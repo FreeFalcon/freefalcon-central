@@ -156,7 +156,7 @@ public:
     };
     int GameStarted(void)
     {
-        if (gameStatus != dog_Waiting) return TRUE;
+        if (gameStatus not_eq dog_Waiting) return TRUE;
 
         return FALSE;
     };

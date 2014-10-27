@@ -41,7 +41,7 @@ int RwrClass::BeingPainted(SimObjectType* rwrObj)
 
         // Since targetPtr belongs to movers only, make sure it is one. Not sure if required but just to be safe. I've been burned top many time :-(
         // Only use the true radar scan volume if the contact's target isn't us...
-        if (rwrObj->BaseData()->IsMover() && ((SimMoverClass *)rwrObj->BaseData())->targetPtr && ((SimMoverClass *)rwrObj->BaseData())->targetPtr->BaseData() != platform)
+        if (rwrObj->BaseData()->IsMover() && ((SimMoverClass *)rwrObj->BaseData())->targetPtr && ((SimMoverClass *)rwrObj->BaseData())->targetPtr->BaseData() not_eq platform)
         {
             scanAz = ((SimBaseClass*)rwrObj->BaseData())->RdrAz();
             scanEl = ((SimBaseClass*)rwrObj->BaseData())->RdrEl();

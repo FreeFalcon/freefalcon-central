@@ -205,7 +205,7 @@ UnitScoreNode* UnitScoreNode::Insert(UnitScoreNode* to_insert, int sort_by)
     }
     else
     {
-        if (to_insert != this)
+        if (to_insert not_eq this)
             to_insert->next = this;
         else
             to_insert->next = NULL;
@@ -348,16 +348,16 @@ GODNode GndObjDataType::Insert(GODNode to_insert, int sort_by)
         if (to_insert->priority_score > priority_score)
         {
             to_insert->next = this;
-            ShiAssert(this != to_insert);
+            ShiAssert(this not_eq to_insert);
             return to_insert;
         }
 
         if (!next or to_insert->priority_score > next->priority_score)
         {
             to_insert->next = next;
-            ShiAssert(next != to_insert);
+            ShiAssert(next not_eq to_insert);
 
-            if (to_insert != this)
+            if (to_insert not_eq this)
                 next = to_insert;
             else
                 next = NULL;
@@ -372,7 +372,7 @@ GODNode GndObjDataType::Insert(GODNode to_insert, int sort_by)
             if (to_insert->priority_score > temp->next->priority_score)
             {
                 to_insert->next = temp->next;
-                ShiAssert(temp->next != to_insert);
+                ShiAssert(temp->next not_eq to_insert);
                 temp->next = to_insert;
                 return this;
             }
@@ -388,16 +388,16 @@ GODNode GndObjDataType::Insert(GODNode to_insert, int sort_by)
         if (to_insert->unit_options < unit_options)
         {
             to_insert->next = this;
-            ShiAssert(this != to_insert);
+            ShiAssert(this not_eq to_insert);
             return to_insert;
         }
 
         if (!next or to_insert->unit_options < next->unit_options)
         {
             to_insert->next = next;
-            ShiAssert(next != to_insert);
+            ShiAssert(next not_eq to_insert);
 
-            if (to_insert != this)
+            if (to_insert not_eq this)
                 next = to_insert;
             else
                 next = NULL;
@@ -412,7 +412,7 @@ GODNode GndObjDataType::Insert(GODNode to_insert, int sort_by)
             if (to_insert->unit_options < temp->next->unit_options)
             {
                 to_insert->next = temp->next;
-                ShiAssert(temp->next != to_insert);
+                ShiAssert(temp->next not_eq to_insert);
                 temp->next = to_insert;
                 return this;
             }
@@ -424,7 +424,7 @@ GODNode GndObjDataType::Insert(GODNode to_insert, int sort_by)
     }
     else
     {
-        if (to_insert != this)
+        if (to_insert not_eq this)
             to_insert->next = this;
         else
             to_insert->next = NULL;

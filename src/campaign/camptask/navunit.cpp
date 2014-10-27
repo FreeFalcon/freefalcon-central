@@ -409,7 +409,7 @@ int TaskForceClass::GetDeaggregationPoint(int slot, CampEntity *installation)
             last_pt = pt = GetNextPt(last_pt);
 #ifdef DEBUG
 
-            if (!pt or PtDataTable[pt].type != type)
+            if (!pt or PtDataTable[pt].type not_eq type)
             {
                 FILE *fp = fopen("PtDatErr.log", "a");
 
@@ -530,7 +530,7 @@ int TaskForceClass::MoveUnit(CampaignTime time)
     }
 
     // Move, if we're not at destination
-    if (x != nx or y != ny)
+    if (x not_eq nx or y not_eq ny)
     {
         if (w)
             ow = w->GetPrevWP();
@@ -1096,7 +1096,7 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
     if (class_data->RadarVehicle == 255 or !GetNumVehicles(class_data->RadarVehicle))
         return FEC_RADAR_OFF;
 
-    assert(radarDatFileTable != NULL);
+    assert(radarDatFileTable not_eq NULL);
     RadarDataSet* radarData = &radarDatFileTable[((VehicleClassDataType *)Falcon4ClassTable[class_data->VehicleType[class_data->RadarVehicle]].dataPtr)->RadarType];
 
 

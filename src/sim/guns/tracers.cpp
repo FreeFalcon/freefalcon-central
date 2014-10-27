@@ -135,7 +135,7 @@ void GunClass::UpdateTracers(int firing)
         }
         else
         {
-            if (trailState[i] != 0)
+            if (trailState[i] not_eq 0)
             {
                 trailState[i] = 0;
                 OTWDriver.RemoveObject(tracers[i]);

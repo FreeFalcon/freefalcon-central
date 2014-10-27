@@ -669,7 +669,7 @@ void AiMakeCommandMsg(SimBaseClass* p_sender, int command, int extent, VU_ID tar
 
 VU_ID AiDesignateTarget(AircraftClass* aircraft)
 {
-    return (aircraft != NULL) ?  FindAircraftTarget(aircraft) : vuNullId;
+    return (aircraft not_eq NULL) ?  FindAircraftTarget(aircraft) : vuNullId;
 }
 
 // --------------------------------------------------------------------

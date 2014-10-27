@@ -529,7 +529,7 @@ BOOL C_TreeList::AddChildItem(TREELIST *par, TREELIST *NewItem)
 
     F4CSECTIONHANDLE* Leave = UI_Enter(Parent_);
 
-    if (NewItem->Type_ != C_TYPE_INFO)
+    if (NewItem->Type_ not_eq C_TYPE_INFO)
         Hash_->Add(NewItem->ID_, NewItem);
 
     AddChild(par, NewItem);
@@ -554,7 +554,7 @@ BOOL C_TreeList::AddItem(TREELIST *current, TREELIST *NewItem)
     F4CSECTIONHANDLE* Leave = UI_Enter(Parent_);
     Add(current, NewItem);
 
-    if (NewItem->Type_ != C_TYPE_INFO)
+    if (NewItem->Type_ not_eq C_TYPE_INFO)
         Hash_->Add(NewItem->ID_, NewItem);
 
     UI_Leave(Leave);
@@ -565,7 +565,7 @@ void C_TreeList::MoveChildItem(TREELIST *Parent, TREELIST *item)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if (item && Parent && item != Parent)
+    if (item && Parent && item not_eq Parent)
     {
         Leave = UI_Enter(Parent_);
 
@@ -598,7 +598,7 @@ BOOL C_TreeList::ChangeItemID(TREELIST *item, long NewID)
     if (!item or Find(NewID))
         return(FALSE);
 
-    if (item->Type_ != C_TYPE_INFO)
+    if (item->Type_ not_eq C_TYPE_INFO)
     {
         Hash_->Remove(item->ID_);
         item->ID_ = NewID;
@@ -728,7 +728,7 @@ void C_TreeList::SetAllControlStates(short newstate, TREELIST *me)
 
     while (cur)
     {
-        if (cur->Type_ != C_TYPE_INFO)
+        if (cur->Type_ not_eq C_TYPE_INFO)
             cur->Item_->SetState(newstate);
 
         if (cur->Child)
@@ -762,11 +762,11 @@ void C_TreeList::RemoveOldBranch(long UserSlot, long Age, TREELIST *me)
         me = cur;
         cur = cur->Next;
 
-        if (me->Type_ != C_TYPE_INFO)
+        if (me->Type_ not_eq C_TYPE_INFO)
         {
             if (me->Item_)
             {
-                if (me->Item_->GetUserNumber(UserSlot) && me->Item_->GetUserNumber(UserSlot) != Age)
+                if (me->Item_->GetUserNumber(UserSlot) && me->Item_->GetUserNumber(UserSlot) not_eq Age)
                 {
                     DeleteItem(me);
                 }
@@ -930,7 +930,7 @@ long C_TreeList::CheckHotSpots(long relX, long relY)
         return(0);
     }
 
-    if (LastFound_ != cur)
+    if (LastFound_ not_eq cur)
     {
         Parent_->DeactivateControl();
     }
@@ -1072,7 +1072,7 @@ void C_TreeList::DrawBranch(SCREEN *surface, TREELIST *branch, UI95_RECT *clipre
         {
             if (Parent_->InsideClientHeight(current->y_ - current->Item_->GetH(), current->y_ + current->Item_->GetH(), GetClient()))
             {
-                if (current->Type_ != C_TYPE_INFO)
+                if (current->Type_ not_eq C_TYPE_INFO)
                 {
                     if (current->Child && FindVisible(current->Child))
                     {

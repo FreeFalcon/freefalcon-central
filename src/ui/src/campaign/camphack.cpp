@@ -30,7 +30,7 @@ extern GlobalPositioningSystem *gGps;
 
 void CampHackButton1CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // Button 1 is Fist Of God tool
@@ -39,7 +39,7 @@ void CampHackButton1CB(long, short hittype, C_Base *)
 
 void CampHackButton2CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // Button 1 is Cheat tool
@@ -48,7 +48,7 @@ void CampHackButton2CB(long, short hittype, C_Base *)
 
 void CampHackButton3CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gGps->TeamNo_ >= 0)
@@ -62,7 +62,7 @@ int GetBriefingData(int query, int data, _TCHAR *buffer, int len);
 
 void CampHackButton4CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     _TCHAR buffer[80];
@@ -89,7 +89,7 @@ void CampHackButton5CB(long, short hittype, C_Base *)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(DEBRIEF_WIN);

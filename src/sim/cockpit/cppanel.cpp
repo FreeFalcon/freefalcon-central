@@ -26,7 +26,7 @@ void TestBounds(int position, int dimension, int* pcursorIndex, int cursor0, int
 
     if (position <= dimension / 4)
     {
-        if (cursor0 != -1)
+        if (cursor0 not_eq -1)
         {
             *pcursorIndex = cursor0;
         }
@@ -41,7 +41,7 @@ void TestBounds(int position, int dimension, int* pcursorIndex, int cursor0, int
     }
     else
     {
-        if (cursor2 != -1)
+        if (cursor2 not_eq -1)
         {
             *pcursorIndex = cursor2;
         }
@@ -173,7 +173,7 @@ CPPanel::~CPPanel()
 
     for (
         vector<CPObject*>::iterator it = mpObjects.begin();
-        it != mpObjects.end();
+        it not_eq mpObjects.end();
         ++it
     )
     {
@@ -182,7 +182,7 @@ CPPanel::~CPPanel()
 
     mpObjects.clear();
 
-    for (vector<CPButtonView*>::iterator it = mpButtonViews.begin(); it != mpButtonViews.end(); ++it)
+    for (vector<CPButtonView*>::iterator it = mpButtonViews.begin(); it not_eq mpButtonViews.end(); ++it)
     {
         delete *it;
     }
@@ -690,14 +690,14 @@ void CPPanel::SetPalette()
 
     for (int i = mNumObjects - 1; i >= 0; i--)
     {
-        if (dynamic_cast<CPLight*>(mpObjects[i]) != NULL)
+        if (dynamic_cast<CPLight*>(mpObjects[i]) not_eq NULL)
         {
             mpObjects[i]->Translate3D(lightPlt);
         }
         else if (
-            (dynamic_cast<CPHsi*>(mpObjects[i]) != NULL) ||
-            (dynamic_cast<CPAdi*>(mpObjects[i]) != NULL) ||
-            (dynamic_cast<CPIndicator*>(mpObjects[i]) != NULL)
+            (dynamic_cast<CPHsi*>(mpObjects[i]) not_eq NULL) ||
+            (dynamic_cast<CPAdi*>(mpObjects[i]) not_eq NULL) ||
+            (dynamic_cast<CPIndicator*>(mpObjects[i]) not_eq NULL)
         )
         {
             mpObjects[i]->Translate3D(adiHsiPlt);

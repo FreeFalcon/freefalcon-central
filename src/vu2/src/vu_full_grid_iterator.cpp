@@ -41,7 +41,7 @@ VuEntity *VuFullGridIterator::GetNext()
 
     do
     {
-        if (ret != NULL)
+        if (ret not_eq NULL)
         {
             // found it
             return ret;
@@ -81,7 +81,7 @@ VuEntity *VuFullGridIterator::GetNext(VuFilter* filter)
 {
     VuEntity* retval = 0;
 
-    while ((retval = GetNext()) != 0)
+    while ((retval = GetNext()) not_eq 0)
     {
         if (filter->Test(retval))
         {
@@ -189,7 +189,7 @@ VuEntity *VuFullGridIterator::GetNext(VuFilter* filter)
 {
     VuEntity* retval = 0;
 
-    while ((retval = GetNext()) != 0)
+    while ((retval = GetNext()) not_eq 0)
     {
         if (filter->Test(retval))
         {

@@ -464,7 +464,7 @@ void C_Waypoint::Draw(SCREEN *surface, UI95_RECT *cliprect)
             if (!(cur->Flags & C_BIT_INVISIBLE))
             {
                 if (cur->Flags & C_BIT_USELINE)
-                    if (prev != cur)
+                    if (prev not_eq cur)
                         if (prev->Group == cur->Group)
                             Parent_->DrawLine(surface, cur->LineColor_[cur->state], prev->x, prev->y, cur->x, cur->y, GetFlags(), GetClient(), cliprect);
 
@@ -508,7 +508,7 @@ BOOL C_Waypoint::UpdateInfo(long ID, float x, float y)
     if (cur == NULL)
         return(FALSE);
 
-    if (cur->worldx != x or cur->worldy != y)
+    if (cur->worldx not_eq x or cur->worldy not_eq y)
     {
         cur->worldx = x;
         cur->worldy = y;
@@ -555,7 +555,7 @@ BOOL C_Waypoint::UpdateInfo(long ID, float x, float y)
             }
         }
 
-        if ((ox != cur->x or oy != cur->y) && !(cur->Flags & C_BIT_INVISIBLE))
+        if ((ox not_eq cur->x or oy not_eq cur->y) && !(cur->Flags & C_BIT_INVISIBLE))
             return(TRUE);
     }
 
@@ -623,7 +623,7 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Dragable(0))
         return(FALSE);
 
-    if (over != Parent_)
+    if (over not_eq Parent_)
         return(FALSE);
 
     if (!(GetFlags() & C_BIT_ABSOLUTE))
@@ -651,11 +651,11 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     cur = Root_;
     prev = NULL;
 
-    if (cur != Waypoint)
+    if (cur not_eq Waypoint)
     {
         prev = cur;
 
-        while (cur->Next && cur->Next != Waypoint)
+        while (cur->Next && cur->Next not_eq Waypoint)
         {
             prev = cur;
             cur = cur->Next;

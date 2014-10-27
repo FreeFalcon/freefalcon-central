@@ -303,7 +303,7 @@ void O_Output::WordWrap()
         {
             count++;
 
-            if (WWCount_ && WWCount_ != count)
+            if (WWCount_ && WWCount_ not_eq count)
             {
                 WWCount_ = 0;
 
@@ -602,7 +602,7 @@ long O_Output::GetCursorPos(long relx, long rely) // Based on mouse location
     unsigned long i, j; //!
     long x, y, w;
 
-    if (_GetOType_() != _OUT_TEXT_)
+    if (_GetOType_() not_eq _OUT_TEXT_)
         return(0);
 
     cur = gFontList->Find(Font_);
@@ -669,7 +669,7 @@ void O_Output::GetCharXY(short idx, long *cx, long *cy) // Based on cursor locat
     C_Fontmgr *cur;
     short i;
 
-    if (_GetOType_() != _OUT_TEXT_)
+    if (_GetOType_() not_eq _OUT_TEXT_)
         return;
 
     cur = gFontList->Find(Font_);
@@ -1282,7 +1282,7 @@ void O_Output::Extract16BitRLE(SCREEN *surface, long FrameNo, long destx, long d
 {
     src; //! Unused
 
-    ShiAssert(surface->bpp != 32);  //XX
+    ShiAssert(surface->bpp not_eq 32);  //XX
 
     long i, dx, dy, done;
     WORD Key, count;

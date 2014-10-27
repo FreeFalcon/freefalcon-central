@@ -832,7 +832,7 @@ static int pob_expand_compare(const void *p, const void *q)
     Prof_Report_Record * a = (Prof_Report_Record *) p;
     Prof_Report_Record * b = (Prof_Report_Record *) q;
 
-    if (a->indent != b->indent)
+    if (a->indent not_eq b->indent)
     {
         if (a->indent == 5) return -1;
 
@@ -1105,7 +1105,7 @@ Prof_extern_C void Prof_select(void)
     {
         void *z = b->record[b->hilight].zone;
 
-        if (z != NULL)
+        if (z not_eq NULL)
         {
             expand = (Prof_Zone *) z;
             displayed_quantity = Prof_CALL_GRAPH;
@@ -1233,7 +1233,7 @@ void Prof_graph(int num_frames, void (*callback)(int id, int x0, int x1, float *
     }
 
     // display frame "cursor"
-    if (display_frame != 0)
+    if (display_frame not_eq 0)
     {
         float value[2] = { 2.0, 0 };
         callback(0, NUM_FRAME_SLOTS - 1 - display_frame, NUM_FRAME_SLOTS - 1 - display_frame, value, data);

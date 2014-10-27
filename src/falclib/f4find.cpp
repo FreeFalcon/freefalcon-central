@@ -37,7 +37,7 @@ int F4GetRegistryString(char* keyName, char* dataPtr, int dataSize)
                           0, KEY_ALL_ACCESS, &theKey);
     retval = RegQueryValueEx(theKey, keyName, 0, &type, (LPBYTE)dataPtr, &size);
 
-    if (retval != ERROR_SUCCESS)
+    if (retval not_eq ERROR_SUCCESS)
     {
         memset(dataPtr, 0, dataSize);
         retval = FALSE;
@@ -222,7 +222,7 @@ int F4LoadData(char path[], void* buffer, int offset, int length)
     if (offset)
         fseek(fp, offset, 0);
 
-    if (fread(buffer, length, 1, fp) != 1)
+    if (fread(buffer, length, 1, fp) not_eq 1)
     {
         sprintf(ebuf, "Failed to read file %s.\n", path);
         F4Warning(ebuf);
@@ -271,7 +271,7 @@ int F4SaveData(char path[], void* buffer, int offset, int length)
     if (offset)
         fseek(fp, offset, 0);
 
-    if (fwrite(buffer, length, 1, fp) != 1)
+    if (fwrite(buffer, length, 1, fp) not_eq 1)
     {
         sprintf(ebuf, "Failed to write file: %d\n", path);
         F4Warning(ebuf);
@@ -314,7 +314,7 @@ char* F4LoadDataID(char basicfile[], int dataID, char* buffer)
         fcheck = fseek(fhandle, offset, 0);
         fcheck = fread(buffer, sizeof(char), length, fhandle);
 
-        if (fcheck != length)
+        if (fcheck not_eq length)
         {
             sprintf(ebuf, "Failed to read data at offset %d in file %s.\n", offset, filename);
             F4Warning(ebuf);

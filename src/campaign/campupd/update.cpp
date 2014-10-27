@@ -493,7 +493,7 @@ int DoWPAction(Flight u)
             // Check if we're planning to take off again!
             pw = w->GetNextWP();
 
-            if (!pw or (!(w->GetWPFlags() & WPF_TAKEOFF) && pw->GetWPAction() != WP_TAKEOFF))
+            if (!pw or (!(w->GetWPFlags() & WPF_TAKEOFF) && pw->GetWPAction() not_eq WP_TAKEOFF))
             {
                 UpdateSquadronStatus(u, TRUE, FALSE);
                 return -1;

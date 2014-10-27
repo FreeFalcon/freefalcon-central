@@ -135,7 +135,7 @@ Texture::~Texture()
     //InterlockedIncrement((long *)&m_dwNumHandles); // Number of instances
     //InterlockedExchangeAdd((long *)&m_dwTotalBytes,-sizeof(*this));
 #endif
-    if((texHandle != NULL) or (imageData != NULL))
+    if((texHandle not_eq NULL) or (imageData not_eq NULL))
     {
         FreeAll();
     }
@@ -155,7 +155,7 @@ void Texture::SetupForDevice(DXContext *texRC, char *path)
 
     strcpy(TexturePath, path);
 
-    if (TexturePath[strlen(TexturePath) - 1] != '\\')
+    if (TexturePath[strlen(TexturePath) - 1] not_eq '\\')
     {
         strcat(TexturePath, "\\");
     }
@@ -178,7 +178,7 @@ void Texture::CleanupForDevice(DXContext *texRC)
 // This is called to check whether the device is setup.
 bool Texture::IsSetup()
 {
-    return rc != NULL;
+    return rc not_eq NULL;
 }
 
 // Read a data file and store its information.
@@ -205,7 +205,7 @@ BOOL Texture::LoadImage(char *filename, DWORD newFlags, BOOL addDefaultPath)
     }
 
     texFile.imageType = CheckImageType(fullname);
-    ShiAssert(texFile.imageType != IMAGE_TYPE_UNKNOWN);
+    ShiAssert(texFile.imageType not_eq IMAGE_TYPE_UNKNOWN);
 
     if (texFile.imageType == IMAGE_TYPE_APL)
     {
@@ -359,7 +359,7 @@ void Texture::FreeImage()
 // Using image (and optional palette data) already loaded, create an MPR texture.
 bool Texture::CreateTexture(char *strName)
 {
-    ShiAssert(rc != NULL);
+    ShiAssert(rc not_eq NULL);
     ShiAssert(imageData);
     ShiAssert(texHandle == NULL);
 
@@ -382,7 +382,7 @@ bool Texture::CreateTexture(char *strName)
         texHandle->Create(strName, (WORD)flags, 8, static_cast<UInt16>(dimensions), static_cast<UInt16>(dimensions));
 
         // OW: Prevent a crash
-        if (imageData != NULL)
+        if (imageData not_eq NULL)
         {
             if (!texHandle->Load(0, chromaKey, (BYTE *)imageData))
             {
@@ -422,7 +422,7 @@ bool Texture::CreateTexture(char *strName)
 // Release the MPR texture we're holding.
 void Texture::FreeTexture()
 {
-    if (texHandle != NULL)
+    if (texHandle not_eq NULL)
     {
         delete texHandle;
         texHandle = NULL;
@@ -449,7 +449,7 @@ BOOL Texture::LoadAndCreate(char *filename, DWORD newFlags)
 // Release the MPR palette and palette data we're holding.
 void Texture::FreePalette()
 {
-    if ((palette != NULL) && (palette->Release() == 0))
+    if ((palette not_eq NULL) && (palette->Release() == 0))
     {
         // sfr: added palette check and corectedx the > to >=
         if (
@@ -468,7 +468,7 @@ void Texture::FreePalette()
 // Reload the MPR texels with the ones we have stored locally.
 bool Texture::UpdateMPR(char *strName)
 {
-    ShiAssert(rc != NULL);
+    ShiAssert(rc not_eq NULL);
     ShiAssert(imageData);
     ShiAssert(texHandle);
 
@@ -629,7 +629,7 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
         }
 
         // Force square
-        if (ddsd.dwWidth != ddsd.dwHeight && (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_SQUAREONLY))
+        if (ddsd.dwWidth not_eq ddsd.dwHeight && (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_SQUAREONLY))
         {
             ddsd.dwWidth = ddsd.dwHeight = max(ddsd.dwWidth, ddsd.dwHeight);
         }
@@ -873,9 +873,9 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
             ;
     }
 
-    m_nImageDataStride = nImageDataStride != -1 ? nImageDataStride : m_nWidth;
+    m_nImageDataStride = nImageDataStride not_eq -1 ? nImageDataStride : m_nWidth;
 
-    if ((m_dwFlags & MPR_TI_PALETTE) && m_eSurfFmt != D3DX_SF_PALETTE8)
+    if ((m_dwFlags & MPR_TI_PALETTE) && m_eSurfFmt not_eq D3DX_SF_PALETTE8)
     {
         DWORD dwSize = m_nImageDataStride * m_nHeight;
 
@@ -1105,7 +1105,7 @@ bool TextureHandle::Reload()
                     {
                         dwTmp = pal[i];
 
-                        if (dwTmp != m_dwChromaKey)
+                        if (dwTmp not_eq m_dwChromaKey)
                             palette[i] = dwTmp;
                         else
                             // Zero alpha but preserve RGB for pre-alpha test filtering (0 == full transparent, 0xff == full opaque)
@@ -1152,7 +1152,7 @@ bool TextureHandle::Reload()
                     {
                         dwTmp = (pal[i].peRed >> 3) | ((pal[i].peGreen >> 3) << 5) | ((pal[i].peBlue >> 3) << 10) | ((pal[i].peFlags >> 7) << 15);
 
-                        if (dwTmp != (WORD)m_dwChromaKey)
+                        if (dwTmp not_eq (WORD)m_dwChromaKey)
                             palette[i] = dwTmp;
                         else
                             // Zero alpha but preserve RGB for pre-alpha test filtering (0 == full transparent, 0xff == full opaque)
@@ -1202,7 +1202,7 @@ bool TextureHandle::Reload()
                     {
                         dwTmp = (pal[i].peRed >> 4) | ((pal[i].peGreen >> 4) << 4) | ((pal[i].peBlue >> 4) << 8) | ((pal[i].peFlags >> 4) << 12);
 
-                        if (dwTmp != (WORD) m_dwChromaKey)
+                        if (dwTmp not_eq (WORD) m_dwChromaKey)
                             palette[i] = dwTmp;
                         else
                             // Zero alpha but preserve RGB for pre-alpha test filtering (0 == full transparent, 0xff == full opaque)
@@ -1574,7 +1574,7 @@ HRESULT CALLBACK TextureHandle::TextureSearchCallback(DDPIXELFORMAT* pddpf, VOID
     }
 
     // Skip any FourCC formats
-    if (pddpf->dwFourCC != 0)
+    if (pddpf->dwFourCC not_eq 0)
     {
         return DDENUMRET_OK;
     }

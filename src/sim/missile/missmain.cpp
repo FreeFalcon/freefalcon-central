@@ -219,14 +219,14 @@ void MissileClass::CleanupData()
 
 void MissileClass::CleanupLocalData()
 {
-    if (runTime != 0.0F && !IsDead())
+    if (runTime not_eq 0.0F && !IsDead())
     {
         SetDead(TRUE);
     }
 
     DropTarget();
 
-    if (display && inputData->displayType != DisplayHTS)
+    if (display && inputData->displayType not_eq DisplayHTS)
     {
         delete display;
     }
@@ -487,7 +487,7 @@ void MissileClass::Start(SimObjectType *tgt)
     #endif
        */
 
-    if (inputData->displayType != DisplayHTS && display)
+    if (inputData->displayType not_eq DisplayHTS && display)
     {
         display->DisplayExit();
         delete display;
@@ -532,7 +532,7 @@ int MissileClass::Exec(void)
         }
         else
         {
-            //if (((DrawableBSP*)drawPointer)->Label()[0] != '\0')
+            //if (((DrawableBSP*)drawPointer)->Label()[0] not_eq '\0')
             // MonoPrint ("ZPOS %.2f\n", ZPos());
 #ifndef MISSILE_TEST_PROG
             if (sensorArray)
@@ -667,7 +667,7 @@ int MissileClass::Exec(void)
                 done = FalconMissileEndMessage::NotDone;
             }
 
-            if (done != FalconMissileEndMessage::NotDone)
+            if (done not_eq FalconMissileEndMessage::NotDone)
             {
 #ifndef MISSILE_TEST_PROG
                 EndMissile();
@@ -909,7 +909,7 @@ int MissileClass::SetSeekerPos(float* az, float* el)
         sensorArray[0]->SetSeekerPos(*az, *el);
         isLimited = TRUE;
 
-        if (inputData->displayType != DisplayHTS && display)
+        if (inputData->displayType not_eq DisplayHTS && display)
         {
             ((MaverickDisplayClass*)display)->SetSeekerPos(*az / inputData->gimlim,
                     *el / inputData->gimlim);
@@ -1003,7 +1003,7 @@ int MissileClass::Sleep()
 
     // make sure parent is no longer referenced
     // Tell the parent this missile doesn't need guidance anymore
-    if (parent.get() != NULL)
+    if (parent.get() not_eq NULL)
     {
         if (parent->IsGroundVehicle())
         {
@@ -1101,11 +1101,11 @@ MissileClass::EndMissile(void)
     FalconMissileEndMessage* endMessage;
 
 
-    if (done != FalconMissileEndMessage::MissileKill &&
-        done != FalconMissileEndMessage::GroundImpact &&
-        done != FalconMissileEndMessage::FeatureImpact &&
-        done != FalconMissileEndMessage::BombImpact && // "bomb warhead" missiles hit SIM target
-        done != FalconMissileEndMessage::ArmingDelay) // when the warhead is not yet armed, do nothing here
+    if (done not_eq FalconMissileEndMessage::MissileKill &&
+        done not_eq FalconMissileEndMessage::GroundImpact &&
+        done not_eq FalconMissileEndMessage::FeatureImpact &&
+        done not_eq FalconMissileEndMessage::BombImpact && // "bomb warhead" missiles hit SIM target
+        done not_eq FalconMissileEndMessage::ArmingDelay) // when the warhead is not yet armed, do nothing here
     {
         if (flags & SensorLostLock)
             done = FalconMissileEndMessage::ExceedFOV;
@@ -1125,7 +1125,7 @@ MissileClass::EndMissile(void)
             if (campBaseObj && campBaseObj->IsAggregate())
             {
                 // Yes, replace the current target by its aggregated campaign object
-                if (campBaseObj != targetPtr->BaseData())
+                if (campBaseObj not_eq targetPtr->BaseData())
                 {
                     if (targetPtr)
                         targetPtr->Release();
@@ -1358,7 +1358,7 @@ MissileClass::ApplyProximityDamage(void)
 
             while (testObject)
             {
-                if (testObject != this)
+                if (testObject not_eq this)
                 {
                     tmpX = testObject->XPos() - XPos();
                     tmpY = testObject->YPos() - YPos();
@@ -1407,10 +1407,10 @@ MissileClass::ApplyProximityDamage(void)
                     // but we have got no missile kill or BombImpact -
                     // or the target can not be damaged by proximity damage
                     if (
-                        !targetPtr or testObject != targetPtr->BaseData() ||
+                        !targetPtr or testObject not_eq targetPtr->BaseData() ||
                         (g_nMissileFix & 0x08) && testObject == targetPtr->BaseData() &&
-                        done != FalconMissileEndMessage::MissileKill &&
-                        done != FalconMissileEndMessage::BombImpact
+                        done not_eq FalconMissileEndMessage::MissileKill &&
+                        done not_eq FalconMissileEndMessage::BombImpact
                     )
                     {
                         tmpX = testObject->XPos() - XPos();

@@ -620,7 +620,7 @@ void SimMoverClass::MakeLocal()
 
     VuDriver *oldd = SetDriver(NULL);
 
-    if (oldd != NULL)
+    if (oldd not_eq NULL)
     {
         if (this == FalconLocalSession->GetPlayerEntity())
         {
@@ -1008,7 +1008,7 @@ int SimMoverClass::Handle(VuFullUpdateEvent *event)
 
     for (i = 0; i < numSwitches; i++)
     {
-        if (switchData[i] != tmpMover->switchData[i])
+        if (switchData[i] not_eq tmpMover->switchData[i])
         {
             switchData[i] = tmpMover->switchData[i];
             switchChange[i] = TRUE;

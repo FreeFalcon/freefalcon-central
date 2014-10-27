@@ -657,7 +657,7 @@ int FalconATCMessage::Process(uchar autodisp)
                                         atcBrain->RemoveFromAllOtherATCs(aircraft);
                                         int Runway = atcBrain->IsOverRunway(aircraft);
 
-                                        if (GetQueue(Runway) != GetQueue(info->rwindex))
+                                        if (GetQueue(Runway) not_eq GetQueue(info->rwindex))
                                         {
                                             atcBrain->RemoveTraffic(aircraft->Id(), GetQueue(info->rwindex));
                                             atcBrain->AddTraffic(aircraft->Id(), lCrashed, Runway, SimLibElapsedTime);
@@ -749,7 +749,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case lFirstLeg:
-                            if (acBrain->ATCStatus() != lFirstLeg && acBrain->ATCStatus() <= lOnFinal)
+                            if (acBrain->ATCStatus() not_eq lFirstLeg && acBrain->ATCStatus() <= lOnFinal)
                             {
                                 atcBrain->FindFinalPt(aircraft, acBrain->Runway(), &finalX, &finalY);
                                 cosAngle = atcBrain->DetermineAngle(aircraft, acBrain->Runway(), lFirstLeg);
@@ -777,7 +777,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case lToBase:
-                            if (acBrain->ATCStatus() != lToBase && acBrain->ATCStatus() <= lOnFinal)
+                            if (acBrain->ATCStatus() not_eq lToBase && acBrain->ATCStatus() <= lOnFinal)
                             {
                                 atcBrain->FindFinalPt(aircraft, acBrain->Runway(), &finalX, &finalY);
                                 atcBrain->FindBasePt(aircraft, acBrain->Runway(), finalX, finalY, &baseX, &baseY);
@@ -794,7 +794,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case lToFinal:
-                            if (acBrain->ATCStatus() != lToFinal && acBrain->ATCStatus() <= lOnFinal)
+                            if (acBrain->ATCStatus() not_eq lToFinal && acBrain->ATCStatus() <= lOnFinal)
                             {
                                 atcBrain->FindFinalPt(aircraft, acBrain->Runway(), &finalX, &finalY);
                                 acBrain->SetATCStatus(lToFinal);
@@ -813,7 +813,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             TranslatePointData(atc, GetFirstPt(acBrain->Runway()), &x, &y);
 
                             //if we sent the message we already know this
-                            if (acBrain->ATCStatus() != lOnFinal && acBrain->ATCStatus() <= lOnFinal)
+                            if (acBrain->ATCStatus() not_eq lOnFinal && acBrain->ATCStatus() <= lOnFinal)
                             {
                                 acBrain->SetATCStatus(lOnFinal);
                                 acBrain->SetTrackPoint(x, y, atcBrain->GetAltitude(aircraft, lOnFinal));
@@ -856,7 +856,7 @@ int FalconATCMessage::Process(uchar autodisp)
                         case lLanded:
 
                             //if we sent the message we already know this
-                            if (acBrain->ATCStatus() != lLanded)
+                            if (acBrain->ATCStatus() not_eq lLanded)
                             {
                                 acBrain->SetATCStatus(lLanded);
                                 taxiPoint = GetFirstPt(acBrain->Runway());
@@ -870,7 +870,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case lAborted:
-                            if (acBrain->ATCStatus() != lAborted)
+                            if (acBrain->ATCStatus() not_eq lAborted)
                             {
                                 atcBrain->FindAbortPt(aircraft, &x, &y, &z);
                                 acBrain->SetATCStatus(lAborted);
@@ -885,7 +885,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case lEmergencyToBase:
-                            if (acBrain->ATCStatus() != lEmergencyToBase)
+                            if (acBrain->ATCStatus() not_eq lEmergencyToBase)
                             {
                                 atcBrain->FindFinalPt(aircraft, acBrain->Runway(), &finalX, &finalY);
                                 atcBrain->FindBasePt(aircraft, acBrain->Runway(), finalX, finalY, &baseX, &baseY);
@@ -896,7 +896,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case lEmergencyToFinal:
-                            if (acBrain->ATCStatus() != lEmergencyToFinal)
+                            if (acBrain->ATCStatus() not_eq lEmergencyToFinal)
                             {
                                 atcBrain->FindFinalPt(aircraft, acBrain->Runway(), &finalX, &finalY);
                                 acBrain->SetATCStatus(lEmergencyToFinal);
@@ -906,7 +906,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case lEmergencyOnFinal:
-                            if (acBrain->ATCStatus() != lEmergencyOnFinal)
+                            if (acBrain->ATCStatus() not_eq lEmergencyOnFinal)
                             {
                                 TranslatePointData(atc, GetFirstPt(acBrain->Runway()), &x, &y);
                                 acBrain->SetATCStatus(lEmergencyOnFinal);
@@ -924,7 +924,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case tTaxi:
-                            if (acBrain->ATCStatus() != tTaxi)
+                            if (acBrain->ATCStatus() not_eq tTaxi)
                             {
                                 acBrain->SetATCStatus(tTaxi);
                                 TranslatePointData(atc, acBrain->GetTaxiPoint() , &x, &y);
@@ -937,7 +937,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             acBrain->ClearATCFlag(DigitalBrain::PermitRunway);
                             acBrain->ClearATCFlag(DigitalBrain::PermitTakeoff);
 
-                            if (acBrain->ATCStatus() != tHoldShort)
+                            if (acBrain->ATCStatus() not_eq tHoldShort)
                             {
                                 acBrain->SetATCStatus(tHoldShort);
                                 taxiPoint = GetFirstPt(acBrain->Runway());
@@ -951,7 +951,7 @@ int FalconATCMessage::Process(uchar autodisp)
                         case tPrepToTakeRunway:
                             acBrain->SetATCFlag(DigitalBrain::PermitTakeRunway);
 
-                            if (acBrain->ATCStatus() != tTaxi)
+                            if (acBrain->ATCStatus() not_eq tTaxi)
                             {
                                 acBrain->SetATCStatus(tTaxi);
 
@@ -966,7 +966,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case tTakeRunway:
-                            if (acBrain->ATCStatus() != tTakeRunway)
+                            if (acBrain->ATCStatus() not_eq tTakeRunway)
                             {
                                 acBrain->SetATCFlag(DigitalBrain::PermitTakeRunway);
                                 acBrain->SetATCStatus(tTakeRunway);
@@ -977,7 +977,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case tTakeoff:
-                            if (acBrain->ATCStatus() != tTakeoff)
+                            if (acBrain->ATCStatus() not_eq tTakeoff)
                             {
                                 acBrain->SetATCFlag(DigitalBrain::PermitRunway);
                                 acBrain->SetATCFlag(DigitalBrain::PermitTakeoff);
@@ -989,7 +989,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case tTaxiBack:
-                            if (acBrain->ATCStatus() != tTaxiBack)
+                            if (acBrain->ATCStatus() not_eq tTaxiBack)
                             {
                                 acBrain->SetATCStatus(tTaxiBack);
                             }
@@ -997,7 +997,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case tFlyOut:
-                            if (acBrain->ATCStatus() != tFlyOut)
+                            if (acBrain->ATCStatus() not_eq tFlyOut)
                             {
                                 acBrain->ResetATC();
                             }

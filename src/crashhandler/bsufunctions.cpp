@@ -58,7 +58,7 @@ Win95GetModuleBaseName(HANDLE  /*hProcess*/  ,
     // This could blow the stack...
     char szBuff[ MAX_PATH + 1 ] ;
     DWORD dwRet = GetModuleFileName(hModule , szBuff , MAX_PATH) ;
-    ASSERT(0 != dwRet) ;
+    ASSERT(0 not_eq dwRet) ;
 
     if (0 == dwRet)
     {
@@ -69,7 +69,7 @@ Win95GetModuleBaseName(HANDLE  /*hProcess*/  ,
     char * pStart = strrchr(szBuff , '\\') ;
     int iMin ;
 
-    if (NULL != pStart)
+    if (NULL not_eq pStart)
     {
         // Move up one character.
         pStart++ ;

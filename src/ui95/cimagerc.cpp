@@ -148,7 +148,7 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, UI95_RECT *rect, short x, shor
         return(NULL);
     }
 
-    if (prior->Header->Type != _RSC_IS_IMAGE_)
+    if (prior->Header->Type not_eq _RSC_IS_IMAGE_)
     {
         MonoPrint("(%1ld) is NOT an IMAGE_RSC (type=%1d)\n", ID, prior->Header->Type);
         return(NULL);
@@ -284,7 +284,7 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, short x, short y, short w, sho
         return(NULL);
     }
 
-    if (prior->Header->Type != _RSC_IS_IMAGE_)
+    if (prior->Header->Type not_eq _RSC_IS_IMAGE_)
     {
         MonoPrint("(%1ld) is NOT an IMAGE_RSC (type=%1d)\n", ID, prior->Header->Type);
         return(NULL);

@@ -209,7 +209,7 @@ void DogfightClass::ApplySettingsToFlight(Flight flight)
     x = startX + DFOffsetX[flight->GetTeam()] * startRange * 0.5F;
     y = startY + DFOffsetY[flight->GetTeam()] * startRange * 0.5F;
 
-    while (calltable[flight->GetTeam()][cid] != flight->callsign_id)
+    while (calltable[flight->GetTeam()][cid] not_eq flight->callsign_id)
     {
         cid++;
     }
@@ -259,7 +259,7 @@ void DogfightClass::ApplySettingsToFlight(Flight flight)
     // Check if there are any players in this flight
     for (i = 0, p = 0; i < PILOTS_PER_FLIGHT; i++)
     {
-        if (flight->player_slots[i] != NO_PILOT)
+        if (flight->player_slots[i] not_eq NO_PILOT)
         {
             p++;
         }
@@ -569,7 +569,7 @@ void DogfightClass::UpdateDogfight(void)
             {
                 EndGame();
             }
-            else if (gameType != dog_TeamMatchplay)
+            else if (gameType not_eq dog_TeamMatchplay)
             {
                 RegenerateAvailableAircraft();
             }
@@ -579,7 +579,7 @@ void DogfightClass::UpdateDogfight(void)
             if (gameType == dog_TeamMatchplay)
             {
                 // Wait until all players are no longer flying before resetting
-                if (gameStatus != dog_Flying)
+                if (gameStatus not_eq dog_Flying)
                 {
                     ResetRound();
                 }
@@ -646,9 +646,9 @@ void DogfightClass::UpdateGameStatus(void)
 
     session = (FalconSessionEntity*)sessionWalker.GetFirst();
 
-    while (session && newStatus != dog_Flying)
+    while (session && newStatus not_eq dog_Flying)
     {
-        if (session->GetFlyState() != FLYSTATE_IN_UI)
+        if (session->GetFlyState() not_eq FLYSTATE_IN_UI)
         {
             newStatus = dog_Starting;
         }
@@ -949,7 +949,7 @@ void DogfightClass::RegenerateAvailableAircraft(void)
 
             if (vuxGameTime > static_cast<VU_TIME>(theObject->timeOfDeath + REGEN_WAIT_TIME) or gameType == dog_TeamMatchplay)
             {
-                if (theObject != FalconLocalSession->GetPlayerEntity() or IsSetLocalFlag(DF_PLAYER_REQ_REGEN) or gameType == dog_TeamMatchplay)
+                if (theObject not_eq FalconLocalSession->GetPlayerEntity() or IsSetLocalFlag(DF_PLAYER_REQ_REGEN) or gameType == dog_TeamMatchplay)
                 {
                     msg = new FalconRegenerationMessage(theObject->Id(), FalconLocalGame);
                     msg->dataBlock.newx = startX;

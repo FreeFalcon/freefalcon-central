@@ -20,7 +20,7 @@ void HeliBrain::WvrEngageCheck(void)
     /*-------*/
     /* entry */
     /*-------*/
-    if (curMode != WVREngageMode)
+    if (curMode not_eq WVREngageMode)
     {
         /*--------------------------------*/
         /* check against threshold values */

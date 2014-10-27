@@ -128,7 +128,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
     if (pctStrength <= 0.0F)
     {
         // Kill us
-        if ((Status() & VIS_TYPE_MASK) != VIS_DESTROYED)
+        if ((Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED)
         {
 
             if (gACMIRec.IsRecording())
@@ -193,7 +193,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
             {
                 SimFeatureClass *prevObj = (SimFeatureClass*) GetCampaignObject()->GetComponentEntity(GetCampaignObject()->GetComponentIndex(this) - 1);
 
-                if (prevObj && featureFlags & FEAT_PREV_CRIT && (prevObj->Status() & VIS_TYPE_MASK) != VIS_DESTROYED)
+                if (prevObj && featureFlags & FEAT_PREV_CRIT && (prevObj->Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED)
                 {
                     MonoPrint("ID %d taking previous neighbor with it!\n", GetCampaignObject()->GetComponentIndex(this));
                     prevObj->ApplyDamage(damageMessage);
@@ -206,7 +206,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
             {
                 SimFeatureClass *nextObj = (SimFeatureClass*) GetCampaignObject()->GetComponentEntity(GetCampaignObject()->GetComponentIndex(this) + 1);
 
-                if (nextObj && featureFlags & FEAT_NEXT_CRIT && (nextObj->Status() & VIS_TYPE_MASK) != VIS_DESTROYED)
+                if (nextObj && featureFlags & FEAT_NEXT_CRIT && (nextObj->Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED)
                 {
                     MonoPrint("ID %d taking next neighbor with it!\n", GetCampaignObject()->GetComponentIndex(this));
                     nextObj->ApplyDamage(damageMessage);
@@ -219,7 +219,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
         // Update the drawable, to reflect our new state
         UpdateDrawableObject(this);
     }
-    else if (pctStrength <= 0.75F && (Status() & VIS_TYPE_MASK) != VIS_DAMAGED)
+    else if (pctStrength <= 0.75F && (Status() & VIS_TYPE_MASK) not_eq VIS_DAMAGED)
     {
         // MonoPrint ("Feature %d DAMAGED at %8ld\n", Id().num_, SimLibElapsedTime);
 

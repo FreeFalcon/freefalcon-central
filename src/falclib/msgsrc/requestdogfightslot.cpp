@@ -36,7 +36,7 @@ UI_RequestDogfightSlot::~UI_RequestDogfightSlot(void)
 
 int UI_RequestDogfightSlot::Process(uchar autodisp)
 {
- if(gCommsMgr != NULL)
+ if(gCommsMgr not_eq NULL)
  {
  if (vuLocalSessionEntity->Game()->OwnerId() == vuLocalSessionEntity->Id())
  {

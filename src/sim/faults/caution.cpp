@@ -33,7 +33,7 @@ BOOL CautionClass::IsFlagSet()
         flag   or_eq  mpBitVector[i];
     }
 
-    return (flag != 0);
+    return (flag not_eq 0);
 }
 
 //-------------------------------------------------
@@ -150,6 +150,6 @@ BOOL CautionClass::GetCaution(int subsystem)
     vectorNum = subsystem / BITS_PER_VECTOR;
     bitNum = subsystem - vectorNum * BITS_PER_VECTOR;
 
-    return ((mpBitVector[vectorNum] & (0x01 << bitNum)) != 0);
+    return ((mpBitVector[vectorNum] & (0x01 << bitNum)) not_eq 0);
 }
 

@@ -177,7 +177,7 @@ void FackClass::SetFault(type_CSubSystem subsystem)
         mCautions.SetCaution(subsystem);
 
         // No Master Caution for low_altitude warming - just bitchin' betty :-) - RH
-        if (subsystem != alt_low)
+        if (subsystem not_eq alt_low)
         {
             if (!g_bRealisticAvionics)
             {
@@ -206,7 +206,7 @@ void FackClass::SetFault(type_CSubSystem subsystem)
                 }
 
                 //these are actually cautions
-                if (subsystem != fuel_low_fault)
+                if (subsystem not_eq fuel_low_fault)
                 {
                     if (GetFault(stores_config_fault) ||
                         GetFault(flt_cont_fault) ||

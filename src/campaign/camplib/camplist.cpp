@@ -45,7 +45,7 @@ UnitFilter::UnitFilter(uchar p, uchar r, ushort h, uchar a)
 
 VU_BOOL UnitFilter::Test(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
     if (parent && !((Unit)e)->Parent())
@@ -67,7 +67,7 @@ VU_BOOL UnitFilter::Test(VuEntity *e)
 
 VU_BOOL UnitFilter::RemoveTest(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
     if (parent && !((Unit)e)->Parent())
@@ -96,10 +96,10 @@ AirUnitFilter::AirUnitFilter(uchar p, uchar r, ushort h)
 
 VU_BOOL AirUnitFilter::Test(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
-    if (((Unit)e)->GetDomain() != DOMAIN_AIR)
+    if (((Unit)e)->GetDomain() not_eq DOMAIN_AIR)
         return FALSE;
 
     if (parent && !((Unit)e)->Parent())
@@ -119,10 +119,10 @@ VU_BOOL AirUnitFilter::Test(VuEntity *e)
 
 VU_BOOL AirUnitFilter::RemoveTest(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
-    if (((Unit)e)->GetDomain() != DOMAIN_AIR)
+    if (((Unit)e)->GetDomain() not_eq DOMAIN_AIR)
         return FALSE;
 
     if (parent && !((Unit)e)->Parent())
@@ -149,10 +149,10 @@ GroundUnitFilter::GroundUnitFilter(uchar p, uchar r, ushort h)
 
 VU_BOOL GroundUnitFilter::Test(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
-    if (((Unit)e)->GetDomain() != DOMAIN_LAND)
+    if (((Unit)e)->GetDomain() not_eq DOMAIN_LAND)
         return FALSE;
 
     if (parent && !((Unit)e)->Parent())
@@ -172,10 +172,10 @@ VU_BOOL GroundUnitFilter::Test(VuEntity *e)
 
 VU_BOOL GroundUnitFilter::RemoveTest(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
-    if (((Unit)e)->GetDomain() != DOMAIN_LAND)
+    if (((Unit)e)->GetDomain() not_eq DOMAIN_LAND)
         return FALSE;
 
     if (parent && !((Unit)e)->Parent())
@@ -202,10 +202,10 @@ NavalUnitFilter::NavalUnitFilter(uchar p, uchar r, ushort h)
 
 VU_BOOL NavalUnitFilter::Test(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
-    if (((Unit)e)->GetDomain() != DOMAIN_SEA)
+    if (((Unit)e)->GetDomain() not_eq DOMAIN_SEA)
         return FALSE;
 
     if (parent && !((Unit)e)->Parent())
@@ -225,10 +225,10 @@ VU_BOOL NavalUnitFilter::Test(VuEntity *e)
 
 VU_BOOL NavalUnitFilter::RemoveTest(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
-    if (((Unit)e)->GetDomain() != DOMAIN_SEA)
+    if (((Unit)e)->GetDomain() not_eq DOMAIN_SEA)
         return FALSE;
 
     if (parent && !((Unit)e)->Parent())
@@ -281,7 +281,7 @@ UnitProxFilter::UnitProxFilter(const UnitProxFilter *other, int r) : VuBiKeyFilt
 
 VU_BOOL UnitProxFilter::Test(VuEntity *ent)
 {
-    if (!ent->EntityType()->classInfo_[VU_DOMAIN] or ent->EntityType()->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!ent->EntityType()->classInfo_[VU_DOMAIN] or ent->EntityType()->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
     {
         return FALSE;
     }
@@ -301,7 +301,7 @@ VU_BOOL UnitProxFilter::Test(VuEntity *ent)
 
 VU_BOOL UnitProxFilter::RemoveTest(VuEntity *ent)
 {
-    if (!ent->EntityType()->classInfo_[VU_DOMAIN] or ent->EntityType()->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!ent->EntityType()->classInfo_[VU_DOMAIN] or ent->EntityType()->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
     {
         return FALSE;
     }
@@ -329,7 +329,7 @@ ObjFilter::ObjFilter(ushort h)
 
 VU_BOOL ObjFilter::Test(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_OBJECTIVE)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
         return FALSE;
 
     if (host && !e->IsLocal())
@@ -340,7 +340,7 @@ VU_BOOL ObjFilter::Test(VuEntity *e)
 
 VU_BOOL ObjFilter::RemoveTest(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_OBJECTIVE)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
         return FALSE;
 
     if (host && !e->IsLocal())
@@ -377,7 +377,7 @@ ObjProxFilter::ObjProxFilter(const ObjProxFilter *other) : VuBiKeyFilter(other)
 
 VU_BOOL ObjProxFilter::Test(VuEntity *ent)
 {
-    if ((ent->EntityType())->classInfo_[VU_DOMAIN] && (ent->EntityType())->classInfo_[VU_CLASS] != CLASS_OBJECTIVE)
+    if ((ent->EntityType())->classInfo_[VU_DOMAIN] && (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
     {
         return FALSE;
     }
@@ -387,7 +387,7 @@ VU_BOOL ObjProxFilter::Test(VuEntity *ent)
 
 VU_BOOL ObjProxFilter::RemoveTest(VuEntity *ent)
 {
-    if ((ent->EntityType())->classInfo_[VU_DOMAIN] && (ent->EntityType())->classInfo_[VU_CLASS] != CLASS_OBJECTIVE)
+    if ((ent->EntityType())->classInfo_[VU_DOMAIN] && (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
     {
         return FALSE;
     }
@@ -902,7 +902,7 @@ int RebuildFrontList(int do_barcaps, int incremental)
                     front = u->GetOwner();
                 }
 
-                if (!u or (u && u->GetTeam() != o->GetTeam()))
+                if (!u or (u && u->GetTeam() not_eq o->GetTeam()))
                 {
                     // Enemy units are in control, send a captured message
                     CaptureObjective(o, (Control)front, NULL);
@@ -1011,7 +1011,7 @@ void RebuildFLOTList(void)
         {
             n = o->GetNeighbor(i);
 
-            if (n && n->IsFrontline() && o->GetTeam() != n->GetTeam())
+            if (n && n->IsFrontline() && o->GetTeam() not_eq n->GetTeam())
             {
                 n->GetLocation(&nx, &ny);
                 fx = (short)((ox + nx) / 2);
@@ -1058,7 +1058,7 @@ void MarkObjectives(void)
         VuListIterator myit(AllObjList);
         o = GetFirstObjective(&myit);
 
-        while (o != NULL)
+        while (o not_eq NULL)
         {
             o->ClearObjFlags(O_SECONDLINE | O_THIRDLINE);
             o = GetNextObjective(&myit);
@@ -1069,7 +1069,7 @@ void MarkObjectives(void)
         VuListIterator frontit(FrontList);
         o = GetFirstObjective(&frontit);
 
-        while (o != NULL)
+        while (o not_eq NULL)
         {
             for (i = 0; i < o->NumLinks(); i++)
             {
@@ -1093,7 +1093,7 @@ void MarkObjectives(void)
         VuListIterator secondit(&secondlist);
         o = GetFirstObjective(&secondit);
 
-        while (o != NULL)
+        while (o not_eq NULL)
         {
             for (i = 0; i < o->NumLinks(); i++)
             {
@@ -1127,7 +1127,7 @@ int RebuildObjectiveLists(void)
         VuListIterator myit(AllObjList);
         o = GetFirstObjective(&myit);
 
-        while (o != NULL)
+        while (o not_eq NULL)
         {
             if (o->IsPrimary())
                 POList->ForcedInsert(o);
@@ -1292,7 +1292,7 @@ int CheckObjProxyOK(int X, int Y)
 
     for (
         o = (Objective) myit.GetFirst();
-        o != NULL;
+        o not_eq NULL;
         o = (Objective) myit.GetNext()
     )
     {
@@ -1318,7 +1318,7 @@ int CheckUnitProxyOK(int X, int Y)
 
     for (
         u = (Unit) myit.GetFirst();
-        u != NULL;
+        u not_eq NULL;
         u = (Unit) myit.GetNext()
     )
     {

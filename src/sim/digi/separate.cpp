@@ -59,9 +59,9 @@ void DigitalBrain::SeparateCheck(void)
     }
 
     // 2001-12-28 MN this prevents FAC aircraft from aborting missions in 3D (they have no weapons..)
-    /* if (missionClass == AGMission && !IsSetATC(HasAGWeapon) && missionType != AMIS_FAC)
+    /* if (missionClass == AGMission && !IsSetATC(HasAGWeapon) && missionType not_eq AMIS_FAC)
      {
-        if ((missionType != AMIS_BDA && missionType != AMIS_RECON) or !hasCamera)
+        if ((missionType not_eq AMIS_BDA && missionType not_eq AMIS_RECON) or !hasCamera)
     // 2001-05-12 ADDED BY S.G. ABORT ONLY WHEN THE MISSION IS NOT COMPLETED OR WE ARE AT THE ATTACK WAYPOINT, OTHERWISE FOLLOW WAYPOINTS HOME
     // 2001-06-21 MODIFIED BY S.G. BROUGHT BACK TO WHAT IS RELEASED
     //    if (!missionComplete or !self->curWaypoint or self->curWaypoint->GetWPFlags() & WPF_TARGET)
@@ -81,7 +81,7 @@ void DigitalBrain::SeparateCheck(void)
     if ((aaAbort or agAbort or campAbort or damageAbort) && !inTraining)
     {
         // If pre IP go to landing, else step past target
-        if (curMode != RTBMode && curMode != LandingMode && curMode != TakeoffMode)
+        if (curMode not_eq RTBMode && curMode not_eq LandingMode && curMode not_eq TakeoffMode)
         {
             // Drop ground target if any
             if (groundTargetPtr)
@@ -181,7 +181,7 @@ void DigitalBrain::SeparateCheck(void)
         curMode == WVREngageMode && (aaAbort or agAbort or campAbort or damageAbort))
     {
         // Entry
-        if (curMode != SeparateMode && targetData->range < 2.0f * NM_TO_FT)
+        if (curMode not_eq SeparateMode && targetData->range < 2.0f * NM_TO_FT)
         {
             // Find range where tail chase would begin
             sepRange = RangeAtTailChase(self, targetPtr);
@@ -225,7 +225,7 @@ void DigitalBrain::SeparateCheck(void)
 
     //TJL 11/08/03 Bugout code courtesy of Jam/Mike
     // Is the AI deep six? ataFrom is from target nose.
-    if (targetData->ataFrom > 135.0F * DTR && FalconLocalGame->GetGameType() != game_Dogfight)
+    if (targetData->ataFrom > 135.0F * DTR && FalconLocalGame->GetGameType() not_eq game_Dogfight)
     {
         if (!bugoutTimer)
         {

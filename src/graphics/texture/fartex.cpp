@@ -247,7 +247,7 @@ void FarTexDB::SetLightLevel(void)
         TheTimeOfDay.GetTextureLightingColor(&lightColor);
     }
 
-    if (DisplayOptions.m_texMode != DisplayOptionsClass::TEX_MODE_DDS)
+    if (DisplayOptions.m_texMode not_eq DisplayOptionsClass::TEX_MODE_DDS)
     {
         // Apply the current lighting
         from = (BYTE *)palette;
@@ -576,7 +576,7 @@ void FarTexDB::Activate(DWORD offset)
     ShiAssert(IsReady());
     ShiAssert(offset >= 0);
     ShiAssert(offset < (DWORD) texCount);
-    ShiAssert(texArray[offset].bits != NULL);
+    ShiAssert(texArray[offset].bits not_eq NULL);
     ShiAssert(texArray[offset].handle == NULL);
 
     if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)

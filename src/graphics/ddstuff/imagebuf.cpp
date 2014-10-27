@@ -857,12 +857,12 @@ void ImageBuffer::Compose(ImageBuffer *srcBuffer, RECT *dstRect, RECT *srcRect)
     ShiAssert(FALSE == F4IsBadReadPtr(srcBuffer, sizeof * srcBuffer));
 
 
-    bool bStretch = ((srcRect->right - srcRect->left) != (dstRect->right - dstRect->left)) or ((srcRect->bottom - srcRect->top) != (dstRect->bottom - dstRect->top));
+    bool bStretch = ((srcRect->right - srcRect->left) not_eq (dstRect->right - dstRect->left)) or ((srcRect->bottom - srcRect->top) not_eq (dstRect->bottom - dstRect->top));
     HRESULT hr;
 
     if (!m_bFrontRectValid && !bStretch)
     {
-        if (srcRect && m_pBltTarget != m_pDDSBack)
+        if (srcRect && m_pBltTarget not_eq m_pDDSBack)
         {
             RECT rcSrc = *srcRect;
             rcSrc.left += m_rcFront.left;
@@ -876,7 +876,7 @@ void ImageBuffer::Compose(ImageBuffer *srcBuffer, RECT *dstRect, RECT *srcRect)
 
     else
     {
-        if (m_bFrontRectValid && srcRect && m_pBltTarget != m_pDDSBack)
+        if (m_bFrontRectValid && srcRect && m_pBltTarget not_eq m_pDDSBack)
         {
             RECT rcSrc = *srcRect;
             rcSrc.left += m_rcFront.left;
@@ -904,12 +904,12 @@ void ImageBuffer::ComposeTransparent(ImageBuffer *srcBuffer, RECT *dstRect, RECT
     ShiAssert(FALSE == F4IsBadReadPtr(dstRect, sizeof * dstRect));
     ShiAssert(FALSE == F4IsBadReadPtr(srcBuffer, sizeof * srcBuffer));
 
-    bool bStretch = ((srcRect->right - srcRect->left) != (dstRect->right - dstRect->left)) or ((srcRect->bottom - srcRect->top) != (dstRect->bottom - dstRect->top));
+    bool bStretch = ((srcRect->right - srcRect->left) not_eq (dstRect->right - dstRect->left)) or ((srcRect->bottom - srcRect->top) not_eq (dstRect->bottom - dstRect->top));
     HRESULT hr;
 
     if (!m_bFrontRectValid && !bStretch)
     {
-        if (srcRect && m_pBltTarget != m_pDDSBack)
+        if (srcRect && m_pBltTarget not_eq m_pDDSBack)
         {
             RECT rcSrc = *srcRect;
             rcSrc.left += m_rcFront.left;
@@ -923,7 +923,7 @@ void ImageBuffer::ComposeTransparent(ImageBuffer *srcBuffer, RECT *dstRect, RECT
 
     else
     {
-        if (m_bFrontRectValid && srcRect && m_pBltTarget != m_pDDSBack)
+        if (m_bFrontRectValid && srcRect && m_pBltTarget not_eq m_pDDSBack)
         {
             RECT rcSrc = *srcRect;
             rcSrc.left += m_rcFront.left;
@@ -1038,7 +1038,7 @@ void ImageBuffer::SwapBuffers(bool bDontFlip)
         {
             HRESULT hres = m_pDDSBack->GetFlipStatus(DDGFS_CANFLIP);
 
-            if (hres != DDERR_WASSTILLDRAWING)
+            if (hres not_eq DDERR_WASSTILLDRAWING)
             {
                 break;
             }
@@ -1128,7 +1128,7 @@ void ImageBuffer::BackBufferToRAW(char *filename)
     bfh.bfSize = bfh.bfOffBits + bih.biSizeImage;
 
     // Write the header
-    if ((!WriteFile(fileID, &bfh, sizeof(BITMAPFILEHEADER), &dwBytes, NULL)) or (dwBytes != sizeof(BITMAPFILEHEADER)))
+    if ((!WriteFile(fileID, &bfh, sizeof(BITMAPFILEHEADER), &dwBytes, NULL)) or (dwBytes not_eq sizeof(BITMAPFILEHEADER)))
     {
         char string[256];
         PutErrorString(string);
@@ -1137,7 +1137,7 @@ void ImageBuffer::BackBufferToRAW(char *filename)
     }
 
     // Write the bitmap info header
-    if ((!WriteFile(fileID, &bih, sizeof(BITMAPINFOHEADER), &dwBytes, NULL)) or (dwBytes != sizeof(BITMAPINFOHEADER)))
+    if ((!WriteFile(fileID, &bih, sizeof(BITMAPINFOHEADER), &dwBytes, NULL)) or (dwBytes not_eq sizeof(BITMAPINFOHEADER)))
     {
         char string[256];
         PutErrorString(string);
@@ -1184,7 +1184,7 @@ void ImageBuffer::BackBufferToRAW(char *filename)
                 // Write the scanline to disk
                 if (!WriteFile(fileID, buffer, bufferSize, &bytes, NULL))  bytes = 0xFFFFFFFF;
 
-                if (bytes != bufferSize)
+                if (bytes not_eq bufferSize)
                 {
                     char string[256];
                     PutErrorString(string);
@@ -1225,7 +1225,7 @@ void ImageBuffer::BackBufferToRAW(char *filename)
                 // Write the scanline to disk
                 if (!WriteFile(fileID, buffer, bufferSize, &bytes, NULL))  bytes = 0xFFFFFFFF;
 
-                if (bytes != bufferSize)
+                if (bytes not_eq bufferSize)
                 {
                     char string[256];
                     PutErrorString(string);
@@ -1262,7 +1262,7 @@ void ImageBuffer::RestoreAll()
         {
             MonoPrint("ImageBuffer::RestoreAll - Front restored\n");
 
-            if (m_pDDSFront != m_pDDSBack)
+            if (m_pDDSFront not_eq m_pDDSBack)
             {
                 hr = m_pDDSBack->IsLost();
 

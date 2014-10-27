@@ -643,7 +643,7 @@ void ATCBrain::ProcessQueue(int queue)
                         //and next acft to T/O is not current obj???, and next acft to T/O is not on rwy, then
                         else if (pNTOAircraft && pNTOAircraft->IsAirplane() && nextTakeoff->schedTime + FalconLocalGame->rules.AtcPatience < SimLibElapsedTime  &&
                                  pNTOAircraft->af->vt < 5.0F * KNOTS_TO_FTPSEC && info->schedTime < SimLibElapsedTime  &&
-                                 pNTOAircraft->GetCampaignObject() != aircraft->GetCampaignObject() && !IsOnRunway(pNTOAircraft))
+                                 pNTOAircraft->GetCampaignObject() not_eq aircraft->GetCampaignObject() && !IsOnRunway(pNTOAircraft))
                         {
                             //RAS - no aircraft on final and past T/O time + delta(60sec)
                             if (!nextLand or SimLibElapsedTime + LAND_TIME_DELTA > nextLand->schedTime)
@@ -704,7 +704,7 @@ void ATCBrain::ProcessQueue(int queue)
                         }
                         else if (pNTOAircraft && pNTOAircraft->IsAirplane() && nextTakeoff->schedTime + FalconLocalGame->rules.AtcPatience < SimLibElapsedTime  &&
                                  pNTOAircraft->af->vt < 5.0F * KNOTS_TO_FTPSEC && info->schedTime < SimLibElapsedTime &&
-                                 pNTOAircraft->GetCampaignObject() != aircraft->GetCampaignObject() && !IsOnRunway(pNTOAircraft))
+                                 pNTOAircraft->GetCampaignObject() not_eq aircraft->GetCampaignObject() && !IsOnRunway(pNTOAircraft))
                         {
                             if (!nextLand or SimLibElapsedTime + LAND_TIME_DELTA > nextLand->schedTime)
                             {
@@ -861,7 +861,7 @@ void ATCBrain::ProcessQueue(int queue)
                             temp = temp->next;
                         }
 
-                        if (info->schedTime < SimLibElapsedTime && (temp or runwayStats[queue].nextEmergency != FalconNullId))
+                        if (info->schedTime < SimLibElapsedTime && (temp or runwayStats[queue].nextEmergency not_eq FalconNullId))
                         {
                             if (!aircraft->DBrain()->IsSetATC(DigitalBrain::ClearToLand) ||
                                 info->schedTime + CampaignMinutes < SimLibElapsedTime)
@@ -1190,7 +1190,7 @@ void ATCBrain::ProcessPlayers(void)
                             break;
 
                         case tFlyOut:
-                            if (player->AutopilotType() != AircraftClass::CombatAP)
+                            if (player->AutopilotType() not_eq AircraftClass::CombatAP)
                             {
                                 player->DBrain()->SetATCStatus(noATC);
                                 //remove from list
@@ -1235,7 +1235,7 @@ void ATCBrain::ProcessPlayers(void)
                                         {
                                             if (
                                                 curObj &&
-                                                (curObj != self) &&
+                                                (curObj not_eq self) &&
                                                 (curObj->GetType() == TYPE_AIRBASE) &&
                                                 curObj->brain->InList(player->Id())
                                             )
@@ -1300,7 +1300,7 @@ void ATCBrain::ProcessPlayers(void)
                                     while (curObj)
                                     {
                                         if (
-                                            curObj && (curObj != self) &&
+                                            curObj && (curObj not_eq self) &&
                                             (curObj->GetType() == TYPE_AIRBASE) &&
                                             (curObj->brain->InList(player->Id()))
                                         )
@@ -1576,7 +1576,7 @@ void ATCBrain::RequestEmerClearance(AircraftClass* approaching)
     landTime = SimLibElapsedTime + min;
 
     //multiple emergencies, you have to wait your turn
-    if (runwayStats[queue].nextEmergency != FalconNullId)
+    if (runwayStats[queue].nextEmergency not_eq FalconNullId)
     {
         info = InList(runwayStats[queue].nextEmergency);
 
@@ -1830,7 +1830,7 @@ void ATCBrain::RequestTakeoff(AircraftClass* departing)
                         info->status = tHoldShort;
                 }
 
-                if (runwayStats[queue].nextEmergency != FalconNullId)
+                if (runwayStats[queue].nextEmergency not_eq FalconNullId)
                     info->status = tEmerStop;
 
                 SendCmdMessage(aircraft, info);
@@ -2033,7 +2033,7 @@ void ATCBrain::RequestTaxi(AircraftClass* departing)
                 info->status = tHoldShort;
         }
 
-        if (runwayStats[queue].nextEmergency != FalconNullId)
+        if (runwayStats[queue].nextEmergency not_eq FalconNullId)
             info->status = tEmerStop;
 
         SendCmdMessage(departing, info);
@@ -2133,7 +2133,7 @@ void ATCBrain::SetEmergency(int queue)
 
     emer = runwayQueue[queue];
 
-    while (emer && emer->aircraftID != runwayStats[queue].nextEmergency)
+    while (emer && emer->aircraftID not_eq runwayStats[queue].nextEmergency)
         emer = emer->next;
 
     // Check for AC in the queue. If its not, don't remove it, just return LRKLUDGE
@@ -2200,7 +2200,7 @@ void ATCBrain::ReschedulePlanes(int queue)
     {
         aircraft = (AircraftClass*)vuDatabase->Find(info->aircraftID);
 
-        if (aircraft && info->status != noATC)
+        if (aircraft && info->status not_eq noATC)
         {
             if (info->status > lCrashed)
             {
@@ -2291,7 +2291,7 @@ void ATCBrain::RescheduleFlightTakeoff(int queue, Flight flight)
                 continue;
             }
 
-            if (runwayStats[queue].nextEmergency != FalconNullId)
+            if (runwayStats[queue].nextEmergency not_eq FalconNullId)
                 info->status = tEmerStop;
 
             SendCmdMessage(aircraft, info);
@@ -2408,7 +2408,7 @@ int ATCBrain::FindBestTakeoffRunway(int checklist)
 
             if (delta < 91)
             {
-                if (info->status < tReqTaxi && info->status != noATC && GetOppositeRunway(rwindex))
+                if (info->status < tReqTaxi && info->status not_eq noATC && GetOppositeRunway(rwindex))
                     rwindex = GetOppositeRunway(rwindex);
             }
             else
@@ -2924,7 +2924,7 @@ int ATCBrain::FindBestLandingRunway(FalconEntity* landing, int checklist)
     // only return if they are on the same team
     int rel = GetTTRelations(self->GetTeam(), landing->GetTeam());
 
-    if ((rel != Friendly) && (rel != Allied))
+    if ((rel not_eq Friendly) && (rel not_eq Allied))
     {
         return 0;
     }
@@ -2973,7 +2973,7 @@ int ATCBrain::FindBestLandingRunway(FalconEntity* landing, int checklist)
     }
 
     //we prefer to use the runway with a shorter queue that is closer to us
-    if (numRwys == 2 && rwindex2 && PtHeaderDataTable[rwindex2].runwayNum != PtHeaderDataTable[rwindex].runwayNum)
+    if (numRwys == 2 && rwindex2 && PtHeaderDataTable[rwindex2].runwayNum not_eq PtHeaderDataTable[rwindex].runwayNum)
     {
         //score both choices, while favoring the second choice so we don't have crossing patterns
         score1 = (runwayStats[queue2].numInQueue - runwayStats[queue].numInQueue);
@@ -2987,12 +2987,12 @@ int ATCBrain::FindBestLandingRunway(FalconEntity* landing, int checklist)
             score2 = (runwayStats[queue].numInQueue - runwayStats[queue2].numInQueue) + 7;
         }
 
-        if (runwayStats[queue].nextEmergency != FalconNullId)
+        if (runwayStats[queue].nextEmergency not_eq FalconNullId)
         {
             score1 -= 6;
         }
 
-        if (runwayStats[queue2].nextEmergency != FalconNullId)
+        if (runwayStats[queue2].nextEmergency not_eq FalconNullId)
         {
             score2 -= 6;
         }
@@ -3133,7 +3133,7 @@ void ATCBrain::FindEmergencyLandingRunway(int *queue, int *rwindex, FalconEntity
     }
 
     //we prefer to use the runway with a shorter queue that is closer to us
-    if (rwindex2 && PtHeaderDataTable[rwindex2].runwayNum != PtHeaderDataTable[*rwindex].runwayNum)
+    if (rwindex2 && PtHeaderDataTable[rwindex2].runwayNum not_eq PtHeaderDataTable[*rwindex].runwayNum)
     {
         //score both choices, while favoring the second choice so we don't have crossing patterns
         score1 = (runwayStats[queue2].numInQueue - runwayStats[*queue].numInQueue);
@@ -3143,10 +3143,10 @@ void ATCBrain::FindEmergencyLandingRunway(int *queue, int *rwindex, FalconEntity
         else
             score2 = (runwayStats[*queue].numInQueue - runwayStats[queue2].numInQueue) + 7;
 
-        if (runwayStats[*queue].nextEmergency != FalconNullId)
+        if (runwayStats[*queue].nextEmergency not_eq FalconNullId)
             score1 -= 6;
 
-        if (runwayStats[queue2].nextEmergency != FalconNullId)
+        if (runwayStats[queue2].nextEmergency not_eq FalconNullId)
             score2 -= 6;
 
         //if we choose the closer runway we won't have to worry about our patterns crossing over the runway
@@ -5130,9 +5130,9 @@ int ATCBrain::CheckLanding(AircraftClass *aircraft, runwayQueueStruct* landInfo)
     {
         if (landInfo)
         {
-            if (landInfo->status != lEmergencyToBase && landInfo->status != lEmergencyToFinal &&
-                landInfo->status != lEmergencyOnFinal && next != landInfo &&
-                landInfo->status != lLanded) // JB 010713 If we're already landed, then what's the big deal?
+            if (landInfo->status not_eq lEmergencyToBase && landInfo->status not_eq lEmergencyToFinal &&
+                landInfo->status not_eq lEmergencyOnFinal && next not_eq landInfo &&
+                landInfo->status not_eq lLanded) // JB 010713 If we're already landed, then what's the big deal?
             {
                 float groundZ = OTWDriver.GetGroundLevel(aircraft->XPos(), aircraft->YPos());
                 aircraft->FeatureCollision(groundZ);
@@ -5148,7 +5148,7 @@ int ATCBrain::CheckLanding(AircraftClass *aircraft, runwayQueueStruct* landInfo)
             }
 
 
-            if (landInfo->status != lLanded)
+            if (landInfo->status not_eq lLanded)
             {
                 landInfo->status = lLanded;
                 // landInfo->timer = SimLibElapsedTime + 15 * CampaignSeconds;
@@ -5340,14 +5340,14 @@ int ATCBrain::CheckIfBlockingRunway(AircraftClass *aircraft, runwayQueueStruct* 
         }
         else if (info->lastContacted + 90 * CampaignSeconds < SimLibElapsedTime &&  // 06FEB04 - FRB - was 45 seconds
                  (SimLibElapsedTime > LAND_TIME_DELTA + info->schedTime ||
-                  (rwindex != info->rwindex && GetOppositeRunway(rwindex) != info->rwindex)))
+                  (rwindex not_eq info->rwindex && GetOppositeRunway(rwindex) not_eq info->rwindex)))
         {
             //yell at them to get off runway
             if (!nextOnRunway)
                 SendCallFromATC(self, aircraft, rcTAXICLEAR, FalconLocalGame);
             else if (nextOnRunway == nextTakeoff)
                 SendCallFromATC(self, aircraft, rcTAXICLEAR, FalconLocalGame);
-            else if (nextOnRunway == nextLand && nextOnRunway != info)
+            else if (nextOnRunway == nextLand && nextOnRunway not_eq info)
                 SendCallFromATC(self, aircraft, rcGETOFFRUNWAYA, FalconLocalGame);
 
             info->lastContacted = SimLibElapsedTime;
@@ -5372,9 +5372,9 @@ int ATCBrain::CheckIfBlockingRunway(AircraftClass *aircraft, runwayQueueStruct* 
         //yell at them to get off runway
         if (!nextOnRunway)
             SendCallFromATC(self, aircraft, rcTAXICLEAR, FalconLocalGame);
-        else if (nextOnRunway == nextTakeoff && nextOnRunway != info)
+        else if (nextOnRunway == nextTakeoff && nextOnRunway not_eq info)
             SendCallFromATC(self, aircraft, rcTAXICLEAR, FalconLocalGame);
-        else if (nextOnRunway == nextLand && nextOnRunway != info)
+        else if (nextOnRunway == nextLand && nextOnRunway not_eq info)
             SendCallFromATC(self, aircraft, rcGETOFFRUNWAYA, FalconLocalGame);
 
         info->lastContacted = SimLibElapsedTime;
@@ -5410,7 +5410,7 @@ void ATCBrain::RemoveFromAllOtherATCs(AircraftClass *aircraft)
 
     while (curObj)
     {
-        if (curObj && curObj != self && curObj->GetType() == TYPE_AIRBASE)
+        if (curObj && curObj not_eq self && curObj->GetType() == TYPE_AIRBASE)
         {
             info = curObj->brain->InList(aircraft->Id());
 
@@ -5485,7 +5485,7 @@ void ATCBrain::CheckList(runwayQueueStruct *list)
     int count;
 
 #ifdef DEBUG
-    /* if(GetCurrentThreadId() != gSimThreadID)
+    /* if(GetCurrentThreadId() not_eq gSimThreadID)
      {
      ShiAssert(!"Tell Dave Power you hit the ATC assert (x4373) Don't ignore this!");
      ShiAssert(!"Tell Dave Power you hit the ATC assert (x4373) Don't ignore this!");
@@ -5515,7 +5515,7 @@ void ATCBrain::CheckList(runwayQueueStruct *list)
 
         while (cirCheck && count)
         {
-            ShiAssert(cirCheck->next != list);
+            ShiAssert(cirCheck->next not_eq list);
 
             if (cirCheck->next == list)
                 cirCheck->next = NULL;
@@ -5617,7 +5617,7 @@ void ATCBrain::CheckForTraffic(AircraftClass *aircraft, runwayQueueStruct *playe
         int navangle; // computed degrees off nose
 
 
-        if (self->brain->pLastTraffic != NULL)
+        if (self->brain->pLastTraffic not_eq NULL)
             self->brain->oldTrafficRange = self->brain->trafficRange; //store range of last traffic call
 
         // Check for Traffic
@@ -5653,7 +5653,7 @@ void ATCBrain::CheckForTraffic(AircraftClass *aircraft, runwayQueueStruct *playe
 
 
         // Begin O'Clock code - convert to compass angle
-        if (self->brain->trafficCheck != noTraffic)
+        if (self->brain->trafficCheck not_eq noTraffic)
         {
             xdiff = traffic->XPos() - aircraft->XPos();
             ydiff = traffic->YPos() - aircraft->YPos();

@@ -258,7 +258,7 @@ void CTimeOfDay::UpdateSkyProperties()
     // No two table entries should have the same time stamp
     c = tod -> Time;
     n = ntod -> Time;
-    ShiAssert(c != n);
+    ShiAssert(c not_eq n);
 
     // Calculate the time between the two table entries
     if (n < c)
@@ -628,7 +628,7 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
         {
             DWORD ivar1, ivar2, ivar3;
 
-            if (total != 0)
+            if (total not_eq 0)
             {
                 SetDefaultColor(&tod->RainColor, &tod->HazeGroundColor);
                 SetDefaultColor(&tod->SnowColor, &tod->HazeGroundColor);

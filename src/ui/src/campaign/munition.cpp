@@ -969,7 +969,7 @@ void LoadFlight(VU_ID flightID)
 
     for (i = HARDPOINT_MAX - 1; i >= 0; i--)
     {
-        if (vc->Weapon[i] != 0)
+        if (vc->Weapon[i] not_eq 0)
             break;
     }
 
@@ -1068,7 +1068,7 @@ void LoadFlight(VU_ID flightID)
         //TJL 01/03/04 If player changes a skin, then always show what was last selected.
         //Since set3DTexture is a global, it stays sets during the same session.
         //This makes sure the same texture is displayed when returning from the 3D world as well.
-        if (set3DTexture != -1)
+        if (set3DTexture not_eq -1)
             ((DrawableBSP*)obj->object)->SetTextureSet(set3DTexture);
 
         // Figure out the weapons
@@ -1201,8 +1201,8 @@ BOOL MuniTimeCB(C_Base *control)
 
                     for (int hpi = 0; hpi < HARDPOINT_MAX ; ++hpi)
                     {
-                        if ((gOriginalStores[aci].WeaponID[hpi] != flightLOS.WeaponID[hpi]) ||
-                            (gOriginalStores[aci].WeaponCount[hpi] != flightLOS.WeaponCount[hpi]))
+                        if ((gOriginalStores[aci].WeaponID[hpi] not_eq flightLOS.WeaponID[hpi]) ||
+                            (gOriginalStores[aci].WeaponCount[hpi] not_eq flightLOS.WeaponCount[hpi]))
                         {
                             // update the info for the loadout
                             gOriginalStores[aci].WeaponID[hpi] = flightLOS.WeaponID[hpi];
@@ -1836,7 +1836,7 @@ void UpdateStoresTally(C_Window *win)
                 }
             }
 
-            if (wid != -1)
+            if (wid not_eq -1)
                 if (Quantity[FirstPlane][1][wid])
                 {
                     _stprintf(buf, "%1d", Quantity[FirstPlane][1][wid]);
@@ -1919,7 +1919,7 @@ void InternalArmPlaneCB(long ID, short hittype, C_Base *control)
     STORESLIST *store;
     int i;
 
-    if (hittype != C_TYPE_LMOUSEUP && hittype != C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
         return;
 
     hp = ID >> 16;
@@ -2011,7 +2011,7 @@ void ArmPlaneCB(long ID, short hittype, C_Base *control)
     int i;
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     hp = ID >> 16;
@@ -2130,7 +2130,7 @@ void SetCurrentLoadout()
 
                     for (i = 0; i < 4; i++)
                     {
-                        if (PlaneEditList[i] && (gCurStores[FirstPlane].WeaponID[j] != gCurStores[i].WeaponID[j] or gCurStores[FirstPlane].WeaponCount[j] != gCurStores[i].WeaponCount[j]))
+                        if (PlaneEditList[i] && (gCurStores[FirstPlane].WeaponID[j] not_eq gCurStores[i].WeaponID[j] or gCurStores[FirstPlane].WeaponCount[j] not_eq gCurStores[i].WeaponCount[j]))
                             Diff = 1;
                     }
 
@@ -2150,7 +2150,7 @@ void SetCurrentLoadout()
 
                     for (i = 0; i < 4; i++)
                     {
-                        if (PlaneEditList[i] && (cur->Control_->GetID() == ((j << 16) | gCurStores[i].WeaponID[j]) && i != FirstPlane))
+                        if (PlaneEditList[i] && (cur->Control_->GetID() == ((j << 16) | gCurStores[i].WeaponID[j]) && i not_eq FirstPlane))
                             Diff = 1;
                     }
 

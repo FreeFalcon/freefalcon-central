@@ -468,7 +468,7 @@ static void AcceptConnection(LPVOID cvoid)
     {
         REQUEST_LOCK(ctcpListen->lock);
 
-        if (ctcpListen->ThreadActive != THREAD_ACTIVE)
+        if (ctcpListen->ThreadActive not_eq THREAD_ACTIVE)
         {
             RELEASE_LOCK(ctcpListen->lock);
             break;
@@ -511,7 +511,7 @@ static void AcceptConnection(LPVOID cvoid)
 
                 continue;
             }
-            else if (ctcpListen->ThreadActive != THREAD_ACTIVE && err == WSAENOTSOCK)
+            else if (ctcpListen->ThreadActive not_eq THREAD_ACTIVE && err == WSAENOTSOCK)
             {
                 break;
             }
@@ -863,7 +863,7 @@ void ComTCPClose(com_API_handle c)
 
     ctcp->lock = 0;  /* clear it */
 
-    if ((ctcp->handletype != GROUP) && (ctcp->state != COMAPI_STATE_CONNECTION_PENDING))
+    if ((ctcp->handletype not_eq GROUP) && (ctcp->state not_eq COMAPI_STATE_CONNECTION_PENDING))
     {
         windows_sockets_connections--;   /* decrement the INIT reference count */
     }
@@ -1007,7 +1007,7 @@ int ComTCPSend(com_API_handle c, int msgsize, int oob, int type)
 
 #endif
 
-        if (bytesSent != (int)ctcp->send_buffer.len)  /* Incomplete message was sent?? */
+        if (bytesSent not_eq (int)ctcp->send_buffer.len)  /* Incomplete message was sent?? */
         {
             ctcp->sendwouldblockcount++;
             return COMAPI_WOULDBLOCK;
@@ -1206,7 +1206,7 @@ int ComTCPRecv(com_API_handle c, int BytesToRecv)
                 recverror = 0;
                 ctcp->recvwouldblockcount++;
             }
-            else if (recverror != COMAPI_CONNECTION_CLOSED)
+            else if (recverror not_eq COMAPI_CONNECTION_CLOSED)
             {
                 recverror *= -1;                 /* Negate Winsock error code */
             }
@@ -1323,7 +1323,7 @@ int ComTCPGetMessage(com_API_handle c)
             if (ctcp->bytes_needed_for_message == 0)   /* we now have a complete message */
             {
                 /* a PANIC Check */
-                if (ctcp->messagesize != ctcp->bytes_recvd_for_message)
+                if (ctcp->messagesize not_eq ctcp->bytes_recvd_for_message)
                 {
                     RELEASE_LOCK(ctcp->lock);
                     return COMAPI_BAD_MESSAGE_SIZE;
@@ -1389,7 +1389,7 @@ static int isHeader(char *data)
         header = (tcpHeader *)data;
         ret = 1;
 
-        if (header->header_base != HEADER_BASE)
+        if (header->header_base not_eq HEADER_BASE)
         {
             ret = 0;
         }
@@ -1582,7 +1582,7 @@ CAPIList *CAPIListRemove(CAPIList * list, com_API_handle com)
         prev = NULL;
         curr = list;
 
-        while ((curr) && (curr -> com != com))
+        while ((curr) && (curr -> com not_eq com))
         {
             prev = curr;
             curr = curr -> next;
@@ -1858,7 +1858,7 @@ void ComGROUPClose(com_API_handle c)
     MonoPrint("================================\n");
 #endif
 
-    for (curr = GlobalGroupListHead ; curr  != NULL ; curr = curr -> next)
+    for (curr = GlobalGroupListHead ; curr  not_eq NULL ; curr = curr -> next)
     {
         ComAPIDeleteFromGroup(curr->com, c);                             /* remove this group from others */
     }
@@ -2020,7 +2020,7 @@ int  ComAPIAddToGroup(com_API_handle grouphandle, com_API_handle memberhandle)
         return COMAPI_EMPTYGROUP;
     }
 
-    if (grouphandle->protocol != CAPI_GROUP_PROTOCOL)
+    if (grouphandle->protocol not_eq CAPI_GROUP_PROTOCOL)
     {
         return COMAPI_NOTAGROUP;
     }
@@ -2076,7 +2076,7 @@ int ComAPIDeleteFromGroup(com_API_handle grouphandle, com_API_handle memberhandl
         return 0;
     }
 
-    if (grouphandle->protocol != CAPI_GROUP_PROTOCOL)
+    if (grouphandle->protocol not_eq CAPI_GROUP_PROTOCOL)
     {
         return COMAPI_NOTAGROUP;
     }
@@ -2119,7 +2119,7 @@ char *ComGROUPSendBufferGet(com_API_handle c)
 {
     if (c)
     {
-        if (c->protocol != CAPI_GROUP_PROTOCOL)
+        if (c->protocol not_eq CAPI_GROUP_PROTOCOL)
         {
             return NULL;
         }
@@ -2484,7 +2484,7 @@ com_API_handle  ComAPICreateGroup(char *name_in, int BufferSize, ...)
     va_start(marker, BufferSize);       /* Initialize variable arguments. */
     vptr = va_arg(marker, LPVOID);
 
-    while (vptr != 0)
+    while (vptr not_eq 0)
     {
         count++;
 

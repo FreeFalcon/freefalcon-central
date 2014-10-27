@@ -375,7 +375,7 @@ void C_Map::CalculateDrawingParams()
     short x, y;
     TheCampaign.GetBullseyeLocation(&x, &y);
 
-    if (x != BullsEyeX_ or y != BullsEyeY_)
+    if (x not_eq BullsEyeX_ or y not_eq BullsEyeY_)
     {
         SetBullsEye(x * FEET_PER_KM, (TheCampaign.TheaterSizeY - y) * FEET_PER_KM);
         DrawMap();
@@ -539,7 +539,7 @@ MAPICONLIST *C_Map::AddObjective(Objective Obj)
     ObjType = GetObjectiveType(Obj);
     TypeID = FindTypeIndex(ObjType, OBJ_TypeList, _MAP_NUM_OBJ_TYPES_);
 
-    if (TypeID != -1)
+    if (TypeID not_eq -1)
     {
         if (ObjType)
         {
@@ -686,7 +686,7 @@ MAPICONLIST *C_Map::AddUnit(Unit u)
     {
         TypeID = FindTypeIndex(UnitType & 0x0fff, GND_TypeList, _MAP_NUM_GND_TYPES_);
 
-        if (TypeID != -1)
+        if (TypeID not_eq -1)
             LevelID = FindTypeIndex(UnitType & _UNIT_GROUND_MASK, GND_LevelList, _MAP_NUM_GND_LEVELS_);
         else
             LevelID = -1;
@@ -697,7 +697,7 @@ MAPICONLIST *C_Map::AddUnit(Unit u)
         LevelID = 1;
     }
 
-    if (TypeID != -1 && LevelID != -1)
+    if (TypeID not_eq -1 && LevelID not_eq -1)
     {
         UnitPtr = u->GetUnitClassData();
 
@@ -821,7 +821,7 @@ MAPICONLIST *C_Map::AddFlight(Flight flight)
         idx = GetAirIcon(flight->GetSType());
         TypeID = FindTypeIndex(AirIcons[idx].UIType, AIR_TypeList, _MAP_NUM_AIR_TYPES_);
 
-        if (TypeID != -1)
+        if (TypeID not_eq -1)
         {
             if (UnitPtr->IconIndex)
             {
@@ -863,7 +863,7 @@ MAPICONLIST *C_Map::AddSquadron(Squadron squadron)
     UnitType = GetObjectiveType(squadron);
     TypeID = FindTypeIndex(UnitType, OBJ_TypeList, _MAP_NUM_OBJ_TYPES_);
 
-    if (TypeID != -1)
+    if (TypeID not_eq -1)
     {
         if (UnitType)
         {
@@ -895,7 +895,7 @@ MAPICONLIST *C_Map::AddPackage(Package package)
     UnitType = GetObjectiveType(package);
     TypeID = FindTypeIndex(UnitType, OBJ_TypeList, _MAP_NUM_OBJ_TYPES_);
 
-    if (TypeID != -1)
+    if (TypeID not_eq -1)
     {
         if (UnitType)
         {
@@ -932,7 +932,7 @@ MAPICONLIST *C_Map::AddVC(victory_condition *vc)
 
     TypeID = FindTypeIndex(_VC_CONDITION_, OBJ_TypeList, _MAP_NUM_OBJ_TYPES_);
 
-    if (TypeID != -1)
+    if (TypeID not_eq -1)
     {
         _stprintf(Buffer, "%s %1ld", gStringMgr->GetString(TXT_VC), vc->get_number());
         return(Team_[vc->get_team()].Objectives->Type[TypeID]->AddIconToList(
@@ -965,7 +965,7 @@ void C_Map::UpdateVC(victory_condition *vc)
 
     TypeID = FindTypeIndex(_VC_CONDITION_, OBJ_TypeList, _MAP_NUM_OBJ_TYPES_);
 
-    if (TypeID != -1)
+    if (TypeID not_eq -1)
     {
         vcicon = Team_[vc->get_team()].Objectives->Type[TypeID]->FindID(vc->get_number());
 
@@ -990,7 +990,7 @@ void C_Map::RemoveVC(long team, long ID)
 
     TypeID = FindTypeIndex(_VC_CONDITION_, OBJ_TypeList, _MAP_NUM_OBJ_TYPES_);
 
-    if (TypeID != -1)
+    if (TypeID not_eq -1)
     {
         Leave = UI_Enter(DrawWindow_);
         Team_[team].Objectives->Type[TypeID]->RemoveIcon(ID);
@@ -1212,7 +1212,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
 
                 if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
                 {
-                    if (firstwp != unit->GetCurrentUnitWP())
+                    if (firstwp not_eq unit->GetCurrentUnitWP())
                     {
                         wpl->Icon->SetText(0, TXT_SPACE);
                         wpl->Icon->SetText(1, TXT_SPACE);
@@ -1310,7 +1310,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
                     wpl->Icon->SetUserNumber(C_STATE_1, i);
 
                     if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
-                        if (firstwp != unit->GetCurrentUnitWP())
+                        if (firstwp not_eq unit->GetCurrentUnitWP())
                             wpl->Dragable = 0;
                 }
             }
@@ -1386,7 +1386,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
                 wpl->Icon->SetUserNumber(C_STATE_1, -1);
 
                 if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
-                    if (firstwp != unit->GetCurrentUnitWP())
+                    if (firstwp not_eq unit->GetCurrentUnitWP())
                         wpl->Dragable = 0;
             }
         }
@@ -1703,7 +1703,7 @@ void C_Map::UpdateWaypoint(Flight flt)
         i = 1;
         wp = flt->GetFirstUnitWP();
 
-        while (wp && wp != flt->GetCurrentUnitWP())
+        while (wp && wp not_eq flt->GetCurrentUnitWP())
         {
             i++;
             wp = wp->GetNextWP();
@@ -1739,7 +1739,7 @@ void C_Map::RemoveOldWaypoints()
     Unit un;
 
     // remove current set
-    if (WPUnitID_ != FalconNullId)
+    if (WPUnitID_ not_eq FalconNullId)
     {
         un = (Unit)vuDatabase->Find(WPUnitID_);
 
@@ -2018,13 +2018,13 @@ void C_Map::SetUnitLevel(long level)
                         Team_[i].Units->Type[j]->Levels[0]->SetFlagBitOn(C_BIT_INVISIBLE);
                         Team_[i].Units->Type[j]->Flags[1] = 0;
 
-                        if (level != 1)
+                        if (level not_eq 1)
                             Team_[i].Units->Type[j]->Levels[1]->Refresh();
 
                         Team_[i].Units->Type[j]->Levels[1]->SetFlagBitOn(C_BIT_INVISIBLE);
                         Team_[i].Units->Type[j]->Flags[2] = 0;
 
-                        if (level != 2)
+                        if (level not_eq 2)
                             Team_[i].Units->Type[j]->Levels[2]->Refresh();
 
                         Team_[i].Units->Type[j]->Levels[2]->SetFlagBitOn(C_BIT_INVISIBLE);
@@ -2356,7 +2356,7 @@ void C_Map::SetWPZWindow(C_Window *win)
 
 void C_Map::SetZoomLevel(short zoom)
 {
-    if (zoom >= _MIN_ZOOM_LEVEL_ && zoom <= _MAX_ZOOM_LEVEL_ && zoom != ZoomLevel_ && Map_)
+    if (zoom >= _MIN_ZOOM_LEVEL_ && zoom <= _MAX_ZOOM_LEVEL_ && zoom not_eq ZoomLevel_ && Map_)
     {
         ZoomLevel_ = Map_->GetW() / zoom;
         CalculateDrawingParams();
@@ -2375,7 +2375,7 @@ void C_Map::ZoomIn()
     if (tempzoom < MaxZoomLevel_)
         tempzoom = MaxZoomLevel_;
 
-    if (tempzoom != ZoomLevel_)
+    if (tempzoom not_eq ZoomLevel_)
     {
         ZoomLevel_ = tempzoom;
         CalculateDrawingParams();
@@ -2394,7 +2394,7 @@ void C_Map::ZoomOut()
     if (tempzoom < MaxZoomLevel_)
         tempzoom = MaxZoomLevel_;
 
-    if (tempzoom != ZoomLevel_)
+    if (tempzoom not_eq ZoomLevel_)
     {
         ZoomLevel_ = tempzoom;
         CalculateDrawingParams();
@@ -3010,7 +3010,7 @@ void C_Map::DrawMap()
         // 2002-04-16 MN update the bullseye location when it changed
         TheCampaign.GetBullseyeLocation(&x, &y);
 
-        if (x != BullsEyeX_ or y != BullsEyeY_)
+        if (x not_eq BullsEyeX_ or y not_eq BullsEyeY_)
             SetBullsEye(x * FEET_PER_KM, (TheCampaign.TheaterSizeY - y) * FEET_PER_KM);
 
         if (flags_ & I_NEED_TO_DRAW_MAP)

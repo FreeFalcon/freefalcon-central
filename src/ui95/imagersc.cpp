@@ -2068,7 +2068,7 @@ void IMAGE_RSC::ScaleUp8(SCREEN *surface, long *Rows, long *Cols, long dx, long 
                     rep movsd
                 };
             }
-            else if (Rows[i] != Rows[i + 1])
+            else if (Rows[i] not_eq Rows[i + 1])
             {
                 for (j = 0; j < dw; j++)
                     ((DWORD*)dline)[j] = RGB565toRGB8(Palette[sline[Cols[j]]]);
@@ -2106,7 +2106,7 @@ void IMAGE_RSC::ScaleUp8(SCREEN *surface, long *Rows, long *Cols, long dx, long 
                 };
                 // memcpy(&dline[first],cpyline,count*sizeof(WORD));
             }
-            else if (Rows[i] != Rows[i + 1])
+            else if (Rows[i] not_eq Rows[i + 1])
             {
                 for (j = 0; j < dw; j++)
                     dline[j] = Palette[sline[Cols[j]]];
@@ -2175,7 +2175,7 @@ void IMAGE_RSC::ScaleUp8Overlay(SCREEN *surface, long *Rows, long *Cols, long dx
                     rep movsd
                 };
             }
-            else if (Rows[i] != Rows[i + 1])
+            else if (Rows[i] not_eq Rows[i + 1])
             {
                 for (j = 0; j < dw; j++)
                 {
@@ -2220,7 +2220,7 @@ void IMAGE_RSC::ScaleUp8Overlay(SCREEN *surface, long *Rows, long *Cols, long dx
                 };
                 // memcpy(&dline[first],cpyline,count*sizeof(WORD));
             }
-            else if (Rows[i] != Rows[i + 1])
+            else if (Rows[i] not_eq Rows[i + 1])
             {
                 for (j = 0; j < dw; j++)
                 {

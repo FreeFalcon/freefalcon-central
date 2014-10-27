@@ -38,7 +38,7 @@ void SendOrder(FalconWingmanMsg* p_msg, AircraftClass* p_sender, FlightClass* p_
     {
         p_aircraft = (AircraftClass*) p_flight->GetComponentEntity(i);
 
-        if (p_aircraft && p_aircraft->IsLocal() && p_sender && p_aircraft != p_sender)
+        if (p_aircraft && p_aircraft->IsLocal() && p_sender && p_aircraft not_eq p_sender)
         {
             p_aircraft->ReceiveOrders(p_msg);
         }

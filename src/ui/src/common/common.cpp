@@ -60,30 +60,30 @@ void PromotionWindow(void);
 
 void KIA_Abandon_CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 }
 
 void Fly_Now_CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 }
 
 void Dont_Fly_CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 }
 void Truce_Accept_CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 }
 
 void Truce_Fight_CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 }
 

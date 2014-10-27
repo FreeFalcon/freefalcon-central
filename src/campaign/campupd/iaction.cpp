@@ -456,7 +456,7 @@ void instant_action::create_wave(void)
 
         while (*str)
         {
-            if ((*str != ' ') && (*str != '\t'))
+            if ((*str not_eq ' ') && (*str not_eq '\t'))
             {
                 break;
             }
@@ -782,7 +782,7 @@ void instant_action::create_player_flight(void)
 
             while (*str)
             {
-                if ((*str != ' ') && (*str != '\t'))
+                if ((*str not_eq ' ') && (*str not_eq '\t'))
                 {
                     break;
                 }
@@ -2035,7 +2035,7 @@ void instant_action::create_battalion(ia_data &data)
         }
         else if (objective->GetTeam() == new_battalion->GetTeam())
          new_battalion->SetUnitOrders(GORD_DEFEND,objective->Id());
-        else if (objective->GetTeam() != new_battalion->GetTeam())
+        else if (objective->GetTeam() not_eq new_battalion->GetTeam())
          new_battalion->SetUnitOrders(GORD_CAPTURE,objective->Id());
         if (rand()%3)
          new_battalion->SetUnitDestination (x, y);*/
@@ -2049,7 +2049,7 @@ void instant_action::create_battalion(ia_data &data)
 
     vuDatabase->/*Quick*/Insert(new_battalion);
 
-    if (new_battalion->GetRadarType() != RDR_NO_RADAR)
+    if (new_battalion->GetRadarType() not_eq RDR_NO_RADAR)
     {
         new_battalion->SetSearchMode((unsigned char)(FEC_RADAR_SEARCH_1));//me123 + rand()%3));
         new_battalion->SetEmitting(1);

@@ -847,7 +847,7 @@ void EnableScenarioText(C_Base *control)
 
 void CloseSelectWindowCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     DisableScenarioInfo();
@@ -909,7 +909,7 @@ void SelectScenarioCB(long ID, short hittype, C_Base *control)
 {
     int i;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SelectScenarioButtons(ID);
@@ -957,7 +957,7 @@ void SelectScenarioCB(long ID, short hittype, C_Base *control)
     //wrong campaign.
     if (g_bExitCampSelectFix)
     {
-        if (oldCampSelMode != 1)
+        if (oldCampSelMode not_eq 1)
         {
             LoadScenarioInfo();
         }
@@ -1033,7 +1033,7 @@ void RecieveScenarioInfo()
         //dpc ExitCampSelectFix
         if (g_bExitCampSelectFix)
         {
-            if (oldCampSelMode != 1)
+            if (oldCampSelMode not_eq 1)
             {
                 LoadScenarioInfo();
             }
@@ -1067,7 +1067,7 @@ static void CommitCB(long, short hittype, C_Base *)
     C_EditBox *ebox;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (TheCampaign.NumAvailSquadrons < 1)
@@ -1082,7 +1082,7 @@ static void CommitCB(long, short hittype, C_Base *)
     FalconLocalSession->SetCountry(TheCampaign.CampaignSquadronData[gSelectedSquadronID].country);
     gPlayerSquadronId = TheCampaign.CampaignSquadronData[gSelectedSquadronID].id;
 
-    if (CampSelMode != 2)
+    if (CampSelMode not_eq 2)
     {
         if (gCommsMgr->Online())
             SetupInfoWindow(ReallyCreateCB, CancelJoinCB);
@@ -1097,7 +1097,7 @@ static void CommitCB(long, short hittype, C_Base *)
         if (!game)
             return;
 
-        if (game != FalconLocalGame)
+        if (game not_eq FalconLocalGame)
         {
             win = gMainHandler->FindWindow(INFO_WIN);
 
@@ -1123,7 +1123,7 @@ static void CommitCB(long, short hittype, C_Base *)
 
 static void CommsCommitCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (TheCampaign.NumAvailSquadrons < 1)
@@ -1149,7 +1149,7 @@ static void PickSquadronCB(long ID, short, C_Base *)
 
 static void HostCampaignCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 }
 
@@ -1161,7 +1161,7 @@ static void LoadCampaignFileCB(long, short hittype, C_Base *control)
 
     int i;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)control;
@@ -1204,7 +1204,7 @@ void SetCampaignSelectCB(long ID, short hittype, C_Base *control)
     C_Slider *sldr;
     C_TreeList *tree;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     switch (ID)
@@ -1354,7 +1354,7 @@ static void CampSelectGameCB(long, short hittype, C_Base *control)
     FalconGameEntity *game;
     TREELIST *item;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetCursor(gCursors[CRSR_WAIT]);
@@ -1571,7 +1571,7 @@ void CopySettingsToTemp(void)
 
 static void ChallengeLevelCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     switch (((C_ListBox *)control)->GetTextID())
@@ -1658,7 +1658,7 @@ static void ChallengeLevelCB(long, short hittype, C_Base *control)
 
 void OpenChallengeCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // Copy in current settings
@@ -1680,7 +1680,7 @@ void CampDelFileCB(long, short hittype, C_Base *control)
     C_TreeList *tree;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(CS_SELECT_WIN);
@@ -1723,7 +1723,7 @@ void CampDelFileCB(long, short hittype, C_Base *control)
 
 static void CampDelVerifyCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gLastCampFilename[0])
@@ -1734,7 +1734,7 @@ static void SetSkillSettingsCB(long ID, short hittype, C_Base *control)
 {
     uchar value;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     switch (((C_ListBox *)control)->GetTextID())
@@ -1779,7 +1779,7 @@ static void SetSliderSettingsCB(long ID, short hittype, C_Base *control)
     long val;
     C_Slider *sldr;
 
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     sldr = (C_Slider *)control;
@@ -1790,7 +1790,7 @@ static void SetSliderSettingsCB(long ID, short hittype, C_Base *control)
     switch (ID)
     {
         case BAR_1_SCROLL:
-            if (val != TEMP_Settings.AirForces)
+            if (val not_eq TEMP_Settings.AirForces)
             {
                 TEMP_Settings.AirForces = static_cast<uchar>(val);
                 // Force the aircraft field to update
@@ -1823,10 +1823,10 @@ static void UseChallengeSettingsCB(long, short hittype, C_Base *control)
     C_Window *win;
     C_Button *btn;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (CampSelMode != 2)
+    if (CampSelMode not_eq 2)
     {
         PlayerOptions.SetCampEnemyAirExperience(TEMP_Settings.PilotSkill);
         PlayerOptions.SetCampEnemyGroundExperience(TEMP_Settings.SAMSkill);
@@ -2024,7 +2024,7 @@ static void HookupCampaignSelectControls(long ID)
 
 static void JoinStatusCancelCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     MonoPrint("Cancel Join\n");
@@ -2134,7 +2134,7 @@ void DisplayJoinStatusWindow(int bits)
             break;
     }
 
-    if (id != last_id)
+    if (id not_eq last_id)
     {
         win = gMainHandler->FindWindow(COMMLINK_WIN);
 

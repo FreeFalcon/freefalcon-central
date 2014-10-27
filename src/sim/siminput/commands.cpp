@@ -432,7 +432,7 @@ void SimRadarNextTarget(unsigned long, int state, void*)
             theRadar->NextTarget();
 
         // M.N. added full realism mode
-        if (PlayerOptions.GetAvionicsType() != ATRealistic && PlayerOptions.GetAvionicsType() != ATRealisticAV)
+        if (PlayerOptions.GetAvionicsType() not_eq ATRealistic && PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
         {
             HarmTargetingPod *theHTS = (HarmTargetingPod*)FindSensor(SimDriver.GetPlayerAircraft(), SensorClass::HTS);
 
@@ -453,7 +453,7 @@ void SimRadarPrevTarget(unsigned long, int state, void*)
             theRadar->PrevTarget();
 
         // M.N. added full realism mode
-        if (PlayerOptions.GetAvionicsType() != ATRealistic && PlayerOptions.GetAvionicsType() != ATRealisticAV)
+        if (PlayerOptions.GetAvionicsType() not_eq ATRealistic && PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
         {
             HarmTargetingPod *theHTS = (HarmTargetingPod*)FindSensor(SimDriver.GetPlayerAircraft(), SensorClass::HTS);
 
@@ -671,7 +671,7 @@ void SimACMBoresight(unsigned long, int state, void*)
             theRadar->SelectACMBore();
 
         // M.N. added full realism mode
-        if (PlayerOptions.GetAvionicsType() != ATRealistic && PlayerOptions.GetAvionicsType() != ATRealisticAV)
+        if (PlayerOptions.GetAvionicsType() not_eq ATRealistic && PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
         {
             HarmTargetingPod *theHTS = (HarmTargetingPod*)FindSensor(SimDriver.GetPlayerAircraft(), SensorClass::HTS);
 
@@ -770,7 +770,7 @@ void SimRWRSetPriority(unsigned long, int state, void*)
             theRwr->TogglePriority();
 
             if (OTWDriver.GetVirtualCockpit())
-                if (theRwr->IsPriority() != FALSE)
+                if (theRwr->IsPriority() not_eq FALSE)
                     OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_RWR_PRIORITY, 2);
                 else
                     OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_RWR_PRIORITY, 1);
@@ -802,7 +802,7 @@ void SimRWRSetTargetSep(unsigned long, int state, void*)
             theRwr->ToggleTargetSep();
 
             if (OTWDriver.GetVirtualCockpit())
-                if (theRwr->TargetSep() != FALSE)
+                if (theRwr->TargetSep() not_eq FALSE)
                     OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_RWR_TGT_SEP, 2);
                 else
                     OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_RWR_TGT_SEP, 1);
@@ -821,7 +821,7 @@ void SimRWRSetUnknowns(unsigned long, int state, void*)
             theRwr->ToggleUnknowns();
 
             if (OTWDriver.GetVirtualCockpit())
-                if (theRwr->ShowUnknowns() != FALSE)
+                if (theRwr->ShowUnknowns() not_eq FALSE)
                     OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_RWR_UNKS, 2);
                 else
                     OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_RWR_UNKS, 1);
@@ -840,7 +840,7 @@ void SimRWRSetNaval(unsigned long, int state, void*)
             theRwr->ToggleNaval();
 
             if (OTWDriver.GetVirtualCockpit())
-                if (theRwr->ShowNaval() != FALSE)
+                if (theRwr->ShowNaval() not_eq FALSE)
                     OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_RWR_NAVAL, 2);
                 else
                     OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_RWR_NAVAL, 1);
@@ -859,7 +859,7 @@ void SimRWRSetGroundPriority(unsigned long, int state, void*)
             theRwr->ToggleLowAltPriority();
 
             if (OTWDriver.GetVirtualCockpit())
-                if (theRwr->ShowLowAltPriority() != FALSE)
+                if (theRwr->ShowLowAltPriority() not_eq FALSE)
                     OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_RWR_GND_PRI, 2);
                 else
                     OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_RWR_GND_PRI, 1);
@@ -878,7 +878,7 @@ void SimRWRSetSearch(unsigned long, int state, void*)
             theRwr->ToggleSearch();
 
             if (OTWDriver.GetVirtualCockpit())
-                if (theRwr->ShowSearch() != FALSE)
+                if (theRwr->ShowSearch() not_eq FALSE)
                     OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_RWR_SEARCH, 2);
                 else
                     OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_RWR_SEARCH, 1);
@@ -1838,10 +1838,10 @@ void SimNextAAWeapon(unsigned long val, int state, void* pButton)
             //MI modified for ICP
             /* // MLR 2/8/2004 -
             if( SimDriver.GetPlayerAircraft()->FCC->GetSubMode() == (FireControlComputer::STRAF) or // ASSOCIATOR: Added a STAF check here so we can get out of it
-               SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != (FireControlComputer::AAGun) &&
-               SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != (FireControlComputer::Missile) &&
-               SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != (FireControlComputer::Dogfight) &&
-               SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != (FireControlComputer::MissileOverride))
+               SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq (FireControlComputer::AAGun) &&
+               SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq (FireControlComputer::Missile) &&
+               SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq (FireControlComputer::Dogfight) &&
+               SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq (FireControlComputer::MissileOverride))
                SimDriver.GetPlayerAircraft()->FCC->SetMasterMode( SimDriver.GetPlayerAircraft()->FCC->GetLastAaMasterMode() );
             */
             Sms = SimDriver.GetPlayerAircraft()->Sms;
@@ -1850,8 +1850,8 @@ void SimNextAAWeapon(unsigned long val, int state, void* pButton)
             Sms->StepAAWeapon(); // ASSOCIATOR: now it steps the weapon type instead of Missile stepping each weapon
 
             // ASSOCIATOR: This whole section is redundant now and is handled in a central place in the SelectWeapon method
-            /*if (Sms && SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != FireControlComputer::Dogfight &&
-             SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != FireControlComputer::MissileOverride )
+            /*if (Sms && SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq FireControlComputer::Dogfight &&
+             SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq FireControlComputer::MissileOverride )
             {
                //Sms->GetNextWeapon(wdAir);
                Sms->curWeaponDomain = wdAir;
@@ -1869,7 +1869,7 @@ void SimNextAAWeapon(unsigned long val, int state, void* pButton)
             */
 
             // ASSOCIATOR 03/12/03: Put the radar in the its default AA mode but not while in Dogfight mode
-            if (SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != FireControlComputer::Dogfight)
+            if (SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq FireControlComputer::Dogfight)
             {
                 // Put the radar in the its default AA mode
                 RadarClass* pradar = (RadarClass*) FindSensor(SimDriver.GetPlayerAircraft(), SensorClass::Radar);
@@ -2006,7 +2006,7 @@ void SimNextNavMode(unsigned long val, int state, void* pButton)
 {
     if (state & KEY_DOWN && SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && !((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
-        if (OTWDriver.pCockpitManager->mpIcp->GetICPPrimaryMode() != NAV_MODE)
+        if (OTWDriver.pCockpitManager->mpIcp->GetICPPrimaryMode() not_eq NAV_MODE)
         {
             SimICPNav(val, state, pButton);
         }
@@ -2019,7 +2019,7 @@ void SimNextNavMode(unsigned long val, int state, void* pButton)
 
 void SimEject(unsigned long, int state, void*)
 {
-    if (SimDriver.GetPlayerAircraft() != NULL && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP))
+    if (SimDriver.GetPlayerAircraft() not_eq NULL && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP))
     {
         // We only want to eject if the eject key combo is held
         // for > 1 second.
@@ -2062,7 +2062,7 @@ void TimeAccelerate(unsigned long, int state, void*)
     {
         if (state & KEY_DOWN)
         {
-            if (gameCompressionRatio != 2)
+            if (gameCompressionRatio not_eq 2)
                 SetTimeCompression(2);
             else
                 SetTimeCompression(1);
@@ -2079,7 +2079,7 @@ void TimeAccelerateMaxToggle(unsigned long, int state, void*)
     {
         if (state & KEY_DOWN)
         {
-            if (gameCompressionRatio != 4)
+            if (gameCompressionRatio not_eq 4)
                 SetTimeCompression(4);
             else
                 SetTimeCompression(1);
@@ -2558,7 +2558,7 @@ void OTWStepNextPadlock(unsigned long, int state, void*)
     if ((state & KEY_DOWN) && (SimDriver.GetPlayerAircraft()) && (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
     {
         // 2002-02-08 ADDED BY S.G. If we're not in PadlockF3 or PadlockEFOV mode, we need to switch to it first...
-        if (FalconLocalGame->rules.GetPadlockMode() != PDDisabled && OTWDriver.GetOTWDisplayMode() != OTWDriverClass::ModePadlockF3 && OTWDriver.GetOTWDisplayMode() != OTWDriverClass::ModePadlockEFOV)
+        if (FalconLocalGame->rules.GetPadlockMode() not_eq PDDisabled && OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::ModePadlockF3 && OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::ModePadlockEFOV)
         {
             OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityNone);
             OTWDriver.SetOTWDisplayMode(OTWDriverClass::ModePadlockF3);
@@ -2574,7 +2574,7 @@ void OTWStepNextPadlockAA(unsigned long, int state, void*)
     if ((state & KEY_DOWN) && (SimDriver.GetPlayerAircraft()) && (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
     {
         // 2002-02-08 ADDED BY S.G. If we're not in PadlockF3 or PadlockEFOV mode, we need to switch to it first...
-        if (FalconLocalGame->rules.GetPadlockMode() != PDDisabled && OTWDriver.GetOTWDisplayMode() != OTWDriverClass::ModePadlockF3 && OTWDriver.GetOTWDisplayMode() != OTWDriverClass::ModePadlockEFOV)
+        if (FalconLocalGame->rules.GetPadlockMode() not_eq PDDisabled && OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::ModePadlockF3 && OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::ModePadlockEFOV)
         {
             OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityAA);
             OTWDriver.SetOTWDisplayMode(OTWDriverClass::ModePadlockF3);
@@ -2590,7 +2590,7 @@ void OTWStepNextPadlockAG(unsigned long, int state, void*)
     if ((state & KEY_DOWN) && (SimDriver.GetPlayerAircraft()) && (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
     {
         // 2002-02-08 ADDED BY S.G. If we're not in PadlockF3 or PadlockEFOV mode, we need to switch to it first...
-        if (FalconLocalGame->rules.GetPadlockMode() != PDDisabled && OTWDriver.GetOTWDisplayMode() != OTWDriverClass::ModePadlockF3 && OTWDriver.GetOTWDisplayMode() != OTWDriverClass::ModePadlockEFOV)
+        if (FalconLocalGame->rules.GetPadlockMode() not_eq PDDisabled && OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::ModePadlockF3 && OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::ModePadlockEFOV)
         {
             OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityAG);
             OTWDriver.SetOTWDisplayMode(OTWDriverClass::ModePadlockF3);
@@ -2605,7 +2605,7 @@ void OTWStepPrevPadlock(unsigned long, int state, void*)
     if ((state & KEY_DOWN) && (SimDriver.GetPlayerAircraft()) && (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
     {
         // 2002-02-08 ADDED BY S.G. If we're not in PadlockF3 or PadlockEFOV mode, we need to switch to it first...
-        if (FalconLocalGame->rules.GetPadlockMode() != PDDisabled && OTWDriver.GetOTWDisplayMode() != OTWDriverClass::ModePadlockF3 && OTWDriver.GetOTWDisplayMode() != OTWDriverClass::ModePadlockEFOV)
+        if (FalconLocalGame->rules.GetPadlockMode() not_eq PDDisabled && OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::ModePadlockF3 && OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::ModePadlockEFOV)
         {
             OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityNone);
             OTWDriver.SetOTWDisplayMode(OTWDriverClass::ModePadlockF3);
@@ -2621,7 +2621,7 @@ void OTWStepPrevPadlockAA(unsigned long, int state, void*)
     if ((state & KEY_DOWN) && (SimDriver.GetPlayerAircraft()) && (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
     {
         // 2002-02-08 ADDED BY S.G. If we're not in PadlockF3 or PadlockEFOV mode, we need to switch to it first...
-        if (FalconLocalGame->rules.GetPadlockMode() != PDDisabled && OTWDriver.GetOTWDisplayMode() != OTWDriverClass::ModePadlockF3 && OTWDriver.GetOTWDisplayMode() != OTWDriverClass::ModePadlockEFOV)
+        if (FalconLocalGame->rules.GetPadlockMode() not_eq PDDisabled && OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::ModePadlockF3 && OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::ModePadlockEFOV)
         {
             OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityAA);
             OTWDriver.SetOTWDisplayMode(OTWDriverClass::ModePadlockF3);
@@ -2637,7 +2637,7 @@ void OTWStepPrevPadlockAG(unsigned long, int state, void*)
     if ((state & KEY_DOWN) && (SimDriver.GetPlayerAircraft()) && (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
     {
         // 2002-02-08 ADDED BY S.G. If we're not in PadlockF3 or PadlockEFOV mode, we need to switch to it first...
-        if (FalconLocalGame->rules.GetPadlockMode() != PDDisabled && OTWDriver.GetOTWDisplayMode() != OTWDriverClass::ModePadlockF3 && OTWDriver.GetOTWDisplayMode() != OTWDriverClass::ModePadlockEFOV)
+        if (FalconLocalGame->rules.GetPadlockMode() not_eq PDDisabled && OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::ModePadlockF3 && OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::ModePadlockEFOV)
         {
             OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityAG);
             OTWDriver.SetOTWDisplayMode(OTWDriverClass::ModePadlockF3);
@@ -2667,7 +2667,7 @@ void OTWToggleActionCamera(unsigned long, int state, void*)
 
 void OTWSelectEFOVPadlockMode(unsigned long, int state, void*)
 {
-    if ((FalconLocalGame->rules.GetPadlockMode() != PDDisabled) && (state & KEY_DOWN) && \
+    if ((FalconLocalGame->rules.GetPadlockMode() not_eq PDDisabled) && (state & KEY_DOWN) && \
         (SimDriver.GetPlayerAircraft()) && (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
     {
         // 20020-03-12 MODIFIED BY S.G. Not working, lets try with three different functions, one that doesn't care, one that checks for AA and one for AG
@@ -2685,7 +2685,7 @@ void OTWSelectEFOVPadlockMode(unsigned long, int state, void*)
 // 2002-03-12 ADDED BY S.G. So we can priorotize air things
 void OTWSelectEFOVPadlockModeAA(unsigned long, int state, void*)
 {
-    if ((FalconLocalGame->rules.GetPadlockMode() != PDDisabled) && (state & KEY_DOWN) && \
+    if ((FalconLocalGame->rules.GetPadlockMode() not_eq PDDisabled) && (state & KEY_DOWN) && \
         (SimDriver.GetPlayerAircraft()) && (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
     {
         OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityAA);
@@ -2696,7 +2696,7 @@ void OTWSelectEFOVPadlockModeAA(unsigned long, int state, void*)
 // 2002-03-12 ADDED BY S.G. So we can priorotize ground things
 void OTWSelectEFOVPadlockModeAG(unsigned long, int state, void*)
 {
-    if ((FalconLocalGame->rules.GetPadlockMode() != PDDisabled) && (state & KEY_DOWN) && \
+    if ((FalconLocalGame->rules.GetPadlockMode() not_eq PDDisabled) && (state & KEY_DOWN) && \
         (SimDriver.GetPlayerAircraft()) && (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
     {
         OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityAG);
@@ -2706,7 +2706,7 @@ void OTWSelectEFOVPadlockModeAG(unsigned long, int state, void*)
 
 void OTWSelectF3PadlockMode(unsigned long, int state, void*)
 {
-    if ((FalconLocalGame->rules.GetPadlockMode() != PDDisabled) && (state & KEY_DOWN) && \
+    if ((FalconLocalGame->rules.GetPadlockMode() not_eq PDDisabled) && (state & KEY_DOWN) && \
         (SimDriver.GetPlayerAircraft()) && (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
     {
         // 20020-03-12 ADDED BY S.G. If we ask for, allow multi state padlocking by choosing what to look for
@@ -2725,7 +2725,7 @@ void OTWSelectF3PadlockMode(unsigned long, int state, void*)
 // 2002-03-12 ADDED BY S.G. So we can priorotize air things
 void OTWSelectF3PadlockModeAA(unsigned long, int state, void*)
 {
-    if ((FalconLocalGame->rules.GetPadlockMode() != PDDisabled) && (state & KEY_DOWN) && \
+    if ((FalconLocalGame->rules.GetPadlockMode() not_eq PDDisabled) && (state & KEY_DOWN) && \
         (SimDriver.GetPlayerAircraft()) && (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
     {
         OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityAA);
@@ -2736,7 +2736,7 @@ void OTWSelectF3PadlockModeAA(unsigned long, int state, void*)
 // 2002-03-12 ADDED BY S.G. So we can priorotize ground things
 void OTWSelectF3PadlockModeAG(unsigned long, int state, void*)
 {
-    if ((FalconLocalGame->rules.GetPadlockMode() != PDDisabled) && (state & KEY_DOWN) && \
+    if ((FalconLocalGame->rules.GetPadlockMode() not_eq PDDisabled) && (state & KEY_DOWN) && \
         (SimDriver.GetPlayerAircraft()) && (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
     {
         OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityAG);
@@ -3848,7 +3848,7 @@ void SimSelectiveJettison(unsigned long, int state, void*)
 
 void SimEmergencyJettison(unsigned long, int state, void*)
 {
-    if (SimDriver.GetPlayerAircraft() != NULL && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP))
+    if (SimDriver.GetPlayerAircraft() not_eq NULL && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP))
     {
         if (!SimDriver.GetPlayerAircraft()->Sms or !SimDriver.GetPlayerAircraft()->Sms->drawable)
             return;
@@ -3873,8 +3873,8 @@ void SimEmergencyJettison(unsigned long, int state, void*)
                 if (g_bRealisticAvionics)
                 {
                     //Set our display mode
-                    if (MfdDisplay[1]->GetCurMode() != MFDClass::SMSMode ||
-                        SimDriver.GetPlayerAircraft()->Sms->drawable->DisplayMode() != SmsDrawable::EmergJet)
+                    if (MfdDisplay[1]->GetCurMode() not_eq MFDClass::SMSMode ||
+                        SimDriver.GetPlayerAircraft()->Sms->drawable->DisplayMode() not_eq SmsDrawable::EmergJet)
                     {
                         MfdDisplay[0]->EmergStoreMode = MfdDisplay[0]->CurMode();
                         MfdDisplay[1]->EmergStoreMode = MfdDisplay[1]->CurMode();
@@ -8014,7 +8014,7 @@ void SimLaserArmOn(unsigned long val, int state, void *)
 
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
-        if (SimDriver.GetPlayerAircraft()->Sms->MasterArm() != SMSBaseClass::MasterArmState::Arm)
+        if (SimDriver.GetPlayerAircraft()->Sms->MasterArm() not_eq SMSBaseClass::MasterArmState::Arm)
             return;
 
         if (SimDriver.GetPlayerAircraft()->FCC)
@@ -8378,11 +8378,11 @@ void SimAPOverride(unsigned long val, int state, void *)
         if (state & KEY_DOWN)
         {
             // JPO - save AP type.
-            //MI only if it's != APOFF
-            if (SimDriver.GetPlayerAircraft()->AutopilotType() != AircraftClass::APOff)
+            //MI only if it's not_eq APOFF
+            if (SimDriver.GetPlayerAircraft()->AutopilotType() not_eq AircraftClass::APOff)
                 SimDriver.GetPlayerAircraft()->lastapType = SimDriver.GetPlayerAircraft()->AutopilotType();
 
-            if (SimDriver.GetPlayerAircraft()->autopilotType != AircraftClass::APOff)
+            if (SimDriver.GetPlayerAircraft()->autopilotType not_eq AircraftClass::APOff)
                 SimDriver.GetPlayerAircraft()->SetAutopilot(AircraftClass::APOff);
 
             SimDriver.GetPlayerAircraft()->SetAPFlag(AircraftClass::Override);
@@ -8392,7 +8392,7 @@ void SimAPOverride(unsigned long val, int state, void *)
             SimDriver.GetPlayerAircraft()->SetAutopilot(SimDriver.GetPlayerAircraft()->lastapType);
             SimDriver.GetPlayerAircraft()->ClearAPFlag(AircraftClass::Override);
 
-            if (SimDriver.GetPlayerAircraft()->lastapType != AircraftClass::LantirnAP)   // JPO - lantirn stays
+            if (SimDriver.GetPlayerAircraft()->lastapType not_eq AircraftClass::LantirnAP)   // JPO - lantirn stays
             {
                 SimDriver.GetPlayerAircraft()->SetAPParameters();
 
@@ -8428,7 +8428,7 @@ void SimToggleTFR(unsigned long val, int state, void *)
         else
         {
             // MD -- 2003127: adding a check to put the TFR state back into standby
-            if (theLantirn->GetTFRMode() != LantirnClass::TFR_STBY)
+            if (theLantirn->GetTFRMode() not_eq LantirnClass::TFR_STBY)
                 theLantirn->SetTFRMode(LantirnClass::TFR_STBY);
 
             SimDriver.GetPlayerAircraft()->SetAutopilot(AircraftClass::APOff);
@@ -8562,7 +8562,7 @@ void SimInteriorLight(unsigned long val, int state, void *)
 
         TheColorBank.PitLightLevel = (int)ac->GetInteriorLight();
 
-        if (OTWDriver.pCockpitManager != NULL)
+        if (OTWDriver.pCockpitManager not_eq NULL)
         {
             OTWDriver.pCockpitManager->UpdatePalette();
         }
@@ -8597,7 +8597,7 @@ void SimInstrumentLight(unsigned long val, int state, void *)
         //sfr: this is messing light system, interior has its own switch
         //SimDriver.GetPlayerAircraft()->SetInteriorLight(AircraftClass::LT_OFF);
 
-        if (OTWDriver.pCockpitManager != NULL)
+        if (OTWDriver.pCockpitManager not_eq NULL)
         {
             OTWDriver.pCockpitManager->UpdatePalette();
         }
@@ -11086,9 +11086,9 @@ void AFFullFlap(unsigned long, int state, void*)
             SimDriver.GetPlayerAircraft()->af->GetTypeAC() == 10)
         {
             if (
-                SimDriver.GetPlayerAircraft()->af->flapPos != 10 &&
-                SimDriver.GetPlayerAircraft()->af->flapPos != 20 &&
-                SimDriver.GetPlayerAircraft()->af->flapPos != 30
+                SimDriver.GetPlayerAircraft()->af->flapPos not_eq 10 &&
+                SimDriver.GetPlayerAircraft()->af->flapPos not_eq 20 &&
+                SimDriver.GetPlayerAircraft()->af->flapPos not_eq 30
             )
             {
                 SimDriver.GetPlayerAircraft()->af->flapPos = 10;

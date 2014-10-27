@@ -118,7 +118,7 @@ SimObjectType* IrstClass::ConsiderDecoy(SimObjectType *target)
     id = ((SimBaseClass*)target->BaseData())->NewestFlareID();
 
     // If we have a new chaff bundle to deal with
-    if (id != lastFlareID)
+    if (id not_eq lastFlareID)
     {
         // Stop here if there isn't a counter measure in play
         if (id == FalconNullId)

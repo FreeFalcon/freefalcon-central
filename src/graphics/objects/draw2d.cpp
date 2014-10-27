@@ -2354,7 +2354,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
             v0.a -= alpha * NRANDPOS * 0.9f;
 
         }
-        else if ((typeData.flags & GROUND_GLOW) && type != DRAW2D_MISSILE_GROUND_GLOW)
+        else if ((typeData.flags & GROUND_GLOW) && type not_eq DRAW2D_MISSILE_GROUND_GLOW)
         {
             v0.r = 1.0f;
             v0.g = 0.3f + NRANDPOS * 0.5f;

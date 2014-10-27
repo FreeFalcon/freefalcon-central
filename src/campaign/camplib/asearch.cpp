@@ -376,7 +376,7 @@ int AS_DataClass::ASSearch(Path p, void* origin, void* target, void (*extend)(AS
         T = queue;
         best = 99999.0F;
 
-        while (T != NULL)
+        while (T not_eq NULL)
         {
             if (T->cost > 0 && T->to_go < best)
             {
@@ -389,7 +389,7 @@ int AS_DataClass::ASSearch(Path p, void* origin, void* target, void (*extend)(AS
 
         T = tried;
 
-        while (T != NULL)
+        while (T not_eq NULL)
         {
             if (T->cost > 0 && T->to_go < best)
             {
@@ -433,7 +433,7 @@ void AS_DataClass::AS_dispose_queue(ASNode N)
 {
     ASNode   T;
 
-    while (N != NULL)
+    while (N not_eq NULL)
     {
         T = N->next;
         delete N;
@@ -446,11 +446,11 @@ void AS_DataClass::AS_attach_queues(void)
 {
     ASNode   N;
 
-    if (queue != NULL)
+    if (queue not_eq NULL)
     {
         N = queue;
 
-        while (N->next != NULL)
+        while (N->next not_eq NULL)
             N = N->next;
 
         N->next = waste;
@@ -458,11 +458,11 @@ void AS_DataClass::AS_attach_queues(void)
         queue = NULL;
     }
 
-    if (tried != NULL)
+    if (tried not_eq NULL)
     {
         N = tried;
 
-        while (N->next != NULL)
+        while (N->next not_eq NULL)
             N = N->next;
 
         N->next = waste;
@@ -549,7 +549,7 @@ ASNode AS_DataClass::AS_get_new_node(int n)
     // Ignore this neighbor if already tried
     T = tried;
 
-    while (T != NULL)
+    while (T not_eq NULL)
     {
         // KCK: The following line is only usefull if the user's huristic overestimates -
         // And even then, it only gets slightly better answers for a moderate cost.

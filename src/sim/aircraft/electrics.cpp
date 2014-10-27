@@ -75,7 +75,7 @@ void AircraftClass::DoElectrics()
             currentPower = PowerBattery;
     }
 
-    if (currentPower != PowerNonEssentialBus)
+    if (currentPower not_eq PowerNonEssentialBus)
         elecfault = true;
 
     ElecClear(ElecToFlcs);

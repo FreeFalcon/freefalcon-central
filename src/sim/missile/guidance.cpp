@@ -54,7 +54,7 @@ void MissileClass::CheckGuidePhase(void)
                 // update the targetPtr
                 // set the targetPtr so the missile can track moving
                 // targets and lead as needed.
-                if (tgt != targetPtr)
+                if (tgt not_eq targetPtr)
                     SetTarget(tgt);
 
                 // no FCC target, track laser point
@@ -83,7 +83,7 @@ void MissileClass::CheckGuidePhase(void)
         //SimObjectType *tgt;
         //tgt=theFCC->TargetPtr();
         //
-        //if(tgt != targetPtr)
+        //if(tgt not_eq targetPtr)
         // SetTarget(tgt);
         //
         //if(!tgt)
@@ -333,7 +333,7 @@ void MissileClass::CommandGuide(void)
             invRngSq  = 1.0F / (range * range);
         }
         // we've lost our target, but want to continue our flight to the last known location
-        else if (targetX != -1.0F && targetY != -1.0F && targetZ != -1.0F)
+        else if (targetX not_eq -1.0F && targetY not_eq -1.0F && targetZ not_eq -1.0F)
         {
             hasTarget = TRUE;
 
@@ -487,7 +487,7 @@ void MissileClass::CommandGuide(void)
         }
         else
         {
-            if (this != theOne)
+            if (this not_eq theOne)
             {
                 // Get out now so we only have data for one missile to sort through
                 return;

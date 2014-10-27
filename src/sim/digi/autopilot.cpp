@@ -480,9 +480,9 @@ void DigitalBrain::FollowWP(void)
     float wpX, wpY, wpZ;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (self == playerAC && playerAC->FCC->GetStptMode() != FireControlComputer::FCCWaypoint &&
-        playerAC->FCC->GetStptMode() != FireControlComputer::FCCMarkpoint &&
-        playerAC->FCC->GetStptMode() != FireControlComputer::FCCDLinkpoint)
+    if (self == playerAC && playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCWaypoint &&
+        playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCMarkpoint &&
+        playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCDLinkpoint)
     {
         AcceptManual();
         return;
@@ -499,7 +499,7 @@ void DigitalBrain::FollowWP(void)
     //MI add in INS Drift
     if (g_bINS && g_bRealisticAvionics)
     {
-        if (playerAC != NULL)
+        if (playerAC not_eq NULL)
         {
             wpX += playerAC->GetINSLatDrift();
             wpY += playerAC->GetINSLongDrift();

@@ -189,7 +189,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
 #if RADIO_TEST
 
     // sfr: test hack for testing client radio calls
-    if (this->dataBlock.message != rcOUTSIDEAIRSPEED)
+    if (this->dataBlock.message not_eq rcOUTSIDEAIRSPEED)
     {
         return 0;
     }
@@ -239,7 +239,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
         }
     }
 
-    if (FalconLocalSession->GetFlyState() != FLYSTATE_FLYING && SimDriver.RunningCampaign() && !noUIcomms)
+    if (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING && SimDriver.RunningCampaign() && !noUIcomms)
         us = FalconLocalSession->GetPlayerSquadron();
 
 #ifdef _DEBUG
@@ -317,8 +317,8 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
         else if (from && from->IsCampaign())
             from_entity = (CampBaseClass*)from;
 
-        if (FalconLocalGame && FalconLocalGame->GetGameType() != game_InstantAction &&
-            FalconLocalGame->GetGameType() != game_Dogfight)
+        if (FalconLocalGame && FalconLocalGame->GetGameType() not_eq game_InstantAction &&
+            FalconLocalGame->GetGameType() not_eq game_Dogfight)
         {
             if (from_entity && from_entity->IsFlight())
                 from_package = (Package)((Flight)from_entity)->GetUnitParent();

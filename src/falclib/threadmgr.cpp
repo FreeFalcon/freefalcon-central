@@ -53,7 +53,7 @@ bool ThreadManager::campaign_wait_for_sim(DWORD maxwait)
     ResetEvent(campaign_wait_event);
 #endif
 
-    return WaitForSingleObject(campaign_wait_event, maxwait) != WAIT_TIMEOUT ? true : false;
+    return WaitForSingleObject(campaign_wait_event, maxwait) not_eq WAIT_TIMEOUT ? true : false;
 }
 
 
@@ -68,7 +68,7 @@ bool ThreadManager::sim_wait_for_campaign(DWORD maxwait)
     ResetEvent(sim_wait_event);
 #endif
 
-    return WaitForSingleObject(sim_wait_event, maxwait) != WAIT_TIMEOUT ? true : false;
+    return WaitForSingleObject(sim_wait_event, maxwait) not_eq WAIT_TIMEOUT ? true : false;
 }
 
 

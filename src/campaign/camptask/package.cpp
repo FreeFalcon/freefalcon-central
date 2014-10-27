@@ -97,7 +97,7 @@ public:
         MonoPrint("%d (%d) packages of %d left\n", gPackageCount, packlist.size(), maxoccupancy);
         ID2PACK::iterator it;
 
-        for (it = packlist.begin(); it != packlist.end(); it++)
+        for (it = packlist.begin(); it not_eq packlist.end(); it++)
         {
             PackageClass *ent = (*it).second;
             MonoPrint("Package left %d campid %d ref %d\n", (*it).first,
@@ -759,7 +759,7 @@ int PackageClass::CheckNeedRequests(void)
                 while (e)
                 {
                     // add to all package elements that really need to refuel
-                    if (e->GetUnitMission() != AMIS_TANKER && f->refuel != 0)
+                    if (e->GetUnitMission() not_eq AMIS_TANKER && f->refuel not_eq 0)
                     {
                         if (!AddTankerWayPoint(f, f->refuel))
                         {
@@ -1049,7 +1049,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
 
             if (add_at_end)
             {
-                if (add_at_end->BuildMission(&newmis) != PRET_SUCCESS)
+                if (add_at_end->BuildMission(&newmis) not_eq PRET_SUCCESS)
                 {
                     CancelFlight((Flight)add_at_end);
                     add_at_end = NULL;
@@ -1067,7 +1067,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
                 mis->ty = mis_request.ty;
                 mis_request.mission = mis->mission = AMIS_PRPLANCAS;
 
-                if (flight->BuildMission(mis) != PRET_SUCCESS)
+                if (flight->BuildMission(mis) not_eq PRET_SUCCESS)
                 {
                     CancelFlight((Flight)flight);
                     DeleteWPList(ingress);
@@ -1166,7 +1166,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
         newmis = *mis;
 
         // RV - Biker - If we have no mission type give 50% sead escort 50% fighter escort
-        if (escort_type != AMIS_NONE)
+        if (escort_type not_eq AMIS_NONE)
             newmis.mission = escort_type; // 2001-11-10 Modified by M.N. use requested escort type
         else
         {
@@ -2115,7 +2115,7 @@ void FinalizeFlight(Unit flight, int flights)
                 }
 
                 // Check if waypoint is co-located with adjacent waypoints
-                if (w != pw && ((px == x && py == y) or (x == nx && y == ny)))
+                if (w not_eq pw && ((px == x && py == y) or (x == nx && y == ny)))
                 {
                     w->DeleteWP();
                     w = pw;
@@ -2158,7 +2158,7 @@ Flight PackageClass::GetFACFlight(void)
 {
     Flight fac;
 
-    if (MissionData[mis_request.mission].skill != ARO_GA)
+    if (MissionData[mis_request.mission].skill not_eq ARO_GA)
         return NULL;
 
     fac = (Flight) GetFirstUnitElement();
@@ -2228,12 +2228,12 @@ void PackageClass::SetTPTime(CampaignTime t)
 
 void PackageClass::MakePackageDirty(Dirty_Package bits, Dirtyness score)
 {
-    if ((!IsLocal()) or (VuState() != VU_MEM_ACTIVE))
+    if ((!IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
 
-    if (!IsAggregate() && (score != SEND_RELIABLEANDOOB))
+    if (!IsAggregate() && (score not_eq SEND_RELIABLEANDOOB))
     {
         score = static_cast<Dirtyness>(score << 4);
     }

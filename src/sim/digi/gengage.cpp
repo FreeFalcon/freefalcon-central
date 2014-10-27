@@ -23,7 +23,7 @@ void DigitalBrain::GunsEngageCheck(void)
 {
     float angleLimit;
 
-    if ((!mpActionFlags[AI_ENGAGE_TARGET] != AI_AIR_TARGET && missionClass != AAMission && !missionComplete) or curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
+    if ((!mpActionFlags[AI_ENGAGE_TARGET] not_eq AI_AIR_TARGET && missionClass not_eq AAMission && !missionComplete) or curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
         angleLimit = 15.0f * DTR;
     else
         angleLimit = 35.0f * DTR;
@@ -39,7 +39,7 @@ void DigitalBrain::GunsEngageCheck(void)
     /*-------*/
     /* entry */
     /*-------*/
-    if (curMode != GunsEngageMode)
+    if (curMode not_eq GunsEngageMode)
     {
         if (targetPtr && targetData->range <= 3500.0F && //targetData->range >= 1000.0F &&//me123 let's bfm to 4000 before gunning changed from 10000
             // JB !(self->YawDelta() > 0 && targetPtr->BaseData()->YawDelta() < 0 ||// not nose to nose

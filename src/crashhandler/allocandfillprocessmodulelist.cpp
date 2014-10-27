@@ -22,7 +22,7 @@ AllocAndFillProcessModuleList(HANDLE hHeap    ,
         return (NULL) ;
     }
 
-    ASSERT(NULL != hHeap) ;
+    ASSERT(NULL not_eq hHeap) ;
 
     if (NULL == hHeap)
     {
@@ -38,7 +38,7 @@ AllocAndFillProcessModuleList(HANDLE hHeap    ,
                                  NULL                    ,
                                  &uiQueryCount) ;
     ASSERT(TRUE == bRet) ;
-    ASSERT(0 != uiQueryCount) ;
+    ASSERT(0 not_eq uiQueryCount) ;
 
     if ((FALSE == bRet) or (0 == uiQueryCount))
     {
@@ -54,7 +54,7 @@ AllocAndFillProcessModuleList(HANDLE hHeap    ,
                                     uiQueryCount *
                                     sizeof(HMODULE));
 
-    ASSERT(NULL != pModArray) ;
+    ASSERT(NULL not_eq pModArray) ;
 
     if (NULL == pModArray)
     {

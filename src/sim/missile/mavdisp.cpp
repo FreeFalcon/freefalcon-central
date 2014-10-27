@@ -67,7 +67,7 @@ MaverickDisplayClass::MaverickDisplayClass(SimMoverClass* newPlatform) : Missile
     else
         displayType = AGM65_TV;
 
-    F4Assert(displayType != NoDisplay);
+    F4Assert(displayType not_eq NoDisplay);
 }
 
 void MaverickDisplayClass::DisplayInit(ImageBuffer* image)
@@ -174,7 +174,7 @@ void MaverickDisplayClass::DrawDisplay(void)
 
         ShiAssert(platform->IsMissile());
 
-        if (((MissileClass*)platform)->parent->IsAirplane() && ((AircraftClass*)((MissileClass*)platform)->parent.get())->Sms->MasterArm() != SMSBaseClass::Safe)
+        if (((MissileClass*)platform)->parent->IsAirplane() && ((AircraftClass*)((MissileClass*)platform)->parent.get())->Sms->MasterArm() not_eq SMSBaseClass::Safe)
             DrawTerrain();
 
         display->StartDraw();

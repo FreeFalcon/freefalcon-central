@@ -158,7 +158,7 @@ void FireControlComputer::AirGroundMode(void)
                 BombClass *theBomb;
                 theBomb = GetTheBomb();
 
-                if (theBomb && ((AircraftClass*)platform->IsPlayer() && ((AircraftClass *)platform)->AutopilotType() != AircraftClass::CombatAP) &&
+                if (theBomb && ((AircraftClass*)platform->IsPlayer() && ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP) &&
                     ((theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS) ||
                      (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)) &&
                     (!Sms->JDAMPowered))
@@ -221,7 +221,7 @@ void FireControlComputer::CalculateRocketImpactPoint(void)
                 // WeaponId does not match rocketWeaponId
 
                 /* MLR 5/29/2004 - Handled in UpdateWeaponPointer()
-                if(lau->LauGetWeaponId() != rocketWeaponId)
+                if(lau->LauGetWeaponId() not_eq rocketWeaponId)
                 {
 
                  if(rocketPointer)
@@ -329,7 +329,7 @@ void FireControlComputer::CalculateImpactPoint(void)
     }
 
 
-    if (!preDesignate && GetMasterMode() != AirGroundLaser) //MI added check for Laser
+    if (!preDesignate && GetMasterMode() not_eq AirGroundLaser) //MI added check for Laser
     {
 
         a = 0.5F * grav;
@@ -419,7 +419,7 @@ void FireControlComputer::CalculateImpactPoint(void)
         // now calc the x and y times
         vdragx = dragCoeff * BombClass::dragConstant * ratx;
 
-        if (vdragx != 0.0f)
+        if (vdragx not_eq 0.0f)
         {
             xt = (float)fabs(xDot) / (vdragx);
 
@@ -429,7 +429,7 @@ void FireControlComputer::CalculateImpactPoint(void)
 
         vdragy = dragCoeff * BombClass::dragConstant * raty;
 
-        if (vdragy != 0.0f)
+        if (vdragy not_eq 0.0f)
         {
             yt = (float)fabs(yDot) / (vdragy);
 
@@ -502,7 +502,7 @@ void FireControlComputer::CalculateImpactPoint(void)
 
         // 2002-03-28 MI make this configurable for better adjustments
         // 2001-06-17 ADDED BY S.G. ONLY IF IT'S NOT A GUN
-        if (Sms->curWeaponClass != wcGunWpn)
+        if (Sms->curWeaponClass not_eq wcGunWpn)
             // 2001-04-14 ADDED BY S.G. KLUDGE TO MAKE THE BOMBS HIT WHERE THEY ARE SUPPOSED TO HIT
             groundImpactZ -= g_fGroundImpactMod;
 
@@ -958,7 +958,7 @@ void FireControlComputer::CalculateReleaseRange(void)
 
         if (laserPod && laserPod->IsLocked() && Sms->JDAMtargeting == SMSBaseClass::TOO
             && ((AircraftClass *)platform)->IsPlayer()
-            && (((AircraftClass *)platform)->AutopilotType() != AircraftClass::CombatAP))
+            && (((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP))
         {
             ((AircraftClass*)platform)->JDAMAllowAutoStep = false;
             float lpdX;
@@ -1193,7 +1193,7 @@ void FireControlComputer::DTOSMode(void)
     }
 
     // Move the cursors as needed
-    if ((cursorXCmd != 0) or (cursorYCmd != 0))
+    if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
         if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
             yMove = (float)cursorYCmd / 10000.0F;
@@ -1208,7 +1208,7 @@ void FireControlComputer::DTOSMode(void)
     groundPipperEl += yMove * g_fCursorSpeed * DTOS_SLEW_RATE * SimLibMajorFrameTime;
     groundPipperAz += xMove * g_fCursorSpeed * DTOS_SLEW_RATE * SimLibMajorFrameTime;
 
-    if (preDesignate or (cursorXCmd != 0) or (cursorYCmd != 0))
+    if (preDesignate or (cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
     {
         groundDesignateAz = -cockpitFlightData.beta * DTR + cockpitFlightData.windOffset * platform->platformAngles.cosphi;
         groundDesignateAz += groundPipperAz;
@@ -1279,7 +1279,7 @@ void FireControlComputer::LADDMode(void)
     }
 
     // Move the cursors as needed
-    if (cursorXCmd != 0) or (cursorYCmd != 0)
+    if (cursorXCmd not_eq 0) or (cursorYCmd not_eq 0)
         if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
             yMove = (float)cursorYCmd / 10000.0F;
@@ -1294,7 +1294,7 @@ void FireControlComputer::LADDMode(void)
     groundPipperEl += yMove * g_fCursorSpeed * DTOS_SLEW_RATE * SimLibMajorFrameTime;
     groundPipperAz += xMove * g_fCursorSpeed * DTOS_SLEW_RATE * SimLibMajorFrameTime;
 
-    if (preDesignate or (cursorXCmd != 0) or (cursorYCmd != 0))
+    if (preDesignate or (cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
     {
         groundDesignateAz = -cockpitFlightData.beta * DTR + cockpitFlightData.windOffset * platform->platformAngles.cosphi;
         groundDesignateAz += groundPipperAz;

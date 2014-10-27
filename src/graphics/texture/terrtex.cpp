@@ -84,14 +84,14 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
 
     strcpy(texturePath, path);
 
-    if (texturePath[strlen(texturePath) - 1] != '\\')
+    if (texturePath[strlen(texturePath) - 1] not_eq '\\')
         strcat(texturePath, "\\");
 
     sprintf(texturePathD, "%stexture\\", texturePath);
 
     // Store the rendering context to be used just for managing our textures
     private_rc = hrc;
-    ShiAssert(private_rc != NULL);
+    ShiAssert(private_rc not_eq NULL);
 
     // Initialize data members to default values
     overrideHandle = NULL;
@@ -346,7 +346,7 @@ void TextureDB::Cleanup(void)
 
 #ifdef USE_SH_POOLS
 
-    if (gTexDBMemPool != NULL)
+    if (gTexDBMemPool not_eq NULL)
     {
         MemPoolFree(gTexDBMemPool);
         gTexDBMemPool = NULL;
@@ -383,7 +383,7 @@ void TextureDB::SetLightLevel(void)
     }
 
     // Update all the currently loaded textures
-    if (DisplayOptions.m_texMode != DisplayOptionsClass::TEX_MODE_DDS)
+    if (DisplayOptions.m_texMode not_eq DisplayOptionsClass::TEX_MODE_DDS)
     {
         for (int i = 0; i < numSets; i++)
             if (TextureSets[i].palHandle)
@@ -715,14 +715,14 @@ TexPath* TextureDB::GetPath(TextureID texID, int type, int offset)
 
     // Find the first entry of the required type
     if (type)
-        while ((a < stop) && (a->type != type))
+        while ((a < stop) && (a->type not_eq type))
             a++;
 
     // Step to the requested offset
     a += offset;
 
     // We didn't find enough (or any) matching types
-    if ((a >= stop) or ((type) && (a->type != type)))
+    if ((a >= stop) or ((type) && (a->type not_eq type)))
         return NULL;
 
     // We found a match
@@ -746,14 +746,14 @@ TexArea* TextureDB::GetArea(TextureID texID, int type, int offset)
 
     // Find the first entry of the required type
     if (type)
-        while ((a < stop) && (a->type != type))
+        while ((a < stop) && (a->type not_eq type))
             a++;
 
     // Step to the requested offset
     a += offset;
 
     // We didn't find enough (or any) matching types
-    if ((a >= stop) or ((type) && (a->type != type)))
+    if ((a >= stop) or ((type) && (a->type not_eq type)))
         return NULL;
 
     // We found a match
@@ -805,12 +805,12 @@ void TextureDB::Load(SetEntry* pSet, TileEntry* pTile, int res, bool forceNoDDS)
 
         // Make sure we recognize this file type
         texFile.imageType = CheckImageType(filename);
-        ShiAssert(texFile.imageType != IMAGE_TYPE_UNKNOWN);
+        ShiAssert(texFile.imageType not_eq IMAGE_TYPE_UNKNOWN);
 
         // Open the input file
         result = texFile.glOpenFileMem(filename);
 
-        if (result != 1)
+        if (result not_eq 1)
         {
             char message[256];
             sprintf(message, "Failed to open %s", filename);
@@ -821,7 +821,7 @@ void TextureDB::Load(SetEntry* pSet, TileEntry* pTile, int res, bool forceNoDDS)
         texFile.glReadFileMem();
         result = ReadTextureImage(&texFile);
 
-        if (result != GOOD_READ)
+        if (result not_eq GOOD_READ)
             ShiError("Failed to read terrain texture. CD Error?");
 
         // Store pointer to the image data
@@ -921,7 +921,7 @@ void TextureDB::Activate(SetEntry* pSet, TileEntry* pTile, int res)
     ShiAssert(!pTile->handle[res]);
     ShiAssert(pTile->bits[res]);
 
-    if (DisplayOptions.m_texMode != DisplayOptionsClass::TEX_MODE_DDS)
+    if (DisplayOptions.m_texMode not_eq DisplayOptionsClass::TEX_MODE_DDS)
     {
         // Pass the palette to MPR if it isn't already there
         if (pSet->palHandle == 0)
@@ -1096,7 +1096,7 @@ void TextureDB::Free(SetEntry* pSet, TileEntry* pTile, int res)
     // Free the set palette if no tiles are in use
     if (pSet->refCount == 0)
     {
-        if (DisplayOptions.m_texMode != DisplayOptionsClass::TEX_MODE_DDS)
+        if (DisplayOptions.m_texMode not_eq DisplayOptionsClass::TEX_MODE_DDS)
         {
             if (pSet->palHandle)
             {

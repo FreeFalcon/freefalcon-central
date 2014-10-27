@@ -64,42 +64,42 @@ static BOOL InitTOOLHELP32(void)
     // Obtain the module handle of the kernel to retrieve addresses of
     //  the tool helper functions.
     hKernel = GetModuleHandleA("KERNEL32.DLL") ;
-    ASSERT(NULL != hKernel) ;
+    ASSERT(NULL not_eq hKernel) ;
 
-    if (NULL != hKernel)
+    if (NULL not_eq hKernel)
     {
         g_pCreateToolhelp32Snapshot =
             (CREATESNAPSHOT)GetProcAddress(hKernel ,
                                            "CreateToolhelp32Snapshot");
-        ASSERT(NULL != g_pCreateToolhelp32Snapshot) ;
+        ASSERT(NULL not_eq g_pCreateToolhelp32Snapshot) ;
 
         g_pModule32First = (MODULEWALK)GetProcAddress(hKernel ,
                            "Module32First");
-        ASSERT(NULL != g_pModule32First) ;
+        ASSERT(NULL not_eq g_pModule32First) ;
 
         g_pModule32Next = (MODULEWALK)GetProcAddress(hKernel        ,
                           "Module32Next");
-        ASSERT(NULL != g_pModule32Next) ;
+        ASSERT(NULL not_eq g_pModule32Next) ;
 
         g_pProcess32First =
             (PROCESSWALK)GetProcAddress(hKernel          ,
                                         "Process32First") ;
-        ASSERT(NULL != g_pProcess32First) ;
+        ASSERT(NULL not_eq g_pProcess32First) ;
 
         g_pProcess32Next =
             (PROCESSWALK)GetProcAddress(hKernel         ,
                                         "Process32Next") ;
-        ASSERT(NULL != g_pProcess32Next) ;
+        ASSERT(NULL not_eq g_pProcess32Next) ;
 
         g_pThread32First =
             (THREADWALK)GetProcAddress(hKernel         ,
                                        "Thread32First") ;
-        ASSERT(NULL != g_pThread32First) ;
+        ASSERT(NULL not_eq g_pThread32First) ;
 
         g_pThread32Next =
             (THREADWALK)GetProcAddress(hKernel        ,
                                        "Thread32Next") ;
-        ASSERT(NULL != g_pThread32Next) ;
+        ASSERT(NULL not_eq g_pThread32Next) ;
 
         // All addresses must be non-NULL to be successful.  If one of
         //  these addresses is NULL, one of the needed lists cannot be
@@ -182,7 +182,7 @@ BOOL TLHELPGetLoadedModules(DWORD     dwPID        ,
     // Get the snapshot for the specified process.
     hModSnap = g_pCreateToolhelp32Snapshot(TH32CS_SNAPMODULE ,
                                            dwPID) ;
-    ASSERT(INVALID_HANDLE_VALUE != hModSnap) ;
+    ASSERT(INVALID_HANDLE_VALUE not_eq hModSnap) ;
 
     if (INVALID_HANDLE_VALUE == hModSnap)
     {
@@ -199,7 +199,7 @@ BOOL TLHELPGetLoadedModules(DWORD     dwPID        ,
         do
         {
             // If uiCount is not zero, copy values.
-            if (0 != uiCount)
+            if (0 not_eq uiCount)
             {
                 // If the passed in buffer is to small, set the flag.
                 //  This is so we match the functionality of the NT4

@@ -327,7 +327,7 @@ void InitWaveFormatEXData(void)
 int InitSoundManager(HWND hWnd, int, char *falconDataDir)
 {
     ShiAssert(FALSE == IsBadStringPtr(falconDataDir, _MAX_PATH));
-    ShiAssert(FALSE != IsWindow(hWnd));
+    ShiAssert(FALSE not_eq IsWindow(hWnd));
     ShiAssert(FALSE == IsBadStringPtr(FalconObjectDataDir, _MAX_PATH));
     ShiAssert(FALSE == IsBadStringPtr(FalconSoundThrDirectory, _MAX_PATH));
 
@@ -567,7 +567,7 @@ int F4CreateStream(WAVEFORMATEX *fmt, float seconds)
  */
 void F4RemoveStream(int StreamID)
 {
-    if (gSoundDriver && StreamID != SND_NO_HANDLE)
+    if (gSoundDriver && StreamID not_eq SND_NO_HANDLE)
         gSoundDriver->RemoveStream(StreamID);
 }
 
@@ -596,7 +596,7 @@ int F4StartStream(char *filename, long flags)
         StreamID = gSoundDriver->CreateStream(&Header, 0.5);
 
         // END KLUDGE
-        if (StreamID != SND_NO_HANDLE)
+        if (StreamID not_eq SND_NO_HANDLE)
         {
             if (gSoundDriver->StartFileStream(StreamID, filename, flags))
                 return(StreamID);
@@ -612,7 +612,7 @@ int F4StartStream(char *filename, long flags)
 */
 BOOL F4LoopStream(int StreamID, char *filename)
 {
-    if (gSoundDriver && StreamID != SND_NO_HANDLE)
+    if (gSoundDriver && StreamID not_eq SND_NO_HANDLE)
         return(gSoundDriver->StartFileStream(StreamID, filename, SND_STREAM_LOOP));
 
     return(FALSE);
@@ -620,7 +620,7 @@ BOOL F4LoopStream(int StreamID, char *filename)
 
 BOOL F4StartRawStream(int StreamID, char *Data, long size)
 {
-    if (gSoundDriver && StreamID != SND_NO_HANDLE)
+    if (gSoundDriver && StreamID not_eq SND_NO_HANDLE)
         return(gSoundDriver->StartMemoryStream(StreamID, Data, size));
 
     return(FALSE);
@@ -628,7 +628,7 @@ BOOL F4StartRawStream(int StreamID, char *Data, long size)
 
 BOOL F4StartCallbackStream(int StreamID, void *ptr, DWORD (*cb)(void *, char *, DWORD))
 {
-    if (gSoundDriver && StreamID != SND_NO_HANDLE)
+    if (gSoundDriver && StreamID not_eq SND_NO_HANDLE)
         return(gSoundDriver->StartCallbackStream(StreamID, ptr, cb));
 
     return(FALSE);
@@ -636,7 +636,7 @@ BOOL F4StartCallbackStream(int StreamID, void *ptr, DWORD (*cb)(void *, char *, 
 
 void F4StopStream(int StreamID)
 {
-    if (gSoundDriver && StreamID != SND_NO_HANDLE)
+    if (gSoundDriver && StreamID not_eq SND_NO_HANDLE)
     {
         gSoundDriver->StopStream(StreamID);
         gSoundDriver->RemoveStream(StreamID);
@@ -698,7 +698,7 @@ long F4StreamPlayed(int StreamID)
  */
 void F4PanSound(int soundIdx, int PanDir)
 {
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
         gSoundDriver->SetSamplePan(soundIdx, PanDir);
 }
 
@@ -709,7 +709,7 @@ SND_EXPORT int AudioSetPitch( int handle, int pitch )
  */
 void F4PitchBend(int soundIdx, float Pitch)
 {
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
         gSoundDriver->SetSamplePitch(soundIdx, Pitch);
 }
 
@@ -719,7 +719,7 @@ void F4PitchBend(int soundIdx, float Pitch)
 // Volume is in dBs (-10000 -> 0)
 long F4SetVolume(int soundIdx, int Volume)
 {
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
         return(gSoundDriver->SetSampleVolume(soundIdx, Volume));
 
     return(-10000);
@@ -739,11 +739,11 @@ void F4SetSoundFlags(int soundIdx, long flags)
 {
     SOUNDLIST *snd;
 
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
     {
         snd = gSoundDriver->FindSample(soundIdx);
 
-        if (snd != NULL)
+        if (snd not_eq NULL)
             snd->Flags  or_eq  flags;
     }
 }
@@ -752,7 +752,7 @@ void F4SetSoundFlags(int soundIdx, long flags)
 void F4SetStreamFlags(int, long)
 {
     /*
-     if(gSoundDriver && soundIdx != SND_NO_HANDLE)
+     if(gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
      {
      }
     */
@@ -760,7 +760,7 @@ void F4SetStreamFlags(int, long)
 
 int F4GetVolume(int soundIdx)
 {
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
         return(gSoundDriver->GetSampleVolume(soundIdx));
 
     return(0);
@@ -772,13 +772,13 @@ int F4GetVolume(int soundIdx)
  */
 void F4PlaySound(int soundIdx)
 {
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
         gSoundDriver->PlaySample(soundIdx, 0);
 }
 
 void F4PlaySound(int soundIdx, int flags)
 {
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
         gSoundDriver->PlaySample(soundIdx, flags);
 }
 
@@ -787,7 +787,7 @@ void F4PlaySound(int soundIdx, int flags)
  */
 int F4IsSoundPlaying(int theSound, int UID)
 {
-    if (gSoundDriver && theSound != SND_NO_HANDLE)
+    if (gSoundDriver && theSound not_eq SND_NO_HANDLE)
         return(gSoundDriver->IsSamplePlaying(theSound, UID));
 
     return(0);
@@ -810,7 +810,7 @@ int F4SoundFXPlaying(int sfxId, int UID)
  */
 void F4LoopSound(int soundIdx)
 {
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
         //gSoundDriver->PlaySample(soundIdx,SND_LOOP_SAMPLE | SND_EXCLUSIVE);
         gSoundDriver->PlaySample(soundIdx, SFX_POS_LOOPED);
 }
@@ -821,7 +821,7 @@ void F4LoopSound(int soundIdx)
  */
 void F4StopSound(int soundIdx)
 {
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
         gSoundDriver->StopSample(soundIdx);
 }
 
@@ -855,7 +855,7 @@ void ExitSoundManager(void)
 
     UnLoadSFX();
 
-    if (SFX_DEF != BuiltinSFX)
+    if (SFX_DEF not_eq BuiltinSFX)
     {
         delete [] SFX_DEF;
     }
@@ -887,8 +887,8 @@ BOOL ReadSFXTable(char *sndtable)
     UINT nsfx;
     int vrsn;
 
-    if (fread(&vrsn, sizeof(vrsn), 1, fp) != 1 ||
-        fread(&nsfx, sizeof(nsfx), 1, fp) != 1)
+    if (fread(&vrsn, sizeof(vrsn), 1, fp) not_eq 1 ||
+        fread(&nsfx, sizeof(nsfx), 1, fp) not_eq 1)
     {
         SFX_DEF = BuiltinSFX;
         NumSFX = BuiltinNSFX;
@@ -907,7 +907,7 @@ BOOL ReadSFXTable(char *sndtable)
         return TRUE;
     }
 
-    if (vrsn != SFX_TABLE_VRSN)
+    if (vrsn not_eq SFX_TABLE_VRSN)
     {
         ShiWarning("Old Version of Sound Table");
         SFX_DEF = BuiltinSFX;
@@ -918,7 +918,7 @@ BOOL ReadSFXTable(char *sndtable)
 
     SFX_DEF = new SFX_DEF_ENTRY[nsfx];
 
-    if (fread(SFX_DEF, sizeof(*SFX_DEF), nsfx, fp) != nsfx)
+    if (fread(SFX_DEF, sizeof(*SFX_DEF), nsfx, fp) not_eq nsfx)
     {
         ShiAssert(!"Read error on Sound Table");
         fclose(fp);
@@ -1000,7 +1000,7 @@ BOOL ReadSFXTableTXT(char *sndtable)
 
     while (fgets(buffer, 512, fp))
     {
-        if (buffer[0] != '#')
+        if (buffer[0] not_eq '#')
             nsfx++;
     }
 
@@ -1013,7 +1013,7 @@ BOOL ReadSFXTableTXT(char *sndtable)
 
     while (fgets(buffer, 512, fp))
     {
-        if (buffer[0] != '#')
+        if (buffer[0] not_eq '#')
         {
             arg = strtok(buffer, " ,\t\n");
             strncpy(SFX_DEF[i].fileName, arg, 64);
@@ -1143,7 +1143,7 @@ void F4ReloadSFX(void)
 {
     UnLoadSFX();
 
-    if (SFX_DEF != BuiltinSFX)
+    if (SFX_DEF not_eq BuiltinSFX)
     {
         delete [] SFX_DEF;
     }
@@ -1195,7 +1195,7 @@ void LoadSFX(char *falconDataDir)
             // if(fp)
             // fprintf(fp,"LoadSFX() didn't load %d:%s\n",i,fname);
             //}
-            // ShiAssert (SFX_DEF[i].handle != SND_NO_HANDLE); // MLR 1/21/2004 - who cares!
+            // ShiAssert (SFX_DEF[i].handle not_eq SND_NO_HANDLE); // MLR 1/21/2004 - who cares!
         }
 
         for (i = 0; i < NumSFX; i++)
@@ -1211,7 +1211,7 @@ void LoadSFX(char *falconDataDir)
             // if(fp)
             // fprintf(fp,"LoadSFX() didn't load %f\n",fname);
             //}
-            // ShiAssert (SFX_DEF[i].handle != SND_NO_HANDLE); // MLR 1/21/2004 - who cares!
+            // ShiAssert (SFX_DEF[i].handle not_eq SND_NO_HANDLE); // MLR 1/21/2004 - who cares!
         }
 
         //if(fp)
@@ -1237,15 +1237,15 @@ BOOL WriteSFXTable(char *sndtable)
 
     int vrsn = SFX_TABLE_VRSN;
 
-    if (fwrite(&vrsn, sizeof(vrsn), 1, fp) != 1 ||
-        fwrite(&BuiltinNSFX, sizeof(BuiltinNSFX), 1, fp) != 1)
+    if (fwrite(&vrsn, sizeof(vrsn), 1, fp) not_eq 1 ||
+        fwrite(&BuiltinNSFX, sizeof(BuiltinNSFX), 1, fp) not_eq 1)
     {
         ShiAssert(!"Write error on Sound Table");
         fclose(fp);
         return FALSE;
     }
 
-    if (fwrite(BuiltinSFX, sizeof(*BuiltinSFX), BuiltinNSFX, fp) != (UINT)BuiltinNSFX)
+    if (fwrite(BuiltinSFX, sizeof(*BuiltinSFX), BuiltinNSFX, fp) not_eq (UINT)BuiltinNSFX)
     {
         ShiAssert(!"Write error on Sound Table");
         fclose(fp);
@@ -1572,7 +1572,7 @@ F4SoundFXPositionDriver(unsigned int begFrame, unsigned int endFrame)
             static int LastOTWDispMode = -1;
             bool reset = 0;
 
-            if (OTWDriver.GetOTWDisplayMode() != LastOTWDispMode)
+            if (OTWDriver.GetOTWDisplayMode() not_eq LastOTWDispMode)
             {
                 reset = 1;
                 LastOTWDispMode = OTWDriver.GetOTWDisplayMode();

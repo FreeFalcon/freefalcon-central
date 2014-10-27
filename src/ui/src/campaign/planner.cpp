@@ -245,7 +245,7 @@ static void SpinViewCB(long ID, short hittype, C_Base *control)
 {
     C_Button *btn;
 
-    if (hittype != C_TYPE_LMOUSEUP) return;
+    if (hittype not_eq C_TYPE_LMOUSEUP) return;
 
     switch (ID)
     {
@@ -301,7 +301,7 @@ static void SpinViewCB(long ID, short hittype, C_Base *control)
 
 static void OverHeadCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP) return;
+    if (hittype not_eq C_TYPE_LMOUSEUP) return;
 
     Recon.Pitch = 90;
     PositionCamera(&Recon, control->Parent_, 0);
@@ -312,7 +312,7 @@ static void ViewPannerCB(long, short hittype, C_Base *control)
     float dx, dy;
     C_Panner *pnr;
 
-    if (hittype != C_TYPE_LMOUSEUP && hittype != C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
         return;
 
     pnr = (C_Panner*)control;
@@ -355,7 +355,7 @@ static void ZoomPannerCB(long, short hittype, C_Base *control)
     _TCHAR buffer[20];
     int dx;
 
-    if (hittype != C_TYPE_LMOUSEUP && hittype != C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
         return;
 
     dx = pnr->GetVRange();
@@ -387,12 +387,12 @@ void AssignTargetCB(long ID, short hittype, C_Base *control)
     WayPoint wp;
     long i;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     CloseReconWindowCB(ID, hittype, control);
 
-    if (FeatureID != FalconNullId && FeatureNo >= 0)
+    if (FeatureID not_eq FalconNullId && FeatureNo >= 0)
     {
         // Set Target
         flight = (Flight)vuDatabase->Find(gActiveFlightID);
@@ -422,7 +422,7 @@ void CloseReconWindowCB(long, short hittype, C_Base *control)
 {
     long Flags1, Flags2;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->HideWindow(control->Parent_);
@@ -445,7 +445,7 @@ void TgtAssignCWCB(long ID, short hittype, C_Base *control)
 {
     C_Base *btn;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     btn = control->Parent_->FindControl(SET_TARGET);
@@ -473,7 +473,7 @@ static void OpenReconWindowCB(long, short hittype, C_Base *)
     int i;
     float x, y, z;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetCursor(gCursors[CRSR_WAIT]);
@@ -529,7 +529,7 @@ void OpenReconForVCCB(long, short hittype, C_Base *)
     C_Window *win;
     C_Base *btn;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetCursor(gCursors[CRSR_WAIT]);
@@ -566,7 +566,7 @@ void OpenReconForVCCB(long, short hittype, C_Base *)
 
 void ClosePlannerWindowCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (control->GetGroup())
@@ -578,7 +578,7 @@ static void ObjectPannerCB(long, short hittype, C_Base *control)
     float dx, dy;
     C_Panner *pnr;
 
-    if (hittype != C_TYPE_LMOUSEUP && hittype != C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
         return;
 
     pnr = (C_Panner*)control;
@@ -613,7 +613,7 @@ static void ObjectZoomCB(long, short hittype, C_Base *control)
     float dy;
     C_Panner *pnr;
 
-    if (hittype != C_TYPE_LMOUSEUP && hittype != C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
         return;
 
     pnr = (C_Panner*)control;
@@ -634,7 +634,7 @@ void OpenMunitionsWindowCB(long, short hittype, C_Base *control)
     Flight flight;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gSelectedFlightID == FalconNullId)
@@ -696,7 +696,7 @@ void ClearAllHardPointBSPs(void);
 
 void CloseMunitionsWindowCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (control->GetGroup())
@@ -715,7 +715,7 @@ static void SelectPlaneToArmCB(long ID, short hittype, C_Base *control)
 {
     int i, idx, count;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     switch (ID)
@@ -770,7 +770,7 @@ static void ChooseWeaponListCB(long, short hittype, C_Base *)
     C_Window *win;
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     win = gMainHandler->FindWindow(MUNITIONS_WIN);
@@ -795,7 +795,7 @@ static void LoadTheStoresCB(long, short hittype, C_Base *control)
     C_Window *win;
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->HideWindow(control->Parent_);
@@ -843,7 +843,7 @@ static void LoadStoresCB(long, short hittype, C_Base *)
 {
     _TCHAR fname[MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetDeleteCallback(DelSTRFileCB);
@@ -858,7 +858,7 @@ static void SaveTheStoresCB(long, short hittype, C_Base *control)
     C_EditBox *ebox;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(SAVE_WIN);
@@ -890,7 +890,7 @@ static void VerifySaveTheStoresCB(long ID, short hittype, C_Base *control)
     FILE *ofp;
     C_EditBox *ebox;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
@@ -923,7 +923,7 @@ static void VerifySaveTheStoresCB(long ID, short hittype, C_Base *control)
 
 static void SaveStoresCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetDeleteCallback(DelSTRFileCB);
@@ -942,7 +942,7 @@ static void SaveStoresCB(long, short hittype, C_Base *)
 
 static void RestoreStoresCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     RestoreStores(control->Parent_);
@@ -950,7 +950,7 @@ static void RestoreStoresCB(long, short hittype, C_Base *control)
 
 static void ClearStoresCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     ClearStores(control->Parent_);
@@ -959,7 +959,7 @@ static void ClearStoresCB(long, short hittype, C_Base *control)
 //TJL 01/02/04 Change_Skin stuff
 static void ChangeSkinCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     //add code;
@@ -973,7 +973,7 @@ static void ChangeSkinCB(long, short hittype, C_Base *control)
 
 static void UseStoresCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gFlightOverloaded)
@@ -1020,7 +1020,7 @@ static void OpenReconWinCB(long, short hittype, C_Base *)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(RECON_WIN);
@@ -1041,7 +1041,7 @@ static void OpenTargetWinCB(long, short hittype, C_Base *)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(RECON_LIST_WIN);
@@ -1056,7 +1056,7 @@ static void OpenTargetWinCB(long, short hittype, C_Base *)
 
 static void CampaignAbortTakeoffCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     CancelCampaignCompression();
@@ -1067,7 +1067,7 @@ static void CampaignAbortTakeoffCB(long, short hittype, C_Base *control)
 
 static void CampaignTaxiCB(long ID, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     Flight fl;
@@ -1137,7 +1137,7 @@ static BOOL CampaignCountDownCB(C_Base *me)
     if (deltaTime < 0)
         deltaTime = 0;
 
-    if (deltaTime != me->GetUserNumber(0))
+    if (deltaTime not_eq me->GetUserNumber(0))
     {
         txt->SetUserNumber(0, deltaTime);
         day = (long)(deltaTime / (24 * 60 * 60));

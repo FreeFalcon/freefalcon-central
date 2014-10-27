@@ -67,7 +67,7 @@ static Prof_Int64 Prof_time;
    Prof_dummy_declare (                                         \
                                                                 \
       /* check the cached Zone_Stack and update if needed */    \
-    (Prof_cache->parent != Prof_stack                           \
+    (Prof_cache->parent not_eq Prof_stack                           \
         ? Prof_cache = Prof_StackAppend(&z)                     \
         : 0),                                                   \
                                                                 \

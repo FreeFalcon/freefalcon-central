@@ -198,13 +198,13 @@ int SIMLIB_IO_CLASS::ReadFile(void)
     size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    if (size != sizeof(SIMLIB_ANALOG_TYPE)*SIMLIB_MAX_ANALOG)
+    if (size not_eq sizeof(SIMLIB_ANALOG_TYPE)*SIMLIB_MAX_ANALOG)
         return FALSE;
 
     success = fread(temp, sizeof(SIMLIB_ANALOG_TYPE), SIMLIB_MAX_ANALOG, fp);
     fclose(fp);
 
-    if (success != SIMLIB_MAX_ANALOG)
+    if (success not_eq SIMLIB_MAX_ANALOG)
         return FALSE;
 
     for (int i = 0; i < SIMLIB_MAX_ANALOG; i++)
@@ -240,7 +240,7 @@ int SIMLIB_IO_CLASS::SaveFile(void)
     success = fwrite(analog, sizeof(SIMLIB_ANALOG_TYPE), SIMLIB_MAX_ANALOG, fp);
     fclose(fp);
 
-    if (success != SIMLIB_MAX_ANALOG)
+    if (success not_eq SIMLIB_MAX_ANALOG)
         return FALSE;
 
     return TRUE;
@@ -270,13 +270,13 @@ int SIMLIB_IO_CLASS::ReadAxisMappingFile()
     size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    if (size != sizeof(AxisMapping))
+    if (size not_eq sizeof(AxisMapping))
         return FALSE;
 
     success = fread(&temp, sizeof(AxisMapping), 1, fp);
     fclose(fp);
 
-    if (success != 1)
+    if (success not_eq 1)
         return FALSE;
 
     AxisMap = temp;
@@ -306,7 +306,7 @@ int SIMLIB_IO_CLASS::WriteAxisMappingFile()
     success = fwrite(&AxisMap, sizeof(AxisMapping), 1, fp);
     fclose(fp);
 
-    if (success != 1)
+    if (success not_eq 1)
         return FALSE;
 
     return TRUE;
@@ -402,7 +402,7 @@ void SIMLIB_IO_CLASS::ResetAllInputs()
 /*****************************************************************************/
 void SIMLIB_IO_CLASS::SaveGUIDAndCount()
 {
-    if (AxisMap.FlightControlDevice != -1)
+    if (AxisMap.FlightControlDevice not_eq -1)
     {
         HRESULT hres;
         DIDEVICEINSTANCE devinst;
@@ -434,13 +434,13 @@ int SIMLIB_IO_CLASS::LoadAxisCalibrationFile()
     size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    if (size != sizeof(AxisCalibration))
+    if (size not_eq sizeof(AxisCalibration))
         return FALSE;
 
     success = fread(&temp, sizeof(AxisCalibration), 1, fp);
     fclose(fp);
 
-    if (success != 1)
+    if (success not_eq 1)
         return FALSE;
 
     AxisShapes = temp;

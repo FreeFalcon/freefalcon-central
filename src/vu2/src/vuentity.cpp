@@ -425,7 +425,7 @@ void VuEntity::SetDelta(SM_SCALAR dx, SM_SCALAR dy, SM_SCALAR dz)
 #include "IsBad.h"
 VuDriver *VuEntity::SetDriver(VuDriver* newdriver)
 {
-    if ((newdriver != NULL) && (F4IsBadReadPtr(newdriver, sizeof(*newdriver))))
+    if ((newdriver not_eq NULL) && (F4IsBadReadPtr(newdriver, sizeof(*newdriver))))
     {
         printf("bad driver being assigned");
     }
@@ -438,7 +438,7 @@ VuDriver *VuEntity::SetDriver(VuDriver* newdriver)
 void VuEntity::SetOwnerId(VU_ID ownerId)
 {
     // New owner sends xfer message: check for locality after set
-    if (vuLocalSession == ownerId && share_.ownerId_ != ownerId)
+    if (vuLocalSession == ownerId && share_.ownerId_ not_eq ownerId)
     {
         share_.ownerId_ = ownerId;
         VuTargetEntity* target = vuGlobalGroup;
@@ -593,9 +593,9 @@ VU_ERRCODE VuEntity::Handle(VuPushRequest* msg)
             {
                 VuEntity* assoc = 0;
 
-                if (Association() != vuNullId &&
-                    (assoc = vuDatabase->Find(Association())) != 0 &&
-                    assoc->OwnerId() != vuLocalSession)
+                if (Association() not_eq vuNullId &&
+                    (assoc = vuDatabase->Find(Association())) not_eq 0 &&
+                    assoc->OwnerId() not_eq vuLocalSession)
                 {
                     // entity has association, and we do not manage it
                     VuMessage* resp = new VuErrorMessage(VU_TRANSFER_ASSOCIATION_ERROR, msg->Sender(), Id(), sender);
@@ -644,9 +644,9 @@ VU_ERRCODE VuEntity::Handle(VuPullRequest* msg)
             {
                 VuEntity* assoc = 0;
 
-                if (Association() != vuNullId &&
-                    (assoc = vuDatabase->Find(Association())) != 0 &&
-                    assoc->OwnerId() != msg->Sender())
+                if (Association() not_eq vuNullId &&
+                    (assoc = vuDatabase->Find(Association())) not_eq 0 &&
+                    assoc->OwnerId() not_eq msg->Sender())
                 {
                     // entity has association, and target does not manage it
                     resp = new VuErrorMessage(VU_TRANSFER_ASSOCIATION_ERROR,
@@ -703,7 +703,7 @@ VU_ERRCODE VuEntity::Handle(VuFullUpdateEvent* event)
         if (driver_->Handle(event) > 0)
             return VU_SUCCESS;
     }
-    else if (event->Entity() && event->Entity() != this)
+    else if (event->Entity() && event->Entity() not_eq this)
     {
         share_  = event->Entity()->share_;
         pos_    = event->Entity()->pos_;
@@ -758,7 +758,7 @@ VuEntity::CollisionCheck(VuEntity* other,
     SM_SCALAR size = EntityType()->collisionRadius_ +  other->EntityType()->collisionRadius_;
     // object does not collide with itself
 
-    if (Id() != other->Id())
+    if (Id() not_eq other->Id())
     {
 
         // Cull based on simple bounding box rejection test, on a per axis basis

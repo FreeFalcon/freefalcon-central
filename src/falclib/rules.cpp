@@ -33,7 +33,7 @@ int LoadAllRules(char *filename)
     size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    if (size != sizeof(RulesStruct) * rNUM_MODES)
+    if (size not_eq sizeof(RulesStruct) * rNUM_MODES)
     {
         MonoPrint(_T("%s's rules are in old file format\n"), filename);
         return FALSE;
@@ -45,7 +45,7 @@ int LoadAllRules(char *filename)
     success = fread(&tempRules, sizeof(RulesStruct), rNUM_MODES, fp);
     fclose(fp);
 
-    if (success != rNUM_MODES)
+    if (success not_eq rNUM_MODES)
     {
         MonoPrint(_T("Failed to read %s's rules file\n"), filename);
         //Initialize();
@@ -130,7 +130,7 @@ int RulesClass::LoadRules(char *filename)
     size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    if (size != sizeof(RulesStruct) * rNUM_MODES)
+    if (size not_eq sizeof(RulesStruct) * rNUM_MODES)
     {
         MonoPrint(_T("%s's rules are in old file format\n"), filename);
         return FALSE;
@@ -142,7 +142,7 @@ int RulesClass::LoadRules(char *filename)
     success = fread(&tempRules, sizeof(RulesStruct), rNUM_MODES, fp);
     fclose(fp);
 
-    if (success != rNUM_MODES)
+    if (success not_eq rNUM_MODES)
     {
         MonoPrint(_T("Failed to read %s's rules file\n"), filename);
         //Initialize();
@@ -200,7 +200,7 @@ int RulesClass::SaveRules(_TCHAR *filename)
     success = fwrite(gRules, sizeof(RulesStruct), rNUM_MODES, fp);
     fclose(fp);
 
-    if (success != rNUM_MODES)
+    if (success not_eq rNUM_MODES)
     {
         MonoPrint(_T("Couldn't save rules"));
         return FALSE;

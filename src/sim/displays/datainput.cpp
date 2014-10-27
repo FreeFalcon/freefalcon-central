@@ -263,7 +263,7 @@ void SmsDrawable::CNTLPage(void)
         sprintf(tempstr, "%.2fSEC", Sms->GetAGBC1ArmDelay2() / 100);
 
         if (C1Weap)
-            display->TextLeft(x + 0.1F, y, "AD2", Sms->GetAGBFuze() != 1 ? 2 : 0);
+            display->TextLeft(x + 0.1F, y, "AD2", Sms->GetAGBFuze() not_eq 1 ? 2 : 0);
         else
             display->TextLeft(x + 0.1F, y, "AD2");
 
@@ -272,7 +272,7 @@ void SmsDrawable::CNTLPage(void)
     else
     {
         sprintf(tempstr, "%.2fSEC", Sms->GetAGBC1ArmDelay2() / 100);
-        display->TextLeft(x + 0.1F, y, "AD2", Sms->GetAGBFuze() != 1 ? 2 : 0);
+        display->TextLeft(x + 0.1F, y, "AD2", Sms->GetAGBFuze() not_eq 1 ? 2 : 0);
         display->TextLeft(x + 0.3F, y, tempstr);
     }
 
@@ -281,7 +281,7 @@ void SmsDrawable::CNTLPage(void)
     {
      sprintf(tempstr, "%.2fSEC", Sms->C1AD2 / 100);
      if(C1Weap)
-     display->TextLeft(x + 0.1F, y, "AD2", Sms->Prof1NSTL != 1 ? 2 : 0);
+     display->TextLeft(x + 0.1F, y, "AD2", Sms->Prof1NSTL not_eq 1 ? 2 : 0);
      else
      display->TextLeft(x + 0.1F, y, "AD2");
      display->TextLeft(x + 0.3F, y, tempstr);
@@ -289,7 +289,7 @@ void SmsDrawable::CNTLPage(void)
     else
     {
      sprintf(tempstr, "%.2fSEC", Sms->C1AD2 / 100);
-     display->TextLeft(x + 0.1F, y, "AD2", Sms->Prof2NSTL != 1 ? 2 : 0);
+     display->TextLeft(x + 0.1F, y, "AD2", Sms->Prof2NSTL not_eq 1 ? 2 : 0);
      display->TextLeft(x + 0.3F, y, tempstr);
     }*/
 }
@@ -524,7 +524,7 @@ void SmsDrawable::InputPushButton(int whichButton, int whichMFD)
             }
             else
             {
-                if (InputModus != CONTROL_PAGE)
+                if (InputModus not_eq CONTROL_PAGE)
                     SetDisplayMode(lastInputMode);
             }
 
@@ -598,7 +598,7 @@ void SmsDrawable::InputPushButton(int whichButton, int whichMFD)
                 InputModus = C4;
                 MaxInputLines = 3;
             }
-            else if (InputModus != CONTROL_PAGE)
+            else if (InputModus not_eq CONTROL_PAGE)
             {
                 AddInput(19 - whichButton);
             }
@@ -612,7 +612,7 @@ void SmsDrawable::InputPushButton(int whichButton, int whichMFD)
                 InputModus = C3;
                 MaxInputLines = 2;
             }
-            else if (InputModus != CONTROL_PAGE)
+            else if (InputModus not_eq CONTROL_PAGE)
             {
                 AddInput(19 - whichButton);
                 Manual_Input = TRUE;
@@ -629,7 +629,7 @@ void SmsDrawable::InputPushButton(int whichButton, int whichMFD)
                 InputLine = 0;
                 MaxInputLines = 2;
             }
-            else if (InputModus != CONTROL_PAGE)
+            else if (InputModus not_eq CONTROL_PAGE)
             {
                 AddInput(19 - whichButton);
             }
@@ -645,7 +645,7 @@ void SmsDrawable::InputPushButton(int whichButton, int whichMFD)
                 InputLine = 0;
                 MaxInputLines = 2;
             }
-            else if (InputModus != CONTROL_PAGE)
+            else if (InputModus not_eq CONTROL_PAGE)
             {
                 AddInput(19 - whichButton);
             }

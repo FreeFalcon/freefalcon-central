@@ -87,7 +87,7 @@ unsigned int VuRedBlackTree::Purge(VU_BOOL all)
 
     for (
         RBMap::iterator it = map_.begin();
-        it != map_.end();
+        it not_eq map_.end();
     )
     {
         VuEntityBin &eb = it->second;
@@ -112,7 +112,7 @@ unsigned int VuRedBlackTree::Count() const
 
     for (
         RBMap::const_iterator it = map_.begin();
-        it != map_.end();
+        it not_eq map_.end();
         ++it
     )
     {
@@ -272,7 +272,7 @@ unsigned int VuRedBlackTree::Purge(VU_BOOL all)
 
     for (
         RBMap::iterator it = map_.begin();
-        it != map_.end();
+        it not_eq map_.end();
     )
     {
         VuEntityBin &eb = it->second;
@@ -298,7 +298,7 @@ unsigned int VuRedBlackTree::Count() const
 
     for (
         RBMap::const_iterator it = map_.begin();
-        it != map_.end();
+        it not_eq map_.end();
         ++it
     )
     {

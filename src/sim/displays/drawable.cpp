@@ -62,8 +62,8 @@ unsigned int DrawableClass::AltMFDColors[] =   // JPO Alternative High contrast 
 // JPO - pick color with intensity and backwards compat
 unsigned int DrawableClass::GetMfdColor(MfdColor type)
 {
-    ShiAssert(GetIntensity() != 0 &&
-              GetIntensity() != 0xCCCCCCCC); // we shouldn't ever switch off completely.
+    ShiAssert(GetIntensity() not_eq 0 &&
+              GetIntensity() not_eq 0xCCCCCCCC); // we shouldn't ever switch off completely.
 
     if (!g_bEnableColorMfd or greenMode)
         type = MFD_DEFAULT;

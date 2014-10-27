@@ -97,7 +97,7 @@ void DrawablePoint::Draw(RenderOTW *renderer, int LOD)
     {
 
         // See if we need to update our ground position
-        if (onGround == TRUE && LOD != previousLOD)
+        if (onGround == TRUE && LOD not_eq previousLOD)
         {
             // Update our height to reflect the terrain beneath us
             position.z = renderer->viewpoint->GetGroundLevel(position.x, position.y, NULL);

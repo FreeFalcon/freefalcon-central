@@ -212,7 +212,7 @@ int AircraftClass::Wake(void)
             }
         }
 
-        if (set3DTexture != -1 && ((FlightClass*)GetCampaignObject())->IsPlayer())
+        if (set3DTexture not_eq -1 && ((FlightClass*)GetCampaignObject())->IsPlayer())
         {
             ((DrawableBSP*)drawPointer)->SetTextureSet(set3DTexture);
         }
@@ -396,7 +396,7 @@ void AircraftClass::MakePlayerVehicle(void)
 
     targetUpdateRate = (5 * SEC_TO_MSEC);/*targetUpdateRate * ((4 - DBrain()->SkillLevel()) * 2 + 1);*/
 
-    if (FalconLocalSession->GetPlayerEntity() != this)
+    if (FalconLocalSession->GetPlayerEntity() not_eq this)
     {
         MonoPrint("Local but not player\n");
         return;
@@ -418,7 +418,7 @@ void AircraftClass::MakePlayerVehicle(void)
         //above and replaced with this one
         if (!DBrain()->IsSetATC(DigitalBrain::DonePreflight))
         {
-            if (PlayerOptions.GetStartFlag() != PlayerOptionsClass::START_RAMP)
+            if (PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RAMP)
             {
                 PreFlight();
             }
@@ -714,7 +714,7 @@ void AircraftClass::MakeNonPlayerVehicle()
         af->SetSimpleMode(SIMPLE_MODE_AF);
     }
 
-    if ((GetCampaignObject()->GetDeagOwner() != OwnerId()) && (!IsSetFlag(OBJ_DEAD)))
+    if ((GetCampaignObject()->GetDeagOwner() not_eq OwnerId()) && (!IsSetFlag(OBJ_DEAD)))
     {
         //MonoPrint(
         // "AircraftClass::Change owner to deag owner %08x %08x%08x\n", this, GetCampaignObject()->GetDeagOwner()
@@ -743,7 +743,7 @@ void AircraftClass::MakeNonPlayerVehicle()
             SetAutopilot(CombatAP);
         }
 
-        if ((DBrain()->ATCStatus() != lLanded) && (DBrain()->ATCStatus() != lTaxiOff))
+        if ((DBrain()->ATCStatus() not_eq lLanded) && (DBrain()->ATCStatus() not_eq lTaxiOff))
         {
             // JB 010811 Prevent aircraft KIA after landing.
             SetAcStatusBits(ACSTATUS_PILOT_EJECTED);

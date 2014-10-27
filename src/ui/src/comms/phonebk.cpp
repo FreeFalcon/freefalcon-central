@@ -100,7 +100,7 @@ void CopyDataFromWindow()
         bool foundColon = false;
         string::iterator it = uiText.begin(); // outside for cause well need this below
 
-        for (; it != uiText.end(); ++it)
+        for (; it not_eq uiText.end(); ++it)
         {
             if (*it == ':')
             {
@@ -141,7 +141,7 @@ void CopyDataFromWindow()
 void AddressInputCB(long ID, short hittype, C_Base *)
 {
     // set connect as client
-    if ((hittype != 1))
+    if ((hittype not_eq 1))
     {
         return;
     }
@@ -170,7 +170,7 @@ void Phone_Select_CB(long ID, short hittype, C_Base *)
 {
     PHONEBOOK *data;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -252,7 +252,7 @@ void CopyPBToWindow(long ID, long Client)
 // new is hit
 void Phone_New_CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -263,7 +263,7 @@ void Phone_New_CB(long, short hittype, C_Base *)
 // save is hit
 void Phone_Apply_CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -278,12 +278,12 @@ void Phone_Apply_CB(long, short hittype, C_Base *)
 
 void Phone_Remove_CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     PHONEBOOK *apply = gPlayerBook->FindID(localID);
 
-    if (apply != NULL)
+    if (apply not_eq NULL)
     {
         gPlayerBook->Remove(localID);
         CopyPBToWindow(PB_WIN, 0);
@@ -292,7 +292,7 @@ void Phone_Remove_CB(long, short hittype, C_Base *)
 
 void Phone_Connect_CB(long n, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -331,7 +331,7 @@ void Phone_ConnectType_CB(long, short hittype, C_Base *control)
 {
     int i;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
 

@@ -214,7 +214,7 @@ void CPButtonObject::AddView(CPButtonView* pCPButtonView)
 BOOL CPButtonObject::DoBlit(void)
 {
 
-    return(mCurrentState != mNormalState);
+    return(mCurrentState not_eq mNormalState);
 }
 
 //------------------------------------------------------------------

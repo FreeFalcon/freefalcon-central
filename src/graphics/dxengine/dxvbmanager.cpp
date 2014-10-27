@@ -419,7 +419,7 @@ bool CDXVbManager::VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices)
 
         // if here, the right Class, check for Space and eventually scan
         // if found assign data to the Objects Buffer pointer whose ID is passed
-        if ((Base = VBAddObject(&pVbList[i], nVertices, ID)) != CHUNK_NOT_FOUND)
+        if ((Base = VBAddObject(&pVbList[i], nVertices, ID)) not_eq CHUNK_NOT_FOUND)
         {
             // Assign the Buffer address
             pVBuffers[ID].Vb = pVbList[i].Vb;

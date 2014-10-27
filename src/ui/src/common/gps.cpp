@@ -166,7 +166,7 @@ void SelectMissionSortCB(long ID, short hittype, C_Base *control)
     C_TreeList *tree;
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)control->Parent_->FindControl(MISSION_LIST_TREE);
@@ -374,7 +374,7 @@ void GlobalPositioningSystem::Update()
             }
             else
             {
-                if (cur->GetType() != entity->GetType())
+                if (cur->GetType() not_eq entity->GetType())
                 {
                     GPS_Hash->Remove(entity->GetCampID());
 

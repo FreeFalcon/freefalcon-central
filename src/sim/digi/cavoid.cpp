@@ -109,7 +109,7 @@ void DigitalBrain::CollisionCheck(void)
         /*------------------------------*/
         if (collision)
         {
-            if (curMode != CollisionAvoidMode)
+            if (curMode not_eq CollisionAvoidMode)
             {
                 /*------------------------------------*/
                 /* Find a point in the maneuver plane */

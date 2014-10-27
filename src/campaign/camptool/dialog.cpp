@@ -277,7 +277,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 sptr = ReadNameString(i, buffer, 79);
 
-                if (sptr[0] && sptr[0] != '<')
+                if (sptr[0] && sptr[0] not_eq '<')
                     SendMessage(GetDlgItem(hDlg, IDC_OBJ_NAMECOMBO), CB_ADDSTRING, 0, (LPARAM)ReadNameString(i, buffer, 79));
             }
 
@@ -1499,7 +1499,7 @@ BOOL WINAPI EditTeams(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     {
                         j = SendMessage(GetDlgItem(hDlg, i), CB_GETCURSEL, 0, 0);
 
-                        if (j != tempTeam->who)
+                        if (j not_eq tempTeam->who)
                         {
                             memcpy(TeamInfo[tempTeam->who], tempTeam, sizeof(TeamClass));
                             memcpy(tempTeam, TeamInfo[j], sizeof(TeamClass));
@@ -2712,7 +2712,7 @@ BOOL SaveScriptedUnitFile (HWND hWnd, OPENFILENAME file)
  // Set Current Campaign to use this theater
  sprintf(filename,file.lpstrFile);
  fp = fopen(filename, "wb");
- if (GlobUnit != NULL)
+ if (GlobUnit not_eq NULL)
  GlobUnit->Save(fp);
  fclose(fp);
  MessageBox( hWnd, filename, "File Saved", MB_OK );

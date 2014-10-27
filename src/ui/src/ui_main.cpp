@@ -470,7 +470,7 @@ void CloseAllRenderers(long openID)
 
     gMainHandler->EnterCritical();
 
-    if (openID != RECON_WIN && openID != RECON_LIST_WIN)
+    if (openID not_eq RECON_WIN && openID not_eq RECON_LIST_WIN)
     {
         win = gMainHandler->FindWindow(RECON_WIN);
 
@@ -650,7 +650,7 @@ void LoadMainWindow()
 
 static void ExitTheGameCB(long , short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     //Cobra 12/29/04 Attempt to shut down comms if someone exits but forgot to shut down comms
@@ -678,7 +678,7 @@ static void ExitTheGameCB(long , short hittype, C_Base *)
 
 void ExitCloseWindowCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // gMainHandler->SetOutputDelay(80);
@@ -696,7 +696,7 @@ static void ExitButtonCB(long , short hittype, C_Base *)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
 
@@ -712,7 +712,7 @@ static void ExitButtonCB(long , short hittype, C_Base *)
 
 void CloseWindowCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (control->GetGroup())
@@ -727,7 +727,7 @@ void CloseWindowCB(long , short hittype, C_Base *control)
 
 void GenericCloseWindowCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->HideWindow(control->Parent_);
@@ -735,7 +735,7 @@ void GenericCloseWindowCB(long , short hittype, C_Base *control)
 
 void MinMaxWindowCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (control->Parent_->Minimized())
@@ -850,7 +850,7 @@ void EnableScenarioInfo(long ID)
 
 static void OpenInstantActionCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     DisableScenarioInfo();
@@ -863,12 +863,12 @@ static void OpenInstantActionCB(long , short hittype, C_Base *control)
     if (!IALoaded)
         LoadInstantActionWindows();
 
-    if (MainLastGroup != 0 && MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq 0 && MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->DisableWindowGroup(MainLastGroup);
     }
 
-    if (MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->EnableWindowGroup(control->GetGroup());
         MainLastGroup = control->GetGroup();
@@ -879,7 +879,7 @@ static void OpenInstantActionCB(long , short hittype, C_Base *control)
 
 static void OpenDogFightCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     DisableScenarioInfo();
@@ -892,12 +892,12 @@ static void OpenDogFightCB(long , short hittype, C_Base *control)
     if (!DFLoaded)
         LoadDogFightWindows();
 
-    if (MainLastGroup != 0 && MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq 0 && MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->DisableWindowGroup(MainLastGroup);
     }
 
-    if (MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->EnableWindowGroup(control->GetGroup());
         MainLastGroup = control->GetGroup();
@@ -909,7 +909,7 @@ static void OpenDogFightCB(long , short hittype, C_Base *control)
 //VP_changes
 static void OpenTacticalCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     DisableScenarioInfo();
@@ -923,10 +923,10 @@ static void OpenTacticalCB(long , short hittype, C_Base *control)
     if (!TACSelLoaded)
         LoadTacEngSelectWindows();
 
-    if (MainLastGroup != 0 && MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq 0 && MainLastGroup not_eq control->GetGroup())
         gMainHandler->DisableWindowGroup(MainLastGroup);
 
-    if (MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->EnableWindowGroup(control->GetGroup());
         MainLastGroup = control->GetGroup();
@@ -940,7 +940,7 @@ void OpenMainCampaignCB(long , short hittype, C_Base *control)
     C_Button *btn;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     DisableScenarioInfo();
@@ -953,7 +953,7 @@ void OpenMainCampaignCB(long , short hittype, C_Base *control)
     if (!CPSelectLoaded)
         LoadCampaignSelectWindows();
 
-    if (MainLastGroup != 0 && MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq 0 && MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->DisableWindowGroup(MainLastGroup);
     }
@@ -979,7 +979,7 @@ void OpenMainCampaignCB(long , short hittype, C_Base *control)
 
 void OpenCommsCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -999,7 +999,7 @@ void OpenCommsCB(long , short hittype, C_Base *control)
 
 void OpenTacticalReferenceCB(long nID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetCursor(gCursors[CRSR_WAIT]);
@@ -1019,7 +1019,7 @@ void OpenTacticalReferenceCB(long nID, short hittype, C_Base *control)
 
 void OpenSetupCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetCursor(gCursors[CRSR_WAIT]);
@@ -1034,7 +1034,7 @@ void OpenSetupCB(long , short hittype, C_Base *control)
 
 void OpenFontToolCB(long , short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     InitFontTool();
@@ -1055,7 +1055,7 @@ void GenericTimerCB(long , short , C_Base *control)
 
 void InfoGroupCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     F4CSECTIONHANDLE* Leave = UI_Enter(control->GetParent());
@@ -1419,13 +1419,13 @@ void PlayUIMusic()
     MusicTypePlayed = 1; // Main UI Music
     LastTypePlayed = 1;
 
-    if (LastUIPlayed != SND_AMBIENT1 && LastUIPlayed != SND_AMBIENT2)
+    if (LastUIPlayed not_eq SND_AMBIENT1 && LastUIPlayed not_eq SND_AMBIENT2)
     {
         if (rand() & 1)
             LastUIPlayed = SND_AMBIENT1;
     }
 
-    if (LastUIPlayed != SND_AMBIENT1)
+    if (LastUIPlayed not_eq SND_AMBIENT1)
     {
         gMusic->AddQ(SND_AMBIENT1);
         LastUIPlayed = SND_AMBIENT1;
@@ -1473,7 +1473,7 @@ void PlayThatFunkyMusicWhiteBoy()
     // if(GetCurrentTime() < (MusicStopped + 60000l))
     // return;
 
-    if (LastTypePlayed != 1)
+    if (LastTypePlayed not_eq 1)
     {
         if (MusicTypePlayed == 2)
             PlayCampaignMusic();
@@ -1749,7 +1749,7 @@ int UI_Startup()
     else
         gMainHandler->EnableWindowGroup(100);
 
-    if (CampaignLastGroup != 4000)
+    if (CampaignLastGroup not_eq 4000)
         PlayUIMusic();
 
     gSoundMgr->SetAllVolumes(PlayerOptions.GroupVol[UI_SOUND_GROUP]);
@@ -2067,7 +2067,7 @@ static void SelectTheater(TheaterDef *td);
 
 static void TheaterBackCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     TheaterDef *td = NULL;
@@ -2098,7 +2098,7 @@ static void TheaterBackCB(long, short hittype, C_Base *control)
 
 static void TheaterCancelCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->HideWindow(control->Parent_);
@@ -2111,7 +2111,7 @@ static void TheaterLoadCB(long ID, short hittype, C_Base *control)
     TREELIST *item;
     C_Button   *btn;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)control;
@@ -2260,7 +2260,7 @@ void TheaterButtonCB(long ID, short hittype, C_Base *control)
 {
     static bool theatersetupdone = false;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     C_Window *win;
@@ -2272,7 +2272,7 @@ void TheaterButtonCB(long ID, short hittype, C_Base *control)
     DisableScenarioInfo();
     LeaveCurrentGame();
 
-    if (MainLastGroup != 0 && MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq 0 && MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->DisableWindowGroup(MainLastGroup);
     }
@@ -2280,7 +2280,7 @@ void TheaterButtonCB(long ID, short hittype, C_Base *control)
     MainLastGroup = 0;
 #if 0
 
-    if (MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->EnableWindowGroup(control->GetGroup());
         MainLastGroup = control->GetGroup();

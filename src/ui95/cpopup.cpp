@@ -152,10 +152,10 @@ BOOL C_PopupList::AddItem(long ID, short Type, _TCHAR *Str, long ParentID)
 {
     POPUPLIST *newitem, *cur;
 
-    if (FindID(ID) && Type != C_TYPE_NOTHING)
+    if (FindID(ID) && Type not_eq C_TYPE_NOTHING)
         return(FALSE);
 
-    if (!Str && Type != C_TYPE_NOTHING)
+    if (!Str && Type not_eq C_TYPE_NOTHING)
         return(FALSE);
 
     if (ParentID)
@@ -195,7 +195,7 @@ BOOL C_PopupList::AddItem(long ID, short Type, _TCHAR *Str, long ParentID)
     newitem->CheckIcon_ = NULL;
     newitem->State_ = 0;
 
-    if (Str && Type != C_TYPE_NOTHING)
+    if (Str && Type not_eq C_TYPE_NOTHING)
     {
         newitem->Label_ = new O_Output;
         newitem->Label_->SetOwner(this);
@@ -455,7 +455,7 @@ void C_PopupList::GetSize(short *width, short *height)
     {
         if (!(cur->flags_ & C_BIT_INVISIBLE))
         {
-            if (cur->Type_ != C_TYPE_NOTHING)
+            if (cur->Type_ not_eq C_TYPE_NOTHING)
             {
                 if (cur->Label_)
                     len = static_cast<short>(gFontList->StrWidth(Font_, cur->Label_->GetText())); //!
@@ -544,7 +544,7 @@ long C_PopupList::CheckHotSpots(long relX, long relY)
     if (!(cur->flags_ & C_BIT_ENABLED))
         cur = NULL;
 
-    if (cur && cur->Type_ != C_TYPE_NOTHING)
+    if (cur && cur->Type_ not_eq C_TYPE_NOTHING)
     {
         SetRelXY(relX - GetX(), relY - GetY());
         return(cur->ID_);
@@ -559,7 +559,7 @@ BOOL C_PopupList::Process(long ID, short HitType)
 
     gSoundMgr->PlaySound(GetSound(HitType));
 
-    if (HitType != C_TYPE_LMOUSEUP && HitType != C_TYPE_RMOUSEUP)
+    if (HitType not_eq C_TYPE_LMOUSEUP && HitType not_eq C_TYPE_RMOUSEUP)
         return(FALSE);
 
     cur = FindID(ID);
@@ -611,7 +611,7 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
 
     item = static_cast<short>((relY - 5) / gFontList->GetHeight(GetFont()));
 
-    if (item != Selected_)
+    if (item not_eq Selected_)
     {
         Refresh();
 
@@ -718,7 +718,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
         return;
 
     // Draw border
-    if (BorderColor_ != BgColor_)
+    if (BorderColor_ not_eq BgColor_)
     {
         Parent_->DrawHLine(surface, BorderColor_, 0, 0, Parent_->GetW(), C_BIT_ABSOLUTE, GetClient(), cliprect);
         Parent_->DrawHLine(surface, BorderColor_, 0, Parent_->GetH() - 1, Parent_->GetW(), C_BIT_ABSOLUTE, GetClient(), cliprect);

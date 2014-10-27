@@ -2206,7 +2206,7 @@ SfxClass::~SfxClass(void)
 
         if (baseObj)
         {
-            if (type != SFX_SMOKING_FEATURE && type != SFX_STEAMING_FEATURE)
+            if (type not_eq SFX_SMOKING_FEATURE && type not_eq SFX_STEAMING_FEATURE)
             {
                 if (baseObj->drawPointer)
                 {
@@ -2415,7 +2415,7 @@ SfxClass::Start(void)
 
     if (baseObj)
     {
-        if (type != SFX_SMOKING_FEATURE && type != SFX_STEAMING_FEATURE)   // MLR 12/20/2003 - added
+        if (type not_eq SFX_SMOKING_FEATURE && type not_eq SFX_STEAMING_FEATURE)   // MLR 12/20/2003 - added
         {
             OTWDriver.InsertObject(baseObj->drawPointer);
         }
@@ -5981,7 +5981,7 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
 
         if ((groundType == COVERAGE_WATER ||
              groundType == COVERAGE_RIVER) &&
-            type != SFX_FLARE_GFX)
+            type not_eq SFX_FLARE_GFX)
         {
             F4SoundFXSetPos(SFX_SPLASH, TRUE, pos.x, pos.y, pos.z, 1.0f);
             /*
@@ -6122,7 +6122,7 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
     */
 
     // all trails get timed out
-    if (objTrail && type != SFX_TIMER)
+    if (objTrail && type not_eq SFX_TIMER)
     {
         OTWDriver.AddSfxRequest(
             new SfxClass(

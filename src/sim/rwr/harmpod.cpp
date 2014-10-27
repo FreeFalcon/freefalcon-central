@@ -246,7 +246,7 @@ void HarmTargetingPod::NextTarget(void)
         if (range < bestSoFar)
         {
             // Don't choose the same one we've already got
-            if (tmpElement != currentElement)
+            if (tmpElement not_eq currentElement)
             {
                 bestSoFar = range;
                 choice = tmpElement;
@@ -326,7 +326,7 @@ void HarmTargetingPod::PrevTarget(void)
         if (range > bestSoFar)
         {
             // Don't choose the same one we've already got
-            if (tmpElement != currentElement)
+            if (tmpElement not_eq currentElement)
             {
                 bestSoFar = range;
                 choice = tmpElement;
@@ -857,7 +857,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
 
     float xMove = 0.0F, yMove = 0.0F;
 
-    if ((FCC->cursorXCmd != 0) or (FCC->cursorYCmd != 0))
+    if ((FCC->cursorXCmd not_eq 0) or (FCC->cursorYCmd not_eq 0))
         if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
             yMove = (float)FCC->cursorYCmd / 10000.0F;
@@ -946,7 +946,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
     }
 
     // Check the target list for 'pings'
-    for (SimObjectType *curObj = platform->targetList, *next; curObj != NULL; curObj = next)
+    for (SimObjectType *curObj = platform->targetList, *next; curObj not_eq NULL; curObj = next)
     {
         next = curObj->next;
         // sfr: taking my chances
@@ -996,7 +996,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
         if (
             curEmitter->IsAggregate() &&                      // A campaign thing
             curEmitter->CanDetect(platform) &&                // That has us spotted
-            curEmitter->GetRadarMode() != FEC_RADAR_OFF &&    // And is emmitting
+            curEmitter->GetRadarMode() not_eq FEC_RADAR_OFF &&    // And is emmitting
             // JB 011016 CanDetectObject (platform))          // And there is line of sight
             CanDetectObject(curEmitter)                       // And there is line of sight // JB 011016
         )
@@ -1305,7 +1305,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
 
     else // Find the first waypoint
     {
-        while (curWaypoint->GetPrevWP() && (curWaypoint->GetPrevWP())->GetWPAction() != WP_TAKEOFF)
+        while (curWaypoint->GetPrevWP() && (curWaypoint->GetPrevWP())->GetWPAction() not_eq WP_TAKEOFF)
         {
             curWaypoint = curWaypoint->GetPrevWP();
         }
@@ -1316,7 +1316,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
     tempWP = firstValidWP;
 
     // Now move on to find the last valid WP
-    while (tempWP->GetNextWP() && (tempWP->GetNextWP())->GetWPAction() != WP_LAND)
+    while (tempWP->GetNextWP() && (tempWP->GetNextWP())->GetWPAction() not_eq WP_LAND)
     {
         tempWP = tempWP->GetNextWP();
     }
@@ -1327,7 +1327,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
 
     int tempIndex = firstFreeTargetIndex;
 
-    for (tempWP = firstValidWP; tempWP != lastValidWP->GetNextWP(); tempWP = tempWP->GetNextWP())
+    for (tempWP = firstValidWP; tempWP not_eq lastValidWP->GetNextWP(); tempWP = tempWP->GetNextWP())
     {
         mlSinCos(&trig, platform->Yaw());
 
@@ -1839,7 +1839,7 @@ int HarmTargetingPod::FindWaypointNum(WayPointClass* theWP)
 
     WPnum = 1;
 
-    while (tempWaypoint && tempWaypoint != theWP)
+    while (tempWaypoint && tempWaypoint not_eq theWP)
     {
         tempWaypoint = tempWaypoint->GetNextWP();
         WPnum++;
@@ -1862,9 +1862,9 @@ bool HarmTargetingPod::IsInPriorityList(int symbol)
 
         case HP: // Get only high priority threats, basically only SAMs and AAA radars
             if (symbol < RWRSYM_HAWK ||
-                (symbol > 23 && symbol != 111 && symbol != 112 &&
-                 symbol != 117) &&
-                symbol != RWRSYM_KSAM ||
+                (symbol > 23 && symbol not_eq 111 && symbol not_eq 112 &&
+                 symbol not_eq 117) &&
+                symbol not_eq RWRSYM_KSAM ||
                 symbol == RWRSYM_SEARCH)
             {
                 return false;
@@ -2104,7 +2104,7 @@ void GetCurWezValue(int i, float &curX, float &curY, float &nextX, float &nextY)
 //
 // newBase = SimCampHandoff( baseObject, HANDOFF_RADAR );
 //
-// if (newBase != baseObject) {
+// if (newBase not_eq baseObject) {
 // VuDeReferenceEntity(baseObject);
 //
 // baseObject = newBase;

@@ -923,7 +923,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
     piece -> dy *= YDelta();
     piece -> dz *= ZDelta();
 
-    if (this != SimDriver.GetPlayerEntity())
+    if (this not_eq SimDriver.GetPlayerEntity())
     {
         piece -> sfxflag &= compl SFX_F16CRASH_OBJECT;
     }
@@ -1561,7 +1561,7 @@ void AircraftClass::AddEngineTrails(int ttype, DWORD *tlist, DWORD *tlist_trail)
 
         Tpoint *tp;
 
-        if (tlist != conTrails && tlist != colorConTrails)
+        if (tlist not_eq conTrails && tlist not_eq colorConTrails)
         {
             tp = &af->auxaeroData->engineLocation[i];
         }
@@ -1598,9 +1598,9 @@ void AircraftClass::AddEngineTrails(int ttype, DWORD *tlist, DWORD *tlist_trail)
         //RV - I-Hawk - engine trails size/alpha change with altitude
         engineTrailMargin = 1;
 
-        if (tlist != conTrails)
+        if (tlist not_eq conTrails)
         {
-            if (tlist != colorConTrails)
+            if (tlist not_eq colorConTrails)
             {
 
                 // if trail is engine trail, use 1K feet margin between 11K and 10K for trail fade-in/out...
@@ -1868,7 +1868,7 @@ void AircraftClass::ShowDamage(void)
     }
 
     // JPO - maybe some wing tip vortexes
-    if (af->auxaeroData->wingTipLocation.y != 0   &&
+    if (af->auxaeroData->wingTipLocation.y not_eq 0   &&
         af->auxaeroData->wingTipLocation.y < 500 &&
         GetKias() > 80)
     {
@@ -2965,7 +2965,7 @@ void AircraftClass::CheckObjectCollision(void)
             else
             {
                 if (objData->range > theObject->drawPointer->Radius() + drawPointer->Radius())
-                    if (theObject->GetDomain() != DOMAIN_SEA or theObject->GetClass() != CLASS_VEHICLE or theObject->GetType() != TYPE_CAPITAL_SHIP or carrierInitTimer >= 30.0f)
+                    if (theObject->GetDomain() not_eq DOMAIN_SEA or theObject->GetClass() not_eq CLASS_VEHICLE or theObject->GetType() not_eq TYPE_CAPITAL_SHIP or carrierInitTimer >= 30.0f)
                     {
                         continue;
                     }
@@ -2991,7 +2991,7 @@ void AircraftClass::CheckObjectCollision(void)
 
                 if (!theObject->drawPointer->GetRayHit(&org, &vec, &pos, 1.0f))
                 {
-                    if (theObject->GetDomain() != DOMAIN_SEA or theObject->GetClass() != CLASS_VEHICLE or theObject->GetType() != TYPE_CAPITAL_SHIP or carrierInitTimer >= 30.0f)
+                    if (theObject->GetDomain() not_eq DOMAIN_SEA or theObject->GetClass() not_eq CLASS_VEHICLE or theObject->GetType() not_eq TYPE_CAPITAL_SHIP or carrierInitTimer >= 30.0f)
                         continue;
                 }
 
@@ -3074,7 +3074,7 @@ void AircraftClass::CheckObjectCollision(void)
             startAngle.x = max(min(startAngle.x, 45.0f), -45.0f) * DTR;
 
             // RV - Biker - Rotate AC with carrier
-            if (af->vt <= 1.0f && af->Thrust() <= 1.0f && (carrierInitTimer < 10.0f or theObject->YawDelta() != 0.0f))
+            if (af->vt <= 1.0f && af->Thrust() <= 1.0f && (carrierInitTimer < 10.0f or theObject->YawDelta() not_eq 0.0f))
             {
                 af->sigma = theObject->Yaw() + startAngle.x;
                 af->ResetOrientation();
@@ -3092,7 +3092,7 @@ void AircraftClass::CheckObjectCollision(void)
                 startPos.z = tmpPos.z;
             }
 
-            if (startPos.z != 0.0f && numSlots > 0)
+            if (startPos.z not_eq 0.0f && numSlots > 0)
                 minB.z = startPos.z;
 
             float deltaX = abs(af->x - theObject->XPos());
@@ -3185,7 +3185,7 @@ void AircraftClass::CheckObjectCollision(void)
 
                     //Randomize the vector a bit... Yaw pushes the smoke away more
                     //quickly, Delta make it hover a bit longer over the deck...
-                    if ((rand() & 3) != 3)
+                    if ((rand() & 3) not_eq 3)
                     {
                         vec.x = theObject->Yaw();
                         vec.y = theObject->Yaw();
@@ -3303,7 +3303,7 @@ void AircraftClass::CheckObjectCollision(void)
                         af->platform->DBrain()->SetATCStatus(lCrashed);
 
                         // KCK NOTE:: Don't set timer for players
-                        if (af->platform != SimDriver.GetPlayerEntity())
+                        if (af->platform not_eq SimDriver.GetPlayerEntity())
                             af->platform->DBrain()->SetWaitTimer(SimLibElapsedTime + 1 * CampaignMinutes);
                     }
                 }
@@ -3560,7 +3560,7 @@ void AircraftClass::AddFault(int failures, unsigned int failuresPossible, int, i
             failedThing = j * (float)rand() / (float)RAND_MAX;
             numFunctions = 0;
 
-            if (failedThings[failedThing] != -1)
+            if (failedThings[failedThing] not_eq -1)
             {
                 // FLCS is a special case, as it has 1 informational fault which MUST happen first
                 if ((FaultClass::type_FSubSystem)failedThings[failedThing] == FaultClass::flcs_fault &&

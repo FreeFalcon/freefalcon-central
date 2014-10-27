@@ -215,7 +215,7 @@ void RadarDopplerClass::SAMMode(void)
 
     if (!g_bAntElevKnobFix)
     {
-        if (oldseekerElCenter && subMode != SAM_AUTO_MODE)
+        if (oldseekerElCenter && subMode not_eq SAM_AUTO_MODE)
         {
             seekerElCenter = min(max(oldseekerElCenter, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
             oldseekerElCenter = 0.0f;
@@ -1048,7 +1048,7 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
     {
         ClearFlagBit(STTingTarget);
 
-        if (mode != STT)
+        if (mode not_eq STT)
             ChangeMode(mode);
         else
             ChangeMode(prevMode);
@@ -1133,7 +1133,7 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
     /*------------------*/
     /* Auto Range Scale */
     /*------------------*/
-    if (mode != VS)
+    if (mode not_eq VS)
     {
         if (lockedTargetData->range > 0.9F * tdisplayRange && curRangeIdx < NUM_RANGES - 1)
             rangeChangeCmd = 1;
@@ -1152,7 +1152,7 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
             reacqEl = lockedTargetData->el;
 
             // MD -- 20040125: add new TWS mode processing: still show a bug after STT
-            if (mode != TWS)
+            if (mode not_eq TWS)
                 ClearHistory(lockedTarget);
 
             if (mode == ACM_30x20 or mode == ACM_SLEW
@@ -1326,10 +1326,10 @@ void RadarDopplerClass::ACMMode(void)
         SetScan();
     }
     else if (
-        !lockedTarget && mode != ACM_SLEW &&
+        !lockedTarget && mode not_eq ACM_SLEW &&
         SimDriver.GetPlayerAircraft() && // JB 010113 CTD fix
-        (SimDriver.GetPlayerAircraft()->FCC->cursorYCmd != 0 ||
-         SimDriver.GetPlayerAircraft()->FCC->cursorXCmd != 0)
+        (SimDriver.GetPlayerAircraft()->FCC->cursorYCmd not_eq 0 ||
+         SimDriver.GetPlayerAircraft()->FCC->cursorXCmd not_eq 0)
     )
     {
         ChangeMode(ACM_SLEW);
@@ -1340,10 +1340,10 @@ void RadarDopplerClass::ACMMode(void)
     // as the previous implementation of the key commands which did this job.  Looks like
     // if should have been here all along really.
     else if (
-        lockedTarget && mode != ACM_SLEW &&
+        lockedTarget && mode not_eq ACM_SLEW &&
         SimDriver.GetPlayerAircraft() &&
-        (SimDriver.GetPlayerAircraft()->FCC->cursorYCmd != 0 ||
-         SimDriver.GetPlayerAircraft()->FCC->cursorXCmd != 0)
+        (SimDriver.GetPlayerAircraft()->FCC->cursorYCmd not_eq 0 ||
+         SimDriver.GetPlayerAircraft()->FCC->cursorXCmd not_eq 0)
     )
     {
         //ClearSensorTarget();  //JPG 28 - This no longer applies w/ one-switch TMS aft to ACM NO RAD condition
@@ -1530,7 +1530,7 @@ void RadarDopplerClass::AddToHistory(SimObjectType* ptr, int sy)
     rdrData->rdrHd[0] = platform->Yaw();
     //rdrData->rdrSy[0] = sy; Cobra removed from here and moved up
 
-    if (sy != None)
+    if (sy not_eq None)
     {
         rdrData->rdrLastHit  = SimLibElapsedTime;
         //      UpdateObjectData(ptr);
@@ -1634,7 +1634,7 @@ void RadarDopplerClass::SetHistory(SimObjectType* ptr, int sy)
     rdrData->rdrHd[0] = platform->Yaw();
     rdrData->rdrSy[0] = sy;
 
-    if (sy != None)
+    if (sy not_eq None)
     {
         //   UpdateObjectData(ptr);
     }
@@ -1681,7 +1681,7 @@ RadarDopplerClass::TWSTrackList* RadarDopplerClass::TWSTrackList::Insert(SimObje
     if (!(depth < MAX_TWS_TRACKS))  // keep the list from growing needlessly
         return NULL;
 
-    if (tgt != track)
+    if (tgt not_eq track)
     {
         if (tgt->localData->range < track->localData->range)
         {

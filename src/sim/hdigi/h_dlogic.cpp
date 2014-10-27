@@ -228,7 +228,7 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
                 break;  // Yes, ignore it.
 
         // If we didn't reach the end, someone else is using it so skip it.
-        if (j != usComponents)
+        if (j not_eq usComponents)
             continue;
 
         // Mark this sim entity as the first target with a match (in case no emitting targets are left standing, or it's a feature)
@@ -271,12 +271,12 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
 */
 void HeliBrain::SetTargetEntity(FalconEntity *obj)
 {
-    if (obj != NULL)
+    if (obj not_eq NULL)
     {
-        if (targetPtr != NULL)
+        if (targetPtr not_eq NULL)
         {
             // release existing target data if different object
-            if (targetPtr->BaseData() != obj)
+            if (targetPtr->BaseData() not_eq obj)
             {
                 targetPtr->Release();
                 targetPtr = NULL;
@@ -301,7 +301,7 @@ void HeliBrain::SetTargetEntity(FalconEntity *obj)
     }
     else // obj is null
     {
-        if (targetPtr != NULL)
+        if (targetPtr not_eq NULL)
         {
             targetPtr->Release();
             targetPtr = NULL;
@@ -459,7 +459,7 @@ void HeliBrain::PrtMode(void)
 {
     AirAIModeMsg* modeMsg;
 
-    if (curMode != lastMode)
+    if (curMode not_eq lastMode)
     {
         switch (curMode)
         {

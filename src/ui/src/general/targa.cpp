@@ -75,7 +75,7 @@ BOOL LoadTargaFile(char *filename, char **image, BITMAPINFO *bmi)
         return FALSE;
 
     // For 15-bit Targa file, skip first 12 bytes.
-    if (UI_READ(&Targa, sizeof(BOGUS_HEADER), 1, hFile) != 1)
+    if (UI_READ(&Targa, sizeof(BOGUS_HEADER), 1, hFile) not_eq 1)
     {
         UI_CLOSE(hFile);
         return NULL;
@@ -95,7 +95,7 @@ BOOL LoadTargaFile(char *filename, char **image, BITMAPINFO *bmi)
     if (data == NULL)
         return(NULL);
 
-    if (UI_READ(data, bytesToRead, 1, hFile) != 1)
+    if (UI_READ(data, bytesToRead, 1, hFile) not_eq 1)
     {
         UI_CLOSE(hFile);
         return NULL;

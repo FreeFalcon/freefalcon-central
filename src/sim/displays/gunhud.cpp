@@ -104,7 +104,7 @@ void HudClass::DrawGuns(void)
     {
         if (targetPtr)
         {
-            if ((ownship->fireGun or ownship->GunFire) && ownship->Sms->MasterArm() != SMSBaseClass::Safe)
+            if ((ownship->fireGun or ownship->GunFire) && ownship->Sms->MasterArm() not_eq SMSBaseClass::Safe)
             {
                 if (!HideFunnel && !SetHideTimer)
                 {
@@ -249,7 +249,7 @@ void HudClass::DrawFunnel(void)
         }
         else
         {
-            if (i != 0)
+            if (i not_eq 0)
             {
                 scale = radius / sqrt(scale);
             }

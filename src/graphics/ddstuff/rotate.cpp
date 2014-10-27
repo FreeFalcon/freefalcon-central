@@ -1,4 +1,5 @@
 
+#include <cISO646>
 #include "stdafx.h"
 #include "shi/ConvFtoI.h"
 #include "grmath.h"
@@ -173,7 +174,7 @@ void RotateBitmapMask(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle, RECT
 
     destbuf -> Unlock();
 
-    ShiAssert(srcbuf != NULL);
+    ShiAssert(srcbuf not_eq NULL);
 
     if (srcbuf) // JB 010318 CTD
         srcbuf -> Unlock();

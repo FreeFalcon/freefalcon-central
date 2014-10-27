@@ -651,7 +651,7 @@ BOOL RenderGMRadar::SetRange(float newRange, int newLOD)
 
     // We check this to make sure we're not doing too much work as a result
     // of a floating point miscompare
-    ShiAssert((LOD != newLOD) or (fabs(newRange - range) > 1.0f))
+    ShiAssert((LOD not_eq newLOD) or (fabs(newRange - range) > 1.0f))
 
 
     // Get us to a known starting state (constructed but uninitialized TViewPoint)

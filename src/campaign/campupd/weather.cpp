@@ -123,7 +123,7 @@ void WeatherClass::UpdateCondition(int condition, bool bForce)
 {
     weatherCondition = condition;
 
-    if (weatherCondition != oldWeatherCondition or bForce)
+    if (weatherCondition not_eq oldWeatherCondition or bForce)
     {
         oldWeatherCondition = weatherCondition;
         needsWeatherRefresh = updateLighting = TRUE;
@@ -212,7 +212,7 @@ void WeatherClass::UpdateWeather()
     float seed, delta;
     CampaignTime time, tDelta;
 
-    if (weatherDay != TheCampaign.GetCurrentDay())
+    if (weatherDay not_eq TheCampaign.GetCurrentDay())
     {
         switch (TimeOfDayGeneral())
         {
@@ -480,7 +480,7 @@ int WeatherClass::CampLoad(char* name, int type)
 
     data_ptr = cd.data;
 
-    if (type != game_Campaign && type != game_PlayerPool)
+    if (type not_eq game_Campaign && type not_eq game_PlayerPool)
     {
         if (gCampDataVersion >= 75)
         {

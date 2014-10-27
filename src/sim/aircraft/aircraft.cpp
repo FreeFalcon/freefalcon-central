@@ -1091,8 +1091,8 @@ void AircraftClass::Init(SimInitDataClass* initData)
     }
 
     // FRB - Open canopy before entering 3D
-    if (PlayerOptions.GetStartFlag() != PlayerOptionsClass::START_RUNWAY &&
-        OnGround() /*&& (af->GetParkType() != LargeParkPt)*/) // FRB = BigBoys do things too.
+    if (PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY &&
+        OnGround() /*&& (af->GetParkType() not_eq LargeParkPt)*/) // FRB = BigBoys do things too.
     {
         af->canopyState = true;
 
@@ -1387,7 +1387,7 @@ int AircraftClass::Exec(void)
         // it stays dark when entering the simulation.
         if (g_bDarkHudFix && TheHud && this == SimDriver.GetPlayerEntity() &&
             DBrain() && !(DBrain()->moreFlags & DigitalBrain::HUDSetup) &&
-            PlayerOptions.GetStartFlag() != PlayerOptionsClass::START_RAMP)
+            PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RAMP)
         {
             TheHud->SymWheelPos = 1.0F;
             TheHud->SetLightLevel();
@@ -1495,13 +1495,13 @@ int AircraftClass::Exec(void)
             //RALT stuff
             //Cobra Hack attempt to keep RALT ON and CoolTime down when Combat AI is engaged
             //and disengaged.
-            if (autopilotType == CombatAP && RALTCoolTime != -1.0f)
+            if (autopilotType == CombatAP && RALTCoolTime not_eq -1.0f)
             {
                 RALTCoolTime = -1.0f;
                 RALTStatus = RON;
             }
             //made this an else if, the rest is orig code.
-            else if (HasPower(RaltPower) && RALTCoolTime > -1.0F && RALTStatus != ROFF)
+            else if (HasPower(RaltPower) && RALTCoolTime > -1.0F && RALTStatus not_eq ROFF)
                 RALTCoolTime -= SimLibMajorFrameTime;
             else
                 RALTCoolTime += SimLibMajorFrameTime;
@@ -1991,7 +1991,7 @@ int AircraftClass::Exec(void)
         // code.  I want to synchronize doing this and geom calcs with running
         // sensor fusion
         //if ( IsSetFlag( MOTION_OWNSHIP ) )
-        if (autopilotType != CombatAP && HasPilot())
+        if (autopilotType not_eq CombatAP && HasPilot())
         {
             targetList = UpdateTargetList(targetList, this, SimDriver.combinedList);
 
@@ -2478,7 +2478,7 @@ int AircraftClass::Exec(void)
                     // Check ground type
                     groundType = OTWDriver.GetGroundType(XPos(), YPos());
 
-                    if (groundType != COVERAGE_ROAD)
+                    if (groundType not_eq COVERAGE_ROAD)
                     {
                         connected = 1;
                         dustConnect = 1;
@@ -2576,7 +2576,7 @@ int AircraftClass::Exec(void)
             float refuelRate = af->GetRefuelRate();
             float refuelHelp = (float)PlayerOptions.GetRefuelingMode();
 
-            if (this != SimDriver.GetPlayerEntity() && g_fAIRefuelSpeed)
+            if (this not_eq SimDriver.GetPlayerEntity() && g_fAIRefuelSpeed)
                 refuelHelp = g_fAIRefuelSpeed;
 
             if (!tanker or !tanker->IsAirplane() ||
@@ -2619,7 +2619,7 @@ int AircraftClass::Exec(void)
         // END OF MODIFIED SECTION
 
         // Weapons
-        if (autopilotType != CombatAP)
+        if (autopilotType not_eq CombatAP)
         {
             SetTarget(FCC->Exec(targetPtr, targetList, theInputs));
         }
@@ -2639,7 +2639,7 @@ int AircraftClass::Exec(void)
                 tmpTarget = NULL;
             }
 
-            //    if (FCC->GetMasterMode() != FireControlComputer::AirGroundBomb)
+            //    if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundBomb)
             // TODO
             // COBRA - RED - WE HAD A CTD from this following call just entering 3D, still dunno why...
             SetTarget(FCC->Exec(tmpTarget, targetList, theInputs));
@@ -2650,7 +2650,7 @@ int AircraftClass::Exec(void)
         // Handle missiles launched but still on the rail
         Sms->Exec();
 
-        if (TheHud && TheHud->Ownship() == this && Guns != NULL)
+        if (TheHud && TheHud->Ownship() == this && Guns not_eq NULL)
         {
             TheHud->SetEEGSData(af->x, af->y, af->z, af->gmma, af->sigma,
                                 af->theta, af->psi, af->vt);
@@ -2757,8 +2757,8 @@ int AircraftClass::Exec(void)
     if (isDigital && curWaypoint)
     {
         if (
-            curWaypoint->GetWPAction() != WP_TAKEOFF
-            && curWaypoint->GetWPAction() != WP_LAND
+            curWaypoint->GetWPAction() not_eq WP_TAKEOFF
+            && curWaypoint->GetWPAction() not_eq WP_LAND
             && (IsAcStatusBitsSet(ACSTATUS_EXT_LIGHTS))
         )
         {
@@ -2832,8 +2832,8 @@ void AircraftClass::RunSensors(void)
         if (
             autopilotType == CombatAP &&
             sensor->CurrentTarget() == NULL &&
-            sensor->Type() != SensorClass::TargetingPod &&
-            targetPtr != NULL
+            sensor->Type() not_eq SensorClass::TargetingPod &&
+            targetPtr not_eq NULL
         )
         {
             sensor->SetDesiredTarget(targetPtr);
@@ -2845,7 +2845,7 @@ void AircraftClass::RunSensors(void)
         object = sensor->Exec(targetList);
 
         //Cobra for some reason Visdetect isn't setting target!
-        if (object && sensor->Type() == SensorClass::Visual && sensor->Type() != SensorClass::TargetingPod)
+        if (object && sensor->Type() == SensorClass::Visual && sensor->Type() not_eq SensorClass::TargetingPod)
         {
             SetTarget(object);
         }
@@ -2855,11 +2855,11 @@ void AircraftClass::RunSensors(void)
         // target directly.  Sad but true...
         if (sensor->Type() == SensorClass::Radar)
         {
-            if (FCC->GetMasterMode() != FireControlComputer::AirGroundBomb &&
-                FCC->GetMasterMode() != FireControlComputer::AirGroundRocket &&  // MLR 4/3/2004 -
-                FCC->GetMasterMode() != FireControlComputer::AirGroundMissile &&
-                FCC->GetMasterMode() != FireControlComputer::AirGroundLaser &&
-                FCC->GetMasterMode() != FireControlComputer::AirGroundHARM
+            if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundBomb &&
+                FCC->GetMasterMode() not_eq FireControlComputer::AirGroundRocket &&  // MLR 4/3/2004 -
+                FCC->GetMasterMode() not_eq FireControlComputer::AirGroundMissile &&
+                FCC->GetMasterMode() not_eq FireControlComputer::AirGroundLaser &&
+                FCC->GetMasterMode() not_eq FireControlComputer::AirGroundHARM
                )
             {
                 // Our system target becomes our radar target
@@ -2906,7 +2906,7 @@ void AircraftClass::Eject(void)
         ejectMessage->dataBlock.eCampID = ((CampBaseClass*)GetCampaignObject())->GetCampID();
         ejectMessage->dataBlock.eFlightID = GetCampaignObject()->Id();
         ejectMessage->dataBlock.ePilotID = pilotSlot;
-        ejectMessage->dataBlock.hadLastShooter = (uchar)(LastShooter() != FalconNullId);
+        ejectMessage->dataBlock.hadLastShooter = (uchar)(LastShooter() not_eq FalconNullId);
         FalconSendMessage(ejectMessage, TRUE);
 
         deathMessage = new FalconDeathMessage(Id(), FalconLocalGame);
@@ -2977,7 +2977,7 @@ void AircraftClass::Eject(void)
             epc = NULL;
             epc = new EjectedPilotClass(this, EM_F16_MODE1, pilotno);
 
-            if (epc != NULL)
+            if (epc not_eq NULL)
             {
                 epc->SetSendCreate(VuEntity::VU_SC_SEND_OOB);
                 vuDatabase->/*Quick*/Insert(epc);
@@ -2996,7 +2996,7 @@ void AircraftClass::Eject(void)
                 // PJW 12/3/97... added Eject message broadcast
                 ejectMessage = new FalconEjectMessage(epc->Id(), FalconLocalGame);
 
-                if (ejectMessage != NULL)
+                if (ejectMessage not_eq NULL)
                 {
                     ejectMessage->dataBlock.ePlaneID = Id();
                     // ejectMessage->dataBlock.eEjectID = epc->Id();
@@ -3005,14 +3005,14 @@ void AircraftClass::Eject(void)
                     // ejectMessage->dataBlock.eSide = ((CampBaseClass*)GetCampaignObject())->GetOwner();
                     ejectMessage->dataBlock.ePilotID = pilotSlot;
                     // ejectMessage->dataBlock.eIndex = Type();
-                    ejectMessage->dataBlock.hadLastShooter = (uchar)(LastShooter() != FalconNullId);
+                    ejectMessage->dataBlock.hadLastShooter = (uchar)(LastShooter() not_eq FalconNullId);
                     FalconSendMessage(ejectMessage, TRUE);
                 }
 
                 // If there is a wingman that is not the player send the airman down message, and ask for sar
                 for (i = 0; i < GetCampaignObject()->NumberOfComponents(); i++)
                 {
-                    if (GetCampaignObject()->GetComponentEntity(i) != this &&
+                    if (GetCampaignObject()->GetComponentEntity(i) not_eq this &&
                         !((SimBaseClass*)GetCampaignObject()->GetComponentEntity(i))->IsSetFlag(MOTION_OWNSHIP))
                     {
                         SimBaseClass* sender = GetCampaignObject()->GetComponentEntity(i);
@@ -3164,7 +3164,7 @@ void AircraftClass::SetPowerOutput(float)
 {
     int send = FALSE, diff, value;
 
-    if (af->auxaeroData->nEngines != 2 or af->rpm == af->rpm2)
+    if (af->auxaeroData->nEngines not_eq 2 or af->rpm == af->rpm2)
     {
         // xmit as a single event
         // RPM
@@ -3262,8 +3262,8 @@ void AircraftClass::PreFlight()
 
     // Cobra - Start with canopy open if on parking spot
     if (
-        PlayerOptions.GetStartFlag() != PlayerOptionsClass::START_RUNWAY &&
-        OnGround() && (af->GetParkType() != LargeParkPt)
+        PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY &&
+        OnGround() && (af->GetParkType() not_eq LargeParkPt)
     )
     {
         af->canopyState = true;
@@ -3366,7 +3366,7 @@ void AircraftClass::PreFlight()
     PodCooling = 0.0F;
     //MI HUD
     // if(TheHud && this == SimDriver.GetPlayerEntity() && (!OnGround() ||
-    // PlayerOptions.GetStartFlag() != PlayerOptionsClass::START_RAMP))
+    // PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RAMP))
     //ATARIBABY/WOMBAT Hud sym wheel ramp start fix
     // MD -- 20041216: this has to move to MakePlayerVehicle().  For MP games, it turns out that
     // the AircraftClass instances are preflighted before a player vehicle is marked as such so
@@ -3380,7 +3380,7 @@ void AircraftClass::PreFlight()
     //}
 
 
-    if (PlayerOptions.GetStartFlag() != PlayerOptionsClass::START_RAMP && OnGround())
+    if (PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RAMP && OnGround())
         af->SetFlag(AirframeClass::NoseSteerOn);
 
     //MI voice volume stuff
@@ -3721,9 +3721,9 @@ void AircraftClass::SetCursorCmdsByAnalog(void)
 
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC != NULL && playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC not_eq NULL && playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
-        if ((xValue != 0) or (yValue != 0))
+        if ((xValue not_eq 0) or (yValue not_eq 0))
         {
             // we're moving
             if (g_bRealisticAvionics)

@@ -62,7 +62,7 @@ void AircraftClass::OnGroundInit(SimInitDataClass* initData)
     {
         // try and get the carrier's position, otherwise just use the
         // task force position
-        if (!ent->IsAggregate() && ent->GetComponents() && (carrier = ent->GetComponentLead()) != NULL)
+        if (!ent->IsAggregate() && ent->GetComponents() && (carrier = ent->GetComponentLead()) not_eq NULL)
         {
             psi = carrier->Yaw();
             af->initialX = nextX = af->x = initData->x = carrier->XPos();
@@ -253,7 +253,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
                                            (af->IsSet(AirframeClass::OverRunway)
                                             or af->IsSet(AirframeClass::OnObject)) // JB carrier
                                            &&
-                                           !onFlatFeature && groundType != COVERAGE_ROAD) * 0.5F) && af->gearPos > 0.8F)
+                                           !onFlatFeature && groundType not_eq COVERAGE_ROAD) * 0.5F) && af->gearPos > 0.8F)
     {
         // ok touchdown
 
@@ -288,7 +288,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     else if (af->vt * impactAngle < sinkRate * 1.75F * (1.0F - (!
              (af->IsSet(AirframeClass::OverRunway)
               or af->IsSet(AirframeClass::OnObject)) // JB carrier
-             && !onFlatFeature && groundType != COVERAGE_ROAD) * 0.5F) && af->gearPos > 0.8F)
+             && !onFlatFeature && groundType not_eq COVERAGE_ROAD) * 0.5F) && af->gearPos > 0.8F)
     {
         //bounce
 
@@ -323,7 +323,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
         return FALSE;
     }
-    else if (af->vt * impactAngle < sinkRate * 3.0F * (1.0F - (!af->IsSet(AirframeClass::OverRunway) && !onFlatFeature && groundType != COVERAGE_ROAD) * 0.5F) && af->gearPos > 0.8F)
+    else if (af->vt * impactAngle < sinkRate * 3.0F * (1.0F - (!af->IsSet(AirframeClass::OverRunway) && !onFlatFeature && groundType not_eq COVERAGE_ROAD) * 0.5F) && af->gearPos > 0.8F)
     {
         //we hit too hard for the landing gear, crunch!
 

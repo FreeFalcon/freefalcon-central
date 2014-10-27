@@ -19,7 +19,7 @@ long CompressRLE8Bit(uchar *Src, uchar *Dest, long srcsize)
     uchar run;
 
     start = Src;
-    data = static_cast<uchar>((*Src) + 1); // Just make data != *Src
+    data = static_cast<uchar>((*Src) + 1); // Just make data not_eq *Src
     srcsize;
     count = 0xff;
     run = 0;
@@ -328,7 +328,7 @@ void main(int argc,char **argv)
  char *oBuf;
  long iSize,oSize;
 
- if(argc != 3)
+ if(argc not_eq 3)
  {
  printf("Usage: test ifp ofp\n");
  exit(0);

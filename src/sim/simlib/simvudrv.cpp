@@ -113,7 +113,7 @@ VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME t
     // invalid entity or time smaller than fine
     if (
         (timeDelta < FINE_POSITIONAL_UPDATES_PERIOD) ||
-        (entity->VuState() != VU_MEM_ACTIVE)
+        (entity->VuState() not_eq VU_MEM_ACTIVE)
         /* or (!ToleranceReached())*/
     )
     {
@@ -131,12 +131,12 @@ VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME t
 
     // if entity is in the same group as the player entity, fine OOB
     // for example, player in the same flight
-    if (pEntity != NULL)
+    if (pEntity not_eq NULL)
     {
         CampBaseClass *pCampObj = pEntity->GetCampaignObject();
         CampBaseClass *eCampObj = entity->GetCampaignObject();
 
-        if ((pCampObj != NULL) && (pCampObj == eCampObj))
+        if ((pCampObj not_eq NULL) && (pCampObj == eCampObj))
         {
             return SEND_SCORE(SEND_OOB, 0.0f);
         }
@@ -160,7 +160,7 @@ VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME t
     // distance from entity to session squared
     BIG_SCALAR sessionD2;
 
-    if (pEntity != NULL)
+    if (pEntity not_eq NULL)
     {
         // if entity is closer to session entity than fine update distance, send
         BIG_SCALAR x2, y2, z2;
@@ -230,7 +230,7 @@ VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME t
     roughDistD2 *= roughDistD2;
 
     // if entity is in rough range of session entity, check rough (distance is already computed)
-    if ((pEntity != NULL) && (sessionD2 <= roughDistD2))
+    if ((pEntity not_eq NULL) && (sessionD2 <= roughDistD2))
     {
         return SEND_SCORE(ENQUEUE_SEND, roughDistD2);
     }

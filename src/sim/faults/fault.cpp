@@ -253,7 +253,7 @@ void FaultClass::SetFault(type_FSubSystem subsystem,
 void FaultClass::ClearFault(type_FSubSystem subsystem)
 {
 
-    if (mpFaultList[subsystem].elFunction != nofault)
+    if (mpFaultList[subsystem].elFunction not_eq nofault)
     {
         mFaultCount--;
 
@@ -325,7 +325,7 @@ BOOL FaultClass::GetFirstFault(type_FSubSystem *subsystemp, int *functionp)
 {
     for (int i = 0; i < FaultClass::NumFaultListSubSystems; i++)
     {
-        if (mpFaultList[i].elFunction != nofault)
+        if (mpFaultList[i].elFunction not_eq nofault)
         {
             *subsystemp = (type_FSubSystem)i;
             return FindFirstFunction((type_FSubSystem)i, functionp); // this should be true
@@ -343,7 +343,7 @@ BOOL FaultClass::GetNextFault(type_FSubSystem *subsystemp, int *functionp)
 
     for (int i = (*subsystemp) + 1; i < FaultClass::NumFaultListSubSystems; i++)
     {
-        if (mpFaultList[i].elFunction != nofault)
+        if (mpFaultList[i].elFunction not_eq nofault)
         {
             *subsystemp = (type_FSubSystem)i;
             return FindFirstFunction((type_FSubSystem)i, functionp);

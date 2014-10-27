@@ -430,7 +430,7 @@ TeamClass::TeamClass(FILE *file) :
                 teamColor = 2;
         }
 
-        if (FalconLocalGame->GetGameType() != game_InstantAction)
+        if (FalconLocalGame->GetGameType() not_eq game_InstantAction)
             stance[0] = NoRelations;
 
         if (FalconLocalGame->GetGameType() == game_TacticalEngagement)
@@ -441,7 +441,7 @@ TeamClass::TeamClass(FILE *file) :
             {
                 if (!i or !who)
                     stance[i] = NoRelations;
-                else if (i != who)
+                else if (i not_eq who)
                     stance[i] = War;
                 else
                     stance[i] = Allied;
@@ -1129,7 +1129,7 @@ int TeamClass::Handle(VuSessionEvent *event)
 
 VU_ERRCODE TeamClass::InsertionCallback(void)
 {
-    if (TeamInfo[who] != this)
+    if (TeamInfo[who] not_eq this)
     {
         RemoveTeam(who);
         TeamInfo[who] = this;
@@ -1281,7 +1281,7 @@ void TeamClass::SelectGroundAction(void)
     }
 
     // If we're currently performing an action, check if it's still valid
-    if (groundAction.actionType != GACTION_CONSOLIDATE)
+    if (groundAction.actionType not_eq GACTION_CONSOLIDATE)
     {
         // Validate our current action
         bo = (Objective) vuDatabase->Find(groundAction.actionObjective);
@@ -1484,7 +1484,7 @@ void TeamClass::SelectAirActions(void)
             {
                 o->GetLocation(&tx, &ty);
 
-                if (o != bo && DistSqu(x, y, tx, ty) < SIDE_CHECK_DISTANCE * SIDE_CHECK_DISTANCE)
+                if (o not_eq bo && DistSqu(x, y, tx, ty) < SIDE_CHECK_DISTANCE * SIDE_CHECK_DISTANCE)
                 {
                     found = 0;
                     lp = objectiveList->GetFirstElement();
@@ -1572,9 +1572,9 @@ void AddTeam(int teamNum, int defaultStance)
 
     for (j = 0; j < NUM_TEAMS; j++)
     {
-        if (teamNum != j && teamNum && j)
+        if (teamNum not_eq j && teamNum && j)
             temp->stance[j] = defaultStance;
-        else if (teamNum != j)
+        else if (teamNum not_eq j)
             temp->stance[j] = Neutral;
         else
             temp->stance[j] = Allied;
@@ -1882,7 +1882,7 @@ float CombatBonus(Team t, VU_ID poid)
     float bonus = 1.0F, mult;
 
     // Area bonuses
-    if (poid != FalconNullId)
+    if (poid not_eq FalconNullId)
     {
         for (i = 0; i < MAX_BONUSES; i++)
         {
@@ -2101,7 +2101,7 @@ void NewInitiativePointSetting(Team who)
 
     for (i = 0; i < NUM_TEAMS; i++) // old code for the other teams (replaces same code in UpdateTeamStatistics-procedure)
     {
-        if (i != who  &&  i != et  &&  TeamInfo[i]->flags & TEAM_ACTIVE)
+        if (i not_eq who  &&  i not_eq et  &&  TeamInfo[i]->flags & TEAM_ACTIVE)
         {
             if (TeamInfo[i]->GetInitiative() < 40)
                 TeamInfo[i]->AddInitiative((INITIATIVE_LEAK_PER_HOUR * MIN_RECALCULATE_STATISTICS) / 60);
@@ -2838,9 +2838,9 @@ void InsertIntoSortedList(priority_structure *el)
         ShiAssert(last->next == NULL);
         last->next = el;
         el->prev = last;
-        ShiAssert(el->next != el);
-        ShiAssert(el->prev != el);
-        ShiAssert(last->next != last);
+        ShiAssert(el->next not_eq el);
+        ShiAssert(el->prev not_eq el);
+        ShiAssert(last->next not_eq last);
         return;
     }
 
@@ -2854,9 +2854,9 @@ void InsertIntoSortedList(priority_structure *el)
     if (tmp == PriorityList)
         PriorityList = el;
 
-    ShiAssert(el->next != el);
-    ShiAssert(el->prev != el);
-    ShiAssert(tmp->prev != tmp);
+    ShiAssert(el->next not_eq el);
+    ShiAssert(el->prev not_eq el);
+    ShiAssert(tmp->prev not_eq tmp);
 }
 
 void RemoveFromSortedList(priority_structure *el)
@@ -2864,13 +2864,13 @@ void RemoveFromSortedList(priority_structure *el)
     if (el->prev)
     {
         el->prev->next = el->next;
-        ShiAssert(el->prev->next != el->prev);
+        ShiAssert(el->prev->next not_eq el->prev);
     }
 
     if (el->next)
     {
         el->next->prev = el->prev;
-        ShiAssert(el->next->prev != el->next);
+        ShiAssert(el->next->prev not_eq el->next);
     }
 
     if (el == PriorityList)
@@ -3058,7 +3058,7 @@ TeamGndActionType *TeamClass::SetGroundAction(void)
 
 void TeamClass::MakeTeamDirty(Dirty_Team bits, Dirtyness score)
 {
-    if ((!IsLocal()) or (VuState() != VU_MEM_ACTIVE))
+    if ((!IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
@@ -3144,7 +3144,7 @@ void TeamClass::WriteDirty(unsigned char **stream)
 
     if (dirty_team & DIRTY_TEAM_RELATIONS)
     {
-        ShiAssert((cteam & 0xff) != 0xfc);
+        ShiAssert((cteam & 0xff) not_eq 0xfc);
         memcpy(ptr, &cteam, sizeof(uchar));
         ptr += sizeof(uchar);
         memcpy(ptr, member, sizeof(uchar) * NUM_COUNS);

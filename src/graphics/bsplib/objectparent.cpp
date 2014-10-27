@@ -5,6 +5,7 @@
 
     Provides structures and definitions for 3D objects.
 \***************************************************************************/
+#include <cISO646>
 #include "stdafx.h"
 #include <io.h>
 #include <fcntl.h>
@@ -135,7 +136,7 @@ void ObjectParent::CleanupTable(void)
 
 #ifdef USE_SH_POOLS
 
-    if (gBSPLibMemPool != NULL)
+    if (gBSPLibMemPool not_eq NULL)
     {
         MemPoolFree(gBSPLibMemPool);
         gBSPLibMemPool = NULL;
@@ -333,7 +334,7 @@ void ObjectParent::VerifyVersion(int file)
     result = read(file, &fileVersion, sizeof(fileVersion));
 
     // If the version doesn't match our expectations, report an error
-    if (fileVersion != FORMAT_VERSION)
+    if (fileVersion not_eq FORMAT_VERSION)
     {
         //Beep( 2000, 500 );
         //Beep( 2000, 500 );
@@ -342,7 +343,7 @@ void ObjectParent::VerifyVersion(int file)
     }
 
     // New version of KO,dxh which uses UINT's for nSwitches and nDOFs to handle the increased number of Switch and DOF ID's.
-    if (nVer != (int)DXver)
+    if (nVer not_eq (int)DXver)
         nVer = 0; // old KO.dxh version
 }
 

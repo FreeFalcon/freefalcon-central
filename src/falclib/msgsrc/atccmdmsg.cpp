@@ -83,7 +83,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
 
     if (dataBlock.type == Release && aircraft && aircraft->DBrain())
     {
-        if (!aircraft->IsPlayer() or aircraft->AutopilotType() != AircraftClass::CombatAP)
+        if (!aircraft->IsPlayer() or aircraft->AutopilotType() not_eq AircraftClass::CombatAP)
         {
             aircraft->DBrain()->ResetATC();
         }
@@ -168,7 +168,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                             status = atcBrain->FindFirstLegPt(aircraft, dataBlock.rwindex, acBrain->RwTime(), finalX, finalY, FALSE, &x, &y);
                         }
 
-                        if (status != lFirstLeg)
+                        if (status not_eq lFirstLeg)
                             acBrain->SendATCMsg(status);
 
                         desAlt = atcBrain->GetAltitude(aircraft, status);
@@ -288,7 +288,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
 
                         // sfr: only track point if ATC is on
                         // this can happen in MP when a player touches down a destroyed runway
-                        if (atcs != noATC)
+                        if (atcs not_eq noATC)
                         {
                             taxiPoint = GetFirstPt(dataBlock.rwindex);
                             TranslatePointData(atc, GetNextPt(taxiPoint) , &x, &y);
@@ -318,7 +318,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     if (aircraft->OnGround())
                         break;
 
-                    if (acBrain->ATCStatus() != lEmergencyToBase)
+                    if (acBrain->ATCStatus() not_eq lEmergencyToBase)
                     {
                         atcBrain->FindFinalPt(aircraft, dataBlock.rwindex, &finalX, &finalY);
                         atcBrain->FindBasePt(aircraft, dataBlock.rwindex, finalX, finalY, &baseX, &baseY);
@@ -333,7 +333,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     if (aircraft->OnGround())
                         break;
 
-                    if (acBrain->ATCStatus() != lEmergencyToFinal)
+                    if (acBrain->ATCStatus() not_eq lEmergencyToFinal)
                     {
                         atcBrain->FindFinalPt(aircraft, dataBlock.rwindex, &finalX, &finalY);
                         acBrain->SetTrackPoint(finalX, finalY, atcBrain->GetAltitude(aircraft, lEmergencyToFinal));
@@ -347,7 +347,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     if (aircraft->OnGround())
                         break;
 
-                    if (acBrain->ATCStatus() != lEmergencyOnFinal)
+                    if (acBrain->ATCStatus() not_eq lEmergencyOnFinal)
                     {
                         acBrain->SetTaxiPoint(GetFirstPt(dataBlock.rwindex));
                         TranslatePointData(atc, GetFirstPt(dataBlock.rwindex), &x, &y);
@@ -363,7 +363,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
 
                     atcBrain->FindAbortPt(aircraft, &x, &y, &z);
 
-                    if (acBrain->ATCStatus() != lAborted)
+                    if (acBrain->ATCStatus() not_eq lAborted)
                     {
                         acBrain->SetATCStatus(lAborted);
                         acBrain->SetTrackPoint(x, y, z);
@@ -656,7 +656,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     if (aircraft->OnGround())
                         break;
 
-                    if (!aircraft->IsPlayer() or aircraft->AutopilotType() != AircraftClass::CombatAP)
+                    if (!aircraft->IsPlayer() or aircraft->AutopilotType() not_eq AircraftClass::CombatAP)
                         acBrain->ResetATC();
 
                     //Cobra Let's try a new comm here

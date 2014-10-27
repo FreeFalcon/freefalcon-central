@@ -146,7 +146,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
         DrawBars();
     }
 
-    if (mode != GM && mode != GMT && mode != SEA)
+    if (mode not_eq GM && mode not_eq GMT && mode not_eq SEA)
     {
         DrawAzElTicks(); // ASSOCIATOR 3/12/03: Reversed drawing order
         DrawScanMarkers();
@@ -425,7 +425,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
                   if(pFCC->GetSubMode() == FireControlComputer::CCIP or pFCC->GetSubMode() == FireControlComputer::DTOSS ||
                   pFCC->GetSubMode() == FireControlComputer::***STRAF or pFCC->GetSubMode() == FireControlComputer::RCKT)
                   {
-                  if(mode != AGR) {
+                  if(mode not_eq AGR) {
                   mode = AGR;
                   }
                   return;
@@ -517,7 +517,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
         DrawBorder(); // JPO SOI
     }
 
-    if (!isEmitting && mode != OFF) // JPO
+    if (!isEmitting && mode not_eq OFF) // JPO
     {
         //MI not here in real
         if (!g_bRealisticAvionics)
@@ -557,7 +557,7 @@ void RadarDopplerClass::STBYDisplay(void)
     {
         LabelButton(0, mode == OFF ? "OFF" : "STBY");
 
-        if (mode != OFF)
+        if (mode not_eq OFF)
         {
             //LabelButton(3, "OVRD", NULL, !isEmitting);
             LabelButton(3, "OVRD");
@@ -573,7 +573,7 @@ void RadarDopplerClass::STBYDisplay(void)
         LabelButton(5, "BARO");
         LabelButton(8, "CZ");
 
-        if (mode != OFF)
+        if (mode not_eq OFF)
         {
             LabelButton(7, "SP");
             LabelButton(9, "STP");
@@ -658,7 +658,7 @@ void RadarDopplerClass::DrawAzElTicks(void)
 
         for (i = 0; i < 7; i++)
         {
-            if (1 != i)
+            if (1 not_eq i)
                 display->Line(DisplayAreaViewLeft - 0.01F, curPos,
                               DisplayAreaViewLeft - 0.04F, curPos);
 
@@ -991,7 +991,7 @@ void RadarDopplerClass::RWSDisplay(void)
     }
 
     //Cobra 11/20/04
-    if (iff && (self->iffModeChallenge != 99))
+    if (iff && (self->iffModeChallenge not_eq 99))
         LabelButton(16, "SCAN");
 
     // Set the viewport
@@ -1447,7 +1447,7 @@ void RadarDopplerClass::ACMDisplay(void)
         STTDisplay();
     else
     {
-        if (mode != ACM_BORE)
+        if (mode not_eq ACM_BORE)
         {
             // Set the viewport
             display->SetViewportRelative(DisplayAreaViewLeft, DisplayAreaViewTop, DisplayAreaViewRight, DisplayAreaViewBottom);
@@ -1520,7 +1520,7 @@ void RadarDopplerClass::TWSDisplay(void)
     }
 
     //Cobra 11/20/04
-    if (iff && (self->iffModeChallenge != 99))
+    if (iff && (self->iffModeChallenge not_eq 99))
     {
         LabelButton(16, "SCAN");
     }
@@ -2314,7 +2314,7 @@ void RadarDopplerClass::DrawACQCursor(void)
     /*----------------------*/
     /* add elevation limits */
     /*----------------------*/
-    if (mode != VS)
+    if (mode not_eq VS)
     {
         //if(g_bMLU)               // JPG 9 Mar 04 - Hardcoded the negative numbers to show and made em red when they're -
         //{
@@ -2912,7 +2912,7 @@ void RadarDopplerClass::DrawDLZSymbol(void)
     rNeMax = pFCC->missileRneMax * rangeInv; // Marco Edit * 0.70f;//me123 addet *0.70 ;
     rNeMin = pFCC->missileRneMin * rangeInv;
 
-    ShiAssert(lockedTargetData != NULL);
+    ShiAssert(lockedTargetData not_eq NULL);
     // Clamp in place
     rMin = min(rMin, 1.0F);
     rMax = min(rMax, 1.0F);
@@ -3203,7 +3203,7 @@ void RadarDopplerClass::DrawNCTR(bool TWS)
 #else
     // JPO start with some checks.
     ShiAssert(FALSE == F4IsBadReadPtr(lockedTarget, sizeof * lockedTarget));
-    ShiAssert(lockedTarget->BaseData() != NULL);
+    ShiAssert(lockedTarget->BaseData() not_eq NULL);
 
     // Marco Edit - here we display our NCTR data INSTEAD of the bar
     // This was grabbed from Radar360.cpp (Easy Avionics radar/*
@@ -3311,7 +3311,7 @@ void RadarDopplerClass::AGRangingDisplay(void)
     LabelButton(19, "", "10");
     LabelButton(17, "A", "1");
 
-    if (mode != OFF)
+    if (mode not_eq OFF)
     {
         LabelButton(7, "SP");
         LabelButton(9, "STP");
@@ -3350,7 +3350,7 @@ void RadarDopplerClass::DrawReference(VirtualDisplay* display)
 
     float offset = 0.0f;
 
-    ShiAssert(self != NULL && TheHud != NULL);
+    ShiAssert(self not_eq NULL && TheHud not_eq NULL);
 
     if (TheHud->waypointValid)
     {
@@ -3358,7 +3358,7 @@ void RadarDopplerClass::DrawReference(VirtualDisplay* display)
     }
 
     FireControlComputer *FCC = self->GetFCC();
-    ShiAssert(FCC != NULL);
+    ShiAssert(FCC not_eq NULL);
 
     switch (FCC->GetMasterMode())
     {
@@ -3376,7 +3376,7 @@ void RadarDopplerClass::DrawReference(VirtualDisplay* display)
         case FireControlComputer::Dogfight:
         case FireControlComputer::MissileOverride:
         case FireControlComputer::AAGun:
-            //case (FireControlComputer::Gun && FCC->GetSubMode() != FireControlComputer::STRAF):
+            //case (FireControlComputer::Gun && FCC->GetSubMode() not_eq FireControlComputer::STRAF):
         {
             if (lockedTarget && lockedTarget->BaseData() && !FCC->IsAGMasterMode())
             {

@@ -100,13 +100,13 @@ static void ShowModuleInfo(HANDLE LogFile, HINSTANCE ModuleHandle)
             // our way through its structures to find the link time stamp.
             IMAGE_DOS_HEADER *DosHeader = (IMAGE_DOS_HEADER*)ModuleHandle;
 
-            if (IMAGE_DOS_SIGNATURE != DosHeader->e_magic)
+            if (IMAGE_DOS_SIGNATURE not_eq DosHeader->e_magic)
                 return;
 
             IMAGE_NT_HEADERS *NTHeader = (IMAGE_NT_HEADERS*)((char *)DosHeader
                                          + DosHeader->e_lfanew);
 
-            if (IMAGE_NT_SIGNATURE != NTHeader->Signature)
+            if (IMAGE_NT_SIGNATURE not_eq NTHeader->Signature)
                 return;
 
             // Open the code module file so that we can get its file date
@@ -117,7 +117,7 @@ static void ShowModuleInfo(HANDLE LogFile, HINSTANCE ModuleHandle)
             char TimeBuffer[100] = "";
             DWORD FileSize = 0;
 
-            if (ModuleFile != INVALID_HANDLE_VALUE)
+            if (ModuleFile not_eq INVALID_HANDLE_VALUE)
             {
                 FileSize = GetFileSize(ModuleFile, 0);
                 FILETIME LastWriteTime;

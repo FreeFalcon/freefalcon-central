@@ -82,7 +82,7 @@ void TLevel::Setup(int level, int width, int height, const char *mapPath)
         // Read the file offsets into the post pointer array
         bytes = read(offsetFile, blocks, sizeof(TBlock*)*blocks_wide * blocks_high);
 
-        if (bytes != sizeof(TBlock*)*blocks_wide * blocks_high)
+        if (bytes not_eq sizeof(TBlock*)*blocks_wide * blocks_high)
         {
             char message[120];
             sprintf(message, "%s:  Couldn't read block offset data", strerror(errno));

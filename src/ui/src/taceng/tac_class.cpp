@@ -508,7 +508,7 @@ void tactical_mission::process_load(char *data, int size, int)
                 }
             }
         }
-        else if (buffer[0] != '\0') // Otherwise, do we have something to set this state's value to.
+        else if (buffer[0] not_eq '\0') // Otherwise, do we have something to set this state's value to.
         {
             switch (current_state)
             {
@@ -739,7 +739,7 @@ void tactical_mission::info_load(char *the_filename)
     char
     *data;
 
-    if (strcmp(filename, the_filename) != 0)
+    if (strcmp(filename, the_filename) not_eq 0)
     {
         delete(filename);
 
@@ -1525,7 +1525,7 @@ void tactical_mission::evaluate_victory_conditions(void)
                 //}
             }
 
-            if (old_active != vc->active)
+            if (old_active not_eq vc->active)
             {
                 update_team_victory_window();
                 //MonoPrint ("Victory Condition %d is now %s\n", count, (vc->active?"TRUE":"FALSE"));
@@ -1747,7 +1747,7 @@ void tactical_mission::evaluate_parameters(void *arg_wp, double x, double y, dou
             }
         }
 
-        if (old_active != vc->active)
+        if (old_active not_eq vc->active)
         {
             //MonoPrint ("Victory Condition %d is now %s\n", count, (vc->active?"TRUE":"FALSE"));
         }
@@ -1881,7 +1881,7 @@ int tactical_mission::determine_rating(void)
 
     for (int i = 0; i < 8; i++)
     {
-        if ((team_pts[i] > best_opp) && (i != team))
+        if ((team_pts[i] > best_opp) && (i not_eq team))
             best_opp = team_pts[i];
     }
 
@@ -1898,7 +1898,7 @@ int tactical_mission::determine_rating(void)
         }
         else
         {
-            if (TheCampaign.TE_type != tt_engagement)
+            if (TheCampaign.TE_type not_eq tt_engagement)
                 return mr_success;
             else
                 return mr_decisive_victory;
@@ -1908,7 +1908,7 @@ int tactical_mission::determine_rating(void)
     {
         if (best_opp > points_required)
         {
-            if (TheCampaign.TE_type != tt_engagement)
+            if (TheCampaign.TE_type not_eq tt_engagement)
                 return mr_failure;
             else
                 return mr_crushing_defeat;

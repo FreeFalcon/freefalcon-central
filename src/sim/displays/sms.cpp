@@ -121,7 +121,7 @@ SMSBaseClass::SMSBaseClass(SimVehicleClass *newOwnship, short *weapId, uchar *we
     {
         for (numHardpoints = HARDPOINT_MAX - 1; numHardpoints >= 0; numHardpoints--)
         {
-            if (weapId[numHardpoints] != 0)
+            if (weapId[numHardpoints] not_eq 0)
             {
                 break;
             }
@@ -1724,7 +1724,7 @@ void SMSClass::Exec(void)
     }
 
     // We're out of coolant! We start to warm up....
-    if (aim9coolingtimeleft <= 0 && GetCoolState() != WARM)
+    if (aim9coolingtimeleft <= 0 && GetCoolState() not_eq WARM)
         SetCoolState(WARMING);
 
     // Okay, we've warmed up enough....
@@ -1837,8 +1837,8 @@ void SMSClass::SelectiveJettison(void)
     {
         for (curStation = numHardpoints - 1; curStation > 0; curStation--)
         {
-            //if(drawable->hardPointSelected & (1 << curStation) && MasterArm() != Safe)
-            if (drawable->sjSelected[curStation] != JettisonNone && MasterArm() != Safe)
+            //if(drawable->hardPointSelected & (1 << curStation) && MasterArm() not_eq Safe)
+            if (drawable->sjSelected[curStation] not_eq JettisonNone && MasterArm() not_eq Safe)
             {
                 MonoPrint("Jettison station %d at %ld\n", curStation, SimLibElapsedTime);
                 ReleaseCurWeapon(-1);
@@ -2329,7 +2329,7 @@ int SMSClass::WeaponStep(int symFlag)
     }
 
     // Next try and find first weapon of the same class on any other hardpoint
-    if (!found && classDesired != wcGbuWpn)
+    if (!found && classDesired not_eq wcGbuWpn)
     {
         for (i = 0; i < numHardpoints; i++)
         {
@@ -2479,7 +2479,7 @@ void SMSClass::WeaponStep(int symFlag)
     }
 
     // Next try and find first weapon of the same class on any other hardpoint
-    if (!found && classDesired != wcGbuWpn)
+    if (!found && classDesired not_eq wcGbuWpn)
     {
         for (i = 0; i < numHardpoints; i++)
         {
@@ -2634,7 +2634,7 @@ int SMSClass::FindWeaponClass(WeaponClass weaponDesired, int needWeapon)
         SetCurrentWeapon(foundStation, found);
         retval = TRUE;
     }
-    else if (!needWeapon && notNeedStation != -1)
+    else if (!needWeapon && notNeedStation not_eq -1)
     {
         // Found where one was, and thats good enough
         SetCurrentWeapon(notNeedStation, NULL);
@@ -2681,7 +2681,7 @@ int SMSClass::FindWeaponType(WeaponType weaponDesired)
 
         newHp = NextACHp(newHp, this->numHardpoints);
     }
-    while (newHp != 0);
+    while (newHp not_eq 0);
 
     ReleaseCurWeapon(curHardpoint);
 
@@ -2827,7 +2827,7 @@ WeaponType SMSClass::GetNextWeapon(WeaponDomain domainDesired)
 
         // Marco edit - non-zero weapon check due to problems with weapon cycling
         if (hardPoint[stationUnderTest] && (hardPoint[stationUnderTest]->GetWeaponData()->domain & domainDesired) &&
-            (hardPoint[stationUnderTest]->weaponCount != 0 ||
+            (hardPoint[stationUnderTest]->weaponCount not_eq 0 ||
              hardPoint[stationUnderTest]->GetWeaponType() == wtGuns
              or hardPoint[stationUnderTest]->GetWeaponType() == wtAgm88
              or hardPoint[stationUnderTest]->GetWeaponType() == wtGBU)) // JB 010726 Allow HTS/LaserPod to be selected even when out of weapons
@@ -2838,7 +2838,7 @@ WeaponType SMSClass::GetNextWeapon(WeaponDomain domainDesired)
             //MI
             if (g_bRealisticAvionics)
             {
-                if (newType == wtAgm65 && curWeaponType != wtAgm65)
+                if (newType == wtAgm65 && curWeaponType not_eq wtAgm65)
                     StepMavSubMode(TRUE);
             }
 
@@ -2849,7 +2849,7 @@ WeaponType SMSClass::GetNextWeapon(WeaponDomain domainDesired)
         // ASSOCIATOR 03/12/03: Added this check so that we can now properly cycle AG guns without relying on the
         // buggy g_bUseDefinedGunDomain that causes AI to crash
         else if (hardPoint[stationUnderTest] && (hardPoint[stationUnderTest]->GetWeaponData()->domain | wdBoth) &&
-                 (hardPoint[stationUnderTest]->weaponCount != 0 && hardPoint[stationUnderTest]->GetWeaponType() == wtGuns))
+                 (hardPoint[stationUnderTest]->weaponCount not_eq 0 && hardPoint[stationUnderTest]->GetWeaponType() == wtGuns))
         {
             newType = hardPoint[stationUnderTest]->GetWeaponType();
             break;
@@ -2999,7 +2999,7 @@ void SMSClass::SelectWeapon(WeaponType newtype, WeaponDomain domainDesired)
 
         case wtMk82:
         case wtMk84:
-            if (FCC->GetMasterMode() != FireControlComputer::AirGroundBomb) // or // MLR 4/3/2004 -
+            if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundBomb) // or // MLR 4/3/2004 -
                 //FCC->GetSubMode() == FireControlComputer::STRAF ||
                 //FCC->GetSubMode() == FireControlComputer::OBSOLETERCKT)
             {
@@ -3029,7 +3029,7 @@ void SMSClass::SelectWeapon(WeaponType newtype, WeaponDomain domainDesired)
             else
             {
                 // M.N. added full realism mode
-                if (PlayerOptions.GetAvionicsType() != ATRealistic && PlayerOptions.GetAvionicsType() != ATRealisticAV)
+                if (PlayerOptions.GetAvionicsType() not_eq ATRealistic && PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
                     FCC->SetSubMode(FireControlComputer::BSGT);
                 else
                     FCC->SetSubMode(FireControlComputer::SLAVE);
@@ -3420,7 +3420,7 @@ int SMSClass::JettisonStation(int stationNum, JettisonMode mode)
         if (ownship->IsLocal() && !ownship->OnGround())
         {
             // RV - Biker - Only allow jettison when in plane flight
-            if (mode != RippedOff)
+            if (mode not_eq RippedOff)
             {
                 if (fabs(ownship->Roll()) > 35.0f * DTR)
                     return 0;
@@ -3526,7 +3526,7 @@ int SMSClass::JettisonStation(int stationNum, JettisonMode mode)
 
             while (weapPtr)
             {
-                if (FalconLocalGame->GetGameType() != game_InstantAction)
+                if (FalconLocalGame->GetGameType() not_eq game_InstantAction)
                 {
                     tempPtr.reset(weapPtr->GetNextOnRail());
                 }
@@ -3701,7 +3701,7 @@ int SMSClass::JettisonStation(int stationNum, JettisonMode mode)
          while (weapPtr)
          {
          ShiAssert( weapPtr->drawPointer == NULL );
-         if(FalconLocalGame->GetGameType() != game_InstantAction)
+         if(FalconLocalGame->GetGameType() not_eq game_InstantAction)
          tempPtr = weapPtr->GetNextOnRail();
          RemoveStore(stationNum, hardPoint[stationNum]->weaponId);
          // 2002-02-08 ADDED BY S.G. Before we delete it, we must check if the drawable->thePrevMissile is pointing to it but NOT referenced so we can clear it as well otherwise it will CTD in UpdateGroundSpot
@@ -4292,7 +4292,7 @@ void SMSClass::StepWeaponByID(void)
 
     found = 0;
 
-    for (i = curHardpoint + 1; i != curHardpoint && !found; i++)
+    for (i = curHardpoint + 1; i not_eq curHardpoint && !found; i++)
     {
         i = i % numHardpoints;
 

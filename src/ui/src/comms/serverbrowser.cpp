@@ -258,7 +258,7 @@ static void OnDeleteItemServerList(TREELIST *item)
 
 static void LocalCloseWindowCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (m_bCloseWindowPending)
@@ -282,7 +282,7 @@ static void LocalCloseWindowCB(long, short hittype, C_Base *control)
 
 static void OnClickedBack(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     C_Base *wndClose = control->GetParent()->FindControl(CLOSE_WINDOW);
@@ -293,7 +293,7 @@ static void OnClickedBack(long, short hittype, C_Base *control)
 /*  This crashes, removed from the UI
 static void OnClickedSettings(long, short hittype,C_Base *control)
 {
- if(hittype != C_TYPE_LMOUSEUP)
+ if(hittype not_eq C_TYPE_LMOUSEUP)
  return;
 
  C_Window *win;
@@ -335,7 +335,7 @@ static void OnClickedSettings(long, short hittype,C_Base *control)
 
 static void OnClickedRefresh(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     Update();
@@ -343,7 +343,7 @@ static void OnClickedRefresh(long, short hittype, C_Base *control)
 
 static void OnClickedPlay(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (!m_pSelectedItem or m_bConnectPending)
@@ -363,7 +363,7 @@ static void OnClickedPlay(long, short hittype, C_Base *control)
 
 static void OnClickedFilter_All(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetFilterMode(FILTER_MODE_ALL);
@@ -371,7 +371,7 @@ static void OnClickedFilter_All(long, short hittype, C_Base *control)
 
 static void OnClickedFilter_Campaign(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetFilterMode(FILTER_MODE_CAMPAIGN);
@@ -379,7 +379,7 @@ static void OnClickedFilter_Campaign(long, short hittype, C_Base *control)
 
 static void OnClickedFilter_TE(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetFilterMode(FILTER_MODE_TE);
@@ -387,7 +387,7 @@ static void OnClickedFilter_TE(long, short hittype, C_Base *control)
 
 static void OnClickedFilter_Dogfight(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetFilterMode(FILTER_MODE_DOGFIGHT);
@@ -395,7 +395,7 @@ static void OnClickedFilter_Dogfight(long, short hittype, C_Base *control)
 
 static void OnClickedFilter_Favorites(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetFilterMode(FILTER_MODE_FAVORITES);
@@ -403,7 +403,7 @@ static void OnClickedFilter_Favorites(long, short hittype, C_Base *control)
 
 static void OnClickedFilter_Populated(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetFilterMode(FILTER_MODE_POPULATED);
@@ -411,7 +411,7 @@ static void OnClickedFilter_Populated(long, short hittype, C_Base *control)
 
 static void OnClickedSort_ServerName(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // F4CSECTIONHANDLE *Leave = UI_Enter(control->Parent_);
@@ -423,7 +423,7 @@ static void OnClickedSort_ServerName(long, short hittype, C_Base *control)
 
 static void OnClickedSort_Ping(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // F4CSECTIONHANDLE *Leave = UI_Enter(control->Parent_);
@@ -438,7 +438,7 @@ static void OnClickedSort_Ping(long, short hittype, C_Base *control)
 
 static void OnClickedSort_Mode(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // F4CSECTIONHANDLE *Leave = UI_Enter(control->Parent_);
@@ -453,7 +453,7 @@ static void OnClickedSort_Mode(long, short hittype, C_Base *control)
 
 static void OnClickedSort_Players(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // F4CSECTIONHANDLE *Leave = UI_Enter(control->Parent_);
@@ -468,7 +468,7 @@ static void OnClickedSort_Players(long, short hittype, C_Base *control)
 
 static void OnClickedSort_Location(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // F4CSECTIONHANDLE *Leave = UI_Enter(control->Parent_);
@@ -519,7 +519,7 @@ static void OnSelchangeServerList(long n, short hittype, C_Base *control)
 /*
 static void OnClickedSetup(long,short hittype,C_Base *control)
 {
-    if(hittype != C_TYPE_LMOUSEUP)
+    if(hittype not_eq C_TYPE_LMOUSEUP)
  return;
     C_Window *win;
     win=gMainHandler->FindWindow(SETUP_JETNET_OPTIONS_WIN);
@@ -720,7 +720,7 @@ static void ClearServerList()
 {
     GAMEARRAY::iterator it;
 
-    for (it = m_arrGames.begin(); it != m_arrGames.end(); it++)
+    for (it = m_arrGames.begin(); it not_eq m_arrGames.end(); it++)
         if (*it)
             (*it)->Release();
 
@@ -861,7 +861,7 @@ static void UpdateDisplay()
         GAMEARRAY::iterator it;
         GNETCORELib::IGamePtr p;
 
-        for (it = m_arrGames.begin(); it != m_arrGames.end(); it++)
+        for (it = m_arrGames.begin(); it not_eq m_arrGames.end(); it++)
             if (FilterGame(*it))
                 MakeServerItem(m_pListServers, *it);
 
@@ -880,7 +880,7 @@ static void ServerListReceived(int nServers)
 {
     m_bConnectedToMaster = false;
 
-    if (nServers != 0)
+    if (nServers not_eq 0)
         UpdateStatus("Connected .. getting server information");
 }
 
@@ -1300,7 +1300,7 @@ void CGNetUpdater::Cleanup()
 void CGNetUpdater::CancelUpdate()
 {
     // Abort now
-    if (m_pMasterServer != NULL)
+    if (m_pMasterServer not_eq NULL)
     {
         m_pMasterServer->raw_CancelUpdate();
         return;

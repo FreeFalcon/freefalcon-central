@@ -448,7 +448,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                 }
 
                 // don't play any effect for air penetration misses...
-                else // if ( dataBlock.endCode != Missed )
+                else // if ( dataBlock.endCode not_eq Missed )
                 {
                     /*
                     OTWDriver.AddSfxRequest(
@@ -772,7 +772,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
         }
 
         // hit building
-        if (dataBlock.endCode == FeatureImpact && wc->DamageType != HighExplosiveDam)
+        if (dataBlock.endCode == FeatureImpact && wc->DamageType not_eq HighExplosiveDam)
         {
             pos.x -= dataBlock.xDelta * 0.32f;
             pos.y -= dataBlock.yDelta * 0.32f;

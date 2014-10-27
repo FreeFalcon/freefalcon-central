@@ -431,7 +431,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     if (shooter->GetDomain() == DOMAIN_AIR)
     {
         // 2002-02-21 ADDED BY S.G. If it's not spotted and it's NOT the player, use the 'Bandit' vehicle so we don't warn the player on the identity of the shooter
-        if (!shooter->GetIdentified(target->GetTeam()) && FalconLocalSession->GetTeam() != shooter->GetTeam())
+        if (!shooter->GetIdentified(target->GetTeam()) && FalconLocalSession->GetTeam() not_eq shooter->GetTeam())
             newEvent->dataBlock.data.textIds[0] = (short)(-1 * BANDIT_VEH);
         else
             // END OF ADDED SECTION 2002-02-21
@@ -448,7 +448,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
             newEvent->dataBlock.data.formatId = 1805;
 
             // 2002-02-21 ADDED BY S.G. If it's not spotted and it's NOT the player, use the 'Bandit' vehicle so we don't warn the player on the identity of the shooter
-            if (!target->GetIdentified(shooter->GetTeam()) && FalconLocalSession->GetTeam() != target->GetTeam())
+            if (!target->GetIdentified(shooter->GetTeam()) && FalconLocalSession->GetTeam() not_eq target->GetTeam())
                 newEvent->dataBlock.data.textIds[1] = (short)(-1 * BANDIT_VEH);
             else
                 // END OF ADDED SECTION 2002-02-21
@@ -499,7 +499,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         newEvent->dataBlock.data.formatId = 1825;
 
         // 2002-02-21 ADDED BY S.G. If it's not spotted and it's NOT the player, use the 'Bandit' vehicle so we don't warn the player on the identity of the shooter
-        if (!target->GetIdentified(shooter->GetTeam()) && FalconLocalSession->GetTeam() != target->GetTeam())
+        if (!target->GetIdentified(shooter->GetTeam()) && FalconLocalSession->GetTeam() not_eq target->GetTeam())
             newEvent->dataBlock.data.textIds[0] = (short)(-1 * BANDIT_VEH);
         else
             // END OF ADDED SECTION 2002-02-21
@@ -531,7 +531,7 @@ SimBaseClass* GetSimTarget(CampEntity target, uchar targetId)
         return NULL;
 
     // Get a specific component
-    if (targetId != 255)
+    if (targetId not_eq 255)
         theObj = target->GetComponentNumber(targetId);
 
     if (!theObj)
@@ -849,7 +849,7 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
      ** better placement
 
      d = sqrt(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z);
-     if ( d != 0.0f )
+     if ( d not_eq 0.0f )
      {
      vec.x /= d;
      vec.y /= d;

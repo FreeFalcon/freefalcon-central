@@ -152,7 +152,7 @@ void DigitalBrain::MissileDefeatCheck(void)
     /*-------*/
     /* entry */
     /*-------*/
-    if (curMode != MissileDefeatMode)
+    if (curMode not_eq MissileDefeatMode)
     {
 
         // 2000-09-01 ADDED BY S.G. SO AI ARE NOT AWARE OF ARH MISSILE STILL COMMAND GUIDED (NOT ACTIVE) OR SARH OR ACTIVE ARH UNLESS IT'S GETTING CLOSE OR HAS A RWR, SKILL RELATED
@@ -161,7 +161,7 @@ void DigitalBrain::MissileDefeatCheck(void)
         /*
          // Must have a RWR or visual tally on the missile
          if (!((
-         ((MissileClass *)self->incomingMissile[0])->GetSeekerType() != SensorClass::IRST && // Don't test for RWR if it's a IR missile...
+         ((MissileClass *)self->incomingMissile[0])->GetSeekerType() not_eq SensorClass::IRST && // Don't test for RWR if it's a IR missile...
          (rwrSensor = FindSensor(self, SensorClass::RWR)) && // The plane has an RWR (without it, why bother)
          (
          ( (MissileClass *)self->incomingMissile[0])->GetSeekerType() == SensorClass::RadarHoming or // The real missile sensor is a SARH
@@ -175,7 +175,7 @@ void DigitalBrain::MissileDefeatCheck(void)
         //Is "seeing" the missile
 
         //Cobra Test this Radar Detect stuff
-        if (((MissileClass *)self->incomingMissile[0])->GetSeekerType() != SensorClass::IRST)
+        if (((MissileClass *)self->incomingMissile[0])->GetSeekerType() not_eq SensorClass::IRST)
         {
             if (rwrSensor = FindSensor(self, SensorClass::RWR))
             {
@@ -199,7 +199,7 @@ void DigitalBrain::MissileDefeatCheck(void)
 
         //end
 
-        if (((MissileClass *)self->incomingMissile[0])->GetSeekerType() != SensorClass::IRST
+        if (((MissileClass *)self->incomingMissile[0])->GetSeekerType() not_eq SensorClass::IRST
             && (rwrSensor = FindSensor(self, SensorClass::RWR))
             &&
             (((MissileClass *)self->incomingMissile[0])->GetSeekerType() == SensorClass::RadarHoming
@@ -327,11 +327,11 @@ void DigitalBrain::MissileDefeatCheck(void)
         //
         // // 2002-01-01 ADDED BY S.G. From GunJinks.cpp, drop stores under some conditions...
         // //Cobra we modified this - me too
-        // if (self->CombatClass() != MnvrClassBomber
+        // if (self->CombatClass() not_eq MnvrClassBomber
         // && (((launcherRange < g_fAIDropStoreLauncherRange * NM_TO_FT) && (launcherRange > 0.0f))
         // && (((MissileClass *)self->incomingMissile[0])->parent
         // && (!((MissileClass *)self->incomingMissile[0])->parent->OnGround())
-        // && (((MissileClass *)self->incomingMissile[0])->GetSeekerType() != SensorClass::IRST)))
+        // && (((MissileClass *)self->incomingMissile[0])->GetSeekerType() not_eq SensorClass::IRST)))
         // )
         // {
         // self->Sms->AGJettison();
@@ -383,7 +383,7 @@ void DigitalBrain::MissileDefeat()
     // RV - Biker - Maybe check some extra conditions later
     if (!self->Sms->DidEmergencyJettison() && self->incomingMissileRange < 10.0f * NM_TO_FT)
     {
-        if (self->CombatClass() != MnvrClassBomber)
+        if (self->CombatClass() not_eq MnvrClassBomber)
         {
             if (rand() % 100 < SkillLevel() * 25)
             {
@@ -402,7 +402,7 @@ void DigitalBrain::MissileDefeat()
     if (/*!isWing &&*/ ((MissileClass *)self->incomingMissile[0])->parent && ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
     {
         // Have we given the attack yet? Oh yeah, do we have some AG weapons and do we have someone to direct?
-        if (sentWingAGAttack != AG_ORDER_ATTACK && IsSetATC(HasAGWeapon) && self->GetCampaignObject()->NumberOfComponents() > 1)
+        if (sentWingAGAttack not_eq AG_ORDER_ATTACK && IsSetATC(HasAGWeapon) && self->GetCampaignObject()->NumberOfComponents() > 1)
         {
             VU_ID targetId = FalconNullId;
 
@@ -424,7 +424,7 @@ void DigitalBrain::MissileDefeat()
                     targetId = groundTargetPtr->BaseData()->Id();
             }
 
-            if (targetId != FalconNullId)
+            if (targetId not_eq FalconNullId)
             {
                 SetGroundTargetPtr(NULL); // First clean our ground target so we can release the radar if we were targeting it
                 gndTargetHistory[0] = NULL; // Then remove our hold on the target so it can be retargeted

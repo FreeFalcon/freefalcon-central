@@ -154,7 +154,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
         kill_type = ASTAT_ANKILL;
 
     // Credit kill if shooter was a flight && target was not on our team (not nessisarily ok for RoE)
-    if (campShooter->IsFlight() && campShooter->GetTeam() != campTarget->GetTeam())
+    if (campShooter->IsFlight() && campShooter->GetTeam() not_eq campTarget->GetTeam())
     {
         int pilot, squadron_pilot;
 
@@ -163,7 +163,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
 
         // JB 010107
         //if (simShooter)
-        if (simShooter && (void*) simShooter != (void*) campShooter) // JB 010107 CTD Sanity check
+        if (simShooter && (void*) simShooter not_eq (void*) campShooter) // JB 010107 CTD Sanity check
             // JB 010107
             pilot = ((SimMoverClass*)simShooter)->pilotSlot;
         else
@@ -205,7 +205,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
         {
             pc = sq->GetPilotData(squadron_pilot);
 
-            if (pc && pc->pilot_status != PILOT_RESCUED)
+            if (pc && pc->pilot_status not_eq PILOT_RESCUED)
             {
                 pc->pilot_status = PILOT_KIA;
 
@@ -213,7 +213,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
                 // territory.
                 // For sim spawned deaths, we assume KIA. Choose between MIA and rescued if and when we get an
                 // eject message
-                if (!dtm or dtm->dataBlock.dEntityID != FalconNullId)
+                if (!dtm or dtm->dataBlock.dEntityID not_eq FalconNullId)
                 {
                     if (((Flight)campTarget)->plane_stats[pilot] == AIRCRAFT_MISSING)
                     {

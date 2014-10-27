@@ -4,6 +4,7 @@
 * @author sfr
 */
 
+#include <cISO646>
 #include <assert.h>
 #include <time.h>
 #include "capibwcontrol.h"
@@ -197,7 +198,7 @@ public:
         used_by_type[type] += size;
 
         // see if used exceed amount for that type
-        if ((used_by_type[type] > bytes_by_type[type]) && (type != BW_COMMON))
+        if ((used_by_type[type] > bytes_by_type[type]) && (type not_eq BW_COMMON))
         {
             // consume common
             int common = used_by_type[type] - bytes_by_type[type];

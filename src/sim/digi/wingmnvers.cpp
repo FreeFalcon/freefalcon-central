@@ -374,7 +374,7 @@ float DigitalBrain::SimpleTrackElevation(float zft, float scale)
         float curKias = self->GetKias(); // Current speed
 
         // If we're way above our best climb speed, lets pitch up a bit more to drain some speed and get some altitude
-        if (minVcas * 1.9f < curKias && minVcas != 0.0f)
+        if (minVcas * 1.9f < curKias && minVcas not_eq 0.0f)
             altErr *=  curKias / (minVcas * 1.9f);
         else
         {

@@ -34,7 +34,7 @@ void CBEECMPwrLight(void * pObject)
 
     if (SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity()->HasSPJamming())
     {
-        pCPLight->mState = SimDriver.GetPlayerEntity()->IsSetFlag(ECM_ON) != FALSE;
+        pCPLight->mState = SimDriver.GetPlayerEntity()->IsSetFlag(ECM_ON) not_eq FALSE;
     }
     else
     {
@@ -108,7 +108,7 @@ void CBEAuxWarnActL(void * pObject)
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->HasActivity() != FALSE);
+            pCPLight->mState = (theRwr->HasActivity() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -135,7 +135,7 @@ void CBELaunchL(void * pObject)
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->LaunchIndication() != FALSE);
+            pCPLight->mState = (theRwr->LaunchIndication() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -163,7 +163,7 @@ void CBEHandoffL(void * pObject)
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->ManualSelect() != FALSE);
+            pCPLight->mState = (theRwr->ManualSelect() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -191,7 +191,7 @@ void CBEPriModeL(void * pObject)
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->IsPriority() != FALSE);
+            pCPLight->mState = (theRwr->IsPriority() not_eq FALSE);
         }
 
         //MI extracting DATA
@@ -219,7 +219,7 @@ void CBEUnknownL(void * pObject)
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->LightUnknowns() != FALSE);
+            pCPLight->mState = (theRwr->LightUnknowns() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -246,7 +246,7 @@ void CBENavalL(void * pObject)
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->ShowNaval() != FALSE);
+            pCPLight->mState = (theRwr->ShowNaval() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -273,7 +273,7 @@ void CBETgtSepL(void * pObject)
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->TargetSep() != FALSE);
+            pCPLight->mState = (theRwr->TargetSep() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -301,7 +301,7 @@ void CBEAuxWarnSearchL(void * pObject)
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->LightSearch() != FALSE);
+            pCPLight->mState = (theRwr->LightSearch() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -329,7 +329,7 @@ void CBEAuxWarnAltL(void * pObject)
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->LowAltPriority() != FALSE);
+            pCPLight->mState = (theRwr->LowAltPriority() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -357,7 +357,7 @@ void CBEAuxWarnPwrL(void * pObject)
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->IsOn() != FALSE);
+            pCPLight->mState = (theRwr->IsOn() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -830,7 +830,7 @@ void CBECaution1(void * pObject)
     pCPLight = (CPLight*) pObject;
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
-    pCPLight->mState = faultSys->GetFault(FaultClass::flcs_fault) != 0;
+    pCPLight->mState = faultSys->GetFault(FaultClass::flcs_fault) not_eq 0;
 }
 
 //Caution le_flaps_fault
@@ -844,7 +844,7 @@ void CBECaution2(void * pObject)
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
     // JPO
-    pCPLight->mState = faultSys->GetFault(le_flaps_fault) != 0;
+    pCPLight->mState = faultSys->GetFault(le_flaps_fault) not_eq 0;
 }
 
 //Caution overheat_fault ???
@@ -862,7 +862,7 @@ void CBECaution3(void * pObject)
 
     pCPLight = (CPLight*) pObject;
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
-    pCPLight->mState = (faultSys->GetFault(FaultClass::eng_fault) != 0) &&
+    pCPLight->mState = (faultSys->GetFault(FaultClass::eng_fault) not_eq 0) &&
                        playerAC->af->rpm <= 0.75 &&
                        playerAC->af->FuelFlow() > 0.0f
                        ; // JPO
@@ -900,11 +900,11 @@ void CBECaution5(void * pObject)
     // JPO fix
     if (!g_bRealisticAvionics)
     {
-        pCPLight->mState = faultSys->GetFault(FaultClass::amux_fault) != 0;
+        pCPLight->mState = faultSys->GetFault(FaultClass::amux_fault) not_eq 0;
     }
     else
     {
-        pCPLight->mState = SimDriver.GetPlayerAircraft()->mFaults->NeedAckAvioncFault != 0;
+        pCPLight->mState = SimDriver.GetPlayerAircraft()->mFaults->NeedAckAvioncFault not_eq 0;
     }
 }
 
@@ -918,7 +918,7 @@ void CBECaution6(void * pObject)
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
     // JPO fix
-    pCPLight->mState = faultSys->GetFault(FaultClass::ralt_fault) != 0;
+    pCPLight->mState = faultSys->GetFault(FaultClass::ralt_fault) not_eq 0;
 }
 
 //Caution iff_fault
@@ -931,7 +931,7 @@ void CBECaution7(void * pObject)
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
     // IFF - JPO fix
-    pCPLight->mState = faultSys->GetFault(FaultClass::iff_fault) != 0;
+    pCPLight->mState = faultSys->GetFault(FaultClass::iff_fault) not_eq 0;
 }
 
 //Caution ecm_fault
@@ -944,7 +944,7 @@ void CBECaution8(void * pObject)
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
     // JPO Fix
-    pCPLight->mState = faultSys->GetFault(FaultClass::rwr_fault) != 0;
+    pCPLight->mState = faultSys->GetFault(FaultClass::rwr_fault) not_eq 0;
 }
 
 //Caution hook_fault - JPO Fix
@@ -957,7 +957,7 @@ void CBECaution9(void *pObject)
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
     // use the hook caution to set it!
-    pCPLight->mState = faultSys->GetFault(hook_fault) != 0;
+    pCPLight->mState = faultSys->GetFault(hook_fault) not_eq 0;
 }
 
 //Caution nws_fault
@@ -981,7 +981,7 @@ void CBECaution12(void * pObject)
     pCPLight = (CPLight*) pObject;
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
-    pCPLight->mState = (faultSys->GetFault(FaultClass::eng_fault) != 0) ;
+    pCPLight->mState = (faultSys->GetFault(FaultClass::eng_fault) not_eq 0) ;
 }
 
 // Caution TO/LDG Config
@@ -1022,7 +1022,7 @@ void CBECaution13(void * pObject)
                 (playerAC->ZPos() > -5000.0F) &&
                 (playerAC->GetKias() < 190.0F) &&
                 (playerAC->ZDelta() * 60.0F >= 250.0F) &&
-                (playerAC->af->gearPos != 1.0F)
+                (playerAC->af->gearPos not_eq 1.0F)
             )
             {
                 pCPLight->mState = TRUE;
@@ -1096,7 +1096,7 @@ void CBECaution15(void * pObject)
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
     pCPLight->mState = (playerAC->af->rpm * 37.0F) < 15.0F ||
-                       faultSys->GetFault(FaultClass::eng_fault) != 0 ||
+                       faultSys->GetFault(FaultClass::eng_fault) not_eq 0 ||
                        !playerAC->af->HydraulicOK();
 }
 /////////

@@ -164,7 +164,7 @@ void SimVehicleClass::Init(SimInitDataClass* initData)
 
         // Note, until there is a vehicle definition for radar vehicles
         // do it as a special case here and below.
-        if (IsGroundVehicle() && GetRadarType() != RDR_NO_RADAR)
+        if (IsGroundVehicle() && GetRadarType() not_eq RDR_NO_RADAR)
         {
             sensorArray = new SensorClass*[numSensors + 1];
         }
@@ -201,7 +201,7 @@ void SimVehicleClass::Init(SimInitDataClass* initData)
 
         // Note, until there is a vehicle definition for radar vehicles
         // do it as a special case here and above.
-        if (IsGroundVehicle() && GetRadarType() != RDR_NO_RADAR)
+        if (IsGroundVehicle() && GetRadarType() not_eq RDR_NO_RADAR)
         {
             numSensors ++;
             sensorArray[i] = new RadarDigiClass(GetRadarType(), this);
@@ -1019,7 +1019,7 @@ int SimVehicleClass::Exec(void)
         // Have a look how AC behave when on ground
         if (pctStrength <= -1.0f /*|| OnGround()*/)
         {
-            if (GetDomain() == DOMAIN_LAND && GetType() != TYPE_FOOT)
+            if (GetDomain() == DOMAIN_LAND && GetType() not_eq TYPE_FOOT)
             {
                 dyingTimer = 0.0f;
                 pos.x = XPos();
@@ -1499,14 +1499,14 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
     // JB 010121 adjusted to work in MP
     if (g_bNewDamageEffects && IsSetFlag(MOTION_OWNSHIP) && // hitPoints > 0 && 2002-04-11 REMOVED BY S.G. Done below after ->af since it's now externalized
-        // SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity()->AutopilotType() != AircraftClass::CombatAP &&
+        // SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity()->AutopilotType() not_eq AircraftClass::CombatAP &&
         // !(gCommsMgr && gCommsMgr->Online()) &&
         IsAirplane() &&
         // (rand() & 0x7) == 0x7 && // 13% chance 2002-04-11 MOVED BY S.G. After the ->af and used the external var now
         ((AircraftClass*)this)->af &&
         ((AircraftClass*)this)->af->GetEngineDamageHitThreshold() < hitPoints && // 2002-04-11 ADDED BY S.G. hitPoints 'theshold' is no longer 1 or above but externalized
         ((AircraftClass*)this)->af->GetEngineDamageStopThreshold() > rand() % 100 && // 2002-04-11 ADDED BY S.G. instead of a fixed 13%, now uses an aiframe aux var
-        ((AircraftClass*)this)->AutopilotType() != AircraftClass::CombatAP
+        ((AircraftClass*)this)->AutopilotType() not_eq AircraftClass::CombatAP
        )
     {
         ((AircraftClass*)this)->af->SetFlag(AirframeClass::EngineStopped);
@@ -1527,7 +1527,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
     }
 
     // BIGASSCOW - We need to make this a local sound so it can be heard inside the cockpit.
-    if (soundIdx != -1)
+    if (soundIdx not_eq -1)
         SoundPos.Sfx(soundIdx, 0, 1, 0);
 
     // send out death message if strength below zero
@@ -1552,7 +1552,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
             lastToHit = (SimVehicleClass*)vuDatabase->Find(LastShooter());
 
-            if (lastToHit && !lastToHit->IsEject() && lastToHit->Id() != damageMessage->dataBlock.fEntityID)
+            if (lastToHit && !lastToHit->IsEject() && lastToHit->Id() not_eq damageMessage->dataBlock.fEntityID)
             {
                 deathMessage->dataBlock.fEntityID = lastToHit->Id();
                 deathMessage->dataBlock.fIndex = lastToHit->Type();
@@ -1678,7 +1678,7 @@ void SimVehicleClass::SendFireMessage(SimWeaponClass* curWeapon, int type, int s
 
     if (targetPtr)
         fireMsg->dataBlock.targetId   = targetPtr->BaseData()->Id();
-    else if (targetId != vuNullId)
+    else if (targetId not_eq vuNullId)
         fireMsg->dataBlock.targetId   = targetId;
     else
         fireMsg->dataBlock.targetId   = vuNullId;
@@ -1739,7 +1739,7 @@ SimVehicleClass::ApplyProximityDamage(void)
             continue;
         }
 
-        if (testObject != this)
+        if (testObject not_eq this)
         {
             tmpX = testObject->XPos() - XPos();
             tmpY = testObject->YPos() - YPos();
@@ -1858,7 +1858,7 @@ void SimVehicleClass::StepSOI(int dir)
                 //if we are in AG MasterMode, there's not many possibilities
                 if (FCC->IsAGMasterMode())
                 {
-                    if (FCC->GetSubMode() != FireControlComputer::CCIP && FCC->GetSubMode() != FireControlComputer::DTOSS)
+                    if (FCC->GetSubMode() not_eq FireControlComputer::CCIP && FCC->GetSubMode() not_eq FireControlComputer::DTOSS)
                     {
                         SOIManager(SOI_RADAR);
                     }

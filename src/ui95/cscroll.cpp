@@ -491,7 +491,7 @@ BOOL C_ScrollBar::Process(long, short HitType)
     switch (ControlPressed_)
     {
         case 1: // Bar Minus side
-            if (HitType != C_TYPE_LMOUSEUP)
+            if (HitType not_eq C_TYPE_LMOUSEUP)
                 break;
 
             switch (GetType())
@@ -522,7 +522,7 @@ BOOL C_ScrollBar::Process(long, short HitType)
             break;
 
         case 2: // Bar Plus Side
-            if (HitType != C_TYPE_LMOUSEUP)
+            if (HitType not_eq C_TYPE_LMOUSEUP)
                 break;
 
             switch (GetType())
@@ -558,7 +558,7 @@ BOOL C_ScrollBar::Process(long, short HitType)
         case 4: // Minus Button
             Minus_->Process(4, HitType);
 
-            if (HitType != C_TYPE_LMOUSEUP && HitType != C_TYPE_REPEAT)
+            if (HitType not_eq C_TYPE_LMOUSEUP && HitType not_eq C_TYPE_REPEAT)
                 break;
 
             switch (GetType())
@@ -591,7 +591,7 @@ BOOL C_ScrollBar::Process(long, short HitType)
         case 5: // Plus Button
             Plus_->Process(5, HitType);
 
-            if (HitType != C_TYPE_LMOUSEUP && HitType != C_TYPE_REPEAT)
+            if (HitType not_eq C_TYPE_LMOUSEUP && HitType not_eq C_TYPE_REPEAT)
                 break;
 
             switch (GetType())

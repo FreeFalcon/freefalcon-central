@@ -61,7 +61,7 @@ namespace
 do {\
  if (self->vehicleInUnit == 2){\
  string cur(str);\
- if (cur != last){\
+ if (cur not_eq last){\
  logFile << str << endl; \
  last = cur;\
  }\
@@ -171,7 +171,7 @@ void DigitalBrain::ResetTaxiState(void)
         taxiPoint = GetNextPt(taxiPoint);
     }
 
-    if (closest != curTaxiPoint)
+    if (closest not_eq curTaxiPoint)
     {
         SetTaxiPoint(closest);
         self->spawnpoint = closest;
@@ -428,7 +428,7 @@ void DigitalBrain::Land(void)
     {
         if ((self->curWaypoint->GetWPAction() == WP_LAND) && !self->IsPlayer())
         {
-            if (self->curWaypoint->GetPrevWP() != NULL)
+            if (self->curWaypoint->GetPrevWP() not_eq NULL)
             {
                 GridIndex abXg, abYg;
                 float abXs, abYs;
@@ -557,10 +557,10 @@ void DigitalBrain::Land(void)
 
             //me123
             if (
-                curMode != LandingMode &&
-                curMode != TakeoffMode &&
-                curMode != WaypointMode &&
-                curMode != RTBMode
+                curMode not_eq LandingMode &&
+                curMode not_eq TakeoffMode &&
+                curMode not_eq WaypointMode &&
+                curMode not_eq RTBMode
             )
             {
                 break;
@@ -651,7 +651,7 @@ void DigitalBrain::Land(void)
                     VuListIterator cit(self->GetCampaignObject()->GetComponents());
                     component = (AircraftClass*)cit.GetFirst();
 
-                    while (component && component->vehicleInUnit != self->vehicleInUnit)
+                    while (component && component->vehicleInUnit not_eq self->vehicleInUnit)
                     {
                         leader = component;
                         component = (AircraftClass*)cit.GetNext();
@@ -798,7 +798,7 @@ void DigitalBrain::Land(void)
                     tz = abObj->brain->GetAltitude(self, atcstatus);
                     SetTrackPoint(tx, ty, tz);
 
-                    if (atcstatus != lHolding)
+                    if (atcstatus not_eq lHolding)
                     {
                         SendATCMsg(atcstatus);
                     }
@@ -814,7 +814,7 @@ void DigitalBrain::Land(void)
                     tz = abObj->brain->GetAltitude(self, atcstatus);
                     SetTrackPoint(tx, ty, tz);
 
-                    if (atcstatus != lHolding)
+                    if (atcstatus not_eq lHolding)
                     {
                         SendATCMsg(atcstatus);
                     }
@@ -1311,13 +1311,13 @@ void DigitalBrain::Land(void)
                     }
                     else if (
                         af->rpm < 0.05f &&
-                        self->MainPower() != AircraftClass::MainPowerOff
+                        self->MainPower() not_eq AircraftClass::MainPowerOff
                     )
                     {
                         self->DecMainPower();
                     }
                     else if (
-                        self != SimDriver.GetPlayerEntity() &&
+                        self not_eq SimDriver.GetPlayerEntity() &&
                         (g_nReagTimer <= 0 or waittimer < SimLibElapsedTime)
                     )
                     {
@@ -1356,7 +1356,7 @@ void DigitalBrain::Land(void)
                     case PT_LAST:  // if at last PD, a/c should reagg...no parking spots available
 
                         //....looks bad to have bunch of a/c out in the fields
-                        if (self != SimDriver.GetPlayerEntity())
+                        if (self not_eq SimDriver.GetPlayerEntity())
                             RegroupAircraft(self);  //end of the line, time to pull you
 
                         break;
@@ -1380,7 +1380,7 @@ void DigitalBrain::Land(void)
                 {
                     case SmallParkPt: //was a possible parking spot, alas no more.
                     case LargeParkPt: // someone beat us to it.
-                        if (PtDataTable[curTaxiPoint].flags != PT_LAST)
+                        if (PtDataTable[curTaxiPoint].flags not_eq PT_LAST)
                         {
                             FindParkingSpot(abObj); // try again
                             float tx, ty;
@@ -1432,7 +1432,7 @@ int DigitalBrain::BestParkSpot(ObjectiveClass *Airbase)  // FRB - Landing-->Park
     pt = GetNextParkTypePt(curTaxiPoint, pktype); // find first available parking spot
     npt = pt;
 
-    while (PtDataTable[npt].flags != PT_LAST)
+    while (PtDataTable[npt].flags not_eq PT_LAST)
     {
         pt = npt;
         TranslatePointData(Airbase, pt, &x, &y);
@@ -1448,10 +1448,10 @@ int DigitalBrain::BestParkSpot(ObjectiveClass *Airbase)  // FRB - Landing-->Park
 
 #else
 
-    while ((npt = GetNextParkTypePt(pt, pktype)) != 0) // find last possible parking spot
+    while ((npt = GetNextParkTypePt(pt, pktype)) not_eq 0) // find last possible parking spot
         pt = npt;
 
-    if (PtDataTable[pt].type != pktype) // just in case we found none  // FRB - isn't pt == 0 here???
+    if (PtDataTable[pt].type not_eq pktype) // just in case we found none  // FRB - isn't pt == 0 here???
         return 0;
 
     while (pt > curTaxiPoint)
@@ -1477,7 +1477,7 @@ void DigitalBrain::FindParkingSpot(ObjectiveClass *Airbase) // FRB - Landing-->P
     int bestpt = BestParkSpot(Airbase);
     int pt = GetNextPtLoop(curTaxiPoint);
 
-    while (PtDataTable[pt].flags != PT_LAST)
+    while (PtDataTable[pt].flags not_eq PT_LAST)
     {
         if (pt == bestpt)
         {
@@ -1505,7 +1505,7 @@ void DigitalBrain::FindParkingSpot(ObjectiveClass *Airbase) // FRB - Landing-->P
     int pt = GetNextPtLoop(curTaxiPoint);
     int pktype = af->GetParkType();
 
-    while (PtDataTable[pt].flags != PT_LAST)
+    while (PtDataTable[pt].flags not_eq PT_LAST)
     {
         if (PtDataTable[pt].type == pktype)
         {
@@ -1772,7 +1772,7 @@ void DigitalBrain::TakeOff()
 
     if (self->IsSetFlag(ON_GROUND) && af->Fuel() <= 0.0F && self->GetVt() < 5.0F)
     {
-        if (self != SimDriver.GetPlayerEntity())
+        if (self not_eq SimDriver.GetPlayerEntity())
             RegroupAircraft(self);  //no gas get him out of the way
     }
 
@@ -1813,8 +1813,8 @@ void DigitalBrain::TakeOff()
             t2t = self->curWaypoint->GetWPDepartureTime(); // else original scheduled time
 
         // Cobra - Start with canopy open if on parking spot
-        if ((PlayerOptions.GetStartFlag() != PlayerOptionsClass::START_RUNWAY) &&
-            ((af->GetParkType() != LargeParkPt)))
+        if ((PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY) &&
+            ((af->GetParkType() not_eq LargeParkPt)))
         {
             af->canopyState = true;
             self->ClearAcStatusBits(AircraftClass::ACSTATUS_EXT_LANDINGLIGHT);
@@ -1851,8 +1851,8 @@ void DigitalBrain::TakeOff()
             //RAS-12Nov04-If flight leader is Human and does not have combat autopilot on and
             //has left parking, then quick preflight wingman so they can follow human lead
             if (
-                isWing && flight_leader && flight_leader->AutopilotType() != AircraftClass::CombatAP
-                && flight_leader->DBrain()->curTaxiPoint != flight_leader->spawnpoint
+                isWing && flight_leader && flight_leader->AutopilotType() not_eq AircraftClass::CombatAP
+                && flight_leader->DBrain()->curTaxiPoint not_eq flight_leader->spawnpoint
             )
             {
                 QuickPreFlight();
@@ -2272,7 +2272,7 @@ void DigitalBrain::TakeOff()
                 (rx < 0.0F && distSq < TAXI_CHECK_DIST * TAXI_CHECK_DIST * 4.0F)
             )
             {
-                if (PtDataTable[curTaxiPoint].type != RunwayPt)
+                if (PtDataTable[curTaxiPoint].type not_eq RunwayPt)
                 {
                     ChooseNextPoint(Airbase);
                 }
@@ -2445,7 +2445,7 @@ void DigitalBrain::TakeOff()
                         if (tmpWaypoint)
                         {
                             ShiAssert(tmpWaypoint->GetWPAction() == WP_TAKEOFF);
-                            // add this if we have if (tmpWaypoint->GetWPAction() != WP_TAKEOFF && tmpWaypoint->GetPrevWP())
+                            // add this if we have if (tmpWaypoint->GetWPAction() not_eq WP_TAKEOFF && tmpWaypoint->GetPrevWP())
                             // a failed assertion tmpWaypoint = tmpWaypoint->GetPrevWP();
 
                             tmpWaypoint = tmpWaypoint->GetNextWP();
@@ -2786,12 +2786,12 @@ void DigitalBrain::DealWithBlocker(SimBaseClass *inTheWay, ObjectiveClass *Airba
             break;
     }
 
-    if (tmpX != trackX or tmpY != trackY)
+    if (tmpX not_eq trackX or tmpY not_eq trackY)
         inTheWay2 = CheckPoint(tmpX, tmpY);
     else
         inTheWay2 = inTheWay;
 
-    if (atcstatus != tTakeRunway)
+    if (atcstatus not_eq tTakeRunway)
     {
         extraWait = FalconLocalGame->rules.AiPatience; // FRB - not *that* patient!
 
@@ -2813,7 +2813,7 @@ void DigitalBrain::DealWithBlocker(SimBaseClass *inTheWay, ObjectiveClass *Airba
             CalculateTaxiSpeed(MoveAlong);
         }
     }
-    else if ((isWing && (!inTheWay2 or inTheWay2->GetCampaignObject() != self->GetCampaignObject() ||
+    else if ((isWing && (!inTheWay2 or inTheWay2->GetCampaignObject() not_eq self->GetCampaignObject() ||
                          self->vehicleInUnit < ((AircraftClass*)inTheWay2)->vehicleInUnit)) ||
              (inTheWay->GetVt() < 5.0F && SimLibElapsedTime > waittimer + extraWait) ||
              (inTheWay->IsAirplane() && ((AircraftClass*)inTheWay)->DBrain()->RwTime() > rwtime))
@@ -2909,7 +2909,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
     }
 
     // Cobra - If Human Pilot in control, then clear his parking spot and tell the AI to taxi to the runway
-    if (flight_leader && flight_leader->IsPlayer() &&  flight_leader->AutopilotType() != AircraftClass::CombatAP)
+    if (flight_leader && flight_leader->IsPlayer() &&  flight_leader->AutopilotType() not_eq AircraftClass::CombatAP)
     {
         HP_Is_Leader = TRUE;
 
@@ -2949,13 +2949,13 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
         else if (
             leader &&
             leader->IsPlayer() &&
-            HP_Moving && leader->AutopilotType() != AircraftClass::CombatAP
+            HP_Moving && leader->AutopilotType() not_eq AircraftClass::CombatAP
         )
         {
             // Cobra
             minPoint = GetFirstPt(rwIndex);
         }
-        else if (leader && leader->OnGround() && leader->DBrain()->ATCStatus() != tTaxiBack)
+        else if (leader && leader->OnGround() && leader->DBrain()->ATCStatus() not_eq tTaxiBack)
         {
             minPoint = leader->DBrain()->GetTaxiPoint();
         }
@@ -2966,7 +2966,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
          else
          if(flightLead && flightLead->OnGround() &&
          ((AircraftClass*)flightLead)->DBrain()->GetTaxiPoint() > minPoint &&
-         ((AircraftClass*)flightLead)->DBrain()->ATCStatus() != tTaxiBack )
+         ((AircraftClass*)flightLead)->DBrain()->ATCStatus() not_eq tTaxiBack )
          minPoint = ((AircraftClass*)flightLead)->DBrain()->GetTaxiPoint();
         */
     }
@@ -3096,7 +3096,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
                     waittimer = 0;
 
                     //RAS - 17Oct04
-                    if (atcstatus != tTakeRunway)
+                    if (atcstatus not_eq tTakeRunway)
                     {
                         atcstatus = tTakeRunway;
                         SendATCMsg(atcstatus);
@@ -3157,7 +3157,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
                 //CalculateTaxiSpeed(MoveAlong);
                 CalculateTaxiSpeed(HurryUp);    // 17JAN04 - FRB - expedite takeoff
 
-                if (atcstatus != tTakeRunway)
+                if (atcstatus not_eq tTakeRunway)
                 {
                     SendATCMsg(tPrepToTakeRunway);
                     atcstatus = tTaxi;
@@ -3184,7 +3184,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
             }
             else
             {
-                if (atcstatus != tTakeRunway && !self->IsSetFalcFlag(FEC_HOLDSHORT))
+                if (atcstatus not_eq tTakeRunway && !self->IsSetFalcFlag(FEC_HOLDSHORT))
                 {
                     atcstatus = tHoldShort;
                     SendATCMsg(atcstatus);
@@ -3210,7 +3210,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
                     //CalculateTaxiSpeed(MoveAlong);
                     CalculateTaxiSpeed(HurryUp);    // 17JAN04 - FRB - expedite takeoff
 
-                    if (atcstatus != tTakeRunway)
+                    if (atcstatus not_eq tTakeRunway)
                     {
                         atcstatus = tTakeRunway;
                         SendATCMsg(atcstatus);
@@ -3239,7 +3239,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
                 CalculateTaxiSpeed(MoveAlong);
 
                 //CalculateTaxiSpeed(HurryUp);    // 17JAN04 - FRB - expedite takeoff
-                if (atcstatus != tTakeRunway)
+                if (atcstatus not_eq tTakeRunway)
                 {
                     atcstatus = tTakeRunway;
                     SendATCMsg(atcstatus);
@@ -3256,7 +3256,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
                 waittimer = 0;
             }
             else if (
-                PtDataTable[curTaxiPoint].type != TakeRunwayPt &&
+                PtDataTable[curTaxiPoint].type not_eq TakeRunwayPt &&
                 !IsSetATC(PermitTakeRunway) &&
                 !self->IsSetFalcFlag(FEC_HOLDSHORT)
             )
@@ -3297,7 +3297,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
             //takeoff and get out of the way
             SetATCFlag(PermitRunway);
 
-            if (atcstatus != tTakeRunway && atcstatus != tTakeoff)
+            if (atcstatus not_eq tTakeRunway && atcstatus not_eq tTakeoff)
             {
                 atcstatus = tTakeRunway;
             }
@@ -3319,7 +3319,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
 
 void DigitalBrain::TaxiBack(ObjectiveClass *Airbase)
 {
-    if (atcstatus != lTaxiOff)
+    if (atcstatus not_eq lTaxiOff)
     {
         atcstatus = lTaxiOff;
         SendATCMsg(noATC);
@@ -3355,7 +3355,7 @@ void DigitalBrain::TaxiBack(ObjectiveClass *Airbase)
         }
     }
 
-    if (self != SimDriver.GetPlayerEntity())
+    if (self not_eq SimDriver.GetPlayerEntity())
     {
         if (!curTaxiPoint or PtDataTable[curTaxiPoint].flags & PT_LAST)
         {
@@ -4363,13 +4363,13 @@ void DigitalBrain::UpdateTaxipoint(void)  // Called by Airframe.cpp, AircraftInp
         taxiPoint = GetNextPtLoop(taxiPoint);
     }
 
-    if (closest != curTaxiPoint)
+    if (closest not_eq curTaxiPoint)
     {
         // Cobra - Skip looking at parking pts.
         // if(closest == GetNextPtLoop(curTaxiPoint) && self->AutopilotType() == AircraftClass::APOff)
         if (closest == GetNextTaxiPt(curTaxiPoint) && self->AutopilotType() == AircraftClass::APOff)
         {
-            if (IsSetATC(CheckTaxiBack) && atcstatus != tTaxiBack)
+            if (IsSetATC(CheckTaxiBack) && atcstatus not_eq tTaxiBack)
             {
                 atcstatus = tTaxiBack;
                 SendATCMsg(atcstatus);
@@ -4555,7 +4555,7 @@ static const int MAX_PF_ACTIONS = sizeof(PreFlightTable) / sizeof(PreFlightTable
 // JPO - go through start up steps.
 int DigitalBrain::PreFlight()
 {
-    ShiAssert(af != NULL);
+    ShiAssert(af not_eq NULL);
 
     if (SimLibElapsedTime < mNextPreflightAction) return 0;
 
@@ -4587,7 +4587,7 @@ int DigitalBrain::PreFlight()
             break;
 
         case PreflightActions::MAINPOWER:
-            if (self->MainPower() != AircraftClass::MainPowerMain)
+            if (self->MainPower() not_eq AircraftClass::MainPowerMain)
             {
                 self->IncMainPower();
                 mNextPreflightAction = SimLibElapsedTime + PreFlightTable[mActionIndex].timedelay * CampaignSeconds;
@@ -4752,16 +4752,16 @@ int DigitalBrain::PreFlight()
 
 void DigitalBrain::QuickPreFlight()
 {
-    ShiAssert(af != NULL && self != NULL);
+    ShiAssert(af not_eq NULL && self not_eq NULL);
     self->PreFlight();
 }
 
 // JPO - work out if we are further along the time line.
 int DigitalBrain::IsAtFirstTaxipoint()
 {
-    ShiAssert(self != NULL);
+    ShiAssert(self not_eq NULL);
     Flight flight = (Flight)self->GetCampaignObject();
-    ShiAssert(flight != NULL);
+    ShiAssert(flight not_eq NULL);
     WayPoint w = flight->GetFirstUnitWP(); // this is takeoff time
     ObjectiveClass *Airbase = (ObjectiveClass *)vuDatabase->Find(airbase);
     ShiAssert(Airbase);

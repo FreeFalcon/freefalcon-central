@@ -1105,18 +1105,18 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
     if (Draws2D[Start].Flags & POLY_LINE) LineMode = true;
 
     // thru all the list
-    while (Start != 0xffffffff && Index < MAX_VERTICES_PER_DRAW)
+    while (Start not_eq 0xffffffff && Index < MAX_VERTICES_PER_DRAW)
     {
         DrawItemType &Draw = Draws2D[Start];
 #if MAX_2D_BUFFERS > 1
 
         // check if changed VB, exit if changed
-        if (Draw.Vb != (LPDIRECT3DVERTEXBUFFER7)Vb) return Start;
+        if (Draw.Vb not_eq (LPDIRECT3DVERTEXBUFFER7)Vb) return Start;
 
 #endif
 
         // if texture changed exit here
-        if (Draw.TexHandle != Tex) return Start;
+        if (Draw.TexHandle not_eq Tex) return Start;
 
         // * SORTED 3D OBJECT *
         if (Draw.Flags & POLY_3DOBJECT)
@@ -1248,7 +1248,7 @@ void CDXEngine::DX2D_AssignLayers(void)
     DWORD Layer;
 
     // For each item in the AUTO list
-    while (Start != 0xFFFFFFFF)
+    while (Start not_eq 0xFFFFFFFF)
     {
         // Default to GROUND LAYER
         Layer = LAYER_GROUND;
@@ -1282,7 +1282,7 @@ DWORD CDXEngine::DX2D_SortIndexes(DWORD Start)
     memset(SortTail, 0xff, sizeof(SortTail));
 
     // * SORT LOWER DIGIT DIRECTLY FROM THE DRAW LIST INTO BUCKETS *
-    while (Start != 0xffffffff)
+    while (Start not_eq 0xffffffff)
     {
         // Take next item
         Next = Draws2D[Start].Next;
@@ -1292,7 +1292,7 @@ DWORD CDXEngine::DX2D_SortIndexes(DWORD Start)
         Idx = *(unsigned char*)&Draws2D[Start].Dist256;
 
         // If bucket already assigned, link to old one
-        if (SortBuckets[0][Idx] != 0xffffffff) Draws2D[Start].Next = SortBuckets[0][Idx];
+        if (SortBuckets[0][Idx] not_eq 0xffffffff) Draws2D[Start].Next = SortBuckets[0][Idx];
 
         // Assign this to the bucked
         SortBuckets[0][Idx] = Start;
@@ -1305,10 +1305,10 @@ DWORD CDXEngine::DX2D_SortIndexes(DWORD Start)
     Row = 0xff;
 
     // Till a valid Bucket pointed
-    while (Row != 0xffffffff)
+    while (Row not_eq 0xffffffff)
     {
         // if a valid bucket
-        if (SortBuckets[0][Row] != 0xffffffff)
+        if (SortBuckets[0][Row] not_eq 0xffffffff)
         {
             // get the Bucket
             Start = SortBuckets[0][Row];
@@ -1332,7 +1332,7 @@ DWORD CDXEngine::DX2D_SortIndexes(DWORD Start)
                 // Next Item
                 Start = Next;
             }
-            while (Start != 0xffffffff); // Repeat till end of list
+            while (Start not_eq 0xffffffff); // Repeat till end of list
         }
 
         // Next Row
@@ -1344,10 +1344,10 @@ DWORD CDXEngine::DX2D_SortIndexes(DWORD Start)
     Row = 0xff;
 
     // Till a valid Bucket pointed
-    while (Row != 0xffffffff)
+    while (Row not_eq 0xffffffff)
     {
         // if a valid bucket
-        if (SortBuckets[1][Row] != 0xffffffff)
+        if (SortBuckets[1][Row] not_eq 0xffffffff)
         {
             // get the Bucket
             Start = SortBuckets[1][Row];
@@ -1371,7 +1371,7 @@ DWORD CDXEngine::DX2D_SortIndexes(DWORD Start)
                 // Next Item
                 Start = Next;
             }
-            while (Start != 0xffffffff); // Repeat till end of list
+            while (Start not_eq 0xffffffff); // Repeat till end of list
         }
 
         // Next Row
@@ -1383,10 +1383,10 @@ DWORD CDXEngine::DX2D_SortIndexes(DWORD Start)
     Row = 0xff;
 
     // Till a valid Bucket pointed
-    while (Row != 0xffffffff)
+    while (Row not_eq 0xffffffff)
     {
         // if a valid bucket
-        if (SortBuckets[2][Row] != 0xffffffff)
+        if (SortBuckets[2][Row] not_eq 0xffffffff)
         {
             // get the Bucket
             Start = SortBuckets[2][Row];
@@ -1410,7 +1410,7 @@ DWORD CDXEngine::DX2D_SortIndexes(DWORD Start)
                 // Next Item
                 Start = Next;
             }
-            while (Start != 0xffffffff); // Repeat till end of list
+            while (Start not_eq 0xffffffff); // Repeat till end of list
         }
 
         // Next Row
@@ -1427,7 +1427,7 @@ DWORD CDXEngine::DX2D_SortIndexes(DWORD Start)
     while (Row < 0x100)
     {
         // get an item to link
-        if (SortBuckets[3][Row] != 0xffffffff)
+        if (SortBuckets[3][Row] not_eq 0xffffffff)
         {
             // Link to previous one
             Draws2D[SortTail[3][Row]].Next = Next;
@@ -1595,7 +1595,7 @@ void CDXEngine::DX2D_Flush2DObjects(void)
         if (Layer == LAYER_TOP) m_pD3DD->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
 
         // ok, flush all the Draws till end of Layer
-        while (DrawStart != 0xffffffff)
+        while (DrawStart not_eq 0xffffffff)
         {
 #ifdef DRAW_USING_2D_FANS
             NextDraw = Draws2D[DrawStart].Next;
@@ -1634,7 +1634,7 @@ void CDXEngine::DX2D_Flush2DObjects(void)
                 }
 
                 // eventually assign texture
-                if (LastTexHandle != Draw.TexHandle)
+                if (LastTexHandle not_eq Draw.TexHandle)
                 {
                     if (Draw.TexHandle) m_pD3DD->SetTexture(0, ((TextureHandle *)Draw.TexHandle)->m_pDDS);
                     else m_pD3DD->SetTexture(0, NULL);
@@ -1676,7 +1676,7 @@ void CDXEngine::DX2D_Flush2DObjects(void)
 
         if (Layer == LAYER_TOP) m_pD3DD->SetRenderState(D3DRENDERSTATE_ZENABLE, TRUE);
     }
-    while (Layer != LAYER_TOP && l <= LAYER_TOP); // END with TOP LAYER in any case
+    while (Layer not_eq LAYER_TOP && l <= LAYER_TOP); // END with TOP LAYER in any case
 
 
     // buffer is flushed
@@ -2170,7 +2170,7 @@ void CDXEngine::FlushBlips(void)
         m_NODE.BYTE = (BYTE*)m_VB.Nodes;
 
         // Till end of Model
-        while (m_NODE.HEAD->Type != DX_MODELEND)
+        while (m_NODE.HEAD->Type not_eq DX_MODELEND)
         {
 
 

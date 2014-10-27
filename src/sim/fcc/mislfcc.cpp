@@ -87,7 +87,7 @@ void FireControlComputer::AirAirMode(void)
             // Marco Edit - AIM9 Spot/Scan
             if (
                 Sms->curWeaponType == wtAim9 && missileSpotScanCmd &&
-                cw->GetSPType() != SPTYPE_AIM9P
+                cw->GetSPType() not_eq SPTYPE_AIM9P
             )
             {
                 theMissile->isSpot = 1 - theMissile->isSpot;
@@ -279,13 +279,13 @@ void FireControlComputer::AirAirMode(void)
                 //MI 02/02/02 added check for PlayerFCC and or AIM9P
                 bool IsCAP = true;
 
-                if (playerAC && playerAC->AutopilotType() != AircraftClass::CombatAP)
+                if (playerAC && playerAC->AutopilotType() not_eq AircraftClass::CombatAP)
                     IsCAP = false;
 
                 if (playerFCC && !IsCAP
-                    && (Sms->GetCoolState() != SMSClass::COOL && Sms->GetCoolState() != SMSClass::WARMING)
+                    && (Sms->GetCoolState() not_eq SMSClass::COOL && Sms->GetCoolState() not_eq SMSClass::WARMING)
                     && theMissile->targetPtr && Sms->GetCurrentWeapon() && Sms->curWeaponType == wtAim9
-                    && cw->GetSPType() != SPTYPE_AIM9P)
+                    && cw->GetSPType() not_eq SPTYPE_AIM9P)
                 {
                     theMissile->DropTarget();
                     irSig = 0.0;
@@ -309,15 +309,15 @@ void FireControlComputer::AirAirMode(void)
                 {
                     inRange = TRUE;
                 }
-                else if (irSig < 1.01F or theMissile->targetPtr != targetPtr)
+                else if (irSig < 1.01F or theMissile->targetPtr not_eq targetPtr)
                 {
                     inRange = FALSE;
                 }
 
-                //if (playerFCC && (playerAC && playerAC->AutopilotType() != AircraftClass::CombatAP))
+                //if (playerFCC && (playerAC && playerAC->AutopilotType() not_eq AircraftClass::CombatAP))
                 IsCAP = true;
 
-                if (playerAC && playerAC->AutopilotType() != AircraftClass::CombatAP)
+                if (playerAC && playerAC->AutopilotType() not_eq AircraftClass::CombatAP)
                     IsCAP = false;
 
                 if (playerFCC && !IsCAP)

@@ -96,7 +96,7 @@ void ListClass::Insert(ListElementClass *newElement)
             while (current && current->key < newElement->key)
                 current = current->next;
 
-            ShiAssert(current != front);
+            ShiAssert(current not_eq front);
             newElement->prev = current->prev;
             newElement->next = current;
 
@@ -220,7 +220,7 @@ int ListClass::SanityCheck(void)
 
     while (cur && next)
     {
-        if (next->prev != cur)
+        if (next->prev not_eq cur)
             return 0;
 
         cur = next;
@@ -232,7 +232,7 @@ int ListClass::SanityCheck(void)
 
     while (cur && next)
     {
-        if (next->next != cur)
+        if (next->next not_eq cur)
             return 0;
 
         cur = next;

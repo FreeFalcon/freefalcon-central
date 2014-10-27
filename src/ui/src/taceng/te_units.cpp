@@ -306,7 +306,7 @@ extern C_TreeList
 
 void LoadTEUnits()
 {
-    if (table_of_equipment != NULL)
+    if (table_of_equipment not_eq NULL)
         return;
 
     FILE *fp = OpenCampFile("teunits", "lst", "r");
@@ -320,7 +320,7 @@ void LoadTEUnits()
         fp = OpenCampFile("teunits", "lst", "w");
         fprintf(fp, "// Side SubType Specific\n");
 
-        for (int i = 0; table_of_equipment[i].side != 0; i++)
+        for (int i = 0; table_of_equipment[i].side not_eq 0; i++)
         {
             fprintf(fp, "%7d %7d %8d\n",
                     table_of_equipment[i].side,
@@ -357,7 +357,7 @@ void LoadTEUnits()
         if (sscanf(buf, "%7d %7d %8d",
                    &side,
                    &SType,
-                   &SPType) != 3)
+                   &SPType) not_eq 3)
         {
             ShiWarning("Bad format file teunits.lst");
             free(table_of_equipment);
@@ -408,17 +408,17 @@ void hookup_new_squad_window(C_Window *win)
     // Setup cancel/ok buttons
     btn = (C_Button *) win->FindControl(CREATE_UNIT);
 
-    if (btn != NULL)
+    if (btn not_eq NULL)
         btn->SetCallback(tactical_create_squadron);
 
     btn = (C_Button *) win->FindControl(CANCEL_UNIT);
 
-    if (btn != NULL)
+    if (btn not_eq NULL)
         btn->SetCallback(tactical_cancel_squadron);
 
     btn = (C_Button *) win->FindControl(CLOSE_WINDOW);
 
-    if (btn != NULL)
+    if (btn not_eq NULL)
         btn->SetCallback(tactical_cancel_squadron);
 }
 
@@ -434,17 +434,17 @@ void hookup_new_battalion_window(C_Window *win)
 
     btn = (C_Button *) win->FindControl(CREATE_UNIT);
 
-    if (btn != NULL)
+    if (btn not_eq NULL)
         btn->SetCallback(tactical_create_battalion);
 
     btn = (C_Button *) win->FindControl(CANCEL_UNIT);
 
-    if (btn != NULL)
+    if (btn not_eq NULL)
         btn->SetCallback(tactical_cancel_battalion);
 
     btn = (C_Button *) win->FindControl(CLOSE_WINDOW);
 
-    if (btn != NULL)
+    if (btn not_eq NULL)
         btn->SetCallback(tactical_cancel_battalion);
 
     list = (C_ListBox *) win->FindControl(UNIT_TOE);
@@ -572,7 +572,7 @@ void PickTeamCB(long, short hittype, C_Base *)
 {
     short StartTeam;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     StartTeam = gSelectedTeam;
@@ -584,7 +584,7 @@ void PickTeamCB(long, short hittype, C_Base *)
         if (gSelectedTeam >= NUM_TEAMS)
             gSelectedTeam = 1;
     }
-    while (!TeamInfo[gSelectedTeam] && gSelectedTeam != StartTeam);
+    while (!TeamInfo[gSelectedTeam] && gSelectedTeam not_eq StartTeam);
 
     gLastEquipment = 0;
     PickTeamColors();
@@ -622,7 +622,7 @@ void tactical_new_flight_select(long, short hittype, C_Base *control)
     C_TreeList *tree;
     TREELIST *item;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (!control)
@@ -694,7 +694,7 @@ void tac_select_squadron_aircraft(long, short hittype, C_Base *control)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     win = gMainHandler->FindWindow(NEW_SQUAD_WIN);
@@ -710,7 +710,7 @@ void tac_select_squadron_airbase(long, short hittype, C_Base *control)
     C_Window *win;
     CampBaseClass* airbase;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     win = gMainHandler->FindWindow(NEW_SQUAD_WIN);
@@ -735,7 +735,7 @@ SquadronClass* tactical_make_squadron(VU_ID id, long ac_type)
 
     airbase = (CampBaseClass*) FindEntity(id);
 
-    if (!airbase or !airbase->IsObjective() or airbase->GetType() != TYPE_AIRBASE)
+    if (!airbase or !airbase->IsObjective() or airbase->GetType() not_eq TYPE_AIRBASE)
         // KCK: Should probably just pick one
         return NULL;
 
@@ -773,7 +773,7 @@ void tactical_add_squadron(VU_ID id)
 
     airbase = (CampBaseClass*) FindEntity(id);
 
-    if (!airbase or !airbase->IsObjective() or airbase->GetType() != TYPE_AIRBASE)
+    if (!airbase or !airbase->IsObjective() or airbase->GetType() not_eq TYPE_AIRBASE)
         // KCK: Should probably just pick one
         return;
 
@@ -830,7 +830,7 @@ void tactical_create_squadron(long, short hittype, C_Base *)
     Squadron squadron;
     C_PopupList *menu;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->DisableWindowGroup(31000);
@@ -866,7 +866,7 @@ void tactical_create_squadron(long, short hittype, C_Base *)
 
 void tactical_cancel_squadron(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->DisableWindowGroup(31000);
@@ -885,7 +885,7 @@ void LockTakeoffTimeCB(long, short hittype, C_Base *)
     C_Button *btn;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(PACKAGE_WIN);
@@ -923,7 +923,7 @@ void LockTimeOnTargetCB(long, short hittype, C_Base *)
     C_Button *btn;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(PACKAGE_WIN);
@@ -1424,7 +1424,7 @@ void SetupPackageControls(C_Window *win, C_Base *caller)
     if (btn)
         btn->SetCallback(ChangePackTimeCB);
 
-    if (caller->_GetCType_() != _CNTL_BUTTON_)
+    if (caller->_GetCType_() not_eq _CNTL_BUTTON_)
         gMainHandler->EnableWindowGroup(win->GetGroup());
 }
 
@@ -1579,7 +1579,7 @@ void tactical_edit_package(VU_ID id, C_Base *caller)
 
 void Open_Flight_WindowCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (new_package_target)
@@ -1590,7 +1590,7 @@ void Open_Flight_WindowCB(long, short hittype, C_Base *control)
 
 void EditFlightInPackage(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 }
 
@@ -1599,7 +1599,7 @@ void DeleteFlightFromPackage(long, short hittype, C_Base *control)
     Flight flt;
     C_TreeList *tree;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)control->Parent_->FindControl(ATO_PACKAGE_TREE);
@@ -1624,7 +1624,7 @@ void DeleteFlightFromPackage(long, short hittype, C_Base *control)
 
 void DiscardPackage(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // if(!EdittingPackage)
@@ -1646,7 +1646,7 @@ void DiscardPackage(long, short hittype, C_Base *control)
 
 void KeepPackage(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (new_package && !new_package->GetFirstUnitElement())
@@ -1694,7 +1694,7 @@ void tactical_make_package(long, short hittype, C_Base *)
     C_TreeList *tree;
     long type = 0; //start_day=0,;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(PACKAGE_WIN);
@@ -1815,7 +1815,7 @@ void tac_select_aircraft(long, short hittype, C_Base *control)
     int i, ac_type, mission = -1;
     C_Window *win;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     win = gMainHandler->FindWindow(TAC_FLIGHT_WIN);
@@ -1874,7 +1874,7 @@ void tac_select_skill(long, short hittype, C_Base *control)
     int mission = -1;
     C_Window *win;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     win = gMainHandler->FindWindow(TAC_FLIGHT_WIN);
@@ -1891,7 +1891,7 @@ void tac_select_role(long, short hittype, C_Base *control)
     C_Window *win;
     int mission;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     win = gMainHandler->FindWindow(TAC_FLIGHT_WIN);
@@ -1971,7 +1971,7 @@ void tac_select_squadron(long ID, short hittype, C_Base *control)
     C_Window *win;
     _TCHAR buffer[50];
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     win = gMainHandler->FindWindow(TAC_FLIGHT_WIN);
@@ -2057,7 +2057,7 @@ void tac_select_airbase(long, short hittype, C_Base *control)
 {
     C_ListBox *lbox;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     lbox = (C_ListBox*)control->Parent_->FindControl(TAC_AIRBASE_LIST);
@@ -2071,7 +2071,7 @@ void tac_select_target(long, short hittype, C_Base *control)
     C_ListBox *lbox;
     int cid;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     lbox = (C_ListBox*)control->Parent_->FindControl(TARGET_LIST);
@@ -2233,7 +2233,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
     CampEntity target = NULL;
     MissionRequestClass mis;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->DisableWindowGroup(control->Parent_->GetGroup());
@@ -2447,7 +2447,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
         mis.flags  or_eq  REQF_ALLOW_ERRORS | REQF_TE_MISSION;
         error = new_flight->BuildMission(&mis);
 
-        if (error != PRET_SUCCESS)
+        if (error not_eq PRET_SUCCESS)
         {
             // Show an error message box notifying user this action was not able to be performed
             // Errors are: PRET_NO_ASSETS - The aircraft wern't available
@@ -2594,7 +2594,7 @@ void tactical_cancel_package(long, short hittype, C_Base *ctrl)
 {
     Flight flt;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -2698,7 +2698,7 @@ void tactical_add_battalion(VU_ID id, C_Base *caller)
             lbox->SetValue(toe_us);
     }
 
-    if (gLastEquipment && gLastUnitType != -1)
+    if (gLastEquipment && gLastUnitType not_eq -1)
     {
         lbox = (C_ListBox *) win->FindControl(UNIT_TYPE);
 
@@ -2779,7 +2779,7 @@ void tactical_set_orders(Battalion bat, VU_ID obj, GridIndex tx, GridIndex ty)
     o->GetLocation(&x, &y);
     bat->SetUnitDestination(x, y);
 
-    if (bat->GetMovementType() != NoMove)
+    if (bat->GetMovementType() not_eq NoMove)
     {
         oldgs = OBJ_GROUND_PATH_MAX_SEARCH;
         OBJ_GROUND_PATH_MAX_SEARCH = MAX_SEARCH;
@@ -2795,7 +2795,7 @@ void tactical_set_orders(Battalion bat, VU_ID obj, GridIndex tx, GridIndex ty)
             wp->GetWPLocation(&x, &y);
         }
 
-        if (!wp or x != xd or y != yd)
+        if (!wp or x not_eq xd or y not_eq yd)
         {
             wp = bat->AddWPAfter(NULL, xd, yd, 0, 0, TheCampaign.CurrentTime, 0, 0);
         }
@@ -2810,7 +2810,7 @@ void tactical_set_orders(Battalion bat, VU_ID obj, GridIndex tx, GridIndex ty)
 
         wp->GetWPLocation(&x, &y);
 
-        if (x != xd or y != yd or wp == bat->GetFirstUnitWP())
+        if (x not_eq xd or y not_eq yd or wp == bat->GetFirstUnitWP())
         {
             nw = new WayPointClass(xd, yd, 0, 0, wp->GetWPDepartureTime() + 30 * CampaignMinutes, 0, 0, 0);
             wp->InsertWP(nw);
@@ -2874,7 +2874,7 @@ void tactical_create_battalion(long, short hittype, C_Base *)
     if (gLastUnitType < 0)
         return;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tid = GetClassID(DOMAIN_LAND, CLASS_UNIT, TYPE_BATTALION, table_of_equipment[gLastUnitType].stype, table_of_equipment[gLastUnitType].sptype, 0, 0, 0);
@@ -2917,7 +2917,7 @@ void tactical_create_battalion(long, short hittype, C_Base *)
 
     new_battalion->SetEmitting(0);
 
-    if (new_battalion->GetRadarType() != RDR_NO_RADAR)
+    if (new_battalion->GetRadarType() not_eq RDR_NO_RADAR)
         new_battalion->SetEmitting(1);
 
     for (int i = 0; i < NUM_TEAMS; i++)
@@ -2932,7 +2932,7 @@ void tactical_create_battalion(long, short hittype, C_Base *)
 
 void tactical_cancel_battalion(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->DisableWindowGroup(32000);
@@ -2942,7 +2942,7 @@ static void set_battalion_table_of_equipment(long, short hittype, C_Base *ctrl)
 {
     C_ListBox *list;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     list = (C_ListBox *) ctrl;
@@ -2955,7 +2955,7 @@ static void set_battalion_type(long, short hittype, C_Base *ctrl)
 {
     C_ListBox *list;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     list = (C_ListBox *) ctrl;
@@ -2991,7 +2991,7 @@ static void update_new_battalion_window(void)
     if (list)
         equipment = list->GetTextID();
 
-    if (last_equip != equipment or gLastUnitType < 0)
+    if (last_equip not_eq equipment or gLastUnitType < 0)
     {
         gLastEquipment = last_equip = equipment;
         gLastUnitType = -1;
@@ -3354,7 +3354,7 @@ void tactical_release_flight(long, short hittype, C_Base *)
     int
     team;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }

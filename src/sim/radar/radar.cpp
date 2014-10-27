@@ -183,7 +183,7 @@ void RadarClass::SetSensorTarget(SimObjectType* newTarget)
         digiRadarMode = DigiRWS;
     }
 
-    if (lockedTarget && lockedTarget != newTarget)
+    if (lockedTarget && lockedTarget not_eq newTarget)
     {
         SendTrackMsg(lockedTarget, Track_Unlock);
     }
@@ -444,7 +444,7 @@ void RadarClass::SendTrackMsg(SimObjectType* tgtptr, unsigned int trackType, uns
         (!((SimBaseClass*)tgtptr->BaseData())->IsAirplane()) ||
         (
             tgtptr->localData->lockmsgsend == trackType && (
-                trackType != Track_Lock or tgtptr->localData->lastRadarMode == hardpoint
+                trackType not_eq Track_Lock or tgtptr->localData->lastRadarMode == hardpoint
             )
         )
     )
@@ -562,7 +562,7 @@ static void ReadDataArray(void *dataPtr, SimlibFileClass* inputFile, const Input
 {
     SimlibFileName buffer;
 
-    while (inputFile->ReadLine(buffer, sizeof buffer) == SIMLIB_OK && buffer[0] != 0)
+    while (inputFile->ReadLine(buffer, sizeof buffer) == SIMLIB_OK && buffer[0] not_eq 0)
     {
         ParseField(dataPtr, buffer, desc);
         buffer[0] = 0;

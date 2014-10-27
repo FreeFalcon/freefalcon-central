@@ -1085,7 +1085,7 @@ void BombClass::SetTarget(SimObjectType* newTarget)
 
     if (newTarget)
     {
-        ShiAssert(newTarget->BaseData() != (FalconEntity*)0xDDDDDDDD);
+        ShiAssert(newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
 
         //#ifdef DEBUG
         // targetPtr = newTarget->Copy(OBJ_TAG, this);
@@ -1218,7 +1218,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
             // until digi's are smarter about thier bombing, prevent them
             // from dying in their own blast
             // 2002-04-21 MN check for damage type and only skip if it is not a nuclear
-            if (wc->DamageType != NuclearDam && (testObject == parent &&
+            if (wc->DamageType not_eq NuclearDam && (testObject == parent &&
                                                  parent && parent->IsAirplane() &&
                                                  (((AircraftClass *)parent.get())->IsDigital() ||
                                                   ((AircraftClass *)parent.get())->AutopilotType() == AircraftClass::CombatAP)))
@@ -1227,7 +1227,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
                 continue;
             }
 
-            if (testObject != this)
+            if (testObject not_eq this)
             {
                 tmpX = testObject->XPos() - XPos();
                 tmpY = testObject->YPos() - YPos();

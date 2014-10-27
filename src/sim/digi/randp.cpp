@@ -456,7 +456,7 @@ void DigitalBrain::PullToCollisionPoint(void)
     /* If collision time is defined */
     /* extrapolate targets position */
     /*------------------------------*/
-    if (lastMode != curMode)
+    if (lastMode not_eq curMode)
     {
         if (tc > 0.0)
         {

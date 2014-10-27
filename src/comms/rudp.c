@@ -112,7 +112,7 @@ extern "C" {
         enter_cs(); // JPO
 
         //sfr new list
-        for (curr = comListGetFirstP(CAPI_RUDP_PROTOCOL); curr != NULL; curr = comListGetNextP(CAPI_RUDP_PROTOCOL))
+        for (curr = comListGetFirstP(CAPI_RUDP_PROTOCOL); curr not_eq NULL; curr = comListGetNextP(CAPI_RUDP_PROTOCOL))
         {
             count = 0;
             rp = curr->rudp_data.sending;
@@ -267,7 +267,7 @@ extern "C" {
         // we already setup comms, use a clone
         comRUDP = comListFindProtocolRport(CAPI_RUDP_PROTOCOL, localPort);
 
-        if (comRUDP != NULL)
+        if (comRUDP not_eq NULL)
         {
             com_API_handle ret_val;
             ret_val = ComRUDPOpenSendClone(name_in, comRUDP, buffersize, gamename, remotePort, IPaddress, id);
@@ -522,7 +522,7 @@ extern "C" {
         else
         {
             // If our last_sent_received is out of date, we need to send it
-            if (cudp->rudp_data.last_sent_received != cudp->rudp_data.last_received)
+            if (cudp->rudp_data.last_sent_received not_eq cudp->rudp_data.last_received)
             {
                 cudp->rudp_data.send_ack = FALSE;
                 *flags  or_eq  RUDPF_LAST;
@@ -534,7 +534,7 @@ extern "C" {
             }
 
             // If our last_sent_received is out of date, we need to send it
-            if (cudp->rudp_data.last_oob_sent_received != cudp->rudp_data.last_oob_received)
+            if (cudp->rudp_data.last_oob_sent_received not_eq cudp->rudp_data.last_oob_received)
             {
                 cudp->rudp_data.send_oob_ack = FALSE;
                 *flags  or_eq  RUDPF_LOOB;
@@ -1068,7 +1068,7 @@ extern "C" {
             return 0;
         }
 
-        if (cudp->rudp_data.reset_send != RUDP_WORKING)
+        if (cudp->rudp_data.reset_send not_eq RUDP_WORKING)
         {
             return 0;
         }
@@ -1521,7 +1521,7 @@ extern "C" {
 
             // Check if we should send the reset stuff
 
-            if ((cudp->rudp_data.reset_send != RUDP_WORKING) && (now - cudp->rudp_data.last_send_time > RUDP_RESEND_TIME))
+            if ((cudp->rudp_data.reset_send not_eq RUDP_WORKING) && (now - cudp->rudp_data.last_send_time > RUDP_RESEND_TIME))
             {
                 if (send_rudp_packet(cudp, NULL, 0))
                 {
@@ -1533,7 +1533,7 @@ extern "C" {
             // This will copy the packets into our receive queue
             get_rudp_packets(cudp);
 
-            if (cudp->rudp_data.reset_send != RUDP_WORKING)
+            if (cudp->rudp_data.reset_send not_eq RUDP_WORKING)
             {
                 if (did_send)
                 {
@@ -1844,7 +1844,7 @@ extern "C" {
             // If we've not send them our last_received, or one second timeout for ack
             if
             (
-                (cudp->rudp_data.last_sent_received != cudp->rudp_data.last_received) &&
+                (cudp->rudp_data.last_sent_received not_eq cudp->rudp_data.last_received) &&
                 (now - cudp->rudp_data.last_send_time > RUDP_ACK_WAIT_TIME)
             )
             {
@@ -1853,7 +1853,7 @@ extern "C" {
 
             if
             (
-                (cudp->rudp_data.last_oob_sent_received != cudp->rudp_data.last_oob_received) &&
+                (cudp->rudp_data.last_oob_sent_received not_eq cudp->rudp_data.last_oob_received) &&
                 (now - cudp->rudp_data.last_oob_send_time > RUDP_OOB_ACK_WAIT_TIME)
             )
             {

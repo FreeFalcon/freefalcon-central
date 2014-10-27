@@ -148,7 +148,7 @@ int CheckDivertStatus(int reply)
 {
     if (!sNextRepost)
         return -1;
-    else if (sNextRepost < vuxGameTime or reply != DIVERT_NO_DIVERT)
+    else if (sNextRepost < vuxGameTime or reply not_eq DIVERT_NO_DIVERT)
     {
         Flight flight = (Flight) vuDatabase->Find(sDivertFlight);
         CampEntity target = NULL;
@@ -165,7 +165,7 @@ int CheckDivertStatus(int reply)
         if (!target or (target->IsUnit() && (((Unit)target)->IsDead() or ((Unit)target)->Broken())))
             return 0;
 
-        if (flight != FalconLocalSession->GetPlayerFlight())
+        if (flight not_eq FalconLocalSession->GetPlayerFlight())
         {
             sLastReply = DIVERT_REPLY_YES;
             ApplyDivert(flight, &sLastDivert);
@@ -225,7 +225,7 @@ void ApplyDivert(Flight flight, FalconDivertMessage *fdm)
 
         // Trying to track down a potential bug here.. It's hard enough to
         // get diverts I figure I'll let QA do the testing..
-        ShiAssert(flight != FalconLocalSession->GetPlayerFlight());
+        ShiAssert(flight not_eq FalconLocalSession->GetPlayerFlight());
 
         flight->BuildMission(&mis);
     }
@@ -371,7 +371,7 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
     }
 
     // This is the flight saying that they're diverting (should be delayed a little..)
-    if (SimDriver.GetPlayerEntity() && flight->GetComponentLead() != SimDriver.GetPlayerEntity())
+    if (SimDriver.GetPlayerEntity() && flight->GetComponentLead() not_eq SimDriver.GetPlayerEntity())
     {
         msg = CreateCallToAWACS(flight, rcAWACSDIVERT, to);
         msg->dataBlock.edata[0] = msg->dataBlock.edata[2];

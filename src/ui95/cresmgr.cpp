@@ -163,7 +163,7 @@ FILE *C_Resmgr::OpenResFile(const char *name, const char *sfx, const char *mode)
 
     sprintf(filename, "%s\\%s.%s", FalconUIArtThrDirectory, name, sfx);
 
-    if ((fp = fopen(filename, mode)) != NULL)
+    if ((fp = fopen(filename, mode)) not_eq NULL)
         return fp;
 
     sprintf(filename, "%s\\%s.%s", FalconUIArtDirectory, name, sfx);

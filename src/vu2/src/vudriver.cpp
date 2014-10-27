@@ -384,7 +384,7 @@ void VuMaster::Exec(VU_TIME timestamp)
     VU_TIME timeDelta = vuxRealTime - updateSentRealTime_;
     VuSessionsIterator iter(vuLocalGame);
 
-    for (VuSessionEntity *s = iter.GetFirst(); s != NULL; s = iter.GetNext())
+    for (VuSessionEntity *s = iter.GetFirst(); s not_eq NULL; s = iter.GetNext())
     {
         // dont send to ourselves!
         if (s == vuLocalSessionEntity)

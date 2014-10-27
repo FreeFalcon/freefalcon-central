@@ -87,7 +87,7 @@ void ObjectDisplayList::InsertObject(DrawableObject *object)
     head = object;
 #ifdef _SANITY_CHECK_
 
-    if (head->prev != NULL)
+    if (head->prev not_eq NULL)
         head->prev = NULL;
 
 #endif
@@ -111,7 +111,7 @@ void ObjectDisplayList::RemoveObject(DrawableObject* object)
     if (!object->parentList)
         return;
 
-    if (object->parentList != this)
+    if (object->parentList not_eq this)
         return;
 
 #endif
@@ -226,7 +226,7 @@ void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportS
         long count = 0;
 
         // Sanity checks
-        if (head->parentList != this)
+        if (head->parentList not_eq this)
             return;
 
         if (head->prev)
@@ -239,7 +239,7 @@ void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportS
 
         while (_cur_ && count < 10000)
         {
-            if (_cur_->parentList != this)
+            if (_cur_->parentList not_eq this)
                 return;
 
             _cur_ = _cur_->next;
@@ -355,11 +355,11 @@ void ObjectDisplayList::InsertionSortLink(DrawableObject **listhead, DrawableObj
     newlist = listend;
     walk = *listhead;
 
-    for (; walk != listend; walk = save)
+    for (; walk not_eq listend; walk = save)
     {
         DrawableObject **pnewlink;
 
-        for (pnewlink = &newlist; *pnewlink != listend && walk->distance <= (*pnewlink)->distance; pnewlink = &((*pnewlink)->next));
+        for (pnewlink = &newlist; *pnewlink not_eq listend && walk->distance <= (*pnewlink)->distance; pnewlink = &((*pnewlink)->next));
 
         save = walk->next;
         walk->next = *pnewlink;
@@ -375,7 +375,7 @@ void ObjectDisplayList::QuickSortLink(DrawableObject **head, DrawableObject *end
     DrawableObject **left_walk, *pivot, *old;
     DrawableObject **right_walk, *right;
 
-    if (*head != end)
+    if (*head not_eq end)
     {
         do
         {
@@ -384,7 +384,7 @@ void ObjectDisplayList::QuickSortLink(DrawableObject **head, DrawableObject *end
             right_walk = &right;
             left_count = right_count = 0;
 
-            for (old = (*head)->next; old != end; old = old->next)
+            for (old = (*head)->next; old not_eq end; old = old->next)
             {
                 if (old->distance > pivot->distance)
                 {
@@ -542,7 +542,7 @@ void ObjectDisplayList::SortForViewpoint(void)
     if (!head) return;
 
     // Now sort the list laterally from far to near
-    for (p = head->next; p != NULL; p = p->next)
+    for (p = head->next; p not_eq NULL; p = p->next)
     {
 
         // Decide where to place this element in the list
@@ -555,7 +555,7 @@ void ObjectDisplayList::SortForViewpoint(void)
         }
 
         // Only adjust the list if we need to
-        if (q != p)
+        if (q not_eq p)
         {
             // Remove the element under consideration (p) from its current location
             if (p->prev)

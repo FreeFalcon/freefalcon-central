@@ -251,7 +251,7 @@ void FalconEntity::MakeDirty(Dirty_Class bits, Dirtyness score)
     // send only local units which are active (in DB) and if the unit is more dirty than currently is
     if (
         (!IsLocal()) ||
-        (VuState() != VU_MEM_ACTIVE) ||
+        (VuState() not_eq VU_MEM_ACTIVE) ||
         (score <= dirty_score) ||
         !(TheCampaign.Flags & CAMP_LOADED)
     )
@@ -465,7 +465,7 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
 #if USE_VU_COLL_FOR_DIRTY
         FalconEntity *current;
 
-        while ((current = static_cast<FalconEntity*>(campDirtyBuckets[bucket]->PopHead())) != NULL)
+        while ((current = static_cast<FalconEntity*>(campDirtyBuckets[bucket]->PopHead())) not_eq NULL)
 #else
         while (!campDirtyBuckets[bucket]->empty())
 #endif
@@ -548,7 +548,7 @@ void FalconEntity::DoSimDirtyData(VU_TIME realTime)
 #if USE_VU_COLL_FOR_DIRTY
         FalconEntity *current;
 
-        while ((current = static_cast<FalconEntity*>(simDirtyBuckets[bucket]->PopHead())) != NULL)
+        while ((current = static_cast<FalconEntity*>(simDirtyBuckets[bucket]->PopHead())) not_eq NULL)
 #else
         while (!simDirtyBuckets[bucket]->empty())
 #endif
@@ -608,7 +608,7 @@ void FalconEntity::MakeFlagsDirty(void)
 
 void FalconEntity::MakeFalconEntityDirty(Dirty_Falcon_Entity bits, Dirtyness score)
 {
-    if ((!IsLocal()) or (VuState() != VU_MEM_ACTIVE))
+    if ((!IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }

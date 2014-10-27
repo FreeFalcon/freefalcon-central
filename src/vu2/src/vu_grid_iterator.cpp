@@ -97,7 +97,7 @@ VuEntity *VuGridIterator::GetNext(VuFilter *filter)
 {
     VuEntity* retval = 0;
 
-    while ((retval = GetNext()) != 0)
+    while ((retval = GetNext()) not_eq 0)
     {
         if (filter->Test(retval))
         {

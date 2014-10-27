@@ -452,7 +452,7 @@ void CampBaseClass::SetLocation(GridIndex x, GridIndex y)
     // Check if flight has moved, and evaluate current situation if so
     GetLocation(&cx, &cy);
 
-    if (cx != x or cy != y)
+    if (cx not_eq x or cy not_eq y)
     {
         vector v;
 
@@ -726,7 +726,7 @@ int CampBaseClass::GetComponentIndex(VuEntity* me) // My call
 
         cur = cit.GetFirst();
 
-        while (cur && cur != me)
+        while (cur && cur not_eq me)
         {
             idx ++;
             cur = cit.GetNext();
@@ -839,7 +839,7 @@ CampEntity GetFirstEntity(F4LIt l)
 
     while (e)
     {
-        //if (e->VuState() != VU_MEM_DELETED)
+        //if (e->VuState() not_eq VU_MEM_DELETED)
         if (GetEntityClass(e) == CLASS_UNIT or GetEntityClass(e) == CLASS_OBJECTIVE)
         {
             return (CampEntity)e;
@@ -859,7 +859,7 @@ CampEntity GetNextEntity(F4LIt l)
 
     while (e)
     {
-        //if (e->VuState() != VU_MEM_DELETED)
+        //if (e->VuState() not_eq VU_MEM_DELETED)
         if (GetEntityClass(e) == CLASS_UNIT or GetEntityClass(e) == CLASS_OBJECTIVE)
         {
             return (CampEntity)e;
@@ -988,7 +988,7 @@ VU_ID_NUMBER GetIdFromNamespace(IdNamespace &ns)
     {
         tryId.num_ = ns.GetId();
     }
-    while (vuDatabase->Find(tryId) != NULL);
+    while (vuDatabase->Find(tryId) not_eq NULL);
 
     return tryId.num_;
 }
@@ -1065,7 +1065,7 @@ void CampBaseClass::SetCampId(short new_camp_id)
 
 void CampBaseClass::SetBaseFlags(short flags)
 {
-    if (base_flags != flags)
+    if (base_flags not_eq flags)
     {
         base_flags = flags;
         //MakeCampBaseDirty (DIRTY_BASE_FLAGS, DDP[8].priority);
@@ -1075,12 +1075,12 @@ void CampBaseClass::SetBaseFlags(short flags)
 
 void CampBaseClass::MakeCampBaseDirty(Dirty_Campaign_Base bits, Dirtyness score)
 {
-    if ((!IsLocal()) or (VuState() != VU_MEM_ACTIVE))
+    if ((!IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
 
-    if (!IsAggregate() && (score != SEND_RELIABLEANDOOB))
+    if (!IsAggregate() && (score not_eq SEND_RELIABLEANDOOB))
     {
         score = static_cast<Dirtyness>(score << 4);
     }

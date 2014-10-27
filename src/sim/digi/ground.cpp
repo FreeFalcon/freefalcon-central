@@ -32,7 +32,7 @@ void DigitalBrain::GroundCheck(void)
     // Let it follow waypoints close to the ground
     if ( //( curMode == WaypointMode or // also perform GroundCheck for leaders
         //curMode == LandingMode or // airbases with hilly terrain around need GroundCheck
-        /*(curMode == WaypointMode && agDoctrine != AGD_NONE) ||*/ // 2002-03-11 ADDED BY S.G. GroundAttackMode has its own ground avoidance code
+        /*(curMode == WaypointMode && agDoctrine not_eq AGD_NONE) ||*/ // 2002-03-11 ADDED BY S.G. GroundAttackMode has its own ground avoidance code
         curMode == TakeoffMode //)
         && threatPtr == NULL)
     {

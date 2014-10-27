@@ -228,13 +228,13 @@ int SimlibFileClass::ReadLine(char *buf, int max_len)
     char *cp;
 
     // Skip Comments
-    while ((cp = fgets(buf, max_len, fptr)) != NULL)
+    while ((cp = fgets(buf, max_len, fptr)) not_eq NULL)
     {
         //RESMANAGER KLUDGE
         SwapCRLF(buf);
 
-        //            if (buf[0] != ';' && buf[0] != '\r')
-        if (buf[0] != ';' && buf[0] != '\n')
+        //            if (buf[0] not_eq ';' && buf[0] not_eq '\r')
+        if (buf[0] not_eq ';' && buf[0] not_eq '\n')
             break;
     }
 

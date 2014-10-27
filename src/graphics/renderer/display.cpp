@@ -799,7 +799,7 @@ int VirtualDisplay::TextWrap(float h, float v, const char *s, float spacing, flo
                 lineBreak--;
                 ShiAssert(lineBreak >= string);
             }
-            while (*lineBreak != ' ');
+            while (*lineBreak not_eq ' ');
 
             do
             {

@@ -112,7 +112,7 @@ com_API_handle ComUDPOpen(
     c = comListFindProtocolRport(CAPI_UDP_PROTOCOL, localUdpPort);
 
     //if (listitem){
-    if (c != NULL)
+    if (c not_eq NULL)
     {
         com_API_handle ret_val;
         ret_val = ComUDPOpenSendClone(name_in, c, buffersize, gamename,  remoteUdpPort, IPaddress, id);
@@ -365,7 +365,7 @@ void ComUDPClose(com_API_handle c)
         // int trueValue = 1;
         // int falseValue = 0;
 
-        if (cudp->parent != NULL)
+        if (cudp->parent not_eq NULL)
         {
             ComIP *parent;
             parent = cudp->parent;
@@ -551,7 +551,7 @@ int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
     /* Do we need to toggle the SO_BROADCAST state ?*/
     actual = cudp;
 
-    if (cudp->parent != NULL)
+    if (cudp->parent not_eq NULL)
     {
         /* am I a SendClone ?? */
         actual   = cudp->parent;
@@ -560,7 +560,7 @@ int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
     if (F4IsBadReadPtrC(cudp, sizeof(ComIP)) or F4IsBadReadPtrC(actual, sizeof(ComIP))) // JB 010220 CTD
         return COMAPI_OUT_OF_SYNC; // JB 010220 CTD
 
-    if (actual->BroadcastModeOn != cudp->NeedBroadcastMode)
+    if (actual->BroadcastModeOn not_eq cudp->NeedBroadcastMode)
     {
         CAPI_setsockopt(cudp->send_sock, SOL_SOCKET, SO_BROADCAST, (char *) & (cudp->NeedBroadcastMode), sizeof(int));
         actual->BroadcastModeOn = cudp->NeedBroadcastMode;
@@ -729,7 +729,7 @@ int ComUDPGet(com_API_handle c)
 
 #ifdef DEBUG_COMMS
 
-            if (recverror != WSAEWOULDBLOCK)
+            if (recverror not_eq WSAEWOULDBLOCK)
             {
             }
 
@@ -839,7 +839,7 @@ int ComUDPGet(com_API_handle c)
              (((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami) &&
              (((struct sockaddr_in *)(&in_addr))->sin_port == CAPI_htons(ComAPIGetMySendPort()))
              )){*/
-            if (((ComAPIHeader *)cudp->recv_buffer.buf)->id != cudp->whoami)
+            if (((ComAPIHeader *)cudp->recv_buffer.buf)->id not_eq cudp->whoami)
             {
                 // sets lastsender
                 cudp->lastsender = ((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr;
@@ -947,7 +947,7 @@ int ComIPHostIDGet(com_API_handle c, char *buf, int reset)
     // wow this is dark magic... dont wanna get in here
     // hentry->h_addr_list[i] is an array of char
     // run all available IPs for host
-    for (i = 0; hentry->h_addr_list[i] != NULL; i++)
+    for (i = 0; hentry->h_addr_list[i] not_eq NULL; i++)
     {
         // we return either first IP or hostIdx IP
         // first IP
@@ -1204,7 +1204,7 @@ void ComAPISetReceiveThreadPriority(com_API_handle c, int priority)
             }
         }
 
-        if (threadhandle && SetPriority != 0xFFFFFFFF)
+        if (threadhandle && SetPriority not_eq 0xFFFFFFFF)
         {
             SetThreadPriority(threadhandle, SetPriority);
         }

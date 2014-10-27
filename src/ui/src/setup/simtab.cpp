@@ -35,7 +35,7 @@ int GetRealism(C_Window *win)
 
     listbox = (C_ListBox *)win->FindControl(SET_FLTMOD);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
     {
         button = (C_Button *)listbox->GetItem(listbox->GetTextID());
 
@@ -50,7 +50,7 @@ int GetRealism(C_Window *win)
 
     listbox = (C_ListBox *)win->FindControl(SET_RADAR);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
     {
 
         button = (C_Button *)listbox->GetItem(listbox->GetTextID());
@@ -66,7 +66,7 @@ int GetRealism(C_Window *win)
 
     listbox = (C_ListBox *)win->FindControl(SET_WEAPEFF);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
     {
         button = (C_Button *)listbox->GetItem(listbox->GetTextID());
 
@@ -81,7 +81,7 @@ int GetRealism(C_Window *win)
 
     listbox = (C_ListBox *)win->FindControl(SET_AUTOPILOT);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
     {
 
         button = (C_Button *)listbox->GetItem(listbox->GetTextID());
@@ -97,7 +97,7 @@ int GetRealism(C_Window *win)
 
     listbox = (C_ListBox *)win->FindControl(SET_PADLOCK);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
     {
 
         button = (C_Button *)listbox->GetItem(listbox->GetTextID());
@@ -113,7 +113,7 @@ int GetRealism(C_Window *win)
 
     listbox = (C_ListBox *)win->FindControl(SET_REFUELING);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
     {
 
         button = (C_Button *)listbox->GetItem(listbox->GetTextID());
@@ -130,7 +130,7 @@ int GetRealism(C_Window *win)
 
     button = (C_Button *)win->FindControl(SET_FUEL);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState())
         {
@@ -143,7 +143,7 @@ int GetRealism(C_Window *win)
 
     button = (C_Button *)win->FindControl(SET_CHAFFLARES);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState())
         {
@@ -157,7 +157,7 @@ int GetRealism(C_Window *win)
 
     button = (C_Button *)win->FindControl(SET_COLLISIONS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState())
         {
@@ -170,7 +170,7 @@ int GetRealism(C_Window *win)
 
     button = (C_Button *)win->FindControl(SET_BLACKOUT);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState())
         {
@@ -184,7 +184,7 @@ int GetRealism(C_Window *win)
 
     button = (C_Button *)win->FindControl(SET_IDTAGS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState())
         {
@@ -197,7 +197,7 @@ int GetRealism(C_Window *win)
 
     button = (C_Button *)win->FindControl(SET_WEATHER);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState())
         {
@@ -210,7 +210,7 @@ int GetRealism(C_Window *win)
 
     button = (C_Button *)win->FindControl(SET_BULLSEYE_CALLS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState())
         {
@@ -223,7 +223,7 @@ int GetRealism(C_Window *win)
 
     button = (C_Button *)win->FindControl(SET_INVULNERABILITY);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState())
         {
@@ -262,7 +262,7 @@ int SetRealism(C_Window *win)
 
     ebox = (C_EditBox *)win->FindControl(REALISM_READOUT);
 
-    if (ebox != NULL)
+    if (ebox not_eq NULL)
     {
         if (realism  > maxrealism)
             realism  = maxrealism ;
@@ -303,7 +303,7 @@ int SetRealism(C_Window *win)
 
 void SimControlCB(long, short hittype, C_Base *control)
 {
-    if ((hittype != C_TYPE_LMOUSEUP) && (hittype != C_TYPE_SELECT))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) && (hittype not_eq C_TYPE_SELECT))
         return;
 
     SetRealism(control->Parent_);
@@ -311,7 +311,7 @@ void SimControlCB(long, short hittype, C_Base *control)
 
 void SetSkillCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     int Index;
@@ -325,7 +325,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     lbox = (C_ListBox *)win->FindControl(SET_FLTMOD);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         if (Presets[Index].FlightModel == FMAccurate)
             lbox->SetValue(SET_FLTMOD_1);
@@ -335,7 +335,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     lbox = (C_ListBox *)win->FindControl(SET_RADAR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (Presets[Index].RadarMode)
         {
@@ -360,7 +360,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     lbox = (C_ListBox *)win->FindControl(SET_WEAPEFF);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (Presets[Index].WeapEffects)
         {
@@ -380,7 +380,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     lbox = (C_ListBox *)win->FindControl(SET_AUTOPILOT);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (Presets[Index].Autopilot)
         {
@@ -400,7 +400,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     lbox = (C_ListBox *)win->FindControl(SET_REFUELING);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (Presets[Index].RefuelingMode)
         {
@@ -420,7 +420,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     lbox = (C_ListBox *)win->FindControl(SET_PADLOCK);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (Presets[Index].PadlockMode)
         {
@@ -443,7 +443,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     button = (C_Button *)win->FindControl(SET_ORDNANCE);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (Presets[Index].flags & SIM_UNLIMITED_AMMO)
             button->SetState(C_STATE_1);
@@ -455,7 +455,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     button = (C_Button *)win->FindControl(SET_FUEL);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (Presets[Index].flags & SIM_UNLIMITED_FUEL)
             button->SetState(C_STATE_1);
@@ -467,7 +467,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     button = (C_Button *)win->FindControl(SET_CHAFFLARES);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (Presets[Index].flags & SIM_UNLIMITED_CHAFF)
             button->SetState(C_STATE_1);
@@ -480,7 +480,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     button = (C_Button *)win->FindControl(SET_COLLISIONS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (Presets[Index].flags & SIM_NO_COLLISIONS)
             button->SetState(C_STATE_1);
@@ -492,7 +492,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     button = (C_Button *)win->FindControl(SET_BLACKOUT);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (Presets[Index].flags & SIM_NO_BLACKOUT)
             button->SetState(C_STATE_1);
@@ -504,7 +504,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     button = (C_Button *)win->FindControl(SET_IDTAGS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (Presets[Index].flags & SIM_NAMETAGS)
             button->SetState(C_STATE_1);
@@ -517,7 +517,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     button = (C_Button *)win->FindControl(SET_INVULNERABILITY); //should be SET_INVULNERABLITY
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetState(C_STATE_0);
 
@@ -549,7 +549,7 @@ extern char g_strRadioStandardCol[0x40]; // Retro 27Dec2003
 
 void SubTitleCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if ((PlayerOptions.getSubtitles() == false) && (!radioLabel)) // need to create a new object..

@@ -105,7 +105,7 @@ void Palette::Setup24(BYTE *data24)
 \***************************************************************************/
 void Palette::UpdateMPR(DWORD *pal)
 {
-    ShiAssert(rc != NULL);
+    ShiAssert(rc not_eq NULL);
     ShiAssert(pal);
 
     if (!rc) // JB 010615 CTD
@@ -149,7 +149,7 @@ int Palette::Release(void)
     {
         if (palHandle)
         {
-            ShiAssert(rc != NULL);
+            ShiAssert(rc not_eq NULL);
 
             delete palHandle;
             palHandle = NULL;
@@ -479,7 +479,7 @@ void PaletteHandle::Load(UInt16 info, UInt16 PalBitsPerEntry, UInt16 index, UInt
 
     if (!m_pIDDP or !m_pPalData) return;
 
-    if ((DWORD *) PalBuffer != m_pPalData)
+    if ((DWORD *) PalBuffer not_eq m_pPalData)
         memcpy(m_pPalData, PalBuffer, sizeof(DWORD) * entries);
 
     // Convert palette
@@ -512,7 +512,7 @@ void PaletteHandle::AttachToTexture(TextureHandle *pTex)
 
     ShiAssert(it == m_arrAttachedTextures.end()); // do not attach twice
 
-    if (it != m_arrAttachedTextures.end())
+    if (it not_eq m_arrAttachedTextures.end())
         return;
 
     m_arrAttachedTextures.push_back(pTex);
@@ -530,7 +530,7 @@ void PaletteHandle::DetachFromTexture(TextureHandle *pTex)
     if (!pTex) return;
 
     std::vector<TextureHandle *>::iterator it = GetAttachedTextureIndex(pTex);
-    ShiAssert(it != m_arrAttachedTextures.end()); // do not detach twice
+    ShiAssert(it not_eq m_arrAttachedTextures.end()); // do not detach twice
 
     if (it == m_arrAttachedTextures.end())
         return;
@@ -547,7 +547,7 @@ std::vector<TextureHandle *>::iterator PaletteHandle::GetAttachedTextureIndex(Te
 {
     std::vector<TextureHandle *>::iterator it;
 
-    for (it = m_arrAttachedTextures.begin(); it != m_arrAttachedTextures.end(); it++)
+    for (it = m_arrAttachedTextures.begin(); it not_eq m_arrAttachedTextures.end(); it++)
         if (*it == pTex) return it;
 
     return m_arrAttachedTextures.end();

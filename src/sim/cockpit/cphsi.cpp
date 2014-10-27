@@ -504,7 +504,7 @@ void CPHsi::Exec(void)
         return;
     }
 
-    if (mode != mLastMode)
+    if (mode not_eq mLastMode)
     {
         mpHsiFlags[HSI_FLAG_INIT] = FALSE;
     }
@@ -681,7 +681,7 @@ CPHsiView::CPHsiView(ObjectInitStr *pobjectInitStr, HsiInitStr *phsiInitStr) : C
     }
     //Wombat778 10-06-2003 Added following lines to set up a temporary buffer for the HSI
     //this is unnecessary in using rendered pit
-    else if (g_bCockpitAutoScale && ((mVScale != 1.0f) or (mHScale != 1.0f)))
+    else if (g_bCockpitAutoScale && ((mVScale not_eq 1.0f) or (mHScale not_eq 1.0f)))
     {
 
         CompassBuffer = new ImageBuffer;
@@ -705,7 +705,7 @@ CPHsiView::~CPHsiView(void)
     }
     //Wombat778 10-06-2003 Added following lines to destroy the temporary imagebuffer;
     //unnecessary if using rendered hsi
-    else if (g_bCockpitAutoScale && ((mVScale != 1.0f) or (mHScale != 1.0f)))
+    else if (g_bCockpitAutoScale && ((mVScale not_eq 1.0f) or (mHScale not_eq 1.0f)))
     {
         if (CompassBuffer)
         {
@@ -748,7 +748,7 @@ void CPHsiView::DisplayBlit()
     // Make the rotating blt call
 
     //Wombat778 10-06-2003, modified following lines. allows HSI to scale properly when using cockpit auto scaling
-    if (g_bCockpitAutoScale && ((mVScale != 1.0f) or (mHScale != 1.0f)))   //dont run this code if the var is set but no scaling is occuring
+    if (g_bCockpitAutoScale && ((mVScale not_eq 1.0f) or (mHScale not_eq 1.0f)))   //dont run this code if the var is set but no scaling is occuring
     {
 
         RECT temprect;

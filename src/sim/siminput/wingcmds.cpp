@@ -742,7 +742,7 @@ VU_ID FindAircraftTarget(AircraftClass* theAC)
         {
             tgtId = OTWDriver.mpPadlockPriorityObject->Id();
 
-            if (tgtId != FalconNullId)
+            if (tgtId not_eq FalconNullId)
             {
                 return (tgtId);
             }

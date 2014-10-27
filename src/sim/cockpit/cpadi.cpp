@@ -159,7 +159,7 @@ CPAdi::CPAdi(ObjectInitStr *pobjectInitStr, ADIInitStr *padiInitStr) : CPObject(
     }
     //Wombat778 10-06-2003 Added following lines to set up a temporary buffer for the ADI
     //this is unnecessary in using rendered pit
-    else if (g_bCockpitAutoScale && ((mHScale != 1.0f) or (mVScale != 1.0f)))
+    else if (g_bCockpitAutoScale && ((mHScale not_eq 1.0f) or (mVScale not_eq 1.0f)))
     {
         ADIBuffer = new ImageBuffer;
         ADIBuffer->Setup(&FalconDisplay.theDisplayDevice,
@@ -195,7 +195,7 @@ CPAdi::~CPAdi(void)
     }
     //Wombat778 10-06-2003 Added following lines to destroy the temporary imagebuffer;
     //this is unnecessary in using rendered pit
-    else if (g_bCockpitAutoScale && ((mHScale != 1.0f) or (mVScale != 1.0f)))
+    else if (g_bCockpitAutoScale && ((mHScale not_eq 1.0f) or (mVScale not_eq 1.0f)))
     {
         if (ADIBuffer)
         {
@@ -681,7 +681,7 @@ void CPAdi::DisplayBlit(void)
 
 
     //Wombat778 10-06-2003, modified following lines. allows ADI to scale properly when using cockpit auto scaling
-    if (g_bCockpitAutoScale && ((mHScale != 1.0f) or (mVScale != 1.0f)))   //dont run this code if the var is set but no scaling is occuring
+    if (g_bCockpitAutoScale && ((mHScale not_eq 1.0f) or (mVScale not_eq 1.0f)))   //dont run this code if the var is set but no scaling is occuring
     {
 
         RECT temprect;
@@ -746,22 +746,22 @@ void CPAdi::DisplayDraw(void)
 
     if (!mpCPManager->mHiddenFlag)
     {
-        //OTWDriver.renderer->SetColor(mColor[OTWDriver.renderer->GetGreenMode() != 0][1]);
+        //OTWDriver.renderer->SetColor(mColor[OTWDriver.renderer->GetGreenMode() not_eq 0][1]);
         OTWDriver.renderer->Render2DTri((float)mVertBarPos, (float)mTopLimit - 3.0F * width, (float)mVertBarPos + width,
                                         (float)mTopLimit - 3.0F * width, (float)mVertBarPos + width, (float)mBottomLimit + 3.0F * width);
         OTWDriver.renderer->Render2DTri((float)mVertBarPos, (float)mTopLimit - 3.0F * width, (float)mVertBarPos,
                                         (float)mBottomLimit + 3.0F * width, (float)mVertBarPos + width, (float)mBottomLimit + 3.0F * width);
-        //OTWDriver.renderer->SetColor(mColor[OTWDriver.renderer->GetGreenMode() != 0][2]);
+        //OTWDriver.renderer->SetColor(mColor[OTWDriver.renderer->GetGreenMode() not_eq 0][2]);
         OTWDriver.renderer->Render2DTri((float)mVertBarPos, (float)mTopLimit - 3.0F * width, (float)mVertBarPos - width,
                                         (float)mTopLimit - 3.0F * width, (float)mVertBarPos - width, (float)mBottomLimit + 3.0F * width);
         OTWDriver.renderer->Render2DTri((float)mVertBarPos, (float)mTopLimit - 3.0F * width, (float)mVertBarPos,
                                         (float)mBottomLimit + 3.0F * width, (float)mVertBarPos - width, (float)mBottomLimit + 3.0F * width);
-        //OTWDriver.renderer->SetColor(mColor[OTWDriver.renderer->GetGreenMode() != 0][1]);
+        //OTWDriver.renderer->SetColor(mColor[OTWDriver.renderer->GetGreenMode() not_eq 0][1]);
         OTWDriver.renderer->Render2DTri((float)mLeftLimit - 3.0F * width, (float)mHorizBarPos, (float)mLeftLimit - 3.0F * width,
                                         (float)mHorizBarPos + width, (float)mRightLimit + 3.0F * width, (float)mHorizBarPos + width);
         OTWDriver.renderer->Render2DTri((float)mLeftLimit - 3.0F * width, (float)mHorizBarPos, (float)mRightLimit + 3.0F * width,
                                         (float)mHorizBarPos, (float)mRightLimit + 3.0F * width, (float)mHorizBarPos + width);
-        //OTWDriver.renderer->SetColor(mColor[OTWDriver.renderer->GetGreenMode() != 0][2]);
+        //OTWDriver.renderer->SetColor(mColor[OTWDriver.renderer->GetGreenMode() not_eq 0][2]);
         OTWDriver.renderer->Render2DTri((float)mLeftLimit - 3.0F * width, (float)mHorizBarPos, (float)mLeftLimit - 3.0F * width,
                                         (float)mHorizBarPos - 2.0F, (float)mRightLimit + 3.0F * width, (float)mHorizBarPos - width);  //MI (float)mHorizBarPos - 2.0F);
         OTWDriver.renderer->Render2DTri((float)mLeftLimit - 3.0F * width, (float)mHorizBarPos, (float)mRightLimit + 3.0F * width,

@@ -174,7 +174,7 @@ void TE_LoadMissionCB(long, short hittype, C_Base *control)
     C_Button   *btn;
     _TCHAR buffer[MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)control;
@@ -221,7 +221,7 @@ void TE_LoadTrainingMissionCB(long, short hittype, C_Base *control)
     C_Button   *btn;
     _TCHAR buffer[MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)control;
@@ -324,7 +324,7 @@ void GetTacticalFileList()
 
 void TEDelFileCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->HideWindow(control->Parent_); // Close Verify Window
@@ -347,7 +347,7 @@ void TEDelFileCB(long, short hittype, C_Base *control)
 
 void TEDelVerifyCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gLastTEFilename[0])
@@ -356,7 +356,7 @@ void TEDelVerifyCB(long, short hittype, C_Base *)
 
 void tac_flag_btn_cb(long, short hittype, C_Base *ctrl)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (current_tactical_mission)
@@ -378,7 +378,7 @@ void tac_flag_btn_cb(long, short hittype, C_Base *ctrl)
 
 void choose_eng_type_cb(long , short hittype, C_Base *ctrl)
 {
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     short type = static_cast<short>(((C_ListBox *)ctrl)->GetTextID());
@@ -667,7 +667,7 @@ void create_tactical_list(void)
 
 void tactical_team_selection(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (current_tactical_mission)
@@ -679,7 +679,7 @@ void tactical_team_selection(long, short hittype, C_Base *control)
 
 void JoinTacTeamCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (control)
@@ -1031,7 +1031,7 @@ void update_missions_details(long winID)
         }
 
         // Get Mission string
-        if (curflight->GetUnitMission() != AMIS_ABORT)
+        if (curflight->GetUnitMission() not_eq AMIS_ABORT)
         {
             GetMissionTarget(curpackage, curflight, Buffer);
 
@@ -1107,7 +1107,7 @@ void tactical_select_join(long, short hittype, C_Base *ctrl)
     C_Window
     *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -1141,7 +1141,7 @@ void tactical_select_join(long, short hittype, C_Base *ctrl)
 
 void tactical_select_load(long, short hittype, C_Base *ctrl)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -1161,7 +1161,7 @@ void tactical_select_load(long, short hittype, C_Base *ctrl)
 
 void tactical_select_training(long, short hittype, C_Base *ctrl)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }

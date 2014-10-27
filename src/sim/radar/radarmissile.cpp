@@ -111,7 +111,7 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
 
 
     // If we changed locks, update our pointers, otherwise see if its time for another "paint" message
-    if (newLock != lockedTarget)
+    if (newLock not_eq lockedTarget)
     {
         SetDesiredTarget(newLock);
     }
@@ -213,7 +213,7 @@ SimObjectType* RadarMissileClass::ConsiderDecoy(SimObjectType *target, BOOL canG
     id = ((SimBaseClass*)target->BaseData())->NewestChaffID();
 
     // If we have a new chaff bundle to deal with
-    if (id != lastChaffID)
+    if (id not_eq lastChaffID)
     {
         // Stop here if there isn't a counter measure in play
         if (id == FalconNullId)

@@ -28,7 +28,7 @@ void DigitalBrain::GunsJinkCheck(void)
     /* 3. Predicted bullet fire <= 2 seconds.        */
     /*-----------------------------------------------*/
     //me123 lets check is closure is resonable too before goin into jink mode
-    if (curMode != GunsJinkMode)
+    if (curMode not_eq GunsJinkMode)
     {
         if (obj == NULL)
             return;
@@ -182,7 +182,7 @@ void DigitalBrain::GunsJink(void)
     if (jinkTime == -1)
     {
         // Should I jettison stores?
-        if (self->CombatClass() != MnvrClassBomber)
+        if (self->CombatClass() not_eq MnvrClassBomber)
         {
             //Cobra we do this always
             self->Sms->AGJettison();
@@ -270,7 +270,7 @@ void DigitalBrain::GunsJink(void)
     }
 
     // Allow unlimited rolling
-    if (self->CombatClass() != MnvrClassBomber)
+    if (self->CombatClass() not_eq MnvrClassBomber)
         SetMaxRoll(190.0F);
 
     /*---------------------------*/

@@ -746,7 +746,7 @@ int SupplyUnits (Team team)
  while (p)
  {
  who = p->GetTeam();
- if (p->GetDomain() != DOMAIN_AIR or p->GetType() == TYPE_SQUADRON)
+ if (p->GetDomain() not_eq DOMAIN_AIR or p->GetType() == TYPE_SQUADRON)
  {
  sneeded[who] += p->GetUnitSupplyNeed(FALSE);
  fneeded[who] += p->GetUnitFuelNeed(FALSE);
@@ -776,7 +776,7 @@ int SupplyUnits (Team team)
  while (p)
  {
  who = p->GetTeam();
- if (p->GetDomain() != DOMAIN_AIR or p->GetType() == TYPE_SQUADRON)
+ if (p->GetDomain() not_eq DOMAIN_AIR or p->GetType() == TYPE_SQUADRON)
  {
  supply = p->GetUnitSupplyNeed(FALSE) * sratio[who];
  fuel = p->GetUnitFuelNeed(FALSE) * fratio[who];

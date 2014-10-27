@@ -120,7 +120,7 @@ int readTexCodes(char *codeFile)
 
     for (i = 0; i < TEXCODELEN; i++)
     {
-        if ((ret = fscanf(texCodesFile, "%x", &id)) != 1)
+        if ((ret = fscanf(texCodesFile, "%x", &id)) not_eq 1)
             break;
 
         if (id == 0xffff)
@@ -135,7 +135,7 @@ int readTexCodes(char *codeFile)
             return -1;
         }
 
-        if (ret = fscanf(texCodesFile, "%s %*[^\n]", &tempCodes[id * FILENAMELEN]) != 1)
+        if (ret = fscanf(texCodesFile, "%s %*[^\n]", &tempCodes[id * FILENAMELEN]) not_eq 1)
             break;
 
         lid = id;
@@ -166,7 +166,7 @@ int readMap(char *mapFile)
 {
     FILE *in;
 
-    if ((in = OpenCampFile(mapFile, "tm", "rb")) != NULL)
+    if ((in = OpenCampFile(mapFile, "tm", "rb")) not_eq NULL)
     {
         Tiles = new short[Map_Max_X * Map_Max_Y];
 

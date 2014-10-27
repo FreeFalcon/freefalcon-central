@@ -414,14 +414,14 @@ void ObjectLOD::Free(void)
 bool ObjectLOD::UpdateLods(void)
 {
 
-    while (LoadIn != LoadOut or ReleaseIn != ReleaseOut)
+    while (LoadIn not_eq LoadOut or ReleaseIn not_eq ReleaseOut)
     {
         // if something to Load
-        if (LoadOut != LoadIn)
+        if (LoadOut not_eq LoadIn)
         {
             // the amount of data loaded
             DWORD LoadSize = 0;
-            // while( LoadSize < MAX_LOD_LOAD_SIZE && LoadOut != LoadIn){
+            // while( LoadSize < MAX_LOD_LOAD_SIZE && LoadOut not_eq LoadIn){
             ObjectLOD &Lod = TheObjectLODs[CacheLoad[LoadOut++]];
 
             if (!Lod.root && Lod.OnOrder) LoadSize += Lod.Load(), Sleep(20);
@@ -437,7 +437,7 @@ bool ObjectLOD::UpdateLods(void)
             if (RatedLoad) return true;
         }
 
-        if (ReleaseIn != ReleaseOut)
+        if (ReleaseIn not_eq ReleaseOut)
         {
             ObjectLOD &Lod = TheObjectLODs[CacheRelease[ReleaseOut++]];
 

@@ -149,7 +149,7 @@ void MonochromeDisplay::EndDraw(void)
         {
 
             // Copy only those bytes which have changed (since display is accross the slow ISA bus)
-            if (*((char *)(screen_buffer[page] + i)) != *((char *)(screen_buffer[1 - page] + i)))
+            if (*((char *)(screen_buffer[page] + i)) not_eq *((char *)(screen_buffer[1 - page] + i)))
             {
                 *((char *)(FRAME_BUFFER_ADDR + i)) = *((char *)(screen_buffer[page] + i));
             }

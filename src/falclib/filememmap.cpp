@@ -19,9 +19,9 @@ void FileMemMap::Close()
 {
     if (m_Data) UnmapViewOfFile(m_Data);
 
-    if (m_hMap != INVALID_HANDLE_VALUE) CloseHandle(m_hMap);
+    if (m_hMap not_eq INVALID_HANDLE_VALUE) CloseHandle(m_hMap);
 
-    if (m_hFile != INVALID_HANDLE_VALUE) CloseHandle(m_hFile);
+    if (m_hFile not_eq INVALID_HANDLE_VALUE) CloseHandle(m_hFile);
 
     Clear();
 }
@@ -94,7 +94,7 @@ BOOL FileMemMap::ReadDataAt(DWORD offset, void *buffer, DWORD size)
     DWORD bytesRead;
     result = ReadFile(m_hFile, buffer, size, &bytesRead, NULL);
 
-    if (result == -1 or bytesRead != size)
+    if (result == -1 or bytesRead not_eq size)
         return FALSE;
 
     return TRUE;

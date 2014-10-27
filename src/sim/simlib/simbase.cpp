@@ -356,7 +356,7 @@ void SimBaseClass::ChangeOwner(VU_ID new_owner)
     }
 
     // LEON TODO: Fill in various sub class's MakeRemote() functions
-    if (IsLocal() && new_owner != FalconLocalSession->Id())
+    if (IsLocal() && new_owner not_eq FalconLocalSession->Id())
     {
         MakeRemote();
     }
@@ -966,7 +966,7 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
         else
             speaker = SimDriver.GetPlayerEntity()->GetCampaignObject()->GetComponentNumber(1);
 
-        if (speaker && incomingMissile[0] != missile)
+        if (speaker && incomingMissile[0] not_eq missile)
         {
             // 2000-10-02 ADDED BY S.G. Wingman NEEDS TO BE CLOSE TO THE SHOOTER AND NOT DEFENSIVE (UNLESS ACE) BEFORE A LAUNCH WARNING IS SAID
             float dx, dy, dz, rangeSquare;
@@ -983,9 +983,9 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
             if (rangeSquare < 6.0f * NM_TO_FT * 6.0f * NM_TO_FT && // Range is below 6 NM AND
                 (SimDriver.RunningInstantAction() or // We're in instant action (in thise case rangeSquare will be 0 because it's the player) OR
                  ((SimVehicleClass *)speaker)->Brain()->SkillLevel() == 4 or // Skill of wingman is ace OR
-                 (((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode() != DigitalBrain::GunsJinkMode && // Wingman not defensive
-                  ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode()  != DigitalBrain::MissileDefeatMode &&
-                  ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode()  != DigitalBrain::DefensiveModes)))
+                 (((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode() not_eq DigitalBrain::GunsJinkMode && // Wingman not defensive
+                  ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode()  not_eq DigitalBrain::MissileDefeatMode &&
+                  ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode()  not_eq DigitalBrain::DefensiveModes)))
             {
 
                 // END OF ADDED SECTION EXCEPT FOR THE INDENTATION OF THE FOLLOWING CODE
@@ -1509,7 +1509,7 @@ void SimBaseClass::SetCountry(int newSide)
 
 void SimBaseClass::SetNewestChaffID(VU_ID id)
 {
-    if (specialData.ChaffID != id)
+    if (specialData.ChaffID not_eq id)
     {
         specialData.ChaffID = id;
         //MakeSimBaseDirty (DIRTY_SIM_CHAFF, DDP[166].priority);
@@ -1523,7 +1523,7 @@ void SimBaseClass::SetNewestChaffID(VU_ID id)
 
 void SimBaseClass::SetNewestFlareID(VU_ID id)
 {
-    if (specialData.FlareID != id)
+    if (specialData.FlareID not_eq id)
     {
         specialData.FlareID = id;
         //MakeSimBaseDirty (DIRTY_SIM_FLARE, DDP[167].priority);
@@ -1537,7 +1537,7 @@ void SimBaseClass::SetNewestFlareID(VU_ID id)
 
 void SimBaseClass::SetStatus(int status)
 {
-    if (specialData.status != status)
+    if (specialData.status not_eq status)
     {
         specialData.status = status;
         MakeSimBaseDirty(DIRTY_SIM_STATUS, SEND_SOON);
@@ -1608,7 +1608,7 @@ void SimBaseClass::SetPowerOutput(float powerOutput)
 
 void SimBaseClass::SetRdrAz(float az)
 {
-    if (specialData.rdrAz != az)
+    if (specialData.rdrAz not_eq az)
     {
         specialData.rdrAz = az;
         //MakeSimBaseDirty (DIRTY_SIM_RADAR, DDP[172].priority);
@@ -1622,7 +1622,7 @@ void SimBaseClass::SetRdrAz(float az)
 
 void SimBaseClass::SetRdrEl(float el)
 {
-    if (specialData.rdrEl != el)
+    if (specialData.rdrEl not_eq el)
     {
         specialData.rdrEl = el;
         //MakeSimBaseDirty (DIRTY_SIM_RADAR, DDP[173].priority);
@@ -1637,7 +1637,7 @@ void SimBaseClass::SetRdrEl(float el)
 void SimBaseClass::SetRdrAzCenter(float az)
 {
     // This _SHOULD_ be used by the RWR but isn't currently...
-    // if (specialData.rdrAzCenter != az)
+    // if (specialData.rdrAzCenter not_eq az)
     // {
     // MakeSimBaseDirty (DIRTY_SIM_RADAR, SEND_SOON);
     // }
@@ -1652,7 +1652,7 @@ void SimBaseClass::SetRdrAzCenter(float az)
 void SimBaseClass::SetRdrElCenter(float el)
 {
     // This _SHOULD_ be used by the RWR but isn't currently...
-    // if (specialData.rdrElCenter != el)
+    // if (specialData.rdrElCenter not_eq el)
     // {
     // MakeSimBaseDirty (DIRTY_SIM_RADAR, SEND_SOON);
     // }
@@ -1666,7 +1666,7 @@ void SimBaseClass::SetRdrElCenter(float el)
 
 void SimBaseClass::SetRdrCycleTime(float cycle)
 {
-    if (specialData.rdrCycleTime != cycle)
+    if (specialData.rdrCycleTime not_eq cycle)
     {
         specialData.rdrCycleTime = cycle;
         //MakeSimBaseDirty (DIRTY_SIM_RADAR_SLOW, DDP[174].priority);
@@ -1677,7 +1677,7 @@ void SimBaseClass::SetRdrCycleTime(float cycle)
 void SimBaseClass::SetRdrRng(float rng)
 {
 
-    if (specialData.rdrNominalRng != rng)
+    if (specialData.rdrNominalRng not_eq rng)
     {
         specialData.rdrNominalRng = rng;
         //MakeSimBaseDirty (DIRTY_SIM_RADAR_SLOW, DDP[175].priority);
@@ -1702,7 +1702,7 @@ void SimBaseClass::SetKias (float)
 
 void SimBaseClass::SetAfterburnerStage(int s)
 {
-    if (specialData.afterburner_stage != s)
+    if (specialData.afterburner_stage not_eq s)
     {
         specialData.afterburner_stage = static_cast<uchar>(s);
         //MakeSimBaseDirty (DIRTY_SIM_AFTERBURNER, DDP[176].priority);

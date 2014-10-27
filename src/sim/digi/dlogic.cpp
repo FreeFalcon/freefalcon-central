@@ -46,7 +46,7 @@ void DigitalBrain::DecisionLogic(void)
     CampBaseClass *diverttarget = NULL;
     SimBaseClass *airtarget = NULL;
 
-    if (curMode != LandingMode && agApproach != AGA_DIVE) // Cobra - Let rocket and strafing attacks take care of avoidance
+    if (curMode not_eq LandingMode && agApproach not_eq AGA_DIVE) // Cobra - Let rocket and strafing attacks take care of avoidance
         GroundCheck();
     else
         groundAvoidNeeded = FALSE;
@@ -86,10 +86,10 @@ void DigitalBrain::DecisionLogic(void)
 
                 if (airtarget) // it's a new one no other flight member has chosen yet
                 {
-                    if (airtargetPtr != NULL)
+                    if (airtargetPtr not_eq NULL)
                     {
                         // release existing target data if different object
-                        if (airtargetPtr->BaseData() != airtarget)
+                        if (airtargetPtr->BaseData() not_eq airtarget)
                         {
                             airtargetPtr->Release();
                             airtargetPtr = NULL;
@@ -210,7 +210,7 @@ void DigitalBrain::DecisionLogic(void)
     // MODIFIED BY S.G. SO AI CAN STILL DEFEND THEMSELF WHEN RETURNING TO BASE (ODDLY ENOUGH, LandingMode IS WHEN RTBing
     //  if((!isWing or mWeaponsAction == AI_WEAPONS_FREE) && targetPtr && curMode > DefensiveModes &&
     if ((!isWing or mWeaponsAction == AI_WEAPONS_FREE) && targetPtr && (curMode > DefensiveModes or curMode == LandingMode) &&
-        (curMode != WaypointMode or agDoctrine == AGD_NONE))
+        (curMode not_eq WaypointMode or agDoctrine == AGD_NONE))
     {
         // Weapon selection
         WeaponSelection();
@@ -332,10 +332,10 @@ void DigitalBrain::RunDecisionRoutines(void)
             // still look if we have still a weapon before checking for an engagement
             // 2002-04-14 MN saw a flight lead in TakeoffMode asking wingman to engage,
             //wingy taxied to the target...
-            if (g_bCheckForMode && curMode != TakeoffMode)
+            if (g_bCheckForMode && curMode not_eq TakeoffMode)
             {
-                if ((g_bAGNoBVRWVR && ((missionClass == AAMission or missionComplete) && maxAAWpnRange != 0.0F))
-                    or maxAAWpnRange != 0.0F)
+                if ((g_bAGNoBVRWVR && ((missionClass == AAMission or missionComplete) && maxAAWpnRange not_eq 0.0F))
+                    or maxAAWpnRange not_eq 0.0F)
                 {
                     WvrEngageCheck();
                     BvrEngageCheck();
@@ -343,8 +343,8 @@ void DigitalBrain::RunDecisionRoutines(void)
             }
             else
             {
-                if ((g_bAGNoBVRWVR && ((missionClass == AAMission or missionComplete) && maxAAWpnRange != 0.0F))
-                    or maxAAWpnRange != 0.0F)
+                if ((g_bAGNoBVRWVR && ((missionClass == AAMission or missionComplete) && maxAAWpnRange not_eq 0.0F))
+                    or maxAAWpnRange not_eq 0.0F)
                 {
                     WvrEngageCheck();
                     BvrEngageCheck();
@@ -379,10 +379,10 @@ void DigitalBrain::PrtMode(void)
     unsigned long tid;
 
     // for only checking ownship....
-    if (self != SimDriver.GetPlayerEntity())
+    if (self not_eq SimDriver.GetPlayerEntity())
         return;
 
-    if (curMode != lastMode)
+    if (curMode not_eq lastMode)
     {
         if (targetPtr)
             tid = targetPtr->BaseData()->Id();
@@ -485,8 +485,8 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
     // 2000-10-09 REMOVED BY S.G. BECAUSE OF THIS, AI WON'T SWITCH TARGET WHEN ASKED
     // No targeting when on ground attack run(i.e. After IP)
     // 2001-05-05 MODIFIED BY S.G. LETS TRY SOMETHING ELSE INSTEAD
-    //if (agDoctrine != AGD_NONE && !madeAGPass)
-    if (newTarget && newTarget->BaseData()->GetTeam() == self->GetTeam() && (agDoctrine != AGD_NONE or missionComplete))
+    //if (agDoctrine not_eq AGD_NONE && !madeAGPass)
+    if (newTarget && newTarget->BaseData()->GetTeam() == self->GetTeam() && (agDoctrine not_eq AGD_NONE or missionComplete))
     {
         return;
     }
@@ -494,13 +494,13 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
     // 2000-09-21 ADDED BY S.G. DON'T CHANGE TARGET IF WE ARE SUPPORTING OUR SARH MISSILE DAMN IT!
     // TODO: Check if 'HandleThreat' is not screwing stuff since it calls WVREngage DIRECTLY
     if (newTarget && // Assigning a target
-        newTarget != targetPtr && // It's a new target
+        newTarget not_eq targetPtr && // It's a new target
         missileFiredEntity && // we launched a missile already
         !((SimWeaponClass *)missileFiredEntity)->IsDead() && // it's not dead
         ((SimWeaponClass *)missileFiredEntity)->targetPtr && // it's still homing to a target
         ((SimWeaponClass *)missileFiredEntity)->sensorArray && // the missile is local (it has a sensor array)
         (((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming &&
-         ((SimWeaponClass *)missileFiredEntity)->GetSPType() != SPTYPE_AIM120)) // It's still being guided by us
+         ((SimWeaponClass *)missileFiredEntity)->GetSPType() not_eq SPTYPE_AIM120)) // It's still being guided by us
     {
         return; // That's it, don't change target (support your missile)
     }
@@ -509,10 +509,10 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
 
     // Tell someone we're enaging/want to engage an air target of our own volition
     if (newTarget && // Assigning a target
-        newTarget != targetPtr && // It's a new target
+        newTarget not_eq targetPtr && // It's a new target
         !newTarget->BaseData()->OnGround() && // It's not on the ground
         (!mpActionFlags[AI_ENGAGE_TARGET] && missionClass == AAMission or missionComplete) && // We're not busy doing A/G stuff
-        newTarget != threatPtr && // It's not a threat we're reacting to
+        newTarget not_eq threatPtr && // It's not a threat we're reacting to
         isWing && // We're a wingy
         mDesignatedObject == FalconNullId && // We're not being directed
         !self->OnGround()) // We're in the air
@@ -549,7 +549,7 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
 
             return;
         }
-        else if (newTarget && (targetPtr == NULL or (newTarget->BaseData() != targetPtr->BaseData())) && newTarget->localData->range < 2.0F * NM_TO_FT)
+        else if (newTarget && (targetPtr == NULL or (newTarget->BaseData() not_eq targetPtr->BaseData())) && newTarget->localData->range < 2.0F * NM_TO_FT)
         {
             ClearATCFlag(AskedToEngage);
             // 2000-09-25 ADDED BY S.G. NEED TO FORCE THE AI TO SHOOT RIGHT AWAY
@@ -631,14 +631,14 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
         // presumably if we're setting to a new target here, we want to
         // clear the air target (?)
         ClearTarget();
-        //ShiAssert(curMode != GunsEngageMode);
+        //ShiAssert(curMode not_eq GunsEngageMode);
         SetGroundTargetPtr(newTarget);
         return;
     }
 
     // sfr: back to 0 so AI can fire weapons
     // RV - Biker - Don't think this is good idea to do without check for weapons hold
-    if (newTarget != targetPtr)
+    if (newTarget not_eq targetPtr)
     {
         missileShotTimer = 0;//SimLibElapsedTime + 30 * SEC_TO_MSEC;
     }
@@ -665,7 +665,7 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
             }
             else if (
                 !curMissile ||
-                (curMissile->sensorArray && curMissile->sensorArray[0]->Type() != SensorClass::IRST)
+                (curMissile->sensorArray && curMissile->sensorArray[0]->Type() not_eq SensorClass::IRST)
             )
             {
                 theRadar->SetDesiredTarget(newTarget);
@@ -680,7 +680,7 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
         {
             ShiAssert(self->sensorArray[i]);
 
-            if (self->sensorArray[i]->Type() != SensorClass::TargetingPod)
+            if (self->sensorArray[i]->Type() not_eq SensorClass::TargetingPod)
             {
                 self->sensorArray[i]->SetDesiredTarget(targetPtr);
             }
@@ -739,7 +739,7 @@ void DigitalBrain::AddMode(DigiMode newMode)
     //TJL 11/08/03
     // Keep BugoutMode set, but allow for MissileDefeat to override.
 
-    if (nextMode == BugoutMode && newMode != MissileDefeatMode)
+    if (nextMode == BugoutMode && newMode not_eq MissileDefeatMode)
         return;
 
 
@@ -764,7 +764,7 @@ void DigitalBrain::AddMode(DigiMode newMode)
 
 void DigitalBrain::ResolveModeConflicts(void)
 {
-    if (threatPtr == NULL && curMode != WVREngageMode)
+    if (threatPtr == NULL && curMode not_eq WVREngageMode)
     {
         wvrCurrTactic = WVR_NONE;
         wvrPrevTactic = WVR_NONE;
@@ -783,7 +783,7 @@ void DigitalBrain::ResolveModeConflicts(void)
 
     //we appear to be getting distracted while landing
     //ShiAssert( (atcstatus == noATC) or (curMode == LandingMode or curMode == TakeoffMode or curMode == WaypointMode) );
-    if (atcstatus != noATC && curMode != LandingMode && curMode != TakeoffMode && curMode != WaypointMode)
+    if (atcstatus not_eq noATC && curMode not_eq LandingMode && curMode not_eq TakeoffMode && curMode not_eq WaypointMode)
     {
         SendATCMsg(noATC);
         ResetATC();
@@ -809,7 +809,7 @@ void DigitalBrain::FireControl(void)
     }
 
     // Are we cleared to fire?
-    if (curMode != MissileEngageMode && !mWeaponsAction == AI_WEAPONS_FREE)
+    if (curMode not_eq MissileEngageMode && !mWeaponsAction == AI_WEAPONS_FREE)
     {
         return;
     }
@@ -817,7 +817,7 @@ void DigitalBrain::FireControl(void)
     // 2000-09-20 S.G. I CHANGED THE CODE SO ONLY ONE AIRPLANE CAN LAUNCH AT ANOTHER AIRPLANE (SAME CODE I ADDED TO 'TargetSelection')
     // me123 commented out for now. it seems the incomign missiles are not getting cleared !
     // 2001-08-31 S.G. FIXED PREVIOUS CODE WAS ASSUMING targetPtr WAS ALWAYS A SIM. IT CAN BE A CAMPAIGN OBJECT AS WELL, HENCE THE CTD.
-    // if ((((SimBaseClass *)targetPtr->BaseData())->incomingMissile && ((SimWeaponClass *)((SimBaseClass *)targetPtr->BaseData())->incomingMissile)->parent != self))
+    // if ((((SimBaseClass *)targetPtr->BaseData())->incomingMissile && ((SimWeaponClass *)((SimBaseClass *)targetPtr->BaseData())->incomingMissile)->parent not_eq self))
     if ((targetPtr->BaseData()->IsAirplane() && ((SimBaseClass *)targetPtr->BaseData())->incomingMissile[1]) or (!targetPtr->BaseData()->IsAirplane() && ((SimBaseClass *)targetPtr->BaseData())->incomingMissile[0]))
         return;
 
@@ -841,9 +841,9 @@ void DigitalBrain::FireControl(void)
 
     if // stuff like mavs has 20 degree off bore cabability
     (
-        curMissile->sensorArray[0]->Type() != SensorClass::RadarHoming &&
-        curMissile->sensorArray[0]->Type() != SensorClass::Radar &&
-        curMissile->sensorArray[0]->Type() != SensorClass::IRST &&
+        curMissile->sensorArray[0]->Type() not_eq SensorClass::RadarHoming &&
+        curMissile->sensorArray[0]->Type() not_eq SensorClass::Radar &&
+        curMissile->sensorArray[0]->Type() not_eq SensorClass::IRST &&
         targetData->ata > 20.0f * DTR
     )
         return;
@@ -870,11 +870,11 @@ void DigitalBrain::FireControl(void)
 
     // ADDED BY S.G. TO MAKE SURE WE DON'T FIRE BEAM RIDER IF THE MAIN RADAR IS JAMMED (NEW: USES SensorTrack INSTEAD of noTrack)
     if (curMissile->sensorArray && curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming
-        /*&& curMissile->GetSPType() != SPTYPE_AIM120*/ ||
+        /*&& curMissile->GetSPType() not_eq SPTYPE_AIM120*/ ||
         curMissile->sensorArray[0]->Type() == SensorClass::Radar)
     {
         // Find the radar attached to us
-        if (targetPtr->localData->sensorState[SensorClass::Radar] != SensorClass::SensorTrack)
+        if (targetPtr->localData->sensorState[SensorClass::Radar] not_eq SensorClass::SensorTrack)
         {
             return;
         }
@@ -955,7 +955,7 @@ int DigitalBrain::SelectFlightModel(void)
     }
 
     // override if we're deling with a threat
-    if (threatPtr != NULL)
+    if (threatPtr not_eq NULL)
     {
         return SIMPLE_MODE_OFF;
     }

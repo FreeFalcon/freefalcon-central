@@ -64,7 +64,7 @@ static void SetACTypeCB(long ID, short hittype, C_Base *)
     C_Dog_Flight *dfflight = NULL;
     Flight        flt = NULL;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     LoadDfPlanes();
@@ -163,7 +163,7 @@ static void TeamJoinCB(long, short hittype, C_Base *)
     C_Pilot      *pilot;
     Flight        flt;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     LoadDfPlanes();
@@ -253,7 +253,7 @@ static void DeleteFlightCB(long, short hittype, C_Base *)
     C_Dog_Flight *dfflight;
     Flight        flt;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)gPopupMgr->GetCallingControl();
@@ -286,7 +286,7 @@ static void DeletePilotCB(long, short hittype, C_Base *)
     C_Pilot    *pilot;
     Flight      flt;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)gPopupMgr->GetCallingControl();
@@ -322,7 +322,7 @@ static void AddAIToFlightCB(long ID, short hittype, C_Base *)
     Flight        flt;
     uchar SkillLevel;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     switch (ID)
@@ -381,7 +381,7 @@ static void AddAIPilotCB(long ID, short hittype, C_Base *)
     Flight        flt;
     uchar SkillLevel;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     switch (ID)
@@ -446,7 +446,7 @@ static void SetAIPilotSkillCB(long ID, short hittype, C_Base *)
     Flight        flt;
     short SkillLevel;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     switch (ID)
@@ -504,7 +504,7 @@ static void SetAIPilotSkillCB(long ID, short hittype, C_Base *)
 
 static void SetFlightLeadCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gPopupMgr->CloseMenu();

@@ -56,7 +56,7 @@ void FireControlComputer::HarmMode(void)
 
         if (theHTS->CurrentTarget())
         {
-            if (!targetPtr or targetPtr->BaseData() != theHTS->CurrentTarget()->BaseData())
+            if (!targetPtr or targetPtr->BaseData() not_eq theHTS->CurrentTarget()->BaseData())
             {
                 SetTarget(theHTS->CurrentTarget());
             }

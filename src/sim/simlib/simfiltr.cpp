@@ -17,7 +17,7 @@ int SimCompare(VuEntity *ent1, VuEntity *ent2)
 {
     int retval = 0;
 
-    if (ent1 && ent2 && ent1->Id() != ent2->Id())
+    if (ent1 && ent2 && ent1->Id() not_eq ent2->Id())
     {
         retval = (ent2->Id() > ent1->Id() ? 1 : -1);
     }
@@ -307,12 +307,12 @@ VU_BOOL SimSurfaceFilter::Test (VuEntity* ent1)
  VuEntityType* classPtr = ent1->EntityType();
  if (classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE)
  {
- if (domain != DOMAIN_ANY)
+ if (domain not_eq DOMAIN_ANY)
  {
  if (classPtr->classInfo_[VU_DOMAIN] == domain)
  return TRUE;
  }
- else if (classPtr->classInfo_[VU_DOMAIN] != DOMAIN_AIR)
+ else if (classPtr->classInfo_[VU_DOMAIN] not_eq DOMAIN_AIR)
  return TRUE;
  }
  }
@@ -350,10 +350,10 @@ SimAirfieldFilter::~SimAirfieldFilter(void)
 
 VU_BOOL SimAirfieldFilter::Test(VuEntity* e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_OBJECTIVE)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
         return FALSE;
 
-    if ((e->EntityType())->classInfo_[VU_TYPE] != TYPE_AIRBASE)
+    if ((e->EntityType())->classInfo_[VU_TYPE] not_eq TYPE_AIRBASE)
         return FALSE;
 
     return TRUE;
@@ -465,7 +465,7 @@ double t1, t2;
    t1 = ((SimPersistantClass*)ent1)->RemovalTime();
    t2 = ((SimPersistantClass*)ent2)->RemovalTime();
 
-   if (t1 != t2)
+   if (t1 not_eq t2)
    {
       retval = (t2 > t1 ? 1 : -1);
    }

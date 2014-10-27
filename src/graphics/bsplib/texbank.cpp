@@ -269,7 +269,7 @@ void TextureBankClass::Reference(int id)
     {
         ShiAssert(TexFileMap.IsReady());
         ShiAssert(CompressedBuffer);
-        if(TexturePool[id].tex.imageData != NULL)
+        if(TexturePool[id].tex.imageData not_eq NULL)
             return;
         ShiAssert(TexturePool[id].tex.TexHandle() == NULL);
 
@@ -806,11 +806,11 @@ bool TextureBankClass::UpdateBank(void)
     DWORD id;
 
     // till when data to update into caches
-    while (LoadIn != LoadOut or ReleaseIn != ReleaseOut)
+    while (LoadIn not_eq LoadOut or ReleaseIn not_eq ReleaseOut)
     {
 
         // check for textures to be released
-        if (ReleaseIn != ReleaseOut)
+        if (ReleaseIn not_eq ReleaseOut)
         {
             // get the 1st texture Id from cache
             id = CacheRelease[ReleaseOut++];
@@ -829,7 +829,7 @@ bool TextureBankClass::UpdateBank(void)
         }
 
         // check for textures to be released
-        if (LoadIn != LoadOut)
+        if (LoadIn not_eq LoadOut)
         {
             // get the 1st texture Id from cache
             id = CacheLoad[LoadOut++];

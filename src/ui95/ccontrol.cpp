@@ -728,7 +728,7 @@ BOOL C_Control::MouseOver(long relx, long rely, C_Base *me)
 
     if (relx >= GetX() && rely >= GetY() && relx <= (GetX() + GetW()) && rely <= GetY() + GetH())
     {
-        if ((C_Base*)this != me)
+        if ((C_Base*)this not_eq me)
             gSoundMgr->PlaySound(GetSound(C_TYPE_MOUSEOVER));
 
         return(TRUE);

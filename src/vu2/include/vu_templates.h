@@ -1,5 +1,6 @@
 #ifndef VU_TEMPLATES_H
 #define VU_TEMPLATES_H
+#include <cISO646>
 
 /** @file vu_templates.h templates for VU. */
 
@@ -49,7 +50,7 @@ public:
     }
     operator bool() const
     {
-        return e != NULL;
+        return e not_eq NULL;
     }
 
     /** returns the dumb pointer */
@@ -95,7 +96,7 @@ template <class E> bool operator==(const void* le, const VuBin<E> &re)
 /** difference between void * and a VuBin */
 template <class E> bool operator!=(const void* le, const VuBin<E> &re)
 {
-    return ((void*)re.get()) != le;
+    return ((void*)re.get()) not_eq le;
 }
 
 

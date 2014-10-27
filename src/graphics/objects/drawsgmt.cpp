@@ -863,7 +863,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
                                 if (n->lodBit & LODPattern[LOD])
                                 {
 
-                                    if (prevnodetype != n->Type)
+                                    if (prevnodetype not_eq n->Type)
                                     {
                                         prevnodetype = n->Type;
 
@@ -1561,7 +1561,7 @@ void LoadTrails()
         if (sscanf(path, "%d %g %g %g %g %g %g %g %g %g %g %g",
                    &ind,
                    &initLight, &lightFade, &tileAmt, &radiusStart,
-                   &maxRadius, &expandRate, &disipation, &r, &g, &b, &a) != 12)
+                   &maxRadius, &expandRate, &disipation, &r, &g, &b, &a) not_eq 12)
             continue;
 
         if (ind < 0 or ind >= nTypes)

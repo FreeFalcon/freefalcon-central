@@ -57,7 +57,7 @@ int FalconPrivateOrderedList::PrivateInsert(VuEntity *entity)
 
 int FalconPrivateOrderedList::ForcedInsert(VuEntity *entity)
 {
-    for (list<VuEntityBin>::iterator it = l_.begin(); it != l_.end(); ++it)
+    for (list<VuEntityBin>::iterator it = l_.begin(); it not_eq l_.end(); ++it)
     {
         VuEntityBin &eb = *it;
 
@@ -178,7 +178,7 @@ int FalconPrivateOrderedList::Insert(VuEntity *entity)
 
 int FalconPrivateOrderedList::ForcedInsert(VuEntity *entity)
 {
-    for (list<VuEntityBin>::iterator it = l_.begin(); it != l_.end(); ++it)
+    for (list<VuEntityBin>::iterator it = l_.begin(); it not_eq l_.end(); ++it)
     {
         VuEntityBin &eb = *it;
 

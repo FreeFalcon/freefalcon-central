@@ -41,7 +41,7 @@ void TestSoundCB(long, short hittype, C_Base *ctrl)
     long itemID;
     SOUND_RES *snd;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     lbox = (C_ListBox*)ctrl;
@@ -65,7 +65,7 @@ void TestSoundCB(long, short hittype, C_Base *ctrl)
 
 void UI_Help_Guide_CB(long, short hittype, C_Base *ctrl)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (ctrl->GetGroup())

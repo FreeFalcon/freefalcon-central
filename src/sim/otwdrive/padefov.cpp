@@ -76,7 +76,7 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
     visObj = ((SimMoverClass*)otwPlatform.get())->targetList;
 
     // Walk the target list and search for the padlock priority object
-    while (visObj != NULL && found == FALSE)
+    while (visObj not_eq NULL && found == FALSE)
     {
 
         // If the padlock priority object is in the list safe some important angle values.
@@ -359,7 +359,7 @@ void OTWDriverClass::PadlockEFOV_DrawBox(
     {
         tmpStr[0] = 0;
 
-        if ((bcBSP = (DrawableBSP *)base->drawPointer) != NULL)
+        if ((bcBSP = (DrawableBSP *)base->drawPointer) not_eq NULL)
         {
             sprintf(tmpStr, "%s", bcBSP->Label());
         }

@@ -246,7 +246,7 @@ BOOL DeviceManager::ChooseDevice(int *usrDrvNum, int *usrDevNum, int *usrWidth)
     MessageBox(NULL, "Click OK when you've made your device choice", "", MB_OK);
 
     listSlot = SendMessage(listWin, LB_GETCURSEL, 0, 0);
-    ShiAssert(listSlot != LB_ERR);
+    ShiAssert(listSlot not_eq LB_ERR);
     packedNum = SendMessage(listWin, LB_GETITEMDATA, listSlot, 0);
     devNum  = (packedNum >> 24) & 0xFF;
     drvNum  = (packedNum >> 8)  & 0xFFFF;
@@ -758,7 +758,7 @@ bool DXContext::SetRenderTarget(IDirectDrawSurface7 *pRenderTarget)
             //JAM 17Dec03
             IDirectDrawSurface7Ptr pDDS;
 
-            if (FAILED(m_pD3DD->GetRenderTarget(&pDDS)) or pDDS.GetInterfacePtr() != pRenderTarget)
+            if (FAILED(m_pD3DD->GetRenderTarget(&pDDS)) or pDDS.GetInterfacePtr() not_eq pRenderTarget)
             {
                 IDirectDrawSurface7Ptr pRenderTargetOld;
                 CheckHR(m_pD3DD->GetRenderTarget(&pRenderTargetOld));
@@ -839,7 +839,7 @@ void DXContext::AttachDepthBuffer(IDirectDrawSurface7 *p)
 
         PIXELFMT_ARRAY::iterator it;
 
-        for (it = arrZBFmts.begin(); it != arrZBFmts.end(); it++)
+        for (it = arrZBFmts.begin(); it not_eq arrZBFmts.end(); it++)
         {
             // RV - RED - OK, Restored old original Code, seems the Stencil search causes a 25% FPS drop, dunno why
             // as we use the setncil on a surface not having it now
@@ -1035,14 +1035,14 @@ DWORD DXContext::TestCooperativeLevel()
 {
     HRESULT hr = m_pDD->TestCooperativeLevel();
 
-    if (hr != DD_OK)
+    if (hr not_eq DD_OK)
     {
         do
         {
             Sleep(100);
             hr = m_pDD->TestCooperativeLevel();
         }
-        while (hr != DD_OK);
+        while (hr not_eq DD_OK);
 
         return S_FALSE; // surface were lost
     }

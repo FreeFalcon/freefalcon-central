@@ -40,6 +40,7 @@ DO_NOT_WORK_AROUND_SRCLINE_BUG - Define this to NOT work around the
 #ifndef _SYMBOLENGINE_H
 #define _SYMBOLENGINE_H
 
+#include <cISO646>
 #include "imagehlp.h"
 #include <tchar.h>
 
@@ -277,7 +278,7 @@ public      :
     BOOL CanDoSourceLines(void)
     {
 #ifdef SYMENG_EXTRAWORK
-        return (NULL != m_pfnSymGetLineFromAddr) ;
+        return (NULL not_eq m_pfnSymGetLineFromAddr) ;
 #else
         return (TRUE) ;
 #endif  // SYMENG_EXTRAWORK
@@ -545,7 +546,7 @@ public      :
 
         // It was found and the source line information is correct so
         //  change the displacement if it was looked up multiple times.
-        if (0 != dwTempDis)
+        if (0 not_eq dwTempDis)
         {
             *pdwDisplacement = dwTempDis ;
         }

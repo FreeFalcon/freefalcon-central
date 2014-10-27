@@ -724,7 +724,7 @@ int ObjectiveClass::Deaggregate(FalconSessionEntity *session)
     simdata.campBase = this;
     simdata.createFlags = SIDC_SILENT_INSERT;
 
-    if (session != FalconLocalSession)
+    if (session not_eq FalconLocalSession)
     {
         simdata.createFlags  or_eq  SIDC_REMOTE_OWNER;
         simdata.owner = session;
@@ -815,7 +815,7 @@ int ObjectiveClass::RecordCurrentState(FalconSessionEntity *session, int)
         int f;
         VuListIterator myit(GetComponents());
 
-        for (feature = myit.GetFirst(); feature != NULL; feature = next)
+        for (feature = myit.GetFirst(); feature not_eq NULL; feature = next)
         {
             next = myit.GetNext();
             f = ((SimBaseClass*)feature)->GetSlot();
@@ -1082,7 +1082,7 @@ void ObjectiveClass::DeaggregateFromData(VU_BYTE* data, long size)
     simdata.campBase = this;
     simdata.createFlags = SIDC_SILENT_INSERT | SIDC_FORCE_ID;
 
-    if (session != FalconLocalSession)
+    if (session not_eq FalconLocalSession)
     {
         simdata.createFlags  or_eq  SIDC_REMOTE_OWNER;
         simdata.owner = session;
@@ -1186,7 +1186,7 @@ void ObjectiveClass::ReaggregateFromData(VU_BYTE* data, long size)
 
             for (
                 feature = myit.GetFirst();
-                feature != NULL;
+                feature not_eq NULL;
                 feature = nextFeature
             )
             {
@@ -1399,7 +1399,7 @@ int ObjectiveClass::ApplyDamage(DamType d, int *str, int f, short flags)
             // Find something to bomb
             for (fid = 0, f = 255; fid < static_data.class_data->Features && f >= static_data.class_data->Features ; fid++)
             {
-                if (GetFeatureStatus(fid) != VIS_DESTROYED && GetFeatureClassData(GetFeatureID(fid))->DamageMod[d] > 0)
+                if (GetFeatureStatus(fid) not_eq VIS_DESTROYED && GetFeatureClassData(GetFeatureID(fid))->DamageMod[d] > 0)
                     f = fid;
             }
 
@@ -1424,11 +1424,11 @@ int ObjectiveClass::ApplyDamage(DamType d, int *str, int f, short flags)
 
             this_pass = 1;
 
-            //if (s != VIS_DESTROYED && *str > rand()%hp)
-            if (s != VIS_DESTROYED && (hp == 0 or *str > rand() % hp)) // JB 010401 CTD
+            //if (s not_eq VIS_DESTROYED && *str > rand()%hp)
+            if (s not_eq VIS_DESTROYED && (hp == 0 or *str > rand() % hp)) // JB 010401 CTD
                 s = VIS_DESTROYED;
-            //else if (s != VIS_DESTROYED && s != VIS_DAMAGED && *str > rand()%(hp/2))
-            else if (s != VIS_DESTROYED && s != VIS_DAMAGED && (hp < 2 or *str > rand() % (hp / 2))) // JB 010401 CTD
+            //else if (s not_eq VIS_DESTROYED && s not_eq VIS_DAMAGED && *str > rand()%(hp/2))
+            else if (s not_eq VIS_DESTROYED && s not_eq VIS_DAMAGED && (hp < 2 or *str > rand() % (hp / 2))) // JB 010401 CTD
                 s = VIS_DAMAGED;
             else
             {
@@ -1551,7 +1551,7 @@ void ObjectiveClass::Repair(void)
     int repair, bf;
     CampaignTime time;
 
-    if (GetObjectiveStatus() != 100)
+    if (GetObjectiveStatus() not_eq 100)
     {
         time = Camp_GetCurrentTime() - GetObjectiveRepairTime();
         repair = time / CampaignHours;
@@ -1645,7 +1645,7 @@ int ObjectiveClass::GetDetectionRange(int mt)
 
     ShiAssert(oc);
 
-    if (IsEmitting() && oc->RadarFeature < 255 && GetFeatureStatus(oc->RadarFeature) != VIS_DESTROYED)
+    if (IsEmitting() && oc->RadarFeature < 255 && GetFeatureStatus(oc->RadarFeature) not_eq VIS_DESTROYED)
         // 2001-04-21 MODIFIED BY S.G. ABOVE 250 HAS A NEW MEANING SO USE THE UNIT ELECTRONIC DETECTION RANGE INSTEAD...
         // dr = oc->Detection[mt];
     {
@@ -1662,7 +1662,7 @@ int ObjectiveClass::GetDetectionRange(int mt)
 
 int ObjectiveClass::GetElectronicDetectionRange(int mt)
 {
-    if (static_data.class_data->RadarFeature < 255 && GetFeatureStatus(static_data.class_data->RadarFeature) != VIS_DESTROYED)
+    if (static_data.class_data->RadarFeature < 255 && GetFeatureStatus(static_data.class_data->RadarFeature) not_eq VIS_DESTROYED)
         // 2001-04-21 MODIFIED BY S.G. ABOVE 250 HAS A NEW MEANING SO USE THE UNIT ELECTRONIC DETECTION RANGE INSTEAD...
         // return static_data.class_data->Detection[mt];
     {
@@ -2340,10 +2340,10 @@ void ObjectiveClass::SetFeatureStatus(int f, int n, int from)
     // Check for critical links and set those features accordingly.
     if (n == VIS_DESTROYED or n == VIS_REPAIRED)
     {
-        if (from != f - 1 && (FeatureEntryDataTable[static_data.class_data->FirstFeature + f].Flags & FEAT_PREV_CRIT))
+        if (from not_eq f - 1 && (FeatureEntryDataTable[static_data.class_data->FirstFeature + f].Flags & FEAT_PREV_CRIT))
             SetFeatureStatus(f - 1, n, f);
 
-        if (from != f + 1 && (FeatureEntryDataTable[static_data.class_data->FirstFeature + f].Flags & FEAT_NEXT_CRIT))
+        if (from not_eq f + 1 && (FeatureEntryDataTable[static_data.class_data->FirstFeature + f].Flags & FEAT_NEXT_CRIT))
             SetFeatureStatus(f + 1, n, f);
     }
 
@@ -2465,7 +2465,7 @@ void ObjectiveClass::ResetObjectiveStatus(void)
         for (f = 0; s && f < static_data.class_data->Features; f++)
         {
             // Only adjust status for non-runways
-            if (Falcon4ClassTable[GetFeatureID(f)].vuClassData.classInfo_[VU_TYPE] != TYPE_RUNWAY) // (IS_RUNWAY)
+            if (Falcon4ClassTable[GetFeatureID(f)].vuClassData.classInfo_[VU_TYPE] not_eq TYPE_RUNWAY) // (IS_RUNWAY)
             {
                 if (GetFeatureStatus(f) == VIS_DAMAGED)
                     s -= GetFeatureValue(f) / 2;
@@ -2521,7 +2521,7 @@ void ObjectiveClass::ResetObjectiveStatus(void)
             s = 0;
     }
 
-    if (s != obj_data.status)
+    if (s not_eq obj_data.status)
     {
         SetObjectiveStatus((uchar)s);
     }
@@ -2576,7 +2576,7 @@ uchar ObjectiveClass::GetBestTarget(void)
     {
         v = GetFeatureValue(i);
 
-        if (v > bv && GetFeatureStatus(i) != VIS_DESTROYED)
+        if (v > bv && GetFeatureStatus(i) not_eq VIS_DESTROYED)
         {
             bv = v;
             f = i;
@@ -2641,7 +2641,7 @@ void ObjectiveClass::RecalculateParent(void)
             VuListIterator myit(POList);
             n = GetFirstObjective(&myit);
 
-            while (n != NULL)
+            while (n not_eq NULL)
             {
                 n->GetLocation(&X, &Y);
                 who = n->GetTeam();
@@ -2783,7 +2783,7 @@ Objective NewObjective(void)
                          o/*, lastObjectiveId+1, FIRST_OBJECTIVE_VU_ID_NUMBER, LAST_OBJECTIVE_VU_ID_NUMBER*/
                      );
 
-    if (ret != VU_SUCCESS)
+    if (ret not_eq VU_SUCCESS)
     {
         delete o;
         o = NULL;
@@ -3049,7 +3049,7 @@ int BestRepairFeature(Objective o, int *hours)
 
     while (u)
     {
-        if (u->IsBrigade() or u->GetDomain() != DOMAIN_LAND or u->GetTeam() != o->GetTeam())
+        if (u->IsBrigade() or u->GetDomain() not_eq DOMAIN_LAND or u->GetTeam() not_eq o->GetTeam())
         {
             u = GetNextUnit(&uit);
             continue;
@@ -3079,7 +3079,7 @@ int BestRepairFeature(Objective o, int *hours)
     {
         s = o->GetFeatureStatus(f);
 
-        if (s != VIS_NORMAL && s != VIS_REPAIRED)
+        if (s not_eq VIS_NORMAL && s not_eq VIS_REPAIRED)
         {
             v = o->GetFeatureValue(f);
 
@@ -3099,7 +3099,7 @@ int BestRepairFeature(Objective o, int *hours)
             }
         }
 
-        // if (s != VIS_DESTROYED && !o->GetFeatureID(f))
+        // if (s not_eq VIS_DESTROYED && !o->GetFeatureID(f))
         // o->SetFeatureStatus(f,VIS_DESTROYED);
     }
 
@@ -3126,7 +3126,7 @@ int BestTargetFeature(Objective o, uchar targeted[])
     {
         s = o->GetFeatureStatus(f);
 
-        if (s != VIS_DESTROYED && targeted && !targeted[f])
+        if (s not_eq VIS_DESTROYED && targeted && !targeted[f])
         {
             score = o->GetFeatureValue(f);
 
@@ -3148,7 +3148,7 @@ void RepairObjectives(void)
     VuListIterator myit(AllObjList);
     o = GetFirstObjective(&myit);
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         o->Repair();
         o = GetNextObjective(&myit);
@@ -3178,7 +3178,7 @@ void AddChildObjectives(Objective o, Objective p, F4PFList list, int maxdist, in
         if (!n or (CampSearch[n->GetCampID()] && n->GetObjectiveScore() <= level + 1))
             continue;
 
-        if (flags & FIND_THISOBJONLY && n->GetObjectiveParentID() != p->Id())
+        if (flags & FIND_THISOBJONLY && n->GetObjectiveParentID() not_eq p->Id())
             continue;
 
         if (flags & FIND_STANDARDONLY && n->IsSecondary())
@@ -3330,7 +3330,7 @@ void CaptureObjective(Objective co, Control who, Unit u)
     {
         // if it is, we should remove all flights belonging to it which hav not taken off
         // Now remove any enemy flights which are based here and have not taken off yet
-        for (unit = (Unit) fit.GetFirst(); (unit != NULL); unit = (Unit) fit.GetNext())
+        for (unit = (Unit) fit.GetFirst(); (unit not_eq NULL); unit = (Unit) fit.GetNext())
         {
             FlightClass *f;
 
@@ -3497,12 +3497,12 @@ int DecodeObjectiveDeltas(VU_BYTE **stream, long *rem, FalconSessionEntity *)
 
 void ObjectiveClass::MakeObjectiveDirty(Dirty_Objective bits, Dirtyness score)
 {
-    if (!IsLocal() or (VuState() != VU_MEM_ACTIVE))
+    if (!IsLocal() or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
 
-    if (!IsAggregate() && (score != SEND_RELIABLEANDOOB))
+    if (!IsAggregate() && (score not_eq SEND_RELIABLEANDOOB))
     {
         score = static_cast<Dirtyness>(score << 4);
     }

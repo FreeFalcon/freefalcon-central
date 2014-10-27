@@ -360,12 +360,12 @@ void TogglePoleCB(long ID, short hittype, C_Base *control)
 {
     int temp;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     temp = ((C_PopupList *)control)->GetItemState(ID);
 
-    if (acmiView != NULL)
+    if (acmiView not_eq NULL)
     {
         acmiView->TogglePoles(temp);
     }
@@ -381,12 +381,12 @@ void TogglePoleCB(long ID, short hittype, C_Base *control)
 
 void ToggleLockLineCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gDoLockLines = ((C_PopupList *)control)->GetItemState(ID);
 
-    if (acmiView != NULL)
+    if (acmiView not_eq NULL)
     {
         acmiView->ToggleLockLines(gDoLockLines);
     }
@@ -409,7 +409,7 @@ void ToggleWireFrameCB(long ID, short, C_Base *control)
     // TOGGLE NAME LABELS HERE
     gDoWireFrame = ((C_PopupList *)control)->GetItemState(ID);
 
-    if (acmiView != NULL)
+    if (acmiView not_eq NULL)
     {
         win = gMainHandler->FindWindow(ACMI_RENDER_WIN);
 
@@ -567,7 +567,7 @@ void ToggleFirstSelectionOfOptionsCB(long ID, short hittype, C_Base *control)
     int temp = 0;
 
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     switch (ID)
@@ -577,7 +577,7 @@ void ToggleFirstSelectionOfOptionsCB(long ID, short hittype, C_Base *control)
             // TOGGLE NAME LABELS HERE
             temp = ((C_PopupList *)control)->GetItemState(ID);
 
-            if (acmiView != NULL)
+            if (acmiView not_eq NULL)
             {
                 acmiView->ToggleLabel(temp);
             }
@@ -590,7 +590,7 @@ void ToggleFirstSelectionOfOptionsCB(long ID, short hittype, C_Base *control)
             // TOGGLE AIRSPEED HERE
             temp = ((C_PopupList *)control)->GetItemState(ID);
 
-            if (acmiView != NULL)
+            if (acmiView not_eq NULL)
             {
                 acmiView->ToggleAirSpeed(temp);
             }
@@ -603,7 +603,7 @@ void ToggleFirstSelectionOfOptionsCB(long ID, short hittype, C_Base *control)
             // TOGGLE ALTITUDE HERE
             temp = ((C_PopupList *)control)->GetItemState(ID);
 
-            if (acmiView != NULL)
+            if (acmiView not_eq NULL)
             {
                 acmiView->ToggleAltitude(temp);
             }
@@ -616,7 +616,7 @@ void ToggleFirstSelectionOfOptionsCB(long ID, short hittype, C_Base *control)
             // TOGGLE HEADING HERE
             temp = ((C_PopupList *)control)->GetItemState(ID);
 
-            if (acmiView != NULL)
+            if (acmiView not_eq NULL)
             {
                 acmiView->ToggleHeading(temp);
             }
@@ -628,7 +628,7 @@ void ToggleFirstSelectionOfOptionsCB(long ID, short hittype, C_Base *control)
         {
             temp = ((C_PopupList *)control)->GetItemState(ID);
 
-            if (acmiView != NULL)
+            if (acmiView not_eq NULL)
             {
                 acmiView->ToggleTurnRate(temp);
             }
@@ -642,7 +642,7 @@ void ToggleFirstSelectionOfOptionsCB(long ID, short hittype, C_Base *control)
         {
             temp = ((C_PopupList *)control)->GetItemState(ID);
 
-            if (acmiView != NULL)
+            if (acmiView not_eq NULL)
             {
                 acmiView->ToggleTurnRadius(temp);
             }
@@ -656,7 +656,7 @@ void ToggleFirstSelectionOfOptionsCB(long ID, short hittype, C_Base *control)
             // TOGGLE HEADING HERE
             temp = ((C_PopupList *)control)->GetItemState(ID);
 
-            if (acmiView != NULL)
+            if (acmiView not_eq NULL)
             {
                 acmiView->Togglelockrange(temp);
             }
@@ -678,7 +678,7 @@ void ToggleFirstSelectionOfOptionsCB(long ID, short hittype, C_Base *control)
 void ToggleObjScaleCB(long ID, short hittype, C_Base*)
 {
 
-    if (!acmiView or !acmiView->Tape() or hittype != C_TYPE_LMOUSEUP)
+    if (!acmiView or !acmiView->Tape() or hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     switch (ID)
@@ -727,7 +727,7 @@ void ACMItoggleLABELSCB(long, short hittype, C_Base *control)
     short x, y;
     short w, h;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     menu = gPopupMgr->GetMenu(ACMI_OPTION_POPUP);
@@ -791,20 +791,20 @@ void ACMItoggleLABELSCB(long, short hittype, C_Base *control)
  int temp=0;
 
  btn=(C_Button *)win->FindControl(ACMI_LABELS);
- if(btn != NULL)
+ if(btn not_eq NULL)
  {
  temp = ((C_Button *)btn)->GetState();
 
  if(temp > 0)
  {
- if(acmiView != NULL)
+ if(acmiView not_eq NULL)
  {
  acmiView->ToggleLabel(temp);
  }
  }
  else
  {
- if(acmiView != NULL)
+ if(acmiView not_eq NULL)
  {
  acmiView->ToggleLabel(temp);
  }
@@ -889,7 +889,7 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
     if (!acmiView)
         return;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     renwin = gMainHandler->FindWindow(ACMI_RENDER_WIN);
@@ -946,7 +946,7 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
         {
             text = (C_Text *)win->FindControl(ACMI_TAPE_NAME);
 
-            if (text != NULL)
+            if (text not_eq NULL)
             {
                 text->SetText(fname);
                 text->Refresh();
@@ -957,11 +957,11 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
 
         win = gMainHandler->FindWindow(ACMI_LEFT_WIN);
 
-        if (win != NULL)
+        if (win not_eq NULL)
         {
             camFilter = (C_ListBox *)win->FindControl(ACMI_CAMERA);
 
-            if (camFilter != NULL)
+            if (camFilter not_eq NULL)
             {
                 // Init camera view stuff to inside cockpit view
                 camFilter->SetValue(gCameraMode);
@@ -974,7 +974,7 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
 
             ACMIListBox = (C_ListBox *)win->FindControl(SUBCAMERA_FIELD);
 
-            if (ACMIListBox != NULL)
+            if (ACMIListBox not_eq NULL)
             {
                 ACMIListBox->RemoveAllItems();
 
@@ -998,7 +998,7 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
 
             ACMIListBox = (C_ListBox *)win->FindControl(TRACKED_OBJECT_FIELD);
 
-            if (ACMIListBox != NULL)
+            if (ACMIListBox not_eq NULL)
             {
                 ACMIListBox->RemoveAllItems();
 
@@ -1027,7 +1027,7 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
             events = acmiView->Tape()->GetTextEvents(&count);
             ProcessEventArray(win, events, count);
 
-        }// if win != null
+        }// if win not_eq null
     } // end listbox
 
     gMainHandler->HideWindow(control->Parent_);
@@ -1077,7 +1077,7 @@ void ACMI_SaveItCB(long, short hittype, C_Base *control)
     C_Window *renwin;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     renwin = gMainHandler->FindWindow(ACMI_RENDER_WIN);
@@ -1148,7 +1148,7 @@ void ACMI_SaveItCB(long, short hittype, C_Base *control)
         {
             C_Text *text = (C_Text *)win->FindControl(ACMI_TAPE_NAME);
 
-            if (text != NULL)
+            if (text not_eq NULL)
             {
                 text->SetText(fname);
                 text->Refresh();
@@ -1165,7 +1165,7 @@ void ACMI_VerifySaveItCB(long ID, short hittype, C_Base *control)
     _TCHAR fname[MAX_PATH];
     FILE *fp;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
@@ -1213,7 +1213,7 @@ void ACMI_VerifySaveItCB(long ID, short hittype, C_Base *control)
 
 static void LoadACMIFileCB(long, short hittype, C_Base*)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetDeleteCallback(DelVHSFileCB);
@@ -1229,7 +1229,7 @@ static void LoadACMIFileCB(long, short hittype, C_Base*)
 
 static void SaveACMIFileCB(long, short hittype, C_Base*)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetDeleteCallback(DelVHSFileCB);
@@ -1249,8 +1249,8 @@ inline BOOL ACMIViewIsReady()
     return
         (
             (
-                acmiView != NULL &&
-                acmiView->Tape() != NULL &&
+                acmiView not_eq NULL &&
+                acmiView->Tape() not_eq NULL &&
                 acmiView->Tape()->IsLoaded() &&
                 acmiView->TapeHasLoaded()
             ) ?
@@ -1271,7 +1271,7 @@ void ACMIButtonCB(long, short hittype, C_Base*)
     C_Window
     *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     CloseAllRenderers(ACMI_RIGHT_WIN);
@@ -1408,11 +1408,11 @@ void FindACMIFLTFiles()
         y += gFontList->GetHeight(win->Font_);
         win->AddControl(tbtn);
 
-        while (retVal != -1)
+        while (retVal not_eq -1)
         {
             retVal = _findnext(handle, fileinfo);
 
-            if (retVal != -1)
+            if (retVal not_eq -1)
             {
                 tbtn = new C_Button;
                 tbtn->Setup(ui_id++, C_TYPE_TOGGLE, 10, y);
@@ -1430,7 +1430,7 @@ void FindACMIFLTFiles()
 
         scroll = (C_ScrollBar *)win->FindControl(FILE_SCROLL);
 
-        if (scroll != NULL)
+        if (scroll not_eq NULL)
         {
             scroll->SetVirtualH(y);
         }
@@ -1503,7 +1503,7 @@ void HookupACMIControls(long ID)
     // Hook up IDs here...Hook up Main Buttons...
     ctrl = (C_Button *)winme->FindControl(ACMI_CLOSE);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(ACMICloseCB);
     }
@@ -1511,14 +1511,14 @@ void HookupACMIControls(long ID)
     // Hook up Close Button
     ctrl = (C_Button *)winme->FindControl(CLOSE_WINDOW);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(CloseWindowCB);
     }
 
     ctrl = (C_Button *)winme->FindControl(FILE_LOAD_BUTTON);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         //ctrl->SetCallback(ACMILoadCB);
         ctrl->SetCallback(LoadACMIFileCB);
@@ -1527,7 +1527,7 @@ void HookupACMIControls(long ID)
 
     ctrl = (C_Button *)winme->FindControl(STOP);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(ACMIStopCB);
         //gTransport[ STOP_BUTTON ] = ctrl;
@@ -1535,7 +1535,7 @@ void HookupACMIControls(long ID)
 
     ctrl = (C_Button *)winme->FindControl(PLAY);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(ACMIPlayCB);
         //gTransport[ PLAY_BUTTON ] = ctrl;
@@ -1543,7 +1543,7 @@ void HookupACMIControls(long ID)
 
     ctrl = (C_Button *)winme->FindControl(REVERSE);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(ACMIPlayBackwardsCB);
         //gTransport[ REV_BUTTON ] = ctrl;
@@ -1551,7 +1551,7 @@ void HookupACMIControls(long ID)
 
     ctrl = (C_Button *)winme->FindControl(FRAME_STEP_FORWARD);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(ACMIStepFowardCB);
         //gTransport[ SPLAY_BUTTON ] = ctrl;
@@ -1559,7 +1559,7 @@ void HookupACMIControls(long ID)
 
     ctrl = (C_Button *)winme->FindControl(FRAME_STEP_BACK);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(ACMIStepReverseCB);
         //gTransport[ SREV_BUTTON ] = ctrl;
@@ -1567,7 +1567,7 @@ void HookupACMIControls(long ID)
 
     ctrl = (C_Button *)winme->FindControl(FASTREVERSE);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(ACMIRewindCB);
         //gTransport[ FF_BUTTON ] = ctrl;
@@ -1575,144 +1575,144 @@ void HookupACMIControls(long ID)
 
     ctrl = (C_Button *)winme->FindControl(FASTFORWARD);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(ACMIFastForwardCB);
     }
 
     ctrl = (C_Button *)winme->FindControl(TRACKING_CHECK_CTRL);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(ACMITrackingCB);
     }
 
     // ctrl = (C_Button *)winme->FindControl(TRAIL_CTRL);
-    // if(ctrl != NULL)
+    // if(ctrl not_eq NULL)
     // {
     // ctrl->SetCallback(ACMIWingTrailCB);
     // }
     //
     // ctrl = (C_Button *)winme->FindControl(TRAIL_INC);
-    // if(ctrl != NULL)
+    // if(ctrl not_eq NULL)
     // {
     // ctrl->SetCallback(ACMIWingTrailIncCB);
     // }
 
     // ctrl = (C_Button *)winme->FindControl(TRAIL_DEC);
-    // if(ctrl != NULL)
+    // if(ctrl not_eq NULL)
     // {
     // ctrl->SetCallback(ACMIWingTrailDecCB);
     // }
 
     panner = (C_Panner *)winme->FindControl(YAW_PITCH_ARROWS);
 
-    if (panner != NULL)
+    if (panner not_eq NULL)
     {
         panner->SetCallback(ACMIPannerCB);
     }
 
     panner = (C_Panner *)winme->FindControl(OTHER_YAW_PITCH_ARROWS);
 
-    if (panner != NULL)
+    if (panner not_eq NULL)
     {
         panner->SetCallback(ACMIPannerCB);
     }
 
     panner = (C_Panner *)winme->FindControl(H_ARROWS);
 
-    if (panner != NULL)
+    if (panner not_eq NULL)
     {
         panner->SetCallback(ACMIHArrowsCB);
     }
 
     panner = (C_Panner *)winme->FindControl(ACMI_ZOOMER);
 
-    if (panner != NULL)
+    if (panner not_eq NULL)
     {
         panner->SetCallback(ACMIHArrowsCB);
     }
 
     panner = (C_Panner *)winme->FindControl(V_ARROWS);
 
-    if (panner != NULL)
+    if (panner not_eq NULL)
     {
         panner->SetCallback(ACMIVArrowsCB);
     }
 
     ACMIListBox = (C_ListBox *)winme->FindControl(ACMI_CAMERA);
 
-    if (ACMIListBox != NULL)
+    if (ACMIListBox not_eq NULL)
     {
         ACMIListBox->SetCallback(ACMICameraCB);
     }
 
     ACMIListBox = (C_ListBox *)winme->FindControl(SUBCAMERA_FIELD);
 
-    if (ACMIListBox != NULL)
+    if (ACMIListBox not_eq NULL)
     {
         ACMIListBox->SetCallback(ACMISubCameraCB);
     }
 
     ctrl = (C_Button *)winme->FindControl(PREV_SUBCAMERA_CTRL);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(ACMISubCameraPrevCB);
     }
 
     ctrl = (C_Button *)winme->FindControl(NEXT_SUBCAMERA_CTRL);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(ACMISubCameraNextCB);
     }
 
     ACMIListBox = (C_ListBox *)winme->FindControl(TRACKED_OBJECT_FIELD);
 
-    if (ACMIListBox != NULL)
+    if (ACMIListBox not_eq NULL)
     {
         ACMIListBox->SetCallback(ACMICamTrackingCB);
     }
 
     ctrl = (C_Button *)winme->FindControl(PREV_TRACK_CTRL);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(ACMICamTrackingPrevCB);
     }
 
     ctrl = (C_Button *)winme->FindControl(NEXT_TRACK_CTRL);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(ACMICamTrackingNextCB);
     }
 
     ACMIListBox = (C_ListBox *)winme->FindControl(SUBCAMERA_FIELD);
 
-    if (ACMIListBox != NULL)
+    if (ACMIListBox not_eq NULL)
     {
         ACMIListBox->SetCallback(ACMISubCameraCB);
     }
 
     ctrl = (C_Button *)winme->FindControl(ADD_POV);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(ACMIScreenCaptureCB);
     }
 
     ctrl = (C_Button *)winme->FindControl(CUT_POV);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(ACMICutPOVCB);
     }
 
     sctrl = (C_Slider *)winme->FindControl(FRAME_MARKER);
 
-    if (sctrl != NULL)
+    if (sctrl not_eq NULL)
     {
         gFrameMarker = sctrl;
         gFrameMarker->SetCallback(ACMIFrameMarkerCB);
@@ -1723,14 +1723,14 @@ void HookupACMIControls(long ID)
 
     tctrl = (C_Text *)winme->FindControl(COUNTER);
 
-    if (tctrl != NULL)
+    if (tctrl not_eq NULL)
     {
         gCounter = tctrl;
     }
 
     /*
     tctrl = (C_Text *)winme->FindControl(TRAIL_FIELD);
-    if(tctrl != NULL)
+    if(tctrl not_eq NULL)
     {
      gTrailLenCtrl = tctrl;
     }
@@ -1740,7 +1740,7 @@ void HookupACMIControls(long ID)
     /// ACMI LABEL TOGGLE - GNU OPTIONS BUTTONS... LABELS ARE INSIDE THIS..
     ctrl = (C_Button *)winme->FindControl(ACMI_LABELS);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(ACMItoggleLABELSCB);
         ctrl->SetState(0);
@@ -1750,7 +1750,7 @@ void HookupACMIControls(long ID)
     /// ACMI SAVE AS...
     ctrl = (C_Button *)winme->FindControl(FILE_SAVE_BUTTON);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(SaveACMIFileCB);
         ctrl->SetState(0);
@@ -1971,7 +1971,7 @@ void ACMICloseCB(long, short hittype, C_Base *control)
     C_Window *renwin;
 
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     renwin = gMainHandler->FindWindow(ACMI_RENDER_WIN);
@@ -1989,7 +1989,7 @@ void ACMICloseCB(long, short hittype, C_Base *control)
 
     drawTimer->SetFlagBitOn(C_BIT_INVISIBLE);
 
-    if (acmiView != NULL)
+    if (acmiView not_eq NULL)
     {
 
         if (acmiView->TapeHasLoaded())
@@ -2417,7 +2417,7 @@ void ACMICamTrackingCB(long, int hittype, C_Control *control)
     (
         hittype == C_TYPE_SELECT &&
         ACMIViewIsReady() &&
-        ACMIListBox != NULL
+        ACMIListBox not_eq NULL
     )
     {
         itemSel = ACMIListBox->GetTextID();
@@ -2448,7 +2448,7 @@ void ACMICamTrackingCB(long, short hittype, C_Base *control)
     (
         hittype == C_TYPE_SELECT &&
         ACMIViewIsReady() &&
-        ACMIListBox != NULL
+        ACMIListBox not_eq NULL
     )
     {
         itemSel = ACMIListBox->GetTextID();
@@ -2533,7 +2533,7 @@ void ACMISubCameraCB(long, short hittype, C_Base *control)
     (
         hittype == C_TYPE_SELECT &&
         ACMIViewIsReady() &&
-        ACMIListBox != NULL
+        ACMIListBox not_eq NULL
     )
     {
         itemSel = ACMIListBox->GetTextID();
@@ -2643,7 +2643,7 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
     C_Window *renwin;
 
 
-    if (hittype != C_TYPE_LMOUSEUP or acmiView == NULL)
+    if (hittype not_eq C_TYPE_LMOUSEUP or acmiView == NULL)
         return;
 
     renwin = gMainHandler->FindWindow(ACMI_RENDER_WIN);
@@ -2691,11 +2691,11 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
 
     winme = gMainHandler->FindWindow(ACMI_LEFT_WIN);
 
-    if (winme != NULL)
+    if (winme not_eq NULL)
     {
         camFilter = (C_ListBox *)winme->FindControl(ACMI_CAMERA);
 
-        if (camFilter != NULL)
+        if (camFilter not_eq NULL)
         {
             camSel = camFilter->GetTextID();
             acmiView->SelectCamera(camSel);
@@ -2705,7 +2705,7 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
 
         ACMIListBox = (C_ListBox *)winme->FindControl(SUBCAMERA_FIELD);
 
-        if (ACMIListBox != NULL)
+        if (ACMIListBox not_eq NULL)
         {
             ACMIListBox->RemoveAllItems();
 
@@ -2725,7 +2725,7 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
 
         ACMIListBox = (C_ListBox *)winme->FindControl(TRACKED_OBJECT_FIELD);
 
-        if (ACMIListBox != NULL)
+        if (ACMIListBox not_eq NULL)
         {
             ACMIListBox->RemoveAllItems();
 
@@ -2758,12 +2758,12 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
     // put the name of the vhs file into the window top.
     winme = gMainHandler->FindWindow(ACMI_RIGHT_WIN);
 
-    if (winme != NULL)
+    if (winme not_eq NULL)
     {
 
         text = (C_Text *)winme->FindControl(ACMI_TAPE_NAME);
 
-        if (text != NULL)
+        if (text not_eq NULL)
         {
             text->SetText(fname);
             text->Refresh();
@@ -2809,18 +2809,18 @@ void ACMIUpdateModelMenu()
 
     winme = gMainHandler->FindWindow(ACMI_LEFT_WIN);
 
-    if (winme != NULL)
+    if (winme not_eq NULL)
     {
         camFilter = (C_ListBox *)winme->FindControl(ACMI_CAMERA);
 
-        if (camFilter != NULL)
+        if (camFilter not_eq NULL)
         {
             camSel = camFilter->GetTextID();
         }
 
         ACMIListBox = (C_ListBox *)winme->FindControl(SUBCAMERA_FIELD);
 
-        if (ACMIListBox != NULL)
+        if (ACMIListBox not_eq NULL)
         {
             ACMIListBox->RemoveAllItems();
 
@@ -2843,7 +2843,7 @@ void ACMIUpdateModelMenu()
 
         ACMIListBox = (C_ListBox *)winme->FindControl(TRACKED_OBJECT_FIELD);
 
-        if (ACMIListBox != NULL)
+        if (ACMIListBox not_eq NULL)
         {
             ACMIListBox->RemoveAllItems();
 

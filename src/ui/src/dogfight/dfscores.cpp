@@ -173,7 +173,7 @@ long FigureOutHowIDid()
 
         /* for(i=0;i<MAX_DOGFIGHT_TEAMS;i++)
          {
-         if(i != cur->team)
+         if(i not_eq cur->team)
          kills += cur->pilot_data->kills[i][VS_AI] + cur->pilot_data->kills[i][VS_HUMAN];
          }
         */
@@ -219,7 +219,7 @@ long FigureOutHowIDid()
     if (player == LKills)
         HowIDid  or_eq  _FEWEST_KILLS_;
 
-    if (SimDogfight.GetGameType() != dog_Furball)
+    if (SimDogfight.GetGameType() not_eq dog_Furball)
     {
         if (TeamRank[0] == team && TeamUsed[1])
             HowIDid  or_eq  _FIRST_PLACE_;
@@ -266,7 +266,7 @@ void PlayDogfightBite()
 
     HowIDid = FigureOutHowIDid();
 
-    if (HowIDid & (_FIRST_PLACE_ | _MOST_KILLS_) && SimDogfight.GetGameType() != dog_Furball)
+    if (HowIDid & (_FIRST_PLACE_ | _MOST_KILLS_) && SimDogfight.GetGameType() not_eq dog_Furball)
     {
         SoundID = gDogfightBites->Pick(DF5);
 
@@ -280,7 +280,7 @@ void PlayDogfightBite()
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if ((HowIDid & _MOST_KILLS_) && SimDogfight.GetGameType() != dog_Furball)
+    else if ((HowIDid & _MOST_KILLS_) && SimDogfight.GetGameType() not_eq dog_Furball)
     {
         SoundID = gDogfightBites->Pick(DF6);
 

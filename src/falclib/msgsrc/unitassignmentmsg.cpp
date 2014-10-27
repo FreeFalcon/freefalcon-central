@@ -64,7 +64,7 @@ int FalconUnitAssignmentMessage::Process(uchar autodisp)
     // Assign objectives
     u->SetUnitPrimaryObj(dataBlock.poid);
 
-    if (dataBlock.soid != FalconNullId)
+    if (dataBlock.soid not_eq FalconNullId)
         u->SetUnitSecondaryObj(dataBlock.soid);
 
     u->SetAssigned(1);
@@ -86,7 +86,7 @@ int FalconUnitAssignmentMessage::Process(uchar autodisp)
         {
             e->SetUnitPrimaryObj(dataBlock.poid);
 
-            if (dataBlock.soid != FalconNullId)
+            if (dataBlock.soid not_eq FalconNullId)
                 e->SetUnitSecondaryObj(dataBlock.soid);
 
             e->SetAssigned(1);

@@ -70,7 +70,7 @@ void AirframeClass::Axial(float dt)
 
     //MI retracts our SBR if it's > 43° and gear down and locked
     //TJL 11/21/03 added isF16 so non-F16 aircraft will not retract brakes with gear down
-    if (platform->IsF16() && gearPos == 1.0F && HydraulicA() != 0 && speedBrake == 0)
+    if (platform->IsF16() && gearPos == 1.0F && HydraulicA() not_eq 0 && speedBrake == 0)
     {
         //if you hold the switch, they go to 60°
         if (speedBrake == 1.0F)
@@ -88,7 +88,7 @@ void AirframeClass::Axial(float dt)
         }
     }
 
-    if (speedBrake != 0.0)
+    if (speedBrake not_eq 0.0)
     {
         dbrake += 0.3F * dt * speedBrake;
 
@@ -145,14 +145,14 @@ void AirframeClass::Axial(float dt)
             platform->SoundPos.Sfx(auxaeroData->sndSpdBrakeLoop);
 
         //MI fix for "b" key
-        if ((dbrake == 1.0F or dbrake == 0) && speedBrake != 0 && BrakesToggle)
+        if ((dbrake == 1.0F or dbrake == 0) && speedBrake not_eq 0 && BrakesToggle)
         {
             speedBrake = 0.0F;
             BrakesToggle = FALSE;
         }
     }
 
-    if (gearHandle != 0 && !IsSet(GearBroken) && IsSet(InAir))
+    if (gearHandle not_eq 0 && !IsSet(GearBroken) && IsSet(InAir))
     {
         gearPos += 0.3F * dt * gearHandle;
         gearPos = min(max(gearPos, 0.0F), 1.0F);
@@ -199,7 +199,7 @@ void AirframeClass::Axial(float dt)
     }
 
     // JB carrier start
-    if (hookHandle != 0)
+    if (hookHandle not_eq 0)
     {
         hookPos += 0.3F * dt * hookHandle;
         hookPos = min(max(hookPos, 0.0F), 1.0F);

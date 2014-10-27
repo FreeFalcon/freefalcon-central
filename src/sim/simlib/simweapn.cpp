@@ -63,7 +63,7 @@ void SimWeaponClass::InitLocalData()
     WeaponClassDataType *wc = (WeaponClassDataType*)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
 
 #ifndef MISSILE_TEST_PROG
-    ShiAssert(wc != NULL); // JPO catch it
+    ShiAssert(wc not_eq NULL); // JPO catch it
 
     if (wc) // JB 010220
     {

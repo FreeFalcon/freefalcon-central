@@ -346,7 +346,7 @@ void MissileClass::SetStatus(void)
 // if (bombwarhead)
 // {
 // // bombwarhead missile - we've not hit our target on our way:
-// if (targetPtr && hitObj != targetPtr->BaseData()) // CTD fix
+// if (targetPtr && hitObj not_eq targetPtr->BaseData()) // CTD fix
 // {
 // done = FalconMissileEndMessage::FeatureImpact;
 // // might as well send the msg now....

@@ -52,7 +52,7 @@ int LoadWeapon(int hp, int last_hp, short wid, int to_load, int max, Squadron sq
         ShiAssert(uc);
         index = uc->SpecialIndex;
 
-        if (wid != SquadronStoresDataTable[index].infiniteAA && wid != SquadronStoresDataTable[index].infiniteAG && wid != SquadronStoresDataTable[index].infiniteGun)
+        if (wid not_eq SquadronStoresDataTable[index].infiniteAA && wid not_eq SquadronStoresDataTable[index].infiniteAG && wid not_eq SquadronStoresDataTable[index].infiniteGun)
             return 0;
 
 #endif
@@ -66,7 +66,7 @@ int LoadWeapon(int hp, int last_hp, short wid, int to_load, int max, Squadron sq
             else
                 max = to_load = WeaponDataTable[wid].FireRate; // Otherwise, load one shot's
 
-            if (last_hp + 1 - hp != hp)
+            if (last_hp + 1 - hp not_eq hp)
                 to_load *= 2; // Twice as many, if we've got an opposite hp
         }
     }
@@ -78,7 +78,7 @@ int LoadWeapon(int hp, int last_hp, short wid, int to_load, int max, Squadron sq
         {
             to_load += max - 1; // Adjust 1 pt worth of to_load to max;
 
-            if (last_hp + 1 - hp != hp && to_load > max)
+            if (last_hp + 1 - hp not_eq hp && to_load > max)
                 to_load += max - 1; // Symetrical - Adjust another point
         }
     }
@@ -170,7 +170,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
     if (type_flags && type_flags & WeaponDataTable[wid].Flags)
         score += 100; // Needed so we load non-combat type things
 
-    if ((guide_flags & WEAP_GUIDED_MASK) && (guide_flags & WeaponDataTable[wid].GuidanceFlags) != guide_flags)
+    if ((guide_flags & WEAP_GUIDED_MASK) && (guide_flags & WeaponDataTable[wid].GuidanceFlags) not_eq guide_flags)
         score = 0;
 
     if (guide_flags == WEAP_DUMB_ONLY && (WeaponDataTable[wid].GuidanceFlags & WEAP_GUIDED_MASK))
@@ -183,7 +183,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
     // END OF ADDED SECTION 2002-01-26
     if (type_flags & WEAP_BAI_LOADOUT)
     {
-        if (((WeaponDataTable[wid].GuidanceFlags & WEAP_LASER) && (wid != 68 or wid != 310)) or // 2002-01-24 MODIFIED BY S.G. Added () around the '&' statements since it has lower precedence than &&
+        if (((WeaponDataTable[wid].GuidanceFlags & WEAP_LASER) && (wid not_eq 68 or wid not_eq 310)) or // 2002-01-24 MODIFIED BY S.G. Added () around the '&' statements since it has lower precedence than &&
             (WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR) ||
             (WeaponDataTable[wid].GuidanceFlags & WEAP_ANTIRADATION))
             score = 0;
@@ -222,7 +222,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
 
     //Cobra 11/23/04 Removed the random thing; not needed.
     //Cobra 12/27/04 Put it back because Jim didn't get random loads of A/A weapons ;)
-    if (score > 0 && randomize && FalconLocalGame && FalconLocalGame->GetGameType() != game_Dogfight)
+    if (score > 0 && randomize && FalconLocalGame && FalconLocalGame->GetGameType() not_eq game_Dogfight)
     {
         // Add some randomness in this
         if (rand() % 2)
@@ -230,7 +230,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
 
         if (wid == lw)
         {
-            if (mt != Air) // Keep air to ground weapons similar
+            if (mt not_eq Air) // Keep air to ground weapons similar
                 score *= 4;
             else // Keep air to air weapons different
                 score /= 4;
@@ -326,7 +326,7 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
 #ifndef INFINITE_AI_AMMO
 
                             // Check for infinite weapons
-                            if (wid != SquadronStoresDataTable[uc->SpecialIndex].infiniteAA && wid != SquadronStoresDataTable[uc->SpecialIndex].infiniteAG)
+                            if (wid not_eq SquadronStoresDataTable[uc->SpecialIndex].infiniteAA && wid not_eq SquadronStoresDataTable[uc->SpecialIndex].infiniteAG)
                                 score = 0;
 
 #else
@@ -336,7 +336,7 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
                         else if (((Squadron)squadron)->GetUnitStores(wid) < 100)
                         {
                             // Lower score of rare things
-                            if (wid != SquadronStoresDataTable[uc->SpecialIndex].infiniteAA && wid != SquadronStoresDataTable[uc->SpecialIndex].infiniteAG)
+                            if (wid not_eq SquadronStoresDataTable[uc->SpecialIndex].infiniteAA && wid not_eq SquadronStoresDataTable[uc->SpecialIndex].infiniteAG)
                                 score = max(((score * ((Squadron)squadron)->GetUnitStores(wid)) / 100), 1);
                         }
                     }

@@ -107,7 +107,7 @@ int UI_RequestAircraftSlot::Process(uchar autodisp)
 #if 0
 
     // sfr: test
-    if (FalconLocalGame->IsLocal() && dataBlock.request_type != REQUEST_UI_UPDATE)
+    if (FalconLocalGame->IsLocal() && dataBlock.request_type not_eq REQUEST_UI_UPDATE)
     {
         UI_RequestAircraftSlot* msga = new UI_RequestAircraftSlot(FalconNullId, FalconLocalGame);
         msga->dataBlock.request_type = REQUEST_UI_UPDATE;
@@ -183,7 +183,7 @@ int UI_RequestAircraftSlot::ChangePilotSkill(Flight flight)
 {
     MonoPrint("Request Skill Change %08x To %d\n", flight, dataBlock.requested_skill);
 
-    if (flight->pilots[dataBlock.requested_slot] != 255)
+    if (flight->pilots[dataBlock.requested_slot] not_eq 255)
     {
         flight->pilots[dataBlock.requested_slot] = dataBlock.requested_skill;
         flight->MakeFlightDirty(DIRTY_PILOTS, DDP[152].priority);
@@ -386,7 +386,7 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
         }
         // In Tactical Engagement and Campaign, if there is an AI there, we can take the slot,
         // otherwise, we try the next slot until we run out of aircraft or find an available AI.
-        else if (dataBlock.request_type != REQUEST_SLOT_JOIN_AI)
+        else if (dataBlock.request_type not_eq REQUEST_SLOT_JOIN_AI)
         {
             MonoPrint("Request Slot Join %d\n", dataBlock.requested_slot);
 

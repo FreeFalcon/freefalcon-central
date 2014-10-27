@@ -189,7 +189,7 @@ class TlkFile : public FileMemMap
     long GetFragIndex(int tlkind)
     {
         BYTE *data = GetData(Index2Data(tlkind), sizeof(long));
-        ShiAssert(data != NULL);
+        ShiAssert(data not_eq NULL);
         return data ? *(long *)data : 0;
     };
     struct TlkBlock

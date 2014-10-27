@@ -186,7 +186,7 @@ int FindNextNode(int node, LZSS_COMP_CTXT* ctxt)
 
     next = ctxt->tree[ node ].smaller_child;
 
-    while (ctxt->tree[ next ].larger_child != UNUSED)
+    while (ctxt->tree[ next ].larger_child not_eq UNUSED)
         next = ctxt->tree[ next ].larger_child;
 
     return(next);
@@ -249,7 +249,7 @@ int AddString(int new_node, int* match_position, LZSS_COMP_CTXT* ctxt)
             delta = ctxt->window[ MOD_WINDOW(new_node + i) ] -
                     ctxt->window[ MOD_WINDOW(test_node + i) ];
 
-            if (delta != 0)
+            if (delta not_eq 0)
                 break;
         }
 

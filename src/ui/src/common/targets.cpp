@@ -58,7 +58,7 @@ void PickFirstChildCB(long, short hittype, C_Base *control)
     TREELIST *parent, *item;
     C_Entity *cent;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     cent = (C_Entity*)control;
@@ -242,7 +242,7 @@ C_Entity *BuildUnitParent(Unit unit)
             Flight flt = (Flight)unit;
             planecount = 0;
 
-            while (flt->plane_stats[planecount] != AIRCRAFT_NOT_ASSIGNED && planecount < PILOTS_PER_FLIGHT)
+            while (flt->plane_stats[planecount] not_eq AIRCRAFT_NOT_ASSIGNED && planecount < PILOTS_PER_FLIGHT)
                 planecount++;
 
             if (planecount)
@@ -280,7 +280,7 @@ C_Entity *BuildUnitParent(Unit unit)
 
     // Set Name
     // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified and not editing a TE, change its label to 'Bandit'
-    if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && unit->IsFlight() && gGps->GetTeamNo() >= 0 && unit->GetTeam() != gGps->GetTeamNo() && !unit->GetIdentified(static_cast<uchar>(gGps->GetTeamNo())))
+    if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && unit->IsFlight() && gGps->GetTeamNo() >= 0 && unit->GetTeam() not_eq gGps->GetTeamNo() && !unit->GetIdentified(static_cast<uchar>(gGps->GetTeamNo())))
         _stprintf(buffer, "Bandit");
     else
         // END OF ADDED SECTION 2002-02-21
@@ -313,7 +313,7 @@ C_Feature *BuildUnit(Unit un, long vehno, long vehid, Tpoint *)
         veh->InitEntity();
 
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified and not editing a TE, change its label to 'Bandit'
-        if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && un->IsFlight() && gGps->GetTeamNo() >= 0 && un->GetTeam() != gGps->GetTeamNo() && !un->GetIdentified(static_cast<uchar>(gGps->GetTeamNo())))
+        if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && un->IsFlight() && gGps->GetTeamNo() >= 0 && un->GetTeam() not_eq gGps->GetTeamNo() && !un->GetIdentified(static_cast<uchar>(gGps->GetTeamNo())))
             veh->SetName(25, 0, "Bandit");
         else
             // END OF ADDED SECTION 2002-02-21
@@ -340,7 +340,7 @@ void AddUnitToTargetTree(Unit unit)
     C_Entity *recon_ent;
     C_Feature *veh;
 
-    if (gGps->GetTeamNo() >= 0 && unit->GetTeam() != gGps->GetTeamNo())
+    if (gGps->GetTeamNo() >= 0 && unit->GetTeam() not_eq gGps->GetTeamNo())
         if (!unit->GetSpotted(static_cast<uchar>(gGps->GetTeamNo())) && !unit->IsFlight())
             return;
 
@@ -372,7 +372,7 @@ void AddUnitToTargetTree(Unit unit)
         }
 
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified and not editing a TE, don't break it down by vehicle so it can't be reconed either NOTE THE '!' IN FRONT OF THE WHOLE STATEMENT TO REVERSE IT
-        if (!(!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && unit->IsFlight() && gGps->GetTeamNo() >= 0 && unit->GetTeam() != gGps->GetTeamNo() && !unit->GetIdentified(static_cast<uchar>(gGps->GetTeamNo()))))
+        if (!(!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && unit->IsFlight() && gGps->GetTeamNo() >= 0 && unit->GetTeam() not_eq gGps->GetTeamNo() && !unit->GetIdentified(static_cast<uchar>(gGps->GetTeamNo()))))
         {
             // END OF ADDED DATA 2002-02-21
             simdata.vehicleInUnit = -1;
@@ -482,11 +482,11 @@ void AddObjectiveToTargetTree(Objective obj)
                 objPos.z = z;
                 classPtr = &Falcon4ClassTable[fc->Index];
 
-                if (classPtr != NULL)
+                if (classPtr not_eq NULL)
                 {
                     drawptr = gUIViewer->LoadDrawableFeature(obj->GetCampID() << 16 | f, obj, f, fid, classPtr, fc, &objPos, Parent);
 
-                    if (drawptr != NULL)
+                    if (drawptr not_eq NULL)
                     {
                         // 2002-02-28 ADDED BY S.G. If runway, adjust texture so runway number is accurate
                         if (Falcon4ClassTable[fc->Index].vuClassData.classInfo_[VU_TYPE] == TYPE_RUNWAY && Falcon4ClassTable[fc->Index].vuClassData.classInfo_[VU_STYPE] == STYPE_RUNWAY_NUM)
@@ -536,7 +536,7 @@ void GetGroundUnitsNear(float x, float y, float range)
 
     un = GetFirstUnit(&myit);
 
-    while (un != NULL)
+    while (un not_eq NULL)
     {
         deltax = x - un->XPos();
         deltay = y - un->YPos();
@@ -562,7 +562,7 @@ void GetObjectivesNear(float x, float y, float range)
 
     Obj = GetFirstObjective(&myit);
 
-    while (Obj != NULL)
+    while (Obj not_eq NULL)
     {
         deltax = x - Obj->XPos();
         deltay = y - Obj->YPos();

@@ -315,7 +315,7 @@ void FireControlComputer::NavMode(void)
             float OAYPos;
             float OAZPos;
 
-            ShiAssert(platform->curWaypoint != NULL or !F4IsBadReadPtr(platform->curWaypoint, sizeof(WayPointClass)));
+            ShiAssert(platform->curWaypoint not_eq NULL or !F4IsBadReadPtr(platform->curWaypoint, sizeof(WayPointClass)));
 
             for (i = 0; i < MAX_DESTOA; i++)
             {
@@ -465,7 +465,7 @@ void FireControlComputer::InitNewStptMode(void)
     if (platform == (SimVehicleClass*) playerAC)
     {
 
-        if (mNewStptMode != mStptMode)
+        if (mNewStptMode not_eq mStptMode)
         {
             // Save the current
             if (mStptMode == FCCWaypoint)
@@ -901,7 +901,7 @@ void FireControlComputer::NavDisplay(void)
     if (!IsHsdState(HSDNOPRE) && g_bRealisticAvionics)
         DrawPPThreats();
 
-    if (PlayerOptions.GetAvionicsType() != ATEasy)
+    if (PlayerOptions.GetAvionicsType() not_eq ATEasy)
     {
         display->SetColor(GetMfdColor(MFD_LINES));
 
@@ -983,7 +983,7 @@ void FireControlComputer::NavDisplay(void)
         {
             for (i = 0; i < 20; i ++)
             {
-                if (hsdcntlcfg[i].mode != HSDNONE)
+                if (hsdcntlcfg[i].mode not_eq HSDNONE)
                 {
                     if (hsdcntlcfg[i].mode == HSDCNTL)
                         LabelButton(i, hsdcntlcfg[i].label, NULL, TRUE);
@@ -1035,7 +1035,7 @@ void FireControlComputer::NavDisplay(void)
             HSDDisplay();
         }
 
-        if (HSDZoom != 0)
+        if (HSDZoom not_eq 0)
             return;
     }
 
@@ -1474,7 +1474,7 @@ void FireControlComputer::DrawPointSymbol(WayPointClass* curWaypoint, float disp
     else
         theWaypt = ((SimVehicleClass*)platform)->curWaypoint;
 
-    if ((curWaypoint != theWaypt) or (vuxRealTime & 0x200))
+    if ((curWaypoint not_eq theWaypt) or (vuxRealTime & 0x200))
     {
 
         wpFlags = curWaypoint->GetWPFlags();
@@ -1903,7 +1903,7 @@ void FireControlComputer::DrawPPThreats(void)
             display->SaveDisplayMatrix(&savem);
 
             // JB 010730 Advanced and basic symbols are drawn sometimes on the HSD. This is an attempt to fix that.
-            if (gp->symbol != RWRSYM_ADVANCED_INTERCEPTOR && gp->symbol != RWRSYM_BASIC_INTERCEPTOR)
+            if (gp->symbol not_eq RWRSYM_ADVANCED_INTERCEPTOR && gp->symbol not_eq RWRSYM_BASIC_INTERCEPTOR)
                 RwrClass::DrawSymbol(display, gp->symbol);  // This zeros display rotation, caused bad FLOT and bullseye drawing (now fixed I hope JPO)
 
             display->RestoreDisplayMatrix(&savem);
@@ -2207,7 +2207,7 @@ void FireControlComputer::Draw1WingmanGnd(AircraftClass *wing)
 
 #endif
 
-    if (theRadar->GetRadarModeR() != RadarClass::GM && theRadar->GetRadarModeR() != RadarClass::GMT)
+    if (theRadar->GetRadarModeR() not_eq RadarClass::GM && theRadar->GetRadarModeR() not_eq RadarClass::GMT)
     {
         return;
     }
@@ -2324,7 +2324,7 @@ void FireControlComputer::Draw1Wingman(AircraftClass *wing)
         }
     }
 
-    ShiAssert(wing != NULL);
+    ShiAssert(wing not_eq NULL);
     char no[10], thealt[20];
     mlTrig trig;
     static const float wingBugX = 0.05f;
@@ -2484,7 +2484,7 @@ void FireControlComputer::Draw1Wingman(AircraftClass *wing)
 #endif
 
     //Cobra we don't want to draw A/G stuff and certainly not with A/A symbology
-    if ((theRadar->GetRadarModeR() != RadarClass::AA) or (abs(alt) <= 1))
+    if ((theRadar->GetRadarModeR() not_eq RadarClass::AA) or (abs(alt) <= 1))
     {
         return;
     }
@@ -2624,7 +2624,7 @@ void FireControlComputer::HSDDisplay(void)
 //MI
 void FireControlComputer::MoveCursor(void)
 {
-    if (HSDCursorXCmd != 0.0F or HSDCursorYCmd != 0.0F)
+    if (HSDCursorXCmd not_eq 0.0F or HSDCursorYCmd not_eq 0.0F)
     {
         if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
@@ -2695,7 +2695,7 @@ void FireControlComputer::MoveCursor(void)
                     if (HSDDesignate == 1)
                     {
                         //need to find which waypoint our cursor is over now
-                        if (platform->curWaypoint != tmpWp)
+                        if (platform->curWaypoint not_eq tmpWp)
                         {
                             ChangeSTPT(tmpWp);
                         }
@@ -2716,7 +2716,7 @@ void FireControlComputer::MoveCursor(void)
 //MI
 void FireControlComputer::ChangeSTPT(WayPointClass *tmpWp)
 {
-    while (platform->curWaypoint && platform->curWaypoint != tmpWp)
+    while (platform->curWaypoint && platform->curWaypoint not_eq tmpWp)
     {
         waypointStepCmd = 1;
         StepPoint();

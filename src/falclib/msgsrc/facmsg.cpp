@@ -60,7 +60,7 @@ int FalconFACMessage::Process(uchar autodisp)
                 ((FACBrain*)theEntity->Brain())->AddToQ(theFighter);
 
             // Play message here
-            if (theFighter != SimDriver.GetPlayerEntity())
+            if (theFighter not_eq SimDriver.GetPlayerEntity())
             {
             }
 
@@ -69,7 +69,7 @@ int FalconFACMessage::Process(uchar autodisp)
         case Wilco:
 
             // Play message here
-            if (theFighter != SimDriver.GetPlayerEntity())
+            if (theFighter not_eq SimDriver.GetPlayerEntity())
             {
             }
 
@@ -78,7 +78,7 @@ int FalconFACMessage::Process(uchar autodisp)
         case Unable:
 
             // Play message here
-            if (theFighter != SimDriver.GetPlayerEntity())
+            if (theFighter not_eq SimDriver.GetPlayerEntity())
             {
             }
 
@@ -87,7 +87,7 @@ int FalconFACMessage::Process(uchar autodisp)
         case In:
 
             // Play message here
-            if (theFighter != SimDriver.GetPlayerEntity())
+            if (theFighter not_eq SimDriver.GetPlayerEntity())
             {
             }
 
@@ -96,7 +96,7 @@ int FalconFACMessage::Process(uchar autodisp)
         case Out:
 
             // Play message here
-            if (theFighter != SimDriver.GetPlayerEntity())
+            if (theFighter not_eq SimDriver.GetPlayerEntity())
             {
             }
 

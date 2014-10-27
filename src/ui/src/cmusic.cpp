@@ -130,7 +130,7 @@ void C_Music::Cleanup()
 {
     int i, j;
 
-    if (Sound_ && StreamID_[0] != SND_NO_HANDLE or StreamID_[1] != SND_NO_HANDLE)
+    if (Sound_ && StreamID_[0] not_eq SND_NO_HANDLE or StreamID_[1] not_eq SND_NO_HANDLE)
     {
         RemoveStream();
         StreamID_[0] = SND_NO_HANDLE;
@@ -175,10 +175,10 @@ void C_Music::RemoveStream()
 {
     if (Sound_)
     {
-        if (StreamID_[0] != SND_NO_HANDLE)
+        if (StreamID_[0] not_eq SND_NO_HANDLE)
             Sound_->RemoveStream(StreamID_[0]);
 
-        if (StreamID_[1] != SND_NO_HANDLE)
+        if (StreamID_[1] not_eq SND_NO_HANDLE)
             Sound_->RemoveStream(StreamID_[1]);
 
         StreamID_[0] = SND_NO_HANDLE;
@@ -296,10 +296,10 @@ void C_Music::SetVolume(long volume)
 
     if (Sound_)
     {
-        if (StreamID_[0] != SND_NO_HANDLE)
+        if (StreamID_[0] not_eq SND_NO_HANDLE)
             Sound_->SetStreamVolume(StreamID_[0], volume);
 
-        if (StreamID_[1] != SND_NO_HANDLE)
+        if (StreamID_[1] not_eq SND_NO_HANDLE)
             Sound_->SetStreamVolume(StreamID_[1], volume);
     }
 }
@@ -310,7 +310,7 @@ void C_Music::AddQ(long ID)
 
     i = 0;
 
-    while (Queue_[i] != SND_NO_HANDLE && i < _MUSIC_QUEUE_SIZE_)
+    while (Queue_[i] not_eq SND_NO_HANDLE && i < _MUSIC_QUEUE_SIZE_)
         i++;
 
     if (i == _MUSIC_QUEUE_SIZE_)
@@ -360,7 +360,7 @@ void C_Music::PlayQ()
 
         Queue_[_MUSIC_QUEUE_SIZE_ - 1] = SND_NO_HANDLE;
     }
-    while (!snd && Queue_[0] != SND_NO_HANDLE);
+    while (!snd && Queue_[0] not_eq SND_NO_HANDLE);
 }
 
 // HELLA HUGE KLUDGE to String 2 or more WAVE files together
@@ -380,7 +380,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
 
         if (snd)
         {
-            if (Stream->fp != INVALID_HANDLE_VALUE)
+            if (Stream->fp not_eq INVALID_HANDLE_VALUE)
             {
                 CloseHandle(Stream->fp);
                 Stream->fp = INVALID_HANDLE_VALUE;
@@ -399,7 +399,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
                                         OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
             }
 
-            if (Stream->fp != INVALID_HANDLE_VALUE)
+            if (Stream->fp not_eq INVALID_HANDLE_VALUE)
             {
                 if (snd->Sound && snd->flags & SOUND_RES_STREAM)
                 {
@@ -481,7 +481,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
 
         Queue_[_MUSIC_QUEUE_SIZE_ - 1] = SND_NO_HANDLE;
     }
-    while (!snd && Queue_[0] != SND_NO_HANDLE);
+    while (!snd && Queue_[0] not_eq SND_NO_HANDLE);
 }
 
 // Interactive stuff

@@ -210,7 +210,7 @@ int VuMessage::Send()
 {
     int retval = -1;
 
-    if (Target() && Target() != vuLocalSessionEntity)
+    if (Target() && Target() not_eq vuLocalSessionEntity)
     {
         retval = Target()->SendMessage(this);
 
@@ -332,9 +332,9 @@ VU_ERRCODE VuRequestDummyBlockMessage::Process(VU_BOOL autod)
     VuSessionsIterator iter(vuGlobalGroup);
     VuSessionEntity *s;
 
-    for (s = iter.GetFirst(); (s != NULL); s = iter.GetNext())
+    for (s = iter.GetFirst(); (s not_eq NULL); s = iter.GetNext())
     {
-        if (s->GetCommsHandle() != NULL)
+        if (s->GetCommsHandle() not_eq NULL)
         {
             break;
         }
@@ -349,7 +349,7 @@ VU_ERRCODE VuRequestDummyBlockMessage::Process(VU_BOOL autod)
         sendAddress.ip = s->GetAddress().ip;
     }
 
-    if (s != NULL)
+    if (s not_eq NULL)
     {
         ComAPISendDummy(s->GetCommsHandle(), sendAddress.ip, sendAddress.recvPort);
         ComAPISendDummy(s->GetCommsHandle(), sendAddress.ip, sendAddress.recvPort + 1);
@@ -518,7 +518,7 @@ VU_ERRCODE VuGetRequest::Process(VU_BOOL autod)
                 {
                     if (!ent->IsPrivate() && ent->IsGlobal())
                     {
-                        if (ent->Id() != sender->Id())
+                        if (ent->Id() not_eq sender->Id())
                         {
                             if (ent->IsLocal())
                             {
@@ -554,7 +554,7 @@ VU_ERRCODE VuGetRequest::Process(VU_BOOL autod)
                 {
                     if (!ent->IsPrivate() && ent->IsLocal() && !ent->IsGlobal())
                     {
-                        if (ent->Id() != sender->Id())
+                        if (ent->Id() not_eq sender->Id())
                         {
                             resp = new VuFullUpdateEvent(ent, sender);
                             resp->RequestReliableTransmit();
@@ -601,7 +601,7 @@ VU_ERRCODE VuGetRequest::Process(VU_BOOL autod)
             {
                 if (!ent->IsPrivate() && ent->IsGlobal())
                 {
-                    if ((ent->Id() != sender->Id()))
+                    if ((ent->Id() not_eq sender->Id()))
                     {
                         if (ent->IsLocal())
                         {
@@ -927,7 +927,7 @@ int VuCreateEvent::Decode(VU_BYTE** buf, long *rem)
     memcpychk(&vutype_,   buf, sizeof(vutype_), rem);
     memcpychk(&size_,     buf, sizeof(size_), rem);
 
-    if (!data_ or oldsize != size_)
+    if (!data_ or oldsize not_eq size_)
     {
         delete [] data_;
         data_ = new VU_BYTE[size_];
@@ -1027,8 +1027,8 @@ VU_ERRCODE VuCreateEvent::Process(VU_BOOL)
 
     if (
         Entity() &&
-        (Entity()->OwnerId() != expandedData_->OwnerId()) &&
-        Entity() != expandedData_
+        (Entity()->OwnerId() not_eq expandedData_->OwnerId()) &&
+        Entity() not_eq expandedData_
     )
     {
         if (Entity()->IsPrivate())
@@ -1681,7 +1681,7 @@ VU_ERRCODE VuBroadcastGlobalEvent::Process(VU_BOOL autod)
             // TODO  check if we can get vuGlobalGroup owner...
             VuSessionEntity *server = static_cast<VuSessionEntity*>(vuDatabase->Find(vuGlobalGroup->OwnerId()));
 
-            if (server != NULL)
+            if (server not_eq NULL)
             {
                 VU_ADDRESS serverAdd = server->GetAddress();
 
@@ -1696,7 +1696,7 @@ VU_ERRCODE VuBroadcastGlobalEvent::Process(VU_BOOL autod)
         VuxAddDanglingSession(EntityId(), entityAddress);
 
         // someone broadcasted an event (not a session)
-        if (EntityId().num_ != VU_SESSION_ENTITY_ID)
+        if (EntityId().num_ not_eq VU_SESSION_ENTITY_ID)
         {
             // Send a get request for the entity if its not a session
             VuGetRequest *msg = new VuGetRequest(EntityId(), vuGlobalGroup);
@@ -2084,7 +2084,7 @@ VU_ERRCODE VuTimerEvent::Process(VU_BOOL)
         {
             VuMessageQueue::PostVuMessage(event_);
         }
-        else if ((event_->Target()) && (event_->Target() != vuLocalSessionEntity))
+        else if ((event_->Target()) && (event_->Target() not_eq vuLocalSessionEntity))
         {
             //me123 from Target() to event_->Target()
             retval = event_->Send();
@@ -2101,7 +2101,7 @@ VU_ERRCODE VuTimerEvent::Process(VU_BOOL)
         retval = VU_SUCCESS;
     }
 
-    if (EntityId() != vuNullId)
+    if (EntityId() not_eq vuNullId)
     {
         if (Entity())
         {

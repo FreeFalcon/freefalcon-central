@@ -46,7 +46,7 @@ VU_BOOL VuStandardMsgFilter::Test(VuMessage *message) const
     }
 
     // test to see if entity was found in database
-    if (message->Entity() != 0)
+    if (message->Entity() not_eq 0)
     {
         return TRUE;
     }

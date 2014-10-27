@@ -149,7 +149,7 @@ int VoiceManager::VoiceOpen(void)
     voiceMapPtr = (char *)map_file(filename);
 #endif
 
-    if (voiceMap.Open(filename) != TRUE)
+    if (voiceMap.Open(filename) not_eq TRUE)
         ShiError("Can't open falcon.tlk");
 
     return TRUE;
@@ -170,7 +170,7 @@ void VoiceManager::CallVoiceThread(void)
     hThread = (HANDLE) _beginthreadex(NULL, 0, (unsigned int (__stdcall *)(void *)) VoiceManagementThread,
                                       (LPVOID)falconVoices, 0, (unsigned *) &dwIDThread);
 
-    if (hThread != NULL)
+    if (hThread not_eq NULL)
     {
         // 2002-03-25 MN we need to set killThread to false if we opened a thread sucessfully because of theater switching, or we won't have voices
         killThread = false;
@@ -196,9 +196,9 @@ int FilterMessage(CONVERSATION *node)
     if (!node or node->message == -1)
         return FALSE;
 
-    if (FalconLocalSession->GetFlyState() != FLYSTATE_FLYING && SimDriver.RunningCampaign())
+    if (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING && SimDriver.RunningCampaign())
     {
-        if (noUIcomms or FalconLocalSession->GetFlyState() != FLYSTATE_IN_UI)
+        if (noUIcomms or FalconLocalSession->GetFlyState() not_eq FLYSTATE_IN_UI)
             return FALSE;
 
         //else
@@ -469,21 +469,21 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
             // breaking means we are interrupting an ongoing conversation to play a new one
             breakin = FALSE;
 
-            if (SimDriver.GetPlayerAircraft() && (best != NULL))
+            if (SimDriver.GetPlayerAircraft() && (best not_eq NULL))
             {
                 if (
                     (
                         // message from us
-                        (VM->decompQueue[i].from != FalconLocalSession->GetPlayerEntityID()) &&
+                        (VM->decompQueue[i].from not_eq FalconLocalSession->GetPlayerEntityID()) &&
                         (best->node->priority == rpLifeThreatening) &&
-                        (VM->decompQueue[i].priority != rpLifeThreatening)
+                        (VM->decompQueue[i].priority not_eq rpLifeThreatening)
                     ) ||
                     (
                         best->node->from == FalconLocalSession->GetPlayerEntityID()
                     ) ||
                     (
                         (best && best->node->priority == rpLifeThreatening) &&
-                        (VM->decompQueue[i].priority != rpLifeThreatening)
+                        (VM->decompQueue[i].priority not_eq rpLifeThreatening)
                     )
                 )
                 {
@@ -507,7 +507,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                     // we must break an ongoing conversation at the channel
 
                     //if we're breaking in let's clean up first
-                    if (VM->decompQueue[i].status != SLOT_IS_AVAILABLE)
+                    if (VM->decompQueue[i].status not_eq SLOT_IS_AVAILABLE)
                     {
                         delete [] VM->decompQueue[i].conversations;
                         VM->decompQueue[i].conversations = NULL;
@@ -516,7 +516,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                         VM->decompQueue[i].message = -1;
 
                         // sfr: whats is this firing thing????
-                        if (best->node->message != rcFIRING)
+                        if (best->node->message not_eq rcFIRING)
                         {
                             VM->falconVoices[i].BufferEmpty(0);
                             VM->falconVoices[i].BufferEmpty(1);
@@ -562,7 +562,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                 }
 
                 // if we placed something in this channel, it will be the current channel
-                if (VM->decompQueue[i].status != SLOT_IS_AVAILABLE)
+                if (VM->decompQueue[i].status not_eq SLOT_IS_AVAILABLE)
                 {
                     curChannel = i;
                 }
@@ -583,7 +583,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
 
         //if there are any buffers on the queue we need to fill them if we can and remove
         //them from the queue if there is nothing to process
-        if (voiceBufferQueue != NULL)
+        if (voiceBufferQueue not_eq NULL)
         {
             int buffChnl;
             bool leave = false;
@@ -597,7 +597,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                 // sfr: it seems this get called twice (here and after the continue below)
                 VM->falconVoices[buffChnl].BufferEmpty(curBuffer);
 
-                if (curChannel != buffChnl)
+                if (curChannel not_eq buffChnl)
                 {
                     leave = true;
                 }
@@ -714,7 +714,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
             }
 
             // if the other buffer is not full, wake immediatly
-            if (VM->falconVoices[curChannel].voiceBuffers[1 - curBuffer].status != BUFFER_FILLED)
+            if (VM->falconVoices[curChannel].voiceBuffers[1 - curBuffer].status not_eq BUFFER_FILLED)
             {
                 SetEvent(VMWakeEventHandle);
             }
@@ -728,7 +728,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
         {
             for (i = 0; i < NUM_VOICE_CHANNELS; i++)
             {
-                if (VM->decompQueue[i].status != SLOT_IS_AVAILABLE)
+                if (VM->decompQueue[i].status not_eq SLOT_IS_AVAILABLE)
                 {
                     VM->falconVoices[i].PopVCAddQueue();
                 }
@@ -814,7 +814,7 @@ void VoiceManager::AddToConversationQueue(CONVERSATION *newConv)
     {
         F4EnterCriticalSection(VM->vmCriticalSection);
 
-        if (voiceChannelQueue[newConv->channelIndex] != NULL)
+        if (voiceChannelQueue[newConv->channelIndex] not_eq NULL)
         {
             voiceChannelQueue[newConv->channelIndex] = VMListDestroyVCQ(voiceChannelQueue[newConv->channelIndex]);
         }
@@ -852,7 +852,7 @@ void VoiceManager::VMResetVoice(int channel)
 
     int i;
 
-    if (voiceBufferQueue != NULL)
+    if (voiceBufferQueue not_eq NULL)
     {
         voiceBufferQueue = VMListDestroyVBQ(voiceBufferQueue);
         voiceBufferQueue = NULL;
@@ -860,13 +860,13 @@ void VoiceManager::VMResetVoice(int channel)
 
     for (i = 0; i < NUM_VOICE_CHANNELS; i++)
     {
-        if (i != channel)
+        if (i not_eq channel)
             falconVoices[1 - channel].PopVCAddQueue();
     }
 
     decompQueue[channel].status = SLOT_IS_AVAILABLE;
 
-    if (decompQueue[channel].conversations != NULL)
+    if (decompQueue[channel].conversations not_eq NULL)
     {
         delete [] decompQueue[channel].conversations;
         decompQueue[channel].conversations = NULL;
@@ -875,7 +875,7 @@ void VoiceManager::VMResetVoice(int channel)
     }
 
 
-    if (voiceChannelQueue[channel] != NULL)
+    if (voiceChannelQueue[channel] not_eq NULL)
     {
         voiceChannelQueue[channel] = VMListDestroyVCQ(voiceChannelQueue[channel]);
         voiceChannelQueue[channel] = NULL;
@@ -905,7 +905,7 @@ void VoiceManager::VMResetVoices(void)
 
     VMSilenceVoices();
 
-    if (voiceBufferQueue != NULL)
+    if (voiceBufferQueue not_eq NULL)
     {
         F4EnterCriticalSection(vmCriticalSection);
         voiceBufferQueue = VMListDestroyVBQ(voiceBufferQueue);
@@ -921,14 +921,14 @@ void VoiceManager::VMResetVoices(void)
         decompQueue[i].message = -1;
         decompQueue[i].from = FalconNullId;
 
-        if (decompQueue[i].conversations != NULL)
+        if (decompQueue[i].conversations not_eq NULL)
         {
             delete [] decompQueue[i].conversations;
             decompQueue[i].conversations = NULL;
         }
 
 
-        if (voiceChannelQueue[i] != NULL)
+        if (voiceChannelQueue[i] not_eq NULL)
         {
             voiceChannelQueue[i] = VMListDestroyVCQ(voiceChannelQueue[i]);
             voiceChannelQueue[i] = NULL;
@@ -1008,7 +1008,7 @@ void VoiceManager::VMCleanup(void)
 
     F4EnterCriticalSection(vmCriticalSection);
 
-    if (voiceBufferQueue != NULL)
+    if (voiceBufferQueue not_eq NULL)
     {
         voiceBufferQueue = VMListDestroyVBQ(voiceBufferQueue);
         voiceBufferQueue = NULL;
@@ -1016,20 +1016,20 @@ void VoiceManager::VMCleanup(void)
 
     for (i = 0; i < NUM_VOICE_CHANNELS; i++)
     {
-        if (voiceChannelQueue[i] != NULL)
+        if (voiceChannelQueue[i] not_eq NULL)
         {
             voiceChannelQueue[i] = VMListDestroyVCQ(voiceChannelQueue[i]);
             voiceChannelQueue[i] = NULL;
         }
 
-        if (VM->decompQueue[i].conversations != NULL)
+        if (VM->decompQueue[i].conversations not_eq NULL)
         {
             delete [] VM->decompQueue[i].conversations;
             VM->decompQueue[i].conversations = NULL;
         }
     }
 
-    if (falconVoices != NULL)
+    if (falconVoices not_eq NULL)
         delete [] falconVoices;
 
     falconVoices = NULL;
@@ -1038,7 +1038,7 @@ void VoiceManager::VMCleanup(void)
     F4LeaveCriticalSection(vmCriticalSection);
 
     // edg: destroy critical section for voicemanager
-    if (vmCriticalSection != NULL)
+    if (vmCriticalSection not_eq NULL)
     {
         F4DestroyCriticalSection(vmCriticalSection);
         vmCriticalSection = NULL;
@@ -1157,9 +1157,9 @@ VM_BUFFLIST *VoiceManager::VMBuffListAppend(VM_BUFFLIST *list, VMBuffQueue *node
 
     F4EnterCriticalSection(vmCriticalSection);
 
-    if (tmpPtr != NULL)
+    if (tmpPtr not_eq NULL)
     {
-        while (tmpPtr->next != NULL)
+        while (tmpPtr->next not_eq NULL)
             tmpPtr = tmpPtr->next;
 
         newnode->prev = tmpPtr;
@@ -1193,7 +1193,7 @@ void VoiceManager::RemoveDuplicateMessages(VU_ID from, VU_ID to, int msgid)
             pVCnext = pVC->next;
 
             // Fix for Weapons Call
-            if (pVC->node->from == from && pVC->node->to == to && pVC->node->message == msgid && pVC->node->message != rcDAMREPORT && pVC->node->message != rcWEAPONSCHECKRSP)
+            if (pVC->node->from == from && pVC->node->to == to && pVC->node->message == msgid && pVC->node->message not_eq rcDAMREPORT && pVC->node->message not_eq rcWEAPONSCHECKRSP)
                 VMListRemoveVCQ(&voiceChannelQueue[i], pVC);
 
             pVC = pVCnext;
@@ -1708,7 +1708,7 @@ void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from, int c
 
     fromEnt = vuDatabase->Find(from);
 
-    if (fromEnt && ownship && fromEnt != SimDriver.GetPlayerEntity() && !nonoise && SimDriver.InSim())
+    if (fromEnt && ownship && fromEnt not_eq SimDriver.GetPlayerEntity() && !nonoise && SimDriver.InSim())
     {
         dx = fromEnt->XPos() - ownship->XPos();
         dy = fromEnt->YPos() - ownship->YPos();
@@ -1784,7 +1784,7 @@ unsigned long TlkFile::GetFileLength(int tlkind)
     ShiAssert(blockind > 0);
     struct TlkBlock *tblock;
     tblock = (struct TlkBlock *) GetData(blockind, sizeof * tblock);
-    ShiAssert(tblock != NULL);
+    ShiAssert(tblock not_eq NULL);
 
     if (tblock == NULL) return 0;
 
@@ -1797,7 +1797,7 @@ unsigned long TlkFile::GetCompressedLength(int tlkind)
     ShiAssert(blockind > 0);
     struct TlkBlock *tblock;
     tblock = (struct TlkBlock *) GetData(blockind, sizeof * tblock);
-    ShiAssert(tblock != NULL);
+    ShiAssert(tblock not_eq NULL);
 
     if (tblock == NULL) return 0;
 
@@ -1810,7 +1810,7 @@ char *TlkFile::GetDataPtr(int tlkind)
     ShiAssert(blockind > 0);
     struct TlkBlock *tblock;
     tblock = (struct TlkBlock *) GetData(blockind, sizeof * tblock);
-    ShiAssert(tblock != NULL);
+    ShiAssert(tblock not_eq NULL);
 
     if (tblock == NULL) return 0;
 

@@ -27,7 +27,7 @@ UI_UpdateSettings::~UI_UpdateSettings(void)
 
 int UI_UpdateSettings::Process(uchar autodisp)
 {
- if(dataBlock.from != vuLocalSessionEntity->Id())
+ if(dataBlock.from not_eq vuLocalSessionEntity->Id())
  {
  if(gCommsMgr == NULL)
  return(0);

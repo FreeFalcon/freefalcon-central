@@ -139,7 +139,7 @@ void SelectATOItemCB(long, short hittype, C_Base *control)
     C_ATO_Flight *ato;
     C_ATO_Package *pkg;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     ShiAssert(gATOAll);
@@ -185,7 +185,7 @@ void SelectATOPackageCB(long, short hittype, C_Base *control)
     C_ATO_Package *package;
     VU_ID *tmpID;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     package = (C_ATO_Package*)control;
@@ -311,7 +311,7 @@ void ChangeFlightTypeCB(long, short hittype, C_Base *control)
     int camp_id;
     uchar type;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
     {
         return;
     }
@@ -467,7 +467,7 @@ C_ATO_Package *BuildATOPackageInfo(Package pkg)
 
 void ToggleATOInfoCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (((C_Button *)control)->GetState())
@@ -617,7 +617,7 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
 
     if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
     {
-        if (FltPkg->GetTeam() != FalconLocalSession->GetTeam())
+        if (FltPkg->GetTeam() not_eq FalconLocalSession->GetTeam())
             return(NULL);
     }
 
@@ -706,7 +706,7 @@ C_ATO_Flight *AddFlighttoATO(Flight flt)
 
     if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
     {
-        if (flt->GetTeam() != FalconLocalSession->GetTeam())
+        if (flt->GetTeam() not_eq FalconLocalSession->GetTeam())
             return(NULL);
     }
 
@@ -769,7 +769,7 @@ C_ATO_Flight *AddtoATO(Flight flt)
 
     if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
     {
-        if (flt->GetTeam() != FalconLocalSession->GetTeam())
+        if (flt->GetTeam() not_eq FalconLocalSession->GetTeam())
             return(NULL);
     }
 
@@ -885,7 +885,7 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
 
     if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
     {
-        if (FltPkg->GetTeam() != FalconLocalSession->GetTeam())
+        if (FltPkg->GetTeam() not_eq FalconLocalSession->GetTeam())
             return(NULL);
     }
 

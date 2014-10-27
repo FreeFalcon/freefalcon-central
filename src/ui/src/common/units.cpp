@@ -494,7 +494,7 @@ void SetupDivisionInfoWindow(long DivID, short owner)
 
     div = GetFirstDivisionByCountry(owner);
 
-    while (div && div->nid != (DivID))
+    while (div && div->nid not_eq (DivID))
         div = GetNextDivisionByCountry(div, owner);
 
     if (!div)
@@ -767,7 +767,7 @@ void PickPilotCB(long, short hittype, C_Base *control)
     _TCHAR buffer[10];
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     Leave = UI_Enter(control->Parent_);
@@ -960,7 +960,7 @@ void BuildPilotList(C_TreeList *tree, Squadron sqd)
     for (i = 0; i < PILOTS_PER_SQUADRON; i++)
     {
         // if(sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE or sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
-        if (sqd->GetPilotData(i)->pilot_status != PILOT_KIA)
+        if (sqd->GetPilotData(i)->pilot_status not_eq PILOT_KIA)
         {
             GetPilotName(sqd->GetPilotData(i)->pilot_id, buffer, 25);
             btn = new C_Button;
@@ -1014,7 +1014,7 @@ void PickSquadronStatsCB(long, short hittype, C_Base *control)
 
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     Leave = UI_Enter(control->Parent_);
@@ -1089,7 +1089,7 @@ void PickSquadronStatsCB(long, short hittype, C_Base *control)
 
 void SquadronAirUnitCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (control)
@@ -1106,7 +1106,7 @@ void PilotAirUnitCB(long, short hittype, C_Base *control)
     C_TreeList *tree = NULL;
     C_Button *btn = NULL;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (control)
@@ -1137,7 +1137,7 @@ void SquadronFindCB(long, short hittype, C_Base *)
 {
     Squadron sqd;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     sqd = (Squadron)vuDatabase->Find(gLastSquadron);
@@ -2121,7 +2121,7 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
                     gDragWPNum = 1;
                     wp = unit->GetFirstUnitWP();
 
-                    while (wp && wp != unit->GetCurrentUnitWP())
+                    while (wp && wp not_eq unit->GetCurrentUnitWP())
                     {
                         gDragWPNum++;
                         wp = wp->GetNextWP();
@@ -2168,7 +2168,7 @@ void fixup_unit(Unit unit)
 
     wp = unit->GetFirstUnitWP();
 
-    while (wp && (wp->GetWPDepartureTime() < current_time) && wp->GetWPAction() != WP_LAND)
+    while (wp && (wp->GetWPDepartureTime() < current_time) && wp->GetWPAction() not_eq WP_LAND)
     {
         // Some special case stuff for air mobile
         if (wp->GetWPAction() == WP_PICKUP)

@@ -109,7 +109,7 @@ void RenderOTW::BuildRingList(void)
     {
 
         // Figure where to stop this LOD and move to the next
-        if (LOD != viewpoint->GetHighLOD())
+        if (LOD not_eq viewpoint->GetHighLOD())
         {
 
             // The stop ring is one ring in from the first available ring at the next LOD
@@ -166,7 +166,7 @@ void RenderOTW::BuildRingList(void)
     // Pad the end of the list to avoid overrunning the list when performing look ahead
     ShiAssert(firstEmptySpan < spanList + spanListMaxEntries);
 
-    if (firstEmptySpan != spanList)
+    if (firstEmptySpan not_eq spanList)
     {
         firstEmptySpan->ring = -1;
         firstEmptySpan->LOD = (firstEmptySpan - 1)->LOD;
@@ -280,7 +280,7 @@ void RenderOTW::ClipHorizontalSectors(void)
     LOD = -1;
 
     // Now clip the top horizontal spans to the bounding region
-    for (span = spanList; span != firstEmptySpan; span++)
+    for (span = spanList; span not_eq firstEmptySpan; span++)
     {
 
         // Spans are  empty until we get to the top corner of the bounding region
@@ -292,7 +292,7 @@ void RenderOTW::ClipHorizontalSectors(void)
         }
 
         // Restart the edge traversal since the spans can take a step backward at LOD change
-        if (span->LOD != LOD)
+        if (span->LOD not_eq LOD)
         {
             LOD = span->LOD;
             e = w = 0;
@@ -368,7 +368,7 @@ void RenderOTW::ClipHorizontalSectors(void)
         }
 
         // Restart the edge traversal since the spans can take a step backward at LOD change
-        if (span->LOD != LOD)
+        if (span->LOD not_eq LOD)
         {
             LOD = span->LOD;
             e = w = 0;
@@ -532,7 +532,7 @@ void RenderOTW::ClipVerticalSectors(void)
     LOD = -1;
 
     // Now fill in the extents of spans along the right edge of the bounding region
-    for (span = spanList; span != firstEmptySpan; span++)
+    for (span = spanList; span not_eq firstEmptySpan; span++)
     {
 
         // Spans are empty until we get to the top corner of the bounding region
@@ -544,7 +544,7 @@ void RenderOTW::ClipVerticalSectors(void)
         }
 
         // Restart the edge traversal since the spans can take a step backward at LOD change
-        if (span->LOD != LOD)
+        if (span->LOD not_eq LOD)
         {
             LOD = span->LOD;
             n = s = 0;
@@ -620,7 +620,7 @@ void RenderOTW::ClipVerticalSectors(void)
         }
 
         // Restart the edge traversal since the spans can take a step backward at LOD change
-        if (span->LOD != LOD)
+        if (span->LOD not_eq LOD)
         {
             LOD = span->LOD;
             n = s = 0;
@@ -702,7 +702,7 @@ void RenderOTW::BuildCornerSet(void)
 
         // The start/stop points were computed for the inside edges of each ring of squares.
         // Make sure the outter edge doesn't dictate a larger span.
-        if (span != spanList)
+        if (span not_eq spanList)
         {
             if (span->LOD == (span - 1)->LOD)
             {

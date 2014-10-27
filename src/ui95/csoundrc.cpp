@@ -105,13 +105,13 @@ void C_Sound::Setup()
 
 void C_Sound::Cleanup()
 {
-    if (Stereo_ != SND_NO_HANDLE)
+    if (Stereo_ not_eq SND_NO_HANDLE)
     {
         gSoundDriver->RemoveStream(Stereo_);
         Stereo_ = SND_NO_HANDLE;
     }
 
-    if (Mono_ != SND_NO_HANDLE)
+    if (Mono_ not_eq SND_NO_HANDLE)
     {
         gSoundDriver->RemoveStream(Mono_);
         Mono_ = SND_NO_HANDLE;
@@ -511,7 +511,7 @@ long C_Sound::SetVolume(long Volume)
 void C_Sound::SetAllVolumes(long Volume)
 {
     /* cur=Root_;
-     while(cur != NULL)
+     while(cur not_eq NULL)
      {
      cur->Volume=Volume;
      if(cur->flags & SOUND_STREAM)

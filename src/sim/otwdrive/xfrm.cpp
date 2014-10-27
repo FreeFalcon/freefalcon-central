@@ -109,7 +109,7 @@ void OTWDriverClass::CalculateHeadRoll(float headRoll, Tpoint* p_at, Tpoint* p_u
     // Computer Graphics, 2nd Ed. by Rodgers and Adams. Section 3-9 has a very nice explaination
     // to this very nontrivial problem.
 
-    if (headRoll != 0.0F)
+    if (headRoll not_eq 0.0F)
     {
 
         mlTrig trigRoll;

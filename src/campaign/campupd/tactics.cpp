@@ -92,7 +92,7 @@ int CheckTeam(int tid, int team)
     if (TacticsTable[tid].team == CHECK_ANY)
         return 1;
 
-    if (TacticsTable[tid].team != team)
+    if (TacticsTable[tid].team not_eq team)
         return 0;
 
     return 1;
@@ -103,7 +103,7 @@ int CheckUnitType(int tid, int domain, int type)
     if (TacticsTable[tid].domainType == CHECK_ANY)
         return 1;
 
-    if (TacticsTable[tid].domainType != domain or TacticsTable[tid].unitSize != type)
+    if (TacticsTable[tid].domainType not_eq domain or TacticsTable[tid].unitSize not_eq type)
         return 0;
 
     return 1;
@@ -138,7 +138,7 @@ int CheckAction(int tid, int act)
     if (TacticsTable[tid].actionList[0] == CHECK_ANY)
         return 1;
 
-    for (i = 0; i < 10 && TacticsTable[tid].actionList[i] != CHECK_ANY; i++)
+    for (i = 0; i < 10 && TacticsTable[tid].actionList[i] not_eq CHECK_ANY; i++)
     {
         if (TacticsTable[tid].actionList[i] == act)
             return 1;
@@ -275,7 +275,7 @@ int CheckRole(int tid, int role)
     if (TacticsTable[tid].role == CHECK_ANY)
         return 1;
 
-    if (TacticsTable[tid].role != role)
+    if (TacticsTable[tid].role not_eq role)
         return 0;
 
     return 1;

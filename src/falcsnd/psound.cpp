@@ -79,7 +79,7 @@ CSoundMgr::CSoundMgr()
     Ds3dListener = NULL;
     // to notify the thread thigns have changed
     signalEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-    ShiAssert(signalEvent != NULL);
+    ShiAssert(signalEvent not_eq NULL);
     CamPos.x = 0;
     CamPos.y = 0;
     CamPos.z = 0;
@@ -96,7 +96,7 @@ CSoundMgr::~CSoundMgr()
     signalEvent = NULL;
 #ifdef USE_SH_POOLS
 
-    if (gSoundMemPool != NULL)
+    if (gSoundMemPool not_eq NULL)
     {
         MemPoolFree(gSoundMemPool);
         gSoundMemPool = NULL;
@@ -122,12 +122,12 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
 
     if (gSoundDriver)
     {
-        if (DSound != NULL)
+        if (DSound not_eq NULL)
             return(FALSE);
 
         res = DirectSoundCreate(NULL, &DSound, NULL);
 
-        if (res != DS_OK)
+        if (res not_eq DS_OK)
         {
             DSoundCheck(res);
             return(FALSE);
@@ -135,7 +135,7 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
 
         res = DSound->SetCooperativeLevel(hwnd, DSSCL_EXCLUSIVE);
 
-        if (res != DS_OK)
+        if (res not_eq DS_OK)
         {
             DSound->Release();
             DSound = NULL;
@@ -159,7 +159,7 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
 
         res = DSound->CreateSoundBuffer(&dsbdesc, &Primary, NULL);
 
-        if (res != DS_OK)  // JPO - no primary buffer, must mean no sound
+        if (res not_eq DS_OK)  // JPO - no primary buffer, must mean no sound
         {
             DSoundCheck(res);
             DSound->Release();
@@ -197,18 +197,18 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
         if (!F4IsBadCodePtr((FARPROC) Primary)) // JB 010305 CTD
             res = Primary->SetFormat(fmt);
 
-        if (res != DS_OK)
+        if (res not_eq DS_OK)
             DSoundCheck(res);
 
         /*
          memset(&dscaps,0,sizeof(DSCAPS));
          dscaps.dwSize=sizeof(DSCAPS);
          res=DSound->GetCaps(&dscaps);
-         if(res != DS_OK)
+         if(res not_eq DS_OK)
          DSoundCheck(res);
 
          res=lpNewDSBuf->GetFormat(fmt,sizeof(WAVEFORMATEX),&size);
-         if(res != DS_OK)
+         if(res not_eq DS_OK)
          DSoundCheck(res);
 
          DSound->GetSpeakerConfig(&Speakers);
@@ -236,7 +236,7 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
         res = DSound->SetCooperativeLevel(hwnd, Priority);
 
         //Primary->Play(0,0,DSBPLAY_LOOPING);
-        if (res != DS_OK)
+        if (res not_eq DS_OK)
         {
             if (!F4IsBadCodePtr((FARPROC) Primary)) // JB 010305 CTD
                 Primary->Release();
@@ -257,12 +257,12 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
 
 void CSoundMgr::RemoveDSound()
 {
-    if (this != NULL)
+    if (this not_eq NULL)
     {
         if (DSound == NULL)
             return;
 
-        if (StreamList != NULL)
+        if (StreamList not_eq NULL)
         {
             RemoveAllStreams();
         }
@@ -278,7 +278,7 @@ void CSoundMgr::RemoveDSound()
             CloseHandle(StreamThreadID);
         }
 
-        if (SampleList != NULL)
+        if (SampleList not_eq NULL)
         {
             RemoveAllSamples();
             SampleList = NULL;
@@ -808,7 +808,7 @@ void CSoundMgr::RemoveSample(long ID)
 
         Cur = SampleList;
 
-        while (Cur != NULL)
+        while (Cur not_eq NULL)
         {
             if (Cur->ID == ID)
             {
@@ -822,7 +822,7 @@ void CSoundMgr::RemoveSample(long ID)
 
         Last = Cur;
 
-        while (Cur != NULL)
+        while (Cur not_eq NULL)
         {
             if (Cur->ID == ID)
             {
@@ -848,7 +848,7 @@ void CSoundMgr::RemoveDuplicateSample(long ID)
 
         Cur = DuplicateList;
 
-        while (Cur != NULL)
+        while (Cur not_eq NULL)
         {
             if (Cur->ID == ID)
             {
@@ -862,7 +862,7 @@ void CSoundMgr::RemoveDuplicateSample(long ID)
 
         Last = Cur;
 
-        while (Cur != NULL)
+        while (Cur not_eq NULL)
         {
             if (Cur->ID == ID)
             {
@@ -888,7 +888,7 @@ void CSoundMgr::RemoveAllSamples()
 
     Cur = SampleList;
 
-    while (Cur != NULL)
+    while (Cur not_eq NULL)
     {
         Last = Cur;
         Cur = Cur->Next;
@@ -904,7 +904,7 @@ void CSoundMgr::RemoveAllSamples()
 
     Cur = DuplicateList;
 
-    while (Cur != NULL)
+    while (Cur not_eq NULL)
     {
         Last = Cur;
         Cur = Cur->Next;
@@ -927,7 +927,7 @@ BOOL CSoundMgr::PlaySample(long ID, long Flags)
         {
             Sample = FindSample(ID);
 
-            if (Sample != NULL)
+            if (Sample not_eq NULL)
             {
                 /*
                 if(IsSamplePlaying(ID,0) && !(Flags & SND_OVERRIDE))
@@ -996,7 +996,7 @@ BOOL CSoundMgr::StopSample(long ID)
         {
             Sample = FindSample(ID);
 
-            if (Sample != NULL)
+            if (Sample not_eq NULL)
             {
                 for (int i = 0; i < Sample->DS3DBufferCount; i++)
                 {
@@ -1018,7 +1018,7 @@ BOOL CSoundMgr::StopAllSamples(void)
 
     Cur = SampleList;
 
-    while (Cur != NULL)
+    while (Cur not_eq NULL)
     {
         StopSample(Cur->ID);
         Cur = Cur->Next;
@@ -1026,7 +1026,7 @@ BOOL CSoundMgr::StopAllSamples(void)
 
     Cur = DuplicateList;
 
-    while (Cur != NULL)
+    while (Cur not_eq NULL)
     {
         StopSample(Cur->ID);
         Cur = Cur->Next;
@@ -1046,7 +1046,7 @@ BOOL CSoundMgr::SetSamplePitch(long ID, float NewPitch)
      if(DSound)
      {
      Sample=FindSample(ID);
-     if(Sample != NULL)
+     if(Sample not_eq NULL)
      {
      Frequency=(long)(Sample->Frequency * NewPitch);
             Frequency = min ( max (DSBFREQUENCY_MIN, Frequency), DSBFREQUENCY_MAX);
@@ -1071,7 +1071,7 @@ BOOL CSoundMgr::IsSamplePlaying(long ID, int UID)
         {
             Sample = FindSample(ID);
 
-            if (Sample != NULL)
+            if (Sample not_eq NULL)
             {
                 int i;
 
@@ -1102,7 +1102,7 @@ int CSoundMgr::GetSampleVolume(long ID)
         {
             Sample = FindSample(ID);
 
-            if (Sample != NULL)
+            if (Sample not_eq NULL)
                 Sample->Buf[0].DSoundBuffer->GetVolume(&Volume);
         }
     }
@@ -1121,13 +1121,13 @@ BOOL CSoundMgr::SetSampleVolume(long ID, long Volume)
         {
             Sample = FindSample(ID);
 
-            if (Sample != NULL)
+            if (Sample not_eq NULL)
             {
                 //Sample->Volume=Volume;
                 //if (Sample->is3d == FALSE) {
                 hr = Sample->Buf[0].DSoundBuffer->SetVolume(Volume);
 
-                if (hr != DS_OK)
+                if (hr not_eq DS_OK)
                     DSoundCheck(hr);
 
                 //}
@@ -1150,13 +1150,13 @@ BOOL CSoundMgr::SetSamplePosition(long ID, float x, float y, float z, float vx, 
     {
         Sample = FindSample(ID);
 
-        if (Sample != NULL && Sample->DSound3dBuffer)
+        if (Sample not_eq NULL && Sample->DSound3dBuffer)
         {
             if (Sample->is3d == FALSE)
             {
                 hr = Sample->DSound3dBuffer->SetMode(DS3DMODE_NORMAL, DS3D_DEFERRED);
 
-                if (hr != DS_OK)
+                if (hr not_eq DS_OK)
                     DSoundCheck(hr);
             }
 
@@ -1177,7 +1177,7 @@ BOOL CSoundMgr::SetSamplePosition(long ID, float x, float y, float z, float vx, 
                 }
             }
 
-            if (hr != DS_OK)
+            if (hr not_eq DS_OK)
                 DSoundCheck(hr);
 
             return(TRUE);
@@ -1764,7 +1764,7 @@ BOOL CSoundMgr::Disable3dSample(long ID)
     {
         Sample = FindSample(ID);
 
-        if (Sample != NULL)
+        if (Sample not_eq NULL)
         {
             if (Sample->is3d == TRUE)
             {
@@ -1795,11 +1795,11 @@ BOOL CSoundMgr::SetSamplePan(long ID, long Direction)
         {
             Sample = FindSample(ID);
 
-            if (Sample != NULL)
+            if (Sample not_eq NULL)
             {
                 hr = Sample->Buf[0].DSoundBuffer->SetPan(Direction);
 
-                if (hr != DS_OK)
+                if (hr not_eq DS_OK)
                     DSoundCheck(hr);
 
                 return(TRUE);
@@ -1850,7 +1850,7 @@ DWORD CSoundMgr::SampleStatus(SoundList *Sample)
 
     if (gSoundDriver)
     {
-        if (Sample != NULL)
+        if (Sample not_eq NULL)
         {
             // if [0] aint playing, then none of them are playing.
             Sample->Buf[0].DSoundBuffer->GetStatus(&status);
@@ -1893,7 +1893,7 @@ SoundList *CSoundMgr::AddDuplicateSample(SoundList *Sample)
             if (!(SampleStatus(Cur) & DSBSTATUS_PLAYING))
                 return(Cur);
 
-        while (Cur->Next != NULL)
+        while (Cur->Next not_eq NULL)
         {
             if (Cur->Next->ID == Sample->ID)
             {
@@ -2027,7 +2027,7 @@ long CSoundMgr::AddSampleToMgr(long Volume, long Frequency, long Direction, IDir
     {
         Cur = SampleList;
 
-        while (Cur->Next != NULL)
+        while (Cur->Next not_eq NULL)
             Cur = Cur->Next;
 
         Cur->Next = New;
@@ -2045,7 +2045,7 @@ SoundList * CSoundMgr::FindSample(long ID)
     {
         Cur = SampleList;
 
-        while (Cur != NULL)
+        while (Cur not_eq NULL)
         {
             if (Cur->ID == ID)
                 return(Cur);
@@ -2093,7 +2093,7 @@ long CSoundMgr::CreateStream(WAVEFORMATEX *Format, float StreamSeconds) // Quesi
         // Create buffer.
         hr = DSound->CreateSoundBuffer(&dsbdesc, &lpNewDSBuf, NULL);
 
-        if (hr != DS_OK)
+        if (hr not_eq DS_OK)
             DSoundCheck(hr);
 
         if (hr == DS_OK)
@@ -2101,7 +2101,7 @@ long CSoundMgr::CreateStream(WAVEFORMATEX *Format, float StreamSeconds) // Quesi
             NewID = AddStreamToMgr(0, Format, Size, lpNewDSBuf);
             hr = lpNewDSBuf->SetVolume(DSBVOLUME_MIN);
 
-            if (hr != DS_OK)
+            if (hr not_eq DS_OK)
                 DSoundCheck(hr);
         }
 
@@ -2117,7 +2117,7 @@ DWORD CSoundMgr::StreamStatus(SoundStream *Stream)
 
     if (gSoundDriver)
     {
-        if (Stream != NULL)
+        if (Stream not_eq NULL)
         {
             Stream->DSoundBuffer->GetStatus(&status);
             return(status);
@@ -2135,7 +2135,7 @@ long CSoundMgr::GetStreamPlayTime(long ID)
     {
         Stream = FindStream(ID);
 
-        if (Stream != NULL)
+        if (Stream not_eq NULL)
             return(Stream->BytesProcessed);//*1000/Stream->BytesPerSecond);
     }
 
@@ -2153,7 +2153,7 @@ BOOL CSoundMgr::IsStreamPlaying(long ID)
         {
             Stream = FindStream(ID);
 
-            if (Stream != NULL)
+            if (Stream not_eq NULL)
             {
                 status = StreamStatus(Stream);
 
@@ -2179,7 +2179,7 @@ long CSoundMgr::SetStreamVolume(long ID, long Volume)
         {
             Stream = FindStream(ID);
 
-            if (Stream != NULL)
+            if (Stream not_eq NULL)
             {
                 oldvol = Stream->Volume;
                 Stream->Volume = Volume;
@@ -2188,7 +2188,7 @@ long CSoundMgr::SetStreamVolume(long ID, long Volume)
                 {
                     hr = Stream->DSoundBuffer->SetVolume(Volume);
 
-                    if (hr != DS_OK)
+                    if (hr not_eq DS_OK)
                         DSoundCheck(hr);
                 }
 
@@ -2246,7 +2246,7 @@ void CSoundMgr::SetCameraPostion(Tpoint *campos, Trotation *camrot, Tpoint *camv
         // we don't need this with the custom doppler code.
         Ds3dListener->SetVelocity(CamVelocity.x, CamVelocity.y, CamVelocity.z, DS3D_DEFERRED);
 
-        if (g_fSoundDopplerFactor != olddoppler)
+        if (g_fSoundDopplerFactor not_eq olddoppler)
         {
             Ds3dListener->SetDopplerFactor(g_fSoundDopplerFactor, DS3D_DEFERRED);
             olddoppler = g_fSoundDopplerFactor;
@@ -2254,7 +2254,7 @@ void CSoundMgr::SetCameraPostion(Tpoint *campos, Trotation *camrot, Tpoint *camv
 
 #endif
 
-        if (g_fSoundRolloffFactor != oldrolloff)
+        if (g_fSoundRolloffFactor not_eq oldrolloff)
         {
             Ds3dListener->SetRolloffFactor(g_fSoundRolloffFactor, DS3D_DEFERRED);
             oldrolloff = g_fSoundRolloffFactor;
@@ -2292,9 +2292,9 @@ void CSoundMgr::SetNotification(SoundStream *Stream)
 {
     if (g_bOldSoundAlg) return;
 
-    ShiAssert(Stream->notif != NULL);
-    ShiAssert(Stream->lpDsNotify != NULL);
-    ShiAssert((Stream->Status & SND_USE_THREAD) != 0);
+    ShiAssert(Stream->notif not_eq NULL);
+    ShiAssert(Stream->lpDsNotify not_eq NULL);
+    ShiAssert((Stream->Status & SND_USE_THREAD) not_eq 0);
 
     if ((Stream->Status & SND_USE_THREAD) == 0 ||
         Stream->notif == NULL ||
@@ -2312,7 +2312,7 @@ void CSoundMgr::SetNotification(SoundStream *Stream)
 
     HRESULT hr = Stream->lpDsNotify->SetNotificationPositions(2, PositionNotify);
 
-    if (hr != S_OK)
+    if (hr not_eq S_OK)
         DSoundCheck(hr);
 }
 
@@ -2320,7 +2320,7 @@ long CSoundMgr::AddStreamToMgr(long Volume, WAVEFORMATEX *Header, long StreamSiz
 {
     SoundStream *Cur, *New;
     SECURITY_ATTRIBUTES ps;
-    ShiAssert(NewSound != NULL);
+    ShiAssert(NewSound not_eq NULL);
 
 #ifdef USE_SH_POOLS
     New = (SoundStream *)MemAllocPtr(gSoundMemPool, sizeof(SoundStream), 0);
@@ -2404,7 +2404,7 @@ long CSoundMgr::AddStreamToMgr(long Volume, WAVEFORMATEX *Header, long StreamSiz
     {
         Cur = StreamList;
 
-        while (Cur->Next != NULL)
+        while (Cur->Next not_eq NULL)
             Cur = Cur->Next;
 
         Cur->Next = New;
@@ -2473,7 +2473,7 @@ SoundStream *CSoundMgr::FindStream(long ID)
     {
         Cur = StreamList;
 
-        while (Cur != NULL)
+        while (Cur not_eq NULL)
         {
             if (Cur->ID == ID)
                 return(Cur);
@@ -2776,7 +2776,7 @@ void CSoundMgr::StopAllStreams()
     {
         cur = StreamList;
 
-        while (cur != NULL)
+        while (cur not_eq NULL)
         {
             StreamStop(cur);
             cur = cur->Next;
@@ -2850,7 +2850,7 @@ void CSoundMgr::StreamStop(SoundStream *Stream)
     {
         if (Stream->Status & SND_STREAM_FILE)
         {
-            if (Stream->fp != INVALID_HANDLE_VALUE)
+            if (Stream->fp not_eq INVALID_HANDLE_VALUE)
                 CloseHandle(Stream->fp);
 
             Stream->fp = INVALID_HANDLE_VALUE;
@@ -2959,13 +2959,13 @@ BOOL CSoundMgr::StartFileStream(long StreamID, char *filename, long Flags, long 
 
     hr = Stream->DSoundBuffer->SetCurrentPosition(0);
 
-    if (hr != DS_OK)
+    if (hr not_eq DS_OK)
         DSoundCheck(hr);
 
     SilenceStream(Stream, 0, Stream->Size);
     hr = Stream->DSoundBuffer->SetVolume(Stream->CurFade);
 
-    if (hr != DS_OK)
+    if (hr not_eq DS_OK)
         DSoundCheck(hr);
 
     Stream->StreamSize = 0;
@@ -2974,7 +2974,7 @@ BOOL CSoundMgr::StartFileStream(long StreamID, char *filename, long Flags, long 
     SetNotification(Stream);
     hr = Stream->DSoundBuffer->Play(0, 0, DSBPLAY_LOOPING);
 
-    if (hr != DS_OK)
+    if (hr not_eq DS_OK)
         DSoundCheck(hr);
 
     NotifyThread();
@@ -3044,13 +3044,13 @@ BOOL CSoundMgr::StartMemoryStream(long StreamID, RIFF_FILE *wave, long Flags)
 
     hr = Stream->DSoundBuffer->SetCurrentPosition(0);
 
-    if (hr != DS_OK)
+    if (hr not_eq DS_OK)
         DSoundCheck(hr);
 
     SilenceStream(Stream, 0, Stream->Size);
     hr = Stream->DSoundBuffer->SetVolume(Stream->CurFade);
 
-    if (hr != DS_OK)
+    if (hr not_eq DS_OK)
         DSoundCheck(hr);
 
     Stream->StreamSize = 0;
@@ -3059,7 +3059,7 @@ BOOL CSoundMgr::StartMemoryStream(long StreamID, RIFF_FILE *wave, long Flags)
     SetNotification(Stream);
     hr = Stream->DSoundBuffer->Play(0, 0, DSBPLAY_LOOPING);
 
-    if (hr != DS_OK)
+    if (hr not_eq DS_OK)
         DSoundCheck(hr);
 
     NotifyThread();
@@ -3190,7 +3190,7 @@ void CSoundMgr::RemoveAllStreams()
 
     Cur = StreamList;
 
-    while (Cur != NULL)
+    while (Cur not_eq NULL)
     {
         Last = Cur;
         Cur = Cur->Next;
@@ -3215,14 +3215,14 @@ unsigned int __stdcall CSoundMgr::StreamThread(void *myself)
 //    of constraints on whats going on.
 BOOL CSoundMgr::BuildObjectList(HANDLE hArray[], int *nHandles, SoundStream *slist[])
 {
-    ShiAssert(signalEvent != NULL);
+    ShiAssert(signalEvent not_eq NULL);
     SoundStream *Stream;
     int count = 0;
     slist[count] = NULL;
     hArray[count++] = signalEvent;
     *nHandles = 1; // set here in case we have to exit in a rush
 
-    for (Stream = StreamList; Stream != NULL; Stream = Stream->Next)
+    for (Stream = StreamList; Stream not_eq NULL; Stream = Stream->Next)
     {
         if ((Stream->Status & SND_USE_THREAD) == 0)
         {
@@ -3337,7 +3337,7 @@ void CSoundMgr::ThreadHandler()
             F4EnterCriticalSection(StreamCSection);
 
             // ok - so we loop through all streams, looking for things to do.
-            for (Stream = StreamList; Stream != NULL; Stream = Stream->Next)
+            for (Stream = StreamList; Stream not_eq NULL; Stream = Stream->Next)
             {
                 if ((Stream->Status & SND_USE_THREAD) == 0) continue; // not played on a thread
 
@@ -3629,7 +3629,7 @@ SoundStream::~SoundStream()
     if (DSoundBuffer)
         DSoundBuffer->Release();
 
-    if (notif != NULL)
+    if (notif not_eq NULL)
         CloseHandle(notif);
 
     if (ImaInfo)
@@ -3686,7 +3686,7 @@ SoundList::SoundList(SoundList *copy, IDirectSound *DSound)
         HRESULT hr = DSound->DuplicateSoundBuffer(copy->Buf[0].DSoundBuffer, &Buf[i].DSoundBuffer);
         Buf[i].DSound3dBuffer = 0;
 
-        if (hr != S_OK)
+        if (hr not_eq S_OK)
             CSoundMgr::DSoundCheck(hr);
     }
 

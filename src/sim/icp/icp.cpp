@@ -227,7 +227,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
         //MI original code
         if (mode == AA_BUTTON or mode == AG_BUTTON or mode == NAV_BUTTON)
         {
-            if (pbutton != mpPrimaryExclusiveButton)
+            if (pbutton not_eq mpPrimaryExclusiveButton)
             {
                 mpPrimaryExclusiveButton->SetCurrentState(0);
                 mICPPrimaryMode = mode;
@@ -250,7 +250,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
         }
         else if (mode == COMM1_BUTTON or mode == COMM2_BUTTON)
         {
-            if (pbutton != mpTertiaryExclusiveButton)
+            if (pbutton not_eq mpTertiaryExclusiveButton)
             {
                 mpTertiaryExclusiveButton->SetCurrentState(0);
                 mICPTertiaryMode = mode;
@@ -282,7 +282,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
             }
             else
             {
-                if (mpSecondaryExclusiveButton != NULL)
+                if (mpSecondaryExclusiveButton not_eq NULL)
                 {
                     mpSecondaryExclusiveButton->SetCurrentState(0);
                 }
@@ -378,7 +378,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
             ClearStrings();
 
             //Did we push the same button as before?
-            if (mICPTertiaryMode == mode && mode != CNI_MODE)
+            if (mICPTertiaryMode == mode && mode not_eq CNI_MODE)
                 PushedSame(LastMode);
             else
                 NewMode(mode);

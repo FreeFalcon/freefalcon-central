@@ -93,7 +93,7 @@ void UpdateOccupationMap(void);
 
 void tactical_territory_editor_clear(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (TheCampaign.CampMapData)
@@ -109,7 +109,7 @@ void tactical_territory_editor_clear(long, short hittype, C_Base *)
 
 void tactical_territory_editor_restore(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if ((TheCampaign.CampMapData) && (te_restore_map))
@@ -152,7 +152,7 @@ static int get_group_cover(int x, int y)
         {
             cover = GetCover(static_cast<short>(x + dx), static_cast<short>(y + dy));
 
-            if (cover != Water)
+            if (cover not_eq Water)
             {
                 return cover;
             }
@@ -194,14 +194,14 @@ static void flood_fill_team(int x, int y)
         old_team = fill_src[(y * fill_width + x) / 2] & 0x0f;
     }
 
-    if ((old_team == gDrawTeam) or (old_team != fill_team))
+    if ((old_team == gDrawTeam) or (old_team not_eq fill_team))
     {
         return;
     }
 
     cover = static_cast<uchar>(get_group_cover(x * MAP_RATIO, y * MAP_RATIO));
 
-    if (cover != Water)
+    if (cover not_eq Water)
     {
 
         if (x & 1)
@@ -320,7 +320,7 @@ void tactical_territory_map_edit(long, short hittype, C_Base *control)
                     {
                         cover = static_cast<uchar>(get_group_cover(px * MAP_RATIO, py * MAP_RATIO));
 
-                        if (cover != Water)
+                        if (cover not_eq Water)
                         {
                             // Update the ownership for all objectives/squadrons/battalions in the area
 
@@ -373,7 +373,7 @@ void SetupOccupationMap(void)
 
     win = gMainHandler->FindWindow(TAC_TEAM_WIN);
 
-    if (win != NULL)
+    if (win not_eq NULL)
     {
         but = (C_Button *)win->FindControl(TAC_MAP_TE);
 
@@ -427,7 +427,7 @@ void UpdateOccupationMap(void)
 
     win = gMainHandler->FindWindow(TAC_TEAM_WIN);
 
-    if (win != NULL)
+    if (win not_eq NULL)
     {
         but = (C_Button *)win->FindControl(TAC_MAP_TE);
 
@@ -531,7 +531,7 @@ void UpdateObjectiveOwnership()
 
     obj = (Objective) myit.GetFirst();
 
-    while (obj != NULL)
+    while (obj not_eq NULL)
     {
         obj->GetLocation(&x, &y);
 
@@ -539,18 +539,18 @@ void UpdateObjectiveOwnership()
 
         if ((team < NUM_TEAMS) && (TeamInfo[team]))
         {
-            if (obj->GetOwner() != team)
+            if (obj->GetOwner() not_eq team)
                 obj->SetOwner(team);
 
-            if (obj->GetObjectiveOldown() != team)
+            if (obj->GetObjectiveOldown() not_eq team)
                 obj->SetObjectiveOldown(team);
         }
         else
         {
-            if (obj->GetOwner() != 0)
+            if (obj->GetOwner() not_eq 0)
                 obj->SetOwner(0);
 
-            if (obj->GetObjectiveOldown() != 0)
+            if (obj->GetObjectiveOldown() not_eq 0)
                 obj->SetObjectiveOldown(0);
         }
 
@@ -577,7 +577,7 @@ void UpdateUnitOwnership(void)
 
     theUnit = GetFirstUnit(&myit);
 
-    while (theUnit != NULL)
+    while (theUnit not_eq NULL)
     {
         theUnit->GetLocation(&unitX, &unitY);
         team = GetOwner(TheCampaign.CampMapData, unitX, unitY);

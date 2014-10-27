@@ -95,7 +95,7 @@ void CenterOnFeatureCB(long, short hittype, C_Base *control)
     C_Feature *feat;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gUIViewer)
@@ -347,11 +347,11 @@ int UI_Deaggregate(ObjectiveClass* objective)
             objPos.z = z;
             classPtr = &Falcon4ClassTable[fc->Index];
 
-            if (classPtr != NULL)
+            if (classPtr not_eq NULL)
             {
                 drawptr = LoadFeature(objective->GetCampID() << 16 | f, classPtr->visType[objective->GetFeatureStatus(f)], &objPos, (float)FeatureEntryDataTable[fid].Facing);
 
-                if (drawptr != NULL)
+                if (drawptr not_eq NULL)
                 {
                     // if(objective->GetFeatureValue(f))
                     // {
@@ -448,7 +448,7 @@ void LoadObject(long objID)
         if (currentObj == objID)
             return;
 
-        if (currentObj != -1)
+        if (currentObj not_eq -1)
             DrawableBSP::Unlock(currentObj);
 
         DrawableBSP::LockAndLoad(objID);
@@ -458,7 +458,7 @@ void LoadObject(long objID)
 
 void UnloadObject()
 {
-    if (currentObj != -1)
+    if (currentObj not_eq -1)
     {
         DrawableBSP::Unlock(currentObj);
         currentObj = -1;
@@ -475,7 +475,7 @@ void CleanupObjectViewer()
         UIrend3d = NULL;
     }
 
-    if (gBSPList != NULL)
+    if (gBSPList not_eq NULL)
     {
         gBSPList->RemoveAll();
         delete gBSPList;
@@ -491,7 +491,7 @@ void ViewBSPObjectCB(long, short, C_Base *)
 
     obj = gBSPList->Find(FirstPlane << 24);
 
-    if (obj != NULL)
+    if (obj not_eq NULL)
     {
         UIrend3d->StartDraw();
         ((DrawableBSP*)obj->object)->Draw(UIrend3d);

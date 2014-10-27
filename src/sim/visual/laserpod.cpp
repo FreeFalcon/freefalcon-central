@@ -132,7 +132,7 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
         {
             display->EndDraw();
 
-            if (platform->IsAirplane() && ((AircraftClass*)platform)->Sms->MasterArm() != SMSBaseClass::Safe)
+            if (platform->IsAirplane() && ((AircraftClass*)platform)->Sms->MasterArm() not_eq SMSBaseClass::Safe)
             {
                 DrawTerrain();
             }

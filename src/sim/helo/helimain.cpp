@@ -581,7 +581,7 @@ int HelicopterClass::Exec(void)
         ShowDamage();
 
         // animate rotors
-        if (GetSwitch(HELI_ROTORS) != 1)
+        if (GetSwitch(HELI_ROTORS) not_eq 1)
         {
             SetSwitch(HELI_ROTORS, 1);
             SetDOF(HELI_MAIN_ROTOR, 0.0f);
@@ -886,7 +886,7 @@ void HelicopterClass::JoinFlight(void)
         hBrain->JoinFlight();
 
     // every 5th heli in flight will LOD out on heli battalions
-    if (GetCampaignObject()->NumberOfComponents() > 4 && (flightIndex % 5) != 0)
+    if (GetCampaignObject()->NumberOfComponents() > 4 && (flightIndex % 5) not_eq 0)
     {
         useDistLOD = TRUE;
     }
@@ -1154,7 +1154,7 @@ void HelicopterClass::PromoteSubordinates(void)
             break;
 
         // do we promote this guy?
-        if (theObj != this && newLead == NULL)
+        if (theObj not_eq this && newLead == NULL)
         {
             // edg: observed drawPointer being NULL (!?)
             if (theObj->drawPointer)
@@ -1170,7 +1170,7 @@ void HelicopterClass::PromoteSubordinates(void)
         }
 
         // do we set others to newly promoted leader?
-        if (theObj != this && newLead != NULL)
+        if (theObj not_eq this && newLead not_eq NULL)
         {
             // yup!
             theObj->flightLead = newLead;

@@ -195,7 +195,7 @@ void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
         LightsToOn[idx] = false;
 
         // if this is a light illuminating ONLY THE OWNER, and we r not the owners, skip
-        if (LightList[idx].Flags.OwnLight && LightList[idx].LightID != ID)
+        if (LightList[idx].Flags.OwnLight && LightList[idx].LightID not_eq ID)
         {
             idx++;
             continue;

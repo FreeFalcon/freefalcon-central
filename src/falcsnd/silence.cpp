@@ -201,7 +201,7 @@ void ExpandFile(BIT_FILE *input, FILE *output, int, char*[])
 
     count = InputBits(input, 32);
 
-    while ((c = (int) InputBits(input, bits)) != EOF)
+    while ((c = (int) InputBits(input, bits)) not_eq EOF)
     {
         if (c == 31)
         {

@@ -533,7 +533,7 @@ void C_Parser::LoadIDTable(char *filename)
 
     idfile = new char [size + 5]; // just in case :)
 
-    if (UI_READ(idfile, size, 1, ifp) != 1)
+    if (UI_READ(idfile, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
@@ -630,7 +630,7 @@ void C_Parser::LoadIDList(char *filename)
 
     listfile = new char [size + 5]; // just in case :)
 
-    if (UI_READ(listfile, size, 1, ifp) != 1)
+    if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
         delete listfile;
         UI_CLOSE(ifp);
@@ -658,7 +658,7 @@ void C_Parser::LoadIDList(char *filename)
 
         if (*lfp)
         {
-            if (*lfp != '#')
+            if (*lfp not_eq '#')
             {
                 //strcpy(filebuf,FalconUIArtDirectory);
                 //strcat(filebuf,"\\");
@@ -741,7 +741,7 @@ BOOL C_Parser::LoadScript(char *filename)
 
     if (script_) memset(script_, 0, size + 5); // OW
 
-    if (UI_READ(script_, size, 1, ifp) != 1)
+    if (UI_READ(script_, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
@@ -798,7 +798,7 @@ UI_HANDLE C_Parser::OpenArtFile(char *filename, const char *thrdir, const char *
     strcat(filebuf, filename);
     ifp = UI_OPEN(filebuf, "rb");
 
-    if (ifp != NULL)
+    if (ifp not_eq NULL)
     {
         return ifp;    // got the main one
     }
@@ -883,7 +883,7 @@ BOOL C_Parser::LoadWindowList(char *filename)
 
     listfile = new char [size + 5]; // just in case :)
 
-    if (UI_READ(listfile, size, 1, ifp) != 1)
+    if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
@@ -923,7 +923,7 @@ BOOL C_Parser::LoadWindowList(char *filename)
                     fprintf(Perror_, "LoadWindowList Parsing Window (%s)\n", lfp);
             }
 
-            if (*lfp != '#')
+            if (*lfp not_eq '#')
             {
                 //strcpy(filebuf,FalconUIArtDirectory);
                 //strcat(filebuf,"\\");
@@ -1011,7 +1011,7 @@ BOOL C_Parser::LoadPopupMenuList(char *filename)
 
     listfile = new char [size + 5]; // just in case :)
 
-    if (UI_READ(listfile, size, 1, ifp) != 1)
+    if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
@@ -1128,7 +1128,7 @@ BOOL C_Parser::LoadImageList(char *filename)
 
     listfile = new char [size + 5]; // just in case :)
 
-    if (UI_READ(listfile, size, 1, ifp) != 1)
+    if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
@@ -1227,7 +1227,7 @@ BOOL C_Parser::LoadSoundList(char *filename)
 
     listfile = new char [size + 5]; // just in case :)
 
-    if (UI_READ(listfile, size, 1, ifp) != 1)
+    if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
@@ -1327,7 +1327,7 @@ BOOL C_Parser::LoadStringList(char *filename)
 
     listfile = new char [size + 5]; // just in case :)
 
-    if (UI_READ(listfile, size, 1, ifp) != 1)
+    if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
@@ -1426,7 +1426,7 @@ BOOL C_Parser::LoadMovieList(char *filename)
 
     listfile = new char [size + 5]; // just in case :)
 
-    if (UI_READ(listfile, size, 1, ifp) != 1)
+    if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
@@ -1568,7 +1568,7 @@ BOOL C_Parser::ParseScript(char *filename)
 
                 tokenlen_ = 1;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' && (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -1707,7 +1707,7 @@ C_Base *C_Parser::ControlParser()
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' && (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -1962,7 +1962,7 @@ C_Base *C_Parser::ControlParser()
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' && (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -2271,7 +2271,7 @@ C_Window *C_Parser::WindowParser()
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' && (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -2417,7 +2417,7 @@ C_Window *C_Parser::WindowParser()
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' && (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -2731,7 +2731,7 @@ C_Window *C_Parser::ParseWindow(char *filename)
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' && (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -2845,7 +2845,7 @@ C_Base *C_Parser::ParseControl(char *filename)
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' && (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -2990,7 +2990,7 @@ C_Image *C_Parser::ParseImage(char *filename)
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' && (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -3296,7 +3296,7 @@ C_Font *C_Parser::ParseFont(char *filename)
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' && (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -3586,7 +3586,7 @@ C_Sound *C_Parser::ParseSound(char *filename)
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' && (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -3876,7 +3876,7 @@ C_String *C_Parser::ParseString(char *filename)
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' && (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -4176,7 +4176,7 @@ C_Movie *C_Parser::ParseMovie(char *filename)
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' && (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -4451,7 +4451,7 @@ C_Base *C_Parser::PopupParser()
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' && (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -4543,7 +4543,7 @@ C_Base *C_Parser::PopupParser()
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' && (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -4869,7 +4869,7 @@ C_Base *C_Parser::ParsePopupMenu(char *filename)
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' && (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;

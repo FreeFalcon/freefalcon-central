@@ -565,7 +565,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
                         else if (
                             !e->IsObjective() ||
                             (
-                                e->IsObjective() && (e->GetType() != TYPE_AIRBASE) && (e->GetType() != TYPE_AIRSTRIP)
+                                e->IsObjective() && (e->GetType() not_eq TYPE_AIRBASE) && (e->GetType() not_eq TYPE_AIRSTRIP)
                             )
                         )
                             e->Sleep();
@@ -818,7 +818,7 @@ void RebuildBubble(int forced)
 
     for (
         CampEntity c = static_cast<CampEntity>(deagIt.GetFirst());
-        c != NULL;
+        c not_eq NULL;
         c = static_cast<CampEntity>(deagIt.GetNext())
     )
     {
@@ -836,7 +836,7 @@ void RebuildBubble(int forced)
 
         for (
             CampBaseMap::iterator it = deaggregatedMap->begin();
-            it != deaggregatedMap->end();
+            it not_eq deaggregatedMap->end();
             ++it
         )
         {
@@ -896,7 +896,7 @@ void RebuildBubble(int forced)
         /* if (!player && FalconLocalGame->IsLocal() && gCommsMgr->Online())
          player = FalconLocalSession->GetPlayerFlight();
          */
-        if (player && (player != FalconLocalSession or !sCampaignSleepRequested))
+        if (player && (player not_eq FalconLocalSession or !sCampaignSleepRequested))
         {
             u = session->GetPlayerFlight();
 
@@ -1031,7 +1031,7 @@ void RebuildBubble(int forced)
                         {
                             deag = 0;
                         }
-                        else if (w->GetWPAction() != WP_TAKEOFF)
+                        else if (w->GetWPAction() not_eq WP_TAKEOFF)
                         {
                             deag = 1;
                         }
@@ -1207,14 +1207,14 @@ void RebuildBubble(int forced)
 
         while (session)
         {
-            if (session != FalconLocalSession)
+            if (session not_eq FalconLocalSession)
             {
 #if USE_VU_COLL_FOR_CAMPAIGN
                 VuHashIterator deagIt(deaggregatedEntities);
 
                 for (
                     CampEntity c = static_cast<CampEntity>(deagIt.GetFirst());
-                    c != NULL;
+                    c not_eq NULL;
                     c = static_cast<CampEntity>(deagIt.GetNext())
                 )
                 {
@@ -1233,7 +1233,7 @@ void RebuildBubble(int forced)
 
                 for (
                     CampBaseMap::iterator it = deaggregatedMap->begin();
-                    it != deaggregatedMap->end();
+                    it not_eq deaggregatedMap->end();
                     ++it
                 )
                 {
@@ -1267,7 +1267,7 @@ void RebuildBubble(int forced)
 
             for (
                 CampEntity c = static_cast<CampEntity>(deagIt.GetFirst());
-                c != NULL;
+                c not_eq NULL;
                 c = static_cast<CampEntity>(deagIt.GetNext())
             )
             {
@@ -1281,7 +1281,7 @@ void RebuildBubble(int forced)
 
                         for (
                             session = static_cast<FalconSessionEntity*>(sit.GetFirst());
-                            session != NULL;
+                            session not_eq NULL;
                             session = static_cast<FalconSessionEntity*>(sit.GetNext())
                         )
                         {
@@ -1311,7 +1311,7 @@ void RebuildBubble(int forced)
 
             for (
                 CampBaseMap::iterator it = deaggregatedMap->begin();
-                it != deaggregatedMap->end();
+                it not_eq deaggregatedMap->end();
                 ++it
             )
             {
@@ -1419,7 +1419,7 @@ void RebuildBubble(int forced)
 
         for (
             CampEntity c = static_cast<CampEntity>(deagIt.GetFirst());
-            c != NULL;
+            c not_eq NULL;
             c = static_cast<CampEntity>(deagIt.GetNext())
         )
         {
@@ -1745,7 +1745,7 @@ CampaignData ReadCampFile(char *filename, char *ext)
 
     if (reading_campressed_file)
     {
-        if ((strcmp(filename, camp_file_name) != 0) && IsCampFile(camp_game_type, filename))
+        if ((strcmp(filename, camp_file_name) not_eq 0) && IsCampFile(camp_game_type, filename))
         {
             EndReadCampFile();
             StartReadCampFile(camp_game_type, filename);
@@ -1933,9 +1933,9 @@ FILE* OpenCampFile(char *filename, char *ext, char *mode)
 
     // 2002-03-25 MN added check for not being WCH file - otherwise can crash sometimes
     // especially after theater switching situations !
-    if ((reading_campressed_file) && (mode[0] == 'r') && strcmp(ext, "wch") != 0)
+    if ((reading_campressed_file) && (mode[0] == 'r') && strcmp(ext, "wch") not_eq 0)
     {
-        if (strcmp(filename, camp_file_name) != 0 && IsCampFile(camp_game_type, filename))
+        if (strcmp(filename, camp_file_name) not_eq 0 && IsCampFile(camp_game_type, filename))
         {
             EndReadCampFile();
             StartReadCampFile(camp_game_type, filename);
@@ -2223,7 +2223,7 @@ void SetEntryTime(Flight flight)
     }
 
 
-    else if (!gCompressTillTime or lastchoice != PlayerOptions.GetStartFlag())
+    else if (!gCompressTillTime or lastchoice not_eq PlayerOptions.GetStartFlag())
     {
         // JPO - decide where we start
         switch (PlayerOptions.GetStartFlag())
@@ -2257,7 +2257,7 @@ void SetEntryTime(Flight flight)
 
 
     //me123 give the player a few sec to make a change.
-    if ((PlayerOptions.GetStartFlag() != PlayerOptionsClass::START_RUNWAY) &&  timer &&
+    if ((PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY) &&  timer &&
         (timer < (VU_TIME)(3 * CampaignSeconds)) &&
         (gLaunchTime < (CampaignTime)(vuxGameTime + 3 * CampaignSeconds)))
     {
@@ -2388,7 +2388,7 @@ void DoCompressionLoop(void)
             return;
         }
 
-        if (pf->plane_stats[FalconLocalSession->GetAircraftNum()] != AIRCRAFT_AVAILABLE)
+        if (pf->plane_stats[FalconLocalSession->GetAircraftNum()] not_eq AIRCRAFT_AVAILABLE)
         {
             gCompressTillTime = 0;
             UI_HandleAircraftDestroyed();
@@ -2522,7 +2522,7 @@ void UpdatePlayerSessions()
 
     for (
         session = (FalconSessionEntity*)sit.GetFirst();
-        session != NULL;
+        session not_eq NULL;
         session = nextSession
     )
     {
@@ -2649,7 +2649,7 @@ unsigned int __stdcall HandleCampaignThread(void)
                 SetTemporaryCompression(gameCompressionRatio / 2); // Slow things down
             }
         }
-        else if (gameCompressionRatio != targetCompressionRatio)
+        else if (gameCompressionRatio not_eq targetCompressionRatio)
         {
             SetTemporaryCompression(targetCompressionRatio); // Back to full speed
         }
@@ -2805,7 +2805,7 @@ void DoTacticalLoop(int startup)
     }
 
     // Do any stage actions on change
-    if (stage != lastStage)
+    if (stage not_eq lastStage)
     {
         switch (stage)
         {
@@ -2897,7 +2897,7 @@ void DoCampaignLoop(int startup)
     }
 
     // Do any stage actions on change
-    if (stage != lastStage)
+    if (stage not_eq lastStage)
     {
         switch (stage)
         {
@@ -3015,7 +3015,7 @@ void UpdateParentUnits(CampaignTime deltatime)
     VuListIterator pit(AllParentList);
     Unit u, next;
 
-    for (u = (Unit) pit.GetFirst(); u != NULL; u = next)
+    for (u = (Unit) pit.GetFirst(); u not_eq NULL; u = next)
     {
         next = (Unit) pit.GetNext();
 
@@ -3059,7 +3059,7 @@ void UpdateRealUnits(CampaignTime deltatime)
 
     VuListIterator rit(AllRealList);
 
-    for (UnitClass *u = (UnitClass*)rit.GetFirst(), *next = NULL; u != NULL; u = next)
+    for (UnitClass *u = (UnitClass*)rit.GetFirst(), *next = NULL; u not_eq NULL; u = next)
     {
         next = static_cast<UnitClass*>(rit.GetNext());
 

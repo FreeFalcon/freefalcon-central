@@ -3,11 +3,11 @@
 
 VuIterator::VuIterator(VuCollection *coll) : collection_(coll)
 {
-    if (collection_ != NULL)
+    if (collection_ not_eq NULL)
     {
         VuMutex m = collection_->GetMutex();
 
-        if (m != NULL)
+        if (m not_eq NULL)
         {
             VuxLockMutex(m);
         }
@@ -16,11 +16,11 @@ VuIterator::VuIterator(VuCollection *coll) : collection_(coll)
 
 VuIterator::~VuIterator()
 {
-    if (collection_ != NULL)
+    if (collection_ not_eq NULL)
     {
         VuMutex m = collection_->GetMutex();
 
-        if (m != NULL)
+        if (m not_eq NULL)
         {
             VuxUnlockMutex(m);
         }

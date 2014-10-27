@@ -178,7 +178,7 @@ public:
     TREELIST *GetChild(TREELIST *me);
     TREELIST *SearchWithCB(TREELIST *me)
     {
-        if (SearchCB_ != NULL) return(FindItemWithCB(me));
+        if (SearchCB_ not_eq NULL) return(FindItemWithCB(me));
 
         return(NULL);
     }
@@ -186,7 +186,7 @@ public:
     void ToggleItemState(long cID);
     void ToggleItemState(TREELIST *item)
     {
-        if (item != NULL) item->state_ = 1 - item->state_;
+        if (item not_eq NULL) item->state_ = 1 - item->state_;
     }
     void SetAllBranches(long Mask, short newstate, TREELIST *me);
     void ClearAllStates(long Mask);

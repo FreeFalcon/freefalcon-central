@@ -1419,7 +1419,7 @@ C_Base *C_Window::GetControl(long *ID, long relX, long relY)
     long thisID, lastID = 0;
 
     // run all controls in window
-    for (CONTROLLIST *cur = Controls_; cur != NULL; cur = cur->Next)
+    for (CONTROLLIST *cur = Controls_; cur not_eq NULL; cur = cur->Next)
     {
         if (cur->Control_->IsControl())
         {
@@ -1649,7 +1649,7 @@ void C_Window::BlendTransparent(WORD Mask, WORD *front, UI95_RECT *frect, short 
 
         for (j = drect->left; j < drect->right; j++)
         {
-            if (front[fidx] != Mask)
+            if (front[fidx] not_eq Mask)
             {
                 rf = UIColorTable[fperc][(front[fidx] & r_mask_) >> r_shift_];
                 gf = UIColorTable[fperc][(front[fidx] & g_mask_) >> g_shift_];
@@ -2631,7 +2631,7 @@ void C_Window::SetGroupState(long GroupID, short state)
     {
         if (cur->Control_->GetGroup() == GroupID && cur->Control_->IsControl())
         {
-            if (cur->Control_->GetState() != state)
+            if (cur->Control_->GetState() not_eq state)
             {
                 cur->Control_->SetState(state);
                 cur->Control_->Refresh();
@@ -2680,7 +2680,7 @@ void C_Window::SetControl(long ID) // Called when mouse is used over this contro
         {
             if (CurControl_)
             {
-                if (cur != CurControl_)
+                if (cur not_eq CurControl_)
                 {
                     CurControl_->Deactivate();
                     CurControl_ = cur;
@@ -2747,7 +2747,7 @@ void C_Window::SetPrevControl() // Called when SHIFT & TAB are pressed
         else
             cur = cur->Prev;
 
-        while (cur->Control_ != CurControl_)
+        while (cur->Control_ not_eq CurControl_)
         {
             if (cur->Control_->GetFlags() & C_BIT_SELECTABLE && cur->Control_->GetFlags() & C_BIT_ENABLED && !(cur->Control_->GetFlags() & C_BIT_INVISIBLE))
             {
@@ -2799,7 +2799,7 @@ void C_Window::SetNextControl() // Called when TAB is pressed
         else
             cur = cur->Next;
 
-        while (cur->Control_ != CurControl_)
+        while (cur->Control_ not_eq CurControl_)
         {
             if (cur->Control_->GetFlags() & C_BIT_SELECTABLE && cur->Control_->GetFlags() & C_BIT_ENABLED && !(cur->Control_->GetFlags() & C_BIT_INVISIBLE))
             {

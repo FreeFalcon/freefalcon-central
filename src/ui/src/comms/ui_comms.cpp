@@ -145,7 +145,7 @@ void ViewRemoteLBCB(long, short hittype, C_Base *)
     UI_RequestLogbook *rlb;
     FalconSessionEntity *session;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL)
@@ -162,7 +162,7 @@ void ViewRemoteLBCB(long, short hittype, C_Base *)
 
                 if (plyr)
                 {
-                    //if(plyr->GetVUID() != FalconLocalSessionId)
+                    //if(plyr->GetVUID() not_eq FalconLocalSessionId)
                     {
                         // Go Ask for Logbook info & Open logbook...
                         // Log book should be EMPTY, until data appears...
@@ -337,7 +337,7 @@ void CommsSetup()
 
 static void DisconnectCommsCB(long, short hittype, C_Base *)
 {
-    if ((hittype != C_TYPE_LMOUSEUP) or (!gCommsMgr->Online()))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) or (!gCommsMgr->Online()))
     {
         return;
     }
@@ -353,7 +353,7 @@ static void OpenPhoneBookCB(long, short hittype, C_Base *control)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->EnableWindowGroup(control->GetGroup());
@@ -740,7 +740,7 @@ void AddMessageToChatWindow(VU_ID from, _TCHAR *message)
             //session=(FalconSessionEntity*)vuLocalSessionEntity;
             session = FalconLocalSession;
         }
-        else if (from != FalconNullId)
+        else if (from not_eq FalconNullId)
         {
             color = 0x00ff00;
             session = (FalconSessionEntity*)vuDatabase->Find(from);
@@ -756,7 +756,7 @@ void AddMessageToChatWindow(VU_ID from, _TCHAR *message)
             _tcscpy(chatbuf, session->GetPlayerCallsign());
             _tcscat(chatbuf, ": ");
         }
-        else if (from != FalconNullId)
+        else if (from not_eq FalconNullId)
         {
             _tcscpy(chatbuf, "Unknown");
             _tcscat(chatbuf, ": ");
@@ -1062,7 +1062,7 @@ void ProcessChatStr(CHATSTR *msg)
             _tcscpy(chatbuf, session->GetPlayerCallsign());
             _tcscat(chatbuf, ": ");
         }
-        else if (msg->ID_ != FalconNullId)
+        else if (msg->ID_ not_eq FalconNullId)
         {
             _tcscpy(chatbuf, "Unknown");
             _tcscat(chatbuf, ": ");
@@ -1086,7 +1086,7 @@ void SendChatStringCB(long, short hittype, C_Base *control)
     C_Player *plyr;
     UI_SendChatMessage *chat;
 
-    if (hittype != DIK_RETURN or control == NULL or !gCommsMgr->Online())
+    if (hittype not_eq DIK_RETURN or control == NULL or !gCommsMgr->Online())
         return;
 
     AddMessageToChatWindow(FalconLocalSessionId, ((C_EditBox *)control)->GetText());
@@ -1103,7 +1103,7 @@ void SendChatStringCB(long, short hittype, C_Base *control)
             {
                 FalconSessionEntity *session = (FalconSessionEntity*) vuDatabase->Find(plyr->GetVUID());
 
-                if (session && session != FalconLocalSession)
+                if (session && session not_eq FalconLocalSession)
                 {
                     chat = new UI_SendChatMessage(FalconNullId, session);
 
@@ -1430,7 +1430,7 @@ void UpdateGameTreeBranch(long branchid, VuGameEntity *game, C_TreeList *tree, T
     if (game == NULL)
         return;
 
-    if (branchid != game_PlayerPool)
+    if (branchid not_eq game_PlayerPool)
     {
         group = StartTreeSearch(game->Id(), parent, tree);
 
@@ -1487,7 +1487,7 @@ static void RemoveOldPeopleTreeCB(TREELIST *old)
     ReceiveChatString(FalconNullId, buffer);
 
     // Begin Uplink stuff
-    if (m_pUplink != NULL && FalconLocalGame && FalconLocalGame->IsLocal())
+    if (m_pUplink not_eq NULL && FalconLocalGame && FalconLocalGame->IsLocal())
     {
         try
         {
@@ -1662,7 +1662,7 @@ static void CheckPlayerGroup(FalconSessionEntity *session, C_Player *plyr)
     }
     else if (PeopleChatType == 4) // CHAT_FLIGHT
     {
-        if (FalconLocalSession->GetPlayerFlightID() == session->GetPlayerFlightID() && FalconLocalSession->GetPlayerFlightID() != FalconNullId)
+        if (FalconLocalSession->GetPlayerFlightID() == session->GetPlayerFlightID() && FalconLocalSession->GetPlayerFlightID() not_eq FalconNullId)
         {
             plyr->SetState(1);
             plyr->SetMute(0);
@@ -1709,7 +1709,7 @@ void MutePlayerCB(long, short hittype, C_Base *)
     TREELIST    *item;
     C_Player *plyr;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL)
@@ -1726,7 +1726,7 @@ void MutePlayerCB(long, short hittype, C_Base *)
 
                 if (plyr)
                 {
-                    if (plyr->GetVUID() != FalconLocalSessionId)
+                    if (plyr->GetVUID() not_eq FalconLocalSessionId)
                     {
                         if (plyr->GetMute())
                             plyr->SetMute(0);
@@ -1747,7 +1747,7 @@ void IgnorePlayerCB(long, short hittype, C_Base *)
     TREELIST    *item;
     C_Player *plyr;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL)
@@ -1764,7 +1764,7 @@ void IgnorePlayerCB(long, short hittype, C_Base *)
 
                 if (plyr)
                 {
-                    if (plyr->GetVUID() != FalconLocalSession->Id())
+                    if (plyr->GetVUID() not_eq FalconLocalSession->Id())
                     {
                         if (plyr->GetIgnore())
                             plyr->SetIgnore(0);
@@ -1805,10 +1805,10 @@ void UpdateLocalGameTree()
 
             if (tmpID)
             {
-                if (FalconLocalGame->Id() != *tmpID)
+                if (FalconLocalGame->Id() not_eq *tmpID)
                     MakeLocalGameTree(FalconLocalGame);
             }
-            else if ((VuGameEntity*)FalconLocalGame != vuPlayerPoolGroup)
+            else if ((VuGameEntity*)FalconLocalGame not_eq vuPlayerPoolGroup)
                 MakeLocalGameTree(FalconLocalGame);
         }
     }
@@ -1846,7 +1846,7 @@ void UpdateLocalGameTree()
                 ReceiveChatString(FalconNullId, buffer);
 
                 // Begin Uplink stuff
-                if (m_pUplink != NULL && FalconLocalGame && FalconLocalGame->IsLocal())
+                if (m_pUplink not_eq NULL && FalconLocalGame && FalconLocalGame->IsLocal())
                 {
                     try
                     {
@@ -2229,7 +2229,7 @@ void UI_UpdateGameList()
                 {
                     CheckChatFilters(session);
 
-                    if (gCommsMgr->GetGame() != vuPlayerPoolGroup)
+                    if (gCommsMgr->GetGame() not_eq vuPlayerPoolGroup)
                     {
                         if (gCommsMgr->GetGame())
                         {
@@ -2254,12 +2254,12 @@ static void PeopleSelectCB(long, short hittype, C_Base *)
     TREELIST *item;
     C_Player *player;
 
-    if (hittype != C_TYPE_LMOUSEUP or !People)
+    if (hittype not_eq C_TYPE_LMOUSEUP or !People)
         return;
 
     item = People->GetLastItem();
 
-    if (item->Type_ != C_TYPE_ITEM)
+    if (item->Type_ not_eq C_TYPE_ITEM)
         return;
 
     player = (C_Player*)item->Item_;
@@ -2276,7 +2276,7 @@ static void SelectChatFilterCB(long, short hittype, C_Base *control)
     VuSessionsIterator sessionWalker(FalconLocalGame);
     FalconSessionEntity *session;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     PeopleChatType = static_cast<short>(control->GetCluster()); // 1=All,2=team,3=package,4=flight

@@ -155,7 +155,7 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
         // (recalculate the velocity to get some movement
         // - can be speed up)
         //
-        if ((ox != x) or (oy != y))
+        if ((ox not_eq x) or (oy not_eq y))
         {
             dir = theBattalion->GetNextMoveDirection();
 

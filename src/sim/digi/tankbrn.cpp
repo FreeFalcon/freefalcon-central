@@ -484,7 +484,7 @@ void TankerBrain::CallNext(void)
         //me123
         if (vuLocalSessionEntity &&
             vuLocalSessionEntity->Game() &&
-            self->OwnerId() != curThirsty->OwnerId()
+            self->OwnerId() not_eq curThirsty->OwnerId()
            )
         {
             // we are hostign a game
@@ -549,7 +549,7 @@ void TankerBrain::DoneRefueling(void)
     //me123 transfere ownship back to host when we are done rf
     if (vuLocalSessionEntity &&
         vuLocalSessionEntity->Game() &&
-        self->OwnerId() != vuLocalSessionEntity->Game()->OwnerId())
+        self->OwnerId() not_eq vuLocalSessionEntity->Game()->OwnerId())
     {
         FalconSimCampMessage *msg = new FalconSimCampMessage(self->GetCampaignObject()->Id(), FalconLocalGame);  // target);
         msg->dataBlock.from = vuLocalSessionEntity->Game()->OwnerId();
@@ -1272,7 +1272,7 @@ void TankerBrain::FollowThirsty(void)
     FalconTankerMessage* tankMsg;
 
     // Find the thirsty one
-    if (!tankingPtr or tankingPtr->BaseData() != curThirsty)
+    if (!tankingPtr or tankingPtr->BaseData() not_eq curThirsty)
     {
         if (tankingPtr)
             tankingPtr->Release();
@@ -1317,7 +1317,7 @@ void TankerBrain::FollowThirsty(void)
         /*-------*/
         oldEl = tankingPtr->localData->el;
 
-        if (xyRange != 0.0)
+        if (xyRange not_eq 0.0)
             tankingPtr->localData->el = (float)atan(-relPos.z / xyRange);
         else
             tankingPtr->localData->el = (relPos.z < 0.0F ? -90.0F * DTR : 90.0F * DTR);
@@ -1486,7 +1486,7 @@ void TankerBrain::FollowThirsty(void)
 
         if (!(flags & ClearingPlane))
             // 25NOV03 - FRB - Give directions to drogue-refueling a/c
-            // if(ServiceType != DROGUE_SERVICE && !(flags & ClearingPlane))
+            // if(ServiceType not_eq DROGUE_SERVICE && !(flags & ClearingPlane))
         {
             if (xyRange < 200.0F && !(flags & GivingGas) &&
                 (SimLibElapsedTime - lastBoomCommand) > 10000)
@@ -1662,7 +1662,7 @@ int TankerBrain::AddToQ(SimVehicleClass* thirstyOne)
         }
         thirstyQ->ForcedInsert(thirstyOne);
 
-        if (count != 0)
+        if (count not_eq 0)
         {
             FalconTankerMessage *tankMsg;
 

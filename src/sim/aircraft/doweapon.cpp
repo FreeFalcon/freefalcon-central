@@ -165,7 +165,7 @@ void AircraftClass::DoWeapons()
             if (FCC->releaseConsent && !FCC->postDrop)
             {
                 // 2002-04-07 MN CTD fix - if in AA mode and gun is selected, pressing trigger will crash
-                if (Sms->curWeapon && Sms->curWeaponClass != wcGunWpn)
+                if (Sms->curWeapon && Sms->curWeaponClass not_eq wcGunWpn)
                 {
                     if (Sms->LaunchMissile())
                     {
@@ -196,7 +196,7 @@ void AircraftClass::DoWeapons()
                         // END OF ADDED SECTION
                         // JPO - two cases- dogfight mode has its own sub mode.
                         // all others use the regular.
-                        if ((FCC->GetMasterMode() != FireControlComputer::Dogfight &&
+                        if ((FCC->GetMasterMode() not_eq FireControlComputer::Dogfight &&
                              FCC->GetSubMode() == FireControlComputer::Aim9) ||
                             (FCC->GetMasterMode() == FireControlComputer::Dogfight &&
                              FCC->GetDgftSubMode() == FireControlComputer::Aim9)  ||
@@ -504,14 +504,14 @@ void AircraftClass::DoWeapons()
                     // Find the 'official target
                     tmpWp = waypoint;
 
-                    while (tmpWp && tmpWp->GetWPAction() != WP_RECON)
+                    while (tmpWp && tmpWp->GetWPAction() not_eq WP_RECON)
                         tmpWp = tmpWp->GetNextWP();
 
                     if (tmpWp)
                         tgtId = tmpWp->GetWPTargetID();
 
                     // Check the assigned target, if any
-                    if (tgtId != FalconNullId)
+                    if (tgtId not_eq FalconNullId)
                     {
                         campEntity = (CampBaseClass*) vuDatabase->Find(tgtId);
 

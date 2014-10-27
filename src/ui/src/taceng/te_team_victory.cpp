@@ -486,7 +486,7 @@ void SetVCSortTypeCB(long ID, short hittype, C_Base *)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     VCSortType = ID;
@@ -645,7 +645,7 @@ void UpdateVCOptions(victory_condition *vc)
                     lbox->SetValue(vt_intercept);
                     lbox->SetFlagBitOff(C_BIT_INVISIBLE);
 
-                    if (vc->get_type() != vt_intercept)
+                    if (vc->get_type() not_eq vt_intercept)
                         vc->set_type(vt_intercept);
                 }
                 else if (ent->IsBattalion())
@@ -659,7 +659,7 @@ void UpdateVCOptions(victory_condition *vc)
                     lbox->SetValue(vt_attrit);
                     lbox->SetFlagBitOff(C_BIT_INVISIBLE);
 
-                    if (vc->get_type() != vt_attrit)
+                    if (vc->get_type() not_eq vt_attrit)
                         vc->set_type(vt_attrit);
                 }
                 else
@@ -732,7 +732,7 @@ void VCChangeTeamNoCB(long, short hittype, C_Base *)
     C_Victory *vctrl;
     TREELIST *item;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     item = gVCTree->GetLastItem();
@@ -744,7 +744,7 @@ void VCChangeTeamNoCB(long, short hittype, C_Base *)
 
         if (vc)
         {
-            if (vctrl->GetTeam()->GetTextID() != vc->get_team())
+            if (vctrl->GetTeam()->GetTextID() not_eq vc->get_team())
             {
                 gMapMgr->RemoveVC(vc->get_team(), vc->get_number());
                 vc->set_team(vctrl->GetTeam()->GetTextID());
@@ -763,7 +763,7 @@ void VCChangeActionCB(long, short hittype, C_Base *control)
     C_Victory *vctrl;
     TREELIST *item;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     item = gVCTree->GetLastItem();
@@ -815,7 +815,7 @@ void VCChangeActionCB(long, short hittype, C_Base *control)
                 SelectToolTypeCB(TARGET_VC, C_TYPE_LMOUSEUP, vctrl);
                 BuildSpecificTargetList(vc->get_vu_id());
             }
-            else if (vc->get_type() != vt_destroy)
+            else if (vc->get_type() not_eq vt_destroy)
                 vc->set_sub_objective(-1);
         }
     }
@@ -830,7 +830,7 @@ void VCSetTargetCB(long, short hittype, C_Base *control)
     C_Window *win;
     C_Base *btn;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (control && control->GetUserNumber(10))
@@ -882,7 +882,7 @@ void VCArgsCB(long, short hittype, C_Base *)
     C_Victory *vctrl;
     TREELIST *item;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     item = gVCTree->GetLastItem();
@@ -906,7 +906,7 @@ void VCSetPointsCB(long, short hittype, C_Base *control)
     C_Victory *vctrl;
     TREELIST *item;
 
-    if (hittype && hittype != DIK_RETURN)
+    if (hittype && hittype not_eq DIK_RETURN)
         return;
 
     item = gVCTree->GetLastItem();
@@ -927,7 +927,7 @@ void VCSetPointsCB(long, short hittype, C_Base *control)
 
 void VCSelectVCCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gVCTree)
@@ -942,12 +942,12 @@ void AssignVCCB(long ID, short hittype, C_Base *control)
     C_Victory *vctrl;
     victory_condition *vc;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     CloseReconWindowCB(ID, hittype, control);
 
-    if (FeatureID != FalconNullId && FeatureNo >= 0)
+    if (FeatureID not_eq FalconNullId && FeatureNo >= 0)
     {
         if (gVCTree)
         {
@@ -1076,7 +1076,7 @@ void SelectVCTargetCB(long ID, short hittype, C_Base *control)
     victory_condition *vc;
     TREELIST *item;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     icon = (C_MapIcon*)control;
@@ -1115,7 +1115,7 @@ void SelectVCTargetCB(long ID, short hittype, C_Base *control)
                                 }
                                 else
                                 {
-                                    if (vc->get_type() != vt_occupy && vc->get_type() != vt_degrade)
+                                    if (vc->get_type() not_eq vt_occupy && vc->get_type() not_eq vt_degrade)
                                     {
                                         vc->set_type(vt_degrade);
                                         vc->set_tolerance(10);
@@ -1414,7 +1414,7 @@ int advance_team(int team, int state)
         {
             if
             (
-                (loop != team) &&
+                (loop not_eq team) &&
                 (TeamInfo[loop]) &&
                 (TeamInfo[loop]->GetFlag() == state)
             )
@@ -1677,7 +1677,7 @@ static void delete_current_vc(long, short hittype, C_Base *)
     C_Victory *vctrl;
     victory_condition *vc;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (!gVCTree)
@@ -1713,7 +1713,7 @@ static void new_victory_condition(long, short hittype, C_Base *)
     victory_condition *vc;
     TREELIST *item;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     //MonoPrint ("New Victory Condition\n");
@@ -1770,7 +1770,7 @@ static void change_vc_team_name(long ID, short hittype, C_Base *ctrl)
     old_team,
     new_team;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
     {
         return;
     }
@@ -1843,7 +1843,7 @@ static void change_vc_team_action(long ID, short hittype, C_Base *ctrl)
     C_Window
     *win;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
     {
         return;
     }
@@ -1893,7 +1893,7 @@ static void change_vc_tolerance(long ID, short hittype, C_Base *ctrl)
     C_Window
     *win;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
     {
         return;
     }
@@ -1922,7 +1922,7 @@ static void change_vc_steerpoint(long ID, short hittype, C_Base *ctrl)
     C_Window
     *win;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
     {
         return;
     }
@@ -1967,7 +1967,7 @@ static void set_points_required_for_victory(long, short hittype, C_Base *ctrl)
     C_EditBox
     *editbox;
 
-    if (hittype != DIK_RETURN)
+    if (hittype not_eq DIK_RETURN)
         return;
 
     editbox = (C_EditBox *) ctrl;

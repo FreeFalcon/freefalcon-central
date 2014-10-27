@@ -155,7 +155,7 @@ void GetHighScores()
     retval = RegQueryValueEx(theKey, "initData", 0, &type, (LPBYTE)&Scores, &size);
     RegCloseKey(theKey);
 
-    if (retval != ERROR_SUCCESS)
+    if (retval not_eq ERROR_SUCCESS)
     {
         // ShiAssert(strcmp("Failed Reg Load,I would Clear Here","But Not this time") == 0);
         // memset(&Scores[0],0,size);
@@ -251,7 +251,7 @@ int FindCost(int ID)
 
     i = 0;
 
-    while (VisualIDCost[i][0] != 0)
+    while (VisualIDCost[i][0] not_eq 0)
     {
         if (MapVisId(VisualIDCost[i][0]) == ID)
             return(VisualIDCost[i][1]);
@@ -567,7 +567,7 @@ static void InstantActionFlyCB(long, short hittype, C_Base *)
     C_Clock *clk;
     float XPos, YPos;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(IA_SETTINGS_WIN);
@@ -698,12 +698,12 @@ static void InsertScoreCB(long, short hittype, C_Base *)
     C_Text *txt;
     _TCHAR buf[MAX_NAME_LENGTH + 1];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     i = 0;
 
-    while (i < MAX_SCORES && TotalScore <= Scores.Scores[i].Score && Scores.Scores[i].Name[0] != 0)
+    while (i < MAX_SCORES && TotalScore <= Scores.Scores[i].Score && Scores.Scores[i].Name[0] not_eq 0)
         i++;
 
     idx = MAX_SCORES;
@@ -754,7 +754,7 @@ static void InsertScoreCB(long, short hittype, C_Base *)
         {
             for (i = 0; i < MAX_SCORES; i++)
             {
-                if (Scores.Scores[i].Name[0] != 0)
+                if (Scores.Scores[i].Name[0] not_eq 0)
                 {
                     // Set Name
                     txt = (C_Text *)win->FindControl(TEXT_1 + i * 2);
@@ -808,7 +808,7 @@ void ChangeTimeCB(long, short hittype, C_Base *control)
     short dir = 0;
     long value, flag;
 
-    if (hittype != C_TYPE_LMOUSEUP && hittype != C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
         return;
 
     dir = static_cast<short>(control->GetUserNumber(1));
@@ -1663,7 +1663,7 @@ void CheckHighScore(long TotalScore)
 
     i = 0;
 
-    while (i < MAX_SCORES && TotalScore <= Scores.Scores[i].Score && Scores.Scores[i].Name[0] != 0)
+    while (i < MAX_SCORES && TotalScore <= Scores.Scores[i].Score && Scores.Scores[i].Name[0] not_eq 0)
         i++;
 
     if (TotalScore < 0)
@@ -1774,7 +1774,7 @@ static void SetupInstantAction()
     {
         for (i = 0; i < MAX_SCORES; i++)
         {
-            if (Scores.Scores[i].Name[0] != 0)
+            if (Scores.Scores[i].Name[0] not_eq 0)
             {
                 // Set Name
                 txt = (C_Text *)win->FindControl(TEXT_1 + i * 2);
@@ -1845,7 +1845,7 @@ static void SetupInstantAction()
 
 void OpenIAMunitionsCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (!TheCampaign.IsLoaded())

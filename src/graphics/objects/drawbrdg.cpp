@@ -175,7 +175,7 @@ void DrawableBridge::Draw(class RenderOTW *renderer, int LOD)
     DrawableObject *obj;
 
     // See if we need to update our ground position
-    if (LOD != previousLOD)
+    if (LOD not_eq previousLOD)
     {
 
         // Update our position to reflect the terrain beneath us

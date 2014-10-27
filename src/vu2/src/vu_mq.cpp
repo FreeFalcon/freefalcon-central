@@ -180,9 +180,9 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
     // outgoing message, try send. If fails, add to send queue
     if (
         vuGlobalGroup && vuGlobalGroup->Connected() &&
-        msg->Target() && msg->Target() != vuLocalSessionEntity &&
+        msg->Target() && msg->Target() not_eq vuLocalSessionEntity &&
         msg->DoSend() && (!ent or !ent->IsPrivate()) &&
-        (vuLocalSession.creator_ != VU_SESSION_NULL_CONNECTION.creator_)
+        (vuLocalSession.creator_ not_eq VU_SESSION_NULL_CONNECTION.creator_)
     )
     {
         retval = msg->Send();
@@ -217,7 +217,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
         while (cur)
         {
             // sfr: this is only for received messages. exclude send queues
-            if (/*cur != vuLowSendQueue && */cur != vuMainThread->SendQueue())
+            if (/*cur not_eq vuLowSendQueue && */cur not_eq vuMainThread->SendQueue())
             {
                 cur->AddMessage(msg);
             }
@@ -252,7 +252,7 @@ void VuMessageQueue::FlushAllQueues()
 
     for (
         VuMessageQueue* cur = queuecollhead_;
-        cur != NULL;
+        cur not_eq NULL;
         cur = cur->nextqueue_
     )
     {
@@ -294,10 +294,10 @@ VU_BOOL VuMessageQueue::ReallocQueue()
     newhead = new VuMessage*[size];
     cp      = newhead;
 
-    for (rp = read_; rp != tail_; cp++, rp++)
+    for (rp = read_; rp not_eq tail_; cp++, rp++)
         *cp = *rp;
 
-    for (rp = head_; rp != write_; cp++, rp++)
+    for (rp = head_; rp not_eq write_; cp++, rp++)
         *cp = *rp;
 
     delete[] head_;
@@ -306,7 +306,7 @@ VU_BOOL VuMessageQueue::ReallocQueue()
     write_ = cp;
     tail_  = head_ + size;
 
-    while (cp != tail_)
+    while (cp not_eq tail_)
     {
         *cp++ = 0;
     }
@@ -322,7 +322,7 @@ VU_BOOL VuMessageQueue::AddMessage(VuMessage* event)
         return 0;
     }
 
-    if (filter_->Test(event) && event->Type() != VU_TIMER_EVENT)
+    if (filter_->Test(event) && event->Type() not_eq VU_TIMER_EVENT)
     {
         event->Ref();
         *write_++ = event;

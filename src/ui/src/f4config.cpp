@@ -1439,7 +1439,7 @@ void ReadFalcon4Config()
 
         char *p = &strAppPath[nAppPathLen - 1];
 
-        while (p > strAppPath && *p != '\\') p--;
+        while (p > strAppPath && *p not_eq '\\') p--;
 
         if (p == strAppPath) return;
 

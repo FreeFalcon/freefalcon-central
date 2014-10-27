@@ -461,7 +461,7 @@ int CStar::Setup(char *starfile, float maxmagnitude)
             if (data -> star[j].color >  data -> star[max].color) max = j;
         }
 
-        if (i != max)
+        if (i not_eq max)
         {
             StarRecord tempstar = data -> star[max];
             data -> star[max] = data -> star[i];

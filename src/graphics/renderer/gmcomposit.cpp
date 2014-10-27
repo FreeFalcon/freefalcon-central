@@ -535,7 +535,7 @@ bool RenderGMComposite::BackgroundGeneration(Tpoint *from, Tpoint *at, float pla
         return FALSE;
 
     // Detect the beam reversal at the end of a sweep or a sweep restart
-    if ((prevBeamRight != movingRight) /*|| (beamPercent < prevBeamPercent)*/ or DrawChanged)
+    if ((prevBeamRight not_eq movingRight) /*|| (beamPercent < prevBeamPercent)*/ or DrawChanged)
     {
         //BackgroundGeneration( from, at, platformHdg, 101, prevBeamRight, Shaped );
         dx = (float)cos(radar.GetHdg());
@@ -773,7 +773,7 @@ static int ClipToEdge(TwoDVertex **inArray, TwoDVertex **outArray, Edge *edge, i
 
         amOut = edge->RightOf(v->x, v->y);
 
-        if (amOut != wasOut)
+        if (amOut not_eq wasOut)
         {
             // Compute the intesection
             d1 = edge->DistanceFrom(p->x, p->y);
@@ -795,7 +795,7 @@ static int ClipToEdge(TwoDVertex **inArray, TwoDVertex **outArray, Edge *edge, i
     }
 
     // Finally, clip the edge between the first and last verts
-    if (wasOut != startedOut)
+    if (wasOut not_eq startedOut)
     {
         p = v;
         v = inArray[0];

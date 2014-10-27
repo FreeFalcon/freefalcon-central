@@ -32,7 +32,7 @@ unsigned int VuDatabase::Purge(VU_BOOL all)
 
         for (
             e = li.GetFirst();
-            e != NULL;
+            e not_eq NULL;
             e = li.GetNext()
         )
         {
@@ -64,7 +64,7 @@ int VuDatabase::Suspend(VU_BOOL all)
 
         for (
             e = li.GetFirst();
-            e != NULL;
+            e not_eq NULL;
             e = li.GetNext()
         )
         {
@@ -119,7 +119,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
     vuCollectionManager->AddToBirthList(entity);
     VuEntity::VU_SEND_TYPE sendType = entity->SendCreate();
 
-    if (entity->IsLocal() && (!entity->IsPrivate()) && (sendType != VuEntity::VU_SC_DONT_SEND))
+    if (entity->IsLocal() && (!entity->IsPrivate()) && (sendType not_eq VuEntity::VU_SC_DONT_SEND))
     {
         VuCreateEvent *event = 0;
         VuTargetEntity *target = vuGlobalGroup;
@@ -146,7 +146,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 #else
 
     // no duplicates allowed
-    if ((entity->VuState() == VU_MEM_ACTIVE) or (dbHash_->Find(entity->Id()) != NULL))
+    if ((entity->VuState() == VU_MEM_ACTIVE) or (dbHash_->Find(entity->Id()) not_eq NULL))
     {
         return VU_ERROR;
     }
@@ -157,7 +157,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 
     VuEntity::VU_SEND_TYPE sendType = entity->SendCreate();
 
-    if (entity->IsLocal() && (!entity->IsPrivate()) && (sendType != VuEntity::VU_SC_DONT_SEND))
+    if (entity->IsLocal() && (!entity->IsPrivate()) && (sendType not_eq VuEntity::VU_SC_DONT_SEND))
     {
         VuCreateEvent *event = 0;
         VuTargetEntity *target = vuGlobalGroup;
@@ -188,7 +188,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 
 VU_ERRCODE VuDatabase::CommonRemove(VuEntity *entity)
 {
-    if (!entity or entity->VuState() != VU_MEM_ACTIVE)
+    if (!entity or entity->VuState() not_eq VU_MEM_ACTIVE)
     {
         return VU_NO_OP;
     }
@@ -207,7 +207,7 @@ VU_ERRCODE VuDatabase::Remove(VuEntity *entity)
 {
     VU_ERRCODE ret = CommonRemove(entity);
 
-    if (ret != VU_SUCCESS)
+    if (ret not_eq VU_SUCCESS)
     {
         return ret;
     }
@@ -305,7 +305,7 @@ unsigned int VuDatabase::Purge(VU_BOOL all)
 
         for (
             e = li.GetFirst();
-            e != NULL;
+            e not_eq NULL;
             e = li.GetNext()
         )
         {
@@ -333,7 +333,7 @@ int VuDatabase::Suspend(VU_BOOL all)
 
         for (
             e = li.GetFirst();
-            e != NULL;
+            e not_eq NULL;
             e = li.GetNext()
         )
         {
@@ -386,7 +386,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
     vuCollectionManager->AddToBirthList(entity);
     VuEntity::VU_SEND_TYPE sendType = entity->SendCreate();
 
-    if (entity->IsLocal() && (!entity->IsPrivate()) && (sendType != VuEntity::VU_SC_DONT_SEND))
+    if (entity->IsLocal() && (!entity->IsPrivate()) && (sendType not_eq VuEntity::VU_SC_DONT_SEND))
     {
         VuCreateEvent *event = 0;
         VuTargetEntity *target = vuGlobalGroup;
@@ -413,7 +413,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 #else
 
     // no duplicates allowed
-    if ((entity->VuState() == VU_MEM_ACTIVE) or (Find(entity->Id()) != NULL))
+    if ((entity->VuState() == VU_MEM_ACTIVE) or (Find(entity->Id()) not_eq NULL))
     {
         return VU_ERROR;
     }
@@ -426,7 +426,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 
     VuEntity::VU_SEND_TYPE sendType = entity->SendCreate();
 
-    if (entity->IsLocal() && (!entity->IsPrivate()) && (sendType != VuEntity::VU_SC_DONT_SEND))
+    if (entity->IsLocal() && (!entity->IsPrivate()) && (sendType not_eq VuEntity::VU_SC_DONT_SEND))
     {
         VuCreateEvent *event = 0;
         VuTargetEntity *target = vuGlobalGroup;
@@ -455,7 +455,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 
 VU_ERRCODE VuDatabase::CommonRemove(VuEntity *entity)
 {
-    if (!entity or entity->VuState() != VU_MEM_ACTIVE)
+    if (!entity or entity->VuState() not_eq VU_MEM_ACTIVE)
     {
         return VU_NO_OP;
     }
@@ -471,7 +471,7 @@ VU_ERRCODE VuDatabase::Remove(VuEntity *entity)
 {
     VU_ERRCODE ret = CommonRemove(entity);
 
-    if (ret != VU_SUCCESS)
+    if (ret not_eq VU_SUCCESS)
     {
         return ret;
     }

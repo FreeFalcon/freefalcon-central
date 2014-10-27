@@ -62,7 +62,7 @@ void INFOSetupRulesControls(void)
     else if(!gCommsMgr->GetTargetGame() && !FalconLocalGameEntity)
      host = TRUE;
 
-    if(gCommsMgr->GetSettings()->Rules.GameStatus != GAME_WAITING)
+    if(gCommsMgr->GetSettings()->Rules.GameStatus not_eq GAME_WAITING)
      host = FALSE;*/
 
     ebox = (C_EditBox *)win->FindControl(INFO_GAMENAME);
@@ -74,7 +74,7 @@ void INFOSetupRulesControls(void)
         else
             ebox->SetFlagBitOff(C_BIT_ENABLED);
 
-        // if(FalconLocalGame != vuPlayerPoolGroup)
+        // if(FalconLocalGame not_eq vuPlayerPoolGroup)
         // ebox->SetText(FalconLocalGameEntity->GameName());
         // else
         if (gCommsMgr->GetTargetGame())
@@ -102,7 +102,7 @@ void INFOSetupRulesControls(void)
 
     lbox = (C_ListBox *)win->FindControl(FLTMOD_REQ);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         if (host)
             lbox->SetFlagBitOn(C_BIT_ENABLED);
@@ -119,7 +119,7 @@ void INFOSetupRulesControls(void)
 
     lbox = (C_ListBox *)win->FindControl(RADAR_REQ);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         if (host)
             lbox->SetFlagBitOn(C_BIT_ENABLED);
@@ -151,7 +151,7 @@ void INFOSetupRulesControls(void)
 
     lbox = (C_ListBox *)win->FindControl(WEAPEFF_REQ);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         if (host)
             lbox->SetFlagBitOn(C_BIT_ENABLED);
@@ -178,7 +178,7 @@ void INFOSetupRulesControls(void)
 
     lbox = (C_ListBox *)win->FindControl(AUTOPILOT_REQ);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         if (host)
             lbox->SetFlagBitOn(C_BIT_ENABLED);
@@ -205,7 +205,7 @@ void INFOSetupRulesControls(void)
 
     lbox = (C_ListBox *)win->FindControl(REFUELING_REQ);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         if (host)
             lbox->SetFlagBitOn(C_BIT_ENABLED);
@@ -232,7 +232,7 @@ void INFOSetupRulesControls(void)
 
     lbox = (C_ListBox *)win->FindControl(PADLOCK_REQ);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         if (host)
             lbox->SetFlagBitOn(C_BIT_ENABLED);
@@ -262,7 +262,7 @@ void INFOSetupRulesControls(void)
 
     button = (C_Button *)win->FindControl(FUEL_REQ);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (CurrRules.UnlimitedFuel())
             button->SetState(C_STATE_1);
@@ -274,7 +274,7 @@ void INFOSetupRulesControls(void)
 
     button = (C_Button *)win->FindControl(CHAFFLARES_REQ);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (CurrRules.UnlimitedChaff())
             button->SetState(C_STATE_1);
@@ -287,7 +287,7 @@ void INFOSetupRulesControls(void)
 
     button = (C_Button *)win->FindControl(COLLISIONS_REQ);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (CurrRules.CollisionsOn())
             button->SetState(C_STATE_0);
@@ -299,7 +299,7 @@ void INFOSetupRulesControls(void)
 
     button = (C_Button *)win->FindControl(BLACKOUT_REQ);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (CurrRules.BlackoutOn())
             button->SetState(C_STATE_0);
@@ -312,7 +312,7 @@ void INFOSetupRulesControls(void)
 
     button = (C_Button *)win->FindControl(IDTAGS_REQ);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (CurrRules.NameTagsOn())
             button->SetState(C_STATE_1);
@@ -324,7 +324,7 @@ void INFOSetupRulesControls(void)
 
     button = (C_Button *)win->FindControl(WEATHER_REQ);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (CurrRules.WeatherOn())
             button->SetState(C_STATE_0);
@@ -336,7 +336,7 @@ void INFOSetupRulesControls(void)
 
     button = (C_Button *)win->FindControl(INVULNERABILITY_REQ);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (CurrRules.InvulnerableOn())
             button->SetState(C_STATE_1);
@@ -348,7 +348,7 @@ void INFOSetupRulesControls(void)
 
     button = (C_Button *)win->FindControl(EXT_VIEWS_REQ);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (CurrRules.ExternalViewOn())
             button->SetState(C_STATE_1);
@@ -360,7 +360,7 @@ void INFOSetupRulesControls(void)
 
     slider = (C_Slider *)win->FindControl(VEHICLE_SIZE_REQ);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         if (host)
             slider->SetFlagBitOn(C_BIT_ENABLED);
@@ -398,7 +398,7 @@ void INFOSetupControls(void)
 
     button = (C_Button *)win->FindControl(INFO_COMPLY);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.InCompliance(CurrRules.GetRules()))
         {
@@ -414,7 +414,7 @@ void INFOSetupControls(void)
 
     lbox = (C_ListBox *)win->FindControl(FLTMOD_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         if (PlayerOptions.GetFlightModelType() == FMAccurate)
             lbox->SetValue(FLTMOD_1);
@@ -426,7 +426,7 @@ void INFOSetupControls(void)
 
     lbox = (C_ListBox *)win->FindControl(RADAR_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (PlayerOptions.GetAvionicsType())
         {
@@ -453,7 +453,7 @@ void INFOSetupControls(void)
 
     lbox = (C_ListBox *)win->FindControl(WEAPEFF_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (PlayerOptions.GetWeaponEffectiveness())
         {
@@ -475,7 +475,7 @@ void INFOSetupControls(void)
 
     lbox = (C_ListBox *)win->FindControl(AUTOPILOT_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (PlayerOptions.GetAutopilotMode())
         {
@@ -497,7 +497,7 @@ void INFOSetupControls(void)
 
     lbox = (C_ListBox *)win->FindControl(REFUELING_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (PlayerOptions.GetRefuelingMode())
         {
@@ -519,7 +519,7 @@ void INFOSetupControls(void)
 
     lbox = (C_ListBox *)win->FindControl(PADLOCK_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (PlayerOptions.GetPadlockMode())
         {
@@ -544,7 +544,7 @@ void INFOSetupControls(void)
 
     button = (C_Button *)win->FindControl(FUEL_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.UnlimitedFuel())
             button->SetState(C_STATE_1);
@@ -556,7 +556,7 @@ void INFOSetupControls(void)
 
     button = (C_Button *)win->FindControl(CHAFFLARES_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.UnlimitedChaff())
             button->SetState(C_STATE_1);
@@ -569,7 +569,7 @@ void INFOSetupControls(void)
 
     button = (C_Button *)win->FindControl(COLLISIONS_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.CollisionsOn())
             button->SetState(C_STATE_0);
@@ -581,7 +581,7 @@ void INFOSetupControls(void)
 
     button = (C_Button *)win->FindControl(BLACKOUT_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.BlackoutOn())
             button->SetState(C_STATE_0);
@@ -593,7 +593,7 @@ void INFOSetupControls(void)
 
     button = (C_Button *)win->FindControl(IDTAGS_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.NameTagsOn())
             button->SetState(C_STATE_1);
@@ -605,7 +605,7 @@ void INFOSetupControls(void)
 
     button = (C_Button *)win->FindControl(WEATHER_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.WeatherOn())
             button->SetState(C_STATE_0);
@@ -617,7 +617,7 @@ void INFOSetupControls(void)
 
     button = (C_Button *)win->FindControl(INVULNERABILITY_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.InvulnerableOn())
             button->SetState(C_STATE_1);
@@ -629,7 +629,7 @@ void INFOSetupControls(void)
 
     slider = (C_Slider *)win->FindControl(VEHICLE_SIZE_CUR);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         slider->SetSliderPos(static_cast<long>((slider->GetSliderMax() - slider->GetSliderMin()) * ((PlayerOptions.ObjMagnification) - 1) / 4));
         ebox = (C_EditBox *)win->FindControl(VEHICLE_SIZE_READOUT_CUR);
@@ -648,7 +648,7 @@ void INFOSetupControls(void)
 
 void UpdateRules(void)
 {
-    if (vuPlayerPoolGroup != vuLocalGame)
+    if (vuPlayerPoolGroup not_eq vuLocalGame)
         CurrRules.LoadRules(FalconLocalGame->rules.GetRules());
 
     if (!gMainHandler)
@@ -666,7 +666,7 @@ void UpdateRules(void)
 
     button = (C_Button *)win->FindControl(INFO_COMPLY);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.InCompliance(CurrRules.GetRules()))
         {
@@ -688,7 +688,7 @@ void ComplyCB(long ID, short hittype, C_Base *control)
     _TCHAR name[30];
     _TCHAR *head, *tail;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
@@ -712,7 +712,7 @@ void ComplyCB(long ID, short hittype, C_Base *control)
         while (*tail)
             tail++;
 
-        while (tail != head && !_istalnum(*tail))
+        while (tail not_eq head && !_istalnum(*tail))
             tail--;
 
         tail++;
@@ -806,7 +806,7 @@ void CheckCompliance(void)
 
     lbox = (C_ListBox *)win->FindControl(FLTMOD_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         if (lbox->GetTextID() == FLTMOD_2)
             if (CurrRules.SimFlightModel > FMSimplified)
@@ -837,7 +837,7 @@ void CheckCompliance(void)
 
     lbox = (C_ListBox *)win->FindControl(RADAR_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (lbox->GetTextID())
         {
@@ -894,7 +894,7 @@ void CheckCompliance(void)
 
     lbox = (C_ListBox *)win->FindControl(WEAPEFF_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (lbox->GetTextID())
         {
@@ -942,7 +942,7 @@ void CheckCompliance(void)
 
     lbox = (C_ListBox *)win->FindControl(AUTOPILOT_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (lbox->GetTextID())
         {
@@ -990,7 +990,7 @@ void CheckCompliance(void)
 
     lbox = (C_ListBox *)win->FindControl(PADLOCK_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (lbox->GetTextID())
         {
@@ -1054,7 +1054,7 @@ void CheckCompliance(void)
 
     lbox = (C_ListBox *)win->FindControl(REFUELING_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (lbox->GetTextID())
         {
@@ -1102,7 +1102,7 @@ void CheckCompliance(void)
 
     button = (C_Button *)win->FindControl(FUEL_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (!CheckButtonCompliance(button, !CurrRules.UnlimitedFuel()))
             InCompliance = FALSE;
@@ -1110,7 +1110,7 @@ void CheckCompliance(void)
 
     button = (C_Button *)win->FindControl(CHAFFLARES_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (!CheckButtonCompliance(button, !CurrRules.UnlimitedChaff()))
             InCompliance = FALSE;
@@ -1118,7 +1118,7 @@ void CheckCompliance(void)
 
     button = (C_Button *)win->FindControl(COLLISIONS_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (!CheckButtonCompliance(button, !CurrRules.NoCollisions()))
             InCompliance = FALSE;
@@ -1126,7 +1126,7 @@ void CheckCompliance(void)
 
     button = (C_Button *)win->FindControl(BLACKOUT_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (!CheckButtonCompliance(button, !CurrRules.NoBlackout()))
             InCompliance = FALSE;
@@ -1135,7 +1135,7 @@ void CheckCompliance(void)
 
     button = (C_Button *)win->FindControl(IDTAGS_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (!CheckButtonCompliance(button, !CurrRules.NameTagsOn()))
             InCompliance = FALSE;
@@ -1143,7 +1143,7 @@ void CheckCompliance(void)
 
     button = (C_Button *)win->FindControl(WEATHER_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (!CheckButtonCompliance(button, CurrRules.WeatherOn()))
             InCompliance = FALSE;
@@ -1152,7 +1152,7 @@ void CheckCompliance(void)
 
     button = (C_Button *)win->FindControl(INVULNERABILITY_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (!CheckButtonCompliance(button, !CurrRules.InvulnerableOn()))
             InCompliance = FALSE;
@@ -1160,7 +1160,7 @@ void CheckCompliance(void)
 
     /* May need to hit this if veh mag is 1
     button=(C_Button *)win->FindControl(AUTO_SCALE);
-    if(button != NULL)
+    if(button not_eq NULL)
     {
      if(!CheckButtonCompliance(button,!CurrRules.InvulnerableOn()) )
      InCompliance = FALSE;
@@ -1175,7 +1175,7 @@ void CheckCompliance(void)
 
     slider = (C_Slider *)win->FindControl(VEHICLE_SIZE_CUR);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         if (CurrRules.ObjMagnification < (int)((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4 + 1.5f))
         {
@@ -1203,7 +1203,7 @@ void CheckCompliance(void)
 
     button = (C_Button *)win->FindControl(INFO_COMPLY);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (InCompliance)
         {
@@ -1220,7 +1220,7 @@ void CheckCompliance(void)
 
 void ListBoxChangeCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     CheckCompliance();
@@ -1228,7 +1228,7 @@ void ListBoxChangeCB(long, short hittype, C_Base *)
 
 void SliderChangeCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     C_Slider *slider;
@@ -1237,7 +1237,7 @@ void SliderChangeCB(long, short hittype, C_Base *control)
     slider = (C_Slider *)control;
     scale = FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4 + 1.5F);
 
-    if (scale != slider->GetUserNumber(2))
+    if (scale not_eq slider->GetUserNumber(2))
     {
         C_EditBox *ebox;
         ebox = (C_EditBox *)control->Parent_->FindControl(slider->GetUserNumber(0));
@@ -1256,13 +1256,13 @@ void SliderChangeCB(long, short hittype, C_Base *control)
 
 void ButtonChangeCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     C_Button *btn;
     btn = (C_Button *)control;
 
-    if (btn->GetState() != C_STATE_0)
+    if (btn->GetState() not_eq C_STATE_0)
     {
         btn->SetState(C_STATE_0);
         btn->Refresh();
@@ -1284,7 +1284,7 @@ static void INFOSaveRulesToFile(void)
 
 static void SliderRuleControlCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     C_Slider *slider;
@@ -1293,7 +1293,7 @@ static void SliderRuleControlCB(long, short hittype, C_Base *control)
     slider = (C_Slider *)control;
     scale = static_cast<int>(((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4 + 1.5F));
 
-    if (scale != slider->GetUserNumber(2))
+    if (scale not_eq slider->GetUserNumber(2))
     {
         C_EditBox *ebox;
         ebox = (C_EditBox *)control->Parent_->FindControl(slider->GetUserNumber(0));
@@ -1316,7 +1316,7 @@ static void RuleControlCB(long, short hittype, C_Base *control)
     if (!control)
         return;
 
-    if ((hittype != C_TYPE_LMOUSEUP) && (hittype != C_TYPE_SELECT))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) && (hittype not_eq C_TYPE_SELECT))
         return;
 
     if (modify && control->_GetCType_() == _CNTL_BUTTON_) // if host I assume
@@ -1337,7 +1337,7 @@ static void RuleControlCB(long, short hittype, C_Base *control)
 
 static void CloseInfoWindowCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (CancelCB)
@@ -1360,17 +1360,17 @@ void INFOHookupControls()
 
     button = (C_Button *)win->FindControl(CLOSE_WINDOW);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(CloseInfoWindowCB);
 
     button = (C_Button *)win->FindControl(INFO_CANCEL);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(CloseInfoWindowCB);
 
     button = (C_Button *)win->FindControl(INFO_COMPLY);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(ComplyCB);
 
     /*
@@ -1399,77 +1399,77 @@ void INFOHookupControls()
     */
     lbox = (C_ListBox *)win->FindControl(FLTMOD_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
         lbox->SetCallback(ListBoxChangeCB);
 
 
     lbox = (C_ListBox *)win->FindControl(RADAR_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
         lbox->SetCallback(ListBoxChangeCB);
 
 
     lbox = (C_ListBox *)win->FindControl(WEAPEFF_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
         lbox->SetCallback(ListBoxChangeCB);
 
 
     lbox = (C_ListBox *)win->FindControl(AUTOPILOT_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
         lbox->SetCallback(ListBoxChangeCB);
 
     lbox = (C_ListBox *)win->FindControl(PADLOCK_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
         lbox->SetCallback(ListBoxChangeCB);
 
     lbox = (C_ListBox *)win->FindControl(REFUELING_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
         lbox->SetCallback(ListBoxChangeCB);
 
     button = (C_Button *)win->FindControl(FUEL_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(ButtonChangeCB);
 
     button = (C_Button *)win->FindControl(CHAFFLARES_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(ButtonChangeCB);
 
     button = (C_Button *)win->FindControl(COLLISIONS_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(ButtonChangeCB);
 
     button = (C_Button *)win->FindControl(BLACKOUT_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(ButtonChangeCB);
 
 
     button = (C_Button *)win->FindControl(IDTAGS_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(ButtonChangeCB);
 
     button = (C_Button *)win->FindControl(WEATHER_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(ButtonChangeCB);
 
 
     button = (C_Button *)win->FindControl(INVULNERABILITY_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(ButtonChangeCB);
 
     /* May need to hit this if veh mag is 1
     button=(C_Button *)win->FindControl(AUTO_SCALE);
-    if(button != NULL)
+    if(button not_eq NULL)
     {
      if(button->GetState() == C_STATE_1)
      PlayerOptions.SetObjFlag(DISP_OBJ_DYN_SCALING);
@@ -1479,89 +1479,89 @@ void INFOHookupControls()
 
     slider = (C_Slider *)win->FindControl(VEHICLE_SIZE_CUR);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
         slider->SetCallback(SliderChangeCB);
 
     //required values
 
     lbox = (C_ListBox *)win->FindControl(FLTMOD_REQ);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
         lbox->SetCallback(RuleControlCB);
 
 
     lbox = (C_ListBox *)win->FindControl(RADAR_REQ);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
         lbox->SetCallback(RuleControlCB);
 
 
     lbox = (C_ListBox *)win->FindControl(WEAPEFF_REQ);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
         lbox->SetCallback(RuleControlCB);
 
 
     lbox = (C_ListBox *)win->FindControl(AUTOPILOT_REQ);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
         lbox->SetCallback(RuleControlCB);
 
     lbox = (C_ListBox *)win->FindControl(PADLOCK_REQ);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
         lbox->SetCallback(RuleControlCB);
 
     lbox = (C_ListBox *)win->FindControl(REFUELING_REQ);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
         lbox->SetCallback(RuleControlCB);
 
     button = (C_Button *)win->FindControl(FUEL_REQ);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(RuleControlCB);
 
     button = (C_Button *)win->FindControl(CHAFFLARES_REQ);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(RuleControlCB);
 
     button = (C_Button *)win->FindControl(COLLISIONS_REQ);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(RuleControlCB);
 
     button = (C_Button *)win->FindControl(BLACKOUT_REQ);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(RuleControlCB);
 
 
     button = (C_Button *)win->FindControl(IDTAGS_REQ);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(RuleControlCB);
 
     button = (C_Button *)win->FindControl(WEATHER_REQ);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(RuleControlCB);
 
 
     button = (C_Button *)win->FindControl(EXT_VIEWS_REQ);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(RuleControlCB);
 
     button = (C_Button *)win->FindControl(INVULNERABILITY_REQ);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(RuleControlCB);
 
     /* May need to hit this if veh mag is 1
     button=(C_Button *)win->FindControl(AUTO_SCALE);
-    if(button != NULL)
+    if(button not_eq NULL)
     {
      if(button->GetState() == C_STATE_1)
      PlayerOptions.SetObjFlag(DISP_OBJ_DYN_SCALING);
@@ -1573,7 +1573,7 @@ void INFOHookupControls()
 
     slider = (C_Slider *)win->FindControl(VEHICLE_SIZE_REQ);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
         slider->SetCallback(SliderRuleControlCB);
 }
 
@@ -1592,7 +1592,7 @@ void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)())
         return;
     }
 
-    /*if(FalconLocalGame != vuPlayerPoolGroup)
+    /*if(FalconLocalGame not_eq vuPlayerPoolGroup)
      CurrRules = &FalconLocalGameEntity->rules;
     else if(gCommsMgr->GetTargetGame())
      CurrRules = &((FalconGameEntity *)gCommsMgr->GetTargetGame())->rules;
@@ -1654,7 +1654,7 @@ static void INFOSaveRules(void)
 
     tempRules.Initialize();
 
-    if (vuPlayerPoolGroup != vuLocalGame)
+    if (vuPlayerPoolGroup not_eq vuLocalGame)
         return;
 
     win = gMainHandler->FindWindow(INFO_WIN);
@@ -1701,7 +1701,7 @@ static void INFOSaveRules(void)
 
         lbox = (C_ListBox *)win->FindControl(FLTMOD_REQ);
 
-        if (lbox != NULL)
+        if (lbox not_eq NULL)
         {
             if ((lbox->GetTextID()) == FLTMOD_1)
                 tempRules.SimFlightModel = FMAccurate;
@@ -1711,7 +1711,7 @@ static void INFOSaveRules(void)
 
         lbox = (C_ListBox *)win->FindControl(RADAR_REQ);
 
-        if (lbox != NULL)
+        if (lbox not_eq NULL)
         {
             switch (lbox->GetTextID())
             {
@@ -1736,7 +1736,7 @@ static void INFOSaveRules(void)
 
         lbox = (C_ListBox *)win->FindControl(WEAPEFF_REQ);
 
-        if (lbox != NULL)
+        if (lbox not_eq NULL)
         {
             switch (lbox->GetTextID())
             {
@@ -1756,7 +1756,7 @@ static void INFOSaveRules(void)
 
         lbox = (C_ListBox *)win->FindControl(AUTOPILOT_REQ);
 
-        if (lbox != NULL)
+        if (lbox not_eq NULL)
         {
             switch (lbox->GetTextID())
             {
@@ -1776,7 +1776,7 @@ static void INFOSaveRules(void)
 
         lbox = (C_ListBox *)win->FindControl(PADLOCK_REQ);
 
-        if (lbox != NULL)
+        if (lbox not_eq NULL)
         {
             switch (lbox->GetTextID())
             {
@@ -1799,7 +1799,7 @@ static void INFOSaveRules(void)
 
         lbox = (C_ListBox *)win->FindControl(REFUELING_REQ);
 
-        if (lbox != NULL)
+        if (lbox not_eq NULL)
         {
             switch (lbox->GetTextID())
             {
@@ -1819,7 +1819,7 @@ static void INFOSaveRules(void)
 
         button = (C_Button *)win->FindControl(FUEL_REQ);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             if (button->GetState() == C_STATE_1)
                 tempRules.SetSimFlag(SIM_UNLIMITED_FUEL);
@@ -1829,7 +1829,7 @@ static void INFOSaveRules(void)
 
         button = (C_Button *)win->FindControl(CHAFFLARES_REQ);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             if (button->GetState() == C_STATE_1)
                 tempRules.SetSimFlag(SIM_UNLIMITED_CHAFF);
@@ -1840,7 +1840,7 @@ static void INFOSaveRules(void)
 
         button = (C_Button *)win->FindControl(COLLISIONS_REQ);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             if (button->GetState() == C_STATE_1)
                 tempRules.SetSimFlag(SIM_NO_COLLISIONS);
@@ -1850,7 +1850,7 @@ static void INFOSaveRules(void)
 
         button = (C_Button *)win->FindControl(BLACKOUT_REQ);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             if (button->GetState() == C_STATE_1)
                 tempRules.SetSimFlag(SIM_NO_BLACKOUT);
@@ -1861,7 +1861,7 @@ static void INFOSaveRules(void)
 
         button = (C_Button *)win->FindControl(IDTAGS_REQ);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             if (button->GetState() == C_STATE_1)
                 tempRules.SetSimFlag(SIM_NAMETAGS);
@@ -1871,7 +1871,7 @@ static void INFOSaveRules(void)
 
         button = (C_Button *)win->FindControl(WEATHER_REQ);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             if (button->GetState() == C_STATE_1)
                 tempRules.SetGenFlag(GEN_NO_WEATHER);
@@ -1882,7 +1882,7 @@ static void INFOSaveRules(void)
 
         button = (C_Button *)win->FindControl(INVULNERABILITY_REQ);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             if (button->GetState() == C_STATE_1)
                 tempRules.SetSimFlag(SIM_INVULNERABLE);
@@ -1892,7 +1892,7 @@ static void INFOSaveRules(void)
 
         button = (C_Button *)win->FindControl(EXT_VIEWS_REQ);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             if (button->GetState() == C_STATE_1)
                 tempRules.SetGenFlag(GEN_EXTERNAL_VIEW);
@@ -1902,7 +1902,7 @@ static void INFOSaveRules(void)
 
         /* May need to hit this if veh mag is 1
         button=(C_Button *)win->FindControl(AUTO_SCALE);
-        if(button != NULL)
+        if(button not_eq NULL)
         {
          if(button->GetState() == C_STATE_1)
          PlayerOptions.SetObjFlag(DISP_OBJ_DYN_SCALING);
@@ -1912,7 +1912,7 @@ static void INFOSaveRules(void)
 
         slider = (C_Slider *)win->FindControl(VEHICLE_SIZE_REQ);
 
-        if (slider != NULL)
+        if (slider not_eq NULL)
         {
             tempRules.ObjMagnification = static_cast<float>((int)((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4 + 1.5f));
         }
@@ -1944,7 +1944,7 @@ static void INFOSaveValues(void)
 
     lbox = (C_ListBox *)win->FindControl(FLTMOD_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         if ((lbox->GetTextID()) == FLTMOD_1)
             PlayerOptions.SimFlightModel = FMAccurate;
@@ -1956,7 +1956,7 @@ static void INFOSaveValues(void)
 
     lbox = (C_ListBox *)win->FindControl(RADAR_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (lbox->GetTextID())
         {
@@ -1983,7 +1983,7 @@ static void INFOSaveValues(void)
 
     lbox = (C_ListBox *)win->FindControl(WEAPEFF_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (lbox->GetTextID())
         {
@@ -2005,7 +2005,7 @@ static void INFOSaveValues(void)
 
     lbox = (C_ListBox *)win->FindControl(AUTOPILOT_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (lbox->GetTextID())
         {
@@ -2027,7 +2027,7 @@ static void INFOSaveValues(void)
 
     lbox = (C_ListBox *)win->FindControl(PADLOCK_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (lbox->GetTextID())
         {
@@ -2052,7 +2052,7 @@ static void INFOSaveValues(void)
 
     lbox = (C_ListBox *)win->FindControl(REFUELING_CUR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (lbox->GetTextID())
         {
@@ -2074,7 +2074,7 @@ static void INFOSaveValues(void)
 
     button = (C_Button *)win->FindControl(FUEL_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1 or button->GetState() == C_STATE_2)
             PlayerOptions.SetSimFlag(SIM_UNLIMITED_FUEL);
@@ -2084,7 +2084,7 @@ static void INFOSaveValues(void)
 
     button = (C_Button *)win->FindControl(CHAFFLARES_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1 or button->GetState() == C_STATE_2)
             PlayerOptions.SetSimFlag(SIM_UNLIMITED_CHAFF);
@@ -2095,7 +2095,7 @@ static void INFOSaveValues(void)
 
     button = (C_Button *)win->FindControl(COLLISIONS_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1 or button->GetState() == C_STATE_2)
             PlayerOptions.SetSimFlag(SIM_NO_COLLISIONS);
@@ -2105,7 +2105,7 @@ static void INFOSaveValues(void)
 
     button = (C_Button *)win->FindControl(BLACKOUT_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1 or button->GetState() == C_STATE_2)
             PlayerOptions.SetSimFlag(SIM_NO_BLACKOUT);
@@ -2116,7 +2116,7 @@ static void INFOSaveValues(void)
 
     button = (C_Button *)win->FindControl(IDTAGS_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1 or button->GetState() == C_STATE_2)
             PlayerOptions.SetSimFlag(SIM_NAMETAGS);
@@ -2126,7 +2126,7 @@ static void INFOSaveValues(void)
 
     button = (C_Button *)win->FindControl(WEATHER_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1 or button->GetState() == C_STATE_2)
             PlayerOptions.GeneralFlags  or_eq  GEN_NO_WEATHER;
@@ -2137,7 +2137,7 @@ static void INFOSaveValues(void)
 
     button = (C_Button *)win->FindControl(INVULNERABILITY_CUR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1 or button->GetState() == C_STATE_2)
             PlayerOptions.SetSimFlag(SIM_INVULNERABLE);
@@ -2147,7 +2147,7 @@ static void INFOSaveValues(void)
 
     /* May need to hit this if veh mag is 1
     button=(C_Button *)win->FindControl(AUTO_SCALE);
-    if(button != NULL)
+    if(button not_eq NULL)
     {
      if(button->GetState() == C_STATE_1)
      PlayerOptions.SetObjFlag(DISP_OBJ_DYN_SCALING);
@@ -2159,7 +2159,7 @@ static void INFOSaveValues(void)
 
     slider = (C_Slider *)win->FindControl(VEHICLE_SIZE_CUR);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         PlayerOptions.ObjMagnification = static_cast<float>((int)((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4 + 1.5f));
     }

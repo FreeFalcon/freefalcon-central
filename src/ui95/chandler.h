@@ -333,7 +333,7 @@ public:
     long GetDragY(WORD MouseY);
     BOOL Dragging(void)
     {
-        if (Drag_.Control_ != NULL or Drag_.Window_ != NULL) return(TRUE);
+        if (Drag_.Control_ not_eq NULL or Drag_.Window_ not_eq NULL) return(TRUE);
 
         return(FALSE);
     }

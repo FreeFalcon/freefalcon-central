@@ -291,11 +291,11 @@ DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
         return length;
     }
 
-    if (thisFV->voiceBuffers[thisFV->voiceStruct->streamBuffer].status != BUFFER_FILLED)
+    if (thisFV->voiceBuffers[thisFV->voiceStruct->streamBuffer].status not_eq BUFFER_FILLED)
     {
         //don't want to change buffer pointed to unless there is data in the other buffer but not
         //this one. (This way I can make sure I grab the right buffer first)
-        if (thisFV->voiceBuffers[1 - thisFV->voiceStruct->streamBuffer].status != BUFFER_FILLED)
+        if (thisFV->voiceBuffers[1 - thisFV->voiceStruct->streamBuffer].status not_eq BUFFER_FILLED)
         {
             // sfr: i think this is causing the buffer to stop being consumed
             /*if(gSoundDriver && (thisFV->silenceWritten > 16000) )
@@ -397,7 +397,7 @@ DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
     {
         filler = SILENCE_KEY;
 
-        if (thisFV->voiceStruct->waveFormat.wBitsPerSample != 8)
+        if (thisFV->voiceStruct->waveFormat.wBitsPerSample not_eq 8)
             filler = 0;
 
         memset(dsb, filler, fillerSize);

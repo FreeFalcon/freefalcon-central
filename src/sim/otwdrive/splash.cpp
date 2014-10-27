@@ -139,7 +139,7 @@ void OTWDriverClass::SetupSplashScreen(void)
     // Open the input file
     result = texFile.glOpenFileMem(filename);
 
-    if (result != 1)
+    if (result not_eq 1)
     {
         ShiWarning("We failed to read a splash screen image");
         return;
@@ -149,7 +149,7 @@ void OTWDriverClass::SetupSplashScreen(void)
     texFile.glReadFileMem();
     result = ReadTextureImage(&texFile);
 
-    if (result != GOOD_READ)
+    if (result not_eq GOOD_READ)
     {
         ShiWarning("We failed to read a splash screen image");
         return;

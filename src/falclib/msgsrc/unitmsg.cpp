@@ -173,7 +173,7 @@ int FalconUnitMessage::Process(uchar autodisp)
             if (!u->IsFlight())
                 return 0;
 
-            if (((Flight)u)->GetUnitMission() != AMIS_ALERT)
+            if (((Flight)u)->GetUnitMission() not_eq AMIS_ALERT)
                 return 0;
 
             Flight enemy = (Flight) FindUnit(dataBlock.from);

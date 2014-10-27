@@ -78,7 +78,7 @@ GunClass::ReadyToFire(void)
         return FALSE;
 
     // if we've got a target a shell is in the air
-    if (shellTargetPtr != NULL)
+    if (shellTargetPtr not_eq NULL)
         return FALSE;
 
     // ok to fire

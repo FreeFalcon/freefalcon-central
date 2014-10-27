@@ -392,7 +392,7 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
     {
         p_current = mpTList;
 
-        while (p_current && (p_current->channel != channel or p_current->set != set or p_current->domain != domain))
+        while (p_current && (p_current->channel not_eq channel or p_current->set not_eq set or p_current->domain not_eq domain))
         {
             p_current = p_current->p_next;
         }
@@ -417,7 +417,7 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
 
         p_current = mpAssigned;
 
-        while (p_current && (p_current->channel != channel or p_current->set != set or p_current->domain != domain))
+        while (p_current && (p_current->channel not_eq channel or p_current->set not_eq set or p_current->domain not_eq domain))
         {
             p_current = p_current->p_next;
         }
@@ -435,7 +435,7 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
 
         p_current = mpAssigned;
 
-        while (p_current && (p_current->channel != channel or p_current->set != set or p_current->domain != domain))
+        while (p_current && (p_current->channel not_eq channel or p_current->set not_eq set or p_current->domain not_eq domain))
         {
             p_current = p_current->p_next;
         }
@@ -729,7 +729,7 @@ BOOL TacanList::StoreStation(LinkedCampStationStr** p_list,
         return FALSE;
     }
 
-    if (band != X && band != Y)   // Channels are constrained to
+    if (band not_eq X && band not_eq Y)   // Channels are constrained to
     {
         //F4Assert(FALSE); // X or Y band.
         ShiWarning("invalid band\n");

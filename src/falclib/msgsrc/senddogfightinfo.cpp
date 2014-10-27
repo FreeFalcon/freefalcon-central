@@ -36,12 +36,12 @@ int UI_SendDogfightInfo::Process(uchar autodisp)
     if (autodisp)
         return 0;
 
-    if (gCommsMgr != NULL)
+    if (gCommsMgr not_eq NULL)
     {
         VuGameEntity *game = (VuGameEntity*) vuDatabase->Find(dataBlock.game);
         gCommsMgr->LookAtGame(game);
 
-        if (dataBlock.from != vuLocalSessionEntity->Id())
+        if (dataBlock.from not_eq vuLocalSessionEntity->Id())
         {
             SimDogfight.ReceiveSettings(&dataBlock.settings);
             PostMessage(FalconDisplay.appWin, FM_REFRESH_DOGFIGHT, 0, 0);

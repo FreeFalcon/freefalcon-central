@@ -418,7 +418,7 @@ void SimulationDriver::Enter(void)
         F4EventFile = NULL;
     }
 
-    if (IO.Init((char *)"joy1.dat") != SIMLIB_OK)
+    if (IO.Init((char *)"joy1.dat") not_eq SIMLIB_OK)
     {
         MonoPrint("No Joystick Connected\n");
     }
@@ -438,7 +438,7 @@ void SimulationDriver::Exit(void)
     // Kill All remaining awake sim Entities
     for (
         theObject = static_cast<SimBaseClass*>(objectWalker.GetFirst());
-        theObject != NULL;
+        theObject not_eq NULL;
         theObject = nextObject
     )
     {
@@ -558,8 +558,8 @@ void SimulationDriver::Cycle()
             // sfr: why get from DB???
             // this is fucking hack. They get from DB because UI can be closing while this is runnig
             // definitely NOT SAFE
-            //if (((FalconSessionEntity*)vuDatabase->Find(sess->Id()))->GetFlyState () != FLYSTATE_IN_UI)
-            if (((FalconSessionEntity*)sess)->GetFlyState() != FLYSTATE_IN_UI)
+            //if (((FalconSessionEntity*)vuDatabase->Find(sess->Id()))->GetFlyState () not_eq FLYSTATE_IN_UI)
+            if (((FalconSessionEntity*)sess)->GetFlyState() not_eq FLYSTATE_IN_UI)
             {
                 flying = TRUE;
             }
@@ -629,7 +629,7 @@ void SimulationDriver::Cycle()
 
             for (
                 SimBaseClass *theObject = (SimBaseClass*)objectWalker.GetFirst(), *next = NULL;
-                theObject != NULL;
+                theObject not_eq NULL;
                 theObject = next
             )
             {
@@ -858,12 +858,12 @@ void SimulationDriver::SetPlayerEntity(SimMoverClass* newObject)
     if (newObject == NULL or newObject->IsAirplane() or newObject->IsEject())
     {
         // sfr: reference / derefence stuff
-        if (playerEntity != NULL)
+        if (playerEntity not_eq NULL)
         {
             VuDeReferenceEntity(playerEntity);
         }
 
-        if (newObject != NULL)
+        if (newObject not_eq NULL)
         {
             VuReferenceEntity(newObject);
         }
@@ -895,7 +895,7 @@ void SimulationDriver::SetPlayerEntity(SimMoverClass* newObject)
             gTacanList->GetVUIDFromChannel(101, TacanList::X, TacanList::AG, &ATCId, &range, &type, &ilsf);
         }
 
-        if (ATCId != FalconNullId && playerEntity)
+        if (ATCId not_eq FalconNullId && playerEntity)
         {
             FalconATCMessage* atcMsg = new FalconATCMessage(ATCId, FalconLocalGame);
             atcMsg->dataBlock.type = 0;
@@ -993,7 +993,7 @@ void SimulationDriver::WakeCampaignBase(int isUnit, CampBaseClass* baseEntity, T
 
     for (
         theObject = static_cast<SimBaseClass*>(cit.GetFirst());
-        theObject != NULL;
+        theObject not_eq NULL;
         theObject = static_cast<SimBaseClass*>(cit.GetNext())
     )
     {
@@ -1554,7 +1554,7 @@ SimBaseClass* SimulationDriver::FindNearestTraffic(AircraftClass* aircraft, Obje
         // check it is an airplane and not dead
         // check that it is not on the ground
         // checks that it is not hostile
-        if (aircraft->GetCallsignIdx() != theObject->GetCallsignIdx() && theObject->IsAirplane() && !theObject->IsDead() && !theObject->OnGround() &&
+        if (aircraft->GetCallsignIdx() not_eq theObject->GetCallsignIdx() && theObject->IsAirplane() && !theObject->IsDead() && !theObject->OnGround() &&
             GetTTRelations((Team)theObject->GetTeam(), myTeam) <= Neutral)
         {
             if (retval == NULL)
@@ -2128,7 +2128,7 @@ void SimulationDriver::InitACMIRecord(void)
         featPos.data.specialFlags = theObject->featureFlags;
         leadObject = theObject->GetCampaignObject()->GetComponentLead();
 
-        if (leadObject && leadObject->Id().num_ != theObject->Id().num_)
+        if (leadObject && leadObject->Id().num_ not_eq theObject->Id().num_)
             featPos.data.leadUniqueID = ACMIIDTable->Add(leadObject->Id(), NULL, 0); //.num_;
         else
             featPos.data.leadUniqueID = -1;
@@ -2200,8 +2200,8 @@ void SimulationDriver::POVKludgeFunction(DWORD povHatAngle)   // VWF POV Kludge 
 
     //static DWORD previousAngle = -1;
 
-    //if((povHatAngle == -1 && previousAngle != -1) ||
-    // (povHatAngle != -1 && previousAngle == -1)) {
+    //if((povHatAngle == -1 && previousAngle not_eq -1) ||
+    // (povHatAngle not_eq -1 && previousAngle == -1)) {
 
     if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit  ||
         OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3  or // 2002-02-17 MODIFIED BY S.G. Needed now for the 'break lock by POV' to work
@@ -2270,7 +2270,7 @@ void SimulationDriver::POVKludgeFunction(DWORD povHatAngle)   // VWF POV Kludge 
             OTWViewUp(0, KEY_DOWN, NULL);
         }
     }
-    else if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit && povHatAngle != -1)
+    else if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit && povHatAngle not_eq -1)
     {
 
         if (((povHatAngle >= (POV_NW + POV_HALF_RANGE)) && (povHatAngle < 36000)) or (povHatAngle < POV_N + POV_HALF_RANGE))

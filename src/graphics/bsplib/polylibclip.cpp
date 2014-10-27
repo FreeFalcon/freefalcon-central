@@ -451,7 +451,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
                 if (I) extraVertIdx.I++;
 
-                IntersectNear(p, v, nextOut, rgba != NULL, I != NULL, uv != NULL);
+                IntersectNear(p, v, nextOut, rgba not_eq NULL, I not_eq NULL, uv not_eq NULL);
                 clipTest  or_eq  TheStateStack.ClipInfoPool[nextOut->xyz].clipFlag;
                 nextOut++;
             }
@@ -499,7 +499,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
                 if (I) extraVertIdx.I++;
 
-                IntersectBottom(p, v, nextOut++, rgba != NULL, I != NULL, uv != NULL);
+                IntersectBottom(p, v, nextOut++, rgba not_eq NULL, I not_eq NULL, uv not_eq NULL);
             }
 
             // If this vert isn't clipped, use it
@@ -540,7 +540,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
                 if (I) extraVertIdx.I++;
 
-                IntersectTop(p, v, nextOut++, rgba != NULL, I != NULL, uv != NULL);
+                IntersectTop(p, v, nextOut++, rgba not_eq NULL, I not_eq NULL, uv not_eq NULL);
             }
 
             // If this vert isn't clipped, use it
@@ -581,7 +581,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
                 if (I) extraVertIdx.I++;
 
-                IntersectRight(p, v, nextOut++, rgba != NULL, I != NULL, uv != NULL);
+                IntersectRight(p, v, nextOut++, rgba not_eq NULL, I not_eq NULL, uv not_eq NULL);
             }
 
             // If this vert isn't clipped, use it
@@ -622,7 +622,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
                 if (I) extraVertIdx.I++;
 
-                IntersectLeft(p, v, nextOut++, rgba != NULL, I != NULL, uv != NULL);
+                IntersectLeft(p, v, nextOut++, rgba not_eq NULL, I not_eq NULL, uv not_eq NULL);
             }
 
             // If this vert isn't clipped, use it

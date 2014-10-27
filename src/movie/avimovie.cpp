@@ -449,7 +449,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
     status = aviOpen(aviFileName, audioFileName,
                      &(item->aviStreams));
 
-    if (status != RIFF_OK)
+    if (status not_eq RIFF_OK)
     {
         aviClose(&(item->aviStreams));
         item->status = 0;
@@ -545,7 +545,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
 
     if (ICDecompressQuery(item->hIC, &(item->aviStreams.bihIn),
                           (LPBITMAPINFOHEADER)
-                          & (item->bihOut)) != ICERR_OK)
+                          & (item->bihOut)) not_eq ICERR_OK)
     {
         aviClose(&(item->aviStreams));
         item->status = 0;
@@ -554,7 +554,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
 
     if (ICDecompressBegin(item->hIC, &(item->aviStreams.bihIn),
                           (LPBITMAPINFOHEADER)
-                          & (item->bihOut)) != ICERR_OK)
+                          & (item->bihOut)) not_eq ICERR_OK)
     {
         aviClose(&(item->aviStreams));
         item->status = 0;
@@ -639,7 +639,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
     */
 
     // OW
-    //   if ( ddPointer && ( videoMode != MOVIE_MODE_INTERLACE ) )
+    //   if ( ddPointer && ( videoMode not_eq MOVIE_MODE_INTERLACE ) )
     if (1)
     {
         item->sbType  or_eq  SURFACE_TYPE_DDRAW;
@@ -745,7 +745,7 @@ int movieStart(int handle)
 
                 status = aviReadRecord(streams);
 
-                if (status != RIFF_OK)
+                if (status not_eq RIFF_OK)
                     return MOVIE_BAD_FILE;
             }
             else
@@ -756,13 +756,13 @@ int movieStart(int handle)
                 {
                     status = aviReadRecord(streams);
 
-                    if (status != RIFF_OK)
+                    if (status not_eq RIFF_OK)
                         return MOVIE_BAD_FILE;
                 }
 
                 status = waveReadBlock(streams);
 
-                if (status != RIFF_OK)
+                if (status not_eq RIFF_OK)
                     return MOVIE_BAD_AUDIO_FILE;
             }
         }
@@ -776,12 +776,12 @@ int movieStart(int handle)
 
     for (i = 0; i < streams->numOfVidBlocks; i++)
     {
-        if (aviReadRecord(streams) != RIFF_OK)
+        if (aviReadRecord(streams) not_eq RIFF_OK)
             return MOVIE_BAD_FILE;
 
         if ((streams->audioFlag & STREAM_AUDIO_EXTERNAL) &&
             !(streams->audioFlag & STREAM_AUDIO_PRELOAD))
-            if (waveReadBlock(streams) != RIFF_OK)
+            if (waveReadBlock(streams) not_eq RIFF_OK)
                 return MOVIE_BAD_AUDIO_FILE;
     }
 
@@ -1178,7 +1178,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
                     }
                 }
 
-                if (errorCode != ICERR_OK)
+                if (errorCode not_eq ICERR_OK)
                 {
                     item->status  or_eq  MOVIE_STATUS_STOP_THREAD;
                     item->lastError = exitCode = MOVIE_THREAD_BAD_DECOMPRESS;
@@ -1222,7 +1222,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
 
                         item->audioChannel = (int)F4CreateStream(&streams->waveFormat, 0.5f);
 
-                        if (item->audioChannel != 0)
+                        if (item->audioChannel not_eq 0)
                         {
                             void *test;
                             test = &item->handle;
@@ -1371,7 +1371,7 @@ static DWORD fillSoundBuffer(void *me, char *soundBuffer, DWORD length)
     {
         filler = 0x80;
 
-        if (streams->waveFormat.wBitsPerSample != 8)
+        if (streams->waveFormat.wBitsPerSample not_eq 8)
             filler = 0;
 
         memset(dsb, filler, fillerSize);

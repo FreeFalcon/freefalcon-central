@@ -550,7 +550,7 @@ BOOL C_3dViewer::ViewGreyOTW()
         RECT rcDst = { 0, 0, nWidth, nHeight };
 
         // Cleanup old buffer if it doesnt fit
-        if (m_pImgGray && (m_pImgGray->targetXres() != nWidth or m_pImgGray->targetYres() != nHeight))
+        if (m_pImgGray && (m_pImgGray->targetXres() not_eq nWidth or m_pImgGray->targetYres() not_eq nHeight))
         {
             m_pImgGray->Cleanup();
             delete m_pImgGray;

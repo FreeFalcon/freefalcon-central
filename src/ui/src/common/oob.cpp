@@ -145,7 +145,7 @@ void SelectOOBSquadronCB(long, short hittype, C_Base *control)
 {
     C_Squadron *squad;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gOOBTree->SetAllControlStates(0, gOOBTree->GetRoot());
@@ -161,7 +161,7 @@ void SelectOOBEntityCB(long, short hittype, C_Base *control)
 {
     C_Entity *ent;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gOOBTree->SetAllControlStates(0, gOOBTree->GetRoot());
@@ -200,7 +200,7 @@ void SetupOOBWindow()
 
         for (i = 0; i < NUM_TEAMS; i++)
         {
-            if (TeamInfo[i] && ((TeamInfo[i]->flags & TEAM_ACTIVE) or GetTeam(static_cast<uchar>(i)) != i))
+            if (TeamInfo[i] && ((TeamInfo[i]->flags & TEAM_ACTIVE) or GetTeam(static_cast<uchar>(i)) not_eq i))
             {
                 btn = (C_Button*)win->FindControl(TeamFlagBtnIDs[idx]);
 
@@ -258,7 +258,7 @@ void SetupOOBWindow()
 
             for (i = 0; i < NUM_TEAMS; i++)
             {
-                if (TeamInfo[i] && ((TeamInfo[i]->flags & TEAM_ACTIVE) or GetTeam(static_cast<uchar>(i)) != i))
+                if (TeamInfo[i] && ((TeamInfo[i]->flags & TEAM_ACTIVE) or GetTeam(static_cast<uchar>(i)) not_eq i))
                 {
                     for (j = 0; j < 4; j++)
                     {
@@ -354,7 +354,7 @@ BOOL FindOtherChildren(TREELIST *list, short owner)
     {
         if (!(item->Item_->GetFlags() & C_BIT_INVISIBLE))
         {
-            if (item->Item_->GetUserNumber(0) != owner)
+            if (item->Item_->GetUserNumber(0) not_eq owner)
                 return(TRUE);
 
             if (item->Child)
@@ -378,7 +378,7 @@ void ToggleOOBTeamCB(long, short hittype, C_Base *control)
     TREELIST *root, *child;
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = control->GetParent();
@@ -425,7 +425,7 @@ void ToggleOOBTeamCB(long, short hittype, C_Base *control)
         {
             btn = (C_Button *)win->FindControl(TeamFlagBtnIDs[i]);
 
-            if (btn && i != owner)
+            if (btn && i not_eq owner)
             {
                 if ((GetTeam(static_cast<uchar>(btn->GetUserNumber(0))) == TeamID) && btn->GetState())
                     DontTurnOff = TRUE;
@@ -509,7 +509,7 @@ void ToggleOOBFilterCB(long ID, short hittype, C_Base *control)
 
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     Leave = UI_Enter(control->Parent_);
@@ -1007,7 +1007,7 @@ void GetPlayerInfo(VU_ID ID)
 
     session = (FalconSessionEntity*)vuDatabase->Find(ID);
 
-    if (session && session != FalconLocalSession)
+    if (session && session not_eq FalconLocalSession)
     {
         rlb = new UI_RequestLogbook(FalconNullId, session);
         rlb->dataBlock.fromID = FalconLocalSessionId;
@@ -1293,7 +1293,7 @@ C_Entity *AddDivisionToOOB(Division div)
     if (!un)
         return(NULL);
 
-    while (un && un->GetSType() != div->type)
+    while (un && un->GetSType() not_eq div->type)
         un = div->GetNextUnitElement();
 
     if (!un)
@@ -1385,14 +1385,14 @@ C_Base *AddItemToOOB(CampEntity entity)
             else
                 oobitem->SetFlagBitOn(C_BIT_INVISIBLE);
 
-            if (Cat != OOB_OBJECTIVE)
+            if (Cat not_eq OOB_OBJECTIVE)
             {
                 if (entity->IsSquadron())
                 {
                     BaseInfo = NULL;
                     Base = ((Squadron)entity)->GetUnitAirbase();
 
-                    if (Base && Base != entity)
+                    if (Base && Base not_eq entity)
                     {
                         subcat = gOOBTree->Find(Base->GetCampID());
 
@@ -1578,7 +1578,7 @@ void MoveOOBSquadron(Squadron sqd, C_Squadron *Squadron)
     else
         newloc = gOOBTree->Find((sqd->GetTeam() << 24) | OOB_AIRFORCE);
 
-    if (newloc && newloc != item->Parent)
+    if (newloc && newloc not_eq item->Parent)
     {
         gOOBTree->MoveChildItem(newloc, item);
 
@@ -1614,10 +1614,10 @@ void OOBFindCB(long, short hittype, C_Base *)
 {
     CampEntity ent;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (gSelectedEntity != FalconNullId)
+    if (gSelectedEntity not_eq FalconNullId)
     {
         ent = (CampEntity)vuDatabase->Find(gSelectedEntity);
 
@@ -1655,10 +1655,10 @@ void OOBInfoCB(long, short hittype, C_Base *)
 {
     CampEntity ent;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (gSelectedEntity != FalconNullId)
+    if (gSelectedEntity not_eq FalconNullId)
     {
         ent = (CampEntity)vuDatabase->Find(gSelectedEntity);
 

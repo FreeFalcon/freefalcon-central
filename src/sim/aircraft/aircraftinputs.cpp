@@ -72,7 +72,7 @@ void AircraftClass::GatherInputs(void)
             af->engine2Throttle = 0.0F;
         }
     }
-    else if (autopilotType != APOff)
+    else if (autopilotType not_eq APOff)
     {
         // No autopilot for ownship if broken
         if (
@@ -346,7 +346,7 @@ void AircraftClass::GatherInputs(void)
     }
     else
     {
-        if (this != FalconLocalSession->GetPlayerEntity())
+        if (this not_eq FalconLocalSession->GetPlayerEntity())
         {
             af->pstick = 0.0F;
             af->rstick = 0.0F;
@@ -592,7 +592,7 @@ void AircraftClass::GatherInputs(void)
 
     // JB 000814
     // JB 010104 add CombatAP check
-    if (g_bNewDamageEffects && autopilotType != CombatAP)
+    if (g_bNewDamageEffects && autopilotType not_eq CombatAP)
     {
         af->ypedal += yBias;
         af->rstick += rBias;
@@ -602,7 +602,7 @@ void AircraftClass::GatherInputs(void)
     // JB 000814
 
     //MI asynchronous lift
-    if (g_bRealisticAvionics && g_bNewDamageEffects && autopilotType != CombatAP && !isDigital)
+    if (g_bRealisticAvionics && g_bNewDamageEffects && autopilotType not_eq CombatAP && !isDigital)
     {
         //produce asynchronous "lift"
         if (LEFState(LEFSASYNCH))
@@ -625,7 +625,7 @@ void AircraftClass::GatherInputs(void)
                 mFaults->SetCaution(lef_fault);
             }
 
-            if (GetDOFValue(llef) != GetDOFValue(rlef))
+            if (GetDOFValue(llef) not_eq GetDOFValue(rlef))
             {
                 LEFOn(LEFSASYNCH);
 

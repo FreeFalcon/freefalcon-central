@@ -156,7 +156,7 @@ public:
     // Query Functions
     BOOL Opened()
     {
-        if (Window_ != NULL) return(TRUE);
+        if (Window_ not_eq NULL) return(TRUE);
 
         return(FALSE);
     }

@@ -79,7 +79,7 @@ void DrawableGroundVehicle::Update(Tpoint *pos, float heading)
 void DrawableGroundVehicle::Draw(class RenderOTW *renderer, int LOD)
 {
     // See if we need to update our ground position
-    if (LOD != previousLOD)
+    if (LOD not_eq previousLOD)
     {
 
         Tpoint normal;

@@ -221,7 +221,7 @@ void TurnOnHQButton()
 // Just turn off HQ Flag if slider moved
 void PriSliderCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEDOWN)
+    if (hittype not_eq C_TYPE_LMOUSEDOWN)
         return;
 
     TurnOffHQButton();
@@ -1271,7 +1271,7 @@ void SelectPAK(long PAKID, long TeamID)
 
 void PriorityTabsCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     control->Parent_->HideCluster(control->GetUserNumber(1));
@@ -1285,7 +1285,7 @@ void UsePriotityCB(long ID, short hittype, C_Base *control)
 {
     C_Button *btn;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     btn = (C_Button*)control->Parent_->FindControl(HQ_FLAG);
@@ -1307,7 +1307,7 @@ void ResetPriorityCB(long, short hittype, C_Base *control)
     long PAKID;
     C_ListBox *lbox;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // Kevin TODO: Reset priorities to those set by the campaign
@@ -1332,7 +1332,7 @@ void ResetPriorityCB(long, short hittype, C_Base *control)
 
 void CancelPriorityCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     CloseWindowCB(ID, hittype, control);
@@ -1344,7 +1344,7 @@ void OpenPriorityCB(long, short hittype, C_Base *control)
     C_Button *btn;
     C_ListBox *lbox;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     InitPAKMap();
@@ -1407,7 +1407,7 @@ void MapSelectPAKCB(long, short hittype, C_Base *control)
     long x, y, PAKID;
     char *overlay;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (!control or !PAKMap)
@@ -1442,7 +1442,7 @@ void SelectPAKCB(long, short hittype, C_Base *control)
 {
     long PAKID;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     PAKID = ((C_ListBox*)control)->GetTextID();
@@ -1455,7 +1455,7 @@ void SetPAKPriorityCB(long, short hittype, C_Base *control)
 {
     long value;
 
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     value = 100 - SliderValue((C_Slider*)control);
@@ -1468,7 +1468,7 @@ void SetPAKPriorityCB(long, short hittype, C_Base *control)
 
 void SetCampaignPrioritiesCB(long, short hittype, C_Base *base)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (base->GetState())

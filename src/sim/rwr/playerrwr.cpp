@@ -231,14 +231,14 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
             // A campaign thing or an objective (sim objectives have no sensor routine
             // so they can never make it to the contact list by themself)
             (
-                (curEmitter->IsObjective() && curEmitter->GetElectronicDetectionRange(Air) != 0) ||
+                (curEmitter->IsObjective() && curEmitter->GetElectronicDetectionRange(Air) not_eq 0) ||
                 // An objective (sim objectives have no sensor routine
                 // so they can never make it to the contact list by themself)
                 // that has a working radar or a campaign thing
                 curEmitter->IsAggregate()
             ) &&
             curEmitter->CanDetect(platform) &&              // That has us spotted
-            curEmitter->GetRadarMode() != FEC_RADAR_OFF &&  // And is emmitting
+            curEmitter->GetRadarMode() not_eq FEC_RADAR_OFF &&  // And is emmitting
             CanDetectObject(curEmitter)                     // And there is line of sight
         )
         {
@@ -284,7 +284,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
             // 2002-03-21 REMOVED BY S.G. In accordance with RIK, this code doesn't belong here
             //if(!curEmitter->IsSim() &&
             // curEmitter->GetRadarMode()> FEC_RADAR_SEARCH_1 &&
-            // curEmitter->GetRadarMode() != FEC_RADAR_SEARCH_100)
+            // curEmitter->GetRadarMode() not_eq FEC_RADAR_SEARCH_100)
             // ((BattalionClass*)(SimBaseClass*)curEmitter)->SetRadarMode(FEC_RADAR_SEARCH_1);
             // Add it to the list (if the list isn't full)
             //if (ObjectDetected(curEmitter, pingType))
@@ -308,7 +308,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
                     if (!platformCampObj->GetSpotted(enemy))
                         RequestIntercept((Flight)platform->GetCampaignObject(), enemy);
 
-                    platformCampObj->SetSpotted(enemy, TheCampaign.CurrentTime, ((ObjectiveClass *)curEmitter)->HasNCTR() != 0); // 2002-02-11 MODIFIED BY S.G. Ground objective radar can identify me
+                    platformCampObj->SetSpotted(enemy, TheCampaign.CurrentTime, ((ObjectiveClass *)curEmitter)->HasNCTR() not_eq 0); // 2002-02-11 MODIFIED BY S.G. Ground objective radar can identify me
                     spotted = 1;
                 }
             }
@@ -331,7 +331,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
             {
                 // 2000-09-03 S.G. SO ARH DON'T GET A LAUNCH WARNING
                 // JB 010118 added check of detectionList[i].entity
-                if (detectionList[i].entity && (!((MissileClass *)detectionList[i].entity)->IsMissile() or ((MissileClass *)detectionList[i].entity)->GetSeekerType() != SensorClass::Radar))
+                if (detectionList[i].entity && (!((MissileClass *)detectionList[i].entity)->IsMissile() or ((MissileClass *)detectionList[i].entity)->GetSeekerType() not_eq SensorClass::Radar))
                 {
                     // END OF ADDED SECTION (PLUS INDENTATION OF NEXT LINE)
                     missileActivity = TRUE;
@@ -342,7 +342,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
             listElement->lethality = GetLethality(listElement->entity);
 
             // Special handling to implement "Target Separation"
-            if (targetSep && i != 0)
+            if (targetSep && i not_eq 0)
             {
                 listElement->lethality *= 0.5f;
             }
@@ -401,9 +401,9 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
         }
         else if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::EWSRWRPower))
         {
-            if (SimDriver.GetPlayerAircraft()->EWSPGM() != AircraftClass::Off &&
-                SimDriver.GetPlayerAircraft()->EWSPGM() != AircraftClass::Stby &&
-                SimDriver.GetPlayerAircraft()->EWSPGM() != AircraftClass::Man)
+            if (SimDriver.GetPlayerAircraft()->EWSPGM() not_eq AircraftClass::Off &&
+                SimDriver.GetPlayerAircraft()->EWSPGM() not_eq AircraftClass::Stby &&
+                SimDriver.GetPlayerAircraft()->EWSPGM() not_eq AircraftClass::Man)
                 CheckEWS();
         }
     }
@@ -495,7 +495,7 @@ void PlayerRwrClass::Display(VirtualDisplay *activeDisplay)
             mode = ((BattalionClass*)((SimBaseClass*)detectionList[i].entity)->GetCampaignObject())->GetRadarMode();
         else mode = ((SimBaseClass*)detectionList[i].entity)->GetRadarMode();
 
-        if (mode != FEC_RADAR_OFF or Element->isLocked)
+        if (mode not_eq FEC_RADAR_OFF or Element->isLocked)
         {
             drawn++;
             DrawContact(&detectionList[i]);
@@ -562,19 +562,19 @@ void PlayerRwrClass::DrawContact(DetectListElement *record)
 
         if (mode == FEC_RADAR_SEARCH_1 && radarfileData->Rwrsymbolsearch1)
         {
-            if ((radarfileData->Rwrsymbolsearch1 != RWRSYM_SEARCH) ||
+            if ((radarfileData->Rwrsymbolsearch1 not_eq RWRSYM_SEARCH) ||
                 radarfileData->Rwrsymbolsearch1 == RWRSYM_SEARCH && ShowSearch())
                 symbol = radarfileData->Rwrsymbolsearch1;
         }
         else if (mode == FEC_RADAR_SEARCH_2 && radarfileData->Rwrsymbolsearch2)
         {
-            if ((radarfileData->Rwrsymbolsearch2 != RWRSYM_SEARCH) ||
+            if ((radarfileData->Rwrsymbolsearch2 not_eq RWRSYM_SEARCH) ||
                 radarfileData->Rwrsymbolsearch2 == RWRSYM_SEARCH && ShowSearch())
                 symbol = radarfileData->Rwrsymbolsearch2;
         }
         else if (mode == FEC_RADAR_SEARCH_3 && radarfileData->Rwrsymbolsearch3)
         {
-            if ((radarfileData->Rwrsymbolsearch3 != RWRSYM_SEARCH) ||
+            if ((radarfileData->Rwrsymbolsearch3 not_eq RWRSYM_SEARCH) ||
                 radarfileData->Rwrsymbolsearch3 == RWRSYM_SEARCH && ShowSearch())
                 symbol = radarfileData->Rwrsymbolsearch3;
         }
@@ -829,7 +829,7 @@ void PlayerRwrClass::DoAudio(DetectListElement *record)
             else if (mode == FEC_RADAR_GUIDE)
                 if (radarfileData->Rwrsoundguide) sound = radarfileData->Rwrsoundguide;
 
-            if (mode != FEC_RADAR_OFF or record->isLocked)
+            if (mode not_eq FEC_RADAR_OFF or record->isLocked)
             {
                 if (!sound)  sound = record->radarData->RWRsound;
 
@@ -885,7 +885,7 @@ void PlayerRwrClass::DrawGrid(void)
             tick[i * 2][0] = 0.95F * trig.cos;
             tick[i * 2][1] = 0.95F * trig.sin;
 
-            if (i != 2)
+            if (i not_eq 2)
             {
                 tick[i * 2 + 1][0] = 0.80F * trig.cos;
                 tick[i * 2 + 1][1] = 0.80F * trig.sin;

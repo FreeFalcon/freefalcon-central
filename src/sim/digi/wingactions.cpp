@@ -188,7 +188,7 @@ void DigitalBrain::AiMonitorTargets()
     //else if(mpSearchFlags[AI_TOTAL_SEARCH_TYPES] == AI_SEARCH_FOR_TARGET) {
     else if (mpSearchFlags[AI_SEARCH_FOR_TARGET])
     {
-        if (targetPtr && targetPtr != mpLastTargetPtr && vuxGameTime > (mLastReportTime + 120000))
+        if (targetPtr && targetPtr not_eq mpLastTargetPtr && vuxGameTime > (mLastReportTime + 120000))
         {
 
             mLastReportTime = vuxGameTime;
@@ -396,7 +396,7 @@ void DigitalBrain::AiFollowLead(void)
 
         // This will set our current waypoint to the leads waypoint
         // 2001-10-20 M.N. Added ->GetNextWP() to while (...) to assure a valid WP is chosen
-        while (wlistUs->GetNextWP() && wlistLead && wlistLead->GetNextWP() && wlistLead != ((AircraftClass *)flightLead)->curWaypoint)
+        while (wlistUs->GetNextWP() && wlistLead && wlistLead->GetNextWP() && wlistLead not_eq ((AircraftClass *)flightLead)->curWaypoint)
         {
             wlistUs   = wlistUs->GetNextWP();
             wlistLead = wlistLead->GetNextWP();
@@ -404,7 +404,7 @@ void DigitalBrain::AiFollowLead(void)
         }
 
         // 2001-07-28 S.G. Only do it if it changed and I need to update our ICP wp index as well or it will get screwed up if we change it manually.
-        if (self->curWaypoint != wlistUs)
+        if (self->curWaypoint not_eq wlistUs)
         {
             self->curWaypoint = wlistUs;
 
@@ -421,7 +421,7 @@ void DigitalBrain::AiFollowLead(void)
             if (campUnit)   // sanity check
 
                 // Only do this if our waypoint has changed
-                if (campUnit->GetCurrentWaypoint() != waypointIndex)
+                if (campUnit->GetCurrentWaypoint() not_eq waypointIndex)
                     campUnit->SetCurrentWaypoint(waypointIndex);
         }
 

@@ -61,7 +61,7 @@ VuStandardFilter::~VuStandardFilter()
 VU_BOOL
 VuStandardFilter::Notice(VuMessage* event)
 {
-    if ((localSession_ != DONT_CARE) && ((event->Type() == VU_TRANSFER_EVENT)))
+    if ((localSession_ not_eq DONT_CARE) && ((event->Type() == VU_TRANSFER_EVENT)))
     {
         return TRUE;
     }

@@ -430,7 +430,7 @@ void C_Button::SetFill(short ID, short w, short h)
     {
         if (btn->Image_)
         {
-            if (btn->Image_->_GetOType_() != O_Output::_OUT_BITMAP_)
+            if (btn->Image_->_GetOType_() not_eq O_Output::_OUT_BITMAP_)
             {
                 btn->Image_->Cleanup();
                 delete btn->Image_;
@@ -483,7 +483,7 @@ void C_Button::SetImage(short ID, long ImageID)
     {
         if (btn->Image_)
         {
-            if (btn->Image_->_GetOType_() != O_Output::_OUT_BITMAP_)
+            if (btn->Image_->_GetOType_() not_eq O_Output::_OUT_BITMAP_)
             {
                 btn->Image_->Cleanup();
                 delete btn->Image_;
@@ -557,7 +557,7 @@ void C_Button::SetImage(short ID, IMAGE_RSC *image)
     {
         if (btn->Image_)
         {
-            if (btn->Image_->_GetOType_() != O_Output::_OUT_BITMAP_)
+            if (btn->Image_->_GetOType_() not_eq O_Output::_OUT_BITMAP_)
             {
                 btn->Image_->Cleanup();
                 delete btn->Image_;
@@ -611,7 +611,7 @@ void C_Button::SetAnim(short ID, long AnimID, short animtype, short dir)
     {
         if (btn->Image_)
         {
-            if (btn->Image_->_GetOType_() != O_Output::_OUT_ANIM_)
+            if (btn->Image_->_GetOType_() not_eq O_Output::_OUT_ANIM_)
             {
                 btn->Image_->Cleanup();
                 delete btn->Image_;
@@ -709,7 +709,7 @@ void C_Button::SetText(short ID, const _TCHAR *str)
 
         if (btn->Image_)
         {
-            if (btn->Image_->_GetOType_() != O_Output::_OUT_TEXT_)
+            if (btn->Image_->_GetOType_() not_eq O_Output::_OUT_TEXT_)
             {
                 btn->Image_->Cleanup();
                 delete btn->Image_;
@@ -764,7 +764,7 @@ void C_Button::SetText(short ID, long txtID)
 
         if (btn->Image_)
         {
-            if (btn->Image_->_GetOType_() != O_Output::_OUT_TEXT_)
+            if (btn->Image_->_GetOType_() not_eq O_Output::_OUT_TEXT_)
             {
                 btn->Image_->Cleanup();
                 delete btn->Image_;
@@ -1273,7 +1273,7 @@ BOOL C_Button::Process(long ID, short HitType)
         case C_TYPE_LMOUSEUP:
             if (GetType() == C_TYPE_NORMAL)
                 state_ = 0;
-            else if ((GetType() == C_TYPE_RADIO) && state_ != 1)
+            else if ((GetType() == C_TYPE_RADIO) && state_ not_eq 1)
             {
                 Parent_->SetGroupState(GetGroup(), 0);
                 state_ = 1;
@@ -1288,7 +1288,7 @@ BOOL C_Button::Process(long ID, short HitType)
                     if (!btn && state_)
                         state_ = 0;
                 }
-                while (!btn && state_ != startstate && (!btn && state_));
+                while (!btn && state_ not_eq startstate && (!btn && state_));
             }
             else if (GetType() == C_TYPE_TOGGLE)
                 state_ = (short)((1 - state_) & 1); //!
@@ -1308,7 +1308,7 @@ BOOL C_Button::Process(long ID, short HitType)
     //if(state_ < 0)
     // return(TRUE);
 
-    if (startstate != state_)
+    if (startstate not_eq state_)
     {
         Refresh();
         gSoundMgr->PlaySound(GetSound(HitType));
@@ -1317,7 +1317,7 @@ BOOL C_Button::Process(long ID, short HitType)
 
     // JB 000812 // Callbacks were called twice (mousedown and mouseup)
     //if(Callback_)
-    if (Callback_ && HitType != C_TYPE_LMOUSEDOWN)
+    if (Callback_ && HitType not_eq C_TYPE_LMOUSEDOWN)
         // JB 000812
         (*Callback_)(ID, HitType, this);
 
@@ -1339,7 +1339,7 @@ BOOL C_Button::MouseOver(long relx, long rely, C_Base *me)
             if (relx >= (GetX() + HotSpot_.left) && rely >= (GetY() + HotSpot_.top) && relx <= (GetX() + HotSpot_.right) && rely <= (GetY() + HotSpot_.bottom))
             {
                 // Set cursor...
-                if (this != (C_Button *)me)
+                if (this not_eq (C_Button *)me)
                 {
                     gSoundMgr->PlaySound(GetSound(C_TYPE_MOUSEOVER));
                 }
@@ -1365,7 +1365,7 @@ BOOL C_Button::MouseOver(long relx, long rely, C_Base *me)
                     rely >= (y) && rely < (h))
                 {
                     // Set cursor...
-                    if (this != (C_Button *)me)
+                    if (this not_eq (C_Button *)me)
                     {
                         gSoundMgr->PlaySound(GetSound(C_TYPE_MOUSEOVER));
                     }
@@ -1393,7 +1393,7 @@ BOOL C_Button::MouseOver(long relx, long rely, C_Base *me)
                 rely >= (y) && rely < (y + h))
             {
                 // Set cursor...
-                if (this != (C_Button *)me)
+                if (this not_eq (C_Button *)me)
                 {
                     gSoundMgr->PlaySound(GetSound(C_TYPE_MOUSEOVER));
                 }

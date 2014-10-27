@@ -359,7 +359,7 @@ void HudClass::SetTarget(SimObjectType* newTarget)
 
     if (newTarget)
     {
-        ShiAssert(newTarget->BaseData() != (FalconEntity*)0xDDDDDDDD);
+        ShiAssert(newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
         newTarget->Reference();
         targetPtr = newTarget;
         targetData = newTarget->localData;
@@ -456,7 +456,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
             DrawAltitude();
 
             // Marco Edit
-            if (FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight)
+            if (FCC && FCC->GetMasterMode() not_eq FireControlComputer::Dogfight)
                 DrawHeading(); // Don't draw heading in Dogfight Mode
         }
     }
@@ -467,7 +467,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
         DrawAltitude();
 
         // Marco Edit
-        if (FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight)
+        if (FCC && FCC->GetMasterMode() not_eq FireControlComputer::Dogfight)
             DrawHeading(); // Don't draw heading in Dogfight Mode
     }
 
@@ -520,7 +520,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
     }
     else if ((ownship && ownship->af && ownship->af->gearPos > 0.5F) or (fpmSwitch == ATT_FPM))
     {
-        if (FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight)
+        if (FCC && FCC->GetMasterMode() not_eq FireControlComputer::Dogfight)
             DrawPitchLadder();//me123 status ok. don't draw ladders in dogfight mode
     }
 
@@ -553,8 +553,8 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
     }
 
     if ((!FCC->postDrop or flash) &&
-        fpmSwitch != FPM_OFF &&
-        FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight) // JPO not show in DGFT
+        fpmSwitch not_eq FPM_OFF &&
+        FCC && FCC->GetMasterMode() not_eq FireControlComputer::Dogfight) // JPO not show in DGFT
         DrawFPM();
 
     switch (FCC->GetMasterMode())
@@ -569,7 +569,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
             break;
             /*
                case FireControlComputer::Gun:
-                   if (FCC->GetSubMode() != FireControlComputer::STRAF)
+                   if (FCC->GetSubMode() not_eq FireControlComputer::STRAF)
                 {
                 DrawTDBox();
                 DrawGuns();
@@ -1084,7 +1084,7 @@ void HudClass::DrawAlphaNumeric(void)
 
     // Window 3 (Master Arm / ILS)
     //TJL 03/07/04 F16 specific or default HUD
-    if (PlayerOptions.GetAvionicsType() != ATEasy && (ownship->IsF16() or ownship->af->GetTypeAC() == 0))
+    if (PlayerOptions.GetAvionicsType() not_eq ATEasy && (ownship->IsF16() or ownship->af->GetTypeAC() == 0))
     {
         if (FCC && FCC->GetMasterMode() == FireControlComputer::ILS)
             DrawWindowString(3, "ILS");
@@ -1120,7 +1120,7 @@ void HudClass::DrawAlphaNumeric(void)
         sprintf(tmpStr, "%.2f", mach);
         ShiAssert(strlen(tmpStr) < 40);
 
-        if (FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight) //JPG 29 Apr 04 - Not here in DF override
+        if (FCC && FCC->GetMasterMode() not_eq FireControlComputer::Dogfight) //JPG 29 Apr 04 - Not here in DF override
         {
             DrawWindowString(4, tmpStr);
         }
@@ -1137,7 +1137,7 @@ void HudClass::DrawAlphaNumeric(void)
     }
 
     //TJL 03/07/04 F16 specific or default HUD
-    if (PlayerOptions.GetAvionicsType() != ATEasy && (ownship->IsF16() or ownship->af->GetTypeAC() == 0))
+    if (PlayerOptions.GetAvionicsType() not_eq ATEasy && (ownship->IsF16() or ownship->af->GetTypeAC() == 0))
     {
         //MI changed for INS stuff
         if (g_bINS && g_bRealisticAvionics)
@@ -1181,7 +1181,7 @@ void HudClass::DrawAlphaNumeric(void)
 
         ShiAssert(strlen(tmpStr) < 40);
 
-        if (FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight) //JPG 29 Apr 04 - Not here in DF override
+        if (FCC && FCC->GetMasterMode() not_eq FireControlComputer::Dogfight) //JPG 29 Apr 04 - Not here in DF override
         {
             DrawWindowString(7, tmpStr);
         }
@@ -1278,7 +1278,7 @@ void HudClass::DrawAlphaNumeric(void)
         }
 
         // RV - RED - REWRITTEN THIS STUFF in a decent way
-        if (PlayerOptions.GetAvionicsType() != ATEasy)
+        if (PlayerOptions.GetAvionicsType() not_eq ATEasy)
         {
             char tempstr[10] = "";
 
@@ -1319,7 +1319,7 @@ void HudClass::DrawAlphaNumeric(void)
     }
     //Wombat778 10-16-2003 added as per MIRV  (draw bullseye info on hud)
 
-    else if ((OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo) && (PlayerOptions.GetAvionicsType() != ATEasy))
+    else if ((OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo) && (PlayerOptions.GetAvionicsType() not_eq ATEasy))
     {
         char tempstr[15] = "";
         GetBullseyeToOwnship(tempstr);
@@ -1460,7 +1460,7 @@ void HudClass::DrawAlphaNumeric(void)
 
     //MI TFR info if needed
     if (theLantirn && theLantirn->IsEnabled() && ownship && ownship->mFaults && !ownship->mFaults->WarnReset()
-        && ownship->RFState != 2)
+        && ownship->RFState not_eq 2)
     {
         char tempstr[20] = "";
 
@@ -2350,7 +2350,7 @@ void HudClass::SetHudColor(DWORD newColor)
     // Find fixed colors index
     curColorIdx = 0;
 
-    while (newColor != HUDcolor[curColorIdx])
+    while (newColor not_eq HUDcolor[curColorIdx])
     {
         curColorIdx++;
 

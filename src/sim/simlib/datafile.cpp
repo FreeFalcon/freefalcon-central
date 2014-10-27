@@ -69,8 +69,8 @@ bool AssignField(const InputDataDesc *field, void *dataPtr, const char *value)
         {
             Tpoint *tp = (Tpoint *)cp;
 
-            if (sscanf(value, "%g %g %g", &tp->x, &tp->y, &tp->z) != 3)
-                if (sscanf(value, "%g, %g, %g", &tp->x, &tp->y, &tp->z) != 3) // MLR 12/4/2003 - Make the vector reading a little more flexible
+            if (sscanf(value, "%g %g %g", &tp->x, &tp->y, &tp->z) not_eq 3)
+                if (sscanf(value, "%g, %g, %g", &tp->x, &tp->y, &tp->z) not_eq 3) // MLR 12/4/2003 - Make the vector reading a little more flexible
                 {
                     return false;
 

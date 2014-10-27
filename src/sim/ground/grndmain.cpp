@@ -174,7 +174,7 @@ void GroundClass::Init(SimInitDataClass* initData)
     radarDown = false;
 
     // check for radar emitter
-    if (vc->RadarType != RDR_NO_RADAR)
+    if (vc->RadarType not_eq RDR_NO_RADAR)
     {
         isEmitter = TRUE;
     }
@@ -185,7 +185,7 @@ void GroundClass::Init(SimInitDataClass* initData)
     // SimVehicleClass::Init created the radar so it's safe to do it here...
     if (isEmitter)
     {
-        if (GetCampaignObject()->GetRadarMode() != FEC_RADAR_OFF)
+        if (GetCampaignObject()->GetRadarMode() not_eq FEC_RADAR_OFF)
         {
             RadarClass *radar = NULL;
             radar = (RadarClass*)FindSensor(this, SensorClass::Radar);
@@ -342,7 +342,7 @@ void GroundClass::Init(SimInitDataClass* initData)
 
     Sms->SelectBestWeapon(dam, LowAir, -1);
 
-    if (Sms->CurHardpoint() != -1)
+    if (Sms->CurHardpoint() not_eq -1)
     {
         isAirCapable = TRUE;
     }
@@ -353,7 +353,7 @@ void GroundClass::Init(SimInitDataClass* initData)
 
     Sms->SelectBestWeapon(dam, NoMove, -1);
 
-    if (Sms->CurHardpoint() != -1)
+    if (Sms->CurHardpoint() not_eq -1)
     {
         isGroundCapable = TRUE;
     }
@@ -537,7 +537,7 @@ int GroundClass::Exec(void)
             //RV - I-Hawk - seperating explosion type for ground/sea domains. also
             //adding a check so soldiers will not explode like ground vehicles...
 
-            if (GetDomain() == DOMAIN_LAND && GetType() != TYPE_FOOT)
+            if (GetDomain() == DOMAIN_LAND && GetType() not_eq TYPE_FOOT)
             {
                 //pos.z -= 20.0f;
                 /*
@@ -845,7 +845,7 @@ int GroundClass::Exec(void)
                 {
                     campBaseObj->SetSpotted(
                         GetTeam(), TheCampaign.CurrentTime,
-                        (radar->radarData->flag & RAD_NCTR) != 0 &&
+                        (radar->radarData->flag & RAD_NCTR) not_eq 0 &&
                         radar->CurrentTarget()->localData &&
                         radar->CurrentTarget()->localData->ataFrom < 45.0f * DTR &&
                         radar->CurrentTarget()->localData->range <
@@ -961,7 +961,7 @@ int GroundClass::Exec(void)
     // do some extra LOD stuff: if the unit is not a lead veh amd the
     // distLOD is less than a certain value, remove it from the draw
     // list.
-    if (drawPointer && gai->rank != GNDAI_BATTALION_COMMANDER)
+    if (drawPointer && gai->rank not_eq GNDAI_BATTALION_COMMANDER)
     {
         // distLOD cutoff by ranking (KCK: This is explicit for testing, could be a formula/table)
         if (gai->rank & GNDAI_COMPANY_LEADER)
@@ -1111,7 +1111,7 @@ int GroundClass::Exec(void)
         if (GetCampaignObject()->IsBattalion())
         {
             //if (vc)
-            if (vc && vc->EngineSound != 34) // kludge prevent 34 from playing
+            if (vc && vc->EngineSound not_eq 34) // kludge prevent 34 from playing
             {
                 SoundPos.Sfx(vc->EngineSound, 0, 1.0, 0);  // MLR 5/16/2004 -
             }
@@ -1400,7 +1400,7 @@ int GroundClass::Wake(void)
 
     // when we wake the object, default it to not labeled unless
     // it's the main guy
-    if (drawPointer && gai->rank != GNDAI_BATTALION_COMMANDER)
+    if (drawPointer && gai->rank not_eq GNDAI_BATTALION_COMMANDER)
     {
         drawPointer->SetLabel("", 0xff00ff00); // Don't label
         SetLocalFlag(NOT_LABELED);

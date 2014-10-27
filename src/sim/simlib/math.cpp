@@ -1388,7 +1388,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::OnedInterp(SIM_FLOAT x, const SIM_FLOAT *xarray,
     /*-------------------------------------------------*/
     /* If there is a last x use it as a starting point */
     /*-------------------------------------------------*/
-    if (*lastx != 0)
+    if (*lastx not_eq 0)
     {
         if (xinpt >= xarray[*lastx] && xinpt <= xarray[*lastx + 1])
         {
@@ -1517,7 +1517,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
     ix = *lastx;
     ShiAssert(ix >= 0 && ix < numx); // JPO CTD
 
-    if (ix != 0)
+    if (ix not_eq 0)
     {
         if (xinpt <= xarray[ix])
         {
@@ -1561,7 +1561,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
     iy = *lasty;
     ShiAssert(iy >= 0 && iy < numy); // JPO CTD
 
-    if (iy != 0)
+    if (iy not_eq 0)
     {
         if (yinpt <= yarray[iy])
         {
@@ -1683,7 +1683,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
     /*-------------------------------------------------*/
     /* If there is a last x use it as a starting point */
     /*-------------------------------------------------*/
-    if (*lastx != 0)
+    if (*lastx not_eq 0)
     {
         if (xinpt >= xarray[*lastx] && xinpt <= xarray[*lastx + 1])
         {
@@ -1749,7 +1749,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
     /*-------------------------------------------------*/
     /* If there is a last y use it as a starting point */
     /*-------------------------------------------------*/
-    if (*lasty != 0)
+    if (*lasty not_eq 0)
     {
         if (yinpt >= yarray[*lasty] && yinpt <= yarray[*lasty + 1])
         {
@@ -1815,7 +1815,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
     /*-------------------------------------------------*/
     /* If there is a last z use it as a starting point */
     /*-------------------------------------------------*/
-    if (*lastz != 0)
+    if (*lastz not_eq 0)
     {
         if (zinpt >= zarray[*lastz] && zinpt <= zarray[*lastz + 1])
         {

@@ -205,7 +205,7 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
             switch (DataMode)
             {
                 case 2:
-                    if (c != Water)
+                    if (c not_eq Water)
                         SetPixel(DC, ScreenX, ScreenY, RelCol[r]);
                     else
                         SetPixel(DC, ScreenX, ScreenY, CovCol[c]);

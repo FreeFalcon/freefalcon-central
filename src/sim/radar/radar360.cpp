@@ -53,7 +53,7 @@ void Radar360Class::ExecModes(int newDesignate, int newDrop)
     }
 
     // Change modes if such has been requested
-    if (mode != wantMode)
+    if (mode not_eq wantMode)
     {
         mode = wantMode;
         wantLock = NOCHANGE;
@@ -63,7 +63,7 @@ void Radar360Class::ExecModes(int newDesignate, int newDrop)
     }
 
     // Change ranges if such has been requested
-    if (wantRange != rangeNM)
+    if (wantRange not_eq rangeNM)
     {
         if ((wantRange >= 5.0f) && (wantRange <= max(40.0, maxRangeNM * 1.5)))
         {
@@ -99,7 +99,7 @@ void Radar360Class::ExecModes(int newDesignate, int newDrop)
 void Radar360Class::UpdateState(int cursorXCmd, int cursorYCmd)
 {
     // Handle any requests for cursor movement
-    if (cursorXCmd != 0)
+    if (cursorXCmd not_eq 0)
     {
         if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
             cursorX += (cursorXCmd / 10000.0F) * CursorRate * SimLibMajorFrameTime;
@@ -114,7 +114,7 @@ void Radar360Class::UpdateState(int cursorXCmd, int cursorYCmd)
         }
     }
 
-    if (cursorYCmd != 0)
+    if (cursorYCmd not_eq 0)
     {
         if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
             cursorY += (cursorYCmd / 10000.0F) * CursorRate * SimLibMajorFrameTime;
@@ -139,7 +139,7 @@ void Radar360Class::UpdateState(int cursorXCmd, int cursorYCmd)
         }
     }
 
-    if ((cursorXCmd != 0) or (cursorYCmd != 0))
+    if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
         flags  or_eq  CursorMoving;
     else
         flags &= compl CursorMoving;
@@ -379,7 +379,7 @@ void Radar360Class::ExecAA(void)
 
 
     // If we changed locks, tell our previous target he's off the hook
-    if (newLock != lockedTarget)
+    if (newLock not_eq lockedTarget)
     {
         SetDesiredTarget(newLock);
         sendThisFrame = TRUE;

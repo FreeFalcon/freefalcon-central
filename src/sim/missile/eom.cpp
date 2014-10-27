@@ -108,7 +108,7 @@ void MissileClass::EquationsOfMotion(void)
     /*-----------------*/
     /* inertial coords */
     /*-----------------*/
-    if (done != FalconMissileEndMessage::GroundImpact)
+    if (done not_eq FalconMissileEndMessage::GroundImpact)
     {
         x   = Math.FITust(xdot, SimLibMinorFrameTime, ifd->oldx);
         y   = Math.FITust(ydot, SimLibMinorFrameTime, ifd->oldy);

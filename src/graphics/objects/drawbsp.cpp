@@ -89,7 +89,7 @@ void DrawableBSP::Update(const Tpoint *pos, const Trotation *rot)
     position.x = pos->x;
     position.y = pos->y;
 
-    if (GetClass() != GroundVehicle)
+    if (GetClass() not_eq GroundVehicle)
         position.z = pos->z;
 
     orientation = *rot;
@@ -142,7 +142,7 @@ void DrawableBSP::DetachChild(DrawableBSP *child, int slotNumber)
         return;
     }
 
-    if ((!instance.SlotChildren) or (instance.SlotChildren[slotNumber] != &child->instance))
+    if ((!instance.SlotChildren) or (instance.SlotChildren[slotNumber] not_eq &child->instance))
     {
         //(*(int*)0) = 0;
         return;
@@ -417,7 +417,7 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
     }
 
     // calculate T distances to candidate planes and accumulate the largest
-    if (quadrant[0] != MIDDLE && vec.x != 0.0f)
+    if (quadrant[0] not_eq MIDDLE && vec.x not_eq 0.0f)
     {
         tMax = (candidatePlane[0] - origin.x) / vec.x;
         whichPlane = 0;
@@ -427,7 +427,7 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
         tMax = -1.0f;
     }
 
-    if (quadrant[1] != MIDDLE && vec.y != 0.0f)
+    if (quadrant[1] not_eq MIDDLE && vec.y not_eq 0.0f)
     {
         t = (candidatePlane[1] - origin.y) / vec.y;
 
@@ -438,7 +438,7 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
         }
     }
 
-    if (quadrant[2] != MIDDLE && vec.z != 0.0f)
+    if (quadrant[2] not_eq MIDDLE && vec.z not_eq 0.0f)
     {
         t = (candidatePlane[2] - origin.z) / vec.z;
 
@@ -462,7 +462,7 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
 
     for (i = 0; i < 3; i++, vecp++, orgp++, collp++)
     {
-        if (whichPlane != i)
+        if (whichPlane not_eq i)
         {
             *collp = *orgp + tMax * (*vecp);
 

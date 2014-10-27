@@ -415,7 +415,7 @@ void Canvas3D::TextLeft(float x1, float y1, const char *string, int boxed)
         // Transform the point from world space to window space
         r3d->TransformPoint(&p1, &ps1);
 
-        if (ps1.clipFlag != ON_SCREEN)  return;
+        if (ps1.clipFlag not_eq ON_SCREEN)  return;
 
         // make sure the text won't go off the edge of our canvas
         // assumption: the canvas doesn't roll so that text travels in the
@@ -437,7 +437,7 @@ void Canvas3D::TextLeft(float x1, float y1, const char *string, int boxed)
         numChars = strlen(string);
         slope = (ps2.x - ps1.x);
 
-        if (slope != 0.0f)
+        if (slope not_eq 0.0f)
             slope = (ps2.y - ps1.y) / slope;
         else
             slope = 0.0f;

@@ -29,7 +29,7 @@ public :
     // State Access Functions
     int HasActivity(void)
     {
-        return detectionList[0].entity != NULL;
+        return detectionList[0].entity not_eq NULL;
     };
     int LaunchIndication(void)
     {

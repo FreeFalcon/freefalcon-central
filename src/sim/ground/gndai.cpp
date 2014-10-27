@@ -455,16 +455,16 @@ void GNDAIClass::SetLeader(GNDAIClass* newLeader)
     /* GNDAIClass* oldLeader = leader;
 
     // edg: don't reference/deref if ourself
-    if (newLeader != oldLeader)
+    if (newLeader not_eq oldLeader)
     {
     leader = newLeader;
-    if (oldLeader && oldLeader->self != self)
+    if (oldLeader && oldLeader->self not_eq self)
     {
     VuDeReferenceEntity(oldLeader->self);
     }
     if (newLeader)
     {
-    if ( newLeader->self != self )
+    if ( newLeader->self not_eq self )
     VuReferenceEntity(newLeader->self);
     formation = newLeader->formation;
     }
@@ -564,7 +564,7 @@ void GNDAIClass::ProcessTargeting(void)
         if (campTargetEntity)
         {
             // Create our shared ground target object (campaign target)
-            if (!gndTargetPtr or gndTargetPtr->BaseData() != campTargetEntity)
+            if (!gndTargetPtr or gndTargetPtr->BaseData() not_eq campTargetEntity)
             {
                 SetGroundTarget(new SimObjectType(campTargetEntity));
             }
@@ -584,7 +584,7 @@ void GNDAIClass::ProcessTargeting(void)
         if (campTargetEntity)
         {
             // Create our shared ground target object (campaign target)
-            if (!airTargetPtr or airTargetPtr->BaseData() != campTargetEntity)
+            if (!airTargetPtr or airTargetPtr->BaseData() not_eq campTargetEntity)
             {
                 SetAirTarget(new SimObjectType(campTargetEntity));
             }
@@ -714,11 +714,11 @@ void GNDAIClass::ProcessTargeting(void)
     // 3. our commander wants us to shoot at another unit
 
     // RV - Biker - Switch to next target if we did take a hit (pctStrength <= 0.0f)
-    //if(!self->targetPtr or self->targetPtr->BaseData()->IsDead() or newUnit != oldUnit)
+    //if(!self->targetPtr or self->targetPtr->BaseData()->IsDead() or newUnit not_eq oldUnit)
     if (
         !self->targetPtr ||
         ((SimBaseClass *)self->targetPtr->BaseData())->pctStrength <= 0.0f ||
-        self->targetPtr->BaseData()->IsDead() or newUnit != oldUnit
+        self->targetPtr->BaseData()->IsDead() or newUnit not_eq oldUnit
     )
     {
         self->SetTarget(SimCampHandoff(newTarget, self->targetList, HANDOFF_RANDOM));
@@ -773,7 +773,7 @@ void GNDAIClass::ProcessTargeting(void)
             // as us but different target pointers, switch our radar target pointer to our target pointer
             else if (
                 !radar->CurrentTarget() or (
-                    radar->CurrentTarget() != self->targetPtr &&
+                    radar->CurrentTarget() not_eq self->targetPtr &&
                     radar->CurrentTarget()->BaseData() == self->targetPtr->BaseData()
                 )
             )
@@ -911,7 +911,7 @@ void GNDAIClass::ProcessTargeting(void)
 #endif
         }
 
-        if ((!self->isEmitter or self->isAirCapable) && this != battalionCommand)
+        if ((!self->isEmitter or self->isAirCapable) && this not_eq battalionCommand)
         {
             self->SelectWeapon(FALSE);
             SimWeaponClass *theWeapon = self->Sms->GetCurrentWeapon();
@@ -952,7 +952,7 @@ void GNDAIClass::Process(void)
     // edg: I'm not entirely sure this is working correctly in IA.
     // additionally check for leader == NULL ( meaning I'm a batallion )
     // and follow waypoints....
-    if (leader == NULL && self->curWaypoint && rank != GNDAI_BATTALION_COMMANDER)
+    if (leader == NULL && self->curWaypoint && rank not_eq GNDAI_BATTALION_COMMANDER)
     {
         rank = GNDAI_BATTALION_COMMANDER;
     }
@@ -1140,7 +1140,7 @@ void GNDAIClass::Order_Battalion(void)
             {
                 for (i = delta; i < g_nlookAroundWaterTiles; i++)
                 {
-                    if (GetCover(cx + i, cy + j) != Water)
+                    if (GetCover(cx + i, cy + j) not_eq Water)
                     {
                         continue;
                     }
@@ -1203,12 +1203,12 @@ void GNDAIClass::Order_Company(void)
 {
     ShiAssert(battalionCommand); // This should always be TRUE, right?
 
-    if (moveState != GNDAI_MOVE_HALTED)
+    if (moveState not_eq GNDAI_MOVE_HALTED)
     {
         // We can move, so get into formation
         formation = battalionCommand->formation;
 
-        if (formation != GNDAI_FORM_COLUMN or !CheckThrough())
+        if (formation not_eq GNDAI_FORM_COLUMN or !CheckThrough())
         {
             if (InPosition(this))
             {
@@ -1234,12 +1234,12 @@ void GNDAIClass::Order_Platoon(void)
 {
     ShiAssert(battalionCommand); // This should always be TRUE, right?
 
-    if (moveState != GNDAI_MOVE_HALTED)
+    if (moveState not_eq GNDAI_MOVE_HALTED)
     {
         // We can move, so get into formation
         formation = battalionCommand->formation;
 
-        if (formation != GNDAI_FORM_COLUMN or !CheckThrough())
+        if (formation not_eq GNDAI_FORM_COLUMN or !CheckThrough())
         {
             if (InPosition(this))
             {
@@ -1266,12 +1266,12 @@ void GNDAIClass::Order_Squad(void)
 {
     ShiAssert(battalionCommand); // This should always be TRUE, right?
 
-    if (moveState != GNDAI_MOVE_HALTED)
+    if (moveState not_eq GNDAI_MOVE_HALTED)
     {
         // We can move, so get into formation
         formation = battalionCommand->formation;
 
-        if (formation != GNDAI_FORM_COLUMN or !CheckThrough())
+        if (formation not_eq GNDAI_FORM_COLUMN or !CheckThrough())
         {
             if (InPosition(this))
             {
@@ -1306,7 +1306,7 @@ int GNDAIClass::CheckThrough(void)
     ShiAssert(battalionCommand);
 
     // Check to see if we want to move through a turn point
-    if (battalionCommand->through_x != through_x or battalionCommand->through_y != through_y)
+    if (battalionCommand->through_x not_eq through_x or battalionCommand->through_y not_eq through_y)
     {
         moveFlags &= compl GNDAI_WENT_THROUGH;
         through_x = battalionCommand->through_x;
@@ -1379,7 +1379,7 @@ void GNDAIClass::Move_Towards_Dest(void)
     // Check if we need to turn
     delh = ideal_h - self->Yaw();
 
-    if (!(moveFlags & GNDAI_MOVE_FIXED_POSITIONS) && delh != 0.0F)
+    if (!(moveFlags & GNDAI_MOVE_FIXED_POSITIONS) && delh not_eq 0.0F)
     {
         //if (delh >= PI or (delh < 0 && delh > -PI))
         // rotvel = -1.0F * OPTIMAL_VEHICLE_ROTATION;
@@ -1645,7 +1645,7 @@ void GNDAIClass::PromoteSubordinates(void)
             VuListIterator vehicleWalker(self->GetCampaignObject()->GetComponents());
             theObj = (GroundClass*)vehicleWalker.GetFirst();
 
-            while (theObj && theObj != self && (theObj->IsExploding() or theObj->IsDead()))
+            while (theObj && theObj not_eq self && (theObj->IsExploding() or theObj->IsDead()))
                 theObj = (GroundClass*)vehicleWalker.GetNext();
         }
 
@@ -1673,7 +1673,7 @@ void GNDAIClass::PromoteSubordinates(void)
         {
 
             ShiAssert(theObj->gai);
-            ShiAssert(theObj != self);
+            ShiAssert(theObj not_eq self);
 
             // KCK: This creates problems by allowing a vehicle to
             // null it's pointers prematurely. The easiest solution
@@ -1776,10 +1776,10 @@ static int InPosition(GNDAIClass* us)
     // Particularly the fact that MSVC/Intel don't always ensure that compare arguments are rounded
     // to the same precision before the compare.
 
-    if (us->ideal_x != us->self->XPos() ||
-        us->ideal_y != us->self->YPos() ||
-        us->battalionCommand->self->XDelta() != 0.0F ||
-        us->battalionCommand->self->YDelta() != 0.0F)
+    if (us->ideal_x not_eq us->self->XPos() ||
+        us->ideal_y not_eq us->self->YPos() ||
+        us->battalionCommand->self->XDelta() not_eq 0.0F ||
+        us->battalionCommand->self->YDelta() not_eq 0.0F)
 
         return 0;
     else

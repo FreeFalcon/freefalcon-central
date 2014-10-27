@@ -99,7 +99,7 @@ void RemoveNFZ(NFZ zone)
         NFZList = zone->next;
     else
     {
-        while (curr && curr->next != zone)
+        while (curr && curr->next not_eq zone)
             curr = curr->next;
 
         if (curr)

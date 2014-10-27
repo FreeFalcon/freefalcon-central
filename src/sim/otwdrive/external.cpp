@@ -815,7 +815,7 @@ void OTWDriverClass::DrawExternalViewTarget(void)
 void OTWDriverClass::StartEjectCam(EjectedPilotClass *ejectedPilot, int startChaseMode)
 {
     // F4Assert(ejectCam == 0);
-    F4Assert(ejectedPilot != NULL);
+    F4Assert(ejectedPilot not_eq NULL);
 
     // Set ownship to the ejected pilot
     lastotwPlatform = otwPlatform;

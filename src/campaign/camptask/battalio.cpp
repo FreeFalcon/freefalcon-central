@@ -264,7 +264,7 @@ BattalionClass::BattalionClass(VU_BYTE **stream, long *rem) : GroundUnitClass(st
     GetLocation(&x, &y);
     GetUnitDestination(&nx, &ny);
 
-    if ((x != nx) && (y != ny))
+    if ((x not_eq nx) && (y not_eq ny))
     {
         GetUnitGridPath(path, x, y, nx, ny);
         SetMoving(1);
@@ -284,7 +284,7 @@ BattalionClass::~BattalionClass(void)
         deag_data = NULL;
     }
 
-    if (path != NULL)
+    if (path not_eq NULL)
     {
         delete path;
         path = NULL;
@@ -572,7 +572,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
             u = brig->GetPrevUnitElement(this);
         }
 
-        if (u && (u != this) && (u->GetUnitTactic() == GTACTIC_MOVE_BRIGADE_COLUMN))
+        if (u && (u not_eq this) && (u->GetUnitTactic() == GTACTIC_MOVE_BRIGADE_COLUMN))
         {
             pw = u->GetCurrentUnitWP();
 
@@ -605,7 +605,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
     }
 
     // Get our next waypoint, or build a set of waypoints if we don't have any
-    if ((x != nx) or (y != ny))
+    if ((x not_eq nx) or (y not_eq ny))
     {
         w = GetCurrentUnitWP();
 
@@ -746,7 +746,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
 #endif
 
     // Now try to actually move
-    if ((x != nx) or (y != ny))
+    if ((x not_eq nx) or (y not_eq ny))
     {
         SetMoving(1);
 
@@ -823,7 +823,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
         int formation = GetUnitFormation();
         h = GetNextMoveDirection();
 
-        if (h != Here)
+        if (h not_eq Here)
         {
             // Below is ok, if we've got time for it - otherwise, we drive through other units.
             // h = GetAlternateHeading(this,x,y,nx,ny,h); // Check if we need to go around
@@ -910,11 +910,11 @@ int BattalionClass::MoveUnit(CampaignTime time)
                 lfx = rfx = x;
                 lfy = rfy = y;
 
-                for (i = 1, ph = 0; ph != Here; i++)
+                for (i = 1, ph = 0; ph not_eq Here; i++)
                 {
                     ph = (GetPreviousDirection(i) + 4) % 8;
 
-                    if (ph != Here)
+                    if (ph not_eq Here)
                     {
                         rfx += dx[ph];
                         rfy += dy[ph];
@@ -1142,7 +1142,7 @@ void BattalionClass::SetUnitOrders(int neworders, VU_ID oid)
     if (neworders == GetOrders() && oid == GetUnitObjectiveID())
         return;
 
-    /* if (Cargo() or cargo_id != FalconNullId)
+    /* if (Cargo() or cargo_id not_eq FalconNullId)
      {
     // KCK: We're in mid-transport, or waiting for pickup what o-what to do?
     // Probably be cool if we re-routed the transports to new location.
@@ -1158,7 +1158,7 @@ void BattalionClass::SetUnitOrders(int neworders, VU_ID oid)
     SetLastCheck(0);
 
     // If we've received new orders, and arn't engaged, let's halt our retreat
-    if (Retreating() && (!Engaged() or neworders != GORD_RESERVE))
+    if (Retreating() && (!Engaged() or neworders not_eq GORD_RESERVE))
         SetRetreating(0);
 
     GroundUnitClass::SetUnitOrders(neworders);
@@ -1192,7 +1192,7 @@ void BattalionClass::PickFinalLocation(void)
             // For these, we want to sit in front of the objective
         case GORD_DEFEND:
         case GORD_RECON:
-            if (o->GetTeam() != GetTeam()) // Counter attack
+            if (o->GetTeam() not_eq GetTeam()) // Counter attack
             {
                 SetUnitOrders(GORD_CAPTURE, o->Id());
                 return;
@@ -1258,7 +1258,7 @@ void BattalionClass::PickFinalLocation(void)
 
     GetLocation(&x, &y);
 
-    if ((x != dx or y != dy) && GetMovementType() != NoMove)
+    if ((x not_eq dx or y not_eq dy) && GetMovementType() not_eq NoMove)
         SetMoving(1);
     else
         GetLocation(&dx, &dy);
@@ -1630,7 +1630,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
     if (class_data->RadarVehicle == 255 or !GetNumVehicles(class_data->RadarVehicle))
         return FEC_RADAR_OFF;
 
-    assert(radarDatFileTable != NULL);
+    assert(radarDatFileTable not_eq NULL);
     RadarDataSet* radarData = &radarDatFileTable[((VehicleClassDataType *)Falcon4ClassTable[class_data->VehicleType[class_data->RadarVehicle]].dataPtr)->RadarType];
 
 
@@ -2084,7 +2084,7 @@ int BattalionClass::GetDeaggregationPoint(int slot, CampEntity *installation)
         {
             last_SAM_pt = pt = GetNextPt(last_SAM_pt);
 
-            while (pt && PtDataTable[pt].type != SAMPt)
+            while (pt && PtDataTable[pt].type not_eq SAMPt)
             {
                 last_SAM_pt = pt = GetNextPt(last_SAM_pt);
             }
@@ -2097,7 +2097,7 @@ int BattalionClass::GetDeaggregationPoint(int slot, CampEntity *installation)
         {
             last_AAA_pt = pt = GetNextPt(last_AAA_pt);
 
-            while (pt && PtDataTable[pt].type != AAAPt)
+            while (pt && PtDataTable[pt].type not_eq AAAPt)
             {
                 last_AAA_pt = pt = GetNextPt(last_AAA_pt);
             }
@@ -2110,7 +2110,7 @@ int BattalionClass::GetDeaggregationPoint(int slot, CampEntity *installation)
         {
             last_art_pt = pt = GetNextPt(last_art_pt);
 
-            while (pt && PtDataTable[pt].type != ArtilleryPt)
+            while (pt && PtDataTable[pt].type not_eq ArtilleryPt)
             {
                 last_art_pt = pt = GetNextPt(last_art_pt);
             }
@@ -2123,7 +2123,7 @@ int BattalionClass::GetDeaggregationPoint(int slot, CampEntity *installation)
         {
             last_support_pt = pt = GetNextPt(last_support_pt);
 
-            while (pt && PtDataTable[pt].type != SupportPt)
+            while (pt && PtDataTable[pt].type not_eq SupportPt)
             {
                 last_support_pt = pt = GetNextPt(last_support_pt);
             }
@@ -2292,7 +2292,7 @@ int BattalionClass::ChooseTactic(void)
             tid++;
     }
 
-    if (tid != GetTactic())
+    if (tid not_eq GetTactic())
         SetOrdered(1);
 
     // Make Adjustments due to tactic
@@ -2300,7 +2300,7 @@ int BattalionClass::ChooseTactic(void)
     {
         SetAssigned(0);
 
-        if (GetUnitTactic() != GTACTIC_WITHDRAW)
+        if (GetUnitTactic() not_eq GTACTIC_WITHDRAW)
         {
             Objective o;
             Brigade brigade;
@@ -2336,7 +2336,7 @@ int BattalionClass::ChooseTactic(void)
 
 #ifdef ROBIN_DEBUG
 
-    if (GetUnitTactic() != tid && TrackingOn[GetCampID()] or (GetUnitParent() && TrackingOn[GetUnitParent()->GetCampID()]))
+    if (GetUnitTactic() not_eq tid && TrackingOn[GetCampID()] or (GetUnitParent() && TrackingOn[GetUnitParent()->GetCampID()]))
     {
         CampEntity target = (CampEntity) GetTarget();
         MonoPrint("Battalion %d (%s) chose tactic %s vs %d.\n", GetCampID(), OrderStr[GetUnitOrders()], TacticsTable[tid].name, (target) ? target->GetCampID() : 0);
@@ -2423,7 +2423,7 @@ int BattalionClass::CheckTactic(int tid)
     if (CheckSpecial(tid) == 1 && GetUnitParentID() == FalconNullId)
         return 0; // Check if part of a brigade
 
-    if (CheckSpecial(tid) == 2 && TeamInfo[GetTeam()]->GetGroundAction()->actionType != GACTION_OFFENSIVE)
+    if (CheckSpecial(tid) == 2 && TeamInfo[GetTeam()]->GetGroundAction()->actionType not_eq GACTION_OFFENSIVE)
         return 0; // KCK Check if our offensive's started yet.
 
     // Refused() means our request was refused. These are no longer valid tactics
@@ -2453,7 +2453,7 @@ void BattalionClass::SimSetLocation(float x, float y, float z)
     ::vector pos = { x, y };
     ConvertSimToGrid(&pos, &nx, &ny);
 
-    if (cx != nx or cy != ny)
+    if (cx not_eq nx or cy not_eq ny)
     {
         SetPosition(x, y, z);
         //MakeCampBaseDirty (DIRTY_POSITION, DDP[90].priority);
@@ -2584,12 +2584,12 @@ void BattalionClass::SetUnitSupply(int s)
 
 void BattalionClass::MakeBattalionDirty(Dirty_Battalion bits, Dirtyness score)
 {
-    if ((!IsLocal()) or (VuState() != VU_MEM_ACTIVE))
+    if ((!IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
 
-    if (!IsAggregate() && (score != SEND_RELIABLEANDOOB))
+    if (!IsAggregate() && (score not_eq SEND_RELIABLEANDOOB))
     {
         score = static_cast<Dirtyness>(score << 4);
     }
@@ -2679,7 +2679,7 @@ void BattalionClass::ReadDirty(VU_BYTE **stream, long *rem)
         GetLocation(&x, &y);
         GetUnitDestination(&nx, &ny);
 
-        if ((x != nx) && (y != ny))
+        if ((x not_eq nx) && (y not_eq ny))
         {
             GetUnitGridPath(path, x, y, nx, ny);
             SetMoving(1);

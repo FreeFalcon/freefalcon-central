@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -34,7 +35,7 @@ static void insert_node(Prof_Zone_Stack *q)
     int x = h & zone_hash_mask;
     int s = ((h << 4) + (h >> 4)) | 1;
 
-    while (zone_hash[x] != &Prof_dummy)
+    while (zone_hash[x] not_eq &Prof_dummy)
         x = (x + s) & zone_hash_mask;
 
     zone_hash[x] = q;
@@ -104,7 +105,7 @@ Prof_extern_C Prof_Zone_Stack *Prof_StackAppend(Prof_Zone *zone)
 
     if (z->parent == Prof_stack && z->zone == zone) return z;
 
-    if (z != &Prof_dummy)
+    if (z not_eq &Prof_dummy)
     {
 
         // compute a secondary hash function; force it to be odd
@@ -148,7 +149,7 @@ Prof_extern_C Prof_Zone_Stack *Prof_StackAppend(Prof_Zone *zone)
         init_zone_hash(zone_hash_max * 2);
 
         for (i = 0; i < n; ++i)
-            if (old_hash[i] != &Prof_dummy)
+            if (old_hash[i] not_eq &Prof_dummy)
                 insert_node(old_hash[i]);
 
         z = createStackNode(zone, Prof_stack);
@@ -166,7 +167,7 @@ void Prof_traverse(void (*func)(Prof_Zone_Stack *z))
     int i;
 
     for (i = 0; i < zone_hash_max; ++i)
-        if (zone_hash[i] != &Prof_dummy)
+        if (zone_hash[i] not_eq &Prof_dummy)
             func(zone_hash[i]);
 }
 

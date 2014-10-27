@@ -514,7 +514,7 @@ int huft_build(unsigned * b, unsigned n, unsigned s, ush * d, ush * e, struct hu
 
     do
     {
-        if ((j = *p++) != 0)
+        if ((j = *p++) not_eq 0)
             v[x[j]++] = i;
     }
     while (++i < n);
@@ -636,7 +636,7 @@ int huft_build(unsigned * b, unsigned n, unsigned s, ush * d, ush * e, struct hu
             i xor_eq j;
 
             /* backup over finished tables */
-            while ((i & ((1 << w) - 1)) != x[h])
+            while ((i & ((1 << w) - 1)) not_eq x[h])
                 w -= l[--h];            /* don't need to update q */
         }
     }
@@ -647,7 +647,7 @@ int huft_build(unsigned * b, unsigned n, unsigned s, ush * d, ush * e, struct hu
 
 
     /* Return true (1) if we were given an incomplete table */
-    return y != 0 && g != 1;
+    return y not_eq 0 && g not_eq 1;
 }
 
 
@@ -676,7 +676,7 @@ int huft_free(struct huft * t)
 
     p = t;
 
-    while (p != (struct huft *)NULL)
+    while (p not_eq (struct huft *)NULL)
     {
         q = (--p)->v.t;
 #ifdef USE_SH_POOLS
@@ -874,7 +874,7 @@ int inflate_stored(COMPRESSED_FILE * cmp)
 
     NEEDBITS(16)
 
-    if (n != (unsigned)((compl b) & 0xffff))
+    if (n not_eq (unsigned)((compl b) & 0xffff))
         return 1;               /* error in compressed data */
 
     DUMPBITS(16)
@@ -951,7 +951,7 @@ int inflate_fixed(COMPRESSED_FILE * cmp)
 
         fixed_bl = 7;
 
-        if ((i = huft_build(l, 288, 257, cplens, cplext, &fixed_tl, &fixed_bl)) != 0)
+        if ((i = huft_build(l, 288, 257, cplens, cplext, &fixed_tl, &fixed_bl)) not_eq 0)
         {
             fixed_tl = NULL;
             return i;
@@ -972,7 +972,7 @@ int inflate_fixed(COMPRESSED_FILE * cmp)
     }
 
     /* decompress until an end-of-block code */
-    return inflate_codes(fixed_tl, fixed_td, fixed_bl, fixed_bd, cmp) != 0;
+    return inflate_codes(fixed_tl, fixed_td, fixed_bl, fixed_bd, cmp) not_eq 0;
 }
 
 
@@ -1045,7 +1045,7 @@ int inflate_dynamic(COMPRESSED_FILE * cmp)
     /* build decoding table for trees--single level, 7 bit lookup */
     bl = 7;
 
-    if ((i = huft_build(ll, 19, 19, NULL, NULL, &tl, &bl)) != 0)
+    if ((i = huft_build(ll, 19, 19, NULL, NULL, &tl, &bl)) not_eq 0)
     {
         if (i == 1)
             huft_free(tl);
@@ -1123,7 +1123,7 @@ int inflate_dynamic(COMPRESSED_FILE * cmp)
     /* build the decoding tables for literal/length and distance codes */
     bl = lbits;
 
-    if ((i = huft_build(ll, nl, 257, cplens, cplext, &tl, &bl)) != 0)
+    if ((i = huft_build(ll, nl, 257, cplens, cplext, &tl, &bl)) not_eq 0)
     {
         //    if (i == 1 && !qflag) {
         //      fprintf(stderr, "(incomplete l-tree)  ");
@@ -1134,7 +1134,7 @@ int inflate_dynamic(COMPRESSED_FILE * cmp)
 
     bd = dbits;
 
-    if ((i = huft_build(ll + nl, nd, 0, cpdist, cpdext, &td, &bd)) != 0)
+    if ((i = huft_build(ll + nl, nd, 0, cpdist, cpdext, &td, &bd)) not_eq 0)
     {
         //    if (i == 1 && !qflag) {
         //      fprintf(stderr, "(incomplete d-tree)  ");
@@ -1253,7 +1253,7 @@ int inflate(COMPRESSED_FILE * cmp)
     {
         hufts = 0;
 
-        if ((r = inflate_block(&e, cmp)) != 0)
+        if ((r = inflate_block(&e, cmp)) not_eq 0)
             return(r);
 
         if (hufts > h)
@@ -1288,7 +1288,7 @@ int inflate(COMPRESSED_FILE * cmp)
 
 int inflate_free(void)
 {
-    if (fixed_tl != NULL)
+    if (fixed_tl not_eq NULL)
     {
         huft_free(fixed_td);
         huft_free(fixed_tl);

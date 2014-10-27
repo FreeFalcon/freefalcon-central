@@ -285,7 +285,7 @@ static void AddSquadronToAirbaseCB(long ID, short hittype, C_Base *ctrl)
     UI_Refresher *urec;
     VU_ID id;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     icon = (C_MapIcon*)ctrl;
@@ -306,7 +306,7 @@ void SelectTargetCB(long ID, short hittype, C_Base *ctrl)
     UI_Refresher *urec;
     VU_ID id;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         // We're either dragging or mouse down - check to see if we should drag a unit
         UnitCB(ID, hittype, ctrl);
@@ -401,7 +401,7 @@ static void SetToolbarDirections(long textid)
 
 void SelectToolTypeCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMapMgr->SetAllObjCallbacks(NULL);
@@ -539,14 +539,14 @@ static void tactical_maximize_map(long, short hittype, C_Base *control)
     C_Window
     *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
 
     win = gMainHandler->FindWindow(TAC_FULLMAP_WIN);
 
-    if (win != NULL)
+    if (win not_eq NULL)
     {
         gMapMgr->SetWindow(win);
         gMapMgr->DrawMap();
@@ -554,7 +554,7 @@ static void tactical_maximize_map(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(TAC_PUA_MAP);
 
-    if (win != NULL)
+    if (win not_eq NULL)
     {
         gMainHandler->HideWindow(win);
     }
@@ -571,7 +571,7 @@ static void tactical_minimize_map(long, short hittype, C_Base *control)
     C_Window
     *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -580,7 +580,7 @@ static void tactical_minimize_map(long, short hittype, C_Base *control)
 
     //MonoPrint ("Minimize %d %08x\n", control->GetGroup (), win);
 
-    if (win != NULL)
+    if (win not_eq NULL)
     {
         gMapMgr->SetWindow(win);
         gMapMgr->DrawMap();
@@ -588,7 +588,7 @@ static void tactical_minimize_map(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(TAC_PUA_MAP);
 
-    if (win != NULL)
+    if (win not_eq NULL)
     {
         gMainHandler->ShowWindow(win);
     }
@@ -722,7 +722,7 @@ static void gMapMgr_zoom_in(long, short hittype, C_Base *ctrl)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((hittype != C_TYPE_LMOUSEUP) && (hittype != C_TYPE_REPEAT))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) && (hittype not_eq C_TYPE_REPEAT))
         return;
 
     Leave = UI_Enter(ctrl->Parent_);
@@ -739,7 +739,7 @@ static void gMapMgr_zoom_out(long, short hittype, C_Base *ctrl)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((hittype != C_TYPE_LMOUSEUP) && (hittype != C_TYPE_REPEAT))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) && (hittype not_eq C_TYPE_REPEAT))
         return;
 
     Leave = UI_Enter(ctrl->Parent_);
@@ -758,7 +758,7 @@ void gMapMgr_menu(long ID, short hittype, C_Base *control)
     objective = -1,
     zoom;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }

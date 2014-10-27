@@ -109,7 +109,7 @@ void CPKneeView::DisplayDraw(void)
     {
         // If we're not in Realistic mode, draw the current position marker
         // M.N. Added Full realism mode
-        if (PlayerOptions.GetAvionicsType() != ATRealistic && PlayerOptions.GetAvionicsType() != ATRealisticAV)
+        if (PlayerOptions.GetAvionicsType() not_eq ATRealistic && PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
         {
             DrawCurrentPosition(mpOTWImage, renderer, (SimVehicleClass*)mpOwnship);
         }
@@ -146,13 +146,13 @@ void CPKneeView::DrawMissionText(Render2D *renderer, SimVehicleClass *platform)
     {
         v = 0.95f - LINE_HEIGHT;
 
-        if (GetBriefingData(GBD_PACKAGE_STPTHDR, 0, string, sizeof(string)) != -1)
+        if (GetBriefingData(GBD_PACKAGE_STPTHDR, 0, string, sizeof(string)) not_eq -1)
         {
             renderer->TextLeft(-0.95f, v, string);
             v -= LINE_HEIGHT;
         }
 
-        for (lines = 0; GetBriefingData(GBD_PACKAGE_STPT, lines, string, sizeof(string)) != -1; ++lines)
+        for (lines = 0; GetBriefingData(GBD_PACKAGE_STPT, lines, string, sizeof(string)) not_eq -1; ++lines)
         {
             renderer->TextLeft(-0.95f, v, string);
             v -= LINE_HEIGHT;
@@ -211,26 +211,26 @@ void CPKneeView::DrawMissionText(Render2D *renderer, SimVehicleClass *platform)
     }
     else
     {
-        if (GetBriefingData(GBD_PLAYER_ELEMENT, 0, string, sizeof(string)) != -1)
+        if (GetBriefingData(GBD_PLAYER_ELEMENT, 0, string, sizeof(string)) not_eq -1)
         {
             renderer->TextLeft(-0.9f, v, string);
             v -= LINE_HEIGHT;
         }
 
-        if (GetBriefingData(GBD_PLAYER_TASK,    0, string, sizeof(string)) != -1)
+        if (GetBriefingData(GBD_PLAYER_TASK,    0, string, sizeof(string)) not_eq -1)
         {
             lines = renderer->TextWrap(-0.8f, v, string, LINE_HEIGHT, 1.7f);
             v -= (lines + 1) * LINE_HEIGHT;
         }
 
         // Display the package info (if we are part of a package)
-        if (GetBriefingData(GBD_PACKAGE_LABEL, 0, string, sizeof(string)) != -1)
+        if (GetBriefingData(GBD_PACKAGE_LABEL, 0, string, sizeof(string)) not_eq -1)
         {
             renderer->TextLeft(-0.9f, v, string);
             v -= LINE_HEIGHT;
 
             // Package mission statement
-            if (GetBriefingData(GBD_PACKAGE_MISSION, 0, string, sizeof(string)) != -1)
+            if (GetBriefingData(GBD_PACKAGE_MISSION, 0, string, sizeof(string)) not_eq -1)
             {
                 lines = renderer->TextWrap(-0.8f, v, string, LINE_HEIGHT, 1.7f);
                 v -= lines * LINE_HEIGHT;
@@ -239,11 +239,11 @@ void CPKneeView::DrawMissionText(Render2D *renderer, SimVehicleClass *platform)
             // List the flights in the package
             lines = 0;
 
-            while (GetBriefingData(GBD_PACKAGE_ELEMENT_NAME, lines, string, sizeof(string)) != -1)
+            while (GetBriefingData(GBD_PACKAGE_ELEMENT_NAME, lines, string, sizeof(string)) not_eq -1)
             {
                 renderer->TextLeft(-0.8f, v, string);
 
-                if (GetBriefingData(GBD_PACKAGE_ELEMENT_TASK, lines, string, sizeof(string)) != -1)
+                if (GetBriefingData(GBD_PACKAGE_ELEMENT_TASK, lines, string, sizeof(string)) not_eq -1)
                     renderer->TextLeft(-0.1f, v, string);
 
                 lines ++;

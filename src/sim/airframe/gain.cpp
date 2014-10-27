@@ -67,9 +67,9 @@ void AirframeClass::Gains(void)
     cosphiLim = max(0.0F, platform->platformAngles.cosphi);
     cosmuLim  = max(0.0F, platform->platformAngles.cosmu);
 
-    //landingGains = gearPos != 0 or IsEngineFlag(FuelDoorOpen) or IsSet(Refueling);
+    //landingGains = gearPos not_eq 0 or IsEngineFlag(FuelDoorOpen) or IsSet(Refueling);
     //TJL 10/20/03 Added TEFExtend. Per the F-16-1 ALT FLAPS sets Landing Gains
-    landingGains = gearPos != 0 or IsEngineFlag(FuelDoorOpen) or IsSet(Refueling) or platform->TEFExtend;
+    landingGains = gearPos not_eq 0 or IsEngineFlag(FuelDoorOpen) or IsSet(Refueling) or platform->TEFExtend;
 
 
 
@@ -181,7 +181,7 @@ void AirframeClass::Gains(void)
     tp01 = 0.200F;
     zp01 = 0.900F;
 
-    if (!IsSet(Simplified) && simpleMode != SIMPLE_MODE_AF)
+    if (!IsSet(Simplified) && simpleMode not_eq SIMPLE_MODE_AF)
     {
         //tp01 *= (1.0F + (loadingFraction - 1.3F) *0.1F);
         zp01 *= (1.0F - 0.15F * (max(0.0F, 1.0F - qbar / 25.0F)) - zpdamp - max(0.0F, (loadingFraction - 1.3F) * 0.01F));
@@ -289,7 +289,7 @@ void AirframeClass::Gains(void)
     //wy01 = (0.8F/tr01);
     wy01 = (0.3F / tr01);
 
-    if (!IsSet(Simplified) && simpleMode != SIMPLE_MODE_AF)
+    if (!IsSet(Simplified) && simpleMode not_eq SIMPLE_MODE_AF)
         wy01 *= (1.0F - loadingFraction * 0.1F);
 
     ky01 = 1.000F;
@@ -314,7 +314,7 @@ void AirframeClass::Gains(void)
     ty01   =  1 / yfreq1;
     ty02   =  1 / yfreq2;
 
-    if (cy != 0.0F)
+    if (cy not_eq 0.0F)
     {
         ky05   = -GRAVITY * wy01 * wy01 / (qsom * cy * yfreq1 * yfreq2);
     }

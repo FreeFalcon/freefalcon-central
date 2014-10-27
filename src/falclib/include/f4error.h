@@ -43,7 +43,7 @@ extern int f4AssertsOn, f4HardCrashOn;
  *((unsigned int *) 0x00) = 0; \
  else \
  { \
- while (choice != IDIGNORE) { \
+ while (choice not_eq IDIGNORE) { \
  sprintf( buffer, "Assertion at %0d  %s  %s", __LINE__, __FILE__, __DATE__ );\
  choice = MessageBox(NULL, buffer, "Failed:  " #expr,   \
  MB_ICONERROR | MB_ABORTRETRYIGNORE | MB_TASKMODAL); \

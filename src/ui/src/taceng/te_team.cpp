@@ -445,7 +445,7 @@ void MakeNewTeamCB(long, short hittype, C_Base *)
     int tid;
     _TCHAR buffer[30];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     i = 1;
@@ -500,7 +500,7 @@ static void RemoveTeamCB(long, short hittype, C_Base *)
     CampBaseClass *entity;
     VuListIterator eit(AllCampList);
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     TeamCount = 0;
@@ -578,7 +578,7 @@ static void ChoosePrevFlag(long, short hittype, C_Base *)
 {
     short oldFlag, newflag, done;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     oldFlag = static_cast<short>(TeamInfo[gSelectedTeam]->GetFlag());
@@ -609,7 +609,7 @@ static void ChooseNextFlag(long, short hittype, C_Base *)
 {
     short oldFlag, newflag, done;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     oldFlag = static_cast<short>(TeamInfo[gSelectedTeam]->GetFlag());
@@ -640,7 +640,7 @@ static void ChoosePrevColor(long, short hittype, C_Base *)
 {
     short oldcolor, newcolor, done;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     oldcolor = static_cast<short>(TeamInfo[gSelectedTeam]->GetColor());
@@ -672,7 +672,7 @@ static void ChooseNextColor(long, short hittype, C_Base *)
 {
     short oldcolor, newcolor, done;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     oldcolor = static_cast<short>(TeamInfo[gSelectedTeam]->GetColor());
@@ -707,7 +707,7 @@ void ChooseTeamCB(long, short hittype, C_Base *base)
     C_Button *btn;
     C_Line   *line;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gSelectedTeam = static_cast<uchar>(base->GetUserNumber(0));
@@ -790,7 +790,7 @@ static void SetTeamNameCB(long, short hittype, C_Base *base)
 {
     C_EditBox *ebox;
 
-    if (hittype != DIK_RETURN && hittype)
+    if (hittype not_eq DIK_RETURN && hittype)
         return;
 
     ebox = (C_EditBox*)base;
@@ -806,7 +806,7 @@ static void SetTeamStatementCB(long, short hittype, C_Base *base)
 {
     C_EditBox *ebox;
 
-    if (hittype != DIK_RETURN)
+    if (hittype not_eq DIK_RETURN)
         return;
 
     ebox = (C_EditBox*)base;
@@ -820,7 +820,7 @@ static void SetTeamExperience(long ID, short hittype, C_Base *base)
 {
     C_ListBox *lbox;
 
-    if (hittype != DIK_RETURN)
+    if (hittype not_eq DIK_RETURN)
         return;
 
     lbox = (C_ListBox*)base;
@@ -865,7 +865,7 @@ void Hookup_Team_Win(C_Window *win)
 
     if (win)
     {
-        if (win->GetID() != TAC_TEAM_WIN)
+        if (win->GetID() not_eq TAC_TEAM_WIN)
             return;
 
         base = win->FindControl(TAC_MAP_TE);

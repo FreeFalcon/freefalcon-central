@@ -272,7 +272,7 @@ void ActivateTacMissionBuilder()
 
 static void TACNewCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -316,7 +316,7 @@ static void TACNewCB(long, short hittype, C_Base *control)
 
 static void TACEditCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -382,7 +382,7 @@ static void TACReallyAcceptCB(void)
 
 static void TACAcceptCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -426,7 +426,7 @@ void UpdateVCs()
 
 static void TACExitCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -454,7 +454,7 @@ static void TACExitCB(long, short hittype, C_Base *)
 
 static void TACInfoCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -471,7 +471,7 @@ static void TACInfoCB(long, short hittype, C_Base *)
 
 static void TACHostCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -488,7 +488,7 @@ static void TACHostCB(long, short hittype, C_Base *)
 
 static void TACRevertCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -507,7 +507,7 @@ static void TACSaveFileCB(long, short hittype, C_Base *control)
 
     char buffer[100];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(SAVE_WIN);
@@ -540,7 +540,7 @@ static void TACVerifySaveFileCB(long ID, short hittype, C_Base *control)
 
     char buffer[MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     edit_box = (C_EditBox*) control->Parent_->FindControl(FILE_NAME);
@@ -588,7 +588,7 @@ void LoadSaveSelectFileCB(long, short hittype, C_Base *control)
     C_EditBox *ebox;
     C_Button *btn;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (control)
@@ -614,7 +614,7 @@ static void TACSaveAsCB(long, short hittype, C_Base *)
     _TCHAR buffer[MAX_PATH];
     _TCHAR filename [MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (OwnershipChanged)
@@ -737,7 +737,7 @@ void tactical_restart_mission(void)
 
 void restart_tactical_engagement(void)
 {
-    if (current_tactical_mission->get_type() != tt_engagement)
+    if (current_tactical_mission->get_type() not_eq tt_engagement)
     {
         TheCampaign.Suspend();
         InitTimeCompressionBox(0);

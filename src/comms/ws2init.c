@@ -2,6 +2,7 @@
 
 
 // SYSTEM INCLUDES
+#include <cISO646>
 #include <StdIO.h>
 #include <stdlib.h>
 #include <WinSock.h>
@@ -139,8 +140,8 @@ int initialize_windows_sockets(WSADATA* windows_sockets_data)
         {
             // Now confirm that the WinSock 2 DLL supports the exact version
             // we want. If not, make sure to call WSACleanup(). 
-            if (LOBYTE(windows_sockets_data->wVersion) != major_version ||
-                HIBYTE(windows_sockets_data->wVersion) != minor_version)
+            if (LOBYTE(windows_sockets_data->wVersion) not_eq major_version ||
+                HIBYTE(windows_sockets_data->wVersion) not_eq minor_version)
             {
                 
                  MessageBox(NULL,

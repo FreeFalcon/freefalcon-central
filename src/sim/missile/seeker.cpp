@@ -58,10 +58,10 @@ void MissileClass::RunSeeker()
         inputData->mslActiveTtg > 0 &&
         (
             timpct * factor < inputData->mslActiveTtg &&
-            sensorArray[0]->Type() != SensorClass::Radar
+            sensorArray[0]->Type() not_eq SensorClass::Radar
         ) ||
         (
-            launchState == InFlight && sensorArray[0]->Type() != SensorClass::Radar &&
+            launchState == InFlight && sensorArray[0]->Type() not_eq SensorClass::Radar &&
             (!isSlave or !targetPtr) //I-Hawk - was missing the parentheses here, caused heat seeker locking problems
         )
     )
@@ -80,11 +80,11 @@ void MissileClass::RunSeeker()
     }
 
     // Deal with the case where the seeker lost lock on the intended target
-    if (lockedTarget != targetPtr)
+    if (lockedTarget not_eq targetPtr)
     {
         if (
             (inputData->mslActiveTtg > 0) &&
-            (sensorArray[0]->Type() != SensorClass::Radar) &&
+            (sensorArray[0]->Type() not_eq SensorClass::Radar) &&
             launchState == InFlight
         )
         {
@@ -180,17 +180,17 @@ void MissileClass::RunSeeker()
     // KLUDGE: 2000-08-26 MODIFIED BY S.G. SO ARH MISSILE WAIT LONGER WHEN THE TARGET IS JAMMING
     // IT DOESN'T MATTER IF targetPtr IS NULL AND newTarget IS SET BECAUSE GoActive
     // WILL BE DONE LATER IN THE ROUTINE ANYHOW IN SUCH A SCENARIO
-    // if ((timpct < inputData->mslActiveTtg) && (sensorArray[0]->Type() != SensorClass::Radar))
+    // if ((timpct < inputData->mslActiveTtg) && (sensorArray[0]->Type() not_eq SensorClass::Radar))
 
     // ME123 WE GET A CTD HERE IF NOT MAKING THE ARH CHECK FIRST !
     // if (timpct *
     // ((targetPtr && targetPtr->BaseData()->IsSPJamming()) ? 1.5f : 1.0f) <
-    // inputData->mslActiveTtg && sensorArray[0]->Type() != SensorClass::Radar)
+    // inputData->mslActiveTtg && sensorArray[0]->Type() not_eq SensorClass::Radar)
     // Marco edit - Also added in GoActive for 'Mad Dog' Launches
     //if (
     // inputData->mslActiveTtg > 0 &&
     // launchState == InFlight &&
-    // sensorArray[0]->Type() != SensorClass::Radar &&
+    // sensorArray[0]->Type() not_eq SensorClass::Radar &&
     // !isSlave
     //){
     // Pitbull = false;
@@ -202,11 +202,11 @@ void MissileClass::RunSeeker()
         inputData->mslActiveTtg > 0 &&
         (
             timpct * factor < inputData->mslActiveTtg &&
-            sensorArray[0]->Type() != SensorClass::Radar
+            sensorArray[0]->Type() not_eq SensorClass::Radar
         ) ||
         (
             inputData->mslActiveTtg > 0 &&
-            launchState == InFlight && sensorArray[0]->Type() != SensorClass::Radar &&
+            launchState == InFlight && sensorArray[0]->Type() not_eq SensorClass::Radar &&
             (!isSlave or !targetPtr)
         )
     )
@@ -260,11 +260,11 @@ void MissileClass::RunSeeker()
     }
 
     // Deal with the case where the seeker lost lock on the intended target
-    if (newTarget != targetPtr)
+    if (newTarget not_eq targetPtr)
     {
         if (
             (inputData->mslActiveTtg > 0) &&
-            (sensorArray[0]->Type() != SensorClass::Radar) &&
+            (sensorArray[0]->Type() not_eq SensorClass::Radar) &&
             launchState == InFlight
         )
         {
@@ -338,7 +338,7 @@ void MissileClass::RunSeeker()
 void MissileClass::GoActive(void)
 {
     // Can't go active is we're already active
-    ShiAssert(sensorArray[0]->Type() != SensorClass::Radar)
+    ShiAssert(sensorArray[0]->Type() not_eq SensorClass::Radar)
 
     // Get rid of the old sensor
     sensorArray[0]->SetPower(FALSE);
@@ -366,7 +366,7 @@ void MissileClass::LimitSeeker(float az, float el)
     float gimbalCmd;        /* Gimbal command */
     float azCmd, elCmd;
 
-    //  if (inputData->seekerType != SensorClass::RadarHoming)
+    //  if (inputData->seekerType not_eq SensorClass::RadarHoming)
     {
         /*     if ( targetPtr == NULL)// launchState == PreLaunch ||
              {

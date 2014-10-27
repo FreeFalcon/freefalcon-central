@@ -149,7 +149,7 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
             featPos.data.specialFlags = initData->specialFlags;
             leadObject = initData->campBase->GetComponentLead();
 
-            if (leadObject && leadObject->Id().num_ != retval->Id().num_)
+            if (leadObject && leadObject->Id().num_ not_eq retval->Id().num_)
             {
                 featPos.data.leadUniqueID = (leadObject->Id());//.num_;
             }
@@ -201,7 +201,7 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
         }
 
         if (
-            initData->playerSlot != NO_PILOT &&
+            initData->playerSlot not_eq NO_PILOT &&
             initData->campBase->IsUnit() &&
             initData->campBase->IsSetFalcFlag(FEC_PLAYERONLY)
         )
@@ -210,7 +210,7 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
         }
 
         if (
-            initData->playerSlot != NO_PILOT &&
+            initData->playerSlot not_eq NO_PILOT &&
             initData->campBase->IsUnit() &&
             initData->campBase->IsSetFalcFlag(FEC_HOLDSHORT)
         )
@@ -550,7 +550,7 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
     // can be shot and collided with!  Missile logic may have to be changed...
     // to reduce possible crashes and other anomalies I'm doing this only
     // for player vehicle
-    if (curUpdate->EntityType()->classInfo_[VU_TYPE] == TYPE_EJECT && self != SimDriver.GetPlayerEntity())
+    if (curUpdate->EntityType()->classInfo_[VU_TYPE] == TYPE_EJECT && self not_eq SimDriver.GetPlayerEntity())
     {
         return FALSE;
     }

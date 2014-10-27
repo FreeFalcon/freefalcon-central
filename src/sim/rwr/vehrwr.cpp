@@ -123,7 +123,7 @@ SimObjectType* VehRwrClass::Exec(SimObjectType* targetList)
     DetectListElement* listElement;
     SimObjectLocalData* localData;
 
-    while (curObj &&  platform != SimDriver.GetPlayerAircraft() && !F4IsBadReadPtr(curObj, sizeof(SimObjectType))) // JB 010318 CTD
+    while (curObj &&  platform not_eq SimDriver.GetPlayerAircraft() && !F4IsBadReadPtr(curObj, sizeof(SimObjectType))) // JB 010318 CTD
     {
         // if ((curObj->BaseData ()) && (curObj->BaseData()->IsSim()) && (curObj->BaseData()->GetRadarType())) // JB 010221 CTD
         //if ((curObj->BaseData()) && !F4IsBadCodePtr((FARPROC) curObj->BaseData()) && (curObj->BaseData()->IsSim()) && (curObj->BaseData()->GetRadarType())) // JB 010221 CTD
@@ -242,7 +242,7 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
     F4Assert(numContacts == 0 or detectionList[numContacts - 1].entity);
 
     //Cobra TEST Let me know if AI brain is here.
-    if (platform != SimDriver.GetPlayerAircraft())
+    if (platform not_eq SimDriver.GetPlayerAircraft())
         int Player = 0;
 
     int helper = 0;//cobra test
@@ -270,7 +270,7 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
     if (!listElement)
     {
         // Don't add a track upon receipt of a "drop" message
-        if (trackType != Track_Unlock && trackType != Track_LaunchEnd)
+        if (trackType not_eq Track_Unlock && trackType not_eq Track_LaunchEnd)
         {
 
             // Create a new record for this threat
@@ -296,7 +296,7 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
      else
      {
      // Resort him into the list
-     if (listElement->lethality != lethality)
+     if (listElement->lethality not_eq lethality)
      {
      listElement->lethality = lethality;
      ResortList (listElement);
@@ -329,7 +329,7 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
                 {
                     // 2000-09-03 S.G. SO ARH DON'T GET A LAUNCH WARNING
                     // 2000-09-11 S.G. make sure the entity is a missile before testing its sensor type...
-                    if (!listElement->entity->IsMissile() or ((MissileClass *)listElement->entity)->GetSeekerType() != SensorClass::Radar)
+                    if (!listElement->entity->IsMissile() or ((MissileClass *)listElement->entity)->GetSeekerType() not_eq SensorClass::Radar)
                         // END OF ADDED SECTION (PLUS INDENTATION OF NEXT LINE)
                     {
                         //F4SoundFXSetDist( SFX_TWS_LAUNCH, FALSE, 0.0f, 1.0f );
@@ -352,7 +352,7 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
                     if (platform == SimDriver.GetPlayerAircraft() && listElement->missileLaunch == 0)
 
                         // 2000-09-03 S.G. SO ARH DON'T GET A LAUNCH WARNING
-                        if (((MissileClass *)listElement->entity)->GetSeekerType() != SensorClass::Radar)
+                        if (((MissileClass *)listElement->entity)->GetSeekerType() not_eq SensorClass::Radar)
                         {
                             // END OF ADDED SECTION (PLUS INDENTATION OF NEXT LINE)
                             //F4SoundFXSetDist( SFX_TWS_LOCK, FALSE, 0.0f, 1.0f );
@@ -581,7 +581,7 @@ FalconEntity* VehRwrClass::CurSpike(FalconEntity *byHim, int *data)  // 2002-02-
     }
 
     // 2002-02-11 ADDED BY S.G. If we reached the end and couldn't find a prioritized one, return at least what we found
-    if (curIndex != -1)
+    if (curIndex not_eq -1)
     {
         *data = detectionList[i].radarMode; // Pass back the radar mode to the calling function
         return detectionList[i].entity;

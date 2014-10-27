@@ -87,7 +87,7 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
             break;
     }
 
-    if (size != csize or !map_data)
+    if (size not_eq csize or !map_data)
     {
         // better resize it
         CampEnterCriticalSection();
@@ -176,14 +176,14 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
                     own = GetOwner(TheCampaign.CampMapData, rx, ry);
 
                     // Let the ownership map decide if we're over water or not
-                    //if (GetCover(rx,ry) != Water or GetCover(rx+PAK_MAP_RATIO-1,ry) != Water ||
-                    // GetCover(rx,ry+PAK_MAP_RATIO-1) != Water)
+                    //if (GetCover(rx,ry) not_eq Water or GetCover(rx+PAK_MAP_RATIO-1,ry) not_eq Water ||
+                    // GetCover(rx,ry+PAK_MAP_RATIO-1) not_eq Water)
                     if (own)
                     {
                         float last = -1.0F;
                         o = FindNearestObjective(POList, rx, ry, &last);
 
-                        while (o && o->GetTeam() != own)
+                        while (o && o->GetTeam() not_eq own)
                         {
                             o = FindNearestObjective(POList, rx, ry, &last);
                         }
@@ -221,9 +221,9 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
                     ry = y * MAP_RATIO;
 
                     if (
-                        GetCover(rx, ry) != Water ||
-                        GetCover(rx + MAP_RATIO - 1, ry) != Water ||
-                        GetCover(rx, ry + MAP_RATIO - 1) != Water
+                        GetCover(rx, ry) not_eq Water ||
+                        GetCover(rx + MAP_RATIO - 1, ry) not_eq Water ||
+                        GetCover(rx, ry + MAP_RATIO - 1) not_eq Water
                     )
                     {
                         // KCK: Search a small area first, then if I don't find something, search a larger area
@@ -303,9 +303,9 @@ uchar* UpdateCampMap(int type, uchar* map_data, GridIndex cx, GridIndex cy)
                     ry = y * MAP_RATIO;
 
                     if (
-                        GetCover(rx, ry) != Water ||
-                        GetCover(rx + MAP_RATIO - 1, ry) != Water ||
-                        GetCover(rx, ry + MAP_RATIO - 1) != Water
+                        GetCover(rx, ry) not_eq Water ||
+                        GetCover(rx + MAP_RATIO - 1, ry) not_eq Water ||
+                        GetCover(rx, ry + MAP_RATIO - 1) not_eq Water
                     )
                     {
                         // KCK: Searh a small area first, then if I don't find something, search a larger area

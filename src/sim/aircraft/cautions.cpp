@@ -111,7 +111,7 @@ void AircraftClass::CautionCheck(void)
         if (!isDigital)
         {
             //RV - I-Hawk - changed altitude value from 10000 to 5000 according to Dannycoh
-            if (ZPos() > -5000.0F && GetKias() < 190.0F && ZDelta() * 60.0F >= 250.0F && af->gearPos != 1.0F)
+            if (ZPos() > -5000.0F && GetKias() < 190.0F && ZDelta() * 60.0F >= 250.0F && af->gearPos not_eq 1.0F)
             {
                 if (!mFaults->GetFault(to_ldg_config))
                 {
@@ -1145,7 +1145,7 @@ void AircraftClass::SetExternalData(void)
         return;
     }
 
-    if (playerAC->TestLights != NULL)
+    if (playerAC->TestLights not_eq NULL)
     {
         cockpitFlightData.lightBits  = FlightData::AllLampBitsOn;   // All current lamp related lightBits  to ON
         cockpitFlightData.lightBits2 = FlightData::AllLampBits2On;  // All current lamp related lightBits2 to ON
@@ -1508,7 +1508,7 @@ void AircraftClass::SetExternalData(void)
     // because here we only care about the lamp state not where the handle is (up/down)
     if (playerAC->mFaults->GetFault(FaultClass::gear_fault) ||
         (playerAC->mFaults->GetFault(to_ldg_config) && playerAC->af->gearPos == 0.0F) ||
-        ((playerAC->af->gearPos != 0.0F) && (playerAC->af->gearPos != 1.0F)))
+        ((playerAC->af->gearPos not_eq 0.0F) && (playerAC->af->gearPos not_eq 1.0F)))
         cockpitFlightData.SetLightBit2(FlightData::GEARHANDLE);
     else
         cockpitFlightData.ClearLightBit2(FlightData::GEARHANDLE);

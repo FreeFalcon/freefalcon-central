@@ -635,7 +635,7 @@ void ICPClass::CruiseTOS(void)
     ttg -= minute * 60.0F;
     sec = FloatToInt32(ttg);
 
-    if (hr != 0)
+    if (hr not_eq 0)
         sprintf(tempstr, "%02d:%02d:%02d", hr, abs(minute), abs(sec));
     else if (sec >= 0)
         sprintf(tempstr, "   %02d:%02d", abs(minute), sec);

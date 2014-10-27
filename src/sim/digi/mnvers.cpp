@@ -160,7 +160,7 @@ float DigitalBrain::VectorTrack(float maxMnvrGs, int fineTrack)
     /*-------------------*/
     /* relative geometry */
     /*-------------------*/
-    if (rx != 0.0F)
+    if (rx not_eq 0.0F)
         ata      = (float)acos(rx / range) * RTD;
     else
         ata = 0.0F;
@@ -460,7 +460,7 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
     {
         // If in combat take vtDot into account
         // For waypoint stuff you need to be really slow to hit burner
-        if (curMode < LoiterMode && curMode != LandingMode) // 2002-02-12 MODIFIED BY S.G. And not in landing mode
+        if (curMode < LoiterMode && curMode not_eq LandingMode) // 2002-02-12 MODIFIED BY S.G. And not in landing mode
         {
             eProp -= min(2.0F * af->VtDot(), 0.0F);
             burnerDelta = 100.0F;
@@ -686,7 +686,7 @@ void DigitalBrain::Loiter(void)
         /*-----------*/
         /* MACH HOLD */
         /*-----------*/
-        if (curMode != lastMode)
+        if (curMode not_eq lastMode)
         {
             onStation = Stabalizing;
             holdAlt = -self->ZPos();
@@ -723,7 +723,7 @@ void DigitalBrain::LevelTurn(float load_factor, float turnDir, int newTurn)
         trackMode = 0;
     }
 
-    if (trackMode != 0)
+    if (trackMode not_eq 0)
     {
         edroll = (float)atan(sqrt(load_factor * load_factor - 1));
         ResetMaxRoll();
@@ -872,7 +872,7 @@ void DigitalBrain::RollOutOfPlane(void)
     /*-----------------------*/
     /* first pass, save roll */
     /*-----------------------*/
-    if (lastMode != RoopMode)
+    if (lastMode not_eq RoopMode)
     {
         mnverTime = 1.0F;//me123 from 4
 
@@ -932,7 +932,7 @@ void DigitalBrain::OverBank(float delta)
         /*-----------------------*/
         /* Find a new roll angle */
         /*-----------------------*/
-        if (lastMode != OverBMode)
+        if (lastMode not_eq OverBMode)
         {
             if (self->Roll() > 0.0F)
                 newroll = targetData->droll + delta;

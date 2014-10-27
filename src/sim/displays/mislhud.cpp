@@ -611,7 +611,7 @@ void HudClass::DrawMissileReticle(float radius, int showRange, int showAspect)
 
         // Reference Ticks
         // M.N. added full realism mode
-        if (targetData->range < 12000.0F or (PlayerOptions.GetAvionicsType() != ATRealistic && PlayerOptions.GetAvionicsType() != ATRealisticAV))
+        if (targetData->range < 12000.0F or (PlayerOptions.GetAvionicsType() not_eq ATRealistic && PlayerOptions.GetAvionicsType() not_eq ATRealisticAV))
         {
             display->Line(0.0F,  radius, 0.0F,  radius + 0.04F);
             display->Line(0.0F, -radius, 0.0F, -radius - 0.04F);
@@ -971,10 +971,10 @@ void HudClass::DrawAim120DLZ(bool dfgt)
         {
             // Draw "A"/"F"-pole range for missile on the rail below closure (which is done above on line 2339)
             // "A" is not used to avoid confusion w/ AMRAAM active indications
-            if (theRadar != NULL)
-                if (FCC->nextMissileImpactTime > 0.0F && theRadar->lockedTargetData != NULL)
-                    // assert(lockedTargetData != NULL);
-                    // assert(FCC != NULL);
+            if (theRadar not_eq NULL)
+                if (FCC->nextMissileImpactTime > 0.0F && theRadar->lockedTargetData not_eq NULL)
+                    // assert(lockedTargetData not_eq NULL);
+                    // assert(FCC not_eq NULL);
                 {
                     if (FCC->nextMissileImpactTime > FCC->lastmissileActiveTime)
                     {

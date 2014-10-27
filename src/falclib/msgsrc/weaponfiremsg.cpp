@@ -76,7 +76,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
             }
 
             //Cobra test
-            if ((theEntity->IsAirplane() or theEntity->IsHelicopter()) /*&& dataBlock.weaponType != FalconWeaponsFire::GUN*/)
+            if ((theEntity->IsAirplane() or theEntity->IsHelicopter()) /*&& dataBlock.weaponType not_eq FalconWeaponsFire::GUN*/)
             {
                 FalconRadioChatterMessage *radioMessage = new FalconRadioChatterMessage(simEntity->Id(), FalconLocalSession);
                 radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
@@ -162,14 +162,14 @@ int FalconWeaponsFire::Process(uchar autodisp)
             }
 
             // Register the shot if it was by someone in our package me123 or we are server
-            if (dataBlock.fWeaponUID != FalconNullId && simEntity->GetCampaignObject() && ((simEntity->GetCampaignObject())->InPackage() or FalconLocalGame->GetGameType() == game_InstantAction or g_bLogEvents))
+            if (dataBlock.fWeaponUID not_eq FalconNullId && simEntity->GetCampaignObject() && ((simEntity->GetCampaignObject())->InPackage() or FalconLocalGame->GetGameType() == game_InstantAction or g_bLogEvents))
                 TheCampaign.MissionEvaluator->RegisterShot(this);
 
         }
         else
         {
             // Register the shot if it was by someone in our package
-            if (dataBlock.fWeaponUID != FalconNullId && theEntity->IsCampaign() && (((CampEntity)theEntity)->InPackage() or FalconLocalGame->GetGameType() == game_InstantAction or g_bLogEvents))
+            if (dataBlock.fWeaponUID not_eq FalconNullId && theEntity->IsCampaign() && (((CampEntity)theEntity)->InPackage() or FalconLocalGame->GetGameType() == game_InstantAction or g_bLogEvents))
                 TheCampaign.MissionEvaluator->RegisterShot(this);
         }
     }
@@ -183,7 +183,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
 
     // if the weapon is a missile and we have a target ID, tell the target
     // there's an incoming
-    if (dataBlock.targetId != vuNullId &&
+    if (dataBlock.targetId not_eq vuNullId &&
         (dataBlock.weaponType == SRM or dataBlock.weaponType == MRM))
     {
         SimBaseClass *theMissile = (SimBaseClass*)(vuDatabase->Find(dataBlock.fWeaponUID));
@@ -196,7 +196,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
                 ((SimBaseClass*)theTarget)->SetThreat(simEntity, THREAT_MISSILE);
         }
     }
-    else if (dataBlock.targetId != vuNullId && dataBlock.weaponType == GUN)
+    else if (dataBlock.targetId not_eq vuNullId && dataBlock.weaponType == GUN)
     {
         if (theTarget && theTarget->IsSim())
         {

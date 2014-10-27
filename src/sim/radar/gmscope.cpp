@@ -640,7 +640,7 @@ void RadarDopplerClass::SetAimPoint(float xCmd, float yCmd)
     {
         //MI better cursor control
         // MD -- 20040215: the cursor doesn't move in SP until you are ground stabilized
-        if ((xCmd != 0.0F or yCmd != 0.0F) && ((!IsSet(SP)) or (IsSet(SP) && IsSet(SP_STAB))))
+        if ((xCmd not_eq 0.0F or yCmd not_eq 0.0F) && ((!IsSet(SP)) or (IsSet(SP) && IsSet(SP_STAB))))
         {
             float CursorSpeed = g_fCursorSpeed;
 
@@ -997,7 +997,7 @@ void RadarDopplerClass::RestoreAGCursor()
             maxIdx = NUM_RANGES - 2;
         }
 
-        if (mode != GM)
+        if (mode not_eq GM)
         {
             ClearFlagBit(DBS1);
             ClearFlagBit(DBS2);
@@ -1372,7 +1372,7 @@ void RadarDopplerClass::GMDisplay(void)
 
         // edg: DON'T DRAW when the display is a CANVAS
         {
-            if (gainCmd != 0.0F)
+            if (gainCmd not_eq 0.0F)
             {
                 if (gainCmd < 1)
                     GainPos -= 0.5F;
@@ -1416,7 +1416,7 @@ void RadarDopplerClass::GMDisplay(void)
             {
                 int CurrentPos = IO.GetAxisValue(AXIS_RANGE_KNOB);
 
-                if (CurrentPos != lastRngKnobPos)
+                if (CurrentPos not_eq lastRngKnobPos)
                 {
                     float diff = ((float)abs(CurrentPos - lastRngKnobPos) / 10000.0F) * (0.4F * curgain); // +/-20% -> 40% range total variation(?)...looks better so assume yes ;)
                     float newgain = ((RenderGMComposite*)display)->GetGain();
@@ -1909,7 +1909,7 @@ void RadarDopplerClass::GMDisplay(void)
             minute = max(min(minute, 999), 0);
             sec = max(min(sec, 59), 0);
 
-            if (hr != 0)
+            if (hr not_eq 0)
                 sprintf(tmpStr, "%03d:%02d", abs(minute), sec);   //JPG 5 Feb 04
             else if (sec >= 0)
             {
@@ -3329,7 +3329,7 @@ void RadarDopplerClass::GMMode(void)
                             {
                                 radius = 2.0F * testObject->drawPointer->Radius();
                                 /*  JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
-                                if (testObject->GetDomain() != DOMAIN_SEA) // JB carrier (otherwise ships stop when you turn on your GM radar)
+                                if (testObject->GetDomain() not_eq DOMAIN_SEA) // JB carrier (otherwise ships stop when you turn on your GM radar)
                                 {
                                 ((SimBaseClass*)testObject)->drawPointer->GetPosition(&pos);
                                 testObject->SetPosition(pos.x, pos.y, pos.z);
@@ -3359,7 +3359,7 @@ void RadarDopplerClass::GMMode(void)
                             {
                                 radius = 2.0F * testObject->drawPointer->Radius();
                                 /*  JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
-                                if (testObject->GetDomain() != DOMAIN_SEA) // JB carrier (otherwise ships stop when you turn on your GM radar)
+                                if (testObject->GetDomain() not_eq DOMAIN_SEA) // JB carrier (otherwise ships stop when you turn on your GM radar)
                                 {
                                 ((SimBaseClass*)testObject)->drawPointer->GetPosition(&pos);
                                 testObject->SetPosition(pos.x, pos.y, pos.z);
@@ -3497,7 +3497,7 @@ void RadarDopplerClass::GMMode(void)
                             testObject = (SimBaseClass*)objectWalker.GetNext();
                             break;
                     }
-                } // inUse != testObject
+                } // inUse not_eq testObject
             } // inUse
             else
             {

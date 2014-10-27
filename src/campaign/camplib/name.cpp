@@ -55,7 +55,7 @@ void LoadNames(char* filename)
 
     memcpychk(&NameEntries, &data_ptr, sizeof(short), &rem);
 
-    if (NameIndex != NULL)
+    if (NameIndex not_eq NULL)
     {
         delete NameIndex;
     }

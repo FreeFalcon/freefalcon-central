@@ -3,7 +3,7 @@
 
 VuListIterator::VuListIterator(VuLinkedList* coll) : VuIterator(coll)
 {
-    if (coll != NULL)
+    if (coll not_eq NULL)
     {
         curr_ = coll->l_.end();
     }
@@ -42,7 +42,7 @@ VuEntity *VuListIterator::GetFirst()
     curr_ = vl->l_.begin();
     VuEntityBin &eb = *curr_;
 
-    if (eb->VuState() != VU_MEM_ACTIVE)
+    if (eb->VuState() not_eq VU_MEM_ACTIVE)
     {
         return GetNext();
     }
@@ -62,7 +62,7 @@ VuEntity *VuListIterator::GetNext()
         {
             return NULL;
         }
-        else if ((*curr_)->VuState() != VU_MEM_ACTIVE)
+        else if ((*curr_)->VuState() not_eq VU_MEM_ACTIVE)
         {
             continue;
         }
@@ -110,7 +110,7 @@ VuEntity *VuListIterator::GetNext(VuFilter *filter)
             return e;
         }
     }
-    while (e != NULL);
+    while (e not_eq NULL);
 
     return NULL;
 }

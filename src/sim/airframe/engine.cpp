@@ -98,7 +98,7 @@ void AirframeClass::EngineModel(float dt)
     {
         // MD -- 20040531: adding test to make sure that the EPU keeps running when you land if it was
         // already running (previous logic shut EPU off on touchdown)
-        if ((GetEpuSwitch() == ON) or (GeneratorRunning(GenEpu) && (GetEpuSwitch() != OFF)))
+        if ((GetEpuSwitch() == ON) or (GeneratorRunning(GenEpu) && (GetEpuSwitch() not_eq OFF)))
         {
             // pilot command
             GeneratorOn(GenEpu);
@@ -222,7 +222,7 @@ void AirframeClass::EngineModel(float dt)
         thrust = 0.0f;
 
         // broken engine - anything but a flame out?
-        if ((platform->mFaults->GetFault(FaultClass::eng_fault) & compl FaultClass::fl_out) != 0)
+        if ((platform->mFaults->GetFault(FaultClass::eng_fault) & compl FaultClass::fl_out) not_eq 0)
         {
             rpmCmd = 0.0f; // engine must be seized, not going to start or windmill
         }
@@ -991,7 +991,7 @@ void AirframeClass::MultiEngineModel(float dt)
 
 
         // broken engine - anything but a flame out?
-        if ((platform->mFaults->GetFault(FaultClass::eng_fault) & compl FaultClass::fl_out) != 0)
+        if ((platform->mFaults->GetFault(FaultClass::eng_fault) & compl FaultClass::fl_out) not_eq 0)
         {
             rpmCmd = 0.0f; // engine must be seized, not going to start or windmill
         }
@@ -1492,7 +1492,7 @@ void AirframeClass::MultiEngineModel(float dt)
 
         // broken engine - anything but a flame out?
         //TODO Chase down faults to fault Engine 2
-        if ((platform->mFaults->GetFault(FaultClass::eng_fault) & compl FaultClass::fl_out) != 0)
+        if ((platform->mFaults->GetFault(FaultClass::eng_fault) & compl FaultClass::fl_out) not_eq 0)
         {
             rpmCmd2 = 0.0f; // engine must be seized, not going to start or windmill
         }
@@ -2384,7 +2384,7 @@ void AirframeClass::FuelTransfer(float dt)
             else
                 platform->mFaults->SetCaution(fwd_fuel_low_fault);
         }
-        else if (fuelSwitch != FS_TEST && platform->mFaults->GetFault(fwd_fuel_low_fault))
+        else if (fuelSwitch not_eq FS_TEST && platform->mFaults->GetFault(fwd_fuel_low_fault))
             platform->mFaults->ClearFault(fwd_fuel_low_fault);
 
         if (m_tanks[TANK_AFTRES] < auxaeroData->fuelMinAft)
@@ -2395,7 +2395,7 @@ void AirframeClass::FuelTransfer(float dt)
             else
                 platform->mFaults->SetCaution(aft_fuel_low_fault);
         }
-        else if (fuelSwitch != FS_TEST && platform->mFaults->GetFault(aft_fuel_low_fault))
+        else if (fuelSwitch not_eq FS_TEST && platform->mFaults->GetFault(aft_fuel_low_fault))
             platform->mFaults->ClearFault(aft_fuel_low_fault);
     }
 
@@ -2596,7 +2596,7 @@ void AirframeClass::DecAirSource()
 // 5. Fuel Flow < 18000pph for 30 seconds.
 int AirframeClass::CheckTrapped()
 {
-    if (fuelSwitch != FS_NORM) return 0;  // cond 1
+    if (fuelSwitch not_eq FS_NORM) return 0;  // cond 1
 
     if (externalFuel < 500) return 0; // cond 4
 

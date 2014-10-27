@@ -90,7 +90,7 @@ InputFunctionHashTable::~InputFunctionHashTable(void)
 
 #ifdef USE_SH_POOLS
 
-    if (gInputMemPool != NULL)
+    if (gInputMemPool not_eq NULL)
     {
         MemPoolFree(gInputMemPool);
         gInputMemPool = NULL;
@@ -436,8 +436,8 @@ void CallInputFunction(unsigned long val, int state)
         /* // ASSOCIATOR: Commented this out so that Comms menu will not deactivate while pressing other keys
         // Cancel the combo, whether it is handled or not
         if (
-         CommandsKeyCombo && keyDown && theFunc != ScreenShot &&
-         theFunc != RadioMessageSend && theFunc != OTWRadioMenuStep && theFunc != OTWRadioMenuStepBack
+         CommandsKeyCombo && keyDown && theFunc not_eq ScreenShot &&
+         theFunc not_eq RadioMessageSend && theFunc not_eq OTWRadioMenuStep && theFunc not_eq OTWRadioMenuStepBack
         ){
          CommandsKeyCombo = 0;
          CommandsKeyComboMod = 0;
@@ -449,8 +449,8 @@ void CallInputFunction(unsigned long val, int state)
         // ASSOCIATOR: Added so that other keys can be pressed while in Comms menus
         if (
             CommandsKeyComboMod && CommandsKeyCombo && keyDown &&
-            theFunc != ScreenShot && theFunc != RadioMessageSend && theFunc != OTWRadioMenuStep &&
-            theFunc != OTWRadioMenuStepBack
+            theFunc not_eq ScreenShot && theFunc not_eq RadioMessageSend && theFunc not_eq OTWRadioMenuStep &&
+            theFunc not_eq OTWRadioMenuStepBack
         )
         {
             CommandsKeyCombo = 0;
@@ -478,10 +478,10 @@ void CallInputFunction(unsigned long val, int state)
 
         // ASSOCIATOR: Added so that other keys can be pressed while in Comms menus
         if (
-            CommandsKeyCombo && theFunc != ScreenShot &&
-            theFunc != RadioMessageSend &&
-            theFunc != OTWRadioMenuStep &&
-            theFunc != OTWRadioMenuStepBack
+            CommandsKeyCombo && theFunc not_eq ScreenShot &&
+            theFunc not_eq RadioMessageSend &&
+            theFunc not_eq OTWRadioMenuStep &&
+            theFunc not_eq OTWRadioMenuStepBack
         )
         {
             tempCombo = CommandsKeyCombo;
@@ -744,13 +744,13 @@ void StandardAsciiInput(unsigned long key, int state)
     switch (AsciiAllowed)
     {
         case 1: // Integers
-            if (!DIK_IsDigit(key, state) && asciival != '-')
+            if (!DIK_IsDigit(key, state) && asciival not_eq '-')
                 return;
 
             break;
 
         case 2: // Floats
-            if (!DIK_IsDigit(key, state) && asciival != '-' && asciival != '.')
+            if (!DIK_IsDigit(key, state) && asciival not_eq '-' && asciival not_eq '.')
                 return;
 
             break;

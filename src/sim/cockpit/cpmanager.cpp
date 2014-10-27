@@ -157,7 +157,7 @@ void ReadImage(char* pfilename, GLubyte** image, GLulong** palette)
 
     // Make sure we recognize this file type
     result = texFile.imageType = CheckImageType(pfilename);
-    ShiAssert(texFile.imageType != IMAGE_TYPE_UNKNOWN);
+    ShiAssert(texFile.imageType not_eq IMAGE_TYPE_UNKNOWN);
 
     // Open the input file
     result = texFile.glOpenFileMem(pfilename);
@@ -167,7 +167,7 @@ void ReadImage(char* pfilename, GLubyte** image, GLulong** palette)
     texFile.glReadFileMem();
     result = ReadTextureImage(&texFile);
 
-    if (result != GOOD_READ)
+    if (result not_eq GOOD_READ)
     {
         //sfr: changed message
         std::ostringstream msg;
@@ -602,11 +602,11 @@ CockpitManager::CockpitManager(
 
     if (cockpit_verifier)
     {
-        if (mSurfaceTally != mNumSurfaces ||
-            mObjectTally != mNumObjects ||
-            mPanelTally != mNumPanels ||
-            mButtonTally != mNumButtons ||
-            mButtonViewTally != mNumButtonViews)
+        if (mSurfaceTally not_eq mNumSurfaces ||
+            mObjectTally not_eq mNumObjects ||
+            mPanelTally not_eq mNumPanels ||
+            mButtonTally not_eq mNumButtons ||
+            mButtonViewTally not_eq mNumButtonViews)
         {
             char buf[0x400];
             sprintf(buf, "Verify error detected!\n\nNumSurfaces:\t%.3d\t\tSurfaceTally:\t%.3d\nNumObjects:\t%.3d\t\tObjectTally:\t%.3d\nNumPanels:\t%.3d\t\tPanelTally:\t%.3d\nNumButtons:\t%.3d\t\tButtonTally:\t%.3d\nNumButtonViews:\t%.3d\t\tButtonViewTally:\t%.3d\t\n",
@@ -1203,7 +1203,7 @@ string RemoveInvalidChars(const string &instr)
     int len = strlen(outstr.c_str());
 
     for (int i = 0; i < len; ++i)
-        if (isspace(*pos) or (invalid_chars.find(*pos) != string::npos))
+        if (isspace(*pos) or (invalid_chars.find(*pos) not_eq string::npos))
             outstr.erase(pos); // this increments pos
         else ++pos;
 
@@ -4363,7 +4363,7 @@ void CockpitManager::GeometryDraw(void)
                 DrawableBSP *bsp = (DrawableBSP*)SimDriver.GetPlayerEntity()->drawPointer;
                 int t = bsp->GetTextureSet();
 
-                if (mpGeometry->GetNTextureSet() != 0)
+                if (mpGeometry->GetNTextureSet() not_eq 0)
                     mpGeometry->SetTextureSet(t % mpGeometry->GetNTextureSet());
                 else
                     mpGeometry->SetTextureSet(0);
@@ -4775,7 +4775,7 @@ bool CockpitManager::SetActivePanel(int panelId)   //Wombat778 changed return to
 
         mIsNextInitialized = FALSE;
     }
-    else if (mpActivePanel == NULL or mpActivePanel->mIdNum != panelId)
+    else if (mpActivePanel == NULL or mpActivePanel->mIdNum not_eq panelId)
     {
 
         // loop thru all the panels
@@ -4947,7 +4947,7 @@ void CockpitManager::SetNextView(void)
 
     if (!mIsNextInitialized && mpNextActivePanel)
     {
-        if (mpNextActivePanel != mpActivePanel)
+        if (mpNextActivePanel not_eq mpActivePanel)
         {
 
             // OW
@@ -5024,7 +5024,7 @@ void CockpitManager::SetTOD(float newLightLevel)
 {
 
     /* if ((fabs(lightLevel - newLightLevel) <= COCKPIT_LIGHT_CHANGE_TOLERANCE) &&
-     (OTWDriver.renderer->GetGreenMode() != inNVGmode)) {
+     (OTWDriver.renderer->GetGreenMode() not_eq inNVGmode)) {
      return;
      }*/
 
@@ -6336,7 +6336,7 @@ int CockpitManager::Set2DPanelDirection(float pan, float tilt)
         lastpanelnum = newpanelnum;
     }
 
-    if (newpanel != currentpanel->mIdNum)
+    if (newpanel not_eq currentpanel->mIdNum)
     {
         SetActivePanel(newpanel);
         return true;

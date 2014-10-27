@@ -30,7 +30,7 @@ void TViewPoint::Setup(int minimumLOD, int maximumLOD, float *fetchRanges)
 
     minLOD  = minimumLOD;
     maxLOD  = maximumLOD;
-    nLists  = maxLOD + 1; // Wastes extra array entries if minLOD != 0 (compl  50 bytes per)
+    nLists  = maxLOD + 1; // Wastes extra array entries if minLOD not_eq 0 (compl  50 bytes per)
 
     maxRange = new float[(maxLOD + 1) ];
 
@@ -117,7 +117,7 @@ void TViewPoint::Update(const Tpoint *position)
     // JB 010608 for weather effects start
     static unsigned long prevvuxGameTime;
 
-    if (vuxGameTime != prevvuxGameTime)
+    if (vuxGameTime not_eq prevvuxGameTime)
     {
         float dist =
             (float)sqrt(((pos.x - position->x) * (pos.x - position->x) + (pos.y - position->y) * (pos.y - position->y)));
@@ -459,7 +459,7 @@ int TViewPoint::GetGroundType(float x, float y)
     // Unlock the viewpoint
     LeaveCriticalSection(&cs_update);
 
-    ShiAssert(type != -1);
+    ShiAssert(type not_eq -1);
 
     return type;
 }
@@ -988,7 +988,7 @@ BOOL TViewPoint::GroundIntersection(Tpoint *dir, Tpoint *intersection)
             }
 
             // Walk the line
-            while (row != endRow)
+            while (row not_eq endRow)
             {
 
                 // Compute row/col for next check
@@ -999,7 +999,7 @@ BOOL TViewPoint::GroundIntersection(Tpoint *dir, Tpoint *intersection)
                 col = WORLD_TO_LEVEL_POST(y, LOD);
 
                 // Do vertical edge check if we've changed columns
-                if (col != prevCol)
+                if (col not_eq prevCol)
                 {
 
                     // Compute row/col for the check
@@ -1054,7 +1054,7 @@ BOOL TViewPoint::GroundIntersection(Tpoint *dir, Tpoint *intersection)
             }
 
             // Walk the line
-            while (col != endCol)
+            while (col not_eq endCol)
             {
 
                 // Compute row/col for next check
@@ -1065,7 +1065,7 @@ BOOL TViewPoint::GroundIntersection(Tpoint *dir, Tpoint *intersection)
                 row = WORLD_TO_LEVEL_POST(x, LOD);
 
                 // Do horizontal edge check if we've changed rows
-                if (row != prevRow)
+                if (row not_eq prevRow)
                 {
 
                     // Compute row/col for next check

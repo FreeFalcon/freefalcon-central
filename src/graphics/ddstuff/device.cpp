@@ -189,7 +189,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
 
     // Make sure we haven't gotten confused about how many contexts we have
     // ShiAssert( ContextMPR::StateSetupCounter == 0 );
-    if (ContextMPR::StateSetupCounter != 0)
+    if (ContextMPR::StateSetupCounter not_eq 0)
         ContextMPR::StateSetupCounter = 0; // Force it for now.  Shouldn't be required.
 
     // Create a rendering context for the primary surface
@@ -217,7 +217,7 @@ void DisplayDevice::Cleanup(void)
 
     // Make sure we haven't gotten confused about how many contexts we have
     // ShiAssert( ContextMPR::StateSetupCounter == 0 );
-    if (ContextMPR::StateSetupCounter != 0)
+    if (ContextMPR::StateSetupCounter not_eq 0)
     {
         ContextMPR::StateSetupCounter = 0; // Force it for now.  Shouldn't be required.
     }

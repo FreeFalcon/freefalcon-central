@@ -63,7 +63,7 @@ int GameManagerClass::AllPlayersReady(VuGameEntity *game)
 
         MonoPrint("APR %s %d\n", session->GetPlayerCallsign(), session->GetFlyState());
 
-        if ((session->GetFlyState() != FLYSTATE_WAITING) && (session->GetFlyState() != FLYSTATE_FLYING))
+        if ((session->GetFlyState() not_eq FLYSTATE_WAITING) && (session->GetFlyState() not_eq FLYSTATE_FLYING))
         {
             ok = FALSE;
         }
@@ -93,7 +93,7 @@ int GameManagerClass::NoMorePlayers(VuGameEntity *game)
     {
         // MonoPrint ("NMP %s %d\n", session->GetPlayerCallsign (), session->GetFlyState ());
 
-        if (session->GetFlyState() != FLYSTATE_IN_UI)
+        if (session->GetFlyState() not_eq FLYSTATE_IN_UI)
         {
             ok = FALSE;
         }
@@ -271,7 +271,7 @@ SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int ve
         return NULL;
     }
 
-    while (simEntity->vehicleInUnit != vehSlot)
+    while (simEntity->vehicleInUnit not_eq vehSlot)
     {
         simEntity = (SimMoverClass*) flit.GetNext();
     }
@@ -296,7 +296,7 @@ SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int ve
      {
      simEntity = (SimMoverClass*) flit.GetFirst();
 
-     while (simEntity && simEntity->vehicleInUnit != vehSlot)
+     while (simEntity && simEntity->vehicleInUnit not_eq vehSlot)
      {
      simEntity = (SimMoverClass*) flit.GetNext();
      }
@@ -447,7 +447,7 @@ void GameManagerClass::ReleasePlayer(FalconSessionEntity *player)
 {
     SimMoverClass* simEntity = (SimMoverClass*) player->GetPlayerEntity();
 
-    ShiAssert(player != FalconLocalSession or simEntity);
+    ShiAssert(player not_eq FalconLocalSession or simEntity);
 
     if (simEntity)
     {

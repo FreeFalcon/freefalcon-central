@@ -360,7 +360,7 @@ Statistics *Entity::GetStats()
     offset = 0;
     hdr = (Header*)&Data[offset];
 
-    while (hdr && hdr->type != _STATS_)
+    while (hdr && hdr->type not_eq _STATS_)
     {
         offset += sizeof(Header) + hdr->size;
         hdr = (Header*)&Data[offset];
@@ -377,7 +377,7 @@ Description *Entity::GetDescription()
     offset = 0;
     hdr = (Header*)&Data[offset];
 
-    while (hdr && hdr->type != _DESCRIPTION_)
+    while (hdr && hdr->type not_eq _DESCRIPTION_)
     {
         offset += sizeof(Header) + hdr->size;
         hdr = (Header*)&Data[offset];
@@ -394,7 +394,7 @@ RWR *Entity::GetRWR()
     offset = 0;
     hdr = (Header*)&Data[offset];
 
-    while (hdr && hdr->type != _RWR_MAIN_ && hdr->type != _ENTITY_)
+    while (hdr && hdr->type not_eq _RWR_MAIN_ && hdr->type not_eq _ENTITY_)
     {
         offset += sizeof(Header) + hdr->size;
         hdr = (Header*)&Data[offset];

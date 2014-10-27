@@ -410,7 +410,7 @@ void EjectedPilotClass::InitLocalData(AircraftClass *ac, int mode, int no)
     {
         acBSP = (DrawableBSP *)ac->drawPointer;
 
-        if (acBSP != NULL)
+        if (acBSP not_eq NULL)
         {
             strncpy(_label, acBSP->Label(), 32);
             labelLen = strlen(acBSP->Label());
@@ -481,7 +481,7 @@ void EjectedPilotClass::CleanupLocalData()
     _md = NULL;
 
     // Delete the death message if it still exists.
-    if (_deathMsg != NULL)
+    if (_deathMsg not_eq NULL)
     {
         delete _deathMsg;
         _deathMsg = NULL;
@@ -589,7 +589,7 @@ int EjectedPilotClass::Exec()
             else if (prevframe > NUM_FRAMES)
                 prevframe = NUM_FRAMES;
 
-            if (gACMIRec.IsRecording() && prevframe != frame)
+            if (gACMIRec.IsRecording() && prevframe not_eq frame)
             {
                 acmiSwitch.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
                 acmiSwitch.data.type = Type();
@@ -841,14 +841,14 @@ void EjectedPilotClass::HitGround()
         drawPointer = NULL;
     }
 
-    if (_stage != PD_SAFE_LANDING)
+    if (_stage not_eq PD_SAFE_LANDING)
     {
         // No strength left.
         strength = 0.0;
         pctStrength = 0.0;
 
         // Send the death message
-        if (_deathMsg != NULL)
+        if (_deathMsg not_eq NULL)
         {
             FalconSendMessage(_deathMsg, FALSE);
             _deathMsg = NULL;
@@ -879,7 +879,7 @@ void EjectedPilotClass::GetFocusPoint(BIG_SCALAR &x, BIG_SCALAR &y, BIG_SCALAR &
 
     Tpoint modelSpaceOffset, worldSpaceOffset;
 
-    F4Assert(_model != MD_START);
+    F4Assert(_model not_eq MD_START);
 
     /*
     x = XPos() + _md[_model].focusOffset[I_X];
@@ -1042,7 +1042,7 @@ void EjectedPilotClass::AdvanceTime()
     _runTime += _deltaTime;
 
     // Advance stage if necessary.
-    if (!_hitGround && _collapseChute && _stage != PD_FREE_FALL_WITH_COLLAPSED_CHUTE)
+    if (!_hitGround && _collapseChute && _stage not_eq PD_FREE_FALL_WITH_COLLAPSED_CHUTE)
     {
         SetStage(PD_FREE_FALL_WITH_COLLAPSED_CHUTE);
         InitFreeFallWithCollapsedChute();
@@ -1165,7 +1165,7 @@ void EjectedPilotClass::SetModel(int model)
         drawPointer = new DrawableBSP(_md[_model].bsp, &pos, &rot, 1.0);
     }
 
-    F4Assert(drawPointer != NULL);
+    F4Assert(drawPointer not_eq NULL);
 
     // Set the label.
     if (drawPointer && strlen(_label) > 0)
@@ -1329,7 +1329,7 @@ void EjectedPilotClass::InitFreeFallWithOpenChute()
 
 void EjectedPilotClass::InitSafeLanding()
 {
-    F4Assert(_md != NULL);
+    F4Assert(_md not_eq NULL);
 
     // PlayRadioMessage (rcAIRMANDOWND)
     // _aircraft is pointer to the plane the pilot came from.
@@ -1379,7 +1379,7 @@ void EjectedPilotClass::InitSafeLanding()
 
 void EjectedPilotClass::InitCrashLanding()
 {
-    F4Assert(_md != NULL);
+    F4Assert(_md not_eq NULL);
 
     // Set the new BSP.
     SetModel(MD_CRASH_LANDING);
@@ -1408,7 +1408,7 @@ void EjectedPilotClass::InitCrashLanding()
 
 void EjectedPilotClass::InitFreeFallWithCollapsedChute()
 {
-    F4Assert(_md != NULL);
+    F4Assert(_md not_eq NULL);
 
     // Set the new BSP.
     SetModel(MD_PILOT_AND_COLLAPSED_CHUTE);
@@ -1453,7 +1453,7 @@ void EjectedPilotClass::RunEjectSeat()
     CalculateDragVector(dragVector);
 
     // Calculate the resultant acceleration on the seat.
-    F4Assert(Mass() != 0.0);
+    F4Assert(Mass() not_eq 0.0);
     accelVector += thrustVector;
     dragVector *= _deltaTime / Mass();
     accelVector *= _deltaTime / Mass();
@@ -1527,7 +1527,7 @@ void EjectedPilotClass::RunFreeFallWithOpenChute()
     CalculateDragVector(dragVector);
 
     // Calculate the resultant acceleration on the seat.
-    F4Assert(Mass() != 0.0);
+    F4Assert(Mass() not_eq 0.0);
     dragVector *= _deltaTime / Mass();
     accelVector *= _deltaTime / Mass();
 
@@ -1581,7 +1581,7 @@ void EjectedPilotClass::RunFreeFall()
     CalculateDragVector(dragVector);
 
     // Calculate the resultant acceleration on the seat.
-    F4Assert(Mass() != 0.0);
+    F4Assert(Mass() not_eq 0.0);
     dragVector *= _deltaTime / Mass();
     accelVector *= _deltaTime / Mass();
 
@@ -1747,7 +1747,7 @@ void EjectedPilotClass::CalculateDragVector(EP_VECTOR &result) const
     relSpeed = result.Magnitude();
 
     // Normalize.
-    if (relSpeed != 0.0)
+    if (relSpeed not_eq 0.0)
     {
         result /= relSpeed;
     }
@@ -1958,7 +1958,7 @@ void EjectedPilotClass::SpewDebugData()
      );
 
      // Output motion data for aircraft.
-     if(_aircraft != NULL)
+     if(_aircraft not_eq NULL)
      {
      MonoLocate(monoX, monoY++);
      MonoPrint("Aircraft                                                    \n");

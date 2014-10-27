@@ -131,7 +131,7 @@ void HeliBrain::GoToCurrentWaypoint(void)
     rollDir = 0.0f;
     rollLoad = 0.0f;
 
-    if (curMode != lastMode)
+    if (curMode not_eq lastMode)
     {
         onStation = NotThereYet;
     }
@@ -162,7 +162,7 @@ void HeliBrain::GoToCurrentWaypoint(void)
 
     // Reached the next waypoint?
     // RV - Biker - Never skip waypoints
-    if (rng < (600.0F * 600.0F) or (onStation != NotThereYet) /*|| SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime()*/)
+    if (rng < (600.0F * 600.0F) or (onStation not_eq NotThereYet) /*|| SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime()*/)
     {
         if (onStation == NotThereYet)
         {
@@ -249,7 +249,7 @@ void HeliBrain::SelectNextWaypoint(void)
 
     // first get our current waypoint index in the list
     for (waypointIndex = 0;
-         wlist && wlist != tmpWaypoint;
+         wlist && wlist not_eq tmpWaypoint;
          wlist = wlist->GetNextWP(), waypointIndex++);
 
     // see if we're running in tactical or campaign.  If so, we want to

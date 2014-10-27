@@ -233,7 +233,7 @@ CPLiftLine::CPLiftLine(ObjectInitStr* pobjectInitStr, LiftInitStr* liftInitStr) 
             mCheveron[7][1] = y2 + spacing;
         }
 
-        if (pan != 0.0F)
+        if (pan not_eq 0.0F)
         {
 
             mlSinCos(&trig, pan * DTR);

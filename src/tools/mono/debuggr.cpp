@@ -322,7 +322,7 @@ void DrawDebugString(float x, float y, char *str)
     int len;
     float x1, y1;
 
-    if (graphicsMode != DEBUGGER_GRAPHICS_MODE)
+    if (graphicsMode not_eq DEBUGGER_GRAPHICS_MODE)
         return;
 
     x *= ASPECT_RATIO;
@@ -346,7 +346,7 @@ void DrawDebugStringRight(float x, float y, char *str)
     int len;
     float x1, y1;
 
-    if (graphicsMode != DEBUGGER_GRAPHICS_MODE)
+    if (graphicsMode not_eq DEBUGGER_GRAPHICS_MODE)
         return;
 
     x *= ASPECT_RATIO;
@@ -369,7 +369,7 @@ void DrawDebugStringLeft(float x, float y, char *str)
     int row, col;
     float x1, y1;
 
-    if (graphicsMode != DEBUGGER_GRAPHICS_MODE)
+    if (graphicsMode not_eq DEBUGGER_GRAPHICS_MODE)
         return;
 
     x *= ASPECT_RATIO;
@@ -431,7 +431,7 @@ void DisplayDebugLine(int x0, int y0, int x1, int y1)
     int dx, dy, ince, incne;
     int d, x, y, pixcount;
 
-    if (graphicsMode != DEBUGGER_GRAPHICS_MODE)
+    if (graphicsMode not_eq DEBUGGER_GRAPHICS_MODE)
         return;
 
     dx = x1 - x0;
@@ -569,7 +569,7 @@ void DisplayDebugCircle(int x_center, int y_center, int radius)
     int x, y, d, de , dse;
     int x2, y2;
 
-    if (graphicsMode != DEBUGGER_GRAPHICS_MODE)
+    if (graphicsMode not_eq DEBUGGER_GRAPHICS_MODE)
         return;
 
     x = 0;
@@ -625,7 +625,7 @@ void DisplayDebugCharacter(int num, int x, int y)
     unsigned char *data;
     unsigned char c;
 
-    if (graphicsMode != DEBUGGER_GRAPHICS_MODE)
+    if (graphicsMode not_eq DEBUGGER_GRAPHICS_MODE)
         return;
 
     if (num < -4 or num > MAX_CHAR_IDX)
@@ -689,7 +689,7 @@ spin[] = "|/-\\";
 
 void set_spinner1(int s)
 {
-    if (graphicsMode != DEBUGGER_TEXT_MODE)
+    if (graphicsMode not_eq DEBUGGER_TEXT_MODE)
         return;
 
     spinner1 = s;
@@ -711,7 +711,7 @@ void set_spinner1(int s)
 
 void set_spinner2(int s)
 {
-    if (graphicsMode != DEBUGGER_TEXT_MODE)
+    if (graphicsMode not_eq DEBUGGER_TEXT_MODE)
         return;
 
     spinner2 = s;
@@ -732,7 +732,7 @@ void set_spinner2(int s)
 
 void set_spinner3(int s)
 {
-    if (graphicsMode != DEBUGGER_TEXT_MODE)
+    if (graphicsMode not_eq DEBUGGER_TEXT_MODE)
         return;
 
     spinner3 = s;
@@ -818,7 +818,7 @@ unsigned long WINAPI update_mono(void *ptr)
 
         for (loop = 0; loop < 80 * 25 * 2; loop ++)
         {
-            if (*cmp != *src)
+            if (*cmp not_eq *src)
             {
                 *dst = *src;
                 *cmp = *src;
@@ -896,7 +896,7 @@ void DebugSwapbuffer()
 {
     int i;
 
-    if (graphicsMode != DEBUGGER_GRAPHICS_MODE)
+    if (graphicsMode not_eq DEBUGGER_GRAPHICS_MODE)
         return;
 
     for (i = 0; i < 0x8000; i++)
@@ -915,7 +915,7 @@ void DebugSwapbuffer()
 
 void DebugClear(void)
 {
-    if (graphicsMode != DEBUGGER_GRAPHICS_MODE)
+    if (graphicsMode not_eq DEBUGGER_GRAPHICS_MODE)
         return;
 
 #ifndef DISABLE_MONO_DISPLAY
@@ -957,7 +957,7 @@ void MonoPrint(char *string, ...)
 
     va_start(params, string);
 
-    if (graphicsMode != DEBUGGER_TEXT_MODE)
+    if (graphicsMode not_eq DEBUGGER_TEXT_MODE)
         return;
 
     if (!string)
@@ -995,13 +995,13 @@ void MonoPrint(char *string, ...)
 
 #elif defined _TEXT_TGT_TRACE
 
-    if (_mono_buffer[check - 1] != '\n')
+    if (_mono_buffer[check - 1] not_eq '\n')
         strcat(_mono_buffer, "\n");
 
     OutputDebugString(_mono_buffer);
 #elif defined _TEXT_TGT_FILE
 
-    if (_mono_buffer[check - 1] != '\n')
+    if (_mono_buffer[check - 1] not_eq '\n')
     {
         strcat(_mono_buffer, "\n");
         check++;
@@ -1045,7 +1045,7 @@ static unsigned char * MonoNewline(void)
     unsigned char
     *ptr;
 
-    if (graphicsMode != DEBUGGER_TEXT_MODE)
+    if (graphicsMode not_eq DEBUGGER_TEXT_MODE)
         return (0);
 
     EnterCriticalSection(&mono_critical);
@@ -1089,7 +1089,7 @@ static unsigned char * MonoNewline(void)
 
 void MonoScroll(void)
 {
-    if (graphicsMode != DEBUGGER_TEXT_MODE)
+    if (graphicsMode not_eq DEBUGGER_TEXT_MODE)
         return;
 
 #ifndef DISABLE_MONO_DISPLAY
@@ -1107,7 +1107,7 @@ void MonoScroll(void)
 
 void MonoLocate(unsigned char x, unsigned char y)
 {
-    if (graphicsMode != DEBUGGER_TEXT_MODE)
+    if (graphicsMode not_eq DEBUGGER_TEXT_MODE)
         return;
 
     EnterCriticalSection(&mono_critical);
@@ -1124,7 +1124,7 @@ void MonoGetLoc(int* x, int* y)
 
 void MonoColor(unsigned char attribute)
 {
-    if (graphicsMode != DEBUGGER_TEXT_MODE)
+    if (graphicsMode not_eq DEBUGGER_TEXT_MODE)
         return;
 
     monoPenattribute = attribute;
@@ -1137,7 +1137,7 @@ void MonoColor(unsigned char attribute)
 
 void MonoCls(void)
 {
-    if (graphicsMode != DEBUGGER_TEXT_MODE)
+    if (graphicsMode not_eq DEBUGGER_TEXT_MODE)
         return;
 
 #ifndef DISABLE_MONO_DISPLAY
@@ -1172,6 +1172,6 @@ void SetMonoGraphicsMode(int newMode)
     //      return;
 #endif
 
-    if (graphicsMode != -1)
+    if (graphicsMode not_eq -1)
         graphicsMode = newMode;
 }

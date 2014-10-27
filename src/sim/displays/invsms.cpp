@@ -348,7 +348,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         else
         {
             if ((sjSelected[hp] == SelectiveRack && jettOnly) or (Sms->curHardpoint == hp && !jettOnly)
-                && Sms->hardPoint[hp]->GetWeaponType() != wtNone)
+                && Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
             {
                 reverse = 2;
             }
@@ -392,7 +392,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         else
         {
          if(hardPointSelected & (1 << hp) or (Sms->curHardpoint == hp && !jettOnly)
-         && Sms->hardPoint[hp]->GetWeaponType() != wtNone)
+         && Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
          {
          float bx = HpInvData[hp].boxx;
          float by = HpInvData[hp].boxy;
@@ -580,7 +580,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
     else
     {
         if (hardPointSelected & (1 << hp) or (Sms->curHardpoint == hp && !jettOnly)
-            && Sms->hardPoint[hp]->GetWeaponType() != wtNone)
+            && Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
         {
             float bx = HpInvData[hp].boxx;
             float by = HpInvData[hp].boxy;
@@ -703,7 +703,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
     else
     {
         if (hardPointSelected & (1 << hp) or (Sms->curHardpoint == hp && !jettOnly)
-            && Sms->hardPoint[hp]->GetWeaponType() != wtNone)
+            && Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
         {
             float bx = HpInvData[hp].boxx;
             float by = HpInvData[hp].boxy;

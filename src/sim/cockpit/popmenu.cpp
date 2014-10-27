@@ -450,7 +450,7 @@ void MenuManager::ParseItemInfo(char* plinePtr, int* menuNumber, int* pageNumber
 
     int i = 0;
 
-    while (*plinePtr != '\n' && *plinePtr != NULL)
+    while (*plinePtr not_eq '\n' && *plinePtr not_eq NULL)
     {
         pItem->mpText[i++] = *(plinePtr++);
     }
@@ -797,7 +797,7 @@ void MenuManager::ProcessInput(unsigned long val, int state, int type, int exten
                     break;
             }
 
-            if (item != -1)
+            if (item not_eq -1)
             {
                 DeActivateAndClear();
 

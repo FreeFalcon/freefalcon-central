@@ -460,7 +460,7 @@ void NavigationSystem::ExecIls(void)
     mpCurrentIls.gpDeviation = -180.0F * DTR;
     mpCurrentIls.gsDeviation = 180.0F * DTR;
 
-    if (SimDriver.GetPlayerAircraft() && mpCurrentIls.rwyidx != 0 && mpCurrentIls.vuID != FalconNullId && (GetInstrumentMode() == NavigationSystem::ILS_TACAN or GetInstrumentMode() == NavigationSystem::ILS_NAV))
+    if (SimDriver.GetPlayerAircraft() && mpCurrentIls.rwyidx not_eq 0 && mpCurrentIls.vuID not_eq FalconNullId && (GetInstrumentMode() == NavigationSystem::ILS_TACAN or GetInstrumentMode() == NavigationSystem::ILS_NAV))
     {
 
         xfrontdiff = mpCurrentIls.frontx - SimDriver.GetPlayerAircraft()->XPos();
@@ -523,7 +523,7 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, float* value)
 
     // MD -- 20040605: adding a reception check here -- you should not be able to get a signal and therefore
     // needles should remain inactive if range to station is greater than ~25nm (150k feet)
-    if (mpCurrentIls.vuID != FalconNullId && mpCurrentIls.rwyidx != 0 && (distToToLocalizer < 150000.0F))
+    if (mpCurrentIls.vuID not_eq FalconNullId && mpCurrentIls.rwyidx not_eq 0 && (distToToLocalizer < 150000.0F))
     {
         //MI check to make sure we are allowed to get the ILS
         if (g_bRealisticAvionics)
@@ -547,7 +547,7 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, float* value)
 
                 if (GetTacanBand(NavigationSystem::AUXCOMM) == TacanList::Y or //Tacanband isn't X
                     GetDomain(NavigationSystem::AUXCOMM) == TacanList::AA or //Not in AG Mode
-                    mpCurrentIls.vuID != ID) //Tacanchannel not same
+                    mpCurrentIls.vuID not_eq ID) //Tacanchannel not same
                 {
                     return FALSE;
                 }
@@ -565,7 +565,7 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, float* value)
 
                 if (GetTacanBand(NavigationSystem::ICP) == TacanList::Y or //Tacanband isn't X
                     GetDomain(NavigationSystem::ICP) == TacanList::AA or // Not in AG mode
-                    mpCurrentIls.vuID != ID)
+                    mpCurrentIls.vuID not_eq ID)
                 {
                     return FALSE;
                 }
@@ -615,7 +615,7 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, char* pRwyNum)
 
     *pRwyNum = NULL;
 
-    if (mpCurrentIls.vuID != FalconNullId && mpCurrentIls.rwyidx != 0)
+    if (mpCurrentIls.vuID not_eq FalconNullId && mpCurrentIls.rwyidx not_eq 0)
     {
 
         if (attribute == RWY_NUM)
@@ -639,7 +639,7 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, VU_ID* pId)
 
     *pId = mpCurrentIls.vuID;
 
-    if (*pId != FalconNullId)
+    if (*pId not_eq FalconNullId)
     {
         returnVal = TRUE;
     }
@@ -879,14 +879,14 @@ void NavigationSystem::StepPreviousTacan(void)
 
     Tacan_Data_LL_Str* p_current;
 
-    if (mpCurrentMissionTacan && mpCurrentMissionTacan->pData->vuID != FalconNullId)
+    if (mpCurrentMissionTacan && mpCurrentMissionTacan->pData->vuID not_eq FalconNullId)
     {
         if (mpCurrentMissionTacan->pPrevious == NULL)
         {
 
             p_current = mpMissionTacans;
 
-            while (p_current->pNext != NULL)
+            while (p_current->pNext not_eq NULL)
             {
                 p_current = p_current->pNext;
             }
@@ -914,7 +914,7 @@ void NavigationSystem::StepPreviousTacan(void)
 void NavigationSystem::StepNextTacan(void)   // For ICP Only
 {
 
-    if (mpCurrentMissionTacan && mpCurrentMissionTacan->pData->vuID != FalconNullId)
+    if (mpCurrentMissionTacan && mpCurrentMissionTacan->pData->vuID not_eq FalconNullId)
     {
 
         if (mpCurrentMissionTacan->pNext == NULL)
@@ -1031,7 +1031,7 @@ BOOL NavigationSystem::GetTCNAttribute(Attribute attribute, float* value)
 
     float x, y, z;
 
-    if (GetTCNPosition(&x, &y, &z) != TRUE)
+    if (GetTCNPosition(&x, &y, &z) not_eq TRUE)
         return FALSE;
 
     switch (attribute)
@@ -2052,7 +2052,7 @@ int NavigationSystem::GetTacanChannel(Tacan_Channel_Src src)
 void NavigationSystem::SetTacanBand(Tacan_Channel_Src src, TacanList::StationSet set)
 {
 
-    if (set != TacanList::X && set != TacanList::Y)
+    if (set not_eq TacanList::X && set not_eq TacanList::Y)
     {
         ShiWarning("Bad TACAN Band");
         return;
@@ -2101,7 +2101,7 @@ void NavigationSystem::SetTacanChannel(Tacan_Channel_Src src, int channel, Tacan
         return;
     }
 
-    if (set != TacanList::X && set != TacanList::Y)
+    if (set not_eq TacanList::X && set not_eq TacanList::Y)
     {
         ShiWarning("Bad TACAN Band");
         return;
@@ -2449,7 +2449,7 @@ void NavigationSystem::SetIlsFromTacan()
         // Find the VU_ID for the entity that the TACAN channel represents
         GetTacanVUID(GetControlSrc(), &ATCId);
 
-        if (ATCId != FalconNullId)
+        if (ATCId not_eq FalconNullId)
         {
             // use the VU_ID to get the pointer to the airbase
             atc = (ObjectiveClass*)vuDatabase->Find(ATCId);
@@ -2461,7 +2461,7 @@ void NavigationSystem::SetIlsFromTacan()
                 rwindex = atc->brain->FindBestLandingRunway(playerAC, FALSE);
 
                 // sfr: only do if rwindex is valid
-                if (rwindex != 0)
+                if (rwindex not_eq 0)
                 {
                     // and set the ILS data
                     /*gNavigationSys->*/SetIlsData(ATCId, rwindex);

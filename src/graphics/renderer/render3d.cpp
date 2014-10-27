@@ -435,7 +435,7 @@ void Render3D::GetLightDirection(Tpoint* dir)
 \***************************************************************************/
 void Render3D::SetObjectTextureState(BOOL state)
 {
-    if (state != objTextureState)
+    if (state not_eq objTextureState)
     {
         // Record the choice
         objTextureState = state;
@@ -707,7 +707,7 @@ void Render3D::Render3DPoint(Tpoint* p1)
     // Transform the point from world space to window space
     TransformPoint(p1, &ps1);
 
-    if (ps1.clipFlag != ON_SCREEN)  return;
+    if (ps1.clipFlag not_eq ON_SCREEN)  return;
 
     // Draw the point
     Render2DPoint((UInt16)ps1.x, (UInt16)ps1.y);

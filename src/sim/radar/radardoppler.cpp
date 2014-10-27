@@ -237,7 +237,7 @@ void RadarDopplerClass::PushButton(int whichButton, int whichMFD)
         case 11:
             if (g_bRealisticAvionics)
                 MfdDrawable::PushButton(whichButton, whichMFD);
-            else if (mode != OFF)
+            else if (mode not_eq OFF)
             {
                 MfdDisplay[whichMFD]->SetNewMode(MFDClass::SMSMode);
             }
@@ -477,8 +477,8 @@ void RadarDopplerClass::AAPushButton(int whichButton, int whichMFD)
             break;
 
         case 18:
-            if ((mode != ACM_SLEW) && (mode != ACM_30x20) &&
-                (mode != ACM_10x60) && (mode != ACM_BORE))
+            if ((mode not_eq ACM_SLEW) && (mode not_eq ACM_30x20) &&
+                (mode not_eq ACM_10x60) && (mode not_eq ACM_BORE))
             {
                 rangeChangeCmd = -1;
             }
@@ -486,8 +486,8 @@ void RadarDopplerClass::AAPushButton(int whichButton, int whichMFD)
             break;
 
         case 19:
-            if ((mode != ACM_SLEW) && (mode != ACM_30x20) &&
-                (mode != ACM_10x60) && (mode != ACM_BORE))
+            if ((mode not_eq ACM_SLEW) && (mode not_eq ACM_30x20) &&
+                (mode not_eq ACM_10x60) && (mode not_eq ACM_BORE))
             {
                 rangeChangeCmd = 1;
             }
@@ -801,7 +801,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
         SetPower(FALSE);
         SetEmitting(FALSE);
 
-        if (mode != OFF)
+        if (mode not_eq OFF)
         {
             prevMode = mode;
             mode = OFF;
@@ -817,7 +817,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
     {
         if (isEmitting)
             TheHud->HudData.Clear(HudDataType::RadarNoRad);
-        else if (radarData->NominalRange != 0.0) // JB 010706 Only set if the aircraft has radar to begin with
+        else if (radarData->NominalRange not_eq 0.0) // JB 010706 Only set if the aircraft has radar to begin with
             TheHud->HudData.Set(HudDataType::RadarNoRad);
     }
 
@@ -830,7 +830,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
     CheckLockedTarget();
 
     // Maintain track history across agg/deag boundary
-    if (lockedTarget != lastLocked && lockedTarget && lastLocked)
+    if (lockedTarget not_eq lastLocked && lockedTarget && lastLocked)
     {
         ShiAssert(lockedTargetData == lockedTarget->localData);
         memcpy(lockedTargetData, lastLocked->localData, sizeof(SimObjectLocalData));
@@ -905,7 +905,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
         }
 
         // See if it is time to send a "painted" list update
-        if (lastLocked != lockedTarget)
+        if (lastLocked not_eq lockedTarget)
         {
             if (lastLocked)
             {
@@ -925,7 +925,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
 
         // Just in case we don't have a list but we do have a locked target OR IF THE RADAR IS NOT IN AA MODE
         // I noticed the radar isn't really used in air to ground mode so we'll do just the lockedTarget then
-        if (!tmpPtr or digimode != AA)
+        if (!tmpPtr or digimode not_eq AA)
             tmpPtr = lockedTarget;
 
         while (tmpPtr)
@@ -972,7 +972,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                 {
                     // Ground mode is more than just GM, it can be GMT and SEA as well (not sure about SEA though, but gndAttck.cpp DO put the digital radar in GMT mode)
                     // But AFAIK, if NOT in AA, you're in GM or GMT mode (SEA is NOT used by AI after all)
-                    if (digimode != AA)
+                    if (digimode not_eq AA)
                     {
                         // Skip air objects in AA mode
                         canSee = SG_NOLOCK;
@@ -1137,7 +1137,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
             lockedFound = TRUE;
 
         // Is this the target under the cursor?
-        if (mode != VS)
+        if (mode not_eq VS)
         {
             if (IsUnderCursor(rdrObj, platform->Yaw()))
                 targetUnderCursor = rdrObj->BaseData()->Id();
@@ -1281,7 +1281,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
 
 
     // If we changed locks, tell our previous target he's off the hook
-    if (lastLocked != lockedTarget)
+    if (lastLocked not_eq lockedTarget)
     {
         if (lastLocked)
         {
@@ -1298,7 +1298,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
 
     // 2002-02-09 MODIFIED BY S.G. Since radarMode is sent as well and is passed to the AI, will let him make the decision to deal with us or not...
     // Tell our current target he's locked
-    /* if (sendThisFrame && lockedTarget && (mode != TWS or IsSet(STTingTarget)))
+    /* if (sendThisFrame && lockedTarget && (mode not_eq TWS or IsSet(STTingTarget)))
     {
     SendTrackMsg (lockedTarget, Track_Lock);
     lastTargetLockSend = SimLibElapsedTime;

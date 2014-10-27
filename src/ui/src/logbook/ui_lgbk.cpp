@@ -237,7 +237,7 @@ void F4DialogBox(long ID, void (*YesCB)(long, short, C_Base*),
 
 void ChoosePilotCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     _TCHAR Pilot[MAX_PATH];
@@ -290,7 +290,7 @@ void PasswordWindow(long TitleID, long MessageID, void (*YesCB)(long, short, C_B
                 else
                     ebox = NULL;
 
-                if (ebox != NULL)
+                if (ebox not_eq NULL)
                     lbox->AddItem(1, C_TYPE_ITEM, ebox->GetText());
                 else
                     lbox->AddItem(1, C_TYPE_ITEM, UI_logbk.Callsign());
@@ -407,7 +407,7 @@ void CheckPasswordCB(long, short hittype, C_Base *control)
     C_EditBox * ebox;
     _TCHAR pwd[MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     ebox = (C_EditBox*)control->Parent_->FindControl(PASSWORD);
@@ -488,7 +488,7 @@ void LoadLogBookWindows(LB_PILOT *Pilot = &LogBook.Pilot, int flag = LB_EDITABLE
 
 void NoPasswordCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     LogBook.Initialize();
@@ -540,7 +540,7 @@ void GetPilotList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[],
     if (!win or !lbox) return;
 
     ffhnd = FindFirstFile(fspec, &filedata);
-    last = (ffhnd != INVALID_HANDLE_VALUE);
+    last = (ffhnd not_eq INVALID_HANDLE_VALUE);
 
     lbox->RemoveAllItems();
 
@@ -611,7 +611,7 @@ void GetPilotList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[],
 
     lbox->Refresh();
 
-    if (ffhnd != INVALID_HANDLE_VALUE)
+    if (ffhnd not_eq INVALID_HANDLE_VALUE)
         FindClose(ffhnd);  // JPO handle leak
 }
 
@@ -632,7 +632,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
     {
         button = (C_Button *)win->FindControl(LOG_OK);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             if (LogState & LB_OPPONENT)
                 button->SetFlagBitOn(C_BIT_INVISIBLE);
@@ -642,7 +642,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         button = (C_Button *)win->FindControl(LOG_NEW);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             if (LogState & LB_OPPONENT)
                 button->SetFlagBitOn(C_BIT_INVISIBLE);
@@ -652,7 +652,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         button = (C_Button *)win->FindControl(LOG_CLEAR);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             if (LogState & LB_OPPONENT)
                 button->SetFlagBitOn(C_BIT_INVISIBLE);
@@ -662,7 +662,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         button = (C_Button *)win->FindControl(LOG_CANCEL);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             if (LogState & LB_OPPONENT)
                 button->SetFlagBitOn(C_BIT_INVISIBLE);
@@ -686,7 +686,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
                 _stprintf(buf, _T("%s\\patches\\%s.tga"), FalconDataDirectory, Patch);
                 SetImage(PATCH_PIC, buf, CurPatch);
             }
-            else if (*(UI_logbk.GetPatch()) != 0)
+            else if (*(UI_logbk.GetPatch()) not_eq 0)
             {
                 _TCHAR buf[MAX_PATH];
                 _stprintf(buf, _T("%s\\patches\\%s.tga"), FalconDataDirectory, UI_logbk.GetPatch());
@@ -725,7 +725,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
                 button->SetImage(C_STATE_DISABLED, Picture);
                 button->Refresh();
             }
-            else if (*(UI_logbk.GetPicture()) != 0)
+            else if (*(UI_logbk.GetPicture()) not_eq 0)
             {
                 _TCHAR buf[MAX_PATH];
                 _stprintf(buf, _T("%s\\pictures\\%s.tga"), FalconDataDirectory, UI_logbk.GetPicture());
@@ -1304,7 +1304,7 @@ void LoadTGACB(long, short hittype, C_Base *control)
     _TCHAR fname[MAX_PATH];
     long imageID;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->HideWindow(control->Parent_);
@@ -1369,7 +1369,7 @@ void LoadVirtualTGACB(long, short hittype, C_Base *control)
     long imageID;
     C_Resmgr *res;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->HideWindow(control->Parent_);
@@ -1411,7 +1411,7 @@ void ChangeImageCB(long ID, short hittype, C_Base *control)
     if (LogState & LB_OPPONENT or !(LogState & LB_EDITABLE))
         return;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     CurControl = ID;
@@ -1437,7 +1437,7 @@ int SetResourceImage(long ID, long ImageID)
     C_Window *win;
     win = gMainHandler->FindWindow(LOG_WIN);
 
-    if (win != NULL)
+    if (win not_eq NULL)
     {
         C_Button *button = (C_Button *)win->FindControl(ID);
 
@@ -1475,7 +1475,7 @@ int SetImage(long ID, _TCHAR *filename , long ImageID)
 
     win = gMainHandler->FindWindow(LOG_WIN);
 
-    if (win != NULL)
+    if (win not_eq NULL)
     {
         long OldImageID = ImageID;
         Leave = UI_Enter(win);
@@ -1601,7 +1601,7 @@ void LoadLogCB(long ID,short hittype,C_Base *control)
  C_EditBox * ebox;
  _TCHAR fname[MAX_PATH];
 
- if(hittype != C_TYPE_LMOUSEUP)
+ if(hittype not_eq C_TYPE_LMOUSEUP)
  return;
 
  gMainHandler->HideWindow(control->Parent_);
@@ -1632,7 +1632,7 @@ void PasswordChangeVerifiedCB(long, short hittype, C_Base *control)
     C_EditBox * pwdbox;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(LOG_WIN);
@@ -1646,7 +1646,7 @@ void PasswordChangeVerifiedCB(long, short hittype, C_Base *control)
     {
         pwdbox = (C_EditBox *)win->FindControl(PASSWORD_LIST);
 
-        if (pwdbox != NULL)
+        if (pwdbox not_eq NULL)
         {
             if (_tcscmp(ebox->GetText(), pwdbox->GetText()))
                 return;
@@ -1671,7 +1671,7 @@ void PwdVerifiedContLoading(long, short hittype, C_Base *control)
     C_EditBox * pwdbox;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(LOG_WIN);
@@ -1685,7 +1685,7 @@ void PwdVerifiedContLoading(long, short hittype, C_Base *control)
     {
         pwdbox = (C_EditBox *)win->FindControl(PASSWORD_LIST);
 
-        if (pwdbox != NULL)
+        if (pwdbox not_eq NULL)
         {
             if (_tcscmp(ebox->GetText(), pwdbox->GetText()))
                 return;
@@ -1734,7 +1734,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
         //so we don't have two exclusive windows at once)
         ebox = (C_EditBox *)control->Parent_->FindControl(PASSWORD_LIST);
 
-        if (ebox != NULL)
+        if (ebox not_eq NULL)
         {
             if (!UI_logbk.CheckPassword(ebox->GetText()))
             {
@@ -1762,7 +1762,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
 
         ebox = (C_EditBox *)control->Parent_->FindControl(PASSWORD_LIST);
 
-        if (ebox != NULL)
+        if (ebox not_eq NULL)
         {
             SaveControlValues();
             UI_logbk.SaveData();
@@ -1817,7 +1817,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
         //if callsign is invalid note it for later use
         ebox = (C_EditBox *)control->Parent_->FindControl(CALLSIGN_LIST);
 
-        if (ebox != NULL)
+        if (ebox not_eq NULL)
         {
             if (!CheckCallsign(ebox->GetText()))
             {
@@ -1830,7 +1830,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
             //if password was changed, confirm it in select event CB
             pbox = (C_EditBox *)control->Parent_->FindControl(PASSWORD_LIST);
 
-            if (pbox != NULL)
+            if (pbox not_eq NULL)
             {
                 if (!UI_logbk.CheckPassword(pbox->GetText()))
                 {
@@ -1871,7 +1871,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
 /*
 void LoadLogBookCB(long ID,short hittype,C_Base *control)
 {
- if(hittype != C_TYPE_LMOUSEUP)
+ if(hittype not_eq C_TYPE_LMOUSEUP)
  return;
 
  LoadAFile("config\\*.lbk",NULL,LoadLogCB,CloseWindowCB);
@@ -1880,7 +1880,7 @@ void LoadLogBookCB(long ID,short hittype,C_Base *control)
 
 void OpenLogBookCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetCursor(gCursors[CRSR_WAIT]);
@@ -1900,7 +1900,7 @@ void NewLogbookCB(long, short hittype, C_Base *)
     if (LogState & LB_OPPONENT)
         return;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     LogState  or_eq  LB_EDITABLE | LB_CHECKED;
@@ -1911,7 +1911,7 @@ void NewLogbookCB(long, short hittype, C_Base *)
 
 void ClearCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     UI_logbk.Clear();
@@ -1924,7 +1924,7 @@ void ClearLogBookCB(long, short hittype, C_Base *)
     if (LogState & LB_OPPONENT)
         return;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     AreYouSure(TXT_WARNING, TXT_CLEAR_LOGBOOK, ClearCB, CloseWindowCB);
@@ -1950,7 +1950,7 @@ int CheckCallsign(_TCHAR *filename)
     {
         if (_istalnum(*ptr))
             numchars++;
-        else if (*ptr != ' ')
+        else if (*ptr not_eq ' ')
             return FALSE;
     }
 
@@ -1977,7 +1977,7 @@ int SaveControlValues(void)
 
     ebox = (C_EditBox *)win->FindControl(CALLSIGN_LIST);
 
-    if (ebox != NULL)
+    if (ebox not_eq NULL)
     {
         if (!CheckCallsign(ebox->GetText()))
         {
@@ -2045,14 +2045,14 @@ int SaveControlValues(void)
 
     ebox = (C_EditBox *)win->FindControl(PILOT_LIST);
 
-    if (ebox != NULL)
+    if (ebox not_eq NULL)
     {
         UI_logbk.SetName(ebox->GetText());
     }
 
     ebox = (C_EditBox *)win->FindControl(PASSWORD_LIST);
 
-    if (ebox != NULL)
+    if (ebox not_eq NULL)
     {
         UI_logbk.SetPassword(ebox->GetText());
         ebox->SetText(_T(""));
@@ -2095,7 +2095,7 @@ void SaveLogBookCB(long ID, short hittype, C_Base *control)
     C_Window *win;
     C_EditBox *ebox;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (LogState & LB_OPPONENT or !(LogState & LB_EDITABLE))
@@ -2112,7 +2112,7 @@ void SaveLogBookCB(long ID, short hittype, C_Base *control)
 
     ebox = (C_EditBox *)win->FindControl(PASSWORD_LIST);
 
-    if (ebox != NULL)
+    if (ebox not_eq NULL)
     {
         if (!UI_logbk.CheckPassword(ebox->GetText()))
         {
@@ -2135,7 +2135,7 @@ void SaveLogBookCB(long ID, short hittype, C_Base *control)
 
 void CloseLogWindowCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     PlayerOptions.LoadOptions(LogBook.OptionsFile());
@@ -2160,42 +2160,42 @@ void HookupLBControls(long ID)
     // Hook up Close Button
     ctrl = (C_Button *)winme->FindControl(CLOSE_WINDOW);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
         ctrl->SetCallback(CloseWindowCB);
 
     ctrl = (C_Button *)winme->FindControl(LOG_NEW);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
         ctrl->SetCallback(NewLogbookCB);
 
     ctrl = (C_Button *)winme->FindControl(LOG_CLEAR);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
         ctrl->SetCallback(ClearLogBookCB);
 
     ctrl = (C_Button *)winme->FindControl(LOG_CANCEL);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
         ctrl->SetCallback(CloseLogWindowCB);
 
     ctrl = (C_Button *)winme->FindControl(LOG_OK);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
         ctrl->SetCallback(SaveLogBookCB);
 
     /*
      ctrl=(C_Button *)winme->FindControl(LOG_LOAD);
-     if(ctrl != NULL)
+     if(ctrl not_eq NULL)
      ctrl->SetCallback(LoadLogBookCB);*/
 
     ctrl = (C_Button *)winme->FindControl(PATCH_PIC);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
         ctrl->SetCallback(ChangeImageCB);
 
     ctrl = (C_Button *)winme->FindControl(PILOT_PIC);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
         ctrl->SetCallback(ChangeImageCB);
 
     lbox = (C_ListBox *)winme->FindControl(LOGBOOK_LIST);
@@ -2233,22 +2233,22 @@ void DisplayLogbook(LB_PILOT *Pilot, IMAGE_RSC *Photo, IMAGE_RSC *Patch, BOOL Ed
 
             button = (C_Button *)win->FindControl(LOG_CLEAR);
 
-            if (button != NULL)
+            if (button not_eq NULL)
                 button->SetFlagBitOff(C_BIT_INVISIBLE);
 
             button = (C_Button *)win->FindControl(LOG_CANCEL);
 
-            if (button != NULL)
+            if (button not_eq NULL)
                 button->SetFlagBitOff(C_BIT_INVISIBLE);
 
             button = (C_Button *)win->FindControl(LOG_OK);
 
-            if (button != NULL)
+            if (button not_eq NULL)
                 button->SetFlagBitOff(C_BIT_INVISIBLE);
 
             button = (C_Button *)win->FindControl(CLOSE_WINDOW);
 
-            if (button != NULL)
+            if (button not_eq NULL)
                 button->SetFlagBitOn(C_BIT_INVISIBLE);
         }
         else
@@ -2260,22 +2260,22 @@ void DisplayLogbook(LB_PILOT *Pilot, IMAGE_RSC *Photo, IMAGE_RSC *Patch, BOOL Ed
 
             button = (C_Button *)win->FindControl(LOG_CLEAR);
 
-            if (button != NULL)
+            if (button not_eq NULL)
                 button->SetFlagBitOn(C_BIT_INVISIBLE);
 
             button = (C_Button *)win->FindControl(LOG_CANCEL);
 
-            if (button != NULL)
+            if (button not_eq NULL)
                 button->SetFlagBitOn(C_BIT_INVISIBLE);
 
             button = (C_Button *)win->FindControl(LOG_OK);
 
-            if (button != NULL)
+            if (button not_eq NULL)
                 button->SetFlagBitOn(C_BIT_INVISIBLE);
 
             button = (C_Button *)win->FindControl(CLOSE_WINDOW);
 
-            if (button != NULL)
+            if (button not_eq NULL)
                 button->SetFlagBitOff(C_BIT_INVISIBLE);
         }
 

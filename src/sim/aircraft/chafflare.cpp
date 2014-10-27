@@ -485,7 +485,7 @@ void AircraftClass::ReleaseManualProgram(void)
         return;
 
     if (static_cast<unsigned int>(ChaffCount) >= OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum] &&
-        ChaffSalvoCount != 0 && !theRwr->ChaffCheck)
+        ChaffSalvoCount not_eq 0 && !theRwr->ChaffCheck)
     {
         //Set our timer
         ChaffBurstInterval = static_cast<VU_TIME>(SimLibElapsedTime + (OTWDriver.pCockpitManager->mpIcp->fCHAFF_SI[EWSProgNum] * CampaignSeconds));
@@ -498,7 +498,7 @@ void AircraftClass::ReleaseManualProgram(void)
     }
 
     if (FlareCount == OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum] &&
-        FlareSalvoCount != 0 && !theRwr->FlareCheck)
+        FlareSalvoCount not_eq 0 && !theRwr->FlareCheck)
     {
         //Set our timer
         FlareBurstInterval = static_cast<VU_TIME>(SimLibElapsedTime + (OTWDriver.pCockpitManager->mpIcp->fFLARE_SI[EWSProgNum] * CampaignSeconds));

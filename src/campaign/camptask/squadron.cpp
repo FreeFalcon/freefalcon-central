@@ -535,7 +535,7 @@ int SquadronClass::MoveUnit(CampaignTime time)
 
                             if (atmbase && atmbase->usage)
                             {
-                                if (o != ab)  score /= (atmbase->usage + 1);
+                                if (o not_eq ab)  score /= (atmbase->usage + 1);
 
                                 if (o == ab) score /= atmbase->usage;
                             }
@@ -554,7 +554,7 @@ int SquadronClass::MoveUnit(CampaignTime time)
 
             if (bo)
             {
-                if (bo != ab)
+                if (bo not_eq ab)
                 {
                     bo->GetLocation(&nx, &ny);
                     SetLocation(nx, ny);
@@ -604,7 +604,7 @@ int SquadronClass::MoveUnit(CampaignTime time)
         if (DontPlan())
         {
             // 2001-08-06 MODIFIED BY S.G. FRIENDLY BASE WILL DO THE JOB ALL RIGHT. NO NEED TO LIMIT IT TO OUR TEAM.
-            // if (ab->GetTeam() != GetTeam())
+            // if (ab->GetTeam() not_eq GetTeam())
             if (!ab or !GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
             {
                 if (this == FalconLocalSession->GetPlayerSquadron())
@@ -689,7 +689,7 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
 
             while (o)
             {
-                if (o->GetType() != TYPE_ARMYBASE)
+                if (o->GetType() not_eq TYPE_ARMYBASE)
                 {
                     o = (Objective) myit.GetNext();
                     continue;
@@ -721,7 +721,7 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
 
                         if (atmbase && atmbase->usage)
                         {
-                            if (o != ab)  score /= (atmbase->usage + 1);
+                            if (o not_eq ab)  score /= (atmbase->usage + 1);
 
                             if (o == ab) score /= atmbase->usage;
                         }
@@ -745,7 +745,7 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
 
             if (bo)
             {
-                if (bo != ab)
+                if (bo not_eq ab)
                 {
                     bo->GetLocation(&nx, &ny);
                     SetLocation(nx, ny);
@@ -1128,11 +1128,11 @@ int SquadronClass::FindAvailableAircraft(MissionRequest mis)
     {
         for (ls = 0; ls < PILOTS_PER_FLIGHT; ls++)
         {
-            ShiAssert(i == ls or mis->slots[i] == 255 or mis->slots[ls] != mis->slots[i]);
+            ShiAssert(i == ls or mis->slots[i] == 255 or mis->slots[ls] not_eq mis->slots[i]);
         }
     }
 
-    ShiAssert(!got or mis->slots[0] != 255);
+    ShiAssert(!got or mis->slots[0] not_eq 255);
 #endif
 
     return got;
@@ -1483,7 +1483,7 @@ void SquadronClass::ShiftSchedule(int i)
 
 void SquadronClass::SetSchedule(int i, ulong a)
 {
-    if ((schedule[i] | a) != (schedule[i]))
+    if ((schedule[i] | a) not_eq (schedule[i]))
     {
         schedule[i]  or_eq  a;
         //MakeSquadronDirty (DIRTY_SCHEDULE, DDP[126].priority);
@@ -1684,12 +1684,12 @@ void SquadronClass::SetLastResupply(int s)
 
 void SquadronClass::MakeSquadronDirty(Dirty_Squadron bits, Dirtyness score)
 {
-    if ((!IsLocal()) or (VuState() != VU_MEM_ACTIVE))
+    if ((!IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
 
-    if (!IsAggregate() && (score != SEND_RELIABLEANDOOB))
+    if (!IsAggregate() && (score not_eq SEND_RELIABLEANDOOB))
     {
         score = static_cast<Dirtyness>(score << 4);
     }

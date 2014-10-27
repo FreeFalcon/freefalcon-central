@@ -305,7 +305,7 @@ int EndCommsStuff(void)
     VuSessionsIterator siter(vuGlobalGroup);
     FalconSessionEntity *cs;
 
-    for (cs = (FalconSessionEntity*) siter.GetFirst(); cs != NULL;)
+    for (cs = (FalconSessionEntity*) siter.GetFirst(); cs not_eq NULL;)
     {
         FalconSessionEntity *oldCs = cs;
         cs = (FalconSessionEntity*) siter.GetNext();
@@ -395,7 +395,7 @@ bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
 
         for (
             FalconSessionEntity *session = (FalconSessionEntity*)dsit.GetFirst();
-            session != NULL;
+            session not_eq NULL;
             session = (FalconSessionEntity*)dsit.GetNext()
         )
         {
@@ -474,7 +474,7 @@ int RemoveDanglingSession(VuSessionEntity *newSess)
 
     for (
         VuSessionEntity *session = (VuSessionEntity*)dsit.GetFirst();
-        session != NULL;
+        session not_eq NULL;
         session = (VuSessionEntity*)dsit.GetNext()
     )
     {
@@ -487,7 +487,7 @@ int RemoveDanglingSession(VuSessionEntity *newSess)
         )
         {
             // new sessions have no handle and old one does. exchange them
-            if ((newSess->GetCommsHandle() == NULL) && (session->GetCommsHandle() != NULL))
+            if ((newSess->GetCommsHandle() == NULL) && (session->GetCommsHandle() not_eq NULL))
             {
                 newSess->SetCommsHandle(
                     session->GetCommsHandle(), F4CommsMaxUDPMessageSize, F4CommsIdealUDPPacketSize
@@ -499,7 +499,7 @@ int RemoveDanglingSession(VuSessionEntity *newSess)
                 session->SetCommsHandle(NULL);
             }
 
-            if ((newSess->GetReliableCommsHandle() == NULL) && (session->GetReliableCommsHandle() != NULL))
+            if ((newSess->GetReliableCommsHandle() == NULL) && (session->GetReliableCommsHandle() not_eq NULL))
             {
                 newSess->SetReliableCommsHandle(
                     session->GetReliableCommsHandle(), F4CommsMaxTCPMessageSize, F4CommsIdealTCPPacketSize
@@ -593,7 +593,7 @@ void TcpConnectCallback(ComAPIHandle ch, int ret)
 
     MonoPrint("Calling TcpConnectCallback.\n");
 
-    if (ret != 0)
+    if (ret not_eq 0)
     {
         MonoPrint("RequestConnection failed %d, will retry\n", ret);
         return;
@@ -678,7 +678,7 @@ void ModemConnectCallback(ComAPIHandle ch, int ret)
 
     for (s = siter.GetFirst(); s; s = siter.GetNext())
     {
-        if (s != FalconLocalSession)
+        if (s not_eq FalconLocalSession)
         {
             if (ret == 0)
             {
@@ -966,7 +966,7 @@ void VuxGroupDisconnect(VuGroupEntity *group)
     group->SetCommsHandle(NULL);
     group->SetCommsStatus(VU_CONN_INACTIVE);
 
-    if (ch && ch != FalconGlobalUDPHandle)
+    if (ch && ch not_eq FalconGlobalUDPHandle)
         ComAPIClose(ch);
 
     // Disconnect TCP
@@ -974,7 +974,7 @@ void VuxGroupDisconnect(VuGroupEntity *group)
     group->SetReliableCommsHandle(NULL);
     group->SetReliableCommsStatus(VU_CONN_INACTIVE);
 
-    if (ch && ch != FalconGlobalTCPHandle)
+    if (ch && ch not_eq FalconGlobalTCPHandle)
         ComAPIClose(ch);
 
     if (gUICommsQ && group->IsGame())
@@ -1039,7 +1039,7 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
             }
 
             // if game is not ours, we need to update bw to reflect other players already in
-            if (game->OwnerId() != vuLocalSessionEntity->Id())
+            if (game->OwnerId() not_eq vuLocalSessionEntity->Id())
             {
                 for (unsigned int players = game->SessionCount(); players > 0; --players)
                 {
@@ -1057,7 +1057,7 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
     gh = group->GetCommsHandle();
     sh = session->GetCommsHandle();
 
-    if (gh && sh && gh != sh)
+    if (gh && sh && gh not_eq sh)
     {
         ComAPIAddToGroup(gh, sh);
     }
@@ -1065,7 +1065,7 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
     gh = group->GetReliableCommsHandle();
     sh = session->GetReliableCommsHandle();
 
-    if (gh && sh && gh != sh)
+    if (gh && sh && gh not_eq sh)
     {
         ComAPIAddToGroup(gh, sh);
     }
@@ -1080,7 +1080,7 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
     if (
         (group->IsGame()) &&
         (group->Id() == vuLocalSessionEntity->GameId()) &&
-        (vuLocalSessionEntity.get() != session)
+        (vuLocalSessionEntity.get() not_eq session)
     )
     {
         VuFullUpdateEvent *msg = new VuFullUpdateEvent(vuLocalSessionEntity.get(), session);
@@ -1120,7 +1120,7 @@ int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session)
     gh = group->GetCommsHandle();
     sh = session->GetCommsHandle();
 
-    if (gh && sh && (gh != sh))
+    if (gh && sh && (gh not_eq sh))
     {
         ComAPIDeleteFromGroup(gh, sh);
     }
@@ -1130,7 +1130,7 @@ int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session)
     gh = group->GetReliableCommsHandle();
     sh = session->GetReliableCommsHandle();
 
-    if (gh && sh && gh != sh)
+    if (gh && sh && gh not_eq sh)
     {
         ComAPIDeleteFromGroup(gh, sh);
     }
@@ -1176,7 +1176,7 @@ int VuxSessionConnect(VuSessionEntity *session)
     int wait_for_connection = 0;
 
     // We only want to connect here during our initial insertion
-    if (session->GameAction() != VU_NO_GAME_ACTION)
+    if (session->GameAction() not_eq VU_NO_GAME_ACTION)
     {
         return 0;
     }
@@ -1255,7 +1255,7 @@ void VuxSessionDisconnect(VuSessionEntity *session)
         return;
 
     // We only want to do this if we're leaving a game (i.e: This session is going away)
-    if (session->GameAction() != VU_LEAVE_GAME_ACTION)
+    if (session->GameAction() not_eq VU_LEAVE_GAME_ACTION)
         return;
 
 
@@ -1323,7 +1323,7 @@ void VuxSessionDisconnect(VuSessionEntity *session)
     // Remove from the global group
     VuxGroupRemoveSession(vuGlobalGroup, session);
 
-    if (session->GetCommsStatus() != VU_CONN_INACTIVE or session->GetReliableCommsStatus() != VU_CONN_INACTIVE)
+    if (session->GetCommsStatus() not_eq VU_CONN_INACTIVE or session->GetReliableCommsStatus() not_eq VU_CONN_INACTIVE)
     {
         MonoPrint("Disconnecting to session: %s\n", ((FalconSessionEntity*)session)->GetPlayerCallsign());
     }
@@ -1335,13 +1335,13 @@ void VuxSessionDisconnect(VuSessionEntity *session)
     ch = session->GetCommsHandle();
     session->SetCommsHandle(NULL);
     session->SetCommsStatus(VU_CONN_INACTIVE);
-    if (session && ch && ch != FalconGlobalUDPHandle)
+    if (session && ch && ch not_eq FalconGlobalUDPHandle)
     ComAPIClose(ch);
     // Disconnect TCP
     ch = session->GetReliableCommsHandle();
     session->SetReliableCommsHandle(NULL);
     session->SetReliableCommsStatus(VU_CONN_INACTIVE);
-    if (session && ch && ch != FalconGlobalTCPHandle)
+    if (session && ch && ch not_eq FalconGlobalTCPHandle)
     ComAPIClose(ch);
     */
 }

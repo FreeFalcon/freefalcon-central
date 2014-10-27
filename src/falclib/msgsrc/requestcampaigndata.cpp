@@ -167,13 +167,13 @@ void SendRequestedData(void)
 
     CampEnterCriticalSection();
 
-    for (FalconRequestCampaignData *request = gRequestQueue; request != NULL; request = gRequestQueue)
+    for (FalconRequestCampaignData *request = gRequestQueue; request not_eq NULL; request = gRequestQueue)
     {
         VU_BYTE *buf;
         uchar *dataptr = request->dataBlock.data;
         FalconSessionEntity *requester = (FalconSessionEntity*)vuDatabase->Find(request->dataBlock.who);
 
-        if ((requester != NULL) && TheCampaign.IsLoaded())
+        if ((requester not_eq NULL) && TheCampaign.IsLoaded())
         {
             TheCampaign.SetOnlineStatus(1);
 
@@ -264,7 +264,7 @@ void SendRequestedData(void)
                     requester->unitDataSendSet = 0;
                 }
 
-                if (request->dataBlock.dataNeeded & CAMP_NEED_ENTITIES && request->dataBlock.who != vuLocalSession)
+                if (request->dataBlock.dataNeeded & CAMP_NEED_ENTITIES && request->dataBlock.who not_eq vuLocalSession)
                 {
                     MonoPrint("Sending Entity Data\n");
                     // KCK: I don't think there's anything we need here -
@@ -278,7 +278,7 @@ void SendRequestedData(void)
                      ent = iter.GetFirst();
                      while (ent)
                      {
-                     if (!ent->IsPrivate() && ent->IsLocal() && (ent->EntityType())->classInfo_[VU_CLASS] != CLASS_OBJECTIVE && (ent->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT && (ent->EntityType())->classInfo_[VU_CLASS] != CLASS_MANAGER)
+                     if (!ent->IsPrivate() && ent->IsLocal() && (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE && (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT && (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_MANAGER)
                      {
                      resp = new VuFullUpdateEvent(ent, requester);
                      resp->RequestReliableTransmit();
@@ -289,7 +289,7 @@ void SendRequestedData(void)
                     */
                 }
 
-                if (request->dataBlock.dataNeeded & CAMP_NEED_TEAM_DATA && request->dataBlock.who != vuLocalSession)
+                if (request->dataBlock.dataNeeded & CAMP_NEED_TEAM_DATA && request->dataBlock.who not_eq vuLocalSession)
                 {
                     MonoPrint("Sending Team Data\n");
 
@@ -303,7 +303,7 @@ void SendRequestedData(void)
                     }
                 }
 
-                if (request->dataBlock.dataNeeded & CAMP_NEED_VC && request->dataBlock.who != vuLocalSession)
+                if (request->dataBlock.dataNeeded & CAMP_NEED_VC && request->dataBlock.who not_eq vuLocalSession)
                 {
                     MonoPrint("Sending VC Data\n");
                     SendVCData(requester);

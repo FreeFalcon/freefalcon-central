@@ -556,7 +556,7 @@ void AdvancedHarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
             display->AdjustOriginInViewport(-displayX, -displayY);
 
             // Only show the locked up target (after we finished updating DTSB list)
-            if (tmpElement->BaseObject() != lockedTarget->BaseData())
+            if (tmpElement->BaseObject() not_eq lockedTarget->BaseData())
             {
                 continue;
             }
@@ -760,7 +760,7 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
     }
 
     // In case of a launch, save the target's symbol and WP
-    if (curMissile && curMissile->launchState != MissileClass::PreLaunch && lockedTarget)
+    if (curMissile && curMissile->launchState not_eq MissileClass::PreLaunch && lockedTarget)
     {
         // Stop tracking the missile
         curMissile = NULL;

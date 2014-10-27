@@ -180,7 +180,7 @@ void GroundTaskingManagerClass::DoCalculations(void)
     VuListIterator poit(POList);
     o = GetFirstObjective(&poit);
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         // Get score for proximity to front
         o->GetLocation(&x, &y);
@@ -203,7 +203,7 @@ void GroundTaskingManagerClass::DoCalculations(void)
             if (es > 30)
                 es = 30; // Cap enemy strength after 1500 vehicles
 
-            if (owner != t)
+            if (owner not_eq t)
                 es = -es + (rand() % 5) - 2;
         }
 
@@ -240,10 +240,10 @@ void GroundTaskingManagerClass::DoCalculations(void)
             // pd->player_priority[owner] = pd->air_priority[owner];
         }
 
-        if (!GetRoE(owner, t, ROE_GROUND_CAPTURE) && owner != t)
+        if (!GetRoE(owner, t, ROE_GROUND_CAPTURE) && owner not_eq t)
             pd->ground_priority[owner] = 0;
 
-        if (!GetRoE(owner, t, ROE_AIR_ATTACK) && owner != t)
+        if (!GetRoE(owner, t, ROE_AIR_ATTACK) && owner not_eq t)
             pd->air_priority[owner] = 0;
 
         if (score > topPriority)
@@ -513,10 +513,10 @@ int GroundTaskingManagerClass::GetAddBits(Objective o, int to_collect)
     else
         add_now &= compl (COLLECT_CAPTURE | COLLECT_DEFEND);
 
-    if (owner != o->GetTeam())
+    if (owner not_eq o->GetTeam())
         add_now &= compl (COLLECT_RESERVE | COLLECT_SECURE | COLLECT_DEFEND | COLLECT_SUPPORT | COLLECT_REPAIR | COLLECT_AIRDEFENSE | COLLECT_RADAR);
 
-    if (GetRoE(owner, o->GetTeam(), ROE_GROUND_CAPTURE) != ROE_ALLOWED)
+    if (GetRoE(owner, o->GetTeam(), ROE_GROUND_CAPTURE) not_eq ROE_ALLOWED)
         add_now &= compl (COLLECT_CAPTURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_COMMANDO);
 
     if (o->Abandoned())
@@ -706,7 +706,7 @@ void GroundTaskingManagerClass::AddToLists(Unit u, int to_collect)
     int i, role;
 
     // Units with valid orders are not reassigned
-    if (u->GetUnitOrders() != GRO_RESERVE)
+    if (u->GetUnitOrders() not_eq GRO_RESERVE)
     {
         int orders = u->GetUnitOrders();
 
@@ -793,19 +793,19 @@ void GroundTaskingManagerClass::AddToLists(Unit u, int to_collect)
         if (!(to_collect & (0x01 << i)))
             continue;
 
-        if (i == GORD_ASSAULT && u->GetUnitNormalRole() != GRO_ASSAULT)
+        if (i == GORD_ASSAULT && u->GetUnitNormalRole() not_eq GRO_ASSAULT)
             continue;
 
         if (i == GORD_COMMANDO && !u->Commando())
             continue;
 
-        if (i == GORD_AIRBORNE && u->GetUnitNormalRole() != GRO_AIRBORNE)
+        if (i == GORD_AIRBORNE && u->GetUnitNormalRole() not_eq GRO_AIRBORNE)
             continue;
 
         if (i == GORD_SUPPORT or i == GORD_REPAIR or i == GORD_AIRDEFENSE)
             continue;
 
-        if (i == GORD_RADAR && u->GetUnitNormalRole() != GRO_RECON)
+        if (i == GORD_RADAR && u->GetUnitNormalRole() not_eq GRO_RECON)
             continue;
 
         if (!i or u->GetUnitRoleScore(GetGroundRole(i), CALC_MAX, 0) > MIN_ALLOWABLE_ROLE_SCORE)
@@ -906,7 +906,7 @@ int GroundTaskingManagerClass::AssignUnit(Unit u, int orders, Objective o, int s
     if (pod)
         pod->ground_assigned[owner] += u->GetTotalVehicles();
 
-    /* if (so != po)
+    /* if (so not_eq po)
      {
      sod = GetSOData(so);
      if (sod)
@@ -1016,7 +1016,7 @@ int GroundTaskingManagerClass::AssignUnits(int orders, int mode)
             float dist = DistanceToFront(ox, oy);
 
             // RV - Biker - Do not repair object near front only if it's a bridge
-            if (curo->obj->Type() !=  TYPE_BRIDGE && (curo->obj->IsFrontline() or curo->obj->IsSecondline() or curo->obj->IsThirdline() or dist < 15.0f))
+            if (curo->obj->Type() not_eq  TYPE_BRIDGE && (curo->obj->IsFrontline() or curo->obj->IsSecondline() or curo->obj->IsThirdline() or dist < 15.0f))
             {
                 continue;
             }
@@ -1218,7 +1218,7 @@ void GroundTaskingManagerClass::RequestEngineer(Objective o, int division)
     while (u)
     {
         if (u->GetTeam() == owner && u->GetDomain() == DOMAIN_LAND &&
-            u->GetUnitNormalRole() == GRO_ENGINEER && u->GetUnitDivision() == division && u->GetUnitOrders() != GORD_REPAIR)
+            u->GetUnitNormalRole() == GRO_ENGINEER && u->GetUnitDivision() == division && u->GetUnitOrders() not_eq GORD_REPAIR)
         {
             u->SetUnitOrders(GORD_REPAIR, o->Id());
             return;

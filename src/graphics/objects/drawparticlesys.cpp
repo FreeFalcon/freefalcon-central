@@ -2130,7 +2130,7 @@ char *trim(char *in)
 
     q = in;
 
-    while (*q != 0)
+    while (*q not_eq 0)
         q++;
 
     q--;
@@ -2785,7 +2785,7 @@ void  DrawableParticleSys::PS_SoundRun(void)
     float SndVol, SndPitch;
 
     // thru all the list
-    while (ptr != PS_NOPTR)
+    while (ptr not_eq PS_NOPTR)
     {
 #ifdef DEBUG_NEW_PS_SOUNDS
         Count++;
@@ -2847,7 +2847,7 @@ void  DrawableParticleSys::PS_LightsRun(void)
 
 
     // thru all the list
-    while (ptr != PS_NOPTR)
+    while (ptr not_eq PS_NOPTR)
     {
 #ifdef DEBUG_NEW_PS_LIGHTS
         Count++;
@@ -2959,7 +2959,7 @@ void  DrawableParticleSys::PS_PolyRun(void)
     D3DDYNVERTEX Quad[4];
 
     // thru all the list
-    while (ptr != PS_NOPTR)
+    while (ptr not_eq PS_NOPTR)
     {
 #ifdef DEBUG_NEW_PS_POLYS
         Count++;
@@ -3086,7 +3086,7 @@ void  DrawableParticleSys::PS_PolyRun(void)
         }
 
         // if a light assigned
-        if (ppn.EmitLight && Part.LIGHT != PS_NOPTR)
+        if (ppn.EmitLight && Part.LIGHT not_eq PS_NOPTR)
         {
             LightPartType &Light = (((LightPartType*)PS_Lists[PS_LIGHTS_IDX].ObjectList)[Part.LIGHT]);
             Light.Alive = true;
@@ -3186,7 +3186,7 @@ void  DrawableParticleSys::PS_EmitterRun(void)
     PS_PTR ptr = PS_Lists[PS_EMITTERS_IDX].ListEntry, LastPtr = PS_NOPTR;
 
     // thru all the list
-    while (ptr != PS_NOPTR)
+    while (ptr not_eq PS_NOPTR)
     {
 #ifdef DEBUG_NEW_PS_EMITTERS
         Count++;
@@ -3207,7 +3207,7 @@ void  DrawableParticleSys::PS_EmitterRun(void)
         float Life = Part.life;
 
         // if a light assigned, confirm still alive
-        if (Emitter.LIGHT != PS_NOPTR)((LightPartType*)PS_Lists[PS_LIGHTS_IDX].ObjectList)[Emitter.LIGHT].Alive = true;
+        if (Emitter.LIGHT not_eq PS_NOPTR)((LightPartType*)PS_Lists[PS_LIGHTS_IDX].ObjectList)[Emitter.LIGHT].Alive = true;
 
         // cache the Position from the OWNER
         Tpoint epos = Part.pos;
@@ -3339,7 +3339,7 @@ void DrawableParticleSys::PS_AddEmitter(PS_PTR owner, ParticleEmitterParam *PEP,
     // and Light
     pn.LIGHT = Light;
 
-    if (pn.LIGHT != PS_NOPTR)((LightPartType*)PS_Lists[PS_LIGHTS_IDX].ObjectList)[pn.LIGHT].Light = 0.0f;
+    if (pn.LIGHT not_eq PS_NOPTR)((LightPartType*)PS_Lists[PS_LIGHTS_IDX].ObjectList)[pn.LIGHT].Light = 0.0f;
 
     // initialize variables
     pn.rollover  = 0;
@@ -3427,12 +3427,12 @@ void DrawableParticleSys::PS_AddParticle(int ID, Tpoint *Pos, Tpoint *Vel, Tpoin
     pn.Cluster = false;
 
     // Check for clustering - No clustering for -1
-    if (ppn.ClusterMode != NO_CLUSTERING)
+    if (ppn.ClusterMode not_eq NO_CLUSTERING)
     {
         // * CHILD CLUSTER *
         if (ppn.ClusterMode == CHILD_CLUSTER)
         {
-            if (Cluster != PS_NOPTR) pn.CLUSTER = Cluster, pn.Cluster = true;
+            if (Cluster not_eq PS_NOPTR) pn.CLUSTER = Cluster, pn.Cluster = true;
         }
         else
         {
@@ -3441,7 +3441,7 @@ void DrawableParticleSys::PS_AddParticle(int ID, Tpoint *Pos, Tpoint *Vel, Tpoin
             pn.CLUSTER = PS_AddItem(PS_CLUSTERS_IDX);
 
             // Check for Cluster Overflow
-            if (pn.CLUSTER != PS_NOPTR)
+            if (pn.CLUSTER not_eq PS_NOPTR)
             {
                 pn.Cluster = true;
                 // check for cluster mode
@@ -3566,7 +3566,7 @@ void DrawableParticleSys::PS_ParticleRun(void)
     PS_PTR ptr = PS_Lists[PS_PARTICLES_IDX].ListEntry, LastPtr = PS_NOPTR;
 
     // thru all the list
-    while (ptr != PS_NOPTR)
+    while (ptr not_eq PS_NOPTR)
     {
 #ifdef DEBUG_NEW_PS_PARTICLES
         Count++;
@@ -3804,7 +3804,7 @@ void DrawableParticleSys::PS_ClustersReset(void)
     PS_PTR ptr = PS_Lists[PS_CLUSTERS_IDX].ListEntry;
 
     // thru all the list
-    while (ptr != PS_NOPTR)
+    while (ptr not_eq PS_NOPTR)
     {
         // Get the object
         ClusterPosType &Cluster = (((ClusterPosType*)PS_Lists[PS_CLUSTERS_IDX].ObjectList)[ptr]);
@@ -3837,7 +3837,7 @@ void DrawableParticleSys::PS_ClustersRun(void)
     PS_PTR ptr = PS_Lists[PS_CLUSTERS_IDX].ListEntry, LastPtr = PS_NOPTR;
 
     // thru all the list
-    while (ptr != PS_NOPTR)
+    while (ptr not_eq PS_NOPTR)
     {
         // Get the object
         ClusterPosType &Cluster = (((ClusterPosType*)PS_Lists[PS_CLUSTERS_IDX].ObjectList)[ptr]);
@@ -4007,7 +4007,7 @@ void DrawableParticleSys::PS_TrailsClear(void)
     PS_PTR ptr = PS_Lists[PS_TRAILS_IDX].ListEntry, LastPtr = PS_NOPTR;
 
     // thru all the list
-    while (ptr != PS_NOPTR)
+    while (ptr not_eq PS_NOPTR)
     {
         TrailEmitterType &Trail = (((TrailEmitterType*)PS_Lists[PS_TRAILS_IDX].ObjectList)[ptr]);
         Trail.Handle = NULL;
@@ -4034,7 +4034,7 @@ void DrawableParticleSys::PS_TrailRun(void)
     PS_PTR ptr = PS_Lists[PS_TRAILS_IDX].ListEntry, LastPtr = PS_NOPTR;
 
     // thru all the list
-    while (ptr != PS_NOPTR)
+    while (ptr not_eq PS_NOPTR)
     {
 
 #ifdef DEBUG_NEW_PS_TRAILS
@@ -4044,7 +4044,7 @@ void DrawableParticleSys::PS_TrailRun(void)
         PS_TPType &TPN = PS_TPN[Trail.ID];
 
         // If part is dead, remove it, all last stages have been already killed/exucuted
-        if (Trail.OWNER != PS_NOPTR && !(((ParticleNodeType*)PS_Lists[PS_PARTICLES_IDX].ObjectList)[Trail.OWNER]).Alive) Trail.Alive = false;
+        if (Trail.OWNER not_eq PS_NOPTR && !(((ParticleNodeType*)PS_Lists[PS_PARTICLES_IDX].ObjectList)[Trail.OWNER]).Alive) Trail.Alive = false;
 
         if (!Trail.Run) goto Skip;
 
@@ -4053,7 +4053,7 @@ void DrawableParticleSys::PS_TrailRun(void)
         Trail.Wind = ((WeatherClass*)realWeather)->GetWindVector();
 
 
-        if (Trail.Alive && Trail.OWNER != PS_NOPTR)
+        if (Trail.Alive && Trail.OWNER not_eq PS_NOPTR)
         {
             Trail.Life +=  PS_ElapsedTime * Trail.LifeCx;
 
@@ -4207,7 +4207,7 @@ void DrawableParticleSys::PS_TrailRun(void)
         TheDXEngine.DX2D_MakeCameraSpace(&Origin, &Trail.Origin);
 
         // Update the Trail if something to draw
-        if (Trail.Entry != Trail.Last) PS_SubTrailRun(Trail.TRAIL, Origin, Trail.Entry, Trail.Last, Trail.Nodes, Trail.ID);
+        if (Trail.Entry not_eq Trail.Last) PS_SubTrailRun(Trail.TRAIL, Origin, Trail.Entry, Trail.Last, Trail.Nodes, Trail.ID);
 
         Skip:
         Trail.Updated = false;
@@ -4504,7 +4504,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
              }*/
 
             // if to be integrated, Skip the requested nodes
-            if (Integrate && !TrailCompleted && Index != Exit)
+            if (Integrate && !TrailCompleted && Index not_eq Exit)
             {
                 // 1 less, as the index is alerady postincremented in upper function code
                 Integrate -= 1;
@@ -5936,7 +5936,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
             }
             else
             {
-                if (PS_PPN[c].id != -1)
+                if (PS_PPN[c].id not_eq -1)
                 {
                     continue;
                 }

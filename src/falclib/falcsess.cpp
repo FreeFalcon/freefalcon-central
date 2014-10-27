@@ -273,7 +273,7 @@ int FalconSessionEntity::Save(VU_BYTE** stream)
         FalconEntityList::iterator it;
         unsigned int i = 0;
 
-        for (it = fineInterestList.begin(); it != fineInterestList.end(); ++it)
+        for (it = fineInterestList.begin(); it not_eq fineInterestList.end(); ++it)
         {
             ids[i++] = it->get()->Id();
         }
@@ -695,7 +695,7 @@ void FalconSessionEntity::SetFlyState(uchar fs)
 
 void FalconSessionEntity::SetReqCompression(short rc)
 {
-    if (reqCompression != rc)
+    if (reqCompression not_eq rc)
     {
         reqCompression = rc;
         DoFullUpdate();
@@ -779,7 +779,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     }
 
     // Copy in new data
-    if (!name or strcmp(name, tmpSess->name) != 0)
+    if (!name or strcmp(name, tmpSess->name) not_eq 0)
     {
         dirty  or_eq  0x0001;
         size = _tcslen(tmpSess->name);
@@ -790,7 +790,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
         name[size] = name[_NAME_LEN_] = 0;
     }
 
-    if (!callSign or strcmp(callSign, tmpSess->callSign) != 0)
+    if (!callSign or strcmp(callSign, tmpSess->callSign) not_eq 0)
     {
         dirty  or_eq  0x0002;
         size = _tcslen(tmpSess->callSign);
@@ -810,19 +810,19 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     // a flight in another game.. Probably not good. If he's in
     // a flight in this game, the playerFlightPtr should dirty the
     // session just dandily..
-    // if(playerFlight != tmpSess->playerFlight)
+    // if(playerFlight not_eq tmpSess->playerFlight)
     // dirty  or_eq  0x0004;
-    if (country != tmpSess->country)
+    if (country not_eq tmpSess->country)
     {
         dirty  or_eq  0x0008;
     }
 
-    if (aircraftNum != tmpSess->aircraftNum)
+    if (aircraftNum not_eq tmpSess->aircraftNum)
     {
         dirty  or_eq  0x0010;
     }
 
-    if (pilotSlot != tmpSess->pilotSlot)
+    if (pilotSlot not_eq tmpSess->pilotSlot)
     {
         dirty  or_eq  0x0020;
     }
@@ -831,19 +831,19 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     tmpSess->playerFlightPtr.reset((Flight) vuDatabase->Find(tmpSess->playerFlight));
     tmpSess->playerEntityPtr.reset(static_cast<FalconEntity*>(vuDatabase->Find(tmpSess->playerEntity)));
 
-    if (playerSquadronPtr != tmpSess->playerSquadronPtr)
+    if (playerSquadronPtr not_eq tmpSess->playerSquadronPtr)
     {
         dirty  or_eq  0x0040;
         SetPlayerSquadron(tmpSess->playerSquadronPtr.get());
     }
 
-    if (playerFlightPtr != tmpSess->playerFlightPtr)
+    if (playerFlightPtr not_eq tmpSess->playerFlightPtr)
     {
         dirty  or_eq  0x0080;
         SetPlayerFlight(tmpSess->playerFlightPtr.get());
     }
 
-    if (playerEntityPtr != tmpSess->playerEntityPtr)
+    if (playerEntityPtr not_eq tmpSess->playerEntityPtr)
     {
         dirty  or_eq  0x0100;
         SetPlayerEntity(tmpSess->playerEntityPtr.get());
@@ -870,7 +870,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
 
     memcpy(&reqCompression, &tmpSess->reqCompression, sizeof(short));
 
-    if (tmpSess->Game() && (Game() != tmpSess->Game()))
+    if (tmpSess->Game() && (Game() not_eq tmpSess->Game()))
     {
         JoinGame(tmpSess->Game());
     }
@@ -892,9 +892,9 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     if (FalconLocalGame && Game() == FalconLocalGame && FalconLocalGame->IsLocal())
     {
         if (
-            assignedAircraftNum != aircraftNum ||
-            assignedPilotSlot != pilotSlot ||
-            assignedPlayerFlightPtr != playerFlightPtr
+            assignedAircraftNum not_eq aircraftNum ||
+            assignedPilotSlot not_eq pilotSlot ||
+            assignedPlayerFlightPtr not_eq playerFlightPtr
         )
         {
             //Flight flight = GetAssignedPlayerFlight();
@@ -920,7 +920,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
              msg->dataBlock.got_pilot_slot = assignedPilotSlot;
              msg->dataBlock.got_slot = assignedAircraftNum;
              msg->dataBlock.got_pilot_skill = 0;
-             if (msg->dataBlock.got_pilot_slot != NO_PILOT)
+             if (msg->dataBlock.got_pilot_slot not_eq NO_PILOT)
              msg->dataBlock.result = REQUEST_RESULT_SUCCESS;
              else
              msg->dataBlock.result = REQUEST_RESULT_DENIED;
@@ -934,7 +934,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     fineInterestList.clear();
     FalconEntityList::iterator it;
 
-    for (it = tmpSess->fineInterestList.begin(); it != tmpSess->fineInterestList.end(); ++it)
+    for (it = tmpSess->fineInterestList.begin(); it not_eq tmpSess->fineInterestList.end(); ++it)
     {
         AddToFineInterest(it->get());
     }
@@ -953,7 +953,7 @@ void FalconSessionEntity::UpdatePlayer(void)
     squadron_ptr = (Squadron) vuDatabase->Find(playerSquadron);
     flight_ptr = (Flight) vuDatabase->Find(playerFlight);
 
-    if ((!flight_ptr) && (playerFlight != vuNullId))
+    if ((!flight_ptr) && (playerFlight not_eq vuNullId))
     {
         static int now, last_time;
         now = GetTickCount();
@@ -969,17 +969,17 @@ void FalconSessionEntity::UpdatePlayer(void)
 
     entity_ptr = static_cast<FalconEntity*>(vuDatabase->Find(playerEntity));
 
-    if (squadron_ptr != playerSquadronPtr)
+    if (squadron_ptr not_eq playerSquadronPtr)
     {
         SetPlayerSquadron(squadron_ptr);
     }
 
-    if (flight_ptr != playerFlightPtr)
+    if (flight_ptr not_eq playerFlightPtr)
     {
         SetPlayerFlight(flight_ptr);
     }
 
-    if (entity_ptr != playerEntityPtr)
+    if (entity_ptr not_eq playerEntityPtr)
     {
         SetPlayerEntity(entity_ptr);
 
@@ -1013,7 +1013,7 @@ bool FalconSessionEntity::AddToFineInterest(FalconEntity *entity, bool silent)
 /** removes unit from fine interest list. Will be updated normally */
 bool FalconSessionEntity::RemoveFromFineInterest(const FalconEntity *entity, bool silent)
 {
-    for (FalconEntityList::iterator it = fineInterestList.begin(); it != fineInterestList.end(); ++it)
+    for (FalconEntityList::iterator it = fineInterestList.begin(); it not_eq fineInterestList.end(); ++it)
     {
         FalconEntity *e = it->get();
 
@@ -1048,7 +1048,7 @@ void FalconSessionEntity::ClearFineInterest(bool silent)
 /** checks if a unit is in fine interest list */
 bool FalconSessionEntity::HasFineInterest(const FalconEntity *entity) const
 {
-    for (FalconEntityList::const_iterator it = fineInterestList.begin(); it != fineInterestList.end(); ++it)
+    for (FalconEntityList::const_iterator it = fineInterestList.begin(); it not_eq fineInterestList.end(); ++it)
     {
         FalconEntity *e = it->get();
 

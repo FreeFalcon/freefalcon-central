@@ -231,7 +231,7 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
             //the first long contains 4 left samples the second long
             //contains 4 right samples.  Will process the source in 8-byte
             //chunks to make it eay to interleave the output correctly
-            if ((Info->blockLength % 8) != 0)
+            if ((Info->blockLength % 8) not_eq 0)
             {
                 MonoPrint("S16:  buffer length is not divisible by 8\n");
                 return 0;
@@ -358,13 +358,13 @@ long CSoundMgr::ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength)
         //the first long contains 4 left samples the second long
         //contains 4 right samples.  Will process the source in 8-byte
         //chunks to make it eay to interleave the output correctly
-        if ((blockLength % 8) != 0)
+        if ((blockLength % 8) not_eq 0)
         {
             MonoPrint("S16:  buffer length is not divisible by 8\n");
             return 0;
         }
 
-        while (0 != blockLength)
+        while (0 not_eq blockLength)
         {
             blockLength    -= 8;
 
@@ -395,8 +395,8 @@ long CSoundMgr::ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength)
                 leftSamples  >>= 4;
                 rightSamples >>= 4;
             } //loop of i=8 decrement to 0
-        } //0 != blockLength
-    } //while 0 != bufferLength
+        } //0 not_eq blockLength
+    } //while 0 not_eq bufferLength
 
     //return the number of bytes written
     return (long)(dBuff - dBuffStart);
@@ -470,7 +470,7 @@ long CSoundMgr::ImaDecodeM16(char *sBuff, char *dBuff, long bufferLength)
 
             *(short *)dBuff = (short)predSample;
             dBuff = dBuff + sizeof(short);
-        } //0 != blockLength
+        } //0 not_eq blockLength
     } //while bufferLength >= blockHeaderSize
 
     //return the number of bytes written

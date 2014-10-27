@@ -147,22 +147,22 @@ ObjectInstance::~ObjectInstance()
 #else
 
     // sfr: checking for NULL values first
-    if (SwitchValues != NULL)
+    if (SwitchValues not_eq NULL)
     {
         delete[] SwitchValues;
     }
 
-    if (DOFValues != NULL)
+    if (DOFValues not_eq NULL)
     {
         delete[] DOFValues;
     }
 
-    if (SlotChildren != NULL)
+    if (SlotChildren not_eq NULL)
     {
         delete[] SlotChildren;
     }
 
-    if (DynamicCoords != NULL)
+    if (DynamicCoords not_eq NULL)
     {
         delete[] DynamicCoords;
     }

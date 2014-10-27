@@ -97,7 +97,7 @@ public:
     BOOL Setup(DXContext *hrc, const char* texturePath);
     BOOL IsReady(void)
     {
-        return (TextureSets != NULL);
+        return (TextureSets not_eq NULL);
     };
     void Cleanup(void);
 

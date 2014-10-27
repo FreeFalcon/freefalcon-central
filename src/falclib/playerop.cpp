@@ -183,7 +183,7 @@ int PlayerOptionsClass::LoadOptions(_TCHAR* filename)
     success = fread(this, 1, size, fp);
     fclose(fp);
 
-    if (success != size)
+    if (success not_eq size)
     {
         MonoPrint(_T("Failed to read %s's player options\n"), filename);
         Initialize();
@@ -191,13 +191,13 @@ int PlayerOptionsClass::LoadOptions(_TCHAR* filename)
     }
 
     // M.N. If older version, set some new stuff to default values. Next save will update the saved file
-    if (size != sizeof(class PlayerOptionsClass))
+    if (size not_eq sizeof(class PlayerOptionsClass))
     {
         PlayerOptions.skycol = 1;
         PlayerOptions.PlayerRadioVoice = true;
     }
 
-    /* if(size != sizeof(class PlayerOptionsClass))
+    /* if(size not_eq sizeof(class PlayerOptionsClass))
      {
      MonoPrint(_T("%s's player options are in old file format\n"),filename);
      return FALSE;
@@ -206,7 +206,7 @@ int PlayerOptionsClass::LoadOptions(_TCHAR* filename)
 
      success = fread(this, sizeof(class PlayerOptionsClass), 1, fp);
      fclose(fp);
-     if(success != 1)
+     if(success not_eq 1)
      {
      MonoPrint(_T("Failed to read %s's player options\n"),filename);
      Initialize();

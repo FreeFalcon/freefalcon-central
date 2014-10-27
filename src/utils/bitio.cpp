@@ -60,8 +60,8 @@ BIT_FILE *OpenInputBitFile(char *name)
 
 void CloseOutputBitFile(BIT_FILE *bit_file)
 {
-    if (bit_file->mask != 0x80)
-        if (putc(bit_file->rack, bit_file->file) != bit_file->rack)
+    if (bit_file->mask not_eq 0x80)
+        if (putc(bit_file->rack, bit_file->file) not_eq bit_file->rack)
             printf("Fatal error in CloseBitFile!");
 
     fclose(bit_file->file);
@@ -83,7 +83,7 @@ void OutputBit(BIT_FILE *bit_file, int bit)
 
     if (bit_file->mask == 0)
     {
-        if (putc(bit_file->rack, bit_file->file) != bit_file->rack)
+        if (putc(bit_file->rack, bit_file->file) not_eq bit_file->rack)
             printf("Fatal error in OutputBit!");
         else if ((bit_file->pacifier_counter++ & PACIFIER_COUNT) == 0)
             putc('.', stdout);
@@ -99,7 +99,7 @@ void OutputBits(BIT_FILE *bit_file, unsigned long code, int count)
 
     mask = 1L << (count - 1);
 
-    while (mask != 0)
+    while (mask not_eq 0)
     {
         if (mask & code)
             bit_file->rack  or_eq  bit_file->mask;
@@ -108,7 +108,7 @@ void OutputBits(BIT_FILE *bit_file, unsigned long code, int count)
 
         if (bit_file->mask == 0)
         {
-            if (putc(bit_file->rack, bit_file->file) != bit_file->rack)
+            if (putc(bit_file->rack, bit_file->file) not_eq bit_file->rack)
                 printf("Fatal error in OutputBit!");
             else if ((bit_file->pacifier_counter++ & PACIFIER_COUNT) == 0)
                 putc('.', stdout);
@@ -157,7 +157,7 @@ unsigned long InputBits(BIT_FILE *bit_file, int bit_count)
     mask = 1L << (bit_count - 1);
     return_value = 0;
 
-    while (mask != 0)
+    while (mask not_eq 0)
     {
         /*
          * 0x80 is silence in sound files, clear or zero
@@ -197,7 +197,7 @@ void FilePrintBinary(FILE *file, unsigned int code, int bits)
 
     mask = 1 << (bits - 1);
 
-    while (mask != 0)
+    while (mask not_eq 0)
     {
         if (code & mask)
             fputc('1', file);

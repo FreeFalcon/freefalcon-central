@@ -346,7 +346,7 @@ void OTWDriverClass::DrawExitMenu(void)
     SetFOV(45.0f * DTR); //Wombat778 3-26-04 Set the FOV to 45 degrees to make it not dark (temporary fix till jam comes up with the real solution, then change to 60.0f)
 
 
-    if (exitMenuOn != exitMenuDesired)
+    if (exitMenuOn not_eq exitMenuDesired)
     {
         ChangeExitMenu(exitMenuDesired);
     }
@@ -465,7 +465,7 @@ void OTWDriverClass::Timeout(void)
     // a ways to get a fly-by effect
     if (endFlightPointSet == FALSE)
     {
-        if (otwPlatform.get() != NULL)
+        if (otwPlatform.get() not_eq NULL)
         {
             // MonoPrint ("Panning exit\n");
             SetEndFlightPoint(otwPlatform->XPos() + otwPlatform->dmx[0][0] * 10.0f + otwPlatform->XDelta() * 2.0f,

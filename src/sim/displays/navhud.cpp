@@ -130,11 +130,11 @@ void HudClass::DrawAirspeed(void)
     ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
 
     //TJL 03/07/04 Removing ticks from everything but F-16 or default HUD
-    //if ((scalesSwitch == VAH or scalesSwitch == VV_VAH) && (FCC->GetMasterMode() != FireControlComputer::Dogfight))//me123 status test.
+    //if ((scalesSwitch == VAH or scalesSwitch == VV_VAH) && (FCC->GetMasterMode() not_eq FireControlComputer::Dogfight))//me123 status test.
     if (
         (ownship->IsF16() or (ownship->af->GetTypeAC() == 0)) &&
         ((scalesSwitch == VAH) or (scalesSwitch == VV_VAH)) &&
-        (FCC->GetMasterMode() != FireControlComputer::Dogfight))//me123 status test.
+        (FCC->GetMasterMode() not_eq FireControlComputer::Dogfight))//me123 status test.
     {
         //MI
         if (!g_bRealisticAvionics)
@@ -387,7 +387,7 @@ void HudClass::DrawAltitude(void)
             }
             else
             {
-                if (FCC->GetMasterMode() != FireControlComputer::Dogfight && FCC->GetMasterMode() != FireControlComputer::MissileOverride)
+                if (FCC->GetMasterMode() not_eq FireControlComputer::Dogfight && FCC->GetMasterMode() not_eq FireControlComputer::MissileOverride)
                 {
                     if (-hat < lowAltWarning && (FindRollAngle(-hat) && FindPitchAngle(-hat)) &&
                         ((AircraftClass*)ownship)->af->platform->RaltReady())
@@ -422,7 +422,7 @@ void HudClass::DrawAltitude(void)
 
     //TJL 03/07/04 Only for F16 or default HUD
     if ((ownship->IsF16() or ownship->af->GetTypeAC() == 0) && (scalesSwitch == VAH  or scalesSwitch == VV_VAH)
-        && (FCC->GetMasterMode() != FireControlComputer::Dogfight)) //me123 status test.
+        && (FCC->GetMasterMode() not_eq FireControlComputer::Dogfight)) //me123 status test.
     {
         //MI
         if (!g_bRealisticAvionics)
@@ -532,7 +532,7 @@ void HudClass::DrawAltitude(void)
         }
 
         // Non-Auto altitude scale
-        if (radarSwitch != RADAR_AUTO or !lowAlt)
+        if (radarSwitch not_eq RADAR_AUTO or !lowAlt)
         {
             if (lowAlt)
             {
@@ -972,7 +972,7 @@ void HudClass::DrawHeading(void)
             }
         }
 
-        if (GetDriftCOSwitch() != DRIFT_CO_OFF)
+        if (GetDriftCOSwitch() not_eq DRIFT_CO_OFF)
         {
             headingTop = hudWinY[HEADING_WINDOW_HI] +
                          hudWinHeight[HEADING_WINDOW_HI] * 0.5F;
@@ -1283,20 +1283,20 @@ void HudClass::DrawHeading(void)
     {
         //MI appears to be based on mode and geardown/switch, not only switch
 #if 0
-        if (fpmSwitch != FPM_OFF && scalesSwitch == VV_VAH)
+        if (fpmSwitch not_eq FPM_OFF && scalesSwitch == VV_VAH)
             DrawBankIndicator();
-        else if (fpmSwitch != FPM_OFF && scalesSwitch == VAH)
+        else if (fpmSwitch not_eq FPM_OFF && scalesSwitch == VAH)
             DrawRollCue();
 
 #else
 
         if (FCC && FCC->IsAGMasterMode() or (playerAC->af->gearPos > 0.5F &&
-                                             fpmSwitch != FPM_OFF && scalesSwitch == VV_VAH))
+                                             fpmSwitch not_eq FPM_OFF && scalesSwitch == VV_VAH))
             DrawBankIndicator();
         //not there in Dogfight
         else
         {
-            if (FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight &&
+            if (FCC && FCC->GetMasterMode() not_eq FireControlComputer::Dogfight &&
                 GetDEDSwitch() == DED_OFF)
                 DrawRollCue();
         }
@@ -1546,7 +1546,7 @@ void HudClass::DrawWaypoint(void)
             }
         }
 
-        if (GetDriftCOSwitch() != DRIFT_CO_OFF)
+        if (GetDriftCOSwitch() not_eq DRIFT_CO_OFF)
         {
             headingTop = hudWinY[HEADING_WINDOW_HI] +
                          hudWinHeight[HEADING_WINDOW_HI] * 0.5F;
@@ -1723,7 +1723,7 @@ void HudClass::DrawWaypoint(void)
                     if (playerAC && playerAC->curWaypoint &&
                         playerAC->curWaypoint->GetWPFlags() & WPF_TARGET &&
                         FCC && FCC->IsAGMasterMode() &&
-                        FCC->GetSubMode() != FireControlComputer::CCIP)
+                        FCC->GetSubMode() not_eq FireControlComputer::CCIP)
                     {
                         //This is our target, so the WP is a square, but not in CCIP, and only in AG
                         //mode.
@@ -1814,7 +1814,7 @@ void HudClass::TimeToSteerpoint(void)
         ttg -= minute * 60.0F;
         sec = FloatToInt32(ttg);
 
-        if (hr != 0)
+        if (hr not_eq 0)
             sprintf(tmpStr, "%03d:%02d", abs(minute), sec);   //JPG 5 Feb 04
         else if (sec >= 0)
         {
@@ -2492,7 +2492,7 @@ void HudClass::DrawRALT(void)
         }
         else if (((AircraftClass*)ownship)->OnGround())
         {
-            //if(((AircraftClass*)ownship)->af->platform->RALTStatus != AircraftClass::RaltStatus::ROFF)
+            //if(((AircraftClass*)ownship)->af->platform->RALTStatus not_eq AircraftClass::RaltStatus::ROFF)
             DrawALString();
         }
 
@@ -2501,7 +2501,7 @@ void HudClass::DrawRALT(void)
     }
     else
     {
-        //if(((AircraftClass*)ownship)->af->platform->RALTStatus != AircraftClass::RaltStatus::ROFF)
+        //if(((AircraftClass*)ownship)->af->platform->RALTStatus not_eq AircraftClass::RaltStatus::ROFF)
         DrawALString();
     }
 

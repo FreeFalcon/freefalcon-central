@@ -542,7 +542,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
 
 #endif
 
-    if (gametype != game_InstantAction)
+    if (gametype not_eq game_InstantAction)
     {
         RebuildObjectiveLists();
 
@@ -552,7 +552,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
         }
     }
 
-    if (gametype != game_InstantAction)
+    if (gametype not_eq game_InstantAction)
     {
         BuildDivisionData();
     }
@@ -643,7 +643,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
     ulong need_from_master, need_from_all;
     FalconSessionEntity *masterSession;
 
-    if (game != CurrentGame)
+    if (game not_eq CurrentGame)
     {
         EndCampaign(); // Shut down previous campaign request
     }
@@ -659,7 +659,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
         return 0;
     }
 
-    F4Assert(gametype != game_InstantAction);
+    F4Assert(gametype not_eq game_InstantAction);
 
     masterSession = (FalconSessionEntity*) vuDatabase->Find(game->OwnerId());
 
@@ -854,7 +854,7 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
     FILE* fp;
     char to[MAX_PATH], from[MAX_PATH];
 
-    if (!IsLoaded() or (Flags & CAMP_LIGHT && save_mode != CAMP_SAVE_LIGHT))
+    if (!IsLoaded() or (Flags & CAMP_LIGHT && save_mode not_eq CAMP_SAVE_LIGHT))
         return 0;
 
     StartWriteCampFile(gametype, savefile);
@@ -1007,7 +1007,7 @@ void CampaignClass::EndCampaign()
 
     gMainThread->JoinGame(vuPlayerPoolGroup);
 
-    if ((oldGame != NULL) && (oldGame->SessionCount() == 0))
+    if ((oldGame not_eq NULL) && (oldGame->SessionCount() == 0))
     {
         vuDatabase->Remove(oldGame);
     }
@@ -1079,7 +1079,7 @@ void CampaignClass::EndCampaign()
 
     gMainThread->JoinGame(vuPlayerPoolGroup);
 
-    if ((oldGame != NULL) && (oldGame->SessionCount() == 0))
+    if ((oldGame not_eq NULL) && (oldGame->SessionCount() == 0))
     {
         vuDatabase->Remove(oldGame);
     }
@@ -1807,7 +1807,7 @@ int CampaignClass::RequestScenarioStats(FalconGameEntity *game)
 
     if (IsLoaded())
     {
-        if (game != CurrentGame)
+        if (game not_eq CurrentGame)
         {
             EndCampaign(); // End any current game if it's different
         }
@@ -1824,7 +1824,7 @@ int CampaignClass::RequestScenarioStats(FalconGameEntity *game)
         return 0;
     }
 
-    if (game != CurrentGame)
+    if (game not_eq CurrentGame)
     {
         ClearCurrentPreload();
         gCommsMgr->LookAtGame(game);
@@ -2024,7 +2024,7 @@ void CampaignClass::AddCampaignEvent(CampUIEventElement *newEvent)
 
     if (newEvent->flags & 0x01)
     {
-        if (!PriorityEventQueue or strcmp(PriorityEventQueue->eventText, newEvent->eventText) != 0)
+        if (!PriorityEventQueue or strcmp(PriorityEventQueue->eventText, newEvent->eventText) not_eq 0)
         {
             newEvent->next = PriorityEventQueue;
             PriorityEventQueue = newEvent;
@@ -2039,7 +2039,7 @@ void CampaignClass::AddCampaignEvent(CampUIEventElement *newEvent)
     }
     else
     {
-        if (!StandardEventQueue or strcmp(StandardEventQueue->eventText, newEvent->eventText) != 0)
+        if (!StandardEventQueue or strcmp(StandardEventQueue->eventText, newEvent->eventText) not_eq 0)
         {
             newEvent->next = StandardEventQueue;
             StandardEventQueue = newEvent;
@@ -2303,7 +2303,7 @@ int CampaignClass::IsValidSquadron(int id)
 
 void CampaignClass::ChillTypes(void)
 {
-    if (NumberOfValidTypes > 0 && NumberOfValidTypes != CAMP_FLY_ANY_AIRCRAFT)
+    if (NumberOfValidTypes > 0 && NumberOfValidTypes not_eq CAMP_FLY_ANY_AIRCRAFT)
     {
         NumberOfValidTypes = 0;
         delete [] ValidAircraftTypes;
@@ -2390,7 +2390,7 @@ void Camp_FreeMemory(void)
     delete ASD;
     ASD = NULL;
     //sfr: Real weather destructor shouldnt be here!!
-    /* if (realWeather != NULL){
+    /* if (realWeather not_eq NULL){
      delete realWeather;
      realWeather = NULL;
      }
@@ -2435,7 +2435,7 @@ int ReadVersionNumber(char *saveFile)
 
     CampaignData cd = ReadCampFile(saveFile, "ver");
 
-    if (cd.dataSize != -1)
+    if (cd.dataSize not_eq -1)
     {
         sscanf(cd.data, "%d", &vers);
         delete cd.data;

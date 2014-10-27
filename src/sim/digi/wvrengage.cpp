@@ -40,7 +40,7 @@ void DigitalBrain::WvrEngageCheck(void)
     /*---------------------*/
     /* return if no target */
     /*---------------------*/
-    if (targetPtr == NULL or (mpActionFlags[AI_ENGAGE_TARGET] != AI_AIR_TARGET && missionClass != AAMission && !missionComplete) or curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
+    if (targetPtr == NULL or (mpActionFlags[AI_ENGAGE_TARGET] not_eq AI_AIR_TARGET && missionClass not_eq AAMission && !missionComplete) or curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
     {
         //me123     ClearTarget();
         engagementTimer = 0;
@@ -48,7 +48,7 @@ void DigitalBrain::WvrEngageCheck(void)
     /*-------*/
     /* entry */
     /*-------*/
-    else if (curMode != WVREngageMode && targetData->range < engageRange &&
+    else if (curMode not_eq WVREngageMode && targetData->range < engageRange &&
              (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter()) && // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
              SimLibElapsedTime > engagementTimer &&
              CanEngage(self, self->CombatClass(), targetPtr, WVRManeuver))  // 2002-03-11 MODIFIED BY S.G. Added parameter WVRManeuver
@@ -204,7 +204,7 @@ void DigitalBrain::WvrEngage(void)
                 PrintWVRMode("DIGI WVR STRAIGHT\n");
                 wvrTacticTimer = SimLibElapsedTime + 1500;
 
-                if (lastTactic != wvrCurrTactic)
+                if (lastTactic not_eq wvrCurrTactic)
                 {
                     if (af->theta > 0.0F)
                         holdAlt = max(5000.0F, -self->ZPos());
@@ -218,7 +218,7 @@ void DigitalBrain::WvrEngage(void)
                 PrintWVRMode("DIGI WVR AVOID\n");
                 wvrTacticTimer = SimLibElapsedTime + 1500;
 
-                if (lastTactic != wvrCurrTactic)
+                if (lastTactic not_eq wvrCurrTactic)
                 {
                     holdAlt = max(5000.0F, -self->ZPos());
                 }
@@ -231,7 +231,7 @@ void DigitalBrain::WvrEngage(void)
                 break;
 
             case WVR_BEAM_RETURN:
-                if (lastTactic != wvrCurrTactic)
+                if (lastTactic not_eq wvrCurrTactic)
                 {
                     PrintWVRMode("DIGI WVR BEAM RETURN\n");
                     wvrTacticTimer = SimLibElapsedTime + 10000;
@@ -271,7 +271,7 @@ void DigitalBrain::WvrEngage(void)
                 PrintWVRMode("DIGI WVR BEAM\n");
                 wvrTacticTimer = SimLibElapsedTime + 1500;
 
-                if (lastTactic != wvrCurrTactic)
+                if (lastTactic not_eq wvrCurrTactic)
                 {
                     holdAlt = max(5000.0F, -self->ZPos());
                 }
@@ -309,7 +309,7 @@ void DigitalBrain::WvrEngage(void)
                 PrintWVRMode("DIGI WVR BUGOUT\n");
                 wvrTacticTimer = SimLibElapsedTime + 5000;
 
-                if (lastTactic != wvrCurrTactic)
+                if (lastTactic not_eq wvrCurrTactic)
                 {
                     holdAlt = max(5000.0F, -self->ZPos());
                 }
@@ -515,7 +515,7 @@ void DigitalBrain::WvrChooseTactic(void)
                     wvrCurrTactic = WVR_AVOID;
                 else if (targetData->range > 15.0F * NM_TO_FT)
                     wvrCurrTactic = WVR_BEAM ;//me123 status test chenged from WVR_BEAM_RETURN
-                else if (targetData->range > 10.0F * NM_TO_FT && wvrCurrTactic != WVR_BEAM_RETURN)//me123 status test chenged from >3
+                else if (targetData->range > 10.0F * NM_TO_FT && wvrCurrTactic not_eq WVR_BEAM_RETURN)//me123 status test chenged from >3
                 {
                     wvrCurrTactic = WVR_BEAM_RETURN;
                 }
@@ -591,7 +591,7 @@ void DigitalBrain::WvrRollOutOfPlane(void)
     /*-----------------------*/
     /* first pass, save roll */
     /*-----------------------*/
-    if (wvrPrevTactic != WVR_ROOP)
+    if (wvrPrevTactic not_eq WVR_ROOP)
     {
         /*----------------------------------------------------*/
         /* want to roll toward the vertical but limit to keep */
@@ -637,7 +637,7 @@ void DigitalBrain::WvrOverBank(float delta)
     // Find a new roll angle */
     // relative to target
     //-----------------------*/
-    if (wvrPrevTactic != WVR_OVERB)
+    if (wvrPrevTactic not_eq WVR_OVERB)
     {
         if (self->Roll() > 0.0F)
             newroll = targetData->droll + delta;
@@ -755,7 +755,7 @@ void DigitalBrain::SetThreat(FalconEntity *obj)
 
     // don't pre-empt current threat with a new threat until we've been
     // dealing with the threat for a while unless the threat is NULL
-    if (obj != NULL && threatTimer > 0.0f)
+    if (obj not_eq NULL && threatTimer > 0.0f)
         return;
 
     F4Assert(!obj or !obj->IsSim() or !obj->IsHelicopter());

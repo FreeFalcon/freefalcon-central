@@ -257,7 +257,7 @@ void GetJoystickInput()
         {
             hRes = gpDIDevice[i]->Acquire();
 
-            if (hRes != DI_OK)
+            if (hRes not_eq DI_OK)
             {
 #pragma warning(disable:4127)
                 ShiAssert(false);
@@ -797,13 +797,13 @@ void ProcessJoyButtonAndPOVHat(void)
 
     for (i = 0; i < NumberOfPOVs; i++) // Retro 26Dec2003
     {
-        if (IO.povHatAngle[i] != -1)
+        if (IO.povHatAngle[i] not_eq -1)
         {
             int ID;
             InputFunctionType theFunc;
             int Direction = 0;
 
-            if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) && IO.povHatAngle[i] != -1)
+            if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) && IO.povHatAngle[i] not_eq -1)
                 Direction = 0;
             else if (IO.povHatAngle[i] < 6750)
                 Direction = 1;
@@ -820,7 +820,7 @@ void ProcessJoyButtonAndPOVHat(void)
             else if (IO.povHatAngle[i] < 33750)
                 Direction = 7;
 
-            if (LastDirPOV[i] != Direction)
+            if (LastDirPOV[i] not_eq Direction)
             {
                 theFunc = UserFunctionTable.GetPOVFunction(i, LastDirPOV[i], &ID);
 
@@ -895,7 +895,7 @@ float ReadThrottle(void)
         {
             hRes = gpDIDevice[AxisMap.Throttle.Device]->Acquire();
 
-            if (hRes != DI_OK)
+            if (hRes not_eq DI_OK)
             {
 #pragma warning(disable:4127)
                 ShiAssert(false);
@@ -1131,7 +1131,7 @@ void CheckForMouseAxis(void)
     LPDIRECTINPUTDEVICE8 mouse = 0;
     HRESULT hr = gpDIObject->CreateDevice(GUID_SysMouse, &mouse, NULL);
 
-    if (hr != DI_OK)
+    if (hr not_eq DI_OK)
         return;
 
     hr = mouse->SetDataFormat(&c_dfDIMouse);
@@ -1597,7 +1597,7 @@ BOOL JoystickCreateEffect(DWORD)
         // Check for envelope
         j = GetPrivateProfileInt(effectName, "envelopeAttackLevel", -1, dataFileName);
 
-        if (j != 0xffffffff)
+        if (j not_eq 0xffffffff)
         {
             envelopeHolder.dwSize = sizeof(DIENVELOPE);
             envelopeHolder.dwAttackLevel = j;
@@ -1858,7 +1858,7 @@ void JoystickStopAllEffects(void)
 
     for (i = 0; i < gNumEffectsLoaded; i++)
     {
-        if (i != g_nFFEffectAutoCenter)
+        if (i not_eq g_nFFEffectAutoCenter)
             JoystickStopEffect(i);
     }
 }
@@ -1883,7 +1883,7 @@ void JoystickStopEffect(int effectNum)
 #ifndef NDEBUG
 
     // Retro 14Jan2004
-    if (effectNum != lastStoppedEffect)
+    if (effectNum not_eq lastStoppedEffect)
     {
         lastStoppedEffect = effectNum;
         MonoPrint("Stopped effect %d\n", effectNum);
@@ -1995,7 +1995,7 @@ int JoystickPlayEffect(int effectNum, int data)
 
 #ifndef NDEBUG // Retro 14Feb2004
 
-    if (effectNum != lastStartedEffect)
+    if (effectNum not_eq lastStartedEffect)
     {
         lastStartedEffect = effectNum;
         MonoPrint("Started effect %d\n", effectNum);

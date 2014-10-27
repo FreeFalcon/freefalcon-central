@@ -1307,7 +1307,7 @@ void AirframeClass::Init(int idx)
             // RV - Biker - Check if CL tank is our last weapon (don't count guns)
             for (int i = center + 1; i < platform->Sms->NumHardpoints(); i++)
             {
-                if (platform->Sms->hardPoint[i] && platform->Sms->hardPoint[i]->GetWeaponType() != wtNone)
+                if (platform->Sms->hardPoint[i] && platform->Sms->hardPoint[i]->GetWeaponType() not_eq wtNone)
                     weapons++;
             }
 
@@ -1429,7 +1429,7 @@ void AirframeClass::Init(int idx)
             // RV - Biker - Check if CL tank is our last weapon (don't count guns)
             for (int i = center + 1; i < platform->Sms->NumHardpoints(); i++)
             {
-                if (platform->Sms->hardPoint[i] && platform->Sms->hardPoint[i]->GetWeaponType() != wtNone)
+                if (platform->Sms->hardPoint[i] && platform->Sms->hardPoint[i]->GetWeaponType() not_eq wtNone)
                     weapons++;
             }
 
@@ -1723,7 +1723,7 @@ void AirframeClass::Init(int idx)
             float vflapmin = auxaeroData->maxFlapVcas - auxaeroData->flapVcasRange;
             float vflapmax = auxaeroData->maxFlapVcas;
 
-            if (auxaeroData->hasTef != AUX_LEFTEF_MANUAL)
+            if (auxaeroData->hasTef not_eq AUX_LEFTEF_MANUAL)
                 return;
 
 

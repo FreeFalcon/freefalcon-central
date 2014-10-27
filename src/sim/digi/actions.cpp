@@ -98,7 +98,7 @@ void DigitalBrain::Actions(void)
 #endif
 
     // handle threat above all else
-    if (threatPtr && curMode != TakeoffMode)
+    if (threatPtr && curMode not_eq TakeoffMode)
     {
         if (curMode == MissileDefeatMode)
         {
@@ -116,7 +116,7 @@ void DigitalBrain::Actions(void)
         }
 
         //tell atc we're going to ignore him
-        if (atcstatus != noATC)
+        if (atcstatus not_eq noATC)
         {
             ShiAssert(atcstatus < tReqTaxi);
             SendATCMsg(noATC);
@@ -129,7 +129,7 @@ void DigitalBrain::Actions(void)
     else
     {
         // Mode radar appropriately
-        if (curMode != WaypointMode && theRadar && theRadar->IsAG())
+        if (curMode not_eq WaypointMode && theRadar && theRadar->IsAG())
         {
             theRadar->SetMode(RadarClass::AA);
         }
@@ -294,7 +294,7 @@ void DigitalBrain::Actions(void)
                 /*----------*/
             case SeparateMode:
             case BugoutMode:
-                if (lastMode != BugoutMode && lastMode != SeparateMode && targetPtr)
+                if (lastMode not_eq BugoutMode && lastMode not_eq SeparateMode && targetPtr)
                 {
                     // 2001-10-28 CHANGED BACK M.N. holdAlt is used in AltitudeHold, which needs a positive value
                     // altitude error is calculated as holdAlt + self->ZPos() there !!!
@@ -587,7 +587,7 @@ void DigitalBrain::AirbaseCheck()
         // END OF ADDED SECTION 2002-04-02
 
         // change home base, of course only if it is another than our current one...
-        if (obj && obj->Id() != airbase)
+        if (obj && obj->Id() not_eq airbase)
         {
             airbase = obj->Id();
             moreFlags  or_eq  NewHomebase; // set this so that ResetATC doesn't reset our new airbase

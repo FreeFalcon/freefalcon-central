@@ -35,7 +35,7 @@ bool DigitalBrain::EvaluateTarget(DWORD Type)
     const DWORD *ptr = NonTargets;
 
     // Look in the list
-    while (*ptr && *ptr != Type) ptr++;
+    while (*ptr && *ptr not_eq Type) ptr++;
 
     // Return the result
     return *ptr ? false : true;
@@ -94,7 +94,7 @@ void DigitalBrain::AiRunTargetSelection(void)
     FalconEntity* curSpike = SpikeCheck(self);
 
     // 2001-06-27 ADDED BY S.G. SO WING WILL SET THEIR ECM AS WELL
-    if (curSpike or (flightLead && flightLead != self && flightLead->IsSPJamming()))
+    if (curSpike or (flightLead && flightLead not_eq self && flightLead->IsSPJamming()))
     {
         if (self->HasSPJamming())
         {
@@ -114,7 +114,7 @@ void DigitalBrain::AiRunTargetSelection(void)
     }
     else
     {
-        if (mDesignatedObject != FalconNullId)
+        if (mDesignatedObject not_eq FalconNullId)
         {
             // If target has been designated by the leader
 
@@ -148,7 +148,7 @@ void DigitalBrain::AiRunTargetSelection(void)
         }
         else
         {
-            ShiAssert(curMode != GunsEngageMode);// Otherwise just chill out
+            ShiAssert(curMode not_eq GunsEngageMode);// Otherwise just chill out
             ClearTarget(); // No targets of interest
             AiRestoreWeaponState();
             mpActionFlags[AI_ENGAGE_TARGET] = AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
@@ -218,8 +218,8 @@ void DigitalBrain::AiSearchTargetList(VuEntity* pentity)
     if (theTarget)
     {
         // 2001-05-10 MODIFIED BY S.G. IF WE HAVE A GROUND TARGET AND IT'S OUR TARGET, AVOID DOING THIS AS WELL (WE'RE FINE)
-        //    if (!targetPtr or targetPtr->BaseData() != theTarget)
-        if ((!targetPtr or targetPtr->BaseData() != theTarget) && (!groundTargetPtr or groundTargetPtr->BaseData() != theTarget))
+        //    if (!targetPtr or targetPtr->BaseData() not_eq theTarget)
+        if ((!targetPtr or targetPtr->BaseData() not_eq theTarget) && (!groundTargetPtr or groundTargetPtr->BaseData() not_eq theTarget))
         {
 #ifdef DEBUG
             /*     objectPtr = new SimObjectType (OBJ_TAG, self, theTarget);*/
@@ -234,7 +234,7 @@ void DigitalBrain::AiSearchTargetList(VuEntity* pentity)
     }
     else
     {
-        ShiAssert(curMode != GunsEngageMode);
+        ShiAssert(curMode not_eq GunsEngageMode);
         ClearTarget();
         mDesignatedObject = FalconNullId; // 2002-04-04 ADDED BY S.G. If we are clearing the target, we might as well clear the designated target as well so we leave it alone...
         AddMode(WaypointMode);
@@ -380,7 +380,7 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
         }
 
         // If we didn't reach the end, someone else is using it so skip it.
-        if (j != usComponents)
+        if (j not_eq usComponents)
             continue;
 
         // Mark this sim entity as the first target with a match (in case no emitting targets are left standing, or it's a feature)
@@ -396,8 +396,8 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
 
         // If I have HARMS or no one has any and the entity has a radar, choose it
         // 2001-07-12 S.G. Testing if radar first so it's not becoming an air defense if i have no harms
-        if ((simTarg->IsVehicle() && ((SimVehicleClass *)simTarg)->GetRadarType() != RDR_NO_RADAR) or // It's a vehicle and it has a radar
-            (simTarg->IsStatic() && ((SimStaticClass *)simTarg)->GetRadarType() != RDR_NO_RADAR))  // It's a feature and it has a radar
+        if ((simTarg->IsVehicle() && ((SimVehicleClass *)simTarg)->GetRadarType() not_eq RDR_NO_RADAR) or // It's a vehicle and it has a radar
+            (simTarg->IsStatic() && ((SimStaticClass *)simTarg)->GetRadarType() not_eq RDR_NO_RADAR))  // It's a feature and it has a radar
         {
             // 2001-07-29 S.G. If I was shooting at the campaign object, then I stick to it
             if ((((FlightClass *)self->GetCampaignObject())->shotAt == targetGroup && ((FlightClass *)self->GetCampaignObject())->whoShot == self) or ((((FlightClass *)self->GetCampaignObject())->whoShot == NULL) && (haveHARMS or !otherHaveHARMS)))
@@ -512,7 +512,7 @@ SimBaseClass *DigitalBrain::FindSimAirTarget(CampBaseClass *targetGroup, int tar
         }
 
         // If we didn't reach the end, someone else is using it so skip it.
-        if (j != usComponents)
+        if (j not_eq usComponents)
             continue;
 
         // Mark this sim entity as the first target with a match (in case no emitting targets are left standing, or it's a feature)
@@ -613,7 +613,7 @@ SimBaseClass *DigitalBrain::FindJSOWGroundTarget(CampBaseClass *targetGroup, int
         }
 
         // If we didn't reach the end, someone else is using it so skip it.
-        if (j != usComponents)
+        if (j not_eq usComponents)
             continue;
 
         // Mark this sim entity as the first target with a match (in case no emitting targets are left standing, or it's a feature)
@@ -735,7 +735,7 @@ int DigitalBrain::FindJDAMGroundTarget(CampBaseClass *targetGroup, int targetNum
         }
 
         // If we didn't reach the end, someone else is using it so skip it.
-        if (j != usComponents)
+        if (j not_eq usComponents)
             continue;
 
         // Mark this sim entity as the first target with a match (in case no emitting targets are left standing, or it's a feature)
@@ -799,7 +799,7 @@ void DigitalBrain::AiCheckEngage(void)
     // 2002-03-15 MODIFIED BY S.G. Perform this if mpActionFlags[AI_EXECUTE_MANEUVER] is NOT TRUE+1, since TRUE+1 mean we are doing a maneuver that's limiting the AI's ACTION to specific functions
     // if(mpActionFlags[AI_ENGAGE_TARGET] /* REMOVED BY S.G. && !mpActionFlags[AI_EXECUTE_MANEUVER] */) {
     // if(mpActionFlags[AI_ENGAGE_TARGET] or mWeaponsAction == AI_WEAPONS_FREE) {
-    if ((mpActionFlags[AI_ENGAGE_TARGET] or mWeaponsAction == AI_WEAPONS_FREE) && mpActionFlags[AI_EXECUTE_MANEUVER] != TRUE + 1)
+    if ((mpActionFlags[AI_ENGAGE_TARGET] or mWeaponsAction == AI_WEAPONS_FREE) && mpActionFlags[AI_EXECUTE_MANEUVER] not_eq TRUE + 1)
     {
         MergeCheck();
         BvrEngageCheck();
@@ -921,11 +921,11 @@ void DigitalBrain::AiCheckManeuvers(void)
 void DigitalBrain::AiCheckFormation(void)
 {
     //temp Hack until I can talk to Vince about a better way. DSP
-    // if(mpActionFlags[AI_FOLLOW_FORMATION] && self->curWaypoint->GetWPAction() != WP_LAND) { // If we are ordered to fly in formation
+    // if(mpActionFlags[AI_FOLLOW_FORMATION] && self->curWaypoint->GetWPAction() not_eq WP_LAND) { // If we are ordered to fly in formation
 
     // edg: if the wingy was told to engage a ground target, we must make sure that they
     // will continue on waypoint mode so that they can go thru the ground attack logic
-    if (mpActionFlags[AI_ENGAGE_TARGET] && !mpActionFlags[AI_EXECUTE_MANEUVER] && (agDoctrine != AGD_NONE or groundTargetPtr))
+    if (mpActionFlags[AI_ENGAGE_TARGET] && !mpActionFlags[AI_EXECUTE_MANEUVER] && (agDoctrine not_eq AGD_NONE or groundTargetPtr))
     {
         AddMode(WaypointMode);
     }

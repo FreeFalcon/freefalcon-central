@@ -49,7 +49,7 @@ int SMSClass::LaunchMissile(void)
     if (!CurStationOK() ||
         !curWeapon ||
         Ownship()->OnGround() ||
-        MasterArm() != Arm)
+        MasterArm() not_eq Arm)
     {
         return retval;
     }
@@ -97,7 +97,7 @@ int SMSClass::LaunchMissile(void)
 
         // JB 010109 CTD sanity check
         //if (theMissile->launchState == MissileClass::PreLaunch)
-        if (theMissile->launchState == MissileClass::PreLaunch && curHardpoint != -1)
+        if (theMissile->launchState == MissileClass::PreLaunch && curHardpoint not_eq -1)
             // JB 010109 CTD sanity check
         {
             // Set the missile position on the AC
@@ -124,7 +124,7 @@ int SMSClass::LaunchMissile(void)
             // END OF MOVED SECTION
 
             // Don't hand off ground targets to radar guided air to air missiles
-            if (curWeaponType != wtAim120 or (tmpTargetPtr && !tmpTargetPtr->BaseData()->OnGround()))
+            if (curWeaponType not_eq wtAim120 or (tmpTargetPtr && !tmpTargetPtr->BaseData()->OnGround()))
             {
                 theMissile->Start(tmpTargetPtr);
             }
@@ -416,7 +416,7 @@ int SMSClass::LaunchRocket(void)
     if (!CurStationOK() ||
         !curWeapon ||
         Ownship()->OnGround() ||
-        MasterArm() != Arm)
+        MasterArm() not_eq Arm)
     {
         return retval;
     }
@@ -780,7 +780,7 @@ int SMSClass::SubLaunchRocket(int hpId)
     if (!CurStationOK() ||
         !curWeapon ||
         Ownship()->OnGround() ||
-        MasterArm() != Arm)
+        MasterArm() not_eq Arm)
     {
         return TRUE; // MLR 5/30/2004 - was false
     }

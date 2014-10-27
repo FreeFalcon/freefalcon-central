@@ -802,12 +802,12 @@ void ICPClass::ExecMODEMode(void)
 }
 void ICPClass::UpdateMODEMode(void)
 {
-    if (IN_AA && mICPPrimaryMode != AA_MODE)
+    if (IN_AA && mICPPrimaryMode not_eq AA_MODE)
     {
         CPButtonObject* pButton = OTWDriver.pCockpitManager->GetButtonPointer(ICP_AA_BUTTON_ID);
         SimICPAA1(ICP_AA_BUTTON_ID, KEY_DOWN, pButton);
     }
-    else if (IN_AG && mICPPrimaryMode != AG_MODE)
+    else if (IN_AG && mICPPrimaryMode not_eq AG_MODE)
     {
         CPButtonObject* pButton = OTWDriver.pCockpitManager->GetButtonPointer(ICP_NAV_BUTTON_ID);
         SimICPAG1(ICP_AG_BUTTON_ID, KEY_DOWN, pButton);

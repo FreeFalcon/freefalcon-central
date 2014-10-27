@@ -152,7 +152,7 @@ void HideKeyStatusLines(C_Window *win)
     {
         button = (C_Button *)win->FindControl(KEYCODES + count);
 
-        if (!button or button->GetUserNumber(EDITABLE) != -1)
+        if (!button or button->GetUserNumber(EDITABLE) not_eq -1)
         {
             line->SetFlagBitOn(C_BIT_INVISIBLE);
             line->Refresh();
@@ -176,7 +176,7 @@ void SetButtonColor(C_Button *button)
 
 void RecenterJoystickCB(long, short hittype, C_Base *)
 {
-    if ((hittype != C_TYPE_LMOUSEUP))
+    if ((hittype not_eq C_TYPE_LMOUSEUP))
         return;
 
     SetJoystickCenter();
@@ -298,7 +298,7 @@ void SaveAxisMappings(C_Window* win)
 
                 if (index > -2)
                 {
-                    if (index != -1)
+                    if (index not_eq -1)
                     {
                         UIInputStuff[i].theDeviceAxis->Device = DIAxisNames[index].DXDeviceID;
                         UIInputStuff[i].theDeviceAxis->Axis = DIAxisNames[index].DXAxisID;
@@ -329,7 +329,7 @@ void SaveAxisMappings(C_Window* win)
 /************************************************************************/
 void SetupControlTabsCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     int i = 1;
@@ -353,7 +353,7 @@ void SetupControlTabsCB(long, short hittype, C_Base *control)
 /************************************************************************/
 void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
 {
-    if ((hittype != C_TYPE_LMOUSEUP))
+    if ((hittype not_eq C_TYPE_LMOUSEUP))
         return;
 
     /* pointer to mommy */
@@ -474,7 +474,7 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
 
         button = (C_Button *)win->FindControl(UIInputStuff[j].ReverseBtn);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             if (button->GetState() == C_STATE_1)
                 IO.SetAnalogIsReversed(UIInputStuff[j].InGameAxis, true);
@@ -510,7 +510,7 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
 /************************************************************************/
 void AdvancedControlOKCB(long ID, short hittype, C_Base *control)
 {
-    if ((hittype != C_TYPE_LMOUSEUP))
+    if ((hittype not_eq C_TYPE_LMOUSEUP))
         return;
 
     /* this takes care of saving */
@@ -527,7 +527,7 @@ void AdvancedControlOKCB(long ID, short hittype, C_Base *control)
 /************************************************************************/
 void AdvancedControlCancelCB(long ID, short hittype, C_Base *control)
 {
-    if ((hittype != C_TYPE_LMOUSEUP))
+    if ((hittype not_eq C_TYPE_LMOUSEUP))
         return;
 
     /* just quit without saving */
@@ -539,7 +539,7 @@ void AdvancedControlCancelCB(long ID, short hittype, C_Base *control)
 /************************************************************************/
 void MouseLookCB(long ID, short hittype, C_Base *control)
 {
-    if ((hittype != C_TYPE_LMOUSEUP))
+    if ((hittype not_eq C_TYPE_LMOUSEUP))
     {
         return;
     }
@@ -552,7 +552,7 @@ void MouseLookCB(long ID, short hittype, C_Base *control)
 /************************************************************************/
 void TouchBuddyCB(long ID, short hittype, C_Base *control)
 {
-    if ((hittype != C_TYPE_LMOUSEUP))
+    if ((hittype not_eq C_TYPE_LMOUSEUP))
     {
         return;
     }
@@ -568,7 +568,7 @@ void TouchBuddyCB(long ID, short hittype, C_Base *control)
 /************************************************************************/
 void EnableFFBCB(long ID, short hittype, C_Base *control)
 {
-    if ((hittype != C_TYPE_LMOUSEUP))
+    if ((hittype not_eq C_TYPE_LMOUSEUP))
         return;
 
     C_Button* button = (C_Button*)control;
@@ -588,7 +588,7 @@ void EnableFFBCB(long ID, short hittype, C_Base *control)
 /************************************************************************/
 void ToggleClickableModeCB(long ID, short hittype, C_Base *control)
 {
-    if ((hittype != C_TYPE_LMOUSEUP))
+    if ((hittype not_eq C_TYPE_LMOUSEUP))
         return;
 
     C_Button* button = (C_Button*)control;
@@ -604,7 +604,7 @@ void ToggleClickableModeCB(long ID, short hittype, C_Base *control)
 /************************************************************************/
 void TrackIR2dCB(long ID, short hittype, C_Base *control)
 {
-    if ((hittype != C_TYPE_LMOUSEUP))
+    if ((hittype not_eq C_TYPE_LMOUSEUP))
         return;
 
     C_Button* button = (C_Button*)control;
@@ -623,7 +623,7 @@ void TrackIR2dCB(long ID, short hittype, C_Base *control)
 /************************************************************************/
 void TrackIR3dCB(long ID, short hittype, C_Base *control)
 {
-    if ((hittype != C_TYPE_LMOUSEUP))
+    if ((hittype not_eq C_TYPE_LMOUSEUP))
         return;
 
     C_Button* button = (C_Button*)control;
@@ -640,7 +640,7 @@ void TrackIR3dCB(long ID, short hittype, C_Base *control)
 /************************************************************************/
 void AxisShapingCB(long ID, short hittype, C_Base *control)
 {
-    if ((hittype != C_TYPE_LMOUSEUP))
+    if ((hittype not_eq C_TYPE_LMOUSEUP))
         return;
 
     C_Button* button = (C_Button*)control;
@@ -666,7 +666,7 @@ void AxisShapingCB(long ID, short hittype, C_Base *control)
 /************************************************************************/
 void MouseLookSensitivityCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     if (!control)
@@ -702,7 +702,7 @@ void MouseLookSensitivityCB(long ID, short hittype, C_Base *control)
 /************************************************************************/
 void MouseWheelSensitivityCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     if (!control)
@@ -734,7 +734,7 @@ void MouseWheelSensitivityCB(long ID, short hittype, C_Base *control)
 /************************************************************************/
 void KeyPOVPanningSensitivityCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     if (!control)
@@ -976,7 +976,7 @@ void RePopulateAllListBoxes(C_Window* win)
 /************************************************************************/
 void AxisChangeCB(long, short hittype, C_Base *me)
 {
-    if ((hittype != C_TYPE_SELECT))
+    if ((hittype not_eq C_TYPE_SELECT))
         return;
 
     if (!me)
@@ -1096,7 +1096,7 @@ void AxisChangeCB(long, short hittype, C_Base *me)
 void AdvancedControlCB(long, short hittype, C_Base *)
 {
 
-    if ((hittype != C_TYPE_LMOUSEUP))
+    if ((hittype not_eq C_TYPE_LMOUSEUP))
         return;
 
     /* pointer to mommy */
@@ -1183,7 +1183,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
 
         button = (C_Button *)win->FindControl(UIInputStuff[j].ReverseBtn);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             if (IO.AnalogIsReversed(UIInputStuff[j].InGameAxis) == true)
                 button->SetState(C_STATE_1);
@@ -1199,7 +1199,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     // register tab callbacks
     button = (C_Button *)win->FindControl(SETUP_ADVANCED_FLIGHT_TAB);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetState(C_STATE_0); // 'unpress' this tab
         button->SetCallback(SetupControlTabsCB);
@@ -1209,7 +1209,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
 
     button = (C_Button *)win->FindControl(SETUP_ADVANCED_AVIONICS_TAB);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetState(C_STATE_0); // 'unpress' this tab
         button->SetCallback(SetupControlTabsCB);
@@ -1219,7 +1219,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
 
     button = (C_Button *)win->FindControl(SETUP_ADVANCED_SOUND_TAB);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetState(C_STATE_0); // 'unpress' this tab
         button->SetCallback(SetupControlTabsCB);
@@ -1229,7 +1229,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
 
     button = (C_Button *)win->FindControl(SETUP_ADVANCED_GENERAL_TAB);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetState(C_STATE_1); // fudging the 'General' tab to be pressed
         button->SetCallback(SetupControlTabsCB);
@@ -1242,7 +1242,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
 
     button = (C_Button*)win->FindControl(SETUP_ADVANCED_ENABLE_MOUSELOOK);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.GetMouseLook() == true)
             button->SetState(C_STATE_1);
@@ -1258,7 +1258,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     // touch buddy callback
     button = (C_Button*)win->FindControl(SETUP_ADVANCED_ENABLE_TOUCHBUDDY);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetState(PlayerOptions.GetTouchBuddy() == true ? C_STATE_1 : C_STATE_0);
         button->SetCallback(TouchBuddyCB);
@@ -1273,7 +1273,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     // TrackIR callbacks.. check the funcs itself for more explanation
     button = (C_Button*)win->FindControl(SETUP_ADVANCED_ENABLE_2DTIR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if ((g_bEnableTrackIR == true) && (PlayerOptions.Get2dTrackIR() == true))
             button->SetState(C_STATE_1);
@@ -1289,7 +1289,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     // TrackIR callbacks.. check the funcs itself for more explanation
     button = (C_Button*)win->FindControl(SETUP_ADVANCED_ENABLE_3DTIR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if ((g_bEnableTrackIR == true) && (PlayerOptions.Get3dTrackIR() == true))
             button->SetState(C_STATE_1);
@@ -1305,7 +1305,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     // Retro 27Jan2004 - Axisshaping button + callback
     button = (C_Button*)win->FindControl(SETUP_ADVANCED_ENABLE_AXISSHAPING);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.GetAxisShaping() == true)
             button->SetState(C_STATE_1);
@@ -1325,7 +1325,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     // still need to look at centering though
     button = (C_Button*)win->FindControl(SETUP_ADVANCED_ENABLE_FFB);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if ((hasForceFeedback) && (PlayerOptions.GetFFB()))
             button->SetState(C_STATE_1);
@@ -1342,7 +1342,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     // is activated when entering the 3d cockpit the first time.
     button = (C_Button*)win->FindControl(SETUP_ADVANCED_3DCOCKPIT_DEFAULT);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.GetClickablePitMode()) // if TRUE then we´re in 'clickable mode'
             button->SetState(C_STATE_1);
@@ -1534,17 +1534,17 @@ void RefreshJoystickCB(long, short, C_Base *)
 
     win = gMainHandler->FindWindow(SETUP_WIN);
 
-    if (win != NULL)
+    if (win not_eq NULL)
     {
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
         //test to see if joystick moved, if so update the control
-        if ((IO.analog[AXIS_ROLL].engrValue != JoyXPrev) or (IO.analog[AXIS_PITCH].engrValue != JoyYPrev) or InitializeValueBars) // Retro 31Dec2003
+        if ((IO.analog[AXIS_ROLL].engrValue not_eq JoyXPrev) or (IO.analog[AXIS_PITCH].engrValue not_eq JoyYPrev) or InitializeValueBars) // Retro 31Dec2003
 #endif
         {
             bmap = (C_Bitmap *)win->FindControl(JOY_INDICATOR);
 
-            if (bmap != NULL)
+            if (bmap not_eq NULL)
             {
                 bmap->Refresh();
                 bmap->SetX((int)(JoyScale + IO.analog[AXIS_ROLL].engrValue * JoyScale)); // Retro 31Dec2003
@@ -1559,12 +1559,12 @@ void RefreshJoystickCB(long, short, C_Base *)
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
             //test to see if rudder moved, if so update the control
-            if (((IO.analog[AXIS_YAW].engrValue != RudderPrev) or InitializeValueBars) && state) // Retro 31Dec2003
+            if (((IO.analog[AXIS_YAW].engrValue not_eq RudderPrev) or InitializeValueBars) && state) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(RUDDER);
 
-                if (line != NULL)
+                if (line not_eq NULL)
                 {
                     line->Refresh();
                     line->SetY((int)(Rudder.top + RudderScale - IO.analog[AXIS_YAW].engrValue * RudderScale + .5)); // Retro 31Dec2003
@@ -1585,12 +1585,12 @@ void RefreshJoystickCB(long, short, C_Base *)
         {
             //test to see if throttle moved, if so update the control
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
-            if (((IO.analog[AXIS_THROTTLE].engrValue != ThrottlePrev) or InitializeValueBars) && state) // Retro 31Dec2003
+            if (((IO.analog[AXIS_THROTTLE].engrValue not_eq ThrottlePrev) or InitializeValueBars) && state) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(THROTTLE);
 
-                if (line != NULL)
+                if (line not_eq NULL)
                 {
                     line->Refresh();
                     line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE].ioVal / 15000.0F * ThrottleScale + .5))); // Retro 31Dec2003
@@ -1609,7 +1609,7 @@ void RefreshJoystickCB(long, short, C_Base *)
             // Retro 13Jan2004 - dual throttle display =)
             line = (C_Line *)win->FindControl(THROTTLE2);
 
-            if (line != NULL)
+            if (line not_eq NULL)
             {
                 line->Refresh();
 
@@ -1632,12 +1632,12 @@ void RefreshJoystickCB(long, short, C_Base *)
 
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
-            if (ABDetentPrev != IO.analog[AXIS_THROTTLE].center or InitializeValueBars) // Retro 31Dec2003
+            if (ABDetentPrev not_eq IO.analog[AXIS_THROTTLE].center or InitializeValueBars) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(AB_DETENT);
 
-                if (line != NULL)
+                if (line not_eq NULL)
                 {
                     line->Refresh();
                     line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE].center / 15000.0F * ThrottleScale + .5))); // Retro 31Dec2003
@@ -1654,12 +1654,12 @@ void RefreshJoystickCB(long, short, C_Base *)
 
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
-            if (IdleCutoffPrev != IO.analog[AXIS_THROTTLE].cutoff or InitializeValueBars) // Retro 31Dec2003
+            if (IdleCutoffPrev not_eq IO.analog[AXIS_THROTTLE].cutoff or InitializeValueBars) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(SETUP_IDLE_CUTOFF);
 
-                if (line != NULL)
+                if (line not_eq NULL)
                 {
                     line->Refresh();
                     line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE].cutoff / 15000.0F * ThrottleScale + .5))); // Retro 31Dec2003
@@ -1683,7 +1683,7 @@ void RefreshJoystickCB(long, short, C_Base *)
             // Retro 31Dec2003:
             // actually I only want to show the buttons on the flight control device here..
             // if FFB is enabled then the user also gets effects
-            if (AxisMap.FlightControlDevice != -1)
+            if (AxisMap.FlightControlDevice not_eq -1)
             {
                 int theIndex = (AxisMap.FlightControlDevice - SIM_JOYSTICK1) * SIMLIB_MAX_DIGITAL;
 
@@ -1706,7 +1706,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
                     button = (C_Button *)win->FindControl(J1 + i % 8);
 
-                    if (button != NULL)
+                    if (button not_eq NULL)
                     {
                         if (IO.digital[i])
                             button->SetState(C_STATE_1);
@@ -1809,7 +1809,7 @@ void RefreshJoystickCB(long, short, C_Base *)
         {
             Direction = 0;
 
-            if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) && IO.povHatAngle[i] != -1)
+            if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) && IO.povHatAngle[i] not_eq -1)
             {
                 flags  or_eq  0x01;
                 Direction = 0;
@@ -1850,7 +1850,7 @@ void RefreshJoystickCB(long, short, C_Base *)
                 Direction = 7;
             }
 
-            if (KeyVar.EditKey && IO.povHatAngle[i] != -1)
+            if (KeyVar.EditKey && IO.povHatAngle[i] not_eq -1)
             {
                 C_Button *button;
 
@@ -1863,7 +1863,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
             C_Text *text = (C_Text *)win->FindControl(FUNCTION_LIST);
 
-            if (text && IO.povHatAngle[i] != -1)
+            if (text && IO.povHatAngle[i] not_eq -1)
             {
                 C_Text *text2 = (C_Text *)win->FindControl(CONTROL_KEYS);
 
@@ -1924,7 +1924,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
         button = (C_Button *)win->FindControl(UP_HAT);
 
-        if (button != NULL && button->GetState() != C_STATE_DISABLED)
+        if (button not_eq NULL && button->GetState() not_eq C_STATE_DISABLED)
         {
             if (flags & 0x01)
                 button->SetState(C_STATE_1);
@@ -1936,7 +1936,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
         button = (C_Button *)win->FindControl(RIGHT_HAT);
 
-        if (button != NULL && button->GetState() != C_STATE_DISABLED)
+        if (button not_eq NULL && button->GetState() not_eq C_STATE_DISABLED)
         {
             if (flags & 0x02)
                 button->SetState(C_STATE_1);
@@ -1948,7 +1948,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
         button = (C_Button *)win->FindControl(DOWN_HAT);
 
-        if (button != NULL && button->GetState() != C_STATE_DISABLED)
+        if (button not_eq NULL && button->GetState() not_eq C_STATE_DISABLED)
         {
             if (flags & 0x04)
                 button->SetState(C_STATE_1);
@@ -1960,7 +1960,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
         button = (C_Button *)win->FindControl(LEFT_HAT);
 
-        if (button != NULL && button->GetState() != C_STATE_DISABLED)
+        if (button not_eq NULL && button->GetState() not_eq C_STATE_DISABLED)
         {
             if (flags & 0x08)
                 button->SetState(C_STATE_1);
@@ -1997,7 +1997,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
         line = (C_Line *)win->FindControl(UIInputStuff[i].AxisValueBar);
 
-        if (line != NULL)
+        if (line not_eq NULL)
         {
             line->Refresh();
 
@@ -2045,7 +2045,7 @@ SIM_INT CalibrateFile(void)
 
     filePtr = fopen(fileName, "rb");
 
-    if (filePtr != NULL)
+    if (filePtr not_eq NULL)
     {
         fread(&numAxis, sizeof(int), 1, filePtr);
 
@@ -2136,7 +2136,7 @@ SIM_INT Calibrate ( void )
  if(Calibration.disp_text)
  {
  MonoPrint ("Center the joystick, throttle, and rudder and push a button.\n");
- if(text != NULL)
+ if(text not_eq NULL)
  {
  text->Refresh();
  text->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -2213,7 +2213,7 @@ SIM_INT Calibrate ( void )
  if(Calibration.disp_text)
  {
  MonoPrint ("Move the joystick to the corners and push a button.\n");
- if(text != NULL)
+ if(text not_eq NULL)
  {
  text->Refresh();
  text->SetText(TXT_MV_JOY);
@@ -2245,7 +2245,7 @@ SIM_INT Calibrate ( void )
  if(Calibration.disp_text)
  {
  MonoPrint ("Move the throttle to the ends and push a button\n");
- if(text != NULL && IO.analog[2].isUsed)
+ if(text not_eq NULL && IO.analog[2].isUsed)
  {
  text->Refresh();
  text->SetText(TXT_MV_THR);
@@ -2279,7 +2279,7 @@ SIM_INT Calibrate ( void )
  if(Calibration.disp_text)
  {
  MonoPrint ("Move the rudder to the ends and push a button\n");
- if(text != NULL && IO.analog[3].isUsed)
+ if(text not_eq NULL && IO.analog[3].isUsed)
  {
  text->Refresh();
  text->SetText(TXT_MV_RUD);
@@ -2349,7 +2349,7 @@ SIM_INT Calibrate ( void )
 
 
 
- if(text != NULL)
+ if(text not_eq NULL)
  {
  text->Refresh();
  text->SetFlagBitOn(C_BIT_INVISIBLE);
@@ -2401,7 +2401,7 @@ SIM_INT Calibrate ( void )
 
 void CalibrateCB(long ID,short hittype,C_Base *control)
 {
- if((hittype != C_TYPE_LMOUSEUP))
+ if((hittype not_eq C_TYPE_LMOUSEUP))
  return;
 
  Calibration.calibrating = 1;
@@ -2488,7 +2488,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
             KeyVar.CommandsKeyComboMod = (button->GetUserNumber(FLAGS) & MOD1_MASK) >> SECOND_KEY_MOD_SHIFT;
 
             //here is where we need to change the key combo for the function
-            if (DKScanCode != button->GetUserNumber(KEY2) or flags != button->GetUserNumber(FLAGS))
+            if (DKScanCode not_eq button->GetUserNumber(KEY2) or flags not_eq button->GetUserNumber(FLAGS))
             {
                 char keydescrip[_MAX_PATH];
                 keydescrip[0] = 0;
@@ -2741,7 +2741,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
 
 void KeycodeCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (KeyVar.EditKey)
@@ -2989,7 +2989,7 @@ int SetHdrStatusLine(C_Window *win, C_Button *Keycodes, C_Line *Vline, KeyMap &M
 
     if (line)
     {
-        if (Map.editable != -1)
+        if (Map.editable not_eq -1)
         {
             line->SetFlagBitOn(C_BIT_INVISIBLE);
         }
@@ -3027,7 +3027,7 @@ int SetHdrStatusLine(C_Window *win, C_Button *Keycodes, C_Line *Vline, KeyMap &M
             line->Refresh();
 
             //this is a header, so we put a lt blue line behind it
-            if (Map.editable != -1)
+            if (Map.editable not_eq -1)
             {
                 line->SetFlagBitOn(C_BIT_INVISIBLE);
             }
@@ -3162,7 +3162,7 @@ void SaveKeyCB(long, short hittype, C_Base *control)
     C_EditBox * ebox;
     _TCHAR fname[MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(SAVE_WIN);
@@ -3196,7 +3196,7 @@ void VerifySaveKeyCB(long ID, short hittype, C_Base *control)
     _TCHAR fname[MAX_PATH];
     FILE *fp;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
@@ -3230,7 +3230,7 @@ void VerifySaveKeyCB(long ID, short hittype, C_Base *control)
 
 void SaveKeyButtonCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetDeleteCallback(DelKeyFileCB);
@@ -3453,7 +3453,7 @@ void LoadKeyCB(long, short hittype, C_Base *control)
     C_EditBox * ebox;
     _TCHAR fname[MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->HideWindow(control->Parent_);
@@ -3482,7 +3482,7 @@ void LoadKeyCB(long, short hittype, C_Base *control)
 
 void LoadKeyButtonCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetDeleteCallback(DelKeyFileCB);
@@ -3658,7 +3658,7 @@ void SetJoystickAndPOVSymbols(const bool isActive, C_Base *control)
     {
         button = (C_Button *)control->Parent_->FindControl(POVSymbols[i]);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             if (!isActive)
                 button->SetFlagBitOn(C_BIT_INVISIBLE);
@@ -3685,7 +3685,7 @@ void SetThrottleAndRudderBars(C_Base *control)
     /* do throttle mumbo-jumbo */
     line = (C_Line *)control->Parent_->FindControl(THROTTLE);
 
-    if (line != NULL)
+    if (line not_eq NULL)
     {
         // line->Refresh();
         if (!IO.AnalogIsUsed(AXIS_THROTTLE))
@@ -3697,7 +3697,7 @@ void SetThrottleAndRudderBars(C_Base *control)
 
             line = (C_Line *)control->Parent_->FindControl(THROTTLE2);
 
-            if (line != NULL)
+            if (line not_eq NULL)
             {
                 line->SetColor(RGB(130, 130, 130)); //grey
                 line->SetH(Throttle.bottom - Throttle.top);
@@ -3715,7 +3715,7 @@ void SetThrottleAndRudderBars(C_Base *control)
             line->Refresh();
             line = (C_Line *)control->Parent_->FindControl(THROTTLE2);
 
-            if (line != NULL)
+            if (line not_eq NULL)
             {
                 line->SetColor(RGB(60, 123, 168)); //blue
                 line->Refresh();
@@ -3735,7 +3735,7 @@ void SetThrottleAndRudderBars(C_Base *control)
     /* same shit for rudder */
     line = (C_Line *)control->Parent_->FindControl(RUDDER);
 
-    if (line != NULL)
+    if (line not_eq NULL)
     {
         line->Refresh();
 
@@ -3758,7 +3758,7 @@ void SetThrottleAndRudderBars(C_Base *control)
 /************************************************************************/
 void ControllerSelectCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     /************************************************************************/
@@ -3826,7 +3826,7 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
         {
             button = (C_Button *)control->Parent_->FindControl(POVSymbols[i]);
 
-            if (button != NULL)
+            if (button not_eq NULL)
             {
                 if (!hasPOV)
                     button->SetFlagBitOn(C_BIT_INVISIBLE);

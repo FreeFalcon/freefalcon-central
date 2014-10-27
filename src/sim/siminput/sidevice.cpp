@@ -149,7 +149,7 @@ BOOL SetupDIDevice(HWND hWnd, BOOL Exclusive, int DeviceIndex,
     if (SetupResult)
     {
         gphDeviceEvent[DeviceIndex] = CreateEvent(0, 0, 0, 0);
-        SetupResult = (gphDeviceEvent[DeviceIndex] != NULL);
+        SetupResult = (gphDeviceEvent[DeviceIndex] not_eq NULL);
     }
 
     // Associate the event with the device

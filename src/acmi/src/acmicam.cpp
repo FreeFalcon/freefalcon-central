@@ -12,6 +12,7 @@
 
    ------------------------------------------------------------------------ */
 
+#include <cISO646>
 #include <windows.h>
 #include <conio.h>
 #include <stdio.h>
@@ -496,7 +497,7 @@ void ACMICamera::TrackPoint(const Tpoint &trackingPt)
             )
         );
 
-    if (deltaRange != 0.0F)
+    if (deltaRange not_eq 0.0F)
     {
         deltaRange = (deltaZ / deltaRange);
     }

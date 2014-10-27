@@ -104,7 +104,7 @@ void HeliBrain::SensorFusion(void)
         /*----------*/
         /* aircraft */
         /*----------*/
-        else if ((pcId != ID_NONE) && (pcId < ID_NEUTRAL))
+        else if ((pcId not_eq ID_NONE) && (pcId < ID_NEUTRAL))
         {
             /*-------------------------*/
             /* time to turn to ownship */

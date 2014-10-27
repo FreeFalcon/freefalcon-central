@@ -210,7 +210,7 @@ MoveType GroundUnitClass::GetObjMovementType(Objective o, int n)
     UnitClassDataType* uc;
     MoveType amt;
 
-    if (GetSType() != STYPE_UNIT_AIRMOBILE && GetSType() != STYPE_UNIT_MARINE)
+    if (GetSType() not_eq STYPE_UNIT_AIRMOBILE && GetSType() not_eq STYPE_UNIT_MARINE)
         return GetMovementType();
 
     uc = GetUnitClassData();
@@ -271,7 +271,7 @@ int GroundUnitClass::DetectOnMove(void)
 
     while (o)
     {
-        if (o->GetTeam() != who)
+        if (o->GetTeam() not_eq who)
         {
             capture = 0;
             DetectVs(o, &d, &combat, &spot, &capture, &nomove, &estr);
@@ -404,7 +404,7 @@ int GroundUnitClass::ChooseTarget(void)
                     SetEmitting(1);
 
                     // 2002-03-22 ADDED BY S.G. Since someone else was searching for us (that's why we were off), make sure the next radar step will be FEC_RADAR_AQUIRE
-                    if (GetRadarMode() < FEC_RADAR_AQUIRE && GetRadarMode() != FEC_RADAR_SEARCH_100)
+                    if (GetRadarMode() < FEC_RADAR_AQUIRE && GetRadarMode() not_eq FEC_RADAR_SEARCH_100)
                     {
                         SetStepSearchMode(FEC_RADAR_AQUIRE);
                         SetRadarMode(FEC_RADAR_CHANGEMODE);
@@ -757,7 +757,7 @@ Unit BestElement(Unit u, int at, int role)
                 case GRO_AIRDEFENSE:
                 case GRO_FIRESUPPORT:
                 case GRO_ENGINEER:
-                    if (uc->Role != role)
+                    if (uc->Role not_eq role)
                         s = -1;
                     else
                         s = e->GetTotalVehicles() * uc->Scores[role];  // s = e->GetUnitGROScore(role)
@@ -894,7 +894,7 @@ int BuildGroundWP(Unit u)
 
     us = u->GetTeam();
 
-    if (u->GetType() == TYPE_BATTALION && ((Battalion)u)->last_obj != FalconNullId)
+    if (u->GetType() == TYPE_BATTALION && ((Battalion)u)->last_obj not_eq FalconNullId)
         o = FindObjective(((Battalion)u)->last_obj);
     else
         o = FindNearestObjective(ux, uy, NULL);
@@ -1077,7 +1077,7 @@ int BuildGroundWP(Unit u)
         //// Also - limit to first unit element if moving in brigade column,
         //// so we don't generate a request for every battalion in a brigade
         if (time - Camp_GetCurrentTime() < 60 * CampaignMinutes &&
-            (!u->GetUnitElement() or u->GetUnitTactic() != GTACTIC_MOVE_BRIGADE_COLUMN))
+            (!u->GetUnitElement() or u->GetUnitTactic() not_eq GTACTIC_MOVE_BRIGADE_COLUMN))
         {
             // if (n->GetType() == TYPE_BRIDGE && (n->GetTeam() == us or TeamInfo[n->GetTeam()]->GetInitiative() < 40))
             // {
@@ -1202,7 +1202,7 @@ int SOSecured(Objective o, Team who)
     Objective n, nn;
     int i, j;
 
-    if (o->GetTeam() != who)
+    if (o->GetTeam() not_eq who)
         return 0;
 
     for (i = 0; i < o->NumLinks(); i++)
@@ -1211,7 +1211,7 @@ int SOSecured(Objective o, Team who)
 
         if (n && n->GetObjectiveParentID() == o->Id())
         {
-            if (n->GetTeam() != who)
+            if (n->GetTeam() not_eq who)
                 return 0;
 
             for (j = 0; j < n->NumLinks(); j++)
@@ -1220,7 +1220,7 @@ int SOSecured(Objective o, Team who)
 
                 if (nn && nn->GetObjectiveParentID() == o->Id())
                 {
-                    if (nn->GetTeam() != who)
+                    if (nn->GetTeam() not_eq who)
                         return 0;
                 }
             }
@@ -1304,7 +1304,7 @@ return h;
 //  Got rid of this -\v because two moving units would never pass each other.
 // else if (e->Moving() && !e->Engaged())
 // return Here; // It's moving, just wait your turn..
-else if (e->GetTeam() != u->GetTeam())
+else if (e->GetTeam() not_eq u->GetTeam())
 bh = Here; // Never move through enemy units
 else
 bh = h; // We'll go ahead and move if it's a friendly and no way around
@@ -1325,7 +1325,7 @@ bh = ah;
 bd = d;
 }
 }
-if (bh != h)
+if (bh not_eq h)
 u->ClearUnitPath();
 return bh;
 }
@@ -1393,7 +1393,7 @@ int PositionToSupportUnit(Battalion e)
 
     while (me)
     {
-        if (me->GetUnitOrders() != GORD_SUPPORT && OrderPriority[me->GetUnitOrders()] > bp)
+        if (me->GetUnitOrders() not_eq GORD_SUPPORT && OrderPriority[me->GetUnitOrders()] > bp)
         {
             bp = OrderPriority[me->GetUnitOrders()];
             bo = me->GetUnitObjective();
@@ -1465,7 +1465,7 @@ int ScorePosition(Unit battalion, int role, int role_score, Objective o, GridInd
     o->GetLocation(&ox, &oy);
 
     // Check if this is a busted bridge
-    if (role != GRO_ENGINEER && o->GetType() == TYPE_BRIDGE && !o->GetObjectiveStatus())
+    if (role not_eq GRO_ENGINEER && o->GetType() == TYPE_BRIDGE && !o->GetObjectiveStatus())
         return -32000;
 
     switch (role)
@@ -1589,7 +1589,7 @@ Objective FindBestPosition(Unit battalion, Brigade brigade, int role, F4PFList n
         // Check for invalid offensive objectives
         if (!owned_by_us)
         {
-            if (brigade->GetUnitCurrentRole() != GRO_ATTACK or !o->IsFrontline() or GetRoE(our_team, o->GetTeam(), ROE_GROUND_CAPTURE) != ROE_ALLOWED)
+            if (brigade->GetUnitCurrentRole() not_eq GRO_ATTACK or !o->IsFrontline() or GetRoE(our_team, o->GetTeam(), ROE_GROUND_CAPTURE) not_eq ROE_ALLOWED)
             {
                 nearlist->Remove(o);
                 continue;
@@ -1597,7 +1597,7 @@ Objective FindBestPosition(Unit battalion, Brigade brigade, int role, F4PFList n
 
             p = o->GetObjectiveParent();
 
-            if (!o->IsSecondary() && (!p or (p->Id() != brigade->GetUnitObjectiveID() && p->GetTeam() != our_team)))
+            if (!o->IsSecondary() && (!p or (p->Id() not_eq brigade->GetUnitObjectiveID() && p->GetTeam() not_eq our_team)))
             {
                 nearlist->Remove(o);
                 continue;
@@ -1617,7 +1617,7 @@ Objective FindBestPosition(Unit battalion, Brigade brigade, int role, F4PFList n
 
         while (other_battalion)
         {
-            if (other_battalion != battalion && other_battalion->Assigned() && other_battalion->GetUnitObjectiveID() == o->Id())
+            if (other_battalion not_eq battalion && other_battalion->Assigned() && other_battalion->GetUnitObjectiveID() == o->Id())
             {
                 // This guy's already assigned - check his score
                 int other_role, other_role_score, other_score;
@@ -1626,7 +1626,7 @@ Objective FindBestPosition(Unit battalion, Brigade brigade, int role, F4PFList n
                 other_role_score = other_battalion->GetUnitRoleScore(other_role, CALC_MAX, USE_VEH_COUNT);
                 other_battalion->GetLocation(&oex, &oey);
 
-                if ((role != GRO_FIRESUPPORT && other_role != GRO_FIRESUPPORT) or role == other_role)
+                if ((role not_eq GRO_FIRESUPPORT && other_role not_eq GRO_FIRESUPPORT) or role == other_role)
                 {
                     other_score = ScorePosition(other_battalion, other_role, other_role_score, o, oex, oey, owned_by_us);
 
@@ -2012,7 +2012,7 @@ int RequestAirborneTransport(Unit u)
     MissionRequestClass mis;
 
     // Check if we've already made a request
-    if (u->GetCargoId() != FalconNullId)
+    if (u->GetCargoId() not_eq FalconNullId)
         return 1;
 
     // Mark unit as waiting for a transport reply. If we get a replay before we time out,
@@ -2440,12 +2440,12 @@ void GroundUnitClass::SetPObj(VU_ID id)
 
 void GroundUnitClass::MakeGndUnitDirty(Dirty_Ground_Unit bits, Dirtyness score)
 {
-    if ((!IsLocal()) or (VuState() != VU_MEM_ACTIVE))
+    if ((!IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
 
-    if (!IsAggregate() && (score != SEND_RELIABLEANDOOB))
+    if (!IsAggregate() && (score not_eq SEND_RELIABLEANDOOB))
     {
         score = static_cast<Dirtyness>(score << 4);
     }

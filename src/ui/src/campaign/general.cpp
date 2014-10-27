@@ -249,7 +249,7 @@ _TCHAR *UI_WordWrap(C_Window *win, _TCHAR *str, long fontid, short width, BOOL *
     while (!done)
     {
         // find a space
-        while (WordPtr[i] != ' ' && (WordPtr[i] > 31))
+        while (WordPtr[i] not_eq ' ' && (WordPtr[i] > 31))
             i++;
 
         if (i)
@@ -434,7 +434,7 @@ void GetFileList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[], long clien
     if (!win or !cb) return;
 
     ffhnd = FindFirstFile(fspec, &filedata);
-    last = (ffhnd != INVALID_HANDLE_VALUE);
+    last = (ffhnd not_eq INVALID_HANDLE_VALUE);
 
     while (last)
     {
@@ -542,7 +542,7 @@ void GetFileListTree(C_TreeList *tree, _TCHAR *fspec, _TCHAR *excludelist[], lon
         UniqueID++;
 
     ffhnd = FindFirstFile(fspec, &filedata);
-    last = (ffhnd != INVALID_HANDLE_VALUE);
+    last = (ffhnd not_eq INVALID_HANDLE_VALUE);
 
     while (last)
     {
@@ -613,7 +613,7 @@ void GetFileListTree(C_TreeList *tree, _TCHAR *fspec, _TCHAR *excludelist[], lon
         last = FindNextFile(ffhnd, &filedata);
     }
 
-    if (ffhnd != INVALID_HANDLE_VALUE)
+    if (ffhnd not_eq INVALID_HANDLE_VALUE)
         FindClose(ffhnd);
 
     tree->SetUserNumber(0, UniqueID);
@@ -713,7 +713,7 @@ static void LoadVirtualSelectFileCB(long, short hittype, C_Base *control)
     C_Button *btn;
     TREELIST *item;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (control)
@@ -1469,7 +1469,7 @@ void GetMissionTarget(Package curpackage, Flight curflight, _TCHAR Buffer[])
     CampEntity ent;
     GridIndex x = 0, y = 0;
 
-    if (((curflight) && (curflight->GetUnitMission() != AMIS_ABORT)) or (!curflight))
+    if (((curflight) && (curflight->GetUnitMission() not_eq AMIS_ABORT)) or (!curflight))
     {
         ent = FindEntity(curpackage->GetMissionRequest()->targetID);
 
@@ -1628,7 +1628,7 @@ void UpdateMissionWindow(long ID)
 
         if (curflight)
         {
-            while (curflight->plane_stats[planecount] != AIRCRAFT_NOT_ASSIGNED && planecount < PILOTS_PER_FLIGHT)
+            while (curflight->plane_stats[planecount] not_eq AIRCRAFT_NOT_ASSIGNED && planecount < PILOTS_PER_FLIGHT)
                 planecount++;
         }
 
@@ -1723,7 +1723,7 @@ void UpdateMissionWindow(long ID)
 
             // Get Mission string
 
-            if ((curflight != NULL) && (curflight->GetUnitMission() != AMIS_ABORT))
+            if ((curflight not_eq NULL) && (curflight->GetUnitMission() not_eq AMIS_ABORT))
             {
                 GetMissionTarget(curpackage, curflight, Buffer);
 
@@ -2208,7 +2208,7 @@ void UpdateIntelBarCB(long ID, short hittype, C_Base *control)
     C_Window *win;
     C_ListBox *lbox;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     lbox = (C_ListBox *)control;
@@ -2648,7 +2648,7 @@ void RelocateSquadron()
 // Screen shot HACK stuff
 void CloseItCB(long, short hit, C_Base *ctrl)
 {
-    if (hit != C_TYPE_LMOUSEUP)
+    if (hit not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->HideWindow(ctrl->Parent_);
@@ -2690,7 +2690,7 @@ void SaveTargaCB(long, short hittype, C_Base *control)
     FILE *fp;
     long y, i;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->HideWindow(control->Parent_);

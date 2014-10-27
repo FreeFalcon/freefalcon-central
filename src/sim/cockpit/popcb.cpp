@@ -66,7 +66,7 @@ BOOL CBTestForTarget(int callerIdx, int numInFlight, int extent, BOOL isPolling,
 
     if (CBCheckExtent(callerIdx, numInFlight, extent, isPolling, tgtId))
     {
-        if (tgtId != FalconNullId)
+        if (tgtId not_eq FalconNullId)
         {
             retVal = TRUE;
         }

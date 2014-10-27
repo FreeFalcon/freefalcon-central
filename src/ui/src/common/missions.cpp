@@ -174,14 +174,14 @@ void CheckCampaignFlyButton()
     if ((gCommsMgr) && (gCommsMgr->Online()))
     {
         // Don't care about restricting access when online
-        if (flt && plane != 255)
+        if (flt && plane not_eq 255)
             Enabled = 1;
     }
     else
     {
         // OW - sylvains checkfly fix
 #if 1
-        if (flt && plane != 255 && GetFlightStatusID(flt) < _MIS_EGRESS)
+        if (flt && plane not_eq 255 && GetFlightStatusID(flt) < _MIS_EGRESS)
             // ADDED BY S.G. SO UNINITIALIZED FLIGHTS CAN'T TAKE OFF
         {
             int i, dontEnable = 0;
@@ -202,7 +202,7 @@ void CheckCampaignFlyButton()
 
 #else
 
-        if (flt && plane != 255 && GetFlightStatusID(flt) < _MIS_EGRESS)
+        if (flt && plane not_eq 255 && GetFlightStatusID(flt) < _MIS_EGRESS)
             Enabled = 1;
 
 #endif
@@ -273,7 +273,7 @@ static void MissionSelectCB(long, short hittype, C_Base *control)
     Flight flight;
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     Leave = UI_Enter(control->Parent_);
@@ -426,14 +426,14 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
 
     if (TheCampaign.Flags & CAMP_TACTICAL)
     {
-        if (element->GetOwner() != FalconLocalSession->GetTeam())
+        if (element->GetOwner() not_eq FalconLocalSession->GetTeam())
         {
             return NULL;
         }
     }
     else
     {
-        if (element->GetUnitSquadronID() != FalconLocalSession->GetPlayerSquadronID())
+        if (element->GetUnitSquadronID() not_eq FalconLocalSession->GetPlayerSquadronID())
             return(NULL);
     }
 

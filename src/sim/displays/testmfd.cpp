@@ -127,11 +127,11 @@ void TestMfdDrawable::Display(VirtualDisplay* newDisplay)
     display = newDisplay;
 
     ShiAssert(bitpage >= 0 && bitpage < sizeof(mfdpages) / sizeof(mfdpages[0]));
-    ShiAssert(display != NULL);
+    ShiAssert(display not_eq NULL);
 
     const MfdTestButtons *mb = mfdpages[bitpage].buttons;
     AircraftClass *self = MfdDisplay[OnMFD()]->GetOwnShip();
-    ShiAssert(self != NULL);
+    ShiAssert(self not_eq NULL);
 
     //MI changed
     if (g_bRealisticAvionics)

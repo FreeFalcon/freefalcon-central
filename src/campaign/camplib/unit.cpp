@@ -208,7 +208,7 @@ extern int displayCampaign;
 // void Report() {
 // MonoPrint("%d (%d) units of %d left\n", gUnitCount, unitlist.size(), maxoccupancy);
 // ID2UNIT::iterator it;
-// for(it = unitlist.begin(); it != unitlist.end(); it++) {
+// for(it = unitlist.begin(); it not_eq unitlist.end(); it++) {
 // UnitClass *ent = (*it).second;
 // MonoPrint("Unit left %d campid %d ref %d\n", (*it).first,
 // ent->GetCampId(), ent->RefCount());
@@ -605,8 +605,8 @@ int UnitClass::ApplyDamage(FalconCampWeaponsFire *cwfm, uchar bonusToHit)
     // Since this person is shooting at us, check if they're a higher concern than our current target.
     // If so, set our target to them and choose a new tactic.
     // 2001-07-31 MODIFIED BY S.G. SO GROUND UNIT ARE NOT CAUSING A REACTION.
-    // if (IsFlight() && shooter->Id() != GetTargetID())
-    if (IsFlight() && !shooter->OnGround() && shooter->Id() != GetTargetID())
+    // if (IsFlight() && shooter->Id() not_eq GetTargetID())
+    if (IsFlight() && !shooter->OnGround() && shooter->Id() not_eq GetTargetID())
     {
         float d;
         int c, s, e, r = 0;
@@ -833,7 +833,7 @@ int UnitClass::ApplyDamage(DamType d, int* str, int where, short flags)
     }
 
     // Make sure we hit something if our target is gone
-    if (where != 255 && !GetNumVehicles(where))
+    if (where not_eq 255 && !GetNumVehicles(where))
     {
         where = 255;
     }
@@ -844,7 +844,7 @@ int UnitClass::ApplyDamage(DamType d, int* str, int where, short flags)
     while (*str > 0 && vehs && count < MAX_DAMAGE_TRIES)
     {
         // Small units can avoid damage simply by not finding a vehicle
-        if (where != 255)
+        if (where not_eq 255)
         {
             v = where;
         }
@@ -1227,7 +1227,7 @@ void UnitClass::SendDeaggregateData(VuTargetEntity *target)
 
         for (
             vehicle = static_cast<SimVehicleClass*>(myit.GetFirst());
-            vehicle != NULL;
+            vehicle not_eq NULL;
             vehicle = static_cast<SimVehicleClass*>(myit.GetNext())
         )
         {
@@ -1574,7 +1574,7 @@ int UnitClass::Deaggregate(FalconSessionEntity* session)
 
     CampBaseClass *base = GetUnitAirbase();
 
-    if (base != NULL && GetCurrentWaypoint() == 1)
+    if (base not_eq NULL && GetCurrentWaypoint() == 1)
     {
         // for airbases, add to runway lists
         ATCBrain *brain = NULL;
@@ -1676,7 +1676,7 @@ int UnitClass::Deaggregate(FalconSessionEntity* session)
     simdata.createType = SimInitDataClass::CampaignVehicle;
     simdata.createFlags = SIDC_SILENT_INSERT;
 
-    if (session != FalconLocalSession)
+    if (session not_eq FalconLocalSession)
     {
         simdata.createFlags  or_eq  SIDC_REMOTE_OWNER;
         simdata.owner = session;
@@ -1705,7 +1705,7 @@ int UnitClass::Deaggregate(FalconSessionEntity* session)
                 // so if we do not find the DF variant, use the common one
                 VehicleID dfClassID = SimDogfight.AdjustClassId(GetVehicleID(v), GetTeam());
 
-                if (dfClassID != 0)
+                if (dfClassID not_eq 0)
                 {
                     classID = dfClassID;
                 }
@@ -2161,7 +2161,7 @@ void UnitClass::DeaggregateFromData(VU_BYTE* data, long size)
     simdata.createFlags = SIDC_SILENT_INSERT | SIDC_FORCE_ID;
     simdata.ptIndex = 0;
 
-    if (owning_session != FalconLocalSession)
+    if (owning_session not_eq FalconLocalSession)
     {
         simdata.createFlags  or_eq  SIDC_REMOTE_OWNER;
         simdata.owner = owning_session;
@@ -2282,7 +2282,7 @@ void UnitClass::ReaggregateFromData(VU_BYTE *data, long size)
             // destroy iterator before the components
             VuListIterator myit(GetComponents());
 
-            for (VuEntity * next, *vehicle = myit.GetFirst(); vehicle != NULL; vehicle = next)
+            for (VuEntity * next, *vehicle = myit.GetFirst(); vehicle not_eq NULL; vehicle = next)
             {
                 next = myit.GetNext();
                 ((SimBaseClass*)vehicle)->SetRemoveFlag();
@@ -2904,7 +2904,7 @@ void UnitClass::SetBroken(int p)
                     newEvent->dataBlock.data.formatId = 1810;
                 }
 
-                if (GetUnitParentID() != FalconNullId)
+                if (GetUnitParentID() not_eq FalconNullId)
                 {
                     newEvent->dataBlock.data.vuIds[0] = GetUnitParentID();
                 }
@@ -3390,7 +3390,7 @@ int UnitClass::GetHitChance(int mt, int range)
     {
         T = GetFirstUnitElement();
 
-        while (T != NULL)
+        while (T not_eq NULL)
         {
             hc += (100 - hc) * T->GetHitChance(mt, range) / 100;
             T = GetNextUnitElement();
@@ -3433,7 +3433,7 @@ int UnitClass::GetCombatStrength(int mt, int range)
     {
         T = GetFirstUnitElement();
 
-        while (T != NULL)
+        while (T not_eq NULL)
         {
             str += T->GetCombatStrength(mt, range);
             T = GetNextUnitElement();
@@ -3468,7 +3468,7 @@ int UnitClass::GetAproxCombatStrength(int mt, int range)
     {
         T = GetFirstUnitElement();
 
-        while (T != NULL)
+        while (T not_eq NULL)
         {
             str += T->GetAproxCombatStrength(mt, range);
             T = GetNextUnitElement();
@@ -3578,7 +3578,7 @@ int UnitClass::CanDetect(FalconEntity* ent)
                 return 0;
 
             // Don't use height limits when the enemy has been spotted by other sources
-            if (ent->GetTeam() != GetTeam() && ((FlightClass*) ent)->GetSpotted(GetTeam()))
+            if (ent->GetTeam() not_eq GetTeam() && ((FlightClass*) ent)->GetSpotted(GetTeam()))
                 return DETECTED_VISUAL;
 
             targeteangle = (float) atan(-dz / (float) sqrt(dx * dx + dy * dy + 0.1F));
@@ -3669,7 +3669,7 @@ int UnitClass::CanDetect(FalconEntity* ent)
             return 0;
 
         // Don't use limits for radar when the enemy has been spotted by other sources
-        if (ent->GetTeam() != GetTeam() && ((FlightClass*) ent)->GetSpotted(GetTeam()))
+        if (ent->GetTeam() not_eq GetTeam() && ((FlightClass*) ent)->GetSpotted(GetTeam()))
             return DETECTED_RADAR;
 
         if (IsFlight())
@@ -4364,7 +4364,7 @@ int UnitClass::GetUnitGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, G
 
     // Flights will never find a path inroute - only during planning and they should use
     // 2001-07-27 REMOVED BY S.G. ALLOWED IN RP5
-    // ShiAssert ( GetMovementType() != Air && GetMovementType() != LowAir );
+    // ShiAssert ( GetMovementType() not_eq Air && GetMovementType() not_eq LowAir );
 
     maxSearch = GROUND_PATH_MAX;
     retval = GetGridPath(p, x, y, xx, yy, GetMovementType(), GetTeam(), flags);
@@ -4752,7 +4752,7 @@ WayPoint UnitClass::GetCurrentUnitWP() const
     w = wp_list;
     i = 1;
 
-    while (w && i != current_wp)
+    while (w && i not_eq current_wp)
     {
         w = w->GetNextWP();
         i++;
@@ -4777,7 +4777,7 @@ void UnitClass::SetCurrentUnitWP(WayPoint w)
 
     i = 1;
 
-    while (tw && tw != w)
+    while (tw && tw not_eq w)
     {
         tw = tw->GetNextWP();
         i++;
@@ -4864,7 +4864,7 @@ void UnitClass::ResetMoves(void)
     {
         n = GetFirstUnitElement();
 
-        while (n != NULL)
+        while (n not_eq NULL)
         {
             n->ResetMoves();
             n = GetNextUnitElement();
@@ -4925,7 +4925,7 @@ void UnitClass::DisposeWayPoints(void)
     w = wp_list;
     current_wp = 0;
 
-    while (w != NULL)
+    while (w not_eq NULL)
     {
         t = w;
         w = w->GetNextWP();
@@ -5063,7 +5063,7 @@ int UnitClass::GetBestVehicleWeapon(int slot, uchar *dam, MoveType mt, int range
     VehicleClassDataType* vc;
 
     ShiAssert(slot >= 0 && slot < VEHICLE_GROUPS_PER_UNIT);
-    ShiAssert(class_data != NULL);
+    ShiAssert(class_data not_eq NULL);
     vc = GetVehicleClassData(class_data->VehicleType[slot]);
 
     if (!vc)
@@ -5103,7 +5103,7 @@ int UnitClass::GetVehicleHitChance(int slot, MoveType mt, int range, int hitflag
     int i, bc = 0, hc = 0, wid;
 
     ShiAssert(slot >= 0 && slot < VEHICLE_GROUPS_PER_UNIT);
-    ShiAssert(class_data != NULL);
+    ShiAssert(class_data not_eq NULL);
     vc = GetVehicleClassData(class_data->VehicleType[slot]);
 
     if (!vc)
@@ -5136,7 +5136,7 @@ int UnitClass::GetVehicleCombatStrength(int slot, MoveType mt, int range)
     int i, str = 0, bs = 0, wid;
     VehicleClassDataType* vc;
     ShiAssert(slot >= 0 && slot < VEHICLE_GROUPS_PER_UNIT);
-    ShiAssert(class_data != NULL);
+    ShiAssert(class_data not_eq NULL);
 
     vc = GetVehicleClassData(class_data->VehicleType[slot]);
 
@@ -5164,7 +5164,7 @@ int UnitClass::GetVehicleCombatStrength(int slot, MoveType mt, int range)
 int UnitClass::GetVehicleRange(int slot, int mt, FalconEntity *target)  // 2002-03-08 MODIFIED BY S.G. Need to pass it a target sometime so default to NULL for most cases
 {
     ShiAssert(slot >= 0 && slot < VEHICLE_GROUPS_PER_UNIT);
-    ShiAssert(class_data != NULL);
+    ShiAssert(class_data not_eq NULL);
     int i, wid, rng, br = 0;
     VehicleClassDataType* vc;
 
@@ -5236,7 +5236,7 @@ int UnitClass::GetUnitWeaponId(int hp, int slot)
 {
     ShiAssert(slot >= 0 && slot < VEHICLE_GROUPS_PER_UNIT);
     ShiAssert(hp >= 0 && hp < HARDPOINT_MAX);
-    ShiAssert(class_data != NULL);
+    ShiAssert(class_data not_eq NULL);
 
     VehicleClassDataType* vc;
 
@@ -5252,7 +5252,7 @@ int UnitClass::GetUnitWeaponCount(int hp, int slot)
 {
     ShiAssert(slot >= 0 && slot < VEHICLE_GROUPS_PER_UNIT);
     ShiAssert(hp >= 0 && hp < HARDPOINT_MAX);
-    ShiAssert(class_data != NULL);
+    ShiAssert(class_data not_eq NULL);
     VehicleClassDataType* vc;
     int wc;
 
@@ -5365,7 +5365,7 @@ Unit GetNextUnit(F4LIt l)
 
     while (e)
     {
-        //if (e->VuState() != VU_MEM_DELETED)
+        //if (e->VuState() not_eq VU_MEM_DELETED)
         if (GetEntityClass(e) == CLASS_UNIT)
         {
             return (Unit)e;
@@ -5382,7 +5382,7 @@ Unit GetUnitByID(VU_ID id)
 #if VU_ALL_FILTERED
     VuListIterator it(AllUnitList);
 
-    for (VuEntity *u = it.GetFirst(); u != NULL; u = it.GetNext())
+    for (VuEntity *u = it.GetFirst(); u not_eq NULL; u = it.GetNext())
     {
         if (u->Id() == id)
         {
@@ -6088,7 +6088,7 @@ int DecodeUnitData(VU_BYTE **stream, long *rem, FalconSessionEntity *owner)
         if (FalconLocalGame && cur->IsBattalion() && FalconLocalGame->GetGameType() == game_TacticalEngagement)
         {
             // Emitters are always spotted and emitting in tactical engagement
-            if (cur->GetRadarType() != RDR_NO_RADAR)
+            if (cur->GetRadarType() not_eq RDR_NO_RADAR)
             {
                 cur->SetSearchMode(FEC_RADAR_SEARCH_1);//me123 + rand()%3);
                 cur->SetEmitting(1);
@@ -6129,7 +6129,7 @@ UnitDeaggregationData::~UnitDeaggregationData()
 
 void UnitDeaggregationData::StoreDeaggregationData(Unit theUnit)
 {
-    if (!theUnit or theUnit->IsAggregate() or theUnit->GetDomain() != DOMAIN_LAND or !theUnit->GetComponents())
+    if (!theUnit or theUnit->IsAggregate() or theUnit->GetDomain() not_eq DOMAIN_LAND or !theUnit->GetComponents())
         return;
 
     int vehicles = 0, slot;
@@ -6241,7 +6241,7 @@ void UnitClass::SetRoster(fourbyte r)
 
 void UnitClass::SetUnitFlags(fourbyte f)
 {
-    if (unit_flags != f)
+    if (unit_flags not_eq f)
     {
         unit_flags = f;
         MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_EVENTUALLY);
@@ -6399,7 +6399,7 @@ WayPoint UnitClass::AddUnitWP(GridIndex x, GridIndex y, int alt, int speed,
     {
         t = wp_list;
 
-        while (t->GetNextWP() != NULL)
+        while (t->GetNextWP() not_eq NULL)
             t = t->GetNextWP();
 
         t->InsertWP(w);
@@ -6596,12 +6596,12 @@ void UnitClass::DecodeWaypoints(VU_BYTE **stream, long *rem)
 
 void UnitClass::MakeUnitDirty(Dirty_Unit bits, Dirtyness score)
 {
-    if ((!IsLocal()) or (VuState() != VU_MEM_ACTIVE))
+    if ((!IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
 
-    if (!IsAggregate() && (score != SEND_RELIABLEANDOOB))
+    if (!IsAggregate() && (score not_eq SEND_RELIABLEANDOOB))
     {
         // increase score for deagged units
         score = static_cast<Dirtyness>(score << 4);

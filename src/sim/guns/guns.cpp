@@ -644,7 +644,7 @@ int GunClass::Exec(
                     (!testObject->BaseData()->IsWeapon() or testObject->BaseData()->IsEject()) &&
                     !((SimBaseClass*)testObject->BaseData())->IsExploding() &&
                     testObject->localData && testObject->localData->range < initBulletVelocity * (2.5F) &&
-                    ((SimBaseClass*)testObject->BaseData())->drawPointer != NULL
+                    ((SimBaseClass*)testObject->BaseData())->drawPointer not_eq NULL
                 )
                 {
                     // get feature's radius -- store in vt to save another stack var

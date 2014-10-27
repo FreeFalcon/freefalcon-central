@@ -651,7 +651,7 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
     // Now check the upper right corner
     amOut = horizonLine.LeftOf(rightPixel, topPixel);
 
-    if (amOut != wasOut)
+    if (amOut not_eq wasOut)
     {
         // Compute the intesection of the top edge with the horizon and insert it
         vert[num].x = horizonLine.X(topPixel);
@@ -671,7 +671,7 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
     // Now check the lower right corner
     amOut = horizonLine.LeftOf(rightPixel, bottomPixel);
 
-    if (amOut != wasOut)
+    if (amOut not_eq wasOut)
     {
         // Compute the intesection of the right edge with the horizon and insert it
         vert[num].x = rightPixel;
@@ -691,7 +691,7 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
     // Now check the lower left corner
     amOut = horizonLine.LeftOf(leftPixel, bottomPixel);
 
-    if (amOut != wasOut)
+    if (amOut not_eq wasOut)
     {
         // Compute the intesection of the bottom edge with the horizon and insert it
         vert[num].x = horizonLine.X(bottomPixel);
@@ -709,7 +709,7 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
     wasOut = amOut;
 
     // Finally, clip the left edge if it crosses the horizon line
-    if (wasOut != startedOut)
+    if (wasOut not_eq startedOut)
     {
         // Compute the intesection of the left edge with the horizon and insert it
         vert[num].x = (float)leftPixel;
@@ -1215,7 +1215,7 @@ void RenderOTW::DrawStars(void)
         {
             if (coord -> flag) continue;
 
-            if (lastcolor != coord -> color)
+            if (lastcolor not_eq coord -> color)
             {
                 lastcolor = coord -> color;
                 float curcolor = lastcolor * starblend;
@@ -1252,9 +1252,9 @@ void RenderOTW::DrawStars(void)
             // Now determine if the point is out behind us or to the sides
             if (scratch_z < 0.000001f) continue;
 
-            if (GetHorizontalClipFlags(scratch_x, scratch_z) != ON_SCREEN) continue;
+            if (GetHorizontalClipFlags(scratch_x, scratch_z) not_eq ON_SCREEN) continue;
 
-            if (GetVerticalClipFlags(scratch_y, scratch_z) != ON_SCREEN) continue;
+            if (GetVerticalClipFlags(scratch_y, scratch_z) not_eq ON_SCREEN) continue;
 
             // Finally, do the perspective divide and scale and shift into screen space
             register float OneOverZ = 1.0f / scratch_z;

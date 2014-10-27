@@ -64,7 +64,7 @@ int DigitalBrain::IsNotMainTargetSEAD()
         return TRUE;
 
     // Only for SEADS missions
-    if (missionType != AMIS_SEADSTRIKE)
+    if (missionType not_eq AMIS_SEADSTRIKE)
         return FALSE;
 
     // If not ground target, we can't check if it's our main target, right? So assume it's not our main target
@@ -82,7 +82,7 @@ int DigitalBrain::IsNotMainTargetSEAD()
         return TRUE;
 
     // If it's not our main target, it's ok to stop attacking it
-    if (self->curWaypoint->GetWPTarget() != campBaseTarget)
+    if (self->curWaypoint->GetWPTarget() not_eq campBaseTarget)
         return TRUE;
 
     // It's our main target, keep pounding it to death...
@@ -126,7 +126,7 @@ void DigitalBrain::GroundAttackMode(void)
         return;
     }
 
-    if ((agmergeTimer != 0 && SimLibElapsedTime > agmergeTimer) ||
+    if ((agmergeTimer not_eq 0 && SimLibElapsedTime > agmergeTimer) ||
         (missionComplete && (!groundTargetPtr or !(IsSetATC(HasAGWeapon)))))
     {
         if (groundTargetPtr)
@@ -245,7 +245,7 @@ void DigitalBrain::GroundAttackMode(void)
         }
 
         // So if we choose a different weapon, we'll set our FCC
-        if (((hasHARM << 24) | (hasAGMissile << 16) | (hasGBU << 8) | hasBomb) != tempWeapon)
+        if (((hasHARM << 24) | (hasAGMissile << 16) | (hasGBU << 8) | hasBomb) not_eq tempWeapon)
         {
             if (onStation == Final)
             {
@@ -266,7 +266,7 @@ void DigitalBrain::GroundAttackMode(void)
 
                 if (campUnit->ChooseTarget())
                 {
-                    if (lastGndCampTarget != campUnit->GetTarget())
+                    if (lastGndCampTarget not_eq campUnit->GetTarget())
                         SetGroundTargetPtr(NULL);
                 }
             }
@@ -278,7 +278,7 @@ void DigitalBrain::GroundAttackMode(void)
         nextAGTargetTime = SimLibElapsedTime + 5000;
     }
 
-    // 2001-07-12 S.G. Need to force a target reselection under some conditions. If we're in GroundAttackMode, it's because we are already in agDoctrine != AGD_NONE which mean we already got a target originally
+    // 2001-07-12 S.G. Need to force a target reselection under some conditions. If we're in GroundAttackMode, it's because we are already in agDoctrine not_eq AGD_NONE which mean we already got a target originally
     // This was done is some 'onStation' modes but I moved it here instead so all modes runs it
     if (
         groundTargetPtr &&
@@ -428,7 +428,7 @@ void DigitalBrain::GroundAttackMode(void)
                 nextAttackCommandToSend = SimLibElapsedTime + g_nAIshootLookShootTime * SEC_TO_MSEC;
             }
             // 2002-01-20 ADDED BY S.G. Either we haven't sent the attack order or we sent it a while ago, check if we should send it again
-            else if (sentWingAGAttack != AG_ORDER_ATTACK or SimLibElapsedTime > nextAttackCommandToSend)
+            else if (sentWingAGAttack not_eq AG_ORDER_ATTACK or SimLibElapsedTime > nextAttackCommandToSend)
             {
                 VU_ID targetId;
 
@@ -439,7 +439,7 @@ void DigitalBrain::GroundAttackMode(void)
                 else
                     targetId = groundTargetPtr->BaseData()->Id();
 
-                if (targetId != FalconNullId)
+                if (targetId not_eq FalconNullId)
                 {
                     // 2002-01-20 ADDED BY S.G. Check the wing's AI to see if they have weapon but in formation
                     int sendAttack = FALSE;
@@ -515,7 +515,7 @@ DownwindBypass:
                 // next.  Otherwise we're in look_shoot_look.   We'll remain
                 // at the current waypoint and allow the campaign to retarget
                 // for us
-                if (agDoctrine == AGD_SHOOT_RUN or (agmergeTimer != 0 && SimLibElapsedTime > agmergeTimer))  // Cobra - Get out of Dodge
+                if (agDoctrine == AGD_SHOOT_RUN or (agmergeTimer not_eq 0 && SimLibElapsedTime > agmergeTimer))  // Cobra - Get out of Dodge
                 {
                     if (agImprovise == FALSE or (SimLibElapsedTime > agmergeTimer))
                     {
@@ -1016,7 +1016,7 @@ DownwindBypass:
             // tell our wing to attack
             if (groundTargetPtr && ((hasJSOW && approxRange < g_fAIJSOWMaxRange * NM_TO_FT) or (approxRange < 8.0f * NM_TO_FT))) // was 5.0
             {
-                if (self->GetCampaignObject()->NumberOfComponents() > 1 && !isWing && sentWingAGAttack != AG_ORDER_ATTACK)
+                if (self->GetCampaignObject()->NumberOfComponents() > 1 && !isWing && sentWingAGAttack not_eq AG_ORDER_ATTACK)
                 {
                     VU_ID targetId;
 
@@ -1027,7 +1027,7 @@ DownwindBypass:
                     else
                         targetId = groundTargetPtr->BaseData()->Id();
 
-                    if (targetId != FalconNullId)
+                    if (targetId not_eq FalconNullId)
                     {
                         AiSendCommand(self, FalconWingmanMsg::WMAssignTarget, AiFlight, targetId);
                         AiSendCommand(self, FalconWingmanMsg::WMShooterMode, AiFlight, targetId);
@@ -1203,7 +1203,7 @@ DownwindBypass:
                 // tell our wing to attack
                 if (
                     self->GetCampaignObject()->NumberOfComponents() > 1 &&
-                    !isWing && sentWingAGAttack != AG_ORDER_ATTACK
+                    !isWing && sentWingAGAttack not_eq AG_ORDER_ATTACK
                 )
                 {
                     VU_ID targetId;
@@ -1217,7 +1217,7 @@ DownwindBypass:
                         targetId = groundTargetPtr->BaseData()->Id();
                     }
 
-                    if (targetId != FalconNullId)
+                    if (targetId not_eq FalconNullId)
                     {
                         AiSendCommand(self, FalconWingmanMsg::WMAssignTarget, AiFlight, targetId);
                         AiSendCommand(self, FalconWingmanMsg::WMShooterMode, AiFlight, targetId);
@@ -1431,7 +1431,7 @@ DownwindBypass:
                         FireAGMissile(approxSlantRange, ata);
                     }
                     // 2001-06-24 ADDED BY S.G. IF shootMissile IS NOT FALSE (AND ALSO NOT TRUE), IF WE'RE CLOSE AND CAN'T LAUNCH HARM, SAY 'NO HARMS' or 'no JSOWs' AND TRY AGAIN RIGHT AWAY
-                    else if (shootMissile != FALSE)
+                    else if (shootMissile not_eq FALSE)
                     {
                         // FRB
                         if (shootMissile == FALSE - 2) // Maverick - break away from target
@@ -1450,7 +1450,7 @@ DownwindBypass:
                             hasBomb = FALSE;
 
                         // Cobra - get out of a possible forever loop
-                        if (agmergeTimer != 0 && SimLibElapsedTime > agmergeTimer)
+                        if (agmergeTimer not_eq 0 && SimLibElapsedTime > agmergeTimer)
                             break;
 
                         goto FinalSG;
@@ -2076,7 +2076,7 @@ DownwindBypass:
 
     // Been doing this long enough, go to the next waypoint
     //    if (groundTargetPtr && SimLibElapsedTime > agmergeTimer)
-    if (agmergeTimer != 0 && SimLibElapsedTime > agmergeTimer)
+    if (agmergeTimer not_eq 0 && SimLibElapsedTime > agmergeTimer)
     {
         ClearATCFlag(HasCanUseAGWeapon);
         ClearATCFlag(HasAGWeapon);
@@ -2111,12 +2111,12 @@ DownwindBypass:
  */
 void DigitalBrain::SetGroundTarget(FalconEntity *obj)
 {
-    if (obj != NULL)
+    if (obj not_eq NULL)
     {
-        if (groundTargetPtr != NULL)
+        if (groundTargetPtr not_eq NULL)
         {
             // release existing target data if different object
-            if (groundTargetPtr->BaseData() != obj)
+            if (groundTargetPtr->BaseData() not_eq obj)
             {
                 groundTargetPtr->Release();
                 groundTargetPtr = NULL;
@@ -2135,7 +2135,7 @@ void DigitalBrain::SetGroundTarget(FalconEntity *obj)
     }
     else  // obj is null
     {
-        if (groundTargetPtr != NULL)
+        if (groundTargetPtr not_eq NULL)
         {
             groundTargetPtr->Release();
             groundTargetPtr = NULL;
@@ -2150,12 +2150,12 @@ void DigitalBrain::SetGroundTarget(FalconEntity *obj)
  */
 void DigitalBrain::SetGroundTargetPtr(SimObjectType *obj)
 {
-    if (obj != NULL)
+    if (obj not_eq NULL)
     {
-        if (groundTargetPtr != NULL)
+        if (groundTargetPtr not_eq NULL)
         {
             // release existing target data if different object
-            if (groundTargetPtr != obj)
+            if (groundTargetPtr not_eq obj)
             {
                 groundTargetPtr->Release();
                 groundTargetPtr = NULL;
@@ -2175,7 +2175,7 @@ void DigitalBrain::SetGroundTargetPtr(SimObjectType *obj)
     }
     else // obj is null
     {
-        if (groundTargetPtr != NULL)
+        if (groundTargetPtr not_eq NULL)
         {
             groundTargetPtr->Release();
             groundTargetPtr = NULL;
@@ -2213,7 +2213,7 @@ void DigitalBrain::SelectGroundTarget(int targetFilter)
 
     // if we're not on interdiction type mission, return....
     //Cobra: We want to let the AI target as necessary when weapons free
-    /*if ( missionType != AMIS_SAD && missionType != AMIS_INT && missionType != AMIS_BAI )
+    /*if ( missionType not_eq AMIS_SAD && missionType not_eq AMIS_INT && missionType not_eq AMIS_BAI )
       return;*/
 
     if (!campUnit)
@@ -2227,7 +2227,7 @@ void DigitalBrain::SelectGroundTarget(int targetFilter)
     else
         cwp = dwp;
 
-    /*if ( !cwp or cwp->GetWPAction() != WP_SAD )
+    /*if ( !cwp or cwp->GetWPAction() not_eq WP_SAD )
       return;*/ //Cobra, remove this so that we can attack regardless
 
 
@@ -2244,7 +2244,7 @@ void DigitalBrain::SelectGroundTarget(int targetFilter)
     // get the 1st objective that contains the bomb
     campTarg = (CampBaseClass*)gridIt->GetFirst();
 
-    while (campTarg != NULL)
+    while (campTarg not_eq NULL)
     {
         if (campTarg->IsAirplane() or campTarg->IsFlight()) //Cobra
         {
@@ -2358,9 +2358,9 @@ void DigitalBrain::SelectGroundWeapon(void)
             {
                 hasRocket = TRUE;
 
-                if (rocketMnvr != RocketFlyout && rocketMnvr != RocketJink && rocketMnvr != RocketFiring)
+                if (rocketMnvr not_eq RocketFlyout && rocketMnvr not_eq RocketJink && rocketMnvr not_eq RocketFiring)
                 {
-                    if (rocketMnvr != RocketFlyToTgt)
+                    if (rocketMnvr not_eq RocketFlyToTgt)
                     {
                         rocketMnvr = RocketFlyToTgt; // Cobra Interrupts RocketFlyOut before far enough from target to get good approach.
                         rocketTimer = 60; // 1 minute for something to happen
@@ -2404,8 +2404,8 @@ void DigitalBrain::SelectGroundWeapon(void)
             {
                 // 2001-06-20 MODIFIED BY S.G. IT DOESN'T MATTER AT THIS POINT IF IT'S EMITTING OR NOT. ALL THAT MATTERS IS - IS IT A RADAR VEHICLE/FEATURE FOR A SIM OR DOES IT HAVE A RADAR VEHICLE IF A CAMPAIGN ENTITY
                 // No need to check if they exists because if they got selected, it's because they exists. Only check if they have a radar
-                if (!((groundTargetPtr->BaseData()->IsVehicle() && ((SimVehicleClass *)groundTargetPtr->BaseData())->GetRadarType() != RDR_NO_RADAR) or // It's a vehicle and it has a radar
-                      (groundTargetPtr->BaseData()->IsStatic()  && ((SimStaticClass *)groundTargetPtr->BaseData())->GetRadarType() != RDR_NO_RADAR))) // It's a feature and it has a radar
+                if (!((groundTargetPtr->BaseData()->IsVehicle() && ((SimVehicleClass *)groundTargetPtr->BaseData())->GetRadarType() not_eq RDR_NO_RADAR) or // It's a vehicle and it has a radar
+                      (groundTargetPtr->BaseData()->IsStatic()  && ((SimStaticClass *)groundTargetPtr->BaseData())->GetRadarType() not_eq RDR_NO_RADAR))) // It's a feature and it has a radar
                     hasHARM = FALSE;
             }
             // NOPE - It's a campaign object, if it's aggregated, can't use HARM unless no one has chosen it yet.
@@ -2415,12 +2415,12 @@ void DigitalBrain::SelectGroundWeapon(void)
                 if (!groundTargetPtr->BaseData()->IsBattalion() or ((BattalionClass *)groundTargetPtr->BaseData())->class_data->RadarVehicle < 16)
                 {
                     // END OF ADDED SECTION 2002-01-20
-                    if (((FlightClass *)self->GetCampaignObject())->shotAt != groundTargetPtr->BaseData())
+                    if (((FlightClass *)self->GetCampaignObject())->shotAt not_eq groundTargetPtr->BaseData())
                     {
                         ((FlightClass *)self->GetCampaignObject())->shotAt = groundTargetPtr->BaseData();
                         ((FlightClass *)self->GetCampaignObject())->whoShot = self;
                     }
-                    else if (((FlightClass *)self->GetCampaignObject())->whoShot != self)
+                    else if (((FlightClass *)self->GetCampaignObject())->whoShot not_eq self)
                         hasHARM = FALSE;
                 }
             }
@@ -2443,7 +2443,7 @@ void DigitalBrain::SelectGroundWeapon(void)
     // 2001-06-30 MODIFIED BY S.G. IF NOT A ENROUTE SEAD TARGET, SKIP HARMS AS AVAILABLE IF IT CAN'T BE FIRED
     int ret;
 
-    if (!hasWeapons && !isWing && ((ret = IsNotMainTargetSEAD()) or sentWingAGAttack != AG_ORDER_ATTACK))
+    if (!hasWeapons && !isWing && ((ret = IsNotMainTargetSEAD()) or sentWingAGAttack not_eq AG_ORDER_ATTACK))
     {
         int i;
         int usComponents = self->GetCampaignObject()->NumberOfComponents();
@@ -2715,7 +2715,7 @@ void DigitalBrain::SelectCampGroundTarget(void)
     target = campUnit->GetTarget();
 
     // If ChooseTarget returned FALSE or we changed campaign target and we're the lead  (but we must had a previous campaign target first)
-    if (!isWing && lastGndCampTarget && (!ret or target != lastGndCampTarget))
+    if (!isWing && lastGndCampTarget && (!ret or target not_eq lastGndCampTarget))
     {
         agDoctrine = AGD_NONE; // Need to setup our next ground attack
         onStation = NotThereYet; // Need to do a new pass next time
@@ -2745,10 +2745,10 @@ void DigitalBrain::SelectCampGroundTarget(void)
     // sanity check and make sure its on ground, what to do if not?!...
     if (!target ||
         !target->OnGround() ||
-        (campTactic != ATACTIC_ENGAGE_STRIKE &&
-         campTactic != ATACTIC_ENGAGE_SURFACE &&
-         campTactic != ATACTIC_ENGAGE_DEF &&
-         campTactic != ATACTIC_ENGAGE_NAVAL))
+        (campTactic not_eq ATACTIC_ENGAGE_STRIKE &&
+         campTactic not_eq ATACTIC_ENGAGE_SURFACE &&
+         campTactic not_eq ATACTIC_ENGAGE_DEF &&
+         campTactic not_eq ATACTIC_ENGAGE_NAVAL))
         return;
 
 
@@ -2835,7 +2835,7 @@ void DigitalBrain::SetupAGMode(WayPointClass *cwp, WayPointClass *wp)
 
     // So we don't think our mission is complete and forget to go to CrossWind from 'NotThereYet'
     // Cobra - if we have been attacking long enough, go home
-    if (agmergeTimer != 0 && SimLibElapsedTime > agmergeTimer)
+    if (agmergeTimer not_eq 0 && SimLibElapsedTime > agmergeTimer)
     {
         ClearATCFlag(HasCanUseAGWeapon);
         ClearATCFlag(HasAGWeapon);
@@ -2863,7 +2863,7 @@ void DigitalBrain::SetupAGMode(WayPointClass *cwp, WayPointClass *wp)
         if (wp)
         {
             // First have the lead fly toward the IP waypoint until he can see a target
-            if (cwp != wp)
+            if (cwp not_eq wp)
             {
                 cwp->GetLocation(&ipX, &ipY, &ipZ);
 
@@ -3336,7 +3336,7 @@ void DigitalBrain::TakePicture(float approxRange, float ata)
     FireControlComputer* FCC = self->FCC;
 
     // Go to camera mode
-    if (FCC->GetMasterMode() != FireControlComputer::AirGroundCamera)
+    if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundCamera)
     {
         //Cobra test
         self->FCC->SetMasterMode(FireControlComputer::AirGroundCamera);
@@ -3372,21 +3372,21 @@ void DigitalBrain::DropBomb(float approxRange, float ata, RadarClass* theRadar)
 
 
     // Check for JDAM/JSOW ready-to-drop
-    /* if ((self->IsPlayer() && self->AutopilotType() != AircraftClass::CombatAP) && (Sms->GetCurrentHardpoint() > 0) &&
+    /* if ((self->IsPlayer() && self->AutopilotType() not_eq AircraftClass::CombatAP) && (Sms->GetCurrentHardpoint() > 0) &&
      ((Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType()==wtGPS) ||
      (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer) &&
      ((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW))) &&
      (!Sms->JDAMPowered))
      return;*/
 
-    if ((self->IsPlayer() && self->AutopilotType() != AircraftClass::CombatAP) && TheBomb &&
+    if ((self->IsPlayer() && self->AutopilotType() not_eq AircraftClass::CombatAP) && TheBomb &&
         (TheBomb->IsSetBombFlag(BombClass::IsGPS) or TheBomb->IsSetBombFlag(BombClass::IsJSOW)) && (!Sms->JDAMPowered))
         return;
 
 
     // Make sure the FCC is in the right mode/sub mode
-    if (FCC->GetMasterMode() != FireControlComputer::AirGroundBomb ||
-        FCC->GetSubMode() != FireControlComputer::CCRP)
+    if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundBomb ||
+        FCC->GetSubMode() not_eq FireControlComputer::CCRP)
     {
         //Cobra test
         self->FCC->SetMasterMode(FireControlComputer::AirGroundBomb);
@@ -3499,9 +3499,9 @@ void DigitalBrain::DropBomb(float approxRange, float ata, RadarClass* theRadar)
         // the lead is a player (not in autopilot) use the lead's ripple setting.
         if (!droppingBombs)
         {
-            //if (flightLead && ((AircraftClass*)flightLead)->AutopilotType() != AircraftClass::CombatAP && ((AircraftClass*)flightLead)->Sms)
+            //if (flightLead && ((AircraftClass*)flightLead)->AutopilotType() not_eq AircraftClass::CombatAP && ((AircraftClass*)flightLead)->Sms)
             // FRB
-            if (flightLead && flightLead == self && self->IsPlayer() && self->AutopilotType() != AircraftClass::CombatAP && ((AircraftClass*)flightLead)->Sms)
+            if (flightLead && flightLead == self && self->IsPlayer() && self->AutopilotType() not_eq AircraftClass::CombatAP && ((AircraftClass*)flightLead)->Sms)
             {
                 Sms->SetAGBRippleCount(min(((AircraftClass*)flightLead)->Sms->GetAGBRippleCount(), int(Sms->NumCurrentWpn() / 2.0F + 0.5F) - 1));
 
@@ -3618,8 +3618,8 @@ void DigitalBrain::DropGBU(float approxRange, float ata, RadarClass* theRadar)
     droppingBombs = wcGbuWpn;
 
     // Make sure the FCC is in the right mode/sub mode
-    if (FCC->GetMasterMode() != FireControlComputer::AirGroundLaser ||
-        FCC->GetSubMode() != FireControlComputer::SLAVE)
+    if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundLaser ||
+        FCC->GetSubMode() not_eq FireControlComputer::SLAVE)
     {
         //Cobra test
         self->FCC->SetMasterMode(FireControlComputer::AirGroundLaser);
@@ -3747,7 +3747,7 @@ void DigitalBrain::DropGBU(float approxRange, float ata, RadarClass* theRadar)
             if (FCC->postDrop)
             {
                 // 1/2 second between bombs, 10 seconds after last bomb - Cobra - 1/4 second to get the pair closer to target
-                if (Sms->NumCurrentWpn() % 2 != 0)
+                if (Sms->NumCurrentWpn() % 2 not_eq 0)
                 {
                     waitingForShot = SimLibElapsedTime + (SEC_TO_MSEC / 4);
                 }
@@ -3904,7 +3904,7 @@ void DigitalBrain::FireAGMissile(float approxRange, float ata)
         // 2001-05-03 MODIFIED BY S.G. WE STOP FIRING WHEN WE HAVE AN ODD NUMBER OF MISSILE LEFT (MEANT WE FIRED ONE ALREADY) THIS WILL LIMIT IT TO 2 MISSILES PER TARGET
         // if (Sms->NumCurrentWpn() == 1 )
 
-        if ((hasBomb != TRUE + 4) && Sms->NumCurrentWpn() & 1)
+        if ((hasBomb not_eq TRUE + 4) && Sms->NumCurrentWpn() & 1)
         {
             hasRocket = FALSE;
             hasGun = FALSE;
@@ -3992,7 +3992,7 @@ int DigitalBrain::FireRocket(float approxRange, float ata)
     FireControlComputer* FCC = self->FCC;
     SMSClass* Sms = self->Sms;
 
-    if (FCC->GetMasterMode() != FireControlComputer::AirGroundRocket) // MLR 4/3/2004 -
+    if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundRocket) // MLR 4/3/2004 -
     {
         //self->Sms->FindWeaponClass(wcRocketWpn);
         //FCC->SetAGMasterModeForCurrentWeapon();
@@ -4342,8 +4342,8 @@ int DigitalBrain::GunStrafe(float approxRange, float ata)
 {
     FireControlComputer* FCC = self->FCC;
 
-    if (FCC->GetMasterMode() != FireControlComputer::AGGun ||
-        FCC->GetSubMode() != FireControlComputer::STRAF)
+    if (FCC->GetMasterMode() not_eq FireControlComputer::AGGun ||
+        FCC->GetSubMode() not_eq FireControlComputer::STRAF)
     {
         FCC->SetMasterMode(FireControlComputer::AGGun);
         FCC->SetSubMode(FireControlComputer::STRAF);
@@ -4400,7 +4400,7 @@ int DigitalBrain::MaverickSetup(float rx, float ry, float ata, float approxRange
 
 
         // Set up FCC for maverick shot
-        if (FCC->GetMasterMode() != FireControlComputer::AirGroundMissile)
+        if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundMissile)
         {
             //Cobra test
             self->FCC->SetMasterMode(FireControlComputer::AirGroundMissile);
@@ -4417,7 +4417,7 @@ int DigitalBrain::MaverickSetup(float rx, float ry, float ata, float approxRange
             {
                 if (Sms->curWeapon->targetPtr)
                 {
-                    if (self->curSOI != SimVehicleClass::SOI_WEAPON)
+                    if (self->curSOI not_eq SimVehicleClass::SOI_WEAPON)
                     {
                         FCC->designateCmd = TRUE;
                     }
@@ -4532,7 +4532,7 @@ int DigitalBrain::HARMSetup(float rx, float ry, float ata, float approxRange)
     F4Assert(!Sms->curWeapon or Sms->curWeapon->IsMissile());
 
     // Set up FCC for harm shot
-    if (FCC->GetMasterMode() != FireControlComputer::AirGroundHARM)
+    if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundHARM)
     {
         //Cobra test
         self->FCC->SetMasterMode(FireControlComputer::AirGroundHARM);
@@ -4610,7 +4610,7 @@ int DigitalBrain::HARMSetup(float rx, float ry, float ata, float approxRange)
     {
         // 2001-06-25 ADDED BY S.G. IF I HAVE SOMETHING IN shotAt, IT COULD MEAN SOMEONE SHOT WHILE THE TARGET WAS AGGREGATED. DEAL WITH THIS
         // If shotAt has something, someone is/was targeting the aggregated entity. If it wasn't me, don't fire at it once it is deaggregated as well.
-        if (((FlightClass *)self->GetCampaignObject())->shotAt == ((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject() && ((FlightClass *)self->GetCampaignObject())->whoShot != self)
+        if (((FlightClass *)self->GetCampaignObject())->shotAt == ((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject() && ((FlightClass *)self->GetCampaignObject())->whoShot not_eq self)
             retval = FALSE - 1;
 
         // END OF ADDED SECTION
@@ -4671,13 +4671,13 @@ int DigitalBrain::HARMSetup(float rx, float ry, float ata, float approxRange)
             {
                 // END OF ADDED SECTION 2002-01-20
                 // If it's not at what we shot last, then it's valid
-                if (((FlightClass *)self->GetCampaignObject())->shotAt != groundTargetPtr->BaseData())
+                if (((FlightClass *)self->GetCampaignObject())->shotAt not_eq groundTargetPtr->BaseData())
                 {
                     ((FlightClass *)self->GetCampaignObject())->shotAt = groundTargetPtr->BaseData();
                     ((FlightClass *)self->GetCampaignObject())->whoShot = self;
                 }
                 // If one of us is shooting, make sure it's me, otherwise no HARMS for me please.
-                else if (((FlightClass *)self->GetCampaignObject())->whoShot != self)
+                else if (((FlightClass *)self->GetCampaignObject())->whoShot not_eq self)
                     retval = FALSE - 1;
             }
         }
@@ -4732,7 +4732,7 @@ int DigitalBrain::HARMSetup(float rx, float ry, float ata, float approxRange)
 
     // if we use missiles we don't drop bombs
     // unless we shot a harm
-    if (agDoctrine != AGD_LOOK_SHOOT_LOOK)
+    if (agDoctrine not_eq AGD_LOOK_SHOOT_LOOK)
     {
         hasBomb = FALSE;
         hasGBU = FALSE;
@@ -4750,7 +4750,7 @@ int DigitalBrain::JSOWSetup(float rx, float ry, float ata, float approxRange)
     int retval = TRUE;
 
     // Set up FCC for JSOW shot
-    if (FCC->GetMasterMode() != FireControlComputer::AirGroundBomb)
+    if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundBomb)
     {
         //Cobra test
         self->FCC->SetMasterMode(FireControlComputer::AirGroundBomb);
@@ -4795,7 +4795,7 @@ int DigitalBrain::JSOWSetup(float rx, float ry, float ata, float approxRange)
     {
         // 2001-06-25 ADDED BY S.G. IF I HAVE SOMETHING IN shotAt, IT COULD MEAN SOMEONE SHOT WHILE THE TARGET WAS AGGREGATED. DEAL WITH THIS
         // If shotAt has something, someone is/was targeting the aggregated entity. If it wasn't me, don't fire at it once it is deaggregated as well.
-        if (((FlightClass *)self->GetCampaignObject())->shotAt == ((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject() && ((FlightClass *)self->GetCampaignObject())->whoShot != self)
+        if (((FlightClass *)self->GetCampaignObject())->shotAt == ((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject() && ((FlightClass *)self->GetCampaignObject())->whoShot not_eq self)
             retval = FALSE - 1;
     }
     else
@@ -4804,7 +4804,7 @@ int DigitalBrain::JSOWSetup(float rx, float ry, float ata, float approxRange)
         if (((CampBaseClass *)groundTargetPtr->BaseData())->IsAggregate())
         {
             // If it's not at what we shot last, then it's valid
-            if (((FlightClass *)self->GetCampaignObject())->shotAt != groundTargetPtr->BaseData())
+            if (((FlightClass *)self->GetCampaignObject())->shotAt not_eq groundTargetPtr->BaseData())
             {
                 ((FlightClass *)self->GetCampaignObject())->shotAt = groundTargetPtr->BaseData();
                 ((FlightClass *)self->GetCampaignObject())->whoShot = self;

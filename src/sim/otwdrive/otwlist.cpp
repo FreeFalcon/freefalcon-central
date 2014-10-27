@@ -268,12 +268,12 @@ void OTWDriverClass::InsertObject(DrawableObject *dObj)
 void OTWDriverClass::RemoveObject(DrawableObject *dObj, int deleteObject)
 {
     //JAM 19Feb04 - Let's add a meaningful warning here instead of causing a CTD.
-    if (GetCurrentThreadId() != gSimThreadID)
+    if (GetCurrentThreadId() not_eq gSimThreadID)
     {
         ShiWarning("RemoveObject being called outside of the sim thread");
     }
 
-    //if (g_bNeedSimThreadToRemoveObject && GetCurrentThreadId() != gSimThreadID)
+    //if (g_bNeedSimThreadToRemoveObject && GetCurrentThreadId() not_eq gSimThreadID)
     // return;
     //JAM
 
@@ -364,7 +364,7 @@ void OTWDriverClass::AddToLitList(DrawableBSP* bsp)
     for (newEntry = litObjectRoot; newEntry; newEntry = newEntry->next)
     {
         // Make sure we don't already have this object being managed
-        ShiAssert(newEntry->drawPointer != bsp);
+        ShiAssert(newEntry->drawPointer not_eq bsp);
     }
 
 #endif
@@ -430,7 +430,7 @@ void OTWDriverClass::AddToNearList(DrawableObject* drawPtr, float depth)
     for (newEntry = nearObjectRoot; newEntry; newEntry = newEntry->next)
     {
         // Make sure we don't already have this object being managed
-        ShiAssert(newEntry->drawPointer != drawPtr);
+        ShiAssert(newEntry->drawPointer not_eq drawPtr);
     }
 
 #endif

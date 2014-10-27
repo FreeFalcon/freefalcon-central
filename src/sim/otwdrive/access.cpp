@@ -495,10 +495,10 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
     // }
 
     /*
-    if((mode != ModePadlockF3) &&
-       (mode != ModePadlockEFOV) &&
-       (mode != ModeTarget) &&
-       (mode != ModeTargetToSelf) )
+    if((mode not_eq ModePadlockF3) &&
+       (mode not_eq ModePadlockEFOV) &&
+       (mode not_eq ModeTarget) &&
+       (mode not_eq ModeTargetToSelf) )
     {
      if(mpPadlockPriorityObject) {
      VuDeReferenceEntity(mpPadlockPriorityObject);
@@ -507,8 +507,8 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
      mpPadlockCandidate = NULL;
     }
     */
-    if ((mode != ModePadlockF3) &&
-        (mode != ModePadlockEFOV))
+    if ((mode not_eq ModePadlockF3) &&
+        (mode not_eq ModePadlockEFOV))
     {
         /* 2001-01-29 MODIFIED BY S.G. FOR THE NEW mpPadlockPrioritySimObject
          if(mpPadlockPriorityObject) {
@@ -652,7 +652,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 if ( mpPadlockCandidate )
                 {
                  if ( mpPadlockPriorityObject &&
-                  mpPadlockPriorityObject != mpPadlockCandidate )
+                  mpPadlockPriorityObject not_eq mpPadlockCandidate )
                  {
                  VuDeReferenceEntity(mpPadlockPriorityObject);
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
@@ -736,7 +736,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 if ( mpPadlockCandidate && mpPadlockCandidate->IsSim() )
                 {
                  if ( mpPadlockPriorityObject &&
-                  mpPadlockPriorityObject != mpPadlockCandidate )
+                  mpPadlockPriorityObject not_eq mpPadlockCandidate )
                  {
                  VuDeReferenceEntity(mpPadlockPriorityObject);
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
@@ -937,7 +937,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 if ( mpPadlockCandidate )
                 {
                  if ( mpPadlockPriorityObject &&
-                  mpPadlockPriorityObject != mpPadlockCandidate )
+                  mpPadlockPriorityObject not_eq mpPadlockCandidate )
                  {
                  VuDeReferenceEntity(mpPadlockPriorityObject);
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
@@ -966,7 +966,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                  if ( mpPadlockCandidate )
                  {
                  if ( mpPadlockPriorityObject &&
-                  mpPadlockPriorityObject != mpPadlockCandidate )
+                  mpPadlockPriorityObject not_eq mpPadlockCandidate )
                  {
                  VuDeReferenceEntity(mpPadlockPriorityObject);
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
@@ -1048,7 +1048,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 if ( mpPadlockCandidate && mpPadlockCandidate->IsSim() )
                 {
                  if ( mpPadlockPriorityObject &&
-                  mpPadlockPriorityObject != mpPadlockCandidate )
+                  mpPadlockPriorityObject not_eq mpPadlockCandidate )
                  {
                  VuDeReferenceEntity(mpPadlockPriorityObject);
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
@@ -1082,7 +1082,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                  if ( mpPadlockCandidate && mpPadlockCandidate->IsSim() )
                  {
                  if ( mpPadlockPriorityObject &&
-                  mpPadlockPriorityObject != mpPadlockCandidate )
+                  mpPadlockPriorityObject not_eq mpPadlockCandidate )
                  {
                  VuDeReferenceEntity(mpPadlockPriorityObject);
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
@@ -1139,7 +1139,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 if (
                     (ejectCam) ||
                     (!SimDriver.GetPlayerAircraft())
-                    //||  (FalconLocalSession->GetFlyState() != FLYSTATE_FLYING)
+                    //||  (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING)
                 )
                 {
                     return;
@@ -1211,10 +1211,10 @@ void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastm
         case ModePadlockEFOV:
             ViewReset(); //Wombat778
 
-            if (PlayerOptions.GetPadlockMode() != PDDisabled)
+            if (PlayerOptions.GetPadlockMode() not_eq PDDisabled)
             {
                 // this mode restores to player's f16
-                if (otwPlatform.get() != SimDriver.GetPlayerAircraft())
+                if (otwPlatform.get() not_eq SimDriver.GetPlayerAircraft())
                     SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
             }
 
@@ -1235,9 +1235,9 @@ void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastm
             break;
 
         case ModePadlockF3:
-            if (PlayerOptions.GetPadlockMode() != PDDisabled)
+            if (PlayerOptions.GetPadlockMode() not_eq PDDisabled)
             {
-                if (otwPlatform.get() != SimDriver.GetPlayerAircraft())
+                if (otwPlatform.get() not_eq SimDriver.GetPlayerAircraft())
                     SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
 
                 SelectF3PadlockMode();
@@ -1250,7 +1250,7 @@ void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastm
             // this mode restores to player's f16
 
             //Wombat778 11-18-04 added view reset code.  Only reset the view when not moving from 2d to 3d cockpit.
-            if (otwPlatform.get() != SimDriver.GetPlayerAircraft())
+            if (otwPlatform.get() not_eq SimDriver.GetPlayerAircraft())
                 SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
 
             if (g_bSync2D3DPit && lastmode == Mode3DCockpit) //consider adding padlock modes
@@ -1267,7 +1267,7 @@ void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastm
 
             // this mode restores to player's f16
 
-            if (!g_bSync2D3DPit or lastmode != Mode2DCockpit) //Wombat778 reset the view if not from 2d pit. COnsider adding padlock modes here
+            if (!g_bSync2D3DPit or lastmode not_eq Mode2DCockpit) //Wombat778 reset the view if not from 2d pit. COnsider adding padlock modes here
             {
                 ViewReset();
                 eyePan = 0.0f;
@@ -1284,7 +1284,7 @@ void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastm
                 }
             }
 
-            if (otwPlatform.get() != SimDriver.GetPlayerAircraft())
+            if (otwPlatform.get() not_eq SimDriver.GetPlayerAircraft())
                 SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
 
             Select3DCockpitMode();

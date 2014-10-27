@@ -584,7 +584,7 @@ void DigitalBrain::FrameExec(SimObjectType* curTargetList, SimObjectType* curTar
     else
     {
         // make sure the wheels are up after takeoff
-        if (self->curWaypoint && self->curWaypoint->GetWPAction() != WP_TAKEOFF)
+        if (self->curWaypoint && self->curWaypoint->GetWPAction() not_eq WP_TAKEOFF)
         {
             af->gearHandle = -1.0F;
         }
@@ -624,7 +624,7 @@ void DigitalBrain::FrameExec(SimObjectType* curTargetList, SimObjectType* curTar
     }
 
     // has the target changed?
-    if (targetPtr != lastTarget)
+    if (targetPtr not_eq lastTarget)
     {
         lastTarget = targetPtr;
         ataddot = 10.0F;
@@ -652,7 +652,7 @@ void DigitalBrain::FrameExec(SimObjectType* curTargetList, SimObjectType* curTar
         throtl = 1.5f;
 
     // RV - Biker - Don't allow AB when low on fuel or on ground
-    if (IsSetATC(SaidFumes) or IsSetATC(SaidFlameout) or (self->OnGround() && GetCurrentMode() != TakeoffMode))
+    if (IsSetATC(SaidFumes) or IsSetATC(SaidFlameout) or (self->OnGround() && GetCurrentMode() not_eq TakeoffMode))
     {
         throtl = min(1.0f, throtl);
     }
@@ -745,16 +745,16 @@ void DigitalBrain::SetLeader(SimBaseClass* newLead)
     // is associated with flight lead setting.  So what I put in was a
     // check for self and not doing the reference -- shouldn;t be needed in
     // this case, right?
-    if (flightLead != newLead)
+    if (flightLead not_eq newLead)
     {
-        if (flightLead && flightLead != self)
+        if (flightLead && flightLead not_eq self)
         {
             VuDeReferenceEntity(flightLead);
         }
 
         flightLead = newLead;
 
-        if (flightLead && flightLead != self)
+        if (flightLead && flightLead not_eq self)
         {
             VuReferenceEntity(flightLead);
         }
@@ -765,7 +765,7 @@ void DigitalBrain::SetLeader(SimBaseClass* newLead)
         // SetLeader( NULL ) is called.  We then called SetLead() below,
         // which resulted in a new flight lead!!
         // check for NULL flight lead and just return
-        if (flightLead != NULL)
+        if (flightLead not_eq NULL)
             SetLead(flightLead == self ? TRUE : FALSE);
     }
 }
@@ -876,7 +876,7 @@ void DigitalBrain::ReadManeuverData(void)
         }
     }
     // Allow binary, but otherwise throw a warning
-    else if (fileType != 'B')
+    else if (fileType not_eq 'B')
         ShiWarning("Bad Maneuver Data File Format");
 
     mnvrFile->Close();

@@ -396,7 +396,7 @@ BOOL C_Clock::Process(long ID, short HitType)
 
     if (HitType == C_TYPE_LMOUSEUP)
     {
-        if (CurEdit_->GetID() != Section_)
+        if (CurEdit_->GetID() not_eq Section_)
         {
             Leave = UI_Enter(Parent_);
 

@@ -150,7 +150,7 @@ void StoresList::Sort(long ID)
     {
         sort1 = list;
 
-        while (sort1 != sort2)
+        while (sort1 not_eq sort2)
         {
             if (stricmp(sort2->Name, sort1->Name) < 0)
             {

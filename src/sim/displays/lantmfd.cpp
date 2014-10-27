@@ -169,7 +169,7 @@ void LantirnDrawable::Display(VirtualDisplay* newDisplay)
         if (theLantirn->SpeedUp && !flash)
             sprintf(tempstr, "SLOW");
 
-        if (playerAC && playerAC->RFState != 2)
+        if (playerAC && playerAC->RFState not_eq 2)
             display->TextCenter(0, 0.25, tempstr);
     }
 }

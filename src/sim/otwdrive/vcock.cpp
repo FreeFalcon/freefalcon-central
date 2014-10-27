@@ -379,7 +379,7 @@ void OTWDriverClass::VCock_Glance(float dT)
 void OTWDriverClass::VCock_GiveGilmanHead(float dT)
 {
     // No limits when using a head tracker
-    if (padlockGlance != GlanceNone)
+    if (padlockGlance not_eq GlanceNone)
     {
         VCock_Glance(dT);
         BuildHeadMatrix(FALSE, YAW_PITCH, eyePan, eyeTilt, 0.0F);
@@ -789,7 +789,7 @@ bool OTWDriverClass::VCock_SetCanvas(char **plinePtr, Canvas3D **canvaspp)
     if (sscanf(ptoken, "%f %f %f %f %f %f %f %f %f",
                &ul.x, &ul.y, &ul.z,
                &ur.x, &ur.y, &ur.z,
-               &ll.x, &ll.y, &ll.z) != 9)
+               &ll.x, &ll.y, &ll.z) not_eq 9)
     {
         ShiAssert(!"Failed to parse canvas");
         *canvaspp = NULL;
@@ -1476,7 +1476,7 @@ void OTWDriverClass::VCock_HeadCalc(void)
                 int gs = (int)cockpitFlightData.gs;
                 gs = gs - 1;
 
-                if (gs != 0)
+                if (gs not_eq 0)
                     actualtilt = actualtilt + (((rand() % gs) / 2000.0F) * g_fDyn_Head_TiltRndGMul);
                 else
                     actualtilt = 0;
@@ -2463,32 +2463,32 @@ void OTWDriverClass::VCock_Exec(void)
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_LAUNCH, 0);
 
             // RWR switches
-            if (theRwr->IsPriority() != FALSE)
+            if (theRwr->IsPriority() not_eq FALSE)
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_PRIORITY, 2);
             else
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_PRIORITY, 1);
 
-            if (theRwr->TargetSep() != FALSE)
+            if (theRwr->TargetSep() not_eq FALSE)
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_TGT_SEP, 2);
             else
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_TGT_SEP, 1);
 
-            if (theRwr->ShowUnknowns() != FALSE)
+            if (theRwr->ShowUnknowns() not_eq FALSE)
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_UNKS, 2);
             else
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_UNKS, 1);
 
-            if (theRwr->ShowNaval() != FALSE)
+            if (theRwr->ShowNaval() not_eq FALSE)
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_NAVAL, 2);
             else
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_NAVAL, 1);
 
-            if (theRwr->ShowLowAltPriority() != FALSE)
+            if (theRwr->ShowLowAltPriority() not_eq FALSE)
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_GND_PRI, 2);
             else
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_GND_PRI, 1);
 
-            if (theRwr->ShowSearch() != FALSE)
+            if (theRwr->ShowSearch() not_eq FALSE)
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_SEARCH, 2);
             else
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_SEARCH, 1);
@@ -3025,7 +3025,7 @@ void OTWDriverClass::VCock_Exec(void)
                 vRWRrenderer->Line(0.995F, 0.995F, 0.995F, -0.995F);
             }
 
-            vRWRrenderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() != 0][8]);
+            vRWRrenderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][8]);
             rwr->SetGridVisible(FALSE);
             vHUDrenderer->SetFont(pCockpitManager->MFDFont());
             rwr->Display(vRWRrenderer);
@@ -3067,7 +3067,7 @@ void OTWDriverClass::VCock_Exec(void)
                 F4Assert(SimDriver.GetPlayerAircraft()->mFaults);
 
                 // DED is orange :)
-                vDEDrenderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() != 0][7]);
+                vDEDrenderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][7]);
 
                 if (!SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::ufc_fault))
                 {
@@ -3089,7 +3089,7 @@ void OTWDriverClass::VCock_Exec(void)
                     F4Assert(SimDriver.GetPlayerAircraft()->mFaults);
 
                     // DED is orange :)
-                    vDEDrenderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() != 0][7]);
+                    vDEDrenderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][7]);
 
                     //ATARIBABY
                     float stepx;
@@ -3109,7 +3109,7 @@ void OTWDriverClass::VCock_Exec(void)
                             buf[0] = pCockpitManager->mpIcp->DEDLines[j][i];
                             buf[1] = '\0';
 
-                            if (buf[0] != ' ' && pCockpitManager->mpIcp->Invert[j][i] == 0)
+                            if (buf[0] not_eq ' ' && pCockpitManager->mpIcp->Invert[j][i] == 0)
                                 vDEDrenderer->TextLeft(x, y, buf, pCockpitManager->mpIcp->Invert[j][i]);
                             else if (pCockpitManager->mpIcp->Invert[j][i] == 2)
                                 vDEDrenderer->TextLeft(x, y, buf, pCockpitManager->mpIcp->Invert[j][i]);
@@ -3124,7 +3124,7 @@ void OTWDriverClass::VCock_Exec(void)
                 }
             }
 
-            renderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() != 0][6]);
+            renderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][6]);
             VirtualDisplay::SetFont(oldFont); // ASSO:
         }
 
@@ -3158,7 +3158,7 @@ void OTWDriverClass::VCock_Exec(void)
                 F4Assert(SimDriver.GetPlayerAircraft()->mFaults);
 
                 // DED is orange :)
-                vPFLrenderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() != 0][7]);
+                vPFLrenderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][7]);
 
                 {
                     vPFLrenderer->TextLeft(-0.90F, 0.99F, dedStr1, FALSE);
@@ -3177,7 +3177,7 @@ void OTWDriverClass::VCock_Exec(void)
                     F4Assert(SimDriver.GetPlayerAircraft()->mFaults);
 
                     // PFL is orange :)
-                    vPFLrenderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() != 0][7]);
+                    vPFLrenderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][7]);
 
                     //ATARIBABY
                     float stepx;
@@ -3197,7 +3197,7 @@ void OTWDriverClass::VCock_Exec(void)
                             buf[0] = pCockpitManager->mpIcp->PFLLines[j][i];
                             buf[1] = '\0';
 
-                            if (buf[0] != ' ' && pCockpitManager->mpIcp->PFLInvert[j][i] == 0)
+                            if (buf[0] not_eq ' ' && pCockpitManager->mpIcp->PFLInvert[j][i] == 0)
                                 vPFLrenderer->TextLeft(x, y, buf, pCockpitManager->mpIcp->PFLInvert[j][i]);
                             else if (pCockpitManager->mpIcp->PFLInvert[j][i] == 2)
                                 vPFLrenderer->TextLeft(x, y, buf, pCockpitManager->mpIcp->PFLInvert[j][i]);
@@ -3214,7 +3214,7 @@ void OTWDriverClass::VCock_Exec(void)
                 }
             }
 
-            renderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() != 0][6]);
+            renderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][6]);
         }
 
 
@@ -3301,7 +3301,7 @@ void OTWDriverClass::VCock_Exec(void)
             vcInfo.vMACHrenderer->Line(x1, y1, x2, y2);
         }
 
-        renderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() != 0][5]);
+        renderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][5]);
 
         for (i = 0; static_cast<unsigned int>(i) < mpVDials.size(); i++)
             mpVDials[i]->Exec(SimDriver.GetPlayerAircraft());
@@ -3380,7 +3380,7 @@ void OTWDriverClass::VCock_Exec(void)
             }
         }
 
-        if (closestbutton != 9999)
+        if (closestbutton not_eq 9999)
             if (Button3DList.buttons[closestbutton].function)
             {
                 //Wombat778 03-06-04 Send the buttonid of the function, which should stop a ctd in not-realistic avionics
@@ -3406,7 +3406,7 @@ void OTWDriverClass::VCock_Exec(void)
         {
 
             // if (i==Button3DList.debugbutton)
-            // renderer->SetColor(pVColors[TheTimeOfDay.GetNVGmode() != 0][7]);
+            // renderer->SetColor(pVColors[TheTimeOfDay.GetNVGmode() not_eq 0][7]);
             // else
             // renderer->SetColor (0x000000FF); //RED
             Tpoint Pos = Button3DList.buttons[i].loc;
@@ -3452,7 +3452,7 @@ void OTWDriverClass::VCock_Exec(void)
 
         }
 
-        renderer->SetColor(pVColors[TheTimeOfDay.GetNVGmode() != 0][5]);
+        renderer->SetColor(pVColors[TheTimeOfDay.GetNVGmode() not_eq 0][5]);
     }
 
 #if 0

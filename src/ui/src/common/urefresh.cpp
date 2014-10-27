@@ -113,7 +113,7 @@ void UI_Refresher::Cleanup()
 
 void UI_Refresher::Update(CampEntity entity, long allow)
 {
-    if (entity->GetTeam() != Side_)
+    if (entity->GetTeam() not_eq Side_)
     {
         // Handle ownership change
         Remove();
@@ -185,7 +185,7 @@ void UI_Refresher::AddMission(CampEntity entity)
 {
     if (entity->IsFlight() && ((FlightClass*)entity)->Final())
     {
-        if (((FlightClass*)entity)->GetUnitMission() != AMIS_ALERT)
+        if (((FlightClass*)entity)->GetUnitMission() not_eq AMIS_ALERT)
         {
             VehicleClassDataType* vc;
             Falcon4EntityClassType* classPtr;
@@ -218,16 +218,16 @@ void UI_Refresher::UpdateMission(CampEntity entity)
 {
     if (!entity->IsDead())
     {
-        if (GetFlightTime((Flight)entity) != Mission_->GetTakeOffTime())
+        if (GetFlightTime((Flight)entity) not_eq Mission_->GetTakeOffTime())
         {
             MissionUpdateTime((Flight)entity, Mission_);
             Owner_->SetFlags(Owner_->GetFlags() | _GPS_RESORT_MISSION_);
         }
 
-        if (GetFlightStatusID((Flight)entity) != Mission_->GetStatusID())
+        if (GetFlightStatusID((Flight)entity) not_eq Mission_->GetStatusID())
             MissionUpdateStatus((Flight)entity, Mission_);
 
-        if (((Flight)entity)->Final() && ((Flight)entity)->GetUnitMission() != AMIS_ALERT)
+        if (((Flight)entity)->Final() && ((Flight)entity)->GetUnitMission() not_eq AMIS_ALERT)
             Mission_->SetFlagBitOff(C_BIT_INVISIBLE);
     }
     else
@@ -275,7 +275,7 @@ void UI_Refresher::AddMapItem(CampEntity entity)
     {
         MapItem_ = Owner_->Map_->AddUnit((Unit)entity);
 
-        if (MapItem_ && entity->GetTeam() != Owner_->TeamNo_)
+        if (MapItem_ && entity->GetTeam() not_eq Owner_->TeamNo_)
             Threat_ = Owner_->Map_->AddThreat(entity);
     }
     else if (entity->IsBrigade())
@@ -288,7 +288,7 @@ void UI_Refresher::AddMapItem(CampEntity entity)
     {
         MapItem_ = Owner_->Map_->AddObjective((Objective)entity);
 
-        if (MapItem_ && entity->GetTeam() != Owner_->TeamNo_)
+        if (MapItem_ && entity->GetTeam() not_eq Owner_->TeamNo_)
             Threat_ = Owner_->Map_->AddThreat(entity);
     }
 
@@ -304,9 +304,9 @@ void UI_Refresher::AddMapItem(CampEntity entity)
             MapItem_->Flags  or_eq  C_BIT_INVISIBLE;
         }
 
-        if (entity->GetTeam() != Owner_->TeamNo_ && Owner_->TeamNo_ >= 0 && !entity->IsSquadron())
+        if (entity->GetTeam() not_eq Owner_->TeamNo_ && Owner_->TeamNo_ >= 0 && !entity->IsSquadron())
         {
-            if (!entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) && entity->GetMovementType() != NoMove)
+            if (!entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) && entity->GetMovementType() not_eq NoMove)
             {
                 MapItem_->Flags  or_eq  C_BIT_INVISIBLE;
 
@@ -358,7 +358,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
                 // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified
                 //and not editing a TE, change the IconIndex of the unit to ICON_UKN
                 //and its label to 'Bandit'
-                if (g_nUnidentifiedInUI && (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && MapItem_ && entity->GetTeam() != Owner_->TeamNo_))
+                if (g_nUnidentifiedInUI && (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && MapItem_ && entity->GetTeam() not_eq Owner_->TeamNo_))
                 {
                     if (entity->GetIdentified(static_cast<uchar>(Owner_->TeamNo_)))
                     {
@@ -403,7 +403,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
                     if (gGps->GetTeamNo() == entity->GetTeam())
                         GetCallsign(flt, name);
                     // 2002-02-24 ADDED BY S.G. Don't give AWACS more info than it can get...
-                    else if (g_nUnidentifiedInUI && (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && MapItem_ && entity->IsFlight() && entity->GetTeam() != Owner_->TeamNo_ && !entity->GetIdentified(static_cast<uchar>(Owner_->TeamNo_))))
+                    else if (g_nUnidentifiedInUI && (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && MapItem_ && entity->IsFlight() && entity->GetTeam() not_eq Owner_->TeamNo_ && !entity->GetIdentified(static_cast<uchar>(Owner_->TeamNo_))))
                         strcpy(name, "Bandit");
                     else
                     {
@@ -495,7 +495,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
      }
      }
     */
-    if (MapItem_ && entity->IsUnit() && entity->GetTeam() != Owner_->TeamNo_)
+    if (MapItem_ && entity->IsUnit() && entity->GetTeam() not_eq Owner_->TeamNo_)
     {
         if (Owner_->TeamNo_ < 0)
         {
@@ -518,7 +518,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
         }
         else
         {
-            if (!entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) && entity->GetMovementType() != NoMove)
+            if (!entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) && entity->GetMovementType() not_eq NoMove)
             {
                 MapItem_->Flags  or_eq  C_BIT_INVISIBLE;
 

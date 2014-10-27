@@ -73,12 +73,12 @@ CRITICAL_SECTION  RadioSubTitle::cs_radiosubtitle;
 RadioSubTitle::RadioSubTitle(const int MaximumMessageNum, const unsigned long TTL)
 {
 
-    if (MaximumMessageNum != 0)
+    if (MaximumMessageNum not_eq 0)
         MaxMessageNum = MaximumMessageNum;
     else
         MaxMessageNum = 20;
 
-    if (TTL != 0)
+    if (TTL not_eq 0)
         messageTTL = TTL;
     else
         messageTTL = MESSAGE_TTL;
@@ -191,12 +191,12 @@ RadioSubTitle::~RadioSubTitle(void)
 /*****************************************************************************/
 void RadioSubTitle::SetTTLAndMessageNum(const int MessageNum, const unsigned long TTL)
 {
-    if (MessageNum != 0)
+    if (MessageNum not_eq 0)
         MaxMessageNum = MessageNum;
     else
         MaxMessageNum = 20;
 
-    if (TTL != 0)
+    if (TTL not_eq 0)
         messageTTL = TTL;
     else
         messageTTL = MESSAGE_TTL;
@@ -600,22 +600,22 @@ void RadioSubTitle::SetChannelColours(unsigned long flight, unsigned long toPack
                                       unsigned long Team, unsigned long Proximity, unsigned long World,
                                       unsigned long Tower, unsigned long Standard)
 {
-    if (flight != 0) colour_Flight = flight;
+    if (flight not_eq 0) colour_Flight = flight;
 
-    if (toPackage != 0) colour_ToPackage = toPackage;
+    if (toPackage not_eq 0) colour_ToPackage = toPackage;
 
-    if (ToFromPackage != 0) colour_ToFromPackage = ToFromPackage;
+    if (ToFromPackage not_eq 0) colour_ToFromPackage = ToFromPackage;
 
     // 'Team' is the guard channel
-    if (Team != 0) colour_Team = Team;
+    if (Team not_eq 0) colour_Team = Team;
 
-    if (Proximity != 0) colour_Proximity = Proximity;
+    if (Proximity not_eq 0) colour_Proximity = Proximity;
 
-    if (World != 0) colour_World = World;
+    if (World not_eq 0) colour_World = World;
 
-    if (Tower != 0) colour_Tower = Tower;
+    if (Tower not_eq 0) colour_Tower = Tower;
 
-    if (Standard != 0) colour_Standard = Standard;
+    if (Standard not_eq 0) colour_Standard = Standard;
 }
 
 /*****************************************************************************/
@@ -845,7 +845,7 @@ void RadioSubTitle::breakDownLine(csvLine_t* theTextString, char* theLine, const
             {
                 end++;
             }
-            while (*end != QUOTAS/*'"'*/);
+            while (*end not_eq QUOTAS/*'"'*/);
 
             inDoubleQuotes = true;
         }
@@ -927,7 +927,7 @@ bool RadioSubTitle::ReadNewFile(const char* theFileName)
         char tmp[MAX_READ_LEN];
         int j = 0;
 
-        while (fgets(&tmp[0], MAX_READ_LEN, fp) != NULL)
+        while (fgets(&tmp[0], MAX_READ_LEN, fp) not_eq NULL)
         {
             if (j == 0)
             {
@@ -964,7 +964,7 @@ int RadioSubTitle::CountLinesInFile(const char* theFileName)
         char tmp[MAX_READ_LEN];
         int linecount = 0;
 
-        while (fgets(&tmp[0], MAX_READ_LEN, fp) != NULL)
+        while (fgets(&tmp[0], MAX_READ_LEN, fp) not_eq NULL)
         {
             linecount++;
         }

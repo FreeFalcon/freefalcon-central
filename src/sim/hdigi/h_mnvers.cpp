@@ -257,7 +257,7 @@ void HeliBrain::RollOutOfPlane(void)
     float eroll;
 
     // first pass, save roll
-    if (lastMode != RoopMode)
+    if (lastMode not_eq RoopMode)
     {
         mnverTime = 4.0F;
 
@@ -302,7 +302,7 @@ void HeliBrain::OverBank(float delta)
     if (fabs(self->Pitch()) < 70.0 * DTR)
     {
         // Find a new roll angle
-        if (lastMode != OverBMode)
+        if (lastMode not_eq OverBMode)
         {
             if (self->Roll() > 0.0F)
                 newroll = targetData->droll + delta;

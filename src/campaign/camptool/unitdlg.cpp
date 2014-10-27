@@ -502,7 +502,7 @@ void ParseOptionalButtons(HWND hDlg, int button, int message, Unit u)
                     return;
                 else
                 {
-                    if (u->GetUnitDivision() != i)
+                    if (u->GetUnitDivision() not_eq i)
                     {
                         u->SetUnitDivision(i);
                         u->SetUnitNameID(0);
@@ -643,7 +643,7 @@ void DisplayNextInStack(HWND hDlg, Unit u)
     u->GetLocation(&x, &y); // Current in stack
     e = GetFirstUnit(myit);
 
-    while (e && e != u)
+    while (e && e not_eq u)
     {
         e = GetNextUnit(myit); // Get to current location in list
     }
@@ -661,7 +661,7 @@ void DisplayNextInStack(HWND hDlg, Unit u)
     {
         e->GetLocation(&tx, &ty);
 
-        if (x == tx && y == ty && e != u)
+        if (x == tx && y == ty && e not_eq u)
         {
             foundone = 1;
         }
@@ -691,7 +691,7 @@ void ShowSubunitInfo(HDC DC, HWND hDlg, Unit U, short Set, short i, int asagg)
 
     E = U->GetFirstUnitElement();
 
-    while (E != NULL)
+    while (E not_eq NULL)
     {
         if (j > 4)
         {
@@ -1319,7 +1319,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                                 U = GlobUnit;
                                 GlobUnit = U->GetUnitParent();
 
-                                if (GlobUnit && GlobUnit != U)
+                                if (GlobUnit && GlobUnit not_eq U)
                                     DialogBox(hInst, MAKEINTRESOURCE(IDD_UNITDIALOG1), hDlg, (DLGPROC)EditUnit);
 
                                 GlobUnit = U;
@@ -1768,7 +1768,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     {
                         dt = w->GetWPArrivalTime();
 
-                        if (w->GetWPAction() != WP_TAKEOFF)
+                        if (w->GetWPAction() not_eq WP_TAKEOFF)
                             sprintf(buffer, "In Progress");
                         else
                             sprintf(buffer, "%s", GetTimeString(dt, buffer));

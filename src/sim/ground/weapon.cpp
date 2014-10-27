@@ -125,7 +125,7 @@ void GroundClass::WeaponKeepAlive(void)
                     whatWasHit = Gun->Exec(&fire, gunDmx, &platformAngles, targetPtr, FALSE);
 
                     // if we hit something, stop firing....
-                    if (whatWasHit != TRACER_HIT_NOTHING)
+                    if (whatWasHit not_eq TRACER_HIT_NOTHING)
                     {
                         UnSetGunFiring(i);
 
@@ -775,11 +775,11 @@ int GroundClass::MissileTrack(void)
                 RadarClass *radar = (RadarClass*)FindSensor(battalionFireControl, SensorClass::Radar);
                 ShiAssert(radar);
 
-                if (!radar->CurrentTarget() or targetPtr->BaseData() != radar->CurrentTarget()->BaseData())
+                if (!radar->CurrentTarget() or targetPtr->BaseData() not_eq radar->CurrentTarget()->BaseData())
                     SetTarget(radar->CurrentTarget());
 
                 // ADDED BY S.G. SO SAM DO NOT NORMALLY FIRE WHEN JAMMED. DEPENDING ON THE SKILL, THEY MIGHT FIRE THOUGH
-                if (radar->CurrentTarget() && radar->CurrentTarget()->localData->sensorState[SensorClass::Radar] != SensorClass::SensorTrack && (rand() % 1000 >= (4 - gai->skillLevel) * (4 - gai->skillLevel) * 10))
+                if (radar->CurrentTarget() && radar->CurrentTarget()->localData->sensorState[SensorClass::Radar] not_eq SensorClass::SensorTrack && (rand() % 1000 >= (4 - gai->skillLevel) * (4 - gai->skillLevel) * 10))
                     return FALSE;
 
                 // END OF ADDED SECTION
@@ -920,7 +920,7 @@ int GroundClass::MissileTrack(void)
         */
     }
     // target on ground
-    else if (maxAlt != 0.0f or targetPtr->localData->range > wc->Range * KM_TO_FT)
+    else if (maxAlt not_eq 0.0f or targetPtr->localData->range > wc->Range * KM_TO_FT)
         return FALSE;
 
     // az and el are relative from our vehicles orientation so subtract

@@ -56,7 +56,7 @@ AirframeClass::SetSimpleMode(int mode)
     if (mode == simpleMode)
         return;
 
-    if (simpleMode != SIMPLE_MODE_OFF && mode == SIMPLE_MODE_OFF)
+    if (simpleMode not_eq SIMPLE_MODE_OFF && mode == SIMPLE_MODE_OFF)
     {
         Reinit();
         // MonoPrint("Reinit() Called \n");
@@ -150,7 +150,7 @@ AirframeClass::SimpleModel(void)
             maxBank = min(MAX_AF_ROLL, aeroDataset[vehicleIndex].inputData[AeroDataSet::MaxRoll]);
 
             //me123 dont bank more then you can keep the nose up with your max gs availeble
-            if (g_bSimpleFMUpdates && gearPos < 0.7F && platform->DBrain()->GetCurrentMode() != DigitalBrain::LandingMode && platform->DBrain()->GetCurrentMode() != DigitalBrain::RefuelingMode)
+            if (g_bSimpleFMUpdates && gearPos < 0.7F && platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::LandingMode && platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::RefuelingMode)
                 maxBank = min(maxBank, acos(1 / (max(min(curMaxGs, gsAvail), 1.5f))));
 
             tmp = ctlroll * maxBank * 1.2F;
@@ -175,8 +175,8 @@ AirframeClass::SimpleModel(void)
                  platform->TBrain() /* && platform->TBrain()->IsSet(TankerBrain::IsRefueling)  &&
  platform->TBrain()->ReachedFirstTrackPoint() */) ||
                 (g_bSimpleFMUpdates && vt > 1 && gearPos < 0.7F &&
-                 platform->DBrain()->GetCurrentMode() != DigitalBrain::LandingMode &&
-                 platform->DBrain()->GetCurrentMode() != DigitalBrain::RefuelingMode))
+                 platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::LandingMode &&
+                 platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::RefuelingMode))
                 r = (360.0f * GRAVITY * tan(turnangle) / (2 * PI * vt)) * DTR;
             else
                 r = (ctlroll * MAX_AF_YAWRATE);
@@ -457,7 +457,7 @@ AirframeClass::SimpleModel(void)
             if (vcas > rotate && tstatus > tTaxi) //Cobra
             {
 #ifdef DEBUG
-                ShiAssert(platform->DBrain()->ATCStatus() != lLanded);
+                ShiAssert(platform->DBrain()->ATCStatus() not_eq lLanded);
 #endif
                 SetFlag(InAir);
                 platform->UnSetFlag(ON_GROUND);

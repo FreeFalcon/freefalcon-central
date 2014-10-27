@@ -409,7 +409,7 @@ void C_Hash::RemoveOld()
 
     for (i = 0; i < TableSize_; i++)
     {
-        while (Table_[i].Root_ && Table_[i].Root_->Check != Check_)
+        while (Table_[i].Root_ && Table_[i].Root_->Check not_eq Check_)
         {
             prev = Table_[i].Root_;
             Table_[i].Root_ = Table_[i].Root_->Next;
@@ -436,7 +436,7 @@ void C_Hash::RemoveOld()
         {
             while (cur->Next)
             {
-                if (cur->Next->Check != Check_)
+                if (cur->Next->Check not_eq Check_)
                 {
                     prev = cur->Next;
                     cur->Next = cur->Next->Next;
@@ -474,7 +474,7 @@ void *C_Hash::GetFirstOld(C_HASHNODE **current, long *curidx)
 
     while (cur)
     {
-        if (cur->Record && cur->Check != Check_)
+        if (cur->Record && cur->Check not_eq Check_)
         {
             *current = cur;
             return(cur->Record);

@@ -1,5 +1,6 @@
 #ifndef _F4THREADS_H
 #define _F4THREADS_H
+#include <cISO646>
 
 /** @file f4thread.h FreeFalcon thread and mutex API. */
 
@@ -114,7 +115,7 @@ public:
     /** creates object locking muytex */
     F4ScopeLock(F4CSECTIONHANDLE *mutex) : mutex(mutex)
     {
-        if (mutex != 0)
+        if (mutex not_eq 0)
         {
             F4EnterCriticalSection(mutex);
         }
@@ -122,7 +123,7 @@ public:
     /** destroys object unlocking mutex */
     ~F4ScopeLock()
     {
-        if (mutex != 0)
+        if (mutex not_eq 0)
         {
             F4LeaveCriticalSection(mutex);
         }

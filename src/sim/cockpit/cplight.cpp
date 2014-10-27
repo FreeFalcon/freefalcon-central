@@ -121,7 +121,7 @@ void CPLight::DisplayBlit(void)
         return;
     }
     else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerOff)
-             && mPersistant != 3)
+             && mPersistant not_eq 3)
     {
         //restore our original state
         if (WasPersistant)
@@ -157,7 +157,7 @@ void CPLight::DisplayBlit(void)
         WasPersistant = TRUE;
     }
 
-    if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->TestLights && mPersistant != 3 && !WasPersistant)
+    if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->TestLights && mPersistant not_eq 3 && !WasPersistant)
     {
         mState = TRUE;
     }
@@ -245,7 +245,7 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
         return;
 
 
-    if (mpSourceBuffer[mState].m_arrTex.size() != 1)
+    if (mpSourceBuffer[mState].m_arrTex.size() not_eq 1)
         return;
 
     if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerOff)
@@ -273,7 +273,7 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
         return;
     }
     else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerOff)
-             && mPersistant != 3)
+             && mPersistant not_eq 3)
     {
         //restore our original state
         if (WasPersistant)
@@ -315,7 +315,7 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
         WasPersistant = TRUE;
     }
 
-    if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->TestLights && mPersistant != 3 && !WasPersistant)
+    if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->TestLights && mPersistant not_eq 3 && !WasPersistant)
     {
         mState = TRUE;
     }

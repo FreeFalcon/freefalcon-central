@@ -245,7 +245,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         // end Cobra
 #endif
 
-        if (!radar->CurrentTarget() or radar->CurrentTarget()->BaseData() != lockedTarget->BaseData())
+        if (!radar->CurrentTarget() or radar->CurrentTarget()->BaseData() not_eq lockedTarget->BaseData())
         {
             if (lockedTarget)
                 SendTrackMsg(lockedTarget, Track_Unlock);
@@ -255,7 +255,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         }
 
         // ADDED BY S.G. TO MAKE SURE OUR RADAR IS STILL LOCKED ON THE TARGET AND NOT JAMMED (NEW: USES SensorTrack INSTEAD of noTrack)
-        if (radar->CurrentTarget()->localData->sensorState[SensorClass::Radar] != SensorClass::SensorTrack)
+        if (radar->CurrentTarget()->localData->sensorState[SensorClass::Radar] not_eq SensorClass::SensorTrack)
         {
             if (lockedTarget)
                 SendTrackMsg(lockedTarget, Track_Unlock);
@@ -288,7 +288,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         }
         else
         {
-            if (radarPlatform->GetRadarMode() != FEC_RADAR_GUIDE)
+            if (radarPlatform->GetRadarMode() not_eq FEC_RADAR_GUIDE)
             {
                 if (lockedTarget)
                     SendTrackMsg(lockedTarget, Track_Unlock);
@@ -308,7 +308,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
     if (lockedTarget && !lockedTarget->BaseData()->IsWeapon())
     {
         // 2000-08-31 ADDED BY S.G. SO ARH DOESN'T SEND A LAUNCH WHEN THE MISSILE IS LAUNCHED (IT'S COMMAND GUIDED, NOT A REAL BEAM RIDER)
-        if (((MissileClass *)platform)->GetSeekerType() != SensorClass::Radar)
+        if (((MissileClass *)platform)->GetSeekerType() not_eq SensorClass::Radar)
         {
             // END OF ADDED SECTION (EXCEPT FOR THE BLOCK INDENTATION)
             if (lockedTarget->localData->lockmsgsend == Track_Lock && SimLibElapsedTime - lastTargetLockSend > RadarClass::TrackUpdateTime)
@@ -455,7 +455,7 @@ void BeamRiderClass::ConsiderDecoy(SimObjectType *target)
     id = ((SimBaseClass*)target->BaseData())->NewestChaffID();
 
     // If we have a new chaff bundle to deal with
-    if (id != lastChaffID)
+    if (id not_eq lastChaffID)
     {
         // Stop here if there isn't a counter measure in play
         if (id == FalconNullId)

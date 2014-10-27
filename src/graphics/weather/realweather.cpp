@@ -171,7 +171,7 @@ inline void RealWeather::DrawStratus2(Tpoint *position, int txtIndex)
 
 inline void RealWeather::DrawCumulus(Tpoint *position, int txtIndex, float Radius)
 {
-    if (weatherCondition != FAIR) return;
+    if (weatherCondition not_eq FAIR) return;
 
     float minFog = 0.2f;
 
@@ -1431,7 +1431,7 @@ bool RealWeather::ReadWeather(void)
 
         pch = strtok(specMETAR, " ");
 
-        while (pch != NULL)
+        while (pch not_eq NULL)
         {
             //Identify things by length
             if (strlen(pch) == 2 or (strlen(pch) == 3 && strncmp(pch, "-", 1))

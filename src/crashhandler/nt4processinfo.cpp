@@ -58,7 +58,7 @@ static BOOL InitPSAPI(void)
 
     // Load up PSAPI.DLL.
     HINSTANCE hInst = LoadLibraryA("PSAPI.DLL") ;
-    ASSERT(NULL != hInst) ;
+    ASSERT(NULL not_eq hInst) ;
 
     if (NULL == hInst)
     {
@@ -70,7 +70,7 @@ static BOOL InitPSAPI(void)
     g_pEnumProcessModules =
         (ENUMPROCESSMODULES)GetProcAddress(hInst ,
                                            "EnumProcessModules") ;
-    ASSERT(NULL != g_pEnumProcessModules) ;
+    ASSERT(NULL not_eq g_pEnumProcessModules) ;
 
     if (NULL == g_pEnumProcessModules)
     {
@@ -81,7 +81,7 @@ static BOOL InitPSAPI(void)
     g_pGetModuleBaseName =
         (GETMODULEBASENAME)GetProcAddress(hInst ,
                                           "GetModuleBaseNameA") ;
-    ASSERT(NULL != g_pGetModuleBaseName) ;
+    ASSERT(NULL not_eq g_pGetModuleBaseName) ;
 
     if (NULL == g_pGetModuleBaseName)
     {
@@ -135,7 +135,7 @@ BOOL NT4GetLoadedModules(DWORD     dwPID        ,
                                PROCESS_VM_READ         ,
                                FALSE                      ,
                                dwPID) ;
-    ASSERT(NULL != hProc) ;
+    ASSERT(NULL not_eq hProc) ;
 
     if (NULL == hProc)
     {
@@ -144,7 +144,7 @@ BOOL NT4GetLoadedModules(DWORD     dwPID        ,
     }
 
     // Now get the modules for the specified process.
-    ASSERT(NULL != g_pEnumProcessModules) ;
+    ASSERT(NULL not_eq g_pEnumProcessModules) ;
     // Because of possible DLL unload order differences, make sure that
     //  PSAPI.DLL is still loaded in case this function is called during
     //  shutdown.

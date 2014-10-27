@@ -25,7 +25,7 @@ void MissileClass::UpdateTargetData(void)
             // This ensures that everybody agrees about where ground objects are even as they move
             // with terrain LOD changes.
             /* JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
-            if (targetPtr->BaseData()->GetDomain() != DOMAIN_SEA) // JB carrier (otherwise ships stop when you fire a missile at them)
+            if (targetPtr->BaseData()->GetDomain() not_eq DOMAIN_SEA) // JB carrier (otherwise ships stop when you fire a missile at them)
             {
              if (targetPtr->BaseData()->IsSim() &&
              ((SimBaseClass*)targetPtr->BaseData())->OnGround() &&
@@ -54,8 +54,8 @@ void MissileClass::SetTarget(SimObjectType* newTarget)
         return;
 
 
-    ShiAssert(!newTarget or newTarget->BaseData() != (FalconEntity*)0xDDDDDDDD);
-    ShiAssert(!targetPtr or targetPtr->BaseData() != (FalconEntity*)0xDDDDDDDD);
+    ShiAssert(!newTarget or newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
+    ShiAssert(!targetPtr or targetPtr->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
 
 
     if (targetPtr)
@@ -65,8 +65,8 @@ void MissileClass::SetTarget(SimObjectType* newTarget)
     }
 
 
-    ShiAssert(!newTarget or newTarget->BaseData() != (FalconEntity*)0xDDDDDDDD);
-    ShiAssert(!targetPtr or targetPtr->BaseData() != (FalconEntity*)0xDDDDDDDD);
+    ShiAssert(!newTarget or newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
+    ShiAssert(!targetPtr or targetPtr->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
 
 
     if (newTarget)
@@ -102,7 +102,7 @@ void MissileClass::SetTarget(SimObjectType* newTarget)
 
     // If we're still on the rail, update our seeker as well -- otherwise let it do its thing
     // TODO:  Might be nice if the missile always used the seeker's target instead of keeping its own.
-    if (sensorArray && launchState != InFlight)
+    if (sensorArray && launchState not_eq InFlight)
     {
         ShiAssert(sensorArray[0]);
 

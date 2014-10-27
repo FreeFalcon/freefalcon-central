@@ -155,7 +155,7 @@ costtype GetPathCost(GridIndex x, GridIndex y, Path path, MoveType mt, int flags
 
     d = path->GetDirection(i);
 
-    while (d != Here)
+    while (d not_eq Here)
     {
         x += dx[d];
         y += dy[d];
@@ -174,7 +174,7 @@ costtype GetPathCost(Objective o, Path path, MoveType mt, int flags)
 
     d = path->GetDirection(i);
 
-    while (d != Here)
+    while (d not_eq Here)
     {
         cost += o->GetNeighborCost(d, mt);
         o = o->GetNeighbor(d);
@@ -193,7 +193,7 @@ int GetObjectivePath(Path p, Objective o, Objective t, int type, int who, int fl
     moveType = type;
     moveFlags = flags;
 
-    if (type == NoMove && o != t)
+    if (type == NoMove && o not_eq t)
         return -1;
 
 #ifdef CAMPTOOL
@@ -333,7 +333,7 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
 
                     while (u)
                     {
-                        if (u->IsBrigade() or u->GetDomain() != DOMAIN_LAND or u->GetTeam() != o->GetTeam())
+                        if (u->IsBrigade() or u->GetDomain() not_eq DOMAIN_LAND or u->GetTeam() not_eq o->GetTeam())
                         {
                             u = GetNextUnit(&uit);
                             continue;
@@ -643,11 +643,11 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
                     mult = 4.0F;
                 else if (!t)
                     return 255.0F;
-                else if (n->GetObjectiveParentID() != t->Id())
+                else if (n->GetObjectiveParentID() not_eq t->Id())
                 {
                     p = n->GetObjectiveParent();
 
-                    if (p && p->GetTeam() != team)
+                    if (p && p->GetTeam() not_eq team)
                         // return 255.0F;
                         mult = 4.0F;
                 }
@@ -692,7 +692,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
 
             while (u)
             {
-                if (u->IsBrigade() or u->GetDomain() != DOMAIN_LAND or u->GetTeam() != o->GetTeam())
+                if (u->IsBrigade() or u->GetDomain() not_eq DOMAIN_LAND or u->GetTeam() not_eq o->GetTeam())
                 {
                     u = GetNextUnit(&uit);
                     continue;

@@ -206,7 +206,7 @@ VOID CDXEngine::SelectTexture(GLint texID)
     // eventually select other textures for NVG/TV
 
     // get the Handle of the Texture from the Texture Bank
-    texID = (texID != -1) ? TheTextureBank.GetHandle(texID) : (GLint)ZeroTex;
+    texID = (texID not_eq -1) ? TheTextureBank.GetHandle(texID) : (GLint)ZeroTex;
 
     if (texID) texID = (GLint)((TextureHandle *)texID)->m_pDDS;
 
@@ -897,7 +897,7 @@ void CDXEngine::DrawSurface()
 
 
     /////////////////////// TEXTURE CHANGE Feature //////////////////////////
-    if (m_TexID != LastTexID)
+    if (m_TexID not_eq LastTexID)
     {
         SelectTexture(m_TexID);
 #ifdef DEBUG_ENGINE
@@ -912,7 +912,7 @@ void CDXEngine::DrawSurface()
     ////////////////////// ZBIAS Checking done every time ////////////////////
 #ifdef DEBUG_ENGINE
 
-    if (UseZBias && m_LastZBias != m_NODE.SURFACE->dwzBias)
+    if (UseZBias && m_LastZBias not_eq m_NODE.SURFACE->dwzBias)
     {
         m_LastZBias = m_NODE.SURFACE->dwzBias;
         m_pD3DD->SetRenderState(D3DRENDERSTATE_ZBIAS, m_LastZBias);
@@ -920,7 +920,7 @@ void CDXEngine::DrawSurface()
 
 #else
 
-    if (m_LastZBias != m_NODE.SURFACE->dwzBias)
+    if (m_LastZBias not_eq m_NODE.SURFACE->dwzBias)
     {
         m_LastZBias = m_NODE.SURFACE->dwzBias;
         m_pD3DD->SetRenderState(D3DRENDERSTATE_ZBIAS, m_LastZBias);
@@ -943,7 +943,7 @@ void CDXEngine::DrawSurface()
 
 
     ////////////////////// Surface SPECULARITY  management ///////////////////////////
-    if (TheMaterial.power != m_NODE.SURFACE->SpecularIndex or m_LastSpecular != m_NODE.SURFACE->DefaultSpecularity)
+    if (TheMaterial.power not_eq m_NODE.SURFACE->SpecularIndex or m_LastSpecular not_eq m_NODE.SURFACE->DefaultSpecularity)
     {
         TheMaterial.power = m_NODE.SURFACE->SpecularIndex;
         m_LastSpecular = m_NODE.SURFACE->DefaultSpecularity;
@@ -1035,7 +1035,7 @@ float CDXEngine::Process_DOFRot(float dofrot, int dofNumber, int flags, float mi
     }
 
     // Scaled 0-1 DOF
-    if (flags & XDOF_SUBRANGE && min != max)
+    if (flags & XDOF_SUBRANGE && min not_eq max)
     {
         dofrot -= min;
         dofrot /= max - min;
@@ -1399,7 +1399,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
     }
 
     // check if child enlighted
-    if (LightOwner != NULL) Liter = LightOwner;
+    if (LightOwner not_eq NULL) Liter = LightOwner;
     else
     {
         if (!++LightID) LightID++;
@@ -1460,7 +1460,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
             // hoping it is updated...
 
             // * Any class not air/ground get a normal draw
-            if (Model->VBClass != VB_CLASS_DOMAIN_GROUND && Model->VBClass != VB_CLASS_DOMAIN_AIR) Si = 0.2f;
+            if (Model->VBClass not_eq VB_CLASS_DOMAIN_GROUND && Model->VBClass not_eq VB_CLASS_DOMAIN_AIR) Si = 0.2f;
 
             // Ground vehicles, hi Q reflection index
             if (Model->VBClass == VB_CLASS_DOMAIN_GROUND)
@@ -1586,7 +1586,7 @@ inline void CDXEngine::DrawNode(ObjectInstance *objInst, DWORD LightOwner, DWORD
 
 #endif
 
-            if (m_NODE.SURFACE->dwFlags.b.Texture && m_NODE.SURFACE->TexID[0] != -1) m_TexID = m_TexUsed[m_NODE.SURFACE->TexID[0]];
+            if (m_NODE.SURFACE->dwFlags.b.Texture && m_NODE.SURFACE->TexID[0] not_eq -1) m_TexID = m_TexUsed[m_NODE.SURFACE->TexID[0]];
             else m_TexID = -1;
 
 
@@ -1795,7 +1795,7 @@ void CDXEngine::FlushObjects(void)
         m_NODE.BYTE = (BYTE*)m_VB.Nodes;
 
         // Till end of Model
-        while (m_NODE.HEAD->Type != DX_MODELEND)
+        while (m_NODE.HEAD->Type not_eq DX_MODELEND)
         {
             // Draw the Node
             DrawNode(objInst, LightOwner, LodID);
@@ -1829,7 +1829,7 @@ void CDXEngine::DrawAlphaSurfaces(void)
 
     while (PopSurface(&m_AlphaStack, &State))
     {
-        if (AppliedState != State) m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&State);
+        if (AppliedState not_eq State) m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&State);
 
         AppliedState = State;
 #ifndef DEBUG_ENGINE
@@ -1839,7 +1839,7 @@ void CDXEngine::DrawAlphaSurfaces(void)
 #endif
 
         // if Changed object, remap all lights
-        if (LastObj != m_TheObjectInstance) TheLightEngine.EnableMappedLights();
+        if (LastObj not_eq m_TheObjectInstance) TheLightEngine.EnableMappedLights();
 
         LastObj = m_TheObjectInstance;
 
@@ -1850,7 +1850,7 @@ void CDXEngine::DrawAlphaSurfaces(void)
 #endif
 
         // Stup the Fog level for this object
-        if (m_FogLevel != LastFog) m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)(&m_FogLevel));
+        if (m_FogLevel not_eq LastFog) m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)(&m_FogLevel));
 
         LastFog = m_FogLevel;
         DrawSurface();
@@ -1882,7 +1882,7 @@ void CDXEngine::DrawSortedAlpha(DWORD Level, bool SetupMode)
     m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&State);
     AppliedState = State;
 
-    if (m_LastObjectInstance != m_TheObjectInstance) TheLightEngine.EnableMappedLights(), m_LastObjectInstance = m_TheObjectInstance;
+    if (m_LastObjectInstance not_eq m_TheObjectInstance) TheLightEngine.EnableMappedLights(), m_LastObjectInstance = m_TheObjectInstance;
 
     m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)(&m_FogLevel));
 
@@ -1909,7 +1909,7 @@ void CDXEngine::DrawSolidSurfaces(void)
 
     while (PopSurface(&m_SolidStack, &State))
     {
-        if (State != AppliedState) m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&State);
+        if (State not_eq AppliedState) m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&State);
 
         AppliedState = State;
 #ifndef DEBUG_ENGINE
@@ -1919,7 +1919,7 @@ void CDXEngine::DrawSolidSurfaces(void)
 #endif
 
         // if Changed object, remap all lights
-        if (LastObj != m_TheObjectInstance) TheLightEngine.EnableMappedLights();
+        if (LastObj not_eq m_TheObjectInstance) TheLightEngine.EnableMappedLights();
 
         LastObj = m_TheObjectInstance;
 #ifndef DEBUG_ENGINE
@@ -1929,7 +1929,7 @@ void CDXEngine::DrawSolidSurfaces(void)
 #endif
 
         // Stup the Fog level for this object
-        if (m_FogLevel != LastFog) m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)(&m_FogLevel));
+        if (m_FogLevel not_eq LastFog) m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)(&m_FogLevel));
 
         LastFog = m_FogLevel;
         DrawSurface();

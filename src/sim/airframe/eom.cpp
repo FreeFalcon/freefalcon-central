@@ -92,7 +92,7 @@ void AirframeClass::EquationsOfMotion(float dt)
     /* earth coordinates */
     /*-------------------*/
 
-    if (stallMode != Crashing && stallMode < Spinning)
+    if (stallMode not_eq Crashing && stallMode < Spinning)
     {
         mlSinCos(&trigWind, ((WeatherClass*)realWeather)->WindHeadingAt(&gndNormal));
         windfraction = 1.0f;//me123max(0.0F, min(nzcgs, 1.0F));
@@ -1040,7 +1040,7 @@ void AirframeClass::CalcGroundTurnRate(float dt)
             // rCom *= (0.5F + (80.0F*KNOTS_TO_FTPSEC - vt)/(160.0F * KNOTS_TO_FTPSEC));
             rCom *= max(0.01F, (0.5F + (80.0F * KNOTS_TO_FTPSEC - vt) / (160.0F * KNOTS_TO_FTPSEC))); // JB 010805 Reverse steers over 160 knots.
 
-            Mu_fric += (0.6F - 0.3F * (!platform->onFlatFeature && groundType != COVERAGE_ROAD));
+            Mu_fric += (0.6F - 0.3F * (!platform->onFlatFeature && groundType not_eq COVERAGE_ROAD));
 
             if (!IsSet(OverRunway))
             {
@@ -1151,7 +1151,7 @@ float AirframeClass::CalcMuFric(int groundType)
 
     if (IsSet(GearBroken) or gearPos <= 0.3F or platform->platformAngles.cosphi < 0.9659F)
     {
-        Mu_fric = (0.6F + 0.3F * (!platform->onFlatFeature && groundType != COVERAGE_ROAD) + 0.1F * IsSet(OverRunway));
+        Mu_fric = (0.6F + 0.3F * (!platform->onFlatFeature && groundType not_eq COVERAGE_ROAD) + 0.1F * IsSet(OverRunway));
     }
     else
     {
@@ -1216,9 +1216,9 @@ float AirframeClass::CalcMuFric(int groundType)
         }
 
         if (vt <= 0.1F)
-            Mu_fric += (0.06F + 0.4F * platform->platformAngles.sinbet + (0.44F + 0.2F * IsSet(OverAirStrip)) * wheelbrakes + (!platform->onFlatFeature && groundType != COVERAGE_ROAD) * (0.4F - 0.1F * IsSet(WheelBrakes)));
+            Mu_fric += (0.06F + 0.4F * platform->platformAngles.sinbet + (0.44F + 0.2F * IsSet(OverAirStrip)) * wheelbrakes + (!platform->onFlatFeature && groundType not_eq COVERAGE_ROAD) * (0.4F - 0.1F * IsSet(WheelBrakes)));
         else
-            Mu_fric += (0.04F + 0.5F * platform->platformAngles.sinbet + (0.36F + 0.2F * IsSet(OverAirStrip)) * wheelbrakes + (!platform->onFlatFeature && groundType != COVERAGE_ROAD) * (0.4F - 0.1F * IsSet(WheelBrakes)));
+            Mu_fric += (0.04F + 0.5F * platform->platformAngles.sinbet + (0.36F + 0.2F * IsSet(OverAirStrip)) * wheelbrakes + (!platform->onFlatFeature && groundType not_eq COVERAGE_ROAD) * (0.4F - 0.1F * IsSet(WheelBrakes)));
 
         if (platform->AutopilotType() == AircraftClass::CombatAP)
             Mu_fric += 0.4F * IsSet(WheelBrakes);
@@ -1379,7 +1379,7 @@ float AirframeClass::CalculateVt(float dt)
 
                     if (
                         !IsSet(OnObject) && // JB carrier
-                        !platform->onFlatFeature && groundType != COVERAGE_ROAD
+                        !platform->onFlatFeature && groundType not_eq COVERAGE_ROAD
                     )
                     {
                         pitch = min(pitch, 1.0F);
@@ -1436,7 +1436,7 @@ float AirframeClass::CalculateVt(float dt)
             }
             else
             {
-                float speedMods = 1.0F + IsSet(Simplified) * 0.25F + IsSet(IsDigital) * 0.25F - (!platform->onFlatFeature && groundType != COVERAGE_ROAD) * 0.3F;
+                float speedMods = 1.0F + IsSet(Simplified) * 0.25F + IsSet(IsDigital) * 0.25F - (!platform->onFlatFeature && groundType not_eq COVERAGE_ROAD) * 0.3F;
 
                 float gearLimitSpeed;
 
@@ -1569,7 +1569,7 @@ float AirframeClass::CalculateVt(float dt)
         newVt = vt + vtDot * dt;
         netAccel = vtDot * dt;
 
-        if (newVt != 0.0F)
+        if (newVt not_eq 0.0F)
             vt = newVt;
         else
             vt = 0.01F;
@@ -1777,7 +1777,7 @@ void AirframeClass::CheckGroundImpact(float dt)
                     platform->DBrain()->SetATCStatus(lCrashed);
 
                     // KCK NOTE:: Don't set timer for players
-                    if (platform != SimDriver.GetPlayerEntity())
+                    if (platform not_eq SimDriver.GetPlayerEntity())
                         platform->DBrain()->SetWaitTimer(SimLibElapsedTime + 1 * CampaignMinutes);
                 }
 
@@ -2117,11 +2117,11 @@ void AirframeClass::DragBodypart(void)
         else
             xwaero -= 0.2F * (1.0F - nzcgs) * GRAVITY;
     }
-    else if (vt <= 0.0F && platform->DBrain()->ATCStatus() != lCrashed)
+    else if (vt <= 0.0F && platform->DBrain()->ATCStatus() not_eq lCrashed)
     {
         platform->DBrain()->SetATCStatus(lCrashed);
 
-        if (platform != SimDriver.GetPlayerEntity())
+        if (platform not_eq SimDriver.GetPlayerEntity())
         {
             platform->DBrain()->SetWaitTimer(SimLibElapsedTime + 1 * CampaignMinutes);
         }

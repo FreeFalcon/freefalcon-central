@@ -139,7 +139,7 @@ int ICPClass::CheckMode(void)
     {
         //you can only change progs if you're in STBY
         if (playerAC &&
-            playerAC->EWSPGM() != AircraftClass::Stby)
+            playerAC->EWSPGM() not_eq AircraftClass::Stby)
             return TRUE;
     }
 
@@ -176,7 +176,7 @@ void ICPClass::HandleManualInput(int button)
     if (InputsMade == PossibleInputs)
         return;
 
-    //Only shift our Input if we have something != 0
+    //Only shift our Input if we have something not_eq 0
     if (MadeInput)
     {
         if (Input_Digit2 < 10)
@@ -441,7 +441,7 @@ void ICPClass::FillDEDMatrix(int Line, int Pos, char *str, int Inverted)
     ShiAssert(Line >= 0 && Line < 5);
     ShiAssert(Pos >= 0 && Pos + strlen(str) <= MAX_DED_LEN);
 
-    for (int i = 0; str[i] != '\0'; i++)
+    for (int i = 0; str[i] not_eq '\0'; i++)
     {
         DEDLines[Line][Pos + i] = str[i];
         Invert[Line][Pos + i] = Inverted;
@@ -908,7 +908,7 @@ void ICPClass::FillPFLMatrix(int Line, int Pos, char *str, int Inverted)
     ShiAssert(Line >= 0 && Line < 5);
     ShiAssert(Pos >= 0 && Pos + strlen(str) < MAX_PFL_LEN);
 
-    for (int i = 0; str[i] != '\0'; i++)
+    for (int i = 0; str[i] not_eq '\0'; i++)
     {
         PFLLines[Line][Pos + i] = str[i];
         PFLInvert[Line][Pos + i] = Inverted;

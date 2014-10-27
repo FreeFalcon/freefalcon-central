@@ -149,7 +149,7 @@ int FalconSimCampMessage::Process(uchar autodisp)
 
                 for (
                     CampEntity c = static_cast<CampEntity>(deagIt.GetFirst());
-                    c != NULL;
+                    c not_eq NULL;
                     c = static_cast<CampEntity>(deagIt.GetNext())
                 )
                 {

@@ -107,7 +107,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
 
     // Just in case we don't have a list but we do have a locked target OR IF THE RADAR IS NOT IN AA MODE
     // I noticed the radar isn't really used in air to ground mode so we'll do just the lockedTarget then
-    if (!tmpPtr or mode != AA)
+    if (!tmpPtr or mode not_eq AA)
         tmpPtr = lockedTarget;
 
     while (tmpPtr)
@@ -146,7 +146,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
                 // it can be GMT and SEA as well (not sure about SEA though,
                 // but gndAttck.cpp DO put the digital radar in GMT mode)
                 // But AFAIK, if NOT in AA, you're in GM or GMT mode (SEA is NOT used by AI after all)
-                if (mode != AA)
+                if (mode not_eq AA)
                 {
                     // Skip air objects in AA mode
                     canSee = SG_NOLOCK;
@@ -167,7 +167,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
             if (ret < 1.0f)
             {
                 // Ok so it's too low, but is it jamming? If so, follow anyway...
-                if (ret != -1.0f && tmpPtr->BaseData()->IsSPJamming())
+                if (ret not_eq -1.0f && tmpPtr->BaseData()->IsSPJamming())
                     canSee  or_eq  SG_JAMMING; // That's our second bit being used
                 // So it's too low and were are not jamming. When did we loose the signal?
                 else if (SimLibElapsedTime - tmpPtr->localData->rdrLastHit > radarData->CoastTime)
@@ -352,7 +352,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
     id = ((SimBaseClass*)target->BaseData())->NewestChaffID();
 
     // If we have a new chaff bundle to deal with
-    if (id != lastChaffID)
+    if (id not_eq lastChaffID)
     {
         // Stop here if there isn't a counter measure in play
         if (id == FalconNullId)

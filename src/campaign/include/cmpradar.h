@@ -29,7 +29,7 @@ public:
     // float GetArcRange (int anum) { return ALT_FOR_RANGE_DETERMINATION/detect_ratio[anum]; };
     float GetArcRange(int anum)
     {
-        return detect_ratio[anum] != 0.0f ? ALT_FOR_RANGE_DETERMINATION / detect_ratio[anum] : 0.0f;
+        return detect_ratio[anum] not_eq 0.0f ? ALT_FOR_RANGE_DETERMINATION / detect_ratio[anum] : 0.0f;
     };
     int CanDetect(float dx, float dy, float dz);
     float GetRadarRange(float dx, float dy, float dz);

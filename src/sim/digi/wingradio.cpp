@@ -596,7 +596,7 @@ void AiCustomizeRadioMsg(SimBaseClass* p_sender,
             theRadar->GetCursorPosition(&xPos, &yPos);
             (*pp_radioMsgs)->dataBlock.message = rcRAYGUN;
 
-            if (theRadar->TargetUnderCursor() != FalconNullId)
+            if (theRadar->TargetUnderCursor() not_eq FalconNullId)
             {
                 theTarget = vuDatabase->Find(theRadar->TargetUnderCursor());
                 (*pp_radioMsgs)->dataBlock.edata[2] = SimToGrid(theTarget->YPos());

@@ -48,7 +48,7 @@ public:
     BOOL Setup(DXContext *hrc, const char* texturePath);
     BOOL IsReady(void)
     {
-        return (texArray != NULL);
+        return (texArray not_eq NULL);
     };
     void Cleanup(void);
 

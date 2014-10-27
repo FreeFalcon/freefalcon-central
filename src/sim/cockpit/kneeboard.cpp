@@ -91,15 +91,15 @@ void KneeBoard::LoadKneeImage()
     sprintf(pathname, "%s\\%s", FalconCampaignSaveDirectory, THR_KNEEBOARD_MAP_NAME);
     // Make sure we recognize this file type
     mapImageFile.imageType = CheckImageType(pathname);
-    ShiAssert(mapImageFile.imageType != IMAGE_TYPE_UNKNOWN);
+    ShiAssert(mapImageFile.imageType not_eq IMAGE_TYPE_UNKNOWN);
 
     // Open the input file
     result = mapImageFile.glOpenFileMem(pathname);
 
-    if (result != 1)
+    if (result not_eq 1)
     {
         mapImageFile.imageType = CheckImageType(KNEEBOARD_MAP_NAME);
-        ShiAssert(mapImageFile.imageType != IMAGE_TYPE_UNKNOWN);
+        ShiAssert(mapImageFile.imageType not_eq IMAGE_TYPE_UNKNOWN);
 
         // Open the input file
         result = mapImageFile.glOpenFileMem(KNEEBOARD_MAP_NAME);
@@ -111,7 +111,7 @@ void KneeBoard::LoadKneeImage()
     mapImageFile.glReadFileMem();
     result = ReadTextureImage(&mapImageFile);
 
-    if (result != GOOD_READ)
+    if (result not_eq GOOD_READ)
     {
         //ShiError( "Failed to read kneeboard image." );
         imageLoaded = false;

@@ -383,7 +383,7 @@ void DigitalBrain::SensorFusion(void)
                     else localData->threatTime = MAX_THREAT_TIME;
                  }
 
-                 else if ((baseObj->IsAirplane() or (baseObj->IsFlight() && !baseObj->IsHelicopter())) && pcId != ID_NONE && pcId < ID_NEUTRAL && GuestimateCombatClass(self, baseObj) < MnvrClassA10)
+                 else if ((baseObj->IsAirplane() or (baseObj->IsFlight() && !baseObj->IsHelicopter())) && pcId not_eq ID_NONE && pcId < ID_NEUTRAL && GuestimateCombatClass(self, baseObj) < MnvrClassA10)
                  {
 
           //TJL 11/07/03 VO log says there is an radian error in this code
@@ -455,7 +455,7 @@ void DigitalBrain::SensorFusion(void)
            int isMissionTarget = canSee && campObj && (((FlightClass *)(self->GetCampaignObject()))->GetUnitMissionTargetID() == campObj->Id() or ((FlightClass *)(self->GetCampaignObject()))->GetAssignedTarget() == campObj->Id());
 
               if (canSee &&
-           (baseObj->IsAirplane() or (baseObj->IsFlight() && !baseObj->IsHelicopter()) or (baseObj->IsHelicopter() && ((missionType != AMIS_SWEEP && IsSetATC(OnSweep)) or isMissionTarget))) &&
+           (baseObj->IsAirplane() or (baseObj->IsFlight() && !baseObj->IsHelicopter()) or (baseObj->IsHelicopter() && ((missionType not_eq AMIS_SWEEP && IsSetATC(OnSweep)) or isMissionTarget))) &&
            pcId < ID_NEUTRAL &&
            (GuestimateCombatClass(self, baseObj) < MnvrClassA10 or IsSetATC(OnSweep) or isMissionTarget)) // 2002-03-11 Don't assume you know the combat class
         // END OF MODIFIED SECTION 2002-03-05

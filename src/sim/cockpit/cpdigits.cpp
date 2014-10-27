@@ -195,7 +195,7 @@ void CPDigits::SetDigitValues(long value)
     int i, j;
     int fieldlen;
 
-    if (mValue != value)
+    if (mValue not_eq value)
     {
         mValue = value;
         char tbuf[20]; // temporary copy - as it might be bigger

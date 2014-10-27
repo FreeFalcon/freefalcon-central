@@ -224,7 +224,7 @@ void AirframeClass::Aerodynamics(void)
                           aeroData->cdrag, aeroData->numMach,
                           aeroData->numAlpha, &curMachBreak, &i);
 
-    if (cl2 - cl1 != 0.0F)
+    if (cl2 - cl1 not_eq 0.0F)
     {
         clalpha = (cl2 - cl1) * 0.25F  * (1 + tefFactor * auxaeroData->CLtefFactor);
         cnalpha = ((cl2 - cl1) * platform->platformAngles.cosalp +
@@ -233,8 +233,8 @@ void AirframeClass::Aerodynamics(void)
 
     F4Assert(!_isnan(cnalpha));
 
-    //F4Assert (!IsSet(Trimming) && cnalpha != 0.0F);
-    //F4Assert (!IsSet(Trimming) && clalpha != 0.0F);
+    //F4Assert (!IsSet(Trimming) && cnalpha not_eq 0.0F);
+    //F4Assert (!IsSet(Trimming) && clalpha not_eq 0.0F);
 
     /*------------------*/
     /* lift curve slope */

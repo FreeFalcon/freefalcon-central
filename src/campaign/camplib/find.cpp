@@ -101,10 +101,10 @@ float DistanceToFront(GridIndex x, GridIndex y)
     VuListIterator myit(FrontList);
     f = GetFirstObjective(&myit);
 
-    while (f != NULL)
+    while (f not_eq NULL)
     {
         // RV - Biker - This is a hack because JimG did introduce
-        if (f->GetType() != TYPE_BORDER or f->GetSType() != 2)
+        if (f->GetType() not_eq TYPE_BORDER or f->GetSType() not_eq 2)
         {
             f->GetLocation(&fx, &fy);
             d = Distance(x, y, fx, fy);
@@ -132,10 +132,10 @@ float DirectionToFront(GridIndex x, GridIndex y)
         VuListIterator myit(FrontList);
         f = GetFirstObjective(&myit);
 
-        while (f != NULL)
+        while (f not_eq NULL)
         {
             // RV - Biker - This is a hack because JimG did introduce
-            if (f->GetType() != TYPE_BORDER or f->GetSType() != 2)
+            if (f->GetType() not_eq TYPE_BORDER or f->GetSType() not_eq 2)
             {
                 f->GetLocation(&fx, &fy);
                 d = Distance(x, y, fx, fy);
@@ -167,7 +167,7 @@ float DirectionToFront(GridIndex x, GridIndex y)
         {
             n = f->GetNeighbor(i);
 
-            if (n && n->GetTeam() != f->GetTeam())
+            if (n && n->GetTeam() not_eq f->GetTeam())
             {
                 n->GetLocation(&fx, &fy);
                 d = Distance(x, y, fx, fy);
@@ -198,10 +198,10 @@ float DirectionTowardFriendly(GridIndex x, GridIndex y, int team)
         VuListIterator myit(FrontList);
         f = GetFirstObjective(&myit);
 
-        while (f != NULL)
+        while (f not_eq NULL)
         {
             // RV - Biker - This is a hack because JimG did introduce
-            if (f->GetType() != TYPE_BORDER or f->GetSType() != 2)
+            if (f->GetType() not_eq TYPE_BORDER or f->GetSType() not_eq 2)
             {
                 f->GetLocation(&fx, &fy);
                 d = Distance(x, y, fx, fy);
@@ -239,7 +239,7 @@ float DirectionTowardFriendly(GridIndex x, GridIndex y, int team)
         {
             n = f->GetNeighbor(i);
 
-            if (n && n->GetTeam() != f->GetTeam())
+            if (n && n->GetTeam() not_eq f->GetTeam())
             {
                 n->GetLocation(&fx, &fy);
                 d = Distance(x, y, fx, fy);
@@ -249,7 +249,7 @@ float DirectionTowardFriendly(GridIndex x, GridIndex y, int team)
                     lowest = d;
                     r = (float)atan2((float)(fx - x), (float)(fy - y));
 
-                    if (n->GetTeam() != team)
+                    if (n->GetTeam() not_eq team)
                         r += (float)PI;
                 }
             }
@@ -722,7 +722,7 @@ Unit FindNearestEnemyUnit(GridIndex X, GridIndex Y, GridIndex mx)
     nd = max_dist * 2;
     u = (Unit) myit.GetFirst();
 
-    while (u != NULL)
+    while (u not_eq NULL)
     {
         u->GetLocation(&x, &y);
         d = FloatToInt32(Distance(X, Y, x, y));
@@ -770,7 +770,7 @@ Unit FindNearestRealUnit(GridIndex X, GridIndex Y, float *last, GridIndex mx)
 #endif
     u = (Unit) myit.GetFirst();
 
-    while (u != NULL)
+    while (u not_eq NULL)
     {
         u->GetLocation(&x, &y);
         ds = (float)DistSqu(X, Y, x, y);
@@ -784,7 +784,7 @@ Unit FindNearestRealUnit(GridIndex X, GridIndex Y, float *last, GridIndex mx)
         u = (Unit) myit.GetNext();
     }
 
-    if (last != NULL)
+    if (last not_eq NULL)
     {
         *last = (float)sqrt(nds);
     }
@@ -810,7 +810,7 @@ Unit FindNearestUnit(VuFilteredList* l, GridIndex X, GridIndex Y, float *last)
     VuListIterator myit(l);
     u = GetFirstUnit(&myit);
 
-    while (u != NULL)
+    while (u not_eq NULL)
     {
         u->GetLocation(&x, &y);
         ds = (float)DistSqu(X, Y, x, y);
@@ -824,7 +824,7 @@ Unit FindNearestUnit(VuFilteredList* l, GridIndex X, GridIndex Y, float *last)
         u = GetNextUnit(&myit);
     }
 
-    if (last != NULL)
+    if (last not_eq NULL)
     {
         *last = (float)sqrt(nds);
     }
@@ -846,7 +846,7 @@ Unit FindUnitByXY(VuFilteredList* l, GridIndex X, GridIndex Y, int domain)
     VuListIterator myit(l);
     u = GetFirstUnit(&myit);
 
-    while (u != NULL)
+    while (u not_eq NULL)
     {
         u->GetLocation(&x, &y);
 
@@ -876,7 +876,7 @@ Unit GetUnitByXY(GridIndex X, GridIndex Y)
     VuListIterator myit(AllUnitList);
     u = GetFirstUnit(&myit);
 
-    while (u != NULL)
+    while (u not_eq NULL)
     {
         u->GetLocation(&x, &y);
 
@@ -909,7 +909,7 @@ Objective FindNearestObjective(VuFilteredList* l, GridIndex X, GridIndex Y, floa
     VuListIterator myit(l);
     o = GetFirstObjective(&myit);
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         o->GetLocation(&x, &y);
         ds = (float) DistSqu(X, Y, x, y);
@@ -923,7 +923,7 @@ Objective FindNearestObjective(VuFilteredList* l, GridIndex X, GridIndex Y, floa
         o = GetNextObjective(&myit);
     }
 
-    if (last != NULL)
+    if (last not_eq NULL)
     {
         *last = (float)sqrt(nds);
     }
@@ -957,7 +957,7 @@ Objective FindNearestObjective(GridIndex X, GridIndex Y, float *last, GridIndex 
 
     o = (Objective) myit.GetFirst();
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         o->GetLocation(&x, &y);
         ds = (float) DistSqu(X, Y, x, y);
@@ -971,7 +971,7 @@ Objective FindNearestObjective(GridIndex X, GridIndex Y, float *last, GridIndex 
         o = (Objective) myit.GetNext();
     }
 
-    if (last != NULL)
+    if (last not_eq NULL)
     {
         *last = (float)sqrt(nds);
     }
@@ -1002,7 +1002,7 @@ Objective FindNearestAirbase(GridIndex X, GridIndex Y)
     nd = 9999;
     o = (Objective) myit.GetFirst();
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         if (
             (o->GetType() == TYPE_AIRBASE) ||
@@ -1045,7 +1045,7 @@ Objective FindNearbyAirbase(GridIndex X, GridIndex Y)
     nd = 9999;
     o = (Objective) myit.GetFirst();
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         if (
             (o->GetType() == TYPE_AIRBASE) ||
@@ -1079,7 +1079,7 @@ Objective FindNearestFriendlyAirbase(Team who, GridIndex X, GridIndex Y)
     VuListIterator myit(AllObjList);
     o = (Objective) myit.GetFirst();
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         if (
             (GetTTRelations(o->GetTeam(), who) <= Neutral) &&
@@ -1121,7 +1121,7 @@ Objective FindNearestFriendlyRunway(Team who, GridIndex X, GridIndex Y)
     nd =  32800000; //100 km (in ft)
     o = (Objective) myit.GetFirst();
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         if (GetTTRelations(o->GetTeam(), who) <= Neutral)
         {
@@ -1282,7 +1282,7 @@ Objective GetObjectiveByXY(GridIndex X, GridIndex Y)
 
     o = (Objective) myit.GetFirst();
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         o->GetLocation(&x, &y);
 
@@ -1345,7 +1345,7 @@ int ScoreThreatFast(GridIndex X, GridIndex Y, int altlevel, Team who)
             score += ((TheCampaign.SamMapData[i] >> (ix + 2)) & 0x03) * 2;
 
             //score += ((TheCampaign.RadarMapData[i] >> ix) & 0x03) * 3;
-            if (own && own != 0xF && GetRoE(who, own, ROE_AIR_FIRE))
+            if (own && own not_eq 0xF && GetRoE(who, own, ROE_AIR_FIRE))
                 score += 10; // 'General' threat for flying over enemy territory
 
             break;
@@ -1637,7 +1637,7 @@ void FillDistanceList(List list, Team who, int  i, int j)
     VuListIterator myit1(AllObjList);
     o = GetFirstObjective(&myit1);
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         good = 0;
         o->GetLocation(&x, &y);

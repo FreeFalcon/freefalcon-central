@@ -174,7 +174,7 @@ HRESULT InitDirectPlay()
         goto LCleanup;
     }
     else
-        g_bLobbyLaunched = g_hLobbyHandle != NULL;
+        g_bLobbyLaunched = g_hLobbyHandle not_eq NULL;
 
     // Ensure that TCP/IP is a valid Service Provider
     if (FALSE == IsServiceProviderValid(&CLSID_DP8SP_TCPIP))
@@ -211,7 +211,7 @@ BOOL IsServiceProviderValid(const GUID* pGuidSP)
         hr = g_pDPClient->EnumServiceProviders(&CLSID_DP8SP_TCPIP, NULL, NULL, &dwSize, &dwItems, 0);
     }
 
-    if (hr != DPNERR_BUFFERTOOSMALL)
+    if (hr not_eq DPNERR_BUFFERTOOSMALL)
     {
         MonoPrint("Failed Enumerating Service Providers:  0x%x\n", hr);
         goto LCleanup;
@@ -469,7 +469,7 @@ HRESULT WINAPI DirectPlayMessageHandler(PVOID pvUserContext, DWORD dwMessageId, 
                 return hr;
             }
 
-            if (FAILED(hr) && hr != DPNERR_BUFFERTOOSMALL)
+            if (FAILED(hr) && hr not_eq DPNERR_BUFFERTOOSMALL)
             {
                 MonoPrint("Failed GetPeerInfo:  0x%X\n", hr);
                 return hr;
@@ -977,7 +977,7 @@ HRESULT Register()
     dplDesc.guidApplication = g_guidApp;
 
     // We need to parse out the path and the exe name from the input value
-    for (i = wcslen(g_wszPath); i >= 0 && g_wszPath[i] != L'\\'; i--);
+    for (i = wcslen(g_wszPath); i >= 0 && g_wszPath[i] not_eq L'\\'; i--);
 
     pwszPath = new WCHAR[i + 1];
 
@@ -1113,7 +1113,7 @@ HRESULT InitDirectPlayVoice()
 
         hr = pVoiceClient->GetCompressionTypes(pBuffer, &dwSize, &dwNumElements, 0);
 
-        if (hr != DVERR_BUFFERTOOSMALL && FAILED(hr))
+        if (hr not_eq DVERR_BUFFERTOOSMALL && FAILED(hr))
         {
             return 1;
         }
@@ -1383,7 +1383,7 @@ void CleanupDirectPlay()
 
         pHostNode = g_pHostList;
 
-        while (pHostNode != NULL)
+        while (pHostNode not_eq NULL)
         {
             SAFE_RELEASE(pHostNode->pHostAddress);
             SAFE_DELETE(pHostNode->pAppDesc);
@@ -1874,7 +1874,7 @@ void RefreshVoiceFreqs()
 
     if (FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI)
     {
-        if (FalconLocalSession->GetTeam() != 255)
+        if (FalconLocalSession->GetTeam() not_eq 255)
             comvuid1.num_ = FalconLocalSession->GetTeam() + 10; //ui
         else comvuid1.num_ = 11;//ui
 
@@ -2152,7 +2152,7 @@ void Transmit(int com)
 
     if (FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI)
     {
-        if (FalconLocalSession->GetTeam() != 255)
+        if (FalconLocalSession->GetTeam() not_eq 255)
             comvuid1.num_ = FalconLocalSession->GetTeam() + 10; //ui
         else comvuid1.num_ = 11;//ui
 
@@ -2260,7 +2260,7 @@ start:
 
         hr = g_pDPServer->EnumPlayersAndGroups(aGroupsDPNID, &dwCount, DPNENUM_GROUPS);
     }
-    while (hr == DPNERR_BUFFERTOOSMALL && dwCount != 0);
+    while (hr == DPNERR_BUFFERTOOSMALL && dwCount not_eq 0);
 
     // find the Freq if it's already there and join it
 
@@ -2274,7 +2274,7 @@ start:
         DPN_GROUP_INFO* pdpGroupInfo = NULL;
         hr = g_pDPServer->GetGroupInfo(aGroupsDPNID[i], pdpGroupInfo, &dwSize, 0);
 
-        if (FAILED(hr) && hr != DPNERR_BUFFERTOOSMALL)
+        if (FAILED(hr) && hr not_eq DPNERR_BUFFERTOOSMALL)
             return ;
 
         pdpGroupInfo = (DPN_GROUP_INFO*) new BYTE[ dwSize ];
@@ -2336,7 +2336,7 @@ start:
         DPN_GROUP_INFO* pdpGroupInfo = NULL;
         hr = g_pDPServer->GetGroupInfo(aGroupsDPNID[i], pdpGroupInfo, &dwSize, 0);
 
-        if (FAILED(hr) && hr != DPNERR_BUFFERTOOSMALL)
+        if (FAILED(hr) && hr not_eq DPNERR_BUFFERTOOSMALL)
             return ;
 
         pdpGroupInfo = (DPN_GROUP_INFO*) new BYTE[ dwSize ];
@@ -2401,7 +2401,7 @@ void CreateGroup(unsigned long freq)
 
         hr = g_pDPServer->EnumPlayersAndGroups(aGroupsDPNID, &dwCount, DPNENUM_GROUPS);
     }
-    while (hr == DPNERR_BUFFERTOOSMALL && dwCount != 0);
+    while (hr == DPNERR_BUFFERTOOSMALL && dwCount not_eq 0);
 
     DPN_GROUP_INFO dpGroupInfo;
     DWORD* pdwData = new DWORD;

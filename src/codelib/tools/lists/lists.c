@@ -11,6 +11,7 @@
      KBR   12/03/96   added thread-safe code
    ---------------------------------------------------------- */
 
+#include <cISO646>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -298,7 +299,7 @@ ListAlloc(void)
         GLOBAL_ALLOC_TABLE -> index++;
 
     }
-    while (lu -> check != ALLOC_FREE_FLAG);
+    while (lu -> check not_eq ALLOC_FREE_FLAG);
 
     lu -> check = ALLOC_USED_FLAG;
 
@@ -330,8 +331,8 @@ ListValidate(void)
 
     for (tmp = table; tmp; tmp = tmp -> next)
         for (i = 0; i < ALLOC_UNITS; i++)
-            if ((tmp -> unit[i].check != ALLOC_FREE_FLAG) &&
-                (tmp -> unit[i].check != ALLOC_USED_FLAG))
+            if ((tmp -> unit[i].check not_eq ALLOC_FREE_FLAG) &&
+                (tmp -> unit[i].check not_eq ALLOC_USED_FLAG))
             {
                 DBG(PF("ERROR: Possible overwrite in lists."));
 
@@ -371,7 +372,7 @@ ListFree(void * unit)
 
     lu = (LIST_UNIT *)((int) unit - sizeof(int));
 
-    if (lu -> check != ALLOC_USED_FLAG)
+    if (lu -> check not_eq ALLOC_USED_FLAG)
     {
         ERROR("Free of a corrupt list node from allocation table.");
         RELEASE_LOCK(LIST_MUTEX);
@@ -546,7 +547,7 @@ ListAppendEnd(LIST * list, void * node)
     else
     {
         /* find end of list */
-        for (curr = list ; curr -> next != NULL ; curr = curr -> next) ;
+        for (curr = list ; curr -> next not_eq NULL ; curr = curr -> next) ;
 
         /* chain in at end */
         curr -> next = newnode;
@@ -597,7 +598,7 @@ ListCatenate(LIST * l1, LIST * l2)
         return l1;
 
     /* find last element of l1 */
-    for (curr = l1; curr -> next != NULL; curr = curr -> next);
+    for (curr = l1; curr -> next not_eq NULL; curr = curr -> next);
 
     /* catenate */
     curr -> next = l2;
@@ -725,7 +726,7 @@ ListRemove(LIST * list, void * node)
     prev = NULL;
     curr = list;
 
-    while (curr && (curr -> node != node))
+    while (curr && (curr -> node not_eq node))
     {
         prev = curr;
         curr = curr -> next;

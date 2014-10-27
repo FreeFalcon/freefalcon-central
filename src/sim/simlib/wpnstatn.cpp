@@ -95,7 +95,7 @@ AdvancedWeaponStation::~AdvancedWeaponStation(void)
 void AdvancedWeaponStation::Cleanup(void)
 {
     // 2002-03-26 MN CTD fix, only delete when we used "new" below
-    if (xSub != &xPos && numPoints != 1)
+    if (xSub not_eq &xPos && numPoints not_eq 1)
     {
         if (xSub)
             delete [] xSub;
@@ -485,7 +485,7 @@ void AdvancedWeaponStation::AttachAllWeaponBSP(void)
 
 void BasicWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
 {
-    if (!weapPtr or weapPtr != weaponPointer) // only attach 1st weapon
+    if (!weapPtr or weapPtr not_eq weaponPointer) // only attach 1st weapon
         return;
 
     DrawableBSP *weapBSP = (DrawableBSP *)weapPtr->drawPointer;
@@ -746,7 +746,7 @@ void AdvancedWeaponStation::DeleteAllWeaponBSP(void)
 
 void BasicWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
 {
-    if (!weapPtr or weapPtr != weaponPointer)
+    if (!weapPtr or weapPtr not_eq weaponPointer)
         return;
 
     DrawableBSP *weapBSP = (DrawableBSP *)weapPtr->drawPointer;

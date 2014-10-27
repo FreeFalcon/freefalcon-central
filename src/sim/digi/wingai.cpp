@@ -1148,7 +1148,7 @@ void DigitalBrain::AiRejoin(FalconWingmanMsg* msg, AiHint hint)
 
     // This will set our current waypoint to the leads waypoint
     // 2001-10-20 Modified by M.N. Added ->GetNextWP() to assure that we get a valid waypoint
-    while (wlistUs->GetNextWP() && wlistLead && wlistLead->GetNextWP() && wlistLead != ((AircraftClass *)flightLead)->curWaypoint)
+    while (wlistUs->GetNextWP() && wlistLead && wlistLead->GetNextWP() && wlistLead not_eq ((AircraftClass *)flightLead)->curWaypoint)
     {
         wlistUs   = wlistUs->GetNextWP();
         wlistLead = wlistLead->GetNextWP();
@@ -1186,7 +1186,7 @@ void DigitalBrain::AiRejoin(FalconWingmanMsg* msg, AiHint hint)
 
     // 2002-03-10 MN when ordered AI to rejoin, rejoin immediately, not only when connected to the boom!
     // if(self->af->IsSet(Refueling)) {
-    if (refuelstatus != refNoTanker && refuelstatus != refDone)
+    if (refuelstatus not_eq refNoTanker && refuelstatus not_eq refDone)
     {
         VuEntity* theTanker = vuDatabase->Find(tankerId);
         FalconTankerMessage* TankerMsg;
@@ -1273,7 +1273,7 @@ void DigitalBrain::AiDesignateTarget(FalconWingmanMsg* msg)
         // END OF ADDED SECTION
 
         // Try not to attack friendlies
-        if (newTarg->GetTeam() != self->GetTeam() or (SkillLevel() < 2 && rand() % 10 > SkillLevel() + 8))
+        if (newTarg->GetTeam() not_eq self->GetTeam() or (SkillLevel() < 2 && rand() % 10 > SkillLevel() + 8))
         {
             mWeaponsAction = AI_WEAPONS_FREE;
 
@@ -2214,7 +2214,7 @@ void DigitalBrain::AiGiveDamageReport(FalconWingmanMsg* msg)
                 edata[2] = 1;
             }
 
-            if (i != count)
+            if (i not_eq count)
             {
                 edata[0] = -1;
             }
@@ -2752,7 +2752,7 @@ void DigitalBrain::AiCheckPosition(void)
     AircraftClass* paircraft;
     int vehInFlight, flightIdx;
 
-    if (flightLead && flightLead != self)
+    if (flightLead && flightLead not_eq self)
     {
         // Get wingman slot position relative to the leader
         vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();

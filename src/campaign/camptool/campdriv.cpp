@@ -219,7 +219,7 @@ void ShowTime(CampaignTime t)
     nh = (WORD)(t / CampaignHours);
     nm = (WORD)((t - nh * CampaignHours) / CampaignMinutes);
 
-    if (nm != CampMinute)
+    if (nm not_eq CampMinute)
     {
         _setcolor(hToolDC, White);
         CampHour = nh;
@@ -405,7 +405,7 @@ void ShowPathHistory(MapData md, GridIndex X, GridIndex Y, Path p, int color)
 
     d = p->GetPreviousDirection(i);
 
-    while (d != Here)
+    while (d not_eq Here)
     {
         x = X - dx[d] * step;
         y = Y - dy[d] * step;
@@ -639,7 +639,7 @@ void ShowSAMs(MapData md, HDC DC)
         else
             range = e->GetWeaponRange(LowAir);
 
-        if (range > 0 && (e->IsObjective() or (e->GetDomain() != DOMAIN_AIR && e->IsUnit() && !((Unit)e)->Moving())))
+        if (range > 0 && (e->IsObjective() or (e->GetDomain() not_eq DOMAIN_AIR && e->IsUnit() && !((Unit)e)->Moving())))
         {
             e->GetLocation(&x, &y);
             DisplaySideRange(DC, e->GetOwner(), (short)(POSX(x) + (md->CellSize >> 1)), (short)(POSY(y) + (md->CellSize >> 1)), range * md->CellSize);
@@ -1096,7 +1096,7 @@ void MatchObjectiveTypes(void)
     locs = new GridIndex[(MaxTextureType + 1)*NumEntities * 2]; //DSP
     memset(locs, 0, sizeof(GridIndex) * (MaxTextureType + 1)*NumEntities * 2);
 
-    while (FromObjective != NULL)
+    while (FromObjective not_eq NULL)
     {
         if (FromObjective->ManualSet())
         {
@@ -1206,7 +1206,7 @@ void RecalculateBrigadePositions(void)
     VuListIterator myit(AllParentList);
     unit = (Unit) myit.GetFirst();
 
-    while (unit != NULL)
+    while (unit not_eq NULL)
     {
         SumX = SumY = count = 0;
 
@@ -1379,7 +1379,7 @@ void AssignBattToBrigDiv(void)
     VuListIterator myit(AllParentList);
     unit = (Unit) myit.GetFirst();
 
-    while (unit != NULL)
+    while (unit not_eq NULL)
     {
         if (unit->GetType() == TYPE_BRIGADE)
         {
@@ -1774,7 +1774,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
 
         OneObjective = GetFirstObjective(&oit);
 
-        while (OneObjective != NULL)
+        while (OneObjective not_eq NULL)
         {
             OneObjective->GetLocation(&x, &y);
 
@@ -1829,7 +1829,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
         {
             OneUnit = GetFirstUnit(uit);
 
-            while (OneUnit != NULL)
+            while (OneUnit not_eq NULL)
             {
                 OneUnit->GetLocation(&x, &y);
                 DisplayUnit(DC, OneUnit, (short)(POSX(x + xd) + (md->CellSize >> 3)*scale), (short)(POSY(y + yd) + (md->CellSize >> 2)*scale), (short)((md->CellSize >> 1)*scale));
@@ -2427,7 +2427,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                 VuListIterator oit(AllObjList);
                 FromObjective = GetFirstObjective(&oit);
 
-                while (FromObjective != NULL)
+                while (FromObjective not_eq NULL)
                 {
                     if (FromObjective->GetType() == TYPE_PORT)
                     {
@@ -2437,7 +2437,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                         // Attempt to find an adjacent land space
                         for (i = 0, done = 0; i < 8 && !done; i += 2)
                         {
-                            if (GetCover(ox + dx[i], oy + dy[i]) != Water)
+                            if (GetCover(ox + dx[i], oy + dy[i]) not_eq Water)
                             {
                                 SetRoadCell(GetCell(ox + dx[i], oy + dy[i]), 1);
                                 done = 1;
@@ -2447,7 +2447,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                         // Attempt to find a diagonal if no luck
                         for (i = 1; i < 8 && !done; i += 2)
                         {
-                            if (GetCover(ox + dx[i], oy + dy[i]) != Water)
+                            if (GetCover(ox + dx[i], oy + dy[i]) not_eq Water)
                             {
                                 SetRoadCell(GetCell(ox + dx[i], oy + dy[i]), 1);
                                 SetRoadCell(GetCell(ox + dx[i - 1], oy + dy[i - 1]), 1);
@@ -2466,7 +2466,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             memset(CampSearch, 0, sizeof(uchar)*MAX_CAMP_ENTITIES);
 
             /* FromObjective = GetFirstObjective(&oit);*/
-            while (FromObjective != NULL)
+            while (FromObjective not_eq NULL)
             {
                 CampSearch[FromObjective->GetCampID()] = 1;
 
@@ -2518,7 +2518,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                 VuListIterator myit(InactiveList);
                 unit = (Unit) myit.GetFirst();
 
-                while (unit != NULL)
+                while (unit not_eq NULL)
                 {
                     unit->GetLocation(&x, &y);
                     obj = GetObjectiveByXY(x, y);
@@ -2611,7 +2611,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                 VuListIterator myit(AllUnitList);
                 unit = (Unit) myit.GetFirst();
 
-                while (unit != NULL)
+                while (unit not_eq NULL)
                 {
                     unit->GetLocation(&x, &y);
                     obj = GetObjectiveByXY(x, y);
@@ -2720,7 +2720,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                 VuListIterator oit(AllObjList);
                 FromObjective = GetFirstObjective(&oit);
 
-                while (FromObjective != NULL)
+                while (FromObjective not_eq NULL)
                 {
                     if (FromObjective->GetType() == type)
                     {
@@ -3069,7 +3069,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
                     CenX = Map_Max_X;
             }
 
-            if (ReBlt && nScrollCode != 8)
+            if (ReBlt && nScrollCode not_eq 8)
             {
                 MainMapData->CenX = CenX;
                 MainMapData->CenY = CenY;
@@ -3131,7 +3131,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
                     CenY = 0;
             }
 
-            if (ReBlt && nScrollCode != 8)
+            if (ReBlt && nScrollCode not_eq 8)
             {
                 MainMapData->CenX = CenX;
                 MainMapData->CenY = CenY;
@@ -3195,7 +3195,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
                  // Next unit in stack.
                  e = (Unit) myit.GetFirst();
-                 while (e && e != OneUnit)
+                 while (e && e not_eq OneUnit)
                  e = GetNextUnit(&myit); // Get to current location in list
                  // e should be OneUnit or be null here
                  if (e)
@@ -3204,7 +3204,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
                  while (e && !foundone)
                  {
                  e->GetLocation(&x,&y);
-                 if (x==CurX && y==CurY && e != OneUnit)
+                 if (x==CurX && y==CurY && e not_eq OneUnit)
                  foundone = 1;
                  else
                  e = GetNextUnit(&myit);
@@ -3282,7 +3282,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             ReBlt = TRUE;
             GetClientRect(hMainWnd, &r);
 
-            if (nWidth % 16 != 0)
+            if (nWidth % 16 not_eq 0)
             {
                 trunc = 1 + nWidth / 16;
                 r.right = 16 * trunc;
@@ -3292,7 +3292,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
                     r.right = 304;
             }
 
-            if (nHeight % 16 != 0)
+            if (nHeight % 16 not_eq 0)
             {
                 if (r.right < 304)
                     r.right = 304;

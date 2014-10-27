@@ -39,7 +39,7 @@ RadarSuperClass::RadarSuperClass(int type, SimMoverClass* parentPlatform) : Rada
 void RadarSuperClass::ExecModes(int newDesignate, int newDrop)
 {
     // Change modes if such has been requested
-    if (mode != wantMode)
+    if (mode not_eq wantMode)
     {
         mode = wantMode;
 
@@ -47,7 +47,7 @@ void RadarSuperClass::ExecModes(int newDesignate, int newDrop)
         ClearSensorTarget();
 
         // Turn off auto-targeting unless we're in AA
-        if (mode != AA)
+        if (mode not_eq AA)
         {
             lockCmd = NOCHANGE;
             wantLock = NOCHANGE;
@@ -55,7 +55,7 @@ void RadarSuperClass::ExecModes(int newDesignate, int newDrop)
     }
 
     // Change ranges if such has been requested
-    if (wantRange != rangeNM)
+    if (wantRange not_eq rangeNM)
     {
         if ((wantRange >= 5.0f) && (wantRange <= 40.0f))
         {
@@ -99,7 +99,7 @@ void RadarSuperClass::ExecModes(int newDesignate, int newDrop)
     }
 
     // If we're in auto targeting, keep trying to get a lock
-    if (wantLock != AUTO)
+    if (wantLock not_eq AUTO)
     {
         wantLock = NOCHANGE;
     }
@@ -135,7 +135,7 @@ void RadarSuperClass::UpdateState(int cursorXCmd, int cursorYCmd)
     if (cursorY <= -0.8f) RangeStep(-1);
 
     // Note if the cursors are in motion or not
-    if ((cursorXCmd != 0) or (cursorYCmd != 0))
+    if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
         flags  or_eq  CursorMoving;
     else
         flags &= compl CursorMoving;
@@ -667,7 +667,7 @@ void RadarSuperClass::ExecAA(void)
 
 
     // If we changed locks, immediatly notify those concerned and update our state
-    if (newLock != lockedTarget)
+    if (newLock not_eq lockedTarget)
     {
         SetDesiredTarget(newLock);
         sendThisFrame = TRUE;

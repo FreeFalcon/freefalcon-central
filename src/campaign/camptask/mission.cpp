@@ -321,7 +321,7 @@ void SetupAltitudes(Flight flight, MissionRequestClass *mis)
     if (sTargetAlt > maxAlt)
         sTargetAlt = maxAlt;
 
-    if (MissionData[mis->mission].target_profile != TPROF_FLYBY && MissionData[mis->mission].target_profile != TPROF_NONE)
+    if (MissionData[mis->mission].target_profile not_eq TPROF_FLYBY && MissionData[mis->mission].target_profile not_eq TPROF_NONE)
     {
         // Find a target alt based on threat as well
         sTargetAlt = (sTargetAlt + MissionData[mis->mission].missionalt * 100) / 2;
@@ -1333,7 +1333,7 @@ void AddInformationWPs(Flight flight, MissionRequestClass *mis)
         time = mis->tot;
     }
 
-    if (flight->GetUnitMission() != AMIS_TANKER)
+    if (flight->GetUnitMission() not_eq AMIS_TANKER)
     {
         d = TeamInfo[flight->GetTeam()]->atm->FindNearestActiveTanker(&x, &y, &time);
 
@@ -1471,7 +1471,7 @@ int AddTankerWayPoint(Flight u, int refuel)
             }
 
             // o = FindNearestObjective(wx,wy,NULL); // objective near the waypoint => marker for territory
-            if (::GetOwner(TheCampaign.CampMapData, wx, wy) != u->GetTeam()) // abort search if we got into enemy territory
+            if (::GetOwner(TheCampaign.CampMapData, wx, wy) not_eq u->GetTeam()) // abort search if we got into enemy territory
             {
                 break;
             }
@@ -1479,7 +1479,7 @@ int AddTankerWayPoint(Flight u, int refuel)
             lw = lw->GetNextWP();
         }
 
-        if (ix != 0 && iy != 0) // -> We have found a tanker near a waypoint
+        if (ix not_eq 0 && iy not_eq 0) // -> We have found a tanker near a waypoint
         {
             dist = DistanceToFront(ix, iy); // Tankers distance to FLOT
             w = new WayPointClass(ix, iy, 20000, 0, 0, 0, WP_REFUEL, 0);
@@ -1488,7 +1488,7 @@ int AddTankerWayPoint(Flight u, int refuel)
             // We can have the case that a waypoint on the other side of the FLOT
             // is closer to an active tanker at its mistot time than a waypoint on friendly side.
             // In this case, go one waypoint back
-            if (::GetOwner(TheCampaign.CampMapData, wx, wy) != u->GetTeam() && bw->GetPrevWP())
+            if (::GetOwner(TheCampaign.CampMapData, wx, wy) not_eq u->GetTeam() && bw->GetPrevWP())
                 bw = bw->GetPrevWP(); // Is wx,wy right here ?????????????????
 
             bw->GetWPLocation(&x, &y);
@@ -1503,7 +1503,7 @@ int AddTankerWayPoint(Flight u, int refuel)
                 bw->GetWPLocation(&x, &y);
 
                 // o = FindNearestObjective(x,y,NULL);
-                if (::GetOwner(TheCampaign.CampMapData, x, y) != u->GetTeam() && bw->GetPrevWP())
+                if (::GetOwner(TheCampaign.CampMapData, x, y) not_eq u->GetTeam() && bw->GetPrevWP())
                     bw = bw->GetPrevWP();
 
                 bw->InsertWP(w);
@@ -1564,7 +1564,7 @@ int AddTankerWayPoint(Flight u, int refuel)
         }
 
         // o = FindNearestObjective(wx,wy,NULL);
-        if (::GetOwner(TheCampaign.CampMapData, wx, wy) != u->GetTeam()) // abort search if we got into enemy territory
+        if (::GetOwner(TheCampaign.CampMapData, wx, wy) not_eq u->GetTeam()) // abort search if we got into enemy territory
         {
             //bw = lw;
             break;
@@ -1573,7 +1573,7 @@ int AddTankerWayPoint(Flight u, int refuel)
         lw = lw->GetPrevWP();
     }
 
-    if (ix != 0 && iy != 0) // -> We have found a tanker, otherwise ix==iy==0;
+    if (ix not_eq 0 && iy not_eq 0) // -> We have found a tanker, otherwise ix==iy==0;
     {
         dist = DistanceToFront(ix, iy); // Tankers distance to FLOT
         w = new WayPointClass(ix, iy, 20000, 0, 0, 0, WP_REFUEL, 0);
@@ -1746,7 +1746,7 @@ long SetWPTimes(Flight u, MissionRequestClass *mis)
 
         mission_time += w->GetWPStationTime();
 #ifdef DEBUG
-        // if (u->GetUnitMission() != AMIS_ALERT && u->GetUnitMission() != AMIS_RECONPATROL)
+        // if (u->GetUnitMission() not_eq AMIS_ALERT && u->GetUnitMission() not_eq AMIS_RECONPATROL)
         // ShiAssert(!WayPointErrorCode(w,u));
 #endif
         w = w->GetNextWP();
@@ -2184,7 +2184,7 @@ int FindSafePath(WayPoint w1, WayPoint w2, Flight flight)
 
     // Check high altitude
     // Loop until we find a full path to our next waypoint
-    while (x != nx or y != ny)
+    while (x not_eq nx or y not_eq ny)
     {
         if (GetGridPath(&path, x, y, nx, ny, moveType, flight->GetTeam(), PATH_ENEMYCOST) >= 0)
             w = FillAirPath(&path, &x, &y, nx, ny, w);
@@ -2208,7 +2208,7 @@ int FindSafePath(WayPoint w1, WayPoint w2, Flight flight)
     maxSearch = MAX_SEARCH;
     QuickSearch = 0;
 
-    if (x != nx or y != ny)
+    if (x not_eq nx or y not_eq ny)
         return 0;
 
     // Now let's try to eliminated unneeded waypoints
@@ -2233,7 +2233,7 @@ WayPoint FillAirPath(Path path, GridIndex *x, GridIndex *y, GridIndex nx, GridIn
         h = (CampaignHeading) path->GetDirection(i);
 
         // We trigger an add if we've moved a couple times and our heading has changed
-        if (h != lh && steps > 1)
+        if (h not_eq lh && steps > 1)
         {
             nw = new WayPointClass(*x, *y, 0, 0, 0, 0, WP_NOTHING, 0);
             FinalizeFillerWayPoint(nw);
@@ -2277,7 +2277,7 @@ WayPoint EliminateExcessWaypoints(WayPoint w1, WayPoint w2, int who)
     mw = w->GetNextWP(); // Middle waypoint (The one we may decide to eliminate)
     nw = mw->GetNextWP(); // End waypoint
 
-    while (w && mw && nw && w != w2 && mw != w2)
+    while (w && mw && nw && w not_eq w2 && mw not_eq w2)
     {
         // Check to see if this is a filler way point
         if (mw->GetWPAction() == WP_NOTHING && !(mw->GetWPFlags() & WPF_CRITICAL_MASK))
@@ -2332,7 +2332,7 @@ WayPoint EliminateExcessWaypoints(WayPoint w1, WayPoint w2, int who)
      w = w1; // Starting waypoint for this check
      mw = w->GetNextWP(); // Middle waypoint (The one we may decide to eliminate)
      nw = mw->GetNextWP(); // End waypoint
-     while (w && mw && nw && w != w2 && mw != w2)
+     while (w && mw && nw && w not_eq w2 && mw not_eq w2)
      {
      // Check to see if this is a filler way point
      if (mw->GetWPAction()==WP_NOTHING)
@@ -2376,7 +2376,7 @@ WayPoint AddSafeWaypoint(WayPoint w1, WayPoint w2, int type, int distance, Team 
     w2->GetWPLocation(&tx, &ty);
     bw = w = w1;
 
-    while (w && w != w2 && !done)
+    while (w && w not_eq w2 && !done)
     {
         if (type)
             nw = w->GetPrevWP();
@@ -2398,7 +2398,7 @@ WayPoint AddSafeWaypoint(WayPoint w1, WayPoint w2, int type, int distance, Team 
             cy = y + (GridIndex)(yd * step + 0.5F);
             owner = GetOwner(TheCampaign.CampMapData, cx, cy);
 
-            if (owner && owner != who)
+            if (owner && owner not_eq who)
                 done = 1;
             else if (ScoreThreatFast(cx, cy, GetAltitudeLevel(sCruiseAlt), who) or DistSqu(cx, cy, tx, ty) < dsq)
                 done = 1;
@@ -2426,7 +2426,7 @@ WayPoint AddSafeWaypoint(WayPoint w1, WayPoint w2, int type, int distance, Team 
     if (bw)
     {
         // Check if we can share/co-op this waypoint
-        if (bw->GetWPAction() != WP_NOTHING)
+        if (bw->GetWPAction() not_eq WP_NOTHING)
         {
             // find a decent spot for it.
             if (type)
@@ -2479,7 +2479,7 @@ WayPoint AddDistanceWaypoint(WayPoint w1, WayPoint w2, int distance)
     w2->GetWPLocation(&tx, &ty);
     w = w1;
 
-    while (w && w != w2)
+    while (w && w not_eq w2)
     {
         w->GetWPLocation(&x, &y);
         nw = w->GetNextWP();
@@ -2764,7 +2764,7 @@ WayPoint EliminateExcessWaypoints (WayPoint w1, WayPoint w2, int who, int min, i
  w = w1; // Starting waypoint for this check
  mw = w->GetNextWP(); // Middle waypoint (The one we may decide to eliminate)
  nw = mw->GetNextWP(); // End waypoint
- while (w && mw && nw && w != w2 && mw != w2)
+ while (w && mw && nw && w not_eq w2 && mw not_eq w2)
  {
  // Check for safest Altitude
  mh = CheckBestAltitude(w,mw,who,min,max,&alt,TT_TOTAL);
@@ -2828,7 +2828,7 @@ BOOL LoadMissionData()
 
     char buffer[1024];
 
-    while (fgets(buffer, sizeof buffer, fp) != NULL)
+    while (fgets(buffer, sizeof buffer, fp) not_eq NULL)
     {
         if (buffer[0] == '/' or buffer[0] == '\r' or buffer[0] == '\n')
             continue;
@@ -2841,7 +2841,7 @@ BOOL LoadMissionData()
                    &no, &type, &target, &skill, &misprof, &tprof, &tdesc, &routewp, &targetwp,
                    &minalt, &maxalt, &missalt, &separation, &loiter,
                    &str, &mintime, &maxtime, &escort, &mindist, &min_time, &caps, &flags
-                  ) != 22)
+                  ) not_eq 22)
         {
             MonoPrint("Bad line %s\n", buffer);
             continue;

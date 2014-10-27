@@ -71,7 +71,7 @@ void DigitalBrain::DoTargeting(void)
         // If we are lead, or lead is player, look for a target
         if (!isWing or (mDesignatedObject == FalconNullId && flightLead && flightLead->IsSetFlag(MOTION_OWNSHIP)))
         {
-            if (missionClass != AAMission && !missionComplete && agDoctrine == AGD_NONE)
+            if (missionClass not_eq AAMission && !missionComplete && agDoctrine == AGD_NONE)
                 SelectGroundWeapon();
 
             campTarget = CampTargetSelection();
@@ -117,7 +117,7 @@ void DigitalBrain::DoTargeting(void)
         }
         else //wingman
         {
-            if (mDesignatedObject != FalconNullId)
+            if (mDesignatedObject not_eq FalconNullId)
             {
                 campTarget = (FalconEntity*) vuDatabase->Find(mDesignatedObject); // Lookup target in database
 
@@ -240,7 +240,7 @@ void DigitalBrain::TargetSelection(void)
         FalconEntity *baseData = objectPtr->BaseData();
 
         if (
-            (baseData == NULL) or (baseData->VuState() != VU_MEM_ACTIVE) ||
+            (baseData == NULL) or (baseData->VuState() not_eq VU_MEM_ACTIVE) ||
             //F4IsBadCodePtr((FARPROC) objectPtr->BaseData()) or // JB 010224 CTD
             baseData->IsSim() && (
                 baseData->IsWeapon() or baseData->IsEject() or (
@@ -324,7 +324,7 @@ void DigitalBrain::TargetSelection(void)
         // 2000-09-12 ADDED BY S.G.
         // IF THE TARGET ALREADY HAS A MISSILES ON ITS WAY AND
         // WE DIDN'T SHOOT IT, DECREASE ITS PRIORITY BY 4. THIS WILL MAKE THE CURRENT LESS LIKEABLE
-        /*else if (objectPtr->BaseData()->IsSim() && ((SimBaseClass *)objectPtr->BaseData())->incomingMissile[0] && ((SimWeaponClass *)((SimBaseClass *)objectPtr->BaseData())->incomingMissile[0])->parent != self)
+        /*else if (objectPtr->BaseData()->IsSim() && ((SimBaseClass *)objectPtr->BaseData())->incomingMissile[0] && ((SimWeaponClass *)((SimBaseClass *)objectPtr->BaseData())->incomingMissile[0])->parent not_eq self)
          //objectPtr->localData->targetTime *= 4.0f;
          //objectPtr->localData->threatScore -= 20;*/
         else if (baseData->IsSim() && ((SimBaseClass *)baseData)->incomingMissile[0])
@@ -367,14 +367,14 @@ void DigitalBrain::TargetSelection(void)
         {
             //if (objectPtr->BaseData()->IsSim())
             //{
-            //if (!((SimBaseClass *)objectPtr->BaseData())->incomingMissile[0]/* && ((SimWeaponClass *)((SimBaseClass *)objectPtr->BaseData())->incomingMissile[0])->parent != self*/)
+            //if (!((SimBaseClass *)objectPtr->BaseData())->incomingMissile[0]/* && ((SimWeaponClass *)((SimBaseClass *)objectPtr->BaseData())->incomingMissile[0])->parent not_eq self*/)
             //{
             baseScore = objectPtr->localData->threatScore;
 
             if (maxTargetPtr[0] == NULL)
                 maxTargetPtr[0] = objectPtr;
 
-            if (maxTargetPtr[0] != NULL)
+            if (maxTargetPtr[0] not_eq NULL)
             {
                 maxTargetPtr[1] = maxTargetPtr[0];
                 maxTargetPtr[0] = objectPtr;
@@ -394,7 +394,7 @@ void DigitalBrain::TargetSelection(void)
         targetTimer = SimLibElapsedTime + 60000;
     }
 
-    if (missionType != AMIS_AIRCAV)
+    if (missionType not_eq AMIS_AIRCAV)
     {
         /*if (threatTime < targetTime && maxThreatPtr && !maxThreatPtr->BaseData()->OnGround() )
           SetTarget(maxThreatPtr);
@@ -586,9 +586,9 @@ SimObjectType* DigitalBrain::InsertIntoTargetList(SimObjectType* root, SimObject
             tmpPtr = tmpPtr->next;
         }
 
-        if (!last && (tmpPtr->BaseData() != newObj->BaseData()))
+        if (!last && (tmpPtr->BaseData() not_eq newObj->BaseData()))
         {
-            F4Assert(tmpPtr != newObj);
+            F4Assert(tmpPtr not_eq newObj);
             // Goes at the front
             newObj->next = root;
             root->prev = newObj;
@@ -603,7 +603,7 @@ SimObjectType* DigitalBrain::InsertIntoTargetList(SimObjectType* root, SimObject
             newObj->Reference();
         }
         // Somewhere in the middle, but not already in there
-        else if (tmpPtr->BaseData() != newObj->BaseData())
+        else if (tmpPtr->BaseData() not_eq newObj->BaseData())
         {
             last->next = newObj;
             newObj->prev = last;
@@ -613,7 +613,7 @@ SimObjectType* DigitalBrain::InsertIntoTargetList(SimObjectType* root, SimObject
             newObj->Reference();
         }
         // Must already be in the list
-        else if (tmpPtr != newObj)
+        else if (tmpPtr not_eq newObj)
         {
             F4Assert(tmpPtr->BaseData() == newObj->BaseData());
 

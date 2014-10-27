@@ -28,10 +28,10 @@ void SetupTransport( WORD port )
  // Open WinSock
  wVersionRequested = MAKEWORD(1, 1);
  result = WSAStartup(wVersionRequested, &wsaData);
- if (result != 0) {
+ if (result not_eq 0) {
  ShiError( "Transport:  We couldn't load WinSock!" );
  }
- if ( LOBYTE( wsaData.wVersion ) != 1 or HIBYTE( wsaData.wVersion ) != 1 ) {
+ if ( LOBYTE( wsaData.wVersion ) not_eq 1 or HIBYTE( wsaData.wVersion ) not_eq 1 ) {
  WSACleanup();
  ShiError( "Transport:  We couldn't find a 1.1 compatable WinSock!" );
  }

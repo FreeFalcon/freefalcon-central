@@ -248,7 +248,7 @@ void NewTimedPersistantObject(int vistype, CampaignTime removalTime, float x, fl
 
     ShiAssert(persistantListTail < MAX_PERSISTANT_OBJECTS);
 
-    while (i != persistantListTail && slot < 0)
+    while (i not_eq persistantListTail && slot < 0)
     {
         if (!PersistantObjects[i].InUse())
             slot = i;
@@ -281,7 +281,7 @@ void NewLinkedPersistantObject(int vistype, VU_ID campObjID, int campIdx, float 
 
     ShiAssert(persistantListTail < MAX_PERSISTANT_OBJECTS);
 
-    while (i != persistantListTail && slot < 0)
+    while (i not_eq persistantListTail && slot < 0)
     {
         if (!PersistantObjects[i].InUse())
             slot = i;

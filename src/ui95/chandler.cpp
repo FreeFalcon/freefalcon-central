@@ -322,7 +322,7 @@ void C_Handler::Cleanup()
 
     UserRoot_ = NULL;
 
-    if (Front_ && Front_ != Primary_)
+    if (Front_ && Front_ not_eq Primary_)
     {
         Front_->Cleanup();
         delete Front_;
@@ -1241,7 +1241,7 @@ void C_Handler::CopyToPrimary()
         {
             HRESULT hres = Primary_->frontSurface()->GetBltStatus(DDGBS_ISBLTDONE);
 
-            if (hres != DDERR_WASSTILLDRAWING)
+            if (hres not_eq DDERR_WASSTILLDRAWING)
             {
                 break;
             }
@@ -1557,7 +1557,7 @@ void C_Handler::SetBehindWindow(C_Window *thewin)
 
     while (cur)
     {
-        if (cur->win != thewin)
+        if (cur->win not_eq thewin)
         {
             if (cur->Flags & C_BIT_ENABLED)
                 cur->win->SetUpdateRect(x - cur->win->GetX(), y - cur->win->GetY(), w - cur->win->GetX(), h - cur->win->GetY(), C_BIT_ABSOLUTE, 0);
@@ -1965,7 +1965,7 @@ void C_Handler::ReleaseControl(C_Base *control)
 
 void C_Handler::StartDrag()
 {
-    if (Grab_.GrabType_ != C_TYPE_LMOUSEDOWN)
+    if (Grab_.GrabType_ not_eq C_TYPE_LMOUSEDOWN)
         return;
 
     if (Grab_.Control_)
@@ -1988,7 +1988,7 @@ void C_Handler::StartDrag()
 
 BOOL C_Handler::DragItem(WORD MouseX, WORD MouseY, C_Window *overme)
 {
-    if (Drag_.GrabType_ != C_TYPE_LMOUSEDOWN)
+    if (Drag_.GrabType_ not_eq C_TYPE_LMOUSEDOWN)
         return(FALSE);
 
     if (Drag_.Control_)
@@ -2199,7 +2199,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 break;
             }
 
-            if (CurWindow_ && CurWindow_ != overme)
+            if (CurWindow_ && CurWindow_ not_eq overme)
             {
                 CurWindow_->Deactivate();
                 overme->Activate();
@@ -2282,7 +2282,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
             if (Grab_.Control_)
             {
-                if (this != gMainHandler)
+                if (this not_eq gMainHandler)
                 {
                     ret = TRUE;
                 }
@@ -2296,7 +2296,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                     ret = TRUE;
                 }
 
-                if (this != gMainHandler)
+                if (this not_eq gMainHandler)
                 {
                     ret = TRUE;
                 }
@@ -2330,7 +2330,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                     }
                 }
 
-                if (this != gMainHandler)
+                if (this not_eq gMainHandler)
                 {
                     ret = TRUE;
                 }
@@ -2372,7 +2372,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             {
                 OverControl_ = overme->MouseOver(MouseX - overme->GetX(), MouseY - overme->GetY(), OverControl_);
 
-                if (OverLast_.Control_ != OverControl_)
+                if (OverLast_.Control_ not_eq OverControl_)
                 {
                     HelpOff();
                     OverLast_.Control_ = OverControl_;
@@ -2517,13 +2517,13 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             {
                 MouseControl_ = overme->MouseOver(MouseX - overme->GetX(), MouseY - overme->GetY(), OldMouseControl_);
 
-                if (OldMouseControl_ && MouseControl_ != OldMouseControl_ && OldMouseControl_->GetFlags() & C_BIT_MOUSEOVER)
+                if (OldMouseControl_ && MouseControl_ not_eq OldMouseControl_ && OldMouseControl_->GetFlags() & C_BIT_MOUSEOVER)
                 {
                     OldMouseControl_->SetMouseOver(0);
                     OldMouseControl_->Refresh();
                 }
 
-                if (MouseControl_ && MouseControl_ != OldMouseControl_ && MouseControl_->GetFlags() & C_BIT_MOUSEOVER)
+                if (MouseControl_ && MouseControl_ not_eq OldMouseControl_ && MouseControl_->GetFlags() & C_BIT_MOUSEOVER)
                 {
                     MouseControl_->SetMouseOver(1);
                     MouseControl_->Refresh();
@@ -2544,7 +2544,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 }
             }
 
-            if (OverLast_.Control_ != OverControl_)
+            if (OverLast_.Control_ not_eq OverControl_)
             {
                 HelpOff();
                 OverLast_.Control_ = OverControl_;
@@ -2585,7 +2585,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 break;
             }
 
-            if (CurWindow_ && CurWindow_ != overme)
+            if (CurWindow_ && CurWindow_ not_eq overme)
             {
                 CurWindow_->Deactivate();
                 overme->Activate();
@@ -2693,7 +2693,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             {
                 OverControl_ = overme->MouseOver(MouseX - overme->GetX(), MouseY - overme->GetY(), OverControl_);
 
-                if (OverLast_.Control_ != OverControl_)
+                if (OverLast_.Control_ not_eq OverControl_)
                 {
                     HelpOff();
                     OverLast_.Control_ = OverControl_;
@@ -2781,7 +2781,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                             InTimer = 1;
                             MouseDown_ = 0;
 
-                            if (Drag_.Window_ != NULL && Drag_.Control_ != NULL)
+                            if (Drag_.Window_ not_eq NULL && Drag_.Control_ not_eq NULL)
                             {
                                 DropItem((WORD)(Drag_.Window_->GetX() + Drag_.Control_->GetX()), //!
                                          (WORD)(Drag_.Window_->GetY() + Drag_.Control_->GetY()), //!
@@ -2928,7 +2928,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 {
                     ValidateRect(hwnd, NULL);
 
-                    if (Primary_ != Front_)
+                    if (Primary_ not_eq Front_)
                     {
                         UI95_RECT upme;
 

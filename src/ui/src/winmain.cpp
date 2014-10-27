@@ -321,7 +321,7 @@ void BuildAscii()
     {
         vkey = VkKeyScan(static_cast<char>(i));
 
-        if (vkey != -1)
+        if (vkey not_eq -1)
         {
             kbd = static_cast<short>(MapVirtualKey(vkey, 2) & 0xff);
 
@@ -537,7 +537,7 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
         return FALSE;
 
 	MSG  msg;
-	while (GetMessage(&msg, NULL, 0, 0) != 0)
+	while (GetMessage(&msg, NULL, 0, 0) not_eq 0)
     {
         DispatchMessage(&msg);
     }
@@ -596,8 +596,8 @@ signed int PASCAL WinMain(HINSTANCE h_Instance, HINSTANCE h_previous_instance,
 void EndUI(void)
 {
     // Looking for multiplayer stomp...
-    ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam != 0xFC);
-    ShiAssert(TeamInfo[2] == NULL or TeamInfo[2]->cteam != 0xFC);
+    ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam not_eq 0xFC);
+    ShiAssert(TeamInfo[2] == NULL or TeamInfo[2]->cteam not_eq 0xFC);
 
     doUI = FALSE;
     TheCampaign.Suspend();
@@ -613,8 +613,8 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
     LRESULT retval = 0;
 
     // Looking for multiplayer stomp...
-    ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam != 0xFC);
-    ShiAssert(TeamInfo[2] == NULL or TeamInfo[2]->cteam != 0xFC);
+    ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam not_eq 0xFC);
+    ShiAssert(TeamInfo[2] == NULL or TeamInfo[2]->cteam not_eq 0xFC);
 
     switch (message)
     {
@@ -797,7 +797,7 @@ int get_ip(char *str)
 
     while (*src)
     {
-        if (*src != '.')
+        if (*src not_eq '.')
             ++src;
         else
         {
@@ -859,7 +859,7 @@ void ParseCommandLine(LPSTR cmdLine)
     //sfr: zero lgbk
     memset(g_strLgbk, 0, 20);
 
-    if (arg != NULL)
+    if (arg not_eq NULL)
     {
         do
         {
@@ -903,7 +903,7 @@ void ParseCommandLine(LPSTR cmdLine)
                 DisableSmoothing = TRUE;
 
             if (!stricmp(arg, "-numhats"))
-                if ((arg = strtok(NULL, " ")) != NULL)
+                if ((arg = strtok(NULL, " ")) not_eq NULL)
                     NumHats = atoi(arg);
 
             if (_strnicmp(arg, "-nosound", 8) == 0)
@@ -970,7 +970,7 @@ void ParseCommandLine(LPSTR cmdLine)
 #endif
 
             if (!stricmp(arg, "-bandwidth") or !stricmp(arg, "-bandwith") or !stricmp(arg, "-bw"))
-                if ((arg = strtok(NULL, " ")) != NULL)
+                if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     F4CommsBandwidth = atoi(arg);
 
@@ -979,7 +979,7 @@ void ParseCommandLine(LPSTR cmdLine)
                 }
 
             if (!stricmp(arg, "-urview"))
-                if ((arg = strtok(NULL, " ")) != NULL)
+                if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     UR_HEAD_VIEW = (float)atoi(arg);
 
@@ -991,7 +991,7 @@ void ParseCommandLine(LPSTR cmdLine)
                 }
 
             if (!stricmp(arg, "-latency"))
-                if ((arg = strtok(NULL, " ")) != NULL)
+                if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     F4CommsLatency = atoi(arg);
 
@@ -1000,7 +1000,7 @@ void ParseCommandLine(LPSTR cmdLine)
                 }
 
             if (!stricmp(arg, "-drop"))
-                if ((arg = strtok(NULL, " ")) != NULL)
+                if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     F4CommsDropInterval = atoi(arg);
 
@@ -1009,19 +1009,19 @@ void ParseCommandLine(LPSTR cmdLine)
                 }
 
             if (!stricmp(arg, "-session"))
-                if ((arg = strtok(NULL, " ")) != NULL)
+                if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     F4SessionUpdateTime = atoi(arg);
                 }
 
             if ((!stricmp(arg, "-hostidx")) or (!stricmp(arg, "-hostid")))
-                if ((arg = strtok(NULL, " ")) != NULL)
+                if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     ComIPGetHostIDIndex = atoi(arg);
                 }
 
             if (!stricmp(arg, "-alive"))
-                if ((arg = strtok(NULL, " ")) != NULL)
+                if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     F4SessionAliveTimeout = atoi(arg);
                 }
@@ -1036,7 +1036,7 @@ void ParseCommandLine(LPSTR cmdLine)
                 OTWDriver.SetHeadTracking(TRUE);
 
             if (!stricmp(arg, "-swap"))
-                if ((arg = strtok(NULL, " ")) != NULL)
+                if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     F4CommsLatency = atoi(arg);
 
@@ -1046,7 +1046,7 @@ void ParseCommandLine(LPSTR cmdLine)
 
             if (!stricmp(arg, "-mtu"))  // Booster and Unz At work
             {
-                if ((arg = strtok(NULL, " ")) != NULL)
+                if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     F4CommsMTU = atoi(arg);
 
@@ -1061,7 +1061,7 @@ void ParseCommandLine(LPSTR cmdLine)
 
             if (!stricmp(arg, "-ip"))
             {
-                if ((arg = strtok(NULL, " ")) != NULL)
+                if ((arg = strtok(NULL, " ")) not_eq NULL)
                     force_ip_address = atoi(arg);
 
                 MonoPrint("Force IP Address to %08x\n", force_ip_address);
@@ -1070,7 +1070,7 @@ void ParseCommandLine(LPSTR cmdLine)
             //sfr converts
             // added for ports
             if (!_strnicmp(arg, "-port", 5))
-                if ((arg = strtok(NULL, " ")) != NULL)
+                if ((arg = strtok(NULL, " ")) not_eq NULL)
                     force_port = (unsigned short)atoi(arg);
 
             // sfr: no T&L checks
@@ -1081,7 +1081,7 @@ void ParseCommandLine(LPSTR cmdLine)
 
             // force logbook
             if (!_strnicmp(arg, "-lgbk", 5))
-                if ((arg = strtok(NULL, " ")) != NULL)
+                if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     // select a given logbook if it exists
                     sprintf(g_strLgbk, "%.19s", arg);
@@ -1105,7 +1105,7 @@ void ParseCommandLine(LPSTR cmdLine)
                 g_writeMissionTbl = true;
 
         }
-        while ((arg = strtok(NULL, " ")) != NULL);
+        while ((arg = strtok(NULL, " ")) not_eq NULL);
     }
 
     size = sizeof(FalconDataDirectory);
@@ -1113,7 +1113,7 @@ void ParseCommandLine(LPSTR cmdLine)
                           0, KEY_QUERY_VALUE, &theKey);
     retval = RegQueryValueEx(theKey, "baseDir", 0, &type, (LPBYTE)&FalconDataDirectory, &size);
 
-    if (retval != ERROR_SUCCESS)
+    if (retval not_eq ERROR_SUCCESS)
     {
         SimLibPrintMessage("No Registry Variable\n");
         strcpy(FalconDataDirectory, ".\\");
@@ -1129,7 +1129,7 @@ void ParseCommandLine(LPSTR cmdLine)
     size = sizeof(FalconMovieMode);
     retval = RegQueryValueEx(theKey, "movieMode", 0, &type, (LPBYTE)FalconMovieMode, &size);
 
-    if (retval != ERROR_SUCCESS)
+    if (retval not_eq ERROR_SUCCESS)
         strcpy(FalconMovieMode, "Hurry");
     else if (size <= 1)
         strcpy(FalconMovieMode, "Hurry");
@@ -1137,7 +1137,7 @@ void ParseCommandLine(LPSTR cmdLine)
     size = sizeof(FalconUIArtDirectory);
     retval = RegQueryValueEx(theKey, "uiArtDir", 0, &type, (LPBYTE)FalconUIArtDirectory, &size);
 
-    if (retval != ERROR_SUCCESS)
+    if (retval not_eq ERROR_SUCCESS)
     {
         strcpy(FalconUIArtDirectory, FalconDataDirectory);
         strcpy(FalconUIArtThrDirectory, FalconDataDirectory);
@@ -1146,7 +1146,7 @@ void ParseCommandLine(LPSTR cmdLine)
     size = sizeof(FalconUISoundDirectory);
     retval = RegQueryValueEx(theKey, "uiSoundDir", 0, &type, (LPBYTE)FalconUISoundDirectory, &size);
 
-    if (retval != ERROR_SUCCESS)
+    if (retval not_eq ERROR_SUCCESS)
     {
         strcpy(FalconUISoundDirectory, FalconDataDirectory);
     }
@@ -1410,8 +1410,8 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
     static int InTimer = 0;
 
     // Looking for multiplayer stomp...
-    ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam != 0xFC);
-    ShiAssert(TeamInfo[2] == NULL or TeamInfo[2]->cteam != 0xFC);
+    ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam not_eq 0xFC);
+    ShiAssert(TeamInfo[2] == NULL or TeamInfo[2]->cteam not_eq 0xFC);
 
 #ifdef _MSC_VER
     // Set the FPU to Truncate
@@ -1514,7 +1514,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_REFRESH_TACTICAL:
-            if (gMainHandler != NULL)
+            if (gMainHandler not_eq NULL)
             {
                 UpdateMissionWindow(TAC_AIRCRAFT);
                 CheckCampaignFlyButton();
@@ -1523,7 +1523,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_REFRESH_CAMPAIGN:
-            if (gMainHandler != NULL)
+            if (gMainHandler not_eq NULL)
             {
                 UpdateMissionWindow(CB_MISSION_SCREEN);
                 CheckCampaignFlyButton();
@@ -1532,7 +1532,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_TIMER_UPDATE:
-            if (gMainHandler != NULL)
+            if (gMainHandler not_eq NULL)
             {
                 if (InTimer)
                     break;
@@ -1573,8 +1573,8 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             // Load a campaign here (this should allow tactical engagements too, so we
             // So we can eliminate the LOAD_TACTICAL case.
             if (
-                (FalconGameType)lParam != game_Campaign &&
-                (FalconGameType)lParam != game_TacticalEngagement
+                (FalconGameType)lParam not_eq game_Campaign &&
+                (FalconGameType)lParam not_eq game_TacticalEngagement
             )
             {
                 strcpy(gUI_CampaignFile, "Instant");
@@ -2020,7 +2020,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
         default:
         {
-            if (gMainHandler != NULL)
+            if (gMainHandler not_eq NULL)
             {
                 if (gMainHandler->EventHandler(hwnd, message, wParam, lParam))
                 {
@@ -2076,12 +2076,12 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
 
     // Looking for multiplayer stomp...
-    ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam != 0xFC);
-    ShiAssert(TeamInfo[2] == NULL or TeamInfo[2]->cteam != 0xFC);
+    ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam not_eq 0xFC);
+    ShiAssert(TeamInfo[2] == NULL or TeamInfo[2]->cteam not_eq 0xFC);
 
     // Looking for multiplayer stomp...
-    ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam != 0xFC);
-    ShiAssert(TeamInfo[2] == NULL or TeamInfo[2]->cteam != 0xFC);
+    ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam not_eq 0xFC);
+    ShiAssert(TeamInfo[2] == NULL or TeamInfo[2]->cteam not_eq 0xFC);
 
     return retval;
 }
@@ -2148,7 +2148,7 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
                 stopMovie = TRUE;
 
 
-            if (msg.message != WM_ACTIVATEAPP)
+            if (msg.message not_eq WM_ACTIVATEAPP)
             {
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
@@ -2180,7 +2180,7 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
                 break;
             }
 
-            if (movieStart(hMovie) != MOVIE_OK)
+            if (movieStart(hMovie) not_eq MOVIE_OK)
             {
                 MonoPrint("error with movieStart.\n");
                 movieClose(hMovie);

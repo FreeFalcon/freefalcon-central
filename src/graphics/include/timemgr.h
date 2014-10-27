@@ -9,6 +9,7 @@
 #ifndef TIMEMGR_H
 #define TIMEMGR_H
 
+#include <cISO646>
 #include "grtypes.h"
 
 
@@ -44,7 +45,7 @@ public:
 
     BOOL IsReady(void)
     {
-        return (CBlist != NULL);
+        return (CBlist not_eq NULL);
     };
 
     void SetTime(DWORD newTime);

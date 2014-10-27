@@ -171,7 +171,7 @@ void ICPClass::PNUpdateFACKMode(int button, int)
 
                 failedFuncs = playerAC->mFaults->GetFault((FaultClass::type_FSubSystem) faultIdx);
             }
-            while (!failedFuncs && faultIdx != mFaultNum);
+            while (!failedFuncs && faultIdx not_eq mFaultNum);
 
 
             // Find highest failed sub-system
@@ -218,7 +218,7 @@ void ICPClass::PNUpdateFACKMode(int button, int)
 
                 failedFuncs = playerAC->mFaults->GetFault((FaultClass::type_FSubSystem) faultIdx);
             }
-            while (!failedFuncs && faultIdx != mFaultNum);
+            while (!failedFuncs && faultIdx not_eq mFaultNum);
 
             // Find lowest failed sub-system
             funcIdx = 1;

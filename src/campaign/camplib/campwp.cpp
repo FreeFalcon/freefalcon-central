@@ -199,10 +199,10 @@ int WayPointClass::SaveSize(void)
 {
     int size = 0;
 
-    if (TargetID != FalconNullId)
+    if (TargetID not_eq FalconNullId)
         size += sizeof(VU_ID) + sizeof(uchar);
 
-    if (Depart != Arrive)
+    if (Depart not_eq Arrive)
         size += sizeof(CampaignTime);
 
     size += sizeof(uchar)
@@ -221,12 +221,12 @@ int WayPointClass::Save(VU_BYTE **stream)
 {
     uchar haves = 0;
 
-    if (TargetID != FalconNullId)
+    if (TargetID not_eq FalconNullId)
     {
         haves  or_eq  WP_HAVE_TARGET;
     }
 
-    if (Depart != Arrive)
+    if (Depart not_eq Arrive)
     {
         haves  or_eq  WP_HAVE_DEPTIME;
     }
@@ -289,12 +289,12 @@ int WayPointClass::Save(FILE* fp)
         return 0;
     }
 
-    if (TargetID != FalconNullId)
+    if (TargetID not_eq FalconNullId)
     {
         haves  or_eq  WP_HAVE_TARGET;
     }
 
-    if (Depart != Arrive)
+    if (Depart not_eq Arrive)
     {
         haves  or_eq  WP_HAVE_DEPTIME;
     }
@@ -401,7 +401,7 @@ void WayPointClass::SetNextWP(WayPointClass *w)
                 dist = (float)sqrt(delta_x * delta_x + delta_y * delta_y);
                 time = (float)(NextWP->GetWPArrivalTime() - GetWPArrivalTime()) / CampaignHours; // Hours
 
-                if (time != 0.0)
+                if (time not_eq 0.0)
                 {
                     // JB 010413 CTD
                     speed = (dist / time) / NM_TO_FT;
@@ -643,7 +643,7 @@ void DeleteWPList(WayPoint w)
 {
     WayPoint t;
 
-    while (w != NULL)
+    while (w not_eq NULL)
     {
         t = w;
         w = w->GetNextWP();
@@ -787,7 +787,7 @@ WayPoint CloneWPToList(WayPoint w, WayPoint stop)
 
     lw = list = NULL;
 
-    while ((w) && (w != stop))
+    while ((w) && (w not_eq stop))
     {
         nw = new WayPointClass();
         nw->CloneWP(w);
@@ -914,7 +914,7 @@ float SetWPSpeed(WayPoint wp)
         pw->GetWPLocation(&px, &py);
         time = wp->GetWPArrivalTime() - pw->GetWPDepartureTime();
 
-        if (time != 0)
+        if (time not_eq 0)
             speed = (Distance(x, y, px, py) * CampaignHours) / time;
     }
 

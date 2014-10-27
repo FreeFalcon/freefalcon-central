@@ -356,7 +356,7 @@ void RViewPoint::UpdateMoon()
 
     while (texel < stopTexel)
     {
-        if (*texel != 0)   // Don't touch the chromakeyed texels!
+        if (*texel not_eq 0)   // Don't touch the chromakeyed texels!
         {
             *dest++ = (BYTE)((*texel++) | 128); // Use the "green" set of palette entries
         }
@@ -492,7 +492,7 @@ void RViewPoint::ReleaseTextures(void)
     // Free our texture resources
 
     //JAM 04Oct03
-    if (DisplayOptions.m_texMode != DisplayOptionsClass::TEX_MODE_DDS)
+    if (DisplayOptions.m_texMode not_eq DisplayOptionsClass::TEX_MODE_DDS)
         GreenSunTexture.FreeAll();
 
     //JAM

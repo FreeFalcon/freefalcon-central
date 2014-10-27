@@ -93,7 +93,7 @@ long SearchList(long val, long list[])
 {
     int i;
 
-    for (i = 1; list[i] != -5551212; i++)
+    for (i = 1; list[i] not_eq -5551212; i++)
         if (list[i] == val)
             return(i);
 
@@ -521,7 +521,7 @@ C_Fontmgr *FontToBFT(long ID, LOGFONT *logfont)
 
 void ChoosePairCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     control->Refresh();
@@ -595,7 +595,7 @@ void IncreaseLead(long, short hittype, C_Base *control)
     C_Text *txt;
     char buffer[10];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     cur = gFontList->Find(CurrentFontID);
@@ -628,7 +628,7 @@ void DecreaseLead(long , short hittype, C_Base *control)
     C_Text *txt;
     char buffer[10];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     cur = gFontList->Find(CurrentFontID);
@@ -661,7 +661,7 @@ void IncreaseTrail(long, short hittype, C_Base *control)
     C_Text *txt;
     char buffer[10];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     cur = gFontList->Find(CurrentFontID);
@@ -694,7 +694,7 @@ void DecreaseTrail(long, short hittype, C_Base *control)
     C_Text *txt;
     char buffer[10];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     cur = gFontList->Find(CurrentFontID);
@@ -727,7 +727,7 @@ void IncreaseWidth(long, short hittype, C_Base *control)
     C_Text *txt;
     char buffer[10];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     cur = gFontList->Find(CurrentFontID);
@@ -760,7 +760,7 @@ void DecreaseWidth(long, short hittype, C_Base *control)
     C_Text *txt;
     char buffer[10];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     cur = gFontList->Find(CurrentFontID);
@@ -788,13 +788,13 @@ void DecreaseWidth(long, short hittype, C_Base *control)
 
 void IncreaseKern(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 }
 
 void DecreaseKern(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 }
 
@@ -805,7 +805,7 @@ void ChooseCharCB(long ID, short hittype, C_Base *control)
     C_Text *txt;
     char buffer[10];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     CurrentChar = ID - FONT_CHAR_BASE;
@@ -1014,7 +1014,7 @@ void MakeFontList(long FontID)
 
 void CreateTheFontCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (CreatedFont)
@@ -1037,7 +1037,7 @@ void CreateTheFontCB(long, short hittype, C_Base *)
 
 void CreateFontCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->EnableWindowGroup(-200);
@@ -1045,13 +1045,13 @@ void CreateFontCB(long, short hittype, C_Base *)
 
 void SaveFontCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     C_Window *win;
     C_EditBox *ebox;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = control->Parent_;
@@ -1072,7 +1072,7 @@ void ChooseFontCB(long ID, short hittype, C_Base *control)
 {
     C_ListBox *lbox;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     if (control)
@@ -1090,7 +1090,7 @@ void ChooseAvailableFontCB(long, short hittype, C_Base *control)
 {
     int idx;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     idx = ((C_ListBox*)control)->GetTextID();

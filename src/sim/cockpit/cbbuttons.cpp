@@ -371,7 +371,7 @@ void CBEStoresJettison(void *, int)
 
     SimEmergencyJettison(0, KEY_DOWN, NULL);
 
-    if (playerAC->Sms != NULL && playerAC->Sms->DidEmergencyJettison())
+    if (playerAC->Sms not_eq NULL && playerAC->Sms->DidEmergencyJettison())
     {
         SimEmergencyJettison(0, 0, NULL);
     }
@@ -3094,7 +3094,7 @@ void CBExInteriorLightSwitch(void * pButton, int event)
             break;
     }
 
-    // if (OTWDriver.pCockpitManager != NULL){
+    // if (OTWDriver.pCockpitManager not_eq NULL){
     // OTWDriver.pCockpitManager->UpdatePalette();
     // }
 
@@ -3135,7 +3135,7 @@ void CBExInstrumentLightSwitch(void * pButton, int event)
             break;
     }
 
-    // if (OTWDriver.pCockpitManager != NULL){
+    // if (OTWDriver.pCockpitManager not_eq NULL){
     // OTWDriver.pCockpitManager->UpdatePalette();
     // }
 }
@@ -4391,13 +4391,13 @@ void CBEFlap(void * pButton, int event)
     {
         AFIncFlap(0, KEY_DOWN, NULL);
         pCPButton->SetCurrentState(1);
-        //if (pCPButton != NULL){ pCPButton->IncrementState(); }
+        //if (pCPButton not_eq NULL){ pCPButton->IncrementState(); }
     }
     else
     {
         AFDecFlap(0, KEY_DOWN, NULL);
         pCPButton->SetCurrentState(2);
-        //if (pCPButton != NULL){ pCPButton->DecrementState(); }
+        //if (pCPButton not_eq NULL){ pCPButton->DecrementState(); }
     }
 }
 
@@ -4433,12 +4433,12 @@ void CBELef(void * pButton, int event)
     if (event == CP_MOUSE_BUTTON0)
     {
         AFIncLEF(0, KEY_DOWN, NULL);
-        //if (pCPButton != NULL){ pCPButton->IncrementState(); }
+        //if (pCPButton not_eq NULL){ pCPButton->IncrementState(); }
     }
     else
     {
         AFDecLEF(0, KEY_DOWN, NULL);
-        //if (pCPButton != NULL){ pCPButton->DecrementState(); }
+        //if (pCPButton not_eq NULL){ pCPButton->DecrementState(); }
     }
 }
 
@@ -4461,7 +4461,7 @@ void CBExDragChute(void * pButton, int event)
 
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
 
-    if (playerAC->af->dragChute != AirframeClass::DRAGC_STOWED)
+    if (playerAC->af->dragChute not_eq AirframeClass::DRAGC_STOWED)
     {
         pCPButton->SetCurrentState(1);
     }

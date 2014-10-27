@@ -398,7 +398,7 @@ BOOL C_EditBox::CheckChar(unsigned char key)
             break;
 
         case C_TYPE_INTEGER:
-            if (!isdigit(key) && key != _T('-'))
+            if (!isdigit(key) && key not_eq _T('-'))
                 return(FALSE);
 
             break;
@@ -658,7 +658,7 @@ _TCHAR *C_EditBox::GetText()
 
 void C_EditBox::SetInteger(long value)
 {
-    if (MinInteger_ != MaxInteger_)
+    if (MinInteger_ not_eq MaxInteger_)
     {
         if (value < MinInteger_)
             value = MinInteger_;
@@ -667,7 +667,7 @@ void C_EditBox::SetInteger(long value)
             value = MaxInteger_;
     }
 
-    if (Integer_ != value)
+    if (Integer_ not_eq value)
     {
         Integer_ = value;
         CopyToText();
@@ -676,7 +676,7 @@ void C_EditBox::SetInteger(long value)
 
 void C_EditBox::SetFloat(double value)
 {
-    if (MinFloat_ != MaxFloat_)
+    if (MinFloat_ not_eq MaxFloat_)
     {
         if (value < MinFloat_)
             value = MinFloat_;
@@ -685,7 +685,7 @@ void C_EditBox::SetFloat(double value)
             value = MaxFloat_;
     }
 
-    if (Float_ != value)
+    if (Float_ not_eq value)
     {
         Float_ = value;
         CopyToText();
@@ -847,7 +847,7 @@ BOOL C_EditBox::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
 
     SelEnd_ = (short)Text_->GetCursorPos(relx, rely); //!
 
-    if (SelStart_ != SelEnd_)
+    if (SelStart_ not_eq SelEnd_)
     {
         Text_->SetFlags(Text_->GetFlags() | C_BIT_OPAQUE);
 

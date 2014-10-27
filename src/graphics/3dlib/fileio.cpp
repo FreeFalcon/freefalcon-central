@@ -30,7 +30,7 @@ GLint CFileIO::openwrite(const char *filename, GLint binary)
 
 void CFileIO::closefile()
 {
-    if (file != -1)
+    if (file not_eq -1)
     {
         GR_CLOSE(file);
         file = -1;

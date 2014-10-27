@@ -51,7 +51,7 @@ DivisionClass::~DivisionClass(void)
 #endif
     element = NULL;
     next = NULL;
-    ShiAssert(this != DivisionData[owner]);
+    ShiAssert(this not_eq DivisionData[owner]);
 }
 
 _TCHAR* DivisionClass::GetName(_TCHAR* buffer, int size, int object)
@@ -90,7 +90,7 @@ Unit DivisionClass::GetUnitElement(int en)
     {
         ret = (Unit)vuDatabase->Find(element[en]);
 
-        if (!ret or ret->GetDomain() != DOMAIN_LAND)
+        if (!ret or ret->GetDomain() not_eq DOMAIN_LAND)
             RemoveChild(element[en]);
     }
 
@@ -235,7 +235,7 @@ void BuildDivisionData(void)
 
         while (u)
         {
-            //if (u->VuState() != VU_MEM_DELETED)
+            //if (u->VuState() not_eq VU_MEM_DELETED)
             //{
             if (u->GetDomain() == DOMAIN_LAND)
             {
@@ -496,7 +496,7 @@ int DivisionSanityCheck(void)
 
         while (tmp)
         {
-            ShiAssert((int)tmp != 0xdddddddd);
+            ShiAssert((int)tmp not_eq 0xdddddddd);
             tmp = tmp->next;
         }
     }

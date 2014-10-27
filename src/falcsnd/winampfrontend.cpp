@@ -273,7 +273,7 @@ char* WinAmpFrontEnd::getDEDTitle(const int theLine)
     if (!ampexists)
         return "No WinAMP window found !";
 
-    if ((theLine != 0) && (theLine != 1))
+    if ((theLine not_eq 0) && (theLine not_eq 1))
         return 0;
 
     return DEDString[theLine];

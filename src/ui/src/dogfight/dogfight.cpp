@@ -299,7 +299,7 @@ DF_AIRPLANE_TYPE *DFAIPlanes;
 
 void LoadDfPlanes()
 {
-    if (DFAIPlanes != NULL)
+    if (DFAIPlanes not_eq NULL)
         return;
 
     FILE *fp = OpenCampFile("teplanes", "lst", "r");
@@ -315,7 +315,7 @@ void LoadDfPlanes()
         fp = OpenCampFile("teplanes", "lst", "w");
         fprintf(fp, "// Type SubType Specific UnitSubType    ID text UnitIcon\n");
 
-        for (int i = 0; DFAIPlanes[i].ID != 0; i++)
+        for (int i = 0; DFAIPlanes[i].ID not_eq 0; i++)
         {
             fprintf(fp, "%7d %7d %8d %11d %5d %4d %8d\n",
                     DFAIPlanes[i].Type,
@@ -359,7 +359,7 @@ void LoadDfPlanes()
                    &UnitSType,
                    &DFAIPlanes[curdf].ID,
                    &DFAIPlanes[curdf].TextID,
-                   &DFAIPlanes[curdf].IconID) != 7)
+                   &DFAIPlanes[curdf].IconID) not_eq 7)
         {
             ShiWarning("Bad format file teplanes.lst");
             free(DFAIPlanes);
@@ -474,7 +474,7 @@ void SetCurrentGameState(C_TreeList *tree, short state)
 
     if (gCommsMgr->Online() && tree)
     {
-        if (vuLocalGame != vuPlayerPoolGroup)
+        if (vuLocalGame not_eq vuPlayerPoolGroup)
         {
             group = StartTreeSearch(FalconLocalGame->Id(), tree->GetRoot(), tree);
 
@@ -493,7 +493,7 @@ void JoinDogfightCB(long, short hittype, C_Base *)
     FalconGameEntity *game;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gCommsMgr == NULL)
@@ -557,7 +557,7 @@ static void DogfightBeginCB(long ID, short hittype, C_Base *control)
 {
     FalconGameEntity *game;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gCommsMgr == NULL)
@@ -641,7 +641,7 @@ void AddDogfightPlayerCB(long ID, short hittype, C_Base *)
     int idx, type;
     uchar teamid;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // If we're not yet in a game, this equates to host
@@ -842,7 +842,7 @@ void CheckDelButtons()
 
 void SelectDogfightFlightCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (((C_Dog_Flight*)control)->GetVUID() == gCurrentFlightID)
@@ -861,7 +861,7 @@ void SelectDogfightFlightCB(long, short hittype, C_Base *control)
 
 void SelectDogfightPilotCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (((C_Pilot*)control)->GetVUID() == gCurrentFlightID)
@@ -884,7 +884,7 @@ void SelectDogfightItemCB(long, short hittype, C_Base *control)
     C_TreeList *tree;
     TREELIST *item;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList *)control;
@@ -1018,7 +1018,7 @@ C_Dog_Flight *MakeFlight(C_TreeList *list, Flight flight)
     {
         dark = (IMAGE_RSC*)iconresdark->Find(DFAIPlanes[idx].IconID);
 
-        if (!dark or dark->Header->Type != _RSC_IS_IMAGE_)
+        if (!dark or dark->Header->Type not_eq _RSC_IS_IMAGE_)
             dark = NULL;
     }
 
@@ -1026,7 +1026,7 @@ C_Dog_Flight *MakeFlight(C_TreeList *list, Flight flight)
     {
         lite = (IMAGE_RSC*)iconreslite->Find(DFAIPlanes[idx].IconID);
 
-        if (!lite or lite->Header->Type != _RSC_IS_IMAGE_)
+        if (!lite or lite->Header->Type not_eq _RSC_IS_IMAGE_)
             lite = NULL;
     }
 
@@ -1085,7 +1085,7 @@ void UpdateFlight(C_Dog_Flight *newflt, Flight flight)
     {
         dark = (IMAGE_RSC*)iconresdark->Find(DFAIPlanes[idx].IconID);
 
-        if (dark->Header->Type != _RSC_IS_IMAGE_)
+        if (dark->Header->Type not_eq _RSC_IS_IMAGE_)
             dark = NULL;
     }
 
@@ -1093,7 +1093,7 @@ void UpdateFlight(C_Dog_Flight *newflt, Flight flight)
     {
         lite = (IMAGE_RSC*)iconreslite->Find(DFAIPlanes[idx].IconID);
 
-        if (!lite or lite->Header->Type != _RSC_IS_IMAGE_)
+        if (!lite or lite->Header->Type not_eq _RSC_IS_IMAGE_)
             lite = NULL;
     }
 
@@ -1144,7 +1144,7 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
         {
             if (!pilot->GetPlayer())
             {
-                if (pilot->GetSkill() != flight->pilots[ac])
+                if (pilot->GetSkill() not_eq flight->pilots[ac])
                 {
                     switch (flight->pilots[ac])
                     {
@@ -1180,7 +1180,7 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
     if (!flt)
         return(NULL);
 
-    if (flight->player_slots[ac] != 255)
+    if (flight->player_slots[ac] not_eq 255)
     {
         if (FalconLocalGame)
         {
@@ -1303,7 +1303,7 @@ void EraseOldLimbs(C_TreeList *tree, TREELIST *first, long timestamp)
         item = cur;
         cur = cur->Next;
 
-        if (item->Item_ && item->Item_->GetUserNumber(0) != timestamp)
+        if (item->Item_ && item->Item_->GetUserNumber(0) not_eq timestamp)
         {
             if (item->Child)
                 tree->DeleteBranch(item->Child);
@@ -1469,7 +1469,7 @@ void BuildDFPlayerList()
 
             for (ac = 0; ac < PILOTS_PER_FLIGHT; ac++)
             {
-                if (flight->pilots[ac] != NO_PILOT or flight->player_slots[ac] != NO_PILOT)
+                if (flight->pilots[ac] not_eq NO_PILOT or flight->player_slots[ac] not_eq NO_PILOT)
                 {
                     // Add PLAYER to Furball Tree
                     furplt = AddDogfightPilot(flist, flight, ac);
@@ -1508,7 +1508,7 @@ void BuildDFPlayerList()
         unit = (Unit)listit.GetNext();
     }
 
-    // Erase everything with UserNumber(0) != timestamp
+    // Erase everything with UserNumber(0) not_eq timestamp
     ClearOldDFInfo(timestamp);
     CheckDelButtons();
     CheckFlyButton();
@@ -1599,7 +1599,7 @@ static void SelectDogfightGameCB(long, short hittype, C_Base *control)
     FalconGameEntity *game;
     TREELIST *item;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     item = ((C_TreeList *)control)->GetLastItem();
@@ -1608,7 +1608,7 @@ static void SelectDogfightGameCB(long, short hittype, C_Base *control)
 
     if (item->Item_ == NULL) return;
 
-    if (gCommsMgr->GetGame() != vuPlayerPoolGroup)
+    if (gCommsMgr->GetGame() not_eq vuPlayerPoolGroup)
         return;
 
     if (item->Type_ == C_TYPE_MENU)
@@ -1681,7 +1681,7 @@ void AddDogfightFlightCB(long, short hittype, C_Base *control)
     C_ListBox *lbox = NULL;
     long value = 0;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (!FalconLocalGame or FalconLocalSession->Game() == vuPlayerPoolGroup)
@@ -1745,7 +1745,7 @@ void AddDogfightFlightCB(long, short hittype, C_Base *control)
         case dog_TeamFurball:
             flight = (Flight)vuDatabase->Find(gCurrentFlightID);
 
-            if (flight && flight->GetTeam() != teamid)
+            if (flight && flight->GetTeam() not_eq teamid)
                 flight = NULL;
 
             break;
@@ -1767,10 +1767,10 @@ void AddDogfightAICB(long ID, short hittype, C_Base *control)
     C_Window *win;
     C_ListBox *lbox;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (gCommsMgr && gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
+    if (gCommsMgr && gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -1825,7 +1825,7 @@ void RemoveAICB(long ID, short hittype, C_Base *)
     Flight flight;
     short teamid = 0;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     flight = (Flight)vuDatabase->Find(gCurrentFlightID);
@@ -1833,7 +1833,7 @@ void RemoveAICB(long ID, short hittype, C_Base *)
     if (!flight)
         return;
 
-    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
+    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -1919,7 +1919,7 @@ void UpdateDogfightWindows(void)
 
     if (win)
     {
-        if (SimDogfight.GetGameType() != dog_Furball)
+        if (SimDogfight.GetGameType() not_eq dog_Furball)
         {
             win->HideCluster(200);
             win->UnHideCluster(100);
@@ -2182,7 +2182,7 @@ void CopyDFSettingsFromWindow(void)
 
     if (!gMainHandler) return;
 
-    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
+    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
         return;
 
     gMainHandler->EnterCritical();
@@ -2308,10 +2308,10 @@ void CopyDFSettingsFromWindow(void)
 
 static void DFGameModeCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
-    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
+    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -2345,7 +2345,7 @@ void CheckFlyButton()
 
     Enabled = FALSE;
 
-    if (vuLocalGame != vuPlayerPoolGroup && FalconLocalSession->GetTeam() != 255 && FalconLocalSession->GetPilotSlot() != 255)
+    if (vuLocalGame not_eq vuPlayerPoolGroup && FalconLocalSession->GetTeam() not_eq 255 && FalconLocalSession->GetPilotSlot() not_eq 255)
         Enabled = TRUE;
 
     // In dogfight games, check ready state
@@ -2476,10 +2476,10 @@ static void DogFightSLDRCB(long ID, short hittype, C_Base *control)
     C_EditBox *ebox = NULL;
     long value = 0, step = 0, temp = 0;
 
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
-    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
+    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -2737,7 +2737,7 @@ void LeaveDogfight()
 
     if (gCommsMgr->Online())
     {
-        if (vuLocalGame != vuPlayerPoolGroup)
+        if (vuLocalGame not_eq vuPlayerPoolGroup)
         {
             SetCurrentGameState(DogfightGames, C_STATE_0);
             vuLocalSessionEntity->JoinGame(vuPlayerPoolGroup);
@@ -2765,7 +2765,7 @@ void InfoButtonCB(long, short hittype, C_Base *control)
 {
     VU_ID gameID;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetupInfoWindow(NULL, NULL);
@@ -2779,7 +2779,7 @@ void SaveItCB(long, short hittype, C_Base *control)
     C_TreeList *tree;
     char filename[MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(SAVE_WIN);
@@ -2825,7 +2825,7 @@ void VerifySaveItCB(long ID, short hittype, C_Base *control)
     FILE *fp;
     char filename[MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
@@ -2869,7 +2869,7 @@ static void SaveDFSettingsCB(long, short hittype, C_Base *)
 {
     _TCHAR fname[MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetDeleteCallback(DelDFSFileCB);
@@ -2884,7 +2884,7 @@ static void SelectDFSettingsFileCB(long, short hittype, C_Base *control)
     TREELIST *item;
     C_Button   *btn;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)control;
@@ -2931,7 +2931,7 @@ void SelectDFGameFileCB(long, short hittype, C_Base *)
 {
     FalconGameEntity *game = NULL; // KCK: Need to get game associated with button
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (!game)
@@ -2943,7 +2943,7 @@ void SelectDFGameFileCB(long, short hittype, C_Base *)
 
 void LoadRadioCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // Probably don't want to load settings until after we load the campaign
@@ -2955,7 +2955,7 @@ void JoinRadioCB(long, short hittype, C_Base *control)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (!gCommsMgr->Online())
@@ -2975,10 +2975,10 @@ void JoinRadioCB(long, short hittype, C_Base *control)
 
 static void ToggleGunCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
+    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -2991,10 +2991,10 @@ static void ToggleGunCB(long, short hittype, C_Base *)
 
 static void ToggleECMCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
+    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -3007,10 +3007,10 @@ static void ToggleECMCB(long, short hittype, C_Base *)
 
 static void MoveGameLocationCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LDROP)
+    if (hittype not_eq C_TYPE_LDROP)
         return;
 
-    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
+    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -3107,7 +3107,7 @@ static void DogfightFlyCB(long, short hittype, C_Base *)
 {
     Flight flight;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     flight = FalconLocalSession->GetPlayerFlight();
@@ -3150,7 +3150,7 @@ void SaveResultsFileCB(long, short hittype, C_Base *control)
     _TCHAR fname[MAX_PATH];
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(SAVE_WIN);
@@ -3182,7 +3182,7 @@ void VerifySaveResultsFileCB(long ID, short hittype, C_Base *control)
     _TCHAR fname[MAX_PATH];
     FILE *fp;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
@@ -3215,7 +3215,7 @@ void VerifySaveResultsFileCB(long ID, short hittype, C_Base *control)
 
 void SaveResultsCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetDeleteCallback(DelLSTFileCB);
@@ -3224,7 +3224,7 @@ void SaveResultsCB(long, short hittype, C_Base *)
 
 void CleanupDebriefCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->DisableWindowGroup(control->GetGroup());
@@ -3235,7 +3235,7 @@ void SeeDFFilesCB(long, short hittype, C_Base *control)
 {
     C_TreeList *tree;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)control->Parent_->FindControl(FILELIST_TREE);
@@ -3262,7 +3262,7 @@ void SeeDFFilesCB(long, short hittype, C_Base *control)
 
 void SeeDFGamesCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (!gCommsMgr->Online())
@@ -3274,10 +3274,10 @@ void SeeDFGamesCB(long, short hittype, C_Base *control)
 
 void DogfightChangeTimeCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP && hittype != C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
         return;
 
-    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
+    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -3295,7 +3295,7 @@ void DeleteCurrentFileCB(long, short hittype, C_Base *control)
     C_TreeList *tree;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(DF_LOAD_WIN);
@@ -3334,7 +3334,7 @@ void DeleteCurrentFileCB(long, short hittype, C_Base *control)
 
 void DeleteVerifyFileCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (!CheckExclude(gCurDogfightFile, FalconCampUserSaveDirectory, DFExcludeList, "dfs"))
@@ -3345,7 +3345,7 @@ void EndDogfightCB(long, short hittype, C_Base *control)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     LeaveDogfight();

@@ -161,7 +161,7 @@ void SimulationLoopControl::StartSim(void)
     unsigned long value;
 
     // Don't start until we're ready
-    while (currentMode != Stopped)
+    while (currentMode not_eq Stopped)
     {
         Sleep(50);
     }
@@ -187,7 +187,7 @@ void SimulationLoopControl::StartSim(void)
 void SimulationLoopControl::StopSim(void)
 {
     // Don't stop until we're sure we're running
-    while (currentMode != RunningSim)
+    while (currentMode not_eq RunningSim)
     {
         Sleep(50);
     }
@@ -264,7 +264,7 @@ void SimulationLoopControl::StartGraphics(void)
         OTWDriver.SetActive(FALSE);
     }
 
-    while (currentMode != RunningSim)
+    while (currentMode not_eq RunningSim)
     {
         Sleep(50);
     }
@@ -278,7 +278,7 @@ void SimulationLoopControl::StartGraphics(void)
 void SimulationLoopControl::StopGraphics()
 {
     // Don't stop until we're sure we're running
-    while (currentMode != RunningGraphics)
+    while (currentMode not_eq RunningGraphics)
     {
         Sleep(50);
     }
@@ -320,7 +320,7 @@ void SimulationLoopControl::Loop(void)
     // Record the fact that we're up and running
     currentMode = RunningSim;
 
-    //while (currentMode != StoppingSim)
+    //while (currentMode not_eq StoppingSim)
     do
     {
         //START_PROFILE("INPUT");
@@ -387,7 +387,7 @@ void SimulationLoopControl::Loop(void)
 
         if (
             FalconLocalGame && (
-                ((vuPlayerPoolGroup) && (FalconLocalGame->Id() != vuPlayerPoolGroup->Id())) or !vuPlayerPoolGroup
+                ((vuPlayerPoolGroup) && (FalconLocalGame->Id() not_eq vuPlayerPoolGroup->Id())) or !vuPlayerPoolGroup
             )
         )
         {
@@ -443,7 +443,7 @@ void SimulationLoopControl::Loop(void)
                     ratio = 0;
                 }
 
-                if (ratio != last_ratio)
+                if (ratio not_eq last_ratio)
                 {
                     last_ratio = ratio;
                 }
@@ -473,14 +473,14 @@ void SimulationLoopControl::Loop(void)
 
                 for (
                     VuSessionEntity *sess = sessionIter.GetFirst(), *nextSess;
-                    sess != NULL && !flying;
+                    sess not_eq NULL && !flying;
                     sess = nextSess
                 )
                 {
                     nextSess = sessionIter.GetNext();
                     FalconSessionEntity *sessionEntity = static_cast<FalconSessionEntity*>(sess);
 
-                    if (sessionEntity != NULL)
+                    if (sessionEntity not_eq NULL)
                     {
                         uchar flyState = sessionEntity->GetFlyState();
 
@@ -507,7 +507,7 @@ void SimulationLoopControl::Loop(void)
             }
 
             if (
-                FalconLocalSession->GetFlyState() !=  FLYSTATE_FLYING &&
+                FalconLocalSession->GetFlyState() not_eq  FLYSTATE_FLYING &&
                 gCompressTillTime && tmpTime > gLaunchTime + 1000
             )
             {
@@ -921,7 +921,7 @@ void SimulationLoopControl::StartLoop(void)
 
             // Dogfights have some special case start code -
             // i.e. For match play and instant entry
-            if (!SimDriver.RunningDogfight() or SimDogfight.GetGameType() != dog_TeamMatchplay)
+            if (!SimDriver.RunningDogfight() or SimDogfight.GetGameType() not_eq dog_TeamMatchplay)
             {
                 GameManager.ReleasePlayer(FalconLocalSession);
             }

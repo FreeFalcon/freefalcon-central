@@ -110,7 +110,7 @@ void VoiceMapper::LoadVoices()
         if (buf[0] == '\n' or buf[0] == '#' or buf[0] == ';')
             continue; // comment
 
-        if (sscanf(buf, "%d %99s %99s", &voice, &type, &side) != 3)
+        if (sscanf(buf, "%d %99s %99s", &voice, &type, &side) not_eq 3)
             continue;
 
         ShiAssert(voice < totalvoices);
@@ -130,7 +130,7 @@ unsigned int VoiceMapper::LookupName(const char *name)
 {
     const struct namemap *mp;
 
-    for (mp = Names; mp->name != NULL; mp ++)
+    for (mp = Names; mp->name not_eq NULL; mp ++)
     {
         if (stricmp(mp->name, name) == 0)
             return mp->id;
@@ -164,7 +164,7 @@ int VoiceMapper::PickVoice(int type, int side)
     ShiAssert((side >= 0 && side <= 7) or side == VOICE_SIDE_UNK);
     unsigned int match = type;
 
-    if (side != VOICE_SIDE_UNK)
+    if (side not_eq VOICE_SIDE_UNK)
         match  or_eq  (VOICE_SIDE_BASE << side);
 
     float chance;
@@ -173,7 +173,7 @@ int VoiceMapper::PickVoice(int type, int side)
 
     for (int i = 0; i < totalvoices; i++)
     {
-        if ((voiceflags[i] & match) != match)
+        if ((voiceflags[i] & match) not_eq match)
             continue;
 
         recno ++;

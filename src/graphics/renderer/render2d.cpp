@@ -301,7 +301,7 @@ void Render2D::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, char
 
     // Make sure we recognize this file type
     texFile.imageType = CheckImageType(filename);
-    ShiAssert(texFile.imageType != IMAGE_TYPE_UNKNOWN);
+    ShiAssert(texFile.imageType not_eq IMAGE_TYPE_UNKNOWN);
 
     // Open the input file
     result = texFile.glOpenFileMem(filename);
@@ -311,7 +311,7 @@ void Render2D::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, char
     texFile.glReadFileMem();
     result = ReadTextureImage(&texFile);
 
-    if (result != GOOD_READ)
+    if (result not_eq GOOD_READ)
     {
         ShiError("Failed to read bitmap.  CD Error?");
     }
@@ -377,7 +377,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
     else a = 1.0f;
 
     // Draw two tris to make a square;
-    if (boxed != 2)
+    if (boxed not_eq 2)
     {
         r = (color & 0xFF) / 255.0F;
         g = ((color & 0xFF00) >> 8) / 255.0F;

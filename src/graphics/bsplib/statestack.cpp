@@ -347,7 +347,7 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
 
     SetWorld(rot, pos);
 
-    if ((operation & OP_WARP) or (scale != 1.f))
+    if ((operation & OP_WARP) or (scale not_eq 1.f))
     {
         Pmatrix tempM;
         float cx, cy, cz;
@@ -381,7 +381,7 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
         mW = mS * mT;
     }
 
-    /* if(scale != 1.f)
+    /* if(scale not_eq 1.f)
      {
      Pmatrix tempM;
 
@@ -424,7 +424,7 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
             clipFlag = CheckBoundingSphereClipping();
 
             // Continue only if some part of the bounding volume is on screen
-            if (clipFlag != OFF_SCREEN)
+            if (clipFlag not_eq OFF_SCREEN)
             {
                 // Set the jump pointers to turn on/off clipping
                 if (clipFlag == ON_SCREEN)

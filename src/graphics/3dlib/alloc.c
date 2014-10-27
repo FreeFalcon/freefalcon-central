@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <stdlib.h>
 #include "alloc.h"
 #include "xmmintrin.h"
@@ -63,7 +64,7 @@ char *Alloc(int size)
 
     if ((unsigned int)(blk->free) > (unsigned int)(blk->end))
     {
-        if (blk->next != 0UL)
+        if (blk->next not_eq 0UL)
         {
             blk = blk->next;
             blk->free = AllocSetToAlignment(blk->start);
@@ -104,7 +105,7 @@ void AllocFreePool(void)
     alloc_block_t *next, *curr;
     curr = root->first;
 
-    while (curr != NULL)
+    while (curr not_eq NULL)
     {
         next = curr->next;
         free(curr->start);

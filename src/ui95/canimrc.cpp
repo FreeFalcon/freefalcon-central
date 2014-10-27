@@ -122,7 +122,7 @@ ANIM_RES *C_Animation::LoadAnim(long ID, char *filename)
         return(NULL);
     }
 
-    if (UI_READ(NewAnim->Anim, size, 1, ifp) != 1)
+    if (UI_READ(NewAnim->Anim, size, 1, ifp) not_eq 1)
     {
         delete NewAnim->Anim;
         delete NewAnim;

@@ -180,7 +180,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
     // TWS and VS mode signal strength multiplier
     else if (mode == TWS)
     {
-        if (obj != lockedTarget)
+        if (obj not_eq lockedTarget)
             S *= 0.9f;
 
         SimObjectLocalData* rdrData;
@@ -250,7 +250,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
         id = ((SimBaseClass*)target->BaseData())->NewestChaffID();
 
         // If we have a new chaff bundle to deal with
-        if (id != lastChaffID)
+        if (id not_eq lastChaffID)
         {
             // Stop here if there isn't a counter measure in play
             if (id == FalconNullId)

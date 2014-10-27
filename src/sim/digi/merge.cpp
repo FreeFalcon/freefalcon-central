@@ -21,7 +21,7 @@ void DigitalBrain::MergeCheck(void)
     /*-------*/
     /* entry */
     /*-------*/
-    if (curMode != MergeMode)
+    if (curMode not_eq MergeMode)
     {
         if (-self->ZPos() > 3000 && targetData->range <= (1000) && targetData->ata < 45.0f * DTR && fabs(self->Pitch()) < 45.0F * DTR)
         {
@@ -66,7 +66,7 @@ void DigitalBrain::MergeManeuver(void)
     }
 
     // Pick bank angle on first pass
-    if (lastMode != MergeMode)
+    if (lastMode not_eq MergeMode)
     {
         // Mil power except for Vertical;
 
@@ -257,7 +257,7 @@ void DigitalBrain::AccelCheck(void)
 {
     //Leon, if you are in waypoint mode, or loiter mode, it may be desired to fly at less than corner speed
     //this is only important in combat
-    if (nextMode >= MergeMode && nextMode <= BVREngageMode && nextMode != GroundAvoidMode)
+    if (nextMode >= MergeMode && nextMode <= BVREngageMode && nextMode not_eq GroundAvoidMode)
     {
         if ((self->Pitch() > 50.0F * DTR && self->GetKias() < cornerSpeed * 0.4F) ||//me123 150kias
             (self->Pitch() > 0.0F * DTR && self->GetKias() < cornerSpeed * 0.35F))//me123 100 GetKias

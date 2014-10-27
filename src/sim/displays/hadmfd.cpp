@@ -60,8 +60,8 @@ void HadMfdDrawable::Display(VirtualDisplay* newDisplay)
     }
 
     // This makes sure we are in the correct FCC and Harmpod submodes
-    if (pFCC->GetSubMode() != FireControlComputer::HTS or (harmPod->GetSubMode() != HarmTargetingPod::FilterMode &&
-            harmPod->GetSubMode() != HarmTargetingPod::HAD))
+    if (pFCC->GetSubMode() not_eq FireControlComputer::HTS or (harmPod->GetSubMode() not_eq HarmTargetingPod::FilterMode &&
+            harmPod->GetSubMode() not_eq HarmTargetingPod::HAD))
     {
         if (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON)
         {

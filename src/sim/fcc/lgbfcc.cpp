@@ -106,9 +106,9 @@ void FireControlComputer::TargetingPodMode(void)
     {
         // Simple radars, look at locked target if any, otherwise look at cursors
         // 2001-04-16 MODIFIED BY S.G. CombatAP GETS TO USE THIS STUFF AS WELL.
-        //    if  (playerFCC && (PlayerOptions.GetAvionicsType() != ATRealistic) && (subMode == SLAVE))
+        //    if  (playerFCC && (PlayerOptions.GetAvionicsType() not_eq ATRealistic) && (subMode == SLAVE))
         // M.N. added full realism mode
-        if ((playerFCC && (PlayerOptions.GetAvionicsType() != ATRealistic && PlayerOptions.GetAvionicsType() != ATRealisticAV)
+        if ((playerFCC && (PlayerOptions.GetAvionicsType() not_eq ATRealistic && PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
              && (subMode == SLAVE)) or ((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP)
         {
             if (systemTarget && systemTarget->BaseData()->OnGround())
@@ -395,7 +395,7 @@ void FireControlComputer::TargetingPodMode(void)
             {
                 float xMove = 0.0F, yMove = 0.0F;
 
-                if ((cursorXCmd != 0) or (cursorYCmd != 0))
+                if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
                 {
                     if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
                     {
@@ -409,7 +409,7 @@ void FireControlComputer::TargetingPodMode(void)
                     }
                 }
 
-                if (((cursorXCmd != 0) or (cursorYCmd != 0)) && !targetingPod->IsLocked())
+                if (((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0)) && !targetingPod->IsLocked())
                 {
                     if (g_bLgbFixes) // a.s. 26.Febr.2002. begin: New Code for slewing LGBs. With this code, not the angles are altered, but
                         // directly the designated point. A non-orthogonal rotation of the co-ordinate system is necessary
@@ -633,7 +633,7 @@ void FireControlComputer::TargetingPodMode(void)
                     // 2000-09-30 MODIFIED BY S.G. WHY ONLY LOOK ONE DEGREE?!? WE CALL CanSeeObject ANYHOW!
                     // 2000-10-05 WE'LL LIMIT THE PLAYER'S TARGETING POD TO ONE DEGREE SO IT DOESN'T WANDER TOO FAR OFF
                     //             minDist = 1.0F * DTR;
-                    if (playerFCC && SimDriver.GetPlayerAircraft() && ((AircraftClass *)platform)->AutopilotType() != AircraftClass::CombatAP)
+                    if (playerFCC && SimDriver.GetPlayerAircraft() && ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP)
                         minDist = 0.2F * DTR;   // a.s. statt 1.0F 0.2F
                     else
                         minDist = 10.0f; // Above 2*pi
@@ -747,7 +747,7 @@ void FireControlComputer::TargetingPodMode(void)
     }
 
     //MI no Laser Above 25k ft
-    if (g_bRealisticAvionics && playerFCC && ((AircraftClass *)platform)->AutopilotType() != AircraftClass::CombatAP)
+    if (g_bRealisticAvionics && playerFCC && ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP)
     {
         // RV - Biker - New systems (e.g. LANTIRN on F-14D) can do laser above 25k ft!!!
         //if(platform->ZPos() > -25000.0F)
@@ -921,7 +921,7 @@ void FireControlComputer::ToggleLaserArm(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->Sms->MasterArm() != SMSBaseClass::Arm)
+    if (playerAC && playerAC->Sms->MasterArm() not_eq SMSBaseClass::Arm)
         return;
 
     LaserArm = !LaserArm;

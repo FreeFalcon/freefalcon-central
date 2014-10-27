@@ -209,7 +209,7 @@ void CPDed::DisplayDraw(void)
                         buf[0] = mpCPManager->mpIcp->DEDLines[j][i];
                         buf[1] = '\0';
 
-                        if (buf[0] != ' ' && mpCPManager->mpIcp->Invert[j][i] == 0)
+                        if (buf[0] not_eq ' ' && mpCPManager->mpIcp->Invert[j][i] == 0)
                             OTWDriver.renderer->ScreenText(x, y, buf, mpCPManager->mpIcp->Invert[j][i]);
                         else if (mpCPManager->mpIcp->Invert[j][i] == 2)
                             OTWDriver.renderer->ScreenText(x, y, buf, mpCPManager->mpIcp->Invert[j][i]);
@@ -252,7 +252,7 @@ void CPDed::DisplayDraw(void)
                         buf[0] = mpCPManager->mpIcp->PFLLines[j][i];
                         buf[1] = '\0';
 
-                        if (buf[0] != ' ' && mpCPManager->mpIcp->PFLInvert[j][i] == 0)
+                        if (buf[0] not_eq ' ' && mpCPManager->mpIcp->PFLInvert[j][i] == 0)
                             OTWDriver.renderer->ScreenText(x, y, buf, mpCPManager->mpIcp->PFLInvert[j][i]);
                         else if (mpCPManager->mpIcp->PFLInvert[j][i] == 2)
                             OTWDriver.renderer->ScreenText(x, y, buf, mpCPManager->mpIcp->PFLInvert[j][i]);

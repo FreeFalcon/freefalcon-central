@@ -178,7 +178,7 @@ void ICPClass::EnterALOW(void)
     if (!EDITMSLFLOOR && !TFADV)
     {
         //round to the next 10FT
-        if (Input_Digit7 != 0)
+        if (Input_Digit7 not_eq 0)
         {
             if (Input_Digit6 > 10)
                 Input_Digit6 = 0;

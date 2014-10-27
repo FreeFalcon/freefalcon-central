@@ -44,7 +44,7 @@ int SMSClass::DropBomb(int allowRipple)
         ownship->OnGround() or // Weight on wheels inhibit
         !curWeapon or // No Weapon
         ownship->GetNz() < 0.0F or // Negative Gs
-        MasterArm() != Arm) // Not in arm mode
+        MasterArm() not_eq Arm) // Not in arm mode
     {
         ownship->GetFCC()->bombPickle = FALSE;
         return retval;
@@ -60,7 +60,7 @@ int SMSClass::DropBomb(int allowRipple)
         slotId = curHardpoint;
 
     // Verify curWeapon on curHardpoint
-    if (curHardpoint < 0 or hardPoint[curHardpoint]->weaponPointer.get() != curWeapon)
+    if (curHardpoint < 0 or hardPoint[curHardpoint]->weaponPointer.get() not_eq curWeapon)
     {
         for (i = 0; i < numHardpoints; i++)
         {
@@ -252,10 +252,10 @@ int SMSClass::DropBomb(int allowRipple)
         }
 
         // Want to drop a pair - No pairs w/ only one rack of bombs unless from centerline
-        //if (pair && allowRipple && (curHardpoint != matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
+        //if (pair && allowRipple && (curHardpoint not_eq matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
         // Cobra -
-        //if (GetAGBPair() && allowRipple && (curHardpoint != matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
-        if (GetAGBPair() && (curHardpoint != matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
+        //if (GetAGBPair() && allowRipple && (curHardpoint not_eq matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
+        if (GetAGBPair() && (curHardpoint not_eq matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
         {
             theBomb.reset((BombClass *)curWeapon.get());
 

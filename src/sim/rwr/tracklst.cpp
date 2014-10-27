@@ -86,7 +86,7 @@ VehRwrClass::DetectListElement* VehRwrClass::AddTrack(FalconEntity* object, floa
         retval = &detectionList[i];
 
         // Maintain the "selected" flag
-        if (i != 0)
+        if (i not_eq 0)
         {
             // If we didn't go into the top slot, we won't change who's selected
             detectionList[i].selected = 0;

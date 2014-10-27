@@ -99,7 +99,7 @@ int ComAPISendDummy(com_API_handle c, unsigned long ip, unsigned short port)
     int rc = 0;
     enter_cs();
 
-    if (c != NULL)
+    if (c not_eq NULL)
     {
         if (c->send_dummy_func)
         {

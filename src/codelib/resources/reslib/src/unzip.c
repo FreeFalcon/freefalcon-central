@@ -236,7 +236,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
     {
         struct stat statbuf;
 
-        if (SSTAT(filename, &statbuf) or (error = S_ISDIR(statbuf.st_mode)) != 0)
+        if (SSTAT(filename, &statbuf) or (error = S_ISDIR(statbuf.st_mode)) not_eq 0)
         {
             ResCheckMedia(toupper(filename[0]) - 'A');   /* see if media has been swapped */
 
@@ -338,7 +338,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
 #endif /*RES_PREDETERMINE_SIZE */
 
     //****** (arc -> len) ?  66000L ? *****//
-    if ((((error_in_archive = find_end_central_dir(MIN((arc -> length), 66000L), &ecrec, arc)) != 0)))
+    if ((((error_in_archive = find_end_central_dir(MIN((arc -> length), 66000L), &ecrec, arc)) not_eq 0)))
     {
         _close(arc -> os_handle);
 #ifdef USE_SH_POOLS
@@ -436,14 +436,14 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
 
         /* process_cdir_file_hdr() sets pInfo->hostnum, pInfo->lcflag */
 
-        if ((error = process_cdir_file_hdr(&crec, arc)) != PK_COOL)
+        if ((error = process_cdir_file_hdr(&crec, arc)) not_eq PK_COOL)
         {
             error_in_archive = error;               /* only PK_EOF defined                          */
             SAY_ERROR(RES_ERR_BAD_ARCHIVE, filename);
             break;
         }
 
-        if ((error = do_string(crec.filename_length, FILENAME, curfilename, arc)) != PK_COOL)
+        if ((error = do_string(crec.filename_length, FILENAME, curfilename, arc)) not_eq PK_COOL)
         {
             if (error > error_in_archive)
                 error_in_archive = error;
@@ -456,7 +456,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
             }
         }
 
-        if ((error = do_string(crec.extra_field_length, SKIP, NULL, arc)) != PK_COOL)
+        if ((error = do_string(crec.extra_field_length, SKIP, NULL, arc)) not_eq PK_COOL)
         {
             if (error > error_in_archive)
                 error_in_archive = error;
@@ -469,7 +469,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
             }
         }
 
-        if ((error = do_string(crec.file_comment_length, SKIP, NULL, arc)) != PK_COOL)
+        if ((error = do_string(crec.file_comment_length, SKIP, NULL, arc)) not_eq PK_COOL)
         {
             if (error > error_in_archive)
                 error_in_archive = error;
@@ -485,7 +485,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
         fname = curfilename;
         path_idx = 0;                               /* see if directory has changed                 */
 
-        if (attach_point[ strlen(attach_point) - 1 ] != ASCII_BACKSLASH)
+        if (attach_point[ strlen(attach_point) - 1 ] not_eq ASCII_BACKSLASH)
             sprintf(path, "%s\\%s", attach_point, curfilename);
         else
             sprintf(path, "%s%s", attach_point, curfilename);
@@ -729,7 +729,7 @@ int archive_size(ARCHIVE * arc)
     central_hdr_sig[0] = '\120';
     end_central_sig[0] = '\120';   /* not EBCDIC */
 
-    if ((((error_in_archive = find_end_central_dir(MIN((arc -> length), 66000L), &ecrec, arc)) != 0)))
+    if ((((error_in_archive = find_end_central_dir(MIN((arc -> length), 66000L), &ecrec, arc)) not_eq 0)))
         return(-1);
 
     if (UNZIP_LSEEK(ecrec.offset_start_central_directory, arc))
@@ -755,13 +755,13 @@ int archive_size(ARCHIVE * arc)
 
         /* process_cdir_file_hdr() sets pInfo->hostnum, pInfo->lcflag */
 
-        if ((error = process_cdir_file_hdr(&crec, arc)) != PK_COOL)
+        if ((error = process_cdir_file_hdr(&crec, arc)) not_eq PK_COOL)
         {
             error_in_archive = error;               /* only PK_EOF defined                          */
             break;
         }
 
-        if ((error = do_string(crec.filename_length, FILENAME, curfilename, arc)) != PK_COOL)
+        if ((error = do_string(crec.filename_length, FILENAME, curfilename, arc)) not_eq PK_COOL)
         {
             if (error > error_in_archive)
                 error_in_archive = error;
@@ -773,7 +773,7 @@ int archive_size(ARCHIVE * arc)
             }
         }
 
-        if ((error = do_string(crec.file_comment_length, SKIP, NULL, arc)) != PK_COOL)
+        if ((error = do_string(crec.file_comment_length, SKIP, NULL, arc)) not_eq PK_COOL)
         {
             if (error > error_in_archive)
                 error_in_archive = error;
@@ -810,7 +810,7 @@ int unzip_seek(LONGINT val, ARCHIVE * arc)
     }
     else
     {
-        if (bufstart != arc -> start_buffer)
+        if (bufstart not_eq arc -> start_buffer)
         {
             arc -> start_buffer = lseek(arc -> os_handle, (LONGINT)bufstart, SEEK_SET);
 
@@ -920,7 +920,7 @@ int getfiletomem(char * myfile, char **retbuf, long * size, COMPRESSED_FILE * cm
 
         lseek(tmp -> archive -> os_handle, entry->file_position, SEEK_SET);
 
-        if ((error = extract_or_test_member(entry->method, entry->file_csize, cmp)) != PK_COOL)
+        if ((error = extract_or_test_member(entry->method, entry->file_csize, cmp)) not_eq PK_COOL)
         {
 #ifdef USE_SH_POOLS
             MemFreePtr(tmp -> out_buffer);
@@ -935,7 +935,7 @@ int getfiletomem(char * myfile, char **retbuf, long * size, COMPRESSED_FILE * cm
 
     *retbuf = tmp -> out_buffer;
 
-    if (size != NULL)
+    if (size not_eq NULL)
         *size = entry->file_size;
 
     return(0);
@@ -1002,7 +1002,7 @@ static int process_cdir_file_hdr(cdir_file_hdr * crec, ARCHIVE * arc)
 {
     int error;
 
-    if ((error = get_cdir_file_hdr(crec, arc)) != 0)
+    if ((error = get_cdir_file_hdr(crec, arc)) not_eq 0)
         return(error);
 
     return(PK_COOL);
@@ -1068,7 +1068,7 @@ int extract_or_test_member(int method, long fcsize, COMPRESSED_FILE * cmp)
             cmp -> csize = fcsize;
             seeklocked = TRUE;
 
-            if ((r = inflate(cmp)) != 0)
+            if ((r = inflate(cmp)) not_eq 0)
                 error = (r == 3) ? PK_MEM2 : PK_ERR;
 
             /* free allocated memory */
@@ -1267,7 +1267,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
             arc -> start_buffer = lseek(arc -> os_handle, (arc -> length) - tail_len, SEEK_SET);
             arc -> tmp_in_count = read(arc -> os_handle, (char *)arc -> tmp_in_buffer, (unsigned int)tail_len);
 
-            if (arc -> tmp_in_count != (int)tail_len)
+            if (arc -> tmp_in_count not_eq (int)tail_len)
                 goto fail;      /* shut up; it's expedient */
 
             /* 'P' must be at least 22 bytes from end of zipfile */
@@ -1306,7 +1306,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
             arc -> start_buffer -= arc -> tmp_in_size;
             lseek(arc -> os_handle, arc -> start_buffer, SEEK_SET);
 
-            if ((arc -> tmp_in_count = read(arc -> os_handle, (char *)arc -> tmp_in_buffer, arc -> tmp_in_size)) != arc -> tmp_in_size)
+            if ((arc -> tmp_in_count = read(arc -> os_handle, (char *)arc -> tmp_in_buffer, arc -> tmp_in_size)) not_eq arc -> tmp_in_size)
                 break;   /* fall through and fail */
 
             for (arc -> tmp_in_ptr = arc -> tmp_in_buffer + arc -> tmp_in_size - 1;
@@ -1559,7 +1559,7 @@ int process_local_file_hdr(local_file_hdr * lrec, char * buffer)      /* return 
     lrec->filename_length = makeword(&byterec[L_FILENAME_LENGTH]);
     lrec->extra_field_length = makeword(&byterec[L_EXTRA_FIELD_LENGTH]);
 
-    if ((lrec->general_purpose_bit_flag & 8) != 0)
+    if ((lrec->general_purpose_bit_flag & 8) not_eq 0)
     {
         /* can't trust local header, use central directory
            If this is the problem, you should probably extract the

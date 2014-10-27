@@ -58,7 +58,7 @@ ACMIRecorder::ACMIRecorder(void)
 
     handle = FindFirstFile("acmibin\\*.flt", &FindFileData);
 
-    if (handle != INVALID_HANDLE_VALUE)
+    if (handle not_eq INVALID_HANDLE_VALUE)
     {
         strcpy(path, "acmibin\\");
         strcat(path, FindFileData.cFileName);
@@ -81,7 +81,7 @@ ACMIRecorder::ACMIRecorder(void)
 
     handle = FindFirstFile("acmibin\\*.flt", lpFindFileData);
 
-    if (handle != INVALID_HANDLE_VALUE)
+    if (handle not_eq INVALID_HANDLE_VALUE)
     {
         strcpy(path, "acmibin\\");
         strcat(path, lpFindFileData->cFileName);

@@ -366,7 +366,7 @@ public:
     };
     BOOL InTransistion(void)
     {
-        return mStptMode != mNewStptMode;
+        return mStptMode not_eq mNewStptMode;
     };
     void SetBombReleaseOverride(int newVal)
     {

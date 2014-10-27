@@ -75,7 +75,7 @@ void C_Fill::SetGradient(long s, long e)
     Start_ = static_cast<short>(s);
     End_ = static_cast<short>(e);
 
-    if (s != e)
+    if (s not_eq e)
         SetFlagBitOn(C_BIT_USEGRADIENT);
     else
     {
@@ -117,7 +117,7 @@ void C_Fill::SetDither(short size, short range)
     if ((size < 3) or !(range))
         size = 0;
 
-    if (size != DitherSize_)
+    if (size not_eq DitherSize_)
     {
         if (DitherPattern_)
         {

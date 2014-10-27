@@ -206,7 +206,7 @@ void VoiceFilter::LoadCommFile(void)
     // commData = (char *)map_file(filename);
 
     // ShiAssert( commData );
-    if (commfile.Open(filename) != TRUE)
+    if (commfile.Open(filename) not_eq TRUE)
         ShiError("Can't open commfile.bin");
 
     commfile.Initialise();
@@ -249,7 +249,7 @@ void VoiceFilter::LoadEvalFile(void)
     // evalData = (char *)map_file(filename);
 
     // ShiAssert( evalData );
-    if (evalfile.Open(filename) != TRUE)
+    if (evalfile.Open(filename) not_eq TRUE)
         ShiError("Can't open evalFile.bin");
 
     evalfile.Initialise();
@@ -293,7 +293,7 @@ void VoiceFilter::LoadFragFile(void)
     //fragData = (char *)map_file(filename);
 
     //ShiAssert( fragData );
-    if (fragfile.Open(filename) != TRUE)
+    if (fragfile.Open(filename) not_eq TRUE)
         ShiError("Can't open fragFile.bin");
 
     fragfile.Initialise();
@@ -1613,7 +1613,7 @@ void GetDialogValues(HWND hwnd)
     VToolMsgData.talker = atoi(buffer);
     GetWindowText(GetDlgItem(hwnd, IDC_MESSAGE), (LPTSTR) buffer, MAX_PATH);
 
-    if (atoi(buffer) != VToolMsgData.message)
+    if (atoi(buffer) not_eq VToolMsgData.message)
     {
         VToolMsgData.message = atoi(buffer);
         SetupNewMsg();

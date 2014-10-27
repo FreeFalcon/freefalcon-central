@@ -819,7 +819,7 @@ WayPointClass* GetSelectedWayPoint(void)
 
                 tmpID = (VU_ID *)control->GetUserPtr(C_STATE_0);
 
-                if (tmpID && *tmpID != gActiveFlightID)
+                if (tmpID && *tmpID not_eq gActiveFlightID)
                 {
                     gActiveFlightID = *tmpID;
                     gCurrentFlightID = *tmpID;
@@ -942,7 +942,7 @@ void MenuUnitDeleteCB(long, short, C_Base *)
 
                         while (sec)
                         {
-                            if (sec != unit)
+                            if (sec not_eq unit)
                                 count++;
 
                             sec = pkg->GetNextUnitElement();
@@ -1050,7 +1050,7 @@ void MenuReconCB(long, short, C_Base *)
                 if (
                     !(TheCampaign.Flags & CAMP_TACTICAL_EDIT) &&
                     ent->IsFlight() &&
-                    (gGps->GetTeamNo() != ent->GetTeam()) &&
+                    (gGps->GetTeamNo() not_eq ent->GetTeam()) &&
                     !ent->GetIdentified(static_cast<Team>(gGps->GetTeamNo()))
                 )
                 {
@@ -1330,7 +1330,7 @@ void MenuAddWPCB(long, short, C_Base *)
         return;
 
     wp = un->GetFirstUnitWP();
-    // if(un->GetCurrentUnitWP() != wp)
+    // if(un->GetCurrentUnitWP() not_eq wp)
     // return;
 
     wps = cwp->GetLast();
@@ -1359,7 +1359,7 @@ void MenuDeleteWPCB(long, short hittype, C_Base *)
     if (!un)
         return;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gPopupMgr->CloseMenu();

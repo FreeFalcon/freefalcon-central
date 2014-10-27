@@ -67,7 +67,7 @@ BOOL CreateSimCursors()
         return (FALSE);
     }
 
-    if (fscanf(pCursorFile, "%d", &gTotalCursors) != 1)
+    if (fscanf(pCursorFile, "%d", &gTotalCursors) not_eq 1)
     {
         return(FALSE);
     }
@@ -78,7 +78,7 @@ BOOL CreateSimCursors()
     {
         // Note, the %hu is to read in unsigned shorts instead of unsigned ints
         if (fscanf(pCursorFile, "\t%hu %hu %hu %hu %s\n", &gpSimCursors[i].Width, &gpSimCursors[i].Height,
-                   &gpSimCursors[i].xHotspot, &gpSimCursors[i].yHotspot, pFileName) != NUM_FIELDS)
+                   &gpSimCursors[i].xHotspot, &gpSimCursors[i].yHotspot, pFileName) not_eq NUM_FIELDS)
         {
             return(FALSE);
         }
@@ -101,7 +101,7 @@ BOOL CreateSimCursors()
 
         // Make sure we recognize this file type
         texFile.imageType = CheckImageType(pFilePath);
-        ShiAssert(texFile.imageType != IMAGE_TYPE_UNKNOWN);
+        ShiAssert(texFile.imageType not_eq IMAGE_TYPE_UNKNOWN);
 
         // Open the input file
         result = texFile.glOpenFileMem(pFilePath);
@@ -111,7 +111,7 @@ BOOL CreateSimCursors()
         texFile.glReadFileMem();
         result = ReadTextureImage(&texFile);
 
-        if (result != GOOD_READ)
+        if (result not_eq GOOD_READ)
         {
             ShiError("Failed to read bitmap.  CD Error?");
         }

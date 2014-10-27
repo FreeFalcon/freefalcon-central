@@ -155,7 +155,7 @@ void C_Blip::Update(long curtime) // time is in minutes
 
     cur = Root_;
 
-    while (cur && cur != Last_)
+    while (cur && cur not_eq Last_)
     {
         if (cur->time < (curtime - STATE_7_TIME))
             cur->state = 7;

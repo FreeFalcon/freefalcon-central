@@ -45,7 +45,7 @@ FalconSessionEntity *UIComms::FindCampaignPlayer(VU_ID flightID, uchar planeid)
         }
 
         // Clear out any slot which we thought we had
-        //if(planeid != 255)
+        //if(planeid not_eq 255)
         //flight->player_slots[planeid] = 255;
     }
 

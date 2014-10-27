@@ -222,11 +222,11 @@ void ACMIView::SetupEntityUIMappings()
     // _tape->_simTapeEntities[i].name;
 
     F4Assert(_entityUIMappings == NULL);
-    F4Assert(_tape != NULL && _tape->IsLoaded());
+    F4Assert(_tape not_eq NULL && _tape->IsLoaded());
 
     numEntities = _tape->NumEntities();
     _entityUIMappings = new ACMIEntityUIMap[numEntities];
-    F4Assert(_entityUIMappings != NULL);
+    F4Assert(_entityUIMappings not_eq NULL);
 
     for (i = 0; i < numEntities; i++)
     {
@@ -272,7 +272,7 @@ BOOL ACMIView::LoadTape(char *fname, BOOL reload)
 
     // create the tape from the file
     _tape = new ACMITape(_fileName, _renderer, _viewPoint);
-    F4Assert(_tape != NULL);
+    F4Assert(_tape not_eq NULL);
 
     // do something go wrong?
     if (!_tape->IsLoaded())

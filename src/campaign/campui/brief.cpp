@@ -322,7 +322,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
         return 0;
     }
 
-    ShiAssert(flight_data->mission != AMIS_TRAINING);
+    ShiAssert(flight_data->mission not_eq AMIS_TRAINING);
     ShiAssert(TheCampaign.MissionEvaluator->player_pilot);
 
     TheCampaign.MissionEvaluator->curr_pilot = TheCampaign.MissionEvaluator->player_pilot;
@@ -536,7 +536,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
             // Find all players who were in this AC first
             while (!done)
             {
-                while (pilot_data && pilot_data->aircraft_slot != i)
+                while (pilot_data && pilot_data->aircraft_slot not_eq i)
                     pilot_data = pilot_data->next_pilot;
 
                 if (pilot_data)
@@ -763,7 +763,7 @@ static void GetWpTimeToBuffer(WayPoint wp, _TCHAR *cline)
 
 static void GetWptDist(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 {
-    if (wp && lwp && wp->GetWPAction() != WP_REFUEL && !(wp->GetWPFlags() & WPF_ALTERNATE))
+    if (wp && lwp && wp->GetWPAction() not_eq WP_REFUEL && !(wp->GetWPFlags() & WPF_ALTERNATE))
     {
         GridIndex lx, ly, cx, cy;
         lwp->GetWPLocation(&lx, &ly);
@@ -776,7 +776,7 @@ static void GetWptDist(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 
 static void GetWptSpeed(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 {
-    if (wp && lwp && wp->GetWPAction() != WP_REFUEL && !(wp->GetWPFlags() & WPF_ALTERNATE))
+    if (wp && lwp && wp->GetWPAction() not_eq WP_REFUEL && !(wp->GetWPFlags() & WPF_ALTERNATE))
     {
         /*
         GridIndex cx,cy,lx,ly;
@@ -836,7 +836,7 @@ static void GetWpDescription(WayPoint wp, _TCHAR *cline)
 
 static void GetWpHeading(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 {
-    if (wp && lwp && wp->GetWPAction() != WP_REFUEL && !(wp->GetWPFlags() & WPF_ALTERNATE))
+    if (wp && lwp && wp->GetWPAction() not_eq WP_REFUEL && !(wp->GetWPFlags() & WPF_ALTERNATE))
     {
         GridIndex cx, cy, lx, ly;
         float heading;
@@ -879,7 +879,7 @@ void AddStringToBrief(_TCHAR *buffer, C_Window *window, _TCHAR *output)
                                 CBColor, buffer);
     else
     {
-        ShiAssert(output != buffer);
+        ShiAssert(output not_eq buffer);
         _tcscat(output, buffer);
 
         if (!CCurrentLine)
@@ -1029,7 +1029,7 @@ void AddFontTextToBrief(_TCHAR *buffer, int font, C_Window *window, _TCHAR *outp
 // These add strings to a buffer
 void AddStringToBuffer(_TCHAR *string, _TCHAR *buffer)
 {
-    ShiAssert(string != buffer);
+    ShiAssert(string not_eq buffer);
 
     _tcscat(buffer, string);
 }
@@ -1302,7 +1302,7 @@ void ReadComments(FILE* fh)
     {
         c = fgetc(fh);
 
-        while (c != '\n' && !feof(fh))
+        while (c not_eq '\n' && !feof(fh))
             c = fgetc(fh);
 
         while (c == '\n')
@@ -1713,7 +1713,7 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
                 {
                     VehicleClassDataType *vc;
                     vc = GetVehicleClassData(-1 * data->textIds[format[index] - '0']);
-                    ShiAssert(vc != NULL);
+                    ShiAssert(vc not_eq NULL);
                     _stprintf(argstring, vc ? vc->Name : "<unk>");
                 }
                 else
@@ -2084,7 +2084,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 }
                 else if (strcmp(token, "#IF_ALTERNATE_STRIP") == 0)
                 {
-                    if (mec->alternate_strip_id != FalconNullId)
+                    if (mec->alternate_strip_id not_eq FalconNullId)
                         stack_active[curr_stack] = 1;
                     else
                         stack_active[curr_stack] = 0;
@@ -2274,7 +2274,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 }
                 else if (strcmp(token, "#IF_DIVERTED") == 0)
                 {
-                    if (flight_data->old_mission != flight_data->mission)
+                    if (flight_data->old_mission not_eq flight_data->mission)
                         stack_active[curr_stack] = 1;
                     else
                         stack_active[curr_stack] = 0;
@@ -2905,7 +2905,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 success = fptr->mission_success;
 
                 // 2002-02-13 MN added AWACSAbort
-                if (success != Incomplete /*&& success != AWACSAbort*/)
+                if (success not_eq Incomplete /*&& success not_eq AWACSAbort*/)
                 {
                     // Determine losses, if necessary
                     losses = fptr->target_status;
@@ -3388,10 +3388,10 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             {
                 WayPoint nw = NULL;
 
-                if (CWayPoint && CWayPoint->GetWPAction() != WP_LAND && CWayPoint->GetWPAction() != WP_REFUEL)
+                if (CWayPoint && CWayPoint->GetWPAction() not_eq WP_LAND && CWayPoint->GetWPAction() not_eq WP_REFUEL)
                     nw = CWayPoint->GetNextWP();
 
-                if (CWayPoint && nw && nw->GetWPAltitude() != CWayPoint->GetWPAltitude())
+                if (CWayPoint && nw && nw->GetWPAltitude() not_eq CWayPoint->GetWPAltitude())
                 {
                     if (CWayPoint->GetWPFlags() & WPF_HOLDCURRENT)
                     {
@@ -3574,7 +3574,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             //THW 2003-12-07 HTML handler
             else if (strncmp(token, "<", 1) == 0)
             {
-                //if ((g_bBriefHTML) && (filename != ""))
+                //if ((g_bBriefHTML) && (filename not_eq ""))
                 if ((g_bBriefHTML) && (!win))
                     AddStringToBuffer(token, current_line);
             }

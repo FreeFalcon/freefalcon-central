@@ -50,7 +50,7 @@ void DigitalBrain::MissileEngageCheck(void)
     // To enter Missile engage you need a target, a missile within its dlz,
     // you need to be pointeing 'close' to the target, and outside of one
     // mile or be out of guns
-    if (curMode != MissileEngageMode)
+    if (curMode not_eq MissileEngageMode)
     {
         if (targetPtr && curMissile &&
             targetData->range <= maxAAWpnRange * 1.05f  &&
@@ -111,7 +111,7 @@ void DigitalBrain::MissileEngage(void)
     }
 
     // Set up for missile engage
-    if (curMode != lastMode)//only go into missile mode the first time
+    if (curMode not_eq lastMode)//only go into missile mode the first time
     {
         FireControlComputer::FCCSubMode newSubMode;
 
@@ -132,7 +132,7 @@ void DigitalBrain::MissileEngage(void)
                 break;
         }
 
-        if (newSubMode != self->FCC->GetSubMode())
+        if (newSubMode not_eq self->FCC->GetSubMode())
             self->FCC->SetSubMode(newSubMode);
     }
 
@@ -341,11 +341,11 @@ void DigitalBrain::WeaponSelection(void)
             continue;
 
         // Is this an aim missile?
-        if (self->Sms->hardPoint[i]->GetWeaponClass() != wcAimWpn)
+        if (self->Sms->hardPoint[i]->GetWeaponClass() not_eq wcAimWpn)
             continue;
 
         if (targetPtr->BaseData()->IsHelicopter() &&
-            self->Sms->hardPoint[i]->GetWeaponType() != wtAim9)
+            self->Sms->hardPoint[i]->GetWeaponType() not_eq wtAim9)
             continue;
 
         self->Sms->curWeapon.reset();// = NULL;
@@ -412,7 +412,7 @@ void DigitalBrain::WeaponSelection(void)
                 //we have a radar or radarhoming missile but this one has father range or
                 // outside 3nm and curmissile is a irmissile
                 else if (
-                    theMissile->sensorArray && theMissile->sensorArray[0]->Type() != SensorClass::IRST && !curMissile
+                    theMissile->sensorArray && theMissile->sensorArray[0]->Type() not_eq SensorClass::IRST && !curMissile
                     ||
                     (curMissile &&
                      (curMissile->sensorArray[0]->Type() == SensorClass::Radar ||

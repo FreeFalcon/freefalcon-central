@@ -51,7 +51,7 @@ public:
 
     BOOL IsReady(void)
     {
-        return (blocks != NULL);
+        return (blocks not_eq NULL);
     };
 
     int LOD(void)

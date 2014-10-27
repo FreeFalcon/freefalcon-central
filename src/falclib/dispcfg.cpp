@@ -268,19 +268,19 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
 
     if (pDI)
     {
-        /*JAM 01Dec03 if((g_bForceSoftwareGUI or pDI->Is3dfx() or !pDI->CanRenderWindowed()) && newMode != Sim)
+        /*JAM 01Dec03 if((g_bForceSoftwareGUI or pDI->Is3dfx() or !pDI->CanRenderWindowed()) && newMode not_eq Sim)
          {
          // V1, V2 workaround - use primary display adapter with RGB Renderer
          int nIndexPrimary = FalconDisplay.devmgr.FindPrimaryDisplayDriver();
-         ShiAssert(nIndexPrimary != -1);
+         ShiAssert(nIndexPrimary not_eq -1);
 
-         if(nIndexPrimary != -1)
+         if(nIndexPrimary not_eq -1)
          {
          DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(nIndexPrimary);
          int nIndexRGBRenderer = pDI->FindRGBRenderer();
-         ShiAssert(nIndexRGBRenderer != -1);
+         ShiAssert(nIndexRGBRenderer not_eq -1);
 
-         if(nIndexRGBRenderer != -1)
+         if(nIndexRGBRenderer not_eq -1)
          {
          Driver = nIndexPrimary;
          theDevice = nIndexRGBRenderer;

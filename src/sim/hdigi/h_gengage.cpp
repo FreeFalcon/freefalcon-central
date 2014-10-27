@@ -66,7 +66,7 @@ void HeliBrain::GunsEngageCheck(void)
 
     for (int i = 1; i < self->Sms->NumHardpoints(); i++)
     {
-        if (self->Sms->hardPoint[i]->GetWeaponType() != wtAim9 && self->Sms->hardPoint[i]->GetWeaponType() != wtAim120)
+        if (self->Sms->hardPoint[i]->GetWeaponType() not_eq wtAim9 && self->Sms->hardPoint[i]->GetWeaponType() not_eq wtAim120)
             hasAgWeapons = hasAgWeapons + self->Sms->hardPoint[i]->weaponCount;
         else
             hasAaWeapons = hasAaWeapons + self->Sms->hardPoint[i]->weaponCount;
@@ -153,7 +153,7 @@ void HeliBrain::GunsEngageCheck(void)
     // targetData->ata =  (float)acos(rx/targetData->range);
 
     // entry
-    if (curMode != GunsEngageMode)
+    if (curMode not_eq GunsEngageMode)
     {
         if (targetData->range <= GUN_MAX_RANGE * 8.0f)
         {
@@ -358,7 +358,7 @@ void HeliBrain::GunsEngage(void)
 
     rng = (float)sqrt(rng);
 
-    if (rng != 0.0f)
+    if (rng not_eq 0.0f)
     {
         elerr = (float)atan(rz / rng);
     }
@@ -721,7 +721,7 @@ void HeliBrain::FireControl(void)
 //            }
 //         }
 //         self->Sms->FindWeaponClass (SMSClass::AimWpn);
-//      } while (self->Sms->curWpnStation != startStation);
+//      } while (self->Sms->curWpnStation not_eq startStation);
 //   }
 //}
 //#endif
@@ -775,7 +775,7 @@ void HeliBrain::FireControl(void)
 // curAA = (MissileClass *)(self->Sms->curWeapon);
 // curAAStation = self->Sms->CurHardpoint();
 // curAANum     = self->Sms->curWpnNum;
-// if (curAA->launchState != MissileClass::PreLaunch )
+// if (curAA->launchState not_eq MissileClass::PreLaunch )
 // {
 // curAA = NULL;
 // continue;
@@ -800,7 +800,7 @@ void HeliBrain::FireControl(void)
 // curAG = (MissileClass *)(self->Sms->curWeapon);
 // curAGStation = self->Sms->CurHardpoint();
 // curAGNum     = self->Sms->curWpnNum;
-// if (curAG->launchState != MissileClass::PreLaunch )
+// if (curAG->launchState not_eq MissileClass::PreLaunch )
 // {
 // curAG = NULL;
 // continue;
@@ -832,7 +832,7 @@ void HeliBrain::FireControl(void)
 //
 // curRockStation = self->Sms->CurHardpoint();
 // curRockNum     = self->Sms->curWpnNum;
-// if (curRock->launchState != MissileClass::PreLaunch )
+// if (curRock->launchState not_eq MissileClass::PreLaunch )
 // {
 // curRock = NULL;
 // continue;

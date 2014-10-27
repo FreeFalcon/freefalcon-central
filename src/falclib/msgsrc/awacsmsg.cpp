@@ -88,8 +88,8 @@ static void CollectAssistCandidates(AircraftClass *plane, stdRange2FlightMap &ar
             // - Not on a CAP or SWEEP mission
             // - Flight is engaged
 
-            if ((p != plane) &&
-                (p->GetCampaignObject() != plane->GetCampaignObject()) &&
+            if ((p not_eq plane) &&
+                (p->GetCampaignObject() not_eq plane->GetCampaignObject()) &&
                 p->IsAirplane() &&
                 (pFlight = (FlightClass *) p->GetCampaignObject()) &&
                 (setTmp.find(pFlight) == setTmp.end()) &&
@@ -143,7 +143,7 @@ static void CollectAssistCandidates(AircraftClass *plane, stdRange2FlightMap &ar
 
     stdRange2FlightMap::iterator it;
 
-    for (it = arrCandidates.begin(); it != arrCandidates.end(); it++)
+    for (it = arrCandidates.begin(); it not_eq arrCandidates.end(); it++)
     {
         char strFlightName[0x100];
         GetCallsign(it->second->callsign_id, it->second->callsign_num, strFlightName);
@@ -555,16 +555,16 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     }
 #if 0 // Retro 20May2004 - fixed logic
 
-                    if (flight->GetUnitCurrentRole() != ARO_GA &&
-                        flight->GetUnitMission() != (AMIS_ONCALLCAS or AMIS_PRPLANCAS or AMIS_CAS or AMIS_SAD or AMIS_INT or AMIS_BAI))
+                    if (flight->GetUnitCurrentRole() not_eq ARO_GA &&
+                        flight->GetUnitMission() not_eq (AMIS_ONCALLCAS or AMIS_PRPLANCAS or AMIS_CAS or AMIS_SAD or AMIS_INT or AMIS_BAI))
 #else
-                    if (flight->GetUnitCurrentRole() != ARO_GA &&
-                        ((flight->GetUnitMission() != AMIS_ONCALLCAS) &&
-                         (flight->GetUnitMission() != AMIS_PRPLANCAS) &&
-                         (flight->GetUnitMission() != AMIS_CAS) &&
-                         (flight->GetUnitMission() != AMIS_SAD) &&
-                         (flight->GetUnitMission() != AMIS_INT) &&
-                         (flight->GetUnitMission() != AMIS_BAI)))
+                    if (flight->GetUnitCurrentRole() not_eq ARO_GA &&
+                        ((flight->GetUnitMission() not_eq AMIS_ONCALLCAS) &&
+                         (flight->GetUnitMission() not_eq AMIS_PRPLANCAS) &&
+                         (flight->GetUnitMission() not_eq AMIS_CAS) &&
+                         (flight->GetUnitMission() not_eq AMIS_SAD) &&
+                         (flight->GetUnitMission() not_eq AMIS_INT) &&
+                         (flight->GetUnitMission() not_eq AMIS_BAI)))
 #endif // Retro 20May2004 - end
                     {
                         radioMessage = CreateCallFromAwacs(flight, rcUNABLE);
@@ -912,11 +912,11 @@ int FalconAWACSMessage::Process(uchar autodisp)
                             cf = nu;
                             nu = (Unit) myit.GetNext();
 
-                            if (cf->GetTeam() != plane->GetTeam() or cf->IsDead())
+                            if (cf->GetTeam() not_eq plane->GetTeam() or cf->IsDead())
                                 continue;
 
                             // RV - Biker - All naval units return TRUE here so better check for subtype
-                            if (!cf->IsTaskForce() or cf->GetSType() != STYPE_UNIT_CARRIER)
+                            if (!cf->IsTaskForce() or cf->GetSType() not_eq STYPE_UNIT_CARRIER)
                                 continue;
 
                             dx = plane->XPos() - cf->XPos();

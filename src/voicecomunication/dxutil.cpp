@@ -35,14 +35,14 @@ const TCHAR* DXUtil_GetDXSDKMediaPath()
                                 _T("Software\\Microsoft\\DirectX SDK"),
                                 0, KEY_READ, &hKey);
 
-    if (ERROR_SUCCESS != lResult)
+    if (ERROR_SUCCESS not_eq lResult)
         return strNull;
 
     lResult = RegQueryValueEx(hKey, _T("DX81SDK Samples Path"), NULL,
                               &dwType, (BYTE*)strPath, &dwSize);
     RegCloseKey(hKey);
 
-    if (ERROR_SUCCESS != lResult)
+    if (ERROR_SUCCESS not_eq lResult)
         return strNull;
 
     _tcscat(strPath, _T("\\Media\\"));
@@ -77,7 +77,7 @@ HRESULT DXUtil_FindMediaFile(TCHAR* strPath, TCHAR* strFilename)
     file = CreateFile(strFullPath, GENERIC_READ, FILE_SHARE_READ, NULL,
                       OPEN_EXISTING, 0, NULL);
 
-    if (INVALID_HANDLE_VALUE != file)
+    if (INVALID_HANDLE_VALUE not_eq file)
     {
         _tcscpy(strPath, strFullPath);
         CloseHandle(file);
@@ -88,7 +88,7 @@ HRESULT DXUtil_FindMediaFile(TCHAR* strPath, TCHAR* strFilename)
     file = CreateFile(strShortName, GENERIC_READ, FILE_SHARE_READ, NULL,
                       OPEN_EXISTING, 0, NULL);
 
-    if (INVALID_HANDLE_VALUE != file)
+    if (INVALID_HANDLE_VALUE not_eq file)
     {
         _tcscpy(strPath, strShortName);
         CloseHandle(file);
@@ -101,7 +101,7 @@ HRESULT DXUtil_FindMediaFile(TCHAR* strPath, TCHAR* strFilename)
     file = CreateFile(strPath, GENERIC_READ, FILE_SHARE_READ, NULL,
                       OPEN_EXISTING, 0, NULL);
 
-    if (INVALID_HANDLE_VALUE != file)
+    if (INVALID_HANDLE_VALUE not_eq file)
     {
         CloseHandle(file);
         return S_OK;
@@ -124,7 +124,7 @@ HRESULT DXUtil_ReadStringRegKey(HKEY hKey, TCHAR* strRegName, TCHAR* strValue,
 {
     DWORD dwType;
 
-    if (ERROR_SUCCESS != RegQueryValueEx(hKey, strRegName, 0, &dwType,
+    if (ERROR_SUCCESS not_eq RegQueryValueEx(hKey, strRegName, 0, &dwType,
                                          (BYTE*)strValue, &dwLength))
     {
         _tcscpy(strValue, strDefault);
@@ -143,7 +143,7 @@ HRESULT DXUtil_ReadStringRegKey(HKEY hKey, TCHAR* strRegName, TCHAR* strValue,
 HRESULT DXUtil_WriteStringRegKey(HKEY hKey, TCHAR* strRegName,
                                  TCHAR* strValue)
 {
-    if (ERROR_SUCCESS != RegSetValueEx(hKey, strRegName, 0, REG_SZ,
+    if (ERROR_SUCCESS not_eq RegSetValueEx(hKey, strRegName, 0, REG_SZ,
                                        (BYTE*)strValue,
                                        (_tcslen(strValue) + 1)*sizeof(TCHAR)))
         return E_FAIL;
@@ -164,7 +164,7 @@ HRESULT DXUtil_ReadIntRegKey(HKEY hKey, TCHAR* strRegName, DWORD* pdwValue,
     DWORD dwType;
     DWORD dwLength = sizeof(DWORD);
 
-    if (ERROR_SUCCESS != RegQueryValueEx(hKey, strRegName, 0, &dwType,
+    if (ERROR_SUCCESS not_eq RegQueryValueEx(hKey, strRegName, 0, &dwType,
                                          (BYTE*)pdwValue, &dwLength))
     {
         *pdwValue = dwDefault;
@@ -182,7 +182,7 @@ HRESULT DXUtil_ReadIntRegKey(HKEY hKey, TCHAR* strRegName, DWORD* pdwValue,
 //-----------------------------------------------------------------------------
 HRESULT DXUtil_WriteIntRegKey(HKEY hKey, TCHAR* strRegName, DWORD dwValue)
 {
-    if (ERROR_SUCCESS != RegSetValueEx(hKey, strRegName, 0, REG_DWORD,
+    if (ERROR_SUCCESS not_eq RegSetValueEx(hKey, strRegName, 0, REG_DWORD,
                                        (BYTE*)&dwValue, sizeof(DWORD)))
         return E_FAIL;
 
@@ -202,7 +202,7 @@ HRESULT DXUtil_ReadBoolRegKey(HKEY hKey, TCHAR* strRegName, BOOL* pbValue,
     DWORD dwType;
     DWORD dwLength = sizeof(BOOL);
 
-    if (ERROR_SUCCESS != RegQueryValueEx(hKey, strRegName, 0, &dwType,
+    if (ERROR_SUCCESS not_eq RegQueryValueEx(hKey, strRegName, 0, &dwType,
                                          (BYTE*)pbValue, &dwLength))
     {
         *pbValue = bDefault;
@@ -220,7 +220,7 @@ HRESULT DXUtil_ReadBoolRegKey(HKEY hKey, TCHAR* strRegName, BOOL* pbValue,
 //-----------------------------------------------------------------------------
 HRESULT DXUtil_WriteBoolRegKey(HKEY hKey, TCHAR* strRegName, BOOL bValue)
 {
-    if (ERROR_SUCCESS != RegSetValueEx(hKey, strRegName, 0, REG_DWORD,
+    if (ERROR_SUCCESS not_eq RegSetValueEx(hKey, strRegName, 0, REG_DWORD,
                                        (BYTE*)&bValue, sizeof(BOOL)))
         return E_FAIL;
 
@@ -240,7 +240,7 @@ HRESULT DXUtil_ReadGuidRegKey(HKEY hKey, TCHAR* strRegName, GUID* pGuidValue,
     DWORD dwType;
     DWORD dwLength = sizeof(GUID);
 
-    if (ERROR_SUCCESS != RegQueryValueEx(hKey, strRegName, 0, &dwType,
+    if (ERROR_SUCCESS not_eq RegQueryValueEx(hKey, strRegName, 0, &dwType,
                                          (LPBYTE) pGuidValue, &dwLength))
     {
         *pGuidValue = guidDefault;
@@ -258,7 +258,7 @@ HRESULT DXUtil_ReadGuidRegKey(HKEY hKey, TCHAR* strRegName, GUID* pGuidValue,
 //-----------------------------------------------------------------------------
 HRESULT DXUtil_WriteGuidRegKey(HKEY hKey, TCHAR* strRegName, GUID guidValue)
 {
-    if (ERROR_SUCCESS != RegSetValueEx(hKey, strRegName, 0, REG_BINARY,
+    if (ERROR_SUCCESS not_eq RegSetValueEx(hKey, strRegName, 0, REG_BINARY,
                                        (BYTE*)&guidValue, sizeof(GUID)))
         return E_FAIL;
 
@@ -312,7 +312,7 @@ FLOAT __stdcall DXUtil_Timer(TIMER_COMMAND command)
 
         // Get either the current time or the stop time, depending
         // on whether we're stopped and what command was sent
-        if (m_llStopTime != 0 && command != TIMER_START && command != TIMER_GETABSOLUTETIME)
+        if (m_llStopTime not_eq 0 && command not_eq TIMER_START && command not_eq TIMER_GETABSOLUTETIME)
             qwTime.QuadPart = m_llStopTime;
         else
             QueryPerformanceCounter(&qwTime);
@@ -389,7 +389,7 @@ FLOAT __stdcall DXUtil_Timer(TIMER_COMMAND command)
 
         // Get either the current time or the stop time, depending
         // on whether we're stopped and what command was sent
-        if (m_fStopTime != 0.0 && command != TIMER_START && command != TIMER_GETABSOLUTETIME)
+        if (m_fStopTime not_eq 0.0 && command not_eq TIMER_START && command not_eq TIMER_GETABSOLUTETIME)
             fTime = m_fStopTime;
         else
             fTime = timeGetTime() * 0.001;
@@ -695,7 +695,7 @@ BOOL DXUtil_ConvertStringToGUID(const TCHAR* strIn, GUID* pGuidOut)
                  &aiTmp[2], &aiTmp[3],
                  &aiTmp[4], &aiTmp[5],
                  &aiTmp[6], &aiTmp[7],
-                 &aiTmp[8], &aiTmp[9]) != 11)
+                 &aiTmp[8], &aiTmp[9]) not_eq 11)
     {
         ZeroMemory(pGuidOut, sizeof(GUID));
         return FALSE;

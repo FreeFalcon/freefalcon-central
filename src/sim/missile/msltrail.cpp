@@ -150,7 +150,7 @@ void MissileClass::InitTrail(void)
         engGlowBSP1 = new DrawableBSP(MapVisId(misengGlowBSP), &newPoint, &rot, 1.0f);
         //RV - I-Hawk - disabling old ground glow stuff...
         /*
-        if (misgroundGlow != -1)
+        if (misgroundGlow not_eq -1)
          groundGlow = new Drawable2D( misgroundGlow, 1.0, &newPoint );
          */
     }
@@ -235,7 +235,7 @@ void MissileClass::UpdateTrail(void)
 
             //RV - I-Hawk - AIM-120 had no trail, it should have a weak trail
             /*
-            if (classPtr->vuClassData.classInfo_[VU_SPTYPE] != SPTYPE_AIM120 ||
+            if (classPtr->vuClassData.classInfo_[VU_SPTYPE] not_eq SPTYPE_AIM120 ||
             contrail ||
              g_nmissiletrial)
             */

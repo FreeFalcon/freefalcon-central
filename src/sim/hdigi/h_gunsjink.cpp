@@ -23,7 +23,7 @@ void HeliBrain::GunsJinkCheck(void)
     /* 2. Target time to fire < ownship time to fire */
     /* 3. Predicted bullet fire <= 2 seconds.        */
     /*-----------------------------------------------*/
-    if (curMode != GunsJinkMode)
+    if (curMode not_eq GunsJinkMode)
     {
         gunsJinkPtr = NULL;
 
@@ -33,7 +33,7 @@ void HeliBrain::GunsJinkCheck(void)
         while (obj)
         {
             if (obj->BaseData()->IsSim() &&
-                (((SimBaseClass*)obj->BaseData())->IsFiring() or ((SimBaseClass*)obj->BaseData())->GetTeam() != side))
+                (((SimBaseClass*)obj->BaseData())->IsFiring() or ((SimBaseClass*)obj->BaseData())->GetTeam() not_eq side))
             {
                 localData = obj->localData;
 

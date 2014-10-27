@@ -135,7 +135,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
         return;
     }
 
-    if (!g_bRealisticAvionics or !Sms->curWeapon or (Sms->curWeaponType != wtAgm65 && Sms->curWeaponType != wtAgm88))
+    if (!g_bRealisticAvionics or !Sms->curWeapon or (Sms->curWeaponType not_eq wtAgm65 && Sms->curWeaponType not_eq wtAgm88))
     {
         OffMode(display);
         return;
@@ -144,7 +144,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     if (harmPod && Sms->curWeaponType == wtAgm88)
     {
         // This makes sure we are in the correct FCC submode
-        if (pFCC->GetSubMode() != FireControlComputer::HARM)
+        if (pFCC->GetSubMode() not_eq FireControlComputer::HARM)
         {
             pFCC->SetSubMode(FireControlComputer::HARM);
             harmPod->SetSubMode(HarmTargetingPod::HarmModeChooser);
@@ -181,7 +181,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     }
 
     // RV-I-Hawk - No do for HARM WPN in HTSSubmode
-    if (Sms->curWeaponType == wtAgm65 or (Sms->curWeaponType == wtAgm88 && harmPod->GetSubMode() != HarmTargetingPod::HarmModeChooser))
+    if (Sms->curWeaponType == wtAgm65 or (Sms->curWeaponType == wtAgm88 && harmPod->GetSubMode() not_eq HarmTargetingPod::HarmModeChooser))
     {
         // FRB - B&W display
         if ((g_bGreyMFD) && (!bNVGmode))
@@ -301,7 +301,7 @@ void WpnMfdDrawable::PushButton(int whichButton, int whichMFD)
     HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
 
     // RV - I-Hawk - First check if FCC isn't in HARM mode
-    if (pFCC->GetMasterMode() != FireControlComputer::AirGroundHARM)
+    if (pFCC->GetMasterMode() not_eq FireControlComputer::AirGroundHARM)
     {
         switch (whichButton)
         {

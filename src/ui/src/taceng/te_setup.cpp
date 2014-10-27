@@ -82,7 +82,7 @@ extern C_TreeList *gVCTree;
 
 void CloseTEWin(long ID, short hittype, C_Base *base)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     DisableScenarioInfo();
@@ -347,7 +347,7 @@ void TestOpenCB(long, short hittype, C_Base *control)
     long idx, cluster;
     C_Window *win1, *win2;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (TacLastGroup)
@@ -393,7 +393,7 @@ void TestOpenCB(long, short hittype, C_Base *control)
 
 void OpenTeamWindowCB(long ID, short hittype, C_Base *base)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (OwnershipChanged)
@@ -408,7 +408,7 @@ void OpenVCWindowCB(long ID, short hittype, C_Base *base)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (OwnershipChanged)
@@ -429,7 +429,7 @@ void OpenBuilderWindowCB(long ID, short hittype, C_Base *base)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (OwnershipChanged)
@@ -450,7 +450,7 @@ void OpenMissionWindowCB(long ID, short hittype, C_Base *base)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (OwnershipChanged)
@@ -517,7 +517,7 @@ void ChangeStartTimeCB(long ID, short hittype, C_Base *control)
     C_Clock *clk;
     long time, deltatime;
 
-    if (hittype != C_TYPE_LMOUSEUP && hittype != C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
         return;
 
     clk = (C_Clock*)control->Parent_->FindControl(control->GetUserNumber(0));
@@ -539,7 +539,7 @@ void ChangeEndTimeCB(long ID, short hittype, C_Base *control)
     C_Clock *clk;
     unsigned long time;
 
-    if (hittype != C_TYPE_LMOUSEUP && hittype != C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
         return;
 
     clk = (C_Clock*)control->Parent_->FindControl(control->GetUserNumber(0));
@@ -567,7 +567,7 @@ void ChangeCurrentTimeCB(long ID, short hittype, C_Base *control)
     C_Clock *clk;
     Unit un;
 
-    if (hittype != C_TYPE_LMOUSEUP && hittype != C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
         return;
 
     clk = (C_Clock*)control->Parent_->FindControl(control->GetUserNumber(0));
@@ -604,7 +604,7 @@ static void TacSelectGameCB(long, short hittype, C_Base *control)
     FalconGameEntity *game;
     TREELIST *item;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     MonoPrint("Select TAC Online Game\n");

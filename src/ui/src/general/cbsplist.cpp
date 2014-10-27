@@ -81,7 +81,7 @@ void C_BSPList::Add(BSPLIST **list, BSPLIST *obj)
     {
         cur = *list;
 
-        while (cur->Next != NULL)
+        while (cur->Next not_eq NULL)
             cur = cur->Next;
 
         cur->Next = obj;
@@ -95,7 +95,7 @@ void C_BSPList::RemoveList(BSPLIST **list)
     // Remove Children from their parents
     cur = *list;
 
-    while (cur != NULL)
+    while (cur not_eq NULL)
     {
         if (cur->owner)
         {
@@ -119,7 +119,7 @@ void C_BSPList::RemoveList(BSPLIST **list)
     // free up the allocated shit
     cur = *list;
 
-    while (cur != NULL)
+    while (cur not_eq NULL)
     {
         prev = cur;
         cur = cur->Next;
@@ -150,7 +150,7 @@ void C_BSPList::Remove(long ID, BSPLIST **top)
     }
     else
     {
-        while (cur->Next != NULL)
+        while (cur->Next not_eq NULL)
         {
             if (cur->Next->ID == ID)
             {
@@ -196,7 +196,7 @@ void C_BSPList::RemoveLockList()
 
 BSPLIST *C_BSPList::Find(long ID, BSPLIST *list)
 {
-    while (list != NULL)
+    while (list not_eq NULL)
     {
         if (list->ID == ID)
             return(list);
@@ -337,7 +337,7 @@ BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, 
     if (visType >= 0)
     {
         // In many cases, our visType should be modified by our neighbors.
-        if ((obj->GetFeatureStatus(f) & VIS_TYPE_MASK) != VIS_DESTROYED && (FeatureEntryDataTable[fid].Flags & (FEAT_PREV_NORM | FEAT_NEXT_NORM)))
+        if ((obj->GetFeatureStatus(f) & VIS_TYPE_MASK) not_eq VIS_DESTROYED && (FeatureEntryDataTable[fid].Flags & (FEAT_PREV_NORM | FEAT_NEXT_NORM)))
         {
             prevFlags = GetFeatureFlags(obj, static_cast<short>(f - 1));
             nextFlags = GetFeatureFlags(obj, static_cast<short>(f + 1));
@@ -409,7 +409,7 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
     if (visType >= 0)
     {
         // In many cases, our visType should be modified by our neighbors.
-        if ((obj->GetFeatureStatus(f) & VIS_TYPE_MASK) != VIS_DESTROYED && (FeatureEntryDataTable[fid].Flags & (FEAT_PREV_NORM | FEAT_NEXT_NORM)))
+        if ((obj->GetFeatureStatus(f) & VIS_TYPE_MASK) not_eq VIS_DESTROYED && (FeatureEntryDataTable[fid].Flags & (FEAT_PREV_NORM | FEAT_NEXT_NORM)))
         {
             prevFlags = GetFeatureFlags(obj, static_cast<short>(f - 1));
             nextFlags = GetFeatureFlags(obj, static_cast<short>(f + 1));
@@ -446,7 +446,7 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
                 bspobj->owner = Parent;
                 bspobj->Next = NULL;
 
-                if ((fc->Flags & FEAT_NEXT_IS_TOP) && (obj->GetFeatureStatus(f) & VIS_TYPE_MASK) != VIS_DESTROYED)
+                if ((fc->Flags & FEAT_NEXT_IS_TOP) && (obj->GetFeatureStatus(f) & VIS_TYPE_MASK) not_eq VIS_DESTROYED)
                     bspobj->object = new DrawableRoadbed(visType, visType + 1, objPos, Yaw, 10.0f, static_cast<float>(atan(20.0f / 280.0f)));
                 else
                     bspobj->object = new DrawableRoadbed(visType, -1, objPos, Yaw, 10.0f, static_cast<float>(atan(20.0f / 280.0f)));

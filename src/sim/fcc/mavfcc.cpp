@@ -91,7 +91,7 @@ void FireControlComputer::MaverickMode(void)
     // MD -- 20040110: adding for analog cursor support
     float xMove = 0.0F, yMove = 0.0F;
 
-    if ((cursorXCmd != 0) or (cursorYCmd != 0))
+    if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
         if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
             yMove = (float)cursorYCmd / 10000.0F;
@@ -124,7 +124,7 @@ void FireControlComputer::MaverickMode(void)
     }
 
     //sfr: added display check
-    if ((theDisplay != NULL) && systemTarget && systemTarget->BaseData()->IsAirplane()) // Cobra - Target only ground targets
+    if ((theDisplay not_eq NULL) && systemTarget && systemTarget->BaseData()->IsAirplane()) // Cobra - Target only ground targets
     {
         if (theDisplay) theDisplay->DropTarget();
 
@@ -160,7 +160,7 @@ void FireControlComputer::MaverickMode(void)
         // M.N. added full realism mode
         AircraftClass *pa = (AircraftClass *)platform;
 
-        if (!playerFCC or (pa->IsPlayer() && pa->AutopilotType() == AircraftClass::CombatAP) or ((PlayerOptions.GetAvionicsType() != ATRealistic && PlayerOptions.GetAvionicsType() != ATRealisticAV) && (subMode == SLAVE)))
+        if (!playerFCC or (pa->IsPlayer() && pa->AutopilotType() == AircraftClass::CombatAP) or ((PlayerOptions.GetAvionicsType() not_eq ATRealistic && PlayerOptions.GetAvionicsType() not_eq ATRealisticAV) && (subMode == SLAVE)))
         {
             if (systemTarget && systemTarget->BaseData()->OnGround())
             {
@@ -254,7 +254,7 @@ void FireControlComputer::MaverickMode(void)
                     theDisplay->DropTarget();
                     preDesignate = TRUE;
 
-                    if (subMode != SLAVE)
+                    if (subMode not_eq SLAVE)
                         platform->SOIManager(SimVehicleClass::SOI_HUD);
                     else
                         platform->SOIManager(SimVehicleClass::SOI_RADAR);
@@ -454,7 +454,7 @@ void FireControlComputer::MaverickMode(void)
 
                         if (!theMissile->targetPtr)
                         {
-                            if (subMode != SLAVE)
+                            if (subMode not_eq SLAVE)
                                 platform->SOIManager(SimVehicleClass::SOI_HUD);
                             else
                                 platform->SOIManager(SimVehicleClass::SOI_RADAR);
@@ -465,7 +465,7 @@ void FireControlComputer::MaverickMode(void)
                     }
                     else
                     {
-                        if (subMode != SLAVE)
+                        if (subMode not_eq SLAVE)
                             platform->SOIManager(SimVehicleClass::SOI_HUD);
                         else
                             platform->SOIManager(SimVehicleClass::SOI_RADAR);
@@ -475,7 +475,7 @@ void FireControlComputer::MaverickMode(void)
                 }
                 else
                 {
-                    if ((cursorXCmd != 0) or (cursorYCmd != 0))
+                    if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
                     {
 
                         if (g_bMavFixes) // a.s. 20.Febr.2002. begin: New Code for slewing MAVs. With this code, not the angles are altered, but
@@ -635,7 +635,7 @@ void FireControlComputer::MaverickMode(void)
                         curTarget = NULL;
                         preDesignate = TRUE;
 
-                        if (subMode != SLAVE)
+                        if (subMode not_eq SLAVE)
                             platform->SOIManager(SimVehicleClass::SOI_HUD);
                         else
                             platform->SOIManager(SimVehicleClass::SOI_RADAR);
@@ -735,7 +735,7 @@ void FireControlComputer::MaverickMode(void)
     }
     else
     {
-        if (subMode != SLAVE)
+        if (subMode not_eq SLAVE)
             platform->SOIManager(SimVehicleClass::SOI_HUD);
         else
             platform->SOIManager(SimVehicleClass::SOI_RADAR);

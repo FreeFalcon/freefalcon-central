@@ -816,7 +816,7 @@ RES_EXPORT void ResExit(void)
 
 #if USE_SH_POOLS
 
-    if (gResmgrMemPool != NULL)
+    if (gResmgrMemPool not_eq NULL)
     {
         MemPoolFree(gResmgrMemPool);
         gResmgrMemPool = NULL;
@@ -861,7 +861,7 @@ RES_EXPORT int ResMountCD(int cd_number, int device)
 
     GLOBAL_CD_DEVICE = device;
 
-    if (GLOBAL_CURRENT_CD != cd_number)   /* we need this flag later */
+    if (GLOBAL_CURRENT_CD not_eq cd_number)   /* we need this flag later */
         resynch = TRUE;
 
     /* has the user installed a handler for swap cd? */
@@ -998,7 +998,7 @@ RES_EXPORT int ResCheckMedia(int device)
 
     if (GetVolumeInformation(root, name, 22, &serial, &long1, &long2, dummy, 5))
     {
-        if (strcmp(name, dev -> name) or (serial != dev -> serial))
+        if (strcmp(name, dev -> name) or (serial not_eq dev -> serial))
         {
             strcpy(dev -> name, name);
             dev -> serial = serial;
@@ -1094,7 +1094,7 @@ RES_EXPORT int ResAttach(const char * attach_point_arg, const char * filename, i
 #if( RES_COERCE_FILENAMES )
     len = strlen(attach_point);
 
-    if (attach_point[len - 1] != ASCII_BACKSLASH)
+    if (attach_point[len - 1] not_eq ASCII_BACKSLASH)
     {
         attach_point[len++] = ASCII_BACKSLASH;
         attach_point[len] = 0x00;
@@ -1516,7 +1516,7 @@ RES_EXPORT int ResOpenFile(const char * name, int mode)
     /* Make sure the user isn't trying to write to an archive file.
        Someday this may be possible, but not for a while. */
 
-    if (entry -> archive != -1)
+    if (entry -> archive not_eq -1)
     {
         int check;
 
@@ -2455,7 +2455,7 @@ RES_EXPORT int ResDeleteDirectory(char * pathname, int forced)
     sprintf(full_path, "%s\\*.*", pathname);
     handle = _findfirst(full_path, &fileinfo);
 
-    while (status != -1)
+    while (status not_eq -1)
     {
 
         if (!stricmp(fileinfo.name, ".") or !stricmp(fileinfo.name, ".."))
@@ -2795,7 +2795,7 @@ RES_EXPORT int ResExistDirectory(char * pathname)
 #if( RES_COERCE_FILENAMES )
     len = strlen(path);
 
-    if (path[len - 1] != ASCII_BACKSLASH)
+    if (path[len - 1] not_eq ASCII_BACKSLASH)
     {
         path[len++] = ASCII_BACKSLASH;
         path[len] = 0x00;
@@ -2887,7 +2887,7 @@ RES_EXPORT int ResSeekFile(int handle, size_t offset, int origin)
         return(-1);
     }
 
-    if ((origin != SEEK_CUR) && (origin != SEEK_SET) && (origin != SEEK_END))
+    if ((origin not_eq SEEK_CUR) && (origin not_eq SEEK_SET) && (origin not_eq SEEK_END))
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResSeekFile");
         return(-1);
@@ -2985,7 +2985,7 @@ RES_EXPORT int ResSetDirectory(const char * pathname)
 
     len = strlen(full);
 
-    if (full[len - 1] != ASCII_BACKSLASH)
+    if (full[len - 1] not_eq ASCII_BACKSLASH)
     {
         full[len++] = ASCII_BACKSLASH;
         full[len++] = '\0';
@@ -3245,7 +3245,7 @@ RES_EXPORT int ResWhereIs(char * filename, char * path)
         return(-1);
     }
 
-    if (entry -> archive != -1)
+    if (entry -> archive not_eq -1)
         retval  or_eq  RES_ARCHIVE;
 
     type = RES_DEVICES[ entry -> volume ].type;
@@ -3610,7 +3610,7 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
 
 #ifdef RES_NO_REPEATED_ADDPATHS
 
-    if (get_dir_index(path) != -1)
+    if (get_dir_index(path) not_eq -1)
     {
         return TRUE;
     }
@@ -3665,7 +3665,7 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
 
     length = strlen(tmp_path);
 
-    if (tmp_path[ length - 1 ] != ASCII_BACKSLASH)
+    if (tmp_path[ length - 1 ] not_eq ASCII_BACKSLASH)
     {
         tmp_path[ length++ ] = ASCII_BACKSLASH;
         tmp_path[ length ] = '\0';
@@ -3795,7 +3795,7 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
     directory = _findfirst(tmp_path, &data);
 #endif
 
-    if (directory != -1)
+    if (directory not_eq -1)
     {
         /* integral volume id & path index */
 
@@ -3895,7 +3895,7 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
 
                         ln = strlen(tmp_path);
 
-                        for (idx = ln - 1; idx, tmp_path[idx] != ASCII_BACKSLASH; idx--) ;
+                        for (idx = ln - 1; idx, tmp_path[idx] not_eq ASCII_BACKSLASH; idx--) ;
 
                         strncpy(buffer, tmp_path, idx);
                         sprintf(&buffer[idx], "\\%s\\", data.name);
@@ -3997,7 +3997,7 @@ RES_EXPORT int ResBuildPathname(int index, char * path_in, char * path_out)
     }
 
 
-    if ((index != RES_DIR_NONE) && (RES_PATH[ index ] == NULL))
+    if ((index not_eq RES_DIR_NONE) && (RES_PATH[ index ] == NULL))
     {
         SAY_ERROR(RES_ERR_NO_SYSTEM_PATH, "ResBuildPathname");
         *path_out = '\0';
@@ -4012,7 +4012,7 @@ RES_EXPORT int ResBuildPathname(int index, char * path_in, char * path_out)
 
     if (path_in)
     {
-        if (index != RES_DIR_NONE)                     /* since all these end with a slash  */
+        if (index not_eq RES_DIR_NONE)                     /* since all these end with a slash  */
             while (*path_in == ASCII_BACKSLASH)     /* trim leading backslashes             */
                 path_in++;
 
@@ -4033,7 +4033,7 @@ RES_EXPORT int ResBuildPathname(int index, char * path_in, char * path_out)
 
         len = strlen(tmp);
 
-        if (len && (tmp[len - 1] != ASCII_BACKSLASH))
+        if (len && (tmp[len - 1] not_eq ASCII_BACKSLASH))
         {
             tmp[len++] = ASCII_BACKSLASH;
             tmp[len] = '\0';
@@ -4048,7 +4048,7 @@ RES_EXPORT int ResBuildPathname(int index, char * path_in, char * path_out)
 
     /* if there is a system path index */
 
-    if (index != RES_DIR_NONE)
+    if (index not_eq RES_DIR_NONE)
         sprintf(path_out, "%s%s", RES_PATH[ index ], tmp);
     else
         strcpy(path_out, tmp);
@@ -4146,7 +4146,7 @@ RES_EXPORT int ResCountDirectory(char * path , struct _finddata_t **file_data)
     //    dir = _findfirst( fullpath, &data );
     dir = _findfirst(fullpath, data);
 
-    if (dir != -1)
+    if (dir not_eq -1)
     {
         count = 1;
 
@@ -4252,7 +4252,7 @@ RES_EXPORT void ResAssignPath(int index, char * path)
 
     len = strlen(ptr);
 
-    if (len && (ptr[ len - 1 ] != ASCII_BACKSLASH))
+    if (len && (ptr[ len - 1 ] not_eq ASCII_BACKSLASH))
     {
         ptr[len++] = ASCII_BACKSLASH;
         ptr[len] = '\0';
@@ -4485,7 +4485,7 @@ RES_EXPORT int ResExtractFile(const char * dst, const char * src)
     {
         handle = ResOpenFile(fdst, _O_CREAT | _O_WRONLY | _O_BINARY);
 
-        if (handle != -1)
+        if (handle not_eq -1)
         {
             size = ResWriteFile(handle, buffer, size);
             ResCloseFile(handle);
@@ -4869,7 +4869,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
     /* Make sure the user isn't trying to write to an archive file.
        Someday this may be possible, but not for a while. */
 
-    if (entry && (entry -> archive != -1) && write_flag)
+    if (entry && (entry -> archive not_eq -1) && write_flag)
     {
         SAY_ERROR(RES_ERR_CANT_WRITE_ARCHIVE, "ResFOpen");
 #if (RES_MULTITHREAD)
@@ -5579,7 +5579,7 @@ long __cdecl RES_FTELL(FILE * stream)
 
             filepos -= (long)rdcnt;
 
-        } /* end else stream->_cnt != 0 */
+        } /* end else stream->_cnt not_eq 0 */
     }
     else
         UNLOCK_STREAM(stream);
@@ -5644,11 +5644,11 @@ size_t __cdecl RES_FREAD(void *buffer, size_t size, size_t num, FILE *stream)
 #endif  /* defined (_M_M68K) or defined (_M_MPPC) */
 
     /* here is the main loop -- we go through here until we're done */
-    while (count != 0)
+    while (count not_eq 0)
     {
         /* if the buffer exists and has characters, copy them to user
            buffer */
-        if (anybuf(stream) && stream->_cnt != 0)
+        if (anybuf(stream) && stream->_cnt not_eq 0)
         {
             /* how much do we want? */
             nbytes = (count < (unsigned)stream->_cnt) ? count : stream->_cnt;
@@ -5833,9 +5833,9 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
     else
     {
         if (!inuse(stream) ||
-            ((whence != SEEK_SET) &&
-             (whence != SEEK_CUR) &&
-             (whence != SEEK_END)))
+            ((whence not_eq SEEK_SET) &&
+             (whence not_eq SEEK_CUR) &&
+             (whence not_eq SEEK_END)))
         {
             errno = EINVAL;
             UNLOCK_STREAM(stream);
@@ -5896,7 +5896,7 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
         // file.  Therefore... the following fix was actually scribling
         // memory.
 
-        // if( pos != -1 )
+        // if( pos not_eq -1 )
         //     FILE_HANDLES[ stream -> _file ].current_pos = pos; [KBR SEPT 10 96]
 
         if (pos == -1)
@@ -5908,7 +5908,7 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
         }
 
 
-        if ((stream -> _flag & _IOARCHIVE) && (pos != -1))
+        if ((stream -> _flag & _IOARCHIVE) && (pos not_eq -1))
             FILE_HANDLES[ stream -> _file ].current_pos = pos;
     }
 
@@ -6470,7 +6470,7 @@ void shut_down(void)
     if (FILE_HANDLES)    /* close any open file handles, clear for heck of it */
     {
         for (index = 0; index < MAX_FILE_HANDLES; index++)
-            if (FILE_HANDLES[ index ].os_handle != -1)
+            if (FILE_HANDLES[ index ].os_handle not_eq -1)
                 ResCloseFile(index);
 
 #ifdef USE_SH_POOLS
@@ -6738,7 +6738,7 @@ int hash(const char * string, int size)
 
 #if( USE_SEDGEWICK )
 
-    for (i = 0; *string != '\0'; string++)
+    for (i = 0; *string not_eq '\0'; string++)
         i = (HASH_CONST * i + (toupper(*string))) % size;
 
 #   error   DO NOT USE SEDGEWICK - RH
@@ -7558,7 +7558,7 @@ HASH_ENTRY * hash_find_table(const char * name, HASH_TABLE ** table)
         strcpy(fullpath, name);
         wild_len = strlen(name);
 
-        for (wild_len; (name[wild_len] != ASCII_BACKSLASH) && wild_len; wild_len--) ;
+        for (wild_len; (name[wild_len] not_eq ASCII_BACKSLASH) && wild_len; wild_len--) ;
 
         if (wild_len)
         {
@@ -8173,7 +8173,7 @@ char * res_fullpath(char * abs_buffer, const char * rel_buffer, int maxlen)
 
     if (colon)
     {
-        if (rel_buffer[1] != ASCII_COLON)
+        if (rel_buffer[1] not_eq ASCII_COLON)
         {
             *abs_buffer = 0x00;
             return(NULL);

@@ -197,7 +197,7 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
         //Write to file and append "\r\n" sequence.
         if (!WriteFile(fileID, from, size, &bytes, NULL)) bytes = -1;
 
-        if (bytes != size)
+        if (bytes not_eq size)
         {
             MonoPrint("Failed to write to briefing output file\n");
             CloseHandle(fileID);

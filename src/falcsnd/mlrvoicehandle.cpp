@@ -82,7 +82,7 @@ void mlrVoiceHandle::Play(float pscale, float volume, float x, float y, float z,
         voice->Play(pscale, volume, x, y, z, vx, vy, vz);
     }
 
-    if (sfx->LinkedSoundID && sfx->LinkedSoundID != sfxid)
+    if (sfx->LinkedSoundID && sfx->LinkedSoundID not_eq sfxid)
     {
         // there's an another sound associated with this sound
         SPos->Sfx(sfx->LinkedSoundID, userid, pscale, volume, x, y, z);

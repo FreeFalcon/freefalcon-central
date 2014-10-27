@@ -44,7 +44,7 @@ int LogBookData::Load(void)
     HKEY theKey;
     long retval;
 
-    if (strlen(g_strLgbk) != 0)
+    if (strlen(g_strLgbk) not_eq 0)
     {
         sprintf(Pilot.Callsign, "%s", g_strLgbk);
     }
@@ -58,7 +58,7 @@ int LogBookData::Load(void)
         retval = RegQueryValueEx(theKey, "PilotCallsign", 0, &type, (LPBYTE)Pilot.Callsign, &size);
         RegCloseKey(theKey);
 
-        if (retval != ERROR_SUCCESS)
+        if (retval not_eq ERROR_SUCCESS)
         {
             MonoPrint(_T("Failed to get registry entries.\n"));
             Initialize();
@@ -127,7 +127,7 @@ void LogBookData::Initialize(void)
     // german hack... no time
     GetSystemTime(&systime);
 
-    if (gLangIDNum != F4LANG_ENGLISH)
+    if (gLangIDNum not_eq F4LANG_ENGLISH)
     {
         _stprintf(Pilot.Commissioned, "%02d.%02d.%02d", systime.wDay, systime.wMonth, systime.wYear % 100);
     }
@@ -205,7 +205,7 @@ int LogBookData::LoadData(_TCHAR *callsign)
     size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    if (size != sizeof(LB_PILOT))
+    if (size not_eq sizeof(LB_PILOT))
     {
         MonoPrint(_T("%s's logbook is old file format.\n"), callsign);
         fclose(fp);
@@ -216,7 +216,7 @@ int LogBookData::LoadData(_TCHAR *callsign)
     success = fread(&Pilot, sizeof(LB_PILOT), 1, fp);
     fclose(fp);
 
-    if (success != 1)
+    if (success not_eq 1)
     {
         MonoPrint(_T("Failed to read %s's logbook.\n"), callsign);
         Initialize();

@@ -666,7 +666,7 @@ void HudClass::DrawSteeringToRelease(void)
                 alphaHudUnits);
 
         // Solution Cue
-        if (FCC->tossAnticipationCue != FireControlComputer::NoCue)
+        if (FCC->tossAnticipationCue not_eq FireControlComputer::NoCue)
         {
             if (FCC->tossAnticipationCue == FireControlComputer::PullUp ||
                 FCC->tossAnticipationCue == FireControlComputer::AwaitingRelease)
@@ -1046,7 +1046,7 @@ void HudClass::DrawSteeringToReleaseLADD(void)
                 alphaHudUnits);
 
         // Solution Cue
-        if (FCC->laddAnticipationCue != FireControlComputer::NoLADDCue)
+        if (FCC->laddAnticipationCue not_eq FireControlComputer::NoLADDCue)
         {
             if (FCC->laddAnticipationCue == FireControlComputer::LADDPullUp ||
                 FCC->laddAnticipationCue == FireControlComputer::LADDAwaitingRelease)

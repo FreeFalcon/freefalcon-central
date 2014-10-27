@@ -740,12 +740,12 @@ void AirTaskingManagerClass::DoCalculations(void)
                 sq->GetLocation(&x, &y);
                 airbase = GetObjectiveByXY(x, y);
 
-                if (!airbase or (airbase->GetType() != TYPE_AIRBASE && airbase->GetType() != TYPE_ARMYBASE))
+                if (!airbase or (airbase->GetType() not_eq TYPE_AIRBASE && airbase->GetType() not_eq TYPE_ARMYBASE))
                 {
                     // Check for carrier unit
                     airbase = FindUnitByXY(AllRealList, x, y, DOMAIN_SEA);
 
-                    if (!airbase or airbase->GetSType() != STYPE_UNIT_CARRIER)
+                    if (!airbase or airbase->GetSType() not_eq STYPE_UNIT_CARRIER)
                     {
                         // Check for a fixed flag (we're our own airbase)
                         if (sq->DontPlan())
@@ -1147,7 +1147,7 @@ int AirTaskingManagerClass::BuildSpecificDivert(Flight flight)
             continue;
 
         // Check vs roll
-        if (flight->GetUnitCurrentRole() != MissionData[mis->mission].skill)
+        if (flight->GetUnitCurrentRole() not_eq MissionData[mis->mission].skill)
             continue;
 
         // Check viability of this target
@@ -1304,7 +1304,7 @@ void AirTaskingManagerClass::ProcessRequest(MissionRequest request)
         if (u && !u->GetSpotted(request->who) && !FriendlyTerritory(request->tx, request->ty, request->who))
         {
             // 33% chance of SAD mission instead (Except for SEAD Strike missions)
-            if (request->mission != AMIS_SEADSTRIKE && !(rand() % 3))
+            if (request->mission not_eq AMIS_SEADSTRIKE && !(rand() % 3))
             {
                 request->mission = AMIS_SAD;
                 request->targetID = FalconNullId;
@@ -1354,7 +1354,7 @@ void AirTaskingManagerClass::ProcessRequest(MissionRequest request)
                     // Check if it's our initial request (requested at the same time && same target)
                     // Dump only additional requests - the only time our initial request would still
                     // be here is if we need additional interceptors.
-                    if (request->targetID == pmis->targetID && pmis->tot != request->tot)
+                    if (request->targetID == pmis->targetID && pmis->tot not_eq request->tot)
                         return;
                 }
                 else
@@ -1400,7 +1400,7 @@ void AirTaskingManagerClass::ProcessRequest(MissionRequest request)
         // Check for timeout
         timeleft = (int)((pmis->tot - Camp_GetCurrentTime()) / CampaignMinutes);
 
-        if (pmis->mission != request->mission)
+        if (pmis->mission not_eq request->mission)
             continue;
 
         // Check for action vs non-action missions
@@ -1565,7 +1565,7 @@ Squadron AirTaskingManagerClass::FindBestAir(MissionRequest mis, GridIndex bx, G
             // KCK HACK TO FORCE ONLY ALERT MISSIONS (TO TRACK DOWN THE SCRAMBLE STUFF)
 #ifdef TEST_SCRAMBLE
 
-            if (mis->mission != AMIS_ALERT && sq->Id() == FalconLocalSession->GetPlayerSquadronID())
+            if (mis->mission not_eq AMIS_ALERT && sq->Id() == FalconLocalSession->GetPlayerSquadronID())
                 continue;
 
 #endif
@@ -1580,11 +1580,11 @@ Squadron AirTaskingManagerClass::FindBestAir(MissionRequest mis, GridIndex bx, G
 
             // END OF ADDED SECTION
 
-            if ((caps & stats) != caps or (service && !(service & stats)))
+            if ((caps & stats) not_eq caps or (service && !(service & stats)))
                 continue;
 
             // 2001-04-26 ADDED BY S.G. SO STEALTH AIRCRAFT ARE NOT TASKED DURING DAYTIME. ONLY AT NIGHT...
-            if (TimeOfDayGeneral(mis->tot) != TOD_NIGHT && (stats & VEH_STEALTH))
+            if (TimeOfDayGeneral(mis->tot) not_eq TOD_NIGHT && (stats & VEH_STEALTH))
                 continue;
 
             // END OF ADDED SECTION
@@ -1637,7 +1637,7 @@ Squadron AirTaskingManagerClass::FindBestAir(MissionRequest mis, GridIndex bx, G
 
             if (to < scheduleTime)
             {
-                if (mis->tot_type != TYPE_NE && mis->tot_type <= TYPE_EQ) // Not going to be here in time
+                if (mis->tot_type not_eq TYPE_NE && mis->tot_type <= TYPE_EQ) // Not going to be here in time
                     continue;
 
                 // Otherwise, shift our estimate
@@ -1794,7 +1794,7 @@ Flight AirTaskingManagerClass::FindBestAirFlight(MissionRequest mis)
         cf = nu;
         nu = (Unit) myit.GetNext();
 
-        if (cf->GetType() != TYPE_FLIGHT or !cf->Final() or cf->IsDead())
+        if (cf->GetType() not_eq TYPE_FLIGHT or !cf->Final() or cf->IsDead())
             continue;
 
 #ifdef REQHELP_DEBUG
@@ -1805,11 +1805,11 @@ Flight AirTaskingManagerClass::FindBestAirFlight(MissionRequest mis)
 #endif
 
         // Check for valid role
-        if (MissionData[cf->GetUnitMission()].skill != role)
+        if (MissionData[cf->GetUnitMission()].skill not_eq role)
             continue;
 
         // Check for team
-        if (cf->GetTeam() != mis->who)
+        if (cf->GetTeam() not_eq mis->who)
             continue;
 
         // Check if it's busy (Flights should reduce their priority to 0 when they're done with their current task)
@@ -1829,7 +1829,7 @@ Flight AirTaskingManagerClass::FindBestAirFlight(MissionRequest mis)
             continue;
 
         // Check to make sure it's taken off (unless it's an alert mission)
-        if (cf->GetUnitMission() != AMIS_ALERT && (!cf->GetCurrentUnitWP() or cf->GetCurrentUnitWP()->GetWPAction() == WP_TAKEOFF))
+        if (cf->GetUnitMission() not_eq AMIS_ALERT && (!cf->GetCurrentUnitWP() or cf->GetCurrentUnitWP()->GetWPAction() == WP_TAKEOFF))
             continue;
 
         // Check for required plane capibilities
@@ -1837,7 +1837,7 @@ Flight AirTaskingManagerClass::FindBestAirFlight(MissionRequest mis)
         stats = uc->Flags;
         score = (uc->Scores[role] + 4) / 5;
 
-        if (score <= 0 or (caps & stats) != caps or (service && !(service & stats)))
+        if (score <= 0 or (caps & stats) not_eq caps or (service && !(service & stats)))
             continue;
 
         // Check for aircraft and priority
@@ -1899,7 +1899,7 @@ Flight AirTaskingManagerClass::FindBestAirFlight(MissionRequest mis)
 
         // KCK: Experimental - this is to keep from tasking flights which will simply ignore
         // their orders because they have better things to do.
-        if (cf->Engaged() && cf->GetTargetID() != FalconNullId)
+        if (cf->Engaged() && cf->GetTargetID() not_eq FalconNullId)
         {
             FalconEntity *oldtarget = cf->GetTarget();
             FalconEntity *newtarget = (FalconEntity*) vuDatabase->Find(mis->targetID);
@@ -2140,7 +2140,7 @@ void AirTaskingManagerClass::ScheduleAircraft(VU_ID abid, WayPoint w, int aircra
     {
         lw = w->GetNextWP();
 
-        while (lw && (lw->GetWPAction() != WP_LAND or lw->GetWPTargetID() != w->GetWPTargetID()))
+        while (lw && (lw->GetWPAction() not_eq WP_LAND or lw->GetWPTargetID() not_eq w->GetWPTargetID()))
             lw = lw->GetNextWP();
 
         if (lw)
@@ -2644,7 +2644,7 @@ int RequestSARMission(FlightClass* flight)
     // Check if we're to far into enemy territory
     rel = GetTTRelations(GetOwner(TheCampaign.CampMapData, mis.tx, mis.ty), mis.who);
 
-    if (rel != Friendly && rel != Allied && DistanceToFront(mis.tx, mis.ty) > MAX_SAR_DIST)
+    if (rel not_eq Friendly && rel not_eq Allied && DistanceToFront(mis.tx, mis.ty) > MAX_SAR_DIST)
         return 0;
 
     mis.RequestMission();
@@ -2675,17 +2675,17 @@ void RequestIntercept(FlightClass* enemy, int who, RequIntHint hint)
     return;*/
 
     //Cobra Cheat script
-    if (hint != RI_HELP)
+    if (hint not_eq RI_HELP)
     {
         int test = enemy->GetUnitMission();
 
-        if (test != AMIS_OCASTRIKE &&
-            test != AMIS_INTSTRIKE &&
-            test != AMIS_STRIKE &&
-            test != AMIS_DEEPSTRIKE &&
-            test != AMIS_STSTRIKE &&
-            test != AMIS_STRATBOMB &&
-            test != AMIS_SEADSTRIKE)
+        if (test not_eq AMIS_OCASTRIKE &&
+            test not_eq AMIS_INTSTRIKE &&
+            test not_eq AMIS_STRIKE &&
+            test not_eq AMIS_DEEPSTRIKE &&
+            test not_eq AMIS_STSTRIKE &&
+            test not_eq AMIS_STRATBOMB &&
+            test not_eq AMIS_SEADSTRIKE)
             return;
     }
 
@@ -2862,7 +2862,7 @@ int TargetAllSites(Objective po, int action, int team, CampaignTime startTime)
                         requests++;
                     }
                     else if (otarget->GetType() == TYPE_BRIDGE &&
-                             TeamInfo[team]->GetGroundAction()->actionObjective != po->Id())
+                             TeamInfo[team]->GetGroundAction()->actionObjective not_eq po->Id())
                     {
                         // Generate a mission to take out this bridge (Shouldn't happen
                         // if this primary is a target of a ground offensive)

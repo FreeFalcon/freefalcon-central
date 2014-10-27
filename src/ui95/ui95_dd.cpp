@@ -64,7 +64,7 @@ void UIBuildColorTable()
 //XXvoid UI95_SetScreenColorInfo( WORD r_mask,WORD g_mask,WORD b_mask )
 void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
 {
-    ShiAssert(r_mask != 0 && g_mask != 0 && b_mask != 0); // this should never happen
+    ShiAssert(r_mask not_eq 0 && g_mask not_eq 0 && b_mask not_eq 0); // this should never happen
     // but I saw it once (JPO)
 
 
@@ -314,13 +314,13 @@ GLImageInfo *LoadImageFile(char *filename)
 
  // Open the input file
  result = texFile.glOpenFileMem( (GLbyte*)filename );
- if ( result != 1 )
+ if ( result not_eq 1 )
  return(NULL);
 
  // Read the image data (note that ReadTextureImage will close texFile for us)
  texFile.glReadFileMem();
  result = ReadTextureImage( &texFile );
- if (result != GOOD_READ)
+ if (result not_eq GOOD_READ)
  return(NULL);
 
  // Store the image properties in our local storage
@@ -363,7 +363,7 @@ IDirectDrawSurface *LoadImageFile(char *fname)
 /*
 BOOL UI95_DDErrorCheck( HRESULT result )
 {
- if(result != DD_OK) return(FALSE);
+ if(result not_eq DD_OK) return(FALSE);
  return(TRUE);
  switch ( result ) {
 

@@ -97,7 +97,7 @@ VuEntity *VuHashIterator::GetNext()
 #if 0
     curr_ = curr_->next_;
 
-    if (curr_ != vuTailNode)
+    if (curr_ not_eq vuTailNode)
     {
         // sfr: smartpointer
         return curr_->entity_.get();

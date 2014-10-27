@@ -16,13 +16,13 @@ GetLoadedModules(DWORD     dwPID        ,
                  LPUINT    puiRealCount)
 {
     // Do the debug checking.
-    ASSERT(NULL != puiRealCount) ;
+    ASSERT(NULL not_eq puiRealCount) ;
     ASSERT(FALSE == IsBadWritePtr(puiRealCount , sizeof(UINT)));
 #ifdef _DEBUG
 
-    if (0 != uiCount)
+    if (0 not_eq uiCount)
     {
-        ASSERT(NULL != paModArray) ;
+        ASSERT(NULL not_eq paModArray) ;
         ASSERT(FALSE == IsBadWritePtr(paModArray                   ,
                                       uiCount *
                                       sizeof(HMODULE)));

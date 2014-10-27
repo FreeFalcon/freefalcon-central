@@ -155,7 +155,7 @@ DWORD Loader::MainLoop()
                 {
                     // Make the callback to notify the requestor
                     // NOTE:  The callback is responsible for deleting the queue entry!
-                    ShiAssert((Active->callback != NULL));
+                    ShiAssert((Active->callback not_eq NULL));
                     Active->callback(Active);
                 }
                 else if (queueStatus == QUEUE_SORTING)
@@ -379,7 +379,7 @@ BOOL Loader::CancelRequest(void(*callback)(LoaderQ*), void *parameter, char *fil
 
     LeaveCriticalSection(&cs_loaderQ);
 
-    return (p != NULL);
+    return (p not_eq NULL);
 }
 
 

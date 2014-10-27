@@ -57,7 +57,7 @@ int UI_SendAircraftSlot::Process(uchar autodisp)
 
     VuGameEntity *g = FalconLocalGame;
 
-    if (game != FalconLocalGame or !session)
+    if (game not_eq FalconLocalGame or !session)
     {
         return FALSE;
     }
@@ -75,7 +75,7 @@ int UI_SendAircraftSlot::Process(uchar autodisp)
     }
 
     // For Campaign and TE games, if the player switches flights, we need to redo PreMissionEval
-    if (session == FalconLocalSession && oldflight != flight && FalconLocalGame->GetGameType() != game_Dogfight)
+    if (session == FalconLocalSession && oldflight not_eq flight && FalconLocalGame->GetGameType() not_eq game_Dogfight)
         TheCampaign.MissionEvaluator->PreMissionEval(flight, dataBlock.got_pilot_slot);
 
     CheckForNewPlayer(session);

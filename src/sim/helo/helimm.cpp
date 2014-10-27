@@ -1452,7 +1452,7 @@ HeliMMClass::Fuselage(void)
         wa_fus = VA.z - vi_mr;
 
         // calc position on fuselage
-        if (wa_fus != 0)
+        if (wa_fus not_eq 0)
             wa_fus_pos =
                 (VA.x / (-wa_fus) * (ma_hub.y - ma_fus.y)) -
                 (ma_fus.x - ma_hub.x);
@@ -1651,7 +1651,7 @@ HeliMMClass::Wing(void)
         vta_wn = (float)sqrt(va_x_sq + wa_wn * wa_wn);
 
         // induced drag
-        if (vta_wn != 0)
+        if (vta_wn not_eq 0)
             wn6d.x =
                 -(rh02) / PI / vta_wn / vta_wn *
                 (md->wn.zuu * va_x_sq +

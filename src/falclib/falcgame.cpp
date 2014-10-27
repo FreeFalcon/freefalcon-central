@@ -358,7 +358,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      cs = (FalconSessionEntity*) siter.GetFirst();
      while (cs)
      {
-     if ((!sess or sess->Id() != cs->Id()) && cs->GameId() == Id() && (ulong)cs->Id().creator_ < best)
+     if ((!sess or sess->Id() not_eq cs->Id()) && cs->GameId() == Id() && (ulong)cs->Id().creator_ < best)
      {
      best = cs->Id().creator_;
      new_host = cs;
@@ -388,7 +388,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      ent = dbiter.GetFirst();
      while (ent)
      {
-     if ((!sess or ent->OwnerId() == sess->Id()) && ent != sess)
+     if ((!sess or ent->OwnerId() == sess->Id()) && ent not_eq sess)
      {
      ent_class = ent->EntityType()->classInfo_[VU_CLASS];
      if (!new_host or (sess && !ent->IsTransferrable()))
@@ -403,7 +403,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      else if (ent_class == CLASS_FEATURE or ent_class == CLASS_VEHICLE)
      {
      // KCK: If there's a valid deaggregate owner, set owner to that..
-     if ((int)((SimBaseClass*)ent)->campaignObject > MAX_IA_CAMP_UNIT && ((CampBaseClass*)((SimBaseClass*)ent)->campaignObject)->deag_owner != sess->Id())
+     if ((int)((SimBaseClass*)ent)->campaignObject > MAX_IA_CAMP_UNIT && ((CampBaseClass*)((SimBaseClass*)ent)->campaignObject)->deag_owner not_eq sess->Id())
      ((SimBaseClass*)ent)->ChangeOwner(((CampBaseClass*)((SimBaseClass*)ent)->campaignObject)->GetDeaggregateOwner());
      // Otherwise, change ownership to the host (let campaign entity know too!)
      else

@@ -95,7 +95,7 @@ int FalconSendObjData::Process(uchar autodisp)
     {
         CampaignJoinKeepAlive();
 
-        if (dataBlock.set != session->objDataReceiveSet)
+        if (dataBlock.set not_eq session->objDataReceiveSet)
         {
             // New data - toss the old stuff
             delete session->objDataReceiveBuffer;

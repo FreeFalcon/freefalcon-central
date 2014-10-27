@@ -185,7 +185,7 @@ int ReadNumberOfEvents(char* scenario)
 
     CloseCampFile(fp);
 
-    if (CampEvents != NULL)
+    if (CampEvents not_eq NULL)
         delete [] CampEvents;
 
     CampEvents = new EventClass*[CE_Events];
@@ -611,7 +611,7 @@ int ReadScriptedTriggerFile(char* filename)
                         {
                             o = (Objective) GetEntityByCampID(atoi(sptr));
 
-                            if (o && o->GetTeam() != team)
+                            if (o && o->GetTeam() not_eq team)
                                 stack_active[curr_stack] = 0;
 
                             if (sptr = strchr(sptr, ' '))
@@ -783,7 +783,7 @@ int ReadScriptedTriggerFile(char* filename)
                      if (sptr = strchr(sptr,' '))
                      sptr++;
                      // Check if we have offensive units assigned
-                     if (TeamInfo[team]->GetGroundAction()->actionType != GACTION_OFFENSIVE)
+                     if (TeamInfo[team]->GetGroundAction()->actionType not_eq GACTION_OFFENSIVE)
                      stack_active[curr_stack] = 0;
                      else
                      stack_active[curr_stack] = 1;

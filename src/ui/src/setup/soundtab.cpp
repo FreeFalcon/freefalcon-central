@@ -145,7 +145,7 @@ void InitSoundSetup()
         {
             button = (C_Button *)win->FindControl(UI_ENABLE_3D_SOUNDS + l);
 
-            if (button != NULL)
+            if (button not_eq NULL)
             {
                 if (PlayerOptions.SoundFlags & 1 << l)
                     button->SetState(C_STATE_1);
@@ -202,7 +202,7 @@ void InitSoundSetup()
 
 void TestButtonCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (!control)
@@ -255,7 +255,7 @@ void SoundSliderCB(long, short hittype, C_Base *control)
     double pos, range;
     int volume;
 
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     range = ((C_Slider *)control)->GetSliderMax() - ((C_Slider *)control)->GetSliderMin();
@@ -325,7 +325,7 @@ void PlayVoicesCB(long, short, C_Base *control)
 // M.N.
 void TogglePlayerVoiceCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (((C_Button *)control)->GetState())
@@ -336,7 +336,7 @@ void TogglePlayerVoiceCB(long, short hittype, C_Base *control)
 
 void ToggleUICommsCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (((C_Button *)control)->GetState())
@@ -353,7 +353,7 @@ void ToggleUICommsCB(long, short hittype, C_Base *control)
 
 void SoundFlagsCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (!control)
@@ -396,7 +396,7 @@ void SoundFlagsCB(long, short hittype, C_Base *control)
 void SoundExtVolCB(long, short hittype, C_Base *control)
 {
 
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     int smin, smax, pos;

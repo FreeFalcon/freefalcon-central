@@ -220,7 +220,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                 SimBaseClass *prevObj = NULL, *nextObj = NULL;
 
                 // In many cases, our visType should be modified by our neighbors.
-                if ((theObject->Status() & VIS_TYPE_MASK) != VIS_DESTROYED && (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM or ((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM))
+                if ((theObject->Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED && (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM or ((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM))
                 {
                     // KCK: Can we just use our slot number? Or will this break something?
                     // int idx = theObject->GetCampaignObject()->GetComponentIndex (theObject);
@@ -303,7 +303,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                     // Make the new BRIDGE object
                     if (visType)
                     {
-                        if (theObject->IsSetCampaignFlag(FEAT_NEXT_IS_TOP) && theObject->Status() != VIS_DESTROYED)
+                        if (theObject->IsSetCampaignFlag(FEAT_NEXT_IS_TOP) && theObject->Status() not_eq VIS_DESTROYED)
                             theObject->drawPointer = new DrawableRoadbed(visType, visType + 1, &simView, theObject->Yaw(), 10.0f, (float)atan(20.0f / 280.0f));
                         else
                             theObject->drawPointer = new DrawableRoadbed(visType, -1, &simView, theObject->Yaw(), 10.0f, (float)atan(20.0f / 280.0f));
@@ -368,7 +368,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
             }
             else
                 // TODO:  Might want to remove shadows from missiles/bombs for performance reasons...
-                // if (classPtr->vuClassData.classInfo_[VU_TYPE] != TYPE_MISSILE)
+                // if (classPtr->vuClassData.classInfo_[VU_TYPE] not_eq TYPE_MISSILE)
             {
                 // We may still be on the ground
                 theObject->drawPointer = new DrawableShadowed(visType, &simView, &viewRotation, objectScale, classPtr->visType[1]);

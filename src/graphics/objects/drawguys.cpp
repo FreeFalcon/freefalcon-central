@@ -73,7 +73,7 @@ void DrawableGuys::Draw(class RenderOTW *renderer, int LOD)
 
 
     // See if we need to update our ground position because the terrain under us changed
-    if (LOD != previousLOD)
+    if (LOD not_eq previousLOD)
     {
 
         Tpoint normal;

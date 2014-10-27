@@ -319,7 +319,7 @@ MAPICONLIST *C_MapIcon::AddIconToList(
         return(NULL);
     }
 
-    if (img->Header->Type != _RSC_IS_IMAGE_)
+    if (img->Header->Type not_eq _RSC_IS_IMAGE_)
     {
         MonoPrint("C_MapIcon::AddIconToList() Image ID (%1ld) - Not an Image\n", ImageID);
         return(NULL);
@@ -512,7 +512,7 @@ void C_MapIcon::Refresh(MAPICONLIST *icon)
         UI_Leave(Leave);
     }
 
-    if ((!gShowUnknown or icon->ImageID != ICON_UKN) && (GetFlags() & C_BIT_INVISIBLE)) // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
+    if ((!gShowUnknown or icon->ImageID not_eq ICON_UKN) && (GetFlags() & C_BIT_INVISIBLE)) // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
         return;
 
     // END OF ADDED SECTION 2002-02-21
@@ -727,15 +727,15 @@ BOOL C_MapIcon::UpdateInfo(MAPICONLIST *icon, float x, float y, long newstatus, 
 
     if (!icon) return(FALSE);
 
-    if (icon->worldx != x or icon->worldy != y or icon->state != newstate)
+    if (icon->worldx not_eq x or icon->worldy not_eq y or icon->state not_eq newstate)
     {
-        if (icon->Status != newstatus)
+        if (icon->Status not_eq newstatus)
         {
             icon->Status = newstatus;
             newstatus = -1;
         }
 
-        if (icon->state != newstate)
+        if (icon->state not_eq newstate)
         {
             icon->state = newstate;
             newstate = -1;
@@ -746,7 +746,7 @@ BOOL C_MapIcon::UpdateInfo(MAPICONLIST *icon, float x, float y, long newstatus, 
         ox = icon->x;
         oy = icon->y;
 
-        if (ox != ((icon->worldx * scale_)) or oy != (icon->worldy * scale_))
+        if (ox not_eq ((icon->worldx * scale_)) or oy not_eq (icon->worldy * scale_))
         {
             if (!(icon->Flags & C_BIT_INVISIBLE) && icon->Flags & C_BIT_ENABLED)
             {
@@ -758,7 +758,7 @@ BOOL C_MapIcon::UpdateInfo(MAPICONLIST *icon, float x, float y, long newstatus, 
         icon->x = (short)(icon->worldx * scale_);
         icon->y = (short)(icon->worldy * scale_);
 
-        if ((ox != icon->x) or (oy != icon->y) or (icon->state != newstate) or (icon->Status != newstatus))
+        if ((ox not_eq icon->x) or (oy not_eq icon->y) or (icon->state not_eq newstate) or (icon->Status not_eq newstatus))
         {
             if (icon->Icon)
                 icon->Icon->SetImage((IMAGE_RSC*)Icons_[icon->state][0]->Find(icon->ImageID));
@@ -784,7 +784,7 @@ BOOL C_MapIcon::UpdateInfo(long ID, float x, float y, long newstatus, long newst
     if (cur == NULL)
         return(FALSE);
 
-    if (cur->worldx != x or cur->worldy != y)
+    if (cur->worldx not_eq x or cur->worldy not_eq y)
     {
         cur->Status = newstatus;
         cur->state = newstate;
@@ -795,7 +795,7 @@ BOOL C_MapIcon::UpdateInfo(long ID, float x, float y, long newstatus, long newst
         cur->x = (short)(cur->worldx * scale_);
         cur->y = (short)(cur->worldy * scale_);
 
-        if ((ox != cur->x or oy != cur->y) && !(cur->Flags & C_BIT_INVISIBLE))
+        if ((ox not_eq cur->x or oy not_eq cur->y) && !(cur->Flags & C_BIT_INVISIBLE))
             return(TRUE);
     }
 
@@ -886,7 +886,7 @@ BOOL C_MapIcon::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !(GetFlags() & C_BIT_DRAGABLE))
         return(FALSE);
 
-    if (over != Parent_)
+    if (over not_eq Parent_)
         return(FALSE);
 
     if (!(GetFlags() & C_BIT_ABSOLUTE))

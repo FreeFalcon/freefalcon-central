@@ -35,7 +35,7 @@ void DigitalBrain::AiRefuel(void)
     AircraftClass *tanker = NULL;
 
     //for now
-    if (tankerId != FalconNullId)
+    if (tankerId not_eq FalconNullId)
     {
         tanker = (AircraftClass*)vuDatabase->Find(tankerId);
 

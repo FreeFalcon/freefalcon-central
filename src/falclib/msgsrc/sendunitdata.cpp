@@ -78,7 +78,7 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
     //decode event
     FalconEvent::Decode(buf, rem);
 
-    if ((init - *rem) != Size())
+    if ((init - *rem) not_eq Size())
     {
         char err[50];
         sprintf(err, "%s %d: invalid datablock size", __FILE__, __LINE__);
@@ -103,7 +103,7 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
 
     if (TheCampaign.Flags & CAMP_NEED_UNIT_DATA)
     {
-        if (dataBlock.set != session->unitDataReceiveSet)
+        if (dataBlock.set not_eq session->unitDataReceiveSet)
         {
             MonoPrint("Tossing old Set, starting a new one\n");
             // New data - toss the old stuff
@@ -277,7 +277,7 @@ void SendCampaignUnitData(FalconSessionEntity *session, VuTargetEntity *target, 
 
         for (
             CampBaseClass *ent = static_cast<CampBaseClass*>(deagIt.GetFirst());
-            ent != NULL;
+            ent not_eq NULL;
             ent = static_cast<CampBaseClass*>(deagIt.GetNext())
         )
         {
