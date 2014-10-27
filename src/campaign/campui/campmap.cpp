@@ -2,7 +2,7 @@
 // Map.cpp deals with the various modes of coloring the small theater map
 //
 
-#include <iso646.h>
+#include <cISO646>
 #include <stdio.h>
 #include <tchar.h>
 #include "CmpGlobl.h"

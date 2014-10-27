@@ -6,7 +6,7 @@
 
  Main UI screen stuff for FreeFalcon
 \***************************************************************************/
-#include <iso646.h>
+#include <cISO646>
 #include <windows.h>
 #include "falclib.h"
 

@@ -1,7 +1,7 @@
 #ifndef _FCC_H
 #define _FCC_H
 
-#include <iso646.h>
+#include <cISO646>
 #include "drawable.h"
 #include "Entity.h"
 #include "campwp.h"

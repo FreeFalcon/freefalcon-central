@@ -2,7 +2,7 @@
 // Package.cpp
 // ===================================================
 
-#include <iso646.h>
+#include <cISO646>
 #include <stdio.h>
 #include <time.h>
 #include "CmpGlobl.h"

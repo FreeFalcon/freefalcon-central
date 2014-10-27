@@ -1,4 +1,4 @@
-#include <iso646.h>
+#include <cISO646>
 #include <windows.h>
 #include <process.h>
 #include "dispcfg.h"

@@ -1,7 +1,7 @@
 #ifndef _ICP_H
 #define _ICP_H
 
-#include <iso646.h>
+#include <cISO646>
 #ifndef _WINDOWS_
 #include <windows.h>
 #endif

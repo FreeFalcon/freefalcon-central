@@ -1,4 +1,4 @@
-#include <iso646.h>
+#include <cISO646>
 #include <windows.h>
 #include "fsound.h"
 #include <mmreg.h>

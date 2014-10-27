@@ -5,7 +5,7 @@
 
     This code contains a bunch of generic routines
 \***************************************************************************/
-#include <iso646.h>
+#include <cISO646>
 #include <windows.h>
 #include "f4version.h"
 #include <ddraw.h>

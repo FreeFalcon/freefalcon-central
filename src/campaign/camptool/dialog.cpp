@@ -1,4 +1,4 @@
-#include <iso646.h>
+#include <cISO646>
 #include <windows.h>    // includes basic windows functionality
 #include <commdlg.h>    // includes common dialog functionality
 #include <commctrl.h>

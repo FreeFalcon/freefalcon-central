@@ -168,7 +168,7 @@
  */
 
 
-#include <iso646.h>
+#include <cISO646>
 #define PKZIP_BUG_WORKAROUND    /* PKZIP 1.93a problem--live with it */
 
 #define INFMOD                  /* tell inflate.h to include code to be compiled */

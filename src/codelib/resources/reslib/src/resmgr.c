@@ -88,7 +88,7 @@
  TBD:  CD statistic caching (head movements, warning tracks, etc).
 
    ---------------------------------------------------------------------- */
-#include <iso646.h>
+#include <cISO646>
 #include "lists.h"         /* list manipulation functions (+list.cpp)        */
 #include "resmgr.h"        /* exported prototypes & type definitions         */
 //#include "memmgr.h"

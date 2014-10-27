@@ -4,7 +4,7 @@
 // Team related variables and routines
 // ***************************************************************************
 
-#include <iso646.h>
+#include <cISO646>
 #include <io.h>
 #include <stdio.h>
 #include <fcntl.h>

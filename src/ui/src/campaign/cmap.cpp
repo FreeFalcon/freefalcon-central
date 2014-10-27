@@ -5,7 +5,7 @@
 
     This code handles drawing the Campaign Map with/without units (user selectable)
 \***************************************************************************/
-#include <iso646.h>
+#include <cISO646>
 #include <windows.h>
 #include "unit.h"
 #include "team.h"
