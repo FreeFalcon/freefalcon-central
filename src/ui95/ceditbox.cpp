@@ -165,7 +165,7 @@ void C_EditBox::DeleteRange()
 
         End_ = Start_;
         Cursor_ = Start_;
-        Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+        Text_->SetFlags(Text_->GetFlags() & compl C_BIT_OPAQUE);
         Refresh();
     }
 }
@@ -209,7 +209,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
             NoChanges_ = 0;
             Start_ = Cursor_;
             End_ = Cursor_;
-            Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+            Text_->SetFlags(Text_->GetFlags() & compl C_BIT_OPAQUE);
 
             if (Cursor_ < MaxLen_ && EditText_[Cursor_])
             {
@@ -225,7 +225,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
             NoChanges_ = 0;
             Start_ = Cursor_;
             End_ = Cursor_;
-            Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+            Text_->SetFlags(Text_->GetFlags() & compl C_BIT_OPAQUE);
 
             if (Cursor_ > 0)
             {
@@ -247,7 +247,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
             NoChanges_ = 0;
             Start_ = Cursor_;
             End_ = Cursor_;
-            Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+            Text_->SetFlags(Text_->GetFlags() & compl C_BIT_OPAQUE);
             Cursor_ = 0;
             Refresh();
             return(TRUE);
@@ -258,7 +258,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
             NoChanges_ = 0;
             Start_ = Cursor_;
             End_ = Cursor_;
-            Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+            Text_->SetFlags(Text_->GetFlags() & compl C_BIT_OPAQUE);
 
             while (EditText_[Cursor_] && Cursor_ < (MaxLen_))
                 Cursor_++;
@@ -329,7 +329,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
         case DIK_RETURN:
             Cursor_ = 0;
             CopyFromText();
-            Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+            Text_->SetFlags(Text_->GetFlags() & compl C_BIT_OPAQUE);
 
             if (Callback_)
             {
@@ -350,7 +350,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
             Cursor_ = 0;
             CopyToText();
             Refresh();
-            Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+            Text_->SetFlags(Text_->GetFlags() & compl C_BIT_OPAQUE);
 
             if (Callback_)
             {
@@ -462,7 +462,7 @@ BOOL C_EditBox::Process(long, short HitType)
             Cursor_ = (short)Text_->GetCursorPos(GetRelX() - Text_->GetX(), GetRelY() - Text_->GetY()); //!
             Start_ = Cursor_;
             End_ = Cursor_;
-            Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+            Text_->SetFlags(Text_->GetFlags() & compl C_BIT_OPAQUE);
             Text_->SetOpaqueRange(Start_, End_);
             Refresh();
             break;
@@ -496,7 +496,7 @@ void C_EditBox::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Text_)
     {
         if (GetType() == C_TYPE_PASSWORD)
-            Text_->SetFlags((Text_->GetFlags() | C_BIT_PASSWORD) & ~C_BIT_OPAQUE);
+            Text_->SetFlags((Text_->GetFlags() | C_BIT_PASSWORD) & compl C_BIT_OPAQUE);
 
         Text_->Draw(surface, cliprect);
 
@@ -577,7 +577,7 @@ void C_EditBox::SetSubParents(C_Window *)
         if (GetType() == C_TYPE_INTEGER || GetType() == C_TYPE_FLOAT || GetType() == C_TYPE_IPADDRESS)
             CopyToText();
 
-        Text_->SetFlags(GetFlags()&~C_BIT_OPAQUE);
+        Text_->SetFlags(GetFlags()& compl C_BIT_OPAQUE);
 
         if (GetFlags() & C_BIT_VCENTER)
             Text_->SetY(GetH() / 2);
@@ -611,7 +611,7 @@ void C_EditBox::SetMaxLen(short len)
 
         SetFlags(GetFlags() | C_BIT_FIXEDSIZE);
         MaxLen_ = len;
-        Text_->SetFlags(GetFlags()&~C_BIT_OPAQUE);
+        Text_->SetFlags(GetFlags()& compl C_BIT_OPAQUE);
         Text_->SetFont(Font_);
         Text_->SetTextWidth((short)(MaxLen_ + 1)); //!
 
@@ -629,7 +629,7 @@ void C_EditBox::SetText(_TCHAR *str)
         Text_->SetText(str);
 
     Text_->SetFont(Font_);
-    Text_->SetFlags(GetFlags()&~C_BIT_OPAQUE);
+    Text_->SetFlags(GetFlags()& compl C_BIT_OPAQUE);
 
     if (GetType() == C_TYPE_TEXT)
     {
@@ -820,7 +820,7 @@ void C_EditBox::Deactivate()
     UseCursor_ = 0;
     Cursor_ = 0;
     CopyFromText();
-    Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+    Text_->SetFlags(Text_->GetFlags() & compl C_BIT_OPAQUE);
     Text_->SetInfo();
     Refresh();
 
@@ -857,7 +857,7 @@ BOOL C_EditBox::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
             Text_->SetOpaqueRange(SelEnd_, SelStart_);
     }
     else
-        Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+        Text_->SetFlags(Text_->GetFlags() & compl C_BIT_OPAQUE);
 
     NoChanges_ = 0;
     Refresh();
@@ -883,7 +883,7 @@ BOOL C_EditBox::Drop(GRABBER *, WORD , WORD , C_Window *)
         Text_->SetFlags(Text_->GetFlags() | C_BIT_OPAQUE);
     }
     else
-        Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+        Text_->SetFlags(Text_->GetFlags() & compl C_BIT_OPAQUE);
 
     NoChanges_ = 0;
     Refresh();

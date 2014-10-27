@@ -774,7 +774,7 @@ public:
     }
     void ClearATCFlag(int flag)
     {
-        atcFlags &= ~flag;
+        atcFlags &= compl flag;
     }
     int IsSetATC(int flag)
     {

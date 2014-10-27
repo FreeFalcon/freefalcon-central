@@ -58,7 +58,7 @@ public:
     };
     void ClearFlag(int flag)
     {
-        flags &= ~flag;
+        flags &= compl flag;
     } ;
     //MI
     void ToggleFlag(int flag)

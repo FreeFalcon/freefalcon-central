@@ -274,7 +274,7 @@ public:
     };
     void INSOff(INSAlignFlags fl)
     {
-        INSFlags &= ~fl;
+        INSFlags &= compl fl;
     };
     int INSState(INSAlignFlags fl)
     {
@@ -336,7 +336,7 @@ public:
     };
     void AVTROff(AVTRStateFlags fl)
     {
-        AVTRFlags &= ~fl;
+        AVTRFlags &= compl fl;
     };
     int AVTRState(AVTRStateFlags fl)
     {
@@ -369,7 +369,7 @@ public:
     };
     void LEFOff(LEFStateFlags fl)
     {
-        LEFFlags &= ~fl;
+        LEFFlags &= compl fl;
     };
     int LEFState(LEFStateFlags fl)
     {
@@ -587,7 +587,7 @@ public:
     };
     void ClearAPFlag(APFlags flag)
     {
-        APFlag &= ~flag;
+        APFlag &= compl flag;
     };
     void SetAPParameters(void);
     void SetNewRoll(void);
@@ -665,7 +665,7 @@ public:
     int HasPower(AvionicsPowerFlags fl);
     void PowerOff(AvionicsPowerFlags fl)
     {
-        powerFlags &= ~fl;
+        powerFlags &= compl fl;
     };
     void PowerToggle(AvionicsPowerFlags fl)
     {
@@ -716,7 +716,7 @@ public:
     };
     void ElecClear(ElectricLights lt)
     {
-        elecLights &= ~lt;
+        elecLights &= compl lt;
     };
     void DoElectrics();
     static const unsigned long systemStates[PowerMaxState];

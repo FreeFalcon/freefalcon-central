@@ -1,6 +1,7 @@
 #ifndef FALCENT_H
 #define FALCENT_H
 
+#include <ciso646>
 //#include "shi/shierror.h"
 #include "dirtybits.h"
 #include "../../mathlib/math.h"
@@ -127,7 +128,7 @@ public:
     };
     void UnSetTypeFlag(int flag)
     {
-        falconType &= ~flag;
+        falconType &= compl flag;
     };
     void SetFalcFlag(int flag)
     {
@@ -141,7 +142,7 @@ public:
     {
         if (falconFlags & flag)
         {
-            falconFlags &= ~flag;
+            falconFlags &= compl flag;
             MakeFlagsDirty();
         }
     };
@@ -368,7 +369,7 @@ public:
     };
     void UnSetFELocalFlag(int flag)
     {
-        feLocalFlags &= ~flag;
+        feLocalFlags &= compl flag;
     };
     int IsSetFELocalFlag(int flag)
     {

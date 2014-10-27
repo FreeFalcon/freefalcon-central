@@ -925,7 +925,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
 
     if (this != SimDriver.GetPlayerEntity())
     {
-        piece -> sfxflag &= ~SFX_F16CRASH_OBJECT;
+        piece -> sfxflag &= compl SFX_F16CRASH_OBJECT;
     }
 
     return 1;

@@ -234,7 +234,7 @@ public:
     };
     void ClearFlag(int val)
     {
-        flags &= ~val;
+        flags &= compl val;
     };
     int IsSetFlag(int val)
     {

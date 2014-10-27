@@ -5764,7 +5764,7 @@ void FlightClass::ClearEvalFlag(uchar f)
 {
     if ((eval_flags & f))
     {
-        eval_flags &= ~f;
+        eval_flags &= compl f;
         //MakeFlightDirty (DIRTY_EVAL_FLAGS, DDP[107].priority);
         MakeFlightDirty(DIRTY_EVAL_FLAGS, SEND_EVENTUALLY);
     }

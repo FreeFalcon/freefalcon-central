@@ -3328,7 +3328,7 @@ void AircraftClass::PreFlight()
     }
     else
     {
-        PowerOn(AvionicsPowerFlags(AllPower & ~DLPower));
+        PowerOn(AvionicsPowerFlags(AllPower & compl DLPower));
         PowerOff(DLPower);
     }
 
@@ -4134,7 +4134,7 @@ void AircraftClass::ClearAcStatusBits(int bits)
 {
     if (IsAcStatusBitsSet(bits))
     {
-        status_bits &= ~bits;
+        status_bits &= compl bits;
         MakeAircraftDirty(DIRTY_ACSTATUS_BITS, SEND_NOW);
     }
 }

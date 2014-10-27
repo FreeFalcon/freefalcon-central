@@ -5,6 +5,7 @@
 
     This class provides the ground mapping radar terrain display.
 \***************************************************************************/
+#include <ciso646>
 #include <math.h>
 #include "Tmap.h"
 #include "TViewPnt.h"
@@ -359,7 +360,7 @@ void RenderGMRadar::DrawFeatures(void)
     SetColor(0xFF000000);
 
     // Construct the mask to test if a post falls on a texture boundry
-    mask = ~((~0 >> levelDifference) << levelDifference);
+    mask = compl ((compl 0 >> levelDifference) << levelDifference);
 
     // Load the display's 2D transformation matrix
     // Note that we're swapping x and y to get into the system VirtualDisplay expects

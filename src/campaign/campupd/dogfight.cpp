@@ -865,8 +865,8 @@ void DogfightClass::RestartGame(void)
 {
     MonoPrint("Restarting Game\n");
     // Reset game && mission evaluator after everyone has returned to the UI and viewed their scores
-    flags &= ~DF_GAME_OVER;
-    localFlags &= ~DF_VIEWED_SCORES;
+    flags &= compl DF_GAME_OVER;
+    localFlags &= compl DF_VIEWED_SCORES;
     TheCampaign.MissionEvaluator->PreDogfightEval();
     ApplySettings();
 
@@ -962,7 +962,7 @@ void DogfightClass::RegenerateAvailableAircraft(void)
                     if (theObject == FalconLocalSession->GetPlayerEntity())
                     {
                         UnSetLocalFlag(DF_PLAYER_REQ_REGEN);
-                        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() & ~SHOW_DOGFIGHT_SCORES);
+                        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() & compl SHOW_DOGFIGHT_SCORES);
                     }
 
 #ifdef DEBUG

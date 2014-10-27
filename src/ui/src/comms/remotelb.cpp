@@ -38,7 +38,7 @@ void RemoteLB::Cleanup()
         delete Patch_;
 
     Patch_ = NULL;
-    flags_ &= ~(PHOTO_CLEANUP | PATCH_CLEANUP | PHOTO_READY | PATCH_READY);
+    flags_ &= compl (PHOTO_CLEANUP | PATCH_CLEANUP | PHOTO_READY | PATCH_READY);
 }
 
 void RemoteLB::SetPilotData(LB_PILOT *data)

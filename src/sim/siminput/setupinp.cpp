@@ -868,7 +868,7 @@ void ExtendedKeyInput(unsigned long key, int)
             memset(chatterStr, 0, sizeof(chatterStr));
             UseInputFn = NULL;
             DiscardInputFn = NULL;
-            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() & ~SHOW_CHATBOX);
+            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() & compl SHOW_CHATBOX);
             break;
 
         case DIK_ESCAPE:
@@ -883,7 +883,7 @@ void ExtendedKeyInput(unsigned long key, int)
             memset(chatterStr, 0, sizeof(chatterStr));
             UseInputFn = NULL;
             DiscardInputFn = NULL;
-            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() & ~SHOW_CHATBOX);
+            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() & compl SHOW_CHATBOX);
             break;
     }
 }

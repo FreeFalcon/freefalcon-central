@@ -30,7 +30,7 @@ void TViewPoint::Setup(int minimumLOD, int maximumLOD, float *fetchRanges)
 
     minLOD  = minimumLOD;
     maxLOD  = maximumLOD;
-    nLists  = maxLOD + 1; // Wastes extra array entries if minLOD != 0 (~ 50 bytes per)
+    nLists  = maxLOD + 1; // Wastes extra array entries if minLOD != 0 (compl  50 bytes per)
 
     maxRange = new float[(maxLOD + 1) ];
 

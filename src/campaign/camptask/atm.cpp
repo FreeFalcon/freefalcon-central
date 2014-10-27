@@ -558,7 +558,7 @@ int AirTaskingManagerClass::Task(void)
         return 0;
 
     // Clear flags
-    flags &= ~ATM_NEW_PLANES;
+    flags &= compl ATM_NEW_PLANES;
     flags |= ATM_NEW_REQUESTS;
 
     // Now traverse my request list
@@ -674,7 +674,7 @@ int AirTaskingManagerClass::Task(void)
 
     // we actually finished traversing the whole list.
     // Mark us as not having new requests and move the delayed list to the request list
-    flags &= ~ATM_NEW_REQUESTS;
+    flags &= compl ATM_NEW_REQUESTS;
     lp = delayedList->GetFirstElement();
 
     while (lp)

@@ -1,3 +1,4 @@
+#include <ciso646>
 #include "caution.h"
 #include "debuggr.h"
 
@@ -132,7 +133,7 @@ void CautionClass::ClearCaution(int subsystem)
     vectorNum = subsystem / BITS_PER_VECTOR;
     bitNum = subsystem - vectorNum * BITS_PER_VECTOR;
 
-    mpBitVector[vectorNum] &= ~(0x01 << bitNum);
+    mpBitVector[vectorNum] &= compl (0x01 << bitNum);
 
 }
 

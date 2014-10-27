@@ -18,9 +18,9 @@ VuLineIterator::VuLineIterator
 {
     curRB_ = 0;
     key1min_ = 0;
-    key1max_ = static_cast<VU_KEY>(~0);
+    key1max_ = static_cast<VU_KEY>(compl 0);
     key2min_ = 0;
-    key2max_ = static_cast<VU_KEY>(~0);
+    key2max_ = static_cast<VU_KEY>(compl 0);
     key1cur_ = 0;
 
     VU_KEY key1origin      = coll->filter_->Key1(origin);
@@ -73,9 +73,9 @@ VuLineIterator::VuLineIterator(
 {
     curRB_ = 0;
     key1min_ = 0;
-    key1max_ = static_cast<VU_KEY>(~0);
+    key1max_ = static_cast<VU_KEY>(compl 0);
     key2min_ = 0;
-    key2max_ = static_cast<VU_KEY>(~0);
+    key2max_ = static_cast<VU_KEY>(compl 0);
     key1cur_ = 0;
     VU_KEY key1origin      = coll->filter_->CoordToKey1(xPos0);
     VU_KEY key2origin      = coll->filter_->CoordToKey2(yPos0);

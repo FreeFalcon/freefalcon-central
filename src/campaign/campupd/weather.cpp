@@ -457,7 +457,7 @@ void WeatherClass::ReceiveWeather(FalconWeatherMessage* message)
     if (TheCampaign.Flags & CAMP_NEED_WEATHER)
     {
         GenerateClouds(FALSE);
-        TheCampaign.Flags &= ~CAMP_NEED_WEATHER;
+        TheCampaign.Flags &= compl CAMP_NEED_WEATHER;
     }
 
     TheCampaign.GotJoinData();

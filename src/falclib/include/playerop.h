@@ -365,7 +365,7 @@ public:
     };
     void ClearSimFlag(int flag)
     {
-        SimFlags &= ~flag;
+        SimFlags &= compl flag;
     };
 
     void SetDispFlag(int flag)
@@ -374,7 +374,7 @@ public:
     };
     void ClearDispFlag(int flag)
     {
-        DispFlags &= ~flag;
+        DispFlags &= compl flag;
     };
 
     void SetObjFlag(int flag)
@@ -383,7 +383,7 @@ public:
     };
     void ClearObjFlag(int flag)
     {
-        ObjFlags &= ~flag;
+        ObjFlags &= compl flag;
     };
 
     void SetGenFlag(int flag)
@@ -392,7 +392,7 @@ public:
     };
     void ClearGenFlag(int flag)
     {
-        GeneralFlags &= ~flag;
+        GeneralFlags &= compl flag;
     };
 
     void SetStartFlag(StartFlag flag)

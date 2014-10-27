@@ -3570,7 +3570,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'd':
-            gDumping = ~gDumping;
+            gDumping = compl gDumping;
             break;
 
         case 'D':

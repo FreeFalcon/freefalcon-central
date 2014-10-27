@@ -569,7 +569,7 @@ public:
     /** sets the number of vehicles in a given group of the unit. */
     void SetNumVehicles(int vg, int n)
     {
-        SetRoster((roster & ~(3 << (vg * 2))) | ((n & 0x03) << (vg * 2)));
+        SetRoster((roster & compl (3 << (vg * 2))) | ((n & 0x03) << (vg * 2)));
     }
     void SetTarget(FalconEntity *e)
     {

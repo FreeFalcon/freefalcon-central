@@ -194,29 +194,29 @@ void C_Button::SetLabelFlagBitsOn(long flags)
 
     // Mutually exclusive flags...
     if (flags & C_BIT_TOP)
-        LabelFlags_ &= ~(C_BIT_VCENTER | C_BIT_BOTTOM);
+        LabelFlags_ &= compl (C_BIT_VCENTER | C_BIT_BOTTOM);
 
     if (flags & C_BIT_BOTTOM)
-        LabelFlags_ &= ~(C_BIT_VCENTER | C_BIT_TOP);
+        LabelFlags_ &= compl (C_BIT_VCENTER | C_BIT_TOP);
 
     if (flags & C_BIT_VCENTER)
-        LabelFlags_ &= ~(C_BIT_TOP | C_BIT_BOTTOM);
+        LabelFlags_ &= compl (C_BIT_TOP | C_BIT_BOTTOM);
 
     if (flags & C_BIT_LEFT)
-        LabelFlags_ &= ~(C_BIT_HCENTER | C_BIT_RIGHT);
+        LabelFlags_ &= compl (C_BIT_HCENTER | C_BIT_RIGHT);
 
     if (flags & C_BIT_RIGHT)
-        LabelFlags_ &= ~(C_BIT_HCENTER | C_BIT_LEFT);
+        LabelFlags_ &= compl (C_BIT_HCENTER | C_BIT_LEFT);
 
     if (flags & C_BIT_HCENTER)
-        LabelFlags_ &= ~(C_BIT_LEFT | C_BIT_RIGHT);
+        LabelFlags_ &= compl (C_BIT_LEFT | C_BIT_RIGHT);
 
     SetLabelInfo();
 }
 
 void C_Button::SetLabelFlagBitsOff(long flags)
 {
-    LabelFlags_ &= ~flags;
+    LabelFlags_ &= compl flags;
     SetLabelInfo();
 }
 

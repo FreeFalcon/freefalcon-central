@@ -680,7 +680,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
         return 0;
         // We're resuming a previous request.
         ShiAssert(0); // KCK: I don't want to do this anymore. These are sent reliably
-        need_from_master = Flags & (CAMP_NEED_MASK & ~CAMP_NEED_ENTITIES);
+        need_from_master = Flags & (CAMP_NEED_MASK & compl CAMP_NEED_ENTITIES);
         need_from_all = Flags & (CAMP_NEED_MASK & CAMP_NEED_ENTITIES);
 
         // resend our master session information requests here.
@@ -752,7 +752,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
         gCampDataVersion = gCurrentDataVersion;
 
         // Clear previous requests
-        Flags &= ~CAMP_NEED_MASK;
+        Flags &= compl CAMP_NEED_MASK;
 
         if (Flags & CAMP_LIGHT)
         {
@@ -793,7 +793,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
 
     // Assume we'll get all our entities in time - ie: don't block on this request
-    Flags &= ~CAMP_NEED_ENTITIES;
+    Flags &= compl CAMP_NEED_ENTITIES;
 
     MonoPrint("Done requesting shit... \n");
 
@@ -1883,7 +1883,7 @@ void CampaignClass::ClearCurrentPreload(void)
         FreeSquadronData();
         ChillTypes();
         CampLeaveCriticalSection();
-        Flags &= ~CAMP_PRELOADED;
+        Flags &= compl CAMP_PRELOADED;
     }
 }
 
@@ -1925,7 +1925,7 @@ void CampaignClass::SetOnlineStatus(int online)
     }
     else
     {
-        Flags &= ~CAMP_ONLINE;
+        Flags &= compl CAMP_ONLINE;
     }
 }
 

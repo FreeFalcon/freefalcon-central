@@ -44,7 +44,7 @@
    c6   31 May 92  M. Adler        added some typecasts to eliminate warnings
    c7   27 Jun 92  G. Roelofs      added some more typecasts (444:  MSC bug).
    c8    5 Oct 92  J-l. Gailly     added ifdef'd code to deal with PKZIP bug.
-   c9    9 Oct 92  M. Adler        removed a memory error message (~line 416).
+   c9    9 Oct 92  M. Adler        removed a memory error message (compl line 416).
    c10  17 Oct 92  G. Roelofs      changed ULONG/UWORD/byte to ulg/ush/uch,
    removed old inflate, renamed inflate_entry
    to inflate, added Mark's fix to a comment.
@@ -874,7 +874,7 @@ int inflate_stored(COMPRESSED_FILE * cmp)
 
     NEEDBITS(16)
 
-    if (n != (unsigned)((~b) & 0xffff))
+    if (n != (unsigned)((compl b) & 0xffff))
         return 1;               /* error in compressed data */
 
     DUMPBITS(16)

@@ -433,7 +433,7 @@ void ContextMPR::StartFrame(void)
     {
         Sleep(1000);
 
-        if (GetKeyState(VK_F4) & ~1)
+        if (GetKeyState(VK_F4) & compl 1)
             DebugBreak();
 
         bRenderStateHighlightReplaceTargetState++;
@@ -2061,7 +2061,7 @@ void ContextMPR::RestoreState(GLint state)
 
 #if defined _DEBUG && defined _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT_REPLACE
 
-    if (GetKeyState(VK_F4) & ~1)
+    if (GetKeyState(VK_F4) & compl 1)
     {
         if (!bEnableRenderStateHighlightReplace)
             bEnableRenderStateHighlightReplace = true;

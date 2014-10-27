@@ -123,7 +123,7 @@ public:
     };
     void ClearBombFlag(int newFlag)
     {
-        flags &= ~newFlag;
+        flags &= compl newFlag;
     };
     int IsSetBombFlag(int newFlag)
     {

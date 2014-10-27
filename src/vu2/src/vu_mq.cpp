@@ -1,5 +1,6 @@
 /** @file vu_mq.cpp message queue implementation */
 
+#include <ciso646>
 #include "vu2.h"
 
 ////////////////////
@@ -277,7 +278,7 @@ int VuMessageQueue::InvalidateMessages(VU_BOOL (*evalFunc)(VuMessage*, void*), v
 
 void VuMessageQueue::RepostMessage(VuMessage* msg, int delay)
 {
-    msg->flags_ |= ~VU_LOOPBACK_MSG_FLAG;
+    msg->flags_ |= compl VU_LOOPBACK_MSG_FLAG;
     VuTimerEvent *timer = new VuTimerEvent(0, vuxRealTime + delay, VU_DELAY_TIMER, msg);
     VuMessageQueue::PostVuMessage(timer);
 }

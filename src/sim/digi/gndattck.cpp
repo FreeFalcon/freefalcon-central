@@ -202,7 +202,7 @@ void DigitalBrain::GroundAttackMode(void)
     // 2002-03-08 ADDED BY S.G. Turn off the lasing flag we were lasing (fail safe)
     if (SimLibElapsedTime > waitingForShot && (moreFlags & KeepLasing))
     {
-        moreFlags &= ~KeepLasing;
+        moreFlags &= compl KeepLasing;
     }
 
     // 2001-06-18 ADDED BY S.G. AI NEED TO RE-EVALUATE ITS TARGET FROM TIME TO TIME, UNLESS THE LEAD IS THE PLAYER
@@ -3824,7 +3824,7 @@ void DigitalBrain::DropGBU(float approxRange, float ata, RadarClass* theRadar)
             // Force a weapon/target selection
             madeAGPass = TRUE;
             onStation = NotThereYet;
-            moreFlags &= ~KeepLasing; // 2002-03-08 ADDED BY S.G. Not lasing anymore
+            moreFlags &= compl KeepLasing; // 2002-03-08 ADDED BY S.G. Not lasing anymore
         }
         else if (SimLibElapsedTime == waitingForShot) // Turn but keep designating
         {

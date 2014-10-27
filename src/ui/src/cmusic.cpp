@@ -444,7 +444,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
                 }
                 else
                 {
-                    Stream->Status &= ~SND_IS_IMAADPCM;
+                    Stream->Status &= compl SND_IS_IMAADPCM;
 
                     if (Stream->ImaInfo)
                     {

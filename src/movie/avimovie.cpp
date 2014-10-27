@@ -16,6 +16,7 @@
    Programmed by Kuswara Pranawahadi               September 5, 1996
 */
 
+#include <ciso646>
 #include <windows.h>
 #include "fsound.h" //psound
 #include "avimovie.h"
@@ -1092,7 +1093,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
             item->status |= MOVIE_STATUS_STOP_THREAD;
             item->lastError = exitCode = MOVIE_BUFFER_LOCK_FAIL;
             WaitForSingleObject((HANDLE) item->hFillerThread, INFINITE);
-            item->status &= ~MOVIE_STATUS_PLAYING;
+            item->status &= compl MOVIE_STATUS_PLAYING;
         }
 
         surfaceReleasePointer(item->ddSurface, &(item->sa));
@@ -1279,7 +1280,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
     //
 #endif
 
-    item->status &= ~MOVIE_STATUS_PLAYING;
+    item->status &= compl MOVIE_STATUS_PLAYING;
     return (unsigned int) exitCode;
 }
 

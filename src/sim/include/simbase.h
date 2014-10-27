@@ -1,6 +1,7 @@
 #ifndef _SIMBASE_H
 #define _SIMBASE_H
 
+#include <ciso646>
 #include "FalcLib/include/f4vu.h"
 #include "Falclib/include/FalcEnt.h"
 #include "geometry.h"
@@ -239,7 +240,7 @@ public:
     }
     void UnSetLocalFlag(int flag)
     {
-        localFlags &= ~(flag);
+        localFlags &= compl (flag);
     }
     int  IsSetCampaignFlag(int flag) const
     {
@@ -251,7 +252,7 @@ public:
     }
     void UnSetCampaignFlag(int flag)
     {
-        campaignFlags &= ~(flag);
+        campaignFlags &= compl (flag);
     }
     int IsSetRemoveFlag() const
     {
@@ -401,7 +402,7 @@ public:
     {
         return lastShooter;
     };
-    void SetDying(int flag); // { if (flag) specialData.flags |= OBJ_DYING; else specialData.flags &= ~OBJ_DYING;};
+    void SetDying(int flag); // { if (flag) specialData.flags |= OBJ_DYING; else specialData.flags &= compl OBJ_DYING;};
     SimBaseSpecialData* SpecialData(void)
     {
         return &specialData;

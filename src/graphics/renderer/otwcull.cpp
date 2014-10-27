@@ -10,6 +10,7 @@
  is computed and the posts required to draw the terrain within the volume
  are identified.
 \***************************************************************************/
+#include <ciso646>
 #include <math.h>
 #include "TMap.h"
 #include "Tpost.h"
@@ -934,8 +935,8 @@ void RenderOTW::TrimCornerSet(void)
                         }
 
                         // Rounding
-                        span->Tsector.startDraw = span->Tsector.startDraw & ~1;
-                        span->Tsector.stopDraw  = span->Tsector.stopDraw  & ~1;
+                        span->Tsector.startDraw = span->Tsector.startDraw & compl 1;
+                        span->Tsector.stopDraw  = span->Tsector.stopDraw  & compl 1;
                         span->Lsector.startDraw = (span->Lsector.startDraw - 1) | 1;
                         span->Lsector.stopDraw  = (span->Lsector.stopDraw  - 1) | 1;
                     }
@@ -981,8 +982,8 @@ void RenderOTW::TrimCornerSet(void)
                         // Rounding
                         span->Bsector.startDraw = (span->Bsector.startDraw - 1) | 1;
                         span->Bsector.stopDraw  = (span->Bsector.stopDraw  - 1) | 1;
-                        span->Rsector.startDraw = span->Rsector.startDraw & ~1;
-                        span->Rsector.stopDraw  = span->Rsector.stopDraw  & ~1;
+                        span->Rsector.startDraw = span->Rsector.startDraw & compl 1;
+                        span->Rsector.stopDraw  = span->Rsector.stopDraw  & compl 1;
                     }
                     else
                     {
@@ -1009,10 +1010,10 @@ void RenderOTW::TrimCornerSet(void)
                         }
 
                         // Rounding
-                        span->Bsector.startDraw = span->Bsector.startDraw & ~1;
-                        span->Bsector.stopDraw  = span->Bsector.stopDraw  & ~1;
-                        span->Lsector.startDraw = span->Lsector.startDraw & ~1;
-                        span->Lsector.stopDraw  = span->Lsector.stopDraw  & ~1;
+                        span->Bsector.startDraw = span->Bsector.startDraw & compl 1;
+                        span->Bsector.stopDraw  = span->Bsector.stopDraw  & compl 1;
+                        span->Lsector.startDraw = span->Lsector.startDraw & compl 1;
+                        span->Lsector.stopDraw  = span->Lsector.stopDraw  & compl 1;
                     }
                 }
 
@@ -1115,8 +1116,8 @@ void RenderOTW::TrimCornerSet(void)
                         span->Lsector.stopDraw  = MAX_NEGATIVE_I;
 
                         // Rounding
-                        span->Bsector.startDraw = span->Bsector.startDraw & ~1;
-                        span->Bsector.stopDraw  = span->Bsector.stopDraw  & ~1;
+                        span->Bsector.startDraw = span->Bsector.startDraw & compl 1;
+                        span->Bsector.stopDraw  = span->Bsector.stopDraw  & compl 1;
                         span->Rsector.startDraw = (span->Rsector.startDraw - 1) | 1;
                         span->Rsector.stopDraw  = (span->Rsector.stopDraw  - 1) | 1;
                     }
@@ -1155,8 +1156,8 @@ void RenderOTW::TrimCornerSet(void)
                         // Rounding
                         span->Tsector.startDraw = (span->Tsector.startDraw - 1) | 1;
                         span->Tsector.stopDraw  = (span->Tsector.stopDraw  - 1) | 1;
-                        span->Lsector.startDraw = span->Lsector.startDraw & ~1;
-                        span->Lsector.stopDraw  = span->Lsector.stopDraw  & ~1;
+                        span->Lsector.startDraw = span->Lsector.startDraw & compl 1;
+                        span->Lsector.stopDraw  = span->Lsector.stopDraw  & compl 1;
                     }
                     else
                     {
@@ -1188,10 +1189,10 @@ void RenderOTW::TrimCornerSet(void)
                         span->Lsector.stopDraw  = MAX_NEGATIVE_I;
 
                         // Rounding
-                        span->Tsector.startDraw = span->Tsector.startDraw & ~1;
-                        span->Tsector.stopDraw  = span->Tsector.stopDraw  & ~1;
-                        span->Rsector.startDraw = span->Rsector.startDraw & ~1;
-                        span->Rsector.stopDraw  = span->Rsector.stopDraw  & ~1;
+                        span->Tsector.startDraw = span->Tsector.startDraw & compl 1;
+                        span->Tsector.stopDraw  = span->Tsector.stopDraw  & compl 1;
+                        span->Rsector.startDraw = span->Rsector.startDraw & compl 1;
+                        span->Rsector.stopDraw  = span->Rsector.stopDraw  & compl 1;
                     }
                 }
             }

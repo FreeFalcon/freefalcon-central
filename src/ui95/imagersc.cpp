@@ -54,7 +54,8 @@ void IMAGE_RSC::Blit8BitFast(WORD *dest)
         *dptr++ = Palette[*sptr++];
 
 #else
-    __asm
+#undef xor
+	__asm
     {
         mov ESI, sptr
         mov EDI, dptr

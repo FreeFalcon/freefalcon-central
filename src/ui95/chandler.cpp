@@ -282,7 +282,7 @@ void C_Handler::Cleanup()
 
     while (cur)
     {
-        cur->Flags &= ~C_BIT_ENABLED;
+        cur->Flags &= compl C_BIT_ENABLED;
         cur = cur->Next;
     }
 
@@ -485,7 +485,7 @@ BOOL C_Handler::HideWindow(C_Window *thewin)
     {
         if (cur->win == thewin && (cur->Flags & C_BIT_ENABLED))
         {
-            cur->Flags &= ~C_BIT_ENABLED;
+            cur->Flags &= compl C_BIT_ENABLED;
             SetBehindWindow(cur->win);
             cur->win->SetCritical(NULL);
 

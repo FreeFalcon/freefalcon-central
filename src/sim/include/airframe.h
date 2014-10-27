@@ -1418,7 +1418,7 @@ public:
     void HydrBreak(int sys);
     void HydrDown(int sys)
     {
-        hydrAB &= ~(sys & HYDR_ALL);
+        hydrAB &= compl (sys & HYDR_ALL);
     };
     void HydrRestore(int sys);
 
@@ -1456,7 +1456,7 @@ public:
     };
     void ClearEngineFlag(EngineFlags ef)
     {
-        engineFlags &= ~ ef;
+        engineFlags &= compl  ef;
     };
     void ToggleEngineFlag(EngineFlags ef)
     {
@@ -1555,7 +1555,7 @@ public:
     };
     void GeneratorOff(Generator gen)
     {
-        generators &= ~gen;
+        generators &= compl gen;
     };
     void GeneratorBreak(Generator gen)
     {
@@ -1742,7 +1742,7 @@ public:
     };
     void ClearFlag(int newFlag)
     {
-        flags &= ~newFlag;
+        flags &= compl newFlag;
     };
     int IsSet(int testFlag) const
     {

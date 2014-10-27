@@ -506,45 +506,45 @@ int GroundTaskingManagerClass::GetAddBits(Objective o, int to_collect)
         return 0;
 
     if (!o->IsSecondary())
-        add_now &= ~(COLLECT_RESERVE | COLLECT_CAPTURE | COLLECT_SECURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_DEFEND);
+        add_now &= compl (COLLECT_RESERVE | COLLECT_CAPTURE | COLLECT_SECURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_DEFEND);
 
     if (o->IsNearfront())
-        add_now &= ~(COLLECT_RESERVE | COLLECT_ASSAULT | COLLECT_AIRBORNE);
+        add_now &= compl (COLLECT_RESERVE | COLLECT_ASSAULT | COLLECT_AIRBORNE);
     else
-        add_now &= ~(COLLECT_CAPTURE | COLLECT_DEFEND);
+        add_now &= compl (COLLECT_CAPTURE | COLLECT_DEFEND);
 
     if (owner != o->GetTeam())
-        add_now &= ~(COLLECT_RESERVE | COLLECT_SECURE | COLLECT_DEFEND | COLLECT_SUPPORT | COLLECT_REPAIR | COLLECT_AIRDEFENSE | COLLECT_RADAR);
+        add_now &= compl (COLLECT_RESERVE | COLLECT_SECURE | COLLECT_DEFEND | COLLECT_SUPPORT | COLLECT_REPAIR | COLLECT_AIRDEFENSE | COLLECT_RADAR);
 
     if (GetRoE(owner, o->GetTeam(), ROE_GROUND_CAPTURE) != ROE_ALLOWED)
-        add_now &= ~(COLLECT_CAPTURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_COMMANDO);
+        add_now &= compl (COLLECT_CAPTURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_COMMANDO);
 
     if (o->Abandoned())
-        add_now &= ~COLLECT_DEFEND;
+        add_now &= compl COLLECT_DEFEND;
 
     if (!o->IsFrontline() && !o->IsSecondline())
-        add_now &= ~(COLLECT_SECURE);
+        add_now &= compl (COLLECT_SECURE);
 
     if (!o->IsBeach())
-        add_now &= ~(COLLECT_ASSAULT);
+        add_now &= compl (COLLECT_ASSAULT);
 
     if (1) // defended
-        add_now &= ~(COLLECT_AIRBORNE);
+        add_now &= compl (COLLECT_AIRBORNE);
 
     if (!o->CommandoSite())
-        add_now &= ~(COLLECT_COMMANDO);
+        add_now &= compl (COLLECT_COMMANDO);
 
     if (!o->ArtillerySite())
-        add_now &= ~(COLLECT_SUPPORT);
+        add_now &= compl (COLLECT_SUPPORT);
 
     if (!o->NeedRepair() || o->GetObjectiveStatus() > 50)
-        add_now &= ~(COLLECT_REPAIR);
+        add_now &= compl (COLLECT_REPAIR);
 
     if (!o->SamSite())
-        add_now &= ~(COLLECT_AIRDEFENSE);
+        add_now &= compl (COLLECT_AIRDEFENSE);
 
     if (!o->RadarSite())
-        add_now &= ~(COLLECT_RADAR);
+        add_now &= compl (COLLECT_RADAR);
 
     return add_now;
 }
@@ -1312,7 +1312,7 @@ short EncodePrimaryObjectiveList(uchar teammask, uchar **buffer)
     for (team = 0; team < NUM_TEAMS; team++)
     {
         if (!TeamInfo[team])
-            teammask &= ~(1 << team);
+            teammask &= compl (1 << team);
         else if (teammask & (1 << team))
             teams++;
     }
@@ -1404,7 +1404,7 @@ void DecodePrimaryObjectiveList(uchar *datahead, FalconEntity *fe)
         count--;
     }
 
-    TheCampaign.Flags &= ~CAMP_NEED_PRIORITIES;
+    TheCampaign.Flags &= compl CAMP_NEED_PRIORITIES;
 }
 
 // This should send the current priority of all primary objectives

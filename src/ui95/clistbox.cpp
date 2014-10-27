@@ -218,7 +218,7 @@ void C_ListBox::SetFlags(long flags)
 
     if (Label_)
     {
-        Label_->SetFlags(flags & ~(C_BIT_USEBGFILL));
+        Label_->SetFlags(flags & compl (C_BIT_USEBGFILL));
     }
 }
 
@@ -286,7 +286,7 @@ C_ListBox *C_ListBox::AddItem(long ID, short, _TCHAR *Str)
     newitem->Label_->SetColor(C_STATE_1, SelColor_);
     newitem->Label_->SetGroup(5551212);
     newitem->Label_->SetFont(Font_);
-    newitem->Label_->SetFlags((GetFlags() & ~(C_BIT_INVISIBLE | C_BIT_ABSOLUTE | C_BIT_USEBGFILL | C_BIT_REMOVE)));
+    newitem->Label_->SetFlags((GetFlags() & compl (C_BIT_INVISIBLE | C_BIT_ABSOLUTE | C_BIT_USEBGFILL | C_BIT_REMOVE)));
     newitem->Label_->SetOwner(this);
     newitem->Label_->SetParent(Parent_);
     newitem->Next = NULL;
@@ -507,7 +507,7 @@ void C_ListBox::SetItemFlags(long ID, long flags)
 
     if (cur)
     {
-        cur->Label_->SetFlags(flags & ~(C_BIT_USEBGFILL));
+        cur->Label_->SetFlags(flags & compl (C_BIT_USEBGFILL));
     }
 }
 

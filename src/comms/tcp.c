@@ -1,3 +1,4 @@
+#include <ciso646>
 #include "capiopt.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -1414,7 +1415,7 @@ static void setHeader(char *data, int size)
         header = (tcpHeader *)data;
         header->header_base = HEADER_BASE;
         header->size = (unsigned short)size;
-        header->inv_size = (unsigned short)(~size);
+        header->inv_size = (unsigned short)(compl size);
     }
 }
 

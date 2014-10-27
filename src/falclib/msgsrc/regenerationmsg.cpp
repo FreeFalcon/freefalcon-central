@@ -48,8 +48,8 @@ int FalconRegenerationMessage::Process(uchar autodisp)
             {
                 MonoPrint("Delaying Regeneration Message\n");
                 // sfr: flag bug, setting all but loopback :/
-                //this->flags_ |= ~VU_LOOPBACK_MSG_FLAG;
-                this->flags_ &= ~VU_LOOPBACK_MSG_FLAG;
+                //this->flags_ |= compl VU_LOOPBACK_MSG_FLAG;
+                this->flags_ &= compl VU_LOOPBACK_MSG_FLAG;
                 VuTimerEvent *timer = new VuTimerEvent(0, vuxRealTime + 1000, VU_DELAY_TIMER, this);
                 VuMessageQueue::PostVuMessage(timer);
 

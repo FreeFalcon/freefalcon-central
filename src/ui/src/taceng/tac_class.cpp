@@ -109,7 +109,7 @@ void tactical_mission::set_flag(long value)
 
 void tactical_mission::clear_flag(long value)
 {
-    TheCampaign.TE_flags &= ~value;
+    TheCampaign.TE_flags &= compl value;
 }
 
 tactical_mission::tactical_mission(char *the_filename)
@@ -546,7 +546,7 @@ void tactical_mission::process_load(char *data, int size, int)
                 case t_flags:
                 {
                     TheCampaign.TE_flags = atoi(buffer);
-                    TheCampaign.TE_flags &= ~tf_start_paused; // Don't set the paused flag
+                    TheCampaign.TE_flags &= compl tf_start_paused; // Don't set the paused flag
                     break;
                 }
 

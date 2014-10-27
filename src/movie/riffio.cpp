@@ -11,6 +11,7 @@
    Programmed by Kuswara Pranawahadi               September 5, 1996
 */
 
+#include <ciso646>
 #include <windows.h>
 #include "fsound.h" //psound
 #include "riffio.h"
@@ -203,7 +204,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
             */
 
             if (streams->mainAVIHeader.dwStreams == 1)
-                streams->audioFlag &= ~STREAM_AUDIO_ON;
+                streams->audioFlag &= compl STREAM_AUDIO_ON;
             else
             {
                 /*

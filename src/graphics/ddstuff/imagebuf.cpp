@@ -7,6 +7,7 @@
  for blit operations.
 \***************************************************************************/
 
+#include <ciso646>
 #include "stdafx.h"
 #include "Rotate.h"
 #include "Device.h"
@@ -1118,7 +1119,7 @@ void ImageBuffer::BackBufferToRAW(char *filename)
     bih.biPlanes = 1;
     bih.biBitCount = 24;
     bih.biCompression = BI_RGB;
-    bih.biSizeImage = ((((bih.biWidth * bih.biBitCount) + 31) & ~31) >> 3) * bih.biHeight;
+    bih.biSizeImage = ((((bih.biWidth * bih.biBitCount) + 31) & compl 31) >> 3) * bih.biHeight;
 
     bfh.bfType = 0x4d42;
     bfh.bfReserved1 = 0;

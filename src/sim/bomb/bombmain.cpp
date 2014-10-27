@@ -345,7 +345,7 @@ int BombClass::Exec(void)
 
     if (IsDead() || (flags & FirstFrame))
     {
-        flags &= ~FirstFrame;
+        flags &= compl FirstFrame;
         return TRUE;
     }
 

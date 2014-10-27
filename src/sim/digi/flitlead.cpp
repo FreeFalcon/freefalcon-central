@@ -22,8 +22,8 @@ void DigitalBrain::CommandFlight(void)
             {
                 if (curMode != WaypointMode)
                 {
-                    moreFlags &= ~KeepTryingAttack;
-                    moreFlags &= ~KeepTryingRejoin;
+                    moreFlags &= compl KeepTryingAttack;
+                    moreFlags &= compl KeepTryingRejoin;
 
                     // KCK: I added the GetCampaignObject() check because BaseData() was observed to be a MissileClass
                     // But why would we be targetting a missile class?
@@ -80,8 +80,8 @@ void DigitalBrain::CommandFlight(void)
                 AiSendCommand(self, FalconWingmanMsg::WMRejoin, AiFlight, FalconNullId);
                 AiSendCommand(self, FalconWingmanMsg::WMCoverMode, AiFlight, FalconNullId);
 
-                moreFlags &= ~KeepTryingAttack;
-                moreFlags &= ~KeepTryingRejoin;
+                moreFlags &= compl KeepTryingAttack;
+                moreFlags &= compl KeepTryingRejoin;
             }
             else
                 moreFlags |= KeepTryingRejoin;

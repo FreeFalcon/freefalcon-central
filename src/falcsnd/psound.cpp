@@ -2792,7 +2792,7 @@ void CSoundMgr::StreamPause(SoundStream *Stream)
     if (gSoundDriver)
     {
         Stream->DSoundBuffer->Stop();
-        Stream->Status &= ~SND_USE_THREAD;
+        Stream->Status &= compl SND_USE_THREAD;
         NotifyThread();
     }
 }
@@ -2806,7 +2806,7 @@ void CSoundMgr::StreamFadeOut(SoundStream *Stream)
     {
         Stream->FadeOut = DSBVOLUME_MIN;
         Stream->Status |= SND_STREAM_FADE_OUT;
-        Stream->Status &= ~SND_STREAM_FADE_IN;
+        Stream->Status &= compl SND_STREAM_FADE_IN;
         NotifyThread();
     }
 }
@@ -2826,7 +2826,7 @@ void CSoundMgr::StreamResume(SoundStream *Stream)
         if (FAILED(hr))
             DSoundCheck(hr);
 
-        Stream->Status &= ~SND_STREAM_FADEDOUT;
+        Stream->Status &= compl SND_STREAM_FADEDOUT;
         NotifyThread();
     }
 }
@@ -2837,7 +2837,7 @@ void CSoundMgr::StreamResumeFadeIn(SoundStream *Stream)
         return;
 
     Stream->Status |= SND_STREAM_FADE_IN;
-    Stream->Status &= ~(SND_STREAM_FADEDOUT | SND_STREAM_FADE_OUT);
+    Stream->Status &= compl (SND_STREAM_FADEDOUT | SND_STREAM_FADE_OUT);
     StreamResume(Stream);
 }
 
@@ -2856,7 +2856,7 @@ void CSoundMgr::StreamStop(SoundStream *Stream)
             Stream->fp = INVALID_HANDLE_VALUE;
         }
 
-        Stream->Status &= ~SND_USE_THREAD;
+        Stream->Status &= compl SND_USE_THREAD;
         Stream->DSoundBuffer->Stop();
         NotifyThread();
     }
@@ -2939,7 +2939,7 @@ BOOL CSoundMgr::StartFileStream(long StreamID, char *filename, long Flags, long 
         Stream->ImaInfo->srcsize = Stream->ImaInfo->bufsize;
     }
     else
-        Stream->Status &= ~SND_IS_IMAADPCM;
+        Stream->Status &= compl SND_IS_IMAADPCM;
 
     if (Flags & SND_STREAM_LOOP)
         Stream->Status |= SND_STREAM_LOOP;
@@ -3024,7 +3024,7 @@ BOOL CSoundMgr::StartMemoryStream(long StreamID, RIFF_FILE *wave, long Flags)
         Stream->ImaInfo->srcsize = size;
     }
     else
-        Stream->Status &= ~SND_IS_IMAADPCM;
+        Stream->Status &= compl SND_IS_IMAADPCM;
 
     if (Flags & SND_STREAM_LOOP)
         Stream->Status |= SND_STREAM_LOOP;
@@ -3382,7 +3382,7 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
             {
                 if (Stream->Status & SND_STREAM_FINAL)
                 {
-                    Stream->Status &= ~SND_STREAM_FINAL;
+                    Stream->Status &= compl SND_STREAM_FINAL;
                     Stream->Status |= SND_STREAM_DONE;
                 }
                 else
@@ -3405,7 +3405,7 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
             {
                 if (Stream->Status & SND_STREAM_FINAL)
                 {
-                    Stream->Status &= ~SND_STREAM_FINAL;
+                    Stream->Status &= compl SND_STREAM_FINAL;
                     Stream->Status |= SND_STREAM_DONE;
                 }
                 else

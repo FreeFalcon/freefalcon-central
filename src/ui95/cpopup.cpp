@@ -369,7 +369,7 @@ void C_PopupList::SetItemFlagBitOff(long ID, long flags)
     cur = FindID(ID);
 
     if (cur)
-        cur->flags_ &= ~flags;
+        cur->flags_ &= compl flags;
 }
 
 void C_PopupList::SetItemState(long ID, short val)

@@ -239,7 +239,7 @@ extern int  __cdecl _flush(FILE * str);
 
 #define FLAG_TEST(a,b)           ( a & b )
 #define FLAG_SET(a,b)            ( a |= b )
-#define FLAG_UNSET(a,b)          ( a xor_eq ~b )
+#define FLAG_UNSET(a,b)          ( a xor_eq compl b )
 
 #define HI_WORD(a)               ((a)>>16)
 #define LO_WORD(a)               ((a)&0x0ffff)
@@ -5847,7 +5847,7 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
 
         /* Clear EOF flag */
 
-        stream -> _flag &= ~_IOEOF;
+        stream -> _flag &= compl _IOEOF;
 
         /* If seeking relative to current location, then convert to
            a seek relative to beginning of file.  This accounts for
@@ -5869,7 +5869,7 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
            won't cost quite so much */
 
         if (stream->_flag & _IORW)
-            stream->_flag &= ~(_IOWRT | _IOREAD);
+            stream->_flag &= compl (_IOWRT | _IOREAD);
         else
         {
             if ((stream->_flag & _IOREAD) &&

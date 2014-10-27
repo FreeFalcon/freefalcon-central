@@ -1609,7 +1609,7 @@ static void SaveValues(void)
      if(button->GetState() == C_STATE_1)
      PlayerOptions.ObjFlags |= DISP_OBJ_TEXTURES;
      else
-     PlayerOptions.ObjFlags &= ~DISP_OBJ_TEXTURES;
+     PlayerOptions.ObjFlags &= compl DISP_OBJ_TEXTURES;
      }
     */
     slider = (C_Slider *)win->FindControl(OBJECT_DETAIL);

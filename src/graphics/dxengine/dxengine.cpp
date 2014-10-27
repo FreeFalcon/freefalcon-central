@@ -1,3 +1,4 @@
+#include <ciso646>
 #include "time.h"
 #include <math.h>
 #include "../include/ObjectInstance.h"
@@ -880,7 +881,7 @@ void CDXEngine::DrawSurface()
     // Selects changed Flags
     DXFlagsType ChangedFlags, DisabledFlags, EnabledFlags;
     ChangedFlags.w = m_LastFlags.w ^ NewFlags.w;
-    DisabledFlags.w = ChangedFlags.w & (~NewFlags.w);
+    DisabledFlags.w = ChangedFlags.w & (compl NewFlags.w);
     EnabledFlags.w = ChangedFlags.w & NewFlags.w;
 
 
@@ -1251,7 +1252,7 @@ void CDXEngine::SWITCHManage()
     DWORD Value = m_TheObjectInstance->SwitchValues[SWNumber];
     BYTE *LastAddr = m_NODE.BYTE;
 
-    if (m_NODE.DOF->Type == XSWITCH) Value = ~Value;
+    if (m_NODE.DOF->Type == XSWITCH) Value = compl Value;
 
     // Traverse the Switch Items
     while (m_NODE.DOF->SwitchNumber == SWNumber && (m_NODE.DOF->Type == SWITCH || m_NODE.DOF->Type == XSWITCH))

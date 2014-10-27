@@ -3754,7 +3754,7 @@ void MissionEvaluationClass::RegisterMove(Flight flight)
             // Check if our VOL time is over
             else if (now > tofft)
             {
-                feflags &= ~FEVAL_ON_STATION;
+                feflags &= compl FEVAL_ON_STATION;
                 meflags |= MISEVAL_FLIGHT_STATION_OVER;
             }
 

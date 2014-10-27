@@ -295,10 +295,10 @@ int PlayerOptionsClass::SaveOptions(_TCHAR* filename)
 // returns TRUE if in FULL compliance w/rules
 int PlayerOptionsClass::InCompliance(RulesStruct *rules)
 {
-    if ((SimFlags & SIM_RULES_FLAGS) & ~rules->SimFlags)
+    if ((SimFlags & SIM_RULES_FLAGS) & compl rules->SimFlags)
         return FALSE;
 
-    if ((GeneralFlags & GEN_RULES_FLAGS) & ~rules->GeneralFlags)
+    if ((GeneralFlags & GEN_RULES_FLAGS) & compl rules->GeneralFlags)
         return FALSE;
 
     if (ObjectMagnification() > rules->ObjMagnification)
@@ -326,9 +326,9 @@ int PlayerOptionsClass::InCompliance(RulesStruct *rules)
 }
 void PlayerOptionsClass::ComplyWRules(RulesStruct *rules)
 {
-    SimFlags &= ~(SIM_RULES_FLAGS & ~rules->SimFlags);
+    SimFlags &= compl (SIM_RULES_FLAGS & compl rules->SimFlags);
 
-    GeneralFlags &= ~(GEN_RULES_FLAGS & ~rules->GeneralFlags);
+    GeneralFlags &= compl (GEN_RULES_FLAGS & compl rules->GeneralFlags);
 
     if (ObjectMagnification() > rules->ObjMagnification)
         ObjMagnification = rules->ObjMagnification;

@@ -621,11 +621,11 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
 
             nMsb = FindMsb(ddsd.dwWidth);
 
-            if (ddsd.dwWidth & ~(1 << nMsb)) ddsd.dwWidth = 1 << (nMsb + 1);
+            if (ddsd.dwWidth & compl (1 << nMsb)) ddsd.dwWidth = 1 << (nMsb + 1);
 
             nMsb = FindMsb(ddsd.dwHeight);
 
-            if (ddsd.dwHeight & ~(1 << nMsb)) ddsd.dwHeight = 1 << (nMsb + 1);
+            if (ddsd.dwHeight & compl (1 << nMsb)) ddsd.dwHeight = 1 << (nMsb + 1);
         }
 
         // Force square
@@ -1955,7 +1955,7 @@ bool Texture::DumpImageToFile(char *szFile, int palID)
     // Filter out fake chroma textures
     if (!bChroma)
     {
-        this->flags &= ~MPR_TI_CHROMAKEY;
+        this->flags &= compl MPR_TI_CHROMAKEY;
     }
 
     return true;

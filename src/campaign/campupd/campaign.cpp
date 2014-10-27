@@ -3193,7 +3193,7 @@ void MakeTacticalEdit(void)
 
 void RemoveTacticalEdit(void)
 {
-    TheCampaign.Flags &= ~CAMP_TACTICAL_EDIT;
+    TheCampaign.Flags &= compl CAMP_TACTICAL_EDIT;
 }
 
 void PauseTacticalEngagement(void)
@@ -3203,7 +3203,7 @@ void PauseTacticalEngagement(void)
 
 void ResumeTacticalEngagement(void)
 {
-    TheCampaign.Flags &= ~CAMP_TACTICAL_PAUSE;
+    TheCampaign.Flags &= compl CAMP_TACTICAL_PAUSE;
 }
 
 void OutputRef(VuEntity *ent, int refs)

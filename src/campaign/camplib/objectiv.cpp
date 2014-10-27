@@ -2322,7 +2322,7 @@ void ObjectiveClass::SetFeatureStatus(int f, int n)
     }
 
     f -= i * 4;
-    obj_data.fstatus[i] = (uchar)((obj_data.fstatus[i] & ~(3 << (f * 2))) | (n << (f * 2)));
+    obj_data.fstatus[i] = (uchar)((obj_data.fstatus[i] & compl (3 << (f * 2))) | (n << (f * 2)));
     //MakeObjectiveDirty (DIRTY_STATUS, DDP[9].priority);
     MakeObjectiveDirty(DIRTY_STATUS, SEND_NOW);
     SetDelta(1);
@@ -2348,7 +2348,7 @@ void ObjectiveClass::SetFeatureStatus(int f, int n, int from)
     }
 
     f -= i * 4;
-    obj_data.fstatus[i] = (uchar)((obj_data.fstatus[i] & ~(3 << (f * 2))) | (n << (f * 2)));
+    obj_data.fstatus[i] = (uchar)((obj_data.fstatus[i] & compl (3 << (f * 2))) | (n << (f * 2)));
     ResetObjectiveStatus();
     SetDelta(1);
 }

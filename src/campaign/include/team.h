@@ -207,7 +207,7 @@ public:
     };
     void Clear(int val)
     {
-        simFlags &= ~val;
+        simFlags &= compl val;
     };
     float RadarShootShootPct(void)
     {

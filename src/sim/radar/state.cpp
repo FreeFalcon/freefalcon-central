@@ -555,7 +555,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
         else
         {
             curCursorRate = CursorRate;
-            flags &= ~WasMoving;
+            flags &= compl WasMoving;
         }
 
     }
@@ -964,7 +964,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
                 if (flags & WasMoving)
                 {
                     // MD -- 20040229: switched ordering here - need WasMoving set to FALSE to bump!
-                    flags &= ~WasMoving;
+                    flags &= compl WasMoving;
                 }
 
                 rangeChangeCmd = CheckGMBump();

@@ -66,7 +66,7 @@ VU_ID_NUMBER lastVolatileId = FIRST_VOLATILE_VU_ID_NUMBER;*/
 #define FIRST_FLIGHT_ID_NUMBER            (LAST_PACKAGE_ID_NUMBER + 1)
 #define LAST_FLIGHT_ID_NUMBER             (FIRST_PACKAGE_ID_NUMBER + MAX_NUMBER_OF_VOLATILE_UNITS)
 #define FIRST_VOLATILE_VU_ID_NUMBER   (LAST_FLIGHT_ID_NUMBER+1)
-#define LAST_VOLATILE_VU_ID_NUMBER   (~((VU_ID_NUMBER)0))
+#define LAST_VOLATILE_VU_ID_NUMBER   (compl ((VU_ID_NUMBER)0))
 
 IdNamespace ObjectiveNS(FIRST_OBJECTIVE_VU_ID_NUMBER, LAST_OBJECTIVE_VU_ID_NUMBER);
 IdNamespace NonVolatileNS(FIRST_NON_VOLATILE_VU_ID_NUMBER, LAST_NON_VOLATILE_VU_ID_NUMBER);
@@ -568,7 +568,7 @@ void CampBaseClass::SetEmitting(int e)
     }
     else if (IsEmitting())
     {
-        base_flags &= ~CBC_EMITTING;
+        base_flags &= compl CBC_EMITTING;
 
         if (IsBattalion() || IsObjective())
         {
@@ -590,7 +590,7 @@ void CampBaseClass::SetAggregate(bool agg)
     }
     else
     {
-        local_flags &= (~CBC_AGGREGATE);
+        local_flags &= (compl CBC_AGGREGATE);
     }
 }
 /*void CampBaseClass::SetAggregate (int a)
@@ -615,7 +615,7 @@ void CampBaseClass::SetJammed(int j)
     {
         if (base_flags & CBC_JAMMED)
         {
-            base_flags &= ~CBC_JAMMED;
+            base_flags &= compl CBC_JAMMED;
             //MakeCampBaseDirty (DIRTY_BASE_FLAGS, DDP[7].priority);
             MakeCampBaseDirty(DIRTY_BASE_FLAGS, SEND_SOMETIME);
         }

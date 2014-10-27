@@ -325,7 +325,7 @@ public:
     };
     void ClearFlagBit(int newFlag)
     {
-        flags &= ~newFlag;
+        flags &= compl newFlag;
     };
     void ToggleFlag(int flag)
     {
@@ -364,7 +364,7 @@ protected:
     };
     void ClearAADcltBit(int newFlag)
     {
-        aadclt &= ~newFlag;
+        aadclt &= compl newFlag;
     };
     void ToggleAADclt(int flag)
     {
@@ -385,7 +385,7 @@ protected:
     };
     void ClearAGDcltBit(int newFlag)
     {
-        agdclt &= ~newFlag;
+        agdclt &= compl newFlag;
     };
     void ToggleAGDclt(int flag)
     {
@@ -489,7 +489,7 @@ protected :
     };
     void ClrModeFlag(int flag)
     {
-        radarmodeflags &= ~flag;
+        radarmodeflags &= compl flag;
     };
     void ToggleModeFlag(int flag)
     {
@@ -513,7 +513,7 @@ protected :
     };
     void ClrIFFFlags(int flag)
     {
-        iffmodeflags &= ~flag;
+        iffmodeflags &= compl flag;
     };
     void ToggleIFFFlags(int flag)
     {

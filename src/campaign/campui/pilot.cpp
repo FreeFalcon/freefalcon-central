@@ -231,7 +231,7 @@ void DisposePilotInfo(void)
 int GetAvailablePilot(int first, int last, int owner)
 {
     int best_pilot = -1;
-    ushort best = ~0;
+    ushort best = compl 0;
 
     if (last > NumPilots)
         last = NumPilots;
@@ -340,7 +340,7 @@ void SetCallsignID(int id, int num)
 void UnsetCallsignID(int id, int num)
 {
     int temp = (0x01 << (num - 1));
-    CallsignData[id] &= (uchar)(~temp);
+    CallsignData[id] &= (uchar)(compl temp);
 }
 
 void GetCallsign(int id, int num, _TCHAR* callsign)

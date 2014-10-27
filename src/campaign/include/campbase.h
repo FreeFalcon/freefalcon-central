@@ -1,6 +1,7 @@
 #ifndef CAMPBASE_H
 #define CAMPBASE_H
 
+#include <ciso646>
 #include <tchar.h>
 #include "Entity.h"
 #include "FalcLib.h"
@@ -522,7 +523,7 @@ public:
     }
     void UnsetChecked(void)
     {
-        local_flags &= ~CBC_CHECKED;
+        local_flags &= compl CBC_CHECKED;
     }
     void SetInterest(void)
     {
@@ -530,7 +531,7 @@ public:
     }
     void UnsetInterest(void)
     {
-        local_flags &= ~CBC_INTEREST;
+        local_flags &= compl CBC_INTEREST;
     }
     void SetAwake(int d);
     void SetInPackage(int p);

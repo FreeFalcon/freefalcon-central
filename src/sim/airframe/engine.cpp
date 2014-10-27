@@ -222,7 +222,7 @@ void AirframeClass::EngineModel(float dt)
         thrust = 0.0f;
 
         // broken engine - anything but a flame out?
-        if ((platform->mFaults->GetFault(FaultClass::eng_fault) & ~FaultClass::fl_out) != 0)
+        if ((platform->mFaults->GetFault(FaultClass::eng_fault) & compl FaultClass::fl_out) != 0)
         {
             rpmCmd = 0.0f; // engine must be seized, not going to start or windmill
         }
@@ -237,7 +237,7 @@ void AirframeClass::EngineModel(float dt)
                 ClearFlag(JfsStart);
         }
         //TJL 01/18/04 Added parens to correct operator precedence error
-        else   // engine windmill (~12% at 450 knts) (me123 - this works on mine)
+        else   // engine windmill (compl 12% at 450 knts) (me123 - this works on mine)
         {
             rpmCmd = (platform->GetKias() / 450.0f) * 0.12f;
         }
@@ -991,7 +991,7 @@ void AirframeClass::MultiEngineModel(float dt)
 
 
         // broken engine - anything but a flame out?
-        if ((platform->mFaults->GetFault(FaultClass::eng_fault) & ~FaultClass::fl_out) != 0)
+        if ((platform->mFaults->GetFault(FaultClass::eng_fault) & compl FaultClass::fl_out) != 0)
         {
             rpmCmd = 0.0f; // engine must be seized, not going to start or windmill
         }
@@ -1006,7 +1006,7 @@ void AirframeClass::MultiEngineModel(float dt)
             if (JFSSpinTime <= 0)
                 ClearFlag(JfsStart);
         }
-        else   // engine windmill (~12% at 450 knts) (me123 - this works on mine)
+        else   // engine windmill (compl 12% at 450 knts) (me123 - this works on mine)
         {
             rpmCmd = (platform->GetKias() / 450.0f) * 0.12f;
         }
@@ -1492,7 +1492,7 @@ void AirframeClass::MultiEngineModel(float dt)
 
         // broken engine - anything but a flame out?
         //TODO Chase down faults to fault Engine 2
-        if ((platform->mFaults->GetFault(FaultClass::eng_fault) & ~FaultClass::fl_out) != 0)
+        if ((platform->mFaults->GetFault(FaultClass::eng_fault) & compl FaultClass::fl_out) != 0)
         {
             rpmCmd2 = 0.0f; // engine must be seized, not going to start or windmill
         }
@@ -1507,7 +1507,7 @@ void AirframeClass::MultiEngineModel(float dt)
             if (JFSSpinTime <= 0)
                 ClearFlag(JfsStart);
         }
-        else   // engine windmill (~12% at 450 knts) (me123 - this works on mine)
+        else   // engine windmill (compl 12% at 450 knts) (me123 - this works on mine)
         {
             rpmCmd2 = (platform->GetKias() / 450.0f) * 0.12f;
         }
@@ -2099,13 +2099,13 @@ void AirframeClass::HydrBreak(int sys)
 {
     if (sys & HYDR_A_SYSTEM)   // mark A system as down and broke
     {
-        hydrAB &= ~ HYDR_A_SYSTEM;
+        hydrAB &= compl  HYDR_A_SYSTEM;
         hydrAB |= HYDR_A_BROKE;
     }
 
     if (sys & HYDR_B_SYSTEM)   // mark A system as down and broke
     {
-        hydrAB &= ~ HYDR_B_SYSTEM;
+        hydrAB &= compl  HYDR_B_SYSTEM;
         hydrAB |= HYDR_B_BROKE;
     }
 }

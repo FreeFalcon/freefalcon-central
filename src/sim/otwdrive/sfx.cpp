@@ -1990,7 +1990,7 @@ SfxClass::SfxClass(int  typeSfx,
                 if (PRANDInt3() == 0)
                 {
                     timeToLive += 90.0f;
-                    flags &= ~SFX_EXPLODE_WHEN_DONE;
+                    flags &= compl SFX_EXPLODE_WHEN_DONE;
                 }
 
                 secondaryInterval = 1.0f;
@@ -2132,7 +2132,7 @@ SfxClass::SfxClass(int typeSfx,
             if (gTotSfx <= gSfxLODTotCutoff && gSfxCount[ SFX_AIR_SMOKECLOUD ] < gSfxLODCutoff)
             {
                 timeToLive += 90.0f;
-                flags &= ~SFX_EXPLODE_WHEN_DONE;
+                flags &= compl SFX_EXPLODE_WHEN_DONE;
                 secondaryInterval = 1.0f;
                 secondaryCount = FloatToInt32(timeToLive);
             }
@@ -2751,8 +2751,8 @@ BOOL SfxClass::Exec()
 
         if (hitGround && coverage)
         {
-            flags &= ~SFX_F16CRASHLANDING;
-            flags &= ~SFX_MOVES;
+            flags &= compl SFX_F16CRASHLANDING;
+            flags &= compl SFX_MOVES;
         }
         else if (hitGround && !coverage)
         {
@@ -2867,12 +2867,12 @@ BOOL SfxClass::Exec()
 
                 if (stopit == 3)
                 {
-                    flags &= ~SFX_F16CRASH_ADJUSTANGLE;
+                    flags &= compl SFX_F16CRASH_ADJUSTANGLE;
                     baseObj->SetYPR(yaw, pitch, roll);
                 }
                 else baseObj->SetYPR(yaw, pitch1, roll1);
             }
-            else flags &= ~SFX_F16CRASH_ADJUSTANGLE;
+            else flags &= compl SFX_F16CRASH_ADJUSTANGLE;
         }
 
         // update position based on vector
@@ -2942,8 +2942,8 @@ BOOL SfxClass::Exec()
 
                 if (stopit == 3)
                 {
-                    flags &= ~SFX_MOVES;
-                    flags &= ~SFX_F16CRASH_STOP;
+                    flags &= compl SFX_MOVES;
+                    flags &= compl SFX_F16CRASH_STOP;
                     vec.x = vec.y = vec.z = 0.0f;
                 }
 
@@ -3106,7 +3106,7 @@ BOOL SfxClass::Exec()
 
         if (fabs(vec.x) < 10.0f && fabs(vec.y) < 10.0f && fabs(vec.z) < 10.0f)
         {
-            flags &= ~SFX_MOVES;
+            flags &= compl SFX_MOVES;
         }
 
         hitGround = FALSE;

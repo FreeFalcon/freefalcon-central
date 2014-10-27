@@ -5,6 +5,7 @@
 
     This class provides basic 2D drawing functions in a device independent fashion.
 \***************************************************************************/
+#include <ciso646>
 #include <math.h>
 #include "Display.h"
 #include "Render3D.h" // ASSO:
@@ -1303,7 +1304,7 @@ void VirtualDisplay::InitializeFonts(void)
         // Shift each row right one to make room for the edging
         for (r = 0; r < 8; r++)
         {
-            InvFont[c][r] = (unsigned char)(~(Font[c][r] >> 1));
+            InvFont[c][r] = (unsigned char)(compl (Font[c][r] >> 1));
         }
     }
 }

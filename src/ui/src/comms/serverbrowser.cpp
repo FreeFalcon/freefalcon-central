@@ -491,7 +491,7 @@ static void OnSelchangeServerList(long n, short hittype, C_Base *control)
             // F4CSECTIONHANDLE *Leave = UI_Enter(control->Parent_);
             if (m_pSelectedItem)
             {
-                m_pSelectedItem->SetState(static_cast<short>(control->GetState() & ~1));
+                m_pSelectedItem->SetState(static_cast<short>(control->GetState() & compl 1));
                 m_pSelectedItem->Refresh();
             }
 

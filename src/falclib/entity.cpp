@@ -2100,7 +2100,7 @@ void RDLoadRackData(void)
             On("rackjettmodes")
             {
                 int i;
-                rn->flags &= ~(RDF_EMERGENCY_JETT_RACK | RDF_SELECTIVE_JETT_RACK); // clear flags
+                rn->flags &= compl (RDF_EMERGENCY_JETT_RACK | RDF_SELECTIVE_JETT_RACK); // clear flags
                 char *enums[] = {"emergency", "selective", 0};
 
                 while (-1 != (i = TokenEnum(enums, -1)))
@@ -2121,7 +2121,7 @@ void RDLoadRackData(void)
             On("weapjettmodes")
             {
                 int i;
-                rn->flags &= ~(RDF_EMERGENCY_JETT_WEAPON | RDF_SELECTIVE_JETT_WEAPON); // clear flags
+                rn->flags &= compl (RDF_EMERGENCY_JETT_WEAPON | RDF_SELECTIVE_JETT_WEAPON); // clear flags
                 char *enums[] = {"emergency", "selective", 0};
 
                 while (-1 != (i = TokenEnum(enums, -1)))
@@ -2309,7 +2309,7 @@ void RDLoadRackData(void)
                 On("pylonjettmodes")
                 {
                     int i;
-                    pn->flags &= ~(RDF_EMERGENCY_JETT_PYLON | RDF_SELECTIVE_JETT_PYLON); // clear flags
+                    pn->flags &= compl (RDF_EMERGENCY_JETT_PYLON | RDF_SELECTIVE_JETT_PYLON); // clear flags
                     char *enums[] = {"emergency", "selective", 0};
 
                     while (-1 != (i = TokenEnum(enums, -1)))

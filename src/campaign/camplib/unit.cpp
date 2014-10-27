@@ -2669,7 +2669,7 @@ void UnitClass::SetDead(int d)
     {
         if (unit_flags & U_DEAD)
         {
-            unit_flags &= ~U_DEAD;
+            unit_flags &= compl U_DEAD;
             //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[37].priority);
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
@@ -2681,7 +2681,7 @@ void UnitClass::SetAssigned(int p)
     if (p)
         unit_flags |= U_ASSIGNED;
     else
-        unit_flags &= ~U_ASSIGNED;
+        unit_flags &= compl U_ASSIGNED;
 }
 
 void UnitClass::SetOrdered(int p)
@@ -2689,7 +2689,7 @@ void UnitClass::SetOrdered(int p)
     if (p)
         unit_flags |= U_ORDERED;
     else
-        unit_flags &= ~U_ORDERED;
+        unit_flags &= compl U_ORDERED;
 }
 
 void UnitClass::SetDontPlan(int p)
@@ -2707,7 +2707,7 @@ void UnitClass::SetDontPlan(int p)
     {
         if (unit_flags & U_NO_PLANNING)
         {
-            unit_flags &= ~U_NO_PLANNING;
+            unit_flags &= compl U_NO_PLANNING;
             //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[39].priority);
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
@@ -2728,7 +2728,7 @@ void UnitClass::SetParent(int p)
     {
         if (unit_flags & U_PARENT)
         {
-            unit_flags &= ~U_PARENT;
+            unit_flags &= compl U_PARENT;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -2748,7 +2748,7 @@ void UnitClass::SetEngaged(int p)
     {
         if ((unit_flags & U_ENGAGED))
         {
-            unit_flags &= ~U_ENGAGED;
+            unit_flags &= compl U_ENGAGED;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -2792,7 +2792,7 @@ void UnitClass::SetMoving(int p)
     {
         if (unit_flags & U_MOVING)
         {
-            unit_flags &= ~U_MOVING;
+            unit_flags &= compl U_MOVING;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -2822,7 +2822,7 @@ void UnitClass::SetHasECM(int e)
     {
         if (unit_flags & U_HASECM)
         {
-            unit_flags &= ~U_HASECM;
+            unit_flags &= compl U_HASECM;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -2862,7 +2862,7 @@ void UnitClass::SetCombat(int p)
     {
         if (unit_flags & U_COMBAT)
         {
-            unit_flags &= ~U_COMBAT;
+            unit_flags &= compl U_COMBAT;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -2996,7 +2996,7 @@ void UnitClass::SetInactive(int f)
             // activate: have to find a place for list handlings here
 
             ClearDeaggregationData();
-            unit_flags &= ~U_INACTIVE;
+            unit_flags &= compl U_INACTIVE;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
 
             InactiveList->Remove(this);
@@ -3027,7 +3027,7 @@ void UnitClass::SetFragment(int f)
     {
         if (unit_flags & U_FRAGMENTED)
         {
-            unit_flags &= ~U_FRAGMENTED;
+            unit_flags &= compl U_FRAGMENTED;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -3057,7 +3057,7 @@ void UnitClass::SetRetreating(int p)
     {
         if (unit_flags & U_RETREATING)
         {
-            unit_flags &= ~U_RETREATING;
+            unit_flags &= compl U_RETREATING;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -3078,7 +3078,7 @@ void UnitClass::SetDetached(int p)
     {
         if (unit_flags & U_DETACHED)
         {
-            unit_flags &= ~U_DETACHED;
+            unit_flags &= compl U_DETACHED;
             //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[63].priority);
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
@@ -3136,7 +3136,7 @@ void UnitClass::SetPilots(int p)
     {
         if (unit_flags & U_HAS_PILOTS)
         {
-            unit_flags &= ~U_HAS_PILOTS;
+            unit_flags &= compl U_HAS_PILOTS;
             //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[67].priority);
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
@@ -3158,7 +3158,7 @@ void UnitClass::SetDiverted(int d)
     {
         if (unit_flags & U_DIVERTED)
         {
-            unit_flags &= ~U_DIVERTED;
+            unit_flags &= compl U_DIVERTED;
             //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[69].priority);
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
@@ -3180,7 +3180,7 @@ void UnitClass::SetFired(int d)
     {
         if (unit_flags & U_FIRED)
         {
-            unit_flags &= ~U_FIRED;
+            unit_flags &= compl U_FIRED;
             //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[71].priority);
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
@@ -3202,7 +3202,7 @@ void UnitClass::SetLocked(int l)
     {
         if (unit_flags & U_LOCKED)
         {
-            unit_flags &= ~U_LOCKED;
+            unit_flags &= compl U_LOCKED;
             //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[73].priority);
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
@@ -4446,7 +4446,7 @@ void UnitClass::UnloadUnit(void)
 
 CampaignTime UnitClass::GetUnitSupplyTime(void)
 {
-    CampaignTime time = ~0;
+    CampaignTime time = compl 0;
 
     // Determine how long we need to wait to receive supplies
     if (IsBattalion())

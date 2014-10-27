@@ -261,7 +261,7 @@ UnitProxFilter::UnitProxFilter(int r) : VuBiKeyFilter()
 {
     // KCK NOTE: Using this max will cause errors, since we'll
     // have more percision than the sim coordinates we're deriving from
-    // VU_KEY max = ~0;
+    // VU_KEY max = compl 0;
     VU_KEY max = 0xFFFF;
     step = (float)(max / (GRID_SIZE_FT * (Map_Max_Y + 1)));
     real = (uchar) r;
@@ -271,7 +271,7 @@ UnitProxFilter::UnitProxFilter(const UnitProxFilter *other, int r) : VuBiKeyFilt
 {
     // KCK NOTE: Using this max will cause errors, since we'll
     // have more percision than the sim coordinates we're deriving from
-    // VU_KEY max = ~0;
+    // VU_KEY max = compl 0;
     VU_KEY max = 0xFFFF;
     step = (float)(max / (GRID_SIZE_FT * (Map_Max_Y + 1)));
     real = (uchar) r;
@@ -358,7 +358,7 @@ ObjProxFilter::ObjProxFilter(void) : VuBiKeyFilter()
 {
     // KCK NOTE: Using this max will cause errors, since we'll
     // have more percision than the sim coordinates we're deriving from
-    // VU_KEY max = ~0;
+    // VU_KEY max = compl 0;
     VU_KEY max = 0xFFFF;
     xStep = (float)(max / (GRID_SIZE_FT * (Map_Max_Y + 1)));
     yStep = (float)(max / (GRID_SIZE_FT * (Map_Max_X + 1)));
@@ -368,7 +368,7 @@ ObjProxFilter::ObjProxFilter(const ObjProxFilter *other) : VuBiKeyFilter(other)
 {
     // KCK NOTE: Using this max will cause errors, since we'll
     // have more percision than the sim coordinates we're deriving from
-    // VU_KEY max = ~0;
+    // VU_KEY max = compl 0;
     VU_KEY max = 0xFFFF;
     xStep = (float)(max / (GRID_SIZE_FT * (Map_Max_Y + 1)));
     yStep = (float)(max / (GRID_SIZE_FT * (Map_Max_X + 1)));

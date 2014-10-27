@@ -131,9 +131,9 @@ WAYPOINTLIST *C_Waypoint::AddWaypointToList(long CampID, short type, long NormID
     newitem->Icon->SetImage(C_STATE_2, OthrID);
 
     if (Dragable)
-        newitem->Icon->SetFlags((GetFlags() & ~(C_BIT_DRAGABLE)) | C_BIT_DRAGABLE);
+        newitem->Icon->SetFlags((GetFlags() & compl (C_BIT_DRAGABLE)) | C_BIT_DRAGABLE);
     else
-        newitem->Icon->SetFlags((GetFlags() & ~(C_BIT_DRAGABLE)));
+        newitem->Icon->SetFlags((GetFlags() & compl (C_BIT_DRAGABLE)));
 
     newitem->Icon->SetClient(GetClient());
     newitem->Icon->SetParent(Parent_);

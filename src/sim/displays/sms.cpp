@@ -3083,7 +3083,7 @@ void SMSClass::SetUnlimitedAmmo(int newFlag)
     if (newFlag)
         flags |= UnlimitedAmmoFlag;
     else
-        flags &= ~UnlimitedAmmoFlag;
+        flags &= compl UnlimitedAmmoFlag;
 
     SetUnlimitedGuns(newFlag);
 }

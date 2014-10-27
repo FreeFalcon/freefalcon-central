@@ -283,7 +283,7 @@ void OTWToggleScoreDisplay(unsigned long, int state, void*)
 
         if (OTWDriver.GetFrontTextFlags() & flag)
         {
-            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() & ~flag);
+            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() & compl flag);
         }
         else
         {

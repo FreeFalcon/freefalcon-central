@@ -352,7 +352,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      {
      VuSessionsIterator siter(this);
      FalconSessionEntity *cs;
-     ulong best = ~0;
+     ulong best = compl 0;
 
      new_host = NULL;
      cs = (FalconSessionEntity*) siter.GetFirst();

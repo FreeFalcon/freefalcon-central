@@ -12,6 +12,7 @@
 
 //___________________________________________________________________________
 
+#include <ciso646>
 #include "image.h"
 #include <ddraw.h> //JAM 22Sep03
 
@@ -976,7 +977,7 @@ GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
                 {
                     if (c != 0x80)
                     {
-                        j = ((~c) & 0xff) + 2;
+                        j = ((compl c) & 0xff) + 2;
                         c = fi->glReadCharMem();
 
                         while (j--) p[n++] = (GLubyte) c;

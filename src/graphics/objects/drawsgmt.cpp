@@ -2213,7 +2213,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
                     ((FloatToInt32(vS.g * 255.9f) & 0xFF) << 8) |
                     ((FloatToInt32(vS.b * 255.9f) & 0xFF) << 16);
 
-            renderer->context.SelectForegroundColor(~color);
+            renderer->context.SelectForegroundColor(compl color);
             renderer->context.SelectForegroundColor(color);
         }
 #endif

@@ -43,7 +43,7 @@ public:
     void SetReady(int flag)
     {
         if (flag) flags |= DisplayReady;
-        else flags &= ~DisplayReady;
+        else flags &= compl DisplayReady;
     };
     virtual void DisplayInit(ImageBuffer* newImage);
     void Display(VirtualDisplay*);

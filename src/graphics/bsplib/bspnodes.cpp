@@ -5,6 +5,7 @@
 
     This provides the structure for the runtime BSP trees.
 \***************************************************************************/
+#include <ciso646>
 #include "stdafx.h"
 #include "StateStack.h"
 #include "ClipFlags.h"
@@ -709,7 +710,7 @@ void BXSwitchNode::Draw(void)
     mask = TheStateStack.CurrentInstance->SwitchValues[switchNumber];
 
     if (flags & XSWT_REVERSED_EFFECT)
-        mask = ~mask;
+        mask = compl mask;
 
 
     while (i < numChildren)

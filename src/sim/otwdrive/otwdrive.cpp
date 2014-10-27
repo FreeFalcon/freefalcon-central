@@ -3261,7 +3261,7 @@ void OTWDriverClass::ScrollMessages()
     }
     else
     {
-        showFrontText &= ~SHOW_MESSAGES;
+        showFrontText &= compl SHOW_MESSAGES;
     }
 }
 

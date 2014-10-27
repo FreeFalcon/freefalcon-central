@@ -592,7 +592,7 @@ TeamClass::TeamClass(FILE *file) :
     if ((FalconLocalGame) && (!FalconLocalGame->IsLocal()))
     {
         SetOwner(FalconLocalGame->OwnerId());
-        flags &= ~TEAM_UPDATED; // We're not updated until we get data from the master
+        flags &= compl TEAM_UPDATED; // We're not updated until we get data from the master
     }
     else
         flags |= TEAM_UPDATED;
@@ -1100,7 +1100,7 @@ int TeamClass::Handle(VuFullUpdateEvent *event)
 
     if (TheCampaign.Flags & CAMP_SLAVE)
     {
-        TheCampaign.Flags &= ~CAMP_NEED_TEAM_DATA;
+        TheCampaign.Flags &= compl CAMP_NEED_TEAM_DATA;
         TheCampaign.GotJoinData();
     }
 

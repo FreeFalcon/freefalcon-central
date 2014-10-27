@@ -76,7 +76,7 @@ void ICPClass::ExecPfl()
     if ((mUpdateFlags & FACK_UPDATE) == 0) // nothing to update;
         ClearPFLLines(); // reset the display
 
-    mUpdateFlags &= ~FACK_UPDATE; // we'll have updated.
+    mUpdateFlags &= compl FACK_UPDATE; // we'll have updated.
 
     if (m_FaultDisplay == false || !playerAC || !playerAC->mFaults)
         return; // nothing to show
@@ -195,7 +195,7 @@ void ICPClass::PNUpdateFACKMode(int button, int)
         failedFuncs = playerAC->mFaults->GetFault((FaultClass::type_FSubSystem) faultIdx);
 
         // next failures on the System?
-        if ((failedFuncs & ~((1 << mFaultFunc) - 1)) > 0)
+        if ((failedFuncs & compl ((1 << mFaultFunc) - 1)) > 0)
         {
             funcIdx = (1 << mFaultFunc);
 
