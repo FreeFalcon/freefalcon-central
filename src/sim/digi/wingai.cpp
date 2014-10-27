@@ -926,7 +926,7 @@ void DigitalBrain::AiInitTrig(mlTrig* firstTrig, mlTrig* secondTrig)
     // For a 2 ship 0 goes right, 1 goes left
     // In a 4 ship 0 & 1 go right, 2 & 3 go left
 
-    if (isWing >= 2 || (isWing == 1 && self->GetCampaignObject()->NumberOfComponents() < 3))
+    if (isWing >= 2 or (isWing == 1 && self->GetCampaignObject()->NumberOfComponents() < 3))
     {
         firstTrig->cos = -firstTrig->cos;
         firstTrig->sin = -firstTrig->sin;
@@ -1056,7 +1056,7 @@ void DigitalBrain::AiGoCover(void)
     AiClearManeuver();
 
     // 2001-06-16 ADDED BY S.G. NEED TO GO BACK IN NAV MODE.
-    if (self->AutopilotType() == AircraftClass::CombatAP || self->IsDigital()) // 2002-01-28 ADDED BY S.G But only if in CombatAP!!!
+    if (self->AutopilotType() == AircraftClass::CombatAP or self->IsDigital()) // 2002-01-28 ADDED BY S.G But only if in CombatAP!!!
         self->FCC->SetMasterMode(FireControlComputer::Nav);
 
     // END OF ADDED SECTION
@@ -1123,7 +1123,7 @@ void DigitalBrain::AiRejoin(FalconWingmanMsg* msg, AiHint hint)
     int flightIdx;
 
     //we can't rejoin if we're on the ground still!
-    if (self->OnGround() || atcstatus >= lOnFinal)
+    if (self->OnGround() or atcstatus >= lOnFinal)
         return;
 
     AiCheckPosition();
@@ -1273,7 +1273,7 @@ void DigitalBrain::AiDesignateTarget(FalconWingmanMsg* msg)
         // END OF ADDED SECTION
 
         // Try not to attack friendlies
-        if (newTarg->GetTeam() != self->GetTeam() || (SkillLevel() < 2 && rand() % 10 > SkillLevel() + 8))
+        if (newTarg->GetTeam() != self->GetTeam() or (SkillLevel() < 2 && rand() % 10 > SkillLevel() + 8))
         {
             mWeaponsAction = AI_WEAPONS_FREE;
 
@@ -1561,7 +1561,7 @@ void DigitalBrain::AiSetFormation(FalconWingmanMsg* msg)
     int flightIdx;
 
     //we can't fly in formation if we're on the ground still!
-    if (self->OnGround() || atcstatus >= lOnFinal)
+    if (self->OnGround() or atcstatus >= lOnFinal)
         return;
 
     // mInPositionFlag = FALSE;
@@ -1951,7 +1951,7 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
 
     flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
 
-    if ((curMode == GunsJinkMode || curMode == MissileDefeatMode) && pmytarget && (pmytarget->IsAirplane() || pmytarget->IsHelicopter()))
+    if ((curMode == GunsJinkMode or curMode == MissileDefeatMode) && pmytarget && (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
     {
 
         xdiff = self->XPos() - pmytarget->XPos();
@@ -1980,7 +1980,7 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
             response = rcENGDEFENSIVEC;
         }
     }
-    else if (pmytarget && (pmytarget->IsAirplane() || pmytarget->IsHelicopter()))
+    else if (pmytarget && (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
     {
 
         edata[0] = -1;
@@ -2028,7 +2028,7 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
     else if ((curMode == GunsEngageMode ||
               curMode == MissileEngageMode ||
               curMode == WVREngageMode ||
-              curMode == BVREngageMode) && pmytarget && (pmytarget->IsAirplane() || pmytarget->IsHelicopter()))
+              curMode == BVREngageMode) && pmytarget && (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
     {
         xdiff = self->XPos() - pmytarget->XPos();
         ydiff = self->YPos() - pmytarget->YPos();
@@ -2097,7 +2097,7 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
             response = rcENGAGINGC;
         }
     }
-    else if (pmytarget && (pmytarget->IsAirplane() || pmytarget->IsHelicopter()))
+    else if (pmytarget && (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
     {
         // and i am spiked
         response =  rcSPIKE;
@@ -2715,7 +2715,7 @@ void DigitalBrain::AiCheckInPositionCall(float trX, float trY, float trZ)
         // 2002-02-12 ADDED BY S.G. If the lead is climbing (or is the player since I can't tell what altitude he wants), be more relax about z
         float maxZDiff;
 
-        if (g_bPitchLimiterForAI && flightLead && (flightLead->IsSetFlag(MOTION_OWNSHIP) || (((AircraftClass*)flightLead)->DBrain() && fabs(flightLead->ZPos() - ((AircraftClass*)flightLead)->DBrain()->trackZ) > 2000.0f)))
+        if (g_bPitchLimiterForAI && flightLead && (flightLead->IsSetFlag(MOTION_OWNSHIP) or (((AircraftClass*)flightLead)->DBrain() && fabs(flightLead->ZPos() - ((AircraftClass*)flightLead)->DBrain()->trackZ) > 2000.0f)))
             maxZDiff = 2000.0f;
         else
             maxZDiff = 250.0f;
@@ -2803,7 +2803,7 @@ void DigitalBrain::AiCheckPosition(void)
         ydiff = trY - self->YPos();
         zdiff = trZ - self->ZPos();
 
-        if ((xdiff * xdiff + ydiff + ydiff >  250.0F * 250.0F) || fabs(zdiff) < 250.0F)
+        if ((xdiff * xdiff + ydiff + ydiff >  250.0F * 250.0F) or fabs(zdiff) < 250.0F)
         {
             mInPositionFlag = FALSE;
         }

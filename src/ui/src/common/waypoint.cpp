@@ -135,7 +135,7 @@ static void SetSteerPointValues(C_Window *win, WayPointClass *wp, int)
 
     flt = (Flight)vuDatabase->Find(gActiveFlightID);
 
-    if (!flt || !wp)
+    if (!flt or !wp)
         return;
 
     // Depending on a combination of waypoint flags and action type, we may have special
@@ -143,7 +143,7 @@ static void SetSteerPointValues(C_Window *win, WayPointClass *wp, int)
     action = wp->GetWPAction();
     flags = wp->GetWPFlags();
 
-    if ((flags & WPF_TAKEOFF) || (flags & WPF_LAND))
+    if ((flags & WPF_TAKEOFF) or (flags & WPF_LAND))
     {
         // Associate an airbase/carrier
         ent = wp->GetWPTarget();
@@ -180,7 +180,7 @@ static void SetSteerPointValues(C_Window *win, WayPointClass *wp, int)
         }
     }
 
-    if (((flags & WPF_TARGET) && (action == WP_INTERCEPT || action == WP_NAVSTRIKE || action == WP_GNDSTRIKE)) || action == WP_PICKUP || action == WP_AIRDROP)
+    if (((flags & WPF_TARGET) && (action == WP_INTERCEPT or action == WP_NAVSTRIKE or action == WP_GNDSTRIKE)) or action == WP_PICKUP or action == WP_AIRDROP)
     {
         // Associate a UNIT target
         ent = wp->GetWPTarget();
@@ -218,7 +218,7 @@ static void SetSteerPointValues(C_Window *win, WayPointClass *wp, int)
         }
     }
 
-    if ((flags & WPF_TARGET) && (action == WP_STRIKE || action == WP_BOMB || action == WP_RECON))
+    if ((flags & WPF_TARGET) && (action == WP_STRIKE or action == WP_BOMB or action == WP_RECON))
     {
         // Associate an OBJECTIVE target
         ent = wp->GetWPTarget();
@@ -279,7 +279,7 @@ static void SetSteerPointValues(C_Window *win, WayPointClass *wp, int)
         }
     }
 
-    if ((flags & WPF_REPEAT) || (wp->GetNextWP() && (wp->GetNextWP()->GetWPFlags() & WPF_REPEAT)))
+    if ((flags & WPF_REPEAT) or (wp->GetNextWP() && (wp->GetNextWP()->GetWPFlags() & WPF_REPEAT)))
     {
         // Associate a patrol/station time
         if (flags & WPF_REPEAT)
@@ -301,7 +301,7 @@ static void SetSteerPointValues(C_Window *win, WayPointClass *wp, int)
         }
     }
 
-    if (action == WP_PICKUP || action == WP_AIRDROP)
+    if (action == WP_PICKUP or action == WP_AIRDROP)
     {
         // Associate a patrol/station time
         time = wp->GetWPStationTime();
@@ -392,7 +392,7 @@ void UpdateWaypointWindowInfo(C_Window *win, WayPointClass *wp, int wpnum, int c
 
     flt = (Flight)vuDatabase->Find(gActiveFlightID);
 
-    if (!win || !wp || !flt)
+    if (!win or !wp or !flt)
         return;
 
     SetSteerPointValues(win, wp, wpnum);
@@ -726,7 +726,7 @@ void DeleteWPCB(long, short hittype, C_Base *)
     flt = (Flight)vuDatabase->Find(gActiveFlightID);
     wp = get_current_waypoint();
 
-    if (!wp || !flt)
+    if (!wp or !flt)
         return;
 
     nw = wp->GetPrevWP();
@@ -783,7 +783,7 @@ void SetupFlightSpecificControls(Flight flt)
 
         for (i = 0; i < WP_LAST; i++)
         {
-            if (IsValidAction(mission, i) || g_bAnyWaypointTask)    //Wombat778 9-27-2003 added || g_bAnyWaypointTask to allow selection of all tasks
+            if (IsValidAction(mission, i) or g_bAnyWaypointTask)    //Wombat778 9-27-2003 added or g_bAnyWaypointTask to allow selection of all tasks
             {
                 if (!i)
                     lbox->AddItem(i + 1, C_TYPE_ITEM, WPActStr[39]);
@@ -1071,7 +1071,7 @@ void ChangeAltCB(long ID, short hittype, C_Base *)
     else if (value > 80000)
         value = 80000;
 
-    if (wp->GetWPAction() == WP_TAKEOFF || wp->GetWPAction() == WP_LAND)
+    if (wp->GetWPAction() == WP_TAKEOFF or wp->GetWPAction() == WP_LAND)
         value = 0;
 
     wp->SetWPAltitude(value);
@@ -1088,7 +1088,7 @@ void ChangeAltCB(long ID, short hittype, C_Base *)
 
     // KCK HACK: Not sure how to just refresh this waypoint - so, I'm going to only rebuild the list
     // once in a while for repeat, or on mouseup.
-    if (hittype == C_TYPE_LMOUSEUP || !(rand() % 4))
+    if (hittype == C_TYPE_LMOUSEUP or !(rand() % 4))
     {
         // Rebuild the Z waypoint list (would be nice to just refresh)
         gMapMgr->SetCurrentWaypointList(gActiveFlightID);
@@ -1366,8 +1366,8 @@ void recalculate_waypoints(WayPointClass *wp)
 
     flt = (Flight) vuDatabase->Find(gActiveFlightID);
 
-    //if (!flt || !wp || !flt->IsFlight())
-    if (!flt || !wp) // JB 010326 Allow ground units
+    //if (!flt or !wp or !flt->IsFlight())
+    if (!flt or !wp) // JB 010326 Allow ground units
         return;
 
     //TJL 11/22/03 Remove /2 division
@@ -1566,8 +1566,8 @@ int WayPointErrorCode(WayPointClass *wp, Flight flt)
     // Check for bad target/airbase/patrol times
     action = wp->GetWPAction();
 
-    if (action == WP_TAKEOFF || action == WP_LAND || action == WP_STRIKE || action == WP_BOMB ||
-        action == WP_INTERCEPT || action == WP_RECON || action == WP_NAVSTRIKE)
+    if (action == WP_TAKEOFF or action == WP_LAND or action == WP_STRIKE or action == WP_BOMB ||
+        action == WP_INTERCEPT or action == WP_RECON or action == WP_NAVSTRIKE)
     {
         // Requires a valid campaign entity
         CampEntity ent = wp->GetWPTarget();
@@ -1600,7 +1600,7 @@ int WayPointErrorCode(WayPointClass *wp, Flight flt)
     minSpeed = flt->GetCruiseSpeed() * 0.7F;
     maxSpeed = flt->GetMaxSpeed() * 1.3F;
 
-    if ((wp->GetWPFlags() & WPF_ALTERNATE) || wp->GetWPAction() == WP_REFUEL)
+    if ((wp->GetWPFlags() & WPF_ALTERNATE) or wp->GetWPAction() == WP_REFUEL)
         return errors;
 
     if (wp->GetWPSpeed() < minSpeed && wp->GetPrevWP())
@@ -1626,7 +1626,7 @@ int WayPointErrorCode(WayPointClass *wp, Flight flt)
         else
             speed = 0.0F;
 
-        if (speed < minSpeed || speed > maxSpeed || fabs(speed - wp->GetWPSpeed()) > 10.0F)
+        if (speed < minSpeed or speed > maxSpeed or fabs(speed - wp->GetWPSpeed()) > 10.0F)
             errors  or_eq  WPERROR_SPEED;
     }
 
@@ -1779,7 +1779,7 @@ void set_waypoint_action(WayPoint wp, int action)
             wp->GetWPLocation(&x, &y);
             ent = GetObjectiveByXY(x, y);
 
-            if (ent && (ent->GetType() == TYPE_AIRBASE || ent->GetType() == TYPE_AIRSTRIP))
+            if (ent && (ent->GetType() == TYPE_AIRBASE or ent->GetType() == TYPE_AIRSTRIP))
                 wp->SetWPTarget(ent->Id());
             else
                 wp->SetWPTarget(FalconNullId);
@@ -1792,7 +1792,7 @@ void set_waypoint_action(WayPoint wp, int action)
             wp->GetWPLocation(&x, &y);
             ent = GetObjectiveByXY(x, y);
 
-            if (ent && (ent->GetType() == TYPE_AIRBASE || ent->GetType() == TYPE_AIRSTRIP))
+            if (ent && (ent->GetType() == TYPE_AIRBASE or ent->GetType() == TYPE_AIRSTRIP))
                 wp->SetWPTarget(ent->Id());
             else
                 wp->SetWPTarget(FalconNullId);
@@ -1861,7 +1861,7 @@ void set_waypoint_action(WayPoint wp, int action)
             if (ent && ent->IsUnit())
                 ent->GetLocation(&ex, &ey);
 
-            if (x != ex || y != ey)
+            if (x != ex or y != ey)
             {
                 ent = GetUnitByXY(x, y);
 
@@ -1884,7 +1884,7 @@ void set_waypoint_action(WayPoint wp, int action)
             if (ent && ent->IsObjective())
                 ent->GetLocation(&ex, &ey);
 
-            if (x != ex || y != ey)
+            if (x != ex or y != ey)
             {
                 ent = GetObjectiveByXY(x, y);
 
@@ -2080,11 +2080,11 @@ void DropWayPoint(WayPoint wp)
     action = wp->GetWPAction();
     wp->GetWPLocation(&x, &y);
 
-    if (action == WP_TAKEOFF || action == WP_LAND)
+    if (action == WP_TAKEOFF or action == WP_LAND)
     {
         ent = GetObjectiveByXY(x, y);
 
-        if (ent && (ent->GetType() == TYPE_AIRBASE || ent->GetType() == TYPE_AIRSTRIP))
+        if (ent && (ent->GetType() == TYPE_AIRBASE or ent->GetType() == TYPE_AIRSTRIP))
         {
             wp->SetWPTarget(ent->Id());
         }
@@ -2093,7 +2093,7 @@ void DropWayPoint(WayPoint wp)
             wp->SetWPTarget(FalconNullId);
         }
     }
-    else if (action == WP_STRIKE || action == WP_BOMB || action == WP_RECON)
+    else if (action == WP_STRIKE or action == WP_BOMB or action == WP_RECON)
     {
         ent = GetObjectiveByXY(x, y);
 
@@ -2102,7 +2102,7 @@ void DropWayPoint(WayPoint wp)
         else
             wp->SetWPTarget(FalconNullId);
     }
-    else if (action == WP_INTERCEPT || action == WP_NAVSTRIKE || action == WP_GNDSTRIKE)
+    else if (action == WP_INTERCEPT or action == WP_NAVSTRIKE or action == WP_GNDSTRIKE)
     {
         ent = GetUnitByXY(x, y);
 
@@ -2191,7 +2191,7 @@ void WaypointCB(long ID, short hittype, class C_Base *ctrl)
     if (cwp)
         wpicon = cwp->GetLast();
 
-    if (!cwp || !wpicon)
+    if (!cwp or !wpicon)
         return;
 
     // The reason I changed this routine... (And it didn't screw up the waypoints)... is because you guys took out
@@ -2392,7 +2392,7 @@ void WaypointCB(long ID, short hittype, class C_Base *ctrl)
             // Just update the waypoint's location and check for validity
             un = (Unit)vuDatabase->Find(gMapMgr->GetCurWPID());
 
-            if (!un || !un->IsFlight())
+            if (!un or !un->IsFlight())
                 return;
 
             gActiveFlightID = un->Id();

@@ -57,7 +57,7 @@ void PlayerStats::LoadStats()
 
             if (!rec.CheckSum) // No tampering... keep it
             {
-                if (rec.aa_kills || rec.ag_kills || rec.as_kills || rec.an_kills || rec.rating || rec.missions)
+                if (rec.aa_kills or rec.ag_kills or rec.as_kills or rec.an_kills or rec.rating or rec.missions)
                 {
                     newrec = new StatList;
                     newrec->Next = NULL;

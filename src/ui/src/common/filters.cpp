@@ -349,7 +349,7 @@ long FindUnitCategory(Unit unit)
 
     while (UnitFilters[i].Domain)
     {
-        if (unit->GetDomain() == UnitFilters[i].Domain && unit->GetClass() == UnitFilters[i].Class && unit->GetType() == UnitFilters[i].Type && (unit->GetSType() == UnitFilters[i].SubType || UnitFilters[i].SubType == UI_VU_ANY))
+        if (unit->GetDomain() == UnitFilters[i].Domain && unit->GetClass() == UnitFilters[i].Class && unit->GetType() == UnitFilters[i].Type && (unit->GetSType() == UnitFilters[i].SubType or UnitFilters[i].SubType == UI_VU_ANY))
             return(UnitFilters[i].OOBCategory);
 
         i++;

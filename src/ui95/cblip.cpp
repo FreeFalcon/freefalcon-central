@@ -46,7 +46,7 @@ C_Blip::C_Blip(FILE *fp) : C_Base(fp)
 
 C_Blip::~C_Blip()
 {
-    if (Root_ || Drawer_)
+    if (Root_ or Drawer_)
         Cleanup();
 }
 
@@ -191,7 +191,7 @@ void C_Blip::Refresh(BLIP *blip)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((Flags_ & C_BIT_INVISIBLE) || !Parent_ || !Drawer_)
+    if ((Flags_ & C_BIT_INVISIBLE) or !Parent_ or !Drawer_)
         return;
 
     Leave = UI_Enter(Parent_);
@@ -205,7 +205,7 @@ void C_Blip::Refresh()
     BLIP *cur;
     F4CSECTIONHANDLE *Leave;
 
-    if ((Flags_ & C_BIT_INVISIBLE) || !Parent_ || !Drawer_)
+    if ((Flags_ & C_BIT_INVISIBLE) or !Parent_ or !Drawer_)
         return;
 
     Leave = UI_Enter(Parent_);
@@ -225,7 +225,7 @@ void C_Blip::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     BLIP *cur;
 
-    if ((Flags_ & C_BIT_INVISIBLE) || !Parent_ || !Drawer_)
+    if ((Flags_ & C_BIT_INVISIBLE) or !Parent_ or !Drawer_)
         return;
 
     cur = Root_;

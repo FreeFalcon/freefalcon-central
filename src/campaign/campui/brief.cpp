@@ -269,7 +269,7 @@ int BuildBriefString(C_Window *win, _TCHAR *brief)
 
         for (TheCampaign.MissionEvaluator->curr_data = 0; TheCampaign.MissionEvaluator->curr_data < pilots; TheCampaign.MissionEvaluator->curr_data += 2)
         {
-            for (j = 0; j < weaps || !j; j++)
+            for (j = 0; j < weaps or !j; j++)
             {
                 TheCampaign.MissionEvaluator->curr_pilot = NULL;
                 TheCampaign.MissionEvaluator->curr_weapon = j;
@@ -315,7 +315,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
     flight_data = TheCampaign.MissionEvaluator->player_element;
     ShiAssert(flight_data);//Cobra 10/31/04 TJL
 
-    if (!TheCampaign.MissionEvaluator->player_element || // MLR 3/25/2004 -
+    if (!TheCampaign.MissionEvaluator->player_element or // MLR 3/25/2004 -
         !TheCampaign.MissionEvaluator->player_pilot)
     {
         // this prevents a CTD, but makes the debried window empty
@@ -755,7 +755,7 @@ static void GetWpActionToBuffer(WayPoint wp, _TCHAR *cline)
 
 static void GetWpTimeToBuffer(WayPoint wp, _TCHAR *cline)
 {
-    if (wp->GetWPFlags() & WPF_ALTERNATE || wp->GetWPAction() == WP_REFUEL)
+    if (wp->GetWPFlags() & WPF_ALTERNATE or wp->GetWPAction() == WP_REFUEL)
         AddIndexedStringToBuffer(1650, cline);
     else
         AddTimeToBuffer(wp->GetWPArrivalTime(), cline);
@@ -1090,9 +1090,9 @@ void AddLocationToBuffer(char type, GridIndex x, GridIndex y, _TCHAR *buffer)
     CampaignHeading h;
     VuListIterator *oit;
 
-    if (type == 'G' || type == 'g')
+    if (type == 'G' or type == 'g')
         oit = new VuListIterator(POList);
-    else if (type == 'E' || type == 'e')
+    else if (type == 'E' or type == 'e')
         oit = new VuListIterator(AllObjList);
     else
         oit = new VuListIterator(SOList);
@@ -1118,12 +1118,12 @@ void AddLocationToBuffer(char type, GridIndex x, GridIndex y, _TCHAR *buffer)
         bpo->GetLocation(&ox, &oy);
         bpo->GetName(name, 60, FALSE);
 
-        if ((type == 'g' || type == 's') && bd < 2.0F)
+        if ((type == 'g' or type == 's') && bd < 2.0F)
             h = Here;
         else
             h = DirectionTo(ox, oy, x, y);
 
-        if (h < Here || type == 'T' || type == 't' || type == 'E' || type == 'e')
+        if (h < Here or type == 'T' or type == 't' or type == 'E' or type == 'e')
         {
             ReadIndexedString(30 + h, wdstr, 40);
 
@@ -1133,7 +1133,7 @@ void AddLocationToBuffer(char type, GridIndex x, GridIndex y, _TCHAR *buffer)
                 case 'n':
 
                     // Say 'direction of name'
-                    if (gLangIDNum == F4LANG_FRENCH && (name[0] == 'A' || name[0] == 'a' || name[0] == 'E' || name[0] == 'e' || name[0] == 'I' || name[0] == 'i' || name[0] == 'O' || name[0] == 'o' || name[0] == 'U' || name[0] == 'u'))
+                    if (gLangIDNum == F4LANG_FRENCH && (name[0] == 'A' or name[0] == 'a' or name[0] == 'E' or name[0] == 'e' or name[0] == 'I' or name[0] == 'i' or name[0] == 'O' or name[0] == 'o' or name[0] == 'U' or name[0] == 'u'))
                         ReadIndexedString(3993, format, MAX_STRLEN_PER_TOKEN);
                     else
                         ReadIndexedString(53, format, MAX_STRLEN_PER_TOKEN);
@@ -1155,7 +1155,7 @@ void AddLocationToBuffer(char type, GridIndex x, GridIndex y, _TCHAR *buffer)
                     bd = bd * GRID_SIZE_FT * FT_TO_NM;
                     _stprintf(dist, "%d", FloatToInt32(bd));
 
-                    if (gLangIDNum == F4LANG_FRENCH && (name[0] == 'A' || name[0] == 'a' || name[0] == 'E' || name[0] == 'e' || name[0] == 'I' || name[0] == 'i' || name[0] == 'O' || name[0] == 'o' || name[0] == 'U' || name[0] == 'u'))
+                    if (gLangIDNum == F4LANG_FRENCH && (name[0] == 'A' or name[0] == 'a' or name[0] == 'E' or name[0] == 'e' or name[0] == 'I' or name[0] == 'i' or name[0] == 'O' or name[0] == 'o' or name[0] == 'U' or name[0] == 'u'))
                         ReadIndexedString(3992, format, MAX_STRLEN_PER_TOKEN);
                     else
                         ReadIndexedString(52, format, MAX_STRLEN_PER_TOKEN);
@@ -1167,7 +1167,7 @@ void AddLocationToBuffer(char type, GridIndex x, GridIndex y, _TCHAR *buffer)
                     // Say 'x km direction of name'
                     _stprintf(dist, "%d", FloatToInt32(bd));
 
-                    if (gLangIDNum == F4LANG_FRENCH && (name[0] == 'A' || name[0] == 'a' || name[0] == 'E' || name[0] == 'e' || name[0] == 'I' || name[0] == 'i' || name[0] == 'O' || name[0] == 'o' || name[0] == 'U' || name[0] == 'u'))
+                    if (gLangIDNum == F4LANG_FRENCH && (name[0] == 'A' or name[0] == 'a' or name[0] == 'E' or name[0] == 'e' or name[0] == 'I' or name[0] == 'i' or name[0] == 'O' or name[0] == 'o' or name[0] == 'U' or name[0] == 'u'))
                         ReadIndexedString(3991, format, MAX_STRLEN_PER_TOKEN);
                     else
                         ReadIndexedString(51, format, MAX_STRLEN_PER_TOKEN);
@@ -1176,7 +1176,7 @@ void AddLocationToBuffer(char type, GridIndex x, GridIndex y, _TCHAR *buffer)
                     break;
             }
         }
-        else if (bpo->GetType() == TYPE_CITY || bpo->GetType() == TYPE_TOWN)
+        else if (bpo->GetType() == TYPE_CITY or bpo->GetType() == TYPE_TOWN)
         {
             if (type > 'a' && type < 'z')
             {
@@ -1194,7 +1194,7 @@ void AddLocationToBuffer(char type, GridIndex x, GridIndex y, _TCHAR *buffer)
         else
         {
             // Just say 'near x'
-            if (gLangIDNum == F4LANG_FRENCH && (name[0] == 'A' || name[0] == 'a' || name[0] == 'E' || name[0] == 'e' || name[0] == 'I' || name[0] == 'i' || name[0] == 'O' || name[0] == 'o' || name[0] == 'U' || name[0] == 'u'))
+            if (gLangIDNum == F4LANG_FRENCH && (name[0] == 'A' or name[0] == 'a' or name[0] == 'E' or name[0] == 'e' or name[0] == 'I' or name[0] == 'i' or name[0] == 'O' or name[0] == 'o' or name[0] == 'U' or name[0] == 'u'))
                 ReadIndexedString(3994, format, MAX_STRLEN_PER_TOKEN);
             else
                 ReadIndexedString(54, format, MAX_STRLEN_PER_TOKEN);
@@ -1340,14 +1340,14 @@ char* ReadMemToken(char **ptr, char name[], int len)
     src = *ptr;
     dst = name;
 
-    while ((*src == '\n') || (*src == '\r'))
+    while ((*src == '\n') or (*src == '\r'))
     {
         *src ++;
     }
 
     while ((len) && (*src))
     {
-        if ((*src == '\n') || (*src == '\r'))
+        if ((*src == '\n') or (*src == '\r'))
         {
             break;
         }
@@ -1412,10 +1412,10 @@ void ConstructOrderedSentence(short maxsize, _TCHAR *string, _TCHAR *format, ...
 int GetGender(CampEntity entity, int div)
 {
     // Gender is hardcoded for now- no data exists
-    if (!entity || gLangIDNum < F4LANG_GERMAN)
+    if (!entity or gLangIDNum < F4LANG_GERMAN)
         return F4LANG_MASCULINE;
 
-    if (div && (!entity->IsUnit() || !((Unit)entity)->GetUnitDivision()))
+    if (div && (!entity->IsUnit() or !((Unit)entity)->GetUnitDivision()))
         div = 0;
 
     if (gLangIDNum == F4LANG_GERMAN)
@@ -1433,7 +1433,7 @@ int GetGender(CampEntity entity, int div)
     {
         if (div)
             return F4LANG_FEMININE;
-        else if (entity->IsBattalion() || entity->IsSquadron() || entity->IsTaskForce())
+        else if (entity->IsBattalion() or entity->IsSquadron() or entity->IsTaskForce())
             return F4LANG_MASCULINE;
         else
             return F4LANG_FEMININE;
@@ -1442,7 +1442,7 @@ int GetGender(CampEntity entity, int div)
     {
         if (div)
             return F4LANG_FEMININE;
-        else if (entity->IsBattalion() || entity->IsPackage())
+        else if (entity->IsBattalion() or entity->IsPackage())
             return F4LANG_MASCULINE;
         else
             return F4LANG_FEMININE;
@@ -1451,7 +1451,7 @@ int GetGender(CampEntity entity, int div)
     {
         if (div)
             return F4LANG_FEMININE;
-        else if (entity->IsBattalion() || entity->IsFlight() || entity->IsSquadron())
+        else if (entity->IsBattalion() or entity->IsFlight() or entity->IsSquadron())
             return F4LANG_MASCULINE;
         else
             return F4LANG_FEMININE;
@@ -1460,7 +1460,7 @@ int GetGender(CampEntity entity, int div)
     {
         if (div)
             return F4LANG_FEMININE;
-        else if (entity->IsBattalion() || entity->IsPackage() || entity->IsSquadron())
+        else if (entity->IsBattalion() or entity->IsPackage() or entity->IsSquadron())
             return F4LANG_MASCULINE;
         else
             return F4LANG_FEMININE;
@@ -1496,7 +1496,7 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
             argstring[0] = 0;
 
             // Check for an artical, country name, description or Location
-            if (format[index] == 'A' || format[index] == 'a')
+            if (format[index] == 'A' or format[index] == 'a')
             {
                 if (format[index] == 'A')
                     to_upper = 1;
@@ -1504,7 +1504,7 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
                 index++;
 
                 // Check for Gender
-                if (format[index] == 'm' || format[index] == 'M')
+                if (format[index] == 'm' or format[index] == 'M')
                 {
                     if (format[index] == 'M')
                         plural = 1;
@@ -1512,7 +1512,7 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
                     index++;
                     gender = F4LANG_MASCULINE;
                 }
-                else if (format[index] == 'f' || format[index] == 'F')
+                else if (format[index] == 'f' or format[index] == 'F')
                 {
                     if (format[index] == 'F')
                         plural = 1;
@@ -1520,7 +1520,7 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
                     index++;
                     gender = F4LANG_FEMININE;
                 }
-                else if (format[index] == 'n' || format[index] == 'N')
+                else if (format[index] == 'n' or format[index] == 'N')
                 {
                     if (format[index] == 'N')
                         plural = 1;
@@ -1546,7 +1546,7 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
                 if (gender < 0)
                 {
                     // Find the entity
-                    ShiAssert(format[index] == '0' || format[index] == '1');
+                    ShiAssert(format[index] == '0' or format[index] == '1');
                     entity = (CampEntity) vuDatabase->Find(data->vuIds[format[index] - '0']);
                     // Check for force to division
                     _TCHAR *sptr = strstr(format, "#DD");
@@ -1565,7 +1565,7 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
                 if (to_upper && _istlower(argstring[0]))
                     argstring[0] = _toupper(argstring[0]);
             }
-            else if (format[index] == 'C' || format[index] == 'c')
+            else if (format[index] == 'C' or format[index] == 'c')
             {
                 if (format[index] == 'C')
                     to_upper = 1;
@@ -1573,7 +1573,7 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
                 index++;
 
                 // Check for Gender
-                if (format[index] == 'm' || format[index] == 'M')
+                if (format[index] == 'm' or format[index] == 'M')
                 {
                     if (format[index] == 'M')
                         plural = 1;
@@ -1581,7 +1581,7 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
                     index++;
                     gender = F4LANG_MASCULINE;
                 }
-                else if (format[index] == 'f' || format[index] == 'F')
+                else if (format[index] == 'f' or format[index] == 'F')
                 {
                     if (format[index] == 'F')
                         plural = 1;
@@ -1589,7 +1589,7 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
                     index++;
                     gender = F4LANG_FEMININE;
                 }
-                else if (format[index] == 'n' || format[index] == 'N')
+                else if (format[index] == 'n' or format[index] == 'N')
                 {
                     if (format[index] == 'N')
                         plural = 1;
@@ -1614,7 +1614,7 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
                 if (gender < 0)
                 {
                     // Find the entity
-                    ShiAssert(format[index] == '0' || format[index] == '1');
+                    ShiAssert(format[index] == '0' or format[index] == '1');
                     entity = (CampEntity) vuDatabase->Find(data->vuIds[format[index] - '0']);
                     // Check for force to division
                     _TCHAR *sptr = strstr(format, "#DD");
@@ -1629,7 +1629,7 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
                         gender = GetGender(entity, div);
                 }
 
-                ShiAssert(format[index] == '0' || format[index] == '1');
+                ShiAssert(format[index] == '0' or format[index] == '1');
                 // Find the adjective
                 stridx = ConvertTeamToStringIndex(data->owners[format[index] - '0'], gender, usage, plural);
                 // stridx = 3820 + 20*data->owners[format[index] - '0'] + 6*usage + 3*plural + gender;
@@ -1642,7 +1642,7 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
             {
                 index++;
                 // Check for description type
-                ShiAssert(format[index] == 'D' || format[index] == 'F' || format[index] == 'B');
+                ShiAssert(format[index] == 'D' or format[index] == 'F' or format[index] == 'B');
                 mode = format[index];
                 index++;
 
@@ -1659,7 +1659,7 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
                 }
 
                 // Find the entity
-                ShiAssert(format[index] == '0' || format[index] == '1');
+                ShiAssert(format[index] == '0' or format[index] == '1');
                 entity = (CampEntity) vuDatabase->Find(data->vuIds[format[index] - '0']);
 
                 if (entity)
@@ -1701,7 +1701,7 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
             {
                 // add a location
                 index++;
-                ShiAssert(format[index] == 'N' || format[index] == 'T' || format[index] == 'S' || format[index] == 'G' || format[index] == 'n' || format[index] == 't' || format[index] == 's' || format[index] == 'g' || format[index] == 'E' || format[index] == 'e');
+                ShiAssert(format[index] == 'N' or format[index] == 'T' or format[index] == 'S' or format[index] == 'G' or format[index] == 'n' or format[index] == 't' or format[index] == 's' or format[index] == 'g' or format[index] == 'E' or format[index] == 'e');
                 AddLocationToBuffer(format[index], data->xLoc, data->yLoc, argstring);
             }
             else if (format[index] == 'I')
@@ -1785,7 +1785,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
     _TCHAR eol[2] = { '\n', 0 };
     CampEntity target, ptarget;
 
-    if (!mec || !mec->flight_data || !mec->flight_data->camp_id)
+    if (!mec or !mec->flight_data or !mec->flight_data->camp_id)
         return 0;
 
     if ((fp = OpenCampFile(filename, "", "r")) == NULL)
@@ -1962,7 +1962,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                     stack_active[curr_stack] = 0;
 
-                    while (sptr && (atoi(sptr) || *sptr == '0'))
+                    while (sptr && (atoi(sptr) or *sptr == '0'))
                     {
                         if (atoi(sptr) == flight_data->mission_context)
                             stack_active[curr_stack] = 1;
@@ -1982,7 +1982,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                     stack_active[curr_stack] = 0;
 
-                    while (sptr && (atoi(sptr) || *sptr == '0'))
+                    while (sptr && (atoi(sptr) or *sptr == '0'))
                     {
                         if (atoi(sptr) == mec->package_context)
                             stack_active[curr_stack] = 1;
@@ -2023,7 +2023,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 }
                 else if (strcmp(token, "#IF_ENEMY_AIR_RESPONSE") == 0)
                 {
-                    if (mec->responses & PRESPONSE_CA || ESquad)
+                    if (mec->responses & PRESPONSE_CA or ESquad)
                         stack_active[curr_stack] = 1;
                     else
                         stack_active[curr_stack] = 0;
@@ -2053,7 +2053,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                  if (sptr = strchr(token,' '))
                  sptr++;
                  stack_active[curr_stack] = 0;
-                 while (sptr && (atoi(sptr) || *sptr == '0'))
+                 while (sptr && (atoi(sptr) or *sptr == '0'))
                  {
                  if (atoi(sptr) == ((mec->threat_stats >> 8) & 0x0F))
                  stack_active[curr_stack] = 1;
@@ -2066,7 +2066,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                  if (sptr = strchr(token,' '))
                  sptr++;
                  stack_active[curr_stack] = 0;
-                 while (sptr && (atoi(sptr) || *sptr == '0'))
+                 while (sptr && (atoi(sptr) or *sptr == '0'))
                  {
                  if (atoi(sptr) == ((mec->threat_stats >> 4) & 0x0F))
                  stack_active[curr_stack] = 1;
@@ -2145,7 +2145,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                     stack_active[curr_stack] = 0;
 
-                    while (sptr && (atoi(sptr) || *sptr == '0'))
+                    while (sptr && (atoi(sptr) or *sptr == '0'))
                     {
                         if (atoi(sptr) == mec->curr_pilot->weapon_data[mec->curr_weapon].missed)
                             stack_active[curr_stack] = 1;
@@ -2165,7 +2165,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                     stack_active[curr_stack] = 0;
 
-                    while (sptr && (atoi(sptr) || *sptr == '0'))
+                    while (sptr && (atoi(sptr) or *sptr == '0'))
                     {
                         if (atoi(sptr) == mec->curr_pilot->weapon_data[mec->curr_weapon].hit)
                             stack_active[curr_stack] = 1;
@@ -2245,7 +2245,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                     stack_active[curr_stack] = 0;
 
-                    while (sptr && (atoi(sptr) || *sptr == '0'))
+                    while (sptr && (atoi(sptr) or *sptr == '0'))
                     {
                         if (atoi(sptr) == mec->pack_success)
                             stack_active[curr_stack] = 1;
@@ -2347,7 +2347,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 sptr = token + 4;
                 i = atoi(sptr);
 
-                if ((strncmp(filename, "FOrdWeap.db", 11) == 0) || (strncmp(filename, "FOrdEvt.db", 10) == 0))  //THW Kludge to remove tab tags from debrief
+                if ((strncmp(filename, "FOrdWeap.db", 11) == 0) or (strncmp(filename, "FOrdEvt.db", 10) == 0))  //THW Kludge to remove tab tags from debrief
                     AddTabToDebrief(i, current_line, NULL, brief);
                 else
                     AddTabToBrief(i, current_line, win, brief);
@@ -2955,23 +2955,23 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     }
 
                     // Now choose which format to use
-                    if (!tar || (tar->IsUnit() && (((Unit)tar)->Broken() || ((Unit)tar)->IsDead()))
-                        || (tar->IsObjective() && ((Objective)tar)->GetObjectiveStatus() < 10))
+                    if (!tar or (tar->IsUnit() && (((Unit)tar)->Broken() or ((Unit)tar)->IsDead()))
+                        or (tar->IsObjective() && ((Objective)tar)->GetObjectiveStatus() < 10))
                     {
                         // Target is completely broken or destroyed
-                        if (success == Success || success == PartSuccess || success == AWACSAbort)
+                        if (success == Success or success == PartSuccess or success == AWACSAbort)
                             data.formatId = 1200 + mission_context;
                         else
                             data.formatId = 1400 + mission_context;
                     }
                     else if ((tar->IsUnit() && (float)losses / (float)fptr->target_status > 0.01F)
-                             || (tar->IsObjective() && losses > 0))
+                             or (tar->IsObjective() && losses > 0))
                         // KCK: Needed to use this one until we have strings entered for
                         // posibility of partial destruction and successfull mission
-                        // || (tar->IsObjective() && losses > 10))
+                        // or (tar->IsObjective() && losses > 10))
                     {
                         // Target is partially broken or destroyed
-                        if (success == Success || success == PartSuccess || success == AWACSAbort)
+                        if (success == Success or success == PartSuccess or success == AWACSAbort)
                             data.formatId = 1200 + mission_context;
                         else
                             data.formatId = 1400 + mission_context;
@@ -2979,7 +2979,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     else
                     {
                         // Target took little or no damage
-                        if (success == Success || success == PartSuccess || success == AWACSAbort)
+                        if (success == Success or success == PartSuccess or success == AWACSAbort)
                             data.formatId = 1300 + mission_context;
                         else
                             data.formatId = 1500 + mission_context;
@@ -3004,7 +3004,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             }
             else if (strcmp(token, "AIRCRAFT_TYPE") == 0)
                 AddStringToBuffer(flight_data->aircraft_name, current_line);
-            else if (strcmp(token, "TIME_ON_TARGET") == 0 || strcmp(token, "TIME_ON_STATION_LABEL") == 0)
+            else if (strcmp(token, "TIME_ON_TARGET") == 0 or strcmp(token, "TIME_ON_STATION_LABEL") == 0)
             {
                 AddTimeToBuffer(mec->assigned_tot, current_line);
             }
@@ -3069,7 +3069,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     AddStringToBuffer(name, current_line);
                 }
             }
-            else if (strncmp(token, "GENERAL_LOCATION", 16) == 0 || strncmp(token, "SPECIFIC_LOCATION", 17) == 0 || strncmp(token, "NEAREST_LOCATION", 16) == 0 || strncmp(token, "THE_LOCATION", 12) == 0)
+            else if (strncmp(token, "GENERAL_LOCATION", 16) == 0 or strncmp(token, "SPECIFIC_LOCATION", 17) == 0 or strncmp(token, "NEAREST_LOCATION", 16) == 0 or strncmp(token, "THE_LOCATION", 12) == 0)
             {
                 GridIndex x = 0, y = 0;
 
@@ -3434,7 +3434,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                             CEntity = u;
                             ReadScriptedBriefFile("Squad.b", current_line, win, brief, mec, mec->package_element);
 
-                            if (u->GetSType() == STYPE_UNIT_FIGHTER || u->GetSType() == STYPE_UNIT_FIGHTER_BOMBER)
+                            if (u->GetSType() == STYPE_UNIT_FIGHTER or u->GetSType() == STYPE_UNIT_FIGHTER_BOMBER)
                                 ESquad = u;
 
                             got++;
@@ -3490,7 +3490,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 int i, j, f, skip;
                 _TCHAR names[MAX_TARGET_FEATURES][30];
 
-                if (!ptarget || !ptarget->IsObjective())
+                if (!ptarget or !ptarget->IsObjective())
                     continue;
 
                 for (i = 0; i < MAX_TARGET_FEATURES; i++)

@@ -613,7 +613,7 @@ void FireControlComputer::FindRelativeImpactPoint(void)
         dz = groundImpactZ - platform->ZPos();
 
         // Cobra - Rocket calcs are screwed up (dx/dy instead of dy/dx)
-        if (subMode == OBSOLETERCKT || subMode == STRAF)
+        if (subMode == OBSOLETERCKT or subMode == STRAF)
         {
             //----------------------------------
             groundPipperAz = ((float)atan2(dx, dy) - platform->Yaw());
@@ -710,8 +710,8 @@ void FireControlComputer::DelayModePipperCorrection(void)
 #if 0
 
     // See if the pipper falls off screen
-    if (groundPipperEl >  5.0F * DTR || groundPipperEl < -13.0F * DTR ||
-        groundPipperAz > 10.0F * DTR || groundPipperAz < -10.0F * DTR)
+    if (groundPipperEl >  5.0F * DTR or groundPipperEl < -13.0F * DTR ||
+        groundPipperAz > 10.0F * DTR or groundPipperAz < -10.0F * DTR)
     {
         // This computes a new az and el in the same direction with a 13 degree solid angle
         groundPipperEl = atan(tan(13.0f * DTR) * rollTrig.cos);
@@ -831,7 +831,7 @@ void FireControlComputer::CheckForBombRelease(void)
     // How long to null the impact point error assuming level flight toward the target?
     tmpTime = airGroundRange / platform->GetVt();
 
-    if ((tmpTime < 0.1F || (airGroundDelayTime > 0.0 &&
+    if ((tmpTime < 0.1F or (airGroundDelayTime > 0.0 &&
                             airGroundDelayTime < 0.4F && tmpTime > airGroundDelayTime)) &&
         Sms->curWeapon)
     {
@@ -951,7 +951,7 @@ void FireControlComputer::CalculateReleaseRange(void)
         isJDAM = true;
     }
 
-    if (isJSOW || isJDAM)
+    if (isJSOW or isJDAM)
     {
         // RV - Biker - If we have a locked target on laser pod go to TOO
         LaserPodClass* laserPod = (LaserPodClass*)FindLaserPod(platform);
@@ -1013,7 +1013,7 @@ void FireControlComputer::CalculateReleaseRange(void)
     if ((Sms->CurHardpoint() >= 0) && (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags & SMSClass::Loftable))
     {
         //MI
-        if (!g_bRealisticAvionics || !playerFCC || (((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP))
+        if (!g_bRealisticAvionics or !playerFCC or (((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP))
             tossAngle = 45.0F * DTR;
         else
         {
@@ -1193,7 +1193,7 @@ void FireControlComputer::DTOSMode(void)
     }
 
     // Move the cursors as needed
-    if ((cursorXCmd != 0) || (cursorYCmd != 0))
+    if ((cursorXCmd != 0) or (cursorYCmd != 0))
         if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
             yMove = (float)cursorYCmd / 10000.0F;
@@ -1208,7 +1208,7 @@ void FireControlComputer::DTOSMode(void)
     groundPipperEl += yMove * g_fCursorSpeed * DTOS_SLEW_RATE * SimLibMajorFrameTime;
     groundPipperAz += xMove * g_fCursorSpeed * DTOS_SLEW_RATE * SimLibMajorFrameTime;
 
-    if (preDesignate || (cursorXCmd != 0) || (cursorYCmd != 0))
+    if (preDesignate or (cursorXCmd != 0) or (cursorYCmd != 0))
     {
         groundDesignateAz = -cockpitFlightData.beta * DTR + cockpitFlightData.windOffset * platform->platformAngles.cosphi;
         groundDesignateAz += groundPipperAz;
@@ -1216,7 +1216,7 @@ void FireControlComputer::DTOSMode(void)
         groundDesignateEl += groundPipperEl;
         groundDesignateDroll = (float)atan2(sin(groundDesignateAz), sin(groundDesignateEl));
 
-        if (releaseConsent || designateCmd || !preDesignate)
+        if (releaseConsent or designateCmd or !preDesignate)
         {
             // Convert from the body relative flight path marker angles to world space pitch/yaw
             mlSinCos(&trig, platform->Roll());
@@ -1279,7 +1279,7 @@ void FireControlComputer::LADDMode(void)
     }
 
     // Move the cursors as needed
-    if (cursorXCmd != 0) || (cursorYCmd != 0)
+    if (cursorXCmd != 0) or (cursorYCmd != 0)
         if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
             yMove = (float)cursorYCmd / 10000.0F;
@@ -1294,7 +1294,7 @@ void FireControlComputer::LADDMode(void)
     groundPipperEl += yMove * g_fCursorSpeed * DTOS_SLEW_RATE * SimLibMajorFrameTime;
     groundPipperAz += xMove * g_fCursorSpeed * DTOS_SLEW_RATE * SimLibMajorFrameTime;
 
-    if (preDesignate || (cursorXCmd != 0) || (cursorYCmd != 0))
+    if (preDesignate or (cursorXCmd != 0) or (cursorYCmd != 0))
     {
         groundDesignateAz = -cockpitFlightData.beta * DTR + cockpitFlightData.windOffset * platform->platformAngles.cosphi;
         groundDesignateAz += groundPipperAz;
@@ -1302,7 +1302,7 @@ void FireControlComputer::LADDMode(void)
         groundDesignateEl += groundPipperEl;
         groundDesignateDroll = (float)atan2(sin(groundDesignateAz), sin(groundDesignateEl));
 
-        if (releaseConsent || designateCmd || !preDesignate)
+        if (releaseConsent or designateCmd or !preDesignate)
         {
             // Convert from the body relative flight path marker angles to world space pitch/yaw
             mlSinCos(&trig, platform->Roll());
@@ -1480,8 +1480,8 @@ void FireControlComputer::CalculateLADDReleaseRange(void)
         (laddAnticipationCue == AwaitingRelease && laddAnticipationCue == lastCue))
     {
         if (!wayTooFar && releaseConsent && !postDrop &&
-            ((tmpTime < 0.1F || (airGroundDelayTime > 0.0 && airGroundDelayTime < maxDelay &&
-                                 tmpTime > airGroundDelayTime)) || bombReleaseOverride) && Sms->curWeapon)
+            ((tmpTime < 0.1F or (airGroundDelayTime > 0.0 && airGroundDelayTime < maxDelay &&
+                                 tmpTime > airGroundDelayTime)) or bombReleaseOverride) && Sms->curWeapon)
         {
             bombPickle = TRUE;
         }

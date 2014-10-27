@@ -73,7 +73,7 @@ int FalconDeathMessage::Process(uchar autodisp)
     // KCK: update kill records for mission evaluator.
     EvaluateKill(this, shooter, campShooter, target, campTarget);
 
-    if (target && (target->IsAirplane() || !(rand() % 3)))
+    if (target && (target->IsAirplane() or !(rand() % 3)))
     {
         if (shooter && shooter->IsAirplane() &&
             (GetTTRelations(shooter->GetTeam(), target->GetTeam()) >= Hostile) && rand() % 2
@@ -137,7 +137,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
     int kill_type = -1, tid, ps = PILOT_KIA;
     Squadron sq;
 
-    if (!campShooter || !campTarget)
+    if (!campShooter or !campTarget)
         return;
 
     // Determine type of kill
@@ -213,7 +213,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
                 // territory.
                 // For sim spawned deaths, we assume KIA. Choose between MIA and rescued if and when we get an
                 // eject message
-                if (!dtm || dtm->dataBlock.dEntityID != FalconNullId)
+                if (!dtm or dtm->dataBlock.dEntityID != FalconNullId)
                 {
                     if (((Flight)campTarget)->plane_stats[pilot] == AIRCRAFT_MISSING)
                     {
@@ -233,7 +233,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
     }
 
     // Update mission evaluation records if either target or shooter is in our package
-    if (dtm && ((campTarget && (campTarget->InPackage() || g_bLogEvents)) || (campShooter && (campShooter->InPackage() || g_bLogEvents))))
+    if (dtm && ((campTarget && (campTarget->InPackage() or g_bLogEvents)) or (campShooter && (campShooter->InPackage() or g_bLogEvents))))
         TheCampaign.MissionEvaluator->RegisterKill(dtm, kill_type, ps);
 
     // Update some status flags as well for all hits

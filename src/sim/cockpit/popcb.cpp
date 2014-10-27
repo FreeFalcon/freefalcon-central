@@ -26,7 +26,7 @@ BOOL CBCheckExtent(int callerIdx, int numInFlight, int extent, BOOL isPolling, V
     {
         case AiFlightLead:
 
-            if (numInFlight > 2 || (numInFlight == 2 && extent == AiWingman))
+            if (numInFlight > 2 or (numInFlight == 2 && extent == AiWingman))
             {
                 retVal = TRUE;
             }

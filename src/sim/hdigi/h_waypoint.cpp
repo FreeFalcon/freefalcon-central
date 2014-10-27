@@ -32,7 +32,7 @@ void HeliBrain::FollowWaypoints(void)
     //switch (self->curWaypoint->GetWPAction())
     //{
     //   case WP_LAND:
-    // if ( onStation == Arrived || onStation == Stabilizing )
+    // if ( onStation == Arrived or onStation == Stabilizing )
     //   LandMe();
     // else if ( !(onStation == OnStation) )
     // GoToCurrentWaypoint();
@@ -162,7 +162,7 @@ void HeliBrain::GoToCurrentWaypoint(void)
 
     // Reached the next waypoint?
     // RV - Biker - Never skip waypoints
-    if (rng < (600.0F * 600.0F) || (onStation != NotThereYet) /*|| SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime()*/)
+    if (rng < (600.0F * 600.0F) or (onStation != NotThereYet) /*|| SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime()*/)
     {
         if (onStation == NotThereYet)
         {

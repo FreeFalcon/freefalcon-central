@@ -65,7 +65,7 @@ unsigned int DrawableClass::GetMfdColor(MfdColor type)
     ShiAssert(GetIntensity() != 0 &&
               GetIntensity() != 0xCCCCCCCC); // we shouldn't ever switch off completely.
 
-    if (!g_bEnableColorMfd || greenMode)
+    if (!g_bEnableColorMfd or greenMode)
         type = MFD_DEFAULT;
 
     if (g_bMFDHighContrast)
@@ -169,7 +169,7 @@ void DrawableClass::LabelButton(int idx, char* str1, char* str2, int inverse)
         inverse = 2;
     }
 
-    if (str2 == NULL || *str2 == '\0') // JPO - ignore 2nd string null
+    if (str2 == NULL or *str2 == '\0') // JPO - ignore 2nd string null
     {
         if (idx > 4 && idx < 10)
         {

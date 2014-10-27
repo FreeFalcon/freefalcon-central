@@ -260,7 +260,7 @@ void PasswordWindow(long TitleID, long MessageID, void (*YesCB)(long, short, C_B
     C_ListBox *lbox;
     C_EditBox *ebox;
 
-    if (!YesCB || !NoCB)
+    if (!YesCB or !NoCB)
         return;
 
     if (LogState & LB_CHECKED)
@@ -537,7 +537,7 @@ void GetPilotList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[],
     int items = 0;
     _TCHAR *dst, *ptr, *extension;
 
-    if (!win || !lbox) return;
+    if (!win or !lbox) return;
 
     ffhnd = FindFirstFile(fspec, &filedata);
     last = (ffhnd != INVALID_HANDLE_VALUE);
@@ -675,7 +675,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (button)
         {
-            if (!(LogState & LB_EDITABLE) || LogState & LB_OPPONENT)
+            if (!(LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
                 button->SetFlagBitOff(C_BIT_ENABLED);
             else
                 button->SetFlagBitOn(C_BIT_ENABLED);
@@ -712,7 +712,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (button)
         {
-            if (!(LogState & LB_EDITABLE) || LogState & LB_OPPONENT)
+            if (!(LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
                 button->SetFlagBitOff(C_BIT_ENABLED);
             else
                 button->SetFlagBitOn(C_BIT_ENABLED);
@@ -752,7 +752,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if (!(LogState & LB_EDITABLE) || LogState & LB_OPPONENT)
+            if (!(LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -774,7 +774,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if (!(LogState & LB_EDITABLE) || LogState & LB_OPPONENT)
+            if (!(LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -787,7 +787,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if (!(LogState & LB_EDITABLE) || LogState & LB_OPPONENT)
+            if (!(LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -824,7 +824,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if (!(LogState & LB_EDITABLE) || LogState & LB_OPPONENT)
+            if (!(LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -837,7 +837,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if (!(LogState & LB_EDITABLE) || LogState & LB_OPPONENT)
+            if (!(LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -1408,7 +1408,7 @@ void LoadVirtualTGACB(long, short hittype, C_Base *control)
 
 void ChangeImageCB(long ID, short hittype, C_Base *control)
 {
-    if (LogState & LB_OPPONENT || !(LogState & LB_EDITABLE))
+    if (LogState & LB_OPPONENT or !(LogState & LB_EDITABLE))
         return;
 
     if (hittype != C_TYPE_LMOUSEUP)
@@ -1520,7 +1520,7 @@ int SetImage(long ID, _TCHAR *filename , long ImageID)
 
         if (CurControl == PATCH_PIC)
         {
-            if (Image->Header->w > 96 || Image->Header->h > 96)
+            if (Image->Header->w > 96 or Image->Header->h > 96)
             {
                 MonoPrint("Patch %s is too large\n", filename);
                 UI_Leave(Leave);
@@ -1535,7 +1535,7 @@ int SetImage(long ID, _TCHAR *filename , long ImageID)
         }
         else
         {
-            if (Image->Header->w > 96 || Image->Header->h > 96)
+            if (Image->Header->w > 96 or Image->Header->h > 96)
             {
                 MonoPrint("Picture %s is too large\n", filename);
                 UI_Leave(Leave);
@@ -2098,7 +2098,7 @@ void SaveLogBookCB(long ID, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    if (LogState & LB_OPPONENT || !(LogState & LB_EDITABLE))
+    if (LogState & LB_OPPONENT or !(LogState & LB_EDITABLE))
     {
         CloseLogWindowCB(ID, hittype, control);
         return;

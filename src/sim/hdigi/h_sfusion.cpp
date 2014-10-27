@@ -31,7 +31,7 @@ void HeliBrain::SensorFusion(void)
         localData = obj->localData;
         classPtr = (Falcon4EntityClassType*) obj->BaseData()->EntityType();
 
-        if (!obj->BaseData()->IsSim() || ((SimBaseClass*)obj->BaseData())->IsExploding())
+        if (!obj->BaseData()->IsSim() or ((SimBaseClass*)obj->BaseData())->IsExploding())
         {
             obj = obj->next;
             continue;
@@ -45,7 +45,7 @@ void HeliBrain::SensorFusion(void)
         /* RWR ids coming form RWR_INTERP can be incorrect. */
         /* Visual identification is 100% correct.           */
         /*--------------------------------------------------*/
-        if (localData->sensorState[SensorClass::Visual] || localData->sensorState[SensorClass::RWR] >= SensorClass::SensorTrack)
+        if (localData->sensorState[SensorClass::Visual] or localData->sensorState[SensorClass::RWR] >= SensorClass::SensorTrack)
         {
             if (obj->BaseData()->IsMissile())
             {

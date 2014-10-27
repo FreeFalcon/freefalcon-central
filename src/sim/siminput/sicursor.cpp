@@ -270,7 +270,7 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
     RECT CursorSrc;
     RECT CursorDest;
 
-    if (gSelectedCursor < 0 || gSelectedCursor >= gTotalCursors)
+    if (gSelectedCursor < 0 or gSelectedCursor >= gTotalCursors)
     {
         return;
     }

@@ -414,7 +414,7 @@ void AddSquadronsToMap()
                     res_w = gImageMgr->GetImageRes(BLUE_TEAM_ICONS_W);
             }
 
-            if (TheCampaign.IsValidSquadron(i)  || _IsF16_)
+            if (TheCampaign.IsValidSquadron(i)  or _IsF16_)
             {
                 x = TheCampaign.CampaignSquadronData[i].y; // real world x & y are y & x
                 y = TheCampaign.CampaignSquadronData[i].x;
@@ -433,7 +433,7 @@ void AddSquadronsToMap()
                 // IconID=TheCampaign.CampaignSquadronData[i].airbaseIcon; // too big
                 IconID = 10003;
 
-                if (i == gSelectedSquadronID || savex == -1 || savey == -1)
+                if (i == gSelectedSquadronID or savex == -1 or savey == -1)
                 {
                     savex = static_cast<int>(x);
                     savey = static_cast<int>(y);
@@ -514,7 +514,7 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
 
         for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
         {
-            if (TheCampaign.IsValidSquadron(i)  || _IsF16_)
+            if (TheCampaign.IsValidSquadron(i)  or _IsF16_)
             {
                 x = TheCampaign.CampaignSquadronData[i].y; // real world x & y are y & x
                 y = TheCampaign.CampaignSquadronData[i].x;
@@ -565,7 +565,7 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
                     btn->SetCursorID(CRSR_F16_ON);
                     win->AddControl(btn);
 
-                    if (i == gSelectedSquadronID || gSelectedSquadronID < 0)
+                    if (i == gSelectedSquadronID or gSelectedSquadronID < 0)
                     {
                         gSelectedSquadronID = i;
                         btn->SetState(1);
@@ -595,14 +595,14 @@ void LoadSquadronInfo()
     {
         // Need squadron info now
 
-        if (gSelectedSquadronID < 0 || gSelectedSquadronID >= TheCampaign.NumAvailSquadrons)
+        if (gSelectedSquadronID < 0 or gSelectedSquadronID >= TheCampaign.NumAvailSquadrons)
         {
             // KCK: Pick a valid squadron with the lowest id.
             gSelectedSquadronID = -1;
 
             for (int i = 0; i < TheCampaign.NumAvailSquadrons; i++)
             {
-                if ((TheCampaign.IsValidSquadron(i) || _IsF16_) && (gSelectedSquadronID < 0 || TheCampaign.CampaignSquadronData[i].id.num_ < TheCampaign.CampaignSquadronData[gSelectedSquadronID].id.num_))
+                if ((TheCampaign.IsValidSquadron(i) or _IsF16_) && (gSelectedSquadronID < 0 or TheCampaign.CampaignSquadronData[i].id.num_ < TheCampaign.CampaignSquadronData[gSelectedSquadronID].id.num_))
                     gSelectedSquadronID = i;
             }
         }
@@ -943,7 +943,7 @@ void SelectScenarioCB(long ID, short hittype, C_Base *control)
 
     for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
     {
-        if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID && (TheCampaign.IsValidSquadron(i) || _IsF16_))
+        if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID && (TheCampaign.IsValidSquadron(i) or _IsF16_))
             gSelectedSquadronID = i;
     }
 
@@ -1004,7 +1004,7 @@ void RecieveScenarioInfo()
 
         for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
         {
-            if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID && (TheCampaign.IsValidSquadron(i) || _IsF16_))
+            if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID && (TheCampaign.IsValidSquadron(i) or _IsF16_))
                 gSelectedSquadronID = i;
         }
 
@@ -1025,7 +1025,7 @@ void RecieveScenarioInfo()
 
         for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
         {
-            if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID && (TheCampaign.IsValidSquadron(i) || _IsF16_))
+            if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID && (TheCampaign.IsValidSquadron(i) or _IsF16_))
                 gSelectedSquadronID = i;
         }
 
@@ -1107,7 +1107,7 @@ static void CommitCB(long, short hittype, C_Base *)
 
                 if (ebox)
                 {
-                    // if(!PlayerOptions.InCompliance(game->GetRules()) || !game->CheckPassword(ebox->GetText()))
+                    // if(!PlayerOptions.InCompliance(game->GetRules()) or !game->CheckPassword(ebox->GetText()))
                     // {
                     SetupInfoWindow(ReallyJoinCB, CancelJoinCB);
                     // }
@@ -2086,7 +2086,7 @@ void DisplayJoinStatusWindow(int bits)
     C_Window
     *win;
 
-    if ((!gCommsMgr->Online()) || (FalconLocalGame->IsLocal()))
+    if ((!gCommsMgr->Online()) or (FalconLocalGame->IsLocal()))
     {
         return;
     }

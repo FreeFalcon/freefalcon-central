@@ -114,7 +114,7 @@ void C_Fill::SetDither(short size, short range)
 {
     short i, j;
 
-    if ((size < 3) || !(range))
+    if ((size < 3) or !(range))
         size = 0;
 
     if (size != DitherSize_)
@@ -167,7 +167,7 @@ void C_Fill::Cleanup(void)
 
 void C_Fill::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     F4CSECTIONHANDLE* Leave = UI_Enter(Parent_);
@@ -180,7 +180,7 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
     UI95_RECT s, d;
     float startg;
 
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     d.left = GetX();

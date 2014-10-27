@@ -349,7 +349,7 @@ CockpitManager::CockpitManager(
 
         for (int i = 0; i < (int)strlen(m_eCPName); i++)
         {
-            if (m_eCPName[i] == '/' || m_eCPName[i] == '\\')
+            if (m_eCPName[i] == '/' or m_eCPName[i] == '\\')
             {
                 if (i < (int)strlen(m_eCPName) - 1)
                 {
@@ -368,7 +368,7 @@ CockpitManager::CockpitManager(
 
         for (int i = 0; i < (int)strlen(m_eCPNameNCTR); i++)
         {
-            if (m_eCPNameNCTR[i] == '/' || m_eCPNameNCTR[i] == '\\')
+            if (m_eCPNameNCTR[i] == '/' or m_eCPNameNCTR[i] == '\\')
             {
                 if (i < (int)strlen(m_eCPNameNCTR) - 1)
                 {
@@ -1203,7 +1203,7 @@ string RemoveInvalidChars(const string &instr)
     int len = strlen(outstr.c_str());
 
     for (int i = 0; i < len; ++i)
-        if (isspace(*pos) || (invalid_chars.find(*pos) != string::npos))
+        if (isspace(*pos) or (invalid_chars.find(*pos) != string::npos))
             outstr.erase(pos); // this increments pos
         else ++pos;
 
@@ -2384,7 +2384,7 @@ void CockpitManager::SafeImageCopy(GLubyte* ploadBuffer,
         return;
     }
 
-    if (psrcRect->top < 0 || psrcRect->left < 0 || psrcRect->bottom > height || psrcRect->right > width) //Wombat778 4-11-04 added another check for src rectangles below 0
+    if (psrcRect->top < 0 or psrcRect->left < 0 or psrcRect->bottom > height or psrcRect->right > width) //Wombat778 4-11-04 added another check for src rectangles below 0
     {
         CockpitError(gDebugLineNum, 2); //Wombat778 4-11-04 throw up an error
         clearbuffer = true; //Wombat778 4-13-04 since this is just a buffer size error, we still want to clear the texture with chroma blue
@@ -4370,7 +4370,7 @@ void CockpitManager::GeometryDraw(void)
             }
         }
 
-        if (!mpActivePanel->DoGeometry() || PlayerOptions.ObjectDetailLevel() < 1.5F)
+        if (!mpActivePanel->DoGeometry() or PlayerOptions.ObjectDetailLevel() < 1.5F)
         {
             drawOrdinance = FALSE;
         }
@@ -4390,7 +4390,7 @@ void CockpitManager::GeometryDraw(void)
         }
 
 
-        if (PlayerOptions.SimVisualCueMode == VCReflection || PlayerOptions.SimVisualCueMode == VCBoth)
+        if (PlayerOptions.SimVisualCueMode == VCReflection or PlayerOptions.SimVisualCueMode == VCBoth)
         {
             mpGeometry->SetSwitchMask(3, 1);
         }
@@ -4400,7 +4400,7 @@ void CockpitManager::GeometryDraw(void)
             drawReflection = FALSE;
         }
 
-        if (drawWing || drawReflection)
+        if (drawWing or drawReflection)
         {
 
             // Wombat778 2-24-04 Set the FOV back to 60 for drawing the wings and ordinance.
@@ -4775,7 +4775,7 @@ bool CockpitManager::SetActivePanel(int panelId)   //Wombat778 changed return to
 
         mIsNextInitialized = FALSE;
     }
-    else if (mpActivePanel == NULL || mpActivePanel->mIdNum != panelId)
+    else if (mpActivePanel == NULL or mpActivePanel->mIdNum != panelId)
     {
 
         // loop thru all the panels

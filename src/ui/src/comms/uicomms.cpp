@@ -125,7 +125,7 @@ void UIComms::SetStatsFile(char *filename)
     GameStats_->SetName(filename);
     GameStats_->LoadStats();
 
-    if (FalconLocalGame && (FalconLocalGame->GetGameType() == game_Campaign || FalconLocalGame->GetGameType() == game_TacticalEngagement))
+    if (FalconLocalGame && (FalconLocalGame->GetGameType() == game_Campaign or FalconLocalGame->GetGameType() == game_TacticalEngagement))
     {
         LoadStats();
     }
@@ -196,7 +196,7 @@ void UIComms::SetUserInfo()
 
 BOOL UIComms::LookAtGame(VuGameEntity* game)
 {
-    if (!game || game == vuPlayerPoolGroup)
+    if (!game or game == vuPlayerPoolGroup)
     {
         TargetGame_ = FalconNullId;
         TheCampaign.CurrentGame.reset();

@@ -181,7 +181,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
     if (
         vuGlobalGroup && vuGlobalGroup->Connected() &&
         msg->Target() && msg->Target() != vuLocalSessionEntity &&
-        msg->DoSend() && (!ent || !ent->IsPrivate()) &&
+        msg->DoSend() && (!ent or !ent->IsPrivate()) &&
         (vuLocalSession.creator_ != VU_SESSION_NULL_CONNECTION.creator_)
     )
     {
@@ -191,7 +191,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
         if (
             (retval == 0) && sq &&
             (msg->Flags() & VU_SEND_FAILED_MSG_FLAG) &&
-            ((msg->Flags() & VU_RELIABLE_MSG_FLAG) || (msg->Flags() & VU_KEEPALIVE_MSG_FLAG))
+            ((msg->Flags() & VU_RELIABLE_MSG_FLAG) or (msg->Flags() & VU_KEEPALIVE_MSG_FLAG))
         )
         {
             //if (msg->Flags() & VU_NORMAL_PRIORITY_MSG_FLAG){
@@ -229,7 +229,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
     // message not added to any queue, auto destroy
     if (
         (msg->refcnt_ == 1) &&
-        (!msg->IsLocal() || (msg->Flags() & VU_LOOPBACK_MSG_FLAG))
+        (!msg->IsLocal() or (msg->Flags() & VU_LOOPBACK_MSG_FLAG))
     )
     {
         VuExitCriticalSection();
@@ -317,7 +317,7 @@ VU_BOOL VuMessageQueue::ReallocQueue()
 VU_BOOL VuMessageQueue::AddMessage(VuMessage* event)
 {
     // JB 010121
-    if (!event || !filter_)
+    if (!event or !filter_)
     {
         return 0;
     }

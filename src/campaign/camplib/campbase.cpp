@@ -373,7 +373,7 @@ int CampBaseClass::GetSpotted(Team t)
 
     MoveType mt = GetMovementType();
 
-    if (mt > 8 || mt <= 0)
+    if (mt > 8 or mt <= 0)
         return 1;
 
     // sfr: bad usage here! use sum instead, since in MP clients can receive future updates
@@ -452,12 +452,12 @@ void CampBaseClass::SetLocation(GridIndex x, GridIndex y)
     // Check if flight has moved, and evaluate current situation if so
     GetLocation(&cx, &cy);
 
-    if (cx != x || cy != y)
+    if (cx != x or cy != y)
     {
         vector v;
 
         //ShiAssert (x >= 0 && y >= 0 && x < Map_Max_X && y < Map_Max_Y)
-        if ((x < 1) || (x >= Map_Max_X - 1) || (y < 1) || (y >= Map_Max_Y - 1))
+        if ((x < 1) or (x >= Map_Max_X - 1) or (y < 1) or (y >= Map_Max_Y - 1))
         {
             // KCK Hack: Teleport units off map back onto map
             if (x < 1)
@@ -502,7 +502,7 @@ void CampBaseClass::SetSpotted(Team t, CampaignTime time, int identified)
 {
     // Make this dirty if we wern't previously spotted or our time has expired
     // 2002-02-11 MODIFIED BY S.G. Or we were not identified and now we are
-    if (ReSpot() || !((spotted >> t) & 0x01) || (!((spotted >> (t + 8)) & 0x01) && identified))
+    if (ReSpot() or !((spotted >> t) & 0x01) or (!((spotted >> (t + 8)) & 0x01) && identified))
     {
         spotTime = time;
 
@@ -554,7 +554,7 @@ void CampBaseClass::SetEmitting(int e)
 #endif
         )
         {
-            if (IsBattalion() || IsObjective())
+            if (IsBattalion() or IsObjective())
             {
                 EmitterList->ForcedInsert(this);
             }
@@ -570,7 +570,7 @@ void CampBaseClass::SetEmitting(int e)
     {
         base_flags &= compl CBC_EMITTING;
 
-        if (IsBattalion() || IsObjective())
+        if (IsBattalion() or IsObjective())
         {
             EmitterList->Remove(this);
         }
@@ -640,7 +640,7 @@ void CampBaseClass::SetTacan(int t)
             gTacanList->RemoveTacan(Id(), NavigationSystem::CARRIER);
         }
     }
-    else if (t && (!IsTacan() || (IsObjective() && GetType() == TYPE_AIRBASE)) && gTacanList)
+    else if (t && (!IsTacan() or (IsObjective() && GetType() == TYPE_AIRBASE)) && gTacanList)
     {
         gTacanList->AddTacan(this);
     }
@@ -840,7 +840,7 @@ CampEntity GetFirstEntity(F4LIt l)
     while (e)
     {
         //if (e->VuState() != VU_MEM_DELETED)
-        if (GetEntityClass(e) == CLASS_UNIT || GetEntityClass(e) == CLASS_OBJECTIVE)
+        if (GetEntityClass(e) == CLASS_UNIT or GetEntityClass(e) == CLASS_OBJECTIVE)
         {
             return (CampEntity)e;
         }
@@ -860,7 +860,7 @@ CampEntity GetNextEntity(F4LIt l)
     while (e)
     {
         //if (e->VuState() != VU_MEM_DELETED)
-        if (GetEntityClass(e) == CLASS_UNIT || GetEntityClass(e) == CLASS_OBJECTIVE)
+        if (GetEntityClass(e) == CLASS_UNIT or GetEntityClass(e) == CLASS_OBJECTIVE)
         {
             return (CampEntity)e;
         }
@@ -873,7 +873,7 @@ CampEntity GetNextEntity(F4LIt l)
 
 int Real(int type)
 {
-    if (type == TYPE_BATTALION || type == TYPE_FLIGHT || type == TYPE_TASKFORCE)
+    if (type == TYPE_BATTALION or type == TYPE_FLIGHT or type == TYPE_TASKFORCE)
         return 1;
 
     return 0;
@@ -1004,7 +1004,7 @@ int GetVisualDetectionRange(int mt)
     SIM_ULONG timer = 0;
     static int tod = 0;
 
-    if ((timer == 0) || (SimLibElapsedTime > timer))
+    if ((timer == 0) or (SimLibElapsedTime > timer))
     {
         tod = TimeOfDayGeneral();
         timer = SimLibElapsedTime + 900000;//15 minutes
@@ -1075,7 +1075,7 @@ void CampBaseClass::SetBaseFlags(short flags)
 
 void CampBaseClass::MakeCampBaseDirty(Dirty_Campaign_Base bits, Dirtyness score)
 {
-    if ((!IsLocal()) || (VuState() != VU_MEM_ACTIVE))
+    if ((!IsLocal()) or (VuState() != VU_MEM_ACTIVE))
     {
         return;
     }

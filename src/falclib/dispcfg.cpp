@@ -243,7 +243,7 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
         int NewXOffset = 0;
         int NewYOffset = 0;
 
-        if ((rect.right > wx) || (rect.bottom > wy))
+        if ((rect.right > wx) or (rect.bottom > wy))
         {
             NewXOffset = 0;
             NewYOffset = 0;
@@ -268,7 +268,7 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
 
     if (pDI)
     {
-        /*JAM 01Dec03 if((g_bForceSoftwareGUI || pDI->Is3dfx() || !pDI->CanRenderWindowed()) && newMode != Sim)
+        /*JAM 01Dec03 if((g_bForceSoftwareGUI or pDI->Is3dfx() or !pDI->CanRenderWindowed()) && newMode != Sim)
          {
          // V1, V2 workaround - use primary display adapter with RGB Renderer
          int nIndexPrimary = FalconDisplay.devmgr.FindPrimaryDisplayDriver();

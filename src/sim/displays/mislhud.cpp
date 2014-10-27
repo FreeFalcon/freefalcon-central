@@ -52,7 +52,7 @@ void HudClass::DrawDogfight()
     {
         if (targetPtr)
         {
-            /*if ( flash || targetData->range > FCC->missileRneMax || targetData->range < FCC->missileRneMin)
+            /*if ( flash or targetData->range > FCC->missileRneMax or targetData->range < FCC->missileRneMin)
             {
              DrawMissileReticle(FCC->Aim120ASECRadius(targetData->range), FALSE, TRUE);
             }*/
@@ -62,7 +62,7 @@ void HudClass::DrawDogfight()
 
             //else
             // DrawAATDBox();
-            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
             {
                 DrawAim120DLZ(true);
                 DrawAim120ASE();
@@ -106,7 +106,7 @@ void HudClass::DrawDogfight()
             // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
             // DrawMissileReticle(0.3F, FALSE, TRUE);
             //else
-            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
             {
                 DrawMissileReticle(MRM_RETICLE_SIZE, FALSE, TRUE);
                 DrawAim120Diamond();
@@ -118,7 +118,7 @@ void HudClass::DrawDogfight()
 
         if (targetPtr)
         {
-            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
             {
                 //MI changed
                 if (!g_bRealisticAvionics)
@@ -137,14 +137,14 @@ void HudClass::DrawDogfight()
         }
         else
         {
-            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
             {
                 DrawAim9Diamond();
             }
         }
     }
 
-    if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+    if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
     {
         DrawGuns();
     }
@@ -154,7 +154,7 @@ void HudClass::DrawDogfight()
     // Add target aspect angle
     if (targetPtr)
     {
-        if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+        if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
         {
             ang = max(min(targetData->aspect * RTD * 0.1F, 18.0F), -18.0F);
             sprintf(str, "AA %02.0f%c", ang, (targetData->azFrom > 0.0F ? 'R' : 'L'));
@@ -190,7 +190,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                 else
                     DrawAATDBox();
 
-                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                 {
                     DrawAim9DLZ();
                     DrawAim9Diamond();//me123 addet
@@ -198,7 +198,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
 
                 if (wpn)
                 {
-                    if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+                    if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                     {
                         // Marco Edit - check for our missile type (ie. REAR ASPECT)
                         // if (wc && wc->Flags & WEAP_REAR_ASPECT)
@@ -212,7 +212,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                         else
                         {
                             // if (((MissileClass*)wpn)->isCaged && !((MissileClass*)wpn)->isSpot)
-                            if (g_bRealisticAvionics && ((MissileClass*)wpn)->isSpot || (!((MissileClass*)wpn)->isCaged && ((MissileClass*)wpn)->targetPtr))
+                            if (g_bRealisticAvionics && ((MissileClass*)wpn)->isSpot or (!((MissileClass*)wpn)->isCaged && ((MissileClass*)wpn)->targetPtr))
                             {
                                 DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
                             }
@@ -226,7 +226,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
             }
             else
             {
-                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                 {
 
                     // Marco Edit - check for our missile type (ie. REAR ASPECT)
@@ -239,7 +239,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                     else
                     {
                         // if (((MissileClass*)wpn)->isCaged && !((MissileClass*)wpn)->isSpot)
-                        if (g_bRealisticAvionics && wpn && (((MissileClass*)wpn)->isSpot || (!((MissileClass*)wpn)->isCaged && ((MissileClass*)wpn)->targetPtr)))
+                        if (g_bRealisticAvionics && wpn && (((MissileClass*)wpn)->isSpot or (!((MissileClass*)wpn)->isCaged && ((MissileClass*)wpn)->targetPtr)))
                         {
                             DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
                         }
@@ -258,7 +258,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
         case FireControlComputer::Aim120:
             if (targetPtr)
             {
-                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                 {
                     // JPO flashing resizing reticle
                     if (flash ||
@@ -278,7 +278,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
             }
             else
             {
-                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                 {
                     // JPG 17 Jan 04 - No again MI, see above
                     //MI make it dependant on missil bore/slave
@@ -300,7 +300,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
         case FireControlComputer::Snapshot:
             if (g_bRealisticAvionics)
             {
-                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                 {
                     DrawGuns();
                 }
@@ -327,7 +327,7 @@ void HudClass::DrawAirMissile(void)
     SimWeaponClass* wpn;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
     wpn = playerAC->Sms->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
-    ShiAssert(wpn == NULL || wpn->IsMissile());
+    ShiAssert(wpn == NULL or wpn->IsMissile());
 
     switch (FCC->GetSubMode())
     {
@@ -340,7 +340,7 @@ void HudClass::DrawAirMissile(void)
                 else
                     DrawAATDBox();
 
-                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                 {
 
                     DrawAim9DLZ();
@@ -361,7 +361,7 @@ void HudClass::DrawAirMissile(void)
                         else
                         {
                             // if (((MissileClass*)wpn)->isCaged && !((MissileClass*)wpn)->isSpot)
-                            if (g_bRealisticAvionics && ((MissileClass*)wpn)->isSpot || (!((MissileClass*)wpn)->isCaged && ((MissileClass*)wpn)->targetPtr))
+                            if (g_bRealisticAvionics && ((MissileClass*)wpn)->isSpot or (!((MissileClass*)wpn)->isCaged && ((MissileClass*)wpn)->targetPtr))
                             {
                                 DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
                             }
@@ -377,7 +377,7 @@ void HudClass::DrawAirMissile(void)
             {
                 if (wpn)
                 {
-                    if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+                    if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                     {
                         // Marco Edit - check for our missile type (ie. REAR ASPECT)
                         // if (wc && wc->Flags & WEAP_REAR_ASPECT)
@@ -391,7 +391,7 @@ void HudClass::DrawAirMissile(void)
                         else
                         {
                             // if (((MissileClass*)wpn)->isCaged && !((MissileClass*)wpn)->isSpot)
-                            if (g_bRealisticAvionics && ((MissileClass*)wpn)->isSpot || (!((MissileClass*)wpn)->isCaged && ((MissileClass*)wpn)->targetPtr))
+                            if (g_bRealisticAvionics && ((MissileClass*)wpn)->isSpot or (!((MissileClass*)wpn)->isCaged && ((MissileClass*)wpn)->targetPtr))
                             {
                                 DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
                             }
@@ -404,7 +404,7 @@ void HudClass::DrawAirMissile(void)
                 }
             }
 
-            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
             {
                 DrawAim9Diamond();
             }
@@ -420,7 +420,7 @@ void HudClass::DrawAirMissile(void)
                 else
                     DrawAATDBox();
 
-                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                 {
                     if (flash ||
                         targetData->range > FCC->missileRneMax ||
@@ -433,7 +433,7 @@ void HudClass::DrawAirMissile(void)
             }
             else   // JPG 17 Jan 04 - No for the last time
             {
-                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                 {
                     //MI make it dependant on missil bore/slave
                     //if(playerAC && playerAC->Sms && playerAC->Sms->curWeapon &&
@@ -466,7 +466,7 @@ void HudClass::DrawGroundMissile(void)
 
     if (targetPtr)
     {
-        if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+        if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
         {
             DrawAGMDLZ();
         }
@@ -611,7 +611,7 @@ void HudClass::DrawMissileReticle(float radius, int showRange, int showAspect)
 
         // Reference Ticks
         // M.N. added full realism mode
-        if (targetData->range < 12000.0F || (PlayerOptions.GetAvionicsType() != ATRealistic && PlayerOptions.GetAvionicsType() != ATRealisticAV))
+        if (targetData->range < 12000.0F or (PlayerOptions.GetAvionicsType() != ATRealistic && PlayerOptions.GetAvionicsType() != ATRealisticAV))
         {
             display->Line(0.0F,  radius, 0.0F,  radius + 0.04F);
             display->Line(0.0F, -radius, 0.0F, -radius - 0.04F);
@@ -692,7 +692,7 @@ void HudClass::DrawAim9Diamond(void)
         // Marco Edit - if seeker is Slave and/or SPOT and no target, then vibrate
         if (g_bRealisticAvionics && playerAC->Sms->curWeaponType == wtAim9)
         {
-            if (!((MissileClass*)wpn)->targetPtr && (((MissileClass*)wpn)->isCaged || ((MissileClass*)wpn)->isSpot))
+            if (!((MissileClass*)wpn)->targetPtr && (((MissileClass*)wpn)->isCaged or ((MissileClass*)wpn)->isSpot))
             {
                 if (FCC->Aim9AtGround)
                 {
@@ -833,7 +833,7 @@ void HudClass::DrawAim9DLZ(void)
         rNeMax = FCC->missileRneMax / FCC->missileWEZDisplayRange;
         rNeMin = FCC->missileRneMin / FCC->missileWEZDisplayRange;
 
-        if (targetData->range < rMin || targetData->range > rNeMax || flash)
+        if (targetData->range < rMin or targetData->range > rNeMax or flash)
         {
             if (FCC->GetSubMode() == FireControlComputer::Aim9)
             {
@@ -849,7 +849,7 @@ void HudClass::DrawAim9DLZ(void)
                     else
                     {
                         // if (((MissileClass*)wpn)->isCaged && !((MissileClass*)wpn)->isSpot)
-                        if (((MissileClass*)wpn)->isSpot || (!((MissileClass*)wpn)->isCaged && ((MissileClass*)wpn)->targetPtr))
+                        if (((MissileClass*)wpn)->isSpot or (!((MissileClass*)wpn)->isCaged && ((MissileClass*)wpn)->targetPtr))
                         {
                             DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
                         }
@@ -862,7 +862,7 @@ void HudClass::DrawAim9DLZ(void)
             }
         }
 
-        if (targetData->range < rMin || targetData->range > rMax || flash)
+        if (targetData->range < rMin or targetData->range > rMax or flash)
         {
             DrawAim9Diamond();
         }
@@ -951,13 +951,13 @@ void HudClass::DrawAim120DLZ(bool dfgt)
         rNeMin = FCC->missileRneMin;
 
         // JPO compare raw data first for ranging
-        if (targetData->range < rNeMin || targetData->range > rNeMax || flash)
+        if (targetData->range < rNeMin or targetData->range > rNeMax or flash)
         {
             if (FCC->GetSubMode() == FireControlComputer::Aim120)
                 DrawMissileReticle(FCC->Aim120ASECRadius(targetData->range), FALSE, TRUE);
         }
 
-        if (targetData->range < rMin || targetData->range > rMax || flash && !dfgt)
+        if (targetData->range < rMin or targetData->range > rMax or flash && !dfgt)
         {
             DrawAim120Diamond();
         }
@@ -1163,8 +1163,8 @@ void HudClass::DrawAim120ASE(void)
             display->Circle(az, el , MISSILE_ASE_SIZE);
             rMax   = FCC->missileRMax;
 
-            //  if ((float)fabs(FCC->missileSeekerAz) > AIM120ASECX || (float)fabs(FCC->missileSeekerEl) > AIM120ASECX || targetData->range > rMax)
-            if ((float)fabs(az) >= 0.9f || (float)fabs(el) >= 0.9f || targetData->range > rMax)
+            //  if ((float)fabs(FCC->missileSeekerAz) > AIM120ASECX or (float)fabs(FCC->missileSeekerEl) > AIM120ASECX or targetData->range > rMax)
+            if ((float)fabs(az) >= 0.9f or (float)fabs(el) >= 0.9f or targetData->range > rMax)
             {
                 // Display ASEC X
                 display->Line(az - 0.6f * MISSILE_ASE_SIZE, el - 0.6f * MISSILE_ASE_SIZE,
@@ -1188,8 +1188,8 @@ void HudClass::DrawAim120ASE(void)
             display->Circle(az, el, MISSILE_ASE_SIZE);
             rMax   = FCC->missileRMax;
 
-            //  if ((float)fabs(FCC->missileSeekerAz) > AIM120ASECX || (float)fabs(FCC->missileSeekerEl) > AIM120ASECX || targetData->range > rMax)
-            if ((float)fabs(az) >= 0.9f || (float)fabs(el) >= 0.9f || targetData->range > rMax)
+            //  if ((float)fabs(FCC->missileSeekerAz) > AIM120ASECX or (float)fabs(FCC->missileSeekerEl) > AIM120ASECX or targetData->range > rMax)
+            if ((float)fabs(az) >= 0.9f or (float)fabs(el) >= 0.9f or targetData->range > rMax)
 
             {
                 // Display ASEC X
@@ -1215,7 +1215,7 @@ void HudClass::CheckBreakX(void)
     vector a, b, c, d;
 
     // Quit now if nothing to do
-    if (!targetPtr || Warnflash)
+    if (!targetPtr or Warnflash)
         return;
 
     // Check the next 5 seconds.
@@ -1310,7 +1310,7 @@ void HudClass::DrawHTSDLZ(void)
     rMax   = FCC->missileRMax;
     rMin   = FCC->missileRMin;
 
-    if (targetData->range < rMin || targetData->range > rMax || flash)
+    if (targetData->range < rMin or targetData->range > rMax or flash)
     {
         boresightOffset = hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
         xPos = RadToHudUnitsX(FCC->missileSeekerAz);

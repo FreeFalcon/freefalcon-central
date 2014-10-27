@@ -405,7 +405,7 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
     {
         Root_ = newwin;
     }
-    else if (thewin->GetDepth() < Root_->win->GetDepth() && thewin->GetDepth() || (thewin->GetFlags() & C_BIT_CANTMOVE && !(Root_->win->GetFlags() & C_BIT_CANTMOVE)))
+    else if (thewin->GetDepth() < Root_->win->GetDepth() && thewin->GetDepth() or (thewin->GetFlags() & C_BIT_CANTMOVE && !(Root_->win->GetFlags() & C_BIT_CANTMOVE)))
     {
         newwin->Next = Root_;
         Root_->Prev = newwin;
@@ -417,7 +417,7 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
 
         while (cur && newwin)
         {
-            if (thewin->GetDepth() < cur->win->GetDepth() && thewin->GetDepth() || (thewin->GetFlags() & C_BIT_CANTMOVE && !(cur->win->GetFlags() & C_BIT_CANTMOVE)))
+            if (thewin->GetDepth() < cur->win->GetDepth() && thewin->GetDepth() or (thewin->GetFlags() & C_BIT_CANTMOVE && !(cur->win->GetFlags() & C_BIT_CANTMOVE)))
             {
                 newwin->Next = cur;
                 newwin->Prev = cur->Prev;
@@ -659,7 +659,7 @@ void C_Handler::WindowToFront(C_Window *thewin) // move to end of list
 
     if (Root_->win == thewin)
     {
-        if (Root_->Flags & C_BIT_CANTMOVE || !(Root_->Flags & C_BIT_ENABLED))
+        if (Root_->Flags & C_BIT_CANTMOVE or !(Root_->Flags & C_BIT_ENABLED))
             return;
 
         found = Root_;
@@ -685,7 +685,7 @@ void C_Handler::WindowToFront(C_Window *thewin) // move to end of list
         {
             if (cur->Next->win == thewin && found == NULL)
             {
-                if (cur->Next->Flags & C_BIT_CANTMOVE || !(cur->Next->Flags & C_BIT_ENABLED))
+                if (cur->Next->Flags & C_BIT_CANTMOVE or !(cur->Next->Flags & C_BIT_ENABLED))
                     return;
 
                 found = cur->Next;
@@ -1118,7 +1118,7 @@ void C_Handler::Update()
     UI95_RECT src, dst;
     short i;
 
-    if (!(UpdateFlag & C_DRAW_REFRESH) || !DrawFlags)
+    if (!(UpdateFlag & C_DRAW_REFRESH) or !DrawFlags)
         return;
 
     Lock();
@@ -1475,7 +1475,7 @@ BOOL C_Handler::RemoveUserCallback(void (*cb)())
     CBLIST *cur, *last;
     BOOL retval = FALSE;
 
-    if (cb == NULL || UserRoot_ == NULL) return(FALSE);
+    if (cb == NULL or UserRoot_ == NULL) return(FALSE);
 
     EnterCritical();
 
@@ -1931,7 +1931,7 @@ BOOL C_Handler::GrabItem(WORD MouseX, WORD MouseY, C_Window *overme, long GrabTy
     {
         if (overme->GetFlags() & C_BIT_DRAGABLE)
         {
-            if (MouseX < overme->GetX() || MouseY < overme->GetY() || MouseX > (overme->GetX() + overme->GetW()) || MouseY > (overme->GetY() + overme->GetDragH()))
+            if (MouseX < overme->GetX() or MouseY < overme->GetY() or MouseX > (overme->GetX() + overme->GetW()) or MouseY > (overme->GetY() + overme->GetDragH()))
             {
                 Grab_.Window_ = NULL;
                 return(FALSE);
@@ -2352,7 +2352,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                     WindowToFront(overme);
                 }
 
-                if (MouseX < overme->GetX() || MouseY < overme->GetY() || MouseX > (overme->GetX() + overme->GetW()) || MouseY > (overme->GetY() + overme->GetH()))
+                if (MouseX < overme->GetX() or MouseY < overme->GetY() or MouseX > (overme->GetX() + overme->GetW()) or MouseY > (overme->GetY() + overme->GetH()))
                 {
                     if (overme->GetOwner())
                     {
@@ -2474,7 +2474,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 break;
             }
 
-            if (!Dragging() && (Grab_.Control_ || Grab_.Window_) && Grab_.GrabType_ == C_TYPE_LMOUSEDOWN)
+            if (!Dragging() && (Grab_.Control_ or Grab_.Window_) && Grab_.GrabType_ == C_TYPE_LMOUSEDOWN)
                 StartDrag();
 
             if (Dragging())
@@ -2846,11 +2846,11 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 ShiftStates  or_eq  _CTRL_DOWN_;
 
             if (GetKeyState(VK_CAPITAL) & 0x01)
-                if ((Key >= DIK_Q && Key <= DIK_P) || (Key >= DIK_A && Key <= DIK_L) || (Key >= DIK_Z && Key <= DIK_M))
+                if ((Key >= DIK_Q && Key <= DIK_P) or (Key >= DIK_A && Key <= DIK_L) or (Key >= DIK_Z && Key <= DIK_M))
                     ShiftStates xor_eq _SHIFT_DOWN_;
 
             if (GetKeyState(VK_NUMLOCK) & 0x01)
-                if ((Key >= DIK_NUMPAD7 && Key <= DIK_NUMPAD9) || (Key >= DIK_NUMPAD4 && Key <= DIK_NUMPAD6) || (Key >= DIK_NUMPAD1 && Key <= DIK_DECIMAL))
+                if ((Key >= DIK_NUMPAD7 && Key <= DIK_NUMPAD9) or (Key >= DIK_NUMPAD4 && Key <= DIK_NUMPAD6) or (Key >= DIK_NUMPAD1 && Key <= DIK_DECIMAL))
                     ShiftStates  or_eq  _SHIFT_DOWN_;
 
             Ascii = AsciiChar(Key, ShiftStates);

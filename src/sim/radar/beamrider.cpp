@@ -136,7 +136,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
                 //if (ret < 1.0f)
                 //{
                 // Ok so it's too low, but is it jamming? If so, follow anyway...
-                //if (ret == -1.0f || lockedTarget->BaseData()->IsSPJamming())
+                //if (ret == -1.0f or lockedTarget->BaseData()->IsSPJamming())
                 //}
                 //stat ++;
                 //}
@@ -204,7 +204,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
                 //if (ret < 1.0f)
                 //{
                 // Ok so it's too low, but is it jamming? If so, follow anyway...
-                //if (ret == -1.0f || lockedTarget->BaseData()->IsSPJamming())
+                //if (ret == -1.0f or lockedTarget->BaseData()->IsSPJamming())
                 int stat = 0;
 
                 //if (lockedTarget->BaseData()->IsSPJamming())
@@ -245,7 +245,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         // end Cobra
 #endif
 
-        if (!radar->CurrentTarget() || radar->CurrentTarget()->BaseData() != lockedTarget->BaseData())
+        if (!radar->CurrentTarget() or radar->CurrentTarget()->BaseData() != lockedTarget->BaseData())
         {
             if (lockedTarget)
                 SendTrackMsg(lockedTarget, Track_Unlock);
@@ -444,7 +444,7 @@ void BeamRiderClass::ConsiderDecoy(SimObjectType *target)
     int dummy = 0;
 
     // No counter measures deployed by campaign things
-    if (!target || !target->BaseData()->IsSim())
+    if (!target or !target->BaseData()->IsSim())
     {
         return;
     }

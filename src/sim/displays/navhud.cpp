@@ -104,7 +104,7 @@ void HudClass::DrawAirspeed(void)
     }
 
     // M.N. added full realism mode
-    if ((PlayerOptions.GetAvionicsType() == ATRealistic) || (PlayerOptions.GetAvionicsType() == ATRealisticAV))
+    if ((PlayerOptions.GetAvionicsType() == ATRealistic) or (PlayerOptions.GetAvionicsType() == ATRealisticAV))
     {
         if (temp < 60)
         {
@@ -130,10 +130,10 @@ void HudClass::DrawAirspeed(void)
     ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
 
     //TJL 03/07/04 Removing ticks from everything but F-16 or default HUD
-    //if ((scalesSwitch == VAH || scalesSwitch == VV_VAH) && (FCC->GetMasterMode() != FireControlComputer::Dogfight))//me123 status test.
+    //if ((scalesSwitch == VAH or scalesSwitch == VV_VAH) && (FCC->GetMasterMode() != FireControlComputer::Dogfight))//me123 status test.
     if (
-        (ownship->IsF16() || (ownship->af->GetTypeAC() == 0)) &&
-        ((scalesSwitch == VAH) || (scalesSwitch == VV_VAH)) &&
+        (ownship->IsF16() or (ownship->af->GetTypeAC() == 0)) &&
+        ((scalesSwitch == VAH) or (scalesSwitch == VV_VAH)) &&
         (FCC->GetMasterMode() != FireControlComputer::Dogfight))//me123 status test.
     {
         //MI
@@ -175,7 +175,7 @@ void HudClass::DrawAirspeed(void)
               y1 - boxY < -tickInc))*/
             if (!g_bRealisticAvionics)
             {
-                if ((a >= 0) && ((y1 - boxY > tickInc) || (y1 - boxY < (-tickInc * 3.0F))))
+                if ((a >= 0) && ((y1 - boxY > tickInc) or (y1 - boxY < (-tickInc * 3.0F))))
                 {
                     if (a % 5)
                     {
@@ -203,7 +203,7 @@ void HudClass::DrawAirspeed(void)
 
                 if (!(a % 5))
                 {
-                    if (a >= 0 && (y1 - boxY > tickInc || y1 - boxY < (-tickInc * 3.0F)))
+                    if (a >= 0 && (y1 - boxY > tickInc or y1 - boxY < (-tickInc * 3.0F)))
                     {
                         display->TextRightVertical(x2 - smallTickLen * 0.5F, y1 + 0.01F, hudNumbers[min(a, 99)]);
                     }
@@ -421,7 +421,7 @@ void HudClass::DrawAltitude(void)
     boxY = winCenter + display->TextHeight() * 0.5F;
 
     //TJL 03/07/04 Only for F16 or default HUD
-    if ((ownship->IsF16() || ownship->af->GetTypeAC() == 0) && (scalesSwitch == VAH  || scalesSwitch == VV_VAH)
+    if ((ownship->IsF16() or ownship->af->GetTypeAC() == 0) && (scalesSwitch == VAH  or scalesSwitch == VV_VAH)
         && (FCC->GetMasterMode() != FireControlComputer::Dogfight)) //me123 status test.
     {
         //MI
@@ -484,7 +484,7 @@ void HudClass::DrawAltitude(void)
         }
         else
         {
-            if (hat > -1200.0F || (cockpitFlightData.zDot < 0.0F && hat > -1500.0F))
+            if (hat > -1200.0F or (cockpitFlightData.zDot < 0.0F && hat > -1500.0F))
             {
                 //MI for CARA switch
                 if (g_bRealisticAvionics)
@@ -522,7 +522,7 @@ void HudClass::DrawAltitude(void)
         a = -FloatToInt32(theAlt);
 
         // Under 1500 going up or below 1200 going down
-        if (a < 1200 || (cockpitFlightData.zDot < 0.0F && a < 1500))
+        if (a < 1200 or (cockpitFlightData.zDot < 0.0F && a < 1500))
         {
             lowAlt = TRUE;
         }
@@ -532,7 +532,7 @@ void HudClass::DrawAltitude(void)
         }
 
         // Non-Auto altitude scale
-        if (radarSwitch != RADAR_AUTO || !lowAlt)
+        if (radarSwitch != RADAR_AUTO or !lowAlt)
         {
             if (lowAlt)
             {
@@ -609,11 +609,11 @@ void HudClass::DrawAltitude(void)
 
             //MI
             //ATARIBABY fix for missaligned alt readout in 3d padlock
-            //if(!g_bRealisticAvionics || OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit)
+            //if(!g_bRealisticAvionics or OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit)
             // sfr: caused hud altitude missaligned
 #if 0
 
-            if (!g_bRealisticAvionics || OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit || OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3)
+            if (!g_bRealisticAvionics or OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit or OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3)
             {
                 display->TextRight(hudWinX[ALTITUDE_WINDOW] + 0.01F + hudWinWidth[ALTITUDE_WINDOW],
                                    boxY, tmpStr, 4);
@@ -637,7 +637,7 @@ void HudClass::DrawAltitude(void)
                   y1 - boxY < -tickInc))*/
                 if (!g_bRealisticAvionics)
                 {
-                    if (a >= 0 && (y1 - boxY > tickInc || y1 - boxY < (-tickInc * 3.0F)))
+                    if (a >= 0 && (y1 - boxY > tickInc or y1 - boxY < (-tickInc * 3.0F)))
                     {
                         if (a % labelInterval)
                             x2 = x1 + smallTickLen;
@@ -670,7 +670,7 @@ void HudClass::DrawAltitude(void)
                         ShiAssert(strlen(tmpStr) < 12);
                         x2 = x1 + bigTickLen;
 
-                        if (a >= 0 && (y1 - boxY > tickInc || y1 - boxY < (-tickInc * 3.0F)))
+                        if (a >= 0 && (y1 - boxY > tickInc or y1 - boxY < (-tickInc * 3.0F)))
                             display->TextLeftVertical(x2 + smallTickLen * 0.5F, y1 + 0.01F, tmpStr);
                     }
 
@@ -819,7 +819,7 @@ void HudClass::DrawAltitude(void)
         }
         else
         {
-            if (hat > -1200.0F || (cockpitFlightData.zDot < 0.0F && hat > -1500.0F))
+            if (hat > -1200.0F or (cockpitFlightData.zDot < 0.0F && hat > -1500.0F))
             {
                 //MI for CARA switch
                 if (g_bRealisticAvionics)
@@ -891,11 +891,11 @@ void HudClass::DrawAltitude(void)
         ShiAssert(strlen(tmpStr) < 12);
         //MI
         //ATARIBABY fix for missaligned alt readout in 3d padlock
-        //if(!g_bRealisticAvionics || OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit)
+        //if(!g_bRealisticAvionics or OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit)
         // sfr: caused hud missalignment
 #if 0
 
-        if (!g_bRealisticAvionics || OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit || OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3)
+        if (!g_bRealisticAvionics or OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit or OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3)
             display->TextRight(hudWinX[ALTITUDE_WINDOW] + 0.01F + hudWinWidth[ALTITUDE_WINDOW],
                                boxY, tmpStr, 4);
         else
@@ -934,14 +934,14 @@ void HudClass::DrawHeading(void)
     else
         HEADING_BOTTOM = -0.82F;
 
-    if (headingPos == Off || (FCC->GetMasterMode() == FireControlComputer::Dogfight)) //me123 status test.)
+    if (headingPos == Off or (FCC->GetMasterMode() == FireControlComputer::Dogfight)) //me123 status test.)
     {
         return;
     }
-    else if (headingPos == High || ((AircraftClass*)ownship)->af->gearPos > 0.5F)
+    else if (headingPos == High or ((AircraftClass*)ownship)->af->gearPos > 0.5F)
     {
         //MI
-        if (!g_bRealisticAvionics || ((AircraftClass*)ownship)->OnGround() ||
+        if (!g_bRealisticAvionics or ((AircraftClass*)ownship)->OnGround() ||
             (g_bRealisticAvionics && g_bINS && ownship && ownship->INSState(AircraftClass::INS_PowerOff) ||
              !ownship->INSState(AircraftClass::INS_HUD_STUFF)))
         {
@@ -1039,7 +1039,7 @@ void HudClass::DrawHeading(void)
 #if 1
 
     // ADDED BY S.G. SO 3 DIGIT ARE DISPLAYED FOR THE HEADING WHEN IN 'SS_OFF' MODE
-    if (scalesSwitch == SS_OFF || scalesSwitch == VAH)   //MI changed VV_VAH to VAH
+    if (scalesSwitch == SS_OFF or scalesSwitch == VAH)   //MI changed VV_VAH to VAH
     {
         // a is multiplied by ten above, we don't need that here
         //MI 16/2/02 give us a 180 heading
@@ -1047,7 +1047,7 @@ void HudClass::DrawHeading(void)
 #if 0
         int tmpVal = 0;
 
-        if (a > 1795 || a < -1795)
+        if (a > 1795 or a < -1795)
             tmpVal = 180;
         else
             tmpVal = (int)(a / 10);
@@ -1129,7 +1129,7 @@ void HudClass::DrawHeading(void)
 
     textWidth = display->TextWidth(tmpStr);
 
-    if (scalesSwitch == VAH || scalesSwitch == VV_VAH || scalesSwitch == H)
+    if (scalesSwitch == VAH or scalesSwitch == VV_VAH or scalesSwitch == H)
     {
         //MI
         if (!g_bRealisticAvionics)
@@ -1290,7 +1290,7 @@ void HudClass::DrawHeading(void)
 
 #else
 
-        if (FCC && FCC->IsAGMasterMode() || (playerAC->af->gearPos > 0.5F &&
+        if (FCC && FCC->IsAGMasterMode() or (playerAC->af->gearPos > 0.5F &&
                                              fpmSwitch != FPM_OFF && scalesSwitch == VV_VAH))
             DrawBankIndicator();
         //not there in Dogfight
@@ -1329,7 +1329,7 @@ void HudClass::DrawTadpole(void)
             return;
     }
 
-    if (!waypointValid || (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.
+    if (!waypointValid or (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.
     {
         return;
     }
@@ -1492,7 +1492,7 @@ void HudClass::DrawWaypoint(void)
     else
         HEADING_BOTTOM = -0.82F;
 
-    if (!waypointValid || ownship == NULL || (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.)
+    if (!waypointValid or ownship == NULL or (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.)
     {
         return;
     }
@@ -1512,10 +1512,10 @@ void HudClass::DrawWaypoint(void)
     {
         return;
     }
-    else if (headingPos == High || ((AircraftClass*)ownship)->af->gearPos > 0.5F)
+    else if (headingPos == High or ((AircraftClass*)ownship)->af->gearPos > 0.5F)
     {
         //MI
-        if (!g_bRealisticAvionics || ((AircraftClass*)ownship)->OnGround() ||
+        if (!g_bRealisticAvionics or ((AircraftClass*)ownship)->OnGround() ||
             (g_bRealisticAvionics && g_bINS && ownship && ownship->INSState(AircraftClass::INS_PowerOff) ||
              !ownship->INSState(AircraftClass::INS_HUD_STUFF)))
         {
@@ -1623,7 +1623,7 @@ void HudClass::DrawWaypoint(void)
             //Normally we only consider drawing the waypoint if it's less than 90deg
             //in either direction off the nose. However, the HUD fix for constraining
             //the waypoint to the HUD's edge requires us to always draw it. Smeghead, 16-Oct-2003
-            if ((g_bHUDFix == true) || (fabs(waypointAz) < (90.0F * DTR)))
+            if ((g_bHUDFix == true) or (fabs(waypointAz) < (90.0F * DTR)))
             {
                 if ((g_bHUDFix == true) && (g_bRealisticAvionics))
                 {
@@ -1686,23 +1686,23 @@ void HudClass::DrawWaypoint(void)
                         //NOTE: If Stpt is almost directly behind us, then it's constrained to the HUD,
                         //but it seems to be drawn the wrong way up - as you raise the nose, the stpt on
                         //the hud rises, which makes bugger all sense. This really needs to be looked at...
-                        if ((xPos <= -horizConstraint) || (waypointAz < (-90.0F * DTR))) //Left edge
+                        if ((xPos <= -horizConstraint) or (waypointAz < (-90.0F * DTR))) //Left edge
                         {
                             xPos = -horizConstraint;
                             stptConstrained = true;
                         }
-                        else if ((xPos > horizConstraint) || (waypointAz > (90.0F * DTR))) //Right
+                        else if ((xPos > horizConstraint) or (waypointAz > (90.0F * DTR))) //Right
                         {
                             xPos = horizConstraint;
                             stptConstrained = true;
                         }
 
-                        if ((yPos <= vertConstraintBottom) || (waypointEl < (-90.0F * DTR))) //Bottom
+                        if ((yPos <= vertConstraintBottom) or (waypointEl < (-90.0F * DTR))) //Bottom
                         {
                             yPos = vertConstraintBottom;
                             stptConstrained = true;
                         }
-                        else if ((yPos > vertConstraintTop) || (waypointEl > (90.0F * DTR))) //Top
+                        else if ((yPos > vertConstraintTop) or (waypointEl > (90.0F * DTR))) //Top
                         {
                             yPos = vertConstraintTop;
                             stptConstrained = true;
@@ -2299,7 +2299,7 @@ void HudClass::DrawOA(void)
 
     float xPos, yPos;
 
-    if ((!OA1Valid && !OA2Valid) || (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.)
+    if ((!OA1Valid && !OA2Valid) or (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.)
         return;
     else
     {
@@ -2333,7 +2333,7 @@ void HudClass::DrawOA(void)
         }
     }
 
-    if (!OA2Valid || (FCC->GetMasterMode() == FireControlComputer::Dogfight)) //me123 status test.)
+    if (!OA2Valid or (FCC->GetMasterMode() == FireControlComputer::Dogfight)) //me123 status test.)
         return;
     else
     {
@@ -2380,7 +2380,7 @@ void HudClass::DrawVIP(void)
 
     float xPos, yPos;
 
-    if (!VIPValid || (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.)
+    if (!VIPValid or (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.)
         return;
     else
     {
@@ -2426,7 +2426,7 @@ void HudClass::DrawVRP(void)
 
     float xPos, yPos;
 
-    if (!VRPValid || (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.)
+    if (!VRPValid or (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.)
         return;
     else
     {
@@ -2470,7 +2470,7 @@ void HudClass::DrawRALT(void)
     if (!ownship)
         return;
 
-    if (FCC->GetMasterMode() == FireControlComputer::Dogfight || FCC->GetMasterMode() == FireControlComputer::MissileOverride)
+    if (FCC->GetMasterMode() == FireControlComputer::Dogfight or FCC->GetMasterMode() == FireControlComputer::MissileOverride)
         return;
 
     //NO RALT if RF Switch in SILENT
@@ -2526,7 +2526,7 @@ void HudClass::DrawRALT(void)
 
 void HudClass::DrawRALTBox(void)
 {
-    if (FCC->GetMasterMode() == FireControlComputer::Dogfight || FCC->GetMasterMode() == FireControlComputer::MissileOverride)
+    if (FCC->GetMasterMode() == FireControlComputer::Dogfight or FCC->GetMasterMode() == FireControlComputer::MissileOverride)
         return;
 
     if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeHud)
@@ -2589,7 +2589,7 @@ void HudClass::DrawRALTBox(void)
 }
 void HudClass::DrawALString(void)
 {
-    if (FCC->GetMasterMode() == FireControlComputer::Dogfight || FCC->GetMasterMode() == FireControlComputer::MissileOverride)
+    if (FCC->GetMasterMode() == FireControlComputer::Dogfight or FCC->GetMasterMode() == FireControlComputer::MissileOverride)
         return;
 
     //here in any case, according to the list member
@@ -2659,7 +2659,7 @@ void HudClass::DrawCMDSTRG(void)
     //Calcualte correction phase Bearing1
     Bearing1 = RWYHeading - curHeading + (LocalizerDev * hDeviationGain);
 
-    while ((Bearing1 < -180) || (Bearing1 > 180))
+    while ((Bearing1 < -180) or (Bearing1 > 180))
     {
         if (Bearing1 > 180)
             Bearing1 -= 360;
@@ -2671,7 +2671,7 @@ void HudClass::DrawCMDSTRG(void)
     Descent = cockpitFlightData.gamma * RTD;
     Slope = (GlideSlopeAngle - Descent) + GlideSlopeDev * vDeviationGain;
 
-    while ((Slope < -180) || (Slope > 180))
+    while ((Slope < -180) or (Slope > 180))
     {
         if (Slope > 180)
             Slope -= 360;
@@ -2704,7 +2704,7 @@ void HudClass::DrawCMDSTRG(void)
         //Smooth slope movement
         float tmpSmooth = 0.9F;
 
-        if ((LocalizerDev > tmpSmooth * CorrectionLimit) || (LocalizerDev < -tmpSmooth * CorrectionLimit))
+        if ((LocalizerDev > tmpSmooth * CorrectionLimit) or (LocalizerDev < -tmpSmooth * CorrectionLimit))
         {
             if (LocalizerDev > 0)
                 Slope = Slope * ((CorrectionLimit - LocalizerDev) / ((1 - tmpSmooth) * CorrectionLimit));
@@ -2761,7 +2761,7 @@ void HudClass::DrawBankIndicator(void)
     {
         for (int i = 0; i  < nangles; i++)
         {
-            if (i == 0 || i == 1 || i == 4 || i == 7 || i == 8)
+            if (i == 0 or i == 1 or i == 4 or i == 7 or i == 8)
                 oedist = 0.16f;
             else
                 oedist = 0.13f;
@@ -2796,8 +2796,8 @@ void HudClass::DrawAirSpeedCarret(float Speed)
 
     //TJL 07/31/04 F14 - F18 Airspeed Carret //Cobra 11/04/04 TJL
     //Cobra fixed non-F16, non-HUD specific airspeed carret issue
-    if (ownship->af->GetTypeAC() == 6 || ownship->af->GetTypeAC() == 7 || ownship->af->GetTypeAC() == 8 ||
-        ownship->af->GetTypeAC() == 9 || ownship->af->GetTypeAC() == 10)
+    if (ownship->af->GetTypeAC() == 6 or ownship->af->GetTypeAC() == 7 or ownship->af->GetTypeAC() == 8 ||
+        ownship->af->GetTypeAC() == 9 or ownship->af->GetTypeAC() == 10)
     {
         float delta = 0.0f;
         delta = Speed - (cockpitFlightData.kias);
@@ -2825,7 +2825,7 @@ void HudClass::DrawAirSpeedCarret(float Speed)
         return;
     }
     //F15s
-    else if (ownship->af->GetTypeAC() == 3 || ownship->af->GetTypeAC() == 4 || ownship->af->GetTypeAC() == 5)
+    else if (ownship->af->GetTypeAC() == 3 or ownship->af->GetTypeAC() == 4 or ownship->af->GetTypeAC() == 5)
     {
         float delta = 0.0f;
         delta = Speed - (cockpitFlightData.kias);
@@ -2914,7 +2914,7 @@ void HudClass::DrawAltCarret(float Alt)
 //MI
 void HudClass::DrawCruiseIndexes(void)
 {
-    if (!OTWDriver.pCockpitManager || !OTWDriver.pCockpitManager->mpIcp)
+    if (!OTWDriver.pCockpitManager or !OTWDriver.pCockpitManager->mpIcp)
     {
         return;
     }

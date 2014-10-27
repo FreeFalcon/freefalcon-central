@@ -455,7 +455,7 @@ BOOL CPPanel::Dispatch(int* cursorIndex, int event, int xpos, int ypos)
             height = DisplayOptions.DispHeight;
             width  = DisplayOptions.DispWidth;
 
-            if (event == CP_MOUSE_BUTTON0 || event == CP_MOUSE_BUTTON1)
+            if (event == CP_MOUSE_BUTTON0 or event == CP_MOUSE_BUTTON1)
             {
 
                 if (ypos < border)

@@ -104,7 +104,7 @@ void HudClass::DrawGuns(void)
     {
         if (targetPtr)
         {
-            if ((ownship->fireGun || ownship->GunFire) && ownship->Sms->MasterArm() != SMSBaseClass::Safe)
+            if ((ownship->fireGun or ownship->GunFire) && ownship->Sms->MasterArm() != SMSBaseClass::Safe)
             {
                 if (!HideFunnel && !SetHideTimer)
                 {
@@ -397,7 +397,7 @@ void HudClass::DrawTDCircle(void)
 
     if (fabs(targetData->az) > 825.0F * DTR ||
         fabs(targetData->el) > 825.0F * DTR ||
-        fabs(xPos) > 0.90F || fabs(yPos + hudWinY[BORESIGHT_CROSS_WINDOW] +
+        fabs(xPos) > 0.90F or fabs(yPos + hudWinY[BORESIGHT_CROSS_WINDOW] +
                                    hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) > 0.825F)
     {
         mlSinCos(&trig, 90.0F * DTR - targetData->droll);

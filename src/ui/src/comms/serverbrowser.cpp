@@ -346,7 +346,7 @@ static void OnClickedPlay(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    if (!m_pSelectedItem || m_bConnectPending)
+    if (!m_pSelectedItem or m_bConnectPending)
         return;
 
     C_Base *wndClose = control->GetParent()->FindControl(CLOSE_WINDOW);
@@ -675,7 +675,7 @@ C_ServerItem *MakeServerItem(C_TreeList *pTree, IGame *p)
     C_Window *pWindow;
 	TREELIST* pTreeItem = NULL;
 
-    if (!pTree || !p)
+    if (!pTree or !p)
         return NULL;
 
     try
@@ -971,7 +971,7 @@ static void UpdateServerStatus()
 {
     int nServerCount;
 
-    if (!m_pUpdater || m_pUpdater->m_nServerCount == 0)
+    if (!m_pUpdater or m_pUpdater->m_nServerCount == 0)
         nServerCount = 1;
     else
         nServerCount = m_pUpdater->m_nServerCount;
@@ -1022,7 +1022,7 @@ long C_ServerItem::Size()
 
 void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 {
-    if (!_pGame || !pParent)
+    if (!_pGame or !pParent)
         return;
 
     GNETCORELib::IGamePtr pGame(_pGame);
@@ -1141,7 +1141,7 @@ void C_ServerItem::SetFont(long id)
 
 long C_ServerItem::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
         return(0);
 
     if (relx >= GetX() && rely >= GetY() && relx <= (GetX() + GetW()) && rely <= (GetY() + GetH()))
@@ -1168,7 +1168,7 @@ BOOL C_ServerItem::Process(long ID, short HitType)
 
 void C_ServerItem::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -1176,7 +1176,7 @@ void C_ServerItem::Refresh()
 
 void C_ServerItem::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL || !Ready())
+    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL or !Ready())
         return;
 
     short x = GetState();
@@ -1193,7 +1193,7 @@ void C_ServerItem::Draw(SCREEN *surface, UI95_RECT *cliprect)
         }
     }
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
@@ -1354,7 +1354,7 @@ void CGNetUpdater::UpdateGame(IGame *p, bool bSuccess)
 #ifndef _DEBUG
             BSTR _bstr;
 
-            if (SUCCEEDED(p->get_Name(&_bstr) || _bstr_t(_bstr) == _bstr_t("Falcon4")))
+            if (SUCCEEDED(p->get_Name(&_bstr) or _bstr_t(_bstr) == _bstr_t("Falcon4")))
 #endif
             {
                 p->AddRef();

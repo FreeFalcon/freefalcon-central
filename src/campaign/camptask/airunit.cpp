@@ -159,7 +159,7 @@ int GetUnitScore(Unit u, MoveType mt)
 {
     if (!u)
         return 0;
-    else if (u->IsPackage() || u->IsBrigade())
+    else if (u->IsPackage() or u->IsBrigade())
     {
         Unit e;
         int score = 0;

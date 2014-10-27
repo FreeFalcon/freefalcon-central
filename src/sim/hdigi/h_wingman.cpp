@@ -177,7 +177,7 @@ void HeliBrain::FollowLead(void)
     // maybe there is a variable with speed in XY plane already
     speedXY = sqrt(self->XDelta() * self->XDelta() + self->YDelta() * self->YDelta());
 
-    if ((self->flightLead->hBrain->onStation == Landed || self->flightLead->hBrain->onStation == Landing) && speedXY <= 20.0f)
+    if ((self->flightLead->hBrain->onStation == Landed or self->flightLead->hBrain->onStation == Landing) && speedXY <= 20.0f)
     {
         if (onStation < Arrived)
             onStation = Arrived;

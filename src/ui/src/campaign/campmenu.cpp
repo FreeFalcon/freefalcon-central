@@ -1182,7 +1182,7 @@ void MenuUnitStatusCB(long, short, C_Base *)
 
                 if (ent && ent->IsUnit())
                 {
-                    if (ent->IsFlight() || ent->IsSquadron())
+                    if (ent->IsFlight() or ent->IsSquadron())
                     {
                         // 2002-02-21 ADDED BY S.G. If not spotted by the player's team or not editing a TE, can't get its status...
                         if (
@@ -2068,7 +2068,7 @@ void MapMenuOpenCB(C_Base *themenu, C_Base *caller)
 {
     C_PopupList *menu;
 
-    if (!themenu || !caller || !caller->Parent_)
+    if (!themenu or !caller or !caller->Parent_)
         return;
 
     menu = (C_PopupList*)themenu;
@@ -2104,7 +2104,7 @@ void OpenUnitMenuCB(C_Base *themenu, C_Base *caller)
 {
     C_PopupList *menu;
 
-    if (!themenu || !caller || !caller->Parent_)
+    if (!themenu or !caller or !caller->Parent_)
         return;
 
     menu = (C_PopupList*)themenu;
@@ -2173,7 +2173,7 @@ void OpenNavalMenuCB(C_Base *themenu, C_Base *caller)
 {
     C_PopupList *menu;
 
-    if (!themenu || !caller || !caller->Parent_)
+    if (!themenu or !caller or !caller->Parent_)
         return;
 
     menu = (C_PopupList*)themenu;
@@ -2243,7 +2243,7 @@ void ObjMenuOpenCB(C_Base *themenu, C_Base *caller)
     C_PopupList *menu;
     bool isAirbase = false;
 
-    if (!themenu || !caller || !caller->Parent_)
+    if (!themenu or !caller or !caller->Parent_)
         return;
 
     if (caller->_GetCType_() == _CNTL_DRAWLIST_)
@@ -2278,7 +2278,7 @@ void ObjMenuOpenCB(C_Base *themenu, C_Base *caller)
         menu->SetItemFlagBitOn(MID_SQUADRONS, C_BIT_ENABLED);
         menu->SetItemFlagBitOff(MID_SQUADRONS, C_BIT_INVISIBLE);
 
-        if (GameType == 1 || !EditMode)
+        if (GameType == 1 or !EditMode)
             menu->SetItemFlagBitOff(MID_ADD_SQUADRON, C_BIT_ENABLED);
         else
             menu->SetItemFlagBitOn(MID_ADD_SQUADRON, C_BIT_ENABLED);

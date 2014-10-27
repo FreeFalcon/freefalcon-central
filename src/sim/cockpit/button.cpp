@@ -119,7 +119,7 @@ int CPButtonObject::GetSound(int which) const
 
     int returnVal = -1;
 
-    F4Assert(which == 1 || which == 2); //values for which can only be 1 or 2;
+    F4Assert(which == 1 or which == 2); //values for which can only be 1 or 2;
 
     if (which == 1)
     {
@@ -283,7 +283,7 @@ int CPButtonObject::GetCursorIndex() {
 void CPButtonObject::SetCurrentState(int newState)
 {
     // sfr: @todo should we change the state if its bad? wouldnt it be safer to keep the old one?
-    if (newState < 0 || newState >= mTotalStates)
+    if (newState < 0 or newState >= mTotalStates)
     {
         // If getting passed a bad state
         mCurrentState = mNormalState;

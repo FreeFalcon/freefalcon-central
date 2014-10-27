@@ -39,7 +39,7 @@ static unsigned __stdcall timerThread(void)
             delta = MAX_TIME_DELTA;
 
         //ShiAssert(vuxGameTime + SimLibMajorFrameTime >= SimLibElapsedTime);
-        if (!gCompressTillTime || vuxGameTime + delta * gameCompressionRatio < gCompressTillTime)
+        if (!gCompressTillTime or vuxGameTime + delta * gameCompressionRatio < gCompressTillTime)
         {
             vuxGameTime += delta * gameCompressionRatio; // Normal time advance
         }

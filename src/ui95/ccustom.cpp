@@ -156,7 +156,7 @@ void C_Custom::Refresh()
 {
     short i;
 
-    if ((GetFlags() & C_BIT_INVISIBLE) || !Parent_ || !Ready())
+    if ((GetFlags() & C_BIT_INVISIBLE) or !Parent_ or !Ready())
         return;
 
     for (i = 0; i < Count_; i++)
@@ -167,12 +167,12 @@ void C_Custom::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     short i;
 
-    if ((GetFlags() & C_BIT_INVISIBLE) || !Parent_ || !Ready())
+    if ((GetFlags() & C_BIT_INVISIBLE) or !Parent_ or !Ready())
         return;
 
     for (i = 0; i < Count_; i++)
         Items_[i].Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }

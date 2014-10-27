@@ -466,7 +466,7 @@ public:
     // sfr: added for new driver
     virtual int HasEntity(VuEntity *e) const
     {
-        return ((components && (components->Find(e) != NULL)) || (this == e));
+        return ((components && (components->Find(e) != NULL)) or (this == e));
     }
     int HasDelta(void)
     {

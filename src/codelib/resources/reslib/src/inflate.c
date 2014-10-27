@@ -1026,7 +1026,7 @@ int inflate_dynamic(COMPRESSED_FILE * cmp)
     nb = 4 + ((unsigned)b & 0xf);         /* number of bit length codes */
     DUMPBITS(4)
 
-    if (nl > 288 || nd > 32)
+    if (nl > 288 or nd > 32)
         return 1;                   /* bad lengths */
 
 

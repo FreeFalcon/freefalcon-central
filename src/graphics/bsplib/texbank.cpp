@@ -502,7 +502,7 @@ void TextureBankClass::SyncDDSTextures(bool bForce)
         sprintf(szFile, "%s\\%d.dds", baseName, id);
         fp = fopen(szFile, "rb");
 
-        if (!fp || bForce)
+        if (!fp or bForce)
         {
             if (fp)
                 fclose(fp);
@@ -806,7 +806,7 @@ bool TextureBankClass::UpdateBank(void)
     DWORD id;
 
     // till when data to update into caches
-    while (LoadIn != LoadOut || ReleaseIn != ReleaseOut)
+    while (LoadIn != LoadOut or ReleaseIn != ReleaseOut)
     {
 
         // check for textures to be released

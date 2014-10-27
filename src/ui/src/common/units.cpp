@@ -959,7 +959,7 @@ void BuildPilotList(C_TreeList *tree, Squadron sqd)
 
     for (i = 0; i < PILOTS_PER_SQUADRON; i++)
     {
-        // if(sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE || sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
+        // if(sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE or sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
         if (sqd->GetPilotData(i)->pilot_status != PILOT_KIA)
         {
             GetPilotName(sqd->GetPilotData(i)->pilot_id, buffer, 25);
@@ -1152,10 +1152,10 @@ BOOL SortPilotByNameCB(TREELIST *list, TREELIST *newitem)
 {
     C_Button *btn1, *btn2;
 
-    if (!list || !newitem)
+    if (!list or !newitem)
         return(FALSE);
 
-    if (!list->Item_ || !newitem->Item_)
+    if (!list->Item_ or !newitem->Item_)
         return(FALSE);
 
     btn1 = (C_Button *)list->Item_;
@@ -1404,7 +1404,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
 
             for (i = 0; i < PILOTS_PER_SQUADRON; i++)
             {
-                if (sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE || sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
+                if (sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE or sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
                 {
                     total += sqd->GetPilotData(i)->GetPilotSkill();
                     count++;
@@ -1565,7 +1565,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL CampHotelSortCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list || !newitem)
+    if (!list or !newitem)
         return(FALSE);
 
     if (((C_Custom*)newitem->Item_)->GetValue(1) > ((C_Custom*)list->Item_)->GetValue(1))
@@ -1624,7 +1624,7 @@ void UpdateSierraHotel()
                 {
                     kills = 0;
                     kills = session->GetKill(FalconSessionEntity::_AIR_KILLS_);
-                    // if(kills || 1)
+                    // if(kills or 1)
                     {
                         ctrl = new C_Custom;
                         ctrl->Setup(C_DONT_CARE, FalconSessionEntity::_VS_HUMAN_, 2);
@@ -1696,11 +1696,11 @@ void UpdateSierraHotel()
 
         for (i = 0; i < PILOTS_PER_SQUADRON; i++)
         {
-            if (sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE || sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
+            if (sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE or sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
             {
                 kills = sqd->GetPilotData(i)->aa_kills;
 
-                // if(kills || 1)
+                // if(kills or 1)
                 {
                     GetPilotName(sqd->GetPilotData(i)->pilot_id, buffer, 25);
                     ctrl = new C_Custom;
@@ -2062,7 +2062,7 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
         {
             unit = (UnitClass *) entity;
 
-            if ((TheCampaign.Flags & CAMP_TACTICAL_EDIT) || (GetTeam(unit->GetOwner()) == FalconLocalSession->GetTeam()))
+            if ((TheCampaign.Flags & CAMP_TACTICAL_EDIT) or (GetTeam(unit->GetOwner()) == FalconLocalSession->GetTeam()))
             {
                 gMapMgr->SetCurrentWaypointList(unit->Id());
 

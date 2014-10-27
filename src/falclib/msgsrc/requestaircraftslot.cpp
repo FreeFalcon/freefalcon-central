@@ -37,7 +37,7 @@ int UI_RequestAircraftSlot::Process(uchar autodisp)
     Flight flight;
     int retval = FALSE;
 
-    if (autodisp || !FalconLocalGame)
+    if (autodisp or !FalconLocalGame)
     {
         return FALSE;
     }

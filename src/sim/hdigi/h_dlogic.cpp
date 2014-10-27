@@ -72,7 +72,7 @@ void HeliBrain::TargetSelection(void)
     // dead, if so let's get a new target from the campaign
     if (targetPtr &&
         targetPtr->BaseData()->IsSim() &&
-        (targetPtr->BaseData()->IsExploding() || !((SimBaseClass *)targetPtr->BaseData())->IsAwake()))
+        (targetPtr->BaseData()->IsExploding() or !((SimBaseClass *)targetPtr->BaseData())->IsAwake()))
     {
         ClearTarget();
     }
@@ -190,7 +190,7 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
         // I onced tried to get the player's current target so it could be skipped by the AI but
         // all the player's are not on the same PC as the AI so this is not valid.
         // Therefore, only get this from digital planes, or the player if he is local
-        if (((HeliMMClass *)self->GetCampaignObject()->GetComponentEntity(i))->isDigital || ((HelicopterClass *)self->GetCampaignObject()->GetComponentEntity(i))->IsLocal())
+        if (((HeliMMClass *)self->GetCampaignObject()->GetComponentEntity(i))->isDigital or ((HelicopterClass *)self->GetCampaignObject()->GetComponentEntity(i))->IsLocal())
         {
             flightMember[i] = (HelicopterClass *)self->GetCampaignObject()->GetComponentEntity(i);
 
@@ -212,7 +212,7 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
             continue;
 
         // Is it alive?
-        if (simTarg->IsExploding() || simTarg->IsDead() || simTarg->pctStrength <= 0.0f)
+        if (simTarg->IsExploding() or simTarg->IsDead() or simTarg->pctStrength <= 0.0f)
             continue; // Dead thing, ignore it.
 
         // Are flight members already using it (was using it) as a target?
@@ -223,8 +223,8 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
                 && flightMember[j]->hBrain
                 && ((flightMember[j]->hBrain->targetPtr
                      && flightMember[j]->hBrain->targetPtr->BaseData() == simTarg)
-                    || flightMember[j]->hBrain->targetHistory[0] == simTarg
-                    || flightMember[j]->hBrain->targetHistory[1] == simTarg))
+                    or flightMember[j]->hBrain->targetHistory[0] == simTarg
+                    or flightMember[j]->hBrain->targetHistory[1] == simTarg))
                 break;  // Yes, ignore it.
 
         // If we didn't reach the end, someone else is using it so skip it.
@@ -341,7 +341,7 @@ void HeliBrain::TargetSelection(SimObjectType *tlist)
         theObject = (SimBaseClass*)tmpObj->BaseData();
 
         // edg : ERROR!
-        if (!theObject || !tmpObj->localData)
+        if (!theObject or !tmpObj->localData)
         {
             // get next object
             tmpObj = tmpObj->next;

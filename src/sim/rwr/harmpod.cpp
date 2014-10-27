@@ -158,7 +158,7 @@ void HarmTargetingPod::BoresightTarget(void)
         displayY *= FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
         displayY += HTS_Y_OFFSET;
 
-        //if ((fabs(displayX) > 1.0f) || (fabs(displayY) > 1.0f))
+        //if ((fabs(displayX) > 1.0f) or (fabs(displayY) > 1.0f))
         // RV - I-Hawk - Diplay only what's inside the ALIC video
         if (!IsInsideALIC(displayX, displayY))
         {
@@ -227,7 +227,7 @@ void HarmTargetingPod::NextTarget(void)
         displayY *= FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
         displayY += HTS_Y_OFFSET;
 
-        //if ((fabs(displayX) > 1.0f) || (fabs(displayY) > 1.0f))
+        //if ((fabs(displayX) > 1.0f) or (fabs(displayY) > 1.0f))
         // RV - I-Hawk - Diplay only what's inside the ALIC video
         if (!IsInsideALIC(displayX, displayY))
         {
@@ -307,7 +307,7 @@ void HarmTargetingPod::PrevTarget(void)
         displayY *= FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
         displayY += HTS_Y_OFFSET;
 
-        //if ((fabs(displayX) > 1.0f) || (fabs(displayY) > 1.0f))
+        //if ((fabs(displayX) > 1.0f) or (fabs(displayY) > 1.0f))
         // RV - I-Hawk - Diplay only what's inside the ALIC video
         if (!IsInsideALIC(displayX, displayY))
         {
@@ -857,7 +857,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
 
     float xMove = 0.0F, yMove = 0.0F;
 
-    if ((FCC->cursorXCmd != 0) || (FCC->cursorYCmd != 0))
+    if ((FCC->cursorXCmd != 0) or (FCC->cursorYCmd != 0))
         if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
             yMove = (float)FCC->cursorYCmd / 10000.0F;
@@ -950,7 +950,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
     {
         next = curObj->next;
         // sfr: taking my chances
-        /*if (F4IsBadReadPtr(curObj, sizeof(SimObjectType)) || F4IsBadCodePtr((FARPROC) curObj->BaseData()))
+        /*if (F4IsBadReadPtr(curObj, sizeof(SimObjectType)) or F4IsBadCodePtr((FARPROC) curObj->BaseData()))
         {
          // JB 010318 CTD
          curObj = curObj->next;
@@ -1050,7 +1050,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
                 // See if the target is near the ground
                 OTWDriver.GetAreaFloorAndCeiling(&bottom, &top);
 
-                if (curSimObj->ZPos() < top || OTWDriver.CheckLOS(platform, curSimObj))
+                if (curSimObj->ZPos() < top or OTWDriver.CheckLOS(platform, curSimObj))
                 {
                     ObjectDetected(curSimObj, Track_Ping);
                 }
@@ -1090,7 +1090,7 @@ GroundListElement* HarmTargetingPod::FindTargetUnderCursor(void)
         mlSinCos(&trig, platform->Yaw());
     }
 
-    else if (HadZoomMode == EXP1 || HadZoomMode == EXP2)
+    else if (HadZoomMode == EXP1 or HadZoomMode == EXP2)
     {
         mlSinCos(&trig, yawBackup);
     }
@@ -1365,7 +1365,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
 
             if (!curTargetFound && curTarget && curTarget->BaseObject())
             {
-                if (tmpElement == curTarget || tmpElement->BaseObject() == curTarget->BaseObject())
+                if (tmpElement == curTarget or tmpElement->BaseObject() == curTarget->BaseObject())
                 {
                     curTargetFound = true;
                 }
@@ -1599,7 +1599,7 @@ void HarmTargetingPod::DecreaseRange()
 // Check if emitter is inside the ALIC video
 bool HarmTargetingPod::IsInsideALIC(float &displayX, float &displayY)
 {
-    if (fabs(displayX) > (0.75f * zoomFactor) || displayY > ((1.05f + HTS_Y_OFFSET) * zoomFactor) ||
+    if (fabs(displayX) > (0.75f * zoomFactor) or displayY > ((1.05f + HTS_Y_OFFSET) * zoomFactor) ||
         displayY < ((-0.3f + HTS_Y_OFFSET) * zoomFactor))
     {
         return false;
@@ -1818,7 +1818,7 @@ void HarmTargetingPod::ClearPOSTargets(void)
 
 void HarmTargetingPod::SetPOSTargetIndex(int index)
 {
-    if (index < 0 || index > 3)
+    if (index < 0 or index > 3)
     {
         POSTargetIndex = -1;
         return;

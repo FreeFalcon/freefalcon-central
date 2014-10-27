@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <windows.h>
 #include <tchar.h>
 
@@ -58,7 +59,7 @@ void StoresList::AddHardPoint(long ID, long hp, short count)
 
     cur = Find(ID);
 
-    if (cur == NULL || hp >= HARDPOINT_MAX)
+    if (cur == NULL or hp >= HARDPOINT_MAX)
         return;
 
     cur->HardPoint[hp] = count;

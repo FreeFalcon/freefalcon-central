@@ -293,7 +293,7 @@ void DigitalBrain::RealisticAP(void)
     // want pitch hold and STRG SEL for example, you should be allowed to do that.  Old SP3
     // code would only allow fixed pitch and fixed roll hold mode.
 
-    if (self->IsOn(AircraftClass::AttHold) || self->IsOn(AircraftClass::AltHold))
+    if (self->IsOn(AircraftClass::AttHold) or self->IsOn(AircraftClass::AltHold))
     {
 
         //Right switch
@@ -393,7 +393,7 @@ void DigitalBrain::PitchRollHold(void)
         CurrentPitch *= -1;
 
     //anything to do?
-    if (self->Pitch() * RTD > destPitch + 0.5F ||  self->Pitch() * RTD < destPitch - 0.5F)
+    if (self->Pitch() * RTD > destPitch + 0.5F or  self->Pitch() * RTD < destPitch - 0.5F)
     {
         if (CurrentPitch > destPitch)
         {
@@ -434,7 +434,7 @@ void DigitalBrain::PitchRollHold(void)
         CurrentRoll *= -1;
 
     //anything to do?
-    if (self->Roll() * RTD > destRoll + 1.0F ||  self->Roll() * RTD < destRoll - 1.0F)
+    if (self->Roll() * RTD > destRoll + 1.0F or  self->Roll() * RTD < destRoll - 1.0F)
     {
         if (CurrentRoll > destRoll)
         {
@@ -564,7 +564,7 @@ void DigitalBrain::RollHold(void)
         CurrentRoll *= -1;
 
     //anything to do?
-    if (self->Roll() * RTD > destRoll + 1.0F ||  self->Roll() * RTD < destRoll - 1.0F)
+    if (self->Roll() * RTD > destRoll + 1.0F or  self->Roll() * RTD < destRoll - 1.0F)
     {
         if (CurrentRoll > destRoll)
         {
@@ -623,7 +623,7 @@ void DigitalBrain::PitchHold(void)
     // AP just holds the set reference.  Pressure on the stick will change the reference
     // provided the pitch and other parameters that would disconnect the AP stay within limits.
     // Be careful to take this input only if there is some pressure on the stick though!
-    if ((UserStickInputs.pstick > 0.05F) || (UserStickInputs.pstick < -0.05F))
+    if ((UserStickInputs.pstick > 0.05F) or (UserStickInputs.pstick < -0.05F))
     {
         self->SetAPFlag(AircraftClass::StickStrng);
         pStick = 0.0F * af->pstick + 0.5F * UserStickInputs.pstick;
@@ -641,7 +641,7 @@ void DigitalBrain::PitchHold(void)
 void DigitalBrain::CheckForTurn(void)
 {
     //anything to do for us?
-    if (HeadingDifference < -1.0F || HeadingDifference > 1.0F)
+    if (HeadingDifference < -1.0F or HeadingDifference > 1.0F)
     {
         //MI DON'T TOUCH THIS CODE!!!!
         //my brain was smoking after I got this down! It seems to work just fine.
@@ -668,7 +668,7 @@ void DigitalBrain::CheckForTurn(void)
     }
     else
     {
-        if (self->Roll() * RTD > 0.5F || self->Roll() *RTD < -0.5F)
+        if (self->Roll() * RTD > 0.5F or self->Roll() *RTD < -0.5F)
         {
             if (self->Roll() * RTD > 0.5F)
                 bank = (self->Roll() * RTD) - 1;
@@ -724,11 +724,11 @@ bool DigitalBrain::APAutoDisconnect(void)
 int DigitalBrain::CheckAPParameters(void)
 {
     //dont do anything if not within parameters
-    if ((self->Pitch() * RTD > 60.2F) || (self->Pitch() * RTD < -60.2F))
+    if ((self->Pitch() * RTD > 60.2F) or (self->Pitch() * RTD < -60.2F))
         return TRUE;
-    else if ((self->Roll() * RTD > 60.2F) || (self->Roll() * RTD < -60.2F))
+    else if ((self->Roll() * RTD > 60.2F) or (self->Roll() * RTD < -60.2F))
         return TRUE;
-    else if (self->af->mach > 0.95 || -self->ZPos() > 40000)
+    else if (self->af->mach > 0.95 or -self->ZPos() > 40000)
         return TRUE;
     else
         return FALSE;

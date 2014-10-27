@@ -152,9 +152,9 @@ void AirframeClass::Atmosphere(void)
 
     if (platform == SimDriver.GetPlayerAircraft())
     {
-        if ((fabs(qbar - lastqBar) > 5.0F) || !lastqBar)
+        if ((fabs(qbar - lastqBar) > 5.0F) or !lastqBar)
         {
-            if ((qbar > 250) || g_bFFCenterFix)
+            if ((qbar > 250) or g_bFFCenterFix)
             {
                 JoystickPlayEffect(JoyAutoCenter, 10000);
             }

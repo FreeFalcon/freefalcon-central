@@ -74,7 +74,7 @@ BOOL C_3dViewer::Setup()
 
 BOOL C_3dViewer::Init3d(float ViewAngle)
 {
-    if (rend3d_ || rendOTW_)
+    if (rend3d_ or rendOTW_)
         return(FALSE);
 
 
@@ -103,7 +103,7 @@ BOOL C_3dViewer::InitOTW(float, BOOL Preload)
 {
     RViewPoint *tempVP = NULL;
 
-    if (rend3d_ || rendOTW_)
+    if (rend3d_ or rendOTW_)
         return(FALSE);
 
     // This preloads a SMALL portion of the terrain for speedy viewing
@@ -550,7 +550,7 @@ BOOL C_3dViewer::ViewGreyOTW()
         RECT rcDst = { 0, 0, nWidth, nHeight };
 
         // Cleanup old buffer if it doesnt fit
-        if (m_pImgGray && (m_pImgGray->targetXres() != nWidth || m_pImgGray->targetYres() != nHeight))
+        if (m_pImgGray && (m_pImgGray->targetXres() != nWidth or m_pImgGray->targetYres() != nHeight))
         {
             m_pImgGray->Cleanup();
             delete m_pImgGray;

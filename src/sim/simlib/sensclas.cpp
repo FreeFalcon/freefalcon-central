@@ -102,7 +102,7 @@ void SensorClass::CheckLockedTarget()
     }
 
     // Run the handoff routine
-    if (sensorType == HTS || sensorType == RWR)
+    if (sensorType == HTS or sensorType == RWR)
     {
         newTarget = SimCampHandoff(lockedTarget, platform->targetList, HANDOFF_RADAR);
     }
@@ -138,7 +138,7 @@ SensorClass* FindSensor(SimMoverClass* theObject, int sensorType)
         {
             ShiAssert(theObject->sensorArray[i]);
 
-            if (((theObject->sensorArray[i]) == (SensorClass*)0xbaadf00d) || ((theObject->sensorArray[i]) == (SensorClass*)0xfeeefeee))
+            if (((theObject->sensorArray[i]) == (SensorClass*)0xbaadf00d) or ((theObject->sensorArray[i]) == (SensorClass*)0xfeeefeee))
                 continue;
 
             if (theObject && (theObject->sensorArray[i]) && (theObject->sensorArray[i]->Type() == sensorType))

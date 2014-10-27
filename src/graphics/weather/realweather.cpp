@@ -95,7 +95,7 @@ inline void RealWeather::DrawStratus(Tpoint *position, int txtIndex)
     else if ((realWeather->weatherCondition == FAIR) && (ShadingFactor < 5)) txtIndex += FIRST_CIRCUM_INDEX;
 
     // Assign textures Coord
-    if (realWeather->weatherCondition < FAIR || ((realWeather->weatherCondition == FAIR) && (ShadingFactor < 5)))
+    if (realWeather->weatherCondition < FAIR or ((realWeather->weatherCondition == FAIR) && (ShadingFactor < 5)))
     {
         Quad[0].tu = UVCoords4X4[txtIndex][0][0], Quad[0].tv = UVCoords4X4[txtIndex][0][1];
         Quad[1].tu = UVCoords4X4[txtIndex][1][0], Quad[1].tv = UVCoords4X4[txtIndex][1][1];
@@ -123,7 +123,7 @@ inline void RealWeather::DrawStratus(Tpoint *position, int txtIndex)
     Quad[3].pos.x = -stratusRadius, Quad[3].pos.y = -stratusRadius, Quad[3].pos.z = 0;
 
     // Draw the Square
-    if (realWeather->weatherCondition < FAIR || ((realWeather->weatherCondition == FAIR) && (ShadingFactor < 5)))
+    if (realWeather->weatherCondition < FAIR or ((realWeather->weatherCondition == FAIR) && (ShadingFactor < 5)))
         TheDXEngine.DX2D_AddQuad(LAYER_STRATUS1, 0, (D3DXVECTOR3*)position, Quad, stratusRadius, CirrusCumTextures.TexHandle());
     else
         TheDXEngine.DX2D_AddQuad(LAYER_STRATUS1, 0, (D3DXVECTOR3*)position, Quad, stratusRadius, overcastTexture.TexHandle());
@@ -136,7 +136,7 @@ inline void RealWeather::DrawStratus2(Tpoint *position, int txtIndex)
     if (UnderOvercast()) return;
 
     // if stratus invisible, do not draw it
-    if (!(Stratus2Color & 0xff000000) || ShadingFactor < 2.0f) return;
+    if (!(Stratus2Color & 0xff000000) or ShadingFactor < 2.0f) return;
 
     // COBRA - DX - Setup the Squares in the 2D DX Engine for clouds
     TheDXEngine.DX2D_SetupSquareCx(1.0f, 1.0f);
@@ -308,7 +308,7 @@ RealWeather::RealWeather()
 
 RealWeather::~RealWeather()
 {
-    if (real3DClouds || real2DClouds)
+    if (real3DClouds or real2DClouds)
     {
         Cleanup();
     }
@@ -388,7 +388,7 @@ void RealWeather::RefreshWeather(RenderOTW *Renderer)
         InsideOVCST = UnderOVCST = OverOVCST = false;
     }
 
-    if (UnderOvercast() || InsideOvercast())
+    if (UnderOvercast() or InsideOvercast())
     {
         float OvercastShading = .8f + ShadingFactor * 0.05f;
 
@@ -427,7 +427,7 @@ void RealWeather::RefreshWeather(RenderOTW *Renderer)
     if (TheTimeManager.GetClockTime() - WeatherQualityElapsed >= 1000)
     {
         // if Local game, update data
-        if (!vuLocalGame || vuLocalGame->IsLocal())
+        if (!vuLocalGame or vuLocalGame->IsLocal())
         {
             if (WeatherQualityStep) WeatherQualityStep--;
             else UpdateWeatherQuality();
@@ -849,7 +849,7 @@ void RealWeather::UpdateDrawables()
             stratusPos.z = stratus2Z;
             DrawStratus2(&stratusPos, sTxtIndex);
 
-            if (weatherCondition == FAIR || (weatherCondition > FAIR && InsideOvercast()))
+            if (weatherCondition == FAIR or (weatherCondition > FAIR && InsideOvercast()))
             {
                 for (i = 0; i < NUM_3DCLOUD_POLYS; i++)
                 {
@@ -966,7 +966,7 @@ void RealWeather::UpdateDrawables()
                     clipFlag[i]  or_eq  GetVerticalClipFlags(vp[i].y, vp[i].z);
                 }
 
-                weatherCellArray[row][col].onScreen = (!clipFlag[0] || !clipFlag[1] || !clipFlag[2] || !clipFlag[3]);
+                weatherCellArray[row][col].onScreen = (!clipFlag[0] or !clipFlag[1] or !clipFlag[2] or !clipFlag[3]);
 
                 if (!weatherCellArray[row][col].onScreen
                     && row >= shadowCell + 1 && row < numCells - shadowCell - 1
@@ -1388,7 +1388,7 @@ bool RealWeather::ReadWeather(void)
 
     while (fgets(file, 1024, fp))
     {
-        if (file[0] == '\r' || file[0] == '#' || file[0] == ';' || file[0] == '\n')
+        if (file[0] == '\r' or file[0] == '#' or file[0] == ';' or file[0] == '\n')
         {
             t++;
             continue;
@@ -1434,8 +1434,8 @@ bool RealWeather::ReadWeather(void)
         while (pch != NULL)
         {
             //Identify things by length
-            if (strlen(pch) == 2 || (strlen(pch) == 3 && strncmp(pch, "-", 1))
-                || (strlen(pch) == 3 && strncmp(pch, "+", 1)))
+            if (strlen(pch) == 2 or (strlen(pch) == 3 && strncmp(pch, "-", 1))
+                or (strlen(pch) == 3 && strncmp(pch, "+", 1)))
             {
                 if (strlen(pch) == 3) //strip it down to two
                 {
@@ -1446,18 +1446,18 @@ bool RealWeather::ReadWeather(void)
                     strcpy(cpy, pch);
                 }
 
-                if (strcmp(cpy, "RA") == 0 || strcmp(cpy, "DZ") == 0 || strcmp(cpy, "SN") == 0 ||
-                    strcmp(cpy, "GR") == 0 || strcmp(cpy, "GS") == 0 || strcmp(cpy, "PL") == 0 ||
-                    strcmp(cpy, "SG") == 0 || strcmp(cpy, "IC") == 0 || strcmp(cpy, "UP") == 0) //0/8
+                if (strcmp(cpy, "RA") == 0 or strcmp(cpy, "DZ") == 0 or strcmp(cpy, "SN") == 0 ||
+                    strcmp(cpy, "GR") == 0 or strcmp(cpy, "GS") == 0 or strcmp(cpy, "PL") == 0 ||
+                    strcmp(cpy, "SG") == 0 or strcmp(cpy, "IC") == 0 or strcmp(cpy, "UP") == 0) //0/8
                 {
                     //Some form of precip present
                     tm = 1;
                     memset(&cpy, 0, sizeof(cpy));
                 }
 
-                if (strcmp(cpy, "FG") == 0 || strcmp(cpy, "HZ") == 0 || strcmp(cpy, "FU") == 0 ||
-                    strcmp(cpy, "PY") == 0 || strcmp(cpy, "BR") == 0 || strcmp(cpy, "SA") == 0 ||
-                    strcmp(cpy, "DU") == 0 || strcmp(cpy, "VA") == 0) //0/8
+                if (strcmp(cpy, "FG") == 0 or strcmp(cpy, "HZ") == 0 or strcmp(cpy, "FU") == 0 ||
+                    strcmp(cpy, "PY") == 0 or strcmp(cpy, "BR") == 0 or strcmp(cpy, "SA") == 0 ||
+                    strcmp(cpy, "DU") == 0 or strcmp(cpy, "VA") == 0) //0/8
                 {
                     //Some form of visibility obstruction
                     tm = 1;
@@ -1468,7 +1468,7 @@ bool RealWeather::ReadWeather(void)
             else if (strlen(pch) == 3)
             {
                 //
-                if (strcmp(pch, "CLR") == 0 || strcmp(pch, "NSC") == 0 || strcmp(pch, "SKC") == 0) //0/8
+                if (strcmp(pch, "CLR") == 0 or strcmp(pch, "NSC") == 0 or strcmp(pch, "SKC") == 0) //0/8
                 {
                     tm = 1;
                 }
@@ -1493,8 +1493,8 @@ bool RealWeather::ReadWeather(void)
                     tm = 1;
                 }
             }
-            else if (strlen(pch) == 4 || (strlen(pch) == 5 && strncmp(pch, "-", 1) == 0)
-                     || (strlen(pch) == 5 && strncmp(pch, "+", 1) == 0))
+            else if (strlen(pch) == 4 or (strlen(pch) == 5 && strncmp(pch, "-", 1) == 0)
+                     or (strlen(pch) == 5 && strncmp(pch, "+", 1) == 0))
             {
                 if (strlen(pch) == 5) //strip it down to four
                 {
@@ -1558,8 +1558,8 @@ bool RealWeather::ReadWeather(void)
 
 
             }
-            else if (strlen(pch) == 6 || (strlen(pch) == 8 && (strncmp(pch + 6, "CB", 2) == 0))
-                     || (strlen(pch) == 9 && (strncmp(pch + 6, "TCU", 3) == 0)))
+            else if (strlen(pch) == 6 or (strlen(pch) == 8 && (strncmp(pch + 6, "CB", 2) == 0))
+                     or (strlen(pch) == 9 && (strncmp(pch + 6, "TCU", 3) == 0)))
             {
                 //XYZ000
                 if (strncmp(pch + 6, "CB", 2) == 0)
@@ -1603,7 +1603,7 @@ bool RealWeather::ReadWeather(void)
                 }
 
             }
-            else if (strlen(pch) == 7 || strlen(pch) == 10)
+            else if (strlen(pch) == 7 or strlen(pch) == 10)
             {
                 //
 
@@ -1676,7 +1676,7 @@ bool RealWeather::ReadWeather(void)
     while (i<numMETARS)
     {
      fgets(file,1024,fp);
-     if (file[0] == '\r' || file[0] == '#' || file[0] == ';' || file[0] == '\n')
+     if (file[0] == '\r' or file[0] == '#' or file[0] == ';' or file[0] == '\n')
      continue;
 
      switch (cnt)

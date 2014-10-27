@@ -508,13 +508,13 @@ BOOL VCSortCB(TREELIST *list, TREELIST *newitem)
 {
     C_Victory *lvc, *nvc;
 
-    if (!list || !newitem)
+    if (!list or !newitem)
         return(FALSE);
 
     lvc = (C_Victory*)list->Item_;
     nvc = (C_Victory*)newitem->Item_;
 
-    if (!lvc || !nvc)
+    if (!lvc or !nvc)
         return(FALSE);
 
     switch (VCSortType)
@@ -573,7 +573,7 @@ void UpdateVCOptions(victory_condition *vc)
 
     vctrl = (C_Victory*)vc->control;
 
-    if (!vctrl || !vctrl->Parent_)
+    if (!vctrl or !vctrl->Parent_)
         return;
 
     ent = (CampEntity)vuDatabase->Find(vc->get_vu_id());
@@ -630,7 +630,7 @@ void UpdateVCOptions(victory_condition *vc)
 
                     lbox->SetFlagBitOff(C_BIT_INVISIBLE);
 
-                    if (vc->get_type() == vt_attrit || vc->get_type() == vt_intercept)
+                    if (vc->get_type() == vt_attrit or vc->get_type() == vt_intercept)
                         vc->set_type(vt_degrade);
 
                 }
@@ -2158,7 +2158,7 @@ void tactical_add_victory_condition(VU_ID id, C_Base *)
     if (!ent)
         return;
 
-    if (ent->IsObjective() || ent->IsFlight() || ent->IsBattalion())
+    if (ent->IsObjective() or ent->IsFlight() or ent->IsBattalion())
     {
         vc = new victory_condition(current_tactical_mission);
 

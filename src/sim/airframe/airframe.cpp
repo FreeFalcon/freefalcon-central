@@ -945,7 +945,7 @@ void AirframeClass::Init(int idx)
                         if (!IsSet(Simplified) &&
                             ((!platform->OnGround() && vcas < 180.0f) ||
                              (fabs(pshape) > 0.85F  && fabs(rshape) > 0.85F) ||
-                             (fabs(alpha)  > 18.0F) || //&& IsSet(LowSpdHorn) ) ||
+                             (fabs(alpha)  > 18.0F) or //&& IsSet(LowSpdHorn) ) ||
                              (fabs(pshape) > 0.6F && fabs(rshape) > 0.6F && IsSet(LowSpdHorn))))
                         {
                             loadingFraction = weight / emptyWeight; //me123
@@ -959,7 +959,7 @@ void AirframeClass::Init(int idx)
                                 alpha > 31.0F  - 9 * (loadingFraction - 1.3F) - //me123 addet 9
                                 //me123 bulshit IsSet(LowSpdHorn)*3.0F
                                 //me123 - IsSet(CATLimiterIII)*5.0F
-                                - fabs(assymetry / weight) * 10.0F || // 10 from 5 me123
+                                - fabs(assymetry / weight) * 10.0F or // 10 from 5 me123
                                 alpha < -14.0F + (loadingFraction - 1.3F) +
                                 IsSet(LowSpdHorn) * 3.0F + fabs(assymetry / weight) * 5.0F)
                             {
@@ -1068,7 +1068,7 @@ void AirframeClass::Init(int idx)
 
                     case Recovering:
 
-                        if ((alpha > g_fRecoveryAOA || alpha < -11.0f) && platform->platformAngles.sinthe > 0.342F)
+                        if ((alpha > g_fRecoveryAOA or alpha < -11.0f) && platform->platformAngles.sinthe > 0.342F)
                         {
                             stallMode = EnteringDeepStall;
                             stallMagnitude += (1.0f - rand() / (float)RAND_MAX * 2.0f) * 5.0f;
@@ -1760,7 +1760,7 @@ void AirframeClass::Init(int idx)
             else
             {
                 //if (vcas > vflapmax - (vflapmax - vflapmin)/2 )
-                if (vcas > 200 || vcas > vflapmax - (vflapmax - vflapmin) / 2)
+                if (vcas > 200 or vcas > vflapmax - (vflapmax - vflapmin) / 2)
                 {
                     TEFClose();
                     LEFClose();
@@ -1778,9 +1778,9 @@ void AirframeClass::Init(int idx)
             float vflapmax = 250.0f;//F15
 
             //F15A/B, C, E
-            if (auxaeroData->typeAC == 3 || auxaeroData->typeAC == 4 || auxaeroData->typeAC == 5)
+            if (auxaeroData->typeAC == 3 or auxaeroData->typeAC == 4 or auxaeroData->typeAC == 5)
             {
-                if (tefPos > 0 && (flapPos == 0 || flapPos == 4))
+                if (tefPos > 0 && (flapPos == 0 or flapPos == 4))
                 {
                     flapPos = 1;
                     tefState = tefPos;
@@ -1802,7 +1802,7 @@ void AirframeClass::Init(int idx)
             }//End F15
 
             //F-18A-D, F-18E/F TEF scheduling
-            if (auxaeroData->typeAC == 8 || auxaeroData->typeAC == 9 || auxaeroData->typeAC == 10)
+            if (auxaeroData->typeAC == 8 or auxaeroData->typeAC == 9 or auxaeroData->typeAC == 10)
             {
                 if (mach > 1.05)
                 {
@@ -1844,7 +1844,7 @@ void AirframeClass::Init(int idx)
                 }
                 //this assumes half/full left on and auto is amber
                 //F18A-D
-                else if (auxaeroData->typeAC == 8 || auxaeroData->typeAC == 9)
+                else if (auxaeroData->typeAC == 8 or auxaeroData->typeAC == 9)
                 {
                     if (mach < 0.6f && vcas > 250.f)
                     {

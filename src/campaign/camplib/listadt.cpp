@@ -203,16 +203,16 @@ int ListClass::SanityCheck(void)
     if (!front && !end)
         return 1;
 
-    if (front == end && (front->prev || front->next))
+    if (front == end && (front->prev or front->next))
         return 0;
 
-    if ((front && !end) || (!front && end))
+    if ((front && !end) or (!front && end))
         return 0;
 
-    if (front == (void*)0xdddddddd || front == (void*)0xfcfcfcfc)
+    if (front == (void*)0xdddddddd or front == (void*)0xfcfcfcfc)
         return 0;
 
-    if (end == (void*)0xdddddddd || end == (void*)0xfcfcfcfc)
+    if (end == (void*)0xdddddddd or end == (void*)0xfcfcfcfc)
         return 0;
 
     cur = front;

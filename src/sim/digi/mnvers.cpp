@@ -82,7 +82,7 @@ float DigitalBrain::TrackPointLanding(float speed)
     }
     else
     {
-        //if(atcstatus == lOnFinal || (throtl == 0.0F && af->vtDot > -5.0F && eProp < -10.0F))
+        //if(atcstatus == lOnFinal or (throtl == 0.0F && af->vtDot > -5.0F && eProp < -10.0F))
         //TJL 02/20/04 Not just boards on final because of drag penalty.
         if (throtl == 0.0F && af->vtDot > -5.0F && eProp < -10.0F)
             //deploy speed brakes on final
@@ -470,7 +470,7 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
             burnerDelta = 500.0F;
 
             // 2002-03-26 MN make it harder to go into afterburner when in waypoint- or wingymode
-            if (curMode == WingyMode || curMode == WaypointMode)
+            if (curMode == WingyMode or curMode == WaypointMode)
                 burnerDelta = g_fWaypointBurnerDelta;
         }
 
@@ -518,11 +518,11 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
             }
 
             // no burner unless in combat
-            if ((curMode >= LoiterMode || curMode == LandingMode) && // 2002-02-12 MODIFIED BY S.G. Don't go in AB if you're in landing mode either
+            if ((curMode >= LoiterMode or curMode == LandingMode) && // 2002-02-12 MODIFIED BY S.G. Don't go in AB if you're in landing mode either
                 m2 > aeroDataset[self->af->VehicleIndex()].inputData[AeroDataSet::MinVcas] * 0.9f && // JB 011018 If we can't keep our speed up, use the buner 2002-02-12 MODIFIED BY S.G. Use a percentage of MinVcas instead.
-                (!flightLead || flightLead && ((AircraftClass*)flightLead)->af) &&
-                (!flightLead || (((AircraftClass*)flightLead)->af == af || ((((AircraftClass*)flightLead)->af->rpm < 1.0F)) && // JB 011025 If the lead is using his burner, we can use ours 2002-02-12 MODIFIED BY S.G. Don't look at lead's burner or g_fFormationBurnerDistance if we're RTBing...
-                                 dist < g_fFormationBurnerDistance * NM_TO_FT) || curMode == RTBMode) || // allow usage of burner if lead is more than defined distance away
+                (!flightLead or flightLead && ((AircraftClass*)flightLead)->af) &&
+                (!flightLead or (((AircraftClass*)flightLead)->af == af or ((((AircraftClass*)flightLead)->af->rpm < 1.0F)) && // JB 011025 If the lead is using his burner, we can use ours 2002-02-12 MODIFIED BY S.G. Don't look at lead's burner or g_fFormationBurnerDistance if we're RTBing...
+                                 dist < g_fFormationBurnerDistance * NM_TO_FT) or curMode == RTBMode) or // allow usage of burner if lead is more than defined distance away
                 self->OnGround()) // never use AB on ground
             {
                 // Flight lead goes even slower so wingies can catch up
@@ -617,7 +617,7 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
 
     //me123 status test. IRCM STUFF.
 
-    if (curMode == MissileEngageMode || curMode == GunsEngageMode || curMode == WVREngageMode)
+    if (curMode == MissileEngageMode or curMode == GunsEngageMode or curMode == WVREngageMode)
     {
         //me123 status test. we are inside 6nm, somebody is pointing at us and we are head on.
 
@@ -732,7 +732,7 @@ void DigitalBrain::LevelTurn(float load_factor, float turnDir, int newTurn)
 
         SetRstick(edroll * RTD * 2.50F);
 
-        if (fabs(edroll) < 5.0 * DTR || trackMode == 2)
+        if (fabs(edroll) < 5.0 * DTR or trackMode == 2)
         {
             alterr = (holdAlt + self->ZPos() - self->ZDelta()) * 0.015F;
             GammaHold(alterr);
@@ -969,7 +969,7 @@ int HoldCorner(int combatClass, SimObjectType* targetPtr)
 
     // Only check for A/C
     // if (targetPtr->BaseData()->IsSim() && targetPtr->BaseData()->IsAirplane())
-    if (targetPtr->BaseData()->IsAirplane() || targetPtr->BaseData()->IsFlight()) // 2002-02-26 MODIFIED BY S.G. airplane and fligth are ok in here
+    if (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight()) // 2002-02-26 MODIFIED BY S.G. airplane and fligth are ok in here
     {
         // Find the data table for these two types of A/C
         hisCombatClass = targetPtr->BaseData()->CombatClass(); // 2002-02-26 MODIFIED BY S.G. Removed the AircraftClass cast

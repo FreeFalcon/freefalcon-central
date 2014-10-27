@@ -37,7 +37,7 @@ unsigned int VuDatabase::Purge(VU_BOOL all)
         )
         {
             // run calling all callbacks and seting as removed... purge will do the actual removal
-            if (!(!all && ((e->IsPrivate() && e->IsPersistent()) || e->IsGlobal())))
+            if (!(!all && ((e->IsPrivate() && e->IsPersistent()) or e->IsGlobal())))
             {
                 toBePurged.push_back(VuEntityBin(e));
             }
@@ -69,7 +69,7 @@ int VuDatabase::Suspend(VU_BOOL all)
         )
         {
             // run calling all callbacks and seting as removed... purge will do the actual removal
-            if (!(!all && ((e->IsPrivate() && e->IsPersistent()) || e->IsGlobal())))
+            if (!(!all && ((e->IsPrivate() && e->IsPersistent()) or e->IsGlobal())))
             {
                 toBeSuspended.push_back(VuEntityBin(e));
                 e->RemovalCallback();
@@ -109,7 +109,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 #if 0//BIRTH_LIST
 
     // already in
-    if ((entity->VuState() == VU_MEM_ACTIVE) || (entity->VuState() == VU_MEM_TO_BE_INSERTED))
+    if ((entity->VuState() == VU_MEM_ACTIVE) or (entity->VuState() == VU_MEM_TO_BE_INSERTED))
     {
         return VU_ERROR;
     }
@@ -146,7 +146,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 #else
 
     // no duplicates allowed
-    if ((entity->VuState() == VU_MEM_ACTIVE) || (dbHash_->Find(entity->Id()) != NULL))
+    if ((entity->VuState() == VU_MEM_ACTIVE) or (dbHash_->Find(entity->Id()) != NULL))
     {
         return VU_ERROR;
     }
@@ -188,7 +188,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 
 VU_ERRCODE VuDatabase::CommonRemove(VuEntity *entity)
 {
-    if (!entity || entity->VuState() != VU_MEM_ACTIVE)
+    if (!entity or entity->VuState() != VU_MEM_ACTIVE)
     {
         return VU_NO_OP;
     }
@@ -309,7 +309,7 @@ unsigned int VuDatabase::Purge(VU_BOOL all)
             e = li.GetNext()
         )
         {
-            if (!(!all && ((e->IsPrivate() && e->IsPersistent()) || e->IsGlobal())))
+            if (!(!all && ((e->IsPrivate() && e->IsPersistent()) or e->IsGlobal())))
             {
                 e->SetVuState(VU_MEM_REMOVED);
             }
@@ -337,7 +337,7 @@ int VuDatabase::Suspend(VU_BOOL all)
             e = li.GetNext()
         )
         {
-            if (!(!all && ((e->IsPrivate() && e->IsPersistent()) || e->IsGlobal())))
+            if (!(!all && ((e->IsPrivate() && e->IsPersistent()) or e->IsGlobal())))
             {
                 e->RemovalCallback();
                 e->SetVuState(VU_MEM_REMOVED);
@@ -376,7 +376,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 #if 0//BIRTH_LIST
 
     // already in
-    if ((entity->VuState() == VU_MEM_ACTIVE) || (entity->VuState() == VU_MEM_TO_BE_INSERTED))
+    if ((entity->VuState() == VU_MEM_ACTIVE) or (entity->VuState() == VU_MEM_TO_BE_INSERTED))
     {
         return VU_ERROR;
     }
@@ -413,7 +413,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 #else
 
     // no duplicates allowed
-    if ((entity->VuState() == VU_MEM_ACTIVE) || (Find(entity->Id()) != NULL))
+    if ((entity->VuState() == VU_MEM_ACTIVE) or (Find(entity->Id()) != NULL))
     {
         return VU_ERROR;
     }
@@ -455,7 +455,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 
 VU_ERRCODE VuDatabase::CommonRemove(VuEntity *entity)
 {
-    if (!entity || entity->VuState() != VU_MEM_ACTIVE)
+    if (!entity or entity->VuState() != VU_MEM_ACTIVE)
     {
         return VU_NO_OP;
     }

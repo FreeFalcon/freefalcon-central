@@ -464,7 +464,7 @@ void CheckLandingGearHandle(void * pObject)
     int currentState;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC == NULL || !playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC == NULL or !playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         return;
     }
@@ -884,7 +884,7 @@ void CBECaution4(void * pObject)
     pCPLight = (CPLight*) pObject;
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
-    pCPLight->mState = (playerAC->af->Fuel() < 750.0F) || faultSys->GetFault(FaultClass::fms_fault);
+    pCPLight->mState = (playerAC->af->Fuel() < 750.0F) or faultSys->GetFault(FaultClass::fms_fault);
 }
 
 //Caution avionics_fault
@@ -1053,7 +1053,7 @@ void CBECaution14(void * pObject)
     pCPLight = (CPLight*) pObject;
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
-    //pCPLight->mState = (2 * faultSys->GetFault(FaultClass::fcc_fault) || faultSys->GetFault(FaultClass::dmux_fault)) + faultSys->GetFault(FaultClass::hud_fault);
+    //pCPLight->mState = (2 * faultSys->GetFault(FaultClass::fcc_fault) or faultSys->GetFault(FaultClass::dmux_fault)) + faultSys->GetFault(FaultClass::hud_fault);
     pCPLight->mState = 0;
     // copied canopy fault code
     int canopyopen;
@@ -1067,7 +1067,7 @@ void CBECaution14(void * pObject)
         canopyopen = playerAC->GetDOFValue(SIMP_CANOPY_DOF) > 0;
     }
 
-    if (canopyopen || (faultSys && faultSys->GetFault(canopy)))
+    if (canopyopen or (faultSys && faultSys->GetFault(canopy)))
     {
         pCPLight->mState = 1;
     }
@@ -1753,7 +1753,7 @@ void CBECanopyLight(void *pObject)
         canopyopen = playerAC->GetDOFValue(SIMP_CANOPY_DOF) > 0;
     }
 
-    if (canopyopen || (faultSys && faultSys->GetFault(canopy)))
+    if (canopyopen or (faultSys && faultSys->GetFault(canopy)))
     {
         pCPLight->mState = CPLIGHT_ON;
     }
@@ -1797,7 +1797,7 @@ void CBEGearHandleLight(void *pObject)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC == NULL || !SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC == NULL or !SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP))
     {
         return;
     }
@@ -1969,7 +1969,7 @@ void CBELEFLight(void *pObject)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC == NULL || playerAC->mFaults == NULL)
+    if (playerAC == NULL or playerAC->mFaults == NULL)
     {
         return;
     }
@@ -2013,7 +2013,7 @@ void CBEBUPADIFlag(void *pObject)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC == NULL || playerAC->mFaults == NULL)
+    if (playerAC == NULL or playerAC->mFaults == NULL)
     {
         return;
     }
@@ -2078,7 +2078,7 @@ void CBEGSFlag(void *pObject)
         return;
     }
 
-    if (playerAC->GSValid == FALSE || playerAC->currentPower == AircraftClass::PowerNone)
+    if (playerAC->GSValid == FALSE or playerAC->currentPower == AircraftClass::PowerNone)
     {
         pCPLight->mState = CPLIGHT_ON; //Flag visible
         // MD -- 20031011: Move to otwloop.cpp
@@ -2110,7 +2110,7 @@ void CBELOCFlag(void *pObject)
         return;
     }
 
-    if (playerAC->LOCValid == FALSE || playerAC->currentPower == AircraftClass::PowerNone)
+    if (playerAC->LOCValid == FALSE or playerAC->currentPower == AircraftClass::PowerNone)
     {
         pCPLight->mState = CPLIGHT_ON; //Flag visible
         // MD -- 20031011: Move to otwloop.cpp

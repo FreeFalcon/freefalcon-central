@@ -858,7 +858,7 @@ bool SubPartPoly::Run(RenderOTW *renderer, ParticleNode *owner)
         v2.q = v2.csZ * Q_SCALE;
         v3.q = v3.csZ * Q_SCALE;
 
-        /* if(PS_NVG || PS_TV)
+        /* if(PS_NVG or PS_TV)
          {
          v0.r = v1.r = v2.r = v3.r = 0.f;
          v0.g = v1.g = v2.g = v3.g = .4f;
@@ -1065,7 +1065,7 @@ bool SubEmitter::Run(RenderOTW *renderer, ParticleNode *owner)
                 epos.z = GroundLevel;
 
 
-                if (!(gtype == COVERAGE_WATER || gtype == COVERAGE_RIVER))
+                if (!(gtype == COVERAGE_WATER or gtype == COVERAGE_RIVER))
                 {
                     qty += pep->rate[0].value;
                     // ok... done... then die...!!!
@@ -1085,7 +1085,7 @@ bool SubEmitter::Run(RenderOTW *renderer, ParticleNode *owner)
                 epos.z = GroundLevel;
 
 
-                if ((gtype == COVERAGE_WATER || gtype == COVERAGE_RIVER))
+                if ((gtype == COVERAGE_WATER or gtype == COVERAGE_RIVER))
                 {
                     qty += pep->rate[0].value;
                     // ok... done... then die...!!!
@@ -1445,7 +1445,7 @@ ParticleNode::~ParticleNode()
 
 int ParticleNode::IsDead(void)
 {
-    if (life > 1.0 || life < 0.0)
+    if (life > 1.0 or life < 0.0)
     {
         SubPart *sub = firstSubPart;
 
@@ -2123,7 +2123,7 @@ char *trim(char *in)
 
     if (!in) return 0;
 
-    while (*in == ' ' || *in == '/t')
+    while (*in == ' ' or *in == '/t')
     {
         in++;
     }
@@ -2135,7 +2135,7 @@ char *trim(char *in)
 
     q--;
 
-    while (*q == ' ' || *q == '/t')
+    while (*q == ' ' or *q == '/t')
     {
         *q = 0;
         q--;
@@ -3066,7 +3066,7 @@ void  DrawableParticleSys::PS_PolyRun(void)
         light = (light - Flash) * 2;
         DWORD LiteColor;
 
-        if (PS_NVG || PS_TV)
+        if (PS_NVG or PS_TV)
         {
             // NVG View
             HifColor.r = HifColor.r * PS_HiLightCx.r;
@@ -3234,7 +3234,7 @@ void  DrawableParticleSys::PS_EmitterRun(void)
                         int gtype = OTWDriver.GetGroundType(epos.x, epos.y);
 
                         // if on WATER or RIVER add the quantity and die
-                        if (!(gtype == COVERAGE_WATER || gtype == COVERAGE_RIVER)) qty += Emitter.PEP->rate[0].value, Alive = false;
+                        if (!(gtype == COVERAGE_WATER or gtype == COVERAGE_RIVER)) qty += Emitter.PEP->rate[0].value, Alive = false;
                     }
 
                 break;
@@ -3248,7 +3248,7 @@ void  DrawableParticleSys::PS_EmitterRun(void)
                         int gtype = OTWDriver.GetGroundType(epos.x, epos.y);
 
                         // if on WATER or RIVER add the quantity and die
-                        if (gtype == COVERAGE_WATER || gtype == COVERAGE_RIVER) qty += Emitter.PEP->rate[0].value, Alive = false;
+                        if (gtype == COVERAGE_WATER or gtype == COVERAGE_RIVER) qty += Emitter.PEP->rate[0].value, Alive = false;
                     }
 
                 break;
@@ -3601,7 +3601,7 @@ void DrawableParticleSys::PS_ParticleRun(void)
 
         // Check if large position change from last Calc,
         // if so, recalc seom parameters
-        if (F_ABS(Part.LastCalcPos.x - Part.pos.x) >= PS_RECALC_DELTA || F_ABS(Part.LastCalcPos.y - Part.pos.y) >= PS_RECALC_DELTA)
+        if (F_ABS(Part.LastCalcPos.x - Part.pos.x) >= PS_RECALC_DELTA or F_ABS(Part.LastCalcPos.y - Part.pos.y) >= PS_RECALC_DELTA)
         {
             // Recalc Ground position
             Part.LastCalcPos = Part.pos;
@@ -3735,7 +3735,7 @@ void DrawableParticleSys::PS_ParticleRun(void)
             if (ppn.drawType == PSDT_POLY)
             {
                 // if Already marked as IN Skip all checks
-                if (Cluster.In || Cluster.Out) goto Skip;
+                if (Cluster.In or Cluster.Out) goto Skip;
 
                 // 1st, check for Distance, if already out of visibility it's a CLUUSTER OUT OF FOV
                 float Distance = TheDXEngine.DX2D_GetDistance((D3DXVECTOR3 *)&Part.pos);
@@ -3863,7 +3863,7 @@ void DrawableParticleSys::PS_ClustersRun(void)
         XMMPos = Cluster.TLFpos;
 #else
 
-        if (Cluster.Out || Cluster.In) continue;
+        if (Cluster.Out or Cluster.In) continue;
 
 #endif
 
@@ -4115,7 +4115,7 @@ void DrawableParticleSys::PS_TrailRun(void)
             float TexSeg = Trail.su[1] - Trail.su[0];
 
             // if the Trail StartUp ( 1st Node ), initialize a randomic texture start index
-            if (Trail.StartUp || Trail.Split)
+            if (Trail.StartUp or Trail.Split)
             {
                 Trail.NextTexIndex = Trail.su[0] + TexSeg * PRANDFloatPos(), Trail.StartUp = false;;
                 // ok, done
@@ -4216,7 +4216,7 @@ void DrawableParticleSys::PS_TrailRun(void)
         if (!Trail.Alive) Trail.Handle = NULL;
 
         // check for dead, can be dead also when the trail time has elapsed since last Sub Part geneation
-        if ((!Trail.Alive && Trail.Entry == Trail.Last) || Trail.Elapsed >= TPN.LifeSpan)
+        if ((!Trail.Alive && Trail.Entry == Trail.Last) or Trail.Elapsed >= TPN.LifeSpan)
         {
             // Release memory
             Trail.Handle = NULL;
@@ -4462,7 +4462,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
         if (TrailCompleted) Size = BaseSize * Part.SizeRnd/*, Alpha=0.0f*/;
 
         // Overrides for 1st point in list
-        if (Part.Entry || Part.Split || Part.Exit) Size = 0.0f, Alpha = 0.0f, Integrate = 0;
+        if (Part.Entry or Part.Split or Part.Exit) Size = 0.0f, Alpha = 0.0f, Integrate = 0;
 
         // if entry, no trail is valid now
         if (Part.Entry) TrailValid = LineMode = false, RecalcP1 = true;
@@ -4518,7 +4518,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
 
                     // an integration can not end on trail ends
                     // if segment is a split/exit, then stop here and keep old Index as good value
-                    if (Part.Split || Part.Exit || NewIndex == Exit) break;
+                    if (Part.Split or Part.Exit or NewIndex == Exit) break;
 
                     // ok, the step
                     Index = NewIndex;
@@ -4582,7 +4582,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
                 }
 
                 // Draw only if any of the vertices has Alpha > 1
-                if (Color.a > 1.0 || LastColor.a > 1.0f)
+                if (Color.a > 1.0 or LastColor.a > 1.0f)
                 {
                     // if not a Line already started
                     if (!LineMode)
@@ -4870,7 +4870,7 @@ TRAIL_HANDLE DrawableParticleSys::PS_EmitTrail(TRAIL_HANDLE Handle, int TrailId,
 {
     // RV - I-Hawk - CTD fix on vortex trails. probably caused by bad conversion from DWORD to int
     // So this will cause the emitter to cut and start another trail, but won't be noticed anyway...
-    if (TrailId < 0 || TrailId > TRAIL_MAX - 1)
+    if (TrailId < 0 or TrailId > TRAIL_MAX - 1)
     {
         return NULL;
     }
@@ -5157,17 +5157,17 @@ bool DrawableParticleSys::PS_LoadParameters(void)
 
         // end Cobra
 
-        if (buffer[0] == '#' || buffer[0] == ';' || buffer[0] == '\n')
+        if (buffer[0] == '#' or buffer[0] == ';' or buffer[0] == '\n')
             continue;
 
         int b;
 
-        for (b = 0; b < 1024 && (buffer[b] == ' ' || buffer[b] == '\t'); b++);
+        for (b = 0; b < 1024 && (buffer[b] == ' ' or buffer[b] == '\t'); b++);
 
         com = strtok(&buffer[b], "=\n");
         arg = strtok(0, "\n\0");
 
-        if (com[0] == '#' || com[0] == ';')
+        if (com[0] == '#' or com[0] == ';')
             continue;
 
 
@@ -5760,7 +5760,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
             On("texture")
             {
                 // Check for texture
-                if (GroupNode->Type == GRP_NONE || GroupNode->Type == GRP_TEXTURE)
+                if (GroupNode->Type == GRP_NONE or GroupNode->Type == GRP_TEXTURE)
                 {
                     char *n = TokenStr(0);
 
@@ -5969,7 +5969,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
 
     while (pan)
     {
-        if ((!pan->Fps) || (!pan->NFrames) || (!pan->Sequence))
+        if ((!pan->Fps) or (!pan->NFrames) or (!pan->Sequence))
         {
             sprintf(ErrorMessage, "Animation %s Failed", pan->AnimationName); //*** CRASH MESSAGE ****
             OutputDebugString(ErrorMessage);

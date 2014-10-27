@@ -69,7 +69,7 @@ VuEntity *VuFullGridIterator::GetFirst(VuFilter* filter)
 {
     VuEntity* retval = GetFirst();
 
-    if (retval == 0 || filter->Test(retval))
+    if (retval == 0 or filter->Test(retval))
     {
         return retval;
     }
@@ -177,7 +177,7 @@ VuEntity *VuFullGridIterator::GetFirst(VuFilter* filter)
 {
     VuEntity* retval = GetFirst();
 
-    if (retval == 0 || filter->Test(retval))
+    if (retval == 0 or filter->Test(retval))
     {
         return retval;
     }

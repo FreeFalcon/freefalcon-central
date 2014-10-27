@@ -294,7 +294,7 @@ void OTWDriverClass::SelectExternal()
 
                 // edg: I think this may be where we're getting bad values
                 // for camera position
-                if (fabs(dx) > 15000.0f || fabs(dy) > 15000.0f || fabs(dz) > 15000.0f)
+                if (fabs(dx) > 15000.0f or fabs(dy) > 15000.0f or fabs(dz) > 15000.0f)
                 {
                     endFlightPoint.x = otwPlatform->XPos();
                     endFlightPoint.y = otwPlatform->YPos();
@@ -624,7 +624,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 // edg note: this is now actually self to any enemny
             case ModeTarget:
 
-                if (!SimDriver.GetPlayerAircraft() || otwTrackPlatform.get() == NULL)
+                if (!SimDriver.GetPlayerAircraft() or otwTrackPlatform.get() == NULL)
                     return;
 
                 // try and find a flying weapon for the current otwPlatform
@@ -696,7 +696,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 targetPtr = (( SimMoverClass * )otwPlatform)->targetPtr;
 
                 // any target?
-                if ( targetPtr == NULL || targetPtr->BaseData() == NULL || !targetPtr->BaseData()->IsSim())
+                if ( targetPtr == NULL or targetPtr->BaseData() == NULL or !targetPtr->BaseData()->IsSim())
                  return;
 
                 // set graphics focus to the target
@@ -838,7 +838,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 newObject = FindNextViewObject(otwPlatform.get(), NULL, NEXT_WEAPON);
 
                 // At the moment, no weapons flying, no mode change
-                if (newObject == NULL || otwTrackPlatform.get() == NULL)
+                if (newObject == NULL or otwTrackPlatform.get() == NULL)
                     return;
 
                 // set graphics focus to the target, tracking to weapon
@@ -988,14 +988,14 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
 
                 }
 
-                if ( !otwPlatform || otwPlatform->IsSimObjective())
+                if ( !otwPlatform or otwPlatform->IsSimObjective())
                  return;
 
                 // get the target (if any) of the current platform
                 targetPtr = (( SimMoverClass * )otwPlatform)->targetPtr;
 
                 // any target?
-                if ( targetPtr == NULL || targetPtr->BaseData() == NULL || !targetPtr->BaseData()->IsSim())
+                if ( targetPtr == NULL or targetPtr->BaseData() == NULL or !targetPtr->BaseData()->IsSim())
                 {
                  // no target, look for air threat
                  newObject = FindNextViewObject( otwPlatform, NULL, NEXT_AIR_ENEMY  );
@@ -1267,7 +1267,7 @@ void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastm
 
             // this mode restores to player's f16
 
-            if (!g_bSync2D3DPit || lastmode != Mode2DCockpit) //Wombat778 reset the view if not from 2d pit. COnsider adding padlock modes here
+            if (!g_bSync2D3DPit or lastmode != Mode2DCockpit) //Wombat778 reset the view if not from 2d pit. COnsider adding padlock modes here
             {
                 ViewReset();
                 eyePan = 0.0f;

@@ -37,7 +37,7 @@ int FalconUnitMessage::Process(uchar autodisp)
     Unit u = FindUnit(EntityId());
     int i;
 
-    if (autodisp || !u)
+    if (autodisp or !u)
         return 0;
 
     switch (dataBlock.message)
@@ -106,7 +106,7 @@ int FalconUnitMessage::Process(uchar autodisp)
             {
                 for (i = 0; i < PILOTS_PER_FLIGHT; i++)
                 {
-                    if (((Flight)u)->slots[i] > VEHICLE_GROUPS_PER_UNIT || ((Flight)u)->slots[i] == dataBlock.data1)
+                    if (((Flight)u)->slots[i] > VEHICLE_GROUPS_PER_UNIT or ((Flight)u)->slots[i] == dataBlock.data1)
                     {
                         ((Flight)u)->slots[i] = (uchar)dataBlock.data1;
                         i = PILOTS_PER_FLIGHT;
@@ -179,7 +179,7 @@ int FalconUnitMessage::Process(uchar autodisp)
             Flight enemy = (Flight) FindUnit(dataBlock.from);
             Squadron squadron = (Squadron)((Flight)u)->GetUnitSquadron();
 
-            if (!squadron || !enemy)
+            if (!squadron or !enemy)
                 return 0;
 
             MissionRequest mis = new MissionRequestClass;

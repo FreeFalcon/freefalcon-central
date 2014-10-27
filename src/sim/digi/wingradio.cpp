@@ -645,7 +645,7 @@ void AiCustomizeRadioMsg(SimBaseClass* p_sender,
                 com = 0;
             else com = 1;
 
-            if (pentity->GetDomain() == DOMAIN_LAND || pentity->GetDomain() == DOMAIN_SEA)
+            if (pentity->GetDomain() == DOMAIN_LAND or pentity->GetDomain() == DOMAIN_SEA)
             {
                 (*pp_radioMsgs)->dataBlock.message = rcENGAGEGNDTARGET;
                 AiFillCallsign(p_sender, extent, pp_radioMsgs, TRUE);
@@ -653,7 +653,7 @@ void AiCustomizeRadioMsg(SimBaseClass* p_sender,
                 (*pp_radioMsgs)->dataBlock.edata[3] = SimToGrid(pentity->YPos());
                 (*pp_radioMsgs)->dataBlock.edata[4] = SimToGrid(pentity->XPos());
             }
-            else if (pentity->IsFlight() || pentity->IsAirplane() || pentity->IsHelicopter() || pentity->IsSquadron() || pentity->IsPackage())
+            else if (pentity->IsFlight() or pentity->IsAirplane() or pentity->IsHelicopter() or pentity->IsSquadron() or pentity->IsPackage())
             {
                 // if air target and shooter mode
                 (*pp_radioMsgs)->dataBlock.message = rcENGAGEDIRECTIVE;
@@ -664,13 +664,13 @@ void AiCustomizeRadioMsg(SimBaseClass* p_sender,
                 (*pp_radioMsgs)->dataBlock.edata[2] = ((FlightClass*)p_sender->GetCampaignObject())->callsign_id;
                 (*pp_radioMsgs)->dataBlock.edata[3] = (((FlightClass*)p_sender->GetCampaignObject())->callsign_num - 1) * 4 + flightIdx + 1;
 
-                if (pentity->IsFlight() || pentity->IsSquadron() || pentity->IsPackage())
+                if (pentity->IsFlight() or pentity->IsSquadron() or pentity->IsPackage())
                 {
                     (*pp_radioMsgs)->dataBlock.edata[4] = ((Unit)pentity)->GetUnitClassData()->VehicleType[0] * 2 + 1;
                     // (*pp_radioMsgs)->dataBlock.edata[5] = ((Unit)pentity)->GetTotalVehicles();
                     (*pp_radioMsgs)->dataBlock.edata[5] = -1;
                 }
-                else if (pentity->IsAirplane() || pentity->IsHelicopter())
+                else if (pentity->IsAirplane() or pentity->IsHelicopter())
                 {
                     (*pp_radioMsgs)->dataBlock.edata[4] = 2 * (pentity->Type() - VU_LAST_ENTITY_TYPE);
                     (*pp_radioMsgs)->dataBlock.edata[5] = -1;

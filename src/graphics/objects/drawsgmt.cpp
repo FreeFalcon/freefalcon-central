@@ -145,12 +145,12 @@ void LoadTrails()
 
     while (fgets(buffer, sizeof buffer, fp))
     {
-        if (buffer[0] == '#' || buffer[0] == ';' || buffer[0] == '\n')
+        if (buffer[0] == '#' or buffer[0] == ';' or buffer[0] == '\n')
             continue;
 
         ind = TokenI(buffer, -1);
 
-        if (ind < 0 || ind >= nTypes)
+        if (ind < 0 or ind >= nTypes)
             continue;
 
         types[ind].posVariationStart = TokenF(0, 0);
@@ -603,7 +603,7 @@ void DrawableTrail::TrimTrail(int len)   // len in seconds!
         Link->TrimTrail(len);
     }
 
-    if (type == TRAIL_LWING || type == TRAIL_RWING)
+    if (type == TRAIL_LWING or type == TRAIL_RWING)
     {
         // only do it for these types
         // 30, 60, 120, 240 seconds of trails
@@ -1555,7 +1555,7 @@ void LoadTrails()
 
     while (fgets(path, sizeof path, fp))
     {
-        if (path[0] == '#' || path[0] == ';' || path[0] == '\n')
+        if (path[0] == '#' or path[0] == ';' or path[0] == '\n')
             continue;
 
         if (sscanf(path, "%d %g %g %g %g %g %g %g %g %g %g %g",
@@ -1564,7 +1564,7 @@ void LoadTrails()
                    &maxRadius, &expandRate, &disipation, &r, &g, &b, &a) != 12)
             continue;
 
-        if (ind < 0 || ind >= nTypes)
+        if (ind < 0 or ind >= nTypes)
             continue;
 
         tp = &types[ind];
@@ -1797,7 +1797,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
     ShiAssert(type < sizeof(types) / sizeof(TrailTypeEntry));
 
     // If we don't have a least two points, we have nothing to do
-    if ((!head) || (!head->next))
+    if ((!head) or (!head->next))
     {
         return;
     }
@@ -1946,7 +1946,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
             gV1[i].a = vE.a * a * a;
             a += aStep;
 
-            if (a > 0.7f || a < 0.0f)
+            if (a > 0.7f or a < 0.0f)
             {
                 aStep = -aStep;
                 a += aStep;
@@ -2041,7 +2041,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
                 gV1[i].a = vE.a * a * a;
                 a += aStep;
 
-                if (a > 0.7f || a < 0.0f)
+                if (a > 0.7f or a < 0.0f)
                 {
                     aStep = -aStep;
                     a += aStep;
@@ -2185,7 +2185,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
                 gV1[i].a = vE.a * a * a;
                 a += aStep;
 
-                if (a > 0.7f || a < 0.0f)
+                if (a > 0.7f or a < 0.0f)
                 {
                     aStep = -aStep;
                     a += aStep;
@@ -2476,7 +2476,7 @@ void DrawableTrail::ConstructSegmentEnd(RenderOTW *renderer, Tpoint *start, Tpoi
     renderer->TransformCameraCentricPoint(&left,  xformLeft);
     renderer->TransformCameraCentricPoint(&right, xformRight);
 
-    if (!gTextured || sGreenMode)
+    if (!gTextured or sGreenMode)
         return;
 
     // test for highest LOD

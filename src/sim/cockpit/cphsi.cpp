@@ -248,7 +248,7 @@ void CPHsi::ExecTacan(void)
         mpHsiFlags[HSI_FLAG_CRS_WARN] = !gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
         gNavigationSys->GetTCNAttribute(NavigationSystem::RANGE, &tacanRange);
 
-        if (gNavigationSys->IsTCNTanker() || gNavigationSys->IsTCNAirbase() || gNavigationSys->IsTCNCarrier())   // now Carrier support
+        if (gNavigationSys->IsTCNTanker() or gNavigationSys->IsTCNAirbase() or gNavigationSys->IsTCNCarrier())   // now Carrier support
         {
             mpHsiFlags[HSI_FLAG_ILS_WARN] = FALSE;
         }
@@ -441,7 +441,7 @@ BOOL CPHsi::BeaconInRange(float rangeToBeacon, float nominalBeaconrange)
     if ((rangeToBeacon < radioHorizon) && (detectionChanceRange > 1) && (detectionChanceAlt > 1)) // definite receive
         lastResult = TRUE;
     // outside of radio horizon or detection range or altitude detection range to low for reception - no reception
-    else if ((rangeToBeacon > radioHorizon) || (detectionChanceRange <= 0) || (detectionChanceAlt <= 0.5))
+    else if ((rangeToBeacon > radioHorizon) or (detectionChanceRange <= 0) or (detectionChanceAlt <= 0.5))
         lastResult = FALSE;
     // detection range at max or detection altitude near min (intermitant reception)
     else if ((detectionChanceRange > rndNum) && (detectionChanceAlt > rndNum))
@@ -681,7 +681,7 @@ CPHsiView::CPHsiView(ObjectInitStr *pobjectInitStr, HsiInitStr *phsiInitStr) : C
     }
     //Wombat778 10-06-2003 Added following lines to set up a temporary buffer for the HSI
     //this is unnecessary in using rendered pit
-    else if (g_bCockpitAutoScale && ((mVScale != 1.0f) || (mHScale != 1.0f)))
+    else if (g_bCockpitAutoScale && ((mVScale != 1.0f) or (mHScale != 1.0f)))
     {
 
         CompassBuffer = new ImageBuffer;
@@ -705,7 +705,7 @@ CPHsiView::~CPHsiView(void)
     }
     //Wombat778 10-06-2003 Added following lines to destroy the temporary imagebuffer;
     //unnecessary if using rendered hsi
-    else if (g_bCockpitAutoScale && ((mVScale != 1.0f) || (mHScale != 1.0f)))
+    else if (g_bCockpitAutoScale && ((mVScale != 1.0f) or (mHScale != 1.0f)))
     {
         if (CompassBuffer)
         {
@@ -730,7 +730,7 @@ void CPHsiView::DisplayBlit()
 
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag || DisplayOptions.bRender2DCockpit)
+    if (!mDirtyFlag or DisplayOptions.bRender2DCockpit)
     {
         return;
     }
@@ -748,7 +748,7 @@ void CPHsiView::DisplayBlit()
     // Make the rotating blt call
 
     //Wombat778 10-06-2003, modified following lines. allows HSI to scale properly when using cockpit auto scaling
-    if (g_bCockpitAutoScale && ((mVScale != 1.0f) || (mHScale != 1.0f)))   //dont run this code if the var is set but no scaling is occuring
+    if (g_bCockpitAutoScale && ((mVScale != 1.0f) or (mHScale != 1.0f)))   //dont run this code if the var is set but no scaling is occuring
     {
 
         RECT temprect;
@@ -837,7 +837,7 @@ void CPHsiView::DisplayBlit3D()
 
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag || !DisplayOptions.bRender2DCockpit)
+    if (!mDirtyFlag or !DisplayOptions.bRender2DCockpit)
     {
         return;
     }
@@ -1197,7 +1197,7 @@ void CPHsiView::DrawCourse(float desiredCourse, float deviaiton)
                             courseDevBar[0][0], -courseDevBar[0][1]);
 
 
-    if (ilsWarnFlag) // && (gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN || gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV)) {
+    if (ilsWarnFlag) // && (gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN or gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV)) {
     {
 
         r = (float) sqrt(courseDevScale[1] * courseDevScale[1] + 0.2f * 0.2f);

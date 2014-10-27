@@ -173,7 +173,7 @@ VuMainThread::VuMainThread(
 #endif
     )
 {
-    if (vuCollectionManager || vuDatabase)
+    if (vuCollectionManager or vuDatabase)
     {
         VU_PRINT("VU: Warning:  creating second VuMainThread!\n");
     }
@@ -595,7 +595,7 @@ VU_ERRCODE VuMainThread::InitComms
     int resendQueueSize
 )
 {
-    if ((vuGlobalGroup->GetCommsHandle() != NULL) || (vuPlayerPoolGroup != NULL) || (handle == NULL))
+    if ((vuGlobalGroup->GetCommsHandle() != NULL) or (vuPlayerPoolGroup != NULL) or (handle == NULL))
     {
         return VU_ERROR;
     }

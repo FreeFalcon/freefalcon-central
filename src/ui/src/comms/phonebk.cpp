@@ -43,7 +43,7 @@ void CopyDataToWindow()
     C_Button *servButtonControl = (C_Button*)win->FindControl(COMM_MODE_SERV);
     C_Button *clientButtonControl = (C_Button*)win->FindControl(COMM_MODE_CLIENT);
 
-    if ((win == NULL) || (hostAddressControl == NULL) || (servButtonControl == NULL))
+    if ((win == NULL) or (hostAddressControl == NULL) or (servButtonControl == NULL))
     {
         return;
     }
@@ -79,7 +79,7 @@ void CopyDataFromWindow()
     C_EditBox *hostAddressControl = (C_EditBox*)win->FindControl(IP_ADDRESS_1);
     C_Button *servButtonControl = (C_Button*)win->FindControl(COMM_MODE_SERV);
 
-    if ((win == NULL) || (hostAddressControl == NULL) || (servButtonControl == NULL))
+    if ((win == NULL) or (hostAddressControl == NULL) or (servButtonControl == NULL))
     {
         return;
     }

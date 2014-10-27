@@ -336,7 +336,7 @@ void LoadDfPlanes()
 
     while (fgets(buf, sizeof buf, fp))
     {
-        if (buf[0] == '#' || buf[0] == '/' || buf[0] == '\r' || buf[0] == '\n')
+        if (buf[0] == '#' or buf[0] == '/' or buf[0] == '\r' or buf[0] == '\n')
             continue;
 
         if (curdf >= maxdf - 2)   // time to grow the array
@@ -645,7 +645,7 @@ void AddDogfightPlayerCB(long ID, short hittype, C_Base *)
         return;
 
     // If we're not yet in a game, this equates to host
-    if (!FalconLocalGame || FalconLocalSession->Game() == vuPlayerPoolGroup)
+    if (!FalconLocalGame or FalconLocalSession->Game() == vuPlayerPoolGroup)
         return;
 
     LoadDfPlanes();
@@ -657,7 +657,7 @@ void AddDogfightPlayerCB(long ID, short hittype, C_Base *)
     // For the furball buttons:
     // a) Change team of selected flight   OR
     // b) Request a new player flight
-    if (ID == DF_MARK_CRIMSON || ID == DF_MARK_SHARK || ID == DF_MARK_VIPER || ID == DF_MARK_TIGER)
+    if (ID == DF_MARK_CRIMSON or ID == DF_MARK_SHARK or ID == DF_MARK_VIPER or ID == DF_MARK_TIGER)
     {
         if (flight)
             RequestTeamChange(flight, teamid);
@@ -784,7 +784,7 @@ void CheckDelButtons()
             btn->Refresh();
         }
 
-        if (gCurrentFlightID == FalconNullId || gCurrentAircraftNum < 0)
+        if (gCurrentFlightID == FalconNullId or gCurrentAircraftNum < 0)
             return;
 
         flight = (Flight)vuDatabase->Find(gCurrentFlightID);
@@ -1018,7 +1018,7 @@ C_Dog_Flight *MakeFlight(C_TreeList *list, Flight flight)
     {
         dark = (IMAGE_RSC*)iconresdark->Find(DFAIPlanes[idx].IconID);
 
-        if (!dark || dark->Header->Type != _RSC_IS_IMAGE_)
+        if (!dark or dark->Header->Type != _RSC_IS_IMAGE_)
             dark = NULL;
     }
 
@@ -1026,7 +1026,7 @@ C_Dog_Flight *MakeFlight(C_TreeList *list, Flight flight)
     {
         lite = (IMAGE_RSC*)iconreslite->Find(DFAIPlanes[idx].IconID);
 
-        if (!lite || lite->Header->Type != _RSC_IS_IMAGE_)
+        if (!lite or lite->Header->Type != _RSC_IS_IMAGE_)
             lite = NULL;
     }
 
@@ -1093,7 +1093,7 @@ void UpdateFlight(C_Dog_Flight *newflt, Flight flight)
     {
         lite = (IMAGE_RSC*)iconreslite->Find(DFAIPlanes[idx].IconID);
 
-        if (!lite || lite->Header->Type != _RSC_IS_IMAGE_)
+        if (!lite or lite->Header->Type != _RSC_IS_IMAGE_)
             lite = NULL;
     }
 
@@ -1469,7 +1469,7 @@ void BuildDFPlayerList()
 
             for (ac = 0; ac < PILOTS_PER_FLIGHT; ac++)
             {
-                if (flight->pilots[ac] != NO_PILOT || flight->player_slots[ac] != NO_PILOT)
+                if (flight->pilots[ac] != NO_PILOT or flight->player_slots[ac] != NO_PILOT)
                 {
                     // Add PLAYER to Furball Tree
                     furplt = AddDogfightPilot(flist, flight, ac);
@@ -1684,7 +1684,7 @@ void AddDogfightFlightCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    if (!FalconLocalGame || FalconLocalSession->Game() == vuPlayerPoolGroup)
+    if (!FalconLocalGame or FalconLocalSession->Game() == vuPlayerPoolGroup)
         return;
 
     LoadDfPlanes();
@@ -2337,7 +2337,7 @@ void CheckFlyButton()
     btn1 = (C_Button *)win->FindControl(SINGLE_FLY_CTRL);
     btn2 = (C_Button *)win->FindControl(COMMS_FLY_CTRL);
 
-    if (btn1 == NULL || btn2 == NULL)
+    if (btn1 == NULL or btn2 == NULL)
         return;
 
     btn1->SetFlagBitOff(C_BIT_ENABLED);

@@ -87,7 +87,7 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
             break;
     }
 
-    if (size != csize || !map_data)
+    if (size != csize or !map_data)
     {
         // better resize it
         CampEnterCriticalSection();
@@ -176,7 +176,7 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
                     own = GetOwner(TheCampaign.CampMapData, rx, ry);
 
                     // Let the ownership map decide if we're over water or not
-                    //if (GetCover(rx,ry) != Water || GetCover(rx+PAK_MAP_RATIO-1,ry) != Water ||
+                    //if (GetCover(rx,ry) != Water or GetCover(rx+PAK_MAP_RATIO-1,ry) != Water ||
                     // GetCover(rx,ry+PAK_MAP_RATIO-1) != Water)
                     if (own)
                     {
@@ -346,7 +346,7 @@ uchar GetOwner(uchar* map_data, GridIndex x, GridIndex y)
 
     i = (y / MAP_RATIO) * MRX + (x / MAP_RATIO);
 
-    if (i < 0 || i > MAXOI)
+    if (i < 0 or i > MAXOI)
         return 0;
 
     hi = 4 * (i & 1);
@@ -368,7 +368,7 @@ int GetAproxDetection(Team who, GridIndex x, GridIndex y)
     // Find our indexes
     i = (y / MAP_RATIO) * MRX + (x / MAP_RATIO);
 
-    if (i < 0 || i > TheCampaign.RadarMapSize)
+    if (i < 0 or i > TheCampaign.RadarMapSize)
         return 0; // Off the map
 
     if (who == FalconLocalSession->GetTeam())
@@ -386,7 +386,7 @@ int GetAproxThreat(Team who, GridIndex x, GridIndex y)
     // Find our indexes
     i = (y / MAP_RATIO) * MRX + (x / MAP_RATIO);
 
-    if (i < 0 || i > TheCampaign.RadarMapSize)
+    if (i < 0 or i > TheCampaign.RadarMapSize)
         return 0; // Off the map
 
     if (who == FalconLocalSession->GetTeam())

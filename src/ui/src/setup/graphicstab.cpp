@@ -481,7 +481,7 @@ void ChangeViewpointCB(long, short, C_Base *)
         // Update the Joystick control
         GetJoystickInput();
 
-        if (IO.digital[0] || ((count %= 3) == 0))
+        if (IO.digital[0] or ((count %= 3) == 0))
         {
             win = gMainHandler->FindWindow(SETUP_WIN);
 
@@ -1233,10 +1233,10 @@ void BuildResolutionList(C_ListBox *lbox)
     {
         // For now we only allow 640x480, 800x600, 1280x960, 1600x1200
         // (MPR already does the 4:3 aspect ratio check for us)
-        if (height > 400 && ((width == 640 || width == 800 || width == 1024 ||
-                              (width == 1280 && height == 960) || width == 1600 || HighResolutionHackFlag)))
+        if (height > 400 && ((width == 640 or width == 800 or width == 1024 ||
+                              (width == 1280 && height == 960) or width == 1600 or HighResolutionHackFlag)))
         {
-            if (depth == 8 || depth == 24)
+            if (depth == 8 or depth == 24)
                 continue;
 
             // if(depth == 16 && !(pD3DDI->m_devDesc.dwDeviceRenderBitDepth & DDBD_16))
@@ -1554,7 +1554,7 @@ void RealWeatherCB(long, short hittype, C_Base *control)
 
     C_ListBox *lbox = (C_ListBox*)control;
 
-    if (TheCampaign.InMainUI || !((WeatherClass *)realWeather)->lockedCondition)
+    if (TheCampaign.InMainUI or !((WeatherClass *)realWeather)->lockedCondition)
     {
         PlayerOptions.weatherCondition = lbox->GetTextID() - 70207;
         ((WeatherClass *)realWeather)->UpdateCondition(PlayerOptions.weatherCondition, true);

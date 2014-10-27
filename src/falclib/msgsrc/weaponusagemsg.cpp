@@ -37,7 +37,7 @@ int FalconWeaponUsageMessage::Process(uchar autodisp)
  int i,n;
  long f;
 
- if (autodisp || !sq)
+ if (autodisp or !sq)
  return 0;
 
  for (i=0; i<HARDPOINT_MAX; i++)

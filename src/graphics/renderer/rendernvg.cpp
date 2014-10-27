@@ -56,7 +56,7 @@ void RenderNVG::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
         vert->r = vert->b = vert->g;
 
     if ((distance > haze_start + haze_depth + 3000)
-        || (realWeather->weatherCondition > FAIR && (-realWeather->viewerZ) > (-realWeather->stratusZ)))
+        or (realWeather->weatherCondition > FAIR && (-realWeather->viewerZ) > (-realWeather->stratusZ)))
     {
         vert->RenderingStateHandle = state_far;
     }

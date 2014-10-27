@@ -1082,19 +1082,19 @@ void SimMissileStep(unsigned long, int state, void*)//me123 addet nosewheel stea
             {
 
                 if (masterMode == FireControlComputer::Missile
-                    || masterMode == FireControlComputer::Dogfight
-                    || masterMode == FireControlComputer::MissileOverride
-                    || masterMode == FireControlComputer::AAGun /*Cobra TJL 11/12/04*/
+                    or masterMode == FireControlComputer::Dogfight
+                    or masterMode == FireControlComputer::MissileOverride
+                    or masterMode == FireControlComputer::AAGun /*Cobra TJL 11/12/04*/
                    )
                 {
                     SimDriver.GetPlayerAircraft()->Sms->StepAAWeapon();
                 }
 
                 if (masterMode == FireControlComputer::AirGroundBomb
-                    || masterMode == FireControlComputer::AirGroundMissile
-                    || masterMode == FireControlComputer::AirGroundHARM
-                    || masterMode == FireControlComputer::AirGroundLaser
-                    || masterMode == FireControlComputer::AirGroundRocket)
+                    or masterMode == FireControlComputer::AirGroundMissile
+                    or masterMode == FireControlComputer::AirGroundHARM
+                    or masterMode == FireControlComputer::AirGroundLaser
+                    or masterMode == FireControlComputer::AirGroundRocket)
                 {
                     SimDriver.GetPlayerAircraft()->Sms->StepAGWeapon();
                 }
@@ -1103,7 +1103,7 @@ void SimMissileStep(unsigned long, int state, void*)//me123 addet nosewheel stea
             {
                 // COBRA - RED - in Bombs Mode, step thru FCC Sub modes
                 if (masterMode == FireControlComputer::AirGroundBomb
-                    || masterMode == FireControlComputer::AirGroundLaser)
+                    or masterMode == FireControlComputer::AirGroundLaser)
                     SimDriver.GetPlayerAircraft()->FCC->NextSubMode();
                 else
                     SimDriver.GetPlayerAircraft()->FCC->WeaponStep();
@@ -1162,7 +1162,7 @@ void SimCursorUp(unsigned long, int state, void*)
                 //}
                 //  else
                 if (
-                    (theRadar && theRadar->IsSOI()) || (mavDisplay && mavDisplay->IsSOI()) ||
+                    (theRadar && theRadar->IsSOI()) or (mavDisplay && mavDisplay->IsSOI()) ||
                     (laserPod && laserPod->IsSOI())
                 )
                 {
@@ -1244,7 +1244,7 @@ void SimCursorDown(unsigned long, int state, void*)
                 //}
                 //else
                 if (
-                    (theRadar && theRadar->IsSOI()) || (mavDisplay && mavDisplay->IsSOI()) ||
+                    (theRadar && theRadar->IsSOI()) or (mavDisplay && mavDisplay->IsSOI()) ||
                     (laserPod && laserPod->IsSOI())
                 )
                 {
@@ -1322,7 +1322,7 @@ void SimCursorLeft(unsigned long, int state, void*)
                 //}
                 //else
                 if (
-                    (theRadar && theRadar->IsSOI()) || (mavDisplay && mavDisplay->IsSOI()) ||
+                    (theRadar && theRadar->IsSOI()) or (mavDisplay && mavDisplay->IsSOI()) ||
                     (laserPod && laserPod->IsSOI())
                 )
                 {
@@ -1400,7 +1400,7 @@ void SimCursorRight(unsigned long, int state, void*)
                 //}
                 //else
                 if (
-                    (theRadar && theRadar->IsSOI()) || (mavDisplay && mavDisplay->IsSOI()) ||
+                    (theRadar && theRadar->IsSOI()) or (mavDisplay && mavDisplay->IsSOI()) ||
                     (laserPod && laserPod->IsSOI())
                 )
                 {
@@ -1530,7 +1530,7 @@ void SimToggleAutopilot(unsigned long, int state, void*)
                 break;
 
             case APNormal: // POGO/JPO - if auto pilot normal, && realistic, this isn't used.
-                if ((!SimDriver.GetPlayerAircraft()->OnGround() || SimDriver.GetPlayerAircraft()->AutopilotType() == AircraftClass::CombatAP))
+                if ((!SimDriver.GetPlayerAircraft()->OnGround() or SimDriver.GetPlayerAircraft()->AutopilotType() == AircraftClass::CombatAP))
                 {
                     if (!g_bRealisticAvionics)
                         SimDriver.GetPlayerAircraft()->ToggleAutopilot();
@@ -1695,8 +1695,8 @@ void SimDropChaff(unsigned long, int state, void*)
 
         //MI
         // RV - Biker - Hack AC with IFF now can drop programmed EWS (player only)
-        // if(!g_bRealisticAvionics || !SimDriver.GetPlayerAircraft()->af->platform->IsF16())
-        if (!g_bRealisticAvionics || !(SimDriver.GetPlayerAircraft()->af->platform->IsF16() || SimDriver.GetPlayerAircraft()->af->platform->GetiffEnabled()))
+        // if(!g_bRealisticAvionics or !SimDriver.GetPlayerAircraft()->af->platform->IsF16())
+        if (!g_bRealisticAvionics or !(SimDriver.GetPlayerAircraft()->af->platform->IsF16() or SimDriver.GetPlayerAircraft()->af->platform->GetiffEnabled()))
             SimDriver.GetPlayerAircraft()->dropChaffCmd = TRUE;
         else if (g_bMLU)
         {
@@ -1729,10 +1729,10 @@ void SimDropFlare(unsigned long, int state, void*)
     if (playerAC && playerAC->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
         // RV - Biker - Hack AC with IFF now can drop programmed EWS (player only)
-        // if(!g_bRealisticAvionics || !SimDriver.GetPlayerAircraft()->af->platform->IsF16())
+        // if(!g_bRealisticAvionics or !SimDriver.GetPlayerAircraft()->af->platform->IsF16())
         if (
             !g_bRealisticAvionics ||
-            !(playerAC->af->platform->IsF16() || playerAC->af->platform->GetiffEnabled())
+            !(playerAC->af->platform->IsF16() or playerAC->af->platform->GetiffEnabled())
         )
         {
             playerAC->dropFlareCmd = TRUE;
@@ -1837,7 +1837,7 @@ void SimNextAAWeapon(unsigned long val, int state, void* pButton)
         {
             //MI modified for ICP
             /* // MLR 2/8/2004 -
-            if( SimDriver.GetPlayerAircraft()->FCC->GetSubMode() == (FireControlComputer::STRAF) || // ASSOCIATOR: Added a STAF check here so we can get out of it
+            if( SimDriver.GetPlayerAircraft()->FCC->GetSubMode() == (FireControlComputer::STRAF) or // ASSOCIATOR: Added a STAF check here so we can get out of it
                SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != (FireControlComputer::AAGun) &&
                SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != (FireControlComputer::Missile) &&
                SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != (FireControlComputer::Dogfight) &&
@@ -1942,8 +1942,8 @@ void SimNextAGWeapon(unsigned long val, int state, void* pButton)
 {
     SMSClass* Sms;
 
-    if (F4IsBadReadPtr(SimDriver.GetPlayerAircraft(), sizeof(AircraftClass)) || !SimDriver.GetPlayerAircraft()->FCC || // JB 010305 CTD
-        F4IsBadReadPtr(SimDriver.GetPlayerAircraft()->FCC, sizeof(FireControlComputer)) || // JB 010305 CTD
+    if (F4IsBadReadPtr(SimDriver.GetPlayerAircraft(), sizeof(AircraftClass)) or !SimDriver.GetPlayerAircraft()->FCC or // JB 010305 CTD
+        F4IsBadReadPtr(SimDriver.GetPlayerAircraft()->FCC, sizeof(FireControlComputer)) or // JB 010305 CTD
         SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride ||
         SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::Dogfight)
         return;
@@ -2953,7 +2953,7 @@ void OTWSelectOrbitMode(unsigned long, int state, void*)
 {
     if (FalconLocalGame && SimDriver.GetPlayerAircraft()) //added SimDriver check
     {
-        if (FalconLocalGame->rules.ExternalViewOn() || (!FalconLocalGame->rules.ExternalViewOn()
+        if (FalconLocalGame->rules.ExternalViewOn() or (!FalconLocalGame->rules.ExternalViewOn()
                 && SimDriver.GetPlayerAircraft()->OnGround() && g_bExtViewOnGround))
         {
             if (state & KEY_DOWN)
@@ -3850,7 +3850,7 @@ void SimEmergencyJettison(unsigned long, int state, void*)
 {
     if (SimDriver.GetPlayerAircraft() != NULL && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP))
     {
-        if (!SimDriver.GetPlayerAircraft()->Sms || !SimDriver.GetPlayerAircraft()->Sms->drawable)
+        if (!SimDriver.GetPlayerAircraft()->Sms or !SimDriver.GetPlayerAircraft()->Sms->drawable)
             return;
 
         //MI
@@ -5469,9 +5469,9 @@ void SimICPNav(unsigned long, int state, void* pButton)
         OTWDriver.pCockpitManager->mpIcp->HandleInput(NAV_BUTTON, (CPButtonObject*)pButton);
 
         if (
-            F4IsBadReadPtr(SimDriver.GetPlayerAircraft(), sizeof(AircraftClass)) || // JB 010317 CTD
-            !SimDriver.GetPlayerAircraft()->FCC || // JB 010307 CTD
-            F4IsBadReadPtr(SimDriver.GetPlayerAircraft()->FCC, sizeof(FireControlComputer)) || // JB 010307 CTD
+            F4IsBadReadPtr(SimDriver.GetPlayerAircraft(), sizeof(AircraftClass)) or // JB 010317 CTD
+            !SimDriver.GetPlayerAircraft()->FCC or // JB 010307 CTD
+            F4IsBadReadPtr(SimDriver.GetPlayerAircraft()->FCC, sizeof(FireControlComputer)) or // JB 010307 CTD
             SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride ||
             SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::Dogfight) return;
 
@@ -5543,7 +5543,7 @@ void SimICPAA(unsigned long, int state, void* pButton)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC || !playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (!playerAC or !playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         // 2002-02-15 ADDED BY S.G. Do it once here and removed the corresponding line from below
         return;
@@ -5679,7 +5679,7 @@ void SimICPAA1(unsigned long, int state, void* pButton)
     {
         //MI 3/1/2002 if we're in DF or MRM, don't do anything
         if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->FCC && (SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() ==
-                FireControlComputer::Dogfight || SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride))
+                FireControlComputer::Dogfight or SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride))
             return;
 
         OTWDriver.pCockpitManager->mpIcp->HandleInput(AA_BUTTON, (CPButtonObject*)pButton);
@@ -5703,7 +5703,7 @@ void SimICPAA1(unsigned long, int state, void* pButton)
 
 void SimICPAG(unsigned long, int state, void* pButton)
 {
-    if (!SimDriver.GetPlayerAircraft() || !SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP))   // 2002-02-15 ADDED BY S.G. Do it once here and removed the corresponding line from below
+    if (!SimDriver.GetPlayerAircraft() or !SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP))   // 2002-02-15 ADDED BY S.G. Do it once here and removed the corresponding line from below
         return;
 
     if (!g_bRealisticAvionics)
@@ -5730,7 +5730,7 @@ void SimICPAG(unsigned long, int state, void* pButton)
     {
         //MI 3/1/2002 if we're in DF or MRM, don't do anything
         if (SimDriver.GetPlayerAircraft()->FCC && (SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() ==
-                FireControlComputer::Dogfight || SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride))
+                FireControlComputer::Dogfight or SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride))
             return;
 
         if (SimDriver.GetPlayerAircraft()->Sms) //JPO CTDfix //Set our display mode
@@ -5808,7 +5808,7 @@ void SimICPAG1(unsigned long, int state, void* pButton)
     {
         //MI 3/1/2002 if we're in DF or MRM, don't do anything
         if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->FCC && (SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() ==
-                FireControlComputer::Dogfight || SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride))
+                FireControlComputer::Dogfight or SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride))
             return;
 
         OTWDriver.pCockpitManager->mpIcp->HandleInput(AG_BUTTON, (CPButtonObject*)pButton);
@@ -8289,7 +8289,7 @@ void SimLeftAPSwitch(unsigned long val, int state, void *)
             SimDriver.GetPlayerAircraft()->SetAPFlag(AircraftClass::RollHold);
         }
 
-        if ((SimDriver.GetPlayerAircraft()->IsOn(AircraftClass::AttHold)) || (SimDriver.GetPlayerAircraft()->IsOn(AircraftClass::AltHold)))
+        if ((SimDriver.GetPlayerAircraft()->IsOn(AircraftClass::AttHold)) or (SimDriver.GetPlayerAircraft()->IsOn(AircraftClass::AltHold)))
         {
             if (SimDriver.GetPlayerAircraft()->IsOn(AircraftClass::RollHold))
             {
@@ -8342,7 +8342,7 @@ void SimLeftAPMid(unsigned long val, int state, void *)
         SimDriver.GetPlayerAircraft()->ClearAPFlag(AircraftClass::HDGSel);
         SimDriver.GetPlayerAircraft()->SetAPFlag(AircraftClass::RollHold);
 
-        if ((SimDriver.GetPlayerAircraft()->IsOn(AircraftClass::AttHold)) || (SimDriver.GetPlayerAircraft()->IsOn(AircraftClass::AltHold)))
+        if ((SimDriver.GetPlayerAircraft()->IsOn(AircraftClass::AttHold)) or (SimDriver.GetPlayerAircraft()->IsOn(AircraftClass::AltHold)))
         {
             SimDriver.GetPlayerAircraft()->SetNewRoll();
             // MD -- 20031108: fixing AP ATT HLD modes.  Roll switch should set roll not pitch.
@@ -8813,7 +8813,7 @@ void SimTMSDown(unsigned long val, int state, void *)
                     else if (theRadar->GetRadarMode() == RadarClass::TWS)
                     {
                         // MD -- 20040118: revised TWS mode function -- only select RWS if the TWS track directory is empty
-                        if (theRadar->CurrentTarget() || theRadar->twsTrackDirectory())
+                        if (theRadar->CurrentTarget() or theRadar->twsTrackDirectory())
                         {
                             //First, drop our track
                             SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = TRUE;
@@ -8853,13 +8853,13 @@ void SimTMSRight(unsigned long val, int state, void *)
     {
         if (g_bMLU)
         {
-            if (state & KEY_DOWN && (!g_bMLU || !tmstimer || SimLibElapsedTime - tmstimer < 500))
+            if (state & KEY_DOWN && (!g_bMLU or !tmstimer or SimLibElapsedTime - tmstimer < 500))
             {
                 if (!tmstimer)  tmstimer = SimLibElapsedTime;
             }
             else
             {
-                if (SimLibElapsedTime - tmstimer < 500 || !g_bMLU)
+                if (SimLibElapsedTime - tmstimer < 500 or !g_bMLU)
                 {
                     if (g_bRealisticAvionics)
                     {
@@ -10426,7 +10426,7 @@ void SimIFFIn(unsigned long val, int state, void *)
 void SimINSInc(unsigned long val, int state, void *)
 {
     //don't bother
-    if (!g_bINS || !g_bRealisticAvionics)
+    if (!g_bINS or !g_bRealisticAvionics)
         return;
 
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
@@ -10458,7 +10458,7 @@ void SimINSInc(unsigned long val, int state, void *)
 void SimINSDec(unsigned long val, int state, void *)
 {
     //don't bother
-    if (!g_bINS || !g_bRealisticAvionics)
+    if (!g_bINS or !g_bRealisticAvionics)
         return;
 
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
@@ -10493,7 +10493,7 @@ void SimINSDec(unsigned long val, int state, void *)
 void SimINSOff(unsigned long val, int state, void *)
 {
     //don't bother
-    if (!g_bINS || !g_bRealisticAvionics)
+    if (!g_bINS or !g_bRealisticAvionics)
         return;
 
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
@@ -10508,7 +10508,7 @@ void SimINSOff(unsigned long val, int state, void *)
 void SimINSNorm(unsigned long val, int state, void *)
 {
     //don't bother
-    if (!g_bINS || !g_bRealisticAvionics)
+    if (!g_bINS or !g_bRealisticAvionics)
         return;
 
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
@@ -10523,7 +10523,7 @@ void SimINSNorm(unsigned long val, int state, void *)
 void SimINSNav(unsigned long val, int state, void *)
 {
     //don't bother
-    if (!g_bINS || !g_bRealisticAvionics)
+    if (!g_bINS or !g_bRealisticAvionics)
         return;
 
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
@@ -10538,7 +10538,7 @@ void SimINSNav(unsigned long val, int state, void *)
 void SimINSInFlt(unsigned long val, int state, void *)
 {
     //don't bother
-    if (!g_bINS || !g_bRealisticAvionics)
+    if (!g_bINS or !g_bRealisticAvionics)
         return;
 
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
@@ -11245,7 +11245,7 @@ void SimCursorEnable(unsigned long, int state, void*)
         {
             if (SimDriver.GetPlayerAircraft()->Sms->curWeaponType == wtAgm65 && SimDriver.GetPlayerAircraft()->Sms->curWeapon)
                 SimDriver.GetPlayerAircraft()->Sms->StepMavSubMode();
-            else if (SimDriver.GetPlayerAircraft()->Sms->curWeaponType == wtAim9 || SimDriver.GetPlayerAircraft()->Sms->curWeaponType == wtAim120)
+            else if (SimDriver.GetPlayerAircraft()->Sms->curWeaponType == wtAim9 or SimDriver.GetPlayerAircraft()->Sms->curWeaponType == wtAim120)
             {
                 if (SimDriver.GetPlayerAircraft()->FCC)
                     SimDriver.GetPlayerAircraft()->FCC->missileSlaveCmd = TRUE;

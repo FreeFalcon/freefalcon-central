@@ -780,7 +780,7 @@ void AircraftClass::Init(SimInitDataClass* initData)
 
         //TJL 12/20/03 This will allow for all F-16's to set the isF16 flag
         // without having to have the same specific type like the code above
-        if (af->auxaeroData->typeAC == 1 || af->auxaeroData->typeAC == 2)
+        if (af->auxaeroData->typeAC == 1 or af->auxaeroData->typeAC == 2)
         {
             acFlags  or_eq  isF16;
         }
@@ -1084,7 +1084,7 @@ void AircraftClass::Init(SimInitDataClass* initData)
             FCC->SetSubMode(FireControlComputer::Aim9);
         }
 
-        if (!g_bRealisticAvionics || !OnGround())  // JPO set up the systems
+        if (!g_bRealisticAvionics or !OnGround())  // JPO set up the systems
         {
             PreFlight();
         }
@@ -2168,12 +2168,12 @@ int AircraftClass::Exec(void)
 
         //Cobra AI JDAMs need a target.  Go through PB target list and select a target
         // Cobra - bypass HP = 0 (guns) and HP= -1 (CTD)
-        if ((isDigital || Sms->JDAMtargeting == SMSBaseClass::PB) && Sms->GetCurrentHardpoint() > 0)
+        if ((isDigital or Sms->JDAMtargeting == SMSBaseClass::PB) && Sms->GetCurrentHardpoint() > 0)
         {
             SimWeaponClass *sw = static_cast<BombClass*>(Sms->hardPoint[Sms->GetCurrentHardpoint()]->weaponPointer.get());
 
             if (((Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType() == wtGPS)
-                 || (sw && (((BombClass *)sw)->IsSetBombFlag(BombClass::IsJSOW)))))
+                 or (sw && (((BombClass *)sw)->IsSetBombFlag(BombClass::IsJSOW)))))
             {
                 if (this)
                     JDAMtgtnum = GetJDAMPBTarget((AircraftClass*)this);
@@ -2191,7 +2191,7 @@ int AircraftClass::Exec(void)
                 // First See if the timer has elapsed or the target is died
                 if (
                     SimLibElapsedTime > DBrain()->targetSpotWingTimer ||
-                    !DBrain()->targetSpotWingTarget || DBrain()->targetSpotWingTarget->IsDead()
+                    !DBrain()->targetSpotWingTarget or DBrain()->targetSpotWingTarget->IsDead()
                 )
                 {
                     // 2002-03-07 MODIFIDED BY S.G.
@@ -2508,7 +2508,7 @@ int AircraftClass::Exec(void)
                         //*/
 
                         //I-Hawk - Use PS for dust/mist effect
-                        if (!(groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER))
+                        if (!(groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
                         {
                             theSFX = SFX_DUSTCLOUD;
                         }
@@ -2579,7 +2579,7 @@ int AircraftClass::Exec(void)
             if (this != SimDriver.GetPlayerEntity() && g_fAIRefuelSpeed)
                 refuelHelp = g_fAIRefuelSpeed;
 
-            if (!tanker || !tanker->IsAirplane() ||
+            if (!tanker or !tanker->IsAirplane() ||
                 !af->AddFuel(refuelRate * SimLibMajorFrameTime * refuelHelp * refuelHelp)
                )
             {
@@ -2696,7 +2696,7 @@ int AircraftClass::Exec(void)
 
     //Cobra 11/20/04 IFF Do we have it? Is it on? Is it working?
     if (
-        (af->auxaeroData->hasIFF == 1 || g_bAllHaveIFF) &&
+        (af->auxaeroData->hasIFF == 1 or g_bAllHaveIFF) &&
         HasPower(AircraftClass::IFFPower) && (!mFaults->GetFault(FaultClass::iff_fault))
     )
     {
@@ -2749,7 +2749,7 @@ int AircraftClass::Exec(void)
     }
 
     // RV - Biker - Set carrierInitTimer to 35 if we're moving
-    if (ZPos() < -150.0f || af->Thrust() > 5.0f)
+    if (ZPos() < -150.0f or af->Thrust() > 5.0f)
         carrierInitTimer = 35.0f;
 
     //Cobra lights
@@ -2794,7 +2794,7 @@ void AircraftClass::RunSensors(void)
     // is not using CombatAP.  Both X and Y must be mapped for analog to work at all.
     if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
     {
-        if (!isDigital || autopilotType == CombatAP)
+        if (!isDigital or autopilotType == CombatAP)
         {
             SetCursorCmdsByAnalog();
         }
@@ -2815,7 +2815,7 @@ void AircraftClass::RunSensors(void)
 
         // Do player control processing
         //if (!isDigital){
-        if (!isDigital || autopilotType == CombatAP)
+        if (!isDigital or autopilotType == CombatAP)
         {
             sensor->ExecModes(FCC->designateCmd, FCC->dropTrackCmd);
             sensor->UpdateState(FCC->cursorXCmd, FCC->cursorYCmd);
@@ -3164,7 +3164,7 @@ void AircraftClass::SetPowerOutput(float)
 {
     int send = FALSE, diff, value;
 
-    if (af->auxaeroData->nEngines != 2 || af->rpm == af->rpm2)
+    if (af->auxaeroData->nEngines != 2 or af->rpm == af->rpm2)
     {
         // xmit as a single event
         // RPM
@@ -3177,7 +3177,7 @@ void AircraftClass::SetPowerOutput(float)
 
         diff = specialData.powerOutputNet - value;
 
-        if ((diff < -g_nMPPowerXmitThreshold) || (diff > g_nMPPowerXmitThreshold) ||
+        if ((diff < -g_nMPPowerXmitThreshold) or (diff > g_nMPPowerXmitThreshold) ||
             !value && specialData.powerOutputNet) // Xmit if RPM just changed to 0
         {
             //MonoPrint ("%08x SPO %f\n", this, powerOutput);
@@ -3197,7 +3197,7 @@ void AircraftClass::SetPowerOutput(float)
 
          diff = specialData.engineHeatOutputNet - value;
 
-         if ((diff < -16) || (diff > 16))
+         if ((diff < -16) or (diff > 16))
          {
          //MonoPrint ("%08x SPO %f\n", this, powerOutput);
 
@@ -3222,7 +3222,7 @@ void AircraftClass::SetPowerOutput(float)
 
         diff = specialData.powerOutputNet - value;
 
-        if ((diff < -g_nMPPowerXmitThreshold) || (diff > g_nMPPowerXmitThreshold) ||
+        if ((diff < -g_nMPPowerXmitThreshold) or (diff > g_nMPPowerXmitThreshold) ||
             !value && specialData.powerOutputNet) // Xmit if RPM just changed to 0
         {
 
@@ -3240,7 +3240,7 @@ void AircraftClass::SetPowerOutput(float)
 
         diff = specialData.powerOutputNet2 - value;
 
-        if ((diff < -g_nMPPowerXmitThreshold) || (diff > g_nMPPowerXmitThreshold) ||
+        if ((diff < -g_nMPPowerXmitThreshold) or (diff > g_nMPPowerXmitThreshold) ||
             !value && specialData.powerOutputNet2) // Xmit if RPM just changed to 0
         {
             specialData.powerOutputNet2 = static_cast<uchar>(value);
@@ -3652,7 +3652,7 @@ int AircraftClass::FindBestSpawnPoint(Objective obj, SimInitDataClass* initData)
     }
 
     // FRB - CTD's here
-    if (GetNextTaxiPt(initData->ptIndex) == 0 || initData->ptIndex >= -2)
+    if (GetNextTaxiPt(initData->ptIndex) == 0 or initData->ptIndex >= -2)
     {
         // means were at first point, try and find a parking spot
         info = 0;
@@ -3713,7 +3713,7 @@ void AircraftClass::SetCursorCmdsByAnalog(void)
     // of the microstick X/Y axis values.  The logic here is pretty much the same as that used in
     // the keyboard routine however.
 
-    if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == false) || (IO.AnalogIsUsed(AXIS_CURSOR_Y) == false))
+    if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == false) or (IO.AnalogIsUsed(AXIS_CURSOR_Y) == false))
         return;  // shouldn't be needed but this code only makes sense if both are mapped
 
     int xValue = IO.GetAxisValue(AXIS_CURSOR_X);
@@ -3723,7 +3723,7 @@ void AircraftClass::SetCursorCmdsByAnalog(void)
 
     if (playerAC != NULL && playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
-        if ((xValue != 0) || (yValue != 0))
+        if ((xValue != 0) or (yValue != 0))
         {
             // we're moving
             if (g_bRealisticAvionics)
@@ -3739,8 +3739,8 @@ void AircraftClass::SetCursorCmdsByAnalog(void)
                     mavDisplay = (MaverickDisplayClass*)((MissileClass*)playerAC->Sms->GetCurrentWeapon())->display;
                 }
 
-                if ((theRadar && theRadar->IsSOI()) || (mavDisplay && mavDisplay->IsSOI()) ||
-                    (laserPod && laserPod->IsSOI()) || (TheHud && TheHud->IsSOI()) ||
+                if ((theRadar && theRadar->IsSOI()) or (mavDisplay && mavDisplay->IsSOI()) ||
+                    (laserPod && laserPod->IsSOI()) or (TheHud && TheHud->IsSOI()) ||
                     (theHTS && playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
                 {
                     FCC->cursorXCmd = xValue;
@@ -3822,9 +3822,9 @@ float AircraftClass::GetA2GBombMissileAlt(void)
 void AircraftClass::SetSpeedBrake(void)
 {
     //F15A/B, C/D, E
-    if (af->auxaeroData->typeAC == 3 || af->auxaeroData->typeAC == 4 || af->auxaeroData->typeAC == 5)
+    if (af->auxaeroData->typeAC == 3 or af->auxaeroData->typeAC == 4 or af->auxaeroData->typeAC == 5)
     {
-        if (af->dbrake > 0 && (brakePos == 0 || brakePos == 3))
+        if (af->dbrake > 0 && (brakePos == 0 or brakePos == 3))
         {
             brakePos = 1;
             speedBrakeState = af->dbrake;
@@ -3846,9 +3846,9 @@ void AircraftClass::SetSpeedBrake(void)
     }
 
     //F14A-D Speedbrake retracts when MIL power or greater
-    if (af->auxaeroData->typeAC == 6 || af->auxaeroData->typeAC == 7)
+    if (af->auxaeroData->typeAC == 6 or af->auxaeroData->typeAC == 7)
     {
-        if (af->rpm >= 1.0f || af->rpm2 >= 1.0f)
+        if (af->rpm >= 1.0f or af->rpm2 >= 1.0f)
         {
             af->speedBrake = -1.0f;
         }
@@ -3861,9 +3861,9 @@ void AircraftClass::SetSpeedBrake(void)
     }
 
     //F-18A-D if g +6, AOA 28, or tef/down and vcas < 250 retract
-    if (af->auxaeroData->typeAC == 8 || af->auxaeroData->typeAC == 9)
+    if (af->auxaeroData->typeAC == 8 or af->auxaeroData->typeAC == 9)
     {
-        if (af->nzcgb > 6.0f || af->alpha > 28.0f || (af->gearPos > 0.5f && af->vcas < 250.0f))
+        if (af->nzcgb > 6.0f or af->alpha > 28.0f or (af->gearPos > 0.5f && af->vcas < 250.0f))
         {
             af->speedBrake = -1.0f;
         }

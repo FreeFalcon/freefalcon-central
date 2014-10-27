@@ -680,7 +680,7 @@ int PackageClass::MoveUnit(CampaignTime time)
 
 int PackageClass::CheckNeedRequests(void)
 {
-    if (Final() || Aborted())
+    if (Final() or Aborted())
         return -1;
 
     Unit e;
@@ -689,7 +689,7 @@ int PackageClass::CheckNeedRequests(void)
     if (wait_cycles)
         wait_cycles--;
 
-    if (!wait_cycles || Camp_GetCurrentTime() > takeoff + (AMIS_TAKEOFF_DELAY - 1) * CampaignMinutes)
+    if (!wait_cycles or Camp_GetCurrentTime() > takeoff + (AMIS_TAKEOFF_DELAY - 1) * CampaignMinutes)
     {
         // 2001-09-16 REMOVED by M.N. We don't need this anymore - is done by AddTankerWaypoints result
         // -> If no tanker, packageelement->KillUnit();
@@ -700,7 +700,7 @@ int PackageClass::CheckNeedRequests(void)
         KillUnit();
         return 0;
         } */
-        if ((wait_for & AMIS_BARCAP) || (wait_for & AMIS_SWEEP))
+        if ((wait_for & AMIS_BARCAP) or (wait_for & AMIS_SWEEP))
         {
             // if we're still waiting on these, they arn't planned yet and probably won't be.
             wait_for  or_eq  AMIS_BARCAP | AMIS_SWEEP;
@@ -859,7 +859,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
                 count++;
                 f = BestTargetFeature((Objective)target, targeted);
 
-                if (f >= FEATURES_PER_OBJ || !((Objective)target)->GetFeatureValue(f))
+                if (f >= FEATURES_PER_OBJ or !((Objective)target)->GetFeatureValue(f))
                 {
                     count = 10;
                     continue;
@@ -954,7 +954,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
     ls = ScoreThreatFast(mis->tx, mis->ty, GetAltitudeLevel(MissionData[mis->mission].minalt * 100), mis->who);
     hs = ScoreThreatFast(mis->tx, mis->ty, GetAltitudeLevel(MissionData[mis->mission].maxalt * 100), mis->who);
 
-    if (ls > MIN_SEADESCORT_THREAT || hs > MIN_SEADESCORT_THREAT)
+    if (ls > MIN_SEADESCORT_THREAT or hs > MIN_SEADESCORT_THREAT)
         targetd  or_eq  NEED_SEAD;
 
     if (mis->priority > ATM_HIGH_PRIORITY && ls && hs)
@@ -1012,7 +1012,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
             {
                 CancelFlight((Flight)flight);
 
-                if (result == PRET_ABORTED && !flights && (ls || hs))
+                if (result == PRET_ABORTED && !flights && (ls or hs))
                 {
                     // This flight couldn't get to target
                     return PRET_ABORTED;
@@ -1096,7 +1096,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
         flights++;
     }
 
-    if (!flights || !flight)
+    if (!flights or !flight)
         return PRET_NO_ASSETS;
 
 #ifdef KEV_ADEBUG
@@ -1260,7 +1260,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
         newmis.priority = 0;
         newmis.roe_check = ROE_AIR_ENGAGE;
 
-        if (MissionData[mis_request.mission].skill == ARO_GA || MissionData[mis_request.mission].skill == ARO_REC)
+        if (MissionData[mis_request.mission].skill == ARO_GA or MissionData[mis_request.mission].skill == ARO_REC)
             newmis.context = enemyCASAircraftPresent;
         else if (MissionData[mis_request.mission].skill == ARO_ASW)
             newmis.context = enemyAircraftPresent;
@@ -1336,12 +1336,12 @@ int PackageClass::RecordFlightAddition(Flight flight, MissionRequest mis, int ta
                 if (w->GetWPFlags() & WPF_BREAKPOINT)
                     bw = w;
 
-                if (w->GetWPFlags() & WPF_TARGET || w->GetWPFlags() & WPF_IP || w->GetWPFlags() & WPF_CP || /* w->GetWPFlags() & WPF_TURNPOINT || */ w->GetWPFlags() & WPF_REPEAT)
+                if (w->GetWPFlags() & WPF_TARGET or w->GetWPFlags() & WPF_IP or w->GetWPFlags() & WPF_CP or /* w->GetWPFlags() & WPF_TURNPOINT or */ w->GetWPFlags() & WPF_REPEAT)
                 {
                     if (!bw)
                         bw = lw;
 
-                    if (lw->GetWPFlags() & WPF_TARGET || lw->GetWPFlags() & WPF_CP)
+                    if (lw->GetWPFlags() & WPF_TARGET or lw->GetWPFlags() & WPF_CP)
                         tw = w; // Just passed the target waypoint
 
                     intarget = 1;
@@ -1622,7 +1622,7 @@ void PackageClass::HandleRequestReceipt(int type, int them, VU_ID triggered_flig
             else
                 GetUnitDestination(&mis.tx, &mis.ty);
 
-            if (mis.mission == AMIS_ESCORT || mis.mission == AMIS_HAVCAP)
+            if (mis.mission == AMIS_ESCORT or mis.mission == AMIS_HAVCAP)
             {
                 // Add a new flight to this package
                 mis.caps = caps | MissionData[mis.mission].caps;
@@ -1761,7 +1761,7 @@ void PackageClass::CancelFlight(Flight flight)
     /* sfr: flight will be removed anyway, even if not in DB, since the remove call
     will ref unref it.
     // JPO - another memory leak - lets assume if its not in the database then it s not been added
-    if(VuState() < VU_MEM_ACTIVE || flight->Remove() == VU_NO_OP)
+    if(VuState() < VU_MEM_ACTIVE or flight->Remove() == VU_NO_OP)
     {
      // Never inserted - let vu do the deletion.
      VuReferenceEntity(flight);
@@ -2115,7 +2115,7 @@ void FinalizeFlight(Unit flight, int flights)
                 }
 
                 // Check if waypoint is co-located with adjacent waypoints
-                if (w != pw && ((px == x && py == y) || (x == nx && y == ny)))
+                if (w != pw && ((px == x && py == y) or (x == nx && y == ny)))
                 {
                     w->DeleteWP();
                     w = pw;
@@ -2228,7 +2228,7 @@ void PackageClass::SetTPTime(CampaignTime t)
 
 void PackageClass::MakePackageDirty(Dirty_Package bits, Dirtyness score)
 {
-    if ((!IsLocal()) || (VuState() != VU_MEM_ACTIVE))
+    if ((!IsLocal()) or (VuState() != VU_MEM_ACTIVE))
     {
         return;
     }

@@ -433,7 +433,7 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
 
         if (PlayerOptions.Season == 1) //Autumn
         {
-            if (!((tmpR == tmpG && tmpG == tmpB) || tmpG < 60 || (tmpR + tmpG + tmpB) / 3 > 225)) //Not Greyscale / green / not very bright
+            if (!((tmpR == tmpG && tmpG == tmpB) or tmpG < 60 or (tmpR + tmpG + tmpB) / 3 > 225)) //Not Greyscale / green / not very bright
             {
                 RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
@@ -459,11 +459,11 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
         }
         else if (PlayerOptions.Season == 2) //Winter
         {
-            if (!(tmpR == tmpG && tmpR == tmpB) || tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //|| (tmpR == 255 && tmpG == 255))) //Greyscale //or pure color
+            if (!(tmpR == tmpG && tmpR == tmpB) or tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //|| (tmpR == 255 && tmpG == 255))) //Greyscale //or pure color
             {
                 RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-                if (!(s <= 0.2 || h == -1))  //If Not Greyscale
+                if (!(s <= 0.2 or h == -1))  //If Not Greyscale
                 {
                     if (h >= 45 && h <= 150) //If Green
                     {
@@ -490,7 +490,7 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
         {
             RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-            if (!(s <= 0.1 || h == -1))  //Not Greyscale
+            if (!(s <= 0.1 or h == -1))  //Not Greyscale
             {
                 if (h >= 45 && h <= 160) //Green
                 {
@@ -722,7 +722,7 @@ TexPath* TextureDB::GetPath(TextureID texID, int type, int offset)
     a += offset;
 
     // We didn't find enough (or any) matching types
-    if ((a >= stop) || ((type) && (a->type != type)))
+    if ((a >= stop) or ((type) && (a->type != type)))
         return NULL;
 
     // We found a match
@@ -753,7 +753,7 @@ TexArea* TextureDB::GetArea(TextureID texID, int type, int offset)
     a += offset;
 
     // We didn't find enough (or any) matching types
-    if ((a >= stop) || ((type) && (a->type != type)))
+    if ((a >= stop) or ((type) && (a->type != type)))
         return NULL;
 
     // We found a match
@@ -764,7 +764,7 @@ BYTE TextureDB::GetTerrainType(TextureID texID)
 {
     int set = ExtractSet(texID);
 
-    if ((set < 0) || (set >= numSets))
+    if ((set < 0) or (set >= numSets))
         return 0;
 
     ShiAssert(set >= 0);
@@ -1071,7 +1071,7 @@ void TextureDB::Free(SetEntry* pSet, TileEntry* pTile, int res)
     ShiAssert(pTile->handle[res] == NULL);
 
     // KLUDGE to prevent release runtime crash
-    if (!pTile || !pSet) return;
+    if (!pTile or !pSet) return;
 
     // Release the image memory if it isn't already gone
     if ((char*)pTile->bits[res])
@@ -1277,7 +1277,7 @@ bool TextureDB::DumpImageToFile(TileEntry* pTile, DWORD *palette, int res, bool 
 
     fp = fopen(szFileName, "rb");
 
-    if (!fp || bForce || bIs092)
+    if (!fp or bForce or bIs092)
     {
         if (fp)
             fclose(fp);
@@ -1320,7 +1320,7 @@ bool TextureDB::DumpImageToFile(TileEntry* pTile, DWORD *palette, int res, bool 
 
     fp = fopen(szFileName, "rb");
 
-    if (!fp || bForce || bIs092)
+    if (!fp or bForce or bIs092)
     {
         if (fp)
             fclose(fp);
@@ -1667,7 +1667,7 @@ void TextureDB::HSVtoRGB(float *r, float *g, float *b, float h, float s, float v
     int i;
     float f, p, q, t;
 
-    if (s == 0 || h == -1)
+    if (s == 0 or h == -1)
     {
         // achromatic (grey)
         *r = *g = *b = v;

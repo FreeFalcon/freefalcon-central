@@ -184,7 +184,7 @@ VuEntity *VuLineIterator::GetNext()
     {
         curnode_ = curnode_->next_;
 
-        if (curnode_ == 0 || curnode_->key_ > key2max_)
+        if (curnode_ == 0 or curnode_->key_ > key2max_)
         {
             // skip to next row
             curlink_ = vuTailNode;
@@ -205,7 +205,7 @@ VuEntity *VuLineIterator::GetFirst(VuFilter* filter)
 {
     VuEntity* retval = GetFirst();
 
-    if (retval == 0 || filter->Test(retval))
+    if (retval == 0 or filter->Test(retval))
     {
         return retval;
     }

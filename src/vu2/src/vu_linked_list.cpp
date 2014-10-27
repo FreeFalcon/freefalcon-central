@@ -181,7 +181,7 @@ unsigned int VuLinkedList::Purge(VU_BOOL all)
     {
         VuEntityBin &ent = *it;
 
-        if (!all && (ent->IsGlobal() || (ent->IsPrivate() && ent->IsPersistent())))
+        if (!all && (ent->IsGlobal() or (ent->IsPrivate() && ent->IsPersistent())))
         {
             // dont remove global or private pesistant
             ++it;

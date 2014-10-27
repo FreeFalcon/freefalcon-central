@@ -87,7 +87,7 @@ VuEntity *VuListIterator::GetFirst(VuFilter* filter)
     {
         return NULL;
     }
-    else if ((!filter) || filter->Test(e))
+    else if ((!filter) or filter->Test(e))
     {
         return e;
     }
@@ -105,7 +105,7 @@ VuEntity *VuListIterator::GetNext(VuFilter *filter)
     {
         e = GetNext();
 
-        if (!filter || filter->Test(e))
+        if (!filter or filter->Test(e))
         {
             return e;
         }

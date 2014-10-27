@@ -193,12 +193,12 @@ int FilterMessage(CONVERSATION *node)
     if (!VM)
         return FALSE;
 
-    if (!node || node->message == -1)
+    if (!node or node->message == -1)
         return FALSE;
 
     if (FalconLocalSession->GetFlyState() != FLYSTATE_FLYING && SimDriver.RunningCampaign())
     {
-        if (noUIcomms || FalconLocalSession->GetFlyState() != FLYSTATE_IN_UI)
+        if (noUIcomms or FalconLocalSession->GetFlyState() != FLYSTATE_IN_UI)
             return FALSE;
 
         //else
@@ -229,31 +229,31 @@ int FilterMessage(CONVERSATION *node)
         case rcfPackage2:
         case rcfPackage3:
         case rcfPackage4:
-            if ((TO_PACKAGE & node->filter) || (node->filter & TOFROM_FLIGHT))
+            if ((TO_PACKAGE & node->filter) or (node->filter & TOFROM_FLIGHT))
                 retval = TRUE;
 
             break;
 
         case rcfFromPackage:
-            if ((TOFROM_PACKAGE & node->filter) || (node->filter & TOFROM_FLIGHT))
+            if ((TOFROM_PACKAGE & node->filter) or (node->filter & TOFROM_FLIGHT))
                 retval = TRUE;
 
             break;
 
         case rcfProx:
-            if ((node->filter & TOFROM_FLIGHT) || ((IN_PROXIMITY & node->filter) && ((node->filter & TO_TEAM) || (TO_PACKAGE & node->filter))))
+            if ((node->filter & TOFROM_FLIGHT) or ((IN_PROXIMITY & node->filter) && ((node->filter & TO_TEAM) or (TO_PACKAGE & node->filter))))
                 retval = TRUE;
 
             break;
 
         case rcfTeam:
-            if ((TO_TEAM & node->filter) || (node->filter & TOFROM_FLIGHT) || (TOFROM_PACKAGE & node->filter))
+            if ((TO_TEAM & node->filter) or (node->filter & TOFROM_FLIGHT) or (TOFROM_PACKAGE & node->filter))
                 retval = TRUE;
 
             break;
 
         case rcfAll:
-            if ((TO_WORLD & node->filter) || (node->filter & TOFROM_FLIGHT) || (TOFROM_PACKAGE & node->filter) || (TO_TEAM & node->filter))
+            if ((TO_WORLD & node->filter) or (node->filter & TOFROM_FLIGHT) or (TOFROM_PACKAGE & node->filter) or (TO_TEAM & node->filter))
                 retval = TRUE;
 
             break;
@@ -266,7 +266,7 @@ int FilterMessage(CONVERSATION *node)
                 VU_ID ATCId;
                 gNavigationSys->GetAirbase(&ATCId);
 
-                if (ATCId == node->from || ATCId == node->to)
+                if (ATCId == node->from or ATCId == node->to)
                     //return TRUE;
                     retval = TRUE;
             }
@@ -304,31 +304,31 @@ int FilterMessage(CONVERSATION *node)
         case rcfPackage3:
         case rcfPackage4:
 
-            if ((TO_PACKAGE & node->filter) || (node->filter & TOFROM_FLIGHT))
+            if ((TO_PACKAGE & node->filter) or (node->filter & TOFROM_FLIGHT))
                 retval = TRUE;
 
             break;
 
         case rcfFromPackage:
-            if ((TOFROM_PACKAGE & node->filter) || (node->filter & TOFROM_FLIGHT))
+            if ((TOFROM_PACKAGE & node->filter) or (node->filter & TOFROM_FLIGHT))
                 retval = TRUE;
 
             break;
 
         case rcfProx:
-            if ((node->filter & TOFROM_FLIGHT) || ((IN_PROXIMITY & node->filter) && ((node->filter & TO_TEAM) || (TO_PACKAGE & node->filter))))
+            if ((node->filter & TOFROM_FLIGHT) or ((IN_PROXIMITY & node->filter) && ((node->filter & TO_TEAM) or (TO_PACKAGE & node->filter))))
                 retval = TRUE;
 
             break;
 
         case rcfTeam:
-            if ((TO_TEAM & node->filter) || (node->filter & TOFROM_FLIGHT) || (TOFROM_PACKAGE & node->filter))
+            if ((TO_TEAM & node->filter) or (node->filter & TOFROM_FLIGHT) or (TOFROM_PACKAGE & node->filter))
                 retval = TRUE;
 
             break;
 
         case rcfAll:
-            if ((TO_WORLD & node->filter) || (node->filter & TOFROM_FLIGHT) || (TOFROM_PACKAGE & node->filter) || (TO_TEAM & node->filter))
+            if ((TO_WORLD & node->filter) or (node->filter & TOFROM_FLIGHT) or (TOFROM_PACKAGE & node->filter) or (TO_TEAM & node->filter))
                 retval = TRUE;
 
             break;
@@ -341,7 +341,7 @@ int FilterMessage(CONVERSATION *node)
                 VU_ID ATCId;
                 gNavigationSys->GetAirbase(&ATCId);
 
-                if (ATCId == node->from || ATCId == node->to)
+                if (ATCId == node->from or ATCId == node->to)
                     //return TRUE;
                     retval = TRUE;
             }
@@ -499,7 +499,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                 //if there is a message queued from PlayRadioMessage and the appropriate decompQueue is available
                 if (
                     best &&
-                    (VM->decompQueue[i].status == SLOT_IS_AVAILABLE  || breakin) &&
+                    (VM->decompQueue[i].status == SLOT_IS_AVAILABLE  or breakin) &&
                     !VM->falconVoices[curChannel].exitChannel
                 )
                 {
@@ -1569,7 +1569,7 @@ int VoiceManager::GetRadioFreq(int radio)
 
 void VoiceManager::ForwardCycleFreq(int radio)
 {
-    if (radio < 0 || radio > 1 || !this)
+    if (radio < 0 or radio > 1 or !this)
     {
         return;
     }
@@ -1587,7 +1587,7 @@ void VoiceManager::ForwardCycleFreq(int radio)
 
 void VoiceManager::BackwardCycleFreq(int radio)
 {
-    if (radio < 0 || radio > 1 || !this)
+    if (radio < 0 or radio > 1 or !this)
     {
         return;
     }

@@ -11,7 +11,7 @@ ACMI_Hash::ACMI_Hash()
 
 ACMI_Hash::~ACMI_Hash()
 {
-    if (TableSize_ || Table_)
+    if (TableSize_ or Table_)
         Cleanup();
 }
 
@@ -31,7 +31,7 @@ void ACMI_Hash::Cleanup()
     unsigned long i;
     ACMI_HASHNODE *cur, *prev;
 
-    if (TableSize_ || Table_)
+    if (TableSize_ or Table_)
     {
         for (i = 0; i < TableSize_; i++)
         {
@@ -56,7 +56,7 @@ long ACMI_Hash::Find(VU_ID ID)
     unsigned long idx;
     ACMI_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_) return(NULL);
+    if (!TableSize_ or !Table_) return(NULL);
 
     idx = (ID.creator_ | ID.num_) % TableSize_;
     cur = Table_[idx].Root_;
@@ -79,7 +79,7 @@ ACMI_HASHNODE *ACMI_Hash::Get(VU_ID ID)
     unsigned long idx;
     ACMI_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_) return(NULL);
+    if (!TableSize_ or !Table_) return(NULL);
 
     idx = (ID.creator_ | ID.num_) % TableSize_;
     cur = Table_[idx].Root_;
@@ -102,7 +102,7 @@ long ACMI_Hash::Add(VU_ID ID, char *lbl, long color)
     unsigned long idx;
     ACMI_HASHNODE *cur, *newhash;
 
-    if (!TableSize_ || !Table_) return(0);
+    if (!TableSize_ or !Table_) return(0);
 
     cur = Get(ID);
 
@@ -157,7 +157,7 @@ void ACMI_Hash::Remove(VU_ID ID)
     unsigned long idx;
     ACMI_HASHNODE *cur, *prev;
 
-    if (!TableSize_ || !Table_) return;
+    if (!TableSize_ or !Table_) return;
 
     idx = (ID.creator_ | ID.num_) % TableSize_;
 

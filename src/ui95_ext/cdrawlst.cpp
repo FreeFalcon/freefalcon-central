@@ -73,7 +73,7 @@ long C_DrawList::CheckHotSpots(long relX, long relY)
     long curidx;
     long x, y, w, h;
 
-    if (Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
         return(0);
 
     Last_ = NULL;
@@ -121,7 +121,7 @@ void C_DrawList::Refresh()
     C_HASHNODE *me;
     long curidx;
 
-    if (Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     item = (MAPICONLIST*)Root_->GetFirst(&me, &curidx);
@@ -162,7 +162,7 @@ void C_DrawList::Draw(SCREEN *surface, UI95_RECT *cliprect)
     C_HASHNODE *me;
     long curidx;
 
-    if (Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     item = (MAPICONLIST*)Root_->GetFirst(&me, &curidx);

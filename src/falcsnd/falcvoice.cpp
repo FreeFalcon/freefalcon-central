@@ -285,7 +285,7 @@ DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
 
     thisFV = (FalcVoice *)me;
 
-    if (thisFV == NULL || killThread || thisFV->exitChannel)
+    if (thisFV == NULL or killThread or thisFV->exitChannel)
     {
         memset(soundBuffer, SILENCE_KEY, length);
         return length;

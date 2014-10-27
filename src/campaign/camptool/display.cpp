@@ -585,7 +585,7 @@ void DisplayUnit(HDC DC, Unit U, short ScreenX, short ScreenY, short Size)
     {
         _rectangle(DC, _GBORDER, ULX, ULY, LRX, LRY);
 
-        if (SType == STYPE_UNIT_INFANTRY || SType == STYPE_UNIT_MECHANIZED || SType == STYPE_UNIT_MARINE)
+        if (SType == STYPE_UNIT_INFANTRY or SType == STYPE_UNIT_MECHANIZED or SType == STYPE_UNIT_MARINE)
         {
             _moveto(DC, ULX, ULY);
             _lineto(DC, LRX, LRY);
@@ -593,7 +593,7 @@ void DisplayUnit(HDC DC, Unit U, short ScreenX, short ScreenY, short Size)
             _lineto(DC, ULX, LRY);
         }
 
-        if (SType == STYPE_UNIT_ARMOR || SType == STYPE_UNIT_MECHANIZED || SType == STYPE_UNIT_ARMORED_CAV || SType == STYPE_UNIT_SP_ARTILLERY)
+        if (SType == STYPE_UNIT_ARMOR or SType == STYPE_UNIT_MECHANIZED or SType == STYPE_UNIT_ARMORED_CAV or SType == STYPE_UNIT_SP_ARTILLERY)
         {
             _ellipse(DC, _GBORDER, ULX + ssmall, ULY + ssmall, LRX - ssmall, LRY - ssmall);
         }
@@ -636,12 +636,12 @@ void DisplayUnit(HDC DC, Unit U, short ScreenX, short ScreenY, short Size)
             _rectangle(DC, _GFILLINTERIOR, ULX + ssmall, (ULY + LRY) / 2 + 1, LRX - ssmall, LRY - 1);
         }
 
-        if (SType == STYPE_UNIT_SP_ARTILLERY  || SType == STYPE_UNIT_TOWED_ARTILLERY)
+        if (SType == STYPE_UNIT_SP_ARTILLERY  or SType == STYPE_UNIT_TOWED_ARTILLERY)
         {
             _ellipse(DC, _GFILLINTERIOR, (ULX + LRX) / 2 - ssmall, ULY + ssmall, (ULX + LRX) / 2 + ssmall, LRY - ssmall);
         }
 
-        if (SType == STYPE_UNIT_SS_MISSILE || SType == STYPE_UNIT_ROCKET)
+        if (SType == STYPE_UNIT_SS_MISSILE or SType == STYPE_UNIT_ROCKET)
         {
             _moveto(DC, centerx, LRY - ssmall);
             _lineto(DC, centerx, ULY + ssmall);
@@ -675,7 +675,7 @@ void DisplayUnit(HDC DC, Unit U, short ScreenX, short ScreenY, short Size)
     }
     else if (U->GetDomain() == DOMAIN_AIR)
     {
-        if (SType == STYPE_UNIT_ATTACK_HELO || SType == STYPE_UNIT_RECON_HELO || SType == STYPE_UNIT_TRANSPORT_HELO)
+        if (SType == STYPE_UNIT_ATTACK_HELO or SType == STYPE_UNIT_RECON_HELO or SType == STYPE_UNIT_TRANSPORT_HELO)
         {
             _ellipse(DC, _GFILLINTERIOR, ULX + ssmall, ULY + ssmall, centerx - 1, ULY + ssmall * 2);
             _ellipse(DC, _GFILLINTERIOR, centerx + 1, ULY + ssmall, LRX - ssmall, ULY + ssmall * 2);

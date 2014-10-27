@@ -604,7 +604,7 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
     {
         return FALSE;
     }
-    else if (self->IsAirplane() && (curUpdate->IsAirplane() || curUpdate->IsFlight() || curUpdate->IsHelicopter())) // 2002-03-05 MODIFIED BY S.G. Choppers are fare game now under some condition so don't screen them out
+    else if (self->IsAirplane() && (curUpdate->IsAirplane() or curUpdate->IsFlight() or curUpdate->IsHelicopter())) // 2002-03-05 MODIFIED BY S.G. Choppers are fare game now under some condition so don't screen them out
     {
         if (self->GetTeam() == curUpdate->GetTeam())
             airRange = 100.0F * 100.0F;
@@ -651,7 +651,7 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
         // I extended this for to include helicopters and made the range
         // go out to 5NM.  Also: Aren't aircraft AI going to need to detect
         // ground units?!
-        if (self->IsGroundVehicle() || self->IsHelicopter())
+        if (self->IsGroundVehicle() or self->IsHelicopter())
             gndRange = 15.0f * NM_TO_FT * 15.0f * NM_TO_FT;
         else
             gndRange = 0.0F;

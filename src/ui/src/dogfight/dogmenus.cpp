@@ -587,7 +587,7 @@ void CheckForPlayerCB(C_Base *themenu, C_Base *caller)
     Flight flt;
     C_PopupList *menu;
 
-    if (!themenu || !caller)
+    if (!themenu or !caller)
         return;
 
     menu = (C_PopupList*)themenu;

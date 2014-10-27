@@ -141,7 +141,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
     /*---------------------*/
     // ASSOCIATOR 3/12/03: Moved DrawBars before DrawAzElTicks and DrawScanMarkers so that they draw peoperly
     // in transparent MFD view and also with better drawing order.
-    if (mode == RWS || mode == SAM || mode == TWS || mode == LRS || mode == VS || mode == STT)
+    if (mode == RWS or mode == SAM or mode == TWS or mode == LRS or mode == VS or mode == STT)
     {
         DrawBars();
     }
@@ -422,8 +422,8 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
                 // ASSOCIATOR moved this check to RadarDopplerClass::DefaultAGModehere so that it only
                 // defaults to AGR when first selected and than be changed manually to any other radar mode
                 /*FireControlComputer* pFCC = ((SimVehicleClass*)platform)->GetFCC();//me123 addet for ccip/DTOSS ground ranging check
-                  if(pFCC->GetSubMode() == FireControlComputer::CCIP || pFCC->GetSubMode() == FireControlComputer::DTOSS ||
-                  pFCC->GetSubMode() == FireControlComputer::***STRAF || pFCC->GetSubMode() == FireControlComputer::RCKT)
+                  if(pFCC->GetSubMode() == FireControlComputer::CCIP or pFCC->GetSubMode() == FireControlComputer::DTOSS ||
+                  pFCC->GetSubMode() == FireControlComputer::***STRAF or pFCC->GetSubMode() == FireControlComputer::RCKT)
                   {
                   if(mode != AGR) {
                   mode = AGR;
@@ -889,9 +889,9 @@ void RadarDopplerClass::DrawRangeArrows(void)
     display->AdjustOriginInViewport(x19 + arrowW, y19 + arrowH / 2);
 
     //MI
-    if (g_bRealisticAvionics && (mode == GM || mode == GMT || mode == SEA))
+    if (g_bRealisticAvionics && (mode == GM or mode == GMT or mode == SEA))
     {
-        if (mode == GMT || mode == SEA)
+        if (mode == GMT or mode == SEA)
         {
             if (curRangeIdx < NUM_RANGES - 3)
                 display->Tri(0.0F, arrowH, arrowW, -arrowH, -arrowW, -arrowH);
@@ -1070,7 +1070,7 @@ void RadarDopplerClass::RWSDisplay(void)
                         xPos = tgtx + dx;
                         yPos = tgty + dy;
 
-                        if (fabs(xPos) > AZL || fabs(yPos) > AZL)
+                        if (fabs(xPos) > AZL or fabs(yPos) > AZL)
                         {
                             continue;
                         }
@@ -1211,7 +1211,7 @@ void RadarDopplerClass::RWSDisplay(void)
                             }
                             else
                             {
-                                if ((rdrData->rdrSy[i] >= Track) || (rdrObj->BaseData()->Id() == targetUnderCursor))
+                                if ((rdrData->rdrSy[i] >= Track) or (rdrObj->BaseData()->Id() == targetUnderCursor))
                                 {
                                     alt  = -rdrObj->BaseData()->ZPos();
                                     sprintf(str, "%02d", (int)((alt + 500.0F) * 0.001));
@@ -1243,7 +1243,7 @@ void RadarDopplerClass::RWSDisplay(void)
                             /*---------------------------------------------*/
                             /* target under cursor or locked show altitude */
                             /*---------------------------------------------*/
-                            if ((rdrData->rdrSy[i] >= Track) || (rdrObj->BaseData()->Id() == targetUnderCursor))
+                            if ((rdrData->rdrSy[i] >= Track) or (rdrObj->BaseData()->Id() == targetUnderCursor))
                             {
                                 alt  = -rdrObj->BaseData()->ZPos();
                                 sprintf(str, "%02d", (int)((alt + 500.0F) * 0.001));
@@ -1383,7 +1383,7 @@ void RadarDopplerClass::SAMDisplay(void)
         display->CenterOriginInViewport();
 
         // Add NCTR data for any bugged target
-        if (lockedTargetData->rdrSy[0] == Track || lockedTargetData->rdrSy[0] == FlashTrack)
+        if (lockedTargetData->rdrSy[0] == Track or lockedTargetData->rdrSy[0] == FlashTrack)
         {
             DrawNCTR(true);
         }
@@ -1570,7 +1570,7 @@ void RadarDopplerClass::TWSDisplay(void)
         display->TextRight(0.45F, SECOND_LINE_Y, str);
 
         // Add NCTR data for any bugged target
-        if (lockedTargetData->rdrSy[0] == Bug || lockedTargetData->rdrSy[0] == FlashBug)
+        if (lockedTargetData->rdrSy[0] == Bug or lockedTargetData->rdrSy[0] == FlashBug)
         {
             DrawNCTR(true);
 
@@ -1658,7 +1658,7 @@ void RadarDopplerClass::TWSDisplay(void)
                     xPos = tgtx + dx;
                     yPos = tgty + dy;
 
-                    if (fabs(xPos) > AZL || fabs(yPos) > AZL)
+                    if (fabs(xPos) > AZL or fabs(yPos) > AZL)
                     {
                         rdrObj = rdrObj->next;
                         continue;
@@ -2009,7 +2009,7 @@ void RadarDopplerClass::STTDisplay(void)
     display->TextRight(0.45F, SECOND_LINE_Y, str);
 
     // Add NCTR data for any bugged target //me123 addet check on ground & jamming
-    if (!lockedTarget->BaseData()->OnGround() || !lockedTarget->BaseData()->IsSPJamming())
+    if (!lockedTarget->BaseData()->OnGround() or !lockedTarget->BaseData()->IsSPJamming())
     {
         DrawNCTR(false);
     }
@@ -2522,7 +2522,7 @@ void RadarDopplerClass::DrawSymbol(int type, float schweemLen, int age, int flas
     /*-------------*/
     /* draw symbol */
     /*-------------*/
-    if ((type == FlashBug || type == FlashTrack) && flashOff)
+    if ((type == FlashBug or type == FlashTrack) && flashOff)
         return;
 
     // RV - RED - WARNING...!!!!
@@ -2579,7 +2579,7 @@ void RadarDopplerClass::DrawSymbol(int type, float schweemLen, int age, int flas
     {
         case AimFlash: // jpo draw filled square
         case AimRel:
-            if (g_bRealisticAvionics && (type == AimRel || vuxRealTime & 0x080))   //MI changed from || flash
+            if (g_bRealisticAvionics && (type == AimRel or vuxRealTime & 0x080))   //MI changed from or flash
             {
                 display->Tri(g_fRadarScale * trackTriH / 2.0f, g_fRadarScale * -trackTriV, //tail flashes faster then flash
                              g_fRadarScale * trackTriH / 2.0f, g_fRadarScale * -trackTriV - 0.035f,
@@ -2752,7 +2752,7 @@ void RadarDopplerClass::DrawCollisionSteering(SimObjectType* buggedTarget, float
     float   dx, dy, xPos = 0.0F;
     vector  collPoint;
 
-    if (!buggedTarget || !buggedTarget->BaseData()->IsSim())
+    if (!buggedTarget or !buggedTarget->BaseData()->IsSim())
         return;
 
     if (IsAADclt(AttackStr)) return;
@@ -2922,7 +2922,7 @@ void RadarDopplerClass::DrawDLZSymbol(void)
     // Rmin/Rmax
     textbottom = bottomEdge + rMin * height;
 
-    if ((SimDriver.GetPlayerAircraft()->Sms->MasterArm() == SMSBaseClass::Arm) || (SimDriver.GetPlayerAircraft()->Sms->MasterArm() == SMSBaseClass::Sim))
+    if ((SimDriver.GetPlayerAircraft()->Sms->MasterArm() == SMSBaseClass::Arm) or (SimDriver.GetPlayerAircraft()->Sms->MasterArm() == SMSBaseClass::Sim))
     {
         if (g_bnewAMRAAMdlz)
         {
@@ -3019,7 +3019,7 @@ void RadarDopplerClass::DrawDLZSymbol(void)
         }
 
         // Draw the ASEC symbol. if its flashing, or outside the NE zone JPO
-        if (g_bRealisticAvionics && ((vuxRealTime & 0x200) || lockedTargetData->range > pFCC->missileRneMax * 0.7f ||
+        if (g_bRealisticAvionics && ((vuxRealTime & 0x200) or lockedTargetData->range > pFCC->missileRneMax * 0.7f ||
                                      lockedTargetData->range < pFCC->missileRneMin))
         {
             display -> SetColor(GetMfdColor(MFD_STEER_ERROR_CUE));
@@ -3216,7 +3216,7 @@ void RadarDopplerClass::DrawNCTR(bool TWS)
     if (lockedTarget->BaseData()->IsSim() &&
         !((SimBaseClass*)lockedTarget->BaseData())->IsExploding() &&
         ((!TWS && ReturnStrength(lockedTarget) > 1.9f)
-         || (TWS && ReturnStrength(lockedTarget) > 2.5f)))
+         or (TWS && ReturnStrength(lockedTarget) > 2.5f)))
     {
         if (
 #if 1 // original marco

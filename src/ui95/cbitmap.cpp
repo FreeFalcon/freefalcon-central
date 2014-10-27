@@ -121,7 +121,7 @@ BOOL C_Bitmap::TimerUpdate()
 }
 void C_Bitmap::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Image_)

@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <windows.h>
 #include "uihash.h"
 
@@ -11,7 +12,7 @@ UI_Hash::UI_Hash()
 
 UI_Hash::~UI_Hash()
 {
-    if (TableSize_ || Table_)
+    if (TableSize_ or Table_)
         Cleanup();
 }
 
@@ -31,7 +32,7 @@ void UI_Hash::Cleanup()
     unsigned long i;
     UI_HASHNODE *cur, *prev;
 
-    if (TableSize_ || Table_)
+    if (TableSize_ or Table_)
     {
         for (i = 0; i < TableSize_; i++)
         {
@@ -62,7 +63,7 @@ void *UI_Hash::Find(unsigned long ID)
     unsigned long idx;
     UI_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_) return(NULL);
+    if (!TableSize_ or !Table_) return(NULL);
 
     idx = ID % TableSize_;
     cur = Table_[idx].Root_;
@@ -85,7 +86,7 @@ void UI_Hash::Add(unsigned long ID, void *rec)
     unsigned long idx;
     UI_HASHNODE *cur, *newhash;
 
-    if (!TableSize_ || !Table_ || !rec) return;
+    if (!TableSize_ or !Table_ or !rec) return;
 
     if (Find(ID)) return;
 
@@ -116,7 +117,7 @@ void UI_Hash::Remove(unsigned long ID)
     unsigned long idx;
     UI_HASHNODE *cur, *prev;
 
-    if (!TableSize_ || !Table_) return;
+    if (!TableSize_ or !Table_) return;
 
     idx = ID % TableSize_;
 

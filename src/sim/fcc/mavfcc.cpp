@@ -91,7 +91,7 @@ void FireControlComputer::MaverickMode(void)
     // MD -- 20040110: adding for analog cursor support
     float xMove = 0.0F, yMove = 0.0F;
 
-    if ((cursorXCmd != 0) || (cursorYCmd != 0))
+    if ((cursorXCmd != 0) or (cursorYCmd != 0))
         if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
             yMove = (float)cursorYCmd / 10000.0F;
@@ -160,7 +160,7 @@ void FireControlComputer::MaverickMode(void)
         // M.N. added full realism mode
         AircraftClass *pa = (AircraftClass *)platform;
 
-        if (!playerFCC || (pa->IsPlayer() && pa->AutopilotType() == AircraftClass::CombatAP) || ((PlayerOptions.GetAvionicsType() != ATRealistic && PlayerOptions.GetAvionicsType() != ATRealisticAV) && (subMode == SLAVE)))
+        if (!playerFCC or (pa->IsPlayer() && pa->AutopilotType() == AircraftClass::CombatAP) or ((PlayerOptions.GetAvionicsType() != ATRealistic && PlayerOptions.GetAvionicsType() != ATRealisticAV) && (subMode == SLAVE)))
         {
             if (systemTarget && systemTarget->BaseData()->OnGround())
             {
@@ -475,7 +475,7 @@ void FireControlComputer::MaverickMode(void)
                 }
                 else
                 {
-                    if ((cursorXCmd != 0) || (cursorYCmd != 0))
+                    if ((cursorXCmd != 0) or (cursorYCmd != 0))
                     {
 
                         if (g_bMavFixes) // a.s. 20.Febr.2002. begin: New Code for slewing MAVs. With this code, not the angles are altered, but
@@ -781,7 +781,7 @@ void FireControlComputer::MaverickMode(void)
             (curWeapon->parent &&
              pa->IsPlayer() &&
              !(pa->AutopilotType() == AircraftClass::CombatAP) &&
-             (curWeapon->Covered || !Sms->Powered))
+             (curWeapon->Covered or !Sms->Powered))
         )
         {
             missileTarget = FALSE;
@@ -849,7 +849,7 @@ void FireControlComputer::CheckFeatures(MissileClass* theMissile)
                 //in his head when he wrote this! Fix for the jumping cursors
                 float CurRange = (float)sqrt(dx * dx + dy * dy);
 
-                if ((CurRange < curMin) && !(testObject->IsDead() || testObject->IsExploding()))
+                if ((CurRange < curMin) && !(testObject->IsDead() or testObject->IsExploding()))
                 {
                     closestObj = testObject;
                     curMin = CurRange;
@@ -937,7 +937,7 @@ SimObjectType* FireControlComputer::MavCheckLock(MissileClass* theMissile)
     //MI fix for better Maverick target selection
     AircraftClass *pa = (AircraftClass *)platform;
 
-    if (!playerFCC || (pa->IsPlayer() && pa->AutopilotType() == AircraftClass::CombatAP))
+    if (!playerFCC or (pa->IsPlayer() && pa->AutopilotType() == AircraftClass::CombatAP))
         minDist = 1.0F * DTR;
     else
     {

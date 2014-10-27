@@ -714,7 +714,7 @@ void *C_Base::GetUserPtr(long idx)
     {
         usr = (USERDATA*)User_->Find(idx);
 
-        if (usr && (usr->type == CSB_IS_PTR || usr->type == CSB_IS_CLEANUP_PTR))
+        if (usr && (usr->type == CSB_IS_PTR or usr->type == CSB_IS_CLEANUP_PTR))
             return(usr->data.ptr);
     }
 
@@ -723,7 +723,7 @@ void *C_Base::GetUserPtr(long idx)
 
 BOOL C_Control::MouseOver(long relx, long rely, C_Base *me)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
         return(FALSE);
 
     if (relx >= GetX() && rely >= GetY() && relx <= (GetX() + GetW()) && rely <= GetY() + GetH())

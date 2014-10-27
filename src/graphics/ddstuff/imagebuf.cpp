@@ -490,7 +490,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 // Alternative setup method
 void ImageBuffer::AttachSurfaces(DisplayDevice *pDev, IDirectDrawSurface7 *pDDSFront, IDirectDrawSurface7 *pDDSBack)
 {
-    if (!pDev || !pDDSFront)
+    if (!pDev or !pDDSFront)
         return;
 
     if (!pDDSBack)
@@ -623,7 +623,7 @@ void ImageBuffer::UpdateFrontWindowRect(RECT *rect)
     // ShiAssert( frontType == Primary ); // This is only useful for the primary surface
     if (rect) m_rcFront = *rect;
 
-    m_bFrontRectValid = rect && (m_rcFront.left || m_rcFront.right);
+    m_bFrontRectValid = rect && (m_rcFront.left or m_rcFront.right);
 }
 
 // Fix in memory and return and pointer to the memory associated with our back buffer
@@ -857,7 +857,7 @@ void ImageBuffer::Compose(ImageBuffer *srcBuffer, RECT *dstRect, RECT *srcRect)
     ShiAssert(FALSE == F4IsBadReadPtr(srcBuffer, sizeof * srcBuffer));
 
 
-    bool bStretch = ((srcRect->right - srcRect->left) != (dstRect->right - dstRect->left)) || ((srcRect->bottom - srcRect->top) != (dstRect->bottom - dstRect->top));
+    bool bStretch = ((srcRect->right - srcRect->left) != (dstRect->right - dstRect->left)) or ((srcRect->bottom - srcRect->top) != (dstRect->bottom - dstRect->top));
     HRESULT hr;
 
     if (!m_bFrontRectValid && !bStretch)
@@ -904,7 +904,7 @@ void ImageBuffer::ComposeTransparent(ImageBuffer *srcBuffer, RECT *dstRect, RECT
     ShiAssert(FALSE == F4IsBadReadPtr(dstRect, sizeof * dstRect));
     ShiAssert(FALSE == F4IsBadReadPtr(srcBuffer, sizeof * srcBuffer));
 
-    bool bStretch = ((srcRect->right - srcRect->left) != (dstRect->right - dstRect->left)) || ((srcRect->bottom - srcRect->top) != (dstRect->bottom - dstRect->top));
+    bool bStretch = ((srcRect->right - srcRect->left) != (dstRect->right - dstRect->left)) or ((srcRect->bottom - srcRect->top) != (dstRect->bottom - dstRect->top));
     HRESULT hr;
 
     if (!m_bFrontRectValid && !bStretch)
@@ -1128,7 +1128,7 @@ void ImageBuffer::BackBufferToRAW(char *filename)
     bfh.bfSize = bfh.bfOffBits + bih.biSizeImage;
 
     // Write the header
-    if ((!WriteFile(fileID, &bfh, sizeof(BITMAPFILEHEADER), &dwBytes, NULL)) || (dwBytes != sizeof(BITMAPFILEHEADER)))
+    if ((!WriteFile(fileID, &bfh, sizeof(BITMAPFILEHEADER), &dwBytes, NULL)) or (dwBytes != sizeof(BITMAPFILEHEADER)))
     {
         char string[256];
         PutErrorString(string);
@@ -1137,7 +1137,7 @@ void ImageBuffer::BackBufferToRAW(char *filename)
     }
 
     // Write the bitmap info header
-    if ((!WriteFile(fileID, &bih, sizeof(BITMAPINFOHEADER), &dwBytes, NULL)) || (dwBytes != sizeof(BITMAPINFOHEADER)))
+    if ((!WriteFile(fileID, &bih, sizeof(BITMAPINFOHEADER), &dwBytes, NULL)) or (dwBytes != sizeof(BITMAPINFOHEADER)))
     {
         char string[256];
         PutErrorString(string);

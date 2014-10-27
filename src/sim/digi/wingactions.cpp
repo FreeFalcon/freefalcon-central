@@ -86,7 +86,7 @@ void DigitalBrain::AiPerformManeuver(void)
 
 #ifdef MANEUVER_DEBUG
 
-    if ((g_nShowDebugLabels & 0x08) || (g_nShowDebugLabels & 0x400000))
+    if ((g_nShowDebugLabels & 0x08) or (g_nShowDebugLabels & 0x400000))
     {
         if (g_nShowDebugLabels & 0x40)
         {
@@ -280,7 +280,7 @@ void DigitalBrain::AiCheckPlayerInPosition(void)
             mInPositionFlag = TRUE;
             AiMakeCommandMsg((SimBaseClass*) self, FalconWingmanMsg::WMGlue, AiWingman, FalconNullId);
         }
-        else if (((xdiff * xdiff + ydiff + ydiff >  2500.0F * 2500.0F) || fabs(zdiff) > 3000.0F) && mInPositionFlag == TRUE)
+        else if (((xdiff * xdiff + ydiff + ydiff >  2500.0F * 2500.0F) or fabs(zdiff) > 3000.0F) && mInPositionFlag == TRUE)
         {
             mInPositionFlag = FALSE;
             AiMakeCommandMsg((SimBaseClass*) self, FalconWingmanMsg::WMSplit, AiWingman, FalconNullId);
@@ -301,7 +301,7 @@ void DigitalBrain::AiFollowLead(void)
     int flightIdx;
     AircraftClass* paircraft;
 
-    if (flightLead == self || isWing == 0 || !flightLead)
+    if (flightLead == self or isWing == 0 or !flightLead)
     {
 
         Loiter();

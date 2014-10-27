@@ -42,11 +42,11 @@ void RadarDopplerClass::ChangeMode(int newMode)
 
     //static float oldseekerElCenter =0.0f;
 
-    if (prevMode == SAM || prevMode == TWS
-        || prevMode == RWS || prevMode == LRS || prevMode == VS)
+    if (prevMode == SAM or prevMode == TWS
+        or prevMode == RWS or prevMode == LRS or prevMode == VS)
         oldseekerElCenter = seekerElCenter;//me123
 
-    if (prevMode == GM || prevMode == GMT || prevMode == SEA)
+    if (prevMode == GM or prevMode == GMT or prevMode == SEA)
     {
         DropGMTrack();
         wasGround = TRUE;
@@ -148,7 +148,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
             // Go to sam if there is a lock
             //MI added check for RWS mode. If this isn't here, we never make it out of RWS/SAM
             //mode. This makes sure that if we switch to RWS, we go to SAM, which is right I think.
-            if (lockedTarget  && (mode == RWS || mode == LRS))
+            if (lockedTarget  && (mode == RWS or mode == LRS))
             {
                 ChangeMode(SAM);
             }
@@ -242,7 +242,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
             // me123 status ok. We don't always want to stop emitting when we change to an acm mode from a non acm radar mode
             // we just wanna transfer to acm and get the symbolgy for that.
             //MI but that's how it works in the Block 50 Viper, so let's change it back
-            if (prevMode == ACM_30x20 || prevMode == ACM_BORE || prevMode == ACM_10x60 || prevMode == ACM_SLEW || lockedTarget)
+            if (prevMode == ACM_30x20 or prevMode == ACM_BORE or prevMode == ACM_10x60 or prevMode == ACM_SLEW or lockedTarget)
                 SetEmitting(TRUE);
             else
                 SetEmitting(FALSE);
@@ -273,7 +273,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
                 TheHud->HudData.Set(HudDataType::RadarBoresight);
             }
 
-            if (prevMode == ACM_30x20 || prevMode == ACM_BORE || prevMode == ACM_10x60 || prevMode == ACM_SLEW || lockedTarget)
+            if (prevMode == ACM_30x20 or prevMode == ACM_BORE or prevMode == ACM_10x60 or prevMode == ACM_SLEW or lockedTarget)
                 SetEmitting(TRUE);
             else
                 SetEmitting(FALSE);
@@ -302,7 +302,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
                 TheHud->HudData.Set(HudDataType::RadarVertical);
             }
 
-            if (prevMode == ACM_30x20 || prevMode == ACM_BORE || prevMode == ACM_10x60 || prevMode == ACM_SLEW || lockedTarget)
+            if (prevMode == ACM_30x20 or prevMode == ACM_BORE or prevMode == ACM_10x60 or prevMode == ACM_SLEW or lockedTarget)
                 SetEmitting(TRUE);
             else
                 SetEmitting(FALSE);
@@ -329,7 +329,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
                 TheHud->HudData.Set(HudDataType::RadarSlew);
             }
 
-            if (prevMode == ACM_30x20 || prevMode == ACM_BORE || prevMode == ACM_10x60 || prevMode == ACM_SLEW || lockedTarget)
+            if (prevMode == ACM_30x20 or prevMode == ACM_BORE or prevMode == ACM_10x60 or prevMode == ACM_SLEW or lockedTarget)
                 SetEmitting(TRUE);
             else
                 SetEmitting(FALSE);
@@ -400,7 +400,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
 
                 if (g_bRealisticAvionics && g_bAGRadarFixes)
                 {
-                    if (mode == GM || mode == SEA)
+                    if (mode == GM or mode == SEA)
                         curAzIdx = gmAzIdx;
                     else
                         curAzIdx = gmtAzIdx;
@@ -419,7 +419,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
             else
             {
                 // Reuse current range, within limits of course
-                if (flags & (DBS1 | DBS2) || mode == GMT || mode == SEA)
+                if (flags & (DBS1 | DBS2) or mode == GMT or mode == SEA)
                 {
                     maxIdx = NUM_RANGES - 3;
                 }
@@ -511,7 +511,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
             Missovrradarmode = mode;
         else if (FCC->GetMasterMode() == FireControlComputer::Dogfight)
         {
-            if (mode == ACM_30x20 || mode == ACM_10x60 || mode == ACM_SLEW || mode == ACM_BORE)
+            if (mode == ACM_30x20 or mode == ACM_10x60 or mode == ACM_SLEW or mode == ACM_BORE)
                 Dogfovrradarmode = mode;
         }
     }
@@ -526,7 +526,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
     if (IsSOI() && !IsAG() && mode != STBY) //MI added STBY check. No cursors in STBY
     {
-        if ((cursorXCmd != 0.0F || cursorYCmd != 0.0F) && !IsSet(STTingTarget))  // don't move cursor when you are in STT
+        if ((cursorXCmd != 0.0F or cursorYCmd != 0.0F) && !IsSet(STTingTarget))  // don't move cursor when you are in STT
         {
             if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
             {
@@ -587,7 +587,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
             }
 
             //MI
-            if ((cursorX == 1.0F && cursorXCmd > 0) || (cursorX == -1.0F && cursorXCmd < 0))
+            if ((cursorX == 1.0F && cursorXCmd > 0) or (cursorX == -1.0F && cursorXCmd < 0))
                 StepAzimuth(cursorX, cursorXCmd);
 
             if (azScan + beamWidth != MAX_ANT_EL)
@@ -633,7 +633,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
             // Slewing Scan
             // Make sure that we only do this when were not locking or trying to lock
-            if (!lockedTarget || g_bMLU && !IsSet(STTingTarget))
+            if (!lockedTarget or g_bMLU && !IsSet(STTingTarget))
             {
                 seekerAzCenter = cursorX * MAX_ANT_EL;
                 seekerAzCenter = max(min(seekerAzCenter, MAX_ANT_EL - azScan), -MAX_ANT_EL + azScan);
@@ -683,7 +683,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
             //MI
             // MD -- 20040123: don't bump the scan pattern when there's a bugged track file
-            if (!lockedTarget && ((cursorX == 1.0F && cursorXCmd > 0) || (cursorX == -1.0F && cursorXCmd < 0)))
+            if (!lockedTarget && ((cursorX == 1.0F && cursorXCmd > 0) or (cursorX == -1.0F && cursorXCmd < 0)))
                 StepAzimuth(cursorX, cursorXCmd);
 
             //me123 az/bar change same as rws -- MD, umm no, that's not correct...there are three fixed
@@ -733,7 +733,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
                     }
 
                     //MI
-                    if ((cursorX == 1.0F && cursorXCmd > 0) || (cursorX == -1.0F && cursorXCmd < 0))
+                    if ((cursorX == 1.0F && cursorXCmd > 0) or (cursorX == -1.0F && cursorXCmd < 0))
                         StepAzimuth(cursorX, cursorXCmd);
 
                     if (azScan != MAX_ANT_EL)
@@ -765,7 +765,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
                 /*--------------*/
                 /* Manual SAM ? */
                 /*--------------*/
-                if (((cursorXCmd != 0) || (cursorYCmd != 0)) && !targetUnderCursor)
+                if (((cursorXCmd != 0) or (cursorYCmd != 0)) && !targetUnderCursor)
                 {
                     subMode = SAM_MANUAL_MODE;
                 }
@@ -862,7 +862,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
             }
 
             //MI
-            if ((cursorX == 1.0F && cursorXCmd > 0) || (cursorX == -1.0F && cursorXCmd < 0))
+            if ((cursorX == 1.0F && cursorXCmd > 0) or (cursorX == -1.0F && cursorXCmd < 0))
                 StepAzimuth(cursorX, cursorXCmd);
 
             // Scan Center
@@ -913,7 +913,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
             // No 80 mile range in DBS1, DBS2, GMT or SEA
             if (rangeChangeCmd)
             {
-                if (flags & (DBS1 | DBS2) || mode == GMT || mode == SEA)
+                if (flags & (DBS1 | DBS2) or mode == GMT or mode == SEA)
                 {
                     maxIdx = NUM_RANGES - 2;
                 }
@@ -941,7 +941,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
                 curAzIdx = (curAzIdx + scanWidthCmd) % NUM_RWS_AZS;
 
                 //azScan = rwsAzs[curAzIdx] - beamWidth * 0.5F;
-                if (mode == GM || mode == SEA)
+                if (mode == GM or mode == SEA)
                     gmAzIdx = curAzIdx;
                 else if (mode == GMT)
                     gmtAzIdx = curAzIdx;
@@ -953,7 +953,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
                 scanWidthCmd = FALSE;
             }
 
-            if ((cursorXCmd != 0) || (cursorYCmd != 0))
+            if ((cursorXCmd != 0) or (cursorYCmd != 0))
             {
                 SetAimPoint((float)cursorXCmd, (float)cursorYCmd);
                 SetGMScan();
@@ -1062,7 +1062,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
         tdisplayRange = displayRange * NM_TO_FT;
 
-        if (mode == GM || mode == GMT || mode == SEA)
+        if (mode == GM or mode == GMT or mode == SEA)
         {
             SetGMScan();
             // MD -- 20040303: commenting this out -- when range is bumped in AUTO mode
@@ -1325,9 +1325,9 @@ void RadarDopplerClass::DefaultAGMode(void)
             {
                 // ASSOCIATOR moved this check from RadarDopplerClass::Display in Bscope.cpp to here so that it only
                 // defaults to AGR when first selected and than be changed manually to any other radar mode
-                if (FCC->GetSubMode() == FireControlComputer::CCIP || FCC->GetSubMode() == FireControlComputer::DTOSS ||
+                if (FCC->GetSubMode() == FireControlComputer::CCIP or FCC->GetSubMode() == FireControlComputer::DTOSS ||
                     FCC->GetSubMode() == FireControlComputer::STRAF ||
-                    FCC->GetSubMode() == FireControlComputer::MAN ||   // Cobra - for JSOWa
+                    FCC->GetSubMode() == FireControlComputer::MAN or   // Cobra - for JSOWa
                     FCC->GetMasterMode() == FireControlComputer::AirGroundRocket/*FCC->GetSubMode() == FireControlComputer::RCKT*/ && mode != AGR)
                 {
                     mode = AGR;
@@ -1513,7 +1513,7 @@ void RadarDopplerClass::ClearOverride(void)
 
     if (Overridemode == 2) //me123 dogfight flag
     {
-        if (mode == ACM_30x20 || mode == ACM_10x60 || mode == ACM_SLEW || mode == ACM_BORE)
+        if (mode == ACM_30x20 or mode == ACM_10x60 or mode == ACM_SLEW or mode == ACM_BORE)
             Dogfovrradarmode = mode;
 
         //restore our range

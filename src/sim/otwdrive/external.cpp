@@ -64,7 +64,7 @@ float OTWDriverClass::GetDoppler(float x, float y, float z, float dx, float dy, 
     dPos.z /= dist;
 
     // Decide on the camera's motion vector
-    if (otwPlatform.get() == NULL || GetOTWDisplayMode() == ModeFlyby)
+    if (otwPlatform.get() == NULL or GetOTWDisplayMode() == ModeFlyby)
     {
         camVec.x = 0.0f;
         camVec.y = 0.0f;
@@ -274,7 +274,7 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
                   GetOTWDisplayMode() == ModeTargetToWeapon ||
                   GetOTWDisplayMode() == ModeIncoming ||
                   GetOTWDisplayMode() == ModeWeapon) &&
-                 (otwTrackPlatform.get() == NULL || otwTrackPlatform == otwPlatform)
+                 (otwTrackPlatform.get() == NULL or otwTrackPlatform == otwPlatform)
              ))
     {
 
@@ -511,7 +511,7 @@ void OTWDriverClass::DisplaceTheCamera(float dT)
 {
     Prof(DisplaceTheCamera);
 
-    if ((!xDir) || (!yDir) || (!zDir))
+    if ((!xDir) or (!yDir) or (!zDir))
         return;
 
     // only compute any additional displacement when NOT paused..
@@ -681,7 +681,7 @@ void OTWDriverClass::BuildExternalNearList(void)
     FlushNearList();
 
     // Drop out if we have nothing to do...
-    if (!SimDriver.objectList || DisplayInCockpit() || !otwPlatform || otwPlatform->OnGround() || !otwPlatform->drawPointer)
+    if (!SimDriver.objectList or DisplayInCockpit() or !otwPlatform or otwPlatform->OnGround() or !otwPlatform->drawPointer)
         return;
 
     // Compute the real world camera position
@@ -741,7 +741,7 @@ void OTWDriverClass::DrawExternalViewTarget(void)
     static int LODlie = 0; // A way to force an object to update its terrain data every frame.
 
     // Make sure we don't get in here when we shouldn't.
-    if (otwPlatform.get() == NULL || otwPlatform->drawPointer == NULL)
+    if (otwPlatform.get() == NULL or otwPlatform->drawPointer == NULL)
     {
         return;
     }

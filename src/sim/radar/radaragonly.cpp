@@ -114,6 +114,6 @@ SimObjectType* RadarAGOnlyClass::Exec(SimObjectType*)
 void RadarAGOnlyClass::SetDesiredTarget(SimObjectType* newTarget)
 {
     // Only accept ground targets
-    if (!newTarget || newTarget->BaseData()->OnGround())
+    if (!newTarget or newTarget->BaseData()->OnGround())
         RadarClass::SetDesiredTarget(newTarget);
 }

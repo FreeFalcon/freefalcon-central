@@ -198,7 +198,7 @@ int SimFeatureClass::Wake()
 
         // Is This a taxiway sign?
         if (EntityType()->classInfo_[VU_TYPE] == TYPE_TAXIWAY &&
-            (EntityType()->classInfo_[VU_STYPE] == STYPE_THP || EntityType()->classInfo_[VU_STYPE] == STYPE_THPX))
+            (EntityType()->classInfo_[VU_STYPE] == STYPE_THP or EntityType()->classInfo_[VU_STYPE] == STYPE_THPX))
         {
             // NOTE: Runway pieces are defined upside down. a heading of 0 means runway 18
             yaw = Yaw() * RTD + 180.0F;

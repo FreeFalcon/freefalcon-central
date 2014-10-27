@@ -225,7 +225,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
     if (!g_bRealisticAvionics)
     {
         //MI original code
-        if (mode == AA_BUTTON || mode == AG_BUTTON || mode == NAV_BUTTON)
+        if (mode == AA_BUTTON or mode == AG_BUTTON or mode == NAV_BUTTON)
         {
             if (pbutton != mpPrimaryExclusiveButton)
             {
@@ -240,7 +240,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 }
             }
         }
-        else if (mode == PREV_BUTTON || mode == NEXT_BUTTON)
+        else if (mode == PREV_BUTTON or mode == NEXT_BUTTON)
         {
             HandlePrevNext(mode, mICPSecondaryMode);
         }
@@ -248,7 +248,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
         {
             HandleENTR(mICPSecondaryMode);
         }
-        else if (mode == COMM1_BUTTON || mode == COMM2_BUTTON)
+        else if (mode == COMM1_BUTTON or mode == COMM2_BUTTON)
         {
             if (pbutton != mpTertiaryExclusiveButton)
             {
@@ -346,7 +346,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
             return;
 
         //Master Modes
-        if (mode == AA_BUTTON || mode == AG_BUTTON || mode == NAV_BUTTON)
+        if (mode == AA_BUTTON or mode == AG_BUTTON or mode == NAV_BUTTON)
         {
             mICPPrimaryMode = mode;
 
@@ -371,8 +371,8 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
         /*what mode we've been before. */
         /****************************************************/
 
-        else if (mode == COMM1_BUTTON || mode == COMM2_BUTTON ||
-                 mode == LIST_BUTTON || mode == IFF_BUTTON)
+        else if (mode == COMM1_BUTTON or mode == COMM2_BUTTON ||
+                 mode == LIST_BUTTON or mode == IFF_BUTTON)
         {
             //This results in a new DED page, clear our strings
             ClearStrings();
@@ -407,7 +407,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
         }
 
         //SENCONDAR FUNCTIONS
-        else if (mode == PREV_BUTTON || mode == NEXT_BUTTON)
+        else if (mode == PREV_BUTTON or mode == NEXT_BUTTON)
         {
             ClearStrings();
 
@@ -419,7 +419,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
             else if (IsICPSet(ICPClass::MODE_CNI) && mICPSecondaryMode == SEVEN_BUTTON)
                 PNUpdateMARKMode(mode, 0);
 
-            else if (IsICPSet(ICPClass::EDIT_VHF) || IsICPSet(ICPClass::EDIT_UHF))
+            else if (IsICPSet(ICPClass::EDIT_VHF) or IsICPSet(ICPClass::EDIT_UHF))
                 PNUpdateCOMMMode(mode, 0);
 
             else if (IsICPSet(ICPClass::MODE_DLINK))
@@ -489,7 +489,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
             }
             else if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == EWS_MODE)
             {
-                if (PGMFlare || PGMChaff)
+                if (PGMFlare or PGMChaff)
                     StepEWSProg(mode);
                 else
                     PNUpdateSTPTMode(mode, 0);
@@ -516,7 +516,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
             else
                 ClearInput();
         }
-        else if (mode == UP_MODE || mode == DOWN_MODE || mode == SEQ_MODE || mode == CNI_BUTTON)
+        else if (mode == UP_MODE or mode == DOWN_MODE or mode == SEQ_MODE or mode == CNI_BUTTON)
         {
             if (mode == CNI_MODE)
                 mICPTertiaryMode = CNI_MODE;
@@ -548,7 +548,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 OneButton(mode);
@@ -560,7 +560,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 TwoButton(mode);
@@ -572,7 +572,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 ThreeButton(mode);
@@ -584,7 +584,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 FourButton(mode);
@@ -596,7 +596,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 FifeButton(mode);
@@ -608,7 +608,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 SixButton(mode);
@@ -620,7 +620,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 SevenButton(mode);
@@ -632,7 +632,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 EightButton(mode);
@@ -644,7 +644,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 NineButton(mode);
@@ -697,7 +697,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
 
             if (CheckMode())
                 return;
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
@@ -788,7 +788,7 @@ void ICPClass::Exec()
         if (!MAN)
             CheckAutoSTPT();
 
-        if (IsICPSet(ICPClass::MODE_FACK) || TheHud && TheHud->GetDEDSwitch() == HudClass::PFL_DATA)
+        if (IsICPSet(ICPClass::MODE_FACK) or TheHud && TheHud->GetDEDSwitch() == HudClass::PFL_DATA)
             ExecFACKMode();
 
         if (IsICPSet(ICPClass::MODE_COMM1))

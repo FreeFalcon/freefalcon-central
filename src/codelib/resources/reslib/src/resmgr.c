@@ -851,7 +851,7 @@ RES_EXPORT int ResMountCD(int cd_number, int device)
 
 #if( RES_DEBUG_PARAMS )   /* parameter checking only with debug version */
 
-    if (cd_number < 1 || cd_number > MAX_CD)
+    if (cd_number < 1 or cd_number > MAX_CD)
         SHOULD_I_CALL_WITH(CALLBACK_UNKNOWN_CD, RES_ERR_ILLEGAL_CD, retval);
 
     if (!retval)
@@ -978,7 +978,7 @@ RES_EXPORT int ResCheckMedia(int device)
 
 #if( RES_DEBUG_PARAMS )
 
-    if (device < 0 || device > MAX_DEVICES)
+    if (device < 0 or device > MAX_DEVICES)
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResCheckMedia (use ordinals)");
         return(-1);
@@ -998,7 +998,7 @@ RES_EXPORT int ResCheckMedia(int device)
 
     if (GetVolumeInformation(root, name, 22, &serial, &long1, &long2, dummy, 5))
     {
-        if (strcmp(name, dev -> name) || (serial != dev -> serial))
+        if (strcmp(name, dev -> name) or (serial != dev -> serial))
         {
             strcpy(dev -> name, name);
             dev -> serial = serial;
@@ -1074,7 +1074,7 @@ RES_EXPORT int ResAttach(const char * attach_point_arg, const char * filename, i
 
 #if( RES_DEBUG_PARAMS )
 
-    if (!filename || (strlen(filename) > _MAX_FNAME))
+    if (!filename or (strlen(filename) > _MAX_FNAME))
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResAttach");
         return(-1);
@@ -1226,7 +1226,7 @@ RES_EXPORT int ResDevice(int device_id, DEVICE_ENTRY * dev)
 {
 #if( RES_DEBUG_PARAMS )
 
-    if (device_id < 0 || device_id > MAX_DEVICES || !dev)
+    if (device_id < 0 or device_id > MAX_DEVICES or !dev)
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResDevice");
         return(FALSE);
@@ -1447,7 +1447,7 @@ RES_EXPORT int ResOpenFile(const char * name, int mode)
                 entry = hash_find(GLOBAL_CURRENT_PATH, GLOBAL_HASH_TABLE);
             }
 
-            if (!entry || !entry -> dir)    /* directory is not already added */
+            if (!entry or !entry -> dir)    /* directory is not already added */
             {
                 SAY_ERROR(RES_ERR_UNKNOWN_WRITE_TO, name);
 #if (RES_MULTITHREAD)
@@ -1737,7 +1737,7 @@ RES_EXPORT int ResSizeFile(int file)
 {
 #if( RES_DEBUG_PARAMS )
 
-    if (file < 0 || file >= MAX_FILE_HANDLES)
+    if (file < 0 or file >= MAX_FILE_HANDLES)
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResSizeFile");
         return(-1);
@@ -1777,7 +1777,7 @@ RES_EXPORT int ResReadFile(int handle, void * buffer, size_t count)
 
 #if( RES_DEBUG_PARAMS )
 
-    if (!buffer || handle < 0 || handle > MAX_FILE_HANDLES)
+    if (!buffer or handle < 0 or handle > MAX_FILE_HANDLES)
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResReadFile");
         return(-1);
@@ -2007,7 +2007,7 @@ RES_EXPORT int ResCloseFile(int file)
 
 #if( RES_DEBUG_PARAMS )
 
-    if (file < 0 || file >= MAX_FILE_HANDLES)
+    if (file < 0 or file >= MAX_FILE_HANDLES)
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResCloseFile");
         return(FALSE);
@@ -2141,7 +2141,7 @@ RES_EXPORT size_t ResWriteFile(int handle, const void * buffer, size_t count)
 
 #if( RES_DEBUG_PARAMS )
 
-    if (handle < 0 || handle >= MAX_FILE_HANDLES || !buffer)
+    if (handle < 0 or handle >= MAX_FILE_HANDLES or !buffer)
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResWriteFile");
         return(0);
@@ -2458,7 +2458,7 @@ RES_EXPORT int ResDeleteDirectory(char * pathname, int forced)
     while (status != -1)
     {
 
-        if (!stricmp(fileinfo.name, ".") || !stricmp(fileinfo.name, ".."))
+        if (!stricmp(fileinfo.name, ".") or !stricmp(fileinfo.name, ".."))
         {
             status = _findnext(handle, &fileinfo);
             continue;
@@ -2590,7 +2590,7 @@ RES_EXPORT RES_DIR * ResOpenDirectory(char * pathname)
         dir -> filenames = (char**)((char*)dir + sizeof(RES_DIR));
         dir -> string_pool = (char*)dir + sizeof(RES_DIR) + (sizeof(char *) * (hsh -> num_entries));
 
-        if (!dir -> filenames || !dir -> string_pool)
+        if (!dir -> filenames or !dir -> string_pool)
         {
             SAY_ERROR(RES_ERR_NO_MEMORY, "ResOpenDirectory");
             return(NULL);
@@ -2828,7 +2828,7 @@ RES_EXPORT long ResTellFile(int handle)
 {
 #if( RES_DEBUG_PARAMS )
 
-    if (handle < 0 || handle >= MAX_FILE_HANDLES)
+    if (handle < 0 or handle >= MAX_FILE_HANDLES)
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResTellFile");
         return(-1);
@@ -2881,7 +2881,7 @@ RES_EXPORT int ResSeekFile(int handle, size_t offset, int origin)
 {
 #if( RES_DEBUG_PARAMS )
 
-    if (handle < 0 || handle >= MAX_FILE_HANDLES)
+    if (handle < 0 or handle >= MAX_FILE_HANDLES)
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResSeekFile");
         return(-1);
@@ -2966,7 +2966,7 @@ RES_EXPORT int ResSetDirectory(const char * pathname)
 
 #if( RES_DEBUG_PARAMS )
 
-    if (!pathname || !(*pathname))
+    if (!pathname or !(*pathname))
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResSetDirectory");
         return(FALSE);
@@ -2996,7 +2996,7 @@ RES_EXPORT int ResSetDirectory(const char * pathname)
 
     entry = hash_find(pathname, GLOBAL_HASH_TABLE);
 
-    if (!entry || !entry -> dir)
+    if (!entry or !entry -> dir)
     {
         SAY_ERROR(RES_ERR_PATH_NOT_FOUND, pathname);
         return(FALSE);
@@ -3111,7 +3111,7 @@ RES_EXPORT int ResGetPath(int idx, char * buffer)
 
 #if( RES_DEBUG_PARAMS )
 
-    if (!buffer || idx < 0)
+    if (!buffer or idx < 0)
     {
         return(0);
     }
@@ -3347,7 +3347,7 @@ RES_EXPORT int ResStatusFile(const char * filename, RES_STAT * stat_buffer)
 
 #if( RES_DEBUG_PARAMS )
 
-    if (!filename || !stat_buffer)
+    if (!filename or !stat_buffer)
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResStatusFile");
         return(FALSE);
@@ -3428,7 +3428,7 @@ RES_EXPORT PFI ResSetCallback(int which, PFI func)
 
 #if( RES_DEBUG_PARAMS )
 
-    if ((which < 0) || (which >=  NUMBER_OF_CALLBACKS))
+    if ((which < 0) or (which >=  NUMBER_OF_CALLBACKS))
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResSetCallback");
         return(NULL);
@@ -3464,7 +3464,7 @@ RES_EXPORT PFI ResGetCallback(int which)
 {
 #if( RES_DEBUG_PARAMS )
 
-    if ((which < 0) || (which >= NUMBER_OF_CALLBACKS))
+    if ((which < 0) or (which >= NUMBER_OF_CALLBACKS))
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResGetCallback");
         return(NULL);
@@ -3724,7 +3724,7 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
 
 #endif
 
-    if (!entry || !entry -> dir)
+    if (!entry or !entry -> dir)
         local_table = hash_create(count, buffer);   /* create a new table                               */
     else if (entry)
         local_table = entry -> dir;
@@ -4303,7 +4303,7 @@ RES_EXPORT int ResAsynchRead(int file, void * buffer, PFV callback)
 
 #if( RES_DEBUG_PARAMS )
 
-    if (!buffer || (file < 0) || (file > MAX_FILE_HANDLES))
+    if (!buffer or (file < 0) or (file > MAX_FILE_HANDLES))
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResAsynchRead");
         return(FALSE);
@@ -4380,7 +4380,7 @@ RES_EXPORT int ResAsynchWrite(int file, void * buffer, PFV callback)
 
 #if( RES_DEBUG_PARAMS )
 
-    if (!buffer || (file < 0) || (file > MAX_FILE_HANDLES))
+    if (!buffer or (file < 0) or (file > MAX_FILE_HANDLES))
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResAsynchWrite");
         return(FALSE);
@@ -4455,7 +4455,7 @@ RES_EXPORT int ResExtractFile(const char * dst, const char * src)
 
 #if( RES_DEBUG_PARAMS )
 
-    if (!dst || !src)
+    if (!dst or !src)
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResExtract");
         return(-1);
@@ -4718,7 +4718,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
 
 #if( RES_DEBUG_PARAMS )
 
-    if (!name || !mode)
+    if (!name or !mode)
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResFOpen");
         return(FALSE);
@@ -4734,7 +4734,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
        need to return an error if the file being operated on
        is an archive file (eventually, this may be otherwise) */
 
-    if (strchr(mode, 'w') || strchr(mode, 'a'))
+    if (strchr(mode, 'w') or strchr(mode, 'a'))
         write_flag = TRUE;
 
 
@@ -4788,7 +4788,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
         /* if the directory does not exist, this is an error.  Otherwise,
            we get the ptr to the hash table for the destination directory */
 
-        if (!entry || !entry -> dir)    /* directory not found in resmgr */
+        if (!entry or !entry -> dir)    /* directory not found in resmgr */
         {
             SAY_ERROR(RES_ERR_UNKNOWN_WRITE_TO, name);
 #if (RES_MULTITHREAD)
@@ -4908,7 +4908,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
     stream -> _bufsiz  = 0;
     stream -> _tmpfname = NULL;
 
-    if (!entry || (entry -> archive == -1))
+    if (!entry or (entry -> archive == -1))
     {
 
         /* ----- Loose file ----- */
@@ -5216,7 +5216,7 @@ int __cdecl RES_FCLOSE(FILE * file)
 #if( RES_DEBUG_PARAMS )
     /* check to see if it's one of our two flavors of FILE ptrs */
 
-    if (!file || !(file -> _flag, (_IOARCHIVE | _IOLOOSE)))
+    if (!file or !(file -> _flag, (_IOARCHIVE | _IOLOOSE)))
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResFClose");
         return(EOF); /* error */
@@ -5390,7 +5390,7 @@ long __cdecl RES_FTELL(FILE * stream)
 
         /* GFG_NOV06        count = (int)( stream -> _ptr - stream -> _base ); *//* should be safe (key word: SHOULD) */
 
-        if (handle < 0 || handle > MAX_FILE_HANDLES || (FILE_HANDLES[ handle ].os_handle == -1 && !(stream -> _flag & _IOLOOSE)))
+        if (handle < 0 or handle > MAX_FILE_HANDLES or (FILE_HANDLES[ handle ].os_handle == -1 && !(stream -> _flag & _IOLOOSE)))
         {
             SAY_ERROR(RES_ERR_ILLEGAL_FILE_HANDLE, "ftell");
             UNLOCK_STREAM(stream);
@@ -5636,12 +5636,12 @@ size_t __cdecl RES_FREAD(void *buffer, size_t size, size_t num, FILE *stream)
     if (anybuf(stream)) /* already has buffer, use its size */
         bufsize = stream->_bufsiz;
     else
-#if defined (_M_M68K) || defined (_M_MPPC)
+#if defined (_M_M68K) or defined (_M_MPPC)
         bufsize = BUFSIZ;           /* assume will get BUFSIZ buffer */
 
-#else  /* defined (_M_M68K) || defined (_M_MPPC) */
+#else  /* defined (_M_M68K) or defined (_M_MPPC) */
         bufsize = _INTERNAL_BUFSIZ; /* assume will get _INTERNAL_BUFSIZ buffer */
-#endif  /* defined (_M_M68K) || defined (_M_MPPC) */
+#endif  /* defined (_M_M68K) or defined (_M_MPPC) */
 
     /* here is the main loop -- we go through here until we're done */
     while (count != 0)
@@ -6101,7 +6101,7 @@ int __cdecl _filbuf(FILE * stream)
             ***/
         }
 
-        if ((stream -> _cnt == 0) || (stream -> _cnt == -1))
+        if ((stream -> _cnt == 0) or (stream -> _cnt == -1))
         {
             stream -> _flag  or_eq  stream -> _cnt ? _IOERR : _IOEOF;
             stream -> _cnt = 0;
@@ -7573,7 +7573,7 @@ HASH_ENTRY * hash_find_table(const char * name, HASH_TABLE ** table)
 
     /* check to see if a directory name is specified */
 
-    if (!wild_path && (strchr(name, ASCII_BACKSLASH) || (name[0] == ASCII_DOT)))
+    if (!wild_path && (strchr(name, ASCII_BACKSLASH) or (name[0] == ASCII_DOT)))
     {
         /* utterly non-portable */
         /* create a full path name from what could be a partial path */

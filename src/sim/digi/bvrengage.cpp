@@ -52,8 +52,8 @@ void DigitalBrain::BvrEngageCheck(void)
     /*---------------------*/
     /* return if no target */
     /*---------------------*/
-    if (targetPtr == NULL || curMode == RTBMode || /* 2002-04-01 ADDED BY S.G. Player's wing doing a maneuver */ mpActionFlags[AI_EXECUTE_MANEUVER])/*|| // No Target
-      (!mpActionFlags[AI_ENGAGE_TARGET] && missionClass != AAMission && !missionComplete) || // Target is not assigned and on AG mission
+    if (targetPtr == NULL or curMode == RTBMode or /* 2002-04-01 ADDED BY S.G. Player's wing doing a maneuver */ mpActionFlags[AI_EXECUTE_MANEUVER])/*|| // No Target
+      (!mpActionFlags[AI_ENGAGE_TARGET] && missionClass != AAMission && !missionComplete) or // Target is not assigned and on AG mission
        curMode == RTBMode)*/
     {
         bvrCurrProfile = Pnone;
@@ -198,7 +198,7 @@ void DigitalBrain::BvrEngageCheck(void)
             AddMode(BVREngageMode);
         }
     }
-    else if (targetPtr->localData->range > 1.2F * engageRange || //1,2 from 1,5
+    else if (targetPtr->localData->range > 1.2F * engageRange or //1,2 from 1,5
              /*!CanEngage(self, self->CombatClass(), targetPtr, BVRManeuver)*/
              self->CombatClass() > 7) // 2002-03-11 MODIFIED BY S.G. Added parameter BVRManeuver
     {
@@ -239,7 +239,7 @@ void DigitalBrain::BvrEngage(void)
 #endif
 
     // do we need to evaluate our position?
-    if (bvrTacticTimer < SimLibElapsedTime || targetPtr != lastTarget ||
+    if (bvrTacticTimer < SimLibElapsedTime or targetPtr != lastTarget ||
         missilelasttime != missileFiredEntity)
     {
         // run logic for next tactic
@@ -626,7 +626,7 @@ void DigitalBrain::BvrChooseTactic(void)
 
     //CalculateMAR();//Cobra bye bye
 
-    if (targetPtr->BaseData()->IsAirplane() || targetPtr->BaseData()->IsFlight() || targetPtr->BaseData()->IsHelicopter())
+    if (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter())
     {
         bvrCurrTactic = BvrNoIntercept;
     }
@@ -737,7 +737,7 @@ void DigitalBrain::ChoiceProfile(void)
 
     missionType = ((UnitClass*)(self->GetCampaignObject()))->GetUnitMission();
 
-    if (missionType > 10 && !g_bUseAggresiveIncompleteA2G && (IsSetATC(HasAGWeapon) || !missionComplete))
+    if (missionType > 10 && !g_bUseAggresiveIncompleteA2G && (IsSetATC(HasAGWeapon) or !missionComplete))
     {
         //We are defensive to protect ourselves
         bvrCurrProfile = PDefensive;
@@ -932,7 +932,7 @@ void DigitalBrain::ChoiceProfile(void)
      {
      //Cobra we are modifying here to allow A/G flights to attack
      //this works with prior new BVR code for A/G flights
-     if (!IsSetATC(HasAGWeapon) || g_bUseAggresiveIncompleteA2G || (!g_bUseAggresiveIncompleteA2G && missionComplete))
+     if (!IsSetATC(HasAGWeapon) or g_bUseAggresiveIncompleteA2G or (!g_bUseAggresiveIncompleteA2G && missionComplete))
      {
      if (!outranged)
      {
@@ -1119,7 +1119,7 @@ void DigitalBrain::level2b(void)
     if (self->vehicleInUnit == 2)
         elementlead = (AircraftClass *)self->GetCampaignObject()->GetComponentNumber(0);
 
-    if ((bvractionstep != 0 || targetData->range > TGTMAR) && WhoIsSpiked() >= 15 && targetData->range < MAR)
+    if ((bvractionstep != 0 or targetData->range > TGTMAR) && WhoIsSpiked() >= 15 && targetData->range < MAR)
         bvractionstep = 0;
     else bvractionstep = 1;
 
@@ -1179,7 +1179,7 @@ void DigitalBrain::level3b(void)
 
     if (bvractionstep != 3)// we are not pumping
     {
-        if ((bvractionstep != 0 || targetData->range > maxAAWpnRange) && WhoIsSpiked() >= 15)
+        if ((bvractionstep != 0 or targetData->range > maxAAWpnRange) && WhoIsSpiked() >= 15)
             bvractionstep = 0;
         else bvractionstep = 1;
 
@@ -1391,8 +1391,8 @@ void DigitalBrain::level2c(void)
 
     if (wingman)
     {
-        if ((bvractionstep != 0  || targetData->range > TGTMAR) && wingman->DBrain()->bvrCurrTactic == BvrFlyFormation && WhoIsSpiked() > 3  ||
-            (bvractionstep != 0 || targetData->range > TGTMAR) && wingman->DBrain()->bvrCurrTactic != BvrFlyFormation && WhoIsSpiked() > 7)
+        if ((bvractionstep != 0  or targetData->range > TGTMAR) && wingman->DBrain()->bvrCurrTactic == BvrFlyFormation && WhoIsSpiked() > 3  ||
+            (bvractionstep != 0 or targetData->range > TGTMAR) && wingman->DBrain()->bvrCurrTactic != BvrFlyFormation && WhoIsSpiked() > 7)
             bvractionstep = 0;
         else bvractionstep = 1;
 
@@ -1654,7 +1654,7 @@ void DigitalBrain::grinder(void)
                 bvrCurrTactic = BvrPump ;
                 bvrTacticTimer = SimLibElapsedTime + 40 * CampaignSeconds;
 
-                if (targetData->range > 10 * NM_TO_FT || WhoIsSpiked() < 3)
+                if (targetData->range > 10 * NM_TO_FT or WhoIsSpiked() < 3)
                     bvractionstep = 1;
             }
             else if (IsElementlead)
@@ -1662,7 +1662,7 @@ void DigitalBrain::grinder(void)
                 bvrCurrTactic = BvrPump  ;
                 bvrTacticTimer = SimLibElapsedTime + 40 * CampaignSeconds;
 
-                if (targetData->range > 10 * NM_TO_FT || WhoIsSpiked() < 3)
+                if (targetData->range > 10 * NM_TO_FT or WhoIsSpiked() < 3)
                     bvractionstep = 1;
             }
 
@@ -2026,7 +2026,7 @@ void DigitalBrain::Defensive(void)
 {
     if (!Isflightlead && !IsElementlead) return;
 
-    if (WhoIsSpiked() || WhoIsHotnosed())
+    if (WhoIsSpiked() or WhoIsHotnosed())
     {
         bvrCurrTactic = BvrFollowWaypoints;
         bvrTacticTimer = SimLibElapsedTime + 10 * CampaignSeconds;
@@ -2221,7 +2221,7 @@ int DigitalBrain::WhoIsSpiked(void)
      campBaseObj = ((CampBaseClass *)targetPtr->BaseData());
 
     // If it doesn't have a campaign object or it's identified... END OF ADDED SECTION plus the use of campBaseObj below
-    if ( !campBaseObj || campBaseObj->GetIdentified(self->GetTeam()))
+    if ( !campBaseObj or campBaseObj->GetIdentified(self->GetTeam()))
     {
      RadarClass* theRadar = (RadarClass*)FindSensor(((SimMoverClass*)targetPtr->BaseData()), SensorClass::Radar);
      if (theRadar)
@@ -2250,7 +2250,7 @@ void DigitalBrain::CalculateMAR()
      TGTMAR = maxAAWpnRange/2;
 
      // 2002-03-22 MODIFIED BY S.G. Only use the original code if we have no minTGTMAR
-     if (!self->af || self->af->GetMinTGTMAR() == 0.0) {
+     if (!self->af or self->af->GetMinTGTMAR() == 0.0) {
      if (self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG29||
       self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG31)
      {
@@ -2288,10 +2288,10 @@ void DigitalBrain::CalculateMAR()
      campBaseObj = ((CampBaseClass *)targetPtr->BaseData());
 
      // If it doesn't have a campaign object or it's identified... END OF ADDED SECTION plus the use of campBaseObj below
-     if ( !campBaseObj || campBaseObj->GetIdentified(self->GetTeam()))
+     if ( !campBaseObj or campBaseObj->GetIdentified(self->GetTeam()))
      {// we have Type ID.
      // 2002-03-22 MODIFIED BY S.G. If our target is an airplane and we have a minMAR, use it instead of the original method
-     if (!targetPtr->BaseData()->IsAirplane() || !((AircraftClass *)targetPtr->BaseData())->af || ((AircraftClass *)targetPtr->BaseData())->af->GetMaxMARIdedStart() == 0.0f) {
+     if (!targetPtr->BaseData()->IsAirplane() or !((AircraftClass *)targetPtr->BaseData())->af or ((AircraftClass *)targetPtr->BaseData())->af->GetMaxMARIdedStart() == 0.0f) {
      if (targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG29||
       targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG31)
      {
@@ -2829,7 +2829,7 @@ int DigitalBrain::BeamManeuver(int direction, int NotchHI)
     if (nh2 < -PI)
         nh2 += 2 * PI;
 
-    if (direction == offRight || (TargetAz(self, targetPtr) < 0 && direction != offLeft))
+    if (direction == offRight or (TargetAz(self, targetPtr) < 0 && direction != offLeft))
     {
         az = nh1;
         offsetdir = offRight;
@@ -2942,7 +2942,7 @@ void DigitalBrain::CrankManeuver(int direction, int Height)//me123 //Cobra add h
             nh2 += 2 * PI;
         }
 
-        if (direction == offRight || (targetPtr->localData->azFrom < 0.0f && direction != offLeft))
+        if (direction == offRight or (targetPtr->localData->azFrom < 0.0f && direction != offLeft))
         {
             az = nh1;
             offsetdir = offRight;

@@ -372,7 +372,7 @@ void DrawPolyTG(PolyTexVC *poly)
 {
     verts += poly->nVerts;
     SelectState(RenderStateTable[poly->type]);
-    ShiAssert((poly->type == TexG) || (poly->type == CTexG));
+    ShiAssert((poly->type == TexG) or (poly->type == CTexG));
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
     TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, NULL, poly->uv, false);
     TheStateStack.context->SetPalID(0);
@@ -383,7 +383,7 @@ void DrawPolyFTG(PolyTexVC *poly)
     verts += poly->nVerts;
     SetSpecularFog();
     SelectState(RenderStateTable[poly->type]);
-    ShiAssert((poly->type == TexG) || (poly->type == CTexG));
+    ShiAssert((poly->type == TexG) or (poly->type == CTexG));
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
     TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, NULL, poly->uv, false);
     TheStateStack.context->SetPalID(0);
@@ -393,7 +393,7 @@ void DrawPolyATG(PolyTexVC *poly)
 {
     verts += poly->nVerts;
     SelectState(RenderStateTable[poly->type]);
-    ShiAssert((poly->type == ATexG) || (poly->type == CATexG));
+    ShiAssert((poly->type == ATexG) or (poly->type == CATexG));
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
     TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR | PRIM_COLOP_TEXTURE, poly, poly->xyz, poly->rgba, NULL, poly->uv, false);
     TheStateStack.context->SetPalID(0);
@@ -404,7 +404,7 @@ void DrawPolyFATG(PolyTexVC *poly)
     verts += poly->nVerts;
     SetSpecularFog();
     SelectState(RenderStateTable[poly->type]);
-    ShiAssert((poly->type == ATexG) || (poly->type == CATexG));
+    ShiAssert((poly->type == ATexG) or (poly->type == CATexG));
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
     TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR | PRIM_COLOP_TEXTURE, poly, poly->xyz, poly->rgba, NULL, poly->uv, false);
     TheStateStack.context->SetPalID(0);

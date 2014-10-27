@@ -348,7 +348,7 @@ void CPDial::DisplayBlit3D()
         return;
     }
 
-    if (!IsRendered || !DisplayOptions.bRender2DCockpit)
+    if (!IsRendered or !DisplayOptions.bRender2DCockpit)
     {
         return;
     }

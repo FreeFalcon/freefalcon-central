@@ -920,7 +920,7 @@ void MakeFontList(long FontID)
 
     win = gMainHandler->FindWindow(FONT_ED_WIN);
 
-    if (!win || !FontID)
+    if (!win or !FontID)
         return;
 
     curfont = gFontList->Find(FontID);

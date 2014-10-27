@@ -552,7 +552,7 @@ void RedrawCell(MapData md, GridIndex X, GridIndex Y)
     if (!MainMapData)
         return; // Map's not open
 
-    if (X < md->FX || X > md->LX || Y < md->FY || Y > md->LY)
+    if (X < md->FX or X > md->LX or Y < md->FY or Y > md->LY)
         return;
 
     GetCellScreenRect(md, X, Y, &r);
@@ -639,7 +639,7 @@ void ShowSAMs(MapData md, HDC DC)
         else
             range = e->GetWeaponRange(LowAir);
 
-        if (range > 0 && (e->IsObjective() || (e->GetDomain() != DOMAIN_AIR && e->IsUnit() && !((Unit)e)->Moving())))
+        if (range > 0 && (e->IsObjective() or (e->GetDomain() != DOMAIN_AIR && e->IsUnit() && !((Unit)e)->Moving())))
         {
             e->GetLocation(&x, &y);
             DisplaySideRange(DC, e->GetOwner(), (short)(POSX(x) + (md->CellSize >> 1)), (short)(POSY(y) + (md->CellSize >> 1)), range * md->CellSize);
@@ -842,10 +842,10 @@ void FindBorders(MapData md)
     tx = md->CenX - (xsize / md->CellSize) / 2;
     ty = md->CenY + (ysize / md->CellSize) / 2;
 
-    if (tx - md->FX > 1 || md->FX - tx > 1)
+    if (tx - md->FX > 1 or md->FX - tx > 1)
         md->FX = tx;
 
-    if (ty - md->LY > 1 || md->LY - ty > 1)
+    if (ty - md->LY > 1 or md->LY - ty > 1)
         md->LY = ty;
 
     md->LX = md->FX + (xsize / md->CellSize) + 1;
@@ -967,7 +967,7 @@ void MakeCampaignNew(void)
 
         while (u)
         {
-            if (u->IsFlight() || u->IsPackage())
+            if (u->IsFlight() or u->IsPackage())
             {
                 u->KillUnit();
                 u->Remove();
@@ -1605,7 +1605,7 @@ void SetRefresh(MapData md)
 {
     RECT r;
 
-    if (!md || !md->hMapWnd)
+    if (!md or !md->hMapWnd)
         return;
 
     RefreshAll = TRUE;
@@ -1713,7 +1713,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
             NLY = md->LY;
         }
 
-        if ((side & 0xC) == 0xC || (side & 0x3) == 0x3)
+        if ((side & 0xC) == 0xC or (side & 0x3) == 0x3)
         {
             NFX = md->FX;
             NFY = md->FY;
@@ -1778,7 +1778,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
         {
             OneObjective->GetLocation(&x, &y);
 
-            if (x > md->LX || x < md->FX || y < md->FY || y > md->LY)
+            if (x > md->LX or x < md->FX or y < md->FY or y > md->LY)
                 ; // Out of window bounds
             else
             {
@@ -1869,7 +1869,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
 
     if (md->ShowWPs)
     {
-        if (!WPUnit || WPUnit->IsDead())
+        if (!WPUnit or WPUnit->IsDead())
             WPUnit = NULL;
         else
         {
@@ -2845,7 +2845,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                 {
                     role = u->GetUnitNormalRole();
 
-                    if (role == GRO_FIRESUPPORT || role == GRO_AIRDEFENSE)
+                    if (role == GRO_FIRESUPPORT or role == GRO_AIRDEFENSE)
                     {
                         u->GetLocation(&x, &y);
                         o = FindNearestObjective(x, y, NULL);
@@ -2875,7 +2875,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
 
                 while (o)
                 {
-                    if (o->SamSite() || o->RadarSite() || o->GetElectronicDetectionRange(LowAir) > 0)
+                    if (o->SamSite() or o->RadarSite() or o->GetElectronicDetectionRange(LowAir) > 0)
                     {
                         // This place needs arc data
                         ox = o->XPos();
@@ -3585,7 +3585,7 @@ void ProcessCommand(int Key)
         case 'E':
             StateEdit = !StateEdit;
 
-            if (ThisTeam == 0 || !StateToEdit)
+            if (ThisTeam == 0 or !StateToEdit)
                 StateEdit = FALSE;
 
             SetRefresh(MainMapData);

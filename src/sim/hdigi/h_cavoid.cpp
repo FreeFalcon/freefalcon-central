@@ -47,7 +47,7 @@ void HeliBrain::CollisionCheck(void)
             timeToImpact = (localData->range - hRange) / localData->rangedot;
 
             // not a problem
-            if (timeToImpact < 0.0 || timeToImpact > reactTime)
+            if (timeToImpact < 0.0 or timeToImpact > reactTime)
             {
                 obj = obj->next;
                 continue;

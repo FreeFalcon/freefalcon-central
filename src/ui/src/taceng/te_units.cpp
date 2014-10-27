@@ -337,7 +337,7 @@ void LoadTEUnits()
 
     while (fgets(buf, sizeof buf, fp))
     {
-        if (buf[0] == '#' || buf[0] == '/' || buf[0] == '\r' || buf[0] == '\n')
+        if (buf[0] == '#' or buf[0] == '/' or buf[0] == '\r' or buf[0] == '\n')
             continue;
 
         if (curdf >= maxdf - 2)   // time to grow the array
@@ -735,7 +735,7 @@ SquadronClass* tactical_make_squadron(VU_ID id, long ac_type)
 
     airbase = (CampBaseClass*) FindEntity(id);
 
-    if (!airbase || !airbase->IsObjective() || airbase->GetType() != TYPE_AIRBASE)
+    if (!airbase or !airbase->IsObjective() or airbase->GetType() != TYPE_AIRBASE)
         // KCK: Should probably just pick one
         return NULL;
 
@@ -773,7 +773,7 @@ void tactical_add_squadron(VU_ID id)
 
     airbase = (CampBaseClass*) FindEntity(id);
 
-    if (!airbase || !airbase->IsObjective() || airbase->GetType() != TYPE_AIRBASE)
+    if (!airbase or !airbase->IsObjective() or airbase->GetType() != TYPE_AIRBASE)
         // KCK: Should probably just pick one
         return;
 
@@ -2362,7 +2362,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
         else
             mis.mission = AMIS_TRAINING;
 
-        if (!mis.tx || !mis.ty)
+        if (!mis.tx or !mis.ty)
         {
             // This is probably a package being editing, and the target x,y have got nuked.
             // We can get them from the package destination
@@ -2559,7 +2559,7 @@ void display_air_units(Unit u)
     // Make sure we can see this unit
     stype = u->GetSType();
 
-    if (stype == STYPE_UNIT_FIGHTER || stype == STYPE_UNIT_FIGHTER_BOMBER)
+    if (stype == STYPE_UNIT_FIGHTER or stype == STYPE_UNIT_FIGHTER_BOMBER)
     {
         menu->SetItemState(MID_UNITS_SQUAD_FIGHTER, 1);
         MenuToggleUnitCB(MID_UNITS_SQUAD_FIGHTER, 0, menu);
@@ -2569,7 +2569,7 @@ void display_air_units(Unit u)
         menu->SetItemState(MID_UNITS_SQUAD_BOMBER, 1);
         MenuToggleUnitCB(MID_UNITS_SQUAD_BOMBER, 0, menu);
     }
-    else if (stype == STYPE_UNIT_ATTACK_HELO || stype == STYPE_UNIT_RECON_HELO || stype == STYPE_UNIT_TRANSPORT_HELO)
+    else if (stype == STYPE_UNIT_ATTACK_HELO or stype == STYPE_UNIT_RECON_HELO or stype == STYPE_UNIT_TRANSPORT_HELO)
     {
         menu->SetItemState(MID_UNITS_SQUAD_HELI, 1);
         MenuToggleUnitCB(MID_UNITS_SQUAD_HELI, 0, menu);
@@ -2751,7 +2751,7 @@ void tactical_set_orders(Battalion bat, VU_ID obj, GridIndex tx, GridIndex ty)
 
     o = FindValidObjective(bat, obj, tx, ty);
 
-    if (!o || !bat)
+    if (!o or !bat)
     {
         return;
     }
@@ -2766,7 +2766,7 @@ void tactical_set_orders(Battalion bat, VU_ID obj, GridIndex tx, GridIndex ty)
             bat->SetUnitOrders(GORD_AIRDEFENSE, o->Id());
         else if (role == GRO_FIRESUPPORT)
             bat->SetUnitOrders(GORD_SUPPORT, o->Id());
-        else if (role == GRO_DEFENSE || role == GRO_ATTACK || role == GRO_RECON)
+        else if (role == GRO_DEFENSE or role == GRO_ATTACK or role == GRO_RECON)
             bat->SetUnitOrders(GORD_DEFEND, o->Id());
         else
             bat->SetUnitOrders(GORD_RESERVE, o->Id());
@@ -2795,7 +2795,7 @@ void tactical_set_orders(Battalion bat, VU_ID obj, GridIndex tx, GridIndex ty)
             wp->GetWPLocation(&x, &y);
         }
 
-        if (!wp || x != xd || y != yd)
+        if (!wp or x != xd or y != yd)
         {
             wp = bat->AddWPAfter(NULL, xd, yd, 0, 0, TheCampaign.CurrentTime, 0, 0);
         }
@@ -2810,7 +2810,7 @@ void tactical_set_orders(Battalion bat, VU_ID obj, GridIndex tx, GridIndex ty)
 
         wp->GetWPLocation(&x, &y);
 
-        if (x != xd || y != yd || wp == bat->GetFirstUnitWP())
+        if (x != xd or y != yd or wp == bat->GetFirstUnitWP())
         {
             nw = new WayPointClass(xd, yd, 0, 0, wp->GetWPDepartureTime() + 30 * CampaignMinutes, 0, 0, 0);
             wp->InsertWP(nw);
@@ -2991,7 +2991,7 @@ static void update_new_battalion_window(void)
     if (list)
         equipment = list->GetTextID();
 
-    if (last_equip != equipment || gLastUnitType < 0)
+    if (last_equip != equipment or gLastUnitType < 0)
     {
         gLastEquipment = last_equip = equipment;
         gLastUnitType = -1;

@@ -82,7 +82,7 @@ BOOL LoadTargaFile(char *filename, char **image, BITMAPINFO *bmi)
     }
 
     // Read in image data
-    F4Assert(!(Targa.Width > 3000 || Targa.Height > 3000));
+    F4Assert(!(Targa.Width > 3000 or Targa.Height > 3000));
 
     bytesToRead = Targa.Width * Targa.Height * 2;
 

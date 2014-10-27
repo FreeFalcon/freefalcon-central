@@ -718,7 +718,7 @@ void ComplyCB(long ID, short hittype, C_Base *control)
         tail++;
         *tail = 0;
 
-        if ((tail - head) < (3 * sizeof(_TCHAR)) || !(*head))
+        if ((tail - head) < (3 * sizeof(_TCHAR)) or !(*head))
         {
             AreYouSure(TXT_ERROR, TXT_INVALID_GAMENAME, CloseWindowCB, CloseWindowCB);
             return;
@@ -2076,7 +2076,7 @@ static void INFOSaveValues(void)
 
     if (button != NULL)
     {
-        if (button->GetState() == C_STATE_1 || button->GetState() == C_STATE_2)
+        if (button->GetState() == C_STATE_1 or button->GetState() == C_STATE_2)
             PlayerOptions.SetSimFlag(SIM_UNLIMITED_FUEL);
         else
             PlayerOptions.ClearSimFlag(SIM_UNLIMITED_FUEL);
@@ -2086,7 +2086,7 @@ static void INFOSaveValues(void)
 
     if (button != NULL)
     {
-        if (button->GetState() == C_STATE_1 || button->GetState() == C_STATE_2)
+        if (button->GetState() == C_STATE_1 or button->GetState() == C_STATE_2)
             PlayerOptions.SetSimFlag(SIM_UNLIMITED_CHAFF);
         else
             PlayerOptions.ClearSimFlag(SIM_UNLIMITED_CHAFF);
@@ -2097,7 +2097,7 @@ static void INFOSaveValues(void)
 
     if (button != NULL)
     {
-        if (button->GetState() == C_STATE_1 || button->GetState() == C_STATE_2)
+        if (button->GetState() == C_STATE_1 or button->GetState() == C_STATE_2)
             PlayerOptions.SetSimFlag(SIM_NO_COLLISIONS);
         else
             PlayerOptions.ClearSimFlag(SIM_NO_COLLISIONS);
@@ -2107,7 +2107,7 @@ static void INFOSaveValues(void)
 
     if (button != NULL)
     {
-        if (button->GetState() == C_STATE_1 || button->GetState() == C_STATE_2)
+        if (button->GetState() == C_STATE_1 or button->GetState() == C_STATE_2)
             PlayerOptions.SetSimFlag(SIM_NO_BLACKOUT);
         else
             PlayerOptions.ClearSimFlag(SIM_NO_BLACKOUT);
@@ -2118,7 +2118,7 @@ static void INFOSaveValues(void)
 
     if (button != NULL)
     {
-        if (button->GetState() == C_STATE_1 || button->GetState() == C_STATE_2)
+        if (button->GetState() == C_STATE_1 or button->GetState() == C_STATE_2)
             PlayerOptions.SetSimFlag(SIM_NAMETAGS);
         else
             PlayerOptions.ClearSimFlag(SIM_NAMETAGS);
@@ -2128,7 +2128,7 @@ static void INFOSaveValues(void)
 
     if (button != NULL)
     {
-        if (button->GetState() == C_STATE_1 || button->GetState() == C_STATE_2)
+        if (button->GetState() == C_STATE_1 or button->GetState() == C_STATE_2)
             PlayerOptions.GeneralFlags  or_eq  GEN_NO_WEATHER;
         else
             PlayerOptions.GeneralFlags &= compl GEN_NO_WEATHER;
@@ -2139,7 +2139,7 @@ static void INFOSaveValues(void)
 
     if (button != NULL)
     {
-        if (button->GetState() == C_STATE_1 || button->GetState() == C_STATE_2)
+        if (button->GetState() == C_STATE_1 or button->GetState() == C_STATE_2)
             PlayerOptions.SetSimFlag(SIM_INVULNERABLE);
         else
             PlayerOptions.ClearSimFlag(SIM_INVULNERABLE);

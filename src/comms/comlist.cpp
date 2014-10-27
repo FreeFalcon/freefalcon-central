@@ -3,6 +3,7 @@
 * @author sfr
 */
 
+#include <cISO646>
 #include "ComList.h"
 
 // global variable
@@ -82,7 +83,7 @@ ComIP *ComList::iterBegin(int protocol)
         ComIP *com = *iterator;
 
         if (
-            (protocol == -1) || // matches all
+            (protocol == -1) or // matches all
             (com_API_get_protocol((com_API_handle)(com)) == protocol)
         )
         {

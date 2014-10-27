@@ -124,7 +124,7 @@ int SMSClass::LaunchMissile(void)
             // END OF MOVED SECTION
 
             // Don't hand off ground targets to radar guided air to air missiles
-            if (curWeaponType != wtAim120 || (tmpTargetPtr && !tmpTargetPtr->BaseData()->OnGround()))
+            if (curWeaponType != wtAim120 or (tmpTargetPtr && !tmpTargetPtr->BaseData()->OnGround()))
             {
                 theMissile->Start(tmpTargetPtr);
             }

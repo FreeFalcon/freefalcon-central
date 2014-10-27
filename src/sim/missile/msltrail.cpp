@@ -180,7 +180,7 @@ void MissileClass::UpdateTrail(void)
     //   if (trail)
     if (TrailId)
     {
-        if (PowerOutput() > 0.25F || g_nmissiletrial)
+        if (PowerOutput() > 0.25F or g_nmissiletrial)
         {
             newPoint.x = XPos();
             newPoint.y = YPos();

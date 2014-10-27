@@ -90,7 +90,7 @@ Unit DivisionClass::GetUnitElement(int en)
     {
         ret = (Unit)vuDatabase->Find(element[en]);
 
-        if (!ret || ret->GetDomain() != DOMAIN_LAND)
+        if (!ret or ret->GetDomain() != DOMAIN_LAND)
             RemoveChild(element[en]);
     }
 

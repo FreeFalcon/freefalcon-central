@@ -40,7 +40,7 @@ uchar AdjustedWeaponCount(int *total, uchar max_this_station, short wid);
 
 int LoadWeapon(int hp, int last_hp, short wid, int to_load, int max, Squadron squadron, short Weapon[HARDPOINT_MAX], uchar Weapons[HARDPOINT_MAX], VehicleClassDataType* vc)
 {
-    if (wid < 0 || wid >= NumWeaponTypes)
+    if (wid < 0 or wid >= NumWeaponTypes)
         return 0;
 
     if (squadron && !squadron->GetUnitStores(wid))
@@ -83,7 +83,7 @@ int LoadWeapon(int hp, int last_hp, short wid, int to_load, int max, Squadron sq
         }
     }
 
-    if (last_hp + 1 - hp == hp || to_load & 0x01)
+    if (last_hp + 1 - hp == hp or to_load & 0x01)
     {
         // Not loading symetrically
         Weapon[hp] = wid;
@@ -105,7 +105,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
 {
     int score;
 
-    if (!wid || wid < 0 || wid >= NumWeaponTypes)
+    if (!wid or wid < 0 or wid >= NumWeaponTypes)
         return 0;
 
     //LRKLUDGE
@@ -183,13 +183,13 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
     // END OF ADDED SECTION 2002-01-26
     if (type_flags & WEAP_BAI_LOADOUT)
     {
-        if (((WeaponDataTable[wid].GuidanceFlags & WEAP_LASER) && (wid != 68 || wid != 310)) || // 2002-01-24 MODIFIED BY S.G. Added () around the '&' statements since it has lower precedence than &&
+        if (((WeaponDataTable[wid].GuidanceFlags & WEAP_LASER) && (wid != 68 or wid != 310)) or // 2002-01-24 MODIFIED BY S.G. Added () around the '&' statements since it has lower precedence than &&
             (WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR) ||
             (WeaponDataTable[wid].GuidanceFlags & WEAP_ANTIRADATION))
             score = 0;
 
         //Cobra Test
-        if ((WeaponDataTable[wid].GuidanceFlags & WEAP_REAR_ASPECT) || (WeaponDataTable[wid].GuidanceFlags & WEAP_FRONT_ASPECT))
+        if ((WeaponDataTable[wid].GuidanceFlags & WEAP_REAR_ASPECT) or (WeaponDataTable[wid].GuidanceFlags & WEAP_FRONT_ASPECT))
             score = 0;
 
         // RV - Biker - Check for PEN type weapons here also
@@ -300,9 +300,9 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
     for (hp = chp; hp <= lhp && num > 0; hp++)
     {
         // RV - Biker - Jammers now do overwrite AA and AG weapons
-        //if (!Weapon[hp] && (!sl || !Weapon[lhp+1-hp])) // Only check for empty hard points
-        if (!Weapon[hp] && (!sl || !Weapon[lhp + 1 - hp]) || ((type_flags & WEAP_ECM || type_flags & WEAP_LASER_POD) && !(WeaponDataTable[Weapon[hp]].Flags & (WEAP_FUEL | WEAP_RECON)))) // Only check for empty hard points
-            //if (!Weapon[hp] || (temp_flags & WEAP_LASER_POD))
+        //if (!Weapon[hp] && (!sl or !Weapon[lhp+1-hp])) // Only check for empty hard points
+        if (!Weapon[hp] && (!sl or !Weapon[lhp + 1 - hp]) or ((type_flags & WEAP_ECM or type_flags & WEAP_LASER_POD) && !(WeaponDataTable[Weapon[hp]].Flags & (WEAP_FUEL | WEAP_RECON)))) // Only check for empty hard points
+            //if (!Weapon[hp] or (temp_flags & WEAP_LASER_POD))
         {
             if (vc->Weapons[hp] == 255) // This is a weapon list
             {

@@ -82,7 +82,7 @@ int SimDirtyData::Process(uchar autodisp)
 
     ent = static_cast<FalconEntity*>(vuDatabase->Find(EntityId()));
 
-    if (!ent || autodisp)
+    if (!ent or autodisp)
     {
         return 0;
     }

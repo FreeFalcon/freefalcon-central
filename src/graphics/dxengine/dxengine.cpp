@@ -106,7 +106,7 @@ CDXEngine::CDXEngine(void)
     t = time(NULL);
     today = localtime(&t);
 
-    if (today->tm_mon > PROTECTION_MONTH || today->tm_year > PROTECTION_YEAR)
+    if (today->tm_mon > PROTECTION_MONTH or today->tm_year > PROTECTION_YEAR)
         DateOff = true;
     else
         DateOff = false;
@@ -943,7 +943,7 @@ void CDXEngine::DrawSurface()
 
 
     ////////////////////// Surface SPECULARITY  management ///////////////////////////
-    if (TheMaterial.power != m_NODE.SURFACE->SpecularIndex || m_LastSpecular != m_NODE.SURFACE->DefaultSpecularity)
+    if (TheMaterial.power != m_NODE.SURFACE->SpecularIndex or m_LastSpecular != m_NODE.SURFACE->DefaultSpecularity)
     {
         TheMaterial.power = m_NODE.SURFACE->SpecularIndex;
         m_LastSpecular = m_NODE.SURFACE->DefaultSpecularity;
@@ -1255,7 +1255,7 @@ void CDXEngine::SWITCHManage()
     if (m_NODE.DOF->Type == XSWITCH) Value = compl Value;
 
     // Traverse the Switch Items
-    while (m_NODE.DOF->SwitchNumber == SWNumber && (m_NODE.DOF->Type == SWITCH || m_NODE.DOF->Type == XSWITCH))
+    while (m_NODE.DOF->SwitchNumber == SWNumber && (m_NODE.DOF->Type == SWITCH or m_NODE.DOF->Type == XSWITCH))
     {
         // If value found then Exit here pointing the SWITCH, next to it is the SURFACE
         if (Value & (1 << m_NODE.DOF->SwitchBranch))
@@ -1302,7 +1302,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
 #ifndef DEBUG_ENGINE
 
     // Consistency Check
-    if (objInst->id < 0 || objInst->id >= TheObjectListLength || objInst->TextureSet < 0)
+    if (objInst->id < 0 or objInst->id >= TheObjectListLength or objInst->TextureSet < 0)
         return;
 
 #endif
@@ -1362,7 +1362,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
     Model = (DxDbHeader*)CurrentLOD->root;
 
     // FRB - Filter out bad/nonexistant models
-    if ((Model->Id <= 0) || (Model->Id >= (unsigned int)  TheObjectLODsCount))
+    if ((Model->Id <= 0) or (Model->Id >= (unsigned int)  TheObjectLODsCount))
         return;
 
     ///////////////////////////////// HERE CHECK FOR VISIBILITY /////////////////////////////////////
@@ -1510,7 +1510,7 @@ LightCheck:
         // and add all of them to the dynamic lights list
         while (LightsNr--)
         {
-            if (Light->Switch == -1 || (objInst->SwitchValues[Light->Switch] & Light->SwitchMask)) TheLightEngine.AddDynamicLight(Liter, Light, RotMatrix, &p, LODRange);
+            if (Light->Switch == -1 or (objInst->SwitchValues[Light->Switch] & Light->SwitchMask)) TheLightEngine.AddDynamicLight(Liter, Light, RotMatrix, &p, LODRange);
 
             Light++;
         }

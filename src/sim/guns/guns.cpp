@@ -60,7 +60,7 @@ void GunClass::Init(float muzzleVel, int numRounds)
     //The LAST 5 bits will be used and the value will range from 256 to 8192 ft/sec.
     initBulletVelocity = (float)(((((unsigned char *)wcPtr)[45] >> 3) + 1) * 256);
 
-    if (typeOfGun == GUN_TRACER || typeOfGun == GUN_TRACER_BALL)
+    if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
     {
         if (parent->IsGroundVehicle())
         {
@@ -181,14 +181,14 @@ void GunClass::InitLocalData(int type)
     // ok, try and figure out what the domain is from the
     // weapon hit chance table
     if (
-        wcPtr->HitChance[ NoMove ] > 0 || wcPtr->HitChance[ Foot ] > 0 || wcPtr->HitChance[ Wheeled ] > 0 ||
-        wcPtr->HitChance[ Tracked ] > 0 || wcPtr->HitChance[ Naval ] > 0 || wcPtr->HitChance[ Rail ] > 0
+        wcPtr->HitChance[ NoMove ] > 0 or wcPtr->HitChance[ Foot ] > 0 or wcPtr->HitChance[ Wheeled ] > 0 ||
+        wcPtr->HitChance[ Tracked ] > 0 or wcPtr->HitChance[ Naval ] > 0 or wcPtr->HitChance[ Rail ] > 0
     )
     {
         domain = (int)wdGround;
     }
 
-    if (wcPtr->HitChance[ Air ] > 0 || wcPtr->HitChance[ LowAir ] > 0)
+    if (wcPtr->HitChance[ Air ] > 0 or wcPtr->HitChance[ LowAir ] > 0)
     {
         domain  or_eq  (int)wdAir;
     }
@@ -214,7 +214,7 @@ void GunClass::InitLocalData(int type)
 
 void GunClass::CleanupLocalData()
 {
-    if (typeOfGun == GUN_TRACER || typeOfGun == GUN_TRACER_BALL)
+    if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
     {
         delete [] bullet;
         bullet = NULL;
@@ -641,7 +641,7 @@ int GunClass::Exec(
                 if
                 (
                     testObject->BaseData() && testObject->BaseData()->IsSim() &&
-                    (!testObject->BaseData()->IsWeapon() || testObject->BaseData()->IsEject()) &&
+                    (!testObject->BaseData()->IsWeapon() or testObject->BaseData()->IsEject()) &&
                     !((SimBaseClass*)testObject->BaseData())->IsExploding() &&
                     testObject->localData && testObject->localData->range < initBulletVelocity * (2.5F) &&
                     ((SimBaseClass*)testObject->BaseData())->drawPointer != NULL
@@ -1023,7 +1023,7 @@ int GunClass::Exec(
     }
 
     // if firing, insert an new round into the queue at 1st position
-    if (*fire && (!bulptr->flying || advanceQueue))
+    if (*fire && (!bulptr->flying or advanceQueue))
     {
         bulptr->x = parent->XPos();
         bulptr->y = parent->YPos();

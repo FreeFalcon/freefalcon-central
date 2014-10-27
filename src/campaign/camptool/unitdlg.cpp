@@ -728,7 +728,7 @@ void ShowElementInfo(HDC DC, HWND hDlg, Unit U, short Set, short i, int asagg)
     short Rost;
     char buffer[20];
 
-    if ((!asagg || !U->Father()) && Set == 1)
+    if ((!asagg or !U->Father()) && Set == 1)
     {
         if (U->GetDomain() == DOMAIN_AIR)
         {
@@ -835,7 +835,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     RECT buttons[10];
     RECT ebuttons[5][6];
 
-    if (!U || U->CountUnitElements() == 0)
+    if (!U or U->CountUnitElements() == 0)
         None = 1;
 
     GetWindowRect(hDlg, &rect);
@@ -909,7 +909,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             HWND hCWnd;
             //! int c=0;
 
-            if (!U || U->IsDead())
+            if (!U or U->IsDead())
             {
                 if (U)
                     vuDatabase->Remove(U);
@@ -1680,7 +1680,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             flights = new FalconPrivateList(&AllAirFilter);
             flights->Register();
 
-            if (!squadrons || !flights)
+            if (!squadrons or !flights)
                 return FALSE;
 
             squadron = flight = NULL;

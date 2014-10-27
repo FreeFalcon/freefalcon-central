@@ -40,7 +40,7 @@ long GetFeatureFlags(Objective obj, short featno)
     FeatureClassDataType* fc;
     long classID;
 
-    if (featno < 0 || featno >= obj->GetObjectiveClassData()->Features)
+    if (featno < 0 or featno >= obj->GetObjectiveClassData()->Features)
         return(0);
 
     classID = obj->GetFeatureID(featno);

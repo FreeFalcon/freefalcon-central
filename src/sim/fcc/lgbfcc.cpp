@@ -70,7 +70,7 @@ void FireControlComputer::TargetingPodMode(void)
 
 
     // Is the currently aimed target dead or exploding ? If so, delete the pod targetpointer
-    if (systemTarget && (systemTarget->BaseData()->IsDead() || systemTarget->BaseData()->IsExploding())
+    if (systemTarget && (systemTarget->BaseData()->IsDead() or systemTarget->BaseData()->IsExploding())
         && !F4IsBadWritePtr(targetingPod, sizeof(targetingPod)))  // CTD fix
     {
         systemTarget = NULL;
@@ -109,7 +109,7 @@ void FireControlComputer::TargetingPodMode(void)
         //    if  (playerFCC && (PlayerOptions.GetAvionicsType() != ATRealistic) && (subMode == SLAVE))
         // M.N. added full realism mode
         if ((playerFCC && (PlayerOptions.GetAvionicsType() != ATRealistic && PlayerOptions.GetAvionicsType() != ATRealisticAV)
-             && (subMode == SLAVE)) || ((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP)
+             && (subMode == SLAVE)) or ((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP)
         {
             if (systemTarget && systemTarget->BaseData()->OnGround())
             {
@@ -395,7 +395,7 @@ void FireControlComputer::TargetingPodMode(void)
             {
                 float xMove = 0.0F, yMove = 0.0F;
 
-                if ((cursorXCmd != 0) || (cursorYCmd != 0))
+                if ((cursorXCmd != 0) or (cursorYCmd != 0))
                 {
                     if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
                     {
@@ -409,7 +409,7 @@ void FireControlComputer::TargetingPodMode(void)
                     }
                 }
 
-                if (((cursorXCmd != 0) || (cursorYCmd != 0)) && !targetingPod->IsLocked())
+                if (((cursorXCmd != 0) or (cursorYCmd != 0)) && !targetingPod->IsLocked())
                 {
                     if (g_bLgbFixes) // a.s. 26.Febr.2002. begin: New Code for slewing LGBs. With this code, not the angles are altered, but
                         // directly the designated point. A non-orthogonal rotation of the co-ordinate system is necessary
@@ -711,7 +711,7 @@ void FireControlComputer::TargetingPodMode(void)
 
             if (dropTrackCmd)
             {
-                if (isLimited || !targetPtr)
+                if (isLimited or !targetPtr)
                 {
                     preDesignate = TRUE;
 
@@ -848,7 +848,7 @@ void FireControlComputer::CheckFeatures(LaserPodClass* targetingPod)
 
                 // 2001-11-01 Added IsDead ||
                 //IsExploding check by M.N. - we don't want to bomb something that is already destroyed
-                if ((CurRange < curMin) && !(testObject->IsDead() || testObject->IsExploding()))
+                if ((CurRange < curMin) && !(testObject->IsDead() or testObject->IsExploding()))
                 {
                     //simTarg = (SimBaseClass*)testObject;
                     //if (simTarg->IsStatic())

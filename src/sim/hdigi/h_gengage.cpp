@@ -124,7 +124,7 @@ void HeliBrain::GunsEngageCheck(void)
     // RV - Biker - Don't attack AC or chopper which are 5000 ft above us or are above 10000 ft in general
     if (!theObject->OnGround())
     {
-        if (theObject->ZPos() < -10000.0f || zft < -5000.0f)
+        if (theObject->ZPos() < -10000.0f or zft < -5000.0f)
         {
             targetPtr->Release();
             targetPtr = NULL;
@@ -261,8 +261,8 @@ void HeliBrain::GunsEngage(void)
 
     // 2001-07-06 MODIDIED BY S.G. WE DON'T WANT THE ROCKETS TO FIRE ONE PER 15 SECONDS! LAUNCH AT FRAME SPEED (JUST LIKE FOR PLANES)
     //if ( mslCheckTimer > 15.0f )
-    //if ( mslCheckTimer > 15.0f || (mslCheckTimer > 0.25f && self->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb && self->FCC->GetSubMode() == FireControlComputer::RCKT))
-    if (mslCheckTimer > 15.0f || (mslCheckTimer > 0.25f && self->FCC->GetMasterMode() == FireControlComputer::AirGroundRocket))
+    //if ( mslCheckTimer > 15.0f or (mslCheckTimer > 0.25f && self->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb && self->FCC->GetSubMode() == FireControlComputer::RCKT))
+    if (mslCheckTimer > 15.0f or (mslCheckTimer > 0.25f && self->FCC->GetMasterMode() == FireControlComputer::AirGroundRocket))
     {
         WeaponSelection();
 
@@ -382,7 +382,7 @@ void HeliBrain::GunsEngage(void)
 
     // Ground missiles
     // TJL 11/15/03 Hellfires/AGMs between 3 to 5 miles
-    if (self->FCC->GetMasterMode() == FireControlComputer::Missile || self->FCC->GetMasterMode() == FireControlComputer::AirGroundMissile)
+    if (self->FCC->GetMasterMode() == FireControlComputer::Missile or self->FCC->GetMasterMode() == FireControlComputer::AirGroundMissile)
     {
         //if ( targetData->range >= 2000.0f && targetData->range <= 12000.0F)
         if (targetData->range >= 12000.0f && targetData->range <= 24000.0F)
@@ -479,7 +479,7 @@ void HeliBrain::FireControl(void)
     if (self->FCC->GetMasterMode() == FireControlComputer::Missile ||
         self->FCC->GetMasterMode() == FireControlComputer::AirGroundMissile)
     {
-        if (targetData->range < 2000.0f || targetData->range > maxWpnRange)
+        if (targetData->range < 2000.0f or targetData->range > maxWpnRange)
             return;
     }
     // 2001-07-06 ADDED BY S.G. SO ROCKETS WORKS
@@ -488,13 +488,13 @@ void HeliBrain::FireControl(void)
         //  self->FCC->GetSubMode() == FireControlComputer::RCKT )
         if (self->FCC->GetMasterMode() == FireControlComputer::AirGroundRocket) // MLR 4/3/2004 -
         {
-            if (targetData->range < 1000.0f || targetData->range > maxWpnRange)
+            if (targetData->range < 1000.0f or targetData->range > maxWpnRange)
                 return;
         }
     // END OF ADDED SECTION
         else
         {
-            if (targetData->range < 1000.0f || targetData->range > 6000.0f)
+            if (targetData->range < 1000.0f or targetData->range > 6000.0f)
                 return;
         }
 
@@ -960,7 +960,7 @@ void HeliBrain::FireControl(void)
 // }
 //
 // /*
-// if ( curAA || curAG || curRock || curGun )
+// if ( curAA or curAG or curRock or curGun )
 // anyWeapons = TRUE;
 // */
 //

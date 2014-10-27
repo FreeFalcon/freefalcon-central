@@ -383,7 +383,7 @@ void DisplayDogfightResults()
 
             while (pilot_data)
             {
-                if (!human_only || pilot_data->pilot_flags & PFLAG_PLAYER_CONTROLLED)
+                if (!human_only or pilot_data->pilot_flags & PFLAG_PLAYER_CONTROLLED)
                 {
                     AddtoSortedList(pilot_data, flight_data->flight_team);
                     TeamUsed[flight_data->flight_team] = 1;

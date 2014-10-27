@@ -101,7 +101,7 @@ void C_Anim::SetFlags(long flags)
 
 void C_Anim::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL || !Ready())
+    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL or !Ready())
         return;
 
     if (Anim_)
@@ -110,7 +110,7 @@ void C_Anim::Refresh()
 
 void C_Anim::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL || !Ready())
+    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL or !Ready())
         return;
 
     if (Anim_)
@@ -159,7 +159,7 @@ BOOL C_Anim::TimerUpdate()
         case C_TYPE_PINGPONG:
             Anim_->SetFrame(Anim_->GetFrame() + Anim_->GetDirection());
 
-            if ((Anim_->GetFrame() < 0) || (Anim_->GetFrame() >= Anim_->GetAnim()->Anim->Frames))
+            if ((Anim_->GetFrame() < 0) or (Anim_->GetFrame() >= Anim_->GetAnim()->Anim->Frames))
             {
                 Anim_->SetFrame(Anim_->GetFrame() - Anim_->GetDirection());
                 Anim_->SetDirection(-Anim_->GetDirection());

@@ -291,7 +291,7 @@ void OTWDriverClass::DisplayAxisValues()
             sprintf(tmp, "%i", IO.analog[i].cutoff);
             OTWDriver.renderer->TextLeft(-0.30F, 0.85F - (i * 0.05f), tmp);
 
-            if ((i == AXIS_THROTTLE) || (i == AXIS_THROTTLE2))
+            if ((i == AXIS_THROTTLE) or (i == AXIS_THROTTLE2))
             {
                 if (IO.IsAxisCutOff((GameAxis_t)i) == true)
                 {
@@ -390,7 +390,7 @@ void OTWDriverClass::DrawExitMenu(void)
             endsAvail[0] = TRUE;
             endsAvail[1] = TRUE;
 
-            if (tactical_is_training() || (gCommsMgr && gCommsMgr->Online()))
+            if (tactical_is_training() or (gCommsMgr && gCommsMgr->Online()))
             {
                 endDialogObject->SetSwitchMask(2, FALSE);
                 endsAvail[2] = FALSE;
@@ -491,18 +491,18 @@ void OTWDriverClass::ExitMenu(unsigned long i)
     {
         SetExitMenu(FALSE);
     }
-    else if ((i == DIK_E && endsAvail[0]) || (i == DIK_D && endsAvail[2]))
+    else if ((i == DIK_E && endsAvail[0]) or (i == DIK_D && endsAvail[2]))
     {
         g_intellivibeData.IsEndFlight = true;
         memcpy(gSharedIntellivibe, &g_intellivibeData, sizeof(g_intellivibeData));
 
-        if (i == DIK_D || tactical_is_training())
+        if (i == DIK_D or tactical_is_training())
             endAbort = TRUE;
 
         SetExitMenu(FALSE);
 
         // if already set end now
-        if (endFlightTimer || !gameCompressionRatio)
+        if (endFlightTimer or !gameCompressionRatio)
         {
             endFlightTimer = vuxRealTime;
         }

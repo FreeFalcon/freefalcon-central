@@ -77,7 +77,7 @@ C_TreeList::C_TreeList(FILE *fp) : C_Control(fp)
 
 C_TreeList::~C_TreeList()
 {
-    if (Root_ || Hash_)
+    if (Root_ or Hash_)
         Cleanup();
 }
 
@@ -453,7 +453,7 @@ void C_TreeList::Add(TREELIST *current, TREELIST *NewItem)
             while (current->Next && !(*SortCB_)(current, NewItem))
                 current = current->Next;
 
-            if ((NewItem->Type_ < current->Type_) || (NewItem->Type_ == current->Type_ && (*SortCB_)(current, NewItem)))
+            if ((NewItem->Type_ < current->Type_) or (NewItem->Type_ == current->Type_ && (*SortCB_)(current, NewItem)))
             {
                 // Insert before
                 if (current->Parent && current->Parent->Child == current)
@@ -512,7 +512,7 @@ void C_TreeList::AddChild(TREELIST *par, TREELIST *NewItem)
 
 BOOL C_TreeList::AddChildItem(TREELIST *par, TREELIST *NewItem)
 {
-    if (par == NULL || Root_ == NULL || NewItem == NULL)
+    if (par == NULL or Root_ == NULL or NewItem == NULL)
         return(FALSE);
 
     if (Hash_->Find(NewItem->ID_))
@@ -539,7 +539,7 @@ BOOL C_TreeList::AddChildItem(TREELIST *par, TREELIST *NewItem)
 
 BOOL C_TreeList::AddItem(TREELIST *current, TREELIST *NewItem)
 {
-    if ((!current && Root_) || !NewItem || !NewItem->Item_)
+    if ((!current && Root_) or !NewItem or !NewItem->Item_)
         return(FALSE);
 
     if (Hash_->Find(NewItem->ID_))
@@ -595,7 +595,7 @@ void C_TreeList::MoveChildItem(TREELIST *Parent, TREELIST *item)
 
 BOOL C_TreeList::ChangeItemID(TREELIST *item, long NewID)
 {
-    if (!item || Find(NewID))
+    if (!item or Find(NewID))
         return(FALSE);
 
     if (item->Type_ != C_TYPE_INFO)
@@ -918,7 +918,7 @@ long C_TreeList::CheckHotSpots(long relX, long relY)
 {
     TREELIST *cur;
 
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED))
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED))
         return(0);
 
     CheckFlag_ = C_BIT_NOTHING; // (0)
@@ -986,7 +986,7 @@ BOOL C_TreeList::CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii, un
 
 BOOL C_TreeList::Process(long cID, short HitType)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED))
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED))
         return(0);
 
     if (CheckFlag_ == C_BIT_NOTHING) return(FALSE); // CheckFlag is the segment of the button pressed (0=Nothing)
@@ -1052,7 +1052,7 @@ BOOL C_TreeList::Process(long cID, short HitType)
 
 void C_TreeList::Refresh()
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1, GetY() + GetH() + 1, GetFlags(), GetClient());
@@ -1140,7 +1140,7 @@ void C_TreeList::DrawBranch(SCREEN *surface, TREELIST *branch, UI95_RECT *clipre
         current = current->Next;
     }
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
@@ -1186,7 +1186,7 @@ void C_TreeList::HighLite(SCREEN *surface, UI95_RECT *cliprect)
 
 BOOL C_TreeList::MouseOver(long relx, long rely, C_Base *me)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED))
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED))
         return(FALSE);
 
     CheckFlag_ = C_BIT_NOTHING; // (0)

@@ -608,7 +608,7 @@ int GroundClass::Exec(void)
         {
             if (isShip)
             {
-                isNight = (TimeOfDayGeneral(TheCampaign.CurrentTime) <= TOD_DAWNDUSK || realWeather->weatherCondition == INCLEMENT) ? true : false;
+                isNight = (TimeOfDayGeneral(TheCampaign.CurrentTime) <= TOD_DAWNDUSK or realWeather->weatherCondition == INCLEMENT) ? true : false;
 
                 if (pctStrength > 0.50f)
                 {
@@ -637,7 +637,7 @@ int GroundClass::Exec(void)
                     }
 
                     // Fow now we skip missles -- might want to display them eventually...
-                    if (object->IsMissile() || object->IsBomb())
+                    if (object->IsMissile() or object->IsBomb())
                     {
                         object = (FalconEntity*)vehicleWalker.GetNext();
                         continue;
@@ -701,7 +701,7 @@ int GroundClass::Exec(void)
                     }
 
                     // Fow now we skip missles -- might want to display them eventually...
-                    if (object->IsMissile() || object->IsBomb())
+                    if (object->IsMissile() or object->IsBomb())
                     {
                         object = (FalconEntity*)vehicleWalker.GetNext();
                         continue;
@@ -921,7 +921,7 @@ int GroundClass::Exec(void)
         // Biker's version
         //if(SimLibElapsedTime > nextSamFireTime  && !allowSamFire)
         //{
-        // if (radarDown == false || (theWeapon && theWeapon->IsMissile() && theWeapon->sensorArray[0]->Type() == SensorClass::IRST))
+        // if (radarDown == false or (theWeapon && theWeapon->IsMissile() && theWeapon->sensorArray[0]->Type() == SensorClass::IRST))
         // allowSamFire = TRUE;
         //}
 
@@ -1178,7 +1178,7 @@ int GroundClass::Exec(void)
                 truckDrawable->Update(&truckPos, Yaw() + PI);
             }
 
-            if (isTowed || hasCrew)
+            if (isTowed or hasCrew)
             {
                 SetSwitch(0, 0x2);
             }
@@ -1277,7 +1277,7 @@ int GroundClass::Exec(void)
             truckDrawable->Update(&truckPos, Yaw());
         }
 
-        if (isTowed || hasCrew)
+        if (isTowed or hasCrew)
         {
             SetSwitch(0, 0x1);
         }
@@ -1365,7 +1365,7 @@ int GroundClass::Wake(void)
         tracktorType = (rand() % 3);
         bool teamUs = (
                           TeamInfo[GetCountry()] && (
-                              TeamInfo[GetCountry()]->equipment == toe_us || TeamInfo[GetCountry()]->equipment == toe_rok
+                              TeamInfo[GetCountry()]->equipment == toe_us or TeamInfo[GetCountry()]->equipment == toe_rok
                           )
                       );
         int vtIdx;

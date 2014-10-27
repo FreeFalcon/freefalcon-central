@@ -46,7 +46,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
     PSvec.y = 0;
     PSvec.z = 0;
 
-    if (IsExploding() || IsDead() || pctStrength < 0.0F || (Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
+    if (IsExploding() or IsDead() or pctStrength < 0.0F or (Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
     {
         // Just double check the drawable object and return
         UpdateDrawableObject(this);
@@ -189,7 +189,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
             damageMessage->dataBlock.damageType = FalconDamageType::FODDamage;
             damageMessage->dataBlock.damageRandomFact = 0.0F;
 
-            if ((featureFlags & FEAT_PREV_CRIT || featureFlags & FEAT_PREV_NORM))
+            if ((featureFlags & FEAT_PREV_CRIT or featureFlags & FEAT_PREV_NORM))
             {
                 SimFeatureClass *prevObj = (SimFeatureClass*) GetCampaignObject()->GetComponentEntity(GetCampaignObject()->GetComponentIndex(this) - 1);
 
@@ -202,7 +202,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                     UpdateDrawableObject(prevObj);
             }
 
-            if ((featureFlags & FEAT_NEXT_CRIT || featureFlags & FEAT_NEXT_NORM))
+            if ((featureFlags & FEAT_NEXT_CRIT or featureFlags & FEAT_NEXT_NORM))
             {
                 SimFeatureClass *nextObj = (SimFeatureClass*) GetCampaignObject()->GetComponentEntity(GetCampaignObject()->GetComponentIndex(this) + 1);
 
@@ -341,7 +341,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
         // possible explosion
         if ((fc->Flags & FEAT_CAN_EXPLODE) &&
-            (pctDamage > 0.1f || pctStrength < 0.3f) &&
+            (pctDamage > 0.1f or pctStrength < 0.3f) &&
             !(rand() & 0x03))
         {
             ppos.z = pos.z + PRANDFloatPos() * minB.z * 0.5f + minB.z * 0.5f;
@@ -535,7 +535,7 @@ void UpdateDrawableObject(SimFeatureClass *theFeature)
         OTWDriver.CreateVisualObject(theFeature, OTWDriver.Scale()); // FRB
 
     // if we're damaged,, use the damaged texture set
-    if ((theFeature->Status() & VIS_TYPE_MASK) == VIS_DAMAGED || (theFeature->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
+    if ((theFeature->Status() & VIS_TYPE_MASK) == VIS_DAMAGED or (theFeature->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
     {
         if (theFeature->drawPointer)
         {

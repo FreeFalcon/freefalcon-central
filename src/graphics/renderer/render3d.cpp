@@ -803,7 +803,7 @@ void Render3D::Render3DFlatTri(Tpoint* p1, Tpoint* p2, Tpoint* p3)
     // I'm not sure this function is called anywhere anyway.  With the current
     // state of things, just checking near clip could cause bad problems since
     // MPR no longer does other edge clipping.  We'd have to do that here.
-    if (ps1.clipFlag || ps2.clipFlag || ps3.clipFlag)  return;
+    if (ps1.clipFlag or ps2.clipFlag or ps3.clipFlag)  return;
 
     // Don't draw the triangle if it is backfacing (counter-clockwise in screen space)
     // edg: always draw irregardless of backfacing
@@ -901,7 +901,7 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
         count = 4;
     else
     {
-        if (useFirst || useLast)
+        if (useFirst or useLast)
             count = 3;
         else
             return;

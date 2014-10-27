@@ -123,7 +123,7 @@ void WeatherClass::UpdateCondition(int condition, bool bForce)
 {
     weatherCondition = condition;
 
-    if (weatherCondition != oldWeatherCondition || bForce)
+    if (weatherCondition != oldWeatherCondition or bForce)
     {
         oldWeatherCondition = weatherCondition;
         needsWeatherRefresh = updateLighting = TRUE;
@@ -260,7 +260,7 @@ void WeatherClass::UpdateWeather()
 
     time = Camp_GetCurrentTime();
 
-    if (time - lastCheck > (CampaignMinutes / 2) || needsWeatherRefresh)
+    if (time - lastCheck > (CampaignMinutes / 2) or needsWeatherRefresh)
     {
         static int lastTOD = TOD_NIGHT;
         int h = FloatToInt32((windHeading - .5f * PI) * 3.f);
@@ -337,7 +337,7 @@ void WeatherClass::UpdateWeather()
             }
         }
 
-        if (rand() % 100 > wHdgThresh || needsWeatherRefresh)
+        if (rand() % 100 > wHdgThresh or needsWeatherRefresh)
         {
             if (rand() % 8 > 4 + h)
                 windHeading = windHeading + (float)delta / 3;
@@ -469,7 +469,7 @@ int WeatherClass::CampLoad(char* name, int type)
     BYTE utemp;
     float ftemp, ftemp1;
 
-    Init((type == game_InstantAction || type == game_Dogfight));
+    Init((type == game_InstantAction or type == game_Dogfight));
 
     if (type == game_Campaign)
         unlockableCondition = TRUE;
@@ -636,7 +636,7 @@ int WeatherClass::CampLoad(char* name, int type)
                 stratusZ = -22000.f;
                 stratus2Z = -35000.f;
 
-                if (PlayerOptions.weatherCondition < 1 || PlayerOptions.weatherCondition > 4)
+                if (PlayerOptions.weatherCondition < 1 or PlayerOptions.weatherCondition > 4)
                     PlayerOptions.weatherCondition = 1;
 
                 UpdateCondition(PlayerOptions.weatherCondition, false);

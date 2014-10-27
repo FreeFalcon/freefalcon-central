@@ -56,7 +56,7 @@ GunClass::IsShell(void)
 BOOL
 GunClass::IsTracer(void)
 {
-    if (typeOfGun == GUN_TRACER || typeOfGun == GUN_TRACER_BALL)
+    if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
         return TRUE;
 
     return FALSE;
@@ -70,7 +70,7 @@ BOOL
 GunClass::ReadyToFire(void)
 {
     // tracers are always ready
-    if (typeOfGun == GUN_TRACER || typeOfGun == GUN_TRACER_BALL)
+    if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
         return TRUE;
 
     // any rounds left?
@@ -97,13 +97,13 @@ GunClass::GetDamageAssessment(SimBaseClass *target, float range)
 {
     float zpos, zdelta;
 
-    if (range < minShellRange || range > maxShellRange)
+    if (range < minShellRange or range > maxShellRange)
         return 0.0f;
 
     // just random stuff for now....
     if (gunDomain == wdBoth)
     {
-        if (typeOfGun == GUN_TRACER || typeOfGun == GUN_TRACER_BALL)
+        if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
         {
             if (!target->OnGround())
             {
@@ -138,7 +138,7 @@ GunClass::GetDamageAssessment(SimBaseClass *target, float range)
 
     if (gunDomain == wdGround && target->OnGround())
     {
-        if (typeOfGun == GUN_TRACER || typeOfGun == GUN_TRACER_BALL)
+        if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
             return 0.1f + PRANDFloatPos();
         else
             return 0.3f + PRANDFloatPos();
@@ -146,7 +146,7 @@ GunClass::GetDamageAssessment(SimBaseClass *target, float range)
 
     if (gunDomain == wdAir && !target->OnGround())
     {
-        if (typeOfGun == GUN_TRACER || typeOfGun == GUN_TRACER_BALL)
+        if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
         {
             // disallow tracers above 6000ft
             // target z in 1.5 secs

@@ -221,11 +221,11 @@ void ICPClass::ExecSTPTMode()
 
             FormatTime(ETA, timeStr);
 
-            if (!previous ||  wpflags & WPF_ALTERNATE)
+            if (!previous or  wpflags & WPF_ALTERNATE)
             {
                 sprintf(mpLine3, "", timeStr);
             }
-            else if (action == WP_LAND || action == WP_TAKEOFF || plannedSpeed == 0)
+            else if (action == WP_LAND or action == WP_TAKEOFF or plannedSpeed == 0)
             {
                 sprintf(mpLine3, "ETA %8s", timeStr);
             }
@@ -239,7 +239,7 @@ void ICPClass::ExecSTPTMode()
         else if (frame == 9)
         {
 
-            if (!previous ||  wpflags & WPF_ALTERNATE)
+            if (!previous or  wpflags & WPF_ALTERNATE)
             {
                 sprintf(mpLine3, "", timeStr);
             }
@@ -254,7 +254,7 @@ void ICPClass::ExecSTPTMode()
 
                 FormatTime(ETA, timeStr);
 
-                if (action == WP_LAND || action == WP_TAKEOFF || plannedSpeed == 0)
+                if (action == WP_LAND or action == WP_TAKEOFF or plannedSpeed == 0)
                 {
                     sprintf(mpLine3, "ETA %8s", timeStr);
                 }

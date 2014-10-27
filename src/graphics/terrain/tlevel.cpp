@@ -218,7 +218,7 @@ TBlock* TLevel::RequestBlockOwnership(int r, int c)
     else
     {
 
-        if ((r < 0) || (r >= (int)BlocksHigh()) || (c < 0) || (c >= (int)BlocksWide()))
+        if ((r < 0) or (r >= (int)BlocksHigh()) or (c < 0) or (c >= (int)BlocksWide()))
         {
             {
                 // We're off the map, so don't return a block

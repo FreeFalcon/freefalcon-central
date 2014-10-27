@@ -431,7 +431,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
 
     // 2000-11-10 MODIFIED BY S.G. TO HANDLE THE 'driftCO' switch
     // if (ownship->OnGround()) {
-    if (ownship->OnGround() || driftCOSwitch == DRIFT_CO_ON)
+    if (ownship->OnGround() or driftCOSwitch == DRIFT_CO_ON)
     {
 #if 1
         // With weight on wheels, the jet turns on "drift cutout" to keep the fpm centered on the HUD
@@ -518,7 +518,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
             DrawHorizonLine();
         }
     }
-    else if ((ownship && ownship->af && ownship->af->gearPos > 0.5F) || (fpmSwitch == ATT_FPM))
+    else if ((ownship && ownship->af && ownship->af->gearPos > 0.5F) or (fpmSwitch == ATT_FPM))
     {
         if (FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight)
             DrawPitchLadder();//me123 status ok. don't draw ladders in dogfight mode
@@ -535,15 +535,15 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
     DrawAlphaNumeric();
 
     //TJL 03/07/04 Draw Other HUDs 04/17/04 Make non-F16 default to F18 HUD
-    if (ownship->af->GetTypeAC() == 8 || ownship->af->GetTypeAC() == 9 || ownship->af->GetTypeAC() == 10)
+    if (ownship->af->GetTypeAC() == 8 or ownship->af->GetTypeAC() == 9 or ownship->af->GetTypeAC() == 10)
     {
         DrawF18HUD();
     }
-    else if (ownship->af->GetTypeAC() == 6 || ownship->af->GetTypeAC() == 7)
+    else if (ownship->af->GetTypeAC() == 6 or ownship->af->GetTypeAC() == 7)
     {
         DrawF14HUD();
     }
-    else if (ownship->af->GetTypeAC() == 3 || ownship->af->GetTypeAC() == 4 || ownship->af->GetTypeAC() == 5)
+    else if (ownship->af->GetTypeAC() == 3 or ownship->af->GetTypeAC() == 4 or ownship->af->GetTypeAC() == 5)
     {
         DrawF15HUD();
     }
@@ -552,7 +552,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
         DrawA10HUD();
     }
 
-    if ((!FCC->postDrop || flash) &&
+    if ((!FCC->postDrop or flash) &&
         fpmSwitch != FPM_OFF &&
         FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight) // JPO not show in DGFT
         DrawFPM();
@@ -655,7 +655,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
 
     //MI removed RPM indication
     //M.N. we need RPM indication for Flightmodel testing
-    if (!g_bNoRPMOnHud/* || !g_bRealisticAvionics*/)
+    if (!g_bNoRPMOnHud/* or !g_bRealisticAvionics*/)
     {
         if (ownship)
         {
@@ -1084,7 +1084,7 @@ void HudClass::DrawAlphaNumeric(void)
 
     // Window 3 (Master Arm / ILS)
     //TJL 03/07/04 F16 specific or default HUD
-    if (PlayerOptions.GetAvionicsType() != ATEasy && (ownship->IsF16() || ownship->af->GetTypeAC() == 0))
+    if (PlayerOptions.GetAvionicsType() != ATEasy && (ownship->IsF16() or ownship->af->GetTypeAC() == 0))
     {
         if (FCC && FCC->GetMasterMode() == FireControlComputer::ILS)
             DrawWindowString(3, "ILS");
@@ -1110,7 +1110,7 @@ void HudClass::DrawAlphaNumeric(void)
 
     // Window 4 (Mach Number)
     //TJL 03/07/04 F16 specific or default HUD
-    if (ownship->IsF16() || ownship->af->GetTypeAC() == 0)
+    if (ownship->IsF16() or ownship->af->GetTypeAC() == 0)
     {
         float mach =  cockpitFlightData.mach;
 
@@ -1129,7 +1129,7 @@ void HudClass::DrawAlphaNumeric(void)
     // Window 5 (Gs)
     //MI (JPO - fixed elsewhere !)
     //TJL 03/07/04 F16 specific or default HUD
-    if (ownship->IsF16() || ownship->af->GetTypeAC() == 0)
+    if (ownship->IsF16() or ownship->af->GetTypeAC() == 0)
     {
         sprintf(tmpStr, "%.1f", cockpitFlightData.gs);
         ShiAssert(strlen(tmpStr) < 40);
@@ -1137,20 +1137,20 @@ void HudClass::DrawAlphaNumeric(void)
     }
 
     //TJL 03/07/04 F16 specific or default HUD
-    if (PlayerOptions.GetAvionicsType() != ATEasy && (ownship->IsF16() || ownship->af->GetTypeAC() == 0))
+    if (PlayerOptions.GetAvionicsType() != ATEasy && (ownship->IsF16() or ownship->af->GetTypeAC() == 0))
     {
         //MI changed for INS stuff
         if (g_bINS && g_bRealisticAvionics)
         {
             if (!ownship->INSState(AircraftClass::INS_Aligned) &&
                 ownship->INSState(AircraftClass::INS_AlignNorm) && (cockpitFlightData.kias <= 1.0F
-                        && !ownship->INS60kts) || ownship->INSState(AircraftClass::INS_AlignFlight))
+                        && !ownship->INS60kts) or ownship->INSState(AircraftClass::INS_AlignFlight))
             {
                 sprintf(tmpStr, "ALIGN");
             }
             else if (ownship->INSState(AircraftClass::INS_Aligned) &&
                      ownship->INSState(AircraftClass::INS_AlignNorm) && cockpitFlightData.kias <= 1.0F
-                     && !ownship->INS60kts || ownship->INSState(AircraftClass::INS_AlignFlight))
+                     && !ownship->INS60kts or ownship->INSState(AircraftClass::INS_AlignFlight))
             {
                 if (flash)
                     sprintf(tmpStr, "ALIGN");
@@ -1170,7 +1170,7 @@ void HudClass::DrawAlphaNumeric(void)
                 sprintf(tmpStr, "%.1f", maxGs);
             }
         }
-        else if (ownship->IsF16() || ownship->af->GetTypeAC() == 0)
+        else if (ownship->IsF16() or ownship->af->GetTypeAC() == 0)
         {
             // Window 7 (Max Gs)
             if (cockpitFlightData.gs > maxGs)
@@ -1191,7 +1191,7 @@ void HudClass::DrawAlphaNumeric(void)
     if (ownship->Sms->drawable && ownship->Sms->drawable->DisplayMode() == SmsDrawable::SelJet)
         DrawWindowString(8, "JETT");
     //TJL F16 specific or default HUD
-    else if (ownship->IsF16() || ownship->af->GetTypeAC() == 0)
+    else if (ownship->IsF16() or ownship->af->GetTypeAC() == 0)
     {
         //MI
         if (!g_bRealisticAvionics)
@@ -1338,7 +1338,7 @@ void HudClass::DrawAlphaNumeric(void)
 
     //MI they wanted DED data, so here it is.....
     //if (dedSwitch == DED_DATA && OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeHud)
-    if (dedSwitch == DED_DATA || dedSwitch == PFL_DATA)// && OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeHud)
+    if (dedSwitch == DED_DATA or dedSwitch == PFL_DATA)// && OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeHud)
     {
         if (OTWDriver.pCockpitManager)
         {
@@ -1596,11 +1596,11 @@ void HudClass::DrawFPM(void)
     {
         float aoaOffset = 0.0f;
 
-        if (ownship->af->GetTypeAC() == 8 || ownship->af->GetTypeAC() == 9 || ownship->af->GetTypeAC() == 10)
+        if (ownship->af->GetTypeAC() == 8 or ownship->af->GetTypeAC() == 9 or ownship->af->GetTypeAC() == 10)
         {
             aoaOffset = cockpitFlightData.alpha - 8.0F;
         }
-        else if (ownship->af->GetTypeAC() == 6 || ownship->af->GetTypeAC() == 7)
+        else if (ownship->af->GetTypeAC() == 6 or ownship->af->GetTypeAC() == 7)
         {
             aoaOffset = cockpitFlightData.alpha - 15.0F;
         }
@@ -1683,7 +1683,7 @@ void HudClass::DrawBoresightCross(void)
     float yCenter = hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
 
     //TJL 03/11/04 F16 only for boresight cross (others have waterline) or default HUD
-    if (ownship->IsF16() || ownship->af->GetTypeAC() == 0)
+    if (ownship->IsF16() or ownship->af->GetTypeAC() == 0)
     {
         //end
 
@@ -2181,7 +2181,7 @@ bool HudClass::CheckGhostHorizon(float radius, float xOffset, float yOffset, flo
     bool ghostHorizonDrawn = false;
 
     //Ghost horizon only drawn if HUD fixes are used and we're on realistic avionics.
-    if ((g_bHUDFix == false) || !(g_bRealisticAvionics))
+    if ((g_bHUDFix == false) or !(g_bRealisticAvionics))
     {
         return ghostHorizonDrawn;
     }
@@ -2793,8 +2793,8 @@ void HudClass::DrawF18HUD(void)
 
     //AOA 46
     //HUD AOA Greek Letter Alpha -65 X -13 Y
-    if (ownship->af->gearPos < 0.5F || (ownship->af->gearPos > 0.5F &&
-                                        (ownship->af->alpha > 10.0F || ownship->af->alpha < 6.0F)))
+    if (ownship->af->gearPos < 0.5F or (ownship->af->gearPos > 0.5F &&
+                                        (ownship->af->alpha > 10.0F or ownship->af->alpha < 6.0F)))
     {
 
         display->Line(-0.80F, -0.13F, -0.80F, -0.15F);
@@ -2820,7 +2820,7 @@ void HudClass::DrawF18HUD(void)
     }
 
     //G 48
-    if (ownship->af->gearPos < 0.5F || (ownship->af->gearPos > 0.5 && maxGs > 4.0f))
+    if (ownship->af->gearPos < 0.5F or (ownship->af->gearPos > 0.5 && maxGs > 4.0f))
     {
         sprintf(tmpStr, "G %.1f", cockpitFlightData.gs);
         ShiAssert(strlen(tmpStr) < 40);
@@ -2840,7 +2840,7 @@ void HudClass::DrawF18HUD(void)
     }
 
     //Waterline
-    if (fpmConstrained || ownship->af->gearPos > 0.5)
+    if (fpmConstrained or ownship->af->gearPos > 0.5)
     {
         display->Line(-0.09F, 0.6F, -0.05F, 0.6F);
         display->Line(-0.05F, 0.6F, -0.03F, 0.57F);
@@ -2870,8 +2870,8 @@ void HudClass::DrawF14HUD(void)
 
     //AOA 46
     //HUD AOA Greek Letter Alpha -65 X -13 Y
-    if (ownship->af->gearPos < 0.5F || (ownship->af->gearPos > 0.5F &&
-                                        (ownship->af->alpha > 17.0F || ownship->af->alpha < 13.0F)))
+    if (ownship->af->gearPos < 0.5F or (ownship->af->gearPos > 0.5F &&
+                                        (ownship->af->alpha > 17.0F or ownship->af->alpha < 13.0F)))
     {
 
         display->Line(-0.80F, -0.13F, -0.80F, -0.15F);
@@ -2898,7 +2898,7 @@ void HudClass::DrawF14HUD(void)
     }
 
     //G 48
-    if (ownship->af->gearPos < 0.5F || (ownship->af->gearPos > 0.5 && maxGs > 4.0f))
+    if (ownship->af->gearPos < 0.5F or (ownship->af->gearPos > 0.5 && maxGs > 4.0f))
     {
         sprintf(tmpStr, "G %.1f", cockpitFlightData.gs);
         ShiAssert(strlen(tmpStr) < 40);
@@ -2919,7 +2919,7 @@ void HudClass::DrawF14HUD(void)
 
     //TJL 03/06/04 F-14 Specific HUD warning per -1
 
-    if ((ownship->af->tefPos > 0.0f || ownship->af->lefPos > 0.0f) &&
+    if ((ownship->af->tefPos > 0.0f or ownship->af->lefPos > 0.0f) &&
         ownship->GetKias() > 225.0f && flash)
     {
         DrawWindowString(12, "RDC SPEED");
@@ -2930,7 +2930,7 @@ void HudClass::DrawF14HUD(void)
     }
 
     //Waterline
-    if (fpmConstrained || ownship->af->gearPos > 0.5)
+    if (fpmConstrained or ownship->af->gearPos > 0.5)
     {
         display->Line(-0.09F, 0.6F, -0.05F, 0.6F);
         display->Line(-0.05F, 0.6F, -0.03F, 0.57F);
@@ -2983,7 +2983,7 @@ void HudClass::DrawF15HUD(void)
     }
 
     //G 48
-    if (ownship->af->gearPos < 0.5F || (ownship->af->gearPos > 0.5 && maxGs > 4.0f))
+    if (ownship->af->gearPos < 0.5F or (ownship->af->gearPos > 0.5 && maxGs > 4.0f))
     {
         sprintf(tmpStr, "G %.1f", cockpitFlightData.gs);
         ShiAssert(strlen(tmpStr) < 40);

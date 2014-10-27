@@ -154,7 +154,7 @@ void DigitalBrain::GunsJink(void)
     /* itself, but we must make sure the  */
     /* threat is still around             */
     /*------------------------------------*/
-    if (targetPtr == NULL || targetPtr->BaseData()->IsExploding() ||
+    if (targetPtr == NULL or targetPtr->BaseData()->IsExploding() ||
         targetPtr && targetPtr->localData->range > 4000)
     {
         // bail, no target
@@ -307,7 +307,7 @@ void DigitalBrain::GunsJink(void)
     /*-----------------------*/
     /* pull max gs for 2 sec */
     /*-----------------------*/
-    if (jinkTime > 0 || groundAvoidNeeded)
+    if (jinkTime > 0 or groundAvoidNeeded)
     {
         maxPull = max(0.8F * af->MaxGs(), maxGs);
         SetPstick(maxPull, af->MaxGs(), AirframeClass::GCommand);

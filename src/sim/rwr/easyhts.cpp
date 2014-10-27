@@ -71,7 +71,7 @@ void EasyHarmTargetingPod::Display(VirtualDisplay* activeDisplay)
         displayY = sinAng * x2 + cosAng * y2 + HTS_Y_OFFSET;
 
         // Skip this one if its off screen
-        if ((fabs(displayX) > 1.0f) || (fabs(displayY) > 1.0f))
+        if ((fabs(displayX) > 1.0f) or (fabs(displayY) > 1.0f))
         {
             continue;
         }

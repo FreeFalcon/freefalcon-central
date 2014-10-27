@@ -200,7 +200,7 @@ void SetupOOBWindow()
 
         for (i = 0; i < NUM_TEAMS; i++)
         {
-            if (TeamInfo[i] && ((TeamInfo[i]->flags & TEAM_ACTIVE) || GetTeam(static_cast<uchar>(i)) != i))
+            if (TeamInfo[i] && ((TeamInfo[i]->flags & TEAM_ACTIVE) or GetTeam(static_cast<uchar>(i)) != i))
             {
                 btn = (C_Button*)win->FindControl(TeamFlagBtnIDs[idx]);
 
@@ -258,7 +258,7 @@ void SetupOOBWindow()
 
             for (i = 0; i < NUM_TEAMS; i++)
             {
-                if (TeamInfo[i] && ((TeamInfo[i]->flags & TEAM_ACTIVE) || GetTeam(static_cast<uchar>(i)) != i))
+                if (TeamInfo[i] && ((TeamInfo[i]->flags & TEAM_ACTIVE) or GetTeam(static_cast<uchar>(i)) != i))
                 {
                     for (j = 0; j < 4; j++)
                     {
@@ -321,7 +321,7 @@ BOOL FindChildren(TREELIST *list, short owner)
 {
     TREELIST *item;
 
-    if (!list || !owner)
+    if (!list or !owner)
         return(FALSE);
 
     item = list;
@@ -345,7 +345,7 @@ BOOL FindOtherChildren(TREELIST *list, short owner)
 {
     TREELIST *item;
 
-    if (!list || !owner)
+    if (!list or !owner)
         return(FALSE);
 
     item = list;
@@ -456,7 +456,7 @@ void ToggleOOBTeamCB(long, short hittype, C_Base *control)
                 {
                     if (TurnOn)
                     {
-                        if (root->Item_->GetUserNumber(0) == owner || FindChildren(root->Child, owner))
+                        if (root->Item_->GetUserNumber(0) == owner or FindChildren(root->Child, owner))
                         {
                             root->Item_->SetFlagBitOff(C_BIT_INVISIBLE);
                             child = root->Child;
@@ -572,7 +572,7 @@ void ToggleOOBFilterCB(long ID, short hittype, C_Base *control)
      {
      if(TurnOn)
      {
-     if(root->Item_->GetUserNumber(0) == owner || FindChildren(root->Child,owner))
+     if(root->Item_->GetUserNumber(0) == owner or FindChildren(root->Child,owner))
      {
      root->Item_->SetFlagBitOff(C_BIT_INVISIBLE);
      child=root->Child;
@@ -1115,7 +1115,7 @@ C_Base *BuildOOBItem(CampEntity entity)
             return(builder);
         }
     }
-    else if (entity->IsBattalion() || entity->IsBrigade())
+    else if (entity->IsBattalion() or entity->IsBrigade())
     {
         builder = BuildUnitInfo((Unit)entity);
 

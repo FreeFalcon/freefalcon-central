@@ -161,7 +161,7 @@ void C_Marque::SetBGImage(long ImageID)
 
 void C_Marque::Refresh()
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -241,7 +241,7 @@ void C_Marque::SetSubParents(C_Window *)
         }
     }
 
-    if (!GetW() || !GetH())
+    if (!GetW() or !GetH())
         SetWH(Parent_->GetW(), Parent_->GetH());
 }
 

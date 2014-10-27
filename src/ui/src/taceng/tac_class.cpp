@@ -452,9 +452,9 @@ void tactical_mission::process_load(char *data, int size, int)
         {
             *ptr = *data;
 
-            if ((*ptr == '\r') || (*ptr == '\n'))
+            if ((*ptr == '\r') or (*ptr == '\n'))
             {
-                while ((size) && ((*data == '\n') || (*data == '\r') || (*data == '\t') || (*data == ' ')))
+                while ((size) && ((*data == '\n') or (*data == '\r') or (*data == '\t') or (*data == ' ')))
                 {
                     data ++;
                     size --;
@@ -653,7 +653,7 @@ char *tactical_mission::read_te_file(char *filename, int *size)
         *src ++ = '\0';
     }
 
-    if ((stricmp(ext, "tac") == 0) || (stricmp(ext, "trn") == 0))
+    if ((stricmp(ext, "tac") == 0) or (stricmp(ext, "trn") == 0))
     {
         //MonoPrint ("Extracting TE File from %s\n", filename);
 
@@ -1636,7 +1636,7 @@ void tactical_mission::evaluate_parameters(void *arg_wp, double x, double y, dou
     {
         old_active = vc->active;
 
-        if ((vc->type == vt_tos) || (vc->type == vt_airspeed) || (vc->type == vt_altitude) || (vc->type == vt_position))
+        if ((vc->type == vt_tos) or (vc->type == vt_airspeed) or (vc->type == vt_altitude) or (vc->type == vt_position))
         {
             wp = first_wp;
 

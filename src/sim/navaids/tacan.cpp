@@ -122,7 +122,7 @@ TacanList::TacanList()
         }
 
         // check for comments.
-        if (buffer[0] == ';' || buffer[0] == '#' || buffer[0] == '\n')
+        if (buffer[0] == ';' or buffer[0] == '#' or buffer[0] == '\n')
             continue;
 
         result = sscanf(buffer, "%d %d %c %d %d %d %f",
@@ -149,11 +149,11 @@ TacanList::TacanList()
                 break;
         }
 
-        if (bandChar == 'x' || bandChar == 'X')
+        if (bandChar == 'x' or bandChar == 'X')
         {
             band = X;
         }
-        else if (bandChar == 'y' || bandChar == 'Y')
+        else if (bandChar == 'y' or bandChar == 'Y')
         {
             band = Y;
         }
@@ -392,7 +392,7 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
     {
         p_current = mpTList;
 
-        while (p_current && (p_current->channel != channel || p_current->set != set || p_current->domain != domain))
+        while (p_current && (p_current->channel != channel or p_current->set != set or p_current->domain != domain))
         {
             p_current = p_current->p_next;
         }
@@ -417,7 +417,7 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
 
         p_current = mpAssigned;
 
-        while (p_current && (p_current->channel != channel || p_current->set != set || p_current->domain != domain))
+        while (p_current && (p_current->channel != channel or p_current->set != set or p_current->domain != domain))
         {
             p_current = p_current->p_next;
         }
@@ -435,7 +435,7 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
 
         p_current = mpAssigned;
 
-        while (p_current && (p_current->channel != channel || p_current->set != set || p_current->domain != domain))
+        while (p_current && (p_current->channel != channel or p_current->set != set or p_current->domain != domain))
         {
             p_current = p_current->p_next;
         }
@@ -487,7 +487,7 @@ BOOL TacanList::GetVUIDFromLocation(float x, float y, Domain domain,
 
             distance = DistSqu(tacanX, tacanY, x, y);
 
-            if (distance < bestDistance || bestDistance < 0.0F)
+            if (distance < bestDistance or bestDistance < 0.0F)
             {
                 bestDistance = distance;
                 bestTacan = p_current->vuID;
@@ -722,7 +722,7 @@ BOOL TacanList::StoreStation(LinkedCampStationStr** p_list,
                              int range, int tactype, float ilsfreq)
 {
 
-    if (channel < 1 || channel > 126)   // Note: the value of channel should be
+    if (channel < 1 or channel > 126)   // Note: the value of channel should be
     {
         //F4Assert(FALSE); // constrained to 1 - 126
         ShiWarning("invalid channel\n");

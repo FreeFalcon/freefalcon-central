@@ -173,7 +173,7 @@ void GroundTaskingManagerClass::DoCalculations(void)
     POData pd;
 
     // Don't do this if we're not active, or not owned by this machine
-    if (!(TeamInfo[owner]->flags & TEAM_ACTIVE) || !IsLocal())
+    if (!(TeamInfo[owner]->flags & TEAM_ACTIVE) or !IsLocal())
         return;
 
     topPriority = 0;
@@ -263,7 +263,7 @@ int GroundTaskingManagerClass::Task(void)
     int action;
 
     // Don't do this if we're not active, or not owned by this machine
-    if (!(TeamInfo[owner]->flags & TEAM_ACTIVE) || !IsLocal())
+    if (!(TeamInfo[owner]->flags & TEAM_ACTIVE) or !IsLocal())
         return 0;
 
     action = TeamInfo[owner]->GetGroundActionType();
@@ -427,7 +427,7 @@ int GroundTaskingManagerClass::IsValidObjective(int orders, Objective o)
             break;
 
         case GORD_SECURE:
-            if (o->IsSecondary() && owner == o->GetTeam() && (o->IsFrontline() || o->IsSecondline()))
+            if (o->IsSecondary() && owner == o->GetTeam() && (o->IsFrontline() or o->IsSecondline()))
                 return 1;
 
             break;
@@ -537,7 +537,7 @@ int GroundTaskingManagerClass::GetAddBits(Objective o, int to_collect)
     if (!o->ArtillerySite())
         add_now &= compl (COLLECT_SUPPORT);
 
-    if (!o->NeedRepair() || o->GetObjectiveStatus() > 50)
+    if (!o->NeedRepair() or o->GetObjectiveStatus() > 50)
         add_now &= compl (COLLECT_REPAIR);
 
     if (!o->SamSite())
@@ -583,7 +583,7 @@ int ScoreObj(int orders, int os, int ss, int ps, int pps, int fs)
         default:
 
             // KCK EXPERIMENTAL: Only assign reserve objectives which are near the front
-            if (fs > 60 || fs < 20)
+            if (fs > 60 or fs < 20)
                 return 0;
 
             // END EXPERIMENTAL
@@ -748,7 +748,7 @@ void GroundTaskingManagerClass::AddToLists(Unit u, int to_collect)
         u->GetLocation(&x, &y);
         o = FindNearestObjective(x, y, &d);
 
-        if (!o || d > 2.0F || GetRoE(o->GetTeam(), owner, ROE_GROUND_FIRE) == ROE_ALLOWED)
+        if (!o or d > 2.0F or GetRoE(o->GetTeam(), owner, ROE_GROUND_FIRE) == ROE_ALLOWED)
         {
             // Overrun!
             u->KillUnit();
@@ -768,7 +768,7 @@ void GroundTaskingManagerClass::AddToLists(Unit u, int to_collect)
     }
 
     // Broken/unsupplied units get tasked as reserve only
-    if (u->Broken() || u->GetUnitSupply() < 50)
+    if (u->Broken() or u->GetUnitSupply() < 50)
     {
         AddToList(u, GORD_RESERVE);
         return;
@@ -780,7 +780,7 @@ void GroundTaskingManagerClass::AddToLists(Unit u, int to_collect)
     // Check for one role units
     role = u->GetUnitNormalRole();
 
-    if (role == GRO_FIRESUPPORT || role == GRO_AIRDEFENSE || role == GRO_ENGINEER) // KCK: Radar units here?
+    if (role == GRO_FIRESUPPORT or role == GRO_AIRDEFENSE or role == GRO_ENGINEER) // KCK: Radar units here?
     {
         AddToList(u, GetGroundOrders(role));
         AddToList(u, GORD_RESERVE);
@@ -802,13 +802,13 @@ void GroundTaskingManagerClass::AddToLists(Unit u, int to_collect)
         if (i == GORD_AIRBORNE && u->GetUnitNormalRole() != GRO_AIRBORNE)
             continue;
 
-        if (i == GORD_SUPPORT || i == GORD_REPAIR || i == GORD_AIRDEFENSE)
+        if (i == GORD_SUPPORT or i == GORD_REPAIR or i == GORD_AIRDEFENSE)
             continue;
 
         if (i == GORD_RADAR && u->GetUnitNormalRole() != GRO_RECON)
             continue;
 
-        if (!i || u->GetUnitRoleScore(GetGroundRole(i), CALC_MAX, 0) > MIN_ALLOWABLE_ROLE_SCORE)
+        if (!i or u->GetUnitRoleScore(GetGroundRole(i), CALC_MAX, 0) > MIN_ALLOWABLE_ROLE_SCORE)
         {
             // Add to canidate list
             AddToList(u, i);
@@ -873,7 +873,7 @@ int GroundTaskingManagerClass::AssignUnit(Unit u, int orders, Objective o, int s
     POData pod;
     // SOData sod;
 
-    if (!u || !o)
+    if (!u or !o)
         return 0;
 
 #ifdef KEV_GDEBUG
@@ -937,7 +937,7 @@ int GroundTaskingManagerClass::AssignUnits(int orders, int mode)
     time = GetTickCount();
 #endif
 
-    if (!objList[orders] || !canidateList[orders])
+    if (!objList[orders] or !canidateList[orders])
         return 0;
 
     // Special case for reserve orders -
@@ -1000,7 +1000,7 @@ int GroundTaskingManagerClass::AssignUnits(int orders, int mode)
         if (orders == GORD_REPAIR)
         {
             // RV - Biker - Only repair ABs if they are used by some squadron
-            if (curo->obj->GetType() == TYPE_AIRBASE || curo->obj->GetType() == TYPE_AIRSTRIP)
+            if (curo->obj->GetType() == TYPE_AIRBASE or curo->obj->GetType() == TYPE_AIRSTRIP)
             {
                 ATMAirbaseClass* atmbase = TeamInfo[curo->obj->GetTeam()]->atm->FindATMAirbase(curo->obj->Id());
 
@@ -1016,7 +1016,7 @@ int GroundTaskingManagerClass::AssignUnits(int orders, int mode)
             float dist = DistanceToFront(ox, oy);
 
             // RV - Biker - Do not repair object near front only if it's a bridge
-            if (curo->obj->Type() !=  TYPE_BRIDGE && (curo->obj->IsFrontline() || curo->obj->IsSecondline() || curo->obj->IsThirdline() || dist < 15.0f))
+            if (curo->obj->Type() !=  TYPE_BRIDGE && (curo->obj->IsFrontline() or curo->obj->IsSecondline() or curo->obj->IsThirdline() or dist < 15.0f))
             {
                 continue;
             }

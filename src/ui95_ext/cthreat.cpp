@@ -51,7 +51,7 @@ void C_Threat::AddCircle(long ID, long type, long worldx, long worldy, long radi
     THREAT_CIRCLE *circle;
     long i;
 
-    if (!Root_ || ID < 1 || !radius)
+    if (!Root_ or ID < 1 or !radius)
         return;
 
     if (Root_->Find(ID))
@@ -76,7 +76,7 @@ void C_Threat::UpdateCircle(long ID, long worldx, long worldy)
 {
     THREAT_CIRCLE *circle;
 
-    if (!Root_ || ID < 1)
+    if (!Root_ or ID < 1)
         return;
 
     circle = (THREAT_CIRCLE*)Root_->Find(ID);
@@ -90,7 +90,7 @@ void C_Threat::UpdateCircle(long ID, long worldx, long worldy)
 
 void C_Threat::Remove(long ID)
 {
-    if (!Root_ || ID < 1)
+    if (!Root_ or ID < 1)
         return;
 
     Root_->Remove(ID);
@@ -100,7 +100,7 @@ void C_Threat::SetRadius(long ID, long slice, long radius)
 {
     THREAT_CIRCLE *circle;
 
-    if (slice < 0 || slice >= 8)
+    if (slice < 0 or slice >= 8)
         return;
 
     circle = (THREAT_CIRCLE*)Root_->Find(ID);
@@ -116,7 +116,7 @@ void C_Threat::BuildOverlay(BYTE *overlay, long w, long h, float pixelsperkm)
     long curidx;
     long i;
 
-    if (Flags_ & C_BIT_INVISIBLE || !Root_ || !overlay)
+    if (Flags_ & C_BIT_INVISIBLE or !Root_ or !overlay)
         return;
 
     myCircle.SetBuffer((char*)overlay);

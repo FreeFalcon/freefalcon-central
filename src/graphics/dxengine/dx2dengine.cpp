@@ -107,11 +107,11 @@ void CDXEngine::LoadTexture(char *FileName)
         }
 
         // Skip if a comment, or a New Line
-        if (Buffer[0] == '#' || Buffer[0] == ';' || Buffer[0] == '\n')
+        if (Buffer[0] == '#' or Buffer[0] == ';' or Buffer[0] == '\n')
             continue;
 
         // Skip initial Spaces or TABs
-        for (b = 0; b < sizeof(Buffer) && (Buffer[b] == ' ' || Buffer[b] == '\t'); b++);
+        for (b = 0; b < sizeof(Buffer) && (Buffer[b] == ' ' or Buffer[b] == '\t'); b++);
 
         // Ok, get the Item Name
         Name = strtok(&Buffer[b], "=\n");
@@ -1585,7 +1585,7 @@ void CDXEngine::DX2D_Flush2DObjects(void)
         if (Layer == LAYER_NODRAW) continue;
 
         // check if Layer need to be sorted and eventually sort it
-        if (1 || Layers[Layer].Flags & LAYER_SORT) DrawStart = DX2D_SortIndexes(DrawStart);
+        if (1 or Layers[Layer].Flags & LAYER_SORT) DrawStart = DX2D_SortIndexes(DrawStart);
 
 #ifdef DEBUG_2D_ENGINE
         STOP_PROFILE("DYN SORT:");

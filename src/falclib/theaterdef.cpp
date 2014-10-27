@@ -145,7 +145,7 @@ void LoadTheaterList()
 
     while (fgets(line, sizeof line, fp))
     {
-        if (line[0] == '\r' || line[0] == '#' || line[0] == ';' || line[0] == '\n')
+        if (line[0] == '\r' or line[0] == '#' or line[0] == ';' or line[0] == '\n')
             continue;
 
         char *cp;
@@ -306,7 +306,7 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
 
     //======================================================
     // Cobra - Add "sim" path if Korea theater
-    if ((!strnicmp(td->m_name, "Korea", 5)) || (!strnicmp(td->m_name, "Eurowar", 7)))
+    if ((!strnicmp(td->m_name, "Korea", 5)) or (!strnicmp(td->m_name, "Eurowar", 7)))
     {
         char tmpPath[256];
         sprintf(tmpPath, "%s\\sim", FalconDataDirectory); // JPO - so we can find raw sim files
@@ -419,8 +419,8 @@ void TheaterList::DoSoundSetup() // must be done after END_UI !!
 // helper function so we can have full pathnames if we want.
 void TheaterList::SetPathName(char *dest, char *src, char *reldir)
 {
-    //if (src == NULL || src[0] == 0) return; // leave alone
-    if (src == NULL || src[0] == 0)
+    //if (src == NULL or src[0] == 0) return; // leave alone
+    if (src == NULL or src[0] == 0)
         strcpy(dest, reldir);
     else if ((src[1] == ':' && isalpha(src[0])) ||
              (src[0] == '\\' && src[1] == '\\')) // probably full pathname

@@ -7,6 +7,7 @@
 // Copyright (c) 1997-2001 Microsoft Corporation. All rights reserved
 //-----------------------------------------------------------------------------
 //#define STRICT
+#include <cISO646>
 #include <windows.h>
 #include <mmsystem.h>
 #include <tchar.h>
@@ -63,13 +64,13 @@ HRESULT DXUtil_FindMediaFile(TCHAR* strPath, TCHAR* strFilename)
     TCHAR *strShortName;
     DWORD cchPath;
 
-    if (NULL == strFilename || NULL == strPath)
+    if (NULL == strFilename or NULL == strPath)
         return E_INVALIDARG;
 
     // Build full path name from strFileName (strShortName will be just the leaf filename)
     cchPath = GetFullPathName(strFilename, sizeof(strFullPath) / sizeof(TCHAR), strFullPath, &strShortName);
 
-    if ((cchPath == 0) || (sizeof(strFullPath) / sizeof(TCHAR) <= cchPath))
+    if ((cchPath == 0) or (sizeof(strFullPath) / sizeof(TCHAR) <= cchPath))
         return E_FAIL;
 
     // first try to find the filename given a full path
@@ -466,7 +467,7 @@ FLOAT __stdcall DXUtil_Timer(TIMER_COMMAND command)
 VOID DXUtil_ConvertAnsiStringToWide(WCHAR* wstrDestination, const CHAR* strSource,
                                     int cchDestChar)
 {
-    if (wstrDestination == NULL || strSource == NULL)
+    if (wstrDestination == NULL or strSource == NULL)
         return;
 
     if (cchDestChar == -1)
@@ -490,7 +491,7 @@ VOID DXUtil_ConvertAnsiStringToWide(WCHAR* wstrDestination, const CHAR* strSourc
 VOID DXUtil_ConvertWideStringToAnsi(CHAR* strDestination, const WCHAR* wstrSource,
                                     int cchDestChar)
 {
-    if (strDestination == NULL || wstrSource == NULL)
+    if (strDestination == NULL or wstrSource == NULL)
         return;
 
     if (cchDestChar == -1)
@@ -514,7 +515,7 @@ VOID DXUtil_ConvertWideStringToAnsi(CHAR* strDestination, const WCHAR* wstrSourc
 VOID DXUtil_ConvertGenericStringToAnsi(CHAR* strDestination, const TCHAR* tstrSource,
                                        int cchDestChar)
 {
-    if (strDestination == NULL || tstrSource == NULL || cchDestChar == 0)
+    if (strDestination == NULL or tstrSource == NULL or cchDestChar == 0)
         return;
 
 #ifdef _UNICODE
@@ -546,7 +547,7 @@ VOID DXUtil_ConvertGenericStringToAnsi(CHAR* strDestination, const TCHAR* tstrSo
 VOID DXUtil_ConvertGenericStringToWide(WCHAR* wstrDestination, const TCHAR* tstrSource,
                                        int cchDestChar)
 {
-    if (wstrDestination == NULL || tstrSource == NULL || cchDestChar == 0)
+    if (wstrDestination == NULL or tstrSource == NULL or cchDestChar == 0)
         return;
 
 #ifdef _UNICODE
@@ -578,7 +579,7 @@ VOID DXUtil_ConvertGenericStringToWide(WCHAR* wstrDestination, const TCHAR* tstr
 VOID DXUtil_ConvertAnsiStringToGeneric(TCHAR* tstrDestination, const CHAR* strSource,
                                        int cchDestChar)
 {
-    if (tstrDestination == NULL || strSource == NULL || cchDestChar == 0)
+    if (tstrDestination == NULL or strSource == NULL or cchDestChar == 0)
         return;
 
 #ifdef _UNICODE
@@ -610,7 +611,7 @@ VOID DXUtil_ConvertAnsiStringToGeneric(TCHAR* tstrDestination, const CHAR* strSo
 VOID DXUtil_ConvertWideStringToGeneric(TCHAR* tstrDestination, const WCHAR* wstrSource,
                                        int cchDestChar)
 {
-    if (tstrDestination == NULL || wstrSource == NULL || cchDestChar == 0)
+    if (tstrDestination == NULL or wstrSource == NULL or cchDestChar == 0)
         return;
 
 #ifdef _UNICODE

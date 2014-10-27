@@ -130,7 +130,7 @@ void CPDigits::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered digi
         return;
 
     //Wombat778 new rendering code. Taken from cpsurface.cpp
-    if (!g_bRealisticAvionics || (g_bRealisticAvionics && active))
+    if (!g_bRealisticAvionics or (g_bRealisticAvionics && active))
     {
         OTWDriver.renderer->CenterOriginInViewport();
         OTWDriver.renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F);

@@ -460,7 +460,7 @@ void NavigationSystem::ExecIls(void)
     mpCurrentIls.gpDeviation = -180.0F * DTR;
     mpCurrentIls.gsDeviation = 180.0F * DTR;
 
-    if (SimDriver.GetPlayerAircraft() && mpCurrentIls.rwyidx != 0 && mpCurrentIls.vuID != FalconNullId && (GetInstrumentMode() == NavigationSystem::ILS_TACAN || GetInstrumentMode() == NavigationSystem::ILS_NAV))
+    if (SimDriver.GetPlayerAircraft() && mpCurrentIls.rwyidx != 0 && mpCurrentIls.vuID != FalconNullId && (GetInstrumentMode() == NavigationSystem::ILS_TACAN or GetInstrumentMode() == NavigationSystem::ILS_NAV))
     {
 
         xfrontdiff = mpCurrentIls.frontx - SimDriver.GetPlayerAircraft()->XPos();
@@ -545,8 +545,8 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, float* value)
                                                GetTacanBand(NavigationSystem::AUXCOMM), GetDomain(NavigationSystem::AUXCOMM),
                                                &ID, &range, &type, &ilsf);
 
-                if (GetTacanBand(NavigationSystem::AUXCOMM) == TacanList::Y || //Tacanband isn't X
-                    GetDomain(NavigationSystem::AUXCOMM) == TacanList::AA || //Not in AG Mode
+                if (GetTacanBand(NavigationSystem::AUXCOMM) == TacanList::Y or //Tacanband isn't X
+                    GetDomain(NavigationSystem::AUXCOMM) == TacanList::AA or //Not in AG Mode
                     mpCurrentIls.vuID != ID) //Tacanchannel not same
                 {
                     return FALSE;
@@ -563,8 +563,8 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, float* value)
                                                GetTacanBand(NavigationSystem::ICP), GetDomain(NavigationSystem::ICP),
                                                &ID, &range, &type, &ilsf);
 
-                if (GetTacanBand(NavigationSystem::ICP) == TacanList::Y || //Tacanband isn't X
-                    GetDomain(NavigationSystem::ICP) == TacanList::AA || // Not in AG mode
+                if (GetTacanBand(NavigationSystem::ICP) == TacanList::Y or //Tacanband isn't X
+                    GetDomain(NavigationSystem::ICP) == TacanList::AA or // Not in AG mode
                     mpCurrentIls.vuID != ID)
                 {
                     return FALSE;
@@ -1162,7 +1162,7 @@ void NavigationSystem::SetDomain(Type type)
 void NavigationSystem::SetDomain(Tacan_Channel_Src src, TacanList::Domain domain)
 {
 
-    if (domain < 0 || domain >= TacanList::NumDomains)
+    if (domain < 0 or domain >= TacanList::NumDomains)
     {
         ShiWarning("Bad Nav Domain");
         return;
@@ -1233,7 +1233,7 @@ TacanList::Domain NavigationSystem::ToggleDomain(Tacan_Channel_Src src)
 void NavigationSystem::SetInstrumentMode(Instrument_Mode mode)
 {
 
-    if (mode < 0 || mode >= TOTAL_MODES)
+    if (mode < 0 or mode >= TOTAL_MODES)
     {
         ShiWarning("Bad NAV Mode");
         return;
@@ -1887,14 +1887,14 @@ void NavigationSystem::GotoNextDLink(void)
 void NavigationSystem::SetTacanChannel(Tacan_Channel_Src src, int digit, int value)
 {
 
-    if (digit < 0 || digit > 2)
+    if (digit < 0 or digit > 2)
     {
         // Tacan Channels have between one and three digits.
         ShiWarning("Too many digits"); // Element #2 = MSDigit, Element #0 = LSDigit
         return;
     }
 
-    if (digit == 2 && (value < 0 || value > 1))
+    if (digit == 2 && (value < 0 or value > 1))
     {
         // Element #2 can only take values of 0 or 1
         ShiWarning("Bad TACAN Number");
@@ -2001,7 +2001,7 @@ void NavigationSystem::SetTacanChannel(Tacan_Channel_Src src, int channel)
 {
 
 
-    if (channel < 1 || channel > 126)   // Tacan Channels are numbered 1 to 126
+    if (channel < 1 or channel > 126)   // Tacan Channels are numbered 1 to 126
     {
         ShiWarning("Bad TACAN Channel");
         return;
@@ -2095,7 +2095,7 @@ TacanList::StationSet NavigationSystem::GetTacanBand(Tacan_Channel_Src src)
 void NavigationSystem::SetTacanChannel(Tacan_Channel_Src src, int channel, TacanList::StationSet set)
 {
 
-    if (channel < 1 || channel > 126)   // Tacan Channels are numbered 1 to 126
+    if (channel < 1 or channel > 126)   // Tacan Channels are numbered 1 to 126
     {
         ShiWarning("Bad TACAN Number");
         return;
@@ -2156,7 +2156,7 @@ void NavigationSystem::GetTacanChannel(Tacan_Channel_Src src, int* channel, Taca
 void NavigationSystem::StepTacanChannelDigit(Tacan_Channel_Src src, int digit, int direction)
 {
 
-    if (digit < 0 || digit > 2)
+    if (digit < 0 or digit > 2)
     {
         // Tacan Channels have between one and three digits.
         // Element #2 = MSDigit, Element #0 = LSDigit
@@ -2309,11 +2309,11 @@ void NavigationSystem::GetAirbase(VU_ID* pATCId)
         return;
     }
 
-    if (GetInstrumentMode() == TACAN || GetInstrumentMode() == ILS_TACAN)
+    if (GetInstrumentMode() == TACAN or GetInstrumentMode() == ILS_TACAN)
     {
         GetTacanVUID(GetControlSrc(), pATCId);
     }
-    else if (GetInstrumentMode() == NAV || GetInstrumentMode() == ILS_NAV)
+    else if (GetInstrumentMode() == NAV or GetInstrumentMode() == ILS_NAV)
     {
         pcurrentWaypoint = SimDriver.GetPlayerAircraft()->curWaypoint;
 

@@ -72,7 +72,7 @@ void C_Pilot::SetState(short state)
 
 long C_Pilot::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
         return(0);
 
     if (relx >= GetX() && rely >= GetY() && relx <= (GetX() + GetW()) && rely <= GetY() + GetH())
@@ -93,7 +93,7 @@ BOOL C_Pilot::Process(long ID, short HitType)
 
 void C_Pilot::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -101,13 +101,13 @@ void C_Pilot::Refresh()
 
 void C_Pilot::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Callsign_)
         Callsign_->Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 

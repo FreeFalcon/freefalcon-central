@@ -40,7 +40,7 @@ void CBExSpeedAlt(void* ptext)
     }
     else
     {
-        if (hat > -1200.0F || (cockpitFlightData.zDot < 0.0F && hat > -1500.0F))
+        if (hat > -1200.0F or (cockpitFlightData.zDot < 0.0F && hat > -1500.0F))
         {
             theAlt = -hat;
         }

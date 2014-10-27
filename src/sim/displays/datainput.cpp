@@ -517,8 +517,8 @@ void SmsDrawable::InputPushButton(int whichButton, int whichMFD)
         case 2:
             ClearDigits();
 
-            if (InputModus == C1 || InputModus == C2 || InputModus == C3 ||
-                InputModus == C4 || InputModus == REL_ANG || InputModus == LADD_MODE)
+            if (InputModus == C1 or InputModus == C2 or InputModus == C3 ||
+                InputModus == C4 or InputModus == REL_ANG or InputModus == LADD_MODE)
             {
                 InputModus = CONTROL_PAGE;
             }
@@ -673,7 +673,7 @@ void SmsDrawable::AddInput(int whichButton)
 }
 void SmsDrawable::FillInputString(void)
 {
-    if (InputModus == RELEASE_PULSE || InputModus == REL_ANG)
+    if (InputModus == RELEASE_PULSE or InputModus == REL_ANG)
     {
         for (int i = 0; i < MAX_DIGITS; i++)
         {
@@ -696,7 +696,7 @@ void SmsDrawable::FillInputString(void)
             inputstr[MAX_DIGITS + 1] = 'T';
         }
     }
-    else if (InputModus == ARMING_DELAY || InputModus == C1 || (InputModus == C2 && InputLine <= 0))
+    else if (InputModus == ARMING_DELAY or InputModus == C1 or (InputModus == C2 && InputLine <= 0))
     {
         inputstr[8] = 'S';
         inputstr[9] = 'E';
@@ -739,7 +739,7 @@ void SmsDrawable::FillInputString(void)
         else
             inputstr[0] = ' ';
     }
-    else if (InputModus == BURST_ALT || (InputModus == C2 && InputLine > 0))
+    else if (InputModus == BURST_ALT or (InputModus == C2 && InputLine > 0))
     {
         for (int i = 0; i < MAX_DIGITS; i++)
         {

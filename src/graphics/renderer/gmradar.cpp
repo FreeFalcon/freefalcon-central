@@ -544,7 +544,7 @@ void RenderGMRadar::DrawBlip(DrawableObject* drawable, float GainScale, bool Sha
         r = drawable->GetRadarSign() * worldToUnitScale * scaleX; // +/-1 * scale to pixels
 
     // Decide if a spot will suffice or if we need to do a full render
-    if (!Shaped || r < 2.0f)
+    if (!Shaped or r < 2.0f)
     {
 
         // Compute the rotated and scaled location of the points
@@ -651,7 +651,7 @@ BOOL RenderGMRadar::SetRange(float newRange, int newLOD)
 
     // We check this to make sure we're not doing too much work as a result
     // of a floating point miscompare
-    ShiAssert((LOD != newLOD) || (fabs(newRange - range) > 1.0f))
+    ShiAssert((LOD != newLOD) or (fabs(newRange - range) > 1.0f))
 
 
     // Get us to a known starting state (constructed but uninitialized TViewPoint)

@@ -96,7 +96,7 @@ C_Font::C_Font()
 
 C_Font::~C_Font()
 {
-    if (Root_ || Fonts_)
+    if (Root_ or Fonts_)
         Cleanup();
 }
 

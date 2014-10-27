@@ -193,7 +193,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
 
     visType = classPtr->visType[theObject->Status() & VIS_TYPE_MASK];
 
-    if (visType >= 0 || theObject->drawPointer)
+    if (visType >= 0 or theObject->drawPointer)
     {
         if (classPtr->vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_LAND ||
             classPtr->vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_SEA)
@@ -220,7 +220,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                 SimBaseClass *prevObj = NULL, *nextObj = NULL;
 
                 // In many cases, our visType should be modified by our neighbors.
-                if ((theObject->Status() & VIS_TYPE_MASK) != VIS_DESTROYED && (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM || ((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM))
+                if ((theObject->Status() & VIS_TYPE_MASK) != VIS_DESTROYED && (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM or ((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM))
                 {
                     // KCK: Can we just use our slot number? Or will this break something?
                     // int idx = theObject->GetCampaignObject()->GetComponentIndex (theObject);

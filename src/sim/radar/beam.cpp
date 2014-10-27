@@ -172,7 +172,7 @@ void RadarDopplerClass::MoveBeam(void)
             /*------------------*/
             /* Off the top edge */
             /*------------------*/
-            if (beamEl > elScan || beamEl + seekerElCenter > MAX_ANT_EL)
+            if (beamEl > elScan or beamEl + seekerElCenter > MAX_ANT_EL)
             {
                 SetFlagBit(ChangingBars);
                 targetAz = beamAz + barWidth;
@@ -183,7 +183,7 @@ void RadarDopplerClass::MoveBeam(void)
             /*---------------------*/
             /* Off the bottom edge */
             /*---------------------*/
-            else if (beamEl < -elScan || beamEl + seekerElCenter < -MAX_ANT_EL)
+            else if (beamEl < -elScan or beamEl + seekerElCenter < -MAX_ANT_EL)
             {
                 SetFlagBit(ChangingBars);
                 targetAz = beamAz + barWidth;
@@ -223,7 +223,7 @@ void RadarDopplerClass::MoveBeam(void)
 
                 // target in beam ?
                 if ((az >= curScanLeft && az <= curScanRight &&
-                     el <= curScanTop && el >= curScanBottom) || scanDir == ScanRev)
+                     el <= curScanTop && el >= curScanBottom) or scanDir == ScanRev)
                 {
                     // Can See, or, have seen so head home
                     scanDir = ScanRev;
@@ -410,12 +410,12 @@ void RadarDopplerClass::MoveBeam(void)
             /* Right Edge */
             /*------------*/
             if (scanDir == ScanFwd &&
-                (beamAz > azScan || beamAz + seekerAzCenter > MAX_ANT_EL))
+                (beamAz > azScan or beamAz + seekerAzCenter > MAX_ANT_EL))
             {
 #if 0 // This will be nice but is a bit broken inside GMComposit.cpp  SCR 8/14/98
 
                 // In GM DBS modes, the beam always sweeps from left to right
-                if ((mode == GM) && ((flags & DBS1) || (flags & DBS2)))
+                if ((mode == GM) && ((flags & DBS1) or (flags & DBS2)))
                 {
                     beamAz = max(-azScan, -MAX_ANT_EL + seekerAzCenter);
                 }
@@ -433,7 +433,7 @@ void RadarDopplerClass::MoveBeam(void)
             /* Left Edge */
             /*-----------*/
             else if (scanDir == ScanRev &&
-                     (beamAz < -azScan || beamAz + seekerAzCenter < -MAX_ANT_EL))
+                     (beamAz < -azScan or beamAz + seekerAzCenter < -MAX_ANT_EL))
             {
                 SetFlagBit(ChangingBars);
                 targetEl = beamEl - barWidth;

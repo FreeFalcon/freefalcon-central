@@ -98,7 +98,7 @@ void AirframeClass::EngineModel(float dt)
     {
         // MD -- 20040531: adding test to make sure that the EPU keeps running when you land if it was
         // already running (previous logic shut EPU off on touchdown)
-        if ((GetEpuSwitch() == ON) || (GeneratorRunning(GenEpu) && (GetEpuSwitch() != OFF)))
+        if ((GetEpuSwitch() == ON) or (GeneratorRunning(GenEpu) && (GetEpuSwitch() != OFF)))
         {
             // pilot command
             GeneratorOn(GenEpu);
@@ -126,7 +126,7 @@ void AirframeClass::EngineModel(float dt)
     }
 
     // check hydraulics and generators
-    if (GeneratorRunning(GenMain) || GeneratorRunning(GenStdby))
+    if (GeneratorRunning(GenMain) or GeneratorRunning(GenStdby))
     {
         HydrRestore(HYDR_ALL); // restore those systems we can
     }
@@ -354,7 +354,7 @@ void AirframeClass::EngineModel(float dt)
         }
 
         //else if (pwrlev <= 1.0)
-        if ((pwrlev <= 1.0f && rpm <= 1.0f) || (pwrlev > 1.0f && rpm <= 1.0f))
+        if ((pwrlev <= 1.0f && rpm <= 1.0f) or (pwrlev > 1.0f && rpm <= 1.0f))
         {
             /*-------------------*/
             /* Mil power or less */
@@ -442,7 +442,7 @@ void AirframeClass::EngineModel(float dt)
         /*-----------------*/
         /* engine dynamics */
         /*-----------------*/
-        if (IsSet(Trimming)) // || simpleMode == SIMPLE_MODE_AF)
+        if (IsSet(Trimming)) // or simpleMode == SIMPLE_MODE_AF)
         {
             ethrst = 1.0F;
             tgross = thrtab;
@@ -485,7 +485,7 @@ void AirframeClass::EngineModel(float dt)
         /*-----------*/
         /*   burn fuel */
         /*-----------*/
-        if (AvailableFuel() <= 0.0f || IsEngineFlag(MasterFuelOff))   // no fuel - dead engine.
+        if (AvailableFuel() <= 0.0f or IsEngineFlag(MasterFuelOff))   // no fuel - dead engine.
         {
             SetFlag(EngineStopped);
             // mark it as a flame out
@@ -885,7 +885,7 @@ void AirframeClass::MultiEngineModel(float dt)
     //*****************************************************
     // #2
     // check hydraulics and generators
-    if (GeneratorRunning(GenMain) || GeneratorRunning(GenStdby))
+    if (GeneratorRunning(GenMain) or GeneratorRunning(GenStdby))
     {
         HydrRestore(HYDR_ALL); // restore those systems we can
     }
@@ -1132,7 +1132,7 @@ void AirframeClass::MultiEngineModel(float dt)
         }
         //7.6 MIL Power Engine 1
         //if (pwrlevEngine1 <= 1.0f)
-        else if ((pwrlevEngine1 <= 1.0f && rpm <= 1.0f) || (pwrlevEngine1 > 1.0f && rpm <= 1.0f))
+        else if ((pwrlevEngine1 <= 1.0f && rpm <= 1.0f) or (pwrlevEngine1 > 1.0f && rpm <= 1.0f))
         {
             /*-------------------*/
             /* Mil power or less */
@@ -1223,7 +1223,7 @@ void AirframeClass::MultiEngineModel(float dt)
         /*-----------------*/
         /* engine dynamics */
         /*-----------------*/
-        if (IsSet(Trimming)) // || simpleMode == SIMPLE_MODE_AF)
+        if (IsSet(Trimming)) // or simpleMode == SIMPLE_MODE_AF)
         {
             //Engine 1
             ethrst = 1.0F;
@@ -1269,7 +1269,7 @@ void AirframeClass::MultiEngineModel(float dt)
         /*-----------*/
         /* burn fuel */
         /*-----------*/
-        if (AvailableFuel() <= 0.0f || IsEngineFlag(MasterFuelOff))   // no fuel - dead engine.
+        if (AvailableFuel() <= 0.0f or IsEngineFlag(MasterFuelOff))   // no fuel - dead engine.
         {
             SetFlag(EngineStopped);
             // mark it as a flame out
@@ -1635,7 +1635,7 @@ void AirframeClass::MultiEngineModel(float dt)
 
         //7.6 MIL Power Engine 2
         //if (pwrlevEngine2 <= 1.0f)
-        else if ((pwrlevEngine2 <= 1.0f && rpm2 <= 1.0f) || (pwrlevEngine2 > 1.0f && rpm2 <= 1.0f))
+        else if ((pwrlevEngine2 <= 1.0f && rpm2 <= 1.0f) or (pwrlevEngine2 > 1.0f && rpm2 <= 1.0f))
         {
             /*-------------------*/
             /* Mil power or less */
@@ -1725,7 +1725,7 @@ void AirframeClass::MultiEngineModel(float dt)
         /*-----------------*/
         /* engine dynamics */
         /*-----------------*/
-        if (IsSet(Trimming)) // || simpleMode == SIMPLE_MODE_AF)
+        if (IsSet(Trimming)) // or simpleMode == SIMPLE_MODE_AF)
         {
             //Engine 2
             ethrst2 = 1.0F;
@@ -1772,7 +1772,7 @@ void AirframeClass::MultiEngineModel(float dt)
         /*-----------*/
         /* burn fuel */
         /*-----------*/
-        if (AvailableFuel() <= 0.0f || IsEngineFlag(MasterFuelOff))   // no fuel - dead engine.
+        if (AvailableFuel() <= 0.0f or IsEngineFlag(MasterFuelOff))   // no fuel - dead engine.
         {
             SetEngineFlag(EngineStopped2);
             // mark it as a flame out
@@ -2358,7 +2358,7 @@ void AirframeClass::FuelTransfer(float dt)
     // switch set, or cline empty and
     // we have some fuel to transfer
     // only happens if externals are pressurized.
-    if (airSource == AS_NORM || airSource == AS_DUMP)
+    if (airSource == AS_NORM or airSource == AS_DUMP)
     {
         if (((engineFlags & WingFirst) ||
              m_tanks[TANK_CLINE] <= 0.0f) &&
@@ -2691,7 +2691,7 @@ float AirframeClass::EngineRpmMods(float rpmCmd)
     float rpmRSE = 0.0F;
 
     //PW-100/PW-220
-    if (auxaeroData->typeEngine == 1 || auxaeroData->typeEngine == 2)
+    if (auxaeroData->typeEngine == 1 or auxaeroData->typeEngine == 2)
     {
         //TJL -1 says idle RPM increases from 0.84 till it is MIL power at 1.4 Mach
         if (mach >= 0.84f && mach <= 1.4f)
@@ -2727,7 +2727,7 @@ float AirframeClass::EngineRpmMods(float rpmCmd)
 
 
     // PW-229/GE-110/GE-129
-    if (auxaeroData->typeEngine == 3 || auxaeroData->typeEngine == 4 || auxaeroData->typeEngine == 5)
+    if (auxaeroData->typeEngine == 3 or auxaeroData->typeEngine == 4 or auxaeroData->typeEngine == 5)
     {
         //Reduced Speed Excursion Logic 0.5 - 0.6 is the switch range, we'll call it 5.5 for coding
         if (mach > 0.55f && mach < 1.1f)
@@ -2806,8 +2806,8 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
 
     //RPM effect for any of the modern engines
     //Note, even the F-4E GE J79 schedules idle speed so keep this effect for engines
-    if (auxaeroData->typeEngine == 9 || auxaeroData->typeEngine == 10
-        || auxaeroData->typeEngine == 11)
+    if (auxaeroData->typeEngine == 9 or auxaeroData->typeEngine == 10
+        or auxaeroData->typeEngine == 11)
     {
         //TJL -1 says idle RPM increases from 0.84 till it is MIL power at 1.4 Mach
         if (mach >= 0.84f && mach <= 1.4f)
@@ -2825,7 +2825,7 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
     }
 
     //PW-100/PW-220
-    if (auxaeroData->typeEngine == 1 || auxaeroData->typeEngine == 2)
+    if (auxaeroData->typeEngine == 1 or auxaeroData->typeEngine == 2)
     {
         //TJL -1 says idle RPM increases from 0.84 till it is MIL power at 1.4 Mach
         if (mach >= 0.84f && mach <= 1.4f)
@@ -2861,7 +2861,7 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
 
 
     // PW-229/GE-110/GE-129
-    if (auxaeroData->typeEngine == 3 || auxaeroData->typeEngine == 4 || auxaeroData->typeEngine == 5)
+    if (auxaeroData->typeEngine == 3 or auxaeroData->typeEngine == 4 or auxaeroData->typeEngine == 5)
     {
         //Reduced Speed Excursion Logic 0.5 - 0.6 is the switch range, we'll call it 5.5 for coding
         if (mach > 0.55f && mach < 1.1f)
@@ -2925,8 +2925,8 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
 
 
     //F18A-D MIL at 1.23 mach
-    if (auxaeroData->typeEngine == 6 || auxaeroData->typeEngine == 7
-        || auxaeroData->typeAC == 8 || auxaeroData->typeAC == 9)
+    if (auxaeroData->typeEngine == 6 or auxaeroData->typeEngine == 7
+        or auxaeroData->typeAC == 8 or auxaeroData->typeAC == 9)
     {
         if (mach >= 0.9f && mach <= 1.23f)
             rpmCmd = max(mach / 1.23f, rpmCmd);
@@ -2943,7 +2943,7 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
     }
 
     //F18E/F RPM to MIL at 1.23 mach
-    if (auxaeroData->typeEngine == 8 || auxaeroData->typeAC == 10)
+    if (auxaeroData->typeEngine == 8 or auxaeroData->typeAC == 10)
     {
         if (mach >= 1.18f && mach <= 1.23f)
             rpmCmd = max(mach / 1.23f, rpmCmd);
@@ -2961,8 +2961,8 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
 
 
     // F-14 spools engine up when Mach < 0.9 and AOA over 18
-    if ((auxaeroData->typeAC == 6 || auxaeroData->typeAC == 7) ||
-        (auxaeroData->typeEngine == 9 || auxaeroData->typeEngine == 10))
+    if ((auxaeroData->typeAC == 6 or auxaeroData->typeAC == 7) ||
+        (auxaeroData->typeEngine == 9 or auxaeroData->typeEngine == 10))
     {
         if (alpha >= 18.0F && mach <= 0.9F)
             rpmCmd = max(0.85f, rpmCmd);
@@ -2982,7 +2982,7 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
     }
 
     // F-4E Engine Stall Zone
-    if (auxaeroData->typeEngine == 11 || auxaeroData->typeAC == 11)
+    if (auxaeroData->typeEngine == 11 or auxaeroData->typeAC == 11)
     {
         if ((SimLibElapsedTime - engEventTimer) >= 1000)
         {
@@ -3031,8 +3031,8 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
     float rpmRSE = 0.0F;
 
     //RPM effect for any of the modern engines
-    if (auxaeroData->typeEngine == 9 || auxaeroData->typeEngine == 10
-        || auxaeroData->typeEngine == 11)
+    if (auxaeroData->typeEngine == 9 or auxaeroData->typeEngine == 10
+        or auxaeroData->typeEngine == 11)
     {
         //TJL -1 says idle RPM increases from 0.84 till it is MIL power at 1.4 Mach
         if (mach >= 0.84f && mach <= 1.4f)
@@ -3050,7 +3050,7 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
     }
 
     //PW-100/PW-220
-    if (auxaeroData->typeEngine == 1 || auxaeroData->typeEngine == 2)
+    if (auxaeroData->typeEngine == 1 or auxaeroData->typeEngine == 2)
     {
         //TJL -1 says idle RPM increases from 0.84 till it is MIL power at 1.4 Mach
         if (mach >= 0.84f && mach <= 1.4f)
@@ -3086,7 +3086,7 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
 
 
     // PW-229/GE-110/GE-129
-    if (auxaeroData->typeEngine == 3 || auxaeroData->typeEngine == 4 || auxaeroData->typeEngine == 5)
+    if (auxaeroData->typeEngine == 3 or auxaeroData->typeEngine == 4 or auxaeroData->typeEngine == 5)
     {
         //Reduced Speed Excursion Logic 0.5 - 0.6 is the switch range, we'll call it 5.5 for coding
         if (mach > 0.55f && mach < 1.1f)
@@ -3149,8 +3149,8 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
 
 
     //F18A-D MIL at 1.23 mach
-    if (auxaeroData->typeEngine == 6 || auxaeroData->typeEngine == 7
-        || auxaeroData->typeAC == 8 || auxaeroData->typeAC == 9)
+    if (auxaeroData->typeEngine == 6 or auxaeroData->typeEngine == 7
+        or auxaeroData->typeAC == 8 or auxaeroData->typeAC == 9)
     {
         if (mach >= 0.9f && mach <= 1.23f)
             rpmCmd2 = max(mach / 1.23f, rpmCmd2);
@@ -3168,7 +3168,7 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
 
 
     //F18E/F RPM to MIL at 1.23 mach
-    if (auxaeroData->typeEngine == 8 || auxaeroData->typeAC == 10)
+    if (auxaeroData->typeEngine == 8 or auxaeroData->typeAC == 10)
     {
         if (mach >= 1.18f && mach <= 1.23f)
             rpmCmd2 = max(mach / 1.23f, rpmCmd2);
@@ -3185,8 +3185,8 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
     }
 
     // F-14 spools engine up when Mach < 0.9 and AOA over 18
-    if ((auxaeroData->typeAC == 6 || auxaeroData->typeAC == 7) ||
-        (auxaeroData->typeEngine == 9 || auxaeroData->typeEngine == 10))
+    if ((auxaeroData->typeAC == 6 or auxaeroData->typeAC == 7) ||
+        (auxaeroData->typeEngine == 9 or auxaeroData->typeEngine == 10))
     {
         if (alpha >= 18.0F && mach <= 0.9F)
             rpmCmd2 = max(0.85f, rpmCmd2);
@@ -3206,7 +3206,7 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
     }
 
     // F-4E Engine Stall Zone
-    if (auxaeroData->typeEngine == 11 || auxaeroData->typeAC == 11)
+    if (auxaeroData->typeEngine == 11 or auxaeroData->typeAC == 11)
     {
         if ((SimLibElapsedTime - engEventTimer2) >= 1000)
         {

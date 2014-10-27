@@ -282,7 +282,7 @@ void instant_action::check_next_wave(void)
 
                 while (unit)
                 {
-                    if ((unit->GetDomain() == DOMAIN_AIR) || (unit->GetDomain() == DOMAIN_LAND))
+                    if ((unit->GetDomain() == DOMAIN_AIR) or (unit->GetDomain() == DOMAIN_LAND))
                     {
                         if ((!unit->IsDead()) && (unit->IsBattalion()))
                         {
@@ -340,7 +340,7 @@ void instant_action::check_next_wave(void)
 
                 // MonoPrint ("Flights %d\n", count_flights);
 
-                if (((count_flights == 0) || ((wave_time) && (TheCampaign.CurrentTime > wave_time))) && (aircraft_left < 4))
+                if (((count_flights == 0) or ((wave_time) && (TheCampaign.CurrentTime > wave_time))) && (aircraft_left < 4))
                 {
                     current_wave ++;
 
@@ -483,7 +483,7 @@ void instant_action::create_wave(void)
 
             while (*ptr)
             {
-                if ((*ptr == '\n') || (*ptr == '\r') || (*ptr == ' ') || (*ptr == '\t'))
+                if ((*ptr == '\n') or (*ptr == '\r') or (*ptr == ' ') or (*ptr == '\t'))
                 {
                     *ptr = '\0';
                     break;
@@ -584,7 +584,7 @@ void instant_action::create_wave(void)
 
             while (*ptr)
             {
-                if ((*ptr == '\n') || (*ptr == '\r') || (*ptr == ' ') || (*ptr == '\t'))
+                if ((*ptr == '\n') or (*ptr == '\r') or (*ptr == ' ') or (*ptr == '\t'))
                 {
                     *ptr = '\0';
                     break;
@@ -593,7 +593,7 @@ void instant_action::create_wave(void)
                 ptr ++;
             }
 
-            if ((*str == '#') || (*str == '\0'))
+            if ((*str == '#') or (*str == '\0'))
             {
                 // Comment or blank line
             }
@@ -809,7 +809,7 @@ void instant_action::create_player_flight(void)
 
                 while (*ptr)
                 {
-                    if ((*ptr == '\n') || (*ptr == '\r') || (*ptr == ' ') || (*ptr == '\t'))
+                    if ((*ptr == '\n') or (*ptr == '\r') or (*ptr == ' ') or (*ptr == '\t'))
                     {
                         *ptr = '\0';
                         break;
@@ -1670,7 +1670,7 @@ void instant_action::create_flight(ia_data &data)
     new_flight->SetAltitude(FloatToInt32(data.altitude));
     // new_flight->SetInPackage(1);
 
-    if ((data.dumb) || (!((data.radar) || (data.heat))))
+    if ((data.dumb) or (!((data.radar) or (data.heat))))
     {
         new_flight->SetUnitMission(AMIS_NONE);
     }

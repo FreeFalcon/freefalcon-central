@@ -63,7 +63,7 @@ extern bool g_bNewFm;
 void AirframeClass::Pitch(void)
 {
     //if(vt == 0.0F)
-    //if(IsSet(Planted) || (!IsSet(InAir) && pstick <= 0.0F) )
+    //if(IsSet(Planted) or (!IsSet(InAir) && pstick <= 0.0F) )
     if (IsSet(Planted))
         return;
 

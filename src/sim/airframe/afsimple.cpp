@@ -215,7 +215,7 @@ AirframeClass::SimpleModel(void)
         // only can pull back on ground when we can achieve 1G with 10 degrees AOA
         //note: we want to make sure the plane takes off, so even if we couldn't
         //get off the ground, we lift off
-        //if ( ctlpitch > 0.0f && (-zaero > GRAVITY || oldp03[2] == 13.0F) ) Cobra old rotation code
+        //if ( ctlpitch > 0.0f && (-zaero > GRAVITY or oldp03[2] == 13.0F) ) Cobra old rotation code
         float cltakeoff = Math.TwodInterp(mach, 12.0f, aeroData->mach, aeroData->alpha,
                                           aeroData->clift, aeroData->numMach,
                                           aeroData->numAlpha, &curMachBreak, &curAlphaBreak) *
@@ -451,7 +451,7 @@ AirframeClass::SimpleModel(void)
         {
             ClearFlag(Planted);
             //Cobra test
-            //if ((-zaero > GRAVITY || oldp03[2] == 13.0F) && gmma - gndGmma > 0.0F && ctlpitch > 0.0f)
+            //if ((-zaero > GRAVITY or oldp03[2] == 13.0F) && gmma - gndGmma > 0.0F && ctlpitch > 0.0f)
             int tstatus = platform->DBrain()->ATCStatus();
 
             if (vcas > rotate && tstatus > tTaxi) //Cobra

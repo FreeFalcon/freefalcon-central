@@ -71,7 +71,7 @@ void DeviceManager::Cleanup(void)
 
 const char * DeviceManager::GetDriverName(int driverNum)
 {
-    if (driverNum < 0 || driverNum >= (int) m_arrDDDrivers.size())
+    if (driverNum < 0 or driverNum >= (int) m_arrDDDrivers.size())
         return NULL;
 
     return m_arrDDDrivers[driverNum].GetName();
@@ -80,7 +80,7 @@ const char * DeviceManager::GetDriverName(int driverNum)
 
 const char * DeviceManager::GetDeviceName(int driverNum, int devNum)
 {
-    if (driverNum < 0 || driverNum >= (int) m_arrDDDrivers.size())
+    if (driverNum < 0 or driverNum >= (int) m_arrDDDrivers.size())
         return NULL;
 
     return m_arrDDDrivers[driverNum].GetDeviceName(devNum);
@@ -99,7 +99,7 @@ const char *DeviceManager::GetModeName(int driverNum, int devNum, int modeNum)
     static char buffer[80];
     int i = 0;
 
-    if (driverNum < 0 || driverNum >= (int) m_arrDDDrivers.size())
+    if (driverNum < 0 or driverNum >= (int) m_arrDDDrivers.size())
         return NULL;
 
     DDDriverInfo &DI = m_arrDDDrivers[driverNum];
@@ -110,8 +110,8 @@ const char *DeviceManager::GetModeName(int driverNum, int devNum, int modeNum)
     {
         // For now we only allow 640x480, 800x600, 1280x960, 1600x1200
         // (MPR already does the 4:3 aspect ratio check for us)
-        if (pddsd->ddpfPixelFormat.dwRGBBitCount >= 16 && (pddsd->dwWidth == 640 || pddsd->dwWidth == 800 || pddsd->dwWidth == 1024 ||
-                (pddsd->dwWidth == 1280 && pddsd->dwHeight == 960) || pddsd->dwWidth == 1600 || HighResolutionHackFlag))
+        if (pddsd->ddpfPixelFormat.dwRGBBitCount >= 16 && (pddsd->dwWidth == 640 or pddsd->dwWidth == 800 or pddsd->dwWidth == 1024 ||
+                (pddsd->dwWidth == 1280 && pddsd->dwHeight == 960) or pddsd->dwWidth == 1600 or HighResolutionHackFlag))
         {
             if (modeNum == 0)
             {
@@ -140,7 +140,7 @@ bool DeviceManager::GetMode(int driverNum, int devNum, int modeNum, UINT *pWidth
     static char buffer[80];
     int i = 0;
 
-    if (driverNum < 0 || driverNum >= (int) m_arrDDDrivers.size())
+    if (driverNum < 0 or driverNum >= (int) m_arrDDDrivers.size())
         return false;
 
     DDDriverInfo &DI = m_arrDDDrivers[driverNum];
@@ -350,7 +350,7 @@ BOOL WINAPI DeviceManager::EnumDDCallbackEx(GUID FAR *lpGUID, LPSTR lpDriverDesc
 
 DeviceManager::DDDriverInfo *DeviceManager::GetDriver(int driverNum)
 {
-    if (driverNum < 0 || driverNum >= (int) m_arrDDDrivers.size())
+    if (driverNum < 0 or driverNum >= (int) m_arrDDDrivers.size())
         return false;
 
     return &m_arrDDDrivers[driverNum];
@@ -428,7 +428,7 @@ HRESULT WINAPI DeviceManager::DDDriverInfo::EnumModesCallback(LPDDSURFACEDESC2 l
 
 const char *DeviceManager::DDDriverInfo::GetDeviceName(int n)
 {
-    if (n < 0 || n >= (int) m_arrD3DDevices.size())
+    if (n < 0 or n >= (int) m_arrD3DDevices.size())
         return NULL;
 
     return m_arrD3DDevices[n].GetName();
@@ -448,7 +448,7 @@ int DeviceManager::DDDriverInfo::FindDisplayMode(int nWidth, int nHeight, int nB
 
 LPDDSURFACEDESC2 DeviceManager::DDDriverInfo::GetDisplayMode(int n)
 {
-    if (n < 0 || n >= (int) m_arrModes.size())
+    if (n < 0 or n >= (int) m_arrModes.size())
         return NULL;
 
     return &m_arrModes[n];
@@ -468,7 +468,7 @@ bool DeviceManager::DDDriverInfo::SupportsSRT()
 {
     if (devID.dwVendorId == 4634) // 3dfx
     {
-        if (devID.dwDeviceId == 1 || devID.dwDeviceId == 2) // Voodoo 1 & 2
+        if (devID.dwDeviceId == 1 or devID.dwDeviceId == 2) // Voodoo 1 & 2
             return false;
     }
 
@@ -477,7 +477,7 @@ bool DeviceManager::DDDriverInfo::SupportsSRT()
 
 DeviceManager::DDDriverInfo::D3DDeviceInfo *DeviceManager::DDDriverInfo::GetDevice(int n)
 {
-    if (n < 0 || n >= (int) m_arrD3DDevices.size())
+    if (n < 0 or n >= (int) m_arrD3DDevices.size())
         return NULL;
 
     return &m_arrD3DDevices[n];
@@ -503,8 +503,8 @@ DeviceManager::DDDriverInfo::D3DDeviceInfo::D3DDeviceInfo(D3DDEVICEDESC7 &devDes
 
 bool DeviceManager::DDDriverInfo::D3DDeviceInfo::IsHardware()
 {
-    if (IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRGBDevice) || IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRefDevice) ||
-        IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRampDevice) || IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DMMXDevice))
+    if (IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRGBDevice) or IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRefDevice) ||
+        IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRampDevice) or IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DMMXDevice))
         return false;
     else if (IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DHALDevice))
         return true;
@@ -672,8 +672,8 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
         */
 
         //JAM 25Oct03 - Let's avoid user error and disable these.
-        // if(IsEqualIID(m_guidD3D, IID_IDirect3DRGBDevice) || IsEqualIID(m_guidD3D, IID_IDirect3DRefDevice) ||
-        // IsEqualIID(m_guidD3D, IID_IDirect3DRampDevice) || IsEqualIID(m_guidD3D, IID_IDirect3DMMXDevice))
+        // if(IsEqualIID(m_guidD3D, IID_IDirect3DRGBDevice) or IsEqualIID(m_guidD3D, IID_IDirect3DRefDevice) ||
+        // IsEqualIID(m_guidD3D, IID_IDirect3DRampDevice) or IsEqualIID(m_guidD3D, IID_IDirect3DMMXDevice))
         // m_eDeviceCategory = D3DDeviceCategory_Software;
         // if(IsEqualIID(m_guidD3D, IID_IDirect3DHALDevice))
         m_eDeviceCategory = D3DDeviceCategory_Hardware;
@@ -758,7 +758,7 @@ bool DXContext::SetRenderTarget(IDirectDrawSurface7 *pRenderTarget)
             //JAM 17Dec03
             IDirectDrawSurface7Ptr pDDS;
 
-            if (FAILED(m_pD3DD->GetRenderTarget(&pDDS)) || pDDS.GetInterfacePtr() != pRenderTarget)
+            if (FAILED(m_pD3DD->GetRenderTarget(&pDDS)) or pDDS.GetInterfacePtr() != pRenderTarget)
             {
                 IDirectDrawSurface7Ptr pRenderTargetOld;
                 CheckHR(m_pD3DD->GetRenderTarget(&pRenderTargetOld));

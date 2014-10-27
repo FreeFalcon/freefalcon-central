@@ -48,19 +48,19 @@ void HadMfdDrawable::Display(VirtualDisplay* newDisplay)
     Sms = playerAC->Sms;
     HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
 
-    if (!theRadar || !pFCC || !self || !Sms)
+    if (!theRadar or !pFCC or !self or !Sms)
     {
         return;
     }
 
-    if (!harmPod || !self->af->GetIsHtsAble())  // offMode if no HTS pod or equivalent system on board
+    if (!harmPod or !self->af->GetIsHtsAble())  // offMode if no HTS pod or equivalent system on board
     {
         OffMode(display);
         return;
     }
 
     // This makes sure we are in the correct FCC and Harmpod submodes
-    if (pFCC->GetSubMode() != FireControlComputer::HTS || (harmPod->GetSubMode() != HarmTargetingPod::FilterMode &&
+    if (pFCC->GetSubMode() != FireControlComputer::HTS or (harmPod->GetSubMode() != HarmTargetingPod::FilterMode &&
             harmPod->GetSubMode() != HarmTargetingPod::HAD))
     {
         if (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON)

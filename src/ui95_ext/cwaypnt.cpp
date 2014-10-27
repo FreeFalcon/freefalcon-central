@@ -182,7 +182,7 @@ void C_Waypoint::EraseWaypointList()
 
     cur = Root_;
 
-    if (Root_ == NULL || Parent_ == NULL)
+    if (Root_ == NULL or Parent_ == NULL)
         return;
 
     Root_ = NULL;
@@ -207,7 +207,7 @@ void C_Waypoint::EraseWaypointGroup(long groupid)
 {
     WAYPOINTLIST *cur, *last, *prev;
 
-    if (Root_ == NULL || Parent_ == NULL)
+    if (Root_ == NULL or Parent_ == NULL)
         return;
 
     while (Root_ && Root_->Group == groupid)
@@ -361,7 +361,7 @@ void C_Waypoint::SetScaleFactor(float scale)
 {
     WAYPOINTLIST *cur;
 
-    if (scale <= 0.0f || scale == scale_ || WPScaleType_)
+    if (scale <= 0.0f or scale == scale_ or WPScaleType_)
         return;
 
     scale_ = scale;
@@ -413,7 +413,7 @@ void C_Waypoint::Refresh()
     WAYPOINTLIST *cur;
     UI95_RECT rect;
 
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     rect.left = 5000;
@@ -508,7 +508,7 @@ BOOL C_Waypoint::UpdateInfo(long ID, float x, float y)
     if (cur == NULL)
         return(FALSE);
 
-    if (cur->worldx != x || cur->worldy != y)
+    if (cur->worldx != x or cur->worldy != y)
     {
         cur->worldx = x;
         cur->worldy = y;
@@ -555,7 +555,7 @@ BOOL C_Waypoint::UpdateInfo(long ID, float x, float y)
             }
         }
 
-        if ((ox != cur->x || oy != cur->y) && !(cur->Flags & C_BIT_INVISIBLE))
+        if ((ox != cur->x or oy != cur->y) && !(cur->Flags & C_BIT_INVISIBLE))
             return(TRUE);
     }
 
@@ -620,7 +620,7 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     _TCHAR buf[15];
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Dragable(0))
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Dragable(0))
         return(FALSE);
 
     if (over != Parent_)
@@ -631,10 +631,10 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
         relx = MouseX - over->GetX();
         rely = MouseY - over->GetY();
 
-        if (relx < over->ClientArea_[GetClient()].left || relx > over->ClientArea_[GetClient()].right)
+        if (relx < over->ClientArea_[GetClient()].left or relx > over->ClientArea_[GetClient()].right)
             return(FALSE);
 
-        if (rely < over->ClientArea_[GetClient()].top || rely > over->ClientArea_[GetClient()].bottom)
+        if (rely < over->ClientArea_[GetClient()].top or rely > over->ClientArea_[GetClient()].bottom)
             return(FALSE);
     }
 
@@ -708,12 +708,12 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     Dragging_ = 1;
 
 
-    if (GetType() == C_TYPE_DRAGXY || GetType() == C_TYPE_DRAGX)
+    if (GetType() == C_TYPE_DRAGXY or GetType() == C_TYPE_DRAGX)
         x = Drag->ItemX_ + (MouseX - Drag->StartX_);
     else
         x = Waypoint->x;
 
-    if (GetType() == C_TYPE_DRAGXY || GetType() == C_TYPE_DRAGY)
+    if (GetType() == C_TYPE_DRAGXY or GetType() == C_TYPE_DRAGY)
         y = Drag->ItemY_ + (MouseY - Drag->StartY_);
     else
         y = Waypoint->y;

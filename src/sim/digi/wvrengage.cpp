@@ -40,7 +40,7 @@ void DigitalBrain::WvrEngageCheck(void)
     /*---------------------*/
     /* return if no target */
     /*---------------------*/
-    if (targetPtr == NULL || (mpActionFlags[AI_ENGAGE_TARGET] != AI_AIR_TARGET && missionClass != AAMission && !missionComplete) || curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
+    if (targetPtr == NULL or (mpActionFlags[AI_ENGAGE_TARGET] != AI_AIR_TARGET && missionClass != AAMission && !missionComplete) or curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
     {
         //me123     ClearTarget();
         engagementTimer = 0;
@@ -49,7 +49,7 @@ void DigitalBrain::WvrEngageCheck(void)
     /* entry */
     /*-------*/
     else if (curMode != WVREngageMode && targetData->range < engageRange &&
-             (targetPtr->BaseData()->IsAirplane() || targetPtr->BaseData()->IsFlight() || targetPtr->BaseData()->IsHelicopter()) && // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
+             (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter()) && // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
              SimLibElapsedTime > engagementTimer &&
              CanEngage(self, self->CombatClass(), targetPtr, WVRManeuver))  // 2002-03-11 MODIFIED BY S.G. Added parameter WVRManeuver
     {
@@ -124,12 +124,12 @@ void DigitalBrain::WvrEngage(void)
     }
 
     // do we need to evaluate our position?
-    if (SimLibElapsedTime > wvrTacticTimer || wvrCurrTactic == WVR_NONE)
+    if (SimLibElapsedTime > wvrTacticTimer or wvrCurrTactic == WVR_NONE)
     {
         // 2002-02-09 ADDED BY S.G. Change our radarMode to digiSTT if we have been detected and we have a radar to start with
 
         // Look up intercept type for all A/C
-        if (targetPtr->BaseData()->IsAirplane() || targetPtr->BaseData()->IsFlight() || targetPtr->BaseData()->IsHelicopter())
+        if (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter())
         {
             // Find the data table for these two types of A/C
             hisCombatClass = targetPtr->BaseData()->CombatClass(); // 2002-02-26 MODIFIED BY S.G. Removed the AircraftClass cast
@@ -487,7 +487,7 @@ void DigitalBrain::WvrChooseTactic(void)
     {
         // Look up intercept type for all A/C
         //    if (targetPtr->BaseData()->IsSim() && targetPtr->BaseData()->IsAirplane())
-        if (targetPtr->BaseData()->IsAirplane() || targetPtr->BaseData()->IsFlight() || targetPtr->BaseData()->IsHelicopter()) // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
+        if (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter()) // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
         {
             // Find the data table for these two types of A/C
             hisCombatClass = targetPtr->BaseData()->CombatClass(); // 2002-02-26 MODIFIED BY S.G. Removed the AircraftClass cast
@@ -496,10 +496,10 @@ void DigitalBrain::WvrChooseTactic(void)
             // No intercepts or Choose not to, or no weapons, or Guns only and ACE in campaign
             if (theIntercept->numIntercepts == 0 ||
                 theIntercept->intercept[0] == BvrNoIntercept ||
-                maxAAWpnRange == 0 || aceAvoid)
+                maxAAWpnRange == 0 or aceAvoid)
             {
                 // Can't go offensive, should we be defensive, or just keep running?
-                if (targetData->range > 1.5F * NM_TO_FT || targetData->ataFrom > 25.0F * DTR)
+                if (targetData->range > 1.5F * NM_TO_FT or targetData->ataFrom > 25.0F * DTR)
                     wvrCurrTactic = WVR_BUGOUT;
                 else
                     wvrCurrTactic = WVR_GUNJINK;
@@ -758,7 +758,7 @@ void DigitalBrain::SetThreat(FalconEntity *obj)
     if (obj != NULL && threatTimer > 0.0f)
         return;
 
-    F4Assert(!obj || !obj->IsSim() || !obj->IsHelicopter());
+    F4Assert(!obj or !obj->IsSim() or !obj->IsHelicopter());
 
     if (obj && obj->OnGround())//Cobra We want to nail those targeting us!
     {
@@ -839,7 +839,7 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
     int retWvr = TRUE;
 
     // Check for aircraft, choppers or flights
-    if (targetPtr->BaseData()->IsAirplane() || targetPtr->BaseData()->IsFlight() || targetPtr->BaseData()->IsHelicopter())
+    if (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter())
     {
         // If asked to use the new code, then honor the request
         if (g_bUseNewCanEnage)
@@ -854,7 +854,7 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
                 campBaseObj = ((CampBaseClass *)targetPtr->BaseData());
 
             // If it doesn't have a campaign object or it's identified... END OF ADDED SECTION plus the use of campBaseObj below
-            if (!campBaseObj || campBaseObj->GetIdentified(self->GetTeam()))
+            if (!campBaseObj or campBaseObj->GetIdentified(self->GetTeam()))
             {
                 // Yes, now you can get its combat class!
                 hisCombatClass = targetPtr->BaseData()->CombatClass();
@@ -866,7 +866,7 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
                 hisCombatClass = 4;
 
 
-                /*if ((targetPtr->BaseData()->GetVt() * FTPSEC_TO_KNOTS > 300.0f || targetPtr->BaseData()->ZPos() < -10000.0f))  {
+                /*if ((targetPtr->BaseData()->GetVt() * FTPSEC_TO_KNOTS > 300.0f or targetPtr->BaseData()->ZPos() < -10000.0f))  {
                  //this might be a combat jet.. asume the worst
                  hisCombatClass = 4;
                 }
@@ -945,7 +945,7 @@ int CanEngage(int combatClass, SimObjectType* targetPtr)
 
     // Only check for A/C
     // if (targetPtr->BaseData()->IsSim() && targetPtr->BaseData()->IsAirplane())
-    if (targetPtr->BaseData()->IsAirplane() || targetPtr->BaseData()->IsFlight() || targetPtr->BaseData()->IsHelicopter()) // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
+    if (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter()) // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
     {
         // Find the data table for these two types of A/C
         hisCombatClass = targetPtr->BaseData()->CombatClass(); // 2002-02-26 MODIFIED BY S.G. Removed the AircraftClass cast

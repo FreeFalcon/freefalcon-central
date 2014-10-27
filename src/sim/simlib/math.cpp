@@ -1547,7 +1547,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
 
     ShiAssert(ix >= 0 && ix < numx); // JPO CTD  check again
 
-    if (ix < 0 || ix >= numx)
+    if (ix < 0 or ix >= numx)
         return 0.0f;
 
     *lastx = ix;

@@ -208,7 +208,7 @@ void C_Text::SetFlags(long flags)
 
 void C_Text::Refresh()
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (BgImage_ && GetFlags() & C_BIT_USEBGIMAGE)

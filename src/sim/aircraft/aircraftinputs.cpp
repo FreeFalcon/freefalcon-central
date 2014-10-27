@@ -48,7 +48,7 @@ extern bool g_bTFRFixes;
 
 void AircraftClass::GatherInputs(void)
 {
-    if (!HasPilot() || strength < 0.0F)
+    if (!HasPilot() or strength < 0.0F)
     {
         // Let it down
         af->SetSimpleMode(SIMPLE_MODE_OFF);
@@ -95,7 +95,7 @@ void AircraftClass::GatherInputs(void)
                     {
                         if (this == FalconLocalSession->GetPlayerEntity())
                         {
-                            if (RFState == 2 || !HasPower(AircraftClass::APPower))
+                            if (RFState == 2 or !HasPower(AircraftClass::APPower))
                             {
                                 //SILENT or no power
                                 SetAutopilot(AircraftClass::APOff);
@@ -468,7 +468,7 @@ void AircraftClass::GatherInputs(void)
             ((DrawableBSP*)drawPointer)->SetLabel(label, ((DrawableBSP*)drawPointer)->LabelColor());
         }
     }
-    else if ((g_nShowDebugLabels & 0x100 || g_nShowDebugLabels & g_nMaxDebugLabel) && DBrain())
+    else if ((g_nShowDebugLabels & 0x100 or g_nShowDebugLabels & g_nMaxDebugLabel) && DBrain())
     {
         DBrain()->ReSetLabel(this);
     }
@@ -808,7 +808,7 @@ void AircraftClass::SetAutopilot(AutoPilotType flag)
 void AircraftClass::SetAPParameters(void)
 {
     //Is our AP on?
-    if (IsOn(AircraftClass::AltHold) || IsOn(AircraftClass::AttHold))
+    if (IsOn(AircraftClass::AltHold) or IsOn(AircraftClass::AttHold))
     {
         autopilotType = ThreeAxisAP;
     }

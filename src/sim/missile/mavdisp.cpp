@@ -354,7 +354,7 @@ void MaverickDisplayClass::DrawDisplay(void)
     //MI
     if (!g_bRealisticAvionics)
     {
-        if ((totalAngle < 30.0F * DTR) || vuxRealTime & 0x200)
+        if ((totalAngle < 30.0F * DTR) or vuxRealTime & 0x200)
         {
             display->AdjustOriginInViewport(platform->sensorArray[0]->SeekerAz(), platform->sensorArray[0]->SeekerEl());
             display->Line(0.0F,  0.2F,  0.0F, -0.2F);

@@ -333,7 +333,7 @@ void SimulationDriver::Startup(void)
     EndFlightFlag = FALSE;
 
 #ifndef NO_TIMER_THREAD
-#if MF_DONT_PROCESS_DELETE || VU_USE_ENUM_FOR_TYPES
+#if MF_DONT_PROCESS_DELETE or VU_USE_ENUM_FOR_TYPES
     FalconMessageFilter messageFilter(FalconEvent::SimThread, 0);
 #else
     FalconMessageFilter messageFilter(FalconEvent::SimThread, VU_DELETE_EVENT_BITS);
@@ -487,7 +487,7 @@ void SimulationDriver::Cycle()
     if ((elapsedTime >= 10) && (gameCompressionRatio))
     {
         // Check if the graphics are runnning and read inputs, if so.
-        if (curFlyState == FLYSTATE_FLYING || curFlyState == FLYSTATE_DEAD)
+        if (curFlyState == FLYSTATE_FLYING or curFlyState == FLYSTATE_DEAD)
         {
             UserStickInputs.Update();
             runGraphics = true;
@@ -855,7 +855,7 @@ void SimulationDriver::SetPlayerEntity(SimMoverClass* newObject)
     }
 
     // 2002-02-11 MODIFIED BY S.G. A player can also be a EjectedPilotClass
-    if (newObject == NULL || newObject->IsAirplane() || newObject->IsEject())
+    if (newObject == NULL or newObject->IsAirplane() or newObject->IsEject())
     {
         // sfr: reference / derefence stuff
         if (playerEntity != NULL)
@@ -1033,7 +1033,7 @@ void SimulationDriver::SleepCampaignFlight(TailInsertList *flightList)
 
     // Put all objects in this flight to sleep
     theObject = (SimBaseClass*)flit.GetFirst();
-    ShiAssert(theObject == NULL || FALSE == F4IsBadReadPtr(theObject, sizeof * theObject));
+    ShiAssert(theObject == NULL or FALSE == F4IsBadReadPtr(theObject, sizeof * theObject));
 
     //while (theObject) // JB 010306 CTD
     while (theObject && !F4IsBadReadPtr(theObject, sizeof(SimBaseClass))) // JB 010306 CTD
@@ -1051,7 +1051,7 @@ void SimulationDriver::SleepCampaignFlight(TailInsertList *flightList)
 // This call makes the sim aware of this object
 void SimulationDriver::WakeObject(SimBaseClass* theObject)
 {
-    if (!theObject || theObject->IsAwake())
+    if (!theObject or theObject->IsAwake())
     {
         return;
     }
@@ -1073,7 +1073,7 @@ void SimulationDriver::WakeObject(SimBaseClass* theObject)
 // This call makes the sim ignore this object
 void SimulationDriver::SleepObject(SimBaseClass* theObject)
 {
-    if (!theObject || !theObject->IsAwake())
+    if (!theObject or !theObject->IsAwake())
         return;
 
     theObject->Sleep();
@@ -1803,7 +1803,7 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
 
     // In Forward Sector
     if (relativeBearing >= 355 && relativeBearing <= 359
-        || relativeBearing >= 0 && relativeBearing <= 4)
+        or relativeBearing >= 0 && relativeBearing <= 4)
     {
         if (relativeBearing >= 355 && relativeBearing <= 360)
         {
@@ -2204,8 +2204,8 @@ void SimulationDriver::POVKludgeFunction(DWORD povHatAngle)   // VWF POV Kludge 
     // (povHatAngle != -1 && previousAngle == -1)) {
 
     if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit  ||
-        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3  || // 2002-02-17 MODIFIED BY S.G. Needed now for the 'break lock by POV' to work
-        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockEFOV || // 2002-02-17 MODIFIED BY S.G. Needed now for the 'break lock by POV' to work
+        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3  or // 2002-02-17 MODIFIED BY S.G. Needed now for the 'break lock by POV' to work
+        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockEFOV or // 2002-02-17 MODIFIED BY S.G. Needed now for the 'break lock by POV' to work
         OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeOrbit  ||
         OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeChase  ||
         OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeSatellite)
@@ -2215,7 +2215,7 @@ void SimulationDriver::POVKludgeFunction(DWORD povHatAngle)   // VWF POV Kludge 
           OTWDriver.ViewTiltHold();
           OTWDriver.ViewSpinHold();
           }
-          else if((povHatAngle > POV_NW && povHatAngle < 36000) || povHatAngle < POV_NE) {
+          else if((povHatAngle > POV_NW && povHatAngle < 36000) or povHatAngle < POV_NE) {
           OTWViewUp(0, KEY_DOWN, NULL);
           }
           else if(povHatAngle > POV_NE && povHatAngle < POV_SE) {
@@ -2233,7 +2233,7 @@ void SimulationDriver::POVKludgeFunction(DWORD povHatAngle)   // VWF POV Kludge 
             OTWDriver.ViewTiltHold();
             OTWDriver.ViewSpinHold();
         }
-        else if (((povHatAngle >= (POV_NW + POV_HALF_RANGE)) && (povHatAngle < 36000)) || (povHatAngle < POV_N + POV_HALF_RANGE))
+        else if (((povHatAngle >= (POV_NW + POV_HALF_RANGE)) && (povHatAngle < 36000)) or (povHatAngle < POV_N + POV_HALF_RANGE))
         {
             OTWViewUp(0, KEY_DOWN, NULL);
         }
@@ -2273,7 +2273,7 @@ void SimulationDriver::POVKludgeFunction(DWORD povHatAngle)   // VWF POV Kludge 
     else if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit && povHatAngle != -1)
     {
 
-        if (((povHatAngle >= (POV_NW + POV_HALF_RANGE)) && (povHatAngle < 36000)) || (povHatAngle < POV_N + POV_HALF_RANGE))
+        if (((povHatAngle >= (POV_NW + POV_HALF_RANGE)) && (povHatAngle < 36000)) or (povHatAngle < POV_N + POV_HALF_RANGE))
         {
             gSelectedCursor = OTWDriver.pCockpitManager->POVDispatch(POV_N, gxPos, gyPos);
         }
@@ -2307,7 +2307,7 @@ void SimulationDriver::POVKludgeFunction(DWORD povHatAngle)   // VWF POV Kludge 
         }
 
         /*
-         if(((povHatAngle >= (POV_NW + POV_HALF_RANGE)) && (povHatAngle < 65535)) || (povHatAngle < POV_N + POV_HALF_RANGE)) {
+         if(((povHatAngle >= (POV_NW + POV_HALF_RANGE)) && (povHatAngle < 65535)) or (povHatAngle < POV_N + POV_HALF_RANGE)) {
          gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, DisplayOptions.DispWidth / 2, 0);
          }
          else if((povHatAngle >= (POV_NE - POV_HALF_RANGE)) && (povHatAngle < POV_NE + POV_HALF_RANGE)) {

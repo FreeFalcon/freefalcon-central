@@ -165,7 +165,7 @@ void TACREFCloseWindowCB(long ID, short hittype, C_Base *control)
 
 void TACREF_PositionCamera(OBJECTINFO *Info, C_Window *win, long client)
 {
-    if (!TAC_Viewer || !Info || !win)
+    if (!TAC_Viewer or !Info or !win)
         return;
 
     FindCameraDeltas(Info);
@@ -308,7 +308,7 @@ static void BuildStatsTree(Statistics *stats, C_TreeList *tree)
     long catval = 0; // internal... don't use for anything
     long UniqueID = 1;
 
-    if (!stats || !tree)
+    if (!stats or !tree)
         return;
 
     tree->Parent_->ScanClientArea(tree->GetClient());
@@ -346,7 +346,7 @@ static void BuildDescTree(Description *desc, C_TreeList *tree)
     long textval = 0;
     long UniqueID = 1;
 
-    if (!desc || !tree)
+    if (!desc or !tree)
         return;
 
     tree->Parent_->ScanClientArea(tree->GetClient());
@@ -434,7 +434,7 @@ static void BuildRWRList(RWR *rwr, C_ListBox *listbox)
     long rwrval = 0;
     long UniqueID = 1;
 
-    if (!rwr || !listbox)
+    if (!rwr or !listbox)
         return;
 
     radar = rwr->GetFirst(&rwrval);
@@ -702,7 +702,7 @@ static void Load3dModel(Entity *ent)
             obj = TAC_Viewer->LoadBSP(modelid, modelid, TRUE);
 
             // if (ent->ModelID == MapVisId(VIS_F16C))
-            if (modelid == MapVisId(VIS_F16C) || ((DrawableBSP*)obj->object)->instance.ParentObject->nSwitches >= 10)
+            if (modelid == MapVisId(VIS_F16C) or ((DrawableBSP*)obj->object)->instance.ParentObject->nSwitches >= 10)
             {
                 ((DrawableBSP*)obj->object)->SetSwitchMask(10, 1); // Afterburner
                 ((DrawableBSP*)obj->object)->SetSwitchMask(31, 1); // Afterburner

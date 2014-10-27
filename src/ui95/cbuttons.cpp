@@ -225,7 +225,7 @@ void C_Button::SetLabel(long ID, _TCHAR *str)
     F4CSECTIONHANDLE* Leave;
     BUTTONLIST *btn;
 
-    if (!Root_ || !str)
+    if (!Root_ or !str)
         return;
 
     btn = (BUTTONLIST*)Root_->Find(ID);
@@ -999,7 +999,7 @@ BOOL C_Button::TimerUpdate()
                 case C_TYPE_PINGPONG:
                     btn->Image_->SetFrame(btn->Image_->GetFrame() + btn->Image_->GetDirection());
 
-                    if ((btn->Image_->GetFrame() < 0) || (btn->Image_->GetFrame() >= btn->Image_->GetAnim()->Anim->Frames))
+                    if ((btn->Image_->GetFrame() < 0) or (btn->Image_->GetFrame() >= btn->Image_->GetAnim()->Anim->Frames))
                     {
                         btn->Image_->SetFrame(btn->Image_->GetFrame() - btn->Image_->GetDirection());
                         btn->Image_->SetDirection(-btn->Image_->GetDirection());
@@ -1029,7 +1029,7 @@ void C_Button::Refresh()
     BUTTONLIST *btn;
     short i;
 
-    if (!Root_ || !Ready() || (GetFlags() & C_BIT_INVISIBLE) || !Parent_)
+    if (!Root_ or !Ready() or (GetFlags() & C_BIT_INVISIBLE) or !Parent_)
         return;
 
     if (UseHotSpot_)
@@ -1158,7 +1158,7 @@ void C_Button::Draw(SCREEN *surface, UI95_RECT *cliprect)
     BUTTONLIST *btn;
     short i;
 
-    if (!Root_ || !Ready() || (GetFlags() & C_BIT_INVISIBLE) || !Parent_)
+    if (!Root_ or !Ready() or (GetFlags() & C_BIT_INVISIBLE) or !Parent_)
         return;
 
     if (!(GetFlags() & C_BIT_ENABLED))
@@ -1183,7 +1183,7 @@ void C_Button::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (!(GetFlags() & C_BIT_NOLABEL) && btn && btn->Label_)
         btn->Label_->Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
@@ -1192,7 +1192,7 @@ long C_Button::CheckHotSpots(long relx, long rely)
     BUTTONLIST *btn;
     long x, y, w, h;
 
-    if (!Root_ || (GetFlags() & C_BIT_INVISIBLE) || !(GetFlags() & C_BIT_ENABLED) || (!Ready() && !UseHotSpot_))
+    if (!Root_ or (GetFlags() & C_BIT_INVISIBLE) or !(GetFlags() & C_BIT_ENABLED) or (!Ready() && !UseHotSpot_))
         return(0);
 
 
@@ -1329,7 +1329,7 @@ BOOL C_Button::MouseOver(long relx, long rely, C_Base *me)
     BUTTONLIST *btn;
     long x, y, w, h;
 
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
         return(FALSE);
 
     if (UseHotSpot_)
@@ -1411,7 +1411,7 @@ BOOL C_Button::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
     long x, y;
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !(GetFlags() & C_BIT_DRAGABLE))
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !(GetFlags() & C_BIT_DRAGABLE))
         return(FALSE);
 
     Leave = UI_Enter(Parent_);

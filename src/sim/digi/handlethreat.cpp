@@ -30,7 +30,7 @@ BOOL DigitalBrain::HandleThreat(void)
         if (!targetPtr ||
             (targetPtr != threatPtr) ||
             (targetPtr->BaseData()->IsSim() && !((SimBaseClass*)targetPtr->BaseData())->IsAwake()) ||
-            targetData->range > 8.0F * NM_TO_FT || //me123 changes here
+            targetData->range > 8.0F * NM_TO_FT or //me123 changes here
             (targetData->range > 5.0F * NM_TO_FT && targetData->ataFrom > 90.0f * DTR))
         {
             // we drop concern of this threat

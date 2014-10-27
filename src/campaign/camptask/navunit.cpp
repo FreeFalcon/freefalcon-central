@@ -409,7 +409,7 @@ int TaskForceClass::GetDeaggregationPoint(int slot, CampEntity *installation)
             last_pt = pt = GetNextPt(last_pt);
 #ifdef DEBUG
 
-            if (!pt || PtDataTable[pt].type != type)
+            if (!pt or PtDataTable[pt].type != type)
             {
                 FILE *fp = fopen("PtDatErr.log", "a");
 
@@ -530,7 +530,7 @@ int TaskForceClass::MoveUnit(CampaignTime time)
     }
 
     // Move, if we're not at destination
-    if (x != nx || y != ny)
+    if (x != nx or y != ny)
     {
         if (w)
             ow = w->GetPrevWP();
@@ -699,7 +699,7 @@ int TaskForceClass::DoCombat(void)
             {
                 combat = ::DoCombat(this, e);
 
-                if (combat <= 0 || Targeted())
+                if (combat <= 0 or Targeted())
                     SetTargeted(0);
             }
         }
@@ -753,7 +753,7 @@ int TaskForceClass::Reaction(CampEntity e, int knowledge, float range)
         score += GetAproxHitChance(tmt, FloatToInt32(range / 2.0F)) / 5;
 
     // Added bonus for them attacking
-    if (et && (tmt == Air || tmt == LowAir))
+    if (et && (tmt == Air or tmt == LowAir))
         score += GetAproxHitChance(tmt, 0) / 5 * enemy_threat_bonus;
 
     return score;
@@ -816,7 +816,7 @@ int TaskForceClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spot
     if (det & FRIENDLY_DETECTED)
     {
         // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
-        if ((e->IsAggregate() && CheckValidType(e, this)) || (e->IsFlight() && e->GetSType() == STYPE_UNIT_AWACS))
+        if ((e->IsAggregate() && CheckValidType(e, this)) or (e->IsFlight() && e->GetSType() == STYPE_UNIT_AWACS))
         {
             SetSpotted(e->GetTeam(), TheCampaign.CurrentTime, CanItIdentify(this, e, *d, e->GetMovementType())); // 2002-02-11 MODIFIED BY S.G. Added 'CanItIdentify' which query if the target can be identified
             *spot = 1;
@@ -883,7 +883,7 @@ int TaskForceClass::DetectVs(CampEntity e, float *d, int *combat, int *spot)
     if (det & FRIENDLY_DETECTED)
     {
         // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
-        if ((e->IsAggregate() && CheckValidType(e, this)) || (e->IsFlight() && e->GetSType() == STYPE_UNIT_AWACS))
+        if ((e->IsAggregate() && CheckValidType(e, this)) or (e->IsFlight() && e->GetSType() == STYPE_UNIT_AWACS))
         {
             SetSpotted(e->GetTeam(), TheCampaign.CurrentTime, 1); // 2002-02-11 Modified by S.G. Ground units are always identified (doesn't change a thing)
             *spot = 1;
@@ -924,7 +924,7 @@ void TaskForceClass::GetRealPosition(float *x, float *y, float *z)
     int h = GetNextMoveDirection();
     mlTrig sincos;
 
-    if (h < 0 || h > 7 || SimLibElapsedTime < last_move)
+    if (h < 0 or h > 7 or SimLibElapsedTime < last_move)
     {
         *x = XPos();
         *y = YPos();
@@ -979,7 +979,7 @@ WayPoint DoWPAction(TaskForce tf, WayPoint w)
 {
     WayPoint cw;
 
-    if (!w || !tf)
+    if (!w or !tf)
         return NULL;
 
     // Check Actions
@@ -1030,7 +1030,7 @@ int TaskForceClass::CanShootWeapon(int wid)
         return FALSE;
 
     // Check for radar guidance, and make adjustments if necessary
-    if (!(WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR) || GetRadarMode() == FEC_RADAR_GUIDE || GetRadarMode() == FEC_RADAR_SEARCH_100)
+    if (!(WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR) or GetRadarMode() == FEC_RADAR_GUIDE or GetRadarMode() == FEC_RADAR_SEARCH_100)
         return TRUE;
 
     return FALSE;
@@ -1056,11 +1056,11 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
     if (IsAggregate())
     {
         // Check if we still have any radar vehicles
-        if (class_data->RadarVehicle == 255 || !GetNumVehicles(class_data->RadarVehicle))
+        if (class_data->RadarVehicle == 255 or !GetNumVehicles(class_data->RadarVehicle))
             return FEC_RADAR_OFF;
 
         // Check if we're already in our fire state
-        if (radMode == FEC_RADAR_GUIDE || radMode == FEC_RADAR_SEARCH_100)
+        if (radMode == FEC_RADAR_GUIDE or radMode == FEC_RADAR_SEARCH_100)
             return radMode;
 
         // Check for switch over to guide
@@ -1093,7 +1093,7 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 
 
     // Check if we still have any radar vehicles
-    if (class_data->RadarVehicle == 255 || !GetNumVehicles(class_data->RadarVehicle))
+    if (class_data->RadarVehicle == 255 or !GetNumVehicles(class_data->RadarVehicle))
         return FEC_RADAR_OFF;
 
     assert(radarDatFileTable != NULL);
@@ -1122,7 +1122,7 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
             timetosearch = radarData->Timetosearch1 - skill;
 
             if (range <= radarData->Rangetosearch1 && !SEARCHtimer) SEARCHtimer = SimLibElapsedTime;
-            else if (range >= radarData->Rangetosearch1 || SimLibElapsedTime - SEARCHtimer > timetosearch + 6000.0f)SEARCHtimer = 0;
+            else if (range >= radarData->Rangetosearch1 or SimLibElapsedTime - SEARCHtimer > timetosearch + 6000.0f)SEARCHtimer = 0;
 
             if (range <= radarData->Rangetosearch1 && SEARCHtimer && SimLibElapsedTime - SEARCHtimer > timetosearch)
             {
@@ -1365,7 +1365,7 @@ int TaskForceClass::ChooseTarget(void)
         SetTargeted(0);
         retval = 1;
     }
-    else if (artTarget && (!artTarget->IsUnit() || ((Unit)artTarget)->Engaged()) && orders == GORD_SUPPORT)
+    else if (artTarget && (!artTarget->IsUnit() or ((Unit)artTarget)->Engaged()) && orders == GORD_SUPPORT)
     {
         // Keep blowing away this target until the target gets out of range, disengages, or we get new orders
         // (Target will get reset after a null DoCombat result)

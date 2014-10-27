@@ -387,7 +387,7 @@ int TViewPoint::GetGroundType(float x, float y)
         // Skip this one if we're not inside its bounding box
         if (path->x2 < path->x1)
         {
-            if ((path->x2 > xPos + r) || (path->x1 < xPos - r))
+            if ((path->x2 > xPos + r) or (path->x1 < xPos - r))
             {
                 GET_NEXT_PATH;
                 continue;
@@ -395,7 +395,7 @@ int TViewPoint::GetGroundType(float x, float y)
         }
         else
         {
-            if ((path->x1 > xPos + r) || (path->x2 < xPos - r))
+            if ((path->x1 > xPos + r) or (path->x2 < xPos - r))
             {
                 GET_NEXT_PATH;
                 continue;
@@ -404,7 +404,7 @@ int TViewPoint::GetGroundType(float x, float y)
 
         if (path->y2 < path->y1)
         {
-            if ((path->y2 > yPos + r) || (path->y1 < yPos - r))
+            if ((path->y2 > yPos + r) or (path->y1 < yPos - r))
             {
                 GET_NEXT_PATH;
                 continue;
@@ -412,7 +412,7 @@ int TViewPoint::GetGroundType(float x, float y)
         }
         else
         {
-            if ((path->y1 > yPos + r) || (path->y2 < yPos - r))
+            if ((path->y1 > yPos + r) or (path->y2 < yPos - r))
             {
                 GET_NEXT_PATH;
                 continue;
@@ -806,7 +806,7 @@ BOOL TViewPoint::LineOfSight(Tpoint *p1, Tpoint *p2)
 
 
     // Only check this LOD if at least one end point is "in" the terrain
-    if ((p1->z > blockLists[LOD].GetMinZ()) || (p2->z > blockLists[LOD].GetMinZ()))
+    if ((p1->z > blockLists[LOD].GetMinZ()) or (p2->z > blockLists[LOD].GetMinZ()))
     {
 
         // Compute the z step rate

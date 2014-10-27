@@ -5,6 +5,7 @@
 
     Provides structures and definitions for 3D objects.
 \***************************************************************************/
+#include <cISO646>
 #include "stdafx.h"
 #include "StateStack.h"
 #include "ObjectInstance.h"
@@ -87,7 +88,7 @@ ObjectInstance::ObjectInstance(int tid)
         memset(SlotChildren, 0, sizeof(*SlotChildren)*ParentObject->nSlots);
     }
 
-    if ((ParentObject->nDynamicCoords == 0) || (ParentObject->nDynamicCoords > 10))
+    if ((ParentObject->nDynamicCoords == 0) or (ParentObject->nDynamicCoords > 10))
     {
         DynamicCoords = NULL;
     }

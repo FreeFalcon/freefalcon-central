@@ -2216,7 +2216,7 @@ void CSoundMgr::SetCameraPostion(Tpoint *campos, Trotation *camrot, Tpoint *camv
     CamVelocity.z = camvel->z;
 
 
-    if (use3d == FALSE || Ds3dListener == NULL || StreamCSection == NULL || campos == NULL || camrot == NULL)
+    if (use3d == FALSE or Ds3dListener == NULL or StreamCSection == NULL or campos == NULL or camrot == NULL)
         return;
 
     F4EnterCriticalSection(StreamCSection);
@@ -2593,7 +2593,7 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
 
                     if (bytesread < Length)
                     {
-                        if (Stream->Status & SND_STREAM_LOOP && (Stream->LoopCount > 0 || Stream->LoopCount == -1))
+                        if (Stream->Status & SND_STREAM_LOOP && (Stream->LoopCount > 0 or Stream->LoopCount == -1))
                         {
                             RestartStream(Stream);
 
@@ -2671,7 +2671,7 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
 
                     if (bytesread < Length)
                     {
-                        if (Stream->Status & SND_STREAM_LOOP && (Stream->LoopCount > 0 || Stream->LoopCount == -1))
+                        if (Stream->Status & SND_STREAM_LOOP && (Stream->LoopCount > 0 or Stream->LoopCount == -1))
                         {
                             RestartStream(Stream);
 

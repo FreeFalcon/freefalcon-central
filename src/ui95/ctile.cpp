@@ -110,7 +110,7 @@ void C_Tile::SetFlags(long flags)
 
 void C_Tile::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !Ready() || !Parent_)
+    if (GetFlags() & C_BIT_INVISIBLE or !Ready() or !Parent_)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -121,7 +121,7 @@ void C_Tile::Draw(SCREEN *surface, UI95_RECT *cliprect)
     UI95_RECT clip;
     long x, y;
 
-    if (GetFlags() & C_BIT_INVISIBLE || !Ready() || !Parent_)
+    if (GetFlags() & C_BIT_INVISIBLE or !Ready() or !Parent_)
         return;
 
     clip = *cliprect;

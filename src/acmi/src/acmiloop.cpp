@@ -313,7 +313,7 @@ void ACMIView::Exec()
 {
     Tpoint pos;
 
-    if (!acmiDraw || !_tapeHasLoaded || Tape() == NULL || !Tape()->IsLoaded())
+    if (!acmiDraw or !_tapeHasLoaded or Tape() == NULL or !Tape()->IsLoaded())
         return;
 
     if (fcount++ % 10 == 0)

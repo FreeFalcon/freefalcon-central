@@ -146,7 +146,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
         message = CreateGroundCollisionMessage(this, FloatToInt32(maxStrength));
 
         //we are not allowed to come to a stop on the water
-        if (af->vt < 0.5F && (groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER))
+        if (af->vt < 0.5F && (groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
             message->dataBlock.damageStrength = maxStrength;
         else if ((float)rand() / (float)RAND_MAX < 0.01F)
         {
@@ -157,7 +157,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
         }
         else
         {
-            if (groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER)
+            if (groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER)
                 message->dataBlock.damageStrength = min(1000.0F, af->vt * impactAngle * 0.1F +
                                                         af->vt * af->vt * impactAngle * impactAngle * 0.02F);
             else
@@ -186,7 +186,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
 
     if (fabs(noseAngle) >= impactTest ||
-        (!af->IsSet(AirframeClass::OnObject) && platformAngles.sinthe < 0.0F || platformAngles.sinthe < -0.01F) || // JB carrier
+        (!af->IsSet(AirframeClass::OnObject) && platformAngles.sinthe < 0.0F or platformAngles.sinthe < -0.01F) or // JB carrier
         platformAngles.cosphi < 0.94F)
     {
         // planted right into ground
@@ -251,7 +251,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
     if (af->vt * impactAngle < sinkRate * (1.25F - (!
                                            (af->IsSet(AirframeClass::OverRunway)
-                                            || af->IsSet(AirframeClass::OnObject)) // JB carrier
+                                            or af->IsSet(AirframeClass::OnObject)) // JB carrier
                                            &&
                                            !onFlatFeature && groundType != COVERAGE_ROAD) * 0.5F) && af->gearPos > 0.8F)
     {
@@ -287,7 +287,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     }
     else if (af->vt * impactAngle < sinkRate * 1.75F * (1.0F - (!
              (af->IsSet(AirframeClass::OverRunway)
-              || af->IsSet(AirframeClass::OnObject)) // JB carrier
+              or af->IsSet(AirframeClass::OnObject)) // JB carrier
              && !onFlatFeature && groundType != COVERAGE_ROAD) * 0.5F) && af->gearPos > 0.8F)
     {
         //bounce
@@ -548,7 +548,7 @@ void AircraftClass::CheckPersistantCollision()
     for (i = 0; i < MAX_PERSISTANT_OBJECTS; i++)
     {
         // get the object
-        if (!PersistantObjects[i].InUse() || !PersistantObjects[i].drawPointer)
+        if (!PersistantObjects[i].InUse() or !PersistantObjects[i].drawPointer)
         {
             continue;
         }

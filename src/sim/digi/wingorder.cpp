@@ -712,11 +712,11 @@ VU_ID AiCheckForThreat(AircraftClass* paircraft, char domain, int position, floa
         }
 
         //////// Only change needed here for subtype check => AiCheckForThreat is called from both "Check" and "Clear my 6" !! //JB 052701 (from MN)
-        //if((vuDomain == DOMAIN_AIR && vuClass == CLASS_VEHICLE && (vuType == TYPE_AIRPLANE || vuType == TYPE_HELICOPTER))  //JB 052701 (from MN)
-        if ((vuDomain == DOMAIN_AIR && vuClass == CLASS_VEHICLE && (vuType == TYPE_AIRPLANE) && (vuSType == STYPE_AIR_FIGHTER_BOMBER || vuSType == STYPE_AIR_FIGHTER)) // Removed Helicopters as threat (|| vuType == TYPE_HELICOPTER), added subtype check //JB 052701 (from MN)
+        //if((vuDomain == DOMAIN_AIR && vuClass == CLASS_VEHICLE && (vuType == TYPE_AIRPLANE or vuType == TYPE_HELICOPTER))  //JB 052701 (from MN)
+        if ((vuDomain == DOMAIN_AIR && vuClass == CLASS_VEHICLE && (vuType == TYPE_AIRPLANE) && (vuSType == STYPE_AIR_FIGHTER_BOMBER or vuSType == STYPE_AIR_FIGHTER)) // Removed Helicopters as threat (|| vuType == TYPE_HELICOPTER), added subtype check //JB 052701 (from MN)
             && inSideATA && pobjectPtr->localData->threatTime <= 60.0F)
         {
-            if (pthreatPtr == NULL || pobjectPtr->localData->threatTime < pthreatPtr->localData->threatTime)
+            if (pthreatPtr == NULL or pobjectPtr->localData->threatTime < pthreatPtr->localData->threatTime)
             {
                 if (GetTTRelations(pobjectPtr->BaseData()->GetTeam(), paircraft->GetTeam()) >= Hostile)
                 {

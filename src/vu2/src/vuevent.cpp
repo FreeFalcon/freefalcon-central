@@ -227,7 +227,7 @@ VU_ERRCODE VuMessage::Dispatch(VU_BOOL autod)
 {
     int retval = VU_NO_OP;
 
-    if (!IsLocal() || (flags_ & VU_LOOPBACK_MSG_FLAG))
+    if (!IsLocal() or (flags_ & VU_LOOPBACK_MSG_FLAG))
     {
         if (!Entity())
         {
@@ -491,7 +491,7 @@ VU_ERRCODE VuGetRequest::Process(VU_BOOL autod)
     VuTargetEntity* sender = (VuTargetEntity *)vuDatabase->Find(Sender());
 
     //sfr: took sender out of if and return noop here
-    if (IsLocal() || (sender == NULL))
+    if (IsLocal() or (sender == NULL))
     {
         return VU_NO_OP;
     }
@@ -508,7 +508,7 @@ VU_ERRCODE VuGetRequest::Process(VU_BOOL autod)
         // get ALL ents
         else if (entityId_ == vuNullId)
         {
-            if ((tgtid_ == vuGlobalGroup->Id()) || (tgtid_ == vuLocalSession))
+            if ((tgtid_ == vuGlobalGroup->Id()) or (tgtid_ == vuLocalSession))
             {
                 // get all _global_ ents
                 VuDatabaseIterator iter;
@@ -927,7 +927,7 @@ int VuCreateEvent::Decode(VU_BYTE** buf, long *rem)
     memcpychk(&vutype_,   buf, sizeof(vutype_), rem);
     memcpychk(&size_,     buf, sizeof(size_), rem);
 
-    if (!data_ || oldsize != size_)
+    if (!data_ or oldsize != size_)
     {
         delete [] data_;
         data_ = new VU_BYTE[size_];

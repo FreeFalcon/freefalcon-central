@@ -134,7 +134,7 @@ BOOL C_Entity::Process(long ID, short HitType)
 
 void C_Entity::Refresh()
 {
-    if (!Ready() || Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
@@ -142,7 +142,7 @@ void C_Entity::Refresh()
 
 void C_Entity::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (GetFlags() & C_BIT_USEBGFILL)
@@ -162,6 +162,6 @@ void C_Entity::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Status_)
         Status_->Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }

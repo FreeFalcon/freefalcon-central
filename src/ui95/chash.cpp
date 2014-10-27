@@ -12,7 +12,7 @@ C_Hash::C_Hash()
 
 C_Hash::~C_Hash()
 {
-    if (TableSize_ || Table_)
+    if (TableSize_ or Table_)
         Cleanup();
 }
 
@@ -38,7 +38,7 @@ void C_Hash::Cleanup()
     long i;
     C_HASHNODE *cur, *prev;
 
-    if (TableSize_ || Table_)
+    if (TableSize_ or Table_)
     {
         for (i = 0; i < TableSize_; i++)
         {
@@ -77,7 +77,7 @@ void *C_Hash::Find(long ID)
     long idx;
     C_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_ || ID < 0) return(NULL);
+    if (!TableSize_ or !Table_ or ID < 0) return(NULL);
 
     idx = ID % TableSize_;
     cur = Table_[idx].Root_;
@@ -101,7 +101,7 @@ void C_Hash::Add(long ID, void *rec)
     long idx;
     C_HASHNODE *cur, *newhash;
 
-    if (!TableSize_ || !Table_ || !rec || ID < 0)
+    if (!TableSize_ or !Table_ or !rec or ID < 0)
         return;
 
     if (Find(ID))
@@ -136,7 +136,7 @@ long C_Hash::AddText(const _TCHAR *string)
     C_HASHNODE *cur, *newhash;
     _TCHAR *data;
 
-    if (!TableSize_ || !Table_ || !string) return(-1);
+    if (!TableSize_ or !Table_ or !string) return(-1);
 
     ID = 0;
     idx = _tcsclen(string);
@@ -200,7 +200,7 @@ long C_Hash::AddTextID(long TextID, _TCHAR *string)
     C_HASHNODE *cur, *newhash;
     _TCHAR *data;
 
-    if (!TableSize_ || !Table_ || !string) return(-1);
+    if (!TableSize_ or !Table_ or !string) return(-1);
 
     ID = 0;
     idx = _tcsclen(string);
@@ -262,7 +262,7 @@ _TCHAR *C_Hash::FindText(long ID)
     unsigned long idx, i;
     C_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_ || (ID < 0)) return(NULL);
+    if (!TableSize_ or !Table_ or (ID < 0)) return(NULL);
 
     idx = ID >> 16;
     i = ID & 0x0000ffff;
@@ -287,7 +287,7 @@ long C_Hash::FindTextID(_TCHAR *string)
     unsigned long ID;
     C_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_ || !string) return(-1);
+    if (!TableSize_ or !Table_ or !string) return(-1);
 
     ID = 0;
     idx = _tcsclen(string);
@@ -315,7 +315,7 @@ long C_Hash::FindTextID(long ID)
     long idx, i;
     C_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_ || (ID < 0)) return(NULL);
+    if (!TableSize_ or !Table_ or (ID < 0)) return(NULL);
 
     idx = ID >> 16;
     i = ID & 0x0000ffff;
@@ -339,7 +339,7 @@ void C_Hash::Remove(long ID)
     long idx;
     C_HASHNODE *cur, *prev;
 
-    if (!TableSize_ || !Table_ || (ID < 0)) return;
+    if (!TableSize_ or !Table_ or (ID < 0)) return;
 
     idx = ID % TableSize_;
 
@@ -405,7 +405,7 @@ void C_Hash::RemoveOld()
     long i;
     C_HASHNODE *cur, *prev;
 
-    if (!TableSize_ || !Table_) return;
+    if (!TableSize_ or !Table_) return;
 
     for (i = 0; i < TableSize_; i++)
     {

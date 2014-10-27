@@ -2086,7 +2086,7 @@ void ContextMPR::RestoreState(GLint state)
         m_setStatesUsed.insert(state);
 #endif
 
-        if (currentState == -1 || (StateTableInternal[currentState].SE_TEXTURING && !StateTableInternal[state].SE_TEXTURING))
+        if (currentState == -1 or (StateTableInternal[currentState].SE_TEXTURING && !StateTableInternal[state].SE_TEXTURING))
             currentTexture1 = -1;
 
         currentState = state;
@@ -2172,7 +2172,7 @@ void ContextMPR::UpdateViewport()
     MonoPrint("ContextMPR::UpdateViewport()\n");
 #endif
 
-    if (m_bViewportLocked || !m_pD3DD)
+    if (m_bViewportLocked or !m_pD3DD)
         return;
 
     // get current viewport
@@ -2190,7 +2190,7 @@ void ContextMPR::UpdateViewport()
         vp.dwWidth = m_rcVP.right - m_rcVP.left;
         vp.dwHeight = m_rcVP.bottom - m_rcVP.top;
 
-        if (!vp.dwWidth || !vp.dwHeight)
+        if (!vp.dwWidth or !vp.dwHeight)
             return;
     }
     else
@@ -2254,12 +2254,12 @@ void ContextMPR::Stats()
 #ifdef _CONTEXT_USE_MANAGED_TEXTURES
     D3DDEVINFO_TEXTUREMANAGER ditexman;
     hr = m_pD3DD->GetInfo(D3DDEVINFOID_TEXTUREMANAGER, &ditexman, sizeof(ditexman));
-    m_bNoD3DStatsAvail = FAILED(hr) || hr == S_FALSE;
+    m_bNoD3DStatsAvail = FAILED(hr) or hr == S_FALSE;
 #endif
 
     D3DDEVINFO_TEXTURING ditex;
     hr = m_pD3DD->GetInfo(D3DDEVINFOID_TEXTURING, &ditex, sizeof(ditex));
-    m_bNoD3DStatsAvail = FAILED(hr) || hr == S_FALSE;
+    m_bNoD3DStatsAvail = FAILED(hr) or hr == S_FALSE;
 #endif
 }
 
@@ -2590,7 +2590,7 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
         pEnd = pEnd->pNext;
 
         // was 1024
-        if ((pEnd == NULL) || (vertcnt + pEnd->numVertices > 32768))
+        if ((pEnd == NULL) or (vertcnt + pEnd->numVertices > 32768))
         {
 
             m_pVBB->Lock(DDLOCK_WRITEONLY | DDLOCK_SURFACEMEMORYPTR | DDLOCK_DISCARDCONTENTS, (LPVOID *)&pIns, NULL);
@@ -2612,7 +2612,7 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
 
                 if (
                     (pCur->renderState > STATE_GOURAUD && pCur->renderState < STATE_ALPHA_SOLID)
-                    || pCur->renderState > STATE_ALPHA_GOURAUD
+                    or pCur->renderState > STATE_ALPHA_GOURAUD
                 )
                 {
                     SetTexture1(pCur->textureID0);
@@ -2658,7 +2658,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
     ShiAssert(FALSE == F4IsBadReadPtr(poly, sizeof * poly));
     ShiAssert(poly->nVerts >= 3);
     ShiAssert(xyzIdxPtr);
-    ShiAssert(!bUseFGColor || (bUseFGColor && rgbaIdxPtr == NULL));
+    ShiAssert(!bUseFGColor or (bUseFGColor && rgbaIdxPtr == NULL));
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::DrawPoly(0x%X,0x%X,0x%X,0x%X,0x%X,0x%X,%s)\n",
@@ -2815,7 +2815,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
             if (opFlag & PRIM_COLOP_TEXTURE)
             {
                 // NVG_LIGHT_LEVEL = 0.703125f
-                if (NVGmode || TVmode || IRmode)
+                if (NVGmode or TVmode or IRmode)
                 {
                     pVtx->color &= 0xFF00FF00;
                     pVtx->color  or_eq  0x0000B400;
@@ -2923,7 +2923,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
             if (opFlag & PRIM_COLOP_TEXTURE)
             {
                 // NVG_LIGHT_LEVEL = 0.703125f
-                if (NVGmode || TVmode || IRmode)
+                if (NVGmode or TVmode or IRmode)
                 {
                     sVertex->color &= 0xFF00FF00;
                     sVertex->color  or_eq  0x0000B400;
@@ -3422,7 +3422,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtx_
     ShiAssert(!(VtxInfo & MPR_VI_COLOR));
 
     // Ensure no degenerate nPrimTypeitives
-    ShiAssert((nVerts >= 3) || (nPrimType == MPR_PRM_POINTS && nVerts >= 1) || (nPrimType <= MPR_PRM_POLYLINE && nVerts >= 2));
+    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS && nVerts >= 1) or (nPrimType <= MPR_PRM_POLYLINE && nVerts >= 2));
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::DrawPrimitive(%d,0x%X,%d,0x%X,%d)\n", nPrimType, VtxInfo, nVerts, pData, Stride);
@@ -3521,7 +3521,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
     TLVERTEX *pVtx;
 
     // Ensure no degenerate nPrimTypeitives
-    ShiAssert((nVerts >= 3) || (nPrimType == MPR_PRM_POINTS && nVerts >= 1) || (nPrimType <= MPR_PRM_POLYLINE && nVerts >= 2));
+    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS && nVerts >= 1) or (nPrimType <= MPR_PRM_POLYLINE && nVerts >= 2));
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::DrawPrimitive2(%d,0x%X,%d,0x%X,%d)\n", nPrimType, VtxInfo, nVerts, pData, Stride);
@@ -3644,7 +3644,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
     float PolyZAvg = 0;
 
     // Ensure no degenerate nPrimTypeitives
-    ShiAssert((nVerts >= 3) || (nPrimType == MPR_PRM_POINTS && nVerts >= 1) || (nPrimType <= MPR_PRM_POLYLINE && nVerts >= 2));
+    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS && nVerts >= 1) or (nPrimType <= MPR_PRM_POLYLINE && nVerts >= 2));
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::DrawPrimitive3(%d,0x%X,%d,0x%X)\n", nPrimType, VtxInfo, nVerts, pData);

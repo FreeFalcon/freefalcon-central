@@ -385,10 +385,10 @@ void C_ScrollBar::UpdatePosition()
 
 long C_ScrollBar::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
         return(0);
 
-    if (relX < GetX() || relX > (GetX() + GetW()) || relY < GetY() || relY > (GetY() + GetH()))
+    if (relX < GetX() or relX > (GetX() + GetW()) or relY < GetY() or relY > (GetY() + GetH()))
         return(0);
 
     if (Minus_)
@@ -647,7 +647,7 @@ BOOL C_ScrollBar::Dragable(long)
 
 void C_ScrollBar::Refresh()
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -706,7 +706,7 @@ void C_ScrollBar::Draw(SCREEN *surface, UI95_RECT *cliprect)
         Slider_->Blit(surface, s.left, s.top, s.right - s.left, s.bottom - s.top, rect.left, rect.top);
     }
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 

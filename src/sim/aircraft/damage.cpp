@@ -123,7 +123,7 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
     float dz = 0.0F;
     float range = 0.0F;
 
-    if (IsDead() || IsExploding())
+    if (IsDead() or IsExploding())
     {
         return;
     }
@@ -1432,7 +1432,7 @@ void AircraftClass::AddEngineTrails(int ttype, DWORD *tlist, DWORD *tlist_trail)
     Tpoint ContrailsLocation[MAXENGINES];
 
     //if this are the regular engine trails, don't bother getting in here...
-    if (tlist == conTrails || tlist == colorConTrails)
+    if (tlist == conTrails or tlist == colorConTrails)
     {
         switch (af->auxaeroData->nEngines)      //how many engines?
         {
@@ -1939,7 +1939,7 @@ void AircraftClass::ShowDamage(void)
         }
 
 
-        if (dotrails ||  doturb)
+        if (dotrails or  doturb)
         {
             Trotation *orientation = 0L;
 
@@ -2041,7 +2041,7 @@ void AircraftClass::ShowDamage(void)
 #if NEW_VORTEX_TRAILS
 
                 //RV - I-Hawk - Vortex stuff starting here
-                if (doGVortex || doAOAVortex)
+                if (doGVortex or doAOAVortex)
                 {
                     //Get the vortex locations from data. vortexAOALimit was already taken
                     //since it was used above with the wingtip trails
@@ -2093,7 +2093,7 @@ void AircraftClass::ShowDamage(void)
                     vortex1AlphaCx *= trailAltCx;
 
                     //make sure we never get the Cxs below 0
-                    if (vortex1AlphaCx < 0 || vortex1SizeCx < 0)
+                    if (vortex1AlphaCx < 0 or vortex1SizeCx < 0)
                     {
                         vortex1AlphaCx = vortex1SizeCx = 0;
                     }
@@ -2106,7 +2106,7 @@ void AircraftClass::ShowDamage(void)
                     //bit 1 is to decide for the 2nd vortex trail
                     //bits 2,3,4 are to decide for the 3 PS generators
 
-                    if (lvortex1 == NULL || rvortex1 == NULL)
+                    if (lvortex1 == NULL or rvortex1 == NULL)
                     {
                         if (largeVortex & 1)   //check if bit 0 of largeVortex is set
                         {
@@ -2137,7 +2137,7 @@ void AircraftClass::ShowDamage(void)
                         vortex2AlphaCx = vortex1AlphaCx;
                         vortex2SizeCx = vortex1SizeCx;
 
-                        if (lvortex2 == NULL || rvortex2 == NULL)
+                        if (lvortex2 == NULL or rvortex2 == NULL)
                         {
                             if (largeVortex & 2)   //check if bit 1 of largeVortex is set
                             {
@@ -2154,8 +2154,8 @@ void AircraftClass::ShowDamage(void)
                     }
 
                     //are we doing the PS vortex?
-                    if (((currentG > 7.0f) || (currentAOA > ((vortexAOALimit + vortexAOA) / 2.0f))) &&
-                        (vtx3.y || vtx4.y || vtx5.y))
+                    if (((currentG > 7.0f) or (currentAOA > ((vortexAOALimit + vortexAOA) / 2.0f))) &&
+                        (vtx3.y or vtx4.y or vtx5.y))
                     {
 
                         //local position variables for the PS vortex effects
@@ -2727,7 +2727,7 @@ void AircraftClass::ShowDamage(void)
 
         if (orientation)
         {
-            if (af->auxaeroData->nEngines >= 3 || (af->auxaeroData->nEngines == 2
+            if (af->auxaeroData->nEngines >= 3 or (af->auxaeroData->nEngines == 2
                                                    && (fabs(af->auxaeroData->engineLocation[0].y - af->auxaeroData->engineLocation[1].y) > 15.0f))
                )
             {
@@ -2913,7 +2913,7 @@ void AircraftClass::CheckObjectCollision(void)
             continue;
         }
 
-        if (F4IsBadReadPtr(theObject, sizeof(SimBaseClass)) || !theObject->IsSim() || (OnGround() && !theObject->OnGround()))
+        if (F4IsBadReadPtr(theObject, sizeof(SimBaseClass)) or !theObject->IsSim() or (OnGround() && !theObject->OnGround()))
         {
             continue;
         }
@@ -2932,9 +2932,9 @@ void AircraftClass::CheckObjectCollision(void)
         // Stop now if the spheres don't overlap
         // special case the tanker -- we want to be able to get in closer
         // JB carrier
-        if (af->IsSet(AirframeClass::OnObject) || !OnGround())
+        if (af->IsSet(AirframeClass::OnObject) or !OnGround())
         {
-            if (IsSetFlag(I_AM_A_TANKER) || theObject->IsSetFlag(I_AM_A_TANKER))
+            if (IsSetFlag(I_AM_A_TANKER) or theObject->IsSetFlag(I_AM_A_TANKER))
             {
                 //if ( objData->range >  0.1f * theObject->GetGfx()->Radius()){// + GetGfx()->Radius() ) // PJW
                 // continue;
@@ -2965,7 +2965,7 @@ void AircraftClass::CheckObjectCollision(void)
             else
             {
                 if (objData->range > theObject->drawPointer->Radius() + drawPointer->Radius())
-                    if (theObject->GetDomain() != DOMAIN_SEA || theObject->GetClass() != CLASS_VEHICLE || theObject->GetType() != TYPE_CAPITAL_SHIP || carrierInitTimer >= 30.0f)
+                    if (theObject->GetDomain() != DOMAIN_SEA or theObject->GetClass() != CLASS_VEHICLE or theObject->GetType() != TYPE_CAPITAL_SHIP or carrierInitTimer >= 30.0f)
                     {
                         continue;
                     }
@@ -2991,7 +2991,7 @@ void AircraftClass::CheckObjectCollision(void)
 
                 if (!theObject->drawPointer->GetRayHit(&org, &vec, &pos, 1.0f))
                 {
-                    if (theObject->GetDomain() != DOMAIN_SEA || theObject->GetClass() != CLASS_VEHICLE || theObject->GetType() != TYPE_CAPITAL_SHIP || carrierInitTimer >= 30.0f)
+                    if (theObject->GetDomain() != DOMAIN_SEA or theObject->GetClass() != CLASS_VEHICLE or theObject->GetType() != TYPE_CAPITAL_SHIP or carrierInitTimer >= 30.0f)
                         continue;
                 }
 
@@ -3074,13 +3074,13 @@ void AircraftClass::CheckObjectCollision(void)
             startAngle.x = max(min(startAngle.x, 45.0f), -45.0f) * DTR;
 
             // RV - Biker - Rotate AC with carrier
-            if (af->vt <= 1.0f && af->Thrust() <= 1.0f && (carrierInitTimer < 10.0f || theObject->YawDelta() != 0.0f))
+            if (af->vt <= 1.0f && af->Thrust() <= 1.0f && (carrierInitTimer < 10.0f or theObject->YawDelta() != 0.0f))
             {
                 af->sigma = theObject->Yaw() + startAngle.x;
                 af->ResetOrientation();
             }
 
-            if (theObject->Yaw() >= 178.0f * DTR || theObject->Yaw() <= -178.0f * DTR)
+            if (theObject->Yaw() >= 178.0f * DTR or theObject->Yaw() <= -178.0f * DTR)
             {
                 startPos.x = -tmpPos.x;
                 startPos.y = -tmpPos.y;
@@ -3101,12 +3101,12 @@ void AircraftClass::CheckObjectCollision(void)
             // RV - Biker - Move AC in correct position
             if (af->vt <= 1.0f && af->Thrust() <= 1.0f && carrierInitTimer < 25.0f)
             {
-                if ((deltaX < abs(startPos.x) - 2.5f || deltaX > abs(startPos.x) + 2.5f))
+                if ((deltaX < abs(startPos.x) - 2.5f or deltaX > abs(startPos.x) + 2.5f))
                 {
                     af->x = theObject->XPos() + startPos.x;
                 }
 
-                if ((deltaY < abs(startPos.y) - 2.5f || deltaY > abs(startPos.y) + 2.5f))
+                if ((deltaY < abs(startPos.y) - 2.5f or deltaY > abs(startPos.y) + 2.5f))
                 {
                     af->y = theObject->YPos() + startPos.y;
                 }
@@ -3263,8 +3263,8 @@ void AircraftClass::CheckObjectCollision(void)
                     (SFX_CAT_LAUNCH + 1), &noseGear, &PSvec);
             }
 
-            //if(/*(ZPos() <= minB.z * /*.96*/.90f && ZPos() > minB.z * /*1.02*/1.1f || */(ZPos() > -g_fCarrierStartTolerance && af->vcas < 10.0f /*.01*/))//Cobra aircraft coming in at 6.5 knots and thus failing this check
-            if ((ZPos() <= minB.z * 0.96f && ZPos() > minB.z - 0.5f) || (ZPos() > -g_fCarrierStartTolerance && af->vcas < 10.0f))
+            //if(/*(ZPos() <= minB.z * /*.96*/.90f && ZPos() > minB.z * /*1.02*/1.1f or */(ZPos() > -g_fCarrierStartTolerance && af->vcas < 10.0f /*.01*/))//Cobra aircraft coming in at 6.5 knots and thus failing this check
+            if ((ZPos() <= minB.z * 0.96f && ZPos() > minB.z - 0.5f) or (ZPos() > -g_fCarrierStartTolerance && af->vcas < 10.0f))
             {
                 // the eagle has landed
                 attachedEntity = theObject;
@@ -3295,7 +3295,7 @@ void AircraftClass::CheckObjectCollision(void)
                 af->slice = 0.0F;
                 af->pitch = 0.0F;
 
-                if (af->IsSet(af->GearBroken) || af->gearPos <= 0.1F)
+                if (af->IsSet(af->GearBroken) or af->gearPos <= 0.1F)
                 {
                     if (af->platform->DBrain() && !af->platform->IsSetFalcFlag(FEC_INVULNERABLE))
                     {
@@ -3346,7 +3346,7 @@ void AircraftClass::CheckObjectCollision(void)
                     continue;
 
                 // do the landing check (no damage)
-                if (!af->IsSet(AirframeClass::InAir) || af->platform->LandingCheck(noseAngle, impactAngle, COVERAGE_OBJECT))
+                if (!af->IsSet(AirframeClass::InAir) or af->platform->LandingCheck(noseAngle, impactAngle, COVERAGE_OBJECT))
                 {
                     af->ClearFlag(AirframeClass::InAir);
                     continue;
@@ -3356,7 +3356,7 @@ void AircraftClass::CheckObjectCollision(void)
                 continue;
         }
 
-        if (isDigital || !PlayerOptions.CollisionsOn())
+        if (isDigital or !PlayerOptions.CollisionsOn())
             continue;
 
         // JB carrier end
@@ -3377,8 +3377,8 @@ void AircraftClass::CheckObjectCollision(void)
 
         // 2002-04-17 MN fix for killer chaff / flare
         if (theObject->GetType() == TYPE_BOMB &&
-            (theObject->GetSType() == STYPE_CHAFF || theObject->GetSType() == STYPE_FLARE1) &&
-            (theObject->GetSPType() == SPTYPE_CHAFF1 || theObject->GetSPType() == SPTYPE_CHAFF1 + 1))
+            (theObject->GetSType() == STYPE_CHAFF or theObject->GetSType() == STYPE_FLARE1) &&
+            (theObject->GetSPType() == SPTYPE_CHAFF1 or theObject->GetSPType() == SPTYPE_CHAFF1 + 1))
             continue;
 
         if (!isDigital)

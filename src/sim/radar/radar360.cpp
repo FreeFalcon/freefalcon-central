@@ -139,7 +139,7 @@ void Radar360Class::UpdateState(int cursorXCmd, int cursorYCmd)
         }
     }
 
-    if ((cursorXCmd != 0) || (cursorYCmd != 0))
+    if ((cursorXCmd != 0) or (cursorYCmd != 0))
         flags  or_eq  CursorMoving;
     else
         flags &= compl CursorMoving;
@@ -263,7 +263,7 @@ void Radar360Class::ExecAA(void)
         }
 
         // Can't lock onto weapons in flight
-        if (object->BaseData()->IsMissile() || object->BaseData()->IsBomb())
+        if (object->BaseData()->IsMissile() or object->BaseData()->IsBomb())
         {
             continue;
         }
@@ -291,7 +291,7 @@ void Radar360Class::ExecAA(void)
         }
 
         // We're done unless we need to lock something up
-        if ((!lockCmd) || (range > rangeFT))
+        if ((!lockCmd) or (range > rangeFT))
         {
             continue;
         }
@@ -345,7 +345,7 @@ void Radar360Class::ExecAA(void)
             case NEXT:
                 if (range < bestSoFar)
                 {
-                    if ((!lockedTarget) || (range > lockedTarget->localData->range))
+                    if ((!lockedTarget) or (range > lockedTarget->localData->range))
                     {
                         if (TeamInfo[platform->GetTeam()]->TStance(object->BaseData()->GetTeam()) == War)
                         {
@@ -360,7 +360,7 @@ void Radar360Class::ExecAA(void)
             case PREV:
                 if (range > bestSoFar)
                 {
-                    if ((!lockedTarget) || (range < lockedTarget->localData->range))
+                    if ((!lockedTarget) or (range < lockedTarget->localData->range))
                     {
                         if (TeamInfo[platform->GetTeam()]->TStance(object->BaseData()->GetTeam()) == War)
                         {
@@ -523,7 +523,7 @@ void Radar360Class::ExecAG(void)
         }
 
         // Fow now we skip missles -- might want to display them eventually...
-        if (object->IsMissile() || object->IsBomb())
+        if (object->IsMissile() or object->IsBomb())
         {
             goto NextObject;
         }
@@ -557,7 +557,7 @@ void Radar360Class::ExecAG(void)
 
 
         // Skip the object if it can't be locked
-        if ((range > rangeFT) || !InAGLockZone(cosATA, x, y))
+        if ((range > rangeFT) or !InAGLockZone(cosATA, x, y))
         {
             goto NextObject;
         }
@@ -605,7 +605,7 @@ void Radar360Class::ExecAG(void)
             case NEXT:
                 if (range < bestSoFar)
                 {
-                    if ((!lockedTarget) || (range > lockedTarget->localData->range))
+                    if ((!lockedTarget) or (range > lockedTarget->localData->range))
                     {
                         if (TeamInfo[platform->GetTeam()]->TStance(object->GetTeam()) == War)
                         {
@@ -620,7 +620,7 @@ void Radar360Class::ExecAG(void)
             case PREV:
                 if (range > bestSoFar)
                 {
-                    if ((!lockedTarget) || (range < lockedTarget->localData->range))
+                    if ((!lockedTarget) or (range < lockedTarget->localData->range))
                     {
                         if (TeamInfo[platform->GetTeam()]->TStance(object->GetTeam()) == War)
                         {
@@ -967,7 +967,7 @@ void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
         y = dy * scaledSinYaw + dx * scaledCosYaw; // and scale from feet into viewport space
 
         // Skip if the object is off screen
-        if ((fabs(x) > 1.0f) || (fabs(y) > 1.0f))
+        if ((fabs(x) > 1.0f) or (fabs(y) > 1.0f))
         {
             goto NextObject;
         }

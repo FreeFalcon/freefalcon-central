@@ -5,6 +5,7 @@ Windows NT 4.0 access functions for getting to process information.
 Windows95 and NT5 can use TOOLHELP32.DLL.
 ----------------------------------------------------------------------*/
 
+#include <cISO646>
 #include "PCH.h"
 #include "BugslayerUtil.h"
 
@@ -175,7 +176,7 @@ BOOL NT4GetLoadedModules(DWORD     dwPID        ,
 
     // If bRet was FALSE, and the user was not just asking for the
     //  total, there was a problem.
-    if (((FALSE == bRet) && (uiCount > 0)) || (0 == dwTotal))
+    if (((FALSE == bRet) && (uiCount > 0)) or (0 == dwTotal))
     {
         ASSERT(FALSE) ;
         TRACE0("EnumProcessModules failed!\n") ;

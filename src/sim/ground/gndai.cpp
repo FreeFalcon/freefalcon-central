@@ -351,7 +351,7 @@ GNDAIClass::GNDAIClass(GroundClass *s, GNDAIClass *l, short r, int unit_id, int 
     }
 
     // Update current trig values
-    if (!l || this == l)
+    if (!l or this == l)
     {
         mlSinCos(&trig, ideal_h);
         isinh = trig.sin;
@@ -564,7 +564,7 @@ void GNDAIClass::ProcessTargeting(void)
         if (campTargetEntity)
         {
             // Create our shared ground target object (campaign target)
-            if (!gndTargetPtr || gndTargetPtr->BaseData() != campTargetEntity)
+            if (!gndTargetPtr or gndTargetPtr->BaseData() != campTargetEntity)
             {
                 SetGroundTarget(new SimObjectType(campTargetEntity));
             }
@@ -584,7 +584,7 @@ void GNDAIClass::ProcessTargeting(void)
         if (campTargetEntity)
         {
             // Create our shared ground target object (campaign target)
-            if (!airTargetPtr || airTargetPtr->BaseData() != campTargetEntity)
+            if (!airTargetPtr or airTargetPtr->BaseData() != campTargetEntity)
             {
                 SetAirTarget(new SimObjectType(campTargetEntity));
             }
@@ -667,7 +667,7 @@ void GNDAIClass::ProcessTargeting(void)
 
     // Decide if we want to shoot at the battalion's air or ground target
     // If we are an emitter, we always choose the airtarget
-    if (self->isGroundCapable && (!self->isEmitter || self->isShip))   // JPO let ships decide.
+    if (self->isGroundCapable && (!self->isEmitter or self->isShip))   // JPO let ships decide.
     {
         if (self->isAirCapable)
         {
@@ -682,7 +682,7 @@ void GNDAIClass::ProcessTargeting(void)
             newTarget = battalionCommand->gndTargetPtr;
         }
     }
-    else if (self->isAirCapable || self->isEmitter)
+    else if (self->isAirCapable or self->isEmitter)
     {
         newTarget = battalionCommand->airTargetPtr;
     }
@@ -714,11 +714,11 @@ void GNDAIClass::ProcessTargeting(void)
     // 3. our commander wants us to shoot at another unit
 
     // RV - Biker - Switch to next target if we did take a hit (pctStrength <= 0.0f)
-    //if(!self->targetPtr || self->targetPtr->BaseData()->IsDead() || newUnit != oldUnit)
+    //if(!self->targetPtr or self->targetPtr->BaseData()->IsDead() or newUnit != oldUnit)
     if (
         !self->targetPtr ||
         ((SimBaseClass *)self->targetPtr->BaseData())->pctStrength <= 0.0f ||
-        self->targetPtr->BaseData()->IsDead() || newUnit != oldUnit
+        self->targetPtr->BaseData()->IsDead() or newUnit != oldUnit
     )
     {
         self->SetTarget(SimCampHandoff(newTarget, self->targetList, HANDOFF_RANDOM));
@@ -772,7 +772,7 @@ void GNDAIClass::ProcessTargeting(void)
             // If our radar has no target or if it has the SAME base object
             // as us but different target pointers, switch our radar target pointer to our target pointer
             else if (
-                !radar->CurrentTarget() || (
+                !radar->CurrentTarget() or (
                     radar->CurrentTarget() != self->targetPtr &&
                     radar->CurrentTarget()->BaseData() == self->targetPtr->BaseData()
                 )
@@ -911,7 +911,7 @@ void GNDAIClass::ProcessTargeting(void)
 #endif
         }
 
-        if ((!self->isEmitter || self->isAirCapable) && this != battalionCommand)
+        if ((!self->isEmitter or self->isAirCapable) && this != battalionCommand)
         {
             self->SelectWeapon(FALSE);
             SimWeaponClass *theWeapon = self->Sms->GetCurrentWeapon();
@@ -1208,7 +1208,7 @@ void GNDAIClass::Order_Company(void)
         // We can move, so get into formation
         formation = battalionCommand->formation;
 
-        if (formation != GNDAI_FORM_COLUMN || !CheckThrough())
+        if (formation != GNDAI_FORM_COLUMN or !CheckThrough())
         {
             if (InPosition(this))
             {
@@ -1239,7 +1239,7 @@ void GNDAIClass::Order_Platoon(void)
         // We can move, so get into formation
         formation = battalionCommand->formation;
 
-        if (formation != GNDAI_FORM_COLUMN || !CheckThrough())
+        if (formation != GNDAI_FORM_COLUMN or !CheckThrough())
         {
             if (InPosition(this))
             {
@@ -1271,7 +1271,7 @@ void GNDAIClass::Order_Squad(void)
         // We can move, so get into formation
         formation = battalionCommand->formation;
 
-        if (formation != GNDAI_FORM_COLUMN || !CheckThrough())
+        if (formation != GNDAI_FORM_COLUMN or !CheckThrough())
         {
             if (InPosition(this))
             {
@@ -1306,7 +1306,7 @@ int GNDAIClass::CheckThrough(void)
     ShiAssert(battalionCommand);
 
     // Check to see if we want to move through a turn point
-    if (battalionCommand->through_x != through_x || battalionCommand->through_y != through_y)
+    if (battalionCommand->through_x != through_x or battalionCommand->through_y != through_y)
     {
         moveFlags &= compl GNDAI_WENT_THROUGH;
         through_x = battalionCommand->through_x;
@@ -1332,7 +1332,7 @@ void GNDAIClass::Move_Towards_Dest(void)
     ShiAssert(battalionCommand);
 
     // get delta to next x and y location
-    if ((moveState == GNDAI_MOVE_HALTED) || (battalionCommand->moveState == GNDAI_MOVE_HALTED))
+    if ((moveState == GNDAI_MOVE_HALTED) or (battalionCommand->moveState == GNDAI_MOVE_HALTED))
     {
         delx = 0.0f;
         dely = 0.0f;
@@ -1351,7 +1351,7 @@ void GNDAIClass::Move_Towards_Dest(void)
             {
                 ideal_h = (float)atan2(dely, delx) + move_backwards;
             }
-            else // if (leftToGoSq < 100.0F || ideal_h-battalionCommand->ideal_h > PI || ideal_h-battalionCommand->ideal_h < -PI)
+            else // if (leftToGoSq < 100.0F or ideal_h-battalionCommand->ideal_h > PI or ideal_h-battalionCommand->ideal_h < -PI)
             {
                 // we're close enough to our destination to think again, or
                 // we just don't want to bother backing up.
@@ -1381,12 +1381,12 @@ void GNDAIClass::Move_Towards_Dest(void)
 
     if (!(moveFlags & GNDAI_MOVE_FIXED_POSITIONS) && delh != 0.0F)
     {
-        //if (delh >= PI || (delh < 0 && delh > -PI))
+        //if (delh >= PI or (delh < 0 && delh > -PI))
         // rotvel = -1.0F * OPTIMAL_VEHICLE_ROTATION;
-        //else if (delh <= -PI || delh > 0)
+        //else if (delh <= -PI or delh > 0)
         // rotvel = OPTIMAL_VEHICLE_ROTATION;
 
-        if (delh >= PI || (delh < 0 && delh > -PI))
+        if (delh >= PI or (delh < 0 && delh > -PI))
         {
             rotvel *= -1.0F;
         }
@@ -1419,7 +1419,7 @@ void GNDAIClass::Move_Towards_Dest(void)
         self->SetYPRDelta(0.0f, 0.0f, 0.0f);
     }
 
-    if (delx || dely)
+    if (delx or dely)
     {
         // Calculate speed.
         if (delh > 5.0F * DTR)
@@ -1427,7 +1427,7 @@ void GNDAIClass::Move_Towards_Dest(void)
             // cornering speed
             speed = min(20.0F, maxvel);
         }
-        else if (rank == GNDAI_BATTALION_COMMANDER || formation == GNDAI_FORM_COLUMN)
+        else if (rank == GNDAI_BATTALION_COMMANDER or formation == GNDAI_FORM_COLUMN)
         {
             // go at unit cruise speed
             speed = unitvel;
@@ -1586,7 +1586,7 @@ void GNDAIClass::PromoteSubordinates(void)
     GroundClass *newLead = NULL;
 
     // sfr: @todo remove these checks
-    if (!self || F4IsBadWritePtr(self, sizeof(GroundClass)) || F4IsBadCodePtr((FARPROC) self->GetCampaignObject())) // JB 010318 CTD
+    if (!self or F4IsBadWritePtr(self, sizeof(GroundClass)) or F4IsBadCodePtr((FARPROC) self->GetCampaignObject())) // JB 010318 CTD
     {
         if (F4IsBadWritePtr(this, sizeof(GNDAIClass)))
             return;
@@ -1645,7 +1645,7 @@ void GNDAIClass::PromoteSubordinates(void)
             VuListIterator vehicleWalker(self->GetCampaignObject()->GetComponents());
             theObj = (GroundClass*)vehicleWalker.GetFirst();
 
-            while (theObj && theObj != self && (theObj->IsExploding() || theObj->IsDead()))
+            while (theObj && theObj != self && (theObj->IsExploding() or theObj->IsDead()))
                 theObj = (GroundClass*)vehicleWalker.GetNext();
         }
 
@@ -1680,7 +1680,7 @@ void GNDAIClass::PromoteSubordinates(void)
             // is to allow dead vehicles to inherit command, and then
             // have them pass it along to the next guy when they call
             // PromoteSubordinates()
-            /* if ( theObj->IsExploding() || theObj->IsDead() )
+            /* if ( theObj->IsExploding() or theObj->IsDead() )
              {
              SetLeader( NULL );
              battalionCommand = NULL;

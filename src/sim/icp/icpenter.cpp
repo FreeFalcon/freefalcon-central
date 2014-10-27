@@ -49,13 +49,13 @@ void ICPClass::ICPEnter(void)
             EWSEnter();
         else if (Manual_Input)
         {
-            if (BQ || BI)
+            if (BQ or BI)
                 EnterBurst();
-            else if (SQ || SI)
+            else if (SQ or SI)
                 EnterSalvo();
         }
     }
-    else if ((OA1 || OA2) && Manual_Input)
+    else if ((OA1 or OA2) && Manual_Input)
         EnterOA();
 
     //Mark
@@ -235,7 +235,7 @@ void ICPClass::EnterTCN(void)
         CurrChannel = AddUp();
 
         //Not correct
-        if (CurrChannel > 126 || CurrChannel == 0)
+        if (CurrChannel > 126 or CurrChannel == 0)
             WrongInput();
         else
         {
@@ -467,7 +467,7 @@ void ICPClass::EnterWSpan(void)
 {
     ManualWSpan = AddUpFloat();
 
-    if (ManualWSpan > 120 || ManualWSpan < 20)
+    if (ManualWSpan > 120 or ManualWSpan < 20)
         WrongInput();
     else
     {

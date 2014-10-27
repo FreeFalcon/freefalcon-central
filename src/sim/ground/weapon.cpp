@@ -198,7 +198,7 @@ BOOL GroundClass::DoWeapons(void)
 
         if (GunTrack())
         {
-            if (!IsGunFiring(Sms->GetCurrentWeaponHardpoint()) || Gun->IsShell())
+            if (!IsGunFiring(Sms->GetCurrentWeaponHardpoint()) or Gun->IsShell())
             {
                 //me123 disabled for now...its looking realy strange in mp
                 if (!Gun->FiremsgsendTime)
@@ -549,10 +549,10 @@ int GroundClass::GunTrack(void)
     // if we are not an air defense unit, but we're shooting guns at something in
     // the air, it will be small arms so it is irrelevant which way our main gun
     // is pointing
-    if (target->OnGround() || isAirDefense)
+    if (target->OnGround() or isAirDefense)
     {
         // Check our limits
-        if (el > 85 * DTR || (el < 5 * DTR && !target->OnGround()))
+        if (el > 85 * DTR or (el < 5 * DTR && !target->OnGround()))
             return FALSE;
 
         delta = (float)fabs(GetDOFValue(AIRDEF_AZIMUTH) - az);
@@ -623,7 +623,7 @@ int GroundClass::GunTrack(void)
             WeaponClassDataType* wc = Gun->GetWCD();
             float maxFireRange;
 
-            if (battalionFireControl || rand() % 100 < 10)
+            if (battalionFireControl or rand() % 100 < 10)
                 maxFireRange = float(wc->Range * KM_TO_FT);
             else
                 maxFireRange = float(wc->MaxAlt * KM_TO_FT * 0.666f);
@@ -775,7 +775,7 @@ int GroundClass::MissileTrack(void)
                 RadarClass *radar = (RadarClass*)FindSensor(battalionFireControl, SensorClass::Radar);
                 ShiAssert(radar);
 
-                if (!radar->CurrentTarget() || targetPtr->BaseData() != radar->CurrentTarget()->BaseData())
+                if (!radar->CurrentTarget() or targetPtr->BaseData() != radar->CurrentTarget()->BaseData())
                     SetTarget(radar->CurrentTarget());
 
                 // ADDED BY S.G. SO SAM DO NOT NORMALLY FIRE WHEN JAMMED. DEPENDING ON THE SKILL, THEY MIGHT FIRE THOUGH
@@ -895,7 +895,7 @@ int GroundClass::MissileTrack(void)
 
         // edg: I'm leaving these in for now, however this should all be
         // moved into weapon selection.  I've commented them out in guns.
-        if (zft < maxAlt || zft > minAlt)
+        if (zft < maxAlt or zft > minAlt)
             return FALSE;
 
         // if (targetPtr->localData->range > wc->Range*KM_TO_FT /*|| targetPtr->localData->range < wc->Range*KM_TO_FT*0.1F */)
@@ -920,7 +920,7 @@ int GroundClass::MissileTrack(void)
         */
     }
     // target on ground
-    else if (maxAlt != 0.0f || targetPtr->localData->range > wc->Range * KM_TO_FT)
+    else if (maxAlt != 0.0f or targetPtr->localData->range > wc->Range * KM_TO_FT)
         return FALSE;
 
     // az and el are relative from our vehicles orientation so subtract
@@ -1032,7 +1032,7 @@ GroundClass::FindBattalionFireControl(void)
     ShiAssert(batt); // We'de better belong to a battalion
     ShiAssert(batt->GetComponents()); // If there aren't components, then WHAT ARE WE???
 
-    if (!batt || batt->GetComponents() == NULL)  // Should never have been changed...
+    if (!batt or batt->GetComponents() == NULL)  // Should never have been changed...
         return;
 
     battRadarType = batt->GetRadarType();

@@ -578,7 +578,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
         // 2002-03-28 MN Hack to make full AI refueling control working in each and every situation:
         // if we are really close, just put us on the boom. Period ;-)
         if (dist < af->GetAIBoomDistance() && g_bPutAIToBoom && refuelstatus == refRefueling &&
-            (PlayerOptions.GetRefuelingMode() == ARSimplistic || PlayerOptions.GetRefuelingMode() == ARModerated && af->IsSet(AirframeClass::Refueling)))
+            (PlayerOptions.GetRefuelingMode() == ARSimplistic or PlayerOptions.GetRefuelingMode() == ARModerated && af->IsSet(AirframeClass::Refueling)))
         {
             // 26NOV03 - FRB - Get a more recent position
             ((TankerBrain*)tanker->Brain())->OptTankingPosition(&targetPos);

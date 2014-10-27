@@ -27,7 +27,7 @@ void DecomposeMatrix(Trotation* matrix, float* pitch, float* roll, float* yaw);
 
 void HelicopterClass::ApplyDamage(FalconDamageMessage* damageMessage)
 {
-    if (IsDead() || IsExploding())
+    if (IsDead() or IsExploding())
         return;
 
     // call generic vehicle damage stuff

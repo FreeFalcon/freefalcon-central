@@ -485,7 +485,7 @@ void AdvancedWeaponStation::AttachAllWeaponBSP(void)
 
 void BasicWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
 {
-    if (!weapPtr || weapPtr != weaponPointer) // only attach 1st weapon
+    if (!weapPtr or weapPtr != weaponPointer) // only attach 1st weapon
         return;
 
     DrawableBSP *weapBSP = (DrawableBSP *)weapPtr->drawPointer;
@@ -746,7 +746,7 @@ void AdvancedWeaponStation::DeleteAllWeaponBSP(void)
 
 void BasicWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
 {
-    if (!weapPtr || weapPtr != weaponPointer)
+    if (!weapPtr or weapPtr != weaponPointer)
         return;
 
     DrawableBSP *weapBSP = (DrawableBSP *)weapPtr->drawPointer;

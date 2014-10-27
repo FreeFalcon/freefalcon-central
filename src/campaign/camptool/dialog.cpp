@@ -117,7 +117,7 @@ BOOL WINAPI About(HWND hDlg, UINT message, /* type of message                 */
 
         case WM_COMMAND:                 /* message: received a command */
             if (LOWORD(wParam) == IDOK    /* "OK" box selected?        */
-                || LOWORD(wParam) == IDCANCEL)
+                or LOWORD(wParam) == IDCANCEL)
             {
                 /* System menu close command? */
                 EndDialog(hDlg, TRUE); /* Exits the dialog box        */
@@ -607,7 +607,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     GetDlgItemText(hDlg, IDC_OBJ_PRIVAL, buffer, 79);
                     i = atoi(buffer);
 
-                    if (HIWORD(wParam) == EN_KILLFOCUS || i > 0)
+                    if (HIWORD(wParam) == EN_KILLFOCUS or i > 0)
                     {
                         if (i > 0)
                             O->SetObjectivePriority(i);
@@ -2203,12 +2203,12 @@ BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         {
                             uchar target_b = TheCampaign.MissionEvaluator->player_element->target_building;
 
-                            if (target_b >= ((Objective)target)->GetTotalFeatures() || ((Objective)target)->GetFeatureStatus(target_b) == VIS_DESTROYED)
+                            if (target_b >= ((Objective)target)->GetTotalFeatures() or ((Objective)target)->GetFeatureStatus(target_b) == VIS_DESTROYED)
                             {
                                 int count = 0;
                                 target_b = rand() % ((Objective)target)->GetTotalFeatures();
 
-                                while (count < 20 && (((Objective)target)->GetFeatureStatus(target_b) == VIS_DESTROYED || !((Objective)target)->GetFeatureValue(target_b)))
+                                while (count < 20 && (((Objective)target)->GetFeatureStatus(target_b) == VIS_DESTROYED or !((Objective)target)->GetFeatureValue(target_b)))
                                 {
                                     count++;
                                     target_b = rand() % ((Objective)target)->GetTotalFeatures();
@@ -2636,7 +2636,7 @@ BOOL SaveCampFile(HWND hWnd, int mode)
     else
         strcpy(FalconCampUserSaveDirectory, FalconCampaignSaveDirectory);
 
-    if (mode == ID_CAMPAIGN_SAVE || mode == ID_CAMPAIGN_SAVEAS)
+    if (mode == ID_CAMPAIGN_SAVE or mode == ID_CAMPAIGN_SAVEAS)
         save_mode = 0;
     else if (mode == ID_CAMPAIGN_SAVEALLAS)
         save_mode = 1;

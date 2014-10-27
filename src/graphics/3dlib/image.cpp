@@ -399,7 +399,7 @@ GLint UnpackGIF(CImageFileMemory *fi)
     GLubyte tempPalette[768];
 
     // make sure it's a GIF file
-    if (fi -> glReadMem((GLubyte *)&gh, sizeof(gh)) != sizeof(gh) || memcmp(gh.sig, "GIF", 3))
+    if (fi -> glReadMem((GLubyte *)&gh, sizeof(gh)) != sizeof(gh) or memcmp(gh.sig, "GIF", 3))
     {
         return(BAD_FILE);
     }
@@ -437,7 +437,7 @@ GLint UnpackGIF(CImageFileMemory *fi)
         }
     }
 
-    while ((c = fi -> glReadCharMem()) == ',' || c == '!' || c == 0)
+    while ((c = fi -> glReadCharMem()) == ',' or c == '!' or c == 0)
     {
         if (c == ',')
         {
@@ -555,7 +555,7 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
     GLubyte  *u;             /* Stack pointer into firstcodestack */
     GLubyte  *buffer;        /* Pointer to image buffer */
 
-    if (bits < 2 || bits > 8) return(BAD_SYMBOLSIZE);
+    if (bits < 2 or bits > 8) return(BAD_SYMBOLSIZE);
 
     p = q = b;
     bitsleft = 8;
@@ -1101,7 +1101,7 @@ GLint UnpackPCX(CImageFileMemory *fi)
 
 
     // Read the palette data
-    if ((fi->glReadCharMem() != 0xc) || (!fi->glReadMem(pcxPalette, 768)))
+    if ((fi->glReadCharMem() != 0xc) or (!fi->glReadMem(pcxPalette, 768)))
     {
         glReleaseMemory((char *) fi->image.image);
         return (BAD_ALLOC);

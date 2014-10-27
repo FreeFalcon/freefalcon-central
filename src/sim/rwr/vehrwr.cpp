@@ -211,7 +211,7 @@ SimObjectType* VehRwrClass::Exec(SimObjectType* targetList)
             if (SimLibElapsedTime > detectionList[i].lastHit + ((SimBaseClass*)detectionList[i].entity)->RdrCycleTime() * SEC_TO_MSEC + 1000 &&
                 SimLibElapsedTime > detectionList[i].lastHit + (platform == SimDriver.GetPlayerAircraft() ? 3 * SEC_TO_MSEC : 30 * SEC_TO_MSEC))
             {
-                if (!detectionList[i].isLocked || (SimBaseClass*)detectionList[i].entity->IsDead())
+                if (!detectionList[i].isLocked or (SimBaseClass*)detectionList[i].entity->IsDead())
                     DropTrack(i);
             }
         }
@@ -222,8 +222,8 @@ SimObjectType* VehRwrClass::Exec(SimObjectType* targetList)
                 // 2002-03-10 MODIFIED BY S.G. If IsSim returned false, don't cast it to SimBaseClass but CampBaseClass and not required anyway since IsDead is defined in a parent class
                 //                             Also, I've seen campaign entries stay here forever with missileActivity set because the missile was launched when aggregated (hence made it here) but once it deaggregated, it stayed here. So to fix this, if it's a DEAGGREGATED campaign object, remove its lock
                 //                             I also moved 'DropTrack' on a line by itself. It's much combersome to put breakpoint if the if body is on the same line as the if statement (also done above).
-                // if (!detectionList[i].isLocked || (SimBaseClass*)detectionList[i].entity->IsDead()) DropTrack (i);
-                if (!detectionList[i].isLocked || detectionList[i].entity->IsDead() || !((CampBaseClass*)detectionList[i].entity)->IsAggregate())
+                // if (!detectionList[i].isLocked or (SimBaseClass*)detectionList[i].entity->IsDead()) DropTrack (i);
+                if (!detectionList[i].isLocked or detectionList[i].entity->IsDead() or !((CampBaseClass*)detectionList[i].entity)->IsAggregate())
                     DropTrack(i);
             }
         }
@@ -239,7 +239,7 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
     float lethality;
     DetectListElement *listElement;
 
-    F4Assert(numContacts == 0 || detectionList[numContacts - 1].entity);
+    F4Assert(numContacts == 0 or detectionList[numContacts - 1].entity);
 
     //Cobra TEST Let me know if AI brain is here.
     if (platform != SimDriver.GetPlayerAircraft())
@@ -308,7 +308,7 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
     {
         // JB 010727 RP5 RWR
         // 2001-02-18 ADDED BY S.G. SO only Track_Ping and Track_lock triggers a lastHit update
-        if (trackType == Track_Lock || trackType == Track_Ping)
+        if (trackType == Track_Lock or trackType == Track_Ping)
         {
             // END OF ADDED SECTION
             listElement->lastHit = SimLibElapsedTime;
@@ -329,7 +329,7 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
                 {
                     // 2000-09-03 S.G. SO ARH DON'T GET A LAUNCH WARNING
                     // 2000-09-11 S.G. make sure the entity is a missile before testing its sensor type...
-                    if (!listElement->entity->IsMissile() || ((MissileClass *)listElement->entity)->GetSeekerType() != SensorClass::Radar)
+                    if (!listElement->entity->IsMissile() or ((MissileClass *)listElement->entity)->GetSeekerType() != SensorClass::Radar)
                         // END OF ADDED SECTION (PLUS INDENTATION OF NEXT LINE)
                     {
                         //F4SoundFXSetDist( SFX_TWS_LAUNCH, FALSE, 0.0f, 1.0f );
@@ -440,7 +440,7 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
         }
     }
 
-    ShiAssert(numContacts == 0 || detectionList[numContacts - 1].entity);
+    ShiAssert(numContacts == 0 or detectionList[numContacts - 1].entity);
     return retval;
 }
 
@@ -519,7 +519,7 @@ FalconEntity* VehRwrClass::CurSpike(FalconEntity *byHim, int *data)  // 2002-02-
         {
             if (detectionList[i].isLocked && detectionList[i].radarMode == RadarClass::DigiSTT) // 2002-02-09 MODIFIED BY S.G. Added the radarMode check
             {
-                if (!byHim || detectionList[i].entity == byHim)   // 2002-02-10 ADDED BY S.G. If we are looking at a specific target, limit your search to it
+                if (!byHim or detectionList[i].entity == byHim)   // 2002-02-10 ADDED BY S.G. If we are looking at a specific target, limit your search to it
                 {
                     curSpike = detectionList[i].entity;
 
@@ -541,12 +541,12 @@ FalconEntity* VehRwrClass::CurSpike(FalconEntity *byHim, int *data)  // 2002-02-
         {
             if (detectionList[i].isLocked)   // If not even locked, don't bother...
             {
-                if (((*data & RWR_GET_STT) && detectionList[i].radarMode == RadarClass::DigiSTT) || // The lock is of the right type
+                if (((*data & RWR_GET_STT) && detectionList[i].radarMode == RadarClass::DigiSTT) or // The lock is of the right type
                     ((*data & RWR_GET_SAM) && detectionList[i].radarMode == RadarClass::DigiSAM) ||
                     ((*data & RWR_GET_TWS) && detectionList[i].radarMode == RadarClass::DigiTWS) ||
                     ((*data & RWR_GET_RWS) && detectionList[i].radarMode == RadarClass::DigiRWS))
                 {
-                    if (!byHim || detectionList[i].entity == byHim)   // 2002-02-10 ADDED BY S.G. If we are looking at a specific target, limit your search to it
+                    if (!byHim or detectionList[i].entity == byHim)   // 2002-02-10 ADDED BY S.G. If we are looking at a specific target, limit your search to it
                     {
                         curSpike = detectionList[i].entity;
 
@@ -556,7 +556,7 @@ FalconEntity* VehRwrClass::CurSpike(FalconEntity *byHim, int *data)  // 2002-02-
                             // If we passed a prioritisation mask and not of the right priority, just keep it for later in case we have none of that type
                             if (*data & RWR_PRIORITIZE_MASK)
                             {
-                                if (((*data & RWR_PRIORITIZE_STT) && detectionList[i].radarMode == RadarClass::DigiSTT) || // The lock is of the right priority, return it
+                                if (((*data & RWR_PRIORITIZE_STT) && detectionList[i].radarMode == RadarClass::DigiSTT) or // The lock is of the right priority, return it
                                     ((*data & RWR_PRIORITIZE_SAM) && detectionList[i].radarMode == RadarClass::DigiSAM) ||
                                     ((*data & RWR_PRIORITIZE_TWS) && detectionList[i].radarMode == RadarClass::DigiTWS) ||
                                     ((*data & RWR_PRIORITIZE_RWS) && detectionList[i].radarMode == RadarClass::DigiRWS))

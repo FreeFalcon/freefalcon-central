@@ -208,7 +208,7 @@ void AdjustForceRatios(void)
         }
 
         // Resupply to the team's supply level
-        if (u->Real() && (u->GetDomain() == DOMAIN_LAND || u->GetDomain() == DOMAIN_SEA))
+        if (u->Real() && (u->GetDomain() == DOMAIN_LAND or u->GetDomain() == DOMAIN_SEA))
             u->SetUnitSupply(TeamInfo[u->GetTeam()]->startStats.supplyLevel);
         else if (u->IsSquadron())
         {

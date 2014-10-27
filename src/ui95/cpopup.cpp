@@ -211,7 +211,7 @@ BOOL C_PopupList::AddItem(long ID, short Type, _TCHAR *Str, long ParentID)
             newitem->MenuIcon_->SetFlags(GetFlags());
             newitem->MenuIcon_->SetImage(MenuIconID_);
         }
-        else if ((Type == C_TYPE_RADIO || Type == C_TYPE_TOGGLE) && CheckIconID_)
+        else if ((Type == C_TYPE_RADIO or Type == C_TYPE_TOGGLE) && CheckIconID_)
         {
             newitem->CheckIcon_ = new O_Output;
             newitem->CheckIcon_->SetOwner(this);
@@ -515,11 +515,11 @@ long C_PopupList::CheckHotSpots(long relX, long relY)
     POPUPLIST *cur;
     short i;
 
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED))
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED))
         return(0);
 
-    if (relX < Parent_->ClientArea_[GetClient()].left || relX > Parent_->ClientArea_[GetClient()].right ||
-        relY < Parent_->ClientArea_[GetClient()].top || relY > Parent_->ClientArea_[GetClient()].bottom)
+    if (relX < Parent_->ClientArea_[GetClient()].left or relX > Parent_->ClientArea_[GetClient()].right ||
+        relY < Parent_->ClientArea_[GetClient()].top or relY > Parent_->ClientArea_[GetClient()].bottom)
         return(0);
 
     Selected_ = static_cast<short>((relY - 5) / gFontList->GetHeight(GetFont())); //!
@@ -598,8 +598,8 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
     POPUPLIST *cur;
     short i, item, w, h;
 
-    if (relX < Parent_->ClientArea_[GetClient()].left || relX > Parent_->ClientArea_[GetClient()].right ||
-        relY < Parent_->ClientArea_[GetClient()].top || relY > Parent_->ClientArea_[GetClient()].bottom)
+    if (relX < Parent_->ClientArea_[GetClient()].left or relX > Parent_->ClientArea_[GetClient()].right ||
+        relY < Parent_->ClientArea_[GetClient()].top or relY > Parent_->ClientArea_[GetClient()].bottom)
     {
         /* CloseSubMenus();
          CloseWindow();
@@ -697,7 +697,7 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
 
 void C_PopupList::Refresh()
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->update_  or_eq  C_DRAW_REFRESHALL;
@@ -746,7 +746,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     if (cur)
     {
-        if (cur->Type_ == C_TYPE_NOTHING || !(cur->flags_ & C_BIT_ENABLED))
+        if (cur->Type_ == C_TYPE_NOTHING or !(cur->flags_ & C_BIT_ENABLED))
             cur = NULL;
     }
 
@@ -791,7 +791,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
                 {
                     cur->MenuIcon_->Draw(surface, cliprect);
                 }
-                else if (cur->flags_ & C_BIT_ENABLED && (cur->Type_ == C_TYPE_TOGGLE || cur->Type_ == C_TYPE_RADIO) && cur->State_ && cur->CheckIcon_)
+                else if (cur->flags_ & C_BIT_ENABLED && (cur->Type_ == C_TYPE_TOGGLE or cur->Type_ == C_TYPE_RADIO) && cur->State_ && cur->CheckIcon_)
                 {
                     cur->CheckIcon_->Draw(surface, cliprect);
                 }

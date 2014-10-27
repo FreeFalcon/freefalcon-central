@@ -2341,7 +2341,7 @@ SfxClass::Start(void)
             acmiStatSfx.data.scale = scale;
             gACMIRec.StationarySfxRecord(&acmiStatSfx);
         }
-        else if (flags & SFX_MOVES || type == SFX_BURNING_PART)
+        else if (flags & SFX_MOVES or type == SFX_BURNING_PART)
         {
             acmiMoveSfx.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             acmiMoveSfx.data.type = type;
@@ -2640,7 +2640,7 @@ BOOL SfxClass::Exec()
 
     // special case smoking feature -- they continue to run until the
     // feature goes to sleep
-    if (type == SFX_SMOKING_FEATURE || type == SFX_STEAMING_FEATURE)
+    if (type == SFX_SMOKING_FEATURE or type == SFX_STEAMING_FEATURE)
     {
         // if we'vee got no base object return FALSE
         if (baseObj == NULL)
@@ -2743,7 +2743,7 @@ BOOL SfxClass::Exec()
             groundType = OTWDriver.GetGroundType(pos.x, pos.y);
         }
 
-        int coverage = (groundType == COVERAGE_WATER) || (groundType == COVERAGE_RIVER);
+        int coverage = (groundType == COVERAGE_WATER) or (groundType == COVERAGE_RIVER);
 
         int curtime = static_cast<int>(SIM_ELAPSED_SEC);
         int lastHit = hitGround;
@@ -2833,7 +2833,7 @@ BOOL SfxClass::Exec()
 
 
         // lived long enough?
-        if (curtime > timeToLive || hitGround)
+        if (curtime > timeToLive or hitGround)
         {
             RunSfxCompletion(hitGround, groundZ, groundType);
             // done with this effect
@@ -3081,7 +3081,7 @@ BOOL SfxClass::Exec()
         }
     }
 
-    int coverage = (groundType == COVERAGE_WATER) || (groundType == COVERAGE_RIVER);
+    int coverage = (groundType == COVERAGE_WATER) or (groundType == COVERAGE_RIVER);
 
     // does this object bounce?
     if (hitGround && (flags & (SFX_BOUNCES | SFX_BOUNCES_HARD)) && !coverage)
@@ -3117,7 +3117,7 @@ BOOL SfxClass::Exec()
 
 
     // lived long enough?
-    if (SIM_ELAPSED_SEC > timeToLive || hitGround)
+    if (SIM_ELAPSED_SEC > timeToLive or hitGround)
     {
         RunSfxCompletion(hitGround, groundZ, groundType);
 
@@ -3133,7 +3133,7 @@ BOOL SfxClass::Exec()
     }
 
     // do we need to move it?
-    if (!(flags & SFX_MOVES) || (flags & SFX_TIMER_FLAG))
+    if (!(flags & SFX_MOVES) or (flags & SFX_TIMER_FLAG))
     {
         Draw();
         return TRUE;
@@ -3197,11 +3197,11 @@ SfxClass::Draw(void)
 
     // do we need to move it?
     // this type has no drawing
-    if (type == SFX_SMOKING_FEATURE || type == SFX_STEAMING_FEATURE)
+    if (type == SFX_SMOKING_FEATURE or type == SFX_STEAMING_FEATURE)
         return TRUE;
 
     // this type has no drawing
-    if ((!(flags & SFX_F16CRASHLANDING) && !(flags & SFX_MOVES)) || (flags & SFX_TIMER_FLAG))
+    if ((!(flags & SFX_F16CRASHLANDING) && !(flags & SFX_MOVES)) or (flags & SFX_TIMER_FLAG))
     {
         if (obj2d)
         {
@@ -4682,7 +4682,7 @@ SfxClass::RunSecondarySfx(void)
 
         case SFX_GROUND_EXPLOSION:
 
-            if (secondaryCount == 9 || obj2d)
+            if (secondaryCount == 9 or obj2d)
             {
                 StartRandomDebris();
                 pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y);
@@ -5888,7 +5888,7 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
             pos.z -= 40.0f;
 
             //  water river is 1-2
-            if ((groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER))
+            if ((groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
             {
                 F4SoundFXSetPos(SFX_SPLASH, TRUE, pos.x, pos.y, pos.z, 1.0f);
                 /*
@@ -6300,7 +6300,7 @@ SfxClass::ACMIExec(float currTime)
     */
 
     // lived long enough?
-    if (currTime > timeToLive || hitGround)
+    if (currTime > timeToLive or hitGround)
     {
         // probably will need to remove from draw list here ...
         // done with this effect
@@ -6309,7 +6309,7 @@ SfxClass::ACMIExec(float currTime)
     }
 
     // do we need to move it?
-    if (!(flags & SFX_MOVES) || (flags & SFX_TIMER_FLAG))
+    if (!(flags & SFX_MOVES) or (flags & SFX_TIMER_FLAG))
         return TRUE;
 
     newvec = vec;
@@ -6558,7 +6558,7 @@ SfxClass::StartRandomDebris(void)
         }
         else if (type == SFX_SPARKS)
         {
-            if ((rand() & 1) || groundHit)
+            if ((rand() & 1) or groundHit)
             {}
             /*
             OTWDriver.AddSfxRequest(

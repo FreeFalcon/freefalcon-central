@@ -143,7 +143,7 @@ void RadarClass::SetEmitting(BOOL state)
 
 void RadarClass::SetDesiredTarget(SimObjectType* newTarget)
 {
-    if (!newTarget || newTarget == lockedTarget)
+    if (!newTarget or newTarget == lockedTarget)
     {
         return;
     }
@@ -254,7 +254,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
         iEl = (int)(target->localData->elFrom * RTD);
 
         // If we don't go inside this if body, we do not have ECM protection at all so 'S' isn't reduced
-        if ((iAz < 60 || iAz > 120) && iEl > -30 && iEl < 15)
+        if ((iAz < 60 or iAz > 120) && iEl > -30 && iEl < 15)
         {
             if (iAz < 60 && iAz >= 30)
                 ecmAngleFactor = (float)sqrt((60.0f * DTR - (float)fabs(target->localData->azFrom)) / (30.0f * DTR));
@@ -289,7 +289,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
 
     // 2001-04-05 ADDED BY S.G. SO DEAGGREGATED GROUND RADAR ARE ALSO AFFECTED BY SOJ
     // Only if we're a battalion or an AWAC... Need to check the platform's canpaign object because Missiles (may be others?) don't have any
-    if (platform->GetCampaignObject() && (platform->GetCampaignObject()->IsBattalion() || (platform->GetCampaignObject()->IsFlight() && platform->GetSType() == STYPE_UNIT_AWACS)))
+    if (platform->GetCampaignObject() && (platform->GetCampaignObject()->IsBattalion() or (platform->GetCampaignObject()->IsFlight() && platform->GetSType() == STYPE_UNIT_AWACS)))
     {
         CampBaseClass *campBaseObj;
 
@@ -422,7 +422,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
     }
 
     /* OTWDriver.GetAreaFloorAndCeiling (&bottom, &top);
-    if (target->BaseData()->ZPos() > top || platform->ZPos() > top) {
+    if (target->BaseData()->ZPos() > top or platform->ZPos() > top) {
      if ( !OTWDriver.CheckLOS( platform, target->BaseData() ) ) {
      S = 0.0f;
      }
@@ -438,13 +438,13 @@ void RadarClass::SendTrackMsg(SimObjectType* tgtptr, unsigned int trackType, uns
     ++count;
 
     if (
-        (tgtptr == NULL) || (tgtptr->BaseData() == NULL) ||
+        (tgtptr == NULL) or (tgtptr->BaseData() == NULL) ||
         (tgtptr->localData->lockmsgsend == Track_None && trackType == Track_Unlock) ||
         (tgtptr->localData->lockmsgsend == Track_Launch && trackType == Track_Lock) ||
         (!((SimBaseClass*)tgtptr->BaseData())->IsAirplane()) ||
         (
             tgtptr->localData->lockmsgsend == trackType && (
-                trackType != Track_Lock || tgtptr->localData->lastRadarMode == hardpoint
+                trackType != Track_Lock or tgtptr->localData->lastRadarMode == hardpoint
             )
         )
     )

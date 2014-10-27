@@ -107,7 +107,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
 
     // Just in case we don't have a list but we do have a locked target OR IF THE RADAR IS NOT IN AA MODE
     // I noticed the radar isn't really used in air to ground mode so we'll do just the lockedTarget then
-    if (!tmpPtr || mode != AA)
+    if (!tmpPtr or mode != AA)
         tmpPtr = lockedTarget;
 
     while (tmpPtr)
@@ -343,7 +343,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
 
     // No counter measures deployed by campaign things
     // countermeasures only work when tracking (for now)
-    if (!lockedTarget || !target || !target->BaseData()->IsSim())
+    if (!lockedTarget or !target or !target->BaseData()->IsSim())
     {
         return lockedTarget;
     }
@@ -446,7 +446,7 @@ void RadarDigiClass::SetMode(RadarMode cmd)
 {
     mode = cmd;
 
-    if (cmd == GM || cmd == GMT || cmd == SEA)
+    if (cmd == GM or cmd == GMT or cmd == SEA)
     {
         // This keeps it from pinging RWRs
         platform->SetRdrRng(0.0F);
@@ -473,7 +473,7 @@ int RadarDigiClass::IsAG(void)
 
     // 2000-09-30 MODIFIED BY S.G. AG MODE CAN BE GM, GMT OR SEA, NOT JUST GM
     // if (mode == GM)
-    if (mode == GM || mode == GMT || mode == SEA)
+    if (mode == GM or mode == GMT or mode == SEA)
         // 2000-10-04 MODIFIED BY S.G. NEED TO KNOW WHICH MODE WE ARE IN
         //     retval = TRUE;
         retval = mode;

@@ -347,7 +347,7 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
 
     SetWorld(rot, pos);
 
-    if ((operation & OP_WARP) || (scale != 1.f))
+    if ((operation & OP_WARP) or (scale != 1.f))
     {
         Pmatrix tempM;
         float cx, cy, cz;
@@ -410,7 +410,7 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
         if (g_bSlowButSafe && F4IsBadCodePtr((FARPROC) objInst->ParentObject)) // JB 010220 CTD (too much CPU)
             CurrentLOD = 0; // JB 010220 CTD
         else // JB 010220 CTD
-            if (objInst->id < 0 || objInst->id >= TheObjectListLength || objInst->TextureSet < 0) // JB 010705 CTD second try
+            if (objInst->id < 0 or objInst->id >= TheObjectListLength or objInst->TextureSet < 0) // JB 010705 CTD second try
             {
                 ShiAssert(FALSE);
                 CurrentLOD = 0;

@@ -56,14 +56,14 @@ void AircraftClass::DoWeapons()
 
     // Guns
     //MI
-    if (!g_bRealisticAvionics || isDigital)
+    if (!g_bRealisticAvionics or isDigital)
     {
         fireFlag = fireGun && !OnGround() && (Sms->MasterArm() == SMSBaseClass::Arm);
     }
     else
     {
         //Gun can only be fired if it's selected as actual weapon
-        fireFlag = !OnGround() && (Sms->MasterArm() == SMSBaseClass::Arm) && (GunFire || fireGun);
+        fireFlag = !OnGround() && (Sms->MasterArm() == SMSBaseClass::Arm) && (GunFire or fireGun);
     }
 
     if (Guns)
@@ -144,7 +144,7 @@ void AircraftClass::DoWeapons()
     if ((this->autopilotType == CombatAP)) // FRB
         isPlayer = false;
 
-    if (!SimDriver.RunningInstantAction() || gNumWeaponsInAir < gMaxIAWeaponsFired)
+    if (!SimDriver.RunningInstantAction() or gNumWeaponsInAir < gMaxIAWeaponsFired)
     {
         wasPostDrop = FCC->postDrop;
 
@@ -179,7 +179,7 @@ void AircraftClass::DoWeapons()
                         // dereference our previous missile before setting another one
 
                         // Only if we are a digital entity
-                        if (isDigital || !isPlayer) // FRB
+                        if (isDigital or !isPlayer) // FRB
                         {
                             // If we currenly have a missile in our variable, dereference it first
                             if (DBrain()->missileFiredEntity)

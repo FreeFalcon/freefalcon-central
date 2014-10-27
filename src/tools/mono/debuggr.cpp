@@ -628,7 +628,7 @@ void DisplayDebugCharacter(int num, int x, int y)
     if (graphicsMode != DEBUGGER_GRAPHICS_MODE)
         return;
 
-    if (num < -4 || num > MAX_CHAR_IDX)
+    if (num < -4 or num > MAX_CHAR_IDX)
         num = MAX_CHAR_IDX;
 
     data = CharList[num];
@@ -880,7 +880,7 @@ void WriteDebugPixel(int x, int y)
     int the_bit;
     char *cur_val;
 
-    if (x < 0 || y < 0 || x > (int)DebugScreenWidth || y > (int)DebugScreenHeight)
+    if (x < 0 or y < 0 or x > (int)DebugScreenWidth or y > (int)DebugScreenHeight)
         return;
 
     the_byte = 0x2000 * (y % 4) + 90 * (y / 4) + x / 8;

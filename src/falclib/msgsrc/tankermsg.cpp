@@ -54,7 +54,7 @@ int FalconTankerMessage::Process(uchar autodisp)
         case RequestFuel:
             if (thirstyOne)
             {
-                if (SimDriver.GetPlayerEntity() != thirstyOne || PlayerOptions.PlayerRadioVoice)
+                if (SimDriver.GetPlayerEntity() != thirstyOne or PlayerOptions.PlayerRadioVoice)
                     SendCallToPlane(theTanker, thirstyOne, rcREQUESTFUEL, FalconLocalSession);
 
                 VuListIterator cit(thirstyOne->GetCampaignObject()->GetComponents());
@@ -85,7 +85,7 @@ int FalconTankerMessage::Process(uchar autodisp)
                 if (theTanker)
                     thirstyOne->DBrain()->SetTanker(theTanker->Id());
 
-                if (SimDriver.GetPlayerEntity() != thirstyOne || PlayerOptions.PlayerRadioVoice)
+                if (SimDriver.GetPlayerEntity() != thirstyOne or PlayerOptions.PlayerRadioVoice)
                     SendCallToPlane(theTanker, thirstyOne, rcREADYTOFUEL, FalconLocalSession);
 
                 if (theTanker)
@@ -103,7 +103,7 @@ int FalconTankerMessage::Process(uchar autodisp)
                 {
                     thirstyOne->DBrain()->ClearATCFlag(DigitalBrain::NeedToRefuel);
 
-                    if (SimDriver.GetPlayerEntity() != thirstyOne || PlayerOptions.PlayerRadioVoice)
+                    if (SimDriver.GetPlayerEntity() != thirstyOne or PlayerOptions.PlayerRadioVoice)
                         SendCallToPlane(theTanker, thirstyOne, rcDONEFUELING, FalconLocalSession);
 
                     if (theTanker)
@@ -132,7 +132,7 @@ int FalconTankerMessage::Process(uchar autodisp)
                 theTanker->af->SetFlag(AirframeClass::Refueling);
                 theTanker->af->SetForcedConditions(theTanker->GetVt(), theTanker->Yaw());
 
-                if (SimDriver.GetPlayerEntity() != thirstyOne || PlayerOptions.PlayerRadioVoice)
+                if (SimDriver.GetPlayerEntity() != thirstyOne or PlayerOptions.PlayerRadioVoice)
                     SendCallToPlane(thirstyOne, theTanker, rcCONTACT, FalconLocalSession);
             }
 

@@ -101,7 +101,7 @@ int FalconDamageMessage::Process(uchar autodisp)
             // KCK: Currently Apply Damage calls register hit (sometimes multiple times). Theoretically,
             // it should be possible to call it here, like we do for sim entities - but this is a task
             // for another time.
-            // if (TheCampaign.MissionEvaluator && (!theEntity || !theEntity->IsSetFalcFlag(FEC_INVULNERABLE)))
+            // if (TheCampaign.MissionEvaluator && (!theEntity or !theEntity->IsSetFalcFlag(FEC_INVULNERABLE)))
             // TheCampaign.MissionEvaluator->RegisterHit(this);
         }
     }

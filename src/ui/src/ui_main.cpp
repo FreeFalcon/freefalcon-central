@@ -563,7 +563,7 @@ __forceinline void Encrypt(uchar startkey, uchar *buffer, long length)
     uchar *ptr;
     uchar nextkey;
 
-    if (!buffer || length <= 0)
+    if (!buffer or length <= 0)
         return;
 
     idx = 0;
@@ -587,7 +587,7 @@ void Decrypt(uchar startkey, uchar *buffer, long length)
     uchar *ptr;
     uchar nextkey;
 
-    if (!buffer || length <= 0)
+    if (!buffer or length <= 0)
         return;
 
     idx = 0;
@@ -1467,7 +1467,7 @@ void PlayCampaignMusic() // This function should figure out whether we are happy
 
 void PlayThatFunkyMusicWhiteBoy()
 {
-    if (!gMusic || !MusicStopped)
+    if (!gMusic or !MusicStopped)
         return;
 
     // if(GetCurrentTime() < (MusicStopped + 60000l))
@@ -1536,7 +1536,7 @@ void UI_LoadSkyWeatherData()
      while (i<NumberOfSkyColors) //for (int i=0; i<NumberOfSkyColors; i++)
      {
      fgets(file,1024,fp);
-     if (file[0] == '\r' || file[0] == '#' || file[0] == ';' || file[0] == '\n')
+     if (file[0] == '\r' or file[0] == '#' or file[0] == ';' or file[0] == '\n')
      continue;
 
      strcpy(name,file);
@@ -1575,7 +1575,7 @@ void UI_LoadSkyWeatherData()
     // for (i=0; i<NumWeatherPatterns; i++)
      {
      fgets(file,1024,fp);
-     if (file[0] == '\r' || file[0] == '#' || file[0] == ';' || file[0] == '\n')
+     if (file[0] == '\r' or file[0] == '#' or file[0] == ';' or file[0] == '\n')
      continue;
      strcpy(weatherPatternData[i].name,file);
      fgets(file,1024,fp);

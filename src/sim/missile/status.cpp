@@ -258,7 +258,7 @@ void MissileClass::SetStatus(void)
 //// detonate when the target is within blast range (like JSOW)....
 //   //Cobra test  since ricept might not get updated enough, lets add range as well
 //   // COBRA - RED - SARH BUG - removed, causing unklocked missiles to explode as 'range' is 0 for them
-//   else if ( (ricept*ricept <= lethalRadiusSqrd/* || range * range < lethalRadiusSqrd*/) && !bombwarhead)
+//   else if ( (ricept*ricept <= lethalRadiusSqrd/* or range * range < lethalRadiusSqrd*/) && !bombwarhead)
 //   {
 //   // Marco Edit - check for our missile arming delay
 //   if (wc)
@@ -295,7 +295,7 @@ void MissileClass::SetStatus(void)
 //// bring missile to an end. When we have missiles going high ballistic, intercept them at max altitude
 //// in case of lethalRadius, they might apply a bit of proximity damage to the target...
 // else if (runTime > 1.50f && (flags & SensorLostLock) && !targetPtr && ((g_nMissileFix & 0x20) &&
-// range * range < lethalRadiusSqrd || (wc && wc->MaxAlt && (fabs(z) > fabsf(wc->MaxAlt*1000.0f))))) //JAM 27Sep03 - Should be fabsf
+// range * range < lethalRadiusSqrd or (wc && wc->MaxAlt && (fabs(z) > fabsf(wc->MaxAlt*1000.0f))))) //JAM 27Sep03 - Should be fabsf
 // {
 // done = FalconMissileEndMessage::NotDone; //ExceedFOV;//Cobra we can't use Missed because it is out of range
 //
@@ -312,7 +312,7 @@ void MissileClass::SetStatus(void)
 //   /*-------------------*/
 //// 2002-03-28 MN added range^2 check, as ricept is not updated anymore if we lost our target.
 //// Fixes floating missiles on the ground
-//   else if ((flags & ClosestApprch) && (ricept*ricept > lethalRadiusSqrd || ((g_nMissileFix & 0x02) && range*range > lethalRadiusSqrd)))
+//   else if ((flags & ClosestApprch) && (ricept*ricept > lethalRadiusSqrd or ((g_nMissileFix & 0x02) && range*range > lethalRadiusSqrd)))
 //   {
 //      //done = FalconMissileEndMessage::Missed;
 // done = FalconMissileEndMessage::ExceedFOV;//Cobra we can't use Missed because it is out of range

@@ -712,7 +712,7 @@ int FalconSessionEntity::InSessionBubble(FalconEntity* ent, float bubble_multipl
     float ent_bubble_range;
     int i;
 
-    if (CameraCount() == 0 || bubble_multiplier < 0.01F)
+    if (CameraCount() == 0 or bubble_multiplier < 0.01F)
     {
         // No camera - so we have no bubble, or a rediculously small multiplier
         return FALSE;
@@ -779,7 +779,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     }
 
     // Copy in new data
-    if (!name || strcmp(name, tmpSess->name) != 0)
+    if (!name or strcmp(name, tmpSess->name) != 0)
     {
         dirty  or_eq  0x0001;
         size = _tcslen(tmpSess->name);
@@ -790,7 +790,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
         name[size] = name[_NAME_LEN_] = 0;
     }
 
-    if (!callSign || strcmp(callSign, tmpSess->callSign) != 0)
+    if (!callSign or strcmp(callSign, tmpSess->callSign) != 0)
     {
         dirty  or_eq  0x0002;
         size = _tcslen(tmpSess->callSign);
@@ -995,7 +995,7 @@ void FalconSessionEntity::UpdatePlayer(void)
 // sfr fine interest stuff
 bool FalconSessionEntity::AddToFineInterest(FalconEntity *entity, bool silent)
 {
-    if ((entity == NULL) || (fineInterestList.size() == FALCSESS_MAX_FINE_INTEREST))
+    if ((entity == NULL) or (fineInterestList.size() == FALCSESS_MAX_FINE_INTEREST))
     {
         return false;
     }

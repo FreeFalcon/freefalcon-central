@@ -115,7 +115,7 @@ void UpdateTeamName(long team)
     TREELIST *item;
     C_Text *txt;
 
-    if (!gATOAll || team >= NUM_TEAMS || !TeamInfo[team])
+    if (!gATOAll or team >= NUM_TEAMS or !TeamInfo[team])
         return;
 
     item = gATOAll->Find(team | 0x20000000);
@@ -384,7 +384,7 @@ C_ATO_Flight *BuildATOFlightInfo(Flight fl)
             {
                 lbox->AddItem(i, C_TYPE_ITEM, MissStr[i]);
 
-                if (!added || i == mission)
+                if (!added or i == mission)
                 {
                     lbox->SetValue(i);
                     added = 1;
@@ -628,7 +628,7 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
 
     mistype = MainFlt->GetUnitMission();
 
-    if (mistype == AMIS_ABORT || mistype == AMIS_ALERT)
+    if (mistype == AMIS_ABORT or mistype == AMIS_ALERT)
         return(NULL);
 
     if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
@@ -710,7 +710,7 @@ C_ATO_Flight *AddFlighttoATO(Flight flt)
             return(NULL);
     }
 
-    if (flt->GetUnitMission() == AMIS_ALERT || flt->GetUnitMission() == AMIS_ABORT)
+    if (flt->GetUnitMission() == AMIS_ALERT or flt->GetUnitMission() == AMIS_ABORT)
         return(NULL);
 
     if (!flt->GetUnitParent())
@@ -773,7 +773,7 @@ C_ATO_Flight *AddtoATO(Flight flt)
             return(NULL);
     }
 
-    if (flt->GetUnitMission() == AMIS_ALERT || flt->GetUnitMission() == AMIS_ABORT)
+    if (flt->GetUnitMission() == AMIS_ALERT or flt->GetUnitMission() == AMIS_ABORT)
         return(NULL);
 
     if (!flt->GetUnitParent())
@@ -787,7 +787,7 @@ C_ATO_Flight *AddtoATO(Flight flt)
 
     mistype = MainFlt->GetUnitMission();
 
-    if (mistype == AMIS_ABORT || mistype == AMIS_ALERT)
+    if (mistype == AMIS_ABORT or mistype == AMIS_ALERT)
         return(NULL);
 
     atoitem = BuildATOFlightInfo(flt);
@@ -896,7 +896,7 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
 
     mistype = MainFlt->GetUnitMission();
 
-    if (mistype == AMIS_ABORT || mistype == AMIS_ALERT)
+    if (mistype == AMIS_ABORT or mistype == AMIS_ALERT)
         return(NULL);
 
     if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)

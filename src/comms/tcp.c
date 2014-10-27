@@ -705,7 +705,7 @@ static void RequestConnection(LPVOID cvoid)
             endtime = (clock() - starttime) / 1000;
 
             /* keep waiting */
-            if (error == WSAEWOULDBLOCK || error == WSAEALREADY)
+            if (error == WSAEWOULDBLOCK or error == WSAEALREADY)
             {
                 if (endtime  < c->timeoutsecs)
                 {

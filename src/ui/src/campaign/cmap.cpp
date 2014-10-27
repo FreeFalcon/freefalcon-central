@@ -96,7 +96,7 @@ C_Map::C_Map()
 
 C_Map::~C_Map()
 {
-    if (Map_ || DrawWindow_ || SmallMapCtrl_)
+    if (Map_ or DrawWindow_ or SmallMapCtrl_)
         Cleanup();
 }
 
@@ -321,7 +321,7 @@ void C_Map::CalculateDrawingParams()
     float ratio;
     long pixels;
 
-    if (Map_ == NULL || DrawWindow_ == NULL)
+    if (Map_ == NULL or DrawWindow_ == NULL)
         return;
 
     ratio = (float)(DrawRect_.bottom - DrawRect_.top) / (float)(DrawRect_.right - DrawRect_.left);
@@ -375,7 +375,7 @@ void C_Map::CalculateDrawingParams()
     short x, y;
     TheCampaign.GetBullseyeLocation(&x, &y);
 
-    if (x != BullsEyeX_ || y != BullsEyeY_)
+    if (x != BullsEyeX_ or y != BullsEyeY_)
     {
         SetBullsEye(x * FEET_PER_KM, (TheCampaign.TheaterSizeY - y) * FEET_PER_KM);
         DrawMap();
@@ -404,7 +404,7 @@ THREAT_LIST *C_Map::AddThreat(CampEntity ent)
         radar_short = ent->GetElectronicDetectionRange(LowAir);
         radar_long = ent->GetElectronicDetectionRange(Air);
 
-        if (radar_short || radar_long)
+        if (radar_short or radar_long)
         {
 #ifdef USE_SH_POOLS
             threat = (THREAT_LIST *)MemAllocPtr(UI_Pools[UI_GENERAL_POOL], sizeof(THREAT_LIST), FALSE);
@@ -455,7 +455,7 @@ THREAT_LIST *C_Map::AddThreat(CampEntity ent)
         sam_short = ent->GetAproxWeaponRange(LowAir);
         sam_long = ent->GetAproxWeaponRange(Air);
 
-        if (radar_short || radar_long || sam_long || sam_short)
+        if (radar_short or radar_long or sam_long or sam_short)
         {
             // 2001-06-22 ADDED BY S.G. IF EMITTING, DISPLAY THE RADAR THREATS
             if (((BattalionClass *)ent)->class_data->RadarVehicle < 16)
@@ -552,7 +552,7 @@ MAPICONLIST *C_Map::AddObjective(Objective Obj)
                 radar_short = static_cast<float>(Obj->GetElectronicDetectionRange(LowAir));
                 radar_long = static_cast<float>(Obj->GetElectronicDetectionRange(Air));
 
-                if (radar_short || radar_long)
+                if (radar_short or radar_long)
                 {
 #ifdef USE_SH_POOLS
                     detect = (DETECTOR *)MemAllocPtr(UI_Pools[UI_GENERAL_POOL], sizeof(DETECTOR), FALSE);
@@ -736,7 +736,7 @@ MAPICONLIST *C_Map::AddUnit(Unit u)
                     sam_short = static_cast<float>(u->GetAproxWeaponRange(LowAir));
                     sam_long = static_cast<float>(u->GetAproxWeaponRange(Air));
 
-                    if (radar_short || radar_long || sam_short || sam_long)
+                    if (radar_short or radar_long or sam_short or sam_long)
                     {
 #ifdef USE_SH_POOLS
                         detect = (DETECTOR *)MemAllocPtr(UI_Pools[UI_GENERAL_POOL], sizeof(DETECTOR), FALSE);
@@ -1021,7 +1021,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
 
     if (unit->IsFlight() && !unit->Final()) return;
 
-    if (!CurWP_ || !CurWPZ_)
+    if (!CurWP_ or !CurWPZ_)
         return;
 
     airwps = static_cast<short>(unit->IsFlight());
@@ -1034,7 +1034,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
             firstwp = firstwp->GetPrevWP();
     }
 
-    if (!firstwp || airwps)
+    if (!firstwp or airwps)
         firstwp = unit->GetFirstUnitWP();
 
     if (!firstwp) return;
@@ -1078,7 +1078,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
     }
     else
     {
-        if (firstwp == unit->GetCurrentUnitWP() || !airwps)
+        if (firstwp == unit->GetCurrentUnitWP() or !airwps)
         {
             CurWP_->SetFlagBitOn(C_BIT_DRAGABLE);
             CurWPZ_->SetFlagBitOn(C_BIT_DRAGABLE);
@@ -1097,16 +1097,16 @@ void C_Map::BuildCurrentWPList(Unit unit)
     {
         wp->GetLocation(&x, &y, &z);
 
-        if (x < CurWPArea_.left || CurWPArea_.left < 0)
+        if (x < CurWPArea_.left or CurWPArea_.left < 0)
             CurWPArea_.left = static_cast<long>(x);
 
-        if (x > CurWPArea_.right || CurWPArea_.right < 0)
+        if (x > CurWPArea_.right or CurWPArea_.right < 0)
             CurWPArea_.right = static_cast<long>(x);
 
-        if (y < CurWPArea_.top || CurWPArea_.top < 0)
+        if (y < CurWPArea_.top or CurWPArea_.top < 0)
             CurWPArea_.top = static_cast<long>(y);
 
-        if (y > CurWPArea_.bottom || CurWPArea_.bottom < 0)
+        if (y > CurWPArea_.bottom or CurWPArea_.bottom < 0)
             CurWPArea_.bottom = static_cast<long>(y);
 
         if (wp->GetWPFlags() & WPF_TARGET)
@@ -1121,7 +1121,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
                 wpl->Flags &= compl C_BIT_ENABLED;
             }
         }
-        else if ((wp->GetWPAction() == WP_TAKEOFF) || (wp->GetWPAction() == WP_LAND))
+        else if ((wp->GetWPAction() == WP_TAKEOFF) or (wp->GetWPAction() == WP_LAND))
         {
             // Set 2d Waypoint
             wpl = CurWP_->AddWaypointToList(0x20000000 + campID + i, 0, HOME_BASE_CUR, HOME_BASE_CUR, HOME_BASE_CUR, y, maxy - x, FALSE);
@@ -1287,7 +1287,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
 
             if (airwps)
             {
-                if (wp->GetWPAction() == WP_LAND || wp->GetWPAction() == WP_TAKEOFF)
+                if (wp->GetWPAction() == WP_LAND or wp->GetWPAction() == WP_TAKEOFF)
                     ZDrag = FALSE;
                 else
                     ZDrag = TRUE;
@@ -1445,7 +1445,7 @@ void C_Map::BuildWPList(C_Waypoint *wplist, C_Waypoint *, Unit unit)
             wp = wp->GetPrevWP();
     }
 
-    if (!wp || airwps)
+    if (!wp or airwps)
         wp = unit->GetFirstUnitWP();
 
     if (!wp) return;
@@ -1853,7 +1853,7 @@ void C_Map::FitFlightPlan()
     long cx, cy;
     long w, h;
 
-    if (CurWPArea_.left < 0 || CurWPArea_.top < 0 || CurWPArea_.right < 0 || CurWPArea_.bottom < 0)
+    if (CurWPArea_.left < 0 or CurWPArea_.top < 0 or CurWPArea_.right < 0 or CurWPArea_.bottom < 0)
         return;
 
     w = (CurWPArea_.right - CurWPArea_.left) / 1000; // 1100 = ft -> 500m * 1.64 (allow for icons to fit on map also)
@@ -2424,7 +2424,7 @@ void C_Map::MoveCenter(long x, long y)
 {
     float distance;
 
-    if (Map_ == NULL || DrawWindow_ == NULL)
+    if (Map_ == NULL or DrawWindow_ == NULL)
         return;
 
     if (!x && !y)
@@ -3010,7 +3010,7 @@ void C_Map::DrawMap()
         // 2002-04-16 MN update the bullseye location when it changed
         TheCampaign.GetBullseyeLocation(&x, &y);
 
-        if (x != BullsEyeX_ || y != BullsEyeY_)
+        if (x != BullsEyeX_ or y != BullsEyeY_)
             SetBullsEye(x * FEET_PER_KM, (TheCampaign.TheaterSizeY - y) * FEET_PER_KM);
 
         if (flags_ & I_NEED_TO_DRAW_MAP)

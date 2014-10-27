@@ -422,7 +422,7 @@ int SimBaseClass::Wake()
 
     // Create a drawable object
     // Note:  Our child classes could have already created our drawable for us.
-    if (!drawPointer || drawPointer == (DrawableObject*)0xbaadf00d) // FRB
+    if (!drawPointer or drawPointer == (DrawableObject*)0xbaadf00d) // FRB
     {
         drawPointer = NULL; // FRB - Just in case it is not initialized (= 0xbaadf00d)
         //START_PROFILE("CREATEVISUAL");
@@ -981,8 +981,8 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
             rangeSquare = dx * dx + dy * dy + dz * dz;
 
             if (rangeSquare < 6.0f * NM_TO_FT * 6.0f * NM_TO_FT && // Range is below 6 NM AND
-                (SimDriver.RunningInstantAction() || // We're in instant action (in thise case rangeSquare will be 0 because it's the player) OR
-                 ((SimVehicleClass *)speaker)->Brain()->SkillLevel() == 4 || // Skill of wingman is ace OR
+                (SimDriver.RunningInstantAction() or // We're in instant action (in thise case rangeSquare will be 0 because it's the player) OR
+                 ((SimVehicleClass *)speaker)->Brain()->SkillLevel() == 4 or // Skill of wingman is ace OR
                  (((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode() != DigitalBrain::GunsJinkMode && // Wingman not defensive
                   ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode()  != DigitalBrain::MissileDefeatMode &&
                   ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode()  != DigitalBrain::DefensiveModes)))
@@ -1069,9 +1069,9 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
     }
 
     // If it's not an airplane or the target is the player, no need to do our fancy tests...
-    if (!IsAirplane() || this == SimDriver.GetPlayerEntity())
+    if (!IsAirplane() or this == SimDriver.GetPlayerEntity())
     {
-        if (incomingMissile[0] && (missile == NULL || incomingMissile[0]->IsDead()))
+        if (incomingMissile[0] && (missile == NULL or incomingMissile[0]->IsDead()))
         {
             VuDeReferenceEntity(incomingMissile[0]);
             incomingMissile[0] = NULL;
@@ -1095,7 +1095,7 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
         }
 
         // then the incoming missile spot, this one also check is missile is NULL, then it uses what's in our holding spot for the incoming. That's why we tested it first
-        if (incomingMissile[0] && (missile == NULL || incomingMissile[0]->IsDead()))
+        if (incomingMissile[0] && (missile == NULL or incomingMissile[0]->IsDead()))
         {
             VuDeReferenceEntity(incomingMissile[0]);
 
@@ -1591,7 +1591,7 @@ void SimBaseClass::SetPowerOutput(float powerOutput)
     // specialData.engineHeatOutput = powerOutput;
     // END OF ADDED SECTION
 
-    if ((diff < -g_nMPPowerXmitThreshold) || (diff > g_nMPPowerXmitThreshold))
+    if ((diff < -g_nMPPowerXmitThreshold) or (diff > g_nMPPowerXmitThreshold))
     {
         specialData.powerOutputNet = static_cast<uchar>(value);
         // 2000-11-17 ADDED BY S.G. SO OTHER VEHICLE USES THE RPM IN THEIR ENGINE TEMP

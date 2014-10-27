@@ -306,7 +306,7 @@ void AirframeClass::Aerodynamics(void)
         }
 
         //Stall Horn
-        if ((vcas - stallSpeed) < 3.0f || (auxaeroData->criticalAOA - alpha) < 3.0f)
+        if ((vcas - stallSpeed) < 3.0f or (auxaeroData->criticalAOA - alpha) < 3.0f)
         {
             SetFlag(LowSpdHorn);
             platform->SoundPos.Sfx(auxaeroData->sndLowSpeed);
@@ -316,12 +316,12 @@ void AirframeClass::Aerodynamics(void)
             ClearFlag(LowSpdHorn);
         }
 
-        if (stallMode == FlatSpin || vt == 0.0f)
+        if (stallMode == FlatSpin or vt == 0.0f)
         {
             lift = 0.0f;
         }
 
-        else if (vcas < stallSpeed || alpha > auxaeroData->criticalAOA)
+        else if (vcas < stallSpeed or alpha > auxaeroData->criticalAOA)
         {
             float pscmd = 0.0f;
             lift = min(0.0f, cl * 0.5f) * (vcas / stallSpeed);
@@ -345,7 +345,7 @@ void AirframeClass::Aerodynamics(void)
     //MPS Old stuff
     else
     {
-        if (stallMode == FlatSpin || vt == 0.0F)
+        if (stallMode == FlatSpin or vt == 0.0F)
         {
             lift = 0.0F;
         }

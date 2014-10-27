@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////
 // Falcon4.cfg stuff
 
+#include <cISO646>
 #include <stdio.h>
 #include <windows.h>
 #include "../../SIM/INCLUDE/Phyconst.h" //JAM 19Sep03
@@ -1314,7 +1315,7 @@ NextLine:
 
     while (fgets(strLine, sizeof(strLine) / sizeof(strLine[0]), file))
     {
-        if ((strlen(strLine) <= 1) || (strstr(strLine, "//") == strLine))
+        if ((strlen(strLine) <= 1) or (strstr(strLine, "//") == strLine))
             continue;
 
         if (sscanf(strLine, "set %s \"%s\"", strID, &strVal) == 2)

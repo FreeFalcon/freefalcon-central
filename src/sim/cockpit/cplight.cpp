@@ -83,7 +83,7 @@ void CPLight::DisplayBlit(void)
 
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag || !SimDriver.GetPlayerEntity())
+    if (!mDirtyFlag or !SimDriver.GetPlayerEntity())
     {
         return;
     }
@@ -162,7 +162,7 @@ void CPLight::DisplayBlit(void)
         mState = TRUE;
     }
 
-    if (mState || mPersistant)
+    if (mState or mPersistant)
     {
         if (mTransparencyType == CPTRANSPARENT)
         {
@@ -231,7 +231,7 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
 {
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag || !SimDriver.GetPlayerEntity())
+    if (!mDirtyFlag or !SimDriver.GetPlayerEntity())
     {
         return;
     }
@@ -320,7 +320,7 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
         mState = TRUE;
     }
 
-    if (mState || mPersistant)
+    if (mState or mPersistant)
     {
         if (mTransparencyType == CPTRANSPARENT)
         {

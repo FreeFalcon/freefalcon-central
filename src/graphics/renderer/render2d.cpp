@@ -5,6 +5,7 @@
 
     This class provides 2D drawing functions.
 \***************************************************************************/
+#include <cISO646>
 #include <math.h>
 #include "falclib/include/debuggr.h"
 #include "Image.h"
@@ -635,7 +636,7 @@ void Render2D::Load2DFontSet()
         //This should ensure that old setups arent broken if scaling is disabled
 
         // RV - Biker - Check for widescreen resolutions
-        if (DisplayOptions.DispWidth == 848 || DisplayOptions.DispWidth == 1440 || DisplayOptions.DispWidth == 1680 || DisplayOptions.DispWidth == 1920)
+        if (DisplayOptions.DispWidth == 848 or DisplayOptions.DispWidth == 1440 or DisplayOptions.DispWidth == 1680 or DisplayOptions.DispWidth == 1920)
         {
             switch (DisplayOptions.DispWidth)
             {
@@ -891,7 +892,7 @@ void Render2D::Load3DFontSet()
     else
     {
         // RV - Biker - Check for widescreen resolutions
-        if (DisplayOptions.DispWidth == 848 || DisplayOptions.DispWidth == 1440 || DisplayOptions.DispWidth == 1680 || DisplayOptions.DispWidth == 1920)
+        if (DisplayOptions.DispWidth == 848 or DisplayOptions.DispWidth == 1440 or DisplayOptions.DispWidth == 1680 or DisplayOptions.DispWidth == 1920)
         {
             switch (DisplayOptions.DispWidth)
             {
@@ -1198,7 +1199,7 @@ int FontSet::ReadFontMetrics(int index, char*fileName) // JPO return status
 
             str = strstr(str, "\n");
 
-            while ((str) && ((*str == '\n') || (*str == '\r')))
+            while ((str) && ((*str == '\n') or (*str == '\r')))
             {
                 str ++;
             }

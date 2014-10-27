@@ -62,7 +62,7 @@ VirtualDisplay* WpnMfdDrawable::GetDisplay(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC || !playerAC->Sms ||
+    if (!playerAC or !playerAC->Sms ||
         !playerAC->Sms->curWeapon)
         return privateDisplay;
 
@@ -129,13 +129,13 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     display = newDisplay;
     HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
 
-    if (!theRadar || !pFCC || !self || !Sms)
+    if (!theRadar or !pFCC or !self or !Sms)
     {
         ShiWarning("Oh Oh shouldn't be here without a radar or FCC or player or SMS!");
         return;
     }
 
-    if (!g_bRealisticAvionics || !Sms->curWeapon || (Sms->curWeaponType != wtAgm65 && Sms->curWeaponType != wtAgm88))
+    if (!g_bRealisticAvionics or !Sms->curWeapon or (Sms->curWeaponType != wtAgm65 && Sms->curWeaponType != wtAgm88))
     {
         OffMode(display);
         return;
@@ -164,7 +164,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
         else
             display->SetColor(0xff00ff00);
 
-        if (mavDisplay && (!((MissileClass*)Sms->GetCurrentWeapon())->Covered || playerAC->AutopilotType() == AircraftClass::CombatAP) && Sms->MavCoolTimer <= 0.0F)
+        if (mavDisplay && (!((MissileClass*)Sms->GetCurrentWeapon())->Covered or playerAC->AutopilotType() == AircraftClass::CombatAP) && Sms->MavCoolTimer <= 0.0F)
         {
             mavDisplay->SetIntensity(GetIntensity());
             mavDisplay->viewPoint = viewPoint;
@@ -181,7 +181,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     }
 
     // RV-I-Hawk - No do for HARM WPN in HTSSubmode
-    if (Sms->curWeaponType == wtAgm65 || (Sms->curWeaponType == wtAgm88 && harmPod->GetSubMode() != HarmTargetingPod::HarmModeChooser))
+    if (Sms->curWeaponType == wtAgm65 or (Sms->curWeaponType == wtAgm88 && harmPod->GetSubMode() != HarmTargetingPod::HarmModeChooser))
     {
         // FRB - B&W display
         if ((g_bGreyMFD) && (!bNVGmode))
@@ -330,7 +330,7 @@ void WpnMfdDrawable::PushButton(int whichButton, int whichMFD)
                 break;
 
             case 19:
-                if ((g_bGreyMFD) || (!g_bGreyScaleMFD))
+                if ((g_bGreyMFD) or (!g_bGreyScaleMFD))
                     g_bGreyMFD = false;
                 else
                     g_bGreyMFD = true;

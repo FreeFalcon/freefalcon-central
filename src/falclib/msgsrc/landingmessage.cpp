@@ -38,7 +38,7 @@ int FalconLandingMessage::Process(uchar autodisp)
     GridIndex x, y;
     int status;
 
-    if (!Entity() || autodisp)
+    if (!Entity() or autodisp)
         return -1;
 
     // Check for friendly territory

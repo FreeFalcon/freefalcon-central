@@ -23,7 +23,7 @@ void DigitalBrain::GunsEngageCheck(void)
 {
     float angleLimit;
 
-    if ((!mpActionFlags[AI_ENGAGE_TARGET] != AI_AIR_TARGET && missionClass != AAMission && !missionComplete) || curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
+    if ((!mpActionFlags[AI_ENGAGE_TARGET] != AI_AIR_TARGET && missionClass != AAMission && !missionComplete) or curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
         angleLimit = 15.0f * DTR;
     else
         angleLimit = 35.0f * DTR;
@@ -60,7 +60,7 @@ void DigitalBrain::GunsEngageCheck(void)
             // JB !(self->YawDelta() > 0 && targetPtr->BaseData()->YawDelta() < 0 ||// not nose to nose
             // JB self->YawDelta() < 0 && targetPtr->BaseData()->YawDelta() > 0) &&
             ((AircraftClass *)self)->Guns->numRoundsRemaining > 0 &&
-            (targetPtr->BaseData()->IsAirplane() || targetPtr->BaseData()->IsHelicopter()) // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
+            (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsHelicopter()) // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
             //&& targetData->ata < 135.0f * DTR)
             && targetData->ata < 1.25 * angleLimit)
         {

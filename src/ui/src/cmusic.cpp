@@ -25,7 +25,7 @@ static WAVEFORMATEX stereo =
 
 void gMusicCallback(SOUNDSTREAM *Stream, int MessageID)
 {
-    if (!Stream || !gMusic)
+    if (!Stream or !gMusic)
         return;
 
     switch (MessageID)
@@ -111,7 +111,7 @@ C_Music::C_Music()
 
 C_Music::~C_Music()
 {
-    if (StreamID_[0] || StreamID_[1] || Music_)
+    if (StreamID_[0] or StreamID_[1] or Music_)
         Cleanup();
 }
 
@@ -130,7 +130,7 @@ void C_Music::Cleanup()
 {
     int i, j;
 
-    if (Sound_ && StreamID_[0] != SND_NO_HANDLE || StreamID_[1] != SND_NO_HANDLE)
+    if (Sound_ && StreamID_[0] != SND_NO_HANDLE or StreamID_[1] != SND_NO_HANDLE)
     {
         RemoveStream();
         StreamID_[0] = SND_NO_HANDLE;
@@ -193,7 +193,7 @@ void C_Music::Play(SOUND_RES *snd)
 
     if (Sound_)
     {
-        if (StreamID_[0] == SND_NO_HANDLE || StreamID_[1] == SND_NO_HANDLE)
+        if (StreamID_[0] == SND_NO_HANDLE or StreamID_[1] == SND_NO_HANDLE)
         {
             CreateStream();
             SetMessageCB(gMusicCallback);

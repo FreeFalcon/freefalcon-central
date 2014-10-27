@@ -104,7 +104,7 @@ void BlankMfdDrawable::PushButton(int whichButton, int whichMFD)
         }
 
         // Check other MFD if needed;
-        if (nextMode != MFDClass::MfdOff && (otherMfd < 0 || MfdDisplay[otherMfd]->mode != nextMode))
+        if (nextMode != MFDClass::MfdOff && (otherMfd < 0 or MfdDisplay[otherMfd]->mode != nextMode))
             MfdDisplay[whichMFD]->SetNewMode(nextMode);
     }
 }

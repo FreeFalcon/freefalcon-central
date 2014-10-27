@@ -88,10 +88,10 @@ void ICPClass::CNISwitch(int mode)
         //DEST
         else if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == ONE_BUTTON)
         {
-            if ((IsICPSet(ICPClass::EDIT_LAT) || IsICPSet(ICPClass::EDIT_LONG)) && Manual_Input)
+            if ((IsICPSet(ICPClass::EDIT_LAT) or IsICPSet(ICPClass::EDIT_LONG)) && Manual_Input)
                 return;
 
-            if (OA1 || OA2)
+            if (OA1 or OA2)
             {
                 if (Manual_Input)
                     return;
@@ -210,7 +210,7 @@ void ICPClass::CNISwitch(int mode)
                     SetICPFlag(ICPClass::EDIT_JAMMER);
                 }
             }
-            else if (PGMChaff || PGMFlare)
+            else if (PGMChaff or PGMFlare)
             {
                 if (Manual_Input)
                     return;
@@ -339,10 +339,10 @@ void ICPClass::CNISwitch(int mode)
         //DEST
         else if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == ONE_BUTTON)
         {
-            if ((IsICPSet(ICPClass::EDIT_LAT) || IsICPSet(ICPClass::EDIT_LONG)) && Manual_Input)
+            if ((IsICPSet(ICPClass::EDIT_LAT) or IsICPSet(ICPClass::EDIT_LONG)) && Manual_Input)
                 return;
 
-            if (OA1 || OA2)
+            if (OA1 or OA2)
             {
                 if (Manual_Input)
                     return;
@@ -459,7 +459,7 @@ void ICPClass::CNISwitch(int mode)
                     SetICPFlag(ICPClass::CHAFF_BINGO);
                 }
             }
-            else if (PGMChaff || PGMFlare)
+            else if (PGMChaff or PGMFlare)
             {
                 if (Manual_Input)
                     return;

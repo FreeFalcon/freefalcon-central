@@ -1736,7 +1736,7 @@ void IMAGE_RSC::Blit(SCREEN *surface, long sx, long sy, long sw, long sh, long d
     if (!Owner->Data_)
         return;
 
-    if (sx >= Header->w || sy >= Header->h)
+    if (sx >= Header->w or sy >= Header->h)
         return;
 
     if (!sx && !sy && sw >= Header->w && sh >= Header->h)
@@ -1804,7 +1804,7 @@ void IMAGE_RSC::Blit(SCREEN *surface, long sx, long sy, long sw, long sh, long d
     if ((sy + sh) > Header->h)
         sw = Header->h - sy;
 
-    if (sw < 1 || sh < 1)
+    if (sw < 1 or sh < 1)
         return;
 
     soff = sy * Header->w + sx;
@@ -1862,7 +1862,7 @@ void IMAGE_RSC::Blend(SCREEN *surface, long sx, long sy, long sw, long sh, long 
     if (!Owner->Data_)
         return;
 
-    if (sx >= Header->w || sy >= Header->h)
+    if (sx >= Header->w or sy >= Header->h)
         return;
 
     if (!sx && !sy && sw >= Header->w && sh >= Header->h)
@@ -1913,7 +1913,7 @@ void IMAGE_RSC::Blend(SCREEN *surface, long sx, long sy, long sw, long sh, long 
     if ((sy + sh) > Header->h)
         sw = Header->h - sy;
 
-    if (sw < 1 || sh < 1)
+    if (sw < 1 or sh < 1)
         return;
 
     soff = sy * Header->w + sx;

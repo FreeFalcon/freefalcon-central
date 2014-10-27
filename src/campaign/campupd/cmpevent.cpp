@@ -86,7 +86,7 @@ EventClass::EventClass(FILE* file)
 
 EventClass::EventClass(uchar **stream, long *rem)
 {
-    if ((rem <= 0) || (!stream))
+    if ((rem <= 0) or (!stream))
     {
         return;
     }
@@ -142,7 +142,7 @@ void EventClass::SetEvent(int status)
 
 int CheckTriggers(char *scenario)
 {
-    if (!FalconLocalGame || !FalconLocalGame->IsLocal())
+    if (!FalconLocalGame or !FalconLocalGame->IsLocal())
         return 0;
 
     if (FalconLocalSession->GetTeam() == 255)
@@ -416,7 +416,7 @@ void DisposeCampaignEvents(void)
 {
     int i;
 
-    if (!CampEvents || !CE_Events)
+    if (!CampEvents or !CE_Events)
         return;
 
     for (i = 0; i < CE_Events; i++)
@@ -532,7 +532,7 @@ int ReadScriptedTriggerFile(char* filename)
 
                     i = atoi(sptr);
 
-                    if (i > CE_Events || !CampEvents[i]->HasFired())
+                    if (i > CE_Events or !CampEvents[i]->HasFired())
                         stack_active[curr_stack] = 0;
                     else
                         stack_active[curr_stack] = 1;
@@ -1129,7 +1129,7 @@ int ReadScriptedTriggerFile(char* filename)
                  TheCampaign.Tempo = atoi (sptr);
                 */
             }
-            else if (strncmp(token, "#TOTAL_EVENTS", 13) == 0 || strncmp(token, "#SET", 4) == 0 || strcmp(token, "#ENDINIT") == 0)
+            else if (strncmp(token, "#TOTAL_EVENTS", 13) == 0 or strncmp(token, "#SET", 4) == 0 or strcmp(token, "#ENDINIT") == 0)
             {
                 // KCK: For initialization only.
             }

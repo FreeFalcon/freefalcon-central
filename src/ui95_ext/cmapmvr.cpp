@@ -44,7 +44,7 @@ void C_MapMover::Cleanup()
 
 long C_MapMover::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
         return(0);
 
     if (relX >= (GetX()) && relX <= (GetX() + GetW()) && relY >= (GetY()) && relY <= (GetY() + GetH()))
@@ -91,7 +91,7 @@ BOOL C_MapMover::Process(long, short HitType)
 
 void C_MapMover::Refresh()
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1, GetY() + GetH() + 1, GetFlags(), GetClient());

@@ -46,7 +46,7 @@ void HeliBrain::MissileEngage(void)
     float xDot, yDot, zDot;
     float tof, rMax;
 
-    if (!targetPtr || !curMissile)
+    if (!targetPtr or !curMissile)
     {
         //   MonoPrint( "HELO BRAIN Exiting Missile Engange 3\n" );
         return;

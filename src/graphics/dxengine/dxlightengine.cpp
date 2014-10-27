@@ -252,7 +252,7 @@ void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
 #endif
 #endif
 
-            if (ax - dPhi > (laX + lPhy) || ax + dPhi < (laX - lPhy) || ay - dPhi > (laY + lPhy) || ay + dPhi < (laY - lPhy))
+            if (ax - dPhi > (laX + lPhy) or ax + dPhi < (laX - lPhy) or ay - dPhi > (laY + lPhy) or ay + dPhi < (laY - lPhy))
             {
                 idx++;
                 continue;

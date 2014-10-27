@@ -82,7 +82,7 @@ void CPMisc::StepMasterCautionLight(void)
     BOOL masterCautionState;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC == NULL || !playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC == NULL or !playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         return;
     }

@@ -490,7 +490,7 @@ void C_Window::AddUpdateRect(long x1, long y1, long x2, long y2)
 {
     long i, use;
 
-    if (x1 >= x2 || y1 >= y2)
+    if (x1 >= x2 or y1 >= y2)
         return;
 
     use = -1;
@@ -539,7 +539,7 @@ long C_Window::SetCheckedUpdateRect(long x1, long y1, long x2, long y2)
         {
             if (rectflag_[i])
             {
-                if (x1 >= rectlist_[i].right || x2 <= rectlist_[i].left || y1 >= rectlist_[i].bottom || y2 <= rectlist_[i].top)
+                if (x1 >= rectlist_[i].right or x2 <= rectlist_[i].left or y1 >= rectlist_[i].bottom or y2 <= rectlist_[i].top)
                 {
                     // rects don't intersect
                     continue;
@@ -676,7 +676,7 @@ void C_Window::SetUpdateRect(long x1, long y1, long x2, long y2, long flags, lon
         x2 += VX_[client];
         y2 += VY_[client];
 
-        if (x1 > ClientArea_[client].right || y1 > ClientArea_[client].bottom || x2 < ClientArea_[client].left || y2 < ClientArea_[client].top)
+        if (x1 > ClientArea_[client].right or y1 > ClientArea_[client].bottom or x2 < ClientArea_[client].left or y2 < ClientArea_[client].top)
             return;
 
         // original code
@@ -690,7 +690,7 @@ void C_Window::SetUpdateRect(long x1, long y1, long x2, long y2, long flags, lon
     }
     else
     {
-        if (x1 > GetW() || y1 > GetH() || x2 < 0 || y2 < 0)
+        if (x1 > GetW() or y1 > GetH() or x2 < 0 or y2 < 0)
             return;
 
         if (x1 < 0) x1 = 0;
@@ -735,7 +735,7 @@ void C_Window::ClearCheckedUpdateRect(long x1, long y1, long x2, long y2)
         {
             if (rectflag_[i])
             {
-                if (x1 >= rectlist_[i].right || x2 <= rectlist_[i].left || y1 >= rectlist_[i].bottom || y2 <= rectlist_[i].top)
+                if (x1 >= rectlist_[i].right or x2 <= rectlist_[i].left or y1 >= rectlist_[i].bottom or y2 <= rectlist_[i].top)
                 {
                     // rects don't intersect
                     continue;
@@ -878,7 +878,7 @@ void C_Window::ClearUpdateRect(long x1, long y1, long x2, long y2)
 {
     short i;
 
-    if (x1 > GetW() || x2 < 0 || y1 > GetH() || y2 < 0 || !rectcount_)
+    if (x1 > GetW() or x2 < 0 or y1 > GetH() or y2 < 0 or !rectcount_)
         return;
 
     if (x1 <= 0 && y1 <= 0 && x2 >= GetW() && y2 >= GetH())
@@ -1016,7 +1016,7 @@ void C_Window::AddControl(C_Base *NewControl)
     if (!NewControl)
         return;
 
-    //F4Assert(NewControl->GetID() >0 || NewControl->GetID() == C_DONT_CARE);
+    //F4Assert(NewControl->GetID() >0 or NewControl->GetID() == C_DONT_CARE);
 
     if (NewControl->GetID() > 0)
     {
@@ -1081,7 +1081,7 @@ void C_Window::RemoveControl(long ID)
     CONTROLLIST *cur;
     F4CSECTIONHANDLE* Leave;
 
-    if (Controls_ == NULL || ID == C_DONT_CARE)
+    if (Controls_ == NULL or ID == C_DONT_CARE)
         return;
 
     Leave = UI_Enter(this);
@@ -1107,7 +1107,7 @@ CONTROLLIST *C_Window::RemoveControl(CONTROLLIST *ctrl)
     CONTROLLIST *retval;
     F4CSECTIONHANDLE* Leave;
 
-    if (!Controls_ || !ctrl)
+    if (!Controls_ or !ctrl)
         return(NULL);
 
     Leave = UI_Enter(this);
@@ -1592,7 +1592,7 @@ void C_Window::Blend(WORD *front, UI95_RECT *frect, short fwidth, WORD *back, UI
     long fidx, bidx, didx;
     long fidxstart, bidxstart, didxstart;
 
-    if (!front || !frect || !fwidth || !back || !brect || !bwidth || !dest || !drect || !dwidth)
+    if (!front or !frect or !fwidth or !back or !brect or !bwidth or !dest or !drect or !dwidth)
         return;
 
     fidxstart = frect->top * fwidth;
@@ -1634,7 +1634,7 @@ void C_Window::BlendTransparent(WORD Mask, WORD *front, UI95_RECT *frect, short 
     long fidx, bidx, didx;
     long fidxstart, bidxstart, didxstart;
 
-    if (!front || !frect || !fwidth || !back || !brect || !bwidth || !dest || !drect || !dwidth)
+    if (!front or !frect or !fwidth or !back or !brect or !bwidth or !dest or !drect or !dwidth)
         return;
 
     fidxstart = frect->top * fwidth;
@@ -1682,7 +1682,7 @@ void C_Window::Translucency(WORD *front, UI95_RECT *frect, short fwidth, WORD *d
     long fidx, fidxstart;
     long didx, didxstart;
 
-    if (!front || !frect || !fwidth  || !dest || !drect || !dwidth)
+    if (!front or !frect or !fwidth  or !dest or !drect or !dwidth)
         return;
 
     fidxstart = frect->top * fwidth;
@@ -2262,7 +2262,7 @@ BOOL C_Window::ClipLine(long *x1, long *y1, long *x2, long *y2, UI95_RECT *clip)
     if (!flag1 && !flag2) // return, because both points are inside clip rect
         return(TRUE);
 
-    if (((flag1 & flag2) & LINE_CLIP_LEFT) || // If both points are on the same side of the clip rect... don't draw
+    if (((flag1 & flag2) & LINE_CLIP_LEFT) or // If both points are on the same side of the clip rect... don't draw
         ((flag1 & flag2) & LINE_CLIP_TOP) ||
         ((flag1 & flag2) & LINE_CLIP_RIGHT) ||
         ((flag1 & flag2) & LINE_CLIP_BOTTOM))
@@ -2342,10 +2342,10 @@ BOOL C_Window::ClipLine(long *x1, long *y1, long *x2, long *y2, UI95_RECT *clip)
             *y2 = clip->bottom;
         }
 
-        if ((*x1 < clip->left || *x2 < clip->left) || (*x1 > clip->right || *x2 > clip->right))
+        if ((*x1 < clip->left or *x2 < clip->left) or (*x1 > clip->right or *x2 > clip->right))
             return(FALSE);
 
-        if ((*y1 < clip->top || *y2 < clip->top) || (*y1 > clip->bottom || *y2 > clip->bottom))
+        if ((*y1 < clip->top or *y2 < clip->top) or (*y1 > clip->bottom or *y2 > clip->bottom))
             return(FALSE);
     }
 

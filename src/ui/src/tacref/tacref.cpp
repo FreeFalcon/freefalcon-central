@@ -45,7 +45,7 @@ TacticalReference::TacticalReference()
 
 TacticalReference::~TacticalReference()
 {
-    if (Index_ || Data_)
+    if (Index_ or Data_)
         Cleanup();
 }
 

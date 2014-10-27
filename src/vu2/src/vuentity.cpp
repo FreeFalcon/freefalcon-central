@@ -546,11 +546,11 @@ int VuEntity::Save(VU_BYTE** stream)
  vuDatabase->Remove(this);
  VuMessageQueue::FlushAllQueues();
 
- if (vuAssignmentId < vuLowWrapNumber || vuAssignmentId > vuHighWrapNumber)
+ if (vuAssignmentId < vuLowWrapNumber or vuAssignmentId > vuHighWrapNumber)
  vuAssignmentId = vuLowWrapNumber; // cover wrap
  share_.id_.num_ = vuAssignmentId++;
 
- while (vuDatabase->Find(Id()) || vuAntiDB->Find(Id()) || Id() == other->Id())
+ while (vuDatabase->Find(Id()) or vuAntiDB->Find(Id()) or Id() == other->Id())
  share_.id_.num_ = vuAssignmentId++;
 
  SetVuState(VU_MEM_ACTIVE);
@@ -716,7 +716,7 @@ VU_ERRCODE VuEntity::Handle(VuFullUpdateEvent* event)
 
 VU_ERRCODE VuEntity::Handle(VuPositionUpdateEvent* event)
 {
-    if ((driver_ == NULL) || (driver_->Handle(event) <= 0))
+    if ((driver_ == NULL) or (driver_->Handle(event) <= 0))
     {
         SetPosition(event->x_, event->y_, event->z_);
         SetDelta(event->dx_, event->dy_, event->dz_);

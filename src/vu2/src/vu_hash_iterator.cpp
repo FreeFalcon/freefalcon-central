@@ -28,7 +28,7 @@ VuEntity *VuHashIterator::GetFirst()
 {
     VuHashTable *h = static_cast<VuHashTable*>(collection_);
 
-    if (!h || h->capacity_ <= 0)
+    if (!h or h->capacity_ <= 0)
     {
         return NULL;
     }
@@ -183,7 +183,7 @@ VuEntity *VuHashIterator::GetNext(VuFilter* filter)
     {
         ret = GetNext();
 
-        if (ret == NULL || filter->Test(ret))
+        if (ret == NULL or filter->Test(ret))
         {
             return ret;
         }

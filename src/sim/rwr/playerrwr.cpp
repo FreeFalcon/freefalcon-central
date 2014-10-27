@@ -227,7 +227,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
             // 2001-03-06 MODIFIED BY S.G. SO OBJECTIVES
             // ARE ALWAYS CHECKED, WHETHER OR NOT THEY ARE AGGREGATED...
             //curEmitter->IsAggregate() &&                    // A campaign thing
-            //(curEmitter->IsAggregate() || curEmitter->IsObjective()) &&
+            //(curEmitter->IsAggregate() or curEmitter->IsObjective()) &&
             // A campaign thing or an objective (sim objectives have no sensor routine
             // so they can never make it to the contact list by themself)
             (
@@ -331,7 +331,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
             {
                 // 2000-09-03 S.G. SO ARH DON'T GET A LAUNCH WARNING
                 // JB 010118 added check of detectionList[i].entity
-                if (detectionList[i].entity && (!((MissileClass *)detectionList[i].entity)->IsMissile() || ((MissileClass *)detectionList[i].entity)->GetSeekerType() != SensorClass::Radar))
+                if (detectionList[i].entity && (!((MissileClass *)detectionList[i].entity)->IsMissile() or ((MissileClass *)detectionList[i].entity)->GetSeekerType() != SensorClass::Radar))
                 {
                     // END OF ADDED SECTION (PLUS INDENTATION OF NEXT LINE)
                     missileActivity = TRUE;
@@ -495,7 +495,7 @@ void PlayerRwrClass::Display(VirtualDisplay *activeDisplay)
             mode = ((BattalionClass*)((SimBaseClass*)detectionList[i].entity)->GetCampaignObject())->GetRadarMode();
         else mode = ((SimBaseClass*)detectionList[i].entity)->GetRadarMode();
 
-        if (mode != FEC_RADAR_OFF || Element->isLocked)
+        if (mode != FEC_RADAR_OFF or Element->isLocked)
         {
             drawn++;
             DrawContact(&detectionList[i]);
@@ -671,7 +671,7 @@ void PlayerRwrClass::DoAudio(void)   // 2002-02-20 S.G. Just flagging it as not 
 
 
 
-        if (detectionList[i].playIt || (!detectionList[i].cantPlay && (!detectionList[i].entity->IsSim() || !detectionList[i].entity->IsDead())))
+        if (detectionList[i].playIt or (!detectionList[i].cantPlay && (!detectionList[i].entity->IsSim() or !detectionList[i].entity->IsDead())))
         {
             if ((detectionList[i].missileActivity) ||
                 (detectionList[i].playIt) ||
@@ -765,11 +765,11 @@ void PlayerRwrClass::DoAudio(DetectListElement *record)
 
     // JB 010727 RP5 RWR
     // 2001-02-15 ADDED BY S.G. SO Dead stuff don't ping us... If where not a sim object or if a sim, if it's not dead, go on...
-    if (record->playIt || (!record->cantPlay && (!record->entity->IsSim() || !record->entity->IsDead())))
+    if (record->playIt or (!record->cantPlay && (!record->entity->IsSim() or !record->entity->IsDead())))
     {
         // Play all launches and the selected emitter
         if (//(record->missileActivity) ||
-            //(record->playIt) || // JB 010727 RP5 RWR 2001-02-17 MODIFIED BY S.G. SO pressing HANDOFF plays the sound
+            //(record->playIt) or // JB 010727 RP5 RWR 2001-02-17 MODIFIED BY S.G. SO pressing HANDOFF plays the sound
             (record->newDetection) ||
             (record->selected &&
              //((record->isLocked)) ||
@@ -791,7 +791,7 @@ void PlayerRwrClass::DoAudio(DetectListElement *record)
                 //F4SoundFXSetDist( record->radarData->RWRsound, FALSE, 0.0f, 1.0f );// PLAY THE TRACKER
                 PlayRWRSoundFX(record->radarData->RWRsound, FALSE, 0.0f, 1.0f);  // PLAY THE TRACKER
             }
-            else if (mode == FEC_RADAR_SEARCH_1 || mode == FEC_RADAR_SEARCH_2 || mode == FEC_RADAR_SEARCH_3)
+            else if (mode == FEC_RADAR_SEARCH_1 or mode == FEC_RADAR_SEARCH_2 or mode == FEC_RADAR_SEARCH_3)
             {
                 // 2002-03-01 Modified by MN - if symbol is "S" = Searchradar, and we don't show them, don't play them either
                 if (mode == FEC_RADAR_SEARCH_1)
@@ -829,7 +829,7 @@ void PlayerRwrClass::DoAudio(DetectListElement *record)
             else if (mode == FEC_RADAR_GUIDE)
                 if (radarfileData->Rwrsoundguide) sound = radarfileData->Rwrsoundguide;
 
-            if (mode != FEC_RADAR_OFF || record->isLocked)
+            if (mode != FEC_RADAR_OFF or record->isLocked)
             {
                 if (!sound)  sound = record->radarData->RWRsound;
 

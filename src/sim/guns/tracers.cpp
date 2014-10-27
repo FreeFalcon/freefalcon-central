@@ -16,7 +16,7 @@ void GunClass::InitTracers()
     float rgbScale;
     // Tpoint pos;
 
-    if (!(typeOfGun == GUN_TRACER || typeOfGun == GUN_TRACER_BALL))
+    if (!(typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL))
         return;
 
     // Tracers
@@ -65,7 +65,7 @@ void GunClass::UpdateTracers(int firing)
     GunTracerType *bulptr;
 
     // JB 010108 Update is being called without init
-    if (tracers == NULL || trailState == NULL)
+    if (tracers == NULL or trailState == NULL)
         return;
 
     // JB 010108
@@ -149,7 +149,7 @@ void GunClass::CleanupTracers()
 {
     int i;
 
-    if (!(typeOfGun == GUN_TRACER || typeOfGun == GUN_TRACER_BALL))
+    if (!(typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL))
     {
         FireShell(NULL);
         return;

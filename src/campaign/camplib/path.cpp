@@ -119,7 +119,7 @@ int GetGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, in
 #endif
 
     // Should be able to drop this. Assume not true in future.
-    if (x < 0 || y < 0 || xx < 0 || yy < 0 || x >= Map_Max_X || y >= Map_Max_Y || xx >= Map_Max_X || yy >= Map_Max_Y)
+    if (x < 0 or y < 0 or xx < 0 or yy < 0 or x >= Map_Max_X or y >= Map_Max_Y or xx >= Map_Max_X or yy >= Map_Max_Y)
     {
         p->ClearPath();
         return -1;
@@ -279,7 +279,7 @@ costtype CostToArrive(Unit u, int orders, GridIndex x, GridIndex y, Objective t)
 
     o = FindNearestObjective(x, y, NULL);
 
-    if (!o || !t || o == t)
+    if (!o or !t or o == t)
         return 0;
 
     moveTeam = u->GetTeam();
@@ -333,7 +333,7 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
 
                     while (u)
                     {
-                        if (u->IsBrigade() || u->GetDomain() != DOMAIN_LAND || u->GetTeam() != o->GetTeam())
+                        if (u->IsBrigade() or u->GetDomain() != DOMAIN_LAND or u->GetTeam() != o->GetTeam())
                         {
                             u = GetNextUnit(&uit);
                             continue;
@@ -346,7 +346,7 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
                         float dist = sqrt(dx * dx + dy * dy);
 
                         // RV - Biker - Check for engineer type maybe we need some more check
-                        if (u->GetSType() == STYPE_UNIT_ENGINEER || u->GetSType() == STYPE_WHEELED_ENGINEER)
+                        if (u->GetSType() == STYPE_UNIT_ENGINEER or u->GetSType() == STYPE_WHEELED_ENGINEER)
                         {
                             if (dist <= 1.0f && u->GetTeam() == o->GetTeam())
                             {
@@ -358,7 +358,7 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
                         u = GetNextUnit(&uit);
                     }
 
-                    if (o && (o->GetType() == TYPE_PORT || (o->GetType() == TYPE_BRIDGE && (o->GetObjectiveStatus() > 0 || flags & PATH_ENGINEER))))
+                    if (o && (o->GetType() == TYPE_PORT or (o->GetType() == TYPE_BRIDGE && (o->GetObjectiveStatus() > 0 or flags & PATH_ENGINEER))))
                         cost = 0.5F;
 
                     if (o && o->GetType() == TYPE_BRIDGE && o->GetObjectiveStatus() < 30 && assignedEng)
@@ -384,7 +384,7 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
                 {
                     o = FindNearestObjective(x, y, NULL);
 
-                    if (o->GetType() == TYPE_PORT || (o->GetType() == TYPE_BRIDGE && (o->GetObjectiveStatus() > 0 || flags & PATH_ENGINEER)))
+                    if (o->GetType() == TYPE_PORT or (o->GetType() == TYPE_BRIDGE && (o->GetObjectiveStatus() > 0 or flags & PATH_ENGINEER)))
                         cost = 0.5F;
                 }
                 else if (flags & PATH_RAILOK && GetRail((GridIndex)(x - dx[h]), (GridIndex)(y - dy[h]))) // Use rails when we're allowed to
@@ -398,7 +398,7 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
             {
                 o = FindNearestObjective(x, y, NULL);
 
-                if (o && (o->GetType() == TYPE_PORT || o->GetType() == TYPE_BEACH) && o->GetObjectiveStatus() > 0)
+                if (o && (o->GetType() == TYPE_PORT or o->GetType() == TYPE_BEACH) && o->GetObjectiveStatus() > 0)
                     cost = 1.0F;
             }
 
@@ -510,7 +510,7 @@ void GetNeighborCoord(AS_DataClass* asd, void* o, void* t)
         x = (GridIndex)(ox + step * dx[d]);
         y = (GridIndex)(oy + step * dy[d]);
 
-        if (x < 0 || x >= Map_Max_X || y < 0 || y >= Map_Max_Y)
+        if (x < 0 or x >= Map_Max_X or y < 0 or y >= Map_Max_Y)
         {
             asd->ASFillNode(d, &cost, &cost, -1, NULL);
             continue;
@@ -674,7 +674,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
         }
 
         // RV - Biker - Search for engineers then build pontoon bridge
-        if ((MOVE_GROUND(type) || type == NoMove) && n->GetType() == TYPE_BRIDGE && !n->GetObjectiveStatus() && !(flags & PATH_ENGINEER))
+        if ((MOVE_GROUND(type) or type == NoMove) && n->GetType() == TYPE_BRIDGE && !n->GetObjectiveStatus() && !(flags & PATH_ENGINEER))
         {
             // Bridge is broke, can't go here.
             // But let's send engineers, if we havn't already
@@ -692,7 +692,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
 
             while (u)
             {
-                if (u->IsBrigade() || u->GetDomain() != DOMAIN_LAND || u->GetTeam() != o->GetTeam())
+                if (u->IsBrigade() or u->GetDomain() != DOMAIN_LAND or u->GetTeam() != o->GetTeam())
                 {
                     u = GetNextUnit(&uit);
                     continue;
@@ -705,7 +705,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
                 float dist = sqrt(dx * dx + dy * dy);
 
                 // RV - Biker - Check for engineer type maybe we need some more check
-                if (u->GetSType() == STYPE_UNIT_ENGINEER || u->GetSType() == STYPE_WHEELED_ENGINEER)
+                if (u->GetSType() == STYPE_UNIT_ENGINEER or u->GetSType() == STYPE_WHEELED_ENGINEER)
                 {
                     if (dist <= 1.0f && u->GetTeam() == n->GetTeam())
                     {

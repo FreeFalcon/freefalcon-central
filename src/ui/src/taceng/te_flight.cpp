@@ -230,7 +230,7 @@ int IsValidTarget(Team team, int mission, CampEntity target)
     if (mission < 0)
         return FALSE;
 
-    if (!target && (MissionData[mission].target == AMIS_TAR_LOCATION || MissionData[mission].target == AMIS_TAR_NONE))
+    if (!target && (MissionData[mission].target == AMIS_TAR_LOCATION or MissionData[mission].target == AMIS_TAR_NONE))
         return TRUE;
     else if (target && target->IsUnit() && ((Unit)target)->Real() && !target->IsSquadron() && MissionData[mission].target == AMIS_TAR_UNIT)
     {
@@ -293,7 +293,7 @@ int IsValidTarget(Team team, int mission, CampEntity target)
 
                 // Enemy airbases, airstrips, radar, & CCC
                 if (GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE) &&
-                    (target->GetType() == TYPE_AIRBASE || target->GetType() == TYPE_AIRSTRIP || target->GetType() == TYPE_RADAR || target->GetType() == TYPE_COM_CONTROL))
+                    (target->GetType() == TYPE_AIRBASE or target->GetType() == TYPE_AIRSTRIP or target->GetType() == TYPE_RADAR or target->GetType() == TYPE_COM_CONTROL))
                     return TRUE;
 
                 break;
@@ -302,8 +302,8 @@ int IsValidTarget(Team team, int mission, CampEntity target)
 
                 // Enemy bridges, production facilities, ports, depots, etc.
                 if (GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE) &&
-                    (target->GetType() == TYPE_BRIDGE || target->GetType() == TYPE_CHEMICAL || target->GetType() == TYPE_DEPOT || target->GetType() == TYPE_FACTORY ||
-                     target->GetType() == TYPE_NUCLEAR || target->GetType() == TYPE_PORT || target->GetType() == TYPE_POWERPLANT || target->GetType() == TYPE_RAIL_TERMINAL ||
+                    (target->GetType() == TYPE_BRIDGE or target->GetType() == TYPE_CHEMICAL or target->GetType() == TYPE_DEPOT or target->GetType() == TYPE_FACTORY ||
+                     target->GetType() == TYPE_NUCLEAR or target->GetType() == TYPE_PORT or target->GetType() == TYPE_POWERPLANT or target->GetType() == TYPE_RAIL_TERMINAL ||
                      target->GetType() == TYPE_REFINERY))
                     return TRUE;
 
@@ -392,11 +392,11 @@ int GetMissionFromTarget(Team team, int dindex, CampEntity target)
     {
         if (!GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE))
             target = NULL;
-        else if ((target->GetType() == TYPE_AIRBASE || target->GetType() == TYPE_AIRSTRIP || target->GetType() == TYPE_RADAR || target->GetType() == TYPE_COM_CONTROL) &&
+        else if ((target->GetType() == TYPE_AIRBASE or target->GetType() == TYPE_AIRSTRIP or target->GetType() == TYPE_RADAR or target->GetType() == TYPE_COM_CONTROL) &&
                  IsValidMission(dindex, AMIS_OCASTRIKE))
             return AMIS_OCASTRIKE;
-        else if ((target->GetType() == TYPE_BRIDGE || target->GetType() == TYPE_CHEMICAL || target->GetType() == TYPE_DEPOT || target->GetType() == TYPE_FACTORY ||
-                  target->GetType() == TYPE_NUCLEAR || target->GetType() == TYPE_PORT || target->GetType() == TYPE_POWERPLANT || target->GetType() == TYPE_RAIL_TERMINAL ||
+        else if ((target->GetType() == TYPE_BRIDGE or target->GetType() == TYPE_CHEMICAL or target->GetType() == TYPE_DEPOT or target->GetType() == TYPE_FACTORY ||
+                  target->GetType() == TYPE_NUCLEAR or target->GetType() == TYPE_PORT or target->GetType() == TYPE_POWERPLANT or target->GetType() == TYPE_RAIL_TERMINAL ||
                   target->GetType() == TYPE_REFINERY) &&
                  IsValidMission(dindex, AMIS_INTSTRIKE))
             return AMIS_INTSTRIKE;

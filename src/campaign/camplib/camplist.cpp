@@ -45,7 +45,7 @@ UnitFilter::UnitFilter(uchar p, uchar r, ushort h, uchar a)
 
 VU_BOOL UnitFilter::Test(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] || (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
         return FALSE;
 
     if (parent && !((Unit)e)->Parent())
@@ -67,7 +67,7 @@ VU_BOOL UnitFilter::Test(VuEntity *e)
 
 VU_BOOL UnitFilter::RemoveTest(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] || (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
         return FALSE;
 
     if (parent && !((Unit)e)->Parent())
@@ -96,7 +96,7 @@ AirUnitFilter::AirUnitFilter(uchar p, uchar r, ushort h)
 
 VU_BOOL AirUnitFilter::Test(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] || (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
         return FALSE;
 
     if (((Unit)e)->GetDomain() != DOMAIN_AIR)
@@ -119,7 +119,7 @@ VU_BOOL AirUnitFilter::Test(VuEntity *e)
 
 VU_BOOL AirUnitFilter::RemoveTest(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] || (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
         return FALSE;
 
     if (((Unit)e)->GetDomain() != DOMAIN_AIR)
@@ -149,7 +149,7 @@ GroundUnitFilter::GroundUnitFilter(uchar p, uchar r, ushort h)
 
 VU_BOOL GroundUnitFilter::Test(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] || (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
         return FALSE;
 
     if (((Unit)e)->GetDomain() != DOMAIN_LAND)
@@ -172,7 +172,7 @@ VU_BOOL GroundUnitFilter::Test(VuEntity *e)
 
 VU_BOOL GroundUnitFilter::RemoveTest(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] || (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
         return FALSE;
 
     if (((Unit)e)->GetDomain() != DOMAIN_LAND)
@@ -202,7 +202,7 @@ NavalUnitFilter::NavalUnitFilter(uchar p, uchar r, ushort h)
 
 VU_BOOL NavalUnitFilter::Test(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] || (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
         return FALSE;
 
     if (((Unit)e)->GetDomain() != DOMAIN_SEA)
@@ -225,7 +225,7 @@ VU_BOOL NavalUnitFilter::Test(VuEntity *e)
 
 VU_BOOL NavalUnitFilter::RemoveTest(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] || (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT)
         return FALSE;
 
     if (((Unit)e)->GetDomain() != DOMAIN_SEA)
@@ -281,7 +281,7 @@ UnitProxFilter::UnitProxFilter(const UnitProxFilter *other, int r) : VuBiKeyFilt
 
 VU_BOOL UnitProxFilter::Test(VuEntity *ent)
 {
-    if (!ent->EntityType()->classInfo_[VU_DOMAIN] || ent->EntityType()->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!ent->EntityType()->classInfo_[VU_DOMAIN] or ent->EntityType()->classInfo_[VU_CLASS] != CLASS_UNIT)
     {
         return FALSE;
     }
@@ -301,7 +301,7 @@ VU_BOOL UnitProxFilter::Test(VuEntity *ent)
 
 VU_BOOL UnitProxFilter::RemoveTest(VuEntity *ent)
 {
-    if (!ent->EntityType()->classInfo_[VU_DOMAIN] || ent->EntityType()->classInfo_[VU_CLASS] != CLASS_UNIT)
+    if (!ent->EntityType()->classInfo_[VU_DOMAIN] or ent->EntityType()->classInfo_[VU_CLASS] != CLASS_UNIT)
     {
         return FALSE;
     }
@@ -329,7 +329,7 @@ ObjFilter::ObjFilter(ushort h)
 
 VU_BOOL ObjFilter::Test(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] || (e->EntityType())->classInfo_[VU_CLASS] != CLASS_OBJECTIVE)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_OBJECTIVE)
         return FALSE;
 
     if (host && !e->IsLocal())
@@ -340,7 +340,7 @@ VU_BOOL ObjFilter::Test(VuEntity *e)
 
 VU_BOOL ObjFilter::RemoveTest(VuEntity *e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] || (e->EntityType())->classInfo_[VU_CLASS] != CLASS_OBJECTIVE)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_OBJECTIVE)
         return FALSE;
 
     if (host && !e->IsLocal())
@@ -866,7 +866,7 @@ int RebuildFrontList(int do_barcaps, int incremental)
             fseed = 0;
             isolated = 1;
 
-            for (i = 0, n = o; i < o->static_data.links && n && (!front || isolated); i++)
+            for (i = 0, n = o; i < o->static_data.links && n && (!front or isolated); i++)
             {
                 n = o->GetNeighbor(i);
 
@@ -902,7 +902,7 @@ int RebuildFrontList(int do_barcaps, int incremental)
                     front = u->GetOwner();
                 }
 
-                if (!u || (u && u->GetTeam() != o->GetTeam()))
+                if (!u or (u && u->GetTeam() != o->GetTeam()))
                 {
                     // Enemy units are in control, send a captured message
                     CaptureObjective(o, (Control)front, NULL);
@@ -935,7 +935,7 @@ int RebuildFrontList(int do_barcaps, int incremental)
                     o->ClearObjFlags(O_SECONDLINE | O_THIRDLINE);
                 }
 
-                if (!incremental || !o->IsFrontline())
+                if (!incremental or !o->IsFrontline())
                 {
                     FrontList->ForcedInsert(o);
                 }
@@ -1175,7 +1175,7 @@ int RebuildEmitterList()
 
     while (e)
     {
-        if (e->GetDomain() == DOMAIN_LAND && (!e->IsUnit() || (!((Unit)e)->Inactive() && ((Unit)e)->Real())))
+        if (e->GetDomain() == DOMAIN_LAND && (!e->IsUnit() or (!((Unit)e)->Inactive() && ((Unit)e)->Real())))
         {
             rl = e->GetElectronicDetectionRange(LowAir);
             range = e->GetElectronicDetectionRange(Air);
@@ -1230,7 +1230,7 @@ int RebuildEmitterList()
                     // if (e->GetAproxHitChance(LowAir,0) > 0)
                     AirDefenseList->ForcedInsert(e);
 
-                if (!change && ((emit && !e->IsEmitting()) || (!emit && e->IsEmitting())))
+                if (!change && ((emit && !e->IsEmitting()) or (!emit && e->IsEmitting())))
                     change = 1;
 
                 e->SetEmitting(emit);
@@ -1255,11 +1255,11 @@ void StandardRebuild(void)
     RebuildFrontList(TRUE, FALSE);
     RebuildEmitterList();
 
-    if (!build || !TheCampaign.SamMapData)
+    if (!build or !TheCampaign.SamMapData)
     {
         TheCampaign.MakeCampMap(MAP_SAMCOVERAGE);
     }
-    else if (build == 1 || !TheCampaign.RadarMapData)
+    else if (build == 1 or !TheCampaign.RadarMapData)
     {
         TheCampaign.MakeCampMap(MAP_RADARCOVERAGE);
     }

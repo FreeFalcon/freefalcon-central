@@ -210,7 +210,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
     VU_ID fromID = dataBlock.from, toID = FalconNullId;
 
 
-    if (from && (from->IsDead() || (from->IsVehicle() && !((SimVehicleClass*)from)->HasPilot())))
+    if (from && (from->IsDead() or (from->IsVehicle() && !((SimVehicleClass*)from)->HasPilot())))
     {
         return 0;
     }
@@ -328,7 +328,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
         }
 
         //we want to hear everything sent to our flight or us
-        if ((to_entity && to_entity == player_flight) || (to == us))
+        if ((to_entity && to_entity == player_flight) or (to == us))
             channel = 1;
 
         //we want to hear everything said by us
@@ -336,7 +336,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
             channel = 1;
 
         //campaign/taceng
-        if ((to_entity && to_entity == player_flight) || (from_entity && from_entity == player_flight))
+        if ((to_entity && to_entity == player_flight) or (from_entity && from_entity == player_flight))
             playbits  or_eq  TOFROM_FLIGHT;
 
         //the seemingly weird check for the team is because everyone in instant action is in the same package but on different teams

@@ -101,7 +101,7 @@ int FalconTimingMessage::Decode(VU_BYTE **buf, long *rem)
 
             diff = vuxTargetGameTime - dataBlock.targetTime;
 
-            if ((diff < -5000) || (diff > 5000))
+            if ((diff < -5000) or (diff > 5000))
             {
                 MonoPrint("Update vuxTargetGameTime %08x %d\n", dataBlock.targetTime, diff);
                 vuxTargetGameTime = dataBlock.targetTime;

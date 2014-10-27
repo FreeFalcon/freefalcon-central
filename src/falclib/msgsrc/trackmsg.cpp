@@ -178,7 +178,7 @@ int FalconTrackMessage::Process(uchar autodisp)
             }
             else if (taggedEntity->IsFlight())
             {
-                if ((dataBlock.trackType == Track_Lock) || (dataBlock.trackType == Track_Launch))
+                if ((dataBlock.trackType == Track_Lock) or (dataBlock.trackType == Track_Launch))
                 {
                     // Tell the campaign entity that it's being locked on to.
                     ((Flight)taggedEntity)->RegisterLock(theEntity);

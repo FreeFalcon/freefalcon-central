@@ -29,7 +29,7 @@ int FalconUnitAssignmentMessage::Process(uchar autodisp)
 {
     Unit u = FindUnit(EntityId());
 
-    if (autodisp || !u)
+    if (autodisp or !u)
         return -1;
 
 #ifdef KEV_DEBUG

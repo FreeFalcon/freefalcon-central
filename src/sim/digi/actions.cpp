@@ -391,7 +391,7 @@ void DigitalBrain::Actions(void)
             }
         }
 
-        if (groundAvoidNeeded || pullupTimer)
+        if (groundAvoidNeeded or pullupTimer)
             strcat(label, " Pullup");
 
         if (g_nShowDebugLabels & 0x8000)
@@ -447,7 +447,7 @@ void DigitalBrain::Actions(void)
 #endif
 
     // have we got a surprise for you!!
-    if ((targetPtr || threatPtr) && IsSetATC(HasTrainable) && self->HasPilot())
+    if ((targetPtr or threatPtr) && IsSetATC(HasTrainable) && self->HasPilot())
     {
         TrainableGunsEngage();
     }
@@ -466,7 +466,7 @@ void DigitalBrain::Actions(void)
     /*-----------------------------------------------------------------*/
 
     // 2002-02-24 MN added pullupTimer - continue last calculated pullup for at least g_nPullupTime seconds
-    if (groundAvoidNeeded || pullupTimer)
+    if (groundAvoidNeeded or pullupTimer)
     {
 
         // 2001-10-21 MODIFIED by M.N.
@@ -538,7 +538,7 @@ void DigitalBrain::AirbaseCheck()
     }
 
     // 2002-03-13 modified by MN works together with checks in Separate.cpp, if 49.9% damage, head to hearest airbase instead of home base
-    if (IsSetATC(SaidFumes) || self->pctStrength < 0.50f) // when on fumes, force RTB to closest airbase
+    if (IsSetATC(SaidFumes) or self->pctStrength < 0.50f) // when on fumes, force RTB to closest airbase
     {
         nearestAirbase = true;
         airbasediverted = 2;

@@ -475,7 +475,7 @@ ListGlobalPack(void)
     }
     while (tbl);
 
-    if (!GLOBAL_ALLOC_TABLE || (GLOBAL_ALLOC_TABLE -> avail < ALLOC_SWAP_SIZE))
+    if (!GLOBAL_ALLOC_TABLE or (GLOBAL_ALLOC_TABLE -> avail < ALLOC_SWAP_SIZE))
         ListGlobalAlloc();
 
     GLOBAL_ALLOC_TABLE -> index = 0;

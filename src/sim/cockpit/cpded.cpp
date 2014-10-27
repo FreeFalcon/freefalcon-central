@@ -192,7 +192,7 @@ void CPDed::DisplayDraw(void)
                 //Wombat778 10-17-2003 Aeyes Ded spacing fix
                 float stepx;
 
-                if ((g_bDEDSpacingFix) || (DisplayOptions.DispWidth > 1024)) //Wombat778 12-12-2003 Changed to allow automatic selection of the fix at high resolutions
+                if ((g_bDEDSpacingFix) or (DisplayOptions.DispWidth > 1024)) //Wombat778 12-12-2003 Changed to allow automatic selection of the fix at high resolutions
                     stepx = VirtualDisplay::pFontSet->fontData[VirtualDisplay::pFontSet->fontNum][32].pixelWidth;
                 else
                     stepx = 5.0F;
@@ -229,7 +229,7 @@ void CPDed::DisplayDraw(void)
                 //Wombat778 10-17-2003 Aeyes Ded spacing fix
                 float stepx;
 
-                if ((g_bDEDSpacingFix) || (DisplayOptions.DispWidth > 1024))
+                if ((g_bDEDSpacingFix) or (DisplayOptions.DispWidth > 1024))
                 {
                     //Wombat778 12-12-2003 Changed to allow automatic selection of the fix at high resolutions
                     stepx = VirtualDisplay::pFontSet->fontData[VirtualDisplay::pFontSet->fontNum][32].pixelWidth;

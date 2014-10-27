@@ -2,6 +2,7 @@
 // FileMemMap - implementation
 // Julian Onions - initial revision
 
+#include <cISO646>
 #include "FileMemMap.h"
 
 FileMemMap::FileMemMap()
@@ -77,7 +78,7 @@ BOOL FileMemMap::Open(const char *filename, BOOL rw, BOOL nomap)
 
 BYTE *FileMemMap::GetData(int offset, int len)
 {
-    if (m_hMap == INVALID_HANDLE_VALUE || offset < 0 || offset + len > m_len)
+    if (m_hMap == INVALID_HANDLE_VALUE or offset < 0 or offset + len > m_len)
         return NULL;
 
     return &m_Data[offset];
@@ -93,7 +94,7 @@ BOOL FileMemMap::ReadDataAt(DWORD offset, void *buffer, DWORD size)
     DWORD bytesRead;
     result = ReadFile(m_hFile, buffer, size, &bytesRead, NULL);
 
-    if (result == -1 || bytesRead != size)
+    if (result == -1 or bytesRead != size)
         return FALSE;
 
     return TRUE;

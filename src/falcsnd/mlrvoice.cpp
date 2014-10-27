@@ -104,7 +104,7 @@ void mlrVoiceManager::Exec(Tpoint *campos, Trotation *camrot, Tpoint *camvel)
     // filter out what will be played
     while (n = (mlrVoice *)temp.RemHead())
     {
-        if ((n->status == mlrVoice::VSSTART || n->status == mlrVoice::VSPLAYING) && channels > 0)
+        if ((n->status == mlrVoice::VSSTART or n->status == mlrVoice::VSPLAYING) && channels > 0)
         {
             PlayList.AddTail(n); // maintain sortedness
             channels--;
@@ -579,7 +579,7 @@ void mlrVoice::PreExec()
         }
     }
 
-    if (IsThunder || !is3d)
+    if (IsThunder or !is3d)
     {
         priority = 1;
     }

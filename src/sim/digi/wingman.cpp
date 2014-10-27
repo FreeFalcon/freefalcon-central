@@ -41,11 +41,11 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
     int fromIndex;
     short edata[10];
 
-    if (!self->IsAwake() || self->IsDead())
+    if (!self->IsAwake() or self->IsDead())
         return;
 
     //we can't follow orders about how to fly if we're on the ground still!
-    if (self->OnGround() || atcstatus >= lOnFinal)
+    if (self->OnGround() or atcstatus >= lOnFinal)
         return;
 
     wingMsg = (FalconWingmanMsg *)theEvent;
@@ -55,7 +55,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
     p_from = (AircraftClass*) vuDatabase->Find(wingMsg->dataBlock.from);
     fromIndex = p_flight->GetComponentIndex(p_from);
 
-    if (curMode == GunsJinkMode || curMode == MissileDefeatMode || curMode == DefensiveModes)
+    if (curMode == GunsJinkMode or curMode == MissileDefeatMode or curMode == DefensiveModes)
     {
 
         switch (command)

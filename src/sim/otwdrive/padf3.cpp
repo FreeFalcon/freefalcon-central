@@ -264,7 +264,7 @@ void OTWDriverClass::PadlockF3_CalcCamera(float dT)
     if (PadlockF3_SetCamera(dT))
     {
 
-        if (eyePan < mMinPadPan || eyePan > mMaxPadPan)
+        if (eyePan < mMinPadPan or eyePan > mMaxPadPan)
         {
 
             term = -(float)sin(180.0F * DTR - fabs(eyePan));
@@ -280,7 +280,7 @@ void OTWDriverClass::PadlockF3_CalcCamera(float dT)
 
         eyeHeadRoll = 0.0F;
 
-        if (eyePan > 90.0F * DTR || eyePan < -90.0F * DTR)
+        if (eyePan > 90.0F * DTR or eyePan < -90.0F * DTR)
         {
 
             mlSinCos(&panTrig, eyePan);
@@ -496,17 +496,17 @@ int OTWDriverClass::PadlockF3_SlewCamera(float startPan, float startTilt, float 
     condD = (fabs(percentTiltErr) < stopCritera);
 
     // If both pan and tilt are less than the stopCritera
-    if ((condB && condD) || (condB && condC) || (condA && condD) || (condA && condC))
+    if ((condB && condD) or (condB && condC) or (condA && condD) or (condA && condC))
     {
         eyePan = desPan; // Close enough, Force the new pan and tilt to be the desired pan and tilt
         eyeTilt = desTilt;
         done = PAN_AND_TILT;
     } // If just the pan is at the stop critera, then make note of it
-    else if (condA || condB)
+    else if (condA or condB)
     {
         done = PAN_ONLY;
     } // If just the tilt is at the stop critera, then make note of it
-    else if (condC || condD)
+    else if (condC or condD)
     {
         done = TILT_ONLY;
     }
@@ -604,7 +604,7 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
     else
     {
 
-        if (mpPadlockPriorityObject && (snapStatus == PRESNAP || snapStatus == TRACKING))
+        if (mpPadlockPriorityObject && (snapStatus == PRESNAP or snapStatus == TRACKING))
         {
             visObj = ((SimMoverClass*)otwPlatform.get())->targetList;
         }
@@ -677,7 +677,7 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
                                  1.1F, 0.1F, dT
                              );
 
-                    if (result == PAN_AND_TILT || result == PAN_ONLY)
+                    if (result == PAN_AND_TILT or result == PAN_ONLY)
                     {
                         snapStatus = TRACKING;
                         //MonoPrint("Switch to TRACKING!\n");
@@ -747,7 +747,7 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
         else
         {
             // 2000-11-06 MODIFIED BY S.G. SO IT DOESN'T SLEW BACK TO CENTER VIEW BUT STAYS AT THE SAME POSITION IF NOTHING IS PADLOCKED
-            /* if(snapStatus == PRESNAP || snapStatus == TRACKING) { // we lost visible object
+            /* if(snapStatus == PRESNAP or snapStatus == TRACKING) { // we lost visible object
              snapStatus = SNAPPING;
              }
 

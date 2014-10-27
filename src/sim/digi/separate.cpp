@@ -61,10 +61,10 @@ void DigitalBrain::SeparateCheck(void)
     // 2001-12-28 MN this prevents FAC aircraft from aborting missions in 3D (they have no weapons..)
     /* if (missionClass == AGMission && !IsSetATC(HasAGWeapon) && missionType != AMIS_FAC)
      {
-        if ((missionType != AMIS_BDA && missionType != AMIS_RECON) || !hasCamera)
+        if ((missionType != AMIS_BDA && missionType != AMIS_RECON) or !hasCamera)
     // 2001-05-12 ADDED BY S.G. ABORT ONLY WHEN THE MISSION IS NOT COMPLETED OR WE ARE AT THE ATTACK WAYPOINT, OTHERWISE FOLLOW WAYPOINTS HOME
     // 2001-06-21 MODIFIED BY S.G. BROUGHT BACK TO WHAT IS RELEASED
-    //    if (!missionComplete || !self->curWaypoint || self->curWaypoint->GetWPFlags() & WPF_TARGET)
+    //    if (!missionComplete or !self->curWaypoint or self->curWaypoint->GetWPFlags() & WPF_TARGET)
         if (!missionComplete)
     // END OF ADDED SECTION
              agAbort = TRUE;
@@ -78,7 +78,7 @@ void DigitalBrain::SeparateCheck(void)
     if (self->pctStrength < 0.50F)
         damageAbort = TRUE;
 
-    if ((aaAbort || agAbort || campAbort || damageAbort) && !inTraining)
+    if ((aaAbort or agAbort or campAbort or damageAbort) && !inTraining)
     {
         // If pre IP go to landing, else step past target
         if (curMode != RTBMode && curMode != LandingMode && curMode != TakeoffMode)
@@ -92,7 +92,7 @@ void DigitalBrain::SeparateCheck(void)
             // 2001-05-13 MODIFIED BY S.G. TO MAKE IT SIMILAR TO THE ABOVE agAbort CODE
             // 2001-06-21 RESTATED BY S.G. BROUGHT BACK TO WHAT IS RELEASED
             if (!IsSetATC(ReachedIP))
-                //      if (!missionComplete || !self->curWaypoint || self->curWaypoint->GetWPFlags() & WPF_TARGET)
+                //      if (!missionComplete or !self->curWaypoint or self->curWaypoint->GetWPFlags() & WPF_TARGET)
             {
                 // Find the landing waypoint, and make it the current one
                 while (tmpWaypoint)
@@ -160,7 +160,7 @@ void DigitalBrain::SeparateCheck(void)
         }
     }
 
-    if ((!isWing || IsSetATC(SaidBingo)) && curMode == RTBMode)
+    if ((!isWing or IsSetATC(SaidBingo)) && curMode == RTBMode)
         AddMode(RTBMode);
 
     if (isWing && mpActionFlags[AI_RTB])
@@ -178,7 +178,7 @@ void DigitalBrain::SeparateCheck(void)
 
     // go no further unless separation is desired
     if (IsSetATC(SaidBingo)  ||
-        curMode == WVREngageMode && (aaAbort || agAbort || campAbort || damageAbort))
+        curMode == WVREngageMode && (aaAbort or agAbort or campAbort or damageAbort))
     {
         // Entry
         if (curMode != SeparateMode && targetData->range < 2.0f * NM_TO_FT)
@@ -190,7 +190,7 @@ void DigitalBrain::SeparateCheck(void)
             // Final flag True = MRM, False = SRM
             // Skip the check if target has no missiles
             if (targetPtr->BaseData()->IsSim() &&
-                (((SimBaseClass*)targetPtr->BaseData())->IsSetFlag(HAS_MISSILES) || targetPtr->localData->range > 2.0F * NM_TO_FT))
+                (((SimBaseClass*)targetPtr->BaseData())->IsSetFlag(HAS_MISSILES) or targetPtr->localData->range > 2.0F * NM_TO_FT))
                 rMaxNe = TailChaseRMaxNe(self, targetPtr, FALSE);
             else
                 rMaxNe = 6000.0F;
@@ -333,7 +333,7 @@ float RangeAtTailChase(AircraftClass* target, SimObjectType* launcher)
     thetaTarget2 = aspectTarget - gammac2 - thetac2;
 
     // Choose between left and right
-    if (thetaLaunch2 < 0.0F || thetaLaunch1 > thetaLaunch2)
+    if (thetaLaunch2 < 0.0F or thetaLaunch1 > thetaLaunch2)
         left = TRUE;
 
     // if left use the 1 case, otherwise use the 2 case

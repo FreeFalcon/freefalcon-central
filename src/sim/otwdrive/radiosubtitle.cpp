@@ -679,7 +679,7 @@ void RadioSubTitle::SetChannelColours(char* flight, char* toPackage, char* ToFro
 /*****************************************************************************/
 inline void RadioSubTitle::AppendToString(char** theOldOne, const char* theNewOne)
 {
-    if ((!theOldOne) || (!*theOldOne) || (!theNewOne))
+    if ((!theOldOne) or (!*theOldOne) or (!theNewOne))
     {
         assert(false);
         return;
@@ -852,7 +852,7 @@ void RadioSubTitle::breakDownLine(csvLine_t* theTextString, char* theLine, const
 
         // look for SEPERATOR
         // set end pointer
-        if ((*end == SEPARATOR/*','*/) || (*end == '\0'))
+        if ((*end == SEPARATOR/*','*/) or (*end == '\0'))
         {
             if (end > start)
             {

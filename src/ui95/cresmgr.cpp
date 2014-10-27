@@ -30,7 +30,7 @@ void C_Resmgr::ConvertToScreen()
     WORD *color = NULL;
     long count = 0;
 
-    if (!Data_ || !Index_)
+    if (!Data_ or !Index_)
         return;
 
     if (reds == 10 && greens == 5 && !blues)
@@ -86,7 +86,7 @@ C_Resmgr::C_Resmgr()
 
 C_Resmgr::~C_Resmgr()
 {
-    if (IDTable_ || Index_ || Data_)
+    if (IDTable_ or Index_ or Data_)
         Cleanup();
 }
 
@@ -142,7 +142,7 @@ void C_Resmgr::Cleanup()
 
 void C_Resmgr::AddIndex(long ID, IMAGE_RSC *resheader)
 {
-    if (!resheader || Type_ == _RSC_MULTIPLE_)
+    if (!resheader or Type_ == _RSC_MULTIPLE_)
         return;
 
     if (!Index_)

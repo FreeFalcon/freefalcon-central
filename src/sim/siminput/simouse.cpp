@@ -111,7 +111,7 @@ void OnSimMouseInput(HWND)
     dwElements = DMOUSE_BUFFERSIZE;
     hResult = gpDIDevice[SIM_MOUSE]->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), ObjData, &dwElements, 0);
 
-    if ((hResult == DIERR_INPUTLOST) || (hResult == DIERR_NOTACQUIRED))
+    if ((hResult == DIERR_INPUTLOST) or (hResult == DIERR_NOTACQUIRED))
     {
         hResult = gpDIDevice[SIM_MOUSE]->Acquire();
 
@@ -203,7 +203,7 @@ void OnSimMouseInput(HWND)
                 continue;
             }
 
-            if (action == CP_MOUSE_BUTTON0 || action == CP_MOUSE_BUTTON1)
+            if (action == CP_MOUSE_BUTTON0 or action == CP_MOUSE_BUTTON1)
             {
                 passThru = OTWDriver.HandleMouseClick(gxPos, gyPos);
 
@@ -271,7 +271,7 @@ void OnSimMouseInput(HWND)
 #ifdef NEW_MOUSELOOK_HANDLING // Retro 16Jan2004
 #if 1 // Retro 22Jan2004 - reorganised the code somewhat
 
-        if (dx || dy)
+        if (dx or dy)
         {
             if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit)
             {
@@ -464,7 +464,7 @@ void OnSimMouseInput(HWND)
         /************************************************************************/
         // This is wombat´s 3d cockpit mouselook
         /************************************************************************/
-        if (dx || dy)
+        if (dx or dy)
         {
             if (oneDown)
             {
@@ -643,7 +643,7 @@ void OnSimMouseInput(HWND)
 #endif
 #else
 
-        if (dx || dy)
+        if (dx or dy)
         {
             if (oneDown)
             {

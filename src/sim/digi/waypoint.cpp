@@ -82,7 +82,7 @@ void DigitalBrain::FollowWaypoints(void)
         mpActionFlags[AI_FOLLOW_FORMATION] = FALSE; // don't follow formation
         mLeaderTookOff = FALSE; // reset leader take off flag
 
-        if (self->curWaypoint->GetWPAction() == WP_ASSEMBLE && (onStation == Arrived || onStation == Stabalizing || onStation == OnStation))
+        if (self->curWaypoint->GetWPAction() == WP_ASSEMBLE && (onStation == Arrived or onStation == Stabalizing or onStation == OnStation))
         {
             // if we are at the assemble point
             if (SimLibElapsedTime < self->curWaypoint->GetWPDepartureTime() + 300000)
@@ -103,12 +103,12 @@ void DigitalBrain::FollowWaypoints(void)
     // if we are, see if the next waypoint is a ground attack type.
     // if it is, setup a GA profile for the attack
 
-    if (((self->curWaypoint->GetWPFlags() & WPF_IP) || (GetTargetWPIndex() >= 0 && GetWaypointIndex() == GetTargetWPIndex() - 1)) &&
+    if (((self->curWaypoint->GetWPFlags() & WPF_IP) or (GetTargetWPIndex() >= 0 && GetWaypointIndex() == GetTargetWPIndex() - 1)) &&
         agDoctrine == AGD_NONE)
     {
         AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-        if ((self != playerAC || (self->IsPlayer() && self->AutopilotType() == AircraftClass::CombatAP)) || playerAC->FCC->GetStptMode() == FireControlComputer::FCCWaypoint)
+        if ((self != playerAC or (self->IsPlayer() && self->AutopilotType() == AircraftClass::CombatAP)) or playerAC->FCC->GetStptMode() == FireControlComputer::FCCWaypoint)
         {
             // VWF 5/25/98 for E3
             // get next Waypoint action
@@ -408,7 +408,7 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
     /*---------------------------*/
     // Cobra - Change rng to 2 nm (was 1 nm) to give AI a little more leeway in hitting the WP.
     // Cobra - Added loitering timer check (agmergeTimer)
-    if (rng < 2.0f || (onStation != NotThereYet) || (SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime()))
+    if (rng < 2.0f or (onStation != NotThereYet) or (SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime()))
     {
         // Should we repeat?
         if (self && self->curWaypoint && self->curWaypoint->GetWPFlags() & (WPF_REPEAT | WPF_REPEAT_CONTINUOUS))
@@ -481,14 +481,14 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
             // Cobra - Sead AI wouldn't move on when no targets left or exceeded loitering timer
             //Adding in onStation == Crosswind; if we make it here, we are past our waypoint time
             //already so this shouldn't be a problem?
-            if (((onStation == Crosswind || (onStation == NotThereYet && missionComplete)) &&
-                 groundTargetPtr == NULL) || onStation == OnStation || !(g_bAGTargetWPFix &&
+            if (((onStation == Crosswind or (onStation == NotThereYet && missionComplete)) &&
+                 groundTargetPtr == NULL) or onStation == OnStation or !(g_bAGTargetWPFix &&
                          self->curWaypoint->GetWPFlags() & WPF_TARGET && !missionComplete && missionClass == AGMission &&
                          curMode != RTBMode && curMode != LandingMode))
             {
                 // 2002-04-08 MN removed again - this stops AI from going to landing mode at all...
                 // JB 020315 Don't skip to the last waypoint unless we're OnStation. Otherwise we may go into landing mode too early.
-                // if (onStation == OnStation || self->curWaypoint->GetNextWP() && self->curWaypoint->GetNextWP()->GetWPAction() != WP_LAND)
+                // if (onStation == OnStation or self->curWaypoint->GetNextWP() && self->curWaypoint->GetNextWP()->GetWPAction() != WP_LAND)
 
                 // Cobra - Don't skip the WP after target WP
                 if (GetTargetWPIndex() >= 0 && GetWaypointIndex() <= GetTargetWPIndex())
@@ -603,10 +603,10 @@ void DigitalBrain::GoToCurrentWaypoint(void)
     /* Reached the next waypoint */
     /*---------------------------*/
     //            0.83 NM
-    // if (rng < (5000.0F * 5000.0F) || (onStation != NotThereYet) ||
+    // if (rng < (5000.0F * 5000.0F) or (onStation != NotThereYet) ||
     // Cobra - Give AI plenty of leeway to reach WP
     //            1.66 NM
-    if (rng < (10000.0F * 10000.0F) || (onStation != NotThereYet) ||
+    if (rng < (10000.0F * 10000.0F) or (onStation != NotThereYet) ||
         SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime())
     {
         // Should we repeat?
@@ -659,13 +659,13 @@ void DigitalBrain::GoToCurrentWaypoint(void)
             have not yet completed the mission, are not in RTB mode or landing mode, don't skip the target waypoint. */
 
             // mind the ! check here !!!
-            if (onStation == OnStation || !(g_bAGTargetWPFix &&
+            if (onStation == OnStation or !(g_bAGTargetWPFix &&
                                             self->curWaypoint->GetWPFlags() & WPF_TARGET &&
                                             !missionComplete && missionClass == AGMission &&
                                             curMode != RTBMode && curMode != LandingMode))
             {
                 // JB 020315 Don't skip to the last waypoint unless we're OnStation. Otherwise we may go into landing mode too early.
-                if (onStation == OnStation || self->curWaypoint->GetNextWP() && self->curWaypoint->GetNextWP()->GetWPAction() != WP_LAND)
+                if (onStation == OnStation or self->curWaypoint->GetNextWP() && self->curWaypoint->GetNextWP()->GetWPAction() != WP_LAND)
                 {
                     // Cobra - Don't skip the WP after target WP
                     if (GetTargetWPIndex() >= 0 && GetWaypointIndex() <= GetTargetWPIndex())
@@ -1024,7 +1024,7 @@ void DigitalBrain::SetWaypointSpecificStuff(void)
             case WP_SAD:
                 //TJL 11/10/03 Sounds?
 #if 0 // Retro 20May2004 - fixed logic
-                if (missionType == (AMIS_OCASTRIKE || AMIS_INTSTRIKE || AMIS_STRIKE || AMIS_DEEPSTRIKE || AMIS_STSTRIKE || AMIS_STRATBOMB))
+                if (missionType == (AMIS_OCASTRIKE or AMIS_INTSTRIKE or AMIS_STRIKE or AMIS_DEEPSTRIKE or AMIS_STSTRIKE or AMIS_STRATBOMB))
 #else
                 if ((missionType == AMIS_OCASTRIKE) ||
                     (missionType == AMIS_INTSTRIKE) ||

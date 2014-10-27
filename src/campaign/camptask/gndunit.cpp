@@ -473,7 +473,7 @@ int GroundUnitClass::ChooseTarget(void)
         SetTargeted(0);
         retval = 1;
     }
-    else if (artTarget && (!artTarget->IsUnit() || ((Unit)artTarget)->Engaged()) && orders == GORD_SUPPORT)
+    else if (artTarget && (!artTarget->IsUnit() or ((Unit)artTarget)->Engaged()) && orders == GORD_SUPPORT)
     {
         // Keep blowing away this target until the target gets out of range, disengages, or we get new orders
         // (Target will get reset after a null DoCombat result)
@@ -547,7 +547,7 @@ int GroundUnitClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spo
     if (det & FRIENDLY_DETECTED)
     {
         // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
-        if ((e->IsAggregate() && CheckValidType(e, this)) || (e->IsFlight() && e->GetSType() == STYPE_UNIT_AWACS))
+        if ((e->IsAggregate() && CheckValidType(e, this)) or (e->IsFlight() && e->GetSType() == STYPE_UNIT_AWACS))
         {
             SetSpotted(e->GetTeam(), TheCampaign.CurrentTime, CanItIdentify(this, e, *d, e->GetMovementType())); // 2002-02-11 MODIFIED BY S.G. Added 'CanItIdentify' which query if the target can be identified
             *spot = 1;
@@ -613,7 +613,7 @@ int GroundUnitClass::DetectVs(CampEntity e, float *d, int *combat, int *spot, in
     if (det & ENEMY_DETECTED)
     {
         if (IsAggregate() && CheckValidType(this, e))
-            e->SetSpotted(GetTeam(), TheCampaign.CurrentTime, (!e->IsFlight() || CanItIdentify(this, e, *d, e->GetMovementType()))); // 2002-02-11 MODIFIED BY S.G. Say 'identified if it's not a flight or it has the hability to identify
+            e->SetSpotted(GetTeam(), TheCampaign.CurrentTime, (!e->IsFlight() or CanItIdentify(this, e, *d, e->GetMovementType()))); // 2002-02-11 MODIFIED BY S.G. Say 'identified if it's not a flight or it has the hability to identify
     }
 
     if (det & ENEMY_IN_RANGE && react)
@@ -622,7 +622,7 @@ int GroundUnitClass::DetectVs(CampEntity e, float *d, int *combat, int *spot, in
     if (det & FRIENDLY_DETECTED)
     {
         // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
-        if ((e->IsAggregate() && CheckValidType(e, this)) || (e->IsFlight() && e->GetSType() == STYPE_UNIT_AWACS))
+        if ((e->IsAggregate() && CheckValidType(e, this)) or (e->IsFlight() && e->GetSType() == STYPE_UNIT_AWACS))
         {
             SetSpotted(e->GetTeam(), TheCampaign.CurrentTime, 1); // 2002-02-11 Modified by S.G. Ground units are always identified (doesn't change a thing)
             *spot = 1;
@@ -697,7 +697,7 @@ int GroundUnitClass::CheckForSurrender(void)
     // If we got here, we assume we're cut off.
     // What we do is sit tight and call for help.
     // However, if our morale breaks, we'll surrender
-    if (Broken() || (IsBattalion() && !MoraleCheck(4, 0)))
+    if (Broken() or (IsBattalion() && !MoraleCheck(4, 0)))
     {
         KillUnit();
         return 0; // Zero is we surrendered
@@ -769,7 +769,7 @@ Unit BestElement(Unit u, int at, int role)
                 case GRO_DEFENSE:
                 case GRO_RECON:
                 default:
-                    if (uc->Role == GRO_AIRDEFENSE || uc->Role == GRO_FIRESUPPORT || uc->Role == GRO_ENGINEER)
+                    if (uc->Role == GRO_AIRDEFENSE or uc->Role == GRO_FIRESUPPORT or uc->Role == GRO_ENGINEER)
                         s = -1;
                     else
                         s = e->GetTotalVehicles() * uc->Scores[role];
@@ -785,7 +785,7 @@ Unit BestElement(Unit u, int at, int role)
         if (e->Retreating())
             s /= 2;
 
-        if (!e->Assigned() && s > bs && (role == GRO_RESERVE || !e->Broken()))
+        if (!e->Assigned() && s > bs && (role == GRO_RESERVE or !e->Broken()))
         {
             be = e;
             bs = s;
@@ -830,7 +830,7 @@ int GetThisWPAction(Unit u, Objective o, Objective n, int d, Team us, float *cos
 {
     int action;
 
-    if (o->GetType() == TYPE_SEA || n->GetType() == TYPE_SEA)
+    if (o->GetType() == TYPE_SEA or n->GetType() == TYPE_SEA)
     {
         action = WP_AMPHIBIOUS;
         *cost = o->GetNeighborCost(d, Naval);
@@ -917,14 +917,14 @@ int BuildGroundWP(Unit u)
     if (!t)
         t = FindNearestObjective(tx, ty, NULL);
 
-    if (o == t || dist < 1.0)
+    if (o == t or dist < 1.0)
     {
         // Just add one waypoint at our final destination
         u->AddUnitWP(tx, ty, 0, speed, time, 0, WP_MOVEUNOPPOSED);
         return 1;
     }
 
-    if (!o || !t)
+    if (!o or !t)
         return 0;
 
     if (u->GetUnitObjectivePath(&path, o, t) < 1) // Avoid enemy objectives
@@ -1077,9 +1077,9 @@ int BuildGroundWP(Unit u)
         //// Also - limit to first unit element if moving in brigade column,
         //// so we don't generate a request for every battalion in a brigade
         if (time - Camp_GetCurrentTime() < 60 * CampaignMinutes &&
-            (!u->GetUnitElement() || u->GetUnitTactic() != GTACTIC_MOVE_BRIGADE_COLUMN))
+            (!u->GetUnitElement() or u->GetUnitTactic() != GTACTIC_MOVE_BRIGADE_COLUMN))
         {
-            // if (n->GetType() == TYPE_BRIDGE && (n->GetTeam() == us || TeamInfo[n->GetTeam()]->GetInitiative() < 40))
+            // if (n->GetType() == TYPE_BRIDGE && (n->GetTeam() == us or TeamInfo[n->GetTeam()]->GetInitiative() < 40))
             // {
             // // Send request for bridge interdiction
             // MissionRequestClass mis;
@@ -1100,7 +1100,7 @@ int BuildGroundWP(Unit u)
             // mis.context = enemyUnitMoveBridge;
             // mis.RequestEnemyMission();
             // }
-            if (n->GetType() == TYPE_ROAD || n->GetType() == TYPE_INTERSECT)
+            if (n->GetType() == TYPE_ROAD or n->GetType() == TYPE_INTERSECT)
             {
                 // Send request for interdiction
                 MissionRequestClass mis;
@@ -1442,7 +1442,7 @@ int PositionToSupportUnit(Battalion e)
         return 0;
 
     // Now determine our new location
-    while (i < path.GetLength() && (d < 2 || d > range - 2))
+    while (i < path.GetLength() && (d < 2 or d > range - 2))
     {
         h = path.GetDirection(i);
         ex += dx[h];
@@ -1520,7 +1520,7 @@ int ScorePosition(Unit battalion, int role, int role_score, Objective o, GridInd
             if (o->Abandoned())
                 score -= 500;
 
-            if (o->IsSecondary() || o->SamSite()) // KCK: Sam site? It'll double up pretty often.
+            if (o->IsSecondary() or o->SamSite()) // KCK: Sam site? It'll double up pretty often.
                 score += 100;
 
             break;
@@ -1589,7 +1589,7 @@ Objective FindBestPosition(Unit battalion, Brigade brigade, int role, F4PFList n
         // Check for invalid offensive objectives
         if (!owned_by_us)
         {
-            if (brigade->GetUnitCurrentRole() != GRO_ATTACK || !o->IsFrontline() || GetRoE(our_team, o->GetTeam(), ROE_GROUND_CAPTURE) != ROE_ALLOWED)
+            if (brigade->GetUnitCurrentRole() != GRO_ATTACK or !o->IsFrontline() or GetRoE(our_team, o->GetTeam(), ROE_GROUND_CAPTURE) != ROE_ALLOWED)
             {
                 nearlist->Remove(o);
                 continue;
@@ -1597,7 +1597,7 @@ Objective FindBestPosition(Unit battalion, Brigade brigade, int role, F4PFList n
 
             p = o->GetObjectiveParent();
 
-            if (!o->IsSecondary() && (!p || (p->Id() != brigade->GetUnitObjectiveID() && p->GetTeam() != our_team)))
+            if (!o->IsSecondary() && (!p or (p->Id() != brigade->GetUnitObjectiveID() && p->GetTeam() != our_team)))
             {
                 nearlist->Remove(o);
                 continue;
@@ -1626,7 +1626,7 @@ Objective FindBestPosition(Unit battalion, Brigade brigade, int role, F4PFList n
                 other_role_score = other_battalion->GetUnitRoleScore(other_role, CALC_MAX, USE_VEH_COUNT);
                 other_battalion->GetLocation(&oex, &oey);
 
-                if ((role != GRO_FIRESUPPORT && other_role != GRO_FIRESUPPORT) || role == other_role)
+                if ((role != GRO_FIRESUPPORT && other_role != GRO_FIRESUPPORT) or role == other_role)
                 {
                     other_score = ScorePosition(other_battalion, other_role, other_role_score, o, oex, oey, owned_by_us);
 
@@ -1732,7 +1732,7 @@ Unit RequestArtillerySupport(Unit req, Unit target)
 
     while (u)
     {
-        // if (u->GetSType() == STYPE_UNIT_TOWED_ARTILLERY || u->GetSType() == STYPE_UNIT_SP_ARTILLERY)
+        // if (u->GetSType() == STYPE_UNIT_TOWED_ARTILLERY or u->GetSType() == STYPE_UNIT_SP_ARTILLERY)
         if (u->GetUnitNormalRole() == GRO_FIRESUPPORT && u->GetTeam() == team)
         {
             u->GetLocation(&x, &y);
@@ -1919,7 +1919,7 @@ int RequestSupport(Unit req, Unit target)
 
     delete myit;
 
-    if (art || foundcas)
+    if (art or foundcas)
         return 1;
 
     return 0;
@@ -1934,7 +1934,7 @@ void RequestOCCAS(Unit u, GridIndex x, GridIndex y, CampaignTime time)
 
     timeleft = (int)((time - Camp_GetCurrentTime()) / CampaignMinutes);
 
-    if (timeleft < MissionData[AMIS_ONCALLCAS].min_time || timeleft > MissionData[AMIS_ONCALLCAS].max_time)
+    if (timeleft < MissionData[AMIS_ONCALLCAS].min_time or timeleft > MissionData[AMIS_ONCALLCAS].max_time)
         return; // Not in required time parameters
 
     mis.tot = time;
@@ -1975,7 +1975,7 @@ void RequestBAI(Unit u, GridIndex x, GridIndex y, CampaignTime time)
 
     timeleft = (int)((time - Camp_GetCurrentTime()) / CampaignMinutes);
 
-    if (timeleft < MissionData[AMIS_BAI].min_time || timeleft > MissionData[AMIS_BAI].max_time)
+    if (timeleft < MissionData[AMIS_BAI].min_time or timeleft > MissionData[AMIS_BAI].max_time)
         return; // Not in required time parameters
 
     mis.tot = time;
@@ -2086,7 +2086,7 @@ void FindBestCover(GridIndex x, GridIndex y, CampaignHeading h, GridIndex *cx, G
     *cx = x;
     *cy = y;
 
-    if (h < 0 || h > 7)
+    if (h < 0 or h > 7)
         return;
 
     // Traverse possible locations, adding up cover values (1/2 value for surrounding terrain)
@@ -2164,9 +2164,9 @@ Objective FindRetreatPath(Unit u, int depth, int flags)
                     if (flags & FIND_SECONDARYONLY && !o->IsSecondary())
                         continue;
 
-                    if (depth > 2 && (o->IsFrontline() || o->IsSecondline() || o->IsThirdline()))
+                    if (depth > 2 && (o->IsFrontline() or o->IsSecondline() or o->IsThirdline()))
                         continue;
-                    else if (depth == 2 && (o->IsFrontline() || o->IsSecondline()))
+                    else if (depth == 2 && (o->IsFrontline() or o->IsSecondline()))
                         continue;
                     else if (o->IsFrontline())
                         continue;
@@ -2216,9 +2216,9 @@ if (o && !CampSearch[o->GetCampID()] && team == o->GetTeam())
 looklist.ForcedInsert(o);
 if (flags & FIND_SECONDARYONLY && !o->IsSecondary())
 continue;
-if (depth > 2 && (o->IsFrontline() || o->IsSecondline() || o->IsThirdline()))
+if (depth > 2 && (o->IsFrontline() or o->IsSecondline() or o->IsThirdline()))
 continue;
-else if (depth == 2 && (o->IsFrontline() || o->IsSecondline()))
+else if (depth == 2 && (o->IsFrontline() or o->IsSecondline()))
 continue;
 else if (o->IsFrontline())
 continue;
@@ -2265,7 +2265,7 @@ int FindUnitSupportRole(Unit u)
     if (!uc)
         return 0;
 
-    if (uc->Role == GRO_FIRESUPPORT || uc->Role == GRO_AIRDEFENSE || uc->Role == GRO_ENGINEER)
+    if (uc->Role == GRO_FIRESUPPORT or uc->Role == GRO_AIRDEFENSE or uc->Role == GRO_ENGINEER)
         return uc->Role;
 
     return 0;
@@ -2440,7 +2440,7 @@ void GroundUnitClass::SetPObj(VU_ID id)
 
 void GroundUnitClass::MakeGndUnitDirty(Dirty_Ground_Unit bits, Dirtyness score)
 {
-    if ((!IsLocal()) || (VuState() != VU_MEM_ACTIVE))
+    if ((!IsLocal()) or (VuState() != VU_MEM_ACTIVE))
     {
         return;
     }

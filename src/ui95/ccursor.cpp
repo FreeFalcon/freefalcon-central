@@ -70,7 +70,7 @@ void C_Cursor::Cleanup()
 
 void C_Cursor::Refresh()
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(MinX_, MinY_, MaxX_ + 2, MaxY_ + 2, GetFlags(), GetClient());
@@ -83,7 +83,7 @@ void C_Cursor::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (!Ready())
         return;
 
-    if (GetFlags() & C_BIT_INVISIBLE || !Parent_)
+    if (GetFlags() & C_BIT_INVISIBLE or !Parent_)
         return;
 
 
@@ -114,7 +114,7 @@ void C_Cursor::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
 long C_Cursor::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED))
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED))
         return(0);
 
     if (relx >= (GetX()) && rely >= (GetY()) && relx <= (GetX() + GetW()) && rely <= (GetY() + GetH()))
@@ -141,7 +141,7 @@ BOOL C_Cursor::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
     long x, y;
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !(GetFlags() & C_BIT_DRAGABLE))
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !(GetFlags() & C_BIT_DRAGABLE))
         return(FALSE);
 
     Leave = UI_Enter(Parent_);

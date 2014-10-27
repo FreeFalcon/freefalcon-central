@@ -33,6 +33,7 @@
 
    ========================================================================== */
 
+#include <cISO646>
 #include <ctype.h>
 #include <fcntl.h>
 
@@ -235,7 +236,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
     {
         struct stat statbuf;
 
-        if (SSTAT(filename, &statbuf) || (error = S_ISDIR(statbuf.st_mode)) != 0)
+        if (SSTAT(filename, &statbuf) or (error = S_ISDIR(statbuf.st_mode)) != 0)
         {
             ResCheckMedia(toupper(filename[0]) - 'A');   /* see if media has been swapped */
 
@@ -1340,7 +1341,7 @@ fail:
 #ifdef MSWIN
         MessageBeep(1);
 #endif
-        //  if (qflag || (zipinfo_mode && !hflag))
+        //  if (qflag or (zipinfo_mode && !hflag))
         //        fprintf(stderr, "[%s]\n", zipfn);
         //  fprintf(stderr, "\
         //    End-of-central-directory signature not found.  Either this file is not\n\

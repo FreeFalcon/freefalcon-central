@@ -156,7 +156,7 @@ void PilotInputs::Update()
             /*******************************************************************************/
             // keyboard only, right engine axis is not even evalutated !
             /*******************************************************************************/
-            if ((!IO.AnalogIsUsed(AXIS_THROTTLE)) || (UseKeyboardThrottle))
+            if ((!IO.AnalogIsUsed(AXIS_THROTTLE)) or (UseKeyboardThrottle))
             {
                 throttleOffset += throttleOffsetRate;
                 throttleOffset = max(min(throttleOffset, 1.5F), 0.0F);
@@ -284,7 +284,7 @@ void PilotInputs::Update()
     else
     {
         if (
-            (!g_bRealisticAvionics) || // TrimAPDisc only works in realistic avionics..
+            (!g_bRealisticAvionics) or // TrimAPDisc only works in realistic avionics..
             ((playerAC) && (!playerAC->TrimAPDisc))
         )
         {
@@ -305,7 +305,7 @@ void PilotInputs::Update()
     else
     {
         if (
-            (!g_bRealisticAvionics) || // TrimAPDisc only works in realistic avionics..
+            (!g_bRealisticAvionics) or // TrimAPDisc only works in realistic avionics..
             ((playerAC) && (!playerAC->TrimAPDisc))
         )
         {
@@ -319,8 +319,8 @@ void PilotInputs::Update()
     // Retro 31Dec2003 ends..
 
     //all joystick button functionality is now in sijoy
-    //if (IO.ReadDigital(0) || keyboardTriggerOverride)
-    if (keyboardTriggerOverride || TriggerOverride)
+    //if (IO.ReadDigital(0) or keyboardTriggerOverride)
+    if (keyboardTriggerOverride or TriggerOverride)
     {
         trigger = Down;
     }
@@ -332,7 +332,7 @@ void PilotInputs::Update()
         // RV - I-Hawk - Added a check to allow ARH "Maddog" launch only in boresight mode
         if ((SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsAirplane()))
         {
-            if (keyboardPickleOverride || PickleOverride)
+            if (keyboardPickleOverride or PickleOverride)
             {
                 if (!PickleTime) PickleTime = SimLibElapsedTime;
                 else if ((SimLibElapsedTime - PickleTime) > playerAC->FCC->GetPickleTime() && pickleButton == Off &&

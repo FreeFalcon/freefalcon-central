@@ -164,10 +164,10 @@ void DigitalBrain::MissileDefeatCheck(void)
          ((MissileClass *)self->incomingMissile[0])->GetSeekerType() != SensorClass::IRST && // Don't test for RWR if it's a IR missile...
          (rwrSensor = FindSensor(self, SensorClass::RWR)) && // The plane has an RWR (without it, why bother)
          (
-         ( (MissileClass *)self->incomingMissile[0])->GetSeekerType() == SensorClass::RadarHoming || // The real missile sensor is a SARH
-         (((MissileClass *)self->incomingMissile[0])->sensorArray && ((MissileClass *)self->incomingMissile[0])->sensorArray[0]->Type() == SensorClass::Radar) || // The current sensor is a ARH (if it's a local entity)
+         ( (MissileClass *)self->incomingMissile[0])->GetSeekerType() == SensorClass::RadarHoming or // The real missile sensor is a SARH
+         (((MissileClass *)self->incomingMissile[0])->sensorArray && ((MissileClass *)self->incomingMissile[0])->sensorArray[0]->Type() == SensorClass::Radar) or // The current sensor is a ARH (if it's a local entity)
          (!((MissileClass *)self->incomingMissile[0])->sensorArray && (rwrElement = ((VehRwrClass *)rwrSensor)->IsTracked(self->incomingMissile[0])) && rwrElement->missileLaunch) // There is no sensor (non local enity) but the missile is on RWR with a launch
-            )) || // Don't forget we take the REVERSE of the test if (!(...
+            )) or // Don't forget we take the REVERSE of the test if (!(...
              missileRange < ((float)SkillLevel() + 1.5f) * NM_TO_FT)) // Or the missile has come to visual range
          return;*/
 
@@ -203,8 +203,8 @@ void DigitalBrain::MissileDefeatCheck(void)
             && (rwrSensor = FindSensor(self, SensorClass::RWR))
             &&
             (((MissileClass *)self->incomingMissile[0])->GetSeekerType() == SensorClass::RadarHoming
-             || (((MissileClass *)self->incomingMissile[0])->sensorArray && ((MissileClass *)self->incomingMissile[0])->sensorArray[0]->Type() == SensorClass::Radar)
-             || (!((MissileClass *)self->incomingMissile[0])->sensorArray && (rwrElement = ((VehRwrClass *)rwrSensor)->IsTracked(self->incomingMissile[0])) && rwrElement->missileLaunch)))
+             or (((MissileClass *)self->incomingMissile[0])->sensorArray && ((MissileClass *)self->incomingMissile[0])->sensorArray[0]->Type() == SensorClass::Radar)
+             or (!((MissileClass *)self->incomingMissile[0])->sensorArray && (rwrElement = ((VehRwrClass *)rwrSensor)->IsTracked(self->incomingMissile[0])) && rwrElement->missileLaunch)))
         {
             int donothing = 1;
         }
@@ -499,7 +499,7 @@ void DigitalBrain::MissileDefeat()
         if (((MissileClass *)self->incomingMissile[0])->targetPtr)
         {
             if (((MissileClass *)self->incomingMissile[0])->targetPtr->localData->range > 2.0f * NM_TO_FT
-                || closure < 400.0f)
+                or closure < 400.0f)
             {
                 MissileDragManeuver();
             }

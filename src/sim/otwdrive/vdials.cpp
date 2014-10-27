@@ -48,7 +48,7 @@ VDial::VDial(VDialInitStr* pInit)
     }
 
     // JPO - lets be careful out there.
-    if (mCallback < 0 || mCallback >= TOTAL_CPCALLBACK_SLOTS)
+    if (mCallback < 0 or mCallback >= TOTAL_CPCALLBACK_SLOTS)
     {
         mExecCallback = NULL;
     }

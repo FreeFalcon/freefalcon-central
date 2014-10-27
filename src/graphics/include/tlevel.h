@@ -10,6 +10,7 @@
 #ifndef _TLEVEL_H_
 #define _TLEVEL_H_
 
+#include <cISO646>
 #include "Loader.h"
 #include "Ttypes.h"
 #include "Falclib/Include/FileMemMap.h"
@@ -125,7 +126,7 @@ protected:
     // Map from virutal block addresses (unbounded) to physical ones (one in the map)
     inline void VirtualToPhysicalBlockAddress(int *r, int *c)
     {
-        if ((*r >= (int)blocks_high) || (*r < 0) || (*c >= (int)blocks_wide) || (*c < 0))
+        if ((*r >= (int)blocks_high) or (*r < 0) or (*c >= (int)blocks_wide) or (*c < 0))
         {
             *r = 0;
             *c = 0;

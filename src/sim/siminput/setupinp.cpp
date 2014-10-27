@@ -138,7 +138,7 @@ void InputFunctionHashTable::AddFunction(int key, int flags, int buttonId, int m
 {
     struct FunctionPtrListEntry* tmpEntry;
 
-    if (key < 0 || key >= NumHashEntries)
+    if (key < 0 or key >= NumHashEntries)
         return;
 
     // Check for duplicate
@@ -310,7 +310,7 @@ BOOL InputFunctionHashTable::SetControl(int key, int flags, long control)
 
 BOOL InputFunctionHashTable::SetButtonFunction(int buttonID, InputFunctionType theFunc, int CPbuttonId)
 {
-    if (buttonID < 0 || buttonID >= NumButtons)
+    if (buttonID < 0 or buttonID >= NumButtons)
         return FALSE;
 
     buttonTable[buttonID].func = theFunc;
@@ -320,7 +320,7 @@ BOOL InputFunctionHashTable::SetButtonFunction(int buttonID, InputFunctionType t
 
 InputFunctionType InputFunctionHashTable::GetButtonFunction(int buttonID, int *cpButtonID)
 {
-    if (buttonID < 0 || buttonID >= NumButtons)
+    if (buttonID < 0 or buttonID >= NumButtons)
     {
         if (cpButtonID)
             *cpButtonID = -1;
@@ -336,10 +336,10 @@ InputFunctionType InputFunctionHashTable::GetButtonFunction(int buttonID, int *c
 
 BOOL InputFunctionHashTable::SetPOVFunction(int POV, int dir, InputFunctionType theFunc, int cpButtonID)
 {
-    if (POV < 0 || POV >= NumPOVs)
+    if (POV < 0 or POV >= NumPOVs)
         return FALSE;
 
-    if (dir < 0 || dir >= MAX_POV_DIR)
+    if (dir < 0 or dir >= MAX_POV_DIR)
         return FALSE;
 
     POVTable[POV].func[dir] = theFunc;
@@ -349,7 +349,7 @@ BOOL InputFunctionHashTable::SetPOVFunction(int POV, int dir, InputFunctionType 
 
 InputFunctionType InputFunctionHashTable::GetPOVFunction(int POV, int dir, int* cpButtonID)
 {
-    if (POV < 0 || POV >= NumPOVs || dir < 0 || dir >= MAX_POV_DIR)
+    if (POV < 0 or POV >= NumPOVs or dir < 0 or dir >= MAX_POV_DIR)
     {
         if (cpButtonID)
             *cpButtonID = -1;

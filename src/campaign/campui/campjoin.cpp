@@ -269,7 +269,7 @@ void CampaignJoinSuccess(void)
             // 2002-01-03 M.N.
             // If we started a new campaign, make some first task manager calculations and pop up the priority windows
             if (FalconLocalGame->IsLocal() &&
-                (strcmp(gUI_CampaignFile, "save0") == 0 || strcmp(gUI_CampaignFile, "save1") == 0 || strcmp(gUI_CampaignFile, "save2") == 0))
+                (strcmp(gUI_CampaignFile, "save0") == 0 or strcmp(gUI_CampaignFile, "save1") == 0 or strcmp(gUI_CampaignFile, "save2") == 0))
             {
                 C_Window *winme = NULL;
                 C_Button *ctrl = NULL;

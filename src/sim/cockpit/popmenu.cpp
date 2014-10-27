@@ -525,7 +525,7 @@ void MenuManager::InitPage()
         nu = (Unit) myit.GetNext();
 
         // 2002-03-07 MN of course only AWACS from our team - doh!
-        if (!cf->IsFlight() || cf->IsDead())
+        if (!cf->IsFlight() or cf->IsDead())
             continue;
 
         if (cf->GetUnitMission() == AMIS_AWACS && cf->GetTeam() == SimDriver.GetPlayerEntity()->GetTeam())
@@ -552,7 +552,7 @@ void MenuManager::CheckItemConditions(BOOL poll)
 
     for (i = 0; i < mNumItems; i++)
     {
-        if (doLoop == TRUE || poll == FALSE || mpPage->mpItems[i].mPoll)
+        if (doLoop == TRUE or poll == FALSE or mpPage->mpItems[i].mPoll)
         {
             condition = mpPage->mpItems[i].mCondition;
 
@@ -1006,7 +1006,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
                                     hasWeaps++;
                                 }
                             }
-                            else if (role == ARO_S || role == ARO_GA || role == ARO_SB || role == ARO_SEAD)
+                            else if (role == ARO_S or role == ARO_GA or role == ARO_SB or role == ARO_SEAD)
                             {
                                 if (
                                     sms->hardPoint[hp] &&
@@ -1016,7 +1016,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
                                     hasWeaps++;
                                 }
                             }
-                            else if (role == ARO_ASW || role == ARO_ASHIP)
+                            else if (role == ARO_ASW or role == ARO_ASHIP)
                             {
                                 if (
                                     sms->hardPoint[hp] &&

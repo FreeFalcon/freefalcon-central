@@ -154,7 +154,7 @@ void FindCameraDeltas(OBJECTINFO *Info)
 
 void PositionCamera(OBJECTINFO *Info, C_Window *win, long client)
 {
-    if (!gUIViewer || !Info || !win)
+    if (!gUIViewer or !Info or !win)
         return;
 
     FindCameraDeltas(Info);
@@ -224,7 +224,7 @@ BOOL ReconListSortCB(TREELIST *list, TREELIST *newitem)
     C_Feature *feat1, *feat2;
     C_Entity *ent1, *ent2;
 
-    if (!list || !newitem)
+    if (!list or !newitem)
         return(FALSE);
 
     if (list->Type_ == C_TYPE_ROOT)
@@ -240,7 +240,7 @@ BOOL ReconListSortCB(TREELIST *list, TREELIST *newitem)
         ent1 = (C_Entity*)list->Item_;
         ent2 = (C_Entity*)newitem->Item_;
 
-        if (!ent1 || !ent2)
+        if (!ent1 or !ent2)
             return(FALSE);
 
         if (_tcscmp(ent2->GetName(), ent1->GetName()) < 0)
@@ -252,7 +252,7 @@ BOOL ReconListSortCB(TREELIST *list, TREELIST *newitem)
         feat1 = (C_Feature*)list->Item_;
         feat2 = (C_Feature*)newitem->Item_;
 
-        if (!feat1 || !feat2)
+        if (!feat1 or !feat2)
             return(FALSE);
 
         if (feat2->GetFeatureValue() > feat1->GetFeatureValue())
@@ -338,7 +338,7 @@ int UI_Deaggregate(ObjectiveClass* objective)
         {
             fc = GetFeatureClassData(classID);
 
-            if (!fc || fc->Flags & FEAT_VIRTUAL)
+            if (!fc or fc->Flags & FEAT_VIRTUAL)
                 continue;
 
             objective->GetFeatureOffset(f, &y, &x, &z);

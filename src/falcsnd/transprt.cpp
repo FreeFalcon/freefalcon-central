@@ -31,7 +31,7 @@ void SetupTransport( WORD port )
  if (result != 0) {
  ShiError( "Transport:  We couldn't load WinSock!" );
  }
- if ( LOBYTE( wsaData.wVersion ) != 1 || HIBYTE( wsaData.wVersion ) != 1 ) {
+ if ( LOBYTE( wsaData.wVersion ) != 1 or HIBYTE( wsaData.wVersion ) != 1 ) {
  WSACleanup();
  ShiError( "Transport:  We couldn't find a 1.1 compatable WinSock!" );
  }
@@ -177,7 +177,7 @@ unsigned Send( void* data, unsigned size )
 // Read out one datagram (at most "size" bytes)
 unsigned Receive( void* data, unsigned size )
 {
- if ( numInBuffer == 0 || firstXR == lastXR )
+ if ( numInBuffer == 0 or firstXR == lastXR )
  return 0;
  memcpy( data, (BYTE *)firstXR->ptr, firstXR->size );
 
@@ -191,7 +191,7 @@ unsigned Receive( void* data, unsigned size )
 // Return TRUE if data is read for reading
 BOOL DataReady( void )
 {
- if ( numInBuffer == 0 || firstXR == lastXR )
+ if ( numInBuffer == 0 or firstXR == lastXR )
  return FALSE;
 
  return TRUE;

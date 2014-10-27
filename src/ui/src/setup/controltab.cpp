@@ -152,7 +152,7 @@ void HideKeyStatusLines(C_Window *win)
     {
         button = (C_Button *)win->FindControl(KEYCODES + count);
 
-        if (!button || button->GetUserNumber(EDITABLE) != -1)
+        if (!button or button->GetUserNumber(EDITABLE) != -1)
         {
             line->SetFlagBitOn(C_BIT_INVISIBLE);
             line->Refresh();
@@ -1539,7 +1539,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
         //test to see if joystick moved, if so update the control
-        if ((IO.analog[AXIS_ROLL].engrValue != JoyXPrev) || (IO.analog[AXIS_PITCH].engrValue != JoyYPrev) || InitializeValueBars) // Retro 31Dec2003
+        if ((IO.analog[AXIS_ROLL].engrValue != JoyXPrev) or (IO.analog[AXIS_PITCH].engrValue != JoyYPrev) or InitializeValueBars) // Retro 31Dec2003
 #endif
         {
             bmap = (C_Bitmap *)win->FindControl(JOY_INDICATOR);
@@ -1559,7 +1559,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
             //test to see if rudder moved, if so update the control
-            if (((IO.analog[AXIS_YAW].engrValue != RudderPrev) || InitializeValueBars) && state) // Retro 31Dec2003
+            if (((IO.analog[AXIS_YAW].engrValue != RudderPrev) or InitializeValueBars) && state) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(RUDDER);
@@ -1585,7 +1585,7 @@ void RefreshJoystickCB(long, short, C_Base *)
         {
             //test to see if throttle moved, if so update the control
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
-            if (((IO.analog[AXIS_THROTTLE].engrValue != ThrottlePrev) || InitializeValueBars) && state) // Retro 31Dec2003
+            if (((IO.analog[AXIS_THROTTLE].engrValue != ThrottlePrev) or InitializeValueBars) && state) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(THROTTLE);
@@ -1632,7 +1632,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
-            if (ABDetentPrev != IO.analog[AXIS_THROTTLE].center || InitializeValueBars) // Retro 31Dec2003
+            if (ABDetentPrev != IO.analog[AXIS_THROTTLE].center or InitializeValueBars) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(AB_DETENT);
@@ -1654,7 +1654,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
-            if (IdleCutoffPrev != IO.analog[AXIS_THROTTLE].cutoff || InitializeValueBars) // Retro 31Dec2003
+            if (IdleCutoffPrev != IO.analog[AXIS_THROTTLE].cutoff or InitializeValueBars) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(SETUP_IDLE_CUTOFF);
@@ -1809,7 +1809,7 @@ void RefreshJoystickCB(long, short, C_Base *)
         {
             Direction = 0;
 
-            if ((IO.povHatAngle[i] < 2250 || IO.povHatAngle[i] > 33750) && IO.povHatAngle[i] != -1)
+            if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) && IO.povHatAngle[i] != -1)
             {
                 flags  or_eq  0x01;
                 Direction = 0;
@@ -2458,9 +2458,9 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
 
     if (Cluster == 8004)
     {
-        if (DKScanCode == DIK_LSHIFT || DKScanCode == DIK_RSHIFT || \
-            DKScanCode == DIK_LCONTROL || DKScanCode == DIK_RCONTROL || \
-            DKScanCode == DIK_LMENU || DKScanCode == DIK_RMENU || \
+        if (DKScanCode == DIK_LSHIFT or DKScanCode == DIK_RSHIFT or \
+            DKScanCode == DIK_LCONTROL or DKScanCode == DIK_RCONTROL or \
+            DKScanCode == DIK_LMENU or DKScanCode == DIK_RMENU or \
             DKScanCode == 0x45)
             return TRUE;
 
@@ -2488,7 +2488,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
             KeyVar.CommandsKeyComboMod = (button->GetUserNumber(FLAGS) & MOD1_MASK) >> SECOND_KEY_MOD_SHIFT;
 
             //here is where we need to change the key combo for the function
-            if (DKScanCode != button->GetUserNumber(KEY2) || flags != button->GetUserNumber(FLAGS))
+            if (DKScanCode != button->GetUserNumber(KEY2) or flags != button->GetUserNumber(FLAGS))
             {
                 char keydescrip[_MAX_PATH];
                 keydescrip[0] = 0;
@@ -3370,7 +3370,7 @@ int UpdateKeyMapList(char *fname, int flag)
     while (fgets(buff, _MAX_PATH, fp))
     {
 
-        if (buff[0] == ';' || buff[0] == '\n' || buff[0] == '#')
+        if (buff[0] == ';' or buff[0] == '\n' or buff[0] == '#')
             continue;
 
         if (sscanf(buff, "%s %d %d %x %x %x %x %d %[^\n]s", funcName, &buttonId, &mouseSide, &key2, &mod2, &key1, &mod1, &editable, &descrip) < 8)
@@ -3561,7 +3561,7 @@ int CreateKeyMapList(char *filename)
 
     while (fgets(buff, _MAX_PATH, fp))
     {
-        if (buff[0] == ';' || buff[0] == '\n' || buff[0] == '#')
+        if (buff[0] == ';' or buff[0] == '\n' or buff[0] == '#')
             continue;
 
         if (sscanf(buff, "%s %d %d %x %x %x %x %d %[^\n]s", funcName, &buttonId, &mouseSide, &key2, &mod2, &key1, &mod1, &editable, &descrip) < 8)
@@ -3784,7 +3784,7 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
         UpdateKeyMapList(PlayerOptions.GetKeyfile(), TRUE);
     }
 
-    if ((newcontroller == SIM_MOUSE) || (newcontroller == SIM_NUMDEVICES))
+    if ((newcontroller == SIM_MOUSE) or (newcontroller == SIM_NUMDEVICES))
     {
         // ??? not allowed !
         ShiAssert(false);

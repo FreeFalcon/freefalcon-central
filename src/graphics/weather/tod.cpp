@@ -49,7 +49,7 @@ void CTimeOfDay::Setup(char *dataPath)
 
     sprintf(starfile, "%s\\star.dat", dataPath);
 
-    if (!skycolor || !(in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
+    if (!skycolor or !(in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
     {
         sprintf(todfile, "%s\\tod\\tod.lst.default", dataPath);
 
@@ -221,7 +221,7 @@ void CTimeOfDay::UpdateSkyProperties()
 
     if (curtime)
     {
-        if (lastMoonTime == 0 || lastMoonTime > curtime || ((curtime - lastMoonTime) > 60 * 60 * 1000))
+        if (lastMoonTime == 0 or lastMoonTime > curtime or ((curtime - lastMoonTime) > 60 * 60 * 1000))
         {
             lastMoonTime = curtime;
             MoonPhase = -1;
@@ -339,7 +339,7 @@ void CTimeOfDay::UpdateSkyProperties()
     IMoonYaw = FloatToInt32(radtoangle(az));
     IMoonPitch = FloatToInt32(radtoangle(alt));
 
-    if (ISunPitch < 256 || ISunPitch > (8192 - 256))
+    if (ISunPitch < 256 or ISunPitch > (8192 - 256))
     {
         // Adjust the light level for the moon
         // (original levels are assumed to have been for a full moon)
@@ -380,7 +380,7 @@ void CTimeOfDay::UpdateSkyProperties()
      BadWeatherLighting.b = max(BadWeatherLighting.b/1.5f,0.01f);
      }
 
-     if(realWeather->InsideOvercast() || realWeather->UnderOvercast())
+     if(realWeather->InsideOvercast() or realWeather->UnderOvercast())
      {
      if(realWeather->weatherCondition > POOR)
       Specular = 0.f;
@@ -475,7 +475,7 @@ void CTimeOfDay::UpdateWeatherColors(DWORD weatherCondition)
             BadWeatherLighting.b = m_BadWeatherLighting.b;
         }
 
-        if (realWeather->InsideOvercast() || realWeather->UnderOvercast())
+        if (realWeather->InsideOvercast() or realWeather->UnderOvercast())
         {
 
             if (realWeather->weatherCondition > POOR) Specular = 0.f;
@@ -910,7 +910,7 @@ void CTimeOfDay::CreateMoonPhaseMask(unsigned char *image, int phase)
                 {
                     c <<= 1;
 
-                    if ((col2 < start) || (col2 >= stop)) c  or_eq  1;
+                    if ((col2 < start) or (col2 >= stop)) c  or_eq  1;
 
                     col2++;
                 }

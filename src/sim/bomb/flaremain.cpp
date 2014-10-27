@@ -270,7 +270,7 @@ void FlareClass::InitTrail(void)
     displayIndex = GetClassID(DOMAIN_AIR, CLASS_SFX, TYPE_FLARE,
                               STYPE_FLARE1, SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
 
-    if (!drawPointer || drawPointer == (DrawableObject*)0xbaadf00d) // FRB
+    if (!drawPointer or drawPointer == (DrawableObject*)0xbaadf00d) // FRB
     {
         drawPointer = NULL;
     }

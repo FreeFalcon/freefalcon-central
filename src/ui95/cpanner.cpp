@@ -135,7 +135,7 @@ void C_Panner::SetImage(short state, long ImageID)
 
 long C_Panner::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready() || !Parent_)
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready() or !Parent_)
     {
         return(0);
     }
@@ -300,7 +300,7 @@ BOOL C_Panner::Process(long, short HitType)
 
 void C_Panner::Refresh()
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (BgImage_)
@@ -329,7 +329,7 @@ void C_Panner::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Image_[i])
         Image_[i]->Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 

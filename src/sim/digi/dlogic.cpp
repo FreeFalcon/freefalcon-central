@@ -59,7 +59,7 @@ void DigitalBrain::DecisionLogic(void)
     if (g_bRequestHelp)
     {
         // 2002-01-14 MODIFIED BY S.G. pctStrength only belongs to SimBaseClass. Make sure it's one before checking
-        if (airtargetPtr && (airtargetPtr->BaseData()->IsDead() || airtargetPtr->BaseData()->IsExploding() ||
+        if (airtargetPtr && (airtargetPtr->BaseData()->IsDead() or airtargetPtr->BaseData()->IsExploding() ||
                              (airtargetPtr->BaseData()->IsSim() && ((SimBaseClass *)airtargetPtr->BaseData())->pctStrength <= 0.0f)))
         {
             airtargetPtr->Release();
@@ -142,7 +142,7 @@ void DigitalBrain::DecisionLogic(void)
     {
         // 2000-09-25 MODIFIED BY S.G. SO WEAPON FREE COMMAND WITH NO DESIGNATED TARGET MAKES THE AI GO AFTER THEIR TARGET...
         // if(isWing && mpActionFlags[AI_ENGAGE_TARGET]) {
-        if (isWing && (mpActionFlags[AI_ENGAGE_TARGET] || mWeaponsAction == AI_WEAPONS_FREE))
+        if (isWing && (mpActionFlags[AI_ENGAGE_TARGET] or mWeaponsAction == AI_WEAPONS_FREE))
         {
             AiRunTargetSelection();
         }
@@ -170,7 +170,7 @@ void DigitalBrain::DecisionLogic(void)
         }
         else
         {
-            if (curMode <= DefensiveModes || curMode == GunsEngageMode || SimLibElapsedTime > self->nextGeomCalc)
+            if (curMode <= DefensiveModes or curMode == GunsEngageMode or SimLibElapsedTime > self->nextGeomCalc)
             {
                 self->nextGeomCalc += self->geomCalcRate;
                 // hack! to avoid traversing a list, set the targetPtr's next var
@@ -208,9 +208,9 @@ void DigitalBrain::DecisionLogic(void)
 
     // If I'm a leader or a wingman with permission to shoot and not defensive or in waypoint mode
     // MODIFIED BY S.G. SO AI CAN STILL DEFEND THEMSELF WHEN RETURNING TO BASE (ODDLY ENOUGH, LandingMode IS WHEN RTBing
-    //  if((!isWing || mWeaponsAction == AI_WEAPONS_FREE) && targetPtr && curMode > DefensiveModes &&
-    if ((!isWing || mWeaponsAction == AI_WEAPONS_FREE) && targetPtr && (curMode > DefensiveModes || curMode == LandingMode) &&
-        (curMode != WaypointMode || agDoctrine == AGD_NONE))
+    //  if((!isWing or mWeaponsAction == AI_WEAPONS_FREE) && targetPtr && curMode > DefensiveModes &&
+    if ((!isWing or mWeaponsAction == AI_WEAPONS_FREE) && targetPtr && (curMode > DefensiveModes or curMode == LandingMode) &&
+        (curMode != WaypointMode or agDoctrine == AGD_NONE))
     {
         // Weapon selection
         WeaponSelection();
@@ -238,7 +238,7 @@ void DigitalBrain::DecisionLogic(void)
     {
         if (SkillLevel() > 2)   // Smart one will do it under most condition
         {
-            if ((curMode >= GroundAvoidMode && curMode <= MissileDefeatMode) || (curMode >= MissileEngageMode && curMode <= BVREngageMode) || curMode == BugoutMode)
+            if ((curMode >= GroundAvoidMode && curMode <= MissileDefeatMode) or (curMode >= MissileEngageMode && curMode <= BVREngageMode) or curMode == BugoutMode)
                 self->Sms->TankJettison(); // will take care if tanks are empty
         }
         else if (SkillLevel() > 0)   // Not so smart will do it if threathened while dumb one won't do it...
@@ -283,7 +283,7 @@ void DigitalBrain::DecisionLogic(void)
     }
 
     // RV - Biker - When no more fuel drop everything
-    if ((IsSetATC(SaidFumes) || IsSetATC(SaidFlameout)) && !self->Sms->DidEmergencyJettison())
+    if ((IsSetATC(SaidFumes) or IsSetATC(SaidFlameout)) && !self->Sms->DidEmergencyJettison())
     {
         self->Sms->EmergencyJettison();
     }
@@ -334,8 +334,8 @@ void DigitalBrain::RunDecisionRoutines(void)
             //wingy taxied to the target...
             if (g_bCheckForMode && curMode != TakeoffMode)
             {
-                if ((g_bAGNoBVRWVR && ((missionClass == AAMission || missionComplete) && maxAAWpnRange != 0.0F))
-                    || maxAAWpnRange != 0.0F)
+                if ((g_bAGNoBVRWVR && ((missionClass == AAMission or missionComplete) && maxAAWpnRange != 0.0F))
+                    or maxAAWpnRange != 0.0F)
                 {
                     WvrEngageCheck();
                     BvrEngageCheck();
@@ -343,8 +343,8 @@ void DigitalBrain::RunDecisionRoutines(void)
             }
             else
             {
-                if ((g_bAGNoBVRWVR && ((missionClass == AAMission || missionComplete) && maxAAWpnRange != 0.0F))
-                    || maxAAWpnRange != 0.0F)
+                if ((g_bAGNoBVRWVR && ((missionClass == AAMission or missionComplete) && maxAAWpnRange != 0.0F))
+                    or maxAAWpnRange != 0.0F)
                 {
                     WvrEngageCheck();
                     BvrEngageCheck();
@@ -486,7 +486,7 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
     // No targeting when on ground attack run(i.e. After IP)
     // 2001-05-05 MODIFIED BY S.G. LETS TRY SOMETHING ELSE INSTEAD
     //if (agDoctrine != AGD_NONE && !madeAGPass)
-    if (newTarget && newTarget->BaseData()->GetTeam() == self->GetTeam() && (agDoctrine != AGD_NONE || missionComplete))
+    if (newTarget && newTarget->BaseData()->GetTeam() == self->GetTeam() && (agDoctrine != AGD_NONE or missionComplete))
     {
         return;
     }
@@ -511,7 +511,7 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
     if (newTarget && // Assigning a target
         newTarget != targetPtr && // It's a new target
         !newTarget->BaseData()->OnGround() && // It's not on the ground
-        (!mpActionFlags[AI_ENGAGE_TARGET] && missionClass == AAMission || missionComplete) && // We're not busy doing A/G stuff
+        (!mpActionFlags[AI_ENGAGE_TARGET] && missionClass == AAMission or missionComplete) && // We're not busy doing A/G stuff
         newTarget != threatPtr && // It's not a threat we're reacting to
         isWing && // We're a wingy
         mDesignatedObject == FalconNullId && // We're not being directed
@@ -549,7 +549,7 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
 
             return;
         }
-        else if (newTarget && (targetPtr == NULL || (newTarget->BaseData() != targetPtr->BaseData())) && newTarget->localData->range < 2.0F * NM_TO_FT)
+        else if (newTarget && (targetPtr == NULL or (newTarget->BaseData() != targetPtr->BaseData())) && newTarget->localData->range < 2.0F * NM_TO_FT)
         {
             ClearATCFlag(AskedToEngage);
             // 2000-09-25 ADDED BY S.G. NEED TO FORCE THE AI TO SHOOT RIGHT AWAY
@@ -731,7 +731,7 @@ void DigitalBrain::AddMode(DigiMode newMode)
 {
     // 2000-11-17 ADDED BY S.G. SO AI CAN BE MORE AGRESSIVE WHEN RTBing
     // Now if the new mode asked is 'LandingMode', and the mode we are asked to go to is a defensive or engagement mode, leave it alone
-    if (newMode == LandingMode && (nextMode == DefensiveModes || (nextMode >= MissileEngageMode && nextMode <= WVREngageMode)))
+    if (newMode == LandingMode && (nextMode == DefensiveModes or (nextMode >= MissileEngageMode && nextMode <= WVREngageMode)))
 
 
         return;
@@ -782,7 +782,7 @@ void DigitalBrain::ResolveModeConflicts(void)
 
 
     //we appear to be getting distracted while landing
-    //ShiAssert( (atcstatus == noATC) || (curMode == LandingMode || curMode == TakeoffMode || curMode == WaypointMode) );
+    //ShiAssert( (atcstatus == noATC) or (curMode == LandingMode or curMode == TakeoffMode or curMode == WaypointMode) );
     if (atcstatus != noATC && curMode != LandingMode && curMode != TakeoffMode && curMode != WaypointMode)
     {
         SendATCMsg(noATC);
@@ -796,13 +796,13 @@ void DigitalBrain::FireControl(void)
 
     // basic check for firing, time to shoot, have a missile, have a target
     if (SimLibElapsedTime < missileShotTimer ||
-        !curMissile || !targetPtr
-        || F4IsBadReadPtr(curMissile, sizeof(MissileClass)) // JB 010223 CTD
-        || F4IsBadReadPtr(self->FCC, sizeof(FireControlComputer)) // JB 010326 CTD
-        || F4IsBadReadPtr(self->Sms, sizeof(SMSClass)) // JB 010326 CTD
-        || F4IsBadReadPtr(targetPtr, sizeof(SimObjectType)) // JB 010326 CTD
-        || F4IsBadReadPtr(targetPtr->localData, sizeof(SimObjectLocalData)) // JB 010326 CTD
-        || !curMissile->sensorArray || F4IsBadReadPtr(curMissile->sensorArray, sizeof(SensorClass*)) // M.N. 011114 CTD
+        !curMissile or !targetPtr
+        or F4IsBadReadPtr(curMissile, sizeof(MissileClass)) // JB 010223 CTD
+        or F4IsBadReadPtr(self->FCC, sizeof(FireControlComputer)) // JB 010326 CTD
+        or F4IsBadReadPtr(self->Sms, sizeof(SMSClass)) // JB 010326 CTD
+        or F4IsBadReadPtr(targetPtr, sizeof(SimObjectType)) // JB 010326 CTD
+        or F4IsBadReadPtr(targetPtr->localData, sizeof(SimObjectLocalData)) // JB 010326 CTD
+        or !curMissile->sensorArray or F4IsBadReadPtr(curMissile->sensorArray, sizeof(SensorClass*)) // M.N. 011114 CTD
        )
     {
         return;
@@ -818,7 +818,7 @@ void DigitalBrain::FireControl(void)
     // me123 commented out for now. it seems the incomign missiles are not getting cleared !
     // 2001-08-31 S.G. FIXED PREVIOUS CODE WAS ASSUMING targetPtr WAS ALWAYS A SIM. IT CAN BE A CAMPAIGN OBJECT AS WELL, HENCE THE CTD.
     // if ((((SimBaseClass *)targetPtr->BaseData())->incomingMissile && ((SimWeaponClass *)((SimBaseClass *)targetPtr->BaseData())->incomingMissile)->parent != self))
-    if ((targetPtr->BaseData()->IsAirplane() && ((SimBaseClass *)targetPtr->BaseData())->incomingMissile[1]) || (!targetPtr->BaseData()->IsAirplane() && ((SimBaseClass *)targetPtr->BaseData())->incomingMissile[0]))
+    if ((targetPtr->BaseData()->IsAirplane() && ((SimBaseClass *)targetPtr->BaseData())->incomingMissile[1]) or (!targetPtr->BaseData()->IsAirplane() && ((SimBaseClass *)targetPtr->BaseData())->incomingMissile[0]))
         return;
 
     //END OF ADDED SECTION
@@ -827,13 +827,13 @@ void DigitalBrain::FireControl(void)
     // MODIFIED BY S.G. SO IR MISSILE HAVE A VARIABLE ATA
     //   if ( targetData->ata > 20.0f * DTR ||
 
-    if (self->FCC->inRange == FALSE || targetData->range < self->FCC->missileRMin ||
+    if (self->FCC->inRange == FALSE or targetData->range < self->FCC->missileRMin ||
         targetData->range > self->FCC->missileRMax)
         return;
 
     //Cobra JB is a crackhead
     /*if (curMissile->sensorArray[0] &&
-     (curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming || curMissile->sensorArray[0]->Type() == SensorClass::Radar) &&
+     (curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming or curMissile->sensorArray[0]->Type() == SensorClass::Radar) &&
      ( targetData->range >
      (self->FCC->missileRMax * (((0.99F - isWing * 0.05f)) *(1.30-1.00f * min(((((float)SkillLevel()/2 )/ ((float)self->Sms->numOnBoard[wcAimWpn]))), 1.0f) *
      ((float)cos(targetPtr->localData->ataFrom/2) * (float)cos(targetPtr->localData->ataFrom/2)))))))
@@ -849,7 +849,7 @@ void DigitalBrain::FireControl(void)
         return;
 
     if // off bore or getting closer to bore
-    (curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming && (targetData->ata > 35.0f * DTR/* ||  targetData->atadot < 0.0f*/)) // 2002-03-12 MODIFIED BY S.G. && has HIGHER precedence than ||
+    (curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming && (targetData->ata > 35.0f * DTR/* or  targetData->atadot < 0.0f*/)) // 2002-03-12 MODIFIED BY S.G. && has HIGHER precedence than ||
         return;
 
     // if // don't shoot semis if agregated
@@ -949,7 +949,7 @@ int DigitalBrain::SelectFlightModel(void)
 
 
     // turn off simple mode if pilot has ejected or dying....
-    if (self->IsAcStatusBitsSet(AircraftClass::ACSTATUS_PILOT_EJECTED) || self->pctStrength <= 0.0f)
+    if (self->IsAcStatusBitsSet(AircraftClass::ACSTATUS_PILOT_EJECTED) or self->pctStrength <= 0.0f)
     {
         return SIMPLE_MODE_OFF;
     }
@@ -1019,7 +1019,7 @@ BOOL DigitalBrain::CommandTest(void)
 
     // If Leader, issue orders to wingmen
 
-    if (flightIdx == AiFlightLead || (flightIdx == AiElementLead && mSplitFlight && mpActionFlags[AI_ENGAGE_TARGET] && mCurrentManeuver == FalconWingmanMsg::WMTotalMsg))   // VWF or rtb should be added
+    if (flightIdx == AiFlightLead or (flightIdx == AiElementLead && mSplitFlight && mpActionFlags[AI_ENGAGE_TARGET] && mCurrentManeuver == FalconWingmanMsg::WMTotalMsg))   // VWF or rtb should be added
     {
         return TRUE;
     }

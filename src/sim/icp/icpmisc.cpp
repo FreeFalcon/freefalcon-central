@@ -295,7 +295,7 @@ BOOL ICPClass::CheckForHARM(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC || !playerAC->Sms)
+    if (!playerAC or !playerAC->Sms)
         return FALSE;
 
     if (playerAC->Sms->curWeapon && playerAC->Sms->curWeaponClass == wcHARMWpn)

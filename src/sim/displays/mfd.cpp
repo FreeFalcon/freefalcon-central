@@ -1067,7 +1067,7 @@ void MfdDrawable::PushButton(int whichButton, int whichMFD)
                 mode = MFDClass::MfdMenu;
 
             // Check other MFD if needed;
-            if (mode == MFDClass::MfdOff || otherMfd < 0 || MfdDisplay[otherMfd]->mode != mode)
+            if (mode == MFDClass::MfdOff or otherMfd < 0 or MfdDisplay[otherMfd]->mode != mode)
                 MfdDisplay[whichMFD]->SetNewModeAndPos(whichButton - 11, mode);
 
             break;

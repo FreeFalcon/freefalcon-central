@@ -74,7 +74,7 @@ C_Image::~C_Image()
 
 void C_Image::Setup()
 {
-    if (Root_ || Finder_)
+    if (Root_ or Finder_)
         Cleanup();
 
     Root_ = new C_Hash;
@@ -134,7 +134,7 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, UI95_RECT *rect, short x, shor
     int neww = 0, newh = 0; //!
     int i = 0, j = 0; //!
 
-    if (Root_->Find(ID) || Finder_->Find(ID))
+    if (Root_->Find(ID) or Finder_->Find(ID))
     {
         MonoPrint("cimagerc error: [ID %1ld] Already used (AddImage)\n", ID);
         return(NULL);
@@ -154,7 +154,7 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, UI95_RECT *rect, short x, shor
         return(NULL);
     }
 
-    if (rect->left >= prior->Header->w || rect->top >= prior->Header->h)
+    if (rect->left >= prior->Header->w or rect->top >= prior->Header->h)
     {
         MonoPrint("AddImage [ID %1ld] is outside of prior image's [ID %1ld] area\n", ID, LastID);
         return(NULL);
@@ -270,7 +270,7 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, short x, short y, short w, sho
     int neww = 0, newh = 0; //!
     int i = 0, j = 0; //!
 
-    if (Root_->Find(ID) || Finder_->Find(ID))
+    if (Root_->Find(ID) or Finder_->Find(ID))
     {
         MonoPrint("cimagerc error: [ID %1ld] Already used (AddImage)\n", ID);
         return(NULL);
@@ -296,7 +296,7 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, short x, short y, short w, sho
         return(NULL);
     }
 
-    if (x >= prior->Header->w || y >= prior->Header->h)
+    if (x >= prior->Header->w or y >= prior->Header->h)
     {
         MonoPrint("AddImage [ID %1ld] is outside of prior image's [ID %1ld] area\n", ID, LastID);
         return(NULL);
@@ -401,7 +401,7 @@ long C_Image::BuildColorTable(WORD *, long , long , long)
     long sidx;
     long count;
 
-    if (!img || !w || !h)
+    if (!img or !w or !h)
         return(0);
 
     if (ColorOrder_)
@@ -455,7 +455,7 @@ void C_Image::MakePalette(WORD *, long)
 #if 0
     long i;
 
-    if (!dest || !entries)
+    if (!dest or !entries)
         return;
 
     for (i = 0; i < entries; i++)
@@ -470,7 +470,7 @@ void C_Image::ConvertTo8Bit(WORD *, unsigned char *, long, long)
 #if 0
     long i, j, didx, start, sidx;
 
-    if (!src || !w || !h || !dest)
+    if (!src or !w or !h or !dest)
         return;
 
     if (dest)
@@ -496,7 +496,7 @@ void C_Image::CopyArea(WORD *src, WORD *dest, long w, long h)
 {
     long i, j, didx, start, sidx;
 
-    if (!src || !w || !h || !dest)
+    if (!src or !w or !h or !dest)
         return;
 
     if (dest)
@@ -529,7 +529,7 @@ C_Resmgr *C_Image::LoadImage(long ID, char *file, short x, short y)
     C_Resmgr *newres;
     IMAGE_RSC *newentry;
 
-    if (Root_->Find(ID) || Finder_->Find(ID))
+    if (Root_->Find(ID) or Finder_->Find(ID))
     {
         MonoPrint("cimagerc error: [ID %1ld] Already used (LoadFile [%s])\n", ID, file);
         return(NULL);
@@ -627,7 +627,7 @@ C_Resmgr *C_Image::LoadFile(long ID, char *file, short x, short y)
     C_Resmgr *newres;
     IMAGE_RSC *newentry;
 
-    if (Root_->Find(ID) || Finder_->Find(ID))
+    if (Root_->Find(ID) or Finder_->Find(ID))
     {
         MonoPrint("cimagerc error: [ID %1ld] Already used (LoadFile [%s])\n", ID, file);
         return(NULL);
@@ -712,7 +712,7 @@ C_Resmgr *C_Image::LoadPrivateRes(long ID, char *filename)
 {
     C_Resmgr *res;
 
-    if (!ID || !filename || !Root_)
+    if (!ID or !filename or !Root_)
         return(NULL);
 
     if (Root_->Find(ID))

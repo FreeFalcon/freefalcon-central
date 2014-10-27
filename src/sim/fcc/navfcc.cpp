@@ -315,7 +315,7 @@ void FireControlComputer::NavMode(void)
             float OAYPos;
             float OAZPos;
 
-            ShiAssert(platform->curWaypoint != NULL || !F4IsBadReadPtr(platform->curWaypoint, sizeof(WayPointClass)));
+            ShiAssert(platform->curWaypoint != NULL or !F4IsBadReadPtr(platform->curWaypoint, sizeof(WayPointClass)));
 
             for (i = 0; i < MAX_DESTOA; i++)
             {
@@ -654,7 +654,7 @@ void FireControlComputer::StepPoint(void)
     RadarClass* theRadar;
     float rx, ry, rz;
 
-    if (waypointStepCmd == 1 || waypointStepCmd == -1 || waypointStepCmd == 127)
+    if (waypointStepCmd == 1 or waypointStepCmd == -1 or waypointStepCmd == 127)
     {
 
         switch (mStptMode)
@@ -1474,7 +1474,7 @@ void FireControlComputer::DrawPointSymbol(WayPointClass* curWaypoint, float disp
     else
         theWaypt = ((SimVehicleClass*)platform)->curWaypoint;
 
-    if ((curWaypoint != theWaypt) || (vuxRealTime & 0x200))
+    if ((curWaypoint != theWaypt) or (vuxRealTime & 0x200))
     {
 
         wpFlags = curWaypoint->GetWPFlags();
@@ -1973,7 +1973,7 @@ void FireControlComputer::DrawGhostCursor(void)
         }
 
         // MD -- 20040113: supress ghost cursors with STT mode; we'll draw the cursor latched on to the bugged target instead
-        if (theRadar && ((theRadar->GetRadarMode() == RadarClass::STBY) || theRadar->IsSet(RadarDopplerClass::STTingTarget)))
+        if (theRadar && ((theRadar->GetRadarMode() == RadarClass::STBY) or theRadar->IsSet(RadarDopplerClass::STTingTarget)))
             return;
     }
 
@@ -2195,7 +2195,7 @@ void FireControlComputer::Draw1WingmanGnd(AircraftClass *wing)
     RadarClass* theRadar = (RadarClass*)FindSensor(wing, SensorClass::Radar);
 #if NO_REMOTE_BUGGED_TARGET
 
-    if (theRadar == NULL || ((locked = theRadar->CurrentTarget()) == NULL))
+    if (theRadar == NULL or ((locked = theRadar->CurrentTarget()) == NULL))
     {
         return;
     }
@@ -2203,7 +2203,7 @@ void FireControlComputer::Draw1WingmanGnd(AircraftClass *wing)
 #else
 
     if (((SimVehicleClass*)wing)->sensorArray[1]->RemoteBuggedTarget == NULL &&
-        (theRadar == NULL || (locked = theRadar->CurrentTarget()) == NULL)) return;
+        (theRadar == NULL or (locked = theRadar->CurrentTarget()) == NULL)) return;
 
 #endif
 
@@ -2415,7 +2415,7 @@ void FireControlComputer::Draw1Wingman(AircraftClass *wing)
 #if !NO_REMOTE_BUGGED_TARGET
         static_cast<SimVehicleClass*>(wing)->sensorArray[1]->RemoteBuggedTarget == NULL &&
 #endif
-        (theRadar == NULL || locked == NULL)
+        (theRadar == NULL or locked == NULL)
     )
     {
         return;
@@ -2484,7 +2484,7 @@ void FireControlComputer::Draw1Wingman(AircraftClass *wing)
 #endif
 
     //Cobra we don't want to draw A/G stuff and certainly not with A/A symbology
-    if ((theRadar->GetRadarModeR() != RadarClass::AA) || (abs(alt) <= 1))
+    if ((theRadar->GetRadarModeR() != RadarClass::AA) or (abs(alt) <= 1))
     {
         return;
     }
@@ -2624,7 +2624,7 @@ void FireControlComputer::HSDDisplay(void)
 //MI
 void FireControlComputer::MoveCursor(void)
 {
-    if (HSDCursorXCmd != 0.0F || HSDCursorYCmd != 0.0F)
+    if (HSDCursorXCmd != 0.0F or HSDCursorYCmd != 0.0F)
     {
         if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {

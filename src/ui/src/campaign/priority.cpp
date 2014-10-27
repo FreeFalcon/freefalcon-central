@@ -1240,7 +1240,7 @@ void SelectPAK(long PAKID, long TeamID)
     WORD *Pal;
     F4CSECTIONHANDLE *Leave;
 
-    if (PAKID >= MAX_PAKS || TeamID >= NUM_TEAMS)
+    if (PAKID >= MAX_PAKS or TeamID >= NUM_TEAMS)
         return;
 
 
@@ -1410,14 +1410,14 @@ void MapSelectPAKCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    if (!control || !PAKMap)
+    if (!control or !PAKMap)
         return;
 
     btn = (C_Button*)control;
     x = btn->GetRelX();
     y = btn->GetRelY();
 
-    if (x < 0 || x >= TheCampaign.TheaterSizeX / PAK_MAP_RATIO || y < 0 || y >= TheCampaign.TheaterSizeY / PAK_MAP_RATIO)
+    if (x < 0 or x >= TheCampaign.TheaterSizeX / PAK_MAP_RATIO or y < 0 or y >= TheCampaign.TheaterSizeY / PAK_MAP_RATIO)
         return;
 
     overlay = PAKMap->Owner->GetData();

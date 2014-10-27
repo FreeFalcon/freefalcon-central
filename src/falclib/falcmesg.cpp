@@ -27,7 +27,7 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
     {
         FalconRadioChatterMessage *radioMessage = (FalconRadioChatterMessage*)theEvent;
 
-        if (radioMessage->dataBlock.message < 0 || radioMessage->dataBlock.message >= LastComm)
+        if (radioMessage->dataBlock.message < 0 or radioMessage->dataBlock.message >= LastComm)
         {
             ShiWarning("Bad radio message");
             MonoPrint("Dropping Chatter Message ID: %d \n", radioMessage->dataBlock.message);
@@ -46,7 +46,7 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
             VuSessionsIterator sit(FalconLocalGame);
             session = (FalconSessionEntity*) sit.GetFirst();
 
-            while (session && (!friendly || !inrange))
+            while (session && (!friendly or !inrange))
             {
                 if (session->GetPlayerEntity())
                     player = (FalconEntity*)session->GetPlayerEntity();
@@ -71,7 +71,7 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
                 session = (FalconSessionEntity*) sit.GetNext();
             }
 
-            if (!friendly || !inrange)
+            if (!friendly or !inrange)
             {
                 // MonoPrint("Dropping Chatter Message ID: %d  Friendly:%d  In Range:%d\n", radioMessage->dataBlock.message, friendly, inrange );
                 delete theEvent;

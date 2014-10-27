@@ -446,7 +446,7 @@ void RenderOTW::ClipVerticalSectors(void)
 
 
     // Construct the ordered edge list (horizontal span case - Y buckets (since Y is East/Right))
-    if ((Yaw() < PI_OVER_2) || (Yaw() > 3.0f * PI_OVER_2))
+    if ((Yaw() < PI_OVER_2) or (Yaw() > 3.0f * PI_OVER_2))
     {
         // Necessarily, rightY2 > leftY2
         if (rightY1 > rightY2)
@@ -812,7 +812,7 @@ void RenderOTW::TrimCornerSet(void)
     for (span = firstEmptySpan - 1; span >= spanList; span--)
     {
 
-        if ((span < spanList + 2) || (span->LOD == (span - 2)->LOD))
+        if ((span < spanList + 2) or (span->LOD == (span - 2)->LOD))
         {
 
             // Normal Draw.
@@ -1762,8 +1762,8 @@ void RenderOTW::ComputeBounds(void)
         back_edge.Normalize();
     }
 
-    ShiAssert((leftX1 == rightX1 && leftY1 == rightY1) || right_edge.RightOf(leftX1, leftY1));
-    ShiAssert((leftX1 == rightX1 && leftY1 == rightY1) || left_edge.LeftOf(rightX1, rightY1));
+    ShiAssert((leftX1 == rightX1 && leftY1 == rightY1) or right_edge.RightOf(leftX1, leftY1));
+    ShiAssert((leftX1 == rightX1 && leftY1 == rightY1) or left_edge.LeftOf(rightX1, rightY1));
     ShiAssert(right_edge.RightOf(leftX2, leftY2));
     ShiAssert(left_edge.LeftOf(rightX2, rightY2));
 #endif

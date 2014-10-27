@@ -623,12 +623,12 @@ void TankerBrain::DriveBoom(void)
         tmpAz = 0;
         tempEl = 0;
 
-        if (!(flags & GivingGas) && (!tankingPtr || tankingPtr->localData->range > 800.0F) || (flags & ClearingPlane))
+        if (!(flags & GivingGas) && (!tankingPtr or tankingPtr->localData->range > 800.0F) or (flags & ClearingPlane))
         {
             tmpAz = 0.0F;
             tempEl = 0;
         }
-        else if (!(flags & GivingGas) && (!tankingPtr || tankingPtr->localData->range - DrogueExt > 30.0F))
+        else if (!(flags & GivingGas) && (!tankingPtr or tankingPtr->localData->range - DrogueExt > 30.0F))
         {
             tmpAz = 0.0F;
             tempEl = 0;
@@ -741,7 +741,7 @@ void TankerBrain::DriveBoom(void)
                  fabs(boom[DROGUE].az)*RTD < 20.0F * /*FRB*/ ScaledRM &&
                  fabs(tankingPtr->BaseData()->Roll())*RTD < 4.0F * /* S.G.*/ ScaledRM &&
                  fabs(tankingPtr->BaseData()->Pitch())*RTD < 6.0F * /* S.G.*/ ScaledRM)
-                || ((flags & AIready) && (tmpRefuelMode >= 3))) // 27NOV03 - FRB  AI is in position
+                or ((flags & AIready) && (tmpRefuelMode >= 3))) // 27NOV03 - FRB  AI is in position
             {
                 flags  or_eq  GivingGas;
                 tankMsg = new FalconTankerMessage(self->Id(), FalconLocalGame);
@@ -838,13 +838,13 @@ void TankerBrain::DriveBoom(void)
 
     tmpRange = 0.0F;
 
-    if (!(flags & GivingGas) && (!tankingPtr || tankingPtr->localData->range > 800.0F) || (flags & ClearingPlane))
+    if (!(flags & GivingGas) && (!tankingPtr or tankingPtr->localData->range > 800.0F) or (flags & ClearingPlane))
     {
         tmpAz = 0.0F;
         tempEl =  self->af->GetBoomStoredAngle() * DTR; // 12DEC03 - FRB - Use tanker <ac>.dat stored angle
         tmpRange = 0.0F;
     }
-    else if (!(flags & GivingGas) && (!tankingPtr || tankingPtr->localData->range - 33.5F > rad)) // 28NOV03 - FRB - replaced 30.0F w/ rad
+    else if (!(flags & GivingGas) && (!tankingPtr or tankingPtr->localData->range - 33.5F > rad)) // 28NOV03 - FRB - replaced 30.0F w/ rad
     {
         tmpAz = 0.0F;
         tempEl = -15.0F * DTR;
@@ -952,7 +952,7 @@ void TankerBrain::DriveBoom(void)
              boom[BOOM].el * RTD < -26.1F && boom[BOOM].el * RTD > -38.9F && fabs(boom[BOOM].az)*RTD < 20.0F /* &&
  fabs(tankingPtr->BaseData()->Roll())*RTD < 4.0F * /* S.G.*/ // ScaledRM &&
              // fabs(tankingPtr->BaseData()->Pitch())*RTD < 4.0F * /* S.G.*/ ScaledRM) */  JPG 14 Jan03 - End of Line 881 thru 883 - pitch and roll isn't needed
-             || ((flags & AIready) && (tmpRefuelMode >= 3.0f)))) // 27NOV03 - FRB  AI is in position
+             or ((flags & AIready) && (tmpRefuelMode >= 3.0f)))) // 27NOV03 - FRB  AI is in position
         {
             flags  or_eq  GivingGas;
             flags &= compl AIready;
@@ -968,7 +968,7 @@ void TankerBrain::DriveBoom(void)
         if (fabs(boom[BOOM].ext - tankingPtr->localData->range + 33.5F) > 2.0F ||
             fabs(boom[BOOM].az - tmpAz)*RTD > 2.0F * /*FRB*/ ScaledRM ||
             fabs(boom[BOOM].el - tankingPtr->localData->el)*RTD > 2.0F ||
-            fabs(tankingPtr->BaseData()->Roll())*RTD > 20.0F * /* S.G.*/ ScaledRM ||  // JPG 14 Jan 03 - 20 prevents tons of disconnects in the turn
+            fabs(tankingPtr->BaseData()->Roll())*RTD > 20.0F * /* S.G.*/ ScaledRM or  // JPG 14 Jan 03 - 20 prevents tons of disconnects in the turn
             fabs(tankingPtr->BaseData()->Pitch())*RTD > 20.0F * /* S.G.*/ ScaledRM ||
             tankingPtr->localData->el * RTD > -25.0F ||
             tankingPtr->localData->el * RTD < -40.0F ||
@@ -1272,7 +1272,7 @@ void TankerBrain::FollowThirsty(void)
     FalconTankerMessage* tankMsg;
 
     // Find the thirsty one
-    if (!tankingPtr || tankingPtr->BaseData() != curThirsty)
+    if (!tankingPtr or tankingPtr->BaseData() != curThirsty)
     {
         if (tankingPtr)
             tankingPtr->Release();
@@ -1371,7 +1371,7 @@ void TankerBrain::FollowThirsty(void)
             }
 
             // distance to trackpoint increases again or we are closer than g_fTankerTrackFactor nm ? -> switch to next trackpoint
-            if ((dist > trackPointDistance || (dist < (g_fTankerTrackFactor) * NM_TO_FT * (g_fTankerTrackFactor) * NM_TO_FT)) && turnallow)
+            if ((dist > trackPointDistance or (dist < (g_fTankerTrackFactor) * NM_TO_FT * (g_fTankerTrackFactor) * NM_TO_FT)) && turnallow)
             {
                 HeadsUp = true;
                 turnallow = false;
@@ -1394,12 +1394,12 @@ void TankerBrain::FollowThirsty(void)
         {
             dist = DistanceToFront(SimToGrid(self->YPos()), SimToGrid(self->XPos()));
 
-            if (dist > 45.0F && dist < 140.0F || dist > 200.0F)
+            if (dist > 45.0F && dist < 140.0F or dist > 200.0F)
             {
                 HeadsUp = true; // and a HeadsUp call
             }
 
-            if ((dist <= 36.0F || dist >= 149.0F) && HeadsUp)
+            if ((dist <= 36.0F or dist >= 149.0F) && HeadsUp)
             {
                 HeadsUp = false;
                 turnallow = true;
@@ -1410,7 +1410,7 @@ void TankerBrain::FollowThirsty(void)
                 FalconSendMessage(tankMsg);
             }
 
-            if (dist < 35.0F || dist > 150.0F) // refuel between 35 and 150 nm distance to the FLOT
+            if (dist < 35.0F or dist > 150.0F) // refuel between 35 and 150 nm distance to the FLOT
             {
                 if (turnallow)
                 {
@@ -1937,7 +1937,7 @@ void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
                 }
 
                 // the closest FLOT point is "east" of us
-                if (heading >= 0.0f && heading < PI / 2.0f || heading > PI && heading < PI + PI / 2.0f)
+                if (heading >= 0.0f && heading < PI / 2.0f or heading > PI && heading < PI + PI / 2.0f)
                 {
                     boxside = true;
                 }// this creates a track box to the right, which should be away from the FLOT, false = to the left

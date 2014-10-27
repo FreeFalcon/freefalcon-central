@@ -144,7 +144,7 @@ int F4ReadFile(FILE *fp, void *buffer, int size)
 {
     char errstr[80];
 
-    if (!size || !fp)
+    if (!size or !fp)
         return 0;
 
     if (fread(buffer, size, 1, fp) == 1)
@@ -159,7 +159,7 @@ int F4WriteFile(FILE *fp, void *buffer, int size)
 {
     char errstr[80];
 
-    if (!size || !fp)
+    if (!size or !fp)
         return 0;
 
     if (fwrite(buffer, size, 1, fp) == 1)

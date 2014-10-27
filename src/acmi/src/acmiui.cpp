@@ -327,7 +327,7 @@ C_Base *FindUITextEvent(C_Window *win, long slot, long time)
     CONTROLLIST *cur;
     C_Base *found = NULL;
 
-    if (!win || !time)
+    if (!win or !time)
         return(NULL);
 
     cur = win->GetControlList();
@@ -678,7 +678,7 @@ void ToggleFirstSelectionOfOptionsCB(long ID, short hittype, C_Base *control)
 void ToggleObjScaleCB(long ID, short hittype, C_Base*)
 {
 
-    if (!acmiView || !acmiView->Tape() || hittype != C_TYPE_LMOUSEUP)
+    if (!acmiView or !acmiView->Tape() or hittype != C_TYPE_LMOUSEUP)
         return;
 
     switch (ID)
@@ -2093,7 +2093,7 @@ void ACMIStepFowardCB(long, short hittype, C_Base *control)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((hittype == C_TYPE_LMOUSEUP || hittype == C_TYPE_REPEAT) && ACMIViewIsReady())
+    if ((hittype == C_TYPE_LMOUSEUP or hittype == C_TYPE_REPEAT) && ACMIViewIsReady())
     {
         Leave = UI_Enter(control->Parent_);
         acmiView->Tape()->Pause();
@@ -2115,7 +2115,7 @@ void ACMIStepReverseCB(long, short hittype, C_Base *control)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((hittype == C_TYPE_LMOUSEUP || hittype == C_TYPE_REPEAT) && ACMIViewIsReady())
+    if ((hittype == C_TYPE_LMOUSEUP or hittype == C_TYPE_REPEAT) && ACMIViewIsReady())
     {
         Leave = UI_Enter(control->Parent_);
         acmiView->Tape()->Pause();
@@ -2275,7 +2275,7 @@ void ACMIPannerCB(long, short hittype, C_Base *control)
     vert = 0.0F;
 
 
-    if ((hittype == C_TYPE_LMOUSEDOWN || hittype == C_TYPE_REPEAT) && ACMIViewIsReady())
+    if ((hittype == C_TYPE_LMOUSEDOWN or hittype == C_TYPE_REPEAT) && ACMIViewIsReady())
     {
         panner = (C_Panner *) control;
         horz = (float)panner->GetHRange();
@@ -2303,7 +2303,7 @@ void ACMIHArrowsCB(long, short hittype, C_Base *control)
     vert = 0.0F;
 
 
-    if ((hittype == C_TYPE_LMOUSEDOWN || hittype == C_TYPE_REPEAT) && ACMIViewIsReady())
+    if ((hittype == C_TYPE_LMOUSEDOWN or hittype == C_TYPE_REPEAT) && ACMIViewIsReady())
     {
         panner = (C_Panner *) control;
         horz = (float)panner->GetHRange();
@@ -2331,7 +2331,7 @@ void ACMIVArrowsCB(long, short hittype, C_Base *control)
     vert = 0.0F;
 
 
-    if ((hittype == C_TYPE_LMOUSEDOWN || hittype == C_TYPE_REPEAT) && ACMIViewIsReady())
+    if ((hittype == C_TYPE_LMOUSEDOWN or hittype == C_TYPE_REPEAT) && ACMIViewIsReady())
     {
         panner = (C_Panner *) control;
         horz = (float)panner->GetHRange();
@@ -2643,7 +2643,7 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
     C_Window *renwin;
 
 
-    if (hittype != C_TYPE_LMOUSEUP || acmiView == NULL)
+    if (hittype != C_TYPE_LMOUSEUP or acmiView == NULL)
         return;
 
     renwin = gMainHandler->FindWindow(ACMI_RENDER_WIN);

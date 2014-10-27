@@ -913,7 +913,7 @@ extern "C" {
                     {
                         lp->send_count ++;
 
-                        if (/*(lp->oob) || */(check_bandwidth(lp->size, 1, type)))
+                        if (/*(lp->oob) or */(check_bandwidth(lp->size, 1, type)))
                         {
                             return send_rudp_packet(cudp, lp, type);
                         }
@@ -940,7 +940,7 @@ extern "C" {
                     {
                         lp->send_count ++;
 
-                        if (/*(lp->oob) || */(check_bandwidth(lp->size, 1, type)))
+                        if (/*(lp->oob) or */(check_bandwidth(lp->size, 1, type)))
                         {
                             return send_rudp_packet(cudp, lp, type);
                         }
@@ -1239,7 +1239,7 @@ extern "C" {
             return 0;
         }
 
-        if (!size || !rp)
+        if (!size or !rp)
         {
             return 0;
         }
@@ -1860,7 +1860,7 @@ extern "C" {
                 cudp->rudp_data.last_oob_sent_received = -1;
             }
 
-            if ((cudp->rudp_data.last_sent_received == -1) || (cudp->rudp_data.last_oob_sent_received == -1))
+            if ((cudp->rudp_data.last_sent_received == -1) or (cudp->rudp_data.last_oob_sent_received == -1))
             {
                 if (send_rudp_packet(cudp, NULL, 0))
                 {
@@ -2118,7 +2118,7 @@ extern "C" {
             // int trueValue = 1;
             // int falseValue = 0;
 
-            if ((cudp->rudp_data.sequence_number) || (cudp->rudp_data.oob_sequence_number))
+            if ((cudp->rudp_data.sequence_number) or (cudp->rudp_data.oob_sequence_number))
             {
                 cudp->rudp_data.reset_send = RUDP_EXIT;
             }

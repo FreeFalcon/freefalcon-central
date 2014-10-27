@@ -259,7 +259,7 @@ SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int ve
 {
     SimMoverClass* simEntity = NULL;
 
-    if ((!campEntity) || (!campEntity->GetComponents()))
+    if ((!campEntity) or (!campEntity->GetComponents()))
     {
         return NULL;
     }
@@ -447,7 +447,7 @@ void GameManagerClass::ReleasePlayer(FalconSessionEntity *player)
 {
     SimMoverClass* simEntity = (SimMoverClass*) player->GetPlayerEntity();
 
-    ShiAssert(player != FalconLocalSession || simEntity);
+    ShiAssert(player != FalconLocalSession or simEntity);
 
     if (simEntity)
     {

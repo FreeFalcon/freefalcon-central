@@ -84,7 +84,7 @@ void TBlockList::Update(float x, float y)
     ourBlockCol = col;
 
     // Skip the block managment stuff if we didn't cross a block boundry
-    if (vx || vy)
+    if (vx or vy)
     {
         // Call the appropriate worker function based on how far we moved
         if ((abs(vx) <= 1) && (abs(vy) <= 1))

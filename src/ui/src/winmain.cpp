@@ -596,8 +596,8 @@ signed int PASCAL WinMain(HINSTANCE h_Instance, HINSTANCE h_previous_instance,
 void EndUI(void)
 {
     // Looking for multiplayer stomp...
-    ShiAssert(TeamInfo[1] == NULL || TeamInfo[1]->cteam != 0xFC);
-    ShiAssert(TeamInfo[2] == NULL || TeamInfo[2]->cteam != 0xFC);
+    ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam != 0xFC);
+    ShiAssert(TeamInfo[2] == NULL or TeamInfo[2]->cteam != 0xFC);
 
     doUI = FALSE;
     TheCampaign.Suspend();
@@ -613,8 +613,8 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
     LRESULT retval = 0;
 
     // Looking for multiplayer stomp...
-    ShiAssert(TeamInfo[1] == NULL || TeamInfo[1]->cteam != 0xFC);
-    ShiAssert(TeamInfo[2] == NULL || TeamInfo[2]->cteam != 0xFC);
+    ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam != 0xFC);
+    ShiAssert(TeamInfo[2] == NULL or TeamInfo[2]->cteam != 0xFC);
 
     switch (message)
     {
@@ -969,7 +969,7 @@ void ParseCommandLine(LPSTR cmdLine)
 
 #endif
 
-            if (!stricmp(arg, "-bandwidth") || !stricmp(arg, "-bandwith") || !stricmp(arg, "-bw"))
+            if (!stricmp(arg, "-bandwidth") or !stricmp(arg, "-bandwith") or !stricmp(arg, "-bw"))
                 if ((arg = strtok(NULL, " ")) != NULL)
                 {
                     F4CommsBandwidth = atoi(arg);
@@ -1014,7 +1014,7 @@ void ParseCommandLine(LPSTR cmdLine)
                     F4SessionUpdateTime = atoi(arg);
                 }
 
-            if ((!stricmp(arg, "-hostidx")) || (!stricmp(arg, "-hostid")))
+            if ((!stricmp(arg, "-hostidx")) or (!stricmp(arg, "-hostid")))
                 if ((arg = strtok(NULL, " ")) != NULL)
                 {
                     ComIPGetHostIDIndex = atoi(arg);
@@ -1180,7 +1180,7 @@ void SystemLevelInit()
         SetCursor(gCursors[CRSR_WAIT]);
         g_theaters.SetNewTheater(td);
 
-        if (((!_strnicmp(td->m_name, "Korea", 5)) || (!_strnicmp(td->m_name, "Eurowar", 7))) && (SimPathHandle == -1))
+        if (((!_strnicmp(td->m_name, "Korea", 5)) or (!_strnicmp(td->m_name, "Eurowar", 7))) && (SimPathHandle == -1))
         {
             char tmpPath[256];
             sprintf(tmpPath, "%s\\sim", FalconDataDirectory); // JPO - so we can find raw sim files
@@ -1410,8 +1410,8 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
     static int InTimer = 0;
 
     // Looking for multiplayer stomp...
-    ShiAssert(TeamInfo[1] == NULL || TeamInfo[1]->cteam != 0xFC);
-    ShiAssert(TeamInfo[2] == NULL || TeamInfo[2]->cteam != 0xFC);
+    ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam != 0xFC);
+    ShiAssert(TeamInfo[2] == NULL or TeamInfo[2]->cteam != 0xFC);
 
 #ifdef _MSC_VER
     // Set the FPU to Truncate
@@ -1626,7 +1626,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 			{
 				FalconGameEntity *game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
 
-				if (!game || (VuGameEntity*)game == vuPlayerPoolGroup)
+				if (!game or (VuGameEntity*)game == vuPlayerPoolGroup)
 				{
 					MonoPrint("Campaign Join Error: Not a valid game.\n");
 					PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
@@ -1770,7 +1770,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     break;
 
                 case CAMP_NEED_ENTITIES:
-                    if (!FalconLocalGame || vuPlayerPoolGroup == vuLocalGame)
+                    if (!FalconLocalGame or vuPlayerPoolGroup == vuLocalGame)
                         break;
 
                     gCampJoinLastData = vuxRealTime;
@@ -1781,7 +1781,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     break;
 
                 case CAMP_NEED_WEATHER:
-                    if (!FalconLocalGame ||  vuPlayerPoolGroup == vuLocalGame)
+                    if (!FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
                     gCampJoinLastData = vuxRealTime;
@@ -1792,7 +1792,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     break;
 
                 case CAMP_NEED_PERSIST:
-                    if (!FalconLocalGame ||  vuPlayerPoolGroup == vuLocalGame)
+                    if (!FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
                     gCampJoinLastData = vuxRealTime;
@@ -1803,7 +1803,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     break;
 
                 case CAMP_NEED_OBJ_DELTAS:
-                    if (!FalconLocalGame || vuPlayerPoolGroup == vuLocalGame)
+                    if (!FalconLocalGame or vuPlayerPoolGroup == vuLocalGame)
                         break;
 
                     gCampJoinLastData = vuxRealTime;
@@ -1814,7 +1814,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     break;
 
                 case CAMP_NEED_TEAM_DATA:
-                    if (!FalconLocalGame ||  vuPlayerPoolGroup == vuLocalGame)
+                    if (!FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
                     gCampJoinLastData = vuxRealTime;
@@ -1825,7 +1825,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     break;
 
                 case CAMP_NEED_UNIT_DATA:
-                    if (!FalconLocalGame ||  vuPlayerPoolGroup == vuLocalGame)
+                    if (!FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
                     gCampJoinLastData = vuxRealTime;
@@ -1836,7 +1836,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     break;
 
                 case CAMP_NEED_VC:
-                    if (!FalconLocalGame ||  vuPlayerPoolGroup == vuLocalGame)
+                    if (!FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
                     gCampJoinLastData = vuxRealTime;
@@ -1847,7 +1847,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     break;
 
                 case CAMP_NEED_PRIORITIES:
-                    if (!FalconLocalGame ||  vuPlayerPoolGroup == vuLocalGame)
+                    if (!FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
                     gCampJoinLastData = vuxRealTime;
@@ -2076,12 +2076,12 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
 
     // Looking for multiplayer stomp...
-    ShiAssert(TeamInfo[1] == NULL || TeamInfo[1]->cteam != 0xFC);
-    ShiAssert(TeamInfo[2] == NULL || TeamInfo[2]->cteam != 0xFC);
+    ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam != 0xFC);
+    ShiAssert(TeamInfo[2] == NULL or TeamInfo[2]->cteam != 0xFC);
 
     // Looking for multiplayer stomp...
-    ShiAssert(TeamInfo[1] == NULL || TeamInfo[1]->cteam != 0xFC);
-    ShiAssert(TeamInfo[2] == NULL || TeamInfo[2]->cteam != 0xFC);
+    ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam != 0xFC);
+    ShiAssert(TeamInfo[2] == NULL or TeamInfo[2]->cteam != 0xFC);
 
     return retval;
 }
@@ -2188,7 +2188,7 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
             }
         }
 
-        if (stopMovie || !movieIsPlaying(hMovie))
+        if (stopMovie or !movieIsPlaying(hMovie))
         {
             MonoPrint("Premature movie exit.\n");
             movieClose(hMovie);

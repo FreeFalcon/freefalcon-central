@@ -345,7 +345,7 @@ void ICPClass::ExecCNIMode()
                 if (tempstr[i] == ':')
                 {
                     //now we gotta look ahead
-                    if (tempstr[j] != '0' || tempstr[k] != '0')
+                    if (tempstr[j] != '0' or tempstr[k] != '0')
                     {
                         if (tempstr[j] != '0')
                         {

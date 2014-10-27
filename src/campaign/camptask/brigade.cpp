@@ -231,9 +231,9 @@ int BrigadeClass::MoveUnit(CampaignTime time)
     // Check if we have a valid objective
     o = GetUnitObjective();
 
-    if (!o || !TeamInfo[GetTeam()]->gtm->IsValidObjective(GetOrders(), o))
+    if (!o or !TeamInfo[GetTeam()]->gtm->IsValidObjective(GetOrders(), o))
     {
-        if (o && (GetOrders() == GORD_CAPTURE || GetOrders() == GORD_ASSAULT || GetOrders() == GORD_AIRBORNE))
+        if (o && (GetOrders() == GORD_CAPTURE or GetOrders() == GORD_ASSAULT or GetOrders() == GORD_AIRBORNE))
             SetUnitOrders(GORD_SECURE, o->Id());
         else
         {
@@ -283,7 +283,7 @@ int BrigadeClass::MoveUnit(CampaignTime time)
     ChooseTactic();
 
     // Upon new orders, reset our element's ordered flags && collect list of possible positions
-    if (Ordered() || toorder)
+    if (Ordered() or toorder)
     {
         Objective o;
 
@@ -409,7 +409,7 @@ int BrigadeClass::ChooseTactic(void)
         Objective o;
         o = GetUnitObjective();
 
-        if (!o || !o->IsSecondary())
+        if (!o or !o->IsSecondary())
         {
             // Find a retreat path
             o = FindRetreatPath(this, 3, FIND_SECONDARYONLY);
@@ -571,7 +571,7 @@ void BrigadeClass::SetUnitOrders(int neworders, VU_ID oid)
     o->GetLocation(&dx, &dy);
     GetLocation(&x, &y);
 
-    if ((x != dx || y != dy) && GetMovementType() != NoMove)
+    if ((x != dx or y != dy) && GetMovementType() != NoMove)
     {
         SetMoving(1);
         SetUnitDestination(dx, dy);
@@ -752,7 +752,7 @@ int GetNewRole(Unit e, Unit brig)
         role = GRO_RESERVE;
 
     // Swap special roles
-    if (role == GRO_AIRBORNE || role == GRO_ASSAULT)
+    if (role == GRO_AIRBORNE or role == GRO_ASSAULT)
         role = brole;
 
     // Modify assignment role by normal role
@@ -1093,7 +1093,7 @@ void BrigadeClass::ReorganizeUnit (void)
  ((Battalion)pos[i])->SetUnitElement(ce);
  te = pos[i];
 #ifdef ROBIN_GDEBUG
- if (i == GPOS_COMBAT1 || i == GPOS_RESERVE1 || i == GPOS_SUPPORT1)
+ if (i == GPOS_COMBAT1 or i == GPOS_RESERVE1 or i == GPOS_SUPPORT1)
  MonoPrint("| ");
  MonoPrint("%d  ",pos[i]->GetCampID());
 #endif
@@ -1128,7 +1128,7 @@ void BrigadeClass::ReorganizeEngagedUnit (void)
  pos[i] = e;
  if (i <= GPOS_COMBAT3 && !e->Broken() && !e->Retreating())
  ce++;
- if (i <= GPOS_COMBAT3 && (e->Broken() || e->Retreating()))
+ if (i <= GPOS_COMBAT3 && (e->Broken() or e->Retreating()))
  be++;
  e = GetNextUnitElement();
  }

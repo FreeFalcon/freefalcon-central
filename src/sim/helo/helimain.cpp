@@ -787,7 +787,7 @@ int HelicopterClass::Exec(void)
                 message = new FalconDamageMessage (Id(), owner_session);
                 message->dataBlock.gameTime   = SimLibElapsedTime;
                 message->dataBlock.fEntityID  = Id();
-                if (!SimDriver.RunningCampaign() || GetCampaignObject() == NULL || IsDogfight())
+                if (!SimDriver.RunningCampaign() or GetCampaignObject() == NULL or IsDogfight())
                 {
                  message->dataBlock.fCampID = GetCallsignIdx();
                  message->dataBlock.fFlightID = (int)GetCampaignObject();
@@ -804,7 +804,7 @@ int HelicopterClass::Exec(void)
                 message->dataBlock.fWeaponUID.num_ = 0;
 
                 message->dataBlock.dEntityID  = Id();
-                if (!SimDriver.RunningCampaign() || GetCampaignObject() == NULL || IsDogfight())
+                if (!SimDriver.RunningCampaign() or GetCampaignObject() == NULL or IsDogfight())
                 {
                  message->dataBlock.dCampID = GetCallsignIdx();
                  message->dataBlock.dFlightID = (int)GetCampaignObject();
@@ -985,7 +985,7 @@ void HelicopterClass::LandingCheck(void)
           message = new FalconDamageMessage (Id(), owner_session);
           message->dataBlock.gameTime   = SimLibElapsedTime;
           message->dataBlock.fEntityID  = Id();
-          if (!SimDriver.RunningCampaign() || GetCampaignObject() == NULL || IsDogfight())
+          if (!SimDriver.RunningCampaign() or GetCampaignObject() == NULL or IsDogfight())
           {
           message->dataBlock.fCampID = GetCallsignIdx();
           message->dataBlock.fFlightID = (int)GetCampaignObject();
@@ -1002,7 +1002,7 @@ void HelicopterClass::LandingCheck(void)
           message->dataBlock.fWeaponUID.num_ = 0;
 
           message->dataBlock.dEntityID  = Id();
-          if (!SimDriver.RunningCampaign() || GetCampaignObject() == NULL || IsDogfight())
+          if (!SimDriver.RunningCampaign() or GetCampaignObject() == NULL or IsDogfight())
           {
           message->dataBlock.dCampID = GetCallsignIdx();
           message->dataBlock.dFlightID = (int)GetCampaignObject();
@@ -1097,7 +1097,7 @@ HelicopterClass::GetFormationPos(float *x, float *y, float *z)
 
     // if we're the leader just return our own position
     //TJL 11/15/03 Test
-    //if ( flightLead == this || !flightLead)
+    //if ( flightLead == this or !flightLead)
     if (flightLead == this)
     {
         *x = XPos();

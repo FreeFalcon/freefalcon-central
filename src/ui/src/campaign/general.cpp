@@ -179,7 +179,7 @@ void Uni_Float(_TCHAR *buffer)
 
     decimal = gStringMgr->GetString(TXT_DECIMAL_PLACE);
 
-    if (!decimal || !buffer)
+    if (!decimal or !buffer)
         return;
 
     i = 0;
@@ -203,7 +203,7 @@ _TCHAR *UI_WordWrap(C_Window *win, _TCHAR *str, long fontid, short width, BOOL *
     short i, done;
     short w;
 
-    if (!win || (str == NULL && (WordWrap == NULL || WordPtr == NULL)))
+    if (!win or (str == NULL && (WordWrap == NULL or WordPtr == NULL)))
         return(NULL);
 
     if (str)
@@ -297,19 +297,19 @@ BOOL FileNameSortCB(TREELIST *list, TREELIST *newitem)
     _TCHAR *first, *second;
     C_Button *btn1, *btn2;
 
-    if (!list || !newitem)
+    if (!list or !newitem)
         return(FALSE);
 
     btn1 = (C_Button*)list->Item_;
     btn2 = (C_Button*)newitem->Item_;
 
-    if (!btn1 || !btn2)
+    if (!btn1 or !btn2)
         return(FALSE);
 
     first = btn1->GetText(0);
     second = btn2->GetText(0);
 
-    if (!first || !second)
+    if (!first or !second)
         return(FALSE);
 
     if (_tcsicmp(second, first) < 0)
@@ -324,7 +324,7 @@ void GetVirtualFileList(C_Window *win, _TCHAR virtlist[200][64], long client, lo
     C_EditBox *ebox;
     short i, half;
 
-    if (!virtlist || !win)
+    if (!virtlist or !win)
         return;
 
     half = static_cast<short>((win->ClientArea_[client].right - win->ClientArea_[client].left) / 2);
@@ -381,7 +381,7 @@ void GetVirtualFileListTree(C_TreeList *tree, _TCHAR virtlist[200][64], long gro
     TREELIST *item;
     short i, UniqueID;
 
-    if (!virtlist || !tree)
+    if (!virtlist or !tree)
         return;
 
     UniqueID = static_cast<short>(tree->GetUserNumber(0));
@@ -431,7 +431,7 @@ void GetFileList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[], long clien
     long i;
     _TCHAR *ptr, *extension;
 
-    if (!win || !cb) return;
+    if (!win or !cb) return;
 
     ffhnd = FindFirstFile(fspec, &filedata);
     last = (ffhnd != INVALID_HANDLE_VALUE);
@@ -783,7 +783,7 @@ void LoadAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*Yes
     C_TreeList *tree;
     C_EditBox *ebox;
 
-    if (!YesCB || !filespec)
+    if (!YesCB or !filespec)
         return;
 
     win = gMainHandler->FindWindow(SAVE_WIN);
@@ -877,7 +877,7 @@ void LoadVirtualFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void
     C_Text *txt;
     C_EditBox *ebox;
 
-    if (!YesCB || !filespec)
+    if (!YesCB or !filespec)
         return;
 
     win = gMainHandler->FindWindow(SAVE_WIN);
@@ -975,7 +975,7 @@ void SaveAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*Yes
     C_EditBox *ebox;
     C_TreeList *tree;
 
-    if (!YesCB || !filespec)
+    if (!YesCB or !filespec)
         return;
 
     win = gMainHandler->FindWindow(SAVE_WIN);
@@ -1469,7 +1469,7 @@ void GetMissionTarget(Package curpackage, Flight curflight, _TCHAR Buffer[])
     CampEntity ent;
     GridIndex x = 0, y = 0;
 
-    if (((curflight) && (curflight->GetUnitMission() != AMIS_ABORT)) || (!curflight))
+    if (((curflight) && (curflight->GetUnitMission() != AMIS_ABORT)) or (!curflight))
     {
         ent = FindEntity(curpackage->GetMissionRequest()->targetID);
 
@@ -2279,7 +2279,7 @@ short AddTextToWindow(C_Window *win, short x, short y, COLORREF color, _TCHAR *s
 {
     C_Text *txt;
 
-    if (win == NULL || str == NULL)
+    if (win == NULL or str == NULL)
         return(0);
 
     txt = new C_Text;
@@ -2323,7 +2323,7 @@ BOOL AddWordWrapTextToWindow(C_Window *win, short *x, short *y, short, short end
 
     retval = TRUE;
 
-    if (win == NULL || str == NULL)
+    if (win == NULL or str == NULL)
         return(0);
 
     wrap_w = static_cast<short>(max(50, endcol - *x));
@@ -2768,7 +2768,7 @@ void EncryptBuffer(uchar startkey, uchar *buffer, long length)
     uchar *ptr;
     uchar nextkey;
 
-    if (!buffer || length <= 0)
+    if (!buffer or length <= 0)
         return;
 
     idx = 0;
@@ -2791,7 +2791,7 @@ void DecryptBuffer(uchar startkey, uchar *buffer, long length)
     uchar *ptr;
     uchar nextkey;
 
-    if (!buffer || length <= 0)
+    if (!buffer or length <= 0)
         return;
 
     idx = 0;

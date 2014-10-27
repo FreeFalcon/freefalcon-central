@@ -272,7 +272,7 @@ int movieInit(int numMovies, LPVOID lpDD)
     if (numOfMovies)
         return MOVIE_HAS_BEEN_INITIALIZED;
 
-    if (!numMovies || numMovies > MAX_MOVIES)
+    if (!numMovies or numMovies > MAX_MOVIES)
         return MOVIE_INVALID_NUMBER;
 
     //   move = AVI_MALLOC( numMovies * sizeof( MOVIE ) );

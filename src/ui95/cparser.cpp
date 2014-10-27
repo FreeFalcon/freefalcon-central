@@ -439,7 +439,7 @@ long C_Parser::TokenizeIDs(char *idfile, long size)
     // remove ALL white space
     while (idx < size)
     {
-        if (idfile[idx] <= ' ' || idfile[idx] == ',')
+        if (idfile[idx] <= ' ' or idfile[idx] == ',')
             idfile[idx] = 0;
 
         idx++;
@@ -468,14 +468,14 @@ long C_Parser::TokenizeIDs(char *idfile, long size)
         {
             if (expecting == 0)
             {
-                if (isdigit(idfile[idx]) || idfile[idx] == '-')
+                if (isdigit(idfile[idx]) or idfile[idx] == '-')
                     idfile[idx] = 0;
                 else
                     expecting = 1;
             }
             else if (expecting == 2)
             {
-                if (isdigit(idfile[idx]) || idfile[idx] == '-')
+                if (isdigit(idfile[idx]) or idfile[idx] == '-')
                     expecting = 3;
                 else
                     idfile[idx] = 0;
@@ -2096,7 +2096,7 @@ C_Base *C_Parser::ControlParser()
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
@@ -2553,7 +2553,7 @@ C_Window *C_Parser::WindowParser()
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
@@ -3107,7 +3107,7 @@ C_Image *C_Parser::ParseImage(char *filename)
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
@@ -3402,7 +3402,7 @@ C_Font *C_Parser::ParseFont(char *filename)
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
@@ -3692,7 +3692,7 @@ C_Sound *C_Parser::ParseSound(char *filename)
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
@@ -3982,7 +3982,7 @@ C_String *C_Parser::ParseString(char *filename)
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
@@ -4282,7 +4282,7 @@ C_Movie *C_Parser::ParseMovie(char *filename)
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
@@ -4677,7 +4677,7 @@ C_Base *C_Parser::PopupParser()
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
@@ -5024,7 +5024,7 @@ C_SoundBite *C_Parser::ParseSoundBite(char *filename)
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;

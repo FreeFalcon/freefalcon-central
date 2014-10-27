@@ -93,7 +93,7 @@ C_Sound::~C_Sound()
 
 void C_Sound::Setup()
 {
-    if (SoundList_ || ResList_)
+    if (SoundList_ or ResList_)
         Cleanup();
 
     if (gSoundDriver)

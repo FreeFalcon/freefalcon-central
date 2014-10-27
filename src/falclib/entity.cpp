@@ -880,7 +880,7 @@ int LoadPtHeaderData(char *filename)
 
     for (l = 0; l < NumObjectiveEntries; l++)
     {
-        if ((ObjDataTable[l].PtDataIndex >= NumPtHeaders) || (ObjDataTable[l].PtDataIndex < 0))
+        if ((ObjDataTable[l].PtDataIndex >= NumPtHeaders) or (ObjDataTable[l].PtDataIndex < 0))
         {
             if (ErrorFH)
                 fprintf(ErrorFH, "ObjDataTable[%d].PtDataIndex >= NumPtHeaders = %d or < 0\n",
@@ -1523,7 +1523,7 @@ void UpdateUnitCombatStatistics(void)
                 {
                     j = SquadronStoresDataTable[squads].Stores[i] * 20;
 
-                    if (j > 255 || WeaponDataTable[i].Flags & WEAP_ONETENTH)
+                    if (j > 255 or WeaponDataTable[i].Flags & WEAP_ONETENTH)
                         j = 255;
 
                     SquadronStoresDataTable[squads].Stores[i] = (uchar)j;
@@ -1709,7 +1709,7 @@ void LoadVisIdMap()
 
     while (fgets(buffer, sizeof buffer, fp))
     {
-        if (buffer[0] == '/' || buffer[0] == '\n' || buffer[0] == '\r')
+        if (buffer[0] == '/' or buffer[0] == '\n' or buffer[0] == '\r')
             continue;
 
         if (sscanf(buffer, "%d => %d", &id1, &id2) == 2 &&
@@ -1743,7 +1743,7 @@ void LoadRackTables()
 
     while (fgets(buffer, sizeof buffer, fp))
     {
-        if (buffer[0] == '#' || buffer[0] == '\n')
+        if (buffer[0] == '#' or buffer[0] == '\n')
             continue;
 
         if (sscanf(buffer, "NumGroups %d", &ngrp) != 1)
@@ -1766,7 +1766,7 @@ void LoadRackTables()
 
     while (rg < MaxRackGroups && fgets(buffer, sizeof buffer, fp))
     {
-        if (buffer[0] == '#' || buffer[0] == '\n')
+        if (buffer[0] == '#' or buffer[0] == '\n')
             continue;
 
         int grp;
@@ -1807,7 +1807,7 @@ void LoadRackTables()
     // now read in the entries
     while (fgets(buffer, sizeof buffer, fp))
     {
-        if (buffer[0] == '#' || buffer[0] == '\n')
+        if (buffer[0] == '#' or buffer[0] == '\n')
             continue;
 
         if (sscanf(buffer, "NumRacks %d", &ngrp) != 1)
@@ -1830,7 +1830,7 @@ void LoadRackTables()
 
     while (fgets(buffer, sizeof buffer, fp))
     {
-        if (buffer[0] == '#' || buffer[0] == '\n')
+        if (buffer[0] == '#' or buffer[0] == '\n')
             continue;
 
         int ctid, occ;
@@ -1849,7 +1849,7 @@ void LoadRackTables()
 
 int FindBestRackID(int rackgroup, int count)
 {
-    if (rackgroup < 0 || rackgroup >= MaxRackGroups)
+    if (rackgroup < 0 or rackgroup >= MaxRackGroups)
         return -1;
 
     for (int i = 0; i < RackGroupTable[rackgroup].nentries; i++)
@@ -1866,8 +1866,8 @@ int FindBestRackID(int rackgroup, int count)
 
 int FindBestRackIDByPlaneAndWeapon(int planerg, int weaponrg, int count)
 {
-    if (planerg < 0 || planerg >= MaxRackGroups ||
-        weaponrg < 0 || weaponrg >= MaxRackGroups)
+    if (planerg < 0 or planerg >= MaxRackGroups ||
+        weaponrg < 0 or weaponrg >= MaxRackGroups)
         return -1;
 
     // first find a rackgroup in common
@@ -2054,7 +2054,7 @@ void RDLoadRackData(void)
     {
         char *com, *arg;
 
-        if (buffer[0] == '#' || buffer[0] == ';' || buffer[0] == '\n')
+        if (buffer[0] == '#' or buffer[0] == ';' or buffer[0] == '\n')
             continue;
 
         com = strtok(buffer, " \t\n");

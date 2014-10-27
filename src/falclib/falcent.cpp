@@ -441,7 +441,7 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
 {
     static VU_TIME lastSent = 0;
 
-    if (!(TheCampaign.Flags & CAMP_LOADED) || ((realTime - lastSent) < SIMDIRTYDATA_INTERVAL))
+    if (!(TheCampaign.Flags & CAMP_LOADED) or ((realTime - lastSent) < SIMDIRTYDATA_INTERVAL))
     {
         return;
     }
@@ -482,7 +482,7 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
 #endif
 
             // can happen if inserted multiple times
-            if ((current->dirty_classes == 0) || (current->GetDirty() == 0))
+            if ((current->dirty_classes == 0) or (current->GetDirty() == 0))
             {
                 continue;
             }
@@ -516,7 +516,7 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
 void FalconEntity::DoSimDirtyData(VU_TIME realTime)
 {
     // only do if initialized
-    if (!(TheCampaign.Flags & CAMP_LOADED) || (simDirtyBuckets == NULL))
+    if (!(TheCampaign.Flags & CAMP_LOADED) or (simDirtyBuckets == NULL))
     {
         return;
     }
@@ -566,7 +566,7 @@ void FalconEntity::DoSimDirtyData(VU_TIME realTime)
 #endif
 
             // discard non dirty entities, can happen if it was inserted more than once
-            if ((current->dirty_classes == 0) || (current->GetDirty() == 0))
+            if ((current->dirty_classes == 0) or (current->GetDirty() == 0))
             {
                 continue;
             }
@@ -608,7 +608,7 @@ void FalconEntity::MakeFlagsDirty(void)
 
 void FalconEntity::MakeFalconEntityDirty(Dirty_Falcon_Entity bits, Dirtyness score)
 {
-    if ((!IsLocal()) || (VuState() != VU_MEM_ACTIVE))
+    if ((!IsLocal()) or (VuState() != VU_MEM_ACTIVE))
     {
         return;
     }

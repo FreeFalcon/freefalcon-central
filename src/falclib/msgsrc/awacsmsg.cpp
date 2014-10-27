@@ -201,7 +201,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     cf = nu;
                     nu = (Unit) myit.GetNext();
 
-                    if (!cf->IsFlight() || cf->IsDead())
+                    if (!cf->IsFlight() or cf->IsDead())
                         continue;
 
                     // 2002-03-07 MN of course only AWACS from our team - doh!
@@ -367,7 +367,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     {
                         FalconEntity* newTarg = (FalconEntity*)vuDatabase->Find(tgtId);
 
-                        if (newTarg && (newTarg->IsFlight() || newTarg->IsAirplane()))
+                        if (newTarg && (newTarg->IsFlight() or newTarg->IsAirplane()))
                         {
                             if (newTarg->IsFlight())
                                 pEnemyFlight = (FlightClass *) newTarg;
@@ -382,7 +382,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     {
                         simThreat = SimDriver.FindNearestThreat(plane, &X, &Y, &altitude);
 
-                        if (simThreat && (simThreat->IsFlight() || simThreat->IsAirplane()))
+                        if (simThreat && (simThreat->IsFlight() or simThreat->IsAirplane()))
                         {
                             if (simThreat->IsFlight())
                                 pEnemyFlight = (FlightClass *) simThreat;
@@ -444,12 +444,12 @@ int FalconAWACSMessage::Process(uchar autodisp)
                                 if (sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->Domain() & wdAir)
                                     hasWeaps++;
                             }
-                            else if (role == ARO_S || role == ARO_GA || role == ARO_SB || role == ARO_SEAD)
+                            else if (role == ARO_S or role == ARO_GA or role == ARO_SB or role == ARO_SEAD)
                             {
                                 if (sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->Domain() & wdGround)
                                     hasWeaps++;
                             }
-                            else if (role == ARO_ASW || role == ARO_ASHIP)
+                            else if (role == ARO_ASW or role == ARO_ASHIP)
                             {
                                 if (sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->Domain() & wdGround)
                                     hasWeaps++;
@@ -480,8 +480,8 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         meflags = flight_ptr->status_flags;
 
                     // What's that ?? Only true if FEVAL_GOT_TO_TARGET is true and false at the same time ??
-                    // if (!hasFuel || !hasWeaps || ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) && (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) && !(flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET)))
-                    if (!hasFuel || !hasWeaps || ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) && (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) && (meflags & MISEVAL_FLIGHT_STATION_OVER)))
+                    // if (!hasFuel or !hasWeaps or ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) && (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) && !(flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET)))
+                    if (!hasFuel or !hasWeaps or ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) && (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) && (meflags & MISEVAL_FLIGHT_STATION_OVER)))
                     {
                         if (rand() % 2)
                             radioMessage = CreateCallFromAwacs(flight, rcRELIEVED);
@@ -549,14 +549,14 @@ int FalconAWACSMessage::Process(uchar autodisp)
                             cf = nu;
                             nu = (Unit) myit.GetNext();
 
-                            if (cf->IsFlight() || cf->IsDead())
+                            if (cf->IsFlight() or cf->IsDead())
                                 continue;
                         }
                     }
 #if 0 // Retro 20May2004 - fixed logic
 
                     if (flight->GetUnitCurrentRole() != ARO_GA &&
-                        flight->GetUnitMission() != (AMIS_ONCALLCAS || AMIS_PRPLANCAS || AMIS_CAS || AMIS_SAD || AMIS_INT || AMIS_BAI))
+                        flight->GetUnitMission() != (AMIS_ONCALLCAS or AMIS_PRPLANCAS or AMIS_CAS or AMIS_SAD or AMIS_INT or AMIS_BAI))
 #else
                     if (flight->GetUnitCurrentRole() != ARO_GA &&
                         ((flight->GetUnitMission() != AMIS_ONCALLCAS) &&
@@ -912,11 +912,11 @@ int FalconAWACSMessage::Process(uchar autodisp)
                             cf = nu;
                             nu = (Unit) myit.GetNext();
 
-                            if (cf->GetTeam() != plane->GetTeam() || cf->IsDead())
+                            if (cf->GetTeam() != plane->GetTeam() or cf->IsDead())
                                 continue;
 
                             // RV - Biker - All naval units return TRUE here so better check for subtype
-                            if (!cf->IsTaskForce() || cf->GetSType() != STYPE_UNIT_CARRIER)
+                            if (!cf->IsTaskForce() or cf->GetSType() != STYPE_UNIT_CARRIER)
                                 continue;
 
                             dx = plane->XPos() - cf->XPos();

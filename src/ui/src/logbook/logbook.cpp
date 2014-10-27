@@ -628,12 +628,12 @@ void LogBookData::CalcRank(void)
         NewRank = COLONEL;
     }
     else if ((Pilot.Campaign.TotalScore > 1600) && \
-             (Pilot.Campaign.GamesWon || Pilot.Campaign.GamesTied))
+             (Pilot.Campaign.GamesWon or Pilot.Campaign.GamesTied))
     {
         NewRank = LT_COL;
     }
     else if ((Pilot.Campaign.TotalScore > 800) && \
-             (Pilot.Campaign.GamesWon || Pilot.Campaign.GamesTied || Pilot.Campaign.GamesLost))
+             (Pilot.Campaign.GamesWon or Pilot.Campaign.GamesTied or Pilot.Campaign.GamesLost))
     {
         NewRank = MAJOR;
     }
@@ -743,7 +743,7 @@ void LogBookData::AwardMedals(CAMP_MISS_STRUCT *MissStats)
     }
 
 
-    if (MissStats->Killed || MissStats->KilledByHuman || MissStats->KilledBySelf)
+    if (MissStats->Killed or MissStats->KilledByHuman or MissStats->KilledBySelf)
     {
         Pilot.Campaign.ConsecMissions = 0;
     }

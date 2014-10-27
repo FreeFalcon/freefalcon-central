@@ -253,7 +253,7 @@ void GetJoystickInput()
         hRes = gpDIDevice[i]->Poll(); // Retro 21Jan2004
 
         // Retro 21Jan2004
-        if ((hRes == DIERR_INPUTLOST) || (hRes == DIERR_NOTACQUIRED))
+        if ((hRes == DIERR_INPUTLOST) or (hRes == DIERR_NOTACQUIRED))
         {
             hRes = gpDIDevice[i]->Acquire();
 
@@ -803,7 +803,7 @@ void ProcessJoyButtonAndPOVHat(void)
             InputFunctionType theFunc;
             int Direction = 0;
 
-            if ((IO.povHatAngle[i] < 2250 || IO.povHatAngle[i] > 33750) && IO.povHatAngle[i] != -1)
+            if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) && IO.povHatAngle[i] != -1)
                 Direction = 0;
             else if (IO.povHatAngle[i] < 6750)
                 Direction = 1;
@@ -891,7 +891,7 @@ float ReadThrottle(void)
         hRes = ((LPDIRECTINPUTDEVICE2)gpDIDevice[AxisMap.Throttle.Device])->Poll();
 
         // Retro 21Jan2004
-        if ((hRes == DIERR_INPUTLOST) || (hRes == DIERR_NOTACQUIRED))
+        if ((hRes == DIERR_INPUTLOST) or (hRes == DIERR_NOTACQUIRED))
         {
             hRes = gpDIDevice[AxisMap.Throttle.Device]->Acquire();
 
@@ -1874,7 +1874,7 @@ int lastStoppedEffect = -1;
 /*****************************************************************************/
 void JoystickStopEffect(int effectNum)
 {
-    if (!hasForceFeedback || effectNum >= gNumEffectsLoaded || !gForceFeedbackEffect || !gForceFeedbackEffect[effectNum])
+    if (!hasForceFeedback or effectNum >= gNumEffectsLoaded or !gForceFeedbackEffect or !gForceFeedbackEffect[effectNum])
         return;
 
     ShiAssert(FALSE == F4IsBadReadPtr(gForceFeedbackEffect[effectNum], sizeof * gForceFeedbackEffect[effectNum]));
@@ -1901,7 +1901,7 @@ int JoystickPlayEffect(int effectNum, int data)
     DIEFFECT        diEffect;
     LONG            rglDirections[2] = { 0, 0 };
 
-    if (!hasForceFeedback || effectNum >= gNumEffectsLoaded || !gForceFeedbackEffect || !gForceFeedbackEffect[effectNum])
+    if (!hasForceFeedback or effectNum >= gNumEffectsLoaded or !gForceFeedbackEffect or !gForceFeedbackEffect[effectNum])
         return FALSE;
 
     if (PlayerOptions.GetFFB() == false) // Retro 27Dec2003 - returning false here.. dunno if this is too clever though
@@ -1936,7 +1936,7 @@ int JoystickPlayEffect(int effectNum, int data)
         }
     }
 
-    if (effectNum == JoyRunwayRumble1 || effectNum == JoyRunwayRumble2)
+    if (effectNum == JoyRunwayRumble1 or effectNum == JoyRunwayRumble2)
     {
         DIPERIODIC periodicHolder;
 

@@ -96,7 +96,7 @@ void AdvancedHarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
         displayY = sinAng * x2 + cosAng * y2 + HTS_Y_OFFSET;
 
         // Skip this one if its off screen
-        if ((fabs(displayX) > 1.0f) || (fabs(displayY) > 1.0f))
+        if ((fabs(displayX) > 1.0f) or (fabs(displayY) > 1.0f))
         {
             continue;
         }
@@ -245,7 +245,7 @@ void AdvancedHarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
         }
 
         // Skip this one if its off screen
-        if ((fabs(displayX) > 1.0f) || (fabs(displayY) > 1.0f))
+        if ((fabs(displayX) > 1.0f) or (fabs(displayY) > 1.0f))
         {
             continue;
         }
@@ -509,7 +509,7 @@ void AdvancedHarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
     {
         for (tmpElement = FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
         {
-            if (!lockedTarget || !lockedTarget->BaseData() || preHandoffMode == Pos)
+            if (!lockedTarget or !lockedTarget->BaseData() or preHandoffMode == Pos)
             {
                 break;
             }
@@ -542,7 +542,7 @@ void AdvancedHarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
             displayY = ey + HTS_Y_OFFSET;
 
             // Skip this one if its off screen
-            //if ((fabs(displayX) > 1.0f) || (fabs(displayY) > 1.0f))
+            //if ((fabs(displayX) > 1.0f) or (fabs(displayY) > 1.0f))
 
             // RV - I-Hawk - Diplay only what's inside the ALIC video
             if (!IsInsideALIC(displayX, displayY))

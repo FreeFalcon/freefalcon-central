@@ -71,7 +71,7 @@ void FackClass::SetFault(
 
     FaultClass::str_FEntry entry;
 
-    //ShiAssert(doWarningMsg == 0 || SimDriver.GetPlayerEntity()->mFaults == this); // should only apply to us
+    //ShiAssert(doWarningMsg == 0 or SimDriver.GetPlayerEntity()->mFaults == this); // should only apply to us
     GetFault(subsystem, &entry);
 
     // Set the fault
@@ -187,10 +187,10 @@ void FackClass::SetFault(type_CSubSystem subsystem)
             else
             {
                 //these are warnings
-                if (GetFault(tf_fail) || //never get's set currently
-                    GetFault(obs_wrn) || //never get's set currently
+                if (GetFault(tf_fail) or //never get's set currently
+                    GetFault(obs_wrn) or //never get's set currently
                     GetFault(eng_fire) ||
-                    GetFault(eng2_fire) || //TJL 01/24/04 multi-engine
+                    GetFault(eng2_fire) or //TJL 01/24/04 multi-engine
                     GetFault(hyd) ||
                     GetFault(oil_press) ||
                     GetFault(dual_fc) ||

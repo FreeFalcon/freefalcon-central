@@ -732,7 +732,7 @@ void ResyncTimes()
 
     best_comp = 1;
 
-    if (gTimeModeServer || g_bServer)
+    if (gTimeModeServer or g_bServer)
     {
         session = (FalconSessionEntity*)sit.GetFirst();
         count = 0;
@@ -768,7 +768,7 @@ void ResyncTimes()
 
     while (session)
     {
-        if (gTimeModeServer || g_bServer)
+        if (gTimeModeServer or g_bServer)
         {
             if (session->IsLocal())
             {
@@ -1323,7 +1323,7 @@ void VuxSessionDisconnect(VuSessionEntity *session)
     // Remove from the global group
     VuxGroupRemoveSession(vuGlobalGroup, session);
 
-    if (session->GetCommsStatus() != VU_CONN_INACTIVE || session->GetReliableCommsStatus() != VU_CONN_INACTIVE)
+    if (session->GetCommsStatus() != VU_CONN_INACTIVE or session->GetReliableCommsStatus() != VU_CONN_INACTIVE)
     {
         MonoPrint("Disconnecting to session: %s\n", ((FalconSessionEntity*)session)->GetPlayerCallsign());
     }

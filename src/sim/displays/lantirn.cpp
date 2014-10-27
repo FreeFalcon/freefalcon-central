@@ -342,7 +342,7 @@ void LantirnClass::Exec(AircraftClass* self)
 
         //adjust gamma correction according to feature distance
         //Adjust gammaCorr for the angle to avoid feature if we are below it.
-        if ((featureDistance2 < 2.5 * min_Radius && featureDistance2 > 0 && featureAngle2 > 0) || featureAngle2 > 1.0F)
+        if ((featureDistance2 < 2.5 * min_Radius && featureDistance2 > 0 && featureAngle2 > 0) or featureAngle2 > 1.0F)
         {
             gammaCorr += featureAngle2 * 1.3F;
         }

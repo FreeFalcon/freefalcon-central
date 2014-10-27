@@ -143,7 +143,7 @@ void C_Slider::SetSliderPos(long Pos) //!
 long C_Slider::CheckHotSpots(long relX, long relY)
 {
     // check visibility, enabled and ready
-    if ((GetFlags() & C_BIT_INVISIBLE) || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if ((GetFlags() & C_BIT_INVISIBLE) or !(GetFlags() & C_BIT_ENABLED) or !Ready())
     {
         return(0);
     }
@@ -155,8 +155,8 @@ long C_Slider::CheckHotSpots(long relX, long relY)
          (relX > (GetX()+(Slider_->Header->w)+SX_)) ||
          (relY < (GetY()+SY_)) ||
          (relY > (GetY()+(Slider_->Header->h)+SY_))*/
-        (relX < GetX()) || (relX > (GetX() + GetW())) ||
-        (relY < GetY()) || (relY > (GetY() + GetH()))
+        (relX < GetX()) or (relX > (GetX() + GetW())) ||
+        (relY < GetY()) or (relY > (GetY() + GetH()))
     )
     {
         return(0);
@@ -259,7 +259,7 @@ BOOL C_Slider::Process(long ID, short HitType)
 
 void C_Slider::Refresh()
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX() + SX_, GetY() + SY_, GetX() + SX_ + GetW() + 1, GetY() + SY_ + GetH() + 1, GetFlags(), GetClient());
@@ -322,7 +322,7 @@ void C_Slider::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
         Slider_->Blit(surface, s.left, s.top, s.right - s.left, s.bottom - s.top, rect.left, rect.top);
 
-        if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+        if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
             HighLite(surface, cliprect);
     }
 }
@@ -367,7 +367,7 @@ BOOL C_Slider::MouseOver(long relx, long rely, C_Base *)
 {
     // Don't want to do anything here
 
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
         return(FALSE);
 
     if (relx >= (GetX() + SX_) && relx < (GetX() + GetW() + SX_) &&

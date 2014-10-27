@@ -107,7 +107,7 @@ void VoiceMapper::LoadVoices()
 
     while (fgets(buf, sizeof buf, fp))
     {
-        if (buf[0] == '\n' || buf[0] == '#' || buf[0] == ';')
+        if (buf[0] == '\n' or buf[0] == '#' or buf[0] == ';')
             continue; // comment
 
         if (sscanf(buf, "%d %99s %99s", &voice, &type, &side) != 3)
@@ -161,7 +161,7 @@ void VoiceMapper::SetMyVoice(int n)
 int VoiceMapper::PickVoice(int type, int side)
 {
     ShiAssert(type > 0 && type < VOICE_SIDE_BASE);
-    ShiAssert((side >= 0 && side <= 7) || side == VOICE_SIDE_UNK);
+    ShiAssert((side >= 0 && side <= 7) or side == VOICE_SIDE_UNK);
     unsigned int match = type;
 
     if (side != VOICE_SIDE_UNK)

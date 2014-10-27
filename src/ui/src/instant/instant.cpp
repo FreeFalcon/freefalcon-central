@@ -511,7 +511,7 @@ void CheckLanding(VU_ID Pilot, float damage, float fuel)
     {
         LandingBonus = 50000;
 
-        if (damage < 50.0f || fuel == 0.0f)
+        if (damage < 50.0f or fuel == 0.0f)
             LandingBonus = 150000;
     }
 }

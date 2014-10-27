@@ -119,7 +119,7 @@ void AircraftTurbulence::RecordPosition(float Strength, float X, float Y, float 
 
     rn = (TurbRecordNode *)turbRecordList.GetHead();
 
-    if (counter <= 0 || !rn || breakRecord)
+    if (counter <= 0 or !rn or breakRecord)
     {
         breakRecord = 0;
         TurbRecordNode *newrn;

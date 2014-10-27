@@ -30,7 +30,7 @@ C_Fontmgr::C_Fontmgr()
 
 C_Fontmgr::~C_Fontmgr()
 {
-    if (fontTable_ || fontData_ || kernList_)
+    if (fontTable_ or fontData_ or kernList_)
         Cleanup();
 }
 

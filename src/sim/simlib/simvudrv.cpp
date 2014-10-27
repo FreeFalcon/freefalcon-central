@@ -114,7 +114,7 @@ VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME t
     if (
         (timeDelta < FINE_POSITIONAL_UPDATES_PERIOD) ||
         (entity->VuState() != VU_MEM_ACTIVE)
-        /* || (!ToleranceReached())*/
+        /* or (!ToleranceReached())*/
     )
     {
         return SEND_SCORE(DONT_SEND, 0.0f);
@@ -186,7 +186,7 @@ VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME t
     {
         VuEntity *ce = targetSession->GetCameraEntity(i);
 
-        if ((ce == NULL) || ce->IsSession())
+        if ((ce == NULL) or ce->IsSession())
         {
             continue;
         }
@@ -240,7 +240,7 @@ VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME t
     {
         VuEntity *ce = targetSession->GetCameraEntity(i);
 
-        if ((ce == NULL) || ce->IsSession())
+        if ((ce == NULL) or ce->IsSession())
         {
             continue;
         }

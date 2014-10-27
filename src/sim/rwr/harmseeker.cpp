@@ -59,7 +59,7 @@ SimObjectType* HarmSeekerClass::Exec(SimObjectType* missileTarget)
     // Adopt the missile's target if it is providing one and it is not the missile itself
     if (missileTarget)
     {
-        if (!platform->IsMissile() || ((MissileClass*)platform)->parent.get() != missileTarget->BaseData())
+        if (!platform->IsMissile() or ((MissileClass*)platform)->parent.get() != missileTarget->BaseData())
             SetDesiredTarget(missileTarget);
     }
 

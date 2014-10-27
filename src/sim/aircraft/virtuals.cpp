@@ -516,7 +516,7 @@ void AircraftClass::MakePlayerVehicle(void)
 
     // Set Unlimited ammo appropriatly
     //Cobra we are doing this to test for now in TE  ADD BACK IN LATER
-    if (SimDriver.RunningInstantAction() || gUnlimitedAmmo > 2 || g_bUnlimitedAmmo)
+    if (SimDriver.RunningInstantAction() or gUnlimitedAmmo > 2 or g_bUnlimitedAmmo)
         Sms->SetUnlimitedAmmo(TRUE);
 
     // Get rid of old sensors
@@ -869,7 +869,7 @@ void AircraftClass::Regenerate(float, float, float, float)
     int wasLocal = IsLocal();
 
     // KCK KLUDGE: To handle regen messages received after a reaggregate
-    if (!GetCampaignObject() || GetCampaignObject()->IsAggregate())
+    if (!GetCampaignObject() or GetCampaignObject()->IsAggregate())
         return;
 
     /*----------------------*/

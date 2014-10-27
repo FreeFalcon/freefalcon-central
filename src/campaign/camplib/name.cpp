@@ -352,7 +352,7 @@ int AddName (char* name)
 
  for (i=2; i<NameEntries && !nid; i++)
  {
- if (NameTable[i][0] == 0 || !strcmp(NameTable[i],"<None>"))
+ if (NameTable[i][0] == 0 or !strcmp(NameTable[i],"<None>"))
  nid = i;
  }
  if (!nid && NameEntries < MAX_NAMES)

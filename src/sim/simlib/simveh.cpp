@@ -1365,7 +1365,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
             if (hitPoints > strength)
             {
                 // death sounds
-                if (!(groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER))
+                if (!(groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
                     soundIdx = SFX_DIRTDART;
                 else
                     soundIdx = SFX_H2ODART;
@@ -1381,7 +1381,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 mvec.y = YDelta();
                 mvec.z = ZDelta() - 40.0f;
 
-                if (!(groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER))
+                if (!(groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
                 {
                     soundIdx = SFX_BOOMA1;
                     /*
@@ -1489,7 +1489,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
     // If this is our own aircraft and if we have disabled the damage jitter or a 25% chance
     // Or otherwise a 13% chance (AI controlled aircraft won't be able to fly with a bias so we want the % to be low)
     if (hitPoints > 0 &&
-        ((IsSetFlag(MOTION_OWNSHIP) && (g_bDisableFunkyChicken || (rand() & 0x3) == 0x3)) ||
+        ((IsSetFlag(MOTION_OWNSHIP) && (g_bDisableFunkyChicken or (rand() & 0x3) == 0x3)) ||
          (rand() & 0x7) == 0x7))
     {
         rBias += ioPerturb / 2 * PRANDFloat();
@@ -1733,7 +1733,7 @@ SimVehicleClass::ApplyProximityDamage(void)
     {
         // don't send msg to objects already dead or dying
         // no damge to camp units
-        if (testObject->IsCampaign() || testObject->pctStrength < 0.0f)
+        if (testObject->IsCampaign() or testObject->pctStrength < 0.0f)
         {
             testObject = (SimBaseClass*) objectWalker.GetNext();
             continue;
@@ -1798,7 +1798,7 @@ void SimVehicleClass::StepSOI(int dir)
     //MI
     FireControlComputer* FCC = ((SimVehicleClass*)this)->GetFCC();
 
-    if (!theRadar || !FCC || !Sms || !SimDriver.GetPlayerEntity())
+    if (!theRadar or !FCC or !Sms or !SimDriver.GetPlayerEntity())
         return;
 
     if (Sms)
@@ -1838,7 +1838,7 @@ void SimVehicleClass::StepSOI(int dir)
             if (FCC->GetSubMode() == FireControlComputer::CCIP ||
                 FCC->GetSubMode() == FireControlComputer::DTOSS ||
                 //FCC->GetSubMode() == FireControlComputer::RCKT ||
-                FCC->GetMasterMode() == FireControlComputer::AirGroundRocket || // MLR 4/3/2004 -
+                FCC->GetMasterMode() == FireControlComputer::AirGroundRocket or // MLR 4/3/2004 -
                 FCC->GetSubMode() == FireControlComputer::STRAF ||
                 FCC->GetSubMode() == FireControlComputer::CCRP ||
                 FCC->GetSubMode() == FireControlComputer::LADD)
@@ -1863,8 +1863,8 @@ void SimVehicleClass::StepSOI(int dir)
                         SOIManager(SOI_RADAR);
                     }
                 }
-                else if (FCC->IsAAMasterMode() || FCC->IsNavMasterMode() || FCC->GetMasterMode() ==
-                         FireControlComputer::MissileOverride || FCC->GetMasterMode() ==
+                else if (FCC->IsAAMasterMode() or FCC->IsNavMasterMode() or FCC->GetMasterMode() ==
+                         FireControlComputer::MissileOverride or FCC->GetMasterMode() ==
                          FireControlComputer::Dogfight)
                 {
                     SOIManager(SOI_RADAR);
@@ -1875,7 +1875,7 @@ void SimVehicleClass::StepSOI(int dir)
                 //No, currently not SOI. If we have the HSD visible, we're going to set it there
                 if (FCC->CouldBeSOI)
                     SOIManager(SOI_FCC);
-                else if ((mslDisplay && !mslDisplay->IsSOI()) || (tPodDisplay && !tPodDisplay->IsSOI()))
+                else if ((mslDisplay && !mslDisplay->IsSOI()) or (tPodDisplay && !tPodDisplay->IsSOI()))
                     SOIManager(SOI_WEAPON);
                 else
                     SOIManager(SOI_RADAR);

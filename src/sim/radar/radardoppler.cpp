@@ -187,7 +187,7 @@ void RadarDopplerClass::DisplayInit(ImageBuffer* newImage)
     ((RenderGMComposite*)privateDisplay)->Setup(newImage, AddTargetReturnCallback, this);
 
     // Prep GM Radar
-    if (mode == GM || mode == GMT || mode == SEA)
+    if (mode == GM or mode == GMT or mode == SEA)
         SetGMScan();
 
     privateDisplay->SetColor(0xff00ff00);
@@ -444,8 +444,8 @@ void RadarDopplerClass::AAPushButton(int whichButton, int whichMFD)
         case 1:
             if (g_bRealisticAvionics)
                 StepAAmode();
-            else if ((mode == ACM_30x20) || (mode == ACM_SLEW) || (mode == ACM_BORE)
-                     || (mode == ACM_10x60))
+            else if ((mode == ACM_30x20) or (mode == ACM_SLEW) or (mode == ACM_BORE)
+                     or (mode == ACM_10x60))
             {
                 scanWidthCmd = TRUE;
             }
@@ -453,7 +453,7 @@ void RadarDopplerClass::AAPushButton(int whichButton, int whichMFD)
             break;
 
         case 2:
-            if ((mode == TWS || mode == RWS || mode == LRS || mode == SAM) && g_bRealisticAvionics)
+            if ((mode == TWS or mode == RWS or mode == LRS or mode == SAM) && g_bRealisticAvionics)
                 fovStepCmd = TRUE;
 
             break;
@@ -469,7 +469,7 @@ void RadarDopplerClass::AAPushButton(int whichButton, int whichMFD)
             break;
 
         case 17:
-            if ((mode == RWS) || (mode == TWS) || (mode == VS) || (mode == LRS))
+            if ((mode == RWS) or (mode == TWS) or (mode == VS) or (mode == LRS))
             {
                 scanWidthCmd = TRUE;
             }
@@ -925,7 +925,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
 
         // Just in case we don't have a list but we do have a locked target OR IF THE RADAR IS NOT IN AA MODE
         // I noticed the radar isn't really used in air to ground mode so we'll do just the lockedTarget then
-        if (!tmpPtr || digimode != AA)
+        if (!tmpPtr or digimode != AA)
             tmpPtr = lockedTarget;
 
         while (tmpPtr)
@@ -939,7 +939,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
             SimObjectType* tmpPtrNext = tmpPtr->next;
 
             // FRB - CTD below
-            if ((!tmpPtr->BaseData()) || (!tmpPtr->localData))
+            if ((!tmpPtr->BaseData()) or (!tmpPtr->localData))
                 tmpPtr = tmpPtrNext;
 
             if (!tmpPtr)
@@ -1126,7 +1126,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
     rdrObj = targetList;
 
     // Hack -- You really can lock a target, etc. in these modes...
-    if (mode == GM || mode == GMT || mode == SEA)
+    if (mode == GM or mode == GMT or mode == SEA)
         return (NULL);
 
     targetUnderCursor = FalconNullId;
@@ -1159,7 +1159,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
         // Did the beam cross the object
         if (isEmitting && rdrObj->BaseData() &&// Radar On?
             !rdrObj->BaseData()->OnGround() && // In the Air?
-            (!rdrObj->BaseData()->IsSim() ||   // Campaign Entity
+            (!rdrObj->BaseData()->IsSim() or   // Campaign Entity
              (!rdrObj->BaseData()->IsExploding() && // Live none weapon sim thing
               !rdrObj->BaseData()->IsWeapon())) &&
             LookingAtObject(rdrObj))
@@ -1247,7 +1247,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
             }
             else // MD -- 20040118: don't do this for TWS tracks as well!
                 if (!rdrData->TWSTrackFileOpen)
-                    if (rdrData->rdrSy[0] == Solid || rdrData->rdrSy[0] == None)
+                    if (rdrData->rdrSy[0] == Solid or rdrData->rdrSy[0] == None)
                         AddToHistory(rdrObj, None);
                     else
                         SlipHistory(rdrObj);
@@ -1298,7 +1298,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
 
     // 2002-02-09 MODIFIED BY S.G. Since radarMode is sent as well and is passed to the AI, will let him make the decision to deal with us or not...
     // Tell our current target he's locked
-    /* if (sendThisFrame && lockedTarget && (mode != TWS || IsSet(STTingTarget)))
+    /* if (sendThisFrame && lockedTarget && (mode != TWS or IsSet(STTingTarget)))
     {
     SendTrackMsg (lockedTarget, Track_Lock);
     lastTargetLockSend = SimLibElapsedTime;

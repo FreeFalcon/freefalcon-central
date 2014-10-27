@@ -489,7 +489,7 @@ BOOL ReadRawACMIPositionData
      rawPositionData.entityPosData.yaw += 2.0f * PI;
     */
 
-    return (!result || result == EOF ? FALSE : TRUE);
+    return (!result or result == EOF ? FALSE : TRUE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -3043,7 +3043,7 @@ BOOL ACMITape::IsEntityInFrame(int index)
 
     pos2 = HeadNext(pos1);
 
-    if (pos2 == NULL || pos2->time < _simTime)
+    if (pos2 == NULL or pos2->time < _simTime)
     {
         return FALSE;
     }
@@ -3079,7 +3079,7 @@ int ACMITape::GetEntityCurrentTarget(int index)
 
     pos2 = HeadNext(pos1);
 
-    if (pos2 == NULL || pos2->time < _simTime)
+    if (pos2 == NULL or pos2->time < _simTime)
     {
         return -1;
     }
@@ -3341,12 +3341,12 @@ void ACMITape::UpdateSimTapeEntities(void)
         }
         else if (_wingTrails && (ep->flags & ENTITY_FLAG_AIRCRAFT))
         {
-            if (_playVelocity < 0.0f && (!_paused || _simulateOnly))
+            if (_playVelocity < 0.0f && (!_paused or _simulateOnly))
             {
                 ep->wtLength -= ep->wrTrail->RewindTrail((DWORD)(_simTime * 1000));
                 ep->wlTrail->RewindTrail((DWORD)(_simTime * 1000));
             }
-            else if (_playVelocity > 0.0f && (!_paused || _simulateOnly))
+            else if (_playVelocity > 0.0f && (!_paused or _simulateOnly))
             {
                 ep->wtLength++;
                 wtpos.x = ep->objBase->dmx[1][0] * -20.0f * _tapeObjScale + ep->x;
@@ -3489,11 +3489,11 @@ void ACMITape::UpdateSimTapeEntities(void)
 
 
 
-        if (_playVelocity < 0.0f && (!_paused || _simulateOnly))
+        if (_playVelocity < 0.0f && (!_paused or _simulateOnly))
         {
             ep->objTrail->RewindTrail((DWORD)(_simTime * 1000));
         }
-        else if (_playVelocity > 0.0f && (!_paused || _simulateOnly))
+        else if (_playVelocity > 0.0f && (!_paused or _simulateOnly))
         {
             ep->objTrail->AddPointAtHead(&newPoint, (DWORD)(_simTime * 1000));
         }
@@ -3812,7 +3812,7 @@ ACMITape::UpdateActiveEvents(void)
                 // blech, this is a very less than optimal solution
                 // the active event list is going to bloat over time
                 /*
-                if ( _simTime > event->timeEnd || event->time > _simTime )
+                if ( _simTime > event->timeEnd or event->time > _simTime )
                 {
                  if ( td->objTracer->InDisplayList() )
                  _viewPoint->RemoveObject( td->objTracer );
@@ -4152,7 +4152,7 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
     visType = classPtr->visType[theObject->Status() & VIS_TYPE_MASK];
 
     // make sure things are sane
-    F4Assert(visType >= 0 || theObject->drawPointer);
+    F4Assert(visType >= 0 or theObject->drawPointer);
     F4Assert(classPtr->vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_LAND);
     F4Assert(classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_FEATURE);
 
@@ -4311,7 +4311,7 @@ SimBaseClass *ACMITape::FindComponentFeature(long leadIndex, int slot)
 {
     int i;
 
-    if (leadIndex < 0 || slot < 0)
+    if (leadIndex < 0 or slot < 0)
         return NULL;
 
     for (i = 0; i < _tapeHdr.numFeat; i++)

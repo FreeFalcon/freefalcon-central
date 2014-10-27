@@ -40,10 +40,10 @@ int SMSClass::DropBomb(int allowRipple)
 
 
     // Check for SMS Failure or other reason not to drop
-    if (!CurStationOK() || //Weapon Station failure
-        ownship->OnGround() || // Weight on wheels inhibit
-        !curWeapon || // No Weapon
-        ownship->GetNz() < 0.0F || // Negative Gs
+    if (!CurStationOK() or //Weapon Station failure
+        ownship->OnGround() or // Weight on wheels inhibit
+        !curWeapon or // No Weapon
+        ownship->GetNz() < 0.0F or // Negative Gs
         MasterArm() != Arm) // Not in arm mode
     {
         ownship->GetFCC()->bombPickle = FALSE;
@@ -60,7 +60,7 @@ int SMSClass::DropBomb(int allowRipple)
         slotId = curHardpoint;
 
     // Verify curWeapon on curHardpoint
-    if (curHardpoint < 0 || hardPoint[curHardpoint]->weaponPointer.get() != curWeapon)
+    if (curHardpoint < 0 or hardPoint[curHardpoint]->weaponPointer.get() != curWeapon)
     {
         for (i = 0; i < numHardpoints; i++)
         {
@@ -132,12 +132,12 @@ int SMSClass::DropBomb(int allowRipple)
         {
             // Cobra - targets for all
             if (theBomb->IsSetBombFlag(BombClass::IsGPS)
-                || theBomb->IsSetBombFlag(BombClass::IsJSOW))
+                or theBomb->IsSetBombFlag(BombClass::IsJSOW))
             {
                 // Cobra - Dynamic select of target from list
                 //TOO mode  //Cobra - !JDAMsbc = PB aggregated - Temp CTD fix
                 if (((AircraftClass*)ownship)->GetSMS()->JDAMtargeting == SMSBaseClass::TOO
-                    || !(((AircraftClass*)ownship)->JDAMsbc))
+                    or !(((AircraftClass*)ownship)->JDAMsbc))
                 {
                     theBomb->gpsx = ownship->GetFCC()->groundDesignateX;
                     theBomb->gpsy = ownship->GetFCC()->groundDesignateY;
@@ -252,10 +252,10 @@ int SMSClass::DropBomb(int allowRipple)
         }
 
         // Want to drop a pair - No pairs w/ only one rack of bombs unless from centerline
-        //if (pair && allowRipple && (curHardpoint != matchingStation || curHardpoint == (numHardpoints / 2 + 1)))
+        //if (pair && allowRipple && (curHardpoint != matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
         // Cobra -
-        //if (GetAGBPair() && allowRipple && (curHardpoint != matchingStation || curHardpoint == (numHardpoints / 2 + 1)))
-        if (GetAGBPair() && (curHardpoint != matchingStation || curHardpoint == (numHardpoints / 2 + 1)))
+        //if (GetAGBPair() && allowRipple && (curHardpoint != matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
+        if (GetAGBPair() && (curHardpoint != matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
         {
             theBomb.reset((BombClass *)curWeapon.get());
 
@@ -283,11 +283,11 @@ int SMSClass::DropBomb(int allowRipple)
                     //if (theBomb->IsSetBombFlag(BombClass::IsGPS))
                     //if (ownship->IsPlayer() && (theBomb->IsSetBombFlag(BombClass::IsGPS)
                     // FRB - for all
-                    if ((theBomb->IsSetBombFlag(BombClass::IsGPS) || theBomb->IsSetBombFlag(BombClass::IsJSOW)))
+                    if ((theBomb->IsSetBombFlag(BombClass::IsGPS) or theBomb->IsSetBombFlag(BombClass::IsJSOW)))
                     {
                         // Cobra - Dynamic select of target from list
                         if (((AircraftClass*)ownship)->GetSMS()->JDAMtargeting == SMSBaseClass::TOO
-                            || !(((AircraftClass*)ownship)->JDAMsbc))
+                            or !(((AircraftClass*)ownship)->JDAMsbc))
                         {
                             //TOO mode  //Cobra - !JDAMsbc = PB aggregated - Temp CTD fix
                             theBomb->gpsx = ownship->GetFCC()->groundDesignateX;

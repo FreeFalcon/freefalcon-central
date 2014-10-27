@@ -103,7 +103,7 @@ void MouseView::BumpViewLeft(float direction)
 /************************************************************************/
 void MouseView::Compute(float amount, bool mouseMoved)
 {
-    if ((azDir) || mouseMoved)
+    if ((azDir) or mouseMoved)
     {
         if (!mouseMoved)
             XTotal += (int)(1500.f * amount * azDir); // 1500.f is an empiric value..
@@ -116,7 +116,7 @@ void MouseView::Compute(float amount, bool mouseMoved)
         Azimuth = XTotal / MAX_AXIS_THROW * PI;
     }
 
-    if ((elDir) || mouseMoved)
+    if ((elDir) or mouseMoved)
     {
         if (!mouseMoved)
             YTotal += (int)(1500.f * amount * elDir); // 1500.f is an empiric value..

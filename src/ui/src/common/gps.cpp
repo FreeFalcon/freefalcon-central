@@ -62,7 +62,7 @@ static BOOL GPSTreeSortCB(TREELIST *list, TREELIST *newitem)
         else
             second = NULL;
 
-        if (!first || !second)
+        if (!first or !second)
             return(FALSE);
 
         if (isdigit(*first) && isdigit(*second))
@@ -92,7 +92,7 @@ static BOOL GPSTreeSortCB(TREELIST *list, TREELIST *newitem)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL GPSMissionSortPriorityCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list || !newitem)
+    if (!list or !newitem)
         return(FALSE);
 
     if (((C_Mission*)newitem->Item_)->GetPriorityID() < ((C_Mission*)list->Item_)->GetPriorityID())
@@ -107,7 +107,7 @@ static BOOL GPSMissionSortPriorityCB(TREELIST *list, TREELIST *newitem)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL GPSMissionSortTimeCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list || !newitem)
+    if (!list or !newitem)
         return(FALSE);
 
     if (((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
@@ -119,7 +119,7 @@ static BOOL GPSMissionSortTimeCB(TREELIST *list, TREELIST *newitem)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL GPSMissionSortMissionCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list || !newitem)
+    if (!list or !newitem)
         return(FALSE);
 
     if (_tcsicmp(((C_Mission*)newitem->Item_)->GetMission(), ((C_Mission*)list->Item_)->GetMission()) < 0)
@@ -134,7 +134,7 @@ static BOOL GPSMissionSortMissionCB(TREELIST *list, TREELIST *newitem)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL GPSMissionSortStatusCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list || !newitem)
+    if (!list or !newitem)
         return(FALSE);
 
     if (((C_Mission*)newitem->Item_)->GetStatusID() < ((C_Mission*)list->Item_)->GetStatusID())
@@ -149,7 +149,7 @@ static BOOL GPSMissionSortStatusCB(TREELIST *list, TREELIST *newitem)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL GPSMissionSortPackageCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list || !newitem)
+    if (!list or !newitem)
         return(FALSE);
 
     if (((C_Mission*)newitem->Item_)->GetPackageID() < ((C_Mission*)list->Item_)->GetPackageID())

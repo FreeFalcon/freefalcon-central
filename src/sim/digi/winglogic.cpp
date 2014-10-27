@@ -94,7 +94,7 @@ void DigitalBrain::AiRunTargetSelection(void)
     FalconEntity* curSpike = SpikeCheck(self);
 
     // 2001-06-27 ADDED BY S.G. SO WING WILL SET THEIR ECM AS WELL
-    if (curSpike || (flightLead && flightLead != self && flightLead->IsSPJamming()))
+    if (curSpike or (flightLead && flightLead != self && flightLead->IsSPJamming()))
     {
         if (self->HasSPJamming())
         {
@@ -178,7 +178,7 @@ void DigitalBrain::AiSearchTargetList(VuEntity* pentity)
         theTarget = (FalconEntity*)pentity;
 
         // 2002-04-02 ADDED BY S.G. If it's dead or a chute, leave it alone...
-        if (!theTarget->OnGround() && (theTarget->IsDead() || theTarget->IsEject()))
+        if (!theTarget->OnGround() && (theTarget->IsDead() or theTarget->IsEject()))
             theTarget = NULL;
 
         // END OF ADDED SECTION 2002-04-02
@@ -206,7 +206,7 @@ void DigitalBrain::AiSearchTargetList(VuEntity* pentity)
                 theTarget = theTargetGroup->GetComponentEntity(isWing % theTargetGroup->NumberOfComponents());
 
             // 2002-04-02 ADDED BY S.G. If it's dead or a chute, leave it alone...
-            if (theTarget && (theTarget->IsDead() || theTarget->IsEject()))
+            if (theTarget && (theTarget->IsDead() or theTarget->IsEject()))
                 theTarget = NULL;
 
             // END OF ADDED SECTION 2002-04-02
@@ -218,8 +218,8 @@ void DigitalBrain::AiSearchTargetList(VuEntity* pentity)
     if (theTarget)
     {
         // 2001-05-10 MODIFIED BY S.G. IF WE HAVE A GROUND TARGET AND IT'S OUR TARGET, AVOID DOING THIS AS WELL (WE'RE FINE)
-        //    if (!targetPtr || targetPtr->BaseData() != theTarget)
-        if ((!targetPtr || targetPtr->BaseData() != theTarget) && (!groundTargetPtr || groundTargetPtr->BaseData() != theTarget))
+        //    if (!targetPtr or targetPtr->BaseData() != theTarget)
+        if ((!targetPtr or targetPtr->BaseData() != theTarget) && (!groundTargetPtr or groundTargetPtr->BaseData() != theTarget))
         {
 #ifdef DEBUG
             /*     objectPtr = new SimObjectType (OBJ_TAG, self, theTarget);*/
@@ -262,7 +262,7 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
         // 2002-03-08 MODIFIED BY S.G. Code change so I'm only calling GetComponentEntity once and checking if it returns non NULL
         flightMember[i] = (AircraftClass *)self->GetCampaignObject()->GetComponentEntity(i);
 
-        if (flightMember[i] && (flightMember[i]->IsDigital() || flightMember[i]->IsLocal()))
+        if (flightMember[i] && (flightMember[i]->IsDigital() or flightMember[i]->IsLocal()))
         {
             // Now that we know it's local (hopefully, digitals are also local), see if they are carrying HARMS
             // By first looking at their 'hasHARM' status
@@ -308,7 +308,7 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
             startPos = rand() % targetNumComponents;
 
             for (i = startPos; i < targetNumComponents && startPos > 0; i++)
-                if (!targetGroup->GetComponentEntity(i)->IsVehicle() || !targetGroup->GetComponentEntity(i)->OnGround())
+                if (!targetGroup->GetComponentEntity(i)->IsVehicle() or !targetGroup->GetComponentEntity(i)->OnGround())
                     startPos = 0;
         }
 
@@ -324,11 +324,11 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
         // Get the sim object associated to this entity number
         simTarg = targetGroup->GetComponentEntity(i);
 
-        if (!simTarg || F4IsBadReadPtr(simTarg, sizeof(simTarg)))  //sanity check
+        if (!simTarg or F4IsBadReadPtr(simTarg, sizeof(simTarg)))  //sanity check
             continue;
 
         // Is it alive?
-        if (simTarg->IsExploding() || simTarg->IsDead() || simTarg->pctStrength <= 0.0f)  // Cobra - add priority filter?
+        if (simTarg->IsExploding() or simTarg->IsDead() or simTarg->pctStrength <= 0.0f)  // Cobra - add priority filter?
             continue; // Dead thing, ignore it.
 
 
@@ -396,11 +396,11 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
 
         // If I have HARMS or no one has any and the entity has a radar, choose it
         // 2001-07-12 S.G. Testing if radar first so it's not becoming an air defense if i have no harms
-        if ((simTarg->IsVehicle() && ((SimVehicleClass *)simTarg)->GetRadarType() != RDR_NO_RADAR) || // It's a vehicle and it has a radar
+        if ((simTarg->IsVehicle() && ((SimVehicleClass *)simTarg)->GetRadarType() != RDR_NO_RADAR) or // It's a vehicle and it has a radar
             (simTarg->IsStatic() && ((SimStaticClass *)simTarg)->GetRadarType() != RDR_NO_RADAR))  // It's a feature and it has a radar
         {
             // 2001-07-29 S.G. If I was shooting at the campaign object, then I stick to it
-            if ((((FlightClass *)self->GetCampaignObject())->shotAt == targetGroup && ((FlightClass *)self->GetCampaignObject())->whoShot == self) || ((((FlightClass *)self->GetCampaignObject())->whoShot == NULL) && (haveHARMS || !otherHaveHARMS)))
+            if ((((FlightClass *)self->GetCampaignObject())->shotAt == targetGroup && ((FlightClass *)self->GetCampaignObject())->whoShot == self) or ((((FlightClass *)self->GetCampaignObject())->whoShot == NULL) && (haveHARMS or !otherHaveHARMS)))
             {
                 gotRadar = TRUE;
                 firstSimTarg = simTarg; // Yes, use it for a target
@@ -495,7 +495,7 @@ SimBaseClass *DigitalBrain::FindSimAirTarget(CampBaseClass *targetGroup, int tar
             continue;
 
         // Is it alive?
-        if (simTarg->IsExploding() || simTarg->IsDead() || simTarg->pctStrength <= 0.0f)
+        if (simTarg->IsExploding() or simTarg->IsDead() or simTarg->pctStrength <= 0.0f)
             continue; // Dead thing, ignore it.
 
         // Are flight members already using it (was using it) as a target?
@@ -507,7 +507,7 @@ SimBaseClass *DigitalBrain::FindSimAirTarget(CampBaseClass *targetGroup, int tar
             if (flightMember[j]->vehicleInUnit == self->vehicleInUnit)
                 continue;
 
-            if (flightMember[j] && flightMember[j]->DBrain() && ((flightMember[j]->DBrain()->airtargetPtr && flightMember[j]->DBrain()->airtargetPtr->BaseData() == simTarg) || flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg || flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg))
+            if (flightMember[j] && flightMember[j]->DBrain() && ((flightMember[j]->DBrain()->airtargetPtr && flightMember[j]->DBrain()->airtargetPtr->BaseData() == simTarg) or flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg or flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg))
                 break;  // Yes, ignore it.
         }
 
@@ -567,11 +567,11 @@ SimBaseClass *DigitalBrain::FindJSOWGroundTarget(CampBaseClass *targetGroup, int
         // Get the sim object associated to this entity number
         simTarg = targetGroup->GetComponentEntity(i);
 
-        if (!simTarg || F4IsBadReadPtr(simTarg, sizeof(simTarg)))  //sanity check
+        if (!simTarg or F4IsBadReadPtr(simTarg, sizeof(simTarg)))  //sanity check
             continue;
 
         // Is it alive?
-        if (simTarg->IsExploding() || simTarg->IsDead() || simTarg->pctStrength <= 0.0f)  // Cobra - add priority filter?
+        if (simTarg->IsExploding() or simTarg->IsDead() or simTarg->pctStrength <= 0.0f)  // Cobra - add priority filter?
             continue; // Dead thing, ignore it.
 
         // COBRA - RED - skip if a target of no-interest
@@ -691,11 +691,11 @@ int DigitalBrain::FindJDAMGroundTarget(CampBaseClass *targetGroup, int targetNum
         // Get the sim object associated to this entity number
         simTarg = targetGroup->GetComponentEntity(i);
 
-        if (!simTarg || F4IsBadReadPtr(simTarg, sizeof(simTarg)))  //sanity check
+        if (!simTarg or F4IsBadReadPtr(simTarg, sizeof(simTarg)))  //sanity check
             continue;
 
         // Is it alive?
-        if (simTarg->IsExploding() || simTarg->IsDead() || simTarg->pctStrength <= 0.0f)  // Cobra - add priority filter?
+        if (simTarg->IsExploding() or simTarg->IsDead() or simTarg->pctStrength <= 0.0f)  // Cobra - add priority filter?
             continue; // Dead thing, ignore it.
 
         // COBRA - RED - skip if a target of no-interest
@@ -798,8 +798,8 @@ void DigitalBrain::AiCheckEngage(void)
     // 2000-09-25 MODIFIED BY S.G. NEED THE WINGMEN TO DO ITS STUFF WHEN HE HAS WEAPON FREE AS WELL
     // 2002-03-15 MODIFIED BY S.G. Perform this if mpActionFlags[AI_EXECUTE_MANEUVER] is NOT TRUE+1, since TRUE+1 mean we are doing a maneuver that's limiting the AI's ACTION to specific functions
     // if(mpActionFlags[AI_ENGAGE_TARGET] /* REMOVED BY S.G. && !mpActionFlags[AI_EXECUTE_MANEUVER] */) {
-    // if(mpActionFlags[AI_ENGAGE_TARGET] || mWeaponsAction == AI_WEAPONS_FREE) {
-    if ((mpActionFlags[AI_ENGAGE_TARGET] || mWeaponsAction == AI_WEAPONS_FREE) && mpActionFlags[AI_EXECUTE_MANEUVER] != TRUE + 1)
+    // if(mpActionFlags[AI_ENGAGE_TARGET] or mWeaponsAction == AI_WEAPONS_FREE) {
+    if ((mpActionFlags[AI_ENGAGE_TARGET] or mWeaponsAction == AI_WEAPONS_FREE) && mpActionFlags[AI_EXECUTE_MANEUVER] != TRUE + 1)
     {
         MergeCheck();
         BvrEngageCheck();
@@ -868,7 +868,7 @@ void DigitalBrain::AiCheckLandTakeoff(void)
         AddMode(TakeoffMode);
     }
     else if (mpActionFlags[AI_LANDING]
-             || (atcstatus >= lReqClearance && atcstatus <= lCrashed))
+             or (atcstatus >= lReqClearance && atcstatus <= lCrashed))
     {
         if (atcstatus > lIngressing)
             mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
@@ -876,7 +876,7 @@ void DigitalBrain::AiCheckLandTakeoff(void)
         AddMode(LandingMode);
     }
     else if (self->curWaypoint->GetWPAction() == WP_LAND && !self->OnGround() && distAirbase < 30.0F * NM_TO_FT
-             && (missionComplete || IsSetATC(SaidRTB) || IsSetATC(SaidBingo) || mpActionFlags[AI_RTB])) // don't land if one of these conditions isn't met
+             && (missionComplete or IsSetATC(SaidRTB) or IsSetATC(SaidBingo) or mpActionFlags[AI_RTB])) // don't land if one of these conditions isn't met
     {
         if (atcstatus > lIngressing)
             mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
@@ -925,7 +925,7 @@ void DigitalBrain::AiCheckFormation(void)
 
     // edg: if the wingy was told to engage a ground target, we must make sure that they
     // will continue on waypoint mode so that they can go thru the ground attack logic
-    if (mpActionFlags[AI_ENGAGE_TARGET] && !mpActionFlags[AI_EXECUTE_MANEUVER] && (agDoctrine != AGD_NONE || groundTargetPtr))
+    if (mpActionFlags[AI_ENGAGE_TARGET] && !mpActionFlags[AI_EXECUTE_MANEUVER] && (agDoctrine != AGD_NONE or groundTargetPtr))
     {
         AddMode(WaypointMode);
     }
@@ -947,9 +947,9 @@ void DigitalBrain::AiSplitFlight(int extent, VU_ID from, int idx)
 {
     if (vuDatabase->Find(from) == self->GetCampaignObject()->GetComponentLead())   // if from the flight lead
     {
-        if (extent == AiElement || extent == AiFlight)
+        if (extent == AiElement or extent == AiFlight)
         {
-            if (idx == AiElementLead || idx == AiSecondWing)
+            if (idx == AiElementLead or idx == AiSecondWing)
             {
                 mSplitFlight = TRUE;
             }
@@ -977,9 +977,9 @@ void DigitalBrain::AiGlueFlight(int extent, VU_ID from, int idx)
 {
     if (vuDatabase->Find(from) == self->GetCampaignObject()->GetComponentLead())   // if from the flight lead
     {
-        if (extent == AiElement || extent == AiFlight)
+        if (extent == AiElement or extent == AiFlight)
         {
-            if (idx == AiElementLead || idx == AiSecondWing)
+            if (idx == AiElementLead or idx == AiSecondWing)
             {
                 mSplitFlight = FALSE;
             }

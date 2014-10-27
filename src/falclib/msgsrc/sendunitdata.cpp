@@ -96,7 +96,7 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
               dataBlock.block,
               dataBlock.size);
 
-    if (!TheCampaign.IsPreLoaded() || !session)
+    if (!TheCampaign.IsPreLoaded() or !session)
     {
         return (init - *rem);
     }

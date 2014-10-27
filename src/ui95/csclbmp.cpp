@@ -102,7 +102,7 @@ void C_ScaleBitmap::InitOverlay()
     IMAGE_RSC *img;
     DWORD tmp;
 
-    if (!Image_ || !Parent_)
+    if (!Image_ or !Parent_)
         return;
 
     img = Image_->GetImage();
@@ -239,7 +239,7 @@ void C_ScaleBitmap::SetFlags(long flags)
 
 void C_ScaleBitmap::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Image_->Refresh();

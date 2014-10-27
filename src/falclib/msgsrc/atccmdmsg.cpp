@@ -83,7 +83,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
 
     if (dataBlock.type == Release && aircraft && aircraft->DBrain())
     {
-        if (!aircraft->IsPlayer() || aircraft->AutopilotType() != AircraftClass::CombatAP)
+        if (!aircraft->IsPlayer() or aircraft->AutopilotType() != AircraftClass::CombatAP)
         {
             aircraft->DBrain()->ResetATC();
         }
@@ -509,7 +509,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     acBrain->ClearATCFlag(DigitalBrain::PermitTakeoff);
                     acBrain->SetWaitTimer(acBrain->CalcWaitTime(atcBrain));
 
-                    if (!acBrain->isWing || aircraft->IsPlayer() || aircraft->vehicleInUnit == 2 ||
+                    if (!acBrain->isWing or aircraft->IsPlayer() or aircraft->vehicleInUnit == 2 ||
                         !atcBrain->UseSectionTakeoff((Flight)aircraft->GetCampaignObject(), dataBlock.rwindex))
                     {
                         radioMessage = CreateCallFromATC(atc, aircraft, rcPOSITIONANDHOLD, FalconLocalSession);
@@ -529,10 +529,10 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     acBrain->SetATCFlag(DigitalBrain::PermitTakeoff);
                     acBrain->SetWaitTimer(acBrain->CalcWaitTime(atcBrain));
 
-                    if (!acBrain->isWing || aircraft->IsPlayer() || aircraft->vehicleInUnit == 2 ||
+                    if (!acBrain->isWing or aircraft->IsPlayer() or aircraft->vehicleInUnit == 2 ||
                         !atcBrain->UseSectionTakeoff((Flight)aircraft->GetCampaignObject(), dataBlock.rwindex))
                     {
-                        if (rand() % 2 || aircraft->IsPlayer())
+                        if (rand() % 2 or aircraft->IsPlayer())
                         {
                             radioMessage = CreateCallFromATC(atc, aircraft, rcCLEAREDONRUNWAY, FalconLocalSession);
                             radioMessage->dataBlock.edata[3] = (short)atcBrain->GetRunwayName(dataBlock.rwindex);
@@ -656,7 +656,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     if (aircraft->OnGround())
                         break;
 
-                    if (!aircraft->IsPlayer() || aircraft->AutopilotType() != AircraftClass::CombatAP)
+                    if (!aircraft->IsPlayer() or aircraft->AutopilotType() != AircraftClass::CombatAP)
                         acBrain->ResetATC();
 
                     //Cobra Let's try a new comm here

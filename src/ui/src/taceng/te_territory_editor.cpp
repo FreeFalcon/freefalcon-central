@@ -182,7 +182,7 @@ static void flood_fill_team(int x, int y)
     unsigned char
     cover;
 
-    if (x < 0 || y < 0 || x >= fill_width || y >= fill_height)
+    if (x < 0 or y < 0 or x >= fill_width or y >= fill_height)
         return;
 
     if (x & 1)
@@ -194,7 +194,7 @@ static void flood_fill_team(int x, int y)
         old_team = fill_src[(y * fill_width + x) / 2] & 0x0f;
     }
 
-    if ((old_team == gDrawTeam) || (old_team != fill_team))
+    if ((old_team == gDrawTeam) or (old_team != fill_team))
     {
         return;
     }
@@ -286,7 +286,7 @@ void tactical_territory_map_edit(long, short hittype, C_Base *control)
             control->Refresh();
         }
     }
-    else if ((hittype == C_TYPE_LMOUSEDOWN) || (hittype == C_TYPE_DRAGXY))
+    else if ((hittype == C_TYPE_LMOUSEDOWN) or (hittype == C_TYPE_DRAGXY))
     {
         if (hittype == C_TYPE_LMOUSEDOWN)
             save_territory_editor();

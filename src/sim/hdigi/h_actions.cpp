@@ -14,7 +14,7 @@ void HeliBrain::Actions(void)
     if (self->flightLead->curWaypoint->GetWPArrivalTime() > self->curWaypoint->GetWPArrivalTime())
         SelectNextWaypoint();
 
-    if (self->flightLead != self && (targetPtr == NULL || !anyWeapons || targetPtr->localData->range > 5.0f * NM_TO_FT))
+    if (self->flightLead != self && (targetPtr == NULL or !anyWeapons or targetPtr->localData->range > 5.0f * NM_TO_FT))
     {
         // if ( modeStack.curMode == GunsEngageMode )
         // GunsEngage();

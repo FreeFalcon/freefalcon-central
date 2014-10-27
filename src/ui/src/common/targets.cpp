@@ -153,7 +153,7 @@ C_Feature *BuildFeature(Objective obj, long featureID, Tpoint *)
         fc = GetFeatureClassData(classID);
 
         // RV - Biker - Don't add trees to target list
-        if (!fc || fc->Flags & FEAT_VIRTUAL || fc->Flags & FEAT_NO_HITEVAL)
+        if (!fc or fc->Flags & FEAT_VIRTUAL or fc->Flags & FEAT_NO_HITEVAL)
             return(NULL);
 
         feat = new C_Feature;
@@ -459,7 +459,7 @@ void AddObjectiveToTargetTree(Objective obj)
 
         Parent = NULL;
 
-        if (obj->GetType() == TYPE_CITY || obj->GetType() == TYPE_TOWN || obj->GetType() == TYPE_VILLAGE)
+        if (obj->GetType() == TYPE_CITY or obj->GetType() == TYPE_TOWN or obj->GetType() == TYPE_VILLAGE)
             ShowAllFeatures = 1;
 
         oc = obj->GetObjectiveClassData();
@@ -473,7 +473,7 @@ void AddObjectiveToTargetTree(Objective obj)
             {
                 fc = GetFeatureClassData(classID);
 
-                if (!fc || fc->Flags & FEAT_VIRTUAL)
+                if (!fc or fc->Flags & FEAT_VIRTUAL)
                     continue;
 
                 obj->GetFeatureOffset(f, &y, &x, &z);
@@ -504,7 +504,7 @@ void AddObjectiveToTargetTree(Objective obj)
                         // END OF ADDED SECTION 2002-02-28
                         Parent = drawptr->owner;
 
-                        if (obj->GetFeatureValue(f) || ShowAllFeatures)
+                        if (obj->GetFeatureValue(f) or ShowAllFeatures)
                         {
                             ((DrawableObject*)drawptr)->GetPosition(&objPos);
 

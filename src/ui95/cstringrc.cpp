@@ -34,7 +34,7 @@ C_String::C_String()
 
 C_String::~C_String()
 {
-    if (Root_ || IDTable_)
+    if (Root_ or IDTable_)
         Cleanup();
 }
 

@@ -14,7 +14,7 @@ FeatureClassDataType* GetFeatureClassData(int index)
 {
     ShiAssert(Falcon4ClassTable[index].dataPtr);
 
-    if (Falcon4ClassTable[index].dataType <= DTYPE_MIN || Falcon4ClassTable[index].dataType >= DTYPE_MAX)  // JB 010106 CTD sanity check
+    if (Falcon4ClassTable[index].dataType <= DTYPE_MIN or Falcon4ClassTable[index].dataType >= DTYPE_MAX)  // JB 010106 CTD sanity check
         return NULL; // JB 010106 CTD sanity check
 
     return (FeatureClassDataType*) Falcon4ClassTable[index].dataPtr;

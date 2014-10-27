@@ -59,7 +59,7 @@ VU_ERRCODE VuGridTree::Move(VuEntity *ent, BIG_SCALAR coord1, BIG_SCALAR coord2)
         VU_KEY ck2 = bkf->Key2(ent);
         VU_KEY nk2 = bkf->CoordToKey(coord2);
 
-        if (ck1 != nk1 || ck2 != nk2)
+        if (ck1 != nk1 or ck2 != nk2)
         {
             // keys changed... have to remove and insert again
             table_[ck1]->Remove(ent);
@@ -221,7 +221,7 @@ VU_ERRCODE VuGridTree::Move(VuEntity *ent, BIG_SCALAR coord1, BIG_SCALAR coord2)
         VU_KEY ck2 = filter_->Key2(ent);
         VU_KEY nk2 = filter_->CoordToKey2(coord2);
 
-        if (ck1 != nk1 || ck2 != nk2)
+        if (ck1 != nk1 or ck2 != nk2)
         {
             // keys changed... have to remove and insert again
             table_[Row(ck1)]->Remove(ent);

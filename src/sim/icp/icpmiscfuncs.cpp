@@ -81,16 +81,16 @@ int ICPClass::ManualInput(void)
         (IsICPSet(ICPClass::MODE_CNI) && mICPSecondaryMode == TWO_BUTTON) ||
         (IsICPSet(ICPClass::MODE_CNI) && mICPSecondaryMode == FOUR_BUTTON) ||
         (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == ONE_BUTTON) ||
-        (IsICPSet(ICPClass::EDIT_LAT)) || (IsICPSet(ICPClass::EDIT_LONG)) ||
-        (IsICPSet(ICPClass::FLARE_BINGO)) || (IsICPSet(ICPClass::CHAFF_BINGO)) ||
-        (BQ || BI || SQ || SI || OA1 || OA2) ||
+        (IsICPSet(ICPClass::EDIT_LAT)) or (IsICPSet(ICPClass::EDIT_LONG)) ||
+        (IsICPSet(ICPClass::FLARE_BINGO)) or (IsICPSet(ICPClass::CHAFF_BINGO)) ||
+        (BQ or BI or SQ or SI or OA1 or OA2) ||
         (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == TWO_BUTTON) ||
         (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == THREE_BUTTON) ||
         (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == FIFE_BUTTON) ||
         (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == NINE_BUTTON) ||
-        (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == 100) || //INTG
-        (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == SIX_BUTTON) || //INS
-        IsICPSet(ICPClass::MODE_IFF) || (IsICPSet(ICPClass::MISC_MODE) &&
+        (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == 100) or //INTG
+        (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == SIX_BUTTON) or //INS
+        IsICPSet(ICPClass::MODE_IFF) or (IsICPSet(ICPClass::MISC_MODE) &&
                                          mICPSecondaryMode == FIFE_BUTTON))
     {
         if (OA1 && OA_BRG)
@@ -146,10 +146,10 @@ int ICPClass::CheckMode(void)
     if (!g_bIFF)
     {
         //Don't do anything for now when in COMM (temporary)/IFF/DLINK/FACK/MARK/INTG mode
-        if (IsICPSet(ICPClass::MODE_COMM1) || IsICPSet(ICPClass::MODE_COMM2) ||
-            IsICPSet(ICPClass::MODE_IFF) || IsICPSet(ICPClass::MODE_DLINK) ||
-            IsICPSet(ICPClass::MODE_FACK) || IsICPSet(ICPClass::BLOCK_MODE) ||
-            (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == 100) || //INTG
+        if (IsICPSet(ICPClass::MODE_COMM1) or IsICPSet(ICPClass::MODE_COMM2) ||
+            IsICPSet(ICPClass::MODE_IFF) or IsICPSet(ICPClass::MODE_DLINK) ||
+            IsICPSet(ICPClass::MODE_FACK) or IsICPSet(ICPClass::BLOCK_MODE) ||
+            (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == 100) or //INTG
             mICPSecondaryMode == MARK_MODE)
             return TRUE;
         else
@@ -158,8 +158,8 @@ int ICPClass::CheckMode(void)
     else
     {
         //Don't do anything for now when in COMM (temporary)/IFF/DLINK/FACK/MARK/INTG mode
-        if (IsICPSet(ICPClass::MODE_COMM1) || IsICPSet(ICPClass::MODE_COMM2) ||
-            IsICPSet(ICPClass::MODE_DLINK) || IsICPSet(ICPClass::MODE_FACK) ||
+        if (IsICPSet(ICPClass::MODE_COMM1) or IsICPSet(ICPClass::MODE_COMM2) ||
+            IsICPSet(ICPClass::MODE_DLINK) or IsICPSet(ICPClass::MODE_FACK) ||
             IsICPSet(ICPClass::BLOCK_MODE) ||
             mICPSecondaryMode == MARK_MODE)
             return TRUE;
@@ -199,15 +199,15 @@ void ICPClass::HandleManualInput(int button)
     }
     else if (IsICPSet(ICPClass::MODE_CNI) && mICPSecondaryMode == ONE_BUTTON ||
              IsICPSet(ICPClass::MODE_CNI) && mICPSecondaryMode == TWO_BUTTON ||
-             (BQ || BI || SQ || SI || OA1 || OA2 || EDITMSLFLOOR) ||
+             (BQ or BI or SQ or SI or OA1 or OA2 or EDITMSLFLOOR) ||
              IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == ONE_BUTTON ||
              IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == TWO_BUTTON ||
              IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == THREE_BUTTON ||
              IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == FIFE_BUTTON ||
              IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == NINE_BUTTON ||
-             IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == 100 ||  //INTG
-             (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == SIX_BUTTON) || //INS
-             IsICPSet(ICPClass::MODE_IFF) || (IsICPSet(ICPClass::MISC_MODE) &&
+             IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == 100 or  //INTG
+             (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == SIX_BUTTON) or //INS
+             IsICPSet(ICPClass::MODE_IFF) or (IsICPSet(ICPClass::MISC_MODE) &&
                      mICPSecondaryMode == FIFE_BUTTON))
     {
         Manual_Input = TRUE;
@@ -351,7 +351,7 @@ void ICPClass::ClearInput(void)
                 fOA_BRG2 = tempvar1;
         }
 
-        if (VIP_BRG || VRP_BRG)
+        if (VIP_BRG or VRP_BRG)
         {
             if (VIP_BRG)
                 fVIP_BRG = tempvar1;
@@ -380,7 +380,7 @@ void ICPClass::ClearInput(void)
 
     ClearCount ++;
 
-    if (ClearCount == 2 || InputsMade == 1)
+    if (ClearCount == 2 or InputsMade == 1)
     {
         //Clear it all here, unset flags
         ClearCount = 0;
@@ -401,7 +401,7 @@ void ICPClass::ClearInput(void)
                 fOA_BRG2 = tempvar1;
         }
 
-        if (VIP_BRG || VRP_BRG)
+        if (VIP_BRG or VRP_BRG)
         {
             if (VIP_BRG)
                 fVIP_BRG = tempvar1;
@@ -687,7 +687,7 @@ void ICPClass::CheckAutoSTPT(void)
         playerAC->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb) // MLR-NOTE Needs to consider Rockets???
         return;
 
-    if (!playerAC || !playerAC->curWaypoint)
+    if (!playerAC or !playerAC->curWaypoint)
         return;
 
     playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
@@ -878,8 +878,8 @@ void ICPClass::ResetInput(void)
 }
 int ICPClass::CheckBackupPages(void)
 {
-    if (IsICPSet(ICPClass::MODE_CNI) || IsICPSet(ICPClass::MODE_IFF) ||
-        IsICPSet(ICPClass::MODE_COMM1) || IsICPSet(ICPClass::MODE_COMM2))
+    if (IsICPSet(ICPClass::MODE_CNI) or IsICPSet(ICPClass::MODE_IFF) ||
+        IsICPSet(ICPClass::MODE_COMM1) or IsICPSet(ICPClass::MODE_COMM2))
         return TRUE;
     else
         return FALSE;

@@ -265,7 +265,7 @@ VU_BOOL SimObjectFilter::Test(VuEntity* ent1)
 
     if (ent1->Type() > VU_LAST_ENTITY_TYPE && classPtr->classInfo_[VU_DOMAIN] > DOMAIN_ABSTRACT)
     {
-        if ((classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE || classPtr->classInfo_[VU_CLASS] == CLASS_WEAPON) && ((FalconEntity*)ent1)->IsSim())
+        if ((classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE or classPtr->classInfo_[VU_CLASS] == CLASS_WEAPON) && ((FalconEntity*)ent1)->IsSim())
             return TRUE;;
     }
 
@@ -350,7 +350,7 @@ SimAirfieldFilter::~SimAirfieldFilter(void)
 
 VU_BOOL SimAirfieldFilter::Test(VuEntity* e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] || (e->EntityType())->classInfo_[VU_CLASS] != CLASS_OBJECTIVE)
+    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] != CLASS_OBJECTIVE)
         return FALSE;
 
     if ((e->EntityType())->classInfo_[VU_TYPE] != TYPE_AIRBASE)

@@ -414,7 +414,7 @@ void AircraftClass::DropEWS()
     //make noise
     if ((counterMeasureStation[FLARE_STATION].weaponCount > 0 ||
          counterMeasureStation[CHAFF_STATION].weaponCount > 0) &&
-        (EWSPGM() == Man || EWSPGM() == Semi || EWSPGM() == Auto))
+        (EWSPGM() == Man or EWSPGM() == Semi or EWSPGM() == Auto))
     {
         //F4SoundFXSetDist(af->auxaeroData->sndBBChaffFlare, FALSE, 0.0f, 1.0f);
         if (!SoundPos.IsPlaying(af->auxaeroData->sndBBChaffFlare))
@@ -444,7 +444,7 @@ void AircraftClass::EWSChaffBurst(void)
     if (theRwr)
     {
         //RWR not on, no spikes!
-        if (!theRwr->IsOn() || !HasPower(AircraftClass::EWSChaffPower))
+        if (!theRwr->IsOn() or !HasPower(AircraftClass::EWSChaffPower))
             return;
     }
     else //no RWR, return anyway
@@ -465,7 +465,7 @@ void AircraftClass::EWSFlareBurst(void)
 
     if (theRwr)
     {
-        if (!theRwr->IsOn() || !HasPower(AircraftClass::EWSFlarePower))
+        if (!theRwr->IsOn() or !HasPower(AircraftClass::EWSFlarePower))
             return;
     }
     else //no RWR, return anyway

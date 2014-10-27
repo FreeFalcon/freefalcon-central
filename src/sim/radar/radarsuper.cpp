@@ -135,7 +135,7 @@ void RadarSuperClass::UpdateState(int cursorXCmd, int cursorYCmd)
     if (cursorY <= -0.8f) RangeStep(-1);
 
     // Note if the cursors are in motion or not
-    if ((cursorXCmd != 0) || (cursorYCmd != 0))
+    if ((cursorXCmd != 0) or (cursorYCmd != 0))
         flags  or_eq  CursorMoving;
     else
         flags &= compl CursorMoving;
@@ -332,7 +332,7 @@ void RadarSuperClass::ExecAG(void)
         range = (float)sqrt(dx * dx + dy * dy);
 
         // Skip the object if it is out of range or _really_ close
-        if ((range > rangeFT) || (range < 500.0f))
+        if ((range > rangeFT) or (range < 500.0f))
         {
             continue;
         }
@@ -342,7 +342,7 @@ void RadarSuperClass::ExecAG(void)
         y = dy * scaledSinYaw + dx * scaledCosYaw - 1.0f;
 
         // Skip the object if it is off screen
-        if ((fabs(x) > 1.0f) || (fabs(y) > 1.0f))
+        if ((fabs(x) > 1.0f) or (fabs(y) > 1.0f))
         {
             continue;
         }
@@ -396,7 +396,7 @@ void RadarSuperClass::ExecAG(void)
             case NEXT:
                 if (range < bestSoFar)
                 {
-                    if ((!lockedTarget) || (range > lockedTarget->localData->range))
+                    if ((!lockedTarget) or (range > lockedTarget->localData->range))
                     {
                         bestSoFar = range;
                         newLock = object;
@@ -409,7 +409,7 @@ void RadarSuperClass::ExecAG(void)
             case PREV:
                 if (range > bestSoFar)
                 {
-                    if ((!lockedTarget) || (range < lockedTarget->localData->range))
+                    if ((!lockedTarget) or (range < lockedTarget->localData->range))
                     {
                         bestSoFar = range;
                         newLock = object;
@@ -549,7 +549,7 @@ void RadarSuperClass::ExecAA(void)
         }
 
         // Skip weapons
-        if (object->BaseData()->IsMissile() || object->BaseData()->IsBomb())
+        if (object->BaseData()->IsMissile() or object->BaseData()->IsBomb())
         {
             continue;
         }
@@ -637,7 +637,7 @@ void RadarSuperClass::ExecAA(void)
             case NEXT:
                 if (object->localData->range < bestSoFar)
                 {
-                    if ((!lockedTarget) || (object->localData->range > lockedTarget->localData->range))
+                    if ((!lockedTarget) or (object->localData->range > lockedTarget->localData->range))
                     {
                         bestSoFar = object->localData->range;
                         newLock = object;
@@ -650,7 +650,7 @@ void RadarSuperClass::ExecAA(void)
             case PREV:
                 if (object->localData->range > bestSoFar)
                 {
-                    if ((!lockedTarget) || (object->localData->range < lockedTarget->localData->range))
+                    if ((!lockedTarget) or (object->localData->range < lockedTarget->localData->range))
                     {
                         bestSoFar = object->localData->range;
                         newLock = object;
@@ -777,7 +777,7 @@ void RadarSuperClass::DisplayAGReturns(void)
 
 
         // Skip the object if it is out of range or _really_ close
-        if ((range > rangeFT) || (range < 1000.0f))
+        if ((range > rangeFT) or (range < 1000.0f))
         {
             continue;
         }
@@ -829,7 +829,7 @@ void RadarSuperClass::DisplayAAReturns(void)
         }
 
         // Skip weapons
-        if (object->BaseData()->IsMissile() || object->BaseData()->IsBomb())
+        if (object->BaseData()->IsMissile() or object->BaseData()->IsBomb())
         {
             continue;
         }

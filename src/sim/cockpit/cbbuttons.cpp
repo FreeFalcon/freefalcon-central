@@ -277,7 +277,7 @@ void CBExAutoPilot(void * pButton, int)
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ((playerAC == NULL) || !playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if ((playerAC == NULL) or !playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         return;
     }
@@ -385,7 +385,7 @@ void CBExStoresJettison(void * pButton, int)
     // pCPButton->SetCurrentState(1);
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC == NULL || playerAC->Sms == NULL)
+    if (playerAC == NULL or playerAC->Sms == NULL)
     {
         return;
     }
@@ -1965,7 +1965,7 @@ void CBExCatIII(void * pButton, int)
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ((playerAC == NULL) || (playerAC->af == NULL))
+    if ((playerAC == NULL) or (playerAC->af == NULL))
     {
         return;
     }
@@ -3652,7 +3652,7 @@ void CBExGndJettEnable(void * pButton, int event)
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC == NULL || playerAC->Sms == NULL)
+    if (playerAC == NULL or playerAC->Sms == NULL)
     {
         return;
     }
@@ -3825,7 +3825,7 @@ void CBExIFFPower(void * pButton, int event)
 
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
 
-    if (g_bIFF || g_bMLU)
+    if (g_bIFF or g_bMLU)
     {
         if (playerAC->PowerSwitchOn(AircraftClass::IFFPower))
         {

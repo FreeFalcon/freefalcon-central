@@ -48,7 +48,7 @@ void OTWDriverClass::UpdateVehicleDrawables(void)
         // Record ownship's position and orientation.
         ObjectSetData(otwPlatform.get(), &ownshipPos, &ownshipRot);
 
-        if (DisplayInCockpit() || !otwPlatform->OnGround())
+        if (DisplayInCockpit() or !otwPlatform->OnGround())
         {
             // Inhibit the drawing of the otwPlatform drawable
             otwPlatform->drawPointer->SetInhibitFlag(TRUE);

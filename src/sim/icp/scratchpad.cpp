@@ -162,7 +162,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
                 InputString[0] = ' ';
         }
     }
-    else if ((IsICPSet(ICPClass::EDIT_LAT) || IsICPSet(ICPClass::EDIT_LONG)) && Manual_Input)
+    else if ((IsICPSet(ICPClass::EDIT_LAT) or IsICPSet(ICPClass::EDIT_LONG)) && Manual_Input)
     {
         InputString[10] = '\0';
         InputString[9] = '\'';
@@ -606,11 +606,11 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
                 sprintf(InputString, "%3.2f", fFLARE_SI[FPI]);
         }
     }
-    else if (OA1 || OA2)
+    else if (OA1 or OA2)
     {
         if (Manual_Input)
         {
-            if (OA_RNG || OA_ALT)
+            if (OA_RNG or OA_ALT)
             {
                 InputString[7] = 'T';
                 InputString[6] = 'F';
@@ -708,7 +708,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
     {
         if (Manual_Input)
         {
-            if (VIP_RNG || VRP_RNG)
+            if (VIP_RNG or VRP_RNG)
             {
                 InputString[7] = 'T';
                 InputString[6] = 'F';
@@ -745,7 +745,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
 
                 InputString[8] = '\0';
             }
-            else if (VIP_BRG || VRP_BRG)
+            else if (VIP_BRG or VRP_BRG)
             {
                 InputString[5] = '\'';
 
@@ -773,7 +773,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
 
                 InputString[6] = '\0';
             }
-            else if (VIP_ALT || VRP_ALT)
+            else if (VIP_ALT or VRP_ALT)
             {
                 InputString[7] = 'T';
                 InputString[6] = 'F';
@@ -961,7 +961,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
         FillDEDMatrix(Line, Start, "\x02", 2);
         FillDEDMatrix(Line, End, "\x02", 2);
 
-        if (Manual_Input ||  IsSelected)
+        if (Manual_Input or  IsSelected)
         {
             MakeInverted(Line, Start, End);
         }

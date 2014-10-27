@@ -142,7 +142,7 @@ void DrawableBSP::DetachChild(DrawableBSP *child, int slotNumber)
         return;
     }
 
-    if ((!instance.SlotChildren) || (instance.SlotChildren[slotNumber] != &child->instance))
+    if ((!instance.SlotChildren) or (instance.SlotChildren[slotNumber] != &child->instance))
     {
         //(*(int*)0) = 0;
         return;
@@ -450,7 +450,7 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
     }
 
     // Check final candidate is within the segment of interest
-    if (tMax < 0.0f || tMax > 1.0f)
+    if (tMax < 0.0f or tMax > 1.0f)
     {
         return FALSE;
     }
@@ -466,7 +466,7 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
         {
             *collp = *orgp + tMax * (*vecp);
 
-            if (*collp < minB[i] ||  *collp > maxB[i])
+            if (*collp < minB[i] or  *collp > maxB[i])
             {
                 // outside box
                 return FALSE;
@@ -575,11 +575,11 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
     // JB 010112
     float scalefactor = 1;
 
-    if (g_bSmartScaling || PlayerOptions.ObjectDynScalingOn())
+    if (g_bSmartScaling or PlayerOptions.ObjectDynScalingOn())
     {
         renderer->TransformPoint(&position, &labelPoint);
 
-        if (radius <= 150 && (GetClass() == Guys || GetClass() == GroundVehicle || GetClass() == BSP))
+        if (radius <= 150 && (GetClass() == Guys or GetClass() == GroundVehicle or GetClass() == BSP))
             scalefactor = (labelPoint.csZ - 1200) / 6076 + 1;
 
         if (scalefactor < 1)
@@ -631,7 +631,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
         }
     }
 
-    if (g_bSmartScaling || PlayerOptions.ObjectDynScalingOn())
+    if (g_bSmartScaling or PlayerOptions.ObjectDynScalingOn())
         TheStateStack.DrawObject(&instance, &orientation, &position, scale * scalefactor);  // JB 010112 added scalefactor
     else
         TheStateStack.DrawObject(&instance, &orientation, &position, scale);

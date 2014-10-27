@@ -69,7 +69,7 @@ void DigitalBrain::DoTargeting(void)
     if (SimLibElapsedTime > self->nextTargetUpdate)
     {
         // If we are lead, or lead is player, look for a target
-        if (!isWing || (mDesignatedObject == FalconNullId && flightLead && flightLead->IsSetFlag(MOTION_OWNSHIP)))
+        if (!isWing or (mDesignatedObject == FalconNullId && flightLead && flightLead->IsSetFlag(MOTION_OWNSHIP)))
         {
             if (missionClass != AAMission && !missionComplete && agDoctrine == AGD_NONE)
                 SelectGroundWeapon();
@@ -86,7 +86,7 @@ void DigitalBrain::DoTargeting(void)
                 // 2002-02-25 MODIFIED BY S.G. NO NO NO, AGGREGATED Campaign object should make it here as well otherwise AI will not target them until they enter the 20 NM limit below.
                 // Campaign returned a sim entity, deal with it
                 //          else if (campTarget->IsSim())
-                else if (campTarget->IsSim() || (campTarget->IsCampaign() && ((CampBaseClass *)campTarget)->IsAggregate()))
+                else if (campTarget->IsSim() or (campTarget->IsCampaign() && ((CampBaseClass *)campTarget)->IsAggregate()))
                 {
                     // Put it directly into our target list
                     SimObjectType *newTarg = new SimObjectType(campTarget);
@@ -103,13 +103,13 @@ void DigitalBrain::DoTargeting(void)
             // objects into our target list and then make a weighted choice among all of the entities.
             // 2000-11-17 MODIFIED BY S.G. WILL TRY DIFFERENT VALUES AND SEE HOW IT AFFECTS GAMEPLAY/FPS
             //(5 NM IS THE DEFAULT). 20 NM SEEMS FINE (NO REAL FPS LOSS AND IMPROVED AI TARGET SORTING)
-            //       if (!campTarget || rngSqr < (5.0F * NM_TO_FT)*(5.0F * NM_TO_FT))
+            //       if (!campTarget or rngSqr < (5.0F * NM_TO_FT)*(5.0F * NM_TO_FT))
             // SYLVAINLOOK in your RP5 code, this was brought back to 5 NM...
             // 2002-03-15 MODIFIED BY S.G. Now uses g_fSearchSimTargetFromRangeSqr so we can tweak it
             // TJL 10/20/03 SearchSim is missing from F4config. Uncommented hard code and changed it to 8.0 miles.
-            //if (!campTarget || rngSqr < (20.0F * NM_TO_FT)*(20.0F * NM_TO_FT))
-            //if (!campTarget || rngSqr < (8.0F * NM_TO_FT)*(8.0F * NM_TO_FT))
-            if (!campTarget || rngSqr < g_fSearchSimTargetFromRangeSqr)
+            //if (!campTarget or rngSqr < (20.0F * NM_TO_FT)*(20.0F * NM_TO_FT))
+            //if (!campTarget or rngSqr < (8.0F * NM_TO_FT)*(8.0F * NM_TO_FT))
+            if (!campTarget or rngSqr < g_fSearchSimTargetFromRangeSqr)
             {
                 // Need a target list for threat checking
                 self->targetList = UpdateTargetList(self->targetList, self, SimDriver.combinedList);
@@ -137,7 +137,7 @@ void DigitalBrain::DoTargeting(void)
             // TODO:  Should we do a range check here like we do for leads above, or just trust the campaign?
             if (!campTarget)
             {
-                //me123 we need it for bvr reactions      if (missionClass == AAMission || missionComplete)
+                //me123 we need it for bvr reactions      if (missionClass == AAMission or missionComplete)
                 self->targetList = UpdateTargetList(self->targetList, self, SimDriver.combinedList);
             }
 
@@ -212,7 +212,7 @@ void DigitalBrain::TargetSelection(void)
 
     // stay on current target
     if (targetPtr && (
-            targetPtr->BaseData()->IsExploding() || targetPtr->BaseData()->IsDead() ||
+            targetPtr->BaseData()->IsExploding() or targetPtr->BaseData()->IsDead() ||
             (
                 targetPtr->BaseData()->IsAirplane() &&
                 ((AircraftClass*)targetPtr->BaseData())->IsAcStatusBitsSet(
@@ -240,10 +240,10 @@ void DigitalBrain::TargetSelection(void)
         FalconEntity *baseData = objectPtr->BaseData();
 
         if (
-            (baseData == NULL) || (baseData->VuState() != VU_MEM_ACTIVE) ||
-            //F4IsBadCodePtr((FARPROC) objectPtr->BaseData()) || // JB 010224 CTD
+            (baseData == NULL) or (baseData->VuState() != VU_MEM_ACTIVE) ||
+            //F4IsBadCodePtr((FARPROC) objectPtr->BaseData()) or // JB 010224 CTD
             baseData->IsSim() && (
-                baseData->IsWeapon() || baseData->IsEject() || (
+                baseData->IsWeapon() or baseData->IsEject() or (
                     baseData->IsAirplane() && ((AircraftClass*)baseData)->IsAcStatusBitsSet(
                         AircraftClass::ACSTATUS_PILOT_EJECTED
                     )
@@ -480,7 +480,7 @@ void DigitalBrain::TargetSelection(void)
     }
 
     // Turn on jamming if possible
-    if (curSpike && !jammertime || (flightLead && flightLead->IsSPJamming()))
+    if (curSpike && !jammertime or (flightLead && flightLead->IsSPJamming()))
     {
         if (self->HasSPJamming())
         {
@@ -532,8 +532,8 @@ FalconEntity* DigitalBrain::CampTargetSelection(void)
     // set ground target pointer if on ground!
     // never, ever set targetPtr to ground object
     // 2000-09-27 MODIFIED BY S.G. AI NEED TO SET ITS TARGET POINTER IF IT HAS REACHED ITS IP WAYPOINT AS WELL
-    // if ( target->OnGround() && (missionClass == AAMission || missionComplete) && hasWeapons)
-    if (target->OnGround() && (missionClass == AAMission || missionComplete || IsSetATC(ReachedIP)) && hasWeapons)
+    // if ( target->OnGround() && (missionClass == AAMission or missionComplete) && hasWeapons)
+    if (target->OnGround() && (missionClass == AAMission or missionComplete or IsSetATC(ReachedIP)) && hasWeapons)
     {
         if (!groundTargetPtr)
         {

@@ -176,7 +176,7 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
 
             // is the parent in the sim lists?
             // if so we want to try and find a matching target in the target list
-            if (!campobj || !campobj->IsAggregate() || campobj->IsDead())
+            if (!campobj or !campobj->IsAggregate() or campobj->IsDead())
             {
                 return NULL;
             }
@@ -206,7 +206,7 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
         // get campaign object
         campobj = (CampBaseClass *)current->BaseData();
 
-        if (!campobj || F4IsBadCodePtr((FARPROC) campobj)) // JB 010220 CTD
+        if (!campobj or F4IsBadCodePtr((FARPROC) campobj)) // JB 010220 CTD
             return NULL; // JB 010220 CTD
 
         if (campobj->IsDead())
@@ -264,7 +264,7 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
                             simobj = campobj->GetComponentLead();
                         }
 
-                        if (simobj && (simobj->IsDead() || !simobj->IsAwake()))
+                        if (simobj && (simobj->IsDead() or !simobj->IsAwake()))
                         {
                             return NULL;
                         }

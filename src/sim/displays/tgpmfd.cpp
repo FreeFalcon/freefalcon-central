@@ -71,7 +71,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
     Sms = playerAC->Sms;
     display = newDisplay;
 
-    if (!theRadar || !pFCC || !self || !Sms)
+    if (!theRadar or !pFCC or !self or !Sms)
     {
         ShiWarning("Oh Oh shouldn't be here without a radar or FCC or player or SMS!");
         return;
@@ -240,7 +240,7 @@ void TgpMfdDrawable::PushButton(int whichButton, int whichMFD)
             break;
 
         case 19:
-            if ((g_bGreyMFD) || (!g_bGreyScaleMFD))
+            if ((g_bGreyMFD) or (!g_bGreyScaleMFD))
                 g_bGreyMFD = false;
             else
                 g_bGreyMFD = true;
@@ -281,7 +281,7 @@ VirtualDisplay* TgpMfdDrawable::GetDisplay(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC || !playerAC->Sms)
+    if (!playerAC or !playerAC->Sms)
         return privateDisplay;
 
     SensorClass* laserPod = FindLaserPod(playerAC->Sms->Ownship());

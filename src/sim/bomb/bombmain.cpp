@@ -343,7 +343,7 @@ int BombClass::Exec(void)
     }
 
 
-    if (IsDead() || (flags & FirstFrame))
+    if (IsDead() or (flags & FirstFrame))
     {
         flags &= compl FirstFrame;
         return TRUE;
@@ -556,19 +556,19 @@ int BombClass::Exec(void)
         // realistic section would be ran. If no parent, run this
         // There is no danger of a CTD if parent is NULL because the
         // OR will have it enter the if statement without running the 'IsPlayer'.
-        //   if(!g_bRealisticAvionics || ( parent && !((AircraftClass *)parent)->IsPlayer()))
+        //   if(!g_bRealisticAvionics or ( parent && !((AircraftClass *)parent)->IsPlayer()))
         // Cobra - Forcing all non-Player (AI) into this section causes their bombs
         // to not be guided, thus randon hit pattern
-        //   if(!g_bRealisticAvionics || !parent)
+        //   if(!g_bRealisticAvionics or !parent)
         /////////////////////////////////////////////////////
 
         // RED -  enough enter when it's not a guided Bomb or LGB for AI
         // ( the targeting sysem would CTD if AI managed by player code,
         // As the PlayerEntity is not the one to use )
         if (
-            !g_bRealisticAvionics || !parent || !(flags & GUIDED_BOMB)
-            || ((((!((AircraftClass *)parent.get())->IsPlayer())
-                  || (((AircraftClass *)parent.get())->IsPlayer())
+            !g_bRealisticAvionics or !parent or !(flags & GUIDED_BOMB)
+            or ((((!((AircraftClass *)parent.get())->IsPlayer())
+                  or (((AircraftClass *)parent.get())->IsPlayer())
                   && ((AircraftClass *)parent.get())->AutopilotType() == AircraftClass::CombatAP))
                 && (flags & IsLGB))
         )
@@ -772,7 +772,7 @@ int BombClass::Exec(void)
         }
         //Wombat778 3-09-04 If this is a GPS weapon, guide to the GPS coordinates. A ripoff from the LGB code above
         // RV - Biker - Add 2 sec delay for guidance
-        else if (((flags & IsGPS) || (flags & IsJSOW)) && (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
+        else if (((flags & IsGPS) or (flags & IsJSOW)) && (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
         {
             FalconEntity *target = NULL;
             // SimBaseClass *simTarg;
@@ -928,7 +928,7 @@ int BombClass::Exec(void)
             {
                 //me123 OWLOOK make your armingdelay switch here.
                 //MI
-                //if (g_bArmingDelay && (SimLibElapsedTime - timeOfDeath > armingdelay *10  || ((AircraftClass *)parent)->isDigital))
+                //if (g_bArmingDelay && (SimLibElapsedTime - timeOfDeath > armingdelay *10  or ((AircraftClass *)parent)->isDigital))
                 if (
                     g_bRealisticAvionics &&
                     (SimLibElapsedTime - timeOfDeath > armingdelay * 10  ||
@@ -974,7 +974,7 @@ int BombClass::Exec(void)
             }
             else if (z >= terrainHeight)
             {
-                if (bombType == None && (SimLibElapsedTime - timeOfDeath > armingdelay * 10.0f || (parent && ((AircraftClass *)parent.get())->IsDigital()))) //me123 addet arming check
+                if (bombType == None && (SimLibElapsedTime - timeOfDeath > armingdelay * 10.0f or (parent && ((AircraftClass *)parent.get())->IsDigital()))) //me123 addet arming check
                 {
                     // Interpolate
                     delta = (z - terrainHeight) / (z - ZPos());

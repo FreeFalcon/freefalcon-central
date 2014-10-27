@@ -337,7 +337,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
     else
         MonoPrint("No new host - shutting game down\n");
 
-    /* if (!sess || Id() == sess->GameId())
+    /* if (!sess or Id() == sess->GameId())
      {
      // All Features get transfered to nearest session.
      // All Non-player transferable vehicles (i.e. non-dogfight) get transfered to nearest session.
@@ -358,7 +358,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      cs = (FalconSessionEntity*) siter.GetFirst();
      while (cs)
      {
-     if ((!sess || sess->Id() != cs->Id()) && cs->GameId() == Id() && (ulong)cs->Id().creator_ < best)
+     if ((!sess or sess->Id() != cs->Id()) && cs->GameId() == Id() && (ulong)cs->Id().creator_ < best)
      {
      best = cs->Id().creator_;
      new_host = cs;
@@ -388,19 +388,19 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      ent = dbiter.GetFirst();
      while (ent)
      {
-     if ((!sess || ent->OwnerId() == sess->Id()) && ent != sess)
+     if ((!sess or ent->OwnerId() == sess->Id()) && ent != sess)
      {
      ent_class = ent->EntityType()->classInfo_[VU_CLASS];
-     if (!new_host || (sess && !ent->IsTransferrable()))
+     if (!new_host or (sess && !ent->IsTransferrable()))
      {
      vuDatabase->Remove(ent);
      }
-     else if (ent_class == CLASS_OBJECTIVE || ent_class == CLASS_UNIT || ent_class == CLASS_MANAGER || ent_class == CLASS_GAME || ent_class == CLASS_GROUP)
+     else if (ent_class == CLASS_OBJECTIVE or ent_class == CLASS_UNIT or ent_class == CLASS_MANAGER or ent_class == CLASS_GAME or ent_class == CLASS_GROUP)
      {
      ((FalconEntity*)ent)->SetOwner(new_host);
      ((CampEntity)ent)->SendMessage(sess->Id(), FalconCampMessage.campReaggregate, 0, 0, 0, 0);
      }
-     else if (ent_class == CLASS_FEATURE || ent_class == CLASS_VEHICLE)
+     else if (ent_class == CLASS_FEATURE or ent_class == CLASS_VEHICLE)
      {
      // KCK: If there's a valid deaggregate owner, set owner to that..
      if ((int)((SimBaseClass*)ent)->campaignObject > MAX_IA_CAMP_UNIT && ((CampBaseClass*)((SimBaseClass*)ent)->campaignObject)->deag_owner != sess->Id())

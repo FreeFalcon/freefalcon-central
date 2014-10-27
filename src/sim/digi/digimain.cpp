@@ -652,7 +652,7 @@ void DigitalBrain::FrameExec(SimObjectType* curTargetList, SimObjectType* curTar
         throtl = 1.5f;
 
     // RV - Biker - Don't allow AB when low on fuel or on ground
-    if (IsSetATC(SaidFumes) || IsSetATC(SaidFlameout) || (self->OnGround() && GetCurrentMode() != TakeoffMode))
+    if (IsSetATC(SaidFumes) or IsSetATC(SaidFlameout) or (self->OnGround() && GetCurrentMode() != TakeoffMode))
     {
         throtl = min(1.0f, throtl);
     }
@@ -670,7 +670,7 @@ void DigitalBrain::Sleep(void)
     {
 #ifdef DEBUG
 
-        if (groundTargetPtr->prev || groundTargetPtr->next)
+        if (groundTargetPtr->prev or groundTargetPtr->next)
         {
             MonoPrint("Ground target still in list at sleep\n");
         }

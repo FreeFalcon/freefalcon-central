@@ -448,7 +448,7 @@ void ACMIView::GetObjectName(SimBaseClass* theObject, char *tmpStr)
 
     memset(tmpStr, 0, 40);
 
-    if (classPtr->dataType == DTYPE_VEHICLE || classPtr->dataType == DTYPE_WEAPON)
+    if (classPtr->dataType == DTYPE_VEHICLE or classPtr->dataType == DTYPE_WEAPON)
     {
 
         strcpy(tmpStr, ((DrawableBSP*)theObject->drawPointer)->Label());

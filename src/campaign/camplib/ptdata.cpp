@@ -56,7 +56,7 @@ int GetFirstPt(int headerindex)
 
 int GetNextPt(int ptindex)
 {
-    if ((ptindex < 0) || (ptindex >= NumPts))
+    if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
     if (!(PtDataTable[ptindex].flags & PT_LAST))
@@ -70,7 +70,7 @@ int GetNextPt(int ptindex)
 int GetNextTaxiPt(int ptindex)
 {
     // FRB - CTD's here
-    if ((ptindex < 0) || (ptindex >= NumPts))
+    if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
     ptindex = GetNextPt(ptindex);
@@ -85,7 +85,7 @@ int GetNextTaxiPt(int ptindex)
 
 int GetNextPtLoop(int ptindex)
 {
-    if ((ptindex < 0) || (ptindex >= NumPts))
+    if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
     if (!(PtDataTable[ptindex].flags & PT_LAST))
@@ -98,7 +98,7 @@ int GetNextPtLoop(int ptindex)
 
 int GetNextPtCrit(int ptindex)
 {
-    if ((ptindex < 0) || (ptindex >= NumPts))
+    if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
     if (PtDataTable[ptindex].type != CritTaxiPt && !(PtDataTable[ptindex].flags & PT_LAST))
@@ -109,7 +109,7 @@ int GetNextPtCrit(int ptindex)
 
 int GetPrevPt(int ptindex)
 {
-    if ((ptindex < 0) || (ptindex >= NumPts))
+    if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
     if (!(PtDataTable[ptindex].flags & PT_FIRST))
@@ -120,7 +120,7 @@ int GetPrevPt(int ptindex)
 
 int GetPrevTaxiPt(int ptindex)
 {
-    if ((ptindex < 0) || (ptindex >= NumPts))
+    if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
     ptindex = GetPrevPt(ptindex);
@@ -133,7 +133,7 @@ int GetPrevTaxiPt(int ptindex)
 
 int GetPrevPtLoop(int ptindex)
 {
-    if ((ptindex < 0) || (ptindex >= NumPts))
+    if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
     if (!(PtDataTable[ptindex].flags & PT_FIRST))
@@ -144,7 +144,7 @@ int GetPrevPtLoop(int ptindex)
 
 int GetPrevPtCrit(int ptindex)
 {
-    if ((ptindex < 0) || (ptindex >= NumPts))
+    if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
     if (PtDataTable[ptindex].type != CritTaxiPt && !(PtDataTable[ptindex].flags & PT_FIRST))
@@ -160,7 +160,7 @@ int GetQueue(int rwindex)
 
 void TranslatePointData(CampEntity e, int ptindex, float *x, float *y)
 {
-    if ((ptindex < 0) || (ptindex >= NumPts))
+    if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
     if (e && e->IsObjective())

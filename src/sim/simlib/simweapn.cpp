@@ -284,7 +284,7 @@ void SimWeaponClass::SendDamageMessage(FalconEntity *testObject, float rangeSqua
     float lethalCone;
 
     // Don't damage other weapons
-    if (testObject->IsMissile() || testObject->IsBomb())
+    if (testObject->IsMissile() or testObject->IsBomb())
         return;
 
     // Adjust damage for distance:
@@ -323,7 +323,7 @@ void SimWeaponClass::SendDamageMessage(FalconEntity *testObject, float rangeSqua
     message->dataBlock.fCampID = parent->GetCampID();
     message->dataBlock.fSide   = static_cast<uchar>(parent->GetCountry());
 
-    if (parent->IsSimObjective() || parent->IsCampaign())
+    if (parent->IsSimObjective() or parent->IsCampaign())
         message->dataBlock.fPilotID   = 255;
     else
         message->dataBlock.fPilotID   = shooterPilotSlot;

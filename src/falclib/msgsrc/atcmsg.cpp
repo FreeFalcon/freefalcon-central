@@ -42,7 +42,7 @@ FalconATCMessage::~FalconATCMessage(void)
 
 void HandleInboundFlight(ObjectiveClass *atc, Flight flight)
 {
-    if (!atc || !flight)
+    if (!atc or !flight)
     {
         return;
     }
@@ -158,7 +158,7 @@ void HandleInboundFlight(ObjectiveClass *atc, Flight flight)
 
 void HandleInbound(ObjectiveClass *atc, AircraftClass *aircraft)
 {
-    if (!atc || !aircraft)
+    if (!atc or !aircraft)
     {
         return;
     }
@@ -293,7 +293,7 @@ int FalconATCMessage::Process(uchar autodisp)
         {
             case ContactApproach:
             case RequestClearance:
-                if (!aircraft->IsPlayer() || !aircraft->IsLocal())
+                if (!aircraft->IsPlayer() or !aircraft->IsLocal())
                 {
                     if (aircraft->pctStrength < STRENGTH_PCT_FOR_EMERG_LDG)
                         SendCallToATC(aircraft, EntityId(), rcLANDCLEAREMERGENCY, FalconLocalSession);
@@ -538,7 +538,7 @@ int FalconATCMessage::Process(uchar autodisp)
                 break;
 
             case RequestEmerClearance:
-                if (!aircraft->IsPlayer() || !aircraft->IsLocal())
+                if (!aircraft->IsPlayer() or !aircraft->IsLocal())
                     SendCallToATC(aircraft, EntityId(), rcLANDCLEAREMERGENCY, FalconLocalSession);
 
                 if (atcBrain && atc->IsLocal())
@@ -547,7 +547,7 @@ int FalconATCMessage::Process(uchar autodisp)
                 break;
 
             case RequestTakeoff:
-                if (!aircraft->IsPlayer() || !aircraft->IsLocal())
+                if (!aircraft->IsPlayer() or !aircraft->IsLocal())
                     SendCallToATC(aircraft, EntityId(), rcREADYFORDERARTURE, FalconLocalSession);
 
                 if (atcBrain && atc->IsLocal())
@@ -571,7 +571,7 @@ int FalconATCMessage::Process(uchar autodisp)
 #else
 
                 // sfr: comment for testing... wanna hear only answer...
-                if (!aircraft->IsPlayer() || !aircraft->IsLocal())
+                if (!aircraft->IsPlayer() or !aircraft->IsLocal())
                 {
                     SendCallToATC(aircraft, EntityId(), rcREADYFORDERARTURE, FalconLocalSession);
                 }
@@ -586,7 +586,7 @@ int FalconATCMessage::Process(uchar autodisp)
 
                 // M.N. 2001-12-20
             case AbortApproach:
-                if (!aircraft->IsPlayer() || !aircraft->IsLocal())
+                if (!aircraft->IsPlayer() or !aircraft->IsLocal())
                     SendCallToATC(aircraft, EntityId(), rcABORTAPPROACH, FalconLocalSession);
 
                 //atcBrain->AbortApproach(aircraft);//Cobra sfr: changed to match repo
@@ -597,7 +597,7 @@ int FalconATCMessage::Process(uchar autodisp)
 
                 // RAS - 22Jan04 - Set flag for traffic in sight call
             case TrafficInSight:
-                if (!aircraft->IsPlayer() || !aircraft->IsLocal())
+                if (!aircraft->IsPlayer() or !aircraft->IsLocal())
                     SendCallToATC(aircraft, EntityId(), rcCOPY, FalconLocalSession);
 
                 if (atcBrain && atc->IsLocal())
@@ -607,7 +607,7 @@ int FalconATCMessage::Process(uchar autodisp)
 
                 // TJL 08/16/04 - Set flag for Hotpit Refueling //Cobra 10/31/04 TJL
             case RequestHotpitRefuel:
-                if (!aircraft->IsPlayer() || !aircraft->IsLocal())
+                if (!aircraft->IsPlayer() or !aircraft->IsLocal())
                     SendCallToATC(aircraft, EntityId(), rcCOPY, FalconLocalSession);
 
                 aircraft->requestHotpitRefuel = TRUE; //Cobra 11/13/04 TJL will this make online work?

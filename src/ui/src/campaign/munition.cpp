@@ -367,7 +367,7 @@ BOOL GetJRackAndWeapon(VehicleClassDataType* vc, Falcon4EntityClassType *classPt
 
     bitflag = 1 << hardpoint;
 
-    if (!vc || !classPtr || !weapClassPtr)
+    if (!vc or !classPtr or !weapClassPtr)
         return(FALSE);
 
     if (!(vc->VisibleFlags & bitflag))
@@ -387,7 +387,7 @@ BOOL GetJRackAndWeapon(VehicleClassDataType* vc, Falcon4EntityClassType *classPt
 
     // Use a rack
     /*
-    if((vc->RackFlags & bitflag) || (WeaponDataTable[WeaponIndex].Flags & WEAP_ALWAYSRACK))
+    if((vc->RackFlags & bitflag) or (WeaponDataTable[WeaponIndex].Flags & WEAP_ALWAYSRACK))
     {
         if(rackClassPtr->visType[0])
         {
@@ -540,7 +540,7 @@ BOOL GetRackAndWeapon(VehicleClassDataType* vc, short VehID, short WeaponIndex, 
 
     bitflag = 1 << hardpoint;
 
-    if (!vc || !classPtr || !weapClassPtr)
+    if (!vc or !classPtr or !weapClassPtr)
         return(FALSE);
 
     if (!(vc->VisibleFlags & bitflag))
@@ -553,7 +553,7 @@ BOOL GetRackAndWeapon(VehicleClassDataType* vc, short VehID, short WeaponIndex, 
     else
         side = 1;
 
-    if ((weapClassPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ROCKET || weapClassPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_LAUNCHER))
+    if ((weapClassPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ROCKET or weapClassPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_LAUNCHER))
     {
         // Rocket POD... virtual weapons...ALWAYS get a rack
         rail->rackID = RocketRack[count].RackID[side];
@@ -564,7 +564,7 @@ BOOL GetRackAndWeapon(VehicleClassDataType* vc, short VehID, short WeaponIndex, 
     {
         RackList = Hellfires;
     }
-    else if ((weapClassPtr->visType[0] == MapVisId(VIS_AGM65B)) || (weapClassPtr->visType[0] == MapVisId(VIS_AGM65D)) || (weapClassPtr->visType[0] == MapVisId(VIS_AGM65G)))
+    else if ((weapClassPtr->visType[0] == MapVisId(VIS_AGM65B)) or (weapClassPtr->visType[0] == MapVisId(VIS_AGM65D)) or (weapClassPtr->visType[0] == MapVisId(VIS_AGM65G)))
     {
         RackList = Maverick;
     }
@@ -1232,7 +1232,7 @@ BOOL MuniTimeCB(C_Base *control)
             // GetTimeString(takeoff,buf);
             // txt->Refresh();
             // txt->SetText(buf);
-            if ((takeoff / VU_TICS_PER_SECOND) > g_nLoadoutTimeLimit || (TheCampaign.Flags & CAMP_TACTICAL_EDIT)) // JB 010729
+            if ((takeoff / VU_TICS_PER_SECOND) > g_nLoadoutTimeLimit or (TheCampaign.Flags & CAMP_TACTICAL_EDIT)) // JB 010729
             {
                 txt->Refresh();
 
@@ -2022,7 +2022,7 @@ void ArmPlaneCB(long ID, short hittype, C_Base *control)
     if (gStores)
         store = gStores->Find(weaponID);
 
-    if (store == NULL || !control)
+    if (store == NULL or !control)
         return;
 
     count = control->GetUserNumber(0);
@@ -2130,7 +2130,7 @@ void SetCurrentLoadout()
 
                     for (i = 0; i < 4; i++)
                     {
-                        if (PlaneEditList[i] && (gCurStores[FirstPlane].WeaponID[j] != gCurStores[i].WeaponID[j] || gCurStores[FirstPlane].WeaponCount[j] != gCurStores[i].WeaponCount[j]))
+                        if (PlaneEditList[i] && (gCurStores[FirstPlane].WeaponID[j] != gCurStores[i].WeaponID[j] or gCurStores[FirstPlane].WeaponCount[j] != gCurStores[i].WeaponCount[j]))
                             Diff = 1;
                     }
 

@@ -341,7 +341,7 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
     gMainThread->JoinGame(newgame);
 
     // Now init the other needed modules
-    ((WeatherClass*)realWeather)->Init((gametype == game_InstantAction || gametype == game_Dogfight));
+    ((WeatherClass*)realWeather)->Init((gametype == game_InstantAction or gametype == game_Dogfight));
 
     if (!LoadTheater(TheaterName))
     {
@@ -491,7 +491,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
     LoadBaseObjectives(Scenario);
     LoadObjectiveDeltas(savefile);
 
-    if (gClearPilotInfo || !LoadPilotInfo(savefile))
+    if (gClearPilotInfo or !LoadPilotInfo(savefile))
     {
         NewPilotInfo();
     }
@@ -663,7 +663,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
     masterSession = (FalconSessionEntity*) vuDatabase->Find(game->OwnerId());
 
-    if (!masterSession || masterSession == vuLocalSessionEntity)
+    if (!masterSession or masterSession == vuLocalSessionEntity)
         return LoadCampaign(gametype, Scenario);
 
     if (stricmp(Scenario, "Instant") == 0)
@@ -806,7 +806,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
 int CampaignClass::StartRemoteCampaign(FalconGameEntity *game)
 {
-    if (!IsLoaded() || (Flags & CAMP_NEED_MASK))
+    if (!IsLoaded() or (Flags & CAMP_NEED_MASK))
         return 0;
 
     if (!(Flags & CAMP_LIGHT))
@@ -832,7 +832,7 @@ void CampaignClass::GotJoinData(void)
 
     MonoPrint("Got Join data! Still needed = %x\n", still_needed);
 
-    if (still_needed || IsLoaded())
+    if (still_needed or IsLoaded())
         return;
 
     // We're loaded!
@@ -854,7 +854,7 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
     FILE* fp;
     char to[MAX_PATH], from[MAX_PATH];
 
-    if (!IsLoaded() || (Flags & CAMP_LIGHT && save_mode != CAMP_SAVE_LIGHT))
+    if (!IsLoaded() or (Flags & CAMP_LIGHT && save_mode != CAMP_SAVE_LIGHT))
         return 0;
 
     StartWriteCampFile(gametype, savefile);
@@ -876,7 +876,7 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
     }
     else
     {
-        if (!CampMapSize || !TheaterSizeX || !CampMapData || save_mode == CAMP_SAVE_FULL)
+        if (!CampMapSize or !TheaterSizeX or !CampMapData or save_mode == CAMP_SAVE_FULL)
             MakeCampMap(MAP_OWNERSHIP);
 
         VerifySquadrons(FALCON_PLAYER_TEAM);
@@ -1840,7 +1840,7 @@ int CampaignClass::RequestScenarioStats(FalconGameEntity *game)
     // Figure out who to send the request to.
     masterSession = (FalconSessionEntity*) vuDatabase->Find(game->OwnerId());
 
-    if (!masterSession || masterSession == vuLocalSessionEntity)
+    if (!masterSession or masterSession == vuLocalSessionEntity)
         return 0;
 
     switch (game->GetGameType())
@@ -2024,7 +2024,7 @@ void CampaignClass::AddCampaignEvent(CampUIEventElement *newEvent)
 
     if (newEvent->flags & 0x01)
     {
-        if (!PriorityEventQueue || strcmp(PriorityEventQueue->eventText, newEvent->eventText) != 0)
+        if (!PriorityEventQueue or strcmp(PriorityEventQueue->eventText, newEvent->eventText) != 0)
         {
             newEvent->next = PriorityEventQueue;
             PriorityEventQueue = newEvent;
@@ -2039,7 +2039,7 @@ void CampaignClass::AddCampaignEvent(CampUIEventElement *newEvent)
     }
     else
     {
-        if (!StandardEventQueue || strcmp(StandardEventQueue->eventText, newEvent->eventText) != 0)
+        if (!StandardEventQueue or strcmp(StandardEventQueue->eventText, newEvent->eventText) != 0)
         {
             newEvent->next = StandardEventQueue;
             StandardEventQueue = newEvent;
@@ -2322,7 +2322,7 @@ void Camp_Init(int processor)
     TheCampaign.Reset();
     TheCampaign.Processor = processor;
     campCritical = F4CreateCriticalSection("campCritical");
-#if MF_DONT_PROCESS_DELETE || VU_USE_ENUM_FOR_TYPES
+#if MF_DONT_PROCESS_DELETE or VU_USE_ENUM_FOR_TYPES
     FalconMessageFilter campFilter(FalconEvent::CampaignThread, 0);
 #else
     FalconMessageFilter campFilter(FalconEvent::CampaignThread, VU_DELETE_EVENT_BITS);
@@ -2488,7 +2488,7 @@ int SaveAfterRename(char *savefile, FalconGameType gametype)
         current_tactical_mission->save_data(filename);
     }
 
-    // if (!CampMapSize || !TheaterSizeX || !CampMapData || save_mode == CAMP_SAVE_FULL)
+    // if (!CampMapSize or !TheaterSizeX or !CampMapData or save_mode == CAMP_SAVE_FULL)
     // MakeCampMap(MAP_OWNERSHIP);
     TheCampaign.VerifySquadrons(FALCON_PLAYER_TEAM);
 

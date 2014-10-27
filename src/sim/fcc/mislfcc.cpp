@@ -40,7 +40,7 @@ void FireControlComputer::AirAirMode(void)
     float irSigTDBP = 0.0F ; // Marco - storage for irSig
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!(Sms->curWeaponType == wtAim120 || Sms->curWeaponType == wtAim9)) return; //me123
+    if (!(Sms->curWeaponType == wtAim120 or Sms->curWeaponType == wtAim9)) return; //me123
 
     SimWeaponClass *cw = Sms->GetCurrentWeapon();
 
@@ -129,7 +129,7 @@ void FireControlComputer::AirAirMode(void)
             }
 
             if (
-                (subMode == Aim9 || mrmSubMode == Aim9 || masterMode == Dogfight) &&
+                (subMode == Aim9 or mrmSubMode == Aim9 or masterMode == Dogfight) &&
                 Sms->curWeaponType == wtAim9
             )
             {
@@ -153,7 +153,7 @@ void FireControlComputer::AirAirMode(void)
                 VehicleClassDataType *vc =
                     (VehicleClassDataType *)Falcon4ClassTable[platform->Type() - VU_LAST_ENTITY_TYPE].dataPtr;
 
-                if (!playerFCC || ( // don't do this check for ai
+                if (!playerFCC or ( // don't do this check for ai
                         vc && (!(vc->Flags & 0x20000000) ||
                                // JB 010712 Normal behavior for the 2d cockpit
                                OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit) &&
@@ -309,7 +309,7 @@ void FireControlComputer::AirAirMode(void)
                 {
                     inRange = TRUE;
                 }
-                else if (irSig < 1.01F || theMissile->targetPtr != targetPtr)
+                else if (irSig < 1.01F or theMissile->targetPtr != targetPtr)
                 {
                     inRange = FALSE;
                 }

@@ -159,7 +159,7 @@ CPAdi::CPAdi(ObjectInitStr *pobjectInitStr, ADIInitStr *padiInitStr) : CPObject(
     }
     //Wombat778 10-06-2003 Added following lines to set up a temporary buffer for the ADI
     //this is unnecessary in using rendered pit
-    else if (g_bCockpitAutoScale && ((mHScale != 1.0f) || (mVScale != 1.0f)))
+    else if (g_bCockpitAutoScale && ((mHScale != 1.0f) or (mVScale != 1.0f)))
     {
         ADIBuffer = new ImageBuffer;
         ADIBuffer->Setup(&FalconDisplay.theDisplayDevice,
@@ -189,13 +189,13 @@ CPAdi::~CPAdi(void)
         delete mpSurfaceBuffer;
     }
 
-    if (DisplayOptions.bRender2DCockpit || mDoBackRect)   //Wombat778 3-24-04
+    if (DisplayOptions.bRender2DCockpit or mDoBackRect)   //Wombat778 3-24-04
     {
         glReleaseMemory((char*) mpSourceBuffer);
     }
     //Wombat778 10-06-2003 Added following lines to destroy the temporary imagebuffer;
     //this is unnecessary in using rendered pit
-    else if (g_bCockpitAutoScale && ((mHScale != 1.0f) || (mVScale != 1.0f)))
+    else if (g_bCockpitAutoScale && ((mHScale != 1.0f) or (mVScale != 1.0f)))
     {
         if (ADIBuffer)
         {
@@ -264,7 +264,7 @@ void CPAdi::CreateLit(void)
         // revert to legacy rendering if we can't use a single texture even if Fast 2D Cockpit is active
         if (!DisplayOptions.bRender2DCockpit ||
             (DisplayOptions.bRender2DCockpit &&
-             (mDoBackRect && ((LONG)dwMaxTextureWidth < mBackSrc.right || (LONG)dwMaxTextureHeight < mBackSrc.bottom))))
+             (mDoBackRect && ((LONG)dwMaxTextureWidth < mBackSrc.right or (LONG)dwMaxTextureHeight < mBackSrc.bottom))))
         {
             if (mDoBackRect)
             {
@@ -424,7 +424,7 @@ void CPAdi::ExecILS()
     float gpDeviation;
     float gsDeviation;
 
-    if (mpCPManager->mHiddenFlag && (gNavigationSys->GetInstrumentMode() == NavigationSystem::TACAN || gNavigationSys->GetInstrumentMode() == NavigationSystem::NAV))
+    if (mpCPManager->mHiddenFlag && (gNavigationSys->GetInstrumentMode() == NavigationSystem::TACAN or gNavigationSys->GetInstrumentMode() == NavigationSystem::NAV))
         return;
 
     if ((gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN ||
@@ -681,7 +681,7 @@ void CPAdi::DisplayBlit(void)
 
 
     //Wombat778 10-06-2003, modified following lines. allows ADI to scale properly when using cockpit auto scaling
-    if (g_bCockpitAutoScale && ((mHScale != 1.0f) || (mVScale != 1.0f)))   //dont run this code if the var is set but no scaling is occuring
+    if (g_bCockpitAutoScale && ((mHScale != 1.0f) or (mVScale != 1.0f)))   //dont run this code if the var is set but no scaling is occuring
     {
 
         RECT temprect;

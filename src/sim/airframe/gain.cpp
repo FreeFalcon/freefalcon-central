@@ -67,9 +67,9 @@ void AirframeClass::Gains(void)
     cosphiLim = max(0.0F, platform->platformAngles.cosphi);
     cosmuLim  = max(0.0F, platform->platformAngles.cosmu);
 
-    //landingGains = gearPos != 0 || IsEngineFlag(FuelDoorOpen) || IsSet(Refueling);
+    //landingGains = gearPos != 0 or IsEngineFlag(FuelDoorOpen) or IsSet(Refueling);
     //TJL 10/20/03 Added TEFExtend. Per the F-16-1 ALT FLAPS sets Landing Gains
-    landingGains = gearPos != 0 || IsEngineFlag(FuelDoorOpen) || IsSet(Refueling) || platform->TEFExtend;
+    landingGains = gearPos != 0 or IsEngineFlag(FuelDoorOpen) or IsSet(Refueling) or platform->TEFExtend;
 
 
 
@@ -78,7 +78,7 @@ void AirframeClass::Gains(void)
     /* AOA bias for aoa command system */
     /*---------------------------------*/
     /*
-    if (clalph0 == 0.0F || IsSet(Planted) )
+    if (clalph0 == 0.0F or IsSet(Planted) )
        aoabias = 0.0F;
     else
     {
@@ -132,7 +132,7 @@ void AirframeClass::Gains(void)
 
         if (IsSet(CATLimiterIII) && limiter)
         {
-            if (alpha  < limiter->Limit(vcas) && (!gearPos || IsSet(GearBroken)))
+            if (alpha  < limiter->Limit(vcas) && (!gearPos or IsSet(GearBroken)))
                 ClearFlag(AOACmdMode);
             else
                 SetFlag(AOACmdMode);
@@ -143,12 +143,12 @@ void AirframeClass::Gains(void)
 
             if (limiter)
             {
-                if (alpha < limiter->Limit(alpha) && (!gearPos || IsSet(GearBroken)))
+                if (alpha < limiter->Limit(alpha) && (!gearPos or IsSet(GearBroken)))
                     ClearFlag(AOACmdMode);
                 else
                     SetFlag(AOACmdMode);
             }
-            else if (gsAvail > maxGs && (!gearPos || IsSet(GearBroken)))
+            else if (gsAvail > maxGs && (!gearPos or IsSet(GearBroken)))
                 ClearFlag(AOACmdMode);
             else
                 SetFlag(AOACmdMode);
@@ -203,7 +203,7 @@ void AirframeClass::Gains(void)
     omegasp1 = max(1.0F, omegasp1);
     omegasp = omegasp1 ;
 
-    if (stallMode > Recovering || !IsSet(InAir))
+    if (stallMode > Recovering or !IsSet(InAir))
     {
         omegasp *= 2.0F;
     }
@@ -237,7 +237,7 @@ void AirframeClass::Gains(void)
 
     tp03   = max(tp03, 0.5F);
 
-    if (IsSet(AOACmdMode) || !(qsom * cnalpha))
+    if (IsSet(AOACmdMode) or !(qsom * cnalpha))
         kp05 = tp02 * tp03 * wp01 * wp01;
     else
         kp05 = GRAVITY * tp02 * tp03 * wp01 * wp01 /

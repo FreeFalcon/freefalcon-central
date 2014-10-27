@@ -104,7 +104,7 @@ float DistanceToFront(GridIndex x, GridIndex y)
     while (f != NULL)
     {
         // RV - Biker - This is a hack because JimG did introduce
-        if (f->GetType() != TYPE_BORDER || f->GetSType() != 2)
+        if (f->GetType() != TYPE_BORDER or f->GetSType() != 2)
         {
             f->GetLocation(&fx, &fy);
             d = Distance(x, y, fx, fy);
@@ -135,7 +135,7 @@ float DirectionToFront(GridIndex x, GridIndex y)
         while (f != NULL)
         {
             // RV - Biker - This is a hack because JimG did introduce
-            if (f->GetType() != TYPE_BORDER || f->GetSType() != 2)
+            if (f->GetType() != TYPE_BORDER or f->GetSType() != 2)
             {
                 f->GetLocation(&fx, &fy);
                 d = Distance(x, y, fx, fy);
@@ -201,7 +201,7 @@ float DirectionTowardFriendly(GridIndex x, GridIndex y, int team)
         while (f != NULL)
         {
             // RV - Biker - This is a hack because JimG did introduce
-            if (f->GetType() != TYPE_BORDER || f->GetSType() != 2)
+            if (f->GetType() != TYPE_BORDER or f->GetSType() != 2)
             {
                 f->GetLocation(&fx, &fy);
                 d = Distance(x, y, fx, fy);
@@ -229,7 +229,7 @@ float DirectionTowardFriendly(GridIndex x, GridIndex y, int team)
 
         f = FindNearestObjective(x, y, NULL);
 
-        if ((f == NULL) || !f->IsFrontline())
+        if ((f == NULL) or !f->IsFrontline())
         {
             // This won't work unless we find a frontline objective. So just use the value from above
             return r;
@@ -360,7 +360,7 @@ CampaignHeading DirectionTo(GridIndex ox, GridIndex oy, GridIndex tx, GridIndex 
     td = Distance(ox, oy, tx, ty);
     d = Distance(ox, oy, cx, cy);
 
-    if (d < 1.9 || d > td)
+    if (d < 1.9 or d > td)
         return DirectionTo(cx, cy, tx, ty);
 
     d += 1.9F;
@@ -594,7 +594,7 @@ CampEntity FindEntity(VU_ID id)
     VuEntity* e;
     e = vuDatabase->Find(id);
 
-    if (e && (GetEntityClass(e) == CLASS_OBJECTIVE || GetEntityClass(e) == CLASS_UNIT))
+    if (e && (GetEntityClass(e) == CLASS_OBJECTIVE or GetEntityClass(e) == CLASS_UNIT))
     {
         return (CampEntity)e;
     }
@@ -751,7 +751,7 @@ Unit FindNearestRealUnit(GridIndex X, GridIndex Y, float *last, GridIndex mx)
         max_dist = mx;
     }
 
-    if (last == NULL || *last < 0)
+    if (last == NULL or *last < 0)
     {
         lds = -1.0F;
     }
@@ -798,7 +798,7 @@ Unit FindNearestUnit(VuFilteredList* l, GridIndex X, GridIndex Y, float *last)
     GridIndex   x, y;
     float ds, nds = FLT_MAX, lds;
 
-    if (last == NULL || *last < 0)
+    if (last == NULL or *last < 0)
     {
         lds = -1.0F;
     }
@@ -850,7 +850,7 @@ Unit FindUnitByXY(VuFilteredList* l, GridIndex X, GridIndex Y, int domain)
     {
         u->GetLocation(&x, &y);
 
-        if (x == X && y == Y && (u->GetDomain() == domain || domain < 1))
+        if (x == X && y == Y && (u->GetDomain() == domain or domain < 1))
         {
             return u;
         }
@@ -897,7 +897,7 @@ Objective FindNearestObjective(VuFilteredList* l, GridIndex X, GridIndex Y, floa
     Objective   o, n = NULL;
     GridIndex   x, y;
 
-    if (last == NULL || *last < 0)
+    if (last == NULL or *last < 0)
     {
         lds = -1;
     }
@@ -946,7 +946,7 @@ Objective FindNearestObjective(GridIndex X, GridIndex Y, float *last, GridIndex 
     Objective   o, n = NULL;
     GridIndex   x, y;
 
-    if (last == NULL || *last < 0)
+    if (last == NULL or *last < 0)
     {
         lds = -1.0F;
     }
@@ -1312,7 +1312,7 @@ int ScoreThreatFast(GridIndex X, GridIndex Y, int altlevel, Team who)
         return 32000;
     }
 
-    if (!TheCampaign.SamMapData || !TheCampaign.RadarMapData)
+    if (!TheCampaign.SamMapData or !TheCampaign.RadarMapData)
     {
         return 0;
     }
@@ -1320,7 +1320,7 @@ int ScoreThreatFast(GridIndex X, GridIndex Y, int altlevel, Team who)
     // Find our indexes
     i = (Y / MAP_RATIO) * MRX + (X / MAP_RATIO);
 
-    if (i < 0 || i > TheCampaign.SamMapSize)
+    if (i < 0 or i > TheCampaign.SamMapSize)
     {
         return 100; // Off the map
     }
@@ -1495,7 +1495,7 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
  if (e->IsUnit() &&
  !(flags & FIND_NOMOVERS && ((Unit)e)->Moving()) &&
  !(flags & FIND_NOAIR && e->GetDomain() == DOMAIN_AIR) &&
- (flags & FIND_FINDUNSPOTTED || e->GetSpotted(who)))
+ (flags & FIND_FINDUNSPOTTED or e->GetSpotted(who)))
  d = d; // placeholder. This unit is valid
  else if (e->IsObjective())
  d = d; // placeholder. This objective is valid
@@ -1573,7 +1573,7 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
 
         for (e = (CampEntity) myit->GetFirst(); e; e = (CampEntity) myit->GetNext())
         {
-            if (e == NULL || e->GetTeam() < 0 || e->GetTeam() >= NUM_TEAMS)
+            if (e == NULL or e->GetTeam() < 0 or e->GetTeam() >= NUM_TEAMS)
             {
                 continue; // something bogus
             }
@@ -1585,7 +1585,7 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
             }
 
             if (
-                (!e->IsUnit() || !((Unit)e)->Moving()) &&
+                (!e->IsUnit() or !((Unit)e)->Moving()) &&
 #if VU_ALL_FILTERED
                 !foundlist->Find(e)
 #else
@@ -1643,7 +1643,7 @@ void FillDistanceList(List list, Team who, int  i, int j)
         o->GetLocation(&x, &y);
         own = o->GetTeam();
 
-        if (GetTTRelations(who, own) == Allied || !own)
+        if (GetTTRelations(who, own) == Allied or !own)
         {
             if (o->IsFrontline())
                 d = 0.0F;

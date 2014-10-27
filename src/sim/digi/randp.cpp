@@ -81,7 +81,7 @@ void DigitalBrain::RollAndPull(void)
 
     // OFFENSIVE
 
-    else if (targetData->ata <= targetData->ataFrom || targetData->ata <= 90 * DTR) //me123 from 45
+    else if (targetData->ata <= targetData->ataFrom or targetData->ata <= 90 * DTR) //me123 from 45
     {
 #ifdef DEBUG_BFM
         MonoPrint("OFFENSIVE");
@@ -116,7 +116,7 @@ void DigitalBrain::RollAndPull(void)
                 }
 
                 // Ok so we're within 6 to 15 NM, do we need to go real fast all the time or only when facing one another
-                if (targetData->ata > 15.0f * DTR || targetData->ataFrom > 15.0f * DTR)
+                if (targetData->ata > 15.0f * DTR or targetData->ataFrom > 15.0f * DTR)
                     MachHold(cornerSpeed, self->GetKias(), TRUE);
                 else
                 {

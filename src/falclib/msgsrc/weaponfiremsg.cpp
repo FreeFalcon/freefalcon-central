@@ -76,7 +76,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
             }
 
             //Cobra test
-            if ((theEntity->IsAirplane() || theEntity->IsHelicopter()) /*&& dataBlock.weaponType != FalconWeaponsFire::GUN*/)
+            if ((theEntity->IsAirplane() or theEntity->IsHelicopter()) /*&& dataBlock.weaponType != FalconWeaponsFire::GUN*/)
             {
                 FalconRadioChatterMessage *radioMessage = new FalconRadioChatterMessage(simEntity->Id(), FalconLocalSession);
                 radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
@@ -129,7 +129,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
             // check for Sim.  I'm not sure what needs to be done if its a camp entity
             //Cobra added weaponType check so bombs don't fall through into this section
             if (theTarget /* && theTarget->IsSim()*/ && dataBlock.weaponType < 3
-                && (theTarget->IsAirplane() || theTarget->IsHelicopter()) && (GetTTRelations(theTarget->GetTeam(), simEntity->GetTeam()) < Hostile))
+                && (theTarget->IsAirplane() or theTarget->IsHelicopter()) && (GetTTRelations(theTarget->GetTeam(), simEntity->GetTeam()) < Hostile))
             {
                 float playMessage = TRUE;
 
@@ -140,7 +140,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
                     // Check rel geom
                     CalcRelAzEl(simEntity, theTarget->XPos(), theTarget->YPos(), theTarget->ZPos(), &az, &el);
 
-                    if (fabs(az) > 10.0F * DTR || fabs(el) > 10.0F * DTR)
+                    if (fabs(az) > 10.0F * DTR or fabs(el) > 10.0F * DTR)
                         playMessage = FALSE;
                 }
 
@@ -162,20 +162,20 @@ int FalconWeaponsFire::Process(uchar autodisp)
             }
 
             // Register the shot if it was by someone in our package me123 or we are server
-            if (dataBlock.fWeaponUID != FalconNullId && simEntity->GetCampaignObject() && ((simEntity->GetCampaignObject())->InPackage() || FalconLocalGame->GetGameType() == game_InstantAction || g_bLogEvents))
+            if (dataBlock.fWeaponUID != FalconNullId && simEntity->GetCampaignObject() && ((simEntity->GetCampaignObject())->InPackage() or FalconLocalGame->GetGameType() == game_InstantAction or g_bLogEvents))
                 TheCampaign.MissionEvaluator->RegisterShot(this);
 
         }
         else
         {
             // Register the shot if it was by someone in our package
-            if (dataBlock.fWeaponUID != FalconNullId && theEntity->IsCampaign() && (((CampEntity)theEntity)->InPackage() || FalconLocalGame->GetGameType() == game_InstantAction || g_bLogEvents))
+            if (dataBlock.fWeaponUID != FalconNullId && theEntity->IsCampaign() && (((CampEntity)theEntity)->InPackage() or FalconLocalGame->GetGameType() == game_InstantAction or g_bLogEvents))
                 TheCampaign.MissionEvaluator->RegisterShot(this);
         }
     }
 
     // Register the shot if it was at the player
-    if (TheCampaign.MissionEvaluator && dataBlock.targetId == FalconLocalSession->GetPlayerEntityID() || g_bLogEvents)
+    if (TheCampaign.MissionEvaluator && dataBlock.targetId == FalconLocalSession->GetPlayerEntityID() or g_bLogEvents)
         if (theTarget && theTarget->IsSetFalcFlag(FEC_HASPLAYERS) && theTarget->IsSim() && ((SimBaseClass*)theTarget)->GetCampaignObject())
             TheCampaign.MissionEvaluator->RegisterShotAtPlayer(this, ((SimBaseClass*)theTarget)->GetCampaignObject()->GetCampID(), ((SimMoverClass*)theTarget)->pilotSlot); //me123 added
 
@@ -184,7 +184,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
     // if the weapon is a missile and we have a target ID, tell the target
     // there's an incoming
     if (dataBlock.targetId != vuNullId &&
-        (dataBlock.weaponType == SRM || dataBlock.weaponType == MRM))
+        (dataBlock.weaponType == SRM or dataBlock.weaponType == MRM))
     {
         SimBaseClass *theMissile = (SimBaseClass*)(vuDatabase->Find(dataBlock.fWeaponUID));
 
@@ -207,7 +207,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
 
     // WM 11-12-03  Fix the annoying missile bug where you can't see other client's missiles if
     //   the host doesn't join the 3D world.
-    if (dataBlock.weaponType == SRM || dataBlock.weaponType == MRM  || dataBlock.weaponType == AGM || dataBlock.weaponType == BMB)
+    if (dataBlock.weaponType == SRM or dataBlock.weaponType == MRM  or dataBlock.weaponType == AGM or dataBlock.weaponType == BMB)
     {
         gRebuildBubbleNow = 2;
     }

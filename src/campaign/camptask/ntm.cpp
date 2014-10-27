@@ -142,7 +142,7 @@ void NavalTaskingManagerClass::DoCalculations(void)
 
             if (o && o->GetType() == TYPE_PORT)
             {
-                if (unit->GetSType() == STYPE_UNIT_SEA_TANKER || unit->GetSType() == STYPE_UNIT_SEA_TRANSPORT)
+                if (unit->GetSType() == STYPE_UNIT_SEA_TANKER or unit->GetSType() == STYPE_UNIT_SEA_TRANSPORT)
                 {
                     mis.context = enemyNavalForceUnloading;
                 }

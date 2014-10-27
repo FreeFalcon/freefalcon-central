@@ -293,7 +293,7 @@ int LinkCampaignObjectives(Path path, Objective O1, Objective O2)
 
         // KCK Hack: If we can get there by road, fool it into thinking it's a 254 cost link for
         // any otherwise unfound paths.
-        if (costs[i] == 255 && (i == Foot || i == Wheeled || i == Tracked) && costs[NoMove] < 255)
+        if (costs[i] == 255 && (i == Foot or i == Wheeled or i == Tracked) && costs[NoMove] < 255)
             costs[i] = 254;
     }
 
@@ -395,7 +395,7 @@ int TimeOfDayGeneral(CampaignTime time)
     static SIM_ULONG timer = 0;
     static long tod = 0;
 
-    if ((timer == 0) || (SimLibElapsedTime > (SIM_ULONG)timer))
+    if ((timer == 0) or (SimLibElapsedTime > (SIM_ULONG)timer))
     {
         tod = time % CampaignDay;
         timer = SimLibElapsedTime + 900000;//15 minutes
@@ -498,7 +498,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 
                 //me123 let the host own all the planes
                 // sfr: host will own battallions too, since battallion 3d movement depends on 2d
-                if ((e->IsBattalion()) || e->IsFlight() || (g_bServer && g_bServerHostAll))
+                if ((e->IsBattalion()) or e->IsFlight() or (g_bServer && g_bServerHostAll))
                 {
                     msg->dataBlock.from = vuLocalSessionEntity->Game()->OwnerId();
 
@@ -524,7 +524,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
     }
     else
     {
-        if (e == session->GetPlayerFlight() || inbobble)
+        if (e == session->GetPlayerFlight() or inbobble)
         {
             // Mark this player entity to prevent reaggregation
             e->SetInterest();
@@ -549,9 +549,9 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
             else
             {
                 // Update local sleep/wake state
-                if (e->IsAwake() && (!want_deaggregate || g_bSleepAll))
+                if (e->IsAwake() && (!want_deaggregate or g_bSleepAll))
                 {
-                    if (!vuLocalSessionEntity->Game()->IsLocal() || g_bSleepAll)
+                    if (!vuLocalSessionEntity->Game()->IsLocal() or g_bSleepAll)
                     {
                         e->Sleep();
                     }
@@ -585,8 +585,8 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
             ( //me123 host wake/sleep stuff
                 //handle airplanes helicopters and airbases
                 g_bSleepAll ||
-                e->IsAirplane() || e->IsHelicopter()  ||
-                (e->IsObjective() && ((e->GetType() == TYPE_AIRBASE) || (e->GetType() == TYPE_AIRSTRIP))) ||
+                e->IsAirplane() or e->IsHelicopter()  ||
+                (e->IsObjective() && ((e->GetType() == TYPE_AIRBASE) or (e->GetType() == TYPE_AIRSTRIP))) ||
                 (g_bServer && g_bServerHostAll && e->IsUnit())
                 //and airbases
             )
@@ -684,7 +684,7 @@ void ChooseNewSession(CampEntity ent)
             dy = y - ent->YPos();
             dist = dx * dx + dy * dy;
 
-            if ((!best_session) || (dist < best_dist))
+            if ((!best_session) or (dist < best_dist))
             {
                 best_dist = dist;
                 best_session = session;
@@ -755,7 +755,7 @@ void RebuildBubble(int forced)
                 {
                     if (!object->IsAwake() &&
                         !object->IsDead() &&
-                        (object->IsBomb() || object->IsMissile()))
+                        (object->IsBomb() or object->IsMissile()))
                     {
                         object->Wake();
                         wokenthiscycle++;
@@ -792,7 +792,7 @@ void RebuildBubble(int forced)
 
 #if USE_VU_COLL_FOR_CAMPAIGN
 
-    if ((!FalconLocalGame) || (!deaggregatedEntities))
+    if ((!FalconLocalGame) or (!deaggregatedEntities))
     {
         CampLeaveCriticalSection();
         return;
@@ -800,7 +800,7 @@ void RebuildBubble(int forced)
 
 #else
 
-    if ((!FalconLocalGame) || (!deaggregatedMap))
+    if ((!FalconLocalGame) or (!deaggregatedMap))
     {
         CampLeaveCriticalSection();
         return;
@@ -896,7 +896,7 @@ void RebuildBubble(int forced)
         /* if (!player && FalconLocalGame->IsLocal() && gCommsMgr->Online())
          player = FalconLocalSession->GetPlayerFlight();
          */
-        if (player && (player != FalconLocalSession || !sCampaignSleepRequested))
+        if (player && (player != FalconLocalSession or !sCampaignSleepRequested))
         {
             u = session->GetPlayerFlight();
 
@@ -965,7 +965,7 @@ void RebuildBubble(int forced)
                     {
                         if (
                             !object->IsAwake() && !object->IsDead() &&
-                            (object->IsBomb() || object->IsMissile())
+                            (object->IsBomb() or object->IsMissile())
                         )
                         {
                             object->Wake();
@@ -1018,7 +1018,7 @@ void RebuildBubble(int forced)
 
                 while (u)
                 {
-                    if (u->IsFlight() && (u->Final() || u == player))
+                    if (u->IsFlight() && (u->Final() or u == player))
                     {
                         if (!u->Final())
                         {
@@ -1163,7 +1163,7 @@ void RebuildBubble(int forced)
                             }
                         }
                     }
-                    else if ((u->IsBattalion() || u->IsTaskForce()) && !u->Inactive())
+                    else if ((u->IsBattalion() or u->IsTaskForce()) && !u->Inactive())
                     {
                         if (!u->IsDead() && !u->Inactive() && DeaggregationCheck(u, session) > 0)
                         {
@@ -1504,7 +1504,7 @@ int InterestingSFX(float x, float y)
 
     player = FalconLocalSession->GetCameraEntity(0);
 
-    if (!player)        // || not in the cockpit
+    if (!player)        // or not in the cockpit
         return 0;
 
     xd = player->XPos() - x;
@@ -2223,7 +2223,7 @@ void SetEntryTime(Flight flight)
     }
 
 
-    else if (!gCompressTillTime || lastchoice != PlayerOptions.GetStartFlag())
+    else if (!gCompressTillTime or lastchoice != PlayerOptions.GetStartFlag())
     {
         // JPO - decide where we start
         switch (PlayerOptions.GetStartFlag())
@@ -2381,7 +2381,7 @@ void DoCompressionLoop(void)
             CompressCampaignUntilTakeoff(pf);
 
         // Validate that the flight/ac combination the player is entering is still valid
-        if (!pf || pf->IsDead() || pf->Aborted())
+        if (!pf or pf->IsDead() or pf->Aborted())
         {
             gCompressTillTime = 0;
             UI_HandleFlightCancel();
@@ -2432,7 +2432,7 @@ void DoCompressionLoop(void)
                         case game_TacticalEngagement:
                             if (pf->GetFirstUnitWP() == pf->GetCurrentUnitWP())
                             {
-                                if ((pf->GetPilotCount() < pf->GetACCount()) || !pf->GetACCount())
+                                if ((pf->GetPilotCount() < pf->GetACCount()) or !pf->GetACCount())
                                 {
                                     gCompressTillTime = 0;
                                     UI_HandleFlightScrub();
@@ -2452,7 +2452,7 @@ void DoCompressionLoop(void)
                             // more than 1 pilot... also only do this check if flight is taking off
                             if (pf->GetFirstUnitWP() == pf->GetCurrentUnitWP())
                             {
-                                if ((pf->GetPilotCount() < pf->GetACCount()) || !pf->GetACCount())
+                                if ((pf->GetPilotCount() < pf->GetACCount()) or !pf->GetACCount())
                                 {
                                     gCompressTillTime = 0;
                                     UI_HandleFlightScrub();
@@ -2603,7 +2603,7 @@ unsigned int __stdcall HandleCampaignThread(void)
         FalconEntity::DoCampaignDirtyData(vuxRealTime);
 #endif
 
-        if ((TheCampaign.Flags & CAMP_SUSPENDED) || (TheCampaign.Flags & CAMP_TACTICAL_PAUSE))
+        if ((TheCampaign.Flags & CAMP_SUSPENDED) or (TheCampaign.Flags & CAMP_TACTICAL_PAUSE))
         {
             // sfr: placed this one inside cs like the others
             CampEnterCriticalSection();

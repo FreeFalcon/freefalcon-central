@@ -157,7 +157,7 @@ void RadarDopplerClass::RWSMode()
         /*--------------------------------*/
         /* If designating, check for lock */
         /*--------------------------------*/
-        if (IsSet(Designating) && (mode == RWS || mode == LRS) && rdrObj->BaseData()->Id() == targetUnderCursor)
+        if (IsSet(Designating) && (mode == RWS or mode == LRS) && rdrObj->BaseData()->Id() == targetUnderCursor)
         {
             // Always lock if it is bright green (detected last time around)
             if (rdrData->rdrDetect & 0x10)
@@ -397,7 +397,7 @@ void RadarDopplerClass::SAMMode(void)
         if (!dropTrackCmd)
             justdidSTT = FALSE;
 
-        if (totHits < HITS_FOR_TRACK || dropSAM || (dropTrackCmd && !justdidSTT))
+        if (totHits < HITS_FOR_TRACK or dropSAM or (dropTrackCmd && !justdidSTT))
         {
             if (platform == SimDriver.GetPlayerAircraft() && ((AircraftClass*)platform)->AutopilotType() == AircraftClass::CombatAP)
             {
@@ -521,7 +521,7 @@ void RadarDopplerClass::TWSMode(void)
     if (!IsSet(Spotlight) && !IsSet(Designating))
     {
 
-        if (targetUnderCursor || (lockedTargetData && !g_bMLU))
+        if (targetUnderCursor or (lockedTargetData && !g_bMLU))
         {
 
             if (azScan > 30.0F * DTR)
@@ -560,9 +560,9 @@ void RadarDopplerClass::TWSMode(void)
             // exceeds max antenna AZ/EL but it may be more correct to extrapolate the track even out
             // past the end of the field of view.
 
-            //if ((rdrObj == lasttargetUnderCursor) && (rdrData->painted || lockedTarget) )
+            //if ((rdrObj == lasttargetUnderCursor) && (rdrData->painted or lockedTarget) )
             if (rdrObj == lasttargetUnderCursor)
-                if ((HitsOnTrack(rdrObj->localData) > HITS_FOR_TRACK) || lockedTarget)
+                if ((HitsOnTrack(rdrObj->localData) > HITS_FOR_TRACK) or lockedTarget)
                     if (fabs(TargetAz(platform, lasttargetUnderCursor)) < MAX_ANT_EL)
                         if (fabs(TargetEl(platform, lasttargetUnderCursor)) < MAX_ANT_EL)
                             attach = TRUE;
@@ -707,7 +707,7 @@ void RadarDopplerClass::TWSMode(void)
         if (!dropTrackCmd)
             justdidSTT = FALSE;
 
-        if (!IsSet(STTingTarget) && ((dropTrackCmd && !justdidSTT) || totHits < HITS_FOR_TRACK))
+        if (!IsSet(STTingTarget) && ((dropTrackCmd && !justdidSTT) or totHits < HITS_FOR_TRACK))
         {
             rangeChangeCmd = 0;
 
@@ -794,7 +794,7 @@ void RadarDopplerClass::TWSMode(void)
     if (!IsSet(Spotlight) && !IsSet(Designating) && !IsSet(STTingTarget))
     {
 
-        if (targetUnderCursor || (lockedTargetData && !g_bMLU))
+        if (targetUnderCursor or (lockedTargetData && !g_bMLU))
         {
             lastTwsAzIdx = curAzIdx;
             lastTwsBarIdx = curBarIdx;
@@ -828,7 +828,7 @@ void RadarDopplerClass::TWSMode(void)
             rdrData = rdrObj->localData;
 
             if (rdrObj == lasttargetUnderCursor)
-                if (rdrData->TWSTrackFileOpen || lockedTarget)
+                if (rdrData->TWSTrackFileOpen or lockedTarget)
                     attach = TRUE;
 
             rdrObj = rdrObj->next;
@@ -1071,8 +1071,8 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
             // with STTingTarget use dropTrackCmd as before.  May not be pretty but
             // it seems to work how Mirv wants it ;)
 
-            if (mode == RadarClass::ACM_30x20 || mode == RadarClass::ACM_SLEW ||
-                mode == RadarClass::ACM_BORE || mode == RadarClass::ACM_10x60)
+            if (mode == RadarClass::ACM_30x20 or mode == RadarClass::ACM_SLEW ||
+                mode == RadarClass::ACM_BORE or mode == RadarClass::ACM_10x60)
             {
                 ClearSensorTarget();
                 ChangeMode(mode);
@@ -1141,11 +1141,11 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
             rangeChangeCmd = -1;
     }
 
-    if (totHits < HITS_FOR_TRACK || dropTrackCmd)
+    if (totHits < HITS_FOR_TRACK or dropTrackCmd)
     {
         ExtrapolateHistory(lockedTarget);
 
-        if (((SimLibElapsedTime - lockedTarget->localData->rdrLastHit) > radarData->CoastTime) || dropTrackCmd)
+        if (((SimLibElapsedTime - lockedTarget->localData->rdrLastHit) > radarData->CoastTime) or dropTrackCmd)
         {
             //me123 rangeChangeCmd = 0;
             reacqFlag = (int)(ReacqusitionCount / SEC_TO_MSEC * SimLibMajorFrameRate);
@@ -1155,8 +1155,8 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
             if (mode != TWS)
                 ClearHistory(lockedTarget);
 
-            if (mode == ACM_30x20 || mode == ACM_SLEW
-                || mode == ACM_BORE || mode == ACM_10x60 || mode == VS)
+            if (mode == ACM_30x20 or mode == ACM_SLEW
+                or mode == ACM_BORE or mode == ACM_10x60 or mode == VS)
             {
                 lockedTarget->localData->rdrDetect = 0;
                 ClearSensorTarget();
@@ -1821,7 +1821,7 @@ RadarDopplerClass::TWSTrackList* RadarDopplerClass::UpdateTWSDirectory(SimObject
     if (tgtList)
     {
         // Don't waste the time to check if the directory is already full
-        if (!directory || (directory && (directory->CountTracks() < MAX_TWS_TRACKS)))
+        if (!directory or (directory && (directory->CountTracks() < MAX_TWS_TRACKS)))
         {
             while (rdrObj)
             {

@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <string>
 #include <vector>
 
@@ -80,7 +81,7 @@ F4THREADHANDLE F4CreateThread(threadf_t tf, void *args, int createSuspended, tpr
 
 void F4JoinThread(F4THREADHANDLE t)
 {
-    if (t < 0 || t >= F4T_MAX_THREADS || !F4Thread[t].inUse)
+    if (t < 0 or t >= F4T_MAX_THREADS or !F4Thread[t].inUse)
     {
         return;
     }
@@ -165,7 +166,7 @@ BOOL F4TryEnterCriticalSection(F4CSECTIONHANDLE* theSection)
     if (theSection && (theSection != (F4CSECTIONHANDLE*)0xfeeefeee) && (theSection != (F4CSECTIONHANDLE*)0xbaadf00d))
     {
         //if (theSection){
-        if ((int)theSection->owningThread < 0 || theSection->owningThread == tid)
+        if ((int)theSection->owningThread < 0 or theSection->owningThread == tid)
         {
             EnterCriticalSection(&(theSection->criticalSection));
             theSection->count ++;

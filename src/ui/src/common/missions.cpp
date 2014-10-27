@@ -437,7 +437,7 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
             return(NULL);
     }
 
-    if (!tree || !element || !element->GetUnitParent())
+    if (!tree or !element or !element->GetUnitParent())
         return(NULL);
 
     // Create new record
@@ -511,7 +511,7 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
     mission->SetUserNumber(C_STATE_2, 1000 - element->GetUnitPriority()); // Priority
     mission->SetUserNumber(C_STATE_3, element->GetUnitMission());
 
-    if (!element->Final() || element->GetUnitMission() == AMIS_ALERT)
+    if (!element->Final() or element->GetUnitMission() == AMIS_ALERT)
     {
         mission->SetFlagBitOn(C_BIT_INVISIBLE);
     }
@@ -603,7 +603,7 @@ void RemoveMissionCB(TREELIST *item)
     {
         if (TheCampaign.Flags & CAMP_TACTICAL)
         {
-            if (gTimeModeServer || g_bServer)
+            if (gTimeModeServer or g_bServer)
             {
                 FindMissionInBriefing(TAC_AIRCRAFT);
             }
@@ -612,7 +612,7 @@ void RemoveMissionCB(TREELIST *item)
         }
         else
         {
-            if (gTimeModeServer || g_bServer)
+            if (gTimeModeServer or g_bServer)
             {
                 FindMissionInBriefing(CB_MISSION_SCREEN);
                 UpdateMissionWindow(CB_MISSION_SCREEN);

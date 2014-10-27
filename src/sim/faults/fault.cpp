@@ -461,7 +461,7 @@ bool FaultClass::GetMflEntry(int n, const char **name, int *subsys, int *count, 
 {
     ShiAssert(n >= 0 && n < mLastMfl);
 
-    if (n < 0 || n >= mLastMfl)
+    if (n < 0 or n >= mLastMfl)
         return false;
 
     ShiAssert(mMflList[n].type >= 0 && mMflList[n].type < TotalFaultStrings);

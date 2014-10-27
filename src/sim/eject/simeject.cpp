@@ -1144,7 +1144,7 @@ void EjectedPilotClass::SetModel(int model)
     // Create the new bsp.
     _rot.GetTrotation(rot);
 
-    if (_md[_model].bsp == VIS_GUYDIE || _md[_model].bsp == VIS_DOWN_PILOT)
+    if (_md[_model].bsp == VIS_GUYDIE or _md[_model].bsp == VIS_DOWN_PILOT)
     {
         if (pos.z > 0.0F)
             pos.z = 0.0F;

@@ -22,7 +22,7 @@ int GetWeaponStrength(int w)
 {
     ShiAssert(w >= 0 && w < NumWeaponTypes);
 
-    if (w < 0 || w >= NumWeaponTypes) return 0;
+    if (w < 0 or w >= NumWeaponTypes) return 0;
 
     return WeaponDataTable[w].Strength;
 }
@@ -31,14 +31,14 @@ int GetWeaponRange(int w, int mt)
 {
     ShiAssert(w >= 0 && w < NumWeaponTypes);
 
-    if ((w < 0) || (w >= NumWeaponTypes))
+    if ((w < 0) or (w >= NumWeaponTypes))
         return 0;
 
     // if (
     // F4IsBadReadPtr(&(WeaponDataTable[w]), sizeof(WeaponClassDataType)) ||
     // F4IsBadReadPtr(&(WeaponDataTable[w].HitChance[mt]), sizeof(uchar)))
     // JB 011205 (too much CPU) // JB 010331 CTD
-    if (w < 0 || w >= NumWeaponTypes)
+    if (w < 0 or w >= NumWeaponTypes)
     {
         // JB 011205
         return 0;
@@ -62,7 +62,7 @@ int GetWeaponHitChance(int w, int mt)
 {
     ShiAssert(w >= 0 && w < NumWeaponTypes);
 
-    if (w < 0 || w >= NumWeaponTypes) return 0;
+    if (w < 0 or w >= NumWeaponTypes) return 0;
 
     return WeaponDataTable[w].HitChance[mt];
 }
@@ -72,7 +72,7 @@ int GetWeaponHitChance(int w, int mt, int range)
     ShiAssert(w >= 0 && w < NumWeaponTypes);
     ShiAssert(mt >= 0 && mt < 8);
 
-    if (w < 0 || w >= NumWeaponTypes) return 0;
+    if (w < 0 or w >= NumWeaponTypes) return 0;
 
     int wr;
 
@@ -88,7 +88,7 @@ int GetWeaponHitChance(int w, int mt, int range, int wrange)
 {
     ShiAssert(w >= 0 && w < NumWeaponTypes);
 
-    if (w < 0 || w >= NumWeaponTypes) return 0;
+    if (w < 0 or w >= NumWeaponTypes) return 0;
 
     return FloatToInt32(WeaponDataTable[w].HitChance[mt] * (1.2F - ((float)(range + 1) / (wrange + 1))) + 0.5F);
 }
@@ -97,7 +97,7 @@ int GetWeaponFireRate(int w)
 {
     ShiAssert(w >= 0 && w < NumWeaponTypes);
 
-    if (w < 0 || w >= NumWeaponTypes) return 0;
+    if (w < 0 or w >= NumWeaponTypes) return 0;
 
     return WeaponDataTable[w].FireRate;
 }
@@ -106,7 +106,7 @@ int GetWeaponScore(int w, int mt, int range)
 {
     ShiAssert(w >= 0 && w < NumWeaponTypes);
 
-    if (w < 0 || w >= NumWeaponTypes) return 0;
+    if (w < 0 or w >= NumWeaponTypes) return 0;
 
     int wr = GetWeaponRange(w, mt) < range;
 
@@ -120,7 +120,7 @@ int GetWeaponScore(int w, int mt, int range, int wrange)
 {
     ShiAssert(w >= 0 && w < NumWeaponTypes);
 
-    if (w < 0 || w >= NumWeaponTypes) return 0;
+    if (w < 0 or w >= NumWeaponTypes) return 0;
 
     return (WeaponDataTable[w].Strength * WeaponDataTable[w].FireRate * GetWeaponHitChance(w, mt, range, wrange)) / 100;
 }
@@ -129,7 +129,7 @@ int GetWeaponScore(int w, uchar* dam, int mt, int range)
 {
     ShiAssert(w >= 0 && w < NumWeaponTypes);
 
-    if (w < 0 || w >= NumWeaponTypes) return 0;
+    if (w < 0 or w >= NumWeaponTypes) return 0;
 
     if (GetWeaponRange(w, mt) < range)
         return 0;
@@ -141,7 +141,7 @@ int GetWeaponScore(int w, uchar* dam, int mt, int range, int wrange)
 {
     ShiAssert(w >= 0 && w < NumWeaponTypes);
 
-    if (w < 0 || w >= NumWeaponTypes) return 0;
+    if (w < 0 or w >= NumWeaponTypes) return 0;
 
     return (WeaponDataTable[w].Strength * WeaponDataTable[w].FireRate * dam[WeaponDataTable[w].DamageType] * GetWeaponHitChance(w, mt, range, wrange)) / 100;
 }
@@ -150,7 +150,7 @@ int GetWeaponDamageType(int w)
 {
     ShiAssert(w >= 0 && w < NumWeaponTypes);
 
-    if (w < 0 || w >= NumWeaponTypes) return 0;
+    if (w < 0 or w >= NumWeaponTypes) return 0;
 
     return (int)(WeaponDataTable[w].DamageType);
 }
@@ -159,7 +159,7 @@ int GetWeaponDescriptionIndex(int w)
 {
     ShiAssert(w >= 0 && w < NumWeaponTypes);
 
-    if (w < 0 || w >= NumWeaponTypes) return 0;
+    if (w < 0 or w >= NumWeaponTypes) return 0;
 
     return (int)(WeaponDataTable[w].Index);
 }
@@ -173,7 +173,7 @@ int GetWeaponFlags(int w)
 {
     ShiAssert(w >= 0 && w < NumWeaponTypes);
 
-    if (w < 0 || w >= NumWeaponTypes) return 0;
+    if (w < 0 or w >= NumWeaponTypes) return 0;
 
     return (int)(WeaponDataTable[w].Flags);
 }
@@ -186,7 +186,7 @@ int GetListEntryWeapon(int list, int num)
 {
     ShiAssert(list >= 0 && list < NumWeaponTypes);
 
-    if (list < 0 || list >= NumWeaponTypes) return 0;
+    if (list < 0 or list >= NumWeaponTypes) return 0;
 
     return WeaponListDataTable[list].WeaponID[num];
 }
@@ -195,7 +195,7 @@ int GetListEntryWeapons(int list, int num)
 {
     ShiAssert(list >= 0 && list < NumWeaponTypes);
 
-    if (list < 0 || list >= NumWeaponTypes) return 0;
+    if (list < 0 or list >= NumWeaponTypes) return 0;
 
 #ifdef DEBUG
 
@@ -211,7 +211,7 @@ char* GetListName(int list)
 {
     ShiAssert(list >= 0 && list < NumWeaponTypes);
 
-    if (list < 0 || list >= NumWeaponTypes) return 0;
+    if (list < 0 or list >= NumWeaponTypes) return 0;
 
     return WeaponListDataTable[list].Name;
 }

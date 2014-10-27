@@ -534,7 +534,7 @@ static void RemoveTeamCB(long, short hittype, C_Base *)
             if (gSelectedTeam < 1)
                 gSelectedTeam = NUM_TEAMS - 1;
 
-            if (TeamInfo[gSelectedTeam] || gSelectedTeam == TeamCount)
+            if (TeamInfo[gSelectedTeam] or gSelectedTeam == TeamCount)
                 i = 1;
         }
 
@@ -712,7 +712,7 @@ void ChooseTeamCB(long, short hittype, C_Base *base)
 
     gSelectedTeam = static_cast<uchar>(base->GetUserNumber(0));
 
-    if (gSelectedTeam < 1 || gSelectedTeam >= NUM_TEAMS)
+    if (gSelectedTeam < 1 or gSelectedTeam >= NUM_TEAMS)
         gSelectedTeam = 1;
 
     gDrawTeam = gSelectedTeam;

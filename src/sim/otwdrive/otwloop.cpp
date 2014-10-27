@@ -299,7 +299,7 @@ void OTWDriverClass::Cycle(void)
     //Wombat778 11-18-04 Run the Automatic hybrid mode (mode 1). Simouse handles non-trackir hybrid mode.
     if (
         GetHybridPitMode() == 1 &&
-        (GetOTWDisplayMode() == Mode2DCockpit || GetOTWDisplayMode() == Mode3DCockpit)
+        (GetOTWDisplayMode() == Mode2DCockpit or GetOTWDisplayMode() == Mode3DCockpit)
     )
     {
         RunHybridPitMode(cockpitFlightData.headYaw, cockpitFlightData.headPitch);
@@ -801,7 +801,7 @@ void OTWDriverClass::DisplayFrontText(void)
     if (vuxRealTime & 0x200) // Blink every half second
     {
         // Display the PAUSE/X2/X4 compression strings HERE
-        if ((vuxRealTime & 0x200) && (remoteCompressionRequests || targetCompressionRatio != 1))
+        if ((vuxRealTime & 0x200) && (remoteCompressionRequests or targetCompressionRatio != 1))
         {
             float offset = 0.0f;
             long color;
@@ -811,7 +811,7 @@ void OTWDriverClass::DisplayFrontText(void)
                        OTWDriver.renderer->ScreenTextWidth(CompressionStr[2]) + COMPRESS_SPACING +
                        OTWDriver.renderer->ScreenTextWidth(CompressionStr[3]) + COMPRESS_SPACING) * 0.5f;
 
-            if ((!targetCompressionRatio) || (!FalconLocalSession->GetReqCompression()) || (remoteCompressionRequests & REMOTE_REQUEST_PAUSE))
+            if ((!targetCompressionRatio) or (!FalconLocalSession->GetReqCompression()) or (remoteCompressionRequests & REMOTE_REQUEST_PAUSE))
             {
                 // if ANY compression OR compression requests == 0... Draw PAUSE
                 // if compression == our compression == all requested compressions
@@ -821,7 +821,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression != our compression
                 // Use GREEN
                 //
-                if ((!targetCompressionRatio) && ((!FalconLocalSession->GetReqCompression()) && (remoteCompressionRequests & REMOTE_REQUEST_PAUSE) || !gCommsMgr->Online()))
+                if ((!targetCompressionRatio) && ((!FalconLocalSession->GetReqCompression()) && (remoteCompressionRequests & REMOTE_REQUEST_PAUSE) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((!FalconLocalSession->GetReqCompression()))
                     color = 0xff00ff00;
@@ -834,7 +834,7 @@ void OTWDriverClass::DisplayFrontText(void)
 
             offset += OTWDriver.renderer->ScreenTextWidth(CompressionStr[0]) + COMPRESS_SPACING;
 
-            if ((targetCompressionRatio == 2) || (FalconLocalSession->GetReqCompression() == 2) || (remoteCompressionRequests & REMOTE_REQUEST_2))
+            if ((targetCompressionRatio == 2) or (FalconLocalSession->GetReqCompression() == 2) or (remoteCompressionRequests & REMOTE_REQUEST_2))
             {
                 // if ANY compression OR compression requests == 2... Draw 2X
                 // if compression == our compression == all requested compressions
@@ -844,7 +844,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression != our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 2) && ((FalconLocalSession->GetReqCompression() == 2) && (remoteCompressionRequests & REMOTE_REQUEST_2) || !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 2) && ((FalconLocalSession->GetReqCompression() == 2) && (remoteCompressionRequests & REMOTE_REQUEST_2) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 2))
                     color = 0xff00ff00;
@@ -856,7 +856,7 @@ void OTWDriverClass::DisplayFrontText(void)
             }
 
             // JB 010109 offset+=OTWDriver.renderer->ScreenTextWidth(CompressionStr[2]) + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 4) || (FalconLocalSession->GetReqCompression() == 4) || (remoteCompressionRequests & REMOTE_REQUEST_4))
+            if ((targetCompressionRatio == 4) or (FalconLocalSession->GetReqCompression() == 4) or (remoteCompressionRequests & REMOTE_REQUEST_4))
             {
                 // if ANY compression OR compression requests > 2... Draw 4X
                 // if compression == our compression == all requested compressions
@@ -866,7 +866,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression != our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 4) && ((FalconLocalSession->GetReqCompression() == 4) && (remoteCompressionRequests & REMOTE_REQUEST_4) || !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 4) && ((FalconLocalSession->GetReqCompression() == 4) && (remoteCompressionRequests & REMOTE_REQUEST_4) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 4))
                     color = 0xff00ff00;
@@ -879,7 +879,7 @@ void OTWDriverClass::DisplayFrontText(void)
 
             // JB 010109
             //offset+=OTWDriver.renderer->ScreenTextWidth(CompressionStr[3]) + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 8) || (FalconLocalSession->GetReqCompression() == 8) || (remoteCompressionRequests & REMOTE_REQUEST_8))
+            if ((targetCompressionRatio == 8) or (FalconLocalSession->GetReqCompression() == 8) or (remoteCompressionRequests & REMOTE_REQUEST_8))
             {
                 // if ANY compression OR compression requests > 2... Draw 8X
                 // if compression == our compression == all requested compressions
@@ -889,7 +889,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression != our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 8) && ((FalconLocalSession->GetReqCompression() == 8) && (remoteCompressionRequests & REMOTE_REQUEST_8) || !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 8) && ((FalconLocalSession->GetReqCompression() == 8) && (remoteCompressionRequests & REMOTE_REQUEST_8) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 8))
                     color = 0xff00ff00;
@@ -901,7 +901,7 @@ void OTWDriverClass::DisplayFrontText(void)
             }
 
             //offset+=OTWDriver.renderer->ScreenTextWidth("x8") + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 16) || (FalconLocalSession->GetReqCompression() == 16) || (remoteCompressionRequests & REMOTE_REQUEST_16))
+            if ((targetCompressionRatio == 16) or (FalconLocalSession->GetReqCompression() == 16) or (remoteCompressionRequests & REMOTE_REQUEST_16))
             {
                 // if ANY compression OR compression requests > 2... Draw 16X
                 // if compression == our compression == all requested compressions
@@ -911,7 +911,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression != our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 16) && ((FalconLocalSession->GetReqCompression() == 16) && (remoteCompressionRequests & REMOTE_REQUEST_16) || !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 16) && ((FalconLocalSession->GetReqCompression() == 16) && (remoteCompressionRequests & REMOTE_REQUEST_16) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 16))
                     color = 0xff00ff00;
@@ -923,7 +923,7 @@ void OTWDriverClass::DisplayFrontText(void)
             }
 
             //offset+=OTWDriver.renderer->ScreenTextWidth("x16") + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 32) || (FalconLocalSession->GetReqCompression() == 32) || (remoteCompressionRequests & REMOTE_REQUEST_32))
+            if ((targetCompressionRatio == 32) or (FalconLocalSession->GetReqCompression() == 32) or (remoteCompressionRequests & REMOTE_REQUEST_32))
             {
                 // if ANY compression OR compression requests > 2... Draw 32X
                 // if compression == our compression == all requested compressions
@@ -933,7 +933,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression != our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 32) && ((FalconLocalSession->GetReqCompression() == 32) && (remoteCompressionRequests & REMOTE_REQUEST_32) || !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 32) && ((FalconLocalSession->GetReqCompression() == 32) && (remoteCompressionRequests & REMOTE_REQUEST_32) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 32))
                     color = 0xff00ff00;
@@ -945,7 +945,7 @@ void OTWDriverClass::DisplayFrontText(void)
             }
 
             //offset+=OTWDriver.renderer->ScreenTextWidth("x32") + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 64) || (FalconLocalSession->GetReqCompression() == 64) || (remoteCompressionRequests & REMOTE_REQUEST_64))
+            if ((targetCompressionRatio == 64) or (FalconLocalSession->GetReqCompression() == 64) or (remoteCompressionRequests & REMOTE_REQUEST_64))
             {
                 // if ANY compression OR compression requests > 2... Draw 64X
                 // if compression == our compression == all requested compressions
@@ -955,7 +955,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression != our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 64) && ((FalconLocalSession->GetReqCompression() == 64) && (remoteCompressionRequests & REMOTE_REQUEST_64) || !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 64) && ((FalconLocalSession->GetReqCompression() == 64) && (remoteCompressionRequests & REMOTE_REQUEST_64) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 64))
                     color = 0xff00ff00;
@@ -967,7 +967,7 @@ void OTWDriverClass::DisplayFrontText(void)
             }
 
             //offset+=OTWDriver.renderer->ScreenTextWidth("x64") + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 128) || (FalconLocalSession->GetReqCompression() == 128) || (remoteCompressionRequests & REMOTE_REQUEST_128))
+            if ((targetCompressionRatio == 128) or (FalconLocalSession->GetReqCompression() == 128) or (remoteCompressionRequests & REMOTE_REQUEST_128))
             {
                 // if ANY compression OR compression requests > 2... Draw 128X
                 // if compression == our compression == all requested compressions
@@ -977,7 +977,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression != our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 128) && ((FalconLocalSession->GetReqCompression() == 128) && (remoteCompressionRequests & REMOTE_REQUEST_128) || !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 128) && ((FalconLocalSession->GetReqCompression() == 128) && (remoteCompressionRequests & REMOTE_REQUEST_128) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 128))
                     color = 0xff00ff00;
@@ -989,7 +989,7 @@ void OTWDriverClass::DisplayFrontText(void)
             }
 
             //offset+=OTWDriver.renderer->ScreenTextWidth("x128") + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 256) || (FalconLocalSession->GetReqCompression() == 256) || (remoteCompressionRequests & REMOTE_REQUEST_256))
+            if ((targetCompressionRatio == 256) or (FalconLocalSession->GetReqCompression() == 256) or (remoteCompressionRequests & REMOTE_REQUEST_256))
             {
                 // if ANY compression OR compression requests > 2... Draw 256X
                 // if compression == our compression == all requested compressions
@@ -999,7 +999,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression != our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 256) && ((FalconLocalSession->GetReqCompression() == 256) && (remoteCompressionRequests & REMOTE_REQUEST_256) || !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 256) && ((FalconLocalSession->GetReqCompression() == 256) && (remoteCompressionRequests & REMOTE_REQUEST_256) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 256))
                     color = 0xff00ff00;
@@ -1011,7 +1011,7 @@ void OTWDriverClass::DisplayFrontText(void)
             }
 
             //offset+=OTWDriver.renderer->ScreenTextWidth("x256") + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 512) || (FalconLocalSession->GetReqCompression() == 512) || (remoteCompressionRequests & REMOTE_REQUEST_512))
+            if ((targetCompressionRatio == 512) or (FalconLocalSession->GetReqCompression() == 512) or (remoteCompressionRequests & REMOTE_REQUEST_512))
             {
                 // if ANY compression OR compression requests > 2... Draw 512X
                 // if compression == our compression == all requested compressions
@@ -1021,7 +1021,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression != our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 512) && ((FalconLocalSession->GetReqCompression() == 512) && (remoteCompressionRequests & REMOTE_REQUEST_512) || !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 512) && ((FalconLocalSession->GetReqCompression() == 512) && (remoteCompressionRequests & REMOTE_REQUEST_512) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 512))
                     color = 0xff00ff00;
@@ -1033,7 +1033,7 @@ void OTWDriverClass::DisplayFrontText(void)
             }
 
             //offset+=OTWDriver.renderer->ScreenTextWidth("x512") + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 1024) || (FalconLocalSession->GetReqCompression() == 1024) || (remoteCompressionRequests & REMOTE_REQUEST_1024))
+            if ((targetCompressionRatio == 1024) or (FalconLocalSession->GetReqCompression() == 1024) or (remoteCompressionRequests & REMOTE_REQUEST_1024))
             {
                 // if ANY compression OR compression requests > 2... Draw 1024X
                 // if compression == our compression == all requested compressions
@@ -1043,7 +1043,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression != our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 1024) && ((FalconLocalSession->GetReqCompression() == 1024) && (remoteCompressionRequests & REMOTE_REQUEST_1024) || !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 1024) && ((FalconLocalSession->GetReqCompression() == 1024) && (remoteCompressionRequests & REMOTE_REQUEST_1024) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 1024))
                     color = 0xff00ff00;
@@ -1386,7 +1386,7 @@ void OTWDriverClass::DisplayFrontText(void)
 
             numframes++;
 
-            if ((vuxRealTime > newsecond) || (newsecond > vuxRealTime + (2000.0f / (float) g_nNewFPSCounter)))
+            if ((vuxRealTime > newsecond) or (newsecond > vuxRealTime + (2000.0f / (float) g_nNewFPSCounter)))
             {
                 newsecond = vuxRealTime + (1000.0f / (float) g_nNewFPSCounter);
                 lastfps = numframes;
@@ -1644,7 +1644,7 @@ void OTWDriverClass::RenderFrame()
     // If we're sitting in our own aircraft...
     if ((otwPlatform.get() != NULL) && (otwPlatform.get() == SimDriver.GetPlayerAircraft()))
     {
-        if (GetOTWDisplayMode() == ModePadlockF3 || (GetOTWDisplayMode() == Mode3DCockpit && mDoSidebar == TRUE))
+        if (GetOTWDisplayMode() == ModePadlockF3 or (GetOTWDisplayMode() == Mode3DCockpit && mDoSidebar == TRUE))
         {
             pPadlockCPManager->SetNextView();
         }
@@ -1730,12 +1730,12 @@ void OTWDriverClass::RenderFrame()
 
     // 2002-02-15 ADDED BY S.G.
     // If the otwPlatform is NOT us, don't do its cockpit stuff since I'll never get in his seat
-    if (!otwPlatform || otwPlatform.get() != SimDriver.GetPlayerAircraft())
+    if (!otwPlatform or otwPlatform.get() != SimDriver.GetPlayerAircraft())
     {
         okToDoCockpitStuff = FALSE;
     }
 
-    if ((GetOTWDisplayMode() == ModePadlockF3 || GetOTWDisplayMode() == Mode3DCockpit) && mDoSidebar)
+    if ((GetOTWDisplayMode() == ModePadlockF3 or GetOTWDisplayMode() == Mode3DCockpit) && mDoSidebar)
     {
         // Set viewport for Padlock
         renderer->SetViewport(padlockWindow[0][0], padlockWindow[0][1], padlockWindow[0][2], padlockWindow[0][3]);
@@ -2037,12 +2037,12 @@ void OTWDriverClass::RenderFrame()
         else
             cockpitFlightData.ClearHsiBit(FlightData::AVTR);
 
-        if (SimDriver.GetPlayerAircraft()->GSValid == FALSE || SimDriver.GetPlayerAircraft()->currentPower == AircraftClass::PowerNone)
+        if (SimDriver.GetPlayerAircraft()->GSValid == FALSE or SimDriver.GetPlayerAircraft()->currentPower == AircraftClass::PowerNone)
             cockpitFlightData.SetHsiBit(FlightData::ADI_GS);
         else
             cockpitFlightData.ClearHsiBit(FlightData::ADI_GS);
 
-        if (SimDriver.GetPlayerAircraft()->LOCValid == FALSE || SimDriver.GetPlayerAircraft()->currentPower == AircraftClass::PowerNone)
+        if (SimDriver.GetPlayerAircraft()->LOCValid == FALSE or SimDriver.GetPlayerAircraft()->currentPower == AircraftClass::PowerNone)
             cockpitFlightData.SetHsiBit(FlightData::ADI_LOC);
         else
             cockpitFlightData.ClearHsiBit(FlightData::ADI_LOC);
@@ -2138,7 +2138,7 @@ void OTWDriverClass::RenderFrame()
     //STOP_PROFILE("RENDER 3DPIT");
 
     // Set up the camera based on the current view chosen
-    if (endFlightTimer || flybyTimer)
+    if (endFlightTimer or flybyTimer)
     {
         SetFlybyCameraPosition(dT);
     }
@@ -2213,19 +2213,19 @@ void OTWDriverClass::RenderFrame()
 
     // if ( actionCameraMode )
     {
-        if (_isnan(viewPos.x) || !_finite(viewPos.x))
+        if (_isnan(viewPos.x) or !_finite(viewPos.x))
         {
             ShiWarning("Bad action camera X pos: Why?");
             viewPos.x = 250000.0f;
         }
 
-        if (_isnan(viewPos.y) || !_finite(viewPos.y))
+        if (_isnan(viewPos.y) or !_finite(viewPos.y))
         {
             ShiWarning("Bad action camera Y pos: Why?");
             viewPos.y = 250000.0f;
         }
 
-        if (_isnan(viewPos.z) || !_finite(viewPos.z))
+        if (_isnan(viewPos.z) or !_finite(viewPos.z))
         {
             ShiWarning("Bad action camera Z pos: Why?");
             viewPos.z = -10000.0f;
@@ -2425,7 +2425,7 @@ void OTWDriverClass::RenderFrame()
             VCock_HeadCalc();
         }
 
-        if (DisplayMode == Mode3DCockpit || DisplayMode == ModePadlockF3)
+        if (DisplayMode == Mode3DCockpit or DisplayMode == ModePadlockF3)
         {
             // DX - Attach Weapons HERE, BEFORE any rendering
             CockAttachWeapons();
@@ -2545,7 +2545,7 @@ void OTWDriverClass::RenderFrame()
     if (okToDoCockpitStuff)
     {
         // DX - Detach Weapons HERE, AFTER any rendering
-        if (DisplayMode == Mode3DCockpit || DisplayMode == ModePadlockF3) CockDetachWeapons();
+        if (DisplayMode == Mode3DCockpit or DisplayMode == ModePadlockF3) CockDetachWeapons();
 
         if (DisplayMode == Mode2DCockpit) pCockpitManager->CockDetachWeapons();
     }
@@ -2592,7 +2592,7 @@ void OTWDriverClass::RenderFrame()
             PadlockEFOV_Draw();
         }
 
-        if (GetOTWDisplayMode() == ModePadlockF3 || GetOTWDisplayMode() == Mode3DCockpit)
+        if (GetOTWDisplayMode() == ModePadlockF3 or GetOTWDisplayMode() == Mode3DCockpit)
         {
             if (mDoSidebar)
             {
@@ -2679,7 +2679,7 @@ void OTWDriverClass::RenderFrame()
             }
         }
         else if (
-            (GetOTWDisplayMode() == ModeHud || GetOTWDisplayMode() == ModePadlockEFOV) &&
+            (GetOTWDisplayMode() == ModeHud or GetOTWDisplayMode() == ModePadlockEFOV) &&
             !g_bNoMFDsIn1View) //MI added g_bNoMFDsIn1View check. Removes MFD's if TRUE
         {
             // SetFont
@@ -2694,7 +2694,7 @@ void OTWDriverClass::RenderFrame()
 
             VirtualDisplay::SetFont(oldFont);
         }
-        else if (GetOTWDisplayMode() == ModePadlockF3 || GetOTWDisplayMode() == Mode3DCockpit)
+        else if (GetOTWDisplayMode() == ModePadlockF3 or GetOTWDisplayMode() == Mode3DCockpit)
         {
             if (mDoSidebar && pPadlockCPManager)
             {
@@ -2752,7 +2752,7 @@ void OTWDriverClass::RenderFrame()
     {
         renderer->DrawTunnelBorder();
     }
-    else if (TheTimeOfDay.GetNVGmode() || endFlightTimer)
+    else if (TheTimeOfDay.GetNVGmode() or endFlightTimer)
     {
         renderer->DrawTunnelBorder();
     }
@@ -2838,7 +2838,7 @@ void OTWDriverClass::RunNew2DTrackIR(float pan, float tilt)
 
     //the 10.0f values are arbitrary, but seems to produce the right amount of jitter reduction while still being sensitive
 
-    if (fabs(pan - lastpan) > 10.0f * DTR || fabs(tilt - lasttilt) > 10.0f * DTR)
+    if (fabs(pan - lastpan) > 10.0f * DTR or fabs(tilt - lasttilt) > 10.0f * DTR)
     {
         lastpan = pan;
         lasttilt = tilt;

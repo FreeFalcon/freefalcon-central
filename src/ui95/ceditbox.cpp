@@ -172,7 +172,7 @@ void C_EditBox::DeleteRange()
 
 long C_EditBox::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED))
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED))
         return(0);
 
     if (relX >= GetX() && relX < (GetX() + GetW()) && relY >= GetY() && relY < (GetY() + GetH()))
@@ -476,7 +476,7 @@ BOOL C_EditBox::Process(long, short HitType)
 
 void C_EditBox::Refresh()
 {
-    if (!Ready() || (Flags_ & C_BIT_INVISIBLE) || Parent_ == NULL)
+    if (!Ready() or (Flags_ & C_BIT_INVISIBLE) or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -519,7 +519,7 @@ void C_EditBox::Draw(SCREEN *surface, UI95_RECT *cliprect)
         }
     }
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
@@ -574,7 +574,7 @@ void C_EditBox::SetSubParents(C_Window *)
 
     if (Text_)
     {
-        if (GetType() == C_TYPE_INTEGER || GetType() == C_TYPE_FLOAT || GetType() == C_TYPE_IPADDRESS)
+        if (GetType() == C_TYPE_INTEGER or GetType() == C_TYPE_FLOAT or GetType() == C_TYPE_IPADDRESS)
             CopyToText();
 
         Text_->SetFlags(GetFlags()& compl C_BIT_OPAQUE);
@@ -751,7 +751,7 @@ void C_EditBox::CopyFromText()
         case C_TYPE_IPADDRESS:
             Integer_ = atol(Text_->GetText());
 
-            if (MinInteger_ || MaxInteger_)
+            if (MinInteger_ or MaxInteger_)
             {
                 if (Integer_ < MinInteger_)
                 {
@@ -770,7 +770,7 @@ void C_EditBox::CopyFromText()
         case C_TYPE_FLOAT:
             Float_ = atof(Text_->GetText());
 
-            if (MinFloat_ || MaxFloat_)
+            if (MinFloat_ or MaxFloat_)
             {
                 if (Float_ < MinFloat_)
                 {

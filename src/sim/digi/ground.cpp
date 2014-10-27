@@ -30,8 +30,8 @@ void DigitalBrain::GroundCheck(void)
     // 2001-10-21 Modified by M.N. When Leader is in WaypointMode, Wings are always in Wingymode.
     // so they do terrain based ground checks for the wingies, but not for leads - makes no sense.
     // Let it follow waypoints close to the ground
-    if ( //( curMode == WaypointMode || // also perform GroundCheck for leaders
-        //curMode == LandingMode || // airbases with hilly terrain around need GroundCheck
+    if ( //( curMode == WaypointMode or // also perform GroundCheck for leaders
+        //curMode == LandingMode or // airbases with hilly terrain around need GroundCheck
         /*(curMode == WaypointMode && agDoctrine != AGD_NONE) ||*/ // 2002-03-11 ADDED BY S.G. GroundAttackMode has its own ground avoidance code
         curMode == TakeoffMode //)
         && threatPtr == NULL)
@@ -46,7 +46,7 @@ void DigitalBrain::GroundCheck(void)
     }
 
     // 2002-03-11 ADDED BY S.G. If in WaypointMode or WingyMode, drop the min altitude before pullup to 500 feet AGL or -trackZ, whichever is smaller but never below 100.0f AGL
-    if (curMode == WaypointMode || curMode == WingyMode)
+    if (curMode == WaypointMode or curMode == WingyMode)
         minAlt = (trackZ > -g_fAIMinAlt ? (trackZ > -100.0f ? 100.0f : -trackZ) : g_fAIMinAlt); // Cobra - externalized AI min alt
     else
         // END OF ADDED SECTION 2002-03-11
@@ -169,7 +169,7 @@ void DigitalBrain::GroundCheck(void)
 
     // Cobra - end of reconstruction
 
-    if (self->GetVt() < 0.1f || !groundavoid)
+    if (self->GetVt() < 0.1f or !groundavoid)
     {
         groundAvoidNeeded = FALSE;
         ResetMaxRoll();

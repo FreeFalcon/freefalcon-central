@@ -706,7 +706,7 @@ void UI_Refresher::AddOOBItem(CampEntity entity)
         if (OOB_)
             OOB_->SetMenu(Owner_->UnitMenu_);
     }
-    else if (entity->IsBrigade() || entity->IsBattalion())
+    else if (entity->IsBrigade() or entity->IsBattalion())
     {
         OOB_ = AddItemToOOB(entity);
 
@@ -729,7 +729,7 @@ void UI_Refresher::AddOOBItem(Division div)
 
 void UI_Refresher::UpdateOOBItem(CampEntity entity)
 {
-    if (entity->IsSquadron() || entity->IsTaskForce() || entity->IsBrigade() || entity->IsBattalion())
+    if (entity->IsSquadron() or entity->IsTaskForce() or entity->IsBrigade() or entity->IsBattalion())
     {
     }
     else if (entity->IsObjective())

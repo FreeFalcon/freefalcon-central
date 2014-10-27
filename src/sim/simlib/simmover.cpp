@@ -400,7 +400,7 @@ void SimMoverClass::CleanupData()
 void SimMoverClass::CleanupLocalData()
 {
     // sfr: @TODO remove this shit (for now im just calling base class cleanup)
-    if (numSensors > 0 && (!sensorArray || F4IsBadReadPtr(sensorArray, sizeof(SensorClass*))))
+    if (numSensors > 0 && (!sensorArray or F4IsBadReadPtr(sensorArray, sizeof(SensorClass*))))
     {
         // JB 010223 CTD
         return; // JB 010223 CTD
@@ -694,7 +694,7 @@ int SimMoverClass::Exec(void)
 
     if (IsLocal())
     {
-        if ((requestCount > 0 && (SimLibFrameCount & 0x2F) == 0) || ((SimLibFrameCount & 0x1FF) == 0))
+        if ((requestCount > 0 && (SimLibFrameCount & 0x2F) == 0) or ((SimLibFrameCount & 0x1FF) == 0))
         {
             //newControlData = new FalconControlSurfaceMsg(Id(), FalconLocalGame);
             //newControlData->dataBlock.gameTime = SimLibElapsedTime;
@@ -1186,7 +1186,7 @@ void SimMoverClass::UpdateLOS(SimObjectType *obj)
 
 int SimMoverClass::CheckLOS(SimObjectType *obj)
 {
-    if (!obj || !obj->BaseData())
+    if (!obj or !obj->BaseData())
         return FALSE;
 
     if (SimLibElapsedTime > obj->localData->nextLOSCheck)
@@ -1197,7 +1197,7 @@ int SimMoverClass::CheckLOS(SimObjectType *obj)
 
 int SimMoverClass::CheckCompositeLOS(SimObjectType *obj)
 {
-    if (!obj || !obj->BaseData())
+    if (!obj or !obj->BaseData())
         return FALSE;
 
     if (SimLibElapsedTime > obj->localData->nextLOSCheck)

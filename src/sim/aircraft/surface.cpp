@@ -175,7 +175,7 @@ void AircraftClass::CalculateSweepAndSpoiler(float &sweep, float &sl1, float &sr
         {
             int l;
 
-            if (af->auxaeroData->animSwingWingStages > 10 || af->auxaeroData->animSwingWingStages < 0)
+            if (af->auxaeroData->animSwingWingStages > 10 or af->auxaeroData->animSwingWingStages < 0)
             {
                 MonoPrint("animSwingWingStages %d\n", af->auxaeroData->animSwingWingStages);
             }
@@ -555,7 +555,7 @@ void AircraftClass::MoveSurfaces(void)
         float doorAngle = 0.0f;
 
         // RV - Biker - Use DOFs defined in DAT files for opening gun and bomb bay doors
-        if (GunFire || fireGun)
+        if (GunFire or fireGun)
             doorAngle = 90.0f * DTR;
         else
             doorAngle =  0.0f * DTR;
@@ -641,10 +641,10 @@ void AircraftClass::MoveSurfaces(void)
         }
 
         // Cobra - FRB animated pilot's head
-        if ((g_bAnimPilotHead) && ((!IsPlayer()) || ((IsPlayer()) && (!g_bEnableTrackIR))
-                                   || ((IsPlayer()) && (g_bEnableTrackIR)
+        if ((g_bAnimPilotHead) && ((!IsPlayer()) or ((IsPlayer()) && (!g_bEnableTrackIR))
+                                   or ((IsPlayer()) && (g_bEnableTrackIR)
                                        && ((PlayerOptions.Get3dTrackIR() == false)
-                                           || (OTWDriver.GetOTWDisplayMode() != OTWDriverClass::Mode2DCockpit
+                                           or (OTWDriver.GetOTWDisplayMode() != OTWDriverClass::Mode2DCockpit
                                                && OTWDriver.GetOTWDisplayMode() != OTWDriverClass::Mode3DCockpit)))))
         {
             long  nHoldSec = 3;
@@ -828,7 +828,7 @@ void AircraftClass::MoveSurfaces(void)
         if (g_bAnimPilotHead && af->AnimPilotAct == 0)
         {
 
-            if ((!g_bEnableTrackIR) || (!IsPlayer()) || ((g_bEnableTrackIR) && (!PlayerOptions.Get3dTrackIR())))
+            if ((!g_bEnableTrackIR) or (!IsPlayer()) or ((g_bEnableTrackIR) && (!PlayerOptions.Get3dTrackIR())))
             {
                 if ((af->rstick > -0.1f) && (af->rstick < 0.1f))
                 {
@@ -1149,7 +1149,7 @@ void AircraftClass::MoveSurfaces(void)
 
             float vortexTrailsUsed = af->auxaeroData->vortex1Location.y;
 
-            if ((!vortexTrailsCondition) || (!vortexTrailsUsed))
+            if ((!vortexTrailsCondition) or (!vortexTrailsUsed))
             {
                 SetSwitch(COMP_WING_VAPOR, gFact);
             }
@@ -1553,7 +1553,7 @@ void AircraftClass::RunGearSurfaces(void)
 
     if (IsLocal())
     {
-        if ((af->gearHandle > 0.0F || OnGround()) && !af->IsSet(AirframeClass::GearBroken))
+        if ((af->gearHandle > 0.0F or OnGround()) && !af->IsSet(AirframeClass::GearBroken))
         {
             SetAcStatusBits(ACSTATUS_GEAR_DOWN);
         }
@@ -1613,17 +1613,17 @@ void AircraftClass::RunGearSurfaces(void)
             SetDOF(ComplexGearDOF[i], af->GetAeroData(AeroDataSet::NosGearRng) * 0.6f * DTR);
 
         if (af->gearPos >= 0.9F && ((af->gear[i].flags & GearData::DoorBroken)
-                                    || (af->gear[i].flags & GearData::DoorStuck)
-                                    || (af->gear[i].flags & GearData::GearStuck)
-                                    || (af->gear[i].flags & GearData::GearBroken)))
+                                    or (af->gear[i].flags & GearData::DoorStuck)
+                                    or (af->gear[i].flags & GearData::GearStuck)
+                                    or (af->gear[i].flags & GearData::GearBroken)))
         {
-            if ((af->gear[i].flags & GearData::DoorBroken) || (af->gear[i].flags & GearData::DoorStuck))
+            if ((af->gear[i].flags & GearData::DoorBroken) or (af->gear[i].flags & GearData::DoorStuck))
                 SetSwitch(ComplexGearDoorSwitch[i], TRUE);
 
-            if ((af->gear[i].flags & GearData::DoorBroken) || (af->gear[i].flags & GearData::DoorStuck))
+            if ((af->gear[i].flags & GearData::DoorBroken) or (af->gear[i].flags & GearData::DoorStuck))
                 SetSwitch(ComplexGearHoleSwitch[i], TRUE);
 
-            if ((af->gear[i].flags & GearData::GearBroken) || (af->gear[i].flags & GearData::GearStuck))
+            if ((af->gear[i].flags & GearData::GearBroken) or (af->gear[i].flags & GearData::GearStuck))
                 SetSwitch(ComplexGearSwitch[i], TRUE);
         }
         else
@@ -1654,7 +1654,7 @@ void AircraftClass::RunGearSurfaces(void)
             // lastRStick and lastYPedal defined in EOM.cpp
             // RAS 06Apr04 changed 30.0F to 50.0F to make graphical nose wheel match rate of turn.  Acutal turn radius needs to be
             // looked at.  Real F-16 nose wheel turns 32.0 degrees
-            if (IO.AnalogIsUsed(AXIS_YAW) && !af->IsSet(AirframeClass::IsDigital) || !g_bRollLinkedNWSRudder)  // Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_YAW) && !af->IsSet(AirframeClass::IsDigital) or !g_bRollLinkedNWSRudder)  // Retro 31Dec2003
             {
                 SetDOF(COMP_NOS_GEAR_ROT, -af->lastYPedal * 50.0F * DTR * (0.5F + (80.0F * KNOTS_TO_FTPSEC - af->vt) / (160.0F * KNOTS_TO_FTPSEC)));
             }
@@ -1891,7 +1891,7 @@ float AircraftClass::CheckLEF(int side)
         case 0:
 
             //Left LEF
-            if (LEFState(LT_LEF_OUT) || LEFState(LEFSASYNCH)) //can't work anymore
+            if (LEFState(LT_LEF_OUT) or LEFState(LEFSASYNCH)) //can't work anymore
                 leftLEFAngle = LTLEFAOA;
             else //normal operation
             {
@@ -1905,7 +1905,7 @@ float AircraftClass::CheckLEF(int side)
         case 1:
 
             //Right LEF
-            if (LEFState(RT_LEF_OUT) || LEFState(LEFSASYNCH)) //can't work anymore
+            if (LEFState(RT_LEF_OUT) or LEFState(LEFSASYNCH)) //can't work anymore
                 rightLEFAngle = RTLEFAOA; //got set when we took hit
             else //normal operation
             {

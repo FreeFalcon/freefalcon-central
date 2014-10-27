@@ -155,7 +155,7 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
         // (recalculate the velocity to get some movement
         // - can be speed up)
         //
-        if ((ox != x) || (oy != y))
+        if ((ox != x) or (oy != y))
         {
             dir = theBattalion->GetNextMoveDirection();
 
@@ -293,7 +293,7 @@ void GNDAIClass::Fire(void)
 
             // RV - Biker - Radar vehicles without weapons should do this also
             //if(SimLibElapsedTime > nextTurretCalc) {
-            if (SimLibElapsedTime > nextTurretCalc || (self->isEmitter && !self->Sms->GetCurrentWeapon()))
+            if (SimLibElapsedTime > nextTurretCalc or (self->isEmitter && !self->Sms->GetCurrentWeapon()))
             {
                 float xft, yft, zft;
                 float realRange, tof;

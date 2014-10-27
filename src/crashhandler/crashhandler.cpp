@@ -7,6 +7,7 @@ CONDITIONAL COMPILATION :
                               lookups fail after the first lookup.
 ----------------------------------------------------------------------*/
 
+#include <cISO646>
 #include "pch.h"
 #include "BugslayerUtil.h"
 #include "CrashHandler.h"
@@ -678,7 +679,7 @@ InternalGetStackTraceString(DWORD                dwOpts  ,
                                 SymGetModuleBase                  ,
                                 NULL) ;
 
-        if ((FALSE == bSWRet) || (0 == g_stFrame.AddrFrame.Offset))
+        if ((FALSE == bSWRet) or (0 == g_stFrame.AddrFrame.Offset))
         {
             szRet = NULL ;
             __leave ;

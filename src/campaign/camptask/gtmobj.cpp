@@ -43,7 +43,7 @@ void CleanupObjList(void)
         pod = (POData) lp->GetUserData();
         o = FindObjective(pod->objective);
 
-        if (!o || !o->IsPrimary())
+        if (!o or !o->IsPrimary())
             PODataList->Remove(lp);
 
         lp = np;
@@ -352,7 +352,7 @@ GODNode GndObjDataType::Insert(GODNode to_insert, int sort_by)
             return to_insert;
         }
 
-        if (!next || to_insert->priority_score > next->priority_score)
+        if (!next or to_insert->priority_score > next->priority_score)
         {
             to_insert->next = next;
             ShiAssert(next != to_insert);
@@ -392,7 +392,7 @@ GODNode GndObjDataType::Insert(GODNode to_insert, int sort_by)
             return to_insert;
         }
 
-        if (!next || to_insert->unit_options < next->unit_options)
+        if (!next or to_insert->unit_options < next->unit_options)
         {
             to_insert->next = next;
             ShiAssert(next != to_insert);
@@ -546,7 +546,7 @@ void GndObjDataType::InsertUnit(Unit u, int s, int d)
 {
     USNode new_node;
 
-    if (s <= 0 || d <= 0)
+    if (s <= 0 or d <= 0)
         return;
 
     new_node = new UnitScoreNode;

@@ -119,7 +119,7 @@ BOOL C_Player::Process(long ID, short HitType)
 
 void C_Player::Refresh()
 {
-    if (!Ready() || Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
@@ -127,7 +127,7 @@ void C_Player::Refresh()
 
 void C_Player::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Icon_)
@@ -139,7 +139,7 @@ void C_Player::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Status_ && muted_)
         Status_->Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 

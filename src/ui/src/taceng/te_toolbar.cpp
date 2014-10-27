@@ -319,7 +319,7 @@ static void tactical_briefing_button(long, short hittype, C_Base *ctrl)
 
     flight = (Flight) vuDatabase->Find(gSelectedFlightID);
 
-    if (!flight || !flight->IsFlight())
+    if (!flight or !flight->IsFlight())
         return;
 
     // KCK: This should only need to be called upon selecting a flight -
@@ -366,7 +366,7 @@ void add_briefing_text (C_Window *win, int &x, int &y, char *str)
  {
  retval=TRUE;
 
- if ((win == NULL) || (str == NULL))
+ if ((win == NULL) or (str == NULL))
  {
  return;
  }

@@ -243,7 +243,7 @@ void C_ListBox::SetFont(long font)
 // sfr: added number of items of scrollbar
 void C_ListBox::AddScrollBar(long MinusUp, long MinusDown, long PlusUp, long PlusDown, long Slider, long nItems)
 {
-    ScrollCount_ = (nItems <= 0) || (nItems > 1000) ? 7 : static_cast<short>(nItems);
+    ScrollCount_ = (nItems <= 0) or (nItems > 1000) ? 7 : static_cast<short>(nItems);
 
     if (ScrollBar_)
     {
@@ -556,10 +556,10 @@ short C_ListBox::GetListHeight()
 
 long C_ListBox::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED))
+    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED))
         return(0);
 
-    if (relX < GetX() || relX > (GetX() + GetW()) || relY < GetY() || relY > (GetY() + GetH()))
+    if (relX < GetX() or relX > (GetX() + GetW()) or relY < GetY() or relY > (GetY() + GetH()))
         return(0);
 
     SetRelXY(relX - GetX(), relY - GetY());
@@ -594,7 +594,7 @@ BOOL C_ListBox::Process(long ID, short HitType)
 
 void C_ListBox::Refresh()
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1, GetY() + GetH() + 1, GetFlags(), GetClient());
@@ -602,7 +602,7 @@ void C_ListBox::Refresh()
 
 void C_ListBox::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (GetFlags() & C_BIT_INVISIBLE)
@@ -625,7 +625,7 @@ void C_ListBox::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (DropDown_ && (GetFlags() & C_BIT_ENABLED))
         DropDown_->Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 

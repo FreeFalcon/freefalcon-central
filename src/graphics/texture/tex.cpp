@@ -135,7 +135,7 @@ Texture::~Texture()
     //InterlockedIncrement((long *)&m_dwNumHandles); // Number of instances
     //InterlockedExchangeAdd((long *)&m_dwTotalBytes,-sizeof(*this));
 #endif
-    if((texHandle != NULL) || (imageData != NULL))
+    if((texHandle != NULL) or (imageData != NULL))
     {
         FreeAll();
     }
@@ -472,7 +472,7 @@ bool Texture::UpdateMPR(char *strName)
     ShiAssert(imageData);
     ShiAssert(texHandle);
 
-    if (!texHandle || !imageData)
+    if (!texHandle or !imageData)
     {
         return false;
     }
@@ -615,7 +615,7 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
         //}
 
         // Force power of 2
-        if ((info & MPR_TI_MIPMAP) || (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_POW2))
+        if ((info & MPR_TI_MIPMAP) or (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_POW2))
         {
             int nMsb;
 
@@ -1163,7 +1163,7 @@ bool TextureHandle::Reload()
                     WORD *pDst = (WORD *)ddsd.lpSurface;
 
                     // JB 010404 CTD
-                    if (F4IsBadReadPtr(pSrc, sizeof(BYTE)) || F4IsBadReadPtr(pDst, sizeof(WORD))) break;
+                    if (F4IsBadReadPtr(pSrc, sizeof(BYTE)) or F4IsBadReadPtr(pDst, sizeof(WORD))) break;
 
                     DWORD dwPitch = ddsd.lPitch >> 1;
 
@@ -1540,7 +1540,7 @@ void TextureHandle::StaticCleanup()
 
 HRESULT CALLBACK TextureHandle::TextureSearchCallback(DDPIXELFORMAT* pddpf, VOID* param)
 {
-    if (NULL == pddpf || NULL == param)
+    if (NULL == pddpf or NULL == param)
     {
         return DDENUMRET_OK;
     }
@@ -1590,7 +1590,7 @@ HRESULT CALLBACK TextureHandle::TextureSearchCallback(DDPIXELFORMAT* pddpf, VOID
     }
 
     // Make sure current alpha format agrees with requested format type
-    if ((ptsi->dwDesiredAlphaBPP) && !(pddpf->dwFlags & DDPF_ALPHAPIXELS) || wAlphaBits < ptsi->dwDesiredAlphaBPP)
+    if ((ptsi->dwDesiredAlphaBPP) && !(pddpf->dwFlags & DDPF_ALPHAPIXELS) or wAlphaBits < ptsi->dwDesiredAlphaBPP)
     {
         return DDENUMRET_OK;
     }

@@ -489,7 +489,7 @@ void AS_DataClass::AS_merge(int)
         if (!neighbors[n].where)
             continue;
 
-        if (queue == NULL || neighbors[n].cost + neighbors[n].to_go < queue->cost + queue->to_go)
+        if (queue == NULL or neighbors[n].cost + neighbors[n].to_go < queue->cost + queue->to_go)
         {
             new_node = AS_get_new_node(n);
 

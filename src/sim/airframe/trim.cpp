@@ -141,7 +141,7 @@ void AirframeClass::TrimModel(void)
         }
 
         // Too slow for weight, make it faster
-        if (!isTrimmed && (_isnan(accz2) || fabs(accz2) > error))
+        if (!isTrimmed && (_isnan(accz2) or fabs(accz2) > error))
         {
             ii ++;
 

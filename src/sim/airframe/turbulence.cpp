@@ -94,7 +94,7 @@ float AirframeClass::Turbulence(float turb)
     {
         if (time > 540 && time < 990)//0900 - 1630
         {
-            if ((groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER ||
+            if ((groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER ||
                  groundType == COVERAGE_SWAMP) && (alt > -5000.0f))
             {
                 if (turbOn == 0)
@@ -399,7 +399,7 @@ float AirframeClass::Turbulence(float turb)
         }
         else if (time > 540 && time < 990)//0900 - 1630
         {
-            if ((groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER ||
+            if ((groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER ||
                  groundType == COVERAGE_SWAMP) && (alt > -5000.0f))
             {
                 if (turbOn == 0)

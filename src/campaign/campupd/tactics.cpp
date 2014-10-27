@@ -103,7 +103,7 @@ int CheckUnitType(int tid, int domain, int type)
     if (TacticsTable[tid].domainType == CHECK_ANY)
         return 1;
 
-    if (TacticsTable[tid].domainType != domain || TacticsTable[tid].unitSize != type)
+    if (TacticsTable[tid].domainType != domain or TacticsTable[tid].unitSize != type)
         return 0;
 
     return 1;
@@ -114,7 +114,7 @@ int CheckRange(int tid, int rng)
     if (TacticsTable[tid].minRangeToDest == CHECK_ANY)
         return 1;
 
-    if (TacticsTable[tid].minRangeToDest > rng || TacticsTable[tid].maxRangeToDest < rng)
+    if (TacticsTable[tid].minRangeToDest > rng or TacticsTable[tid].maxRangeToDest < rng)
         return 0;
 
     return 1;

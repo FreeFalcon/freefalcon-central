@@ -33,7 +33,7 @@ int VisualClass::CanSeeObject(SimObjectType* obj)
     // 2002-04-17 MN "GPS type" weapons can see and detect always
 
     // RV - Biker - Add check for bomb or missile to avoid AI AC to always see target
-    if ((g_nMissileFix & 0x100) && (platform->IsBomb() || platform->IsMissile()))
+    if ((g_nMissileFix & 0x100) && (platform->IsBomb() or platform->IsMissile()))
     {
 
         Falcon4EntityClassType* classPtr = NULL;

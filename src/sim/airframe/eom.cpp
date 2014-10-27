@@ -328,7 +328,7 @@ void AirframeClass::CalcBodyRates(float dt)
                     MatrixMult(&((DrawableBSP*)platform->drawPointer)->orientation, &PtRelPos, &PtWorldPos);
 
                     if (
-                        IsSet(OnObject) || // JB carrier
+                        IsSet(OnObject) or // JB carrier
                         (z + PtWorldPos.z >= groundZ - GROUND_TOLERANCE && GearExt - OldGearExt > -dt))
                     {
                         if (geardof / (GetAeroData(AeroDataSet::NosGearRng + i * 4)*DTR) < 0.85F)
@@ -790,7 +790,7 @@ void AirframeClass::CalcBodyRates(float dt)
     {
         p = min(rightMax * 2.0F, max(leftMax * 2.0F, p + pdelta));
 
-        if (p == rightMax * 2.0F || p == leftMax * 2.0F)
+        if (p == rightMax * 2.0F or p == leftMax * 2.0F)
         {
             //if we had to limit the roll it means we should stop rolling so zero integrator
             oldr01[0] = 0.0F;
@@ -867,7 +867,7 @@ void AirframeClass::CalcGroundTurnRate(float dt)
     float NWSBias = 0.02F; // RAS 02Apr04 - Adjust how fast Nose Wheel turns (1.0 max)
     // 0.01 is pretty slow, and 0.05 is fairly fast
 
-    if (IsSet(InAir) || platform->mFaults->GetFault(nws_fault)) //MI added faults check
+    if (IsSet(InAir) or platform->mFaults->GetFault(nws_fault)) //MI added faults check
         return;
 
     if (g_bRealisticAvionics && platform->Pitch() * RTD > 3 && IsSet(NoseSteerOn))
@@ -890,12 +890,12 @@ void AirframeClass::CalcGroundTurnRate(float dt)
             // MonoPrint("RStick = %f \n", RStick);
             // MonoPrint("YPedal = %f \n", YPedal);
 
-            if (RStick || lastRStick || YPedal || lastYPedal) // Verify that we have a keyboard/rudder input or that the nose wheel
+            if (RStick or lastRStick or YPedal or lastYPedal) // Verify that we have a keyboard/rudder input or that the nose wheel
             {
                 // is in a position other than zero
-                if (RStick || lastRStick) // use this if using keyboard
+                if (RStick or lastRStick) // use this if using keyboard
                 {
-                    if (RStick > 0.0F || lastRStick > 0.0F) // NWS commanded to the right
+                    if (RStick > 0.0F or lastRStick > 0.0F) // NWS commanded to the right
                     {
                         if ((lastRStick < NWSBias) && (RStick < NWSBias)) // if float value near center, zero out variables
                         {
@@ -918,7 +918,7 @@ void AirframeClass::CalcGroundTurnRate(float dt)
                     }
                     else
                     {
-                        if (RStick < 0.0F || lastRStick < 0.0F) // NWS commanded to the left
+                        if (RStick < 0.0F or lastRStick < 0.0F) // NWS commanded to the left
                         {
                             if ((lastRStick > -NWSBias) && (RStick > -NWSBias)) // If float vaule near center, zero out variables
                             {
@@ -953,9 +953,9 @@ void AirframeClass::CalcGroundTurnRate(float dt)
                 }
 
                 // This section works just like above except uses rudder pedals
-                if (YPedal || lastYPedal)
+                if (YPedal or lastYPedal)
                 {
-                    if (YPedal > 0.0F || lastYPedal > 0.0F)
+                    if (YPedal > 0.0F or lastYPedal > 0.0F)
                     {
                         if ((lastYPedal < NWSBias) && (YPedal < NWSBias))
                         {
@@ -978,7 +978,7 @@ void AirframeClass::CalcGroundTurnRate(float dt)
                     }
                     else
                     {
-                        if (YPedal < 0.0F || lastYPedal < 0.0F)
+                        if (YPedal < 0.0F or lastYPedal < 0.0F)
                         {
                             if ((lastYPedal > -NWSBias) && (YPedal > -NWSBias))
                             {
@@ -1019,7 +1019,7 @@ void AirframeClass::CalcGroundTurnRate(float dt)
 
 
             // ASSOCIATOR 30/11/03 Added g_bRollLinkedNWSRudder for roll unlinked NWS on the ground
-            if (IO.AnalogIsUsed(AXIS_YAW) && !IsSet(IsDigital) || !g_bRollLinkedNWSRudder) // Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_YAW) && !IsSet(IsDigital) or !g_bRollLinkedNWSRudder) // Retro 31Dec2003
             {
                 // rCom =  vt/(13.167F/(float)sin(-ypedal * fabs(yshape) * 0.55856F));
                 rCom =  vt / (13.167F / (float)sin(-YPedal * fabs(NWSyshape) * 0.55856F));
@@ -1078,7 +1078,7 @@ void AirframeClass::CalcGroundTurnRate(float dt)
         else
         {
             // ASSOCIATOR 30/11/03 Added g_bRollLinkedNWSRudder for roll unlinked rudder on the ground
-            if (IO.AnalogIsUsed(AXIS_YAW) && !IsSet(IsDigital) || !g_bRollLinkedNWSRudder)  // Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_YAW) && !IsSet(IsDigital) or !g_bRollLinkedNWSRudder)  // Retro 31Dec2003
             {
                 r =  max(-0.5F, min(ypedal * (float)fabs(yshape) * wy01 * cy * qsom * 0.5F, 0.5F));
             }
@@ -1109,7 +1109,7 @@ void AirframeClass::CalcGroundTurnRate(float dt)
     float slip = (float)fabs(vt * platform->platformAngles.sinbet);
 
     if (slip > 3.0F && vt > 25.0F * KNOTS_TO_FTPSEC && platform == SimDriver.GetPlayerEntity() &&
-        (IsSet(OverRunway) || platform->onFlatFeature || groundType == COVERAGE_ROAD))
+        (IsSet(OverRunway) or platform->onFlatFeature or groundType == COVERAGE_ROAD))
     {
         float volume = max(0.0F, 2500.0F - slip * slip * 100.0F);
         //F4SoundFXSetPos( SFX_TIRE_SQUEAL, TRUE, x + 5.0F, y, z, 1.0F, volume );
@@ -1149,7 +1149,7 @@ float AirframeClass::CalcMuFric(int groundType)
 {
     float Mu_fric;
 
-    if (IsSet(GearBroken) || gearPos <= 0.3F || platform->platformAngles.cosphi < 0.9659F)
+    if (IsSet(GearBroken) or gearPos <= 0.3F or platform->platformAngles.cosphi < 0.9659F)
     {
         Mu_fric = (0.6F + 0.3F * (!platform->onFlatFeature && groundType != COVERAGE_ROAD) + 0.1F * IsSet(OverRunway));
     }
@@ -1242,7 +1242,7 @@ float AirframeClass::CalculateVt(float dt)
     Objective airbase = FindNearbyAirbase(gx, gy);
 
     if (
-        IsSet(OnObject) || // JB carrier
+        IsSet(OnObject) or // JB carrier
         (airbase && /* JB 060114 CTD*/ airbase->IsObjective() &&  airbase->brain->IsOverRunway(platform))
     )
     {
@@ -1274,7 +1274,7 @@ float AirframeClass::CalculateVt(float dt)
         oscillationTimer = Trig.sin;
         oscillationSlope = Trig.cos;
 
-        if (IsSet(IsDigital) || !g_bRealisticAvionics)
+        if (IsSet(IsDigital) or !g_bRealisticAvionics)
         {
             if (vt < 80.0F * KNOTS_TO_FTPSEC && theta < 1.0F * DTR)
             {
@@ -1291,7 +1291,7 @@ float AirframeClass::CalculateVt(float dt)
         {
             FalconDamageMessage* message;
 
-            if ((groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER) && vt < 5.0F
+            if ((groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER) && vt < 5.0F
                 && !IsSet(OnObject))  // JB carrier
             {
                 // RV - Biker - Don't apply damage if we're in init
@@ -1303,8 +1303,8 @@ float AirframeClass::CalculateVt(float dt)
             }
             else if (
                 !IsSet(OnObject) && // JB carrier
-                (IsSet(GearBroken) || gearPos <= 0.3F || platform->platformAngles.cosphi < 0.9659F ||
-                 groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER)
+                (IsSet(GearBroken) or gearPos <= 0.3F or platform->platformAngles.cosphi < 0.9659F ||
+                 groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER)
             )
             {
                 int dmgStrength;
@@ -1329,7 +1329,7 @@ float AirframeClass::CalculateVt(float dt)
 
                 if (
                     !IsSet(OnObject) && ( // JB carrier
-                        groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER)
+                        groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER)
                 ) // JB carrier
                 {
                     for (int i = 0; i < NumGear(); i++)
@@ -1474,7 +1474,7 @@ float AirframeClass::CalculateVt(float dt)
                     else
                         dmg = 0.0F;
 
-                    if (theta <= 1.0F * DTR || which > 0)
+                    if (theta <= 1.0F * DTR or which > 0)
                     {
                         gear[which].strength -= dmg;
                     }
@@ -1764,7 +1764,7 @@ void AirframeClass::CheckGroundImpact(float dt)
             slice = 0.0F;
             pitch = 0.0F;
 
-            if (IsSet(GearBroken) || gearPos <= 0.1F)
+            if (IsSet(GearBroken) or gearPos <= 0.1F)
             {
                 // edg note: discovered a crash here.  I'm going to fix it elsewhere, but
                 // protect against it here.  The prob: aircraft is getting init'd, isn't
@@ -1844,7 +1844,7 @@ void AirframeClass::CheckGroundImpact(float dt)
                 float decelFactor = min(0.99F, (sinImpactAngle * 0.9F + impactAngle * 0.2F));
                 vt = max(0.001F, decelFactor * vt);
 
-                if (fabs(slice) > 0.6F || fabs(pitch) > 0.6F)
+                if (fabs(slice) > 0.6F or fabs(pitch) > 0.6F)
                 {
                     stallMode = Crashing;
 

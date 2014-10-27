@@ -193,7 +193,7 @@ void CommsErrorDialog(long TitleID, long MessageID, void (*OKCB)(long, short, C_
     C_Button *btn;
     C_Text *txt;
 
-    if (!MessageID || !gMainHandler)
+    if (!MessageID or !gMainHandler)
         return;
 
     win = gMainHandler->FindWindow(COMMLINK_WIN);
@@ -337,7 +337,7 @@ void CommsSetup()
 
 static void DisconnectCommsCB(long, short hittype, C_Base *)
 {
-    if ((hittype != C_TYPE_LMOUSEUP) || (!gCommsMgr->Online()))
+    if ((hittype != C_TYPE_LMOUSEUP) or (!gCommsMgr->Online()))
     {
         return;
     }
@@ -487,7 +487,7 @@ void ServerChatCommand(_TCHAR *msg)
         }
 
         // COBRA - RED - SFX Activating cheat '.sfx {SfxNr}'
-        if ((arga && argb && !stricmp(arga, ".sfx")) || (arga && !stricmp(arga, ".")))
+        if ((arga && argb && !stricmp(arga, ".sfx")) or (arga && !stricmp(arga, ".")))
         {
             static int sfx = 0;
             static float Dist = 300;
@@ -797,7 +797,7 @@ void BlinkCommsButtonTimerCB(long, short, C_Base *control)
 
     if (!gCommsMgr) return;
 
-    if (!gNewMessage || !gCommsMgr->Online()) return;
+    if (!gNewMessage or !gCommsMgr->Online()) return;
 
     btn = (C_Button *)control->Parent_->FindControl(CO_MAIN_CTRL);
 
@@ -1086,7 +1086,7 @@ void SendChatStringCB(long, short hittype, C_Base *control)
     C_Player *plyr;
     UI_SendChatMessage *chat;
 
-    if (hittype != DIK_RETURN || control == NULL || !gCommsMgr->Online())
+    if (hittype != DIK_RETURN or control == NULL or !gCommsMgr->Online())
         return;
 
     AddMessageToChatWindow(FalconLocalSessionId, ((C_EditBox *)control)->GetText());
@@ -1996,7 +1996,7 @@ void RemoveFromTree(C_TreeList *list, VU_ID ID)
 {
     TREELIST *item;
 
-    if (!list || ID == FalconNullId)
+    if (!list or ID == FalconNullId)
         return;
 
     item = StartTreeSearch(ID, list->GetRoot(), list);
@@ -2211,7 +2211,7 @@ void UI_UpdateGameList()
                 {
                     // if(game->Id() == q->GameID)
                     // RemovePlayerFromGame(q->SessionID);
-                    if (game->GetGameType() == game_Campaign || game->GetGameType() == game_TacticalEngagement)
+                    if (game->GetGameType() == game_Campaign or game->GetGameType() == game_TacticalEngagement)
                         TallyPlayerSquadrons();
 
                     // else if(game->GetGameType() == game_Dogfight)
@@ -2254,7 +2254,7 @@ static void PeopleSelectCB(long, short hittype, C_Base *)
     TREELIST *item;
     C_Player *player;
 
-    if (hittype != C_TYPE_LMOUSEUP || !People)
+    if (hittype != C_TYPE_LMOUSEUP or !People)
         return;
 
     item = People->GetLastItem();
@@ -2293,7 +2293,7 @@ static void SelectChatFilterCB(long, short hittype, C_Base *control)
 
 void UI_Refresh(void)
 {
-    if (!FalconLocalGame || !gCommsMgr || !gMainHandler)
+    if (!FalconLocalGame or !gCommsMgr or !gMainHandler)
     {
         return;
     }

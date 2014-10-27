@@ -1845,7 +1845,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
 
     for (i = 0; i < NUM_TEX_SHEETS; i++)
     {
-        if (i >= 0 && i < NUM_TEXTURES_USED || i >= 15 && i < 15 + NUM_TEXTURES_USED)
+        if (i >= 0 && i < NUM_TEXTURES_USED or i >= 15 && i < 15 + NUM_TEXTURES_USED)
         {
             sprintf(texfile, "bom00%02d.gif", i + 1);
 
@@ -2223,7 +2223,7 @@ void Drawable2D::ReleaseTexturesOnDevice(DXContext *rc)
     // release sheets
     for (i = 0; i < NUM_TEX_SHEETS; i++)
     {
-        if (i >= 0 && i < NUM_TEXTURES_USED || i >= 15 && i < 15 + NUM_TEXTURES_USED)
+        if (i >= 0 && i < NUM_TEXTURES_USED or i >= 15 && i < 15 + NUM_TEXTURES_USED)
         {
             gGlobTextures[i].FreeAll();
         }
@@ -2346,7 +2346,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
     {
         v0.a = alpha;
 
-        if (type == DRAW2D_SPARKS || type == DRAW2D_EXPLSTAR_GLOW)
+        if (type == DRAW2D_SPARKS or type == DRAW2D_EXPLSTAR_GLOW)
         {
             v0.r = 1.0f;
             v0.g = 1.0f;
@@ -2368,7 +2368,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
         }
 
 
-        if (type == DRAW2D_SPARKS || type == DRAW2D_EXPLSTAR_GLOW)
+        if (type == DRAW2D_SPARKS or type == DRAW2D_EXPLSTAR_GLOW)
         {
             v1.r = 1.0f;
             v1.g = 1.0f;
@@ -2770,7 +2770,7 @@ void Draw2DLensFlare(class RenderOTW *renderer)
 
 
     // If we're below the overcast layer, do not draw the lens flare.
-    if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) return;
+    if (realWeather->InsideOvercast() or realWeather->UnderOvercast()) return;
 
     // is there a sun, if not return
     if (!TheTimeOfDay.ThereIsASun()) return;
@@ -2839,7 +2839,7 @@ void Draw2DLensFlare(class RenderOTW *renderer)
 
 
 
-        if (j == 2 || j == 8 || j == 9)
+        if (j == 2 or j == 8 or j == 9)
         {
             v[0].pos.x = lensFlareVerts[0].x * radius * 0.8f;
             v[0].pos.y = lensFlareVerts[0].y * radius * 0.8f;
@@ -3229,7 +3229,7 @@ int Drawable2D::GetAnimFrame(int dT, DWORD start)
                         else
                             curBFrame = 6;
                     }
-                    else if (type == DRAW2D_FIRE4 || type == DRAW2D_FIRE1)
+                    else if (type == DRAW2D_FIRE4 or type == DRAW2D_FIRE1)
                     {
                         if (rand() & 1)
                             curBFrame = 10;
@@ -3346,7 +3346,7 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
         return;
 
     // hack to make long hanging smoke look better
-    if (type == DRAW2D_LONG_HANGING_SMOKE2 || type == DRAW2D_FIRE1)
+    if (type == DRAW2D_LONG_HANGING_SMOKE2 or type == DRAW2D_FIRE1)
     {
         scaleZ = 1.0f;
     }
@@ -3387,7 +3387,7 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
 
     // a nicer effect: put a point in the center of a square, make it
     // a dark alpha and have the edges fade to 0.  LOD this effect.
-    // doFivePoints = !(typeData.flags & NO_FIVE_POINTS ) && ( scaleZ * sLOD > 0.4f || type == DRAW2D_LONG_HANGING_SMOKE2 );
+    // doFivePoints = !(typeData.flags & NO_FIVE_POINTS ) && ( scaleZ * sLOD > 0.4f or type == DRAW2D_LONG_HANGING_SMOKE2 );
     doFivePoints = !(typeData.flags & NO_FIVE_POINTS);
 
     // setup rendering context
@@ -3413,7 +3413,7 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
 
     renderer->context.SetState(MPR_STA_ALPHA_OP_FUNCTION, MPR_TO_MODULATE); //JAM 18Oct03
 
-    if (type == DRAW2D_LONG_HANGING_SMOKE2 || type == DRAW2D_FIRE1)
+    if (type == DRAW2D_LONG_HANGING_SMOKE2 or type == DRAW2D_FIRE1)
         // numToPlot = (NUM_EXPLODE_SCATTER_POINTS);
         numToPlot = 1;
     else if (typeData.flags & FIRE_SCATTER_PLOT)
@@ -3521,30 +3521,30 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
         // we do our own clipping checks -- for now, any point not within
         // screen bounds, we toss the entire element
 
-        //if ( dl.x < left || dl.y < top || dl.x > right || dl.y > bottom )
+        //if ( dl.x < left or dl.y < top or dl.x > right or dl.y > bottom )
         // continue;
 
         v0.x = dl.x - elementR;
         v0.y = dl.y - elementR;
-        //if ( v0.x < left || v0.y < top || v0.x > right || v0.y > bottom )
+        //if ( v0.x < left or v0.y < top or v0.x > right or v0.y > bottom )
         // continue;
 
         v1.x = dl.x + elementR;
         v1.y = dl.y - elementR;
-        //if ( v1.x < left || v1.y < top || v1.x > right || v1.y > bottom )
+        //if ( v1.x < left or v1.y < top or v1.x > right or v1.y > bottom )
         // continue;
 
         v2.x = dl.x + elementR;
         v2.y = dl.y + elementR;
-        //if ( v2.x < left || v2.y < top || v2.x > right || v2.y > bottom )
+        //if ( v2.x < left or v2.y < top or v2.x > right or v2.y > bottom )
         // continue;
 
         v3.x = dl.x - elementR;
         v3.y = dl.y + elementR;
-        //if ( v3.x < left || v3.y < top || v3.x > right || v3.y > bottom )
+        //if ( v3.x < left or v3.y < top or v3.x > right or v3.y > bottom )
         // continue;
 
-        if (v2.x < left || v2.y < top || v0.x > right || v0.y > bottom)
+        if (v2.x < left or v2.y < top or v0.x > right or v0.y > bottom)
             continue;
 
         renderer->SetClipFlags(&v0);
@@ -3736,7 +3736,7 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
 
     // a nicer effect: put a point in the center of a square, make it
     // a dark alpha and have the edges fade to 0.  LOD this effect.
-    doFivePoints = (scaleZ * sLOD > 0.4f || type == DRAW2D_LONG_HANGING_SMOKE2);
+    doFivePoints = (scaleZ * sLOD > 0.4f or type == DRAW2D_LONG_HANGING_SMOKE2);
 
     // setup rendering context
     // if( renderer->GetAlphaMode() )
@@ -3881,31 +3881,31 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
 
         // we do our own clipping checks -- for now, any point not within
         // screen bounds, we toss the entire element
-        if (dl.x < left || dl.y < top || dl.x > right || dl.y > bottom)
+        if (dl.x < left or dl.y < top or dl.x > right or dl.y > bottom)
             continue;
 
         v0.x = dl.x - elementR;
         v0.y = dl.y - elementR;
 
-        if (v0.x < left || v0.y < top || v0.x > right || v0.y > bottom)
+        if (v0.x < left or v0.y < top or v0.x > right or v0.y > bottom)
             continue;
 
         v1.x = dl.x + elementR;
         v1.y = dl.y - elementR;
 
-        if (v1.x < left || v1.y < top || v1.x > right || v1.y > bottom)
+        if (v1.x < left or v1.y < top or v1.x > right or v1.y > bottom)
             continue;
 
         v2.x = dl.x + elementR;
         v2.y = dl.y + elementR;
 
-        if (v2.x < left || v2.y < top || v2.x > right || v2.y > bottom)
+        if (v2.x < left or v2.y < top or v2.x > right or v2.y > bottom)
             continue;
 
         v3.x = dl.x - elementR;
         v3.y = dl.y + elementR;
 
-        if (v3.x < left || v3.y < top || v3.x > right || v3.y > bottom)
+        if (v3.x < left or v3.y < top or v3.x > right or v3.y > bottom)
             continue;
 
         if (typeData.flags & ANIM_NO_CLAMP)
@@ -3916,7 +3916,7 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
             // rippling type explosions
             int texseq = curFrame - i;
 
-            if (texseq < 0 || texseq >= typeData.numTextures)
+            if (texseq < 0 or texseq >= typeData.numTextures)
                 continue;
 
             texseq += typeData.startTexture;

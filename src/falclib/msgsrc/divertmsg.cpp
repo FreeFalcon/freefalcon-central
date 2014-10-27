@@ -86,7 +86,7 @@ int FalconDivertMessage::Process(uchar autodisp)
     Flight flight = (Flight)FindUnit(EntityId());
     CampEntity target = NULL;
 
-    if (autodisp || !flight || !TheCampaign.IsLoaded())
+    if (autodisp or !flight or !TheCampaign.IsLoaded())
         return 0;
 
     if (dataBlock.mission > 0)
@@ -97,7 +97,7 @@ int FalconDivertMessage::Process(uchar autodisp)
         if (target && target->IsUnit() && ((Unit)target)->Father())
             target = ((Unit)target)->GetFirstUnitElement();
 
-        if ((!target || (target->IsUnit() && ((UnitClass*)target)->IsDead())) && dataBlock.mission > 0)
+        if ((!target or (target->IsUnit() && ((UnitClass*)target)->IsDead())) && dataBlock.mission > 0)
             return 0;
 
         // Set with new element's ID
@@ -148,7 +148,7 @@ int CheckDivertStatus(int reply)
 {
     if (!sNextRepost)
         return -1;
-    else if (sNextRepost < vuxGameTime || reply != DIVERT_NO_DIVERT)
+    else if (sNextRepost < vuxGameTime or reply != DIVERT_NO_DIVERT)
     {
         Flight flight = (Flight) vuDatabase->Find(sDivertFlight);
         CampEntity target = NULL;
@@ -162,7 +162,7 @@ int CheckDivertStatus(int reply)
         // Check for target viability
         target = (CampEntity)vuDatabase->Find(sLastDivert.dataBlock.targetID);
 
-        if (!target || (target->IsUnit() && (((Unit)target)->IsDead() || ((Unit)target)->Broken())))
+        if (!target or (target->IsUnit() && (((Unit)target)->IsDead() or ((Unit)target)->Broken())))
             return 0;
 
         if (flight != FalconLocalSession->GetPlayerFlight())
@@ -273,7 +273,7 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
             newTarget = 0;
     }
 
-    if (mission <= 0 || !target)
+    if (mission <= 0 or !target)
     {
         if (mission == DIVERT_DENIGNED)
             SendCallFromAwacs(flight, rcNOTASKING, to); // Divert denigned

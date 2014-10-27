@@ -145,7 +145,7 @@ void AirframeClass::Axial(float dt)
             platform->SoundPos.Sfx(auxaeroData->sndSpdBrakeLoop);
 
         //MI fix for "b" key
-        if ((dbrake == 1.0F || dbrake == 0) && speedBrake != 0 && BrakesToggle)
+        if ((dbrake == 1.0F or dbrake == 0) && speedBrake != 0 && BrakesToggle)
         {
             speedBrake = 0.0F;
             BrakesToggle = FALSE;

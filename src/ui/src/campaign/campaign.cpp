@@ -540,7 +540,7 @@ void CloseAWWWindowTimer(void)
     Flight interceptors = (Flight) vuDatabase->Find(gInterceptersId);
 
     // KCK: Close the window on timeout, interceptor death, or interceptor takeoff
-    if (gAWWTimeout < 0 || !interceptors) // || interceptors->Moving())
+    if (gAWWTimeout < 0 or !interceptors) // or interceptors->Moving())
     {
         Cancel_Scramble_CB(0, C_TYPE_LMOUSEUP, NULL);
     }
@@ -649,7 +649,7 @@ void Cancel_Scramble_CB(long, short hittype, C_Base *)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP || gOldCompressionRatio < 0)
+    if (hittype != C_TYPE_LMOUSEUP or gOldCompressionRatio < 0)
         return;
 
     win = gMainHandler->FindWindow(SCRAMBLE_WIN);
@@ -1183,7 +1183,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     // stop the time and let the camp priorities window pop up (in CAMPUI/CampJoin.cpp)
 
     if (FalconLocalGame->IsLocal() &&
-        (strcmp(gUI_CampaignFile, "save0") == 0 || strcmp(gUI_CampaignFile, "save1") == 0 || strcmp(gUI_CampaignFile, "save2") == 0) &&
+        (strcmp(gUI_CampaignFile, "save0") == 0 or strcmp(gUI_CampaignFile, "save1") == 0 or strcmp(gUI_CampaignFile, "save2") == 0) &&
         campaignStart) // fixes clock being set to "STOP" after a campaign mission
     {
         SetTimeCompression(0);
@@ -1610,7 +1610,7 @@ void CampaignListCB()
 
             if (flt)
             {
-                if (flt->GetTotalVehicles() < 1 || flt->IsDead())
+                if (flt->GetTotalVehicles() < 1 or flt->IsDead())
                 {
                     if (!gTimeModeServer && !g_bServer)
                     {
@@ -1658,7 +1658,7 @@ void TacEngListCB()
 
             if (flt)
             {
-                if (flt->GetTotalVehicles() < 1 || flt->IsDead())
+                if (flt->GetTotalVehicles() < 1 or flt->IsDead())
                 {
                     if (!gTimeModeServer && !g_bServer)
                     {
@@ -1739,7 +1739,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
     C_Button *btn;
 
     // Check for correct mouse click and campaign over state
-    if (hittype != C_TYPE_LMOUSEUP || TheCampaign.EndgameResult)
+    if (hittype != C_TYPE_LMOUSEUP or TheCampaign.EndgameResult)
         return;
 
     if (TheCampaign.EndgameResult)
@@ -1751,7 +1751,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
     fl = FalconLocalSession->GetPlayerFlight();
     pilotSlot = FalconLocalSession->GetPilotSlot();
 
-    if (!fl || pilotSlot == 255)
+    if (!fl or pilotSlot == 255)
     {
         // PETER TODO: Clear mission window's selection TOO!
         FalconLocalSession->SetPlayerFlight(NULL);

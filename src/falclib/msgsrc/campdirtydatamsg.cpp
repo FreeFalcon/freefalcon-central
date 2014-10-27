@@ -113,7 +113,7 @@ int CampDirtyData::Process(uchar autodisp)
 
     ent = (FalconEntity*) vuDatabase->Find(EntityId());
 
-    if (!ent || autodisp)
+    if (!ent or autodisp)
     {
         return 0;
     }

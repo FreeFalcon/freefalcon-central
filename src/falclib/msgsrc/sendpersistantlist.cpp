@@ -90,7 +90,7 @@ int FalconSendPersistantList::Process(uchar autodisp)
     VU_BYTE* buf;
     long rem;
 
-    if (autodisp || !TheCampaign.IsPreLoaded())
+    if (autodisp or !TheCampaign.IsPreLoaded())
         return -1;
 
     if (TheCampaign.Flags & CAMP_NEED_PERSIST)

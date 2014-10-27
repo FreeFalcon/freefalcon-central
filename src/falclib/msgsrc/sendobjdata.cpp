@@ -88,7 +88,7 @@ int FalconSendObjData::Process(uchar autodisp)
     uchar *bufptr;
     FalconSessionEntity *session = (FalconSessionEntity*) vuDatabase->Find(dataBlock.owner);
 
-    if (autodisp || !TheCampaign.IsPreLoaded() || !session)
+    if (autodisp or !TheCampaign.IsPreLoaded() or !session)
         return -1;
 
     if (TheCampaign.Flags & CAMP_NEED_OBJ_DELTAS)
@@ -229,7 +229,7 @@ void SendObjectiveDeltas(FalconSessionEntity *session, VuTargetEntity *target, u
             sizeleft -= gObjBlockSize;
         }
 
-        if (!blocksNeeded || !(blocksNeeded[curBlock / 8] & (1 << (curBlock % 8))))
+        if (!blocksNeeded or !(blocksNeeded[curBlock / 8] & (1 << (curBlock % 8))))
         {
             msg = new FalconSendObjData(session->Id(), target);
             msg->dataBlock.size = (short)blocksize;

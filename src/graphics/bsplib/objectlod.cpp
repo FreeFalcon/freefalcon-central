@@ -262,7 +262,7 @@ BOOL ObjectLOD::Fetch(void)
 
     // if object is on release do nothing
     // DO NOT RETURN A ROOT THAT MAY BE VANISHING, deleted by loader task
-    if (OnRelease || OnOrder) 
+    if (OnRelease or OnOrder) 
         return false;
 
     // If we already have our data
@@ -298,7 +298,7 @@ void ObjectLOD::Unload(void)
 
     // if nothing loaded or already on release, return
     // Have to modify this or nothing is going to be released since Root is always 0x0
-    if (!root || OnRelease) 
+    if (!root or OnRelease) 
         return;
 
     // Setup the Flag about Release
@@ -414,7 +414,7 @@ void ObjectLOD::Free(void)
 bool ObjectLOD::UpdateLods(void)
 {
 
-    while (LoadIn != LoadOut || ReleaseIn != ReleaseOut)
+    while (LoadIn != LoadOut or ReleaseIn != ReleaseOut)
     {
         // if something to Load
         if (LoadOut != LoadIn)

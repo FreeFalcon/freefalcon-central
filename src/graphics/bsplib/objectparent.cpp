@@ -261,7 +261,7 @@ void ObjectParent::ReadParentList(int file)
         }
 
         // Allocate and read this parent's slot and dynamic position array
-        if (objParent->nSlots || objParent->nDynamicCoords)
+        if (objParent->nSlots or objParent->nDynamicCoords)
         {
 
 #ifdef USE_SH_POOLS
@@ -353,7 +353,7 @@ void ObjectParent::FlushReferences(void)
     for (int i = 0; i < TheObjectListLength; i++)
     {
         // if any Ref still present, or locked, release WITH UNLOCK
-        if (TheObjectList[i].refCount || TheObjectList[i].Locked)
+        if (TheObjectList[i].refCount or TheObjectList[i].Locked)
         {
             TheObjectList[i].Release(true);
         }
@@ -503,7 +503,7 @@ ObjectLOD* ObjectParent::ChooseLOD(float range, int *used, float *max_range)
 
         LOD ++;
         record++;
-        ShiAssert(record == NULL || FALSE == F4IsBadReadPtr(record, sizeof * record));
+        ShiAssert(record == NULL or FALSE == F4IsBadReadPtr(record, sizeof * record));
     }
 
     // Return our final drawing candidate (if any)

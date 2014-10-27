@@ -859,7 +859,7 @@ uchar AssignUIImageID(uchar voice_id)
     static int lastm = 0, lastf = 0;
 
     // if women's voice...
-    if (voice_id == 4 || voice_id == 6)
+    if (voice_id == 4 or voice_id == 6)
     {
         res = static_cast<uchar>(lastf + 1);
         lastf = (lastf + 1) % MAX_FEMALE_PILOTS;

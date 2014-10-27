@@ -123,7 +123,7 @@ void DogfightClass::ApplySettings(void)
     int i;
 
     // KCK: Should this be done on the host only, or should everyone assume we have the same data?
-    // if (!FalconLocalGame || !FalconLocalGame->IsLocal())
+    // if (!FalconLocalGame or !FalconLocalGame->IsLocal())
     // return;
 
     if (!TheCampaign.IsLoaded())
@@ -401,7 +401,7 @@ int DogfightClass::ReadyToStart(void)
         }
 
         // Check for more than one team in team play
-        if (gameType == dog_Furball || numTeams > 1)
+        if (gameType == dog_Furball or numTeams > 1)
         {
             retval = TRUE;
         }
@@ -947,9 +947,9 @@ void DogfightClass::RegenerateAvailableAircraft(void)
             ShiAssert(theObject->IsLocal());
             restartIt = FALSE;
 
-            if (vuxGameTime > static_cast<VU_TIME>(theObject->timeOfDeath + REGEN_WAIT_TIME) || gameType == dog_TeamMatchplay)
+            if (vuxGameTime > static_cast<VU_TIME>(theObject->timeOfDeath + REGEN_WAIT_TIME) or gameType == dog_TeamMatchplay)
             {
-                if (theObject != FalconLocalSession->GetPlayerEntity() || IsSetLocalFlag(DF_PLAYER_REQ_REGEN) || gameType == dog_TeamMatchplay)
+                if (theObject != FalconLocalSession->GetPlayerEntity() or IsSetLocalFlag(DF_PLAYER_REQ_REGEN) or gameType == dog_TeamMatchplay)
                 {
                     msg = new FalconRegenerationMessage(theObject->Id(), FalconLocalGame);
                     msg->dataBlock.newx = startX;

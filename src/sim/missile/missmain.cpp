@@ -442,7 +442,7 @@ void MissileClass::Start(SimObjectType *tgt)
     // Marco Edit - actually - if it's boresighted or uncaged
     bool hasref = false; // JB 020109 CTD fix. Engage in safe referencing.  Shooting a breathing but unlocked Mav caused a CTD because DropTarget would delete the object that was later used.
 
-    if (!isSlave || !isCaged || tgt == NULL)// && sensorArray[0]->Type() == SensorClass::IRST) //me123 make sure only ir's are unchaged for now
+    if (!isSlave or !isCaged or tgt == NULL)// && sensorArray[0]->Type() == SensorClass::IRST) //me123 make sure only ir's are unchaged for now
     {
         tgt = targetPtr;
 
@@ -788,7 +788,7 @@ float MissileClass::GetRMax(float alt, float vt, float az, float targetVt, float
 
     ShiAssert(FALSE == F4IsBadReadPtr(rangeData, sizeof(rangeData)));
 
-    if (!rangeData || F4IsBadReadPtr(rangeData, sizeof(rangeData)))   //Wombat778 3-23-04  Added CTD check
+    if (!rangeData or F4IsBadReadPtr(rangeData, sizeof(rangeData)))   //Wombat778 3-23-04  Added CTD check
         // MLR 5/2/2004 - this bug was caused by heli brains firing the new rocket code.
         return 0.0F;
 
@@ -1158,7 +1158,7 @@ MissileClass::EndMissile(void)
     // (cause it hit a building or something silly like that)
 
     // 2002-03-28 MN if end message is ArmingDelay, don't apply damage at all
-    if (!(done == FalconMissileEndMessage::ArmingDelay) && inputData && (runTime > inputData->guidanceDelay || !parent->OnGround()))
+    if (!(done == FalconMissileEndMessage::ArmingDelay) && inputData && (runTime > inputData->guidanceDelay or !parent->OnGround()))
         ApplyProximityDamage();
 
     endMessage = new FalconMissileEndMessage(Id(), FalconLocalGame);
@@ -1212,7 +1212,7 @@ MissileClass::EndMissile(void)
     endMessage->dataBlock.zDelta    = ZDelta();
     endMessage->dataBlock.groundType    = -1;
 
-    if (done == FalconMissileEndMessage::GroundImpact || ZPos() > groundZ)
+    if (done == FalconMissileEndMessage::GroundImpact or ZPos() > groundZ)
     {
         endMessage->dataBlock.z  = groundZ;
         endMessage->dataBlock.groundType = (char)OTWDriver.GetGroundType(XPos(), YPos());
@@ -1275,7 +1275,7 @@ MissileClass::ApplyProximityDamage(void)
 
     // 2002-03-28 MN added BombImpact for "bomb-like" missiles (JSOW...)
     // RV - Biker - For AGMs we use FeatureImpact also
-    if (done == FalconMissileEndMessage::MissileKill || done == FalconMissileEndMessage::BombImpact || done == FalconMissileEndMessage::FeatureImpact)
+    if (done == FalconMissileEndMessage::MissileKill or done == FalconMissileEndMessage::BombImpact or done == FalconMissileEndMessage::FeatureImpact)
     {
         //TJ_Changes .... how about we check for another object in the vicinity and apply damage to that ?
         //Instead of just attacking object you are targeting we will now loop through all aircraft ....
@@ -1293,7 +1293,7 @@ MissileClass::ApplyProximityDamage(void)
          //TJ_changes
          //Only check against planes ....
          //removed this -> dont check against plane that we already were targeting that is handled abouve ... for now .. this could become only check
-         if ( !(testObject->IsAirplane())/* || targetPtr &&  ( targetPtr->BaseData()->Id() == testObject->Id() ) */ /* ) {
+         if ( !(testObject->IsAirplane())/* or targetPtr &&  ( targetPtr->BaseData()->Id() == testObject->Id() ) */ /* ) {
  testObject = (SimBaseClass*) objectWalker.GetNext();
  continue;
  }
@@ -1321,14 +1321,14 @@ MissileClass::ApplyProximityDamage(void)
         }
     }
 
-    if (done == FalconMissileEndMessage::GroundImpact || ZPos() > groundZ)
+    if (done == FalconMissileEndMessage::GroundImpact or ZPos() > groundZ)
     {
         int groundType;
 
         // check for water b4 placing crater
         groundType = OTWDriver.GetGroundType(XPos(), YPos());
 
-        if (!(groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER))
+        if (!(groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
         {
             AddToTimedPersistantList(VIS_CRATER2 + PRANDInt3(), Camp_GetCurrentTime() + CRATER_REMOVAL_TIME, XPos(), YPos());
 
@@ -1407,7 +1407,7 @@ MissileClass::ApplyProximityDamage(void)
                     // but we have got no missile kill or BombImpact -
                     // or the target can not be damaged by proximity damage
                     if (
-                        !targetPtr || testObject != targetPtr->BaseData() ||
+                        !targetPtr or testObject != targetPtr->BaseData() ||
                         (g_nMissileFix & 0x08) && testObject == targetPtr->BaseData() &&
                         done != FalconMissileEndMessage::MissileKill &&
                         done != FalconMissileEndMessage::BombImpact

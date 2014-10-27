@@ -26,7 +26,7 @@ void ICPClass::ExecFACKMode(void)
 
         faultCount = playerAC->mFaults->GetFFaultCount();
 
-        if (mUpdateFlags & FACK_UPDATE || (!(mUpdateFlags & FACK_UPDATE) && faultCount))
+        if (mUpdateFlags & FACK_UPDATE or (!(mUpdateFlags & FACK_UPDATE) && faultCount))
         {
 
             mUpdateFlags &= !FACK_UPDATE;
@@ -78,7 +78,7 @@ void ICPClass::ExecPfl()
 
     mUpdateFlags &= compl FACK_UPDATE; // we'll have updated.
 
-    if (m_FaultDisplay == false || !playerAC || !playerAC->mFaults)
+    if (m_FaultDisplay == false or !playerAC or !playerAC->mFaults)
         return; // nothing to show
 
     if (playerAC->mFaults->GetFFaultCount() <= 0)

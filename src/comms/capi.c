@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -72,7 +73,7 @@ int ComAPISend(com_API_handle c, int msgsize, int type)
     enter_cs();
 
     // sfr: another hack by JB...
-    isBad = F4IsBadReadPtrC(c, sizeof(ComAPI)) || F4IsBadCodePtrC((FARPROC)(*c->send_func));
+    isBad = F4IsBadReadPtrC(c, sizeof(ComAPI)) or F4IsBadCodePtrC((FARPROC)(*c->send_func));
 
     if (c && !isBad)
     {
@@ -162,7 +163,7 @@ int ComAPIGet(com_API_handle c)
     enter_cs();
 
     // sfr: another hack by JB...
-    isBad = c && (F4IsBadReadPtrC(c, sizeof(ComAPI)) || F4IsBadCodePtrC((FARPROC)(*c->recv_func)));
+    isBad = c && (F4IsBadReadPtrC(c, sizeof(ComAPI)) or F4IsBadCodePtrC((FARPROC)(*c->recv_func)));
 
     if (c && !isBad) // JB 010404 CTD
     {
@@ -243,7 +244,7 @@ char *ComAPIRecvBufferGet(com_API_handle c)
     enter_cs();
 
     // sfr: another hack by JB...
-    isBad = c && (F4IsBadReadPtrC(c, sizeof(ComAPI)) || F4IsBadCodePtrC((FARPROC)(*c->recv_buf_func)));
+    isBad = c && (F4IsBadReadPtrC(c, sizeof(ComAPI)) or F4IsBadCodePtrC((FARPROC)(*c->recv_buf_func)));
 
     if (c && !isBad)
     {
@@ -539,9 +540,9 @@ int com_API_private_IP(unsigned long ip)
     w = (ip & 0x000000FF);
 
     if (
-        ((x == 127) && (y == 0) && (z == 0) && (w == 1)) || // localhost
-        (x == 10) || // class A reserved
-        ((x == 172) && ((y >= 16) && (y < 31))) ||  // class B reserver
+        ((x == 127) && (y == 0) && (z == 0) && (w == 1)) or // localhost
+        (x == 10) or // class A reserved
+        ((x == 172) && ((y >= 16) && (y < 31))) or  // class B reserver
         ((x == 192) && (y == 168) && ((z >= 0) && (z < 255))) // class C reserved
     )
     {
@@ -557,7 +558,7 @@ long ComAPIGetIP(const char *address)
 {
     struct hostent *h = CAPI_gethostbyname(address);
 
-    if ((h == NULL) || (h->h_addr_list == NULL))
+    if ((h == NULL) or (h->h_addr_list == NULL))
     {
         return 0;
     }

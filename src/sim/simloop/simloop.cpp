@@ -344,7 +344,7 @@ void SimulationLoopControl::Loop(void)
 
         // Rebuild the bubble here
         if (
-            gRebuildBubbleNow || (
+            gRebuildBubbleNow or (
                 static_cast<CampaignTime>(vuxRealTime - lastBubbleTime) >
                 static_cast<CampaignTime>(BUBBLE_REBUILD_TIME * CampaignSeconds)
             )
@@ -387,7 +387,7 @@ void SimulationLoopControl::Loop(void)
 
         if (
             FalconLocalGame && (
-                ((vuPlayerPoolGroup) && (FalconLocalGame->Id() != vuPlayerPoolGroup->Id())) || !vuPlayerPoolGroup
+                ((vuPlayerPoolGroup) && (FalconLocalGame->Id() != vuPlayerPoolGroup->Id())) or !vuPlayerPoolGroup
             )
         )
         {
@@ -921,7 +921,7 @@ void SimulationLoopControl::StartLoop(void)
 
             // Dogfights have some special case start code -
             // i.e. For match play and instant entry
-            if (!SimDriver.RunningDogfight() || SimDogfight.GetGameType() != dog_TeamMatchplay)
+            if (!SimDriver.RunningDogfight() or SimDogfight.GetGameType() != dog_TeamMatchplay)
             {
                 GameManager.ReleasePlayer(FalconLocalSession);
             }

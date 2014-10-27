@@ -728,7 +728,7 @@ long F4SetVolume(int soundIdx, int Volume)
 // Volume is in dBs (-10000 -> 0)
 void F4SetGroupVolume(int group, int vol)
 {
-    if (group < 0 || group >= NUM_SOUND_GROUPS)
+    if (group < 0 or group >= NUM_SOUND_GROUPS)
         return;
 
     //gGroupMaxVols[ group ] = vol;
@@ -798,7 +798,7 @@ int F4SoundFXPlaying(int sfxId, int UID)
     ShiAssert(sfxId < NumSFX);
     ShiAssert(sfxId > 0);
 
-    if (sfxId <= 0 || sfxId >= NumSFX) return 0;
+    if (sfxId <= 0 or sfxId >= NumSFX) return 0;
 
     if (gSoundManagerRunning == FALSE) return 0;
 
@@ -1224,7 +1224,7 @@ BOOL WriteSFXTable(char *sndtable)
 {
     ShiAssert(FALSE == IsBadStringPtr(sndtable, _MAX_PATH));
 
-    if (BuiltinNSFX <= 0 || BuiltinSFX == NULL) return FALSE;
+    if (BuiltinNSFX <= 0 or BuiltinSFX == NULL) return FALSE;
 
     ShiAssert(FALSE == F4IsBadReadPtr(BuiltinSFX, sizeof(SFX_DEF) * BuiltinNSFX));
 
@@ -1490,7 +1490,7 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
     //Cobra Inhibit stuff?
     SFX_DEF_ENTRY *sfxp;
 
-    if (sfxId <= 0 || sfxId >= NumSFX) return;
+    if (sfxId <= 0 or sfxId >= NumSFX) return;
 
     sfxp = &SFX_DEF[ sfxId ];
 
@@ -1507,7 +1507,7 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
         {
             if (
                 OTWDriver.DisplayInCockpit() && playerAC->OnGround() ||
-                !playerAC->playBetty || !playerAC->IsSetFlag(MOTION_OWNSHIP)
+                !playerAC->playBetty or !playerAC->IsSetFlag(MOTION_OWNSHIP)
             )
             {
                 // MD -- 20031125: except if the MAL/IND test button is being pressed to test the warning sound
@@ -1559,7 +1559,7 @@ F4SoundFXPositionDriver(unsigned int begFrame, unsigned int endFrame)
     {
         lastPlayTime = vuxRealTime;
 
-        if (gSoundManagerRunning == FALSE || !SimDriver.InSim())
+        if (gSoundManagerRunning == FALSE or !SimDriver.InSim())
         {
             return;
         }
@@ -1794,7 +1794,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol)
     //Cobra Inhibit stuff?
     SFX_DEF_ENTRY *sfxp;
 
-    if (SfxID <= 0 || SfxID >= NumSFX) return;
+    if (SfxID <= 0 or SfxID >= NumSFX) return;
 
     sfxp = &SFX_DEF[ SfxID ];
 
@@ -1811,7 +1811,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol)
         {
             if (
                 OTWDriver.DisplayInCockpit() && playerAC->OnGround() ||
-                !playerAC->playBetty || !playerAC->IsSetFlag(MOTION_OWNSHIP)
+                !playerAC->playBetty or !playerAC->IsSetFlag(MOTION_OWNSHIP)
             )
             {
                 // MD -- 20031125: except if the MAL/IND test button is being pressed to test the warning sound

@@ -593,7 +593,7 @@ HRESULT WINAPI DirectVoiceClientMessageHandler(PVOID pvUserContext, DWORD dwMess
     {
         case DVMSGID_RECORDSTART:
         {
-            if (!OTWDriver.pCockpitManager || !OTWDriver.pCockpitManager->mpIcp) break;
+            if (!OTWDriver.pCockpitManager or !OTWDriver.pCockpitManager->mpIcp) break;
 
             if (g_itransmitfreq == 1)
             {
@@ -612,7 +612,7 @@ HRESULT WINAPI DirectVoiceClientMessageHandler(PVOID pvUserContext, DWORD dwMess
 
         case DVMSGID_RECORDSTOP:
         {
-            if (!OTWDriver.pCockpitManager || !OTWDriver.pCockpitManager->mpIcp) break;
+            if (!OTWDriver.pCockpitManager or !OTWDriver.pCockpitManager->mpIcp) break;
 
             OTWDriver.pCockpitManager->mpIcp->transmitingvoicecom1 = FALSE;
             OTWDriver.pCockpitManager->mpIcp->transmitingvoicecom2 = FALSE;
@@ -1426,7 +1426,7 @@ void CleanupDirectPlay()
 /*VOID DXUtil_ConvertWideStringToGeneric( TCHAR* tstrDestination, const WCHAR* wstrSource,
                                         int cchDestChar )
 {
-    if( tstrDestination==NULL || wstrSource==NULL )
+    if( tstrDestination==NULL or wstrSource==NULL )
         return;
 
 #ifdef _UNICODE
@@ -1441,7 +1441,7 @@ void CleanupDirectPlay()
 VOID DXUtil_ConvertWideStringToAnsi( CHAR* strDestination, const WCHAR* wstrSource,
                                      int cchDestChar )
 {
-    if( strDestination==NULL || wstrSource==NULL )
+    if( strDestination==NULL or wstrSource==NULL )
         return;
 
     if( cchDestChar == -1 )
@@ -1614,7 +1614,7 @@ void RefreshVoiceFreqs()
 
     if (g_bHost && !g_dpnidLocalPlayer) return;
 
-    if (!g_bHost && (g_afreqarrey.Freq[0][0] == 0 || g_afreqarrey.Freq[1][0] == 0 || g_afreqarrey.Freq[2][0] == 0)) return;
+    if (!g_bHost && (g_afreqarrey.Freq[0][0] == 0 or g_afreqarrey.Freq[1][0] == 0 or g_afreqarrey.Freq[2][0] == 0)) return;
 
     if (!g_afreqarrey.count && !init)
     {
@@ -2163,7 +2163,7 @@ void Transmit(int com)
     if (com == 0)
     {
         //DVID dvid = NULL;
-        if (!g_pVoiceClient || FAILED(g_pVoiceClient->SetTransmitTargets(0, 0, 0)))
+        if (!g_pVoiceClient or FAILED(g_pVoiceClient->SetTransmitTargets(0, 0, 0)))
         {
             MonoPrint("Failed SetTransmitTargets:  0x%X\n");
         }
@@ -2360,7 +2360,7 @@ start:
         unsigned long FreqVUID = strtoul(&str[0], &p, sizeof(long) * 8 + 1);
 
         //////////////////////////////
-        if (com1 == FreqVUID || com2 == FreqVUID || guard == FreqVUID)
+        if (com1 == FreqVUID or com2 == FreqVUID or guard == FreqVUID)
         {
             // Add player to this group
             DPNHANDLE hAsync;

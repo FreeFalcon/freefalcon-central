@@ -2,6 +2,7 @@
        John Robbins - Microsoft Systems Journal Bugslayer Column
 ----------------------------------------------------------------------*/
 
+#include <cISO646>
 #include "pch.h"
 #include "BugslayerUtil.h"
 
@@ -39,7 +40,7 @@ AllocAndFillProcessModuleList(HANDLE hHeap    ,
     ASSERT(TRUE == bRet) ;
     ASSERT(0 != uiQueryCount) ;
 
-    if ((FALSE == bRet) || (0 == uiQueryCount))
+    if ((FALSE == bRet) or (0 == uiQueryCount))
     {
         return (NULL) ;
     }

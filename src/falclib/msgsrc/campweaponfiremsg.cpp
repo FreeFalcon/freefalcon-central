@@ -172,7 +172,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     //sfr: again we cant use datablock directly
     VU_BYTE *data = dataBlock.data;
 
-    if (autodisp || !shooter || !target || !shooter->IsUnit())
+    if (autodisp or !shooter or !target or !shooter->IsUnit())
         return -1;
 
     if (!target->IsAggregate())
@@ -232,7 +232,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         }
 
         // Synthisize a shot message for flight shooters in our package
-        if (shooter->IsFlight() && (shooter->InPackage() || g_bLogEvents))
+        if (shooter->IsFlight() && (shooter->InPackage() or g_bLogEvents))
         {
             FalconWeaponsFire wfm(FalconNullId, FalconLocalSession);
             wfm.dataBlock.fCampID = shooter->GetCampID();
@@ -254,7 +254,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     }
 
     // Synthisize a death message if either shooter or target is in our package
-    if (shooter->InPackage() || target->InPackage())
+    if (shooter->InPackage() or target->InPackage())
     {
         dtm = new FalconDeathMessage(FalconNullId, FalconLocalSession);
         dtm->dataBlock.damageType = 0;
@@ -290,7 +290,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         PSvec.z = 0;
 
         // ground losses
-        if (target->IsBattalion() || target->IsObjective())
+        if (target->IsBattalion() or target->IsObjective())
         {
             pos.z = 40.0f;
 
@@ -480,7 +480,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         else
         {
             // Ground engagement (artillery or regular)
-            if (shooter->GetSType() == STYPE_UNIT_ROCKET || shooter->GetSType() == STYPE_UNIT_SP_ARTILLERY || shooter->GetSType() == STYPE_UNIT_TOWED_ARTILLERY)
+            if (shooter->GetSType() == STYPE_UNIT_ROCKET or shooter->GetSType() == STYPE_UNIT_SP_ARTILLERY or shooter->GetSType() == STYPE_UNIT_TOWED_ARTILLERY)
                 newEvent->dataBlock.data.formatId = 1807;
             else
                 newEvent->dataBlock.data.formatId = 1800;
@@ -911,7 +911,7 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
                                               &pos,
                                               &PSvec);
     }
-    else if (stype == STYPE_ARTILLERY || stype == STYPE_MORTAR)
+    else if (stype == STYPE_ARTILLERY or stype == STYPE_MORTAR)
     {
         if (shortDist == FALSE)
             /*
@@ -935,7 +935,7 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
                                               &pos,
                                               &PSvec);
     }
-    else if (stype == STYPE_GUN || stype == STYPE_SMALLARMS)
+    else if (stype == STYPE_GUN or stype == STYPE_SMALLARMS)
     {
         if (shortDist == FALSE)
             /*
@@ -959,7 +959,7 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
                                               &pos,
                                               &PSvec);
     }
-    else if (stype == STYPE_ROCKET || stype == STYPE_MISSILE_SURF_SURF)
+    else if (stype == STYPE_ROCKET or stype == STYPE_MISSILE_SURF_SURF)
     {
         if (shortDist == FALSE)
             /*
@@ -983,7 +983,7 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
                                                   &pos,
                                                   &PSvec);
     }
-    else if (stype == STYPE_MISSILE_AIR_AIR || stype == STYPE_MISSILE_AIR_GROUND || stype == STYPE_MISSILE_ANTI_SHIP)
+    else if (stype == STYPE_MISSILE_AIR_AIR or stype == STYPE_MISSILE_AIR_GROUND or stype == STYPE_MISSILE_ANTI_SHIP)
     {
         // Add missile trail
         /*
@@ -1066,7 +1066,7 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
                                                   &pos,
                                                   &PSvec);
     }
-    else if (stype == STYPE_BOMB || stype == STYPE_BOMB_GUIDED || stype == STYPE_BOMB_IRON || stype == STYPE_ROCKET || stype == STYPE_BOMB_GPS) //MI added GPS
+    else if (stype == STYPE_BOMB or stype == STYPE_BOMB_GUIDED or stype == STYPE_BOMB_IRON or stype == STYPE_ROCKET or stype == STYPE_BOMB_GPS) //MI added GPS
     {
         /*
         OTWDriver.AddSfxRequest( new SfxClass( SFX_DIST_GROUNDBURSTS,
@@ -1165,7 +1165,7 @@ void DoShortDistanceVisualEffects(CampEntity shooter, CampEntity target, int wea
         endMessage->dataBlock.zDelta = 0.0f;
 
         // if target is on the ground get ground level and type
-        if (target->IsBattalion() || itsaBomb)
+        if (target->IsBattalion() or itsaBomb)
         {
             endMessage->dataBlock.x = target->XPos() + 700.0f * PRANDFloat();
             endMessage->dataBlock.y = target->YPos() + 700.0f * PRANDFloat();

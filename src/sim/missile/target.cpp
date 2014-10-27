@@ -54,8 +54,8 @@ void MissileClass::SetTarget(SimObjectType* newTarget)
         return;
 
 
-    ShiAssert(!newTarget || newTarget->BaseData() != (FalconEntity*)0xDDDDDDDD);
-    ShiAssert(!targetPtr || targetPtr->BaseData() != (FalconEntity*)0xDDDDDDDD);
+    ShiAssert(!newTarget or newTarget->BaseData() != (FalconEntity*)0xDDDDDDDD);
+    ShiAssert(!targetPtr or targetPtr->BaseData() != (FalconEntity*)0xDDDDDDDD);
 
 
     if (targetPtr)
@@ -65,13 +65,13 @@ void MissileClass::SetTarget(SimObjectType* newTarget)
     }
 
 
-    ShiAssert(!newTarget || newTarget->BaseData() != (FalconEntity*)0xDDDDDDDD);
-    ShiAssert(!targetPtr || targetPtr->BaseData() != (FalconEntity*)0xDDDDDDDD);
+    ShiAssert(!newTarget or newTarget->BaseData() != (FalconEntity*)0xDDDDDDDD);
+    ShiAssert(!targetPtr or targetPtr->BaseData() != (FalconEntity*)0xDDDDDDDD);
 
 
     if (newTarget)
     {
-        if (launchState == Launching || launchState == InFlight)
+        if (launchState == Launching or launchState == InFlight)
         {
             // We need to copy the data if this missile is on it's own.
             rdrDetect = newTarget->localData->rdrDetect;

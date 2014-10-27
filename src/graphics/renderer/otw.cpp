@@ -1405,7 +1405,7 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
 
         // COBRA - RED - Only this is good...just do nothing is false
         //JAM 13Nov03
-        if ((realWeather->weatherCondition <= FAIR) || (viewpoint->Z() > realWeather->MidOvercast))
+        if ((realWeather->weatherCondition <= FAIR) or (viewpoint->Z() > realWeather->MidOvercast))
             // If we're above the overcast layer, ground objects are not visible.
             objectList->DrawBeyond(LEVEL_POST_TO_WORLD(span->ring, span->LOD), span->LOD, this);
 
@@ -1704,7 +1704,7 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
         if (realWeather->weatherCondition > FAIR)
         {
             // if we are lower than overcast layer upper limit, enable Fog...
-            if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) TheDXEngine.LinearFog(true);
+            if (realWeather->InsideOvercast() or realWeather->UnderOvercast()) TheDXEngine.LinearFog(true);
 
             // if we are upper the middle of layer, do not draw grounded objects
             if (viewpoint->Z() < realWeather->MidOvercast)
@@ -1825,7 +1825,7 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
         }
 
         // if we are lower than overcast layer upper limit, enable Fog...
-        if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) TheDXEngine.LinearFog(true);
+        if (realWeather->InsideOvercast() or realWeather->UnderOvercast()) TheDXEngine.LinearFog(true);
 
         // if we are upper the middle of layer, do not draw grounded objects
         if (viewpoint->Z() < realWeather->MidOvercast)

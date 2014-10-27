@@ -289,7 +289,7 @@ void O_Output::WordWrap()
             count++;
             idx += len;
 
-            while (Label_[idx] == ' ' || Label_[idx] == '\n') // 2002-02-24 MODIFIED BY S.G. Skip '\n' as well since these will 'terminate' word wrapped line (like they should) and need to be skipped for the next one
+            while (Label_[idx] == ' ' or Label_[idx] == '\n') // 2002-02-24 MODIFIED BY S.G. Skip '\n' as well since these will 'terminate' word wrapped line (like they should) and need to be skipped for the next one
                 idx++;
 
             len = FitString(idx);
@@ -1387,7 +1387,7 @@ void O_Output::Extract16BitRLE(SCREEN *surface, long FrameNo, long destx, long d
                 dy += count;
             }
 
-            if (dy >= clip->bottom || dy >= surface->height)
+            if (dy >= clip->bottom or dy >= surface->height)
                 done = 1;
         }
     }

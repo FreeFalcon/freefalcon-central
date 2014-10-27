@@ -319,7 +319,7 @@ void C_Victory::SetXYWH(long x, long y, long w, long h)
 
 void C_Victory::Refresh()
 {
-    if (!Ready() || Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
@@ -327,7 +327,7 @@ void C_Victory::Refresh()
 
 void C_Victory::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Number_)
@@ -348,7 +348,7 @@ void C_Victory::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Points_)
         Points_->Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 

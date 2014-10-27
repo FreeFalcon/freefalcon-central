@@ -315,7 +315,7 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
                 else
                     display->SetColor(GetMfdColor(MFD_GREEN));
 
-                if (playerAC->FCC->designateCmd || IsLocked())
+                if (playerAC->FCC->designateCmd or IsLocked())
                     DrawBox(display);
             }
         }
@@ -447,7 +447,7 @@ int LaserPodClass::SetDesiredSeekerPos(float* az, float* el)
 
     //MI original code
     // Looking down or left your total angle is limited to 160 Degrees
-    if (*el < 5.0F * DTR || *az < 5.0F * DTR)
+    if (*el < 5.0F * DTR or *az < 5.0F * DTR)
     {
         tmp = (float)(cos(*az) * cos(*el));
         totalAngle = (float)atan2(sqrt(1 - tmp * tmp), tmp);
@@ -478,7 +478,7 @@ int LaserPodClass::SetDesiredSeekerPos(float* az, float* el)
     if (!g_bRP5Comp)
     {
         // Looking down or left/right your total angle is limited to 150 Degrees
-        if (*el < 35.0F * DTR || *az > 5.0F * DTR)
+        if (*el < 35.0F * DTR or *az > 5.0F * DTR)
         {
             tmp = (float)(cos(*az) * cos(*el));
             totalAngle = (float)atan2(sqrt(1 - tmp * tmp), tmp);
@@ -523,7 +523,7 @@ int LaserPodClass::SetDesiredSeekerPos(float* az, float* el)
         else
         {
             // If we're limited on the azimuth, simulate the pod looking back and limited at -150 degrees elevation)
-            if (*az > 150.0f * DTR || *az < -150.0f * DTR)
+            if (*az > 150.0f * DTR or *az < -150.0f * DTR)
             {
                 if (*el > -30.f * DTR)
                 {

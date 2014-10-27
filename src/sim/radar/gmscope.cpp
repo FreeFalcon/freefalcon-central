@@ -124,7 +124,7 @@ int RadarDopplerClass::InitialGroundContactTest(
             dy = trig.sin * x + trig.cos * y;
 
             // Check Angle off nose
-            if ((dy > 0.0F && dx > 0.5F *  dy) ||  // Right side of nose
+            if ((dy > 0.0F && dx > 0.5F *  dy) or  // Right side of nose
                 (dy < 0.0F && dx > 0.5F * -dy)   // Left side of nose
                )
             {
@@ -495,7 +495,7 @@ void RadarDopplerClass::GMMode(void)
         {
             DoGMDesignate(GMFeatureListRoot);
         }
-        else if (mode == GMT || mode == SEA)
+        else if (mode == GMT or mode == SEA)
         {
             DoGMDesignate(GMMoverListRoot);
         }
@@ -632,7 +632,7 @@ void RadarDopplerClass::SetAimPoint(float xCmd, float yCmd)
     if (
         (IsSOI() && !lockedTarget) ||
         (
-            ((laserPod && laserPod->IsSOI()) || (mavDisplay && mavDisplay->IsSOI())) &&
+            ((laserPod && laserPod->IsSOI()) or (mavDisplay && mavDisplay->IsSOI())) &&
             pac && pac->FCC && pac->FCC->preDesignate
         ) ||
         (pac->FCC->GetSubMode() == FireControlComputer::CCRP)
@@ -640,7 +640,7 @@ void RadarDopplerClass::SetAimPoint(float xCmd, float yCmd)
     {
         //MI better cursor control
         // MD -- 20040215: the cursor doesn't move in SP until you are ground stabilized
-        if ((xCmd != 0.0F || yCmd != 0.0F) && ((!IsSet(SP)) || (IsSet(SP) && IsSet(SP_STAB))))
+        if ((xCmd != 0.0F or yCmd != 0.0F) && ((!IsSet(SP)) or (IsSet(SP) && IsSet(SP_STAB))))
         {
             float CursorSpeed = g_fCursorSpeed;
 
@@ -667,7 +667,7 @@ void RadarDopplerClass::SetAimPoint(float xCmd, float yCmd)
         }
         else
         {
-            if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == false) || (IO.AnalogIsUsed(AXIS_CURSOR_Y) == false))
+            if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == false) or (IO.AnalogIsUsed(AXIS_CURSOR_Y) == false))
                 curCursorRate = CursorRate;
 
             //TJL 11/19/03
@@ -853,7 +853,7 @@ int RadarDopplerClass::CheckGMBump(void)
     // position as an additional multiplier.  Also, the bump does not happen if the radar is frozen
     // or if the cursors are in motion or of course if the MAN range function is set.
 
-    if (IsSet(FZ) || IsSet(WasMoving) || (!IsSet(AutoAGRange)))
+    if (IsSet(FZ) or IsSet(WasMoving) or (!IsSet(AutoAGRange)))
         return rangeChangeCmd;
 
     float x = (GMat.x + viewOffsetInertial.x) - platform->XPos();
@@ -887,7 +887,7 @@ int RadarDopplerClass::CheckGMBump(void)
     }
 
     // Max range available
-    if (flags & (DBS1 | DBS2) || mode == GMT || mode == SEA)
+    if (flags & (DBS1 | DBS2) or mode == GMT or mode == SEA)
     {
         maxIdx = NUM_RANGES - 2;
     }
@@ -911,7 +911,7 @@ void RadarDopplerClass::AdjustGMOffset(int rangeChangeCmd)
         //MI
         if (g_bRealisticAvionics && g_bAGRadarFixes)
         {
-            if (mode == GM || mode == SEA)
+            if (mode == GM or mode == SEA)
             {
                 if (gmRangeIdx >= 4)
                     return;
@@ -964,7 +964,7 @@ void RadarDopplerClass::RestoreAGCursor()
     // now check if steerpoint position is off of the current radar range, and adjust it appropriately
     // only in NORM mode and STP mode
     // MD -- 20040229: and make this adjustment if we are ground stabilized in SP mode as well
-    if ((flags & NORM) && ((!(flags & SP)) || (IsSet(SP) && IsSet(SP_STAB))))
+    if ((flags & NORM) && ((!(flags & SP)) or (IsSet(SP) && IsSet(SP_STAB))))
     {
         // Distance to GMat, only x and y
         float dx, dy, dist, dispRange;
@@ -988,7 +988,7 @@ void RadarDopplerClass::RestoreAGCursor()
         int maxIdx;
 
         // Reuse current range, within limits of course
-        if (flags & (DBS1 | DBS2) || mode == GMT || mode == SEA)
+        if (flags & (DBS1 | DBS2) or mode == GMT or mode == SEA)
         {
             maxIdx = NUM_RANGES - 3;
         }
@@ -1039,11 +1039,11 @@ void RadarDopplerClass::SetGMScan(void)
 
         //azScan = 60.0F * DTR; // Radar still scans full volume, but only displays a subset...
         //MI az is set thru the OSB now
-        if (!g_bRealisticAvionics || !g_bAGRadarFixes)
+        if (!g_bRealisticAvionics or !g_bAGRadarFixes)
             azScan = 60.0F * DTR;
         else if (g_bRealisticAvionics && g_bAGRadarFixes)
         {
-            if (mode == GM || mode == SEA)
+            if (mode == GM or mode == SEA)
                 curAzIdx = gmAzIdx;
             else
                 curAzIdx = gmtAzIdx;
@@ -1067,11 +1067,11 @@ void RadarDopplerClass::SetGMScan(void)
         //   azScan = atan2( TwoRootTwo*groundMapRange, distance from platform to GMat );
         //azScan = 15.0F * DTR;
         //MI az is set thru the OSB now
-        if (!g_bRealisticAvionics || !g_bAGRadarFixes)
+        if (!g_bRealisticAvionics or !g_bAGRadarFixes)
             azScan = 15.0F * DTR;
         else if (g_bRealisticAvionics && g_bAGRadarFixes)
         {
-            if (mode == GM || mode == SEA)
+            if (mode == GM or mode == SEA)
                 curAzIdx = gmAzIdx;
             else
                 curAzIdx = gmtAzIdx;
@@ -1100,11 +1100,11 @@ void RadarDopplerClass::SetGMScan(void)
         //   azScan = atan2( TwoRootTwo*groundMapRange, distance from platform to GMat );
         //azScan = 5.0F * DTR;
         //MI az is set thru the OSB now
-        if (!g_bRealisticAvionics || !g_bAGRadarFixes)
+        if (!g_bRealisticAvionics or !g_bAGRadarFixes)
             azScan = 5.0F * DTR;
         else if (g_bRealisticAvionics && g_bAGRadarFixes)
         {
-            if (mode == GM || mode == SEA)
+            if (mode == GM or mode == SEA)
                 curAzIdx = gmAzIdx;
             else
                 curAzIdx = gmtAzIdx;
@@ -1127,11 +1127,11 @@ void RadarDopplerClass::SetGMScan(void)
         }
 
         //MI az is set thru the OSB now
-        if (!g_bRealisticAvionics || !g_bAGRadarFixes)
+        if (!g_bRealisticAvionics or !g_bAGRadarFixes)
             azScan = MAX_ANT_EL;
         else if (g_bRealisticAvionics && g_bAGRadarFixes)
         {
-            if (mode == GM || mode == SEA)
+            if (mode == GM or mode == SEA)
                 curAzIdx = gmAzIdx;
             else
                 curAzIdx = gmtAzIdx;
@@ -1163,7 +1163,7 @@ void RadarDopplerClass::SetGMScan(void)
 
         // ((RenderGMComposite*)privateDisplay)->SetGimbalLimit( azScan );
         //MI take the azimuth we've selected thru the OSB
-        if (!g_bRealisticAvionics || !g_bAGRadarFixes)
+        if (!g_bRealisticAvionics or !g_bAGRadarFixes)
             ((RenderGMComposite*)privateDisplay)->SetGimbalLimit(MAX_ANT_EL);
         else
             ((RenderGMComposite*)privateDisplay)->SetGimbalLimit(azScan);
@@ -1339,7 +1339,7 @@ void RadarDopplerClass::GMDisplay(void)
     if (fabs(seekerAzCenter) > MAX_ANT_EL)
     {
         //MI why would we want to do this?
-        if (!g_bRealisticAvionics || !g_bAGRadarFixes)
+        if (!g_bRealisticAvionics or !g_bAGRadarFixes)
         {
             viewOffsetRel.x = 0.0F;
             viewOffsetRel.y = 0.0F;
@@ -1393,7 +1393,7 @@ void RadarDopplerClass::GMDisplay(void)
                     curgain = 1;
 
                 //MI
-                if (!g_bRealisticAvionics || !g_bAGRadarFixes)
+                if (!g_bRealisticAvionics or !g_bAGRadarFixes)
                     ((RenderGMComposite*)display)->SetGain(((RenderGMComposite*)display)->GetGain()*gainCmd);
                 else
                     ((RenderGMComposite*)display)->SetGain(curgain);
@@ -1803,7 +1803,7 @@ void RadarDopplerClass::GMDisplay(void)
             if (flags & NORM)
             {
                 //MI
-                if (!g_bRealisticAvionics || !g_bAGRadarFixes)
+                if (!g_bRealisticAvionics or !g_bAGRadarFixes)
                     LabelButton(2, "NRM");
                 else
                     LabelButton(2, "NORM");
@@ -1868,7 +1868,7 @@ void RadarDopplerClass::GMDisplay(void)
     // MD --20040306: Adding the TTG display for when you have GM STP mode or SP mode with a ground
     // stabilized cursor position
 
-    if (SimDriver.GetPlayerAircraft() && (!IsSet(SP) || (IsSet(SP) && IsSet(SP_STAB))))
+    if (SimDriver.GetPlayerAircraft() && (!IsSet(SP) or (IsSet(SP) && IsSet(SP_STAB))))
     {
         char tmpStr[24];
         float ttg = 0.0F;
@@ -2042,7 +2042,7 @@ void RadarDopplerClass::AddTargetReturns(RenderGMRadar* renderer, bool Shaping)
         ry /= groundMapRange;
 
         // Check for scan width NOTE 0.57 = tan(30) (90.0 - the azimuth limit)
-        if ((ry + 1.0F) / (F_ABS(rx) + 0.001F) > 0.57F || F_ABS(rx) > 1.0F)
+        if ((ry + 1.0F) / (F_ABS(rx) + 0.001F) > 0.57F or F_ABS(rx) > 1.0F)
         {
             if (curNode->Object()->IsSim() && ((SimBaseClass*)curNode->Object())->IsAwake())
             {
@@ -2157,7 +2157,7 @@ void RadarDopplerClass::AddTargetReturnsOldStyle(GMList* curNode)
         ry /= groundMapRange;
 
         // Check for scan width NOTE 0.57 = tan(30) (90.0 - the azimuth limit)
-        if ((ry + 1.0F) / (F_ABS(rx) + 0.001F) > 0.57F || F_ABS(rx) > 1.0F)
+        if ((ry + 1.0F) / (F_ABS(rx) + 0.001F) > 0.57F or F_ABS(rx) > 1.0F)
         {
             //MI
             if (g_bRealisticAvionics && g_bAGRadarFixes)
@@ -2468,7 +2468,7 @@ int RadarDopplerClass::IsAG(void)
 {
     int retval;
 
-    if (mode == GM || mode == GMT || mode == SEA)
+    if (mode == GM or mode == GMT or mode == SEA)
         // 2000-10-04 MODIFIED BY S.G. NEED TO KNOW WHICH MODE WE ARE IN
         //    retval = TRUE;
         retval = mode;
@@ -2670,7 +2670,7 @@ void RadarDopplerClass::GMMode(void)
                                 if (walker == &objectWalker)
                                 {
                                     // 2002-04-03 MN removed IsBattalion check, added Drawable::Guys here
-                                    if (testFeature->GetVt() > 1.0F || /*testFeature->IsBattalion()*/
+                                    if (testFeature->GetVt() > 1.0F or /*testFeature->IsBattalion()*/
                                         ((SimBaseClass*)testFeature)->drawPointer &&
                                         ((SimBaseClass*)testFeature)->drawPointer->GetClass() == DrawableObject::Guys)
                                     {
@@ -2746,7 +2746,7 @@ void RadarDopplerClass::GMMode(void)
 
                     // Check Angle off nose
                     if (
-                        (dy > 0.0F && dx > 0.5F * dy) || // Right side of nose
+                        (dy > 0.0F && dx > 0.5F * dy) or // Right side of nose
                         (dy < 0.0F && dx > 0.5F * -dy)   // Left side of nose
                     )
                     {
@@ -2847,7 +2847,7 @@ void RadarDopplerClass::GMMode(void)
                                 //bool here = true;
                                 //float speed = testFeature->GetVt();
                                 // 2002-04-03 MN removed IsBattalion check, added Drawable::Guys here and IsSim() check - don't do simbase stuff on campaign objects
-                                if (testFeature->GetVt() > g_fGMTMinSpeed || /*testFeature->IsBattalion()*/
+                                if (testFeature->GetVt() > g_fGMTMinSpeed or /*testFeature->IsBattalion()*/
                                     testFeature->IsSim() &&
                                     ((SimBaseClass*)testFeature)->drawPointer &&
                                     ((SimBaseClass*)testFeature)->drawPointer->GetClass() == DrawableObject::Guys)
@@ -2974,7 +2974,7 @@ void RadarDopplerClass::GMMode(void)
                                 if (walker == &objectWalker)
                                 {
                                     // 2002-04-03 MN removed IsBattalion check, added Drawable::Guys here
-                                    if (testFeature->GetVt() > 1.0F || /*testFeature->IsBattalion()*/
+                                    if (testFeature->GetVt() > 1.0F or /*testFeature->IsBattalion()*/
                                         ((SimBaseClass*)testFeature)->drawPointer &&
                                         ((SimBaseClass*)testFeature)->drawPointer->GetClass() == DrawableObject::Guys)
                                     {
@@ -3050,7 +3050,7 @@ void RadarDopplerClass::GMMode(void)
 
                     // Check Angle off nose
                     if (
-                        (dy > 0.0F && dx > 0.5F * dy) || // Right side of nose
+                        (dy > 0.0F && dx > 0.5F * dy) or // Right side of nose
                         (dy < 0.0F && dx > 0.5F * -dy)   // Left side of nose
                     )
                     {
@@ -3151,7 +3151,7 @@ void RadarDopplerClass::GMMode(void)
                                 //bool here = true;
                                 //float speed = testFeature->GetVt();
                                 // 2002-04-03 MN removed IsBattalion check, added Drawable::Guys here and IsSim() check - don't do simbase stuff on campaign objects
-                                if (testFeature->GetVt() > g_fGMTMinSpeed || /*testFeature->IsBattalion()*/
+                                if (testFeature->GetVt() > g_fGMTMinSpeed or /*testFeature->IsBattalion()*/
                                     testFeature->IsSim() &&
                                     ((SimBaseClass*)testFeature)->drawPointer &&
                                     ((SimBaseClass*)testFeature)->drawPointer->GetClass() == DrawableObject::Guys)
@@ -3390,7 +3390,7 @@ void RadarDopplerClass::GMMode(void)
                         dy = trig.sin * x + trig.cos * y;
 
                         // Check Angle off nose
-                        if ((dy > 0.0F && dx > 0.5F * dy) || // Right side of nose
+                        if ((dy > 0.0F && dx > 0.5F * dy) or // Right side of nose
                             (dy < 0.0F && dx > 0.5F * -dy))   // Left side of nose
                         {
                             // Actual LOS
@@ -3605,7 +3605,7 @@ void RadarDopplerClass::GMMode(void)
         {
             DoGMDesignate(GMFeatureListRoot);
         }
-        else if (mode == GMT || mode == SEA)
+        else if (mode == GMT or mode == SEA)
         {
             DoGMDesignate(GMMoverListRoot);
         }

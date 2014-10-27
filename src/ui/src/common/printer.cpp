@@ -20,7 +20,7 @@ SendStringToPrinter(_TCHAR *string, _TCHAR *title)
     ShiAssert(IsBadStringPtr(string, 8192) == 0);
     ShiAssert(IsBadStringPtr(title, 1024) == 0);
 
-    if ((g_nPrintToFile & 0x03) || g_bBriefHTML) // 0x01 + 0x02 means write to file ...and to it anyway if html is wanted
+    if ((g_nPrintToFile & 0x03) or g_bBriefHTML) // 0x01 + 0x02 means write to file ...and to it anyway if html is wanted
     {
         char filename[_MAX_PATH];
 
@@ -33,9 +33,9 @@ SendStringToPrinter(_TCHAR *string, _TCHAR *title)
         return 1;
     }
 
-    // if (!g_nPrintToFile || g_nPrintToFile & 0x02) // 0x00 + 0x02 means print out
+    // if (!g_nPrintToFile or g_nPrintToFile & 0x02) // 0x00 + 0x02 means print out
     //THW 2004-04-12 Never print out if HTML-Briefings are enabled
-    if (!g_bBriefHTML || !g_nPrintToFile || (g_nPrintToFile & 0x02)) // 0x00 + 0x02 means print out
+    if (!g_bBriefHTML or !g_nPrintToFile or (g_nPrintToFile & 0x02)) // 0x00 + 0x02 means print out
     {
         CoInitialize(NULL);
         ComSup::RegisterServer("GMPrint.dll");

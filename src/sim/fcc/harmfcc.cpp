@@ -34,7 +34,7 @@ void FireControlComputer::HarmMode(void)
         if (designateCmd && !lastDesignate)
         {
             // In POS mode the Lock is done via WPN OSBs
-            if (theHTS->GetSubMode() == HarmTargetingPod::HAS || theHTS->GetSubMode() == HarmTargetingPod::HAD)
+            if (theHTS->GetSubMode() == HarmTargetingPod::HAS or theHTS->GetSubMode() == HarmTargetingPod::HAD)
             {
                 theHTS->LockTargetUnderCursor();
             }
@@ -56,7 +56,7 @@ void FireControlComputer::HarmMode(void)
 
         if (theHTS->CurrentTarget())
         {
-            if (!targetPtr || targetPtr->BaseData() != theHTS->CurrentTarget()->BaseData())
+            if (!targetPtr or targetPtr->BaseData() != theHTS->CurrentTarget()->BaseData())
             {
                 SetTarget(theHTS->CurrentTarget());
             }

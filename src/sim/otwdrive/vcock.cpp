@@ -138,7 +138,7 @@ void OTWDriverClass::VCock_CheckStopStates(float dT)
 {
     if (stopState == STOP_STATE0)
     {
-        if ((azDir > 0.0F && eyePan <= PAN_LIMIT * DTR) || (azDir < 0.0F && eyePan >= PAN_LIMIT * DTR))
+        if ((azDir > 0.0F && eyePan <= PAN_LIMIT * DTR) or (azDir < 0.0F && eyePan >= PAN_LIMIT * DTR))
         {
 
             stopState = STOP_STATE1;
@@ -152,7 +152,7 @@ void OTWDriverClass::VCock_CheckStopStates(float dT)
     }
     else if (stopState == STOP_STATE1)
     {
-        if ((azDir > 0.0F && eyePan <= -PAN_LIMIT * DTR) || (azDir < 0.0F && eyePan >= PAN_LIMIT * DTR))
+        if ((azDir > 0.0F && eyePan <= -PAN_LIMIT * DTR) or (azDir < 0.0F && eyePan >= PAN_LIMIT * DTR))
         {
             stopState = STOP_STATE1;
         }
@@ -167,7 +167,7 @@ void OTWDriverClass::VCock_CheckStopStates(float dT)
     }
     else if (stopState == STOP_STATE2)
     {
-        if ((azDir > 0.0F && eyePan <= -PAN_LIMIT * DTR) || (azDir < 0.0F && eyePan >= PAN_LIMIT * DTR))
+        if ((azDir > 0.0F && eyePan <= -PAN_LIMIT * DTR) or (azDir < 0.0F && eyePan >= PAN_LIMIT * DTR))
         {
             headMotion = HEAD_TRANSISTION1;
             initialTilt = eyeTilt;
@@ -388,7 +388,7 @@ void OTWDriverClass::VCock_GiveGilmanHead(float dT)
     {
         if (headMotion == YAW_PITCH)
         {
-            if (eyePan <= -PAN_LIMIT * DTR ||  eyePan >= PAN_LIMIT * DTR)
+            if (eyePan <= -PAN_LIMIT * DTR or  eyePan >= PAN_LIMIT * DTR)
             {
                 VCock_CheckStopStates(dT);
             }
@@ -433,7 +433,7 @@ void OTWDriverClass::VCock_GiveGilmanHead(float dT)
         {
 
 
-            if ((snapDir == RTOL || snapDir == LTOR) && ((eyePan >= PAN_LIMIT * DTR) || (eyePan <= -PAN_LIMIT * DTR)))
+            if ((snapDir == RTOL or snapDir == LTOR) && ((eyePan >= PAN_LIMIT * DTR) or (eyePan <= -PAN_LIMIT * DTR)))
             {
                 eyePan -= snapDir * slewRate * 10.0F * dT;
 
@@ -948,7 +948,7 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
         DebugLineNum ++;
         quitFlag = (presult == NULL);
 
-        if (quitFlag || *plineBuffer == '/' || *plineBuffer == '\n')
+        if (quitFlag or *plineBuffer == '/' or *plineBuffer == '\n')
             continue;
 
         plinePtr = plineBuffer;
@@ -1374,7 +1374,7 @@ float OTWDriverClass::MoveByRate(float oldval, float newval, float rate)
     float changeval;
     float value = oldval;
 
-    if (value == newval || !gameCompressionRatio) return value; // all done
+    if (value == newval or !gameCompressionRatio) return value; // all done
 
     changeval = rate * DTR * SimLibMajorFrameTime;
 
@@ -1748,13 +1748,13 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_ENGINE, 0);
 
         //HYD/OIL
-        if ((cockpitFlightData.IsSet(FlightData::HYD) || cockpitFlightData.IsSet(FlightData::OIL)) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if ((cockpitFlightData.IsSet(FlightData::HYD) or cockpitFlightData.IsSet(FlightData::OIL)) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_HYDOIL, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_HYDOIL, 0);
 
         //FLCS
-        if ((cockpitFlightData.IsSet(FlightData::FltControlSys) || cockpitFlightData.IsSet(FlightData::DUAL)) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if ((cockpitFlightData.IsSet(FlightData::FltControlSys) or cockpitFlightData.IsSet(FlightData::DUAL)) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_FLCS, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_FLCS, 0);
@@ -1773,7 +1773,7 @@ void OTWDriverClass::VCock_Exec(void)
         else
             canopyopen = SimDriver.GetPlayerAircraft()->GetDOFValue(SIMP_CANOPY_DOF) > 0;
 
-        if ((cockpitFlightData.IsSet(FlightData::CAN) || cockpitFlightData.IsSet(FlightData::OXY_LOW) || canopyopen) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if ((cockpitFlightData.IsSet(FlightData::CAN) or cockpitFlightData.IsSet(FlightData::OXY_LOW) or canopyopen) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_CANOPY, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_CANOPY, 0);
@@ -2023,13 +2023,13 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_ADI_AUX_FLAG, 0);
 
         //MAIN ADI LOC flag
-        if (SimDriver.GetPlayerAircraft()->LOCValid == FALSE || SimDriver.GetPlayerAircraft()->currentPower == AircraftClass::PowerNone)
+        if (SimDriver.GetPlayerAircraft()->LOCValid == FALSE or SimDriver.GetPlayerAircraft()->currentPower == AircraftClass::PowerNone)
             vrCockpit->SetSwitchMask(COMP_3DPIT_ADI_LOC_FLAG, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ADI_LOC_FLAG, 0);
 
         //MAIN ADI GS flag
-        if (SimDriver.GetPlayerAircraft()->GSValid == FALSE || SimDriver.GetPlayerAircraft()->currentPower == AircraftClass::PowerNone)
+        if (SimDriver.GetPlayerAircraft()->GSValid == FALSE or SimDriver.GetPlayerAircraft()->currentPower == AircraftClass::PowerNone)
             vrCockpit->SetSwitchMask(COMP_3DPIT_ADI_GS_FLAG, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ADI_GS_FLAG, 0);
@@ -2096,7 +2096,7 @@ void OTWDriverClass::VCock_Exec(void)
                 vILS = -1.1F;
             }
 
-            if (hILSneedle > -1.1F || vILSneedle > -1.1F)
+            if (hILSneedle > -1.1F or vILSneedle > -1.1F)
                 vrCockpit->SetSwitchMask(COMP_3DPIT_ILS_VISIBLE, 1);
             else
                 vrCockpit->SetSwitchMask(COMP_3DPIT_ILS_VISIBLE, 0);
@@ -3534,7 +3534,7 @@ void OTWDriverClass::VCock_Exec(void)
             {
                 theMissile->RunSeeker();
 
-                if (!theMissile->targetPtr || vuxRealTime & 0x100)  // JB 010712 Flash when we have a target locked up
+                if (!theMissile->targetPtr or vuxRealTime & 0x100)  // JB 010712 Flash when we have a target locked up
                 {
                     float xDiff, left, right, top, bottom;
 

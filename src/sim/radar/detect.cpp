@@ -136,7 +136,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
         S *= 1.4f;
 
     // Either RWS or SAM mode. If we have a focus on a target, increase signal strength a bit
-    else if (mode == RWS || mode == SAM)
+    else if (mode == RWS or mode == SAM)
     {
         if (obj == lockedTarget)
             S *= 1.1f;
@@ -241,7 +241,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
         // countermeasures only work when tracking (for now)
         //MI possible CTD? added !target->BaseData() check
 
-        if (!lockedTarget || !target || !target->BaseData() || !target->BaseData()->IsSim())
+        if (!lockedTarget or !target or !target->BaseData() or !target->BaseData()->IsSim())
         {
             return (S >= 0.8f + 0.4f * (float)rand() / BIGGEST_RANDOM_NUMBER);
         }

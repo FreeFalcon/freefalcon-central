@@ -73,7 +73,7 @@ int LimiterMgrClass::ReadLimiters(SimlibFileClass *file, int dataset)
     int numLimiters, i;
     char buf[160];
 
-    if (!file || dataset < 0 || dataset > numDatasets)
+    if (!file or dataset < 0 or dataset > numDatasets)
         return FALSE;
 
     /*

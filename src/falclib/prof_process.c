@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <math.h>
 #include <assert.h>
 #include <stdlib.h>
@@ -965,7 +966,7 @@ Prof_Report *Prof_create_report(void)
 
         for (i = 0; i < pob->num_record; ++i)
         {
-            if (pob->record[i].values[0] || pob->record[i].values[1] || pob->record[i].values[2])
+            if (pob->record[i].values[0] or pob->record[i].values[1] or pob->record[i].values[2])
             {
                 pob->record[j] = pob->record[i];
                 ++j;

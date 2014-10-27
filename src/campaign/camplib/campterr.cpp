@@ -140,7 +140,7 @@ ReliefType GetRelief(GridIndex x, GridIndex y)
 
 CoverType GetCover(GridIndex x, GridIndex y)
 {
-    if ((x < 0) || (x >= Map_Max_X) || (y < 0) || (y >= Map_Max_Y))
+    if ((x < 0) or (x >= Map_Max_X) or (y < 0) or (y >= Map_Max_Y))
         return (CoverType) Water;
     else
         return (CoverType)((TheaterCells[x * Map_Max_Y + y] & GroundCoverMask) >> GroundCoverShift);

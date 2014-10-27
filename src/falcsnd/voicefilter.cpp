@@ -349,7 +349,7 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
             case rcfPackage2:
             case rcfPackage3:
             case rcfPackage4:
-                if ((TO_PACKAGE & radiofilter) || (radiofilter & TOFROM_FLIGHT))
+                if ((TO_PACKAGE & radiofilter) or (radiofilter & TOFROM_FLIGHT))
                 {
                     retval[i]  or_eq  TO_PACKAGE;
                 }
@@ -357,25 +357,25 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
                 break;
 
             case rcfFromPackage:
-                if ((TOFROM_PACKAGE & radiofilter) || (radiofilter & TOFROM_FLIGHT))
+                if ((TOFROM_PACKAGE & radiofilter) or (radiofilter & TOFROM_FLIGHT))
                     retval[i]  or_eq  TOFROM_PACKAGE;
 
                 break;
 
             case rcfProx:
-                if ((radiofilter & TOFROM_FLIGHT) || ((IN_PROXIMITY & radiofilter) && ((radiofilter & TO_TEAM) || (TO_PACKAGE & radiofilter))))
+                if ((radiofilter & TOFROM_FLIGHT) or ((IN_PROXIMITY & radiofilter) && ((radiofilter & TO_TEAM) or (TO_PACKAGE & radiofilter))))
                     retval[i]  or_eq  IN_PROXIMITY;
 
                 break;
 
             case rcfTeam:
-                if ((TO_TEAM & radiofilter) || (radiofilter & TOFROM_FLIGHT) || (TOFROM_PACKAGE & radiofilter))
+                if ((TO_TEAM & radiofilter) or (radiofilter & TOFROM_FLIGHT) or (TOFROM_PACKAGE & radiofilter))
                     retval[i]  or_eq  TO_TEAM;
 
                 break;
 
             case rcfAll:
-                if ((TO_WORLD & radiofilter) || (radiofilter & TOFROM_FLIGHT) || (TOFROM_PACKAGE & radiofilter) || (TO_TEAM & radiofilter))
+                if ((TO_WORLD & radiofilter) or (radiofilter & TOFROM_FLIGHT) or (TOFROM_PACKAGE & radiofilter) or (TO_TEAM & radiofilter))
                     retval[i]  or_eq  TO_WORLD;
 
                 break;
@@ -388,7 +388,7 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
                     VU_ID ATCId;
                     gNavigationSys->GetAirbase(&ATCId);
 
-                    if (ATCId == from || ATCId == to)
+                    if (ATCId == from or ATCId == to)
                         retval[i]  or_eq  TOFROM_TOWER;
                 }
 
@@ -630,7 +630,7 @@ void VoiceFilter::PlayRadioMessage(
                     eval++;
                 }
 
-                if (evalElement == -1 || evalElement == 32766)  // 32766 = airbase without ATC
+                if (evalElement == -1 or evalElement == 32766)  // 32766 = airbase without ATC
                 {
                     message.sizeofConv--;
                     commInfo ++;
@@ -1118,7 +1118,7 @@ int VoiceFilter::GetBullseyeComm(int *mesgID, short *data)
     // commHdrInfo = (COMM_FILE_INFO *)dcommPtr;
     commHdrInfo = commfile.GetComm(*mesgID);
 
-    if (!commHdrInfo || F4IsBadReadPtr(commHdrInfo, sizeof(COMM_FILE_INFO))) // JB 010331 CTD
+    if (!commHdrInfo or F4IsBadReadPtr(commHdrInfo, sizeof(COMM_FILE_INFO))) // JB 010331 CTD
         return FALSE;
 
     float dist = 0;
@@ -1157,7 +1157,7 @@ int VoiceFilter::GetBullseyeComm(int *mesgID, short *data)
 
         if (((commHdrInfo->bullseye > -1) && PlayerOptions.BullseyeOn()
              && dist * FT_TO_NM > 25 // JB 010121 if the dist is less than 25 miles don't use a bullseye call
-            ) || !SimDriver.InSim() ||
+            ) or !SimDriver.InSim() ||
             (commHdrInfo->bullseye == *mesgID))
         {
             TheCampaign.GetBullseyeLocation(&x2, &y2);

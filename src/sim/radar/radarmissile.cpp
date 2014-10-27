@@ -204,7 +204,7 @@ SimObjectType* RadarMissileClass::ConsiderDecoy(SimObjectType *target, BOOL canG
     int dummy = 0;
 
     // No counter measures deployed by campaign things
-    if (!target || !target->BaseData()->IsSim())
+    if (!target or !target->BaseData()->IsSim())
     {
         return target;
     }

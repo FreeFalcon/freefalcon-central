@@ -410,7 +410,7 @@ char *SimlibFileClass::GetNext(void)
         fscanf(fptr, "%s", aline);
         SwapCRLF(aline);
 
-        if (aline[0] == ';' || aline[0] == '#')
+        if (aline[0] == ';' or aline[0] == '#')
         {
             if (fgets(aline, 160, fptr) == NULL)
             {

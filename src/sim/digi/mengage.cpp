@@ -54,7 +54,7 @@ void DigitalBrain::MissileEngageCheck(void)
     {
         if (targetPtr && curMissile &&
             targetData->range <= maxAAWpnRange * 1.05f  &&
-            (targetData->range >= 3000.0f || !(((AircraftClass *)self)->Guns)) &&
+            (targetData->range >= 3000.0f or !(((AircraftClass *)self)->Guns)) &&
             targetData->ata < angLimit * 1.05f && self->CombatClass() <= 7/*CanEngage (self, self->CombatClass(), targetPtr, BVRManeuver | BVRManeuver*/) // 2002-03-11 MODIFIED BY S.G. Added parameter "BVRManeuver | BVRManeuver"
         {
             if (targetPtr->BaseData()->IsSim() && ((SimBaseClass *)targetPtr->BaseData())->pctStrength <= 0.0f)
@@ -105,7 +105,7 @@ void DigitalBrain::MissileEngage(void)
     float tof, rMax;
 
     // check for exit condition
-    if (!targetPtr || !curMissile)
+    if (!targetPtr or !curMissile)
     {
         return;
     }
@@ -145,7 +145,7 @@ void DigitalBrain::MissileEngage(void)
        theRadar->digiRadarMode = RadarClass::DigiSTT;
        else if (SpikeCheck(self, targetPtr->BaseData())) // If our target is locked onto us, do the same to him
        theRadar->digiRadarMode = RadarClass::DigiSTT;
-       else if (self->GetCampaignObject()->GetSpotted(self->GetTeam()) || (curMissile && curMissile && curMissile->sensorArray &&curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming))
+       else if (self->GetCampaignObject()->GetSpotted(self->GetTeam()) or (curMissile && curMissile && curMissile->sensorArray &&curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming))
        theRadar->digiRadarMode = RadarClass::DigiSTT;
        else
        theRadar->digiRadarMode = RadarClass::DigiTWS;
@@ -332,7 +332,7 @@ void DigitalBrain::WeaponSelection(void)
         // 2002-03-26 MN A data bug (weapon type = Guns, weapon Class = wcAimWpn) caused a crash in GetRMax below.
         // Just make sure this doesn't happen again
 #ifdef DEBUG
-        if (self->Sms->hardPoint[i]->GetWeaponType() == wtGuns && !(self->Sms->hardPoint[i]->GetWeaponClass() == wcGunWpn || self->Sms->hardPoint[i]->GetWeaponClass() == wcTank))
+        if (self->Sms->hardPoint[i]->GetWeaponType() == wtGuns && !(self->Sms->hardPoint[i]->GetWeaponClass() == wcGunWpn or self->Sms->hardPoint[i]->GetWeaponClass() == wcTank))
             ShiAssert(false);
 
 #endif

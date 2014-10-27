@@ -185,7 +185,7 @@ void DetectOneWay(CampEntity a, FalconEntity *e, int d, int *det, int *ran)
     // if (a->IsUnit() && a->GetAproxWeaponRange(em) >= d && a->GetWeaponRange(em) >= d) // REMOVED BY S.G.
     // WILL MAKE SURE BOTH OBJECTS ARE PLANE, SHOOTER HAS MORE THEN JUST GUN (1 NM) AND TARGET WITHIN AT LEAST 20 NM OF US
     //Cobra changed to d <= 100 from 37 (only 20 nm)
-    if (a->IsUnit() && a->GetAproxWeaponRange(em) >= d && ((am == Air && em == Air && d <= 100  && a->GetWeaponRange(em) > 1) || a->GetWeaponRange(em, e) >= d)) // 2002-03-08 MODIFIED BY S.G. Added 'e' at the end of a->GetWeaponRange so we test the min/max weapon range against this guy
+    if (a->IsUnit() && a->GetAproxWeaponRange(em) >= d && ((am == Air && em == Air && d <= 100  && a->GetWeaponRange(em) > 1) or a->GetWeaponRange(em, e) >= d)) // 2002-03-08 MODIFIED BY S.G. Added 'e' at the end of a->GetWeaponRange so we test the min/max weapon range against this guy
         *ran = 1;
 }
 
@@ -251,7 +251,7 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
     float bonus = 1.0F;
     GridIndex   defx, defy, attx, atty;
 
-    if (!att || !def)
+    if (!att or !def)
         return -1;
 
     // 2001-06-13 ADDED BY S.G. BEFORE WE CAN REALLY COMBAT, WE MUST SEE BE ABLE TO DETECT THE TARGET OURSELF BUT ONLY IF WE ARE A BATTALION
@@ -493,7 +493,7 @@ int DoWPAction(Flight u)
             // Check if we're planning to take off again!
             pw = w->GetNextWP();
 
-            if (!pw || (!(w->GetWPFlags() & WPF_TAKEOFF) && pw->GetWPAction() != WP_TAKEOFF))
+            if (!pw or (!(w->GetWPFlags() & WPF_TAKEOFF) && pw->GetWPAction() != WP_TAKEOFF))
             {
                 UpdateSquadronStatus(u, TRUE, FALSE);
                 return -1;
@@ -541,7 +541,7 @@ int DoWPAction(Flight u)
     }
 
     // Check Flags
-    if ((w->GetWPFlags() & WPF_REPEAT) || (w->GetWPFlags() & WPF_REPEAT_CONTINUOUS))
+    if ((w->GetWPFlags() & WPF_REPEAT) or (w->GetWPFlags() & WPF_REPEAT_CONTINUOUS))
     {
         speed = u->GetCruiseSpeed();
 
@@ -619,7 +619,7 @@ int DoWPAction(Flight u)
         // KCK NOTE: We might want to check for abort here.
     }
 
-    if (w->GetWPFlags() & WPF_TARGET || w->GetWPFlags() & WPF_TURNPOINT)
+    if (w->GetWPFlags() & WPF_TARGET or w->GetWPFlags() & WPF_TURNPOINT)
         u->SetUnitPriority(0); // We're done with our task, so we can now be reassigned
 
     return 1;
@@ -647,7 +647,7 @@ CampaignTime TimeToMove(Unit u, CampaignHeading h)
 
     speed = u->GetUnitSpeed();
 
-    if (h >= Here || speed < 1)
+    if (h >= Here or speed < 1)
     {
         return u->GetMoveTime();
     }
@@ -704,7 +704,7 @@ void UpdateLocation (GridIndex *x, GridIndex *y, Path path, int start, int end)
    for (i=start; i<path->GetLength(); i++)
       {
       h = (CampaignHeading) path->GetDirection(i);
-      if (i >= end || h>8)
+      if (i >= end or h>8)
          path->SetDirection(i, Here);
       else
          {
@@ -726,7 +726,7 @@ int EngageParent(Unit u, FalconEntity *e)
 
     p = u->GetUnitParent();
 
-    if (!p || p->Engaged())
+    if (!p or p->Engaged())
         return 0;
 
     p->SetTarget(e);

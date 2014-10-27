@@ -108,7 +108,7 @@ MissionRequestClass::~MissionRequestClass(void)
 
 int MissionRequestClass::RequestMission(void)
 {
-    if (!mission || priority < 0 || (vs && !GetRoE(who, vs, roe_check)))
+    if (!mission or priority < 0 or (vs && !GetRoE(who, vs, roe_check)))
         return -1;
 
     if ((TeamInfo[who]) && (TeamInfo[who]->atm) && (TeamInfo[who]->flags & TEAM_ACTIVE))
@@ -329,7 +329,7 @@ void SetupAltitudes(Flight flight, MissionRequestClass *mis)
     }
 
     // Pick a Mission Altitude
-    if (dtt < MIN_DIST_FOR_INGRESS || DistanceToFront(mis->tx, mis->ty) < MIN_DIST_FOR_INGRESS / 2)
+    if (dtt < MIN_DIST_FOR_INGRESS or DistanceToFront(mis->tx, mis->ty) < MIN_DIST_FOR_INGRESS / 2)
         sMissionAlt = sTargetAlt;
     else if (sMissionProfile == MPROF_LOW)
         sMissionAlt = vc->LowAlt * 100;
@@ -472,7 +472,7 @@ void FinalizeWayPoint(WayPoint cw, int reset = FALSE)
         sMissionMode = MMODE_AT_BREAKPOINT;
 
     // Check if in target area (Airlift/Aircav missions don't want takeoff waypoints to be in target area)
-    if (sMissionMode > MMODE_TAKEOFF && (cw->GetWPFlags() & WPF_IP || cw->GetWPFlags() & WPF_TARGET || cw->GetWPFlags() & WPF_CP))
+    if (sMissionMode > MMODE_TAKEOFF && (cw->GetWPFlags() & WPF_IP or cw->GetWPFlags() & WPF_TARGET or cw->GetWPFlags() & WPF_CP))
         sMissionMode = MMODE_IN_TARGET_AREA;
     // Check if at turn point
     else if (cw->GetWPFlags() & WPF_TURNPOINT)
@@ -505,8 +505,8 @@ void FinalizeWayPoint(WayPoint cw, int reset = FALSE)
 
     // Check if we should perform our route action or not (depends on target description)
     // 2001-06-28 MODIFIED BY S.G. sMissionMode TAKES MANY VALUES! DON'T CHECK FOR EQUALITY BUT CHECKS FOR RANGE OF VALUES!
-    // if ((sMissionMode == MMODE_IN_TARGET_AREA && sTargetDesc <= TDESC_TAO) || ((sMissionMode == MMODE_INGRESS || sMissionMode == MMODE_EGRESS) && sTargetDesc <= TDESC_ATA) || ((sMissionMode == MMODE_ENROUTE || sMissionMode == MMODE_RETURN_TO_BASE) && sTargetDesc <= TDESC_TTL))
-    if ((sMissionMode == MMODE_IN_TARGET_AREA && sTargetDesc <= TDESC_TAO) || ((sMissionMode >= MMODE_INGRESS && sMissionMode <= MMODE_EGRESS) && sTargetDesc <= TDESC_ATA) || ((sMissionMode >= MMODE_ENROUTE && sMissionMode <= MMODE_RETURN_TO_BASE) && sTargetDesc <= TDESC_TTL))
+    // if ((sMissionMode == MMODE_IN_TARGET_AREA && sTargetDesc <= TDESC_TAO) or ((sMissionMode == MMODE_INGRESS or sMissionMode == MMODE_EGRESS) && sTargetDesc <= TDESC_ATA) or ((sMissionMode == MMODE_ENROUTE or sMissionMode == MMODE_RETURN_TO_BASE) && sTargetDesc <= TDESC_TTL))
+    if ((sMissionMode == MMODE_IN_TARGET_AREA && sTargetDesc <= TDESC_TAO) or ((sMissionMode >= MMODE_INGRESS && sMissionMode <= MMODE_EGRESS) && sTargetDesc <= TDESC_ATA) or ((sMissionMode >= MMODE_ENROUTE && sMissionMode <= MMODE_RETURN_TO_BASE) && sTargetDesc <= TDESC_TTL))
         cw->SetWPRouteAction(sRouteAction);
     else
         cw->SetWPRouteAction(WP_NOTHING);
@@ -550,10 +550,10 @@ void FinalizeWayPoint(WayPoint cw, int reset = FALSE)
 
     // I've noticed a problem where really high altitudes get generated.
     ShiAssert(cw->GetWPAltitude() < 100000);
-    // ShiAssert(cw->GetWPAltitude() > 0 || cw->GetWPAction() == WP_LAND || cw->GetWPAction() == WP_TAKEOFF);
+    // ShiAssert(cw->GetWPAltitude() > 0 or cw->GetWPAction() == WP_LAND or cw->GetWPAction() == WP_TAKEOFF);
 
     // Set holdcurrent flag, if we need to
-    if (sMissionMode == MMODE_RETURN_TO_BASE || (sMissionMode > MMODE_TAKEOFF && cw->GetWPAltitude() == 0))
+    if (sMissionMode == MMODE_RETURN_TO_BASE or (sMissionMode > MMODE_TAKEOFF && cw->GetWPAltitude() == 0))
         cw->SetWPFlags(cw->GetWPFlags() | WPF_HOLDCURRENT);
 }
 
@@ -575,8 +575,8 @@ void FinalizeFillerWayPoint(WayPoint cw)
 
     // Check if we should perform our route action or not (depends on target description)
     // 2001-06-28 MODIFIED BY S.G. sMissionMode TAKES MANY VALUES! DON'T CHECK FOR EQUALITY BUT CHECKS FOR RANGE OF VALUES!
-    // if ((sMissionMode == MMODE_IN_TARGET_AREA && sTargetDesc <= TDESC_TAO) || ((sMissionMode == MMODE_INGRESS || sMissionMode == MMODE_EGRESS) && sTargetDesc <= TDESC_ATA) || ((sMissionMode == MMODE_ENROUTE || sMissionMode == MMODE_RETURN_TO_BASE) && sTargetDesc <= TDESC_TTL))
-    if ((sMissionMode == MMODE_IN_TARGET_AREA && sTargetDesc <= TDESC_TAO) || ((sMissionMode >= MMODE_INGRESS && sMissionMode <= MMODE_EGRESS) && sTargetDesc <= TDESC_ATA) || ((sMissionMode >= MMODE_ENROUTE && sMissionMode <= MMODE_RETURN_TO_BASE) && sTargetDesc <= TDESC_TTL))
+    // if ((sMissionMode == MMODE_IN_TARGET_AREA && sTargetDesc <= TDESC_TAO) or ((sMissionMode == MMODE_INGRESS or sMissionMode == MMODE_EGRESS) && sTargetDesc <= TDESC_ATA) or ((sMissionMode == MMODE_ENROUTE or sMissionMode == MMODE_RETURN_TO_BASE) && sTargetDesc <= TDESC_TTL))
+    if ((sMissionMode == MMODE_IN_TARGET_AREA && sTargetDesc <= TDESC_TAO) or ((sMissionMode >= MMODE_INGRESS && sMissionMode <= MMODE_EGRESS) && sTargetDesc <= TDESC_ATA) or ((sMissionMode >= MMODE_ENROUTE && sMissionMode <= MMODE_RETURN_TO_BASE) && sTargetDesc <= TDESC_TTL))
         cw->SetWPRouteAction(sRouteAction);
 
     // Choose altitude
@@ -666,7 +666,7 @@ int BuildPathToTarget(Flight u, MissionRequestClass *mis, VU_ID airbaseID)
         // Ingress route
         pack->GetUnitAssemblyPoint(0, &ax, &ay);
 
-        if (!ax || !ay || !pack->GetIngress())
+        if (!ax or !ay or !pack->GetIngress())
         {
             // No assembly point currently- We need to find a path to the target, and determine
             // a good assembly point and break point from it.
@@ -730,7 +730,7 @@ int BuildPathToTarget(Flight u, MissionRequestClass *mis, VU_ID airbaseID)
         // Egress Route
         pack->GetUnitAssemblyPoint(1, &ax, &ay);
 
-        if (!ax || !ay || !pack->GetEgress())
+        if (!ax or !ay or !pack->GetEgress())
         {
             // No assembly point currently- We need to find a path to the target, and determine
             // a good assembly point and break point from it.
@@ -792,7 +792,7 @@ void BuildDivertPath(Flight flight, MissionRequestClass *mis)
     tw->SetWPFlags(w->GetWPFlags() | WPF_DIVERT | WPF_TARGET);
     tw->SetWPAltitude(MissionData[mis->mission].missionalt * 100); //Cobra they forgot *100 ;)
 
-    if (w->GetWPAction() == WP_TAKEOFF || !w->GetPrevWP())
+    if (w->GetWPAction() == WP_TAKEOFF or !w->GetPrevWP())
     {
         // This thing hasn't taken off yet, so plan a real route
         w->InsertWP(tw);
@@ -942,7 +942,7 @@ WayPoint AddAttackProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
     // Find and add the FIRST turn point, if we don't have one
     pack->GetUnitAssemblyPoint(3, &tpx, &tpy);
 
-    if (!tpx || !tpy)
+    if (!tpx or !tpy)
     {
         int i, s, bs = 9999, fh, h, d;
         GridIndex x, y;
@@ -965,7 +965,7 @@ WayPoint AddAttackProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
             s = ScoreThreatFast(x, y, GetAltitudeLevel(sTargetAlt), u->GetTeam()) - i;
             s += ScoreThreatFast(x + dx[h] * d, y + dy[h] * d, GetAltitudeLevel(sTargetAlt), u->GetTeam());
 
-            if (s < bs || (s == bs && DistSqu(x, y, bx, by) < DistSqu(tpx, tpy, bx, by)))
+            if (s < bs or (s == bs && DistSqu(x, y, bx, by) < DistSqu(tpx, tpy, bx, by)))
             {
                 tpx = x;
                 tpy = y;
@@ -1279,7 +1279,7 @@ WayPoint AddExitRoute(WayPoint cw, Flight u, MissionRequestClass *mis)
         s = ScoreThreatFast(x, y, GetAltitudeLevel(sMissionAlt), u->GetTeam()) + i;
         s += ScoreThreatFast(x + dx[h] * d, y + dy[h] * d, GetAltitudeLevel(sMissionAlt), u->GetTeam());
 
-        if (s < bs || (s == bs && DistSqu(x, y, bx, by) < DistSqu(eax, eay, bx, by)))
+        if (s < bs or (s == bs && DistSqu(x, y, bx, by) < DistSqu(eax, eay, bx, by)))
         {
             eax = x;
             eay = y;
@@ -1700,7 +1700,7 @@ long SetWPTimes(Flight u, MissionRequestClass *mis)
         // Lock time in some cases
         w->UnSetWPFlag(WPF_SPEED_LOCKED);
 
-        if (w->GetWPAction() == WP_TAKEOFF || (w->GetWPFlags() & WPF_TARGET) || (w->GetWPFlags() & WPF_ASSEMBLE))
+        if (w->GetWPAction() == WP_TAKEOFF or (w->GetWPFlags() & WPF_TARGET) or (w->GetWPFlags() & WPF_ASSEMBLE))
             w->SetWPFlag(WPF_TIME_LOCKED);
 
         w = w->GetNextWP();
@@ -2056,7 +2056,7 @@ int ScoreThreatsOnWPLeg(WayPoint w1, WayPoint w2, Team who, int type)
 
         if (type == TT_MAX && threat > worst)
             worst = threat;
-        else if (type == TT_TOTAL || type == TT_AVERAGE)
+        else if (type == TT_TOTAL or type == TT_AVERAGE)
             worst += threat;
 
         steps++;
@@ -2111,7 +2111,7 @@ int CheckBestAltitude(GridIndex tx, GridIndex ty, Team who, int min, int max, in
         {
             threat = ScoreThreatFast(x, y, a, who);
 
-            if (type == TT_TOTAL || type == TT_AVERAGE)
+            if (type == TT_TOTAL or type == TT_AVERAGE)
                 score[a] += threat;
             else if (type == TT_MAX && threat > score[a])
                 score[a] = threat;
@@ -2184,7 +2184,7 @@ int FindSafePath(WayPoint w1, WayPoint w2, Flight flight)
 
     // Check high altitude
     // Loop until we find a full path to our next waypoint
-    while (x != nx || y != ny)
+    while (x != nx or y != ny)
     {
         if (GetGridPath(&path, x, y, nx, ny, moveType, flight->GetTeam(), PATH_ENEMYCOST) >= 0)
             w = FillAirPath(&path, &x, &y, nx, ny, w);
@@ -2208,7 +2208,7 @@ int FindSafePath(WayPoint w1, WayPoint w2, Flight flight)
     maxSearch = MAX_SEARCH;
     QuickSearch = 0;
 
-    if (x != nx || y != ny)
+    if (x != nx or y != ny)
         return 0;
 
     // Now let's try to eliminated unneeded waypoints
@@ -2293,7 +2293,7 @@ WayPoint EliminateExcessWaypoints(WayPoint w1, WayPoint w2, int who)
             cwm = ((mx - x) * (nx - x) + (my - y) * (ny - y)) / (wmd * wnd);
             cnm = ((mx - nx) * (x - nx) + (my - ny) * (y - ny)) / (mnd * wnd);
 
-            if (cwm > COS_10 || cwm < COS_120 || cnm > COS_10 || cnm < COS_120)
+            if (cwm > COS_10 or cwm < COS_120 or cnm > COS_10 or cnm < COS_120)
             {
 #ifdef DEBUG
                 trimmed_by_angle++;
@@ -2400,7 +2400,7 @@ WayPoint AddSafeWaypoint(WayPoint w1, WayPoint w2, int type, int distance, Team 
 
             if (owner && owner != who)
                 done = 1;
-            else if (ScoreThreatFast(cx, cy, GetAltitudeLevel(sCruiseAlt), who) || DistSqu(cx, cy, tx, ty) < dsq)
+            else if (ScoreThreatFast(cx, cy, GetAltitudeLevel(sCruiseAlt), who) or DistSqu(cx, cy, tx, ty) < dsq)
                 done = 1;
             else if (DistanceToFront(cx, cy) < distance / 2.0F)
                 done = 1;
@@ -2599,7 +2599,7 @@ int TargetThreats(Team team, int priority, F4PFList list, MoveType mt, CampaignT
         {
             retval  or_eq  NEED_SEAD;
 
-            if (e->IsUnit() && e->GetSType() == STYPE_UNIT_AIR_DEFENSE && (e->GetSpotted(team) || rand() < HALF_CHANCE))
+            if (e->IsUnit() && e->GetSType() == STYPE_UNIT_AIR_DEFENSE && (e->GetSpotted(team) or rand() < HALF_CHANCE))
             {
                 // Specifically, it's a SAM battalion
                 strike_type = AMIS_SEADSTRIKE;
@@ -2671,7 +2671,7 @@ int TargetThreats (Team team, int priority, F4PFList list, MoveType mt, Campaign
  if (e->GetAproxCombatStrength(mt,0) > 0) // This unit can hurt us
  {
  retval  or_eq  NEED_SEAD;
- if (e->IsUnit() && e->GetSType() == STYPE_UNIT_AIR_DEFENSE && (e->GetSpotted(team) || rand() < HALF_CHANCE))
+ if (e->IsUnit() && e->GetSType() == STYPE_UNIT_AIR_DEFENSE && (e->GetSpotted(team) or rand() < HALF_CHANCE))
  {
  // Specifically, it's a SAM battalion
  strike_type = AMIS_SEADSTRIKE;
@@ -2830,7 +2830,7 @@ BOOL LoadMissionData()
 
     while (fgets(buffer, sizeof buffer, fp) != NULL)
     {
-        if (buffer[0] == '/' || buffer[0] == '\r' || buffer[0] == '\n')
+        if (buffer[0] == '/' or buffer[0] == '\r' or buffer[0] == '\n')
             continue;
 
         DWORD no, type, target, skill, misprof, tprof, tdesc, routewp, targetwp;
@@ -2847,7 +2847,7 @@ BOOL LoadMissionData()
             continue;
         }
 
-        if (no < 0 || no >= sizeof(MissionData) / sizeof(MissionData[0]))
+        if (no < 0 or no >= sizeof(MissionData) / sizeof(MissionData[0]))
             continue;
 
         MissionDataType *mp = &MissionData[no];

@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -556,7 +557,7 @@ int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
         actual   = cudp->parent;
     }
 
-    if (F4IsBadReadPtrC(cudp, sizeof(ComIP)) || F4IsBadReadPtrC(actual, sizeof(ComIP))) // JB 010220 CTD
+    if (F4IsBadReadPtrC(cudp, sizeof(ComIP)) or F4IsBadReadPtrC(actual, sizeof(ComIP))) // JB 010220 CTD
         return COMAPI_OUT_OF_SYNC; // JB 010220 CTD
 
     if (actual->BroadcastModeOn != cudp->NeedBroadcastMode)

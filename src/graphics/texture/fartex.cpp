@@ -271,7 +271,7 @@ void FarTexDB::SetLightLevel(void)
 
             if (PlayerOptions.Season == 1) //Autumn
             {
-                if (!((tmpR == tmpG && tmpG == tmpB) || tmpG < 60 || (tmpR + tmpG + tmpB) / 3 > 225)) //Not Greyscale / green / not very bright
+                if (!((tmpR == tmpG && tmpG == tmpB) or tmpG < 60 or (tmpR + tmpG + tmpB) / 3 > 225)) //Not Greyscale / green / not very bright
                 {
                     RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
@@ -297,11 +297,11 @@ void FarTexDB::SetLightLevel(void)
             }
             else if (PlayerOptions.Season == 2) //Winter
             {
-                if (!(tmpR == tmpG && tmpR == tmpB) || tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //|| (tmpR == 255 && tmpG == 255))) //Greyscale //or pure color
+                if (!(tmpR == tmpG && tmpR == tmpB) or tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //|| (tmpR == 255 && tmpG == 255))) //Greyscale //or pure color
                 {
                     RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-                    if (!(s <= 0.2 || h == -1))  //If Not Greyscale
+                    if (!(s <= 0.2 or h == -1))  //If Not Greyscale
                     {
                         if (h >= 45 && h <= 150) //If Green
                         {
@@ -328,7 +328,7 @@ void FarTexDB::SetLightLevel(void)
             {
                 RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-                if (!(s <= 0.1 || h == -1))  //Not Greyscale
+                if (!(s <= 0.1 or h == -1))  //Not Greyscale
                 {
                     if (h >= 45 && h <= 160) //Green
                     {
@@ -947,7 +947,7 @@ void FarTexDB::HSVtoRGB(float *r, float *g, float *b, float h, float s, float v)
     int i;
     float f, p, q, t;
 
-    if (s == 0 || h == -1)
+    if (s == 0 or h == -1)
     {
         // achromatic (grey)
         *r = *g = *b = v;
