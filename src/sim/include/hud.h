@@ -78,7 +78,7 @@ public:
     };
     void Clear(int testFlag)
     {
-        flags &= compl testFlag;
+        flags and_eq compl testFlag;
     };
 };
 

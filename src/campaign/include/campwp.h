@@ -199,7 +199,7 @@ public:
     }
     void UnSetWPFlag(ulong f)
     {
-        Flags &= compl ((ulong)(f));
+        Flags and_eq compl ((ulong)(f));
     }
     void SetWPTactic(int f)
     {

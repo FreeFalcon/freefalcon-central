@@ -204,7 +204,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
             */
 
             if (streams->mainAVIHeader.dwStreams == 1)
-                streams->audioFlag &= compl STREAM_AUDIO_ON;
+                streams->audioFlag and_eq compl STREAM_AUDIO_ON;
             else
             {
                 /*
@@ -601,7 +601,7 @@ int aviReadRecord(PAVISTREAMS streams)
                     return RIFF_END_FILE;
                 else
                 {
-                    token &= 0xffff;
+                    token and_eq 0xffff;
                 }
             }
 

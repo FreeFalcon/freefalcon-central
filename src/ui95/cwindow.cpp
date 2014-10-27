@@ -247,7 +247,7 @@ void C_Window::SetFlagBitOn(long flag)
 
 void C_Window::SetFlagBitOff(long flag)
 {
-    Flags_ &= (0xffffffff xor flag);
+    Flags_ and_eq (0xffffffff xor flag);
 }
 
 void C_Window::Cleanup()

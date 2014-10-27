@@ -219,7 +219,7 @@ PackageClass::PackageClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, r
 #ifdef DEBUG
 
     for (int i = 0; i < elements; i++)
-        element[i].num_ &= 0xffff;
+        element[i].num_ and_eq 0xffff;
 
 #endif
     memcpychk(&interceptor, stream, sizeof(VU_ID), rem);
@@ -233,10 +233,10 @@ PackageClass::PackageClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, r
     }
 
 #ifdef DEBUG
-    awacs.num_ &= 0x0000ffff;
-    jstar.num_ &= 0x0000ffff;
-    ecm.num_ &= 0x0000ffff;
-    tanker.num_ &= 0x0000ffff;
+    awacs.num_ and_eq 0x0000ffff;
+    jstar.num_ and_eq 0x0000ffff;
+    ecm.num_ and_eq 0x0000ffff;
+    tanker.num_ and_eq 0x0000ffff;
 #endif
     memcpychk(&wait_cycles, stream, sizeof(uchar), rem);
 
@@ -259,8 +259,8 @@ PackageClass::PackageClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, r
         memcpychk(&mis_request.targetID, stream, sizeof(VU_ID), rem);
 
 #ifdef DEBUG
-        mis_request.requesterID.num_ &= 0x0000ffff;
-        mis_request.targetID.num_ &= 0x0000ffff;
+        mis_request.requesterID.num_ and_eq 0x0000ffff;
+        mis_request.targetID.num_ and_eq 0x0000ffff;
 #endif
 
         if (gCampDataVersion >= 26)

@@ -102,7 +102,7 @@ enum
 #define COMPRESS_RAW_FILES 1
 #define TLK_HEADER_INFO 12
 #define FLAG_SET(a,b) ((a)  or_eq  (b) )
-#define FLAG_UNSET(a,b) ((a) &= compl (b))
+#define FLAG_UNSET(a,b) ((a) and_eq compl (b))
 
 #ifndef BINARY_TOOL
 

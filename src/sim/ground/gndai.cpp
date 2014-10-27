@@ -1308,7 +1308,7 @@ int GNDAIClass::CheckThrough(void)
     // Check to see if we want to move through a turn point
     if (battalionCommand->through_x not_eq through_x or battalionCommand->through_y not_eq through_y)
     {
-        moveFlags &= compl GNDAI_WENT_THROUGH;
+        moveFlags and_eq compl GNDAI_WENT_THROUGH;
         through_x = battalionCommand->through_x;
         through_y = battalionCommand->through_y;
     }

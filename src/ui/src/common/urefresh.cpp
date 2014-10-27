@@ -256,12 +256,12 @@ void UI_Refresher::AddMapItem(CampEntity entity)
         if (wp and MapItem_)
         {
             if (vuxGameTime < wp->GetWPDepartureTime())
-                MapItem_->Flags &= compl C_BIT_ENABLED;
+                MapItem_->Flags and_eq compl C_BIT_ENABLED;
             else
                 MapItem_->Flags  or_eq  C_BIT_ENABLED;
         }
         else if (MapItem_)
-            MapItem_->Flags &= compl C_BIT_ENABLED;
+            MapItem_->Flags and_eq compl C_BIT_ENABLED;
     }
     else if (entity->IsSquadron())
     {
@@ -451,7 +451,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
                 }
             }
             else
-                MapItem_->Flags &= compl C_BIT_ENABLED;
+                MapItem_->Flags and_eq compl C_BIT_ENABLED;
         }
     }
     else if (entity->IsObjective())
@@ -499,21 +499,21 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
     {
         if (Owner_->TeamNo_ < 0)
         {
-            MapItem_->Flags &= compl C_BIT_INVISIBLE;
+            MapItem_->Flags and_eq compl C_BIT_INVISIBLE;
 
             if (Threat_)
             {
                 if (Threat_->SamLow)
-                    Threat_->SamLow->Flags &= compl C_BIT_INVISIBLE;
+                    Threat_->SamLow->Flags and_eq compl C_BIT_INVISIBLE;
 
                 if (Threat_->SamHigh)
-                    Threat_->SamHigh->Flags &= compl C_BIT_INVISIBLE;
+                    Threat_->SamHigh->Flags and_eq compl C_BIT_INVISIBLE;
 
                 if (Threat_->RadarLow)
-                    Threat_->RadarLow->Flags &= compl C_BIT_INVISIBLE;
+                    Threat_->RadarLow->Flags and_eq compl C_BIT_INVISIBLE;
 
                 if (Threat_->RadarHigh)
-                    Threat_->RadarHigh->Flags &= compl C_BIT_INVISIBLE;
+                    Threat_->RadarHigh->Flags and_eq compl C_BIT_INVISIBLE;
             }
         }
         else
@@ -539,21 +539,21 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
             }
             else
             {
-                MapItem_->Flags &= compl C_BIT_INVISIBLE;
+                MapItem_->Flags and_eq compl C_BIT_INVISIBLE;
 
                 if (Threat_)
                 {
                     if (Threat_->SamLow)
-                        Threat_->SamLow->Flags &= compl C_BIT_INVISIBLE;
+                        Threat_->SamLow->Flags and_eq compl C_BIT_INVISIBLE;
 
                     if (Threat_->SamHigh)
-                        Threat_->SamHigh->Flags &= compl C_BIT_INVISIBLE;
+                        Threat_->SamHigh->Flags and_eq compl C_BIT_INVISIBLE;
 
                     if (Threat_->RadarLow)
-                        Threat_->RadarLow->Flags &= compl C_BIT_INVISIBLE;
+                        Threat_->RadarLow->Flags and_eq compl C_BIT_INVISIBLE;
 
                     if (Threat_->RadarHigh)
-                        Threat_->RadarHigh->Flags &= compl C_BIT_INVISIBLE;
+                        Threat_->RadarHigh->Flags and_eq compl C_BIT_INVISIBLE;
                 }
             }
         }

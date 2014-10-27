@@ -427,7 +427,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
     else
         item->sbType = 0;
 
-    videoMode &= 0xffff;             // Clear high word
+    videoMode and_eq 0xffff;             // Clear high word
 
     if (!(audioFlag & MOVIE_NO_AUDIO))
     {
@@ -1093,7 +1093,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
             item->status  or_eq  MOVIE_STATUS_STOP_THREAD;
             item->lastError = exitCode = MOVIE_BUFFER_LOCK_FAIL;
             WaitForSingleObject((HANDLE) item->hFillerThread, INFINITE);
-            item->status &= compl MOVIE_STATUS_PLAYING;
+            item->status and_eq compl MOVIE_STATUS_PLAYING;
         }
 
         surfaceReleasePointer(item->ddSurface, &(item->sa));
@@ -1280,7 +1280,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
     //
 #endif
 
-    item->status &= compl MOVIE_STATUS_PLAYING;
+    item->status and_eq compl MOVIE_STATUS_PLAYING;
     return (unsigned int) exitCode;
 }
 

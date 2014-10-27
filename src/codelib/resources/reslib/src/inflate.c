@@ -794,7 +794,7 @@ int inflate_codes(struct huft * tl, struct huft * td, int bl, int bd, COMPRESSED
             /* do the copy */
             do
             {
-                n -= (e = (e = WSIZE - ((d &= WSIZE - 1) > w ? d : w)) > n ? n : e);
+                n -= (e = (e = WSIZE - ((d and_eq WSIZE - 1) > w ? d : w)) > n ? n : e);
 #ifndef NOMEMCPY
 
                 if (w - d >= e) /* (this test assumes unsigned comparison) */

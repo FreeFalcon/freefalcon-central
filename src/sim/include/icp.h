@@ -512,7 +512,7 @@ public:
     };
     void ClearICPFlag(int newFlag)
     {
-        ICPModeFlags &= compl newFlag;
+        ICPModeFlags and_eq compl newFlag;
     };
     int IsICPSet(int testFlag)
     {
@@ -538,7 +538,7 @@ public:
     };
     void ClearIFFFlag(int newFlag)
     {
-        IFFModes &= compl newFlag;
+        IFFModes and_eq compl newFlag;
     };
     int IsIFFSet(int testFlag)
     {

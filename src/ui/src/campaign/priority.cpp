@@ -166,7 +166,7 @@ void ResetToDefaults()
                 // POD->player_priority[i]=POD->air_priority[i];
                 POD->player_priority[i] = -1;
 
-            POD->flags &= compl GTMOBJ_PLAYER_SET_PRIORITY;
+            POD->flags and_eq compl GTMOBJ_PLAYER_SET_PRIORITY;
         }
 
         o = (Objective) poit.GetNext();

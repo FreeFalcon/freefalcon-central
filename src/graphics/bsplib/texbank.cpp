@@ -513,9 +513,9 @@ void TextureBankClass::SyncDDSTextures(bool bForce)
             fclose(fp);
 
         TexturePool[id].tex.flags  or_eq  MPR_TI_DDS;
-        TexturePool[id].tex.flags &= compl MPR_TI_PALETTE;
+        TexturePool[id].tex.flags and_eq compl MPR_TI_PALETTE;
         TexturePool[id].texN.flags  or_eq  MPR_TI_DDS;
-        TexturePool[id].texN.flags &= compl MPR_TI_PALETTE;
+        TexturePool[id].texN.flags and_eq compl MPR_TI_PALETTE;
     }
 }
 
@@ -555,7 +555,7 @@ void TextureBankClass::ReadImageDDS(DWORD id)
     FILE *fp;
 
     TexturePool[id].tex.flags = MPR_TI_DDS;
-    TexturePool[id].tex.flags &= compl MPR_TI_PALETTE;
+    TexturePool[id].tex.flags and_eq compl MPR_TI_PALETTE;
 
     sprintf(szFile, "%s\\%d.dds", baseName, id);
     fp = fopen(szFile, "rb");
@@ -674,8 +674,8 @@ void TextureBankClass::ReadImageDDSN(DWORD id)
     }
 
     TexturePool[id].texN.flags  or_eq  MPR_TI_DDS;
-    TexturePool[id].texN.flags &= compl MPR_TI_PALETTE;
-    TexturePool[id].texN.flags &= compl MPR_TI_INVALID;
+    TexturePool[id].texN.flags and_eq compl MPR_TI_PALETTE;
+    TexturePool[id].texN.flags and_eq compl MPR_TI_INVALID;
 
     fread(&dwMagic, 1, sizeof(DWORD), fp);
     ShiAssert(dwMagic == MAKEFOURCC('D', 'D', 'S', ' '));

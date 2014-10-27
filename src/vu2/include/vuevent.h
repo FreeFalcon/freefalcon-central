@@ -227,7 +227,7 @@ public:
     }
     void RequestLowPriorityTransmit()
     {
-        flags_ &= 0xf0;
+        flags_ and_eq 0xf0;
     }
 
     // app needs to Ref & UnRef messages they keep around

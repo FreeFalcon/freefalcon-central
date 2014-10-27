@@ -1868,7 +1868,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
                 for (j = 0; j < 256; j++)
                 {
                     intalp = (globPal->paletteData[j] >> 24);
-                    globPal->paletteData[j] &= 0x00ffffff;
+                    globPal->paletteData[j] and_eq 0x00ffffff;
 
                     if (j == 0)
                         continue;
@@ -2146,7 +2146,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
     for (j = 0; j < 256; j++)
     {
         intalp = (aplPal0->paletteData[j] >> 24);
-        aplPal0->paletteData[j] &= 0x00ffffff;
+        aplPal0->paletteData[j] and_eq 0x00ffffff;
 
         if (j == 0)
         {
@@ -2173,7 +2173,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
         for (j = 0; j < 256; j++)
         {
             intalp = (aplPalI->paletteData[j] >> 24);
-            aplPalI->paletteData[j] &= 0x00ffffff;
+            aplPalI->paletteData[j] and_eq 0x00ffffff;
 
             if (j == 0)
                 continue;
@@ -2826,7 +2826,7 @@ void Draw2DLensFlare(class RenderOTW *renderer)
 
         if (Alpha < 0.001f) continue;
 
-        v[0].dwColour &= 0x00ffffff;
+        v[0].dwColour and_eq 0x00ffffff;
 
         radius = lensRadius[j];
 

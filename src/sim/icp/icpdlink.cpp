@@ -23,7 +23,7 @@ void ICPClass::ExecDLINKMode(void)
     {
         if (mUpdateFlags & DLINK_UPDATE)
         {
-            mUpdateFlags &= !DLINK_UPDATE;
+            mUpdateFlags and_eq !DLINK_UPDATE;
 
             //MI Changed for DLINK stuff
 #if 0

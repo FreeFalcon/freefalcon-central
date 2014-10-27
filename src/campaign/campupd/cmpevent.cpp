@@ -128,7 +128,7 @@ void EventClass::SetEvent(int status)
     }
     else
     {
-        flags &= compl CE_FIRED;
+        flags and_eq compl CE_FIRED;
         msg->dataBlock.status = 0;
     }
 
@@ -974,7 +974,7 @@ int ReadScriptedTriggerFile(char* filename)
                     if (rel == Allied)
                     {
                         SetTeam(team, with);
-                        TeamInfo[team]->flags &= compl TEAM_ACTIVE;
+                        TeamInfo[team]->flags and_eq compl TEAM_ACTIVE;
                     }
                 }
             }

@@ -43,7 +43,7 @@ public:
     };
     void ClearFlag(int val)
     {
-        flags &= compl val;
+        flags and_eq compl val;
     };
     int IsSetFlag(int val)
     {

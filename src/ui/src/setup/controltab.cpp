@@ -2467,7 +2467,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
         if (GetAsyncKeyState(VK_SHIFT) & 0x8001)
             ShiftStates  or_eq  _SHIFT_DOWN_;
         else
-            ShiftStates &= compl _SHIFT_DOWN_;
+            ShiftStates and_eq compl _SHIFT_DOWN_;
 
         //int flags = ShiftStates;
         int flags = ShiftStates + (KeyVar.CommandsKeyCombo << SECOND_KEY_SHIFT) + (KeyVar.CommandsKeyComboMod << SECOND_KEY_MOD_SHIFT);

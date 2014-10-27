@@ -131,7 +131,7 @@ void C_Blip::BlinkLast()
     if (Last_)
     {
         Last_->state++;
-        Last_->state &= 0x03;
+        Last_->state and_eq 0x03;
         Refresh(Last_);
     }
 }

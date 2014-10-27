@@ -2100,7 +2100,7 @@ static void delete_tactical_object(long, short, C_Base *)
 
                                 if (old_team == team_mapping[loop])
                                 {
-                                    src[(y * width + x) / 2] &= 0x0f;
+                                    src[(y * width + x) / 2] and_eq 0x0f;
                                 }
                             }
                             else
@@ -2109,7 +2109,7 @@ static void delete_tactical_object(long, short, C_Base *)
 
                                 if (old_team == team_mapping[loop])
                                 {
-                                    src[(y * width + x) / 2] &= 0xf0;
+                                    src[(y * width + x) / 2] and_eq 0xf0;
                                 }
                             }
                         }

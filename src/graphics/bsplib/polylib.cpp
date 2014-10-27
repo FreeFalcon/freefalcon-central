@@ -459,7 +459,7 @@ void DrawClippedPrim(Prim *prim)
     while (xyzIdxPtr < end)
     {
         clipFlag = TheStateStack.ClipInfoPool[*xyzIdxPtr++].clipFlag;
-        clipFlagAND &= clipFlag;
+        clipFlagAND and_eq clipFlag;
         clipFlagOR  or_eq  clipFlag;
     };
 

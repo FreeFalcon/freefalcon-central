@@ -153,7 +153,7 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
         }
 
         // If we get here, it's because all blocks are read
-        TheCampaign.Flags &= compl CAMP_NEED_UNIT_DATA;
+        TheCampaign.Flags and_eq compl CAMP_NEED_UNIT_DATA;
         bufptr = session->unitDataReceiveBuffer;
         //sfr: hack, i think this is the value
         long lsize = dataBlock.totalSize;

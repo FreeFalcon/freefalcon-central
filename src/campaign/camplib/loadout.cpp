@@ -276,7 +276,7 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
     if (type_flags & WEAP_FORCE_ON_ONE)
     {
         // We want to place all our weapons on one (or two if even) hardpoints)
-        type_flags &= compl WEAP_FORCE_ON_ONE;
+        type_flags and_eq compl WEAP_FORCE_ON_ONE;
         force_on_one = 1;
     }
 

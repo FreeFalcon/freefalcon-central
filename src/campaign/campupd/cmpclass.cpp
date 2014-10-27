@@ -752,7 +752,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
         gCampDataVersion = gCurrentDataVersion;
 
         // Clear previous requests
-        Flags &= compl CAMP_NEED_MASK;
+        Flags and_eq compl CAMP_NEED_MASK;
 
         if (Flags & CAMP_LIGHT)
         {
@@ -793,7 +793,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
 
     // Assume we'll get all our entities in time - ie: don't block on this request
-    Flags &= compl CAMP_NEED_ENTITIES;
+    Flags and_eq compl CAMP_NEED_ENTITIES;
 
     MonoPrint("Done requesting shit... \n");
 
@@ -1635,7 +1635,7 @@ int CampaignClass::Encode(VU_BYTE **stream)
     // Might as well send this guy's squadron
     PlayerSquadronID = FalconLocalSession->GetPlayerSquadronID();
 #ifdef DEBUG
-    PlayerSquadronID.num_ &= 0x0000ffff;
+    PlayerSquadronID.num_ and_eq 0x0000ffff;
 #endif
 #ifdef CAMPTOOL
 
@@ -1883,7 +1883,7 @@ void CampaignClass::ClearCurrentPreload(void)
         FreeSquadronData();
         ChillTypes();
         CampLeaveCriticalSection();
-        Flags &= compl CAMP_PRELOADED;
+        Flags and_eq compl CAMP_PRELOADED;
     }
 }
 
@@ -1925,7 +1925,7 @@ void CampaignClass::SetOnlineStatus(int online)
     }
     else
     {
-        Flags &= compl CAMP_ONLINE;
+        Flags and_eq compl CAMP_ONLINE;
     }
 }
 

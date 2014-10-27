@@ -124,7 +124,7 @@ public:
     ulong GetObjFlags(void);
     void ClearObjFlags(ulong flags)
     {
-        obj_data.obj_flags &= compl (flags);
+        obj_data.obj_flags and_eq compl (flags);
     }
     void SetObjFlags(ulong flags)
     {

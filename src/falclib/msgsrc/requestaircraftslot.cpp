@@ -113,7 +113,7 @@ int UI_RequestAircraftSlot::Process(uchar autodisp)
         msga->dataBlock.request_type = REQUEST_UI_UPDATE;
         // sfr: flag bug, setting all but loopback :/
         //msga->flags_  or_eq  compl VU_LOOPBACK_MSG_FLAG;
-        msga->flags_ &= compl VU_LOOPBACK_MSG_FLAG;
+        msga->flags_ and_eq compl VU_LOOPBACK_MSG_FLAG;
         FalconSendMessage(msga, TRUE);
         //VuTimerEvent *timer = new VuTimerEvent(0, vuxRealTime + 1000, VU_DELAY_TIMER, msga);
         //VuMessageQueue::PostVuMessage(timer);

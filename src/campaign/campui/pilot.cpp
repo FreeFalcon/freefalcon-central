@@ -340,7 +340,7 @@ void SetCallsignID(int id, int num)
 void UnsetCallsignID(int id, int num)
 {
     int temp = (0x01 << (num - 1));
-    CallsignData[id] &= (uchar)(compl temp);
+    CallsignData[id] and_eq (uchar)(compl temp);
 }
 
 void GetCallsign(int id, int num, _TCHAR* callsign)

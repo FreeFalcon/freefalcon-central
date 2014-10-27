@@ -139,7 +139,7 @@ void DrawableGuys::Draw(class RenderOTW *renderer, int LOD)
     // for the shift position and mult by 4 to get the starting bit
     // position of the 1st animation frame for the orientation.
     animShift = FloatToInt32(8.0f * relYaw / (2.0f * PI));
-    animShift &= 0x00000007;
+    animShift and_eq 0x00000007;
 
     // set appropriate switch
     if (moving)

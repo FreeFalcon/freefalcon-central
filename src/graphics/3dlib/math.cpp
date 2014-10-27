@@ -59,7 +59,7 @@ New Matrix --> Old Matrix ==> new M(i),(j) = old M(i+1),(j+1)
 void
 glGetSinCos(GLfloat *sinOut, GLfloat *cosOut, GLFixed0_14 angle)
 {
-    angle &= 0x3fff;
+    angle and_eq 0x3fff;
 
     if (angle & 0x1000)
     {
@@ -96,7 +96,7 @@ glGetSinCos(GLfloat *sinOut, GLfloat *cosOut, GLFixed0_14 angle)
 void
 glGetSinCos(GLdouble *sinOut, GLdouble *cosOut, GLFixed0_14 angle)
 {
-    angle &= 0x3fff;
+    angle and_eq 0x3fff;
 
     if (angle & 0x1000)
     {
@@ -135,7 +135,7 @@ glGetSinCos(GLdouble *sinOut, GLdouble *cosOut, GLFixed0_14 angle)
 GLdouble
 glGetSine(GLFixed0_14 angle)
 {
-    angle &= 0x3fff;
+    angle and_eq 0x3fff;
 
     if (angle & 0x1000)
     {
@@ -170,7 +170,7 @@ glGetSine(GLFixed0_14 angle)
 GLdouble
 glGetCosine(GLFixed0_14 angle)
 {
-    angle &= 0x3fff;
+    angle and_eq 0x3fff;
 
     if (angle & 0x1000)
     {

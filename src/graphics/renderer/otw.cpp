@@ -2184,7 +2184,7 @@ void RenderOTW::DrawWeather(const Trotation *orientation)
         DWORD rcol = TheTimeOfDay.GetRainColor();
 
         if (TheTimeOfDay.GetNVGmode())
-            rcol &= 0xff00ff00; // just green component
+            rcol and_eq 0xff00ff00; // just green component
 
         DWORD ocol = Color();
         SetColor(rcol);
@@ -2229,7 +2229,7 @@ void RenderOTW::DrawWeather(const Trotation *orientation)
         DWORD scol = TheTimeOfDay.GetSnowColor();
 
         if (TheTimeOfDay.GetNVGmode())
-            scol &= 0xff00ff00; // just green component
+            scol and_eq 0xff00ff00; // just green component
 
         DWORD ocol = Color();
         SetColor(scol);

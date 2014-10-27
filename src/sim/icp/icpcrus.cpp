@@ -58,7 +58,7 @@ void ICPClass::ExecCRUSMode(void)
     {
         if (mUpdateFlags & CRUS_UPDATE)
         {
-            mUpdateFlags &= !CRUS_UPDATE;
+            mUpdateFlags and_eq !CRUS_UPDATE;
 
             sprintf(mpLine1, "CRUISE");
 

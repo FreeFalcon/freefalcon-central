@@ -386,7 +386,7 @@ void SoundFlagsCB(long, short hittype, C_Base *control)
             }
             else
             {
-                PlayerOptions.SoundFlags &= (compl flagbit);
+                PlayerOptions.SoundFlags and_eq (compl flagbit);
             }
 
             break;

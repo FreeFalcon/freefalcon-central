@@ -240,7 +240,7 @@ public:
     }
     void UnSetLocalFlag(int flag)
     {
-        localFlags &= compl (flag);
+        localFlags and_eq compl (flag);
     }
     int  IsSetCampaignFlag(int flag) const
     {
@@ -252,7 +252,7 @@ public:
     }
     void UnSetCampaignFlag(int flag)
     {
-        campaignFlags &= compl (flag);
+        campaignFlags and_eq compl (flag);
     }
     int IsSetRemoveFlag() const
     {
@@ -402,7 +402,7 @@ public:
     {
         return lastShooter;
     };
-    void SetDying(int flag); // { if (flag) specialData.flags  or_eq  OBJ_DYING; else specialData.flags &= compl OBJ_DYING;};
+    void SetDying(int flag); // { if (flag) specialData.flags  or_eq  OBJ_DYING; else specialData.flags and_eq compl OBJ_DYING;};
     SimBaseSpecialData* SpecialData(void)
     {
         return &specialData;

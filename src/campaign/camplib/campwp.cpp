@@ -173,7 +173,7 @@ WayPointClass::WayPointClass(FILE* fp)
     {
         fread(&TargetID, sizeof(VU_ID), 1, fp);
 #ifdef DEBUG
-        TargetID.num_ &= 0xffff;
+        TargetID.num_ and_eq 0xffff;
 #endif
         fread(&TargetBuilding, sizeof(uchar), 1, fp);
     }

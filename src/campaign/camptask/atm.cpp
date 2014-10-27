@@ -114,7 +114,7 @@ ATMAirbaseClass::ATMAirbaseClass(VU_BYTE **stream, long *rem)
 {
     memcpychk(&id, stream, sizeof(VU_ID), rem);
 #ifdef DEBUG
-    id.num_ &= 0xffff;
+    id.num_ and_eq 0xffff;
 #endif
     memcpychk(schedule, stream, ATM_MAX_CYCLES, rem);
     usage = 0;
@@ -125,7 +125,7 @@ ATMAirbaseClass::ATMAirbaseClass(FILE *file)
 {
     fread(&id, sizeof(VU_ID), 1, file);
 #ifdef DEBUG
-    id.num_ &= 0xffff;
+    id.num_ and_eq 0xffff;
 #endif
     fread(schedule, sizeof(uchar), ATM_MAX_CYCLES, file);
     usage = 0;
@@ -558,7 +558,7 @@ int AirTaskingManagerClass::Task(void)
         return 0;
 
     // Clear flags
-    flags &= compl ATM_NEW_PLANES;
+    flags and_eq compl ATM_NEW_PLANES;
     flags  or_eq  ATM_NEW_REQUESTS;
 
     // Now traverse my request list
@@ -674,7 +674,7 @@ int AirTaskingManagerClass::Task(void)
 
     // we actually finished traversing the whole list.
     // Mark us as not having new requests and move the delayed list to the request list
-    flags &= compl ATM_NEW_REQUESTS;
+    flags and_eq compl ATM_NEW_REQUESTS;
     lp = delayedList->GetFirstElement();
 
     while (lp)

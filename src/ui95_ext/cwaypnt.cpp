@@ -67,7 +67,7 @@ BOOL C_Waypoint::ShowByType(long typemask)
     {
         if (cur->Type & typemask)
         {
-            cur->Flags &= (0xffffffff xor C_BIT_INVISIBLE);
+            cur->Flags and_eq (0xffffffff xor C_BIT_INVISIBLE);
             retval = TRUE;
         }
 

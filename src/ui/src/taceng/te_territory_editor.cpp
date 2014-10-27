@@ -206,7 +206,7 @@ static void flood_fill_team(int x, int y)
 
         if (x & 1)
         {
-            fill_src[(y * fill_width + x) / 2] &= 0x0f;
+            fill_src[(y * fill_width + x) / 2] and_eq 0x0f;
             fill_src[(y * fill_width + x) / 2]  or_eq  gDrawTeam  << 4;
 
             flood_fill_team(x + 0, y - 1);
@@ -216,7 +216,7 @@ static void flood_fill_team(int x, int y)
         }
         else
         {
-            fill_src[(y * fill_width + x) / 2] &= 0xf0;
+            fill_src[(y * fill_width + x) / 2] and_eq 0xf0;
             fill_src[(y * fill_width + x) / 2]  or_eq  gDrawTeam ;
 
             flood_fill_team(x + 0, y - 1);
@@ -327,12 +327,12 @@ void tactical_territory_map_edit(long, short hittype, C_Base *control)
 
                             if (px & 1)
                             {
-                                src[(py * width + px) / 2] &= 0x0f;
+                                src[(py * width + px) / 2] and_eq 0x0f;
                                 src[(py * width + px) / 2]  or_eq  gDrawTeam << 4;
                             }
                             else
                             {
-                                src[(py * width + px) / 2] &= 0xf0;
+                                src[(py * width + px) / 2] and_eq 0xf0;
                                 src[(py * width + px) / 2]  or_eq  gDrawTeam;
                             }
                         }

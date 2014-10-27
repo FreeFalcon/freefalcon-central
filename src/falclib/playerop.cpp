@@ -326,9 +326,9 @@ int PlayerOptionsClass::InCompliance(RulesStruct *rules)
 }
 void PlayerOptionsClass::ComplyWRules(RulesStruct *rules)
 {
-    SimFlags &= compl (SIM_RULES_FLAGS & compl rules->SimFlags);
+    SimFlags and_eq compl (SIM_RULES_FLAGS & compl rules->SimFlags);
 
-    GeneralFlags &= compl (GEN_RULES_FLAGS & compl rules->GeneralFlags);
+    GeneralFlags and_eq compl (GEN_RULES_FLAGS & compl rules->GeneralFlags);
 
     if (ObjectMagnification() > rules->ObjMagnification)
         ObjMagnification = rules->ObjMagnification;

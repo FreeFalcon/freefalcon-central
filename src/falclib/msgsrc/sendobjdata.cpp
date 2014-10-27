@@ -129,7 +129,7 @@ int FalconSendObjData::Process(uchar autodisp)
         }
 
         // If we get here, it's because all blocks are read
-        TheCampaign.Flags &= compl CAMP_NEED_OBJ_DELTAS;
+        TheCampaign.Flags and_eq compl CAMP_NEED_OBJ_DELTAS;
         bufptr = session->objDataReceiveBuffer;
 
         CampEnterCriticalSection();

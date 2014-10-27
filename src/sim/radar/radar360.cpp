@@ -142,7 +142,7 @@ void Radar360Class::UpdateState(int cursorXCmd, int cursorYCmd)
     if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
         flags  or_eq  CursorMoving;
     else
-        flags &= compl CursorMoving;
+        flags and_eq compl CursorMoving;
 }
 
 

@@ -725,7 +725,7 @@ int SimMoverClass::Exec(void)
                     if (nonLocalData->timer2 <= SimLibElapsedTime)
                     {
                         // stop firing
-                        nonLocalData->flags &= compl NONLOCAL_GUNS_FIRING;
+                        nonLocalData->flags and_eq compl NONLOCAL_GUNS_FIRING;
 
                         // check for active smoketrail and send it to sfx for
                         // later removal
@@ -845,7 +845,7 @@ int SimMoverClass::Exec(void)
                 if (nonLocalData->flags & NONLOCAL_GUNS_FIRING)
                 {
                     // stop firing
-                    nonLocalData->flags &= compl NONLOCAL_GUNS_FIRING;
+                    nonLocalData->flags and_eq compl NONLOCAL_GUNS_FIRING;
 
                     // check for active smoketrail and send it to sfx for
                     // later removal

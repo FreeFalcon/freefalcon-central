@@ -407,14 +407,14 @@ void RViewPoint::SetupTextures()
 
         while (p < stop)
         {
-            *p &= 0xFF00FF00;
+            *p and_eq 0xFF00FF00;
             p++;
         }
 
         pal->UpdateMPR();
 
         // Convert chroma color to Green
-        GreenSunTexture.chromaKey &= 0xFF00FF00;
+        GreenSunTexture.chromaKey and_eq 0xFF00FF00;
 
         // Send the texture to MPR
         GreenSunTexture.CreateTexture();

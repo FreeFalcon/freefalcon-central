@@ -100,7 +100,7 @@ void ThreadManager::stop_campaign_thread()
 {
     ShiAssert(campaign_thread.handle);
 
-    campaign_thread.status &= compl THREAD_STATUS_ACTIVE;
+    campaign_thread.status and_eq compl THREAD_STATUS_ACTIVE;
 
     WaitForSingleObject(campaign_thread.handle, INFINITE);
 
@@ -114,7 +114,7 @@ void ThreadManager::stop_sim_thread()
 {
     ShiAssert(sim_thread.handle);
 
-    sim_thread.status &= compl THREAD_STATUS_ACTIVE;
+    sim_thread.status and_eq compl THREAD_STATUS_ACTIVE;
 
     WaitForSingleObject(sim_thread.handle, INFINITE);
 

@@ -109,7 +109,7 @@ void tactical_mission::set_flag(long value)
 
 void tactical_mission::clear_flag(long value)
 {
-    TheCampaign.TE_flags &= compl value;
+    TheCampaign.TE_flags and_eq compl value;
 }
 
 tactical_mission::tactical_mission(char *the_filename)
@@ -546,7 +546,7 @@ void tactical_mission::process_load(char *data, int size, int)
                 case t_flags:
                 {
                     TheCampaign.TE_flags = atoi(buffer);
-                    TheCampaign.TE_flags &= compl tf_start_paused; // Don't set the paused flag
+                    TheCampaign.TE_flags and_eq compl tf_start_paused; // Don't set the paused flag
                     break;
                 }
 
@@ -670,7 +670,7 @@ char *tactical_mission::read_te_file(char *filename, int *size)
             while (num_files)
             {
                 fread(&str_len, 1, 1, fp);
-                str_len &= 0xff;
+                str_len and_eq 0xff;
 
                 fread(name, str_len, 1, fp);
                 \

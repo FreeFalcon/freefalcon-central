@@ -123,7 +123,7 @@ public:
     };
     void ClearBombFlag(int newFlag)
     {
-        flags &= compl newFlag;
+        flags and_eq compl newFlag;
     };
     int IsSetBombFlag(int newFlag)
     {

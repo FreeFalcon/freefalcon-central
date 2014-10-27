@@ -320,7 +320,7 @@ void AircraftClass::GatherInputs(void)
 
             if (glocFactor < 0.2F)
             {
-                acFlags &= compl InRecovery;
+                acFlags and_eq compl InRecovery;
             }
         }
         else
@@ -394,7 +394,7 @@ void AircraftClass::GatherInputs(void)
 
                 if (glocFactor < 0.1F and fabs(UserStickInputs.pstick) < 0.1F)
                 {
-                    acFlags &= compl InRecovery;
+                    acFlags and_eq compl InRecovery;
                 }
             }
             else

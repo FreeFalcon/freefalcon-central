@@ -29,7 +29,7 @@ void ICPClass::ExecFACKMode(void)
         if (mUpdateFlags & FACK_UPDATE or (!(mUpdateFlags & FACK_UPDATE) and faultCount))
         {
 
-            mUpdateFlags &= !FACK_UPDATE;
+            mUpdateFlags and_eq !FACK_UPDATE;
 
             if (!faultCount)
             {
@@ -76,7 +76,7 @@ void ICPClass::ExecPfl()
     if ((mUpdateFlags & FACK_UPDATE) == 0) // nothing to update;
         ClearPFLLines(); // reset the display
 
-    mUpdateFlags &= compl FACK_UPDATE; // we'll have updated.
+    mUpdateFlags and_eq compl FACK_UPDATE; // we'll have updated.
 
     if (m_FaultDisplay == false or !playerAC or !playerAC->mFaults)
         return; // nothing to show

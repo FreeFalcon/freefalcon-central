@@ -907,10 +907,10 @@ void ParseCommandLine(LPSTR cmdLine)
                     NumHats = atoi(arg);
 
             if (_strnicmp(arg, "-nosound", 8) == 0)
-                gSoundFlags &= (0xffffffff xor FSND_SOUND);
+                gSoundFlags and_eq (0xffffffff xor FSND_SOUND);
 
             if (_strnicmp(arg, "-nopete", 7) == 0)
-                gSoundFlags &= (0xffffffff xor FSND_REPETE);
+                gSoundFlags and_eq (0xffffffff xor FSND_REPETE);
 
 #ifdef DEBUG
 

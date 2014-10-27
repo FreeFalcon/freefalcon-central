@@ -945,7 +945,7 @@ int GunClass::Exec(
                 zstagger = 0.0f;
                 muzzleAlpha[i] = 0.5f;
                 muzzleStart++;
-                muzzleStart &= 0x03;
+                muzzleStart and_eq 0x03;
                 xsize = 0.1f;
                 stagger = muzzleStart * 6.2f;
             }

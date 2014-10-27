@@ -65,7 +65,7 @@ GLubyte *ConvertImage(GLImageInfo *fi, GLint mode, GLuint *chromakey)
             g = (r >>  8) & 0xFF;
             b = (r >> 16) & 0xFF;
             a = (r >> 24) & 0xFF;
-            r &= 0xFF;
+            r and_eq 0xFF;
             j = 0;
 
             switch (mode)
@@ -609,7 +609,7 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
             }
         }
 
-        thiscode &= wordmasktable[codesize];
+        thiscode and_eq wordmasktable[codesize];
         currentcode = thiscode;
 
         if (thiscode == (bits2 + 1)) break;     /* found EOI */

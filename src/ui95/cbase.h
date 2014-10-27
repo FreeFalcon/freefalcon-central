@@ -129,7 +129,7 @@ public:
     }
     virtual void SetFlagBitOff(long bits)
     {
-        Flags_ &= compl bits;
+        Flags_ and_eq compl bits;
     }
     virtual void SetX(long x)
     {

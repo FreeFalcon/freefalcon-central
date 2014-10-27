@@ -45,7 +45,7 @@ public:
     };
     void UnsetFlag(SmsDrawFlags fl)
     {
-        flags &= compl fl;
+        flags and_eq compl fl;
     };
     void ToggleFlag(SmsDrawFlags fl)
     {

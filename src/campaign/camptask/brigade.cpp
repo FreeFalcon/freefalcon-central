@@ -147,7 +147,7 @@ BrigadeClass::BrigadeClass(VU_BYTE **stream, long *rem) : GroundUnitClass(stream
 #ifdef DEBUG
 
     for (int i = 0; i < elements; i++)
-        element[i].num_ &= 0x0000ffff;
+        element[i].num_ and_eq 0x0000ffff;
 
 #endif
     c_element = 0;

@@ -149,10 +149,10 @@ void CTimeOfDay::Setup(char *dataPath)
         if (j >= TotalTimeOfDay) j = 0;
 
         if (!(TimeOfDay[j].Flag & GL_TIME_OF_DAY_USE_SUN))
-            TimeOfDay[i].Flag &= compl GL_TIME_OF_DAY_USE_SUN;
+            TimeOfDay[i].Flag and_eq compl GL_TIME_OF_DAY_USE_SUN;
 
         if (!(TimeOfDay[j].Flag & GL_TIME_OF_DAY_USE_MOON))
-            TimeOfDay[i].Flag &= compl GL_TIME_OF_DAY_USE_MOON;
+            TimeOfDay[i].Flag and_eq compl GL_TIME_OF_DAY_USE_MOON;
 
         int k = 0;
 

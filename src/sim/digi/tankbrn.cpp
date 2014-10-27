@@ -542,9 +542,9 @@ void TankerBrain::DoneRefueling(void)
     af->ClearFlag(AirframeClass::Refueling);
     flags  or_eq  ClearingPlane;
     //curThirsty = NULL;
-    flags &= compl GivingGas;
-    flags &= compl PatternDefined;
-    //flags &= compl IsRefueling;
+    flags and_eq compl GivingGas;
+    flags and_eq compl PatternDefined;
+    //flags and_eq compl IsRefueling;
 
     //me123 transfere ownship back to host when we are done rf
     if (vuLocalSessionEntity  and 
@@ -764,8 +764,8 @@ void TankerBrain::DriveBoom(void)
                 tankingPtr->localData->el * RTD < -5.0F * /*FRB*/ ScaledRM ||
                 fabs(tankingPtr->localData->az)*RTD > 23.0F * /*FRB*/ ScaledRM)
             {
-                flags &= compl GivingGas;
-                flags &= compl AIready;
+                flags and_eq compl GivingGas;
+                flags and_eq compl AIready;
                 tankMsg = new FalconTankerMessage(self->Id(), FalconLocalGame);
                 tankMsg->dataBlock.caller = curThirsty->Id();
                 tankMsg->dataBlock.type = FalconTankerMessage::Disconnect;
@@ -807,9 +807,9 @@ void TankerBrain::DriveBoom(void)
             RemoveFromQ(curThirsty);
             tankingPtr->Release();
             tankingPtr = NULL;
-            flags &= compl ClearingPlane;
-            flags &= compl IsRefueling;
-            flags &= compl AIready;
+            flags and_eq compl ClearingPlane;
+            flags and_eq compl IsRefueling;
+            flags and_eq compl AIready;
         }
         else
         {
@@ -817,8 +817,8 @@ void TankerBrain::DriveBoom(void)
                 tankingPtr->Release();
 
             tankingPtr = NULL;
-            //flags &= compl ClearingPlane;
-            //flags &= compl IsRefueling;
+            //flags and_eq compl ClearingPlane;
+            //flags and_eq compl IsRefueling;
         }
 
         return;
@@ -955,7 +955,7 @@ void TankerBrain::DriveBoom(void)
              or ((flags & AIready) and (tmpRefuelMode >= 3.0f)))) // 27NOV03 - FRB  AI is in position
         {
             flags  or_eq  GivingGas;
-            flags &= compl AIready;
+            flags and_eq compl AIready;
             tankMsg = new FalconTankerMessage(self->Id(), FalconLocalGame);
             tankMsg->dataBlock.caller = curThirsty->Id();
             tankMsg->dataBlock.type = FalconTankerMessage::Contact;
@@ -974,7 +974,7 @@ void TankerBrain::DriveBoom(void)
             tankingPtr->localData->el * RTD < -40.0F ||
             fabs(tankingPtr->localData->az)*RTD > 23.0F)
         {
-            flags &= compl GivingGas;
+            flags and_eq compl GivingGas;
             tankMsg = new FalconTankerMessage(self->Id(), FalconLocalGame);
             tankMsg->dataBlock.caller = curThirsty->Id();
             tankMsg->dataBlock.type = FalconTankerMessage::Disconnect;
@@ -1011,9 +1011,9 @@ void TankerBrain::DriveBoom(void)
         RemoveFromQ(curThirsty);
         tankingPtr->Release();
         tankingPtr = NULL;
-        flags &= compl AIready;
-        flags &= compl ClearingPlane;
-        flags &= compl IsRefueling;
+        flags and_eq compl AIready;
+        flags and_eq compl ClearingPlane;
+        flags and_eq compl IsRefueling;
     }
     else
     {
@@ -1021,8 +1021,8 @@ void TankerBrain::DriveBoom(void)
             tankingPtr->Release();
 
         tankingPtr = NULL;
-        //flags &= compl ClearingPlane;
-        //flags &= compl IsRefueling;
+        //flags and_eq compl ClearingPlane;
+        //flags and_eq compl IsRefueling;
     }
 }
 

@@ -421,8 +421,8 @@ FlightClass::FlightClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, rem
     }
 
 #ifdef DEBUG
-    package.num_ &= 0x0000ffff;
-    squadron.num_ &= 0x0000ffff;
+    package.num_ and_eq 0x0000ffff;
+    squadron.num_ and_eq 0x0000ffff;
 #endif
     memcpychk(slots, stream, sizeof(uchar)*PILOTS_PER_FLIGHT, rem);
     memcpychk(pilots, stream, sizeof(uchar)*PILOTS_PER_FLIGHT, rem);
@@ -5764,7 +5764,7 @@ void FlightClass::ClearEvalFlag(uchar f)
 {
     if ((eval_flags & f))
     {
-        eval_flags &= compl f;
+        eval_flags and_eq compl f;
         //MakeFlightDirty (DIRTY_EVAL_FLAGS, DDP[107].priority);
         MakeFlightDirty(DIRTY_EVAL_FLAGS, SEND_EVENTUALLY);
     }

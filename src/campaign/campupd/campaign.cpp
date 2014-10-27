@@ -1710,7 +1710,7 @@ void StartReadCampFile(FalconGameType type, char *filename)
         {
             fread(&str_len, 1, 1, camp_fp);
 
-            str_len &= 0xff;
+            str_len and_eq 0xff;
 
             fread(camp_names[index], str_len, 1, camp_fp);
 
@@ -3193,7 +3193,7 @@ void MakeTacticalEdit(void)
 
 void RemoveTacticalEdit(void)
 {
-    TheCampaign.Flags &= compl CAMP_TACTICAL_EDIT;
+    TheCampaign.Flags and_eq compl CAMP_TACTICAL_EDIT;
 }
 
 void PauseTacticalEngagement(void)
@@ -3203,7 +3203,7 @@ void PauseTacticalEngagement(void)
 
 void ResumeTacticalEngagement(void)
 {
-    TheCampaign.Flags &= compl CAMP_TACTICAL_PAUSE;
+    TheCampaign.Flags and_eq compl CAMP_TACTICAL_PAUSE;
 }
 
 void OutputRef(VuEntity *ent, int refs)

@@ -47,7 +47,7 @@ void ICPClass::ExecCNIMode()
 
             // Clear the update flag
 
-            mUpdateFlags &= !CNI_UPDATE;
+            mUpdateFlags and_eq !CNI_UPDATE;
 
             // Calculate Some Stuff
             if (playerAC->curWaypoint)

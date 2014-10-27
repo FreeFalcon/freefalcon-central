@@ -2099,13 +2099,13 @@ void AirframeClass::HydrBreak(int sys)
 {
     if (sys & HYDR_A_SYSTEM)   // mark A system as down and broke
     {
-        hydrAB &= compl  HYDR_A_SYSTEM;
+        hydrAB and_eq compl  HYDR_A_SYSTEM;
         hydrAB  or_eq  HYDR_A_BROKE;
     }
 
     if (sys & HYDR_B_SYSTEM)   // mark A system as down and broke
     {
-        hydrAB &= compl  HYDR_B_SYSTEM;
+        hydrAB and_eq compl  HYDR_B_SYSTEM;
         hydrAB  or_eq  HYDR_B_BROKE;
     }
 }

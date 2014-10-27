@@ -70,7 +70,7 @@ CampManagerClass::CampManagerClass(FILE *file)
 
 #ifdef DEBUG
     // VU_ID_NUMBERs moved to 32 bits
-    share_.id_.num_ &= 0xffff;
+    share_.id_.num_ and_eq 0xffff;
 #endif
     //#ifdef CAMPTOOL
     // if (gRenameIds)

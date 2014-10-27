@@ -568,7 +568,7 @@ void CampBaseClass::SetEmitting(int e)
     }
     else if (IsEmitting())
     {
-        base_flags &= compl CBC_EMITTING;
+        base_flags and_eq compl CBC_EMITTING;
 
         if (IsBattalion() or IsObjective())
         {
@@ -590,7 +590,7 @@ void CampBaseClass::SetAggregate(bool agg)
     }
     else
     {
-        local_flags &= (compl CBC_AGGREGATE);
+        local_flags and_eq (compl CBC_AGGREGATE);
     }
 }
 /*void CampBaseClass::SetAggregate (int a)
@@ -615,7 +615,7 @@ void CampBaseClass::SetJammed(int j)
     {
         if (base_flags & CBC_JAMMED)
         {
-            base_flags &= compl CBC_JAMMED;
+            base_flags and_eq compl CBC_JAMMED;
             //MakeCampBaseDirty (DIRTY_BASE_FLAGS, DDP[7].priority);
             MakeCampBaseDirty(DIRTY_BASE_FLAGS, SEND_SOMETIME);
         }

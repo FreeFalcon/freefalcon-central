@@ -128,7 +128,7 @@ public:
     };
     void UnSetTypeFlag(int flag)
     {
-        falconType &= compl flag;
+        falconType and_eq compl flag;
     };
     void SetFalcFlag(int flag)
     {
@@ -142,7 +142,7 @@ public:
     {
         if (falconFlags & flag)
         {
-            falconFlags &= compl flag;
+            falconFlags and_eq compl flag;
             MakeFlagsDirty();
         }
     };
@@ -369,7 +369,7 @@ public:
     };
     void UnSetFELocalFlag(int flag)
     {
-        feLocalFlags &= compl flag;
+        feLocalFlags and_eq compl flag;
     };
     int IsSetFELocalFlag(int flag)
     {

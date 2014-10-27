@@ -1466,7 +1466,7 @@ void SimBaseClass::UnSetFlag(int flag)
 {
     if (specialData.flags & flag)
     {
-        specialData.flags &= compl (flag);
+        specialData.flags and_eq compl (flag);
         //MakeSimBaseDirty (DIRTY_SIM_FLAGS, DDP[164].priority);
         MakeSimBaseDirty(DIRTY_SIM_FLAGS, SEND_RELIABLE);
     }
@@ -1488,7 +1488,7 @@ void SimBaseClass::UnSetFlagSilent(int flag)
 {
     if (specialData.flags & flag)
     {
-        specialData.flags &= compl (flag);
+        specialData.flags and_eq compl (flag);
     }
 }
 
@@ -1565,7 +1565,7 @@ void SimBaseClass::ClearStatusBit(int status)
 {
     if (specialData.status & status)
     {
-        specialData.status &= compl status;
+        specialData.status and_eq compl status;
         MakeSimBaseDirty(DIRTY_SIM_STATUS, SEND_RELIABLE);
     }
 }

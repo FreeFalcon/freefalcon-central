@@ -2817,7 +2817,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 // NVG_LIGHT_LEVEL = 0.703125f
                 if (NVGmode or TVmode or IRmode)
                 {
-                    pVtx->color &= 0xFF00FF00;
+                    pVtx->color and_eq 0xFF00FF00;
                     pVtx->color  or_eq  0x0000B400;
                 }
 
@@ -2925,7 +2925,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 // NVG_LIGHT_LEVEL = 0.703125f
                 if (NVGmode or TVmode or IRmode)
                 {
-                    sVertex->color &= 0xFF00FF00;
+                    sVertex->color and_eq 0xFF00FF00;
                     sVertex->color  or_eq  0x0000B400;
                 }
 

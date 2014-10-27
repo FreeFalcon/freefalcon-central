@@ -4134,7 +4134,7 @@ void AircraftClass::ClearAcStatusBits(int bits)
 {
     if (IsAcStatusBitsSet(bits))
     {
-        status_bits &= compl bits;
+        status_bits and_eq compl bits;
         MakeAircraftDirty(DIRTY_ACSTATUS_BITS, SEND_NOW);
     }
 }

@@ -26,7 +26,7 @@ void ICPClass::ExecCOMMMode(void)
 
     if (mUpdateFlags & COMM_UPDATE)
     {
-        mUpdateFlags &= !COMM_UPDATE;
+        mUpdateFlags and_eq !COMM_UPDATE;
 
         FormatRadioString();
     }

@@ -544,8 +544,8 @@ void LeaveCurrentGame()
         case game_TacticalEngagement:
         default:
             SendMessage(FalconDisplay.appWin, FM_SHUTDOWN_CAMPAIGN, 0, 0);
-            TheCampaign.Flags &= compl CAMP_TACTICAL;
-            TheCampaign.Flags &= compl CAMP_TACTICAL_EDIT;
+            TheCampaign.Flags and_eq compl CAMP_TACTICAL;
+            TheCampaign.Flags and_eq compl CAMP_TACTICAL_EDIT;
             break;
 
         case game_Campaign:

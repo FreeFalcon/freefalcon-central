@@ -234,7 +234,7 @@ bool DXScript_Beacon(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 
 
     // All flashes OFF
-    sw &= 0xFFFFF000; // All off
+    sw and_eq 0xFFFFF000; // All off
 
     /////// 0 degree green light
 

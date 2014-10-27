@@ -101,15 +101,15 @@ void EasyHarmTargetingPod::Display(VirtualDisplay* activeDisplay)
         // Set the symbols draw color based on its team
         if (TeamInfo[platform->GetTeam()]->TStance(tmpElement->BaseObject()->GetTeam()) == War)
         {
-            color &= 0x000000FF; // Red means at war
+            color and_eq 0x000000FF; // Red means at war
         }
         else if (TeamInfo[platform->GetTeam()]->TStance(tmpElement->BaseObject()->GetTeam()) == Allied)
         {
-            color &= 0x00FF0000; // Blue means our team
+            color and_eq 0x00FF0000; // Blue means our team
         }
         else
         {
-            color &= 0x0000FF00; // Green means everyone else
+            color and_eq 0x0000FF00; // Green means everyone else
         }
 
 

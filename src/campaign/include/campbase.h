@@ -523,7 +523,7 @@ public:
     }
     void UnsetChecked(void)
     {
-        local_flags &= compl CBC_CHECKED;
+        local_flags and_eq compl CBC_CHECKED;
     }
     void SetInterest(void)
     {
@@ -531,7 +531,7 @@ public:
     }
     void UnsetInterest(void)
     {
-        local_flags &= compl CBC_INTEREST;
+        local_flags and_eq compl CBC_INTEREST;
     }
     void SetAwake(int d);
     void SetInPackage(int p);

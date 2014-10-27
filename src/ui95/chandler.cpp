@@ -282,7 +282,7 @@ void C_Handler::Cleanup()
 
     while (cur)
     {
-        cur->Flags &= compl C_BIT_ENABLED;
+        cur->Flags and_eq compl C_BIT_ENABLED;
         cur = cur->Next;
     }
 
@@ -485,7 +485,7 @@ BOOL C_Handler::HideWindow(C_Window *thewin)
     {
         if (cur->win == thewin and (cur->Flags & C_BIT_ENABLED))
         {
-            cur->Flags &= compl C_BIT_ENABLED;
+            cur->Flags and_eq compl C_BIT_ENABLED;
             SetBehindWindow(cur->win);
             cur->win->SetCritical(NULL);
 
@@ -2168,7 +2168,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     // here we found a component. process event
     // check hi bit of MouseZ, since word is unsigned
     MouseZ = 1 << ((sizeof(WORD) * 8) - 1);
-    MouseZ &= HIWORD(wParam);
+    MouseZ and_eq HIWORD(wParam);
     // here we invert, since positive in mouse wheel
     // is forward, and forward is up in screen coordinates (neg values)
     Grab_.Control_->Wheel(MouseZ ? 1 : -1, MouseX, MouseY);

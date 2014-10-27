@@ -1521,7 +1521,7 @@ RES_EXPORT int ResOpenFile(const char * name, int mode)
         int check;
 
         check = (_O_CREAT | _O_APPEND | _O_RDWR | _O_WRONLY);
-        check &= mode;
+        check and_eq mode;
 
         if (check)   /* don't known why had to do it broken out like this - ask MSVC */
         {
@@ -5847,7 +5847,7 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
 
         /* Clear EOF flag */
 
-        stream -> _flag &= compl _IOEOF;
+        stream -> _flag and_eq compl _IOEOF;
 
         /* If seeking relative to current location, then convert to
            a seek relative to beginning of file.  This accounts for
@@ -5869,7 +5869,7 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
            won't cost quite so much */
 
         if (stream->_flag & _IORW)
-            stream->_flag &= compl (_IOWRT | _IOREAD);
+            stream->_flag and_eq compl (_IOWRT | _IOREAD);
         else
         {
             if ((stream->_flag & _IOREAD)  and 

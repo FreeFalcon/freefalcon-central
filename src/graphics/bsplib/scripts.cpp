@@ -159,7 +159,7 @@ static void Beacon(void)
 
     if (fabs(da) > 5.0f * Degrees)
     {
-        sw &= 0xFFFFFFF8; // All off
+        sw and_eq 0xFFFFFFF8; // All off
     }
     else
     {
@@ -171,7 +171,7 @@ static void Beacon(void)
             }
             else
             {
-                sw &= 0xFFFFFFFD; // Flash off
+                sw and_eq 0xFFFFFFFD; // Flash off
             }
         }
         else
@@ -188,7 +188,7 @@ static void Beacon(void)
 
     if (fabs(da) > 5.0f * Degrees)
     {
-        sw &= 0xFFFFFF8F; // All off
+        sw and_eq 0xFFFFFF8F; // All off
     }
     else
     {
@@ -200,7 +200,7 @@ static void Beacon(void)
             }
             else
             {
-                sw &= 0xFFFFFFDF; // Flash off
+                sw and_eq 0xFFFFFFDF; // Flash off
             }
         }
         else
@@ -217,7 +217,7 @@ static void Beacon(void)
 
     if (fabs(da) > 5.0f * Degrees)
     {
-        sw &= 0xFFFFF8FF; // All off
+        sw and_eq 0xFFFFF8FF; // All off
     }
     else
     {
@@ -229,7 +229,7 @@ static void Beacon(void)
             }
             else
             {
-                sw &= 0xFFFFFDFF; // Flash off
+                sw and_eq 0xFFFFFDFF; // Flash off
             }
         }
         else

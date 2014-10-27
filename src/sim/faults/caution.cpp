@@ -133,7 +133,7 @@ void CautionClass::ClearCaution(int subsystem)
     vectorNum = subsystem / BITS_PER_VECTOR;
     bitNum = subsystem - vectorNum * BITS_PER_VECTOR;
 
-    mpBitVector[vectorNum] &= compl (0x01 << bitNum);
+    mpBitVector[vectorNum] and_eq compl (0x01 << bitNum);
 
 }
 

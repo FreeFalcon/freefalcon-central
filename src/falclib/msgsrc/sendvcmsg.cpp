@@ -184,7 +184,7 @@ int FalconSendVC::Process(uchar autodisp)
             }
         }
 
-        TheCampaign.Flags &= compl CAMP_NEED_VC;
+        TheCampaign.Flags and_eq compl CAMP_NEED_VC;
 
         // Let the UI know we've received some data
         if (gMainHandler)

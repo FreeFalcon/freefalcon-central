@@ -392,7 +392,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
                 displayRange = rangeScales[curRangeIdx];
                 tdisplayRange = displayRange * NM_TO_FT;
                 groundMapRange = tdisplayRange * 0.5F;
-                flags &= SP;
+                flags and_eq SP;
                 SetFlagBit(NORM);
 
                 if (WasAutoAGRange and g_bRealisticAvionics and g_bAGRadarFixes)
@@ -555,7 +555,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
         else
         {
             curCursorRate = CursorRate;
-            flags &= compl WasMoving;
+            flags and_eq compl WasMoving;
         }
 
     }
@@ -964,7 +964,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
                 if (flags & WasMoving)
                 {
                     // MD -- 20040229: switched ordering here - need WasMoving set to FALSE to bump!
-                    flags &= compl WasMoving;
+                    flags and_eq compl WasMoving;
                 }
 
                 rangeChangeCmd = CheckGMBump();

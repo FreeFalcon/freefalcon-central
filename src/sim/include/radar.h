@@ -147,7 +147,7 @@ public:
     };
     void ClearFlag(RadarFlag val)
     {
-        flag &= compl val;
+        flag and_eq compl val;
     };
     int GetFlag(void)
     {

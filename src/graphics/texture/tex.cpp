@@ -1865,7 +1865,7 @@ bool Texture::DumpImageToFile(char *szFile, int palID)
         // Preserve RGB for pre-alpha test filtering
         if (dwTmp == chromaKey)
         {
-            dwTmp &= 0x00ffffff;
+            dwTmp and_eq 0x00ffffff;
             bChroma = TRUE;
         }
 
@@ -1931,7 +1931,7 @@ bool Texture::DumpImageToFile(char *szFile, int palID)
      if(dwTmp & 0x00FFFFFF)
      {
      bSave = TRUE;
-     dwTmp &= 0x00FFFFFF;
+     dwTmp and_eq 0x00FFFFFF;
      dwTmp  or_eq  0xFF000000;
      }
      else
@@ -1955,7 +1955,7 @@ bool Texture::DumpImageToFile(char *szFile, int palID)
     // Filter out fake chroma textures
     if (!bChroma)
     {
-        this->flags &= compl MPR_TI_CHROMAKEY;
+        this->flags and_eq compl MPR_TI_CHROMAKEY;
     }
 
     return true;

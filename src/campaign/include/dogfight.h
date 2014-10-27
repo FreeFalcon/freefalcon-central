@@ -123,7 +123,7 @@ public:
     };
     void UnSetFlag(int flag)
     {
-        flags &= compl flag;
+        flags and_eq compl flag;
     };
     int  IsSetFlag(int flag)
     {
@@ -135,7 +135,7 @@ public:
     };
     void UnSetLocalFlag(int flag)
     {
-        localFlags &= compl flag;
+        localFlags and_eq compl flag;
     };
     int  IsSetLocalFlag(int flag)
     {

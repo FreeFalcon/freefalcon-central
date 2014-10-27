@@ -275,7 +275,7 @@ ObjectiveClass::ObjectiveClass(VU_BYTE **stream, long *rem) : CampBaseClass(stre
     memcpychk(&static_data.nameid, stream, sizeof(short), rem);
     memcpychk(&static_data.parent, stream, sizeof(VU_ID), rem);
 #ifdef DEBUG
-    static_data.parent.num_ &= 0x0000ffff;
+    static_data.parent.num_ and_eq 0x0000ffff;
 #endif
     memcpychk(&static_data.first_owner, stream, sizeof(Control), rem);
     memcpychk(&static_data.links, stream, sizeof(uchar), rem);
@@ -297,7 +297,7 @@ ObjectiveClass::ObjectiveClass(VU_BYTE **stream, long *rem) : CampBaseClass(stre
     {
         memcpychk(&link_data[i], stream, sizeof(CampObjectiveLinkDataType), rem);
 #ifdef DEBUG
-        link_data[i].id.num_ &= 0x0000ffff;
+        link_data[i].id.num_ and_eq 0x0000ffff;
 #endif
     }
 

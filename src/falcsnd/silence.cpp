@@ -142,7 +142,7 @@ void CompressFile(FILE *input, BIT_FILE *output, int, char*[])
             do
             {
                 look_ahead[ index++ ] = getc(input);
-                index &= BUFFER_MASK;
+                index and_eq BUFFER_MASK;
 
                 if (++run_length == 255)
                 {
@@ -174,7 +174,7 @@ void CompressFile(FILE *input, BIT_FILE *output, int, char*[])
         OutputBits(output, (unsigned long) compress[ look_ahead[ index ] ], bits);
 
         look_ahead[ index++ ] = getc(input);
-        index &= BUFFER_MASK;
+        index and_eq BUFFER_MASK;
     }
 
 }

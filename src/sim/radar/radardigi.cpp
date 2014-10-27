@@ -62,7 +62,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
 
 #endif
         SetDesiredTarget(NULL);
-        flag &= compl FirstSweep; // 2002-03-10 ADDED BY S.G. Say we have done our first radar sweep
+        flag and_eq compl FirstSweep; // 2002-03-10 ADDED BY S.G. Say we have done our first radar sweep
         return NULL;
     }
 
@@ -79,7 +79,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
             platform->SetRdrAzCenter(0.0f);
             platform->SetRdrElCenter(0.0f);
             SetDesiredTarget(NULL);
-            flag &= compl FirstSweep; // 2002-03-10 ADDED BY S.G. Say we have done our first radar sweep
+            flag and_eq compl FirstSweep; // 2002-03-10 ADDED BY S.G. Say we have done our first radar sweep
             return NULL;
         }
 
@@ -329,7 +329,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
         platform->SetRdrElCenter(0.0f);
     }
 
-    flag &= compl FirstSweep; // 2002-03-10 ADDED BY S.G. Say we have done our first radar sweep
+    flag and_eq compl FirstSweep; // 2002-03-10 ADDED BY S.G. Say we have done our first radar sweep
 
     VU_ID lastChaffID = FalconNullId;
     VU_ID id;

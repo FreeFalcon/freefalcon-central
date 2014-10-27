@@ -1503,7 +1503,7 @@ MissileClass::FindRocketGroundImpact(float *impactX, float *impactY, float *impa
 
       flags  or_eq  FindingImpact; // MLR 1/9/2004 - added to prevent the rocket's launch smoke puff trail when selected
              FlyMissile();
-      flags &= compl FindingImpact;
+      flags and_eq compl FindingImpact;
 
              ClosestApproach(); // TODO: Avoid this -- it's only really meaningful for proximity fuzed weapons
              SetPosition (x, y, z);

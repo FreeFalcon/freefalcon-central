@@ -809,7 +809,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
                 if (ebox)
                     SetPilot(ebox->GetText(), lbox);
 
-                LogState &= compl LB_REFRESH_PILOT;
+                LogState and_eq compl LB_REFRESH_PILOT;
             }
         }
 
@@ -1617,7 +1617,7 @@ void LoadLogCB(long ID,short hittype,C_Base *control)
  if(fname[0] == 0)
  return;
  UI_logbk.LoadData(fname);
- LogState &= compl LB_CHECKED;
+ LogState and_eq compl LB_CHECKED;
  if(!UI_logbk.CheckPassword(_T("")))
  PasswordWindow(TXT_LOG_IN,TXT_LOG_IN_MESSAGE,CheckPasswordCB,NoPasswordCB);
  LBSetupControls();
@@ -1710,7 +1710,7 @@ void PwdVerifiedContLoading(long, short hittype, C_Base *control)
 
                 if (UI_logbk.LoadData(lbox->GetText()))
                 {
-                    LogState &= compl LB_CHECKED;
+                    LogState and_eq compl LB_CHECKED;
 
                     if (!UI_logbk.CheckPassword(_T("")))
                         PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE, CheckPasswordCB, NoPasswordCB);
@@ -1738,7 +1738,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
         {
             if (!UI_logbk.CheckPassword(ebox->GetText()))
             {
-                LogState &= compl LB_CHECKED;
+                LogState and_eq compl LB_CHECKED;
                 PasswordWindow(TXT_VERIFY_PASSWORD, TXT_VERIFY_PASS_MESSAGE, PwdVerifiedContLoading, CloseWindowCB);
                 return;
             }
@@ -1753,7 +1753,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
             if (LogState & LB_INVALID_CALLSIGN)
             {
                 AreYouSure(TXT_ERROR, TXT_INVALID_CALLSIGN, CloseWindowCB, NULL);
-                LogState &= compl LB_INVALID_CALLSIGN;
+                LogState and_eq compl LB_INVALID_CALLSIGN;
                 //return;
             }
 
@@ -1770,7 +1770,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
             //load data for selected pilot and check password
             if (UI_logbk.LoadData(Pilot))
             {
-                LogState &= compl LB_CHECKED;
+                LogState and_eq compl LB_CHECKED;
 
                 //if password check is passed, allow access, otherwise
                 //initialize UI_logbk and update controls
@@ -1804,7 +1804,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
                 if (LogState & LB_INVALID_CALLSIGN)
                 {
                     AreYouSure(TXT_ERROR, TXT_INVALID_CALLSIGN, CloseWindowCB, NULL);
-                    LogState &= compl LB_INVALID_CALLSIGN;
+                    LogState and_eq compl LB_INVALID_CALLSIGN;
                     //return;
                 }
             }
@@ -2116,7 +2116,7 @@ void SaveLogBookCB(long ID, short hittype, C_Base *control)
     {
         if (!UI_logbk.CheckPassword(ebox->GetText()))
         {
-            LogState &= compl LB_CHECKED;
+            LogState and_eq compl LB_CHECKED;
             PasswordWindow(TXT_VERIFY_PASSWORD, TXT_VERIFY_PASS_MESSAGE, PasswordChangeVerifiedCB, CloseWindowCB);
             return;
         }
@@ -2139,7 +2139,7 @@ void CloseLogWindowCB(long ID, short hittype, C_Base *control)
         return;
 
     PlayerOptions.LoadOptions(LogBook.OptionsFile());
-    LogState &= (LB_CHECKED | LB_LOADED_ONCE);
+    LogState and_eq (LB_CHECKED | LB_LOADED_ONCE);
     CloseWindowCB(ID, hittype, control);
 }
 

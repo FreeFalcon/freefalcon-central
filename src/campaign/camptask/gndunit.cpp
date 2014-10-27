@@ -114,7 +114,7 @@ GroundUnitClass::GroundUnitClass(VU_BYTE **stream, long *rem) : UnitClass(stream
     memcpychk(&division, stream, sizeof(short), rem);
     memcpychk(&aobj, stream, sizeof(VU_ID), rem);
 #ifdef DEBUG
-    aobj.num_ &= 0xffff;
+    aobj.num_ and_eq 0xffff;
 #endif
     o = FindObjective(aobj);
 

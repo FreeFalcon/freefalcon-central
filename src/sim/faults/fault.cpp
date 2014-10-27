@@ -268,7 +268,7 @@ void FaultClass::ClearFault(type_FSubSystem subsystem)
 // JPO clear individual fault bit
 void FaultClass::ClearFault(type_FSubSystem subsystem, type_FFunction function)
 {
-    mpFaultList[subsystem].elFunction &= compl  function;
+    mpFaultList[subsystem].elFunction and_eq compl  function;
 
     if (mpFaultList[subsystem].elFunction == nofault)
     {

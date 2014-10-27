@@ -143,7 +143,7 @@ public:
     };
     void ClearFlag(int newFlag)
     {
-        flags &= compl newFlag;
+        flags and_eq compl newFlag;
     };
     int  IsSet(int newFlag)
     {

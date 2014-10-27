@@ -121,7 +121,7 @@ int FalconCampDataMessage::Process(uchar autodisp)
         case campPriorityData:
             // Set the new priority of this objective/these objectives
             DecodePrimaryObjectiveList(data, ent);
-            TheCampaign.Flags &= compl CAMP_NEED_PERSIST;
+            TheCampaign.Flags and_eq compl CAMP_NEED_PERSIST;
 
             if (gMainHandler)
                 PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_PRIORITIES, 0);

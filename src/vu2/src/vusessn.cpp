@@ -114,7 +114,7 @@ static int ReadMessageHeader(VU_BYTE *data, VuMessageHeader* hdr)
     if (*data & 0x80)     // test for high bit set
     {
         hdr->length_  = static_cast<ushort>(((data[0] << 8) | data[1]));
-        hdr->length_ &= 0x7fff; // mask off huffman bit
+        hdr->length_ and_eq 0x7fff; // mask off huffman bit
         retsize       = MAX_MSG_HDR_SIZE;
     }
     else

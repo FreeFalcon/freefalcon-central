@@ -144,7 +144,7 @@ BOOL C_MapIcon::ShowByType(long typemask)
     {
         if (cur->Type & typemask)
         {
-            cur->Flags &= compl C_BIT_INVISIBLE;
+            cur->Flags and_eq compl C_BIT_INVISIBLE;
             retval = TRUE;
         }
 
@@ -187,7 +187,7 @@ void C_MapIcon::Show()
 
     while (cur)
     {
-        cur->Flags &= compl C_BIT_INVISIBLE;
+        cur->Flags and_eq compl C_BIT_INVISIBLE;
         cur = (MAPICONLIST*)Root_->GetNext(&current, &curidx);
     }
 }

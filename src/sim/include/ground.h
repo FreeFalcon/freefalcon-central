@@ -81,7 +81,7 @@ public:
     };
     void UnSetGunFiring(int i)
     {
-        gunFireFlags &= compl (1 << i);
+        gunFireFlags and_eq compl (1 << i);
     };
 
     void RunSensors(void);

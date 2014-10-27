@@ -36,7 +36,7 @@ void ICPClass::ExecILSMode(void)
 
         if (mUpdateFlags & ILS_UPDATE)
         {
-            mUpdateFlags &= compl ILS_UPDATE;
+            mUpdateFlags and_eq compl ILS_UPDATE;
 
             if (gNavigationSys)
             {

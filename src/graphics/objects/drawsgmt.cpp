@@ -2669,7 +2669,7 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
     for (j = 0; j < 256; j++)
     {
         intalp = (MissleTrailTexture.palette->paletteData[j] >> 24);
-        MissleTrailTexture.palette->paletteData[j] &= 0x00ffffff;
+        MissleTrailTexture.palette->paletteData[j] and_eq 0x00ffffff;
 
         if (j == 0)
             continue;
@@ -2705,7 +2705,7 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
     for (j = 0; j < 256; j++)
     {
         intalp = (FireTrailTexture.palette->paletteData[j] >> 24);
-        FireTrailTexture.palette->paletteData[j] &= 0x00ffffff;
+        FireTrailTexture.palette->paletteData[j] and_eq 0x00ffffff;
 
         if (j == 0)
             continue;
@@ -2742,7 +2742,7 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
     for (j = 0; j < 256; j++)
     {
         intalp = (SmokeTrailTexture.palette->paletteData[j] >> 24);
-        SmokeTrailTexture.palette->paletteData[j] &= 0x00ffffff;
+        SmokeTrailTexture.palette->paletteData[j] and_eq 0x00ffffff;
 
         if (j == 0)
             continue;
@@ -2770,7 +2770,7 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
     for (j = 0; j < 256; j++)
     {
         intalp = (GunTrailTexture.palette->paletteData[j] >> 24);
-        GunTrailTexture.palette->paletteData[j] &= 0x00ffffff;
+        GunTrailTexture.palette->paletteData[j] and_eq 0x00ffffff;
 
         if (j == 0)
             continue;

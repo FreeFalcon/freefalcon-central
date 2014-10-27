@@ -925,7 +925,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
 
     if (this not_eq SimDriver.GetPlayerEntity())
     {
-        piece -> sfxflag &= compl SFX_F16CRASH_OBJECT;
+        piece -> sfxflag and_eq compl SFX_F16CRASH_OBJECT;
     }
 
     return 1;
@@ -990,7 +990,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
             numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NOSE,  dirflag, *mask, speed);
             numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_FRONT, dirflag, *mask, speed);
             numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_BACK,  dirflag, *mask, speed);
-            *mask &= DAMAGEF16_BACK;
+            *mask and_eq DAMAGEF16_BACK;
         }
         else if (damagetype & 0x3)
         {
@@ -1005,7 +1005,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
             numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_RWING, dirflag, *mask, speed);
             numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_RSTAB, dirflag, *mask, speed);
             numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_ONLYBODY, dirflag, *mask, speed);
-            *mask &= DAMAGEF16_ONLYBODY;
+            *mask and_eq DAMAGEF16_ONLYBODY;
         }
     }
     else
@@ -1022,7 +1022,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_LSTAB, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NOSE, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NOLEFTANDNOSE, dirflag, *mask, speed);
-                *mask &= DAMAGEF16_NOLEFTANDNOSE;
+                *mask and_eq DAMAGEF16_NOLEFTANDNOSE;
             }
             else if (damagetype & 0x8)   // damage to the front
             {
@@ -1032,14 +1032,14 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NOSE, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_FRONT, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_BACKWITHRIGHT, dirflag, *mask, speed);
-                *mask &= DAMAGEF16_BACKWITHRIGHT;
+                *mask and_eq DAMAGEF16_BACKWITHRIGHT;
             }
             else
             {
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_LWING, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_LSTAB, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NOLEFT, dirflag, *mask, speed);
-                *mask &= DAMAGEF16_NOLEFT;
+                *mask and_eq DAMAGEF16_NOLEFT;
             }
         }
         else if (damagetype & 0x2)
@@ -1054,7 +1054,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_RSTAB, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NOSE, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NORIGHTANDNOSE, dirflag, *mask, speed);
-                *mask &= DAMAGEF16_NORIGHTANDNOSE;
+                *mask and_eq DAMAGEF16_NORIGHTANDNOSE;
             }
             else if (damagetype & 0x8)   // damage to the front
             {
@@ -1064,14 +1064,14 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NOSE, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_FRONT, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_BACKWITHLEFT, dirflag, *mask, speed);
-                *mask &= DAMAGEF16_BACKWITHLEFT;
+                *mask and_eq DAMAGEF16_BACKWITHLEFT;
             }
             else
             {
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_RWING, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_RSTAB, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NORIGHT, dirflag, *mask, speed);
-                *mask &= DAMAGEF16_NORIGHT;
+                *mask and_eq DAMAGEF16_NORIGHT;
             }
         }
         else if (damagetype & 0x4)
@@ -1080,7 +1080,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
             dirflag = DAMAGEF16_TOFRONT;
             numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NOSE, dirflag, *mask, speed);
             numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NONOSE, dirflag, *mask, speed);
-            *mask &= DAMAGEF16_NONOSE;
+            *mask and_eq DAMAGEF16_NONOSE;
         }
         else if (damagetype & 0x8)
         {
@@ -1089,7 +1089,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
             numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NOSE, dirflag, *mask, speed);
             numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_FRONT, dirflag, *mask, speed);
             numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_BACKWITHWING, dirflag, *mask, speed);
-            *mask &= DAMAGEF16_BACKWITHWING;
+            *mask and_eq DAMAGEF16_BACKWITHWING;
         }
     }
 
@@ -1145,7 +1145,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
         }
 
         numpiece += SetDamageF16PieceType(&(piece[numpiece]), i, dirflag, *mask, speed);
-        *mask &= i;
+        *mask and_eq i;
     }
 
     return numpiece;

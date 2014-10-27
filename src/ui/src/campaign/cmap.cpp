@@ -1118,7 +1118,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
             {
                 CurWP_->SetWPGroup(campID + i, campID + i);
                 CurWP_->SetState(campID + i, 0);
-                wpl->Flags &= compl C_BIT_ENABLED;
+                wpl->Flags and_eq compl C_BIT_ENABLED;
             }
         }
         else if ((wp->GetWPAction() == WP_TAKEOFF) or (wp->GetWPAction() == WP_LAND))
@@ -1130,7 +1130,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
             {
                 CurWP_->SetWPGroup(campID + i, campID + i);
                 CurWP_->SetState(campID + i, 0);
-                wpl->Flags &= compl C_BIT_ENABLED;
+                wpl->Flags and_eq compl C_BIT_ENABLED;
             }
         }
 
@@ -1924,7 +1924,7 @@ void C_Map::HideObjectiveType(long mask)
         }
 
     UI_Leave(Leave);
-    ObjectiveMask_ &= compl offflag;
+    ObjectiveMask_ and_eq compl offflag;
 }
 
 void C_Map::ShowUnitType(long mask)
@@ -1992,7 +1992,7 @@ void C_Map::HideUnitType(long mask)
         }
 
     UI_Leave(Leave);
-    UnitMask_ &= compl offflag;
+    UnitMask_ and_eq compl offflag;
 }
 
 void C_Map::SetUnitLevel(long level)
@@ -2089,7 +2089,7 @@ void C_Map::HideAirUnitType(long mask)
         }
 
     UI_Leave(Leave);
-    AirUnitMask_ &= compl offflag;
+    AirUnitMask_ and_eq compl offflag;
 }
 
 // 2002-02-21 ADDED BY S.G. Goes throuh all the AIR_TypeList and refresh them
@@ -2159,7 +2159,7 @@ void C_Map::HideNavalUnitType(long mask)
         }
 
     UI_Leave(Leave);
-    NavalUnitMask_ &= compl offflag;
+    NavalUnitMask_ and_eq compl offflag;
 }
 
 void C_Map::ShowThreatType(long mask)
@@ -2287,7 +2287,7 @@ void C_Map::HideThreatType(long mask)
                 }
         }
 
-    ThreatMask_ &= compl offflag;
+    ThreatMask_ and_eq compl offflag;
 
     Map_->NoOverlay();
 #if 0

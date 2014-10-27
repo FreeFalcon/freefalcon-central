@@ -865,8 +865,8 @@ void DogfightClass::RestartGame(void)
 {
     MonoPrint("Restarting Game\n");
     // Reset game and mission evaluator after everyone has returned to the UI and viewed their scores
-    flags &= compl DF_GAME_OVER;
-    localFlags &= compl DF_VIEWED_SCORES;
+    flags and_eq compl DF_GAME_OVER;
+    localFlags and_eq compl DF_VIEWED_SCORES;
     TheCampaign.MissionEvaluator->PreDogfightEval();
     ApplySettings();
 

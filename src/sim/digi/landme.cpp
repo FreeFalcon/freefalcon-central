@@ -1322,7 +1322,7 @@ void DigitalBrain::Land(void)
                     )
                     {
                         // 02JAN04 - FRB - Make parking spot available for others
-                        PtDataTable[curTaxiPoint].flags &= compl PT_OCCUPIED;
+                        PtDataTable[curTaxiPoint].flags and_eq compl PT_OCCUPIED;
                         RegroupAircraft(self); //end of the line, time to pull you
                     }
                 }
@@ -2133,7 +2133,7 @@ void DigitalBrain::TakeOff()
                 (PtDataTable[curTaxiPoint].type == LargeParkPt)
             )
             {
-                PtDataTable[curTaxiPoint].flags &= compl PT_OCCUPIED;
+                PtDataTable[curTaxiPoint].flags and_eq compl PT_OCCUPIED;
             }
 
             if (SimLibElapsedTime > waittimer + TAKEOFF_TIME_DELTA)
@@ -2196,7 +2196,7 @@ void DigitalBrain::TakeOff()
             // 17JAN04 - FRB - clear occupied parking spot flag
             if ((PtDataTable[curTaxiPoint].type == SmallParkPt) or (PtDataTable[curTaxiPoint].type == LargeParkPt))
             {
-                PtDataTable[curTaxiPoint].flags &= compl PT_OCCUPIED;
+                PtDataTable[curTaxiPoint].flags and_eq compl PT_OCCUPIED;
             }
 
             desiredSpeed = 0.0F;
@@ -2916,7 +2916,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
         if (HP_Moving)
         {
             // Cobra - Make HP's parking spot available
-            PtDataTable[flight_leader->spawnpoint].flags &= compl PT_OCCUPIED;
+            PtDataTable[flight_leader->spawnpoint].flags and_eq compl PT_OCCUPIED;
             ((AircraftClass*)flight_leader)->DBrain()->SetTaxiPoint(GetFirstPt(rwIndex));
         }
     }
@@ -3038,7 +3038,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
                 af->canopyState = false; // OK
 
             // Cobra - Clear parking spot occupied flag
-            PtDataTable[self->spawnpoint].flags &= compl PT_OCCUPIED; // Cobra - Make HP's parking spot available
+            PtDataTable[self->spawnpoint].flags and_eq compl PT_OCCUPIED; // Cobra - Make HP's parking spot available
 
             //just taxi along
             pt = GetPrevTaxiPt(curTaxiPoint);    // 17JAN04 - FRB - Get taxi pt (prev pt may be parking pt)
@@ -3360,7 +3360,7 @@ void DigitalBrain::TaxiBack(ObjectiveClass *Airbase)
         if (!curTaxiPoint or PtDataTable[curTaxiPoint].flags & PT_LAST)
         {
             // 02JAN04 - FRB - Make parking spot available for others
-            PtDataTable[curTaxiPoint].flags &= compl PT_OCCUPIED;
+            PtDataTable[curTaxiPoint].flags and_eq compl PT_OCCUPIED;
             RegroupAircraft(self);
         }
     }
