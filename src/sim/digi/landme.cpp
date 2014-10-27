@@ -2961,7 +2961,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
         }
 
         /*
-         if (flightLead && flightLead->IsPlayer() && flightlead->AutopilotType()!=AircraftClass::CombatAP) // Cobra
+         if (flightLead && flightLead->IsPlayer() && flightlead->AutopilotType() not_eq AircraftClass::CombatAP) // Cobra
          minPoint =0;
          else
          if(flightLead && flightLead->OnGround() &&

@@ -3880,7 +3880,7 @@ void SimEmergencyJettison(unsigned long, int state, void*)
                         MfdDisplay[1]->EmergStoreMode = MfdDisplay[1]->CurMode();
                         MfdDisplay[1]->SetNewMode(MFDClass::SMSMode);
 
-                        if (SimDriver.GetPlayerAircraft()->Sms->drawable->DisplayMode() !=
+                        if (SimDriver.GetPlayerAircraft()->Sms->drawable->DisplayMode()  not_eq 
                             SmsDrawable::EmergJet)
                         {
                             SimDriver.GetPlayerAircraft()->Sms->drawable->EmergStoreMode =

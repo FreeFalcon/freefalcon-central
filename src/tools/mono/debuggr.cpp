@@ -901,7 +901,7 @@ void DebugSwapbuffer()
 
     for (i = 0; i < 0x8000; i++)
     {
-        if (*((char *)(screen_buffer[page] + i)) !=
+        if (*((char *)(screen_buffer[page] + i))  not_eq 
             *((char *)(screen_buffer[1 - page] + i)))
         {
 #ifndef DISABLE_MONO_DISPLAY

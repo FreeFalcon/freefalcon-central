@@ -872,7 +872,7 @@ void CDXEngine::DrawSurface()
 
 
     ////////////////////// Test if any change in rendering mode /////////////
-    //if(NewFlags.StateFlags!=m_LastFlags.StateFlags){
+    //if(NewFlags.StateFlags not_eq m_LastFlags.StateFlags){
 
 #ifdef DEBUG_ENGINE
     DXStateChanges++;

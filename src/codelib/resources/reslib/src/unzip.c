@@ -134,10 +134,10 @@ _say_error(int error, const char * msg, int line, const char * filename);
 
 #ifdef SFX
 #  define UNKN_COMPR \
-    (crec.compression_method!=STORED && crec.compression_method!=DEFLATED)
+    (crec.compression_method not_eq STORED && crec.compression_method not_eq DEFLATED)
 #else
 #  define UNKN_COMPR \
-    (crec.compression_method>IMPLODED && crec.compression_method!=DEFLATED)
+    (crec.compression_method>IMPLODED && crec.compression_method not_eq DEFLATED)
 #endif
 
 

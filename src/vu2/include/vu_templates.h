@@ -38,7 +38,7 @@ public:
         return e == rhs.e;
     }
     /** different */
-    bool operator!=(const VuBin &rhs)const
+    bool operator not_eq (const VuBin &rhs)const
     {
         return !operator==(rhs);
     }
@@ -94,7 +94,7 @@ template <class E> bool operator==(const void* le, const VuBin<E> &re)
     return ((void*)re.get()) == le;
 }
 /** difference between void * and a VuBin */
-template <class E> bool operator!=(const void* le, const VuBin<E> &re)
+template <class E> bool operator not_eq (const void* le, const VuBin<E> &re)
 {
     return ((void*)re.get()) not_eq le;
 }
