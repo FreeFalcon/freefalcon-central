@@ -1305,7 +1305,7 @@ C_Entity *AddDivisionToOOB(Division div)
     if (!Cat)
         return(NULL);
 
-    TeamID |= Cat;
+    TeamID  or_eq  Cat;
     Team_Cat = gOOBTree->Find(TeamID);
 
     if (Team_Cat)
@@ -1366,7 +1366,7 @@ C_Base *AddItemToOOB(CampEntity entity)
     if (!Cat)
         return(NULL);
 
-    TeamID |= Cat;
+    TeamID  or_eq  Cat;
     Team_Cat = gOOBTree->Find(TeamID);
 
     if (Team_Cat)

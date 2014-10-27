@@ -208,36 +208,36 @@ long FigureOutHowIDid()
     }
 
     if (player == MKills)
-        HowIDid |= _MOST_KILLS_;
+        HowIDid  or_eq  _MOST_KILLS_;
 
     if (player == MDeaths)
-        HowIDid |= _MOST_DEATHS_;
+        HowIDid  or_eq  _MOST_DEATHS_;
 
     if (player == MFrags)
-        HowIDid |= _MOST_FRAGS_;
+        HowIDid  or_eq  _MOST_FRAGS_;
 
     if (player == LKills)
-        HowIDid |= _FEWEST_KILLS_;
+        HowIDid  or_eq  _FEWEST_KILLS_;
 
     if (SimDogfight.GetGameType() != dog_Furball)
     {
         if (TeamRank[0] == team && TeamUsed[1])
-            HowIDid |= _FIRST_PLACE_;
+            HowIDid  or_eq  _FIRST_PLACE_;
         else
-            HowIDid |= _LAST_PLACE_;
+            HowIDid  or_eq  _LAST_PLACE_;
 
         if (TeamRank[1] == team && TeamUsed[2])
-            HowIDid |= _SECOND_PLACE_;
+            HowIDid  or_eq  _SECOND_PLACE_;
         else
-            HowIDid |= _LAST_PLACE_;
+            HowIDid  or_eq  _LAST_PLACE_;
 
         if (TeamRank[2] == team && TeamUsed[3])
-            HowIDid |= _THIRD_PLACE_;
+            HowIDid  or_eq  _THIRD_PLACE_;
         else
-            HowIDid |= _LAST_PLACE_;
+            HowIDid  or_eq  _LAST_PLACE_;
 
         if (TeamRank[3] == team)
-            HowIDid |= _LAST_PLACE_;
+            HowIDid  or_eq  _LAST_PLACE_;
     }
     else
     {
@@ -246,13 +246,13 @@ long FigureOutHowIDid()
         else
         {
             if (!playerrank)
-                HowIDid |= _FIRST_PLACE_;
+                HowIDid  or_eq  _FIRST_PLACE_;
 
             if (playerrank == 1)
-                HowIDid |= _SECOND_PLACE_;
+                HowIDid  or_eq  _SECOND_PLACE_;
 
             if (playerrank == 2)
-                HowIDid |= _THIRD_PLACE_;
+                HowIDid  or_eq  _THIRD_PLACE_;
         }
     }
 

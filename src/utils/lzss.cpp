@@ -21,6 +21,7 @@
 
 --------------------------------------------------------------------*/
 
+#include <cISO646>
 #include <stddef.h>
 #include <memory.h>
 #ifdef INCLUDE_FILE_COMPRESSION
@@ -360,7 +361,7 @@ int FlushOutputBuffer(uchar *output_string, LZSS_COMP_CTXT* ctxt)
 int OutputChar(int data, uchar *output_string, LZSS_COMP_CTXT* ctxt)
 {
     ctxt->DataBuffer[ ctxt->BufferOffset++ ] = (uchar) data;
-    ctxt->DataBuffer[ 0 ] |= ctxt->FlagBitMask;
+    ctxt->DataBuffer[ 0 ]  or_eq  ctxt->FlagBitMask;
     ctxt->FlagBitMask <<= 1;
     ctxt->inc_output_string = 0;                              /**/
 
@@ -390,7 +391,7 @@ int OutputChar(int data, uchar *output_string, LZSS_COMP_CTXT* ctxt)
 int OutputPair(int position, int length, uchar *output_string, LZSS_COMP_CTXT* ctxt)
 {
     ctxt->DataBuffer[ ctxt->BufferOffset ] = (uchar)(length << 4);
-    ctxt->DataBuffer[ ctxt->BufferOffset++ ] |= (position >> 8);
+    ctxt->DataBuffer[ ctxt->BufferOffset++ ]  or_eq  (position >> 8);
     ctxt->DataBuffer[ ctxt->BufferOffset++ ] = (uchar)(position & 0xff);
     ctxt->FlagBitMask <<= 1;
     ctxt->inc_output_string = 0;                              /**/
@@ -667,7 +668,7 @@ extern "C"
                 match_position = *input_string;             /**/
                 CHSZ(srcSize, 1);
                 input_string++;                             /**/
-                match_position |= (match_length & 0xf) << 8;
+                match_position  or_eq  (match_length & 0xf) << 8;
                 match_length >>= 4;
                 match_length += BREAK_EVEN;
 

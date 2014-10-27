@@ -941,7 +941,7 @@ void TextureDB::Activate(SetEntry* pSet, TileEntry* pTile, int res)
         WORD info = MPR_TI_PALETTE;
 
         if (g_bEnableStaticTerrainTextures)
-            dwFlags |= TextureHandle::FLAG_HINT_STATIC;
+            dwFlags  or_eq  TextureHandle::FLAG_HINT_STATIC;
 
         ((TextureHandle *)pTile->handle[res])->Create("TextureDB", info, 8, static_cast<UInt16>(pTile->width[res]), static_cast<UInt16>(pTile->height[res]), dwFlags);
 
@@ -1448,13 +1448,13 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
             ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '5'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth;
-            ddsd.dwFlags |= DDSD_LINEARSIZE;
+            ddsd.dwFlags  or_eq  DDSD_LINEARSIZE;
         }
 
         if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '1'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth / 2;
-            ddsd.dwFlags |= DDSD_LINEARSIZE;
+            ddsd.dwFlags  or_eq  DDSD_LINEARSIZE;
         }
     }
 
@@ -1464,41 +1464,41 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     // Note: HACK (using height for flags)
     pTile->height[res] = MPR_TI_DDS;
     // Note: MUST BE DXT1
-    pTile->height[res] |= MPR_TI_DXT1;
+    pTile->height[res]  or_eq  MPR_TI_DXT1;
 
     // Note: 1024x1024 Max!
     switch (ddsd.dwWidth)
     {
         case 16:
-            pTile->height[res] |= MPR_TI_16;
+            pTile->height[res]  or_eq  MPR_TI_16;
             break;
 
         case 32:
-            pTile->height[res] |= MPR_TI_32;
+            pTile->height[res]  or_eq  MPR_TI_32;
             break;
 
         case 64:
-            pTile->height[res] |= MPR_TI_64;
+            pTile->height[res]  or_eq  MPR_TI_64;
             break;
 
         case 128:
-            pTile->height[res] |= MPR_TI_128;
+            pTile->height[res]  or_eq  MPR_TI_128;
             break;
 
         case 256:
-            pTile->height[res] |= MPR_TI_256;
+            pTile->height[res]  or_eq  MPR_TI_256;
             break;
 
         case 512:
-            pTile->height[res] |= MPR_TI_512;
+            pTile->height[res]  or_eq  MPR_TI_512;
             break;
 
         case 1024:
-            pTile->height[res] |= MPR_TI_1024;
+            pTile->height[res]  or_eq  MPR_TI_1024;
             break;
 
         case 2048:
-            pTile->height[res] |= MPR_TI_2048;
+            pTile->height[res]  or_eq  MPR_TI_2048;
             break;
 
         default:
@@ -1536,54 +1536,54 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
             ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '5'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth;
-            ddsd.dwFlags |= DDSD_LINEARSIZE;
+            ddsd.dwFlags  or_eq  DDSD_LINEARSIZE;
         }
 
         if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '1'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth / 2;
-            ddsd.dwFlags |= DDSD_LINEARSIZE;
+            ddsd.dwFlags  or_eq  DDSD_LINEARSIZE;
         }
     }
 
     // Note: HACK (using height for flags)
     pTile->heightN[res] = MPR_TI_DDS;
     // Note: MUST BE DXT1
-    pTile->heightN[res] |= MPR_TI_DXT1;
+    pTile->heightN[res]  or_eq  MPR_TI_DXT1;
 
     // Note: 1024x1024 Max!
     switch (ddsd.dwWidth)
     {
         case 16:
-            pTile->heightN[res] |= MPR_TI_16;
+            pTile->heightN[res]  or_eq  MPR_TI_16;
             break;
 
         case 32:
-            pTile->heightN[res] |= MPR_TI_32;
+            pTile->heightN[res]  or_eq  MPR_TI_32;
             break;
 
         case 64:
-            pTile->heightN[res] |= MPR_TI_64;
+            pTile->heightN[res]  or_eq  MPR_TI_64;
             break;
 
         case 128:
-            pTile->heightN[res] |= MPR_TI_128;
+            pTile->heightN[res]  or_eq  MPR_TI_128;
             break;
 
         case 256:
-            pTile->heightN[res] |= MPR_TI_256;
+            pTile->heightN[res]  or_eq  MPR_TI_256;
             break;
 
         case 512:
-            pTile->heightN[res] |= MPR_TI_512;
+            pTile->heightN[res]  or_eq  MPR_TI_512;
             break;
 
         case 1024:
-            pTile->heightN[res] |= MPR_TI_1024;
+            pTile->heightN[res]  or_eq  MPR_TI_1024;
             break;
 
         case 2048:
-            pTile->heightN[res] |= MPR_TI_2048;
+            pTile->heightN[res]  or_eq  MPR_TI_2048;
             break;
 
         default:

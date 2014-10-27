@@ -333,10 +333,10 @@ ush   mask[] =
 //#define CHECK_EOF
 
 #ifndef CHECK_EOF
-#define NEEDBITS(n) {while(k<(n)){b|=((ulg)NEXTBYTE)<<k;k+=8;}}
+#define NEEDBITS(n) {while(k<(n)){b or_eq ((ulg)NEXTBYTE)<<k;k+=8;}}
 #else
 #define NEEDBITS(n) {while(k<(n)){int c=NEXTBYTE;if(c==EOF)return 1;\
-    b|=((ulg)c)<<k;k+=8;}}
+    b or_eq ((ulg)c)<<k;k+=8;}}
 #endif /* Piet Plomp:  change "return 1" to "break" */
 
 #define DUMPBITS(n) {b>>=(n);k-=(n);}

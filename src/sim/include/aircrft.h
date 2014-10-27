@@ -184,7 +184,7 @@ public:
     };
     void StationFailed(StationFlags fl)
     {
-        StationsFailed |= fl;
+        StationsFailed  or_eq  fl;
     };
     int GetStationFailed(StationFlags fl)
     {
@@ -270,7 +270,7 @@ public:
     };
     void INSOn(INSAlignFlags fl)
     {
-        INSFlags |= fl;
+        INSFlags  or_eq  fl;
     };
     void INSOff(INSAlignFlags fl)
     {
@@ -332,7 +332,7 @@ public:
     };
     void AVTROn(AVTRStateFlags fl)
     {
-        AVTRFlags |= fl;
+        AVTRFlags  or_eq  fl;
     };
     void AVTROff(AVTRStateFlags fl)
     {
@@ -365,7 +365,7 @@ public:
     };
     void LEFOn(LEFStateFlags fl)
     {
-        LEFFlags |= fl;
+        LEFFlags  or_eq  fl;
     };
     void LEFOff(LEFStateFlags fl)
     {
@@ -583,7 +583,7 @@ public:
     };
     void SetAPFlag(APFlags flag)
     {
-        APFlag |= flag;
+        APFlag  or_eq  flag;
     };
     void ClearAPFlag(APFlags flag)
     {
@@ -660,7 +660,7 @@ public:
     unsigned int powerFlags;
     void PowerOn(AvionicsPowerFlags fl)
     {
-        powerFlags |= fl;
+        powerFlags  or_eq  fl;
     };
     int HasPower(AvionicsPowerFlags fl);
     void PowerOff(AvionicsPowerFlags fl)
@@ -712,7 +712,7 @@ public:
     };
     void ElecSet(ElectricLights lt)
     {
-        elecLights |= lt;
+        elecLights  or_eq  lt;
     };
     void ElecClear(ElectricLights lt)
     {

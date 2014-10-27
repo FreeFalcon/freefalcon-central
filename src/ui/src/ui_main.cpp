@@ -916,7 +916,7 @@ static void OpenTacticalCB(long , short hittype, C_Base *control)
     LeaveCurrentGame();
 
     RuleMode = rTACTICAL_ENGAGEMENT;
-    TheCampaign.Flags |= CAMP_TACTICAL;
+    TheCampaign.Flags  or_eq  CAMP_TACTICAL;
 
     SetCursor(gCursors[CRSR_WAIT]);
 
@@ -1373,21 +1373,21 @@ void SetStartupFlags()
     for (int i = 0; List1[i]; ++i)
         if (stricmp(List1[i], gUBuffer) == 0)
         {
-            gUI_Tracking_Flag |= _UI_TRACK_FLAG00;
+            gUI_Tracking_Flag  or_eq  _UI_TRACK_FLAG00;
             break;
         }
 
     for (int i = 0; List2[i]; ++i)
         if (stricmp(List2[i], gUBuffer) == 0)
         {
-            gUI_Tracking_Flag |= _UI_TRACK_FLAG01;
+            gUI_Tracking_Flag  or_eq  _UI_TRACK_FLAG01;
             break;
         }
 
     for (int i = 0; List3[i]; ++i)
         if (stricmp(List3[i], gUBuffer) == 0)
         {
-            gUI_Tracking_Flag |= _UI_TRACK_FLAG02;
+            gUI_Tracking_Flag  or_eq  _UI_TRACK_FLAG02;
             break;
         }
 }
@@ -1770,7 +1770,7 @@ int UI_Startup()
 
     if (!(LogState & LB_LOADED_ONCE))
     {
-        LogState |= LB_LOADED_ONCE;
+        LogState  or_eq  LB_LOADED_ONCE;
         LogBook.Initialize();
         UI_logbk.Initialize();
         PlayerOptions.Initialize();

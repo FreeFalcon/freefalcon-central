@@ -349,9 +349,9 @@ void ContextMPR::ClearBuffers(WORD ClearInfo)
 
     DWORD dwClearFlags = 0;
 
-    if (ClearInfo & MPR_CI_DRAW_BUFFER) dwClearFlags |= D3DCLEAR_TARGET;
+    if (ClearInfo & MPR_CI_DRAW_BUFFER) dwClearFlags  or_eq  D3DCLEAR_TARGET;
 
-    if (ClearInfo & MPR_CI_ZBUFFER) dwClearFlags |= D3DCLEAR_ZBUFFER;
+    if (ClearInfo & MPR_CI_ZBUFFER) dwClearFlags  or_eq  D3DCLEAR_ZBUFFER;
 
     HRESULT hr = m_pD3DD->Clear(NULL, NULL, dwClearFlags, m_colBG, 1.0f, NULL);
     ShiAssert(SUCCEEDED(hr));
@@ -2818,7 +2818,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 if (NVGmode || TVmode || IRmode)
                 {
                     pVtx->color &= 0xFF00FF00;
-                    pVtx->color |= 0x0000B400;
+                    pVtx->color  or_eq  0x0000B400;
                 }
 
                 ShiAssert(uv);
@@ -2926,7 +2926,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 if (NVGmode || TVmode || IRmode)
                 {
                     sVertex->color &= 0xFF00FF00;
-                    sVertex->color |= 0x0000B400;
+                    sVertex->color  or_eq  0x0000B400;
                 }
 
                 ShiAssert(uv);

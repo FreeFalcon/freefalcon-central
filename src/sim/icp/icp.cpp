@@ -235,7 +235,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
 
                 if (mICPSecondaryMode == NONE_MODE)
                 {
-                    mUpdateFlags |= CNI_UPDATE;
+                    mUpdateFlags  or_eq  CNI_UPDATE;
                     ExecCNIMode();
                 }
             }
@@ -255,7 +255,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 mpTertiaryExclusiveButton->SetCurrentState(0);
                 mICPTertiaryMode = mode;
                 mpTertiaryExclusiveButton = pbutton;
-                mUpdateFlags |= CNI_UPDATE;
+                mUpdateFlags  or_eq  CNI_UPDATE;
 
                 if (VM)
                 {
@@ -277,7 +277,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 mICPSecondaryMode = NONE_MODE;
                 mpSecondaryExclusiveButton->SetCurrentState(0);
                 mpSecondaryExclusiveButton  = NULL;
-                mUpdateFlags |= CNI_UPDATE;
+                mUpdateFlags  or_eq  CNI_UPDATE;
                 ExecCNIMode();
             }
             else
@@ -299,41 +299,41 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                     case STPT_BUTTON:
                         playerAC->FCC->SetStptMode(FireControlComputer::FCCWaypoint);
                         playerAC->FCC->waypointStepCmd = 127;
-                        mUpdateFlags |= STPT_UPDATE;
+                        mUpdateFlags  or_eq  STPT_UPDATE;
                         break;
 
                     case DLINK_BUTTON:
                         playerAC->FCC->SetStptMode(FireControlComputer::FCCDLinkpoint);
                         playerAC->FCC->waypointStepCmd = 127;
-                        mUpdateFlags |= DLINK_UPDATE;
+                        mUpdateFlags  or_eq  DLINK_UPDATE;
                         ExecDLINKMode();
                         break;
 
                     case MARK_BUTTON:
                         playerAC->FCC->SetStptMode(FireControlComputer::FCCMarkpoint);
                         playerAC->FCC->waypointStepCmd = 127;
-                        mUpdateFlags |= MARK_UPDATE;
+                        mUpdateFlags  or_eq  MARK_UPDATE;
                         ExecMARKMode();
                         break;
 
                     case ILS_BUTTON:
-                        mUpdateFlags |= ILS_UPDATE;
+                        mUpdateFlags  or_eq  ILS_UPDATE;
                         ExecILSMode();
                         break;
 
                     case CRUS_BUTTON:
-                        mUpdateFlags |= CRUS_UPDATE;
+                        mUpdateFlags  or_eq  CRUS_UPDATE;
                         ExecCRUSMode();
                         break;
 
                     case FACK_BUTTON:
-                        mUpdateFlags |= FACK_UPDATE;
+                        mUpdateFlags  or_eq  FACK_UPDATE;
                         PNUpdateFACKMode(NEXT_BUTTON, FACK_BUTTON);
                         ExecFACKMode();
                         break;
 
                     case ALOW_BUTTON:
-                        mUpdateFlags |= ALOW_UPDATE;
+                        mUpdateFlags  or_eq  ALOW_UPDATE;
                         break;
                 }
             }
@@ -402,7 +402,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                         m_FaultDisplay = false;
                 }
 
-                mUpdateFlags |= FACK_UPDATE; // we need to do some work
+                mUpdateFlags  or_eq  FACK_UPDATE; // we need to do some work
             }
         }
 

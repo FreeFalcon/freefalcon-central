@@ -394,79 +394,79 @@ void C_Font::FontFunction(short ID, long P[], _TCHAR *str, LOGFONT *lgfnt, long 
 
         case CFNT_lfHeight:
             if (lgfnt)
-                lgfnt->lfHeight |= P[0];
+                lgfnt->lfHeight  or_eq  P[0];
 
             break;
 
         case CFNT_lfWidth:
             if (lgfnt)
-                lgfnt->lfWidth |= P[0];
+                lgfnt->lfWidth  or_eq  P[0];
 
             break;
 
         case CFNT_lfEscapement:
             if (lgfnt)
-                lgfnt->lfEscapement |= P[0];
+                lgfnt->lfEscapement  or_eq  P[0];
 
             break;
 
         case CFNT_lfOrientation:
             if (lgfnt)
-                lgfnt->lfOrientation |= P[0];
+                lgfnt->lfOrientation  or_eq  P[0];
 
             break;
 
         case CFNT_lfWeight:
             if (lgfnt)
-                lgfnt->lfWeight |= P[0];
+                lgfnt->lfWeight  or_eq  P[0];
 
             break;
 
         case CFNT_lfItalic:
             if (lgfnt)
-                lgfnt->lfItalic |= (BYTE)P[0];
+                lgfnt->lfItalic  or_eq  (BYTE)P[0];
 
             break;
 
         case CFNT_lfUnderline:
             if (lgfnt)
-                lgfnt->lfUnderline |= (BYTE)P[0];
+                lgfnt->lfUnderline  or_eq  (BYTE)P[0];
 
             break;
 
         case CFNT_lfStrikeOut:
             if (lgfnt)
-                lgfnt->lfStrikeOut |= (BYTE)P[0];
+                lgfnt->lfStrikeOut  or_eq  (BYTE)P[0];
 
             break;
 
         case CFNT_lfCharSet:
             if (lgfnt)
-                lgfnt->lfCharSet |= (BYTE)P[0];
+                lgfnt->lfCharSet  or_eq  (BYTE)P[0];
 
             break;
 
         case CFNT_lfOutPrecision:
             if (lgfnt)
-                lgfnt->lfOutPrecision |= (BYTE)P[0];
+                lgfnt->lfOutPrecision  or_eq  (BYTE)P[0];
 
             break;
 
         case CFNT_lfClipPrecision:
             if (lgfnt)
-                lgfnt->lfClipPrecision |= (BYTE)P[0];
+                lgfnt->lfClipPrecision  or_eq  (BYTE)P[0];
 
             break;
 
         case CFNT_lfQuality:
             if (lgfnt)
-                lgfnt->lfQuality |= (BYTE)P[0];
+                lgfnt->lfQuality  or_eq  (BYTE)P[0];
 
             break;
 
         case CFNT_lfPitchAndFamily:
             if (lgfnt)
-                lgfnt->lfPitchAndFamily |= (BYTE)P[0];
+                lgfnt->lfPitchAndFamily  or_eq  (BYTE)P[0];
 
             break;
 

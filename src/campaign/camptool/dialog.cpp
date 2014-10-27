@@ -1191,7 +1191,7 @@ BOOL WINAPI EditRelations(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     if (TeamInfo[j]->HasSatelites())
                         TeamInfo[j]->flags xor_eq TEAM_HASSATS;
                     else
-                        TeamInfo[j]->flags |= TEAM_HASSATS;
+                        TeamInfo[j]->flags  or_eq  TEAM_HASSATS;
 
                     break;
 

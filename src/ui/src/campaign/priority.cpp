@@ -93,7 +93,7 @@ void InitPAKMap()
 
         if (PAKMap)
         {
-            PAKMap->Header->flags |= _RSC_USECOLORKEY_;
+            PAKMap->Header->flags  or_eq  _RSC_USECOLORKEY_;
             MakeCampMap(MAP_PAK, (uchar*)PAKMap->Owner->GetData(), TheCampaign.TheaterSizeX / PAK_MAP_RATIO * TheCampaign.TheaterSizeY / PAK_MAP_RATIO);
 
             win = gMainHandler->FindWindow(STRAT_WIN);
@@ -1214,7 +1214,7 @@ void SavePAKPriorities()
                 // for(i=0;i<NUM_TEAMS;i++)
             {
                 POD->player_priority[i] = PAKPriorities[idx][i][0];
-                POD->flags |= GTMOBJ_PLAYER_SET_PRIORITY;
+                POD->flags  or_eq  GTMOBJ_PLAYER_SET_PRIORITY;
                 PAKPriorities[idx][i][1] = 0;
             }
         }

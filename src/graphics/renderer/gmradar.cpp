@@ -241,12 +241,12 @@ void RenderGMRadar::TransformScene(void)
 
             if (x < -1.0f)
             {
-                vert->clipFlag |= CLIP_LEFT;
+                vert->clipFlag  or_eq  CLIP_LEFT;
                 ShiAssert(viewportXtoPixel(x) <= leftPixel);
             }
             else if (x > 1.0f)
             {
-                vert->clipFlag |= CLIP_RIGHT;
+                vert->clipFlag  or_eq  CLIP_RIGHT;
                 ShiAssert(viewportXtoPixel(x) >= rightPixel);
             }
             else

@@ -508,7 +508,7 @@ public:
     //Functions for our Flags
     void SetICPFlag(int newFlag)
     {
-        ICPModeFlags |= newFlag;
+        ICPModeFlags  or_eq  newFlag;
     };
     void ClearICPFlag(int newFlag)
     {
@@ -534,7 +534,7 @@ public:
     };
     void SetIFFFlag(int newFlag)
     {
-        IFFModes |= newFlag;
+        IFFModes  or_eq  newFlag;
     };
     void ClearIFFFlag(int newFlag)
     {
@@ -632,7 +632,7 @@ public:
     };
     void SetICPUpdateFlag(int newFlag)
     {
-        mUpdateFlags |= newFlag;
+        mUpdateFlags  or_eq  newFlag;
     };
 
     void SetICPSecondaryMode(int num)

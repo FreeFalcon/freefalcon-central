@@ -788,7 +788,7 @@ int SimMoverClass::Exec(void)
                 else if (!nonLocalData->timer2)
                 {
                     // we haven't yet started firing....
-                    // will be set when recieving a fire message nonLocalData->flags |= NONLOCAL_GUNS_FIRING;
+                    // will be set when recieving a fire message nonLocalData->flags  or_eq  NONLOCAL_GUNS_FIRING;
 
                     // timer1 is the time to fire next tracer
                     // timer2 is the maximum time we'll allow firing to continue

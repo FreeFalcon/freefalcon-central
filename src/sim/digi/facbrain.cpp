@@ -157,7 +157,7 @@ void FACBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
 
         if (controlledFighter)
         {
-            flags |= FlightInbound;
+            flags  or_eq  FlightInbound;
             newTarget = AssignTarget();
 
             FalconFACMessage* facMsg = new FalconFACMessage(controlledFighter->Id(), FalconLocalGame);

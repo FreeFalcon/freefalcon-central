@@ -3765,13 +3765,13 @@ int FlightClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spot, i
     // Check type of entity before GCI is used
     if (CheckValidType(this, e))
     {
-        detTmp |= e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
+        detTmp  or_eq  e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
     }
 
     // Check type of entity before GCI is used
     if (CheckValidType(e, this))
     {
-        detTmp |= GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
+        detTmp  or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
     }
 
     // Use our temp detection mask which possibly includes GCI
@@ -3851,11 +3851,11 @@ int FlightClass::DetectVs(CampEntity e, float *d, int *combat, int *spot, int *e
 
     // Check type of entity before GCI is used
     if (CheckValidType(this, e))
-        detTmp |= e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
+        detTmp  or_eq  e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
 
     // Check type of entity before GCI is used
     if (CheckValidType(e, this))
-        detTmp |= GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
+        detTmp  or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
 
     // Use our temp detection mask which possibly includes GCI
     if (!(detTmp & REACTION_MASK))
@@ -5749,7 +5749,7 @@ void FlightClass::SetEvalFlag(uchar f, int reset)
         //if (!(eval_flags & f))
         if ((eval_flags & f) != f) // JB 010711
         {
-            eval_flags |= f;
+            eval_flags  or_eq  f;
             //MakeFlightDirty (DIRTY_EVAL_FLAGS, DDP[106].priority);
             MakeFlightDirty(DIRTY_EVAL_FLAGS, SEND_EVENTUALLY);
         }
@@ -5861,7 +5861,7 @@ void FlightClass::MakeFlightDirty(Dirty_Flight bits, Dirtyness score)
         }
     }
 
-    dirty_flight |= bits;
+    dirty_flight  or_eq  bits;
 
     MakeDirty(DIRTY_FLIGHT, score);
     // MonoPrint ("MakeFlightDirty bits,  score  %08x", bits, score);//me123

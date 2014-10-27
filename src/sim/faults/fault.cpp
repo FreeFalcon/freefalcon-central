@@ -241,7 +241,7 @@ void FaultClass::SetFault(type_FSubSystem subsystem,
         }
     }
 
-    mpFaultList[subsystem].elFunction |= function;
+    mpFaultList[subsystem].elFunction  or_eq  function;
     mpFaultList[subsystem].elSeverity = severity;
     AddMflList(SimLibElapsedTime, subsystem, (int)severity);
 }

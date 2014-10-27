@@ -5,6 +5,7 @@
 
  - Begin Major Rewrite (Fat-free version)
 \***************************************************************************/
+#include <cISO646>
 #include "stdafx.h"
 #include "StateStack.h"
 #include "ColorBank.h"
@@ -56,28 +57,28 @@ static inline void SetForegroundColor(DWORD opFlag, int rgbaIdx, int IIdx)
             I = TheStateStack.IntensityPool[IIdx];
 
             color  = FloatToInt32(rgba->r * I * 255.9f);
-            color |= FloatToInt32(rgba->g * I * 255.9f) << 8;
-            color |= FloatToInt32(rgba->b * I * 255.9f) << 16;
+            color  or_eq  FloatToInt32(rgba->g * I * 255.9f) << 8;
+            color  or_eq  FloatToInt32(rgba->b * I * 255.9f) << 16;
         }
         else
         {
             color  = FloatToInt32(rgba->r * 255.9f);
-            color |= FloatToInt32(rgba->g * 255.9f) << 8;
-            color |= FloatToInt32(rgba->b * 255.9f) << 16;
+            color  or_eq  FloatToInt32(rgba->g * 255.9f) << 8;
+            color  or_eq  FloatToInt32(rgba->b * 255.9f) << 16;
         }
 
         if (ShadowBSPRendering)  // COBRA - RED - if rendering a shadow, alpha applied here
-            color |= FloatToInt32(rgba->a * 255.9f * ShadowAlphaLevel) << 24;
+            color  or_eq  FloatToInt32(rgba->a * 255.9f * ShadowAlphaLevel) << 24;
         else
-            color |= FloatToInt32(rgba->a * 255.9f) << 24;
+            color  or_eq  FloatToInt32(rgba->a * 255.9f) << 24;
     }
     else if (opFlag & PRIM_COLOP_INTENSITY)
     {
         ShiAssert(IIdx >= 0);
 
         color  = FloatToInt32(TheStateStack.IntensityPool[IIdx] * 255.9f);
-        color |= color << 8;
-        color |= color << 8;
+        color  or_eq  color << 8;
+        color  or_eq  color << 8;
     }
 
     ShiAssert(colorSet);

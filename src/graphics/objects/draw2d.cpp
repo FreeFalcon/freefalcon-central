@@ -6,6 +6,7 @@
 ** History:
 ** 14-Jul-97 (edg)  We go dancing in .....
 */
+#include <cISO646>
 #include "TimeMgr.h"
 #include "TOD.h"
 #include "RenderOW.h"
@@ -1880,7 +1881,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
                     b = (globPal->paletteData[j] & 0x00ff0000) >> 16;
 
                     intalp = max((r + b + g) / 3, 120);
-                    globPal->paletteData[j] |= (intalp << 24);
+                    globPal->paletteData[j]  or_eq  (intalp << 24);
                 }
 
                 globPal->UpdateMPR(globPal->paletteData);
@@ -2155,7 +2156,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
         alp = (float)intalp;
         alp = alp * 0.5f + alp * 0.5f * PRANDFloat();
         intalp = FloatToInt32(alp);
-        aplPal0->paletteData[j] |= (intalp << 24);
+        aplPal0->paletteData[j]  or_eq  (intalp << 24);
     }
 
     aplPal0->UpdateMPR(aplPal0->paletteData);
@@ -2187,7 +2188,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
                 alp = alp * 0.8f + alp * 0.2f * PRANDFloat();
 
             intalp = FloatToInt32(alp);
-            aplPalI->paletteData[j] |= (intalp << 24);
+            aplPalI->paletteData[j]  or_eq  (intalp << 24);
         }
 
         aplPalI->UpdateMPR(aplPalI->paletteData);

@@ -337,28 +337,28 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
 
         //campaign/taceng
         if ((to_entity && to_entity == player_flight) || (from_entity && from_entity == player_flight))
-            playbits |= TOFROM_FLIGHT;
+            playbits  or_eq  TOFROM_FLIGHT;
 
         //the seemingly weird check for the team is because everyone in instant action is in the same package but on different teams
         if (to && (to_package == player_package) && us && us->GetTeam() == to->GetTeam())
-            playbits |= TO_PACKAGE;
+            playbits  or_eq  TO_PACKAGE;
 
         if ((to && to_package == player_package && us->GetTeam() == to->GetTeam()) ||
             (from && from_package == player_package && us && us->GetTeam() == from->GetTeam()))
-            playbits |= TOFROM_PACKAGE;
+            playbits  or_eq  TOFROM_PACKAGE;
 
         //campaign/taceng
         if (dataBlock.to == MESSAGE_FOR_TEAM && to && us && us->GetTeam() == to->GetTeam())
-            playbits |= TO_TEAM;
+            playbits  or_eq  TO_TEAM;
 
 
         if (from && us && (DistSqu(from->XPos(), from->YPos(), us->XPos(), us->YPos()) < RADIO_PROX_RANGE * RADIO_PROX_RANGE)
             && us && ((to && us->GetTeam() == to->GetTeam()) ||
                       (from && us->GetTeam() == from->GetTeam())))
-            playbits |= IN_PROXIMITY;
+            playbits  or_eq  IN_PROXIMITY;
 
         if (dataBlock.to == MESSAGE_FOR_WORLD)
-            playbits |= TO_WORLD;
+            playbits  or_eq  TO_WORLD;
 
         int tac_channel;
         TacanList::StationSet set;
@@ -367,10 +367,10 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
         float ilsfreq;
 
         if (from_entity && gTacanList->GetChannelFromVUID(from_entity->Id(), &tac_channel, &set, &domain, &range, &ttype, &ilsfreq))
-            playbits |= TOFROM_TOWER;
+            playbits  or_eq  TOFROM_TOWER;
 
         if (to_entity && gTacanList->GetChannelFromVUID(to_entity->Id(), &tac_channel, &set, &domain, &range, &ttype, &ilsfreq))
-            playbits |= TOFROM_TOWER;
+            playbits  or_eq  TOFROM_TOWER;
     }
 
     if (voiceFilter && playbits)
@@ -381,7 +381,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
         //MI if this is here, we're always in proximity mode
         // JPO - yeah - but if not - it fails to decode BRA/Bullseye data
         if (voiceFilter->GetBullseyeComm(&message, dataBlock.edata))
-            playbits |= IN_PROXIMITY;
+            playbits  or_eq  IN_PROXIMITY;
 
 
 #ifndef ROBIN

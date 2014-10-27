@@ -50,7 +50,7 @@ public:
     VU_TIME lastHit;
     void SetFlag(int flag)
     {
-        flags |= flag;
+        flags  or_eq  flag;
     };
     int IsSet(int flag)
     {
@@ -374,7 +374,7 @@ public:
     };
     void SetHsdState(HsdStates st)
     {
-        hsdstates |= st;
+        hsdstates  or_eq  st;
     };
     void ToggleHsdState(HsdStates st)
     {

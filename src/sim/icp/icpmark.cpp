@@ -125,7 +125,7 @@ void ICPClass::ENTRUpdateMARKMode(void)
 
         }
 
-        mUpdateFlags |= MARK_UPDATE;
+        mUpdateFlags  or_eq  MARK_UPDATE;
     }
 }
 
@@ -143,6 +143,6 @@ void ICPClass::PNUpdateMARKMode(int button, int)
         playerAC->FCC->waypointStepCmd = 1;
     }
 
-    mUpdateFlags |= MARK_UPDATE;
-    mUpdateFlags |= CNI_UPDATE;
+    mUpdateFlags  or_eq  MARK_UPDATE;
+    mUpdateFlags  or_eq  CNI_UPDATE;
 }

@@ -780,13 +780,13 @@ void ResyncTimes()
         if (session->GetReqCompression() > 1 && session->GetReqCompression() < best_comp)
         {
             best_comp = session->GetReqCompression();
-            remoteCompressionRequests |= 1 << (best_comp - 1);
+            remoteCompressionRequests  or_eq  1 << (best_comp - 1);
         }
 
         if (session->GetReqCompression() < 1 && session->GetReqCompression() > best_comp)
         {
             best_comp = session->GetReqCompression();
-            remoteCompressionRequests |= REMOTE_REQUEST_PAUSE;
+            remoteCompressionRequests  or_eq  REMOTE_REQUEST_PAUSE;
         }
 
         if (session->GetReqCompression() == 1)

@@ -770,7 +770,7 @@ public:
     void ResetTimer(int delta);
     void SetATCFlag(int flag)
     {
-        atcFlags |= flag;
+        atcFlags  or_eq  flag;
     }
     void ClearATCFlag(int flag)
     {

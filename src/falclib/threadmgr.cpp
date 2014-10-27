@@ -31,7 +31,7 @@ void ThreadManager::start_campaign_thread(UFUNCTION function)
 {
     ShiAssert(campaign_thread.handle == NULL);
 
-    campaign_thread.status |= THREAD_STATUS_ACTIVE;
+    campaign_thread.status  or_eq  THREAD_STATUS_ACTIVE;
 
     campaign_thread.handle = (HANDLE) CreateThread(
                                  NULL,
@@ -81,7 +81,7 @@ void ThreadManager::start_sim_thread(UFUNCTION function)
 {
     ShiAssert(sim_thread.handle == NULL);
 
-    sim_thread.status |= THREAD_STATUS_ACTIVE;
+    sim_thread.status  or_eq  THREAD_STATUS_ACTIVE;
 
     sim_thread.handle = (HANDLE)CreateThread(
                             NULL,

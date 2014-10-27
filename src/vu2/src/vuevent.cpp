@@ -123,7 +123,7 @@ VuMessage::VuMessage(
 
     if (loopback)
     {
-        flags_ |= VU_LOOPBACK_MSG_FLAG;
+        flags_  or_eq  VU_LOOPBACK_MSG_FLAG;
     }
 
     // note: msg id is set only for external messages which are sent out
@@ -216,7 +216,7 @@ int VuMessage::Send()
 
         if (retval <= 0)
         {
-            flags_ |= VU_SEND_FAILED_MSG_FLAG;
+            flags_  or_eq  VU_SEND_FAILED_MSG_FLAG;
         }
     }
 
@@ -243,7 +243,7 @@ VU_ERRCODE VuMessage::Dispatch(VU_BOOL autod)
         retval = Process(autod);
         vuDatabase->Handle(this);
         // mark as sent
-        flags_ |= VU_PROCESSED_MSG_FLAG;
+        flags_  or_eq  VU_PROCESSED_MSG_FLAG;
     }
 
     return retval;

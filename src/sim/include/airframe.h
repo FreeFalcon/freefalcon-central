@@ -1373,11 +1373,11 @@ public:
     unsigned char epuBurnState;
     void EpuSetHydrazine()
     {
-        epuBurnState |= EpuHydrazine;
+        epuBurnState  or_eq  EpuHydrazine;
     };
     void EpuSetAir()
     {
-        epuBurnState |= EpuAir;
+        epuBurnState  or_eq  EpuAir;
     };
     void EpuClear()
     {
@@ -1452,7 +1452,7 @@ public:
     };
     void SetEngineFlag(EngineFlags ef)
     {
-        engineFlags |= ef;
+        engineFlags  or_eq  ef;
     };
     void ClearEngineFlag(EngineFlags ef)
     {
@@ -1551,7 +1551,7 @@ public:
     };
     void GeneratorOn(Generator gen)
     {
-        if (GeneratorOK(gen)) generators |= gen;
+        if (GeneratorOK(gen)) generators  or_eq  gen;
     };
     void GeneratorOff(Generator gen)
     {
@@ -1559,7 +1559,7 @@ public:
     };
     void GeneratorBreak(Generator gen)
     {
-        generators |= (gen << 1);
+        generators  or_eq  (gen << 1);
         GeneratorOff(gen);
     };
 
@@ -1738,7 +1738,7 @@ public:
     void ResetAlpha(void);
     void SetFlag(int newFlag)
     {
-        flags |= newFlag;
+        flags  or_eq  newFlag;
     };
     void ClearFlag(int newFlag)
     {

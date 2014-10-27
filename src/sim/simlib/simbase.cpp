@@ -551,7 +551,7 @@ void SimBaseClass::SetRemoveFlag()
         }
     }
 
-    localFlags |= REMOVE_NEXT_FRAME;
+    localFlags  or_eq  REMOVE_NEXT_FRAME;
 
     SetFlag(OBJ_DEAD);
 
@@ -604,7 +604,7 @@ void SimBaseClass::SetRemoveSilentFlag(void)
         }
     }
 
-    localFlags |= REMOVE_NEXT_FRAME;
+    localFlags  or_eq  REMOVE_NEXT_FRAME;
 
     SetFlag(OBJ_DEAD);
 
@@ -1444,7 +1444,7 @@ void SimBaseClass::MakeSimBaseDirty(Dirty_Sim_Base bits, Dirtyness score)
         return;
     }
 
-    dirty_simbase |= bits;
+    dirty_simbase  or_eq  bits;
     MakeDirty(DIRTY_SIM_BASE, score);
 }
 
@@ -1456,7 +1456,7 @@ void SimBaseClass::SetFlag(int flag)
 {
     if (!(specialData.flags & flag))
     {
-        specialData.flags |= flag;
+        specialData.flags  or_eq  flag;
         //MakeSimBaseDirty (DIRTY_SIM_FLAGS, DDP[163].priority);
         MakeSimBaseDirty(DIRTY_SIM_FLAGS, SEND_RELIABLE);
     }
@@ -1480,7 +1480,7 @@ void SimBaseClass::SetFlagSilent(int flag)
 {
     if (!(specialData.flags & flag))
     {
-        specialData.flags |= flag;
+        specialData.flags  or_eq  flag;
     }
 }
 
@@ -1552,7 +1552,7 @@ void SimBaseClass::SetStatusBit(int status)
 {
     if (!(specialData.status & status))
     {
-        specialData.status |= status;
+        specialData.status  or_eq  status;
         MakeSimBaseDirty(DIRTY_SIM_STATUS, SEND_SOON);
     }
 }

@@ -349,7 +349,7 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
         return 0;
     }
 
-    Flags |= CAMP_THEATER_LOADED;
+    Flags  or_eq  CAMP_THEATER_LOADED;
 
 
     InitCampaignLists();
@@ -414,7 +414,7 @@ int CampaignClass::NewCampaign(FalconGameType gametype, char *savefile)
     AddNewTeams(Neutral);
     NewPilotInfo();
     strcpy(SaveFile, savefile);
-    Flags |= CAMP_LOADED;
+    Flags  or_eq  CAMP_LOADED;
     CampLeaveCriticalSection();
     TheCampaign.Resume();
     return 1;
@@ -467,14 +467,14 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
         case game_InstantAction:
         case game_Dogfight:
         {
-            Flags |= CAMP_LIGHT;
+            Flags  or_eq  CAMP_LIGHT;
             DisposeEventLists();
             break;
         }
 
         case game_TacticalEngagement:
         {
-            Flags |= CAMP_TACTICAL;
+            Flags  or_eq  CAMP_TACTICAL;
             DisposeEventLists();
             break;
         }
@@ -572,7 +572,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
     }
 
     // ChillTypes();
-    Flags |= CAMP_LOADED;
+    Flags  or_eq  CAMP_LOADED;
 
     // Insert our game into the database - which will broadcast it if we're online
     VuGameEntity *game = gCommsMgr->GetTargetGame();
@@ -667,7 +667,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
         return LoadCampaign(gametype, Scenario);
 
     if (stricmp(Scenario, "Instant") == 0)
-        Flags |= CAMP_LIGHT;
+        Flags  or_eq  CAMP_LIGHT;
 
     Suspend();
 
@@ -759,21 +759,21 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
             need_from_master = CAMP_NEED_PERSIST | CAMP_NEED_OBJ_DELTAS | CAMP_NEED_UNIT_DATA;
             need_from_all = 0;
             // need_from_all = CAMP_NEED_ENTITIES;
-            Flags |= need_from_master | need_from_all;
+            Flags  or_eq  need_from_master | need_from_all;
         }
         else
         {
             need_from_master = CAMP_NEED_WEATHER | CAMP_NEED_PERSIST | CAMP_NEED_PRIORITIES | CAMP_NEED_OBJ_DELTAS | CAMP_NEED_TEAM_DATA | CAMP_NEED_UNIT_DATA | CAMP_NEED_VC;
             need_from_all = 0;
             // need_from_all = CAMP_NEED_ENTITIES;
-            Flags |= need_from_master | need_from_all;
+            Flags  or_eq  need_from_master | need_from_all;
 
             if (!LoadPilotInfo(TheCampaign.Scenario))
                 NewPilotInfo();
         }
 
-        Flags |= CAMP_SLAVE;
-        Flags |= CAMP_ONLINE;
+        Flags  or_eq  CAMP_SLAVE;
+        Flags  or_eq  CAMP_ONLINE;
 
         // Send our master session information requests here.
         FalconRequestCampaignData *camprequest;
@@ -836,7 +836,7 @@ void CampaignClass::GotJoinData(void)
         return;
 
     // We're loaded!
-    Flags |= CAMP_LOADED;
+    Flags  or_eq  CAMP_LOADED;
 
     gMainThread->JoinGame(gCommsMgr->GetTargetGame());
 
@@ -950,7 +950,7 @@ void CampaignClass::EndCampaign(void)
         return;
     }
 
-    TheCampaign.Flags |= CAMP_SHUTDOWN_REQUEST;
+    TheCampaign.Flags  or_eq  CAMP_SHUTDOWN_REQUEST;
 
     while (TheCampaign.IsLoaded())
     {
@@ -1482,7 +1482,7 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
     }
 
     // Now we're preloaded
-    Flags |= CAMP_PRELOADED;
+    Flags  or_eq  CAMP_PRELOADED;
 
     CampLeaveCriticalSection();
 
@@ -1775,10 +1775,10 @@ int CampaignClass::LoadScenarioStats(FalconGameType type, char *savefile)
     Decode(&data_ptr, &size);
     delete cd.data;
 
-    Flags |= CAMP_PRELOADED;
+    Flags  or_eq  CAMP_PRELOADED;
 
     if (type == game_TacticalEngagement)
-        Flags |= CAMP_TACTICAL;
+        Flags  or_eq  CAMP_TACTICAL;
 
     // Let's set up our valid aircraft types
     ChillTypes();
@@ -1848,18 +1848,18 @@ int CampaignClass::RequestScenarioStats(FalconGameEntity *game)
         case game_InstantAction:
         case game_Dogfight:
         {
-            Flags |= CAMP_LIGHT;
+            Flags  or_eq  CAMP_LIGHT;
             break;
         }
 
         case game_TacticalEngagement:
         {
-            Flags |= CAMP_TACTICAL;
+            Flags  or_eq  CAMP_TACTICAL;
             break;
         }
     }
 
-    Flags |= CAMP_NEED_PRELOAD;
+    Flags  or_eq  CAMP_NEED_PRELOAD;
     camprequest = new FalconRequestCampaignData(masterSession->Id(), masterSession);
     camprequest->dataBlock.who = vuLocalSessionEntity->Id();
     camprequest->dataBlock.dataNeeded = CAMP_NEED_PRELOAD;
@@ -1897,7 +1897,7 @@ void CampaignClass::Suspend(void)
     }
 
     ThreadManager::fast_campaign();
-    Flags |= CAMP_SUSPEND_REQUEST;
+    Flags  or_eq  CAMP_SUSPEND_REQUEST;
 
     while (!IsSuspended() && (Flags & CAMP_SUSPEND_REQUEST))
     {
@@ -1921,7 +1921,7 @@ void CampaignClass::SetOnlineStatus(int online)
 {
     if (online)
     {
-        Flags |= CAMP_ONLINE;
+        Flags  or_eq  CAMP_ONLINE;
     }
     else
     {
@@ -2418,7 +2418,7 @@ void TrashCampaignUnits(void)
 // This will convert the current campaign to instant action format
 void Camp_MakeInstantAction(void)
 {
-    TheCampaign.Flags |= CAMP_LIGHT;
+    TheCampaign.Flags  or_eq  CAMP_LIGHT;
     TheCampaign.DisposeEventLists();
     TheCampaign.FreeCampMaps();
     TheCampaign.FreeSquadronData();

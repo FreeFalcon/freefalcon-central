@@ -68,7 +68,7 @@ int FalconAirTaskingMessage::Process(uchar autodisp)
         break;
 
         case atmNewACAvail:
-            TeamInfo[dataBlock.team]->atm->flags |= ATM_NEW_PLANES;
+            TeamInfo[dataBlock.team]->atm->flags  or_eq  ATM_NEW_PLANES;
             break;
 
         case atmCompleteMission:

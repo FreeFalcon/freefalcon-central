@@ -343,7 +343,7 @@ void ICPClass::PNUpdateCRUSMode(int button, int)
             //#endif
     }
 
-    mUpdateFlags |= CRUS_UPDATE;
+    mUpdateFlags  or_eq  CRUS_UPDATE;
 }
 
 void ICPClass::CruiseRNG(void)

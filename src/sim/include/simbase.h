@@ -236,7 +236,7 @@ public:
     }
     void SetLocalFlag(int flag)
     {
-        localFlags |= flag;
+        localFlags  or_eq  flag;
     }
     void UnSetLocalFlag(int flag)
     {
@@ -248,7 +248,7 @@ public:
     }
     void SetCampaignFlag(int flag)
     {
-        campaignFlags |= flag;
+        campaignFlags  or_eq  flag;
     }
     void UnSetCampaignFlag(int flag)
     {
@@ -402,7 +402,7 @@ public:
     {
         return lastShooter;
     };
-    void SetDying(int flag); // { if (flag) specialData.flags |= OBJ_DYING; else specialData.flags &= compl OBJ_DYING;};
+    void SetDying(int flag); // { if (flag) specialData.flags  or_eq  OBJ_DYING; else specialData.flags &= compl OBJ_DYING;};
     SimBaseSpecialData* SpecialData(void)
     {
         return &specialData;

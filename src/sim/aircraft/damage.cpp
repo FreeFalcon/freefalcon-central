@@ -678,7 +678,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
     {
         case DAMAGEF16_NOLEFTANDNOSE:
         case DAMAGEF16_NOLEFT:
-            piece -> sfxflag |= SFX_F16CRASH_OBJECT;
+            piece -> sfxflag  or_eq  SFX_F16CRASH_OBJECT;
             piece -> roll = -roll;
             piece -> index = DAMAGEF16_FRONT_SLOTINDEX;
             speed += 20.0f;
@@ -689,7 +689,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
 
         case DAMAGEF16_NORIGHTANDNOSE:
         case DAMAGEF16_NORIGHT:
-            piece -> sfxflag |= SFX_F16CRASH_OBJECT;
+            piece -> sfxflag  or_eq  SFX_F16CRASH_OBJECT;
             piece -> roll = roll;
             piece -> index = DAMAGEF16_FRONT_SLOTINDEX;
             speed += 20.0f;
@@ -699,7 +699,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
             break;
 
         case DAMAGEF16_ONLYBODY:
-            piece -> sfxflag |= SFX_F16CRASH_OBJECT;
+            piece -> sfxflag  or_eq  SFX_F16CRASH_OBJECT;
 
             if (PRANDFloatPos() > 0.5f) roll = -roll;
 
@@ -712,7 +712,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
             break;
 
         case DAMAGEF16_NONOSE:
-            piece -> sfxflag |= SFX_F16CRASH_OBJECT;
+            piece -> sfxflag  or_eq  SFX_F16CRASH_OBJECT;
             piece -> index = DAMAGEF16_FRONT_SLOTINDEX;
             speed += 10.0f;
             angle = 270.0f * DTR;
@@ -758,7 +758,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
             break;
 
         case DAMAGEF16_FRONT:
-            piece -> sfxflag |= SFX_F16CRASH_OBJECT;
+            piece -> sfxflag  or_eq  SFX_F16CRASH_OBJECT;
             piece -> roll = 40.0f * DTR;
             piece -> index = DAMAGEF16_FRONT_SLOTINDEX;
             speed += 30.0f;
@@ -768,7 +768,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
 
         case DAMAGEF16_NOSE:
             piece -> pitch = -5.0f * DTR;
-            piece -> sfxflag |= SFX_BOUNCES;
+            piece -> sfxflag  or_eq  SFX_BOUNCES;
             piece -> index = DAMAGEF16_NOSE_SLOTINDEX;
             speed += 50.0f;
             angle = 450.0f * DTR;
@@ -783,7 +783,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
             break;
 
         case DAMAGEF16_RWING:
-            piece -> sfxflag |= SFX_BOUNCES;
+            piece -> sfxflag  or_eq  SFX_BOUNCES;
             piece -> index = DAMAGEF16_RWING_SLOTINDEX;
 
             if (flag & DAMAGEF16_TOLEFT)
@@ -808,7 +808,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
             break;
 
         case DAMAGEF16_LWING:
-            piece -> sfxflag |= SFX_BOUNCES;
+            piece -> sfxflag  or_eq  SFX_BOUNCES;
             piece -> index = DAMAGEF16_LWING_SLOTINDEX;
 
             if (flag & DAMAGEF16_TORIGHT)
@@ -833,7 +833,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
             break;
 
         case DAMAGEF16_LSTAB:
-            piece -> sfxflag |= SFX_BOUNCES;
+            piece -> sfxflag  or_eq  SFX_BOUNCES;
             piece -> index = DAMAGEF16_LSTAB_SLOTINDEX;
 
             if (flag & DAMAGEF16_TORIGHT)
@@ -857,7 +857,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
             break;
 
         case DAMAGEF16_RSTAB:
-            piece -> sfxflag |= SFX_BOUNCES;
+            piece -> sfxflag  or_eq  SFX_BOUNCES;
             piece -> index = DAMAGEF16_RSTAB_SLOTINDEX;
 
             if (flag & DAMAGEF16_TOLEFT)
@@ -945,22 +945,22 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
 
     if (r > range)
     {
-        damagetype |= 0x2; // right
+        damagetype  or_eq  0x2; // right
 
-        if (r > range2) damagetype |= 0x10;
+        if (r > range2) damagetype  or_eq  0x10;
     }
     else if (r < -range)
     {
-        damagetype |= 0x1; // left
+        damagetype  or_eq  0x1; // left
 
-        if (r < -range2) damagetype |= 0x10;
+        if (r < -range2) damagetype  or_eq  0x10;
     }
 
     if (p > range)
     {
-        if (p > range2) damagetype |= 0x1c;
-        else if (p > range1) damagetype |= 0x8;
-        else damagetype |= 0x4;
+        if (p > range2) damagetype  or_eq  0x1c;
+        else if (p > range1) damagetype  or_eq  0x8;
+        else damagetype  or_eq  0x4;
     }
 
     float speed = (float)sqrt(XDelta() * XDelta() + YDelta() * YDelta() + ZDelta() * ZDelta());
@@ -969,9 +969,9 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
     {
         if (speed > 200.0f && speed < 500.0f)
         {
-            if (damagetype & 0x4) damagetype |= 8;
+            if (damagetype & 0x4) damagetype  or_eq  8;
         }
-        else if (speed > 500.0f) damagetype |= 0x10;
+        else if (speed > 500.0f) damagetype  or_eq  0x10;
     }
 
     int dirflag = DAMAGEF16_TOFRONT;
@@ -1017,7 +1017,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
 
             if (damagetype & 0x4)   // damage to the nose
             {
-                dirflag |= DAMAGEF16_TOFRONT;
+                dirflag  or_eq  DAMAGEF16_TOFRONT;
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_LWING, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_LSTAB, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NOSE, dirflag, *mask, speed);
@@ -1026,7 +1026,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
             }
             else if (damagetype & 0x8)   // damage to the front
             {
-                dirflag |= DAMAGEF16_TOFRONT;
+                dirflag  or_eq  DAMAGEF16_TOFRONT;
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_LWING, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_LSTAB, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NOSE, dirflag, *mask, speed);
@@ -1049,7 +1049,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
 
             if (damagetype & 0x4)   // damage to the nose
             {
-                dirflag |= DAMAGEF16_TOFRONT;
+                dirflag  or_eq  DAMAGEF16_TOFRONT;
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_RWING, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_RSTAB, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NOSE, dirflag, *mask, speed);
@@ -1058,7 +1058,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
             }
             else if (damagetype & 0x8)   // damage to the front
             {
-                dirflag |= DAMAGEF16_TOFRONT;
+                dirflag  or_eq  DAMAGEF16_TOFRONT;
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_RWING, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_RSTAB, dirflag, *mask, speed);
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NOSE, dirflag, *mask, speed);
@@ -1101,12 +1101,12 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
         {
             if (PRANDFloatPos() > 0.5f)
             {
-                dirflag |= DAMAGEF16_TOFRONT;
-                i |= DAMAGEF16_FRONT;
+                dirflag  or_eq  DAMAGEF16_TOFRONT;
+                i  or_eq  DAMAGEF16_FRONT;
 
                 if (PRANDFloatPos() > 0.5f)
                 {
-                    i |= DAMAGEF16_NOSE;
+                    i  or_eq  DAMAGEF16_NOSE;
                 }
             }
         }
@@ -1115,19 +1115,19 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
         {
             if (PRANDFloatPos() > 0.5f)
             {
-                dirflag |= DAMAGEF16_TORIGHT;
-                i |= DAMAGEF16_LWING | DAMAGEF16_LSTAB;
+                dirflag  or_eq  DAMAGEF16_TORIGHT;
+                i  or_eq  DAMAGEF16_LWING | DAMAGEF16_LSTAB;
             }
-            else i |= DAMAGEF16_RWING | DAMAGEF16_RSTAB;
+            else i  or_eq  DAMAGEF16_RWING | DAMAGEF16_RSTAB;
         }
         else
         {
             if (PRANDFloatPos() > 0.5f)
             {
-                dirflag |= DAMAGEF16_TOLEFT;
-                i |= DAMAGEF16_RWING | DAMAGEF16_RSTAB;
+                dirflag  or_eq  DAMAGEF16_TOLEFT;
+                i  or_eq  DAMAGEF16_RWING | DAMAGEF16_RSTAB;
             }
-            else i |= DAMAGEF16_LWING | DAMAGEF16_LSTAB;
+            else i  or_eq  DAMAGEF16_LWING | DAMAGEF16_LSTAB;
         }
 
         int j = i xor 0x7f;

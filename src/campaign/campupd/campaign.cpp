@@ -2564,7 +2564,7 @@ unsigned int __stdcall HandleCampaignThread(void)
     _controlfp(_PC_24, MCW_PC);
 #endif
 
-    TheCampaign.Flags |= CAMP_RUNNING;
+    TheCampaign.Flags  or_eq  CAMP_RUNNING;
 
     while (ThreadManager::campaign_active())
     {
@@ -2585,7 +2585,7 @@ unsigned int __stdcall HandleCampaignThread(void)
         if (TheCampaign.Flags & CAMP_SUSPEND_REQUEST)
         {
             // Someone's asked us to suspend
-            TheCampaign.Flags |= CAMP_SUSPENDED;
+            TheCampaign.Flags  or_eq  CAMP_SUSPENDED;
             TheCampaign.Flags xor_eq CAMP_SUSPEND_REQUEST;
         }
 
@@ -3188,7 +3188,7 @@ void RallyUnits(int minutes)
 
 void MakeTacticalEdit(void)
 {
-    TheCampaign.Flags |= CAMP_TACTICAL_EDIT;
+    TheCampaign.Flags  or_eq  CAMP_TACTICAL_EDIT;
 }
 
 void RemoveTacticalEdit(void)
@@ -3198,7 +3198,7 @@ void RemoveTacticalEdit(void)
 
 void PauseTacticalEngagement(void)
 {
-    TheCampaign.Flags |= CAMP_TACTICAL_PAUSE;
+    TheCampaign.Flags  or_eq  CAMP_TACTICAL_PAUSE;
 }
 
 void ResumeTacticalEngagement(void)

@@ -266,7 +266,7 @@ void FlareClass::InitTrail(void)
      trailSphere = NULL;
     */
 
-    flags |= IsFlare;
+    flags  or_eq  IsFlare;
     displayIndex = GetClassID(DOMAIN_AIR, CLASS_SFX, TYPE_FLARE,
                               STYPE_FLARE1, SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
 

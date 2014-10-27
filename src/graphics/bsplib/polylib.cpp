@@ -5,6 +5,7 @@
 
     //JAM 06Jan04 - Begin Major Rewrite
 \***************************************************************************/
+#include <cISO646>
 #include "stdafx.h"
 #include "StateStack.h"
 #include "ClipFlags.h"
@@ -459,7 +460,7 @@ void DrawClippedPrim(Prim *prim)
     {
         clipFlag = TheStateStack.ClipInfoPool[*xyzIdxPtr++].clipFlag;
         clipFlagAND &= clipFlag;
-        clipFlagOR |= clipFlag;
+        clipFlagOR  or_eq  clipFlag;
     };
 
     // See if we're on, off, or straddling the screen

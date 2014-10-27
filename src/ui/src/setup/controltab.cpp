@@ -1811,42 +1811,42 @@ void RefreshJoystickCB(long, short, C_Base *)
 
             if ((IO.povHatAngle[i] < 2250 || IO.povHatAngle[i] > 33750) && IO.povHatAngle[i] != -1)
             {
-                flags |= 0x01;
+                flags  or_eq  0x01;
                 Direction = 0;
             }
             else if (IO.povHatAngle[i] < 6750)
             {
-                flags |= 0x03;
+                flags  or_eq  0x03;
                 Direction = 1;
             }
             else if (IO.povHatAngle[i] < 11250)
             {
-                flags |= 0x02;
+                flags  or_eq  0x02;
                 Direction = 2;
             }
             else if (IO.povHatAngle[i] < 15750)
             {
-                flags |= 0x06;
+                flags  or_eq  0x06;
                 Direction = 3;
             }
             else if (IO.povHatAngle[i] < 20250)
             {
-                flags |= 0x04;
+                flags  or_eq  0x04;
                 Direction = 4;
             }
             else if (IO.povHatAngle[i] < 24750)
             {
-                flags |= 0x0C;
+                flags  or_eq  0x0C;
                 Direction = 5;
             }
             else if (IO.povHatAngle[i] < 29250)
             {
-                flags |= 0x08;
+                flags  or_eq  0x08;
                 Direction = 6;
             }
             else if (IO.povHatAngle[i] < 33750)
             {
-                flags |= 0x09;
+                flags  or_eq  0x09;
                 Direction = 7;
             }
 
@@ -2465,7 +2465,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
             return TRUE;
 
         if (GetAsyncKeyState(VK_SHIFT) & 0x8001)
-            ShiftStates |= _SHIFT_DOWN_;
+            ShiftStates  or_eq  _SHIFT_DOWN_;
         else
             ShiftStates &= compl _SHIFT_DOWN_;
 

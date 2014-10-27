@@ -5,6 +5,7 @@
 
     Provides custom code for use by specific BSPlib objects.
 \***************************************************************************/
+#include <cISO646>
 #include "stdafx.h"
 #include <math.h>
 #include "TimeMgr.h"
@@ -166,7 +167,7 @@ static void Beacon(void)
         {
             if ((sw & 0x4) == 0)
             {
-                sw |= 0x7; // Flash on, has flashed, visible
+                sw  or_eq  0x7; // Flash on, has flashed, visible
             }
             else
             {
@@ -175,7 +176,7 @@ static void Beacon(void)
         }
         else
         {
-            sw |= 0x1; // Visible
+            sw  or_eq  0x1; // Visible
         }
     }
 
@@ -195,7 +196,7 @@ static void Beacon(void)
         {
             if ((sw & 0x40) == 0)
             {
-                sw |= 0x70; // Flash on, has flashed, visible
+                sw  or_eq  0x70; // Flash on, has flashed, visible
             }
             else
             {
@@ -204,7 +205,7 @@ static void Beacon(void)
         }
         else
         {
-            sw |= 0x10; // Visible
+            sw  or_eq  0x10; // Visible
         }
     }
 
@@ -224,7 +225,7 @@ static void Beacon(void)
         {
             if ((sw & 0x400) == 0)
             {
-                sw |= 0x700; // Flash on, has flashed, visible
+                sw  or_eq  0x700; // Flash on, has flashed, visible
             }
             else
             {
@@ -233,7 +234,7 @@ static void Beacon(void)
         }
         else
         {
-            sw |= 0x100; // Visible
+            sw  or_eq  0x100; // Visible
         }
     }
 

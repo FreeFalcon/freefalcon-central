@@ -1,6 +1,7 @@
 #ifndef _VUEVENT_H_
 #define _VUEVENT_H_
 
+#include <cISO646>
 #include "vu_fwd.h"
 #include "vutypes.h"
 #include "vu.h"
@@ -214,15 +215,15 @@ public:
 
     void RequestLoopback()
     {
-        flags_ |= VU_LOOPBACK_MSG_FLAG;
+        flags_  or_eq  VU_LOOPBACK_MSG_FLAG;
     }
     void RequestReliableTransmit()
     {
-        flags_ |= VU_RELIABLE_MSG_FLAG;
+        flags_  or_eq  VU_RELIABLE_MSG_FLAG;
     }
     void RequestOutOfBandTransmit()
     {
-        flags_ |= VU_OUT_OF_BAND_MSG_FLAG;
+        flags_  or_eq  VU_OUT_OF_BAND_MSG_FLAG;
     }
     void RequestLowPriorityTransmit()
     {
@@ -630,7 +631,7 @@ public:
 
     void MarkAsKeepalive()
     {
-        flags_ |= VU_KEEPALIVE_MSG_FLAG;
+        flags_  or_eq  VU_KEEPALIVE_MSG_FLAG;
     }
 
 protected:
@@ -676,7 +677,7 @@ public:
     }
     void MarkAsKeepalive()
     {
-        flags_ |= VU_KEEPALIVE_MSG_FLAG;
+        flags_  or_eq  VU_KEEPALIVE_MSG_FLAG;
     }
 
 protected:

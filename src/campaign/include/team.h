@@ -203,7 +203,7 @@ public:
     };
     void Set(int val)
     {
-        simFlags |= val;
+        simFlags  or_eq  val;
     };
     void Clear(int val)
     {

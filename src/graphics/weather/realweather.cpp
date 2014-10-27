@@ -962,8 +962,8 @@ void RealWeather::UpdateDrawables()
                 for (i = 0; i < 4; i++)
                 {
                     clipFlag[i]  = GetRangeClipFlags(vp[i].z, 0);
-                    clipFlag[i] |= GetHorizontalClipFlags(vp[i].x, vp[i].z);
-                    clipFlag[i] |= GetVerticalClipFlags(vp[i].y, vp[i].z);
+                    clipFlag[i]  or_eq  GetHorizontalClipFlags(vp[i].x, vp[i].z);
+                    clipFlag[i]  or_eq  GetVerticalClipFlags(vp[i].y, vp[i].z);
                 }
 
                 weatherCellArray[row][col].onScreen = (!clipFlag[0] || !clipFlag[1] || !clipFlag[2] || !clipFlag[3]);

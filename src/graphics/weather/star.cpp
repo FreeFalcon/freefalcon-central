@@ -1,3 +1,4 @@
+#include <cISO646>
 #include "Star.h"
 #define EPSILON 1e-6f
 #define elonge      278.833540f     /* Ecliptic longitude of the Sun at epoch 1980.0 */
@@ -508,10 +509,10 @@ void CStar::UpdateStar()
         if (CalculateStarCoord(star -> ra, star -> dec, coord))
         {
             if (InsideRange(coord -> az, SunAz) && InsideRange(coord -> alt, SunAlt))
-                coord -> flag |= STAR_BEHIND_SUN;
+                coord -> flag  or_eq  STAR_BEHIND_SUN;
 
             if (InsideRange(coord -> az, MoonAz) && InsideRange(coord -> alt, MoonAlt))
-                coord -> flag |= STAR_BEHIND_SUN;
+                coord -> flag  or_eq  STAR_BEHIND_SUN;
 
             if (coord -> alt < HorizonRange)
             {

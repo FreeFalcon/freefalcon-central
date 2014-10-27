@@ -1513,7 +1513,7 @@ void DetermineWeight(VU_ID FlightID)
 
         if (_CURRENT_WEIGHT_[i] > _MAX_WEIGHT_[i])
         {
-            gFlightOverloaded |= 1 << i;
+            gFlightOverloaded  or_eq  1 << i;
         }
     }
 }

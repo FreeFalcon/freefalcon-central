@@ -550,7 +550,7 @@ void DigitalBrain::AirbaseCheck()
     {
         if (!(moreFlags & SaidImADot))
         {
-            moreFlags |= SaidImADot;
+            moreFlags  or_eq  SaidImADot;
             int flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
             FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
             radioMessage->dataBlock.from = self->Id();
@@ -590,7 +590,7 @@ void DigitalBrain::AirbaseCheck()
         if (obj && obj->Id() != airbase)
         {
             airbase = obj->Id();
-            moreFlags |= NewHomebase; // set this so that ResetATC doesn't reset our new airbase
+            moreFlags  or_eq  NewHomebase; // set this so that ResetATC doesn't reset our new airbase
             int flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
             FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
             radioMessage->dataBlock.from = self->Id();

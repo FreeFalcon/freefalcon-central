@@ -331,13 +331,13 @@ void BuildAscii()
                 scan = static_cast<short>(MapVirtualKey(vkey, 0) & 0xff);
 
                 Key_Chart[scan].Ascii[shiftstates] = static_cast<char>(i);
-                Key_Chart[scan].Flags[shiftstates] |= _IS_ASCII_;
+                Key_Chart[scan].Flags[shiftstates]  or_eq  _IS_ASCII_;
 
                 if (i >= '0' && i <= '9')
-                    Key_Chart[scan].Flags[shiftstates] |= _IS_DIGIT_;
+                    Key_Chart[scan].Flags[shiftstates]  or_eq  _IS_DIGIT_;
 
                 if (isalpha(i))
-                    Key_Chart[scan].Flags[shiftstates] |= _IS_ALPHA_;
+                    Key_Chart[scan].Flags[shiftstates]  or_eq  _IS_ALPHA_;
             }
         }
     }
@@ -2115,7 +2115,7 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
 
         if (!stricmp(FalconMovieMode, "Hurry"))
         {
-            mode |= MOVIE_MODE_HURRY;
+            mode  or_eq  MOVIE_MODE_HURRY;
         }
     }
     else

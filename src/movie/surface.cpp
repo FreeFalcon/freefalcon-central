@@ -12,6 +12,7 @@
    Programmed by Kuswara Pranawahadi               September 5, 1996
 */
 
+#include <cISO646>
 #include "surface.h"
 
 // OW
@@ -196,7 +197,7 @@ LPVOID surfaceCreate(LPVOID ddPointer, int dibWidth, int dibHeight)
         ddsd.dwSize = sizeof(ddsd);
         ddsd.ddpfPixelFormat = ddsdMode.ddpfPixelFormat;
 
-        ddsd.dwFlags |= DDSD_WIDTH | DDSD_HEIGHT;
+        ddsd.dwFlags  or_eq  DDSD_WIDTH | DDSD_HEIGHT;
         ddsd.dwWidth  = dibWidth;
         ddsd.dwHeight = dibHeight;
         ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;

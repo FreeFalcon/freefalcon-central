@@ -781,7 +781,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     // Copy in new data
     if (!name || strcmp(name, tmpSess->name) != 0)
     {
-        dirty |= 0x0001;
+        dirty  or_eq  0x0001;
         size = _tcslen(tmpSess->name);
         /*if (name)
           delete name;
@@ -792,7 +792,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
 
     if (!callSign || strcmp(callSign, tmpSess->callSign) != 0)
     {
-        dirty |= 0x0002;
+        dirty  or_eq  0x0002;
         size = _tcslen(tmpSess->callSign);
         /*if (callSign)
           delete callSign;
@@ -811,20 +811,20 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     // a flight in this game, the playerFlightPtr should dirty the
     // session just dandily..
     // if(playerFlight != tmpSess->playerFlight)
-    // dirty |= 0x0004;
+    // dirty  or_eq  0x0004;
     if (country != tmpSess->country)
     {
-        dirty |= 0x0008;
+        dirty  or_eq  0x0008;
     }
 
     if (aircraftNum != tmpSess->aircraftNum)
     {
-        dirty |= 0x0010;
+        dirty  or_eq  0x0010;
     }
 
     if (pilotSlot != tmpSess->pilotSlot)
     {
-        dirty |= 0x0020;
+        dirty  or_eq  0x0020;
     }
 
     tmpSess->playerSquadronPtr.reset((Squadron) vuDatabase->Find(tmpSess->playerSquadron));
@@ -833,19 +833,19 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
 
     if (playerSquadronPtr != tmpSess->playerSquadronPtr)
     {
-        dirty |= 0x0040;
+        dirty  or_eq  0x0040;
         SetPlayerSquadron(tmpSess->playerSquadronPtr.get());
     }
 
     if (playerFlightPtr != tmpSess->playerFlightPtr)
     {
-        dirty |= 0x0080;
+        dirty  or_eq  0x0080;
         SetPlayerFlight(tmpSess->playerFlightPtr.get());
     }
 
     if (playerEntityPtr != tmpSess->playerEntityPtr)
     {
-        dirty |= 0x0100;
+        dirty  or_eq  0x0100;
         SetPlayerEntity(tmpSess->playerEntityPtr.get());
     }
 

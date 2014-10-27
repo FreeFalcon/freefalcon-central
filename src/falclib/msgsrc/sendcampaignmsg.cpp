@@ -97,7 +97,7 @@ int FalconSendCampaign::Process(uchar autodisp)
         gCampDataVersion = gCurrentDataVersion;
         TheCampaign.Decode(&bufptr, &bufSize);
         TheCampaign.Flags &= compl CAMP_NEED_PRELOAD;
-        TheCampaign.Flags |= CAMP_PRELOADED;
+        TheCampaign.Flags  or_eq  CAMP_PRELOADED;
         CampLeaveCriticalSection();
 
         if (gMainHandler)

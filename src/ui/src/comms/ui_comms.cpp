@@ -541,7 +541,7 @@ void ServerChatCommand(_TCHAR *msg)
                 DisableScenarioInfo();
                 LeaveCurrentGame();
                 RuleMode = rTACTICAL_ENGAGEMENT;
-                TheCampaign.Flags |= CAMP_TACTICAL;
+                TheCampaign.Flags  or_eq  CAMP_TACTICAL;
 
                 if (!TACSelLoaded)
                     LoadTacEngSelectWindows();

@@ -382,7 +382,7 @@ void SoundFlagsCB(long, short hittype, C_Base *control)
 
             if (control->GetState())
             {
-                PlayerOptions.SoundFlags |= flagbit;
+                PlayerOptions.SoundFlags  or_eq  flagbit;
             }
             else
             {

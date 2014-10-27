@@ -136,7 +136,7 @@ void RadarSuperClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
     // Note if the cursors are in motion or not
     if ((cursorXCmd != 0) || (cursorYCmd != 0))
-        flags |= CursorMoving;
+        flags  or_eq  CursorMoving;
     else
         flags &= compl CursorMoving;
 }

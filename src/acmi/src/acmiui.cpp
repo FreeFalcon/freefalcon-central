@@ -1793,7 +1793,7 @@ static void ViewTimerCB(long, short, C_Base *control)
 {
     // F4EnterCriticalSection( gUICriticalSection );
     control->SetReady(1);
-    control->Parent_->update_ |= C_DRAW_REFRESHALL;
+    control->Parent_->update_  or_eq  C_DRAW_REFRESHALL;
     control->Parent_->RefreshWindow();
     // F4LeaveCriticalSection( gUICriticalSection );
 }
@@ -1898,7 +1898,7 @@ void MoveACMIViewTimerCB(long, short, C_Base *control)
         }
 
         control->SetUserNumber(_UI95_TIMER_COUNTER_, control->GetUserNumber(_UI95_TIMER_DELAY_));
-        control->Parent_->update_ |= C_DRAW_REFRESHALL;
+        control->Parent_->update_  or_eq  C_DRAW_REFRESHALL;
         control->Parent_->RefreshWindow();
     }
 

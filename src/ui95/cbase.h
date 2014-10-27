@@ -125,7 +125,7 @@ public:
     }
     virtual void SetFlagBitOn(long bits)
     {
-        Flags_ |= bits;
+        Flags_  or_eq  bits;
     }
     virtual void SetFlagBitOff(long bits)
     {

@@ -361,7 +361,7 @@ public:
     // Setter functions
     void SetSimFlag(int flag)
     {
-        SimFlags |= flag;
+        SimFlags  or_eq  flag;
     };
     void ClearSimFlag(int flag)
     {
@@ -370,7 +370,7 @@ public:
 
     void SetDispFlag(int flag)
     {
-        DispFlags |= flag;
+        DispFlags  or_eq  flag;
     };
     void ClearDispFlag(int flag)
     {
@@ -379,7 +379,7 @@ public:
 
     void SetObjFlag(int flag)
     {
-        ObjFlags |= flag;
+        ObjFlags  or_eq  flag;
     };
     void ClearObjFlag(int flag)
     {
@@ -388,7 +388,7 @@ public:
 
     void SetGenFlag(int flag)
     {
-        GeneralFlags |= flag;
+        GeneralFlags  or_eq  flag;
     };
     void ClearGenFlag(int flag)
     {

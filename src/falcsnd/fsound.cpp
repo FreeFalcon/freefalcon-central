@@ -744,7 +744,7 @@ void F4SetSoundFlags(int soundIdx, long flags)
         snd = gSoundDriver->FindSample(soundIdx);
 
         if (snd != NULL)
-            snd->Flags |= flags;
+            snd->Flags  or_eq  flags;
     }
 }
 
@@ -1044,7 +1044,7 @@ BOOL ReadSFXTableTXT(char *sndtable)
                     {
                         if (*arg == flags[l])
                         {
-                            SFX_DEF[i].flags |= 1 << l;
+                            SFX_DEF[i].flags  or_eq  1 << l;
                         }
                     }
 
@@ -1056,14 +1056,14 @@ BOOL ReadSFXTableTXT(char *sndtable)
             if (SFX_DEF[i].flags & (SFX_POS_SELF | SFX_POS_EXTONLY | SFX_POS_EXTINT))
             {
                 // for all those types, set the External flag
-                SFX_DEF[i].flags |= SFX_POS_EXTERN;
+                SFX_DEF[i].flags  or_eq  SFX_POS_EXTERN;
             }
 
             if (SFX_DEF[i].flags & SFX_POS_EXTERN)
             {
                 // for all external types, set the 3d flag
-                SFX_DEF[i].flags |= SFX_FLAGS_3D;
-                // SFX_DEF[i].flags |= SFX_FLAGS_FREQ; // needed for doppler effect // this will be handled in psound
+                SFX_DEF[i].flags  or_eq  SFX_FLAGS_3D;
+                // SFX_DEF[i].flags  or_eq  SFX_FLAGS_FREQ; // needed for doppler effect // this will be handled in psound
 
             }
 

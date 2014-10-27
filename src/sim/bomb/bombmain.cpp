@@ -70,7 +70,7 @@ BombClass::BombClass(VU_BYTE** stream, long *rem) : SimWeaponClass(stream, rem)
 
     if (parent && !IsLocal())
     {
-        flags |= FirstFrame;
+        flags  or_eq  FirstFrame;
         //VuReferenceEntity (parent);
         //parentReferenced = TRUE;
         SetYPR(parent->Yaw(), parent->Pitch(), parent->Roll());
@@ -140,7 +140,7 @@ void BombClass::InitLocalData(BombType btype)
     burstHeight = 0.0F;
     detonateHeight = 0.0F;
     timeOfDeath = 0;
-    specialData.flags |= MOTION_BMB_AI;
+    specialData.flags  or_eq  MOTION_BMB_AI;
     flags = 0;
     dragCoeff = 0.0f;
 
@@ -200,15 +200,15 @@ void BombClass::Init()
 
     // Am I an LGB
     if (EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GUIDED)
-        flags |= IsLGB;
+        flags  or_eq  IsLGB;
 
     //Wombat778 3-09-04 Is this a GPS bomb?
     if (EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS)
-        flags |= IsGPS;
+        flags  or_eq  IsGPS;
 
     // Cobra - GPS/JSOW
     if (EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
-        flags |= (IsGPS | IsJSOW);
+        flags  or_eq  (IsGPS | IsJSOW);
 
 }
 
@@ -252,7 +252,7 @@ void BombClass::Start(vector* pos, vector* rate, float cD, SimObjectType *target
 
     if (parent)
     {
-        flags |= FirstFrame;
+        flags  or_eq  FirstFrame;
         //VuReferenceEntity (parent);
         //parentReferenced = TRUE;
         SetYPR(parent->Yaw(), parent->Pitch(), parent->Roll());
@@ -270,7 +270,7 @@ void BombClass::Start(vector* pos, vector* rate, float cD, SimObjectType *target
 
     // edg hack.  drag coeff of 1.0f we assume to be a durandal
     if (cD >= 1.0f)
-        flags |= IsDurandal;
+        flags  or_eq  IsDurandal;
 
     SetPosition(x, y, z);
     CalcTransformMatrix(this);
@@ -516,7 +516,7 @@ int BombClass::Exec(void)
             dx == 0.0f &&
             dy == 0.0f)
         {
-            flags |= FireDurandal;
+            flags  or_eq  FireDurandal;
 
             // accelerate towards ground
             SetDelta(dx, dy, ZDelta() + 500.0f);

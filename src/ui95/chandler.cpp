@@ -437,7 +437,7 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
     }
 
     thewin->SetHandler(this);
-    thewin->update_ |= C_DRAW_REFRESHALL;
+    thewin->update_  or_eq  C_DRAW_REFRESHALL;
     thewin->RefreshWindow();
 
     if (thewin->GetFlags() & C_BIT_ENABLED)
@@ -461,7 +461,7 @@ BOOL C_Handler::ShowWindow(C_Window *thewin)
         if (cur->win == thewin && !(cur->Flags & C_BIT_ENABLED))
         {
             cur->win->SetCritical(UI_Critical);
-            cur->Flags |= C_BIT_ENABLED;
+            cur->Flags  or_eq  C_BIT_ENABLED;
             cur->win->update_ = C_DRAW_REFRESHALL;
             cur->win->RefreshWindow();
             cur->win->SetSection(CurrentSection_);
@@ -884,7 +884,7 @@ void C_Handler::SetUpdateRect(UI95_RECT *upd)
     {
         rectlist_[rectcount_] = *upd;
         rectcount_++;
-        UpdateFlag |= C_DRAW_COPYWINDOW;
+        UpdateFlag  or_eq  C_DRAW_COPYWINDOW;
     }
     else if (rectcount_ < HND_MAX_RECTS)
     {
@@ -899,7 +899,7 @@ void C_Handler::SetUpdateRect(UI95_RECT *upd)
         rectlist_[rectcount_].right = upd->right;
         rectlist_[rectcount_].bottom = upd->bottom;
         rectcount_++;
-        UpdateFlag |= C_DRAW_COPYWINDOW;
+        UpdateFlag  or_eq  C_DRAW_COPYWINDOW;
     }
     else
     {
@@ -908,7 +908,7 @@ void C_Handler::SetUpdateRect(UI95_RECT *upd)
         rectlist_[0].top = 0;
         rectlist_[0].right = GetW();
         rectlist_[0].bottom = GetH();
-        UpdateFlag |= C_DRAW_COPYWINDOW;
+        UpdateFlag  or_eq  C_DRAW_COPYWINDOW;
     }
 }
 
@@ -2052,13 +2052,13 @@ void C_Handler::BlitWindowNow(C_Window *win)
 
 void C_Handler::PostUpdate()
 {
-    // UpdateFlag |= C_DRAW_UPDATE;
+    // UpdateFlag  or_eq  C_DRAW_UPDATE;
     // PostMessage(AppWindow_,C_WM_UPDATE,0,0);
 }
 
 void C_Handler::SendUpdate()
 {
-    // UpdateFlag |= C_DRAW_UPDATE;
+    // UpdateFlag  or_eq  C_DRAW_UPDATE;
     // SendMessage(AppWindow_,C_WM_UPDATE,0,0);
 }
 
@@ -2837,13 +2837,13 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             Key = (uchar)(((lParam >> 16) & 0xff) | ((lParam >> 17) & 0x80)); //!
 
             if (GetKeyState(VK_SHIFT) & 0x80)
-                ShiftStates |= _SHIFT_DOWN_;
+                ShiftStates  or_eq  _SHIFT_DOWN_;
 
             if (GetKeyState(VK_MENU) & 0x80)
-                ShiftStates |= _ALT_DOWN_;
+                ShiftStates  or_eq  _ALT_DOWN_;
 
             if (GetKeyState(VK_CONTROL) & 0x80)
-                ShiftStates |= _CTRL_DOWN_;
+                ShiftStates  or_eq  _CTRL_DOWN_;
 
             if (GetKeyState(VK_CAPITAL) & 0x01)
                 if ((Key >= DIK_Q && Key <= DIK_P) || (Key >= DIK_A && Key <= DIK_L) || (Key >= DIK_Z && Key <= DIK_M))
@@ -2851,7 +2851,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
             if (GetKeyState(VK_NUMLOCK) & 0x01)
                 if ((Key >= DIK_NUMPAD7 && Key <= DIK_NUMPAD9) || (Key >= DIK_NUMPAD4 && Key <= DIK_NUMPAD6) || (Key >= DIK_NUMPAD1 && Key <= DIK_DECIMAL))
-                    ShiftStates |= _SHIFT_DOWN_;
+                    ShiftStates  or_eq  _SHIFT_DOWN_;
 
             Ascii = AsciiChar(Key, ShiftStates);
 

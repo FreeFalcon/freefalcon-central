@@ -758,8 +758,8 @@ void CPPanel::SetTOD(float lightLevel)
             inColor = *palData;
 
             outColor  = ((((inColor)     & 0xFF) * lighting) >> 16);
-            outColor |= ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
-            outColor |= ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
+            outColor  or_eq  ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
+            outColor  or_eq  ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
 
             blue = (BYTE)(((outColor) >> 16) & 0xFF);
             green = (BYTE)(((outColor) >> 8)  & 0xFF);
@@ -812,8 +812,8 @@ void CPPanel::SetTOD(float lightLevel)
             inColor = *palData;
 
             outColor  = ((((inColor)     & 0xFF) * lighting) >> 16);
-            outColor |= ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
-            outColor |= ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
+            outColor  or_eq  ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
+            outColor  or_eq  ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
 
             if (!gpTemplateSurface)
                 *palTgt = TemplateInfo->Pixel32toPixel32(outColor & mask);
@@ -885,14 +885,14 @@ void CPPanel::SetTOD(float lightLevel)
                 inColor = *palData;
 
                 outColor  = ((((inColor)     & 0xFF) * lighting) >> 16);
-                outColor |= ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
-                outColor |= ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
+                outColor  or_eq  ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
+                outColor  or_eq  ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
 
                 blue = (BYTE)(((outColor) >> 16) & 0xFF);
                 green = (BYTE)(((outColor) >> 8)  & 0xFF);
                 red = (BYTE)((outColor)     & 0xFF);
                 outColor = (((BYTE)(0.299F * red + 0.587F * green + 0.114 * blue)) & 0xFF) << 8;
-                outColor |= 0xff000000; // OW add alpha
+                outColor  or_eq  0xff000000; // OW add alpha
 
                 *palTgt = outColor;
 
@@ -910,7 +910,7 @@ void CPPanel::SetTOD(float lightLevel)
                 green = (BYTE)(((*palData) >> 8)  & 0xFF);
                 red = (BYTE)((*palData)        & 0xFF);
                 outColor = ((int)(0.299F * red + 0.587F * green + 0.114 * blue) & 0xFF) << 8;
-                outColor |= 0xff000000; // OW add alpha
+                outColor  or_eq  0xff000000; // OW add alpha
 
                 if (!gpTemplateSurface)
                     *palTgt = TemplateInfo->Pixel32toPixel32(outColor);
@@ -937,9 +937,9 @@ void CPPanel::SetTOD(float lightLevel)
                 inColor = *palData;
 
                 outColor  = ((((inColor)     & 0xFF) * lighting) >> 16);
-                outColor |= ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
-                outColor |= ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
-                outColor |= 0xff000000; // OW add alpha
+                outColor  or_eq  ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
+                outColor  or_eq  ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
+                outColor  or_eq  0xff000000; // OW add alpha
 
                 *palTgt = outColor & mask;
 

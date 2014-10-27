@@ -84,7 +84,7 @@ void C_Text::SetFixedWidth(long w)
 
     FixedSize_ = w + 1;
     Text_->SetTextWidth(FixedSize_);
-    Flags_ |= C_BIT_FIXEDSIZE;
+    Flags_  or_eq  C_BIT_FIXEDSIZE;
 }
 
 void C_Text::SetText(_TCHAR *text)

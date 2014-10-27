@@ -886,7 +886,7 @@ void DigitalBrain::SelectNextWaypoint(void)
 
         if (!(moreFlags & SaidSunrise)) // only say sunrise once and only insert once into FAC list
         {
-            moreFlags |= SaidSunrise;
+            moreFlags  or_eq  SaidSunrise;
 
             switch (tmpWaypoint->GetWPAction())
             {

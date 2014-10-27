@@ -2100,13 +2100,13 @@ void AirframeClass::HydrBreak(int sys)
     if (sys & HYDR_A_SYSTEM)   // mark A system as down and broke
     {
         hydrAB &= compl  HYDR_A_SYSTEM;
-        hydrAB |= HYDR_A_BROKE;
+        hydrAB  or_eq  HYDR_A_BROKE;
     }
 
     if (sys & HYDR_B_SYSTEM)   // mark A system as down and broke
     {
         hydrAB &= compl  HYDR_B_SYSTEM;
-        hydrAB |= HYDR_B_BROKE;
+        hydrAB  or_eq  HYDR_B_BROKE;
     }
 }
 
@@ -2115,13 +2115,13 @@ void AirframeClass::HydrRestore(int sys)
     // restore A if not broke
     if ((sys & HYDR_A_SYSTEM) && (hydrAB & HYDR_A_BROKE) == 0)
     {
-        hydrAB |= HYDR_A_SYSTEM;
+        hydrAB  or_eq  HYDR_A_SYSTEM;
     }
 
     // restore B if not broke
     if ((sys & HYDR_B_SYSTEM) && (hydrAB & HYDR_B_BROKE) == 0)
     {
-        hydrAB |= HYDR_B_SYSTEM;
+        hydrAB  or_eq  HYDR_B_SYSTEM;
     }
 }
 

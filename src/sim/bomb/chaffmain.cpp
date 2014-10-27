@@ -228,7 +228,7 @@ void ChaffClass::InitTrail()
 {
     Falcon4EntityClassType* classPtr;
 
-    flags |= IsChaff;
+    flags  or_eq  IsChaff;
     displayIndex = GetClassID(DOMAIN_AIR, CLASS_SFX, TYPE_CHAFF,
                               STYPE_CHAFF, SPTYPE_CHAFF1, VU_ANY, VU_ANY, VU_ANY);
 

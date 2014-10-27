@@ -1573,7 +1573,7 @@ int WayPointErrorCode(WayPointClass *wp, Flight flt)
         CampEntity ent = wp->GetWPTarget();
 
         if (!ent)
-            errors |= WPERROR_NO_TARGET;
+            errors  or_eq  WPERROR_NO_TARGET;
     }
 
     // Check for fuel
@@ -1590,7 +1590,7 @@ int WayPointErrorCode(WayPointClass *wp, Flight flt)
     fuelAvail = flt->CalculateFuelAvailable(255);
 
     if ((missionTime / CampaignMinutes) * flt->GetUnitClassData()->Rate > fuelAvail)
-        errors |= WPERROR_FUEL;
+        errors  or_eq  WPERROR_FUEL;
 
     // Do minimum speed checks
     //TJL 11/23/03 Cruise/Max distinction removed. Speeds based on straight KM to NM
@@ -1604,10 +1604,10 @@ int WayPointErrorCode(WayPointClass *wp, Flight flt)
         return errors;
 
     if (wp->GetWPSpeed() < minSpeed && wp->GetPrevWP())
-        errors |= WPERROR_SPEED;
+        errors  or_eq  WPERROR_SPEED;
 
     if (wp->GetWPSpeed() > maxSpeed)
-        errors |= WPERROR_SPEED;
+        errors  or_eq  WPERROR_SPEED;
 
     // Check for valid speeds/times
     pw = wp->GetPrevWP();
@@ -1617,7 +1617,7 @@ int WayPointErrorCode(WayPointClass *wp, Flight flt)
         time = wp->GetWPArrivalTime() - pw->GetWPDepartureTime();
 
         if (time <= 1)
-            errors |= WPERROR_TIME;
+            errors  or_eq  WPERROR_TIME;
 
         dist = wp->DistanceTo(pw);
 
@@ -1627,7 +1627,7 @@ int WayPointErrorCode(WayPointClass *wp, Flight flt)
             speed = 0.0F;
 
         if (speed < minSpeed || speed > maxSpeed || fabs(speed - wp->GetWPSpeed()) > 10.0F)
-            errors |= WPERROR_SPEED;
+            errors  or_eq  WPERROR_SPEED;
     }
 
     return errors;
@@ -1813,7 +1813,7 @@ void set_waypoint_action(WayPoint wp, int action)
             pw = wp->GetPrevWP();
 
             if (pw && pw->GetWPAction() == action)
-                flags |= WPF_REPEAT;
+                flags  or_eq  WPF_REPEAT;
 
             wp->SetWPTarget(FalconNullId);
             break;
@@ -1824,13 +1824,13 @@ void set_waypoint_action(WayPoint wp, int action)
             pw = wp->GetPrevWP();
 
             if (pw && pw->GetWPAction() == action)
-                flags |= WPF_REPEAT;
+                flags  or_eq  WPF_REPEAT;
             else if (pw)
             {
                 pw = wp->GetNextWP();
 
                 if (pw && pw->GetWPAction() == action)
-                    flags |= WPF_CP;
+                    flags  or_eq  WPF_CP;
             }
 
             break;

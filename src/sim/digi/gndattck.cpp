@@ -3838,7 +3838,7 @@ void DigitalBrain::DropGBU(float approxRange, float ata, RadarClass* theRadar)
             ipZ = self->ZPos();
             waitingForShot = SimLibElapsedTime + 27 * SEC_TO_MSEC;
             ShiAssert(ipX > 0.0F);
-            moreFlags |= KeepLasing; // 2002-03-08 ADDED BY S.G. Flag this AI as lasing so he sticks to it
+            moreFlags  or_eq  KeepLasing; // 2002-03-08 ADDED BY S.G. Flag this AI as lasing so he sticks to it
         }
         else
         {

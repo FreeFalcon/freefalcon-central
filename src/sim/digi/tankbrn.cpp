@@ -458,7 +458,7 @@ void TankerBrain::CallNext(void)
         //it's much easier if the tanker isn't trying to change altitude
         //holdAlt = 20000.0F;
         curThirsty = aircraft;
-        flags |= IsRefueling;
+        flags  or_eq  IsRefueling;
 
         // Say precontact message
         tankMsg = new FalconTankerMessage(self->Id(), FalconLocalGame);
@@ -540,7 +540,7 @@ void TankerBrain::DoneRefueling(void)
     */
     holdAlt += 200.0F; // 15NOV03 - FRB - was 100.0F
     af->ClearFlag(AirframeClass::Refueling);
-    flags |= ClearingPlane;
+    flags  or_eq  ClearingPlane;
     //curThirsty = NULL;
     flags &= compl GivingGas;
     flags &= compl PatternDefined;
@@ -743,7 +743,7 @@ void TankerBrain::DriveBoom(void)
                  fabs(tankingPtr->BaseData()->Pitch())*RTD < 6.0F * /* S.G.*/ ScaledRM)
                 || ((flags & AIready) && (tmpRefuelMode >= 3))) // 27NOV03 - FRB  AI is in position
             {
-                flags |= GivingGas;
+                flags  or_eq  GivingGas;
                 tankMsg = new FalconTankerMessage(self->Id(), FalconLocalGame);
                 tankMsg->dataBlock.caller = curThirsty->Id();
                 tankMsg->dataBlock.type = FalconTankerMessage::Contact;
@@ -954,7 +954,7 @@ void TankerBrain::DriveBoom(void)
              // fabs(tankingPtr->BaseData()->Pitch())*RTD < 4.0F * /* S.G.*/ ScaledRM) */  JPG 14 Jan03 - End of Line 881 thru 883 - pitch and roll isn't needed
              || ((flags & AIready) && (tmpRefuelMode >= 3.0f)))) // 27NOV03 - FRB  AI is in position
         {
-            flags |= GivingGas;
+            flags  or_eq  GivingGas;
             flags &= compl AIready;
             tankMsg = new FalconTankerMessage(self->Id(), FalconLocalGame);
             tankMsg->dataBlock.caller = curThirsty->Id();
@@ -1475,7 +1475,7 @@ void TankerBrain::FollowThirsty(void)
             fabs(tankingPtr->localData->rangedot) < 100.0F &&
             fabs(tankingPtr->localData->az) < 35.0F * DTR)
         {
-            flags |= PrecontactPos;
+            flags  or_eq  PrecontactPos;
             // Call into contact position
             tankMsg = new FalconTankerMessage(self->Id(), FalconLocalGame);
             tankMsg->dataBlock.caller = curThirsty->Id();
@@ -1679,7 +1679,7 @@ int TankerBrain::AddToQ(SimVehicleClass* thirstyOne)
 
 void TankerBrain::AIReady()
 {
-    flags |= AIready;
+    flags  or_eq  AIready;
 }
 
 void TankerBrain::RemoveFromQ(SimVehicleClass* thirstyOne)

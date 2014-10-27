@@ -278,7 +278,7 @@ int VuMessageQueue::InvalidateMessages(VU_BOOL (*evalFunc)(VuMessage*, void*), v
 
 void VuMessageQueue::RepostMessage(VuMessage* msg, int delay)
 {
-    msg->flags_ |= compl VU_LOOPBACK_MSG_FLAG;
+    msg->flags_  or_eq  compl VU_LOOPBACK_MSG_FLAG;
     VuTimerEvent *timer = new VuTimerEvent(0, vuxRealTime + delay, VU_DELAY_TIMER, msg);
     VuMessageQueue::PostVuMessage(timer);
 }

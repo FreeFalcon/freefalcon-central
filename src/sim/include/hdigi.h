@@ -230,7 +230,7 @@ public:
     void ClearTarget(void);
     void SetFlag(int val)
     {
-        flags |= val;
+        flags  or_eq  val;
     };
     void ClearFlag(int val)
     {

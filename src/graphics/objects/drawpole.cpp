@@ -4,6 +4,7 @@
  Based on DrawableShadowed, this class is used in ACMI to put altitude
  poles and extra labels on an object.
 \***************************************************************************/
+#include <cISO646>
 #include "Matrix.h"
 #include "RViewPnt.h"
 #include "RenderOW.h"
@@ -225,25 +226,25 @@ void DrawablePoled::DrawTargetBox(class RenderOTW *renderer, ThreeDVertex *spos)
     // not sure if clipping needed, to be safe....
     if (x1 < 0.0f)
     {
-        clip |= CLIP_LEFT;
+        clip  or_eq  CLIP_LEFT;
         x1 = 0.0f;
     }
 
     if (y1 < 0.0f)
     {
-        clip |= CLIP_TOP;
+        clip  or_eq  CLIP_TOP;
         y1 = 0.0f;
     }
 
     if (x2 >= xres)
     {
-        clip |= CLIP_RIGHT;
+        clip  or_eq  CLIP_RIGHT;
         x2 = xres - 1.0f;
     }
 
     if (y2 >= yres)
     {
-        clip |= CLIP_BOTTOM;
+        clip  or_eq  CLIP_BOTTOM;
         y2 = yres - 1.0f;
     }
 

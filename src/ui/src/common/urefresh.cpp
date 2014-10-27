@@ -145,7 +145,7 @@ void UI_Refresher::Update(CampEntity entity, long allow)
     else if ((allow & UR_OOB) && !(Allowed_ & UR_OOB))
         AddOOBItem(entity);
 
-    Allowed_ |= allow;
+    Allowed_  or_eq  allow;
 }
 
 void UI_Refresher::Update(Division div, long allow)
@@ -160,7 +160,7 @@ void UI_Refresher::Update(Division div, long allow)
     else if ((allow & UR_OOB) && !(Allowed_ & UR_OOB))
         AddOOBItem(div);
 
-    Allowed_ |= allow;
+    Allowed_  or_eq  allow;
 }
 
 void UI_Refresher::Remove()
@@ -258,7 +258,7 @@ void UI_Refresher::AddMapItem(CampEntity entity)
             if (vuxGameTime < wp->GetWPDepartureTime())
                 MapItem_->Flags &= compl C_BIT_ENABLED;
             else
-                MapItem_->Flags |= C_BIT_ENABLED;
+                MapItem_->Flags  or_eq  C_BIT_ENABLED;
         }
         else if (MapItem_)
             MapItem_->Flags &= compl C_BIT_ENABLED;
@@ -296,33 +296,33 @@ void UI_Refresher::AddMapItem(CampEntity entity)
     {
         if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
         {
-            MapItem_->Flags |= C_BIT_DRAGABLE;
+            MapItem_->Flags  or_eq  C_BIT_DRAGABLE;
         }
 
         if (entity->IsUnit() && ((Unit)entity)->Inactive())
         {
-            MapItem_->Flags |= C_BIT_INVISIBLE;
+            MapItem_->Flags  or_eq  C_BIT_INVISIBLE;
         }
 
         if (entity->GetTeam() != Owner_->TeamNo_ && Owner_->TeamNo_ >= 0 && !entity->IsSquadron())
         {
             if (!entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) && entity->GetMovementType() != NoMove)
             {
-                MapItem_->Flags |= C_BIT_INVISIBLE;
+                MapItem_->Flags  or_eq  C_BIT_INVISIBLE;
 
                 if (Threat_)
                 {
                     if (Threat_->SamLow)
-                        Threat_->SamLow->Flags |= C_BIT_INVISIBLE;
+                        Threat_->SamLow->Flags  or_eq  C_BIT_INVISIBLE;
 
                     if (Threat_->SamHigh)
-                        Threat_->SamHigh->Flags |= C_BIT_INVISIBLE;
+                        Threat_->SamHigh->Flags  or_eq  C_BIT_INVISIBLE;
 
                     if (Threat_->RadarLow)
-                        Threat_->RadarLow->Flags |= C_BIT_INVISIBLE;
+                        Threat_->RadarLow->Flags  or_eq  C_BIT_INVISIBLE;
 
                     if (Threat_->RadarHigh)
-                        Threat_->RadarHigh->Flags |= C_BIT_INVISIBLE;
+                        Threat_->RadarHigh->Flags  or_eq  C_BIT_INVISIBLE;
                 }
             }
         }
@@ -447,7 +447,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
 
                     if (wp)
                         if (vuxGameTime >= wp->GetWPDepartureTime())
-                            MapItem_->Flags |= C_BIT_ENABLED;
+                            MapItem_->Flags  or_eq  C_BIT_ENABLED;
                 }
             }
             else
@@ -520,21 +520,21 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
         {
             if (!entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) && entity->GetMovementType() != NoMove)
             {
-                MapItem_->Flags |= C_BIT_INVISIBLE;
+                MapItem_->Flags  or_eq  C_BIT_INVISIBLE;
 
                 if (Threat_)
                 {
                     if (Threat_->SamLow)
-                        Threat_->SamLow->Flags |= C_BIT_INVISIBLE;
+                        Threat_->SamLow->Flags  or_eq  C_BIT_INVISIBLE;
 
                     if (Threat_->SamHigh)
-                        Threat_->SamHigh->Flags |= C_BIT_INVISIBLE;
+                        Threat_->SamHigh->Flags  or_eq  C_BIT_INVISIBLE;
 
                     if (Threat_->RadarLow)
-                        Threat_->RadarLow->Flags |= C_BIT_INVISIBLE;
+                        Threat_->RadarLow->Flags  or_eq  C_BIT_INVISIBLE;
 
                     if (Threat_->RadarHigh)
-                        Threat_->RadarHigh->Flags |= C_BIT_INVISIBLE;
+                        Threat_->RadarHigh->Flags  or_eq  C_BIT_INVISIBLE;
                 }
             }
             else
@@ -560,12 +560,12 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
 
         if (entity->IsUnit() && ((Unit)entity)->Inactive())
         {
-            MapItem_->Flags |= C_BIT_INVISIBLE;
+            MapItem_->Flags  or_eq  C_BIT_INVISIBLE;
         }
 
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified, not editing a TE and 'showUnknown' isn't set, hide it
         if (g_nUnidentifiedInUI && !gShowUnknown && MapItem_->ImageID == ICON_UKN)
-            MapItem_->Flags |= C_BIT_INVISIBLE;
+            MapItem_->Flags  or_eq  C_BIT_INVISIBLE;
 
         // END OF ADDED SECTION 2002-02-21
     }

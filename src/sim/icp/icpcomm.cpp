@@ -309,7 +309,7 @@ void ICPClass::PNUpdateCOMMMode(int button, int)
             }
         }
 
-        mUpdateFlags |= CNI_UPDATE;
+        mUpdateFlags  or_eq  CNI_UPDATE;
     }
     else
     {

@@ -249,7 +249,7 @@ public:
     void ZoomOut();
     void SetFlags(long flag)
     {
-        flags_ |= flag;
+        flags_  or_eq  flag;
     }
     void SetFlight(VU_ID ID)
     {

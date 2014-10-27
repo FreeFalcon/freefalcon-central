@@ -1011,7 +1011,7 @@ void GNDAIClass::Order_Battalion(void)
     int delta = 1 - g_nlookAroundWaterTiles;
 
 
-    moveFlags |= GNDAI_MOVE_BATTALION; // We're the battalion lead
+    moveFlags  or_eq  GNDAI_MOVE_BATTALION; // We're the battalion lead
 
     // are we halted?
     if (moveState == GNDAI_MOVE_HALTED)
@@ -1360,7 +1360,7 @@ void GNDAIClass::Move_Towards_Dest(void)
 
                 if (formation == GNDAI_FORM_COLUMN)
                 {
-                    moveFlags |= GNDAI_WENT_THROUGH;
+                    moveFlags  or_eq  GNDAI_WENT_THROUGH;
                     Process();
                     // Move_Towards_Dest();
                     return;
@@ -1372,7 +1372,7 @@ void GNDAIClass::Move_Towards_Dest(void)
         }
         else
         {
-            moveFlags |= GNDAI_WENT_THROUGH;
+            moveFlags  or_eq  GNDAI_WENT_THROUGH;
         }
     }
 

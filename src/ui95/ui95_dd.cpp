@@ -262,8 +262,8 @@ IDirectDrawSurface *UI95_CreateDDSurface(IDirectDraw *DD,DWORD width,DWORD heigh
     ddDescription.dwSize = sizeof( ddDescription );
     ddDescription.dwFlags = DDSD_CAPS;
 
- ddDescription.ddsCaps.dwCaps |= DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN | DDSCAPS_3DDEVICE;
- ddDescription.dwFlags |= DDSD_WIDTH | DDSD_HEIGHT;
+ ddDescription.ddsCaps.dwCaps  or_eq  DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN | DDSCAPS_3DDEVICE;
+ ddDescription.dwFlags  or_eq  DDSD_WIDTH | DDSD_HEIGHT;
  ddDescription.dwWidth = width;
  ddDescription.dwHeight = height;
 

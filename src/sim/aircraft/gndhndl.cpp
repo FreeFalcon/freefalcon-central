@@ -346,7 +346,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
                 for (int i = 0; i < af->NumGear(); i++)
                 {
-                    af->gear[i].flags |= GearData::GearProblem;
+                    af->gear[i].flags  or_eq  GearData::GearProblem;
                     SetDOF(ComplexGearDOF[i]/*COMP_NOS_GEAR + i*/, 0.0F);
                 }
 
@@ -411,7 +411,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
                 for (int i = 0; i < af->NumGear(); i++)
                 {
-                    af->gear[i].flags |= GearData::GearProblem;
+                    af->gear[i].flags  or_eq  GearData::GearProblem;
                 }
 
                 // JPO - change to only play for us.

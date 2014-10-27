@@ -72,9 +72,9 @@ void OnSimKeyboardInput()
 
                     default:
                         state  = KEY_DOWN;
-                        state |= (ShiftCount > 0 ? SHIFT_KEY : 0);
-                        state |= (CtrlCount > 0 ? CTRL_KEY : 0);
-                        state |= (AltCount > 0 ? ALT_KEY : 0);
+                        state  or_eq  (ShiftCount > 0 ? SHIFT_KEY : 0);
+                        state  or_eq  (CtrlCount > 0 ? CTRL_KEY : 0);
+                        state  or_eq  (AltCount > 0 ? ALT_KEY : 0);
                         CallInputFunction(ObjData[i].dwOfs, state);
                         break;
                 }
@@ -100,8 +100,8 @@ void OnSimKeyboardInput()
 
                     default:
                         state = (ShiftCount > 0 ? SHIFT_KEY : 0);
-                        state |= (CtrlCount > 0 ? CTRL_KEY : 0);
-                        state |= (AltCount > 0 ? ALT_KEY : 0);
+                        state  or_eq  (CtrlCount > 0 ? CTRL_KEY : 0);
+                        state  or_eq  (AltCount > 0 ? ALT_KEY : 0);
                         CallInputFunction(ObjData[i].dwOfs, state);
                         break;
                 }

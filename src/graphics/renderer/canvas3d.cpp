@@ -11,6 +11,7 @@
 ** 3-nov-97 (edg)
 ** We go marching in.....
 */
+#include <cISO646>
 #include <math.h>
 #include "Matrix.h"
 #include "canvas3d.h"
@@ -221,13 +222,13 @@ void Canvas3D::Line(float x1, float y1, float x2, float y2)
     {
         x1 = x2 + (x1 - x2) * ((y2 + 1.0f) / (y2 - y1));
         y1 = -1.0f;
-        clipFlag |= CLIP_BOTTOM;
+        clipFlag  or_eq  CLIP_BOTTOM;
     }
     else if (y1 > 1.0f)
     {
         x1 = x2 + (x1 - x2) * ((y2 - 1.0f) / (y2 - y1));
         y1 = 1.0f;
-        clipFlag |= CLIP_TOP;
+        clipFlag  or_eq  CLIP_TOP;
     }
 
     // Clip point 2

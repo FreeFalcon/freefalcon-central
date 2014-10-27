@@ -30,7 +30,7 @@ BOOL CautionClass::IsFlagSet()
 
     for (i = 0; i < NumVectors; i++)
     {
-        flag  |= mpBitVector[i];
+        flag   or_eq  mpBitVector[i];
     }
 
     return (flag != 0);
@@ -116,7 +116,7 @@ void CautionClass::SetCaution(int subsystem)
     vectorNum = subsystem / BITS_PER_VECTOR;
     bitNum = subsystem - vectorNum * BITS_PER_VECTOR;
 
-    mpBitVector[vectorNum] |= 0x01 << bitNum;
+    mpBitVector[vectorNum]  or_eq  0x01 << bitNum;
 
 }
 

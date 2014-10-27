@@ -98,6 +98,6 @@ void ICPClass::PNUpdateDLINKMode(int button, int mode)
         playerAC->FCC->waypointStepCmd = 1;
     }
 
-    mUpdateFlags |= DLINK_UPDATE;
-    mUpdateFlags |= CNI_UPDATE;
+    mUpdateFlags  or_eq  DLINK_UPDATE;
+    mUpdateFlags  or_eq  CNI_UPDATE;
 }

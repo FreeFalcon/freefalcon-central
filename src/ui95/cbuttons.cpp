@@ -190,7 +190,7 @@ void C_Button::SetFlags(long flags)
 
 void C_Button::SetLabelFlagBitsOn(long flags)
 {
-    LabelFlags_ |= flags;
+    LabelFlags_  or_eq  flags;
 
     // Mutually exclusive flags...
     if (flags & C_BIT_TOP)

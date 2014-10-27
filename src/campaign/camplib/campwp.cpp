@@ -223,12 +223,12 @@ int WayPointClass::Save(VU_BYTE **stream)
 
     if (TargetID != FalconNullId)
     {
-        haves |= WP_HAVE_TARGET;
+        haves  or_eq  WP_HAVE_TARGET;
     }
 
     if (Depart != Arrive)
     {
-        haves |= WP_HAVE_DEPTIME;
+        haves  or_eq  WP_HAVE_DEPTIME;
     }
 
     memcpy(*stream, &haves, sizeof(uchar));
@@ -291,12 +291,12 @@ int WayPointClass::Save(FILE* fp)
 
     if (TargetID != FalconNullId)
     {
-        haves |= WP_HAVE_TARGET;
+        haves  or_eq  WP_HAVE_TARGET;
     }
 
     if (Depart != Arrive)
     {
-        haves |= WP_HAVE_DEPTIME;
+        haves  or_eq  WP_HAVE_DEPTIME;
     }
 
     fwrite(&haves, sizeof(uchar), 1, fp);
@@ -666,7 +666,7 @@ CampaignTime SetWPTimes(WayPoint w, CampaignTime start, int speed, int flags)
     // If the first waypoint passed is an alternate - assume we want it's time set
     if (w->GetWPFlags() & WPF_ALTERNATE)
     {
-        flags |= WPTS_SET_ALTERNATE_TIMES;
+        flags  or_eq  WPTS_SET_ALTERNATE_TIMES;
     }
 
     w->GetWPLocation(&x, &y);
@@ -723,7 +723,7 @@ CampaignTime SetWPTimes(WayPoint w, long delta, int flags)
 
     // If the first waypoint passed is an alternate - assume we want it's time set
     if (w->GetWPFlags() & WPF_ALTERNATE)
-        flags |= WPTS_SET_ALTERNATE_TIMES;
+        flags  or_eq  WPTS_SET_ALTERNATE_TIMES;
 
     length = w->GetWPArrivalTime() + delta;
 

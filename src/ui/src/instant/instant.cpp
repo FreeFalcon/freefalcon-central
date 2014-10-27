@@ -1168,13 +1168,13 @@ static void SetMapStartup(C_Window *win)
  for(y=0;y<EVT_MESSAGE_BITS;y++)
  mask[y]=0;
 
- mask[WeaponFireMsg >> 3] |= 0x01 << (WeaponFireMsg & 0x0007);
- mask[DeathMessage >> 3] |= 0x01 << (DeathMessage & 0x0007);
- mask[DamageMsg >> 3] |= 0x01 << (DamageMsg & 0x0007);
- mask[MissileEndMsg >> 3] |= 0x01 << (MissileEndMsg & 0x0007);
- mask[LandingMessage >> 3] |= 0x01 << (LandingMessage & 0x0007);
- mask[EjectMsg >> 3] |= 0x01 << (EjectMsg & 0x0007);
- mask[PlayerStatusMsg >> 3] |= 0x01 << (PlayerStatusMsg & 0x0007);
+ mask[WeaponFireMsg >> 3]  or_eq  0x01 << (WeaponFireMsg & 0x0007);
+ mask[DeathMessage >> 3]  or_eq  0x01 << (DeathMessage & 0x0007);
+ mask[DamageMsg >> 3]  or_eq  0x01 << (DamageMsg & 0x0007);
+ mask[MissileEndMsg >> 3]  or_eq  0x01 << (MissileEndMsg & 0x0007);
+ mask[LandingMessage >> 3]  or_eq  0x01 << (LandingMessage & 0x0007);
+ mask[EjectMsg >> 3]  or_eq  0x01 << (EjectMsg & 0x0007);
+ mask[PlayerStatusMsg >> 3]  or_eq  0x01 << (PlayerStatusMsg & 0x0007);
 
 */
 

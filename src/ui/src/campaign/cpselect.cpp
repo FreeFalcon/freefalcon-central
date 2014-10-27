@@ -2102,7 +2102,7 @@ void DisplayJoinStatusWindow(int bits)
     }
     else
     {
-        join_status_bits |= bits;
+        join_status_bits  or_eq  bits;
     }
 
     switch (bits)

@@ -6,6 +6,7 @@
     Asynchronus loader module.  This class is designed to be run on its
     own thread and respond to requests for data off the disk.
 ***************************************************************************/
+#include <cISO646>
 #include <io.h>
 #include <fcntl.h>
 #include <process.h>
@@ -144,8 +145,8 @@ DWORD Loader::MainLoop()
         {
             actionDone = false;
             // The LOD updating run
-            actionDone |= ObjectLOD::UpdateLods();
-            actionDone |= TheTextureBank.UpdateBank();
+            actionDone  or_eq  ObjectLOD::UpdateLods();
+            actionDone  or_eq  TheTextureBank.UpdateBank();
 
             while ((Active = GetNextRequest()) && (!shutDown))
             {

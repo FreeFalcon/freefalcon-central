@@ -147,7 +147,7 @@ void BasePathClass::SetDirection(int num, int d)
     int o = num % PATH_DIV;
     uchar temp = (unsigned char)(PATH_MASK << (o * PATH_BITS));
     path[i] &= compl temp;
-    path[i] |= d << (o * PATH_BITS);
+    path[i]  or_eq  d << (o * PATH_BITS);
 }
 
 void BasePathClass::StepPath(void)

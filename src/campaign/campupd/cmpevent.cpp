@@ -123,7 +123,7 @@ void EventClass::SetEvent(int status)
 
     if (status)
     {
-        flags |= CE_FIRED;
+        flags  or_eq  CE_FIRED;
         msg->dataBlock.status = 1;
     }
     else
@@ -1119,7 +1119,7 @@ int ReadScriptedTriggerFile(char* filename)
                     // KCK: player_priority only used now if >= 0
                     // if (!(pod->flags & GTMOBJ_PLAYER_SET_PRIORITY))
                     // pod->player_priority[team] =  i;
-                    pod->flags |= GTMOBJ_SCRIPTED_PRIORITY;
+                    pod->flags  or_eq  GTMOBJ_SCRIPTED_PRIORITY;
                 }
             }
             else if (strncmp(token, "#SET_TEMPO", 10) == 0)

@@ -505,13 +505,13 @@ BOOL CheckAlreadyCollided(VU_ID ID1, VU_ID ID2, long gameTime)
  mask[y]=0;
 
  // Desired messages
- mask[WeaponFireMsg >> 3] |= 0x01 << (WeaponFireMsg & 0x0007);
- mask[DeathMessage >> 3] |= 0x01 << (DeathMessage & 0x0007);
- mask[DamageMsg >> 3] |= 0x01 << (DamageMsg & 0x0007);
- mask[MissileEndMsg >> 3] |= 0x01 << (MissileEndMsg & 0x0007);
- mask[LandingMessage >> 3] |= 0x01 << (LandingMessage & 0x0007);
- mask[EjectMsg >> 3] |= 0x01 << (EjectMsg & 0x0007);
- mask[PlayerStatusMsg >> 3] |= 0x01 << (PlayerStatusMsg & 0x0007);
+ mask[WeaponFireMsg >> 3]  or_eq  0x01 << (WeaponFireMsg & 0x0007);
+ mask[DeathMessage >> 3]  or_eq  0x01 << (DeathMessage & 0x0007);
+ mask[DamageMsg >> 3]  or_eq  0x01 << (DamageMsg & 0x0007);
+ mask[MissileEndMsg >> 3]  or_eq  0x01 << (MissileEndMsg & 0x0007);
+ mask[LandingMessage >> 3]  or_eq  0x01 << (LandingMessage & 0x0007);
+ mask[EjectMsg >> 3]  or_eq  0x01 << (EjectMsg & 0x0007);
+ mask[PlayerStatusMsg >> 3]  or_eq  0x01 << (PlayerStatusMsg & 0x0007);
 
 */
 
@@ -539,13 +539,13 @@ static void AddMessageToFile(FILE *ofp, long eventID, _TCHAR output[][32], BOOL 
  mask[y]=0;
 
  // Desired messages
- mask[WeaponFireMsg >> 3] |= 0x01 << (WeaponFireMsg & 0x0007);
- mask[DeathMessage >> 3] |= 0x01 << (DeathMessage & 0x0007);
- mask[DamageMsg >> 3] |= 0x01 << (DamageMsg & 0x0007);
- mask[MissileEndMsg >> 3] |= 0x01 << (MissileEndMsg & 0x0007);
- mask[LandingMessage >> 3] |= 0x01 << (LandingMessage & 0x0007);
- mask[EjectMsg >> 3] |= 0x01 << (EjectMsg & 0x0007);
- mask[PlayerStatusMsg >> 3] |= 0x01 << (PlayerStatusMsg & 0x0007);
+ mask[WeaponFireMsg >> 3]  or_eq  0x01 << (WeaponFireMsg & 0x0007);
+ mask[DeathMessage >> 3]  or_eq  0x01 << (DeathMessage & 0x0007);
+ mask[DamageMsg >> 3]  or_eq  0x01 << (DamageMsg & 0x0007);
+ mask[MissileEndMsg >> 3]  or_eq  0x01 << (MissileEndMsg & 0x0007);
+ mask[LandingMessage >> 3]  or_eq  0x01 << (LandingMessage & 0x0007);
+ mask[EjectMsg >> 3]  or_eq  0x01 << (EjectMsg & 0x0007);
+ mask[PlayerStatusMsg >> 3]  or_eq  0x01 << (PlayerStatusMsg & 0x0007);
 
 */
 

@@ -5,6 +5,7 @@
 
  Provide a class to manage MPR palettes.
 \***************************************************************************/
+#include <cISO646>
 #include "stdafx.h"
 #include "TOD.h"
 #include "Palette.h"
@@ -420,7 +421,7 @@ PaletteHandle::PaletteHandle(IDirectDraw7 *pDD, UInt16 PalBitsPerEntry, UInt16 P
 {
     DWORD dwFlags = DDPCAPS_8BIT;
 
-    if (PalNumEntries == 0x100) dwFlags |= DDPCAPS_ALLOW256;
+    if (PalNumEntries == 0x100) dwFlags  or_eq  DDPCAPS_ALLOW256;
 
     DWORD pal[256];
     ZeroMemory(pal, sizeof(DWORD) * PalNumEntries);

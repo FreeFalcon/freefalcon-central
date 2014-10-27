@@ -76,8 +76,8 @@ void RenderTV::EndDraw(void)
 
 void RenderTV::SetColor(DWORD packedRGBA)
 {
-    //packedRGBA |= (packedRGBA<<8) & 0xFF; // RV - I-Hawk - Allow colors
-    //packedRGBA |= (packedRGBA>>8) & 0xFF;
+    //packedRGBA  or_eq  (packedRGBA<<8) & 0xFF; // RV - I-Hawk - Allow colors
+    //packedRGBA  or_eq  (packedRGBA>>8) & 0xFF;
     RenderOTW::SetColor(packedRGBA & 0xFFFFFFFF); // Was (0xFF00FF00)
     // Enable DX engine TV Mode, THIS HAS TO BE CHANGED IN ANOTHER WAY
     TheDXEngine.SetState(DX_TV);

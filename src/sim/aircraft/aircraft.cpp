@@ -589,7 +589,7 @@ void AircraftClass::Init(SimInitDataClass* initData)
     {
         if (GetSType() == STYPE_AIR_FIGHTER_BOMBER && GetSPType() == SPTYPE_F16C)
         {
-            acFlags |= isF16 | isComplex;
+            acFlags  or_eq  isF16 | isComplex;
             // Turn on the nozzle
             SetSwitch(COMP_EXH_NOZZLE, 1);
 
@@ -782,13 +782,13 @@ void AircraftClass::Init(SimInitDataClass* initData)
         // without having to have the same specific type like the code above
         if (af->auxaeroData->typeAC == 1 || af->auxaeroData->typeAC == 2)
         {
-            acFlags |= isF16;
+            acFlags  or_eq  isF16;
         }
 
         //TJL 01/11/04 Set Two Engines
         if (af->auxaeroData->nEngines == 2)
         {
-            acFlags |= hasTwoEngines;
+            acFlags  or_eq  hasTwoEngines;
         }
 
 
@@ -827,12 +827,12 @@ void AircraftClass::Init(SimInitDataClass* initData)
 
         if (af->auxaeroData->hasSwingWing)
         {
-            acFlags |= hasSwing;
+            acFlags  or_eq  hasSwing;
         }
 
         if (af->auxaeroData->isComplex)
         {
-            acFlags |= isComplex;
+            acFlags  or_eq  isComplex;
             MakeComplex();
         }
 
@@ -1391,7 +1391,7 @@ int AircraftClass::Exec(void)
         {
             TheHud->SymWheelPos = 1.0F;
             TheHud->SetLightLevel();
-            DBrain()->moreFlags |= DigitalBrain::HUDSetup; // set the flag so we don't go in here again
+            DBrain()->moreFlags  or_eq  DigitalBrain::HUDSetup; // set the flag so we don't go in here again
         }
 
 
@@ -3693,13 +3693,13 @@ int AircraftClass::FindBestSpawnPoint(Objective obj, SimInitDataClass* initData)
     }
     else
     {
-        PtDataTable[initData->ptIndex].flags |= PT_OCCUPIED; // 02JAN04 - FRB - Reserve parking spot
+        PtDataTable[initData->ptIndex].flags  or_eq  PT_OCCUPIED; // 02JAN04 - FRB - Reserve parking spot
         spawnpoint = initData->ptIndex; //RAS-11Nov04-store initial spawn point
         return initData->ptIndex;
     }
 
     spawnpoint = initData->ptIndex; //RAS-11Nov04-store initial spawn point
-    PtDataTable[initData->ptIndex].flags |= PT_OCCUPIED; // 02JAN04 - FRB - Reserve parking spot
+    PtDataTable[initData->ptIndex].flags  or_eq  PT_OCCUPIED; // 02JAN04 - FRB - Reserve parking spot
     return initData->ptIndex;
 }
 
@@ -4085,7 +4085,7 @@ void AircraftClass::MakeAircraftDirty(DirtyAircraft bits, Dirtyness score)
         return;
     }
 
-    dirty_aircraft |= bits;
+    dirty_aircraft  or_eq  bits;
     MakeDirty(DIRTY_AIRCRAFT, score);
 }
 
@@ -4125,7 +4125,7 @@ void AircraftClass::SetAcStatusBits(int bits)
 {
     if (!IsAcStatusBitsSet(bits))
     {
-        status_bits |= bits;
+        status_bits  or_eq  bits;
         MakeAircraftDirty(DIRTY_ACSTATUS_BITS, SEND_NOW);
     }
 }

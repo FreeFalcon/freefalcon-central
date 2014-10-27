@@ -1485,7 +1485,7 @@ void SquadronClass::SetSchedule(int i, ulong a)
 {
     if ((schedule[i] | a) != (schedule[i]))
     {
-        schedule[i] |= a;
+        schedule[i]  or_eq  a;
         //MakeSquadronDirty (DIRTY_SCHEDULE, DDP[126].priority);
         MakeSquadronDirty(DIRTY_SCHEDULE, SEND_EVENTUALLY);
     }
@@ -1694,7 +1694,7 @@ void SquadronClass::MakeSquadronDirty(Dirty_Squadron bits, Dirtyness score)
         score = static_cast<Dirtyness>(score << 4);
     }
 
-    dirty_squadron |= bits;
+    dirty_squadron  or_eq  bits;
 
     MakeDirty(DIRTY_SQUADRON, score);
 }

@@ -195,7 +195,7 @@ public:
     }
     void SetWPFlag(ulong f)
     {
-        Flags |= (ulong) f;
+        Flags  or_eq  (ulong) f;
     }
     void UnSetWPFlag(ulong f)
     {

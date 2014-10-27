@@ -238,14 +238,14 @@ extern int  __cdecl _flush(FILE * str);
 #define NOTHING                  -1
 
 #define FLAG_TEST(a,b)           ( a & b )
-#define FLAG_SET(a,b)            ( a |= b )
+#define FLAG_SET(a,b)            ( a  or_eq  b )
 #define FLAG_UNSET(a,b)          ( a xor_eq compl b )
 
 #define HI_WORD(a)               ((a)>>16)
 #define LO_WORD(a)               ((a)&0x0ffff)
 
-#define SET_HIWORD(a,b)          { a |= ((b)<<16);   }
-#define SET_LOWORD(a,b)          { a |= (b)&0x0ffff; }
+#define SET_HIWORD(a,b)          { a  or_eq  ((b)<<16);   }
+#define SET_LOWORD(a,b)          { a  or_eq  (b)&0x0ffff; }
 
 #define WRITTEN_TO_FLAG          -1
 
@@ -680,7 +680,7 @@ RES_EXPORT int ResInit(HWND hwnd)
            crash.  Caveat Emptor.   */
         if (!_chdrive(drive))
         {
-            GLOBAL_VOLUME_MASK |= (1 << drive);
+            GLOBAL_VOLUME_MASK  or_eq  (1 << drive);
         }
     }
 
@@ -3246,24 +3246,24 @@ RES_EXPORT int ResWhereIs(char * filename, char * path)
     }
 
     if (entry -> archive != -1)
-        retval |= RES_ARCHIVE;
+        retval  or_eq  RES_ARCHIVE;
 
     type = RES_DEVICES[ entry -> volume ].type;
 
     if (type == DRIVE_CDROM)
     {
-        retval |= RES_CD;
-        retval |= RES_DEVICES[ entry -> volume ].id;
+        retval  or_eq  RES_CD;
+        retval  or_eq  RES_DEVICES[ entry -> volume ].id;
     }
 
     if (type == DRIVE_REMOTE)
-        retval |= RES_NET;
+        retval  or_eq  RES_NET;
 
     if (type == DRIVE_FIXED)
-        retval |= RES_HD;
+        retval  or_eq  RES_HD;
 
     if (type == DRIVE_REMOVABLE)
-        retval |= RES_FLOPPY;
+        retval  or_eq  RES_FLOPPY;
 
     if (path)
         strcpy(path, GLOBAL_SEARCH_PATH[ entry -> directory ]);
@@ -4958,7 +4958,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
 
         /* tag the structure as our own flavor (specifically 'loose') */
 
-        stream -> _flag |= _IOLOOSE;
+        stream -> _flag  or_eq  _IOLOOSE;
 
         UNLOCK_STREAM(stream);
 
@@ -5042,7 +5042,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
         /* Tag the structure as our own flavor (specifically 'archive'), as well
            as use a vc++ uniqueness. */
 
-        stream -> _flag |= (_IOARCHIVE | _IOSTRG | _IOREAD);
+        stream -> _flag  or_eq  (_IOARCHIVE | _IOSTRG | _IOREAD);
 
 
         /* ---------------------------------------------------------------------------
@@ -5687,7 +5687,7 @@ size_t __cdecl RES_FREAD(void *buffer, size_t size, size_t num, FILE *stream)
             if (nread == 0)
             {
                 /* end of file -- out of here */
-                stream->_flag |= _IOEOF;
+                stream->_flag  or_eq  _IOEOF;
                 UNLOCK_STREAM(stream);
 #if (RES_MULTITHREAD)
                 RELEASE_LOCK(GLOCK);
@@ -5697,7 +5697,7 @@ size_t __cdecl RES_FREAD(void *buffer, size_t size, size_t num, FILE *stream)
             else if (nread == (unsigned) - 1)
             {
                 /* error -- out of here */
-                stream->_flag |= _IOERR;
+                stream->_flag  or_eq  _IOERR;
                 UNLOCK_STREAM(stream);
 #if (RES_MULTITHREAD)
                 RELEASE_LOCK(GLOCK);
@@ -5977,7 +5977,7 @@ int __cdecl _filbuf(FILE * stream)
     //    /* You can actually remove this error trap if you want fopen
     //       as well as ResFOpen */
     //    SAY_ERROR( RES_ERR_UNKNOWN, "Stream not created with ResFOpen!" );
-    //    stream -> _flag |= _IOREAD;
+    //    stream -> _flag  or_eq  _IOREAD;
     //    return( EOF );
     // }
 #endif
@@ -5992,13 +5992,13 @@ int __cdecl _filbuf(FILE * stream)
     /* if stream is opened as WRITE ONLY, set error and return */
     if (stream -> _flag & _IOWRT)
     {
-        stream -> _flag |= _IOERR;
+        stream -> _flag  or_eq  _IOERR;
         return(EOF);
     }
 
     /* force flag */
 
-    stream -> _flag |= _IOREAD;
+    stream -> _flag  or_eq  _IOREAD;
 
     /* Get a buffer, if necessary. (taken from _filbuf.c) */
 
@@ -6044,7 +6044,7 @@ int __cdecl _filbuf(FILE * stream)
         if (file -> os_handle == -1)
         {
             SAY_ERROR(RES_ERR_ILLEGAL_FILE_HANDLE, "_filbuf internal error");
-            stream -> _flag |= _IOERR;
+            stream -> _flag  or_eq  _IOERR;
             return(EOF);
         }
 
@@ -6087,7 +6087,7 @@ int __cdecl _filbuf(FILE * stream)
 
             if (stream -> _cnt < 0)       /* error reading */
             {
-                stream -> _flag |= _IOERR;
+                stream -> _flag  or_eq  _IOERR;
 
                 if (stream -> _flag & (_IOARCHIVE | _IOLOOSE))  /* make sure this is an fopen() file */
                     ResCheckMedia(file -> device);              /* if not, has media changed?        */
@@ -6103,14 +6103,14 @@ int __cdecl _filbuf(FILE * stream)
 
         if ((stream -> _cnt == 0) || (stream -> _cnt == -1))
         {
-            stream -> _flag |= stream -> _cnt ? _IOERR : _IOEOF;
+            stream -> _flag  or_eq  stream -> _cnt ? _IOERR : _IOEOF;
             stream -> _cnt = 0;
             return(EOF);
         }
 
         //  Don't think I need this, but... _osfile_safe(i) expands to (_pioinfo_safe(i)->osfile)
         //  if( !(stream -> _flag & ( _IOWRT | _IORW )) && ((_osfile_safe(_fileno(stream)) & (FTEXT|FEOFLAG)) == (FTEXT|FEOFLAG)))
-        //      stream -> _flag |= _IOCTRLZ;
+        //      stream -> _flag  or_eq  _IOCTRLZ;
 
         /* Check for small _bufsiz (_SMALL_BUFSIZ). If it is small and
            if it is our buffer, then this must be the first _filbuf after

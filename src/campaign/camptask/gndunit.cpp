@@ -527,11 +527,11 @@ int GroundUnitClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spo
 
     // Check type of entity before GCI is used
     if (CheckValidType(this, e))
-        detTmp |= e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
+        detTmp  or_eq  e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
 
     // Check type of entity before GCI is used
     if (CheckValidType(e, this))
-        detTmp |= GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
+        detTmp  or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
 
     if (!(detTmp & REACTION_MASK))
         return 0;
@@ -598,11 +598,11 @@ int GroundUnitClass::DetectVs(CampEntity e, float *d, int *combat, int *spot, in
 
     // Check type of entity before GCI is used
     if (CheckValidType(this, e))
-        detTmp |= e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
+        detTmp  or_eq  e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
 
     // Check type of entity before GCI is used
     if (CheckValidType(e, this))
-        detTmp |= GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
+        detTmp  or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
 
     if (!(detTmp & REACTION_MASK))
         return 0;
@@ -2450,7 +2450,7 @@ void GroundUnitClass::MakeGndUnitDirty(Dirty_Ground_Unit bits, Dirtyness score)
         score = static_cast<Dirtyness>(score << 4);
     }
 
-    dirty_ground_unit |= bits;
+    dirty_ground_unit  or_eq  bits;
 
     MakeDirty(DIRTY_GROUND_UNIT, score);
 }

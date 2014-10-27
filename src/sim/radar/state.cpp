@@ -456,7 +456,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
 
             // GMT starts in snowplow
             //      if (mode == GMT)
-            //         flags |= SP;//me123 no don't start in SP
+            //         flags  or_eq  SP;//me123 no don't start in SP
             SetEmitting(TRUE);
             prevMode = mode;
             break;
@@ -550,7 +550,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
             cursorX = min(max(cursorX, -1.0F), 1.0F);
             cursorY = min(max(cursorY, -1.0F), 1.0F);
-            flags |= WasMoving;
+            flags  or_eq  WasMoving;
         }
         else
         {
@@ -957,7 +957,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
             {
                 SetAimPoint((float)cursorXCmd, (float)cursorYCmd);
                 SetGMScan();
-                flags |= WasMoving;
+                flags  or_eq  WasMoving;
             }
             else
             {
