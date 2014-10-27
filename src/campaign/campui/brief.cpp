@@ -2905,7 +2905,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 success = fptr->mission_success;
 
                 // 2002-02-13 MN added AWACSAbort
-                if (success not_eq Incomplete /*&& success not_eq AWACSAbort*/)
+                if (success not_eq Incomplete /* and  success not_eq AWACSAbort*/)
                 {
                     // Determine losses, if necessary
                     losses = fptr->target_status;

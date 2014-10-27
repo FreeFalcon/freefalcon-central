@@ -343,8 +343,8 @@ void SendRequestedData(void)
 int MatchPlayStarted(void)
 {
     if (
-        (FalconLocalGame->GetGameType() == game_Dogfight) &&
-        (SimDogfight.GetGameType() == dog_TeamMatchplay) &&
+        (FalconLocalGame->GetGameType() == game_Dogfight)  and 
+        (SimDogfight.GetGameType() == dog_TeamMatchplay)  and 
         SimDogfight.GameStarted()
     )
     {

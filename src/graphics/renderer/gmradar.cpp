@@ -514,9 +514,9 @@ void RenderGMRadar::DrawBlip(float worldX, float worldY)
     y = viewportYtoPixel(y);
 
     //Clip test
-    if ((x + 1.0f <= rightPixel)  &&
-        (x      >= leftPixel)   &&
-        (y + 1.0f <= bottomPixel) &&
+    if ((x + 1.0f <= rightPixel)   and 
+        (x      >= leftPixel)    and 
+        (y + 1.0f <= bottomPixel)  and 
         (y      >= topPixel))
     {
         SetColor(0xFF00FF00);

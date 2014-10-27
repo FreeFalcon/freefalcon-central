@@ -1182,8 +1182,8 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     // If we have a local game, so we are host in a multiplayer environment and start a new campaign,
     // stop the time and let the camp priorities window pop up (in CAMPUI/CampJoin.cpp)
 
-    if (FalconLocalGame->IsLocal() &&
-        (strcmp(gUI_CampaignFile, "save0") == 0 or strcmp(gUI_CampaignFile, "save1") == 0 or strcmp(gUI_CampaignFile, "save2") == 0) &&
+    if (FalconLocalGame->IsLocal()  and 
+        (strcmp(gUI_CampaignFile, "save0") == 0 or strcmp(gUI_CampaignFile, "save1") == 0 or strcmp(gUI_CampaignFile, "save2") == 0)  and 
         campaignStart) // fixes clock being set to "STOP" after a campaign mission
     {
         SetTimeCompression(0);

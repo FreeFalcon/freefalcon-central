@@ -97,7 +97,7 @@ void PrintTime(char *output, FILETIME TimeToPrint)
 {
     WORD Date, Time;
 
-    if (FileTimeToLocalFileTime(&TimeToPrint, &TimeToPrint) &&
+    if (FileTimeToLocalFileTime(&TimeToPrint, &TimeToPrint)  and 
         FileTimeToDosDateTime(&TimeToPrint, &Date, &Time))
     {
         // What a silly way to print out the file date/time. Oh well,

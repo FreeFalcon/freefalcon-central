@@ -298,7 +298,7 @@ void OTWDriverClass::Cycle(void)
 
     //Wombat778 11-18-04 Run the Automatic hybrid mode (mode 1). Simouse handles non-trackir hybrid mode.
     if (
-        GetHybridPitMode() == 1 &&
+        GetHybridPitMode() == 1  and 
         (GetOTWDisplayMode() == Mode2DCockpit or GetOTWDisplayMode() == Mode3DCockpit)
     )
     {
@@ -607,8 +607,8 @@ void OTWDriverClass::DisplayInfoBar(void)
     }
 
     // put a line telling what the camera focus is (label)
-    if ((otwPlatform.get() not_eq NULL) &&
-        otwPlatform->drawPointer &&
+    if ((otwPlatform.get() not_eq NULL)  and 
+        otwPlatform->drawPointer  and 
         *((DrawableBSP *)otwPlatform->drawPointer)->Label()
        )
     {
@@ -1242,8 +1242,8 @@ void OTWDriverClass::DisplayFrontText(void)
 
             // put a line telling what the camera focus is (label)
             if (
-                (otwPlatform.get() not_eq NULL) &&
-                otwPlatform->drawPointer &&
+                (otwPlatform.get() not_eq NULL)  and 
+                otwPlatform->drawPointer  and 
                 *((DrawableBSP *)otwPlatform->drawPointer)->Label()
             )
             {
@@ -1772,9 +1772,9 @@ void OTWDriverClass::RenderFrame()
         float tmpVal, tmpVal2;//TJL 01/14/04 multi-engine
 
         // Check for massive hardware failure
-        if (!(mFaults &&
-              mFaults->GetFault(FaultClass::cadc_fault) &&
-              mFaults->GetFault(FaultClass::ins_fault) &&
+        if (!(mFaults  and 
+              mFaults->GetFault(FaultClass::cadc_fault)  and 
+              mFaults->GetFault(FaultClass::ins_fault)  and 
               mFaults->GetFault(FaultClass::gps_fault)))
         {
             cockpitFlightData.x = ac->XPos();
@@ -1896,8 +1896,8 @@ void OTWDriverClass::RenderFrame()
             OTWDriver.pCockpitManager->mpIcp->Exec();
             OTWDriver.pCockpitManager->mpIcp->ExecPfl();
 
-            if (mFaults &&
-                ac->HasPower(AircraftClass::UFCPower) &&
+            if (mFaults  and 
+                ac->HasPower(AircraftClass::UFCPower)  and 
                 !mFaults->GetFault(FaultClass::ufc_fault)
                )
             {
@@ -2119,7 +2119,7 @@ void OTWDriverClass::RenderFrame()
         cockpitFlightData.oilPressure = tmpVal;
         cockpitFlightData.oilPressure2 = tmpVal2;
 
-        //if ((gSharedMemPtr)&&(!g_bEnableTrackIR)) // Retro 02/10/03
+        //if ((gSharedMemPtr) and (!g_bEnableTrackIR)) // Retro 02/10/03
         if (gSharedMemPtr)
         {
             //if (!mHelmetIsUR)
@@ -2183,7 +2183,7 @@ void OTWDriverClass::RenderFrame()
     ObserverPitch = flyingEye->Pitch();
     ObserverRoll = flyingEye->Roll();
 
-    if ((otwPlatform.get() not_eq NULL) and /*otwPlatform->IsAirplane() &&*/ gSharedIntellivibe)
+    if ((otwPlatform.get() not_eq NULL) and /*otwPlatform->IsAirplane()  and */ gSharedIntellivibe)
     {
         g_intellivibeData.eyex = viewPos.x;
         g_intellivibeData.eyey = viewPos.y;
@@ -2297,7 +2297,7 @@ void OTWDriverClass::RenderFrame()
 
     // Set up the black out effects
     if (
-        DisplayInCockpit() and doGLOC &&
+        DisplayInCockpit() and doGLOC  and 
         (otwPlatform.get() == SimDriver.GetPlayerAircraft()) and (otwPlatform.get() not_eq NULL)
     )
     {
@@ -2679,7 +2679,7 @@ void OTWDriverClass::RenderFrame()
             }
         }
         else if (
-            (GetOTWDisplayMode() == ModeHud or GetOTWDisplayMode() == ModePadlockEFOV) &&
+            (GetOTWDisplayMode() == ModeHud or GetOTWDisplayMode() == ModePadlockEFOV)  and 
             !g_bNoMFDsIn1View) //MI added g_bNoMFDsIn1View check. Removes MFD's if TRUE
         {
             // SetFont
@@ -2746,7 +2746,7 @@ void OTWDriverClass::RenderFrame()
 
     // Draw GLOC effect
     if (
-        doGLOC and (otwPlatform.get() not_eq NULL) &&
+        doGLOC and (otwPlatform.get() not_eq NULL)  and 
         (otwPlatform.get() == SimDriver.GetPlayerAircraft()) and otwPlatform->IsLocal()
     )
     {
@@ -2798,8 +2798,8 @@ void OTWDriverClass::RenderFrame()
     // Wombat778 1-23-04 Changed from gTimeLastMouseMove to gTimeLastCursorUpdate because
     // gTimeLastMouseMove reports ALL changes in mouse movement, not just cursor updates.
     else if (
-        gSimInputEnabled &&
-        SimDriver.GetPlayerAircraft() &&
+        gSimInputEnabled  and 
+        SimDriver.GetPlayerAircraft()  and 
         vuxRealTime - /*gTimeLastMouseMove*/gTimeLastCursorUpdate < SI_MOUSE_TIME_DELTA
     )
     {
@@ -2809,7 +2809,7 @@ void OTWDriverClass::RenderFrame()
              GetOTWDisplayMode() == Mode3DCockpit ||
              GetOTWDisplayMode() == ModePadlockF3 ||
              GetOTWDisplayMode() == ModePadlockEFOV
-            ) &&
+            )  and 
             (gSelectedCursor >= 0) and (otwPlatform.get() == SimDriver.GetPlayerAircraft())
         )
         {

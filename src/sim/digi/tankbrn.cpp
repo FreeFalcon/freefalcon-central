@@ -482,8 +482,8 @@ void TankerBrain::CallNext(void)
         }
 
         //me123
-        if (vuLocalSessionEntity &&
-            vuLocalSessionEntity->Game() &&
+        if (vuLocalSessionEntity  and 
+            vuLocalSessionEntity->Game()  and 
             self->OwnerId() not_eq curThirsty->OwnerId()
            )
         {
@@ -547,8 +547,8 @@ void TankerBrain::DoneRefueling(void)
     //flags &= compl IsRefueling;
 
     //me123 transfere ownship back to host when we are done rf
-    if (vuLocalSessionEntity &&
-        vuLocalSessionEntity->Game() &&
+    if (vuLocalSessionEntity  and 
+        vuLocalSessionEntity->Game()  and 
         self->OwnerId() not_eq vuLocalSessionEntity->Game()->OwnerId())
     {
         FalconSimCampMessage *msg = new FalconSimCampMessage(self->GetCampaignObject()->Id(), FalconLocalGame);  // target);
@@ -733,13 +733,13 @@ void TankerBrain::DriveBoom(void)
 
         if (!(flags & (GivingGas | ClearingPlane)) and tankingPtr)
         {
-            if ((fabs(totalrange) < 6.0F * /*FRB*/ ScaledRM &&
-                 fabs(boom[DROGUE].az - tmpAz)*RTD < 6.0F * /*FRB*/ ScaledRM &&
-                 fabs(boom[DROGUE].el - tankingPtr->localData->el)*RTD < 2.0F * /*FRB*/ ScaledRM &&
-                 boom[DROGUE].el * RTD < 5.0F * /*FRB*/ ScaledRM &&
-                 boom[DROGUE].el * RTD > -5.0F * /*FRB*/ ScaledRM &&
-                 fabs(boom[DROGUE].az)*RTD < 20.0F * /*FRB*/ ScaledRM &&
-                 fabs(tankingPtr->BaseData()->Roll())*RTD < 4.0F * /* S.G.*/ ScaledRM &&
+            if ((fabs(totalrange) < 6.0F * /*FRB*/ ScaledRM  and 
+                 fabs(boom[DROGUE].az - tmpAz)*RTD < 6.0F * /*FRB*/ ScaledRM  and 
+                 fabs(boom[DROGUE].el - tankingPtr->localData->el)*RTD < 2.0F * /*FRB*/ ScaledRM  and 
+                 boom[DROGUE].el * RTD < 5.0F * /*FRB*/ ScaledRM  and 
+                 boom[DROGUE].el * RTD > -5.0F * /*FRB*/ ScaledRM  and 
+                 fabs(boom[DROGUE].az)*RTD < 20.0F * /*FRB*/ ScaledRM  and 
+                 fabs(tankingPtr->BaseData()->Roll())*RTD < 4.0F * /* S.G.*/ ScaledRM  and 
                  fabs(tankingPtr->BaseData()->Pitch())*RTD < 6.0F * /* S.G.*/ ScaledRM)
                 or ((flags & AIready) and (tmpRefuelMode >= 3))) // 27NOV03 - FRB  AI is in position
             {
@@ -773,7 +773,7 @@ void TankerBrain::DriveBoom(void)
                 FalconSendMessage(tankMsg);
             }
         }
-        else if ((flags & ClearingPlane) and tankingPtr &&
+        else if ((flags & ClearingPlane) and tankingPtr  and 
                  tankingPtr->localData->range > 0.04F * NM_TO_FT)
         {
             VuEntity *entity = NULL;
@@ -946,11 +946,11 @@ void TankerBrain::DriveBoom(void)
 
     if (!(flags & (GivingGas | ClearingPlane)) and tankingPtr)
     {
-        if ((fabs(boom[BOOM].ext - tankingPtr->localData->range + 33.5F) < 1.0F * /*FRB*/ ScaledRM &&
-             fabs(boom[BOOM].az - tmpAz)*RTD < 1.0F * /*FRB*/ ScaledRM &&
-             fabs(boom[BOOM].el - tankingPtr->localData->el)*RTD < 1.0F * /*FRB*/ ScaledRM &&
-             boom[BOOM].el * RTD < -26.1F and boom[BOOM].el * RTD > -38.9F and fabs(boom[BOOM].az)*RTD < 20.0F /* &&
- fabs(tankingPtr->BaseData()->Roll())*RTD < 4.0F * /* S.G.*/ // ScaledRM &&
+        if ((fabs(boom[BOOM].ext - tankingPtr->localData->range + 33.5F) < 1.0F * /*FRB*/ ScaledRM  and 
+             fabs(boom[BOOM].az - tmpAz)*RTD < 1.0F * /*FRB*/ ScaledRM  and 
+             fabs(boom[BOOM].el - tankingPtr->localData->el)*RTD < 1.0F * /*FRB*/ ScaledRM  and 
+             boom[BOOM].el * RTD < -26.1F and boom[BOOM].el * RTD > -38.9F and fabs(boom[BOOM].az)*RTD < 20.0F /*  and 
+ fabs(tankingPtr->BaseData()->Roll())*RTD < 4.0F * /* S.G.*/ // ScaledRM  and 
              // fabs(tankingPtr->BaseData()->Pitch())*RTD < 4.0F * /* S.G.*/ ScaledRM) */  JPG 14 Jan03 - End of Line 881 thru 883 - pitch and roll isn't needed
              or ((flags & AIready) and (tmpRefuelMode >= 3.0f)))) // 27NOV03 - FRB  AI is in position
         {
@@ -1471,8 +1471,8 @@ void TankerBrain::FollowThirsty(void)
         else if (stype == TNKR_KC135 and g_bLightsKC135) // when we have the lights on the KC-135 model
             DriveLights();
 
-        if (xyRange < 500.0F and !(flags & PrecontactPos) &&
-            fabs(tankingPtr->localData->rangedot) < 100.0F &&
+        if (xyRange < 500.0F and !(flags & PrecontactPos)  and 
+            fabs(tankingPtr->localData->rangedot) < 100.0F  and 
             fabs(tankingPtr->localData->az) < 35.0F * DTR)
         {
             flags  or_eq  PrecontactPos;
@@ -1488,7 +1488,7 @@ void TankerBrain::FollowThirsty(void)
             // 25NOV03 - FRB - Give directions to drogue-refueling a/c
             // if(ServiceType not_eq DROGUE_SERVICE and !(flags & ClearingPlane))
         {
-            if (xyRange < 200.0F and !(flags & GivingGas) &&
+            if (xyRange < 200.0F and !(flags & GivingGas)  and 
                 (SimLibElapsedTime - lastBoomCommand) > 10000)
             {
                 lastBoomCommand = SimLibElapsedTime;
@@ -1592,7 +1592,7 @@ void TankerBrain::FollowThirsty(void)
         }
 
         // Too Eratic?
-        if (!(flags & ClearingPlane) and (flags & GivingGas) and (SimLibElapsedTime - lastStabalize) > 15000 &&
+        if (!(flags & ClearingPlane) and (flags & GivingGas) and (SimLibElapsedTime - lastStabalize) > 15000  and 
             fabs(tankingPtr->localData->azFromdot) > 10.0F * DTR and fabs(tankingPtr->localData->elFromdot) > 10.0F * DTR)
         {
             lastStabalize = SimLibElapsedTime;

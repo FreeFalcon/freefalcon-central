@@ -439,7 +439,7 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
                 }
 
                 // Choose perspective correction or not
-                // if ((Xlation.x > CurrentInstance->Radius() * PERSP_CORR_RADIUS_MULTIPLIER) &&
+                // if ((Xlation.x > CurrentInstance->Radius() * PERSP_CORR_RADIUS_MULTIPLIER)  and 
                 // !(CurrentLOD->flags & ObjectLOD::PERSP_CORR))
                 // {
                 // RenderStateTable = RenderStateTableNPC;

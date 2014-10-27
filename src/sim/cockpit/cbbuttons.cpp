@@ -1938,7 +1938,7 @@ void CBExMasterArm(void * pButton, int)
 
     // sfr: TODO this MUST go away!!!!
     if (
-        !F4IsBadReadPtr(playerAC, sizeof(AircraftClass*)) &&
+        !F4IsBadReadPtr(playerAC, sizeof(AircraftClass*))  and 
         !F4IsBadReadPtr(playerAC->Sms, sizeof(SMSClass))
     )  // JB 010326 CTD
     {

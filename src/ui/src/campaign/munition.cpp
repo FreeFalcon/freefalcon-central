@@ -1013,7 +1013,7 @@ void LoadFlight(VU_ID flightID)
             Object.PosZ = 0;
 
         if (classPtr->visType[0] == MapVisId(VIS_F16C) ||
-            (((DrawableBSP*)obj->object)->instance.ParentObject->nSwitches >= 10 &&
+            (((DrawableBSP*)obj->object)->instance.ParentObject->nSwitches >= 10  and 
              ((DrawableBSP*)obj->object)->instance.ParentObject->nDOFs >= 24))
         {
             // F16 switches/DOFS

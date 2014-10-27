@@ -836,7 +836,7 @@ int ComUDPGet(com_API_handle c)
             // ignore messages from me
             //sfr: added port info
             /* if (!(
-             (((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami) &&
+             (((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami)  and 
              (((struct sockaddr_in *)(&in_addr))->sin_port == CAPI_htons(ComAPIGetMySendPort()))
              )){*/
             if (((ComAPIHeader *)cudp->recv_buffer.buf)->id not_eq cudp->whoami)

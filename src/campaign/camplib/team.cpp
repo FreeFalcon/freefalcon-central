@@ -1199,9 +1199,9 @@ void TeamClass::SelectGroundAction(void)
     }
 
     // If we're not currently in an action, see if we can start one
-    if (groundAction.actionType == GACTION_CONSOLIDATE &&
-        POList &&
-        initiative >= MIN_COUNTER_ATTACK_INITIATIVE &&
+    if (groundAction.actionType == GACTION_CONSOLIDATE  and 
+        POList  and 
+        initiative >= MIN_COUNTER_ATTACK_INITIATIVE  and 
         TheCampaign.CurrentTime >= groundAction.actionTimeout + ACTION_RATE)
     {
         // Select our objective
@@ -2511,7 +2511,7 @@ void UpdateTeamStatistics(void)
             else if (u->GetDomain() == DOMAIN_AIR)
             {
                 // RV - Biker - Only count attack AC for statistic
-                if (u->GetType() == TYPE_SQUADRON &&
+                if (u->GetType() == TYPE_SQUADRON  and 
                     (u->GetSType() == STYPE_UNIT_ATTACK ||
                      u->GetSType() == STYPE_UNIT_ATTACK_HELO ||
                      u->GetSType() == STYPE_UNIT_BOMBER ||

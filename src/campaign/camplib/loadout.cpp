@@ -183,7 +183,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
     // END OF ADDED SECTION 2002-01-26
     if (type_flags & WEAP_BAI_LOADOUT)
     {
-        if (((WeaponDataTable[wid].GuidanceFlags & WEAP_LASER) and (wid not_eq 68 or wid not_eq 310)) or // 2002-01-24 MODIFIED BY S.G. Added () around the '&' statements since it has lower precedence than &&
+        if (((WeaponDataTable[wid].GuidanceFlags & WEAP_LASER) and (wid not_eq 68 or wid not_eq 310)) or // 2002-01-24 MODIFIED BY S.G. Added () around the '&' statements since it has lower precedence than  and 
             (WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR) ||
             (WeaponDataTable[wid].GuidanceFlags & WEAP_ANTIRADATION))
             score = 0;

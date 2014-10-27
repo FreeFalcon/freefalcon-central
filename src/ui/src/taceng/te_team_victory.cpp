@@ -1414,8 +1414,8 @@ int advance_team(int team, int state)
         {
             if
             (
-                (loop not_eq team) &&
-                (TeamInfo[loop]) &&
+                (loop not_eq team)  and 
+                (TeamInfo[loop])  and 
                 (TeamInfo[loop]->GetFlag() == state)
             )
             {

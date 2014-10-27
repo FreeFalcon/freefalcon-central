@@ -106,7 +106,7 @@ void AirframeClass::Axial(float dt)
         if (speedBrake < 0.0f)
         {
             // closing brake
-            if (dbrake > 0.90f * dBrakeMax and dbrake < dBrakeMax &&
+            if (dbrake > 0.90f * dBrakeMax and dbrake < dBrakeMax  and 
                 !platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeStart)
 
                ) // JB 010425
@@ -114,7 +114,7 @@ void AirframeClass::Axial(float dt)
                 platform->SoundPos.Sfx(auxaeroData->sndSpdBrakeStart);
             }
 
-            if (dbrake < 0.10f and dbrake > 0.0f &&
+            if (dbrake < 0.10f and dbrake > 0.0f  and 
                 !platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeEnd)
 
                ) // JB 010425
@@ -126,14 +126,14 @@ void AirframeClass::Axial(float dt)
         else
         {
             // opening brake
-            if (dbrake < 0.10f and dbrake > 0.0f &&
+            if (dbrake < 0.10f and dbrake > 0.0f  and 
                 !platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeStart)
                ) // JB 010425
             {
                 platform->SoundPos.Sfx(auxaeroData->sndSpdBrakeStart);
             }
 
-            if (dbrake > 0.90f * dBrakeMax and dbrake < dBrakeMax  &&
+            if (dbrake > 0.90f * dBrakeMax and dbrake < dBrakeMax   and 
                 !platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeEnd)
                ) // JB 010425
             {
@@ -161,14 +161,14 @@ void AirframeClass::Axial(float dt)
         if (gearHandle < 0.0f)
         {
             // closing brake
-            if (gearPos > 0.90f and gearPos < 1.0f &&
+            if (gearPos > 0.90f and gearPos < 1.0f  and 
                 !platform->SoundPos.IsPlaying(auxaeroData->sndGearCloseStart)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndGearCloseStart);
             }
 
-            if (gearPos < 0.10f and gearPos > 0.0f &&
+            if (gearPos < 0.10f and gearPos > 0.0f  and 
                 !platform->SoundPos.IsPlaying(auxaeroData->sndGearCloseEnd)
                )
             {
@@ -179,14 +179,14 @@ void AirframeClass::Axial(float dt)
         else
         {
             // opening brake
-            if (gearPos < 0.10f and gearPos > 0.0f &&
+            if (gearPos < 0.10f and gearPos > 0.0f  and 
                 !platform->SoundPos.IsPlaying(auxaeroData->sndGearOpenStart)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndGearOpenStart);
             }
 
-            if (gearPos > 0.90f and gearPos < 1.0f &&
+            if (gearPos > 0.90f and gearPos < 1.0f  and 
                 !platform->SoundPos.IsPlaying(auxaeroData->sndGearOpenEnd)
                )
             {
@@ -208,14 +208,14 @@ void AirframeClass::Axial(float dt)
         if (hookHandle < 0.0f)
         {
             // closing hook
-            if (hookPos > 0.90f and hookPos < 1.0f &&
+            if (hookPos > 0.90f and hookPos < 1.0f  and 
                 !platform->SoundPos.IsPlaying(auxaeroData->sndHookEnd)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndHookEnd);
             }
 
-            if (hookPos < 0.10f and hookPos > 0.0f &&
+            if (hookPos < 0.10f and hookPos > 0.0f  and 
                 !platform->SoundPos.IsPlaying(auxaeroData->sndHookStart)
                )
             {
@@ -225,14 +225,14 @@ void AirframeClass::Axial(float dt)
         else
         {
             // opening hook
-            if (hookPos < 0.10f and hookPos > 0.0f &&
+            if (hookPos < 0.10f and hookPos > 0.0f  and 
                 !platform->SoundPos.IsPlaying(auxaeroData->sndHookStart)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndHookStart);
             }
 
-            if (hookPos > 0.90f and hookPos < 1.0f &&
+            if (hookPos > 0.90f and hookPos < 1.0f  and 
                 !platform->SoundPos.IsPlaying(auxaeroData->sndHookEnd)
                )
             {
@@ -608,8 +608,8 @@ default:
     break;
 }
 
-if (gear[0].flags & GearData::GearBroken &&
-    gear[1].flags & GearData::GearBroken &&
+if (gear[0].flags & GearData::GearBroken  and 
+    gear[1].flags & GearData::GearBroken  and 
     gear[2].flags & GearData::GearBroken)
 {
     ((AircraftClass*)platform)->mFaults->SetFault(FaultClass::gear_fault,
@@ -617,8 +617,8 @@ if (gear[0].flags & GearData::GearBroken &&
     SetFlag(GearBroken);
 }
 
-if (gear[0].flags & GearData::GearStuck &&
-    gear[1].flags & GearData::GearStuck &&
+if (gear[0].flags & GearData::GearStuck  and 
+    gear[1].flags & GearData::GearStuck  and 
     gear[2].flags & GearData::GearStuck)
 {
     ((AircraftClass*)platform)->mFaults->SetFault(FaultClass::gear_fault,

@@ -483,7 +483,7 @@ void HeliBrain::FireControl(void)
             return;
     }
     // 2001-07-06 ADDED BY S.G. SO ROCKETS WORKS
-    else //if ( self->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb &&
+    else //if ( self->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb  and 
 
         //  self->FCC->GetSubMode() == FireControlComputer::RCKT )
         if (self->FCC->GetMasterMode() == FireControlComputer::AirGroundRocket) // MLR 4/3/2004 -
@@ -648,7 +648,7 @@ void HeliBrain::FireControl(void)
                 //F4SoundFXSetPos( SFX_MISSILE1, 0, self->XPos(), self->YPos(), self->ZPos(), 1.0f , 0 , self->XDelta(),self->YDelta(),self->ZDelta());
             }
         }
-        else //if (self->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb &&
+        else //if (self->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb  and 
 
             //  self->FCC->GetSubMode() == FireControlComputer::RCKT)
             if (self->FCC->GetMasterMode() == FireControlComputer::AirGroundRocket) // MLR 4/3/2004 -
@@ -811,8 +811,8 @@ void HeliBrain::FireControl(void)
 // ** edg: forget about rockets.   The SMS is fucked up and
 // ** there's no time to fix since it seems o cause a crash.
 // */
-// else if ( curRock == NULL &&
-//   (self->Sms->hardPoint[i]->GetWeaponClass() == wcRocketWpn &&
+// else if ( curRock == NULL  and 
+//   (self->Sms->hardPoint[i]->GetWeaponClass() == wcRocketWpn  and 
 //   self->Sms->hardPoint[i]->weaponCount >= 0 ) )
 // {
 // self->Sms->curWeapon = NULL;
@@ -866,7 +866,7 @@ void HeliBrain::FireControl(void)
 //
 //
 // // finally look for guns
-// if ( self->Guns &&
+// if ( self->Guns  and 
 //  self->Guns->numRoundsRemaining )
 // {
 // curGun = self->Guns;

@@ -1091,8 +1091,8 @@ void AircraftClass::Init(SimInitDataClass* initData)
     }
 
     // FRB - Open canopy before entering 3D
-    if (PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY &&
-        OnGround() /*&& (af->GetParkType() not_eq LargeParkPt)*/) // FRB = BigBoys do things too.
+    if (PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY  and 
+        OnGround() /* and  (af->GetParkType() not_eq LargeParkPt)*/) // FRB = BigBoys do things too.
     {
         af->canopyState = true;
 
@@ -1385,8 +1385,8 @@ int AircraftClass::Exec(void)
     {
         // When doing a QuickPreflight, it can happen that the HUD is not yet setup and
         // it stays dark when entering the simulation.
-        if (g_bDarkHudFix and TheHud and this == SimDriver.GetPlayerEntity() &&
-            DBrain() and !(DBrain()->moreFlags & DigitalBrain::HUDSetup) &&
+        if (g_bDarkHudFix and TheHud and this == SimDriver.GetPlayerEntity()  and 
+            DBrain() and !(DBrain()->moreFlags & DigitalBrain::HUDSetup)  and 
             PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RAMP)
         {
             TheHud->SymWheelPos = 1.0F;
@@ -1412,20 +1412,20 @@ int AircraftClass::Exec(void)
         (
             (
                 (
-                    pctStrength < -0.4f and pctStrength > -0.6f &&
+                    pctStrength < -0.4f and pctStrength > -0.6f  and 
                     (
                         dyingType == SimVehicleClass::DIE_INTERMITTENT_SMOKE ||
                         dyingType == SimVehicleClass::DIE_SHORT_FIREBALL ||
                         dyingType == 5 ||
                         dyingType == 6 ||
                         dyingType == SimVehicleClass::DIE_SMOKE
-                    ) &&
+                    )  and 
                     isDigital
                 ) ||
                 (
                     ejectTriggered
                 )
-            ) &&
+            )  and 
             (
                 !IsAcStatusBitsSet(ACSTATUS_PILOT_EJECTED)
             )
@@ -1839,7 +1839,7 @@ int AircraftClass::Exec(void)
 
         // COBRA - RED - Check for Lite Pool
         if (
-            af->gearPos == 1.0F and !(af->gear[1].flags & GearData::GearBroken) &&
+            af->gearPos == 1.0F and !(af->gear[1].flags & GearData::GearBroken)  and 
             IsAcStatusBitsSet(ACSTATUS_EXT_LANDINGLIGHT) and IsAcStatusBitsSet(ACSTATUS_EXT_LIGHTS)
         )
         {
@@ -2023,7 +2023,7 @@ int AircraftClass::Exec(void)
             RViewPoint* viewp = OTWDriver.GetViewpoint();
 
             if (
-                ZPos() > -g_fCarrierStartTolerance &&
+                ZPos() > -g_fCarrierStartTolerance  and 
                 af and af->vcas < .01 and viewp and viewp->GetGroundType(XPos(), YPos()) == COVERAGE_WATER
             )
             {
@@ -2338,10 +2338,10 @@ int AircraftClass::Exec(void)
         // greater than 50ft AGL
         // descent rate > 960 fpm
         // landing gear up
-        if (!isDigital &&
-            ZPos() - af->groundZ < -50.0f &&
-            af->gearPos <= 0.0f &&
-            af->zdot > 960.0f / 60.0f &&
+        if (!isDigital  and 
+            ZPos() - af->groundZ < -50.0f  and 
+            af->gearPos <= 0.0f  and 
+            af->zdot > 960.0f / 60.0f  and 
             Pitch() < 0.0f
            )
         {
@@ -2468,7 +2468,7 @@ int AircraftClass::Exec(void)
             int connected = 0;
 
             // MLR 1/3/2004 - this is a retarded effect.
-            if (ZPos() - af->groundZ >= -40.0f &&
+            if (ZPos() - af->groundZ >= -40.0f  and 
                 ZPos() - af->groundZ <= -10.0f)
             {
                 //if we are over a runway, we don't want to kick up dust
@@ -2696,7 +2696,7 @@ int AircraftClass::Exec(void)
 
     //Cobra 11/20/04 IFF Do we have it? Is it on? Is it working?
     if (
-        (af->auxaeroData->hasIFF == 1 or g_bAllHaveIFF) &&
+        (af->auxaeroData->hasIFF == 1 or g_bAllHaveIFF)  and 
         HasPower(AircraftClass::IFFPower) and (!mFaults->GetFault(FaultClass::iff_fault))
     )
     {
@@ -2740,7 +2740,7 @@ int AircraftClass::Exec(void)
     if (Sms)
     {
         if (
-            (this == SimDriver.GetPlayerEntity()) and (autopilotType == CombatAP) &&
+            (this == SimDriver.GetPlayerEntity()) and (autopilotType == CombatAP)  and 
             (Sms->MasterArm() == SMSBaseClass::Safe) and !OnGround()
         )
         {
@@ -2830,9 +2830,9 @@ void AircraftClass::RunSensors(void)
         // If it cannot see it, it will be reset anyway...
         // TODO: Do we need to check if it's an AI? Will it affect the player's radar? Update: Nope
         if (
-            autopilotType == CombatAP &&
-            sensor->CurrentTarget() == NULL &&
-            sensor->Type() not_eq SensorClass::TargetingPod &&
+            autopilotType == CombatAP  and 
+            sensor->CurrentTarget() == NULL  and 
+            sensor->Type() not_eq SensorClass::TargetingPod  and 
             targetPtr not_eq NULL
         )
         {
@@ -2855,10 +2855,10 @@ void AircraftClass::RunSensors(void)
         // target directly.  Sad but true...
         if (sensor->Type() == SensorClass::Radar)
         {
-            if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundBomb &&
+            if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundBomb  and 
                 FCC->GetMasterMode() not_eq FireControlComputer::AirGroundRocket and  // MLR 4/3/2004 -
-                FCC->GetMasterMode() not_eq FireControlComputer::AirGroundMissile &&
-                FCC->GetMasterMode() not_eq FireControlComputer::AirGroundLaser &&
+                FCC->GetMasterMode() not_eq FireControlComputer::AirGroundMissile  and 
+                FCC->GetMasterMode() not_eq FireControlComputer::AirGroundLaser  and 
                 FCC->GetMasterMode() not_eq FireControlComputer::AirGroundHARM
                )
             {
@@ -3012,7 +3012,7 @@ void AircraftClass::Eject(void)
                 // If there is a wingman that is not the player send the airman down message, and ask for sar
                 for (i = 0; i < GetCampaignObject()->NumberOfComponents(); i++)
                 {
-                    if (GetCampaignObject()->GetComponentEntity(i) not_eq this &&
+                    if (GetCampaignObject()->GetComponentEntity(i) not_eq this  and 
                         !((SimBaseClass*)GetCampaignObject()->GetComponentEntity(i))->IsSetFlag(MOTION_OWNSHIP))
                     {
                         SimBaseClass* sender = GetCampaignObject()->GetComponentEntity(i);
@@ -3262,7 +3262,7 @@ void AircraftClass::PreFlight()
 
     // Cobra - Start with canopy open if on parking spot
     if (
-        PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY &&
+        PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY  and 
         OnGround() and (af->GetParkType() not_eq LargeParkPt)
     )
     {

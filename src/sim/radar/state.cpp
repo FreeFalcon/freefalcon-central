@@ -1361,8 +1361,8 @@ void RadarDopplerClass::DefaultAGMode(void)
         return;
     }
 
-    if (mode not_eq GMT &&
-        mode not_eq SEA &&
+    if (mode not_eq GMT  and 
+        mode not_eq SEA  and 
         mode not_eq GM)
     {
         modeDesiredCmd = GMT;
@@ -1396,8 +1396,8 @@ void RadarDopplerClass::NextTarget(void)
                 if (ObjectDetected(rdrObj))
                 {
                     //can't lock onto these
-                    if (!rdrObj->BaseData()->OnGround() and !rdrObj->BaseData()->IsMissile() &&
-                        !rdrObj->BaseData()->IsBomb() and !rdrObj->BaseData()->IsEject() &&
+                    if (!rdrObj->BaseData()->OnGround() and !rdrObj->BaseData()->IsMissile()  and 
+                        !rdrObj->BaseData()->IsBomb() and !rdrObj->BaseData()->IsEject()  and 
                         rdrObj->localData->rdrDetect)
                     {
                         if (MinRange > rdrObj->localData->range)
@@ -1541,8 +1541,8 @@ void RadarDopplerClass::FindClosest(float MinRange)
         if (ObjectDetected(rdrObj))
         {
             //can't lock onto these
-            if (!rdrObj->BaseData()->OnGround() and !rdrObj->BaseData()->IsMissile() &&
-                !rdrObj->BaseData()->IsBomb() and !rdrObj->BaseData()->IsEject() &&
+            if (!rdrObj->BaseData()->OnGround() and !rdrObj->BaseData()->IsMissile()  and 
+                !rdrObj->BaseData()->IsBomb() and !rdrObj->BaseData()->IsEject()  and 
                 rdrObj->localData->rdrDetect)
             {
                 if (rdrObj->localData->range < MinRange)

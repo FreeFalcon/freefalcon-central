@@ -270,7 +270,7 @@ void DigitalBrain::AiRefuel(void)
 
                 /*
                  // JB 020311 Respond to "commands" from the tanker.
-                 if (!af->IsSet(AirframeClass::Refueling) and refuelstatus == refRefueling &&
+                 if (!af->IsSet(AirframeClass::Refueling) and refuelstatus == refRefueling  and 
                  (SimLibElapsedTime - lastBoomCommand) > 10000)
                  {
                  lastBoomCommand = SimLibElapsedTime;
@@ -521,10 +521,10 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
     // 2002-02-28 MN refuel fixes, help the player somewhat more. Simplistic = full AI control
 #ifndef DEBUG
 
-    if (dist < refuelMode * 100.0F &&
-        fabs(tanker->Yaw() - self->Yaw()) < 3.0F * DTR * refuelMode &&
-        fabs(tanker->GetVt() - self->GetVt())*FTPSEC_TO_KNOTS < (5.0F + 45.0F * (refuelMode /* S.G. NO! refuelMode is ALREADY -1! - 1 */)) &&
-        fabs(self->Pitch()*DTR) < 8.0F * refuelMode &&
+    if (dist < refuelMode * 100.0F  and 
+        fabs(tanker->Yaw() - self->Yaw()) < 3.0F * DTR * refuelMode  and 
+        fabs(tanker->GetVt() - self->GetVt())*FTPSEC_TO_KNOTS < (5.0F + 45.0F * (refuelMode /* S.G. NO! refuelMode is ALREADY -1! - 1 */))  and 
+        fabs(self->Pitch()*DTR) < 8.0F * refuelMode  and 
         fabs(self->Roll()*DTR) < 8.0F * refuelMode)
 #endif
     {
@@ -577,7 +577,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
 
         // 2002-03-28 MN Hack to make full AI refueling control working in each and every situation:
         // if we are really close, just put us on the boom. Period ;-)
-        if (dist < af->GetAIBoomDistance() and g_bPutAIToBoom and refuelstatus == refRefueling &&
+        if (dist < af->GetAIBoomDistance() and g_bPutAIToBoom and refuelstatus == refRefueling  and 
             (PlayerOptions.GetRefuelingMode() == ARSimplistic or PlayerOptions.GetRefuelingMode() == ARModerated and af->IsSet(AirframeClass::Refueling)))
         {
             // 26NOV03 - FRB - Get a more recent position
@@ -624,7 +624,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
 
             /*
              // JB 020311 Respond to "commands" from the tanker.
-             if (!af->IsSet(AirframeClass::Refueling) and refuelstatus == refRefueling &&
+             if (!af->IsSet(AirframeClass::Refueling) and refuelstatus == refRefueling  and 
              (SimLibElapsedTime - lastBoomCommand) > 10000)
              {
              lastBoomCommand = SimLibElapsedTime;
@@ -924,7 +924,7 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
                 zPos = tankerFlight->ZPos();
 
                 if (
-                    fabs(self->XPos() - tankerFlight->XPos()) < rangeAvail &&
+                    fabs(self->XPos() - tankerFlight->XPos()) < rangeAvail  and 
                     fabs(self->YPos() - tankerFlight->YPos()) < rangeAvail
                 )
                 {
@@ -957,7 +957,7 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
             {
                 tmpWaypoint->GetLocation(&xPos, &yPos, &zPos);
 
-                if (fabs(self->XPos() - tankerFlight->XPos()) < rangeAvail &&
+                if (fabs(self->XPos() - tankerFlight->XPos()) < rangeAvail  and 
                     fabs(self->YPos() - tankerFlight->YPos()) < rangeAvail)
                 {
                     self->curWaypoint = tmpWaypoint;
@@ -996,8 +996,8 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
                     // Is this waypoint close to one we have?
                     tmpWaypoint->GetLocation(&xPos, &yPos, &zPos);
 
-                    if (tmpWaypoint->GetWPAction() == WP_LAND &&
-                        fabs(nearest->XPos() - xPos) < 2.0F * NM_TO_FT &&
+                    if (tmpWaypoint->GetWPAction() == WP_LAND  and 
+                        fabs(nearest->XPos() - xPos) < 2.0F * NM_TO_FT  and 
                         fabs(nearest->YPos() - yPos) < 2.0F * NM_TO_FT)
                     {
                         foundSomething = TRUE;

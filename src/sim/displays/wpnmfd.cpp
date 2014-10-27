@@ -78,7 +78,7 @@ VirtualDisplay* WpnMfdDrawable::GetDisplay(void)
         return retval;
     }
 
-    if (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponClass() == wcAgmWpn &&
+    if (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponClass() == wcAgmWpn  and 
         Sms->curWeaponType == wtAgm65)
     {
         if (theMissile and theMissile->IsMissile())
@@ -209,7 +209,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     //Reference symbol
     theRadar->GetCursorPosition(&cX, &cY);
 
-    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp  and 
         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
     {
         // FRB - B&W display
@@ -620,7 +620,7 @@ void WpnMfdDrawable::OSBLabels(VirtualDisplay* display)
 void WpnMfdDrawable::DrawRALT(VirtualDisplay* display)
 {
     if (TheHud and !(self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
-        and self->af->platform->RaltReady() &&
+        and self->af->platform->RaltReady()  and 
         TheHud->FindRollAngle(-TheHud->hat) and TheHud->FindPitchAngle(-TheHud->hat))
     {
         float x, y = 0;

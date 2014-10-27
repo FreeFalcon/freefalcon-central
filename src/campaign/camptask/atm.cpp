@@ -1345,8 +1345,8 @@ void AirTaskingManagerClass::ProcessRequest(MissionRequest request)
         {
             pmis = pack->GetMissionRequest();
 
-            if (request->action_type == pmis->action_type &&
-                pmis->mission == request->mission and !pack->Aborted()) // KCK: Probably want '&& !mission finished' too
+            if (request->action_type == pmis->action_type  and 
+                pmis->mission == request->mission and !pack->Aborted()) // KCK: Probably want ' and  !mission finished' too
             {
                 // We want to compare to in-progress missions differently for IMMEDIATE and non IMMEDIATE requests
                 if (request->flags & AMIS_IMMEDIATE)
@@ -2679,12 +2679,12 @@ void RequestIntercept(FlightClass* enemy, int who, RequIntHint hint)
     {
         int test = enemy->GetUnitMission();
 
-        if (test not_eq AMIS_OCASTRIKE &&
-            test not_eq AMIS_INTSTRIKE &&
-            test not_eq AMIS_STRIKE &&
-            test not_eq AMIS_DEEPSTRIKE &&
-            test not_eq AMIS_STSTRIKE &&
-            test not_eq AMIS_STRATBOMB &&
+        if (test not_eq AMIS_OCASTRIKE  and 
+            test not_eq AMIS_INTSTRIKE  and 
+            test not_eq AMIS_STRIKE  and 
+            test not_eq AMIS_DEEPSTRIKE  and 
+            test not_eq AMIS_STSTRIKE  and 
+            test not_eq AMIS_STRATBOMB  and 
             test not_eq AMIS_SEADSTRIKE)
             return;
     }
@@ -2861,7 +2861,7 @@ int TargetAllSites(Objective po, int action, int team, CampaignTime startTime)
                         mis.RequestMission();
                         requests++;
                     }
-                    else if (otarget->GetType() == TYPE_BRIDGE &&
+                    else if (otarget->GetType() == TYPE_BRIDGE  and 
                              TeamInfo[team]->GetGroundAction()->actionObjective not_eq po->Id())
                     {
                         // Generate a mission to take out this bridge (Shouldn't happen
@@ -2898,7 +2898,7 @@ int TargetAllSites(Objective po, int action, int team, CampaignTime startTime)
         while (utarget)
         {
             if (
-                GetRoE(team, utarget->GetTeam(), ROE_AIR_ATTACK) == ROE_ALLOWED &&
+                GetRoE(team, utarget->GetTeam(), ROE_AIR_ATTACK) == ROE_ALLOWED  and 
                 utarget->GetElectronicDetectionRange(Air) > 0
             )
             {

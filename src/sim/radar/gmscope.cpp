@@ -155,7 +155,7 @@ int RadarDopplerClass::GMTObjectContactTest(FalconEntity *contact)
         if (contact->IsSim())
         {
             // never show pedestrians
-            if (((SimBaseClass *)contact)->drawPointer &&
+            if (((SimBaseClass *)contact)->drawPointer  and 
                 ((SimBaseClass *)contact)->drawPointer->GetClass() == DrawableObject::Guys
                )
             {
@@ -163,7 +163,7 @@ int RadarDopplerClass::GMTObjectContactTest(FalconEntity *contact)
             }
 
             // speed filter
-            if (contact->GetVt() > g_fGMTMinSpeed &&
+            if (contact->GetVt() > g_fGMTMinSpeed  and 
                 contact->GetVt() < g_fGMTMaxSpeed)
             {
                 return 1;
@@ -206,7 +206,7 @@ int RadarDopplerClass::GMObjectContactTest(FalconEntity *contact)
 
             //if(contact->GetVt() > 1.0F)
             // return 0.0f;
-            if (((SimBaseClass*)contact)->drawPointer &&
+            if (((SimBaseClass*)contact)->drawPointer  and 
                 ((SimBaseClass*)contact)->drawPointer->GetClass() == DrawableObject::Guys)
             {
                 return 0;
@@ -632,7 +632,7 @@ void RadarDopplerClass::SetAimPoint(float xCmd, float yCmd)
     if (
         (IsSOI() and !lockedTarget) ||
         (
-            ((laserPod and laserPod->IsSOI()) or (mavDisplay and mavDisplay->IsSOI())) &&
+            ((laserPod and laserPod->IsSOI()) or (mavDisplay and mavDisplay->IsSOI()))  and 
             pac and pac->FCC and pac->FCC->preDesignate
         ) ||
         (pac->FCC->GetSubMode() == FireControlComputer::CCRP)
@@ -1876,7 +1876,7 @@ void RadarDopplerClass::GMDisplay(void)
 
         // MD -- 20040515: watch out!  Until MARKs are fixed properly, curWaypoint may not point to a real waypoint
         // so check the pointer to avoid a CTD here.
-        if (SimDriver.GetPlayerAircraft() &&
+        if (SimDriver.GetPlayerAircraft()  and 
             !F4IsBadReadPtr(SimDriver.GetPlayerAircraft()->curWaypoint, sizeof(WayPointClass))
            )
         {
@@ -2031,7 +2031,7 @@ void RadarDopplerClass::AddTargetReturns(RenderGMRadar* renderer, bool Shaping)
         ry = cosAz * dx - sinAz * dy;
         rx = sinAz * dx + cosAz * dy;
 
-        if (F_ABS(rx) > groundMapRange &&
+        if (F_ABS(rx) > groundMapRange  and 
             F_ABS(ry) > groundMapRange)
         {
             curNode = curNode->next;
@@ -2671,7 +2671,7 @@ void RadarDopplerClass::GMMode(void)
                                 {
                                     // 2002-04-03 MN removed IsBattalion check, added Drawable::Guys here
                                     if (testFeature->GetVt() > 1.0F or /*testFeature->IsBattalion()*/
-                                        ((SimBaseClass*)testFeature)->drawPointer &&
+                                        ((SimBaseClass*)testFeature)->drawPointer  and 
                                         ((SimBaseClass*)testFeature)->drawPointer->GetClass() == DrawableObject::Guys)
                                     {
                                         radius = 0.0F;
@@ -2697,7 +2697,7 @@ void RadarDopplerClass::GMMode(void)
                                 // Speed test however is valid, as it checks U_MOVING flag of unit
                                 // As there are no campaign units that consist only of soldiers, no need to check for them here
                                 if (testFeature->GetVt() > g_fGMTMinSpeed /*||
- ((SimBaseClass*)testFeature)->drawPointer &&
+ ((SimBaseClass*)testFeature)->drawPointer  and 
  ((SimBaseClass*)testFeature)->drawPointer->GetClass() == DrawableObject::Guys*/
                                    )
                                 {
@@ -2848,8 +2848,8 @@ void RadarDopplerClass::GMMode(void)
                                 //float speed = testFeature->GetVt();
                                 // 2002-04-03 MN removed IsBattalion check, added Drawable::Guys here and IsSim() check - don't do simbase stuff on campaign objects
                                 if (testFeature->GetVt() > g_fGMTMinSpeed or /*testFeature->IsBattalion()*/
-                                    testFeature->IsSim() &&
-                                    ((SimBaseClass*)testFeature)->drawPointer &&
+                                    testFeature->IsSim()  and 
+                                    ((SimBaseClass*)testFeature)->drawPointer  and 
                                     ((SimBaseClass*)testFeature)->drawPointer->GetClass() == DrawableObject::Guys)
                                 {
                                     filterthis = TRUE;
@@ -2960,7 +2960,7 @@ void RadarDopplerClass::GMMode(void)
                         // Check for visibility
                         //I-Hawk - added a check for GFX as chaff is now awake but has no GFX created
                         //so here it'll CTD if not checking GFX existence
-                        if (((SimBaseClass*)testFeature)->IsAwake() &&
+                        if (((SimBaseClass*)testFeature)->IsAwake()  and 
                             ((SimBaseClass*)testFeature)->drawPointer)
                         {
                             radius = ((SimBaseClass*)testFeature)->drawPointer->Radius();
@@ -2975,7 +2975,7 @@ void RadarDopplerClass::GMMode(void)
                                 {
                                     // 2002-04-03 MN removed IsBattalion check, added Drawable::Guys here
                                     if (testFeature->GetVt() > 1.0F or /*testFeature->IsBattalion()*/
-                                        ((SimBaseClass*)testFeature)->drawPointer &&
+                                        ((SimBaseClass*)testFeature)->drawPointer  and 
                                         ((SimBaseClass*)testFeature)->drawPointer->GetClass() == DrawableObject::Guys)
                                     {
                                         radius = 0.0F;
@@ -3001,7 +3001,7 @@ void RadarDopplerClass::GMMode(void)
                                 // Speed test however is valid, as it checks U_MOVING flag of unit
                                 // As there are no campaign units that consist only of soldiers, no need to check for them here
                                 if (testFeature->GetVt() > g_fGMTMinSpeed /*||
-   ((SimBaseClass*)testFeature)->drawPointer &&
+   ((SimBaseClass*)testFeature)->drawPointer  and 
    ((SimBaseClass*)testFeature)->drawPointer->GetClass() == DrawableObject::Guys*/
                                    )
                                 {
@@ -3152,8 +3152,8 @@ void RadarDopplerClass::GMMode(void)
                                 //float speed = testFeature->GetVt();
                                 // 2002-04-03 MN removed IsBattalion check, added Drawable::Guys here and IsSim() check - don't do simbase stuff on campaign objects
                                 if (testFeature->GetVt() > g_fGMTMinSpeed or /*testFeature->IsBattalion()*/
-                                    testFeature->IsSim() &&
-                                    ((SimBaseClass*)testFeature)->drawPointer &&
+                                    testFeature->IsSim()  and 
+                                    ((SimBaseClass*)testFeature)->drawPointer  and 
                                     ((SimBaseClass*)testFeature)->drawPointer->GetClass() == DrawableObject::Guys)
                                 {
                                     filterthis = TRUE;
@@ -3317,12 +3317,12 @@ void RadarDopplerClass::GMMode(void)
                     {
                         bool FilterThis = FALSE;
 
-                        if (testObject and testObject->IsSim() and testObject->drawPointer &&
+                        if (testObject and testObject->IsSim() and testObject->drawPointer  and 
                             testObject->drawPointer->GetClass() == DrawableObject::Guys)
                             FilterThis = TRUE;
 
-                        if (testObject->IsSim() and !FilterThis &&
-                            testObject->GetVt() > g_fGMTMinSpeed &&
+                        if (testObject->IsSim() and !FilterThis  and 
+                            testObject->GetVt() > g_fGMTMinSpeed  and 
                             testObject->GetVt() < g_fGMTMaxSpeed)
                         {
                             if (testObject->IsAwake())
@@ -3352,7 +3352,7 @@ void RadarDopplerClass::GMMode(void)
                     }
                     else
                     {
-                        if (testObject->IsSim()) // NOTE this is for actually moving and testObject->GetVt() > 10.0F * KNOTS_TO_FTPSEC &&
+                        if (testObject->IsSim()) // NOTE this is for actually moving and testObject->GetVt() > 10.0F * KNOTS_TO_FTPSEC  and 
                             //testObject->GetVt() < 100.0F * KNOTS_TO_FTPSEC)
                         {
                             if (testObject->IsAwake())

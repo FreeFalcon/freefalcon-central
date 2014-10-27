@@ -77,7 +77,7 @@ SimBaseClass* SimulationDriver::FindNearest(SimBaseClass* center, VuLinkedList* 
                      (curObj->YPos() - myY) * (curObj->YPos() - myY) +
                      (curObj->ZPos() - myZ) * (curObj->ZPos() - myZ);
 
-            if (tmpRng < rngSqr &&
+            if (tmpRng < rngSqr  and 
                 TeamInfo[curObj->GetTeam()]->TStance(center->GetTeam()) < Hostile)
             {
                 rngSqr = tmpRng;

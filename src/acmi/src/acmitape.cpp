@@ -4160,7 +4160,7 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
     SimBaseClass *prevObj = NULL, *nextObj = NULL;
 
     // In many cases, our visType should be modified by our neighbors.
-    if ((theObject->Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED &&
+    if ((theObject->Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED  and 
         (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM ||
          ((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM))
     {
@@ -4169,12 +4169,12 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
         prevObj = FindComponentFeature(feat->leadIndex, idx - 1);
         nextObj = FindComponentFeature(feat->leadIndex, idx + 1);
 
-        if (prevObj &&
-            (((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM) &&
+        if (prevObj  and 
+            (((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM)  and 
             (prevObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
         {
-            if (nextObj &&
-                (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM) &&
+            if (nextObj  and 
+                (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM)  and 
                 (nextObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
             {
                 visType = classPtr->visType[VIS_BOTH_DEST];
@@ -4184,8 +4184,8 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
                 visType = classPtr->visType[VIS_LEFT_DEST];
             }
         }
-        else if (nextObj &&
-                 (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM) &&
+        else if (nextObj  and 
+                 (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM)  and 
                  (nextObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
         {
             visType = classPtr->visType[VIS_RIGHT_DEST];
@@ -4193,7 +4193,7 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
     }
 
     // Check for change - and don't bother if there is none.
-    if (theObject->drawPointer &&
+    if (theObject->drawPointer  and 
         ((DrawableBSP*)theObject->drawPointer)->GetID() == visType)
         return;
 
@@ -4316,7 +4316,7 @@ SimBaseClass *ACMITape::FindComponentFeature(long leadIndex, int slot)
 
     for (i = 0; i < _tapeHdr.numFeat; i++)
     {
-        if (_simTapeFeatures[i].leadIndex == leadIndex &&
+        if (_simTapeFeatures[i].leadIndex == leadIndex  and 
             _simTapeFeatures[i].slot == slot)
         {
             return _simTapeFeatures[i].objBase;

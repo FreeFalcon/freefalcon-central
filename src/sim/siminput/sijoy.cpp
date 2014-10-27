@@ -421,7 +421,7 @@ void GetJoystickInput()
 #endif
 
             // not in afterburner.. throttle 0 result in 0.0F, throttle in ABDetent results in 1.0F - OK
-            if ((IO.analog[AXIS_THROTTLE].center) &&
+            if ((IO.analog[AXIS_THROTTLE].center)  and 
                 (device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis] > IO.analog[AXIS_THROTTLE].center))
             {
 #ifndef USE_IDLE_CUTOFF
@@ -488,7 +488,7 @@ void GetJoystickInput()
 #endif
 
             // not in afterburner.. throttle 0 result in 0.0F, throttle in ABDetent results in 1.0F - OK
-            if ((IO.analog[AXIS_THROTTLE2].center) &&
+            if ((IO.analog[AXIS_THROTTLE2].center)  and 
                 (device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis] > IO.analog[AXIS_THROTTLE2].center))
             {
 #ifndef USE_IDLE_CUTOFF

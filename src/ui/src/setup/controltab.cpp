@@ -1022,7 +1022,7 @@ void AxisChangeCB(long, short hittype, C_Base *me)
         // now how do I find out the old axis ? hmm
         for (int j = 0; DIAxisNames[j].DXAxisName; j++)
         {
-            if ((DIAxisNames[j].DXDeviceID == UIInputStuff[i].theDeviceAxis->Device) &&
+            if ((DIAxisNames[j].DXDeviceID == UIInputStuff[i].theDeviceAxis->Device)  and 
                 (DIAxisNames[j].DXAxisID == UIInputStuff[i].theDeviceAxis->Axis))
             {
                 ShiAssert(DIAxisNames[j].isMapped == true);
@@ -1043,7 +1043,7 @@ void AxisChangeCB(long, short hittype, C_Base *me)
     {
         // was not keyboard
         // so we have the change from one axis to another axis
-        if ((DIAxisNames[index].DXDeviceID == UIInputStuff[i].theDeviceAxis->Device) &&
+        if ((DIAxisNames[index].DXDeviceID == UIInputStuff[i].theDeviceAxis->Device)  and 
             (DIAxisNames[index].DXAxisID == UIInputStuff[i].theDeviceAxis->Axis))
         {
             ShiAssert(DIAxisNames[index].isMapped == true);
@@ -1070,7 +1070,7 @@ void AxisChangeCB(long, short hittype, C_Base *me)
             // now how do I find out the old axis ? hmm
             for (int j = 0; DIAxisNames[j].DXAxisName; j++)
             {
-                if ((DIAxisNames[j].DXDeviceID == UIInputStuff[i].theDeviceAxis->Device) &&
+                if ((DIAxisNames[j].DXDeviceID == UIInputStuff[i].theDeviceAxis->Device)  and 
                     (DIAxisNames[j].DXAxisID == UIInputStuff[i].theDeviceAxis->Axis))
                 {
                     DIAxisNames[j].isMapped = false;

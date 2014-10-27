@@ -478,7 +478,7 @@ void tactical_mission::process_load(char *data, int size, int)
 
         while
         (
-            (len > 0) &&
+            (len > 0)  and 
             (
                 (buffer[len - 1] == '\n') ||
                 (buffer[len - 1] == '\r') ||
@@ -1186,7 +1186,7 @@ static int test_filter(victory_condition *vc, victory_condition_filter filter, i
         {
             if
             (
-                (team == vc->get_team()) &&
+                (team == vc->get_team())  and 
                 (vc->get_active())
             )
             {
@@ -1202,7 +1202,7 @@ static int test_filter(victory_condition *vc, victory_condition_filter filter, i
         {
             if
             (
-                (team == vc->get_team()) &&
+                (team == vc->get_team())  and 
                 (!vc->get_active())
             )
             {

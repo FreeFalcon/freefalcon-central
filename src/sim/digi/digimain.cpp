@@ -706,8 +706,8 @@ void DigitalBrain::CheckLead(void)
     BOOL done = FALSE;
     int i = 0;
 
-    if (flightLead &&
-        flightLead->VuState() == VU_MEM_ACTIVE &&
+    if (flightLead  and 
+        flightLead->VuState() == VU_MEM_ACTIVE  and 
         !flightLead->IsDead()
        )
     {
@@ -959,7 +959,7 @@ void DigitalBrain::ReSetLabel(SimBaseClass* theObject)
             flight = FalconLocalSession->GetPlayerFlight();
             campObj = theObject->GetCampaignObject();
 
-            if (campObj and campObj->IsFlight() /*&& !campObj->IsAggregate() and campObj->InPackage()*/
+            if (campObj and campObj->IsFlight() /* and  !campObj->IsAggregate() and campObj->InPackage()*/
                 // 2001-10-31 M.N. show flight names of our team
                 and flight and flight->GetTeam() == campObj->GetTeam())
             {

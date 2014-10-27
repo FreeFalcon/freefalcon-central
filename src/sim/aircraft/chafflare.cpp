@@ -413,7 +413,7 @@ void AircraftClass::DropEWS()
 
     //make noise
     if ((counterMeasureStation[FLARE_STATION].weaponCount > 0 ||
-         counterMeasureStation[CHAFF_STATION].weaponCount > 0) &&
+         counterMeasureStation[CHAFF_STATION].weaponCount > 0)  and 
         (EWSPGM() == Man or EWSPGM() == Semi or EWSPGM() == Auto))
     {
         //F4SoundFXSetDist(af->auxaeroData->sndBBChaffFlare, FALSE, 0.0f, 1.0f);
@@ -422,7 +422,7 @@ void AircraftClass::DropEWS()
             SoundPos.Sfx(af->auxaeroData->sndBBChaffFlare); // MLR 5/16/2004 -
         }
     }
-    else if (counterMeasureStation[FLARE_STATION].weaponCount <= 0 &&
+    else if (counterMeasureStation[FLARE_STATION].weaponCount <= 0  and 
              counterMeasureStation[CHAFF_STATION].weaponCount <= 0)
     {
         //F4SoundFXSetDist(af->auxaeroData->sndBBChaffFlareOut, TRUE, 0.0f, 1.0f);
@@ -484,7 +484,7 @@ void AircraftClass::ReleaseManualProgram(void)
     if (!theRwr)
         return;
 
-    if (static_cast<unsigned int>(ChaffCount) >= OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum] &&
+    if (static_cast<unsigned int>(ChaffCount) >= OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum]  and 
         ChaffSalvoCount not_eq 0 and !theRwr->ChaffCheck)
     {
         //Set our timer
@@ -497,7 +497,7 @@ void AircraftClass::ReleaseManualProgram(void)
         theRwr->ChaffCheck = TRUE;
     }
 
-    if (FlareCount == OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum] &&
+    if (FlareCount == OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum]  and 
         FlareSalvoCount not_eq 0 and !theRwr->FlareCheck)
     {
         //Set our timer
@@ -510,22 +510,22 @@ void AircraftClass::ReleaseManualProgram(void)
         theRwr->FlareCheck = TRUE;
     }
 
-    if (SimLibElapsedTime >= ChaffBurstInterval &&
+    if (SimLibElapsedTime >= ChaffBurstInterval  and 
         (static_cast<unsigned int>(ChaffCount) < OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum]))
     {
         EWSChaffBurst();
         theRwr->ChaffCheck = FALSE;
     }
 
-    if (SimLibElapsedTime >= FlareBurstInterval &&
+    if (SimLibElapsedTime >= FlareBurstInterval  and 
         (static_cast<VU_TIME>(FlareCount) < OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum]))
     {
         EWSFlareBurst();
         theRwr->FlareCheck = FALSE;
     }
 
-    if (FlareCount == OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum] &&
-        ChaffCount == OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum] &&
+    if (FlareCount == OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum]  and 
+        ChaffCount == OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum]  and 
         ChaffSalvoCount <= 0 and FlareSalvoCount <= 0)
     {
         theRwr->ReleaseManual = FALSE;

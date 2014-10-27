@@ -252,8 +252,8 @@ BOOL GroundClass::DoWeapons(void)
             // Valid for campaign object as well, not just sim!
             // We're testing inside for SIM or CAMPAIGN ANYWAY! Otherwise nextSamFireTime is NEVER adjusted
             if (
-                gai->battalionCommand &&
-                /* targetPtr->BaseData()->IsSim() &&*/
+                gai->battalionCommand  and 
+                /* targetPtr->BaseData()->IsSim()  and */
                 !targetPtr->BaseData()->OnGround()
             )
             {
@@ -636,8 +636,8 @@ int GroundClass::GunTrack(void)
         // we need to prevent flak from firing when aircraft are flying
         // low -- it should be a gameplay feature.  SelectWeapon isn't
         // being granular enough....
-        if (!targetPtr->BaseData()->OnGround() &&
-            targetPtr->BaseData()->IsSim() &&
+        if (!targetPtr->BaseData()->OnGround()  and 
+            targetPtr->BaseData()->IsSim()  and 
             targetPtr->BaseData()->ZPos() - ZPos() > -2000.0f)
         {
             return FALSE;

@@ -74,7 +74,7 @@ void RenderOTW::DrawTerrainSquare(int r, int c, int LOD)
     // If required, get the post which will provide the texture for this segment
     // and setup the texture coordinates at the corners of this square
     if (v0->RenderingStateHandle > STATE_GOURAUD
-        //&& !F4IsBadReadPtr(v0->post, sizeof(Tpost)) // JB 010318 CTD (too much CPU)
+        // and  !F4IsBadReadPtr(v0->post, sizeof(Tpost)) // JB 010318 CTD (too much CPU)
        )
     {
 

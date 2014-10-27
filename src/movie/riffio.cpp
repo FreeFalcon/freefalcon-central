@@ -396,7 +396,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
         }
         else
         {
-            if ((streams->audioFlag & STREAM_AUDIO_EXTERNAL) &&
+            if ((streams->audioFlag & STREAM_AUDIO_EXTERNAL)  and 
                 !streams->initialFrames)
                 streams->initialFrames = 1 + (streams->frameRate * 3 / 4);
 

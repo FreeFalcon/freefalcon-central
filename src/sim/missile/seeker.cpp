@@ -26,7 +26,7 @@ void MissileClass::RunSeeker()
     // No seeker if in SAFE
     if (
         !sensorArray or !sensorArray[0] ||
-        launchState == PreLaunch and parent and parent->IsAirplane() &&
+        launchState == PreLaunch and parent and parent->IsAirplane()  and 
         ((AircraftClass*)parent.get())->Sms->MasterArm() == SMSBaseClass::Safe
     )
     {
@@ -55,13 +55,13 @@ void MissileClass::RunSeeker()
     float factor = ((targetPtr and targetPtr->BaseData()->IsSPJamming()) ? 1.5f : 1.0f);
 
     if (
-        inputData->mslActiveTtg > 0 &&
+        inputData->mslActiveTtg > 0  and 
         (
-            timpct * factor < inputData->mslActiveTtg &&
+            timpct * factor < inputData->mslActiveTtg  and 
             sensorArray[0]->Type() not_eq SensorClass::Radar
         ) ||
         (
-            launchState == InFlight and sensorArray[0]->Type() not_eq SensorClass::Radar &&
+            launchState == InFlight and sensorArray[0]->Type() not_eq SensorClass::Radar  and 
             (!isSlave or !targetPtr) //I-Hawk - was missing the parentheses here, caused heat seeker locking problems
         )
     )
@@ -83,8 +83,8 @@ void MissileClass::RunSeeker()
     if (lockedTarget not_eq targetPtr)
     {
         if (
-            (inputData->mslActiveTtg > 0) &&
-            (sensorArray[0]->Type() not_eq SensorClass::Radar) &&
+            (inputData->mslActiveTtg > 0)  and 
+            (sensorArray[0]->Type() not_eq SensorClass::Radar)  and 
             launchState == InFlight
         )
         {
@@ -150,7 +150,7 @@ void MissileClass::RunSeeker()
 
     // No seeker if in SAFE
     if (
-        launchState == PreLaunch and parent and parent->IsAirplane() &&
+        launchState == PreLaunch and parent and parent->IsAirplane()  and 
         ((AircraftClass*)parent.get())->Sms->MasterArm() == SMSBaseClass::Safe
     )
     {
@@ -188,9 +188,9 @@ void MissileClass::RunSeeker()
     // inputData->mslActiveTtg and sensorArray[0]->Type() not_eq SensorClass::Radar)
     // Marco edit - Also added in GoActive for 'Mad Dog' Launches
     //if (
-    // inputData->mslActiveTtg > 0 &&
-    // launchState == InFlight &&
-    // sensorArray[0]->Type() not_eq SensorClass::Radar &&
+    // inputData->mslActiveTtg > 0  and 
+    // launchState == InFlight  and 
+    // sensorArray[0]->Type() not_eq SensorClass::Radar  and 
     // !isSlave
     //){
     // Pitbull = false;
@@ -199,14 +199,14 @@ void MissileClass::RunSeeker()
     float factor = ((targetPtr and targetPtr->BaseData()->IsSPJamming()) ? 1.5f : 1.0f);
 
     if (
-        inputData->mslActiveTtg > 0 &&
+        inputData->mslActiveTtg > 0  and 
         (
-            timpct * factor < inputData->mslActiveTtg &&
+            timpct * factor < inputData->mslActiveTtg  and 
             sensorArray[0]->Type() not_eq SensorClass::Radar
         ) ||
         (
-            inputData->mslActiveTtg > 0 &&
-            launchState == InFlight and sensorArray[0]->Type() not_eq SensorClass::Radar &&
+            inputData->mslActiveTtg > 0  and 
+            launchState == InFlight and sensorArray[0]->Type() not_eq SensorClass::Radar  and 
             (!isSlave or !targetPtr)
         )
     )
@@ -263,8 +263,8 @@ void MissileClass::RunSeeker()
     if (newTarget not_eq targetPtr)
     {
         if (
-            (inputData->mslActiveTtg > 0) &&
-            (sensorArray[0]->Type() not_eq SensorClass::Radar) &&
+            (inputData->mslActiveTtg > 0)  and 
+            (sensorArray[0]->Type() not_eq SensorClass::Radar)  and 
             launchState == InFlight
         )
         {

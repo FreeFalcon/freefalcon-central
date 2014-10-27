@@ -757,8 +757,8 @@ void GNDAIClass::ProcessTargeting(void)
             SimObjectLocalData* localData = self->targetPtr->localData;
 
             if (
-                localData->ataFrom == 0.0f &&
-                localData->az == 0.0f  &&
+                localData->ataFrom == 0.0f  and 
+                localData->az == 0.0f   and 
                 localData->el == 0.0f and localData->range == 0.0f
             )
             {
@@ -773,7 +773,7 @@ void GNDAIClass::ProcessTargeting(void)
             // as us but different target pointers, switch our radar target pointer to our target pointer
             else if (
                 !radar->CurrentTarget() or (
-                    radar->CurrentTarget() not_eq self->targetPtr &&
+                    radar->CurrentTarget() not_eq self->targetPtr  and 
                     radar->CurrentTarget()->BaseData() == self->targetPtr->BaseData()
                 )
             )

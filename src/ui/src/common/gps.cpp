@@ -97,7 +97,7 @@ static BOOL GPSMissionSortPriorityCB(TREELIST *list, TREELIST *newitem)
 
     if (((C_Mission*)newitem->Item_)->GetPriorityID() < ((C_Mission*)list->Item_)->GetPriorityID())
         return(TRUE);
-    else if (((C_Mission*)newitem->Item_)->GetPriorityID() == ((C_Mission*)list->Item_)->GetPriorityID() &&
+    else if (((C_Mission*)newitem->Item_)->GetPriorityID() == ((C_Mission*)list->Item_)->GetPriorityID()  and 
              ((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
         return(TRUE);
 
@@ -124,7 +124,7 @@ static BOOL GPSMissionSortMissionCB(TREELIST *list, TREELIST *newitem)
 
     if (_tcsicmp(((C_Mission*)newitem->Item_)->GetMission(), ((C_Mission*)list->Item_)->GetMission()) < 0)
         return(TRUE);
-    else if (!_tcsicmp(((C_Mission*)newitem->Item_)->GetMission(), ((C_Mission*)list->Item_)->GetMission()) &&
+    else if (!_tcsicmp(((C_Mission*)newitem->Item_)->GetMission(), ((C_Mission*)list->Item_)->GetMission())  and 
              ((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
         return(TRUE);
 
@@ -139,7 +139,7 @@ static BOOL GPSMissionSortStatusCB(TREELIST *list, TREELIST *newitem)
 
     if (((C_Mission*)newitem->Item_)->GetStatusID() < ((C_Mission*)list->Item_)->GetStatusID())
         return(TRUE);
-    else if (((C_Mission*)newitem->Item_)->GetStatusID() == ((C_Mission*)list->Item_)->GetStatusID() &&
+    else if (((C_Mission*)newitem->Item_)->GetStatusID() == ((C_Mission*)list->Item_)->GetStatusID()  and 
              ((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
         return(TRUE);
 
@@ -154,7 +154,7 @@ static BOOL GPSMissionSortPackageCB(TREELIST *list, TREELIST *newitem)
 
     if (((C_Mission*)newitem->Item_)->GetPackageID() < ((C_Mission*)list->Item_)->GetPackageID())
         return(TRUE);
-    else if (((C_Mission*)newitem->Item_)->GetPackageID() == ((C_Mission*)list->Item_)->GetPackageID() &&
+    else if (((C_Mission*)newitem->Item_)->GetPackageID() == ((C_Mission*)list->Item_)->GetPackageID()  and 
              ((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
         return(TRUE);
 

@@ -403,7 +403,7 @@ bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
 
             if (
                 //(session->OwnerId().creator_.value_ == CAPI_DANGLING_ID) ||
-                (session->OwnerId().creator_.value_ == owner.creator_) &&
+                (session->OwnerId().creator_.value_ == owner.creator_)  and 
                 (sAdd == address)
             )
             {
@@ -995,7 +995,7 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
 
         if (
             (gConnectionStatus == F4COMMS_CONNECTED ||
-             (g_ipadress and !strcmpi(g_ipadress, "0.0.0.0"))) &&
+             (g_ipadress and !strcmpi(g_ipadress, "0.0.0.0")))  and 
             !stoppingvoice and !g_pDPServer and !g_pDPClient  and (g_ipadress)
         )
         {
@@ -1078,8 +1078,8 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
 
     // Send FullUpdate for session if this is our game
     if (
-        (group->IsGame()) &&
-        (group->Id() == vuLocalSessionEntity->GameId()) &&
+        (group->IsGame())  and 
+        (group->Id() == vuLocalSessionEntity->GameId())  and 
         (vuLocalSessionEntity.get() not_eq session)
     )
     {

@@ -75,7 +75,7 @@ int FalconDeathMessage::Process(uchar autodisp)
 
     if (target and (target->IsAirplane() or !(rand() % 3)))
     {
-        if (shooter and shooter->IsAirplane() &&
+        if (shooter and shooter->IsAirplane()  and 
             (GetTTRelations(shooter->GetTeam(), target->GetTeam()) >= Hostile) and rand() % 2
             and !shooter->IsPlayer())
         {

@@ -984,7 +984,7 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
                 (SimDriver.RunningInstantAction() or // We're in instant action (in thise case rangeSquare will be 0 because it's the player) OR
                  ((SimVehicleClass *)speaker)->Brain()->SkillLevel() == 4 or // Skill of wingman is ace OR
                  (((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode() not_eq DigitalBrain::GunsJinkMode and // Wingman not defensive
-                  ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode()  not_eq DigitalBrain::MissileDefeatMode &&
+                  ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode()  not_eq DigitalBrain::MissileDefeatMode  and 
                   ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode()  not_eq DigitalBrain::DefensiveModes)))
             {
 

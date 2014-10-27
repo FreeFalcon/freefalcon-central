@@ -32,7 +32,7 @@ void HeliBrain::GunsJinkCheck(void)
         /*--------------------*/
         while (obj)
         {
-            if (obj->BaseData()->IsSim() &&
+            if (obj->BaseData()->IsSim()  and 
                 (((SimBaseClass*)obj->BaseData())->IsFiring() or ((SimBaseClass*)obj->BaseData())->GetTeam() not_eq side))
             {
                 localData = obj->localData;

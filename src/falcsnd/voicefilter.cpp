@@ -439,11 +439,11 @@ void VoiceFilter::PlayRadioMessage(
     if (
         // sfr: JB code commented out
         (
-            pEntity /*&& !F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass))*/ &&
+            pEntity /* and  !F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass))*/  and 
             pEntity->IsEject()
         ) ||
         (
-            VM /*&& !F4IsBadReadPtr(VM, sizeof(VoiceManager))*/ &&
+            VM /* and  !F4IsBadReadPtr(VM, sizeof(VoiceManager))*/  and 
             VM->falconVoices[channel].exitChannel
         ) ||
         killThread

@@ -507,7 +507,7 @@ void SimulationLoopControl::Loop(void)
             }
 
             if (
-                FalconLocalSession->GetFlyState() not_eq  FLYSTATE_FLYING &&
+                FalconLocalSession->GetFlyState() not_eq  FLYSTATE_FLYING  and 
                 gCompressTillTime and tmpTime > gLaunchTime + 1000
             )
             {
@@ -817,9 +817,9 @@ void SimulationLoopControl::StartLoop(void)
 
             // Wait until all necessary deaggregation events have been handled
             while (
-                (gLeftToDeaggregate) &&
-                (delayCounter) &&
-                (SimDriver.GetPlayerEntity()) &&
+                (gLeftToDeaggregate)  and 
+                (delayCounter)  and 
+                (SimDriver.GetPlayerEntity())  and 
                 (!(SimDriver.GetPlayerEntity()->IsLocal()))
             )
             {

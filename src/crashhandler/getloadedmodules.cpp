@@ -35,7 +35,7 @@ GetLoadedModules(DWORD     dwPID        ,
     //  in uiCount if they are just interested in the total to be
     //  returned so they could dynamically allocate a buffer.
     if ((TRUE == IsBadWritePtr(puiRealCount , sizeof(UINT)))    ||
-        ((uiCount > 0) &&
+        ((uiCount > 0)  and 
          (TRUE == IsBadWritePtr(paModArray ,
                                 uiCount * sizeof(HMODULE)))))
     {

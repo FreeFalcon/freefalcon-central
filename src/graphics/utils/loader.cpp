@@ -250,9 +250,9 @@ void Loader::Enqueue(LoaderQ *New)
     {
 
         // See if this is a duplicate
-        if ((p->fileoffset == New->fileoffset) &&
-            (p->filename == New->filename) &&
-            (p->parameter == New->parameter) &&
+        if ((p->fileoffset == New->fileoffset)  and 
+            (p->filename == New->filename)  and 
+            (p->parameter == New->parameter)  and 
             (p->callback == New->callback))
         {
 
@@ -359,9 +359,9 @@ BOOL Loader::CancelRequest(void(*callback)(LoaderQ*), void *parameter, char *fil
     {
 
         // See if this is the one we want to cancel
-        if ((p->filename == filename) &&
-            (p->fileoffset == fileoffset) &&
-            (p->parameter == parameter) &&
+        if ((p->filename == filename)  and 
+            (p->fileoffset == fileoffset)  and 
+            (p->parameter == parameter)  and 
             (p->callback == callback))
         {
 

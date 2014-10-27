@@ -389,7 +389,7 @@ void CPDial::CreateLit(void)
 
             // Check if we can use a single texture
             if (
-                ((int)dwMaxTextureWidth >= mSrcRect.right - mSrcRect.left) &&
+                ((int)dwMaxTextureWidth >= mSrcRect.right - mSrcRect.left)  and 
                 ((int)dwMaxTextureHeight >= mSrcRect.bottom - mSrcRect.top)
             )
             {

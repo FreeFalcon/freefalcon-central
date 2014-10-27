@@ -3342,9 +3342,9 @@ void CaptureObjective(Objective co, Control who, Unit u)
             f = (FlightClass*)unit;
 
             if (
-                (GetRoE(newown, unit->GetTeam(), ROE_GROUND_CAPTURE) == ROE_ALLOWED) &&
-                (f->GetUnitAirbase() == co) &&
-                ((f->GetCurrentUnitWP() == NULL) or (f->GetCurrentUnitWP()->GetWPAction() == WP_TAKEOFF)) &&
+                (GetRoE(newown, unit->GetTeam(), ROE_GROUND_CAPTURE) == ROE_ALLOWED)  and 
+                (f->GetUnitAirbase() == co)  and 
+                ((f->GetCurrentUnitWP() == NULL) or (f->GetCurrentUnitWP()->GetWPAction() == WP_TAKEOFF))  and 
                 (f->IsAggregate())
             )
             {
@@ -3382,7 +3382,7 @@ int EncodeObjectiveDeltas(VU_BYTE **stream, FalconSessionEntity *owner)
         while (ent)
         {
             if (
-                (ent->EntityType())->classInfo_[VU_CLASS] == CLASS_OBJECTIVE &&
+                (ent->EntityType())->classInfo_[VU_CLASS] == CLASS_OBJECTIVE  and 
                 (!owner or ent->OwnerId() == ownerid)
             )
             {
@@ -3410,7 +3410,7 @@ int EncodeObjectiveDeltas(VU_BYTE **stream, FalconSessionEntity *owner)
         while (ent)
         {
             if (
-                (ent->EntityType())->classInfo_[VU_CLASS] == CLASS_OBJECTIVE &&
+                (ent->EntityType())->classInfo_[VU_CLASS] == CLASS_OBJECTIVE  and 
                 (!owner or ent->OwnerId() == ownerid)
             )
             {

@@ -181,7 +181,7 @@ static void doFrame(PMOVIE item)
         /*
            Lock surface.
         */
-        if ((sa->lockStatus == SURFACE_IS_UNLOCKED) &&
+        if ((sa->lockStatus == SURFACE_IS_UNLOCKED)  and 
             !(item->sbType & SURFACE_TRY_FAST))
         {
             surfaceGetPointer(item->ddSurface, sa);
@@ -779,7 +779,7 @@ int movieStart(int handle)
         if (aviReadRecord(streams) not_eq RIFF_OK)
             return MOVIE_BAD_FILE;
 
-        if ((streams->audioFlag & STREAM_AUDIO_EXTERNAL) &&
+        if ((streams->audioFlag & STREAM_AUDIO_EXTERNAL)  and 
             !(streams->audioFlag & STREAM_AUDIO_PRELOAD))
             if (waveReadBlock(streams) not_eq RIFF_OK)
                 return MOVIE_BAD_AUDIO_FILE;
@@ -1032,8 +1032,8 @@ static unsigned int __stdcall fillerThread(void* itemIn)
                Read audio data from an external sound file.
             */
 
-            if ((streams->audioFlag & STREAM_AUDIO_EXTERNAL) &&
-                !(item->status & MOVIE_STATUS_AUDIO_EOF) &&
+            if ((streams->audioFlag & STREAM_AUDIO_EXTERNAL)  and 
+                !(item->status & MOVIE_STATUS_AUDIO_EOF)  and 
                 !(streams->audioFlag & STREAM_AUDIO_PRELOAD))
             {
                 status = waveReadBlock(streams);
@@ -1083,7 +1083,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
     item->status  or_eq  MOVIE_STATUS_THREAD_RUNNING;
     streams = &(item->aviStreams);
 
-    if ((item->sbType & SURFACE_TYPE_SYSTEM) &&
+    if ((item->sbType & SURFACE_TYPE_SYSTEM)  and 
         (item->sbType & SURFACE_TRY_FAST))
     {
         surfaceGetPointer(item->ddSurface, &(item->sa));

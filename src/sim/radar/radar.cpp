@@ -474,7 +474,7 @@ void RadarClass::SendTrackMsg(SimObjectType* tgtptr, unsigned int trackType, uns
     while (sess)
     {
         if (
-            (sess->CameraCount() > 0) &&
+            (sess->CameraCount() > 0)  and 
             (
                 (sess->GetCameraEntity(0)->Id() == platform->Id()) ||
                 (sess->GetCameraEntity(0)->Id() == id)

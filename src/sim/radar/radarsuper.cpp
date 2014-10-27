@@ -1040,7 +1040,7 @@ void RadarSuperClass::DrawLockedAirInfo(float h, float v)
     // Target ID (NCTR)
     classPtr = (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
 
-    if (lockedTarget->BaseData()->IsSim() and (!((SimBaseClass*)lockedTarget->BaseData())->IsExploding()) &&
+    if (lockedTarget->BaseData()->IsSim() and (!((SimBaseClass*)lockedTarget->BaseData())->IsExploding())  and 
         (classPtr->dataType == DTYPE_VEHICLE))
     {
         sprintf(str, "%s", ((VehicleClassDataType*)(classPtr->dataPtr))->Name);

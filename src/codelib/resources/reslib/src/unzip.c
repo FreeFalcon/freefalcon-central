@@ -1244,7 +1244,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
                  arc -> tmp_in_ptr = arc -> tmp_in_ptr - 1 /* was: --inptr  uggh! */
                 )
             {
-                //                if((native(*((int*)arc -> tmp_in_ptr)) == 'P') &&
+                //                if((native(*((int*)arc -> tmp_in_ptr)) == 'P')  and 
                 //                    !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))  /* GFG 31/01/98
                 if (((*(char*)(arc -> tmp_in_ptr)) == 'P') and !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
 

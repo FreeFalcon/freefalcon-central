@@ -490,7 +490,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
 
     if (
         !lo or (
-            Parent() and (FalconLocalGame->GetGameType() == game_Campaign) &&
+            Parent() and (FalconLocalGame->GetGameType() == game_Campaign)  and 
             !TeamInfo[GetTeam()]->gtm->IsValidObjective(GetOrders(), lo)
         )
     )
@@ -1548,7 +1548,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 
             // KCK: Good operators could shoot before going to guide mode. Check skill and return TRUE
             if (
-                GetRadarMode() == FEC_RADAR_AQUIRE &&
+                GetRadarMode() == FEC_RADAR_AQUIRE  and 
                 rand() % 100 < TeamInfo[GetOwner()]->airDefenseExperience - MINIMUM_EXP_TO_FIRE_PREGUIDE
             )
             {
@@ -1772,7 +1772,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
      {
     // KCK: Good operators could shoot before going to guide mode. Check skill and return TRUE
     if (
-     GetRadarMode() == FEC_RADAR_AQUIRE &&
+     GetRadarMode() == FEC_RADAR_AQUIRE  and 
      rand()%100 < TeamInfo[GetOwner()]->airDefenseExperience - MINIMUM_EXP_TO_FIRE_PREGUIDE
     )
     {
@@ -1944,7 +1944,7 @@ int BattalionClass::RallyUnit(int minutes)
         maxMorale = 0;  // MLR 6/26/2004 - 0 er?
 
     // Regain MORALE_REGAIN_RATE % of maxMorale each hour we've been waiting
-    if (/*!Engaged() &&*/ GetUnitMorale() < maxMorale)
+    if (/*!Engaged()  and */ GetUnitMorale() < maxMorale)
     {
         increase = (MORALE_REGAIN_RATE * minutes * maxMorale) / 6000;
 

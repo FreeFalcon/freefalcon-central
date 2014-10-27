@@ -1439,8 +1439,8 @@ extern "C" void F4SoundFXSetCamPosAndOrient(Tpoint *campos, Trotation *camrot, T
             v = playerAC->af->GetSoundExternalVol() + PlayerOptions.SoundExtAttenuation;
 
             if (
-                playerAC->GetNumDOFs() > COMP_CANOPY_DOF &&
-                playerAC->IsComplex() &&
+                playerAC->GetNumDOFs() > COMP_CANOPY_DOF  and 
+                playerAC->IsComplex()  and 
                 playerAC->af->GetCanopyMaxAngle()
             )
             {
@@ -1497,7 +1497,7 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
     // Cobra - Fix CTD when exiting FF
     if (F4IsBadReadPtr(sfxp, sizeof(sfxp))) return;
 
-    if (g_bRealisticAvionics &&
+    if (g_bRealisticAvionics  and 
         (sfxp->flags & SFX_FLAGS_VMS))
     {
         AircraftClass *playerAC = SimDriver.GetPlayerAircraft();

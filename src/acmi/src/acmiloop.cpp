@@ -490,7 +490,7 @@ void ACMIView::Draw()
 
 
                     // do target boxes and lines
-                    if (_cameraState not_eq FREE_CAM)  //&& targindex == CameraObject() )//me123 we wanna see all lock lines
+                    if (_cameraState not_eq FREE_CAM)  // and  targindex == CameraObject() )//me123 we wanna see all lock lines
                     {
                         // current attached camera object is target
                         if (targep->flags & ENTITY_FLAG_AIRCRAFT)

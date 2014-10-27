@@ -365,7 +365,7 @@ void CPLight::CreateLit(void)
             for (int i = 0; i < mStates; i++)
             {
                 // Check if we can use a single texture
-                if (((int)(dwMaxTextureWidth) >= mpSourceBuffer[i].mWidth) &&
+                if (((int)(dwMaxTextureWidth) >= mpSourceBuffer[i].mWidth)  and 
                     ((int)(dwMaxTextureHeight) >= mpSourceBuffer[i].mHeight))
                 {
                     TextureHandle *pTex = new TextureHandle;

@@ -1220,7 +1220,7 @@ long C_Button::CheckHotSpots(long relx, long rely)
                 w = GetX() + btn->Image_->GetX() + btn->Image_->GetW() + HotSpot_.right;
                 h = GetY() + btn->Image_->GetX() + btn->Image_->GetH() + HotSpot_.bottom;
 
-                if (relx >= (x) and relx < (w) &&
+                if (relx >= (x) and relx < (w)  and 
                     rely >= (y) and rely < (h))
                 {
                     SetRelXY(relx - GetX() - HotSpot_.left, rely - GetY() - HotSpot_.top);
@@ -1240,7 +1240,7 @@ long C_Button::CheckHotSpots(long relx, long rely)
             w = btn->Image_->GetW();
             h = btn->Image_->GetH();
 
-            if (relx >= (x) and relx < (x + w) &&
+            if (relx >= (x) and relx < (x + w)  and 
                 rely >= (y) and rely < (y + h))
             {
                 SetRelXY(relx - x, rely - y);
@@ -1361,7 +1361,7 @@ BOOL C_Button::MouseOver(long relx, long rely, C_Base *me)
                 w = GetX() + btn->Image_->GetX() + btn->Image_->GetW() + HotSpot_.right;
                 h = GetY() + btn->Image_->GetX() + btn->Image_->GetH() + HotSpot_.bottom;
 
-                if (relx >= (x) and relx < (w) &&
+                if (relx >= (x) and relx < (w)  and 
                     rely >= (y) and rely < (h))
                 {
                     // Set cursor...
@@ -1389,7 +1389,7 @@ BOOL C_Button::MouseOver(long relx, long rely, C_Base *me)
             w = btn->Image_->GetW();
             h = btn->Image_->GetH();
 
-            if (relx >= (x) and relx < (x + w) &&
+            if (relx >= (x) and relx < (x + w)  and 
                 rely >= (y) and rely < (y + h))
             {
                 // Set cursor...

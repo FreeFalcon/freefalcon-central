@@ -1516,9 +1516,9 @@ C_Base *C_Window::MouseOver(long relx, long rely, C_Base *lastover)
             }
         }
         else if (
-            relx >= ClientArea_[cur->Control_->GetClient()].left &&
-            relx <= ClientArea_[cur->Control_->GetClient()].right &&
-            rely >= ClientArea_[cur->Control_->GetClient()].top &&
+            relx >= ClientArea_[cur->Control_->GetClient()].left  and 
+            relx <= ClientArea_[cur->Control_->GetClient()].right  and 
+            rely >= ClientArea_[cur->Control_->GetClient()].top  and 
             rely <= ClientArea_[cur->Control_->GetClient()].bottom
         )
         {

@@ -135,11 +135,11 @@ void PlayerStats::AddStat(long IP, long Date, long Rev, short aa, short ag, shor
 
     if (cur)
     {
-        if (cur->data.aa_kills == aa &&
-            cur->data.ag_kills == ag &&
-            cur->data.an_kills == an &&
-            cur->data.as_kills == as &&
-            cur->data.missions == missions &&
+        if (cur->data.aa_kills == aa  and 
+            cur->data.ag_kills == ag  and 
+            cur->data.an_kills == an  and 
+            cur->data.as_kills == as  and 
+            cur->data.missions == missions  and 
             cur->data.rating == rating)  // No reason to save if nothing changed
             return;
 

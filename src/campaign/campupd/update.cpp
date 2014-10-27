@@ -142,8 +142,8 @@ int UpdateUnit(Unit u, CampaignTime DeltaTime)
         // In tactical engagement, we want to make sure battalions always have a waypoint,
         // So they can be reordered
         if (
-            u->IsBattalion() &&
-            FalconLocalGame->GetGameType() == game_TacticalEngagement &&
+            u->IsBattalion()  and 
+            FalconLocalGame->GetGameType() == game_TacticalEngagement  and 
             !u->GetCurrentUnitWP()
         )
         {

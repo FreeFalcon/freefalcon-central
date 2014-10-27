@@ -593,8 +593,8 @@ VU_ERRCODE VuEntity::Handle(VuPushRequest* msg)
             {
                 VuEntity* assoc = 0;
 
-                if (Association() not_eq vuNullId &&
-                    (assoc = vuDatabase->Find(Association())) not_eq 0 &&
+                if (Association() not_eq vuNullId  and 
+                    (assoc = vuDatabase->Find(Association())) not_eq 0  and 
                     assoc->OwnerId() not_eq vuLocalSession)
                 {
                     // entity has association, and we do not manage it
@@ -644,8 +644,8 @@ VU_ERRCODE VuEntity::Handle(VuPullRequest* msg)
             {
                 VuEntity* assoc = 0;
 
-                if (Association() not_eq vuNullId &&
-                    (assoc = vuDatabase->Find(Association())) not_eq 0 &&
+                if (Association() not_eq vuNullId  and 
+                    (assoc = vuDatabase->Find(Association())) not_eq 0  and 
                     assoc->OwnerId() not_eq msg->Sender())
                 {
                     // entity has association, and target does not manage it
@@ -820,8 +820,8 @@ VuEntity::LineCollisionCheck(BIG_SCALAR x1,
     BIG_SCALAR mult = sizeFactor * dt;
     SM_SCALAR  size = EntityType()->collisionRadius_;
 
-    if (collisionLineEntity1D(z1, z2, ZPos(), (size + vuabs(mult * ZDelta()))) &&
-        collisionLineEntity1D(y1, y2, YPos(), (size + vuabs(mult * YDelta()))) &&
+    if (collisionLineEntity1D(z1, z2, ZPos(), (size + vuabs(mult * ZDelta())))  and 
+        collisionLineEntity1D(y1, y2, YPos(), (size + vuabs(mult * YDelta())))  and 
         collisionLineEntity1D(x1, x2, XPos(), (size + vuabs(mult * XDelta()))))
     {
         return TRUE;

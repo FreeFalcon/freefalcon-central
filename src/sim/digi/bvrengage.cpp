@@ -62,8 +62,8 @@ void DigitalBrain::BvrEngageCheck(void)
         if ((AircraftClass*)flightLead and bvractionstep not_eq 0) //THW 2003-11-15 Only calc if necessary
         {
             if (((AircraftClass*)flightLead)->DBrain()->bvractionstep == 0 and self->GetCampaignObject()->NumberOfComponents() < 3 ||
-                ((AircraftClass*)flightLead)->DBrain()->bvractionstep == 0 and (AircraftClass *)self->GetCampaignObject() &&
-                (AircraftClass *)self->GetCampaignObject()->GetComponentNumber(2) &&
+                ((AircraftClass*)flightLead)->DBrain()->bvractionstep == 0 and (AircraftClass *)self->GetCampaignObject()  and 
+                (AircraftClass *)self->GetCampaignObject()->GetComponentNumber(2)  and 
                 ((AircraftClass *)self->GetCampaignObject()->GetComponentNumber(2))->DBrain()->bvractionstep == 0)
             {
                 bvractionstep = 0;
@@ -114,7 +114,7 @@ void DigitalBrain::BvrEngageCheck(void)
         //Cobra to the rescue ;) threatPtr is working as expected
         //We will try and let A/G guys respond in a limited way so as to not blindly ignore
         //obvious threats
-        if (groundTargetPtr and agDoctrine not_eq AGD_NONE /*&& !threatPtr*/)
+        if (groundTargetPtr and agDoctrine not_eq AGD_NONE /* and  !threatPtr*/)
         {
             if (targetPtr->localData->range > 8.0f * NM_TO_FT)
             {
@@ -191,7 +191,7 @@ void DigitalBrain::BvrEngageCheck(void)
 
         // if its a plane we're in.....
         if ((classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_AIRPLANE ||
-             classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_HELICOPTER) &&
+             classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_HELICOPTER)  and 
             targetPtr->localData->range < engageRange and self->CombatClass() <= 7
             /*CanEngage(self, self->CombatClass(), targetPtr, BVRManeuver)*/) // 2002-03-11 MODIFIED BY S.G. Added parameter BVRManeuver
         {
@@ -659,7 +659,7 @@ void DigitalBrain::BvrChooseTactic(void)
         bvrCurrTactic = BvrCrank;
         bvrTacticTimer = SimLibElapsedTime + 3 * CampaignSeconds;
     }
-    else if (spiked and targetData->range > maxAAWpnRange/*&& SkillLevel() >2*/)
+    else if (spiked and targetData->range > maxAAWpnRange/* and  SkillLevel() >2*/)
     {
         bvrCurrTactic = BvrNotch;
         bvrTacticTimer = SimLibElapsedTime + 20 * CampaignSeconds + SkillLevel() * 5 * CampaignSeconds;
@@ -1193,7 +1193,7 @@ void DigitalBrain::level3b(void)
     {
         case 0:
         {
-            if (elementlead and elementlead->DBrain()->bvrCurrTactic not_eq BvrNotch &&
+            if (elementlead and elementlead->DBrain()->bvrCurrTactic not_eq BvrNotch  and 
                 elementlead->DBrain()->bvrCurrTactic not_eq BvrPump)
                 if (rand() % 2 == 1)
                     bvrCurrTactic = BvrNotchRightHigh;
@@ -2409,7 +2409,7 @@ int DigitalBrain::IsSupportignmissile(void)
     if (missileFiredEntity and ((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming and ((SimWeaponClass *)missileFiredEntity)->GetSPType() not_eq SPTYPE_AIM120)
         result = 1;
 
-    /* if (missileFiredEntity &&
+    /* if (missileFiredEntity  and 
      (((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming ||
      ((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::Radar ))
      {
@@ -2423,8 +2423,8 @@ int DigitalBrain::IsSupportignmissile(void)
     if (wingman and wingman->DBrain()->missileFiredEntity and ((SimWeaponClass *)wingman->DBrain()->missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming)
         result += 2;
 
-    /* if (wingman &&
-     wingman->DBrain()->missileFiredEntity &&
+    /* if (wingman  and 
+     wingman->DBrain()->missileFiredEntity  and 
      (((SimWeaponClass *)wingman->DBrain()->missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming ||
      ((SimWeaponClass *)wingman->DBrain()->missileFiredEntity)->sensorArray[0]->Type() == SensorClass::Radar ))
      {
@@ -2687,7 +2687,7 @@ void DigitalBrain::BaseLineIntercept(void)
 {
     //only with radar sa !
     if (fabs(targetData->azFrom) < 30 * DTR ||
-        fabs(targetData->azFrom) > 40 * DTR &&
+        fabs(targetData->azFrom) > 40 * DTR  and 
         fabs(targetData->azFrom) < 160 * DTR)
     {
         //offset
@@ -2846,7 +2846,7 @@ int DigitalBrain::BeamManeuver(int direction, int NotchHI)
     static VU_TIME heighttimer = 0;
 
     if (
-        heighttimer + 15 * CampaignSeconds < SimLibElapsedTime &&
+        heighttimer + 15 * CampaignSeconds < SimLibElapsedTime  and 
         (TargetAz(self, targetPtr) > 80.0f * DTR and TargetAz(self, targetPtr) < 100.0f * DTR ||
          TargetAz(self, targetPtr) < -80.0f * DTR and TargetAz(self, targetPtr) > -100.0f * DTR)
     )
@@ -2854,8 +2854,8 @@ int DigitalBrain::BeamManeuver(int direction, int NotchHI)
         heighttimer = SimLibElapsedTime;
 
         if (
-            !direction &&
-            bvrTacticTimer > SimLibElapsedTime + 5 * CampaignSeconds - SkillLevel()* CampaignSeconds &&
+            !direction  and 
+            bvrTacticTimer > SimLibElapsedTime + 5 * CampaignSeconds - SkillLevel()* CampaignSeconds  and 
             SpikeCheck(self) not_eq targetPtr->BaseData()
         )
         {
@@ -2870,8 +2870,8 @@ int DigitalBrain::BeamManeuver(int direction, int NotchHI)
     static VU_TIME chaffttimer = 0;
 
     if (
-        SpikeCheck(self) &&
-        SpikeCheck(self) == targetPtr->BaseData() &&
+        SpikeCheck(self)  and 
+        SpikeCheck(self) == targetPtr->BaseData()  and 
         chaffttimer + 1.5 * CampaignSeconds < SimLibElapsedTime
     )
     {

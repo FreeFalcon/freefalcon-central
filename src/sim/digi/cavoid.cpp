@@ -60,7 +60,7 @@ void DigitalBrain::CollisionCheck(void)
         /*---------------*/
         /* not a problem */
         /*---------------*/
-        if (timeToImpact > reactTime &&
+        if (timeToImpact > reactTime  and 
             localData->range > hRange)
         {
             return;

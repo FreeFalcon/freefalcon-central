@@ -647,7 +647,7 @@ void LoadSquadronInfo()
                     {
                         // WM 09-28-03  Display the number of players actually in the selected
                         //  squadron.  Not just the number of total players in the game.
-                        if (session->GetPlayerSquadronID()  &&
+                        if (session->GetPlayerSquadronID()   and 
                             session->GetPlayerSquadronID().num_ == SquadPtr->id.num_)
                             players++;
 

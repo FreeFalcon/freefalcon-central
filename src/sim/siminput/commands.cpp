@@ -993,9 +993,9 @@ void SimPickle(unsigned long, int state, void*)
 
             //JAM 04Jan04 - Fixing pickle-after-ejaculate-CTD.
             if (SimDriver.GetPlayerAircraft() and // MLR 5/4/2004 - <-- THIS IS NULL!!! Fixing pickle-after-ejaculate-CTD.
-                !((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered &&
+                !((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered  and 
                 !((AircraftClass*)SimDriver.GetPlayerAircraft())->doEjectCountdown)
-                //&& !((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectCountdown) //Wombat778 4-02-04 Removed, as the ejectcountdown value is not a stable number, and causes the laser NEVER to fire automatically
+                // and  !((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectCountdown) //Wombat778 4-02-04 Removed, as the ejectcountdown value is not a stable number, and causes the laser NEVER to fire automatically
             {
                 if (SimDriver.GetPlayerAircraft()->FCC
                     and SimDriver.GetPlayerAircraft()->FCC->LaserArm
@@ -1212,7 +1212,7 @@ void SimCursorDown(unsigned long, int state, void*)
 
     // sfr: @todo remove JB check
     if (
-        pac and pac->IsSetFlag(MOTION_OWNSHIP) &&
+        pac and pac->IsSetFlag(MOTION_OWNSHIP)  and 
         !F4IsBadReadPtr(pac->FCC, sizeof(FireControlComputer))// JB 010408 CTD
     )
     {
@@ -1714,7 +1714,7 @@ void SimDropChaff(unsigned long, int state, void*)
             SimDropProgrammed(0, KEY_DOWN, NULL);
         }
     }
-    else if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) &&
+    else if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)  and 
              g_bMLU)
     {
         SimDriver.GetPlayerAircraft()->EWSProgNum = realEWSProgNum ;
@@ -1786,7 +1786,7 @@ void SimToggleInvincible(unsigned long, int state, void*)
 void SimFCCSubModeStep(unsigned long, int state, void*)
 {
     if (
-        SimDriver.GetPlayerAircraft() &&
+        SimDriver.GetPlayerAircraft()  and 
         SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and (state & KEY_DOWN)
     )
     {
@@ -1838,9 +1838,9 @@ void SimNextAAWeapon(unsigned long val, int state, void* pButton)
             //MI modified for ICP
             /* // MLR 2/8/2004 -
             if( SimDriver.GetPlayerAircraft()->FCC->GetSubMode() == (FireControlComputer::STRAF) or // ASSOCIATOR: Added a STAF check here so we can get out of it
-               SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq (FireControlComputer::AAGun) &&
-               SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq (FireControlComputer::Missile) &&
-               SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq (FireControlComputer::Dogfight) &&
+               SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq (FireControlComputer::AAGun)  and 
+               SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq (FireControlComputer::Missile)  and 
+               SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq (FireControlComputer::Dogfight)  and 
                SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq (FireControlComputer::MissileOverride))
                SimDriver.GetPlayerAircraft()->FCC->SetMasterMode( SimDriver.GetPlayerAircraft()->FCC->GetLastAaMasterMode() );
             */
@@ -1850,7 +1850,7 @@ void SimNextAAWeapon(unsigned long val, int state, void* pButton)
             Sms->StepAAWeapon(); // ASSOCIATOR: now it steps the weapon type instead of Missile stepping each weapon
 
             // ASSOCIATOR: This whole section is redundant now and is handled in a central place in the SelectWeapon method
-            /*if (Sms and SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq FireControlComputer::Dogfight &&
+            /*if (Sms and SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq FireControlComputer::Dogfight  and 
              SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() not_eq FireControlComputer::MissileOverride )
             {
                //Sms->GetNextWeapon(wdAir);
@@ -2970,8 +2970,8 @@ void OTWSelectOrbitMode(unsigned long, int state, void*)
 
 void OTWTrackExternal(unsigned long, int state, void*)
 {
-    if (FalconLocalGame and FalconLocalGame->rules.ExternalViewOn() &&
-        (state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()) &&
+    if (FalconLocalGame and FalconLocalGame->rules.ExternalViewOn()  and 
+        (state & KEY_DOWN) and (SimDriver.GetPlayerAircraft())  and 
         (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
         OTWDriver.SetOTWDisplayMode(OTWDriverClass::ModeTargetToSelf);
 }
@@ -3044,7 +3044,7 @@ void OTWSelectWeaponMode(unsigned long, int state, void*)
 void OTWSelectSatelliteMode(unsigned long, int state, void*)
 {
     if (FalconLocalGame and SimDriver.GetPlayerAircraft() and (FalconLocalGame->rules.ExternalViewOn() ||
-            !FalconLocalGame->rules.ExternalViewOn() and SimDriver.GetPlayerAircraft()->OnGround() &&
+            !FalconLocalGame->rules.ExternalViewOn() and SimDriver.GetPlayerAircraft()->OnGround()  and 
             g_bExtViewOnGround) and \
         (state & KEY_DOWN) and  \
         (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
@@ -3714,8 +3714,8 @@ void SimWheelBrakes(unsigned long, int state, void*)
 void SimMotionFreeze(unsigned long, int state, void*)
 {
     if (
-        (state & KEY_DOWN) &&
-        (SimDriver.GetPlayerAircraft()) &&
+        (state & KEY_DOWN)  and 
+        (SimDriver.GetPlayerAircraft())  and 
         (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP))
     )
     {
@@ -3857,7 +3857,7 @@ void SimEmergencyJettison(unsigned long, int state, void*)
         if (g_bRealisticAvionics)
         {
             //not if we're on the ground an our switch isn't set
-            if (SimDriver.GetPlayerAircraft()->OnGround() &&
+            if (SimDriver.GetPlayerAircraft()->OnGround()  and 
                 SimDriver.GetPlayerAircraft()->Sms and !SimDriver.GetPlayerAircraft()->Sms->GndJett)
             {
                 return;
@@ -5263,7 +5263,7 @@ void SimICPTILS(unsigned long, int state, void* pButton)
             //if (OTWDriver.pCockpitManager->mpIcp->GetICPPrimaryMode() == NAV_MODE)
             if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->FCC and SimDriver.GetPlayerAircraft()->FCC->IsNavMasterMode())
             {
-                if (OTWDriver.pCockpitManager->mpIcp->GetICPSecondaryMode() == ILS_MODE &&
+                if (OTWDriver.pCockpitManager->mpIcp->GetICPSecondaryMode() == ILS_MODE  and 
                     (gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV ||
                      gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN))
                 {
@@ -5577,7 +5577,7 @@ void SimICPAA(unsigned long, int state, void* pButton)
     {
         //MI 3/1/2002 if we're in DF or MRM, don't do anything
         if (
-            playerAC->FCC &&
+            playerAC->FCC  and 
             (
                 playerAC->FCC->GetMasterMode() == FireControlComputer::Dogfight ||
                 playerAC->FCC->GetMasterMode() == FireControlComputer::MissileOverride
@@ -6492,7 +6492,7 @@ void SimThrottleIdleDetent(unsigned long, int state, void*)
                     break;
 
                 case UserStickInputs.Both_Engines:
-                    if (SimDriver.GetPlayerAircraft()->af->engine1Throttle < 0.1f &&
+                    if (SimDriver.GetPlayerAircraft()->af->engine1Throttle < 0.1f  and 
                         SimDriver.GetPlayerAircraft()->af->engine2Throttle < 0.1f)
                     {
                         SimDriver.GetPlayerAircraft()->af->SetFlag(AirframeClass::EngineStopped);
@@ -6500,7 +6500,7 @@ void SimThrottleIdleDetent(unsigned long, int state, void*)
                         SimDriver.GetPlayerAircraft()->af->SetFlag(AirframeClass::EngineOff);
                         SimDriver.GetPlayerAircraft()->af->SetFlag(AirframeClass::EngineOff2);
                     }
-                    else if (SimDriver.GetPlayerAircraft()->af->rpm >= 0.20f &&
+                    else if (SimDriver.GetPlayerAircraft()->af->rpm >= 0.20f  and 
                              SimDriver.GetPlayerAircraft()->af->rpm >= 0.20f)
                     {
                         // engine light2
@@ -7944,7 +7944,7 @@ void SimParkingBrakeOff(unsigned long val, int state, void *)
 void SimHookToggle(unsigned long val, int state, void *)
 {
     if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and (state & KEY_DOWN)
-        //&& SimDriver.GetPlayerAircraft()->mFaults->GetFault( FaultClass::hook_fault )
+        // and  SimDriver.GetPlayerAircraft()->mFaults->GetFault( FaultClass::hook_fault )
        )
     {
         SimDriver.GetPlayerAircraft()->af->ToggleHook();
@@ -8689,7 +8689,7 @@ void SimTMSUp(unsigned long val, int state, void *)
                 else if (HasMavs and mavDisplay and mavDisplay->IsSOI())
                 {
                     if (
-                        pac->Sms->curWeapon and !((MissileClass*)pac->Sms->curWeapon.get())->Covered &&
+                        pac->Sms->curWeapon and !((MissileClass*)pac->Sms->curWeapon.get())->Covered  and 
                         pac->Sms->MavCoolTimer < 0.0F
                     )
                     {
@@ -11042,7 +11042,7 @@ void SimTriggerSecondDetent(unsigned long val, int state, void *)
             }
 
             //Gun
-            if (SimDriver.GetPlayerAircraft()->FCC &&
+            if (SimDriver.GetPlayerAircraft()->FCC  and 
                 (SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::Dogfight ||
                  SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride ||
                  SimDriver.GetPlayerAircraft()->FCC->GetSubMode() == FireControlComputer::STRAF ||
@@ -11086,8 +11086,8 @@ void AFFullFlap(unsigned long, int state, void*)
             SimDriver.GetPlayerAircraft()->af->GetTypeAC() == 10)
         {
             if (
-                SimDriver.GetPlayerAircraft()->af->flapPos not_eq 10 &&
-                SimDriver.GetPlayerAircraft()->af->flapPos not_eq 20 &&
+                SimDriver.GetPlayerAircraft()->af->flapPos not_eq 10  and 
+                SimDriver.GetPlayerAircraft()->af->flapPos not_eq 20  and 
                 SimDriver.GetPlayerAircraft()->af->flapPos not_eq 30
             )
             {

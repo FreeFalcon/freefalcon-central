@@ -136,8 +136,8 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
     if (groundType == COVERAGE_WATER ||
         groundType == COVERAGE_RIVER ||
-        (!onFlatFeature &&
-         !af->IsSet(AirframeClass::OverRunway) &&
+        (!onFlatFeature  and 
+         !af->IsSet(AirframeClass::OverRunway)  and 
          (groundType == COVERAGE_THINFOREST ||
           groundType == COVERAGE_THICKFOREST ||
           groundType == COVERAGE_ROCKY ||
@@ -252,7 +252,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     if (af->vt * impactAngle < sinkRate * (1.25F - (!
                                            (af->IsSet(AirframeClass::OverRunway)
                                             or af->IsSet(AirframeClass::OnObject)) // JB carrier
-                                           &&
+                                            and 
                                            !onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
     {
         // ok touchdown
@@ -560,8 +560,8 @@ void AircraftClass::CheckPersistantCollision()
         testP->drawPointer->GetPosition(&fpos);
 
         // test with gross level bounds of object
-        if (fabs(XPos() - fpos.x) < radius  &&
-            fabs(YPos() - fpos.y) < radius  &&
+        if (fabs(XPos() - fpos.x) < radius   and 
+            fabs(YPos() - fpos.y) < radius   and 
             fabs(ZPos() - fpos.z) < radius)
         {
             message = new FalconDamageMessage(Id(), FalconLocalGame);

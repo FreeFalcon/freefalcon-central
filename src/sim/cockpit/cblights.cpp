@@ -641,7 +641,7 @@ void CBEAOAIndLight(void * pObject)
     currentAOAVal = cockpitFlightData.alpha;
 
     //MI in realistic these only work with gear down  //JPG 2 Jan 04 - Nosir, -1 says AoA indexer is operational regardless of gear position
-    /* if(g_bRealisticAvionics and SimDriver.GetPlayerEntity() &&
+    /* if(g_bRealisticAvionics and SimDriver.GetPlayerEntity()  and 
      SimDriver.GetPlayerEntity()->af->gearPos < 0.8F)
      {
      pCPLight->mState = CPLIGHT_AOA_OFF;
@@ -712,7 +712,7 @@ extern void CBEAOAFastLight(void * pObject)
     currentAOAVal = cockpitFlightData.alpha;
 
     //MI in realistic these only work with gear down //JPG 2 Jan 04 - Nosir, -1 says AoA indexer is operational regardless of gear position
-    /* if(g_bRealisticAvionics and SimDriver.GetPlayerEntity() &&
+    /* if(g_bRealisticAvionics and SimDriver.GetPlayerEntity()  and 
      SimDriver.GetPlayerEntity()->af->gearPos < 0.8F)
      {
      pCPLight->mState = CPLIGHT_AOA_OFF;
@@ -767,7 +767,7 @@ void CBERefuelLight(void * pObject)
     //MI NWS light fix
     //else if (!SimDriver.GetPlayerEntity()->af->IsEngineFlag(AirframeClass::FuelDoorOpen) and pCPLight->mState > CPLIGHT_AR_NWS_RDY )
     else if (
-        !playerAC->af->IsEngineFlag(AirframeClass::FuelDoorOpen) &&
+        !playerAC->af->IsEngineFlag(AirframeClass::FuelDoorOpen)  and 
         !playerAC->af->IsSet(AirframeClass::NoseSteerOn)
     )
     {
@@ -862,8 +862,8 @@ void CBECaution3(void * pObject)
 
     pCPLight = (CPLight*) pObject;
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
-    pCPLight->mState = (faultSys->GetFault(FaultClass::eng_fault) not_eq 0) &&
-                       playerAC->af->rpm <= 0.75 &&
+    pCPLight->mState = (faultSys->GetFault(FaultClass::eng_fault) not_eq 0)  and 
+                       playerAC->af->rpm <= 0.75  and 
                        playerAC->af->FuelFlow() > 0.0f
                        ; // JPO
 }
@@ -1019,9 +1019,9 @@ void CBECaution13(void * pObject)
         {
             if (
                 //RV - I-Hawk - changed altitude value from 10000 to 5000 according to Dannycoh
-                (playerAC->ZPos() > -5000.0F) &&
-                (playerAC->GetKias() < 190.0F) &&
-                (playerAC->ZDelta() * 60.0F >= 250.0F) &&
+                (playerAC->ZPos() > -5000.0F)  and 
+                (playerAC->GetKias() < 190.0F)  and 
+                (playerAC->ZDelta() * 60.0F >= 250.0F)  and 
                 (playerAC->af->gearPos not_eq 1.0F)
             )
             {
@@ -1152,7 +1152,7 @@ void CBECaution16(void * pObject)
 
     if (
         (
-            (playerAC->af->rpm <= 0.6F) &&
+            (playerAC->af->rpm <= 0.6F)  and 
             (playerAC->MainPower() == AircraftClass::MainPowerMain)
         ) ||
         (cockpitFlightData.ftit > 1100.0F)
@@ -1197,7 +1197,7 @@ void CBEEng2WarningLight(void * pObject)
     int engine = 0, fire = 0;
 
     if (
-        ((playerAC->af->rpm2 <= 0.6F) &&
+        ((playerAC->af->rpm2 <= 0.6F)  and 
          (playerAC->MainPower() == AircraftClass::MainPowerMain)) ||
         (cockpitFlightData.ftit2 > 1100.0F)
     )
@@ -1819,7 +1819,7 @@ void CBEGearHandleLight(void *pObject)
 
         if (playerAC->af->gearPos == 0.0F) //0 = gear up
         {
-            if (!playerAC->mFaults->GetFault(FaultClass::gear_fault) &&
+            if (!playerAC->mFaults->GetFault(FaultClass::gear_fault)  and 
                 !playerAC->mFaults->GetFault(to_ldg_config))
             {
                 pCPLight->mState = CPLIGHT_OFF; //Light off

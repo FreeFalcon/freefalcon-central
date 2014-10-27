@@ -33,7 +33,7 @@ void DigitalBrain::GunsJinkCheck(void)
         if (obj == NULL)
             return;
 
-        if (obj->BaseData()->IsSim() &&
+        if (obj->BaseData()->IsSim()  and 
             (((SimBaseClass*)obj->BaseData())->IsFiring() ||
              TeamInfo[self->GetTeam()]->TStance(obj->BaseData()->GetTeam()) == War))
         {
@@ -211,8 +211,8 @@ void DigitalBrain::GunsJink(void)
         else
         {
             /* special in-plane crossing case, go the opposite direction */
-            if (targetPtr and ((targetPtr->BaseData()->Yaw()   - self->Yaw() < 15.0F * DTR) &&
-                              (targetPtr->BaseData()->Pitch() - self->Pitch() < 15.0F * DTR) &&
+            if (targetPtr and ((targetPtr->BaseData()->Yaw()   - self->Yaw() < 15.0F * DTR)  and 
+                              (targetPtr->BaseData()->Pitch() - self->Pitch() < 15.0F * DTR)  and 
                               (targetPtr->BaseData()->Roll()  - self->Roll() < 15.0F * DTR)))
             {
                 if (gunsJinkData->droll >= 0.0F and gunsJinkData->az > 0.0F)

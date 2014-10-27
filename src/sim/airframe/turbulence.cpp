@@ -690,7 +690,7 @@ float AirframeClass::Turbulence(float turb)
         }//end under
 
         //in
-        else if (platform->ZPos() <= realWeather->stratusZ &&
+        else if (platform->ZPos() <= realWeather->stratusZ  and 
                  platform->ZPos() > (realWeather->stratusZ - realWeather->stratusDepth))
         {
             turb = PRANDFloat() * ((rand() % 20) * 0.05f);

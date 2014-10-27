@@ -2012,9 +2012,9 @@ Flight AttachFlight(MissionRequest mis, Package pack)
 
         // If we've got a bomber assigned to a lead strike role, switch the mission type to strat
         // bomb so that everything will be planned correctly
-        if (!pack->GetFlights() &&
-            MissionData[mis->mission].skill == ARO_S &&
-            squadron->GetRating(ARO_SB) > squadron->GetRating(ARO_S) &&
+        if (!pack->GetFlights()  and 
+            MissionData[mis->mission].skill == ARO_S  and 
+            squadron->GetRating(ARO_SB) > squadron->GetRating(ARO_S)  and 
             // RV - Biker - Don't convert all to STRATBOMB
             rand() % 100 > 25)
         {

@@ -217,7 +217,7 @@ float EyeballClass::GetSignature(SimObjectType* obj)
             else
             {
                 // Contrails
-                if (objAlt > ((WeatherClass*)realWeather)->contrailLow &&
+                if (objAlt > ((WeatherClass*)realWeather)->contrailLow  and 
                     objAlt < ((WeatherClass*)realWeather)->contrailHigh)
                 {
                     visDetMod = 10.0f;
@@ -236,7 +236,7 @@ float EyeballClass::GetSignature(SimObjectType* obj)
                 }
 
                 // MIL smoking aircraft
-                if (!aircraft->OnGround() &&
+                if (!aircraft->OnGround()  and 
                     aircraft->PowerOutput() <= 1.0f and aircraft->PowerOutput() > 0.90f)
                 {
                     float smoke = aircraft->af->EngineSmokeFactor();
@@ -324,7 +324,7 @@ float EyeballClass::GetSignature(SimObjectType* obj)
     // Now look if we (ourself) are a vehicle. Only vehicle have a brain.
     Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)platform->EntityType();
     // If we are, get our skill + 1
-    if (classPtr->dataType == DTYPE_VEHICLE &&
+    if (classPtr->dataType == DTYPE_VEHICLE  and 
      // S.G. SHOULDN'T BE REQUIRED, ALL VEHICLES ARE ASSIGNED A BRAIN...
      // O.W. WRONG ASSUMPTION DUDE >:)
      ((SimVehicleClass *)platform) and ((SimVehicleClass *)platform)->Brain())//me123 addet brain check to avoid CTD

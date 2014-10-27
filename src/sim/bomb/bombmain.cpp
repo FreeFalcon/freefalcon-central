@@ -501,9 +501,9 @@ int BombClass::Exec(void)
         dmx[2][2] = trigPitch.cos;
 
         // special case durandal -- when fired remove chute
-        if ((flags & IsDurandal) &&
-            (flags & FireDurandal) &&
-            drawPointer &&
+        if ((flags & IsDurandal)  and 
+            (flags & FireDurandal)  and 
+            drawPointer  and 
             ((DrawableBSP*)drawPointer)->GetNumSwitches() > 0)
         {
             ((DrawableBSP *)drawPointer)->SetSwitchMask(0, 0);
@@ -511,9 +511,9 @@ int BombClass::Exec(void)
 
         // special case durandal.  If x and y vel reaches 0 we fire it
         // by starting the special effect
-        if ((flags & IsDurandal) &&
-            !(flags & FireDurandal) &&
-            dx == 0.0f &&
+        if ((flags & IsDurandal)  and 
+            !(flags & FireDurandal)  and 
+            dx == 0.0f  and 
             dy == 0.0f)
         {
             flags  or_eq  FireDurandal;
@@ -720,7 +720,7 @@ int BombClass::Exec(void)
                  why LGB's consistantly missed their targets in anything but vanilla VC6.
                 */
                 if (
-                    Abs(acosf(rx / range)) <= 18.f * DTR &&
+                    Abs(acosf(rx / range)) <= 18.f * DTR  and 
                     (parentAC->IsPlayer() and parentAC->FCC->LaserFire) ||
                     !parentAC->IsPlayer()
                 )
@@ -930,7 +930,7 @@ int BombClass::Exec(void)
                 //MI
                 //if (g_bArmingDelay and (SimLibElapsedTime - timeOfDeath > armingdelay *10  or ((AircraftClass *)parent)->isDigital))
                 if (
-                    g_bRealisticAvionics &&
+                    g_bRealisticAvionics  and 
                     (SimLibElapsedTime - timeOfDeath > armingdelay * 10  ||
                      (parent and ((AircraftClass *)parent.get())->IsDigital()))
                 )
@@ -1218,8 +1218,8 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
             // until digi's are smarter about thier bombing, prevent them
             // from dying in their own blast
             // 2002-04-21 MN check for damage type and only skip if it is not a nuclear
-            if (wc->DamageType not_eq NuclearDam and (testObject == parent &&
-                                                 parent and parent->IsAirplane() &&
+            if (wc->DamageType not_eq NuclearDam and (testObject == parent  and 
+                                                 parent and parent->IsAirplane()  and 
                                                  (((AircraftClass *)parent.get())->IsDigital() ||
                                                   ((AircraftClass *)parent.get())->AutopilotType() == AircraftClass::CombatAP)))
             {
@@ -1363,10 +1363,10 @@ void BombClass::DoExplosion(void)
         FalconSendMessage(endMessage, FALSE);
 
 
-        if (hitObj == NULL &&
+        if (hitObj == NULL  and 
             !(endMessage->dataBlock.groundType == COVERAGE_WATER ||
               endMessage->dataBlock.groundType == COVERAGE_RIVER)
-           ) //&&( ZPos() - groundZ ) > -40.0f ) // JB 010710 craters weren't showing up
+           ) // and ( ZPos() - groundZ ) > -40.0f ) // JB 010710 craters weren't showing up
         {
             //AddToTimedPersistantList(
             // VIS_CRATER2 + PRANDInt3(), Camp_GetCurrentTime() + CRATER_REMOVAL_TIME, XPos(), YPos()

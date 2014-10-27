@@ -2203,7 +2203,7 @@ int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
 
                 //if(this_cudp) // JB 010222 CTD
                 if (
-                    this_cudp  and (this_cudp->send_buffer.buf) &&
+                    this_cudp  and (this_cudp->send_buffer.buf)  and 
                     !F4IsBadReadPtrC(this_cudp->send_buffer.buf, sizeof(char)) and // JB 010222 CTD
                     !F4IsBadCodePtrC((FARPROC)(*curr->com->send_func))
                     // JB 010401 CTD

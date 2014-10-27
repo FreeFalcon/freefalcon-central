@@ -314,9 +314,9 @@ bool mlrVoice::AllocateBuffers(void)
                     DSoundBuffer->QueryInterface(IID_IDirectSound3DBuffer,
                                                  (LPVOID *)&DSound3dBuffer);
 
-                    if (DSound3dBuffer)  // &&
-                        //  sfx &&
-                        // (sfx->flags & SFX_POS_EXTERN) &&
+                    if (DSound3dBuffer)  //  and 
+                        //  sfx  and 
+                        // (sfx->flags & SFX_POS_EXTERN)  and 
                         // (sfx->flags & SFX_FLAGS_3D)) // only make external 3d sounds 3d
                     {
                         g3dVoiceCount++;
@@ -387,9 +387,9 @@ bool mlrVoice::AllocateBuffers(void)
                 {
                     DSoundBuffer->QueryInterface(IID_IDirectSound3DBuffer, (LPVOID *)&DSound3dBuffer);
 
-                    if (DSound3dBuffer)  // &&
-                        //  sfx &&
-                        // (sfx->flags & SFX_POS_EXTERN) &&
+                    if (DSound3dBuffer)  //  and 
+                        //  sfx  and 
+                        // (sfx->flags & SFX_POS_EXTERN)  and 
                         // (sfx->flags & SFX_FLAGS_3D)) // only make external 3d sounds 3d
                     {
                         g3dVoiceCount++;
@@ -474,7 +474,7 @@ void mlrVoice::PreExec()
         // if this is an external only sound and we're in cockpit adjust
         bool isplayer = 0;
 
-        if (owner->SPos->platform &&
+        if (owner->SPos->platform  and 
             owner->SPos->platform == (SimBaseClass *)SimDriver.GetPlayerEntity())
             isplayer = 1; // the object that called this sound is the player
 
@@ -496,8 +496,8 @@ void mlrVoice::PreExec()
             }
         }
 
-        if (sfx->flags & (SFX_POS_INSIDE | SFX_FLAGS_VMS) &&
-            !isplayer &&
+        if (sfx->flags & (SFX_POS_INSIDE | SFX_FLAGS_VMS)  and 
+            !isplayer  and 
             owner->SPos->platform)
         {
             // if we're inside the pit, but this "internal" sound is from another

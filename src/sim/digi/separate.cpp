@@ -40,7 +40,7 @@ void DigitalBrain::SeparateCheck(void)
         return;
 
     // Check for RTB
-    if (((SimDriver.RunningTactical() and current_tactical_mission &&
+    if (((SimDriver.RunningTactical() and current_tactical_mission  and 
           current_tactical_mission->get_type() == tt_training)))
     {
         inTraining = TRUE;
@@ -189,7 +189,7 @@ void DigitalBrain::SeparateCheck(void)
             // Find missile Rmax for a tail chase
             // Final flag True = MRM, False = SRM
             // Skip the check if target has no missiles
-            if (targetPtr->BaseData()->IsSim() &&
+            if (targetPtr->BaseData()->IsSim()  and 
                 (((SimBaseClass*)targetPtr->BaseData())->IsSetFlag(HAS_MISSILES) or targetPtr->localData->range > 2.0F * NM_TO_FT))
                 rMaxNe = TailChaseRMaxNe(self, targetPtr, FALSE);
             else
@@ -213,7 +213,7 @@ void DigitalBrain::SeparateCheck(void)
                 }
             }
         }
-        else if (targetData->range < 6.0f * NM_TO_FT &&
+        else if (targetData->range < 6.0f * NM_TO_FT  and 
                  targetPtr->localData->rangedot > 0.0f ||
                  targetData->range > 6000)// last mode was seperate
         {

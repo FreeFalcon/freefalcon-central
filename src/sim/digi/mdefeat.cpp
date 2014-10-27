@@ -201,7 +201,7 @@ void DigitalBrain::MissileDefeatCheck(void)
 
         if (((MissileClass *)self->incomingMissile[0])->GetSeekerType() not_eq SensorClass::IRST
             and (rwrSensor = FindSensor(self, SensorClass::RWR))
-            &&
+             and 
             (((MissileClass *)self->incomingMissile[0])->GetSeekerType() == SensorClass::RadarHoming
              or (((MissileClass *)self->incomingMissile[0])->sensorArray and ((MissileClass *)self->incomingMissile[0])->sensorArray[0]->Type() == SensorClass::Radar)
              or (!((MissileClass *)self->incomingMissile[0])->sensorArray and (rwrElement = ((VehRwrClass *)rwrSensor)->IsTracked(self->incomingMissile[0])) and rwrElement->missileLaunch)))
@@ -399,7 +399,7 @@ void DigitalBrain::MissileDefeat()
     }
 
     // 2001-06-29 ADDED BY S.G. I WANT LEAD TO ASK WINGS TO ATTACK IF HE IS ENGAGED OTHERWISE HE WON'T...
-    if (/*!isWing &&*/ ((MissileClass *)self->incomingMissile[0])->parent and ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
+    if (/*!isWing  and */ ((MissileClass *)self->incomingMissile[0])->parent and ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
     {
         // Have we given the attack yet? Oh yeah, do we have some AG weapons and do we have someone to direct?
         if (sentWingAGAttack not_eq AG_ORDER_ATTACK and IsSetATC(HasAGWeapon) and self->GetCampaignObject()->NumberOfComponents() > 1)
@@ -484,7 +484,7 @@ void DigitalBrain::MissileDefeat()
         ((AircraftClass*)self)->DropProgramed();
 
         /*if (((MissileClass *)self->incomingMissile[0])->targetPtr)
-         if (((MissileClass *)self->incomingMissile[0])->targetPtr->localData->range > ((float)(6.0f - SkillLevel()) * NM_TO_FT) &&
+         if (((MissileClass *)self->incomingMissile[0])->targetPtr->localData->range > ((float)(6.0f - SkillLevel()) * NM_TO_FT)  and 
           ((MissileClass *)self->incomingMissile[0])->targetPtr->localData->range < ((float)(19.0f - SkillLevel()) * NM_TO_FT))
          missileShouldDrag = TRUE;
 
@@ -709,7 +709,7 @@ void DigitalBrain::MissileLastDitch(float xft, float yft, float zft)
     /*------*/
 
 
-    if (missileDefeatTtgo > LD_TIME * 0.25F and missileDefeatTtgo < LD_TIME * 0.8F &&
+    if (missileDefeatTtgo > LD_TIME * 0.25F and missileDefeatTtgo < LD_TIME * 0.8F  and 
         ((AircraftClass*)self)->HasPilot())
     {
         if (SimLibElapsedTime > self->ChaffExpireTime())

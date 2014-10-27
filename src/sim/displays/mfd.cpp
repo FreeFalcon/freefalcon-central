@@ -751,7 +751,7 @@ void MFDClass::Exec(int clearFrame, int virtualCockpit)
         }
     }
 
-    if (ownship and ownship->mFaults &&
+    if (ownship and ownship->mFaults  and 
         (
             (ownship->mFaults->GetFault(FaultClass::flcs_fault) & FaultClass::dmux) ||
             ownship->mFaults->GetFault(FaultClass::dmux_fault) ||
@@ -1168,7 +1168,7 @@ void MfdDrawable::DrawReference(AircraftClass *self)
             //MI target
             RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
 
-            if (theRadar and theRadar->CurrentTarget() and theRadar->CurrentTarget()->BaseData() &&
+            if (theRadar and theRadar->CurrentTarget() and theRadar->CurrentTarget()->BaseData()  and 
                 !FCC->IsAGMasterMode())
             {
                 float   dx, dy, xPos = 0.0F, tgtx, yPos = 0.0F;

@@ -427,7 +427,7 @@ void TextureBankClass::LoaderCallBack(LoaderQ* request)
             if (TexturePool[id].refCount)
 
                 // This one is in use. Is it already loaded?
-                if (/*!TexturePool[id].tex.imageData &&*/ !TexturePool[id].tex.TexHandle())
+                if (/*!TexturePool[id].tex.imageData  and */ !TexturePool[id].tex.TexHandle())
                 {
 
                     // Nope, go get it.

@@ -317,7 +317,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
         else if (from and from->IsCampaign())
             from_entity = (CampBaseClass*)from;
 
-        if (FalconLocalGame and FalconLocalGame->GetGameType() not_eq game_InstantAction &&
+        if (FalconLocalGame and FalconLocalGame->GetGameType() not_eq game_InstantAction  and 
             FalconLocalGame->GetGameType() not_eq game_Dogfight)
         {
             if (from_entity and from_entity->IsFlight())

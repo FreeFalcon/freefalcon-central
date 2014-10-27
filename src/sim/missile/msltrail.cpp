@@ -229,7 +229,7 @@ void MissileClass::UpdateTrail(void)
             bool contrail = false;
 
             //JAM 24Nov03
-            if (objAlt > ((WeatherClass*)realWeather)->contrailLow &&
+            if (objAlt > ((WeatherClass*)realWeather)->contrailLow  and 
                 objAlt < ((WeatherClass*)realWeather)->contrailHigh)
                 contrail = true;
 

@@ -729,7 +729,7 @@ int FlightClass::MoveUnit(CampaignTime time)
             //Cobra clean up the list if airbase destroyed
             //sfr: dont cancel deagged flights!
             if (
-                (AirbaseOperational(o) == FALSE) and /*&& this not_eq FalconLocalSession->GetPlayerFlight()*/
+                (AirbaseOperational(o) == FALSE) and /* and  this not_eq FalconLocalSession->GetPlayerFlight()*/
                 IsAggregate()
             )
             {
@@ -1132,7 +1132,7 @@ int FlightClass::MoveUnit(CampaignTime time)
                 }
             }
             else if (
-                w and !(w->GetWPFlags() & WPF_HOLDCURRENT) &&
+                w and !(w->GetWPFlags() & WPF_HOLDCURRENT)  and 
                 FloatToInt32(ZPos()) not_eq FloatToInt32(
                     -1.0F * AdjustAltitudeForMSL_AGL(XPos(), YPos(), -1.0F * w->GetWPAltitude())
                 )
@@ -1278,8 +1278,8 @@ int FlightClass::DumpWeapons()
         {
             // RV - Biker - Don't drop fuel tanks and jammers in 2d
             if (
-                loadout[i].WeaponID[hp] and !GetWeaponHitChance(loadout[i].WeaponID[hp], Air) &&
-                !(GetWeaponFlags(loadout[i].WeaponID[hp]) & WEAP_FUEL) &&
+                loadout[i].WeaponID[hp] and !GetWeaponHitChance(loadout[i].WeaponID[hp], Air)  and 
+                !(GetWeaponFlags(loadout[i].WeaponID[hp]) & WEAP_FUEL)  and 
                 !(GetWeaponFlags(loadout[i].WeaponID[hp]) & WEAP_ECM)
             )
             {
@@ -2003,7 +2003,7 @@ int FlightClass::ChooseTarget()
                 // so assume there is one until the unit is dead).
                 // 2001-06-19 MODIFIED BY S.G. SEAD STRIKES AND ESCORTS GO IN,
                 // NOT JUST SEAD ESCORTS (SEE COMMENTS WITHIN FOR MORE DETAILS)
-                //if (((BattalionClass *)e)->class_data->RadarVehicle < 255 &&
+                //if (((BattalionClass *)e)->class_data->RadarVehicle < 255  and 
                 // (((BattalionClass *)e)->class_data->RadarVehicle > 15 ||
                 // ((BattalionClass *)e)->GetNumVehicles(((BattalionClass *)e)->class_data->RadarVehicle)))
                 int enter = FALSE;
@@ -2113,8 +2113,8 @@ int FlightClass::ChooseTarget()
         // potentially result in the unit being removed from the 'AirDefenseList'.
         // Because of this, old_target will not get cleared. Check now to make sure it is still valid...
         if (
-            old_target and old_target->IsBattalion() &&
-            ((BattalionClass *)old_target)->class_data->RadarVehicle < 16 &&
+            old_target and old_target->IsBattalion()  and 
+            ((BattalionClass *)old_target)->class_data->RadarVehicle < 16  and 
             ((BattalionClass *)old_target)->GetNumVehicles(
                 ((BattalionClass *)old_target)->class_data->RadarVehicle
             ) == 0
@@ -2357,7 +2357,7 @@ int FlightClass::ChooseTarget()
     // Check vs ground units, if we're of a valid mission type
     if (
         (GetUnitMission() == AMIS_JSTAR or GetUnitCurrentRole() == ARO_GA or GetUnitCurrentRole() == ARO_FAC)
-        /*&& !react_against*/
+        /* and  !react_against*/
     )
     {
         ground_search_dist = GetDetectionRange(Tracked);
@@ -2374,7 +2374,7 @@ int FlightClass::ChooseTarget()
 
         while (e)
         {
-            if (e->IsBattalion() &&
+            if (e->IsBattalion()  and 
                 /* ADDED BY S.G. SO DEAD UNIT ARE NOT TARGETED */ !e->IsDead() and /* END OF ADDED SECTION */
                 roeg[e->GetTeam()] == ROE_ALLOWED
                )
@@ -2401,7 +2401,7 @@ int FlightClass::ChooseTarget()
     //            BUT WAIT! SINCE THIS CODE ALREADY DOES IT SO I'LL COMBINED BOTH INTO ONE
 #if 0
 
-    if (GetUnitCurrentRole() == ARO_SEAD /*&& !react_against*/ and ::GetOwner(TheCampaign.CampMapData, x, y) not_eq who)
+    if (GetUnitCurrentRole() == ARO_SEAD /* and  !react_against*/ and ::GetOwner(TheCampaign.CampMapData, x, y) not_eq who)
     {
         VuListIterator detit(EmitterList);
         e = (CampEntity)detit.GetFirst();
@@ -3029,8 +3029,8 @@ int FlightClass::BuildMission(MissionRequestClass *mis)
     bool hasRadarVehicle = false;
 
     if (
-        target and target->IsBattalion() &&
-        ((BattalionClass *)target)->class_data->RadarVehicle < 255 /*&& e->IsEmitting()*/
+        target and target->IsBattalion()  and 
+        ((BattalionClass *)target)->class_data->RadarVehicle < 255 /* and  e->IsEmitting()*/
     )  // current emitting status is not interesting here..
     {
         // If the radar vehicle index is less than 16, it's a SAM. Check if it still has a radar vehicle
@@ -3456,8 +3456,8 @@ F4PFList FlightClass::GetKnownEmitters(void)
             while (e)
             {
                 if (
-                    e->GetTeam() not_eq us and e->GetSpotted(us) &&
-                    (!e->IsUnit() or !((Unit)e)->Moving()) and !added[e->GetCampID()] &&
+                    e->GetTeam() not_eq us and e->GetSpotted(us)  and 
+                    (!e->IsUnit() or !((Unit)e)->Moving()) and !added[e->GetCampID()]  and 
                     e->GetElectronicDetectionRange(Air)
                 )
                 {
@@ -3863,9 +3863,9 @@ int FlightClass::DetectVs(CampEntity e, float *d, int *combat, int *spot, int *e
 
     // Don't react if on a air to ground mission, even if within MinIngoreRange unless you're spotted.
     if (
-        e->IsFlight() /* and !(eval_flags & FEVAL_GOT_TO_TARGET) */ &&
-        GetUnitMission() >= AMIS_SEADSTRIKE &&
-        GetUnitMission() <= AMIS_ECM &&
+        e->IsFlight() /* and !(eval_flags & FEVAL_GOT_TO_TARGET) */  and 
+        GetUnitMission() >= AMIS_SEADSTRIKE  and 
+        GetUnitMission() <= AMIS_ECM  and 
         (*d > MIN_IGNORE_RANGE or !GetSpotted(e->GetTeam()))
     )
     {
@@ -4458,9 +4458,9 @@ int FlightClass::IsSPJamming(void)
 int FlightClass::IsAreaJamming(void)
 {
     // JPO - change to basically jamming and active.
-    if (HasAreaJamming() &&
+    if (HasAreaJamming()  and 
         (eval_flags & FEVAL_ON_STATION)) // old test 2002-02-19 REINSTATED BY S.G. Fixed the eval_flags bug where the bit would not reset
-        //     Moving() &&
+        //     Moving()  and 
         //     !IsDead())
         return TRUE;
 
@@ -4599,7 +4599,7 @@ int FlightClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
             float x, y;
 
             if (
-                PtDataTable[simdata->ptIndex].type == TakeoffPt &&
+                PtDataTable[simdata->ptIndex].type == TakeoffPt  and 
                 ((Objective)ent)->brain->UseSectionTakeoff(this, rwindex) and simdata->vehicleInUnit < 2)
             {
                 simdata->ptIndex = ((Objective)ent)->brain->FindTakeoffPt(
@@ -5242,7 +5242,7 @@ WayPoint ResetCurrentWP(Unit u)
     // JPO Logic is: if we are past our departure time at the WP, we got to do something
     // But if we are past our arrival time, and its a repeating WP, we might need to go back.
     // So do the loop anyway. last bit was already commented out.
-    while (w &&
+    while (w  and 
            (w->GetWPDepartureTime() < Camp_GetCurrentTime() or // JPO Original test
             ((w->GetWPFlags() & WPF_REPEAT) and w->GetWPArrivalTime() < Camp_GetCurrentTime()))
           ) //  and w->GetWPAction() not_eq WP_LAND)
@@ -5443,7 +5443,7 @@ Objective FindAlternateStrip(Flight flight)
     while (o)
     {
         if (
-            (o->GetType() == TYPE_AIRBASE or o->GetType() == TYPE_AIRSTRIP) &&
+            (o->GetType() == TYPE_AIRBASE or o->GetType() == TYPE_AIRSTRIP)  and 
             o->GetTeam() == flight->GetTeam() and !o->IsNearfront()
         )
         {
@@ -5451,8 +5451,8 @@ Objective FindAlternateStrip(Flight flight)
             // be the alternate airstrip neither a target
             // airbase nor the home airbase (airlift have airbases as target)
             if (
-                target &&
-                (target->GetType() == TYPE_AIRBASE or target->GetType() == TYPE_AIRSTRIP) &&
+                target  and 
+                (target->GetType() == TYPE_AIRBASE or target->GetType() == TYPE_AIRSTRIP)  and 
                 o->GetCampID() == target->GetCampID() ||
                 homebase and o->GetCampID() == homebase->GetCampID()
             )

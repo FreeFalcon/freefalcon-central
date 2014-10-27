@@ -2361,7 +2361,7 @@ void AirframeClass::FuelTransfer(float dt)
     if (airSource == AS_NORM or airSource == AS_DUMP)
     {
         if (((engineFlags & WingFirst) ||
-             m_tanks[TANK_CLINE] <= 0.0f) &&
+             m_tanks[TANK_CLINE] <= 0.0f)  and 
             (m_tanks[TANK_REXT] > 0.0f ||
              m_tanks[TANK_LEXT] > 0.0f))
         {
@@ -2708,12 +2708,12 @@ float AirframeClass::EngineRpmMods(float rpmCmd)
 
         //AB Schedule per -1
         //Area 3 Seg 5 no light
-        if ((platform->ZPos() <= -35000.0f and platform->ZPos() >= -45000.0f) &&
+        if ((platform->ZPos() <= -35000.0f and platform->ZPos() >= -45000.0f)  and 
             (mach <= 0.8f and mach > 0.4f))
             rpmCmd = min(1.025f, rpmCmd);
 
         //Area 2 Only Seg 1 will light
-        if ((platform->ZPos() <= -45000.0f and platform->ZPos() >= -55000.0f) &&
+        if ((platform->ZPos() <= -45000.0f and platform->ZPos() >= -55000.0f)  and 
             (mach <= 0.95f and mach > 0.4f))
             rpmCmd = min(1.01f, rpmCmd);
 
@@ -2842,12 +2842,12 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
 
         //AB Schedule per -1
         //Area 3 Seg 5 no light
-        if ((platform->ZPos() <= -35000.0f and platform->ZPos() >= -45000.0f) &&
+        if ((platform->ZPos() <= -35000.0f and platform->ZPos() >= -45000.0f)  and 
             (mach <= 0.8f and mach > 0.4f))
             rpmCmd = min(1.025f, rpmCmd);
 
         //Area 2 Only Seg 1 will light
-        if ((platform->ZPos() <= -45000.0f and platform->ZPos() >= -55000.0f) &&
+        if ((platform->ZPos() <= -45000.0f and platform->ZPos() >= -55000.0f)  and 
             (mach <= 0.95f and mach > 0.4f))
             rpmCmd = min(1.01f, rpmCmd);
 
@@ -3067,12 +3067,12 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
 
         //AB Schedule per -1
         //Area 3 Seg 5 no light
-        if ((platform->ZPos() <= -35000.0f and platform->ZPos() >= -45000.0f) &&
+        if ((platform->ZPos() <= -35000.0f and platform->ZPos() >= -45000.0f)  and 
             (mach <= 0.8f and mach > 0.4f))
             rpmCmd2 = min(1.025f, rpmCmd2);
 
         //Area 2 Only Seg 1 will light
-        if ((platform->ZPos() <= -45000.0f and platform->ZPos() >= -55000.0f) &&
+        if ((platform->ZPos() <= -45000.0f and platform->ZPos() >= -55000.0f)  and 
             (mach <= 0.95f and mach > 0.4f))
             rpmCmd2 = min(1.01f, rpmCmd2);
 

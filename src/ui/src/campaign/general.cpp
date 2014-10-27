@@ -1309,7 +1309,7 @@ void MakeOccupationMap(IMAGE_RSC *Map)
 
         while (x < (h - 2) and x < w)
         {
-            ShiAssert(src >=  TheCampaign.CampMapData &&
+            ShiAssert(src >=  TheCampaign.CampMapData  and 
                       src < TheCampaign.CampMapData + TheCampaign.CampMapSize);
             *dst++ = static_cast<uchar>((*src) & 0x0f);
             *dst++ = static_cast<uchar>((*src) >> 4);
@@ -1392,7 +1392,7 @@ void MakeBigOccupationMap(IMAGE_RSC *Map)
 
         while (x < (h - 4) and x < w)
         {
-            ShiAssert(src >=  TheCampaign.CampMapData &&
+            ShiAssert(src >=  TheCampaign.CampMapData  and 
                       src < TheCampaign.CampMapData + TheCampaign.CampMapSize);
             *dst++ = static_cast<uchar>((*src) & 0x0f);
             *dst++ = static_cast<uchar>((*src) >> 4);

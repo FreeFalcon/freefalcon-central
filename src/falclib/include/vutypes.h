@@ -246,8 +246,8 @@ public:
     bool operator==(const VU_ADDRESS & rhs) const
     {
         return (
-                   (this->ip == rhs.ip) &&
-                   (this->recvPort == rhs.recvPort) &&
+                   (this->ip == rhs.ip)  and 
+                   (this->recvPort == rhs.recvPort)  and 
                    (this->reliableRecvPort == rhs.reliableRecvPort)
                );
     }

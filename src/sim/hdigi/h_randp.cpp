@@ -67,7 +67,7 @@ void HeliBrain::RollAndPull(void)
         /*-----------------------------*/
         /* inside of the control point */
         /*-----------------------------*/
-        if (targetData->range < CONTROL_POINT_DISTANCE &&
+        if (targetData->range < CONTROL_POINT_DISTANCE  and 
             targetData->ataFrom > 90.0 * DTR) PullToCollisionPoint();
         /*-----------*/
         /* otherwise */

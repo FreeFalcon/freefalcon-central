@@ -566,7 +566,7 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
         // configure them. Else everything is set to keyboard and the user has to
         // reconfigure.
         /*******************************************************************************/
-        if ((AxisMap.totalDeviceCount == gTotalJoy) and (AxisMap.FlightControlDevice not_eq -1)/*&&(CheckDeviceArray() == true)*/)
+        if ((AxisMap.totalDeviceCount == gTotalJoy) and (AxisMap.FlightControlDevice not_eq -1)/* and (CheckDeviceArray() == true)*/)
         {
             DIDEVICEINSTANCE devinst;
             devinst.dwSize = sizeof(DIDEVICEINSTANCE);

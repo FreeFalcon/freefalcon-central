@@ -340,8 +340,8 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
         }
 
         // possible explosion
-        if ((fc->Flags & FEAT_CAN_EXPLODE) &&
-            (pctDamage > 0.1f or pctStrength < 0.3f) &&
+        if ((fc->Flags & FEAT_CAN_EXPLODE)  and 
+            (pctDamage > 0.1f or pctStrength < 0.3f)  and 
             !(rand() & 0x03))
         {
             ppos.z = pos.z + PRANDFloatPos() * minB.z * 0.5f + minB.z * 0.5f;

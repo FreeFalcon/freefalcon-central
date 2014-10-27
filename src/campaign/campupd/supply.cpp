@@ -491,7 +491,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
         {
             // We only supply/repair Battalions and Squadrons
             if (
-                unit->GetTeam() == who and (unit->IsBattalion() or unit->IsSquadron()) &&
+                unit->GetTeam() == who and (unit->IsBattalion() or unit->IsSquadron())  and 
                 TheCampaign.CurrentTime - unit->GetLastResupplyTime() > unit->GetUnitSupplyTime()
             )
             {

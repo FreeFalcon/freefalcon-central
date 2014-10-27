@@ -281,7 +281,7 @@ void DigitalBrain::GroundAttackMode(void)
     // 2001-07-12 S.G. Need to force a target reselection under some conditions. If we're in GroundAttackMode, it's because we are already in agDoctrine not_eq AGD_NONE which mean we already got a target originally
     // This was done is some 'onStation' modes but I moved it here instead so all modes runs it
     if (
-        groundTargetPtr &&
+        groundTargetPtr  and 
         (
             (
                 groundTargetPtr->BaseData()->IsSim() and // For a SIM entity
@@ -289,7 +289,7 @@ void DigitalBrain::GroundAttackMode(void)
                     groundTargetPtr->BaseData()->IsDead() ||
                     groundTargetPtr->BaseData()->IsExploding() ||
                     (
-                        !isWing and IsNotMainTargetSEAD() &&
+                        !isWing and IsNotMainTargetSEAD()  and 
                         !((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject()->IsEmitting()
                     )
                 )
@@ -297,7 +297,7 @@ void DigitalBrain::GroundAttackMode(void)
             (
                 groundTargetPtr->BaseData()->IsCampaign() and // For a CAMPAIGN entity
                 (
-                    !isWing and IsNotMainTargetSEAD() &&
+                    !isWing and IsNotMainTargetSEAD()  and 
                     !((CampBaseClass *)groundTargetPtr->BaseData())->IsEmitting()
                 )
             )
@@ -373,8 +373,8 @@ void DigitalBrain::GroundAttackMode(void)
 
     // If we got a deaggregated campaign object, find a sim object within
     if (
-        groundTargetPtr &&
-        groundTargetPtr->BaseData()->IsCampaign() &&
+        groundTargetPtr  and 
+        groundTargetPtr->BaseData()->IsCampaign()  and 
         !((CampBaseClass *)groundTargetPtr->BaseData())->IsAggregate()
     )
     {
@@ -697,7 +697,7 @@ DownwindBypass:
             }
 
             // Cobra - one missile/harm at a time
-            if ((agDoctrine == AGD_LOOK_SHOOT_LOOK) &&
+            if ((agDoctrine == AGD_LOOK_SHOOT_LOOK)  and 
                 (missionType == AMIS_SEADESCORT or missionType == AMIS_SEADSTRIKE))
             {
                 Sms->SetAGBPair(FALSE);//Cobra
@@ -1202,7 +1202,7 @@ DownwindBypass:
 
                 // tell our wing to attack
                 if (
-                    self->GetCampaignObject()->NumberOfComponents() > 1 &&
+                    self->GetCampaignObject()->NumberOfComponents() > 1  and 
                     !isWing and sentWingAGAttack not_eq AG_ORDER_ATTACK
                 )
                 {
@@ -2343,8 +2343,8 @@ void DigitalBrain::SelectGroundWeapon(void)
         {
             hasGBU = TRUE;
         }
-        else if (!hasRocket &&
-                 Sms->hardPoint[i]->GetWeaponClass() == wcRocketWpn  &&
+        else if (!hasRocket  and 
+                 Sms->hardPoint[i]->GetWeaponClass() == wcRocketWpn   and 
                  Sms->hardPoint[i]->GetWeaponType()  == wtLAU)
         {
             SimWeaponClass *weap = Sms->hardPoint[i]->weaponPointer.get();
@@ -2379,11 +2379,11 @@ void DigitalBrain::SelectGroundWeapon(void)
     // only the A-10 and SU-25 are guns-capable for A-G
     classPtr = (Falcon4EntityClassType*)self->EntityType();
 
-    if (classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_AIR_ATTACK &&
+    if (classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_AIR_ATTACK  and 
         (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_A10 ||
          classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_SU25))
     {
-        if (self->Guns &&
+        if (self->Guns  and 
             self->Guns->numRoundsRemaining)
         {
             hasGun = TRUE;
@@ -2570,8 +2570,8 @@ void DigitalBrain::SelectCampGroundTarget(void)
     // check to see if our current ground target is a sim and exploding or
     // dead, if so let's get a new target from the campaign
     if (
-        groundTargetPtr &&
-        groundTargetPtr->BaseData()->IsSim() &&
+        groundTargetPtr  and 
+        groundTargetPtr->BaseData()->IsSim()  and 
         (
             groundTargetPtr->BaseData()->IsExploding() ||
             groundTargetPtr->BaseData()->IsDead() ||
@@ -2612,9 +2612,9 @@ void DigitalBrain::SelectCampGroundTarget(void)
          continue;
 
         // don't target runways (yet)
-        if ( // !simTarg->IsSetCampaignFlag (FEAT_FLAT_CONTAINER) &&
-        !simTarg->IsExploding() &&
-        !simTarg->IsDead() &&
+        if ( // !simTarg->IsSetCampaignFlag (FEAT_FLAT_CONTAINER)  and 
+        !simTarg->IsExploding()  and 
+        !simTarg->IsDead()  and 
         simTarg->pctStrength > 0.0f )
         {
         SetGroundTarget( simTarg );
@@ -2745,9 +2745,9 @@ void DigitalBrain::SelectCampGroundTarget(void)
     // sanity check and make sure its on ground, what to do if not?!...
     if (!target ||
         !target->OnGround() ||
-        (campTactic not_eq ATACTIC_ENGAGE_STRIKE &&
-         campTactic not_eq ATACTIC_ENGAGE_SURFACE &&
-         campTactic not_eq ATACTIC_ENGAGE_DEF &&
+        (campTactic not_eq ATACTIC_ENGAGE_STRIKE  and 
+         campTactic not_eq ATACTIC_ENGAGE_SURFACE  and 
+         campTactic not_eq ATACTIC_ENGAGE_DEF  and 
          campTactic not_eq ATACTIC_ENGAGE_NAVAL))
         return;
 
@@ -3273,7 +3273,7 @@ void DigitalBrain::IPCheck(void)
                 //Cobra TJL Attempt to let SEAD flights target earlier
                 if (missionType == AMIS_SEADESCORT or missionType == AMIS_SEADSTRIKE)
                 {
-                    if ((FabsF(rangeSq) < (25.0F * NM_TO_FT) * (25.0F * NM_TO_FT)) &&
+                    if ((FabsF(rangeSq) < (25.0F * NM_TO_FT) * (25.0F * NM_TO_FT))  and 
                         (FabsF(tgtrangeSq) < (g_fAIHarmMaxRange * NM_TO_FT) * (g_fAIHarmMaxRange * NM_TO_FT)))
                     {
                         SetATCFlag(ReachedIP);
@@ -3285,11 +3285,11 @@ void DigitalBrain::IPCheck(void)
 
                 }
                 //Cobra - Attempt to let JSOW flights target earlier
-                //else if (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer) &&
+                //else if (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)  and 
                 // (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW)) ||
                 else if (hasBomb == TRUE + 4)
                 {
-                    if ((FabsF(rangeSq) < FabsF((25.0F * NM_TO_FT) * (25.0F * NM_TO_FT))) &&
+                    if ((FabsF(rangeSq) < FabsF((25.0F * NM_TO_FT) * (25.0F * NM_TO_FT)))  and 
                         (FabsF(tgtrangeSq) < (g_fAIJSOWMaxRange * NM_TO_FT) * (g_fAIJSOWMaxRange * NM_TO_FT)))
                     {
                         SetATCFlag(ReachedIP);
@@ -3372,14 +3372,14 @@ void DigitalBrain::DropBomb(float approxRange, float ata, RadarClass* theRadar)
 
 
     // Check for JDAM/JSOW ready-to-drop
-    /* if ((self->IsPlayer() and self->AutopilotType() not_eq AircraftClass::CombatAP) and (Sms->GetCurrentHardpoint() > 0) &&
+    /* if ((self->IsPlayer() and self->AutopilotType() not_eq AircraftClass::CombatAP) and (Sms->GetCurrentHardpoint() > 0)  and 
      ((Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType()==wtGPS) ||
-     (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer) &&
-     ((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW))) &&
+     (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)  and 
+     ((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW)))  and 
      (!Sms->JDAMPowered))
      return;*/
 
-    if ((self->IsPlayer() and self->AutopilotType() not_eq AircraftClass::CombatAP) and TheBomb &&
+    if ((self->IsPlayer() and self->AutopilotType() not_eq AircraftClass::CombatAP) and TheBomb  and 
         (TheBomb->IsSetBombFlag(BombClass::IsGPS) or TheBomb->IsSetBombFlag(BombClass::IsJSOW)) and (!Sms->JDAMPowered))
         return;
 
@@ -3514,7 +3514,7 @@ void DigitalBrain::DropBomb(float approxRange, float ata, RadarClass* theRadar)
                 // COBRA - RED - FIXING POSSIBLE CTDs
                 // Cobra - rippling pair only for GPS JDAM/JSOW
                 /* if ((Sms->GetCurrentHardpoint() > 0) and ((Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType()==wtGPS) ||
-                 (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer) &&
+                 (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)  and 
                  ((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW))))*/
                 if (TheBomb and (TheBomb->IsSetBombFlag(BombClass::IsJSOW) or TheBomb->IsSetBombFlag(BombClass::IsGPS)))
                     Sms->SetAGBRippleCount(2);
@@ -3847,8 +3847,8 @@ void DigitalBrain::DropGBU(float approxRange, float ata, RadarClass* theRadar)
     }
 
     //MI NULL out our Target
-    if (groundTargetPtr &&
-        groundTargetPtr->BaseData()->IsSim() &&
+    if (groundTargetPtr  and 
+        groundTargetPtr->BaseData()->IsSim()  and 
         (groundTargetPtr->BaseData()->IsDead() ||
          groundTargetPtr->BaseData()->IsExploding()))
     {
@@ -4001,7 +4001,7 @@ int DigitalBrain::FireRocket(float approxRange, float ata)
     }
 
     // put pipper on target
-    if (groundTargetPtr)// &&
+    if (groundTargetPtr)//  and 
         //ata < 45 * DTR)
     {
         static float azRough = 10 * DTR;
@@ -4302,8 +4302,8 @@ int DigitalBrain::FireRocket(float approxRange, float ata)
         // only fire or a bad pass can occur in FlyToTgt mode
         if (rocketMnvr == RocketFlyToTgt)
         {
-            if (angle < 5.0f * DTR &&
-                waitingForShot <= SimLibElapsedTime &&
+            if (angle < 5.0f * DTR  and 
+                waitingForShot <= SimLibElapsedTime  and 
                 approxRange < 2.5f * NM_TO_FT)  // Cobra - was 2
             {
                 MonoPrint("Firing");
@@ -4319,7 +4319,7 @@ int DigitalBrain::FireRocket(float approxRange, float ata)
             }
 
             // bad pass, flyout and re-lineup
-            if (approxRange < 1500 and rocketMnvr == RocketFlyToTgt) //&&
+            if (approxRange < 1500 and rocketMnvr == RocketFlyToTgt) // and 
                 //fabs(taz) > 45 * DTR )
             {
                 if (fp and self->IsPlayer())

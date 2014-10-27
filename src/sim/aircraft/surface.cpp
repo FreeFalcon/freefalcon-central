@@ -407,7 +407,7 @@ void AircraftClass::DeployDragChute(int type)
     if (af->vcas < 20.0f and af->dragChute == AirframeClass::DRAGC_DEPLOYED)
         af->dragChute = AirframeClass::DRAGC_TRAILING;
 
-    if (af->dragChute == AirframeClass::DRAGC_DEPLOYED &&
+    if (af->dragChute == AirframeClass::DRAGC_DEPLOYED  and 
         af->vcas > af->auxaeroData->dragChuteMaxSpeed)
     {
         if ((af->vcas - af->auxaeroData->dragChuteMaxSpeed) / 100 > PRANDFloatPos())
@@ -560,15 +560,15 @@ void AircraftClass::MoveSurfaces(void)
         else
             doorAngle =  0.0f * DTR;
 
-        if (af->GetGunDofType() >= COMP_WEAPON_BAY_0 &&
-            af->GetGunDofType() <= COMP_WEAPON_BAY_4 &&
+        if (af->GetGunDofType() >= COMP_WEAPON_BAY_0  and 
+            af->GetGunDofType() <= COMP_WEAPON_BAY_4  and 
             af->GetGunDofRate() > 0.0f)
         {
 
             MoveDof(af->GetGunDofType(), doorAngle, af->GetGunDofRate());
         }
 
-        if (af->GetGunSwitchType() >= COMP_WEAPON_BAY_0_SW &&
+        if (af->GetGunSwitchType() >= COMP_WEAPON_BAY_0_SW  and 
             af->GetGunSwitchType() <= COMP_WEAPON_BAY_4_SW)
         {
 
@@ -593,7 +593,7 @@ void AircraftClass::MoveSurfaces(void)
 
             }
 
-            /* if (af->GetHpSwitchType(l) >= COMP_WEAPON_BAY_0_SW &&
+            /* if (af->GetHpSwitchType(l) >= COMP_WEAPON_BAY_0_SW  and 
              af->GetHpSwitchType(l) <= COMP_WEAPON_BAY_4_SW) {
 
              if(GetDOFValue(af->GetHpDofType(l)) > 0.0f)

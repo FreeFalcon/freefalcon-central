@@ -1430,7 +1430,7 @@ extern "C" {
 
             /*// sfr: added port info
             if (
-             (((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami) &&
+             (((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami)  and 
              ((struct sockaddr_in *)(&in_addr))->sin_port == CAPI_htons(ComAPIGetMySendPort())
             ){*/
             id = ((ComAPIHeader *)cudp->recv_buffer.buf)->id;
@@ -1844,7 +1844,7 @@ extern "C" {
             // If we've not send them our last_received, or one second timeout for ack
             if
             (
-                (cudp->rudp_data.last_sent_received not_eq cudp->rudp_data.last_received) &&
+                (cudp->rudp_data.last_sent_received not_eq cudp->rudp_data.last_received)  and 
                 (now - cudp->rudp_data.last_send_time > RUDP_ACK_WAIT_TIME)
             )
             {
@@ -1853,7 +1853,7 @@ extern "C" {
 
             if
             (
-                (cudp->rudp_data.last_oob_sent_received not_eq cudp->rudp_data.last_oob_received) &&
+                (cudp->rudp_data.last_oob_sent_received not_eq cudp->rudp_data.last_oob_received)  and 
                 (now - cudp->rudp_data.last_oob_send_time > RUDP_OOB_ACK_WAIT_TIME)
             )
             {

@@ -265,9 +265,9 @@ int FalconTankerMessage::Process(uchar autodisp)
 
                                 float xyRange = (float)sqrt(relPos.x * relPos.x + relPos.y * relPos.y);
 
-                                if (xyRange < 500.0F and !theTanker->TBrain()->IsSet(TankerBrain::PrecontactPos) &&
-                                    theTanker->TBrain()->TankingPtr() &&
-                                    fabs(theTanker->TBrain()->TankingPtr()->localData->rangedot) < 100.0F &&
+                                if (xyRange < 500.0F and !theTanker->TBrain()->IsSet(TankerBrain::PrecontactPos)  and 
+                                    theTanker->TBrain()->TankingPtr()  and 
+                                    fabs(theTanker->TBrain()->TankingPtr()->localData->rangedot) < 100.0F  and 
                                     fabs(theTanker->TBrain()->TankingPtr()->localData->az) < 35.0F * DTR)
                                 {
                                     radioMessage = CreateCallToPlane(thirstyOne, theTanker, rcCLEARTOCONTACT, FalconLocalGame);

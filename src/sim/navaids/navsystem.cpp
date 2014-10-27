@@ -992,7 +992,7 @@ BOOL NavigationSystem::GetTCNPosition(float *xp, float *yp, float *zp)
         return FALSE;
     }
 
-    if (entity->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT &&
+    if (entity->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT  and 
         entity->EntityType()->classInfo_[VU_TYPE] == TYPE_FLIGHT)
     {
         if (((FlightClass*) entity)->GetComponentLead())

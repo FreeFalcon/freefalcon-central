@@ -1108,7 +1108,7 @@ void AirframeClass::CalcGroundTurnRate(float dt)
 
     float slip = (float)fabs(vt * platform->platformAngles.sinbet);
 
-    if (slip > 3.0F and vt > 25.0F * KNOTS_TO_FTPSEC and platform == SimDriver.GetPlayerEntity() &&
+    if (slip > 3.0F and vt > 25.0F * KNOTS_TO_FTPSEC and platform == SimDriver.GetPlayerEntity()  and 
         (IsSet(OverRunway) or platform->onFlatFeature or groundType == COVERAGE_ROAD))
     {
         float volume = max(0.0F, 2500.0F - slip * slip * 100.0F);
@@ -1551,9 +1551,9 @@ float AirframeClass::CalculateVt(float dt)
 
         //MI modified so brakesound only get's played above 80kts
         if (
-            IsSet(WheelBrakes) and (platform == SimDriver.GetPlayerEntity()) &&
-            netAccel - vtDot * dt < -20.0F * KNOTS_TO_FTPSEC * dt &&
-            vt > 80.0 * KNOTS_TO_FTPSEC and !IsSet(GearBroken) and gearPos >= 0.8F &&
+            IsSet(WheelBrakes) and (platform == SimDriver.GetPlayerEntity())  and 
+            netAccel - vtDot * dt < -20.0F * KNOTS_TO_FTPSEC * dt  and 
+            vt > 80.0 * KNOTS_TO_FTPSEC and !IsSet(GearBroken) and gearPos >= 0.8F  and 
             platform->platformAngles.cosphi > 0.9659F
         )
         {

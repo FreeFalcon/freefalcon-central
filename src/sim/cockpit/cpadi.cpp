@@ -263,7 +263,7 @@ void CPAdi::CreateLit(void)
 
         // revert to legacy rendering if we can't use a single texture even if Fast 2D Cockpit is active
         if (!DisplayOptions.bRender2DCockpit ||
-            (DisplayOptions.bRender2DCockpit &&
+            (DisplayOptions.bRender2DCockpit  and 
              (mDoBackRect and ((LONG)dwMaxTextureWidth < mBackSrc.right or (LONG)dwMaxTextureHeight < mBackSrc.bottom))))
         {
             if (mDoBackRect)
@@ -428,7 +428,7 @@ void CPAdi::ExecILS()
         return;
 
     if ((gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN ||
-         gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV) &&
+         gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV)  and 
         gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &gpDeviation))
     {
         gNavigationSys->GetILSAttribute(NavigationSystem::GS_DEV, &gsDeviation);

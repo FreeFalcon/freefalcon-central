@@ -73,8 +73,8 @@ int FalconRegenerationMessage::Process(uchar autodisp)
 
         // Reset our fly state if we've been regenerated and we are in Match play
         if (
-            theObject &&
-            theObject == FalconLocalSession->GetPlayerEntity() &&
+            theObject  and 
+            theObject == FalconLocalSession->GetPlayerEntity()  and 
             SimDogfight.GetGameType() == dog_TeamMatchplay
         )
         {

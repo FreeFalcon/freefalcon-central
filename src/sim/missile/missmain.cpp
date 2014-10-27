@@ -652,8 +652,8 @@ int MissileClass::Exec(void)
             // 2002-04-04 MN only do that if we did not yet have closest approach on the target !!!
             // Hope this finally fixes floating missiles
             if (
-                done == FalconMissileEndMessage::Missed &&
-                runTime < 15.0f &&
+                done == FalconMissileEndMessage::Missed  and 
+                runTime < 15.0f  and 
                 !((g_nMissileFix & 0x10) and (flags & ClosestApprch))
             )
             {
@@ -1101,9 +1101,9 @@ MissileClass::EndMissile(void)
     FalconMissileEndMessage* endMessage;
 
 
-    if (done not_eq FalconMissileEndMessage::MissileKill &&
-        done not_eq FalconMissileEndMessage::GroundImpact &&
-        done not_eq FalconMissileEndMessage::FeatureImpact &&
+    if (done not_eq FalconMissileEndMessage::MissileKill  and 
+        done not_eq FalconMissileEndMessage::GroundImpact  and 
+        done not_eq FalconMissileEndMessage::FeatureImpact  and 
         done not_eq FalconMissileEndMessage::BombImpact and // "bomb warhead" missiles hit SIM target
         done not_eq FalconMissileEndMessage::ArmingDelay) // when the warhead is not yet armed, do nothing here
     {
@@ -1408,8 +1408,8 @@ MissileClass::ApplyProximityDamage(void)
                     // or the target can not be damaged by proximity damage
                     if (
                         !targetPtr or testObject not_eq targetPtr->BaseData() ||
-                        (g_nMissileFix & 0x08) and testObject == targetPtr->BaseData() &&
-                        done not_eq FalconMissileEndMessage::MissileKill &&
+                        (g_nMissileFix & 0x08) and testObject == targetPtr->BaseData()  and 
+                        done not_eq FalconMissileEndMessage::MissileKill  and 
                         done not_eq FalconMissileEndMessage::BombImpact
                     )
                     {

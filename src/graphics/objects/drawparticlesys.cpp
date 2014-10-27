@@ -1702,13 +1702,13 @@ void DrawableParticleSys::AddParticle(int Id, Tpoint *worldPos, Tpoint *v)
 
     // COBRA - RED - New FPS Filter
     // Cobra - Keep the Particle list cleaned up
-    /* if ((now >= TimeToPurge)&&PurgeTimeInc)
+    /* if ((now >= TimeToPurge) and PurgeTimeInc)
      {
      TimeToPurge = (now + PurgeTimeInc);
      CleanParticleList();
      }
      // Cobra - Purge the Particle list
-     else if ((now >= TimeToPurgeAll)&&PurgeTimeInc)
+     else if ((now >= TimeToPurgeAll) and PurgeTimeInc)
      {
      TimeToPurgeAll = (now + PurgeAllTimeInc);
      ClearParticleList();
@@ -1828,7 +1828,7 @@ void DrawableParticleSys::Draw(class RenderOTW *renderer, int LOD)
 
             // Cobra - Moved the node killer to start of mission (otwloop.cpp)
             // also in DrawableParticleSys::AddParticle()
-            if ((n->IsDead()) /*&& !PurgeTimeInc*/) // COBRA - RED - If no1 updates PurgeTimeInc,
+            if ((n->IsDead()) /* and  !PurgeTimeInc*/) // COBRA - RED - If no1 updates PurgeTimeInc,
             {
                 // when it could be 0...???
                 n->Remove();
@@ -4384,7 +4384,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
     Div2.d3d.x = Div2.d3d.y = Div2.d3d.z = 2.0f;
 
     // thru all the list
-    while (!TrailCompleted /*&& PS_SubTrails<14200*/)
+    while (!TrailCompleted /* and  PS_SubTrails<14200*/)
     {
 
 #ifdef DEBUG_NEW_PS_TRAILS

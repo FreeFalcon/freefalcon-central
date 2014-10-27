@@ -483,8 +483,8 @@ int GunClass::Exec(
                     // END OF MODIFIED SECTION
                     testFeature->drawPointer->GetPosition(&fpos);
 
-                    if (fabs(p1.x - fpos.x) < vt + p3.x &&
-                        fabs(p1.y - fpos.y) < vt + p3.y &&
+                    if (fabs(p1.x - fpos.x) < vt + p3.x  and 
+                        fabs(p1.y - fpos.y) < vt + p3.y  and 
                         fabs(p1.z - fpos.z) < vt + p3.z)
                     {
                         org.x = p2.x;
@@ -640,10 +640,10 @@ int GunClass::Exec(
             {
                 if
                 (
-                    testObject->BaseData() and testObject->BaseData()->IsSim() &&
-                    (!testObject->BaseData()->IsWeapon() or testObject->BaseData()->IsEject()) &&
-                    !((SimBaseClass*)testObject->BaseData())->IsExploding() &&
-                    testObject->localData and testObject->localData->range < initBulletVelocity * (2.5F) &&
+                    testObject->BaseData() and testObject->BaseData()->IsSim()  and 
+                    (!testObject->BaseData()->IsWeapon() or testObject->BaseData()->IsEject())  and 
+                    !((SimBaseClass*)testObject->BaseData())->IsExploding()  and 
+                    testObject->localData and testObject->localData->range < initBulletVelocity * (2.5F)  and 
                     ((SimBaseClass*)testObject->BaseData())->drawPointer not_eq NULL
                 )
                 {
@@ -927,7 +927,7 @@ int GunClass::Exec(
 
     // set position of muzzle tracers if we're firing -- only when alpha
     // blending is on
-    if (*fire)  //&& PlayerOptions.AlphaOn() )
+    if (*fire)  // and  PlayerOptions.AlphaOn() )
     {
         float stagger;
         float ystagger;

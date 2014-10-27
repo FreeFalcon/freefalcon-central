@@ -622,7 +622,7 @@ extern "C"
 
         // While we still have room in the output buffer
         //sfr: added check for source also
-        while (size  /*&& srcSize*/)
+        while (size  /* and  srcSize*/)
         {
             CHSZ(srcSize, 1);
 

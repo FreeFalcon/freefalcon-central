@@ -1,5 +1,6 @@
 #include "lookuptable.h"
 #include "token.h"
+#include <cISO646>
 
 LookupTable::LookupTable()
 {
@@ -132,7 +133,7 @@ float TwoDimensionTable::Lookup(float a, float b)
 
                 for (t = 0; t < axis[l].breakPointCount - 1; t++)
                 {
-                    if (arg[l] >  axis[l].breakPoint[t] &&
+                    if (arg[l] >  axis[l].breakPoint[t]  and 
                         arg[l] <= axis[l].breakPoint[t + 1])
                     {
                         index1[l]   = t;

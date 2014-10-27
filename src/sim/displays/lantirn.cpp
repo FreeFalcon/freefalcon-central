@@ -648,8 +648,8 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
                     testFeature->drawPointer->GetPosition(&fpos);
 
                     // test with gross level bounds of object
-                    if (fabs(pos.x - fpos.x) < radius + p3.x &&
-                        fabs(pos.y - fpos.y) < radius + p3.y &&
+                    if (fabs(pos.x - fpos.x) < radius + p3.x  and 
+                        fabs(pos.y - fpos.y) < radius + p3.y  and 
                         fabs(pos.z - fpos.z) < radius + p3.z)
                     {
                         //Check for tall objects when doing horizontal check!!!

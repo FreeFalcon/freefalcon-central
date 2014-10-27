@@ -505,9 +505,9 @@ void PickTeamColors()
 
         if (line)
         {
-            if (gSelectedTeam >= 0 &&
-                !F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo) &&
-                TeamInfo[gSelectedTeam]->GetColor() >= 0 &&
+            if (gSelectedTeam >= 0  and 
+                !F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo)  and 
+                TeamInfo[gSelectedTeam]->GetColor() >= 0  and 
                 TeamInfo[gSelectedTeam]->GetColor() < NUM_TEAM_COLORS)
                 line->SetColor(TeamColorList[TeamInfo[gSelectedTeam]->GetColor()]);
 
@@ -531,9 +531,9 @@ void PickTeamColors()
 
         if (line)
         {
-            if (gSelectedTeam >= 0 &&
-                !F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo) &&
-                TeamInfo[gSelectedTeam]->GetColor() >= 0 &&
+            if (gSelectedTeam >= 0  and 
+                !F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo)  and 
+                TeamInfo[gSelectedTeam]->GetColor() >= 0  and 
                 TeamInfo[gSelectedTeam]->GetColor() < NUM_TEAM_COLORS)
                 line->SetColor(TeamColorList[TeamInfo[gSelectedTeam]->GetColor()]);
 
@@ -557,9 +557,9 @@ void PickTeamColors()
 
         if (line)
         {
-            if (gSelectedTeam >= 0 &&
-                !F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo) &&
-                TeamInfo[gSelectedTeam]->GetColor() >= 0 &&
+            if (gSelectedTeam >= 0  and 
+                !F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo)  and 
+                TeamInfo[gSelectedTeam]->GetColor() >= 0  and 
                 TeamInfo[gSelectedTeam]->GetColor() < NUM_TEAM_COLORS)
                 line->SetColor(TeamColorList[TeamInfo[gSelectedTeam]->GetColor()]);
 

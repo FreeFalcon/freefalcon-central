@@ -1825,7 +1825,7 @@ void AircraftClass::ShowDamage(void)
     // mig29's, f4's and f5's all smoke when at MIL power
     // it's not damage, but since we handle the smoke here anyway.....
 
-    if (!OnGround() &&
+    if (!OnGround()  and 
         af->EngineTrail() >= 0)
     {
         //       if ( OTWDriver.renderer and OTWDriver.renderer->GetAlphaMode() )
@@ -1846,7 +1846,7 @@ void AircraftClass::ShowDamage(void)
     // also this can be toggled by the player
     //JAM 24Nov03
     //RV I-Hawk - contrails use 10% margin band for fading in/out
-    if (-ZPos() > contrailLow90Percent &&
+    if (-ZPos() > contrailLow90Percent  and 
         -ZPos() < contrailHigh110Percent)
     {
         AddEngineTrails(TRAIL_CONTRAIL, conTrails, conTrails_trail);
@@ -1868,8 +1868,8 @@ void AircraftClass::ShowDamage(void)
     }
 
     // JPO - maybe some wing tip vortexes
-    if (af->auxaeroData->wingTipLocation.y not_eq 0   &&
-        af->auxaeroData->wingTipLocation.y < 500 &&
+    if (af->auxaeroData->wingTipLocation.y not_eq 0    and 
+        af->auxaeroData->wingTipLocation.y < 500  and 
         GetKias() > 80)
     {
 
@@ -1893,13 +1893,13 @@ void AircraftClass::ShowDamage(void)
         }
 
         //RV - I-Hawk - do wingtip vortex trails based on G & AOA or based on AOA only if above certain value...
-        if ((OTWDriver.renderer &&
-             /*OTWDriver.renderer->GetAlphaMode() &&*/
-             -ZPos() > minwingvortexalt &&
-             -ZPos() < maxwingvortexalt) &&
+        if ((OTWDriver.renderer  and 
+             /*OTWDriver.renderer->GetAlphaMode()  and */
+             -ZPos() > minwingvortexalt  and 
+             -ZPos() < maxwingvortexalt)  and 
 
             ((currentAOA > wingvortexAlpha and currentG > wingvortexgs) ||
-             (currentAOA > wingvortexAlphaHigh and currentAOA < wingvortexAlphaLimit &&
+             (currentAOA > wingvortexAlphaHigh and currentAOA < wingvortexAlphaLimit  and 
               currentVCAS > vortexMinSpeedLimit)))
         {
             dotrails = 1;
@@ -1911,9 +1911,9 @@ void AircraftClass::ShowDamage(void)
             doGVortex = 1;
         }
 
-        if (OTWDriver.renderer and currentAOA > vortexAOA &&
-            currentAOA < vortexAOALimit &&
-            vortexCondition &&
+        if (OTWDriver.renderer and currentAOA > vortexAOA  and 
+            currentAOA < vortexAOALimit  and 
+            vortexCondition  and 
             -ZPos() < vortexMaxaltLimit)
         {
             doAOAVortex = 1;
@@ -2154,7 +2154,7 @@ void AircraftClass::ShowDamage(void)
                     }
 
                     //are we doing the PS vortex?
-                    if (((currentG > 7.0f) or (currentAOA > ((vortexAOALimit + vortexAOA) / 2.0f))) &&
+                    if (((currentG > 7.0f) or (currentAOA > ((vortexAOALimit + vortexAOA) / 2.0f)))  and 
                         (vtx3.y or vtx4.y or vtx5.y))
                     {
 
@@ -2534,7 +2534,7 @@ void AircraftClass::ShowDamage(void)
     // do military power smoke if its that type of craft
     // PowerOutput() runs from 0.7 (flight idle) to 1.5 (max ab) with 1.0 being mil power
     // M.N. added Poweroutput > 0.65, stops smoke trails when engine is shut down.
-    //if ( !OnGround() and af->EngineTrail() >= 0 and OTWDriver.renderer /*&& OTWDriver.renderer->GetAlphaMode()*/) {
+    //if ( !OnGround() and af->EngineTrail() >= 0 and OTWDriver.renderer /* and  OTWDriver.renderer->GetAlphaMode()*/) {
     /* if (PowerOutput() <= 1.0f and PowerOutput() > 0.65f)
      {
      AddEngineTrails(af->EngineTrail(), engineTrails); // smoke
@@ -2558,7 +2558,7 @@ void AircraftClass::ShowDamage(void)
 
     if (pctStrength > 0.50f)
     {
-        if (!hasMilSmoke and smokeTrail[TRAIL_DAMAGE] /*&& smokeTrail[TRAIL_DAMAGE]->InDisplayList(*/)
+        if (!hasMilSmoke and smokeTrail[TRAIL_DAMAGE] /* and  smokeTrail[TRAIL_DAMAGE]->InDisplayList(*/)
         {
             /* RV - I-Hawk - RV new trails call changes
             OTWDriver.AddSfxRequest(
@@ -3115,10 +3115,10 @@ void AircraftClass::CheckObjectCollision(void)
             // RV - Biker - Check if AC is in correct position otherwise reject "CTRL K"
             bool onCatPosition = false;
 
-            if (deltaX >= abs(startPos.x) - 5.0f &&
-                deltaX <= abs(startPos.x) + 5.0f &&
-                deltaY >= abs(startPos.y) - 5.0f &&
-                deltaY <= abs(startPos.y) + 5.0f &&
+            if (deltaX >= abs(startPos.x) - 5.0f  and 
+                deltaX <= abs(startPos.x) + 5.0f  and 
+                deltaY >= abs(startPos.y) - 5.0f  and 
+                deltaY <= abs(startPos.y) + 5.0f  and 
                 abs(Yaw() - startAngle.x - theObject->Yaw()) <= 5.0f * DTR)
             {
                 onCatPosition = true;
@@ -3376,8 +3376,8 @@ void AircraftClass::CheckObjectCollision(void)
         }
 
         // 2002-04-17 MN fix for killer chaff / flare
-        if (theObject->GetType() == TYPE_BOMB &&
-            (theObject->GetSType() == STYPE_CHAFF or theObject->GetSType() == STYPE_FLARE1) &&
+        if (theObject->GetType() == TYPE_BOMB  and 
+            (theObject->GetSType() == STYPE_CHAFF or theObject->GetSType() == STYPE_FLARE1)  and 
             (theObject->GetSPType() == SPTYPE_CHAFF1 or theObject->GetSPType() == SPTYPE_CHAFF1 + 1))
             continue;
 
@@ -3507,7 +3507,7 @@ void AircraftClass::AddFault(int failures, unsigned int failuresPossible, int, i
     }
 
     // JPO - break hydraulics occasionally
-    if ((failuresPossible & FaultClass::eng_fault) &&
+    if ((failuresPossible & FaultClass::eng_fault)  and 
         (mFaults->GetFault(FaultClass::eng_fault) & FaultClass::hydr))
     {
         if (rand() % 100 < 20)   // 20% failure chance of A system
@@ -3563,7 +3563,7 @@ void AircraftClass::AddFault(int failures, unsigned int failuresPossible, int, i
             if (failedThings[failedThing] not_eq -1)
             {
                 // FLCS is a special case, as it has 1 informational fault which MUST happen first
-                if ((FaultClass::type_FSubSystem)failedThings[failedThing] == FaultClass::flcs_fault &&
+                if ((FaultClass::type_FSubSystem)failedThings[failedThing] == FaultClass::flcs_fault  and 
                     !mFaults->GetFault(FaultClass::flcs_fault))
                 {
                     failedFunc = 1;
@@ -3611,7 +3611,7 @@ void AircraftClass::AddFault(int failures, unsigned int failuresPossible, int, i
                                   (FaultClass::type_FSeverity) FaultClass::fail,
                                   !isDigital); // none, fail for now
 
-                if (failedThings[failedThing] == FaultClass::eng_fault &&
+                if (failedThings[failedThing] == FaultClass::eng_fault  and 
                     (1 << numFunctions) == hydr)
                 {
                     if (rand() % 100 < 20)   // 20% failure chance of A system

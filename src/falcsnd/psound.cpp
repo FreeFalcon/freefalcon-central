@@ -1445,7 +1445,7 @@ void CSoundMgr::AssignSamples(void)
 
 #ifdef CUSTOM_DOPPLER
 
-                                if (g_bEnableDopplerSound &&
+                                if (g_bEnableDopplerSound  and 
                                     S->Flags & SFX_POS_EXTERN)
                                 {
                                     float d1, d2, xx, yy, zz, m;
@@ -1502,8 +1502,8 @@ void CSoundMgr::AssignSamples(void)
                                     S->Buf[i].DSound3dBuffer->SetMode(DS3DMODE_NORMAL, DS3D_DEFERRED);
 #define DISTEFF_THRESHOLD (100 * 100)
 
-                                    if (g_bSoundDistanceEffect                &&
-                                        S->Buf[i].distsq > DISTEFF_THRESHOLD   &&
+                                    if (g_bSoundDistanceEffect                 and 
+                                        S->Buf[i].distsq > DISTEFF_THRESHOLD    and 
                                         S->Flags & SFX_POS_LOOPED)  // MLR 12/3/2003 - Only applied to looping sounds
                                     {
                                         // sounds lag behind high speed objects
@@ -1553,7 +1553,7 @@ void CSoundMgr::AssignSamples(void)
                                     }
 
                                     // MLR 12/4/2003 - We shouldn't be messing with internal volume sounds
-                                    if (S->Flags & SFX_POS_EXTERN &&
+                                    if (S->Flags & SFX_POS_EXTERN  and 
                                         S->Buf[i].Is3d)
                                     {
                                         // we're here because there's on 3d buffer allocated.
@@ -1965,7 +1965,7 @@ long CSoundMgr::AddSampleToMgr(long Volume, long Frequency, long Direction, IDir
             hr = DSound->DuplicateSoundBuffer(NewSound, &New->Buf[i].DSoundBuffer);
 
         /*  MLR 5/6/2004 - No need to allocate a 3D buffer
-        if (g_bUse3dSound &&
+        if (g_bUse3dSound  and 
          New->Flags & SFX_FLAGS_3D)
         {
          // create buffer here
@@ -1982,8 +1982,8 @@ long CSoundMgr::AddSampleToMgr(long Volume, long Frequency, long Direction, IDir
          hr = New->Buf[i].DSound3dBuffer->SetMode(DS3DMODE_DISABLE, DS3D_DEFERRED);
          if (FAILED(hr))
          DSoundCheck(hr);
-         if ( sfx &&
-         (sfx->flags & SFX_POS_EXTERN) &&
+         if ( sfx  and 
+         (sfx->flags & SFX_POS_EXTERN)  and 
          (sfx->flags & SFX_FLAGS_3D)) // only make external 3d sounds 3d
          {
          float maxdist = (float)  sqrt(sfx->maxDistSq);

@@ -70,8 +70,8 @@ void HeliBrain::TargetSelection(void)
 
     // check to see if our current ground target is a sim and exploding or
     // dead, if so let's get a new target from the campaign
-    if (targetPtr &&
-        targetPtr->BaseData()->IsSim() &&
+    if (targetPtr  and 
+        targetPtr->BaseData()->IsSim()  and 
         (targetPtr->BaseData()->IsExploding() or !((SimBaseClass *)targetPtr->BaseData())->IsAwake()))
     {
         ClearTarget();

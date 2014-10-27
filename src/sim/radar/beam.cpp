@@ -222,7 +222,7 @@ void RadarDopplerClass::MoveBeam(void)
                     el += (-MAX_ANT_EL - theta);
 
                 // target in beam ?
-                if ((az >= curScanLeft and az <= curScanRight &&
+                if ((az >= curScanLeft and az <= curScanRight  and 
                      el <= curScanTop and el >= curScanBottom) or scanDir == ScanRev)
                 {
                     // Can See, or, have seen so head home
@@ -409,7 +409,7 @@ void RadarDopplerClass::MoveBeam(void)
             /*------------*/
             /* Right Edge */
             /*------------*/
-            if (scanDir == ScanFwd &&
+            if (scanDir == ScanFwd  and 
                 (beamAz > azScan or beamAz + seekerAzCenter > MAX_ANT_EL))
             {
 #if 0 // This will be nice but is a bit broken inside GMComposit.cpp  SCR 8/14/98
@@ -432,7 +432,7 @@ void RadarDopplerClass::MoveBeam(void)
             /*-----------*/
             /* Left Edge */
             /*-----------*/
-            else if (scanDir == ScanRev &&
+            else if (scanDir == ScanRev  and 
                      (beamAz < -azScan or beamAz + seekerAzCenter < -MAX_ANT_EL))
             {
                 SetFlagBit(ChangingBars);
@@ -472,7 +472,7 @@ int RadarDopplerClass::LookingAtObject(SimObjectType* target)
 
     if (!IsSet(SpaceStabalized))
     {
-        if (targetData->az >= curScanLeft and targetData->az <= curScanRight &&
+        if (targetData->az >= curScanLeft and targetData->az <= curScanRight  and 
             targetData->el <= curScanTop and targetData->el >= curScanBottom)
             retval = TRUE;
         else
@@ -490,7 +490,7 @@ int RadarDopplerClass::LookingAtObject(SimObjectType* target)
         else if (theta < -MAX_ANT_EL)
             el += (-MAX_ANT_EL - theta);
 
-        if (az >= curScanLeft and az <= curScanRight &&
+        if (az >= curScanLeft and az <= curScanRight  and 
             el <= curScanTop and el >= curScanBottom)
             retval = TRUE;
         else

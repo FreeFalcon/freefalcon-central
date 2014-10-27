@@ -45,10 +45,10 @@ extern SensorClass* FindLaserPod(SimMoverClass* theObject);
 BombClass *FireControlComputer::GetTheBomb()
 {
 
-    if (Sms &&
-        Sms->CurHardpoint() >= 0 &&
-        Sms->hardPoint[Sms->CurHardpoint()] &&
-        Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer &&
+    if (Sms  and 
+        Sms->CurHardpoint() >= 0  and 
+        Sms->hardPoint[Sms->CurHardpoint()]  and 
+        Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer  and 
         Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer->IsBomb()) //be EXTRA careful
         return (BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer.get();
     else
@@ -158,9 +158,9 @@ void FireControlComputer::AirGroundMode(void)
                 BombClass *theBomb;
                 theBomb = GetTheBomb();
 
-                if (theBomb and ((AircraftClass*)platform->IsPlayer() and ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP) &&
+                if (theBomb and ((AircraftClass*)platform->IsPlayer() and ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP)  and 
                     ((theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS) ||
-                     (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)) &&
+                     (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW))  and 
                     (!Sms->JDAMPowered))
                 {
                     releaseConsent = FALSE;
@@ -263,9 +263,9 @@ float calcgrav(FireControlComputer *FCC)
 {
     BombClass *theBomb;
 
-    if (FCC and FCC->PlayerFCC() and FCC->Sms and FCC->Sms->CurHardpoint() >= 0 &&
-        FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()] &&
-        FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]->weaponPointer &&
+    if (FCC and FCC->PlayerFCC() and FCC->Sms and FCC->Sms->CurHardpoint() >= 0  and 
+        FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]  and 
+        FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]->weaponPointer  and 
         FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]->weaponPointer->IsBomb()) //be EXTRA careful
     {
         theBomb = (BombClass *)FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]->weaponPointer.get();
@@ -831,8 +831,8 @@ void FireControlComputer::CheckForBombRelease(void)
     // How long to null the impact point error assuming level flight toward the target?
     tmpTime = airGroundRange / platform->GetVt();
 
-    if ((tmpTime < 0.1F or (airGroundDelayTime > 0.0 &&
-                            airGroundDelayTime < 0.4F and tmpTime > airGroundDelayTime)) &&
+    if ((tmpTime < 0.1F or (airGroundDelayTime > 0.0  and 
+                            airGroundDelayTime < 0.4F and tmpTime > airGroundDelayTime))  and 
         Sms->curWeapon)
     {
         bombPickle = TRUE;
@@ -889,7 +889,7 @@ void FireControlComputer::SetDesignatedTarget(void)
         bGPS = TRUE;
 
     // 2001-04-12 ADDED BY S.G. NEED TO MAKE A VARIABLE DESIGNATE BASED ON SKILL AND ALTITUDE
-    if (platform->IsAirplane() and !bGPS &&
+    if (platform->IsAirplane() and !bGPS  and 
         (((AircraftClass *)platform)->IsDigital() ||
          ((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP))
     {
@@ -1479,8 +1479,8 @@ void FireControlComputer::CalculateLADDReleaseRange(void)
     if (laddAnticipationCue == NoCue ||
         (laddAnticipationCue == AwaitingRelease and laddAnticipationCue == lastCue))
     {
-        if (!wayTooFar and releaseConsent and !postDrop &&
-            ((tmpTime < 0.1F or (airGroundDelayTime > 0.0 and airGroundDelayTime < maxDelay &&
+        if (!wayTooFar and releaseConsent and !postDrop  and 
+            ((tmpTime < 0.1F or (airGroundDelayTime > 0.0 and airGroundDelayTime < maxDelay  and 
                                  tmpTime > airGroundDelayTime)) or bombReleaseOverride) and Sms->curWeapon)
         {
             bombPickle = TRUE;

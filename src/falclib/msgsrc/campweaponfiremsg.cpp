@@ -277,8 +277,8 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
 
     // add some additional fire effects if losses were taken, the target is
     // a battalion and the target is in the sim lists
-    if (losses &&
-        target->InSimLists() &&
+    if (losses  and 
+        target->InSimLists()  and 
         OTWDriver.IsActive())
     {
         int i;
@@ -608,7 +608,7 @@ void FireOnSimEntity(CampEntity shooter, SimBaseClass *simTarg, short weaponId)
     hitSomething = FALSE;
 
     // what have we got for a weapon?
-    if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_WEAPON &&
+    if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_WEAPON  and 
         classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_GUN)
     {
         if (wc->Flags & WEAP_TRACER)
@@ -1099,7 +1099,7 @@ void DoShortDistanceVisualEffects(CampEntity shooter, CampEntity target, int wea
 
 
     // what have we got for a weapon?
-    if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_WEAPON &&
+    if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_WEAPON  and 
         classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_GUN)
     {
         if (wc->Flags & WEAP_TRACER)
@@ -1326,7 +1326,7 @@ FireMissileAtSim(CampEntity shooter, SimBaseClass *simTarg, short weapId)
 #if 0 // This is handled by the missile itself now...
     /*
     // Need to send a launch message if this missile is radar guided
-    if (theMissile->sensorArray &&
+    if (theMissile->sensorArray  and 
     (theMissile->sensorArray[0]->Type() == SensorClass::Radar ||
     theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming)) {
 

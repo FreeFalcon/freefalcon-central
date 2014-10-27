@@ -33,8 +33,8 @@ FalconSessionEntity *UIComms::FindCampaignPlayer(VU_ID flightID, uchar planeid)
         while (curSession)
         {
             if (
-                curSession->GetPlayerFlightID() == flightID &&
-                curSession->GetAircraftNum() == planeid &&
+                curSession->GetPlayerFlightID() == flightID  and 
+                curSession->GetAircraftNum() == planeid  and 
                 curSession->GetPilotSlot() < 255
             )
             {

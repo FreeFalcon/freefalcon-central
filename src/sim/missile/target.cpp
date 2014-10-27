@@ -27,8 +27,8 @@ void MissileClass::UpdateTargetData(void)
             /* JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
             if (targetPtr->BaseData()->GetDomain() not_eq DOMAIN_SEA) // JB carrier (otherwise ships stop when you fire a missile at them)
             {
-             if (targetPtr->BaseData()->IsSim() &&
-             ((SimBaseClass*)targetPtr->BaseData())->OnGround() &&
+             if (targetPtr->BaseData()->IsSim()  and 
+             ((SimBaseClass*)targetPtr->BaseData())->OnGround()  and 
              ((SimBaseClass*)targetPtr->BaseData())->drawPointer)
              {
              Tpoint pos;

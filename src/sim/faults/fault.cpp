@@ -439,7 +439,7 @@ void FaultClass::AddMflList(VU_TIME thetime, FaultClass::type_FSubSystem type, i
 {
     for (int i = 0; i < mLastMfl; i++)
     {
-        if (mMflList[i].type == type &&
+        if (mMflList[i].type == type  and 
             mMflList[i].subtype == subtype)
         {
             mMflList[i].no ++;

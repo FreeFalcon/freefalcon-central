@@ -670,7 +670,7 @@ int TViewPoint::GetLODLevel(float x, float y) const
 
     // Figure out the highest detail level which has the required data available
     while (
-        lod <= maxLOD &&
+        lod <= maxLOD  and 
         blockLists[lod].RangeFromCenter(row, col) >= blockLists[lod].GetAvailablePostRange()
     )
     {

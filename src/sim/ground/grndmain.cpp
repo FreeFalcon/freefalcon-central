@@ -783,9 +783,9 @@ int GroundClass::Exec(void)
             SimObjectLocalData* localData = targetPtr->localData;
 
             if (
-                localData->ataFrom == 0.0f &&
-                localData->az == 0.0f  &&
-                localData->el == 0.0f &&
+                localData->ataFrom == 0.0f  and 
+                localData->az == 0.0f   and 
+                localData->el == 0.0f  and 
                 localData->range == 0.0f
             )
             {
@@ -815,10 +815,10 @@ int GroundClass::Exec(void)
             // IF WE CAN SEE THE RADAR'S TARGET AND WE ARE A AIR DEFENSE THINGY
             // NOT IN A BKOGEN MORAL STATE, MARK IT AS SPOTTED IF WE'RE BRIGHT ENOUGH
             if (
-                radar &&
-                radar->CurrentTarget() &&
-                gai->skillLevel >= 3 &&
-                ((UnitClass *)GetCampaignObject())->GetSType() == STYPE_UNIT_AIR_DEFENSE &&
+                radar  and 
+                radar->CurrentTarget()  and 
+                gai->skillLevel >= 3  and 
+                ((UnitClass *)GetCampaignObject())->GetSType() == STYPE_UNIT_AIR_DEFENSE  and 
                 !((UnitClass *)GetCampaignObject())->Broken()
             )
             {
@@ -845,9 +845,9 @@ int GroundClass::Exec(void)
                 {
                     campBaseObj->SetSpotted(
                         GetTeam(), TheCampaign.CurrentTime,
-                        (radar->radarData->flag & RAD_NCTR) not_eq 0 &&
-                        radar->CurrentTarget()->localData &&
-                        radar->CurrentTarget()->localData->ataFrom < 45.0f * DTR &&
+                        (radar->radarData->flag & RAD_NCTR) not_eq 0  and 
+                        radar->CurrentTarget()->localData  and 
+                        radar->CurrentTarget()->localData->ataFrom < 45.0f * DTR  and 
                         radar->CurrentTarget()->localData->range <
                         radar->GetRadarDatFile()->MaxNctrRange / (2.0f * (16.0f - (float)gai->skillLevel) / 16.0f)
                     );
@@ -867,10 +867,10 @@ int GroundClass::Exec(void)
         // Since I only identify visually, need to perform this even if spotted by radar in case I can ID it.
         if (
             /*!spottedSet and  gai->skillLevel >= 3 and */
-            ((UnitClass *)GetCampaignObject())->GetSType() == STYPE_UNIT_AIR_DEFENSE &&
-            gai == gai->battalionCommand &&
-            !((UnitClass *)GetCampaignObject())->Broken() &&
-            gai->GetAirTargetPtr() &&
+            ((UnitClass *)GetCampaignObject())->GetSType() == STYPE_UNIT_AIR_DEFENSE  and 
+            gai == gai->battalionCommand  and 
+            !((UnitClass *)GetCampaignObject())->Broken()  and 
+            gai->GetAirTargetPtr()  and 
             CheckLOS(gai->GetAirTargetPtr())
         )
         {
@@ -1123,8 +1123,8 @@ int GroundClass::Exec(void)
             // (b) Make dust
             // dustTimer += SimLibMajorFrameTime;
             // if ( dustTimer > max( 0.2f,  4.5f - speedScale - gai->distLOD * 3.3f ) )
-            if (((rand() & 7) == 7) &&
-                gSfxCount[ SFX_GROUND_DUSTCLOUD ] < gSfxLODCutoff &&
+            if (((rand() & 7) == 7)  and 
+                gSfxCount[ SFX_GROUND_DUSTCLOUD ] < gSfxLODCutoff  and 
                 gTotSfx < gSfxLODTotCutoff
                )
             {

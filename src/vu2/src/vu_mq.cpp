@@ -179,9 +179,9 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
 
     // outgoing message, try send. If fails, add to send queue
     if (
-        vuGlobalGroup and vuGlobalGroup->Connected() &&
-        msg->Target() and msg->Target() not_eq vuLocalSessionEntity &&
-        msg->DoSend() and (!ent or !ent->IsPrivate()) &&
+        vuGlobalGroup and vuGlobalGroup->Connected()  and 
+        msg->Target() and msg->Target() not_eq vuLocalSessionEntity  and 
+        msg->DoSend() and (!ent or !ent->IsPrivate())  and 
         (vuLocalSession.creator_ not_eq VU_SESSION_NULL_CONNECTION.creator_)
     )
     {
@@ -189,8 +189,8 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
         VuPendingSendQueue *sq = vuMainThread->SendQueue();
 
         if (
-            (retval == 0) and sq &&
-            (msg->Flags() & VU_SEND_FAILED_MSG_FLAG) &&
+            (retval == 0) and sq  and 
+            (msg->Flags() & VU_SEND_FAILED_MSG_FLAG)  and 
             ((msg->Flags() & VU_RELIABLE_MSG_FLAG) or (msg->Flags() & VU_KEEPALIVE_MSG_FLAG))
         )
         {
@@ -228,7 +228,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
 
     // message not added to any queue, auto destroy
     if (
-        (msg->refcnt_ == 1) &&
+        (msg->refcnt_ == 1)  and 
         (!msg->IsLocal() or (msg->Flags() & VU_LOOPBACK_MSG_FLAG))
     )
     {

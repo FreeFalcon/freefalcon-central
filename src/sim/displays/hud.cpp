@@ -398,7 +398,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
     ShiAssert(ownship);
 
     // Various ways to be broken
-    if (ownship->mFaults &&
+    if (ownship->mFaults  and 
         (
             (ownship->mFaults->GetFault(FaultClass::flcs_fault) & FaultClass::dmux) ||
             ownship->mFaults->GetFault(FaultClass::dmux_fault) ||
@@ -552,8 +552,8 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
         DrawA10HUD();
     }
 
-    if ((!FCC->postDrop or flash) &&
-        fpmSwitch not_eq FPM_OFF &&
+    if ((!FCC->postDrop or flash)  and 
+        fpmSwitch not_eq FPM_OFF  and 
         FCC and FCC->GetMasterMode() not_eq FireControlComputer::Dogfight) // JPO not show in DGFT
         DrawFPM();
 
@@ -1142,13 +1142,13 @@ void HudClass::DrawAlphaNumeric(void)
         //MI changed for INS stuff
         if (g_bINS and g_bRealisticAvionics)
         {
-            if (!ownship->INSState(AircraftClass::INS_Aligned) &&
+            if (!ownship->INSState(AircraftClass::INS_Aligned)  and 
                 ownship->INSState(AircraftClass::INS_AlignNorm) and (cockpitFlightData.kias <= 1.0F
                         and !ownship->INS60kts) or ownship->INSState(AircraftClass::INS_AlignFlight))
             {
                 sprintf(tmpStr, "ALIGN");
             }
-            else if (ownship->INSState(AircraftClass::INS_Aligned) &&
+            else if (ownship->INSState(AircraftClass::INS_Aligned)  and 
                      ownship->INSState(AircraftClass::INS_AlignNorm) and cockpitFlightData.kias <= 1.0F
                      and !ownship->INS60kts or ownship->INSState(AircraftClass::INS_AlignFlight))
             {
@@ -1249,8 +1249,8 @@ void HudClass::DrawAlphaNumeric(void)
         if (ownship->mFaults->WarnReset() and Warnflash)
         {
             //Fuel doesn't flash warning
-            if (!ownship->mFaults->GetFault(fuel_low_fault) &&
-                !ownship->mFaults->GetFault(fuel_trapped) &&
+            if (!ownship->mFaults->GetFault(fuel_low_fault)  and 
+                !ownship->mFaults->GetFault(fuel_trapped)  and 
                 !ownship->mFaults->GetFault(fuel_home))
                 DrawWindowString(11, "WARN");
         }
@@ -1296,7 +1296,7 @@ void HudClass::DrawAlphaNumeric(void)
         //MI warn reset is correct
         if (!g_bRealisticAvionics)
         {
-            if (ownship->mFaults->GetFault(fuel_low_fault) and ownship->mFaults->MasterCaution() &&
+            if (ownship->mFaults->GetFault(fuel_low_fault) and ownship->mFaults->MasterCaution()  and 
                 F4SoundFXPlaying(ownship->af->GetBingoSnd()))  // JB 010425
             {
                 F4SoundFXSetDist(ownship->af->GetBingoSnd(), FALSE, 0.0f, 1.0f);
@@ -1307,8 +1307,8 @@ void HudClass::DrawAlphaNumeric(void)
 #if 0
         else
         {
-            if (ownship->mFaults->GetFault(fuel_low_fault) &&
-                ownship->mFaults->WarnReset() &&
+            if (ownship->mFaults->GetFault(fuel_low_fault)  and 
+                ownship->mFaults->WarnReset()  and 
                 F4SoundFXPlaying(ownship->af->GetBingoSnd()))  // JB 010425
             {
                 F4SoundFXSetDist(ownship->af->GetBingoSnd(), FALSE, 0.0f, 1.0f);
@@ -1645,8 +1645,8 @@ void HudClass::DrawDesignateMarker(DesignateShape shape, float az, float el, flo
     xPos = RadToHudUnitsX(az);
     yPos = RadToHudUnitsY(el);
 
-    if (fabs(az) < 90.0F * DTR &&
-        fabs(el) < 90.0F * DTR &&
+    if (fabs(az) < 90.0F * DTR  and 
+        fabs(el) < 90.0F * DTR  and 
         fabs(xPos) < 0.90F and fabs(yPos + hudWinY[BORESIGHT_CROSS_WINDOW] +
                                    hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F)
     {
@@ -1789,7 +1789,7 @@ void HudClass::DrawPitchLadder(void)
     if (g_bRealisticAvionics and g_bINS)
     {
         if (
-            ownship &&
+            ownship  and 
             ownship->INSState(AircraftClass::INS_PowerOff) ||
             !ownship->INSState(AircraftClass::INS_HUD_STUFF)
         )
@@ -1908,7 +1908,7 @@ void HudClass::DrawPitchLadder(void)
 
     // JPO - draw the 2.5 degree line when gear is down and locked.
     if (
-        ((AircraftClass*)ownship)->af->gearPos > 0.5F &&
+        ((AircraftClass*)ownship)->af->gearPos > 0.5F  and 
         (a < -2) and ((a + 50) > -2)
     )  // JPO we surround the -2.5 line
     {
@@ -2685,7 +2685,7 @@ void HudClass::DrawTDMarker(float az, float el, float dRoll, float size)
     xPos = RadToHudUnitsX(az);
     yPos = RadToHudUnitsY(el);
 
-    if (fabs(az) < 90.0F * DTR and fabs(el) < 90.0F * DTR and fabs(xPos) < 0.90F &&
+    if (fabs(az) < 90.0F * DTR and fabs(el) < 90.0F * DTR and fabs(xPos) < 0.90F  and 
         fabs(yPos + hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F)
     {
         display->AdjustOriginInViewport(xPos, yPos);
@@ -2731,8 +2731,8 @@ void HudClass::DrawTDMarker(float az, float el, float dRoll, float size)
                 //MI add a GO STT readout if we're a SARH and not in STT
                 if (ownship and g_bRealisticAvionics)
                 {
-                    if (ownship->Sms and ownship->Sms->curWeapon and ownship->Sms->curWeapon->IsMissile() &&
-                        ((MissileClass *)ownship->Sms->GetCurrentWeapon())->GetSeekerType() == SensorClass::RadarHoming &&
+                    if (ownship->Sms and ownship->Sms->curWeapon and ownship->Sms->curWeapon->IsMissile()  and 
+                        ((MissileClass *)ownship->Sms->GetCurrentWeapon())->GetSeekerType() == SensorClass::RadarHoming  and 
                         theRadar and !theRadar->IsSet(RadarDopplerClass::STTingTarget))
                     {
                         display->TextCenter(0.0F, -0.1F, "GO STT", 0);
@@ -2793,7 +2793,7 @@ void HudClass::DrawF18HUD(void)
 
     //AOA 46
     //HUD AOA Greek Letter Alpha -65 X -13 Y
-    if (ownship->af->gearPos < 0.5F or (ownship->af->gearPos > 0.5F &&
+    if (ownship->af->gearPos < 0.5F or (ownship->af->gearPos > 0.5F  and 
                                         (ownship->af->alpha > 10.0F or ownship->af->alpha < 6.0F)))
     {
 
@@ -2870,7 +2870,7 @@ void HudClass::DrawF14HUD(void)
 
     //AOA 46
     //HUD AOA Greek Letter Alpha -65 X -13 Y
-    if (ownship->af->gearPos < 0.5F or (ownship->af->gearPos > 0.5F &&
+    if (ownship->af->gearPos < 0.5F or (ownship->af->gearPos > 0.5F  and 
                                         (ownship->af->alpha > 17.0F or ownship->af->alpha < 13.0F)))
     {
 
@@ -2919,7 +2919,7 @@ void HudClass::DrawF14HUD(void)
 
     //TJL 03/06/04 F-14 Specific HUD warning per -1
 
-    if ((ownship->af->tefPos > 0.0f or ownship->af->lefPos > 0.0f) &&
+    if ((ownship->af->tefPos > 0.0f or ownship->af->lefPos > 0.0f)  and 
         ownship->GetKias() > 225.0f and flash)
     {
         DrawWindowString(12, "RDC SPEED");

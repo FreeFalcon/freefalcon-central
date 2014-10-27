@@ -99,8 +99,8 @@ void HeliBrain::GoToCurrentWaypoint(void)
     }
 
     // If we are at starting WP stay on ground
-    if (self->curWaypoint->GetWPFlags() & WPF_TAKEOFF  &&
-        self->curWaypoint->GetWPDepartureTime() > SimLibElapsedTime &&
+    if (self->curWaypoint->GetWPFlags() & WPF_TAKEOFF   and 
+        self->curWaypoint->GetWPDepartureTime() > SimLibElapsedTime  and 
         self->curWaypoint->GetPrevWP() == NULL)
     {
         LevelTurn(0.0f, 0.0f, TRUE);

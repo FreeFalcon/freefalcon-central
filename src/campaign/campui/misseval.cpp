@@ -845,7 +845,7 @@ void MissionEvaluationClass::ServerFileLog(FalconPlayerStatusMessage *fpsm)
 
             while (pilot_data)
             {
-                if (fpsm->dataBlock.campID and fpsm->dataBlock.campID == flight_ptr->camp_id &&
+                if (fpsm->dataBlock.campID and fpsm->dataBlock.campID == flight_ptr->camp_id  and 
                     (fpsm->dataBlock.pilotID == pilot_data->pilot_slot or pilot_data->donefiledebrief))
                 {
                     if (!HasDoneFLightData)
@@ -860,7 +860,7 @@ void MissionEvaluationClass::ServerFileLog(FalconPlayerStatusMessage *fpsm)
 
                         WORD Date, Time;
 
-                        if (FileTimeToLocalFileTime(&CurrentTime, &CurrentTime) &&
+                        if (FileTimeToLocalFileTime(&CurrentTime, &CurrentTime)  and 
                             FileTimeToDosDateTime(&CurrentTime, &Date, &Time))
                         {
                             wsprintf(Buffer, "%d/%d/%d %02d:%02d:%02d",
@@ -1355,10 +1355,10 @@ int MissionEvaluationClass::MissionSuccess(FlightDataClass *flight_ptr)
         }
 
     // Check for in progress
-    if (!(flight_ptr->status_flags & MISEVAL_FLIGHT_GOT_TO_TARGET) &&
-        !(flight_ptr->status_flags & MISEVAL_FLIGHT_STATION_OVER) &&
-        !(flight_ptr->status_flags & MISEVAL_FLIGHT_OFF_STATION) &&
-        !(flight_ptr->status_flags & MISEVAL_FLIGHT_DESTROYED) &&
+    if (!(flight_ptr->status_flags & MISEVAL_FLIGHT_GOT_TO_TARGET)  and 
+        !(flight_ptr->status_flags & MISEVAL_FLIGHT_STATION_OVER)  and 
+        !(flight_ptr->status_flags & MISEVAL_FLIGHT_OFF_STATION)  and 
+        !(flight_ptr->status_flags & MISEVAL_FLIGHT_DESTROYED)  and 
         !(flight_ptr->status_flags & MISEVAL_FLIGHT_ABORTED))
     {
         flight_ptr->failure_code = 0;
@@ -1963,8 +1963,8 @@ void MissionEvaluationClass::CollectThreats(GridIndex X, GridIndex Y, int Z, int
     {
         if (tteam[e->GetTeam()])
         {
-            if (!(flags & FIND_NOMOVERS and e->Moving()) &&
-                !(flags & FIND_NOAIR and e->GetDomain() == DOMAIN_AIR) &&
+            if (!(flags & FIND_NOMOVERS and e->Moving())  and 
+                !(flags & FIND_NOAIR and e->GetDomain() == DOMAIN_AIR)  and 
                 (flags & FIND_FINDUNSPOTTED or e->GetSpotted(team)))
             {
                 // Find the distance
@@ -2930,7 +2930,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
 
             if (pilot_data)
             {
-                if (dtm->dataBlock.fCampID and dtm->dataBlock.fCampID == flight_ptr->camp_id &&
+                if (dtm->dataBlock.fCampID and dtm->dataBlock.fCampID == flight_ptr->camp_id  and 
                     (dtm->dataBlock.fPilotID not_eq dtm->dataBlock.dPilotID or dtm->dataBlock.fCampID not_eq dtm->dataBlock.dCampID))
                 {
                     theEvent = new EventElement;
@@ -3281,7 +3281,7 @@ void MissionEvaluationClass::RegisterPlayerJoin(FalconPlayerStatusMessage *fpsm)
 
         while (pilot_data)
         {
-            if (fpsm->dataBlock.campID and fpsm->dataBlock.campID == flight_ptr->camp_id &&
+            if (fpsm->dataBlock.campID and fpsm->dataBlock.campID == flight_ptr->camp_id  and 
                 fpsm->dataBlock.pilotID == pilot_data->pilot_slot)
             {
                 // We're interested
@@ -3341,7 +3341,7 @@ void MissionEvaluationClass::RegisterEjection(FalconEjectMessage *em, int pilot_
 
         while (pilot_data)
         {
-            if (em->dataBlock.eCampID and em->dataBlock.eCampID == flight_ptr->camp_id &&
+            if (em->dataBlock.eCampID and em->dataBlock.eCampID == flight_ptr->camp_id  and 
                 em->dataBlock.ePilotID == pilot_data->pilot_slot)
             {
                 // We're interested
@@ -3409,7 +3409,7 @@ void MissionEvaluationClass::RegisterLanding(FalconLandingMessage *lm, int pilot
 
         while (pilot_data)
         {
-            if (lm->dataBlock.campID and lm->dataBlock.campID == flight_ptr->camp_id &&
+            if (lm->dataBlock.campID and lm->dataBlock.campID == flight_ptr->camp_id  and 
                 lm->dataBlock.pilotID == pilot_data->pilot_slot)
             {
                 // We're interested
@@ -3734,7 +3734,7 @@ void MissionEvaluationClass::RegisterMove(Flight flight)
         {
             // 2002-02-13 MN check if target got occupied by us and has not been engaged yet - for 2D flights
             // 2002-03-03 MN fix - only for strike missions
-            if (w->GetWPTarget() and w->GetWPTarget()->GetTeam() == flight->GetTeam() &&
+            if (w->GetWPTarget() and w->GetWPTarget()->GetTeam() == flight->GetTeam()  and 
                 (flight->GetUnitMission() > AMIS_SEADESCORT and flight->GetUnitMission() < AMIS_FAC))
                 meflags  or_eq  MISEVAL_FLIGHT_ABORT_BY_AWACS;
 

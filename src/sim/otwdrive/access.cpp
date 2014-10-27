@@ -495,9 +495,9 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
     // }
 
     /*
-    if((mode not_eq ModePadlockF3) &&
-       (mode not_eq ModePadlockEFOV) &&
-       (mode not_eq ModeTarget) &&
+    if((mode not_eq ModePadlockF3)  and 
+       (mode not_eq ModePadlockEFOV)  and 
+       (mode not_eq ModeTarget)  and 
        (mode not_eq ModeTargetToSelf) )
     {
      if(mpPadlockPriorityObject) {
@@ -507,7 +507,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
      mpPadlockCandidate = NULL;
     }
     */
-    if ((mode not_eq ModePadlockF3) &&
+    if ((mode not_eq ModePadlockF3)  and 
         (mode not_eq ModePadlockEFOV))
     {
         /* 2001-01-29 MODIFIED BY S.G. FOR THE NEW mpPadlockPrioritySimObject
@@ -651,7 +651,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 // if we got a candidate we use that
                 if ( mpPadlockCandidate )
                 {
-                 if ( mpPadlockPriorityObject &&
+                 if ( mpPadlockPriorityObject  and 
                   mpPadlockPriorityObject not_eq mpPadlockCandidate )
                  {
                  VuDeReferenceEntity(mpPadlockPriorityObject);
@@ -735,7 +735,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 // if we got a candidate we use that
                 if ( mpPadlockCandidate and mpPadlockCandidate->IsSim() )
                 {
-                 if ( mpPadlockPriorityObject &&
+                 if ( mpPadlockPriorityObject  and 
                   mpPadlockPriorityObject not_eq mpPadlockCandidate )
                  {
                  VuDeReferenceEntity(mpPadlockPriorityObject);
@@ -936,7 +936,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 // if we got a candidate we use that
                 if ( mpPadlockCandidate )
                 {
-                 if ( mpPadlockPriorityObject &&
+                 if ( mpPadlockPriorityObject  and 
                   mpPadlockPriorityObject not_eq mpPadlockCandidate )
                  {
                  VuDeReferenceEntity(mpPadlockPriorityObject);
@@ -965,7 +965,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
 
                  if ( mpPadlockCandidate )
                  {
-                 if ( mpPadlockPriorityObject &&
+                 if ( mpPadlockPriorityObject  and 
                   mpPadlockPriorityObject not_eq mpPadlockCandidate )
                  {
                  VuDeReferenceEntity(mpPadlockPriorityObject);
@@ -1047,7 +1047,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 // if we got a candidate we use that
                 if ( mpPadlockCandidate and mpPadlockCandidate->IsSim() )
                 {
-                 if ( mpPadlockPriorityObject &&
+                 if ( mpPadlockPriorityObject  and 
                   mpPadlockPriorityObject not_eq mpPadlockCandidate )
                  {
                  VuDeReferenceEntity(mpPadlockPriorityObject);
@@ -1081,7 +1081,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
 
                  if ( mpPadlockCandidate and mpPadlockCandidate->IsSim() )
                  {
-                 if ( mpPadlockPriorityObject &&
+                 if ( mpPadlockPriorityObject  and 
                   mpPadlockPriorityObject not_eq mpPadlockCandidate )
                  {
                  VuDeReferenceEntity(mpPadlockPriorityObject);

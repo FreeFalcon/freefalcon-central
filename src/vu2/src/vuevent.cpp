@@ -1026,8 +1026,8 @@ VU_ERRCODE VuCreateEvent::Process(VU_BOOL)
     }
 
     if (
-        Entity() &&
-        (Entity()->OwnerId() not_eq expandedData_->OwnerId()) &&
+        Entity()  and 
+        (Entity()->OwnerId() not_eq expandedData_->OwnerId())  and 
         Entity() not_eq expandedData_
     )
     {

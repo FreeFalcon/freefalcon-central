@@ -587,8 +587,8 @@ void OnSimMouseInput(HWND)
 
             // we come here if 1) no RMB pressed 2) not in 2d pit mode
             // aargh this (whole mouselook) code is a freaking mess !!!!
-            if ((PlayerOptions.GetMouseLook() == true) &&
-                (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode3DCockpit) &&
+            if ((PlayerOptions.GetMouseLook() == true)  and 
+                (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode3DCockpit)  and 
                 (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode2DCockpit))
             {
                 /************************************************************************/

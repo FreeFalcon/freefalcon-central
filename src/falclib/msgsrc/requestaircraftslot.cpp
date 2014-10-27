@@ -292,8 +292,8 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
         dataBlock.current_pilot_slot = requester->GetAssignedPilotSlot();
 
         if (
-            (oldflight == flight) &&
-            (FalconLocalGame->GetGameType() == game_Dogfight) &&
+            (oldflight == flight)  and 
+            (FalconLocalGame->GetGameType() == game_Dogfight)  and 
             (flight->GetTotalVehicles() == 1)
         )
         {

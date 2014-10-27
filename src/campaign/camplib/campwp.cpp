@@ -586,8 +586,8 @@ void WayPointClass::GetLocation(float *x, float *y, float *z) const
     {
         //Check that the Sim position and the Grid position are in sync.  If so, return the sim position
         if (
-            //(GridX == SimToGrid(SimX)) and (GridY == SimToGrid(SimY)) &&
-            (GridX == gx) and (GridY == gy) &&
+            //(GridX == SimToGrid(SimX)) and (GridY == SimToGrid(SimY))  and 
+            (GridX == gx) and (GridY == gy)  and 
             (GridZ == (short)((-1.0F * SimZ) / GRIDZ_SCALE_FACTOR))
         )
         {

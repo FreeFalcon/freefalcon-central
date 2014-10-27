@@ -5023,7 +5023,7 @@ float CockpitManager::GetTilt(void)
 void CockpitManager::SetTOD(float newLightLevel)
 {
 
-    /* if ((fabs(lightLevel - newLightLevel) <= COCKPIT_LIGHT_CHANGE_TOLERANCE) &&
+    /* if ((fabs(lightLevel - newLightLevel) <= COCKPIT_LIGHT_CHANGE_TOLERANCE)  and 
      (OTWDriver.renderer->GetGreenMode() not_eq inNVGmode)) {
      return;
      }*/
@@ -5663,9 +5663,9 @@ void CockpitManager::LoadCockpitDefaults(void)
     // Master Arm
     //if (SimDriver.GetPlayerEntity()) // JB 010220 CTD
     // sfr: TODO take this JB hack out
-    if (playerAC &&
-        playerAC->Sms &&
-        !F4IsBadReadPtr(playerAC, sizeof(AircraftClass)) &&
+    if (playerAC  and 
+        playerAC->Sms  and 
+        !F4IsBadReadPtr(playerAC, sizeof(AircraftClass))  and 
         !F4IsBadCodePtr((FARPROC) playerAC->Sms))
     {
         // JB 010220 CTD

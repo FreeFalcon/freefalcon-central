@@ -364,7 +364,7 @@ bool Texture::CreateTexture(char *strName)
     ShiAssert(texHandle == NULL);
 
     // JB 010318 CTD
-    if (/* !F4IsBadReadPtr(palette,sizeof(Palette)) &&*/ (flags & MPR_TI_PALETTE))
+    if (/* !F4IsBadReadPtr(palette,sizeof(Palette))  and */ (flags & MPR_TI_PALETTE))
     {
         palette->Activate();
         ShiAssert(palette->palHandle);

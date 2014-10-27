@@ -208,7 +208,7 @@ SimObjectType* VehRwrClass::Exec(SimObjectType* targetList)
             // JB 010727 RP5 RWR Changed to 3 seconds S.G. WHY?
             // 2001-02-18 MODIFIED BY S.G. IN 1.08i2, THIS IS 30 SECONDS! I'll change it to 6 seconds like the other if it's for the player. Also, why use floats?!?
             // ((SimBaseClass*)detectionList[i].entity)->RdrCycleTime() * 2.0F * SEC_TO_MSEC)
-            if (SimLibElapsedTime > detectionList[i].lastHit + ((SimBaseClass*)detectionList[i].entity)->RdrCycleTime() * SEC_TO_MSEC + 1000 &&
+            if (SimLibElapsedTime > detectionList[i].lastHit + ((SimBaseClass*)detectionList[i].entity)->RdrCycleTime() * SEC_TO_MSEC + 1000  and 
                 SimLibElapsedTime > detectionList[i].lastHit + (platform == SimDriver.GetPlayerAircraft() ? 3 * SEC_TO_MSEC : 30 * SEC_TO_MSEC))
             {
                 if (!detectionList[i].isLocked or (SimBaseClass*)detectionList[i].entity->IsDead())
@@ -429,7 +429,7 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
         // If this is a new lock made by a player, see about sending a "buddy spike" call
         if (trackType == Track_Lock and listElement->previouslyLocked == 0 and radarMode == RadarClass::DigiSTT) // 2002-02-20 MODIFIED BY S.G. Added the radarMode test so only STT will generate a buddy spike.
         {
-            if (theObject->IsPlayer() &&
+            if (theObject->IsPlayer()  and 
                 TeamInfo[platform->GetTeam()]->TStance(theObject->GetTeam()) < Neutral)
             {
                 // We're friendly or allied, so...

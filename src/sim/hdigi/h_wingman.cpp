@@ -157,8 +157,8 @@ void HeliBrain::FollowLead(void)
     }
 
     // RV - Biker - Stay on ground if lead does also
-    if (self->flightLead->curWaypoint->GetWPFlags() & WPF_TAKEOFF  &&
-        self->flightLead->curWaypoint->GetWPDepartureTime() > SimLibElapsedTime &&
+    if (self->flightLead->curWaypoint->GetWPFlags() & WPF_TAKEOFF   and 
+        self->flightLead->curWaypoint->GetWPDepartureTime() > SimLibElapsedTime  and 
         self->flightLead->curWaypoint->GetPrevWP() == NULL)
     {
         LevelTurn(0.0f, 0.0f, TRUE);

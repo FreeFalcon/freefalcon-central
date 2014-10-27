@@ -41,7 +41,7 @@ void MissileClass::SetStatus(void)
     ShiAssert(inputData);
 
     // Check for min speed and max time for all missiles first
-    if ((inputData and engineData) and (mach < inputData->mslVmin) &&
+    if ((inputData and engineData) and (mach < inputData->mslVmin)  and 
         (runTime > engineData->times[engineData->numBreaks - 1]))
     {
         done = FalconMissileEndMessage::MinSpeed;
@@ -294,7 +294,7 @@ void MissileClass::SetStatus(void)
 //// target position is inside the lethal radius OR missile is higher than its maxalt,
 //// bring missile to an end. When we have missiles going high ballistic, intercept them at max altitude
 //// in case of lethalRadius, they might apply a bit of proximity damage to the target...
-// else if (runTime > 1.50f and (flags & SensorLostLock) and !targetPtr and ((g_nMissileFix & 0x20) &&
+// else if (runTime > 1.50f and (flags & SensorLostLock) and !targetPtr and ((g_nMissileFix & 0x20)  and 
 // range * range < lethalRadiusSqrd or (wc and wc->MaxAlt and (fabs(z) > fabsf(wc->MaxAlt*1000.0f))))) //JAM 27Sep03 - Should be fabsf
 // {
 // done = FalconMissileEndMessage::NotDone; //ExceedFOV;//Cobra we can't use Missed because it is out of range

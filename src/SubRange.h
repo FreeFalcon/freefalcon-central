@@ -27,7 +27,7 @@ public:
 	SubRange & operator=(const InputType InputValue)
 	{
 
-		if (InputValue >= InputMinimum &&
+		if (InputValue >= InputMinimum  and 
 			InputValue <= InputMaximum)
 		{
 			mOutputValue = InputValue;

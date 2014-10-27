@@ -1643,8 +1643,8 @@ F4PFList ResetNewSquadron(HWND hDlg, Unit squadron, F4PFList flights)
         while (u)
         {
             if (
-                u->GetDomain() == DOMAIN_AIR &&
-                u->GetType() == TYPE_FLIGHT &&
+                u->GetDomain() == DOMAIN_AIR  and 
+                u->GetType() == TYPE_FLIGHT  and 
                 u->GetUnitSquadronID() == squadron->Id()
             )
             {

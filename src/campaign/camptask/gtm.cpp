@@ -1217,7 +1217,7 @@ void GroundTaskingManagerClass::RequestEngineer(Objective o, int division)
 
     while (u)
     {
-        if (u->GetTeam() == owner and u->GetDomain() == DOMAIN_LAND &&
+        if (u->GetTeam() == owner and u->GetDomain() == DOMAIN_LAND  and 
             u->GetUnitNormalRole() == GRO_ENGINEER and u->GetUnitDivision() == division and u->GetUnitOrders() not_eq GORD_REPAIR)
         {
             u->SetUnitOrders(GORD_REPAIR, o->Id());

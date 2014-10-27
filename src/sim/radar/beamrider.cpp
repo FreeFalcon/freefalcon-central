@@ -125,7 +125,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         // Cobra - AI SARH support check
         else if (lockedTarget and radarPlatform->IsAirplane())
         {
-            if ((((MissileClass *)platform)->GetSeekerType() == SensorClass::RadarHoming) &&
+            if ((((MissileClass *)platform)->GetSeekerType() == SensorClass::RadarHoming)  and 
                 (((MissileClass *)platform)->GetRuntime() > 0.0f))
             {
                 int stat = 0;
@@ -197,7 +197,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         // Cobra - AI SARH ground support check
         else if (!radarPlatform->IsAirplane() and radarPlatform->OnGround())
         {
-            if ((((MissileClass *)platform)->GetSeekerType() == SensorClass::RadarHoming) &&
+            if ((((MissileClass *)platform)->GetSeekerType() == SensorClass::RadarHoming)  and 
                 (((MissileClass *)platform)->GetRuntime() > 0.0f))
             {
                 //float ret = ((RadarClass *)platform)->ReturnStrength(lockedTarget);
@@ -399,7 +399,7 @@ void BeamRiderClass::SendTrackMsg(SimObjectType* tgtptr , unsigned int trackType
     while (sess)
     {
         if (
-            (sess->CameraCount() > 0) &&
+            (sess->CameraCount() > 0)  and 
             (
                 sess->GetCameraEntity(0)->Id() == platform->Id() ||
                 sess->GetCameraEntity(0)->Id() == id

@@ -331,7 +331,7 @@ ListValidate(void)
 
     for (tmp = table; tmp; tmp = tmp -> next)
         for (i = 0; i < ALLOC_UNITS; i++)
-            if ((tmp -> unit[i].check not_eq ALLOC_FREE_FLAG) &&
+            if ((tmp -> unit[i].check not_eq ALLOC_FREE_FLAG)  and 
                 (tmp -> unit[i].check not_eq ALLOC_USED_FLAG))
             {
                 DBG(PF("ERROR: Possible overwrite in lists."));
@@ -436,7 +436,7 @@ ListGlobalPack(void)
 
     do
     {
-        if ((tbl -> avail == ALLOC_UNITS) &&
+        if ((tbl -> avail == ALLOC_UNITS)  and 
             (tbl -> sleeping))
         {
             if (tbl -> prev)

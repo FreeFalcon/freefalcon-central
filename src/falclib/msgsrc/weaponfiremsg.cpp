@@ -76,7 +76,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
             }
 
             //Cobra test
-            if ((theEntity->IsAirplane() or theEntity->IsHelicopter()) /*&& dataBlock.weaponType not_eq FalconWeaponsFire::GUN*/)
+            if ((theEntity->IsAirplane() or theEntity->IsHelicopter()) /* and  dataBlock.weaponType not_eq FalconWeaponsFire::GUN*/)
             {
                 FalconRadioChatterMessage *radioMessage = new FalconRadioChatterMessage(simEntity->Id(), FalconLocalSession);
                 radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
@@ -183,7 +183,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
 
     // if the weapon is a missile and we have a target ID, tell the target
     // there's an incoming
-    if (dataBlock.targetId not_eq vuNullId &&
+    if (dataBlock.targetId not_eq vuNullId  and 
         (dataBlock.weaponType == SRM or dataBlock.weaponType == MRM))
     {
         SimBaseClass *theMissile = (SimBaseClass*)(vuDatabase->Find(dataBlock.fWeaponUID));

@@ -108,7 +108,7 @@ void OTWDriverClass::Draw2DHud(void)
                 TheHud->SetTarget(NULL);
 
             if (
-                (mOTWDisplayMode == ModeHud) &&
+                (mOTWDisplayMode == ModeHud)  and 
                 ((((float)DisplayOptions.DispWidth)) == 1.25F * DisplayOptions.DispHeight)
             )
             {

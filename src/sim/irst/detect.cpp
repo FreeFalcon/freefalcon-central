@@ -109,7 +109,7 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
 
             else
             {
-                if (fabs(obj->localData->el - seekerElCenter) < (typeData->FOVHalfAngle / noneTrackingFactor) &&
+                if (fabs(obj->localData->el - seekerElCenter) < (typeData->FOVHalfAngle / noneTrackingFactor)  and 
                     fabs(obj->localData->az - seekerAzCenter) < (typeData->FOVHalfAngle / noneTrackingFactor))
                 {
                     tracking = TRUE ;

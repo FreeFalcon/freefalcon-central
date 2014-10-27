@@ -201,8 +201,8 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
         }
 
         if (
-            initData->playerSlot not_eq NO_PILOT &&
-            initData->campBase->IsUnit() &&
+            initData->playerSlot not_eq NO_PILOT  and 
+            initData->campBase->IsUnit()  and 
             initData->campBase->IsSetFalcFlag(FEC_PLAYERONLY)
         )
         {
@@ -210,8 +210,8 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
         }
 
         if (
-            initData->playerSlot not_eq NO_PILOT &&
-            initData->campBase->IsUnit() &&
+            initData->playerSlot not_eq NO_PILOT  and 
+            initData->campBase->IsUnit()  and 
             initData->campBase->IsSetFalcFlag(FEC_HOLDSHORT)
         )
         {
@@ -440,7 +440,7 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
             // Check and add to the end of the list if needed
             // sfr: removed JB hack
             if (
-                // !F4IsBadReadPtr(curUpdate, sizeof(SimBaseClass)) &&
+                // !F4IsBadReadPtr(curUpdate, sizeof(SimBaseClass))  and 
                 !curUpdate->IsDead() and CheckForConcern(curUpdate, self)
             )
             {
@@ -608,7 +608,7 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
     {
         if (self->GetTeam() == curUpdate->GetTeam())
             airRange = 100.0F * 100.0F;
-        else if (curUpdate->IsSim() &&
+        else if (curUpdate->IsSim()  and 
                  (((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER ||
                   ((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER_BOMBER ||
                   // 2002-03-05 MODIFIED BY S.G. Duh, it's missionClass, not missionType that holds AAMission
@@ -617,7 +617,7 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
         {
             airRange = 20.0F * NM_TO_FT * 20.0F * NM_TO_FT;
         }
-        else if (curUpdate->IsCampaign() &&
+        else if (curUpdate->IsCampaign()  and 
                  (((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER ||
                   ((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER_BOMBER ||
                   // 2002-03-05 MODIFIED BY S.G. Duh, it's missionClass, not missionType that holds AAMission

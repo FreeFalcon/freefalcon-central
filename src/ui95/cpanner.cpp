@@ -162,9 +162,9 @@ long C_Panner::CheckHotSpots(long relX, long relY)
 
     // check image hotspot
     if (
-        relX >= (GetX() - image->GetX()) &&
-        relX <= (GetX() + GetW() - image->GetX()) &&
-        relY >= (GetY() - image->GetY()) &&
+        relX >= (GetX() - image->GetX())  and 
+        relX <= (GetX() + GetW() - image->GetX())  and 
+        relY >= (GetY() - image->GetY())  and 
         relY <= (GetY() + GetH() - image->GetY())
     )
     {

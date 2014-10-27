@@ -478,7 +478,7 @@ void OTWDriverClass::VCock_GiveGilmanHead(float dT)
         if (headMotion == HEAD_TRANSISTION3)
         {
 
-            if (/*azDir &&*/ initialTilt >= -92.0F * DTR)
+            if (/*azDir  and */ initialTilt >= -92.0F * DTR)
             {
 
                 if (eyeTilt < initialTilt)
@@ -2079,7 +2079,7 @@ void OTWDriverClass::VCock_Exec(void)
         if (gNavigationSys)
         {
             if ((gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN ||
-                 gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV) &&
+                 gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV)  and 
                 gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &hILS))
             {
 
@@ -3079,7 +3079,7 @@ void OTWDriverClass::VCock_Exec(void)
             else
             {
                 //MI modified for ICP Stuff
-                if (!SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::ufc_fault) &&
+                if (!SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::ufc_fault)  and 
                     SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::UFCPower))
                 {
                     pCockpitManager->mpIcp->Exec();

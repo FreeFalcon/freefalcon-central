@@ -403,7 +403,7 @@ ObjProxFilter* AllObjProxFilter = NULL;
 
 VU_BOOL CampBaseFilter::Test(VuEntity *e)
 {
-    if ((e->EntityType())->classInfo_[VU_DOMAIN] &&
+    if ((e->EntityType())->classInfo_[VU_DOMAIN]  and 
         ((e->EntityType())->classInfo_[VU_CLASS] == CLASS_UNIT ||
          (e->EntityType())->classInfo_[VU_CLASS] == CLASS_OBJECTIVE))
         return TRUE;
@@ -413,7 +413,7 @@ VU_BOOL CampBaseFilter::Test(VuEntity *e)
 
 VU_BOOL CampBaseFilter::RemoveTest(VuEntity *e)
 {
-    if ((e->EntityType())->classInfo_[VU_DOMAIN] &&
+    if ((e->EntityType())->classInfo_[VU_DOMAIN]  and 
         ((e->EntityType())->classInfo_[VU_CLASS] == CLASS_UNIT ||
          (e->EntityType())->classInfo_[VU_CLASS] == CLASS_OBJECTIVE))
         return TRUE;
@@ -843,7 +843,7 @@ int RebuildFrontList(int do_barcaps, int incremental)
     //Barcap Request also needed to be converted to milliseconds.
     //if (do_barcaps and lastRequest - Camp_GetCurrentTime() > (unsigned int)BARCAP_REQUEST_INTERVAL)
     if (
-        do_barcaps &&
+        do_barcaps  and 
         (Camp_GetCurrentTime() - lastRequest > ((unsigned int)BARCAP_REQUEST_INTERVAL * CampaignMinutes))
     )
     {

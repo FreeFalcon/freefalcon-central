@@ -864,7 +864,7 @@ TREELIST *C_TreeList::CheckBranch(TREELIST *me, long mx, long my)
         {
             if (cur->Child and ChildImage_[0] and FindVisible(cur->Child))
             {
-                if (mx >= (cur->x_ + 2) and mx <= (cur->x_ + (ChildImage_[0]->Header->w)) &&
+                if (mx >= (cur->x_ + 2) and mx <= (cur->x_ + (ChildImage_[0]->Header->w))  and 
                     my >= (cur->y_ + 2) and my <= (cur->y_ + ChildImage_[0]->Header->h))
                 {
                     CheckFlag_ = C_TYPE_MENU;

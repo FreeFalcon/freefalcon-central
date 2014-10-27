@@ -335,7 +335,7 @@ void PilotInputs::Update()
             if (keyboardPickleOverride or PickleOverride)
             {
                 if (!PickleTime) PickleTime = SimLibElapsedTime;
-                else if ((SimLibElapsedTime - PickleTime) > playerAC->FCC->GetPickleTime() and pickleButton == Off &&
+                else if ((SimLibElapsedTime - PickleTime) > playerAC->FCC->GetPickleTime() and pickleButton == Off  and 
                          playerAC->FCC->AllowMaddog())
                     pickleButton = On;
             }
@@ -388,7 +388,7 @@ void PilotInputs::Reset(void)
 /*******************************************************************************/
 void PilotInputs::cycleCurrentEngine()
 {
-    if ((SimDriver.GetPlayerEntity())/*&&(SimDriver.GetPlayerEntity()->acFlags & hasTwoEngines)*/)
+    if ((SimDriver.GetPlayerEntity())/* and (SimDriver.GetPlayerEntity()->acFlags & hasTwoEngines)*/)
     {
         switch (currentlyActiveEngine)
         {

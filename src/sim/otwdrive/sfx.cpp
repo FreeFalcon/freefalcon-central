@@ -207,7 +207,7 @@ int SfxClass::TryParticleEffect(void)
         // Cobra - Kludge to fix no PS effects above overcast layer
         /*
         if (
-         otwPlatform and realWeather->weatherCondition > FAIR &&
+         otwPlatform and realWeather->weatherCondition > FAIR  and 
          (otwPlatform->ZPos() < (realWeather->stratusZ-realWeather->stratusDepth)))
          return 0;
         */
@@ -409,8 +409,8 @@ SfxClass::SfxClass(int  typeSfx,
     endMessage = NULL;
     damMessage = NULL;
 
-    if (pos.x > -10000.0f and pos.x < 10000000.0f &&
-        pos.y > -10000.0f and pos.y < 10000000.0f &&
+    if (pos.x > -10000.0f and pos.x < 10000000.0f  and 
+        pos.y > -10000.0f and pos.y < 10000000.0f  and 
         pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
@@ -927,8 +927,8 @@ SfxClass::SfxClass(int typeSfx,
     endMessage = NULL;
     damMessage = NULL;
 
-    if (pos.x > -10000.0f and pos.x < 10000000.0f &&
-        pos.y > -10000.0f and pos.y < 10000000.0f &&
+    if (pos.x > -10000.0f and pos.x < 10000000.0f  and 
+        pos.y > -10000.0f and pos.y < 10000000.0f  and 
         pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
@@ -1015,8 +1015,8 @@ SfxClass::SfxClass(int typeSfx,
     endMessage = NULL;
     damMessage = NULL;
 
-    if (pos.x > -10000.0f and pos.x < 10000000.0f &&
-        pos.y > -10000.0f and pos.y < 10000000.0f &&
+    if (pos.x > -10000.0f and pos.x < 10000000.0f  and 
+        pos.y > -10000.0f and pos.y < 10000000.0f  and 
         pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
@@ -1121,8 +1121,8 @@ SfxClass::SfxClass(
     viewPoint = OTWDriver.GetViewpoint();
     flags = SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES;
 
-    if (pos.x > -10000.0f and pos.x < 10000000.0f &&
-        pos.y > -10000.0f and pos.y < 10000000.0f &&
+    if (pos.x > -10000.0f and pos.x < 10000000.0f  and 
+        pos.y > -10000.0f and pos.y < 10000000.0f  and 
         pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
@@ -1248,8 +1248,8 @@ SfxClass::SfxClass(int  typeSfx,
     damMessage = NULL;
     travelDist = 0.0f;
 
-    if (pos.x > -10000.0f and pos.x < 10000000.0f &&
-        pos.y > -10000.0f and pos.y < 10000000.0f &&
+    if (pos.x > -10000.0f and pos.x < 10000000.0f  and 
+        pos.y > -10000.0f and pos.y < 10000000.0f  and 
         pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
@@ -1422,8 +1422,8 @@ SfxClass::SfxClass(int  typeSfx,
     endMessage = NULL;
     damMessage = NULL;
 
-    if (pos.x > -10000.0f and pos.x < 10000000.0f &&
-        pos.y > -10000.0f and pos.y < 10000000.0f &&
+    if (pos.x > -10000.0f and pos.x < 10000000.0f  and 
+        pos.y > -10000.0f and pos.y < 10000000.0f  and 
         pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
@@ -1776,7 +1776,7 @@ SfxClass::SfxClass(int  typeSfx,
             break;
 
         case SFX_GROUND_DUSTCLOUD:
-            if (gSfxCount[ SFX_GROUND_DUSTCLOUD ] < gSfxLODCutoff &&
+            if (gSfxCount[ SFX_GROUND_DUSTCLOUD ] < gSfxLODCutoff  and 
                 gTotSfx < gSfxLODTotCutoff)
             {
                 obj2d = new Drawable2D(DRAW2D_GROUND_DUSTCLOUD, scale, &pos);
@@ -1961,8 +1961,8 @@ SfxClass::SfxClass(int  typeSfx,
     F4Assert(vec.x > -10000.0F and vec.y > -10000.0F and vec.z > -10000.0F);
     F4Assert(vec.x <  10000.0F and vec.y <  10000.0F and vec.z <  10000.0F);
 
-    if (pos.x > -10000.0f and pos.x < 10000000.0f &&
-        pos.y > -10000.0f and pos.y < 10000000.0f &&
+    if (pos.x > -10000.0f and pos.x < 10000000.0f  and 
+        pos.y > -10000.0f and pos.y < 10000000.0f  and 
         pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
@@ -1982,7 +1982,7 @@ SfxClass::SfxClass(int  typeSfx,
 
             //RV - I-Hawk - Removing old trails calls, not needed anymore
             //objTrail = new DrawableTrail(TRAIL_SMOKE);
-            if (gTotSfx <= gSfxLODTotCutoff &&
+            if (gTotSfx <= gSfxLODTotCutoff  and 
                 gSfxCount[ SFX_AIR_SMOKECLOUD ] < gSfxLODCutoff)
             {
                 // for smoking part, randomly allow piece to smoke for a
@@ -2797,8 +2797,8 @@ BOOL SfxClass::Exec()
             }
             else
             {
-                if (fabs(vec.x) > 1.0f &&
-                    fabs(vec.y) > 1.0f &&
+                if (fabs(vec.x) > 1.0f  and 
+                    fabs(vec.y) > 1.0f  and 
                     fabs(vec.z) > 5.0f)
                 {
 
@@ -2924,13 +2924,13 @@ BOOL SfxClass::Exec()
             vec.y *= 0.99f;
             vec.z *= 0.99f;
 
-            if (fabs(vec.x) < 1.0f &&
-                fabs(vec.y) < 1.0f &&
-                lastHit &&
-                !(flags & SFX_F16CRASH_ADJUSTANGLE) &&
-                fabs(baseObj->YawDelta()) < 15.0f * DTR &&
-                fabs(baseObj->PitchDelta()) < 15.0f * DTR &&
-                fabs(baseObj->RollDelta()) < 15.0f * DTR &&
+            if (fabs(vec.x) < 1.0f  and 
+                fabs(vec.y) < 1.0f  and 
+                lastHit  and 
+                !(flags & SFX_F16CRASH_ADJUSTANGLE)  and 
+                fabs(baseObj->YawDelta()) < 15.0f * DTR  and 
+                fabs(baseObj->PitchDelta()) < 15.0f * DTR  and 
+                fabs(baseObj->RollDelta()) < 15.0f * DTR  and 
                 fabs(vec.z) < 5.0f)
             {
 
@@ -2995,9 +2995,9 @@ BOOL SfxClass::Exec()
             baseObj->SetDelta(vec.x, vec.y, vec.z);
 
             /*
-             if (fabs( vec.x ) > 10.0f &&
-             fabs( vec.y ) > 10.0f &&
-             fabs( vec.z ) > 10.0f &&
+             if (fabs( vec.x ) > 10.0f  and 
+             fabs( vec.y ) > 10.0f  and 
+             fabs( vec.z ) > 10.0f  and 
              curtime & 8) {
              OTWDriver.AddSfxRequest(
              new SfxClass(SFX_AAA_EXPLOSION, // type
@@ -4193,7 +4193,7 @@ SfxClass::RunSecondarySfx(void)
             break;
 
         case SFX_SMOKING_PART:
-            if (gSfxCount[ SFX_TRAILSMOKE ] < gSfxLODCutoff &&
+            if (gSfxCount[ SFX_TRAILSMOKE ] < gSfxLODCutoff  and 
                 gTotSfx < gSfxLODTotCutoff)
             {
                 mvec.x = PRANDFloat() * 25.0f;
@@ -4331,8 +4331,8 @@ SfxClass::RunSecondarySfx(void)
             mvec.y = 0.0f;
             mvec.z = -40.0f;
 
-            if (gSfxCount[ SFX_TRAILSMOKE ] < gSfxLODCutoff &&
-                gSfxCount[ SFX_FIRESMOKE ] < gSfxLODCutoff &&
+            if (gSfxCount[ SFX_TRAILSMOKE ] < gSfxLODCutoff  and 
+                gSfxCount[ SFX_FIRESMOKE ] < gSfxLODCutoff  and 
                 gTotSfx < gSfxLODTotCutoff)
             {
                 switch (PRANDInt5())
@@ -4480,7 +4480,7 @@ SfxClass::RunSecondarySfx(void)
                     }
                     else
                     {
-                        if (gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff &&
+                        if (gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff  and 
                             gTotSfx < gSfxLODTotCutoff)
                         {
                             /*
@@ -4716,8 +4716,8 @@ SfxClass::RunSecondarySfx(void)
             {
                 // mvec.z = -20.0f * scale * 0.02f;
 
-                if (gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff &&
-                    gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff &&
+                if (gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff  and 
+                    gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff  and 
                     gTotSfx < gSfxLODTotCutoff)
                 {
                     numBursts = 8 + FloatToInt32(PRANDFloatPos() * 6.0f);
@@ -4765,9 +4765,9 @@ SfxClass::RunSecondarySfx(void)
                     mvec.y = 10.0f * PRANDFloat() * scale * 0.01f;
                     mvec.z = -18.0f * PRANDFloatPos() * scale * 0.01f;
 
-                    if (approxDist < SFX_LOD_DIST &&
-                        gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff &&
-                        gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff &&
+                    if (approxDist < SFX_LOD_DIST  and 
+                        gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff  and 
+                        gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff  and 
                         gTotSfx < gSfxLODTotCutoff)
                     {
                         if (rand() & 1)
@@ -4864,9 +4864,9 @@ SfxClass::RunSecondarySfx(void)
                          */
                     }
 
-                    if (approxDist < SFX_LOD_DIST &&
-                        gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff &&
-                        gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff &&
+                    if (approxDist < SFX_LOD_DIST  and 
+                        gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff  and 
+                        gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff  and 
                         gTotSfx < gSfxLODTotCutoff)
                     {
 
@@ -4914,8 +4914,8 @@ SfxClass::RunSecondarySfx(void)
             break;
 
         case SFX_ROCKET_BURST:
-            if (gSfxCount[ SFX_SPARKS ] < gSfxLODCutoff &&
-                gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff &&
+            if (gSfxCount[ SFX_SPARKS ] < gSfxLODCutoff  and 
+                gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff  and 
                 gTotSfx < gSfxLODTotCutoff)
             {
                 numBursts = 24 + FloatToInt32(PRANDFloatPos() * 10.0f);
@@ -5106,9 +5106,9 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = 60.0f * PRANDFloat();
                 mvec.z = -80.0f * PRANDFloatPos();
 
-                if (approxDist < SFX_LOD_DIST &&
-                    gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff &&
-                    gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff &&
+                if (approxDist < SFX_LOD_DIST  and 
+                    gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff  and 
+                    gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff  and 
                     gTotSfx < gSfxLODTotCutoff)
                 {
                     if (PRANDInt3() == 1)
@@ -5257,7 +5257,7 @@ SfxClass::RunSecondarySfx(void)
                     break;
             }
 
-            if (gSfxCount[ SFX_LONG_HANGING_SMOKE2 ] < gSfxLODCutoff &&
+            if (gSfxCount[ SFX_LONG_HANGING_SMOKE2 ] < gSfxLODCutoff  and 
                 gTotSfx < gSfxLODTotCutoff)
             {
                 /*
@@ -5980,7 +5980,7 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
         pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 10.0f;
 
         if ((groundType == COVERAGE_WATER ||
-             groundType == COVERAGE_RIVER) &&
+             groundType == COVERAGE_RIVER)  and 
             type not_eq SFX_FLARE_GFX)
         {
             F4SoundFXSetPos(SFX_SPLASH, TRUE, pos.x, pos.y, pos.z, 1.0f);

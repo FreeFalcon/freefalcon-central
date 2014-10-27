@@ -920,7 +920,7 @@ void AircraftClass::StoreToDamage(WeaponClass thing)
     for (int i = 0; i < Sms->NumHardpoints(); i++)
     {
         // if its a tank - try and guess which one.
-        if (Sms->hardPoint[i] &&
+        if (Sms->hardPoint[i]  and 
             Sms->hardPoint[i]->GetWeaponClass() == thing)
         {
             //tanks cause our Fuel Management System to fail.
@@ -1286,7 +1286,7 @@ void AircraftClass::SetExternalData(void)
     else
         cockpitFlightData.ClearLightBit(FlightData::RefuelAR);
 
-    if (playerAC->af->IsEngineFlag(AirframeClass::FuelDoorOpen) &&
+    if (playerAC->af->IsEngineFlag(AirframeClass::FuelDoorOpen)  and 
         (OTWDriver.pCockpitManager->mMiscStates.mRefuelState <= 1))  // ready to refuel
         cockpitFlightData.SetLightBit(FlightData::RefuelRDY);
     else
@@ -1356,7 +1356,7 @@ void AircraftClass::SetExternalData(void)
     // and the gear is down and there are no gear faults WoW switch is "on"
     // this is not used elsewhere in the game but several places do use the OnGround() routine
     // to implement correct WoW behavior.
-    if (playerAC->OnGround() and (af->gearPos == 1.0F) &&
+    if (playerAC->OnGround() and (af->gearPos == 1.0F)  and 
         (!playerAC->mFaults->GetFault(FaultClass::gear_fault)))
         cockpitFlightData.SetLightBit(FlightData::WOW);
     else
@@ -1576,7 +1576,7 @@ void AircraftClass::SetExternalData(void)
 
     // MD -- 20031011: this lights come on if the generator is *not* running
     // but only set this to on if the main power switch is not in the off position
-    if (!af->GeneratorRunning(AirframeClass::GenMain) &&
+    if (!af->GeneratorRunning(AirframeClass::GenMain)  and 
         (!(((AircraftClass*)(playerAC))->MainPower() == AircraftClass::MainPowerOff)))
         cockpitFlightData.SetLightBit3(FlightData::MainGen);
     else
@@ -1584,7 +1584,7 @@ void AircraftClass::SetExternalData(void)
 
     // MD -- 20031011: this lights come on if the generator is *not* running
     // but only set this to on if the main power switch is not in the off position
-    if (!af->GeneratorRunning(AirframeClass::GenStdby) &&
+    if (!af->GeneratorRunning(AirframeClass::GenStdby)  and 
         (!(((AircraftClass*)(playerAC))->MainPower() == AircraftClass::MainPowerOff)))
         cockpitFlightData.SetLightBit3(FlightData::StbyGen);
     else

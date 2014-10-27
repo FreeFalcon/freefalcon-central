@@ -581,7 +581,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 
         // host wake/sleep all deaged flights
         if (
-            vuLocalSessionEntity->Game()->IsLocal() &&
+            vuLocalSessionEntity->Game()->IsLocal()  and 
             ( //me123 host wake/sleep stuff
                 //handle airplanes helicopters and airbases
                 g_bSleepAll ||
@@ -605,7 +605,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 
                 e->SetChecked();
             }
-            else if (!g_bSleepAll and !e->IsSetFalcFlag(FEC_PLAYER_ENTERING) &&// we are not in sleep all mode
+            else if (!g_bSleepAll and !e->IsSetFalcFlag(FEC_PLAYER_ENTERING)  and // we are not in sleep all mode
                      (
                          !e->IsSetFalcFlag(FEC_PLAYERONLY) ||// not a human
                          (
@@ -753,8 +753,8 @@ void RebuildBubble(int forced)
 
                 while (object)
                 {
-                    if (!object->IsAwake() &&
-                        !object->IsDead() &&
+                    if (!object->IsAwake()  and 
+                        !object->IsDead()  and 
                         (object->IsBomb() or object->IsMissile()))
                     {
                         object->Wake();
@@ -964,7 +964,7 @@ void RebuildBubble(int forced)
                     while (object)
                     {
                         if (
-                            !object->IsAwake() and !object->IsDead() &&
+                            !object->IsAwake() and !object->IsDead()  and 
                             (object->IsBomb() or object->IsMissile())
                         )
                         {
@@ -1074,7 +1074,7 @@ void RebuildBubble(int forced)
                                                               );
                                             }
                                             else if (
-                                                u->IsFlight() &&
+                                                u->IsFlight()  and 
                                                 (((Flight)u)->GetEvalFlags() & FEVAL_START_COLD)
                                             )
                                             {
@@ -1082,7 +1082,7 @@ void RebuildBubble(int forced)
                                             }
                                         }
                                         else if (
-                                            u->IsSetFalcFlag(FEC_PLAYER_ENTERING | FEC_HASPLAYERS) &&
+                                            u->IsSetFalcFlag(FEC_PLAYER_ENTERING | FEC_HASPLAYERS)  and 
                                             u->IsFlight()
                                         )
                                         {
@@ -2257,8 +2257,8 @@ void SetEntryTime(Flight flight)
 
 
     //me123 give the player a few sec to make a change.
-    if ((PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY) and  timer &&
-        (timer < (VU_TIME)(3 * CampaignSeconds)) &&
+    if ((PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY) and  timer  and 
+        (timer < (VU_TIME)(3 * CampaignSeconds))  and 
         (gLaunchTime < (CampaignTime)(vuxGameTime + 3 * CampaignSeconds)))
     {
 
@@ -2289,7 +2289,7 @@ int CompressCampaignUntilTakeoff(Flight flight)
 
             if (flt)
             {
-                if (flt->GetCurrentUnitWP() &&
+                if (flt->GetCurrentUnitWP()  and 
                     (flt->GetCurrentUnitWP()->GetWPAction() == WP_TAKEOFF))
                 {
 

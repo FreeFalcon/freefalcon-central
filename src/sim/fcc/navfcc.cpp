@@ -1784,7 +1784,7 @@ void FireControlComputer::DrawBullseye(void)
             DrawBullseyeData(display, cursorX, cursorY);
         else
         {
-            if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
+            if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp  and 
                 OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
             {
                 DrawBullseyeCircle(display, cursorX, cursorY);
@@ -2202,7 +2202,7 @@ void FireControlComputer::Draw1WingmanGnd(AircraftClass *wing)
 
 #else
 
-    if (((SimVehicleClass*)wing)->sensorArray[1]->RemoteBuggedTarget == NULL &&
+    if (((SimVehicleClass*)wing)->sensorArray[1]->RemoteBuggedTarget == NULL  and 
         (theRadar == NULL or (locked = theRadar->CurrentTarget()) == NULL)) return;
 
 #endif
@@ -2413,7 +2413,7 @@ void FireControlComputer::Draw1Wingman(AircraftClass *wing)
 
     if (
 #if !NO_REMOTE_BUGGED_TARGET
-        static_cast<SimVehicleClass*>(wing)->sensorArray[1]->RemoteBuggedTarget == NULL &&
+        static_cast<SimVehicleClass*>(wing)->sensorArray[1]->RemoteBuggedTarget == NULL  and 
 #endif
         (theRadar == NULL or locked == NULL)
     )

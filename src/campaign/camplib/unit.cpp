@@ -3610,7 +3610,7 @@ int UnitClass::CanDetect(FalconEntity* ent)
 
         if ((entOctant == sojOctant ||
              entOctant == (sojOctant + 1) % 8 ||
-             entOctant == (sojOctant - 1) % 8) &&
+             entOctant == (sojOctant - 1) % 8)  and 
             sojRangeSq < mrs * 2.25)
         {
             mrs = mrs * sojRangeSq / (mrs * 2.25);
@@ -6814,7 +6814,7 @@ void UnitClass::CalculateSOJ(VuGridIterator &iter)
     while (e)
     {
         // JPO - use IsAreaJamming - the virtual functions will sort it out
-        if (GetRoE(who, e->GetTeam(), ROE_GROUND_FIRE) == ROE_ALLOWED &&
+        if (GetRoE(who, e->GetTeam(), ROE_GROUND_FIRE) == ROE_ALLOWED  and 
             e->IsAreaJamming())
         {
             float rangesq = DistSqu(XPos(), YPos(), e->XPos(), e->YPos());

@@ -777,10 +777,10 @@ void FireControlComputer::MaverickMode(void)
         AircraftClass *pa = (AircraftClass *)curWeapon->parent.get();
 
         if (
-            curWeapon &&
-            (curWeapon->parent &&
-             pa->IsPlayer() &&
-             !(pa->AutopilotType() == AircraftClass::CombatAP) &&
+            curWeapon  and 
+            (curWeapon->parent  and 
+             pa->IsPlayer()  and 
+             !(pa->AutopilotType() == AircraftClass::CombatAP)  and 
              (curWeapon->Covered or !Sms->Powered))
         )
         {
@@ -966,10 +966,10 @@ SimObjectType* FireControlComputer::MavCheckLock(MissileClass* theMissile)
     // Look for a target
     while (curTarget)
     {
-        if (fabs(curTarget->localData->az - yaw) < minDist &&
-            fabs(curTarget->localData->el - pitch) < minDist &&
-            curTarget->BaseData()->IsSim() &&
-            !curTarget->BaseData()->IsWeapon() &&
+        if (fabs(curTarget->localData->az - yaw) < minDist  and 
+            fabs(curTarget->localData->el - pitch) < minDist  and 
+            curTarget->BaseData()->IsSim()  and 
+            !curTarget->BaseData()->IsWeapon()  and 
             curTarget->BaseData()->GetVt() <= 60 * KNOTS_TO_FTPSEC) //MI Maverik lockup fix
         {
             theMissile->SetTarget(curTarget);

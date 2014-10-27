@@ -88,12 +88,12 @@ static void CollectAssistCandidates(AircraftClass *plane, stdRange2FlightMap &ar
             // - Not on a CAP or SWEEP mission
             // - Flight is engaged
 
-            if ((p not_eq plane) &&
-                (p->GetCampaignObject() not_eq plane->GetCampaignObject()) &&
-                p->IsAirplane() &&
-                (pFlight = (FlightClass *) p->GetCampaignObject()) &&
-                (setTmp.find(pFlight) == setTmp.end()) &&
-                (pFlight->GetAssignedTarget() == FalconNullId) &&
+            if ((p not_eq plane)  and 
+                (p->GetCampaignObject() not_eq plane->GetCampaignObject())  and 
+                p->IsAirplane()  and 
+                (pFlight = (FlightClass *) p->GetCampaignObject())  and 
+                (setTmp.find(pFlight) == setTmp.end())  and 
+                (pFlight->GetAssignedTarget() == FalconNullId)  and 
                 (plane->GetTeam() == p->GetTeam()))
             {
                 D3DFrame::Vector vPos(p->XPos(), p->YPos(), p->ZPos());
@@ -555,15 +555,15 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     }
 #if 0 // Retro 20May2004 - fixed logic
 
-                    if (flight->GetUnitCurrentRole() not_eq ARO_GA &&
+                    if (flight->GetUnitCurrentRole() not_eq ARO_GA  and 
                         flight->GetUnitMission() not_eq (AMIS_ONCALLCAS or AMIS_PRPLANCAS or AMIS_CAS or AMIS_SAD or AMIS_INT or AMIS_BAI))
 #else
-                    if (flight->GetUnitCurrentRole() not_eq ARO_GA &&
-                        ((flight->GetUnitMission() not_eq AMIS_ONCALLCAS) &&
-                         (flight->GetUnitMission() not_eq AMIS_PRPLANCAS) &&
-                         (flight->GetUnitMission() not_eq AMIS_CAS) &&
-                         (flight->GetUnitMission() not_eq AMIS_SAD) &&
-                         (flight->GetUnitMission() not_eq AMIS_INT) &&
+                    if (flight->GetUnitCurrentRole() not_eq ARO_GA  and 
+                        ((flight->GetUnitMission() not_eq AMIS_ONCALLCAS)  and 
+                         (flight->GetUnitMission() not_eq AMIS_PRPLANCAS)  and 
+                         (flight->GetUnitMission() not_eq AMIS_CAS)  and 
+                         (flight->GetUnitMission() not_eq AMIS_SAD)  and 
+                         (flight->GetUnitMission() not_eq AMIS_INT)  and 
                          (flight->GetUnitMission() not_eq AMIS_BAI)))
 #endif // Retro 20May2004 - end
                     {

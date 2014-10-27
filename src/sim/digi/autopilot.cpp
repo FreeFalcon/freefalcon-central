@@ -480,8 +480,8 @@ void DigitalBrain::FollowWP(void)
     float wpX, wpY, wpZ;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (self == playerAC and playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCWaypoint &&
-        playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCMarkpoint &&
+    if (self == playerAC and playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCWaypoint  and 
+        playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCMarkpoint  and 
         playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCDLinkpoint)
     {
         AcceptManual();

@@ -438,7 +438,7 @@ int DeviceManager::DDDriverInfo::FindDisplayMode(int nWidth, int nHeight, int nB
 {
     for (int i = 0; i < (int) m_arrModes.size(); i++)
     {
-        if (m_arrModes[i].dwWidth == nWidth and m_arrModes[i].dwHeight == nHeight &&
+        if (m_arrModes[i].dwWidth == nWidth and m_arrModes[i].dwHeight == nHeight  and 
             m_arrModes[i].ddpfPixelFormat.dwRGBBitCount == nBPP)
             return i;
     }
@@ -519,7 +519,7 @@ bool DeviceManager::DDDriverInfo::D3DDeviceInfo::IsHardware()
 
 bool DeviceManager::DDDriverInfo::D3DDeviceInfo::CanFilterAnisotropic()
 {
-    bool bCanDoAnisotropic = (m_devDesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MAGFANISOTROPIC) &&
+    bool bCanDoAnisotropic = (m_devDesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MAGFANISOTROPIC)  and 
                              (m_devDesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MINFANISOTROPIC);
     return bCanDoAnisotropic;
 }
@@ -915,8 +915,8 @@ void DXContext::CheckCaps()
     if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwDestBlendCaps & D3DPBLENDCAPS_INVSRCALPHA))
         MonoPrint(" DestBlend INVSRCALPHA  not supported\n");
 
-    if (!(m_pcapsDD->dwCaps & DDCAPS_COLORKEY &&
-          m_pcapsDD->dwCKeyCaps & DDCKEYCAPS_DESTBLT &&
+    if (!(m_pcapsDD->dwCaps & DDCAPS_COLORKEY  and 
+          m_pcapsDD->dwCKeyCaps & DDCKEYCAPS_DESTBLT  and 
           m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_DRAWPRIMTLVERTEX))
         MonoPrint(" Insufficient color key support\n");
 

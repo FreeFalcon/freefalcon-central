@@ -102,7 +102,7 @@ void HudClass::DrawDogfight()
              4)Self-track
             */
             //MI make it dependant on missil bore/slave
-            //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon &&
+            //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon  and 
             // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
             // DrawMissileReticle(0.3F, FALSE, TRUE);
             //else
@@ -282,7 +282,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                 {
                     // JPG 17 Jan 04 - No again MI, see above
                     //MI make it dependant on missil bore/slave
-                    //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon &&
+                    //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon  and 
                     // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
                     // DrawMissileReticle(0.3F, FALSE, TRUE);
                     //else
@@ -436,7 +436,7 @@ void HudClass::DrawAirMissile(void)
                 if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                 {
                     //MI make it dependant on missil bore/slave
-                    //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon &&
+                    //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon  and 
                     // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
                     // DrawMissileReticle(0.3F, FALSE, TRUE);
                     //else
@@ -824,7 +824,7 @@ void HudClass::DrawAim9DLZ(void)
     wpn = playerAC->Sms->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
 
     //MI prevent some strange things writte on the HUD
-    if (FCC->missileTarget and playerAC and playerAC->Sms &&
+    if (FCC->missileTarget and playerAC and playerAC->Sms  and 
         playerAC->Sms->curWeapon)
     {
         // Range Carat / Closure

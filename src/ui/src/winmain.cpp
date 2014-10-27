@@ -1573,7 +1573,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             // Load a campaign here (this should allow tactical engagements too, so we
             // So we can eliminate the LOAD_TACTICAL case.
             if (
-                (FalconGameType)lParam not_eq game_Campaign &&
+                (FalconGameType)lParam not_eq game_Campaign  and 
                 (FalconGameType)lParam not_eq game_TacticalEngagement
             )
             {

@@ -103,7 +103,7 @@ void DigitalBrain::FollowWaypoints(void)
     // if we are, see if the next waypoint is a ground attack type.
     // if it is, setup a GA profile for the attack
 
-    if (((self->curWaypoint->GetWPFlags() & WPF_IP) or (GetTargetWPIndex() >= 0 and GetWaypointIndex() == GetTargetWPIndex() - 1)) &&
+    if (((self->curWaypoint->GetWPFlags() & WPF_IP) or (GetTargetWPIndex() >= 0 and GetWaypointIndex() == GetTargetWPIndex() - 1))  and 
         agDoctrine == AGD_NONE)
     {
         AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
@@ -228,8 +228,8 @@ void DigitalBrain::FollowWaypoints(void)
             }
 
             // If close, set Refuel Mode
-            if (fabs(trackX - self->XPos()) < g_fAIRefuelRange * NM_TO_FT &&
-                fabs(trackY - self->YPos()) < g_fAIRefuelRange * NM_TO_FT &&
+            if (fabs(trackX - self->XPos()) < g_fAIRefuelRange * NM_TO_FT  and 
+                fabs(trackY - self->YPos()) < g_fAIRefuelRange * NM_TO_FT  and 
                 onStation == NotThereYet)
             {
                 VU_ID TankerId = vuNullId;
@@ -481,9 +481,9 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
             // Cobra - Sead AI wouldn't move on when no targets left or exceeded loitering timer
             //Adding in onStation == Crosswind; if we make it here, we are past our waypoint time
             //already so this shouldn't be a problem?
-            if (((onStation == Crosswind or (onStation == NotThereYet and missionComplete)) &&
-                 groundTargetPtr == NULL) or onStation == OnStation or !(g_bAGTargetWPFix &&
-                         self->curWaypoint->GetWPFlags() & WPF_TARGET and !missionComplete and missionClass == AGMission &&
+            if (((onStation == Crosswind or (onStation == NotThereYet and missionComplete))  and 
+                 groundTargetPtr == NULL) or onStation == OnStation or !(g_bAGTargetWPFix  and 
+                         self->curWaypoint->GetWPFlags() & WPF_TARGET and !missionComplete and missionClass == AGMission  and 
                          curMode not_eq RTBMode and curMode not_eq LandingMode))
             {
                 // 2002-04-08 MN removed again - this stops AI from going to landing mode at all...
@@ -659,9 +659,9 @@ void DigitalBrain::GoToCurrentWaypoint(void)
             have not yet completed the mission, are not in RTB mode or landing mode, don't skip the target waypoint. */
 
             // mind the ! check here !!!
-            if (onStation == OnStation or !(g_bAGTargetWPFix &&
-                                            self->curWaypoint->GetWPFlags() & WPF_TARGET &&
-                                            !missionComplete and missionClass == AGMission &&
+            if (onStation == OnStation or !(g_bAGTargetWPFix  and 
+                                            self->curWaypoint->GetWPFlags() & WPF_TARGET  and 
+                                            !missionComplete and missionClass == AGMission  and 
                                             curMode not_eq RTBMode and curMode not_eq LandingMode))
             {
                 // JB 020315 Don't skip to the last waypoint unless we're OnStation. Otherwise we may go into landing mode too early.
@@ -876,7 +876,7 @@ void DigitalBrain::SelectNextWaypoint(void)
             campUnit->SetCurrentUnitWP(campUnit->GetFirstUnitWP());
         }
     }
-    else if (!(tmpWaypoint->GetWPFlags() & WPF_REPEAT) &&
+    else if (!(tmpWaypoint->GetWPFlags() & WPF_REPEAT)  and 
              (self->curWaypoint->GetWPFlags() & WPF_REPEAT))
     {
         if (self->curWaypoint->GetWPFlags() & WPF_IP)
@@ -911,7 +911,7 @@ void DigitalBrain::SelectNextWaypoint(void)
             }
         }
     }
-    else if ((tmpWaypoint->GetWPFlags() & WPF_REPEAT) &&
+    else if ((tmpWaypoint->GetWPFlags() & WPF_REPEAT)  and 
              !(self->curWaypoint->GetWPFlags() & WPF_REPEAT))
     {
         switch (tmpWaypoint->GetWPAction())

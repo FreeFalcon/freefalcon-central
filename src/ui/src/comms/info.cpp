@@ -56,7 +56,7 @@ void INFOSetupRulesControls(void)
     //host = TRUE;
     //if this is true, we are the host
     /*
-    if( FalconLocalGameEntity and FalconLocalSession &&
+    if( FalconLocalGameEntity and FalconLocalSession  and 
      FalconLocalGameEntity->OwnerId() == FalconLocalSession->Id() )
      host = TRUE;
     else if(!gCommsMgr->GetTargetGame() and !FalconLocalGameEntity)

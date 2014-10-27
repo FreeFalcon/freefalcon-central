@@ -81,7 +81,7 @@ void SimCycleRadioChannel(unsigned long, int state, void*)
         {
             VM->ForwardCycleFreq(0);
 
-            if (OTWDriver.pCockpitManager->mpIcp->IsICPSet(ICPClass::MODE_CNI) &&
+            if (OTWDriver.pCockpitManager->mpIcp->IsICPSet(ICPClass::MODE_CNI)  and 
                 OTWDriver.pCockpitManager->mpIcp->GetICPSecondaryMode() == NONE_MODE)
             {
                 OTWDriver.pCockpitManager->mpIcp->ClearStrings();
@@ -116,7 +116,7 @@ void SimDecRadioChannel(unsigned long, int state, void*)
         {
             VM->BackwardCycleFreq(0);
 
-            if (OTWDriver.pCockpitManager->mpIcp->IsICPSet(ICPClass::MODE_CNI) &&
+            if (OTWDriver.pCockpitManager->mpIcp->IsICPSet(ICPClass::MODE_CNI)  and 
                 OTWDriver.pCockpitManager->mpIcp->GetICPSecondaryMode() == NONE_MODE)
             {
                 OTWDriver.pCockpitManager->mpIcp->ClearStrings();
@@ -389,7 +389,7 @@ void TankerReadyForGas(unsigned long, int state, void*)
     if (state & KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and !((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         // JPO - requires the door to be opened.
-        if (g_bRealisticAvionics &&
+        if (g_bRealisticAvionics  and 
             !SimDriver.GetPlayerAircraft()->af->IsEngineFlag(AirframeClass::FuelDoorOpen))
             return;
 

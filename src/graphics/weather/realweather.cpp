@@ -573,7 +573,7 @@ void RealWeather::GenerateClouds(bool bRandom)
         drawableCell = 1;
 
         /*if(weatherCondition > FAIR
-        &&(-viewerZ) > (-stratusZ) and (-viewerZ) < (-stratusZ)+stratusDepth)
+         and (-viewerZ) > (-stratusZ) and (-viewerZ) < (-stratusZ)+stratusDepth)
         {
          numCells = 5;
          cellSize = 7168;

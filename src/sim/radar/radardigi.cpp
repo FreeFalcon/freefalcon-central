@@ -212,8 +212,8 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
             // END OF ADDED SECTION 2002-03-10
 
             if (
-                radarDatFile &&
-                tmpPtr->localData->sensorState[Radar] == Detection &&
+                radarDatFile  and 
+                tmpPtr->localData->sensorState[Radar] == Detection  and 
                 SimLibElapsedTime - tmpPtr->localData->rdrLastHit < (unsigned)radarDatFile->TimeToLock
             )
             {

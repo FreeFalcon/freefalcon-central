@@ -5545,8 +5545,8 @@ long __cdecl RES_FTELL(FILE * stream)
 
                     LOCK_STREAM(stream);
 
-                    if ((rdcnt <= _SMALL_BUFSIZ) &&
-                        (stream->_flag & _IOMYBUF) &&
+                    if ((rdcnt <= _SMALL_BUFSIZ)  and 
+                        (stream->_flag & _IOMYBUF)  and 
                         !(stream->_flag & _IOSETVBUF))
                     {
                         /* The translated contents of
@@ -5833,8 +5833,8 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
     else
     {
         if (!inuse(stream) ||
-            ((whence not_eq SEEK_SET) &&
-             (whence not_eq SEEK_CUR) &&
+            ((whence not_eq SEEK_SET)  and 
+             (whence not_eq SEEK_CUR)  and 
              (whence not_eq SEEK_END)))
         {
             errno = EINVAL;
@@ -5872,8 +5872,8 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
             stream->_flag &= compl (_IOWRT | _IOREAD);
         else
         {
-            if ((stream->_flag & _IOREAD) &&
-                (stream->_flag & _IOMYBUF) &&
+            if ((stream->_flag & _IOREAD)  and 
+                (stream->_flag & _IOMYBUF)  and 
                 !(stream->_flag & _IOSETVBUF))
             {
                 stream->_bufsiz = _SMALL_BUFSIZ;
@@ -5985,7 +5985,7 @@ int __cdecl _filbuf(FILE * stream)
     //LRKLUDGE
     // If its a string return
     if (!inuse(stream) ||
-        ((stream->_flag & _IOSTRG) &&
+        ((stream->_flag & _IOSTRG)  and 
          !(stream->_flag & (_IOLOOSE | _IOARCHIVE))))
         return(EOF);
 
@@ -6118,8 +6118,8 @@ int __cdecl _filbuf(FILE * stream)
            larger value (_INTERNAL_BUFSIZ) so that the next _filbuf call,
            if one is made, will fill the whole buffer. */
 
-        if ((stream -> _bufsiz == _SMALL_BUFSIZ) &&
-            (stream -> _flag & _IOMYBUF) &&
+        if ((stream -> _bufsiz == _SMALL_BUFSIZ)  and 
+            (stream -> _flag & _IOMYBUF)  and 
             !(stream -> _flag & _IOSETVBUF))
         {
             stream -> _bufsiz = _INTERNAL_BUFSIZ;

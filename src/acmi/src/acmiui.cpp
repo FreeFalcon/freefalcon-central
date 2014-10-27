@@ -1249,9 +1249,9 @@ inline BOOL ACMIViewIsReady()
     return
         (
             (
-                acmiView not_eq NULL &&
-                acmiView->Tape() not_eq NULL &&
-                acmiView->Tape()->IsLoaded() &&
+                acmiView not_eq NULL  and 
+                acmiView->Tape() not_eq NULL  and 
+                acmiView->Tape()->IsLoaded()  and 
                 acmiView->TapeHasLoaded()
             ) ?
             TRUE :
@@ -2250,7 +2250,7 @@ void ACMITrackingCB(long, short hittype, C_Base*)
 {
     if
     (
-        hittype == C_TYPE_LMOUSEUP &&
+        hittype == C_TYPE_LMOUSEUP  and 
         ACMIViewIsReady()
     )
     {
@@ -2415,8 +2415,8 @@ void ACMICamTrackingCB(long, int hittype, C_Control *control)
 
     if
     (
-        hittype == C_TYPE_SELECT &&
-        ACMIViewIsReady() &&
+        hittype == C_TYPE_SELECT  and 
+        ACMIViewIsReady()  and 
         ACMIListBox not_eq NULL
     )
     {
@@ -2446,8 +2446,8 @@ void ACMICamTrackingCB(long, short hittype, C_Base *control)
 
     if
     (
-        hittype == C_TYPE_SELECT &&
-        ACMIViewIsReady() &&
+        hittype == C_TYPE_SELECT  and 
+        ACMIViewIsReady()  and 
         ACMIListBox not_eq NULL
     )
     {
@@ -2531,8 +2531,8 @@ void ACMISubCameraCB(long, short hittype, C_Base *control)
 
     if
     (
-        hittype == C_TYPE_SELECT &&
-        ACMIViewIsReady() &&
+        hittype == C_TYPE_SELECT  and 
+        ACMIViewIsReady()  and 
         ACMIListBox not_eq NULL
     )
     {
@@ -2904,7 +2904,7 @@ void ACMIScreenCaptureCB(long, short hittype, C_Base*)
 {
     if
     (
-        hittype == C_TYPE_LMOUSEUP &&
+        hittype == C_TYPE_LMOUSEUP  and 
         ACMIViewIsReady()
     )
     {

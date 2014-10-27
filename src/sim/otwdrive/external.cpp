@@ -273,7 +273,7 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
                   GetOTWDisplayMode() == ModeTargetToSelf ||
                   GetOTWDisplayMode() == ModeTargetToWeapon ||
                   GetOTWDisplayMode() == ModeIncoming ||
-                  GetOTWDisplayMode() == ModeWeapon) &&
+                  GetOTWDisplayMode() == ModeWeapon)  and 
                  (otwTrackPlatform.get() == NULL or otwTrackPlatform == otwPlatform)
              ))
     {

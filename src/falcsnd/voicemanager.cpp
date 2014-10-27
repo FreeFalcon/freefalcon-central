@@ -423,7 +423,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                     {
                         // best message is from player
                         if (
-                            (pVC->node->from == playerID) &&
+                            (pVC->node->from == playerID)  and 
                             (pVC->node->priority > best->node->priority)
                         )
                         {
@@ -441,7 +441,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                     {
                         // best is to player
                         if (
-                            (pVC->node->to == playerID) &&
+                            (pVC->node->to == playerID)  and 
                             // sfr: was < here!!
                             (pVC->node->priority > best->node->priority)
                         )
@@ -474,15 +474,15 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                 if (
                     (
                         // message from us
-                        (VM->decompQueue[i].from not_eq FalconLocalSession->GetPlayerEntityID()) &&
-                        (best->node->priority == rpLifeThreatening) &&
+                        (VM->decompQueue[i].from not_eq FalconLocalSession->GetPlayerEntityID())  and 
+                        (best->node->priority == rpLifeThreatening)  and 
                         (VM->decompQueue[i].priority not_eq rpLifeThreatening)
                     ) ||
                     (
                         best->node->from == FalconLocalSession->GetPlayerEntityID()
                     ) ||
                     (
-                        (best and best->node->priority == rpLifeThreatening) &&
+                        (best and best->node->priority == rpLifeThreatening)  and 
                         (VM->decompQueue[i].priority not_eq rpLifeThreatening)
                     )
                 )
@@ -498,8 +498,8 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
             {
                 //if there is a message queued from PlayRadioMessage and the appropriate decompQueue is available
                 if (
-                    best &&
-                    (VM->decompQueue[i].status == SLOT_IS_AVAILABLE  or breakin) &&
+                    best  and 
+                    (VM->decompQueue[i].status == SLOT_IS_AVAILABLE  or breakin)  and 
                     !VM->falconVoices[curChannel].exitChannel
                 )
                 {
@@ -1111,7 +1111,7 @@ VM_CONVLIST *VoiceManager::VMConvListInsert(VM_CONVLIST *list, VM_CONVLIST *newn
                 cur = cur->next;
             }
 
-            while (cur and (newnode->node->priority <= cur->node->priority) &&
+            while (cur and (newnode->node->priority <= cur->node->priority)  and 
                    (newnode->node->playTime == cur->node->playTime))
             {
                 prev = cur;
@@ -1666,7 +1666,7 @@ int VoiceManager::PauseChannel(int channel)
 int VoiceManager::BuffersEmpty(int channel)
 {
     return (
-               VM->falconVoices[channel].voiceBuffers[0].status == BUFFER_NOT_IN_QUEUE &&
+               VM->falconVoices[channel].voiceBuffers[0].status == BUFFER_NOT_IN_QUEUE  and 
                VM->falconVoices[channel].voiceBuffers[1].status == BUFFER_NOT_IN_QUEUE
            );
 }

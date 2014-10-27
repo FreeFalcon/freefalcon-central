@@ -105,12 +105,12 @@ static BOOL InitTOOLHELP32(void)
         //  these addresses is NULL, one of the needed lists cannot be
         //  walked.
 
-        bRet =  g_pModule32First            &&
-                g_pModule32Next             &&
-                g_pProcess32First           &&
-                g_pProcess32Next            &&
-                g_pThread32First            &&
-                g_pThread32Next             &&
+        bRet =  g_pModule32First             and 
+                g_pModule32Next              and 
+                g_pProcess32First            and 
+                g_pProcess32Next             and 
+                g_pThread32First             and 
+                g_pThread32Next              and 
                 g_pCreateToolhelp32Snapshot    ;
     }
     else

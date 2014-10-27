@@ -89,8 +89,8 @@ void OTWDriverClass::ShowAerodynamics(void)
     char posStr[120];
 
     if (
-        otwPlatform &&
-        otwPlatform.get() == SimDriver.GetPlayerAircraft() &&
+        otwPlatform  and 
+        otwPlatform.get() == SimDriver.GetPlayerAircraft()  and 
         otwPlatform->IsAirplane()
     )
     {
@@ -117,8 +117,8 @@ void OTWDriverClass::ShowFlaps(void)
     // Human players need to know flap positions and most don't know about
     // g_bShowFlaps.
     if (
-        otwPlatform &&
-        otwPlatform.get() == SimDriver.GetPlayerAircraft() &&
+        otwPlatform  and 
+        otwPlatform.get() == SimDriver.GetPlayerAircraft()  and 
         otwPlatform->IsAirplane()
     )
     {
@@ -168,8 +168,8 @@ void OTWDriverClass::ShowFlaps(void)
 #include "PilotInputs.h"
 void OTWDriverClass::ShowEngine(void)
 {
-    if (otwPlatform.get() &&
-         otwPlatform.get() == SimDriver.GetPlayerAircraft() &&
+    if (otwPlatform.get()  and 
+         otwPlatform.get() == SimDriver.GetPlayerAircraft()  and 
          otwPlatform->IsAirplane())
     {
         AirframeClass *af = ((AircraftClass*)otwPlatform.get())->af;
@@ -707,8 +707,8 @@ void OTWDriverClass::CancelExitMenuCountdown(void)
 
 void OTWDriverClass::ShowThrustReverse(void)
 {
-    if (otwPlatform &&
-         otwPlatform.get() == SimDriver.GetPlayerAircraft() &&
+    if (otwPlatform  and 
+         otwPlatform.get() == SimDriver.GetPlayerAircraft()  and 
          otwPlatform->IsAirplane())
     {
         AirframeClass *af = ((AircraftClass*)otwPlatform.get())->af;

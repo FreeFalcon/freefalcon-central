@@ -76,7 +76,7 @@ int ICPClass::ManualInput(void)
     if (Manual_Input)
         return TRUE;
 
-    if ((IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == ONE_BUTTON &&
+    if ((IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == ONE_BUTTON  and 
          ILSPageSel == 0) ||
         (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == TWO_BUTTON) ||
         (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == FOUR_BUTTON) ||
@@ -90,7 +90,7 @@ int ICPClass::ManualInput(void)
         (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == NINE_BUTTON) ||
         (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == 100) or //INTG
         (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == SIX_BUTTON) or //INS
-        IsICPSet(ICPClass::MODE_IFF) or (IsICPSet(ICPClass::MISC_MODE) &&
+        IsICPSet(ICPClass::MODE_IFF) or (IsICPSet(ICPClass::MISC_MODE)  and 
                                          mICPSecondaryMode == FIFE_BUTTON))
     {
         if (OA1 and OA_BRG)
@@ -138,7 +138,7 @@ int ICPClass::CheckMode(void)
     if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == EWS_MODE and !EWSMain)
     {
         //you can only change progs if you're in STBY
-        if (playerAC &&
+        if (playerAC  and 
             playerAC->EWSPGM() not_eq AircraftClass::Stby)
             return TRUE;
     }
@@ -207,7 +207,7 @@ void ICPClass::HandleManualInput(int button)
              IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == NINE_BUTTON ||
              IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == 100 or  //INTG
              (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == SIX_BUTTON) or //INS
-             IsICPSet(ICPClass::MODE_IFF) or (IsICPSet(ICPClass::MISC_MODE) &&
+             IsICPSet(ICPClass::MODE_IFF) or (IsICPSet(ICPClass::MISC_MODE)  and 
                      mICPSecondaryMode == FIFE_BUTTON))
     {
         Manual_Input = TRUE;
@@ -682,8 +682,8 @@ void ICPClass::CheckAutoSTPT(void)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //no autostpt when in AG mode
-    if (playerAC &&
-        playerAC->FCC &&
+    if (playerAC  and 
+        playerAC->FCC  and 
         playerAC->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb) // MLR-NOTE Needs to consider Rockets???
         return;
 

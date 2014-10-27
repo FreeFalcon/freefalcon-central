@@ -71,7 +71,7 @@ static void PrintTime(char *output, FILETIME TimeToPrint)
 {
     WORD Date, Time;
 
-    if (FileTimeToLocalFileTime(&TimeToPrint, &TimeToPrint) &&
+    if (FileTimeToLocalFileTime(&TimeToPrint, &TimeToPrint)  and 
         FileTimeToDosDateTime(&TimeToPrint, &Date, &Time))
     {
         // What a silly way to print out the file date/time. Oh well,
@@ -433,7 +433,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
         // VirtualQuery can be used to get the allocation base associated with a
         // code address, which is the same as the ModuleHandle. This can be used
         // to get the filename of the module that the crash happened in.
-        if (VirtualQuery((void*)Context->Eip, &MemInfo, sizeof(MemInfo)) &&
+        if (VirtualQuery((void*)Context->Eip, &MemInfo, sizeof(MemInfo))  and 
             GetModuleFileName((HINSTANCE)MemInfo.AllocationBase,
                               CrashModulePathName,
                               sizeof(CrashModulePathName)) > 0)
@@ -447,7 +447,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
     hprintf(LogFile, "%s\r\n", GetFaultReason(data));
     hprintf(LogFile, "Exception handler called in %s.\r\n", Message);
 
-    if (Exception->ExceptionCode == STATUS_ACCESS_VIOLATION &&
+    if (Exception->ExceptionCode == STATUS_ACCESS_VIOLATION  and 
         Exception->NumberParameters >= 2)
     {
         char DebugMessage[1000];

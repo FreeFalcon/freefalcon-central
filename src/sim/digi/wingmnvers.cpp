@@ -351,8 +351,8 @@ float DigitalBrain::SimpleTrackElevation(float zft, float scale)
     }
 
     // 2002-01-30 ADDED BY S.G. Lets limit the pitch when we're at max climb angle
-    if (g_bPitchLimiterForAI and !groundAvoidNeeded &&
-        (curMode == WingyMode or curMode == WaypointMode or curMode == RTBMode) &&
+    if (g_bPitchLimiterForAI and !groundAvoidNeeded  and 
+        (curMode == WingyMode or curMode == WaypointMode or curMode == RTBMode)  and 
         /*agDoctrine == AGD_NONE and *///Cobra removed this // Not doing any A2G attack (since it's in FollowWaypoints during that time)
         (!flightLead or !flightLead->IsSetFlag(MOTION_OWNSHIP) or ((AircraftClass *)flightLead)->autopilotType == AircraftClass::CombatAP) and // The lead isn't the player (we must follow him whatever he does)
         altErr > 0.0f and self->Pitch() > 0.0f)

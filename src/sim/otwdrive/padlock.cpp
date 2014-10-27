@@ -275,9 +275,9 @@ void OTWDriverClass::Padlock_FindEnhancedPriority(BOOL)
             // 2002-02-07 MODIFIED BY S.G. Priority are screwed up.
             // This is enhanced mode so basically, we start with the highest priority then walk our way DOWN the list until we are at the bottom
             // then start from the highest one again
-            /* if((pObj not_eq mpPadlockPriorityObject) &&
+            /* if((pObj not_eq mpPadlockPriorityObject)  and 
              ((pLoMark == NULL and attempt) ||
-             (Padlock_DetermineRelativePriority(mpPadlockPriorityObject, priorityRange, isPriorityPainted, pObj, objRange, isObjPainted) &&
+             (Padlock_DetermineRelativePriority(mpPadlockPriorityObject, priorityRange, isPriorityPainted, pObj, objRange, isObjPainted)  and 
              (pLoMark == NULL or Padlock_DetermineRelativePriority(pObj, objRange, isObjPainted, pLoMark, loMarkRange, isLoMarkPainted)))))
             */ int testAgainstPriority = FALSE;
             int testAgainstLoMark = FALSE;
@@ -572,7 +572,7 @@ void OTWDriverClass::Padlock_FindRealisticPriority(BOOL)
 
     // Okay
     if (
-        mpPadlockCandidate &&
+        mpPadlockCandidate  and 
         mpPadlockCandidate->GetCampaignObject() not_eq ((CampBaseClass*)0xdddddddd) and !mpPadlockCandidate->IsDead()
     )
     {
@@ -622,8 +622,8 @@ void OTWDriverClass::Padlock_FindRealisticPriority(BOOL)
 
     // 2002-02-07 ADDED BY S.G. Now do the same for mpPadlockPriorityObject
     if (
-        mpPadlockPriorityObject &&
-        mpPadlockPriorityObject->GetCampaignObject() not_eq ((CampBaseClass*)0xdddddddd) &&
+        mpPadlockPriorityObject  and 
+        mpPadlockPriorityObject->GetCampaignObject() not_eq ((CampBaseClass*)0xdddddddd)  and 
         !mpPadlockPriorityObject->IsDead()
     )
     {
@@ -756,8 +756,8 @@ void OTWDriverClass::Padlock_FindRealisticPriority(BOOL)
             // 2002-02-07 MODIFIED BY S.G. Priority are screwed up.
             /* if(((attempt and mpPadlockCandidate == NULL and pObj == mpPadlockPriorityObject) ||
              (mpPadlockCandidate == NULL and pObj not_eq mpPadlockPriorityObject) ||
-             (mpPadlockCandidate not_eq NULL and pObj not_eq mpPadlockCandidate)) &&
-             Padlock_DetermineRelativePriority(mpPadlockCandidate, candidateRange, isCandidatePainted, pObj, objRange, isObjPainted) &&
+             (mpPadlockCandidate not_eq NULL and pObj not_eq mpPadlockCandidate))  and 
+             Padlock_DetermineRelativePriority(mpPadlockCandidate, candidateRange, isCandidatePainted, pObj, objRange, isObjPainted)  and 
              (pLoMark == NULL or Padlock_DetermineRelativePriority(pObj, objRange, isObjPainted, pLoMark, loMarkRange, isLoMarkPainted)))
             */ int testAgainstCandidate = FALSE;
             int testAgainstPriority = FALSE;
@@ -1103,7 +1103,7 @@ BOOL OTWDriverClass::Padlock_ConsiderThisObject(SimBaseClass* pObj, BOOL isPaint
                  fccMasterMode == FireControlComputer::AirGroundMissile ||
                  fccMasterMode == FireControlComputer::AirGroundHARM ||
                  fccMasterMode == FireControlComputer::AirGroundLaser ||
-                 (fccMasterMode == FireControlComputer::AGGun &&
+                 (fccMasterMode == FireControlComputer::AGGun  and 
                   fccSubMode == FireControlComputer::STRAF) or // MN added
                  (pradar and pradar->IsAG()) or // 2002-03-12 ADDED BY S.G. If our radar is in AG mode, then prioritize ground object
                  padlockPriority == PriorityAG) // 2002-03-12 ADDED BY S.G. If the player held the control key when pressing down the padlock key, prioritize AG things
@@ -1826,7 +1826,7 @@ void OTWDriverClass::Padlock_CheckPadlock(float dT)
         mPadlockTimeout = 0.0F;
         mTDTimeout = 5.0F;
     }
-    else if (mpPadlockPriorityObject &&
+    else if (mpPadlockPriorityObject  and 
              ((mpPadlockPriorityObject->IsDead() and mPadlockTimeout < 0.0F) ||
               (FalconLocalGame and FalconLocalGame->GetGameType() == game_Dogfight and mpPadlockPriorityObject->IsDead() and mpPadlockPriorityObject->IsSetFalcFlag(FEC_REGENERATING))))
     {
@@ -2075,10 +2075,10 @@ void OTWDriverClass::Padlock_DrawSquares(BOOL highlightPriority)
             objbottom = objectPoint.y + g_nPadlockBoxSize;
 #endif
 
-            if (objtop    > renderer->GetTopPixel()    &&
-                objbottom < renderer->GetBottomPixel() &&
-                objleft   > renderer->GetLeftPixel()   &&
-                objright  < renderer->GetRightPixel()  &&
+            if (objtop    > renderer->GetTopPixel()     and 
+                objbottom < renderer->GetBottomPixel()  and 
+                objleft   > renderer->GetLeftPixel()    and 
+                objright  < renderer->GetRightPixel()   and 
                 mpPadlockPriorityObject->drawPointer)  // JB 001202
             {
                 // 2000-11-24 ADDED BY S.G. IF ASKED, THE COLOR OF THE BOX IS THE COLOR OF THE NEAR LABEL AND THE INTENSITY WILL VARY AS WELL
@@ -2168,9 +2168,9 @@ void OTWDriverClass::Padlock_DrawSquares(BOOL highlightPriority)
             candtop = candidatePoint.y - 4;
             candbottom = candidatePoint.y + 4;
 
-            if (candtop > renderer->GetTopPixel()    &&
-                candbottom < renderer->GetBottomPixel() &&
-                candleft > renderer->GetLeftPixel()   &&
+            if (candtop > renderer->GetTopPixel()     and 
+                candbottom < renderer->GetBottomPixel()  and 
+                candleft > renderer->GetLeftPixel()    and 
                 candright < renderer->GetRightPixel())
             {
                 renderer->SetColor(0xff27eaff);
@@ -2338,7 +2338,7 @@ void OTWDriverClass::SetmpPadlockPriorityObject(SimBaseClass* newObject)
         }
 
         // If mpPadlockPriorityObject is not NULL, is Sim base, is not us and is not a weapon, we must create a sim object for it
-        if (mpPadlockPriorityObject and mpPadlockPriorityObject->IsSim() &&
+        if (mpPadlockPriorityObject and mpPadlockPriorityObject->IsSim()  and 
             (otwPlatform.get() not_eq  mpPadlockPriorityObject) and !mpPadlockPriorityObject->IsWeapon())
         {
 #ifdef DEBUG

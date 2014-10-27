@@ -1076,7 +1076,7 @@ int BuildGroundWP(Unit u)
         //// Change them before then..
         //// Also - limit to first unit element if moving in brigade column,
         //// so we don't generate a request for every battalion in a brigade
-        if (time - Camp_GetCurrentTime() < 60 * CampaignMinutes &&
+        if (time - Camp_GetCurrentTime() < 60 * CampaignMinutes  and 
             (!u->GetUnitElement() or u->GetUnitTactic() not_eq GTACTIC_MOVE_BRIGADE_COLUMN))
         {
             // if (n->GetType() == TYPE_BRIDGE and (n->GetTeam() == us or TeamInfo[n->GetTeam()]->GetInitiative() < 40))

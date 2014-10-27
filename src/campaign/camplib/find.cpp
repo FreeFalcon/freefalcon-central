@@ -1082,8 +1082,8 @@ Objective FindNearestFriendlyAirbase(Team who, GridIndex X, GridIndex Y)
     while (o not_eq NULL)
     {
         if (
-            (GetTTRelations(o->GetTeam(), who) <= Neutral) &&
-            o->GetType() == TYPE_AIRBASE &&
+            (GetTTRelations(o->GetTeam(), who) <= Neutral)  and 
+            o->GetType() == TYPE_AIRBASE  and 
             o->brain and o->brain->NumOperableRunways() // JB 010729 CTD
         )
         {
@@ -1406,7 +1406,7 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
         if (e->GetDetectionRange(mt) > d and GetRoE(e->GetTeam(), who, roe_check))
         {
             if (
-                e->IsUnit() and !(flags & FIND_NOAIR and e->GetDomain() == DOMAIN_AIR) &&
+                e->IsUnit() and !(flags & FIND_NOAIR and e->GetDomain() == DOMAIN_AIR)  and 
                 !(flags & FIND_NOMOVERS and ((Unit)e)->Moving())
             )
             {
@@ -1492,9 +1492,9 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
  got = 0;
  if (tteam[e->GetTeam()])
  {
- if (e->IsUnit() &&
- !(flags & FIND_NOMOVERS and ((Unit)e)->Moving()) &&
- !(flags & FIND_NOAIR and e->GetDomain() == DOMAIN_AIR) &&
+ if (e->IsUnit()  and 
+ !(flags & FIND_NOMOVERS and ((Unit)e)->Moving())  and 
+ !(flags & FIND_NOAIR and e->GetDomain() == DOMAIN_AIR)  and 
  (flags & FIND_FINDUNSPOTTED or e->GetSpotted(who)))
  d = d; // placeholder. This unit is valid
  else if (e->IsObjective())
@@ -1585,7 +1585,7 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
             }
 
             if (
-                (!e->IsUnit() or !((Unit)e)->Moving()) &&
+                (!e->IsUnit() or !((Unit)e)->Moving())  and 
 #if VU_ALL_FILTERED
                 !foundlist->Find(e)
 #else
@@ -1720,8 +1720,8 @@ FalconSessionEntity* FindPlayer(Flight flight, uchar planeNum, uchar pilotSlot)
         while (curSession)
         {
             if (
-                curSession->GetPlayerFlightID() == flight->Id() &&
-                curSession->GetAircraftNum() == planeNum &&
+                curSession->GetPlayerFlightID() == flight->Id()  and 
+                curSession->GetAircraftNum() == planeNum  and 
                 curSession->GetPilotSlot() == pilotSlot
             )
             {

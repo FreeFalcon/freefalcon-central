@@ -1455,7 +1455,7 @@ void DigitalBrain::AiSetWeaponsAction(FalconWingmanMsg* msg, DigitalBrain::AiWea
 
     //Cobra TJL let's remove the WaitingPermission.  If I give weaponsfree I'm expecting the AI
     //to get its game on and find targets!
-    if (action == AI_WEAPONS_FREE and missionClass == AGMission /*&& IsSetATC(WaitingPermission)*/)
+    if (action == AI_WEAPONS_FREE and missionClass == AGMission /* and  IsSetATC(WaitingPermission)*/)
     {
         missileShotTimer = 0;
 

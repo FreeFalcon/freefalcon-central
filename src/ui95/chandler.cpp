@@ -1525,8 +1525,8 @@ C_Window *C_Handler::GetWindow(short x, short y)
     {
         if (cur->Flags & C_BIT_ENABLED)
         {
-            if (x >= cur->win->GetX() and y >= cur->win->GetY() &&
-                x <= (cur->win->GetX() + cur->win->GetW()) &&
+            if (x >= cur->win->GetX() and y >= cur->win->GetY()  and 
+                x <= (cur->win->GetX() + cur->win->GetW())  and 
                 y <= (cur->win->GetY() + cur->win->GetH()))
                 overme = cur->win;
 

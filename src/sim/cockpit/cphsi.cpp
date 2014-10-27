@@ -44,10 +44,10 @@ CPHsi::CPHsi()
     ///VWF HACK: The following is a hack to make the Tac Eng Instrument
     // Landing Mission agree with the Manual
 
-    if (SimDriver.RunningTactical() &&
-        current_tactical_mission &&
-        current_tactical_mission->get_type() == tt_training &&
-        SimDriver.GetPlayerEntity() &&
+    if (SimDriver.RunningTactical()  and 
+        current_tactical_mission  and 
+        current_tactical_mission->get_type() == tt_training  and 
+        SimDriver.GetPlayerEntity()  and 
         !strcmpi(current_tactical_mission->get_title(), "10 Instrument Landing"))
     {
         mpHsiValues[HSI_VAL_DESIRED_CRS] = 340.0F;
@@ -1278,7 +1278,7 @@ void CPHsiView::CreateLit(void)
 
             // Check if we can use a single texture
             if (
-                (dwMaxTextureWidth >= (unsigned int)mCompassWidth) &&
+                (dwMaxTextureWidth >= (unsigned int)mCompassWidth)  and 
                 (dwMaxTextureHeight >= (unsigned int)mCompassHeight)
             )
             {

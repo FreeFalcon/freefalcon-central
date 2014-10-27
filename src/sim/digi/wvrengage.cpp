@@ -48,15 +48,15 @@ void DigitalBrain::WvrEngageCheck(void)
     /*-------*/
     /* entry */
     /*-------*/
-    else if (curMode not_eq WVREngageMode and targetData->range < engageRange &&
+    else if (curMode not_eq WVREngageMode and targetData->range < engageRange  and 
              (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter()) and // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
-             SimLibElapsedTime > engagementTimer &&
+             SimLibElapsedTime > engagementTimer  and 
              CanEngage(self, self->CombatClass(), targetPtr, WVRManeuver))  // 2002-03-11 MODIFIED BY S.G. Added parameter WVRManeuver
     {
         AddMode(WVREngageMode);
     }
-    else if (curMode == WVREngageMode &&
-             targetPtr->localData->range < 1.5F * engageRange &&
+    else if (curMode == WVREngageMode  and 
+             targetPtr->localData->range < 1.5F * engageRange  and 
              CanEngage(self, self->CombatClass(), targetPtr, WVRManeuver)) // 2002-03-11 MODIFIED BY S.G. Added parameter WVRManeuver
     {
         AddMode(WVREngageMode);
@@ -893,13 +893,13 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
             else if (theIntercept->numMerges == 1)
             {
                 // Need to be real close for a hit and run
-                if (theIntercept->merge[0] == DigitalBrain::WvrMergeHitAndRun &&
+                if (theIntercept->merge[0] == DigitalBrain::WvrMergeHitAndRun  and 
                     targetPtr->localData->ata > 45.0F * DTR)
                 {
                     retWvr = FALSE;
                 }
                 // Can't be behind you for limited
-                else if (theIntercept->merge[0] == DigitalBrain::WvrMergeLimited &&
+                else if (theIntercept->merge[0] == DigitalBrain::WvrMergeLimited  and 
                          targetPtr->localData->ata > 90.0F * DTR)
                 {
                     retWvr = FALSE;
@@ -954,13 +954,13 @@ int CanEngage(int combatClass, SimObjectType* targetPtr)
         if (theIntercept->numMerges == 1)
         {
             // Need to be real close for a hit and run
-            if (theIntercept->merge[0] == DigitalBrain::WvrMergeHitAndRun &&
+            if (theIntercept->merge[0] == DigitalBrain::WvrMergeHitAndRun  and 
                 targetPtr->localData->ata > 45.0F * DTR)
             {
                 retval = FALSE;
             }
             // Can't be behind you for limited
-            else if (theIntercept->merge[0] == DigitalBrain::WvrMergeLimited &&
+            else if (theIntercept->merge[0] == DigitalBrain::WvrMergeLimited  and 
                      targetPtr->localData->ata > 90.0F * DTR)
             {
                 retval = FALSE;

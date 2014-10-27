@@ -570,8 +570,8 @@ void RenderOTW::PreSceneCloudOcclusion(float percent, DWORD color)
         float correction = 1.0f + percent * percent * 100.0f;
 
         // Red
-        if (((color & 0x000000FF) == 0x0) &&
-            ((color & 0x0000FF00) >= 0x10) &&
+        if (((color & 0x000000FF) == 0x0)  and 
+            ((color & 0x0000FF00) >= 0x10)  and 
             ((color & 0x00FF0000) == 0x0))
         {
 

@@ -84,8 +84,8 @@ void FireControlComputer::TargetingPodMode(void)
     if (systemTarget)
     {
         /* JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
-        if (systemTarget->BaseData()->IsSim() &&
-        systemTarget->BaseData()->OnGround() &&
+        if (systemTarget->BaseData()->IsSim()  and 
+        systemTarget->BaseData()->OnGround()  and 
         ((SimBaseClass*)systemTarget->BaseData())->IsAwake())
         {
         ((SimBaseClass*)systemTarget->BaseData())->drawPointer->GetPosition (&pos);
@@ -642,10 +642,10 @@ void FireControlComputer::TargetingPodMode(void)
                     while (curTarget)
                     {
                         // 2000-10-04 MODIFIED BY S.G. DON'T TARGET AIR VEHICLE!
-                        //                if (fabs(curTarget->localData->az - yaw) < minDist &&
-                        if (curTarget->BaseData()->OnGround() and fabs(curTarget->localData->az - yaw) < minDist &&
-                            fabs(curTarget->localData->el - pitch) < minDist &&
-                            curTarget->BaseData()->IsSim() &&
+                        //                if (fabs(curTarget->localData->az - yaw) < minDist  and 
+                        if (curTarget->BaseData()->OnGround() and fabs(curTarget->localData->az - yaw) < minDist  and 
+                            fabs(curTarget->localData->el - pitch) < minDist  and 
+                            curTarget->BaseData()->IsSim()  and 
                             !curTarget->BaseData()->IsWeapon())
                         {
                             if (targetingPod->CanSeeObject(curTarget) and targetingPod->CanDetectObject(curTarget))

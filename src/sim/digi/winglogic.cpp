@@ -192,9 +192,9 @@ void DigitalBrain::AiSearchTargetList(VuEntity* pentity)
             if (theTargetGroup->OnGround())
             {
                 // If we already have a ground target and it is part of the unit we are being asked to target and it's still alive, keep using it (ie, don't switch)
-                if (groundTargetPtr and groundTargetPtr->BaseData()->IsSim() &&
-                    ((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject() == theTargetGroup &&
-                    !groundTargetPtr->BaseData()->IsExploding() and !groundTargetPtr->BaseData()->IsDead() &&
+                if (groundTargetPtr and groundTargetPtr->BaseData()->IsSim()  and 
+                    ((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject() == theTargetGroup  and 
+                    !groundTargetPtr->BaseData()->IsExploding() and !groundTargetPtr->BaseData()->IsDead()  and 
                     ((SimBaseClass *)groundTargetPtr->BaseData())->pctStrength > 0.0f)
                     return;
 
@@ -363,10 +363,10 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
                 }
 
                 if (
-                    flightMember[j]->DBrain() &&
+                    flightMember[j]->DBrain()  and 
                     (
                         (
-                            flightMember[j]->DBrain()->groundTargetPtr &&
+                            flightMember[j]->DBrain()->groundTargetPtr  and 
                             flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg
                         ) ||
                         flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg ||
@@ -605,7 +605,7 @@ SimBaseClass *DigitalBrain::FindJSOWGroundTarget(CampBaseClass *targetGroup, int
             if (flightMember[j]->vehicleInUnit == self->vehicleInUnit)
                 continue;
 
-            if (flightMember[j] and flightMember[j]->DBrain() and ((flightMember[j]->DBrain()->groundTargetPtr &&
+            if (flightMember[j] and flightMember[j]->DBrain() and ((flightMember[j]->DBrain()->groundTargetPtr  and 
                     flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg) ||
                     flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg ||
                     flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg))
@@ -727,7 +727,7 @@ int DigitalBrain::FindJDAMGroundTarget(CampBaseClass *targetGroup, int targetNum
             if (flightMember[j]->vehicleInUnit == self->vehicleInUnit)
                 continue;
 
-            if (flightMember[j] and flightMember[j]->DBrain() and ((flightMember[j]->DBrain()->groundTargetPtr &&
+            if (flightMember[j] and flightMember[j]->DBrain() and ((flightMember[j]->DBrain()->groundTargetPtr  and 
                     flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg) ||
                     flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg ||
                     flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg))
