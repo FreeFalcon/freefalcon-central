@@ -250,7 +250,7 @@ void RenderOTW::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
     spanList = new SpanListEntry[ spanListMaxEntries ];
     firstEmptySpan = spanList;
 
-    if (!spanList)
+    if ( not spanList)
     {
         ShiError("Failed to allocate span buffer");
     }
@@ -261,7 +261,7 @@ void RenderOTW::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
     LODbufferSize = (maxSpanExtent) * (maxSpanExtent);
     vertexMemory = new TerrainVertex[ usedLODcount * LODbufferSize ];
 
-    if (!vertexMemory)
+    if ( not vertexMemory)
     {
         ShiError("Failed to allocate transformed vertex buffer");
     }
@@ -271,7 +271,7 @@ void RenderOTW::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
     // Allocate memory for the array of transformed vertex buffer pointers
     vertexBuffer = new TerrainVertex*[(viewpoint->GetMaxLOD() + 1) ];
 
-    if (!vertexBuffer)
+    if ( not vertexBuffer)
     {
         ShiError("Failed to allocate transformed vertex buffer list");
     }
@@ -296,7 +296,7 @@ void RenderOTW::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
     // Allocate memory for the array of information stored for each LOD (viewer location & vectors)
     LODdata = new LODdataBlock[(viewpoint->GetMaxLOD() + 1) ];
 
-    if (!LODdata)
+    if ( not LODdata)
     {
         ShiError("Failed to allocate memory for LOD step vector array");
     }
@@ -1422,7 +1422,7 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
     // COBRA - RED - Seems completely wrong condition, completely wrong way to do it to me
     // these condition ( corrected ) should be placed above
     //JAM 13Nov03
-    /* if(!(realWeather->weatherCondition > FAIR and (-viewpoint->Z()) > (-realWeather->stratusZ)))
+    /* if( not (realWeather->weatherCondition > FAIR and (-viewpoint->Z()) > (-realWeather->stratusZ)))
      {
      // If we're above the overcast layer, ground objects are not visible.
      objectList->DrawBeyond(0.f,-1,this);
@@ -1594,7 +1594,7 @@ void RenderOTW::TransformRun(int row, int col, int run, int LOD, BOOL do_row)
 
 
             // Finally, do the perspective divide and scale and shift into screen space
-            if (!(vert->clipFlag & CLIP_NEAR))
+            if ( not (vert->clipFlag & CLIP_NEAR))
             {
                 ShiAssert(scratch_z > 0.0f);
                 register float OneOverZ = 1.0f / scratch_z;
@@ -1724,7 +1724,7 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
         {
             vert->RenderingStateHandle = state_fore;
         }
-        else if (!hazed and distance < haze_start)
+        else if ( not hazed and distance < haze_start)
         {
             vert->RenderingStateHandle = state_near;
         }

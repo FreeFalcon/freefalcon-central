@@ -54,7 +54,7 @@ void ICPClass::ExecCRUSMode(void)
     WayPointClass* pwaypoint = NULL;
     int fos = 0;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         if (mUpdateFlags & CRUS_UPDATE)
         {
@@ -226,7 +226,7 @@ void ICPClass::PNUpdateCRUSMode(int button, int)
 
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
     {
         return;
     }
@@ -351,7 +351,7 @@ void ICPClass::CruiseRNG(void)
     //Check if this is valid. (Cause of CTD's?)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
         return;
 
     //WayPointClass *wp = playerAC->GetWayPointNo(RangeWP);
@@ -414,7 +414,7 @@ void ICPClass::CruiseHOME(void)
     //Check if this is valid. (Cause of CTD's?)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
         return;
 
     WayPointClass *wp = playerAC->GetWayPointNo(HomeWP);
@@ -503,7 +503,7 @@ void ICPClass::CruiseEDR(void)
     //Check if this is valid. (Cause of CTD's?)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
         return;
 
     ClearStrings();
@@ -573,7 +573,7 @@ void ICPClass::CruiseTOS(void)
     //Check if this is valid. (Cause of CTD's?)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
         return;
 
     //WayPointClass *wp = playerAC->GetWayPointNo(TOSWP);
@@ -660,7 +660,7 @@ void ICPClass::CruiseTOS(void)
     ETA = SimLibElapsedTime / SEC_TO_MSEC + FloatToInt32(Distance(playerAC->XPos(),
             playerAC->YPos(), xCurr, yCurr) / playerAC->af->vt);
 
-    if (!playerAC->OnGround())
+    if ( not playerAC->OnGround())
         FormatTime(ETA, timeStr);
 
     if (playerAC->INSState(AircraftClass::INS_HUD_FPM)) //28 Jul 04 - If INS off/failed, we lose all cruise info

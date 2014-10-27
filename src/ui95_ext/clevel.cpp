@@ -93,7 +93,7 @@ void C_Level::AddPoint(short team, short value)
     else
         MaxValue_ = ((MaxValue_ + 9) / 10) * 10;
 
-    if (!Root_[team])
+    if ( not Root_[team])
     {
         Root_[team] = newval;
     }
@@ -116,7 +116,7 @@ void C_Level::CalcPositions()
     float yscale;
     LEVEL *cur;
 
-    if (!Ready())
+    if ( not Ready())
         return;
 
     if ((MaxValue_ - MinValue_) < 1)
@@ -143,7 +143,7 @@ void C_Level::CalcPositions()
 
 void C_Level::Refresh()
 {
-    if (!Ready() or (GetFlags() & C_BIT_INVISIBLE) or !Parent_ or !Count_)
+    if ( not Ready() or (GetFlags() & C_BIT_INVISIBLE) or !Parent_ or !Count_)
         return;
 
     Parent_->SetUpdateRect(DrawArea_.left, DrawArea_.top, DrawArea_.right, DrawArea_.bottom, GetFlags(), GetClient());
@@ -156,7 +156,7 @@ void C_Level::Draw(SCREEN *surface, UI95_RECT *cliprect)
     float levelx;
     float xstep;
 
-    if (!Ready() or (GetFlags() & C_BIT_INVISIBLE) or !Parent_ or !Count_)
+    if ( not Ready() or (GetFlags() & C_BIT_INVISIBLE) or !Parent_ or !Count_)
         return;
 
     if (Count_ < 2)

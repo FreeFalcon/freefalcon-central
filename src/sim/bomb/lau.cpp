@@ -71,7 +71,7 @@ void BombClass::LauInit(void)
             }
 
             /*
-            if (!entryfound) // use generic 2.75mm rocket
+            if ( not entryfound) // use generic 2.75mm rocket
             {
              lauWeaponId  = gRocketId;
              lauMaxRounds = 19;

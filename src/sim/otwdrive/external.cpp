@@ -119,10 +119,10 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
     float platRoll;
 
     // Display is outside the aircraft....
-    ShiAssert(!DisplayInCockpit());
+    ShiAssert( not DisplayInCockpit());
 
     // Retro 17Jan2004
-    if ((!actionCameraMode) and (IO.AnalogIsUsed(AXIS_ZOOM) == true))
+    if (( not actionCameraMode) and (IO.AnalogIsUsed(AXIS_ZOOM) == true))
     {
         chaseRange = -IO.GetAxisValue(AXIS_ZOOM) / 15000.f * 900.f;
 
@@ -140,7 +140,7 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
     if (PlayerOptions.GetMouseLook() == true) // Retro 18Jan2004
         theMouseView.Compute(slewRate * dT);
 
-    if (!otwPlatform)
+    if ( not otwPlatform)
     {
 
         cameraVel.x = cameraVel.y = cameraVel.z = 0; // MLR 12/2/2003 -
@@ -216,7 +216,7 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
                               &cameraPos, &cameraRot);
 
         // Retro 25Dec2003
-        if ((otwPlatform->IsAirplane()) and (displaceCamera) and (!otwPlatform->OnGround()))
+        if ((otwPlatform->IsAirplane()) and (displaceCamera) and ( not otwPlatform->OnGround()))
         {
             DisplaceTheCamera(dT);
         }
@@ -511,7 +511,7 @@ void OTWDriverClass::DisplaceTheCamera(float dT)
 {
     Prof(DisplaceTheCamera);
 
-    if ((!xDir) or (!yDir) or (!zDir))
+    if (( not xDir) or ( not yDir) or ( not zDir))
         return;
 
     // only compute any additional displacement when NOT paused..
@@ -681,7 +681,7 @@ void OTWDriverClass::BuildExternalNearList(void)
     FlushNearList();
 
     // Drop out if we have nothing to do...
-    if (!SimDriver.objectList or DisplayInCockpit() or !otwPlatform or otwPlatform->OnGround() or !otwPlatform->drawPointer)
+    if ( not SimDriver.objectList or DisplayInCockpit() or !otwPlatform or otwPlatform->OnGround() or !otwPlatform->drawPointer)
         return;
 
     // Compute the real world camera position

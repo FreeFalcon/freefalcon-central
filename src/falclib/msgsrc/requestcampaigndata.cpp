@@ -138,7 +138,7 @@ int FalconRequestCampaignData::Process(uchar autodisp)
             PostMessage(gMainHandler->GetAppWnd(), FM_MATCH_IN_PROGRESS, 0, 0);
     }
 
-    if (!TheCampaign.IsLoaded())
+    if ( not TheCampaign.IsLoaded())
         return -1;
 
     // KCK TODO: Check if a request from this machine is already on the queue,
@@ -177,7 +177,7 @@ void SendRequestedData(void)
         {
             TheCampaign.SetOnlineStatus(1);
 
-            if ((!(request->dataBlock.dataNeeded & CAMP_NEED_PRELOAD)) and (CheckNumberPlayers() < 0))
+            if (( not (request->dataBlock.dataNeeded & CAMP_NEED_PRELOAD)) and (CheckNumberPlayers() < 0))
             {
                 FalconRequestCampaignData *msg;
                 MonoPrint("Too Many Players");
@@ -186,7 +186,7 @@ void SendRequestedData(void)
                 msg->dataBlock.dataNeeded = CAMP_GAME_FULL;
                 FalconSendMessage(msg, TRUE);
             }
-            else if ((!(request->dataBlock.dataNeeded & CAMP_NEED_PRELOAD)) and (MatchPlayStarted()))
+            else if (( not (request->dataBlock.dataNeeded & CAMP_NEED_PRELOAD)) and (MatchPlayStarted()))
             {
                 FalconRequestCampaignData *msg;
                 MonoPrint("Send Match Play In Progress");
@@ -278,7 +278,7 @@ void SendRequestedData(void)
                      ent = iter.GetFirst();
                      while (ent)
                      {
-                     if (!ent->IsPrivate() and ent->IsLocal() and (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE and (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT and (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_MANAGER)
+                     if ( not ent->IsPrivate() and ent->IsLocal() and (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE and (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT and (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_MANAGER)
                      {
                      resp = new VuFullUpdateEvent(ent, requester);
                      resp->RequestReliableTransmit();

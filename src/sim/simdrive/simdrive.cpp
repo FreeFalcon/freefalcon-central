@@ -640,7 +640,7 @@ void SimulationDriver::Cycle()
                 {
                     vuDatabase->Remove(theObject);
                 }
-                else if (!theObject->IsAwake())
+                else if ( not theObject->IsAwake())
                 {
                     SimDriver.RemoveFromObjectList(theObject);
                     continue;
@@ -663,7 +663,7 @@ void SimulationDriver::Cycle()
 
                     if (theObject->EntityDriver())
                     {
-                        if (!(
+                        if ( not (
                                 (theObject->IsSetFalcFlag(FEC_PLAYER_ENTERING))  and 
                                 (theObject->IsLocal())  and 
                                 (RunningDogfight())
@@ -673,7 +673,7 @@ void SimulationDriver::Cycle()
                         }
                     }
 
-                    if (!theObject->IsLocal())
+                    if ( not theObject->IsLocal())
                     {
                         CalcTransformMatrix(theObject);
                         //LRKLUDGE
@@ -714,7 +714,7 @@ void SimulationDriver::Cycle()
     if (runGraphics)
     {
         // if we're not in a cockpit view, play wind noise
-        if (!OTWDriver.DisplayInCockpit())
+        if ( not OTWDriver.DisplayInCockpit())
         {
             //edg note: since this was moved down here from above, the current
             // frame count is now beyond what the positional sound driver expects
@@ -905,7 +905,7 @@ void SimulationDriver::SetPlayerEntity(SimMoverClass* newObject)
     }
 
     // If there is no player vehicle, turn off force feedback
-    if (!playerEntity)
+    if ( not playerEntity)
     {
         JoystickStopAllEffects();
     }
@@ -927,7 +927,7 @@ void SimulationDriver::UpdateIAStats(SimBaseClass* oldEntity)
         //InstantAction.ExpendWeapons(oldEntity);
         return;
     }
-    else if (!(oldEntity->IsSetFlag(MOTION_AIR_AI))  and 
+    else if ( not (oldEntity->IsSetFlag(MOTION_AIR_AI))  and 
              !(oldEntity->IsSetFlag(MOTION_GND_AI))  and 
              !(oldEntity->IsSetFlag(MOTION_HELO_AI)))
     {
@@ -1051,7 +1051,7 @@ void SimulationDriver::SleepCampaignFlight(TailInsertList *flightList)
 // This call makes the sim aware of this object
 void SimulationDriver::WakeObject(SimBaseClass* theObject)
 {
-    if (!theObject or theObject->IsAwake())
+    if ( not theObject or theObject->IsAwake())
     {
         return;
     }
@@ -1061,7 +1061,7 @@ void SimulationDriver::WakeObject(SimBaseClass* theObject)
     {
         GameManager.CheckPlayerStatus(theObject);
 
-        if (!theObject->IsSetFalcFlag(FEC_HASPLAYERS))
+        if ( not theObject->IsSetFalcFlag(FEC_HASPLAYERS))
         {
             return;
         }
@@ -1073,7 +1073,7 @@ void SimulationDriver::WakeObject(SimBaseClass* theObject)
 // This call makes the sim ignore this object
 void SimulationDriver::SleepObject(SimBaseClass* theObject)
 {
-    if (!theObject or !theObject->IsAwake())
+    if ( not theObject or !theObject->IsAwake())
         return;
 
     theObject->Sleep();
@@ -1088,7 +1088,7 @@ void SimulationDriver::UpdateRemoteData(void)
 
     while (theObject)
     {
-        if (!theObject->IsLocal())
+        if ( not theObject->IsLocal())
         {
             CalcTransformMatrix(theObject);
             theObject->Exec();
@@ -1140,7 +1140,7 @@ SimBaseClass* SimulationDriver::FindNearestThreat(float* bearing, float* range, 
     float tmpRange;
     Team myTeam;
 
-    if (!playerEntity)
+    if ( not playerEntity)
         return NULL;
 
     myX = ((SimBaseClass*)playerEntity)->XPos();
@@ -1200,7 +1200,7 @@ SimBaseClass* SimulationDriver::FindNearestThreat(short *x, short *y, float* alt
     float tmpRange = 0.0F, range = 0.0F;
     Team myTeam = 0;
 
-    if (!playerEntity)
+    if ( not playerEntity)
         return NULL;
 
     myX = ((SimBaseClass*)playerEntity)->XPos();
@@ -1262,7 +1262,7 @@ SimBaseClass* SimulationDriver::FindNearestThreat(AircraftClass* aircraft, short
     float tmpRange = 0.0F, range = 0.0F;
     Team myTeam = 0;
 
-    if (!playerEntity)
+    if ( not playerEntity)
         return NULL;
 
     myX = aircraft->XPos();
@@ -1324,7 +1324,7 @@ SimBaseClass* SimulationDriver::FindNearestEnemyPlane(AircraftClass* aircraft, s
     float tmpRange = 0.0F, range = 0.0F;
     Team myTeam = 0;
 
-    if (!playerEntity)
+    if ( not playerEntity)
         return NULL;
 
     myX = aircraft->XPos();
@@ -1382,7 +1382,7 @@ CampBaseClass* SimulationDriver::FindNearestCampThreat(AircraftClass* aircraft, 
     float tmpRange = 0.0F, range = 0.0F;
     Team myTeam = 0;
 
-    if (!playerEntity)
+    if ( not playerEntity)
         return NULL;
 
     // Don't look for campaign threats in dogfight. Everything is deaggregated anyway, and
@@ -1456,7 +1456,7 @@ CampBaseClass* SimulationDriver::FindNearestCampEnemy(AircraftClass* aircraft, s
     float tmpRange = 0.0F, range = 0.0F;
     Team myTeam = 0;
 
-    if (!playerEntity)
+    if ( not playerEntity)
         return NULL;
 
     // Don't look for campaign threats in dogfight. Everything is deaggregated anyway, and
@@ -1537,7 +1537,7 @@ SimBaseClass* SimulationDriver::FindNearestTraffic(AircraftClass* aircraft, Obje
     int priTrafficDist = 5; // Priority traffic distance (not fully implimented)
 
 
-    if (!playerEntity)
+    if ( not playerEntity)
         return NULL;
 
     myX = aircraft->XPos(); // My X position
@@ -1895,7 +1895,7 @@ void SimulationDriver::InitACMIRecord(void)
         airPos.data.type = theMover->Type();
 
         // sfr: remove JB check
-        if (!F4IsBadReadPtr((DrawableBSP*)(theMover->drawPointer), sizeof(DrawableBSP)) and theMover->GetTeam() >= 0 and !F4IsBadReadPtr(TeamInfo[theMover->GetTeam()], sizeof(TeamClass))) // JB 010326 CTD
+        if ( not F4IsBadReadPtr((DrawableBSP*)(theMover->drawPointer), sizeof(DrawableBSP)) and theMover->GetTeam() >= 0 and !F4IsBadReadPtr(TeamInfo[theMover->GetTeam()], sizeof(TeamClass))) // JB 010326 CTD
             airPos.data.uniqueID = ACMIIDTable->Add(theMover->Id(), (char*)((DrawableBSP*)(theMover->drawPointer))->Label(), TeamInfo[theMover->GetTeam()]->GetColor()); //.num_;
 
         airPos.data.x = theMover->XPos();
@@ -2177,7 +2177,7 @@ void ProximityCheck(SimBaseClass* thisObj)
                 theObject = updateWalker.GetNext();
             }
 
-            if (!isClose)
+            if ( not isClose)
             {
                 theObject = updateWalker.GetFirst();
 

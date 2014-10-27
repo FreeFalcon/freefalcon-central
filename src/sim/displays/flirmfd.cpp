@@ -24,7 +24,7 @@ void FlirMfdDrawable::Display(VirtualDisplay* newDisplay)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
     RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
 
-    if (!theRadar)
+    if ( not theRadar)
     {
         ShiWarning("Oh Oh shouldn't be here without a radar!");
         return;
@@ -36,7 +36,7 @@ void FlirMfdDrawable::Display(VirtualDisplay* newDisplay)
 
     display = newDisplay;
 
-    if (!theLantirn->IsFLIR())
+    if ( not theLantirn->IsFLIR())
     {
         int ofont = display->CurFont();
         display->SetFont(2);

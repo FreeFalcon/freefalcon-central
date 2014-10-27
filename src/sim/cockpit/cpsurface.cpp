@@ -69,7 +69,7 @@ CPSurface::~CPSurface()
 
 void CPSurface::CreateLit(void)
 {
-    if (!DisplayOptions.bRender2DCockpit)
+    if ( not DisplayOptions.bRender2DCockpit)
     {
         mpSurfaceBuffer = new ImageBuffer;
 
@@ -78,7 +78,7 @@ void CPSurface::CreateLit(void)
 
         MPRSurfaceType front = (FalconDisplay.theDisplayDevice.IsHardware() and DisplayOptions.bRender2DCockpit) ? LocalVideoMem : SystemMem;
 
-        if (!mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mWidth, mHeight, front, None) and front == LocalVideoMem)
+        if ( not mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mWidth, mHeight, front, None) and front == LocalVideoMem)
         {
             // Retry with system memory if ouf video memory
 #ifdef _DEBUG
@@ -87,7 +87,7 @@ void CPSurface::CreateLit(void)
 
             BOOL bResult = mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mWidth, mHeight, SystemMem, None);
 
-            if (!bResult) return;
+            if ( not bResult) return;
         }
 
         mpSurfaceBuffer->SetChromaKey(0xFFFF0000);
@@ -102,7 +102,7 @@ void CPSurface::CreateLit(void)
 
             m_pPalette = new PaletteHandle(mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-            if (!m_pPalette)
+            if ( not m_pPalette)
                 throw _com_error(E_OUTOFMEMORY);
 
             // Check if we can use a single texture
@@ -110,15 +110,15 @@ void CPSurface::CreateLit(void)
             {
                 TextureHandle *pTex = new TextureHandle;
 
-                if (!pTex)
+                if ( not pTex)
                     throw _com_error(E_OUTOFMEMORY);
 
                 m_pPalette->AttachToTexture(pTex);
 
-                if (!pTex->Create("CPSurface", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, mWidth, mHeight))
+                if ( not pTex->Create("CPSurface", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, mWidth, mHeight))
                     throw _com_error(E_FAIL);
 
-                if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer, true, true)) // soon to be re-loaded by CPSurface::Translate3D
+                if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer, true, true)) // soon to be re-loaded by CPSurface::Translate3D
                     throw _com_error(E_FAIL);
 
                 m_arrTex.push_back(pTex);
@@ -155,19 +155,19 @@ void CPSurface::CreateLit(void)
                     {
                         TextureHandle *pTex = new TextureHandle;
 
-                        if (!pTex)
+                        if ( not pTex)
                             throw _com_error(E_OUTOFMEMORY);
 
                         m_pPalette->AttachToTexture(pTex);
 
-                        if (!pTex->Create("CPSurface - Tile", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8,
+                        if ( not pTex->Create("CPSurface - Tile", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8,
                                           (UInt16)min(dwMaxTextureWidth, dwWidthRemaining), (UInt16)min(dwMaxTextureHeight, dwHeightRemaining)))
                             throw _com_error(E_FAIL);
 
                         DWORD dwOffset = (y * dwMaxTextureHeight) * mWidth;
                         dwOffset += x * dwMaxTextureWidth;
 
-                        if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer + dwOffset, true, true, mWidth)) // soon to be re-loaded by CPSurface::Translate3D
+                        if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer + dwOffset, true, true, mWidth)) // soon to be re-loaded by CPSurface::Translate3D
                             throw _com_error(E_FAIL);
 
                         m_arrTex.push_back(pTex);
@@ -256,7 +256,7 @@ void CPSurface::DisplayBlit(BYTE blitType, BOOL Persistance, RECT *pDestRect, in
 
 void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, int xPanelOffset, int yPanelOffset)
 {
-    if (!m_arrTex.size())
+    if ( not m_arrTex.size())
         return; // handled in DisplayBlit
 
     RECT destRect;

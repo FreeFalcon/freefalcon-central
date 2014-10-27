@@ -62,7 +62,7 @@ static BOOL GPSTreeSortCB(TREELIST *list, TREELIST *newitem)
         else
             second = NULL;
 
-        if (!first or !second)
+        if ( not first or !second)
             return(FALSE);
 
         if (isdigit(*first) and isdigit(*second))
@@ -92,7 +92,7 @@ static BOOL GPSTreeSortCB(TREELIST *list, TREELIST *newitem)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL GPSMissionSortPriorityCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list or !newitem)
+    if ( not list or !newitem)
         return(FALSE);
 
     if (((C_Mission*)newitem->Item_)->GetPriorityID() < ((C_Mission*)list->Item_)->GetPriorityID())
@@ -107,7 +107,7 @@ static BOOL GPSMissionSortPriorityCB(TREELIST *list, TREELIST *newitem)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL GPSMissionSortTimeCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list or !newitem)
+    if ( not list or !newitem)
         return(FALSE);
 
     if (((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
@@ -119,12 +119,12 @@ static BOOL GPSMissionSortTimeCB(TREELIST *list, TREELIST *newitem)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL GPSMissionSortMissionCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list or !newitem)
+    if ( not list or !newitem)
         return(FALSE);
 
     if (_tcsicmp(((C_Mission*)newitem->Item_)->GetMission(), ((C_Mission*)list->Item_)->GetMission()) < 0)
         return(TRUE);
-    else if (!_tcsicmp(((C_Mission*)newitem->Item_)->GetMission(), ((C_Mission*)list->Item_)->GetMission())  and 
+    else if ( not _tcsicmp(((C_Mission*)newitem->Item_)->GetMission(), ((C_Mission*)list->Item_)->GetMission())  and 
              ((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
         return(TRUE);
 
@@ -134,7 +134,7 @@ static BOOL GPSMissionSortMissionCB(TREELIST *list, TREELIST *newitem)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL GPSMissionSortStatusCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list or !newitem)
+    if ( not list or !newitem)
         return(FALSE);
 
     if (((C_Mission*)newitem->Item_)->GetStatusID() < ((C_Mission*)list->Item_)->GetStatusID())
@@ -149,7 +149,7 @@ static BOOL GPSMissionSortStatusCB(TREELIST *list, TREELIST *newitem)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL GPSMissionSortPackageCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list or !newitem)
+    if ( not list or !newitem)
         return(FALSE);
 
     if (((C_Mission*)newitem->Item_)->GetPackageID() < ((C_Mission*)list->Item_)->GetPackageID())
@@ -303,7 +303,7 @@ void GlobalPositioningSystem::UpdateDivisions()
             {
                 cur = (UI_Refresher*)GPS_Hash->Find(u->GetCampID() | UR_DIVISION);
 
-                if (!cur)
+                if ( not cur)
                 {
                     // create a new one
                     cur = new UI_Refresher;
@@ -351,11 +351,11 @@ void GlobalPositioningSystem::Update()
         if (F4IsBadReadPtr(entity, sizeof(CampEntity)))
             continue;
 
-        if (!entity->IsDead())
+        if ( not entity->IsDead())
         {
             cur = (UI_Refresher*)GPS_Hash->Find(entity->GetCampID());
 
-            if (!cur)
+            if ( not cur)
             {
                 if (entity->IsUnit() and ((Unit)entity)->Inactive())
                 {

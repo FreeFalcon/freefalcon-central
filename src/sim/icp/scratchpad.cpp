@@ -45,7 +45,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
     //Bingo Page
     else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == TWO_BUTTON)
     {
-        if (!Manual_Input)
+        if ( not Manual_Input)
         {
             level = (long)((AircraftClass*)(playerAC))->GetBingoFuel();
 
@@ -90,7 +90,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
     }
     else if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == TWO_BUTTON)
     {
-        if (!Manual_Input)
+        if ( not Manual_Input)
         {
             if (EDITMSLFLOOR)
                 sprintf(InputString, "%dFT", TheHud->MSLFloor);

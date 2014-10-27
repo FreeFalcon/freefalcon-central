@@ -247,7 +247,7 @@ void TacanList::AddTacan(CampBaseClass *p_campEntity)
                 p_previous = NULL;
                 InsertIntoTacanList(&p_previous, p_next, p_campEntity->Id(), p_campEntity->GetCampID(), channel, set, domain);
             }
-            else if (!GetPointerFromVUID(mpTList, p_campEntity->Id(), &p_previous, &p_tacanVUStr))
+            else if ( not GetPointerFromVUID(mpTList, p_campEntity->Id(), &p_previous, &p_tacanVUStr))
             {
                 // Check the sorted mpTList (tacan) list for duplicate entries stop ...
                 // searching when we find a VU_ID greater than the one we are searching for.
@@ -1059,7 +1059,7 @@ void TacanList::RetireChannel(VU_ID vuID)
 
     pTacanStr = mpAssigned;
 
-    while (!found and pTacanStr)
+    while ( not found and pTacanStr)
     {
 
         if (pTacanStr->vuID == vuID)

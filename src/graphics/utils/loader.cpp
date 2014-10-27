@@ -68,7 +68,7 @@ void Loader::Setup()
     strcpy(WakeEventName, "LoaderWakeupCall");
     WakeEventHandle = CreateEvent(NULL, FALSE, FALSE, WakeEventName);
 
-    if (!WakeEventHandle)
+    if ( not WakeEventHandle)
     {
         ShiError("Failed to create the loader wake up event");
     }
@@ -81,7 +81,7 @@ void Loader::Setup()
                        NULL, 0, (unsigned int (__stdcall *)(void*))MainLoopWrapper, this, 0, (unsigned *) &threadID
                    );
 
-    if (!threadHandle)
+    if ( not threadHandle)
     {
         ShiError("Failed to spawn loader");
     }
@@ -100,7 +100,7 @@ void Loader::Cleanup()
 
     //WakeUp();
     // RED - Need to wait it is off
-    while (!stopped);
+    while ( not stopped);
 
     LeaveCriticalSection(&cs_loaderQ);
     SetEvent(WakeEventHandle);
@@ -137,7 +137,7 @@ DWORD Loader::MainLoop()
     LoaderQ *Active;
     actionDone = false;
 
-    while (!shutDown)
+    while ( not shutDown)
     {
 
         // Process everything in our queue
@@ -148,7 +148,7 @@ DWORD Loader::MainLoop()
             actionDone  or_eq  ObjectLOD::UpdateLods();
             actionDone  or_eq  TheTextureBank.UpdateBank();
 
-            while ((Active = GetNextRequest()) and (!shutDown))
+            while ((Active = GetNextRequest()) and ( not shutDown))
             {
                 // Check queue status
                 if (queueStatus == QUEUE_FIFO)
@@ -172,7 +172,7 @@ DWORD Loader::MainLoop()
             // the queue is empty
             EnterCriticalSection(&cs_loaderQ);
 
-            if (!head)
+            if ( not head)
             {
                 queueIsEmpty = TRUE;
             }
@@ -231,7 +231,7 @@ void Loader::Dequeue(LoaderQ *Old)
     lastDequeueAt = GetTickCount();
 #endif
 
-    if (!head)
+    if ( not head)
     {
         // Wake the main loop to ensure it sets the queueIsEmpty flag as appropriate
         SetEvent(WakeEventHandle);
@@ -257,7 +257,7 @@ void Loader::Enqueue(LoaderQ *New)
         {
 
             return;
-            ShiAssert(!"Caught trying to add duplicate request");
+            ShiAssert( not "Caught trying to add duplicate request");
         }
 
         p = p->next;
@@ -269,7 +269,7 @@ void Loader::Enqueue(LoaderQ *New)
     New->next = NULL;
     New->prev = tail;
 
-    if (!tail)
+    if ( not tail)
     {
         head = New;
         queueIsEmpty = FALSE;
@@ -296,7 +296,7 @@ void Loader::EnqueueRequest(LoaderQ *New)
     EnterCriticalSection(&cs_loaderQ);
 
     // Link the new queue entry to the end of the Q
-    if (!shutDown)
+    if ( not shutDown)
     {
         Enqueue(New);
     }
@@ -316,7 +316,7 @@ void Loader::ReplaceHeadEntry(LoaderQ *New)
     if (head)
         head->prev = New;
 
-    if (!tail)
+    if ( not tail)
         tail = New;
 
     LeaveCriticalSection(&cs_loaderQ);
@@ -433,7 +433,7 @@ void Loader::WaitForLoader(void)
 void Loader::WaitLoader(void)
 {
 
-    while (!queueIsEmpty)
+    while ( not queueIsEmpty)
     {
 
 #ifdef LOADER_INSTRUMENT

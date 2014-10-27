@@ -303,7 +303,7 @@ void MissileClass::UpdateTrail(void)
             }
         }
     }
-    else if (!IsExploding())
+    else if ( not IsExploding())
     {
         InitTrail();
 

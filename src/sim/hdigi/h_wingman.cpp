@@ -17,7 +17,7 @@ void HeliBrain::ReceiveOrders(FalconEvent* theEvent)
     FalconWingmanMsg *wingCommand = (FalconWingmanMsg *)theEvent;
     int goLead = FALSE;
 
-    if (!self->IsAwake())
+    if ( not self->IsAwake())
         return;
 
     switch (wingCommand->dataBlock.command)
@@ -67,7 +67,7 @@ void HeliBrain::ReceiveOrders(FalconEvent* theEvent)
         case FalconWingmanMsg::WMPromote:
             isWing --;
 
-            if (!isWing)
+            if ( not isWing)
             {
                 SetLead(TRUE);
                 self->flightLead = self;

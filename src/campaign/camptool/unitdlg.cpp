@@ -649,7 +649,7 @@ void DisplayNextInStack(HWND hDlg, Unit u)
     }
 
     // e should be u or be null here
-    if (!e)
+    if ( not e)
     {
         delete myit;
         return;
@@ -728,7 +728,7 @@ void ShowElementInfo(HDC DC, HWND hDlg, Unit U, short Set, short i, int asagg)
     short Rost;
     char buffer[20];
 
-    if ((!asagg or !U->Father()) and Set == 1)
+    if (( not asagg or !U->Father()) and Set == 1)
     {
         if (U->GetDomain() == DOMAIN_AIR)
         {
@@ -835,7 +835,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     RECT buttons[10];
     RECT ebuttons[5][6];
 
-    if (!U or U->CountUnitElements() == 0)
+    if ( not U or U->CountUnitElements() == 0)
         None = 1;
 
     GetWindowRect(hDlg, &rect);
@@ -909,7 +909,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             HWND hCWnd;
             //! int c=0;
 
-            if (!U or U->IsDead())
+            if ( not U or U->IsDead())
             {
                 if (U)
                     vuDatabase->Remove(U);
@@ -1211,7 +1211,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         SetFocus(GetDlgItem(hDlg, IDOK));
                         E = NULL;
 
-                        if (!U->Real())
+                        if ( not U->Real())
                         {
                             E = GlobUnit->GetFirstUnitElement();
                             k = i;
@@ -1253,7 +1253,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         {
                             GridIndex x, y;
 
-                            if (!j) // Primary child
+                            if ( not j) // Primary child
                             {
                                 if (U->GetType() == TYPE_BRIGADE)
                                     E = NewUnit(U->GetDomain(), GetNextType(U), U->GetSType(), 2, U);
@@ -1286,7 +1286,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         {
 
                             /*
-                             if (!E)
+                             if ( not E)
                              ;  // Add the unit
                              else if (E==C1)
                              C1->SetUnitSType((char)(C1->GetSType()-1));
@@ -1376,7 +1376,7 @@ BOOL WINAPI EditWayPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     char buffer[40];
     CampEntity e;
 
-    if (!w)
+    if ( not w)
     {
         EndDialog(hDlg, TRUE);        /* Exits the dialog box        */
         return (FALSE);
@@ -1627,7 +1627,7 @@ F4PFList ResetNewSquadron(HWND hDlg, Unit squadron, F4PFList flights)
     GridIndex x, y;
     RECT rect;
 
-    if (!squadron)
+    if ( not squadron)
         return NULL;
 
     squadron->GetLocation(&x, &y);
@@ -1680,7 +1680,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             flights = new FalconPrivateList(&AllAirFilter);
             flights->Register();
 
-            if (!squadrons or !flights)
+            if ( not squadrons or !flights)
                 return FALSE;
 
             squadron = flight = NULL;
@@ -1713,7 +1713,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     sprintf(buffer, "Squadron %d - %s", u->GetUnitNameID(), GetVehicleName(u->GetVehicleID(0)));
                     SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_ADDSTRING, 0, (LPARAM)buffer);
 
-                    if (!squadron)
+                    if ( not squadron)
                     {
                         squadron = u;
                         FalconLocalSession->SetPlayerSquadron((Squadron)squadron);
@@ -2003,7 +2003,7 @@ BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
             }
             SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), WM_SETREDRAW, 1, 0);
 
-            if (!squadron)
+            if ( not squadron)
             {
                 /* squadron = GetFirstUnit(&sit);*/
                 SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_SETCURSEL, 1, 0);

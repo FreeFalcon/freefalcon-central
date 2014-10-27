@@ -201,7 +201,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
     arc = (ARCHIVE *)MemMalloc(sizeof(ARCHIVE), filename);
 #endif
 
-    if (!arc)
+    if ( not arc)
     {
         UNZIP_ERROR = RES_ERR_NO_MEMORY;
         return(NULL);
@@ -318,7 +318,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
     {
         table -> num_entries = sz;
 
-        if (!hash_resize(table))
+        if ( not hash_resize(table))
         {
             _close(arc -> os_handle);
 #ifdef USE_SH_POOLS
@@ -496,7 +496,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
         {
             if (path[i - 1] == ASCII_FORESLASH)
             {
-                if (!path_idx)
+                if ( not path_idx)
                 {
                     path_idx = i - 1;
                     fname = &path[ path_idx + 1 ];
@@ -518,7 +518,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
         do
         {
 
-            if (!stricmp(GLOBAL_SEARCH_PATH[i], attach_point))
+            if ( not stricmp(GLOBAL_SEARCH_PATH[i], attach_point))
             {
                 dir_was = i;
                 break;
@@ -552,7 +552,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
             {
                 table = (HASH_TABLE *)entry -> dir;
 
-                if (!table)
+                if ( not table)
                     break;
             }
             else
@@ -561,7 +561,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
 
                 if (GLOBAL_SEARCH_INDEX >= (MAX_DIRECTORIES - 1))
                 {
-                    assert(!"Exceeded MAX_DIRECTORIES as defined in omni.h");
+                    assert( not "Exceeded MAX_DIRECTORIES as defined in omni.h");
                     //                  SAY_ERROR( RES_ERR_TOO_MANY_DIRECTORIES, "ResAddPath" );
                     return(FALSE);
                 }
@@ -577,7 +577,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
 
                 entry = hash_add(&info, GLOBAL_HASH_TABLE);
 
-                if (!entry)
+                if ( not entry)
                     break;
 
                 entry -> archive       = -1; /* the actual directory existence should not be considered
@@ -600,13 +600,13 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
 
 #endif /* !RES_USE_FLAT_MODEL */
 
-        if (!(*data.name))
+        if ( not (*data.name))
             continue;  /* this is usually a directory entry, which we'll decipher later */
 
 
 #if( RES_REJECT_EMPTY_FILES )
 
-        if (!crec.csize)
+        if ( not crec.csize)
             continue;
 
 #endif
@@ -618,10 +618,10 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
         /*        RES_LOCK( table );  GFG */
         entry = hash_find(data.name, table);    /* see if an entry already exists */
 
-        if (!entry)
+        if ( not entry)
             entry = hash_add(&data, table);     /* if not, create one             */
         else /* there is already a file with the same name here! */
-            if (!replace_flag)
+            if ( not replace_flag)
                 continue;
 
 
@@ -785,7 +785,7 @@ int archive_size(ARCHIVE * arc)
             }
         }
 
-        if (!(*curfilename))
+        if ( not (*curfilename))
             continue;  /* this is usually a directory entry, which we'll decipher later */
 
         count++;
@@ -1336,7 +1336,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
 
 fail:
 
-    if (!found)
+    if ( not found)
     {
 #ifdef MSWIN
         MessageBeep(1);
@@ -1448,7 +1448,7 @@ static int do_string(unsigned int len, int option, char * filename, ARCHIVE * ar
       of string:  if zero, we're already done.
       ---------------------------------------------------------------------------*/
 
-    if (!len)
+    if ( not len)
         return(PK_COOL);
 
     switch (option)
@@ -1487,7 +1487,7 @@ static int do_string(unsigned int len, int option, char * filename, ARCHIVE * ar
 
             A_TO_N(filename);            /* translate string to native    */
 
-            if (!extra_len)             /* we're done here                */
+            if ( not extra_len)             /* we're done here                */
                 break;
 
             /*

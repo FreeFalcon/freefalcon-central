@@ -151,7 +151,7 @@ void C_Handler::Setup(HWND hwnd, ImageBuffer *, ImageBuffer *Primary)
         // OW FIXME: hack export a function from device or somewhere
         DXContext *pCtx = FalconDisplay.theDisplayDevice.GetDefaultRC();
 
-        if (!(pCtx->m_pcapsDD->dwCaps2 & DDCAPS2_CANRENDERWINDOWED))
+        if ( not (pCtx->m_pcapsDD->dwCaps2 & DDCAPS2_CANRENDERWINDOWED))
         {
             int nWidth = 16;
             int nHeight = 16;
@@ -216,7 +216,7 @@ void C_Handler::Setup(HWND hwnd, ImageBuffer *, ImageBuffer *Primary)
         else
             bResult  = Front_->Setup(&FalconDisplay.theDisplayDevice, dispXres, dispYres, SystemMem, None, FALSE);
 
-        if (!bResult)
+        if ( not bResult)
         {
             MonoPrint("Can't create back surface for UI\n");
             Front_ = Primary_;
@@ -233,7 +233,7 @@ void C_Handler::Setup(HWND hwnd, ImageBuffer *, ImageBuffer *Primary)
     else
         bResult  = Front_->Setup(&FalconDisplay.theDisplayDevice, 800, 600, SystemMem, None, FALSE);
 
-    if (!bResult)
+    if ( not bResult)
     {
         MonoPrint("Can't create back surface for UI\n");
         Front_ = Primary_;
@@ -242,7 +242,7 @@ void C_Handler::Setup(HWND hwnd, ImageBuffer *, ImageBuffer *Primary)
 #endif
 
     // OW - WM_MOVE does not get sent to the app in response to SetWindowPos
-    if (!FalconDisplay.displayFullScreen)
+    if ( not FalconDisplay.displayFullScreen)
     {
         RECT dest;
         GetClientRect(hwnd, &dest);
@@ -740,7 +740,7 @@ void C_Handler::CheckHelpText(SCREEN *surface)
     {
         font = gFontList->Find(OverLast_.HelpFont_);
 
-        if (!OverLast_.HelpOn_ and font)
+        if ( not OverLast_.HelpOn_ and font)
         {
             OverLast_.HelpOn_ = 1;
 
@@ -1118,12 +1118,12 @@ void C_Handler::Update()
     UI95_RECT src, dst;
     short i;
 
-    if (!(UpdateFlag & C_DRAW_REFRESH) or !DrawFlags)
+    if ( not (UpdateFlag & C_DRAW_REFRESH) or !DrawFlags)
         return;
 
     Lock();
 
-    if (!surface_.mem)
+    if ( not surface_.mem)
         return;
 
     // CheckDrawThrough();
@@ -1215,7 +1215,7 @@ void C_Handler::CopyToPrimary()
     short i;
     RECT src, dest;
 
-    if (!DrawFlags)
+    if ( not DrawFlags)
         return;
 
     // OW now handled by running in software mode on V1 and V2
@@ -1378,7 +1378,7 @@ void C_Handler::EnableWindowGroup(long ID)
         {
             ShowWindow(cur->win);
 
-            if (!(cur->win->GetFlags() & C_BIT_CANTMOVE))
+            if ( not (cur->win->GetFlags() & C_BIT_CANTMOVE))
             {
                 next = cur->Next;
                 WindowToFront(cur->win);
@@ -1493,7 +1493,7 @@ BOOL C_Handler::RemoveUserCallback(void (*cb)())
         cur = UserRoot_;
         last = UserRoot_;
 
-        while ((cur) and (cur->Next) and (!retval))
+        while ((cur) and (cur->Next) and ( not retval))
         {
             if (cur->Next->Callback == cb)
             {
@@ -1714,7 +1714,7 @@ void C_Handler::StartOutputThread()
 
     WakeOutput_ = CreateEvent(NULL, FALSE, FALSE, "Awaken Output Thread");
 
-    if (!WakeOutput_)
+    if ( not WakeOutput_)
         return;
 
     OutputLoop_ = 1;
@@ -1778,7 +1778,7 @@ void C_Handler::StartControlThread(long sleeptime)
 
     WakeControl_ = CreateEvent(NULL, FALSE, FALSE, "Awaken Control Thread");
 
-    if (!WakeControl_)
+    if ( not WakeControl_)
     {
         return;
     }
@@ -2159,7 +2159,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     // so we are rolling wheel inside an active window
 
     // grab component we are over
-    if (!GrabItem(MouseX, MouseY, overme, MessageType))
+    if ( not GrabItem(MouseX, MouseY, overme, MessageType))
     {
         break;
     }
@@ -2474,7 +2474,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 break;
             }
 
-            if (!Dragging() and (Grab_.Control_ or Grab_.Window_) and Grab_.GrabType_ == C_TYPE_LMOUSEDOWN)
+            if ( not Dragging() and (Grab_.Control_ or Grab_.Window_) and Grab_.GrabType_ == C_TYPE_LMOUSEDOWN)
                 StartDrag();
 
             if (Dragging())
@@ -2858,7 +2858,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             // Handle Hot Keys & Keyboard input
             if (CurWindow_)
             {
-                if (!CurWindow_->CheckKeyboard(Key, Ascii, ShiftStates, Repeat))
+                if ( not CurWindow_->CheckKeyboard(Key, Ascii, ShiftStates, Repeat))
                     CheckHotKeys(Key, Ascii, ShiftStates, Repeat);
             }
             else
@@ -2883,7 +2883,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
              if(CurWindow_ == NULL)
              break;
 
-             if(!CurWindow_->CheckKeyboard(message,wParam,lParam))
+             if( not CurWindow_->CheckKeyboard(message,wParam,lParam))
              CheckHotKeys(message,wParam,lParam);
              retval=0;
              break;

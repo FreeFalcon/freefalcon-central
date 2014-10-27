@@ -386,7 +386,7 @@ int HelicopterClass::Sleep(void)
 {
     int retval = 0;
 
-    if (!IsAwake())
+    if ( not IsAwake())
         return retval;
 
     if (hBrain)
@@ -561,7 +561,7 @@ int HelicopterClass::Exec(void)
 
     if (IsExploding())
     {
-        if (!IsSetFlag(SHOW_EXPLOSION))
+        if ( not IsSetFlag(SHOW_EXPLOSION))
         {
             RunExplosion();
             SetFlag(SHOW_EXPLOSION);
@@ -576,7 +576,7 @@ int HelicopterClass::Exec(void)
 
         return TRUE;
     }
-    else if (!IsDead())
+    else if ( not IsDead())
     {
         ShowDamage();
 
@@ -637,7 +637,7 @@ int HelicopterClass::Exec(void)
             gACMIRec.GenPositionRecord(&genPos);
         }
 
-        if (!IsLocal())
+        if ( not IsLocal())
         {
             return FALSE;
         }
@@ -657,7 +657,7 @@ int HelicopterClass::Exec(void)
         // does this helicopter LOD out?
         if (useDistLOD == TRUE and flightLead)
         {
-            if (!OnGround() and distLOD < 0.5f and !IsFiring())
+            if ( not OnGround() and distLOD < 0.5f and !IsFiring())
             {
                 // should be hidden
                 SetLocalFlag(IS_HIDDEN);
@@ -752,7 +752,7 @@ int HelicopterClass::Exec(void)
         /*------------------------*/
         hf->SetControls(hBrain->pStick, hBrain->rStick, hBrain->throtl, hBrain->yPedal);
 
-        if (!OnGround() and SimDriver.MotionOn())
+        if ( not OnGround() and SimDriver.MotionOn())
         {
             hf->Exec();
         }
@@ -761,7 +761,7 @@ int HelicopterClass::Exec(void)
         float groundZ;
         groundZ = OTWDriver.GetGroundLevel(hf->XE.x, hf->XE.y, &normal);
 
-        if (!OnGround() and (hf->XE.z + offsetZ) >= groundZ)
+        if ( not OnGround() and (hf->XE.z + offsetZ) >= groundZ)
         {
             float tmp;
 
@@ -787,7 +787,7 @@ int HelicopterClass::Exec(void)
                 message = new FalconDamageMessage (Id(), owner_session);
                 message->dataBlock.gameTime   = SimLibElapsedTime;
                 message->dataBlock.fEntityID  = Id();
-                if (!SimDriver.RunningCampaign() or GetCampaignObject() == NULL or IsDogfight())
+                if ( not SimDriver.RunningCampaign() or GetCampaignObject() == NULL or IsDogfight())
                 {
                  message->dataBlock.fCampID = GetCallsignIdx();
                  message->dataBlock.fFlightID = (int)GetCampaignObject();
@@ -804,7 +804,7 @@ int HelicopterClass::Exec(void)
                 message->dataBlock.fWeaponUID.num_ = 0;
 
                 message->dataBlock.dEntityID  = Id();
-                if (!SimDriver.RunningCampaign() or GetCampaignObject() == NULL or IsDogfight())
+                if ( not SimDriver.RunningCampaign() or GetCampaignObject() == NULL or IsDogfight())
                 {
                  message->dataBlock.dCampID = GetCallsignIdx();
                  message->dataBlock.dFlightID = (int)GetCampaignObject();
@@ -985,7 +985,7 @@ void HelicopterClass::LandingCheck(void)
           message = new FalconDamageMessage (Id(), owner_session);
           message->dataBlock.gameTime   = SimLibElapsedTime;
           message->dataBlock.fEntityID  = Id();
-          if (!SimDriver.RunningCampaign() or GetCampaignObject() == NULL or IsDogfight())
+          if ( not SimDriver.RunningCampaign() or GetCampaignObject() == NULL or IsDogfight())
           {
           message->dataBlock.fCampID = GetCallsignIdx();
           message->dataBlock.fFlightID = (int)GetCampaignObject();
@@ -1002,7 +1002,7 @@ void HelicopterClass::LandingCheck(void)
           message->dataBlock.fWeaponUID.num_ = 0;
 
           message->dataBlock.dEntityID  = Id();
-          if (!SimDriver.RunningCampaign() or GetCampaignObject() == NULL or IsDogfight())
+          if ( not SimDriver.RunningCampaign() or GetCampaignObject() == NULL or IsDogfight())
           {
           message->dataBlock.dCampID = GetCallsignIdx();
           message->dataBlock.dFlightID = (int)GetCampaignObject();
@@ -1137,7 +1137,7 @@ void HelicopterClass::PromoteSubordinates(void)
     MonoPrint("*** Helicopter *** \n");
     MonoPrint("Need to Promote Subordinates!\n");
 
-    if (!GetCampaignObject()->GetComponents())
+    if ( not GetCampaignObject()->GetComponents())
     {
         MonoPrint("No Flight Pointer to determine promotion\n");
         MonoPrint("************** \n");
@@ -1156,7 +1156,7 @@ void HelicopterClass::PromoteSubordinates(void)
         // do we promote this guy?
         if (theObj not_eq this and newLead == NULL)
         {
-            // edg: observed drawPointer being NULL (!?)
+            // edg: observed drawPointer being NULL ( not ?)
             if (theObj->drawPointer)
                 SetLabel(theObj);
 

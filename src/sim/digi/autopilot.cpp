@@ -158,7 +158,7 @@ void DigitalBrain::LantirnAP(void)
         if (theLantirn->evasize > 0)
             desGamma += af->GetEVA_Gain() * (theLantirn->evasize) * (theLantirn->evasize);
 
-        if (!g_bCalibrateTFR_PitchCtrl)
+        if ( not g_bCalibrateTFR_PitchCtrl)
             theLantirn->PID_error = desGamma - af->gmma * RTD;
         else
             theLantirn->PID_error = (theLantirn->GetTFRAlt() - 300.0F) / 100 - af->gmma * RTD;
@@ -277,7 +277,7 @@ void DigitalBrain::RealisticAP(void)
         AcceptManual();
 
     //Left switch
-    if (!self->IsOn(AircraftClass::AttHold)) //does nothing in ATT HOLD position
+    if ( not self->IsOn(AircraftClass::AttHold)) //does nothing in ATT HOLD position
     {
         if (self->IsOn(AircraftClass::RollHold))
             RollHold();
@@ -616,7 +616,7 @@ void DigitalBrain::PitchHold(void)
     // Use the Gamma (pitch angle) hold command here since it seems to work right
     // and the pitch/roll hold code above in earlier versions of this file don't seem to
     // hold pitch at all to speak of.
-    if (!self->IsOn(AircraftClass::StickStrng))
+    if ( not self->IsOn(AircraftClass::StickStrng))
         GammaHold(destPitch);
 
     // Now grab any user input to emulate stick steering during autopilot operation.
@@ -703,7 +703,7 @@ bool DigitalBrain::APAutoDisconnect(void)
     if (af->IsEngineFlag(AirframeClass::FuelDoorOpen))
         return TRUE;
 
-    if (!self->HasPower(AircraftClass::APPower))
+    if ( not self->HasPower(AircraftClass::APPower))
         return TRUE;
 
     if (self->TrimAPDisc)

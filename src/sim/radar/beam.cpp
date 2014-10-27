@@ -470,7 +470,7 @@ int RadarDopplerClass::LookingAtObject(SimObjectType* target)
     float az, el, theta;
     SimObjectLocalData* targetData = target->localData;
 
-    if (!IsSet(SpaceStabalized))
+    if ( not IsSet(SpaceStabalized))
     {
         if (targetData->az >= curScanLeft and targetData->az <= curScanRight  and 
             targetData->el <= curScanTop and targetData->el >= curScanBottom)

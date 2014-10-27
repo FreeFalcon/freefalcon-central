@@ -59,7 +59,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
     int               blockSize, i, remainder;
     long              token;
 
-    if (!aviFileName)
+    if ( not aviFileName)
         return RIFF_BAD_FILENAME;
 
     streams->handle = AVI_OPEN(aviFileName, _O_RDONLY | _O_BINARY);
@@ -339,7 +339,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
     videoBlock = &(streams->videoBlock[0]);
     blockSize = streams->strh1.dwSuggestedBufferSize;
 
-    if (!blockSize)
+    if ( not blockSize)
         blockSize = DEFAULT_BLOCK_SIZE;
 
     if (streams->mainAVIHeader.dwTotalFrames > MAX_VIDBLOCKS)
@@ -353,7 +353,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
         //      videoBlock[i].buffer = AVI_MALLOC( blockSize );
         videoBlock[i].buffer = new char[blockSize];
 
-        if (!videoBlock[i].buffer)
+        if ( not videoBlock[i].buffer)
             return RIFF_MALLOC_FAILED;
 
         if (i < (streams->numOfVidBlocks - 1))
@@ -430,7 +430,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
         //      streams->waveBuffer = AVI_MALLOC( i );
         streams->waveBuffer = new char[i];
 
-        if (!streams->waveBuffer)
+        if ( not streams->waveBuffer)
             return RIFF_MALLOC_FAILED;
 
         streams->waveBufferLen = i;
@@ -529,7 +529,7 @@ int aviReadRecord(PAVISTREAMS streams)
             //         nextBlock->buffer = AVI_MALLOC( subChunk.subChunkLength );
             nextBlock->buffer = new char[subChunk.subChunkLength];
 
-            if (!(nextBlock->buffer))
+            if ( not (nextBlock->buffer))
                 return RIFF_REALLOC_FAILED;
 
             nextBlock->bufferSize = subChunk.subChunkLength;
@@ -693,7 +693,7 @@ int aviReadRecord(PAVISTREAMS streams)
                         //                  nextBlock->buffer = AVI_MALLOC( chunkLength );
                         nextBlock->buffer = new char[chunkLength];
 
-                        if (!(nextBlock->buffer))
+                        if ( not (nextBlock->buffer))
                             return RIFF_REALLOC_FAILED;
 
                         nextBlock->bufferSize = chunkLength;
@@ -753,7 +753,7 @@ int waveReadBlock(PAVISTREAMS streams)
     long           ptr, newPtr, len, size;
     long           blockLen;
 
-    if (!(streams->audioFlag & STREAM_AUDIO_ON))
+    if ( not (streams->audioFlag & STREAM_AUDIO_ON))
         return RIFF_OK;
 
     blockLen = streams->audioToReadPerFrame;
@@ -761,7 +761,7 @@ int waveReadBlock(PAVISTREAMS streams)
     if (streams->totalAudioRemaining < blockLen)
         blockLen = streams->totalAudioRemaining;
 
-    if (!blockLen)
+    if ( not blockLen)
         return RIFF_AUDIO_END_FILE;
 
     streams->totalAudioRemaining -= blockLen;

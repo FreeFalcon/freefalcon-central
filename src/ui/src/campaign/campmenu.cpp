@@ -676,7 +676,7 @@ void MenuObjReconCB(long, short, C_Base *)
         if (objective == NULL)
             return;
 
-        if (!objective->IsObjective())
+        if ( not objective->IsObjective())
             return;
 
         if (gUIViewer)
@@ -803,12 +803,12 @@ WayPointClass* GetSelectedWayPoint(void)
         {
             control = cwp->GetLast()->Icon;
 
-            if (!control)
+            if ( not control)
                 return NULL;
 
             tmpID = (VU_ID *)control->GetUserPtr(C_STATE_0);
 
-            if (!tmpID)
+            if ( not tmpID)
                 return NULL;
 
             // Check if this is our current waypoint set, and make sure our
@@ -1326,7 +1326,7 @@ void MenuAddWPCB(long, short, C_Base *)
 
     un = (Unit)vuDatabase->Find(gMapMgr->GetCurWPID());
 
-    if (!un)
+    if ( not un)
         return;
 
     wp = un->GetFirstUnitWP();
@@ -1356,7 +1356,7 @@ void MenuDeleteWPCB(long, short hittype, C_Base *)
 
     un = (Unit)vuDatabase->Find(gMapMgr->GetCurWPID());
 
-    if (!un)
+    if ( not un)
         return;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -1537,7 +1537,7 @@ void MenuAddUnitCB(long ID, short, C_Base *control)
     urec = NULL;
     caller = gPopupMgr->GetCallingControl();
 
-    if (!caller)
+    if ( not caller)
         return;
 
     if (caller->_GetCType_() == _CNTL_MAPICON_)
@@ -2068,7 +2068,7 @@ void MapMenuOpenCB(C_Base *themenu, C_Base *caller)
 {
     C_PopupList *menu;
 
-    if (!themenu or !caller or !caller->Parent_)
+    if ( not themenu or !caller or !caller->Parent_)
         return;
 
     menu = (C_PopupList*)themenu;
@@ -2104,7 +2104,7 @@ void OpenUnitMenuCB(C_Base *themenu, C_Base *caller)
 {
     C_PopupList *menu;
 
-    if (!themenu or !caller or !caller->Parent_)
+    if ( not themenu or !caller or !caller->Parent_)
         return;
 
     menu = (C_PopupList*)themenu;
@@ -2173,7 +2173,7 @@ void OpenNavalMenuCB(C_Base *themenu, C_Base *caller)
 {
     C_PopupList *menu;
 
-    if (!themenu or !caller or !caller->Parent_)
+    if ( not themenu or !caller or !caller->Parent_)
         return;
 
     menu = (C_PopupList*)themenu;
@@ -2243,7 +2243,7 @@ void ObjMenuOpenCB(C_Base *themenu, C_Base *caller)
     C_PopupList *menu;
     bool isAirbase = false;
 
-    if (!themenu or !caller or !caller->Parent_)
+    if ( not themenu or !caller or !caller->Parent_)
         return;
 
     if (caller->_GetCType_() == _CNTL_DRAWLIST_)
@@ -2582,7 +2582,7 @@ void HookupCampaignMenus()
         // Action Menu
         for (i = 0; i <= WP_FAC; i++)
         {
-            if (!i)
+            if ( not i)
                 menu->AddItem(i | 0x200, C_TYPE_RADIO, WPActStr[39], MID_ACTION);
             else
                 menu->AddItem(i | 0x200, C_TYPE_RADIO, WPActStr[i], MID_ACTION);

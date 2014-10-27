@@ -251,7 +251,7 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
     float bonus = 1.0F;
     GridIndex   defx, defy, attx, atty;
 
-    if (!att or !def)
+    if ( not att or !def)
         return -1;
 
     // 2001-06-13 ADDED BY S.G. BEFORE WE CAN REALLY COMBAT, WE MUST SEE BE ABLE TO DETECT THE TARGET OURSELF BUT ONLY IF WE ARE A BATTALION
@@ -282,7 +282,7 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
     ShiAssert(att->IsUnit());
 
     // Step our radar if we're shoot'n at them flying thingys..
-    if (!def->OnGround())
+    if ( not def->OnGround())
     {
         if (att->IsAggregate())
         {
@@ -300,7 +300,7 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
 
     ((Unit)att)->CollectWeapons(damageMods, defmt, weapon, wcount, d);
 
-    if (!weapon[0])
+    if ( not weapon[0])
         return 0; // We have no weapons to shoot
 
     // Apply combat related bonuses
@@ -327,13 +327,13 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
     {
         wcount[i] = FloatToInt32(wcount[i] * bonus);
 
-        if (!wcount[i])
+        if ( not wcount[i])
             wcount[i] = 1; // minimum of one shot, regardless of bonuses
 
         shot++;
     }
 
-    if (!shot)
+    if ( not shot)
         return 0;
 
     // Mark us as taking a shot (only vs other air)
@@ -382,7 +382,7 @@ int DoWPAction(Flight u)
 
     w = u->GetCurrentUnitWP(); // Find this unit's WP action
 
-    if (!w)
+    if ( not w)
         return 0;
 
     action = w->GetWPAction();
@@ -407,7 +407,7 @@ int DoWPAction(Flight u)
         case WP_ASSEMBLE:
 
             // Radio Chatter messages
-            if (!u->GetUnitMissionID())
+            if ( not u->GetUnitMissionID())
             {
                 // Main flight
                 msg = new FalconRadioChatterMessage(u->Id(), FalconLocalGame);
@@ -467,7 +467,7 @@ int DoWPAction(Flight u)
             u->SetBurntFuel(0);
             pw = w->GetNextWP();
 
-            if (!pw)
+            if ( not pw)
                 GoHome((Flight)u);
 
             break;
@@ -493,7 +493,7 @@ int DoWPAction(Flight u)
             // Check if we're planning to take off again!
             pw = w->GetNextWP();
 
-            if (!pw or (!(w->GetWPFlags() & WPF_TAKEOFF) and pw->GetWPAction() not_eq WP_TAKEOFF))
+            if ( not pw or ( not (w->GetWPFlags() & WPF_TAKEOFF) and pw->GetWPAction() not_eq WP_TAKEOFF))
             {
                 UpdateSquadronStatus(u, TRUE, FALSE);
                 return -1;
@@ -726,7 +726,7 @@ int EngageParent(Unit u, FalconEntity *e)
 
     p = u->GetUnitParent();
 
-    if (!p or p->Engaged())
+    if ( not p or p->Engaged())
         return 0;
 
     p->SetTarget(e);

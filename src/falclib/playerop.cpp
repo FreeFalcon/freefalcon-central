@@ -160,13 +160,13 @@ int PlayerOptionsClass::LoadOptions(_TCHAR* filename)
 
     fp = _tfopen(path, _T("rb"));
 
-    if (!fp)
+    if ( not fp)
     {
         MonoPrint(_T("Couldn't open %s's player options\n"), filename);
         _stprintf(path, _T("%s\\Config\\default.pop"), FalconDataDirectory);
         fp = _tfopen(path, "rb");
 
-        if (!fp)
+        if ( not fp)
         {
             MonoPrint(_T("Couldn't open default player options\n"), filename);
             Initialize();

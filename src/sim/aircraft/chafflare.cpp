@@ -72,7 +72,7 @@ void AircraftClass::InitCountermeasures(void)
 void AircraftClass::DoCountermeasures(void)
 {
     // 2000-11-17 ADDED BY S.G. SO AIRCRAFT HAVE A FLAG TELLING IF THEY CARRY CHAFFS/FLARES OR NOT
-    if (!(GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE)->Flags & 0x40000000))
+    if ( not (GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE)->Flags & 0x40000000))
         return;
 
     // END OF ADDED SECTION
@@ -80,11 +80,11 @@ void AircraftClass::DoCountermeasures(void)
     if (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::bus))
         return;
 
-    if (!IsSetFlag(ON_GROUND))
+    if ( not IsSetFlag(ON_GROUND))
     {
         if (dropFlareCmd)
         {
-            if (!(mFaults and (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::flar)))
+            if ( not (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::flar)))
             {
                 DropFlare();
             }
@@ -93,7 +93,7 @@ void AircraftClass::DoCountermeasures(void)
         }
         else if (dropChaffCmd)
         {
-            if (!(mFaults and (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::chaf)))
+            if ( not (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::chaf)))
             {
                 DropChaff();
             }
@@ -399,7 +399,7 @@ void AircraftClass::CleanupCountermeasures(void)
 
 void AircraftClass::DropProgramed(void)
 {
-    if (!dropProgrammedStep)
+    if ( not dropProgrammedStep)
     {
         dropProgrammedStep  = 3;
         dropProgrammedTimer = 0;
@@ -417,7 +417,7 @@ void AircraftClass::DropEWS()
         (EWSPGM() == Man or EWSPGM() == Semi or EWSPGM() == Auto))
     {
         //F4SoundFXSetDist(af->auxaeroData->sndBBChaffFlare, FALSE, 0.0f, 1.0f);
-        if (!SoundPos.IsPlaying(af->auxaeroData->sndBBChaffFlare))
+        if ( not SoundPos.IsPlaying(af->auxaeroData->sndBBChaffFlare))
         {
             SoundPos.Sfx(af->auxaeroData->sndBBChaffFlare); // MLR 5/16/2004 -
         }
@@ -444,7 +444,7 @@ void AircraftClass::EWSChaffBurst(void)
     if (theRwr)
     {
         //RWR not on, no spikes!
-        if (!theRwr->IsOn() or !HasPower(AircraftClass::EWSChaffPower))
+        if ( not theRwr->IsOn() or !HasPower(AircraftClass::EWSChaffPower))
             return;
     }
     else //no RWR, return anyway
@@ -465,7 +465,7 @@ void AircraftClass::EWSFlareBurst(void)
 
     if (theRwr)
     {
-        if (!theRwr->IsOn() or !HasPower(AircraftClass::EWSFlarePower))
+        if ( not theRwr->IsOn() or !HasPower(AircraftClass::EWSFlarePower))
             return;
     }
     else //no RWR, return anyway
@@ -481,7 +481,7 @@ void AircraftClass::ReleaseManualProgram(void)
 {
     PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
 
-    if (!theRwr)
+    if ( not theRwr)
         return;
 
     if (static_cast<unsigned int>(ChaffCount) >= OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum]  and 

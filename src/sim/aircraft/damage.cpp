@@ -645,7 +645,7 @@ void AircraftClass::CleanupVortex()
 
 int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int type, int flag, int mask, float speed)
 {
-    if (!(type & mask)) return 0;
+    if ( not (type & mask)) return 0;
 
     piece -> damage = MapVisId(DAMAGEF16_ID);
     piece -> mask = type;
@@ -1093,7 +1093,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
         }
     }
 
-    if (!numpiece)   // if no damage, randomized damage parts
+    if ( not numpiece)   // if no damage, randomized damage parts
     {
         int i = DAMAGEF16_BACK;
 
@@ -1171,7 +1171,7 @@ void AircraftClass::SetupDamageF16Effects(DamageF16PieceStructure *piece)
     {
         if (piece -> mask & DAMAGEF16_FRONT)
         {
-            if (!(piece -> mask & DAMAGEF16_NOSE))
+            if ( not (piece -> mask & DAMAGEF16_NOSE))
             {
                 ptr -> SetSwitchMask(DAMAGEF16_NOSEBREAK_SWITCH, 1);
             }
@@ -1183,19 +1183,19 @@ void AircraftClass::SetupDamageF16Effects(DamageF16PieceStructure *piece)
             ptr -> SetSwitchMask(DAMAGEF16_FRONTBREAK_SWITCH, 1);
         }
 
-        if (!(piece -> mask & DAMAGEF16_RWING))
+        if ( not (piece -> mask & DAMAGEF16_RWING))
         {
             ptr -> SetSwitchMask(DAMAGEF16_RWINGBREAK_SWITCH, 1);
         }
 
-        if (!(piece -> mask & DAMAGEF16_LWING))
+        if ( not (piece -> mask & DAMAGEF16_LWING))
         {
             ptr -> SetSwitchMask(DAMAGEF16_LWINGBREAK_SWITCH, 1);
         }
     }
     else if (piece -> mask & DAMAGEF16_FRONT)
     {
-        if (!(piece -> mask & DAMAGEF16_NOSE))
+        if ( not (piece -> mask & DAMAGEF16_NOSE))
         {
             ptr -> SetSwitchMask(DAMAGEF16_NOSEBREAK_SWITCH, 1);
         }
@@ -1227,7 +1227,7 @@ void AircraftClass::SetupDamageF16Effects(DamageF16PieceStructure *piece)
 
 int AircraftClass::CreateDamageF16Effects()
 {
-    if (!IsF16()) return 0;
+    if ( not IsF16()) return 0;
 
     float groundZ = OTWDriver.GetApproxGroundLevel(XPos(), YPos());
 
@@ -1237,7 +1237,7 @@ int AircraftClass::CreateDamageF16Effects()
     int i = DAMAGEF16_ALL;
     int numpiece = CreateDamageF16Piece(piece, &i);
 
-    if (!numpiece) return 0;
+    if ( not numpiece) return 0;
 
     for (i = 0; i < numpiece; i++)
         SetupDamageF16Effects(&(piece[i]));
@@ -1330,12 +1330,12 @@ void AircraftClass::RunExplosion(void)
         OTWDriver.CreateVisualObject(tmpSimBase, classPtr->visType[i + 2], &tpo, &tpim, OTWDriver.Scale());
         tmpSimBase->SetPosition(pos.x, pos.y, pos.z);
 
-        if (!i)
+        if ( not i)
         {
             tmpSimBase->SetDelta(XDelta(), YDelta(), ZDelta());
         }
 
-        if (!OnGround())
+        if ( not OnGround())
         {
             tmpSimBase->SetDelta(XDelta() + 50.0f * PRANDFloat(),
                                  YDelta() + 50.0f * PRANDFloat(),
@@ -1350,7 +1350,7 @@ void AircraftClass::RunExplosion(void)
 
         tmpSimBase->SetYPR(Yaw(), Pitch(), Roll());
 
-        if (!i)
+        if ( not i)
         {
             // First peice is more steady and is flaming
             tmpSimBase->SetYPRDelta(0.0F, 0.0F, 10.0F + PRANDFloat() * 30.0F * DTR);
@@ -1394,7 +1394,7 @@ void AircraftClass::RunExplosion(void)
 void AircraftClass::AddEngineTrails(int ttype, DWORD *tlist, DWORD *tlist_trail)
 {
     // 2002-02-16 ADDED BY S.G. It's been seen that drawPointer is NULL here and &((DrawableBSP*)drawPointer)->orientation is simply drawPointer+0x2C hence why orientation is never NULL
-    if (!drawPointer)
+    if ( not drawPointer)
         return;
 
     Tpoint pos, vec;
@@ -1414,7 +1414,7 @@ void AircraftClass::AddEngineTrails(int ttype, DWORD *tlist, DWORD *tlist_trail)
 
     ShiAssert(orientation);
 
-    if (!orientation)
+    if ( not orientation)
         return;
 
     /*
@@ -1520,7 +1520,7 @@ void AircraftClass::AddEngineTrails(int ttype, DWORD *tlist, DWORD *tlist_trail)
                     }
                 }
 
-                if (!nContrails)    //engines are not close enough to unite, so keep a trail for each one
+                if ( not nContrails)    //engines are not close enough to unite, so keep a trail for each one
                 {
                     nContrails = nEngines;
 
@@ -1572,7 +1572,7 @@ void AircraftClass::AddEngineTrails(int ttype, DWORD *tlist, DWORD *tlist_trail)
 
         ShiAssert(tp)
 
-        if (!tp)
+        if ( not tp)
             return;
 
         float offset = -10.0f;
@@ -1674,7 +1674,7 @@ void AircraftClass::ShowDamage(void)
     Tpoint pos, rearOffset;
 
     //RV - I-Hawk - set Contrails margin band variables for appropraite contrails insertion checks later...
-    if (!contrailLowValue) // Make sure I assigned contrails weather values only once
+    if ( not contrailLowValue) // Make sure I assigned contrails weather values only once
     {
         contrailLowValue = ((WeatherClass*)realWeather)->contrailLow;
         contrailHighValue = ((WeatherClass*)realWeather)->contrailHigh;
@@ -1684,7 +1684,7 @@ void AircraftClass::ShowDamage(void)
     }
 
     //RV - I-Hawk - Set damage trails locations based on how many engines there are, can be set only once
-    if (!damageTrailLocationSet)
+    if ( not damageTrailLocationSet)
     {
         switch (af->auxaeroData->nEngines)
         {
@@ -1825,7 +1825,7 @@ void AircraftClass::ShowDamage(void)
     // mig29's, f4's and f5's all smoke when at MIL power
     // it's not damage, but since we handle the smoke here anyway.....
 
-    if (!OnGround()  and 
+    if ( not OnGround()  and 
         af->EngineTrail() >= 0)
     {
         //       if ( OTWDriver.renderer and OTWDriver.renderer->GetAlphaMode() )
@@ -2558,7 +2558,7 @@ void AircraftClass::ShowDamage(void)
 
     if (pctStrength > 0.50f)
     {
-        if (!hasMilSmoke and smokeTrail[TRAIL_DAMAGE] /* and  smokeTrail[TRAIL_DAMAGE]->InDisplayList(*/)
+        if ( not hasMilSmoke and smokeTrail[TRAIL_DAMAGE] /* and  smokeTrail[TRAIL_DAMAGE]->InDisplayList(*/)
         {
             /* RV - I-Hawk - RV new trails call changes
             OTWDriver.AddSfxRequest(
@@ -2656,7 +2656,7 @@ void AircraftClass::ShowDamage(void)
     // the center
 
     //RV - I-Hawk - RV new trails call changes
-    if (!smokeTrail[TRAIL_DAMAGE])
+    if ( not smokeTrail[TRAIL_DAMAGE])
     {
 
         //smokeTrail[TRAIL_DAMAGE] = new DrawableTrail(TRAIL_SMOKE); // smoke
@@ -2746,7 +2746,7 @@ void AircraftClass::ShowDamage(void)
                 pos.z = orientation->M31 * (tp.x + offset) + orientation->M32 * tp.y + orientation->M33 * tp.z + ZPos();
 
                 //RV - I-Hawk - RV new trails call changes
-                if (!smokeTrail[TRAIL_ENGINE1])
+                if ( not smokeTrail[TRAIL_ENGINE1])
                 {
 
                     //smokeTrail[TRAIL_ENGINE1] = new DrawableTrail(TRAIL_SMOKE); // smoke
@@ -2789,7 +2789,7 @@ void AircraftClass::ShowDamage(void)
         //pos.z = -dmx[1][2]*radius + ZPos() + rearOffset.z * 0.75f;
 
         ////RV - I-Hawk - RV new trails call changes
-        //if (!smokeTrail[TRAIL_ENGINE2])
+        //if ( not smokeTrail[TRAIL_ENGINE2])
         //{
         ////smokeTrail[TRAIL_ENGINE2] = new DrawableTrail(TRAIL_SMOKE); // smoke
         ////smokeTrail[TRAIL_ENGINE2] = new DrawableTrail(TRAIL_BURNING_SMOKE); // smoke
@@ -2828,7 +2828,7 @@ void AircraftClass::ShowDamage(void)
     // occasionally, perturb the controls
     // JB 010104
     //if ( pctStrength < 0.5f and (rand() & 0xf) == 0xf)
-    if (!g_bDisableFunkyChicken and pctStrength < 0.5f and (rand() & 0xf) == 0xf)
+    if ( not g_bDisableFunkyChicken and pctStrength < 0.5f and (rand() & 0xf) == 0xf)
     {
         // JB 010104
         ioPerturb = 0.5f + (1.0f - pctStrength);
@@ -2884,13 +2884,13 @@ void AircraftClass::CheckObjectCollision(void)
     bool setOnObject = false; // JB carrier
 
     // no detection on ground when not moving
-    //if (!af->IsSet(AirframeClass::OnObject) and // JB carrier
+    //if ( not af->IsSet(AirframeClass::OnObject) and // JB carrier
     // OnGround() and af->vt == 0.0f )
     //{
     // return;
     //}
     //
-    //if (!af->IsSet(AirframeClass::OnObject) and // JB carrier
+    //if ( not af->IsSet(AirframeClass::OnObject) and // JB carrier
     // OnGround() and af->vcas <= 50.0f  and gCommsMgr and gCommsMgr->Online()) // JB 010107
     //{
     // return; // JB 010107
@@ -2957,7 +2957,7 @@ void AircraftClass::CheckObjectCollision(void)
                 // for ships, this may be a BIG radius -- longer than
                 // high.  Let's also check the bounding box
                 // scale the box so we might possibly miss it
-                if (!theObject->drawPointer->GetRayHit(&org, &vec, &pos, 0.1f))
+                if ( not theObject->drawPointer->GetRayHit(&org, &vec, &pos, 0.1f))
                     continue;
 
 
@@ -2989,7 +2989,7 @@ void AircraftClass::CheckObjectCollision(void)
                 // for ships, this may be a BIG radius -- longer than
                 // high.  Let's also check the bounding box
 
-                if (!theObject->drawPointer->GetRayHit(&org, &vec, &pos, 1.0f))
+                if ( not theObject->drawPointer->GetRayHit(&org, &vec, &pos, 1.0f))
                 {
                     if (theObject->GetDomain() not_eq DOMAIN_SEA or theObject->GetClass() not_eq CLASS_VEHICLE or theObject->GetType() not_eq TYPE_CAPITAL_SHIP or carrierInitTimer >= 30.0f)
                         continue;
@@ -3346,7 +3346,7 @@ void AircraftClass::CheckObjectCollision(void)
                     continue;
 
                 // do the landing check (no damage)
-                if (!af->IsSet(AirframeClass::InAir) or af->platform->LandingCheck(noseAngle, impactAngle, COVERAGE_OBJECT))
+                if ( not af->IsSet(AirframeClass::InAir) or af->platform->LandingCheck(noseAngle, impactAngle, COVERAGE_OBJECT))
                 {
                     af->ClearFlag(AirframeClass::InAir);
                     continue;
@@ -3363,7 +3363,7 @@ void AircraftClass::CheckObjectCollision(void)
 
         //Cobra Lest Dewdog whine forever
         //This should keep online players from "colliding"
-        if (!af->IsSet(AirframeClass::OnObject) and OnGround() and af->vcas <= 50.0f
+        if ( not af->IsSet(AirframeClass::OnObject) and OnGround() and af->vcas <= 50.0f
             and gCommsMgr and gCommsMgr->Online())
         {
             continue;
@@ -3381,7 +3381,7 @@ void AircraftClass::CheckObjectCollision(void)
             (theObject->GetSPType() == SPTYPE_CHAFF1 or theObject->GetSPType() == SPTYPE_CHAFF1 + 1))
             continue;
 
-        if (!isDigital)
+        if ( not isDigital)
             g_intellivibeData.CollisionCounter++;
 
         // send message to self
@@ -3481,7 +3481,7 @@ void AircraftClass::CheckObjectCollision(void)
     } // end target list loop
 
     // JB carrier start
-    if (!setOnObject and af->IsSet(AirframeClass::OnObject))
+    if ( not setOnObject and af->IsSet(AirframeClass::OnObject))
     {
         attachedEntity = NULL;
         af->ClearFlag(AirframeClass::OverRunway);
@@ -3690,7 +3690,7 @@ Tpoint Get3DMiddle(Tpoint &a, Tpoint &b)
 void AssignACOrientation(Trotation* &orientation, Tpoint &origin, Tpoint &position, Tpoint &worldPosition, bool right)
 {
     // FRB - not now
-    if (!orientation)
+    if ( not orientation)
         return;
 
     if (right)

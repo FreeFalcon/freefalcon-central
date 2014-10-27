@@ -94,7 +94,7 @@ void C_SoundBite::Add(long CatID, long SoundID)
     }
     else
     {
-        if (!Root)
+        if ( not Root)
         {
             Root = new CATLIST;
             Root->CatID = CatID;

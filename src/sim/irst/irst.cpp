@@ -61,13 +61,13 @@ SimObjectType* IrstClass::Exec(SimObjectType*)
         lockedTarget = ConsiderDecoy(lockedTarget);
 
         // Can't hold a lock if its outside our sensor cone
-        if (!CanSeeObject(lockedTarget))
+        if ( not CanSeeObject(lockedTarget))
         {
             newLock = NULL;
         }
 
         // Can't hold lock if the signal is too weak or blocked
-        if (!CanDetectObject(lockedTarget))
+        if ( not CanDetectObject(lockedTarget))
         {
             newLock = NULL;
         }
@@ -109,7 +109,7 @@ SimObjectType* IrstClass::ConsiderDecoy(SimObjectType *target)
     int dummy = 0;
 
     // No counter measures deployed by campaign things
-    if (!target or !target->BaseData()->IsSim())
+    if ( not target or !target->BaseData()->IsSim())
     {
         return target;
     }
@@ -130,7 +130,7 @@ SimObjectType* IrstClass::ConsiderDecoy(SimObjectType *target)
         // Try to find the counter measure entity in the database
         cm = (FalconEntity*)vuDatabase->Find(id);
 
-        if (!cm)
+        if ( not cm)
         {
             // We'll have to wait until next time
             // (probably because the create event hasn't been processed locally yet)

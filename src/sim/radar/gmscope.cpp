@@ -129,7 +129,7 @@ int RadarDopplerClass::InitialGroundContactTest(
                )
             {
                 // Actual LOS
-                if (!OTWDriver.CheckLOS(platform, contact))
+                if ( not OTWDriver.CheckLOS(platform, contact))
                 {
                     canSee = 0.0F;  // LOS is blocked
                 }
@@ -325,7 +325,7 @@ void RadarDopplerClass::GMMode(void)
                 {
                     if (canSee > 1.0f)
                     {
-                        if (!testFeature->IsSetFELocalFlag(FELF_ON_PLAYERS_GM_CONTACT_LIST))
+                        if ( not testFeature->IsSetFELocalFlag(FELF_ON_PLAYERS_GM_CONTACT_LIST))
                         {
                             // only add new nodes if we're not in the list already
                             GMList *newNode = new GMList(testFeature);
@@ -378,7 +378,7 @@ void RadarDopplerClass::GMMode(void)
                     {
                         if (gmCanSee)
                         {
-                            if (!testFeature->IsSetFELocalFlag(FELF_ON_PLAYERS_GM_CONTACT_LIST))
+                            if ( not testFeature->IsSetFELocalFlag(FELF_ON_PLAYERS_GM_CONTACT_LIST))
                             {
                                 GMList *newNode = new GMList(testFeature);
                                 newNode->next = GMFeatureListRoot;
@@ -392,7 +392,7 @@ void RadarDopplerClass::GMMode(void)
 
                         if (gmtCanSee)
                         {
-                            if (!testFeature->IsSetFELocalFlag(FELF_ON_PLAYERS_GMT_CONTACT_LIST))
+                            if ( not testFeature->IsSetFELocalFlag(FELF_ON_PLAYERS_GMT_CONTACT_LIST))
                             {
                                 GMList *newNode = new GMList(testFeature);
                                 newNode->next = GMMoverListRoot;
@@ -419,7 +419,7 @@ void RadarDopplerClass::GMMode(void)
         {
             test = *next;
 
-            if (!test->Object()->IsSetFELocalFlag(FELF_ON_PLAYERS_GM_CONTACT_LIST))
+            if ( not test->Object()->IsSetFELocalFlag(FELF_ON_PLAYERS_GM_CONTACT_LIST))
             {
                 *next = test->next; // removes the node from the list
                 test->Release(); // self deleting
@@ -437,7 +437,7 @@ void RadarDopplerClass::GMMode(void)
         {
             test = *next;
 
-            if (!test->Object()->IsSetFELocalFlag(FELF_ON_PLAYERS_GMT_CONTACT_LIST))
+            if ( not test->Object()->IsSetFELocalFlag(FELF_ON_PLAYERS_GMT_CONTACT_LIST))
             {
                 *next = test->next; // removes the node from the list
                 test->Release(); // self deleting
@@ -510,7 +510,7 @@ void RadarDopplerClass::GMMode(void)
 
             float x = 0.0F, y = 0.0F, z = 0.0F;
 
-            if (!GMSPPseudoWaypt)
+            if ( not GMSPPseudoWaypt)
             {
                 GMSPPseudoWaypt = new WayPointClass();
             }
@@ -569,7 +569,7 @@ void RadarDopplerClass::DropGMTrack(void)
                 cosAz = trig.cos;
                 sinAz = trig.sin;
 
-                if (!(flags & SP))
+                if ( not (flags & SP))
                 {
                     GMat.x = platform->XPos() + tdisplayRange * cosAz * 0.5F;
                     GMat.y = platform->YPos() + tdisplayRange * sinAz * 0.5F;
@@ -640,7 +640,7 @@ void RadarDopplerClass::SetAimPoint(float xCmd, float yCmd)
     {
         //MI better cursor control
         // MD -- 20040215: the cursor doesn't move in SP until you are ground stabilized
-        if ((xCmd not_eq 0.0F or yCmd not_eq 0.0F) and ((!IsSet(SP)) or (IsSet(SP) and IsSet(SP_STAB))))
+        if ((xCmd not_eq 0.0F or yCmd not_eq 0.0F) and (( not IsSet(SP)) or (IsSet(SP) and IsSet(SP_STAB))))
         {
             float CursorSpeed = g_fCursorSpeed;
 
@@ -853,7 +853,7 @@ int RadarDopplerClass::CheckGMBump(void)
     // position as an additional multiplier.  Also, the bump does not happen if the radar is frozen
     // or if the cursors are in motion or of course if the MAN range function is set.
 
-    if (IsSet(FZ) or IsSet(WasMoving) or (!IsSet(AutoAGRange)))
+    if (IsSet(FZ) or IsSet(WasMoving) or ( not IsSet(AutoAGRange)))
         return rangeChangeCmd;
 
     float x = (GMat.x + viewOffsetInertial.x) - platform->XPos();
@@ -964,7 +964,7 @@ void RadarDopplerClass::RestoreAGCursor()
     // now check if steerpoint position is off of the current radar range, and adjust it appropriately
     // only in NORM mode and STP mode
     // MD -- 20040229: and make this adjustment if we are ground stabilized in SP mode as well
-    if ((flags & NORM) and ((!(flags & SP)) or (IsSet(SP) and IsSet(SP_STAB))))
+    if ((flags & NORM) and (( not (flags & SP)) or (IsSet(SP) and IsSet(SP_STAB))))
     {
         // Distance to GMat, only x and y
         float dx, dy, dist, dispRange;
@@ -1039,7 +1039,7 @@ void RadarDopplerClass::SetGMScan(void)
 
         //azScan = 60.0F * DTR; // Radar still scans full volume, but only displays a subset...
         //MI az is set thru the OSB now
-        if (!g_bRealisticAvionics or !g_bAGRadarFixes)
+        if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
             azScan = 60.0F * DTR;
         else if (g_bRealisticAvionics and g_bAGRadarFixes)
         {
@@ -1067,7 +1067,7 @@ void RadarDopplerClass::SetGMScan(void)
         //   azScan = atan2( TwoRootTwo*groundMapRange, distance from platform to GMat );
         //azScan = 15.0F * DTR;
         //MI az is set thru the OSB now
-        if (!g_bRealisticAvionics or !g_bAGRadarFixes)
+        if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
             azScan = 15.0F * DTR;
         else if (g_bRealisticAvionics and g_bAGRadarFixes)
         {
@@ -1100,7 +1100,7 @@ void RadarDopplerClass::SetGMScan(void)
         //   azScan = atan2( TwoRootTwo*groundMapRange, distance from platform to GMat );
         //azScan = 5.0F * DTR;
         //MI az is set thru the OSB now
-        if (!g_bRealisticAvionics or !g_bAGRadarFixes)
+        if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
             azScan = 5.0F * DTR;
         else if (g_bRealisticAvionics and g_bAGRadarFixes)
         {
@@ -1127,7 +1127,7 @@ void RadarDopplerClass::SetGMScan(void)
         }
 
         //MI az is set thru the OSB now
-        if (!g_bRealisticAvionics or !g_bAGRadarFixes)
+        if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
             azScan = MAX_ANT_EL;
         else if (g_bRealisticAvionics and g_bAGRadarFixes)
         {
@@ -1163,7 +1163,7 @@ void RadarDopplerClass::SetGMScan(void)
 
         // ((RenderGMComposite*)privateDisplay)->SetGimbalLimit( azScan );
         //MI take the azimuth we've selected thru the OSB
-        if (!g_bRealisticAvionics or !g_bAGRadarFixes)
+        if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
             ((RenderGMComposite*)privateDisplay)->SetGimbalLimit(MAX_ANT_EL);
         else
             ((RenderGMComposite*)privateDisplay)->SetGimbalLimit(azScan);
@@ -1209,7 +1209,7 @@ void RadarDopplerClass::GMDisplay(void)
     }
 
     // Find lookat point
-    if (!(flags & FZ))
+    if ( not (flags & FZ))
     {
         viewFrom.x = platform->XPos();
         viewFrom.y = platform->YPos();
@@ -1218,9 +1218,9 @@ void RadarDopplerClass::GMDisplay(void)
         headingForDisplay = platform->Yaw();
         mlSinCos(&trig, headingForDisplay);
 
-        if (!lockedTarget)
+        if ( not lockedTarget)
         {
-            if (IsSet(SP) and (!IsSet(SP_STAB)))  // (flags & SP) // MD -- 20040215: make sure we don't snow plow after ground stabilizing!
+            if (IsSet(SP) and ( not IsSet(SP_STAB)))  // (flags & SP) // MD -- 20040215: make sure we don't snow plow after ground stabilizing!
             {
                 // We're in snowplow, so look out in front of the aircraft
                 GMat.x = viewFrom.x + tdisplayRange * 0.5F * trig.cos;
@@ -1233,7 +1233,7 @@ void RadarDopplerClass::GMDisplay(void)
                 GMat.y = viewCenter.y;
             }
 
-            if (!(flags & NORM))
+            if ( not (flags & NORM))
             {
                 // We're zoomed in, so track the cursors
                 GMat.x += viewOffsetInertial.x;
@@ -1242,13 +1242,13 @@ void RadarDopplerClass::GMDisplay(void)
         }
         else
         {
-            if (!(flags & NORM))
+            if ( not (flags & NORM))
             {
                 // We're zoomed in, so look at the target
                 GMat.x = lockedTarget->BaseData()->XPos();
                 GMat.y = lockedTarget->BaseData()->YPos();
             }
-            else if (IsSet(SP) and (!IsSet(SP_STAB)))  // (flags & SP) // MD -- 20040215: if we aren't SP ground stabilized
+            else if (IsSet(SP) and ( not IsSet(SP_STAB)))  // (flags & SP) // MD -- 20040215: if we aren't SP ground stabilized
             {
                 // We're in snowplow, so look out in front of the aircraft
                 GMat.x = viewFrom.x + tdisplayRange * 0.5F * trig.cos;
@@ -1339,7 +1339,7 @@ void RadarDopplerClass::GMDisplay(void)
     if (fabs(seekerAzCenter) > MAX_ANT_EL)
     {
         //MI why would we want to do this?
-        if (!g_bRealisticAvionics or !g_bAGRadarFixes)
+        if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
         {
             viewOffsetRel.x = 0.0F;
             viewOffsetRel.y = 0.0F;
@@ -1393,7 +1393,7 @@ void RadarDopplerClass::GMDisplay(void)
                     curgain = 1;
 
                 //MI
-                if (!g_bRealisticAvionics or !g_bAGRadarFixes)
+                if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
                     ((RenderGMComposite*)display)->SetGain(((RenderGMComposite*)display)->GetGain()*gainCmd);
                 else
                     ((RenderGMComposite*)display)->SetGain(curgain);
@@ -1443,7 +1443,7 @@ void RadarDopplerClass::GMDisplay(void)
                 InitGain = FALSE;
             }
 
-            if (!(flags & FZ))
+            if ( not (flags & FZ))
             {
                 // Decide how far along the beam scan is
                 if (beamAz >  azScan)
@@ -1493,7 +1493,7 @@ void RadarDopplerClass::GMDisplay(void)
             //MI
             if (g_bRealisticAvionics and g_bAGRadarFixes)
             {
-                if (!lockedTarget)
+                if ( not lockedTarget)
                     ((RenderGMComposite*)display)->DrawComposite(&center, headingForDisplay);
             }
             else
@@ -1613,7 +1613,7 @@ void RadarDopplerClass::GMDisplay(void)
 
             if (g_bRealisticAvionics and g_bAGRadarFixes)
             {
-                if (!lockedTarget)
+                if ( not lockedTarget)
                 {
                     if (displayRange > 10.0F)
                     {
@@ -1803,7 +1803,7 @@ void RadarDopplerClass::GMDisplay(void)
             if (flags & NORM)
             {
                 //MI
-                if (!g_bRealisticAvionics or !g_bAGRadarFixes)
+                if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
                     LabelButton(2, "NRM");
                 else
                     LabelButton(2, "NORM");
@@ -1868,7 +1868,7 @@ void RadarDopplerClass::GMDisplay(void)
     // MD --20040306: Adding the TTG display for when you have GM STP mode or SP mode with a ground
     // stabilized cursor position
 
-    if (SimDriver.GetPlayerAircraft() and (!IsSet(SP) or (IsSet(SP) and IsSet(SP_STAB))))
+    if (SimDriver.GetPlayerAircraft() and ( not IsSet(SP) or (IsSet(SP) and IsSet(SP_STAB))))
     {
         char tmpStr[24];
         float ttg = 0.0F;
@@ -1913,14 +1913,14 @@ void RadarDopplerClass::GMDisplay(void)
                 sprintf(tmpStr, "%03d:%02d", abs(minute), sec);   //JPG 5 Feb 04
             else if (sec >= 0)
             {
-                if (!g_bRealisticAvionics)
+                if ( not g_bRealisticAvionics)
                     sprintf(tmpStr, "   %02d:%02d", abs(minute), sec);
                 else
                     sprintf(tmpStr, "%03d:%02d", abs(minute), sec);   //JPG "%02d:%02d"
             }
             else
             {
-                if (!g_bRealisticAvionics)
+                if ( not g_bRealisticAvionics)
                     sprintf(tmpStr, "  -%02d:%02d", abs(minute), abs(sec));
                 else
                     sprintf(tmpStr, "-%02d:%02d", abs(minute), abs(sec));
@@ -1991,7 +1991,7 @@ void RadarDopplerClass::AddTargetReturns(RenderGMRadar* renderer, bool Shaping)
     sinAz = -trig.sin;
 
     // Offset the spots correctly
-    if (!(flags & FZ))
+    if ( not (flags & FZ))
     {
         if (flags & NORM)
         {
@@ -2051,7 +2051,7 @@ void RadarDopplerClass::AddTargetReturns(RenderGMRadar* renderer, bool Shaping)
                 //MI
                 if (g_bRealisticAvionics and g_bAGRadarFixes)
                 {
-                    if (!lockedTarget)
+                    if ( not lockedTarget)
                         renderer->DrawBlip(drawable, GainScale, Shaping);
                 }
                 else
@@ -2062,7 +2062,7 @@ void RadarDopplerClass::AddTargetReturns(RenderGMRadar* renderer, bool Shaping)
                 //MI
                 if (g_bRealisticAvionics and g_bAGRadarFixes)
                 {
-                    if (!lockedTarget)
+                    if ( not lockedTarget)
                         renderer->DrawBlip(curNode->Object()->XPos(), curNode->Object()->YPos());
                 }
                 else
@@ -2109,7 +2109,7 @@ void RadarDopplerClass::AddTargetReturnsOldStyle(GMList* curNode)
     sinAz = -trig.sin;
 
     // Offset the spots correctly
-    if (!(flags & FZ))
+    if ( not (flags & FZ))
     {
         if (flags & NORM)
         {
@@ -2162,7 +2162,7 @@ void RadarDopplerClass::AddTargetReturnsOldStyle(GMList* curNode)
             //MI
             if (g_bRealisticAvionics and g_bAGRadarFixes)
             {
-                if (!lockedTarget)
+                if ( not lockedTarget)
                 {
                     display->AdjustOriginInViewport(rx, ry);
                     DrawSymbol(Solid, 0.0F, 0);
@@ -2212,11 +2212,11 @@ void RadarDopplerClass::DoGMDesignate(GMList* curNode)
     // SP and you first designate, that ground stabilizes the radar aim point and keys the
     // navigation systems to look at the pseudo waypoint defined by the cursor position as
     // the current steerpoint to use.
-    if (IsSet(SP) and (!IsSet(SP_STAB)))  // SP mode but not yet ground stabilized
+    if (IsSet(SP) and ( not IsSet(SP_STAB)))  // SP mode but not yet ground stabilized
     {
         float x = 0.0F, y = 0.0F, z = 0.0F;
 
-        if (!GMSPPseudoWaypt)
+        if ( not GMSPPseudoWaypt)
         {
             GMSPPseudoWaypt = new WayPointClass();
         }
@@ -2247,7 +2247,7 @@ void RadarDopplerClass::DoGMDesignate(GMList* curNode)
         sinAz = -trig.sin;
 
         // Offset the spots correctly
-        if (!(flags & FZ))
+        if ( not (flags & FZ))
         {
             if (flags & NORM)
             {
@@ -2409,7 +2409,7 @@ void RadarDopplerClass::SetAGSteerpoint(int val)
         }
     }
 
-    if (!val)
+    if ( not val)
         SetFlagBit(SP);
     else
         ClearFlagBit(SP);
@@ -2628,7 +2628,7 @@ void RadarDopplerClass::GMMode(void)
             GMFeatureListRoot->prev = NULL;
 
         //MI
-        if (!testFeature and g_bAGRadarFixes and g_bRealisticAvionics)
+        if ( not testFeature and g_bAGRadarFixes and g_bRealisticAvionics)
         {
             testFeature = (SimBaseClass*)objectWalker.GetFirst();
             walker = &objectWalker;
@@ -2707,7 +2707,7 @@ void RadarDopplerClass::GMMode(void)
                                 }
                                 // 2002-04-03 MN a campaign unit only has two speed states - 0.0f and 40.0f for not moving/moving.
                                 //else if(testFeature->GetVt() < -1.0F) //should never happen really.
-                                else if (!testFeature->GetVt())
+                                else if ( not testFeature->GetVt())
                                 {
                                     radius = DEFAULT_OBJECT_RADIUS;
                                     radius = radius * radius * radius * radius;
@@ -2751,7 +2751,7 @@ void RadarDopplerClass::GMMode(void)
                     )
                     {
                         // Actual LOS
-                        if (!OTWDriver.CheckLOS(platform, testFeature))
+                        if ( not OTWDriver.CheckLOS(platform, testFeature))
                         {
                             canSee = 0.0F;  // LOS is blocked
                         }
@@ -2807,7 +2807,7 @@ void RadarDopplerClass::GMMode(void)
                             else
                                 testFeature = (SimBaseClass*)objectWalker.GetNext();
 
-                            if (!testFeature and walker == &featureWalker)
+                            if ( not testFeature and walker == &featureWalker)
                             {
                                 testFeature = (SimBaseClass*)objectWalker.GetFirst();
                                 walker = &objectWalker;
@@ -2883,7 +2883,7 @@ void RadarDopplerClass::GMMode(void)
                             else
                                 testFeature = (SimBaseClass*)objectWalker.GetNext();
 
-                            if (!testFeature and walker == &featureWalker)
+                            if ( not testFeature and walker == &featureWalker)
                             {
                                 testFeature = (SimBaseClass*)objectWalker.GetFirst();
                                 walker = &objectWalker;
@@ -2924,7 +2924,7 @@ void RadarDopplerClass::GMMode(void)
                     else
                         testFeature = (SimBaseClass*)objectWalker.GetNext();
 
-                    if (!testFeature and walker == &featureWalker)
+                    if ( not testFeature and walker == &featureWalker)
                     {
                         testFeature = (SimBaseClass*)objectWalker.GetFirst();
                         walker = &objectWalker;
@@ -3011,7 +3011,7 @@ void RadarDopplerClass::GMMode(void)
                                 }
                                 // 2002-04-03 MN a campaign unit only has two speed states - 0.0f and 40.0f for not moving/moving.
                                 //else if(testFeature->GetVt() < -1.0F) //should never happen really.
-                                else if (!testFeature->GetVt())
+                                else if ( not testFeature->GetVt())
                                 {
                                     radius = DEFAULT_OBJECT_RADIUS;
                                     radius = radius * radius * radius * radius;
@@ -3055,7 +3055,7 @@ void RadarDopplerClass::GMMode(void)
                     )
                     {
                         // Actual LOS
-                        if (!OTWDriver.CheckLOS(platform, testFeature))
+                        if ( not OTWDriver.CheckLOS(platform, testFeature))
                         {
                             canSee = 0.0F;  // LOS is blocked
                         }
@@ -3111,7 +3111,7 @@ void RadarDopplerClass::GMMode(void)
                             else
                                 testFeature = (SimBaseClass*)objectWalker.GetNext();
 
-                            if (!testFeature and walker == &featureWalker)
+                            if ( not testFeature and walker == &featureWalker)
                             {
                                 testFeature = (SimBaseClass*)objectWalker.GetFirst();
                                 walker = &objectWalker;
@@ -3187,7 +3187,7 @@ void RadarDopplerClass::GMMode(void)
                             else
                                 testFeature = (SimBaseClass*)objectWalker.GetNext();
 
-                            if (!testFeature and walker == &featureWalker)
+                            if ( not testFeature and walker == &featureWalker)
                             {
                                 testFeature = (SimBaseClass*)objectWalker.GetFirst();
                                 walker = &objectWalker;
@@ -3228,7 +3228,7 @@ void RadarDopplerClass::GMMode(void)
                     else
                         testFeature = (SimBaseClass*)objectWalker.GetNext();
 
-                    if (!testFeature and walker == &featureWalker)
+                    if ( not testFeature and walker == &featureWalker)
                     {
                         testFeature = (SimBaseClass*)objectWalker.GetFirst();
                         walker = &objectWalker;
@@ -3620,7 +3620,7 @@ void RadarDopplerClass::GMMode(void)
 
             float x = 0.0F, y = 0.0F, z = 0.0F;
 
-            if (!GMSPPseudoWaypt)
+            if ( not GMSPPseudoWaypt)
             {
                 GMSPPseudoWaypt = new WayPointClass();
             }

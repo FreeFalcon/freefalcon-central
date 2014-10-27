@@ -390,7 +390,7 @@ void ObjectParent::ReleaseTexSet(DWORD TexSet, DWORD MaxTexSet)
 void ObjectParent::Reference(void)
 {
     // RED - Possible CTD Fix, if no LODs, exit
-    if (!nLODs) return;
+    if ( not nLODs) return;
 
     if (refCount == 0)
     {
@@ -418,7 +418,7 @@ void ObjectParent::Reference(void)
 void ObjectParent::ReferenceWithFetch(void)
 {
     // RED - Possible CTD Fix, if no LODs, exit
-    if (!nLODs) return;
+    if ( not nLODs) return;
 
     if (refCount == 0)
     {
@@ -478,7 +478,7 @@ ObjectLOD* ObjectParent::ChooseLOD(float range, int *used, float *max_range)
     // 2002-03-29 MN possible CTD fix
     ShiAssert(FALSE == F4IsBadReadPtr(pLODs, sizeof * pLODs));
 
-    if (!pLODs)
+    if ( not pLODs)
         return NULL;
 
     MaxLOD = nLODs;

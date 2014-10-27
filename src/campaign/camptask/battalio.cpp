@@ -523,7 +523,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
        */
 
     // Check if we're being transported
-    ShiAssert(!Cargo());
+    ShiAssert( not Cargo());
 
     // Check to make sure our orders and tactics are still valid.
     ChooseTactic();
@@ -534,7 +534,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
         // Keep falling back 1 km until our tactic changes
         lo = FindRetreatPath(this, 1, 0);
 
-        if (!lo)
+        if ( not lo)
         {
             // This unit is cut off.
             CheckForSurrender();
@@ -609,7 +609,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
     {
         w = GetCurrentUnitWP();
 
-        if (!w)
+        if ( not w)
         {
             if (BuildGroundWP(this) < 0)
             {
@@ -805,7 +805,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
         SetMoving(0);
     }
 
-    if (!IsAggregate())
+    if ( not IsAggregate())
     {
         return 0;
     }
@@ -814,7 +814,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
     {
 #ifdef DEBUG
 
-        if (!IsAggregate())
+        if ( not IsAggregate())
         {
             MonoPrint("Updating deaggregate unit #%d.\n", GetCampID());
         }
@@ -988,7 +988,7 @@ int BattalionClass::DoCombat()
         FalconEntity *a = GetAirTarget();
 
         // Check vs our Ground Target
-        if (!e)
+        if ( not e)
         {
             SetTargeted(0);
             SetTarget(NULL);
@@ -1018,7 +1018,7 @@ int BattalionClass::DoCombat()
         SetSupported(0); // Clear supported flag so we can ask again
 
         // Check vs our Air Target
-        if (!a)
+        if ( not a)
             SetAirTarget(NULL);
         else if (Combat() and IsAggregate())
         {
@@ -1052,7 +1052,7 @@ CampaignHeading FindBestHeading(Objective o, int type, int own)
     CampaignHeading h = 0, nh;
     Objective n;
 
-    if (!o)
+    if ( not o)
         return Here;
 
     o->GetLocation(&x, &y);
@@ -1158,7 +1158,7 @@ void BattalionClass::SetUnitOrders(int neworders, VU_ID oid)
     SetLastCheck(0);
 
     // If we've received new orders, and arn't engaged, let's halt our retreat
-    if (Retreating() and (!Engaged() or neworders not_eq GORD_RESERVE))
+    if (Retreating() and ( not Engaged() or neworders not_eq GORD_RESERVE))
         SetRetreating(0);
 
     GroundUnitClass::SetUnitOrders(neworders);
@@ -1177,7 +1177,7 @@ void BattalionClass::PickFinalLocation(void)
     DisposeWayPoints();
     o = GetUnitObjective();
 
-    if (!o)
+    if ( not o)
     {
         // KCK: We should pick a retreat path during the next cycle.
         return;
@@ -1495,7 +1495,7 @@ void BattalionClass::ReturnToSearch(void)
         if (radar_mode == FEC_RADAR_OFF)
             SetEmitting(0);
     }
-    else if (!IsEmitting())
+    else if ( not IsEmitting())
         radar_mode = FEC_RADAR_OFF;
 }
 
@@ -1512,7 +1512,7 @@ int BattalionClass::CanShootWeapon(int wid)
         return FALSE;
 
     // Check for radar guidance, and make adjustments if necessary
-    if (!(WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR) or GetRadarMode() == FEC_RADAR_GUIDE or GetRadarMode() == FEC_RADAR_SEARCH_100)
+    if ( not (WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR) or GetRadarMode() == FEC_RADAR_GUIDE or GetRadarMode() == FEC_RADAR_SEARCH_100)
         return TRUE;
 
     return FALSE;
@@ -1645,7 +1645,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
     float timetosearch ;
     float timetoaquire ;
 
-    if (!d and !t) SetRadarMode(step_search_mode);
+    if ( not d and !t) SetRadarMode(step_search_mode);
 
     if (GetRadarMode() == FEC_RADAR_CHANGEMODE and step_search_mode >= FEC_RADAR_SEARCH_1)
         SetRadarMode(step_search_mode);// we are changing mode.. realy not off
@@ -1676,7 +1676,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
         case FEC_RADAR_SEARCH_1:
             AQUIREtimer = SimLibElapsedTime;
 
-            if (!SEARCHtimer)
+            if ( not SEARCHtimer)
             {
                 SEARCHtimer = SimLibElapsedTime;
             }
@@ -1696,7 +1696,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
             AQUIREtimer = SimLibElapsedTime;
             timetosearch = radarData->Timetosearch2 - skill;
 
-            if (!SEARCHtimer)
+            if ( not SEARCHtimer)
             {
                 SEARCHtimer = SimLibElapsedTime;
             }
@@ -1707,7 +1707,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
                 SEARCHtimer = SimLibElapsedTime;
             }
-            else if (!d)// no detection step search down
+            else if ( not d)// no detection step search down
             {
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
                 step_search_mode = FEC_RADAR_SEARCH_1 ;
@@ -1720,7 +1720,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
             AQUIREtimer = SimLibElapsedTime;
             timetosearch = radarData->Timetosearch3 - skill;
 
-            if (!SEARCHtimer) SEARCHtimer = SimLibElapsedTime;
+            if ( not SEARCHtimer) SEARCHtimer = SimLibElapsedTime;
 
             // goto aquire ?
             if (d and range <= radarData->Rangetoacuire and SimLibElapsedTime - SEARCHtimer >= timetosearch)
@@ -1729,7 +1729,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
                 AQUIREtimer = SimLibElapsedTime;
             }
-            else if (!d) //  no detection step search down
+            else if ( not d) //  no detection step search down
             {
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
                 step_search_mode = FEC_RADAR_SEARCH_2 ;
@@ -1743,7 +1743,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
             timetoaquire = radarData->Timetoacuire - skill;
 
             // only allow to be in aquire for the coast amount of time
-            if (!t and !d and SimLibElapsedTime - AQUIREtimer >= (unsigned)radarData->Timetocoast)
+            if ( not t and !d and SimLibElapsedTime - AQUIREtimer >= (unsigned)radarData->Timetocoast)
             {
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
                 step_search_mode = FEC_RADAR_SEARCH_3 ;
@@ -1761,7 +1761,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
             AQUIREtimer = SimLibElapsedTime;
             step_search_mode = FEC_RADAR_AQUIRE;
 
-            if (!t) SetRadarMode(FEC_RADAR_CHANGEMODE);
+            if ( not t) SetRadarMode(FEC_RADAR_CHANGEMODE);
 
             break;
     }
@@ -1800,7 +1800,7 @@ int BattalionClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
         simdata->vehicleInUnit = 0;
         ent = NULL;
 
-        if (!remote)
+        if ( not remote)
         {
             simdata->ptIndex = GetDeaggregationPoint(0, &ent);
 
@@ -1830,7 +1830,7 @@ int BattalionClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
         simdata->vehicleInUnit++;
 
     // Three positioning schemes
-    if (!remote)
+    if ( not remote)
     {
         if (deag_data) // Place in our last location
         {
@@ -1848,7 +1848,7 @@ int BattalionClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
             // Find the next point
             simdata->ptIndex = GetDeaggregationPoint(simdata->campSlot, &ent);
 
-            if (!simdata->ptIndex)
+            if ( not simdata->ptIndex)
             {
                 // Reuse the old points, but with an offset
                 ent = NULL;
@@ -1935,7 +1935,7 @@ int BattalionClass::RallyUnit(int minutes)
 {
     int maxMorale, increase;
 
-    if (!fullstrength)
+    if ( not fullstrength)
         fullstrength = GetFullstrengthVehicles();
 
     if (fullstrength)
@@ -1986,13 +1986,13 @@ int BattalionClass::GetDeaggregationPoint(int slot, CampEntity *installation)
     int pt = 0, type;
     static int last_SAM_pt, last_AAA_pt, last_support_pt, last_art_pt, ptListType, index = 0;
 
-    if (!*installation)
+    if ( not *installation)
     {
         // We're looking for a new list, so clear statics
         last_SAM_pt = last_AAA_pt = last_support_pt = last_art_pt = ptListType = index = 0;
 
         // Check if we care about placement
-        if (!Moving())
+        if ( not Moving())
         {
             // RV - Biker - Check if we want some special index type
             if (GetUnitClassData()->PtDataIndex)
@@ -2182,7 +2182,7 @@ int BattalionClass::Reaction(CampEntity e, int knowledge, float range)
     MoveType tmt, omt;
     GridIndex x, y, ex, ey;
 
-    if (!e or e->IsObjective()) // Ignore objectives for target canidates
+    if ( not e or e->IsObjective()) // Ignore objectives for target canidates
         return 0;
 
     // Some basic info on us.
@@ -2379,45 +2379,45 @@ int BattalionClass::CheckTactic(int tid)
         ourObjDist = FloatToInt32(Distance(x, y, dx, dy));
     }
 
-    if (!CheckUnitType(tid, GetDomain(), GetType()))
+    if ( not CheckUnitType(tid, GetDomain(), GetType()))
         return 0;
 
-    if (!CheckTeam(tid, GetTeam()))
+    if ( not CheckTeam(tid, GetTeam()))
         return 0;
 
-    if (!CheckEngaged(tid, Engaged()))
+    if ( not CheckEngaged(tid, Engaged()))
         return 0;
 
-    if (!CheckCombat(tid, Combat()))
+    if ( not CheckCombat(tid, Combat()))
         return 0;
 
-    if (!CheckLosses(tid, Losses()))
+    if ( not CheckLosses(tid, Losses()))
         return 0;
 
-    if (!CheckRetreating(tid, Retreating()))
+    if ( not CheckRetreating(tid, Retreating()))
         return 0;
 
-    if (!CheckAction(tid, GetUnitOrders()))
+    if ( not CheckAction(tid, GetUnitOrders()))
         return 0;
 
-    if (!CheckOwned(tid, ourObjOwner))
+    if ( not CheckOwned(tid, ourObjOwner))
         return 0;
 
-    if (!CheckRange(tid, ourObjDist))
+    if ( not CheckRange(tid, ourObjDist))
         return 0;
 
-    // if (!CheckDistToFront(tid,ourFrontDist))
+    // if ( not CheckDistToFront(tid,ourFrontDist))
     // return 0;
-    if (!CheckStatus(tid, Broken()))
+    if ( not CheckStatus(tid, Broken()))
         return 0;
 
-    if (!CheckOdds(tid, GetOdds()))
+    if ( not CheckOdds(tid, GetOdds()))
         return 0;
 
     if (CheckWeapons(tid) == 1 and !haveWeaps)
         return 0;
 
-    if (!CheckRole(tid, GetUnitNormalRole()))
+    if ( not CheckRole(tid, GetUnitNormalRole()))
         return 0;
 
     if (CheckSpecial(tid) == 1 and GetUnitParentID() == FalconNullId)
@@ -2427,10 +2427,10 @@ int BattalionClass::CheckTactic(int tid)
         return 0; // KCK Check if our offensive's started yet.
 
     // Refused() means our request was refused. These are no longer valid tactics
-    if (!CheckAirborne(tid, !Refused()))
+    if ( not CheckAirborne(tid, !Refused()))
         return 0;
 
-    if (!CheckMarine(tid, !Refused()))
+    if ( not CheckMarine(tid, !Refused()))
         return 0;
 
     return GetTacticPriority(tid);
@@ -2584,12 +2584,12 @@ void BattalionClass::SetUnitSupply(int s)
 
 void BattalionClass::MakeBattalionDirty(Dirty_Battalion bits, Dirtyness score)
 {
-    if ((!IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
+    if (( not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
 
-    if (!IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
+    if ( not IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
     {
         score = static_cast<Dirtyness>(score << 4);
     }

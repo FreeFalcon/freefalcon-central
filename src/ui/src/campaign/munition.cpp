@@ -355,7 +355,7 @@ BOOL GetJRackAndWeapon(VehicleClassDataType* vc, Falcon4EntityClassType *classPt
     //Falcon4EntityClassType* rackClassPtr;
 
     //memset(rail,0,sizeof(RailInfo)); // kills the hardpoint object
-    if (!count)
+    if ( not count)
         return(FALSE);
 
     weapClassPtr = &Falcon4ClassTable[WeaponDataTable[WeaponIndex].Index];
@@ -367,10 +367,10 @@ BOOL GetJRackAndWeapon(VehicleClassDataType* vc, Falcon4EntityClassType *classPt
 
     bitflag = 1 << hardpoint;
 
-    if (!vc or !classPtr or !weapClassPtr)
+    if ( not vc or !classPtr or !weapClassPtr)
         return(FALSE);
 
-    if (!(vc->VisibleFlags & bitflag))
+    if ( not (vc->VisibleFlags & bitflag))
         return(FALSE);
 
     /*
@@ -478,7 +478,7 @@ short FindRackIndex(short visID)
     Falcon4EntityClassType* classPtr;
     int index;
 
-    if (!visID)
+    if ( not visID)
         return(0);
 
     for (index = 0; index < NumEntities; index++)
@@ -529,7 +529,7 @@ BOOL GetRackAndWeapon(VehicleClassDataType* vc, short VehID, short WeaponIndex, 
 
     memset(rail, 0, sizeof(RailInfo));
 
-    if (!count)
+    if ( not count)
         return(FALSE);
 
     if (count >= sizeof(ACRacks) / sizeof(ACRacks[0]))
@@ -540,10 +540,10 @@ BOOL GetRackAndWeapon(VehicleClassDataType* vc, short VehID, short WeaponIndex, 
 
     bitflag = 1 << hardpoint;
 
-    if (!vc or !classPtr or !weapClassPtr)
+    if ( not vc or !classPtr or !weapClassPtr)
         return(FALSE);
 
-    if (!(vc->VisibleFlags & bitflag))
+    if ( not (vc->VisibleFlags & bitflag))
         return(FALSE);
 
     if (hardpoint < center)
@@ -838,7 +838,7 @@ void LoadHardPoint(long plane, long num, long center)
 
     if (Plane == NULL) return;
 
-    if (!(VisFlag & (1 << num))) return;
+    if ( not (VisFlag & (1 << num))) return;
 
     Rack = gUIViewer->Find((plane << 24) + (num << 16));
 
@@ -852,7 +852,7 @@ void LoadHardPoint(long plane, long num, long center)
             {
                 if (num > center)
                 {
-                    if (!i)
+                    if ( not i)
                         ((DrawableBSP*)Rack->object)->DetachChild(((DrawableBSP*)Weapon->object), i + 2);
                     else
                         ((DrawableBSP*)Rack->object)->DetachChild(((DrawableBSP*)Weapon->object), i);
@@ -908,7 +908,7 @@ void LoadHardPoint(long plane, long num, long center)
                     {
                         if (num > center)
                         {
-                            if (!i)
+                            if ( not i)
                                 ((DrawableBSP*)Rack->object)->AttachChild(((DrawableBSP*)Weapon->object), i + 2);
                             else
                                 ((DrawableBSP*)Rack->object)->AttachChild(((DrawableBSP*)Weapon->object), i);
@@ -1009,7 +1009,7 @@ void LoadFlight(VU_ID flightID)
 
         ShiAssert(obj);
 
-        if (!i)
+        if ( not i)
             Object.PosZ = 0;
 
         if (classPtr->visType[0] == MapVisId(VIS_F16C) ||
@@ -1046,7 +1046,7 @@ void LoadFlight(VU_ID flightID)
         {
             ((DrawableBSP*)obj->object)->SetSwitchMask(0, 2); // Turn on rotors
 
-            if (!i)
+            if ( not i)
                 Object.PosZ = -5;
 
 
@@ -1086,7 +1086,7 @@ void LoadFlight(VU_ID flightID)
             LoadHardPoint(i, j, HardPoints / 2, &gCurRails[i].rail[j]);
         }
 
-        if (!i)
+        if ( not i)
         {
             Object.Heading = 180.0f;
             Object.Pitch = -10.0f;
@@ -1308,7 +1308,7 @@ void DetermineWeight(VU_ID FlightID)
 
     flt = (Flight)FindUnit(FlightID);
 
-    if (!flt)
+    if ( not flt)
     {
         for (i = 0; i < 4; i++)
         {
@@ -1493,7 +1493,7 @@ void DetermineWeight(VU_ID FlightID)
             // Add up internal stores weights
             for (j = 1; j < HardPoints; j++)
             {
-                if (!(vc->VisibleFlags & (1 << j)) and gCurStores[i].WeaponID[j])
+                if ( not (vc->VisibleFlags & (1 << j)) and gCurStores[i].WeaponID[j])
                 {
                     store = NULL;
                     ShiAssert(gStores);
@@ -1620,11 +1620,11 @@ void SetupMunitionsWindow(VU_ID FlightID)
     {
         txt->SetTimerCallback(MuniTimeCB);
 
-        if ((!(TheCampaign.Flags & CAMP_TACTICAL_EDIT)) and (!(TheCampaign.Flags & CAMP_LIGHT)))
+        if (( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT)) and ( not (TheCampaign.Flags & CAMP_LIGHT)))
         {
             status = GetFlightStatusID(flt);
 
-            if (!status)
+            if ( not status)
             {
                 takeoff = flt->GetFirstUnitWP()->GetWPDepartureTime() - vuxGameTime;
 
@@ -1792,7 +1792,7 @@ void UpdateStoresTally(C_Window *win)
             cur->Control_->Refresh();
             avail = TotalAvailable(static_cast<short>(cur->Control_->GetID() & 0x0000ffff));
 
-            if (!avail)
+            if ( not avail)
             {
                 availID = TXT_SUPPLY_OUT;
                 color = 0x0000ff;
@@ -1950,7 +1950,7 @@ void InternalArmPlaneCB(long ID, short hittype, C_Base *control)
     if (count and !TotalAvailable(static_cast<short>(weaponID)))
         count--;
 
-    if (!count and count == startcount) //None available
+    if ( not count and count == startcount) //None available
     {
         return;
     }
@@ -2035,7 +2035,7 @@ void ArmPlaneCB(long ID, short hittype, C_Base *control)
     if (count and  !TotalAvailable(static_cast<short>(weaponID)))
         count--;
 
-    if (!count and count == startcount) //None available
+    if ( not count and count == startcount) //None available
     {
         return;
     }
@@ -2186,18 +2186,18 @@ void SetupLoadoutDisplay()
 
     flt = (Flight)vuDatabase->Find(gLoadoutFlightID);
 
-    if (!flt)
+    if ( not flt)
         return;
 
     sqd = (Squadron)flt->GetUnitSquadron();
 
-    if (!sqd)
+    if ( not sqd)
         return;
 
     vid = flt->GetVehicleID(0);
     vc = GetVehicleClassData(vid);
 
-    if (!vc)
+    if ( not vc)
         return;
 
     for (i = 1; i < HardPoints; i++)
@@ -2532,7 +2532,7 @@ void MakeStoresList(C_Window *win, long client)
             // # in stock
             avail = TotalAvailable(static_cast<short>(cur->ID));
 
-            if (!avail)
+            if ( not avail)
             {
                 availID = TXT_SUPPLY_OUT;
                 color = 0x0000ff;
@@ -2587,7 +2587,7 @@ void MakeStoresList(C_Window *win, long client)
                     btn->SetUserNumber(1, cur->HardPoint[i]);
                     btn->SetUserNumber(2, 1);
 
-                    if (!(VisFlag & (1 << (i)))) // Internal stores
+                    if ( not (VisFlag & (1 << (i)))) // Internal stores
                     {
                         btn->SetBackImage(INT_EMPTY);
                         btn->SetImage(C_STATE_0, INT_EMPTY);
@@ -2841,7 +2841,7 @@ void MakeStoresList(C_Window *win, long client)
                     btn->SetFont(win->Font_);
                     btn->SetGroup(i);
 
-                    if (!(VisFlag & (1 << (i)))) // Internal stores
+                    if ( not (VisFlag & (1 << (i)))) // Internal stores
                         btn->SetCallback(InternalArmPlaneCB);
                     else
                         btn->SetCallback(ArmPlaneCB);
@@ -2963,7 +2963,7 @@ void UseStores()
 
     sq = (Squadron) flt->GetUnitSquadron();
 
-    if (!sq)
+    if ( not sq)
         return;
 
     ac = flt->GetTotalVehicles();
@@ -2978,7 +2978,7 @@ void UseStores()
     {
         for (hp = 0; hp < HARDPOINT_MAX; hp++)
         {
-            if (!gCurStores[i].WeaponCount[hp])
+            if ( not gCurStores[i].WeaponCount[hp])
                 gCurStores[i].WeaponID[hp] = 0;
         }
     }

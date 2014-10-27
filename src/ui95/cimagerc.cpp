@@ -142,7 +142,7 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, UI95_RECT *rect, short x, shor
 
     prior = (IMAGE_RSC*)Finder_->Find(LastID);
 
-    if (!prior)
+    if ( not prior)
     {
         MonoPrint("NO prior image to reference (%1ld)\n", ID);
         return(NULL);
@@ -278,7 +278,7 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, short x, short y, short w, sho
 
     prior = (IMAGE_RSC*)Finder_->Find(LastID);
 
-    if (!prior)
+    if ( not prior)
     {
         MonoPrint("NO prior image to reference (%1ld)\n", ID);
         return(NULL);
@@ -290,7 +290,7 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, short x, short y, short w, sho
         return(NULL);
     }
 
-    if (!prior->Owner)
+    if ( not prior->Owner)
     {
         MonoPrint("(%1ld) Data_ not loaded\n", ID, prior->Header->Type);
         return(NULL);
@@ -401,7 +401,7 @@ long C_Image::BuildColorTable(WORD *, long , long , long)
     long sidx;
     long count;
 
-    if (!img or !w or !h)
+    if ( not img or !w or !h)
         return(0);
 
     if (ColorOrder_)
@@ -435,7 +435,7 @@ long C_Image::BuildColorTable(WORD *, long , long , long)
 
     while (sidx)
     {
-        if (!ColorOrder_->Find(img[sidx]))
+        if ( not ColorOrder_->Find(img[sidx]))
         {
             ColorOrder_->Add(img[sidx], (void*)(count + 1));
             IDOrder_->Add(count, (void*)img[sidx]);
@@ -455,7 +455,7 @@ void C_Image::MakePalette(WORD *, long)
 #if 0
     long i;
 
-    if (!dest or !entries)
+    if ( not dest or !entries)
         return;
 
     for (i = 0; i < entries; i++)
@@ -470,7 +470,7 @@ void C_Image::ConvertTo8Bit(WORD *, unsigned char *, long, long)
 #if 0
     long i, j, didx, start, sidx;
 
-    if (!src or !w or !h or !dest)
+    if ( not src or !w or !h or !dest)
         return;
 
     if (dest)
@@ -496,7 +496,7 @@ void C_Image::CopyArea(WORD *src, WORD *dest, long w, long h)
 {
     long i, j, didx, start, sidx;
 
-    if (!src or !w or !h or !dest)
+    if ( not src or !w or !h or !dest)
         return;
 
     if (dest)
@@ -537,7 +537,7 @@ C_Resmgr *C_Image::LoadImage(long ID, char *file, short x, short y)
 
     retval = LoadTargaFile(file, &cptr, &bmi);
 
-    if (!retval)
+    if ( not retval)
     {
         MonoPrint("Failed to load %s\n", file);
         return(NULL);
@@ -635,7 +635,7 @@ C_Resmgr *C_Image::LoadFile(long ID, char *file, short x, short y)
 
     retval = LoadTargaFile(file, &cptr, &bmi);
 
-    if (!retval)
+    if ( not retval)
     {
         MonoPrint("Failed to load %s\n", file);
         return(NULL);
@@ -712,7 +712,7 @@ C_Resmgr *C_Image::LoadPrivateRes(long ID, char *filename)
 {
     C_Resmgr *res;
 
-    if (!ID or !filename or !Root_)
+    if ( not ID or !filename or !Root_)
         return(NULL);
 
     if (Root_->Find(ID))
@@ -720,7 +720,7 @@ C_Resmgr *C_Image::LoadPrivateRes(long ID, char *filename)
 
     res = new C_Resmgr;
 
-    if (!res)
+    if ( not res)
         return(NULL);
 
     res->Setup(ID, filename, gMainParser->GetTokenHash());

@@ -131,7 +131,7 @@ void AirframeClass::Atmosphere(void)
              {
                 if (fabs (qbar - lastqBar) > 5.0F)
                 {
-        if (!g_bFFCenterFix) //Wombat778 9-29-2003  Allows user to have the fixed centering force for FF sticks
+        if ( not g_bFFCenterFix) //Wombat778 9-29-2003  Allows user to have the fixed centering force for FF sticks
         JoystickPlayEffect (JoyAutoCenter, FloatToInt32((qbar/250.0F * 0.5F + 0.5F) * 10000.0F));
 
                    //lastqBar = qbar; // JB 010301 FF would cut out < 250
@@ -141,7 +141,7 @@ void AirframeClass::Atmosphere(void)
              else
              {
                 if (fabs (qbar - lastqBar) > 5.0F)
-     if (!g_bFFCenterFix) //Wombat778 9-29-2003  Allows user to have the fixed centering force for FF sticks
+     if ( not g_bFFCenterFix) //Wombat778 9-29-2003  Allows user to have the fixed centering force for FF sticks
      JoystickPlayEffect (JoyAutoCenter, 10000);
                 lastqBar = qbar;
              }

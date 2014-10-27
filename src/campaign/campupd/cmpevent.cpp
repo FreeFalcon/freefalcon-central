@@ -77,7 +77,7 @@ EventClass::EventClass(short id)
 
 EventClass::EventClass(FILE* file)
 {
-    if (!file)
+    if ( not file)
         return;
 
     fread(&event, sizeof(short), 1, file);
@@ -86,7 +86,7 @@ EventClass::EventClass(FILE* file)
 
 EventClass::EventClass(uchar **stream, long *rem)
 {
-    if ((rem <= 0) or (!stream))
+    if ((rem <= 0) or ( not stream))
     {
         return;
     }
@@ -101,7 +101,7 @@ EventClass::~EventClass(void)
 
 int EventClass::Save(FILE* file)
 {
-    if (!file)
+    if ( not file)
         return 0;
 
     fwrite(&event, sizeof(short), 1, file);
@@ -142,7 +142,7 @@ void EventClass::SetEvent(int status)
 
 int CheckTriggers(char *scenario)
 {
-    if (!FalconLocalGame or !FalconLocalGame->IsLocal())
+    if ( not FalconLocalGame or !FalconLocalGame->IsLocal())
         return 0;
 
     if (FalconLocalSession->GetTeam() == 255)
@@ -163,12 +163,12 @@ int ReadNumberOfEvents(char* scenario)
     if ((fp = OpenCampFile(scenario, "tri", "r")) == NULL)
         return 0;
 
-    while (!done)
+    while ( not done)
     {
         ReadComments(fp);
         ReadToken(fp, token, 120);
 
-        if (!token[0])
+        if ( not token[0])
             continue;
 
         if (strncmp(token, "#TOTAL_EVENTS", 13) == 0)
@@ -201,12 +201,12 @@ void SetInitialEvents(char* scenario)
     if ((fp = OpenCampFile(scenario, "tri", "r")) == NULL)
         return;
 
-    while (!done)
+    while ( not done)
     {
         ReadComments(fp);
         ReadToken(fp, token, 120);
 
-        if (!token[0])
+        if ( not token[0])
             continue;
 
         if (strncmp(token, "#SET_EVENT", 10) == 0)
@@ -277,12 +277,12 @@ void ReadSpecialCampaignData(char* scenario)
     if ((fp = OpenCampFile(scenario, "tri", "r")) == NULL)
         return;
 
-    while (!done)
+    while ( not done)
     {
         ReadComments(fp);
         ReadToken(fp, token, 120);
 
-        if (!token[0])
+        if ( not token[0])
             continue;
 
         // 2002-04-17 MN these have originally been read from Falcon4.AII - but now from trigger files so we can
@@ -416,7 +416,7 @@ void DisposeCampaignEvents(void)
 {
     int i;
 
-    if (!CampEvents or !CE_Events)
+    if ( not CampEvents or !CE_Events)
         return;
 
     for (i = 0; i < CE_Events; i++)
@@ -464,12 +464,12 @@ int ReadScriptedTriggerFile(char* filename)
     // Read # of events
     ReadToken(fp, token, 120);
 
-    while (!done)
+    while ( not done)
     {
         ReadComments(fp);
         ReadToken(fp, token, 120);
 
-        if (!token[0])
+        if ( not token[0])
             continue;
 
         // Check for still in init section
@@ -481,7 +481,7 @@ int ReadScriptedTriggerFile(char* filename)
             continue;
         }
 
-        if (!initdone)
+        if ( not initdone)
             continue;
 
         // Handle standard tokens
@@ -489,7 +489,7 @@ int ReadScriptedTriggerFile(char* filename)
         {
             curr_stack++;
 
-            if (!stack_active[curr_stack - 1])
+            if ( not stack_active[curr_stack - 1])
                 stack_active[curr_stack] = 0;
             else
                 stack_active[curr_stack] = 1;
@@ -503,7 +503,7 @@ int ReadScriptedTriggerFile(char* filename)
         }
         else if (strcmp(token, "#ENDIF") == 0)
         {
-            if (!curr_stack)
+            if ( not curr_stack)
                 MonoPrint("<script reading Error - unmatched #ENDIF>\n");
             else
                 curr_stack--;
@@ -573,7 +573,7 @@ int ReadScriptedTriggerFile(char* filename)
                     i = atoi(sptr);
                     o = (Objective) GetEntityByCampID(i);
 
-                    if (!o)
+                    if ( not o)
                         stack_active[curr_stack] = 0;
                     else
                     {
@@ -623,7 +623,7 @@ int ReadScriptedTriggerFile(char* filename)
                         // Or logic
                         stack_active[curr_stack] = 0;
 
-                        while (!stack_active[curr_stack] and sptr and atoi(sptr))
+                        while ( not stack_active[curr_stack] and sptr and atoi(sptr))
                         {
                             o = (Objective) GetEntityByCampID(atoi(sptr));
 
@@ -1111,13 +1111,13 @@ int ReadScriptedTriggerFile(char* filename)
 #ifdef DEBUG
                     ShiAssert(pod);
 
-                    if (!pod)
+                    if ( not pod)
                         continue;
 
 #endif
                     pod->ground_priority[team] = pod->air_priority[team] = i;
                     // KCK: player_priority only used now if >= 0
-                    // if (!(pod->flags & GTMOBJ_PLAYER_SET_PRIORITY))
+                    // if ( not (pod->flags & GTMOBJ_PLAYER_SET_PRIORITY))
                     // pod->player_priority[team] =  i;
                     pod->flags  or_eq  GTMOBJ_SCRIPTED_PRIORITY;
                 }

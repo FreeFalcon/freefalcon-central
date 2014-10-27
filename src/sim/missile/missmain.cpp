@@ -376,7 +376,7 @@ void MissileClass::Init(void)
     }
 
     //   else // not local
-    if (!IsLocal())
+    if ( not IsLocal())
     {
         // 2002-04-05 MN not needed anymore...
         //      sensorArray = NULL;
@@ -442,7 +442,7 @@ void MissileClass::Start(SimObjectType *tgt)
     // Marco Edit - actually - if it's boresighted or uncaged
     bool hasref = false; // JB 020109 CTD fix. Engage in safe referencing.  Shooting a breathing but unlocked Mav caused a CTD because DropTarget would delete the object that was later used.
 
-    if (!isSlave or !isCaged or tgt == NULL)// and sensorArray[0]->Type() == SensorClass::IRST) //me123 make sure only ir's are unchaged for now
+    if ( not isSlave or !isCaged or tgt == NULL)// and sensorArray[0]->Type() == SensorClass::IRST) //me123 make sure only ir's are unchaged for now
     {
         tgt = targetPtr;
 
@@ -520,7 +520,7 @@ int MissileClass::Exec(void)
     {
         if (IsExploding())
         {
-            if (!IsSetFlag(SHOW_EXPLOSION))
+            if ( not IsSetFlag(SHOW_EXPLOSION))
             {
                 // edg note: all special effects moved to the MissileEndMessage
                 // Process member function
@@ -788,7 +788,7 @@ float MissileClass::GetRMax(float alt, float vt, float az, float targetVt, float
 
     ShiAssert(FALSE == F4IsBadReadPtr(rangeData, sizeof(rangeData)));
 
-    if (!rangeData or F4IsBadReadPtr(rangeData, sizeof(rangeData)))   //Wombat778 3-23-04  Added CTD check
+    if ( not rangeData or F4IsBadReadPtr(rangeData, sizeof(rangeData)))   //Wombat778 3-23-04  Added CTD check
         // MLR 5/2/2004 - this bug was caused by heli brains firing the new rocket code.
         return 0.0F;
 
@@ -941,7 +941,7 @@ void MissileClass::UpdatePosition()
 {
     Tpoint newPos;
 
-    if (!ifd)
+    if ( not ifd)
         return; // JB 010803
 
     drawPointer->GetPosition(&newPos);
@@ -985,7 +985,7 @@ int MissileClass::Sleep()
 {
     int retval = 0;
 
-    if (!IsAwake())
+    if ( not IsAwake())
     {
         return retval;
     }
@@ -1150,7 +1150,7 @@ MissileClass::EndMissile(void)
 
     ShiAssert(parent);
 
-    if (!parent)
+    if ( not parent)
         return;
 
     // SCR 11/29/98
@@ -1158,7 +1158,7 @@ MissileClass::EndMissile(void)
     // (cause it hit a building or something silly like that)
 
     // 2002-03-28 MN if end message is ArmingDelay, don't apply damage at all
-    if (!(done == FalconMissileEndMessage::ArmingDelay) and inputData and (runTime > inputData->guidanceDelay or !parent->OnGround()))
+    if ( not (done == FalconMissileEndMessage::ArmingDelay) and inputData and (runTime > inputData->guidanceDelay or !parent->OnGround()))
         ApplyProximityDamage();
 
     endMessage = new FalconMissileEndMessage(Id(), FalconLocalGame);
@@ -1284,7 +1284,7 @@ MissileClass::ApplyProximityDamage(void)
         /* if( domain & wdAir ) {
          SimBaseClass* testObject;
 
-         if (!SimDriver.objectList) return;
+         if ( not SimDriver.objectList) return;
 
          VuListIterator objectWalker(SimDriver.objectList);
          testObject = (SimBaseClass*) objectWalker.GetFirst();
@@ -1328,7 +1328,7 @@ MissileClass::ApplyProximityDamage(void)
         // check for water b4 placing crater
         groundType = OTWDriver.GetGroundType(XPos(), YPos());
 
-        if (!(groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
+        if ( not (groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
         {
             AddToTimedPersistantList(VIS_CRATER2 + PRANDInt3(), Camp_GetCurrentTime() + CRATER_REMOVAL_TIME, XPos(), YPos());
 

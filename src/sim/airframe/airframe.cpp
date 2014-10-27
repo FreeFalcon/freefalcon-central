@@ -563,12 +563,12 @@ void AirframeClass::Init(int idx)
             {
                 // LRKLUDGE
                 //Clamp vt to some minimum value
-                if (!platform->IsPlayer())
+                if ( not platform->IsPlayer())
                 {
                     vt = max(vt, minVcas * 0.6F * KNOTS_TO_FTPSEC);
                     vcas = vt * FTPSEC_TO_KNOTS;
 
-                    if (!IsSet(GearBroken))
+                    if ( not IsSet(GearBroken))
                     {
                         gearPos = 0.0F;
                         gearHandle = -1.0F;
@@ -588,7 +588,7 @@ void AirframeClass::Init(int idx)
                 groundDeltaX = 0.0f;
                 groundDeltaY = 0.0f;
 
-                if (!IsSet(GearBroken))
+                if ( not IsSet(GearBroken))
                 {
                     gearPos = 1.0F;
                     gearHandle = 1.0F;
@@ -904,7 +904,7 @@ void AirframeClass::Init(int idx)
 
 #if 0
             static count = 0;
-            //if(!count)
+            //if( not count)
             //MonoPrint("P*(Y+R): %f  P+R+Y/2: %f  Damp: %f  Alpha: %f\n  ",avgPdelta*(avgRdelta + avgYdelta),avgPdelta+avgRdelta+avgYdelta/2.0F,zp01,alpha);
 
             count++;
@@ -942,15 +942,15 @@ void AirframeClass::Init(int idx)
                             zpdamp = min(zpdamp, 0.2F);
                         }
 
-                        if (!IsSet(Simplified)  and 
-                            ((!platform->OnGround() and vcas < 180.0f) ||
+                        if ( not IsSet(Simplified)  and 
+                            (( not platform->OnGround() and vcas < 180.0f) ||
                              (fabs(pshape) > 0.85F  and fabs(rshape) > 0.85F) ||
                              (fabs(alpha)  > 18.0F) or // and  IsSet(LowSpdHorn) ) ||
                              (fabs(pshape) > 0.6F and fabs(rshape) > 0.6F and IsSet(LowSpdHorn))))
                         {
                             loadingFraction = weight / emptyWeight; //me123
 
-                            if ((!platform->OnGround() and vcas < 60.0f ||
+                            if (( not platform->OnGround() and vcas < 60.0f ||
                                  !platform->OnGround() and fabs(alpha)  > 18.0F  and 
                                  vcas < 60.0f +
                                  60 * (loadingFraction - 1.3F) +
@@ -1090,7 +1090,7 @@ void AirframeClass::Init(int idx)
                     (g_bRealisticAvionics and gearPos > 0.9F and cockpitFlightData.alpha >= 15.0F))
                 {
 
-                    if (!IsSet(HornSilenced))
+                    if ( not IsSet(HornSilenced))
                     {
                         SetFlag(LowSpdHorn);
                         //play tone
@@ -1588,7 +1588,7 @@ void AirframeClass::Init(int idx)
             FackClass* faultSys;
             faultSys = ((AircraftClass*)(SimDriver.GetPlayerEntity()))->mFaults;
 
-            if (!IsSet(Hook))
+            if ( not IsSet(Hook))
             {
                 hookHandle = 1.0F;
                 SetFlag(Hook);
@@ -1859,7 +1859,7 @@ void AirframeClass::Init(int idx)
                     }
 
                     //Flap HALF Setting
-                    if (!platform->OnGround())
+                    if ( not platform->OnGround())
                     {
                         if (flapPos == 20 and vcas < 250.0f)
                         {
@@ -1902,7 +1902,7 @@ void AirframeClass::Init(int idx)
 
 
                     //Flap HALF Setting
-                    if (!platform->OnGround())
+                    if ( not platform->OnGround())
                     {
                         if (flapPos == 20 and vcas < 240.0f)
                         {
@@ -1937,7 +1937,7 @@ void AirframeClass::Init(int idx)
             {
                 canopyState = false;
             }
-            else if (!IsSet(InAir))
+            else if ( not IsSet(InAir))
             {
                 canopyState = true;
             }
@@ -1959,7 +1959,7 @@ void AirframeClass::Init(int idx)
 
                 // If a config variable exists, use it to override.
                 // This way the feature can be used even before new ac.dats are available
-                if (!MTBF)
+                if ( not MTBF)
                     MTBF = auxaeroData->MeanTimeBetweenFailures;
 
                 if (MTBF)

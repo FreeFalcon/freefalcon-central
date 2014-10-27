@@ -172,7 +172,7 @@ com_API_handle com_TCP_open_listen(int buffersize, char *gamename, int tcpPort, 
     /* although this is only a listener socket */
     GlobalListHead = CAPIListAppend(GlobalListHead);
 
-    if (!GlobalListHead)
+    if ( not GlobalListHead)
     {
         leave_cs();
         return NULL;
@@ -285,7 +285,7 @@ com_API_handle com_TCP_open_connect(int buffersize, char *gamename, int tcpPort,
 
     GlobalListHead = CAPIListAppend(GlobalListHead);
 
-    if (!GlobalListHead)
+    if ( not GlobalListHead)
     {
         leave_cs();
         return NULL;
@@ -387,7 +387,7 @@ com_API_handle com_TCP_open_accept(unsigned long IPaddress, int tcpPort, int tim
 
     enter_cs();
 
-    if (!(listitem = CAPIListFindTCPListenPort(GlobalListHead, (unsigned short)tcpPort)))
+    if ( not (listitem = CAPIListFindTCPListenPort(GlobalListHead, (unsigned short)tcpPort)))
     {
         leave_cs();
         return NULL;
@@ -408,7 +408,7 @@ com_API_handle com_TCP_open_accept(unsigned long IPaddress, int tcpPort, int tim
     /* add connection to our local list */
     GlobalListHead = CAPIListAppend(GlobalListHead);
 
-    if (!GlobalListHead)
+    if ( not GlobalListHead)
     {
         leave_cs();
         return NULL;
@@ -545,7 +545,7 @@ static void AcceptConnection(LPVOID cvoid)
 
                 GlobalListHead = CAPIListAppend(GlobalListHead);
 
-                if (!GlobalListHead)
+                if ( not GlobalListHead)
                 {
                     leave_cs();
                     return;
@@ -775,14 +775,14 @@ void ComTCPClose(com_API_handle c)
     int sockerror;
     ComTCP *ctcp = (ComTCP *)c;
 
-    if (!c)
+    if ( not c)
     {
         return;
     }
 
     enter_cs();
 
-    if (!CAPIListFindHandle(GlobalListHead, c))
+    if ( not CAPIListFindHandle(GlobalListHead, c))
     {
         leave_cs();
 
@@ -882,7 +882,7 @@ void ComTCPClose(com_API_handle c)
     free(c);
 
     /* if No more connections then WSACleanup() */
-    if (!windows_sockets_connections)
+    if ( not windows_sockets_connections)
     {
         if (sockerror = CAPI_WSACleanup())
         {
@@ -927,7 +927,7 @@ int ComTCPSend(com_API_handle c, int msgsize, int oob, int type)
 
         enter_cs();
 
-        if (!CAPIListFindHandle(GlobalListHead, c))
+        if ( not CAPIListFindHandle(GlobalListHead, c))
         {
             leave_cs();
 
@@ -1035,7 +1035,7 @@ char *ComTCPSendBufferGet(com_API_handle c)
     {
         enter_cs();
 
-        if (!CAPIListFindHandle(GlobalListHead, c))
+        if ( not CAPIListFindHandle(GlobalListHead, c))
         {
             leave_cs();
 
@@ -1062,7 +1062,7 @@ char *ComTCPRecvBufferGet(com_API_handle c)
     {
         enter_cs();
 
-        if (!CAPIListFindHandle(GlobalListHead, c))
+        if ( not CAPIListFindHandle(GlobalListHead, c))
         {
             leave_cs();
 
@@ -1249,7 +1249,7 @@ int ComTCPGetMessage(com_API_handle c)
 
         enter_cs();
 
-        if (!CAPIListFindHandle(GlobalListHead, c))
+        if ( not CAPIListFindHandle(GlobalListHead, c))
         {
             leave_cs();
             return  -1 * WSAENOTSOCK; /* is it in  our list ? */
@@ -1495,7 +1495,7 @@ int CAPIListCount(CAPIList *list)
     CAPIList *curr;
     int i;
 
-    if (!list)
+    if ( not list)
     {
         return 0;
     }
@@ -1572,7 +1572,7 @@ CAPIList *CAPIListRemove(CAPIList * list, com_API_handle com)
 
     start = list;
 
-    if (!list)
+    if ( not list)
     {
         return NULL;
     }
@@ -1589,7 +1589,7 @@ CAPIList *CAPIListRemove(CAPIList * list, com_API_handle com)
         }
 
         /* not found, return list unmodified */
-        if (!curr)
+        if ( not curr)
         {
 #ifdef _DEBUG
             // if (list)
@@ -1600,7 +1600,7 @@ CAPIList *CAPIListRemove(CAPIList * list, com_API_handle com)
         }
 
         /* found at head */
-        if (!prev)
+        if ( not prev)
         {
             list = list -> next;
         }
@@ -1734,7 +1734,7 @@ void CAPIListDestroy(CAPIList * list, void (* destructor)())
     *prev,
     *curr;
 
-    if (!list)
+    if ( not list)
     {
         return;
     }
@@ -1779,7 +1779,7 @@ CAPIList *CAPIListAppendTail(CAPIList * list)
     memset(newnode, 0, sizeof(CAPIList));
 
     /* list was null */
-    if (!list)
+    if ( not list)
     {
         list = newnode;
     }
@@ -1824,12 +1824,12 @@ void ComGROUPClose(com_API_handle c)
 {
     CAPIList *curr;
 
-    if (!c)
+    if ( not c)
     {
         return;
     }
 
-    if (!CAPIListFindHandle(GlobalGroupListHead, c))         /* in our list of groups ?*/
+    if ( not CAPIListFindHandle(GlobalGroupListHead, c))         /* in our list of groups ?*/
     {
         return;
     }
@@ -1849,7 +1849,7 @@ void ComGROUPClose(com_API_handle c)
 
     while (curr)
     {
-        if (!F4IsBadReadPtrC(curr->com->name, 1)) // JB 010724 CTD
+        if ( not F4IsBadReadPtrC(curr->com->name, 1)) // JB 010724 CTD
             MonoPrint("  \"%s\"\n", curr->com->name);
 
         curr = curr->next;
@@ -1928,12 +1928,12 @@ com_API_handle CAPIIsInGroup(com_API_handle grouphandle, unsigned long ipAddress
     ComGROUP *group = (ComGROUP *)grouphandle;
     CAPIList * curr;
 
-    if (!grouphandle)
+    if ( not grouphandle)
     {
         return NULL;
     }
 
-    if (!CAPIListFindHandle(GlobalGroupListHead, grouphandle))
+    if ( not CAPIListFindHandle(GlobalGroupListHead, grouphandle))
     {
         return NULL; /* is it in  our list ? */
     }
@@ -2015,7 +2015,7 @@ int  ComAPIAddToGroup(com_API_handle grouphandle, com_API_handle memberhandle)
     ComGROUP *group = (ComGROUP *)grouphandle;
     CAPIList *curr = 0;
 
-    if (!grouphandle)
+    if ( not grouphandle)
     {
         return COMAPI_EMPTYGROUP;
     }
@@ -2030,7 +2030,7 @@ int  ComAPIAddToGroup(com_API_handle grouphandle, com_API_handle memberhandle)
     group->GroupHead = CAPIListRemove(group->GroupHead, memberhandle);
     group->GroupHead = CAPIListAppend(group->GroupHead);
 
-    if (! group->GroupHead)
+    if ( not  group->GroupHead)
     {
         leave_cs();
         return COMAPI_EMPTYGROUP;
@@ -2066,12 +2066,12 @@ int ComAPIDeleteFromGroup(com_API_handle grouphandle, com_API_handle memberhandl
     CAPIList
     *curr = 0;
 
-    if (!grouphandle)
+    if ( not grouphandle)
     {
         return 0;
     }
 
-    if (!memberhandle)
+    if ( not memberhandle)
     {
         return 0;
     }
@@ -2095,7 +2095,7 @@ int ComAPIDeleteFromGroup(com_API_handle grouphandle, com_API_handle memberhandl
 
     while (curr)
     {
-        if (!F4IsBadReadPtrC(curr->com->name, 1)) // JB 010724 CTD
+        if ( not F4IsBadReadPtrC(curr->com->name, 1)) // JB 010724 CTD
             MonoPrint("  \"%s\"\n", curr->com->name);
 
         curr = curr->next;
@@ -2151,7 +2151,7 @@ int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
         char *save_send_buffer;
         enter_cs(); // JPO
 
-        if (!CAPIListFindHandle(GlobalGroupListHead, c))
+        if ( not CAPIListFindHandle(GlobalGroupListHead, c))
         {
             leave_cs();
             return COMAPI_NOTAGROUP; /* is it in  our list ? */
@@ -2325,7 +2325,7 @@ int ComGROUPSendX(com_API_handle c, int msgsize, int oob, int type, com_API_hand
         char *save_send_buffer;
         enter_cs();
 
-        if (!CAPIListFindHandle(GlobalGroupListHead, c))
+        if ( not CAPIListFindHandle(GlobalGroupListHead, c))
         {
             leave_cs();
             return COMAPI_NOTAGROUP; /* is it in  our list ? */
@@ -2583,7 +2583,7 @@ com_API_handle  ComAPICreateGroup(char *name_in, int BufferSize, ...)
     MonoPrint("ComAPICreateGroup CAPIListAppend GlobalGroupListHead\n");
     GlobalGroupListHead = CAPIListAppend(GlobalGroupListHead);
 
-    if (!GlobalGroupListHead)
+    if ( not GlobalGroupListHead)
     {
         leave_cs();
 
@@ -2605,7 +2605,7 @@ com_API_handle  ComAPICreateGroup(char *name_in, int BufferSize, ...)
 
     while (curr)
     {
-        if (!F4IsBadReadPtrC(curr->com->name, 1)) // JB 010724 CTD
+        if ( not F4IsBadReadPtrC(curr->com->name, 1)) // JB 010724 CTD
             MonoPrint("  \"%s\"\n", curr->com->name);
 
         curr = curr->next;

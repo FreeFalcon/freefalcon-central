@@ -136,7 +136,7 @@ void ICPClass::ExecSTPTMode()
     static int frame = 0;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI Original code
         if (playerAC and playerAC->curWaypoint)  // and !playerAC->FCC->InTransistion()
@@ -221,7 +221,7 @@ void ICPClass::ExecSTPTMode()
 
             FormatTime(ETA, timeStr);
 
-            if (!previous or  wpflags & WPF_ALTERNATE)
+            if ( not previous or  wpflags & WPF_ALTERNATE)
             {
                 sprintf(mpLine3, "", timeStr);
             }
@@ -239,7 +239,7 @@ void ICPClass::ExecSTPTMode()
         else if (frame == 9)
         {
 
-            if (!previous or  wpflags & WPF_ALTERNATE)
+            if ( not previous or  wpflags & WPF_ALTERNATE)
             {
                 sprintf(mpLine3, "", timeStr);
             }
@@ -280,7 +280,7 @@ void ICPClass::ExecSTPTMode()
         FillDEDMatrix(0, 9, "STPT");
         AddSTPT(0, 15);
 
-        if (!MAN)
+        if ( not MAN)
             FillDEDMatrix(0, 21, "AUTO");
         else
             FillDEDMatrix(0, 21, "MAN");
@@ -344,7 +344,7 @@ void ICPClass::PNUpdateSTPTMode(int button, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
     {
         return;
     }

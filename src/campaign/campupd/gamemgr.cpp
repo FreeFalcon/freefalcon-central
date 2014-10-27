@@ -116,7 +116,7 @@ int GameManagerClass::CheckPlayerStatus(FalconEntity *entity)
     FalconSessionEntity *session;
     int player = 0;
 
-    if (!entity)
+    if ( not entity)
     {
         return 0;
     }
@@ -259,7 +259,7 @@ SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int ve
 {
     SimMoverClass* simEntity = NULL;
 
-    if ((!campEntity) or (!campEntity->GetComponents()))
+    if (( not campEntity) or ( not campEntity->GetComponents()))
     {
         return NULL;
     }
@@ -282,7 +282,7 @@ SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int ve
 
      SimMoverClass* simEntity = NULL;
 
-     if (!campEntity)
+     if ( not campEntity)
      return NULL;
 
      if (campEntity->GetComponents())
@@ -292,7 +292,7 @@ SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int ve
      // Hack Hack Hack Hack HACK - This is a HACK - RH
      count = 0;
 
-     while ((!simEntity) and (count < 100))
+     while (( not simEntity) and (count < 100))
      {
      simEntity = (SimMoverClass*) flit.GetFirst();
 
@@ -455,7 +455,7 @@ void GameManagerClass::ReleasePlayer(FalconSessionEntity *player)
         simEntity->UnSetFalcFlag(FEC_HOLDSHORT);
         MonoPrint("Releasing the player\n");
 
-        if (!PlayerOptions.InvulnerableOn())
+        if ( not PlayerOptions.InvulnerableOn())
         {
             MonoPrint("Releasing the hounds %08x - not invulnerable\n", simEntity);
             simEntity->UnSetFalcFlag(FEC_INVULNERABLE);

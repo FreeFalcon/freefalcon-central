@@ -98,7 +98,7 @@ int NavalTaskingManagerClass::Save(FILE *file)
 {
     int retval = 0;
 
-    if (!file)
+    if ( not file)
         return 0;
 
     retval += CampManagerClass::Save(file);

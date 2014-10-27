@@ -106,7 +106,7 @@ void StartCampaignGame(int local, int game_type)
         timestamp  = time.wMinute + (timestamp * 60);
         timestamp  = time.wSecond + (timestamp * 60);
 
-        if (!TheCampaign.GetCreationIter())
+        if ( not TheCampaign.GetCreationIter())
         {
             TheCampaign.SetCreatorIP(FalconLocalSessionId.creator_);
             TheCampaign.SetCreationTime(timestamp);
@@ -200,13 +200,13 @@ void CampaignJoinSuccess(void)
     {
         tactical_mission_loaded = TRUE;
 
-        if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+        if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
         {
             tactical_play_setup();
 
             gCommsMgr->SetCampaignFlag(game_TacticalEngagement);
 
-            if (!FalconLocalGame->IsLocal())
+            if ( not FalconLocalGame->IsLocal())
                 TheCampaign.StartRemoteCampaign(FalconLocalGame);
 
             gCommsMgr->LoadStats();
@@ -230,7 +230,7 @@ void CampaignJoinSuccess(void)
         {
             CopyinTempSettings();
 
-            if (!CampSelMode)
+            if ( not CampSelMode)
                 AdjustCampaignOptions();
             else
                 AdjustExperienceLevels();
@@ -247,7 +247,7 @@ void CampaignJoinSuccess(void)
                 TheCampaign.SaveFile[CAMP_NAME_SIZE - 1] = 0;
             }
 
-            if (!FalconLocalGame->IsLocal())
+            if ( not FalconLocalGame->IsLocal())
                 TheCampaign.StartRemoteCampaign(FalconLocalGame);
 
             // 2002-04-18 MN redo bullseye selection once more after we have the theaters reference point from the .tri file
@@ -377,7 +377,7 @@ void CampaignConnectionTimer(void)
         gCampJoinLastData = vuxRealTime;
 
         /* Don't repost messages - these are now sent reliably
-         if (!TheCampaign.IsPreLoaded())
+         if ( not TheCampaign.IsPreLoaded())
          PostMessage(FalconDisplay.appWin,FM_JOIN_CAMPAIGN,JOIN_REQUEST_ALL_DATA,gCampJoinGameType);
          else
          PostMessage(FalconDisplay.appWin,FM_JOIN_CAMPAIGN,JOIN_CAMP_DATA_ONLY,gCampJoinGameType);

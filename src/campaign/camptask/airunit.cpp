@@ -127,7 +127,7 @@ int AirUnitClass::GetUnitSpeed() const
 
 int AirUnitClass::IsHelicopter() const
 {
-    if (!(class_data->Flags & VEH_VTOL))
+    if ( not (class_data->Flags & VEH_VTOL))
     {
         return 0;
     }
@@ -157,7 +157,7 @@ int AirUnitClass::OnGround(void)
 
 int GetUnitScore(Unit u, MoveType mt)
 {
-    if (!u)
+    if ( not u)
         return 0;
     else if (u->IsPackage() or u->IsBrigade())
     {

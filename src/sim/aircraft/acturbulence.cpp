@@ -233,9 +233,9 @@ float AircraftTurbulence::GetTurbulence(float X, float Y, float Z, float Yaw, fl
         {
             AircraftTurbulence *at2 = (AircraftTurbulence *)at->GetSucc();
 
-            if (!at->locked)
+            if ( not at->locked)
             {
-                if (!at->turbRecordList.GetHead())
+                if ( not at->turbRecordList.GetHead())
                 {
                     delete at;
                 }
@@ -377,7 +377,7 @@ float TurbRecordNode::RetieveTurbulence(RetrieveTurbulanceParams &rtp)
 
 void AircraftTurbulence::Draw(class RenderOTW *renderer)   // debug useage
 {
-    if (!g_bDrawWakeTurbulence)
+    if ( not g_bDrawWakeTurbulence)
         return;
 
     lTurbulenceList.Lock();

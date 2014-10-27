@@ -55,7 +55,7 @@ ObjectLOD::ObjectLOD()
 
 ObjectLOD::~ObjectLOD()
 {
-    ShiAssert(!root);
+    ShiAssert( not root);
 }
 
 
@@ -135,7 +135,7 @@ void ObjectLOD::SetupTable(int file, char *basename)
     strcpy(filename, basename);
     strcat(filename, ".DXL");
 
-    if (!ObjectLodMap.Open(filename, FALSE, !g_bUseMappedFiles))
+    if ( not ObjectLodMap.Open(filename, FALSE, !g_bUseMappedFiles))
     {
         char message[256];
         sprintf(message, "Failed to open object LOD database %s", filename);
@@ -298,7 +298,7 @@ void ObjectLOD::Unload(void)
 
     // if nothing loaded or already on release, return
     // Have to modify this or nothing is going to be released since Root is always 0x0
-    if (!root or OnRelease) 
+    if ( not root or OnRelease) 
         return;
 
     // Setup the Flag about Release
@@ -424,7 +424,7 @@ bool ObjectLOD::UpdateLods(void)
             // while( LoadSize < MAX_LOD_LOAD_SIZE and LoadOut not_eq LoadIn){
             ObjectLOD &Lod = TheObjectLODs[CacheLoad[LoadOut++]];
 
-            if (!Lod.root and Lod.OnOrder) LoadSize += Lod.Load(), Sleep(20);
+            if ( not Lod.root and Lod.OnOrder) LoadSize += Lod.Load(), Sleep(20);
 
             // Load is done IN ANY CASE
             Lod.OnOrder = false;
@@ -441,7 +441,7 @@ bool ObjectLOD::UpdateLods(void)
         {
             ObjectLOD &Lod = TheObjectLODs[CacheRelease[ReleaseOut++]];
 
-            if (!F4IsBadReadPtr(Lod.root, sizeof(ObjectLOD)))
+            if ( not F4IsBadReadPtr(Lod.root, sizeof(ObjectLOD)))
             {
                 if (Lod.root and Lod.OnRelease)
                     Lod.Free();
@@ -473,7 +473,7 @@ void ObjectLOD::WaitUpdates(void)
     // Pause the Loader...
     TheLoader.SetPause(true);
 
-    while (!TheLoader.Paused());
+    while ( not TheLoader.Paused());
 
     // Not slow loading
     RatedLoad = false;

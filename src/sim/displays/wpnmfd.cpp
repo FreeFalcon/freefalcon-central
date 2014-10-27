@@ -44,13 +44,13 @@ void WpnMfdDrawable::DisplayInit(ImageBuffer* image)
 {
     DisplayExit();
 
-    if (!g_bGreyScaleMFD)
+    if ( not g_bGreyScaleMFD)
         g_bGreyMFD = false;
 
     privateDisplay = new RenderIR;
     ((RenderIR*)privateDisplay)->Setup(image, OTWDriver.GetViewpoint());
 
-    if ((g_bGreyMFD) and (!bNVGmode))
+    if ((g_bGreyMFD) and ( not bNVGmode))
         privateDisplay->SetColor(GetMfdColor(MFD_WHITE));
     else
         privateDisplay->SetColor(0xff00ff00);
@@ -62,7 +62,7 @@ VirtualDisplay* WpnMfdDrawable::GetDisplay(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC or !playerAC->Sms ||
+    if ( not playerAC or !playerAC->Sms ||
         !playerAC->Sms->curWeapon)
         return privateDisplay;
 
@@ -87,7 +87,7 @@ VirtualDisplay* WpnMfdDrawable::GetDisplay(void)
 
             if (mavDisplay)
             {
-                if (!mavDisplay->GetDisplay())
+                if ( not mavDisplay->GetDisplay())
                 {
                     if (privateDisplay)
                     {
@@ -129,13 +129,13 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     display = newDisplay;
     HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
 
-    if (!theRadar or !pFCC or !self or !Sms)
+    if ( not theRadar or !pFCC or !self or !Sms)
     {
         ShiWarning("Oh Oh shouldn't be here without a radar or FCC or player or SMS!");
         return;
     }
 
-    if (!g_bRealisticAvionics or !Sms->curWeapon or (Sms->curWeaponType not_eq wtAgm65 and Sms->curWeaponType not_eq wtAgm88))
+    if ( not g_bRealisticAvionics or !Sms->curWeapon or (Sms->curWeaponType not_eq wtAgm65 and Sms->curWeaponType not_eq wtAgm88))
     {
         OffMode(display);
         return;
@@ -159,12 +159,12 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
         mavDisplay = (MaverickDisplayClass*)((MissileClass*)Sms->GetCurrentWeapon())->display;
 
         // FRB - B&W display
-        if ((g_bGreyMFD) and (!bNVGmode))
+        if ((g_bGreyMFD) and ( not bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
             display->SetColor(0xff00ff00);
 
-        if (mavDisplay and (!((MissileClass*)Sms->GetCurrentWeapon())->Covered or playerAC->AutopilotType() == AircraftClass::CombatAP) and Sms->MavCoolTimer <= 0.0F)
+        if (mavDisplay and ( not ((MissileClass*)Sms->GetCurrentWeapon())->Covered or playerAC->AutopilotType() == AircraftClass::CombatAP) and Sms->MavCoolTimer <= 0.0F)
         {
             mavDisplay->SetIntensity(GetIntensity());
             mavDisplay->viewPoint = viewPoint;
@@ -184,7 +184,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     if (Sms->curWeaponType == wtAgm65 or (Sms->curWeaponType == wtAgm88 and harmPod->GetSubMode() not_eq HarmTargetingPod::HarmModeChooser))
     {
         // FRB - B&W display
-        if ((g_bGreyMFD) and (!bNVGmode))
+        if ((g_bGreyMFD) and ( not bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
             display->SetColor(0xff00ff00);
@@ -197,7 +197,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     if (Sms->curWeaponType == wtAgm65)
     {
         // FRB - B&W display
-        if ((g_bGreyMFD) and (!bNVGmode))
+        if ((g_bGreyMFD) and ( not bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
             display->SetColor(0xff00ff00);
@@ -213,7 +213,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
     {
         // FRB - B&W display
-        if ((g_bGreyMFD) and (!bNVGmode))
+        if ((g_bGreyMFD) and ( not bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
             display->SetColor(0xff00ff00);
@@ -247,7 +247,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
 
 void WpnMfdDrawable::DrawDLZ(VirtualDisplay* display)
 {
-    if (!pFCC)
+    if ( not pFCC)
     {
         return;
     }
@@ -306,7 +306,7 @@ void WpnMfdDrawable::PushButton(int whichButton, int whichMFD)
         switch (whichButton)
         {
             case 0:
-                if (!Sms->Powered)
+                if ( not Sms->Powered)
                 {
                     Sms->Powered = TRUE;
                 }
@@ -330,7 +330,7 @@ void WpnMfdDrawable::PushButton(int whichButton, int whichMFD)
                 break;
 
             case 19:
-                if ((g_bGreyMFD) or (!g_bGreyScaleMFD))
+                if ((g_bGreyMFD) or ( not g_bGreyScaleMFD))
                     g_bGreyMFD = false;
                 else
                     g_bGreyMFD = true;
@@ -528,7 +528,7 @@ void WpnMfdDrawable::OSBLabels(VirtualDisplay* display)
 {
     char tempstr[10] = "";
 
-    if (!Sms->Powered)
+    if ( not Sms->Powered)
         LabelButton(0, "STBY");
 
     else
@@ -704,7 +704,7 @@ void WpnMfdDrawable::HARMWpnMode()
                 LabelButton(19, "POS");
                 BottomRow();
 
-                if (!(playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+                if ( not (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
                 {
                     DWORD tempColor = display->Color();
                     display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
@@ -725,7 +725,7 @@ void WpnMfdDrawable::HARMWpnMode()
                 harmPod->POSDisplay(display);
                 BottomRow();
 
-                if (!(playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+                if ( not (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
                 {
                     DWORD tempColor = display->Color();
                     display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
@@ -768,7 +768,7 @@ void WpnMfdDrawable::HARMWpnMode()
                 harmPod->HASDisplay(display);
                 BottomRow();
 
-                if (!(playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+                if ( not (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
                 {
                     DWORD tempColor = display->Color();
                     display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
@@ -812,7 +812,7 @@ void WpnMfdDrawable::HARMWpnMode()
                 harmPod->HandoffDisplay(display);
                 BottomRow();
 
-                if (!(playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+                if ( not (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
                 {
                     DWORD tempColor = display->Color();
                     display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
@@ -842,7 +842,7 @@ void WpnMfdDrawable::HARMWpnMode()
 
                 BottomRow();
 
-                if (!(playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+                if ( not (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
                 {
                     DWORD tempColor = display->Color();
                     display->SetColor(GetMfdColor(MFD_WHITY_GRAY));

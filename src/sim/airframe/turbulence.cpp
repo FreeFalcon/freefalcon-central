@@ -44,7 +44,7 @@ float AirframeClass::Turbulence(float turb)
     float alt = 0.0f;
     float roll = 0.0f;
 
-    if (!TheHud)
+    if ( not TheHud)
         return 0.0f;
     else
         alt = TheHud->hat;

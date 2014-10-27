@@ -93,12 +93,12 @@ void AircraftClass::DoElectrics()
         }
     }
 
-    if (!isDigital)
+    if ( not isDigital)
     {
         if (elecfault)
         {
             //MI
-            if (!g_bRealisticAvionics)
+            if ( not g_bRealisticAvionics)
                 mFaults->SetFault(elec_fault);
             else
                 mFaults->SetCaution(elec_fault);

@@ -115,7 +115,7 @@ void UpdateTeamName(long team)
     TREELIST *item;
     C_Text *txt;
 
-    if (!gATOAll or team >= NUM_TEAMS or !TeamInfo[team])
+    if ( not gATOAll or team >= NUM_TEAMS or !TeamInfo[team])
         return;
 
     item = gATOAll->Find(team | 0x20000000);
@@ -384,7 +384,7 @@ C_ATO_Flight *BuildATOFlightInfo(Flight fl)
             {
                 lbox->AddItem(i, C_TYPE_ITEM, MissStr[i]);
 
-                if (!added or i == mission)
+                if ( not added or i == mission)
                 {
                     lbox->SetValue(i);
                     added = 1;
@@ -510,7 +510,7 @@ void MakeIndividualATO(VU_ID flightID)
 
     ShiAssert(gATOPackage);
 
-    if (!gATOPackage)
+    if ( not gATOPackage)
         return;
 
     Leave = UI_Enter(gATOPackage->GetParent());
@@ -518,7 +518,7 @@ void MakeIndividualATO(VU_ID flightID)
 
     flt = (Flight)vuDatabase->Find(flightID);
 
-    if (!flt)
+    if ( not flt)
     {
         UI_Leave(Leave);
         return;
@@ -526,7 +526,7 @@ void MakeIndividualATO(VU_ID flightID)
 
     pkg = (Package)flt->GetUnitParent();
 
-    if (!pkg)
+    if ( not pkg)
     {
         UI_Leave(Leave);
         return;
@@ -607,15 +607,15 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
     short AtoMiss;
     C_Text *txt;
 
-    if (!FltPkg)
+    if ( not FltPkg)
         return(NULL);
 
     ShiAssert(gATOAll);
 
-    if (!gATOAll)
+    if ( not gATOAll)
         return NULL;
 
-    if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+    if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
     {
         if (FltPkg->GetTeam() not_eq FalconLocalSession->GetTeam())
             return(NULL);
@@ -623,7 +623,7 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
 
     MainFlt = (Flight)FltPkg->GetFirstUnitElement();
 
-    if (!MainFlt)
+    if ( not MainFlt)
         return(NULL);
 
     mistype = MainFlt->GetUnitMission();
@@ -635,7 +635,7 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
     {
         team = gATOAll->Find(FltPkg->GetTeam() | 0x20000000);
 
-        if (!team)
+        if ( not team)
         {
             txt = new C_Text;
             txt->Setup(FltPkg->GetTeam() | 0x20000000, 0);
@@ -658,7 +658,7 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
 
     missiontype = gATOAll->Find(AtoMiss | 0x40000000 | (FltPkg->GetTeam() << 16));
 
-    if (!missiontype)
+    if ( not missiontype)
     {
         txt = new C_Text;
         txt->Setup(mistype | 0x40000000, 0);
@@ -701,10 +701,10 @@ C_ATO_Flight *AddFlighttoATO(Flight flt)
 
     ShiAssert(gATOAll);
 
-    if (!gATOAll)
+    if ( not gATOAll)
         return NULL;
 
-    if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+    if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
     {
         if (flt->GetTeam() not_eq FalconLocalSession->GetTeam())
             return(NULL);
@@ -713,12 +713,12 @@ C_ATO_Flight *AddFlighttoATO(Flight flt)
     if (flt->GetUnitMission() == AMIS_ALERT or flt->GetUnitMission() == AMIS_ABORT)
         return(NULL);
 
-    if (!flt->GetUnitParent())
+    if ( not flt->GetUnitParent())
         return(NULL);
 
     FltPkg = (Package)flt->GetUnitParent();
 
-    if (!FltPkg)
+    if ( not FltPkg)
         return(NULL);
 
     package = gATOAll->Find(FltPkg->GetCampID());
@@ -764,10 +764,10 @@ C_ATO_Flight *AddtoATO(Flight flt)
 
     ShiAssert(gATOAll);
 
-    if (!gATOAll)
+    if ( not gATOAll)
         return;
 
-    if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+    if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
     {
         if (flt->GetTeam() not_eq FalconLocalSession->GetTeam())
             return(NULL);
@@ -776,13 +776,13 @@ C_ATO_Flight *AddtoATO(Flight flt)
     if (flt->GetUnitMission() == AMIS_ALERT or flt->GetUnitMission() == AMIS_ABORT)
         return(NULL);
 
-    if (!flt->GetUnitParent())
+    if ( not flt->GetUnitParent())
         return(NULL);
 
     FltPkg = (Package)flt->GetUnitParent();
     MainFlt = (Flight)FltPkg->GetFirstUnitElement();
 
-    if (!MainFlt)
+    if ( not MainFlt)
         return(NULL);
 
     mistype = MainFlt->GetUnitMission();
@@ -802,7 +802,7 @@ C_ATO_Flight *AddtoATO(Flight flt)
         {
             team = gATOAll->Find(flt->GetTeam() | 0x20000000);
 
-            if (!team)
+            if ( not team)
             {
                 txt = new C_Text;
                 txt->Setup(flt->GetTeam() | 0x20000000, 0);
@@ -818,13 +818,13 @@ C_ATO_Flight *AddtoATO(Flight flt)
         mistype = MainFlt->GetUnitMission();
         package = gATOAll->Find(flt->GetUnitParent()->GetCampID() | (mistype << 16));
 
-        if (!package)
+        if ( not package)
         {
             AtoMiss = MissionToATOMiss(mistype);
 
             missiontype = gATOAll->Find(AtoMiss | 0x40000000 | (flt->GetTeam() << 16));
 
-            if (!missiontype)
+            if ( not missiontype)
             {
                 txt = new C_Text;
                 txt->Setup(mistype | 0x40000000, 0);
@@ -874,16 +874,16 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
 
     ShiAssert(gATOAll);
 
-    if (!gATOAll)
+    if ( not gATOAll)
         return;
 
-    if (!FltPkg)
+    if ( not FltPkg)
         return(NULL);
 
-    if (!FltPkg->Final())
+    if ( not FltPkg->Final())
         return(NULL);
 
-    if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+    if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
     {
         if (FltPkg->GetTeam() not_eq FalconLocalSession->GetTeam())
             return(NULL);
@@ -891,7 +891,7 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
 
     MainFlt = (Flight)FltPkg->GetFirstUnitElement();
 
-    if (!MainFlt)
+    if ( not MainFlt)
         return(NULL);
 
     mistype = MainFlt->GetUnitMission();
@@ -903,7 +903,7 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
     {
         team = gATOAll->Find(FltPkg->GetTeam() | 0x20000000);
 
-        if (!team)
+        if ( not team)
         {
             txt = new C_Text;
             txt->Setup(FltPkg->GetTeam() | 0x20000000, 0);
@@ -920,13 +920,13 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
     mistype = MainFlt->GetUnitMission();
     package = gATOAll->Find(FltPkg->GetCampID() | (mistype << 16));
 
-    if (!package)
+    if ( not package)
     {
         AtoMiss = MissionToATOMiss(mistype);
 
         missiontype = gATOAll->Find(AtoMiss | 0x40000000 | (FltPkg->GetTeam() << 16));
 
-        if (!missiontype)
+        if ( not missiontype)
         {
             txt = new C_Text;
             txt->Setup(mistype | 0x40000000, 0);

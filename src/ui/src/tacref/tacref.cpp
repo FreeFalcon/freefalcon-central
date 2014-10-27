@@ -55,7 +55,7 @@ BOOL TacticalReference::Load(char *filename)
 
     fp = UI_OPEN(filename, "rb");
 
-    if (!fp)
+    if ( not fp)
         return(FALSE);
 
     UI_SEEK(fp, 0l, SEEK_END);
@@ -150,7 +150,7 @@ Entity *TacticalReference::GetFirst(long *offset)
 {
     Header *hdr;
 
-    if (!Data_)
+    if ( not Data_)
         return(NULL);
 
     *offset = 0;
@@ -162,7 +162,7 @@ Entity *TacticalReference::GetNext(long *offset)
 {
     Header *hdr;
 
-    if (!Data_)
+    if ( not Data_)
         return(NULL);
 
     hdr = (Header*)(Data_ + *offset);
@@ -194,7 +194,7 @@ Entity *TacticalReference::GetNext(long *offset)
 
 Category *Statistics::GetFirst(long *offset)
 {
-    if (!size)
+    if ( not size)
         return(NULL);
 
     *offset = 0;
@@ -237,7 +237,7 @@ CatText *Category::GetFirst(long *offset)
 
     hdr = (Header *)Data;
 
-    if (!hdr->size)
+    if ( not hdr->size)
         return(NULL);
 
     *offset = 0;
@@ -279,7 +279,7 @@ CatText *Category::GetNext(long *offset)
 
 TextString *Description::GetFirst(long *offset)
 {
-    if (!size)
+    if ( not size)
         return(NULL);
 
     *offset = 0;
@@ -318,7 +318,7 @@ TextString *Description::GetNext(long *offset)
 
 Radar *RWR::GetFirst(long *offset)
 {
-    if (!size)
+    if ( not size)
         return(NULL);
 
     *offset = 0;

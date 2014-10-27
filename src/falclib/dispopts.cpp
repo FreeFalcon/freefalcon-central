@@ -54,7 +54,7 @@ int DisplayOptionsClass::LoadOptions(char *filename)
     sprintf(path, "%s\\config\\%s.dsp", FalconDataDirectory, filename);
     fp = fopen(path, "rb");
 
-    if (!fp)
+    if ( not fp)
     {
         MonoPrint("Couldn't open display options\n");
         Initialize();

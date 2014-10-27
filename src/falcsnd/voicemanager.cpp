@@ -162,7 +162,7 @@ void VoiceManager::CallVoiceThread(void)
     strcpy(VMWakeEventName, "VoiceWakeupCall");
     VMWakeEventHandle = CreateEvent(NULL, FALSE, FALSE, VMWakeEventName);
 
-    if (!VMWakeEventHandle)
+    if ( not VMWakeEventHandle)
     {
         return;
     }
@@ -190,10 +190,10 @@ int FilterMessage(CONVERSATION *node)
     //VM->radiofilter = rcfProx;
 #endif
 
-    if (!VM)
+    if ( not VM)
         return FALSE;
 
-    if (!node or node->message == -1)
+    if ( not node or node->message == -1)
         return FALSE;
 
     if (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING and SimDriver.RunningCampaign())
@@ -279,7 +279,7 @@ int FilterMessage(CONVERSATION *node)
     //MI added check to make it only work for the radio we've selected
     //else if(VM->Radio() == 1)
     //{
-    //if(!retval)
+    //if( not retval)
     //{
     switch (VM->radiofilter[1])
     {
@@ -365,7 +365,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
     VU_ID playerID; // sfr: player ID
     VM_CONVLIST *pVC, *best, *pVCnext;
 
-    while (!killThread)
+    while ( not killThread)
     {
 
         curChannel = 0;
@@ -413,7 +413,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                 // filter message and check if its best
                 else if (FilterMessage(pVC->node))
                 {
-                    if (!best)
+                    if ( not best)
                     {
                         // no best yet, its the best
                         best = pVC;
@@ -736,7 +736,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
         }
 
         // sfr: organized logic here
-        if (!sleep and waketime)
+        if ( not sleep and waketime)
         {
             sleeptime = waketime - vuxGameTime;//should be divided by time compression
         }
@@ -1066,7 +1066,7 @@ void VoiceManager::VMAddBuffToQueue(int channel, int buffer)
 
 VM_CONVLIST *VoiceManager::VMConvListInsert(VM_CONVLIST *list, VM_CONVLIST *newnode, int insType)
 {
-    if (!newnode)
+    if ( not newnode)
         return list;
 
     VM_CONVLIST *prev = NULL;
@@ -1083,7 +1083,7 @@ VM_CONVLIST *VoiceManager::VMConvListInsert(VM_CONVLIST *list, VM_CONVLIST *newn
                 cur = cur->next;
             }
 
-            if (!prev)
+            if ( not prev)
             {
                 newnode->next = list;
 
@@ -1118,7 +1118,7 @@ VM_CONVLIST *VoiceManager::VMConvListInsert(VM_CONVLIST *list, VM_CONVLIST *newn
                 cur = cur->next;
             }
 
-            if (!prev)
+            if ( not prev)
             {
                 newnode->next = list;
 
@@ -1230,7 +1230,7 @@ void VoiceManager::VMListRemoveVCQ(VM_CONVLIST **list, VM_CONVLIST *node)
 
     //F4EnterCriticalSection( vmCriticalSection );
 
-    if (!*list)
+    if ( not *list)
         return;
 
     if (*list == node)
@@ -1271,7 +1271,7 @@ VM_BUFFLIST *VoiceManager::VMListPopVMBQ(VM_BUFFLIST *list)
 {
     VM_BUFFLIST *next;
 
-    if (!list)
+    if ( not list)
         return NULL;
 
     next = list->next;
@@ -1295,7 +1295,7 @@ VM_BUFFLIST *VoiceManager::VMListRemoveVMBQ(VM_BUFFLIST *list)
     VMBuffQueue *vmbqNode;
     VM_BUFFLIST *curr, *next;
 
-    if (!list)
+    if ( not list)
         return NULL;
 
     curr = list;
@@ -1338,7 +1338,7 @@ VM_BUFFLIST *VoiceManager::VMListSearchVMBQ(VM_BUFFLIST *list, int channelNum, i
 {
     VM_BUFFLIST *l;
 
-    if (!list)
+    if ( not list)
         return NULL;
 
     for (l = list; list; list = list->next)
@@ -1346,11 +1346,11 @@ VM_BUFFLIST *VoiceManager::VMListSearchVMBQ(VM_BUFFLIST *list, int channelNum, i
         switch (searchType)
         {
             case SEARCH_AND_DESTROY:
-                if (!ListCheckChannelNum(list->node, channelNum))
+                if ( not ListCheckChannelNum(list->node, channelNum))
                 {
                     list = VMListRemoveVMBQ(list);
 
-                    if (!list)
+                    if ( not list)
                         return NULL;
                 }
 
@@ -1365,7 +1365,7 @@ int VoiceManager::ListCheckChannelNum(void *node_a, int channelNum)
 {
     VMBuffQueue *channel_a;
 
-    if (!node_a)
+    if ( not node_a)
         return NULL;
 
     channel_a = (VMBuffQueue *) node_a;
@@ -1443,7 +1443,7 @@ CONVERSATION *list_a, *list_b;
   list_a = ( CONVERSATION * )parent_a->node;
   list_b = ( CONVERSATION * )parent_b->node;
 
- if ((!list_a)||(!list_b))
+ if (( not list_a)||( not list_b))
  return NULL;
 
    if( list_a->priority < list_b->priority )
@@ -1459,7 +1459,7 @@ CONVERSATION *list_a, *list_b;
   list_a = ( CONVERSATION * )parent_a->node;
   list_b = ( CONVERSATION * )parent_b->node;
 
- if ((!list_a)||(!list_b))
+ if (( not list_a)||( not list_b))
  return NULL;
 
    if( (list_a->playTime) < (list_b->playTime ) )
@@ -1503,7 +1503,7 @@ VM_CONVLIST *VoiceManager::VMListDestroyVCQ(VM_CONVLIST *list)
     CONVERSATION *vmVCNode;
     VM_CONVLIST *curr, *next;
 
-    if (!list)
+    if ( not list)
         return NULL;
 
     // JPO - go FORWARDS through the list stupid!
@@ -1511,7 +1511,7 @@ VM_CONVLIST *VoiceManager::VMListDestroyVCQ(VM_CONVLIST *list)
     {
         next = curr->next;
 
-        if (!curr->node)
+        if ( not curr->node)
             break;
 
         vmVCNode = curr->node;
@@ -1530,7 +1530,7 @@ VM_BUFFLIST *VoiceManager::VMListDestroyVBQ(VM_BUFFLIST *list)
     VMBuffQueue *vmbqNode;
     VM_BUFFLIST *curr, *next;
 
-    if (!list)
+    if ( not list)
         return NULL;
 
     // JPO - go FORWARDS through the list stupid!
@@ -1538,7 +1538,7 @@ VM_BUFFLIST *VoiceManager::VMListDestroyVBQ(VM_BUFFLIST *list)
     {
         next = curr->next;
 
-        if (!curr->node)
+        if ( not curr->node)
             break;
 
         vmbqNode = curr->node;
@@ -1612,7 +1612,7 @@ void VoiceManager::ChangeRadioFreq(int filter, int radio)
 
     for (int i = 0; i < NUM_VOICE_CHANNELS; i++)
     {
-        if (!FilterMessage(&VM->decompQueue[i]))
+        if ( not FilterMessage(&VM->decompQueue[i]))
         {
             delete [] VM->decompQueue[i].conversations;
             VM->decompQueue[i].conversations = NULL;
@@ -1640,7 +1640,7 @@ int VoiceManager::ResumeChannel(int channel)
 {
     if (gSoundDriver)
     {
-        if (!gSoundDriver->IsStreamPlaying(VM->falconVoices[channel].FalcVoiceHandle))
+        if ( not gSoundDriver->IsStreamPlaying(VM->falconVoices[channel].FalcVoiceHandle))
         {
             gSoundDriver->ResumeStream(VM->falconVoices[channel].FalcVoiceHandle);
         }
@@ -1728,7 +1728,7 @@ void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from, int c
 
     for (i = 0; i < streamBuffer->dataInWaveBuffer; i++)
     {
-        if (!(i % 50))
+        if ( not (i % 50))
             level = minLevel - rand() % 4 - rand() % 4;
 
         if (*pos > level)

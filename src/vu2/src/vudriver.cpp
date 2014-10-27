@@ -372,7 +372,7 @@ void VuMaster::Exec(VU_TIME timestamp)
     ResetToSendIfTime();
 
     // exec model, if fails, exec DR
-    if (!ExecModel(timestamp))
+    if ( not ExecModel(timestamp))
     {
         ExecDR(timestamp);
     }

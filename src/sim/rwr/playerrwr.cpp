@@ -135,7 +135,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
             if (SimLibElapsedTime > localData->sensorLoopCount[RWR] + 0.95F * curSimObj->RdrCycleTime() * SEC_TO_MSEC)
             {
                 // Can we hear it?
-                if (!IsFiltered(curObj->BaseData()))
+                if ( not IsFiltered(curObj->BaseData()))
                 {
                     if (/*curObj->localData->range <= 5 * NM_TO_FT and curObj->localData->ataFrom < 60.0f * DTR  and //me123 addet range check*/
                         CanSeeObject(curObj) and BeingPainted(curObj) and CanDetectObject(curObj))
@@ -215,7 +215,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
 
         nextEmitter = static_cast<CampBaseClass*>(emitters.GetNext());
 
-        if (!nextEmitter)
+        if ( not nextEmitter)
             break;
 
         if (F4IsBadReadPtr(nextEmitter, sizeof(CampBaseClass)))
@@ -282,7 +282,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
             }
 
             // 2002-03-21 REMOVED BY S.G. In accordance with RIK, this code doesn't belong here
-            //if(!curEmitter->IsSim()  and 
+            //if( not curEmitter->IsSim()  and 
             // curEmitter->GetRadarMode()> FEC_RADAR_SEARCH_1  and 
             // curEmitter->GetRadarMode() not_eq FEC_RADAR_SEARCH_100)
             // ((BattalionClass*)(SimBaseClass*)curEmitter)->SetRadarMode(FEC_RADAR_SEARCH_1);
@@ -295,7 +295,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
 
         // 2001-03-19 ADDED BY S.G. SO THE PLAYER IS DETECTED BY GROUND RADAR AS WELL...
         // Don't even start testing if we have been spotted in the last ReconLossTime[GetMovementType()]/8 and we're not on a SEAD missiom
-        if (!spotted)
+        if ( not spotted)
         {
             if (roea[curEmitter->GetTeam()] == ROE_ALLOWED)
             {
@@ -305,7 +305,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
                 // Stop testing once we got spotted
                 if (curEmitter->IsObjective() and curEmitter->CanDetect(platformCampObj) and ((ObjectiveClass *)curEmitter)->IsGCI())
                 {
-                    if (!platformCampObj->GetSpotted(enemy))
+                    if ( not platformCampObj->GetSpotted(enemy))
                         RequestIntercept((Flight)platform->GetCampaignObject(), enemy);
 
                     platformCampObj->SetSpotted(enemy, TheCampaign.CurrentTime, ((ObjectiveClass *)curEmitter)->HasNCTR() not_eq 0); // 2002-02-11 MODIFIED BY S.G. Ground objective radar can identify me
@@ -331,7 +331,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
             {
                 // 2000-09-03 S.G. SO ARH DON'T GET A LAUNCH WARNING
                 // JB 010118 added check of detectionList[i].entity
-                if (detectionList[i].entity and (!((MissileClass *)detectionList[i].entity)->IsMissile() or ((MissileClass *)detectionList[i].entity)->GetSeekerType() not_eq SensorClass::Radar))
+                if (detectionList[i].entity and ( not ((MissileClass *)detectionList[i].entity)->IsMissile() or ((MissileClass *)detectionList[i].entity)->GetSeekerType() not_eq SensorClass::Radar))
                 {
                     // END OF ADDED SECTION (PLUS INDENTATION OF NEXT LINE)
                     missileActivity = TRUE;
@@ -368,7 +368,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
     for (i = 0, count = 0; i < numContacts and count < 40; i++)
     {
         // let see what should be drawn
-        if (!IsFiltered(detectionList[i].entity))
+        if ( not IsFiltered(detectionList[i].entity))
         {
             cockpitFlightData.RWRsymbol[count] = detectionList[i].radarData->RWRsymbol; // Which symbol shows up on the RWR
             cockpitFlightData.bearing[count] = detectionList[i].bearing;
@@ -434,7 +434,7 @@ void PlayerRwrClass::Display(VirtualDisplay *activeDisplay)
 {
     int i, last, drawn;
 
-    if (!g_bRWR) // JB 010802
+    if ( not g_bRWR) // JB 010802
         return;
 
     // Make the sensor/MFD system happy
@@ -508,7 +508,7 @@ void PlayerRwrClass::Display(VirtualDisplay *activeDisplay)
 
 void PlayerRwrClass::DrawContact(DetectListElement *record)
 {
-    if (!g_bRWR) // JB 010802
+    if ( not g_bRWR) // JB 010802
         return;
 
     RadarDataSet* radarfileData = &radarDatFileTable[record->radarData->RDRDataInd];
@@ -655,7 +655,7 @@ void PlayerRwrClass::DrawStatusSymbol(int symbol)
 // JB 010718
 void PlayerRwrClass::DoAudio(void)   // 2002-02-20 S.G. Just flagging it as not currently being used so there are no confusion
 {
-    if (!g_bRWR) // JB 010802
+    if ( not g_bRWR) // JB 010802
         return;
 
     // TODO:  This should really be radar cycle time.  Can I get that reliably here?
@@ -671,7 +671,7 @@ void PlayerRwrClass::DoAudio(void)   // 2002-02-20 S.G. Just flagging it as not 
 
 
 
-        if (detectionList[i].playIt or (!detectionList[i].cantPlay and (!detectionList[i].entity->IsSim() or !detectionList[i].entity->IsDead())))
+        if (detectionList[i].playIt or ( not detectionList[i].cantPlay and ( not detectionList[i].entity->IsSim() or !detectionList[i].entity->IsDead())))
         {
             if ((detectionList[i].missileActivity) ||
                 (detectionList[i].playIt) ||
@@ -687,7 +687,7 @@ void PlayerRwrClass::DoAudio(void)   // 2002-02-20 S.G. Just flagging it as not 
                 detectionList[i].newDetection = FALSE;
                 detectionList[i].playIt = FALSE; // JB 010728
 
-                if (!detectionList[i].missileActivity)
+                if ( not detectionList[i].missileActivity)
                     detectionList[i].lastPlayed = SimLibElapsedTime;
             }
         }
@@ -705,7 +705,7 @@ void PlayerRwrClass::DoAudio(void)   // 2002-02-20 S.G. Just flagging it as not 
 
 void PlayerRwrClass::DoAudio(DetectListElement *record)
 {
-    if (!g_bRWR) // JB 010802
+    if ( not g_bRWR) // JB 010802
         return;
 
     RadarDataSet* radarfileData = &radarDatFileTable[record->radarData->RDRDataInd];
@@ -718,7 +718,7 @@ void PlayerRwrClass::DoAudio(DetectListElement *record)
         SEARCH_PERIOD = ((SimBaseClass*)record->entity)->RdrCycleTime() * SEC_TO_MSEC;//me123
     }
 
-    if (!SEARCH_PERIOD) SEARCH_PERIOD = 6 * SEC_TO_MSEC;
+    if ( not SEARCH_PERIOD) SEARCH_PERIOD = 6 * SEC_TO_MSEC;
 
     int mode;
 
@@ -765,7 +765,7 @@ void PlayerRwrClass::DoAudio(DetectListElement *record)
 
     // JB 010727 RP5 RWR
     // 2001-02-15 ADDED BY S.G. SO Dead stuff don't ping us... If where not a sim object or if a sim, if it's not dead, go on...
-    if (record->playIt or (!record->cantPlay and (!record->entity->IsSim() or !record->entity->IsDead())))
+    if (record->playIt or ( not record->cantPlay and ( not record->entity->IsSim() or !record->entity->IsDead())))
     {
         // Play all launches and the selected emitter
         if (//(record->missileActivity) ||
@@ -824,14 +824,14 @@ void PlayerRwrClass::DoAudio(DetectListElement *record)
                 // no data file...
                 assert(sound);
 
-                if (!sound) sound = record->radarData->RWRsound;
+                if ( not sound) sound = record->radarData->RWRsound;
             }
             else if (mode == FEC_RADAR_GUIDE)
                 if (radarfileData->Rwrsoundguide) sound = radarfileData->Rwrsoundguide;
 
             if (mode not_eq FEC_RADAR_OFF or record->isLocked)
             {
-                if (!sound)  sound = record->radarData->RWRsound;
+                if ( not sound)  sound = record->radarData->RWRsound;
 
                 ShiAssert(record->entity);
                 ShiAssert(record->radarData->RWRsound > 0);
@@ -845,7 +845,7 @@ void PlayerRwrClass::DoAudio(DetectListElement *record)
 
                 // JB 010727 RP5 RWR
                 // 2001-02-27 ADDED BY S.G. record->lastPlayed AS TWO FUNCTION NOW. ONE FOR THE PING LIKE BEFORE AND A TIMER FOR THE LAUNCH LIGHT WHEN 'record->missileActivity' IS SET
-                if (!record->missileActivity)
+                if ( not record->missileActivity)
                     // END OF ADDED SECTION
                     record->lastPlayed = SimLibElapsedTime;
             }
@@ -1097,7 +1097,7 @@ int PlayerRwrClass::IsFiltered(FalconEntity *entity)
 
         if (radarData)
         {
-            if (!ShowUnknowns()  and 
+            if ( not ShowUnknowns()  and 
                 (radarData->RWRsymbol == RWRSYM_UNKNOWN ||
                  radarData->RWRsymbol == RWRSYM_UNK1 ||
                  radarData->RWRsymbol == RWRSYM_UNK2 ||
@@ -1106,12 +1106,12 @@ int PlayerRwrClass::IsFiltered(FalconEntity *entity)
                 return TRUE;
             }
 
-            if (!ShowSearch() and (radarData->RWRsymbol == RWRSYM_SEARCH))
+            if ( not ShowSearch() and (radarData->RWRsymbol == RWRSYM_SEARCH))
             {
                 return TRUE;
             }
 
-            if (!ShowNaval() and (radarData->RWRsymbol == RWRSYM_NAVAL))
+            if ( not ShowNaval() and (radarData->RWRsymbol == RWRSYM_NAVAL))
             {
                 return TRUE;
             }
@@ -1128,14 +1128,14 @@ int PlayerRwrClass::IsFiltered(FalconEntity *entity)
 ///////////////////////////////////////////////////////////////////////////////
 void PlayerRwrClass::CheckEWS(void)
 {
-    if (!g_bRWR) // JB 010802
+    if ( not g_bRWR) // JB 010802
         return;
 
     if (F4IsBadReadPtr(SimDriver.GetPlayerAircraft(), sizeof(AircraftClass))) // JB 010408 CTD
         return;
 
     //Check for Power and Failure
-    if (!SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::UFCPower) ||
+    if ( not SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::UFCPower) ||
         SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::ufc_fault) ||
         SimDriver.GetPlayerAircraft()->IsExploding())
         return;
@@ -1158,7 +1158,7 @@ void PlayerRwrClass::CheckEWS(void)
         }
     }
 
-    if (!LaunchIndication())
+    if ( not LaunchIndication())
         LaunchDetected = FALSE;
 
     if (InEWSLoop and !SimDriver.GetPlayerAircraft()->IsExploding())
@@ -1221,7 +1221,7 @@ void PlayerRwrClass::CheckEWS(void)
             {
                 if (SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::EWSJammerPower))
                 {
-                    if (!SimDriver.GetPlayerAircraft()->IsSetFlag(ECM_ON))
+                    if ( not SimDriver.GetPlayerAircraft()->IsSetFlag(ECM_ON))
                     {
                         //Only if fully auto
                         if (SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::Auto)
@@ -1231,7 +1231,7 @@ void PlayerRwrClass::CheckEWS(void)
 
                         else if (SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::Semi) //ask if we want turn it on
                         {
-                            if (!SaidJammer)
+                            if ( not SaidJammer)
                             {
                                 //F4SoundFXSetDist(SFX_BB_JAMMER, TRUE, 0.0f, 1.0f );
                                 PlayRWRSoundFX(SFX_BB_JAMMER, TRUE, 0.0f, 1.0f);
@@ -1244,10 +1244,10 @@ void PlayerRwrClass::CheckEWS(void)
         }
         else
         {
-            if (!SimDriver.GetPlayerAircraft()->ManualECM and SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::Auto)
+            if ( not SimDriver.GetPlayerAircraft()->ManualECM and SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::Auto)
             {
                 // Can't turn off ECM w/ ECM pod broken
-                if (!SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::epod_fault))
+                if ( not SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::epod_fault))
                     SimDriver.GetPlayerAircraft()->UnSetFlag(ECM_ON);
             }
 
@@ -1259,7 +1259,7 @@ void PlayerRwrClass::CheckEWS(void)
 
 BOOL PlayerRwrClass::IsOn()
 {
-    if (!g_bRWR) // JB 010802
+    if ( not g_bRWR) // JB 010802
         return false;
 
     return (((AircraftClass*)platform)->HasPower(AircraftClass::RwrPower) and VehRwrClass::IsOn());

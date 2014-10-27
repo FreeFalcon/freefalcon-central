@@ -48,7 +48,7 @@ VuLineIterator::VuLineIterator
 
     VuGridTree *gt = (VuGridTree *)collection_;
 
-    if (!gt->wrap_)
+    if ( not gt->wrap_)
     {
         if (key1min_ < gt->bottom_)
         {
@@ -102,7 +102,7 @@ VuLineIterator::VuLineIterator(
 
     VuGridTree *gt = (VuGridTree *)collection_;
 
-    if (!gt->wrap_)
+    if ( not gt->wrap_)
     {
         if (key1min_ < gt->bottom_)
         {

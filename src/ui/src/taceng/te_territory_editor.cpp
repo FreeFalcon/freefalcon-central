@@ -420,7 +420,7 @@ void UpdateOccupationMap(void)
     C_Button *but;
     C_Bitmap *bmp;
 
-    if (!gOccupationMap)
+    if ( not gOccupationMap)
         return;
 
     MakeOccupationMap(gOccupationMap);
@@ -466,7 +466,7 @@ void save_territory_editor(void)
 {
     if (TheCampaign.CampMapData)
     {
-        if (!te_restore_map)
+        if ( not te_restore_map)
             te_restore_map = new uchar[TheCampaign.CampMapSize];
 
         if (te_restore_map)
@@ -489,7 +489,7 @@ short GetMapTeam(short x, short y)
     uchar pixel;
     int width;
 
-    if (!TheCampaign.CampMapData)
+    if ( not TheCampaign.CampMapData)
         return(0);
 
     width = MRX >> 1;

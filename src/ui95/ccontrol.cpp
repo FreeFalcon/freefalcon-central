@@ -562,7 +562,7 @@ void C_Control::SetSound(long ID, short Type)
 
     if (snd)
     {
-        if (!Sound_)
+        if ( not Sound_)
         {
             Sound_ = new C_Hash;
             Sound_->Setup(1);
@@ -587,7 +587,7 @@ void C_Base::SetUserNumber(long idx, long value)
 {
     USERDATA *usr;
 
-    if (!User_)
+    if ( not User_)
     {
         User_ = new C_Hash;
         User_->Setup(1);
@@ -623,7 +623,7 @@ void C_Base::SetUserPtr(long idx, void *value)
 {
     USERDATA *usr;
 
-    if (!User_)
+    if ( not User_)
     {
         User_ = new C_Hash;
         User_->Setup(1);
@@ -659,7 +659,7 @@ void C_Base::SetUserCleanupPtr(long idx, void *value)
 {
     USERDATA *usr;
 
-    if (!User_)
+    if ( not User_)
     {
         User_ = new C_Hash;
         User_->Setup(1);
@@ -754,7 +754,7 @@ void C_Control::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     else if (Flags_ & C_BIT_VCENTER)
         clip.top -= GetH() / 2;
 
-    if (!(Flags_ & C_BIT_ABSOLUTE))
+    if ( not (Flags_ & C_BIT_ABSOLUTE))
     {
         clip.left += Parent_->VX_[Client_];
         clip.top += Parent_->VY_[Client_];
@@ -764,11 +764,11 @@ void C_Control::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     clip.bottom = clip.top + GetH();
     tmp = clip; // JPO fix so it has some valid data
 
-    if (!Parent_->ClipToArea(&tmp, &clip, cliprect))
+    if ( not Parent_->ClipToArea(&tmp, &clip, cliprect))
         return;
 
-    if (!(Flags_ & C_BIT_ABSOLUTE))
-        if (!Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
+    if ( not (Flags_ & C_BIT_ABSOLUTE))
+        if ( not Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
             return;
 
     Parent_->BlitTranslucent(surface, MouseOverColor_, MouseOverPercent_, &clip, C_BIT_ABSOLUTE, 0);

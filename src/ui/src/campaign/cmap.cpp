@@ -460,10 +460,10 @@ THREAT_LIST *C_Map::AddThreat(CampEntity ent)
             // 2001-06-22 ADDED BY S.G. IF EMITTING, DISPLAY THE RADAR THREATS
             if (((BattalionClass *)ent)->class_data->RadarVehicle < 16)
             {
-                if (!radar_short)
+                if ( not radar_short)
                     sam_short /= 128;
 
-                if (!radar_long)
+                if ( not radar_long)
                     sam_long /= 128;
             }
 
@@ -924,7 +924,7 @@ MAPICONLIST *C_Map::AddVC(victory_condition *vc)
 
     if (ent)
     {
-        if (!ent->IsUnit() and !ent->IsObjective())
+        if ( not ent->IsUnit() and !ent->IsObjective())
             return(NULL);
     }
     else
@@ -959,7 +959,7 @@ void C_Map::UpdateVC(victory_condition *vc)
 
     if (ent)
     {
-        if (!ent->IsUnit() and !ent->IsObjective())
+        if ( not ent->IsUnit() and !ent->IsObjective())
             ent = NULL;
     }
 
@@ -969,7 +969,7 @@ void C_Map::UpdateVC(victory_condition *vc)
     {
         vcicon = Team_[vc->get_team()].Objectives->Type[TypeID]->FindID(vc->get_number());
 
-        if (!ent)
+        if ( not ent)
         {
             Team_[vc->get_team()].Objectives->Type[TypeID]->RemoveIcon(vc->get_number());
         }
@@ -1021,12 +1021,12 @@ void C_Map::BuildCurrentWPList(Unit unit)
 
     if (unit->IsFlight() and !unit->Final()) return;
 
-    if (!CurWP_ or !CurWPZ_)
+    if ( not CurWP_ or !CurWPZ_)
         return;
 
     airwps = static_cast<short>(unit->IsFlight());
 
-    if (!airwps)
+    if ( not airwps)
     {
         firstwp = unit->GetCurrentUnitWP();
 
@@ -1034,10 +1034,10 @@ void C_Map::BuildCurrentWPList(Unit unit)
             firstwp = firstwp->GetPrevWP();
     }
 
-    if (!firstwp or airwps)
+    if ( not firstwp or airwps)
         firstwp = unit->GetFirstUnitWP();
 
-    if (!firstwp) return;
+    if ( not firstwp) return;
 
     wp = firstwp;
 
@@ -1157,7 +1157,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
 
     while (wp)
     {
-        if (!wp->GetNextWP())
+        if ( not wp->GetNextWP())
             lastwp = 1;
 
         if (wp->GetWPFlags() & WPF_TARGET)
@@ -1210,7 +1210,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
                 CurWP_->SetLabelColor(0x40000000 + campID + i, 0x00ffffff, 0x0000ffff, 0x000000ff);
                 CurWP_->SetLineColor(0x40000000 + campID + i, 0x00ffffff, 0x0000ffff, 0x000000ff);
 
-                if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+                if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
                 {
                     if (firstwp not_eq unit->GetCurrentUnitWP())
                     {
@@ -1309,7 +1309,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
                     wpl->Icon->SetUserCleanupPtr(C_STATE_0, tmpID);
                     wpl->Icon->SetUserNumber(C_STATE_1, i);
 
-                    if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+                    if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
                         if (firstwp not_eq unit->GetCurrentUnitWP())
                             wpl->Dragable = 0;
                 }
@@ -1385,7 +1385,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
                 wpl->Icon->SetUserCleanupPtr(C_STATE_0, tmpID);
                 wpl->Icon->SetUserNumber(C_STATE_1, -1);
 
-                if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+                if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
                     if (firstwp not_eq unit->GetCurrentUnitWP())
                         wpl->Dragable = 0;
             }
@@ -1433,11 +1433,11 @@ void C_Map::BuildWPList(C_Waypoint *wplist, C_Waypoint *, Unit unit)
 
     if (unit == NULL) return;
 
-    if (!unit->Final()) return;
+    if ( not unit->Final()) return;
 
     airwps = static_cast<short>(unit->IsFlight());
 
-    if (!airwps)
+    if ( not airwps)
     {
         wp = unit->GetCurrentUnitWP();
 
@@ -1445,10 +1445,10 @@ void C_Map::BuildWPList(C_Waypoint *wplist, C_Waypoint *, Unit unit)
             wp = wp->GetPrevWP();
     }
 
-    if (!wp or airwps)
+    if ( not wp or airwps)
         wp = unit->GetFirstUnitWP();
 
-    if (!wp) return;
+    if ( not wp) return;
 
     campID = unit->GetCampID() << 8;
 
@@ -1460,7 +1460,7 @@ void C_Map::BuildWPList(C_Waypoint *wplist, C_Waypoint *, Unit unit)
 
     while (wp)
     {
-        if (!wp->GetNextWP())
+        if ( not wp->GetNextWP())
             lastwp = 1;
 
         if (wp->GetWPFlags() & WPF_TARGET)
@@ -1648,7 +1648,7 @@ void C_Map::UpdateWaypoint(Flight flt)
 
         while (wp)
         {
-            if (!IsValidWP(wp, flt) and check)
+            if ( not IsValidWP(wp, flt) and check)
             {
                 CurWP_->SetState((flt->GetCampID() << 8) + i, 2);
                 CurWP_->SetState(0x40000000 | (flt->GetCampID() << 8) + i, 2);
@@ -1671,7 +1671,7 @@ void C_Map::UpdateWaypoint(Flight flt)
             wp = wp->GetNextWP();
         }
 
-        if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+        if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
         {
             if (i > 1)
             {
@@ -1743,7 +1743,7 @@ void C_Map::RemoveOldWaypoints()
     {
         un = (Unit)vuDatabase->Find(WPUnitID_);
 
-        if (!un)
+        if ( not un)
             RemoveCurWPList();
     }
 
@@ -1890,7 +1890,7 @@ void C_Map::ShowObjectiveType(long mask)
         if (Team_[i].Objectives)
         {
             for (j = 0; j < _MAP_NUM_OBJ_TYPES_; j++)
-                if (!Team_[i].Objectives->Flags[j] and (ObjectiveMask_ & (1 << j)))
+                if ( not Team_[i].Objectives->Flags[j] and (ObjectiveMask_ & (1 << j)))
                 {
                     Team_[i].Objectives->Flags[j] = 1;
                     Team_[i].Objectives->Type[j]->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -1941,7 +1941,7 @@ void C_Map::ShowUnitType(long mask)
         {
             for (j = 0; j < _MAP_NUM_GND_TYPES_; j++)
             {
-                if (!Team_[i].Units->Flags[j] and (UnitMask_ & (1 << j)))
+                if ( not Team_[i].Units->Flags[j] and (UnitMask_ & (1 << j)))
                 {
                     Team_[i].Units->Flags[j] = 1;
 
@@ -2055,7 +2055,7 @@ void C_Map::ShowAirUnitType(long mask)
         if (Team_[i].AirUnits)
         {
             for (j = 0; j < _MAP_NUM_AIR_TYPES_; j++)
-                if (!Team_[i].AirUnits->Flags[j] and (AirUnitMask_ & (1 << j)))
+                if ( not Team_[i].AirUnits->Flags[j] and (AirUnitMask_ & (1 << j)))
                 {
                     Team_[i].AirUnits->Flags[j] = 1;
                     Team_[i].AirUnits->Type[j]->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -2125,7 +2125,7 @@ void C_Map::ShowNavalUnitType(long mask)
         if (Team_[i].NavalUnits)
         {
             for (j = 0; j < _MAP_NUM_NAV_TYPES_; j++)
-                if (!Team_[i].NavalUnits->Flags[j] and (NavalUnitMask_ & (1 << j)))
+                if ( not Team_[i].NavalUnits->Flags[j] and (NavalUnitMask_ & (1 << j)))
                 {
                     Team_[i].NavalUnits->Flags[j] = 1;
                     Team_[i].NavalUnits->Type[j]->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -2178,7 +2178,7 @@ void C_Map::ShowThreatType(long mask)
         if (Team_[i].Threats)
         {
             for (j = 0; j < _MAP_NUM_THREAT_TYPES_; j++)
-                if (!Team_[i].Threats->Flags[j] and (ThreatMask_ & (1 << j)))
+                if ( not Team_[i].Threats->Flags[j] and (ThreatMask_ & (1 << j)))
                 {
                     Team_[i].Threats->Flags[j] = 1;
                     Team_[i].Threats->Type[j]->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -2427,7 +2427,7 @@ void C_Map::MoveCenter(long x, long y)
     if (Map_ == NULL or DrawWindow_ == NULL)
         return;
 
-    if (!x and !y)
+    if ( not x and !y)
         return;
 
     distance = (float)(MapRect_.right - MapRect_.left) / (DrawWindow_->ClientArea_[0].right - DrawWindow_->ClientArea_[0].left);
@@ -2611,7 +2611,7 @@ void C_Map::AddListsToWindow()
 
     // Although The Threats are created here... they don't actually get put into a window
 
-    if (!BullsEye_)
+    if ( not BullsEye_)
     {
         BullsEye_ = new C_BullsEye;
         BullsEye_->Setup(5550900, 0);
@@ -2806,7 +2806,7 @@ void C_Map::AddListsToWindow()
     }
 
     // Current Waypoints (After the other waypoints... so they show up infront... (behind the airplanes though))
-    if (!CurWP_)
+    if ( not CurWP_)
     {
         CurWP_ = new C_Waypoint;
         CurWP_->Setup(5555000, C_TYPE_DRAGXY);
@@ -2871,7 +2871,7 @@ void C_Map::AddListsToWindow()
             DrawWindow_->AddControl(Team_[i].AirUnits->Type[j]);
     }
 
-    if (!CurWPZ_)
+    if ( not CurWPZ_)
     {
         CurWPZ_ = new C_Waypoint;
         CurWPZ_->Setup(5555000, C_TYPE_DRAGY);

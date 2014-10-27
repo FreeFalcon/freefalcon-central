@@ -156,7 +156,7 @@ void PilotInputs::Update()
             /*******************************************************************************/
             // keyboard only, right engine axis is not even evalutated !
             /*******************************************************************************/
-            if ((!IO.AnalogIsUsed(AXIS_THROTTLE)) or (UseKeyboardThrottle))
+            if (( not IO.AnalogIsUsed(AXIS_THROTTLE)) or (UseKeyboardThrottle))
             {
                 throttleOffset += throttleOffsetRate;
                 throttleOffset = max(min(throttleOffset, 1.5F), 0.0F);
@@ -263,8 +263,8 @@ void PilotInputs::Update()
     else
     {
         if (
-            (!g_bRealisticAvionics) ||
-            ((playerAC) and (!playerAC->TrimAPDisc))
+            ( not g_bRealisticAvionics) ||
+            ((playerAC) and ( not playerAC->TrimAPDisc))
         )
         {
             ptrim += pitchElevatorTrimRate * SimLibMajorFrameTime;
@@ -284,8 +284,8 @@ void PilotInputs::Update()
     else
     {
         if (
-            (!g_bRealisticAvionics) or // TrimAPDisc only works in realistic avionics..
-            ((playerAC) and (!playerAC->TrimAPDisc))
+            ( not g_bRealisticAvionics) or // TrimAPDisc only works in realistic avionics..
+            ((playerAC) and ( not playerAC->TrimAPDisc))
         )
         {
             rtrim += pitchAileronTrimRate * SimLibMajorFrameTime;
@@ -305,8 +305,8 @@ void PilotInputs::Update()
     else
     {
         if (
-            (!g_bRealisticAvionics) or // TrimAPDisc only works in realistic avionics..
-            ((playerAC) and (!playerAC->TrimAPDisc))
+            ( not g_bRealisticAvionics) or // TrimAPDisc only works in realistic avionics..
+            ((playerAC) and ( not playerAC->TrimAPDisc))
         )
         {
             ytrim += pitchRudderTrimRate * SimLibMajorFrameTime;
@@ -334,7 +334,7 @@ void PilotInputs::Update()
         {
             if (keyboardPickleOverride or PickleOverride)
             {
-                if (!PickleTime) PickleTime = SimLibElapsedTime;
+                if ( not PickleTime) PickleTime = SimLibElapsedTime;
                 else if ((SimLibElapsedTime - PickleTime) > playerAC->FCC->GetPickleTime() and pickleButton == Off  and 
                          playerAC->FCC->AllowMaddog())
                     pickleButton = On;

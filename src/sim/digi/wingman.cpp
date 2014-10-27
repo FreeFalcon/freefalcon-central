@@ -41,7 +41,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
     int fromIndex;
     short edata[10];
 
-    if (!self->IsAwake() or self->IsDead())
+    if ( not self->IsAwake() or self->IsDead())
         return;
 
     //we can't follow orders about how to fly if we're on the ground still!
@@ -187,7 +187,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 edata[1] = 0;
                 AiMakeRadioResponse(p_from, rcFUELCRITICAL, edata);
 
-                if (!isWing)
+                if ( not isWing)
                     FlightMemberWantsFuel(SaidJoker);
 
                 break;
@@ -197,7 +197,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 edata[1] = 1;
                 AiMakeRadioResponse(p_from, rcFUELCRITICAL, edata);
 
-                if (!isWing)
+                if ( not isWing)
                     FlightMemberWantsFuel(SaidBingo);
 
                 break;
@@ -207,7 +207,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 edata[1] = 2;
                 AiMakeRadioResponse(p_from, rcFUELCRITICAL, edata);
 
-                if (!isWing)
+                if ( not isWing)
                     FlightMemberWantsFuel(SaidFumes);
 
                 break;
@@ -217,7 +217,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 edata[1] = 3;
                 AiMakeRadioResponse(p_from, rcFUELCRITICAL, edata);
 
-                if (!isWing)
+                if ( not isWing)
                     FlightMemberWantsFuel(SaidFlameout);
 
                 break;
@@ -485,7 +485,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 edata[1] = 0;
                 AiMakeRadioResponse(p_from, rcFUELCRITICAL, edata);
 
-                if (!isWing)
+                if ( not isWing)
                     FlightMemberWantsFuel(SaidJoker);
 
                 break;
@@ -495,7 +495,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 edata[1] = 1;
                 AiMakeRadioResponse(p_from, rcFUELCRITICAL, edata);
 
-                if (!isWing)
+                if ( not isWing)
                     FlightMemberWantsFuel(SaidBingo);
 
                 break;
@@ -505,7 +505,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 edata[1] = 2;
                 AiMakeRadioResponse(p_from, rcFUELCRITICAL, edata);
 
-                if (!isWing)
+                if ( not isWing)
                     FlightMemberWantsFuel(SaidFumes);
 
                 break;
@@ -515,7 +515,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 edata[1] = 3;
                 AiMakeRadioResponse(p_from, rcFUELCRITICAL, edata);
 
-                if (!isWing)
+                if ( not isWing)
                     FlightMemberWantsFuel(SaidFlameout);
 
                 break;

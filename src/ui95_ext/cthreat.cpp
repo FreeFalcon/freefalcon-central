@@ -51,7 +51,7 @@ void C_Threat::AddCircle(long ID, long type, long worldx, long worldy, long radi
     THREAT_CIRCLE *circle;
     long i;
 
-    if (!Root_ or ID < 1 or !radius)
+    if ( not Root_ or ID < 1 or !radius)
         return;
 
     if (Root_->Find(ID))
@@ -76,7 +76,7 @@ void C_Threat::UpdateCircle(long ID, long worldx, long worldy)
 {
     THREAT_CIRCLE *circle;
 
-    if (!Root_ or ID < 1)
+    if ( not Root_ or ID < 1)
         return;
 
     circle = (THREAT_CIRCLE*)Root_->Find(ID);
@@ -90,7 +90,7 @@ void C_Threat::UpdateCircle(long ID, long worldx, long worldy)
 
 void C_Threat::Remove(long ID)
 {
-    if (!Root_ or ID < 1)
+    if ( not Root_ or ID < 1)
         return;
 
     Root_->Remove(ID);
@@ -127,10 +127,10 @@ void C_Threat::BuildOverlay(BYTE *overlay, long w, long h, float pixelsperkm)
     while (circle)
     {
         // 2001-05-10 MODIFIED BY S.G. NEED TO LOOK UP THE MAP ITEM FLAG TO SEE IF IT CAN BE DISPLAYED OR NOT...
-        // if(!(circle->Flags & C_BIT_INVISIBLE)) {
+        // if( not (circle->Flags & C_BIT_INVISIBLE)) {
         UI_Refresher *gpsItem = NULL;
 
-        if (!(circle->Flags & C_BIT_INVISIBLE) and ((gpsItem = (UI_Refresher*)gGps->Find(circle->ID)) and gpsItem->MapItem_ and !(gpsItem->MapItem_->Flags & C_BIT_INVISIBLE)))
+        if ( not (circle->Flags & C_BIT_INVISIBLE) and ((gpsItem = (UI_Refresher*)gGps->Find(circle->ID)) and gpsItem->MapItem_ and !(gpsItem->MapItem_->Flags & C_BIT_INVISIBLE)))
         {
             myCircle.SetCenter(static_cast<long>(static_cast<float>(circle->x) * pixelsperkm),
                                static_cast<long>(static_cast<float>(circle->y) * pixelsperkm));

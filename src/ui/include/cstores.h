@@ -134,11 +134,11 @@ public:
         {
             current = NULL;
 
-            while (!current and ListID_ < _ALL_)
+            while ( not current and ListID_ < _ALL_)
             {
                 current = Stores_[ListID_];
 
-                if (!current)
+                if ( not current)
                     ListID_++;
             }
         }

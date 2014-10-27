@@ -245,7 +245,7 @@ void DigitalBrain::FollowWaypoints(void)
                 {
                     flight = (Flight)vuDatabase->Find(TankerId);
 
-                    if (!flight->IsFlight())
+                    if ( not flight->IsFlight())
                     {
                         flight = SimDriver.FindTanker(SimDriver.GetPlayerEntity());
                     }
@@ -783,7 +783,7 @@ void DigitalBrain::SelectNextWaypoint(void)
     WayPointClass *campCurWP = NULL;
     int waypointIndex, i;
 
-    ShiAssert(!self->OnGround());
+    ShiAssert( not self->OnGround());
 
     // first get our current waypoint index in the list
     for (waypointIndex = 0;
@@ -827,7 +827,7 @@ void DigitalBrain::SelectNextWaypoint(void)
 
     waypointMode = 0;
 
-    if (!self->curWaypoint)
+    if ( not self->curWaypoint)
     {
         // No current waypoint, so go home
 
@@ -876,7 +876,7 @@ void DigitalBrain::SelectNextWaypoint(void)
             campUnit->SetCurrentUnitWP(campUnit->GetFirstUnitWP());
         }
     }
-    else if (!(tmpWaypoint->GetWPFlags() & WPF_REPEAT)  and 
+    else if ( not (tmpWaypoint->GetWPFlags() & WPF_REPEAT)  and 
              (self->curWaypoint->GetWPFlags() & WPF_REPEAT))
     {
         if (self->curWaypoint->GetWPFlags() & WPF_IP)
@@ -884,7 +884,7 @@ void DigitalBrain::SelectNextWaypoint(void)
             SetATCFlag(ReachedIP);
         }
 
-        if (!(moreFlags & SaidSunrise)) // only say sunrise once and only insert once into FAC list
+        if ( not (moreFlags & SaidSunrise)) // only say sunrise once and only insert once into FAC list
         {
             moreFlags  or_eq  SaidSunrise;
 
@@ -942,7 +942,7 @@ void DigitalBrain::SelectNextWaypoint(void)
     }
 
     // 2001-07-04 ADDED BY S.G. RE_EVALUATE YOUR GROUND WEAPONS WHEN SWITCHING WAYPOINT...
-    if (!IsSetATC(HasAGWeapon) and (missionClass == AGMission))
+    if ( not IsSetATC(HasAGWeapon) and (missionClass == AGMission))
     {
         MissionClassEnum tmpMission = missionClass;
         //missionClass = AAMission; // Without this, SelectGroundWeapon might call SelectNextWaypoint which will result in a stack overflow

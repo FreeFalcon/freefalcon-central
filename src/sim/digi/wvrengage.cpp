@@ -475,7 +475,7 @@ void DigitalBrain::WvrChooseTactic(void)
     ManeuverChoiceTable *theIntercept;
     int aceAvoid = FALSE;
 
-    if (!IsSetATC(AceGunsEngage) and SkillLevel() >= 3)
+    if ( not IsSetATC(AceGunsEngage) and SkillLevel() >= 3)
     {
         if (maxAAWpnRange > 0 and maxAAWpnRange < 1.0F * NM_TO_FT)
             aceAvoid = TRUE;
@@ -758,7 +758,7 @@ void DigitalBrain::SetThreat(FalconEntity *obj)
     if (obj not_eq NULL and threatTimer > 0.0f)
         return;
 
-    F4Assert(!obj or !obj->IsSim() or !obj->IsHelicopter());
+    F4Assert( not obj or !obj->IsSim() or !obj->IsHelicopter());
 
     if (obj and obj->OnGround())//Cobra We want to nail those targeting us!
     {
@@ -854,7 +854,7 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
                 campBaseObj = ((CampBaseClass *)targetPtr->BaseData());
 
             // If it doesn't have a campaign object or it's identified... END OF ADDED SECTION plus the use of campBaseObj below
-            if (!campBaseObj or campBaseObj->GetIdentified(self->GetTeam()))
+            if ( not campBaseObj or campBaseObj->GetIdentified(self->GetTeam()))
             {
                 // Yes, now you can get its combat class!
                 hisCombatClass = targetPtr->BaseData()->CombatClass();

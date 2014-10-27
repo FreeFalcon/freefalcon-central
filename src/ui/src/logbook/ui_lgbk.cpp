@@ -244,7 +244,7 @@ void ChoosePilotCB(long, short hittype, C_Base *control)
     _tcscpy(Pilot, ((C_ListBox *)control)->GetText());
 
     //return if current logbook is selected
-    if (!_tcscmp(Pilot, UI_logbk.Callsign()))
+    if ( not _tcscmp(Pilot, UI_logbk.Callsign()))
         return;
 
     UI_logbk.LoadData(Pilot);
@@ -260,7 +260,7 @@ void PasswordWindow(long TitleID, long MessageID, void (*YesCB)(long, short, C_B
     C_ListBox *lbox;
     C_EditBox *ebox;
 
-    if (!YesCB or !NoCB)
+    if ( not YesCB or !NoCB)
         return;
 
     if (LogState & LB_CHECKED)
@@ -514,7 +514,7 @@ int SetPilot(_TCHAR *callsign, C_ListBox *lbox)
 
         if (CurCallsign)
         {
-            if (!_tcsicmp(CurCallsign, callsign))
+            if ( not _tcsicmp(CurCallsign, callsign))
             {
                 return TRUE;
             }
@@ -537,7 +537,7 @@ void GetPilotList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[],
     int items = 0;
     _TCHAR *dst, *ptr, *extension;
 
-    if (!win or !lbox) return;
+    if ( not win or !lbox) return;
 
     ffhnd = FindFirstFile(fspec, &filedata);
     last = (ffhnd not_eq INVALID_HANDLE_VALUE);
@@ -600,7 +600,7 @@ void GetPilotList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[],
             }
         }
 
-        if (!ignore)
+        if ( not ignore)
         {
             items++;
             lbox->AddItem(items, C_TYPE_ITEM, filedata.cFileName);
@@ -675,7 +675,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (button)
         {
-            if (!(LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
+            if ( not (LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
                 button->SetFlagBitOff(C_BIT_ENABLED);
             else
                 button->SetFlagBitOn(C_BIT_ENABLED);
@@ -712,7 +712,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (button)
         {
-            if (!(LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
+            if ( not (LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
                 button->SetFlagBitOff(C_BIT_ENABLED);
             else
                 button->SetFlagBitOn(C_BIT_ENABLED);
@@ -752,7 +752,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if (!(LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
+            if ( not (LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -774,7 +774,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if (!(LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
+            if ( not (LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -787,7 +787,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if (!(LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
+            if ( not (LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -824,7 +824,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if (!(LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
+            if ( not (LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -837,7 +837,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if (!(LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
+            if ( not (LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -1189,7 +1189,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 //Number is how times it has been awarded
 void AwardDevices(C_Window *win, long ID, uchar Medal, uchar Number)
 {
-    if (!win)
+    if ( not win)
         return;
 
     int Awarded = 0;
@@ -1511,7 +1511,7 @@ int SetImage(long ID, _TCHAR *filename , long ImageID)
 
         Image = gImageMgr->GetImage(ImageID);
 
-        if (!Image)
+        if ( not Image)
         {
             MonoPrint("FUNCTION: void SetImage()  -> Failed to load PHOTO file: %s \n", filename);
             UI_Leave(Leave);
@@ -1618,7 +1618,7 @@ void LoadLogCB(long ID,short hittype,C_Base *control)
  return;
  UI_logbk.LoadData(fname);
  LogState and_eq compl LB_CHECKED;
- if(!UI_logbk.CheckPassword(_T("")))
+ if( not UI_logbk.CheckPassword(_T("")))
  PasswordWindow(TXT_LOG_IN,TXT_LOG_IN_MESSAGE,CheckPasswordCB,NoPasswordCB);
  LBSetupControls();
  PlayerOptions.LoadOptions(UI_logbk.OptionsFile());
@@ -1705,14 +1705,14 @@ void PwdVerifiedContLoading(long, short hittype, C_Base *control)
             if (lbox)
             {
                 //if current log is selected do nothing
-                if (!_tcscmp(lbox->GetText(), UI_logbk.Callsign()))
+                if ( not _tcscmp(lbox->GetText(), UI_logbk.Callsign()))
                     return;
 
                 if (UI_logbk.LoadData(lbox->GetText()))
                 {
                     LogState and_eq compl LB_CHECKED;
 
-                    if (!UI_logbk.CheckPassword(_T("")))
+                    if ( not UI_logbk.CheckPassword(_T("")))
                         PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE, CheckPasswordCB, NoPasswordCB);
 
                     LBSetupControls();
@@ -1736,7 +1736,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
 
         if (ebox not_eq NULL)
         {
-            if (!UI_logbk.CheckPassword(ebox->GetText()))
+            if ( not UI_logbk.CheckPassword(ebox->GetText()))
             {
                 LogState and_eq compl LB_CHECKED;
                 PasswordWindow(TXT_VERIFY_PASSWORD, TXT_VERIFY_PASS_MESSAGE, PwdVerifiedContLoading, CloseWindowCB);
@@ -1748,7 +1748,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
         _tcscpy(Pilot, ((C_ListBox *)control)->GetText());
 
         //return if current logbook is selected
-        if (!_tcscmp(Pilot, UI_logbk.Callsign()))
+        if ( not _tcscmp(Pilot, UI_logbk.Callsign()))
         {
             if (LogState & LB_INVALID_CALLSIGN)
             {
@@ -1774,7 +1774,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
 
                 //if password check is passed, allow access, otherwise
                 //initialize UI_logbk and update controls
-                if (!UI_logbk.CheckPassword(_T("")))
+                if ( not UI_logbk.CheckPassword(_T("")))
                     PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE, CheckPasswordCB, NoPasswordCB);
                 else
                 {
@@ -1819,7 +1819,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
 
         if (ebox not_eq NULL)
         {
-            if (!CheckCallsign(ebox->GetText()))
+            if ( not CheckCallsign(ebox->GetText()))
             {
                 ebox->SetText(UI_logbk.Callsign());
                 LogState  or_eq  LB_INVALID_CALLSIGN;
@@ -1832,7 +1832,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
 
             if (pbox not_eq NULL)
             {
-                if (!UI_logbk.CheckPassword(pbox->GetText()))
+                if ( not UI_logbk.CheckPassword(pbox->GetText()))
                 {
                     return;
                 }
@@ -1890,7 +1890,7 @@ void OpenLogBookCB(long, short hittype, C_Base *control)
     gMainHandler->EnableWindowGroup(control->GetGroup());
     SetCursor(gCursors[CRSR_F16]);
 
-    if (!LogBook.CheckPassword(_T("")))
+    if ( not LogBook.CheckPassword(_T("")))
         PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE, CheckPasswordCB, NoPasswordCB);
 }
 
@@ -1932,7 +1932,7 @@ void ClearLogBookCB(long, short hittype, C_Base *)
 
 int CheckCallsign(_TCHAR *filename)
 {
-    if (!_tcslen(filename))
+    if ( not _tcslen(filename))
         return FALSE;
 
 
@@ -1979,7 +1979,7 @@ int SaveControlValues(void)
 
     if (ebox not_eq NULL)
     {
-        if (!CheckCallsign(ebox->GetText()))
+        if ( not CheckCallsign(ebox->GetText()))
         {
             AreYouSure(TXT_ERROR, TXT_INVALID_CALLSIGN, CloseWindowCB, CloseWindowCB);
             return FALSE;
@@ -2114,7 +2114,7 @@ void SaveLogBookCB(long ID, short hittype, C_Base *control)
 
     if (ebox not_eq NULL)
     {
-        if (!UI_logbk.CheckPassword(ebox->GetText()))
+        if ( not UI_logbk.CheckPassword(ebox->GetText()))
         {
             LogState and_eq compl LB_CHECKED;
             PasswordWindow(TXT_VERIFY_PASSWORD, TXT_VERIFY_PASS_MESSAGE, PasswordChangeVerifiedCB, CloseWindowCB);
@@ -2122,7 +2122,7 @@ void SaveLogBookCB(long ID, short hittype, C_Base *control)
         }
     }
 
-    if (!SaveControlValues())
+    if ( not SaveControlValues())
         return;
 
     LogState  or_eq  LB_REFRESH_PILOT;

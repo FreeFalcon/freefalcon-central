@@ -198,7 +198,7 @@ void VirtualDisplay::GetRttCanvas(Tpoint* Canvas)
 \***************************************************************************/
 void VirtualDisplay::Setup(void)
 {
-    ShiAssert(!IsReady());
+    ShiAssert( not IsReady());
 
     // Setup the default viewport
     SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
@@ -1321,7 +1321,7 @@ void VirtualDisplay::SetFont(int newfont)
 bool VirtualDisplay::SetupRttTarget(int tXres_, int tYres_, int tBpp_)
 {
     // Initialize the shared renderTexture only once
-    if (!renderTexture)
+    if ( not renderTexture)
     {
         int tBpp;
 

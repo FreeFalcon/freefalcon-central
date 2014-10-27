@@ -53,7 +53,7 @@ void DigitalBrain::BvrEngageCheck(void)
     /* return if no target */
     /*---------------------*/
     if (targetPtr == NULL or curMode == RTBMode or /* 2002-04-01 ADDED BY S.G. Player's wing doing a maneuver */ mpActionFlags[AI_EXECUTE_MANEUVER])/*|| // No Target
-      (!mpActionFlags[AI_ENGAGE_TARGET] and missionClass not_eq AAMission and !missionComplete) or // Target is not assigned and on AG mission
+      ( not mpActionFlags[AI_ENGAGE_TARGET] and missionClass not_eq AAMission and !missionComplete) or // Target is not assigned and on AG mission
        curMode == RTBMode)*/
     {
         bvrCurrProfile = Pnone;
@@ -454,7 +454,7 @@ void DigitalBrain::BvrEngage(void)
             sprintf(tmpchr, "%s", "BvrNoIntercept");
 #endif
 
-            if (!isWing)
+            if ( not isWing)
             {
 #ifdef MANEUVER_DEBUG
                 sprintf(tmpchr, "%s", "followwaypoints");
@@ -644,7 +644,7 @@ void DigitalBrain::BvrChooseTactic(void)
         IsElementlead = true;
 
 
-    if (!Isflightlead and !IsElementlead)// wingies default to formationflying
+    if ( not Isflightlead and !IsElementlead)// wingies default to formationflying
     {
         bvrCurrTactic = BvrFlyFormation;
         bvrTacticTimer = SimLibElapsedTime + 5 * CampaignSeconds;
@@ -858,7 +858,7 @@ void DigitalBrain::ChoiceProfile(void)
      case AMIS_ALERT:
      case AMIS_INTERCEPT:
      {
-     if (!outranged)
+     if ( not outranged)
      {
      if (Isflightlead)AiSendCommand (self, FalconWingmanMsg::WMFluidFour, AiFlight);
      int choice = rand()% (SkillLevel()+1);
@@ -882,7 +882,7 @@ void DigitalBrain::ChoiceProfile(void)
      case AMIS_SWEEP:
      case AMIS_ESCORT: // it's a consideratino to stay on time here to protect the pacage
      {
-     if (!outranged)
+     if ( not outranged)
      {
      if (Isflightlead)AiSendCommand (self, FalconWingmanMsg::WMFluidFour, AiFlight);
      int choice = rand()% (SkillLevel()+1);
@@ -932,9 +932,9 @@ void DigitalBrain::ChoiceProfile(void)
      {
      //Cobra we are modifying here to allow A/G flights to attack
      //this works with prior new BVR code for A/G flights
-     if (!IsSetATC(HasAGWeapon) or g_bUseAggresiveIncompleteA2G or (!g_bUseAggresiveIncompleteA2G and missionComplete))
+     if ( not IsSetATC(HasAGWeapon) or g_bUseAggresiveIncompleteA2G or ( not g_bUseAggresiveIncompleteA2G and missionComplete))
      {
-     if (!outranged)
+     if ( not outranged)
      {
      if (Isflightlead) AiSendCommand (self, FalconWingmanMsg::WMBox, AiFlight);
      int choice = rand()%3;
@@ -997,7 +997,7 @@ void DigitalBrain::level1a(void)
     //return;
     /////////////TEST TEST TEST//////////////////
 
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     // well just push forward.
     switch (bvractionstep)
@@ -1016,7 +1016,7 @@ void DigitalBrain::level1a(void)
 }
 void DigitalBrain::level2a(void)
 {
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     switch (bvractionstep)
     {
@@ -1033,7 +1033,7 @@ void DigitalBrain::level2a(void)
 }
 void DigitalBrain::level3a(void)
 {
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     // allowed to drag once pr missile engagement
     switch (bvractionstep)
@@ -1075,7 +1075,7 @@ void DigitalBrain::level1b(void)
 
     bvrTacticTimer = SimLibElapsedTime + 8 * CampaignSeconds;
 
-    if (!Isflightlead) return;
+    if ( not Isflightlead) return;
 
     AircraftClass *elementlead = (AircraftClass *)self->GetCampaignObject()->GetComponentNumber(2);
     AircraftClass *wing1 = (AircraftClass *)self->GetCampaignObject()->GetComponentNumber(1);
@@ -1109,7 +1109,7 @@ void DigitalBrain::level2b(void)
     the spiked element notch, the naked crank
     the offset is in the same direction to "stick together"
       */
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     AircraftClass *elementlead = NULL;
 
@@ -1123,7 +1123,7 @@ void DigitalBrain::level2b(void)
         bvractionstep = 0;
     else bvractionstep = 1;
 
-    if (!HowManyHotnosed())bvractionstep = 2;
+    if ( not HowManyHotnosed())bvractionstep = 2;
 
 
     switch (bvractionstep)
@@ -1160,7 +1160,7 @@ void DigitalBrain::level2b(void)
 }
 void DigitalBrain::level3b(void)
 {
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     // b = defensive missilerange superiority
     /*idea is :
@@ -1183,7 +1183,7 @@ void DigitalBrain::level3b(void)
             bvractionstep = 0;
         else bvractionstep = 1;
 
-        if (!HowManyHotnosed())bvractionstep = 2;
+        if ( not HowManyHotnosed())bvractionstep = 2;
 
         if (IsSupportignmissile()) bvractionstep = 3;
     }
@@ -1335,7 +1335,7 @@ void DigitalBrain::level3b(void)
 // c = missilerange INFERIOR
 void DigitalBrain::level1c(void)
 {
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     switch (bvractionstep)
     {
@@ -1372,9 +1372,9 @@ void DigitalBrain::level2c(void)
         wingman = (AircraftClass *)self->GetCampaignObject()->GetComponentNumber(3);
     }
 
-    if ((!Isflightlead and !IsElementlead) and targetData->range > 16 * NM_TO_FT) return;
+    if (( not Isflightlead and !IsElementlead) and targetData->range > 16 * NM_TO_FT) return;
 
-    if ((!Isflightlead and !IsElementlead) and WhoIsSpiked() < 7 and bvrCurrTactic == BvrFlyFormation) return;
+    if (( not Isflightlead and !IsElementlead) and WhoIsSpiked() < 7 and bvrCurrTactic == BvrFlyFormation) return;
 
     AircraftClass *elementlead = NULL;
 
@@ -1397,7 +1397,7 @@ void DigitalBrain::level2c(void)
         else bvractionstep = 1;
 
     }
-    else if (!wingman)
+    else if ( not wingman)
     {
         if ((bvractionstep not_eq 0  and targetData->range > maxAAWpnRange) and WhoIsSpiked() > 7)
             bvractionstep = 0;
@@ -1449,7 +1449,7 @@ void DigitalBrain::level2c(void)
 
 void DigitalBrain::level3c(void)
 {
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     switch (bvractionstep)// use the leads stepper to coordinate
     {
@@ -1535,7 +1535,7 @@ void DigitalBrain::level3c(void)
 
 void DigitalBrain::beamdeploy(void)
 {
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     if (bvractionstep not_eq 0 and WhoIsSpiked() > 3)
         bvractionstep = 1;
@@ -1593,7 +1593,7 @@ void DigitalBrain::beamdeploy(void)
 
 void DigitalBrain::grinder(void)
 {
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     float  ActionRange = 30.0f * NM_TO_FT;
 
@@ -1679,7 +1679,7 @@ void DigitalBrain::grinder(void)
 }
 void DigitalBrain::wideazimuth(void)
 {
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     switch (bvractionstep)
     {
@@ -1733,7 +1733,7 @@ void DigitalBrain::wideazimuth(void)
 }
 void DigitalBrain::shortazimuth(void)
 {
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     switch (bvractionstep)
     {
@@ -1787,7 +1787,7 @@ void DigitalBrain::shortazimuth(void)
 }
 void DigitalBrain::wideLT(void)
 {
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     float ActionRange = 30 * NM_TO_FT;
 
@@ -1845,7 +1845,7 @@ void DigitalBrain::wideLT(void)
 }
 void DigitalBrain::ShortLT(void)
 {
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     float ActionRange = 30 * NM_TO_FT;
 
@@ -1901,7 +1901,7 @@ void DigitalBrain::ShortLT(void)
 }
 void DigitalBrain::beambeam(void)
 {
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     float ActionRange = 25 * NM_TO_FT;
 
@@ -1965,7 +1965,7 @@ void DigitalBrain::beambeam(void)
 }
 void DigitalBrain::wall(void)
 {
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     if (Isflightlead)
     {
@@ -1981,7 +1981,7 @@ void DigitalBrain::Sweep(void)
     when the bandits are cold we fly on course.
 
       */
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     AircraftClass *elementlead = NULL;
 
@@ -2024,7 +2024,7 @@ void DigitalBrain::Sweep(void)
 }
 void DigitalBrain::Defensive(void)
 {
-    if (!Isflightlead and !IsElementlead) return;
+    if ( not Isflightlead and !IsElementlead) return;
 
     if (WhoIsSpiked() or WhoIsHotnosed())
     {
@@ -2250,7 +2250,7 @@ void DigitalBrain::CalculateMAR()
      TGTMAR = maxAAWpnRange/2;
 
      // 2002-03-22 MODIFIED BY S.G. Only use the original code if we have no minTGTMAR
-     if (!self->af or self->af->GetMinTGTMAR() == 0.0) {
+     if ( not self->af or self->af->GetMinTGTMAR() == 0.0) {
      if (self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG29||
       self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG31)
      {
@@ -2291,7 +2291,7 @@ void DigitalBrain::CalculateMAR()
      if ( !campBaseObj or campBaseObj->GetIdentified(self->GetTeam()))
      {// we have Type ID.
      // 2002-03-22 MODIFIED BY S.G. If our target is an airplane and we have a minMAR, use it instead of the original method
-     if (!targetPtr->BaseData()->IsAirplane() or !((AircraftClass *)targetPtr->BaseData())->af or ((AircraftClass *)targetPtr->BaseData())->af->GetMaxMARIdedStart() == 0.0f) {
+     if ( not targetPtr->BaseData()->IsAirplane() or !((AircraftClass *)targetPtr->BaseData())->af or ((AircraftClass *)targetPtr->BaseData())->af->GetMaxMARIdedStart() == 0.0f) {
      if (targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG29||
       targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG31)
      {
@@ -2450,7 +2450,7 @@ int DigitalBrain::IsSplitup(void)
         otherelementlead = (AircraftClass *)self->GetCampaignObject()->GetComponentNumber(0);
     }
 
-    if (! otherelementlead) return result;
+    if ( not  otherelementlead) return result;
 
     float  rngSq = (self->XPos() - otherelementlead->XPos()) * (self->XPos() - otherelementlead->XPos()) +
                    (self->YPos() - otherelementlead->YPos()) * (self->YPos() - otherelementlead->YPos()) +
@@ -2493,7 +2493,7 @@ int DigitalBrain::HowManyTargetet(void)
         if (elementlead->targetPtr not_eq self->targetPtr)
         {
             if (Mywing and elementlead->targetPtr not_eq Mywing->targetPtr) result++;
-            else if (!Mywing)result++;
+            else if ( not Mywing)result++;
         }
     }
 
@@ -2505,13 +2505,13 @@ int DigitalBrain::HowManyTargetet(void)
             {
                 // its not our element leads target
                 if (Mywing and Elementwing->targetPtr not_eq Mywing->targetPtr)result++;
-                else if (!Mywing)result++;
+                else if ( not Mywing)result++;
             }
-            else if (!elementlead)
+            else if ( not elementlead)
             {
                 // its not my wings target
                 if (Mywing and Elementwing->targetPtr not_eq Mywing->targetPtr)result++;
-                else if (!Mywing)result++;
+                else if ( not Mywing)result++;
             }
         }
     }
@@ -2591,7 +2591,7 @@ int DigitalBrain::WhoIsHotnosed(void)
 
 void DigitalBrain::DoProfile(void)
 {
-    if (!flightLead) return;
+    if ( not flightLead) return;
 
     if (((AircraftClass*)flightLead)->DBrain()->bvrCurrProfile == Pnone)
     {
@@ -2879,7 +2879,7 @@ int DigitalBrain::BeamManeuver(int direction, int NotchHI)
         chaffttimer = SimLibElapsedTime;
     }
 
-    if (!NotchHI)
+    if ( not NotchHI)
     {
         trackZ = max(-10000.0f + (float)SkillLevel() * 2000.0f, self->ZPos());
         StickandThrottle(cornerSpeed, trackZ);

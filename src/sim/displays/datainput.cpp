@@ -105,7 +105,7 @@ void SmsDrawable::InputRP(void)
         return;
     }
 
-    if (!Manual_Input)
+    if ( not Manual_Input)
         //sprintf(inputstr, "%d", Sms->rippleCount + 1);
         sprintf(inputstr, "%d", Sms->GetAGBRippleCount() + 1);
     else
@@ -127,7 +127,7 @@ void SmsDrawable::InputRS(void)
         return;
     }
 
-    if (!Manual_Input)
+    if ( not Manual_Input)
         // sprintf(inputstr, "%dFT", Sms->rippleInterval);
         sprintf(inputstr, "%dFT", Sms->GetAGBRippleInterval());
     else
@@ -141,7 +141,7 @@ void SmsDrawable::CNTLPage(void)
     char tempstr[20];
     FireControlComputer *FCC = Sms->ownship->GetFCC();
 
-    if (!FCC)
+    if ( not FCC)
         return;
 
     //OSB1
@@ -302,7 +302,7 @@ void SmsDrawable::ADPage(void)
     display->TextCenter(InputLineX1, InputLineY, "\x02", 2);
     display->TextCenter(InputLineX2, InputLineY, "\x02", 2);
 
-    if (!Manual_Input)
+    if ( not Manual_Input)
         sprintf(inputstr, "%.2fSEC", Sms->armingdelay / 100);
     else
         FillInputString();
@@ -318,7 +318,7 @@ void SmsDrawable::InputBA(void)
     display->TextCenter(InputLineX1, InputLineY, "\x02", 2);
     display->TextCenter(InputLineX2, InputLineY, "\x02", 2);
 
-    if (!Manual_Input)
+    if ( not Manual_Input)
         sprintf(inputstr, "BA %.0f", Sms->burstHeight);
     else
         FillInputString();
@@ -337,7 +337,7 @@ void SmsDrawable::CDisplay(void)
         if (InputLine <= 0)
         {
             //Line1
-            if (!Manual_Input)
+            if ( not Manual_Input)
                 //sprintf(inputstr, "%.2fSEC", Sms->C1AD1 / 100); // MLR 4/3/2004 -
                 sprintf(inputstr, "%.2fSEC", Sms->GetAGBC1ArmDelay1() / 100);
             else
@@ -358,7 +358,7 @@ void SmsDrawable::CDisplay(void)
             display->TextCenter(InputLineX3, InputLineY, tempstr);
 
             //Line2
-            if (!Manual_Input)
+            if ( not Manual_Input)
                 //sprintf(inputstr, "%.2fSEC", Sms->C1AD2 / 100);
                 sprintf(inputstr, "%.2fSEC", Sms->GetAGBC1ArmDelay2() / 100);
             else
@@ -374,7 +374,7 @@ void SmsDrawable::CDisplay(void)
         if (InputLine <= 0)
         {
             //Line1
-            if (!Manual_Input)
+            if ( not Manual_Input)
                 //sprintf(inputstr, "%.2fSEC", Sms->C2AD / 100);
                 sprintf(inputstr, "%.2fSEC", Sms->GetAGBC2ArmDelay() / 100);
             else
@@ -395,7 +395,7 @@ void SmsDrawable::CDisplay(void)
             display->TextCenter(InputLineX3, InputLineY, tempstr);
 
             //Line2
-            if (!Manual_Input)
+            if ( not Manual_Input)
                 //sprintf(inputstr, "%dFT", Sms->C2BA);
                 sprintf(inputstr, "%dFT", Sms->GetAGBBurstAlt());
             else
@@ -456,7 +456,7 @@ void SmsDrawable::RelAngDisplay(void)
         return;
     }
 
-    if (!Manual_Input)
+    if ( not Manual_Input)
         //sprintf(inputstr, "%d", Sms->angle);
         sprintf(inputstr, "%d", Sms->GetAGBReleaseAngle());
     else
@@ -495,7 +495,7 @@ void SmsDrawable::LADDDisplay(void)
 }
 void SmsDrawable::InputPushButton(int whichButton, int whichMFD)
 {
-    if (!Manual_Input)
+    if ( not Manual_Input)
     {
         for (int i = 0; i < STR_LEN; i++)
             inputstr[i] = ' ';

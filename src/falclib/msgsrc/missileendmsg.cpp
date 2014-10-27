@@ -116,7 +116,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
     {
         pos.z -= 40.0f;
 
-        if (!(dataBlock.groundType == COVERAGE_WATER ||
+        if ( not (dataBlock.groundType == COVERAGE_WATER ||
               dataBlock.groundType == COVERAGE_RIVER))
         {
             F4SoundFXSetPos(SFX_IMPACTG1 + PRANDInt6(), TRUE, pos.x, pos.y, pos.z, 1.0f, 0, sid);

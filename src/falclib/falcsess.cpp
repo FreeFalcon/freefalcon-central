@@ -546,7 +546,7 @@ void FalconSessionEntity::SetPlayerEntity(FalconEntity* ent)
         //VuDeReferenceEntity(oldPlayerPtr);
 #if 0//NEW_SERVER_VIEWPOINT
 
-        if (!IsLocal() and Game()->IsLocal())
+        if ( not IsLocal() and Game()->IsLocal())
         {
             // viewpoint for the session if remote
             OTWDriver.RemoveViewpoint(this);
@@ -570,7 +570,7 @@ void FalconSessionEntity::SetPlayerEntity(FalconEntity* ent)
 
 #if 0//NEW_SERVER_VIEWPOINT
 
-        if (!IsLocal() and Game()->IsLocal())
+        if ( not IsLocal() and Game()->IsLocal())
         {
             // viewpoint for the session if remote
             OTWDriver.AddViewpoint(this);
@@ -779,7 +779,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     }
 
     // Copy in new data
-    if (!name or strcmp(name, tmpSess->name) not_eq 0)
+    if ( not name or strcmp(name, tmpSess->name) not_eq 0)
     {
         dirty  or_eq  0x0001;
         size = _tcslen(tmpSess->name);
@@ -790,7 +790,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
         name[size] = name[_NAME_LEN_] = 0;
     }
 
-    if (!callSign or strcmp(callSign, tmpSess->callSign) not_eq 0)
+    if ( not callSign or strcmp(callSign, tmpSess->callSign) not_eq 0)
     {
         dirty  or_eq  0x0002;
         size = _tcslen(tmpSess->callSign);
@@ -953,7 +953,7 @@ void FalconSessionEntity::UpdatePlayer(void)
     squadron_ptr = (Squadron) vuDatabase->Find(playerSquadron);
     flight_ptr = (Flight) vuDatabase->Find(playerFlight);
 
-    if ((!flight_ptr) and (playerFlight not_eq vuNullId))
+    if (( not flight_ptr) and (playerFlight not_eq vuNullId))
     {
         static int now, last_time;
         now = GetTickCount();
@@ -1002,7 +1002,7 @@ bool FalconSessionEntity::AddToFineInterest(FalconEntity *entity, bool silent)
 
     fineInterestList.push_back(FalconEntityBin(entity));
 
-    if (!silent)
+    if ( not silent)
     {
         SetDirty();
     }
@@ -1021,7 +1021,7 @@ bool FalconSessionEntity::RemoveFromFineInterest(const FalconEntity *entity, boo
         {
             fineInterestList.erase(it);
 
-            if (!silent)
+            if ( not silent)
             {
                 SetDirty();
             }
@@ -1038,7 +1038,7 @@ void FalconSessionEntity::ClearFineInterest(bool silent)
 {
     fineInterestList.clear();
 
-    if (!silent)
+    if ( not silent)
     {
         SetDirty();
     }

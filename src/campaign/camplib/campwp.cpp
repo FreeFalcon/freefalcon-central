@@ -284,7 +284,7 @@ int WayPointClass::Save(FILE* fp)
 {
     uchar haves = 0;
 
-    if (!fp)
+    if ( not fp)
     {
         return 0;
     }
@@ -444,7 +444,7 @@ void WayPointClass::SplitWP()
     GridIndex x, y, z;
     CampaignTime time;
 
-    if (!NextWP)
+    if ( not NextWP)
     {
         first_wp = PrevWP;
         second_wp = this;
@@ -572,7 +572,7 @@ void WayPointClass::SetWPLocation(GridIndex x, GridIndex y)
 void WayPointClass::GetLocation(float *x, float *y, float *z) const
 {
     // No waypoint?
-    if (!this)
+    if ( not this)
         return;
 
     // sfr: xy order
@@ -658,7 +658,7 @@ CampaignTime SetWPTimes(WayPoint w, CampaignTime start, int speed, int flags)
     GridIndex x, y, nx, ny;
     CampaignTime station;
 
-    if (!w)
+    if ( not w)
     {
         return 0;
     }
@@ -718,7 +718,7 @@ CampaignTime SetWPTimes(WayPoint w, long delta, int flags)
     CampaignTime mission_time, length, land = 0;
     int station;
 
-    if (!w)
+    if ( not w)
         return 0;
 
     // If the first waypoint passed is an alternate - assume we want it's time set
@@ -770,7 +770,7 @@ CampaignTime SetWPTimes(WayPoint w, GridIndex x, GridIndex y, int speed, int fla
     CampaignTime mission_time, length;
     GridIndex nx, ny;
 
-    if (!w)
+    if ( not w)
     {
         return 0;
     }
@@ -792,7 +792,7 @@ WayPoint CloneWPToList(WayPoint w, WayPoint stop)
         nw = new WayPointClass();
         nw->CloneWP(w);
 
-        if (!list)
+        if ( not list)
         {
             list = nw;
         }
@@ -820,7 +820,7 @@ WayPoint CloneWPList(WayPoint w)
         nw = new WayPointClass();
         nw->CloneWP(w);
 
-        if (!list)
+        if ( not list)
         {
             list = nw;
         }
@@ -852,7 +852,7 @@ WayPoint CloneWPList(WayPointClass wps[], int waypoints)
             nw = new WayPointClass();
             nw->CloneWP(w);
 
-            if (!list)
+            if ( not list)
             {
                 list = nw;
             }

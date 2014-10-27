@@ -323,7 +323,7 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
 {
     char retval[2] = { 0, 0 };
 
-    if (!VM)
+    if ( not VM)
         return false;
 
     for (int i = 0; i < 2; i++)
@@ -1118,7 +1118,7 @@ int VoiceFilter::GetBullseyeComm(int *mesgID, short *data)
     // commHdrInfo = (COMM_FILE_INFO *)dcommPtr;
     commHdrInfo = commfile.GetComm(*mesgID);
 
-    if (!commHdrInfo or F4IsBadReadPtr(commHdrInfo, sizeof(COMM_FILE_INFO))) // JB 010331 CTD
+    if ( not commHdrInfo or F4IsBadReadPtr(commHdrInfo, sizeof(COMM_FILE_INFO))) // JB 010331 CTD
         return FALSE;
 
     float dist = 0;
@@ -1407,7 +1407,7 @@ void IncDecDataToPlay(int delta)
             }
         }
 
-        if (!wasInc)
+        if ( not wasInc)
             IncDecMsgToPlay(delta);
     }
     else if (VToolMsgData.mode == PLAY_FRAG)

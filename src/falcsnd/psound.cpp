@@ -194,7 +194,7 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
         }
 
 
-        if (!F4IsBadCodePtr((FARPROC) Primary)) // JB 010305 CTD
+        if ( not F4IsBadCodePtr((FARPROC) Primary)) // JB 010305 CTD
             res = Primary->SetFormat(fmt);
 
         if (res not_eq DS_OK)
@@ -238,7 +238,7 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
         //Primary->Play(0,0,DSBPLAY_LOOPING);
         if (res not_eq DS_OK)
         {
-            if (!F4IsBadCodePtr((FARPROC) Primary)) // JB 010305 CTD
+            if ( not F4IsBadCodePtr((FARPROC) Primary)) // JB 010305 CTD
                 Primary->Release();
 
             Primary = NULL;
@@ -323,7 +323,7 @@ long CSoundMgr::FillRiffInfo(char *memory, RIFF_FILE *riff)
     char *ptr, *hdr;
     long size, datasize;
 
-    if (!memory)
+    if ( not memory)
         return(0);
 
     ptr = memory;
@@ -351,11 +351,11 @@ long CSoundMgr::FillRiffInfo(char *memory, RIFF_FILE *riff)
             size = *(long*)ptr;
             ptr += 4;
 
-            if (!strncmp(hdr, "fmt ", 4))
+            if ( not strncmp(hdr, "fmt ", 4))
                 riff->Format = (WAVEFORMATEX*)ptr;
-            else if (!strncmp(hdr, "fact", 4))
+            else if ( not strncmp(hdr, "fact", 4))
                 riff->NumSamples = *(long*)ptr;
-            else if (!strncmp(hdr, "data", 4))
+            else if ( not strncmp(hdr, "data", 4))
             {
                 riff->Start = ptr;
                 riff->SampleLen = size;
@@ -387,7 +387,7 @@ RIFF_FILE *CSoundMgr::LoadRiff(char *filename)
 
     fp = fopen(filename, "rb");
 
-    if (!fp)
+    if ( not fp)
         return(NULL);
 
     fread(buffer, 4, 1, fp);
@@ -426,11 +426,11 @@ RIFF_FILE *CSoundMgr::LoadRiff(char *filename)
             size = *(long*)ptr;
             ptr += 4;
 
-            if (!strncmp(hdr, "fmt ", 4))
+            if ( not strncmp(hdr, "fmt ", 4))
                 filedata->Format = (WAVEFORMATEX*)ptr;
-            else if (!strncmp(hdr, "fact", 4))
+            else if ( not strncmp(hdr, "fact", 4))
                 filedata->NumSamples = *(long*)ptr;
-            else if (!strncmp(hdr, "data", 4))
+            else if ( not strncmp(hdr, "data", 4))
             {
                 filedata->Start = ptr;
                 filedata->SampleLen = size;
@@ -497,7 +497,7 @@ long CSoundMgr::SkipRiffHeader(FILE *fp)
         totalsize -= 8;
     }
 
-    if (!strncmp(buffer, "data", 4))
+    if ( not strncmp(buffer, "data", 4))
         return(bytesread);
 
     return(0);
@@ -550,7 +550,7 @@ long CSoundMgr::SkipRiffHeader(HANDLE fp)
         totalsize -= 8;
     }
 
-    if (!strncmp(buffer, "data", 4))
+    if ( not strncmp(buffer, "data", 4))
         return(bytesread);
 
     return(0);
@@ -604,14 +604,14 @@ long CSoundMgr::LoadRiffFormat(HANDLE fp, WAVEFORMATEX *Format, long *HeaderSize
 
     while (bytesread < totalsize and strncmp(buffer, "data", 4))
     {
-        if (!strncmp(buffer, "fmt ", 4))
+        if ( not strncmp(buffer, "fmt ", 4))
         {
             ReadFile(fp, Format, min(sizeof(WAVEFORMATEX), size), &br, NULL);
             size -= br;
             bytesread += br;
         }
 
-        if (!strncmp(buffer, "fact", 4))
+        if ( not strncmp(buffer, "fact", 4))
         {
             ReadFile(fp, SampleCount, sizeof(long), &br, NULL);
             size -= br;
@@ -668,7 +668,7 @@ long CSoundMgr::LoadWaveFile(char *Filename, long Flags, SFX_DEF_ENTRY *sfx)
 
         if (newsnd)
         {
-            if (!newsnd->Format)
+            if ( not newsnd->Format)
             {
                 if (newsnd->data)
                     delete newsnd->data;
@@ -1274,7 +1274,7 @@ BOOL CSoundMgr::SetSamplePosition(long ID, float x, float y, float z, float pitc
                         }
                     }
 
-                    if (!rv) // didn't match a uid
+                    if ( not rv) // didn't match a uid
                     {
                         int i, best = -1;
                         float  bestdist = (float)0;
@@ -1890,14 +1890,14 @@ SoundList *CSoundMgr::AddDuplicateSample(SoundList *Sample)
         Cur = DuplicateList;
 
         if (Cur->ID == Sample->ID)
-            if (!(SampleStatus(Cur) & DSBSTATUS_PLAYING))
+            if ( not (SampleStatus(Cur) & DSBSTATUS_PLAYING))
                 return(Cur);
 
         while (Cur->Next not_eq NULL)
         {
             if (Cur->Next->ID == Sample->ID)
             {
-                if (!(SampleStatus(Cur->Next) & DSBSTATUS_PLAYING))
+                if ( not (SampleStatus(Cur->Next) & DSBSTATUS_PLAYING))
                     return(Cur->Next);
             }
 
@@ -2184,7 +2184,7 @@ long CSoundMgr::SetStreamVolume(long ID, long Volume)
                 oldvol = Stream->Volume;
                 Stream->Volume = Volume;
 
-                if (!(Stream->Status & (SND_STREAM_FADE_IN | SND_STREAM_FADE_OUT | SND_STREAM_FADEDOUT)))
+                if ( not (Stream->Status & (SND_STREAM_FADE_IN | SND_STREAM_FADE_OUT | SND_STREAM_FADEDOUT)))
                 {
                     hr = Stream->DSoundBuffer->SetVolume(Volume);
 
@@ -2609,7 +2609,7 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
                             if (Stream->LoopCount > 0)
                                 Stream->LoopCount--;
 
-                            if (!Stream->LoopCount and Stream->FadeOut < Stream->Volume) // Do fade out
+                            if ( not Stream->LoopCount and Stream->FadeOut < Stream->Volume) // Do fade out
                             {
                                 if (Stream->StreamMessage)
                                     (*Stream->StreamMessage)(Stream, SND_MSG_START_FADE);
@@ -2700,7 +2700,7 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
                             if (Stream->LoopCount > 0)
                                 Stream->LoopCount--;
 
-                            if (!Stream->LoopCount and Stream->FadeOut < Stream->Volume) // Do fade out
+                            if ( not Stream->LoopCount and Stream->FadeOut < Stream->Volume) // Do fade out
                             {
                                 if (Stream->StreamMessage)
                                     (*Stream->StreamMessage)(Stream, SND_MSG_START_FADE);
@@ -2712,7 +2712,7 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
                             memset(((char *)(mem) + bytesread), 0, Length - bytesread);
                     }
 
-                    if (!(Stream->Status & SND_IS_IMAADPCM))
+                    if ( not (Stream->Status & SND_IS_IMAADPCM))
                         Stream->memptr = ((char *)(Stream->startptr) + Stream->StreamSize);
                 }
                 else if (Stream->Status & SND_STREAM_CALLBACK)
@@ -2786,7 +2786,7 @@ void CSoundMgr::StopAllStreams()
 
 void CSoundMgr::StreamPause(SoundStream *Stream)
 {
-    if (!Stream)
+    if ( not Stream)
         return;
 
     if (gSoundDriver)
@@ -2799,7 +2799,7 @@ void CSoundMgr::StreamPause(SoundStream *Stream)
 
 void CSoundMgr::StreamFadeOut(SoundStream *Stream)
 {
-    if (!Stream)
+    if ( not Stream)
         return;
 
     if (gSoundDriver)
@@ -2813,7 +2813,7 @@ void CSoundMgr::StreamFadeOut(SoundStream *Stream)
 
 void CSoundMgr::StreamResume(SoundStream *Stream)
 {
-    if (!Stream)
+    if ( not Stream)
         return;
 
     if (gSoundDriver)
@@ -2833,7 +2833,7 @@ void CSoundMgr::StreamResume(SoundStream *Stream)
 
 void CSoundMgr::StreamResumeFadeIn(SoundStream *Stream)
 {
-    if (!Stream)
+    if ( not Stream)
         return;
 
     Stream->Status  or_eq  SND_STREAM_FADE_IN;
@@ -2843,7 +2843,7 @@ void CSoundMgr::StreamResumeFadeIn(SoundStream *Stream)
 
 void CSoundMgr::StreamStop(SoundStream *Stream)
 {
-    if (!Stream)
+    if ( not Stream)
         return;
 
     if (gSoundDriver)
@@ -2864,7 +2864,7 @@ void CSoundMgr::StreamStop(SoundStream *Stream)
 
 void CSoundMgr::StreamStopWithFade(SoundStream *Stream)
 {
-    if (!Stream)
+    if ( not Stream)
         return;
 
     if (gSoundDriver)
@@ -2906,7 +2906,7 @@ BOOL CSoundMgr::StartFileStream(long StreamID, char *filename, long Flags, long 
     size = LoadRiffFormat(Stream->fp, &Header, &Stream->HeaderOffset, &NumSamples);
     Stream->HeaderOffset += startoffset;
 
-    if (!size)
+    if ( not size)
     {
         CloseHandle(Stream->fp);
         Stream->fp = INVALID_HANDLE_VALUE;
@@ -2925,7 +2925,7 @@ BOOL CSoundMgr::StartFileStream(long StreamID, char *filename, long Flags, long 
     {
         Stream->Status  or_eq  SND_IS_IMAADPCM;
 
-        if (!Stream->ImaInfo)
+        if ( not Stream->ImaInfo)
             return(FALSE);
 
         Stream->ImaInfo->sidx = 0;
@@ -3285,7 +3285,7 @@ void CSoundMgr::ThreadHandler()
         //else {
         Sleep(dtime);
 
-        if (!g_bOldSoundAlg)
+        if ( not g_bOldSoundAlg)
         {
             F4EnterCriticalSection(StreamCSection);
 
@@ -3369,7 +3369,7 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
     // either we are in the 1st or 2nd half of the buffer.
     HRESULT hr = Stream->DSoundBuffer->GetCurrentPosition(&Pos, &Dummy);
 
-    if (!(Stream->Status & SND_STREAM_PART2))
+    if ( not (Stream->Status & SND_STREAM_PART2))
     {
         // if we have moved beyond the half way stage, we fill up
         // the first half of the buffer.
@@ -3378,7 +3378,7 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
         {
             bytesread = ReadStream(Stream, 0, Stream->HalfSize);
 
-            if (!bytesread)
+            if ( not bytesread)
             {
                 if (Stream->Status & SND_STREAM_FINAL)
                 {
@@ -3401,7 +3401,7 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
         {
             bytesread = ReadStream(Stream, Stream->HalfSize, Stream->HalfSize);
 
-            if (!bytesread)
+            if ( not bytesread)
             {
                 if (Stream->Status & SND_STREAM_FINAL)
                 {
@@ -3730,7 +3730,7 @@ LPDIRECTSOUNDBUFFER CSoundMgr::LoadWaveFile(char *Filename, SFX_DEF_ENTRY *sfx)
 
         if (newsnd)
         {
-            if (!newsnd->Format)
+            if ( not newsnd->Format)
             {
                 if (newsnd->data)
                     delete newsnd->data;

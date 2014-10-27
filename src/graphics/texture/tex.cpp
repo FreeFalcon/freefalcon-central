@@ -384,7 +384,7 @@ bool Texture::CreateTexture(char *strName)
         // OW: Prevent a crash
         if (imageData not_eq NULL)
         {
-            if (!texHandle->Load(0, chromaKey, (BYTE *)imageData))
+            if ( not texHandle->Load(0, chromaKey, (BYTE *)imageData))
             {
                 return false;
             }
@@ -472,7 +472,7 @@ bool Texture::UpdateMPR(char *strName)
     ShiAssert(imageData);
     ShiAssert(texHandle);
 
-    if (!texHandle or !imageData)
+    if ( not texHandle or !imageData)
     {
         return false;
     }
@@ -568,7 +568,7 @@ TextureHandle::~TextureHandle()
 bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width, UInt16 height, DWORD dwFlags)
 {
 
-    if (!rc) // FRB CTD
+    if ( not rc) // FRB CTD
         return false;
 
     m_dwFlags = info;
@@ -651,7 +651,7 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
         // Turn on texture management for HW devices
         if (rc and (rc->m_eDeviceCategory >= DXContext::D3DDeviceCategory_Hardware))
         {
-            if (!(dwFlags & FLAG_NOTMANAGED))
+            if ( not (dwFlags & FLAG_NOTMANAGED))
             {
                 ddsd.ddsCaps.dwCaps2  or_eq  DDSCAPS2_TEXTUREMANAGE;
 
@@ -815,7 +815,7 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
     ShiAssert(TexBuffer);
 
     // MLR 2003-10-10 - Prevent CTD.
-    if (!TexBuffer)
+    if ( not TexBuffer)
     {
         return false;
     }
@@ -890,11 +890,11 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
             delete[] m_pImageData;
         }
 
-        if (!bDoNotCopyBits)
+        if ( not bDoNotCopyBits)
         {
             m_pImageData = new BYTE[dwSize];
 
-            if (!m_pImageData)
+            if ( not m_pImageData)
             {
                 ReportTextureLoadError(E_OUTOFMEMORY, true);
                 return false;
@@ -916,9 +916,9 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
         }
 
         // Load it
-        if (!bDoNotLoadBits)
+        if ( not bDoNotLoadBits)
         {
-            if (!Reload())
+            if ( not Reload())
             {
                 // If loading failed free memory
                 if (m_pImageData and m_bImageDataOwned) delete[] m_pImageData;
@@ -1008,18 +1008,18 @@ inline WORD _RGB8toARGB4444(DWORD sc)
 bool TextureHandle::Reload()
 {
     // No DX context
-    if (!m_pDDS) return false;
+    if ( not m_pDDS) return false;
 
-    if (!(m_dwFlags & MPR_TI_DDS))
+    if ( not (m_dwFlags & MPR_TI_DDS))
     {
-        if (!(m_dwFlags & MPR_TI_PALETTE))
+        if ( not (m_dwFlags & MPR_TI_PALETTE))
         {
             ShiAssert(false);
             return true;
         }
     }
 
-    if (!m_pImageData) return false;
+    if ( not m_pImageData) return false;
 
     DDSURFACEDESC2 ddsd;
     ZeroMemory(&ddsd, sizeof(ddsd));
@@ -1238,7 +1238,7 @@ bool TextureHandle::Reload()
 
                 case D3DX_SF_R5G6B5:
                 {
-                    ShiAssert(!(m_dwFlags & MPR_TI_CHROMAKEY));
+                    ShiAssert( not (m_dwFlags & MPR_TI_CHROMAKEY));
 
                     WORD dwTmp;
 
@@ -1281,7 +1281,7 @@ bool TextureHandle::Reload()
 
                 case D3DX_SF_R5G5B5:
                 {
-                    ShiAssert(!(m_dwFlags & MPR_TI_CHROMAKEY));
+                    ShiAssert( not (m_dwFlags & MPR_TI_CHROMAKEY));
 
                     WORD dwTmp;
 
@@ -1476,12 +1476,12 @@ void TextureHandle::StaticInit(IDirect3DDevice7 *pD3DD)
     ShiAssert(pD3DD);
     m_pD3DD = pD3DD;
 
-    if (!m_pD3DD)
+    if ( not m_pD3DD)
         return;
 
     m_pD3DHWDeviceDesc = new D3DDEVICEDESC7;
 
-    if (!m_pD3DHWDeviceDesc) return;
+    if ( not m_pD3DHWDeviceDesc) return;
 
     HRESULT hr = m_pD3DD->GetCaps(m_pD3DHWDeviceDesc);
     ShiAssert(SUCCEEDED(hr));
@@ -1556,7 +1556,7 @@ HRESULT CALLBACK TextureHandle::TextureSearchCallback(DDPIXELFORMAT* pddpf, VOID
     // Retired
     if (ptsi->bUsePalette)
     {
-        if (!(pddpf->dwFlags & DDPF_PALETTEINDEXED8))
+        if ( not (pddpf->dwFlags & DDPF_PALETTEINDEXED8))
         {
             return DDENUMRET_OK;
         }
@@ -1595,7 +1595,7 @@ HRESULT CALLBACK TextureHandle::TextureSearchCallback(DDPIXELFORMAT* pddpf, VOID
         return DDENUMRET_OK;
     }
 
-    if ((!ptsi->dwDesiredAlphaBPP) and (pddpf->dwFlags & DDPF_ALPHAPIXELS))
+    if (( not ptsi->dwDesiredAlphaBPP) and (pddpf->dwFlags & DDPF_ALPHAPIXELS))
     {
         return DDENUMRET_OK;
     }
@@ -1652,7 +1652,7 @@ DWORD RGB32ToSurfaceColor(DWORD col, LPDIRECTDRAWSURFACE7 lpDDSurface, DDSURFACE
     redShift = 8;
     ShiAssert(mask);
 
-    while (!(mask & 1))
+    while ( not (mask & 1))
     {
         mask >>= 1;
         redShift--;
@@ -1669,7 +1669,7 @@ DWORD RGB32ToSurfaceColor(DWORD col, LPDIRECTDRAWSURFACE7 lpDDSurface, DDSURFACE
     greenShift = 16;
     ShiAssert(mask);
 
-    while (!(mask & 1))
+    while ( not (mask & 1))
     {
         mask >>= 1;
         greenShift--;
@@ -1686,7 +1686,7 @@ DWORD RGB32ToSurfaceColor(DWORD col, LPDIRECTDRAWSURFACE7 lpDDSurface, DDSURFACE
     ShiAssert(mask);
     blueShift = 24;
 
-    while (!(mask & 1))
+    while ( not (mask & 1))
     {
         mask >>= 1;
         blueShift--;
@@ -1848,7 +1848,7 @@ bool Texture::DumpImageToFile(char *szFile, int palID)
     ShiAssert(this->palette);
     ShiAssert(this->palette->paletteData);
 
-    if (!this->imageData) return false;
+    if ( not this->imageData) return false;
 
     sprintf(szFileName, "%s.dds", szFile);
 
@@ -1953,7 +1953,7 @@ bool Texture::DumpImageToFile(char *szFile, int palID)
      }
     */
     // Filter out fake chroma textures
-    if (!bChroma)
+    if ( not bChroma)
     {
         this->flags and_eq compl MPR_TI_CHROMAKEY;
     }

@@ -44,7 +44,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
     CheckLockedTarget();
 
     // Don't do anything if no emitting
-    if (!isEmitting)
+    if ( not isEmitting)
     {
 #ifdef SAMDEBUG
 
@@ -107,7 +107,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
 
     // Just in case we don't have a list but we do have a locked target OR IF THE RADAR IS NOT IN AA MODE
     // I noticed the radar isn't really used in air to ground mode so we'll do just the lockedTarget then
-    if (!tmpPtr or mode not_eq AA)
+    if ( not tmpPtr or mode not_eq AA)
         tmpPtr = lockedTarget;
 
     while (tmpPtr)
@@ -196,7 +196,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
                 // 2002-03-21 ADDED BY S.G. When a radar is doing its first sweep
                 // after creation, don't fade the signal or the SARH missile launched
                 // by an aggregated battalion that just deaggregated will lose its sensor lock
-                if (!(flag & FirstSweep))
+                if ( not (flag & FirstSweep))
                     canSee  or_eq  SG_FADING; // this will make the sensor state max set to detection
             }
 
@@ -228,7 +228,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
                 // It's a valid lock, mark it as such. Even when fading, we can launch
                 tmpPtr->localData->sensorState[Radar] = SensorTrack;
 
-            if (!(canSee & SG_FADING))   // Is the signal fading?
+            if ( not (canSee & SG_FADING))   // Is the signal fading?
             {
                 // No, so update the last hit field
                 tmpPtr->localData->rdrLastHit = SimLibElapsedTime;
@@ -297,7 +297,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
                 platform->SetRdrElCenter(tmpPtr->localData->el);
 
                 // Tag the target as seen from this frame, unless the target is fading
-                if (!(canSee & SG_FADING))
+                if ( not (canSee & SG_FADING))
                 {
                     if (sendThisFrame)
                     {
@@ -319,7 +319,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
     }
 
     // If we do not have a locked target, leave the radar centered...
-    if (!lockedTarget)
+    if ( not lockedTarget)
     {
         SetSeekerPos(0.0f, 0.0f);
         platform->SetRdrAz(radarData->ScanHalfAngle);
@@ -343,7 +343,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
 
     // No counter measures deployed by campaign things
     // countermeasures only work when tracking (for now)
-    if (!lockedTarget or !target or !target->BaseData()->IsSim())
+    if ( not lockedTarget or !target or !target->BaseData()->IsSim())
     {
         return lockedTarget;
     }
@@ -366,7 +366,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
 
         // MonoPrint ("ConsiderDecoy %08x %f: ", cm, target->localData->range);
 
-        if (!cm)
+        if ( not cm)
         {
             // We'll have to wait until next time
             // (probably because the create event hasn't been processed locally yet)
@@ -386,7 +386,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
         //}
 
         // If we've beaten the missile guidance, countermeasures work two times better
-        //if (!canGuide) {
+        //if ( not canGuide) {
         // chance *= 2.0f;
         //}
 

@@ -193,7 +193,7 @@ AirframeClass::SimpleModel(void)
                 r = 0.0F;
         }
 
-        if (!(playerFlightModelHack  and 
+        if ( not (playerFlightModelHack  and 
               platform == SimDriver.GetPlayerEntity()  and 
               platform->AutopilotType() == AircraftClass::APOff))
         {
@@ -278,7 +278,7 @@ AirframeClass::SimpleModel(void)
     // Assume 1 G for wings level, max at 7 gs at +/- 90 degrees roll
     float desiredGs = 1.0F;
 
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
     {
         //nzcgs = nzcgb = max(0.0F, (15.0F - weight/liftO_alp)*0.25F);
         if (ctlpitch > 0.0F)
@@ -347,7 +347,7 @@ AirframeClass::SimpleModel(void)
     {
         Gains();
 
-        if (!IsSet(InAir))
+        if ( not IsSet(InAir))
         {
             if (desiredGs)
                 tmp = CalcDesAlpha(desiredGs);
@@ -387,9 +387,9 @@ AirframeClass::SimpleModel(void)
         ydot =   vt * platform->platformAngles.cosgam *
                  platform->platformAngles.sinsig;
         zdot =  -vt * platform->platformAngles.singam;
-        ShiAssert(!_isnan(xdot));
-        ShiAssert(!_isnan(ydot));
-        ShiAssert(!_isnan(zdot));
+        ShiAssert( not _isnan(xdot));
+        ShiAssert( not _isnan(ydot));
+        ShiAssert( not _isnan(zdot));
     }
     else
     {
@@ -401,7 +401,7 @@ AirframeClass::SimpleModel(void)
 
     //RunLandingGear(); // MLR 2003-10-15
 
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
     {
         groundDeltaX += dT * xdot * gSpeedyGonzales;
         groundDeltaY += dT * ydot * gSpeedyGonzales;
@@ -422,9 +422,9 @@ AirframeClass::SimpleModel(void)
         groundDeltaY = 0.0f;
     }
 
-    ShiAssert(!_isnan(x));
-    ShiAssert(!_isnan(y));
-    ShiAssert(!_isnan(z));
+    ShiAssert( not _isnan(x));
+    ShiAssert( not _isnan(y));
+    ShiAssert( not _isnan(z));
 
     groundZ = OTWDriver.GetGroundLevel(x, y, &gndNormal);
     // Normalize terrain normal
@@ -436,7 +436,7 @@ AirframeClass::SimpleModel(void)
     /*----------------------*/
     /* set flight status
     /*----------------------*/
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
     {
         float gndGmma, relMu;
 

@@ -750,7 +750,7 @@ void tactical_mission::info_load(char *the_filename)
 
     data = read_te_file(filename, &size);
 
-    if (!data)
+    if ( not data)
     {
         MonoPrint("Cannot open a file we just decided existed\n");
 
@@ -777,13 +777,13 @@ void tactical_mission::load(void)
     *data,
     *name;
 
-    if (!is_online)
+    if ( not is_online)
     {
         data = read_te_file(filename, &size);
 
         //MonoPrint ("Tactical_Mission::Load %s\n", filename);
 
-        if (!data)
+        if ( not data)
         {
             MonoPrint("Cannot open a file we just decided existed\n");
 
@@ -917,7 +917,7 @@ void tactical_mission::preload(void)
 
     // StartReadCampFile (game_TacticalEngagement, gUI_CampaignFile);
     //
-    // if (!LoadTeams (gUI_CampaignFile))
+    // if ( not LoadTeams (gUI_CampaignFile))
     // {
     // AddNewTeams (Neutral);
     // }
@@ -1172,7 +1172,7 @@ static int test_filter(victory_condition *vc, victory_condition_filter filter, i
 
         case vcf_all_remaining:
         {
-            if (!vc->get_active())
+            if ( not vc->get_active())
             {
                 victory_condition::leave_critical_section();
 
@@ -1203,7 +1203,7 @@ static int test_filter(victory_condition *vc, victory_condition_filter filter, i
             if
             (
                 (team == vc->get_team())  and 
-                (!vc->get_active())
+                ( not vc->get_active())
             )
             {
                 victory_condition::leave_critical_section();
@@ -1366,7 +1366,7 @@ void tactical_mission::evaluate_victory_conditions(void)
 
     while (vc)
     {
-        if (!vc->active)
+        if ( not vc->active)
         {
             old_active = vc->active;
 
@@ -1453,7 +1453,7 @@ void tactical_mission::evaluate_victory_conditions(void)
 
                     if (unit)
                     {
-                        if (!unit->IsUnit())
+                        if ( not unit->IsUnit())
                             break;
 
                         per = 10 * unit->GetTotalVehicles() / unit->GetFullstrengthVehicles();
@@ -1486,10 +1486,10 @@ void tactical_mission::evaluate_victory_conditions(void)
 
                     if (unit)
                     {
-                        if (!unit->IsUnit())
+                        if ( not unit->IsUnit())
                             break;
 
-                        if (!vc->max_vehicles)
+                        if ( not vc->max_vehicles)
                         {
                             vc->max_vehicles = unit->GetTotalVehicles();
                         }

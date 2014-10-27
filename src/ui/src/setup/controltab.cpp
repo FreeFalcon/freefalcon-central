@@ -139,7 +139,7 @@ void DelKeyFileCB(long ID, short hittype, C_Base *control);
 
 void HideKeyStatusLines(C_Window *win)
 {
-    if (!win)
+    if ( not win)
         return;
 
     C_Line *line;
@@ -152,7 +152,7 @@ void HideKeyStatusLines(C_Window *win)
     {
         button = (C_Button *)win->FindControl(KEYCODES + count);
 
-        if (!button or button->GetUserNumber(EDITABLE) not_eq -1)
+        if ( not button or button->GetUserNumber(EDITABLE) not_eq -1)
         {
             line->SetFlagBitOn(C_BIT_INVISIBLE);
             line->Refresh();
@@ -365,7 +365,7 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
-    if (!win) return;
+    if ( not win) return;
 
     /* array of pointers to all axis listboxes in this sheet */
     C_ListBox *listbox;
@@ -544,7 +544,7 @@ void MouseLookCB(long ID, short hittype, C_Base *control)
         return;
     }
 
-    PlayerOptions.SetMouseLook(!PlayerOptions.GetMouseLook());
+    PlayerOptions.SetMouseLook( not PlayerOptions.GetMouseLook());
 }
 
 /************************************************************************/
@@ -575,7 +575,7 @@ void EnableFFBCB(long ID, short hittype, C_Base *control)
 
     if (button)
         if (hasForceFeedback == TRUE)
-            PlayerOptions.SetFFB(!PlayerOptions.GetFFB());
+            PlayerOptions.SetFFB( not PlayerOptions.GetFFB());
         else
             button->SetState(C_STATE_0);
 }
@@ -594,7 +594,7 @@ void ToggleClickableModeCB(long ID, short hittype, C_Base *control)
     C_Button* button = (C_Button*)control;
 
     if (button)
-        PlayerOptions.SetClickablePitMode(!PlayerOptions.GetClickablePitMode());
+        PlayerOptions.SetClickablePitMode( not PlayerOptions.GetClickablePitMode());
 }
 
 /************************************************************************/
@@ -611,7 +611,7 @@ void TrackIR2dCB(long ID, short hittype, C_Base *control)
 
     if (button)
         if (g_bEnableTrackIR)
-            PlayerOptions.SetTrackIR2d(!PlayerOptions.Get2dTrackIR());
+            PlayerOptions.SetTrackIR2d( not PlayerOptions.Get2dTrackIR());
         else
             button->SetState(C_STATE_0);
 }
@@ -630,7 +630,7 @@ void TrackIR3dCB(long ID, short hittype, C_Base *control)
 
     if (button)
         if (g_bEnableTrackIR)
-            PlayerOptions.SetTrackIR3d(!PlayerOptions.Get3dTrackIR());
+            PlayerOptions.SetTrackIR3d( not PlayerOptions.Get3dTrackIR());
         else
             button->SetState(C_STATE_0);
 }
@@ -669,7 +669,7 @@ void MouseLookSensitivityCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
-    if (!control)
+    if ( not control)
     {
         ShiAssert(false);
         return;
@@ -705,7 +705,7 @@ void MouseWheelSensitivityCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
-    if (!control)
+    if ( not control)
     {
         ShiAssert(false);
         return;
@@ -737,7 +737,7 @@ void KeyPOVPanningSensitivityCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
-    if (!control)
+    if ( not control)
     {
         ShiAssert(false);
         return;
@@ -758,7 +758,7 @@ void KeyPOVPanningSensitivityCB(long ID, short hittype, C_Base *control)
 /************************************************************************/
 void MarkMappedAxis()
 {
-    if (!gTotalJoy)
+    if ( not gTotalJoy)
         return;
 
     // mark all unmapped..
@@ -979,12 +979,12 @@ void AxisChangeCB(long, short hittype, C_Base *me)
     if ((hittype not_eq C_TYPE_SELECT))
         return;
 
-    if (!me)
+    if ( not me)
         return;
 
     C_ListBox *listbox = (C_ListBox*)me;
 
-    if (!listbox)
+    if ( not listbox)
         return;
 
     /* pointer to mommy */
@@ -996,7 +996,7 @@ void AxisChangeCB(long, short hittype, C_Base *me)
 
     win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
-    if (!win) return;
+    if ( not win) return;
 
     // k now I figure we can start working ;)
 
@@ -1111,7 +1111,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
 
     win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
-    if (!win) return;
+    if ( not win) return;
 
     MarkMappedAxis();
 
@@ -1988,7 +1988,7 @@ void RefreshJoystickCB(long, short, C_Base *)
     // Retro - trying to get some of this shit into my advanced controller window..
     win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
-    if (!win) return;
+    if ( not win) return;
 
     for (int i = 0; i < AXIS_MAX; i++)
     {
@@ -2151,7 +2151,7 @@ SIM_INT Calibrate ( void )
  text2->Refresh();
  }
 
- if(!Calibration.calibrated)
+ if( not Calibration.calibrated)
  {
  IO.analog[0].mUp = IO.analog[0].mDown = IO.analog[0].bUp = IO.analog[0].bDown = 0.0F;
  IO.analog[1].mUp = IO.analog[1].mDown = IO.analog[1].bUp = IO.analog[1].bDown = 1.1F;
@@ -2164,7 +2164,7 @@ SIM_INT Calibrate ( void )
 
  IO.analog[0].isUsed = IO.analog[1].isUsed = TRUE;
 
- if (!(S_joycaps.wCaps & JOYCAPS_HASZ))
+ if ( not (S_joycaps.wCaps & JOYCAPS_HASZ))
  {
  IO.analog[2].isUsed = FALSE;
  IO.analog[2].max = 0;
@@ -2176,7 +2176,7 @@ SIM_INT Calibrate ( void )
  IO.analog[2].isUsed = TRUE;
  }
 
- if (!(S_joycaps.wCaps & JOYCAPS_HASR))
+ if ( not (S_joycaps.wCaps & JOYCAPS_HASR))
  {
  IO.analog[3].isUsed= FALSE;
  IO.analog[3].max = 1;
@@ -2508,7 +2508,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
 
                     //there is a function mapped but it's not visible
                     //don't allow user to remap this key combo
-                    if (!ID and oldFunc)
+                    if ( not ID and oldFunc)
                         return TRUE;
 
 
@@ -2710,7 +2710,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
                     else
                         text->SetText(TXT_NO_FUNCTION);
 
-                    if (!KeyVar.EditKey and temp)
+                    if ( not KeyVar.EditKey and temp)
                     {
                         UI95_RECT Client;
                         Client = win->GetClientArea(temp->GetClient());
@@ -2799,13 +2799,13 @@ int AddKeyMapLines(C_Window *win, C_Line *Hline, C_Line *Vline, int count)
 {
     int retval = TRUE;
 
-    if (!win)
+    if ( not win)
         return FALSE;
 
     C_Line *line;
     line = (C_Line *)win->FindControl(HLINE + count);
 
-    if (!line)
+    if ( not line)
     {
         line = new C_Line;
 
@@ -2828,7 +2828,7 @@ int AddKeyMapLines(C_Window *win, C_Line *Hline, C_Line *Vline, int count)
 
     line = (C_Line *)win->FindControl(VLINE + count);
 
-    if (!line)
+    if ( not line)
     {
         line = new C_Line;
 
@@ -3043,7 +3043,7 @@ int SetHdrStatusLine(C_Window *win, C_Button *Keycodes, C_Line *Vline, KeyMap &M
 
 BOOL SaveKeyMapList(char *filename)
 {
-    if (!KeyVar.Modified)
+    if ( not KeyVar.Modified)
         return TRUE;
 
     KeyVar.Modified = FALSE;
@@ -3060,7 +3060,7 @@ BOOL SaveKeyMapList(char *filename)
 
     win = gMainHandler->FindWindow(SETUP_WIN);
 
-    if (!win)
+    if ( not win)
         return FALSE;
 
     char path[_MAX_PATH];
@@ -3068,7 +3068,7 @@ BOOL SaveKeyMapList(char *filename)
 
     fp = fopen(path, "wt");
 
-    if (!fp)
+    if ( not fp)
         return FALSE;
 
     button = (C_Button *)win->FindControl(KEYCODES);
@@ -3167,7 +3167,7 @@ void SaveKeyCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SAVE_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     gMainHandler->HideWindow(win);
@@ -3300,7 +3300,7 @@ int UpdateKeyMapList(char *fname, int flag)
 
     win = gMainHandler->FindWindow(SETUP_WIN);
 
-    if (!win)
+    if ( not win)
     {
         KeyVar.NeedUpdate = TRUE;
         return FALSE;
@@ -3313,7 +3313,7 @@ int UpdateKeyMapList(char *fname, int flag)
 
     fp = fopen(filename, "rt");
 
-    if (!fp)
+    if ( not fp)
         return FALSE;
 
     UserFunctionTable.ClearTable();
@@ -3383,7 +3383,7 @@ int UpdateKeyMapList(char *fname, int flag)
 
         keydescrip[0] = 0;
 
-        if (!theFunc)
+        if ( not theFunc)
             continue;
 
         KeyMap Map;
@@ -3410,7 +3410,7 @@ int UpdateKeyMapList(char *fname, int flag)
         parsed[strlen(descrip) - 2] = 0;
         parsed[37] = 0;
 
-        if (!count)
+        if ( not count)
         {
             //first time through .. special case
             UpdateKeyMapButton(button, Map, count);
@@ -3498,19 +3498,19 @@ int CreateKeyMapList(char *filename)
 
     win = gMainHandler->FindWindow(SETUP_WIN);
 
-    if (!win)
+    if ( not win)
         return FALSE;
 
     sprintf(path, "%s\\config\\%s.key", FalconDataDirectory, filename);
 
     fp = fopen(path, "rt");
 
-    if (!fp)
+    if ( not fp)
     {
         sprintf(path, "%s\\config\\keystrokes.key", FalconDataDirectory);
         fp = fopen(path, "rt");
 
-        if (!fp)
+        if ( not fp)
             return FALSE;
     }
 
@@ -3574,7 +3574,7 @@ int CreateKeyMapList(char *filename)
 
         keydescrip[0] = 0;
 
-        if (!theFunc)
+        if ( not theFunc)
             continue;
 
         KeyMap Map;
@@ -3601,7 +3601,7 @@ int CreateKeyMapList(char *filename)
         parsed[strlen(descrip) - 2] = 0;
         parsed[37] = 0;
 
-        if (!count)
+        if ( not count)
         {
             NumDispKeys++;
             //first time through .. special case
@@ -3660,7 +3660,7 @@ void SetJoystickAndPOVSymbols(const bool isActive, C_Base *control)
 
         if (button not_eq NULL)
         {
-            if (!isActive)
+            if ( not isActive)
                 button->SetFlagBitOn(C_BIT_INVISIBLE);
             else
                 button->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -3688,7 +3688,7 @@ void SetThrottleAndRudderBars(C_Base *control)
     if (line not_eq NULL)
     {
         // line->Refresh();
-        if (!IO.AnalogIsUsed(AXIS_THROTTLE))
+        if ( not IO.AnalogIsUsed(AXIS_THROTTLE))
         {
             line->SetColor(RGB(130, 130, 130)); //grey
             line->SetH(Throttle.bottom - Throttle.top);
@@ -3739,7 +3739,7 @@ void SetThrottleAndRudderBars(C_Base *control)
     {
         line->Refresh();
 
-        if (!IO.AnalogIsUsed(AXIS_YAW))
+        if ( not IO.AnalogIsUsed(AXIS_YAW))
         {
             line->SetColor(RGB(130, 130, 130)); //grey
             line->SetH(Rudder.bottom - Rudder.top);
@@ -3828,7 +3828,7 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
 
             if (button not_eq NULL)
             {
-                if (!hasPOV)
+                if ( not hasPOV)
                     button->SetFlagBitOn(C_BIT_INVISIBLE);
                 else
                     button->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -3868,7 +3868,7 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
 
         if (gDIDevNames[newcontroller])
         {
-            if (!strcmp(gDIDevNames[newcontroller], "HOTAS Cougar Joystick"))
+            if ( not strcmp(gDIDevNames[newcontroller], "HOTAS Cougar Joystick"))
             {
                 weHaveACougerUser = true;
             }
@@ -3940,7 +3940,7 @@ void BuildControllerList(C_ListBox *lbox)
     {
         for (int i = 0; i < gTotalJoy; i++)
         {
-            if (!stricmp(gDIDevNames[SIM_JOYSTICK1 + i], "tm"))
+            if ( not stricmp(gDIDevNames[SIM_JOYSTICK1 + i], "tm"))
             {
                 delete [] gDIDevNames[SIM_JOYSTICK1 + i];
                 gDIDevNames[SIM_JOYSTICK1 + i] = new TCHAR[MAX_PATH];

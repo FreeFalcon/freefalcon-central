@@ -57,7 +57,7 @@ int TMap::Setup(const char *mapPath)
     // Read the number of feet between the highest detail posts in this map
     retval = ReadFile(headerFile, &FeetPerPost, sizeof(FeetPerPost), &bytesRead, NULL);
 
-    if ((!retval) or (bytesRead not_eq sizeof(FeetPerPost)))
+    if (( not retval) or (bytesRead not_eq sizeof(FeetPerPost)))
     {
         char string[80];
         char message[120];
@@ -74,7 +74,7 @@ int TMap::Setup(const char *mapPath)
     retval = ReadFile(headerFile, &MEAheight,   sizeof(MEAheight),   &bytesRead, NULL);
     retval = ReadFile(headerFile, &FTtoMEAcell, sizeof(FTtoMEAcell), &bytesRead, NULL);
 
-    if ((!retval) or (bytesRead not_eq sizeof(FTtoMEAcell)))
+    if (( not retval) or (bytesRead not_eq sizeof(FTtoMEAcell)))
     {
         char string[80];
         char message[120];
@@ -87,7 +87,7 @@ int TMap::Setup(const char *mapPath)
     // Read the number of levels we have available from the map header file
     retval = ReadFile(headerFile, &nLevels, sizeof(nLevels), &bytesRead, NULL);
 
-    if ((!retval) or (bytesRead not_eq sizeof(nLevels)))
+    if (( not retval) or (bytesRead not_eq sizeof(nLevels)))
     {
         char string[80];
         char message[120];
@@ -102,7 +102,7 @@ int TMap::Setup(const char *mapPath)
     // Read the number of the last level which has conventional textures applied
     retval = ReadFile(headerFile, &lastNearTexturedLOD, sizeof(lastNearTexturedLOD), &bytesRead, NULL);
 
-    if ((!retval) or (bytesRead not_eq sizeof(lastNearTexturedLOD)))
+    if (( not retval) or (bytesRead not_eq sizeof(lastNearTexturedLOD)))
     {
         char string[80];
         char message[120];
@@ -117,7 +117,7 @@ int TMap::Setup(const char *mapPath)
     // Read the number of the last level which has far textures applied
     retval = ReadFile(headerFile, &lastFarTexturedLOD, sizeof(lastFarTexturedLOD), &bytesRead, NULL);
 
-    if ((!retval) or (bytesRead not_eq sizeof(lastFarTexturedLOD)))
+    if (( not retval) or (bytesRead not_eq sizeof(lastFarTexturedLOD)))
     {
         char string[80];
         char message[120];
@@ -136,7 +136,7 @@ int TMap::Setup(const char *mapPath)
     // Allocate memory for the map level objects
     Levels = new TLevel[ nLevels ];
 
-    if (!Levels)
+    if ( not Levels)
     {
         ShiError("Failed to allocate memory for map levels");
     }
@@ -154,7 +154,7 @@ int TMap::Setup(const char *mapPath)
             retval = ReadFile(headerFile, &height, sizeof(height), &bytesRead, NULL);
         }
 
-        if ((!retval) or (bytesRead not_eq sizeof(nLevels)))
+        if (( not retval) or (bytesRead not_eq sizeof(nLevels)))
         {
             char string[80];
             char message[120];
@@ -174,7 +174,7 @@ int TMap::Setup(const char *mapPath)
     float latitude, longitude;
     retval = ReadFile(headerFile, &flags, sizeof(flags), &bytesRead, NULL);
 
-    if (!retval  or bytesRead not_eq sizeof(flags))
+    if ( not retval  or bytesRead not_eq sizeof(flags))
     {
         flags = 0;
         ResetLatLong();
@@ -209,7 +209,7 @@ int TMap::Setup(const char *mapPath)
     float maxtheateralt;
     retval = ReadFile(headerFile, &maxtheateralt, sizeof(maxtheateralt), &bytesRead, NULL);
 
-    if (!retval  or bytesRead not_eq sizeof(maxtheateralt))
+    if ( not retval  or bytesRead not_eq sizeof(maxtheateralt))
     {
         g_MaximumTheaterAltitude = 12000.0F;
     }
@@ -273,7 +273,7 @@ void TMap::LoadColorTable(HANDLE inputFile)
     // Read the original color data
     retval = ReadFile(inputFile, palette, sizeof(palette), &bytesRead, NULL);
 
-    if ((!retval) or (bytesRead not_eq sizeof(palette)))
+    if (( not retval) or (bytesRead not_eq sizeof(palette)))
     {
         char string[80];
         char message[120];
@@ -351,7 +351,7 @@ void TMap::LoadMEAtable(const char *mapPath)
         target = &MEAarray[row * MEAwidth];
         retval = ReadFile(dataFile, target, MEAwidth * sizeof(*MEAarray), &bytesRead, NULL);
 
-        if ((!retval) or (bytesRead not_eq MEAwidth * sizeof(*MEAarray)))
+        if (( not retval) or (bytesRead not_eq MEAwidth * sizeof(*MEAarray)))
         {
             char string[80];
             char message[120];

@@ -104,11 +104,11 @@ int FalconSendObjData::Process(uchar autodisp)
             memset(session->objDataReceived, 0, FS_MAXBLK / 8);
         }
 
-        if (!session->objDataReceiveBuffer)
+        if ( not session->objDataReceiveBuffer)
             session->objDataReceiveBuffer = new uchar[dataBlock.totalSize];
 
         // Find the block size, if we havn't already
-        if (!gObjBlockSize)
+        if ( not gObjBlockSize)
             gObjBlockSize = F4VuMaxTCPMessageSize - (Size() - dataBlock.size);
 
         bufptr = session->objDataReceiveBuffer + dataBlock.block * gObjBlockSize;
@@ -124,7 +124,7 @@ int FalconSendObjData::Process(uchar autodisp)
         // Check if we've gotten all our blocks
         for (int i = 0; i < dataBlock.totalBlocks; i++)
         {
-            if (!(session->objDataReceived[i / 8] & (1 << (i % 8))))
+            if ( not (session->objDataReceived[i / 8] & (1 << (i % 8))))
                 return 0;
         }
 
@@ -179,11 +179,11 @@ void SendObjectiveDeltas(FalconSessionEntity *session, VuTargetEntity *target, u
     uchar *buffer, *bufptr;
     FalconSendObjData *msg;
 
-    if (!blocksNeeded)
+    if ( not blocksNeeded)
     {
         int set = rand();
 
-        if (!set)
+        if ( not set)
             set++;
 
         // Encode the objective data
@@ -193,7 +193,7 @@ void SendObjectiveDeltas(FalconSessionEntity *session, VuTargetEntity *target, u
     }
 
     // Find the block size, if we havn't already
-    if (!gObjBlockSize)
+    if ( not gObjBlockSize)
     {
         // This is a temporary message, purely for sizing purposes
         FalconSendObjData msg(session->Id(), target);
@@ -205,7 +205,7 @@ void SendObjectiveDeltas(FalconSessionEntity *session, VuTargetEntity *target, u
 
 #ifdef DEBUG_STARTUP
 
-    if (!blocksNeeded)
+    if ( not blocksNeeded)
         MonoPrint("Sending objective data (%d of %d blocks): ", needed, blocks);
     else
         MonoPrint("Resending objective data (%d of %d blocks): ", needed, blocks);
@@ -229,7 +229,7 @@ void SendObjectiveDeltas(FalconSessionEntity *session, VuTargetEntity *target, u
             sizeleft -= gObjBlockSize;
         }
 
-        if (!blocksNeeded or !(blocksNeeded[curBlock / 8] & (1 << (curBlock % 8))))
+        if ( not blocksNeeded or !(blocksNeeded[curBlock / 8] & (1 << (curBlock % 8))))
         {
             msg = new FalconSendObjData(session->Id(), target);
             msg->dataBlock.size = (short)blocksize;

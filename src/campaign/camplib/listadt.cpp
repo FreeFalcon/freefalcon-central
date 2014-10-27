@@ -47,19 +47,19 @@ ListClass::~ListClass(void)
 
 void ListClass::Insert(ListElementClass *newElement)
 {
-    if (!newElement)
+    if ( not newElement)
         return;
 
-    if (!front)
+    if ( not front)
     {
-        ShiAssert(!end);
+        ShiAssert( not end);
         front = newElement;
         end = newElement;
         ShiAssert(SanityCheck());
         return;
     }
 
-    if (!flags & LADT_SORTED_LIST)
+    if ( not flags & LADT_SORTED_LIST)
     {
         newElement->next = front;
         front->prev = newElement;
@@ -112,7 +112,7 @@ void ListClass::Insert(ListElementClass *newElement)
 
 void ListClass::InsertAtEnd(ListElementClass *newElement)
 {
-    if (!newElement)
+    if ( not newElement)
         return;
 
     if (flags & LADT_SORTED_LIST)
@@ -128,7 +128,7 @@ void ListClass::InsertAtEnd(ListElementClass *newElement)
 
     end = newElement;
 
-    if (!front)
+    if ( not front)
         front = newElement;
 
     ShiAssert(SanityCheck());
@@ -136,7 +136,7 @@ void ListClass::InsertAtEnd(ListElementClass *newElement)
 
 void ListClass::Remove(ListElementClass *oldElement)
 {
-    if (!oldElement)
+    if ( not oldElement)
         return;
 
     Detach(oldElement);
@@ -146,7 +146,7 @@ void ListClass::Remove(ListElementClass *oldElement)
 
 void ListClass::Detach(ListElementClass *oldElement)
 {
-    if (!oldElement)
+    if ( not oldElement)
         return;
 
     if (front == oldElement)
@@ -200,13 +200,13 @@ int ListClass::SanityCheck(void)
 {
     ListElementClass *cur, *next;
 
-    if (!front and !end)
+    if ( not front and !end)
         return 1;
 
     if (front == end and (front->prev or front->next))
         return 0;
 
-    if ((front and !end) or (!front and end))
+    if ((front and !end) or ( not front and end))
         return 0;
 
     if (front == (void*)0xdddddddd or front == (void*)0xfcfcfcfc)

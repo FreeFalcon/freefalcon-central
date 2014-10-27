@@ -117,7 +117,7 @@ void FalconDisplayConfiguration::Setup(int languageNum)
                  NULL /* create parms */
              );
 
-    if (!appWin)
+    if ( not appWin)
     {
         ShiError("Failed to construct main window");
     }
@@ -176,7 +176,7 @@ void FalconDisplayConfiguration::MakeWindow(void)
                  NULL /* create parms */
              );
 
-    if (!appWin)
+    if ( not appWin)
     {
         ShiError("Failed to construct main window");
     }
@@ -186,7 +186,7 @@ void FalconDisplayConfiguration::MakeWindow(void)
     tme.cbSize = sizeof(tme);
     tme.dwFlags = TME_LEAVE;
     tme.hwndTrack = appWin;
-    //if (!TrackMouseEvent(&tme)) {
+    //if ( not TrackMouseEvent(&tme)) {
     // ShiError( "Failed to track mouseleave");
     //}
 
@@ -288,7 +288,7 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
          }
          }*/
 
-        if (!pDI->SupportsSRT() and DisplayOptions.bRender2Texture)
+        if ( not pDI->SupportsSRT() and DisplayOptions.bRender2Texture)
             DisplayOptions.bRender2Texture = false;
     }
 

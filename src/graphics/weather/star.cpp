@@ -217,9 +217,9 @@ int CStar::LeapYear(int year)
 {
     int leap = 0;
 
-    if (!(year & 3))
+    if ( not (year & 3))
     {
-        if (!(year % 400)) leap = 1;
+        if ( not (year % 400)) leap = 1;
         else if (year % 100) leap = 1;
     }
 
@@ -249,7 +249,7 @@ float CStar::ConvertHour(int hour, int min, float sec)
 
 void CStar::CalculateDate(int *day, int *month, int *year, int extraday)
 {
-    if (!extraday) return;
+    if ( not extraday) return;
 
     int d = *day + extraday;
     int m = *month;
@@ -330,30 +330,30 @@ int CStar::Setup(char *starfile, float maxmagnitude)
         fscanf(in, "%s", buffer);
         strupr(buffer);
 
-        if (!strcmp(buffer, "ZZZZ")) break;
-        else if (!strcmp(buffer, "TOTALCONSTELLATION"))
+        if ( not strcmp(buffer, "ZZZZ")) break;
+        else if ( not strcmp(buffer, "TOTALCONSTELLATION"))
         {
             fscanf(in, "%d", &totalcons);
         }
-        else if (!strcmp(buffer, "TOTALSTAR"))
+        else if ( not strcmp(buffer, "TOTALSTAR"))
         {
             fscanf(in, "%d", &totalstar);
         }
-        else if (!strcmp(buffer, "MINMAG"))
+        else if ( not strcmp(buffer, "MINMAG"))
         {
             fscanf(in, "%f", &minmag);
         }
-        else if (!strcmp(buffer, "MAXMAG"))
+        else if ( not strcmp(buffer, "MAXMAG"))
         {
             fscanf(in, "%f", &maxmag);
 
             if (maxmag > maxmagnitude) maxmag = maxmagnitude;
         }
-        else if (!strcmp(buffer, "MININTENSITY"))
+        else if ( not strcmp(buffer, "MININTENSITY"))
         {
             fscanf(in, "%f", &minint);
         }
-        else if (!strcmp(buffer, "MAXINTENSITY"))
+        else if ( not strcmp(buffer, "MAXINTENSITY"))
         {
             fscanf(in, "%f", &maxint);
         }
@@ -361,13 +361,13 @@ int CStar::Setup(char *starfile, float maxmagnitude)
 
     StarData *data = NEW(StarData);
 
-    if (!data)
+    if ( not data)
     {
         fclose(in);
         return 2;
     }
 
-    if (!totalstar)
+    if ( not totalstar)
     {
         fclose(in);
         return 2;
@@ -375,7 +375,7 @@ int CStar::Setup(char *starfile, float maxmagnitude)
 
     StarRecord *star = NEWARRAY(StarRecord, totalstar);
 
-    if (!star)
+    if ( not star)
     {
         FREE(data);
         fclose(in);
@@ -427,7 +427,7 @@ int CStar::Setup(char *starfile, float maxmagnitude)
 
     star = NEWARRAY(StarRecord, data -> totalstar);
 
-    if (!star)
+    if ( not star)
     {
         FREE(data -> star);
         FREE(data);
@@ -440,7 +440,7 @@ int CStar::Setup(char *starfile, float maxmagnitude)
 
     StarCoord *coord = NEWARRAY(StarCoord, data -> totalstar);
 
-    if (!coord)
+    if ( not coord)
     {
         FREE(data -> star);
         FREE(data);

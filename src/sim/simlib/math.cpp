@@ -1744,7 +1744,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
 
     dx = x2 - x1;
 
-    if (!dx) dx = 1; //me123 incase theres only one number in the dat file
+    if ( not dx) dx = 1; //me123 incase theres only one number in the dat file
 
     /*-------------------------------------------------*/
     /* If there is a last y use it as a starting point */
@@ -1810,7 +1810,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
 
     dy = y2 - y1;
 
-    if (!dy) dy = 1; //me123 incase theres only one number in the dat file
+    if ( not dy) dy = 1; //me123 incase theres only one number in the dat file
 
     /*-------------------------------------------------*/
     /* If there is a last z use it as a starting point */
@@ -1876,7 +1876,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
 
     dz = z2 - z1;
 
-    if (!dz) dz = 1; //me123 incase theres only one number in the dat file
+    if ( not dz) dz = 1; //me123 incase theres only one number in the dat file
 
     /*----------------------------------*/
     /* x INTERPOLATION AT z BREAKPOINT  */

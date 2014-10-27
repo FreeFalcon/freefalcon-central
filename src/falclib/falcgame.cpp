@@ -35,7 +35,7 @@ FalconGameEntity::FalconGameEntity(ulong domainMask, char *gameName) : VuGameEnt
 
     // KCK: To keep this from conflicting with entities we plan to load, force
     // the creater to something non-zero for single player games.
-    if (!share_.id_.creator_)
+    if ( not share_.id_.creator_)
     {
         share_.id_.creator_ = 1;
         // Make a new collection with a filter to match
@@ -259,7 +259,7 @@ void FalconGameEntity::DoFullUpdate(void)
 FalconGameType FalconGameEntity::GetGameType(void)
 {
     // KCK Hack to avoid having to type "if (FalconLocalGame and FalconLocalGame->GetGameType ...)"
-    if (!this)
+    if ( not this)
         return game_PlayerPool;
 
     return gameType;
@@ -291,14 +291,14 @@ VU_ERRCODE FalconGameEntity::Handle(VuFullUpdateEvent *event)
     {
 #if VU_ALL_FILTERED
 
-        if (!sessionCollection_->Find(ent))
+        if ( not sessionCollection_->Find(ent))
         {
             AddSession(ent);
         }
 
 #else
 
-        if (!sessionCollection_->Find(ent->Id()))
+        if ( not sessionCollection_->Find(ent->Id()))
         {
             AddSession(ent);
         }
@@ -337,7 +337,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
     else
         MonoPrint("No new host - shutting game down\n");
 
-    /* if (!sess or Id() == sess->GameId())
+    /* if ( not sess or Id() == sess->GameId())
      {
      // All Features get transfered to nearest session.
      // All Non-player transferable vehicles (i.e. non-dogfight) get transfered to nearest session.
@@ -358,7 +358,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      cs = (FalconSessionEntity*) siter.GetFirst();
      while (cs)
      {
-     if ((!sess or sess->Id() not_eq cs->Id()) and cs->GameId() == Id() and (ulong)cs->Id().creator_ < best)
+     if (( not sess or sess->Id() not_eq cs->Id()) and cs->GameId() == Id() and (ulong)cs->Id().creator_ < best)
      {
      best = cs->Id().creator_;
      new_host = cs;
@@ -388,10 +388,10 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      ent = dbiter.GetFirst();
      while (ent)
      {
-     if ((!sess or ent->OwnerId() == sess->Id()) and ent not_eq sess)
+     if (( not sess or ent->OwnerId() == sess->Id()) and ent not_eq sess)
      {
      ent_class = ent->EntityType()->classInfo_[VU_CLASS];
-     if (!new_host or (sess and !ent->IsTransferrable()))
+     if ( not new_host or (sess and !ent->IsTransferrable()))
      {
      vuDatabase->Remove(ent);
      }

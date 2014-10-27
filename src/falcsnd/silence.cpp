@@ -154,7 +154,7 @@ void CompressFile(FILE *input, BIT_FILE *output, int, char*[])
                     OutputBits(output, (unsigned long) run_length, 8);
                 }
             }
-            while (!end_of_silence(look_ahead, index));
+            while ( not end_of_silence(look_ahead, index));
 
             if (run_length > 0)
             {
@@ -630,7 +630,7 @@ int silence_run(int buffer[], int index)
     int i;
 
     for (i = 0 ; i < START_THRESHOLD ; i++)
-        if (!IS_SILENCE(buffer[(index + i) & BUFFER_MASK ]))
+        if ( not IS_SILENCE(buffer[(index + i) & BUFFER_MASK ]))
             return(0);
 
     return(1);

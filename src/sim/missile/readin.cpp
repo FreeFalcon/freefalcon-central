@@ -414,7 +414,7 @@ MissileAuxData *MissileAuxAeroRead(SimlibFileClass* inputFile)
 
     // RV - Biker - Why check when do nothing
     //if (ParseSimlibFile(auxmissileData, AuxMissileDataDesc, inputFile) == false) {
-    //// F4Assert(!"Bad parsing of aux aero data");
+    //// F4Assert( not "Bad parsing of aux aero data");
     //}
 
     ParseSimlibFile(auxmissileData, AuxMissileDataDesc, inputFile);

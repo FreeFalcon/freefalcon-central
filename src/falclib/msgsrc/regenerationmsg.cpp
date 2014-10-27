@@ -42,9 +42,9 @@ int FalconRegenerationMessage::Process(uchar autodisp)
         // if we want to regenerate it ??? Crap!
         // Let's just make the not yet dead object dead and regenerate it again
         // This fixes the infamous respawning bug in Dogfights.
-        if (!(g_nDFRegenerateFix & 0x01))
+        if ( not (g_nDFRegenerateFix & 0x01))
         {
-            if (!theObject->IsDead())
+            if ( not theObject->IsDead())
             {
                 MonoPrint("Delaying Regeneration Message\n");
                 // sfr: flag bug, setting all but loopback :/
@@ -59,7 +59,7 @@ int FalconRegenerationMessage::Process(uchar autodisp)
         }
         else
         {
-            if (!theObject->IsDead())
+            if ( not theObject->IsDead())
             {
                 theObject->SetDead(true);
             }

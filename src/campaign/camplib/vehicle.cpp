@@ -27,7 +27,7 @@ char* GetVehicleName(VehicleID vid)
 
     vc = (VehicleClassDataType*) Falcon4ClassTable[vid].dataPtr;
 
-    if (!vc)
+    if ( not vc)
         return "None";
 
     return vc->Name;
@@ -46,7 +46,7 @@ int CalculateVehicleHitChance(int id, int mt)
 
     vc = GetVehicleClassData(id);
 
-    if (!vc)
+    if ( not vc)
         return 0;
 
     for (i = 0; i < HARDPOINT_MAX; i++)
@@ -107,7 +107,7 @@ int CalculateVehicleCombatStrength(int id, int mt)
 
     vc = GetVehicleClassData(id);
 
-    if (!vc)
+    if ( not vc)
         return 0;
 
     for (i = 0; i < HARDPOINT_MAX; i++)
@@ -152,7 +152,7 @@ int GetAproxVehicleRange(int id, int mt)
 
     vc = GetVehicleClassData(id);
 
-    if (!vc)
+    if ( not vc)
         return 0;
 
     return vc->Range[mt];
@@ -166,7 +166,7 @@ int CalculateVehicleRange(int id, int mt)
 
     vc = GetVehicleClassData(id);
 
-    if (!vc)
+    if ( not vc)
         return 0;
 
     for (i = 0; i < HARDPOINT_MAX; i++)
@@ -212,7 +212,7 @@ int GetVehicleDetectionRange(int id, int mt)
 
     vc = (VehicleClassDataType*) Falcon4ClassTable[id].dataPtr;
 
-    if (!vc)
+    if ( not vc)
         return 0;
 
     return vc->Detection[mt];
@@ -225,7 +225,7 @@ int GetBestVehicleWeapon(int id, uchar* dam, MoveType m, int range, int *hard_po
 
     vc = (VehicleClassDataType*) Falcon4ClassTable[id].dataPtr;
 
-    if (!vc)
+    if ( not vc)
         return 0;
 
     bw = bs = 0;

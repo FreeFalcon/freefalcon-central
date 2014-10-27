@@ -97,7 +97,7 @@ void VehRwrClass::SetPower(int flag)
     }
 
     // If we've been turned off, drop all tracks
-    if (!IsOn())
+    if ( not IsOn())
     {
         for (int i = 0; i < numContacts; i++)
         {
@@ -171,7 +171,7 @@ SimObjectType* VehRwrClass::Exec(SimObjectType* targetList)
 
 
     // Drop tracks if we're turned off
-    if (!IsOn())
+    if ( not IsOn())
     {
         for (int i = numContacts - 1; i >= 0; i--)
         {
@@ -211,7 +211,7 @@ SimObjectType* VehRwrClass::Exec(SimObjectType* targetList)
             if (SimLibElapsedTime > detectionList[i].lastHit + ((SimBaseClass*)detectionList[i].entity)->RdrCycleTime() * SEC_TO_MSEC + 1000  and 
                 SimLibElapsedTime > detectionList[i].lastHit + (platform == SimDriver.GetPlayerAircraft() ? 3 * SEC_TO_MSEC : 30 * SEC_TO_MSEC))
             {
-                if (!detectionList[i].isLocked or (SimBaseClass*)detectionList[i].entity->IsDead())
+                if ( not detectionList[i].isLocked or (SimBaseClass*)detectionList[i].entity->IsDead())
                     DropTrack(i);
             }
         }
@@ -222,8 +222,8 @@ SimObjectType* VehRwrClass::Exec(SimObjectType* targetList)
                 // 2002-03-10 MODIFIED BY S.G. If IsSim returned false, don't cast it to SimBaseClass but CampBaseClass and not required anyway since IsDead is defined in a parent class
                 //                             Also, I've seen campaign entries stay here forever with missileActivity set because the missile was launched when aggregated (hence made it here) but once it deaggregated, it stayed here. So to fix this, if it's a DEAGGREGATED campaign object, remove its lock
                 //                             I also moved 'DropTrack' on a line by itself. It's much combersome to put breakpoint if the if body is on the same line as the if statement (also done above).
-                // if (!detectionList[i].isLocked or (SimBaseClass*)detectionList[i].entity->IsDead()) DropTrack (i);
-                if (!detectionList[i].isLocked or detectionList[i].entity->IsDead() or !((CampBaseClass*)detectionList[i].entity)->IsAggregate())
+                // if ( not detectionList[i].isLocked or (SimBaseClass*)detectionList[i].entity->IsDead()) DropTrack (i);
+                if ( not detectionList[i].isLocked or detectionList[i].entity->IsDead() or !((CampBaseClass*)detectionList[i].entity)->IsAggregate())
                     DropTrack(i);
             }
         }
@@ -249,7 +249,7 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
     FalconEntity* whoPingedMe = theObject;//cobra
 
     // Just return if we're turned off
-    if (!IsOn())
+    if ( not IsOn())
     {
         return retval;
     }
@@ -267,7 +267,7 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
 
     // END OF ADDED SECTION
 
-    if (!listElement)
+    if ( not listElement)
     {
         // Don't add a track upon receipt of a "drop" message
         if (trackType not_eq Track_Unlock and trackType not_eq Track_LaunchEnd)
@@ -329,7 +329,7 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
                 {
                     // 2000-09-03 S.G. SO ARH DON'T GET A LAUNCH WARNING
                     // 2000-09-11 S.G. make sure the entity is a missile before testing its sensor type...
-                    if (!listElement->entity->IsMissile() or ((MissileClass *)listElement->entity)->GetSeekerType() not_eq SensorClass::Radar)
+                    if ( not listElement->entity->IsMissile() or ((MissileClass *)listElement->entity)->GetSeekerType() not_eq SensorClass::Radar)
                         // END OF ADDED SECTION (PLUS INDENTATION OF NEXT LINE)
                     {
                         //F4SoundFXSetDist( SFX_TWS_LAUNCH, FALSE, 0.0f, 1.0f );
@@ -339,7 +339,7 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
 
                 // JB 010727 RP5 RWR
                 // 2001-02-27 ADDED BY S.G. WE SET lastPlayed TO NOW IF THERE IS NO MISSILE ACTIVITY ALREADY SO WE CAN TIME 15 SECONDS. SINCE missileActivity IS SET, DoAudio WILL NOT UPDATE IT
-                if (!listElement->missileActivity)
+                if ( not listElement->missileActivity)
                     listElement->lastPlayed = SimLibElapsedTime;
 
                 // END OF ADDED SECTION
@@ -449,7 +449,7 @@ void VehRwrClass::ReportBuddySpike(FalconEntity* theObject)
 {
     SimVehicleClass *spiked = (SimVehicleClass*)platform;
 
-    if (!spiked->IsPlayer())
+    if ( not spiked->IsPlayer())
     {
         FalconRadioChatterMessage *radioMessage = new FalconRadioChatterMessage(theObject->Id(), FalconLocalGame);
         radioMessage->dataBlock.from = spiked->Id();
@@ -515,16 +515,16 @@ FalconEntity* VehRwrClass::CurSpike(FalconEntity *byHim, int *data)  // 2002-02-
 
     for (i = 0; i < numContacts; i++)
     {
-        if (!data)   // 2002-02-11 ADDED BY S.G. If no data passed (ie data is NULL), act like before
+        if ( not data)   // 2002-02-11 ADDED BY S.G. If no data passed (ie data is NULL), act like before
         {
             if (detectionList[i].isLocked and detectionList[i].radarMode == RadarClass::DigiSTT) // 2002-02-09 MODIFIED BY S.G. Added the radarMode check
             {
-                if (!byHim or detectionList[i].entity == byHim)   // 2002-02-10 ADDED BY S.G. If we are looking at a specific target, limit your search to it
+                if ( not byHim or detectionList[i].entity == byHim)   // 2002-02-10 ADDED BY S.G. If we are looking at a specific target, limit your search to it
                 {
                     curSpike = detectionList[i].entity;
 
                     // Only react to enemy activity
-                    if (!curSpike->IsMissile() and TeamInfo[platform->GetTeam()]->TStance(curSpike->GetTeam()) > Neutral)   // 2002-02-09 MODIFIED BY S.G. Added the !IsMissile since AI do not attack missiles anyway...
+                    if ( not curSpike->IsMissile() and TeamInfo[platform->GetTeam()]->TStance(curSpike->GetTeam()) > Neutral)   // 2002-02-09 MODIFIED BY S.G. Added the !IsMissile since AI do not attack missiles anyway...
                     {
                         return curSpike;
                     }
@@ -546,12 +546,12 @@ FalconEntity* VehRwrClass::CurSpike(FalconEntity *byHim, int *data)  // 2002-02-
                     ((*data & RWR_GET_TWS) and detectionList[i].radarMode == RadarClass::DigiTWS) ||
                     ((*data & RWR_GET_RWS) and detectionList[i].radarMode == RadarClass::DigiRWS))
                 {
-                    if (!byHim or detectionList[i].entity == byHim)   // 2002-02-10 ADDED BY S.G. If we are looking at a specific target, limit your search to it
+                    if ( not byHim or detectionList[i].entity == byHim)   // 2002-02-10 ADDED BY S.G. If we are looking at a specific target, limit your search to it
                     {
                         curSpike = detectionList[i].entity;
 
                         // Only react to enemy activity
-                        if (!curSpike->IsMissile() and TeamInfo[platform->GetTeam()]->TStance(curSpike->GetTeam()) > Neutral)
+                        if ( not curSpike->IsMissile() and TeamInfo[platform->GetTeam()]->TStance(curSpike->GetTeam()) > Neutral)
                         {
                             // If we passed a prioritisation mask and not of the right priority, just keep it for later in case we have none of that type
                             if (*data & RWR_PRIORITIZE_MASK)

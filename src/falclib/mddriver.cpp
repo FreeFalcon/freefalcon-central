@@ -680,10 +680,10 @@ char *MD5End(MD5_CTX *ctx, char *buf)
     unsigned char digest[16];
     static const char hex[] = "0123456789abcdef";
 
-    if (!buf)
+    if ( not buf)
         buf = (char *)malloc(33);
 
-    if (!buf)
+    if ( not buf)
         return 0;
 
     MD5Final(digest, ctx);

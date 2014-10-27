@@ -302,7 +302,7 @@ FlightDataClass::~FlightDataClass()
 MissionEvaluationClass::MissionEvaluationClass(void)
 {
 #ifdef FUNKY_KEVIN_DEBUG_STUFF
-    ShiAssert(!inMission);
+    ShiAssert( not inMission);
 #endif
 
     memset(this, 0, sizeof(MissionEvaluationClass));
@@ -454,12 +454,12 @@ int MissionEvaluationClass::PreMissionEval(Flight flight, uchar aircraft_slot)
 #endif
 
 #ifdef FUNKY_KEVIN_DEBUG_STUFF
-    ShiAssert(!inMission);
+    ShiAssert( not inMission);
 #endif
 
 #ifdef DEBUG
 
-    while (inMission and (!g_bLogEvents))
+    while (inMission and ( not g_bLogEvents))
     {
         Sleep(100);
     }
@@ -641,7 +641,7 @@ void MissionEvaluationClass::PreEvalFlight(Flight element, Flight flight)
         while (tw and !(tw->GetWPFlags() & WPF_TARGET))
             tw = tw->GetNextWP();
 
-        if (!tw or !tw->GetWPTarget())
+        if ( not tw or !tw->GetWPTarget())
             tw = element->GetOverrideWP();
 
         if (tw)
@@ -684,7 +684,7 @@ void MissionEvaluationClass::PreEvalFlight(Flight element, Flight flight)
             flight_ptr->target_camp_id = target->GetCampID();
         }
 
-        if (!package_element)
+        if ( not package_element)
         {
             package_element = flight_ptr;
             // package_mission = element->GetUnitMission();
@@ -733,7 +733,7 @@ void MissionEvaluationClass::PreEvalFlight(Flight element, Flight flight)
 
 void MissionEvaluationClass::RecordTargetStatus(FlightDataClass *flight_ptr, CampBaseClass *target)
 {
-    if (!target)
+    if ( not target)
         return;
 
     memset(flight_ptr->target_features, 255, MAX_TARGET_FEATURES * sizeof(uchar));
@@ -780,7 +780,7 @@ void MissionEvaluationClass::RecordTargetStatus(FlightDataClass *flight_ptr, Cam
 
 void MissionEvaluationClass::ServerFileLog(FalconPlayerStatusMessage *fpsm)
 {
-    if (!g_bLogEvents) return;
+    if ( not g_bLogEvents) return;
 
     char *filename;
     char logstring [250];
@@ -832,7 +832,7 @@ void MissionEvaluationClass::ServerFileLog(FalconPlayerStatusMessage *fpsm)
             }
 
             // goto next flight there's either no humans in it or theres still humans flying
-            if (!humansinflight or humansinflight > humansexitedflight)
+            if ( not humansinflight or humansinflight > humansexitedflight)
             {
                 flight_ptr = flight_ptr->next_flight;
                 continue;
@@ -848,7 +848,7 @@ void MissionEvaluationClass::ServerFileLog(FalconPlayerStatusMessage *fpsm)
                 if (fpsm->dataBlock.campID and fpsm->dataBlock.campID == flight_ptr->camp_id  and 
                     (fpsm->dataBlock.pilotID == pilot_data->pilot_slot or pilot_data->donefiledebrief))
                 {
-                    if (!HasDoneFLightData)
+                    if ( not HasDoneFLightData)
                     {
                         HasDoneFLightData = TRUE;
                         sprintf(logstring, "\n\n\n--------------------------------------------------------\n");
@@ -1128,7 +1128,7 @@ int MissionEvaluationClass::PostMissionEval(void)
                     pilot_data->rating = Horrible;
 
                 // KCK HACK: Per Gilman - cap success to PartSuccess if player didn't land
-                if (pilot_data->pilot_slot >= PILOTS_PER_FLIGHT and !(logbook_data.Flags & LANDED_AIRCRAFT) and flight_ptr->mission_success == Success and (!gCommsMgr or !gCommsMgr->Online()))
+                if (pilot_data->pilot_slot >= PILOTS_PER_FLIGHT and !(logbook_data.Flags & LANDED_AIRCRAFT) and flight_ptr->mission_success == Success and ( not gCommsMgr or !gCommsMgr->Online()))
                     flight_ptr->mission_success = PartSuccess;
 
                 // END HACK
@@ -1136,7 +1136,7 @@ int MissionEvaluationClass::PostMissionEval(void)
                 // Record the rating (for records sake)
                 // KCK:We probably don't have the flight at this point though...
                 // 2002-02-16 MN Only rate a pilot if we didn't have to abort mission
-                if (!(flight_ptr->mission_success == AWACSAbort))
+                if ( not (flight_ptr->mission_success == AWACSAbort))
                     RatePilot((Flight)vuDatabase->Find(flight_ptr->flight_id), pilot_data->aircraft_slot, pilot_data->rating);
 
                 pilot_data = pilot_data->next_pilot;
@@ -1176,7 +1176,7 @@ int MissionEvaluationClass::PostMissionEval(void)
             // Only count guns once - regardless of number of bursts
             if (player_pilot->weapon_data[i].weapon_id >= 0) // sanity check
             {
-                if (!(WeaponDataTable[player_pilot->weapon_data[i].weapon_id].Flags & WEAP_ONETENTH))
+                if ( not (WeaponDataTable[player_pilot->weapon_data[i].weapon_id].Flags & WEAP_ONETENTH))
                     logbook_data.WeaponsExpended += player_pilot->weapon_data[i].fired;
                 else if (player_pilot->weapon_data[i].fired)
                     logbook_data.WeaponsExpended++;
@@ -1230,7 +1230,7 @@ int MissionEvaluationClass::PostMissionEval(void)
                 LogBook.SetAceFactor(FalconLocalSession->GetAceFactor());
 
                 // 2002-02-13 MN added AWACSAbort condition for "don't score mission"
-                if (!logbook_data.Killed and (player_element->mission_success == Incomplete or player_element->mission_success == AWACSAbort))
+                if ( not logbook_data.Killed and (player_element->mission_success == Incomplete or player_element->mission_success == AWACSAbort))
                 {
                     logbook_data.Flags  or_eq  DONT_SCORE_MISSION;
                     LogBook.UpdateCampaign(&logbook_data);
@@ -1318,13 +1318,13 @@ int MissionEvaluationClass::MissionSuccess(FlightDataClass *flight_ptr)
 {
     int retval = Failed, losses;
 
-    if (!flight_ptr)
+    if ( not flight_ptr)
         return retval;
 
     // 2002-02-13 MN Check if we got an Abort from AWACS and the target has not been engaged
     // If it has been engaged, mission failed
     if (flight_ptr->status_flags & MISEVAL_FLIGHT_ABORT_BY_AWACS)
-        if (!(flight_ptr->status_flags & MISEVAL_FLIGHT_TARGET_HIT))
+        if ( not (flight_ptr->status_flags & MISEVAL_FLIGHT_TARGET_HIT))
         {
             flight_ptr->failure_code = 1;
             return AWACSAbort;
@@ -1355,7 +1355,7 @@ int MissionEvaluationClass::MissionSuccess(FlightDataClass *flight_ptr)
         }
 
     // Check for in progress
-    if (!(flight_ptr->status_flags & MISEVAL_FLIGHT_GOT_TO_TARGET)  and 
+    if ( not (flight_ptr->status_flags & MISEVAL_FLIGHT_GOT_TO_TARGET)  and 
         !(flight_ptr->status_flags & MISEVAL_FLIGHT_STATION_OVER)  and 
         !(flight_ptr->status_flags & MISEVAL_FLIGHT_OFF_STATION)  and 
         !(flight_ptr->status_flags & MISEVAL_FLIGHT_DESTROYED)  and 
@@ -1374,7 +1374,7 @@ int MissionEvaluationClass::MissionSuccess(FlightDataClass *flight_ptr)
         case AMIS_AMBUSHCAP:
 
             // Determine if we stayed in the area or not
-            if (!(flight_ptr->status_flags & MISEVAL_FLIGHT_OFF_STATION))
+            if ( not (flight_ptr->status_flags & MISEVAL_FLIGHT_OFF_STATION))
             {
                 // Determine if our vol period is over or not
                 if (flight_ptr->status_flags & MISEVAL_FLIGHT_STATION_OVER)
@@ -1654,10 +1654,10 @@ int MissionEvaluationClass::MissionSuccess(FlightDataClass *flight_ptr)
                     {
                         hit += pilot_data->weapon_data[i].hit;
 
-                        if (!(WeaponDataTable[pilot_data->weapon_data[i].weapon_id].GuidanceFlags & WEAP_GUIDED_MASK))
+                        if ( not (WeaponDataTable[pilot_data->weapon_data[i].weapon_id].GuidanceFlags & WEAP_GUIDED_MASK))
                             hit += pilot_data->weapon_data[i].hit; // double credit for unguided hits
 
-                        if (!(WeaponDataTable[pilot_data->weapon_data[i].weapon_id].Flags & WEAP_ONETENTH))
+                        if ( not (WeaponDataTable[pilot_data->weapon_data[i].weapon_id].Flags & WEAP_ONETENTH))
                             fired += pilot_data->weapon_data[i].fired; // only count nongun weapons as fired
                     }
 
@@ -1963,7 +1963,7 @@ void MissionEvaluationClass::CollectThreats(GridIndex X, GridIndex Y, int Z, int
     {
         if (tteam[e->GetTeam()])
         {
-            if (!(flags & FIND_NOMOVERS and e->Moving())  and 
+            if ( not (flags & FIND_NOMOVERS and e->Moving())  and 
                 !(flags & FIND_NOAIR and e->GetDomain() == DOMAIN_AIR)  and 
                 (flags & FIND_FINDUNSPOTTED or e->GetSpotted(team)))
             {
@@ -2315,7 +2315,7 @@ void MissionEvaluationClass::RegisterShotAtPlayer(FalconWeaponsFire *wfm, unsign
         target_flight = target_flight->next_flight;
     }
 
-    if (!target_data)
+    if ( not target_data)
     {
         CampLeaveCriticalSection();
         return;
@@ -2380,7 +2380,7 @@ void MissionEvaluationClass::RegisterShot(FalconWeaponsFire *wfm)
 
     while (flight_ptr)
     {
-        if (!wfm->dataBlock.fCampID or wfm->dataBlock.fCampID not_eq flight_ptr->camp_id)
+        if ( not wfm->dataBlock.fCampID or wfm->dataBlock.fCampID not_eq flight_ptr->camp_id)
         {
             flight_ptr = flight_ptr->next_flight;
             continue;
@@ -2403,7 +2403,7 @@ void MissionEvaluationClass::RegisterShot(FalconWeaponsFire *wfm)
                         theEvent = new EventElement;
 
                         // Only subtract from our score for non guns and non-photos
-                        if (!(WeaponDataTable[pilot_data->weapon_data[wn].weapon_id].Flags & WEAP_ONETENTH) and wfm->dataBlock.weaponType not_eq FalconWeaponsFire::Recon)
+                        if ( not (WeaponDataTable[pilot_data->weapon_data[wn].weapon_id].Flags & WEAP_ONETENTH) and wfm->dataBlock.weaponType not_eq FalconWeaponsFire::Recon)
                             pilot_data->score += CalcScore(SCORE_FIRE_WEAPON, windex - VU_LAST_ENTITY_TYPE);
                         else if (TheCampaign.Flags & CAMP_LIGHT)
                         {
@@ -2575,16 +2575,16 @@ void MissionEvaluationClass::RegisterHit(FalconDamageMessage *dmm)
 
                                     // If we haven't found the first event for this weapon yet, record
                                     // it now.
-                                    if (!baseevent)
+                                    if ( not baseevent)
                                         baseevent = tmpevent;
                                 }
 
-                                if (!foundEvent)
+                                if ( not foundEvent)
                                     tmpevent = tmpevent->next;
                             }
 
                             // Make a new event if we need to
-                            if (!tmpevent)
+                            if ( not tmpevent)
                             {
                                 // In IA or dogfight, don't list multiple hits
                                 if (TheCampaign.Flags & CAMP_LIGHT)
@@ -2716,7 +2716,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                     {
                         shooter_data = FindPilotData(shooter_flight, dtm->dataBlock.fPilotID);
 
-                        if (!shooter_data)
+                        if ( not shooter_data)
                         {
                             break;
                         }
@@ -2728,7 +2728,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                 }
 
                 // Crash or kill?
-                if (!dtm->dataBlock.fIndex or dtm->dataBlock.damageType == FalconDamageType::GroundCollisionDamage)
+                if ( not dtm->dataBlock.fIndex or dtm->dataBlock.damageType == FalconDamageType::GroundCollisionDamage)
                 {
                     // Ground collision
                     GetFormatString(FET_PILOT_CRASHED, format);
@@ -2946,7 +2946,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                         {
                             target_data = FindPilotData(target_flight, dtm->dataBlock.dPilotID);
 
-                            if (!target_data)
+                            if ( not target_data)
                                 break;
                         }
                         else
@@ -2993,7 +2993,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                     else if (Falcon4ClassTable[dtm->dataBlock.dIndex - VU_LAST_ENTITY_TYPE].vuClassData.classInfo_[VU_CLASS] == CLASS_FEATURE)
                     {
                         // Feature kill
-                        if (!GetRoE(GetTeam(dtm->dataBlock.fSide), GetTeam(dtm->dataBlock.dSide), ROE_AIR_ATTACK) == ROE_ALLOWED)
+                        if ( not GetRoE(GetTeam(dtm->dataBlock.fSide), GetTeam(dtm->dataBlock.dSide), ROE_AIR_ATTACK) == ROE_ALLOWED)
                             pilot_data->score += CalcScore(SCORE_KILL_FRIENDLY_FEATURE, 0); // Hit friendly/neutral
                         else
                         {
@@ -3022,7 +3022,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                         // Naval Vehicle kill
                         int bonus = 0;
 
-                        if (!dtm->dataBlock.dPilotID)
+                        if ( not dtm->dataBlock.dPilotID)
                             bonus += 3; // Capitol ship!
 
                         if (GetRoE(GetTeam(dtm->dataBlock.fSide), GetTeam(dtm->dataBlock.dSide), ROE_AIR_ATTACK) == ROE_ALLOWED)
@@ -3192,11 +3192,11 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
 
                                     // If we haven't found the first event for this weapon yet, record
                                     // it now.
-                                    if (!baseevent)
+                                    if ( not baseevent)
                                         baseevent = tmpevent;
                                 }
 
-                                if (!foundEvent)
+                                if ( not foundEvent)
                                     tmpevent = tmpevent->next;
                             }
 
@@ -3206,7 +3206,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                             if (tmpevent or !(TheCampaign.Flags & CAMP_LIGHT))
                             {
                                 // Make a new event if we need to
-                                if (!tmpevent)
+                                if ( not tmpevent)
                                 {
                                     tmpevent = new EventElement;
                                     tmpevent->vuIdData1 = dtm->dataBlock.fWeaponUID;
@@ -3482,7 +3482,7 @@ void MissionEvaluationClass::AddEventToList(EventElement* theEvent, FlightDataCl
     {
         pilot_data->weapon_data[wn].events++;
 
-        if (!pilot_data->weapon_data[wn].root_event)
+        if ( not pilot_data->weapon_data[wn].root_event)
             pilot_data->weapon_data[wn].root_event = theEvent;
         else
             curEvent = pilot_data->weapon_data[wn].root_event;
@@ -3491,13 +3491,13 @@ void MissionEvaluationClass::AddEventToList(EventElement* theEvent, FlightDataCl
     {
         flight_ptr->events++;
 
-        if (!flight_ptr->root_event)
+        if ( not flight_ptr->root_event)
             flight_ptr->root_event = theEvent;
         else
             curEvent = flight_ptr->root_event;
     }
 
-    if (!curEvent) // Added directly to root, we're done
+    if ( not curEvent) // Added directly to root, we're done
         return;
 
     while (curEvent->next and curEvent->next not_eq curEvent)
@@ -3533,7 +3533,7 @@ void MissionEvaluationClass::RegisterKill(FalconEntity *shooter, FalconEntity *t
     CampEntity campTarget, campShooter;
     FlightDataClass *flight_ptr;
 
-    if (!(flags & MISEVAL_MISSION_IN_PROGRESS))
+    if ( not (flags & MISEVAL_MISSION_IN_PROGRESS))
         return;
 
     CampEnterCriticalSection();
@@ -3596,7 +3596,7 @@ void MissionEvaluationClass::RegisterKill(FalconEntity *shooter, FalconEntity *t
                 flight_ptr->status_flags  or_eq  MISEVAL_FLIGHT_GOT_NKILL;
 
                 // High value for hitting capital ship
-                if (!targetEl)
+                if ( not targetEl)
                     flight_ptr->status_flags  or_eq  MISEVAL_FLIGHT_HIT_HIGH_VAL;
             }
 
@@ -3690,7 +3690,7 @@ void MissionEvaluationClass::RegisterMove(Flight flight)
 
     ShiAssert(flight);
 
-    if (!flight)
+    if ( not flight)
         return;
 
     CampEnterCriticalSection();
@@ -3830,7 +3830,7 @@ void MissionEvaluationClass::RegisterAbort(Flight flight)
     FlightDataClass *flight_ptr;
     int copyFlags = 0;
 
-    if (!(flags & MISEVAL_MISSION_IN_PROGRESS))
+    if ( not (flags & MISEVAL_MISSION_IN_PROGRESS))
         return;
 
     if (package_element and package_element->flight_id == flight->Id())
@@ -3858,7 +3858,7 @@ void MissionEvaluationClass::RegisterRelief(Flight flight)
 {
     FlightDataClass *flight_ptr;
 
-    if (!(flags & MISEVAL_MISSION_IN_PROGRESS))
+    if ( not (flags & MISEVAL_MISSION_IN_PROGRESS))
         return;
 
     CampEnterCriticalSection();
@@ -3875,7 +3875,7 @@ void MissionEvaluationClass::RegisterDivert(Flight flight, MissionRequestClass *
     FlightDataClass *flight_ptr;
     CampEntity target = NULL;
 
-    if (!(flags & MISEVAL_MISSION_IN_PROGRESS))
+    if ( not (flags & MISEVAL_MISSION_IN_PROGRESS))
         return;
 
     CampEnterCriticalSection();
@@ -3890,7 +3890,7 @@ void MissionEvaluationClass::RegisterDivert(Flight flight, MissionRequestClass *
         {
             // Trying to track down a potential bug here.. It's hard enough to
             // get diverts I figure I'll let QA do the testing..
-            // ShiAssert (!"Show this to Kevin K."); - Not any more - RH
+            // ShiAssert ( not "Show this to Kevin K."); - Not any more - RH
 
             flight_ptr->mission_context = flight->GetMissionContext();
             flight_ptr->requester_id = flight->GetRequesterID();
@@ -3957,7 +3957,7 @@ void MissionEvaluationClass::RegisterEvent(GridIndex x, GridIndex y, int eteam, 
 {
     int role;
 
-    if (!(flags & MISEVAL_MISSION_IN_PROGRESS))
+    if ( not (flags & MISEVAL_MISSION_IN_PROGRESS))
         return;
 
     if (team not_eq eteam)
@@ -4087,11 +4087,11 @@ int MissionEvaluationClass::GetFlightName(TCHAR* buffer)
 
 PilotDataClass* MissionEvaluationClass::AddNewPlayerPilot(FlightDataClass *flight_ptr, int ac_num, Flight flight, FalconSessionEntity *player)
 {
-    if (!player)
+    if ( not player)
         return NULL;
 
 #ifdef FUNKY_KEVIN_DEBUG_STUFF
-    ShiAssert(!inMission or player not_eq FalconLocalSession);
+    ShiAssert( not inMission or player not_eq FalconLocalSession);
 #endif
 
     // Tack on a new slot
@@ -4161,7 +4161,7 @@ PilotDataClass* MissionEvaluationClass::AddNewPilot(FlightDataClass *flight_ptr,
     {
         wid = flight->GetUnitWeaponId(w, ac_num);
 
-        if (!wid)
+        if ( not wid)
             continue;
 
         wi = 0;
@@ -4192,7 +4192,7 @@ PilotDataClass* MissionEvaluationClass::AddNewPilot(FlightDataClass *flight_ptr,
         }
 
         // 2002-04-16 MN sh*t... what should that do here ? copy and paste error...
-        /* if (!entryfound) // use generic 2.75mm rocket
+        /* if ( not entryfound) // use generic 2.75mm rocket
          {
          wid = gRocketId;
          }
@@ -4205,7 +4205,7 @@ PilotDataClass* MissionEvaluationClass::AddNewPilot(FlightDataClass *flight_ptr,
                 new_weap = 0;
             }
 
-            if (!pilot_data->weapon_data[k].weapon_id)
+            if ( not pilot_data->weapon_data[k].weapon_id)
             {
                 wi = k;
                 new_weap = 1;
@@ -4274,7 +4274,7 @@ PilotDataClass* MissionEvaluationClass::FindPilotDataFromAC(FlightDataClass *fli
     PilotDataClass *pilot_data = NULL;
     PilotDataClass *ret_data = NULL;
 
-    if (!flight_ptr) // JB 010628 CTD
+    if ( not flight_ptr) // JB 010628 CTD
         return NULL;
 
     CampEnterCriticalSection();
@@ -4413,7 +4413,7 @@ void MissionEvaluationClass::RebuildEvaluationData(void)
     // we don't need anymore and adding any new ones which have popped up
 
     // NOTE: Dogfight only
-    if (!FalconLocalGame or FalconLocalGame->GetGameType() not_eq game_Dogfight)
+    if ( not FalconLocalGame or FalconLocalGame->GetGameType() not_eq game_Dogfight)
     {
         return;
     }
@@ -4442,7 +4442,7 @@ void MissionEvaluationClass::RebuildEvaluationData(void)
         {
             flight = (Flight)FindUnit(flight_ptr->flight_id);
 
-            if (!flight)
+            if ( not flight)
             {
                 if (last_ptr)
                     last_ptr->next_flight = flight_ptr->next_flight;
@@ -4491,7 +4491,7 @@ void MissionEvaluationClass::RebuildEvaluationData(void)
                         if (player_pilot == tmp_pilot)
                         {
 #ifdef FUNKY_KEVIN_DEBUG_STUFF
-                            ShiAssert(!inMission);
+                            ShiAssert( not inMission);
 #endif
                             player_pilot = NULL;
                         }
@@ -4609,7 +4609,7 @@ void CheckForNewPlayer(FalconSessionEntity *session)
     PilotDataClass *pilot_data;
     FlightDataClass *flight_ptr;
 
-    if (!pflight or pslot == 255 or acnum > PILOTS_PER_FLIGHT)
+    if ( not pflight or pslot == 255 or acnum > PILOTS_PER_FLIGHT)
         return;
 
     if ((session) and (session->GetGame() not_eq FalconLocalGame))
@@ -4951,23 +4951,23 @@ void UpdateEvaluators(FlightDataClass *flight_data, PilotDataClass *pilot_data)
         return;
     }
 
-    if (!session and FalconLocalGame and FalconLocalGame->GetGameType() == game_Dogfight)
+    if ( not session and FalconLocalGame and FalconLocalGame->GetGameType() == game_Dogfight)
     {
         // For Dogfight games, host controls all data
         if (FalconLocalGame->IsLocal())
             session = FalconLocalSession;
     }
-    else if (!session)
+    else if ( not session)
     {
         // For Campaign or TacE, the first player in the package controls the data
         flight_ptr = TheCampaign.MissionEvaluator->flight_data;
 
-        while (!session and flight_ptr)
+        while ( not session and flight_ptr)
         {
             // The tracking session will be the first player in the package
             pilot_ptr = flight_ptr->pilot_list;
 
-            while (!session and pilot_ptr)
+            while ( not session and pilot_ptr)
             {
                 if (pilot_ptr->pilot_slot not_eq NO_PILOT)
                     session = FindPlayer(flight_ptr->flight_id, pilot_ptr->aircraft_slot, pilot_ptr->pilot_slot);

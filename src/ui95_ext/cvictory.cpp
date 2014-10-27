@@ -194,7 +194,7 @@ BOOL C_Victory::Process(long ID, short HitType)
     if (Callback_)
         (*Callback_)(ID, HitType, this);
 
-    if (!State_)
+    if ( not State_)
         SetState(1);
 
     switch (Section_)
@@ -319,7 +319,7 @@ void C_Victory::SetXYWH(long x, long y, long w, long h)
 
 void C_Victory::Refresh()
 {
-    if (!Ready() or Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
@@ -327,7 +327,7 @@ void C_Victory::Refresh()
 
 void C_Victory::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Number_)

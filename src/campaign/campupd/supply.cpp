@@ -266,7 +266,7 @@ int SendSupply(Objective s, Objective d, int *supply, int *fuel)
     PathClass path;
     int i, l, n, loss, type;
 
-    if (!*supply and !*fuel)
+    if ( not *supply and !*fuel)
         return 0;
 
     if (GetObjectivePath(&path, s, d, Foot, s->GetTeam(), PATH_MARINE) < 1)
@@ -290,7 +290,7 @@ int SendSupply(Objective s, Objective d, int *supply, int *fuel)
             *fuel = *fuel * (100 - l) / 100;
         }
 
-        if (!*supply and !*fuel)
+        if ( not *supply and !*fuel)
             return 0;
     }
 
@@ -304,7 +304,7 @@ void SupplyUnit(Unit u, int sneed, int supply, int fneed, int fuel)
 
     if (u->IsBattalion() or u->IsSquadron())
     {
-        if (!supply and !fuel)
+        if ( not supply and !fuel)
             return;
 
         // KCK: We can add supply and fuel directly now, since we're asserting all
@@ -355,14 +355,14 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
     int repl_a_s = 0, repl_v_s = 0, repl_s = 0, repl_sa = 0, prob = 0; // A.S. debug variables
     // end added section
 
-    if (!TeamInfo[who] or !(TeamInfo[who]->flags & TEAM_ACTIVE))
+    if ( not TeamInfo[who] or !(TeamInfo[who]->flags & TEAM_ACTIVE))
         return 0;
 
     sratio = fratio = rratio = 0.0F;
 
     // A.S. begin, 2001-12-09.
     rratio_a = rratio_v = a_v_nratio = repl = lambda = 0.0F; // A.S.
-    sqnbonus = RelSquadBonus;     // A.S. gives Sqn relative (!) more repl. than Bde.
+    sqnbonus = RelSquadBonus;     // A.S. gives Sqn relative ( not ) more repl. than Bde.
     // end added section
 
     // zero supply values
@@ -442,7 +442,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
     if (rneeded > 0)
         rratio = (float)TeamInfo[who]->GetReplacementsAvail() / rneeded;
 
-    if (!NoTypeBonusRepl) // A.S. added if-condiion 2001-12-09
+    if ( not NoTypeBonusRepl) // A.S. added if-condiion 2001-12-09
     {
         if (rratio > 0.25F)
             rratio = 0.25F;
@@ -576,7 +576,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
 
                         unit->ChangeVehicles(replacements);
                     }
-                } // end added section  (important: this section replaces(!) the section marked with ++++++ old code ++++++ !)
+                } // end added section  (important: this section replaces( not ) the section marked with ++++++ old code ++++++ !)
 
                 if (fuel or supply)
                 {

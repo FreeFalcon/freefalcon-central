@@ -150,7 +150,7 @@ void FACBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
 {
     SimBaseClass* newTarget;
 
-    if (!controlledFighter)
+    if ( not controlledFighter)
     {
         VuListIterator fighterWalker(fighterQ);
         controlledFighter = (SimVehicleClass*)fighterWalker.GetFirst();

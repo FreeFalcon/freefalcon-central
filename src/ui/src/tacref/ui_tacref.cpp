@@ -165,7 +165,7 @@ void TACREFCloseWindowCB(long ID, short hittype, C_Base *control)
 
 void TACREF_PositionCamera(OBJECTINFO *Info, C_Window *win, long client)
 {
-    if (!TAC_Viewer or !Info or !win)
+    if ( not TAC_Viewer or !Info or !win)
         return;
 
     FindCameraDeltas(Info);
@@ -308,7 +308,7 @@ static void BuildStatsTree(Statistics *stats, C_TreeList *tree)
     long catval = 0; // internal... don't use for anything
     long UniqueID = 1;
 
-    if (!stats or !tree)
+    if ( not stats or !tree)
         return;
 
     tree->Parent_->ScanClientArea(tree->GetClient());
@@ -346,7 +346,7 @@ static void BuildDescTree(Description *desc, C_TreeList *tree)
     long textval = 0;
     long UniqueID = 1;
 
-    if (!desc or !tree)
+    if ( not desc or !tree)
         return;
 
     tree->Parent_->ScanClientArea(tree->GetClient());
@@ -434,7 +434,7 @@ static void BuildRWRList(RWR *rwr, C_ListBox *listbox)
     long rwrval = 0;
     long UniqueID = 1;
 
-    if (!rwr or !listbox)
+    if ( not rwr or !listbox)
         return;
 
     radar = rwr->GetFirst(&rwrval);
@@ -862,7 +862,7 @@ static long InfoToWindow(long SubGroupID)
                 ent = Reference->GetNext(&entval);
             }
 
-            if (!lbox->GetRoot())
+            if ( not lbox->GetRoot())
             {
                 lbox->AddItem(1, C_TYPE_ITEM, TXT_NONE);
                 lbox->SetValue(1);
@@ -1348,7 +1348,7 @@ BOOL TacRef_Setup()
             TAC_Viewer->Init3d(30.0f);
         }
 
-        if (!Reference)
+        if ( not Reference)
         {
             Reference = new TacticalReference;
             // RV - Biker - Load theater specific tacref

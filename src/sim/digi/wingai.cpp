@@ -626,7 +626,7 @@ void DigitalBrain::AiInitSSOffset(FalconWingmanMsg* msg)
     // Instead, odd plane number (wingmen) have the 1.0F side. Leaders (flight and element) have the -1.0F side
     // if (isWing & 1)
     // 2001-8-03 BUT INSTEAD, I'LL REVERSE IT SO THE WINGS GO TO THE LEFT
-    if (!(isWing & 1))
+    if ( not (isWing & 1))
         side = 1.0F;
     else
         side = -1.0F;
@@ -2459,7 +2459,7 @@ void DigitalBrain::AiGiveWeaponsStatus(void)
         AiMakeRadioResponse(self, rcWEAPONSCHECKRSP, edata);
     }
 
-    if (!hasWeapons)
+    if ( not hasWeapons)
     {
         edata[0] = -1;
         edata[1] = 0; // Winchester
@@ -2506,7 +2506,7 @@ void DigitalBrain::AiPromote(void)
     {
         isWing --;
 
-        if (!isWing)
+        if ( not isWing)
         {
             SetLead(TRUE);
         }
@@ -2655,7 +2655,7 @@ void DigitalBrain::AiRTB(FalconWingmanMsg* msg)
     mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
     mpActionFlags[AI_RTB] = TRUE;
 
-    while (!done)
+    while ( not done)
     {
         if (pWaypoint)
         {
@@ -2684,7 +2684,7 @@ void DigitalBrain::AiRTB(FalconWingmanMsg* msg)
     {
         edata[0] = flightIdx;
 
-        if (!IsSetATC(SaidRTB))
+        if ( not IsSetATC(SaidRTB))
         {
             SetATCFlag(SaidRTB);
             AiMakeRadioResponse(self, rcIMADOT, edata);

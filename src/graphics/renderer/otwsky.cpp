@@ -95,7 +95,7 @@ BOOL RenderOTW::DrawSky(void)
     AdjustSkyColor();
 
 
-    if (!skyRoof)
+    if ( not skyRoof)
     {
         DrawSkyNoRoof();
         return TRUE; // Need to draw terrain
@@ -641,7 +641,7 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
     // First check the upper left corner
     wasOut = startedOut = horizonLine.LeftOf(leftPixel, topPixel);
 
-    if (!startedOut)
+    if ( not startedOut)
     {
         vert[num].x = leftPixel;
         vert[num].y = topPixel;
@@ -659,7 +659,7 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
         num++;
     }
 
-    if (!amOut)
+    if ( not amOut)
     {
         vert[num].x = rightPixel;
         vert[num].y = topPixel;
@@ -679,7 +679,7 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
         num++;
     }
 
-    if (!amOut)
+    if ( not amOut)
     {
         vert[num].x = rightPixel;
         vert[num].y = bottomPixel;
@@ -699,7 +699,7 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
         num++;
     }
 
-    if (!amOut)
+    if ( not amOut)
     {
         vert[num].x = leftPixel;
         vert[num].y = bottomPixel;
@@ -1528,7 +1528,7 @@ void RenderOTW::ComputeHorizonEffect(HorizonRecord *pHorizon)
     }
 
     // Return now if the sun isn't up now
-    if (!TheTimeOfDay.ThereIsASun())
+    if ( not TheTimeOfDay.ThereIsASun())
     {
         // No horizon effect
         pHorizon->horeffect = 0;

@@ -159,7 +159,7 @@ BOOL C_Font::AddFont(long , LOGFONT *)
     GetTextMetrics(hdc, &newfont->Metrics_);
     newfont->Widths_ = new INT[newfont->Metrics_.tmLastChar + 1];
 
-    if (!GetCharWidth(hdc, 0, newfont->Metrics_.tmLastChar, &newfont->Widths_[0]))
+    if ( not GetCharWidth(hdc, 0, newfont->Metrics_.tmLastChar, &newfont->Widths_[0]))
     {
         VOID *lpMsgBuf;
 
@@ -260,7 +260,7 @@ C_Fontmgr *C_Font::Find(long ID)
     {
         cur = (C_Fontmgr*)Fonts_->Find(ID);
 
-        if (!cur)
+        if ( not cur)
             cur = (C_Fontmgr*)Fonts_->Find(1);
 
         return(cur);
@@ -279,7 +279,7 @@ void C_Font::LoadFont(long ID, char *filename)
     newfont = new C_Fontmgr;
     newfont->Setup(ID, filename);
 
-    if (!newfont->Height())
+    if ( not newfont->Height())
     {
         delete newfont;
         return;

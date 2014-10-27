@@ -392,12 +392,12 @@ void ICPClass::ExecINSMode(void)
             FillDEDMatrix(0, 9, tempstr1);
             FillDEDMatrix(0, 14, tempstr2);
 
-            if (!playerAC->HasAligned  and 
+            if ( not playerAC->HasAligned  and 
                 playerAC->INSState(AircraftClass::INS_Nav))
             {
                 FillDEDMatrix(0, 14, "00");
             }
-            else if (!playerAC->INSState(AircraftClass::INS_Aligned))
+            else if ( not playerAC->INSState(AircraftClass::INS_Aligned))
             {
                 if (State <= 70)
                     FillDEDMatrix(0, 17, "RDY");
@@ -872,7 +872,7 @@ void ICPClass::ExecINTGMode(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!g_bIFF)
+    if ( not g_bIFF)
     {
         //Line1
         FillDEDMatrix(0, 1, "INTG ON");

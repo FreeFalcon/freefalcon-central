@@ -109,7 +109,7 @@ _TCHAR *AddCommas(_TCHAR *buf)
 
     comma = gStringMgr->GetString(TXT_COMMA_PLACE);
 
-    if (!comma)
+    if ( not comma)
         return(buf);
 
     j = 0;
@@ -531,7 +531,7 @@ void LoadInstantActionWindows()
 
     gMainParser->LoadSoundList("ia_snd.lst");
 
-    if (!gInstantBites)
+    if ( not gInstantBites)
         gInstantBites = gMainParser->ParseSoundBite("art\\instant\\uidia.scf");
 
     gMainParser->LoadWindowList("ia_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
@@ -673,7 +673,7 @@ static void InstantActionFlyCB(long, short hittype, C_Base *)
             instant_action::set_start_time(static_cast<long>(12.0F * 60.0F * 60.0F));
     }
 
-    ShiAssert(!TheCampaign.IsLoaded());
+    ShiAssert( not TheCampaign.IsLoaded());
 
     // Load a campaign here
     strcpy(gUI_CampaignFile, "Instant");
@@ -736,7 +736,7 @@ static void InsertScoreCB(long, short hittype, C_Base *)
         {
             _tcsncpy(Scores.Scores[i].Name, ebox->GetText(), MAX_NAME_LENGTH);
 
-            if (!Scores.Scores[i].Name[0])
+            if ( not Scores.Scores[i].Name[0])
             {
                 Scores.Scores[i].Name[0] = ' ';
                 Scores.Scores[i].Name[1] = 0;
@@ -983,7 +983,7 @@ static void HookupIAControls(long ID)
     {
         ebox->SetCallback(HighScoreKeyboardCB);
 
-        if (!*ebox->GetText())
+        if ( not *ebox->GetText())
         {
             ebox->SetText(UI_logbk.Name());
         }
@@ -1687,7 +1687,7 @@ void CheckHighScore(long TotalScore)
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if (!i)
+    else if ( not i)
     {
         SoundID = gInstantBites->Pick(IA8);
 
@@ -1848,7 +1848,7 @@ void OpenIAMunitionsCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (!TheCampaign.IsLoaded())
+    if ( not TheCampaign.IsLoaded())
     {
         // Load a campaign here
         strcpy(gUI_CampaignFile, "Instant");

@@ -210,7 +210,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     static int editing = 0, unique = 0, renaming = 0, recalc = 0;
     int i, j;
 
-    if (!O)
+    if ( not O)
     {
         EndDialog(hDlg, TRUE);        /* Exits the dialog box        */
         return (FALSE);
@@ -267,7 +267,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             unique = 0;
 
             // Load the name stream into memory, so this stuff goes faster.
-            if (!NameStream)
+            if ( not NameStream)
                 LoadNameStream();
 
             // Fill Name Combo box
@@ -436,7 +436,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                     renaming = 0;
 
-                    if (!recalc)
+                    if ( not recalc)
                         GlobObj = NULL;
 
                     recalc = 0;
@@ -547,7 +547,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                         if (O->IsSecondary() and !j)
                             PostMessage(hDlg, WM_COMMAND, IDC_OBJ_RENAME, 0);
-                        else if (!O->IsSecondary() and j == 1)
+                        else if ( not O->IsSecondary() and j == 1)
                             O->SetObjectiveNameID(0);
 
                         UpdateNames(hDlg, O);
@@ -621,7 +621,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 case IDC_OBJ_RENAME:
                     i = O->GetObjectiveNameID();
 
-                    if (!i)
+                    if ( not i)
                         O->SetObjectiveNameID(1);
 
                     UpdateNames(hDlg, O);
@@ -910,7 +910,7 @@ BOOL WINAPI MissionTriggerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
                     {
                         toteam = SendMessage(GetDlgItem(hDlg, IDC_MT_TEAMCOMBO), CB_GETCURSEL, 0, 0);
 
-                        if (!vsteam)
+                        if ( not vsteam)
                             vsteam = GetEnemyTeam(toteam);
                     }
 
@@ -1775,7 +1775,7 @@ BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 case IDC_MAP_SAMS3:
                     map_data = TheCampaign.SamMapData;
 
-                    if (!map_data)
+                    if ( not map_data)
                     {
                         TheCampaign.SamMapData = MakeCampMap(MAP_SAMCOVERAGE, TheCampaign.SamMapData, 0);
                         map_data = TheCampaign.SamMapData;
@@ -1790,7 +1790,7 @@ BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 case IDC_MAP_RADAR3:
                     map_data = TheCampaign.RadarMapData;
 
-                    if (!map_data)
+                    if ( not map_data)
                     {
                         TheCampaign.RadarMapData = MakeCampMap(MAP_RADARCOVERAGE, TheCampaign.RadarMapData, 0);
                         map_data = TheCampaign.RadarMapData;
@@ -1803,7 +1803,7 @@ BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 default:
                     map_data = TheCampaign.CampMapData;
 
-                    if (!map_data)
+                    if ( not map_data)
                     {
                         TheCampaign.MakeCampMap(MAP_OWNERSHIP);
                         map_data = TheCampaign.CampMapData;
@@ -1836,7 +1836,7 @@ BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                             case IDC_MAP_SAMS3:
                                 dat = (map_data[i] >> s) & 0x03;
 
-                                if (!dat)
+                                if ( not dat)
                                     SetPixel(DC, x, y, RGB_BLACK);
                                 else if (dat == 1)
                                     SetPixel(DC, x, y, RGB_LIGHTBLUE);
@@ -2037,7 +2037,7 @@ BOOL WINAPI CampClipperProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
                                         {
                                             k = Falcon4ClassTable[((ObjectiveClass*)ent)->GetFeatureID(i)].visType[j];
 
-                                            if (!count[k])
+                                            if ( not count[k])
                                             {
                                                 first[k] = ent->Type() - VU_LAST_ENTITY_TYPE;
                                                 fx[k] = x;
@@ -2290,7 +2290,7 @@ int DoACheatFlight(void)
             {
                 flight = (Flight)u;
 
-                if (!best)
+                if ( not best)
                     best = flight;
 
                 if (gCheatPriority == 0 and flight->GetUnitPriority() > best->GetUnitPriority())
@@ -2476,7 +2476,7 @@ BOOL OpenCampFile(HWND hWnd)
     CampFileName.lpstrTitle        = "Open a Campaign file";
     CampFileName.lpstrDefExt       = "*.cam";
 
-    if (!GetOpenFileName(&CampFileName))
+    if ( not GetOpenFileName(&CampFileName))
     {
         ProcessCDError(CommDlgExtendedError(), hWnd);
         return FALSE;
@@ -2503,7 +2503,7 @@ BOOL OpenCampFile(HWND hWnd)
     else
         strcpy(FalconCampUserSaveDirectory, FalconCampaignSaveDirectory);
 
-    if (!TheCampaign.LoadCampaign(game_Campaign, CampFile))
+    if ( not TheCampaign.LoadCampaign(game_Campaign, CampFile))
     {
         MonoPrint("Open Failed\n");
         return (FALSE);
@@ -2540,7 +2540,7 @@ BOOL OpenTheaterFile(HWND hWnd)
     TheaterFileName.lpstrTitle        = "Open a Theater file";
     TheaterFileName.lpstrDefExt       = "*.thr";
 
-    if (!GetOpenFileName(&TheaterFileName))
+    if ( not GetOpenFileName(&TheaterFileName))
     {
         ProcessCDError(CommDlgExtendedError(), hWnd);
         return FALSE;
@@ -2569,7 +2569,7 @@ BOOL OpenTheaterFile(HWND hWnd)
 
     TheCampaign.SetTheater(TheaterFile);
 
-    if (!LoadTheater(TheaterFile))
+    if ( not LoadTheater(TheaterFile))
     {
         MonoPrint("Open Failed.\n");
         return (FALSE);
@@ -2615,7 +2615,7 @@ BOOL SaveCampFile(HWND hWnd, int mode)
     if (strlen(CampFileName.lpstrFile) < 1)
         return FALSE;
 
-    if (!CheckFile(hWnd, CampFileName))
+    if ( not CheckFile(hWnd, CampFileName))
         return FALSE;
 
     // write it's contents into a file
@@ -2646,7 +2646,7 @@ BOOL SaveCampFile(HWND hWnd, int mode)
         Camp_MakeInstantAction();
     }
 
-    if (!TheCampaign.SaveCampaign(game_Campaign, CampFile, save_mode))
+    if ( not TheCampaign.SaveCampaign(game_Campaign, CampFile, save_mode))
     {
         sprintf(buf, "Error writing file %s", CampFileName.lpstrFile);
         MessageBox(hWnd, buf, NULL, MB_OK);
@@ -2666,7 +2666,7 @@ BOOL SaveTheaterFile(HWND hWnd)
     if (strlen(TheaterFileName.lpstrFile) < 1)
         return FALSE;
 
-    if (!CheckFile(hWnd, TheaterFileName))
+    if ( not CheckFile(hWnd, TheaterFileName))
         return FALSE;
 
     // Set Current Campaign to use this theater
@@ -2687,7 +2687,7 @@ BOOL SaveTheaterFile(HWND hWnd)
     else
         strcpy(FalconCampUserSaveDirectory, FalconCampaignSaveDirectory);
 
-    if (!SaveTheater(TheaterFile))
+    if ( not SaveTheater(TheaterFile))
     {
         sprintf(buf, "Error writing theater file");
         MessageBox(hWnd, buf, NULL, MB_OK);
@@ -2707,7 +2707,7 @@ BOOL SaveScriptedUnitFile (HWND hWnd, OPENFILENAME file)
 
  if (strlen(file.lpstrFile) < 1)
  return FALSE;
- if (!CheckFile(hWnd,file))
+ if ( not CheckFile(hWnd,file))
  return FALSE;
  // Set Current Campaign to use this theater
  sprintf(filename,file.lpstrFile);

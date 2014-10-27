@@ -108,7 +108,7 @@ MissionRequestClass::~MissionRequestClass(void)
 
 int MissionRequestClass::RequestMission(void)
 {
-    if (!mission or priority < 0 or (vs and !GetRoE(who, vs, roe_check)))
+    if ( not mission or priority < 0 or (vs and !GetRoE(who, vs, roe_check)))
         return -1;
 
     if ((TeamInfo[who]) and (TeamInfo[who]->atm) and (TeamInfo[who]->flags & TEAM_ACTIVE))
@@ -136,7 +136,7 @@ int MissionRequestClass::RequestEnemyMission(void)
 {
     int bonus = priority;
 
-    if (!vs)
+    if ( not vs)
         return -1;
 
     for (who = 1; who < NUM_TEAMS; who++)
@@ -538,7 +538,7 @@ void FinalizeWayPoint(WayPoint cw, int reset = FALSE)
             break;
 
         default:
-            ShiAssert(!"Shouldn't get here");
+            ShiAssert( not "Shouldn't get here");
             break;
     }
 
@@ -624,7 +624,7 @@ int BuildPathToTarget(Flight u, MissionRequestClass *mis, VU_ID airbaseID)
 
     WayPoint tmpWP;
 
-    if (!airbase)
+    if ( not airbase)
         return 0;
 
     // Pointer to the package
@@ -639,7 +639,7 @@ int BuildPathToTarget(Flight u, MissionRequestClass *mis, VU_ID airbaseID)
     FinalizeWayPoint(cw, TRUE);
     SetCurrentAltitude();
 
-    if (!(MissionData[mis->mission].flags & AMIS_TARGET_ONLY))
+    if ( not (MissionData[mis->mission].flags & AMIS_TARGET_ONLY))
     {
         if (mis->mission == AMIS_AIRCAV)
         {
@@ -647,7 +647,7 @@ int BuildPathToTarget(Flight u, MissionRequestClass *mis, VU_ID airbaseID)
             Unit u = FindUnit(mis->requesterID);
             GridIndex x, y;
 
-            if (!u)
+            if ( not u)
                 return 0;
 
             u->GetLocation(&x, &y);
@@ -666,13 +666,13 @@ int BuildPathToTarget(Flight u, MissionRequestClass *mis, VU_ID airbaseID)
         // Ingress route
         pack->GetUnitAssemblyPoint(0, &ax, &ay);
 
-        if (!ax or !ay or !pack->GetIngress())
+        if ( not ax or !ay or !pack->GetIngress())
         {
             // No assembly point currently- We need to find a path to the target, and determine
             // a good assembly point and break point from it.
             cw = SetupIngressPoints(cw, u, mis);
 
-            if (!cw)
+            if ( not cw)
                 return 0;
         }
         else
@@ -725,12 +725,12 @@ int BuildPathToTarget(Flight u, MissionRequestClass *mis, VU_ID airbaseID)
             break;
     }
 
-    if (!(MissionData[mis->mission].flags & AMIS_TARGET_ONLY))
+    if ( not (MissionData[mis->mission].flags & AMIS_TARGET_ONLY))
     {
         // Egress Route
         pack->GetUnitAssemblyPoint(1, &ax, &ay);
 
-        if (!ax or !ay or !pack->GetEgress())
+        if ( not ax or !ay or !pack->GetEgress())
         {
             // No assembly point currently- We need to find a path to the target, and determine
             // a good assembly point and break point from it.
@@ -739,7 +739,7 @@ int BuildPathToTarget(Flight u, MissionRequestClass *mis, VU_ID airbaseID)
 
             cw = SetupEgressPoints(cw, u, mis);
 
-            if (!cw)
+            if ( not cw)
                 return 0;
         }
         else
@@ -767,7 +767,7 @@ int BuildPathToTarget(Flight u, MissionRequestClass *mis, VU_ID airbaseID)
     }
 
     // Now let's try to eliminated unneeded waypoints for initial flight
-    if (!u->GetUnitMissionID())
+    if ( not u->GetUnitMissionID())
         EliminateExcessWaypoints(sw, nw, u->GetTeam());
 
     return 1;
@@ -780,7 +780,7 @@ void BuildDivertPath(Flight flight, MissionRequestClass *mis)
 
     w = cw = flight->GetCurrentUnitWP();
 
-    if (!cw)
+    if ( not cw)
     {
         MonoPrint("Problem - airborne flight with no waypoints!n");
         return;
@@ -850,7 +850,7 @@ WayPoint SetupIngressPoints(WayPoint cw, Flight u, MissionRequestClass *mis)
     cw->UnlinkNextWP();
     cw->InsertWP(tw);
 
-    if (!CheckSafePath(cw, tw, u))
+    if ( not CheckSafePath(cw, tw, u))
         return 0;
 
     // Find a safe location for an assembly point and add it to the list
@@ -860,7 +860,7 @@ WayPoint SetupIngressPoints(WayPoint cw, Flight u, MissionRequestClass *mis)
     FinalizeWayPoint(aw);
     pack->SetUnitAssemblyPoint(0, iax, iay);
 
-    if (!(MissionData[mis->mission].flags & AMIS_NO_BREAKPT))
+    if ( not (MissionData[mis->mission].flags & AMIS_NO_BREAKPT))
     {
         // Find a good breakpoint
         nw = AddDistanceWaypoint(aw, tw, BREAKPOINT_DISTANCE * 2);
@@ -942,7 +942,7 @@ WayPoint AddAttackProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
     // Find and add the FIRST turn point, if we don't have one
     pack->GetUnitAssemblyPoint(3, &tpx, &tpy);
 
-    if (!tpx or !tpy)
+    if ( not tpx or !tpy)
     {
         int i, s, bs = 9999, fh, h, d;
         GridIndex x, y;
@@ -1170,7 +1170,7 @@ WayPoint SetupEgressPoints(WayPoint cw, Flight u, MissionRequestClass *mis)
     bw = new WayPointClass(bx, by, 0, 0, 0, 0, WP_LAND, WPF_LAND | WPF_HOLDCURRENT);
     cw->InsertWP(bw);
 
-    if (!CheckSafePath(cw, bw, u))
+    if ( not CheckSafePath(cw, bw, u))
         return 0;
 
     // Find a safe location for a post assembly point and add it to the list
@@ -1308,7 +1308,7 @@ void AddInformationWPs(Flight flight, MissionRequestClass *mis)
 
     // KCK NOTE: This assumes the flight is still owned by the ATM's machine
     // If not, abort..
-    if (!TeamInfo[flight->GetTeam()]->atm->IsLocal())
+    if ( not TeamInfo[flight->GetTeam()]->atm->IsLocal())
         return;
 
     x = y = 0;
@@ -1316,7 +1316,7 @@ void AddInformationWPs(Flight flight, MissionRequestClass *mis)
 
     while (lw and lw->GetNextWP())
     {
-        if (!x and lw->GetWPFlags() & WPF_ASSEMBLE)
+        if ( not x and lw->GetWPFlags() & WPF_ASSEMBLE)
         {
             lw->GetWPLocation(&x, &y);
             time = lw->GetWPArrivalTime();
@@ -1326,7 +1326,7 @@ void AddInformationWPs(Flight flight, MissionRequestClass *mis)
     }
 
     // Find Tanker (Use assembly points, if possible, otherwise target)
-    if (!x)
+    if ( not x)
     {
         x = mis->tx;
         y = mis->ty;
@@ -1399,7 +1399,7 @@ int AddTankerWayPoint(Flight u, int refuel)
 
     // This assumes the flight is still owned by the ATM's machine
     // If not, return..
-    if (!TeamInfo[u->GetTeam()]->atm->IsLocal())
+    if ( not TeamInfo[u->GetTeam()]->atm->IsLocal())
         return 1;
 
     if (refuel < g_nNoWPRefuelNeeded)
@@ -1615,7 +1615,7 @@ int AddTankerWayPoint(Flight u, int refuel)
         }
     }
 
-    if (!wpinserted)
+    if ( not wpinserted)
         return 0;
 
     EliminateExcessWaypoints(sw, fw, u->GetTeam()); // remove unneeded wpts from Takeoff to Land
@@ -1639,12 +1639,12 @@ long SetWPTimes(Flight u, MissionRequestClass *mis)
 
     fw = w = u->GetFirstUnitWP();
 
-    if (!w)
+    if ( not w)
         return 0;
 
     pack = (Package) u->GetUnitParent();
 
-    if (!pack)
+    if ( not pack)
         return 0;
 
     //TJL 11/22/03 More division by 2 removal. Errors are now aircraft specific.
@@ -1707,7 +1707,7 @@ long SetWPTimes(Flight u, MissionRequestClass *mis)
     }
 
     // Now let's try and set any times we're allowed to (target to landing first)
-    if (!tw)
+    if ( not tw)
         tw = fw;
 
     mission_time = tw->GetWPDepartureTime();
@@ -1747,7 +1747,7 @@ long SetWPTimes(Flight u, MissionRequestClass *mis)
         mission_time += w->GetWPStationTime();
 #ifdef DEBUG
         // if (u->GetUnitMission() not_eq AMIS_ALERT and u->GetUnitMission() not_eq AMIS_RECONPATROL)
-        // ShiAssert(!WayPointErrorCode(w,u));
+        // ShiAssert( not WayPointErrorCode(w,u));
 #endif
         w = w->GetNextWP();
         x = nx;
@@ -1842,12 +1842,12 @@ long SetWPTimesTanker(Flight u, MissionRequestClass *mis, bool type, CampaignTim
 
     fw = w = u->GetFirstUnitWP();
 
-    if (!w)
+    if ( not w)
         return 0;
 
     pack = (Package) u->GetUnitParent();
 
-    if (!pack)
+    if ( not pack)
         return 0;
 
     //TJL 11/23/03 More division by 2 removal
@@ -1906,10 +1906,10 @@ long SetWPTimesTanker(Flight u, MissionRequestClass *mis, bool type, CampaignTim
     }
 
     // Now let's try and set any times we're allowed to (target to landing first)
-    if (!tw)
+    if ( not tw)
         tw = fw;
 
-    if (!type) // egress -> adjust target to land waypoint ; time = takeoff time
+    if ( not type) // egress -> adjust target to land waypoint ; time = takeoff time
     {
         mission_time = tw->GetWPDepartureTime();
         tw->GetWPLocation(&x, &y);
@@ -2000,7 +2000,7 @@ long SetWPTimesTanker(Flight u, MissionRequestClass *mis, bool type, CampaignTim
 WayPoint CheckSafePath(WayPoint w, WayPoint nw, Flight flight)
 {
     // If we're not a lead flight, we just follow the waypoints we've been given
-    if (!flight->GetUnitMissionID())
+    if ( not flight->GetUnitMissionID())
     {
         int threats = ScoreThreatsOnWPLeg(w, nw, flight->GetTeam(), TT_MAX);
 
@@ -2009,7 +2009,7 @@ WayPoint CheckSafePath(WayPoint w, WayPoint nw, Flight flight)
             // Try to find a way around
             SetCurrentAltitude();
 
-            if (!FindSafePath(w, nw, flight))
+            if ( not FindSafePath(w, nw, flight))
                 return NULL;
         }
     }

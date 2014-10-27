@@ -189,7 +189,7 @@ int SimWeaponClass::Save(VU_BYTE **stream)
 
     ShiAssert(parent);
 
-    if (!parent)
+    if ( not parent)
         return NULL;
 
     VU_ID parentId = parent->Id();
@@ -224,7 +224,7 @@ int SimWeaponClass::Save(VU_BYTE **stream)
 
     ShiAssert(parent);
 
-    if (!parent)
+    if ( not parent)
         return NULL;
 
     VU_ID vuid = parent->Id();

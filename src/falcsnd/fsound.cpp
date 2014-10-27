@@ -353,9 +353,9 @@ int InitSoundManager(HWND hWnd, int, char *falconDataDir)
     {
         gSoundDriver = new CSoundMgr;
 
-        if (!gSoundDriver)
+        if ( not gSoundDriver)
             return FALSE;
-        else if (!gSoundDriver->InstallDSound(hWnd, DSSCL_NORMAL, &stereo_16bit_22k))
+        else if ( not gSoundDriver->InstallDSound(hWnd, DSSCL_NORMAL, &stereo_16bit_22k))
         {
             delete gSoundDriver;
             gSoundDriver = NULL;
@@ -375,7 +375,7 @@ int InitSoundManager(HWND hWnd, int, char *falconDataDir)
     sprintf(sfxtable, "%s\\%s", FalconSoundThrDirectory, FALCONSNDTABLETXT);
     ShiAssert(SFX_DEF == NULL);
 
-    if (!ReadSFXTableTXT(sfxtable)) // MLR 2003-10-17 Parse text file if it exists
+    if ( not ReadSFXTableTXT(sfxtable)) // MLR 2003-10-17 Parse text file if it exists
     {
         return FALSE;
         // MLR 2003-11-19 the new sound table is mandatory!
@@ -402,7 +402,7 @@ int InitSoundManager(HWND hWnd, int, char *falconDataDir)
     int i = _set_SSE2_enable(1);
 #endif
 
-    if (!gSoundObject) // MLR 1/25/2004 - the global sound object
+    if ( not gSoundObject) // MLR 1/25/2004 - the global sound object
     {
         gSoundObject = new F4SoundPos();
     }
@@ -920,7 +920,7 @@ BOOL ReadSFXTable(char *sndtable)
 
     if (fread(SFX_DEF, sizeof(*SFX_DEF), nsfx, fp) not_eq nsfx)
     {
-        ShiAssert(!"Read error on Sound Table");
+        ShiAssert( not "Read error on Sound Table");
         fclose(fp);
         return FALSE;
     }
@@ -1153,7 +1153,7 @@ void F4ReloadSFX(void)
     char sfxtable[_MAX_PATH];
     sprintf(sfxtable, "%s\\%s", FalconSoundThrDirectory, FALCONSNDTABLETXT);
 
-    if (!ReadSFXTableTXT(sfxtable)) // MLR 2003-10-17 Parse text file if it exists
+    if ( not ReadSFXTableTXT(sfxtable)) // MLR 2003-10-17 Parse text file if it exists
     {
         return; // MLR 2003-11-18 - the new style sound table is mandatory
         /*
@@ -1240,14 +1240,14 @@ BOOL WriteSFXTable(char *sndtable)
     if (fwrite(&vrsn, sizeof(vrsn), 1, fp) not_eq 1 ||
         fwrite(&BuiltinNSFX, sizeof(BuiltinNSFX), 1, fp) not_eq 1)
     {
-        ShiAssert(!"Write error on Sound Table");
+        ShiAssert( not "Write error on Sound Table");
         fclose(fp);
         return FALSE;
     }
 
     if (fwrite(BuiltinSFX, sizeof(*BuiltinSFX), BuiltinNSFX, fp) not_eq (UINT)BuiltinNSFX)
     {
-        ShiAssert(!"Write error on Sound Table");
+        ShiAssert( not "Write error on Sound Table");
         fclose(fp);
         return FALSE;
     }
@@ -1275,7 +1275,7 @@ void UnLoadSFX(void)
 BOOL
 ChatSetup(void)
 {
-    if (!gSoundDriver) return(FALSE);
+    if ( not gSoundDriver) return(FALSE);
 
 #ifdef CHAT_USED
     HRESULT result;
@@ -1332,7 +1332,7 @@ ChatCleanup(void)
 #ifdef CHAT_USED
     HRESULT result;
 
-    if (!gSoundDriver) return;
+    if ( not gSoundDriver) return;
 
 
     // If we were transmitting, stop
@@ -1356,7 +1356,7 @@ ChatCleanup(void)
 void
 F4ChatToggleXmitReceive(void)
 {
-    if (!gSoundDriver) return;
+    if ( not gSoundDriver) return;
 
     // Switch modes
     if (chatMode == Transmit)
@@ -1511,7 +1511,7 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
             )
             {
                 // MD -- 20031125: except if the MAL/IND test button is being pressed to test the warning sound
-                if (!((sfxId == SFX_BB_ALLWORDS) and playerAC->TestLights))
+                if ( not ((sfxId == SFX_BB_ALLWORDS) and playerAC->TestLights))
                 {
                     return;
                 }
@@ -1525,7 +1525,7 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
     {
         if ((SFX_DEF[ sfxId ].flags & SFX_POS_LOOPED) ||
             override ||
-            (!gSoundObject->IsPlaying(sfxId, 0)))
+            ( not gSoundObject->IsPlaying(sfxId, 0)))
             gSoundObject->Sfx(sfxId, 0, pscale, volume, CamPos.x, CamPos.y, CamPos.z);
     }
 }
@@ -1624,7 +1624,7 @@ F4SoundFXInit(void)
     int i;
     SFX_DEF_ENTRY *sfxp;
 
-    if (!gSoundDriver) return;
+    if ( not gSoundDriver) return;
 
     // main loop thru sound effects
     for (i = 0, sfxp = &SFX_DEF[0]; i < NumSFX; i++, sfxp++)
@@ -1646,7 +1646,7 @@ F4SoundFXEnd(void)
     int i;
     SFX_DEF_ENTRY *sfxp;
 
-    if (!gSoundDriver) return;
+    if ( not gSoundDriver) return;
 
     // main loop thru sound effects
     for (i = 0, sfxp = &SFX_DEF[0]; i < NumSFX; i++, sfxp++)
@@ -1815,7 +1815,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol)
             )
             {
                 // MD -- 20031125: except if the MAL/IND test button is being pressed to test the warning sound
-                if (!((SfxID == SFX_BB_ALLWORDS) and playerAC->TestLights))
+                if ( not ((SfxID == SFX_BB_ALLWORDS) and playerAC->TestLights))
                     return;
             }
         }
@@ -1894,7 +1894,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol, float X, float
 
     mlrVoiceHandle *vh;
 
-    if (!inPurgeList)
+    if ( not inPurgeList)
     {
         ENTERSPCS;
         sndPurgeList.AddHead(this);
@@ -1970,7 +1970,7 @@ void F4SoundPos::Purge(void)
         sn = sn2;
     }
 
-    if (!(soList.GetHead()))
+    if ( not (soList.GetHead()))
     {
         ENTERSPCS;
         inPurgeList = 0;

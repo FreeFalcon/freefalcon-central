@@ -80,7 +80,7 @@ CampManagerClass::CampManagerClass(FILE *file)
     // // Rename this ID
     // for (new_id.num_ = FIRST_NON_VOLATILE_VU_ID_NUMBER; new_id.num_ < LAST_NON_VOLATILE_VU_ID_NUMBER; new_id.num_++)
     // {
-    // if (!vuDatabase->Find(new_id))
+    // if ( not vuDatabase->Find(new_id))
     // {
     // RenameTable[share_.id_.num_] = new_id.num_;
     // share_.id_ = new_id;
@@ -91,7 +91,7 @@ CampManagerClass::CampManagerClass(FILE *file)
     //#endif
 
     // Set the owner to the game master.
-    if ((FalconLocalGame) and (!FalconLocalGame->IsLocal()))
+    if ((FalconLocalGame) and ( not FalconLocalGame->IsLocal()))
         SetOwnerId(FalconLocalGame->OwnerId());
 
     fread(&managerFlags, sizeof(short), 1, file);
@@ -113,19 +113,19 @@ CampManagerClass::~CampManagerClass(void)
         {
             if (TeamInfo[t]->atm == this)
             {
-                ShiAssert(!"Manager reference problem");
+                ShiAssert( not "Manager reference problem");
                 TeamInfo[t]->atm = NULL;
             }
 
             if (TeamInfo[t]->gtm == this)
             {
-                ShiAssert(!"Manager reference problem");
+                ShiAssert( not "Manager reference problem");
                 TeamInfo[t]->gtm = NULL;
             }
 
             if (TeamInfo[t]->ntm == this)
             {
-                ShiAssert(!"Manager reference problem");
+                ShiAssert( not "Manager reference problem");
                 TeamInfo[t]->ntm = NULL;
             }
         }
@@ -179,7 +179,7 @@ int CampManagerClass::Save(FILE *file)
 {
     int retval = 0;
 
-    if (!file)
+    if ( not file)
         return 0;
 
     // Write vu stuff here
@@ -250,7 +250,7 @@ VU_ERRCODE CampManagerClass::InsertionCallback(void)
     {
         if (EntityType()->classInfo_[VU_DOMAIN] == DOMAIN_AIR)
         {
-            ShiAssert(!TeamInfo[owner]->atm);
+            ShiAssert( not TeamInfo[owner]->atm);
 
             if (TeamInfo[owner]->atm)
                 VuDeReferenceEntity(TeamInfo[owner]->atm);
@@ -259,7 +259,7 @@ VU_ERRCODE CampManagerClass::InsertionCallback(void)
         }
         else if (EntityType()->classInfo_[VU_DOMAIN] == DOMAIN_LAND)
         {
-            ShiAssert(!TeamInfo[owner]->gtm);
+            ShiAssert( not TeamInfo[owner]->gtm);
 
             if (TeamInfo[owner]->gtm)
                 VuDeReferenceEntity(TeamInfo[owner]->gtm);
@@ -268,7 +268,7 @@ VU_ERRCODE CampManagerClass::InsertionCallback(void)
         }
         else if (EntityType()->classInfo_[VU_DOMAIN] == DOMAIN_SEA)
         {
-            ShiAssert(!TeamInfo[owner]->ntm);
+            ShiAssert( not TeamInfo[owner]->ntm);
 
             if (TeamInfo[owner]->ntm)
                 VuDeReferenceEntity(TeamInfo[owner]->ntm);

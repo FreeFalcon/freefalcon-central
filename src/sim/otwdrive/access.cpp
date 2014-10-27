@@ -110,7 +110,7 @@ void OTWDriverClass::NVGToggle(void)
     // RenderOTW *newRenderer;
     ShiAssert(renderer);
 
-    TheTimeOfDay.SetNVGmode(!TheTimeOfDay.GetNVGmode());
+    TheTimeOfDay.SetNVGmode( not TheTimeOfDay.GetNVGmode());
 
     // Construct a new renderer of the appropriate type
 
@@ -241,7 +241,7 @@ void OTWDriverClass::Cleanup2DCockpitMode()
 ////////////////////////
 void OTWDriverClass::Select3DCockpitMode()
 {
-    if (!g_bSync2D3DPit)
+    if ( not g_bSync2D3DPit)
     {
         ViewReset();
         eyePan = 0.0F;
@@ -459,7 +459,7 @@ void OTWDriverClass::ToggleActionCamera(void)
 void OTWDriverClass::ToggleHybridPitMode(void)
 {
 
-    if (!HybridPitModeEnabled)
+    if ( not HybridPitModeEnabled)
     {
         if (g_bSync2D3DPit)
             if (g_bEnableTrackIR and PlayerOptions.Get3dTrackIR() == true) //added check for 3d TIR being enabled
@@ -490,7 +490,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
     }
 
     // reset our chase ranges etc to default or zero out slew stuff
-    // if(!(mode == mOTWDisplayMode and mode == ModePadlockF3)) {
+    // if( not (mode == mOTWDisplayMode and mode == ModePadlockF3)) {
     // ViewReset();
     // }
 
@@ -624,7 +624,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 // edg note: this is now actually self to any enemny
             case ModeTarget:
 
-                if (!SimDriver.GetPlayerAircraft() or otwTrackPlatform.get() == NULL)
+                if ( not SimDriver.GetPlayerAircraft() or otwTrackPlatform.get() == NULL)
                     return;
 
                 // try and find a flying weapon for the current otwPlatform
@@ -707,7 +707,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
 
             case ModeTargetToSelf:
 
-                if (!SimDriver.GetPlayerAircraft())
+                if ( not SimDriver.GetPlayerAircraft())
                     return;
 
                 // try and find a flying weapon for the current otwPlatform
@@ -761,7 +761,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
 
             case ModeIncoming:
 
-                if (!otwTrackPlatform)
+                if ( not otwTrackPlatform)
                     return;
 
                 // try and find a flying weapon for the current otwPlatform
@@ -912,7 +912,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
 
             case ModeTarget:
 
-                if (!SimDriver.GetPlayerAircraft())
+                if ( not SimDriver.GetPlayerAircraft())
                     return;
 
                 // try and find a flying weapon for the current otwPlatform
@@ -1025,7 +1025,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
 
             case ModeTargetToSelf:
 
-                if (!SimDriver.GetPlayerAircraft())
+                if ( not SimDriver.GetPlayerAircraft())
                     return;
 
                 // try and find a flying weapon for the current otwPlatform
@@ -1138,7 +1138,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
             case Mode3DCockpit:
                 if (
                     (ejectCam) ||
-                    (!SimDriver.GetPlayerAircraft())
+                    ( not SimDriver.GetPlayerAircraft())
                     //||  (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING)
                 )
                 {
@@ -1267,7 +1267,7 @@ void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastm
 
             // this mode restores to player's f16
 
-            if (!g_bSync2D3DPit or lastmode not_eq Mode2DCockpit) //Wombat778 reset the view if not from 2d pit. COnsider adding padlock modes here
+            if ( not g_bSync2D3DPit or lastmode not_eq Mode2DCockpit) //Wombat778 reset the view if not from 2d pit. COnsider adding padlock modes here
             {
                 ViewReset();
                 eyePan = 0.0f;
@@ -1449,7 +1449,7 @@ void OTWDriverClass::SetDetail(int newlevel)
             parentDrawable = parentObject->drawPointer;
 
         // KCK: For now, if we've got a parent drawable object, don't fuck with it.
-        if (!parentDrawable)
+        if ( not parentDrawable)
         {
             if (theObject->drawPointer and theObject->displayPriority <= oldlevel and theObject->displayPriority > newlevel)
             {
@@ -1522,7 +1522,7 @@ void OTWDriverClass::ToggleEyeFly(void)
 {
     mlTrig trigYaw, trigPitch, trigRoll;
 
-    if (!eyeFlyEnabled)
+    if ( not eyeFlyEnabled)
     {
         return;
     }
@@ -1669,7 +1669,7 @@ void OTWDriverClass::ViewTiltDown(void)
 
 void OTWDriverClass::ViewTiltHold(void)
 {
-    if (!(SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode2DCockpit))
+    if ( not (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode2DCockpit))
     {
         {
             elDir = 0.0F;
@@ -1732,7 +1732,7 @@ void OTWDriverClass::ViewSpinRight(void)
 
 void OTWDriverClass::ViewSpinHold(void)
 {
-    if (!(SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode2DCockpit))
+    if ( not (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode2DCockpit))
     {
         {
             azDir = 0.0F;
@@ -1745,7 +1745,7 @@ void OTWDriverClass::ViewSpinHold(void)
 
 void OTWDriverClass::ViewReset(void)
 {
-    if (!otwPlatform)
+    if ( not otwPlatform)
         return;
 
     azDir = 0.0F;

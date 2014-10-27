@@ -103,7 +103,7 @@ ANIM_RES *C_Animation::LoadAnim(long ID, char *filename)
 
     size = UI_FILESIZE(ifp);
 
-    if (!size)
+    if ( not size)
     {
         UI_CLOSE(ifp);
         return(FALSE);
@@ -182,9 +182,9 @@ void C_Animation::Convert16BitRLE(ANIMATION *Data)
     {
         dptr = (WORD *)&AnimPtr->Data[0];
 
-        while (!(*dptr & RLE_END))
+        while ( not (*dptr & RLE_END))
         {
-            if (!(*dptr & RLE_KEYMASK))
+            if ( not (*dptr & RLE_KEYMASK))
             {
                 cnt = *dptr;
                 dptr++;

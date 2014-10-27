@@ -188,7 +188,7 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
     d.right = d.left + GetW();
     d.bottom = d.top + GetH();
 
-    if (!(Flags_ & C_BIT_ABSOLUTE))
+    if ( not (Flags_ & C_BIT_ABSOLUTE))
     {
         d.left += Parent_->VX_[GetClient()];
         d.top += Parent_->VY_[GetClient()];
@@ -196,11 +196,11 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
         d.bottom += Parent_->VY_[GetClient()];
     }
 
-    if (!Parent_->ClipToArea(&s, &d, cliprect))
+    if ( not Parent_->ClipToArea(&s, &d, cliprect))
         return;
 
-    if (!(Flags_ & C_BIT_ABSOLUTE))
-        if (!Parent_->ClipToArea(&s, &d, &Parent_->ClientArea_[GetClient()]))
+    if ( not (Flags_ & C_BIT_ABSOLUTE))
+        if ( not Parent_->ClipToArea(&s, &d, &Parent_->ClientArea_[GetClient()]))
             return;
 
     if (Flags_ & C_BIT_USEGRADIENT)

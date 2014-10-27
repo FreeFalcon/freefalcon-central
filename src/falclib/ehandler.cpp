@@ -150,7 +150,7 @@ static void ShowModuleInfo(HANDLE LogFile, HINSTANCE ModuleHandle)
 
 static void RecordModuleList(HANDLE LogFile)
 {
-    if (!g_bModuleList)
+    if ( not g_bModuleList)
         return;
 
     hprintf(LogFile, "\r\n"
@@ -216,7 +216,7 @@ static void RecordSystemInformation(HANDLE LogFile)
     char UserName[200];
     DWORD UserNameSize = sizeof(UserName);
 
-    if (!GetUserName(UserName, &UserNameSize))
+    if ( not GetUserName(UserName, &UserNameSize))
         lstrcpy(UserName, "Unknown");
 
     hprintf(LogFile, "%s, run by %s.\r\n", ModuleName, UserName);
@@ -424,7 +424,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
     PEXCEPTION_RECORD Exception = data->ExceptionRecord;
     PCONTEXT Context = data->ContextRecord;
 
-    if (!hinstDbgHelp)
+    if ( not hinstDbgHelp)
     {
         char CrashModulePathName[MAX_PATH];
         char *CrashModuleFileName = "Unknown";

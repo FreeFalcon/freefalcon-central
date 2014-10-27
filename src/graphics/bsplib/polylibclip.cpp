@@ -457,7 +457,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
             }
 
             // If this vert isn't clipped, use it
-            if (!(TheStateStack.ClipInfoPool[v->xyz].clipFlag & CLIP_NEAR))
+            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag & CLIP_NEAR))
             {
                 *nextOut++ = *v;
             }
@@ -503,7 +503,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
             }
 
             // If this vert isn't clipped, use it
-            if (!(TheStateStack.ClipInfoPool[v->xyz].clipFlag & CLIP_BOTTOM))
+            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag & CLIP_BOTTOM))
             {
                 *nextOut++ = *v;
             }
@@ -544,7 +544,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
             }
 
             // If this vert isn't clipped, use it
-            if (!(TheStateStack.ClipInfoPool[v->xyz].clipFlag & CLIP_TOP))
+            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag & CLIP_TOP))
             {
                 *nextOut++ = *v;
             }
@@ -585,7 +585,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
             }
 
             // If this vert isn't clipped, use it
-            if (!(TheStateStack.ClipInfoPool[v->xyz].clipFlag & CLIP_RIGHT))
+            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag & CLIP_RIGHT))
             {
                 *nextOut++ = *v;
             }
@@ -626,7 +626,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
             }
 
             // If this vert isn't clipped, use it
-            if (!(TheStateStack.ClipInfoPool[v->xyz].clipFlag & CLIP_LEFT))
+            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag & CLIP_LEFT))
             {
                 *nextOut++ = *v;
             }

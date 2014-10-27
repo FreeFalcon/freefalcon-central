@@ -30,7 +30,7 @@ SimObjectType* RadarAGOnlyClass::Exec(SimObjectType*)
     CheckLockedTarget();
 
     // If we don't have a locked target, we don't have anything to do.
-    if (!lockedTarget)
+    if ( not lockedTarget)
     {
         return NULL;
     }
@@ -42,7 +42,7 @@ SimObjectType* RadarAGOnlyClass::Exec(SimObjectType*)
     canSee = TRUE;
 
     // Can't hold a lock while we're off
-    if (!isEmitting)
+    if ( not isEmitting)
     {
         canSee = FALSE;
     }
@@ -54,7 +54,7 @@ SimObjectType* RadarAGOnlyClass::Exec(SimObjectType*)
     }
 
     // Only track object in the correct domain (air/land)
-    if (!lockedTarget->BaseData()->OnGround())
+    if ( not lockedTarget->BaseData()->OnGround())
     {
         canSee = FALSE;
     }
@@ -72,7 +72,7 @@ SimObjectType* RadarAGOnlyClass::Exec(SimObjectType*)
 
 
     // If we can't see the target, drop lock
-    if (!canSee)
+    if ( not canSee)
     {
         SetDesiredTarget(NULL);
     }
@@ -114,6 +114,6 @@ SimObjectType* RadarAGOnlyClass::Exec(SimObjectType*)
 void RadarAGOnlyClass::SetDesiredTarget(SimObjectType* newTarget)
 {
     // Only accept ground targets
-    if (!newTarget or newTarget->BaseData()->OnGround())
+    if ( not newTarget or newTarget->BaseData()->OnGround())
         RadarClass::SetDesiredTarget(newTarget);
 }

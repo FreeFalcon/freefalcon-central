@@ -103,7 +103,7 @@ VuEntity *TailInsertList::PopHead()
 {
     VuScopeLock l(GetMutex());
 
-    while (!l_.empty())
+    while ( not l_.empty())
     {
         VuEntityBin eb = l_.front();
         l_.pop_front();
@@ -226,7 +226,7 @@ VuEntity *TailInsertList::PopHead()
 {
     VuScopeLock l(GetMutex());
 
-    while (!l_.empty())
+    while ( not l_.empty())
     {
         VuEntityBin eb = l_.front();
         l_.pop_front();

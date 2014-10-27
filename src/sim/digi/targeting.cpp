@@ -69,7 +69,7 @@ void DigitalBrain::DoTargeting(void)
     if (SimLibElapsedTime > self->nextTargetUpdate)
     {
         // If we are lead, or lead is player, look for a target
-        if (!isWing or (mDesignatedObject == FalconNullId and flightLead and flightLead->IsSetFlag(MOTION_OWNSHIP)))
+        if ( not isWing or (mDesignatedObject == FalconNullId and flightLead and flightLead->IsSetFlag(MOTION_OWNSHIP)))
         {
             if (missionClass not_eq AAMission and !missionComplete and agDoctrine == AGD_NONE)
                 SelectGroundWeapon();
@@ -103,13 +103,13 @@ void DigitalBrain::DoTargeting(void)
             // objects into our target list and then make a weighted choice among all of the entities.
             // 2000-11-17 MODIFIED BY S.G. WILL TRY DIFFERENT VALUES AND SEE HOW IT AFFECTS GAMEPLAY/FPS
             //(5 NM IS THE DEFAULT). 20 NM SEEMS FINE (NO REAL FPS LOSS AND IMPROVED AI TARGET SORTING)
-            //       if (!campTarget or rngSqr < (5.0F * NM_TO_FT)*(5.0F * NM_TO_FT))
+            //       if ( not campTarget or rngSqr < (5.0F * NM_TO_FT)*(5.0F * NM_TO_FT))
             // SYLVAINLOOK in your RP5 code, this was brought back to 5 NM...
             // 2002-03-15 MODIFIED BY S.G. Now uses g_fSearchSimTargetFromRangeSqr so we can tweak it
             // TJL 10/20/03 SearchSim is missing from F4config. Uncommented hard code and changed it to 8.0 miles.
-            //if (!campTarget or rngSqr < (20.0F * NM_TO_FT)*(20.0F * NM_TO_FT))
-            //if (!campTarget or rngSqr < (8.0F * NM_TO_FT)*(8.0F * NM_TO_FT))
-            if (!campTarget or rngSqr < g_fSearchSimTargetFromRangeSqr)
+            //if ( not campTarget or rngSqr < (20.0F * NM_TO_FT)*(20.0F * NM_TO_FT))
+            //if ( not campTarget or rngSqr < (8.0F * NM_TO_FT)*(8.0F * NM_TO_FT))
+            if ( not campTarget or rngSqr < g_fSearchSimTargetFromRangeSqr)
             {
                 // Need a target list for threat checking
                 self->targetList = UpdateTargetList(self->targetList, self, SimDriver.combinedList);
@@ -135,7 +135,7 @@ void DigitalBrain::DoTargeting(void)
 
             // Check for nearby threats and kill them
             // TODO:  Should we do a range check here like we do for leads above, or just trust the campaign?
-            if (!campTarget)
+            if ( not campTarget)
             {
                 //me123 we need it for bvr reactions      if (missionClass == AAMission or missionComplete)
                 self->targetList = UpdateTargetList(self->targetList, self, SimDriver.combinedList);
@@ -189,7 +189,7 @@ void DigitalBrain::DoTargeting(void)
         FuelCheck();
 
         // Check for reaching IP
-        if (!IsSetATC(ReachedIP))
+        if ( not IsSetATC(ReachedIP))
             IPCheck();
     }
 
@@ -282,7 +282,7 @@ void DigitalBrain::TargetSelection(void)
             }
         }
 
-        if (!tmpLock)
+        if ( not tmpLock)
         {
             // IF NO SENSOR IS SEEING THIS GUY, HOW CAN WE TRACK HIM?
             // 2001-03-16 ADDED BY S.G. THIS IS OUR GCI IMPLEMENTATION...
@@ -367,7 +367,7 @@ void DigitalBrain::TargetSelection(void)
         {
             //if (objectPtr->BaseData()->IsSim())
             //{
-            //if (!((SimBaseClass *)objectPtr->BaseData())->incomingMissile[0]/* and ((SimWeaponClass *)((SimBaseClass *)objectPtr->BaseData())->incomingMissile[0])->parent not_eq self*/)
+            //if ( not ((SimBaseClass *)objectPtr->BaseData())->incomingMissile[0]/* and ((SimWeaponClass *)((SimBaseClass *)objectPtr->BaseData())->incomingMissile[0])->parent not_eq self*/)
             //{
             baseScore = objectPtr->localData->threatScore;
 
@@ -514,14 +514,14 @@ FalconEntity* DigitalBrain::CampTargetSelection(void)
     campUnit->UnsetChecked();
 
     // choose target.  I assume if this returns 0, no target....
-    if (!campUnit->ChooseTarget())
+    if ( not campUnit->ChooseTarget())
         return NULL;
 
     // get the target
     target = campUnit->GetTarget();
 
     // do we have a target?
-    if (!target)
+    if ( not target)
         return NULL;
 
 
@@ -535,7 +535,7 @@ FalconEntity* DigitalBrain::CampTargetSelection(void)
     // if ( target->OnGround() and (missionClass == AAMission or missionComplete) and hasWeapons)
     if (target->OnGround() and (missionClass == AAMission or missionComplete or IsSetATC(ReachedIP)) and hasWeapons)
     {
-        if (!groundTargetPtr)
+        if ( not groundTargetPtr)
         {
             SetGroundTarget(target);
             SetupAGMode(NULL, NULL);
@@ -586,7 +586,7 @@ SimObjectType* DigitalBrain::InsertIntoTargetList(SimObjectType* root, SimObject
             tmpPtr = tmpPtr->next;
         }
 
-        if (!last and (tmpPtr->BaseData() not_eq newObj->BaseData()))
+        if ( not last and (tmpPtr->BaseData() not_eq newObj->BaseData()))
         {
             F4Assert(tmpPtr not_eq newObj);
             // Goes at the front
@@ -617,7 +617,7 @@ SimObjectType* DigitalBrain::InsertIntoTargetList(SimObjectType* root, SimObject
         {
             F4Assert(tmpPtr->BaseData() == newObj->BaseData());
 
-            if (!tmpPtr->BaseData()->OnGround())
+            if ( not tmpPtr->BaseData()->OnGround())
                 SetTarget(tmpPtr);
 
             // we don't need this any more -- and it shouldn't have any refs
@@ -722,7 +722,7 @@ SimObjectType* MakeSimListFromVuList(AircraftClass *self, SimObjectType* targetL
                 lastObject = tmpObject;
 
                 // Set head if needed
-                if (!rootObject)
+                if ( not rootObject)
                     rootObject = tmpObject;
 
                 // Step vu list

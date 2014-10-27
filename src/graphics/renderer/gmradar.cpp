@@ -544,7 +544,7 @@ void RenderGMRadar::DrawBlip(DrawableObject* drawable, float GainScale, bool Sha
         r = drawable->GetRadarSign() * worldToUnitScale * scaleX; // +/-1 * scale to pixels
 
     // Decide if a spot will suffice or if we need to do a full render
-    if (!Shaped or r < 2.0f)
+    if ( not Shaped or r < 2.0f)
     {
 
         // Compute the rotated and scaled location of the points
@@ -717,7 +717,7 @@ float RenderGMRadar::ComputeReflectedIntensity(Tpost *post)
     float cosAngle;
     float I;
 
-    if (!post)
+    if ( not post)
         return 0.0f;
 
     cosAngle = (float)sin(lightPhi) * (float)sin(post->phi);

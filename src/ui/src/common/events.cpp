@@ -246,10 +246,10 @@ void ProcessEventArray(C_Window *win, void *events, int count)
     {
         cur = &evList[i];
 
-        if (!F4IsBadReadPtr(cur->timeStr, sizeof(_TCHAR)))
+        if ( not F4IsBadReadPtr(cur->timeStr, sizeof(_TCHAR)))
             Time_str = (_TCHAR *)cur->timeStr;
 
-        if (!F4IsBadReadPtr(cur->msgStr, sizeof(_TCHAR)))
+        if ( not F4IsBadReadPtr(cur->msgStr, sizeof(_TCHAR)))
             Message_str = (_TCHAR *)cur->msgStr;
 
         txt = new C_Text;
@@ -522,7 +522,7 @@ static void AddMessageToFile(FILE *ofp, long eventID, _TCHAR output[][32], BOOL 
 
     eventstr = AssembleEventString(eventID, output);
 
-    if (!eventstr)
+    if ( not eventstr)
         return;
 
     // Add it to window
@@ -579,7 +579,7 @@ void SaveEventList(FILE *ofp,unsigned char mask[],int DebriefType)
  Done=TRUE;
  AddMessageToFile(ofp,eventMessage,UIEventOutput,TrackFlag);
  TrackFlag=TRUE;
- if(!Done)
+ if( not Done)
  eventMessage=BuildMessage(cur,UIEventOutput,DebriefType,&TrackID,&TrackTime,&dummy);
  }
 

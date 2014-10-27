@@ -295,7 +295,7 @@ void BombClass::Start(vector* pos, vector* rate, float cD, SimObjectType *target
         wc = (WeaponClassDataType *)classPtr->dataPtr;
 
         // if we're not a cluster type, we should have no burst height
-        if (!(wc->Flags & WEAP_CLUSTER))
+        if ( not (wc->Flags & WEAP_CLUSTER))
         {
             burstHeight = 0.0f;
         }
@@ -328,7 +328,7 @@ int BombClass::Exec(void)
 
     // Debub ==========================
     static FILE *fp = NULL;
-    //if (!fp)
+    //if ( not fp)
     //fp = fopen("g:\\JSOWtrgtFinal.txt", "w");
     //=================================
 
@@ -372,7 +372,7 @@ int BombClass::Exec(void)
             gACMIRec.GenPositionRecord(&genPos);
     }
 
-    if (!IsLocal())
+    if ( not IsLocal())
     {
         return FALSE;
     }
@@ -556,10 +556,10 @@ int BombClass::Exec(void)
         // realistic section would be ran. If no parent, run this
         // There is no danger of a CTD if parent is NULL because the
         // OR will have it enter the if statement without running the 'IsPlayer'.
-        //   if(!g_bRealisticAvionics or ( parent and !((AircraftClass *)parent)->IsPlayer()))
+        //   if( not g_bRealisticAvionics or ( parent and !((AircraftClass *)parent)->IsPlayer()))
         // Cobra - Forcing all non-Player (AI) into this section causes their bombs
         // to not be guided, thus randon hit pattern
-        //   if(!g_bRealisticAvionics or !parent)
+        //   if( not g_bRealisticAvionics or !parent)
         /////////////////////////////////////////////////////
 
         // RED -  enough enter when it's not a guided Bomb or LGB for AI
@@ -567,7 +567,7 @@ int BombClass::Exec(void)
         // As the PlayerEntity is not the one to use )
         if (
             !g_bRealisticAvionics or !parent or !(flags & GUIDED_BOMB)
-            or ((((!((AircraftClass *)parent.get())->IsPlayer())
+            or (((( not ((AircraftClass *)parent.get())->IsPlayer())
                   or (((AircraftClass *)parent.get())->IsPlayer())
                   and ((AircraftClass *)parent.get())->AutopilotType() == AircraftClass::CombatAP))
                 and (flags & IsLGB))
@@ -636,7 +636,7 @@ int BombClass::Exec(void)
                             SetDelta((0.8F * XDelta() + 0.2f * desDxPrev) * 1.05f, (0.8f * YDelta() + 0.2f * desDyPrev) * 1.05f, ZDelta());
                     }
 
-                    if (!((SimBaseClass*)(targetPtr->BaseData()))->IsSetFlag(IS_LASED))
+                    if ( not ((SimBaseClass*)(targetPtr->BaseData()))->IsSetFlag(IS_LASED))
                     {
                         targetPtr->Release();
                         targetPtr = NULL;
@@ -737,7 +737,7 @@ int BombClass::Exec(void)
                 }
                 else
                 {
-                    if (!(desDxPrev == 0.0f and desDyPrev == 0.0f and desDzPrev == 0.0f))
+                    if ( not (desDxPrev == 0.0f and desDyPrev == 0.0f and desDzPrev == 0.0f))
                     {
                         // 2001-04-17 ADDED BY S.G. WE'LL KEEP GOING WHERE WE WERE GOING...
                         Falcon4EntityClassType *classPtr = &Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE];
@@ -762,7 +762,7 @@ int BombClass::Exec(void)
 
                 if (targetPtr and targetPtr->BaseData() and parentAC->IsPlayer())
                 {
-                    if (!((SimBaseClass*)(targetPtr->BaseData()))->IsSetFlag(IS_LASED))
+                    if ( not ((SimBaseClass*)(targetPtr->BaseData()))->IsSetFlag(IS_LASED))
                     {
                         targetPtr->Release();
                         targetPtr = NULL;
@@ -952,8 +952,8 @@ int BombClass::Exec(void)
                         hitObj = NULL;
                     }
                 }
-                //else if (!g_bArmingDelay) MI
-                else if (!g_bRealisticAvionics)
+                //else if ( not g_bArmingDelay) MI
+                else if ( not g_bRealisticAvionics)
                 {
                     SendDamageMessage(hitObj, 0, FalconDamageType::BombDamage);
                     // JB 000816 ApplyProximityDamage( terrainHeight, 0.0f ); // Cause of objects not blowing up on runways
@@ -1280,7 +1280,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
 
             while (testObject)
             {
-                if (!testObject->IsSetCampaignFlag(FEAT_CONTAINER_TOP))
+                if ( not testObject->IsSetCampaignFlag(FEAT_CONTAINER_TOP))
                 {
                     tmpX = testObject->XPos() - XPos();
                     tmpY = testObject->YPos() - YPos();
@@ -1317,7 +1317,7 @@ void BombClass::DoExplosion(void)
     FalconMissileEndMessage* endMessage;
     float groundZ;
 
-    if (!IsSetFlag(SHOW_EXPLOSION))
+    if ( not IsSetFlag(SHOW_EXPLOSION))
     {
         // edg note: all special effects are now handled in the
         // missile end message process method
@@ -1393,7 +1393,7 @@ void BombClass::DoExplosion(void)
         // make sure we don't do it again...
         SetFlag(SHOW_EXPLOSION);
     }
-    else if (!IsDead())
+    else if ( not IsDead())
     {
         // we can now kill it immediately
         SetDead(TRUE);

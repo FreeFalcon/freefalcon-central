@@ -228,7 +228,7 @@ void CPDial::Exec(SimBaseClass* pOwnship)
             i++;
         }
     }
-    while ((!found) and (i < mEndPoints));
+    while (( not found) and (i < mEndPoints));
 
     SetDirtyFlag(); //VWF FOR NOW
 }
@@ -238,7 +238,7 @@ void CPDial::DisplayDraw()
 
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag)
+    if ( not mDirtyFlag)
     {
         return;
     }
@@ -343,12 +343,12 @@ void CPDial::DisplayBlit3D()
 
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag)
+    if ( not mDirtyFlag)
     {
         return;
     }
 
-    if (!IsRendered or !DisplayOptions.bRender2DCockpit)
+    if ( not IsRendered or !DisplayOptions.bRender2DCockpit)
     {
         return;
     }
@@ -382,7 +382,7 @@ void CPDial::CreateLit(void)
             m_pPalette =
                 new PaletteHandle(mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-            if (!m_pPalette)
+            if ( not m_pPalette)
             {
                 throw _com_error(E_OUTOFMEMORY);
             }
@@ -395,7 +395,7 @@ void CPDial::CreateLit(void)
             {
                 TextureHandle *pTex = new TextureHandle;
 
-                if (!pTex)
+                if ( not pTex)
                 {
                     throw _com_error(E_OUTOFMEMORY);
                 }
@@ -411,7 +411,7 @@ void CPDial::CreateLit(void)
                     throw _com_error(E_FAIL);
                 }
 
-                if (!pTex->Load(0, 0xFFFF0000, (BYTE*)mpSourceBuffer, true, true))
+                if ( not pTex->Load(0, 0xFFFF0000, (BYTE*)mpSourceBuffer, true, true))
                 {
                     // soon to be re-loaded by CPSurface::Translate3D
                     throw _com_error(E_FAIL);

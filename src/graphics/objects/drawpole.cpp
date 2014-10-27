@@ -252,22 +252,22 @@ void DrawablePoled::DrawTargetBox(class RenderOTW *renderer, ThreeDVertex *spos)
     renderer->SetColor(boxColor);
 
     // draw box
-    if (!(clip & CLIP_LEFT))
+    if ( not (clip & CLIP_LEFT))
     {
         renderer->Render2DLine(x1, y1, x1, y2);
     }
 
-    if (!(clip & CLIP_TOP))
+    if ( not (clip & CLIP_TOP))
     {
         renderer->Render2DLine(x1, y1, x2, y1);
     }
 
-    if (!(clip & CLIP_RIGHT))
+    if ( not (clip & CLIP_RIGHT))
     {
         renderer->Render2DLine(x2, y1, x2, y2);
     }
 
-    if (!(clip & CLIP_BOTTOM))
+    if ( not (clip & CLIP_BOTTOM))
     {
         renderer->Render2DLine(x2, y2, x1, y2);
     }

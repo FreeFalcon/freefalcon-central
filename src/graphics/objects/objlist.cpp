@@ -58,7 +58,7 @@ ObjectDisplayList::~ObjectDisplayList()
 void ObjectDisplayList::InsertObject(DrawableObject *object)
 {
     ShiAssert(object);
-    ShiAssert(!object->InDisplayList());
+    ShiAssert( not object->InDisplayList());
 
 #ifdef _SANITY_CHECK_
 
@@ -108,7 +108,7 @@ void ObjectDisplayList::RemoveObject(DrawableObject* object)
 
 #ifdef _SANITY_CHECK_
 
-    if (!object->parentList)
+    if ( not object->parentList)
         return;
 
     if (object->parentList not_eq this)
@@ -125,7 +125,7 @@ void ObjectDisplayList::RemoveObject(DrawableObject* object)
     // Take the given object out of the active list
     if (object->prev)
     {
-        if (!F4IsBadWritePtr(object->prev, sizeof(DrawableObject)))  // JB 010221 CTD
+        if ( not F4IsBadWritePtr(object->prev, sizeof(DrawableObject)))  // JB 010221 CTD
             object->prev->next = object->next;
     }
     else
@@ -136,7 +136,7 @@ void ObjectDisplayList::RemoveObject(DrawableObject* object)
 
     if (object->next)
     {
-        if (!F4IsBadWritePtr(object->next, sizeof(DrawableObject)))  // JB 010221 CTD
+        if ( not F4IsBadWritePtr(object->next, sizeof(DrawableObject)))  // JB 010221 CTD
             object->next->prev = object->prev;
     }
     else
@@ -168,7 +168,7 @@ void ObjectDisplayList::UpdateMetrics(const Tpoint *pos)
     DrawableObject *p;
 
     // Quit now if we don't have at least one list entry
-    if (!head) return;
+    if ( not head) return;
 
     // Run through the whole list and compute the sorting metrics for each entry
     p = head;
@@ -178,7 +178,7 @@ void ObjectDisplayList::UpdateMetrics(const Tpoint *pos)
     {
         // Update the distance metric (not less than 0)
         p->distance = max((float)fabs(x - p->position.x), (float)fabs(y - p->position.y));
-        ShiAssert(!_isnan(p->distance));
+        ShiAssert( not _isnan(p->distance));
 
         if (_isnan(p->distance))
         {
@@ -215,7 +215,7 @@ void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportS
     long i;
 
     // Quit now if we don't have at least one list entry
-    if (!head) return;
+    if ( not head) return;
 
 
 #ifdef _SANITY_CHECK_
@@ -265,7 +265,7 @@ void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportS
 
         // Update the distance metric (not less than 0)
         p->distance = max((float)fabs(x - p->position.x), (float)fabs(y - p->position.y));
-        ShiAssert(!_isnan(p->distance));
+        ShiAssert( not _isnan(p->distance));
 
         if (_isnan(p->distance))
         {
@@ -444,7 +444,7 @@ void ObjectDisplayList::SortForViewpoint(void)
 #endif
 
     // Quit now if we don't have at least one list entry
-    if (!head) return;
+    if ( not head) return;
 
 #ifdef _SANITY_CHECK_
 
@@ -539,7 +539,7 @@ void ObjectDisplayList::SortForViewpoint(void)
 
 
     // Quit now if we don't have at least one list entry
-    if (!head) return;
+    if ( not head) return;
 
     // Now sort the list laterally from far to near
     for (p = head->next; p not_eq NULL; p = p->next)
@@ -549,7 +549,7 @@ void ObjectDisplayList::SortForViewpoint(void)
         q = p;
 
         while ((q->prev) and (q->prev->distance < p->distance)) // JB 010306 CTD
-            //while ((q->prev) and (!F4IsBadReadPtr(q->prev, sizeof(DrawableObject))) and (q->prev->distance < p->distance)) // JB 010306 CTD (too much CPU)
+            //while ((q->prev) and ( not F4IsBadReadPtr(q->prev, sizeof(DrawableObject))) and (q->prev->distance < p->distance)) // JB 010306 CTD (too much CPU)
         {
             q = q->prev;
         }

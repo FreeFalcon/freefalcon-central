@@ -21,7 +21,7 @@ void DigitalBrain::CollisionCheck(void)
     Falcon4EntityClassType* classPtr;
     SimObjectLocalData* localData;
 
-    if (!targetPtr)
+    if ( not targetPtr)
     {
         return;
     }
@@ -38,7 +38,7 @@ void DigitalBrain::CollisionCheck(void)
     /*---------------*/
     /* check objects */
     /*---------------*/
-    if (!targetPtr->BaseData()->IsSim())
+    if ( not targetPtr->BaseData()->IsSim())
     {
         return;
     }

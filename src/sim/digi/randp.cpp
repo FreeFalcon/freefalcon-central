@@ -386,7 +386,7 @@ void DigitalBrain::EnergyManagement(void)
 void DigitalBrain::PullToControlPoint(void)
 {
     //me123 this rutine does our nose to nose tactic. The only one at the moment :-(
-    if (!targetPtr)
+    if ( not targetPtr)
     {
         return;
     }

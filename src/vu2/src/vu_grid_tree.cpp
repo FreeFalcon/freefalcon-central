@@ -143,7 +143,7 @@ VU_ERRCODE VuGridTree::ForcedInsert(VuEntity* entity)
 
     VuScopeLock l(GetMutex());
 
-    if (!filter_->RemoveTest(entity)) return VU_NO_OP;
+    if ( not filter_->RemoveTest(entity)) return VU_NO_OP;
 
     VuRedBlackTree *row = table_[Row(filter_->Key1(entity))];
     return row->ForcedInsert(entity);
@@ -158,7 +158,7 @@ VU_ERRCODE VuGridTree::Insert(VuEntity *entity)
 
     VuScopeLock l(GetMutex());
 
-    if (!filter_->Test(entity)) return VU_NO_OP;
+    if ( not filter_->Test(entity)) return VU_NO_OP;
 
     VuRedBlackTree *row = table_[Row(filter_->Key1(entity))];
     return row->Insert(entity);
@@ -199,7 +199,7 @@ VuEntity *VuGridTree::Find(VU_ID entityId) const
 
 VuEntity *VuGridTree::Find(VuEntity* ent) const
 {
-    if (!ent)
+    if ( not ent)
     {
         return NULL;
     }

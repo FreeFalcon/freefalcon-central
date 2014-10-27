@@ -247,7 +247,7 @@ void AirframeClass::Axial(float dt)
     // JB carrier end
 
     //DSP hack until we can get the digi's to stay slow until the gear come up
-    if (!platform->IsSetFalcFlag(FEC_INVULNERABLE) and gearPos > 0.1F and  !IsSet(GearBroken) and !IsSet(IsDigital))
+    if ( not platform->IsSetFalcFlag(FEC_INVULNERABLE) and gearPos > 0.1F and  !IsSet(GearBroken) and !IsSet(IsDigital))
     {
         if (gearPos > 0.9F)
             maxQbar = 350.0F;

@@ -79,12 +79,12 @@ void InputCycle(void)
     //AcquireDeviceInput(gCurController, TRUE);
     // sfr: commented here
     //AcquireDeviceInput(SIM_MOUSE, TRUE);
-    if (!CheckDeviceAcquisition(SIM_KEYBOARD))
+    if ( not CheckDeviceAcquisition(SIM_KEYBOARD))
     {
         AcquireDeviceInput(SIM_KEYBOARD, TRUE);
     }
 
-    if (!CheckDeviceAcquisition(SIM_MOUSE))
+    if ( not CheckDeviceAcquisition(SIM_MOUSE))
     {
         AcquireDeviceInput(SIM_MOUSE, TRUE);
     }
@@ -164,7 +164,7 @@ BOOL SetupDIMouseAndKeyboard(HINSTANCE, HWND hWnd)
     BOOL KeyboardSetupResult;
     BOOL CursorSetupResult;
 
-    if (!gDIEnabled)
+    if ( not gDIEnabled)
     {
         ShiAssert(gDIEnabled not_eq FALSE);
         return FALSE;
@@ -195,7 +195,7 @@ BOOL SetupDIMouseAndKeyboard(HINSTANCE, HWND hWnd)
 
     // JB 010618 Disable these messages as they don't appear to do anything useful
     /*
-    if(!KeyboardSetupResult){
+    if( not KeyboardSetupResult){
      DIMessageBox(999, MB_OK, SSI_NO_KEYBOARD_INIT);
      SetupResult = FALSE;
     }
@@ -410,91 +410,91 @@ bool CheckDeviceArray()
     bool retval = true;
 
     if (AxisMap.Pitch.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.Pitch.Device])
+        if ( not gpDIDevice[AxisMap.Pitch.Device])
             retval = false;
 
     if (AxisMap.Bank.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.Bank.Device])
+        if ( not gpDIDevice[AxisMap.Bank.Device])
             retval = false;
 
     if (AxisMap.Yaw.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.Yaw.Device])
+        if ( not gpDIDevice[AxisMap.Yaw.Device])
             retval = false;
 
     if (AxisMap.Throttle.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.Throttle.Device])
+        if ( not gpDIDevice[AxisMap.Throttle.Device])
             retval = false;
 
     if (AxisMap.Throttle2.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.Throttle2.Device])
+        if ( not gpDIDevice[AxisMap.Throttle2.Device])
             retval = false;
 
     if (AxisMap.BrakeLeft.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.BrakeLeft.Device])
+        if ( not gpDIDevice[AxisMap.BrakeLeft.Device])
             retval = false;
 
     if (AxisMap.BrakeRight.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.BrakeRight.Device])
+        if ( not gpDIDevice[AxisMap.BrakeRight.Device])
             retval = false;
 
     if (AxisMap.FOV.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.FOV.Device])
+        if ( not gpDIDevice[AxisMap.FOV.Device])
             retval = false;
 
     if (AxisMap.PitchTrim.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.PitchTrim.Device])
+        if ( not gpDIDevice[AxisMap.PitchTrim.Device])
             retval = false;
 
     if (AxisMap.YawTrim.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.YawTrim.Device])
+        if ( not gpDIDevice[AxisMap.YawTrim.Device])
             retval = false;
 
     if (AxisMap.BankTrim.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.BankTrim.Device])
+        if ( not gpDIDevice[AxisMap.BankTrim.Device])
             retval = false;
 
     if (AxisMap.AntElev.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.AntElev.Device])
+        if ( not gpDIDevice[AxisMap.AntElev.Device])
             retval = false;
 
     if (AxisMap.RngKnob.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.RngKnob.Device])
+        if ( not gpDIDevice[AxisMap.RngKnob.Device])
             retval = false;
 
     if (AxisMap.CursorX.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.CursorX.Device])
+        if ( not gpDIDevice[AxisMap.CursorX.Device])
             retval = false;
 
     if (AxisMap.CursorY.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.CursorY.Device])
+        if ( not gpDIDevice[AxisMap.CursorY.Device])
             retval = false;
 
     if (AxisMap.Comm1Vol.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.Comm1Vol.Device])
+        if ( not gpDIDevice[AxisMap.Comm1Vol.Device])
             retval = false;
 
     if (AxisMap.Comm2Vol.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.Comm2Vol.Device])
+        if ( not gpDIDevice[AxisMap.Comm2Vol.Device])
             retval = false;
 
     if (AxisMap.MSLVol.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.MSLVol.Device])
+        if ( not gpDIDevice[AxisMap.MSLVol.Device])
             retval = false;
 
     if (AxisMap.ThreatVol.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.ThreatVol.Device])
+        if ( not gpDIDevice[AxisMap.ThreatVol.Device])
             retval = false;
 
     if (AxisMap.HudBrt.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.HudBrt.Device])
+        if ( not gpDIDevice[AxisMap.HudBrt.Device])
             retval = false;
 
     if (AxisMap.RetDepr.Device  not_eq -1)
-        if (!gpDIDevice[AxisMap.RetDepr.Device])
+        if ( not gpDIDevice[AxisMap.RetDepr.Device])
             retval = false;
 
     if (AxisMap.Zoom.Device not_eq -1)
-        if (!gpDIDevice[AxisMap.Zoom.Device])
+        if ( not gpDIDevice[AxisMap.Zoom.Device])
             retval = false;
 
     return retval;
@@ -536,7 +536,7 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
     gDIEnabled = (hres == DI_OK) ? TRUE : FALSE;
 #endif
 
-    if (!gDIEnabled)
+    if ( not gDIEnabled)
         return gDIEnabled;
 
     /*******************************************************************************/
@@ -573,7 +573,7 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
 
             hres = gpDIDevice[AxisMap.FlightControlDevice]->GetDeviceInfo(&devinst);
 
-            if (!memcmp(&AxisMap.FlightControllerGUID , &devinst.guidInstance, sizeof(GUID)))
+            if ( not memcmp(&AxisMap.FlightControllerGUID , &devinst.guidInstance, sizeof(GUID)))
             {
                 BOOL result;
                 // wohoo.. user changed nothing !

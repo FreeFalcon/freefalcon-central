@@ -245,7 +245,7 @@ long FigureOutHowIDid()
             place = _LAST_PLACE_;
         else
         {
-            if (!playerrank)
+            if ( not playerrank)
                 HowIDid  or_eq  _FIRST_PLACE_;
 
             if (playerrank == 1)
@@ -383,7 +383,7 @@ void DisplayDogfightResults()
 
             while (pilot_data)
             {
-                if (!human_only or pilot_data->pilot_flags & PFLAG_PLAYER_CONTROLLED)
+                if ( not human_only or pilot_data->pilot_flags & PFLAG_PLAYER_CONTROLLED)
                 {
                     AddtoSortedList(pilot_data, flight_data->flight_team);
                     TeamUsed[flight_data->flight_team] = 1;

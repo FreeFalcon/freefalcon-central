@@ -23,7 +23,7 @@ void MissileClass::Init1(void)
     /*-------------------------------------*/
     mass  = weight / GRAVITY;
 
-    if (!F4IsBadReadPtr(inputData, sizeof(MissileInputData)))  // JB 010304 CTD
+    if ( not F4IsBadReadPtr(inputData, sizeof(MissileInputData)))  // JB 010304 CTD
     {
         m0    = inputData->wm0 / GRAVITY;
         mp0   = inputData->wp0 / GRAVITY;
@@ -54,7 +54,7 @@ void MissileClass::Init1(void)
                              aeroData->numMach, aeroData->numAlpha, &i, &j);
     }
 
-    if (!ifd)
+    if ( not ifd)
     {
         return; // JB 010803
     }

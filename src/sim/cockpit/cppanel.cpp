@@ -272,7 +272,7 @@ void CPPanel::DisplayBlit()
 {
     int i;
 
-    if (!DisplayOptions.bRender2DCockpit) // OW: dont loop in fast 2d mode ("blitting" handled by DisplayBlit3D)
+    if ( not DisplayOptions.bRender2DCockpit) // OW: dont loop in fast 2d mode ("blitting" handled by DisplayBlit3D)
     {
         // loop thru and display all surfaces for this panel
         F4EnterCriticalSection(OTWDriver.pCockpitManager->mpCockpitCritSec);
@@ -443,13 +443,13 @@ BOOL CPPanel::Dispatch(int* cursorIndex, int event, int xpos, int ypos)
 
     if (mDefaultCursor >= 0)
     {
-        while ((!found) and (i < mNumButtonViews))
+        while (( not found) and (i < mNumButtonViews))
         {
             found = mpButtonViews[i]->HandleEvent(cursorIndex, event, xpos, ypos);
             i++;
         }
 
-        if (!found)  //check directional cursors
+        if ( not found)  //check directional cursors
         {
             border = OTWDriver.pCockpitManager->mMouseBorder;
             height = DisplayOptions.DispHeight;
@@ -738,7 +738,7 @@ void CPPanel::SetTOD(float lightLevel)
 
     // Just copy the chromakey color without lighting it
 
-    if (!gpTemplateSurface)
+    if ( not gpTemplateSurface)
         *palTgt++ = TemplateInfo->Pixel32toPixel32(*palData++);
     else
         *palTgt++ = gpTemplateSurface->Pixel32toPixel32(*palData++);
@@ -766,7 +766,7 @@ void CPPanel::SetTOD(float lightLevel)
             red = (BYTE)((outColor)     & 0xFF);
             outColor = (((BYTE)(0.299F * red + 0.587F * green + 0.114 * blue)) & 0xFF) << 8;
 
-            if (!gpTemplateSurface)
+            if ( not gpTemplateSurface)
                 *palTgt = TemplateInfo->Pixel32toPixel32(outColor);
             else
                 *palTgt = gpTemplateSurface->Pixel32toPixel32(outColor);
@@ -787,7 +787,7 @@ void CPPanel::SetTOD(float lightLevel)
             red = (BYTE)((*palData)        & 0xFF);
             outColor = ((int)(0.299F * red + 0.587F * green + 0.114 * blue) & 0xFF) << 8;
 
-            if (!gpTemplateSurface)
+            if ( not gpTemplateSurface)
                 *palTgt = TemplateInfo->Pixel32toPixel32(outColor);
             else
                 *palTgt = gpTemplateSurface->Pixel32toPixel32(outColor);
@@ -815,7 +815,7 @@ void CPPanel::SetTOD(float lightLevel)
             outColor  or_eq  ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
             outColor  or_eq  ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
 
-            if (!gpTemplateSurface)
+            if ( not gpTemplateSurface)
                 *palTgt = TemplateInfo->Pixel32toPixel32(outColor & mask);
             else
                 *palTgt = gpTemplateSurface->Pixel32toPixel32(outColor & mask);
@@ -830,7 +830,7 @@ void CPPanel::SetTOD(float lightLevel)
 
         do
         {
-            if (!gpTemplateSurface)
+            if ( not gpTemplateSurface)
                 *palTgt = TemplateInfo->Pixel32toPixel32(*palData & mask);
             else
                 *palTgt = gpTemplateSurface->Pixel32toPixel32(*palData & mask);
@@ -912,7 +912,7 @@ void CPPanel::SetTOD(float lightLevel)
                 outColor = ((int)(0.299F * red + 0.587F * green + 0.114 * blue) & 0xFF) << 8;
                 outColor  or_eq  0xff000000; // OW add alpha
 
-                if (!gpTemplateSurface)
+                if ( not gpTemplateSurface)
                     *palTgt = TemplateInfo->Pixel32toPixel32(outColor);
                 else
                     *palTgt = gpTemplateSurface->Pixel32toPixel32(outColor);

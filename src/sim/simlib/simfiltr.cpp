@@ -190,7 +190,7 @@ VU_BOOL SimLocalFilter::Test(VuEntity* ent1)
 
     classPtr = ent1->EntityType();
 
-    if (!classPtr->classInfo_[VU_DOMAIN])
+    if ( not classPtr->classInfo_[VU_DOMAIN])
         return retval;
 
     // edg: I'm not sure if this is the right way to test this, but
@@ -350,7 +350,7 @@ SimAirfieldFilter::~SimAirfieldFilter(void)
 
 VU_BOOL SimAirfieldFilter::Test(VuEntity* e)
 {
-    if (!(e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
+    if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
         return FALSE;
 
     if ((e->EntityType())->classInfo_[VU_TYPE] not_eq TYPE_AIRBASE)

@@ -72,7 +72,7 @@ MaverickDisplayClass::MaverickDisplayClass(SimMoverClass* newPlatform) : Missile
 
 void MaverickDisplayClass::DisplayInit(ImageBuffer* image)
 {
-    if (!g_bGreyScaleMFD)
+    if ( not g_bGreyScaleMFD)
         g_bGreyMFD = false;
 
     switch (displayType)
@@ -90,7 +90,7 @@ void MaverickDisplayClass::DisplayInit(ImageBuffer* image)
 
     SetReady(TRUE);
 
-    if ((g_bGreyMFD) and (!bNVGmode))
+    if ((g_bGreyMFD) and ( not bNVGmode))
         privateDisplay->SetColor(GetMfdColor(MFD_WHITE));
     else
         privateDisplay->SetColor(0xff00ff00);
@@ -111,7 +111,7 @@ void MaverickDisplayClass::Display(VirtualDisplay* newDisplay)
     else
         onMainScreen = FALSE;
 
-    if ((g_bGreyMFD) and (!bNVGmode))
+    if ((g_bGreyMFD) and ( not bNVGmode))
         display->SetColor(GetMfdColor(MFD_WHITE));
     else
         display->SetColor(GetMfdColor(MFD_GREEN));
@@ -180,7 +180,7 @@ void MaverickDisplayClass::DrawDisplay(void)
         display->StartDraw();
     }
 
-    if ((g_bGreyMFD) and (!bNVGmode))
+    if ((g_bGreyMFD) and ( not bNVGmode))
         display->SetColor(GetMfdColor(MFD_WHITE));
     else
         display->SetColor(tmpColor);
@@ -190,7 +190,7 @@ void MaverickDisplayClass::DrawDisplay(void)
     display->Line(-1.0F, 0.0F, -0.03F, 0.0F);
     display->Line(1.0F, 0.0F,  0.03F, 0.0F);
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         display->Line(-0.1F, -0.2F, 0.1F, -0.2F);
         display->Line(-0.1F, -0.4F, 0.1F, -0.4F);
@@ -206,7 +206,7 @@ void MaverickDisplayClass::DrawDisplay(void)
     if (IsLocked())
     {
         //MI
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             display->Line(-LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE,
                           -(LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE), -LOCK_RING_MIN_SIZE);
@@ -227,7 +227,7 @@ void MaverickDisplayClass::DrawDisplay(void)
         }
         else
         {
-            if ((g_bGreyMFD) and (!bNVGmode))
+            if ((g_bGreyMFD) and ( not bNVGmode))
                 display->SetColor(GetMfdColor(MFD_WHITE));
             else
                 display->SetColor(GetMfdColor(MFD_GREEN));
@@ -249,7 +249,7 @@ void MaverickDisplayClass::DrawDisplay(void)
     else if (IsDetected())
     {
         //MI doesn't do this in real
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             unsigned long tmp = vuxRealTime;
             float offset = (float)(tmp & 0x3FF) / 0x400;
@@ -280,7 +280,7 @@ void MaverickDisplayClass::DrawDisplay(void)
         {
             // RV - Biker - Make FOV switching this dynamic
             //if(curFOV > 3.0f * DTR)
-            if ((g_bGreyMFD) and (!bNVGmode))
+            if ((g_bGreyMFD) and ( not bNVGmode))
                 display->SetColor(GetMfdColor(MFD_WHITE));
             else
                 display->SetColor(GetMfdColor(MFD_GREEN));
@@ -291,7 +291,7 @@ void MaverickDisplayClass::DrawDisplay(void)
     }
     else
     {
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
 
             display->Line(-LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE,
@@ -313,7 +313,7 @@ void MaverickDisplayClass::DrawDisplay(void)
         }
         else
         {
-            if ((g_bGreyMFD) and (!bNVGmode))
+            if ((g_bGreyMFD) and ( not bNVGmode))
                 display->SetColor(GetMfdColor(MFD_WHITE));
             else
                 display->SetColor(GetMfdColor(MFD_GREEN));
@@ -326,22 +326,22 @@ void MaverickDisplayClass::DrawDisplay(void)
     }
 
     // FRB - B&W display
-    if ((g_bGreyMFD) and (!bNVGmode))
+    if ((g_bGreyMFD) and ( not bNVGmode))
         display->SetColor(GetMfdColor(MFD_WHITE));
     else
         display->SetColor(GetMfdColor(MFD_GREEN));
 
-    if (!IsSOI())
+    if ( not IsSOI())
     {
         //MI
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
             display->TextCenter(0.0F, 0.4F, "NOT SOI");
         else
             display->TextCenter(0.0F, 0.7F, "NOT SOI");
     }
     else
     {
-        if ((g_bGreyMFD) and (!bNVGmode))
+        if ((g_bGreyMFD) and ( not bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
             display->SetColor(GetMfdColor(MFD_GREEN));
@@ -352,7 +352,7 @@ void MaverickDisplayClass::DrawDisplay(void)
     totalAngle = (float)acos(cos(platform->sensorArray[0]->SeekerEl()) * cos(platform->sensorArray[0]->SeekerAz()));
 
     //MI
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         if ((totalAngle < 30.0F * DTR) or vuxRealTime & 0x200)
         {

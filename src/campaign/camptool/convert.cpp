@@ -43,7 +43,7 @@ char* GetFilename(short x, short y)
 {
     int index, i;
 
-    if (!Tiles or !TexCodes)
+    if ( not Tiles or !TexCodes)
         return "INVALID";
 
     i = (Map_Max_Y - (y + 1)) * Map_Max_X + x;
@@ -60,7 +60,7 @@ int GetTextureIndex(short x, short y)
 {
     int i;
 
-    if (!Tiles)
+    if ( not Tiles)
         return 0;
 
     i = (Map_Max_Y - (y + 1)) * Map_Max_X + x;
@@ -76,7 +76,7 @@ char* GetTextureId(int index)
     char *file;
     static char ret[20] = { "NON" };
 
-    if (!TexCodes)
+    if ( not TexCodes)
         return ret;
 
     file = &TexCodes[index * FILENAMELEN];

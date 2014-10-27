@@ -87,13 +87,13 @@ int AircraftClass::Wake(void)
     SimVehicleClass::Wake();
 
 
-    if (!(DrawableBSP*)drawPointer)
+    if ( not (DrawableBSP*)drawPointer)
         return retval;
 
     if (g_bWakeTurbulence)
     {
         /*
-        if(!turbulence)
+        if( not turbulence)
         {
          turbulence = new AircraftTurbulence;
          turbulence->lifeSpan = 30; // seconds;
@@ -101,7 +101,7 @@ int AircraftClass::Wake(void)
          turbulence->startRadius = af->GetAeroData(AeroDataSet::Span) / 4;
         }
         */
-        if (!lVortex)
+        if ( not lVortex)
         {
             lVortex = new AircraftTurbulence;
             lVortex->lifeSpan = 30; // seconds;
@@ -110,7 +110,7 @@ int AircraftClass::Wake(void)
             lVortex->type = AircraftTurbulence::LVORTEX;
         }
 
-        if (!rVortex)
+        if ( not rVortex)
         {
             rVortex = new AircraftTurbulence;
             rVortex->lifeSpan = 30; // seconds;
@@ -260,7 +260,7 @@ int AircraftClass::Sleep(void)
 {
     int retval = 0;
 
-    if (!IsAwake())
+    if ( not IsAwake())
     {
         return retval;
     }
@@ -295,7 +295,7 @@ int AircraftClass::Sleep(void)
     // potentially we could get removed prior to exploding.   Check that
     // here for nonlocal entities
 
-    if (!IsLocal() and pctStrength <= 0.0f and !IsSetFlag(SHOW_EXPLOSION))
+    if ( not IsLocal() and pctStrength <= 0.0f and !IsSetFlag(SHOW_EXPLOSION))
     {
         RunExplosion();
         SetFlag(SHOW_EXPLOSION);
@@ -389,7 +389,7 @@ void AircraftClass::MakePlayerVehicle(void)
 
     SetFlag(MOTION_OWNSHIP);
 
-    if (!IsLocal())
+    if ( not IsLocal())
     {
         return;
     }
@@ -413,10 +413,10 @@ void AircraftClass::MakePlayerVehicle(void)
     if (curWaypoint->GetWPAction() == WP_TAKEOFF)
     {
         //JPO check for preflighting the aircraft. Doit unless we are right at the begining
-        //if (!DBrain()->IsSetATC(DigitalBrain::DonePreflight) and !DBrain()->IsAtFirstTaxipoint()) {
+        //if ( not DBrain()->IsSetATC(DigitalBrain::DonePreflight) and !DBrain()->IsAtFirstTaxipoint()) {
         //RAS-11Nov04-Fix for Ramp Start: When entering Ramp Start, jet would already be running.  Removed line
         //above and replaced with this one
-        if (!DBrain()->IsSetATC(DigitalBrain::DonePreflight))
+        if ( not DBrain()->IsSetATC(DigitalBrain::DonePreflight))
         {
             if (PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RAMP)
             {
@@ -714,7 +714,7 @@ void AircraftClass::MakeNonPlayerVehicle()
         af->SetSimpleMode(SIMPLE_MODE_AF);
     }
 
-    if ((GetCampaignObject()->GetDeagOwner() not_eq OwnerId()) and (!IsSetFlag(OBJ_DEAD)))
+    if ((GetCampaignObject()->GetDeagOwner() not_eq OwnerId()) and ( not IsSetFlag(OBJ_DEAD)))
     {
         //MonoPrint(
         // "AircraftClass::Change owner to deag owner %08x %08x%08x\n", this, GetCampaignObject()->GetDeagOwner()
@@ -869,7 +869,7 @@ void AircraftClass::Regenerate(float, float, float, float)
     int wasLocal = IsLocal();
 
     // KCK KLUDGE: To handle regen messages received after a reaggregate
-    if (!GetCampaignObject() or GetCampaignObject()->IsAggregate())
+    if ( not GetCampaignObject() or GetCampaignObject()->IsAggregate())
         return;
 
     /*----------------------*/
@@ -941,7 +941,7 @@ void AircraftClass::Regenerate(float, float, float, float)
     // Now reinit
     Init(reinitData);
 
-    if (!wasLocal)
+    if ( not wasLocal)
     {
         MakeRemote();
     }

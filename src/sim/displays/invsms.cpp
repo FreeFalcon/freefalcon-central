@@ -53,7 +53,7 @@ void SmsDrawable::InventoryDisplay(int jettOnly)
     for (i = 1; i < 10; i++)
         InvDrawHp(i, jettOnly);
 
-    if (!jettOnly)
+    if ( not jettOnly)
     {
         if (((AircraftClass*)Sms->ownship)->af->IsSet(AirframeClass::CATLimiterIII))
         {
@@ -127,7 +127,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         }
         else
         {
-            if (!jettOnly)
+            if ( not jettOnly)
             {
                 if (Sms->hardPoint[hp]->GetPylonMnemonic() and Sms->hardPoint[hp]->GetPylonMnemonic()[0])
                 {
@@ -156,7 +156,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
                 curStr++;
             }
 
-            if (!jettOnly)
+            if ( not jettOnly)
             {
                 for (; curStr < 3; curStr++) // fill remaining with "-------"
                 {
@@ -176,7 +176,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
 
         int inverse = 0;
 
-        if (!jettOnly and Sms->curHardpoint == hp)
+        if ( not jettOnly and Sms->curHardpoint == hp)
         {
             inverse = 2;
         }
@@ -338,7 +338,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         ShiAssert(strlen(tmpStr3) < sizeof(tmpStr1));
         int reverse = 0;
 
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             if ((sjSelected[hp] == SelectiveRack and jettOnly) or (Sms->curHardpoint == hp and !jettOnly))
             {
@@ -374,7 +374,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
 
         /*
         //MI changed
-        if(!g_bRealisticAvionics)
+        if( not g_bRealisticAvionics)
         {
          if (hardPointSelected & (1 << hp) or (Sms->curHardpoint == hp and !jettOnly))
          {
@@ -560,7 +560,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - 0.2f, tmpStr3);
 
     //MI changed
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         if (hardPointSelected & (1 << hp) or (Sms->curHardpoint == hp and !jettOnly))
         {
@@ -683,7 +683,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - 0.2f, tmpStr3);
 
     //MI changed
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         if (hardPointSelected & (1 << hp) or (Sms->curHardpoint == hp and !jettOnly))
         {
@@ -730,7 +730,7 @@ void SmsDrawable::InvPushButton(int whichButton, int whichMFD)
     switch (whichButton)
     {
         case 3:
-            if (!pFCC->IsNavMasterMode())
+            if ( not pFCC->IsNavMasterMode())
                 SetDisplayMode(Wpn);
 
             break;

@@ -450,7 +450,7 @@ void CDXEngine::UnLoadTextures(DWORD ID)
     TheVbManager.GetModelData(VB, ID);
 
     // Consistency check
-    if (!VB.Valid) return;
+    if ( not VB.Valid) return;
 
     // Get the Textures Offsets
     DWORD *texOffset = VB.Texs;
@@ -669,7 +669,7 @@ void CDXEngine::SetViewMode(void)
         case DX_TV:
 
             // FRB - B&W
-            if ((m_RenderState == DX_TV) and (!bNVGmode) and (g_bGreyMFD))
+            if ((m_RenderState == DX_TV) and ( not bNVGmode) and (g_bGreyMFD))
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, 0x00a0a0a0);
             else
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, 0x0000a000 /*NVG_T_FACTOR*/);
@@ -794,7 +794,7 @@ void CDXEngine::SetRenderState(DXFlagsType Flags, DXFlagsType NewFlags, bool Ena
 
 
     // ********************** DISABLE BLOCK *********************
-    if (!Enable)
+    if ( not Enable)
     {
 
 #ifdef EDIT_ENGINE
@@ -866,7 +866,7 @@ void CDXEngine::DrawSurface()
 
     if (m_TheObjectInstance->SwitchValues and (NewFlags.b.SwEmissive))
     {
-        if (!(m_TheObjectInstance->SwitchValues[m_NODE.SURFACE->SwitchNumber]&m_NODE.SURFACE->SwitchMask))
+        if ( not (m_TheObjectInstance->SwitchValues[m_NODE.SURFACE->SwitchNumber]&m_NODE.SURFACE->SwitchMask))
             m_pD3DD->SetRenderState(D3DRENDERSTATE_EMISSIVEMATERIALSOURCE, D3DMCS_MATERIAL);
     }
 
@@ -1239,7 +1239,7 @@ void CDXEngine::SWITCHManage()
 {
 
     //Consistency check
-    if (!m_TheObjectInstance->SwitchValues)
+    if ( not m_TheObjectInstance->SwitchValues)
     {
         // If no switches then skip the switch
         m_NODE.BYTE += m_NODE.DOF->dwDOFTotalSize;
@@ -1296,7 +1296,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
 #endif;
 
     // Consistency Check
-    if (!objInst->ParentObject)
+    if ( not objInst->ParentObject)
         return;
 
 #ifndef DEBUG_ENGINE
@@ -1338,7 +1338,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
     // if Textures not referenced, refernce them
 #ifndef DEBUG_ENGINE
 
-    if (!objInst->TexSetReferenced)
+    if ( not objInst->TexSetReferenced)
     {
         objInst->ParentObject->ReferenceTexSet(objInst->TextureSet);
         objInst->TexSetReferenced = true;
@@ -1356,7 +1356,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
     CurrentLOD = objInst->ParentObject->ChooseLOD(LODRange , &LODused, &MaxLODRange);
 
     // if not a lod persent, end here
-    if (!CurrentLOD) return;
+    if ( not CurrentLOD) return;
 
     // ok assign The Model
     Model = (DxDbHeader*)CurrentLOD->root;
@@ -1367,7 +1367,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
 
     ///////////////////////////////// HERE CHECK FOR VISIBILITY /////////////////////////////////////
     // Camera Spacce objects are always visible
-    if (!CameraSpace)
+    if ( not CameraSpace)
     {
 #ifndef DEBUG_ENGINE
         // Compute the object visibility -  Return if Clipped out
@@ -1402,7 +1402,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
     if (LightOwner not_eq NULL) Liter = LightOwner;
     else
     {
-        if (!++LightID) LightID++;
+        if ( not ++LightID) LightID++;
 
         Liter = LightID;
     }
@@ -1526,7 +1526,7 @@ LightCheck:
 void CDXEngine::FlushInit(void)
 {
     // if not yet created create the Zero Texture
-    if (!ZeroTex) CreateZeroTexture();
+    if ( not ZeroTex) CreateZeroTexture();
 
     // Initialize the Default Material
     m_pD3DD->SetMaterial(&TheMaterial);
@@ -1624,7 +1624,7 @@ inline void CDXEngine::DrawNode(ObjectInstance *objInst, DWORD LightOwner, DWORD
             {
                 m_DofLevel--;
 
-                if (!m_DofLevel) m_SkipSwitch = false;
+                if ( not m_DofLevel) m_SkipSwitch = false;
 
                 break;
             }
@@ -1646,7 +1646,7 @@ inline void CDXEngine::DrawNode(ObjectInstance *objInst, DWORD LightOwner, DWORD
             {
                 ObjectInstance *subObject = objInst->SlotChildren[m_NODE.SLOT->SlotNr];
 
-                if (!subObject) break;
+                if ( not subObject) break;
 
                 D3DXMATRIX p;
                 D3DXMatrixMultiply(&p, &m_NODE.SLOT->rotation, &AppliedState);
@@ -1707,7 +1707,7 @@ void CDXEngine::FlushObjects(void)
         }
 
         // ok, just Exited Pit Mode
-        if (!m_PitMode and WasInPitMode)
+        if ( not m_PitMode and WasInPitMode)
         {
             // Save transformation State
             D3DXMATRIX OldState = AppliedState;
@@ -1728,7 +1728,7 @@ void CDXEngine::FlushObjects(void)
         StateStackLevel = 0;
 
         // Consistency Check
-        if (!objInst) continue;
+        if ( not objInst) continue;
 
         // assign for engine use
         m_TheObjectInstance = objInst;
@@ -1737,7 +1737,7 @@ void CDXEngine::FlushObjects(void)
         TheVbManager.GetModelData(m_VB, LodID);
 
         // Consistency Check
-        if (!m_VB.Valid) continue;
+        if ( not m_VB.Valid) continue;
 
 #ifdef STAT_DX_ENGINE
         COUNT_PROFILE("*** DX Objects");
@@ -1749,9 +1749,9 @@ void CDXEngine::FlushObjects(void)
         pos.y = AppliedState.m31;
         pos.z = AppliedState.m32;
 
-        if (Script[0].Script) if (!DXScriptArray[Script[0].Script](&pos, objInst, Script[0].Arguments)) goto DrawSection;
+        if (Script[0].Script) if ( not DXScriptArray[Script[0].Script](&pos, objInst, Script[0].Arguments)) goto DrawSection;
 
-        if (Script[1].Script)(!DXScriptArray[Script[1].Script](&pos, objInst, Script[1].Arguments));
+        if (Script[1].Script)( not DXScriptArray[Script[1].Script](&pos, objInst, Script[1].Arguments));
 
     DrawSection:
 
@@ -2183,13 +2183,13 @@ void CDXEngine::ModelInit(ObjectInstance *objInst, DxDbHeader* Header, DWORD *Te
     pos.y = AppliedState.m31;
     pos.z = AppliedState.m32;
 
-    if (!m_ScriptsOn) goto DrawSection;
+    if ( not m_ScriptsOn) goto DrawSection;
 
     DXScriptVariableType *Script = (Header)->Scripts;
 
-    if (Script[0].Script) if (!DXScriptArray[Script[0].Script](&pos, objInst, Script[0].Arguments)) goto DrawSection;
+    if (Script[0].Script) if ( not DXScriptArray[Script[0].Script](&pos, objInst, Script[0].Arguments)) goto DrawSection;
 
-    if (Script[1].Script)(!DXScriptArray[Script[1].Script](&pos, objInst, Script[1].Arguments));
+    if (Script[1].Script)( not DXScriptArray[Script[1].Script](&pos, objInst, Script[1].Arguments));
 
 DrawSection:
 

@@ -49,8 +49,8 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
         // TODO: Fix this case to deal with localData->az being heading instead of relative az
         return TRUE;
     }
-    //else if (!g_bHardCoreReal) MI
-    else if (!g_bRealisticAvionics)
+    //else if ( not g_bHardCoreReal) MI
+    else if ( not g_bRealisticAvionics)
     {
         if (obj == lockedTarget and obj->localData->ata < typeData->GimbalLimitHalfAngle)
         {
@@ -135,7 +135,7 @@ float IrstClass::GetSignature(SimObjectType* obj)
     signal = (obj->BaseData()->GetIRFactor());
 
     // Get our angle off his nose
-    if (!obj->BaseData()->OnGround())
+    if ( not obj->BaseData()->OnGround())
 
         if (0)
         {
@@ -191,7 +191,7 @@ float IrstClass::GetSunFactor(SimObjectType* obj)
     float strength;
 
     // Skip out if no sun
-    if (!TheTimeOfDay.ThereIsASun())
+    if ( not TheTimeOfDay.ThereIsASun())
     {
         return 0.0f;
     }
@@ -264,8 +264,8 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
         signature *= 1.2F;
     }
 
-    //if (!g_bHardCoreReal and obj == lockedTarget) MI
-    if (!g_bRealisticAvionics and obj == lockedTarget)
+    //if ( not g_bHardCoreReal and obj == lockedTarget) MI
+    if ( not g_bRealisticAvionics and obj == lockedTarget)
     {
         signature *= 1.5F;
     }

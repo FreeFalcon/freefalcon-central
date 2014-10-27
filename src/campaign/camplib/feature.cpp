@@ -26,7 +26,7 @@ int GetFeatureRepairTime(int index)
 
     fc = GetFeatureClassData(index);
 
-    if (!fc)
+    if ( not fc)
         return 0;
 
     return fc->RepairTime;
@@ -39,7 +39,7 @@ int GetFeatureHitChance (int id, int mt, int range, int hitflags)
  int i,wid,hc=0,bc=0;
 
  fc = GetFeatureClassData(id);
- if (!fc)
+ if ( not fc)
  return 0;
  for (i=0; i<HARDPOINT_MAX; i++)
  {
@@ -77,7 +77,7 @@ int CalculateFeatureHitChance (int id, int mt)
  FeatureClassDataType* fc;
 
  fc = GetFeatureClassData(id);
- if (!fc)
+ if ( not fc)
  return 0;
  for (i=0; i<HARDPOINT_MAX; i++)
  {
@@ -109,7 +109,7 @@ int GetFeatureCombatStrength (int id, int mt, int range)
  FeatureClassDataType* fc;
 
  fc = GetFeatureClassData(id);
- if (!fc)
+ if ( not fc)
  return 0;
  for (i=0; i<HARDPOINT_MAX; i++)
  {
@@ -132,7 +132,7 @@ int CalculateFeatureCombatStrength (int id, int mt)
  FeatureClassDataType* fc;
 
  fc = GetFeatureClassData(id);
- if (!fc)
+ if ( not fc)
  return 0;
  for (i=0; i<HARDPOINT_MAX; i++)
  {
@@ -152,7 +152,7 @@ int GetAproxFeatureRange (int id, int mt)
  FeatureClassDataType* fc;
 
  fc = GetFeatureClassData(id);
- if (!fc)
+ if ( not fc)
  return 0;
  return fc->Range[mt];
  }
@@ -164,7 +164,7 @@ int GetFeatureRange (int id, int mt)
  FeatureClassDataType* fc;
 
  fc = GetFeatureClassData(id);
- if (!fc)
+ if ( not fc)
  return 0;
  for (i=0; i<HARDPOINT_MAX; i++)
  {
@@ -187,7 +187,7 @@ int CalculateFeatureRange (int id, int mt)
  FeatureClassDataType* fc;
 
  fc = GetFeatureClassData(id);
- if (!fc)
+ if ( not fc)
  return 0;
  for (i=0; i<HARDPOINT_MAX; i++)
  {
@@ -208,7 +208,7 @@ int GetFeatureDetectionRange(int id, int mt)
 
     fc = GetFeatureClassData(id);
 
-    if (!fc)
+    if ( not fc)
         return 0;
 
     return fc->Detection[mt];
@@ -222,7 +222,7 @@ int GetBestFeatureWeapon(int id, uchar* dam, MoveType m, int range)
 
  bw = bs = 0;
  fc = GetFeatureClassData(id);
- if (!fc)
+ if ( not fc)
  return 0;
  for (i=0; i<HARDPOINT_MAX; i++)
  {

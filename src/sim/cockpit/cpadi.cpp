@@ -229,7 +229,7 @@ void CPAdi::CreateLit(void)
             const DWORD dwMaxTextureHeight = mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
             m_pPalette = new PaletteHandle(mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-            if (!m_pPalette)
+            if ( not m_pPalette)
                 throw _com_error(E_OUTOFMEMORY);
 
             // Check if we can use a single texture
@@ -237,15 +237,15 @@ void CPAdi::CreateLit(void)
             {
                 TextureHandle *pTex = new TextureHandle;
 
-                if (!pTex)
+                if ( not pTex)
                     throw _com_error(E_OUTOFMEMORY);
 
                 m_pPalette->AttachToTexture(pTex);
 
-                if (!pTex->Create("CPAdi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, (UInt16)(mSrcRect.right - mSrcRect.left), (UInt16)(mSrcRect.bottom - mSrcRect.top)))
+                if ( not pTex->Create("CPAdi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, (UInt16)(mSrcRect.right - mSrcRect.left), (UInt16)(mSrcRect.bottom - mSrcRect.top)))
                     throw _com_error(E_FAIL);
 
-                if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer, true, true)) // soon to be re-loaded by CPSurface::Translate3D
+                if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer, true, true)) // soon to be re-loaded by CPSurface::Translate3D
                     throw _com_error(E_FAIL);
 
                 m_arrTex.push_back(pTex);
@@ -262,7 +262,7 @@ void CPAdi::CreateLit(void)
 
 
         // revert to legacy rendering if we can't use a single texture even if Fast 2D Cockpit is active
-        if (!DisplayOptions.bRender2DCockpit ||
+        if ( not DisplayOptions.bRender2DCockpit ||
             (DisplayOptions.bRender2DCockpit  and 
              (mDoBackRect and ((LONG)dwMaxTextureWidth < mBackSrc.right or (LONG)dwMaxTextureHeight < mBackSrc.bottom))))
         {
@@ -272,7 +272,7 @@ void CPAdi::CreateLit(void)
 
                 MPRSurfaceType front = (FalconDisplay.theDisplayDevice.IsHardware() and DisplayOptions.bRender2DCockpit) ? LocalVideoMem : SystemMem;
 
-                if (!mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mBackSrc.right, mBackSrc.bottom, front, None) and front == LocalVideoMem)
+                if ( not mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mBackSrc.right, mBackSrc.bottom, front, None) and front == LocalVideoMem)
                 {
                     // Retry with system memory if ouf video memory
 #ifdef _DEBUG
@@ -281,7 +281,7 @@ void CPAdi::CreateLit(void)
 
                     BOOL bResult = mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mBackSrc.right, mBackSrc.bottom, SystemMem, None);
 
-                    if (!bResult) return;
+                    if ( not bResult) return;
                 }
 
                 mpSurfaceBuffer->SetChromaKey(0xFFFF0000);
@@ -299,20 +299,20 @@ void CPAdi::CreateLit(void)
                 {
                     m_pPalette = new PaletteHandle(mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-                    if (!m_pPalette)
+                    if ( not m_pPalette)
                         throw _com_error(E_OUTOFMEMORY);
 
                     TextureHandle *pTex = new TextureHandle;
 
-                    if (!pTex)
+                    if ( not pTex)
                         throw _com_error(E_OUTOFMEMORY);
 
                     m_pPalette->AttachToTexture(pTex);
 
-                    if (!pTex->Create("CPAdi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, (UInt16)mBackSrc.right, (UInt16)mBackSrc.bottom))
+                    if ( not pTex->Create("CPAdi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, (UInt16)mBackSrc.right, (UInt16)mBackSrc.bottom))
                         throw _com_error(E_FAIL);
 
-                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer, true, true)) // soon to be re-loaded by CPObject::Translate3D
+                    if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer, true, true)) // soon to be re-loaded by CPObject::Translate3D
                         throw _com_error(E_FAIL);
 
                     m_arrTex.push_back(pTex);
@@ -571,13 +571,13 @@ void RenderADIPoly(tagRECT *srcrect, tagRECT *srcloc, tagRECT *destrect, GLint a
 
 void CPAdi::DisplayBlit3D()
 {
-    if (!mDirtyFlag)
+    if ( not mDirtyFlag)
         return;
 
-    if (!DisplayOptions.bRender2DCockpit) //handle in displayblit
+    if ( not DisplayOptions.bRender2DCockpit) //handle in displayblit
         return;
 
-    if (!m_arrTex.size())
+    if ( not m_arrTex.size())
         return; // handled in DisplayBlit
 
     if (mDoBackRect)
@@ -658,7 +658,7 @@ void CPAdi::DisplayBlit(void)
     RECT srcRect;
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag)
+    if ( not mDirtyFlag)
         return;
 
     if (DisplayOptions.bRender2DCockpit) //Handle in Displayblit3d
@@ -725,7 +725,7 @@ void CPAdi::DisplayDraw(void)
     // sfr: looks nonsense...
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag)
+    if ( not mDirtyFlag)
     {
         return;
     }
@@ -744,7 +744,7 @@ void CPAdi::DisplayDraw(void)
         );
     }
 
-    if (!mpCPManager->mHiddenFlag)
+    if ( not mpCPManager->mHiddenFlag)
     {
         //OTWDriver.renderer->SetColor(mColor[OTWDriver.renderer->GetGreenMode() not_eq 0][1]);
         OTWDriver.renderer->Render2DTri((float)mVertBarPos, (float)mTopLimit - 3.0F * width, (float)mVertBarPos + width,

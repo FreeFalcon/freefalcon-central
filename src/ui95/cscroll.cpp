@@ -139,7 +139,7 @@ void C_ScrollBar::Cleanup()
 
 void C_ScrollBar::SetBgImage(long ImageID)
 {
-    if (!BgImage_)
+    if ( not BgImage_)
     {
         BgImage_ = new O_Output;
         BgImage_->SetOwner(this);
@@ -357,7 +357,7 @@ void C_ScrollBar::UpdatePosition()
     {
         vl = (VirtualH_ + Parent_->ClientArea_[GetClient()].bottom - Parent_->ClientArea_[GetClient()].top);
 
-        if (!vl) vl = 1;
+        if ( not vl) vl = 1;
 
         SY_ = ((Parent_->VY_[GetClient()] - Parent_->ClientArea_[GetClient()].top) * (MaxPos_ - MinPos_) / vl) + MinPos_;
 
@@ -371,7 +371,7 @@ void C_ScrollBar::UpdatePosition()
     {
         vl = (VirtualW_ + Parent_->ClientArea_[GetClient()].right - Parent_->ClientArea_[GetClient()].left);
 
-        if (!vl) vl = 1;
+        if ( not vl) vl = 1;
 
         SX_ = ((Parent_->VX_[GetClient()] - Parent_->ClientArea_[GetClient()].left) * (MaxPos_ - MinPos_) / vl) + MinPos_;
 
@@ -469,7 +469,7 @@ long C_ScrollBar::CheckHotSpots(long relX, long relY)
 
 BOOL C_ScrollBar::Process(long, short HitType)
 {
-    if (!Ready()) return(FALSE);
+    if ( not Ready()) return(FALSE);
 
     gSoundMgr->PlaySound(GetSound(HitType));
 
@@ -647,7 +647,7 @@ BOOL C_ScrollBar::Dragable(long)
 
 void C_ScrollBar::Refresh()
 {
-    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -657,7 +657,7 @@ void C_ScrollBar::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     UI95_RECT s, rect;
 
-    if (!Ready()) return;
+    if ( not Ready()) return;
 
     if (GetFlags() & C_BIT_INVISIBLE)
         return;
@@ -692,10 +692,10 @@ void C_ScrollBar::Draw(SCREEN *surface, UI95_RECT *cliprect)
         rect.right = rect.left + Slider_->Header->w;
         rect.bottom = rect.top + Slider_->Header->h;
 
-        if (!Parent_->ClipToArea(&s, &rect, &Parent_->Area_))
+        if ( not Parent_->ClipToArea(&s, &rect, &Parent_->Area_))
             return;
 
-        if (!Parent_->ClipToArea(&s, &rect, cliprect))
+        if ( not Parent_->ClipToArea(&s, &rect, cliprect))
             return;
 
         rect.left += Parent_->GetX();

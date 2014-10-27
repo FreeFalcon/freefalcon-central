@@ -321,7 +321,7 @@ static void TACEditCB(long ID, short hittype, C_Base *control)
         return;
     }
 
-    if (!current_tactical_mission)
+    if ( not current_tactical_mission)
     {
         TACNewCB(ID, hittype, control);
         return;
@@ -362,7 +362,7 @@ static void TACCancelJoinCB(void)
 
 static void TACReallyAcceptCB(void)
 {
-    if (!current_tactical_mission)
+    if ( not current_tactical_mission)
     {
         return;
     }
@@ -389,7 +389,7 @@ static void TACAcceptCB(long, short hittype, C_Base *)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if (!current_tactical_mission)
+    if ( not current_tactical_mission)
     {
         return;
     }
@@ -512,7 +512,7 @@ static void TACSaveFileCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SAVE_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     gMainHandler->HideWindow(win);
@@ -639,7 +639,7 @@ void tactical_play_setup()
 {
     short i;
 
-    if (!gMainHandler)
+    if ( not gMainHandler)
         return;
 
     // MonoPrint ("Tactical Play Setup\n");
@@ -660,10 +660,10 @@ void tactical_play_setup()
     {
         if (TeamInfo[i])
         {
-            if (!TeamInfo[i]->GetFlag())
+            if ( not TeamInfo[i]->GetFlag())
                 TeamInfo[i]->SetFlag(static_cast<uchar>(i));
 
-            if (!TeamInfo[i]->GetColor())
+            if ( not TeamInfo[i]->GetColor())
                 TeamInfo[i]->SetColor(static_cast<uchar>(i));
 
             if (i and !(TeamInfo[i]->flags & TEAM_ACTIVE))
@@ -680,7 +680,7 @@ void tactical_play_setup()
 
     gGps->SetAllowed(0xffffffff);
 
-    if (!g_bServer and current_tactical_mission->get_type() == tt_engagement)
+    if ( not g_bServer and current_tactical_mission->get_type() == tt_engagement)
     {
         InitTimeCompressionBox(1);
         SetTimeCompression(1);
@@ -783,7 +783,7 @@ void tactical_edit_mission(tactical_mission *)
     }
     else
     {
-        ShiAssert(!"This doesn't work, so should not be allowed");
+        ShiAssert( not "This doesn't work, so should not be allowed");
 
         return;
 
@@ -821,10 +821,10 @@ void tactical_edit_mission(tactical_mission *)
     {
         if (TeamInfo[i])
         {
-            if (!TeamInfo[i]->GetFlag())
+            if ( not TeamInfo[i]->GetFlag())
                 TeamInfo[i]->SetFlag(static_cast<uchar>(i));
 
-            if (!TeamInfo[i]->GetColor())
+            if ( not TeamInfo[i]->GetColor())
                 TeamInfo[i]->SetColor(static_cast<uchar>(i));
 
             if (i and !(TeamInfo[i]->flags & TEAM_ACTIVE))
@@ -894,7 +894,7 @@ void update_taceng_clock(void)
 
     win = gMainHandler->FindWindow(TAC_TIME);
 
-    if (!win)
+    if ( not win)
     {
         return;
     }

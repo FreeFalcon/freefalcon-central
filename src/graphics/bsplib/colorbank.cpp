@@ -113,7 +113,7 @@ void ColorBankClass::ReadPool(int file)
         dst2->b = 0.0f;
 
         // FRB - B&W display?
-        if ((g_bGreyMFD) and (!bNVGmode))
+        if ((g_bGreyMFD) and ( not bNVGmode))
             dst2->r = dst2->b = dst2->g;
 
         *dst3 = *dst2;
@@ -150,7 +150,7 @@ void ColorBankClass::SetLight(float red, float green, float blue)
         greenTv->g = dst->g;
 
         // FRB - B&W display?
-        if ((g_bGreyMFD) and (!bNVGmode))
+        if ((g_bGreyMFD) and ( not bNVGmode))
             greenTv->r = greenTv->b = greenTv->g;
 
         src++;

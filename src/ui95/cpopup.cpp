@@ -155,7 +155,7 @@ BOOL C_PopupList::AddItem(long ID, short Type, _TCHAR *Str, long ParentID)
     if (FindID(ID) and Type not_eq C_TYPE_NOTHING)
         return(FALSE);
 
-    if (!Str and Type not_eq C_TYPE_NOTHING)
+    if ( not Str and Type not_eq C_TYPE_NOTHING)
         return(FALSE);
 
     if (ParentID)
@@ -453,7 +453,7 @@ void C_PopupList::GetSize(short *width, short *height)
 
     while (cur)
     {
-        if (!(cur->flags_ & C_BIT_INVISIBLE))
+        if ( not (cur->flags_ & C_BIT_INVISIBLE))
         {
             if (cur->Type_ not_eq C_TYPE_NOTHING)
             {
@@ -529,7 +529,7 @@ long C_PopupList::CheckHotSpots(long relX, long relY)
 
     while (cur and i < Selected_)
     {
-        if (!(cur->flags_ & C_BIT_INVISIBLE))
+        if ( not (cur->flags_ & C_BIT_INVISIBLE))
             i++;
 
         cur = cur->Next;
@@ -541,7 +541,7 @@ long C_PopupList::CheckHotSpots(long relX, long relY)
     if (cur == NULL)
         return(0);
 
-    if (!(cur->flags_ & C_BIT_ENABLED))
+    if ( not (cur->flags_ & C_BIT_ENABLED))
         cur = NULL;
 
     if (cur and cur->Type_ not_eq C_TYPE_NOTHING)
@@ -641,7 +641,7 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
 
         while (cur and i < item)
         {
-            if (!(cur->flags_ & C_BIT_INVISIBLE))
+            if ( not (cur->flags_ & C_BIT_INVISIBLE))
                 i++;
 
             cur = cur->Next;
@@ -697,7 +697,7 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
 
 void C_PopupList::Refresh()
 {
-    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->update_  or_eq  C_DRAW_REFRESHALL;
@@ -711,7 +711,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
     short fh;
     UI95_RECT frect, drect;
 
-    if (!Ready())
+    if ( not Ready())
         return;
 
     if (GetFlags() & C_BIT_INVISIBLE)
@@ -735,7 +735,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     while (cur and i < Selected_ and i < Count_)
     {
-        if (!(cur->flags_ & C_BIT_INVISIBLE))
+        if ( not (cur->flags_ & C_BIT_INVISIBLE))
             i++;
 
         cur = cur->Next;
@@ -766,7 +766,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     while (cur)
     {
-        if (!(cur->flags_ & C_BIT_INVISIBLE))
+        if ( not (cur->flags_ & C_BIT_INVISIBLE))
         {
             if (cur->Type_ == C_TYPE_NOTHING)
             {
@@ -777,7 +777,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
             {
                 if (cur->Label_)
                 {
-                    if (!(cur->flags_ & C_BIT_ENABLED))
+                    if ( not (cur->flags_ & C_BIT_ENABLED))
                         cur->Label_->SetFgColor(DisColor_);
                     else if (Selected_ == i)
                         cur->Label_->SetFgColor(SelColor_);
@@ -833,7 +833,7 @@ BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
 
     while (cur)
     {
-        if (!(cur->flags_ & C_BIT_INVISIBLE))
+        if ( not (cur->flags_ & C_BIT_INVISIBLE))
         {
             if (cur->MenuIcon_)
             {
@@ -888,7 +888,7 @@ BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
 
     while (cur)
     {
-        if (!(cur->flags_ & C_BIT_INVISIBLE))
+        if ( not (cur->flags_ & C_BIT_INVISIBLE))
         {
             if (cur->MenuIcon_)
             {

@@ -31,7 +31,7 @@ void HeliBrain::SensorFusion(void)
         localData = obj->localData;
         classPtr = (Falcon4EntityClassType*) obj->BaseData()->EntityType();
 
-        if (!obj->BaseData()->IsSim() or ((SimBaseClass*)obj->BaseData())->IsExploding())
+        if ( not obj->BaseData()->IsSim() or ((SimBaseClass*)obj->BaseData())->IsExploding())
         {
             obj = obj->next;
             continue;
@@ -157,7 +157,7 @@ void HeliBrain::SensorFusion(void)
         /*----------------------------------------------------*/
         localData->targetTime = 2.0F * MAX_TARGET_TIME;
 
-        if (!obj->BaseData()->IsMissile() and pcId < ID_NEUTRAL)
+        if ( not obj->BaseData()->IsMissile() and pcId < ID_NEUTRAL)
         {
             /*------------------*/
             /* closing velocity */

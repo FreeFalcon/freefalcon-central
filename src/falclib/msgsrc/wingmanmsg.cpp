@@ -60,7 +60,7 @@ int FalconWingmanMsg::Process(uchar autodisp)
         p_flight = (FlightClass*) vuDatabase->Find(EntityId());
         p_from = (AircraftClass*) vuDatabase->Find(dataBlock.from);
 
-        if (!p_flight or !p_from)
+        if ( not p_flight or !p_from)
         {
             return FALSE;
         }

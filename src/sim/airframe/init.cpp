@@ -72,9 +72,9 @@ void AirframeClass::Initialize()
              platform->platformAngles.sinsig;
     zdot  = -vt * platform->platformAngles.singam ;
 
-    ShiAssert(!_isnan(xdot));
-    ShiAssert(!_isnan(ydot));
-    ShiAssert(!_isnan(zdot));
+    ShiAssert( not _isnan(xdot));
+    ShiAssert( not _isnan(ydot));
+    ShiAssert( not _isnan(zdot));
     /*------------------------*/
     /* initialize quaternions */
     /*------------------------*/
@@ -102,7 +102,7 @@ void AirframeClass::Initialize()
     /*------------------------------------*/
     /* initial earth coordinate positions */
     /*------------------------------------*/
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
     {
         Tpoint normal;
         float groundZ = OTWDriver.GetGroundLevel(x, y, &normal);
@@ -304,14 +304,14 @@ void AirframeClass::ReInitialize()
              platform->platformAngles.sinsig;
     zdot  = -vt * platform->platformAngles.singam ;
 
-    ShiAssert(!_isnan(xdot));
-    ShiAssert(!_isnan(ydot));
-    ShiAssert(!_isnan(zdot));
+    ShiAssert( not _isnan(xdot));
+    ShiAssert( not _isnan(ydot));
+    ShiAssert( not _isnan(zdot));
 
     /*------------------------------------*/
     /* initial earth coordinate positions */
     /*------------------------------------*/
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
     {
         Tpoint normal;
         float groundZ = OTWDriver.GetGroundLevel(x, y, &normal);

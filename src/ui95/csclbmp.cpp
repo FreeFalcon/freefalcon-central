@@ -102,12 +102,12 @@ void C_ScaleBitmap::InitOverlay()
     IMAGE_RSC *img;
     DWORD tmp;
 
-    if (!Image_ or !Parent_)
+    if ( not Image_ or !Parent_)
         return;
 
     img = Image_->GetImage();
 
-    if (!img)
+    if ( not img)
         return;
 
     if (Overlay_)
@@ -146,12 +146,12 @@ void C_ScaleBitmap::PreparePalette(COLORREF color)
     WORD usecolor;
     long r, g, b;
 
-    if (!Image_)
+    if ( not Image_)
         return;
 
     img = Image_->GetImage();
 
-    if (!img)
+    if ( not img)
         return;
 
     for (i = 1; i < 16; i++)

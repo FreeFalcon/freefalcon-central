@@ -91,7 +91,7 @@ DWORD CDXLight::AddDynamicLight(DWORD ID, DXLightType *Light, D3DXMATRIX *RotMat
     while (Index < MAX_DYNAMIC_LIGHTS)
     {
         // if found the Light at te Max Range
-        if (LightList[Index].CameraDistance == MaxRange and (!Assigned))
+        if (LightList[Index].CameraDistance == MaxRange and ( not Assigned))
         {
             // substitute with new light
             LightList[Index].Light = Light->Light;
@@ -163,7 +163,7 @@ void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
     *(D3DVECTOR*)&Pos.d3d = *pos;
 
     // if 1st call in this rendering
-    if (!LightsLoaded)
+    if ( not LightsLoaded)
     {
         // Enable the lights + 1 ( light #0 is the Sun )
         idx = 0;
@@ -320,7 +320,7 @@ void CDXLight::EnableMappedLights(void)
     for (DWORD idx = 0; idx < DynamicLights; idx++)
     {
         // if light to be disabled
-        if ((!LightsToOn[idx]) and LightList[idx].On)
+        if (( not LightsToOn[idx]) and LightList[idx].On)
         {
             m_pD3DD->LightEnable(idx + 1, false);
             LightList[idx].On = false;
@@ -329,7 +329,7 @@ void CDXLight::EnableMappedLights(void)
 
     for (DWORD idx = 0; idx < DynamicLights; idx++)
     {
-        if (LightsToOn[idx] and (!LightList[idx].On))
+        if (LightsToOn[idx] and ( not LightList[idx].On))
         {
             m_pD3DD->LightEnable(idx + 1, true);
             LightList[idx].On = true;

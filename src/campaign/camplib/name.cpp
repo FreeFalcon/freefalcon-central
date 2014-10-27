@@ -146,7 +146,7 @@ _TCHAR* ReadNameString(int sid, _TCHAR *wstr, unsigned int len)
     FILE *fp;
     unsigned int size, rlen;
 
-    if (!NameIndex) // JB 010731 CTD
+    if ( not NameIndex) // JB 010731 CTD
         return wstr;
 
     ShiAssert(FALSE == F4IsBadReadPtr(NameIndex, sizeof * NameIndex * NameEntries)); // JPO CTD
@@ -185,7 +185,7 @@ int AddName(_TCHAR *name)
     len = _tcslen(name);
 
     // Load our wch file if we don't already have it in memory
-    if (!NameStream)
+    if ( not NameStream)
         LoadNameStream();
 
     // Find a free spot
@@ -205,7 +205,7 @@ int AddName(_TCHAR *name)
     if (nid)
     {
         // Found a free spot, insert this string
-        if (!NameIndex[nid])
+        if ( not NameIndex[nid])
             NameIndex[nid] = (short)offset;
 
         for (i = nid + 1; i < NameEntries; i++)
@@ -275,7 +275,7 @@ void RemoveName(int nid)
         return;
 
     // Load our wch file if we don't already have it in memory
-    if (!NameStream)
+    if ( not NameStream)
         LoadNameStream();
 
     movesize = NameIndex[NameEntries - 1] - NameIndex[nid + 1];
@@ -355,7 +355,7 @@ int AddName (char* name)
  if (NameTable[i][0] == 0 or !strcmp(NameTable[i],"<None>"))
  nid = i;
  }
- if (!nid and NameEntries < MAX_NAMES)
+ if ( not nid and NameEntries < MAX_NAMES)
  {
  nid = NameEntries;
  NameEntries++;

@@ -155,7 +155,7 @@ int AddParticleEffect(int SfxId, Tpoint *pos, Tpoint *vec)
     {
         Tpoint z = {0, 0, 0};
 
-        if (!vec)
+        if ( not vec)
         {
             vec = &z;
         }
@@ -175,7 +175,7 @@ int AddParticleEffect(char *name, Tpoint *pos, Tpoint *vec)
     {
         Tpoint zero = {0, 0, 0};
 
-        if (!vec)
+        if ( not vec)
         {
             vec = &zero;
         }
@@ -2650,7 +2650,7 @@ BOOL SfxClass::Exec()
 
         // check to see if the object is awake or if its state
         // is no longer OK
-        if (!baseObj->IsAwake() ||
+        if ( not baseObj->IsAwake() ||
             (baseObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED ||
             (baseObj->Status() & VIS_TYPE_MASK) == VIS_DAMAGED ||
             baseObj->IsDead())
@@ -2773,7 +2773,7 @@ BOOL SfxClass::Exec()
 
             if (vec.z > GRAVITY) vec.z = -vec.z;
 
-            if (!(flags & SFX_F16CRASH_HITGROUND))
+            if ( not (flags & SFX_F16CRASH_HITGROUND))
             {
                 int i = FloatToInt32(9.99f * PRANDFloatPos());
 
@@ -2886,7 +2886,7 @@ BOOL SfxClass::Exec()
                     baseObj->RollDelta() * 0.9f);//75f);
             }
 
-            if (!(flags & SFX_F16CRASH_STOP))
+            if ( not (flags & SFX_F16CRASH_STOP))
             {
                 if (lastHit)
                 {
@@ -2955,7 +2955,7 @@ BOOL SfxClass::Exec()
                     PlayCrashSound(F16CRASH_FELLMASK, SFX_FLAPLOOP);
                 }
             }
-            else if (!lastHit and !(flags & SFX_F16CRASH_SKIPGRAVITY)) vec.z += GRAVITY * sfxFrameTime;
+            else if ( not lastHit and !(flags & SFX_F16CRASH_SKIPGRAVITY)) vec.z += GRAVITY * sfxFrameTime;
 
             CalcTransformMatrix(baseObj.get());
             Tpoint point;
@@ -3012,7 +3012,7 @@ BOOL SfxClass::Exec()
         }
         else
         {
-            if (!(flags & SFX_F16CRASH_STOP))
+            if ( not (flags & SFX_F16CRASH_STOP))
             {
                 flags  or_eq  SFX_F16CRASH_STOP;
                 float mat[3][3], mat1[3][3];
@@ -3133,7 +3133,7 @@ BOOL SfxClass::Exec()
     }
 
     // do we need to move it?
-    if (!(flags & SFX_MOVES) or (flags & SFX_TIMER_FLAG))
+    if ( not (flags & SFX_MOVES) or (flags & SFX_TIMER_FLAG))
     {
         Draw();
         return TRUE;
@@ -3201,7 +3201,7 @@ SfxClass::Draw(void)
         return TRUE;
 
     // this type has no drawing
-    if ((!(flags & SFX_F16CRASHLANDING) and !(flags & SFX_MOVES)) or (flags & SFX_TIMER_FLAG))
+    if (( not (flags & SFX_F16CRASHLANDING) and !(flags & SFX_MOVES)) or (flags & SFX_TIMER_FLAG))
     {
         if (obj2d)
         {
@@ -3343,7 +3343,7 @@ SfxClass::GetApproxViewDist(float currTime)
     float absmax, absmid, absmin, tmp;
     Tpoint viewLoc;
 
-    if (!viewPoint) // JB 010528
+    if ( not viewPoint) // JB 010528
         return;
 
     if (F4IsBadReadPtr(viewPoint, sizeof * viewPoint)) return; // JPO CTD fix?
@@ -4452,7 +4452,7 @@ SfxClass::RunSecondarySfx(void)
              */
             // StartRandomDebris();
             // if there'2 no 2d animation, we do a firetrail
-            if (!obj2d)
+            if ( not obj2d)
             {
                 mpos.x = pos.x;
                 mpos.y = pos.y;
@@ -5673,7 +5673,7 @@ SfxClass::RunSecondarySfx(void)
              */
 
 
-            if (!PRANDInt3())
+            if ( not PRANDInt3())
             {
                 // vec is normalized, further away = faster
                 // mvec.x = vec.x * ( 150.0f + 1000.0f * distScale );
@@ -5734,7 +5734,7 @@ SfxClass::RunSecondarySfx(void)
             mpos.y = pos.y + 2000.0f * PRANDFloat() * distScale;
             mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 50.0f;
 
-            if (!PRANDInt3())
+            if ( not PRANDInt3())
             {
                 // vec is normalized, further away = faster
                 // mvec.x = vec.x * ( 150.0f + 1000.0f * distScale );
@@ -6309,7 +6309,7 @@ SfxClass::ACMIExec(float currTime)
     }
 
     // do we need to move it?
-    if (!(flags & SFX_MOVES) or (flags & SFX_TIMER_FLAG))
+    if ( not (flags & SFX_MOVES) or (flags & SFX_TIMER_FLAG))
         return TRUE;
 
     newvec = vec;

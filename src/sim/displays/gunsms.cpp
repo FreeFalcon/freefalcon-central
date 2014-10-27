@@ -52,7 +52,7 @@ void SmsDrawable::GunDisplay(void)
     //MI I think this should only show RDY when we are in ARM, like all the other weapons
     if (numRounds)
     {
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
 
             sprintf(tmpStr, "%02dGUN", numRounds);

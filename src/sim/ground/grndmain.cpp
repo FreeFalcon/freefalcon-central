@@ -461,7 +461,7 @@ int GroundClass::Exec(void)
     {
         // KCK: I've never seen this section of code executed. Maybe it gets hit, but I doubt
         // it.
-        if (!IsSetFlag(SHOW_EXPLOSION))
+        if ( not IsSetFlag(SHOW_EXPLOSION))
         {
             // Show the explosion
             Tpoint pos, vec;
@@ -629,7 +629,7 @@ int GroundClass::Exec(void)
                     // Skip sleeping sim objects
                     if (object->IsSim())
                     {
-                        if (!((SimBaseClass*)object)->IsAwake())
+                        if ( not ((SimBaseClass*)object)->IsAwake())
                         {
                             object = (FalconEntity*)vehicleWalker.GetNext();
                             continue;
@@ -662,7 +662,7 @@ int GroundClass::Exec(void)
                 }
 
                 // If no enemy nearby and not heavy damaged switch on lights
-                if (!hasThreat and pctStrength > 0.75f)
+                if ( not hasThreat and pctStrength > 0.75f)
                 {
                     ((DrawableBSP *)drawPointer)->SetSwitchMask(AIRDEF_LIGHT_SWITCH, isNight);
                 }
@@ -693,7 +693,7 @@ int GroundClass::Exec(void)
                     // Skip sleeping sim objects
                     if (object->IsSim())
                     {
-                        if (!((SimBaseClass*)object)->IsAwake())
+                        if ( not ((SimBaseClass*)object)->IsAwake())
                         {
                             object = (FalconEntity*)vehicleWalker.GetNext();
                             continue;
@@ -726,7 +726,7 @@ int GroundClass::Exec(void)
                 }
 
                 // If no enemy nearby and not heavy damaged switch on lights
-                if (!hasThreat and pctStrength > 0.75f)
+                if ( not hasThreat and pctStrength > 0.75f)
                 {
                     truckDrawable->SetSwitchMask(AIRDEF_LIGHT_SWITCH, isNight);
                 }
@@ -883,7 +883,7 @@ int GroundClass::Exec(void)
 
             // JB 011002 If campBaseObj is NULL the target may be chaff
 
-            if (!spottedSet and campBaseObj and !(campBaseObj->GetSpotted(GetTeam())) and campBaseObj->IsFlight())
+            if ( not spottedSet and campBaseObj and !(campBaseObj->GetSpotted(GetTeam())) and campBaseObj->IsFlight())
                 RequestIntercept((FlightClass *)campBaseObj, GetTeam());
 
             if (campBaseObj)
@@ -984,7 +984,7 @@ int GroundClass::Exec(void)
         // Determine whether to draw label or not
         if (gai->distLOD < labelLOD)
         {
-            if (!IsSetLocalFlag(NOT_LABELED))
+            if ( not IsSetLocalFlag(NOT_LABELED))
             {
                 drawPointer->SetLabel("", 0xff00ff00); // Don't label
                 SetLocalFlag(NOT_LABELED);
@@ -1002,7 +1002,7 @@ int GroundClass::Exec(void)
         //}
     }
 
-    if (!targetPtr)
+    if ( not targetPtr)
     {
         //rotate turret to be pointing forward again
         float maxAz = TURRET_ROTATE_RATE * SimLibMajorFrameTime;
@@ -1098,7 +1098,7 @@ int GroundClass::Exec(void)
         }
     }
     // We're not a foot squad, so do the vehicle stuff
-    else if (!IsSetLocalFlag(IS_HIDDEN) and speedScale > 300.0f)
+    else if ( not IsSetLocalFlag(IS_HIDDEN) and speedScale > 300.0f)
     {
         // speedScale /= ( 900.0f * KPH_TO_FPS * KPH_TO_FPS); // essentially 1.0F at 30 mph
 
@@ -1339,7 +1339,7 @@ int GroundClass::Wake(void)
     // Pick a groupId. KCK: Is this even being used?
     groupId = GetCampaignObject()->Id().num_;
 
-    if (!gai->rank)
+    if ( not gai->rank)
     {
         drawPointer->SetLabel("", 0xff00ff00);
     }
@@ -1413,7 +1413,7 @@ int GroundClass::Sleep(void)
 {
     int retval = 0;
 
-    if (!IsAwake())
+    if ( not IsAwake())
     {
         return retval;
     }

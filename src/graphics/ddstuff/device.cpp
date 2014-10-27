@@ -29,7 +29,7 @@ DisplayDevice::DisplayDevice()
 // Clean up after ourselves
 DisplayDevice::~DisplayDevice()
 {
-    ShiAssert(!IsReady());
+    ShiAssert( not IsReady());
 }
 
 
@@ -43,7 +43,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
     int resNum;
     UInt w, h, d;
 
-    ShiAssert(!IsReady());
+    ShiAssert( not IsReady());
 
 
     // Remember our driver number so we know if we're software (driver 0) or hardware.
@@ -87,14 +87,14 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
     // Create an MPR device handle for this device
     m_DXCtx = FalconDisplay.devmgr.CreateContext(driverNumber, devNum, resNum, fullScreen, win);
 
-    if (!m_DXCtx)
+    if ( not m_DXCtx)
     {
         // try default device
         driverNumber = 0;
 
         m_DXCtx = FalconDisplay.devmgr.CreateContext(driverNumber, 0, resNum, fullScreen, win);
 
-        if (!m_DXCtx)
+        if ( not m_DXCtx)
             return;
     }
 
@@ -154,7 +154,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
                      NULL /* create parms */
                  );
 
-        if (!appWin)
+        if ( not appWin)
         {
             ShiError("Failed to construct main window");
         }

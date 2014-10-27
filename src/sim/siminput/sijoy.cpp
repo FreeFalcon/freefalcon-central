@@ -136,7 +136,7 @@ inline void ProcessJoystickInput(GameAxis_t axis, long *value)
         JoyOutput[axis][OldInput] = JoyOutput[axis][NewInput];
         JoyOutput[axis][NewInput] = *value;
 
-        if (!DisableSmoothing)
+        if ( not DisableSmoothing)
         {
             int diff = abs(JoyOutput[axis][NewInput] - JoyOutput[axis][OldInput]) * FloatToInt32((SimLibMajorFrameTime / 0.1F));
 
@@ -239,7 +239,7 @@ void GetJoystickInput()
     HRESULT hRes;
     DIJOYSTATE joyState;
 
-    if (!gTotalJoy)
+    if ( not gTotalJoy)
         return; // returning if we don´t have a stick
 
     long device_axis_values[SIM_NUMDEVICES][8]; // 8 axis in a DIJOYSTATE structure.. don´t think we´ll switch to DIJOYSTATE2
@@ -412,7 +412,7 @@ void GetJoystickInput()
     {
         ProcessJoystickInput(AXIS_THROTTLE, &device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis]);
 
-        if ((!UseKeyboardThrottle) ||
+        if (( not UseKeyboardThrottle) ||
             (abs(JoyOutput[AXIS_THROTTLE][OldInput] - device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis]) > 500.0F))
         {
             UseKeyboardThrottle = FALSE;
@@ -479,7 +479,7 @@ void GetJoystickInput()
     {
         ProcessJoystickInput(AXIS_THROTTLE2, &device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis]);
 
-        if ((!UseKeyboardThrottle) ||
+        if (( not UseKeyboardThrottle) ||
             (abs(JoyOutput[AXIS_THROTTLE2][OldInput] - device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis]) > 500.0F))
         {
             UseKeyboardThrottle = FALSE;
@@ -1000,7 +1000,7 @@ BOOL FAR PASCAL EnumDeviceObjects(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef
 {
     char* DevName = (char*)pvRef;
 
-    if (!pvRef)
+    if ( not pvRef)
         return FALSE;
 
     ShiAssert(lpddoi->tszName);
@@ -1216,7 +1216,7 @@ int ActivateAutoCenter(const bool OnOff, const int theJoyIndex)
         DIPropAutoCenter.dwData = DIPROPAUTOCENTER_ON;
 
     //Wombat778 Put back to original code because fix for FF Centering is now it atmos.cpp.  This should be cleaner and better.
-    if (!VerifyResult(gpDIDevice[SIM_JOYSTICK1 + theJoyIndex]->SetProperty(DIPROP_AUTOCENTER, &DIPropAutoCenter.diph)))
+    if ( not VerifyResult(gpDIDevice[SIM_JOYSTICK1 + theJoyIndex]->SetProperty(DIPROP_AUTOCENTER, &DIPropAutoCenter.diph)))
     {
         if (OnOff == false)
             OutputDebugString("Failed to turn auto-center off.\n");
@@ -1266,7 +1266,7 @@ int CheckForForceFeedback(const int theJoyIndex)
             OutputDebugString("ForceFeedback device found.\n");
 
             // we're supporting ForceFeedback
-            if (!JoystickCreateEffect(0xffffffff))
+            if ( not JoystickCreateEffect(0xffffffff))
             {
                 OutputDebugString("JoystickCreateEffects() failed - ForceFeedback disabled\n");
                 hasForceFeedback =  FALSE;
@@ -1288,7 +1288,7 @@ int CheckForForceFeedback(const int theJoyIndex)
                 DIPropAutoCenter.dwData = DIPROPAUTOCENTER_OFF;
 
                 //Wombat778 Put back to original code because fix for FF Centering is now it atmos.cpp.  This should be cleaner and better.
-                if (!VerifyResult(gpDIDevice[SIM_JOYSTICK1 + theJoyIndex]->SetProperty(DIPROP_AUTOCENTER, &DIPropAutoCenter.diph)))
+                if ( not VerifyResult(gpDIDevice[SIM_JOYSTICK1 + theJoyIndex]->SetProperty(DIPROP_AUTOCENTER, &DIPropAutoCenter.diph)))
                 {
                     OutputDebugString("Failed to turn auto-center off.\n");
                     hasForceFeedback =  FALSE;
@@ -1304,7 +1304,7 @@ int CheckForForceFeedback(const int theJoyIndex)
 
 #else
                 // autocenter will get turned OFF if FFB is ENABLED !
-                hasForceFeedback =  ActivateAutoCenter(!PlayerOptions.GetFFB(), theJoyIndex);
+                hasForceFeedback =  ActivateAutoCenter( not PlayerOptions.GetFFB(), theJoyIndex);
                 return hasForceFeedback;
 #endif
             }
@@ -1355,7 +1355,7 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
     SetupResult = (hr == DI_OK) ? TRUE : FALSE;
 #endif
 
-    if (!SetupResult)
+    if ( not SetupResult)
     {
         return DIENUM_CONTINUE;
     }
@@ -1423,7 +1423,7 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
         if (gDIDevNames[SIM_JOYSTICK1 + gTotalJoy])
             _tcscpy(gDIDevNames[SIM_JOYSTICK1 + gTotalJoy], pdinst->tszProductName);
 
-        if (!strcmp(pdinst->tszProductName, "Union Reality Gear"))
+        if ( not strcmp(pdinst->tszProductName, "Union Reality Gear"))
         {
             OutputDebugString("UR Helmet found\n");
             OTWDriver.SetHeadTracking(TRUE);
@@ -1492,7 +1492,7 @@ BOOL JoystickCreateEffect(DWORD)
     fPtr = fopen(dataFileName, "r");
 
     // Find the file
-    if (!fPtr)
+    if ( not fPtr)
     {
         OutputDebugString("Unable to open force feedback data file");
         return FALSE;
@@ -1648,7 +1648,7 @@ BOOL JoystickCreateEffect(DWORD)
 
                 guidEffect = GUID_Square;
 
-                if (!SetupResult)
+                if ( not SetupResult)
                 {
                     OutputDebugString("EnumEffects(Costum Force) failed\n");
                     continue;
@@ -1700,7 +1700,7 @@ BOOL JoystickCreateEffect(DWORD)
                         break;
                 }
 
-                if (!SetupResult)
+                if ( not SetupResult)
                 {
                     OutputDebugString("EnumEffects(Periodic Force) failed\n");
                     continue;
@@ -1719,7 +1719,7 @@ BOOL JoystickCreateEffect(DWORD)
                 SetupResult = VerifyResult(joystickDevice->EnumEffects((LPDIENUMEFFECTSCALLBACK)JoystickEnumEffectTypeProc,
                                            &guidEffect, DIEFT_CONSTANTFORCE));
 
-                if (!SetupResult)
+                if ( not SetupResult)
                 {
                     OutputDebugString("EnumEffects(Constant Force) failed\n");
                     continue;
@@ -1739,7 +1739,7 @@ BOOL JoystickCreateEffect(DWORD)
                 SetupResult = VerifyResult(joystickDevice->EnumEffects((LPDIENUMEFFECTSCALLBACK)JoystickEnumEffectTypeProc,
                                            &guidEffect, DIEFT_RAMPFORCE));
 
-                if (!SetupResult)
+                if ( not SetupResult)
                 {
                     OutputDebugString("EnumEffects(Ramp Force) failed\n");
                     continue;
@@ -1816,7 +1816,7 @@ BOOL JoystickCreateEffect(DWORD)
 /*****************************************************************************/
 void JoystickReleaseEffects(void)
 {
-    if (!hasForceFeedback)
+    if ( not hasForceFeedback)
         return;
 
     // Get rid of any old effects
@@ -1853,7 +1853,7 @@ void JoystickStopAllEffects(void)
 {
     int i;
 
-    if (!hasForceFeedback)
+    if ( not hasForceFeedback)
         return;
 
     for (i = 0; i < gNumEffectsLoaded; i++)
@@ -1874,7 +1874,7 @@ int lastStoppedEffect = -1;
 /*****************************************************************************/
 void JoystickStopEffect(int effectNum)
 {
-    if (!hasForceFeedback or effectNum >= gNumEffectsLoaded or !gForceFeedbackEffect or !gForceFeedbackEffect[effectNum])
+    if ( not hasForceFeedback or effectNum >= gNumEffectsLoaded or !gForceFeedbackEffect or !gForceFeedbackEffect[effectNum])
         return;
 
     ShiAssert(FALSE == F4IsBadReadPtr(gForceFeedbackEffect[effectNum], sizeof * gForceFeedbackEffect[effectNum]));
@@ -1901,7 +1901,7 @@ int JoystickPlayEffect(int effectNum, int data)
     DIEFFECT        diEffect;
     LONG            rglDirections[2] = { 0, 0 };
 
-    if (!hasForceFeedback or effectNum >= gNumEffectsLoaded or !gForceFeedbackEffect or !gForceFeedbackEffect[effectNum])
+    if ( not hasForceFeedback or effectNum >= gNumEffectsLoaded or !gForceFeedbackEffect or !gForceFeedbackEffect[effectNum])
         return FALSE;
 
     if (PlayerOptions.GetFFB() == false) // Retro 27Dec2003 - returning false here.. dunno if this is too clever though
@@ -1929,7 +1929,7 @@ int JoystickPlayEffect(int effectNum, int data)
         diEffect.rglDirection   = rglDirections;
         SetupResult = VerifyResult(gForceFeedbackEffect[effectNum]->SetParameters(&diEffect, DIEP_DIRECTION));
 
-        if (!SetupResult)
+        if ( not SetupResult)
         {
             OutputDebugString("SetParameters(Bounce effect) failed\n");
             return FALSE;
@@ -1948,7 +1948,7 @@ int JoystickPlayEffect(int effectNum, int data)
         diEffect.lpvTypeSpecificParams = &periodicHolder;
         SetupResult = VerifyResult(gForceFeedbackEffect[effectNum]->SetParameters(&diEffect, DIEP_TYPESPECIFICPARAMS));
 
-        if (!SetupResult)
+        if ( not SetupResult)
         {
             OutputDebugString("SetParameters(Runway Rumble) failed\n");
             return FALSE;
@@ -1976,7 +1976,7 @@ int JoystickPlayEffect(int effectNum, int data)
 
         SetupResult = VerifyResult(gForceFeedbackEffect[effectNum]->SetParameters(&diEffect, DIEP_TYPESPECIFICPARAMS));
 
-        if (!SetupResult)
+        if ( not SetupResult)
         {
             OutputDebugString("SetParameters(Auto Center) failed\n");
             return FALSE;
@@ -1986,7 +1986,7 @@ int JoystickPlayEffect(int effectNum, int data)
     // play the effect
     SetupResult = VerifyResult(gForceFeedbackEffect[effectNum]->Start(1, 0));
 
-    if (!SetupResult)
+    if ( not SetupResult)
     {
         //JoystickCreateEffect(1);
         MonoPrint("Start Effect %d Failed\n", effectNum);

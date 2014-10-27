@@ -254,7 +254,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
         (SimDriver.RunningCampaign() and !noUIcomms) ||
         (to and to == us))
     {
-        if (!us)
+        if ( not us)
             return -1;
 
         //if the sender is more than 300nm away we can't hear it
@@ -923,7 +923,7 @@ FalconRadioChatterMessage* CreateCallToFlight(Flight flight, FalconEntity *from,
 
     ShiAssert(flight);
 
-    if (!from)
+    if ( not from)
     {
         fromID = FalconNullId;
         fromVoice =  GetDefaultAwacsVoice(); // JPO VOICEFIX
@@ -985,7 +985,7 @@ FalconRadioChatterMessage* CreateCallToPlane(AircraftClass* aircraft, FalconEnti
     short toCallsign, toCallnum;
     uchar fromVoice;
 
-    if (!from)
+    if ( not from)
     {
         fromID = FalconNullId;
         fromVoice =  GetDefaultAwacsVoice(); // JPO VOICEFIX
@@ -1015,7 +1015,7 @@ FalconRadioChatterMessage* CreateCallToPlane(AircraftClass* aircraft, FalconEnti
         fromCallnum = -1;
     }
 
-    if (!aircraft)
+    if ( not aircraft)
     {
         toID = FalconNullId;
         toCallsign = -1;
@@ -1065,7 +1065,7 @@ void SendRogerToPlane(AircraftClass* aircraft, FalconEntity *from, VuTargetEntit
     ShiAssert(aircraft);
     flight = (Flight)aircraft->GetCampaignObject();
 
-    if (!from)
+    if ( not from)
     {
         return;
     }

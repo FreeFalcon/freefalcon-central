@@ -155,7 +155,7 @@ int GroundTaskingManagerClass::Save(FILE *file)
 {
     int retval = 0;
 
-    if (!file)
+    if ( not file)
         return 0;
 
     retval += CampManagerClass::Save(file);
@@ -173,7 +173,7 @@ void GroundTaskingManagerClass::DoCalculations(void)
     POData pd;
 
     // Don't do this if we're not active, or not owned by this machine
-    if (!(TeamInfo[owner]->flags & TEAM_ACTIVE) or !IsLocal())
+    if ( not (TeamInfo[owner]->flags & TEAM_ACTIVE) or !IsLocal())
         return;
 
     topPriority = 0;
@@ -227,23 +227,23 @@ void GroundTaskingManagerClass::DoCalculations(void)
             score = 100;
 
         // Minimum of 1 priority if it's owned by us.
-        if (!score and t == owner)
+        if ( not score and t == owner)
             score = 1;
 
         // KCK: AI's air and ground priorities are identical for now
-        if (!(pd->flags & GTMOBJ_SCRIPTED_PRIORITY))
+        if ( not (pd->flags & GTMOBJ_SCRIPTED_PRIORITY))
         {
             pd->ground_priority[owner] = score;
             pd->air_priority[owner] = score;
             // KCK: player_priority only used now if it's >= 0
-            // if (!(pd->flags & GTMOBJ_PLAYER_SET_PRIORITY))
+            // if ( not (pd->flags & GTMOBJ_PLAYER_SET_PRIORITY))
             // pd->player_priority[owner] = pd->air_priority[owner];
         }
 
-        if (!GetRoE(owner, t, ROE_GROUND_CAPTURE) and owner not_eq t)
+        if ( not GetRoE(owner, t, ROE_GROUND_CAPTURE) and owner not_eq t)
             pd->ground_priority[owner] = 0;
 
-        if (!GetRoE(owner, t, ROE_AIR_ATTACK) and owner not_eq t)
+        if ( not GetRoE(owner, t, ROE_AIR_ATTACK) and owner not_eq t)
             pd->air_priority[owner] = 0;
 
         if (score > topPriority)
@@ -263,7 +263,7 @@ int GroundTaskingManagerClass::Task(void)
     int action;
 
     // Don't do this if we're not active, or not owned by this machine
-    if (!(TeamInfo[owner]->flags & TEAM_ACTIVE) or !IsLocal())
+    if ( not (TeamInfo[owner]->flags & TEAM_ACTIVE) or !IsLocal())
         return 0;
 
     action = TeamInfo[owner]->GetGroundActionType();
@@ -415,7 +415,7 @@ void GroundTaskingManagerClass::Cleanup(void)
 // Determine if this objective can accept the passed orders
 int GroundTaskingManagerClass::IsValidObjective(int orders, Objective o)
 {
-    if (!o)
+    if ( not o)
         return 0;
 
     switch (orders)
@@ -502,10 +502,10 @@ int GroundTaskingManagerClass::GetAddBits(Objective o, int to_collect)
 {
     int add_now = to_collect;
 
-    if (!o)
+    if ( not o)
         return 0;
 
-    if (!o->IsSecondary())
+    if ( not o->IsSecondary())
         add_now and_eq compl (COLLECT_RESERVE | COLLECT_CAPTURE | COLLECT_SECURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_DEFEND);
 
     if (o->IsNearfront())
@@ -522,28 +522,28 @@ int GroundTaskingManagerClass::GetAddBits(Objective o, int to_collect)
     if (o->Abandoned())
         add_now and_eq compl COLLECT_DEFEND;
 
-    if (!o->IsFrontline() and !o->IsSecondline())
+    if ( not o->IsFrontline() and !o->IsSecondline())
         add_now and_eq compl (COLLECT_SECURE);
 
-    if (!o->IsBeach())
+    if ( not o->IsBeach())
         add_now and_eq compl (COLLECT_ASSAULT);
 
     if (1) // defended
         add_now and_eq compl (COLLECT_AIRBORNE);
 
-    if (!o->CommandoSite())
+    if ( not o->CommandoSite())
         add_now and_eq compl (COLLECT_COMMANDO);
 
-    if (!o->ArtillerySite())
+    if ( not o->ArtillerySite())
         add_now and_eq compl (COLLECT_SUPPORT);
 
-    if (!o->NeedRepair() or o->GetObjectiveStatus() > 50)
+    if ( not o->NeedRepair() or o->GetObjectiveStatus() > 50)
         add_now and_eq compl (COLLECT_REPAIR);
 
-    if (!o->SamSite())
+    if ( not o->SamSite())
         add_now and_eq compl (COLLECT_AIRDEFENSE);
 
-    if (!o->RadarSite())
+    if ( not o->RadarSite())
         add_now and_eq compl (COLLECT_RADAR);
 
     return add_now;
@@ -611,15 +611,15 @@ int GroundTaskingManagerClass::BuildObjectiveLists(int to_collect)
         {
             so = po = o;
 
-            if (!so->IsSecondary())
+            if ( not so->IsSecondary())
                 so = o->GetObjectiveParent();
 
-            if (!so)
+            if ( not so)
             {
                 po = NULL;
                 ps = os = ss = 0;
             }
-            else if (!po->IsPrimary())
+            else if ( not po->IsPrimary())
                 po = so->GetObjectiveParent();
 
             os = o->GetObjectivePriority();
@@ -644,7 +644,7 @@ int GroundTaskingManagerClass::BuildObjectiveLists(int to_collect)
             // Now insert it in the proper lists
             for (int i = 0; i < GORD_LAST; i++)
             {
-                if (!(add_now & (0x01 << i)))
+                if ( not (add_now & (0x01 << i)))
                     continue;
 
                 if (i == GORD_CAPTURE)
@@ -657,7 +657,7 @@ int GroundTaskingManagerClass::BuildObjectiveLists(int to_collect)
                 new_node->obj = o;
                 new_node->priority_score = ScoreObj(i, os, ss, ps, pps, fs);
 
-                if (!objList[i])
+                if ( not objList[i])
                     objList[i] = new_node;
 
                 objList[i] = objList[i]->Insert(new_node, GODN_SORT_BY_PRIORITY);
@@ -695,7 +695,7 @@ void GroundTaskingManagerClass::AddToList(Unit u, int orders)
     curu->unit = u;
     curu->score = u->GetUnitRoleScore(GetGroundRole(orders), CALC_MAX, USE_VEH_COUNT | IGNORE_BROKEN);
 
-    if (!canidateList[orders])
+    if ( not canidateList[orders])
         canidateList[orders] = curu;
 
     canidateList[orders] = canidateList[orders]->Insert(curu, USN_SORT_BY_SCORE);
@@ -748,7 +748,7 @@ void GroundTaskingManagerClass::AddToLists(Unit u, int to_collect)
         u->GetLocation(&x, &y);
         o = FindNearestObjective(x, y, &d);
 
-        if (!o or d > 2.0F or GetRoE(o->GetTeam(), owner, ROE_GROUND_FIRE) == ROE_ALLOWED)
+        if ( not o or d > 2.0F or GetRoE(o->GetTeam(), owner, ROE_GROUND_FIRE) == ROE_ALLOWED)
         {
             // Overrun!
             u->KillUnit();
@@ -790,7 +790,7 @@ void GroundTaskingManagerClass::AddToLists(Unit u, int to_collect)
     // Add it to a list for each type of orders it's capible of performing
     for (i = 0; i < GORD_LAST; i++)
     {
-        if (!(to_collect & (0x01 << i)))
+        if ( not (to_collect & (0x01 << i)))
             continue;
 
         if (i == GORD_ASSAULT and u->GetUnitNormalRole() not_eq GRO_ASSAULT)
@@ -808,7 +808,7 @@ void GroundTaskingManagerClass::AddToLists(Unit u, int to_collect)
         if (i == GORD_RADAR and u->GetUnitNormalRole() not_eq GRO_RECON)
             continue;
 
-        if (!i or u->GetUnitRoleScore(GetGroundRole(i), CALC_MAX, 0) > MIN_ALLOWABLE_ROLE_SCORE)
+        if ( not i or u->GetUnitRoleScore(GetGroundRole(i), CALC_MAX, 0) > MIN_ALLOWABLE_ROLE_SCORE)
         {
             // Add to canidate list
             AddToList(u, i);
@@ -831,7 +831,7 @@ int GroundTaskingManagerClass::CollectGroundAssets(int to_collect)
         if (u->GetTeam() == owner and u->GetDomain() == DOMAIN_LAND and !u->Scripted())
         {
             // We've got at least one unit to assign - build our objective lists
-            if (!objListBuilt)
+            if ( not objListBuilt)
             {
                 Setup();
                 BuildObjectiveLists(to_collect);
@@ -842,7 +842,7 @@ int GroundTaskingManagerClass::CollectGroundAssets(int to_collect)
             u->UpdateParentStatistics();
 
             // We want to order support battalions individually.
-            if (!u->Real() and FindUnitSupportRole(u))
+            if ( not u->Real() and FindUnitSupportRole(u))
             {
                 pu = u;
                 u = pu->GetFirstUnitElement();
@@ -873,7 +873,7 @@ int GroundTaskingManagerClass::AssignUnit(Unit u, int orders, Objective o, int s
     POData pod;
     // SOData sod;
 
-    if (!u or !o)
+    if ( not u or !o)
         return 0;
 
 #ifdef KEV_GDEBUG
@@ -890,10 +890,10 @@ int GroundTaskingManagerClass::AssignUnit(Unit u, int orders, Objective o, int s
     // Now collect the SO and PO from this objective, if we don't already have them
     po = so = o;
 
-    if (!so->IsSecondary() and o->GetObjectiveParent())
+    if ( not so->IsSecondary() and o->GetObjectiveParent())
         po = so = o->GetObjectiveParent();
 
-    if (!po->IsPrimary() and so->GetObjectiveParent())
+    if ( not po->IsPrimary() and so->GetObjectiveParent())
         po = so->GetObjectiveParent();
 
     u->SetUnitObjective(o->Id());
@@ -937,7 +937,7 @@ int GroundTaskingManagerClass::AssignUnits(int orders, int mode)
     time = GetTickCount();
 #endif
 
-    if (!objList[orders] or !canidateList[orders])
+    if ( not objList[orders] or !canidateList[orders])
         return 0;
 
     // Special case for reserve orders -
@@ -1257,7 +1257,7 @@ int GetTopPriorityObjectives(int team, _TCHAR* buffers[COLLECTABLE_HP_OBJECTIVES
         buffers[i][0] = 0;
 
     // JB 010121
-    if (!TeamInfo[team])
+    if ( not TeamInfo[team])
         return 0;
 
     o = (Objective) vuDatabase->Find(TeamInfo[team]->GetDefensiveAirAction()->actionObjective);
@@ -1311,7 +1311,7 @@ short EncodePrimaryObjectiveList(uchar teammask, uchar **buffer)
     // team exists, there's no reason to send the data. Check for this
     for (team = 0; team < NUM_TEAMS; team++)
     {
-        if (!TeamInfo[team])
+        if ( not TeamInfo[team])
             teammask and_eq compl (1 << team);
         else if (teammask & (1 << team))
             teams++;
@@ -1414,7 +1414,7 @@ void SendPrimaryObjectiveList(uchar teammask)
     int team;
 
     // If we're not specifying a team, send them all
-    if (!teammask)
+    if ( not teammask)
     {
         for (team = 0; team < NUM_TEAMS; team++)
         {

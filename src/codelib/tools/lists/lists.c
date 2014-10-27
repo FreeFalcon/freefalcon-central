@@ -192,7 +192,7 @@ ListGlobalFree(void)
 
     WAIT_FOR_LOCK(LIST_MUTEX);
 
-    if (!GLOBAL_ALLOC_TABLE)
+    if ( not GLOBAL_ALLOC_TABLE)
         return;
 
     table = GLOBAL_ALLOC_TABLE;
@@ -234,7 +234,7 @@ ListGlobalAlloc(void)
     new_unit = (ALLOC_UNIT *)MemMalloc(sizeof(ALLOC_UNIT), "LIST_MEM");
 #endif
 
-    if (!new_unit)
+    if ( not new_unit)
         KEVS_FATAL_ERROR("No memory for list pool.");
 
     if (GLOBAL_ALLOC_TABLE)
@@ -284,7 +284,7 @@ ListAlloc(void)
 
     WAIT_FOR_LOCK(LIST_MUTEX);
 
-    if (!GLOBAL_ALLOC_TABLE)
+    if ( not GLOBAL_ALLOC_TABLE)
         ListGlobalAlloc();
 
     do
@@ -323,7 +323,7 @@ ListValidate(void)
 
     WAIT_FOR_LOCK(LIST_MUTEX);
 
-    if (!GLOBAL_ALLOC_TABLE)
+    if ( not GLOBAL_ALLOC_TABLE)
         return;
 
     for (tmp = GLOBAL_ALLOC_TABLE; tmp; tmp = (ALLOC_UNIT *)table -> prev)
@@ -363,7 +363,7 @@ ListFree(void * unit)
     for (t = GLOBAL_ALLOC_TABLE; t; t = (ALLOC_UNIT *)tbl -> prev)
         tbl = t;
 
-    if (!tbl)
+    if ( not tbl)
     {
         DBG(PF("Error freeing list structure.\n"));
         RELEASE_LOCK(LIST_MUTEX);
@@ -403,7 +403,7 @@ ListFree(void * unit)
     }
     while (tbl and !done);
 
-    if (!done)
+    if ( not done)
         ERROR("Couldn't find list in allocation table\n");
 
     RELEASE_LOCK(LIST_MUTEX);
@@ -426,7 +426,7 @@ ListGlobalPack(void)
     for (t = GLOBAL_ALLOC_TABLE; t; t = (ALLOC_UNIT *)t -> prev)
         tbl = t;
 
-    if (!tbl)
+    if ( not tbl)
     {
         ERROR("List allocation table empty -- cannot pack.");
         GLOBAL_ALLOC_TABLE -> index = 0;
@@ -476,7 +476,7 @@ ListGlobalPack(void)
     }
     while (tbl);
 
-    if (!GLOBAL_ALLOC_TABLE or (GLOBAL_ALLOC_TABLE -> avail < ALLOC_SWAP_SIZE))
+    if ( not GLOBAL_ALLOC_TABLE or (GLOBAL_ALLOC_TABLE -> avail < ALLOC_SWAP_SIZE))
         ListGlobalAlloc();
 
     GLOBAL_ALLOC_TABLE -> index = 0;
@@ -540,7 +540,7 @@ ListAppendEnd(LIST * list, void * node)
     newnode -> next = NULL;
 
     /* list was null */
-    if (!list)
+    if ( not list)
     {
         list = newnode;
     }
@@ -591,10 +591,10 @@ ListCatenate(LIST * l1, LIST * l2)
 {
     LIST *curr;
 
-    if (!l1)
+    if ( not l1)
         return l2;
 
-    if (!l2)
+    if ( not l2)
         return l1;
 
     /* find last element of l1 */
@@ -619,7 +619,7 @@ ListDestroy(LIST * list, PFV destructor)
     LIST * prev,
          * curr;
 
-    if (!list)
+    if ( not list)
         return;
 
     prev = list;
@@ -720,7 +720,7 @@ ListRemove(LIST * list, void * node)
     LIST * prev,
          * curr;
 
-    if (!list)
+    if ( not list)
         return(NULL);
 
     prev = NULL;
@@ -733,11 +733,11 @@ ListRemove(LIST * list, void * node)
     }
 
     /* not found, return list unmodified */
-    if (!curr)
+    if ( not curr)
         return(list);
 
     /* found at head */
-    if (!prev)
+    if ( not prev)
         list = list -> next;
     else
         prev -> next = curr -> next;
@@ -774,7 +774,7 @@ ListSearch(LIST * list, void * node, PFI func_ptr)
     LIST * l;
 
     for (l =  list; list; list = list -> next)
-        if (!((*func_ptr)(list -> node, node)))
+        if ( not ((*func_ptr)(list -> node, node)))
             return(l);
 
     return(NULL);

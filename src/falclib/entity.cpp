@@ -115,9 +115,9 @@ void LoadVisIdMap();
 void WriteClassTable(void)
 {
     /*
-       if (!VirtualProtect (Falcon4ClassTable, NumEntities * sizeof (Falcon4EntityClassType), PAGE_READWRITE, NULL))
+       if ( not VirtualProtect (Falcon4ClassTable, NumEntities * sizeof (Falcon4EntityClassType), PAGE_READWRITE, NULL))
        {
-       ShiAssert (!"Cannot Read/Write Protect ClassTable\n");
+       ShiAssert ( not "Cannot Read/Write Protect ClassTable\n");
        }
      */
 }
@@ -125,9 +125,9 @@ void WriteClassTable(void)
 void ReadClassTable(void)
 {
     /*
-       if (!VirtualProtect (Falcon4ClassTable, NumEntities * sizeof (Falcon4EntityClassType), PAGE_READONLY, NULL))
+       if ( not VirtualProtect (Falcon4ClassTable, NumEntities * sizeof (Falcon4EntityClassType), PAGE_READONLY, NULL))
        {
-       ShiAssert (!"Cannot ReadOnly Protect ClassTable\n");
+       ShiAssert ( not "Cannot ReadOnly Protect ClassTable\n");
        }
      */
 }
@@ -172,41 +172,41 @@ int LoadClassTable(char *filename)
 #ifndef ACMI
 #ifndef IACONVERT
 
-    if (!LoadUnitData(filename)) ShiError("Failed to load unit data");
+    if ( not LoadUnitData(filename)) ShiError("Failed to load unit data");
 
-    if (!LoadFeatureEntryData(filename)) ShiError("Failed to load feature entries");
+    if ( not LoadFeatureEntryData(filename)) ShiError("Failed to load feature entries");
 
-    if (!LoadObjectiveData(filename)) ShiError("Failed to load objective data");
+    if ( not LoadObjectiveData(filename)) ShiError("Failed to load objective data");
 
-    if (!LoadWeaponData(filename)) ShiError("Failed to load weapon data");
+    if ( not LoadWeaponData(filename)) ShiError("Failed to load weapon data");
 
-    if (!LoadFeatureData(filename)) ShiError("Failed to load feature data");
+    if ( not LoadFeatureData(filename)) ShiError("Failed to load feature data");
 
-    if (!LoadVehicleData(filename)) ShiError("Failed to load vehicle data");
+    if ( not LoadVehicleData(filename)) ShiError("Failed to load vehicle data");
 
-    if (!LoadWeaponListData(filename)) ShiError("Failed to load weapon list");
+    if ( not LoadWeaponListData(filename)) ShiError("Failed to load weapon list");
 
-    if (!LoadPtHeaderData(filename)) ShiError("Failed to load point headers");
+    if ( not LoadPtHeaderData(filename)) ShiError("Failed to load point headers");
 
-    if (!LoadPtData(filename)) ShiError("Failed to load point data");
+    if ( not LoadPtData(filename)) ShiError("Failed to load point data");
 
-    if (!LoadRadarData(filename)) ShiError("Failed to load radar data");
+    if ( not LoadRadarData(filename)) ShiError("Failed to load radar data");
 
-    if (!LoadIRSTData(filename)) ShiError("Failed to load IRST data");
+    if ( not LoadIRSTData(filename)) ShiError("Failed to load IRST data");
 
-    if (!LoadRwrData(filename)) ShiError("Failed to load Rwr data");
+    if ( not LoadRwrData(filename)) ShiError("Failed to load Rwr data");
 
-    if (!LoadVisualData(filename)) ShiError("Failed to load Visual data");
+    if ( not LoadVisualData(filename)) ShiError("Failed to load Visual data");
 
-    if (!LoadSimWeaponData(filename)) ShiError("Failed to load SimWeapon data");
+    if ( not LoadSimWeaponData(filename)) ShiError("Failed to load SimWeapon data");
 
-    if (!LoadACDefData(filename)) ShiError("Failed to load AC Definition data");
+    if ( not LoadACDefData(filename)) ShiError("Failed to load AC Definition data");
 
-    if (!LoadSquadronStoresData(filename)) ShiError("Failed to load Squadron stores data");
+    if ( not LoadSquadronStoresData(filename)) ShiError("Failed to load Squadron stores data");
 
-    if (!LoadRocketData(filename)) ShiError("Failed to load Rocket data"); // added by M.N.
+    if ( not LoadRocketData(filename)) ShiError("Failed to load Rocket data"); // added by M.N.
 
-    if (!LoadDirtyData(filename)) ShiError("Failed to load Dirty data priorities");   // added by M.N.
+    if ( not LoadDirtyData(filename)) ShiError("Failed to load Dirty data priorities");   // added by M.N.
 
     LoadMissionData();
     LoadVisIdMap();
@@ -1479,10 +1479,10 @@ void UpdateUnitCombatStatistics(void)
                             {
                                 SquadronStoresDataTable[squads].Stores[mr]++;
 
-                                if (!baaweap and GetWeaponScore(mr, Air, 0))
+                                if ( not baaweap and GetWeaponScore(mr, Air, 0))
                                     baaweap = mr;
 
-                                if (!bagweap and GetWeaponScore(mr, NoMove, 0))
+                                if ( not bagweap and GetWeaponScore(mr, NoMove, 0))
                                     bagweap = mr;
                             }
                         }
@@ -2064,7 +2064,7 @@ void RDLoadRackData(void)
         /* kludge so that arg is the current string being parsed */
         SetTokenString(arg);
 
-        if (!com)
+        if ( not com)
             continue;
 
 #define On(s) if(stricmp(com,s)==0)

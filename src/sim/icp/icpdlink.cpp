@@ -19,7 +19,7 @@ void ICPClass::ExecDLINKMode(void)
     char pheading[4];
     char pdistance[5];
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         if (mUpdateFlags & DLINK_UPDATE)
         {

@@ -163,7 +163,7 @@ void ICPClass::FifeButton(int mode)
         LeaveCNIPage();
 
         //Only set this when not here
-        if (!Cruise_HOME and !Cruise_RNG and !Cruise_TOS)
+        if ( not Cruise_HOME and !Cruise_RNG and !Cruise_TOS)
             SetICPFlag(ICPClass::EDIT_STPT);
 
         //CRUS PAGE
@@ -318,7 +318,7 @@ void ICPClass::ZeroButton(int mode)
         // ORIGINAL STUFF // Retro 3Jan2004
         if (g_bPilotEntertainment == false)
         {
-            if (!CheckForHARM())
+            if ( not CheckForHARM())
                 return;
 
             LastMode = LIST_MODE;

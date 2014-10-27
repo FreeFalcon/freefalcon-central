@@ -107,7 +107,7 @@ float DigitalBrain::TrackPoint(float maxGs, float speed)
     float retval = 0.0F;
 
     //TJL 08/28/04 Other things besides ATC/LANDME use this.  A/A and A/G maneuvers too!
-    /*if (!self->OnGround())
+    /*if ( not self->OnGround())
         af->SetFlaps(curMode == LandingMode);*/
     if (self->af->GetSimpleMode())
     {
@@ -520,18 +520,18 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
             // no burner unless in combat
             if ((curMode >= LoiterMode or curMode == LandingMode) and // 2002-02-12 MODIFIED BY S.G. Don't go in AB if you're in landing mode either
                 m2 > aeroDataset[self->af->VehicleIndex()].inputData[AeroDataSet::MinVcas] * 0.9f and // JB 011018 If we can't keep our speed up, use the buner 2002-02-12 MODIFIED BY S.G. Use a percentage of MinVcas instead.
-                (!flightLead or flightLead and ((AircraftClass*)flightLead)->af)  and 
-                (!flightLead or (((AircraftClass*)flightLead)->af == af or ((((AircraftClass*)flightLead)->af->rpm < 1.0F)) and // JB 011025 If the lead is using his burner, we can use ours 2002-02-12 MODIFIED BY S.G. Don't look at lead's burner or g_fFormationBurnerDistance if we're RTBing...
+                ( not flightLead or flightLead and ((AircraftClass*)flightLead)->af)  and 
+                ( not flightLead or (((AircraftClass*)flightLead)->af == af or ((((AircraftClass*)flightLead)->af->rpm < 1.0F)) and // JB 011025 If the lead is using his burner, we can use ours 2002-02-12 MODIFIED BY S.G. Don't look at lead's burner or g_fFormationBurnerDistance if we're RTBing...
                                  dist < g_fFormationBurnerDistance * NM_TO_FT) or curMode == RTBMode) or // allow usage of burner if lead is more than defined distance away
                 self->OnGround()) // never use AB on ground
             {
                 // Flight lead goes even slower so wingies can catch up
                 /* 2002-02-12 MODIFIED BY S.G. Take the wings 'mInPositionFlag' flag before limiting ourself
-                            if (!isWing)
+                            if ( not isWing)
                                thr = min (thr, 0.9F);
                             else
                                thr = min (thr, 0.975F); */
-                if (!isWing)
+                if ( not isWing)
                 {
                     // The lead will look at everybody else's position and push faster if everyone is in position.
                     int size = self->GetCampaignObject()->NumberOfComponents();
@@ -598,7 +598,7 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
 
             if (pStick > 1.0f) pStick = 1.0f;//me123
 
-            if (!af->IsSet(AirframeClass::IsDigital)) maxDelta = 0.0F;
+            if ( not af->IsSet(AirframeClass::IsDigital)) maxDelta = 0.0F;
 
             if (pitchStick and cornerDelta > maxDelta and pStick > 0.0F)// and fabs(self->Roll()) < 110.0F * DTR)
             {
@@ -985,7 +985,7 @@ int HoldCorner(int combatClass, SimObjectType* targetPtr)
         }
 
         //me123 don't blow corner for now, i wanna test them
-        //     if (!retval)
+        //     if ( not retval)
         //     {
         // Chance of blowing corner speed is proportional to your number of choices
         //        if ((float)rand()/(float)RAND_MAX > 1.0F / theIntercept->numMerges)

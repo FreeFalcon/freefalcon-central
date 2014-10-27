@@ -92,17 +92,17 @@ FILE* F4CreateFile(char* filename, char* path, char* mode)
     // Strip the FalconDataDirectory off the path, if it's there
     ppath = path;
 
-    if (!strncmp(FalconDataDirectory, ppath, strlen(FalconDataDirectory)))
+    if ( not strncmp(FalconDataDirectory, ppath, strlen(FalconDataDirectory)))
         ppath += strlen(FalconDataDirectory) + 1;
 
     // Check if the file's already there
     sprintf(filedir, "%s\\sounds\\files.dir", FalconDataDirectory);
 
-    if (!GetPrivateProfileString("Files", filename, "", tmpStr, 1024, filedir))
+    if ( not GetPrivateProfileString("Files", filename, "", tmpStr, 1024, filedir))
     {
         sprintf(tmpStr, "%s\\%s,0,0", ppath, filename);
 
-        if (!WritePrivateProfileString("Files", filename, tmpStr, filedir))
+        if ( not WritePrivateProfileString("Files", filename, tmpStr, filedir))
             return NULL;
     }
 
@@ -123,7 +123,7 @@ FILE* F4OpenFile(char *filename, char *mode)
     int offset, length;
     FILE* fp;
 
-    if (!F4FindFile(filename, path, 256, &offset, &length))
+    if ( not F4FindFile(filename, path, 256, &offset, &length))
     {
         strcpy(path, filename);
         // Couldn't find this file. To create a file call F4CreateFile
@@ -144,7 +144,7 @@ int F4ReadFile(FILE *fp, void *buffer, int size)
 {
     char errstr[80];
 
-    if (!size or !fp)
+    if ( not size or !fp)
         return 0;
 
     if (fread(buffer, size, 1, fp) == 1)
@@ -159,7 +159,7 @@ int F4WriteFile(FILE *fp, void *buffer, int size)
 {
     char errstr[80];
 
-    if (!size or !fp)
+    if ( not size or !fp)
         return 0;
 
     if (fwrite(buffer, size, 1, fp) == 1)

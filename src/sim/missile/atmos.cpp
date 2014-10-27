@@ -47,7 +47,7 @@ void MissileClass::Atmosphere(void)
         /*------------------------------------------------------------------*/
         vcas = FTPSEC_TO_KNOTS * vt * (float)sqrt(rsigma);
 
-        if (!ifd) // JB 010718 CTD
+        if ( not ifd) // JB 010718 CTD
             return;
 
         /*------------------------*/

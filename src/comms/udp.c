@@ -462,7 +462,7 @@ void ComUDPClose(com_API_handle c)
         windows_sockets_connections--;
 
         /* if No more connections then WSACleanup() */
-        if (!windows_sockets_connections)
+        if ( not windows_sockets_connections)
         {
             if (sockerror = CAPI_WSACleanup())
             {
@@ -494,7 +494,7 @@ void ComUDPClose(com_API_handle c)
         }
 
         // sfr: removed JB check
-        //if (!F4IsBadReadPtrC(cudp, sizeof(ComIP))) // JB 010615 CTD
+        //if ( not F4IsBadReadPtrC(cudp, sizeof(ComIP))) // JB 010615 CTD
         free(cudp);
     }
 }
@@ -582,7 +582,7 @@ int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
     //cudp->send_buffer.len = newsize+sizeof(u_short);
 
     // if not OOB, check if enough bw is available
-    if (!oob)
+    if ( not oob)
     {
         if (check_bandwidth(newsize + sizeof(u_short), 0, type) == 0)
         {
@@ -835,7 +835,7 @@ int ComUDPGet(com_API_handle c)
 
             // ignore messages from me
             //sfr: added port info
-            /* if (!(
+            /* if ( not (
              (((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami)  and 
              (((struct sockaddr_in *)(&in_addr))->sin_port == CAPI_htons(ComAPIGetMySendPort()))
              )){*/

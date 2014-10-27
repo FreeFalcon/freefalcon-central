@@ -318,7 +318,7 @@ void VuMainThread::Update()
     //REPORT_VALUE("sim obj", SimObjects);
 
     // if no game, do dispatch and quite
-    if (!game)
+    if ( not game)
     {
 #if CAP_DISPATCH
 
@@ -462,7 +462,7 @@ void VuMainThread::Update()
     // if no game, nothing else
     VuGameEntity  *game = vuLocalSessionEntity->Game();
 
-    if (!game)
+    if ( not game)
     {
         return;
     }
@@ -600,7 +600,7 @@ VU_ERRCODE VuMainThread::InitComms
         return VU_ERROR;
     }
 
-    if (!relhandle)
+    if ( not relhandle)
     {
         relhandle   = handle;
         relBufSize  = bufSize;
@@ -810,7 +810,7 @@ int VuMainThread::SendQueuedMessages()
 
             for (index = 0; (targets[index]) and (index < MAX_TARGETS); ++index)
             {
-                if ((!used[index]) and (lru_size[index] < size))
+                if (( not used[index]) and (lru_size[index] < size))
                 {
                     best = index;
                     size = lru_size[index];

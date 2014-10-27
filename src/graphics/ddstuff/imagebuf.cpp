@@ -46,7 +46,7 @@ ImageBuffer::ImageBuffer()
 
 ImageBuffer::~ImageBuffer()
 {
-    ShiAssert(!IsReady());
+    ShiAssert( not IsReady());
     Cleanup(); // OW
 
 #ifdef _IMAGEBUFFER_PROTECT_SURF_LOCK
@@ -65,7 +65,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
     try
     {
-        ShiAssert(!IsReady());
+        ShiAssert( not IsReady());
         ShiAssert(dev);
 
 
@@ -117,7 +117,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
                     case Flip:
                     {
-                        if (!fullScreen)
+                        if ( not fullScreen)
                         {
                             ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
                             CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
@@ -165,7 +165,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
                 }
 
                 // auto adjust front rect when creating the primary surface in windowed mode
-                if (!fullScreen)
+                if ( not fullScreen)
                 {
                     GetClientRect(targetWin, &m_rcFront);
                     ClientToScreen(targetWin, (LPPOINT)&m_rcFront);
@@ -436,7 +436,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
         if (clip and m_pDDSFront)
         {
-            ShiAssert(!fullScreen);
+            ShiAssert( not fullScreen);
             IDirectDrawClipperPtr pDDCLP;
             CheckHR(pDD->CreateClipper(0, &pDDCLP, NULL));
             CheckHR(pDDCLP->SetHWnd(0, targetWin));
@@ -490,10 +490,10 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 // Alternative setup method
 void ImageBuffer::AttachSurfaces(DisplayDevice *pDev, IDirectDrawSurface7 *pDDSFront, IDirectDrawSurface7 *pDDSBack)
 {
-    if (!pDev or !pDDSFront)
+    if ( not pDev or !pDDSFront)
         return;
 
-    if (!pDDSBack)
+    if ( not pDDSBack)
         pDDSBack = pDDSFront;
 
     try
@@ -563,7 +563,7 @@ void ImageBuffer::ComputeColorShifts(void)
     redShift = 8;
     ShiAssert(mask);
 
-    while (!(mask & 1))
+    while ( not (mask & 1))
     {
         mask >>= 1;
         redShift--;
@@ -580,7 +580,7 @@ void ImageBuffer::ComputeColorShifts(void)
     greenShift = 16;
     ShiAssert(mask);
 
-    while (!(mask & 1))
+    while ( not (mask & 1))
     {
         mask >>= 1;
         greenShift--;
@@ -597,7 +597,7 @@ void ImageBuffer::ComputeColorShifts(void)
     ShiAssert(mask);
     blueShift = 24;
 
-    while (!(mask & 1))
+    while ( not (mask & 1))
     {
         mask >>= 1;
         blueShift--;
@@ -692,7 +692,7 @@ void ImageBuffer::Unlock()
 // composed into another buffer.
 void ImageBuffer::SetChromaKey(UInt32 colorKey)
 {
-    if (!m_pDDSFront) // JB 010404 CTD
+    if ( not m_pDDSFront) // JB 010404 CTD
         return;
 
     ShiAssert(IsReady());
@@ -860,7 +860,7 @@ void ImageBuffer::Compose(ImageBuffer *srcBuffer, RECT *dstRect, RECT *srcRect)
     bool bStretch = ((srcRect->right - srcRect->left) not_eq (dstRect->right - dstRect->left)) or ((srcRect->bottom - srcRect->top) not_eq (dstRect->bottom - dstRect->top));
     HRESULT hr;
 
-    if (!m_bFrontRectValid and !bStretch)
+    if ( not m_bFrontRectValid and !bStretch)
     {
         if (srcRect and m_pBltTarget not_eq m_pDDSBack)
         {
@@ -890,7 +890,7 @@ void ImageBuffer::Compose(ImageBuffer *srcBuffer, RECT *dstRect, RECT *srcRect)
         else hr = m_pBltTarget->Blt(srcRect, srcBuffer->m_pDDSBack, dstRect, DDBLT_WAIT, NULL);
     }
 
-    if (!SUCCEEDED(hr))
+    if ( not SUCCEEDED(hr))
         MonoPrint("ImageBuffer::Compose - Error 0x%X\n", hr);
 }
 
@@ -907,7 +907,7 @@ void ImageBuffer::ComposeTransparent(ImageBuffer *srcBuffer, RECT *dstRect, RECT
     bool bStretch = ((srcRect->right - srcRect->left) not_eq (dstRect->right - dstRect->left)) or ((srcRect->bottom - srcRect->top) not_eq (dstRect->bottom - dstRect->top));
     HRESULT hr;
 
-    if (!m_bFrontRectValid and !bStretch)
+    if ( not m_bFrontRectValid and !bStretch)
     {
         if (srcRect and m_pBltTarget not_eq m_pDDSBack)
         {
@@ -939,7 +939,7 @@ void ImageBuffer::ComposeTransparent(ImageBuffer *srcBuffer, RECT *dstRect, RECT
 
     ShiAssert(SUCCEEDED(hr));
 
-    if (!SUCCEEDED(hr))
+    if ( not SUCCEEDED(hr))
         MonoPrint("ImageBuffer::ComposeTransparent - Error 0x%X\n", hr);
 }
 
@@ -1050,7 +1050,7 @@ void ImageBuffer::SwapBuffers(bool bDontFlip)
 
     //STOP_PROFILE("SWAP WAIT : ");
     // OW
-    if (!bDontFlip and (m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_FLIP))
+    if ( not bDontFlip and (m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_FLIP))
     {
         hr = m_pDDSFront->Flip(NULL, DDFLIP_WAIT);
         // hr = m_pDDSFront->Flip(NULL, DDFLIP_NOVSYNC);
@@ -1061,14 +1061,14 @@ void ImageBuffer::SwapBuffers(bool bDontFlip)
 
     RECT backRect = { 0, 0, m_ddsdBack.dwWidth, m_ddsdBack.dwHeight };
 
-    if (!m_bFrontRectValid) // assumes no clipper is attached (fullscreen) !!
+    if ( not m_bFrontRectValid) // assumes no clipper is attached (fullscreen) !!
         hr = m_pDDSFront->BltFast(m_rcFront.left, m_rcFront.top, m_pDDSBack, &backRect, DDBLTFAST_WAIT | DDBLTFAST_NOCOLORKEY);
     else
         hr = m_pDDSFront->Blt(&m_rcFront, m_pDDSBack, &backRect, DDBLT_WAIT, NULL);
 
     ShiAssert(SUCCEEDED(hr));
 
-    if (!SUCCEEDED(hr))
+    if ( not SUCCEEDED(hr))
         MonoPrint("ImageBuffer::SwapBuffers - Error 0x%X\n", hr);
 }
 
@@ -1128,7 +1128,7 @@ void ImageBuffer::BackBufferToRAW(char *filename)
     bfh.bfSize = bfh.bfOffBits + bih.biSizeImage;
 
     // Write the header
-    if ((!WriteFile(fileID, &bfh, sizeof(BITMAPFILEHEADER), &dwBytes, NULL)) or (dwBytes not_eq sizeof(BITMAPFILEHEADER)))
+    if (( not WriteFile(fileID, &bfh, sizeof(BITMAPFILEHEADER), &dwBytes, NULL)) or (dwBytes not_eq sizeof(BITMAPFILEHEADER)))
     {
         char string[256];
         PutErrorString(string);
@@ -1137,7 +1137,7 @@ void ImageBuffer::BackBufferToRAW(char *filename)
     }
 
     // Write the bitmap info header
-    if ((!WriteFile(fileID, &bih, sizeof(BITMAPINFOHEADER), &dwBytes, NULL)) or (dwBytes not_eq sizeof(BITMAPINFOHEADER)))
+    if (( not WriteFile(fileID, &bih, sizeof(BITMAPINFOHEADER), &dwBytes, NULL)) or (dwBytes not_eq sizeof(BITMAPINFOHEADER)))
     {
         char string[256];
         PutErrorString(string);
@@ -1182,7 +1182,7 @@ void ImageBuffer::BackBufferToRAW(char *filename)
                 }
 
                 // Write the scanline to disk
-                if (!WriteFile(fileID, buffer, bufferSize, &bytes, NULL))  bytes = 0xFFFFFFFF;
+                if ( not WriteFile(fileID, buffer, bufferSize, &bytes, NULL))  bytes = 0xFFFFFFFF;
 
                 if (bytes not_eq bufferSize)
                 {
@@ -1223,7 +1223,7 @@ void ImageBuffer::BackBufferToRAW(char *filename)
                 }
 
                 // Write the scanline to disk
-                if (!WriteFile(fileID, buffer, bufferSize, &bytes, NULL))  bytes = 0xFFFFFFFF;
+                if ( not WriteFile(fileID, buffer, bufferSize, &bytes, NULL))  bytes = 0xFFFFFFFF;
 
                 if (bytes not_eq bufferSize)
                 {

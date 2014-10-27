@@ -6,7 +6,7 @@ void MissileClass::Engine(void)
 {
     float thrust, impulse;
 
-    if (!ifd)
+    if ( not ifd)
         return; // JB 010720
 
     /*---------------*/

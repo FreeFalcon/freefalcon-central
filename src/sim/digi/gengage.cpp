@@ -23,7 +23,7 @@ void DigitalBrain::GunsEngageCheck(void)
 {
     float angleLimit;
 
-    if ((!mpActionFlags[AI_ENGAGE_TARGET] not_eq AI_AIR_TARGET and missionClass not_eq AAMission and !missionComplete) or curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
+    if (( not mpActionFlags[AI_ENGAGE_TARGET] not_eq AI_AIR_TARGET and missionClass not_eq AAMission and !missionComplete) or curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
         angleLimit = 15.0f * DTR;
     else
         angleLimit = 35.0f * DTR;
@@ -304,7 +304,7 @@ void DigitalBrain::FineGunsTrack(float speed, float *lagAngle)
     if (ata > 60.0F * DTR)
         speed = cornerSpeed;
 
-    if (!waitingForShot)
+    if ( not waitingForShot)
     {
         //      leadTime = 1.5F + 5.0F * targetData->ataFrom / (180.0F * DTR);
         // MODIFIED TO ACCOUNT FOR DIFFERENT PULL OF THE TARGET
@@ -355,7 +355,7 @@ void DigitalBrain::FineGunsTrack(float speed, float *lagAngle)
     MachHold(speed, self->GetKias(), FALSE);//me123 true
 
     // Check for full pull
-    if (!waitingForShot and cata < 5.0F * DTR * (af->GsAvail() - af->nzcgb))
+    if ( not waitingForShot and cata < 5.0F * DTR * (af->GsAvail() - af->nzcgb))
         pStick = lastStick;
 }
 
@@ -555,7 +555,7 @@ void DigitalBrain::TrainableGunsEngage(void)
 
                 fireFlag = TRUE;
 
-                if (!IsSetATC(FireTrainable))
+                if ( not IsSetATC(FireTrainable))
                 {
                     self->SendFireMessage(theGun, FalconWeaponsFire::GUN, TRUE, localTarget);
                     SetATCFlag(FireTrainable);

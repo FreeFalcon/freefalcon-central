@@ -96,7 +96,7 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
               dataBlock.block,
               dataBlock.size);
 
-    if (!TheCampaign.IsPreLoaded() or !session)
+    if ( not TheCampaign.IsPreLoaded() or !session)
     {
         return (init - *rem);
     }
@@ -113,7 +113,7 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
             memset(session->unitDataReceived, 0, FS_MAXBLK / 8);
         }
 
-        if (!session->unitDataReceiveBuffer)
+        if ( not session->unitDataReceiveBuffer)
         {
             session->unitDataReceiveBuffer = new uchar[dataBlock.totalSize];
         }
@@ -144,8 +144,8 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
         // Check if we've gotten all our blocks
         for (int i = 0; i < dataBlock.totalBlocks; i++)
         {
-            // if (!StillNeeded(dataBlock.block, session->unitDataReceived))
-            if (!(session->unitDataReceived[i / 8] & (1 << (i % 8))))
+            // if ( not StillNeeded(dataBlock.block, session->unitDataReceived))
+            if ( not (session->unitDataReceived[i / 8] & (1 << (i % 8))))
             {
                 //return size;
                 return init - *rem;
@@ -212,11 +212,11 @@ void SendCampaignUnitData(FalconSessionEntity *session, VuTargetEntity *target, 
     FalconSendUnitData *msg;
     //CampBaseClass *ent;
 
-    if (!blocksNeeded)
+    if ( not blocksNeeded)
     {
         int set = rand();
 
-        if (!set)
+        if ( not set)
             set++;
 
         if (session->unitDataSendBuffer)
@@ -229,7 +229,7 @@ void SendCampaignUnitData(FalconSessionEntity *session, VuTargetEntity *target, 
     }
 
     // Find the block size, if we havn't already
-    if (!gUnitBlockSize)
+    if ( not gUnitBlockSize)
     {
         // This is a temporary message, purely for sizing purposes
         FalconSendUnitData tmpmsg(session->Id(), target);
@@ -315,7 +315,7 @@ MonoPrint("Sending unit data (%d blocks): ",blocks);
 
 while (sizeleft)
 {
-if (!msg)
+if ( not msg)
 msg = new FalconSendUnitData(id, target);
 if (sizeleft < gUnitBlockSize)
 {

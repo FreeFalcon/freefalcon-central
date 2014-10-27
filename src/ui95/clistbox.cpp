@@ -111,7 +111,7 @@ void C_ListBox::Setup(long ID, short WinType, C_Handler *Handler)
 
 void C_ListBox::Cleanup()
 {
-    if (!(GetFlags() & C_BIT_NOCLEANUP))
+    if ( not (GetFlags() & C_BIT_NOCLEANUP))
         RemoveAllItems();
 
     if (BgImage_)
@@ -267,11 +267,11 @@ C_ListBox *C_ListBox::AddItem(long ID, short, _TCHAR *Str)
 {
     LISTBOX *newitem, *cur;
 
-    if (!ID) return(NULL);
+    if ( not ID) return(NULL);
 
     if (Str == NULL) return(NULL);
 
-    if (!(GetFlags() & C_BIT_REMOVE)) // Using premade list ... don't add to it
+    if ( not (GetFlags() & C_BIT_REMOVE)) // Using premade list ... don't add to it
         return(NULL);
 
     if (FindID(ID))
@@ -359,7 +359,7 @@ void C_ListBox::SetRoot(LISTBOX *NewRoot)
         cur = cur->Next;
     }
 
-    if (!i and Root_)
+    if ( not i and Root_)
     {
         LabelVal_ = Root_->Label_->GetID();
         Label_->SetText(Root_->Label_->GetText(C_STATE_0));
@@ -373,7 +373,7 @@ void C_ListBox::RemoveAllItems()
 {
     LISTBOX *cur, *last;
 
-    if (!(GetFlags() & C_BIT_REMOVE))
+    if ( not (GetFlags() & C_BIT_REMOVE))
     {
         return;
     }
@@ -454,7 +454,7 @@ void C_ListBox::SetValue(long ID)
         cur = cur->Next;
     }
 
-    if (!found and Root_)
+    if ( not found and Root_)
     {
         Label_->SetText(Root_->Label_->GetText(C_STATE_0));
         LabelVal_ = Root_->Label_->GetID();
@@ -491,7 +491,7 @@ void C_ListBox::SetValueText(long inText)
         cur = cur->Next;
     }
 
-    if (!found and Root_)
+    if ( not found and Root_)
     {
         Label_->SetText(Root_->Label_->GetText(C_STATE_0));
         LabelVal_ = Root_->Label_->GetID();
@@ -594,7 +594,7 @@ BOOL C_ListBox::Process(long ID, short HitType)
 
 void C_ListBox::Refresh()
 {
-    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1, GetY() + GetH() + 1, GetFlags(), GetClient());
@@ -602,7 +602,7 @@ void C_ListBox::Refresh()
 
 void C_ListBox::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (GetFlags() & C_BIT_INVISIBLE)
@@ -643,7 +643,7 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
         return(FALSE);
     }
 
-    if (!Ready())
+    if ( not Ready())
     {
         return(FALSE);
     }
@@ -660,7 +660,7 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
 
     while (cur)
     {
-        if (!(cur->Label_->GetFlags() & C_BIT_INVISIBLE))
+        if ( not (cur->Label_->GetFlags() & C_BIT_INVISIBLE))
         {
             i++;
         }
@@ -744,7 +744,7 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
 
     while (cur)
     {
-        if (!(cur->Label_->GetFlags() & C_BIT_INVISIBLE))
+        if ( not (cur->Label_->GetFlags() & C_BIT_INVISIBLE))
         {
             if (cur->Label_->GetID() == LabelVal_)
             {
@@ -848,7 +848,7 @@ void C_ListBox::SetSubParents(C_Window *Parent)
 {
     LISTBOX *cur;
 
-    if (!LabelColor_)
+    if ( not LabelColor_)
         LabelColor_ = NormalColor_;
 
     if (BgImage_)

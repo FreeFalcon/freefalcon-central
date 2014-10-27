@@ -28,7 +28,7 @@ void RViewPoint::Setup(float gndRange, int maxDetail, int minDetail, bool isZBuf
 
     bZBuffering = isZBuffer; //JAM 13Dec03
 
-    ShiAssert(!IsReady());
+    ShiAssert( not IsReady());
 
     // Initialize our sun and moon textures
     SetupTextures();
@@ -208,7 +208,7 @@ void RViewPoint::Update(const Tpoint *pos)
     }
 
     //JAM 265Dec03
-    if (!bZBuffering)
+    if ( not bZBuffering)
     {
         for (i = 0; i < nObjectLists; i++)
             objectLists[i].displayList.SortForViewpoint();
@@ -233,7 +233,7 @@ void RViewPoint::InsertObject(DrawableObject* object)
 
     ShiAssert(object);
 
-    if (!object) // JB 010710 CTD?
+    if ( not object) // JB 010710 CTD?
         return;
 
     // Decide into which list to put the object
@@ -334,13 +334,13 @@ int RViewPoint::CloudLineOfSight(Tpoint *p1, Tpoint *p2)
 \***************************************************************************/
 void RViewPoint::UpdateMoon()
 {
-    if (!TheTimeOfDay.ThereIsAMoon())
+    if ( not TheTimeOfDay.ThereIsAMoon())
     {
         lastDay = 1;
         return;
     }
 
-    if (!lastDay) return;
+    if ( not lastDay) return;
 
     lastDay = 0; // do it only once when the moon appear
 
@@ -395,7 +395,7 @@ void RViewPoint::SetupTextures()
 
         // Now load the image to construct the green sun texture
         // (Could do without this, but this is easy and done only once...)
-        if (!GreenSunTexture.LoadImage("sun5.apl", MPR_TI_CHROMAKEY | MPR_TI_PALETTE))
+        if ( not GreenSunTexture.LoadImage("sun5.apl", MPR_TI_CHROMAKEY | MPR_TI_PALETTE))
         {
             ShiError("Failed to load sun texture(2)");
         }

@@ -108,7 +108,7 @@ void hookup_tactical_controls(long ID)
 
     win = gMainHandler->FindWindow(ID);
 
-    if (!win)
+    if ( not win)
     {
         return;
     }
@@ -625,7 +625,7 @@ static void TacSelectGameCB(long, short hittype, C_Base *control)
 
     if (item->Type_ == C_TYPE_MENU)
     {
-        if (!item->Item_->GetState())
+        if ( not item->Item_->GetState())
         {
             item->Item_->SetState(1);
             item->Item_->Refresh();

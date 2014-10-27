@@ -168,7 +168,7 @@ int InitCommsStuff(ComDataClass *comData)
     // UDP
     FalconGlobalUDPHandle = ComAPICreateGroup("CreateGroup WAN FalconGlobalUDPHandle\n", F4CommsMaxUDPMessageSize, 0);
 
-    if (!FalconGlobalUDPHandle)
+    if ( not FalconGlobalUDPHandle)
     {
         return F4CommsConnectionCallback(F4COMMS_ERROR_UDP_NOT_AVAILABLE);
     }
@@ -176,7 +176,7 @@ int InitCommsStuff(ComDataClass *comData)
     // TCP
     FalconGlobalTCPHandle = ComAPICreateGroup("WAN RUDP GROUP", F4CommsMaxTCPMessageSize, 0);
 
-    if (!FalconGlobalTCPHandle)
+    if ( not FalconGlobalTCPHandle)
     {
         return F4CommsConnectionCallback(F4COMMS_ERROR_MULTICAST_NOT_AVAILABLE);
     }
@@ -191,7 +191,7 @@ int InitCommsStuff(ComDataClass *comData)
                        VU_ADDRESS(CAPI_DANGLING_IP, com_API_get_my_receive_port(), com_API_get_my_reliable_receive_port())
                    );
 
-        if (!(ret))
+        if ( not (ret))
         {
             return F4CommsConnectionCallback(F4COMMS_ERROR_UDP_NOT_AVAILABLE);
         }
@@ -205,7 +205,7 @@ int InitCommsStuff(ComDataClass *comData)
                        VU_ADDRESS(comData->ip_address, comData->remotePort, comData->remotePort + 1)
                    );
 
-        if (!(ret))
+        if ( not (ret))
         {
             return F4CommsConnectionCallback(F4COMMS_ERROR_UDP_NOT_AVAILABLE);
         }
@@ -231,7 +231,7 @@ int F4CommsConnectionCallback(int result)
         int vures;
 
         // Init vu's comms
-        if (!FalconGlobalTCPHandle)
+        if ( not FalconGlobalTCPHandle)
         {
             vures = gMainThread->InitComms(
                         FalconGlobalUDPHandle, F4CommsMaxTCPMessageSize, F4CommsIdealTCPPacketSize,
@@ -384,7 +384,7 @@ bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
     FalconSessionEntity *tempSess = NULL;
 
     // first time in dangling session, why not use a default constructor
-    if (!DanglingSessionsList)
+    if ( not DanglingSessionsList)
     {
         InitDanglingList();
     }
@@ -463,7 +463,7 @@ int RemoveDanglingSession(VuSessionEntity *newSess)
     char buffer[100];
 
     // no dangling sessions
-    if (!DanglingSessionsList)
+    if ( not DanglingSessionsList)
     {
         return retval;
     }
@@ -739,7 +739,7 @@ void ResyncTimes()
 
         while (session)
         {
-            if (!session->IsLocal())
+            if ( not session->IsLocal())
             {
                 count ++;
                 best_comp = session->GetReqCompression();
@@ -856,9 +856,9 @@ int VuxGroupConnect(VuGroupEntity *group)
     }
 
     // Check for existing connections
-    if (!group->GetCommsHandle())
+    if ( not group->GetCommsHandle())
     {
-        if (!(FalconConnectionProtocol & FCP_UDP_AVAILABLE) and !(FalconConnectionProtocol & FCP_SERIAL_AVAILABLE))
+        if ( not (FalconConnectionProtocol & FCP_UDP_AVAILABLE) and !(FalconConnectionProtocol & FCP_SERIAL_AVAILABLE))
         {
             // No udp connections available
             group->SetCommsHandle(NULL);
@@ -902,9 +902,9 @@ int VuxGroupConnect(VuGroupEntity *group)
         }
     }
 
-    if (!group->GetReliableCommsHandle())
+    if ( not group->GetReliableCommsHandle())
     {
-        if (!(FalconConnectionProtocol & FCP_TCP_AVAILABLE) and !(FalconConnectionProtocol & FCP_SERIAL_AVAILABLE) and !(FalconConnectionProtocol & FCP_RUDP_AVAILABLE))
+        if ( not (FalconConnectionProtocol & FCP_TCP_AVAILABLE) and !(FalconConnectionProtocol & FCP_SERIAL_AVAILABLE) and !(FalconConnectionProtocol & FCP_RUDP_AVAILABLE))
         {
             // No reliable connections available
             group->SetReliableCommsHandle(NULL);
@@ -1094,7 +1094,7 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
 int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session)
 {
     // check if session is in group
-    if (!group->SessionInGroup(session))
+    if ( not group->SessionInGroup(session))
     {
         return VU_NO_OP;
     }

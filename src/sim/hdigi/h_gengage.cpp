@@ -30,7 +30,7 @@ void HeliBrain::GunsEngageCheck(void)
     ClearFlag(MslFireFlag | GunFireFlag);
 
     // no target
-    if (!targetPtr)
+    if ( not targetPtr)
     {
         if (curMode == GunsEngageMode)
         {
@@ -81,7 +81,7 @@ void HeliBrain::GunsEngageCheck(void)
     yft = theObject->YPos() - self->YPos();
     zft = theObject->ZPos() - self->ZPos();
 
-    if (!theObject->OnGround() and hasAaWeapons == 0)
+    if ( not theObject->OnGround() and hasAaWeapons == 0)
     {
         if (curMode == GunsEngageMode)
         {
@@ -122,7 +122,7 @@ void HeliBrain::GunsEngageCheck(void)
     }
 
     // RV - Biker - Don't attack AC or chopper which are 5000 ft above us or are above 10000 ft in general
-    if (!theObject->OnGround())
+    if ( not theObject->OnGround())
     {
         if (theObject->ZPos() < -10000.0f or zft < -5000.0f)
         {
@@ -980,7 +980,7 @@ void HeliBrain::WeaponSelection(void)
         if (target->OnGround())
         {
             // would be nice to pick weapons based on what the target is
-            if (!self->Sms->FindWeaponClass(wcAgmWpn))
+            if ( not self->Sms->FindWeaponClass(wcAgmWpn))
                 self->Sms->FindWeaponClass(wcRocketWpn);
 
             // self->Sms->FindWeaponClass(wcGunWpn);

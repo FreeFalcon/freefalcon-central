@@ -343,7 +343,7 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
     // Now init the other needed modules
     ((WeatherClass*)realWeather)->Init((gametype == game_InstantAction or gametype == game_Dogfight));
 
-    if (!LoadTheater(TheaterName))
+    if ( not LoadTheater(TheaterName))
     {
         // JB 010731 return on fail
         return 0;
@@ -378,7 +378,7 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
     // why I have to do this..  sigh.
     CampLeaveCriticalSection();
 
-    if (!(Flags & CAMP_LIGHT))
+    if ( not (Flags & CAMP_LIGHT))
     {
         CampaignWindow(hInst, SW_SHOW);
     }
@@ -442,7 +442,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
         EndCampaign();
     }
 
-    if (!IsPreLoaded() and !LoadScenarioStats(gametype, savefile))
+    if ( not IsPreLoaded() and !LoadScenarioStats(gametype, savefile))
     {
         EndCampaign();
         return 0;
@@ -483,7 +483,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
     InitCampaign(gametype, NULL);
 
     // Load Savefile Data
-    if (!LoadTeams(savefile))
+    if ( not LoadTeams(savefile))
     {
         AddNewTeams(Neutral);
     }
@@ -498,7 +498,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
 
     LoadUnits(savefile);
 
-    if (!LoadCampaignEvents(savefile, Scenario))
+    if ( not LoadCampaignEvents(savefile, Scenario))
     {
         NewCampaignEvents(Scenario);
     }
@@ -557,7 +557,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
         BuildDivisionData();
     }
 
-    if (!(Flags & CAMP_LIGHT) and !(Flags & CAMP_TACTICAL))
+    if ( not (Flags & CAMP_LIGHT) and !(Flags & CAMP_TACTICAL))
     {
         // KCK: By telling weathermap that we're instant action, it won't
         // cause a reloading of weather for multiple instant action runs.
@@ -601,7 +601,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
             {
                 LoadoutStruct *load = ((Flight)u)->GetLoadout();
 
-                if (!load)
+                if ( not load)
                 {
                     ((Flight)u)->LoadWeapons(NULL, DefaultDamageMods, Air, 2, WEAP_GUN, 0);
                 }
@@ -653,7 +653,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
         return 1; // Already loaded, return success
     }
 
-    if (!IsPreLoaded())
+    if ( not IsPreLoaded())
     {
         EndCampaign();
         return 0;
@@ -663,7 +663,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
     masterSession = (FalconSessionEntity*) vuDatabase->Find(game->OwnerId());
 
-    if (!masterSession or masterSession == vuLocalSessionEntity)
+    if ( not masterSession or masterSession == vuLocalSessionEntity)
         return LoadCampaign(gametype, Scenario);
 
     if (stricmp(Scenario, "Instant") == 0)
@@ -719,7 +719,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
     {
         // This is a new request
         // Start up the campaign loop
-        if (!InitCampaign(gametype, game)) // JB 010731 return on fail
+        if ( not InitCampaign(gametype, game)) // JB 010731 return on fail
         {
             CampLeaveCriticalSection();
             return 0;
@@ -732,16 +732,16 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
         LoadBaseObjectives(TheCampaign.Scenario);
 
-        if (!LoadTeams(TheCampaign.Scenario))
+        if ( not LoadTeams(TheCampaign.Scenario))
             AddNewTeams(Neutral);
 
-        if (!LoadPilotInfo(TheCampaign.Scenario))
+        if ( not LoadPilotInfo(TheCampaign.Scenario))
             NewPilotInfo();
 
-        if (!LoadCampaignEvents(Scenario, Scenario))
+        if ( not LoadCampaignEvents(Scenario, Scenario))
             NewCampaignEvents(Scenario);
 
-        if (!(Flags & CAMP_LIGHT))
+        if ( not (Flags & CAMP_LIGHT))
             ((WeatherClass*)realWeather)->CampLoad(TheCampaign.Scenario, game_Campaign);
 
         // Rebuild objective lists once, so our received data has somewhere to go
@@ -768,7 +768,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
             // need_from_all = CAMP_NEED_ENTITIES;
             Flags  or_eq  need_from_master | need_from_all;
 
-            if (!LoadPilotInfo(TheCampaign.Scenario))
+            if ( not LoadPilotInfo(TheCampaign.Scenario))
                 NewPilotInfo();
         }
 
@@ -806,10 +806,10 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
 int CampaignClass::StartRemoteCampaign(FalconGameEntity *game)
 {
-    if (!IsLoaded() or (Flags & CAMP_NEED_MASK))
+    if ( not IsLoaded() or (Flags & CAMP_NEED_MASK))
         return 0;
 
-    if (!(Flags & CAMP_LIGHT))
+    if ( not (Flags & CAMP_LIGHT))
     {
         lastAirPlan = 0; // Force an air replan - To get squadron data into the ATM
         RebuildObjectiveLists();
@@ -854,7 +854,7 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
     FILE* fp;
     char to[MAX_PATH], from[MAX_PATH];
 
-    if (!IsLoaded() or (Flags & CAMP_LIGHT and save_mode not_eq CAMP_SAVE_LIGHT))
+    if ( not IsLoaded() or (Flags & CAMP_LIGHT and save_mode not_eq CAMP_SAVE_LIGHT))
         return 0;
 
     StartWriteCampFile(gametype, savefile);
@@ -876,7 +876,7 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
     }
     else
     {
-        if (!CampMapSize or !TheaterSizeX or !CampMapData or save_mode == CAMP_SAVE_FULL)
+        if ( not CampMapSize or !TheaterSizeX or !CampMapData or save_mode == CAMP_SAVE_FULL)
             MakeCampMap(MAP_OWNERSHIP);
 
         VerifySquadrons(FALCON_PLAYER_TEAM);
@@ -945,7 +945,7 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
 void CampaignClass::EndCampaign(void)
 {
     // returns only when campaign is not loaded anymore
-    if (!TheCampaign.IsLoaded())
+    if ( not TheCampaign.IsLoaded())
     {
         return;
     }
@@ -1015,7 +1015,7 @@ void CampaignClass::EndCampaign()
 #endif
 
     //if (CurrentGame){
-    // if (!CurrentGame->SessionCount()){
+    // if ( not CurrentGame->SessionCount()){
     // vuDatabase->Remove(CurrentGame);
     // }
     // VuDeReferenceEntity(CurrentGame);
@@ -1024,7 +1024,7 @@ void CampaignClass::EndCampaign()
 
     if (Flags & CAMP_LOADED)
     {
-        if (!(Flags & CAMP_LIGHT))
+        if ( not (Flags & CAMP_LIGHT))
         {
             FreeTheaterTerrain();
             // Only remove teams if we're playing a local game
@@ -1036,7 +1036,7 @@ void CampaignClass::EndCampaign()
             DisposeCampaignEvents();
         }
 
-        if (!(Flags & CAMP_ONLINE))
+        if ( not (Flags & CAMP_ONLINE))
         {
             RemoveTeams(); // KCK NOTE: These could be 'silent removes' instead
         }
@@ -1385,7 +1385,7 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
         event->eventText[size] = 0;
         event->next = NULL;
 
-        if (!StandardEventQueue)
+        if ( not StandardEventQueue)
         {
             StandardEventQueue = event;
             last = event;
@@ -1409,7 +1409,7 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
         event->eventText[size] = 0;
         event->next = NULL;
 
-        if (!PriorityEventQueue)
+        if ( not PriorityEventQueue)
         {
             PriorityEventQueue = event;
             last = event;
@@ -1505,7 +1505,7 @@ int CampaignClass::Encode(VU_BYTE **stream)
     int loop;
     long newsize, datasize;
 
-    if (!(Flags & CAMP_LIGHT))
+    if ( not (Flags & CAMP_LIGHT))
     {
         // Get up to data squadron information
         VerifySquadrons(FALCON_PLAYER_TEAM);
@@ -1819,7 +1819,7 @@ int CampaignClass::RequestScenarioStats(FalconGameEntity *game)
         }
     }
 
-    if (!game)
+    if ( not game)
     {
         return 0;
     }
@@ -1840,7 +1840,7 @@ int CampaignClass::RequestScenarioStats(FalconGameEntity *game)
     // Figure out who to send the request to.
     masterSession = (FalconSessionEntity*) vuDatabase->Find(game->OwnerId());
 
-    if (!masterSession or masterSession == vuLocalSessionEntity)
+    if ( not masterSession or masterSession == vuLocalSessionEntity)
         return 0;
 
     switch (game->GetGameType())
@@ -1899,7 +1899,7 @@ void CampaignClass::Suspend(void)
     ThreadManager::fast_campaign();
     Flags  or_eq  CAMP_SUSPEND_REQUEST;
 
-    while (!IsSuspended() and (Flags & CAMP_SUSPEND_REQUEST))
+    while ( not IsSuspended() and (Flags & CAMP_SUSPEND_REQUEST))
     {
         Sleep(100); // Wait until the campaign is actually suspended
     }
@@ -1909,7 +1909,7 @@ void CampaignClass::Suspend(void)
 
 void CampaignClass::Resume(void)
 {
-    if (!IsSuspended())
+    if ( not IsSuspended())
     {
         return;
     }
@@ -1983,7 +1983,7 @@ void CampaignClass::GetPlayerLocation(GridIndex *x, GridIndex *y)
 
     player = FalconLocalSession->GetPlayerEntity();
 
-    if (!player)        // not in the cockpit
+    if ( not player)        // not in the cockpit
     {
         *x = *y = 0;
         return;
@@ -2024,7 +2024,7 @@ void CampaignClass::AddCampaignEvent(CampUIEventElement *newEvent)
 
     if (newEvent->flags & 0x01)
     {
-        if (!PriorityEventQueue or strcmp(PriorityEventQueue->eventText, newEvent->eventText) not_eq 0)
+        if ( not PriorityEventQueue or strcmp(PriorityEventQueue->eventText, newEvent->eventText) not_eq 0)
         {
             newEvent->next = PriorityEventQueue;
             PriorityEventQueue = newEvent;
@@ -2039,7 +2039,7 @@ void CampaignClass::AddCampaignEvent(CampUIEventElement *newEvent)
     }
     else
     {
-        if (!StandardEventQueue or strcmp(StandardEventQueue->eventText, newEvent->eventText) not_eq 0)
+        if ( not StandardEventQueue or strcmp(StandardEventQueue->eventText, newEvent->eventText) not_eq 0)
         {
             newEvent->next = StandardEventQueue;
             StandardEventQueue = newEvent;
@@ -2154,7 +2154,7 @@ void CampaignClass::VerifySquadrons(int team)
     int s, squadrons = 0;
     SquadUIInfoClass *newData;
 
-    if (!AllAirList)
+    if ( not AllAirList)
         return;
 
     FreeSquadronData();
@@ -2173,7 +2173,7 @@ void CampaignClass::VerifySquadrons(int team)
         u = (Unit) myit.GetNext();
     }
 
-    if (!squadrons)
+    if ( not squadrons)
         return;
 
     // Next, allocate a new array of data and fill it
@@ -2271,7 +2271,7 @@ int CampaignClass::IsValidAircraftType(Unit u)
     {
         type = u->Type() - VU_LAST_ENTITY_TYPE;
 
-        if (!type)
+        if ( not type)
             return 0;
 
         for (i = 0; i < NumberOfValidTypes; i++)
@@ -2488,13 +2488,13 @@ int SaveAfterRename(char *savefile, FalconGameType gametype)
         current_tactical_mission->save_data(filename);
     }
 
-    // if (!CampMapSize or !TheaterSizeX or !CampMapData or save_mode == CAMP_SAVE_FULL)
+    // if ( not CampMapSize or !TheaterSizeX or !CampMapData or save_mode == CAMP_SAVE_FULL)
     // MakeCampMap(MAP_OWNERSHIP);
     TheCampaign.VerifySquadrons(FALCON_PLAYER_TEAM);
 
     fp = OpenCampFile(filename, "cmp", "wb");
 
-    if (!fp)
+    if ( not fp)
     {
         MonoPrint("Error opening file %s!\n", filename);
         return 0;

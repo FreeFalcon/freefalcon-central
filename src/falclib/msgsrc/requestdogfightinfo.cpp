@@ -32,7 +32,7 @@ int UI_RequestDogfightInfo::Process(uchar autodisp)
     {
         FalconSessionEntity* requester = (FalconSessionEntity*)vuDatabase->Find(dataBlock.requester_id);
 
-        if (!requester)
+        if ( not requester)
             return FALSE;
 
         SimDogfight.SendSettings(requester);

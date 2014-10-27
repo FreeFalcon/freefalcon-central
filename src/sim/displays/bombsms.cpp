@@ -40,7 +40,7 @@ int SMSClass::DropBomb(int allowRipple)
 
 
     // Check for SMS Failure or other reason not to drop
-    if (!CurStationOK() or //Weapon Station failure
+    if ( not CurStationOK() or //Weapon Station failure
         ownship->OnGround() or // Weight on wheels inhibit
         !curWeapon or // No Weapon
         ownship->GetNz() < 0.0F or // Negative Gs
@@ -389,7 +389,7 @@ int SMSClass::DropBomb(int allowRipple)
 
         retval = TRUE;
 
-        if (!curRippleCount)
+        if ( not curRippleCount)
         {
             // Can we do a ripple drop?
             if (allowRipple)
@@ -400,7 +400,7 @@ int SMSClass::DropBomb(int allowRipple)
             nextDrop = SimLibElapsedTime + FloatToInt32((GetAGBRippleInterval()) /
                        (float)sqrt(ownship->XDelta() * ownship->XDelta() + ownship->YDelta() * ownship->YDelta()) * SEC_TO_MSEC);
 
-            if (!curRippleCount)
+            if ( not curRippleCount)
             {
                 ClearFlag(Firing);
             }

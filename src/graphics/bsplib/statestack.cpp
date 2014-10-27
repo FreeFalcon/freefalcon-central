@@ -724,7 +724,7 @@ void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
 
         // Cobra - RED - Zero is Zero both in Float and Long...but Long is faster
         // ...........(lightSpecular).........................................
-        if (!LODused and ((*(long*)&lightSpecular) & 0x7fffffff) and DisplayOptions.bSpecularLighting)
+        if ( not LODused and ((*(long*)&lightSpecular) & 0x7fffffff) and DisplayOptions.bSpecularLighting)
         {
             viewVector.x = ObjSpaceEye.x - p->x;
             viewVector.y = ObjSpaceEye.y - p->y;

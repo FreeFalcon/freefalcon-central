@@ -249,7 +249,7 @@ int SimlibFileClass::ReadLine(char *buf, int max_len)
         *(strchr(buf, '\r')) = 0;
 
     // Strip the trailing new-line
-    if (!feof(fptr))
+    if ( not feof(fptr))
     {
         if (buf[strlen(buf) - 1] == '\n')
             buf[strlen(buf) - 1] = 0;

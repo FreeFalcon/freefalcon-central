@@ -8,6 +8,7 @@
 #ifndef _PALETTE_H_
 #define _PALETTE_H_
 
+#include <cISO646>
 #include "grtypes.h"
 #include "Context.h"
 
@@ -62,7 +63,7 @@ public:
     int Release();
     void Activate()
     {
-        if (!palHandle) UpdateMPR();
+        if ( not palHandle) UpdateMPR();
     };
     void UpdateMPR(DWORD *pal);
     void UpdateMPR()

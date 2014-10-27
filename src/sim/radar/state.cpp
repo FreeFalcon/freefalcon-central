@@ -132,7 +132,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
             SetFlagBit(HorizontalScan);
             scanDir  = ScanFwd;
 
-            if (!g_bAntElevKnobFix)
+            if ( not g_bAntElevKnobFix)
                 //me123 set the old el center
                 seekerElCenter = min(max(oldseekerElCenter, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
             else
@@ -179,10 +179,10 @@ void RadarDopplerClass::ChangeMode(int newMode)
             SetFlagBit(HorizontalScan);
             scanDir  = ScanFwd;
 
-            if (!g_bAntElevKnobFix)
+            if ( not g_bAntElevKnobFix)
                 //me123 set the old el center
                 seekerElCenter = min(max(oldseekerElCenter, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
-            else if (!lockedTarget)
+            else if ( not lockedTarget)
                 seekerElCenter = AntElevKnob();
 
             SetEmitting(TRUE);
@@ -209,7 +209,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
             SetFlagBit(HorizontalScan);
             scanDir  = ScanFwd;
 
-            if (!g_bAntElevKnobFix)
+            if ( not g_bAntElevKnobFix)
                 //me123 set the old el center
                 seekerElCenter = min(max(oldseekerElCenter, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
             else
@@ -597,7 +597,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
             seekerAzCenter = max(min(seekerAzCenter, MAX_ANT_EL - azScan), -MAX_ANT_EL + azScan);
 
-            if (!g_bAntElevKnobFix)
+            if ( not g_bAntElevKnobFix)
             {
                 seekerElCenter = min(max(seekerElCenter + elSlewCmd * EL_CHANGE_RATE,
                                          -MAX_ANT_EL), MAX_ANT_EL);
@@ -633,12 +633,12 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
             // Slewing Scan
             // Make sure that we only do this when were not locking or trying to lock
-            if (!lockedTarget or g_bMLU and !IsSet(STTingTarget))
+            if ( not lockedTarget or g_bMLU and !IsSet(STTingTarget))
             {
                 seekerAzCenter = cursorX * MAX_ANT_EL;
                 seekerAzCenter = max(min(seekerAzCenter, MAX_ANT_EL - azScan), -MAX_ANT_EL + azScan);
 
-                if (!g_bAntElevKnobFix)
+                if ( not g_bAntElevKnobFix)
                 {
                     seekerElCenter = min(max(seekerElCenter + elSlewCmd * EL_CHANGE_RATE, -MAX_ANT_EL), MAX_ANT_EL);
 
@@ -683,7 +683,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
             //MI
             // MD -- 20040123: don't bump the scan pattern when there's a bugged track file
-            if (!lockedTarget and ((cursorX == 1.0F and cursorXCmd > 0) or (cursorX == -1.0F and cursorXCmd < 0)))
+            if ( not lockedTarget and ((cursorX == 1.0F and cursorXCmd > 0) or (cursorX == -1.0F and cursorXCmd < 0)))
                 StepAzimuth(cursorX, cursorXCmd);
 
             //me123 az/bar change same as rws -- MD, umm no, that's not correct...there are three fixed
@@ -691,7 +691,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
             // these change commands now step both twsAzIdx and twsBarIdx at the same time!
 
             // MD -- 20040123: don't bump the scan pattern when there's a bugged track file
-            if (!lockedTarget and scanWidthCmd)
+            if ( not lockedTarget and scanWidthCmd)
             {
                 curAzIdx = (curAzIdx + scanWidthCmd) % NUM_TWS_AZS;
                 azScan = twsAzs[curAzIdx] - beamWidth * 0.5F;
@@ -703,7 +703,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
             }
 
             // MD -- 20040123: don't bump the scan pattern when there's a bugged track file
-            if (!lockedTarget and scanHeightCmd)
+            if ( not lockedTarget and scanHeightCmd)
             {
                 curBarIdx = (curBarIdx + scanHeightCmd) % NUM_TWS_BARS; //me123 max 3 bars in tws; MD -- but don't hard code it here
                 bars = twsBars[curBarIdx];
@@ -717,7 +717,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
             break;
 
         case SAM:
-            if (!IsSet(STTingTarget))
+            if ( not IsSet(STTingTarget))
             {
                 if (subMode not_eq SAM_AUTO_MODE)
                 {
@@ -743,7 +743,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
                     seekerAzCenter = max(min(seekerAzCenter, MAX_ANT_EL - azScan), -MAX_ANT_EL + azScan);
 
-                    if (!g_bAntElevKnobFix)
+                    if ( not g_bAntElevKnobFix)
                     {
 
                         seekerElCenter = min(max(seekerElCenter + elSlewCmd * EL_CHANGE_RATE,
@@ -798,7 +798,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
             break;
 
         case ACM_SLEW:
-            if (!lockedTarget)
+            if ( not lockedTarget)
             {
                 seekerAzCenter = cursorX * MAX_ANT_EL;
                 seekerElCenter = cursorY * MAX_ANT_EL;
@@ -829,7 +829,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
                     ChangeMode(ACM_SLEW);
             }
 
-            if (!lockedTarget)
+            if ( not lockedTarget)
             {
                 rangeChangeCmd = 0;
             }
@@ -873,7 +873,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
             seekerAzCenter = max(min(seekerAzCenter, MAX_ANT_EL - azScan), -MAX_ANT_EL + azScan);
 
-            if (!g_bAntElevKnobFix)
+            if ( not g_bAntElevKnobFix)
             {
                 seekerElCenter = min(max(seekerElCenter + elSlewCmd * EL_CHANGE_RATE,
                                          -MAX_ANT_EL), MAX_ANT_EL);
@@ -1396,7 +1396,7 @@ void RadarDopplerClass::NextTarget(void)
                 if (ObjectDetected(rdrObj))
                 {
                     //can't lock onto these
-                    if (!rdrObj->BaseData()->OnGround() and !rdrObj->BaseData()->IsMissile()  and 
+                    if ( not rdrObj->BaseData()->OnGround() and !rdrObj->BaseData()->IsMissile()  and 
                         !rdrObj->BaseData()->IsBomb() and !rdrObj->BaseData()->IsEject()  and 
                         rdrObj->localData->rdrDetect)
                     {
@@ -1411,7 +1411,7 @@ void RadarDopplerClass::NextTarget(void)
                     }
                 }
 
-                if (!rdrObj->next)
+                if ( not rdrObj->next)
                     break;
 
                 rdrObj = rdrObj->next;
@@ -1432,7 +1432,7 @@ void RadarDopplerClass::NextTarget(void)
 
         if (lockedTarget and TWSTrackDirectory)
         {
-            if (!IsSet(STTingTarget))
+            if ( not IsSet(STTingTarget))
             {
                 TWSTrackList* tmp = TWSTrackDirectory->OnList(lockedTarget);
                 AddToHistory(lockedTarget, Track);  // demote current from bug to a track
@@ -1440,7 +1440,7 @@ void RadarDopplerClass::NextTarget(void)
                 if (tmp)
                     do
                     {
-                        if (!tmp->Next())
+                        if ( not tmp->Next())
                             tmp = TWSTrackDirectory;
                         else
                             tmp = tmp->Next();
@@ -1495,7 +1495,7 @@ void RadarDopplerClass::SetMRMOverride(void)
     else
         noovrradarmode = mode;//me123
 
-    if (!lockedTarget)
+    if ( not lockedTarget)
     {
         //MI changed so it remembers our last mode
         //airRangeIdx = 1;//me123
@@ -1541,7 +1541,7 @@ void RadarDopplerClass::FindClosest(float MinRange)
         if (ObjectDetected(rdrObj))
         {
             //can't lock onto these
-            if (!rdrObj->BaseData()->OnGround() and !rdrObj->BaseData()->IsMissile()  and 
+            if ( not rdrObj->BaseData()->OnGround() and !rdrObj->BaseData()->IsMissile()  and 
                 !rdrObj->BaseData()->IsBomb() and !rdrObj->BaseData()->IsEject()  and 
                 rdrObj->localData->rdrDetect)
             {
@@ -1553,7 +1553,7 @@ void RadarDopplerClass::FindClosest(float MinRange)
             }
         }
 
-        if (!rdrObj->next)
+        if ( not rdrObj->next)
             break;
 
         rdrObj = rdrObj->next;
@@ -1601,7 +1601,7 @@ void RadarDopplerClass::StepAzimuth(float X, int Cmd)
 
         //bump the cursor back to the center, if no locked target
         //otherwise, just bump it back a bit.
-        if (!lockedTarget)
+        if ( not lockedTarget)
             cursorX = 0.0F;
         else
             cursorX = 0.9F;
@@ -1636,7 +1636,7 @@ void RadarDopplerClass::StepAzimuth(float X, int Cmd)
 
         //bump the cursor back to the center, if no locked target
         //otherwise, just bump it back a bit.
-        if (!lockedTarget)
+        if ( not lockedTarget)
             cursorX = 0.0F;
         else
             cursorX = -0.9F;
@@ -1655,7 +1655,7 @@ void RadarDopplerClass::StepAAelvation(int cmd)
     if (IO.AnalogIsUsed(AXIS_ANT_ELEV))
         return;
 
-    if (!g_bAntElevKnobFix)
+    if ( not g_bAntElevKnobFix)
     {
         if (cmd)
             elSlewCmd = cmd;

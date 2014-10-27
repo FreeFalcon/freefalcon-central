@@ -1260,7 +1260,7 @@ int inflate(COMPRESSED_FILE * cmp)
             h = hufts;
 
     }
-    while (!e);
+    while ( not e);
 
 
     /* flush out slide */

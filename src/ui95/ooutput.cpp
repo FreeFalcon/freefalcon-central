@@ -224,15 +224,15 @@ int O_Output::FitString(int idx) // returns # characters to keep on this line
     int count, space;
     long w; //!
 
-    if (!Label_[idx])
+    if ( not Label_[idx])
         return(0);
 
     w = WWWidth_;
 
-    if (!w)
+    if ( not w)
         w = Owner_->GetW();
 
-    if (!w)
+    if ( not w)
         return((short)_tcsclen(&Label_[idx]));    //!
 
     space = 0;
@@ -315,7 +315,7 @@ void O_Output::WordWrap()
 
             WWCount_ = count;
 
-            if (!Wrap_)
+            if ( not Wrap_)
                 Wrap_ = new WORDWRAP[WWCount_];
 
             fontheight = gFontList->GetHeight(Font_);
@@ -558,7 +558,7 @@ void O_Output::Refresh()
 {
     long x, y, w, h;
 
-    if (!Ready()) return;
+    if ( not Ready()) return;
 
     if (_GetOType_() == _OUT_SCALEBITMAP_)
     {
@@ -607,7 +607,7 @@ long O_Output::GetCursorPos(long relx, long rely) // Based on mouse location
 
     cur = gFontList->Find(Font_);
 
-    if (!cur)
+    if ( not cur)
         return(0);
 
     if (WWCount_ and (flags_ & C_BIT_WORDWRAP))
@@ -674,7 +674,7 @@ void O_Output::GetCharXY(short idx, long *cx, long *cy) // Based on cursor locat
 
     cur = gFontList->Find(Font_);
 
-    if (!cur)
+    if ( not cur)
         return;
 
     *cx = GetX();
@@ -705,7 +705,7 @@ void O_Output::GetCharXY(short idx, long *cx, long *cy) // Based on cursor locat
 
 void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (!Ready()) return;
+    if ( not Ready()) return;
 
     switch (_GetOType_())
     {
@@ -717,7 +717,7 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
             dest.right = dest.left + GetW();
             dest.bottom = dest.top + GetH();
 
-            if (!(Owner_->GetFlags() & C_BIT_ABSOLUTE))
+            if ( not (Owner_->GetFlags() & C_BIT_ABSOLUTE))
             {
                 dest.left += Owner_->Parent_->VX_[Owner_->GetClient()];
                 dest.top += Owner_->Parent_->VY_[Owner_->GetClient()];
@@ -725,11 +725,11 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
                 dest.bottom += Owner_->Parent_->VY_[Owner_->GetClient()];
             }
 
-            if (!Owner_->Parent_->ClipToArea(&src, &dest, cliprect))
+            if ( not Owner_->Parent_->ClipToArea(&src, &dest, cliprect))
                 return;
 
-            if (!(Owner_->GetFlags() & C_BIT_ABSOLUTE))
-                if (!Owner_->Parent_->ClipToArea(&src, &dest, &Owner_->Parent_->ClientArea_[Owner_->GetClient()]))
+            if ( not (Owner_->GetFlags() & C_BIT_ABSOLUTE))
+                if ( not Owner_->Parent_->ClipToArea(&src, &dest, &Owner_->Parent_->ClientArea_[Owner_->GetClient()]))
                     break;
 
             Owner_->Parent_->BlitFill(surface, FgColor_, &dest, C_BIT_ABSOLUTE, 0);
@@ -747,7 +747,7 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
             if (WWCount_ and (flags_ & C_BIT_WORDWRAP))
             {
-                if (!(Owner_->GetFlags() & C_BIT_ABSOLUTE))
+                if ( not (Owner_->GetFlags() & C_BIT_ABSOLUTE))
                 {
                     x += Owner_->Parent_->VX_[Owner_->GetClient()];
                     y += Owner_->Parent_->VY_[Owner_->GetClient()];
@@ -758,11 +758,11 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
                 rect.right = rect.left + GetW();
                 rect.bottom = rect.top + GetH();
 
-                if (!Owner_->Parent_->ClipToArea(&dummy, &rect, cliprect))
+                if ( not Owner_->Parent_->ClipToArea(&dummy, &rect, cliprect))
                     return;
 
-                if (!(Owner_->GetFlags() & C_BIT_ABSOLUTE))
-                    if (!Owner_->Parent_->ClipToArea(&dummy, &rect, &Owner_->Parent_->ClientArea_[Owner_->GetClient()]))
+                if ( not (Owner_->GetFlags() & C_BIT_ABSOLUTE))
+                    if ( not Owner_->Parent_->ClipToArea(&dummy, &rect, &Owner_->Parent_->ClientArea_[Owner_->GetClient()]))
                         return;
 
                 x += Owner_->Parent_->GetX();
@@ -826,7 +826,7 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
                 origx = x;
                 origy = y;
 
-                if (!(Owner_->GetFlags() & C_BIT_ABSOLUTE))
+                if ( not (Owner_->GetFlags() & C_BIT_ABSOLUTE))
                 {
                     x += Owner_->Parent_->VX_[Owner_->GetClient()];
                     y += Owner_->Parent_->VY_[Owner_->GetClient()];
@@ -837,11 +837,11 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
                 rect.right = rect.left + GetW();
                 rect.bottom = rect.top + GetH();
 
-                if (!Owner_->Parent_->ClipToArea(&dummy, &rect, cliprect))
+                if ( not Owner_->Parent_->ClipToArea(&dummy, &rect, cliprect))
                     return;
 
-                if (!(Owner_->GetFlags() & C_BIT_ABSOLUTE))
-                    if (!Owner_->Parent_->ClipToArea(&dummy, &rect, &Owner_->Parent_->ClientArea_[Owner_->GetClient()]))
+                if ( not (Owner_->GetFlags() & C_BIT_ABSOLUTE))
+                    if ( not Owner_->Parent_->ClipToArea(&dummy, &rect, &Owner_->Parent_->ClientArea_[Owner_->GetClient()]))
                         return;
 
                 x += Owner_->Parent_->GetX();
@@ -951,7 +951,7 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
             dest.right = dest.left + GetW();
             dest.bottom = dest.top + GetH();
 
-            if (!(Owner_->GetFlags() & C_BIT_ABSOLUTE))
+            if ( not (Owner_->GetFlags() & C_BIT_ABSOLUTE))
             {
                 dest.left += Owner_->Parent_->VX_[Owner_->GetClient()];
                 dest.top += Owner_->Parent_->VY_[Owner_->GetClient()];
@@ -959,11 +959,11 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
                 dest.bottom += Owner_->Parent_->VY_[Owner_->GetClient()];
             }
 
-            if (!Owner_->Parent_->ClipToArea(&src, &dest, cliprect))
+            if ( not Owner_->Parent_->ClipToArea(&src, &dest, cliprect))
                 return;
 
-            if (!(Owner_->GetFlags() & C_BIT_ABSOLUTE))
-                if (!Owner_->Parent_->ClipToArea(&src, &dest, &Owner_->Parent_->ClientArea_[Owner_->GetClient()]))
+            if ( not (Owner_->GetFlags() & C_BIT_ABSOLUTE))
+                if ( not Owner_->Parent_->ClipToArea(&src, &dest, &Owner_->Parent_->ClientArea_[Owner_->GetClient()]))
                     break;
 
             dest.left += Owner_->Parent_->GetX();
@@ -981,8 +981,8 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
             UI95_RECT dummy, clip;
             clip = *cliprect;
 
-            if (!(Owner_->GetFlags() & C_BIT_ABSOLUTE))
-                if (!Owner_->Parent_->ClipToArea(&dummy, &clip, &Owner_->Parent_->ClientArea_[Owner_->GetClient()]))
+            if ( not (Owner_->GetFlags() & C_BIT_ABSOLUTE))
+                if ( not Owner_->Parent_->ClipToArea(&dummy, &clip, &Owner_->Parent_->ClientArea_[Owner_->GetClient()]))
                     break;
 
             if (ScaleSet_ > 500)
@@ -1008,7 +1008,7 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
             src.right = GetW();
             src.bottom = GetH();
 
-            if (!(Owner_->GetFlags() & C_BIT_ABSOLUTE))
+            if ( not (Owner_->GetFlags() & C_BIT_ABSOLUTE))
             {
                 dest.left += Owner_->Parent_->VX_[Owner_->GetClient()];
                 dest.top += Owner_->Parent_->VY_[Owner_->GetClient()];
@@ -1019,11 +1019,11 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
             dx = dest.left + Owner_->Parent_->GetX();
             dy = dest.top + Owner_->Parent_->GetY();
 
-            if (!Owner_->Parent_->ClipToArea(&src, &dest, cliprect))
+            if ( not Owner_->Parent_->ClipToArea(&src, &dest, cliprect))
                 return;
 
-            if (!(Owner_->GetFlags() & C_BIT_ABSOLUTE))
-                if (!Owner_->Parent_->ClipToArea(&src, &dest, &Owner_->Parent_->ClientArea_[Owner_->GetClient()]))
+            if ( not (Owner_->GetFlags() & C_BIT_ABSOLUTE))
+                if ( not Owner_->Parent_->ClipToArea(&src, &dest, &Owner_->Parent_->ClientArea_[Owner_->GetClient()]))
                     return;
 
             dest.left += Owner_->Parent_->GetX();
@@ -1042,8 +1042,8 @@ void O_Output::Blend4Bit(SCREEN *surface, BYTE *overlay, WORD *Palette[], UI95_R
     UI95_RECT dummy, clip;
     clip = *cliprect;
 
-    if (!(Owner_->GetFlags() & C_BIT_ABSOLUTE))
-        if (!Owner_->Parent_->ClipToArea(&dummy, &clip, &Owner_->Parent_->ClientArea_[Owner_->GetClient()]))
+    if ( not (Owner_->GetFlags() & C_BIT_ABSOLUTE))
+        if ( not Owner_->Parent_->ClipToArea(&dummy, &clip, &Owner_->Parent_->ClientArea_[Owner_->GetClient()]))
             return;
 
     if (ScaleSet_ > 500)
@@ -1195,7 +1195,7 @@ void O_Output::SetScaleInfo(long scale)
 
         while (dd <= 0)
         {
-            if (!F4IsBadWritePtr(&(Rows_[k + 1]), sizeof(short))) // JB 010304 CTD
+            if ( not F4IsBadWritePtr(&(Rows_[k + 1]), sizeof(short))) // JB 010304 CTD
                 Rows_[k++] = i;
 
             dd += scale;
@@ -1211,7 +1211,7 @@ void O_Output::SetScaleInfo(long scale)
 
         while (dd <= 0)
         {
-            if (!F4IsBadWritePtr(&(Cols_[k + 1]), sizeof(short))) // JB 010304 CTD
+            if ( not F4IsBadWritePtr(&(Cols_[k + 1]), sizeof(short))) // JB 010304 CTD
                 Cols_[k++] = i;
 
             dd += scale;
@@ -1307,7 +1307,7 @@ void O_Output::Extract16BitRLE(SCREEN *surface, long FrameNo, long destx, long d
     dy = desty;
     done = 0;
 
-    while (!done)
+    while ( not done)
     {
         Key   = (WORD)(*sptr & RLE_KEYMASK);
         count = (WORD)(*sptr & RLE_COUNTMASK);
@@ -1318,7 +1318,7 @@ void O_Output::Extract16BitRLE(SCREEN *surface, long FrameNo, long destx, long d
         else if (dy < clip->top)
         {
             // go through compressed stuff, & don't do anything for output
-            if (!(Key & RLE_KEYMASK))
+            if ( not (Key & RLE_KEYMASK))
             {
                 sptr += count;
             }
@@ -1339,7 +1339,7 @@ void O_Output::Extract16BitRLE(SCREEN *surface, long FrameNo, long destx, long d
         }
         else
         {
-            if (!(Key & RLE_KEYMASK))
+            if ( not (Key & RLE_KEYMASK))
             {
                 while (count > 0)
                 {

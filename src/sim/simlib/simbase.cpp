@@ -405,7 +405,7 @@ int SimBaseClass::Wake()
     float scale;
 
     // KCK: Sets up this object to become sim aware
-    ShiAssert(!IsAwake());
+    ShiAssert( not IsAwake());
 
     // Join our flight, if we have one
     JoinFlight();
@@ -422,7 +422,7 @@ int SimBaseClass::Wake()
 
     // Create a drawable object
     // Note:  Our child classes could have already created our drawable for us.
-    if (!drawPointer or drawPointer == (DrawableObject*)0xbaadf00d) // FRB
+    if ( not drawPointer or drawPointer == (DrawableObject*)0xbaadf00d) // FRB
     {
         drawPointer = NULL; // FRB - Just in case it is not initialized (= 0xbaadf00d)
         //START_PROFILE("CREATEVISUAL");
@@ -453,7 +453,7 @@ int SimBaseClass::Sleep(void)
     int retval = 0;
 
     // KCK: Stops this object from being sim aware
-    if (!IsAwake())
+    if ( not IsAwake())
     {
         return retval;
     }
@@ -483,7 +483,7 @@ int SimBaseClass::Sleep(void)
      //SimDriver.UpdateIAStats(this);
      //else
      //InstantAction.RegenTarget (this);
-     if (!IsSetRemoveFlag())
+     if ( not IsSetRemoveFlag())
      SetRemoveFlag();
      }
     */
@@ -511,7 +511,7 @@ void SimBaseClass::SetRemoveFlag()
     SetThreat(NULL, THREAT_NONE);
 
     // OW commented out after fixing feature memory leak (features now using this function too)
-    // ShiAssert(!IsStatic());
+    // ShiAssert( not IsStatic());
 
     if (IsAwake())
     {
@@ -678,7 +678,7 @@ void SimBaseClass::SetDead(int flag)
                 }
             }
         }
-        else if (!IsSetRemoveFlag())
+        else if ( not IsSetRemoveFlag())
         {
             if (this == FalconLocalSession->GetPlayerEntity())
             {
@@ -827,13 +827,13 @@ void SimBaseClass::ApplyDeathMessage(FalconDeathMessage* deathMessage)
         VM->RemoveRadioCalls(Id());
 
     // debug non local
-    if (!IsLocal())
+    if ( not IsLocal())
     {
         //   MonoPrint( "NonLocal Apply Death Message: Pct Strength now: %f\n", pctStrength );
 
         // OK, this is a big hack for the time being.  Explosions aren't
         // showing for nonlocal entities.  Let's force them right now:
-        if (!IsSetFlag(SHOW_EXPLOSION))
+        if ( not IsSetFlag(SHOW_EXPLOSION))
         {
             if (IsAwake())
             {
@@ -851,7 +851,7 @@ void SimBaseClass::ApplyDeathMessage(FalconDeathMessage* deathMessage)
             SetFlag(SHOW_EXPLOSION);
         }
 
-        if ((!IsStatic()))
+        if (( not IsStatic()))
         {
             SetDead(TRUE);
         }
@@ -874,7 +874,7 @@ VU_ERRCODE SimBaseClass::InsertionCallback(void)
 {
     CalcTransformMatrix(this);
 
-    if (!campaignObject)
+    if ( not campaignObject)
     {
         // This is not a campaign controlled object
         // put it in our list of objects with no campaign parent
@@ -1069,7 +1069,7 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
     }
 
     // If it's not an airplane or the target is the player, no need to do our fancy tests...
-    if (!IsAirplane() or this == SimDriver.GetPlayerEntity())
+    if ( not IsAirplane() or this == SimDriver.GetPlayerEntity())
     {
         if (incomingMissile[0] and (missile == NULL or incomingMissile[0]->IsDead()))
         {
@@ -1158,7 +1158,7 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
                 if (((MissileClass *)missile)->isSlave)
                 {
                     // And we cannot see it...
-                    if (!canSee)
+                    if ( not canSee)
                     {
                         // Roll the dice to see if he will 'see' it based on his skill
                         if (((SimVehicleClass *)this)->Brain()->SkillLevel() + 5 > rand() % 10)
@@ -1166,14 +1166,14 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
                     }
                 }
                 // The missile was launched uncaged and we cannot see it and the pilot is either an ace or a veteran...
-                else if (!canSee and ((SimVehicleClass *)this)->Brain()->SkillLevel() > 2)
+                else if ( not canSee and ((SimVehicleClass *)this)->Brain()->SkillLevel() > 2)
                 {
                     // Roll the dice to see if he will 'see' it based on his skill
                     if (4 - ((SimVehicleClass *)this)->Brain()->SkillLevel() + 8 <= rand() % 10)
                         canSee = TRUE;
                 }
 
-                if (!canSee)
+                if ( not canSee)
                     return;
             }
 
@@ -1439,7 +1439,7 @@ void SimBaseClass::ReadDirty(uchar **stream, long *rem)
 
 void SimBaseClass::MakeSimBaseDirty(Dirty_Sim_Base bits, Dirtyness score)
 {
-    if (!IsLocal())
+    if ( not IsLocal())
     {
         return;
     }
@@ -1454,7 +1454,7 @@ void SimBaseClass::MakeSimBaseDirty(Dirty_Sim_Base bits, Dirtyness score)
 
 void SimBaseClass::SetFlag(int flag)
 {
-    if (!(specialData.flags & flag))
+    if ( not (specialData.flags & flag))
     {
         specialData.flags  or_eq  flag;
         //MakeSimBaseDirty (DIRTY_SIM_FLAGS, DDP[163].priority);
@@ -1478,7 +1478,7 @@ void SimBaseClass::UnSetFlag(int flag)
 
 void SimBaseClass::SetFlagSilent(int flag)
 {
-    if (!(specialData.flags & flag))
+    if ( not (specialData.flags & flag))
     {
         specialData.flags  or_eq  flag;
     }
@@ -1550,7 +1550,7 @@ void SimBaseClass::SetStatus(int status)
 
 void SimBaseClass::SetStatusBit(int status)
 {
-    if (!(specialData.status & status))
+    if ( not (specialData.status & status))
     {
         specialData.status  or_eq  status;
         MakeSimBaseDirty(DIRTY_SIM_STATUS, SEND_SOON);

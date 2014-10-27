@@ -126,7 +126,7 @@ Prof_extern_C Prof_Zone_Stack *Prof_StackAppend(Prof_Zone *zone)
     }
 
     // now's as good a time as any to initialize this zone
-    if (!zone->initialized)
+    if ( not zone->initialized)
     {
         if (zone_hash_max == 1)
         {

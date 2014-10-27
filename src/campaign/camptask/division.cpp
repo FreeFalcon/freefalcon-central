@@ -90,7 +90,7 @@ Unit DivisionClass::GetUnitElement(int en)
     {
         ret = (Unit)vuDatabase->Find(element[en]);
 
-        if (!ret or ret->GetDomain() not_eq DOMAIN_LAND)
+        if ( not ret or ret->GetDomain() not_eq DOMAIN_LAND)
             RemoveChild(element[en]);
     }
 
@@ -275,7 +275,7 @@ void BuildDivisionData(void)
                         dc = dc->next;
                     }
 
-                    if (!dc)
+                    if ( not dc)
                     {
                         // Create a new one
                         dc = new DivisionClass();
@@ -294,7 +294,7 @@ void BuildDivisionData(void)
                         dd[t] = dc;
                     }
 
-                    if (!F4IsBadWritePtr(dc, sizeof(DivisionClass)) and dc->elements >= 0 and !F4IsBadWritePtr(&(dc->element[dc->elements]), sizeof(VU_ID))) // JB 010223 CTD
+                    if ( not F4IsBadWritePtr(dc, sizeof(DivisionClass)) and dc->elements >= 0 and !F4IsBadWritePtr(&(dc->element[dc->elements]), sizeof(VU_ID))) // JB 010223 CTD
                     {
                         dc->element[dc->elements] = u->Id();
                         dc->elements++;
@@ -351,7 +351,7 @@ void BuildDivisionData (void)
  dc = GetFirstDivision(t);
  while (dc)
  {
- if (!dc->BuildDivision(dc->owner,dc->nid))
+ if ( not dc->BuildDivision(dc->owner,dc->nid))
  {
  // No longer needed, kill off
  if (dc == DivisionData[t])
@@ -382,11 +382,11 @@ void BuildDivisionData (void)
  {
  d = u->GetUnitDivision();
  c = u->GetOwner();
- if (!(divlist[d] & (1 << c)))
+ if ( not (divlist[d] & (1 << c)))
  {
 // CampEnterCriticalSection();
  dc = new DivisionClass();
- if (!dc->BuildDivision(c,d))
+ if ( not dc->BuildDivision(c,d))
  {
  delete dc;
 #ifdef DEBUG

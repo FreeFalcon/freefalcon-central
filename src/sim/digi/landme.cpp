@@ -75,7 +75,7 @@ void DigitalBrain::ResetATC()
 {
     SetATCStatus(noATC);
 
-    if (!(moreFlags & NewHomebase))
+    if ( not (moreFlags & NewHomebase))
     {
         // we set a new airbase to head to (for example because of fumes fuel -> Actions.cpp)
         airbase = self->HomeAirbase();
@@ -108,7 +108,7 @@ void DigitalBrain::ResetTaxiState(void)
     ConvertSimToGrid(&pos, &gx, &gy);
     Objective Airbase = FindNearbyAirbase(gx, gy);
 
-    if (!self->OnGround() or !Airbase)
+    if ( not self->OnGround() or !Airbase)
     {
         if (atcstatus >= tReqTaxi)
         {
@@ -408,7 +408,7 @@ void DigitalBrain::Land(void)
           dy, dist, speed, minSpeed, relx, rely, cosHdg, sinHdg;
     mlTrig Trig;
 
-    if (!abObj)
+    if ( not abObj)
     {
         //need to find something or we don't know where to go
         if (self->af->GetSimpleMode())
@@ -424,7 +424,7 @@ void DigitalBrain::Land(void)
     }
 
     // RV - Biker - If we're about to land on carrier set new track point
-    else if (!abObj->IsObjective() or !abObj->brain)
+    else if ( not abObj->IsObjective() or !abObj->brain)
     {
         if ((self->curWaypoint->GetWPAction() == WP_LAND) and !self->IsPlayer())
         {
@@ -465,7 +465,7 @@ void DigitalBrain::Land(void)
 
     if (self->IsSetFlag(ON_GROUND) and (af->Fuel() <= 0.0F) and (self->GetVt() < 5.0F))
     {
-        if (!self->IsPlayer())
+        if ( not self->IsPlayer())
         {
             RegroupAircraft(self); //no gas get him out of the way
             // sfr: isnt this enough to return
@@ -570,7 +570,7 @@ void DigitalBrain::Land(void)
             {
                 atcstatus = lReqClearance;
 
-                if (!isWing)
+                if ( not isWing)
                     SendATCMsg(lReqClearance);
             }
             else
@@ -602,7 +602,7 @@ void DigitalBrain::Land(void)
                 CalculateNextTurnDistance();
                 atcstatus = lReqClearance;
 
-                if (!isWing)
+                if ( not isWing)
                     SendATCMsg(lReqClearance);
 
                 waittimer = SimLibElapsedTime + LAND_TIME_DELTA;
@@ -637,7 +637,7 @@ void DigitalBrain::Land(void)
             {
                 atcstatus = lReqClearance;
 
-                if (!isWing)
+                if ( not isWing)
                     SendATCMsg(lReqClearance);
 
                 waittimer = SimLibElapsedTime + LAND_TIME_DELTA;
@@ -1130,7 +1130,7 @@ void DigitalBrain::Land(void)
 
             // edg: If we're not on the ground, we're fucked (which has
             // been seen).  We can't stay in this state.  Go to aborted.
-            if (!self->OnGround())
+            if ( not self->OnGround())
             {
                 ShiWarning("Please show this to Dave P (x4373)");
 
@@ -1296,7 +1296,7 @@ void DigitalBrain::Land(void)
                 {
                     //TJL 03/01/04 Reorder this. Canopy up later.
                     // then clean up
-                    if (!af->IsSet(AirframeClass::EngineStopped))
+                    if ( not af->IsSet(AirframeClass::EngineStopped))
                     {
                         af->SetFlag(AirframeClass::EngineStopped);
                     }
@@ -1305,7 +1305,7 @@ void DigitalBrain::Land(void)
                     {
                         af->SetEngineFlag(AirframeClass::EngineStopped2);
                     }
-                    else if (!af->canopyState)
+                    else if ( not af->canopyState)
                     {
                         af->CanopyToggle();
                     }
@@ -1755,7 +1755,7 @@ void DigitalBrain::TakeOff()
 
     flight_leader = (AircraftClass*)self->GetCampaignObject()->GetComponentNumber(0); //RAS
 
-    if (!Airbase or !Airbase->IsObjective() or !Airbase->brain)
+    if ( not Airbase or !Airbase->IsObjective() or !Airbase->brain)
     {
         //need to find the airbase or we don't know where to go
         // JB carrier ShiWarning("Show this to Dave P. (no airbase)");
@@ -1803,7 +1803,7 @@ void DigitalBrain::TakeOff()
     }
 
     // JPO - should we run preflight checks...
-    if (!IsSetATC(DonePreflight) and curTaxiPoint)
+    if ( not IsSetATC(DonePreflight) and curTaxiPoint)
     {
         VU_TIME t2t; // time to takeoff
 
@@ -1859,7 +1859,7 @@ void DigitalBrain::TakeOff()
                 SetATCFlag(DonePreflight);
                 return;
             }
-            else if (!PreFlight())
+            else if ( not PreFlight())
             {
                 // slow preflight
                 return;
@@ -1909,7 +1909,7 @@ void DigitalBrain::TakeOff()
     groundAvoidNeeded = FALSE;
 
     //RAS - This doesn't run on every airbase spawning aircraft, should it?  <== No
-    if (!curTaxiPoint)
+    if ( not curTaxiPoint)
     {
         // Spawning
         Flight flight = (Flight)self->GetCampaignObject();
@@ -1990,9 +1990,9 @@ void DigitalBrain::TakeOff()
         case noATC:
 
             /*AI_MESSAGE(0,"AI - NO_ATC");*/
-            if (!self->IsSetFlag(ON_GROUND))
+            if ( not self->IsSetFlag(ON_GROUND))
             {
-                // ShiAssert(!"Show this to Dave P. (not on ground)");
+                // ShiAssert( not "Show this to Dave P. (not on ground)");
                 if (isWing)
                     self->curWaypoint = self->curWaypoint->GetNextWP();
                 else
@@ -2017,7 +2017,7 @@ void DigitalBrain::TakeOff()
                     TranslatePointData(Airbase, curTaxiPoint, &tx, &ty);
                     SetTrackPoint(tx, ty);
 
-                    if (!isWing)
+                    if ( not isWing)
                     {
                         SendATCMsg(tReqTakeoff);
                     }
@@ -2055,7 +2055,7 @@ void DigitalBrain::TakeOff()
                     SetTrackPoint(tx, ty);
                     waittimer = SimLibElapsedTime;
 
-                    if (!isWing)
+                    if ( not isWing)
                     {
                         SendATCMsg(atcstatus);
                     }
@@ -2090,7 +2090,7 @@ void DigitalBrain::TakeOff()
 
                     waittimer = SimLibElapsedTime;
 
-                    if (!isWing)
+                    if ( not isWing)
                     {
                         SendATCMsg(tReqTakeoff);
                     }
@@ -2110,7 +2110,7 @@ void DigitalBrain::TakeOff()
                     // waittimer = SimLibElapsedTime + TAKEOFF_TIME_DELTA;
                     waittimer = SimLibElapsedTime + (VU_TIME)(HurryUp * CampaignSeconds); // FRB - speed up moving
 
-                    if (!isWing)
+                    if ( not isWing)
                     {
                         SendATCMsg(tReqTakeoff);
                     }
@@ -2309,7 +2309,7 @@ void DigitalBrain::TakeOff()
                     CalculateTaxiSpeed(HurryUp);  // 17JAN04 - FRB - Expedite takeoff
                     curTaxiPoint++;
                 }
-                else if (!self->af->IsSet(AirframeClass::OverRunway))
+                else if ( not self->af->IsSet(AirframeClass::OverRunway))
                 {
                     OffsetTrackPoint(0.0F, centerRunway);
                     curTaxiPoint++;
@@ -2342,7 +2342,7 @@ void DigitalBrain::TakeOff()
             // which are already in the air (bad trackX and Y?).  They never
             // get out of this take runway cycle.   If we find ourselves in
             // this state go to take off since we're off already....
-            if (!self->OnGround())
+            if ( not self->OnGround())
             {
                 ShiWarning("Show this to Dave P. (not on ground)");
                 waittimer = 0;
@@ -2411,7 +2411,7 @@ void DigitalBrain::TakeOff()
             elements = self->GetCampaignObject()->NumberOfComponents();
 
             // 2001-10-16 M.N. added elemleader check -> perform a 90° base leg until element lead has taken off
-            if (!isWing and elements > 1) // Code for the flightlead
+            if ( not isWing and elements > 1) // Code for the flightlead
             {
                 // wingy or lead
                 AircraftClass *elemleader =
@@ -2422,7 +2422,7 @@ void DigitalBrain::TakeOff()
                     airbase = self->LandingAirbase(); // JPO - now we set to go home
                     ObjectiveClass *Airbase = (ObjectiveClass *)vuDatabase->Find(airbase);
 
-                    if (!Airbase or elemleader->af->z - elemleader->af->groundZ < -50.0F) // #3 has taken off -> lead continue to next WP
+                    if ( not Airbase or elemleader->af->z - elemleader->af->groundZ < -50.0F) // #3 has taken off -> lead continue to next WP
                     {
                         onStation = NotThereYet;
                         SelectNextWaypoint();
@@ -2484,13 +2484,13 @@ void DigitalBrain::TakeOff()
                             AircraftClass *wingman = NULL;
                             FlightClass *flight = NULL;
                             flight = (FlightClass*)self->GetCampaignObject();
-                            ShiAssert(!F4IsBadReadPtr(flight, sizeof(FlightClass)));
+                            ShiAssert( not F4IsBadReadPtr(flight, sizeof(FlightClass)));
                             float factor = 0.0F;
 
                             if (flight)
                             {
                                 wingman = (AircraftClass*)flight->GetComponentNumber(1); // my wingy = 1 in each case
-                                ShiAssert(!F4IsBadReadPtr(wingman, sizeof(AircraftClass)));
+                                ShiAssert( not F4IsBadReadPtr(wingman, sizeof(AircraftClass)));
 
                                 if (wingman and wingman->af and (wingman->af->z - wingman->af->groundZ < -200.0F)) // My wingman has flown out
                                     factor = 45.0F * DTR;
@@ -2567,7 +2567,7 @@ void DigitalBrain::TakeOff()
                 waittimer = CalcWaitTime(Airbase->brain);
             }
 
-            if (!isWing or (flightLead and flightLead->OnGround()))
+            if ( not isWing or (flightLead and flightLead->OnGround()))
             {
                 while (Airbase->brain->IsOnRunway(trackX, trackY))
                 {
@@ -2647,11 +2647,11 @@ int DigitalBrain::WingmanTakeRunway(ObjectiveClass *Airbase, AircraftClass *Flig
 
             TranslatePointData(Airbase, pt, &tempX, &tempY);
 
-            if (!Airbase->brain->IsOnRunway(tempX, tempY))
+            if ( not Airbase->brain->IsOnRunway(tempX, tempY))
                 return TRUE;
-            else if (!FlightLead)
+            else if ( not FlightLead)
                 return TRUE;
-            else if (!FlightLead->OnGround())
+            else if ( not FlightLead->OnGround())
                 return TRUE;
             else if (Airbase->brain->IsOnRunway(FlightLead)  and Airbase->brain->UseSectionTakeoff((Flight)self->GetCampaignObject(), rwIndex))
                 return TRUE;
@@ -2667,7 +2667,7 @@ int DigitalBrain::WingmanTakeRunway(ObjectiveClass *Airbase, AircraftClass *Flig
 
             TranslatePointData(Airbase, pt, &tempX, &tempY);
 
-            if (!Airbase->brain->IsOnRunway(tempX, tempY))
+            if ( not Airbase->brain->IsOnRunway(tempX, tempY))
                 return TRUE;
 
             //RAS - 16Oct04 - Get aircraft on runway and airborne sooner by checking to see if aircraft in
@@ -2702,7 +2702,7 @@ int DigitalBrain::WingmanTakeRunway(ObjectiveClass *Airbase, AircraftClass *Flig
 
             TranslatePointData(Airbase, pt, &tempX, &tempY);
 
-            if (!Airbase->brain->IsOnRunway(tempX, tempY))
+            if ( not Airbase->brain->IsOnRunway(tempX, tempY))
                 return TRUE;
             else if (leader and Airbase->brain->IsOnRunway(leader)  and Airbase->brain->UseSectionTakeoff((Flight)self->GetCampaignObject(), rwIndex))
                 return TRUE;
@@ -2726,9 +2726,9 @@ int DigitalBrain::WingmanTakeRunway(ObjectiveClass *Airbase, AircraftClass *Flig
                 if (FlightLead->GetVt() > 50 * KNOTS_TO_FTPSEC and leader and leader->GetVt() > 40.0 * KNOTS_TO_FTPSEC)
                     return TRUE;
             }
-            else if (!leader)
+            else if ( not leader)
                 return TRUE;
-            else if (!leader->OnGround())
+            else if ( not leader->OnGround())
                 return TRUE;
             else if (Airbase->brain->IsOnRunway(leader) and Airbase->brain->UseSectionTakeoff((Flight)self->GetCampaignObject(), rwIndex))
                 return TRUE;
@@ -2799,7 +2799,7 @@ void DigitalBrain::DealWithBlocker(SimBaseClass *inTheWay, ObjectiveClass *Airba
             extraWait += (rwtime - SimLibElapsedTime) / 20; // FRB - Could be a long extra wait (was 20)
     }
 
-    if (!inTheWay2 and (!inTheWay->IsAirplane() or ((AircraftClass*)inTheWay)->DBrain()->RwTime() > rwtime))
+    if ( not inTheWay2 and ( not inTheWay->IsAirplane() or ((AircraftClass*)inTheWay)->DBrain()->RwTime() > rwtime))
     {
         SetTrackPoint(tmpX, tmpY);
         waittimer = CalcWaitTime(Airbase->brain);
@@ -2813,7 +2813,7 @@ void DigitalBrain::DealWithBlocker(SimBaseClass *inTheWay, ObjectiveClass *Airba
             CalculateTaxiSpeed(MoveAlong);
         }
     }
-    else if ((isWing and (!inTheWay2 or inTheWay2->GetCampaignObject() not_eq self->GetCampaignObject() ||
+    else if ((isWing and ( not inTheWay2 or inTheWay2->GetCampaignObject() not_eq self->GetCampaignObject() ||
                          self->vehicleInUnit < ((AircraftClass*)inTheWay2)->vehicleInUnit)) ||
              (inTheWay->GetVt() < 5.0F and SimLibElapsedTime > waittimer + extraWait) ||
              (inTheWay->IsAirplane() and ((AircraftClass*)inTheWay)->DBrain()->RwTime() > rwtime))
@@ -2827,7 +2827,7 @@ void DigitalBrain::DealWithBlocker(SimBaseClass *inTheWay, ObjectiveClass *Airba
             default:
             case CritTaxiPt:
             case TaxiPt:
-                if (!BigBoy) // Skip the dance for big boys
+                if ( not BigBoy) // Skip the dance for big boys
                 {
                     while (CheckTaxiTrackPoint() == inTheWay)
                     {
@@ -3043,7 +3043,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
             //just taxi along
             pt = GetPrevTaxiPt(curTaxiPoint);    // 17JAN04 - FRB - Get taxi pt (prev pt may be parking pt)
 
-            if (!pt)
+            if ( not pt)
             {
                 // no more TaxiPt's, must be at entrance to runway
                 SetTaxiPoint(GetPrevPtLoop(curTaxiPoint));
@@ -3104,7 +3104,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
 
                     //end RAS
                 }
-                else if (!Airbase->brain->IsOnRunway(GetPrevPtLoop(GetPrevPtLoop(curTaxiPoint))))
+                else if ( not Airbase->brain->IsOnRunway(GetPrevPtLoop(GetPrevPtLoop(curTaxiPoint))))
                 {
                     SetTaxiPoint(GetPrevPtLoop(GetPrevPtLoop(curTaxiPoint)));
                     float tx, ty;
@@ -3137,7 +3137,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
                 float tempX, tempY;
                 TranslatePointData(Airbase, pt, &tempX, &tempY);
 
-                if (!Airbase->brain->IsOnRunway(tempX, tempY))
+                if ( not Airbase->brain->IsOnRunway(tempX, tempY))
                 {
                     SetTaxiPoint(pt);
                     SetTrackPoint(tempX, tempY);
@@ -3166,7 +3166,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
                 //waittimer = CalcWaitTime(Airbase->brain);
                 waittimer = 0;
             }
-            else if (!Airbase->brain->IsOnRunway(GetPrevPtLoop(GetPrevPtLoop(curTaxiPoint))))
+            else if ( not Airbase->brain->IsOnRunway(GetPrevPtLoop(GetPrevPtLoop(curTaxiPoint))))
             {
                 SetTaxiPoint(GetPrevPtLoop(GetPrevPtLoop(curTaxiPoint)));
                 float tx, ty;
@@ -3281,7 +3281,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
                 waittimer = 0;
                 break;
             }
-            else if (!isWing and !IsSetATC(PermitRunway))
+            else if ( not isWing and !IsSetATC(PermitRunway))
             {
                 if (self->af->IsSet(AirframeClass::OverRunway))
                 {
@@ -3357,7 +3357,7 @@ void DigitalBrain::TaxiBack(ObjectiveClass *Airbase)
 
     if (self not_eq SimDriver.GetPlayerEntity())
     {
-        if (!curTaxiPoint or PtDataTable[curTaxiPoint].flags & PT_LAST)
+        if ( not curTaxiPoint or PtDataTable[curTaxiPoint].flags & PT_LAST)
         {
             // 02JAN04 - FRB - Make parking spot available for others
             PtDataTable[curTaxiPoint].flags and_eq compl PT_OCCUPIED;
@@ -3383,7 +3383,7 @@ void DigitalBrain::SendATCMsg(AtcStatusEnum msg)
     //hack so we don't send atc messages to taskforces
     CampBaseClass *atc = (CampBaseClass*)vuDatabase->Find(airbase);
 
-    if (!atc or !atc->IsObjective())
+    if ( not atc or !atc->IsObjective())
     {
         return;
     }
@@ -3484,7 +3484,7 @@ float DigitalBrain::CalculateTaxiSpeed(float time)  // to T/O  Need to fix TaxiP
         //how fast do we go to cover the distance in (time) seconds?
         desiredSpeed = (float)sqrt(dx * dx + dy * dy) / time;
 
-        ShiAssert(!_isnan(desiredSpeed))
+        ShiAssert( not _isnan(desiredSpeed))
     }
     else
         desiredSpeed = 5.0F * KNOTS_TO_FTPSEC;
@@ -3776,13 +3776,13 @@ int DigitalBrain::ReadyToGo(void)
     ObjectiveClass *Airbase = (ObjectiveClass *)vuDatabase->Find(airbase);
     AircraftClass *wingman = NULL;
 
-    if (!Airbase)
+    if ( not Airbase)
         return TRUE;
 
-    if (!isWing and !IsSetATC(PermitTakeoff))
+    if ( not isWing and !IsSetATC(PermitTakeoff))
         return FALSE;
 
-    if ((!isWing or self->vehicleInUnit == 2)  and 
+    if (( not isWing or self->vehicleInUnit == 2)  and 
         rwtime + WINGMAN_WAIT_TIME < SimLibElapsedTime and  // FRB - check WINGMAN_WAIT_TIME value (is 30 secs)
         waittimer <= SimLibElapsedTime)
     {
@@ -3798,7 +3798,7 @@ int DigitalBrain::ReadyToGo(void)
             {
                 runway = Airbase->brain->IsOnRunway(wingman);
 
-                if (!wingman->OnGround())
+                if ( not wingman->OnGround())
                     retval = TRUE;
                 else if (wingman->GetVt() > 40.0F * KNOTS_TO_FTPSEC and (runway == rwIndex or Airbase->brain->GetOppositeRunway(runway) == rwIndex))
                     retval = TRUE;
@@ -3876,7 +3876,7 @@ BOOL DigitalBrain::CheckTaxiCollision(void)
     while (campBase)
     {
         // skip campaign unit if no sim components
-        if (!campBase->GetComponents())
+        if ( not campBase->GetComponents())
         {
             campBase = (CampBaseClass*) gridIt.GetNext();
             continue;
@@ -3892,7 +3892,7 @@ BOOL DigitalBrain::CheckTaxiCollision(void)
             // Ourself
             // Not on ground
             // no drawpointer
-            if (!testObject->OnGround() ||
+            if ( not testObject->OnGround() ||
                 testObject == self ||
                 !testObject->drawPointer)
             {
@@ -3978,7 +3978,7 @@ BOOL DigitalBrain::SimpleGroundTrack(float speed)
             // int taxiPoint = GetPrevPtLoop(curTaxiPoint);
             int taxiPoint = GetPrevTaxiPt(curTaxiPoint); // 03JAN04 - FRB - Skip Parking spots
 
-            if (!taxiPoint)
+            if ( not taxiPoint)
                 taxiPoint = GetPrevPtLoop(curTaxiPoint);
 
             ObjectiveClass *Airbase = (ObjectiveClass *)vuDatabase->Find(airbase);
@@ -4046,7 +4046,7 @@ BOOL DigitalBrain::SimpleGroundTrack(float speed)
             // int taxiPoint = GetPrevPtLoop(curTaxiPoint);
             int taxiPoint = GetPrevTaxiPt(curTaxiPoint); // 03JAN04 - FRB - Skip Parking spots
 
-            if (!taxiPoint)
+            if ( not taxiPoint)
                 taxiPoint = GetPrevPtLoop(curTaxiPoint);
 
             ObjectiveClass *Airbase = (ObjectiveClass *)vuDatabase->Find(airbase);
@@ -4074,7 +4074,7 @@ BOOL DigitalBrain::SimpleGroundTrack(float speed)
     if (self->af->GetParkType() == LargeParkPt)
         BigBoy = true;
 
-    if (!self->OnGround())
+    if ( not self->OnGround())
         return FALSE;
 
     // init the stick error
@@ -4101,7 +4101,7 @@ BOOL DigitalBrain::SimpleGroundTrack(float speed)
             // ignore objects under these conditions:
             // Ourself
             // Not on ground
-            if (!testObject->OnGround() ||
+            if ( not testObject->OnGround() ||
                 testObject == self)
             {
                 testObject = (SimBaseClass*) unitWalker.GetNext();
@@ -4177,7 +4177,7 @@ BOOL DigitalBrain::SimpleGroundTrack(float speed)
                     // int taxiPoint = GetPrevPtLoop(curTaxiPoint);
                     int taxiPoint = GetPrevTaxiPt(curTaxiPoint); // 03JAN04 - FRB - Skip Parking spots
 
-                    if (!taxiPoint)
+                    if ( not taxiPoint)
                         taxiPoint = GetPrevPtLoop(curTaxiPoint);
 
                     ObjectiveClass *Airbase = (ObjectiveClass *)vuDatabase->Find(airbase);
@@ -4331,9 +4331,9 @@ void DigitalBrain::UpdateTaxipoint(void)  // Called by Airframe.cpp, AircraftInp
 {
     // Not used by Landme.cpp
 
-    // if((!self->OnGround()) or (atcstatus == tTakeRunway))  // 07FEB04 - FRB - added atcstatus check
+    // if(( not self->OnGround()) or (atcstatus == tTakeRunway))  // 07FEB04 - FRB - added atcstatus check
     //RAS-12Nov04-If your a player then if we're on the ground, we need to update our taxi point
-    if ((!self->OnGround()) or !self->IsPlayer() and (atcstatus == tTakeRunway))
+    if (( not self->OnGround()) or !self->IsPlayer() and (atcstatus == tTakeRunway))
         return;
 
     ObjectiveClass *Airbase = (ObjectiveClass *)vuDatabase->Find(airbase);
@@ -4435,7 +4435,7 @@ static int EngineStart(AircraftClass *self)
     {
         /* RAS - not sure if this has any side effects so commenting it out for now
          //RAS-5Nov04-Set Parking Brake when Starting Engines
-         if(!self->af->IsSet((AirframeClass::WheelBrakes)))
+         if( not self->af->IsSet((AirframeClass::WheelBrakes)))
         */
         self->af->SetFlag(AirframeClass::WheelBrakes);
 
@@ -4569,7 +4569,7 @@ int DigitalBrain::PreFlight()
             break;
 
         case PreflightActions::CANOPY:
-            if (!af->canopyState)
+            if ( not af->canopyState)
             {
                 af->canopyState = true;
                 mNextPreflightAction = SimLibElapsedTime + PreFlightTable[mActionIndex].timedelay * CampaignSeconds;
@@ -4614,7 +4614,7 @@ int DigitalBrain::PreFlight()
             break;
 
         case PreflightActions::AFFLAGS:
-            if (!af->IsSet(PreFlightTable[mActionIndex].data))
+            if ( not af->IsSet(PreFlightTable[mActionIndex].data))
             {
                 af->SetFlag(PreFlightTable[mActionIndex].data);
                 mNextPreflightAction = SimLibElapsedTime + PreFlightTable[mActionIndex].timedelay * CampaignSeconds;
@@ -4623,7 +4623,7 @@ int DigitalBrain::PreFlight()
             break;
 
         case PreflightActions::POWERON:
-            if (!self->PowerSwitchOn((AircraftClass::AvionicsPowerFlags)PreFlightTable[mActionIndex].data))
+            if ( not self->PowerSwitchOn((AircraftClass::AvionicsPowerFlags)PreFlightTable[mActionIndex].data))
             {
                 self->PowerOn((AircraftClass::AvionicsPowerFlags)PreFlightTable[mActionIndex].data);
 
@@ -4672,7 +4672,7 @@ int DigitalBrain::PreFlight()
         break;
 
         case PreflightActions::EXTLON:
-            if (!self->ExtlState((AircraftClass::ExtlLightFlags)PreFlightTable[mActionIndex].data))
+            if ( not self->ExtlState((AircraftClass::ExtlLightFlags)PreFlightTable[mActionIndex].data))
             {
                 self->ExtlOn((AircraftClass::ExtlLightFlags)PreFlightTable[mActionIndex].data);
                 mNextPreflightAction = SimLibElapsedTime + PreFlightTable[mActionIndex].timedelay * CampaignSeconds;

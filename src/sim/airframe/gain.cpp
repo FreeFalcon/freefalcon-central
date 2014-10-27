@@ -87,7 +87,7 @@ void AirframeClass::Gains(void)
        //aoabias = (GRAVITY * platform->platformAngles.costhe *
      // cosphiLim / qsom + 0.1F*gearPos - clift0 * (1.0F + tefFactor * 0.05F)) / clalph0 - tefFactor + lefFactor;
 
-       if(!IsSet(InAir))
+       if( not IsSet(InAir))
        {
         float bleed = max(0.0F , min(aoabias*(vt - minVcas*KNOTS_TO_FTPSEC*0.5F)/(minVcas*KNOTS_TO_FTPSEC*0.25F), 1.0F));
         aoabias = max(0.0F,min (bleed, aoamax));
@@ -132,7 +132,7 @@ void AirframeClass::Gains(void)
 
         if (IsSet(CATLimiterIII) and limiter)
         {
-            if (alpha  < limiter->Limit(vcas) and (!gearPos or IsSet(GearBroken)))
+            if (alpha  < limiter->Limit(vcas) and ( not gearPos or IsSet(GearBroken)))
                 ClearFlag(AOACmdMode);
             else
                 SetFlag(AOACmdMode);
@@ -143,12 +143,12 @@ void AirframeClass::Gains(void)
 
             if (limiter)
             {
-                if (alpha < limiter->Limit(alpha) and (!gearPos or IsSet(GearBroken)))
+                if (alpha < limiter->Limit(alpha) and ( not gearPos or IsSet(GearBroken)))
                     ClearFlag(AOACmdMode);
                 else
                     SetFlag(AOACmdMode);
             }
-            else if (gsAvail > maxGs and (!gearPos or IsSet(GearBroken)))
+            else if (gsAvail > maxGs and ( not gearPos or IsSet(GearBroken)))
                 ClearFlag(AOACmdMode);
             else
                 SetFlag(AOACmdMode);
@@ -181,7 +181,7 @@ void AirframeClass::Gains(void)
     tp01 = 0.200F;
     zp01 = 0.900F;
 
-    if (!IsSet(Simplified) and simpleMode not_eq SIMPLE_MODE_AF)
+    if ( not IsSet(Simplified) and simpleMode not_eq SIMPLE_MODE_AF)
     {
         //tp01 *= (1.0F + (loadingFraction - 1.3F) *0.1F);
         zp01 *= (1.0F - 0.15F * (max(0.0F, 1.0F - qbar / 25.0F)) - zpdamp - max(0.0F, (loadingFraction - 1.3F) * 0.01F));
@@ -246,12 +246,12 @@ void AirframeClass::Gains(void)
     if (landingGains)
         kp05 *= auxaeroData->pitchGearGain;
 
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
     {
         kp05 *= max(0.0f, min(1.0F, (qbar - 20.0F) / 45.0F));
     }
 
-    F4Assert(!_isnan(kp05));
+    F4Assert( not _isnan(kp05));
 
     /*---------------------------------------*/
     /* roll axis gains and filter parameters */
@@ -289,7 +289,7 @@ void AirframeClass::Gains(void)
     //wy01 = (0.8F/tr01);
     wy01 = (0.3F / tr01);
 
-    if (!IsSet(Simplified) and simpleMode not_eq SIMPLE_MODE_AF)
+    if ( not IsSet(Simplified) and simpleMode not_eq SIMPLE_MODE_AF)
         wy01 *= (1.0F - loadingFraction * 0.1F);
 
     ky01 = 1.000F;

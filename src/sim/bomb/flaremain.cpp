@@ -183,7 +183,7 @@ void FlareClass::ExtraGraphics()
 
     // I-Hawk - Removed, Not used anymore
     /*
-    if(!g_bDisableMissleEngGlow) // MLR 2003-11-15 disable that shit-o star effect
+    if( not g_bDisableMissleEngGlow) // MLR 2003-11-15 disable that shit-o star effect
     {
      OTWDriver.InsertObject(trailGlow);
      OTWDriver.InsertObject(trailSphere);
@@ -270,7 +270,7 @@ void FlareClass::InitTrail(void)
     displayIndex = GetClassID(DOMAIN_AIR, CLASS_SFX, TYPE_FLARE,
                               STYPE_FLARE1, SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
 
-    if (!drawPointer or drawPointer == (DrawableObject*)0xbaadf00d) // FRB
+    if ( not drawPointer or drawPointer == (DrawableObject*)0xbaadf00d) // FRB
     {
         drawPointer = NULL;
     }

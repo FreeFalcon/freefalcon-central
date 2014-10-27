@@ -430,7 +430,7 @@ void FillListBoxWithACTypes(C_ListBox *lbox)
         {
             ID += VU_LAST_ENTITY_TYPE;
 
-            if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+            if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
             {
                 if (FindSquadronType(ID, FalconLocalSession->GetTeam()))
                     lbox->AddItem(ID, C_TYPE_ITEM, DFAIPlanes[i].TextID);
@@ -499,7 +499,7 @@ void JoinDogfightCB(long, short hittype, C_Base *)
     if (gCommsMgr == NULL)
         return;
 
-    if (!gCommsMgr->Online())
+    if ( not gCommsMgr->Online())
     {
         win = gMainHandler->FindWindow(PB_WIN);
 
@@ -511,7 +511,7 @@ void JoinDogfightCB(long, short hittype, C_Base *)
 
     game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
 
-    if (!game)
+    if ( not game)
         return;
 
     win = gMainHandler->FindWindow(INFO_WIN);
@@ -645,7 +645,7 @@ void AddDogfightPlayerCB(long ID, short hittype, C_Base *)
         return;
 
     // If we're not yet in a game, this equates to host
-    if (!FalconLocalGame or FalconLocalSession->Game() == vuPlayerPoolGroup)
+    if ( not FalconLocalGame or FalconLocalSession->Game() == vuPlayerPoolGroup)
         return;
 
     LoadDfPlanes();
@@ -889,7 +889,7 @@ void SelectDogfightItemCB(long, short hittype, C_Base *control)
 
     tree = (C_TreeList *)control;
 
-    if (!tree)
+    if ( not tree)
         return;
 
     item = tree->GetLastItem();
@@ -1018,7 +1018,7 @@ C_Dog_Flight *MakeFlight(C_TreeList *list, Flight flight)
     {
         dark = (IMAGE_RSC*)iconresdark->Find(DFAIPlanes[idx].IconID);
 
-        if (!dark or dark->Header->Type not_eq _RSC_IS_IMAGE_)
+        if ( not dark or dark->Header->Type not_eq _RSC_IS_IMAGE_)
             dark = NULL;
     }
 
@@ -1026,7 +1026,7 @@ C_Dog_Flight *MakeFlight(C_TreeList *list, Flight flight)
     {
         lite = (IMAGE_RSC*)iconreslite->Find(DFAIPlanes[idx].IconID);
 
-        if (!lite or lite->Header->Type not_eq _RSC_IS_IMAGE_)
+        if ( not lite or lite->Header->Type not_eq _RSC_IS_IMAGE_)
             lite = NULL;
     }
 
@@ -1062,7 +1062,7 @@ void UpdateFlight(C_Dog_Flight *newflt, Flight flight)
     IMAGE_RSC *dark = NULL, *lite = NULL;
     _TCHAR callbuf[40];
 
-    if (!newflt)
+    if ( not newflt)
         return;
 
     // 2002-03-02 ADDED BY S.G. HACK so MP dogfights client sets their class_ptr since they don't get messages to set it.
@@ -1093,7 +1093,7 @@ void UpdateFlight(C_Dog_Flight *newflt, Flight flight)
     {
         lite = (IMAGE_RSC*)iconreslite->Find(DFAIPlanes[idx].IconID);
 
-        if (!lite or lite->Header->Type not_eq _RSC_IS_IMAGE_)
+        if ( not lite or lite->Header->Type not_eq _RSC_IS_IMAGE_)
             lite = NULL;
     }
 
@@ -1131,7 +1131,7 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
     ID  or_eq  flight->callsign_num << 8;
     ID  or_eq  (ac + 1);
 
-    if (!list)
+    if ( not list)
         return(NULL);
 
     item = list->Find(ID);
@@ -1142,7 +1142,7 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
 
         if (pilot)
         {
-            if (!pilot->GetPlayer())
+            if ( not pilot->GetPlayer())
             {
                 if (pilot->GetSkill() not_eq flight->pilots[ac])
                 {
@@ -1177,7 +1177,7 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
 
     flt = list->Find(ID & 0xffffff00);
 
-    if (!flt)
+    if ( not flt)
         return(NULL);
 
     if (flight->player_slots[ac] not_eq 255)
@@ -1199,7 +1199,7 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
                     session = (FalconSessionEntity*) sit.GetNext();
             }
 
-            if (!found)
+            if ( not found)
                 return(NULL);
 
             pilot = MakePilot(list, flight, session, ac, -1);
@@ -1218,7 +1218,7 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
         pilot->SetPlayer(0);
     }
 
-    if (!pilot)
+    if ( not pilot)
         return(NULL);
 
     item = list->CreateItem(ID, C_TYPE_ITEM, pilot);
@@ -1266,7 +1266,7 @@ C_Dog_Flight *AddDogfightFlight(C_TreeList *list, Flight flight)
     ID  or_eq  flight->callsign_id << 16;
     ID  or_eq  flight->callsign_num << 8;
 
-    if (!list)
+    if ( not list)
         return(NULL);
 
     item = list->Find(ID);
@@ -1279,7 +1279,7 @@ C_Dog_Flight *AddDogfightFlight(C_TreeList *list, Flight flight)
 
     dfflight = MakeFlight(list, flight);
 
-    if (!dfflight)
+    if ( not dfflight)
         return(NULL);
 
     item = list->CreateItem(ID, C_TYPE_MENU, dfflight);
@@ -1393,12 +1393,12 @@ void BuildDFPlayerList()
     C_Dog_Flight *furflt, *teamflt;
     long timestamp;
 
-    if (!gMainHandler)
+    if ( not gMainHandler)
         return;
 
     win = gMainHandler->FindWindow(DF_TEAM_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     ClearAllTreeStates();
@@ -1613,7 +1613,7 @@ static void SelectDogfightGameCB(long, short hittype, C_Base *control)
 
     if (item->Type_ == C_TYPE_MENU)
     {
-        if (!item->Item_->GetState())
+        if ( not item->Item_->GetState())
         {
             ((C_TreeList *)control)->SetAllControlStates(0, ((C_TreeList *)control)->GetRoot());
             item->Item_->SetState(1);
@@ -1684,7 +1684,7 @@ void AddDogfightFlightCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (!FalconLocalGame or FalconLocalSession->Game() == vuPlayerPoolGroup)
+    if ( not FalconLocalGame or FalconLocalSession->Game() == vuPlayerPoolGroup)
         return;
 
     LoadDfPlanes();
@@ -1830,7 +1830,7 @@ void RemoveAICB(long ID, short hittype, C_Base *)
 
     flight = (Flight)vuDatabase->Find(gCurrentFlightID);
 
-    if (!flight)
+    if ( not flight)
         return;
 
     if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
@@ -1954,7 +1954,7 @@ void CopyDFSettingsToWindow(void)
     C_Cursor *crsr;
     C_Clock *clk;
 
-    if (!gMainHandler)
+    if ( not gMainHandler)
         return;
 
     gMainHandler->EnterCritical();
@@ -2133,7 +2133,7 @@ void CopyDFSettingsToSelectWindow(void)
     C_Clock *clk;
     C_Cursor *crsr;
 
-    if (!gMainHandler)
+    if ( not gMainHandler)
         return;
 
     gMainHandler->EnterCritical();
@@ -2180,7 +2180,7 @@ void CopyDFSettingsFromWindow(void)
     C_Button *btn;
     C_Clock *clk;
 
-    if (!gMainHandler) return;
+    if ( not gMainHandler) return;
 
     if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
         return;
@@ -2395,7 +2395,7 @@ void LoadDogFightWindows()
     C_TimerHook *tmr;
     long ID;
 
-    if (!DFLoaded)
+    if ( not DFLoaded)
     {
         if (_LOAD_ART_RESOURCES_)
             gMainParser->LoadImageList("df_res.lst");
@@ -2404,7 +2404,7 @@ void LoadDogFightWindows()
 
         gMainParser->LoadSoundList("df_snd.lst");
 
-        if (!gDogfightBites)
+        if ( not gDogfightBites)
             gDogfightBites = gMainParser->ParseSoundBite("art\\dgft\\play\\uiddf.scf");
 
         gMainParser->LoadWindowList("df_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
@@ -2582,7 +2582,7 @@ void ClearDFTeamLists()
             list->DeleteBranch(list->GetRoot());
             list->RecalcSize();
 
-            if (!(list->GetFlags() & C_BIT_INVISIBLE))
+            if ( not (list->GetFlags() & C_BIT_INVISIBLE))
                 win->RefreshClient(list->GetClient());
         }
 
@@ -2593,7 +2593,7 @@ void ClearDFTeamLists()
             list->DeleteBranch(list->GetRoot());
             list->RecalcSize();
 
-            if (!(list->GetFlags() & C_BIT_INVISIBLE))
+            if ( not (list->GetFlags() & C_BIT_INVISIBLE))
                 win->RefreshClient(list->GetClient());
         }
 
@@ -2604,7 +2604,7 @@ void ClearDFTeamLists()
             list->DeleteBranch(list->GetRoot());
             list->RecalcSize();
 
-            if (!(list->GetFlags() & C_BIT_INVISIBLE))
+            if ( not (list->GetFlags() & C_BIT_INVISIBLE))
                 win->RefreshClient(list->GetClient());
         }
 
@@ -2615,7 +2615,7 @@ void ClearDFTeamLists()
             list->DeleteBranch(list->GetRoot());
             list->RecalcSize();
 
-            if (!(list->GetFlags() & C_BIT_INVISIBLE))
+            if ( not (list->GetFlags() & C_BIT_INVISIBLE))
                 win->RefreshClient(list->GetClient());
         }
 
@@ -2626,7 +2626,7 @@ void ClearDFTeamLists()
             list->DeleteBranch(list->GetRoot());
             list->RecalcSize();
 
-            if (!(list->GetFlags() & C_BIT_INVISIBLE))
+            if ( not (list->GetFlags() & C_BIT_INVISIBLE))
                 win->RefreshClient(list->GetClient());
         }
     }
@@ -2784,7 +2784,7 @@ void SaveItCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SAVE_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     gMainHandler->HideWindow(win);
@@ -2899,7 +2899,7 @@ static void SelectDFSettingsFileCB(long, short hittype, C_Base *control)
 
             if (btn)
             {
-                if (!btn->GetState())
+                if ( not btn->GetState())
                 {
                     tree->SetAllControlStates(0, tree->GetRoot());
                     btn->SetState(1);
@@ -2934,7 +2934,7 @@ void SelectDFGameFileCB(long, short hittype, C_Base *)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (!game)
+    if ( not game)
         return;
 
     // Request Settings here
@@ -2958,7 +2958,7 @@ void JoinRadioCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (!gCommsMgr->Online())
+    if ( not gCommsMgr->Online())
     {
         win = gMainHandler->FindWindow(PB_WIN);
 
@@ -3112,7 +3112,7 @@ static void DogfightFlyCB(long, short hittype, C_Base *)
 
     flight = FalconLocalSession->GetPlayerFlight();
 
-    if (!flight)
+    if ( not flight)
         return;
 
     // TheCampaign.MissionEvaluator->PreMissionEval(flight,FalconLocalSession->GetPilotSlot());
@@ -3121,7 +3121,7 @@ static void DogfightFlyCB(long, short hittype, C_Base *)
     flight->SetAborted(0);
     flight->SetDead(0);
 
-    if (!CompressCampaignUntilTakeoff(flight))
+    if ( not CompressCampaignUntilTakeoff(flight))
         return;
 
     // 2002-03-09 MN Send a "[Commiting now]" message to the chat windows
@@ -3155,7 +3155,7 @@ void SaveResultsFileCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SAVE_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     gMainHandler->HideWindow(win);
@@ -3265,7 +3265,7 @@ void SeeDFGamesCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (!gCommsMgr->Online())
+    if ( not gCommsMgr->Online())
         gMainHandler->EnableWindowGroup(6001);
 
     control->Parent_->HideCluster(control->GetUserNumber(1));
@@ -3300,12 +3300,12 @@ void DeleteCurrentFileCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(DF_LOAD_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     gMainHandler->HideWindow(control->Parent_); // Close Verify Window
 
-    if (!CheckExclude(gCurDogfightFile, FalconCampUserSaveDirectory, DFExcludeList, "dfs"))
+    if ( not CheckExclude(gCurDogfightFile, FalconCampUserSaveDirectory, DFExcludeList, "dfs"))
     {
         DeleteFile(gCurDogfightFile);
         _tcscpy(gCurDogfightFile, FalconCampUserSaveDirectory);
@@ -3337,7 +3337,7 @@ void DeleteVerifyFileCB(long, short hittype, C_Base *)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (!CheckExclude(gCurDogfightFile, FalconCampUserSaveDirectory, DFExcludeList, "dfs"))
+    if ( not CheckExclude(gCurDogfightFile, FalconCampUserSaveDirectory, DFExcludeList, "dfs"))
         VerifyDelete(0, DeleteCurrentFileCB, CloseWindowCB);
 }
 

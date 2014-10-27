@@ -58,7 +58,7 @@ void CDXEngine::LoadTexture(char *FileName)
 
 
     // ok...The surface manager
-    if (!Ts) Ts = TexturesList = new CTextureSurface();
+    if ( not Ts) Ts = TexturesList = new CTextureSurface();
     else
     {
         // look for last texture manager
@@ -90,7 +90,7 @@ void CDXEngine::LoadTexture(char *FileName)
     fp = fopen(Path, "r");
 
     // if not found return
-    if (!fp) return;
+    if ( not fp) return;
 
     char *Name;
     int  b;
@@ -100,7 +100,7 @@ void CDXEngine::LoadTexture(char *FileName)
     while (1)
     {
         // if EOF exit here
-        if (!fgets(Buffer, sizeof Buffer, fp))
+        if ( not fgets(Buffer, sizeof Buffer, fp))
         {
             fclose(fp);
             return;
@@ -117,7 +117,7 @@ void CDXEngine::LoadTexture(char *FileName)
         Name = strtok(&Buffer[b], "=\n");
 
         // Check if Unit Command
-        if (!strcmp(Name, "Unit"))
+        if ( not strcmp(Name, "Unit"))
         {
             Unit = TokenF(0);
             continue;
@@ -170,7 +170,7 @@ DWORD CDXEngine::GetTextureHandle(char *TexName)
         while (Ti)
         {
             // if found, return the surface handle
-            if (!strcmp(Ti->Name, TexName)) return Ts->Tex.TexHandle();
+            if ( not strcmp(Ti->Name, TexName)) return Ts->Tex.TexHandle();
 
             // else next item
             Ti = Ti->Next;
@@ -201,7 +201,7 @@ void CDXEngine::SetupTexturesOnDevice(void)
 
 void CDXEngine::CleanUpTexturesOnDevice(void)
 {
-    if (!TexturesList)
+    if ( not TexturesList)
         return;
 
     CTextureSurface *Ts = TexturesList;
@@ -226,7 +226,7 @@ void CDXEngine::CleanUpTexturesOnDevice(void)
 
 void CDXEngine::DX2D_GetTextureCoords(CTextureItem *Ti, CDrawBaseItem *Item)
 {
-    if (!Ti) return;
+    if ( not Ti) return;
 
     // Assign vertices of the Passed texture
     for (int a = 0; a < 4; a++)
@@ -240,7 +240,7 @@ void CDXEngine::DX2D_GetTextureCoords(CTextureItem *Ti, CDrawBaseItem *Item)
 
 void CDXEngine::DX2D_GetTextureUV(CTextureItem *Ti, DWORD Index, float &u, float &v)
 {
-    if (!Ti) return;
+    if ( not Ti) return;
 
     u = Ti->TuTv[Index][0];
     v = Ti->TuTv[Index][1];
@@ -265,7 +265,7 @@ CTextureItem *CDXEngine::DX2D_GetTextureItem(char *TexName)
         while (Ti)
         {
             // if found, assign coords and exit
-            if (!strcmp(Ti->Name, TexName)) return(Ti);
+            if ( not strcmp(Ti->Name, TexName)) return(Ti);
 
             // else next item
             Ti = Ti->Next;
@@ -373,7 +373,7 @@ bool CDXEngine::DX2D_GetVisibility(D3DXVECTOR3 *Pos, float Radius, DWORD Flags)
     // get the position and make it camera relative
     XMMPos.Xmm = _mm_loadu_ps((float*)Pos);
 
-    if (!(Flags & CAMERA_VERTICES)) XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
+    if ( not (Flags & CAMERA_VERTICES)) XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
 
     // Check for object visibility, return NULL is not visible
     m_pD3DD->ComputeSphereVisibility((D3DVECTOR*)&XMMPos.d3d, &Radius2D, 1, 0, &ClipResult);
@@ -406,7 +406,7 @@ float CDXEngine::DX2D_GetDistance(D3DXVECTOR3 *Pos, float Radius, DWORD Flags)
     // get the position and make it camera relative
     XMMPos.Xmm = _mm_loadu_ps((float*)Pos);
 
-    if (!(Flags & CAMERA_VERTICES))XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
+    if ( not (Flags & CAMERA_VERTICES))XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
 
     // Check for object visibility, return NULL is not visible
     m_pD3DD->ComputeSphereVisibility((D3DVECTOR*)&XMMPos.d3d, &Radius2D, 1, 0, &ClipResult);
@@ -424,7 +424,7 @@ float CDXEngine::DX2D_GetDistance(D3DXVECTOR3 *Pos, DWORD Flags)
     // get the position and make it camera relative
     XMMPos.Xmm = _mm_loadu_ps((float*)Pos);
 
-    if (!(Flags & CAMERA_VERTICES))XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
+    if ( not (Flags & CAMERA_VERTICES))XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
 
     // setup the DISTANCE FROM CAMERA
     XMMStore.Xmm = _mm_mul_ps(XMMPos.Xmm, XMMPos.Xmm);
@@ -495,7 +495,7 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
     DWORD &VbIndex = Dyn2DVertexBuffer[VBSelected].LastIndex;
 
     // if no more space, exit
-    if (!CheckBufferSpace(VbIndex, 4)) return;
+    if ( not CheckBufferSpace(VbIndex, 4)) return;
 
     // Get Distance from a previous test if POLY DECLARED VISIBLE, or calcualte if from scratch
     float Distance;
@@ -632,7 +632,7 @@ void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVE
     DWORD &VbIndex = Dyn2DVertexBuffer[VBSelected].LastIndex;
 
     // if no more space, exit
-    if (!CheckBufferSpace(VbIndex, 3)) return;
+    if ( not CheckBufferSpace(VbIndex, 3)) return;
 
     // Get Distance from a previous test if POLY DECLARED VISIBLE, or calcualte if from scratch
     float Distance = (Flags & POLY_VISIBLE) ? TestDistance : DX2D_GetDistance(Pos, Radius);
@@ -722,7 +722,7 @@ void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVER
     DWORD &VbIndex = Dyn2DVertexBuffer[VBSelected].LastIndex;
 
     // if no more space, exit
-    if (!CheckBufferSpace(VbIndex, 2)) return;
+    if ( not CheckBufferSpace(VbIndex, 2)) return;
 
     // Get Distance from a previous test if POLY DECLARED VISIBLE, or calcualte if from scratch
     float Distance;
@@ -844,7 +844,7 @@ void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDY
     DWORD &VbIndex = Dyn2DVertexBuffer[VBSelected].LastIndex;
 
     // if no more space, exit
-    if (!CheckBufferSpace(VbIndex, 1)) return;
+    if ( not CheckBufferSpace(VbIndex, 1)) return;
 
     // Get Distance from a previous test if POLY DECLARED VISIBLE, or calcualte if from scratch
     float Distance;
@@ -958,7 +958,7 @@ void CDXEngine::DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
     DWORD &VbIndex = Dyn2DVertexBuffer[VBSelected].LastIndex;
 
     // if no more space, exit
-    if (!CheckBufferSpace(VbIndex, Vertices)) return;
+    if ( not CheckBufferSpace(VbIndex, Vertices)) return;
 
     // Get Distance from a previous test if POLY DECLARED VISIBLE, or calcualte if from scratch
     float Distance = (Flags & POLY_VISIBLE) ? TestDistance : DX2D_GetDistance(Pos, Radius);
@@ -1122,7 +1122,7 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
         if (Draw.Flags & POLY_3DOBJECT)
         {
             //if 1st item, return it
-            if (!Index) return Draw.Next;
+            if ( not Index) return Draw.Next;
             else return Start;
         }
 
@@ -1130,7 +1130,7 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
         if (Draw.Flags & POLY_LINE)
         {
             // if it was not a Line mode, close here
-            if (!LineMode) return Start;
+            if ( not LineMode) return Start;
 
             //  if a line Tape
             if (Draw.Flags & POLY_TAPE) DrawIndexes[Index++] = (unsigned short)Draw.Index, DrawIndexes[Index++] = (unsigned short)Draw.Index2;
@@ -1486,7 +1486,7 @@ void CDXEngine::DX2D_SetViewMode(void)
         case DX_TV:
 
             // FRB - B&W
-            if ((g_bGreyMFD) and (!bNVGmode))
+            if ((g_bGreyMFD) and ( not bNVGmode))
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, 0x00a0a0a0);
             else
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, 0x0000a000 /*NVG_T_FACTOR*/);
@@ -1551,7 +1551,7 @@ void CDXEngine::DX2D_Flush2DObjects(void)
     bool Mode_2D = false, Mode_3D = false;
 
     // if no 2D objects to Draw, exit here
-    if (!Total2DItems) return;
+    if ( not Total2DItems) return;
 
     // Set the View Mode for the 2D stuff
     DX2D_SetViewMode();
@@ -1627,7 +1627,7 @@ void CDXEngine::DX2D_Flush2DObjects(void)
                 ////////////////// DRAWING A 2D OBJECT HERE ////////////////////////////////
 
                 // if not already in 2D mode, set the 2D drawing parameters
-                if (!Mode_2D)
+                if ( not Mode_2D)
                 {
                     DX2D_SetViewMode();
                     LastTexHandle = -1;
@@ -1805,13 +1805,13 @@ void CDXEngine::Draw3DPoint(D3DVECTOR *WorldPos, DWORD Color, bool Emissive, boo
 {
 
     // check for Buffer locked
-    if (!TheVbManager.SimpleBuffer.VbPtr) TheVbManager.OpenSimpleBuffer();
+    if ( not TheVbManager.SimpleBuffer.VbPtr) TheVbManager.OpenSimpleBuffer();
 
     // Get the appropriate index list in the buffer
     DWORD Index = POINTS_OFFSET + TheVbManager.SimpleBuffer.Points;
     D3DSIMPLEVERTEX *VPtr = &TheVbManager.SimpleBuffer.VbPtr[Index];
 
-    if (!CameraSpace)
+    if ( not CameraSpace)
     {
         // make it in camera space
         _asm
@@ -1855,13 +1855,13 @@ void CDXEngine::Draw3DLine(D3DVECTOR *WorldStart, D3DVECTOR *WorldEnd, DWORD Col
 {
 
     // check for Buffer locked
-    if (!TheVbManager.SimpleBuffer.VbPtr) TheVbManager.OpenSimpleBuffer();
+    if ( not TheVbManager.SimpleBuffer.VbPtr) TheVbManager.OpenSimpleBuffer();
 
     // Get the appropriate index list in the buffer
     DWORD Index = LINES_OFFSET + TheVbManager.SimpleBuffer.Lines * 2;
     D3DSIMPLEVERTEX *VPtr = &TheVbManager.SimpleBuffer.VbPtr[Index];
 
-    if (!CameraSpace)
+    if ( not CameraSpace)
     {
         // make it in camera space
         _asm
@@ -2075,7 +2075,7 @@ void CDXEngine::DrawBlip(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const P
     CurrentLOD = objInst->ParentObject->ChooseLOD(LODRange , &LODused, &MaxLODRange);
 
     // if not a lod persent, end here
-    if (!CurrentLOD) return;
+    if ( not CurrentLOD) return;
 
     // ok assign The Model
     Model = (DxDbHeader*)CurrentLOD->root;
@@ -2140,7 +2140,7 @@ void CDXEngine::FlushBlips(void)
     {
 
         // Consistency Check
-        if (!objInst) continue;
+        if ( not objInst) continue;
 
         // assign for engine use
         m_TheObjectInstance = objInst;
@@ -2149,7 +2149,7 @@ void CDXEngine::FlushBlips(void)
         TheVbManager.GetModelData(m_VB, LodID);
 
         // Consistency Check
-        if (!m_VB.Valid) continue;
+        if ( not m_VB.Valid) continue;
 
         // Ok... transform the object
         m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&AppliedState);
@@ -2189,7 +2189,7 @@ void CDXEngine::FlushBlips(void)
                                             break;
 
                 case DX_SURFACE: // Setup the Texture setup the Texture to be used
-                        if (!DofLevel) DrawBlitNode();
+                        if ( not DofLevel) DrawBlitNode();
 
                     break;
 

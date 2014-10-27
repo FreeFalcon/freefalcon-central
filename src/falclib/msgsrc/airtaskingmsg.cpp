@@ -45,7 +45,7 @@ int FalconAirTaskingMessage::Process(uchar autodisp)
         return -1;
     }
 
-    if (!TeamInfo[dataBlock.team]->atm or !TeamInfo[dataBlock.team]->atm->IsLocal())
+    if ( not TeamInfo[dataBlock.team]->atm or !TeamInfo[dataBlock.team]->atm->IsLocal())
     {
         return -1;
     }

@@ -377,7 +377,7 @@ void CPKneeView::RenderMap(SimVehicleClass *platform)
     // OW FIXME: the following StartFrame() call will result in a call to IDirect3DDevice7::SetRenderTarget. We can't do this on the Voodoo 1 & 2 ;(
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(DisplayOptions.DispVideoDriver);
 
-    if (!pDI->SupportsSRT())
+    if ( not pDI->SupportsSRT())
         return;
 
     // Draw in the waypoints
@@ -482,7 +482,7 @@ void CPKneeView::DrawWaypoints(SimVehicleClass *platform)
         // Draw the waypoint marker and the connecting line if this isn't the first one
         Circle(x1, y1, WP_SIZE);
 
-        if (!isFirst)
+        if ( not isFirst)
         {
             Line(x1, y1, x2, y2);
         }

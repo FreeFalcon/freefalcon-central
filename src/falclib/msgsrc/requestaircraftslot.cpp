@@ -50,7 +50,7 @@ int UI_RequestAircraftSlot::Process(uchar autodisp)
         case REQUEST_FLIGHT_DELETE:
             MonoPrint("Request Flight Delete %08x\n", flight);
 
-            if (!flight)
+            if ( not flight)
                 return FALSE;
 
             RegroupFlight(flight);
@@ -58,7 +58,7 @@ int UI_RequestAircraftSlot::Process(uchar autodisp)
             break;
 
         case REQUEST_TEAM_CHANGE:
-            if (!flight)
+            if ( not flight)
                 return FALSE;
 
             retval = ChangeFlightTeam(flight);
@@ -66,7 +66,7 @@ int UI_RequestAircraftSlot::Process(uchar autodisp)
             break;
 
         case REQUEST_TYPE_CHANGE:
-            if (!flight)
+            if ( not flight)
                 return FALSE;
 
             retval = ChangeFlightType(flight);
@@ -74,21 +74,21 @@ int UI_RequestAircraftSlot::Process(uchar autodisp)
             break;
 
         case REQUEST_CALLSIGN_CHANGE:
-            if (!flight)
+            if ( not flight)
                 return FALSE;
 
             retval = ChangeFlightCallsign(flight);
             break;
 
         case REQUEST_SKILL_CHANGE:
-            if (!flight)
+            if ( not flight)
                 return FALSE;
 
             retval = ChangePilotSkill(flight);
             break;
 
         case REQUEST_SLOT_LEAVE:
-            if (!flight)
+            if ( not flight)
                 return FALSE;
 
             retval = EmptyFlightSlot(flight);
@@ -238,14 +238,14 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
     UI_SendAircraftSlot *msg = NULL;
     int i, got_slot = -1, retval = 0;
 
-    if (!requester)
+    if ( not requester)
     {
         return FALSE;
     }
 
     MonoPrint("\nRequest Slot Join %08x : ", flight);
 
-    if (!flight)
+    if ( not flight)
     {
         if (FalconLocalGame->GetGameType() == game_Dogfight)
         {

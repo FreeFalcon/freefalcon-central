@@ -423,7 +423,7 @@ HRESULT WINAPI DirectPlayMessageHandler(PVOID pvUserContext, DWORD dwMessageId, 
                 {
                     MonoPrint("voice SetClientListenFreqs");
 
-                    if (!g_bHost)
+                    if ( not g_bHost)
                         break;
 
                     COM_MESSAGE_SetClientListenFreqs* SetClientListenFreqsMessage;
@@ -593,7 +593,7 @@ HRESULT WINAPI DirectVoiceClientMessageHandler(PVOID pvUserContext, DWORD dwMess
     {
         case DVMSGID_RECORDSTART:
         {
-            if (!OTWDriver.pCockpitManager or !OTWDriver.pCockpitManager->mpIcp) break;
+            if ( not OTWDriver.pCockpitManager or !OTWDriver.pCockpitManager->mpIcp) break;
 
             if (g_itransmitfreq == 1)
             {
@@ -612,7 +612,7 @@ HRESULT WINAPI DirectVoiceClientMessageHandler(PVOID pvUserContext, DWORD dwMess
 
         case DVMSGID_RECORDSTOP:
         {
-            if (!OTWDriver.pCockpitManager or !OTWDriver.pCockpitManager->mpIcp) break;
+            if ( not OTWDriver.pCockpitManager or !OTWDriver.pCockpitManager->mpIcp) break;
 
             OTWDriver.pCockpitManager->mpIcp->transmitingvoicecom1 = FALSE;
             OTWDriver.pCockpitManager->mpIcp->transmitingvoicecom2 = FALSE;
@@ -743,7 +743,7 @@ HRESULT CreateDeviceAddress()
             goto LCleanup;
         }
     }
-    else if (!g_bHost and g_ddwPortclient)
+    else if ( not g_bHost and g_ddwPortclient)
     {
         if (FAILED(hr = g_pDeviceAddress->AddComponent(DPNA_KEY_PORT,             //pwszName
                         &g_ddwPortclient, sizeof(g_ddwPortclient),   //lpvData, dwDataSize
@@ -1465,7 +1465,7 @@ void startupvoice(char *ip)
     char hostIp[256];
     strcpy(hostIp, ip);
 
-    if (!strcmp(hostIp, "0.0.0.0")) g_bHost = TRUE;
+    if ( not strcmp(hostIp, "0.0.0.0")) g_bHost = TRUE;
     else g_bHost = FALSE;
 
     // Init COM so we can use CoCreateInstance
@@ -1511,7 +1511,7 @@ void startupvoice(char *ip)
     {
         // Get the necessary user input on whether they are hosting or connecting
 
-        if (!strcmp(hostIp, "0.0.0.0")) iUserChoice = USER_HOST;
+        if ( not strcmp(hostIp, "0.0.0.0")) iUserChoice = USER_HOST;
         else iUserChoice = USER_CONNECT;
 
         if (FAILED(hr = CreateDeviceAddress()))
@@ -1604,19 +1604,19 @@ void RefreshVoiceFreqs()
     static char* gamename;
 
 
-    if (!VM) return;
+    if ( not VM) return;
 
     if (g_bHost and !g_pDPServer)return;
 
-    if (!g_bHost and !g_pDPClient)return;
+    if ( not g_bHost and !g_pDPClient)return;
 
-    if (!g_bconected) return;
+    if ( not g_bconected) return;
 
     if (g_bHost and !g_dpnidLocalPlayer) return;
 
-    if (!g_bHost and (g_afreqarrey.Freq[0][0] == 0 or g_afreqarrey.Freq[1][0] == 0 or g_afreqarrey.Freq[2][0] == 0)) return;
+    if ( not g_bHost and (g_afreqarrey.Freq[0][0] == 0 or g_afreqarrey.Freq[1][0] == 0 or g_afreqarrey.Freq[2][0] == 0)) return;
 
-    if (!g_afreqarrey.count and !init)
+    if ( not g_afreqarrey.count and !init)
     {
         SetListenFreqsClient(11, 1234, 1);
         init = true;
@@ -1624,7 +1624,7 @@ void RefreshVoiceFreqs()
 
     if (team == FalconLocalSession->GetTeam() and com1 == VM->radiofilter[0] and com2 == VM->radiofilter[1]
         and FalconLocalSession->Game() and !strcmp(gamename, FalconLocalSession->Game()->GameName())) return;
-    else if (!FalconLocalSession->Game())return;
+    else if ( not FalconLocalSession->Game())return;
     else
     {
         // something on the radio changed...lets update the groups
@@ -1664,12 +1664,12 @@ void RefreshVoiceFreqs()
         case rcfFromPackage:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id();
@@ -1678,12 +1678,12 @@ void RefreshVoiceFreqs()
         case rcfPackage2:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id() + 1;
@@ -1692,12 +1692,12 @@ void RefreshVoiceFreqs()
         case rcfPackage3:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id() + 2;
@@ -1707,12 +1707,12 @@ void RefreshVoiceFreqs()
         case rcfPackage4:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id() + 3;
@@ -1722,12 +1722,12 @@ void RefreshVoiceFreqs()
         case rcfPackage5:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id() + 4;
@@ -1781,12 +1781,12 @@ void RefreshVoiceFreqs()
         case rcfFromPackage:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id();
@@ -1795,12 +1795,12 @@ void RefreshVoiceFreqs()
         case rcfPackage2:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id() + 1;
@@ -1809,12 +1809,12 @@ void RefreshVoiceFreqs()
         case rcfPackage3:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id() + 2;
@@ -1823,12 +1823,12 @@ void RefreshVoiceFreqs()
         case rcfPackage4:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id() + 3;
@@ -1837,12 +1837,12 @@ void RefreshVoiceFreqs()
         case rcfPackage5:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id() + 4;
@@ -1895,11 +1895,11 @@ void Transmit(int com)
     static int com2 = NULL;
     bool doupdate = false;
 
-    if (!VM) return;
+    if ( not VM) return;
 
     if (g_bHost and !g_pDPServer) return;
 
-    if (!g_bHost and !g_pDPClient) return;
+    if ( not g_bHost and !g_pDPClient) return;
 
     if (g_bHost and !g_dpnidLocalPlayer) return;
 
@@ -1933,12 +1933,12 @@ void Transmit(int com)
         case rcfFromPackage:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1 = pkg->Id();
@@ -1947,12 +1947,12 @@ void Transmit(int com)
         case rcfPackage2:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id() + 1;
@@ -1961,12 +1961,12 @@ void Transmit(int com)
         case rcfPackage3:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id() + 2;
@@ -1975,12 +1975,12 @@ void Transmit(int com)
         case rcfPackage4:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id() + 3;
@@ -1989,12 +1989,12 @@ void Transmit(int com)
         case rcfPackage5:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id() + 4;
@@ -2047,12 +2047,12 @@ void Transmit(int com)
         case rcfPackage1:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2 = pkg->Id();
@@ -2061,12 +2061,12 @@ void Transmit(int com)
         case rcfPackage2:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id() + 1;
@@ -2075,12 +2075,12 @@ void Transmit(int com)
         case rcfPackage3:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id() + 2;
@@ -2089,12 +2089,12 @@ void Transmit(int com)
         case rcfPackage4:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id() + 3;
@@ -2103,12 +2103,12 @@ void Transmit(int com)
         case rcfPackage5:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id() + 4;
@@ -2117,12 +2117,12 @@ void Transmit(int com)
         case rcfFromPackage:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2 = pkg->Id();
@@ -2163,7 +2163,7 @@ void Transmit(int com)
     if (com == 0)
     {
         //DVID dvid = NULL;
-        if (!g_pVoiceClient or FAILED(g_pVoiceClient->SetTransmitTargets(0, 0, 0)))
+        if ( not g_pVoiceClient or FAILED(g_pVoiceClient->SetTransmitTargets(0, 0, 0)))
         {
             MonoPrint("Failed SetTransmitTargets:  0x%X\n");
         }
@@ -2197,7 +2197,7 @@ void TransmistoFreq(unsigned long transmitfreq)
 
     }
 
-    if (!found) SetListenFreqsClient(11, 1234, 1);
+    if ( not found) SetListenFreqsClient(11, 1234, 1);
 }
 
 void SetListenFreqsClient(unsigned long com1, unsigned long com2, unsigned long guard)
@@ -2305,19 +2305,19 @@ start:
         if (guard == FreqVUID) guardok = TRUE;
     }
 
-    if (!com1ok and com1)
+    if ( not com1ok and com1)
     {
         CreateGroup(com1);
         com1ok = true;
         goto start;
     }
-    else if (!com2ok and com2)
+    else if ( not com2ok and com2)
     {
         CreateGroup(com2);
         com2ok = true;
         goto start;
     }
-    else if (!guardok)
+    else if ( not guardok)
     {
         CreateGroup(guard);
         guardok = true;
@@ -2438,7 +2438,7 @@ void SendFreqid(DPNID dpnidplayer, DPNID dpnidgroup, unsigned long freq)
     dpnBuffer.pBufferData = (BYTE*) &comData;
     dpnBuffer.dwBufferSize = sizeof(COM_MESSAGE_SetFreqId);
 
-    if (!dpnidplayer and g_bHost)
+    if ( not dpnidplayer and g_bHost)
     {
         dpnidplayer = DPNID_ALL_PLAYERS_GROUP;
         flags = DPNSEND_SYNC | DPNSEND_GUARANTEED;

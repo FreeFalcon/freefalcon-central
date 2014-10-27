@@ -48,7 +48,7 @@ extern bool g_bTFRFixes;
 
 void AircraftClass::GatherInputs(void)
 {
-    if (!HasPilot() or strength < 0.0F)
+    if ( not HasPilot() or strength < 0.0F)
     {
         // Let it down
         af->SetSimpleMode(SIMPLE_MODE_OFF);
@@ -173,7 +173,7 @@ void AircraftClass::GatherInputs(void)
                             // turn this into a function in the DigitalBrain class to go
                             // with the other AP related functions.
 
-                            if (!DBrain()->APAutoDisconnect())
+                            if ( not DBrain()->APAutoDisconnect())
                             {
                                 if (g_bINS)
                                 {
@@ -754,7 +754,7 @@ void AircraftClass::SetAutopilot(AutoPilotType flag)
         case LantirnAP:
             //MI only those who have it
 #ifndef _DEBUG
-            if (!af->HasTFR())
+            if ( not af->HasTFR())
             {
                 SetAutopilot(AircraftClass::APOff);
                 return;

@@ -557,7 +557,7 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
     if (padlockGlance == GlanceNose)   // if player glances forward
     {
 
-        if (!mIsSlewInit)
+        if ( not mIsSlewInit)
         {
             mIsSlewInit = TRUE;
             mSlewPStart = eyePan;
@@ -575,7 +575,7 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
         if (eyePan < 0.0F)
         {
 
-            if (!mIsSlewInit)
+            if ( not mIsSlewInit)
             {
                 mIsSlewInit = TRUE;
                 mSlewPStart = eyePan;
@@ -587,7 +587,7 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
         else if (eyePan > 0.0F)
         {
 
-            if (!mIsSlewInit)
+            if ( not mIsSlewInit)
             {
                 mIsSlewInit = TRUE;
                 mSlewPStart = eyePan;
@@ -722,7 +722,7 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
                     // 2000-11-06 REMOVED BY S.G. NO YOU DON'T THIS CODE MAKES THE PADLOCK MOVE TO THE 12h POSITION SOMETIMES WHEN THEIR IS A VALID PADLOCKED OBJECT!
                     // WE WILL FALL TRHOUGH TO THE NEXT STEP, POSTSNAP WHICH WILL FORCE A PRESNAP (WHICH WILL MAKE IT SNAP IN PLACE)
                     /*
-                     if(!mIsSlewInit) {
+                     if( not mIsSlewInit) {
                      mIsSlewInit = TRUE;
                      mSlewPStart = eyePan;
                      mSlewTStart = eyeTilt;
@@ -753,7 +753,7 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
 
              if(snapStatus == SNAPPING) {
 
-             if(!mIsSlewInit) {
+             if( not mIsSlewInit) {
              mIsSlewInit = TRUE;
              mSlewPStart = eyePan;
              mSlewTStart = eyeTilt;

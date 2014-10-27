@@ -220,7 +220,7 @@ void LoadCampaignSelectWindows()
     CPSelectLoaded++;
     SetSingle_Comms_Ctrls();
 
-    if (!PlannerLoaded)
+    if ( not PlannerLoaded)
         LoadPlannerWindows();
 
     CampSelMode = 0;
@@ -261,7 +261,7 @@ IMAGE_RSC *CreateOccupationMap(long ID, long w, long h, long palsize)
     size = w * h + palsize * 2;
     data8 = new unsigned char[size];
 
-    if (!data8)
+    if ( not data8)
         return(NULL);
 
     res = new C_Resmgr;
@@ -532,7 +532,7 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
                 {
                     SquadPtr = &TheCampaign.CampaignSquadronData[i];
 
-                    if (!NameShown and SquadPtr)
+                    if ( not NameShown and SquadPtr)
                     {
                         // Airbase Name
                         txt = new C_Text;
@@ -656,7 +656,7 @@ void LoadSquadronInfo()
 
                     _stprintf(buffer, "%1d %s, %1d %s", players, gStringMgr->GetString(TXT_PLAYERS), SquadPtr->currentStrength, vc->Name);
                 }
-                else if (!CampSelMode)
+                else if ( not CampSelMode)
                 {
                     // # of aircraft based on ratio setting for new games
                     int aircraft = 0, mv, i;
@@ -694,7 +694,7 @@ void LoadSquadronInfo()
 
             if (bmp)
             {
-                if (!SquadPtr->squadronPatch)
+                if ( not SquadPtr->squadronPatch)
                 {
                     SquadPtr->squadronPatch = AssignUISquadronID(SquadPtr->nameId);
                 }
@@ -1076,7 +1076,7 @@ static void CommitCB(long, short hittype, C_Base *)
     SetCursor(gCursors[CRSR_WAIT]);
     LoadCampaignWindows();
 
-    if (!TheCampaign.CampaignSquadronData)
+    if ( not TheCampaign.CampaignSquadronData)
         return;
 
     FalconLocalSession->SetCountry(TheCampaign.CampaignSquadronData[gSelectedSquadronID].country);
@@ -1094,7 +1094,7 @@ static void CommitCB(long, short hittype, C_Base *)
         // Join a Campaign
         game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
 
-        if (!game)
+        if ( not game)
             return;
 
         if (game not_eq FalconLocalGame)
@@ -1107,7 +1107,7 @@ static void CommitCB(long, short hittype, C_Base *)
 
                 if (ebox)
                 {
-                    // if(!PlayerOptions.InCompliance(game->GetRules()) or !game->CheckPassword(ebox->GetText()))
+                    // if( not PlayerOptions.InCompliance(game->GetRules()) or !game->CheckPassword(ebox->GetText()))
                     // {
                     SetupInfoWindow(ReallyJoinCB, CancelJoinCB);
                     // }
@@ -1129,7 +1129,7 @@ static void CommsCommitCB(long ID, short hittype, C_Base *control)
     if (TheCampaign.NumAvailSquadrons < 1)
         return;
 
-    if (!gCommsMgr->Online())
+    if ( not gCommsMgr->Online())
         return;
 
     CommitCB(ID, hittype, control); // Do rest of NORMAL Commit button
@@ -1210,7 +1210,7 @@ void SetCampaignSelectCB(long ID, short hittype, C_Base *control)
     switch (ID)
     {
         case CS_NEW_CTRL:
-            if (!CampSelMode)
+            if ( not CampSelMode)
                 return;
 
             break;
@@ -1223,7 +1223,7 @@ void SetCampaignSelectCB(long ID, short hittype, C_Base *control)
             //Ideally after exiting Campaing to Main UI this list should be refreshed automatically
             //and last played campaign selected. This is a compromise solution - last
             //choosen campaign is selected but user has to refresh list manually.
-            if (!g_bCampSavedMenuHack)
+            if ( not g_bCampSavedMenuHack)
             {
                 if (CampSelMode == 1)
                     return;
@@ -1284,7 +1284,7 @@ void SetCampaignSelectCB(long ID, short hittype, C_Base *control)
         case CS_JOIN_CTRL:
             CampSelMode = 2;
 
-            if (!gCommsMgr->Online())
+            if ( not gCommsMgr->Online())
             {
                 win = gMainHandler->FindWindow(PB_WIN);
 
@@ -1366,7 +1366,7 @@ static void CampSelectGameCB(long, short hittype, C_Base *control)
 
     if (item->Type_ == C_TYPE_MENU)
     {
-        if (!item->Item_->GetState())
+        if ( not item->Item_->GetState())
         {
             item->Item_->SetState(1);
             item->Item_->Refresh();
@@ -1547,7 +1547,7 @@ static void SetCampaignLevels()
 
 void CopySettingsToTemp(void)
 {
-    if (!CampSelMode)
+    if ( not CampSelMode)
     {
         TEMP_Settings.PilotSkill = static_cast<uchar>(PlayerOptions.CampaignEnemyAirExperience());
         TEMP_Settings.SAMSkill = static_cast<uchar>(PlayerOptions.CampaignEnemyGroundExperience());
@@ -1581,7 +1581,7 @@ static void ChallengeLevelCB(long, short hittype, C_Base *control)
             TEMP_Settings.PilotSkill = 4;
             TEMP_Settings.SAMSkill = 4;
 
-            if (!CampSelMode)
+            if ( not CampSelMode)
             {
                 TEMP_Settings.AirForces = 0;
                 TEMP_Settings.AirDefenses = 0;
@@ -1596,7 +1596,7 @@ static void ChallengeLevelCB(long, short hittype, C_Base *control)
             TEMP_Settings.PilotSkill = 3;
             TEMP_Settings.SAMSkill = 3;
 
-            if (!CampSelMode)
+            if ( not CampSelMode)
             {
                 TEMP_Settings.AirForces = 1;
                 TEMP_Settings.AirDefenses = 1;
@@ -1611,7 +1611,7 @@ static void ChallengeLevelCB(long, short hittype, C_Base *control)
             TEMP_Settings.PilotSkill = 2;
             TEMP_Settings.SAMSkill = 2;
 
-            if (!CampSelMode)
+            if ( not CampSelMode)
             {
                 TEMP_Settings.AirForces = 2;
                 TEMP_Settings.AirDefenses = 2;
@@ -1626,7 +1626,7 @@ static void ChallengeLevelCB(long, short hittype, C_Base *control)
             TEMP_Settings.PilotSkill = 1;
             TEMP_Settings.SAMSkill = 1;
 
-            if (!CampSelMode)
+            if ( not CampSelMode)
             {
                 TEMP_Settings.AirForces = 3;
                 TEMP_Settings.AirDefenses = 3;
@@ -1641,7 +1641,7 @@ static void ChallengeLevelCB(long, short hittype, C_Base *control)
             TEMP_Settings.PilotSkill = 0;
             TEMP_Settings.SAMSkill = 0;
 
-            if (!CampSelMode)
+            if ( not CampSelMode)
             {
                 TEMP_Settings.AirForces = 4;
                 TEMP_Settings.AirDefenses = 4;
@@ -1685,7 +1685,7 @@ void CampDelFileCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(CS_SELECT_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     gMainHandler->HideWindow(control->Parent_); // Close Verify Window
@@ -1694,7 +1694,7 @@ void CampDelFileCB(long, short hittype, C_Base *control)
     _TCHAR filename[MAX_PATH];
     _stprintf(filename, "%s.cam", gLastCampFilename);
 
-    if (!CheckExclude(filename, FalconCampUserSaveDirectory, CampExcludeList, "cam"))
+    if ( not CheckExclude(filename, FalconCampUserSaveDirectory, CampExcludeList, "cam"))
     {
         DeleteFile(filename); // .cam file
         _stprintf(filename, "%s.his", gLastCampFilename);
@@ -1832,7 +1832,7 @@ static void UseChallengeSettingsCB(long, short hittype, C_Base *control)
         PlayerOptions.SetCampEnemyGroundExperience(TEMP_Settings.SAMSkill);
     }
 
-    if (!CampSelMode)
+    if ( not CampSelMode)
     {
         PlayerOptions.SetCampAirRatio(TEMP_Settings.AirForces);
         PlayerOptions.SetCampAirDefenseRatio(TEMP_Settings.AirDefenses);
@@ -2086,7 +2086,7 @@ void DisplayJoinStatusWindow(int bits)
     C_Window
     *win;
 
-    if ((!gCommsMgr->Online()) or (FalconLocalGame->IsLocal()))
+    if (( not gCommsMgr->Online()) or (FalconLocalGame->IsLocal()))
     {
         return;
     }

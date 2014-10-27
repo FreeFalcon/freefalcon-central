@@ -319,7 +319,7 @@ void VuEntity::SetEntityType(ushort entityType)
     }
     else
     {
-        assert(!"share_.entityType_ out of range");
+        assert( not "share_.entityType_ out of range");
         entityTypePtr_ = 0;
     }
 
@@ -443,7 +443,7 @@ void VuEntity::SetOwnerId(VU_ID ownerId)
         share_.ownerId_ = ownerId;
         VuTargetEntity* target = vuGlobalGroup;
 
-        if (!IsGlobal())
+        if ( not IsGlobal())
         {
             target = vuLocalSessionEntity->Game();
         }
@@ -659,7 +659,7 @@ VU_ERRCODE VuEntity::Handle(VuPullRequest* msg)
                     // owner is local
                     VuTargetEntity* target = vuGlobalGroup;
 
-                    if (!IsGlobal())
+                    if ( not IsGlobal())
                     {
                         target = vuLocalSessionEntity->Game();
                     }

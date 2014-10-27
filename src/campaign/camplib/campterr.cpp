@@ -113,7 +113,7 @@ int SaveTheaterTerrain(char* name)
 {
     FILE *fp;
 
-    if (!TheaterCells)
+    if ( not TheaterCells)
         return 0;
 
     if ((fp = OpenCampFile(name, "thr", "wb")) == NULL)

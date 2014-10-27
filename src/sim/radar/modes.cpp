@@ -104,7 +104,7 @@ void RadarDopplerClass::RWSMode()
     else
         ClearFlagBit(Designating);
 
-    if (!IsSet(Spotlight) and designateCmd)
+    if ( not IsSet(Spotlight) and designateCmd)
     {
         lastAzScan = azScan;
         lastBars = bars;
@@ -213,7 +213,7 @@ void RadarDopplerClass::SAMMode(void)
         dropSAM = TRUE;
     }
 
-    if (!g_bAntElevKnobFix)
+    if ( not g_bAntElevKnobFix)
     {
         if (oldseekerElCenter and subMode not_eq SAM_AUTO_MODE)
         {
@@ -233,7 +233,7 @@ void RadarDopplerClass::SAMMode(void)
         {
             float elhack;
 
-            if (!g_bAntElevKnobFix)
+            if ( not g_bAntElevKnobFix)
                 elhack = oldseekerElCenter;
 
             azScan = lastSAMAzScan;
@@ -245,7 +245,7 @@ void RadarDopplerClass::SAMMode(void)
             ClearFlagBit(STTingTarget);
             ChangeMode(SAM);
 
-            if (!g_bAntElevKnobFix)
+            if ( not g_bAntElevKnobFix)
             {
                 oldseekerElCenter = elhack;
                 seekerElCenter = elhack;
@@ -375,9 +375,9 @@ void RadarDopplerClass::SAMMode(void)
             seekerAzCenter = min(max(tmpVal , -MAX_ANT_EL + azScan), MAX_ANT_EL - azScan);
             tmpVal = TargetEl(platform, lockedTarget);
 
-            if (!g_bAntElevKnobFix)
+            if ( not g_bAntElevKnobFix)
             {
-                if (!oldseekerElCenter)
+                if ( not oldseekerElCenter)
                     seekerElCenter = min(max(tmpVal, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
             }
             else
@@ -394,7 +394,7 @@ void RadarDopplerClass::SAMMode(void)
         //    else if (lockedTargetData->range < 0.4F * tdisplayRange  and 
         //     curRangeIdx > 0)
         //    rangeChangeCmd = -1;
-        if (!dropTrackCmd)
+        if ( not dropTrackCmd)
             justdidSTT = FALSE;
 
         if (totHits < HITS_FOR_TRACK or dropSAM or (dropTrackCmd and !justdidSTT))
@@ -471,9 +471,9 @@ void RadarDopplerClass::TWSMode(void)
     else
         ClearFlagBit(Designating);
 
-    if (!IsSet(Spotlight) and designateCmd)
+    if ( not IsSet(Spotlight) and designateCmd)
     {
-        if (!tgtenteredcursor)
+        if ( not tgtenteredcursor)
         {
             lastAzScan = azScan;
             lastBars = bars;
@@ -518,7 +518,7 @@ void RadarDopplerClass::TWSMode(void)
     }
 
     // max 30 az when tgt under cursor or "locked" target
-    if (!IsSet(Spotlight) and !IsSet(Designating))
+    if ( not IsSet(Spotlight) and !IsSet(Designating))
     {
 
         if (targetUnderCursor or (lockedTargetData and !g_bMLU))
@@ -578,14 +578,14 @@ void RadarDopplerClass::TWSMode(void)
 
             TargetToXY(lasttargetUnderCursor->localData, 0, tdisplayRange, &cursorX, &cursorY);
 
-            if (!oldseekerElCenter)
+            if ( not oldseekerElCenter)
                 oldseekerElCenter = seekerElCenter;//me123
 
             tmpVal = TargetAz(platform, lasttargetUnderCursor);
             seekerAzCenter = min(max(tmpVal , -MAX_ANT_EL + azScan), MAX_ANT_EL - azScan);
             tmpVal = TargetEl(platform, lasttargetUnderCursor);
 
-            if (!g_bAntElevKnobFix)    // MD -- 20031222: EL should only follow target if we're locked on
+            if ( not g_bAntElevKnobFix)    // MD -- 20031222: EL should only follow target if we're locked on
             {
                 seekerElCenter = min(max(tmpVal, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
             }
@@ -618,7 +618,7 @@ void RadarDopplerClass::TWSMode(void)
         /*-------------------------------*/
         if (rdrObj->BaseData()->Id() == targetUnderCursor)
         {
-            if (!lasttargetUnderCursor)
+            if ( not lasttargetUnderCursor)
                 lasttargetUnderCursor = rdrObj;
 
             // MD -- 20031222: use a helper function
@@ -675,12 +675,12 @@ void RadarDopplerClass::TWSMode(void)
 
         static int test = 10;
         test = 20;
-        //if (!oldseekerElCenter) oldseekerElCenter = seekerElCenter;//me123
+        //if ( not oldseekerElCenter) oldseekerElCenter = seekerElCenter;//me123
         tmpVal = TargetAz(platform, lockedTarget);
         seekerAzCenter = min(max(tmpVal , -MAX_ANT_EL + azScan), MAX_ANT_EL - azScan);
         tmpVal = TargetEl(platform, lockedTarget);
 
-        if (!g_bMLU and !g_bAntElevKnobFix)   // MD -- 20031223: antenna elevation fixes
+        if ( not g_bMLU and !g_bAntElevKnobFix)   // MD -- 20031223: antenna elevation fixes
             seekerElCenter = min(max(tmpVal, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
 
         /*------------------*/
@@ -704,10 +704,10 @@ void RadarDopplerClass::TWSMode(void)
             }
         }
 
-        if (!dropTrackCmd)
+        if ( not dropTrackCmd)
             justdidSTT = FALSE;
 
-        if (!IsSet(STTingTarget) and ((dropTrackCmd and !justdidSTT) or totHits < HITS_FOR_TRACK))
+        if ( not IsSet(STTingTarget) and ((dropTrackCmd and !justdidSTT) or totHits < HITS_FOR_TRACK))
         {
             rangeChangeCmd = 0;
 
@@ -769,9 +769,9 @@ void RadarDopplerClass::TWSMode(void)
     else
         ClearFlagBit(Designating);
 
-    if (!IsSet(Spotlight) and designateCmd)
+    if ( not IsSet(Spotlight) and designateCmd)
     {
-        if (!tgtenteredcursor)
+        if ( not tgtenteredcursor)
         {
             lastTwsAzIdx = curAzIdx;
             lastTwsBarIdx = curBarIdx;
@@ -791,7 +791,7 @@ void RadarDopplerClass::TWSMode(void)
     else
         ClearFlagBit(Spotlight);
 
-    if (!IsSet(Spotlight) and !IsSet(Designating) and !IsSet(STTingTarget))
+    if ( not IsSet(Spotlight) and !IsSet(Designating) and !IsSet(STTingTarget))
     {
 
         if (targetUnderCursor or (lockedTargetData and !g_bMLU))
@@ -845,7 +845,7 @@ void RadarDopplerClass::TWSMode(void)
             seekerAzCenter = min(max(tmpVal , -MAX_ANT_EL + azScan), MAX_ANT_EL - azScan);
             tmpVal = TargetEl(platform, lasttargetUnderCursor);
 
-            if (!g_bAntElevKnobFix)    // MD -- 20031222: EL should only follow target if we're locked on
+            if ( not g_bAntElevKnobFix)    // MD -- 20031222: EL should only follow target if we're locked on
             {
                 seekerElCenter = min(max(tmpVal, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
             }
@@ -878,7 +878,7 @@ void RadarDopplerClass::TWSMode(void)
         /*-------------------------------*/
         if (rdrObj->BaseData()->Id() == targetUnderCursor)
         {
-            if (!lasttargetUnderCursor)
+            if ( not lasttargetUnderCursor)
                 lasttargetUnderCursor = rdrObj;
 
             if (IsSet(Designating))
@@ -939,7 +939,7 @@ void RadarDopplerClass::TWSMode(void)
             /*----------------------*/
             if (rdrData->rdrDetect & 0x10)
             {
-                if (!rdrData->TWSTrackFileOpen)
+                if ( not rdrData->TWSTrackFileOpen)
                 {
                     AddToHistory(rdrObj, Solid);
                 }
@@ -987,14 +987,14 @@ void RadarDopplerClass::TWSMode(void)
             else
 
                 // when there is a bugged target, elevation is centered on it not the antenna knob position
-                if (!IsSet(STTingTarget))
+                if ( not IsSet(STTingTarget))
                     seekerElCenter = lockedTarget->localData->el;
         }
 
-        if (!dropTrackCmd)
+        if ( not dropTrackCmd)
             justdidSTT = FALSE;
 
-        if (!IsSet(STTingTarget) and ((dropTrackCmd and !justdidSTT) and lockedTargetData->TWSTrackFileOpen))
+        if ( not IsSet(STTingTarget) and ((dropTrackCmd and !justdidSTT) and lockedTargetData->TWSTrackFileOpen))
         {
             rangeChangeCmd = 0;
 
@@ -1044,7 +1044,7 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
         oldseekerElCenter = 0.0f;
     }
 
-    if (!lockedTarget)
+    if ( not lockedTarget)
     {
         ClearFlagBit(STTingTarget);
 
@@ -1085,10 +1085,10 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
         }
     }
 
-    if (!lockedTargetData)
+    if ( not lockedTargetData)
         return;
 
-    if (!g_bMLU and (dropTrackCmd and !didDesignate and mode == SAM) ||
+    if ( not g_bMLU and (dropTrackCmd and !didDesignate and mode == SAM) ||
         g_bMLU and dropTrackCmd and !diddroptrack)//me123
     {
         reacqFlag = (int)(ReacqusitionCount / SEC_TO_MSEC * SimLibMajorFrameRate);
@@ -1109,7 +1109,7 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
 
     diddroptrack = FALSE;
 
-    if (!oldseekerElCenter)
+    if ( not oldseekerElCenter)
         oldseekerElCenter = seekerElCenter;//me123
 
     seekerAzCenter = max(min(lockedTargetData->az, MAX_ANT_EL), -MAX_ANT_EL);
@@ -1181,7 +1181,7 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
                 oldseekerElCenter = elhack;
 
                 // MD -- 20031223: antenna should go back to where the knob was set for all but TWS with a bug.
-                if (!g_bAntElevKnobFix)
+                if ( not g_bAntElevKnobFix)
                     seekerElCenter = elhack;
             }
 
@@ -1303,7 +1303,7 @@ void RadarDopplerClass::ACMMode(void)
 
 
     //Cobra
-    if (!lockedTarget and islck)
+    if ( not lockedTarget and islck)
     {
         ClearSensorTarget();
         ChangeMode(mode);
@@ -1402,7 +1402,7 @@ void RadarDopplerClass::VSMode(void)
         else
             ClearFlagBit(Designating);
 
-        if (!IsSet(Spotlight) and designateCmd)
+        if ( not IsSet(Spotlight) and designateCmd)
         {
             lastAzScan = azScan;
             lastBars = bars;
@@ -1648,7 +1648,7 @@ int RadarDopplerClass::HitsOnTrack(SimObjectLocalData* rdrData)
     int totHits = 0, i = 0;
     unsigned long detect = rdrData->rdrDetect;
 
-    if (!rdrData)
+    if ( not rdrData)
         return 0;
 
     for (i = 0; i < 5; i++)
@@ -1678,7 +1678,7 @@ RadarDopplerClass::TWSTrackList::TWSTrackList(SimObjectType* tgt)
 RadarDopplerClass::TWSTrackList* RadarDopplerClass::TWSTrackList::Insert(SimObjectType* tgt, int depth)
 {
 
-    if (!(depth < MAX_TWS_TRACKS))  // keep the list from growing needlessly
+    if ( not (depth < MAX_TWS_TRACKS))  // keep the list from growing needlessly
         return NULL;
 
     if (tgt not_eq track)
@@ -1821,7 +1821,7 @@ RadarDopplerClass::TWSTrackList* RadarDopplerClass::UpdateTWSDirectory(SimObject
     if (tgtList)
     {
         // Don't waste the time to check if the directory is already full
-        if (!directory or (directory and (directory->CountTracks() < MAX_TWS_TRACKS)))
+        if ( not directory or (directory and (directory->CountTracks() < MAX_TWS_TRACKS)))
         {
             while (rdrObj)
             {
@@ -1832,7 +1832,7 @@ RadarDopplerClass::TWSTrackList* RadarDopplerClass::UpdateTWSDirectory(SimObject
                     ((fabs(rdrData->az) < radarData->ScanHalfAngle)  and 
                      (fabs(rdrData->el) < radarData->ScanHalfAngle)))
                 {
-                    if (!rdrData->TWSTrackFileOpen) // insert new tracks only
+                    if ( not rdrData->TWSTrackFileOpen) // insert new tracks only
                         if (directory)
                             directory = directory->Insert(rdrObj);
                         else

@@ -284,7 +284,7 @@ void instant_action::check_next_wave(void)
                 {
                     if ((unit->GetDomain() == DOMAIN_AIR) or (unit->GetDomain() == DOMAIN_LAND))
                     {
-                        if ((!unit->IsDead()) and (unit->IsBattalion()))
+                        if (( not unit->IsDead()) and (unit->IsBattalion()))
                         {
                             unit->GetLocation(&ux, &uy);
 
@@ -300,7 +300,7 @@ void instant_action::check_next_wave(void)
                             }
                         }
 
-                        if ((!unit->IsDead()) and (unit->IsFlight()))
+                        if (( not unit->IsDead()) and (unit->IsFlight()))
                         {
                             aircraft_left += unit->GetTotalVehicles();
 
@@ -413,14 +413,14 @@ void instant_action::create_wave(void)
 
     fp = fopen(buffer, "r");
 
-    if (!fp)
+    if ( not fp)
     {
         current_wave --;
         sprintf(buffer, "%s\\%c%d.ia", FalconCampUserSaveDirectory, current_mode, current_wave);
 
         fp = fopen(buffer, "r");
 
-        if (!fp)
+        if ( not fp)
         {
             // MonoPrint ("Cannot open %s for Instant Action Wave File", buffer);
             current_wave ++;
@@ -571,7 +571,7 @@ void instant_action::create_wave(void)
                     }
                 }
 
-                if (!ia)
+                if ( not ia)
                 {
                     valid_data = 0;
                     MonoPrint("Unknown %d:%s\n", value, str);
@@ -703,7 +703,7 @@ void instant_action::create_wave(void)
                         }
                     }
 
-                    if (!ia)
+                    if ( not ia)
                     {
                         valid_data = 0;
                         MonoPrint("Unknown Command %s\n", str);
@@ -1020,7 +1020,7 @@ void instant_action::create_player_flight(void)
 
     }
 
-    if (!tid)
+    if ( not tid)
     {
         MonoPrint("Cannot create F16C Flight\n");
         return;
@@ -1030,7 +1030,7 @@ void instant_action::create_player_flight(void)
 
     player_flight = NewFlight(tid, 0, 0);
 
-    if (!player_flight)
+    if ( not player_flight)
     {
         MonoPrint("Cannot create FlightClass object\n");
         return;
@@ -1152,7 +1152,7 @@ void instant_action::create_player_flight(void)
      0
      );
 
-     if (!tid)
+     if ( not tid)
      {
      MonoPrint ("Cannot create F16C Flight\n");
      return;
@@ -1162,7 +1162,7 @@ void instant_action::create_player_flight(void)
 
      player_flight = NewFlight(tid, 0, 0);
 
-     if (!player_flight)
+     if ( not player_flight)
      {
      MonoPrint ("Cannot create FlightClass object\n");
      return;
@@ -1368,7 +1368,7 @@ void instant_action::move_player_flight(void)
     time;
 
 
-    if (!player_flight)
+    if ( not player_flight)
     {
         create_player_flight();
     }
@@ -1614,7 +1614,7 @@ void instant_action::create_flight(ia_data &data)
         }
     }
 
-    if (!ia)
+    if ( not ia)
     {
         MonoPrint("Cannot find Aircraft Type in Instant Action Object Table (ia_air_objects)");
         return;
@@ -1622,7 +1622,7 @@ void instant_action::create_flight(ia_data &data)
 
     flight = FalconLocalSession->GetPlayerFlight();
 
-    if (!flight)
+    if ( not flight)
     {
         return;
     }
@@ -1647,7 +1647,7 @@ void instant_action::create_flight(ia_data &data)
               0
           );
 
-    if (!tid)
+    if ( not tid)
     {
         MonoPrint("Cannot create F16C Flight\n");
         return;
@@ -1659,7 +1659,7 @@ void instant_action::create_flight(ia_data &data)
 
     new_flight = NewFlight(tid, 0, 0);
 
-    if (!new_flight)
+    if ( not new_flight)
     {
         MonoPrint("Cannot create FlightClass object\n");
         return;
@@ -1670,7 +1670,7 @@ void instant_action::create_flight(ia_data &data)
     new_flight->SetAltitude(FloatToInt32(data.altitude));
     // new_flight->SetInPackage(1);
 
-    if ((data.dumb) or (!((data.radar) or (data.heat))))
+    if ((data.dumb) or ( not ((data.radar) or (data.heat))))
     {
         new_flight->SetUnitMission(AMIS_NONE);
     }
@@ -1820,7 +1820,7 @@ void instant_action::create_flight(ia_data &data)
         new_flight->LoadWeapons(NULL, DefaultDamageMods, Air, 2, 0, WEAP_BAI_LOADOUT);
     }
 
-    //if (!(data.guns) and !(data.heat) and !(data.radar))
+    //if ( not (data.guns) and !(data.heat) and !(data.radar))
     else
     {
         new_flight->LoadWeapons(NULL, DefaultDamageMods, NoMove, 0, 0, 0);
@@ -1832,7 +1832,7 @@ void instant_action::create_flight(ia_data &data)
     // then create a package, and set the tanker stuff up.
     if ((data.type == ia_kc10) and (data.side == 1)) // allied kc10
     {
-        if (!player_flight->GetUnitPackage())
+        if ( not player_flight->GetUnitPackage())
         {
             new_package = (Package) NewUnit
                           (
@@ -1843,7 +1843,7 @@ void instant_action::create_flight(ia_data &data)
                               NULL
                           );
 
-            if (!new_package)
+            if ( not new_package)
             {
                 new_flight->SetFinal(1);
                 return;
@@ -1936,7 +1936,7 @@ void instant_action::create_battalion(ia_data &data)
         }
     }
 
-    if (!ia)
+    if ( not ia)
     {
         MonoPrint("Cannot find Battalion Type in Instant Action Object Table (ia_grnd_objects)");
         return;
@@ -1944,7 +1944,7 @@ void instant_action::create_battalion(ia_data &data)
 
     flight = FalconLocalSession->GetPlayerFlight();
 
-    if (!flight)
+    if ( not flight)
     {
         return;
     }
@@ -1974,7 +1974,7 @@ void instant_action::create_battalion(ia_data &data)
               0
           );
 
-    if (!tid)
+    if ( not tid)
     {
         //MonoPrint ("Cannot have BATTALION of Type\n");
         return;
@@ -1995,10 +1995,10 @@ void instant_action::create_battalion(ia_data &data)
         {
             classPtr = &(Falcon4ClassTable[GetWeaponDescriptionIndex(vc->Weapon[i])]);
 
-            if (!InstantActionSettings.SamSites and classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE)
+            if ( not InstantActionSettings.SamSites and classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE)
                 new_battalion->SetUnitSupply(0);
 
-            if (!InstantActionSettings.AAASites and classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_GUN)
+            if ( not InstantActionSettings.AAASites and classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_GUN)
                 new_battalion->SetUnitSupply(0);
         }
     }

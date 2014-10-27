@@ -286,7 +286,7 @@ void OTWDriverClass::Padlock_FindEnhancedPriority(BOOL)
 
             if (pObj not_eq mpPadlockPriorityObject)   // Skips the current padlock object, if there is one
             {
-                if (!mpPadlockPriorityObject or attempt)   // If we DON'T have a padlock object or we did a pass already
+                if ( not mpPadlockPriorityObject or attempt)   // If we DON'T have a padlock object or we did a pass already
                 {
                     testAgainstLoMark = TRUE; //   Test against the chosen one so far
                 }
@@ -770,7 +770,7 @@ void OTWDriverClass::Padlock_FindRealisticPriority(BOOL)
                 (mpPadlockCandidate not_eq NULL and pObj not_eq mpPadlockCandidate))   // we have a candidate and the current is not the candidate
             {
 
-                if ((!mpPadlockCandidate and !mpPadlockPriorityObject) or attempt) // We don't have a candidate and neither a priority OR we're on our second pass
+                if (( not mpPadlockCandidate and !mpPadlockPriorityObject) or attempt) // We don't have a candidate and neither a priority OR we're on our second pass
                     testAgainstLoMark = TRUE; //   Test against the chosen one so far
                 else if (mpPadlockCandidate)   // We do have a candidate
                 {
@@ -1123,8 +1123,8 @@ BOOL OTWDriverClass::Padlock_ConsiderThisObject(SimBaseClass* pObj, BOOL isPaint
         // Proceed if object is on ground and fcc is in AG mode.  Proceed if in object is in
         // air and fcc is in AA mode
 
-        if ((pObj->OnGround() and mode == AG) or pObj->IsMissile() or (!pObj->OnGround() and mode == AA) ||
-            (mode == NAV and (!pObj->OnGround() or ((Falcon4EntityClassType*)pObj->EntityType())->vuClassData.classInfo_[VU_TYPE] == TYPE_RUNWAY)))
+        if ((pObj->OnGround() and mode == AG) or pObj->IsMissile() or ( not pObj->OnGround() and mode == AA) ||
+            (mode == NAV and ( not pObj->OnGround() or ((Falcon4EntityClassType*)pObj->EntityType())->vuClassData.classInfo_[VU_TYPE] == TYPE_RUNWAY)))
         {
 
             // Check if this azimuth and elevation lies in the occluded zone
@@ -1391,7 +1391,7 @@ int OTWDriverClass::Padlock_RankAGPriority(SimBaseClass* pObj, BOOL isPainted)
         // 2002-03-01 ADDED BY S.G. What if we have no radar? Should it happen? It did and CTD'ed
         F4Assert(pradar);
 
-        if (!pradar)
+        if ( not pradar)
             return priority;
 
         // END OF ADDED SECTION 2002-03-01
@@ -1788,7 +1788,7 @@ void OTWDriverClass::Padlock_CheckPadlock(float dT)
 {
 
 
-    if (!mpPadlockPriorityObject and (snapStatus == PRESNAP or snapStatus == TRACKING))
+    if ( not mpPadlockPriorityObject and (snapStatus == PRESNAP or snapStatus == TRACKING))
     {
         PadlockOccludedTime = 0.0F;
         snapStatus = SNAPPING;
@@ -1980,7 +1980,7 @@ void OTWDriverClass::Padlock_DrawSquares(BOOL highlightPriority)
                     if (theMissile and theMissile->isCaged == 0)
                     {
                         // Now check if the current target (if any) is not the padlocked sim target
-                        if (!theMissile->targetPtr or theMissile->targetPtr not_eq (SimObjectType *)mfdVirtualDisplay)
+                        if ( not theMissile->targetPtr or theMissile->targetPtr not_eq (SimObjectType *)mfdVirtualDisplay)
                         {
                             // Use the sim object we reference in our SetmpPadlockPriorityObject as a target
 
@@ -2125,7 +2125,7 @@ void OTWDriverClass::Padlock_DrawSquares(BOOL highlightPriority)
 
                 // Draw a box around the target
                 //MI 18/01/02
-                if (!g_bNoPadlockBoxes)
+                if ( not g_bNoPadlockBoxes)
                 {
                     renderer->Render2DLine(objleft, objtop, objright, objtop);
                     renderer->Render2DLine(objleft, objbottom, objright, objbottom);
@@ -2176,7 +2176,7 @@ void OTWDriverClass::Padlock_DrawSquares(BOOL highlightPriority)
                 renderer->SetColor(0xff27eaff);
 
                 //MI 18/01/02
-                if (!g_bNoPadlockBoxes)
+                if ( not g_bNoPadlockBoxes)
                 {
                     renderer->Render2DLine(candidatePoint.x, candtop, candright, candidatePoint.y);
                     renderer->Render2DLine(candright, candidatePoint.y, candidatePoint.x, candbottom);
@@ -2243,7 +2243,7 @@ void OTWDriverClass::Padlock_DrawSquares(BOOL highlightPriority)
             if (((strength - COS_SUN_EFFECT_HALF_ANGLE) / (1.0f - COS_SUN_EFFECT_HALF_ANGLE))
                 > 0.75f)
             {
-                if (!sunlooktimer)
+                if ( not sunlooktimer)
                     sunlooktimer = SimLibElapsedTime;
 
                 if (sunlooktimer + (VU_TIME)(g_fSunPadlockTimeout * CampaignSeconds) < SimLibElapsedTime)

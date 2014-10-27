@@ -16,7 +16,7 @@ void GunClass::InitTracers()
     float rgbScale;
     // Tpoint pos;
 
-    if (!(typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL))
+    if ( not (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL))
         return;
 
     // Tracers
@@ -77,7 +77,7 @@ void GunClass::UpdateTracers(int firing)
     {
         for (i = 0; i < numFirstTracers; i++)
         {
-            if (!firstTracer[i]->InDisplayList())
+            if ( not firstTracer[i]->InDisplayList())
             {
                 OTWDriver.InsertObject(firstTracer[i]);
                 firstTracer[i]->SetAlpha(0.0f);
@@ -149,7 +149,7 @@ void GunClass::CleanupTracers()
 {
     int i;
 
-    if (!(typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL))
+    if ( not (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL))
     {
         FireShell(NULL);
         return;

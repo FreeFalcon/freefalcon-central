@@ -486,14 +486,14 @@ void AS_DataClass::AS_merge(int)
 
     for (n = 0; n < MAX_NEIGHBORS; n++)
     {
-        if (!neighbors[n].where)
+        if ( not neighbors[n].where)
             continue;
 
         if (queue == NULL or neighbors[n].cost + neighbors[n].to_go < queue->cost + queue->to_go)
         {
             new_node = AS_get_new_node(n);
 
-            if (!new_node)
+            if ( not new_node)
                 continue;
 
             new_node->next = queue;
@@ -519,7 +519,7 @@ void AS_DataClass::AS_merge(int)
                 // Either way, quit searching
                 break;
             }
-            else if (!insert_after and neighbors[n].cost + neighbors[n].to_go < T->next->cost + T->next->to_go)
+            else if ( not insert_after and neighbors[n].cost + neighbors[n].to_go < T->next->cost + T->next->to_go)
                 insert_after = T;
 
             T = T->next;
@@ -533,7 +533,7 @@ void AS_DataClass::AS_merge(int)
         {
             new_node = AS_get_new_node(n);
 
-            if (!new_node)
+            if ( not new_node)
                 continue;
 
             new_node->next = insert_after->next;

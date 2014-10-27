@@ -107,7 +107,7 @@ void SimFeatureClass::Init(SimInitDataClass* initData)
 
     SetFlag(ON_GROUND);
 
-    if (!initData)
+    if ( not initData)
         return;
 
     featureFlags = initData->specialFlags;
@@ -221,7 +221,7 @@ int SimFeatureClass::Wake()
 
 int SimFeatureClass::Sleep(void)
 {
-    if (!IsAwake())
+    if ( not IsAwake())
     {
         return 0;
     }
@@ -285,7 +285,7 @@ void SimFeatureClass::JoinFlight(void)
 VU_ERRCODE SimFeatureClass::InsertionCallback(void)
 {
     /* KCK: Not sure if this code is still relevant - I highly doubt it
-       if (!IsLocal())
+       if ( not IsLocal())
        {
           // KCK: If this is an element of a campaign unit or objective, it was sent
           // to us during startup - I need to synthisize a deaggregation event.
@@ -293,7 +293,7 @@ VU_ERRCODE SimFeatureClass::InsertionCallback(void)
         {
            // Synthisize a deaggregation (NOTE: not a Wake())
            ((CampEntity)GetCampaignObject())->SetAggregate(0);
-           if (!((CampEntity)GetCampaignObject())->components)
+           if ( not ((CampEntity)GetCampaignObject())->components)
         {
            DeaggregateList->ForcedInsert(GetCampaignObject());
            ((CampEntity)GetCampaignObject())->components = new TailInsertList();

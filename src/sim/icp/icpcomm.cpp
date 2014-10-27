@@ -276,7 +276,7 @@ void ICPClass::ExecCOMM2Mode(void)
 }
 void ICPClass::PNUpdateCOMMMode(int button, int)
 {
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI Original Code
         if (button == PREV_BUTTON)

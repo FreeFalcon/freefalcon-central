@@ -14,7 +14,7 @@ void ICPClass::ExecIFFMode(void)
         IFFBackup();
     else
     {
-        if (!g_bIFF)
+        if ( not g_bIFF)
         {
             //Line1
             FillDEDMatrix(0, 2, "IFF  ON");

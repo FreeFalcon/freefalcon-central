@@ -148,7 +148,7 @@ CampBaseClass::CampBaseClass(VU_BYTE **stream, long *rem) : FalconEntity(VU_LAST
 
         for (int i = 0; i < MAX_CAMP_ENTITIES; i++)
         {
-            if (!CampIDRenameTable[i])
+            if ( not CampIDRenameTable[i])
             {
                 CampIDRenameTable[i] = camp_id;
                 break;
@@ -362,7 +362,7 @@ VU_ERRCODE CampBaseClass::Remove()
 // Getters
 int CampBaseClass::GetSpotted(Team t)
 {
-    if (!this)
+    if ( not this)
         return 1;
 
     // same team always spotted and identified
@@ -502,12 +502,12 @@ void CampBaseClass::SetSpotted(Team t, CampaignTime time, int identified)
 {
     // Make this dirty if we wern't previously spotted or our time has expired
     // 2002-02-11 MODIFIED BY S.G. Or we were not identified and now we are
-    if (ReSpot() or !((spotted >> t) & 0x01) or (!((spotted >> (t + 8)) & 0x01) and identified))
+    if (ReSpot() or !((spotted >> t) & 0x01) or ( not ((spotted >> (t + 8)) & 0x01) and identified))
     {
         spotTime = time;
 
         // 2002-04-02 ADDED BY S.G. Need to send sooner if it gets identified.
-        if (!((spotted >> (t + 8)) & 0x01) and identified)
+        if ( not ((spotted >> (t + 8)) & 0x01) and identified)
         {
             //MakeCampBaseDirty (DIRTY_SPOTTED, DDP[2].priority);
             MakeCampBaseDirty(DIRTY_SPOTTED, SEND_RELIABLE);
@@ -539,7 +539,7 @@ void CampBaseClass::SetEmitting(int e)
     // }
     if (e)
     {
-        if (!IsEmitting())
+        if ( not IsEmitting())
         {
             base_flags  or_eq  CBC_EMITTING;
             //MakeCampBaseDirty (DIRTY_BASE_FLAGS, DDP[4].priority);
@@ -596,7 +596,7 @@ void CampBaseClass::SetAggregate(bool agg)
 /*void CampBaseClass::SetAggregate (int a)
 {
  local_flags  or_eq  CBC_AGGREGATE;
- if (!a)
+ if ( not a)
  local_flags xor_eq CBC_AGGREGATE;
 }
 */
@@ -604,7 +604,7 @@ void CampBaseClass::SetJammed(int j)
 {
     if (j)
     {
-        if (!(base_flags & CBC_JAMMED))
+        if ( not (base_flags & CBC_JAMMED))
         {
             base_flags  or_eq  CBC_JAMMED;
             //MakeCampBaseDirty (DIRTY_BASE_FLAGS, DDP[6].priority);
@@ -625,7 +625,7 @@ void CampBaseClass::SetJammed(int j)
 void CampBaseClass::SetTacan(int t)
 {
 
-    if (!t and IsTacan() and gTacanList)
+    if ( not t and IsTacan() and gTacanList)
     {
         if (IsObjective() and GetType() == TYPE_AIRBASE)
         {
@@ -640,21 +640,21 @@ void CampBaseClass::SetTacan(int t)
             gTacanList->RemoveTacan(Id(), NavigationSystem::CARRIER);
         }
     }
-    else if (t and (!IsTacan() or (IsObjective() and GetType() == TYPE_AIRBASE)) and gTacanList)
+    else if (t and ( not IsTacan() or (IsObjective() and GetType() == TYPE_AIRBASE)) and gTacanList)
     {
         gTacanList->AddTacan(this);
     }
 
     local_flags  or_eq  CBC_HAS_TACAN;
 
-    if (!t)
+    if ( not t)
         local_flags xor_eq CBC_HAS_TACAN;
 }
 /*
    void CampBaseClass::SetChecked (int t)
    {
    local_flags  or_eq  CBC_CHECKED;
-   if (!t)
+   if ( not t)
    local_flags xor_eq CBC_CHECKED;
    }
  */
@@ -662,7 +662,7 @@ void CampBaseClass::SetAwake(int d)
 {
     local_flags  or_eq  CBC_AWAKE;
 
-    if (!d)
+    if ( not d)
     {
         local_flags xor_eq CBC_AWAKE;
     }
@@ -672,7 +672,7 @@ void CampBaseClass::SetInPackage(int p)
 {
     local_flags  or_eq  CBC_IN_PACKAGE;
 
-    if (!p)
+    if ( not p)
     {
         local_flags xor_eq CBC_IN_PACKAGE;
     }
@@ -682,7 +682,7 @@ void CampBaseClass::SetDelta(int d)
 {
     local_flags  or_eq  CBC_HAS_DELTA;
 
-    if (!d)
+    if ( not d)
         local_flags xor_eq CBC_HAS_DELTA;
 }
 
@@ -690,7 +690,7 @@ void CampBaseClass::SetInSimLists(int l)
 {
     local_flags  or_eq  CBC_IN_SIM_LIST;
 
-    if (!l)
+    if ( not l)
         local_flags xor_eq CBC_IN_SIM_LIST;
 }
 
@@ -698,7 +698,7 @@ void CampBaseClass::SetReserved(int r)
 {
     local_flags  or_eq  CBC_RESERVED_ONLY;
 
-    if (!r)
+    if ( not r)
         local_flags xor_eq CBC_RESERVED_ONLY;
 }
 
@@ -716,7 +716,7 @@ int CampBaseClass::ReSpot()
 // Component accessers (Sim Flight emulators)
 int CampBaseClass::GetComponentIndex(VuEntity* me) // My call
 {
-    if (!components)
+    if ( not components)
         return 0;
     else
     {
@@ -881,7 +881,7 @@ int Real(int type)
 
 short GetEntityClass(VuEntity* e)
 {
-    if (!e)
+    if ( not e)
         return 0;
 
     return (e->EntityType())->classInfo_[VU_CLASS];
@@ -889,7 +889,7 @@ short GetEntityClass(VuEntity* e)
 
 short GetEntityDomain(VuEntity* e)
 {
-    if (!e)
+    if ( not e)
         return 0;
 
     return (e->EntityType())->classInfo_[VU_DOMAIN];
@@ -954,7 +954,7 @@ short FindUniqueID()
 
         for (id = 1; id < MAX_CAMP_ENTITIES; id++)
         {
-            if (!CampSearch[id])
+            if ( not CampSearch[id])
                 return id;
         }
 
@@ -1075,12 +1075,12 @@ void CampBaseClass::SetBaseFlags(short flags)
 
 void CampBaseClass::MakeCampBaseDirty(Dirty_Campaign_Base bits, Dirtyness score)
 {
-    if ((!IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
+    if (( not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
 
-    if (!IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
+    if ( not IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
     {
         score = static_cast<Dirtyness>(score << 4);
     }

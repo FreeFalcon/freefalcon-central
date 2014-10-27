@@ -1008,7 +1008,7 @@ void IMAGE_RSC::Blend8Bit(long doffset, long dwidth, WORD *dest, long front, lon
         {
             WORD dc;
 
-            if (!b32)
+            if ( not b32)
                 dc = *dptr;
             else
                 dc = RGB8toRGB565(*dptr2);
@@ -1031,7 +1031,7 @@ void IMAGE_RSC::Blend8Bit(long doffset, long dwidth, WORD *dest, long front, lon
             sptr++;
 
 
-            if (!b32)
+            if ( not b32)
                 *dptr = static_cast<WORD>(r | g | b); //565
             else
                 *dptr2  = RGB565toRGB8(static_cast<WORD>(r | g | b));
@@ -1064,7 +1064,7 @@ void IMAGE_RSC::Blend8BitTransparent(long doffset, long dwidth, WORD *dest, long
     sptr   = (uchar *)(Owner->Data_ + Header->imageoffset);
     srcsize = (uchar *)(sptr  + Header->w * Header->h);
 
-    if (!b32)
+    if ( not b32)
         dptr = dest + doffset;
     else
         dptr = dest + doffset * 2;
@@ -1084,7 +1084,7 @@ void IMAGE_RSC::Blend8BitTransparent(long doffset, long dwidth, WORD *dest, long
             {
                 WORD dc;
 
-                if (!b32)
+                if ( not b32)
                     dc = *dptr;
                 else
                     dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
@@ -1107,7 +1107,7 @@ void IMAGE_RSC::Blend8BitTransparent(long doffset, long dwidth, WORD *dest, long
 
                 sptr++;
 
-                if (!b32)
+                if ( not b32)
                     *dptr++ = static_cast<WORD>(r | g | b);
                 else
                 {
@@ -1147,7 +1147,7 @@ void IMAGE_RSC::Blend8BitPart(long soffset, long scopy, long ssize, long doffset
     sptr   = (uchar *)(Owner->Data_ + Header->imageoffset + soffset);
     srcsize = (uchar *)(Owner->Data_ + Header->imageoffset + ssize);
 
-    if (!b32)
+    if ( not b32)
         dptr = dest + doffset;
     else
         dptr = dest + doffset * 2;
@@ -1167,7 +1167,7 @@ void IMAGE_RSC::Blend8BitPart(long soffset, long scopy, long ssize, long doffset
         {
             WORD dc;
 
-            if (!b32)
+            if ( not b32)
                 dc = *dptr;
             else
                 dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
@@ -1191,7 +1191,7 @@ void IMAGE_RSC::Blend8BitPart(long soffset, long scopy, long ssize, long doffset
             sptr++;
 
             //XX *dptr++=static_cast<WORD>(r|g|b);
-            if (!b32)
+            if ( not b32)
                 *dptr++ = static_cast<WORD>(r | g | b);
             else
             {
@@ -1224,14 +1224,14 @@ void IMAGE_RSC::Blend8BitTransparentPart(long soffset, long scopy, long ssize, l
     sptr   = (uchar *)(Owner->Data_ + Header->imageoffset + soffset);
     srcsize = (uchar *)(Owner->Data_ + Header->imageoffset + ssize);
 
-    if (!b32)
+    if ( not b32)
         dptr = dest + doffset;
     else
         dptr = dest + doffset * 2;
 
     sadd = Header->w - scopy;
 
-    if (!b32)
+    if ( not b32)
         dadd = dwidth - scopy;
     else
         dadd = (dwidth - scopy) * 2;
@@ -1247,7 +1247,7 @@ void IMAGE_RSC::Blend8BitTransparentPart(long soffset, long scopy, long ssize, l
             {
                 WORD dc;
 
-                if (!b32)
+                if ( not b32)
                     dc = *dptr;
                 else
                     dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
@@ -1271,7 +1271,7 @@ void IMAGE_RSC::Blend8BitTransparentPart(long soffset, long scopy, long ssize, l
                 sptr++;
 
                 //XX *dptr++=static_cast<WORD>(r|g|b);
-                if (!b32)
+                if ( not b32)
                     *dptr++ = static_cast<WORD>(r | g | b);
                 else
                 {
@@ -1397,12 +1397,12 @@ void IMAGE_RSC::Blend16Bit(long doffset, long dwidth, WORD *dest, long front, lo
     sptr   = (WORD *)(Owner->Data_ + Header->imageoffset);
     srcsize = (WORD *)(sptr  + Header->w * Header->h);
 
-    if (!b32)
+    if ( not b32)
         dptr = dest + doffset;
     else
         dptr = dest + doffset * 2;
 
-    if (!b32)
+    if ( not b32)
         dadd = dwidth - Header->w;
     else
         dadd = (dwidth - Header->w) * 2;
@@ -1415,7 +1415,7 @@ void IMAGE_RSC::Blend16Bit(long doffset, long dwidth, WORD *dest, long front, lo
         {
             WORD dc;
 
-            if (!b32)
+            if ( not b32)
                 dc = *dptr;
             else
                 dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
@@ -1438,7 +1438,7 @@ void IMAGE_RSC::Blend16Bit(long doffset, long dwidth, WORD *dest, long front, lo
 
             sptr++;
 
-            if (!b32)
+            if ( not b32)
                 *dptr++ = static_cast<WORD>(r | g | b);
             else
             {
@@ -1467,12 +1467,12 @@ void IMAGE_RSC::Blend16BitTransparent(long doffset, long dwidth, WORD *dest, lon
     sptr   = (WORD *)(Owner->Data_ + Header->imageoffset);
     srcsize = (WORD *)(sptr  + Header->w * Header->h);
 
-    if (!b32)
+    if ( not b32)
         dptr = dest + doffset;
     else
         dptr = dest + doffset * 2;
 
-    if (!b32)
+    if ( not b32)
         dadd = dwidth - Header->w;
     else
         dadd = (dwidth - Header->w) * 2;
@@ -1487,7 +1487,7 @@ void IMAGE_RSC::Blend16BitTransparent(long doffset, long dwidth, WORD *dest, lon
             {
                 WORD dc;
 
-                if (!b32)
+                if ( not b32)
                     dc = *dptr;
                 else
                     dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
@@ -1509,7 +1509,7 @@ void IMAGE_RSC::Blend16BitTransparent(long doffset, long dwidth, WORD *dest, lon
 
                 sptr++;
 
-                if (!b32)
+                if ( not b32)
                     *dptr++ = static_cast<WORD>(r | g | b);
                 else
                 {
@@ -1521,7 +1521,7 @@ void IMAGE_RSC::Blend16BitTransparent(long doffset, long dwidth, WORD *dest, lon
             {
                 sptr++;
 
-                if (!b32)
+                if ( not b32)
                     dptr++;
                 else
                     dptr += 2;
@@ -1548,14 +1548,14 @@ void IMAGE_RSC::Blend16BitPart(long soffset, long scopy, long ssize, long doffse
     sptr   = (WORD *)(Owner->Data_ + Header->imageoffset) + soffset;
     srcsize = (WORD *)(Owner->Data_ + Header->imageoffset) + ssize;
 
-    if (!b32)
+    if ( not b32)
         dptr = dest + doffset;
     else
         dptr = dest + doffset * 2;
 
     sadd = Header->w - scopy;
 
-    if (!b32)
+    if ( not b32)
         dadd = dwidth - scopy;
     else
         dadd = (dwidth - scopy) * 2;
@@ -1568,7 +1568,7 @@ void IMAGE_RSC::Blend16BitPart(long soffset, long scopy, long ssize, long doffse
         {
             WORD dc;
 
-            if (!b32)
+            if ( not b32)
                 dc = *dptr;
             else
                 dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
@@ -1590,7 +1590,7 @@ void IMAGE_RSC::Blend16BitPart(long soffset, long scopy, long ssize, long doffse
 
             sptr++;
 
-            if (!b32)
+            if ( not b32)
                 *dptr++ = static_cast<WORD>(r | g | b);
             else
             {
@@ -1620,14 +1620,14 @@ void IMAGE_RSC::Blend16BitTransparentPart(long soffset, long scopy, long ssize, 
     sptr   = (WORD *)(Owner->Data_ + Header->imageoffset) + soffset;
     srcsize = (WORD *)(Owner->Data_ + Header->imageoffset) + ssize;
 
-    if (!b32)
+    if ( not b32)
         dptr = dest + doffset;
     else
         dptr = dest + doffset * 2;
 
     sadd = Header->w - scopy;
 
-    if (!b32)
+    if ( not b32)
         dadd = dwidth - scopy;
     else
         dadd = (dwidth - scopy) * 2;
@@ -1643,7 +1643,7 @@ void IMAGE_RSC::Blend16BitTransparentPart(long soffset, long scopy, long ssize, 
             {
                 WORD dc;
 
-                if (!b32)
+                if ( not b32)
                     dc = *dptr;
                 else
                     dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
@@ -1667,7 +1667,7 @@ void IMAGE_RSC::Blend16BitTransparentPart(long soffset, long scopy, long ssize, 
 
 
                 //XX *dptr++=static_cast<WORD>(r|g|b);
-                if (!b32)
+                if ( not b32)
                     *dptr++ = static_cast<WORD>(r | g | b);
                 else
                 {
@@ -1679,7 +1679,7 @@ void IMAGE_RSC::Blend16BitTransparentPart(long soffset, long scopy, long ssize, 
             {
                 sptr++;
 
-                if (!b32)
+                if ( not b32)
                     dptr++;
                 else
                     dptr += 2;
@@ -1693,9 +1693,9 @@ void IMAGE_RSC::Blend16BitTransparentPart(long soffset, long scopy, long ssize, 
 
 char *IMAGE_RSC::GetImage()
 {
-    if (!Owner) return(NULL);
+    if ( not Owner) return(NULL);
 
-    if (!Owner->Data_)
+    if ( not Owner->Data_)
         return(NULL);
 
     if (Header->Type == _RSC_IS_IMAGE_)
@@ -1706,9 +1706,9 @@ char *IMAGE_RSC::GetImage()
 
 WORD *IMAGE_RSC::GetPalette()
 {
-    if (!Owner) return(NULL);
+    if ( not Owner) return(NULL);
 
-    if (!Owner->Data_)
+    if ( not Owner->Data_)
         return(NULL);
 
     if (Header->Type == _RSC_IS_IMAGE_)
@@ -1730,16 +1730,16 @@ void IMAGE_RSC::Blit(SCREEN *surface, long sx, long sy, long sw, long sh, long d
 {
     long soff, doff, ssize;
 
-    if (!Owner)
+    if ( not Owner)
         return;
 
-    if (!Owner->Data_)
+    if ( not Owner->Data_)
         return;
 
     if (sx >= Header->w or sy >= Header->h)
         return;
 
-    if (!sx and !sy and sw >= Header->w and sh >= Header->h)
+    if ( not sx and !sy and sw >= Header->w and sh >= Header->h)
     {
         if (Header->flags & _RSC_USECOLORKEY_)
         {
@@ -1859,13 +1859,13 @@ void IMAGE_RSC::Blend(SCREEN *surface, long sx, long sy, long sw, long sh, long 
 {
     long soff, doff, ssize;
 
-    if (!Owner->Data_)
+    if ( not Owner->Data_)
         return;
 
     if (sx >= Header->w or sy >= Header->h)
         return;
 
-    if (!sx and !sy and sw >= Header->w and sh >= Header->h)
+    if ( not sx and !sy and sw >= Header->w and sh >= Header->h)
     {
         if (Header->flags & _RSC_USECOLORKEY_)
         {
@@ -1946,10 +1946,10 @@ void IMAGE_RSC::ScaleDown8(SCREEN *surface, long *Rows, long *Cols, long dx, lon
     WORD *Palette;
     int i, j, count;
 
-    if (!Owner)
+    if ( not Owner)
         return;
 
-    if (!Owner->Data_)
+    if ( not Owner->Data_)
         return;
 
     sptr = (unsigned char *)(Owner->Data_ + Header->imageoffset);

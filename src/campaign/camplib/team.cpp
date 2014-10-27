@@ -285,7 +285,7 @@ TeamClass::TeamClass(FILE *file) :
     // // Rename this ID
     // for (new_id.num_ = LAST_NON_VOLATILE_VU_ID_NUMBER-1; new_id.num_ > FIRST_NON_VOLATILE_VU_ID_NUMBER ; new_id.num_--)
     // {
-    // if (!vuDatabase->Find(new_id))
+    // if ( not vuDatabase->Find(new_id))
     // {
     // RenameTable[share_.id_.num_] = new_id.num_;
     // share_.id_ = new_id;
@@ -439,7 +439,7 @@ TeamClass::TeamClass(FILE *file) :
 
             for (i = 0; i < NUM_TEAMS; i++)
             {
-                if (!i or !who)
+                if ( not i or !who)
                     stance[i] = NoRelations;
                 else if (i not_eq who)
                     stance[i] = War;
@@ -589,7 +589,7 @@ TeamClass::TeamClass(FILE *file) :
     }
 
     // Set the owner to the game master.
-    if ((FalconLocalGame) and (!FalconLocalGame->IsLocal()))
+    if ((FalconLocalGame) and ( not FalconLocalGame->IsLocal()))
     {
         SetOwner(FalconLocalGame->OwnerId());
         flags and_eq compl TEAM_UPDATED; // We're not updated until we get data from the master
@@ -970,11 +970,11 @@ int TeamClass::CheckControl(GridIndex X, GridIndex Y)
         }
     }
 
-    if (!bo) // Test case- Should always have CCC
+    if ( not bo) // Test case- Should always have CCC
         return 1;
 
     /* Don't do this right now
-     if (!bo->Targeted() and bo->GetObjectiveStatus() > rand()%100) // The message got through (trigger a mission)
+     if ( not bo->Targeted() and bo->GetObjectiveStatus() > rand()%100) // The message got through (trigger a mission)
      {
      MissionRequestClass mis;
      bo->SetTargeted(1);
@@ -998,7 +998,7 @@ void TeamClass::SetActive(int act)
 {
     flags  or_eq  TEAM_ACTIVE;
 
-    if (!act)
+    if ( not act)
         flags xor_eq TEAM_ACTIVE;
 }
 
@@ -1015,7 +1015,7 @@ void TeamClass::Dump(void)
 
 void TeamClass::DoFullUpdate(VuTargetEntity *target)
 {
-    if (!target)
+    if ( not target)
         target = FalconLocalGame;
 
     VuEvent *event = new VuFullUpdateEvent(this, target);
@@ -1094,7 +1094,7 @@ int TeamClass::Handle(VuFullUpdateEvent *event)
     // Mark team data as received if we have all the teams.
     for (int i = 0; i < NUM_TEAMS; i++)
     {
-        if ((TeamInfo[i]) and (!(TeamInfo[i]->flags & TEAM_UPDATED)))
+        if ((TeamInfo[i]) and ( not (TeamInfo[i]->flags & TEAM_UPDATED)))
             return retval;
     }
 
@@ -1179,7 +1179,7 @@ void TeamClass::SelectGroundAction(void)
     Team t;
     TeamGndActionType enemyAction;
 
-    if (!(flags & TEAM_ACTIVE) or !IsLocal())
+    if ( not (flags & TEAM_ACTIVE) or !IsLocal())
         return;
 
     // A.S. begin, 2001-12-09
@@ -1298,7 +1298,7 @@ void TeamClass::SelectGroundAction(void)
                 return; // We've still got umph, or havn't started yet, and havn't captured our objective
         }
 
-        // end added section. This replaces(!) the section marked with +++ old code +++
+        // end added section. This replaces( not ) the section marked with +++ old code +++
 
 
 
@@ -1341,7 +1341,7 @@ void TeamClass::SelectAirActions(void)
     MissionRequest mis;
     CampaignTime current_time;
 
-    if (!(flags & TEAM_ACTIVE) or !IsLocal())
+    if ( not (flags & TEAM_ACTIVE) or !IsLocal())
         return;
 
     if (TheCampaign.CurrentTime > defensiveAirAction.actionStopTime)
@@ -1364,7 +1364,7 @@ void TeamClass::SelectAirActions(void)
     {
         mis = (MissionRequest) lp->GetUserData();
 
-        if (!mis->action_type and !(MissionData[mis->mission].flags & AMIS_FLYALWAYS))
+        if ( not mis->action_type and !(MissionData[mis->mission].flags & AMIS_FLYALWAYS))
             missions_requested++;
 
         lp = lp->GetPrev();
@@ -1453,7 +1453,7 @@ void TeamClass::SelectAirActions(void)
             }
         }
 
-        if (!bo)
+        if ( not bo)
             return;
 
         // Set up our action
@@ -1497,7 +1497,7 @@ void TeamClass::SelectAirActions(void)
                         lp = lp->GetNext();
                     }
 
-                    if (!found)
+                    if ( not found)
                     {
                         objectiveList->InsertNewElement(FloatToInt32(DistanceToFront(fx, fy)), o);
                         paks++;
@@ -1648,7 +1648,7 @@ int LoadTeams(char* scenario)
     // Set up the DIndex for our team manager class
     teamManagerDIndex = GetClassID(DOMAIN_ABSTRACT, CLASS_MANAGER, TYPE_TEAM, 0, 0, 0, 0, 0);
 
-    if (!teamManagerDIndex)
+    if ( not teamManagerDIndex)
         return 0;
 
     teamManagerDIndex += VU_LAST_ENTITY_TYPE;
@@ -1939,7 +1939,7 @@ void ApplyPlayerInput(Team who, VU_ID poid, int rating)
 {
     ShiAssert(TeamInfo);
 
-    if (!TeamInfo)
+    if ( not TeamInfo)
         return;
 
     int i, os, ts, initiative, maxInitiative, initDelta, pts;
@@ -1972,7 +1972,7 @@ void ApplyPlayerInput(Team who, VU_ID poid, int rating)
 
     if (os > ts)
         maxInitiative = 100;
-    else if (!os)
+    else if ( not os)
         maxInitiative = 0;
     else
         maxInitiative = (os * 100) / ts;
@@ -2219,7 +2219,7 @@ int GetPriority(MissionRequest mis)
         e = ((Package)e)->GetFirstUnitElement();
 
     // KCK: Make sure we ignore any requests if the player has specified 0 priority
-    if (!TeamInfo[mis->who]->GetMissionPriority(mis->mission))
+    if ( not TeamInfo[mis->who]->GetMissionPriority(mis->mission))
         return -1;
 
     // Mission priority (0 - 100)
@@ -2229,7 +2229,7 @@ int GetPriority(MissionRequest mis)
         mission_priority = TeamInfo[mis->who]->GetMissionPriority(mis->mission);
 
     // Target Priority (0 - 100)
-    if (!e)
+    if ( not e)
     {
         // Take the mission priority if no target
         target_priority = mission_priority;
@@ -2238,7 +2238,7 @@ int GetPriority(MissionRequest mis)
     else if (e->IsObjective())
     {
         // KCK: Make sure we ignore any requests if the player has specified 0 priority
-        if (!TeamInfo[mis->who]->GetObjTypePriority(e->GetType()))
+        if ( not TeamInfo[mis->who]->GetObjTypePriority(e->GetType()))
             return -1;
 
         // o Objective Target Type component (0-50)
@@ -2251,13 +2251,13 @@ int GetPriority(MissionRequest mis)
         target_priority += (target_priority * ((Objective)e)->GetObjectivePriority()) / 100;
         po = ((Objective)e)->GetObjectivePrimary();
 
-        if (!po)
+        if ( not po)
             po = FindNearestObjective(POList, mis->tx, mis->ty, NULL);
     }
     else if (e->IsUnit() and e->GetDomain() == DOMAIN_LAND)
     {
         // KCK: Make sure we ignore any requests if the player has specified 0 priority
-        if (!TeamInfo[mis->who]->GetUnitTypePriority(e->GetSType()))
+        if ( not TeamInfo[mis->who]->GetUnitTypePriority(e->GetSType()))
             return -1;
 
         // o Unit Target Type component (0-50)
@@ -2280,7 +2280,7 @@ int GetPriority(MissionRequest mis)
         target_priority = TeamInfo[mis->who]->GetUnitTypePriority(MAX_UNITTYPE - 1);
 
         // KCK: Make sure we ignore any requests if the player has specified 0 priority
-        if (!target_priority)
+        if ( not target_priority)
             return -1;
 
         po = FindNearestObjective(POList, mis->tx, mis->ty, NULL);
@@ -2292,13 +2292,13 @@ int GetPriority(MissionRequest mis)
         po = FindNearestObjective(POList, mis->tx, mis->ty, NULL);
     }
 
-    if (!po)
+    if ( not po)
         return -1;
 
     // Pak priority (0 - 100)
     pd = GetPOData(po);
 
-    if (!pd)
+    if ( not pd)
         return -1;
 
     if (pd->player_priority[mis->who] >= 0)
@@ -2306,7 +2306,7 @@ int GetPriority(MissionRequest mis)
         pak_priority = pd->player_priority[mis->who];
 
         // KCK: Make sure we ignore any requests if the player has specified 0 priority
-        if (!pak_priority)
+        if ( not pak_priority)
             return -1;
     }
     else
@@ -2400,7 +2400,7 @@ void AddReinforcements(Team who, int inc)
     GridIndex x, y;
     int added;
 
-    if ((inc <= 0) or (TeamInfo[who] == NULL) or (!(TeamInfo[who]->flags & TEAM_ACTIVE)))
+    if ((inc <= 0) or (TeamInfo[who] == NULL) or ( not (TeamInfo[who]->flags & TEAM_ACTIVE)))
         return;
 
     TeamInfo[who]->AddReinforcement(inc);
@@ -2430,7 +2430,7 @@ void AddReinforcements(Team who, int inc)
                 // RV - Biker - 100km is too big perimeter (carrier near coast)
                 o = FindNearestObjective(x, y, NULL, 25);
 
-                if (!o or o->GetTeam() == who)
+                if ( not o or o->GetTeam() == who)
                 {
                     // Activate this unit and force list reinsertion
                     e->BroadcastUnitMessage(e->Id(), FalconUnitMessage::unitActivate, 0, 0, 0);
@@ -2475,7 +2475,7 @@ void UpdateTeamStatistics(void)
     // Clear vehicle counts
     for (i = 0; i < NUM_TEAMS; i++)
     {
-        if (!TeamInfo[i])
+        if ( not TeamInfo[i])
             return;
 
         TeamInfo[i]->SetCurrentStats()->airDefenseVehs = 0;
@@ -2578,7 +2578,7 @@ void UpdateTeamStatistics(void)
                 TeamInfo[i]->startStats.airbases = TeamInfo[i]->GetCurrentStats()->airbases;
 
             // A.S. 2001-12-09
-            if (!NewInitiativePoints) // The new procedure NewInitiativePointSetting does the job.
+            if ( not NewInitiativePoints) // The new procedure NewInitiativePointSetting does the job.
             {
                 // same as old code
                 if (TeamInfo[i]->GetInitiative() < 40)
@@ -2816,7 +2816,7 @@ void InsertIntoSortedList(priority_structure *el)
 {
     priority_structure *tmp, *last = NULL;
 
-    if (!PriorityList)
+    if ( not PriorityList)
     {
         // Front of list
         PriorityList = el;
@@ -2831,7 +2831,7 @@ void InsertIntoSortedList(priority_structure *el)
         tmp = tmp->next;
     }
 
-    if (!tmp)
+    if ( not tmp)
     {
         // Back of list
         ShiAssert(last);
@@ -3058,7 +3058,7 @@ TeamGndActionType *TeamClass::SetGroundAction(void)
 
 void TeamClass::MakeTeamDirty(Dirty_Team bits, Dirtyness score)
 {
-    if ((!IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
+    if (( not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
@@ -3221,7 +3221,7 @@ void TeamClass::ReadDirty(unsigned char **stream, long *rem)
     {
         memcpychk(&cteam, stream, sizeof(uchar), rem);
 
-        if (!((cteam > 0) and (cteam < NUM_TEAMS)))
+        if ( not ((cteam > 0) and (cteam < NUM_TEAMS)))
         {
             char err[200];
             sprintf(err, "%s %d: error reading dirty, invalid cteam", __FILE__, __LINE__);

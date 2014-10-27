@@ -139,7 +139,7 @@ void VehRwrClass::SortDetectionList(void)
                 detectionList[j] = detectionList[j - 1];
                 j--;
 
-                if (!j)
+                if ( not j)
                 {
                     //check to prevent going off top of array
                     if (detectionList[1].selected)

@@ -75,7 +75,7 @@ void ICPClass::CNISwitch(int mode)
         //ALOW
         if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == TWO_BUTTON)
         {
-            if (!EDITMSLFLOOR and !TFADV)
+            if ( not EDITMSLFLOOR and !TFADV)
                 TFADV = TRUE;
             else if (TFADV)
             {
@@ -326,7 +326,7 @@ void ICPClass::CNISwitch(int mode)
         //ALOW
         if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == TWO_BUTTON)
         {
-            if (!EDITMSLFLOOR and !TFADV)
+            if ( not EDITMSLFLOOR and !TFADV)
                 EDITMSLFLOOR = TRUE;
             else if (EDITMSLFLOOR)
             {
@@ -510,7 +510,7 @@ void ICPClass::CNISwitch(int mode)
     {
         ClearDigits();
 
-        if (!IsICPSet(ICPClass::MODE_FACK))
+        if ( not IsICPSet(ICPClass::MODE_FACK))
             ClearStrings();
 
         if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == NONE_MODE)

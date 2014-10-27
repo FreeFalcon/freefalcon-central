@@ -66,7 +66,7 @@ void UI_Refresher::Setup(CampEntity entity, GlobalPositioningSystem *own, long a
 {
     Owner_ = own;
 
-    if (!entity)
+    if ( not entity)
         return;
 
     SetID(entity->Id());
@@ -216,7 +216,7 @@ void UI_Refresher::AddMission(CampEntity entity)
 
 void UI_Refresher::UpdateMission(CampEntity entity)
 {
-    if (!entity->IsDead())
+    if ( not entity->IsDead())
     {
         if (GetFlightTime((Flight)entity) not_eq Mission_->GetTakeOffTime())
         {
@@ -239,7 +239,7 @@ void UI_Refresher::RemoveMission()
     long ID;
     ID = Mission_->GetOwner()->ID_;
     Owner_->MisTree_->DeleteItem(Mission_->GetOwner());
-    ShiAssert(!Owner_->MisTree_->Find(ID));
+    ShiAssert( not Owner_->MisTree_->Find(ID));
     Mission_ = NULL;
     Owner_->SetFlags(Owner_->GetFlags() | _GPS_MISSION_RESIZE_);
 }
@@ -306,7 +306,7 @@ void UI_Refresher::AddMapItem(CampEntity entity)
 
         if (entity->GetTeam() not_eq Owner_->TeamNo_ and Owner_->TeamNo_ >= 0 and !entity->IsSquadron())
         {
-            if (!entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) and entity->GetMovementType() not_eq NoMove)
+            if ( not entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) and entity->GetMovementType() not_eq NoMove)
             {
                 MapItem_->Flags  or_eq  C_BIT_INVISIBLE;
 
@@ -353,18 +353,18 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
 
         if (entity->IsFlight())
         {
-            if (!entity->IsDead())
+            if ( not entity->IsDead())
             {
                 // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified
                 //and not editing a TE, change the IconIndex of the unit to ICON_UKN
                 //and its label to 'Bandit'
-                if (g_nUnidentifiedInUI and (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) and MapItem_ and entity->GetTeam() not_eq Owner_->TeamNo_))
+                if (g_nUnidentifiedInUI and ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT) and MapItem_ and entity->GetTeam() not_eq Owner_->TeamNo_))
                 {
                     if (entity->GetIdentified(static_cast<uchar>(Owner_->TeamNo_)))
                     {
                         ((MAPICONLIST *)MapItem_)->ImageID = ((UnitClass *)entity)->GetUnitClassData()->IconIndex;
 
-                        if (!g_bAWACSSupport)
+                        if ( not g_bAWACSSupport)
                         {
                             int vid = ((Unit)entity)->GetVehicleID(0);
                             VehicleClassDataType *vc = GetVehicleClassData(vid);
@@ -375,7 +375,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
                     {
                         ((MAPICONLIST *)MapItem_)->ImageID = ICON_UKN;
 
-                        if (!g_bAWACSSupport)
+                        if ( not g_bAWACSSupport)
                             ((MAPICONLIST *)MapItem_)->Label->SetText(gStringMgr->GetText(gStringMgr->AddText("Bandit")));
                     }
                 }
@@ -403,7 +403,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
                     if (gGps->GetTeamNo() == entity->GetTeam())
                         GetCallsign(flt, name);
                     // 2002-02-24 ADDED BY S.G. Don't give AWACS more info than it can get...
-                    else if (g_nUnidentifiedInUI and (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) and MapItem_ and entity->IsFlight() and entity->GetTeam() not_eq Owner_->TeamNo_ and !entity->GetIdentified(static_cast<uchar>(Owner_->TeamNo_))))
+                    else if (g_nUnidentifiedInUI and ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT) and MapItem_ and entity->IsFlight() and entity->GetTeam() not_eq Owner_->TeamNo_ and !entity->GetIdentified(static_cast<uchar>(Owner_->TeamNo_))))
                         strcpy(name, "Bandit");
                     else
                     {
@@ -441,7 +441,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
                 }
 
                 // JPO end
-                if (!(MapItem_->Flags & C_BIT_ENABLED))
+                if ( not (MapItem_->Flags & C_BIT_ENABLED))
                 {
                     wp = ((Flight)entity)->GetFirstUnitWP();
 
@@ -518,7 +518,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
         }
         else
         {
-            if (!entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) and entity->GetMovementType() not_eq NoMove)
+            if ( not entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) and entity->GetMovementType() not_eq NoMove)
             {
                 MapItem_->Flags  or_eq  C_BIT_INVISIBLE;
 

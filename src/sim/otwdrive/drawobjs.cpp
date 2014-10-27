@@ -37,7 +37,7 @@ void OTWDriverClass::UpdateVehicleDrawables(void)
     Tpoint objLocation;
     Trotation objRotation;
 
-    if (!SimDriver.objectList)
+    if ( not SimDriver.objectList)
         // The Sim isn't running yet..
         return;
 
@@ -79,7 +79,7 @@ void OTWDriverClass::UpdateVehicleDrawables(void)
             numObjsProcessed++;
 
             // Skip things without draw pointers
-            if (!theObject->drawPointer)
+            if ( not theObject->drawPointer)
             {
                 continue;
             }
@@ -93,7 +93,7 @@ void OTWDriverClass::UpdateVehicleDrawables(void)
                 }
             }
             // Its visible, so just update it.
-            else if (!theObject->IsExploding())
+            else if ( not theObject->IsExploding())
             {
                 // Update its position
                 ObjectSetData(theObject, &objLocation, &objRotation);
@@ -115,7 +115,7 @@ void OTWDriverClass::UpdateVehicleDrawables(void)
                 numObjsInDrawList++;
 
                 // Put this object into the visual display list if it isn't already there.
-                if (!theObject->drawPointer->InDisplayList())
+                if ( not theObject->drawPointer->InDisplayList())
                 {
                     InsertObjectIntoDrawList(theObject);
                 }
@@ -142,7 +142,7 @@ void OTWDriverClass::UpdateVehicleDrawables(void)
                     campObject->GetRealPosition(&pos.x, &pos.y, &pos.z);
                     ((DrawablePoint*)(campObject->draw_pointer))->Update(&pos);
 
-                    if (!campObject->draw_pointer->InDisplayList())
+                    if ( not campObject->draw_pointer->InDisplayList())
                         InsertObject(campObject->draw_pointer);
                 }
                 else

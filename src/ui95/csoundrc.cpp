@@ -140,15 +140,15 @@ void C_Sound::AddResSound(C_Resmgr *res)
     long curidx;
     SOUND_RSC *snd;
 
-    if (!res)
+    if ( not res)
         return;
 
     Index = res->GetIDList();
 
-    if (!Index)
+    if ( not Index)
         return;
 
-    if (!SoundList_)
+    if ( not SoundList_)
     {
         SoundList_ = new C_Hash;
         SoundList_->Setup(20);
@@ -187,15 +187,15 @@ void C_Sound::AddResStream(C_Resmgr *res)
     long curidx;
     SOUND_RSC *snd;
 
-    if (!res)
+    if ( not res)
         return;
 
     Index = res->GetIDList();
 
-    if (!Index)
+    if ( not Index)
         return;
 
-    if (!SoundList_)
+    if ( not SoundList_)
     {
         SoundList_ = new C_Hash;
         SoundList_->Setup(20);
@@ -234,7 +234,7 @@ BOOL C_Sound::LoadResource(long ID, char *filename)
     res = new C_Resmgr;
     res->Setup(ID, filename, IDTable_);
 
-    if (!res->Status())
+    if ( not res->Status())
     {
         res->Cleanup();
         delete res;
@@ -243,7 +243,7 @@ BOOL C_Sound::LoadResource(long ID, char *filename)
 
     res->LoadData();
 
-    if (!ResList_)
+    if ( not ResList_)
     {
         ResList_ = new C_Hash;
         ResList_->Setup(1);
@@ -264,14 +264,14 @@ BOOL C_Sound::LoadStreamResource(long ID, char *filename)
     res = new C_Resmgr;
     res->Setup(ID, filename, IDTable_);
 
-    if (!res->Status())
+    if ( not res->Status())
     {
         res->Cleanup();
         delete res;
         return(FALSE);
     }
 
-    if (!ResList_)
+    if ( not ResList_)
     {
         ResList_ = new C_Hash;
         ResList_->Setup(1);
@@ -313,7 +313,7 @@ BOOL C_Sound::LoadSound(long ID, char *file, long flags)
 #endif
     strcpy(newentry->filename, file);
 
-    if (!SoundList_)
+    if ( not SoundList_)
     {
         SoundList_ = new C_Hash;
         SoundList_->Setup(20);
@@ -346,7 +346,7 @@ BOOL C_Sound::StreamSound(long ID, char *file, long flags)
 #endif
     strcpy(newentry->filename, file);
 
-    if (!SoundList_)
+    if ( not SoundList_)
     {
         SoundList_ = new C_Hash;
         SoundList_->Setup(20);
@@ -362,7 +362,7 @@ SOUND_RES *C_Sound::GetSound(long ID)
 {
     SOUND_RES *cur;
 
-    if (!SoundList_)
+    if ( not SoundList_)
         return(NULL);
 
     cur = (SOUND_RES*)SoundList_->Find(ID);

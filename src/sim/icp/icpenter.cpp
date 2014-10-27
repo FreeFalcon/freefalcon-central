@@ -81,7 +81,7 @@ void ICPClass::EnterLat(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
         return;
 
     CheckDigits();
@@ -127,7 +127,7 @@ void ICPClass::EnterLong(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
         return;
 
     CheckDigits();
@@ -175,7 +175,7 @@ void ICPClass::EnterLong(void)
 }
 void ICPClass::EnterALOW(void)
 {
-    if (!EDITMSLFLOOR and !TFADV)
+    if ( not EDITMSLFLOOR and !TFADV)
     {
         //round to the next 10FT
         if (Input_Digit7 not_eq 0)
@@ -221,7 +221,7 @@ void ICPClass::EnterALOW(void)
 }
 void ICPClass::EnterTCN(void)
 {
-    if (!gNavigationSys)
+    if ( not gNavigationSys)
         return;
 
     if (Input_Digit7 == 0 and Input_Digit6 > 10)
@@ -484,7 +484,7 @@ void ICPClass::SetOA(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC->curWaypoint)
+    if ( not playerAC->curWaypoint)
         return;
 
     //which offset do we want to set?
@@ -537,7 +537,7 @@ void ICPClass::SetVIP(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC->curWaypoint)
+    if ( not playerAC->curWaypoint)
         return;
 
     //if we don't have a different altitude or a range, we just take the current waypoint
@@ -568,7 +568,7 @@ void ICPClass::SetVRP(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC->curWaypoint)
+    if ( not playerAC->curWaypoint)
     {
         return;
     }

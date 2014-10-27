@@ -123,10 +123,10 @@ void DogfightClass::ApplySettings(void)
     int i;
 
     // KCK: Should this be done on the host only, or should everyone assume we have the same data?
-    // if (!FalconLocalGame or !FalconLocalGame->IsLocal())
+    // if ( not FalconLocalGame or !FalconLocalGame->IsLocal())
     // return;
 
-    if (!TheCampaign.IsLoaded())
+    if ( not TheCampaign.IsLoaded())
     {
         return;
     }
@@ -182,7 +182,7 @@ void DogfightClass::ApplySettings(void)
 
     lastUpdateTime = 0;
 
-    if (!regenerationQueue)
+    if ( not regenerationQueue)
     {
         ShiAssert(this == &SimDogfight);
         regenerationQueue = new TailInsertList();
@@ -330,7 +330,7 @@ void DogfightClass::SendSettings(FalconSessionEntity *target)
 
 void DogfightClass::ReceiveSettings(DogfightClass *tmpSettings)
 {
-    if (!tmpSettings)
+    if ( not tmpSettings)
     {
         return;
     }
@@ -381,7 +381,7 @@ int DogfightClass::ReadyToStart(void)
     int i, numTeams = 0;
 
     // Check if it's ok to hit the 'Fly' button
-    if (!(flags & DF_GAME_OVER))
+    if ( not (flags & DF_GAME_OVER))
     {
         VuListIterator flit(AllRealList);
         unit = (Unit)flit.GetFirst();
@@ -429,7 +429,7 @@ void DogfightClass::LoadSettings(void)
 
     fp = fopen(settings_filename, "rb");
 
-    if (!fp)
+    if ( not fp)
     {
         return;
     }
@@ -472,7 +472,7 @@ void DogfightClass::SaveSettings(char *filename)
 
     fp = fopen(filename, "wb");
 
-    if (!fp)
+    if ( not fp)
     {
         return;
     }
@@ -619,7 +619,7 @@ void DogfightClass::UpdateDogfight(void)
 
         lastUpdateTime = vuxRealTime;
 
-        if ((!SimDriver.GetPlayerEntity()) and (!action_cam_started) and (!action_cam_time))
+        if (( not SimDriver.GetPlayerEntity()) and ( not action_cam_started) and ( not action_cam_time))
         {
             action_cam_time = vuxRealTime + 10 * VU_TICS_PER_SECOND;
 
@@ -671,7 +671,7 @@ void DogfightClass::UpdateGameStatus(void)
 void DogfightClass::RegenerateAircraft(AircraftClass *aircraft)
 {
     // Queue the aircraft for eventual regeneration
-    if (!aircraft)
+    if ( not aircraft)
         return;
 
     ShiAssert(aircraft->IsDead());
@@ -773,7 +773,7 @@ int DogfightClass::CheckRoundOver(void)
         {
             team = campEntity->GetTeam();
 
-            if (!activeAC[team])
+            if ( not activeAC[team])
             {
                 activeTeams++;
             }
@@ -810,7 +810,7 @@ void DogfightClass::RoundOver(void)
             {
                 team = campEntity->GetTeam();
 
-                if (!activeAC[team])
+                if ( not activeAC[team])
                 {
                     activeTeams++;
                 }
@@ -820,7 +820,7 @@ void DogfightClass::RoundOver(void)
             }
 
             // 2002-04-10 MN force a kill on all alive simlist objects
-            if (!(theObject->IsDead()) and (g_nDFRegenerateFix & 0x02))
+            if ( not (theObject->IsDead()) and (g_nDFRegenerateFix & 0x02))
                 theObject->SetDead(TRUE);
 
             theObject = (SimBaseClass*)updateWalker.GetNext();

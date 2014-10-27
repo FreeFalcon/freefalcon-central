@@ -77,9 +77,9 @@ void C_Text::SetFixedWidth(long w)
     // AFTER assigning a string to the control
     // THIS is a BIG NO NO... unless it started out as fixed width PRIOR to SetText, & the string size
     // is just being changed
-    if (!(Flags_ & C_BIT_FIXEDSIZE))
+    if ( not (Flags_ & C_BIT_FIXEDSIZE))
     {
-        F4Assert(!Text_->GetText());
+        F4Assert( not Text_->GetText());
     }
 
     FixedSize_ = w + 1;
@@ -208,7 +208,7 @@ void C_Text::SetFlags(long flags)
 
 void C_Text::Refresh()
 {
-    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (BgImage_ and GetFlags() & C_BIT_USEBGIMAGE)
@@ -223,7 +223,7 @@ void C_Text::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (GetFlags() & C_BIT_INVISIBLE)
         return;
 
-    if (!(GetFlags() & C_BIT_ABSOLUTE))
+    if ( not (GetFlags() & C_BIT_ABSOLUTE))
         if ((GetY() + GetH() + Parent_->VY_[GetClient()]) < Parent_->ClientArea_[GetClient()].top)
             return;
 

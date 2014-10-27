@@ -131,7 +131,7 @@ void SetHeading(C_Window *win)
     C_Text *txt;
     _TCHAR buffer[5];
 
-    if (!win)
+    if ( not win)
         return;
 
     txt = (C_Text*)win->FindControl(RECON_HEADING);
@@ -154,7 +154,7 @@ void FindCameraDeltas(OBJECTINFO *Info)
 
 void PositionCamera(OBJECTINFO *Info, C_Window *win, long client)
 {
-    if (!gUIViewer or !Info or !win)
+    if ( not gUIViewer or !Info or !win)
         return;
 
     FindCameraDeltas(Info);
@@ -168,7 +168,7 @@ void SetSlantRange(C_Window *win)
     C_Text *txt;
     _TCHAR buffer[15];
 
-    if (!win)
+    if ( not win)
         return;
 
     txt = (C_Text*)win->FindControl(SLANT_RANGE);
@@ -188,7 +188,7 @@ void SetBullsEye(C_Window *win)
     long brg, dist;
     _TCHAR buffer[40];
 
-    if (!win)
+    if ( not win)
         return;
 
     txt = (C_Text*)win->FindControl(BULLSEYE);
@@ -224,7 +224,7 @@ BOOL ReconListSortCB(TREELIST *list, TREELIST *newitem)
     C_Feature *feat1, *feat2;
     C_Entity *ent1, *ent2;
 
-    if (!list or !newitem)
+    if ( not list or !newitem)
         return(FALSE);
 
     if (list->Type_ == C_TYPE_ROOT)
@@ -240,7 +240,7 @@ BOOL ReconListSortCB(TREELIST *list, TREELIST *newitem)
         ent1 = (C_Entity*)list->Item_;
         ent2 = (C_Entity*)newitem->Item_;
 
-        if (!ent1 or !ent2)
+        if ( not ent1 or !ent2)
             return(FALSE);
 
         if (_tcscmp(ent2->GetName(), ent1->GetName()) < 0)
@@ -252,7 +252,7 @@ BOOL ReconListSortCB(TREELIST *list, TREELIST *newitem)
         feat1 = (C_Feature*)list->Item_;
         feat2 = (C_Feature*)newitem->Item_;
 
-        if (!feat1 or !feat2)
+        if ( not feat1 or !feat2)
             return(FALSE);
 
         if (feat2->GetFeatureValue() > feat1->GetFeatureValue())
@@ -295,12 +295,12 @@ int UI_Deaggregate(ObjectiveClass* objective)
 
     tree = (C_TreeList*)win->FindControl(RECON_TREE);
 
-    if (!tree)
+    if ( not tree)
         return(0);
 
     root = tree->Find(objective->GetTeam());
 
-    if (!root)
+    if ( not root)
     {
         txt = new C_Text;
         txt->Setup(C_DONT_CARE, 0);
@@ -316,7 +316,7 @@ int UI_Deaggregate(ObjectiveClass* objective)
 
     }
 
-    if (!root)
+    if ( not root)
         return(0);
 
     recon_ent = BuildObjective(objective);
@@ -338,7 +338,7 @@ int UI_Deaggregate(ObjectiveClass* objective)
         {
             fc = GetFeatureClassData(classID);
 
-            if (!fc or fc->Flags & FEAT_VIRTUAL)
+            if ( not fc or fc->Flags & FEAT_VIRTUAL)
                 continue;
 
             objective->GetFeatureOffset(f, &y, &x, &z);

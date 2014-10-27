@@ -588,7 +588,7 @@ void DigitalBrain::FrameExec(SimObjectType* curTargetList, SimObjectType* curTar
         {
             af->gearHandle = -1.0F;
         }
-        else if (!self->OnGround())
+        else if ( not self->OnGround())
         {
             //Cobra stop Naval aircraft flying around with gear down
             af->gearHandle = -1.0F;
@@ -718,7 +718,7 @@ void DigitalBrain::CheckLead(void)
         VuListIterator cit(self->GetCampaignObject()->GetComponents());
         pobj = (SimBaseClass*)cit.GetFirst();
 
-        while (!done)
+        while ( not done)
         {
             if (pobj and pobj->VuState() == VU_MEM_ACTIVE and !pobj->IsDead())
             {
@@ -951,7 +951,7 @@ void DigitalBrain::ReSetLabel(SimBaseClass* theObject)
     char label[40] = {0};
     long labelColor = 0xff0000ff;
 
-    if (!theObject->IsExploding() and !theObject->IsDead())
+    if ( not theObject->IsExploding() and !theObject->IsDead())
     {
         if (classPtr->dataType == DTYPE_VEHICLE)
         {

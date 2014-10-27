@@ -176,7 +176,7 @@ BOOL GroundClass::DoWeapons(void)
     //SimWeaponClass *theWeapon;
     //theWeapon.reset(Sms->GetCurrentWeapon());
     //theWeapon.reset(Sms->GetCurrentWeapon());
-    if (!theWeapon)
+    if ( not theWeapon)
     {
         return FALSE;
     }
@@ -198,10 +198,10 @@ BOOL GroundClass::DoWeapons(void)
 
         if (GunTrack())
         {
-            if (!IsGunFiring(Sms->GetCurrentWeaponHardpoint()) or Gun->IsShell())
+            if ( not IsGunFiring(Sms->GetCurrentWeaponHardpoint()) or Gun->IsShell())
             {
                 //me123 disabled for now...its looking realy strange in mp
-                if (!Gun->FiremsgsendTime)
+                if ( not Gun->FiremsgsendTime)
                 {
                     SendFireMessage((SimWeaponClass*)Gun, FalconWeaponsFire::GUN, TRUE, targetPtr);
                 }
@@ -386,7 +386,7 @@ void GroundClass::RotateTurret(void)
     }
     else
     {
-        if (!targetPtr->BaseData()->OnGround() and !isAirDefense)
+        if ( not targetPtr->BaseData()->OnGround() and !isAirDefense)
         {
             newAz = 0.0F;
             newEl = 0.0F;
@@ -479,12 +479,12 @@ int GroundClass::GunTrack(void)
 
     target = targetPtr->BaseData();
 
-    if (!target)
+    if ( not target)
         return FALSE;
 
     // make guns less accurate by randomizing target position when in air, unless its AAA
     // 2000-10-19 MODIFIED BY S.G. NEW TEST FOR AAA AND REGULAR GUNS. IF FIRST BIT OF NEW FIELD IS A 1, IT'S AN AAA GUN.
-    // if (!target->OnGround() and !isAirDefense)
+    // if ( not target->OnGround() and !isAirDefense)
     float tracerError; // JB 010106
 
     if ((((unsigned char *)Gun->wcPtr)[31] & 1) == (g_bToggleAAAGunFlag & 1) and !target->OnGround()) // 2002-03-12 MODIFIED BY S.G. Added the 'g_bToggleAAAGunFlag' check to possibly reverse the check. RP5 reversed the check so this deals with it
@@ -618,7 +618,7 @@ int GroundClass::GunTrack(void)
     // RV - Biker check max firing height for AAA (flak)
     else
     {
-        if (!targetPtr->BaseData()->OnGround())
+        if ( not targetPtr->BaseData()->OnGround())
         {
             WeaponClassDataType* wc = Gun->GetWCD();
             float maxFireRange;
@@ -636,7 +636,7 @@ int GroundClass::GunTrack(void)
         // we need to prevent flak from firing when aircraft are flying
         // low -- it should be a gameplay feature.  SelectWeapon isn't
         // being granular enough....
-        if (!targetPtr->BaseData()->OnGround()  and 
+        if ( not targetPtr->BaseData()->OnGround()  and 
             targetPtr->BaseData()->IsSim()  and 
             targetPtr->BaseData()->ZPos() - ZPos() > -2000.0f)
         {
@@ -752,7 +752,7 @@ int GroundClass::MissileTrack(void)
 
     // RV - Biker - Think here is a problem
     // FRB - Increased VT = 1 to VT = 3, same as GMT threshold
-    if (!isShip and (GetVt() > 3.0f and !g_bFireOntheMove))
+    if ( not isShip and (GetVt() > 3.0f and !g_bFireOntheMove))
         return FALSE;
 
     // check for radar-guided missiles
@@ -766,7 +766,7 @@ int GroundClass::MissileTrack(void)
                 ShiAssert(GetCampaignObject()->GetRadarType());
 
                 // if we don't have a fire control radar, don't launch
-                if (!battalionFireControl)
+                if ( not battalionFireControl)
                     return FALSE;
 
                 // Shoot at our fire control radar's target
@@ -775,7 +775,7 @@ int GroundClass::MissileTrack(void)
                 RadarClass *radar = (RadarClass*)FindSensor(battalionFireControl, SensorClass::Radar);
                 ShiAssert(radar);
 
-                if (!radar->CurrentTarget() or targetPtr->BaseData() not_eq radar->CurrentTarget()->BaseData())
+                if ( not radar->CurrentTarget() or targetPtr->BaseData() not_eq radar->CurrentTarget()->BaseData())
                     SetTarget(radar->CurrentTarget());
 
                 // ADDED BY S.G. SO SAM DO NOT NORMALLY FIRE WHEN JAMMED. DEPENDING ON THE SKILL, THEY MIGHT FIRE THOUGH
@@ -785,7 +785,7 @@ int GroundClass::MissileTrack(void)
                 // END OF ADDED SECTION
 
                 // Make sure we still have a target after all the above contortions
-                if (!targetPtr)
+                if ( not targetPtr)
                     return FALSE;
             }
             break;
@@ -795,7 +795,7 @@ int GroundClass::MissileTrack(void)
                 // Don't launch until the seeker sees the target
                 theMissile->SetPosition(XPos(), YPos(), ZPos());
 
-                if (!((IrstClass*)theMissile->sensorArray[0])->CanDetectObject(targetPtr))
+                if ( not ((IrstClass*)theMissile->sensorArray[0])->CanDetectObject(targetPtr))
                 {
                     return FALSE;
                 }
@@ -888,7 +888,7 @@ int GroundClass::MissileTrack(void)
     if (minAlt > 0.0f)
         minAlt = (float)(wc->Name[18]) * -32.0F;
 
-    if (!target->OnGround())
+    if ( not target->OnGround())
     {
         if (maxAlt == 0.0f)
             return FALSE;
@@ -1006,7 +1006,7 @@ GroundClass::FindBattalionFireControl(void)
     // do we already have one?
     if (battalionFireControl)
     {
-        if (!battalionFireControl->IsDead())
+        if ( not battalionFireControl->IsDead())
         {
             // Can still use the one we've got
             return;
@@ -1032,13 +1032,13 @@ GroundClass::FindBattalionFireControl(void)
     ShiAssert(batt); // We'de better belong to a battalion
     ShiAssert(batt->GetComponents()); // If there aren't components, then WHAT ARE WE???
 
-    if (!batt or batt->GetComponents() == NULL)  // Should never have been changed...
+    if ( not batt or batt->GetComponents() == NULL)  // Should never have been changed...
         return;
 
     battRadarType = batt->GetRadarType();
 
     // If the battalion is blind, so are we...
-    if (!battRadarType)
+    if ( not battRadarType)
     {
         ShiAssert(battalionFireControl == NULL); // Should never have been changed...
         return;

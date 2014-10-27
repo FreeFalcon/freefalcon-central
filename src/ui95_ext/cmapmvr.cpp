@@ -58,7 +58,7 @@ long C_MapMover::CheckHotSpots(long relX, long relY)
 
 BOOL C_MapMover::Process(long, short HitType)
 {
-    if (!Ready()) return(FALSE);
+    if ( not Ready()) return(FALSE);
 
     switch (HitType)
     {
@@ -91,7 +91,7 @@ BOOL C_MapMover::Process(long, short HitType)
 
 void C_MapMover::Refresh()
 {
-    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1, GetY() + GetH() + 1, GetFlags(), GetClient());
@@ -99,7 +99,7 @@ void C_MapMover::Refresh()
 
 void C_MapMover::Draw(SCREEN *, UI95_RECT *)
 {
-    if (!Ready()) return;
+    if ( not Ready()) return;
 
     if (GetFlags() & C_BIT_INVISIBLE)
         return;

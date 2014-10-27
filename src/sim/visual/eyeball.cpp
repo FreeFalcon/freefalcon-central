@@ -35,7 +35,7 @@ SimObjectType* EyeballClass::Exec(SimObjectType* newTargetList)
     SimObjectType* tmpPtr = newTargetList;
 
 
-    if (!lockedTarget)
+    if ( not lockedTarget)
         return lockedTarget;
 
     // Validate our locked target
@@ -47,13 +47,13 @@ SimObjectType* EyeballClass::Exec(SimObjectType* newTargetList)
     {
 
         // Can't hold a lock if its outside our sensor cone
-        if (!CanSeeObject(lockedTarget))
+        if ( not CanSeeObject(lockedTarget))
         {
             newLock = NULL;
         }
 
         // Can't hold lock if the object is too far away or is occluded
-        if (!CanDetectObject(lockedTarget))
+        if ( not CanDetectObject(lockedTarget))
         {
             newLock = NULL;
         }
@@ -236,7 +236,7 @@ float EyeballClass::GetSignature(SimObjectType* obj)
                 }
 
                 // MIL smoking aircraft
-                if (!aircraft->OnGround()  and 
+                if ( not aircraft->OnGround()  and 
                     aircraft->PowerOutput() <= 1.0f and aircraft->PowerOutput() > 0.90f)
                 {
                     float smoke = aircraft->af->EngineSmokeFactor();

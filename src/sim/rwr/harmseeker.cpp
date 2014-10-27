@@ -42,7 +42,7 @@ SimObjectType* HarmSeekerClass::Exec(SimObjectType* missileTarget)
     theParent = (SimMoverClass*)(((MissileClass*)platform)->parent.get());
 
     // FRB - CTD fix?
-    if (!theParent)
+    if ( not theParent)
         return NULL;
 
     FCC = ((SimVehicleClass*)theParent)->GetFCC();
@@ -59,7 +59,7 @@ SimObjectType* HarmSeekerClass::Exec(SimObjectType* missileTarget)
     // Adopt the missile's target if it is providing one and it is not the missile itself
     if (missileTarget)
     {
-        if (!platform->IsMissile() or ((MissileClass*)platform)->parent.get() not_eq missileTarget->BaseData())
+        if ( not platform->IsMissile() or ((MissileClass*)platform)->parent.get() not_eq missileTarget->BaseData())
             SetDesiredTarget(missileTarget);
     }
 

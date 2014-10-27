@@ -146,7 +146,7 @@ static void doFrame(PMOVIE item)
 
     double diff;
 
-    if (!once)
+    if ( not once)
     {
 
         _ftime(&now);
@@ -272,13 +272,13 @@ int movieInit(int numMovies, LPVOID lpDD)
     if (numOfMovies)
         return MOVIE_HAS_BEEN_INITIALIZED;
 
-    if (!numMovies or numMovies > MAX_MOVIES)
+    if ( not numMovies or numMovies > MAX_MOVIES)
         return MOVIE_INVALID_NUMBER;
 
     //   move = AVI_MALLOC( numMovies * sizeof( MOVIE ) );
     movie = new MOVIE[numMovies];
 
-    if (!movie)
+    if ( not movie)
         return MOVIE_MALLOC_FAILED;
 
     abortMovie = 0;
@@ -309,7 +309,7 @@ void movieUnInit(void)
 {
     DWORD    i;
 
-    if (!numOfMovies)
+    if ( not numOfMovies)
         return;
 
     EnterCriticalSection(&movieCriticalSection);
@@ -400,7 +400,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
     */
 
     for (handle = 0; handle < numOfMovies; handle++)
-        if (!movie[handle].status)
+        if ( not movie[handle].status)
             break;
 
     /*
@@ -429,7 +429,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
 
     videoMode and_eq 0xffff;             // Clear high word
 
-    if (!(audioFlag & MOVIE_NO_AUDIO))
+    if ( not (audioFlag & MOVIE_NO_AUDIO))
     {
         item->aviStreams.audioFlag  or_eq  STREAM_AUDIO_ON;
 
@@ -531,7 +531,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
        Exit if unable to find the decompressor.
     */
 
-    if (!item->hIC)
+    if ( not item->hIC)
     {
         PF("Compressor open() failed.\n");
         aviClose(&(item->aviStreams));
@@ -656,7 +656,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
         item->sbType  or_eq  SURFACE_TYPE_SYSTEM;
     }
 
-    if (!item->surfaceBuffer)
+    if ( not item->surfaceBuffer)
     {
         ICDecompressEnd(item->hIC);
         aviClose(&(item->aviStreams));
@@ -739,7 +739,7 @@ int movieStart(int handle)
                any.
             */
 
-            if (!(streams->audioFlag & STREAM_AUDIO_EXTERNAL))
+            if ( not (streams->audioFlag & STREAM_AUDIO_EXTERNAL))
             {
                 // Interleaved.
 
@@ -790,7 +790,7 @@ int movieStart(int handle)
     item->hFillerThread = _beginthreadex(NULL, 0, fillerThread, item,
                                          0, (unsigned int *) & (item->fillerThreadID));
 
-    if (!item->hFillerThread)
+    if ( not item->hFillerThread)
         return MOVIE_UNABLE_TO_LAUNCH_THREAD;
 
     // Launch movie thread.
@@ -798,7 +798,7 @@ int movieStart(int handle)
     item->hMovieThread = _beginthreadex(NULL, 0, movieThread, item,
                                         0, (unsigned int *) & (item->movieThreadID));
 
-    if (!item->hMovieThread)
+    if ( not item->hMovieThread)
     {
         /*
            Stop filler thread.
@@ -861,7 +861,7 @@ int movieClose(int handle)
 
     EnterCriticalSection(&movieCriticalSection);
 
-    if (!(item->status & MOVIE_STATUS_IN_USE))
+    if ( not (item->status & MOVIE_STATUS_IN_USE))
     {
         LeaveCriticalSection(&movieCriticalSection);
         return MOVIE_NOT_IN_USE;
@@ -923,7 +923,7 @@ int movieStop(int handle)
 
     item = &(movie[handle]);
 
-    if (!(item->status & MOVIE_STATUS_IN_USE))
+    if ( not (item->status & MOVIE_STATUS_IN_USE))
         return MOVIE_NOT_IN_USE;
 
     item->status  or_eq  MOVIE_STATUS_QUIT;
@@ -1004,14 +1004,14 @@ static unsigned int __stdcall fillerThread(void* itemIn)
     exitCode = MOVIE_OK;
     streams = &(item->aviStreams);
 
-    while (!((item->status & MOVIE_STATUS_QUIT) ||
+    while ( not ((item->status & MOVIE_STATUS_QUIT) ||
              (item->status & MOVIE_STATUS_STOP_THREAD)))
     {
         /*
            Read only if there are free blocks.
         */
 
-        if (!streams->nextBlockToFill->currentBlockSize)
+        if ( not streams->nextBlockToFill->currentBlockSize)
         {
             if (item->status & MOVIE_STATUS_EOF)
                 break;
@@ -1099,7 +1099,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
         surfaceReleasePointer(item->ddSurface, &(item->sa));
     }
 
-    while (!(item->status & MOVIE_STATUS_QUIT))
+    while ( not (item->status & MOVIE_STATUS_QUIT))
     {
         /*
            Process a frame.
@@ -1236,7 +1236,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
                         timeBegin = timeGetTime();
                         bytesProcessed = F4StreamPlayed(item->audioChannel);
 
-                        while (!bytesProcessed)
+                        while ( not bytesProcessed)
                         {
                             if ((timeGetTime() - timeBegin) > AUDIO_TIMEOUT)
                             {
@@ -1248,7 +1248,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
                             bytesProcessed = F4StreamPlayed(item->audioChannel);
                         }
 
-                        if (!bytesProcessed)
+                        if ( not bytesProcessed)
                         {
                             break;                                 // time out
                         }
@@ -1314,7 +1314,7 @@ static DWORD fillSoundBuffer(void *me, char *soundBuffer, DWORD length)
     movieHandle = *((int*)me);
     item = &(movie[movieHandle]);
 
-    if (!(item->status & MOVIE_STATUS_PLAYING))
+    if ( not (item->status & MOVIE_STATUS_PLAYING))
         return 0;
 
     streams = &(item->aviStreams);
@@ -1351,7 +1351,7 @@ static DWORD fillSoundBuffer(void *me, char *soundBuffer, DWORD length)
             dsb += dataToCopy;
             streams->waveBufferRead += dataToCopy;
 
-            if (!size)
+            if ( not size)
                 streams->waveBufferRead = 0;
         }
         else

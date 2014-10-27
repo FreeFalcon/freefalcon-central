@@ -163,7 +163,7 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
     cend.z = tailEnd.z - renderer->Z();
 
     // 1st get 2 points for width at 1 end
-    if (!ConstructWidth(renderer, &cpos, &cend, &v2, &v3, &v5, &v4))
+    if ( not ConstructWidth(renderer, &cpos, &cend, &v2, &v3, &v5, &v4))
     {
         if (sGreenMode)
             renderer->SetColor(0xFF00FF00);

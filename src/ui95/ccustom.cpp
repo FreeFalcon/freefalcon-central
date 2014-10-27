@@ -74,7 +74,7 @@ void C_Custom::Cleanup(void)
 {
     short i;
 
-    if (!Count_)
+    if ( not Count_)
         return;
 
     for (i = 0; i < Count_; i++)

@@ -94,7 +94,7 @@ void FireControlComputer::NavMode(void)
     WayPointClass* curWaypoint = platform->curWaypoint;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!IsHsdState(HSDCPL))
+    if ( not IsHsdState(HSDCPL))
     {
         if (HSDRangeStepCmd > 0)
             HsdRangeIndex ++;
@@ -119,7 +119,7 @@ void FireControlComputer::NavMode(void)
         {
             HSDRange = theRadar->GetRange();
 
-            if (!IsHsdState(HSDCEN))
+            if ( not IsHsdState(HSDCEN))
             {
                 HSDRange *= 1.5;
             }
@@ -327,7 +327,7 @@ void FireControlComputer::NavMode(void)
                         if (curOA)
                         {
                             //Limit it to the TargetWP for the moment
-                            if (!F4IsBadReadPtr(curOA, sizeof(WayPointClass)))
+                            if ( not F4IsBadReadPtr(curOA, sizeof(WayPointClass)))
                             {
                                 curOA->GetLocation(&OAXPos, &OAYPos, &OAZPos);
                                 float dx, dy, dz;
@@ -356,7 +356,7 @@ void FireControlComputer::NavMode(void)
                         if (curOA)
                         {
                             //Limit it to the TargetWP for the moment
-                            if (!F4IsBadReadPtr(curOA, sizeof(WayPointClass)))
+                            if ( not F4IsBadReadPtr(curOA, sizeof(WayPointClass)))
                             {
                                 curOA->GetLocation(&OAXPos, &OAYPos, &OAZPos);
                                 float dx, dy, dz;
@@ -388,7 +388,7 @@ void FireControlComputer::NavMode(void)
 
             if (curVIP)
             {
-                if (!F4IsBadReadPtr(curVIP, sizeof(WayPointClass)))
+                if ( not F4IsBadReadPtr(curVIP, sizeof(WayPointClass)))
                 {
                     //valid, draw VIP
                     curVIP->GetLocation(&OAXPos, &OAYPos, &OAZPos);
@@ -414,7 +414,7 @@ void FireControlComputer::NavMode(void)
 
             if (curVRP)
             {
-                if (!F4IsBadReadPtr(curVRP, sizeof(WayPointClass)))
+                if ( not F4IsBadReadPtr(curVRP, sizeof(WayPointClass)))
                 {
                     //valid, draw VRP
                     curVRP->GetLocation(&OAXPos, &OAYPos, &OAZPos);
@@ -493,7 +493,7 @@ void FireControlComputer::InitNewStptMode(void)
 
                 case FCCWaypoint:
 
-                    if (!mpSavedWaypoint)
+                    if ( not mpSavedWaypoint)
                     {
                         platform->curWaypoint = platform->waypoint;
                     }
@@ -591,7 +591,7 @@ void FireControlComputer::SetWaypointNum(int num)
         // 2001-07-28 MODIFIED BY S.G. ITS THE *NEXT* WAYPOINT, NOT THE PREVIOUS!!! NOT CHECKED SO COMMENTED OUT
         // 2002-04-18 MN let's add a config file variable to test that later - AI uses this function, too,
         // so we need to be sure it works...
-        if (!g_bSetWaypointNumFix)
+        if ( not g_bSetWaypointNumFix)
             curWaypoint = curWaypoint->GetPrevWP();
         else
             curWaypoint = curWaypoint->GetNextWP();
@@ -663,7 +663,7 @@ void FireControlComputer::StepPoint(void)
             case FCCWaypoint:
 
                 //MI 10/02/02 Why?
-                //if (!platform->OnGround())
+                //if ( not platform->OnGround())
             {
                 if (waypointStepCmd == 1)
                 {
@@ -769,21 +769,21 @@ void FireControlComputer::NavDisplay(void)
         y = (frz_x - platform->XPos()) * FT_TO_NM / HSDRange;
         x = (frz_y - platform->YPos()) * FT_TO_NM / HSDRange;
 
-        if (!IsHsdState(HSDCEN))
+        if ( not IsHsdState(HSDCEN))
             y -= 0.4f;
 
         display->AdjustOriginInViewport(x, y);
         basedir = platform->Yaw() - frz_dir;
         display->AdjustRotationAboutOrigin(basedir);
     }
-    else if (!IsHsdState(HSDCEN)) // JPO depressed view
+    else if ( not IsHsdState(HSDCEN)) // JPO depressed view
         display->AdjustOriginInViewport(0.0F, -0.4F);
 
     //Wombat778 11-10-2003 Added to center on cursor in EXP modes
 
     if ((HSDZoom > 0) and IsSOI)
     {
-        if (!IsHsdState(HSDCEN))
+        if ( not IsHsdState(HSDCEN))
         {
             if (HSDZoom == 2)
                 display->AdjustOriginInViewport(-HSDXPos, (-HSDYPos) - 0.4F); //Adjust to the previously set HSDXPos and HSDYPos (set when zooming)
@@ -819,9 +819,9 @@ void FireControlComputer::NavDisplay(void)
     display->AdjustRotationAboutOrigin(-platform->Yaw());
 
     //MI changed for Zoom
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
-        if (!IsHsdState(HSDNORINGS) and !IsHsdState(HSDFRZ))
+        if ( not IsHsdState(HSDNORINGS) and !IsHsdState(HSDFRZ))
         {
             display->SetColor(GetMfdColor(MFD_LINES));
             // Add Cardinal Headings
@@ -858,7 +858,7 @@ void FireControlComputer::NavDisplay(void)
     else
     {
         //MI this is not here if we have it expanded
-        if (!IsHsdState(HSDNORINGS) and !IsHsdState(HSDFRZ) and HSDZoom == 0)
+        if ( not IsHsdState(HSDNORINGS) and !IsHsdState(HSDFRZ) and HSDZoom == 0)
         {
             display->SetColor(GetMfdColor(MFD_LINES));
             // Add Cardinal Headings
@@ -895,21 +895,21 @@ void FireControlComputer::NavDisplay(void)
 
     display->SetColor(GetMfdColor(MFD_ROUTES));
 
-    if (!IsHsdState(HSDNONAV1))
+    if ( not IsHsdState(HSDNONAV1))
         DrawNavPoints();
 
-    if (!IsHsdState(HSDNOPRE) and g_bRealisticAvionics)
+    if ( not IsHsdState(HSDNOPRE) and g_bRealisticAvionics)
         DrawPPThreats();
 
     if (PlayerOptions.GetAvionicsType() not_eq ATEasy)
     {
         display->SetColor(GetMfdColor(MFD_LINES));
 
-        if (!IsHsdState(HSDNOLINE2))
+        if ( not IsHsdState(HSDNOLINE2))
             DrawFLOT();
 
         // Draw additional data
-        if (!IsHsdState(HSDNOFCR))
+        if ( not IsHsdState(HSDNOFCR))
         {
             display->ZeroRotationAboutOrigin();
             display->AdjustRotationAboutOrigin(basedir);
@@ -939,7 +939,7 @@ void FireControlComputer::NavDisplay(void)
             display->AdjustRotationAboutOrigin(basedir);
 
             DrawBuggedTarget();
-            //if (!IsHsdState(HSDNOADLNK)) Cobra not needed we do this below in DrawWingmen
+            //if ( not IsHsdState(HSDNOADLNK)) Cobra not needed we do this below in DrawWingmen
             // {
             display->ZeroRotationAboutOrigin();
             display->AdjustRotationAboutOrigin(basedir);
@@ -947,7 +947,7 @@ void FireControlComputer::NavDisplay(void)
             //}
 
             //Cobra 11/27/04 AIFF
-            if (!IsHsdState(HSDNOAIFF))
+            if ( not IsHsdState(HSDNOAIFF))
             {
                 display->SetColor(GetMfdColor(MFD_IFFFREIENDLY));
                 display->ZeroRotationAboutOrigin();
@@ -1048,7 +1048,7 @@ void FireControlComputer::NavDisplay(void)
     float ymid = y18 + (y19 - y18) / 2;
     display->TextLeftVertical(x18, ymid, tmpStr);
 
-    if (!IsHsdState(HSDCPL) and !IsHsdState(HSDCNTL) and !IsHsdState(HSDFRZ))
+    if ( not IsHsdState(HSDCPL) and !IsHsdState(HSDCNTL) and !IsHsdState(HSDFRZ))
     {
         /*----------*/
         /* up arrow */
@@ -1405,7 +1405,7 @@ void FireControlComputer::MapWaypointToDisplay(WayPointClass* pwaypoint, float* 
     pwaypoint->GetLocation(&wpX, &wpY, &wpZ);
 
     //MI
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         *v = (wpX - platform->XPos()) * FT_TO_NM / HSDRange;
         *h = (wpY - platform->YPos()) * FT_TO_NM / HSDRange;
@@ -1445,7 +1445,7 @@ void FireControlComputer::MapWaypointToDisplay(WayPointClass* pwaypoint, float* 
 
 void FireControlComputer::DrawPointPair(WayPointClass* curWaypoint, float x2, float y2, float displayX, float displayY)
 {
-    if (!(curWaypoint->GetWPFlags() & WPF_ALTERNATE))
+    if ( not (curWaypoint->GetWPFlags() & WPF_ALTERNATE))
         display->Line(x2, y2, displayX, displayY);
 
     DrawPointSymbol(curWaypoint, displayX, displayY);
@@ -1461,7 +1461,7 @@ void FireControlComputer::DrawPointPair(WayPointClass* curWaypoint, float x2, fl
 
 void FireControlComputer::DrawPointSymbol(WayPointClass* curWaypoint, float displayX, float displayY)
 {
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
         return;
 
     int wpFlags;
@@ -1682,7 +1682,7 @@ void FireControlComputer::DrawFLOT(void)
         {
             tmpColor = display->Color();
 
-            if (!g_bEnableColorMfd)
+            if ( not g_bEnableColorMfd)
                 display->SetColor(0xFF008000);
             else
                 display->SetColor(GetMfdColor(MFD_GREY));
@@ -1780,7 +1780,7 @@ void FireControlComputer::DrawBullseye(void)
         theRadar->GetCursorPosition(&cursorX, &cursorY);
 
         //MI
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
             DrawBullseyeData(display, cursorX, cursorY);
         else
         {
@@ -2221,7 +2221,7 @@ void FireControlComputer::Draw1WingmanGnd(AircraftClass *wing)
     speed = lockedData->GetVt();
 #else
 
-    if (!((SimVehicleClass*)wing)->sensorArray[1]->RemoteBuggedTarget)
+    if ( not ((SimVehicleClass*)wing)->sensorArray[1]->RemoteBuggedTarget)
     {
         xPos = locked->BaseData()->XPos();
         yPos = locked->BaseData()->YPos();
@@ -2464,7 +2464,7 @@ void FireControlComputer::Draw1Wingman(AircraftClass *wing)
 
 #else
 
-    if (!((SimVehicleClass*)wing)->sensorArray[1]->RemoteBuggedTarget)
+    if ( not ((SimVehicleClass*)wing)->sensorArray[1]->RemoteBuggedTarget)
     {
         xPos = locked->BaseData()->XPos();
         yPos = locked->BaseData()->YPos();
@@ -2668,7 +2668,7 @@ void FireControlComputer::MoveCursor(void)
         curCursorRate = CursorRate;
 
     //check if our cursor is over a waypoint, only if their not decluttered
-    if (!IsHsdState(HSDNONAV1))
+    if ( not IsHsdState(HSDNONAV1))
     {
         WayPointClass *tmpWp = platform->waypoint;
 
@@ -2682,7 +2682,7 @@ void FireControlComputer::MoveCursor(void)
                 //cursor position
                 MapWaypointToXY(tmpWp);
 
-                if (!IsHsdState(HSDCEN))
+                if ( not IsHsdState(HSDCEN))
                     DispY -= 0.4F;
 
                 float tolerance = 0.05F; //just about the size of the circle
@@ -2710,7 +2710,7 @@ void FireControlComputer::MoveCursor(void)
     }
 
     //check for preplanned threads, only if not decluttered
-    if (!IsHsdState(HSDNOPRE))
+    if ( not IsHsdState(HSDNOPRE))
         CheckPP();
 }
 //MI
@@ -2809,7 +2809,7 @@ void FireControlComputer::CheckPP(void)
         displayX = trig.cos * x2 - trig.sin * y2;
         displayY = trig.sin * x2 + trig.cos * y2;
 
-        if (!IsHsdState(HSDCEN))
+        if ( not IsHsdState(HSDCEN))
             displayY -= 0.4F;
 
         float CursGPRange = (float)sqrt((displayX - xPos) * (displayX - xPos) +

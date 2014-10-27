@@ -56,7 +56,7 @@ int FalconObjectiveMessage::Process(uchar autodisp)
 
     o = FindObjective(EntityId());
 
-    if (!o)
+    if ( not o)
         return -1;
 
     switch (dataBlock.message)

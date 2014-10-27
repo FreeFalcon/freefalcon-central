@@ -304,7 +304,7 @@ GLImageInfo *LoadImageFile(char *filename)
  short result;
 
 
- if(!filename)
+ if( not filename)
  return(NULL);
 
  // Make sure we recognize this file type
@@ -334,7 +334,7 @@ GLImageInfo *LoadImageFile(char *filename)
 
  // Create a palette object if we don't already have one
  ShiAssert( texFile.image.palette );
- if (!palette) {
+ if ( not palette) {
  palette = new Palette;
  palette->Setup32( (DWORD*)texFile.image.palette );
  } else {

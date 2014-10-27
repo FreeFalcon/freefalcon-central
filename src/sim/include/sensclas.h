@@ -48,7 +48,7 @@ public:
     {
         isOn = state;
 
-        if (!isOn) ClearSensorTarget();
+        if ( not isOn) ClearSensorTarget();
     }
     virtual BOOL IsOn(void)
     {

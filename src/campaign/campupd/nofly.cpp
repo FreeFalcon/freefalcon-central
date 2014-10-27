@@ -40,7 +40,7 @@ int NoFlyZoneClass::InZone(GridIndex x, GridIndex y, Team who, int flags)
     {
         if (type == NFZ_OVERFLY_ONLY)
         {
-            if (!GetRoE(who, owner, ROE_AIR_OVERFLY))
+            if ( not GetRoE(who, owner, ROE_AIR_OVERFLY))
                 return 1;
         }
         else if (type == NFZ_OWNER_NOFLY)
@@ -139,7 +139,7 @@ int LoadNFZs(char *name)
         zone = new NoFlyZoneClass();
         fread(zone, sizeof(NoFlyZoneClass), 1, fp);
 
-        if (!NFZList)
+        if ( not NFZList)
             NFZList = zone;
 
         if (last)

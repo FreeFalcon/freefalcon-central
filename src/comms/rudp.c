@@ -550,7 +550,7 @@ extern "C" {
             //
             // while (cp)
             // {
-            // if ((!cp->acknowledged) and ((cudp->rudp_data.last_received - cp->sequence_number + 1) & 0x8000))
+            // if (( not cp->acknowledged) and ((cudp->rudp_data.last_received - cp->sequence_number + 1) & 0x8000))
             // {
             // cudp->rudp_data.send_ack = FALSE;
             //
@@ -605,8 +605,8 @@ extern "C" {
 
                 assert(FALSE == IsBadWritePtr(ptr, rp->size));
 
-                //if (!IsBadWritePtr(ptr, sizeof(unsigned char))) // JB 010223 CTD
-                if (!IsBadWritePtr(ptr, rp->size)) // JB 010401 CTD
+                //if ( not IsBadWritePtr(ptr, sizeof(unsigned char))) // JB 010223 CTD
+                if ( not IsBadWritePtr(ptr, rp->size)) // JB 010401 CTD
                     memcpy(ptr, rp->data, rp->size);
 
                 size += rp->size;
@@ -788,7 +788,7 @@ extern "C" {
                 {
                     cudp->rudp_data.message_number++;
 
-                    if (!cudp->rudp_data.message_number)
+                    if ( not cudp->rudp_data.message_number)
                     {
                         cudp->rudp_data.message_number = 1;
                     }
@@ -909,7 +909,7 @@ extern "C" {
 
                 while (lp)
                 {
-                    if ((!lp->acknowledged) and ((int)(now - lp->last_sent_at) > time)) // and ((lp->sequence_number - cudp->rudp_data.last_sequence - 8) & 0x8000))
+                    if (( not lp->acknowledged) and ((int)(now - lp->last_sent_at) > time)) // and ((lp->sequence_number - cudp->rudp_data.last_sequence - 8) & 0x8000))
                     {
                         lp->send_count ++;
 
@@ -936,7 +936,7 @@ extern "C" {
 
                 while (lp)
                 {
-                    if ((!lp->acknowledged) and ((int)(now - lp->last_sent_at) > time)) // and ((lp->sequence_number - cudp->rudp_data.last_sequence - 8) & 0x8000))
+                    if (( not lp->acknowledged) and ((int)(now - lp->last_sent_at) > time)) // and ((lp->sequence_number - cudp->rudp_data.last_sequence - 8) & 0x8000))
                     {
                         lp->send_count ++;
 
@@ -1239,7 +1239,7 @@ extern "C" {
             return 0;
         }
 
-        if (!size or !rp)
+        if ( not size or !rp)
         {
             return 0;
         }
@@ -1308,7 +1308,7 @@ extern "C" {
         }
 
         // if the queue is empty or we're at the end of the list, insert it
-        if (!cp)
+        if ( not cp)
         {
             if (lp)
             {
@@ -1570,7 +1570,7 @@ extern "C" {
                 {
                     // If it's the first part of a packetized message, try to build
                     // the message and copy into the receive buffer
-                    if ((!msg_size) and (cp->message_slot == 0) and (!cp->dispatched))
+                    if (( not msg_size) and (cp->message_slot == 0) and ( not cp->dispatched))
                     {
                         needed = cp->message_parts - 1;
                         np = cp->next;
@@ -1586,7 +1586,7 @@ extern "C" {
                             np = np->next;
                         }
 
-                        if (!needed)
+                        if ( not needed)
                         {
                             // We've got the entire message, copy it into the receive buffer
                             np = cp;
@@ -1669,7 +1669,7 @@ extern "C" {
                 {
                     // If it's the first part of a packetized message, try to build
                     // the message and copy into the receive buffer
-                    if ((!msg_size) and (cp->message_slot == 0) and (!cp->dispatched))
+                    if (( not msg_size) and (cp->message_slot == 0) and ( not cp->dispatched))
                     {
                         needed = cp->message_parts - 1;
                         np = cp->next;
@@ -1684,7 +1684,7 @@ extern "C" {
                             np = np->next;
                         }
 
-                        if (!needed)
+                        if ( not needed)
                         {
                             // We've got the entire message, copy it into the receive buffer
                             np = cp;
@@ -2044,7 +2044,7 @@ extern "C" {
                     {
                         time = RUDP_RESEND_TIME * 2;
 
-                        if ((!rp->acknowledged) and ((int)(now - rp->last_sent_at) > time))
+                        if (( not rp->acknowledged) and ((int)(now - rp->last_sent_at) > time))
                         {
                             size += rp->size;
                         }
@@ -2058,7 +2058,7 @@ extern "C" {
                     {
                         time = RUDP_RESEND_TIME * 2;
 
-                        if ((!rp->acknowledged) and ((int)(now - rp->last_sent_at) > time))
+                        if (( not rp->acknowledged) and ((int)(now - rp->last_sent_at) > time))
                         {
                             size += rp->size;
                         }
@@ -2228,7 +2228,7 @@ extern "C" {
             windows_sockets_connections--;
 
             /* if No more connections then WSACleanup() */
-            if (!windows_sockets_connections)
+            if ( not windows_sockets_connections)
             {
                 if (sockerror = CAPI_WSACleanup())
                 {

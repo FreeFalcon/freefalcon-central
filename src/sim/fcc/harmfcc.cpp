@@ -24,7 +24,7 @@ void FireControlComputer::HarmMode(void)
 
     if (theHTS)
     {
-        if (!(platform->IsPlayer()))
+        if ( not (platform->IsPlayer()))
         {
             theHTS->SetRange(FloatToInt32(HSDRange)); // RV - I-Hawk - HTS controls range on its own
         }
@@ -51,12 +51,12 @@ void FireControlComputer::HarmMode(void)
         }
 
         //MI why is this here??
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
             platform->SOIManager(SimVehicleClass::SOI_WEAPON);
 
         if (theHTS->CurrentTarget())
         {
-            if (!targetPtr or targetPtr->BaseData() not_eq theHTS->CurrentTarget()->BaseData())
+            if ( not targetPtr or targetPtr->BaseData() not_eq theHTS->CurrentTarget()->BaseData())
             {
                 SetTarget(theHTS->CurrentTarget());
             }
@@ -155,7 +155,7 @@ void FireControlComputer::HarmMode(void)
         missileTarget = FALSE;
     }
 
-    if (!releaseConsent)
+    if ( not releaseConsent)
     {
         postDrop = FALSE;
     }

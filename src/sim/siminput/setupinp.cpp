@@ -379,7 +379,7 @@ void CleanupInputFunctions(void)
 void
 CallFunc(InputFunctionType theFunc, unsigned long val, int state, void* pButton)
 {
-    // if (!TrainingScript->IsBlocked(theFunc,NULL)) //Wombat778 3-09-04 Check if this function is being blocked by the training script
+    // if ( not TrainingScript->IsBlocked(theFunc,NULL)) //Wombat778 3-09-04 Check if this function is being blocked by the training script
     // {
     // if (TrainingScript->IsCapturing())
     // TrainingScript->CaptureCommand(theFunc, NULL);
@@ -407,7 +407,7 @@ void CallInputFunction(unsigned long val, int state)
         if (keyDown)
         {
             //dangling else - JPO
-            if (!(state & 0x6) and DIK_IsAscii(val, state))
+            if ( not (state & 0x6) and DIK_IsAscii(val, state))
             {
                 StandardAsciiInput(val, state);
             }
@@ -744,13 +744,13 @@ void StandardAsciiInput(unsigned long key, int state)
     switch (AsciiAllowed)
     {
         case 1: // Integers
-            if (!DIK_IsDigit(key, state) and asciival not_eq '-')
+            if ( not DIK_IsDigit(key, state) and asciival not_eq '-')
                 return;
 
             break;
 
         case 2: // Floats
-            if (!DIK_IsDigit(key, state) and asciival not_eq '-' and asciival not_eq '.')
+            if ( not DIK_IsDigit(key, state) and asciival not_eq '-' and asciival not_eq '.')
                 return;
 
             break;
@@ -767,7 +767,7 @@ void StandardAsciiInput(unsigned long key, int state)
             chatterStr[MaxInputLength] = 0;
         }
 
-        if (!chatterStr[chatterCount])
+        if ( not chatterStr[chatterCount])
             chatterStr[chatterCount + 1] = 0;
 
         chatterStr[chatterCount] = asciival;

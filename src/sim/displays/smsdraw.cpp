@@ -198,7 +198,7 @@ VirtualDisplay* SmsDrawable::GetDisplay(void)
 
                     if (theDisplay)
                     {
-                        if (!theDisplay->GetDisplay())
+                        if ( not theDisplay->GetDisplay())
                         {
                             if (privateDisplay)
                             {
@@ -234,7 +234,7 @@ VirtualDisplay* SmsDrawable::GetDisplay(void)
 
              if (laserPod)
              {
-             if (!laserPod->GetDisplay())
+             if ( not laserPod->GetDisplay())
              {
              if (privateDisplay)
              {
@@ -470,7 +470,7 @@ void SmsDrawable::Display(VirtualDisplay* newDisplay)
     RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
 
     // sfr: @todo remove this or check why it happens
-    if (!theRadar)
+    if ( not theRadar)
     {
         ShiWarning("Oh Oh shouldn't be here without a radar!");
         return;
@@ -510,7 +510,7 @@ void SmsDrawable::Display(VirtualDisplay* newDisplay)
     // MN get aircrafts maximum ripple count
     maxripple = ((AircraftClass*)(Sms->ownship))->af->GetMaxRippleCount();
 
-    if (!((AircraftClass*)(Sms->ownship))->HasPower(AircraftClass::SMSPower))
+    if ( not ((AircraftClass*)(Sms->ownship))->HasPower(AircraftClass::SMSPower))
     {
         if (displayMode not_eq Off)
         {
@@ -624,7 +624,7 @@ void SmsDrawable::Display(VirtualDisplay* newDisplay)
                             break;
 
                         case wcGbuWpn:
-                            if (!g_bRealisticAvionics)
+                            if ( not g_bRealisticAvionics)
                                 GBUDisplay();
                             else
                                 BombDisplay();
@@ -999,7 +999,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
         case 6:
             if (isJDAM or isJSOW)
             {
-                if (!Sms->JDAMPowered and Sms->curWeapon)
+                if ( not Sms->JDAMPowered and Sms->curWeapon)
                 {
                     Sms->JDAMPowered = TRUE;
                     break;
@@ -1016,7 +1016,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
                 }
             }
 
-            if (!g_bRealisticAvionics or Sms->CurHardpoint() < 0)
+            if ( not g_bRealisticAvionics or Sms->CurHardpoint() < 0)
                 break;
 
             if ((pFCC->GetMasterMode() == FireControlComputer::AirGroundBomb) or //me123 status test. addet four lines
@@ -1047,14 +1047,14 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
                     (pFCC->GetMasterMode() == FireControlComputer::AirGroundLaser) ||
                     pFCC->GetMasterMode() == FireControlComputer::AirGroundRocket)
                 {
-                    Sms->SetAGBPair(!Sms->GetAGBPair());
+                    Sms->SetAGBPair( not Sms->GetAGBPair());
                 }
             }
             else
             {
                 if (pFCC->GetMasterMode() == FireControlComputer::AirGroundBomb) //me123 status test. addet four lines
                 {
-                    Sms->SetAGBPair(!Sms->GetAGBPair());
+                    Sms->SetAGBPair( not Sms->GetAGBPair());
                     /*
                     if (Sms->pair)
                      Sms->SetPair(FALSE);
@@ -1583,7 +1583,7 @@ void SmsDrawable::DogfightDisplay(void)
     // Marco Edit - SLAVE/BORE Mode
     SimWeaponClass *wpn = Sms->GetCurrentWeapon();
 
-    if (!wpn) return; // prevent CTD
+    if ( not wpn) return; // prevent CTD
 
     //MI 29/01/02 changed to be more accurate
     if (g_bRealisticAvionics)
@@ -1820,7 +1820,7 @@ void SmsDrawable::MissileDisplay(void)
         case wtAgm65:
 
             //MI
-            if (!g_bRealisticAvionics)
+            if ( not g_bRealisticAvionics)
                 MaverickDisplay();
             else
                 MavSMSDisplay();
@@ -1883,7 +1883,7 @@ void SmsDrawable::ShowMissiles(int buttonNum)
             case SMSBaseClass::Safe:
 
                 //MI not here in real
-                if (!g_bRealisticAvionics)
+                if ( not g_bRealisticAvionics)
                     sprintf(tmpStr, "SAF");
                 else
                     sprintf(tmpStr, "");
@@ -1910,7 +1910,7 @@ void SmsDrawable::ShowMissiles(int buttonNum)
     //MI
     if (g_bRealisticAvionics and Sms->curWeaponType == wtAgm65 and Sms->curWeapon)
     {
-        if (!Sms->Powered or Sms->MavCoolTimer > 0.0F)
+        if ( not Sms->Powered or Sms->MavCoolTimer > 0.0F)
             sprintf(tmpStr, "");
     }
 
@@ -1956,7 +1956,7 @@ void SmsDrawable::MaverickDisplay(void)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
     AircraftClass *self = ((AircraftClass*)playerAC);
 
-    if (!self)
+    if ( not self)
         return;
 
     float yOffset;
@@ -2073,7 +2073,7 @@ void SmsDrawable::GBUDisplay(void)
 
     //MI
     //if (laserPod and laserPod->CurFOV() < (3.0F * DTR))
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         if (laserPod and laserPod->CurFOV() < (3.5F * DTR))
             LabelButton(2, "EXP", NULL, 1);
@@ -2108,7 +2108,7 @@ void SmsDrawable::AAMDisplay(void)
     ShiAssert(wpn not_eq NULL);
 
     // MN return for now if no weapon found...CTD "fix"
-    if (!wpn)
+    if ( not wpn)
         return;
 
     if (Sms->curWeaponType == wtAim120  and 
@@ -2307,7 +2307,7 @@ void SmsDrawable::HarmDisplay(void)
     LabelButton(3,  "INV");
 
     // RV - I-Hawk - HARM power up timing
-    if (!Sms->GetHARMPowerState())
+    if ( not Sms->GetHARMPowerState())
     {
         LabelButton(6,  "PWR", "OFF");
     }
@@ -2377,7 +2377,7 @@ void SmsDrawable::BombDisplay(void)
         else
             LabelButton(6,  "PROF 2");
 
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             if (Sms->GetAGBPair())
                 LabelButton(7,  "PAIR");
@@ -2462,7 +2462,7 @@ void SmsDrawable::BombDisplay(void)
         }
 
         //MI not here in real
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             if (Sms->curHardpoint >= 0  and 
                 Sms->hardPoint[Sms->curHardpoint]->GetWeaponData()->flags & SMSClass::HasBurstHeight)
@@ -2494,7 +2494,7 @@ void SmsDrawable::CameraDisplay(void)
     char tmpStr[12];
     TopRow(0);
 
-    if (!Sms->CurStationOK())
+    if ( not Sms->CurStationOK())
     {
         LabelButton(2, "MAL");
     }
@@ -2534,7 +2534,7 @@ void SmsDrawable::TopRow(int isinv)
 
     if (isinv)
     {
-        if (!FCC->IsNavMasterMode())
+        if ( not FCC->IsNavMasterMode())
             LabelButton(3, "INV", NULL, 1);
     }
     else
@@ -2579,7 +2579,7 @@ void SmsDrawable::TopRow(int isinv)
         case FireControlComputer::Dogfight:
             LabelButton(0, "DGFT");
 
-            if (!g_bRealisticAvionics)
+            if ( not g_bRealisticAvionics)
             {
                 switch (FCC->GetSubMode())
                 {
@@ -2661,7 +2661,7 @@ void SmsDrawable::BottomRow(void)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
     RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
 
-    if (!theRadar)
+    if ( not theRadar)
     {
         ShiWarning("Oh Oh shouldn't be here without a radar!");
         return;
@@ -2676,7 +2676,7 @@ void SmsDrawable::BottomRow(void)
         case SMSBaseClass::Safe:
 
             //MI not here in real
-            if (!g_bRealisticAvionics)
+            if ( not g_bRealisticAvionics)
                 mode = "SAF";
             else
                 mode = "";
@@ -2734,11 +2734,11 @@ void SmsDrawable::EmergJetDisplay(void)
     {
         // OW Jettison fix
 #if 0
-        if (!(((AircraftClass *)Sms->ownship)->IsF16()  and 
+        if ( not (((AircraftClass *)Sms->ownship)->IsF16()  and 
               (curStation == 1 or curStation == 9 or hardPoint[curStation]->GetWeaponClass() == wcECM))  and 
             hardPoint[curStation]->GetRack())
 #else
-        if (!(((AircraftClass *)Sms->ownship)->IsF16()  and 
+        if ( not (((AircraftClass *)Sms->ownship)->IsF16()  and 
               (curStation == 1 or curStation == 9 or Sms->hardPoint[curStation]->GetWeaponClass() == wcECM or Sms->hardPoint[curStation]->GetWeaponClass() == wcAimWpn))  and 
             (Sms->hardPoint[curStation]->GetRack() or curStation == 5 and Sms->hardPoint[curStation]->GetWeaponClass() == wcTank))//me123 in the line above addet a check so we don't emergency jettison a-a missiles
 #endif
@@ -2935,7 +2935,7 @@ void SmsDrawable::MavSMSDisplay(void)
 
     FireControlComputer *pFCC = Sms->ownship->GetFCC();
 
-    if (!pFCC)
+    if ( not pFCC)
         return;
 
     char tempstr[10] = "";
@@ -2960,7 +2960,7 @@ void SmsDrawable::MavSMSDisplay(void)
     LabelButton(1, tempstr);
     LabelButton(3, "INV");
 
-    if ((Sms->Powered) and (!CAPplayer))
+    if ((Sms->Powered) and ( not CAPplayer))
         LabelButton(6, "PWR", "ON");
     else
         LabelButton(6, "PWR", "OFF");
@@ -3023,7 +3023,7 @@ void SmsDrawable::JDAMDisplay(void)
         }
         else
         {
-            if (!Sms->JDAMPowered) // MLR 4/3/2004 -
+            if ( not Sms->JDAMPowered) // MLR 4/3/2004 -
                 LabelButton(6,  "PWR", "OFF");
             else if (Sms->JDAMPowered and !Sms->curWeapon)
                 LabelButton(6,  "PWR", "OFF");
@@ -3036,7 +3036,7 @@ void SmsDrawable::JDAMDisplay(void)
         }
 
 
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             if (Sms->GetAGBPair())
                 LabelButton(7,  "PAIR");
@@ -3125,7 +3125,7 @@ void SmsDrawable::JDAMDisplay(void)
             sprintf(tmpStr, "AD %.0f", Sms->armingdelay); //me123
             LabelButton(15,  tmpStr); //me123
         }
-        else if (!g_bMLU)
+        else if ( not g_bMLU)
         {
             //Target Step
             LabelButton(15, "TGT", "STEP ^");

@@ -114,7 +114,7 @@ VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME t
     if (
         (timeDelta < FINE_POSITIONAL_UPDATES_PERIOD) ||
         (entity->VuState() not_eq VU_MEM_ACTIVE)
-        /* or (!ToleranceReached())*/
+        /* or ( not ToleranceReached())*/
     )
     {
         return SEND_SCORE(DONT_SEND, 0.0f);
@@ -285,7 +285,7 @@ VU_ERRCODE SimVuSlave::Handle(VuPositionUpdateEvent *event)
 {
     VU_ERRCODE err = VU_SUCCESS;
 
-    if (!((SimBaseClass*)entity_)->IsAwake())
+    if ( not ((SimBaseClass*)entity_)->IsAwake())
     {
         VuDelaySlave::Handle(event);
         entity_->SetUpdateTime(vuxGameTime);

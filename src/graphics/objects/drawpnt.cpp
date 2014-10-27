@@ -110,7 +110,7 @@ void DrawablePoint::Draw(RenderOTW *renderer, int LOD)
         // RV - RED - If ACMI force Label Limit to 150 nMiles
         long limit = (renderACMI ? 150 : g_nNearLabelLimit) * 6076 + 8, limitcheck;
 
-        if (!DrawablePoint::drawLabels)
+        if ( not DrawablePoint::drawLabels)
             limitcheck = (renderACMI ? 150 : g_nNearLabelLimit) * 6076 + 8;
         else limitcheck = 300 * 6076 + 8; //
 

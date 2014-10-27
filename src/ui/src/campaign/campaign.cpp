@@ -444,7 +444,7 @@ void AddToNewsWindow(long timestamp, _TCHAR *desc, long MovieID)
     C_Window *win;
     C_Button *btn;
 
-    if (!gMainHandler)
+    if ( not gMainHandler)
         return;
 
     win = gMainHandler->FindWindow(NEWS_FLASH_WIN);
@@ -607,7 +607,7 @@ void UIScramblePlayerFlight(void)
 {
     C_Window *win;
 
-    if (!gMainHandler)
+    if ( not gMainHandler)
         return;
 
     gSoundMgr->PlaySound(500017); // Airraid sound?
@@ -806,7 +806,7 @@ void SetupMapMgr(bool noawacsmap)
     long i, j, idx;
     C_Window *win;
 
-    if (!gMapMgr)
+    if ( not gMapMgr)
     {
         gMapMgr = new C_Map;
         gMapMgr->SetMapCenter(1536 / 2, 2048 / 2);
@@ -857,7 +857,7 @@ void SetupMapMgr(bool noawacsmap)
 
 void SetupGPS(C_TreeList *MissionTree)
 {
-    if (!gGps)
+    if ( not gGps)
     {
         gGps = new GlobalPositioningSystem;
         gGps->Setup();
@@ -907,7 +907,7 @@ static void CampSaveFileCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SAVE_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     gMainHandler->HideWindow(control->Parent_); // verify window...
@@ -1107,7 +1107,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
 
         if (btn)
         {
-            if (!gCommsMgr->Online())
+            if ( not gCommsMgr->Online())
                 btn->SetFlagBitOff(C_BIT_ENABLED);
             else
                 btn->SetFlagBitOn(C_BIT_ENABLED);
@@ -1218,7 +1218,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     gMainHandler->AddUserCallback(CampaignSoundEventCB);
 
     // Choose our next mission (default)
-    if (!gTimeModeServer and !g_bServer)
+    if ( not gTimeModeServer and !g_bServer)
     {
         FindMissionInBriefing(CB_MISSION_SCREEN);
     }
@@ -1406,7 +1406,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
 
         if (btn)
         {
-            if (!gCommsMgr->Online())
+            if ( not gCommsMgr->Online())
                 btn->SetFlagBitOff(C_BIT_ENABLED);
             else
                 btn->SetFlagBitOn(C_BIT_ENABLED);
@@ -1422,7 +1422,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
 
         if (btn)
         {
-            if (!gCommsMgr->Online())
+            if ( not gCommsMgr->Online())
                 btn->SetFlagBitOff(C_BIT_ENABLED);
             else
                 btn->SetFlagBitOn(C_BIT_ENABLED);
@@ -1510,7 +1510,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
 
     CheckCampaignFlyButton();
 
-    if (!gTimeModeServer and !g_bServer)
+    if ( not gTimeModeServer and !g_bServer)
     {
         FindMissionInBriefing(TAC_AIRCRAFT);
     }
@@ -1612,7 +1612,7 @@ void CampaignListCB()
             {
                 if (flt->GetTotalVehicles() < 1 or flt->IsDead())
                 {
-                    if (!gTimeModeServer and !g_bServer)
+                    if ( not gTimeModeServer and !g_bServer)
                     {
                         FindMissionInBriefing(CB_MISSION_SCREEN);
                     }
@@ -1622,7 +1622,7 @@ void CampaignListCB()
             }
             else
             {
-                if (!gTimeModeServer and !g_bServer)
+                if ( not gTimeModeServer and !g_bServer)
                 {
                     FindMissionInBriefing(CB_MISSION_SCREEN);
                     UpdateMissionWindow(CB_MISSION_SCREEN);
@@ -1660,7 +1660,7 @@ void TacEngListCB()
             {
                 if (flt->GetTotalVehicles() < 1 or flt->IsDead())
                 {
-                    if (!gTimeModeServer and !g_bServer)
+                    if ( not gTimeModeServer and !g_bServer)
                     {
                         FindMissionInBriefing(TAC_AIRCRAFT);
                     }
@@ -1670,7 +1670,7 @@ void TacEngListCB()
             }
             else
             {
-                if (!gTimeModeServer and !g_bServer)
+                if ( not gTimeModeServer and !g_bServer)
                 {
                     FindMissionInBriefing(TAC_AIRCRAFT);
                     UpdateMissionWindow(TAC_AIRCRAFT);
@@ -1707,14 +1707,14 @@ static void OpenFlightPlanWindowCB(long, short hittype, C_Base *control)
 
     flt = (Flight)vuDatabase->Find(gActiveFlightID);
 
-    if (!flt)
+    if ( not flt)
         return;
 
     win = gMainHandler->FindWindow(FLIGHT_PLAN_WIN);
 
     if (win)
     {
-        if (!(gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) & C_BIT_ENABLED))
+        if ( not (gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) & C_BIT_ENABLED))
         {
             wp = flt->GetFirstUnitWP();
 
@@ -1751,7 +1751,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
     fl = FalconLocalSession->GetPlayerFlight();
     pilotSlot = FalconLocalSession->GetPilotSlot();
 
-    if (!fl or pilotSlot == 255)
+    if ( not fl or pilotSlot == 255)
     {
         // PETER TODO: Clear mission window's selection TOO!
         FalconLocalSession->SetPlayerFlight(NULL);
@@ -1764,7 +1764,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
     TheCampaign.MissionEvaluator->PreMissionEval(fl, static_cast<uchar>(pilotSlot));
 
     // KCK HACK TO ISOLATE KNEEBOARD CRASH BUG
-    // if (!TheCampaign.MissionEvaluator->player_pilot)
+    // if ( not TheCampaign.MissionEvaluator->player_pilot)
     // *((unsigned int *) 0x00) = 0;
     // END HACK
 
@@ -1933,7 +1933,7 @@ static void MapMgrDrawCB(long, short, C_Base *)
 // CA map callback function for move events
 static void MapMgrMoveCB(long, short hittype, C_Base *control)
 {
-    if (!control)
+    if ( not control)
     {
         return;
     }
@@ -2385,7 +2385,7 @@ static void OpenBriefingWindowCB(long, short hittype, C_Base *control)
 
 void CheckPlayersFlight(FalconSessionEntity *session)
 {
-    if (!session)
+    if ( not session)
         return;
 
     UpdateMissionWindow(CB_MISSION_SCREEN);
@@ -2447,7 +2447,7 @@ void PickCampaignPlaneCB(long ID, short hittype, C_Base *)
     }
 
     // playerPlane = flight->GetAdjustedAircraftSlot(playerPlane);
-    if (!gTimeModeServer and !g_bServer)
+    if ( not gTimeModeServer and !g_bServer)
     {
         RequestACSlot(flight, 0, static_cast<uchar>(playerPlane), 0, 0, 1);
     }
@@ -2491,7 +2491,7 @@ void OpenCampaignCommsCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (!gCommsMgr->Online())
+    if ( not gCommsMgr->Online())
         gMainHandler->EnableWindowGroup(control->GetUserNumber(1));
     else
     {
@@ -2647,7 +2647,7 @@ void HistoryTimerCB(long, short, C_Base *control)
         UI_Leave(Leave);
     }
 
-    if (!JStarsDirection)
+    if ( not JStarsDirection)
         return;
 
     if (control->GetUserNumber(_UI95_TIMER_COUNTER_) < 1)
@@ -2802,7 +2802,7 @@ void LoadTroopMovementHistory()
     {
         fp = OpenCampFile("tmp", "his", "rb");
 
-        if (!fp)
+        if ( not fp)
             return;
 
         CampEnterCriticalSection();
@@ -3006,7 +3006,7 @@ void LoadForceLevelHistory()
     {
         fp = OpenCampFile("tmp", "frc", "rb");
 
-        if (!fp)
+        if ( not fp)
             return;
 
         for (i = 0; i < _MAX_CATEGORIES_; i++)
@@ -3044,12 +3044,12 @@ void LoadForceLevelHistory()
 
                 end = TimeID;
 
-                if (!fread(&numteams, sizeof(short), 1, fp))
+                if ( not fread(&numteams, sizeof(short), 1, fp))
                     MonoPrint("Error Reading Force Level\n");
 
                 for (i = 0; i < numteams; i++)
                 {
-                    if (!fread(&teamstats[i], sizeof(TeamStatusType), 1, fp))
+                    if ( not fread(&teamstats[i], sizeof(TeamStatusType), 1, fp))
                         MonoPrint("Error Reading Force Level\n");
                 }
 
@@ -3176,7 +3176,7 @@ void UpdateRemoteCompression()
     long color, remreq;
 
 
-    if (!gMainHandler)
+    if ( not gMainHandler)
         return;
 
     remreq = 1;
@@ -3188,7 +3188,7 @@ void UpdateRemoteCompression()
     else if (remoteCompressionRequests & REMOTE_REQUEST_PAUSE)
         remreq = 0;
 
-    if (!gCommsMgr->Online())
+    if ( not gCommsMgr->Online())
         color = 0x00ff00;
     else
     {
@@ -3771,7 +3771,7 @@ static void HookupCampaignControls(long ID)
 
     winme = gMainHandler->FindWindow(STARTCAMP_WIN);
 
-    if (!winme)
+    if ( not winme)
         return;
 
     ctrl = (C_Button*)winme->FindControl(START_CAMP);

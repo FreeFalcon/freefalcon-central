@@ -55,7 +55,7 @@ long CSoundMgr::StreamIMAADPCM(SOUNDSTREAM *Stream, char *dest, long dlen)
     }
     else if (Stream->ImaInfo->sreadidx < Stream->ImaInfo->slen)
     {
-        if (!(Stream->ImaInfo->Status & SND_STREAM_PART2))
+        if ( not (Stream->ImaInfo->Status & SND_STREAM_PART2))
         {
             if ((Stream->ImaInfo->sidx % Stream->ImaInfo->srcsize) > (Stream->ImaInfo->srcsize >> 1))
             {
@@ -108,7 +108,7 @@ long CSoundMgr::StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen)
     //step through each byte of IMA ADPCM and decode it to PCM
     while (Info->sidx < Info->slen and didx < dlen and Info->didx < Info->dlen)
     {
-        if (!Info->blockLength)
+        if ( not Info->blockLength)
         {
             Info->blockLength  = min(Info->slen, SND_ADPCM_MBLOCK_ALIGN);
             Info->blockLength    -= sizeof(IMA_BLOCK) * SND_WAV_MCHAN;
@@ -119,7 +119,7 @@ long CSoundMgr::StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen)
             Info->predSampleL  = header->iSamp0;
             Info->stepIndexL  = (short)header->bStepTableIndex;
 
-            if (!IMA_ValidStepIndex(Info->stepIndexL))
+            if ( not IMA_ValidStepIndex(Info->stepIndexL))
             {
                 MonoPrint("S16:  invalid left step index\n");
                 return 0;
@@ -135,7 +135,7 @@ long CSoundMgr::StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen)
 
         while (Info->blockLength and didx < dlen and Info->didx < Info->dlen)
         {
-            if (!Info->count)
+            if ( not Info->count)
             {
                 Info->leftSamples  = Info->src[Info->sidx % Info->srcsize];
                 Info->sidx++;
@@ -187,7 +187,7 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
     //step through each byte of IMA ADPCM and decode it to PCM
     while (Info->sidx < Info->slen and didx < dlen and Info->didx < Info->dlen)
     {
-        if (!Info->blockLength)
+        if ( not Info->blockLength)
         {
             //data should always be block aligned
             if (Info->slen < SND_ADPCM_SBLOCK_ALIGN)
@@ -205,7 +205,7 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
             Info->predSampleL  = header->iSamp0;
             Info->stepIndexL  = (short)header->bStepTableIndex;
 
-            if (!IMA_ValidStepIndex(Info->stepIndexL))
+            if ( not IMA_ValidStepIndex(Info->stepIndexL))
             {
                 MonoPrint("S16:  invalid left step index\n");
                 return 0;
@@ -217,7 +217,7 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
             Info->predSampleR  = header->iSamp0;
             Info->stepIndexR  = (short)header->bStepTableIndex;
 
-            if (!IMA_ValidStepIndex(Info->stepIndexR))
+            if ( not IMA_ValidStepIndex(Info->stepIndexR))
             {
                 MonoPrint("S16:  invlid right step index\n");
                 return 0;
@@ -242,7 +242,7 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
 
         while (Info->blockLength and didx < dlen and Info->didx < Info->dlen)
         {
-            if (!Info->count)
+            if ( not Info->count)
             {
                 Info->blockLength    -= 8;
 
@@ -333,7 +333,7 @@ long CSoundMgr::ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength)
         predSampleL = header.iSamp0;
         stepIndexL = (short)header.bStepTableIndex;
 
-        if (!IMA_ValidStepIndex(stepIndexL))
+        if ( not IMA_ValidStepIndex(stepIndexL))
         {
             MonoPrint("S16:  invalid left step index\n");
             return 0;
@@ -345,7 +345,7 @@ long CSoundMgr::ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength)
         predSampleR = header.iSamp0;
         stepIndexR = (short)header.bStepTableIndex;
 
-        if (!IMA_ValidStepIndex(stepIndexR))
+        if ( not IMA_ValidStepIndex(stepIndexR))
         {
             MonoPrint("S16:  invlid right step index\n");
             return 0;
@@ -439,7 +439,7 @@ long CSoundMgr::ImaDecodeM16(char *sBuff, char *dBuff, long bufferLength)
         predSample  = header.iSamp0;
         stepIndex  = (short)header.bStepTableIndex;
 
-        if (!IMA_ValidStepIndex(stepIndex))
+        if ( not IMA_ValidStepIndex(stepIndex))
         {
             MonoPrint("M16: invalid step index\n");
             return 0;

@@ -208,7 +208,7 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
 
 
     // RED - Consistency check
-    if (!OTWImage) return;
+    if ( not OTWImage) return;
 
     // Validate our parameter
     if (frame == lastframe) // kill "go back a frame" bug
@@ -224,7 +224,7 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
         return;
     }
 
-    if (!originalImage)
+    if ( not originalImage)
     {
         return;
     }

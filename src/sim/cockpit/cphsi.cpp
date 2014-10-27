@@ -730,7 +730,7 @@ void CPHsiView::DisplayBlit()
 
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag or DisplayOptions.bRender2DCockpit)
+    if ( not mDirtyFlag or DisplayOptions.bRender2DCockpit)
     {
         return;
     }
@@ -837,7 +837,7 @@ void CPHsiView::DisplayBlit3D()
 
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag or !DisplayOptions.bRender2DCockpit)
+    if ( not mDirtyFlag or !DisplayOptions.bRender2DCockpit)
     {
         return;
     }
@@ -890,7 +890,7 @@ void CPHsiView::DisplayDraw()
     static BOOL monoYes;
     static int init = 0;
 
-    if (!init)
+    if ( not init)
     {
         monoYes = 0;
         init = 1;
@@ -898,7 +898,7 @@ void CPHsiView::DisplayDraw()
 
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag)
+    if ( not mDirtyFlag)
     {
         return;
     }
@@ -1068,7 +1068,7 @@ void CPHsiView::DrawStationBearing(float bearing)   // in nav units
 
     // draw tail
     //MI this is not here in real
-    // if(!g_bRealisticAvionics) //Wombat778 10-19-2003   Re-enabled in all avionics modes for realism as per MIRV
+    // if( not g_bRealisticAvionics) //Wombat778 10-19-2003   Re-enabled in all avionics modes for realism as per MIRV
     // {
     OTWDriver.renderer->Tri(bearingTail[0][0], bearingTail[0][1], bearingTail[1][0], bearingTail[1][1],
                             bearingTail[1][0], -bearingTail[1][1]);
@@ -1271,7 +1271,7 @@ void CPHsiView::CreateLit(void)
                 mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
             m_pPalette = new PaletteHandle(mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-            if (!m_pPalette)
+            if ( not m_pPalette)
             {
                 throw _com_error(E_OUTOFMEMORY);
             }
@@ -1284,19 +1284,19 @@ void CPHsiView::CreateLit(void)
             {
                 TextureHandle *pTex = new TextureHandle;
 
-                if (!pTex)
+                if ( not pTex)
                 {
                     throw _com_error(E_OUTOFMEMORY);
                 }
 
                 m_pPalette->AttachToTexture(pTex);
 
-                if (!pTex->Create("CPHsi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, mCompassWidth, mCompassHeight))
+                if ( not pTex->Create("CPHsi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, mCompassWidth, mCompassHeight))
                 {
                     throw _com_error(E_FAIL);
                 }
 
-                if (!pTex->Load(0, 0xFFFF0000, (BYTE*)mpSourceBuffer, true, true))
+                if ( not pTex->Load(0, 0xFFFF0000, (BYTE*)mpSourceBuffer, true, true))
                 {
                     // soon to be re-loaded by CPSurface::Translate3D
                     throw _com_error(E_FAIL);

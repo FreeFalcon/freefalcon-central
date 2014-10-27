@@ -113,7 +113,7 @@ void TestMfdDrawable::Display(VirtualDisplay* newDisplay)
     {
         RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
 
-        if (!theRadar)
+        if ( not theRadar)
         {
             ShiWarning("Oh Oh shouldn't be here without a radar!");
             return;

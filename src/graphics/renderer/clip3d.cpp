@@ -82,7 +82,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             }
 
             // If this vert isn't clipped, use it
-            if (!((*v)->clipFlag & CLIP_NEAR))
+            if ( not ((*v)->clipFlag & CLIP_NEAR))
             {
                 *nextOut++ = *v;
             }
@@ -160,7 +160,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
     // 2002-04-06 MN if gifPicture is false, then do the other clippings (for terrain and stuff).
     // GifPicture is only locally set to true in the case we draw a celestial object.
     // Sun and Moon GIF's are displayed bad when being clipped by below code.
-    if (!gifPicture)
+    if ( not gifPicture)
     {
 #ifndef DO_NEAR_CLIP_ONLY
 
@@ -186,7 +186,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 }
 
                 // If this vert isn't clipped, use it
-                if (!((*v)->clipFlag & CLIP_BOTTOM))
+                if ( not ((*v)->clipFlag & CLIP_BOTTOM))
                 {
                     *nextOut++ = *v;
                 }
@@ -222,7 +222,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 }
 
                 // If this vert isn't clipped, use it
-                if (!((*v)->clipFlag & CLIP_TOP))
+                if ( not ((*v)->clipFlag & CLIP_TOP))
                 {
                     *nextOut++ = *v;
                 }
@@ -258,7 +258,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 }
 
                 // If this vert isn't clipped, use it
-                if (!((*v)->clipFlag & CLIP_RIGHT))
+                if ( not ((*v)->clipFlag & CLIP_RIGHT))
                 {
                     *nextOut++ = *v;
                 }
@@ -294,7 +294,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 }
 
                 // If this vert isn't clipped, use it
-                if (!((*v)->clipFlag & CLIP_LEFT))
+                if ( not ((*v)->clipFlag & CLIP_LEFT))
                 {
                     *nextOut++ = *v;
                 }

@@ -270,7 +270,7 @@ static void DeleteFlightCB(long, short hittype, C_Base *)
             {
                 flt = (Flight)vuDatabase->Find(dfflight->GetVUID());
 
-                if (!flt->IsPlayer())
+                if ( not flt->IsPlayer())
                     RequestFlightDelete(flt);
             }
         }
@@ -587,7 +587,7 @@ void CheckForPlayerCB(C_Base *themenu, C_Base *caller)
     Flight flt;
     C_PopupList *menu;
 
-    if (!themenu or !caller)
+    if ( not themenu or !caller)
         return;
 
     menu = (C_PopupList*)themenu;

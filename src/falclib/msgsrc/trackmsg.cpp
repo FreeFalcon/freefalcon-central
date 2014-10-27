@@ -63,7 +63,7 @@ int FalconTrackMessage::Process(uchar autodisp)
 
     FalconEntity *theEntity = static_cast<FalconEntity*>(Entity());
 
-    if (!theEntity)
+    if ( not theEntity)
     {
         return 0;
     }
@@ -130,7 +130,7 @@ int FalconTrackMessage::Process(uchar autodisp)
         }
         else if (dataBlock.trackType == Track_JettisonAll)
         {
-            if ((!IsLocal()) and (taggedEntity->IsAirplane()))
+            if (( not IsLocal()) and (taggedEntity->IsAirplane()))
             {
                 //MonoPrint ("JettisonAll %08x\n", dataBlock.id, dataBlock.hardpoint);
                 ((AircraftClass*)taggedEntity)->Sms->EmergencyJettison();
@@ -138,7 +138,7 @@ int FalconTrackMessage::Process(uchar autodisp)
         }
         else if (dataBlock.trackType == Track_JettisonWeapon)
         {
-            if ((!IsLocal()) and (taggedEntity->IsAirplane()))
+            if (( not IsLocal()) and (taggedEntity->IsAirplane()))
             {
                 //MonoPrint ("Jettison Weapon %08x %d\n", dataBlock.id, dataBlock.hardpoint);
                 ((AircraftClass*)taggedEntity)->Sms->JettisonWeapon(dataBlock.hardpoint);
@@ -146,7 +146,7 @@ int FalconTrackMessage::Process(uchar autodisp)
         }
         else if (dataBlock.trackType == Track_RemoveWeapon)
         {
-            if ((!IsLocal()) and (taggedEntity->IsAirplane()))
+            if (( not IsLocal()) and (taggedEntity->IsAirplane()))
             {
                 //MonoPrint ("RemoveWeapon %08x %d\n", dataBlock.id, dataBlock.hardpoint);
                 ((AircraftClass*)taggedEntity)->Sms->RemoveWeapon(dataBlock.hardpoint);

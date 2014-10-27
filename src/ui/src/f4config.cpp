@@ -1407,18 +1407,18 @@ void ReadFalcon4Config()
     int nBufLen = 1024;
     char *strAppPath = new char[nBufLen];
 
-    if (!strAppPath) return;
+    if ( not strAppPath) return;
 
     char *strDir = new char[nBufLen];
 
-    if (!strDir) return;
+    if ( not strDir) return;
 
     // sprintf(strDir, "%s\\FalconBMS.cfg", FalconDataDirectory);
     // sprintf(strDir, "%s\\Cobra.cfg", FalconDataDirectory);
     sprintf(strDir, "%s\\FFViper.cfg", FalconDataDirectory);
     FILE *file = fopen(strDir, "r");
 
-    if (!file)
+    if ( not file)
     {
         // strcpy(strDir, "FalconBMS.cfg");
         // strcpy(strDir, "Cobra.cfg");
@@ -1426,12 +1426,12 @@ void ReadFalcon4Config()
         file = fopen(strDir, "r");
     }
 
-    if (!file)
+    if ( not file)
     {
         // Investigate program directory
         HMODULE Module = ::GetModuleHandle(NULL);
 
-        if (!::GetModuleFileName(Module, strAppPath, nBufLen)) return;
+        if ( not ::GetModuleFileName(Module, strAppPath, nBufLen)) return;
 
         int nAppPathLen = strlen(strAppPath);
 
@@ -1470,7 +1470,7 @@ void ReadFalcon4Config()
     }
 
     //JB 010104 Cobra 11/20/04
-    /*if (!g_bwoeir)
+    /*if ( not g_bwoeir)
     { g_bMLU = false;
       g_bIFF = false;}*/
 

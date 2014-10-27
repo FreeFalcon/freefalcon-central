@@ -82,7 +82,7 @@ void AdvancedHarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
         }
 
         // Check if emitter is on priority list
-        if (!IsInPriorityList(tmpElement->symbol))
+        if ( not IsInPriorityList(tmpElement->symbol))
         {
             continue;
         }
@@ -195,7 +195,7 @@ void AdvancedHarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
         }
 
         // Check if emitter is on priority list
-        if (!IsInPriorityList(tmpElement->symbol))
+        if ( not IsInPriorityList(tmpElement->symbol))
         {
             continue;
         }
@@ -388,7 +388,7 @@ void AdvancedHarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
         }
 
         // Check if emitter is on priority list
-        if (!IsInPriorityList(tmpElement->symbol))
+        if ( not IsInPriorityList(tmpElement->symbol))
         {
             continue;
         }
@@ -429,7 +429,7 @@ void AdvancedHarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
         displayY = ey * zoomFactor + HTS_Y_OFFSET;
 
         // RV - I-Hawk - Diplay only what's inside the ALIC video
-        if (!IsInsideALIC(displayX, displayY))
+        if ( not IsInsideALIC(displayX, displayY))
         {
             continue;
         }
@@ -509,7 +509,7 @@ void AdvancedHarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
     {
         for (tmpElement = FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
         {
-            if (!lockedTarget or !lockedTarget->BaseData() or preHandoffMode == Pos)
+            if ( not lockedTarget or !lockedTarget->BaseData() or preHandoffMode == Pos)
             {
                 break;
             }
@@ -545,7 +545,7 @@ void AdvancedHarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
             //if ((fabs(displayX) > 1.0f) or (fabs(displayY) > 1.0f))
 
             // RV - I-Hawk - Diplay only what's inside the ALIC video
-            if (!IsInsideALIC(displayX, displayY))
+            if ( not IsInsideALIC(displayX, displayY))
             {
                 continue;
             }
@@ -587,7 +587,7 @@ void AdvancedHarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
         }
     }
 
-    if (!lockedTarget)   // Back to HAS mode
+    if ( not lockedTarget)   // Back to HAS mode
     {
         SetSubMode(HAS);
         ((SimVehicleClass*)platform)->SOIManager(SimVehicleClass::SOI_WEAPON);

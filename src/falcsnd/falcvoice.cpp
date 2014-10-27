@@ -118,7 +118,7 @@ void FalcVoice::UnsilenceVoices(int SoundGroup)
 
 void FalcVoice::FVResumeVoiceStreams(void)
 {
-    if (!F4IsSoundPlaying(FalcVoiceHandle))
+    if ( not F4IsSoundPlaying(FalcVoiceHandle))
     {
         F4StartCallbackStream(FalcVoiceHandle, (void *)this, fillVoiceBuffer);
         exitChannel = FALSE;
@@ -341,7 +341,7 @@ DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
         streams->waveBufferRead += dataToCopy;
     }
 
-    if (!streams->dataInWaveBuffer)
+    if ( not streams->dataInWaveBuffer)
     {
         thisFV->BufferEmpty(thisFV->voiceStruct->streamBuffer);
         thisFV->PopVCAddQueue();
@@ -380,7 +380,7 @@ DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
                 streams->waveBufferRead += dataToCopy;
             }
 
-            if (!streams->dataInWaveBuffer)
+            if ( not streams->dataInWaveBuffer)
             {
                 thisFV->BufferEmpty(thisFV->voiceStruct->streamBuffer);
                 thisFV->PopVCAddQueue();

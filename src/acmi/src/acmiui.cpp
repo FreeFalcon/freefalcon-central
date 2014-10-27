@@ -237,7 +237,7 @@ void InitACMIMenus()
         menu->SetItemState(WING_TRAILS_LONG, 0);
         menu->SetItemState(WING_TRAILS_MAX, 0);
 
-        if (!gDoWingTrails)
+        if ( not gDoWingTrails)
             menu->SetItemState(WING_TRAILS_NONE, 1);
         else
         {
@@ -327,7 +327,7 @@ C_Base *FindUITextEvent(C_Window *win, long slot, long time)
     CONTROLLIST *cur;
     C_Base *found = NULL;
 
-    if (!win or !time)
+    if ( not win or !time)
         return(NULL);
 
     cur = win->GetControlList();
@@ -440,7 +440,7 @@ void ToggleWireFrameCB(long ID, short, C_Base *control)
         acmiView->ToggleWireFrame(gDoWireFrame);
         acmiView->InitGraphics(win);
 
-        if (!acmiView->LoadTape("", TRUE))
+        if ( not acmiView->LoadTape("", TRUE))
         {
             // something's fucked
         }
@@ -485,7 +485,7 @@ void ToggleWingTrailsCB(long ID, short, C_Base*)
 
         case WING_TRAILS_SHORT:
         {
-            if (!gDoWingTrails)
+            if ( not gDoWingTrails)
             {
                 gDoWingTrails = TRUE;
                 acmiView->Tape()->SetWingTrails(gDoWingTrails);
@@ -499,7 +499,7 @@ void ToggleWingTrailsCB(long ID, short, C_Base*)
 
         case WING_TRAILS_MEDIUM:
         {
-            if (!gDoWingTrails)
+            if ( not gDoWingTrails)
             {
                 gDoWingTrails = TRUE;
                 acmiView->Tape()->SetWingTrails(gDoWingTrails);
@@ -513,7 +513,7 @@ void ToggleWingTrailsCB(long ID, short, C_Base*)
 
         case WING_TRAILS_LONG:
         {
-            if (!gDoWingTrails)
+            if ( not gDoWingTrails)
             {
                 gDoWingTrails = TRUE;
                 acmiView->Tape()->SetWingTrails(gDoWingTrails);
@@ -527,7 +527,7 @@ void ToggleWingTrailsCB(long ID, short, C_Base*)
 
         case WING_TRAILS_MAX:
         {
-            if (!gDoWingTrails)
+            if ( not gDoWingTrails)
             {
                 gDoWingTrails = TRUE;
                 acmiView->Tape()->SetWingTrails(gDoWingTrails);
@@ -678,7 +678,7 @@ void ToggleFirstSelectionOfOptionsCB(long ID, short hittype, C_Base *control)
 void ToggleObjScaleCB(long ID, short hittype, C_Base*)
 {
 
-    if (!acmiView or !acmiView->Tape() or hittype not_eq C_TYPE_LMOUSEUP)
+    if ( not acmiView or !acmiView->Tape() or hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     switch (ID)
@@ -849,7 +849,7 @@ void ACMI_ImportFile(void)
 
             fp = fopen(fname, "r");
 
-            if (!fp)
+            if ( not fp)
             {
                 ACMITape::Import(fltname, fname);
                 break;
@@ -886,7 +886,7 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
     _TCHAR fname[MAX_PATH];
     C_Window *renwin;
 
-    if (!acmiView)
+    if ( not acmiView)
         return;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -926,7 +926,7 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
         acmiView->UnloadTape(FALSE);
 
         // Load the tape.
-        if (!acmiView->LoadTape(fname, FALSE))
+        if ( not acmiView->LoadTape(fname, FALSE))
         {
             acmiView->UnloadTape(FALSE);
             return;
@@ -1087,7 +1087,7 @@ void ACMI_SaveItCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SAVE_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     acmiDraw = FALSE;
@@ -1130,7 +1130,7 @@ void ACMI_SaveItCB(long, short hittype, C_Base *control)
         CopyFile(oldpath, fnamedir, FALSE);
 
         // reload the tape
-        if (!acmiView->LoadTape(fname , TRUE))
+        if ( not acmiView->LoadTape(fname , TRUE))
         {
             // something's fucked
         }
@@ -1290,7 +1290,7 @@ void ACMIButtonCB(long, short hittype, C_Base*)
      gUICriticalSection = F4CreateCriticalSection();
     */
 
-    if (!ACMILoaded)
+    if ( not ACMILoaded)
     {
         LoadACMIWindows();
     }
@@ -1327,7 +1327,7 @@ void LoadACMIWindows()
     long
     id;
 
-    if (!ACMILoaded)
+    if ( not ACMILoaded)
     {
         gMainParser->LoadImageList("ac_art.lst");
         // gImageMgr->SetAllKeys(UI95_RGB24Bit(0x00ff00ff));
@@ -1878,7 +1878,7 @@ void MoveACMIViewTimerCB(long, short, C_Base *control)
             }
 
             // handle moving the events list when tape running
-            if (!acmiView->Tape()->IsPaused())
+            if ( not acmiView->Tape()->IsPaused())
             {
                 int intTime = (int)(acmiView->Tape()->SimTime() - acmiView->Tape()->GetTodOffset()) * 1000;
                 win = gMainHandler->FindWindow(ACMI_LEFT_WIN);
@@ -2672,7 +2672,7 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
     acmiView->UnloadTape(FALSE);
 
     // Load the tape.
-    if (!acmiView->LoadTape(fname, FALSE))
+    if ( not acmiView->LoadTape(fname, FALSE))
     {
         acmiView->UnloadTape(FALSE);
         //F4LeaveCriticalSection( gUICriticalSection );
@@ -2947,7 +2947,7 @@ void ACMIFrameMarkerCB(long, short hittype, C_Base *control)
 
 
 
-    if (!ACMIViewIsReady())
+    if ( not ACMIViewIsReady())
         return;
 
     if (hittype == C_TYPE_MOUSEMOVE)

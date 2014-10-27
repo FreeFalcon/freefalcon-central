@@ -16,13 +16,13 @@ int LoadAllRules(char *filename)
 
     fp = _tfopen(path, _T("rb"));
 
-    if (!fp)
+    if ( not fp)
     {
         MonoPrint(_T("Couldn't open %s rules file\n"), filename);
         _stprintf(path, _T("%s\\Config\\default.rul"), FalconDataDirectory);
         fp = _tfopen(path, "rb");
 
-        if (!fp)
+        if ( not fp)
         {
             MonoPrint(_T("Couldn't open default rules\n"), filename);
             return FALSE;
@@ -112,13 +112,13 @@ int RulesClass::LoadRules(char *filename)
 
     fp = _tfopen(path, _T("rb"));
 
-    if (!fp)
+    if ( not fp)
     {
         MonoPrint(_T("Couldn't open %s rules file\n"), filename);
         _stprintf(path, _T("%s\\Config\\default.rul"), FalconDataDirectory);
         fp = _tfopen(path, "rb");
 
-        if (!fp)
+        if ( not fp)
         {
             MonoPrint(_T("Couldn't open default rules\n"), filename);
             Initialize();

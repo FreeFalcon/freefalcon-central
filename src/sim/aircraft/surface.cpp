@@ -282,11 +282,11 @@ void AircraftClass::CalculateLef(float qfactor)
     }
     else
     {
-        if (!af->IsSet(AirframeClass::InAir))
+        if ( not af->IsSet(AirframeClass::InAir))
         {
             leftLEFAngle = rightLEFAngle = af->auxaeroData->lefGround * DTR;
         }
-        else if (!g_bNewFm and af->mach > af->auxaeroData->lefMaxMach)
+        else if ( not g_bNewFm and af->mach > af->auxaeroData->lefMaxMach)
         {
             leftLEFAngle = rightLEFAngle = 0;;
         }
@@ -393,7 +393,7 @@ void AircraftClass::MoveDof(int dof, float newval, float rate, int ssfx, int lsf
         }
         else
         {
-            if (!SoundPos.IsPlaying(ssfx) and  // MLR 12/30/2003 - changed IsPlaying sound call
+            if ( not SoundPos.IsPlaying(ssfx) and  // MLR 12/30/2003 - changed IsPlaying sound call
                 !SoundPos.IsPlaying(lsfx))
                 SoundPos.Sfx(ssfx);
             else
@@ -641,7 +641,7 @@ void AircraftClass::MoveSurfaces(void)
         }
 
         // Cobra - FRB animated pilot's head
-        if ((g_bAnimPilotHead) and ((!IsPlayer()) or ((IsPlayer()) and (!g_bEnableTrackIR))
+        if ((g_bAnimPilotHead) and (( not IsPlayer()) or ((IsPlayer()) and ( not g_bEnableTrackIR))
                                    or ((IsPlayer()) and (g_bEnableTrackIR)
                                        and ((PlayerOptions.Get3dTrackIR() == false)
                                            or (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode2DCockpit
@@ -652,7 +652,7 @@ void AircraftClass::MoveSurfaces(void)
             // Pilot animation timer
             if (SimLibElapsedTime > static_cast<SIM_ULONG>(af->AnimPilotTime))
             {
-                if (!af->IsSet(AirframeClass::InAir))
+                if ( not af->IsSet(AirframeClass::InAir))
                 {
                     af->AnimPilotScenario = 1;
                 }
@@ -670,7 +670,7 @@ void AircraftClass::MoveSurfaces(void)
             // WSO/RIO/Copilot animation timer
             if (SimLibElapsedTime > static_cast<SIM_ULONG>(af->AnimWSOTime))
             {
-                if (!af->IsSet(AirframeClass::InAir))
+                if ( not af->IsSet(AirframeClass::InAir))
                 {
                     af->AnimWSOScenario = 1;
                 }
@@ -828,7 +828,7 @@ void AircraftClass::MoveSurfaces(void)
         if (g_bAnimPilotHead and af->AnimPilotAct == 0)
         {
 
-            if ((!g_bEnableTrackIR) or (!IsPlayer()) or ((g_bEnableTrackIR) and (!PlayerOptions.Get3dTrackIR())))
+            if (( not g_bEnableTrackIR) or ( not IsPlayer()) or ((g_bEnableTrackIR) and ( not PlayerOptions.Get3dTrackIR())))
             {
                 if ((af->rstick > -0.1f) and (af->rstick < 0.1f))
                 {
@@ -1149,7 +1149,7 @@ void AircraftClass::MoveSurfaces(void)
 
             float vortexTrailsUsed = af->auxaeroData->vortex1Location.y;
 
-            if ((!vortexTrailsCondition) or (!vortexTrailsUsed))
+            if (( not vortexTrailsCondition) or ( not vortexTrailsUsed))
             {
                 SetSwitch(COMP_WING_VAPOR, gFact);
             }
@@ -1312,7 +1312,7 @@ void AircraftClass::MoveSurfaces(void)
     {
         if (GetAlpha() > 15.0F and GetAlpha() < 20.0F)
         {
-            if (!stallShake)
+            if ( not stallShake)
             {
                 if (this->AutopilotType() not_eq AircraftClass::CombatAP) // Retro 20Feb2004.. it can STOP regardless of AP status however..
                 {
@@ -1402,7 +1402,7 @@ void AircraftClass::RunLightSurfaces(void)
     //SetSwitch(COMP_TAIL_STROBE, light == 3);
     //SetSwitch(COMP_LAND_LIGHTS, light == 4);
 
-    if (!ExtlState(Extl_Main_Power))
+    if ( not ExtlState(Extl_Main_Power))
     {
         // lights off
         SetSwitch(COMP_NAV_LIGHTS, FALSE);
@@ -1585,7 +1585,7 @@ void AircraftClass::RunGearSurfaces(void)
     for (i = 0; i < numgear; i++)
     {
         //move the door
-        if (!(af->gear[i].flags & GearData::DoorStuck) and !(af->gear[i].flags & GearData::DoorBroken))
+        if ( not (af->gear[i].flags & GearData::DoorStuck) and !(af->gear[i].flags & GearData::DoorBroken))
         {
             float pos = af->gearPos * 2;
 
@@ -1599,7 +1599,7 @@ void AircraftClass::RunGearSurfaces(void)
             SetDOF(ComplexGearDoorDOF[i], af->GetAeroData(AeroDataSet::NosGearRng) * DTR);
 
         //move the gear
-        if (!(af->gear[i].flags & GearData::GearStuck) and !(af->gear[i].flags & GearData::GearBroken))
+        if ( not (af->gear[i].flags & GearData::GearStuck) and !(af->gear[i].flags & GearData::GearBroken))
         {
             float pos = (af->gearPos - .5f) * 2;
 
@@ -1647,7 +1647,7 @@ void AircraftClass::RunGearSurfaces(void)
 
     if (af->IsSet(AirframeClass::NoseSteerOn))
     {
-        if (!(af->gear[0].flags & GearData::GearStuck))
+        if ( not (af->gear[0].flags & GearData::GearStuck))
         {
             // ASSOCIATOR 30/11/03 Added g_bRollLinkedNWSRudder for roll unlinked rudder on the ground
             // RAS 05Apr04 chanded ypedal to lastYPedal and rstick to lastRStick so that nosewheel will track movement of plane

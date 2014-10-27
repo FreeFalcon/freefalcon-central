@@ -143,7 +143,7 @@ int ICPClass::CheckMode(void)
             return TRUE;
     }
 
-    if (!g_bIFF)
+    if ( not g_bIFF)
     {
         //Don't do anything for now when in COMM (temporary)/IFF/DLINK/FACK/MARK/INTG mode
         if (IsICPSet(ICPClass::MODE_COMM1) or IsICPSet(ICPClass::MODE_COMM2) ||
@@ -687,7 +687,7 @@ void ICPClass::CheckAutoSTPT(void)
         playerAC->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb) // MLR-NOTE Needs to consider Rockets???
         return;
 
-    if (!playerAC or !playerAC->curWaypoint)
+    if ( not playerAC or !playerAC->curWaypoint)
         return;
 
     playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);

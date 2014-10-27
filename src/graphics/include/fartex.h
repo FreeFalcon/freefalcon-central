@@ -42,7 +42,7 @@ public:
     };
     ~FarTexDB()
     {
-        ShiAssert(!IsReady());
+        ShiAssert( not IsReady());
     };
 
     BOOL Setup(DXContext *hrc, const char* texturePath);

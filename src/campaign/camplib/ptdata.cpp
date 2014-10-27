@@ -59,7 +59,7 @@ int GetNextPt(int ptindex)
     if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
-    if (!(PtDataTable[ptindex].flags & PT_LAST))
+    if ( not (PtDataTable[ptindex].flags & PT_LAST))
     {
         return ptindex + 1;
     }
@@ -88,7 +88,7 @@ int GetNextPtLoop(int ptindex)
     if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
-    if (!(PtDataTable[ptindex].flags & PT_LAST))
+    if ( not (PtDataTable[ptindex].flags & PT_LAST))
     {
         return ptindex + 1;
     }
@@ -112,7 +112,7 @@ int GetPrevPt(int ptindex)
     if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
-    if (!(PtDataTable[ptindex].flags & PT_FIRST))
+    if ( not (PtDataTable[ptindex].flags & PT_FIRST))
         return ptindex - 1;
 
     return 0;
@@ -136,7 +136,7 @@ int GetPrevPtLoop(int ptindex)
     if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
-    if (!(PtDataTable[ptindex].flags & PT_FIRST))
+    if ( not (PtDataTable[ptindex].flags & PT_FIRST))
         return ptindex - 1;
 
     return ptindex;

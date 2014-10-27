@@ -332,7 +332,7 @@ PackageClass::PackageClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, r
         {
             w = new WayPointClass(stream, rem);
 
-            if (!lw)
+            if ( not lw)
                 ingress = lw = w;
             else
                 lw->InsertWP(w);
@@ -349,7 +349,7 @@ PackageClass::PackageClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, r
         {
             w = new WayPointClass(stream, rem);
 
-            if (!lw)
+            if ( not lw)
                 egress = lw = w;
             else
                 lw->InsertWP(w);
@@ -668,7 +668,7 @@ int PackageClass::MoveUnit(CampaignTime time)
     Unit e;
     e = GetFirstUnitElement();
 
-    if (!e)
+    if ( not e)
     {
         // This package is gone
         KillUnit();
@@ -689,7 +689,7 @@ int PackageClass::CheckNeedRequests(void)
     if (wait_cycles)
         wait_cycles--;
 
-    if (!wait_cycles or Camp_GetCurrentTime() > takeoff + (AMIS_TAKEOFF_DELAY - 1) * CampaignMinutes)
+    if ( not wait_cycles or Camp_GetCurrentTime() > takeoff + (AMIS_TAKEOFF_DELAY - 1) * CampaignMinutes)
     {
         // 2001-09-16 REMOVED by M.N. We don't need this anymore - is done by AddTankerWaypoints result
         // -> If no tanker, packageelement->KillUnit();
@@ -761,7 +761,7 @@ int PackageClass::CheckNeedRequests(void)
                     // add to all package elements that really need to refuel
                     if (e->GetUnitMission() not_eq AMIS_TANKER and f->refuel not_eq 0)
                     {
-                        if (!AddTankerWayPoint(f, f->refuel))
+                        if ( not AddTankerWayPoint(f, f->refuel))
                         {
                             // M.N. remove the kill unit call - the 2D fuelneeded calculation has a too high
                             // variance so that we shouldn't delete the package here
@@ -986,7 +986,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
         mis->target_num = targetf[tar];
         mis->caps  or_eq  MissionData[mis->mission].caps;
 
-        if (!mis->aircraft)
+        if ( not mis->aircraft)
             mis->aircraft = MissionData[mis->mission].str;
 
         flight = AttachFlight(mis, this);
@@ -1096,7 +1096,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
         flights++;
     }
 
-    if (!flights or !flight)
+    if ( not flights or !flight)
         return PRET_NO_ASSETS;
 
 #ifdef KEV_ADEBUG
@@ -1323,7 +1323,7 @@ int PackageClass::RecordFlightAddition(Flight flight, MissionRequest mis, int ta
         else if (package_flags & AMIS_ADDECM)
             targetd  or_eq  CheckPathThreats(flight);
 
-        if (!(MissionData[mis->mission].flags & AMIS_TARGET_ONLY))
+        if ( not (MissionData[mis->mission].flags & AMIS_TARGET_ONLY))
         {
             // Find assembly points
             w = flight->GetFirstUnitWP();
@@ -1338,7 +1338,7 @@ int PackageClass::RecordFlightAddition(Flight flight, MissionRequest mis, int ta
 
                 if (w->GetWPFlags() & WPF_TARGET or w->GetWPFlags() & WPF_IP or w->GetWPFlags() & WPF_CP or /* w->GetWPFlags() & WPF_TURNPOINT or */ w->GetWPFlags() & WPF_REPEAT)
                 {
-                    if (!bw)
+                    if ( not bw)
                         bw = lw;
 
                     if (lw->GetWPFlags() & WPF_TARGET or lw->GetWPFlags() & WPF_CP)
@@ -1361,7 +1361,7 @@ int PackageClass::RecordFlightAddition(Flight flight, MissionRequest mis, int ta
                 w = w->GetNextWP();
             }
 
-            if (!bw and MissionData[mis->mission].flags & AMIS_NO_BREAKPT)
+            if ( not bw and MissionData[mis->mission].flags & AMIS_NO_BREAKPT)
                 bw = tw;
 
             ShiAssert(bw and tw and aw and eaw)
@@ -1380,7 +1380,7 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
 {
     MissionRequestClass newmis;
 
-    if (!(package_flags & AMIS_SUPPORT_MASK))
+    if ( not (package_flags & AMIS_SUPPORT_MASK))
         return;
 
     if (TeamInfo[GetTeam()] and TeamInfo[GetTeam()]->atm and TeamInfo[GetTeam()]->atm->packageList)
@@ -1565,7 +1565,7 @@ void PackageClass::HandleRequestReceipt(int type, int them, VU_ID triggered_flig
     MissionRequestClass mis;
     Unit flight, enemy;
 
-    if (!wait_cycles)
+    if ( not wait_cycles)
         return; // Error of sorts - response mission was planned after our wait period timed out
 
     switch (type)
@@ -1578,7 +1578,7 @@ void PackageClass::HandleRequestReceipt(int type, int them, VU_ID triggered_flig
             interceptor = triggered_flight;
             enemy = FindUnit(triggered_flight);
 
-            if (!enemy)
+            if ( not enemy)
                 return;
 
             // RV - Biker - If we have no mission type return
@@ -1935,7 +1935,7 @@ Flight AttachFlight(MissionRequest mis, Package pack)
     short tid;
     GridIndex bx, by, x, y;
 
-    if (!TeamInfo[mis->who]->atm)
+    if ( not TeamInfo[mis->who]->atm)
     {
 #ifdef KEV_DEBUG
         MonoPrint("Error, I don't own the ATM!\n");
@@ -1943,7 +1943,7 @@ Flight AttachFlight(MissionRequest mis, Package pack)
         return NULL;
     }
 
-    if (!pack)
+    if ( not pack)
         return NULL;
 
     pack->GetLocation(&bx, &by);
@@ -1952,13 +1952,13 @@ Flight AttachFlight(MissionRequest mis, Package pack)
     {
         flight = TeamInfo[mis->who]->atm->FindBestAirFlight(mis); // We steal the aircraft from a current flight (all the aircraft)
 
-        if (!flight)
+        if ( not flight)
             return NULL;
 
         mis->aircraft = flight->GetTotalVehicles();
 
         // Ok, this package is a go - add it locally
-        if (!PackInserted)
+        if ( not PackInserted)
         {
             // sfr: only say its inserted if its really inserted
             pack->SetSendCreate(VuEntity::VU_SC_DONT_SEND);
@@ -1972,17 +1972,17 @@ Flight AttachFlight(MissionRequest mis, Package pack)
     {
         squadron = TeamInfo[mis->who]->atm->FindBestAir(mis, bx, by);
 
-        if (!squadron)
+        if ( not squadron)
             return NULL;
 
-        if (!bx and !by) // Call this our home base for this package set
+        if ( not bx and !by) // Call this our home base for this package set
         {
             squadron->GetLocation(&bx, &by);
             pack->SetLocation(bx, by);
         }
 
         // Ok, this package is a go - add it locally
-        if (!PackInserted)
+        if ( not PackInserted)
         {
             // sfr: only say its inserted if its really inserted
             pack->SetSendCreate(VuEntity::VU_SC_DONT_SEND);
@@ -1993,14 +1993,14 @@ Flight AttachFlight(MissionRequest mis, Package pack)
 #ifdef DEBUG
         ShiAssert(tid);
 
-        if (!tid)
+        if ( not tid)
             return NULL;
 
 #endif
         tid += VU_LAST_ENTITY_TYPE;
         flight = NewFlight(tid, pack, squadron);
 
-        if (!flight)
+        if ( not flight)
             return NULL;
 
         flight->SetOwner(squadron->GetOwner());
@@ -2012,7 +2012,7 @@ Flight AttachFlight(MissionRequest mis, Package pack)
 
         // If we've got a bomber assigned to a lead strike role, switch the mission type to strat
         // bomb so that everything will be planned correctly
-        if (!pack->GetFlights()  and 
+        if ( not pack->GetFlights()  and 
             MissionData[mis->mission].skill == ARO_S  and 
             squadron->GetRating(ARO_SB) > squadron->GetRating(ARO_S)  and 
             // RV - Biker - Don't convert all to STRATBOMB
@@ -2228,12 +2228,12 @@ void PackageClass::SetTPTime(CampaignTime t)
 
 void PackageClass::MakePackageDirty(Dirty_Package bits, Dirtyness score)
 {
-    if ((!IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
+    if (( not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
 
-    if (!IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
+    if ( not IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
     {
         score = static_cast<Dirtyness>(score << 4);
     }

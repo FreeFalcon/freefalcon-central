@@ -60,7 +60,7 @@ void OTWDriverClass::CreateVisualObject(SimBaseClass* theObject, int visType, fl
     Trotation viewRotation;
 
     ShiAssert(IsActive());
-    ShiAssert(!theObject->drawPointer);
+    ShiAssert( not theObject->drawPointer);
 
     // Set position and orientations
     viewRotation.M11 = theObject->dmx[0][0];
@@ -398,10 +398,10 @@ void SetLabel(SimBaseClass* theObject)
 
     ShiAssert(theObject); // try to catch when this happens (2nd crash BT #955)
 
-    if (!theObject)
+    if ( not theObject)
         return;
 
-    if (!theObject->IsExploding())
+    if ( not theObject->IsExploding())
     {
         if (classPtr->dataType == DTYPE_VEHICLE)
         {

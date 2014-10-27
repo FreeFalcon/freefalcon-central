@@ -106,7 +106,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
             // AircraftClass::Exec do the actual update of the targetSpots
 
             // If we have no timer count, act as if the player wants nothing to do with our little bubbles
-            if (!g_nTargetSpotTimeout)
+            if ( not g_nTargetSpotTimeout)
             {
                 break;
             }
@@ -119,7 +119,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                 case AiWingman:
 
                     // First lets create one if not done already
-                    if (!myBrain->targetSpotWing)
+                    if ( not myBrain->targetSpotWing)
                     {
                         myBrain->targetSpotWing = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);
                         vuDatabase->/*Quick*/Insert(myBrain->targetSpotWing);
@@ -162,7 +162,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                 case AiElement:
 
                     // First lets create one if not done already
-                    if (!myBrain->targetSpotElement)
+                    if ( not myBrain->targetSpotElement)
                     {
                         myBrain->targetSpotElement = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);
                         vuDatabase->/*Quick*/Insert(myBrain->targetSpotElement);
@@ -205,7 +205,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                 case AiFlight:
 
                     // First lets create one if not done already
-                    if (!myBrain->targetSpotFlight)
+                    if ( not myBrain->targetSpotFlight)
                     {
                         myBrain->targetSpotFlight = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);
                         vuDatabase->/*Quick*/Insert(myBrain->targetSpotFlight);
@@ -306,7 +306,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
         case FalconWingmanMsg::WMWeaponsFree:
 
             // If we have no timer count, act as if the player wants nothing to do with our little bubbles
-            if (!g_nTargetSpotTimeout)
+            if ( not g_nTargetSpotTimeout)
             {
                 break;
             }
@@ -344,7 +344,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                     if (wingTgt)
                     {
                         // First lets create one if not done already
-                        if (!myBrain->targetSpotWing)
+                        if ( not myBrain->targetSpotWing)
                         {
                             myBrain->targetSpotWing = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);
                             vuDatabase->/*Quick*/Insert(myBrain->targetSpotWing);
@@ -405,7 +405,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                         wingTgt = wingBrain->targetPtr->BaseData();
 
                     // If the element lead has none, check his wing
-                    if (!wingTgt)
+                    if ( not wingTgt)
                     {
                         wingPlane = ((AircraftClass *)SimDriver.GetPlayerEntity()->GetCampaignObject()->GetComponentNumber(3));
 
@@ -423,7 +423,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                     if (wingTgt)
                     {
                         // First lets create one if not done already
-                        if (!myBrain->targetSpotElement)
+                        if ( not myBrain->targetSpotElement)
                         {
                             myBrain->targetSpotElement = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);
                             vuDatabase->/*Quick*/Insert(myBrain->targetSpotElement);
@@ -488,7 +488,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                     if (wingTgt)
                     {
                         // First lets create one if not done already
-                        if (!myBrain->targetSpotFlight)
+                        if ( not myBrain->targetSpotFlight)
                         {
                             myBrain->targetSpotFlight = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);
                             vuDatabase->/*Quick*/Insert(myBrain->targetSpotFlight);

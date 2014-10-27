@@ -111,7 +111,7 @@ void DigitalBrain::SensorFusion(void)
 
 
 
-        /* if (!g_bRP5Comp) {
+        /* if ( not g_bRP5Comp) {
           // Aces get to use GCI
           // Idiots find out about you inside 1 mile anyway
           if (localData->range > 3.0F * NM_TO_FT and // gci is crap inside 3nm
@@ -195,7 +195,7 @@ void DigitalBrain::SensorFusion(void)
         //for (i = 0; i<self->numSensors; i++) {
         //if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack or localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime) { // 2002-04-18 MODIFIED BY S.G. Reverted to and instead of ||. *MY* logic was flawed. It gaves a 'delay' (grace period) after the sensor becomes 'NoLock'.
         //if (campBaseObj and /* and  SkillLevel() >= g_nLowestSkillForGCI  and */ !((UnitClass *)self->GetCampaignObject())->Broken()) {//Cobra removed GCI test here...not needed
-        //if (!campBaseObj->GetSpotted(self->GetTeam()) and campBaseObj->IsFlight())
+        //if ( not campBaseObj->GetSpotted(self->GetTeam()) and campBaseObj->IsFlight())
         //RequestIntercept((FlightClass *)campBaseObj, self->GetTeam());
 
         // 2002-02-11 ADDED BY S.G. If the sensor can identify the target, mark it identified as well
@@ -504,11 +504,11 @@ void DigitalBrain::SensorFusion(void)
 int GuestimateCombatClass(AircraftClass *self, FalconEntity *baseObj)
 {
     // Fail safe
-    if (!baseObj)
+    if ( not baseObj)
         return 8;
 
     // If asked to use the old code, then honor the request
-    if (!g_bUseNewCanEnage)
+    if ( not g_bUseNewCanEnage)
         return baseObj->CombatClass();
 
     // First I'll get the campaign object if it's for a sim since I use it at many places...
@@ -524,7 +524,7 @@ int GuestimateCombatClass(AircraftClass *self, FalconEntity *baseObj)
         return 8;
 
     // If it doesn't have a campaign object or it's identified...
-    if (!campBaseObj or campBaseObj->GetIdentified(self->GetTeam()))
+    if ( not campBaseObj or campBaseObj->GetIdentified(self->GetTeam()))
     {
         // Yes, now you can get its combat class!
         return baseObj->CombatClass();

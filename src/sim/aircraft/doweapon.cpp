@@ -56,7 +56,7 @@ void AircraftClass::DoWeapons()
 
     // Guns
     //MI
-    if (!g_bRealisticAvionics or isDigital)
+    if ( not g_bRealisticAvionics or isDigital)
     {
         fireFlag = fireGun and !OnGround() and (Sms->MasterArm() == SMSBaseClass::Arm);
     }
@@ -78,7 +78,7 @@ void AircraftClass::DoWeapons()
 
             else if (IsFiring())
             {
-                if (!SoundPos.IsPlaying(af->auxaeroData->sndGunStart))  // MLR 2003-11-19
+                if ( not SoundPos.IsPlaying(af->auxaeroData->sndGunStart))  // MLR 2003-11-19
                 {
                     // MonoPrint("Vulcan Loop Sound: Playing\n" );
                     SoundPos.Sfx(af->auxaeroData->sndGunLoop);
@@ -98,9 +98,9 @@ void AircraftClass::DoWeapons()
                 }
             }
 
-            if (!IsFiring())
+            if ( not IsFiring())
             {
-                if (!isDigital)
+                if ( not isDigital)
                 {
                     SoundPos.Sfx(af->auxaeroData->sndGunStart);
                     // F4PlaySound( SFX_DEF[ SFX_VULCAN_START ].handle );
@@ -121,7 +121,7 @@ void AircraftClass::DoWeapons()
             // spin down ownship vulcan?
             if (IsFiring())
             {
-                if (!isDigital)
+                if ( not isDigital)
                 {
                     vulcDist = 20000.0f;
                     SoundPos.Sfx(af->auxaeroData->sndGunEnd);
@@ -144,7 +144,7 @@ void AircraftClass::DoWeapons()
     if ((this->autopilotType == CombatAP)) // FRB
         isPlayer = false;
 
-    if (!SimDriver.RunningInstantAction() or gNumWeaponsInAir < gMaxIAWeaponsFired)
+    if ( not SimDriver.RunningInstantAction() or gNumWeaponsInAir < gMaxIAWeaponsFired)
     {
         wasPostDrop = FCC->postDrop;
 
@@ -218,7 +218,7 @@ void AircraftClass::DoWeapons()
                             )
                             {
                                 // If we do not have a target, get the missile's target
-                                if (!targetPtr)
+                                if ( not targetPtr)
                                 {
                                     tmpTargetPtr = curWeapon->targetPtr;
                                 }
@@ -286,7 +286,7 @@ void AircraftClass::DoWeapons()
 
                     // 2002-04-14 MN moved into MislSms::LaunchMissile - if WEAP_BOMBDROPSOUND is set, play it, if not, missile launch sound
                     // do that only if we don't want the above...
-                    if (!(g_nMissileFix & 0x80))
+                    if ( not (g_nMissileFix & 0x80))
                         SoundPos.Sfx(SFX_MISSILE2);
                 }
 
@@ -314,7 +314,7 @@ void AircraftClass::DoWeapons()
                     SoundPos.Sfx(SFX_RCKTLOOP);
                     */
 
-                    if (!(Sms->IsSet(SMSBaseClass::Firing)) and curWeapon) // MLR 3/8/2004 - CTD
+                    if ( not (Sms->IsSet(SMSBaseClass::Firing)) and curWeapon) // MLR 3/8/2004 - CTD
                     {
                         // Drop a message
                         SendFireMessage(curWeapon, FalconWeaponsFire::Rocket, TRUE, targetPtr);
@@ -375,7 +375,7 @@ void AircraftClass::DoWeapons()
                     if (TheBomb->IsSetBombFlag(BombClass::IsJSOW and Sms->JDAMPowered))
                     {
                         // if AI Pair enabled based on weight
-                        if (!isPlayer)
+                        if ( not isPlayer)
                         {
                             if (wt < 1999) Sms->SetAGBPair(TRUE);
                             else Sms->SetAGBPair(FALSE);
@@ -399,7 +399,7 @@ void AircraftClass::DoWeapons()
                     if (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags & SMSClass::HasBurstHeight)
                     {
                         // If not Player drop in Couples
-                        if (!isPlayer) Sms->SetAGBPair(TRUE);
+                        if ( not isPlayer) Sms->SetAGBPair(TRUE);
 
                         // Drop it, enabling ripple if Player
                         if (Sms->DropBomb(isPlayer))
@@ -417,7 +417,7 @@ void AircraftClass::DoWeapons()
 
                     // *** GENERIC BOMBS ***
                     // Checks for AI
-                    if (!isPlayer)
+                    if ( not isPlayer)
                     {
                         // Drop light Bombs in pair else as single
                         if (wt < 2000)
@@ -466,7 +466,7 @@ void AircraftClass::DoWeapons()
                     TheBomb->SetTarget(targetPtr);
 
                     //MI ripple for GBU's is there in real
-                    if (!g_bRealisticAvionics)
+                    if ( not g_bRealisticAvionics)
                     {
                         if (Sms->DropBomb(FALSE))
                         {
@@ -539,7 +539,7 @@ void AircraftClass::DoWeapons()
                     }
 
                     // If we didn't find something at our target site, check for something else we may have seen
-                    if (!entity)
+                    if ( not entity)
                     {
                         // Check features first
                         VuListIterator featWalker(SimDriver.combinedFeatureList);
@@ -551,7 +551,7 @@ void AircraftClass::DoWeapons()
                         }
 
                         // No features, check for vehicles
-                        if (!entity)
+                        if ( not entity)
                         {
                             VuListIterator objWalker(SimDriver.combinedList);
                             entity = objWalker.GetFirst();
@@ -593,7 +593,7 @@ void AircraftClass::DoWeapons()
             SoundPos.Sfx(SFX_RCKTLOOP);
             */
 
-            if (!(Sms->IsSet(SMSBaseClass::Firing)) and curWeapon)  // MLR 3/8/2004 - CTD
+            if ( not (Sms->IsSet(SMSBaseClass::Firing)) and curWeapon)  // MLR 3/8/2004 - CTD
             {
                 // Drop a message
                 SendFireMessage(curWeapon, FalconWeaponsFire::Rocket, TRUE, targetPtr);

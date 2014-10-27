@@ -50,7 +50,7 @@ void WeatherClass::Init(bool instantAction)
     weatherDay = TheCampaign.GetCurrentDay();
 
 
-    if (!instantAction)
+    if ( not instantAction)
     {
         lockedCondition = TRUE;
         // Cobra - no random weather
@@ -207,7 +207,7 @@ void WeatherClass::UpdateCondition(int condition, bool bForce)
 
 void WeatherClass::UpdateWeather()
 {
-    if (!TheCampaign.IsMaster()) return;
+    if ( not TheCampaign.IsMaster()) return;
 
     float seed, delta;
     CampaignTime time, tDelta;

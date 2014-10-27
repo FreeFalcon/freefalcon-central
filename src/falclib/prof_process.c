@@ -392,7 +392,7 @@ static void propogate_stack(Prof_Zone_Stack *c)
 
     while (p->zone)
     {
-        if (!p->zone->visited)
+        if ( not p->zone->visited)
         {
             p->total_hier_ticks += c->total_self_ticks;
             p->zone->visited = 1;
@@ -572,7 +572,7 @@ Prof_extern_C void Prof_update(int record_data)
         speedstep_warning = (ss_ratio > SPEEDSTEP_DETECTION_RATIO);
     }
 
-    if (!record_data)
+    if ( not record_data)
     {
         Prof_traverse(clear_stack);
         Prof_End

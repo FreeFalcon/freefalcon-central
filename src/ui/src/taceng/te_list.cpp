@@ -329,7 +329,7 @@ void TEDelFileCB(long, short hittype, C_Base *control)
 
     gMainHandler->HideWindow(control->Parent_); // Close Verify Window
 
-    if (!CheckExclude(gLastTEFilename, FalconCampUserSaveDirectory, TEExcludeList, "tac"))
+    if ( not CheckExclude(gLastTEFilename, FalconCampUserSaveDirectory, TEExcludeList, "tac"))
         DeleteFile(gLastTEFilename);
 
     gLastTEFilename[0] = 0;
@@ -407,7 +407,7 @@ void choose_eng_type_cb(long , short hittype, C_Base *ctrl)
 
 void hookup_edit_controls(C_Window *win)
 {
-    if (!win)
+    if ( not win)
         return;
 
     C_Button *btn;
@@ -523,7 +523,7 @@ void create_tactical_list(void)
 
     win = gMainHandler->FindWindow(TAC_MISSION_WIN);
 
-    if (!win)
+    if ( not win)
     {
         MonoPrint("Cannot Find TAC_MISSION_WIN\n");
         return;
@@ -974,7 +974,7 @@ void update_missions_details(long winID)
 
     C_Window *win = gMainHandler->FindWindow(winID);
 
-    if (!win)
+    if ( not win)
         return;
 
     if (winID == TAC_AIRCRAFT)
@@ -1114,14 +1114,14 @@ void tactical_select_join(long, short hittype, C_Base *ctrl)
 
     DisableScenarioInfo();
 
-    if (!gCommsMgr->Online())
+    if ( not gCommsMgr->Online())
         gMainHandler->EnableWindowGroup(6001);
 
     ctrl->Parent_->HideCluster(ctrl->GetUserNumber(1));
     ctrl->Parent_->HideCluster(ctrl->GetUserNumber(2));
     ctrl->Parent_->UnHideCluster(ctrl->GetUserNumber(0));
 
-    if (!gCommsMgr->Online())
+    if ( not gCommsMgr->Online())
     {
         win = gMainHandler->FindWindow(PB_WIN);
 

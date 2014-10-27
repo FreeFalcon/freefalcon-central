@@ -300,7 +300,7 @@ static void OnClickedSettings(long, short hittype,C_Base *control)
  C_Button *button;
 
  win=gMainHandler->FindWindow(JETNET_WIN);
- if(!win) return;
+ if( not win) return;
 
  button = (C_Button*)win->FindControl(SETUP_JETNET_ENABLEUPLINK);
  if (button)
@@ -346,7 +346,7 @@ static void OnClickedPlay(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (!m_pSelectedItem or m_bConnectPending)
+    if ( not m_pSelectedItem or m_bConnectPending)
         return;
 
     C_Base *wndClose = control->GetParent()->FindControl(CLOSE_WINDOW);
@@ -675,19 +675,19 @@ C_ServerItem *MakeServerItem(C_TreeList *pTree, IGame *p)
     C_Window *pWindow;
 	TREELIST* pTreeItem = NULL;
 
-    if (!pTree or !p)
+    if ( not pTree or !p)
         return NULL;
 
     try
     {
         pServerItem = new C_ServerItem;
 
-        if (!pServerItem)
+        if ( not pServerItem)
             return(NULL);
 
         pWindow = pTree->GetParent();
 
-        if (!pWindow)
+        if ( not pWindow)
             return(NULL);
 
         pServerItem->SetFont(pTree->GetFont());
@@ -731,11 +731,11 @@ static void Update()
 {
     try
     {
-        if (!m_pUpdater)
+        if ( not m_pUpdater)
         {
             m_pUpdater = new GNetUpdater;
 
-            if (!m_pUpdater)
+            if ( not m_pUpdater)
                 throw _com_error(E_OUTOFMEMORY);
 
             m_pUpdater->Init();
@@ -918,7 +918,7 @@ static void UpdateComplete(BOOL bSuccess)
 
     else
     {
-        if (!m_bConnectedToMaster)
+        if ( not m_bConnectedToMaster)
             UpdateStatus("Failed to connect to master server");
 
         else
@@ -971,7 +971,7 @@ static void UpdateServerStatus()
 {
     int nServerCount;
 
-    if (!m_pUpdater or m_pUpdater->m_nServerCount == 0)
+    if ( not m_pUpdater or m_pUpdater->m_nServerCount == 0)
         nServerCount = 1;
     else
         nServerCount = m_pUpdater->m_nServerCount;
@@ -1022,7 +1022,7 @@ long C_ServerItem::Size()
 
 void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 {
-    if (!_pGame or !pParent)
+    if ( not _pGame or !pParent)
         return;
 
     GNETCORELib::IGamePtr pGame(_pGame);
@@ -1042,7 +1042,7 @@ void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 
     m_arrOutput[0] = new O_Output;
 
-    if (!m_arrOutput[0]) throw _com_error(E_OUTOFMEMORY);
+    if ( not m_arrOutput[0]) throw _com_error(E_OUTOFMEMORY);
 
     m_arrOutput[0]->SetOwner(this);
     m_arrOutput[0]->SetFont(Font_);
@@ -1054,7 +1054,7 @@ void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 
     m_arrOutput[1] = new O_Output;
 
-    if (!m_arrOutput[1]) throw _com_error(E_OUTOFMEMORY);
+    if ( not m_arrOutput[1]) throw _com_error(E_OUTOFMEMORY);
 
     m_arrOutput[1]->SetOwner(this);
     m_arrOutput[1]->SetFont(Font_);
@@ -1067,7 +1067,7 @@ void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 
     m_arrOutput[2] = new O_Output;
 
-    if (!m_arrOutput[2]) throw _com_error(E_OUTOFMEMORY);
+    if ( not m_arrOutput[2]) throw _com_error(E_OUTOFMEMORY);
 
     m_arrOutput[2]->SetOwner(this);
     m_arrOutput[2]->SetFont(Font_);
@@ -1079,7 +1079,7 @@ void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 
     m_arrOutput[3] = new O_Output;
 
-    if (!m_arrOutput[3]) throw _com_error(E_OUTOFMEMORY);
+    if ( not m_arrOutput[3]) throw _com_error(E_OUTOFMEMORY);
 
     m_arrOutput[3]->SetOwner(this);
     m_arrOutput[3]->SetFont(Font_);
@@ -1092,7 +1092,7 @@ void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 
     m_arrOutput[4] = new O_Output;
 
-    if (!m_arrOutput[4]) throw _com_error(E_OUTOFMEMORY);
+    if ( not m_arrOutput[4]) throw _com_error(E_OUTOFMEMORY);
 
     m_arrOutput[4]->SetOwner(this);
     m_arrOutput[4]->SetFont(Font_);

@@ -370,7 +370,7 @@ void OTWDriverClass::Cycle(void)
     }
 
     // Check for weather change
-    if (!weatherCmd)
+    if ( not weatherCmd)
     {
     }
     else
@@ -624,7 +624,7 @@ void OTWDriverClass::DisplayInfoBar(void)
         // a) string could be longer as the locally allocated one (bad thing (tm)) - however that´s unlikely, see above
         // b) string could be longer than physical screen size.. FreeFalcon then displays nothing.. also a bit suboptimal..
         // solution for b) need to get renderer->TextWidth() working, if it is >1 then we don´t add a chunk.. or so..
-        if ((!otwPlatform->IsGroundVehicle()) and (!otwPlatform->IsBomb()))
+        if (( not otwPlatform->IsGroundVehicle()) and ( not otwPlatform->IsBomb()))
         {
             char tmp[30];
 
@@ -811,7 +811,7 @@ void OTWDriverClass::DisplayFrontText(void)
                        OTWDriver.renderer->ScreenTextWidth(CompressionStr[2]) + COMPRESS_SPACING +
                        OTWDriver.renderer->ScreenTextWidth(CompressionStr[3]) + COMPRESS_SPACING) * 0.5f;
 
-            if ((!targetCompressionRatio) or (!FalconLocalSession->GetReqCompression()) or (remoteCompressionRequests & REMOTE_REQUEST_PAUSE))
+            if (( not targetCompressionRatio) or ( not FalconLocalSession->GetReqCompression()) or (remoteCompressionRequests & REMOTE_REQUEST_PAUSE))
             {
                 // if ANY compression OR compression requests == 0... Draw PAUSE
                 // if compression == our compression == all requested compressions
@@ -821,9 +821,9 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((!targetCompressionRatio) and ((!FalconLocalSession->GetReqCompression()) and (remoteCompressionRequests & REMOTE_REQUEST_PAUSE) or !gCommsMgr->Online()))
+                if (( not targetCompressionRatio) and (( not FalconLocalSession->GetReqCompression()) and (remoteCompressionRequests & REMOTE_REQUEST_PAUSE) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
-                else if ((!FalconLocalSession->GetReqCompression()))
+                else if (( not FalconLocalSession->GetReqCompression()))
                     color = 0xff00ff00;
                 else
                     color = 0xff00ffff;
@@ -1065,7 +1065,7 @@ void OTWDriverClass::DisplayFrontText(void)
         }
     }
 
-    if (!g_bACMIRecordMsgOff and gACMIRec.IsRecording())
+    if ( not g_bACMIRecordMsgOff and gACMIRec.IsRecording())
     {
         int pct;
         int j;
@@ -1169,7 +1169,7 @@ void OTWDriverClass::DisplayFrontText(void)
     if (showFrontText & (SHOW_CHATBOX))
         DisplayChatBox();
 
-    if ((drawInfoBar) and (!DisplayInCockpit())) // Retro 16Dec2003
+    if ((drawInfoBar) and ( not DisplayInCockpit())) // Retro 16Dec2003
     {
         DisplayInfoBar(); // Retro 16Dec2003
     }
@@ -1177,7 +1177,7 @@ void OTWDriverClass::DisplayFrontText(void)
     {
         // display text for some camera settings
         // TODO:  This should be a string table, not a slew of "if"s
-        if (!DisplayInCockpit())
+        if ( not DisplayInCockpit())
         {
             short cameraID = 0;
 
@@ -1264,7 +1264,7 @@ void OTWDriverClass::DisplayFrontText(void)
         ShowAerodynamics();
 
     //if (g_bShowFlaps) TJL 11/09/03 Show Flaps
-    if (!showFlaps)
+    if ( not showFlaps)
         ShowFlaps();
 
     if (getNewCameraPos)
@@ -1627,7 +1627,7 @@ void OTWDriverClass::RenderFrame()
     // Should be coordinated with wombat´s keypresses: if this active
     // is used, then the keypresses (and maybe the 'l' key) should
     // be deactivated
-    if ((!actionCameraMode) and (!MouseMenuActive))
+    if (( not actionCameraMode) and ( not MouseMenuActive))
     {
         // Retro 20Feb2004 - no FOV control in actioncam and when the 'Exit mission' menu is active
         if (IO.AnalogIsUsed(AXIS_FOV))
@@ -1730,7 +1730,7 @@ void OTWDriverClass::RenderFrame()
 
     // 2002-02-15 ADDED BY S.G.
     // If the otwPlatform is NOT us, don't do its cockpit stuff since I'll never get in his seat
-    if (!otwPlatform or otwPlatform.get() not_eq SimDriver.GetPlayerAircraft())
+    if ( not otwPlatform or otwPlatform.get() not_eq SimDriver.GetPlayerAircraft())
     {
         okToDoCockpitStuff = FALSE;
     }
@@ -1772,7 +1772,7 @@ void OTWDriverClass::RenderFrame()
         float tmpVal, tmpVal2;//TJL 01/14/04 multi-engine
 
         // Check for massive hardware failure
-        if (!(mFaults  and 
+        if ( not (mFaults  and 
               mFaults->GetFault(FaultClass::cadc_fault)  and 
               mFaults->GetFault(FaultClass::ins_fault)  and 
               mFaults->GetFault(FaultClass::gps_fault)))
@@ -2119,12 +2119,12 @@ void OTWDriverClass::RenderFrame()
         cockpitFlightData.oilPressure = tmpVal;
         cockpitFlightData.oilPressure2 = tmpVal2;
 
-        //if ((gSharedMemPtr) and (!g_bEnableTrackIR)) // Retro 02/10/03
+        //if ((gSharedMemPtr) and ( not g_bEnableTrackIR)) // Retro 02/10/03
         if (gSharedMemPtr)
         {
-            //if (!mHelmetIsUR)
+            //if ( not mHelmetIsUR)
             // Retro 8Jan2004 - almost killed the shared mem for good, silly me :/
-            if ((!mHelmetIsUR) and (!g_bEnableTrackIR))
+            if (( not mHelmetIsUR) and ( not g_bEnableTrackIR))
             {
                 cockpitFlightData.headYaw = ((FlightData*)gSharedMemPtr)->headYaw;
                 cockpitFlightData.headPitch = ((FlightData*)gSharedMemPtr)->headPitch;
@@ -2259,7 +2259,7 @@ void OTWDriverClass::RenderFrame()
             {
                 // sfr: THIS IS EXTREMELY DANGEROUS CODE
                 // remove 2nd camera (should be mav camera) and insert ourself
-                //if (!F4IsBadReadPtr(FalconLocalSession->GetCameraEntity(1), sizeof(VuEntity))) // JB 010318 CTD
+                //if ( not F4IsBadReadPtr(FalconLocalSession->GetCameraEntity(1), sizeof(VuEntity))) // JB 010318 CTD
                 if (FalconLocalSession->CameraCount() > 1)
                 {
                     FalconLocalSession->RemoveCamera(FalconLocalSession->GetCameraEntity(1));
@@ -2335,7 +2335,7 @@ void OTWDriverClass::RenderFrame()
         OTWImage->SwapBuffers(false);
     }
 
-    //if(!SkipSwap){ OTWImage->SwapBuffers(false); }
+    //if( not SkipSwap){ OTWImage->SwapBuffers(false); }
     SkipSwap = false;
 
     // RED - If the camera changed, preload the scene objects
@@ -2507,7 +2507,7 @@ void OTWDriverClass::RenderFrame()
     {
         if ((otwPlatform.get() not_eq NULL) and otwPlatform->drawPointer)
         {
-            if (!otwPlatform->OnGround()) DrawExternalViewTarget();
+            if ( not otwPlatform->OnGround()) DrawExternalViewTarget();
         }
 
         if (g_bLensFlare) Draw2DLensFlare(renderer);
@@ -2636,7 +2636,7 @@ void OTWDriverClass::RenderFrame()
 
                 if (pCockpitManager->ShowRwr() and theRwr)
                 {
-                    if (!gDoCockpitHack)
+                    if ( not gDoCockpitHack)
                     {
                         renderer->StartDraw();
                         pCockpitManager->GetViewportBounds(&viewportBounds, BOUNDS_RWR);

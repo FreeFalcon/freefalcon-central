@@ -1519,7 +1519,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
 
 
     // sanity check since time can now go backwards!
-    if (!(typeData.flags & ANIM_NO_CLAMP))
+    if ( not (typeData.flags & ANIM_NO_CLAMP))
     {
         if (curFrame >= typeData.numTextures)
         {
@@ -1733,7 +1733,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
 
     // if( renderer->GetAlphaMode() )
     // {
-    if (!sGreenMode)  //JAM - FIXME
+    if ( not sGreenMode)  //JAM - FIXME
     {
         if (typeData.flags & USES_TREE_MATRIX)
             renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD_PERSPECTIVE);
@@ -1759,7 +1759,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
      renderer->context.RestoreState(STATE_ALPHA_TEXTURE);
      }
     */
-    if (!sGreenMode)  //JAM - FIXME
+    if ( not sGreenMode)  //JAM - FIXME
     {
         if (renderer->GetFilteringMode())
         {
@@ -2423,7 +2423,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
     renderer->context.RestoreState(STATE_ALPHA_GOURAUD);
     renderer->context.SetState(MPR_STA_ALPHA_OP_FUNCTION, MPR_TO_MODULATE); //JAM 18Oct03
 
-    if (!(typeData.flags & GROUND_GLOW))
+    if ( not (typeData.flags & GROUND_GLOW))
     {
         // transform the center point
         renderer->TransformPointToView(&position,  &center);
@@ -2465,7 +2465,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
         for (i = 1; i < typeData.numGlowVerts; i++)
         {
             // get 3rd point of triangle
-            if (!(i & 1) and (type == DRAW2D_SPARKS))
+            if ( not (i & 1) and (type == DRAW2D_SPARKS))
             {
                 float randradius;
 
@@ -2475,7 +2475,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
                 os.y = typeData.glowVerts[i].y * scale2d * randradius;
                 os.z = typeData.glowVerts[i].z * scale2d * randradius;
             }
-            else if (!(i & 1) and (typeData.flags & GLOW_RAND_POINTS))
+            else if ( not (i & 1) and (typeData.flags & GLOW_RAND_POINTS))
             {
                 float randradius;
 
@@ -2533,7 +2533,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
         for (i = 1; i < typeData.numGlowVerts; i++)
         {
             // get 3rd point of triangle
-            if (!(i & 1) and (typeData.flags & GLOW_RAND_POINTS))
+            if ( not (i & 1) and (typeData.flags & GLOW_RAND_POINTS))
             {
                 float randradius;
 
@@ -2773,7 +2773,7 @@ void Draw2DLensFlare(class RenderOTW *renderer)
     if (realWeather->InsideOvercast() or realWeather->UnderOvercast()) return;
 
     // is there a sun, if not return
-    if (!TheTimeOfDay.ThereIsASun()) return;
+    if ( not TheTimeOfDay.ThereIsASun()) return;
 
     // get the Look At vector and lighting vector
     renderer->GetAt(&av);
@@ -3741,7 +3741,7 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
     // setup rendering context
     // if( renderer->GetAlphaMode() )
     // {
-    if (!sGreenMode) //JAM - FIXME
+    if ( not sGreenMode) //JAM - FIXME
         renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD);
     else
         renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD);
@@ -3753,7 +3753,7 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
      doFivePoints = FALSE;
      }
     */
-    if (!sGreenMode)
+    if ( not sGreenMode)
     {
         if (renderer->GetFilteringMode())
         {
@@ -3852,7 +3852,7 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
             elementR = gExplodeScatterPoints[ curSFrame ][ i ].z * elementRbase +
                        elementRbase * 0.25f;
 
-            if (!doFivePoints)
+            if ( not doFivePoints)
             {
                 if (i == 0)
                 {

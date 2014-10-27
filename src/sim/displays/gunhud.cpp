@@ -35,7 +35,7 @@ void HudClass::DrawGuns(void)
 
     // 2001-04-09 ADDED  BY S.G. IF WE HAVE NO GUNS ONBOARD, DON'T DO GUNS DISPLAY STUFF
     // RV - Biker - AC without guns should also have a reticle and target location line
-    if (!ownship->Guns)
+    if ( not ownship->Guns)
     {
         //return;
         tmpMode = FireControlComputer::EEGS;
@@ -52,7 +52,7 @@ void HudClass::DrawGuns(void)
         sprintf(tmpStr, "%.0f", max(min(10000.0F, -targetData->rangedot * FTPSEC_TO_KNOTS), -10000.0F));
 
         //ShiAssert (strlen(tmpStr) < 24);
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
             DrawWindowString(13, tmpStr);
         else
             display->TextLeft(0.45F, -0.43F, tmpStr);
@@ -65,7 +65,7 @@ void HudClass::DrawGuns(void)
     else
         sprintf(tmpStr, "M  015");
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
         DrawWindowString(10, tmpStr);
     else
         display->TextLeft(0.45F, -0.36F, tmpStr);
@@ -106,15 +106,15 @@ void HudClass::DrawGuns(void)
         {
             if ((ownship->fireGun or ownship->GunFire) and ownship->Sms->MasterArm() not_eq SMSBaseClass::Safe)
             {
-                if (!HideFunnel and !SetHideTimer)
+                if ( not HideFunnel and !SetHideTimer)
                 {
                     HideFunnelTimer = SimLibElapsedTime + 150;
                     SetHideTimer = TRUE;
                 }
 
-                if (!ownship->OnGround())
+                if ( not ownship->OnGround())
                 {
-                    if (!HideFunnel)
+                    if ( not HideFunnel)
                     {
                         if (SimLibElapsedTime >= HideFunnelTimer)
                         {
@@ -158,7 +158,7 @@ void HudClass::DrawEEGS(void)
     if (targetPtr == NULL)
     {
         //MI this IS there in reality...
-        //if (!g_bRealisticAvionics) // JPO not real I don't think.
+        //if ( not g_bRealisticAvionics) // JPO not real I don't think.
         DrawMRGS();
     }
     else
@@ -309,7 +309,7 @@ void HudClass::DrawFunnel(void)
         //MI make it dissapearn
         if (g_bRealisticAvionics)
         {
-            if (!HideFunnel)
+            if ( not HideFunnel)
             {
                 display->Line(funnel1X[i], funnel1Y[i], funnel1X[i - 1], funnel1Y[i - 1]);
                 display->Line(funnel2X[i], funnel2Y[i], funnel2X[i - 1], funnel2Y[i - 1]);
@@ -333,7 +333,7 @@ void HudClass::DrawFunnel(void)
         if (g_bRealisticAvionics and !targetPtr)
         {
             //document shows that we get this even when the gun is fired for real.
-            if (!ownship->OnGround() /* and  (ownship->Sms->MasterArm() == SMSBaseClass::Sim)*/)
+            if ( not ownship->OnGround() /* and  (ownship->Sms->MasterArm() == SMSBaseClass::Sim)*/)
             {
                 if (ownship->fireGun and ownship->Sms->FEDS)
                     FlyFEDSBullets(TRUE);

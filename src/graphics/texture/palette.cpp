@@ -108,7 +108,7 @@ void Palette::UpdateMPR(DWORD *pal)
     ShiAssert(rc not_eq NULL);
     ShiAssert(pal);
 
-    if (!rc) // JB 010615 CTD
+    if ( not rc) // JB 010615 CTD
         return;
 
     // OW FIXME Error checking
@@ -477,7 +477,7 @@ void PaletteHandle::Load(UInt16 info, UInt16 PalBitsPerEntry, UInt16 index, UInt
 {
     ShiAssert(m_pIDDP and entries <= m_nNumEntries);
 
-    if (!m_pIDDP or !m_pPalData) return;
+    if ( not m_pIDDP or !m_pPalData) return;
 
     if ((DWORD *) PalBuffer not_eq m_pPalData)
         memcpy(m_pPalData, PalBuffer, sizeof(DWORD) * entries);
@@ -506,7 +506,7 @@ void PaletteHandle::AttachToTexture(TextureHandle *pTex)
 {
     ShiAssert(pTex);
 
-    if (!pTex) return;
+    if ( not pTex) return;
 
     std::vector<TextureHandle *>::iterator it = GetAttachedTextureIndex(pTex);
 
@@ -527,7 +527,7 @@ void PaletteHandle::DetachFromTexture(TextureHandle *pTex)
 {
     ShiAssert(pTex);
 
-    if (!pTex) return;
+    if ( not pTex) return;
 
     std::vector<TextureHandle *>::iterator it = GetAttachedTextureIndex(pTex);
     ShiAssert(it not_eq m_arrAttachedTextures.end()); // do not detach twice

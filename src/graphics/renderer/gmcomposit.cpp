@@ -180,7 +180,7 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
     BYTE *pDst = pBuf;
     ShiAssert(pDst);
 
-    if (!pDst) return;
+    if ( not pDst) return;
 
     const int nNoiseBase = 0x5;
 
@@ -297,7 +297,7 @@ void RenderGMComposite::SetBeam(Tpoint *from, Tpoint *at, Tpoint *center, float 
     // OW
     static RECT rcBlit = { 0, 0, GM_TEXTURE_SIZE, GM_TEXTURE_SIZE };
 
-    if (!DisplayOptions.bRender2Texture)
+    if ( not DisplayOptions.bRender2Texture)
     {
         // This whole blitting crap is slooow
 
@@ -317,7 +317,7 @@ void RenderGMComposite::SetBeam(Tpoint *from, Tpoint *at, Tpoint *center, float 
     ShiAssert(beamPercent <= 100);
     bool bRender = BackgroundGeneration(from, at, platformHdg, beamPercent, movingRight, Shaped);
 
-    if (!DisplayOptions.bRender2Texture)
+    if ( not DisplayOptions.bRender2Texture)
     {
         HRESULT hr;
 
@@ -345,7 +345,7 @@ void RenderGMComposite::DrawComposite(Tpoint *center, float platformHdg)
     ShiAssert(rTexHandle);
     ShiAssert(lTexHandle);
 
-    if (!DisplayOptions.bRender2Texture)
+    if ( not DisplayOptions.bRender2Texture)
     {
         radar.context.UnlockViewport();
         radar.context.SetViewportAbs(0, 0, m_pRenderTarget->targetXres(), m_pRenderTarget->targetYres());
@@ -486,7 +486,7 @@ void RenderGMComposite::DrawComposite(Tpoint *center, float platformHdg)
     // Put the beam back the way it was in case we need it again next time
     beam.Reverse();
 
-    if (!DisplayOptions.bRender2Texture)
+    if ( not DisplayOptions.bRender2Texture)
     {
         radar.context.UnlockViewport();
     }
@@ -500,7 +500,7 @@ void RenderGMComposite::SetRange(float newRange, int newLOD)
     ShiAssert(rTexHandle);
 
     // Update our child class
-    if (!radar.SetRange(newRange * GM_OVERSCAN_RNG, newLOD))
+    if ( not radar.SetRange(newRange * GM_OVERSCAN_RNG, newLOD))
     {
         // If it required no changes, stop here
         return;
@@ -586,7 +586,7 @@ bool RenderGMComposite::BackgroundGeneration(Tpoint *from, Tpoint *at, float pla
                 break;
 
             case Features:
-                if (!Shaped) break;
+                if ( not Shaped) break;
 
                 radar.StartDraw();
                 radar.DrawFeatures();
@@ -647,7 +647,7 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
     }
 
     // Render Noise overlay
-    if (!DisplayOptions.bRender2Texture)
+    if ( not DisplayOptions.bRender2Texture)
     {
         radar.context.UnlockViewport();
         radar.context.SetViewportAbs(0, 0, m_pRenderTarget->targetXres(), m_pRenderTarget->targetYres());
@@ -704,7 +704,7 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
 
     static RECT rcBlit = { 0, 0, GM_TEXTURE_SIZE, GM_TEXTURE_SIZE };
 
-    if (!DisplayOptions.bRender2Texture)
+    if ( not DisplayOptions.bRender2Texture)
     {
         // Save image
         HRESULT hr = m_pRenderBuffer->targetSurface()->Blt(&rcBlit, m_pRenderTarget->targetSurface(), &rcBlit, DDBLT_WAIT, NULL);
@@ -716,7 +716,7 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
     HRESULT hr = targetHandle->m_pDDS->Blt(NULL, pSrcBuffer->targetSurface(), NULL, DDBLT_WAIT, NULL);
     ShiAssert(SUCCEEDED(hr));
 
-    if (!DisplayOptions.bRender2Texture)
+    if ( not DisplayOptions.bRender2Texture)
     {
         radar.context.SetViewportAbs(0, 0, GM_TEXTURE_SIZE, GM_TEXTURE_SIZE);
         radar.context.LockViewport();
@@ -756,7 +756,7 @@ static int ClipToEdge(TwoDVertex **inArray, TwoDVertex **outArray, Edge *edge, i
     // Check the first vert
     wasOut = startedOut = edge->RightOf(v->x, v->y);
 
-    if (!startedOut)
+    if ( not startedOut)
     {
         outArray[num] = v;
         num++;
@@ -785,7 +785,7 @@ static int ClipToEdge(TwoDVertex **inArray, TwoDVertex **outArray, Edge *edge, i
             NumCverts++;
         }
 
-        if (!amOut)
+        if ( not amOut)
         {
             outArray[num] = v;
             num++;

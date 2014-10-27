@@ -155,5 +155,5 @@ void VDial::Exec(SimBaseClass* pOwnship)
         }
 
     }
-    while ((!found) and (i < mEndPoints));
+    while (( not found) and (i < mEndPoints));
 }

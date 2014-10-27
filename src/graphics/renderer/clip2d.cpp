@@ -147,7 +147,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
                 }
 
                 // If this vert isn't clipped, use it
-                if (!((*v)->clipFlag & CLIP_BOTTOM))
+                if ( not ((*v)->clipFlag & CLIP_BOTTOM))
                 {
                     *nextOut++ = *v;
                 }
@@ -183,7 +183,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
                 }
 
                 // If this vert isn't clipped, use it
-                if (!((*v)->clipFlag & CLIP_TOP))
+                if ( not ((*v)->clipFlag & CLIP_TOP))
                 {
                     *nextOut++ = *v;
                 }
@@ -219,7 +219,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
                 }
 
                 // If this vert isn't clipped, use it
-                if (!((*v)->clipFlag & CLIP_RIGHT))
+                if ( not ((*v)->clipFlag & CLIP_RIGHT))
                 {
                     *nextOut++ = *v;
                 }
@@ -255,7 +255,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
                 }
 
                 // If this vert isn't clipped, use it
-                if (!((*v)->clipFlag & CLIP_LEFT))
+                if ( not ((*v)->clipFlag & CLIP_LEFT))
                 {
                     *nextOut++ = *v;
                 }

@@ -171,7 +171,7 @@ static void tactical_start_engagement (long ID, short hittype, C_Base *ctrl)
  // tactical_enable_motion = 1; // !current_tactical_mission->is_flag_on (tf_start_paused);
 
  // Trigger the campaign to compress time and takeoff.
- if (!CompressCampaignUntilTakeoff(fl))
+ if ( not CompressCampaignUntilTakeoff(fl))
  return;
  }
  else
@@ -265,7 +265,7 @@ static void tactical_flight_plan_button(long, short hittype, C_Base *ctrl)
 
     flt = (Flight)vuDatabase->Find(gCurrentFlightID);
 
-    if (!flt)
+    if ( not flt)
     {
         return;
     }
@@ -274,7 +274,7 @@ static void tactical_flight_plan_button(long, short hittype, C_Base *ctrl)
 
     if (win)
     {
-        if (!(gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) & C_BIT_ENABLED))
+        if ( not (gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) & C_BIT_ENABLED))
         {
             gActiveFlightID = gSelectedFlightID;
 
@@ -319,7 +319,7 @@ static void tactical_briefing_button(long, short hittype, C_Base *ctrl)
 
     flight = (Flight) vuDatabase->Find(gSelectedFlightID);
 
-    if (!flight or !flight->IsFlight())
+    if ( not flight or !flight->IsFlight())
         return;
 
     // KCK: This should only need to be called upon selecting a flight -
@@ -377,7 +377,7 @@ void add_briefing_text (C_Window *win, int &x, int &y, char *str)
  {
  wrap = UI_WordWrap (win, str, win->Font_, wrap_w, &status);
 
- if (!status)
+ if ( not status)
  {
  retval = status;
  }
@@ -405,7 +405,7 @@ void add_briefing_text (C_Window *win, int &x, int &y, char *str)
  y += gFontList->GetHeight (win->Font_);
  }
 
- if (!status)
+ if ( not status)
  {
  retval = status;
  }

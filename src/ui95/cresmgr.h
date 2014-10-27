@@ -78,7 +78,7 @@ public:
 
     long Status()
     {
-        if (!Data_)
+        if ( not Data_)
         {
             if (Index_) return(0x01);
 

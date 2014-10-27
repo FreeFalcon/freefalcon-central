@@ -155,7 +155,7 @@ void Canvas3D::Point(float x1, float y1)
     float xres, yres;
 
     // no 3d context, do dice...
-    if (!r3d)
+    if ( not r3d)
         return;
 
     // Rotation and translate this point based on the current settings
@@ -189,7 +189,7 @@ void Canvas3D::Line(float x1, float y1, float x2, float y2)
     float   xres, yres;
 
     // no 3d context, do dice...
-    if (!r3d)
+    if ( not r3d)
         return;
 
     // Rotation and translate this point based on the current settings
@@ -292,7 +292,7 @@ void Canvas3D::Tri(float x1, float y1, float x2, float y2, float x3, float y3)
     float   xres, yres;
 
     // no 3d context, do dice...
-    if (!r3d)
+    if ( not r3d)
         return;
 
 
@@ -393,7 +393,7 @@ void Canvas3D::TextLeft(float x1, float y1, const char *string, int boxed)
     float xStart, yStart;
     int height;
 
-    if (!*string)
+    if ( not *string)
         return;
 
     r3d->ForceAlpha = ForceAlpha; // COBRA - RED -Forced Alpha
@@ -503,7 +503,7 @@ void Canvas3D::TextLeft(float x1, float y1, const char *string, int boxed)
 
 void Canvas3D::TextLeftVertical(float x1, float y1, const char *string, int boxed)
 {
-    if (!*string)
+    if ( not *string)
         return;
 
     y1 += r3d->ScreenTextHeight() / ((float)yRes) * canScaleY;
@@ -519,7 +519,7 @@ void Canvas3D::TextLeftVertical(float x1, float y1, const char *string, int boxe
 \***************************************************************************/
 void Canvas3D::TextRight(float x1, float y1, const char *string, int boxed)
 {
-    if (!*string)
+    if ( not *string)
         return;
 
     x1 -= r3d->ScreenTextWidth(string) / ((float)xRes) * 2.0F * canScaleX;
@@ -534,7 +534,7 @@ void Canvas3D::TextRight(float x1, float y1, const char *string, int boxed)
 \***************************************************************************/
 void Canvas3D::TextRightVertical(float x1, float y1, const char *string, int boxed)
 {
-    if (!*string)
+    if ( not *string)
         return;
 
     x1 -= r3d->ScreenTextWidth(string) / ((float)xRes) * 2.0F * canScaleX;
@@ -552,7 +552,7 @@ void Canvas3D::TextRightVertical(float x1, float y1, const char *string, int box
 \***************************************************************************/
 void Canvas3D::TextCenter(float x1, float y1, const char *string, int boxed)
 {
-    if (!*string)
+    if ( not *string)
         return;
 
     x1 -= r3d->ScreenTextWidth(string) / ((float)xRes) * canScaleX;
@@ -563,7 +563,7 @@ void Canvas3D::TextCenter(float x1, float y1, const char *string, int boxed)
 
 void Canvas3D::TextCenterVertical(float x1, float y1, const char *string, int boxed)
 {
-    if (!*string)
+    if ( not *string)
         return;
 
     x1 -= r3d->ScreenTextWidth(string) / ((float)xRes) * canScaleX;

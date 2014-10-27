@@ -56,7 +56,7 @@ int FalconCampMessage::Process(uchar autodisp)
 
     e = FindEntity(EntityId());
 
-    if (!e)
+    if ( not e)
         return 0;
 
     switch (dataBlock.message)

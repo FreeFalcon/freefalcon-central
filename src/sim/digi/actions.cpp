@@ -81,11 +81,11 @@ void DigitalBrain::Actions(void)
                 w = w->GetNextWP();
             }
 
-            if (!found)
+            if ( not found)
             {
                 char message[250];
                 sprintf(message, "Mission: %d doesn't have WPF_TARGET", flight->GetUnitMission());
-                F4Assert(!message);
+                F4Assert( not message);
             }
         }
     }
@@ -548,7 +548,7 @@ void DigitalBrain::AirbaseCheck()
 
     if (returnHomebase)
     {
-        if (!(moreFlags & SaidImADot))
+        if ( not (moreFlags & SaidImADot))
         {
             moreFlags  or_eq  SaidImADot;
             int flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
@@ -581,7 +581,7 @@ void DigitalBrain::AirbaseCheck()
         ConvertSimToGrid(&pos, &x, &y);
 
         // 2002-04-02 ADDED BY S.G. Since it's not done above anymore, do it here only if not done within 'SaidBingo' if statement above
-        if (!obj)
+        if ( not obj)
             obj = FindNearestFriendlyAirbase(self->GetTeam(), x, y);
 
         // END OF ADDED SECTION 2002-04-02

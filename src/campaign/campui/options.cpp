@@ -145,7 +145,7 @@ void AdjustForceRatios(void)
         // LoadCampaign, so these are fresh scenarios - Also, flights shouldn't be filled.
         u->SetLosses(0);
 
-        if (!u->IsFlight())
+        if ( not u->IsFlight())
         {
             UnitClassDataType *uc = u->GetUnitClassData();
 

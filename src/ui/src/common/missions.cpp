@@ -58,7 +58,7 @@ long GetFlightTime(Flight element)
 {
     WayPoint wp;
 
-    if (!element)
+    if ( not element)
         return(0);
 
     wp = element->GetCurrentUnitWP();
@@ -75,7 +75,7 @@ short GetFlightStatusID(Flight element)
     int found = 0;
     short ID = 0;
 
-    if (!element)
+    if ( not element)
         return(0);
 
     wp = element->GetCurrentUnitWP();
@@ -147,7 +147,7 @@ short GetFlightStatusID(Flight element)
             }
         }
 
-        if ((TheCampaign.Flags & CAMP_TACTICAL) and (!found))
+        if ((TheCampaign.Flags & CAMP_TACTICAL) and ( not found))
         {
             ID = _MIS_ENROUTE;
         }
@@ -195,7 +195,7 @@ void CheckCampaignFlyButton()
                 }
             }
 
-            if (!dontEnable)
+            if ( not dontEnable)
                 // END OF ADDED SECTION
                 Enabled = 1;
         }
@@ -369,13 +369,13 @@ void FindMissionInBriefing(long ID)
                             {
                                 cur->Item_->SetState(1);
 
-                                if (!StopLookingforMission)
+                                if ( not StopLookingforMission)
                                 {
                                     MissionSelectCB(cur->ID_, C_TYPE_LMOUSEUP, cur->Item_);
 
                                     // KLUDGE: Throw player in 1st slot
                                     // KCK: This should be done regardless of online status
-                                    // if(!gCommsMgr->Online())
+                                    // if( not gCommsMgr->Online())
                                     // { // Throw player in 1st slot
                                     RequestACSlot(flight, 0, static_cast<uchar>(flight->GetAdjustedAircraftSlot(0)), 0, 0, 1);
                                     // }
@@ -421,7 +421,7 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
     Package package;
     WayPoint wp;
 
-    if (!element->Final())
+    if ( not element->Final())
         return(NULL);
 
     if (TheCampaign.Flags & CAMP_TACTICAL)
@@ -437,18 +437,18 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
             return(NULL);
     }
 
-    if (!tree or !element or !element->GetUnitParent())
+    if ( not tree or !element or !element->GetUnitParent())
         return(NULL);
 
     // Create new record
     mission = new C_Mission;
 
-    if (!mission)
+    if ( not mission)
         return(NULL);
 
     win = tree->GetParent();
 
-    if (!win)
+    if ( not win)
         return(NULL);
 
     mission->Setup(element->GetCampID(), 0); // ID=element->CampID;
@@ -511,7 +511,7 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
     mission->SetUserNumber(C_STATE_2, 1000 - element->GetUnitPriority()); // Priority
     mission->SetUserNumber(C_STATE_3, element->GetUnitMission());
 
-    if (!element->Final() or element->GetUnitMission() == AMIS_ALERT)
+    if ( not element->Final() or element->GetUnitMission() == AMIS_ALERT)
     {
         mission->SetFlagBitOn(C_BIT_INVISIBLE);
     }
@@ -582,7 +582,7 @@ void RemoveMissionCB(TREELIST *item)
 {
     C_Mission *mis;
 
-    if (!item)
+    if ( not item)
         return;
 
     mis = (C_Mission*)item->Item_;

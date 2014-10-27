@@ -526,7 +526,7 @@ extern "C"
             {
                 replace_count = 1;
 
-                if (!OutputChar(ctxt.window[ current_position ], output_string, &ctxt))
+                if ( not OutputChar(ctxt.window[ current_position ], output_string, &ctxt))
                 {
                     return(0);
                 }
@@ -538,7 +538,7 @@ extern "C"
             }
             else
             {
-                if (!OutputPair(match_position,
+                if ( not OutputPair(match_position,
                                 match_length - (BREAK_EVEN + 1), output_string, &ctxt))
                 {
                     return(0);
@@ -581,7 +581,7 @@ extern "C"
 
         /* If the previous OutputChar or OutputPair call
            didn't write to the output, do so now */
-        if (!ctxt.inc_output_string)
+        if ( not ctxt.inc_output_string)
             FlushOutputBuffer(output_string, &ctxt);
 
         return(ctxt.compressed_size);

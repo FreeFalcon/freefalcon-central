@@ -46,7 +46,7 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
             VuSessionsIterator sit(FalconLocalGame);
             session = (FalconSessionEntity*) sit.GetFirst();
 
-            while (session and (!friendly or !inrange))
+            while (session and ( not friendly or !inrange))
             {
                 if (session->GetPlayerEntity())
                     player = (FalconEntity*)session->GetPlayerEntity();
@@ -71,7 +71,7 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
                 session = (FalconSessionEntity*) sit.GetNext();
             }
 
-            if (!friendly or !inrange)
+            if ( not friendly or !inrange)
             {
                 // MonoPrint("Dropping Chatter Message ID: %d  Friendly:%d  In Range:%d\n", radioMessage->dataBlock.message, friendly, inrange );
                 delete theEvent;
@@ -689,9 +689,9 @@ FalconEvent::FalconEvent(VU_MSG_TYPE type, HandlingThread threadID, VU_ID entity
     // because I'll explicitly set it to FALSE here if you're not included in the target.
     if (loopback)
     {
-        // if (!target and !FalconLocalGame)
+        // if ( not target and !FalconLocalGame)
         // RequestLoopback();
-        if (!target)
+        if ( not target)
             loopback = FALSE;
         else if (target->IsGroup() and !((VuGroupEntity*)target)->SessionInGroup(FalconLocalSession))
             loopback = FALSE;
@@ -822,7 +822,7 @@ VU_BOOL FalconMessageFilter::Test(VuMessage * event) const
 
         // This is a Vu Event. Compare vs filter bits
         // sfr: fixed shift adding -1
-        if (!processVu)
+        if ( not processVu)
         {
             retval = FALSE;
         }
@@ -831,7 +831,7 @@ VU_BOOL FalconMessageFilter::Test(VuMessage * event) const
 
         // This is a Vu Event. Compare vs filter bits
         // sfr: fixed shift adding -1
-        if (!
+        if ( not 
             ((1 << (event->Type() - 1)) & vuFilterBits)
            )
         {

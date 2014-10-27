@@ -59,7 +59,7 @@ BOOL FindMenuColorIndex(char* pColorName, int* pindex)
     BOOL found = FALSE;
     *pindex = 0;
 
-    while (!found and *pindex < MENU_TOTAL_COLORS)
+    while ( not found and *pindex < MENU_TOTAL_COLORS)
     {
         if (strcmpi(gMenuColorTable[*pindex].mName, pColorName) == 0)
         {
@@ -120,7 +120,7 @@ MenuManager::MenuManager(int width, int height)
 
     for (i = 0; i < mTotalRes; i++)
     {
-        if (!found and mpResDimensions[i].xRes == width and mpResDimensions[i].yRes == height)
+        if ( not found and mpResDimensions[i].xRes == width and mpResDimensions[i].yRes == height)
         {
             backDest.top = mpResDimensions[i].mDimensions.top;
             backDest.left = mpResDimensions[i].mDimensions.left;
@@ -129,7 +129,7 @@ MenuManager::MenuManager(int width, int height)
 
             found = TRUE;
         }
-        else if (!found  and 
+        else if ( not found  and 
                  mpResDimensions[i].xRes < width  and 
                  mpResDimensions[i].xRes > backWidth  and 
                  mpResDimensions[i].yRes < height  and 
@@ -184,7 +184,7 @@ void MenuManager::ReadDataFile(char* pfileName)
     quitFlag = (presult == NULL);
     plinePtr = plineBuffer;
 
-    while (!quitFlag)
+    while ( not quitFlag)
     {
 
         if (*plineBuffer == '#')
@@ -192,23 +192,23 @@ void MenuManager::ReadDataFile(char* pfileName)
 
             ptoken = FindToken(&plinePtr, pseparators);
 
-            if (!strcmpi(ptoken, TYPE_MENUMANGER_STR))
+            if ( not strcmpi(ptoken, TYPE_MENUMANGER_STR))
             {
                 ParseManagerInfo(plinePtr);
             }
-            else if (!strcmpi(ptoken, TYPE_MENU_STR))
+            else if ( not strcmpi(ptoken, TYPE_MENU_STR))
             {
                 ParseMenuInfo(plinePtr, &menuNumber, &pageNumber);
             }
-            else if (!strcmpi(ptoken, TYPE_PAGE_STR))
+            else if ( not strcmpi(ptoken, TYPE_PAGE_STR))
             {
                 ParsePageInfo(plinePtr, &menuNumber, &pageNumber, &itemNumber);
             }
-            else if (!strcmpi(ptoken, TYPE_ITEM_STR))
+            else if ( not strcmpi(ptoken, TYPE_ITEM_STR))
             {
                 ParseItemInfo(plinePtr, &menuNumber, &pageNumber, &itemNumber);
             }
-            else if (!strcmpi(ptoken, TYPE_RES_STR))
+            else if ( not strcmpi(ptoken, TYPE_RES_STR))
             {
                 ParseResInfo(plinePtr, --mResCount);
             }
@@ -318,7 +318,7 @@ void MenuManager::ParseMenuInfo(char* plinePtr, int* menuNumber, int* pageNumber
 
     for (i = 0; i < AiTotalExtent; i++)
     {
-        if (!strcmpi(paiExtent, gpAiExtentStr[i]))
+        if ( not strcmpi(paiExtent, gpAiExtentStr[i]))
         {
             pMenu->mWingExtent = i;;
         }
@@ -336,10 +336,10 @@ void MenuManager::ParseMenuInfo(char* plinePtr, int* menuNumber, int* pageNumber
     id = 0;
     found = FALSE;
 
-    while (!found and id <= SimRoughPositionUpdateMsg)
+    while ( not found and id <= SimRoughPositionUpdateMsg)
     {
 
-        if (!strcmpi(pmsgName, TheEventStrings[FalconMsgIdStr[id]]))
+        if ( not strcmpi(pmsgName, TheEventStrings[FalconMsgIdStr[id]]))
         {
             found = TRUE;
             pMenu->mMsgId = id + (VU_LAST_EVENT + 1);
@@ -512,7 +512,7 @@ void MenuManager::InitPage()
     // check for an AWACS in the sky
     mAWACSavail = false;
 
-    if (!g_bAWACSRequired) // Only check for AWACS available if user wants AWACS required...
+    if ( not g_bAWACSRequired) // Only check for AWACS available if user wants AWACS required...
         mAWACSavail = true;
 
     Unit nu, cf;
@@ -525,7 +525,7 @@ void MenuManager::InitPage()
         nu = (Unit) myit.GetNext();
 
         // 2002-03-07 MN of course only AWACS from our team - doh!
-        if (!cf->IsFlight() or cf->IsDead())
+        if ( not cf->IsFlight() or cf->IsDead())
             continue;
 
         if (cf->GetUnitMission() == AMIS_AWACS and cf->GetTeam() == SimDriver.GetPlayerEntity()->GetTeam())
@@ -542,7 +542,7 @@ void MenuManager::CheckItemConditions(BOOL poll)
     int condition;
 
     // COBRA - RED - CTD Fix
-    if (!SimDriver.GetPlayerEntity()) return;
+    if ( not SimDriver.GetPlayerEntity()) return;
 
     mIsPolling = poll;
     //Cobra this should update our menu list while open
@@ -622,7 +622,7 @@ void MenuManager::DisplayDraw(void)
         OTWDriver.renderer->StartDraw();
 
         // ASSO: disable the radio comms menu border //Cobra 10/31/04 TJL
-        if (!g_bDisableCommsBorder)
+        if ( not g_bDisableCommsBorder)
         {
             OTWDriver.renderer->SetViewport(-1.0, 1.0, 1.0, -1.0);
 
@@ -1030,7 +1030,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
                     }
 
                     // Pick what we say depending on our status
-                    if (!hasWeaps)
+                    if ( not hasWeaps)
                         SendCallToAWACS(playerAC, rcENDCAPARMS, FalconLocalGame);
                     else
                         SendCallToAWACS(playerAC, rcENDCAPFUEL, FalconLocalGame);
@@ -1129,7 +1129,7 @@ void MenuSendTanker(int enumId)
     {
         flight = (Flight)vuDatabase->Find(TankerId);
 
-        if (!flight->IsFlight())
+        if ( not flight->IsFlight())
         {
             flight = SimDriver.FindTanker(SimDriver.GetPlayerEntity());
         }

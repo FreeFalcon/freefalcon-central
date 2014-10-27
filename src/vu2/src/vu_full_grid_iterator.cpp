@@ -16,7 +16,7 @@ VuFullGridIterator::~VuFullGridIterator()
 
 VuEntity *VuFullGridIterator::GetFirst()
 {
-    if (!collection_)
+    if ( not collection_)
     {
         return NULL;
     }

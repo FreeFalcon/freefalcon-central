@@ -183,7 +183,7 @@ void OnSimMouseInput(HWND)
             else if ((ObjData[i].dwOfs == DIMOFS_BUTTON3) and (ObjData[i].dwData & 0x80))   // Retro 22Jan2004
             {
 #if 0
-                PlayerOptions.SetClickablePitMode(!PlayerOptions.GetClickablePitMode()); //Wombat778 1-22-04 moved to playeroptions.
+                PlayerOptions.SetClickablePitMode( not PlayerOptions.GetClickablePitMode()); //Wombat778 1-22-04 moved to playeroptions.
 #else
                 clickableMouseMode = !clickableMouseMode; // Retro 15Feb2004
 #endif
@@ -298,7 +298,7 @@ void OnSimMouseInput(HWND)
                 if (clickableMouseMode == false)
 #endif
                 {
-                    if (!oneDown) // Retro 22Jan2004 - the RMB can temporarily (when held down) force the 'opposite' mode
+                    if ( not oneDown) // Retro 22Jan2004 - the RMB can temporarily (when held down) force the 'opposite' mode
                     {
                         float MouseSensitivity = PlayerOptions.GetMouseLookSensitivity(); // Retro 16Jan2004
                         OTWDriver.ViewRelativePanTilt(dx * MouseSensitivity, dy * MouseSensitivity);
@@ -309,7 +309,7 @@ void OnSimMouseInput(HWND)
                 }
                 else // if we´re in clickable mode, move only the mousepointer
                 {
-                    if (!oneDown) // Retro 22Jan2004 - the RMB can temporarily (when held down) force the 'opposite' mode
+                    if ( not oneDown) // Retro 22Jan2004 - the RMB can temporarily (when held down) force the 'opposite' mode
                         UpdateCursorPosition(dx, dy);
                     else
                     {
@@ -399,7 +399,7 @@ void OnSimMouseInput(HWND)
                 }
             }
             // in most of the other views (external..)
-            else if ((!MouseMenuActive) and (PlayerOptions.GetMouseLook() == true))
+            else if (( not MouseMenuActive) and (PlayerOptions.GetMouseLook() == true))
             {
                 /************************************************************************/
                 // Retro 16Jan2004
@@ -473,7 +473,7 @@ void OnSimMouseInput(HWND)
                 /************************************************************************/
                 //Wombat778 10-09-2003 function only is true if in 3d cockpit
                 /************************************************************************/
-                if (!OTWDriver.ViewRelativePanTilt(dx * MouseSensitivity, dy * MouseSensitivity))
+                if ( not OTWDriver.ViewRelativePanTilt(dx * MouseSensitivity, dy * MouseSensitivity))
                 {
                     if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit)
                     {
@@ -651,7 +651,7 @@ void OnSimMouseInput(HWND)
 
                 //Wombat778 10-08-2003  The following function handles all of the crap below and makes mouselook smooth,
 
-                if (!OTWDriver.ViewRelativePanTilt(dx * g_fMouseLookSensitivity, dy * g_fMouseLookSensitivity)) //Wombat778 10-09-2003 function only is true if in 3d cockpit
+                if ( not OTWDriver.ViewRelativePanTilt(dx * g_fMouseLookSensitivity, dy * g_fMouseLookSensitivity)) //Wombat778 10-09-2003 function only is true if in 3d cockpit
                 {
                     //Retain old method for the 2d cockpit and external views because eyepan/eyetilt doesnt do anything in those views
 

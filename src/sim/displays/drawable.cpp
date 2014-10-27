@@ -65,7 +65,7 @@ unsigned int DrawableClass::GetMfdColor(MfdColor type)
     ShiAssert(GetIntensity() not_eq 0  and 
               GetIntensity() not_eq 0xCCCCCCCC); // we shouldn't ever switch off completely.
 
-    if (!g_bEnableColorMfd or greenMode)
+    if ( not g_bEnableColorMfd or greenMode)
         type = MFD_DEFAULT;
 
     if (g_bMFDHighContrast)

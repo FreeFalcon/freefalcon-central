@@ -122,7 +122,7 @@ void InitKeyDescrips(void)
 
     while (default_desc[i].scancode)
     {
-        if (!KeyDescrips[default_desc[i].scancode])
+        if ( not KeyDescrips[default_desc[i].scancode])
         {
             temp = new char[KEY_DESCRIP_LEN];
             strncpy(temp, gStringMgr->GetString(default_desc[i].def_ID), KEY_DESCRIP_LEN);

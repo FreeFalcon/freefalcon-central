@@ -30,7 +30,7 @@ void C_Resmgr::ConvertToScreen()
     WORD *color = NULL;
     long count = 0;
 
-    if (!Data_ or !Index_)
+    if ( not Data_ or !Index_)
         return;
 
     if (reds == 10 and greens == 5 and !blues)
@@ -142,10 +142,10 @@ void C_Resmgr::Cleanup()
 
 void C_Resmgr::AddIndex(long ID, IMAGE_RSC *resheader)
 {
-    if (!resheader or Type_ == _RSC_MULTIPLE_)
+    if ( not resheader or Type_ == _RSC_MULTIPLE_)
         return;
 
-    if (!Index_)
+    if ( not Index_)
     {
         Index_ = new C_Hash;
         Index_->Setup(1);
@@ -188,7 +188,7 @@ void C_Resmgr::LoadIndex()
 
     fp = OpenResFile(name_, "idx", "rb");
 
-    if (!fp)
+    if ( not fp)
     {
         MonoPrint("Error opening index file (%s)\n", buffer);
         return;
@@ -196,7 +196,7 @@ void C_Resmgr::LoadIndex()
 
     fread(&size, sizeof(long), 1, fp);
 
-    if (!size)
+    if ( not size)
     {
         fclose(fp);
         return;
@@ -221,7 +221,7 @@ void C_Resmgr::LoadIndex()
     Idx_ = new char[size];
 #endif
 
-    if (!Idx_)
+    if ( not Idx_)
     {
         fclose(fp);
         Index_->Cleanup();
@@ -381,7 +381,7 @@ void C_Resmgr::LoadData()
     FILE *fp;
     char buffer[MAX_PATH];
 
-    if (!Index_)
+    if ( not Index_)
         return;
 
     if (Data_)
@@ -392,7 +392,7 @@ void C_Resmgr::LoadData()
 
     fp = OpenResFile(name_, "rsc", "rb");
 
-    if (!fp)
+    if ( not fp)
     {
         MonoPrint("Error: Can't open Datafile (%s)\n", buffer);
         return;
@@ -400,7 +400,7 @@ void C_Resmgr::LoadData()
 
     fread(&size, sizeof(long), 1, fp);
 
-    if (!size)
+    if ( not size)
     {
         fclose(fp);
         return;

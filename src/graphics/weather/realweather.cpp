@@ -136,7 +136,7 @@ inline void RealWeather::DrawStratus2(Tpoint *position, int txtIndex)
     if (UnderOvercast()) return;
 
     // if stratus invisible, do not draw it
-    if (!(Stratus2Color & 0xff000000) or ShadingFactor < 2.0f) return;
+    if ( not (Stratus2Color & 0xff000000) or ShadingFactor < 2.0f) return;
 
     // COBRA - DX - Setup the Squares in the 2D DX Engine for clouds
     TheDXEngine.DX2D_SetupSquareCx(1.0f, 1.0f);
@@ -325,7 +325,7 @@ void RealWeather::Setup(ObjectDisplayList* cumulusList, ObjectDisplayList* strat
         return;
     }
 
-    if (!DisplayOptions.bZBuffering)
+    if ( not DisplayOptions.bZBuffering)
     {
         int i;
 
@@ -420,14 +420,14 @@ void RealWeather::RefreshWeather(RenderOTW *Renderer)
     //REPORT_VALUE("Shading Factor :", (ShadingFactor));
     UpdateCells();
 
-    if (!DisplayOptions.bZBuffering)
+    if ( not DisplayOptions.bZBuffering)
         UpdateDrawables();
 
     // Wather quality moving on every second
     if (TheTimeManager.GetClockTime() - WeatherQualityElapsed >= 1000)
     {
         // if Local game, update data
-        if (!vuLocalGame or vuLocalGame->IsLocal())
+        if ( not vuLocalGame or vuLocalGame->IsLocal())
         {
             if (WeatherQualityStep) WeatherQualityStep--;
             else UpdateWeatherQuality();
@@ -556,7 +556,7 @@ void RealWeather::GenerateClouds(bool bRandom)
     stratusRadius = 55000.f;
 
     // TODO - RED - Setup something for MP gaming
-    if (!bRandom)
+    if ( not bRandom)
     {
         FILE *fp;
         char fname[] = "campaign\\save\\mpwcells.bin";
@@ -657,7 +657,7 @@ void RealWeather::UpdateCondition(void)
 
 void RealWeather::UpdateCells()
 {
-    if (!renderer) return;
+    if ( not renderer) return;
 
 
     //START_PROFILE("Clouds");
@@ -758,7 +758,7 @@ void RealWeather::UpdateDrawables()
 {
     bool DrawTheRain = false;
 
-    if (!renderer) return;
+    if ( not renderer) return;
 
     //START_PROFILE("Clouds");
 
@@ -966,9 +966,9 @@ void RealWeather::UpdateDrawables()
                     clipFlag[i]  or_eq  GetVerticalClipFlags(vp[i].y, vp[i].z);
                 }
 
-                weatherCellArray[row][col].onScreen = (!clipFlag[0] or !clipFlag[1] or !clipFlag[2] or !clipFlag[3]);
+                weatherCellArray[row][col].onScreen = ( not clipFlag[0] or !clipFlag[1] or !clipFlag[2] or !clipFlag[3]);
 
-                if (!weatherCellArray[row][col].onScreen
+                if ( not weatherCellArray[row][col].onScreen
                     and row >= shadowCell + 1 and row < numCells - shadowCell - 1
                     and col >= shadowCell + 1 and col < numCells - shadowCell - 1)
                 {
@@ -1006,7 +1006,7 @@ void RealWeather::Draw()
         // just before rain, lightning
         if (WeatherQuality >= 0.1f) // was 0.65
         {
-            if (!didOnce)
+            if ( not didOnce)
             {
                 if ((SimLibElapsedTime - startMS) > intervalMS) didOnce = TRUE;
                 else return;
@@ -1048,7 +1048,7 @@ void RealWeather::DrawRain()
             rainZ = PRANDFloat() * 50.f;
         }
 
-        if (!(rainX > -40 and rainX < 40
+        if ( not (rainX > -40 and rainX < 40
               and   rainY > -26 and rainY < 26
               and   rainZ > -40 and rainZ < 40))
         {
@@ -1117,7 +1117,7 @@ void RealWeather::DoLightning()
     Tpoint pv, p0, p1, p2, p3, lp, lp0, lp2;
     float dx, dy, dz, adj, yoff, zoff, angle, sR, cR, distance;
 
-    if (!drawLightning)
+    if ( not drawLightning)
     {
         intervalMS = max(((rand() % 30) + 20) * SEC_TO_MSEC, 50 * SEC_TO_MSEC);
 
@@ -1311,7 +1311,7 @@ void RealWeather::Cleanup()
 {
     int i;
 
-    if (!DisplayOptions.bZBuffering)
+    if ( not DisplayOptions.bZBuffering)
     {
         for (i = 0; i < MAX_NUM_DRAWABLES; i++)
         {
@@ -1378,7 +1378,7 @@ bool RealWeather::ReadWeather(void)
 
     sprintf(file, "C:\\metar.txt");
 
-    if (!(fp = fopen(file, "rt")))
+    if ( not (fp = fopen(file, "rt")))
         return FALSE;
 
     //Count
@@ -1665,7 +1665,7 @@ bool RealWeather::ReadWeather(void)
     //This reads a file from weather folder (manual weather)
     /*sprintf(file,"%s\\weather\\RKSS.txt",FalconTerrainDataDir);
 
-    if(!(fp=fopen(file,"rt")))
+    if( not (fp=fopen(file,"rt")))
      {
      metar = NULL;
      return FALSE;

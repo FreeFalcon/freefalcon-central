@@ -48,7 +48,7 @@ void DigitalBrain::SimpleTrack(SimpleTrackMode mode, float value)
     float ry;
     float rz;
 
-    if (!self->OnGround())
+    if ( not self->OnGround())
     {
         if (mode == SimpleTrackDist)
         {
@@ -256,7 +256,7 @@ float DigitalBrain::SimpleTrackAzimuth(float rx, float ry, float)
 
 
     // Clamp/limit for in air
-    if (!self->OnGround())
+    if ( not self->OnGround())
     {
         // Calculate azimuth error
         azErr = (float) atan2(ry, rx);
@@ -288,7 +288,7 @@ float DigitalBrain::SimpleTrackAzimuth(float rx, float ry, float)
             !groundAvoidNeeded and // We're not trying to avoid the ground
             (curMode == WingyMode or curMode == WaypointMode or curMode == RTBMode) and  // Following waypoint or lead
             agDoctrine == AGD_NONE and // Not doing any A2G attack (since it's in FollowWaypoints during that time)
-            (!flightLead or !flightLead->IsSetFlag(MOTION_OWNSHIP)))   // The lead isn't the player (we must follow him whatever he does)
+            ( not flightLead or !flightLead->IsSetFlag(MOTION_OWNSHIP)))   // The lead isn't the player (we must follow him whatever he does)
         {
 
             azErr /= ((180.0f) * DTR);
@@ -354,7 +354,7 @@ float DigitalBrain::SimpleTrackElevation(float zft, float scale)
     if (g_bPitchLimiterForAI and !groundAvoidNeeded  and 
         (curMode == WingyMode or curMode == WaypointMode or curMode == RTBMode)  and 
         /*agDoctrine == AGD_NONE and *///Cobra removed this // Not doing any A2G attack (since it's in FollowWaypoints during that time)
-        (!flightLead or !flightLead->IsSetFlag(MOTION_OWNSHIP) or ((AircraftClass *)flightLead)->autopilotType == AircraftClass::CombatAP) and // The lead isn't the player (we must follow him whatever he does)
+        ( not flightLead or !flightLead->IsSetFlag(MOTION_OWNSHIP) or ((AircraftClass *)flightLead)->autopilotType == AircraftClass::CombatAP) and // The lead isn't the player (we must follow him whatever he does)
         altErr > 0.0f and self->Pitch() > 0.0f)
     {
         float maxPitch = min(MAX_AF_PITCH, aeroDataset[self->af->VehicleIndex()].inputData[AeroDataSet::ThetaMax]);

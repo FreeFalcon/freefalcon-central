@@ -738,7 +738,7 @@ VU_ID FindAircraftTarget(AircraftClass* theAC)
     // 2000-11-15 ADDED BY S.G. SO PADLOCKED OBJECT CAN BE TARGETED FIRST
     if (OTWDriver.mpPadlockPriorityObject)
     {
-        if (!OTWDriver.mpPadlockPriorityObject->IsMissile())
+        if ( not OTWDriver.mpPadlockPriorityObject->IsMissile())
         {
             tgtId = OTWDriver.mpPadlockPriorityObject->Id();
 
@@ -773,7 +773,7 @@ VU_ID FindAircraftTarget(AircraftClass* theAC)
     //Cobra need to separate out HTS so it still targets after all 88's fired
     HarmTargetingPod *theHtS = (HarmTargetingPod*)FindSensor(SimDriver.GetPlayerAircraft(), SensorClass::HTS);
 
-    if (!mslDisplay and theHtS)
+    if ( not mslDisplay and theHtS)
     {
         tgtId = theHtS->FindIDUnderCursor();
 

@@ -41,7 +41,7 @@ void CTimeOfDay::Setup(char *dataPath)
     char starfile[_MAX_PATH];
     FILE *in;
 
-    ShiAssert(!IsReady());
+    ShiAssert( not IsReady());
 
     // Construct the input filename we need
     if (skycolor)
@@ -49,11 +49,11 @@ void CTimeOfDay::Setup(char *dataPath)
 
     sprintf(starfile, "%s\\star.dat", dataPath);
 
-    if (!skycolor or !(in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
+    if ( not skycolor or !(in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
     {
         sprintf(todfile, "%s\\tod\\tod.lst.default", dataPath);
 
-        if (!(in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
+        if ( not (in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
             sprintf(todfile, "%s\\tod.lst", dataPath);
         else
             fclose(in);
@@ -76,7 +76,7 @@ void CTimeOfDay::Setup(char *dataPath)
     TimeOfDayStruct temptod;
     TotalTimeOfDay = ReadTODFile(in, &temptod, 1);
 
-    if (!TotalTimeOfDay)
+    if ( not TotalTimeOfDay)
     {
         fclose(in);
         char string[256];
@@ -86,7 +86,7 @@ void CTimeOfDay::Setup(char *dataPath)
 
     TimeOfDay = new TimeOfDayStruct[TotalTimeOfDay];
 
-    if (!TimeOfDay)
+    if ( not TimeOfDay)
     {
         fclose(in);
         ShiError("Failed TOD memory allocation");
@@ -148,10 +148,10 @@ void CTimeOfDay::Setup(char *dataPath)
 
         if (j >= TotalTimeOfDay) j = 0;
 
-        if (!(TimeOfDay[j].Flag & GL_TIME_OF_DAY_USE_SUN))
+        if ( not (TimeOfDay[j].Flag & GL_TIME_OF_DAY_USE_SUN))
             TimeOfDay[i].Flag and_eq compl GL_TIME_OF_DAY_USE_SUN;
 
-        if (!(TimeOfDay[j].Flag & GL_TIME_OF_DAY_USE_MOON))
+        if ( not (TimeOfDay[j].Flag & GL_TIME_OF_DAY_USE_MOON))
             TimeOfDay[i].Flag and_eq compl GL_TIME_OF_DAY_USE_MOON;
 
         int k = 0;
@@ -637,7 +637,7 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
 
             ++total;
 
-            if (!countflag)
+            if ( not countflag)
                 ++tod;
 
             fscanf(in, "%ld:%ld:%ld", &ivar1, &ivar2, &ivar3);

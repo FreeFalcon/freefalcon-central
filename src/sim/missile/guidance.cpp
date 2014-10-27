@@ -22,12 +22,12 @@ extern bool g_bActivateMissileDebug;
 void MissileClass::CheckGuidePhase(void)
 {
 
-    //if (!targetPtr) return; //Cobra 10/31/04 TJL
+    //if ( not targetPtr) return; //Cobra 10/31/04 TJL
     //Get Laser Position and store in targetX etc.
 
     ShiAssert(inputData);
 
-    if (!inputData)
+    if ( not inputData)
         return;
 
     float dxi = 0.0F, dyi = 0.0F, dzi = 0.0F;
@@ -58,7 +58,7 @@ void MissileClass::CheckGuidePhase(void)
                     SetTarget(tgt);
 
                 // no FCC target, track laser point
-                if (!tgt)
+                if ( not tgt)
                 {
                     // need FOV code
                     targetX = theFCC->groundDesignateX;
@@ -86,7 +86,7 @@ void MissileClass::CheckGuidePhase(void)
         //if(tgt not_eq targetPtr)
         // SetTarget(tgt);
         //
-        //if(!tgt)
+        //if( not tgt)
         // return;
         //}
     }
@@ -101,7 +101,7 @@ void MissileClass::CheckGuidePhase(void)
     range = (float)sqrt(dxi * dxi + dyi * dyi + dzi * dzi);
 
     //boost
-    if (!guidencephase)
+    if ( not guidencephase)
     {
         if (runTime > inputData->boostguidesec)
             guidencephase = 1;
@@ -147,7 +147,7 @@ void MissileClass::CommandGuide(void)
 
     ShiAssert(inputData);
 
-    if (!inputData)
+    if ( not inputData)
         return;
 
     CheckGuidePhase();
@@ -199,7 +199,7 @@ void MissileClass::CommandGuide(void)
     }
 
     //boost
-    if (!guidencephase)
+    if ( not guidencephase)
     {
         SensorPrecision = inputData->boostguideSensorPrecision;
         LeadA = inputData->boostguideLead;
@@ -281,7 +281,7 @@ void MissileClass::CommandGuide(void)
 
                 float error = (float)sin(SensorPrecision * DTR) * range;
 
-                if (!g_bNewSensorPrecision)
+                if ( not g_bNewSensorPrecision)
                 {
                     float var = ((-error / 2) + (error * ((float)rand() / (float)RAND_MAX)));
                     targetDX += var;
@@ -442,7 +442,7 @@ void MissileClass::CommandGuide(void)
             if (flags & SensorLostLock)
                 strcat(tmpStr, "OTgtL ");
 
-            if (!guidencephase)
+            if ( not guidencephase)
                 sprintf(label, "B %4.1f %5.0f", vcas, -z);
 
             if (guidencephase == 1)

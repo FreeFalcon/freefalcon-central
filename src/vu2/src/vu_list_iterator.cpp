@@ -27,7 +27,7 @@ void VuListIterator::RemoveCurrent()
 
 VuEntity *VuListIterator::GetFirst()
 {
-    if (!collection_)
+    if ( not collection_)
     {
         return NULL;
     }
@@ -87,7 +87,7 @@ VuEntity *VuListIterator::GetFirst(VuFilter* filter)
     {
         return NULL;
     }
-    else if ((!filter) or filter->Test(e))
+    else if (( not filter) or filter->Test(e))
     {
         return e;
     }
@@ -105,7 +105,7 @@ VuEntity *VuListIterator::GetNext(VuFilter *filter)
     {
         e = GetNext();
 
-        if (!filter or filter->Test(e))
+        if ( not filter or filter->Test(e))
         {
             return e;
         }

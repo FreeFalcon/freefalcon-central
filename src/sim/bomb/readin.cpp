@@ -97,7 +97,7 @@ void ReadAllBombData(void)
     mslList = SimlibFileClass::Open(fileName, SIMLIB_READ);
 
     //   F4Assert(mslList);
-    if (!mslList) // MLR 2003-11-11 Prevent CTD if files are missing.
+    if ( not mslList) // MLR 2003-11-11 Prevent CTD if files are missing.
         return;
 
     numBombDatasets = atoi(mslList->GetNext());
@@ -186,7 +186,7 @@ BombAuxData *BombAuxAeroRead(SimlibFileClass* inputFile)
 
     if (ParseSimlibFile(auxBombData, AuxBombDataDesc, inputFile) == false)
     {
-        //     F4Assert(!"Bad parsing of aux aero data");
+        //     F4Assert( not "Bad parsing of aux aero data");
     }
 
     return (auxBombData);

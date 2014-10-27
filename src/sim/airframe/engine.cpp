@@ -104,7 +104,7 @@ void AirframeClass::EngineModel(float dt)
             GeneratorOn(GenEpu);
         }
         // auto mode
-        else if (!GeneratorRunning(GenMain) and !GeneratorRunning(GenStdby) and IsSet(InAir))
+        else if ( not GeneratorRunning(GenMain) and !GeneratorRunning(GenStdby) and IsSet(InAir))
         {
             GeneratorOn(GenEpu);
         }
@@ -253,7 +253,7 @@ void AirframeClass::EngineModel(float dt)
             platform->mFaults->ClearFault(FaultClass::eng_fault, FaultClass::fl_out);
         }
     }
-    else if (!IsSet(EngineOff))
+    else if ( not IsSet(EngineOff))
     {
         /*------------------*/
         /* get gross thrust */
@@ -586,7 +586,7 @@ void AirframeClass::EngineModel(float dt)
                 fuelFlowSS *= 0.75F;
             }
 
-            if (!platform->IsSetFlag(MOTION_OWNSHIP))
+            if ( not platform->IsSetFlag(MOTION_OWNSHIP))
             {
                 fuelFlowSS *= 0.75F;
             }
@@ -602,7 +602,7 @@ void AirframeClass::EngineModel(float dt)
             if (fuelFlowSS < auxaeroData->minFuelFlow)
                 fuelFlowSS = auxaeroData->minFuelFlow;//me123 from 1000
 
-            if (!IsSet(NoFuelBurn))
+            if ( not IsSet(NoFuelBurn))
             {
                 // JPO - fuel is now burnt and transferred.
                 BurnFuel(fuelFlowSS * dt / 3600.0F);
@@ -717,7 +717,7 @@ void AirframeClass::EngineModel(float dt)
 
             if (g_bUseAnalogIdleCutoff)
             {
-                if (!IO.IsAxisCutOff(AXIS_THROTTLE) and (rpm > 0.20F))
+                if ( not IO.IsAxisCutOff(AXIS_THROTTLE) and (rpm > 0.20F))
                     ClearFlag(ThrottleCheck);
             }
             else
@@ -732,7 +732,7 @@ void AirframeClass::EngineModel(float dt)
         {
             if (g_bUseAnalogIdleCutoff)
             {
-                if (!IO.IsAxisCutOff(AXIS_THROTTLE))
+                if ( not IO.IsAxisCutOff(AXIS_THROTTLE))
                     ClearFlag(EngineOff);
             }
             else
@@ -810,8 +810,8 @@ void AirframeClass::EngineModel(float dt)
 
     }
 
-    ShiAssert(!_isnan(platform->platformAngles.cosalp));
-    ShiAssert(!_isnan(platform->platformAngles.sinalp));
+    ShiAssert( not _isnan(platform->platformAngles.cosalp));
+    ShiAssert( not _isnan(platform->platformAngles.sinalp));
 
     /*------------------*/
     /* wind axis accels */
@@ -861,7 +861,7 @@ void AirframeClass::MultiEngineModel(float dt)
             GeneratorOn(GenEpu);
         }
         // auto mode
-        else if (!GeneratorRunning(GenMain) and !GeneratorRunning(GenStdby) and IsSet(InAir))
+        else if ( not GeneratorRunning(GenMain) and !GeneratorRunning(GenStdby) and IsSet(InAir))
         {
             GeneratorOn(GenEpu);
         }
@@ -1017,7 +1017,7 @@ void AirframeClass::MultiEngineModel(float dt)
 
     //*****************************************************
     //#7 More shut down conditions
-    else if (!IsSet(EngineOff))
+    else if ( not IsSet(EngineOff))
 
     {
         //7.1 Engine flame out, shut down
@@ -1378,7 +1378,7 @@ void AirframeClass::MultiEngineModel(float dt)
          fuelFlow = fuelFlowTotal;
          */
 
-        if (!IsSet(NoFuelBurn))
+        if ( not IsSet(NoFuelBurn))
         {
             // JPO - fuel is now burnt and transferred.
             //Using combined total between engines
@@ -1523,7 +1523,7 @@ void AirframeClass::MultiEngineModel(float dt)
     */
     //*****************************************************
     //#7 More shut down conditions
-    else if (!IsSet(EngineOff2))
+    else if ( not IsSet(EngineOff2))
 
     {
         //7.1 Engine flame out, shut down
@@ -1879,7 +1879,7 @@ void AirframeClass::MultiEngineModel(float dt)
              fuelFlow = fuelFlowTotal;
              */
 
-            if (!IsSet(NoFuelBurn))
+            if ( not IsSet(NoFuelBurn))
             {
                 // JPO - fuel is now burnt and transferred.
                 //Using combined total between engines
@@ -2078,8 +2078,8 @@ void AirframeClass::MultiEngineModel(float dt)
 
     }
 
-    ShiAssert(!_isnan(platform->platformAngles.cosalp));
-    ShiAssert(!_isnan(platform->platformAngles.sinalp));
+    ShiAssert( not _isnan(platform->platformAngles.cosalp));
+    ShiAssert( not _isnan(platform->platformAngles.sinalp));
 
     /*------------------*/
     /* wind axis accels */
@@ -2264,7 +2264,7 @@ void AirframeClass::AllocateFuel(float totalfuel)
 // what fuel do we have available (resevoirs only)
 float AirframeClass::AvailableFuel()
 {
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
         return externalFuel + fuel;
     else if (IsEngineFlag(MasterFuelOff))
         return 0.0f;
@@ -2375,11 +2375,11 @@ void AirframeClass::FuelTransfer(float dt)
         }
     }
 
-    if (!platform->isDigital)
+    if ( not platform->isDigital)
     {
         if (m_tanks[TANK_FWDRES] < auxaeroData->fuelMinFwd)
         {
-            if (!g_bRealisticAvionics)
+            if ( not g_bRealisticAvionics)
                 platform->mFaults->SetFault(fwd_fuel_low_fault);
             else
                 platform->mFaults->SetCaution(fwd_fuel_low_fault);
@@ -2389,7 +2389,7 @@ void AirframeClass::FuelTransfer(float dt)
 
         if (m_tanks[TANK_AFTRES] < auxaeroData->fuelMinAft)
         {
-            if (!g_bRealisticAvionics)
+            if ( not g_bRealisticAvionics)
                 //platform->mFaults->SetFault(fwd_fuel_low_fault); //MI should probably be AFT tank
                 platform->mFaults->SetFault(aft_fuel_low_fault);
             else
@@ -2445,7 +2445,7 @@ void AirframeClass::RecalculateFuel()
 // fuel dial stuff
 void AirframeClass::GetFuel(float *fwdp, float *aftp, float *total)
 {
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         *fwdp = fuel;
         *aftp = externalFuel;
@@ -2521,7 +2521,7 @@ void AirframeClass::IncFuelSwitch()
 
     if (fuelSwitch == FS_TEST)
     {
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             platform->mFaults->SetFault(fwd_fuel_low_fault);
             platform->mFaults->SetFault(aft_fuel_low_fault);
@@ -2543,7 +2543,7 @@ void AirframeClass::DecFuelSwitch()
 
     if (fuelSwitch == FS_TEST)
     {
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             platform->mFaults->SetFault(fwd_fuel_low_fault);
             platform->mFaults->SetFault(aft_fuel_low_fault);
@@ -2629,7 +2629,7 @@ int AirframeClass::CheckHome(void)
             float distanceToSta = (float)sqrt(deltaX * deltaX + deltaY * deltaY);
             float fuelConsumed;
 
-            if (!IsSet(InAir))
+            if ( not IsSet(InAir))
             {
                 // JPO - when we're on the runway or something.
                 fuelConsumed = 0;

@@ -76,7 +76,7 @@ void AirframeClass::Aerodynamics(void)
 
     ShiAssert(aeroData);
 
-    if (!aeroData)
+    if ( not aeroData)
         return;
 
     // make the tef's and lef's useful
@@ -231,10 +231,10 @@ void AirframeClass::Aerodynamics(void)
                    (cd2 - cd1) * platform->platformAngles.sinalp) * 0.25F * (1 + tefFactor * auxaeroData->CDtefFactor);
     }
 
-    F4Assert(!_isnan(cnalpha));
+    F4Assert( not _isnan(cnalpha));
 
-    //F4Assert (!IsSet(Trimming) and cnalpha not_eq 0.0F);
-    //F4Assert (!IsSet(Trimming) and clalpha not_eq 0.0F);
+    //F4Assert ( not IsSet(Trimming) and cnalpha not_eq 0.0F);
+    //F4Assert ( not IsSet(Trimming) and clalpha not_eq 0.0F);
 
     /*------------------*/
     /* lift curve slope */
@@ -264,7 +264,7 @@ void AirframeClass::Aerodynamics(void)
     //Ground Effect
     BIG_SCALAR pz = platform->ZPos();
 
-    if (!IsSet(IsDigital) and pz > -groundZ - 200.0F)
+    if ( not IsSet(IsDigital) and pz > -groundZ - 200.0F)
     {
         float span, factor;
 
@@ -370,10 +370,10 @@ void AirframeClass::Aerodynamics(void)
     zaero = -lift * platform->platformAngles.cosalp -
             drag * platform->platformAngles.sinalp;
 
-    ShiAssert(!_isnan(platform->platformAngles.sinalp));
-    ShiAssert(!_isnan(platform->platformAngles.cosalp));
-    ShiAssert(!_isnan(xaero));
-    ShiAssert(!_isnan(zaero));
+    ShiAssert( not _isnan(platform->platformAngles.sinalp));
+    ShiAssert( not _isnan(platform->platformAngles.cosalp));
+    ShiAssert( not _isnan(xaero));
+    ShiAssert( not _isnan(zaero));
 
     /*-----------------------*/
     /* stability axis accels */

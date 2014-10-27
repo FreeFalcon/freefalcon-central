@@ -250,7 +250,7 @@ static void SpinViewCB(long ID, short hittype, C_Base *control)
     switch (ID)
     {
         case LEFT_SPIN:
-            if (!((C_Button*)control)->GetState())
+            if ( not ((C_Button*)control)->GetState())
             {
                 Recon.Direction = 2;
                 ((C_Button*)control)->SetState(1);
@@ -274,7 +274,7 @@ static void SpinViewCB(long ID, short hittype, C_Base *control)
             break;
 
         case RIGHT_SPIN:
-            if (!((C_Button*)control)->GetState())
+            if ( not ((C_Button*)control)->GetState())
             {
                 Recon.Direction = -2;
                 ((C_Button*)control)->SetState(1);
@@ -430,7 +430,7 @@ void CloseReconWindowCB(long, short hittype, C_Base *control)
     Flags1 = gMainHandler->GetWindowFlags(RECON_WIN);
     Flags2 = gMainHandler->GetWindowFlags(RECON_LIST_WIN);
 
-    if (!(Flags1 & C_BIT_ENABLED) and !(Flags2 & C_BIT_ENABLED))
+    if ( not (Flags1 & C_BIT_ENABLED) and !(Flags2 & C_BIT_ENABLED))
     {
         if (gUIViewer)
         {
@@ -487,7 +487,7 @@ static void OpenReconWindowCB(long, short hittype, C_Base *)
         if (TargetTree)
             TargetTree->DeleteBranch(TargetTree->GetRoot());
 
-        if (!OldReconCWCB)
+        if ( not OldReconCWCB)
         {
             btn = win->FindControl(CLOSE_WINDOW);
 
@@ -543,7 +543,7 @@ void OpenReconForVCCB(long, short hittype, C_Base *)
         if (TargetTree)
             TargetTree->DeleteBranch(TargetTree->GetRoot());
 
-        if (!OldReconCWCB)
+        if ( not OldReconCWCB)
         {
             btn = win->FindControl(CLOSE_WINDOW);
 
@@ -646,9 +646,9 @@ void OpenMunitionsWindowCB(long, short hittype, C_Base *control)
     // if so... open Error window... and don't do anything
     flight = (Flight)vuDatabase->Find(gSelectedFlightID);
 
-    if (!flight) return;
+    if ( not flight) return;
 
-    if (!flight->IsFlight()) return;
+    if ( not flight->IsFlight()) return;
 
     if (control->GetGroup())
     {
@@ -863,7 +863,7 @@ static void SaveTheStoresCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SAVE_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     gMainHandler->HideWindow(win);
@@ -1008,7 +1008,7 @@ static void UseStoresCB(long, short hittype, C_Base *control)
         Flight flight = (Flight) vuDatabase->Find(gLoadoutFlightID);
         int pilotSlot = 255;
 
-        if (!flight)
+        if ( not flight)
             return;
 
         pilotSlot = FalconLocalSession->GetPilotSlot();
@@ -1121,7 +1121,7 @@ static BOOL CampaignCountDownCB(C_Base *me)
 
     txt = (C_Text*)me;
 
-    if (!txt)
+    if ( not txt)
         return(FALSE);
 
     fl = FalconLocalSession->GetPlayerFlight();

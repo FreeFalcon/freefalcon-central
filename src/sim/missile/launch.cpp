@@ -33,7 +33,7 @@ void MissileClass::Launch(void)
     /*--------------------------------*/
     SetLaunchData();
 
-    if (!ifd)
+    if ( not ifd)
         return; // JB 010803
 
     //MI CTD?
@@ -246,7 +246,7 @@ void MissileClass::SetLaunchData(void)
         psi   = pv->Yaw() + initAz + disp_az; // MLR 1/18/2004 - added disp_az
 
         // M.N. add vt > 200.0F check fixes hovering helicopters firing missiles not going ballistic
-        if (!parent->OnGround() and vt > 200.0F)
+        if ( not parent->OnGround() and vt > 200.0F)
         {
             p     = pv->GetP();
             q     = pv->GetQ();

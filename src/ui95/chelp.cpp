@@ -38,13 +38,13 @@ void C_Help::Setup(long ID, short Type)
     SetDefaultFlags();
     SetReady(1);
 
-    if (!Picture_)
+    if ( not Picture_)
     {
         Picture_ = new O_Output;
         Picture_->SetOwner(this);
     }
 
-    if (!Text_)
+    if ( not Text_)
     {
         Text_ = new O_Output;
         Text_->SetOwner(this);
@@ -126,7 +126,7 @@ void C_Help::SetSubParents(C_Window *parent)
 {
     int w = 0, h = 0;
 
-    if (!parent)
+    if ( not parent)
         return;
 
     if (Picture_)

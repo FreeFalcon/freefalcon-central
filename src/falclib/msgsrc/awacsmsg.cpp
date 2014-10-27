@@ -174,7 +174,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
     if (autodisp)
         return 0;
 
-    if (!PlayerOptions.PlayerRadioVoice)
+    if ( not PlayerOptions.PlayerRadioVoice)
         delay = 500; // shorter
 
     MonoPrint("AWACS message #%d playing.\n", dataBlock.type);
@@ -201,7 +201,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     cf = nu;
                     nu = (Unit) myit.GetNext();
 
-                    if (!cf->IsFlight() or cf->IsDead())
+                    if ( not cf->IsFlight() or cf->IsDead())
                         continue;
 
                     // 2002-03-07 MN of course only AWACS from our team - doh!
@@ -276,7 +276,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
 
             case GivePicture:
             {
-                if (!AWACSon)
+                if ( not AWACSon)
                     return 0;
 
                 CampBaseClass *campThreat = NULL;
@@ -378,7 +378,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     }
 
                     // Now look at what's around us if we weren't targeting someone ourself
-                    if (!pEnemyFlight)
+                    if ( not pEnemyFlight)
                     {
                         simThreat = SimDriver.FindNearestThreat(plane, &X, &Y, &altitude);
 
@@ -464,7 +464,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         hasFuel++;
 
                     // Pick what we say depending on our status
-                    // if (!hasWeaps)
+                    // if ( not hasWeaps)
                     // SendCallToAWACS(plane, rcENDCAPARMS);
                     // else
                     // SendCallToAWACS(plane, rcENDCAPFUEL);
@@ -480,8 +480,8 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         meflags = flight_ptr->status_flags;
 
                     // What's that ?? Only true if FEVAL_GOT_TO_TARGET is true and false at the same time ??
-                    // if (!hasFuel or !hasWeaps or ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) and !(flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET)))
-                    if (!hasFuel or !hasWeaps or ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) and (meflags & MISEVAL_FLIGHT_STATION_OVER)))
+                    // if ( not hasFuel or !hasWeaps or ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) and !(flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET)))
+                    if ( not hasFuel or !hasWeaps or ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) and (meflags & MISEVAL_FLIGHT_STATION_OVER)))
                     {
                         if (rand() % 2)
                             radioMessage = CreateCallFromAwacs(flight, rcRELIEVED);
@@ -594,13 +594,13 @@ int FalconAWACSMessage::Process(uchar autodisp)
 
                     target = (CampBaseClass *)vuDatabase->Find(flight->GetAssignedTarget());
 
-                    if (!target)
+                    if ( not target)
                         target = (CampBaseClass *)vuDatabase->Find(flight->GetUnitMissionTargetID());
 
-                    if (!target)
+                    if ( not target)
                         target = (CampBaseClass *)vuDatabase->Find(flight->GetTargetID());
 
-                    if (!target)
+                    if ( not target)
                     {
                         //TJL AWACS tells you to hold at CP Alpha
                         radioMessage = CreateCallFromAwacsPlane(plane, rcHOLDATCP);
@@ -857,7 +857,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
 
                 tankerFlight = flight->GetTankerFlight();
 
-                if (!tankerFlight)
+                if ( not tankerFlight)
                 {
                     tankerFlight = SimDriver.FindTanker(plane);
                 }
@@ -916,7 +916,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                                 continue;
 
                             // RV - Biker - All naval units return TRUE here so better check for subtype
-                            if (!cf->IsTaskForce() or cf->GetSType() not_eq STYPE_UNIT_CARRIER)
+                            if ( not cf->IsTaskForce() or cf->GetSType() not_eq STYPE_UNIT_CARRIER)
                                 continue;
 
                             dx = plane->XPos() - cf->XPos();
@@ -1025,13 +1025,13 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     // This is AWAC's response
                     target = (CampBaseClass *)vuDatabase->Find(flight->GetAssignedTarget());
 
-                    if (!target)
+                    if ( not target)
                         target = (CampBaseClass *)vuDatabase->Find(flight->GetUnitMissionTargetID());
 
-                    if (!target)
+                    if ( not target)
                         target = (CampBaseClass *)vuDatabase->Find(flight->GetTargetID());
 
-                    if (!target)
+                    if ( not target)
                     {
                         radioMessage = CreateCallFromAwacs(flight, rcNOTARGETS);
                     }
@@ -1075,7 +1075,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                 // don't know if it's a sim or campaign object yet
                 otherThing = (FalconEntity *)vuDatabase->Find(dataBlock.caller);
 
-                if (!otherThing)
+                if ( not otherThing)
                 {
                     RadarClass* theRadar = (RadarClass*)FindSensor(plane, SensorClass::Radar);
                     VU_ID targetId;

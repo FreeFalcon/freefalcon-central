@@ -804,7 +804,7 @@ void NavigationSystem::SetMissionTacans(AircraftClass* ownship)
 
         // M.N. we have no airbase - can be in IA; CTD Fix
 
-        if (!mpMissionTacans)
+        if ( not mpMissionTacans)
             mpMissionTacans = pLink;
         else
         {
@@ -1066,7 +1066,7 @@ BOOL NavigationSystem::GetTCNAttribute(Attribute attribute, float* value)
 void NavigationSystem::ToggleControlSrc(void)
 {
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI Original code
         if (mCurrentTCNSrc == ICP)
@@ -1282,7 +1282,7 @@ void NavigationSystem::StepInstrumentMode(void)
     }
     else
     {
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             //MI original code
             switch (mInstrumentMode)
@@ -1967,7 +1967,7 @@ void NavigationSystem::FindTacanStation(Tacan_Channel_Src src,
     }
     else
     {
-        if (!gTacanList->GetVUIDFromChannel(channel, set, mpCurrentDomain[src],
+        if ( not gTacanList->GetVUIDFromChannel(channel, set, mpCurrentDomain[src],
                                             id, rangep, type, ilsfreq))
         {
             *id = FalconNullId;
@@ -2303,7 +2303,7 @@ void NavigationSystem::GetAirbase(VU_ID* pATCId)
     vector pos;
 
     // 2002-04-08 MN CTD fix
-    if (!SimDriver.GetPlayerAircraft())
+    if ( not SimDriver.GetPlayerAircraft())
     {
         *pATCId = FalconNullId;
         return;

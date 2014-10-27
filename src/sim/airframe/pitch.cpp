@@ -63,7 +63,7 @@ extern bool g_bNewFm;
 void AirframeClass::Pitch(void)
 {
     //if(vt == 0.0F)
-    //if(IsSet(Planted) or (!IsSet(InAir) and pstick <= 0.0F) )
+    //if(IsSet(Planted) or ( not IsSet(InAir) and pstick <= 0.0F) )
     if (IsSet(Planted))
         return;
 
@@ -158,7 +158,7 @@ void AirframeClass::Pitch(void)
 
             if (platform->IsF16())
             {
-                if (!IsSet(MPOverride))
+                if ( not IsSet(MPOverride))
                 {
                     //negative G limiter
                     if (gearPos)
@@ -209,7 +209,7 @@ void AirframeClass::Pitch(void)
                             else // we are recovering
                                 alphaError -= alpdot * 0.9f; // slow down the return
                         }
-                        else if (!IsSet(CATLimiterIII))
+                        else if ( not IsSet(CATLimiterIII))
                         {
                             // aoa is below max
                             alphaError += alphadelta * 0.1f; //aoa elastic  only cat I otw up
@@ -228,7 +228,7 @@ void AirframeClass::Pitch(void)
 
                 if (alpha - alphaError > maxCmd)
                 {
-                    if (!g_bNewFm)
+                    if ( not g_bNewFm)
                         pshape = max(-1.0F, (maxCmd - alpha - alphaError) / 4.0F);
                     else if (stallMode == None)
                         pshape = pshape * 1.0f - ((alpha - alphaError - maxCmd) / 3.0f);
@@ -277,7 +277,7 @@ void AirframeClass::Pitch(void)
 
         if (platform->IsF16())
         {
-            if (!IsSet(MPOverride))
+            if ( not IsSet(MPOverride))
             {
                 limiter = gLimiterMgr->GetLimiter(NegGLimiter, vehicleIndex);
 
@@ -466,7 +466,7 @@ void AirframeClass::Pitch(void)
             }
     }
 
-    //if(!IsSet(InAir) and aoacmd < 0.0F)
+    //if( not IsSet(InAir) and aoacmd < 0.0F)
     // aoacmd = 0.0F;
 
     PitchIt(aoacmd, SimLibMinorFrameTime);
@@ -502,7 +502,7 @@ void AirframeClass::PitchIt(float aoacmd, float dt)
                          tp02 * auxaeroData->pitchMomentum, tp03 * auxaeroData->pitchMomentum,
                          dt, oldp03, &jp01);
     alpdot = (alpha - oldalpha) / dt;
-    ShiAssert(!_isnan(alpha));
+    ShiAssert( not _isnan(alpha));
 
     if (alpha < -180.0F)
     {

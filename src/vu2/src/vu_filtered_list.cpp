@@ -28,7 +28,7 @@ VU_ERRCODE VuFilteredList::Handle(VuMessage* msg)
         {
             if (Find(ent->Id()))
             {
-                if (!filter_->Test(ent))
+                if ( not filter_->Test(ent))
                 {
                     // ent is in table, but doesn't belong there...
                     VuLinkedList::Remove(ent);

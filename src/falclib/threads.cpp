@@ -43,7 +43,7 @@ F4THREADHANDLE F4CreateThread(threadf_t tf, void *args, int createSuspended, tpr
     }
 
     // create the thread
-    if (!(F4Thread[i].handle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)tf, args, 0, &F4Thread[i].id)))
+    if ( not (F4Thread[i].handle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)tf, args, 0, &F4Thread[i].id)))
     {
         return F4T_RET_ERROR;
     }

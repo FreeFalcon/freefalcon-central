@@ -24,7 +24,7 @@ public:
     };
     ~DeviceManager()
     {
-        ShiAssert(!IsReady());
+        ShiAssert( not IsReady());
     };
 
     // OW

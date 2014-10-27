@@ -45,12 +45,12 @@ int FalconFACMessage::Process(uchar autodisp)
 
     theEntity = (SimVehicleClass*)Entity();
 
-    if (!theEntity)
+    if ( not theEntity)
         theEntity = (SimVehicleClass*)(vuDatabase->Find(EntityId()));
 
     theFighter = (SimVehicleClass*)(vuDatabase->Find(dataBlock.caller));
 
-    if (!theFighter) // PJW: E3 Hack... make sure (theFighter) is valid
+    if ( not theFighter) // PJW: E3 Hack... make sure (theFighter) is valid
         return 0;
 
     switch (dataBlock.type)

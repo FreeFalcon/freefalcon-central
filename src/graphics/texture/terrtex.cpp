@@ -121,7 +121,7 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
     if (result)
         result = ReadFile(listFile, &totalTiles, sizeof(totalTiles), &bytesRead, NULL);
 
-    if (!result)
+    if ( not result)
     {
         char string[80];
         char message[120];
@@ -138,7 +138,7 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
     TextureSets = new SetEntry[numSets];
 #endif
 
-    if (!TextureSets)
+    if ( not TextureSets)
         ShiError("Failed to allocate memory for the texture database.");
 
     // Read the descriptions for the sets.
@@ -150,7 +150,7 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
         if (result)
             result = ReadFile(listFile, &TextureSets[i].terrainType, sizeof(TextureSets[i].terrainType), &bytesRead, NULL);
 
-        if (!result)
+        if ( not result)
         {
             char string[80];
             char message[120];
@@ -189,7 +189,7 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
             if (result)
                 result = ReadFile(listFile, &TextureSets[i].tiles[j].nPaths, sizeof(TextureSets[i].tiles[j].nPaths), &bytesRead, NULL);
 
-            if (!result)
+            if ( not result)
             {
                 char string[80];
                 char message[120];
@@ -224,7 +224,7 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
 
                 result = ReadFile(listFile, TextureSets[i].tiles[j].Areas, dataSize, &bytesRead, NULL);
 
-                if (!result)
+                if ( not result)
                 {
                     char string[80];
                     char message[120];
@@ -250,7 +250,7 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
 
                 result = ReadFile(listFile, TextureSets[i].tiles[j].Paths, dataSize, &bytesRead, NULL);
 
-                if (!result)
+                if ( not result)
                 {
                     char string[80];
                     char message[120];
@@ -279,7 +279,7 @@ void TextureDB::Cleanup(void)
     F4ScopeLock sl(cs_textureList);
 
 
-    if (!TextureSets) return;
+    if ( not TextureSets) return;
 
 
     // Stop receiving time updates
@@ -433,7 +433,7 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
 
         if (PlayerOptions.Season == 1) //Autumn
         {
-            if (!((tmpR == tmpG and tmpG == tmpB) or tmpG < 60 or (tmpR + tmpG + tmpB) / 3 > 225)) //Not Greyscale / green / not very bright
+            if ( not ((tmpR == tmpG and tmpG == tmpB) or tmpG < 60 or (tmpR + tmpG + tmpB) / 3 > 225)) //Not Greyscale / green / not very bright
             {
                 RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
@@ -444,7 +444,7 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
                     s *= 1.2f; //more saturated (intenser brown, just mudy green otherwise
                     v *= 0.9f; //darker
                 }
-                else if (!(v > 0.9 and s > 0.9)) //Not a strong green, but neither very bright
+                else if ( not (v > 0.9 and s > 0.9)) //Not a strong green, but neither very bright
                 {
                     s *= 0.9f; //less saturated
                     v *= 0.85f; //darken a bit
@@ -459,11 +459,11 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
         }
         else if (PlayerOptions.Season == 2) //Winter
         {
-            if (!(tmpR == tmpG and tmpR == tmpB) or tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //|| (tmpR == 255 and tmpG == 255))) //Greyscale //or pure color
+            if ( not (tmpR == tmpG and tmpR == tmpB) or tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //|| (tmpR == 255 and tmpG == 255))) //Greyscale //or pure color
             {
                 RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-                if (!(s <= 0.2 or h == -1))  //If Not Greyscale
+                if ( not (s <= 0.2 or h == -1))  //If Not Greyscale
                 {
                     if (h >= 45 and h <= 150) //If Green
                     {
@@ -490,7 +490,7 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
         {
             RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-            if (!(s <= 0.1 or h == -1))  //Not Greyscale
+            if ( not (s <= 0.1 or h == -1))  //Not Greyscale
             {
                 if (h >= 45 and h <= 160) //Green
                 {
@@ -784,10 +784,10 @@ void TextureDB::Load(SetEntry* pSet, TileEntry* pTile, int res, bool forceNoDDS)
     ShiAssert(IsReady());
     ShiAssert(pSet);
     ShiAssert(pTile);
-    ShiAssert(!pTile->handle[res]);
-    ShiAssert(!pTile->handle[res]);
+    ShiAssert( not pTile->handle[res]);
+    ShiAssert( not pTile->handle[res]);
 
-    if (!forceNoDDS and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+    if ( not forceNoDDS and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
         ReadImageDDS(pTile, res);
         pSet->palette = NULL;
@@ -918,7 +918,7 @@ void TextureDB::Activate(SetEntry* pSet, TileEntry* pTile, int res)
     ShiAssert(pSet);
     ShiAssert(pTile);
     ShiAssert(res < TEX_LEVELS);
-    ShiAssert(!pTile->handle[res]);
+    ShiAssert( not pTile->handle[res]);
     ShiAssert(pTile->bits[res]);
 
     if (DisplayOptions.m_texMode not_eq DisplayOptionsClass::TEX_MODE_DDS)
@@ -1071,7 +1071,7 @@ void TextureDB::Free(SetEntry* pSet, TileEntry* pTile, int res)
     ShiAssert(pTile->handle[res] == NULL);
 
     // KLUDGE to prevent release runtime crash
-    if (!pTile or !pSet) return;
+    if ( not pTile or !pSet) return;
 
     // Release the image memory if it isn't already gone
     if ((char*)pTile->bits[res])
@@ -1130,7 +1130,7 @@ void TextureDB::Select(ContextMPR *localContext, TextureID texID)
     ShiAssert(tile < TextureSets[set].numTiles);
 
     // JB 010318 CTD
-    if (!(set >= 0 and set < numSets and tile >= 0 and tile < TextureSets[set].numTiles))
+    if ( not (set >= 0 and set < numSets and tile >= 0 and tile < TextureSets[set].numTiles))
         return;
 
     // Make sure the texture we're trying to use is local to MPR
@@ -1156,7 +1156,7 @@ void TextureDB::RestoreAll()
 {
     ShiAssert(IsReady());
 
-    if (!IsReady()) return;
+    if ( not IsReady()) return;
 
     //   EnterCriticalSection(&cs_textureList);
     F4ScopeLock sl(cs_textureList);
@@ -1209,7 +1209,7 @@ bool TextureDB::SyncDDSTextures(bool bForce)
 {
     ShiAssert(IsReady());
 
-    if (!IsReady())
+    if ( not IsReady())
         return false;
 
     CreateDirectory(texturePathD, NULL);
@@ -1252,7 +1252,7 @@ bool TextureDB::DumpImageToFile(TileEntry* pTile, DWORD *palette, int res, bool 
     ShiAssert(pTile->bits[res]);
     ShiAssert(palette);
 
-    if (!pTile->bits[res]) return false;
+    if ( not pTile->bits[res]) return false;
 
     strcpy(szTemp, (char *)pTile->filename);
     token = strtok(szTemp, sep);
@@ -1277,7 +1277,7 @@ bool TextureDB::DumpImageToFile(TileEntry* pTile, DWORD *palette, int res, bool 
 
     fp = fopen(szFileName, "rb");
 
-    if (!fp or bForce or bIs092)
+    if ( not fp or bForce or bIs092)
     {
         if (fp)
             fclose(fp);
@@ -1320,7 +1320,7 @@ bool TextureDB::DumpImageToFile(TileEntry* pTile, DWORD *palette, int res, bool 
 
     fp = fopen(szFileName, "rb");
 
-    if (!fp or bForce or bIs092)
+    if ( not fp or bForce or bIs092)
     {
         if (fp)
             fclose(fp);
@@ -1432,7 +1432,7 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     fp = fopen(szFileName, "rb");
 
     // FRB - bad dds file name
-    if (!fp)
+    if ( not fp)
         return;
 
     fread(&dwMagic, 1, sizeof(DWORD), fp);

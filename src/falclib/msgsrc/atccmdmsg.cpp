@@ -83,7 +83,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
 
     if (dataBlock.type == Release and aircraft and aircraft->DBrain())
     {
-        if (!aircraft->IsPlayer() or aircraft->AutopilotType() not_eq AircraftClass::CombatAP)
+        if ( not aircraft->IsPlayer() or aircraft->AutopilotType() not_eq AircraftClass::CombatAP)
         {
             aircraft->DBrain()->ResetATC();
         }
@@ -302,7 +302,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                 }
 
                 case TaxiOff:
-                    if (!aircraft->OnGround())
+                    if ( not aircraft->OnGround())
                     {
                         break;
                     }
@@ -370,7 +370,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                         acBrain->CalculateNextTurnDistance();
                     }
 
-                    if (!aircraft->IsPlayer() and rand() % 3)
+                    if ( not aircraft->IsPlayer() and rand() % 3)
                     {
                         radioMessage = CreateCallFromATC(atc, aircraft, rcATCGOAROUND2, FalconLocalSession);
                         //M.N. changed to 32767 -> flexibly use randomized value of max available eval indexes
@@ -420,7 +420,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     break;
 
                 case Taxi:
-                    if (!aircraft->OnGround())
+                    if ( not aircraft->OnGround())
                         break;
 
                     switch (PtDataTable[acBrain->GetTaxiPoint()].type)
@@ -455,7 +455,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     break;
 
                 case Wait:
-                    if (!aircraft->OnGround())
+                    if ( not aircraft->OnGround())
                         break;
 
                     acBrain->ClearATCFlag(DigitalBrain::PermitRunway);
@@ -466,7 +466,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     break;
 
                 case EmergencyStop:
-                    if (!aircraft->OnGround())
+                    if ( not aircraft->OnGround())
                         break;
 
                     acBrain->ClearATCFlag(DigitalBrain::PermitRunway);
@@ -476,7 +476,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     break;
 
                 case HoldShort:
-                    if (!aircraft->OnGround())
+                    if ( not aircraft->OnGround())
                         break;
 
                     acBrain->ClearATCFlag(DigitalBrain::PermitRunway);
@@ -489,7 +489,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     break;
 
                 case PrepToTakeRunway:
-                    if (!aircraft->OnGround())
+                    if ( not aircraft->OnGround())
                         break;
 
                     acBrain->ClearATCFlag(DigitalBrain::PermitRunway);
@@ -500,7 +500,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     break;
 
                 case TakeRunway:
-                    if (!aircraft->OnGround())
+                    if ( not aircraft->OnGround())
                         break;
 
                     acBrain->SetATCStatus(tTakeRunway);
@@ -509,7 +509,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     acBrain->ClearATCFlag(DigitalBrain::PermitTakeoff);
                     acBrain->SetWaitTimer(acBrain->CalcWaitTime(atcBrain));
 
-                    if (!acBrain->isWing or aircraft->IsPlayer() or aircraft->vehicleInUnit == 2 ||
+                    if ( not acBrain->isWing or aircraft->IsPlayer() or aircraft->vehicleInUnit == 2 ||
                         !atcBrain->UseSectionTakeoff((Flight)aircraft->GetCampaignObject(), dataBlock.rwindex))
                     {
                         radioMessage = CreateCallFromATC(atc, aircraft, rcPOSITIONANDHOLD, FalconLocalSession);
@@ -520,7 +520,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     break;
 
                 case Takeoff:
-                    if (!aircraft->OnGround())
+                    if ( not aircraft->OnGround())
                         break;
 
                     acBrain->SetATCStatus(tTakeRunway);
@@ -529,7 +529,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     acBrain->SetATCFlag(DigitalBrain::PermitTakeoff);
                     acBrain->SetWaitTimer(acBrain->CalcWaitTime(atcBrain));
 
-                    if (!acBrain->isWing or aircraft->IsPlayer() or aircraft->vehicleInUnit == 2 ||
+                    if ( not acBrain->isWing or aircraft->IsPlayer() or aircraft->vehicleInUnit == 2 ||
                         !atcBrain->UseSectionTakeoff((Flight)aircraft->GetCampaignObject(), dataBlock.rwindex))
                     {
                         if (rand() % 2 or aircraft->IsPlayer())
@@ -558,7 +558,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                         divertBase = FindNearestFriendlyAirbase(aircraft->GetTeam(), X, Y);
                         //altBase = FindAlternateLandingStrip ((Flight)aircraft->GetCampaignObject());
                         //find closest one
-                        /*if(!divertBase)
+                        /*if( not divertBase)
                           {
                           divertBase = altBase;
                           }
@@ -576,7 +576,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                           divertBase = altBase;
                           }*/
 
-                        if (!divertBase)
+                        if ( not divertBase)
                         {
                             divertBase = FindNearestFriendlyRunway(aircraft->GetTeam(), X, Y);
                         }
@@ -646,7 +646,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     }
 
                 case TaxiBack:
-                    if (!aircraft->OnGround())
+                    if ( not aircraft->OnGround())
                         break;
 
                     acBrain->SetATCStatus(tTaxiBack);
@@ -656,7 +656,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     if (aircraft->OnGround())
                         break;
 
-                    if (!aircraft->IsPlayer() or aircraft->AutopilotType() not_eq AircraftClass::CombatAP)
+                    if ( not aircraft->IsPlayer() or aircraft->AutopilotType() not_eq AircraftClass::CombatAP)
                         acBrain->ResetATC();
 
                     //Cobra Let's try a new comm here

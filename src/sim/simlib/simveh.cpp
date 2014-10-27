@@ -150,7 +150,7 @@ void SimVehicleClass::Init(SimInitDataClass* initData)
     SimMoverClass::Init(initData);
     int i;
 
-    if (!IsAirplane())
+    if ( not IsAirplane())
     {
         // Create Sensors
         if (mvrDefinition)
@@ -224,7 +224,7 @@ int SimVehicleClass::Sleep(void)
 {
     int retval = 0;
 
-    if (!IsAwake())
+    if ( not IsAwake())
     {
         return retval;
     }
@@ -285,8 +285,8 @@ float SimVehicleClass::GetIRFactor(void)
 {
     // 2000-11-24 REWRITTEN BY S.G. SO IT USES THE NEW IR FIELD AND THE NEW ENGINE TEMPERATURE. THIS ALSO MAKES IT COMPATIBLE WITH RP4 MP.
 #if 1
-    // if (!g_bHardCoreReal) MI
-    if (!g_bRealisticAvionics)
+    // if ( not g_bHardCoreReal) MI
+    if ( not g_bRealisticAvionics)
     {
         VehicleClassDataType *vc = (VehicleClassDataType *)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
         ShiAssert(vc);
@@ -476,7 +476,7 @@ int SimVehicleClass::Exec(void)
         //
         // Cobra 11/12/04 TJL Removed per Steve and stops Scrape sound during dying
         // /*
-        // if(!AddParticleEffect(PSFX_AC_EARLY_BURNING,&pos, &vec))
+        // if( not AddParticleEffect(PSFX_AC_EARLY_BURNING,&pos, &vec))
         // {
         // /*
         // OTWDriver.AddSfxRequest(
@@ -542,7 +542,7 @@ int SimVehicleClass::Exec(void)
         // &vec);
         //
         // /* I-Hawk
-        //    if(!AddParticleEffect(PSFX_VEHICLE_DIE_SMOKE,&pos,&vec))
+        //    if( not AddParticleEffect(PSFX_VEHICLE_DIE_SMOKE,&pos,&vec))
         //    {
         //        vec.x = PRANDFloat() * 40.0f;
         //    vec.y = PRANDFloat() * 40.0f;
@@ -617,7 +617,7 @@ int SimVehicleClass::Exec(void)
         // &pos,
         // &vec);
         //    /* I-Hawk
-        //    if(!AddParticleEffect(PSFX_VEHICLE_DIE_FIREBALL,&pos,&vec))
+        //    if( not AddParticleEffect(PSFX_VEHICLE_DIE_FIREBALL,&pos,&vec))
         //    {
         //    if ( pctStrength > -0.7f )
         //    {
@@ -733,7 +733,7 @@ int SimVehicleClass::Exec(void)
         // &vec);
         //
         //    /* I-Hawk
-        // if(!AddParticleEffect(PSFX_VEHICLE_DIE_SMOKE2,&pos,&vec))
+        // if( not AddParticleEffect(PSFX_VEHICLE_DIE_SMOKE2,&pos,&vec))
         // {
         // switch ( PRANDInt5() )
         // {
@@ -807,7 +807,7 @@ int SimVehicleClass::Exec(void)
         // &vec);
         //
         //    /* I-Hawk
-        //    if(!AddParticleEffect(PSFX_VEHICLE_DIE_FIREBALL2,&pos,&vec))
+        //    if( not AddParticleEffect(PSFX_VEHICLE_DIE_FIREBALL2,&pos,&vec))
         //    {
         //    /*
         //    OTWDriver.AddSfxRequest(
@@ -844,7 +844,7 @@ int SimVehicleClass::Exec(void)
         // &vec);
         //
         //    /* I-Hawk
-        //    if(!AddParticleEffect(PSFX_VEHICLE_DIE_INTERMITTENT_FIRE,&pos,&vec))
+        //    if( not AddParticleEffect(PSFX_VEHICLE_DIE_INTERMITTENT_FIRE,&pos,&vec))
         //    {
         //
         //    if ( pctStrength > -0.6f ||
@@ -1365,7 +1365,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
             if (hitPoints > strength)
             {
                 // death sounds
-                if (!(groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
+                if ( not (groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
                     soundIdx = SFX_DIRTDART;
                 else
                     soundIdx = SFX_H2ODART;
@@ -1381,7 +1381,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 mvec.y = YDelta();
                 mvec.z = ZDelta() - 40.0f;
 
-                if (!(groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
+                if ( not (groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
                 {
                     soundIdx = SFX_BOOMA1;
                     /*
@@ -1426,7 +1426,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 mvec.y = YDelta();
                 mvec.z = 0;
 
-                if (!AddParticleEffect(PSFX_AC_EARLY_BURNING, &pos, &mvec))
+                if ( not AddParticleEffect(PSFX_AC_EARLY_BURNING, &pos, &mvec))
                 {
                     /*
                     OTWDriver.AddSfxRequest(
@@ -1521,7 +1521,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
     // JB 000816
 
     // debug non local
-    if (!IsLocal())
+    if ( not IsLocal())
     {
         //    MonoPrint( "NonLocal Apply Damage: Pct Strength now: %f\n", pctStrength );
     }
@@ -1719,7 +1719,7 @@ SimVehicleClass::ApplyProximityDamage(void)
         damageRadiusSqrd = 300.0f * 300.0f;
     }
 
-    if (!SimDriver.objectList)
+    if ( not SimDriver.objectList)
     {
         return;
     }
@@ -1798,7 +1798,7 @@ void SimVehicleClass::StepSOI(int dir)
     //MI
     FireControlComputer* FCC = ((SimVehicleClass*)this)->GetFCC();
 
-    if (!theRadar or !FCC or !Sms or !SimDriver.GetPlayerEntity())
+    if ( not theRadar or !FCC or !Sms or !SimDriver.GetPlayerEntity())
         return;
 
     if (Sms)

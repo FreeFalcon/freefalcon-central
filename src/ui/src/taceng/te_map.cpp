@@ -416,7 +416,7 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
         CurMapTool = NULL;
         SetToolbarDirections(TXT_SPACE);
     }
-    else if (!control)
+    else if ( not control)
     {
         if (CurMapTool)
         {
@@ -693,7 +693,7 @@ void gMapMgr_TACmover(long, short hittype, C_Base *control)
 
         case (C_TYPE_MOUSEWHEEL):
         {
-            if (!control->IsControl())
+            if ( not control->IsControl())
             {
                 break;
             }

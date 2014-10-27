@@ -401,7 +401,7 @@ char* gcsDLLPath;
 int TrackIR::TrackIR_2D_Map()
 {
 
-    if (!panningAllowed)
+    if ( not panningAllowed)
         return -1;
 
     TRACKIRDATA tid;
@@ -594,7 +594,7 @@ char* GetDllLocation(char* loc)
     //**********************************************************************
     //get the value from the key
     //*********************************************************************/
-    if (!pKey)
+    if ( not pKey)
         return NULL;
 
     //**********************************************************************
@@ -673,7 +673,7 @@ void TrackIR::InitTrackIR(HWND application_window)
 
     gcsDLLPath = GetDllLocation(gcsDLLPath);
 
-    if (!gcsDLLPath)
+    if ( not gcsDLLPath)
         return;
 
     //**********************************************************************

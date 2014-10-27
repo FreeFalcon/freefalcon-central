@@ -35,7 +35,7 @@ static int init_cs = FALSE;
 static CRITICAL_SECTION cs;
 void enter_cs(void)
 {
-    if (!init_cs)
+    if ( not init_cs)
     {
         InitializeCriticalSection(&cs);
         init_cs = TRUE;
@@ -449,13 +449,13 @@ int com_API_initialize_communications(void)
     WSADATA wsaData;
     int ret = 1;
 
-    if (!windows_sockets_connections)
+    if ( not windows_sockets_connections)
     {
         ret = initialize_windows_sockets(&wsaData);
         windows_sockets_connections--;
 
         /* if No more connections then WSACleanup() */
-        if (!windows_sockets_connections)
+        if ( not windows_sockets_connections)
         {
             CAPI_WSACleanup();
         }

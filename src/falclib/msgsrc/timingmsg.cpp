@@ -20,7 +20,7 @@
 
 FalconTimingMessage::FalconTimingMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(TimingMsg, FalconEvent::CampaignThread, entityId, target, loopback)
 {
-    if (!target)
+    if ( not target)
         return;
 
     ShiAssert(target->IsGame() and target->IsLocal());
@@ -82,7 +82,7 @@ int FalconTimingMessage::Decode(VU_BYTE **buf, long *rem)
     FalconEvent::Decode(buf, rem);
     memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
 
-    if (!FalconLocalGame->IsLocal())
+    if ( not FalconLocalGame->IsLocal())
     {
         // MonoPrint
         // (

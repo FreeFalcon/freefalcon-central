@@ -26,7 +26,7 @@ VuMessageQueue::VuMessageQueue(int queueSize, VuMessageFilter* filter)
         head_[i] = 0;
     }
 
-    if (!filter)
+    if ( not filter)
     {
         filter = &vuNullFilter;
     }
@@ -181,7 +181,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
     if (
         vuGlobalGroup and vuGlobalGroup->Connected()  and 
         msg->Target() and msg->Target() not_eq vuLocalSessionEntity  and 
-        msg->DoSend() and (!ent or !ent->IsPrivate())  and 
+        msg->DoSend() and ( not ent or !ent->IsPrivate())  and 
         (vuLocalSession.creator_ not_eq VU_SESSION_NULL_CONNECTION.creator_)
     )
     {
@@ -229,7 +229,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
     // message not added to any queue, auto destroy
     if (
         (msg->refcnt_ == 1)  and 
-        (!msg->IsLocal() or (msg->Flags() & VU_LOOPBACK_MSG_FLAG))
+        ( not msg->IsLocal() or (msg->Flags() & VU_LOOPBACK_MSG_FLAG))
     )
     {
         VuExitCriticalSection();
@@ -317,7 +317,7 @@ VU_BOOL VuMessageQueue::ReallocQueue()
 VU_BOOL VuMessageQueue::AddMessage(VuMessage* event)
 {
     // JB 010121
-    if (!event or !filter_)
+    if ( not event or !filter_)
     {
         return 0;
     }
@@ -334,7 +334,7 @@ VU_BOOL VuMessageQueue::AddMessage(VuMessage* event)
 
         if (write_ == read_ and *read_)
         {
-            if (!ReallocQueue() and write_ == read_ and *read_)
+            if ( not ReallocQueue() and write_ == read_ and *read_)
             {
                 // do simple dispatch -- cannot be handled by user
                 // danm_note: should we issue a warning here?
@@ -455,7 +455,7 @@ VU_BOOL VuPendingSendQueue::DispatchVuMessage(VU_BOOL autod)
             {
                 retval = FALSE;
 
-                if (!autod)
+                if ( not autod)
                 {
                     // note: this puts the unsent message on the end of the send queue
                     AddMessage(msg);

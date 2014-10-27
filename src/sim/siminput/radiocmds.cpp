@@ -63,7 +63,7 @@ void SimCycleRadioChannel(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and !((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             if (OTWDriver.pCockpitManager->mpIcp->GetICPTertiaryMode() == COMM1_MODE)
             {
@@ -107,7 +107,7 @@ void SimCycleRadioChannel(unsigned long, int state, void*)
 
 void SimDecRadioChannel(unsigned long, int state, void*)
 {
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
         return;
 
     if (state & KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and !((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)

@@ -19,7 +19,7 @@ void ICPClass::CNIBackup(void)
     //else //COMM2 is active
     // FillDEDMatrix(0,0,"VHF");
     //WAYPOINT INFO
-    if (!MAN) //Auto Waypoint
+    if ( not MAN) //Auto Waypoint
     {
         if (IsICPSet(ICPClass::EDIT_STPT))
             sprintf(tempstr, "\x01%2dA", mWPIndex + 1);

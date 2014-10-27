@@ -85,7 +85,7 @@ void InitPAKMap()
     C_Window *win;
     C_Bitmap *bmp;
 
-    if (!PAKMap)
+    if ( not PAKMap)
     {
         SetCursor(gCursors[CRSR_WAIT]);
         MakePAKPalette();
@@ -531,7 +531,7 @@ void LoadPAKPriorities()
     WORD *Pal;
     short CampControl = 1;
 
-    if (!PAKMap)
+    if ( not PAKMap)
         return;
 
     teamid = FalconLocalSession->GetTeam();
@@ -884,7 +884,7 @@ void LoadDefaultPAKPriorities()
     short teamid;
     WORD *Pal;
 
-    if (!PAKMap)
+    if ( not PAKMap)
         return;
 
     teamid = FalconLocalSession->GetTeam();
@@ -1322,7 +1322,7 @@ void ResetPriorityCB(long, short hittype, C_Base *control)
     {
         PAKID = ((C_ListBox*)lbox)->GetTextID();
 
-        if (!PAKID)
+        if ( not PAKID)
             PAKID = 1;
 
         if (PAKID)
@@ -1410,7 +1410,7 @@ void MapSelectPAKCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (!control or !PAKMap)
+    if ( not control or !PAKMap)
         return;
 
     btn = (C_Button*)control;
@@ -1495,7 +1495,7 @@ BOOL PAKMapTimerCB(C_Base *me)
     {
         me->SetUserNumber(0, (me->GetUserNumber(0) + 1) & 0x03);
 
-        if (!me->GetUserNumber(0))
+        if ( not me->GetUserNumber(0))
         {
             Pal = (WORD*)(PAKMap->Owner->GetData() + PAKMap->Header->paletteoffset);
             BlinkPAK = static_cast<char>(-BlinkPAK);

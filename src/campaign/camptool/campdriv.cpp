@@ -171,10 +171,10 @@ void ReBltWnd(MapData md, HDC DC)
 {
     RECT r;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
@@ -190,10 +190,10 @@ void ShowWhere(MapData md, GridIndex x, GridIndex y, int color)
     PAINTSTRUCT ps;
     HDC DC;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetCellScreenRect(md, x, y, &r);
@@ -210,7 +210,7 @@ void ShowTime(CampaignTime t)
     RECT r;
     WORD nm, nh;
 
-    if (!hToolWnd)
+    if ( not hToolWnd)
         return;
 
     while (t > CampaignDay)
@@ -238,10 +238,10 @@ void ShowLink(MapData md, Objective o, Objective n, int color)
     HDC DC;
     GridIndex x, y;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
@@ -262,10 +262,10 @@ void ShowWP(MapData md, GridIndex X, GridIndex Y, int color)
     PAINTSTRUCT ps;
     HDC DC;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetCellScreenRect(md, X, Y, &r);
@@ -282,10 +282,10 @@ void ShowWPLeg(MapData md, GridIndex x, GridIndex y, GridIndex X, GridIndex Y, i
     PAINTSTRUCT ps;
     HDC DC;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
@@ -307,10 +307,10 @@ void ShowPath(MapData md, GridIndex X, GridIndex Y, Path p, int color)
     int i, d, step;
     GridIndex x, y;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
@@ -349,10 +349,10 @@ void ShowObjectivePath(MapData md, Objective o, Path p, int color)
     int i, d;
     GridIndex x, y;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
@@ -385,10 +385,10 @@ void ShowPathHistory(MapData md, GridIndex X, GridIndex Y, Path p, int color)
     int i, d, step;
     GridIndex x, y;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
@@ -425,10 +425,10 @@ void ShowRange(MapData md, GridIndex X, GridIndex Y, int range, int color)
     HDC DC;
     GridIndex x, y;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
@@ -498,7 +498,7 @@ void RedrawUnit(Unit u)
     HDC DC;
     MapData md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return;
 
     u->GetLocation(&x, &y);
@@ -514,7 +514,7 @@ int DisplayOk(Unit u)
 {
     if (ShowReal == 1 and u->Real() and !u->Inactive())
         return 1;
-    else if (!ShowReal and u->Parent() and !u->Inactive())
+    else if ( not ShowReal and u->Parent() and !u->Inactive())
         return 1;
     else if (ShowReal == 2 and u->Inactive())
         return 1;
@@ -528,7 +528,7 @@ int DisplayOk(Unit u)
 
 void GetCellScreenRect(MapData md, GridIndex X, GridIndex Y, RECT *r)
 {
-    if (!md)
+    if ( not md)
         return;
 
     r->left = POSX(X);
@@ -546,10 +546,10 @@ void RedrawCell(MapData md, GridIndex X, GridIndex Y)
     HDC DC;
     short scale = 1;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     if (X < md->FX or X > md->LX or Y < md->FY or Y > md->LY)
@@ -568,7 +568,7 @@ void RedrawCell(MapData md, GridIndex X, GridIndex Y)
 
     if (ShowReal == 1)
         u = FindUnitByXY(AllRealList, X, Y, 0);
-    else if (!ShowReal)
+    else if ( not ShowReal)
     {
         u = FindUnitByXY(AllParentList, X, Y, 0);
         scale = 3;
@@ -1137,8 +1137,8 @@ void MatchObjectiveTypes(void)
         }
 
 
-        //if (!set) // no matching texture
-        if (!matches)
+        //if ( not set) // no matching texture
+        if ( not matches)
         {
             FromObjective->SetObjectiveSType(1);
             index = GetClassID(DOMAIN_LAND, CLASS_OBJECTIVE, (uchar)type, 1, 0, 0, 0, 0);
@@ -1174,7 +1174,7 @@ void MatchObjectiveTypes(void)
 
             for (k = 0; k < MaxTextureType + 1 and index; k++)
             {
-                if (!counts[k * NumEntities + index])
+                if ( not counts[k * NumEntities + index])
                     continue;
 
                 file = GetTextureId(k);
@@ -1399,7 +1399,7 @@ void AssignBattToBrigDiv(void)
 
 void DeleteUnit(Unit unit)
 {
-    if (!unit)
+    if ( not unit)
         return;
 
     Unit E;
@@ -1473,7 +1473,7 @@ void StartObjectiveEdit(void)
     CampEnterCriticalSection();
     OneObjective = GetObjectiveByXY(X, Y);
 
-    if (!OneObjective)
+    if ( not OneObjective)
     {
         OneObjective = AddObjectiveToCampaign(X, Y);
     }
@@ -1605,7 +1605,7 @@ void SetRefresh(MapData md)
 {
     RECT r;
 
-    if (!md or !md->hMapWnd)
+    if ( not md or !md->hMapWnd)
         return;
 
     RefreshAll = TRUE;
@@ -1813,7 +1813,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
 
         if (ShowReal == 1)
             uit = new VuListIterator(AllRealList);
-        else if (!ShowReal)
+        else if ( not ShowReal)
         {
             uit = new VuListIterator(AllParentList);
             scale = 3;
@@ -1869,7 +1869,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
 
     if (md->ShowWPs)
     {
-        if (!WPUnit or WPUnit->IsDead())
+        if ( not WPUnit or WPUnit->IsDead())
             WPUnit = NULL;
         else
         {
@@ -2490,7 +2490,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
         break;
 
         case ID_TOOLS_SETOBJTYPES:
-            if (!ShowCodes)
+            if ( not ShowCodes)
             {
                 // Load the texture codes
                 ShowCodes = 1;
@@ -2704,7 +2704,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
 
             fp = OpenCampFile("Objloc", "txt", "w");
 
-            if (!fp)
+            if ( not fp)
             {
                 CampLeaveCriticalSection();
                 break;
@@ -3642,7 +3642,7 @@ void ProcessCommand(int Key)
         case 'l':
             if (OneObjective)
             {
-                if (!Linking)
+                if ( not Linking)
                 {
                     FromObjective = OneObjective;
                     Linking = TRUE;
@@ -3654,7 +3654,7 @@ void ProcessCommand(int Key)
                     ShowLinkCosts(FromObjective, ToObjective);
 
                     // CampEnterCriticalSection();
-                    if (!UnLinkCampaignObjectives(FromObjective, ToObjective))
+                    if ( not UnLinkCampaignObjectives(FromObjective, ToObjective))
                     {
                         PathClass path;
                         i = LinkCampaignObjectives(&path, FromObjective, ToObjective);
@@ -3749,7 +3749,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'p':
-            if (!FindPath)
+            if ( not FindPath)
             {
                 Movx = X;
                 Movy = Y;
@@ -3771,7 +3771,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'P':
-            if (!FindPath)
+            if ( not FindPath)
             {
                 if (OneObjective)
                 {
@@ -3910,11 +3910,11 @@ void ProcessCommand(int Key)
                     w = w->GetNextWP();
                 }
 
-                if (!gotone)
+                if ( not gotone)
                 {
                     w = WPUnit->GetFirstUnitWP();
 
-                    if (!w)
+                    if ( not w)
                     {
                         // WPUnit->AddCurrentWP (X,Y,0,0,0.0F,0,WP_NOTHING);
                         w = WPUnit->GetFirstUnitWP();

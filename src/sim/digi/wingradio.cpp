@@ -634,7 +634,7 @@ void AiCustomizeRadioMsg(SimBaseClass* p_sender,
 
             pentity = (FalconEntity*) vuDatabase->Find(targetid);
 
-            if (!pentity)
+            if ( not pentity)
             {
                 return;
             }

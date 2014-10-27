@@ -124,7 +124,7 @@ int FalconUnitMessage::Process(uchar autodisp)
         {
             Unit tar = FindUnit(dataBlock.from);
 
-            if (!tar)
+            if ( not tar)
                 return 0;
 
             u->SetTargeted(1);
@@ -141,7 +141,7 @@ int FalconUnitMessage::Process(uchar autodisp)
         case unitStatistics:
         {
             // This should only happen for squadrons
-            if (!u->IsSquadron())
+            if ( not u->IsSquadron())
                 return 0;
 
             // Get Flight from the from data.
@@ -170,7 +170,7 @@ int FalconUnitMessage::Process(uchar autodisp)
         case unitScramble:
         {
             // Converts an alert flight to a scramble flight
-            if (!u->IsFlight())
+            if ( not u->IsFlight())
                 return 0;
 
             if (((Flight)u)->GetUnitMission() not_eq AMIS_ALERT)
@@ -179,7 +179,7 @@ int FalconUnitMessage::Process(uchar autodisp)
             Flight enemy = (Flight) FindUnit(dataBlock.from);
             Squadron squadron = (Squadron)((Flight)u)->GetUnitSquadron();
 
-            if (!squadron or !enemy)
+            if ( not squadron or !enemy)
                 return 0;
 
             MissionRequest mis = new MissionRequestClass;

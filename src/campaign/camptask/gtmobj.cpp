@@ -43,7 +43,7 @@ void CleanupObjList(void)
         pod = (POData) lp->GetUserData();
         o = FindObjective(pod->objective);
 
-        if (!o or !o->IsPrimary())
+        if ( not o or !o->IsPrimary())
             PODataList->Remove(lp);
 
         lp = np;
@@ -57,7 +57,7 @@ void CleanupObjList(void)
     {
         pod = GetPOData(o);
 
-        if (!pod)
+        if ( not pod)
             AddPODataEntry(o);
 
         o = GetNextObjective(&poit);
@@ -352,7 +352,7 @@ GODNode GndObjDataType::Insert(GODNode to_insert, int sort_by)
             return to_insert;
         }
 
-        if (!next or to_insert->priority_score > next->priority_score)
+        if ( not next or to_insert->priority_score > next->priority_score)
         {
             to_insert->next = next;
             ShiAssert(next not_eq to_insert);
@@ -392,7 +392,7 @@ GODNode GndObjDataType::Insert(GODNode to_insert, int sort_by)
             return to_insert;
         }
 
-        if (!next or to_insert->unit_options < next->unit_options)
+        if ( not next or to_insert->unit_options < next->unit_options)
         {
             to_insert->next = next;
             ShiAssert(next not_eq to_insert);
@@ -446,7 +446,7 @@ GODNode GndObjDataType::Remove(GODNode to_remove)
         return temp;
     }
 
-    if (!next)
+    if ( not next)
         return this;
 
     temp = this;
@@ -477,7 +477,7 @@ GODNode GndObjDataType::Remove(Objective o)
         return temp;
     }
 
-    if (!next)
+    if ( not next)
         return this;
 
     temp = this;
@@ -556,7 +556,7 @@ void GndObjDataType::InsertUnit(Unit u, int s, int d)
     new_node->next = NULL;
     unit_options += GetOptions(new_node->distance);
 
-    if (!unit_list)
+    if ( not unit_list)
         unit_list = new_node;
 
     unit_list = unit_list->Insert(new_node, USN_SORT_BY_DISTANCE);

@@ -54,8 +54,8 @@ void MissileClass::SetTarget(SimObjectType* newTarget)
         return;
 
 
-    ShiAssert(!newTarget or newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
-    ShiAssert(!targetPtr or targetPtr->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
+    ShiAssert( not newTarget or newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
+    ShiAssert( not targetPtr or targetPtr->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
 
 
     if (targetPtr)
@@ -65,8 +65,8 @@ void MissileClass::SetTarget(SimObjectType* newTarget)
     }
 
 
-    ShiAssert(!newTarget or newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
-    ShiAssert(!targetPtr or targetPtr->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
+    ShiAssert( not newTarget or newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
+    ShiAssert( not targetPtr or targetPtr->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
 
 
     if (newTarget)

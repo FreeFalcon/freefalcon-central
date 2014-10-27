@@ -152,7 +152,7 @@ int CheckStatus(int tid, int status)
     if (TacticsTable[tid].broken  == CHECK_ANY)
         return 1;
 
-    if (!TacticsTable[tid].broken and status)
+    if ( not TacticsTable[tid].broken and status)
         return 0;
 
     if (TacticsTable[tid].broken and !status)
@@ -166,7 +166,7 @@ int CheckLosses(int tid, int losses)
     if (TacticsTable[tid].losses  == CHECK_ANY)
         return 1;
 
-    if (!TacticsTable[tid].losses  and losses)
+    if ( not TacticsTable[tid].losses  and losses)
         return 0;
 
     if (TacticsTable[tid].losses and !losses)
@@ -180,7 +180,7 @@ int CheckEngaged(int tid, int engaged)
     if (TacticsTable[tid].engaged  == CHECK_ANY)
         return 1;
 
-    if (!TacticsTable[tid].engaged and engaged)
+    if ( not TacticsTable[tid].engaged and engaged)
         return 0;
 
     if (TacticsTable[tid].engaged and !engaged)
@@ -194,7 +194,7 @@ int CheckCombat(int tid, int combat)
     if (TacticsTable[tid].combat  == CHECK_ANY)
         return 1;
 
-    if (!TacticsTable[tid].combat and combat)
+    if ( not TacticsTable[tid].combat and combat)
         return 0;
 
     if (TacticsTable[tid].combat and !combat)
@@ -208,7 +208,7 @@ int CheckRetreating(int tid, int retreat)
     if (TacticsTable[tid].retreating == CHECK_ANY)
         return 1;
 
-    if (!TacticsTable[tid].retreating and retreat)
+    if ( not TacticsTable[tid].retreating and retreat)
         return 0;
 
     if (TacticsTable[tid].retreating and !retreat)
@@ -222,7 +222,7 @@ int CheckOwned(int tid, int o)
     if (TacticsTable[tid].owned == CHECK_ANY)
         return 1;
 
-    if (!TacticsTable[tid].owned and o)
+    if ( not TacticsTable[tid].owned and o)
         return 0;
 
     if (TacticsTable[tid].owned and !o)
@@ -236,7 +236,7 @@ int CheckAirborne(int tid, int airborne) // These two need some thought
     if (TacticsTable[tid].airborne == CHECK_ANY)
         return 1;
 
-    if (!TacticsTable[tid].airborne and airborne)
+    if ( not TacticsTable[tid].airborne and airborne)
         return 0;
 
     if (TacticsTable[tid].airborne and !airborne)
@@ -250,7 +250,7 @@ int CheckMarine(int tid, int marine) //
     if (TacticsTable[tid].marine == CHECK_ANY)
         return 1;
 
-    if (!TacticsTable[tid].marine and marine)
+    if ( not TacticsTable[tid].marine and marine)
         return 0;
 
     if (TacticsTable[tid].marine and !marine)

@@ -552,7 +552,7 @@ void SubTitleCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if ((PlayerOptions.getSubtitles() == false) and (!radioLabel)) // need to create a new object..
+    if ((PlayerOptions.getSubtitles() == false) and ( not radioLabel)) // need to create a new object..
     {
         try
         {

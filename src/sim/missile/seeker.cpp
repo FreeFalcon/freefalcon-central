@@ -62,7 +62,7 @@ void MissileClass::RunSeeker()
         ) ||
         (
             launchState == InFlight and sensorArray[0]->Type() not_eq SensorClass::Radar  and 
-            (!isSlave or !targetPtr) //I-Hawk - was missing the parentheses here, caused heat seeker locking problems
+            ( not isSlave or !targetPtr) //I-Hawk - was missing the parentheses here, caused heat seeker locking problems
         )
     )
     {
@@ -141,12 +141,12 @@ void MissileClass::RunSeeker()
     // Don't come here without a sensor
     ShiAssert(sensorArray);
 
-    if (!sensorArray) return; // Shouldn't be necessary, but at this stage, lets be safe...
+    if ( not sensorArray) return; // Shouldn't be necessary, but at this stage, lets be safe...
 
     // Don't come here without a sensor
     ShiAssert(sensorArray[0]);
 
-    if (!sensorArray[0]) return; // Shouldn't be necessary, but at this stage, lets be safe...
+    if ( not sensorArray[0]) return; // Shouldn't be necessary, but at this stage, lets be safe...
 
     // No seeker if in SAFE
     if (
@@ -207,7 +207,7 @@ void MissileClass::RunSeeker()
         (
             inputData->mslActiveTtg > 0  and 
             launchState == InFlight and sensorArray[0]->Type() not_eq SensorClass::Radar  and 
-            (!isSlave or !targetPtr)
+            ( not isSlave or !targetPtr)
         )
     )
     {
@@ -230,7 +230,7 @@ void MissileClass::RunSeeker()
 #define ALWAYS_RELEASE_LOCAL_LIST 1
 #if ALWAYS_RELEASE_LOCAL_LIST
 
-    if (localList/* and (!lockedTarget)*/)
+    if (localList/* and ( not lockedTarget)*/)
     {
         ReleaseTargetList(newTarget);
         targetPtr = NULL;
@@ -238,7 +238,7 @@ void MissileClass::RunSeeker()
 
 #else
 
-    if (localList and (!lockedTarget))
+    if (localList and ( not lockedTarget))
     {
         ReleaseTargetList(newTarget);
         targetPtr = NULL;

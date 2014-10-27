@@ -73,7 +73,7 @@ void CampHackButton4CB(long, short hittype, C_Base *)
     GetBriefingData(GBD_PACKAGE_LABEL, 0, buffer, 80);
     GetBriefingData(GBD_PACKAGE_MISSION, 0, buffer, 80);
 
-    while (!done)
+    while ( not done)
     {
         if (GetBriefingData(GBD_PACKAGE_ELEMENT_NAME, i, buffer, 80) < 0)
             done = 1;

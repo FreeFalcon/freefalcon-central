@@ -17,7 +17,7 @@ extern int mpHsi;
 
 void ICPClass::ExecILSMode(void)
 {
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI Original code
         VU_ID id;
@@ -271,7 +271,7 @@ void ICPClass::ExecILSMode(void)
 
 void ICPClass::PNUpdateILSMode(int button, int)
 {
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI original code
         if (button == PREV_BUTTON)

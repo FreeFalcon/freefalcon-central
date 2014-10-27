@@ -108,7 +108,7 @@ void C_Blip::AddBlip(short x, short y, uchar side, long starttime) // time is in
     newblip->time = starttime;
     newblip->Next = NULL;
 
-    if (!Root_)
+    if ( not Root_)
         Root_ = newblip;
     else
     {

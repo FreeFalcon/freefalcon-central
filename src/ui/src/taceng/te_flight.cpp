@@ -230,7 +230,7 @@ int IsValidTarget(Team team, int mission, CampEntity target)
     if (mission < 0)
         return FALSE;
 
-    if (!target and (MissionData[mission].target == AMIS_TAR_LOCATION or MissionData[mission].target == AMIS_TAR_NONE))
+    if ( not target and (MissionData[mission].target == AMIS_TAR_LOCATION or MissionData[mission].target == AMIS_TAR_NONE))
         return TRUE;
     else if (target and target->IsUnit() and ((Unit)target)->Real() and !target->IsSquadron() and MissionData[mission].target == AMIS_TAR_UNIT)
     {
@@ -390,7 +390,7 @@ int GetMissionFromTarget(Team team, int dindex, CampEntity target)
 {
     if (target and target->IsObjective())
     {
-        if (!GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE))
+        if ( not GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE))
             target = NULL;
         else if ((target->GetType() == TYPE_AIRBASE or target->GetType() == TYPE_AIRSTRIP or target->GetType() == TYPE_RADAR or target->GetType() == TYPE_COM_CONTROL)  and 
                  IsValidMission(dindex, AMIS_OCASTRIKE))
@@ -408,7 +408,7 @@ int GetMissionFromTarget(Team team, int dindex, CampEntity target)
 
     if (target and target->IsUnit())
     {
-        if (!GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE))
+        if ( not GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE))
         {
             if (target->IsFlight() and IsValidMission(dindex, AMIS_HAVCAP))
                 return AMIS_HAVCAP;
@@ -427,7 +427,7 @@ int GetMissionFromTarget(Team team, int dindex, CampEntity target)
         target = NULL;
     }
 
-    if (!target)
+    if ( not target)
     {
         if (IsValidMission(dindex, AMIS_BARCAP))
             return AMIS_BARCAP;

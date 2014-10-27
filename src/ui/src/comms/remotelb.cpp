@@ -54,11 +54,11 @@ RemoteImage *RemoteLB::Receive(RemoteImage *Image, short packetno, short length,
 
     remotedata = Image;
 
-    if (!remotedata)
+    if ( not remotedata)
     {
         remotedata = new RemoteImage;
 
-        if (!remotedata)
+        if ( not remotedata)
             return(NULL);
 
         remotedata->flags = 0;
@@ -77,7 +77,7 @@ RemoteImage *RemoteLB::Receive(RemoteImage *Image, short packetno, short length,
 
         while (i < remotedata->numblocks)
         {
-            if (!remotedata->blockflag[i])
+            if ( not remotedata->blockflag[i])
                 i = static_cast<short>(remotedata->numblocks + 1);
             else
                 i++;

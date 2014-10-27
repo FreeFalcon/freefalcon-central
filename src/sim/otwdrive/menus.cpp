@@ -645,7 +645,7 @@ void OTWDriverClass::ChangeExitMenu(int newVal)
             endFlightTimer = vuxRealTime;
             newVal = FALSE;
         }
-        else if (!endDialogObject)
+        else if ( not endDialogObject)
         {
             Tpoint pos = {4.0f, 0.f, 0.0f };
             pos.x *= (60.0F * DTR) / GetFOV();

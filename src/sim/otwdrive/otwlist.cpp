@@ -53,7 +53,7 @@ void OTWDriverClass::AddSfxRequest(SfxClass *sfxptr)
 {
     sfxRequest *tmpRequest;
 
-    if (!IsActive())
+    if ( not IsActive())
     {
         return;
     }
@@ -150,7 +150,7 @@ void OTWDriverClass::DoSfxActiveList(void)
         sfxptr = *sfxptrptr;
 
         // exec the request
-        if (!sfxptr->sfx->Exec())
+        if ( not sfxptr->sfx->Exec())
         {
             // effect finished
             // skip to the next effect and remove from chain

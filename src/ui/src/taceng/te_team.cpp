@@ -105,7 +105,7 @@ static uchar GetUnusedFlag()
 
     while (i < TOTAL_FLAGS)
     {
-        if (!FlagImageID[i][FLAG_STATUS])
+        if ( not FlagImageID[i][FLAG_STATUS])
             return(static_cast<uchar>(i));
 
         i++;
@@ -120,7 +120,7 @@ static uchar GetUnusedColor()
 
     while (i < NUM_TEAMS)
     {
-        if (!TeamColorUse[i])
+        if ( not TeamColorUse[i])
             return(static_cast<uchar>(i));
 
         i++;
@@ -382,7 +382,7 @@ void SetupCurrentTeamValues(long team)
     if (team >= NUM_TEAMS) // Out of range
         return;
 
-    if (!TeamInfo[team]) // Team undefined
+    if ( not TeamInfo[team]) // Team undefined
         return;
 
     win = gMainHandler->FindWindow(TAC_TEAM_WIN);
@@ -527,7 +527,7 @@ static void RemoveTeamCB(long, short hittype, C_Base *)
         TeamCount = gSelectedTeam;
         i = 0;
 
-        while (!i)
+        while ( not i)
         {
             gSelectedTeam--;
 
@@ -586,14 +586,14 @@ static void ChoosePrevFlag(long, short hittype, C_Base *)
 
     done = 0;
 
-    while (!done)
+    while ( not done)
     {
         newflag--;
 
         if (newflag < 1)
             newflag += TOTAL_FLAGS;
 
-        if (!FlagImageID[newflag][FLAG_STATUS])
+        if ( not FlagImageID[newflag][FLAG_STATUS])
             done = 1;
     }
 
@@ -618,14 +618,14 @@ static void ChooseNextFlag(long, short hittype, C_Base *)
 
     done = 0;
 
-    while (!done)
+    while ( not done)
     {
         newflag++;
 
         if (newflag >= TOTAL_FLAGS)
             newflag = 1;
 
-        if (!FlagImageID[newflag][FLAG_STATUS])
+        if ( not FlagImageID[newflag][FLAG_STATUS])
             done = 1;
     }
 
@@ -649,14 +649,14 @@ static void ChoosePrevColor(long, short hittype, C_Base *)
 
     done = 0;
 
-    while (!done)
+    while ( not done)
     {
         newcolor--;
 
         if (newcolor < 1)
             newcolor = NUM_TEAMS - 1;
 
-        if (!TeamColorUse[newcolor])
+        if ( not TeamColorUse[newcolor])
             done = 1;
     }
 
@@ -681,14 +681,14 @@ static void ChooseNextColor(long, short hittype, C_Base *)
 
     done = 0;
 
-    while (!done)
+    while ( not done)
     {
         newcolor++;
 
         if (newcolor >= NUM_TEAMS)
             newcolor = 1;
 
-        if (!TeamColorUse[newcolor])
+        if ( not TeamColorUse[newcolor])
             done = 1;
     }
 

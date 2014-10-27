@@ -152,7 +152,7 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
     {
         m_pCtxDX = c;
 
-        if (!m_pCtxDX)
+        if ( not m_pCtxDX)
         {
             ShiWarning("Failed to create device!");
             return FALSE;
@@ -162,7 +162,7 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
 
         ShiAssert(pIB);
 
-        if (!pIB) return FALSE;
+        if ( not pIB) return FALSE;
 
         m_pIB = pIB;
         IDirectDrawSurface7 *lpDDSBack = pIB->targetSurface();
@@ -188,7 +188,7 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
 
         m_pIdx = new WORD[vbdesc.dwNumVertices * 3];
 
-        if (!m_pIdx) throw _com_error(E_OUTOFMEMORY);
+        if ( not m_pIdx) throw _com_error(E_OUTOFMEMORY);
 
         // Setup our set of cached rendering states
         SetupMPRState(CHECK_PREVIOUS_STATE);
@@ -467,7 +467,7 @@ void ContextMPR::FinishFrame(void *lpFnPtr)
             TheTerrTextures.RestoreAll();
             TheFarTextures.RestoreAll();
 
-            if (!bInBeginScene) INT3; // ASSO: break if not in BeginScene
+            if ( not bInBeginScene) INT3; // ASSO: break if not in BeginScene
 
             hr = m_pD3DD->EndScene();
             bInBeginScene = false; // ASSO:
@@ -512,7 +512,7 @@ void ContextMPR::SetState(WORD State, DWORD Value)
 #endif
     ShiAssert(FALSE == F4IsBadReadPtr(m_pD3DD, sizeof * m_pD3DD));
 
-    if (!m_pD3DD)
+    if ( not m_pD3DD)
         return;
 
     switch (State)
@@ -1755,7 +1755,7 @@ void ContextMPR::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, in
         pSrc = (DWORD *)(((BYTE *)pSrc) + (sY * (totalWidth << 2)) + sX);
         pDst = new DWORD[w * h];
 
-        if (!pDst) throw _com_error(E_OUTOFMEMORY);
+        if ( not pDst) throw _com_error(E_OUTOFMEMORY);
 
         for (int y = 0; y < h; y++)
         {
@@ -1836,7 +1836,7 @@ void ContextMPR::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, in
 
 inline void ContextMPR::SetStateTable(GLint state, GLint flag)
 {
-    if (!m_pD3DD)
+    if ( not m_pD3DD)
         return;
 
     // Record a stateblock
@@ -1886,7 +1886,7 @@ void ContextMPR::SetupMPRState(GLint flag)
 
 void ContextMPR::CleanupMPRState(GLint flag)
 {
-    if (!StateSetupCounter)
+    if ( not StateSetupCounter)
     {
         ShiWarning("MPR not initialized!");
         return;
@@ -1919,7 +1919,7 @@ void ContextMPR::SetTexture1(GLint texID)
         else
             hr = m_pD3DD->SetTexture(0, (IDirectDrawSurface7 *)texID);
 
-        if (!SUCCEEDED(hr)) INT3;
+        if ( not SUCCEEDED(hr)) INT3;
 
         m_pD3DD->SetTexture(1, NULL);
     }
@@ -1938,7 +1938,7 @@ void ContextMPR::SetTexture2(GLint texID)
         else
             hr = m_pD3DD->SetTexture(1, (IDirectDrawSurface7 *)texID);
 
-        if (!SUCCEEDED(hr)) INT3;
+        if ( not SUCCEEDED(hr)) INT3;
     }
 }
 
@@ -1961,7 +1961,7 @@ void ContextMPR::SelectTexture1(GLint texID)
         m_stats.PutTexture(false);
 #endif
 
-        if (!bZBuffering)
+        if ( not bZBuffering)
         {
             // JB 010326 CTD (too much CPU)
             if (g_bSlowButSafe and F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
@@ -2001,7 +2001,7 @@ void ContextMPR::SelectTexture2(GLint texID)
         m_stats.PutTexture(false);
 #endif
 
-        if (!bZBuffering)
+        if ( not bZBuffering)
         {
             // JB 010326 CTD (too much CPU)
             if (g_bSlowButSafe and F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
@@ -2050,7 +2050,7 @@ void ContextMPR::ApplyStateBlock(GLint state)
 
         HRESULT hr = m_pD3DD->ApplyStateBlock(StateTable[state]);
 
-        if (!SUCCEEDED(hr)) INT3;
+        if ( not SUCCEEDED(hr)) INT3;
     }
 }
 
@@ -2063,7 +2063,7 @@ void ContextMPR::RestoreState(GLint state)
 
     if (GetKeyState(VK_F4) & compl 1)
     {
-        if (!bEnableRenderStateHighlightReplace)
+        if ( not bEnableRenderStateHighlightReplace)
             bEnableRenderStateHighlightReplace = true;
     }
 
@@ -2091,7 +2091,7 @@ void ContextMPR::RestoreState(GLint state)
 
         currentState = state;
 
-        if (!bZBuffering)
+        if ( not bZBuffering)
         {
             FlushVB();
 
@@ -2109,7 +2109,7 @@ void ContextMPR::UpdateSpecularFog(DWORD specular)
 
 void ContextMPR::SetZBuffering(BOOL state)
 {
-    if (!bZBuffering and state)
+    if ( not bZBuffering and state)
     {
         FlushVB();
         bZBuffering = state;
@@ -2190,7 +2190,7 @@ void ContextMPR::UpdateViewport()
         vp.dwWidth = m_rcVP.right - m_rcVP.left;
         vp.dwHeight = m_rcVP.bottom - m_rcVP.top;
 
-        if (!vp.dwWidth or !vp.dwHeight)
+        if ( not vp.dwWidth or !vp.dwHeight)
             return;
     }
     else
@@ -2269,7 +2269,7 @@ void ContextMPR::TextOut(short x, short y, DWORD col, LPSTR str)
     MonoPrint("ContextMPR::TextOut(%d,%d,0x%X,%s)\n", x, y, col, str);
 #endif
 
-    if (!str) return;
+    if ( not str) return;
 
     try
     {
@@ -2415,7 +2415,7 @@ void ContextMPR::FlushPolyLists()
 
 void ContextMPR::FlushVB()
 {
-    if (!m_dwNumVtx) return;
+    if ( not m_dwNumVtx) return;
 
     ShiAssert(m_nCurPrimType not_eq 0);
 
@@ -2445,7 +2445,7 @@ void ContextMPR::FlushVB()
 
 #ifdef _VALIDATE_DEVICE
 
-    if (!m_pCtxDX->ValidateD3DDevice())
+    if ( not m_pCtxDX->ValidateD3DDevice())
         MonoPrint("ContextMPR::FlushVB() - Validate Device failed - currentState=%d,currentTexture=0x%\n", currentState, currentTexture);
 
 #endif
@@ -2519,7 +2519,7 @@ void ContextMPR::setGlobalZBias(float zBias)
 
 inline TLVERTEX* SPolygon::CopyToVertexBuffer(TLVERTEX *bufferPos)
 {
-    if (!bufferPos)
+    if ( not bufferPos)
         return NULL;
 
     // COBRA - RED - Using arrays of TLVERTEX it is possible to copy directly into DX Buffer
@@ -2658,7 +2658,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
     ShiAssert(FALSE == F4IsBadReadPtr(poly, sizeof * poly));
     ShiAssert(poly->nVerts >= 3);
     ShiAssert(xyzIdxPtr);
-    ShiAssert(!bUseFGColor or (bUseFGColor and rgbaIdxPtr == NULL));
+    ShiAssert( not bUseFGColor or (bUseFGColor and rgbaIdxPtr == NULL));
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::DrawPoly(0x%X,0x%X,0x%X,0x%X,0x%X,0x%X,%s)\n",
@@ -2669,10 +2669,10 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
     m_stats.Primitive(D3DPT_TRIANGLEFAN, poly->nVerts);
 #endif
 
-    if (!bZBuffering)
+    if ( not bZBuffering)
     {
         // Lock VB
-        if (!LockVB(poly->nVerts, (void **)&m_pTLVtx))
+        if ( not LockVB(poly->nVerts, (void **)&m_pTLVtx))
         {
             m_colFOG = 0xFFFFFFFF;
             return;
@@ -2684,7 +2684,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
         ShiAssert(FALSE == F4IsBadWritePtr(pVtx, poly->nVerts * sizeof * pVtx));
 
         // JB 011124 CTD
-        if (!pVtx)
+        if ( not pVtx)
         {
             m_colFOG = 0xFFFFFFFF;
             return;
@@ -2702,7 +2702,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
     }
 
     // Iterate for each vertex
-    if (!bZBuffering)
+    if ( not bZBuffering)
     {
         for (int i = 0; i < poly->nVerts; i++)
         {
@@ -2950,7 +2950,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
     }
 
     // Generate Indices
-    if (!bZBuffering)
+    if ( not bZBuffering)
     {
         WORD *pIdx = &m_pIdx[m_dwNumIdx];
 
@@ -3024,7 +3024,7 @@ void ContextMPR::Draw2DPoint(Tpoint *v0)
     // Lock VB
     TLVERTEX *pVtx;
 
-    if (!LockVB(1, (void **)&m_pTLVtx))
+    if ( not LockVB(1, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -3090,7 +3090,7 @@ void ContextMPR::Draw2DPoint(float x, float y)
     // Lock VB
     TLVERTEX *pVtx;
 
-    if (!LockVB(1, (void **)&m_pTLVtx))
+    if ( not LockVB(1, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -3152,7 +3152,7 @@ void ContextMPR::Draw2DLine(Tpoint *v0, Tpoint *v1)
     // Lock VB
     TLVERTEX *pVtx;
 
-    if (!LockVB(2, (void **)&m_pTLVtx))
+    if ( not LockVB(2, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -3252,7 +3252,7 @@ void ContextMPR::Draw2DLine(float x0, float y0, float x1, float y1)
     // Lock VB
     TLVERTEX *pVtx;
 
-    if (!LockVB(2, (void **)&m_pTLVtx))
+    if ( not LockVB(2, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -3342,7 +3342,7 @@ void ContextMPR::DrawPrimitive2D(int type, int nVerts, int *xyzIdxPtr)
     // Lock VB
     TLVERTEX *pVtx;
 
-    if (!LockVB(nVerts, (void **)&m_pTLVtx))
+    if ( not LockVB(nVerts, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -3419,7 +3419,7 @@ void ContextMPR::DrawPrimitive2D(int type, int nVerts, int *xyzIdxPtr)
 void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtx_t *pData, WORD Stride)
 {
     // Impossible
-    ShiAssert(!(VtxInfo & MPR_VI_COLOR));
+    ShiAssert( not (VtxInfo & MPR_VI_COLOR));
 
     // Ensure no degenerate nPrimTypeitives
     ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS and nVerts >= 1) or (nPrimType <= MPR_PRM_POLYLINE and nVerts >= 2));
@@ -3437,7 +3437,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtx_
     // Lock VB
     TLVERTEX *pVtx;
 
-    if (!LockVB(nVerts, (void **)&m_pTLVtx))
+    if ( not LockVB(nVerts, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -3532,7 +3532,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
 #endif
 
     // Lock VB
-    if (!LockVB(nVerts, (void **)&m_pTLVtx))
+    if ( not LockVB(nVerts, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -3545,7 +3545,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
     ShiAssert(FALSE == F4IsBadWritePtr(pVtx, nVerts * sizeof * pVtx));
 
     // JB 011124 CTD
-    if (!pVtx)
+    if ( not pVtx)
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -3654,10 +3654,10 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
     m_stats.Primitive(m_nCurPrimType, nVerts);
 #endif
 
-    if (!bZBuffering)
+    if ( not bZBuffering)
     {
         // Lock VB
-        if (!LockVB(nVerts, (void **)&m_pTLVtx))
+        if ( not LockVB(nVerts, (void **)&m_pTLVtx))
         {
             m_colFOG = 0xFFFFFFFF;
             return;
@@ -3670,7 +3670,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
         ShiAssert(FALSE == F4IsBadWritePtr(pVtx, nVerts * sizeof * pVtx));
 
         // JB 011124 CTD
-        if (!pVtx)
+        if ( not pVtx)
         {
             m_colFOG = 0xFFFFFFFF;
             return;
@@ -3693,7 +3693,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
         sVertex = sPolygon->pVertexList;
     }
 
-    if (!bZBuffering)
+    if ( not bZBuffering)
     {
         // Iterate for each vertex
         for (int i = 0; i < nVerts; i++)
@@ -3702,7 +3702,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
             ShiAssert((BYTE *)pVtx < m_pVtxEnd);
 
             // JB 010712 CTD second try
-            if (!pData[i]) break;
+            if ( not pData[i]) break;
 
             if (DisplayOptions.bScreenCoordinateBiasFix)
             {
@@ -3776,7 +3776,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
         for (int i = 0; i < nVerts; i++)
         {
             // JB 010712 CTD
-            if (!pData[i]) break;
+            if ( not pData[i]) break;
 
             sVertex->sx = pData[i]->x;
             sVertex->sy = pData[i]->y;
@@ -3830,7 +3830,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
     }
 
     // Generate Indices
-    if (!bZBuffering)
+    if ( not bZBuffering)
     {
         if (m_nCurPrimType == D3DPT_TRIANGLEFAN)
         {

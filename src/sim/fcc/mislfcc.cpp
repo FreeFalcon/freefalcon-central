@@ -40,7 +40,7 @@ void FireControlComputer::AirAirMode(void)
     float irSigTDBP = 0.0F ; // Marco - storage for irSig
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!(Sms->curWeaponType == wtAim120 or Sms->curWeaponType == wtAim9)) return; //me123
+    if ( not (Sms->curWeaponType == wtAim120 or Sms->curWeaponType == wtAim9)) return; //me123
 
     SimWeaponClass *cw = Sms->GetCurrentWeapon();
 
@@ -92,7 +92,7 @@ void FireControlComputer::AirAirMode(void)
             {
                 theMissile->isSpot = 1 - theMissile->isSpot;
 
-                if (!theMissile->isSpot)
+                if ( not theMissile->isSpot)
                 {
                     missileSeekerAz = 0.00f;
                     missileSeekerEl = -0.06f;
@@ -118,10 +118,10 @@ void FireControlComputer::AirAirMode(void)
             //MI 02/02/02 make sure we don't get an "unallowed" mode for the P's
             if (Sms->curWeaponType == wtAim9 and cw->GetSPType() == SPTYPE_AIM9P)
             {
-                if (!theMissile->isSpot)
+                if ( not theMissile->isSpot)
                     theMissile->isSpot = TRUE;
 
-                if (!theMissile->isSlave)
+                if ( not theMissile->isSlave)
                     theMissile->isSlave = TRUE;
 
                 if (theMissile->isTD)
@@ -153,15 +153,15 @@ void FireControlComputer::AirAirMode(void)
                 VehicleClassDataType *vc =
                     (VehicleClassDataType *)Falcon4ClassTable[platform->Type() - VU_LAST_ENTITY_TYPE].dataPtr;
 
-                if (!playerFCC or ( // don't do this check for ai
-                        vc and (!(vc->Flags & 0x20000000) ||
+                if ( not playerFCC or ( // don't do this check for ai
+                        vc and ( not (vc->Flags & 0x20000000) ||
                                // JB 010712 Normal behavior for the 2d cockpit
                                OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit)  and 
                         !theMissile->isCaged)
                    )
                 {
                     // We don't have a target so find one
-                    if (!theMissile->targetPtr)
+                    if ( not theMissile->targetPtr)
                     {
                         theMissile->SetSeekerPos(&missileSeekerAz, &missileSeekerEl);
                         curTarget = targetList;
@@ -239,7 +239,7 @@ void FireControlComputer::AirAirMode(void)
                                         break;
                                     }
 
-                                    if (!theMissile->isSpot and fabs(theMissile->targetPtr->localData->el - missileSeekerEl) <  0.06f  and 
+                                    if ( not theMissile->isSpot and fabs(theMissile->targetPtr->localData->el - missileSeekerEl) <  0.06f  and 
                                         fabs(theMissile->targetPtr->localData->az - missileSeekerAz) <  0.06f)
                                     {
                                         break;
@@ -295,7 +295,7 @@ void FireControlComputer::AirAirMode(void)
                 {
                     irSig = theMissile->targetPtr->localData->irSignature;
                 }
-                else if (!bCageSound)
+                else if ( not bCageSound)
                 {
                     irSig = 0.0f;
                 }
@@ -326,7 +326,7 @@ void FireControlComputer::AirAirMode(void)
                     // Marco Edit
                     irSigTDBP = irSig;
 
-                    if (!theMissile->isTD)
+                    if ( not theMissile->isTD)
                     {
                         irSigTDBP = 0.0f;
                     }
@@ -559,7 +559,7 @@ void FireControlComputer::AirAirMode(void)
                      overtake * missileteoryMaxTof < missileRMax))
                      missileRMax   = overtake * missileteoryMaxTof;// missileMaxTof;
 
-                    else if (!((AircraftClass *)theMissile->parent)->isDigital) */
+                    else if ( not ((AircraftClass *)theMissile->parent)->isDigital) */
                     missileRMax   = overtake * missileteoryMaxTof;
                 }
 
@@ -589,7 +589,7 @@ void FireControlComputer::AirAirMode(void)
                 if (missileRMin > missileRneMin)
                     missileRneMin = missileRMin;//me123  addet.
             }
-            else if (!theMissile->isCaged)
+            else if ( not theMissile->isCaged)
             {
                 if (theMissile->targetPtr)
                 {
@@ -702,7 +702,7 @@ void FireControlComputer::AirAirMode(void)
     }
     else
     {
-        if (!releaseConsent)
+        if ( not releaseConsent)
         {
             // Check for regeneration of weapon
             if (postDrop and Sms->curWeapon == NULL)
@@ -747,7 +747,7 @@ void FireControlComputer::AirAirMode(void)
     else
         nextMissileImpactTime = -1.0F;
 
-    if (!releaseConsent)
+    if ( not releaseConsent)
     {
         postDrop = FALSE;
     }

@@ -125,7 +125,7 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
 
             while (e)
             {
-                if (!e->Moving())
+                if ( not e->Moving())
                 {
                     AddToThreatMap(e, map_data, team);
                 }
@@ -229,7 +229,7 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
                         // KCK: Search a small area first, then if I don't find something, search a larger area
                         o = FindNearestObjective(rx, ry, NULL, 10);
 
-                        if (!o)
+                        if ( not o)
                         {
                             o = FindNearestObjective(rx, ry, NULL, 80);
                         }
@@ -260,7 +260,7 @@ uchar* UpdateCampMap(int type, uchar* map_data, GridIndex cx, GridIndex cy)
     int i, hi;
     Objective o;
 
-    if (!map_data)
+    if ( not map_data)
         return NULL;
 
     fx = cx - MAP_RADIUS;
@@ -311,7 +311,7 @@ uchar* UpdateCampMap(int type, uchar* map_data, GridIndex cx, GridIndex cy)
                         // KCK: Searh a small area first, then if I don't find something, search a larger area
                         o = FindNearestObjective(rx, ry, NULL, 10);
 
-                        if (!o)
+                        if ( not o)
                         {
                             o = FindNearestObjective(rx, ry, NULL, 80);
                         }
@@ -341,7 +341,7 @@ uchar GetOwner(uchar* map_data, GridIndex x, GridIndex y)
 {
     int i, hi;
 
-    if (!map_data)
+    if ( not map_data)
         return 0;
 
     i = (y / MAP_RATIO) * MRX + (x / MAP_RATIO);
@@ -469,7 +469,7 @@ int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
     int fx, lx, fy, ly, li, hi, i, c, oct, bdi;
     float d, hd, bd, ld[NUM_RADAR_ARCS] /* 2001-03-13 S.G. */, ld0;
 
-    if (!e->GetNumberOfArcs())
+    if ( not e->GetNumberOfArcs())
         return 0;
 
     bd = 0.0F;

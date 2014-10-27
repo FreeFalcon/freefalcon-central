@@ -114,7 +114,7 @@ void DrawableBridge::ReplacePiece(DrawableRoadbed *oldPiece, DrawableRoadbed *ne
 
     if (newPiece)
     {
-        ShiAssert(!newPiece->InDisplayList());
+        ShiAssert( not newPiece->InDisplayList());
         oldPiece->parentList->InsertObject(newPiece);
     }
 
@@ -298,7 +298,7 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
     {
 
         // Push the object back up to our parent list if it has moved beyond our area
-        if (!ObjectInside(obj))
+        if ( not ObjectInside(obj))
         {
             ShiAssert(obj->GetClass() == GroundVehicle);
             dynamicObjects.RemoveObject(obj);

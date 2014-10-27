@@ -6,7 +6,7 @@ void MissileClass::Trigenometry(void)
     float t1, t2;
     mlTrig trig;
 
-    if (!ifd)
+    if ( not ifd)
         return; // JB 010803
 
     mlSinCos(&trig, psi);

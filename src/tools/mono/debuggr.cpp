@@ -790,10 +790,10 @@ unsigned long WINAPI update_mono(void *ptr)
 
     while (ptr and hStdoutDbg)
     {
-        if (!SetConsoleCursorPosition(hStdoutDbg, dwBufferCoord))
+        if ( not SetConsoleCursorPosition(hStdoutDbg, dwBufferCoord))
             OutputDebugString("Warning: WriteConsoleOutputA failed\n");
 
-        if (!WriteConsole(hStdoutDbg, mono_memory, 80 * 25 * 2, &cb, NULL))
+        if ( not WriteConsole(hStdoutDbg, mono_memory, 80 * 25 * 2, &cb, NULL))
             OutputDebugString("Warning: WriteConsoleOutputA failed\n");
 
         Sleep(25);
@@ -866,7 +866,7 @@ void InitDebug(int mode)
 
 #ifdef WRITE_FILE
 
-    if (!debugFile)
+    if ( not debugFile)
         debugFile = fopen("c:\\temp\\debug.dat", "w");
 
 #endif
@@ -960,7 +960,7 @@ void MonoPrint(char *string, ...)
     if (graphicsMode not_eq DEBUGGER_TEXT_MODE)
         return;
 
-    if (!string)
+    if ( not string)
         return;
 
     EnterCriticalSection(&mono_critical);

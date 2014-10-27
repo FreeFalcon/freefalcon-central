@@ -32,7 +32,7 @@ void DigitalBrain::CommandFlight(void)
                     // just respond defensivly.
                     if (targetPtr->BaseData()->IsSim())
                     {
-                        if (!targetPtr->BaseData()->IsWeapon())
+                        if ( not targetPtr->BaseData()->IsWeapon())
                             targetId = ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject()->Id();
                     }
                     else
@@ -75,7 +75,7 @@ void DigitalBrain::CommandFlight(void)
                 }
             }
 
-            if (!stillengaging and !threatPtr) // If we are threatened, call the wingmen back regardless what they do
+            if ( not stillengaging and !threatPtr) // If we are threatened, call the wingmen back regardless what they do
             {
                 AiSendCommand(self, FalconWingmanMsg::WMRejoin, AiFlight, FalconNullId);
                 AiSendCommand(self, FalconWingmanMsg::WMCoverMode, AiFlight, FalconNullId);

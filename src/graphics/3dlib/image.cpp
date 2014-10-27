@@ -53,7 +53,7 @@ GLubyte *ConvertImage(GLImageInfo *fi, GLint mode, GLuint *chromakey)
     sizebmp *= totalsize;
     bmpptr = (unsigned char *) glAllocateMemory(sizebmp, 0);
 
-    if (!bmpptr) return (0);
+    if ( not bmpptr) return (0);
 
     if (fi -> palette)   // bitmap has palette
     {
@@ -196,7 +196,7 @@ GLint ReadTGA(CImageFileMemory *fi)
     fi -> image.palette = NULL;
     fi -> image.image = (GLubyte *) glAllocateMemory(i , 0);
 
-    if (!fi -> image.image) return BAD_ALLOC;
+    if ( not fi -> image.image) return BAD_ALLOC;
 
     fi -> glReadMem(fi -> image.image, i);
     return GOOD_READ;
@@ -212,7 +212,7 @@ GLint ReadDDS(CImageFileMemory *fi)
 
     if (dwMagic not_eq MAKEFOURCC('D', 'D', 'S', ' ')) return BAD_FORMAT;
 
-    if (!fi->glReadMem(&ddsd, sizeof(DDSURFACEDESC2))) return BAD_FORMAT;
+    if ( not fi->glReadMem(&ddsd, sizeof(DDSURFACEDESC2))) return BAD_FORMAT;
 
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
@@ -242,7 +242,7 @@ GLint ReadDDS(CImageFileMemory *fi)
 
     fi->image.image = (GLubyte *)glAllocateMemory(ddsd.dwLinearSize, 0);
 
-    if (!fi->image.image) return BAD_ALLOC;
+    if ( not fi->image.image) return BAD_ALLOC;
 
     fi->glReadMem(fi->image.image, ddsd.dwLinearSize);
 
@@ -278,11 +278,11 @@ GLint ReadBMP(CImageFileMemory *fi)
     }
     else
     {
-        if (!i) i = 256;
+        if ( not i) i = 256;
 
         palptr = (GLulong *) glAllocateMemory(1024);
 
-        if (!palptr) return (BAD_ALLOC);
+        if ( not palptr) return (BAD_ALLOC);
 
         fi -> image.palette = palptr;
 
@@ -302,7 +302,7 @@ GLint ReadBMP(CImageFileMemory *fi)
     i = j * (fi -> image.width * fi -> image.height);
     fi -> image.image = (GLubyte *) glAllocateMemory(i, 0);
 
-    if (!fi -> image.image) return (BAD_ALLOC);
+    if ( not fi -> image.image) return (BAD_ALLOC);
 
     ptr = (unsigned char *) fi -> image.image + i;
     i = j * fi -> image.width;
@@ -352,14 +352,14 @@ GLint ReadAPL(CImageFileMemory *fi)
     // Allocate memory for the image and its palette
     fi -> image.palette = (GLulong*)glAllocateMemory(1024, 0);
 
-    if (!fi -> image.palette)
+    if ( not fi -> image.palette)
     {
         return (BAD_ALLOC);
     }
 
     fi -> image.image = (GLubyte *)glAllocateMemory(imageSize, 0);
 
-    if (!fi -> image.image)
+    if ( not fi -> image.image)
     {
         glReleaseMemory(fi -> image.palette);
         return (BAD_ALLOC);
@@ -421,7 +421,7 @@ GLint UnpackGIF(CImageFileMemory *fi)
 
         palOut = (GLulong *) glAllocateMemory(1024);
 
-        if (!palOut)
+        if ( not palOut)
         {
             return BAD_ALLOC;
         }
@@ -451,7 +451,7 @@ GLint UnpackGIF(CImageFileMemory *fi)
             fi -> image.height = iblk.height;
             fi -> image.image = (GLubyte *) glAllocateMemory(fi->image.width * fi->image.height, 0);
 
-            if (!fi -> image.image)
+            if ( not fi -> image.image)
             {
                 glReleaseMemory((char *) fi->image.palette);
                 return (BAD_ALLOC);
@@ -471,7 +471,7 @@ GLint UnpackGIF(CImageFileMemory *fi)
                 glReleaseMemory((char *) fi->image.palette);
                 palOut = (GLulong *) glAllocateMemory(1024);
 
-                if (!palOut)
+                if ( not palOut)
                 {
                     return BAD_ALLOC;
                 }
@@ -885,12 +885,12 @@ GLulong *ReadLBMColorMap(CImageFileMemory *fi)
         }
         else CMAP = 1;
     }
-    while (!CMAP);
+    while ( not CMAP);
 
     fi->glReadMem(LBMPalette, size);
     finalPalette = (GLulong *)glAllocateMemory(1024);
 
-    if (!finalPalette)
+    if ( not finalPalette)
     {
         return NULL;
     }
@@ -938,7 +938,7 @@ GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
         }
         else BODY = 1;
     }
-    while (!BODY);
+    while ( not BODY);
 
     if (lpHeader->masking == 1)
         bytes = ((fi->image.width + 7) / 8) * (lpHeader->nPlanes + 1);
@@ -1067,7 +1067,7 @@ GLint UnpackPCX(CImageFileMemory *fi)
     // Allocate memory for the image data
     fi->image.image = (GLubyte *) glAllocateMemory(totalsize, 0);
 
-    if (!fi->image.image)
+    if ( not fi->image.image)
     {
         return (BAD_ALLOC);
     }
@@ -1101,7 +1101,7 @@ GLint UnpackPCX(CImageFileMemory *fi)
 
 
     // Read the palette data
-    if ((fi->glReadCharMem() not_eq 0xc) or (!fi->glReadMem(pcxPalette, 768)))
+    if ((fi->glReadCharMem() not_eq 0xc) or ( not fi->glReadMem(pcxPalette, 768)))
     {
         glReleaseMemory((char *) fi->image.image);
         return (BAD_ALLOC);
@@ -1110,7 +1110,7 @@ GLint UnpackPCX(CImageFileMemory *fi)
     // Allocate memory for the palette
     fi->image.palette = (GLulong *) glAllocateMemory(1024);
 
-    if (!fi->image.palette)
+    if ( not fi->image.palette)
     {
         glReleaseMemory((char *) fi->image.image);
         return (BAD_ALLOC);

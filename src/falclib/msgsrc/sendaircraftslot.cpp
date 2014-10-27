@@ -69,7 +69,7 @@ int UI_SendAircraftSlot::Process(uchar autodisp)
     session->SetAircraftNum(dataBlock.got_slot);
     session->SetPilotSlot(dataBlock.got_pilot_slot);
 
-    if (!flight)
+    if ( not flight)
     {
         return FALSE;
     }

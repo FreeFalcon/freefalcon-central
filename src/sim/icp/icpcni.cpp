@@ -26,9 +26,9 @@ void ICPClass::ExecCNIMode()
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC) return;//me123 ctd fix
+    if ( not playerAC) return;//me123 ctd fix
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         int type;
         static int wpflags;
@@ -211,7 +211,7 @@ void ICPClass::ExecCNIMode()
 
         //END COMM STUFF
         //WAYPOINT INFO
-        if (!MAN) //Auto Waypoint
+        if ( not MAN) //Auto Waypoint
         {
             if (IsICPSet(ICPClass::EDIT_STPT))
                 sprintf(tempstr, "\x01%2dA", mWPIndex + 1);

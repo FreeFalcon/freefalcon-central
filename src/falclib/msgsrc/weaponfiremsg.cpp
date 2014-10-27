@@ -150,7 +150,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
                     radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
                     radioMessage->dataBlock.from = theTarget->Id();
 
-                    if (!((AircraftClass*)theTarget)->GetCampaignObject())
+                    if ( not ((AircraftClass*)theTarget)->GetCampaignObject())
                         radioMessage->dataBlock.voice_id = (uchar)((SimBaseClass*)theTarget)->GetPilotVoiceId();
                     else
                         radioMessage->dataBlock.voice_id = ((FlightClass*)(((AircraftClass*)theTarget)->GetCampaignObject()))->GetPilotVoiceID(((AircraftClass*)theTarget)->GetCampaignObject()->GetComponentIndex(((AircraftClass*)theTarget)));

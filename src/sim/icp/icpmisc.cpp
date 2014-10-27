@@ -295,7 +295,7 @@ BOOL ICPClass::CheckForHARM(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC or !playerAC->Sms)
+    if ( not playerAC or !playerAC->Sms)
         return FALSE;
 
     if (playerAC->Sms->curWeapon and playerAC->Sms->curWeaponClass == wcHARMWpn)
@@ -316,13 +316,13 @@ extern bool g_bPilotEntertainment; // Retro 3Jan2004
 void ICPClass::ExecWinAmpMode(void)
 {
 
-    if (!g_bPilotEntertainment)
+    if ( not g_bPilotEntertainment)
     {
         ShiAssert(false); // we really shouldn´t be here then !
         return;
     }
 
-    if (!winamp)
+    if ( not winamp)
         return;
 
     winamp->Refresh(vuxRealTime); // have to use real timer here, in case of pause etc..

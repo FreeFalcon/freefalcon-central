@@ -105,7 +105,7 @@ GunClass::GetDamageAssessment(SimBaseClass *target, float range)
     {
         if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
         {
-            if (!target->OnGround())
+            if ( not target->OnGround())
             {
                 // disallow tracers above 6000ft
                 zpos = target->ZPos();
@@ -120,7 +120,7 @@ GunClass::GetDamageAssessment(SimBaseClass *target, float range)
         }
         else
         {
-            if (!target->OnGround())
+            if ( not target->OnGround())
             {
                 // disallow shells below 1000ft?
                 // target z in 1.5 secs

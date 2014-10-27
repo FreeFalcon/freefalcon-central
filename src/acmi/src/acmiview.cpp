@@ -275,7 +275,7 @@ BOOL ACMIView::LoadTape(char *fname, BOOL reload)
     F4Assert(_tape not_eq NULL);
 
     // do something go wrong?
-    if (!_tape->IsLoaded())
+    if ( not _tape->IsLoaded())
     {
         delete _tape;
         _tape = NULL;

@@ -218,7 +218,7 @@ BSPLIST *C_BSPList::Load(long ID, long objID)
     if (obj == NULL)
         return(NULL);
 
-    if (!FindLock(objID))
+    if ( not FindLock(objID))
         Lock(objID);
 
     objPos.x = 0;
@@ -251,7 +251,7 @@ BSPLIST *C_BSPList::LoadBSP(long ID, long objID)
     if (obj == NULL)
         return(NULL);
 
-    if (!FindLock(objID))
+    if ( not FindLock(objID))
         Lock(objID);
 
     objPos.x = 0;
@@ -283,7 +283,7 @@ BSPLIST *C_BSPList::LoadBridge(long, long)
     // if(obj == NULL)
     return(NULL);
 
-    // if(!FindLock(objID))
+    // if( not FindLock(objID))
     // Lock(objID);
 
     // obj->ID=ID;
@@ -308,7 +308,7 @@ BSPLIST *C_BSPList::LoadBuilding(long ID, long objID, Tpoint *pos, float heading
     if (obj == NULL)
         return(NULL);
 
-    if (!FindLock(objID))
+    if ( not FindLock(objID))
         Lock(objID);
 
     obj->ID = ID;
@@ -362,7 +362,7 @@ BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, 
 
             bspobj = new BSPLIST;
 
-            if (!bspobj)
+            if ( not bspobj)
                 return(NULL);
 
             bspobj->ID = ID | 0x8000;
@@ -380,7 +380,7 @@ BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, 
             // lead element.
             bspobj = new BSPLIST;
 
-            if (!bspobj)
+            if ( not bspobj)
                 return(NULL);
 
             bspobj->ID = ID | 0x8000;
@@ -435,10 +435,10 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
             {
                 bspobj = new BSPLIST;
 
-                if (!bspobj)
+                if ( not bspobj)
                     return(NULL);
 
-                if (!FindLock(visType))
+                if ( not FindLock(visType))
                     Lock(visType);
 
                 bspobj->ID = ID;
@@ -465,10 +465,10 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
             // That means it sticks straight up the -Z axis
             bspobj = new BSPLIST;
 
-            if (!bspobj)
+            if ( not bspobj)
                 return(NULL);
 
-            if (!FindLock(visType))
+            if ( not FindLock(visType))
                 Lock(visType);
 
             bspobj->ID = ID;
@@ -490,10 +490,10 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
 
             bspobj = new BSPLIST;
 
-            if (!bspobj)
+            if ( not bspobj)
                 return(NULL);
 
-            if (!FindLock(visType))
+            if ( not FindLock(visType))
                 Lock(visType);
 
             bspobj->ID = ID;
@@ -514,10 +514,10 @@ BSPLIST *C_BSPList::LoadDrawableUnit(long ID, long visType, Tpoint *objPos, floa
 
     bspobj = new BSPLIST;
 
-    if (!bspobj)
+    if ( not bspobj)
         return(NULL);
 
-    if (!FindLock(visType))
+    if ( not FindLock(visType))
         Lock(visType);
 
     bspobj->ID = ID;

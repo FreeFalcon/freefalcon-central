@@ -17,7 +17,7 @@ VuRBIterator::~VuRBIterator()
 
 VuEntity *VuRBIterator::GetFirst()
 {
-    if (!collection_)
+    if ( not collection_)
     {
         return NULL;
     }
@@ -38,7 +38,7 @@ VuEntity *VuRBIterator::GetFirst()
 
 VuEntity *VuRBIterator::GetFirst(VU_KEY low)
 {
-    if (!collection_)
+    if ( not collection_)
     {
         return NULL;
     }
@@ -66,7 +66,7 @@ VuEntity *VuRBIterator::GetFirst(VU_KEY low)
 VuEntity *VuRBIterator::GetNext()
 {
     VuEntity *ret = NULL;
-    if (!collection_)
+    if ( not collection_)
     {
         return NULL;
     }

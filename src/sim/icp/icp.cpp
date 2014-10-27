@@ -63,7 +63,7 @@ ICPClass::~ICPClass()
 ICPClass::ICPClass()
 {
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI Original code
         strcpy(mpSelectedModeName, ICPModeNames[NAV_MODE]);
@@ -222,7 +222,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI original code
         if (mode == AA_BUTTON or mode == AG_BUTTON or mode == NAV_BUTTON)
@@ -341,7 +341,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
     }
     else
     {
-        if (!playerAC->HasPower(AircraftClass::UFCPower) ||
+        if ( not playerAC->HasPower(AircraftClass::UFCPower) ||
             playerAC->mFaults->GetFault(FaultClass::ufc_fault))
             return;
 
@@ -723,7 +723,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
 
 void ICPClass::Exec()
 {
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI original code
         switch (mICPSecondaryMode)
@@ -785,7 +785,7 @@ void ICPClass::Exec()
         }
 
         //automaticaly switch waypoints when in parameters and selected
-        if (!MAN)
+        if ( not MAN)
             CheckAutoSTPT();
 
         if (IsICPSet(ICPClass::MODE_FACK) or TheHud and TheHud->GetDEDSwitch() == HudClass::PFL_DATA)

@@ -122,7 +122,7 @@ bool AssignField(const InputDataDesc *field, void *dataPtr, const char *value)
 
 
         default:
-            F4Assert(!"Bad format type");
+            F4Assert( not "Bad format type");
             return false;
     }
 

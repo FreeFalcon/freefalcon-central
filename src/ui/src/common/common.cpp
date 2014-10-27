@@ -109,7 +109,7 @@ void AwardWindow(void)
     C_Window *win;
     C_Button *btn;
 
-    if (!(MissionResult & AWARD_MEDAL))
+    if ( not (MissionResult & AWARD_MEDAL))
     {
         PromotionWindow();
         return;
@@ -193,7 +193,7 @@ void PromotionWindow(void)
     C_Window *win;
     C_Button *btn;
 
-    if (!(MissionResult & PROMOTION))
+    if ( not (MissionResult & PROMOTION))
     {
         MissionResult = 0;
         return;
@@ -421,7 +421,7 @@ void LoadCommonWindows()
 
     gMainParser->LoadSoundList("cmn_snd.lst");
 
-    if (!gCampaignBites)
+    if ( not gCampaignBites)
         gCampaignBites = gMainParser->ParseSoundBite("art\\common\\uidcp.scf");
 
     gMainParser->LoadWindowList("cmn_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList

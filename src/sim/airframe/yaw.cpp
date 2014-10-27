@@ -67,7 +67,7 @@ void AirframeClass::Yaw(void)
     Limiter *limiter = NULL;
 
     //if( IsSet(Planted) or (IsSet(NoseSteerOn) and !(gear[0].flags & GearData::GearStuck)) )
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
         return;
 
     if (platform->IsF16())
@@ -192,7 +192,7 @@ void AirframeClass::Yaw(void)
 
     YawIt(betcmd, SimLibMinorFrameTime);
 
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
     {
         oldy03[0] *= 0.8F;
         oldy03[1] *= 0.8F;
@@ -224,5 +224,5 @@ void AirframeClass::YawIt(float betcmd, float dt)
     }
 
 
-    ShiAssert(!_isnan(beta));
+    ShiAssert( not _isnan(beta));
 }

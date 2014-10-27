@@ -106,7 +106,7 @@ void SetWindowLOGFONT(LOGFONT *log)
     C_EditBox *ebox;
     C_ListBox *lbox;
 
-    if (!log)
+    if ( not log)
         return;
 
     win = gMainHandler->FindWindow(LOGFONT_WIN);
@@ -229,7 +229,7 @@ void GetWindowLOGFONT(LOGFONT *log)
     C_EditBox *ebox;
     C_ListBox *lbox;
 
-    if (!log)
+    if ( not log)
         return;
 
     win = gMainHandler->FindWindow(LOGFONT_WIN);
@@ -389,7 +389,7 @@ C_Fontmgr *FontToBFT(long ID, LOGFONT *logfont)
     C_Fontmgr *newfont;
 
     // surface=UI95_CreateDDSurface(gMainDDraw,SCREEN_SIZE,SCREEN_SIZE);
-    // if(!surface)
+    // if( not surface)
     // {
     // MonoPrint("Can't create DDSurface for Font conversion to BFT\n");
     // return(NULL);
@@ -494,7 +494,7 @@ C_Fontmgr *FontToBFT(long ID, LOGFONT *logfont)
 
         buffer[0] = static_cast<char>(firstchar + i);
 
-        if (!TextOut(hdc, xoff, yoff, buffer, 1))
+        if ( not TextOut(hdc, xoff, yoff, buffer, 1))
             MonoPrint("Failed to display character (%1d)\n", buffer[0]);
 
         xoff += MyChars[i].lead;
@@ -538,7 +538,7 @@ void PrintPairs(C_Window *win, long FontID)
 
     curfont = gFontList->Find(FontID);
 
-    if (!curfont)
+    if ( not curfont)
         return;
 
     startchar = curfont->First();
@@ -920,12 +920,12 @@ void MakeFontList(long FontID)
 
     win = gMainHandler->FindWindow(FONT_ED_WIN);
 
-    if (!win or !FontID)
+    if ( not win or !FontID)
         return;
 
     curfont = gFontList->Find(FontID);
 
-    if (!curfont)
+    if ( not curfont)
         return;
 
     Leave = UI_Enter(win);

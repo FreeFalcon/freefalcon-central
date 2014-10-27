@@ -404,7 +404,7 @@ void STPRender(C_Base *control)
             text->Refresh();
         }
 
-        if (!tmpVpoint)
+        if ( not tmpVpoint)
         {
             tmpVpoint = new RViewPoint;
             tmpVpoint->Setup(80.0f * FEET_PER_KM, 0, 4, DisplayOptions.bZBuffering);
@@ -442,7 +442,7 @@ void RenderViewCB(long, short hittype, C_Base *control)
     {
         if (SetupViewer)
         {
-            if (!ready)
+            if ( not ready)
             {
                 ((C_Button *)control)->SetState(C_STATE_1);
                 ((C_Button *)control)->Refresh();
@@ -697,7 +697,7 @@ void RemoveObjFromView(int objID)
     bsplist = SetupViewer->GetBSPList();
 
     // I don't think this will happen, but time is short so lets be safe...
-    if (!bsplist) return;
+    if ( not bsplist) return;
 
     list = bsplist->Root_;
 
@@ -1145,14 +1145,14 @@ void BuildVideoCardList(C_ListBox *lbox)
 
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(Driver);
 
-    if (!pDI) return;
+    if ( not pDI) return;
 
     value = lbox->GetTextID();
     lbox->RemoveAllItems();
 
     while (buf = FalconDisplay.devmgr.GetDeviceName(Driver, i))
     {
-        if (!g_bEnumSoftwareDevices)
+        if ( not g_bEnumSoftwareDevices)
         {
             // check for software device
             DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI->GetDevice(i);
@@ -1220,11 +1220,11 @@ void BuildResolutionList(C_ListBox *lbox)
 
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(Driver);
 
-    if (!pDI) return;
+    if ( not pDI) return;
 
     DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI->GetDevice(Card);
 
-    if (!pD3DDI) return;
+    if ( not pD3DDI) return;
 
     // OW
 #if 1
@@ -1301,25 +1301,25 @@ void SetAdvanced()
 
     lbox = (C_ListBox *)win->FindControl(SET_VIDEO_DRIVER);
 
-    if (!lbox) return;
+    if ( not lbox) return;
 
     int nDriver = lbox->GetTextID() - 1;
     lbox = (C_ListBox *)win->FindControl(SET_VIDEO_CARD);
 
-    if (!lbox) return;
+    if ( not lbox) return;
 
     int nDevice = lbox->GetTextID() - 1;
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(nDriver);
 
-    if (!pDI) return;
+    if ( not pDI) return;
 
     DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI->GetDevice(nDevice);
 
-    if (!pD3DDI) return;
+    if ( not pD3DDI) return;
 
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
-    if (!win) return;
+    if ( not win) return;
 
     //========================================
     // FRB - Force Z-Buffering
@@ -1393,7 +1393,7 @@ static void LoadBitmap(long ID, C_Button *btn, char filename[])
  C_ListBox *lbox;
 
  win=gMainHandler->FindWindow(SETUP_SKY_WIN);
- if(!win) return;
+ if( not win) return;
 
  lbox=(C_ListBox *)win->FindControl(SETUP_SKY_COLOR);
  if (lbox)
@@ -1443,7 +1443,7 @@ void SkyColTimeCB(long ID,short hittype,C_Base *control)
  if(hittype not_eq C_TYPE_LMOUSEUP)
  return;
 
- if(!control)
+ if( not control)
  return;
 
  switch(control->GetID())
@@ -1823,7 +1823,7 @@ void SetupGraphicsControls(void)
 
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
-    if (!win) return;
+    if ( not win) return;
 
     // M.N. SkyColor stuff
     // win = gMainHandler->FindWindow(SETUP_SKY_WIN);
@@ -1901,7 +1901,7 @@ void AdvancedCB(long ID, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
-    if (!win) return;
+    if ( not win) return;
 
     gMainHandler->ShowWindow(win);
     gMainHandler->WindowToFront(win);
@@ -1917,7 +1917,7 @@ void AdvancedGameCB(long ID, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(ADVANCED_GAME_OPTIONS_WIN); // JPOLOOK - not finished yet
 
-    if (!win) return;
+    if ( not win) return;
 
     gMainHandler->ShowWindow(win);
     gMainHandler->WindowToFront(win);
@@ -1933,7 +1933,7 @@ void SkyColorCB(long ID, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SETUP_SKY_WIN);
 
-    if (!win) return;
+    if ( not win) return;
 
     gMainHandler->ShowWindow(win);
     gMainHandler->WindowToFront(win);

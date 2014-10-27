@@ -193,7 +193,7 @@ void CommsErrorDialog(long TitleID, long MessageID, void (*OKCB)(long, short, C_
     C_Button *btn;
     C_Text *txt;
 
-    if (!MessageID or !gMainHandler)
+    if ( not MessageID or !gMainHandler)
         return;
 
     win = gMainHandler->FindWindow(COMMLINK_WIN);
@@ -337,7 +337,7 @@ void CommsSetup()
 
 static void DisconnectCommsCB(long, short hittype, C_Base *)
 {
-    if ((hittype not_eq C_TYPE_LMOUSEUP) or (!gCommsMgr->Online()))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) or ( not gCommsMgr->Online()))
     {
         return;
     }
@@ -409,7 +409,7 @@ extern void LoadTrails();
 // me123 for remote server comands via chat
 void ServerChatCommand(_TCHAR *msg)
 {
-    //if (!g_bServer) return;
+    //if ( not g_bServer) return;
     //me123 the server understands a few commands
 
     // find the command
@@ -497,7 +497,7 @@ void ServerChatCommand(_TCHAR *msg)
 
             float Pan, Tilt, d = 300;
 
-            if (!stricmp(arga, ".")) goto doit;
+            if ( not stricmp(arga, ".")) goto doit;
 
             if (argc) Dist = (float)atof(argc);
             else Dist = 300.0f;
@@ -543,7 +543,7 @@ void ServerChatCommand(_TCHAR *msg)
                 RuleMode = rTACTICAL_ENGAGEMENT;
                 TheCampaign.Flags  or_eq  CAMP_TACTICAL;
 
-                if (!TACSelLoaded)
+                if ( not TACSelLoaded)
                     LoadTacEngSelectWindows();
 
                 _TCHAR buffer[MAX_PATH];
@@ -563,16 +563,16 @@ void ServerChatCommand(_TCHAR *msg)
 
             if (arga and argb and !stricmp(arga, ".acmi"))
             {
-                if (!stricmp(argb, "on"))
+                if ( not stricmp(argb, "on"))
                 {
-                    if (!gACMIRec.IsRecording())
+                    if ( not gACMIRec.IsRecording())
                     {
                         //F4EnterCriticalSection( _csect );
                         gACMIRec.StartRecording();
                         //F4LeaveCriticalSection( _csect );
                     }
                 }
-                else if (!stricmp(argb, "off"))
+                else if ( not stricmp(argb, "off"))
                 {
                     if (gACMIRec.IsRecording())
                     {
@@ -582,7 +582,7 @@ void ServerChatCommand(_TCHAR *msg)
                     }
                 }
 
-                else if (!stricmp(argb, "dofile"))
+                else if ( not stricmp(argb, "dofile"))
                 {
                     if (gACMIRec.IsRecording())
                         gACMIRec.StopRecording();
@@ -597,7 +597,7 @@ void ServerChatCommand(_TCHAR *msg)
                 LeaveCurrentGame();
                 RuleMode = rCAMPAIGN;
 
-                if (!CPSelectLoaded)
+                if ( not CPSelectLoaded)
                     LoadCampaignSelectWindows();
 
                 _TCHAR buffer[MAX_PATH];
@@ -795,15 +795,15 @@ void BlinkCommsButtonTimerCB(long, short, C_Base *control)
 {
     C_Button *btn;
 
-    if (!gCommsMgr) return;
+    if ( not gCommsMgr) return;
 
-    if (!gNewMessage or !gCommsMgr->Online()) return;
+    if ( not gNewMessage or !gCommsMgr->Online()) return;
 
     btn = (C_Button *)control->Parent_->FindControl(CO_MAIN_CTRL);
 
     if (btn)
     {
-        if (!(btn->GetFlags() & C_BIT_FORCEMOUSEOVER))
+        if ( not (btn->GetFlags() & C_BIT_FORCEMOUSEOVER))
         {
             // gSoundMgr->PlaySound(SND_HOMER);
             btn->SetFlagBitOn(C_BIT_FORCEMOUSEOVER);
@@ -848,12 +848,12 @@ BOOL FilterIncommingMessage(FalconSessionEntity *session)
             case rcfFromPackage:
                 flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-                if (!flt)
+                if ( not flt)
                     break;
 
                 pkg = (Package)flt->GetUnitParent();
 
-                if (!pkg)
+                if ( not pkg)
                     break;
 
                 MyPackageID = pkg->Id();
@@ -873,7 +873,7 @@ BOOL FilterIncommingMessage(FalconSessionEntity *session)
             case rcfProx: // 40nm range
                 ent = FalconLocalSession->GetPlayerEntity();
 
-                if (!ent)
+                if ( not ent)
                     break;
 
                 myx = ent->XPos();
@@ -930,12 +930,12 @@ BOOL FilterIncommingMessage(FalconSessionEntity *session)
             case rcfFromPackage:
                 flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-                if (!flt)
+                if ( not flt)
                     break;
 
                 pkg = (Package)flt->GetUnitParent();
 
-                if (!pkg)
+                if ( not pkg)
                     break;
 
                 MyPackageID = pkg->Id();
@@ -955,7 +955,7 @@ BOOL FilterIncommingMessage(FalconSessionEntity *session)
             case rcfProx: // 40nm range
                 ent = FalconLocalSession->GetPlayerEntity();
 
-                if (!ent)
+                if ( not ent)
                     break;
 
                 myx = ent->XPos();
@@ -1020,7 +1020,7 @@ void ReceiveChatString(VU_ID from, _TCHAR *message)
 // This function is responsible for deleting msg
 void ProcessChatStr(CHATSTR *msg)
 {
-    if (!msg)
+    if ( not msg)
         return;
 
     ServerChatCommand(msg->Text_); //me123
@@ -1030,7 +1030,7 @@ void ProcessChatStr(CHATSTR *msg)
         TREELIST *item;
         C_Player *plyr;
 
-        if (!People)
+        if ( not People)
             return;
 
         item = People->Find(msg->ID_.creator_);
@@ -1045,7 +1045,7 @@ void ProcessChatStr(CHATSTR *msg)
 
         AddMessageToChatWindow(msg->ID_, msg->Text_);
 
-        if (!(gMainHandler->GetWindowFlags(CHAT_WIN) & C_BIT_ENABLED))
+        if ( not (gMainHandler->GetWindowFlags(CHAT_WIN) & C_BIT_ENABLED))
             gNewMessage = TRUE;
     }
     else if (VM) // Assume Sim is running (AND VM is initialized)
@@ -1056,7 +1056,7 @@ void ProcessChatStr(CHATSTR *msg)
 
         if (session)
         {
-            if (!FilterIncommingMessage(session))
+            if ( not FilterIncommingMessage(session))
                 return;
 
             _tcscpy(chatbuf, session->GetPlayerCallsign());
@@ -1340,7 +1340,7 @@ static void TrimPlayerTree(C_TreeList *tree, TREELIST *branch)
 
             plyr = (C_Player*)branch->Item_;
 
-            if (!TrimmerFindSession(plyr->GetVUID(), game))
+            if ( not TrimmerFindSession(plyr->GetVUID(), game))
                 limb = branch;
         }
 
@@ -1512,7 +1512,7 @@ void MakeLocalGameTree(VuGameEntity *game)
     C_Text *txt;
     VU_ID *tmpID;
 
-    if (!People)
+    if ( not People)
         return;
 
     if (People->GetRoot())
@@ -1520,7 +1520,7 @@ void MakeLocalGameTree(VuGameEntity *game)
 
     win = gMainHandler->FindWindow(CHAT_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     if (game)
@@ -1685,7 +1685,7 @@ void CheckChatFilters(FalconSessionEntity *session)
     TREELIST *item;
     C_Player *player;
 
-    if (!People)
+    if ( not People)
         return;
 
     item = People->Find(session->Id().creator_);
@@ -1787,10 +1787,10 @@ void UpdateLocalGameTree()
     long Age;
     _TCHAR buffer[60];
 
-    if (!People)
+    if ( not People)
         return;
 
-    if (!FalconLocalGame)
+    if ( not FalconLocalGame)
         return;
 
     Age = GetCurrentTime();
@@ -1996,7 +1996,7 @@ void RemoveFromTree(C_TreeList *list, VU_ID ID)
 {
     TREELIST *item;
 
-    if (!list or ID == FalconNullId)
+    if ( not list or ID == FalconNullId)
         return;
 
     item = StartTreeSearch(ID, list->GetRoot(), list);
@@ -2029,7 +2029,7 @@ void UI_UpdateGameList()
     C_TreeList *theTree;
     FalconGameType gametype;
 
-    if (!gUICommsQ)
+    if ( not gUICommsQ)
         return;
 
     q = gUICommsQ->Root_;
@@ -2264,7 +2264,7 @@ static void PeopleSelectCB(long, short hittype, C_Base *)
 
     player = (C_Player*)item->Item_;
 
-    if (!player)
+    if ( not player)
         return;
 
     player->SetState(static_cast<short>(player->GetState() xor 1));
@@ -2293,7 +2293,7 @@ static void SelectChatFilterCB(long, short hittype, C_Base *control)
 
 void UI_Refresh(void)
 {
-    if (!FalconLocalGame or !gCommsMgr or !gMainHandler)
+    if ( not FalconLocalGame or !gCommsMgr or !gMainHandler)
     {
         return;
     }
@@ -2399,12 +2399,12 @@ void SendTextToPackage()
 
     flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-    if (!flt)
+    if ( not flt)
         return;
 
     pkg = (Package)flt->GetUnitParent();
 
-    if (!pkg)
+    if ( not pkg)
         return;
 
     MyPackageID = pkg->Id();
@@ -2446,7 +2446,7 @@ void SendTextToRange()
 
     ent = FalconLocalSession->GetPlayerEntity();
 
-    if (!ent)
+    if ( not ent)
         return;
 
     myx = ent->XPos();

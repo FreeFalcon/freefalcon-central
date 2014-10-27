@@ -100,7 +100,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
             break;
     }
 
-    if (!hitPoints)
+    if ( not hitPoints)
         return;
 
     // apply randomness to hit points (and double for features)
@@ -444,7 +444,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                     if (rand() & 1)
                     {
                         //RV I-Hawk Added a check to seperate CAN_EXPLODE and CAN_BURN features, burn type
-                        if (!(fc->Flags & (FEAT_CAN_EXPLODE)))
+                        if ( not (fc->Flags & (FEAT_CAN_EXPLODE)))
                             /*
                             OTWDriver.AddSfxRequest(
                              new SfxClass (SFX_FIRE, // type

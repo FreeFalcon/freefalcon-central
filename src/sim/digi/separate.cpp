@@ -64,8 +64,8 @@ void DigitalBrain::SeparateCheck(void)
         if ((missionType not_eq AMIS_BDA and missionType not_eq AMIS_RECON) or !hasCamera)
     // 2001-05-12 ADDED BY S.G. ABORT ONLY WHEN THE MISSION IS NOT COMPLETED OR WE ARE AT THE ATTACK WAYPOINT, OTHERWISE FOLLOW WAYPOINTS HOME
     // 2001-06-21 MODIFIED BY S.G. BROUGHT BACK TO WHAT IS RELEASED
-    //    if (!missionComplete or !self->curWaypoint or self->curWaypoint->GetWPFlags() & WPF_TARGET)
-        if (!missionComplete)
+    //    if ( not missionComplete or !self->curWaypoint or self->curWaypoint->GetWPFlags() & WPF_TARGET)
+        if ( not missionComplete)
     // END OF ADDED SECTION
              agAbort = TRUE;
      }*/
@@ -91,8 +91,8 @@ void DigitalBrain::SeparateCheck(void)
 
             // 2001-05-13 MODIFIED BY S.G. TO MAKE IT SIMILAR TO THE ABOVE agAbort CODE
             // 2001-06-21 RESTATED BY S.G. BROUGHT BACK TO WHAT IS RELEASED
-            if (!IsSetATC(ReachedIP))
-                //      if (!missionComplete or !self->curWaypoint or self->curWaypoint->GetWPFlags() & WPF_TARGET)
+            if ( not IsSetATC(ReachedIP))
+                //      if ( not missionComplete or !self->curWaypoint or self->curWaypoint->GetWPFlags() & WPF_TARGET)
             {
                 // Find the landing waypoint, and make it the current one
                 while (tmpWaypoint)
@@ -111,7 +111,7 @@ void DigitalBrain::SeparateCheck(void)
                     SetWaypointSpecificStuff();
                 }
 
-                if (!IsSetATC(SaidRTB))
+                if ( not IsSetATC(SaidRTB))
                 {
                     SetATCFlag(SaidRTB);
                     // Call going home
@@ -144,7 +144,7 @@ void DigitalBrain::SeparateCheck(void)
                     SetWaypointSpecificStuff();
                 }
 
-                if (!IsSetATC(SaidRTB))
+                if ( not IsSetATC(SaidRTB))
                 {
                     SetATCFlag(SaidRTB);
                     // Call going home
@@ -154,19 +154,19 @@ void DigitalBrain::SeparateCheck(void)
             }
         }
 
-        if (!isWing)
+        if ( not isWing)
         {
             AddMode(RTBMode);
         }
     }
 
-    if ((!isWing or IsSetATC(SaidBingo)) and curMode == RTBMode)
+    if (( not isWing or IsSetATC(SaidBingo)) and curMode == RTBMode)
         AddMode(RTBMode);
 
     if (isWing and mpActionFlags[AI_RTB])
         AddMode(RTBMode);
 
-    if (!targetPtr)
+    if ( not targetPtr)
         return;
 
     // If you can't be offensive, and you have a target/threat, run away
@@ -227,7 +227,7 @@ void DigitalBrain::SeparateCheck(void)
     // Is the AI deep six? ataFrom is from target nose.
     if (targetData->ataFrom > 135.0F * DTR and FalconLocalGame->GetGameType() not_eq game_Dogfight)
     {
-        if (!bugoutTimer)
+        if ( not bugoutTimer)
         {
             //Set 90 second timer
             bugoutTimer = SimLibElapsedTime + 90000;
@@ -413,7 +413,7 @@ void DigitalBrain::FuelCheck(void)
      tmpWaypoint = tmpWaypoint->GetNextWP();
     }
 
-    if (!tmpWaypoint)
+    if ( not tmpWaypoint)
       tmpWaypoint = self->waypoint;
 
     if (tmpWaypoint)
@@ -436,7 +436,7 @@ void DigitalBrain::FuelCheck(void)
     // Check fuel state
     if (fuelRemain < af->GetJoker())//me123 from 1000
     {
-        if (!IsSetATC(SaidJoker))
+        if ( not IsSetATC(SaidJoker))
         {
             // Say Joker
             //            MonoPrint ("Digi joker fuel\n");
@@ -445,7 +445,7 @@ void DigitalBrain::FuelCheck(void)
         }
         else if (fuelRemain < af->GetBingo())
         {
-            if (!IsSetATC(SaidBingo))
+            if ( not IsSetATC(SaidBingo))
             {
                 // Say Bingo
                 //               MonoPrint ("Digi bingo fuel\n");

@@ -52,7 +52,7 @@ void RenderNVG::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
     vert->g = NVG_LIGHT_LEVEL;
 
     // FRB - B&W
-    if ((g_bGreyMFD) and (!bNVGmode))
+    if ((g_bGreyMFD) and ( not bNVGmode))
         vert->r = vert->b = vert->g;
 
     if ((distance > haze_start + haze_depth + 3000)
@@ -64,7 +64,7 @@ void RenderNVG::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
     {
         vert->RenderingStateHandle = state_fore;
     }
-    else if (!hazed and distance < haze_start)
+    else if ( not hazed and distance < haze_start)
     {
         vert->RenderingStateHandle = state_near;
     }

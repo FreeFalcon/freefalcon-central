@@ -44,7 +44,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
     // Validate our radar platform
     SetGuidancePlatform(SimCampHandoff(radarPlatform, HANDOFF_RADAR));
 
-    if (!radarPlatform)
+    if ( not radarPlatform)
     {
         if (lockedTarget)
             SendTrackMsg(lockedTarget, Track_Unlock);
@@ -53,7 +53,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         return NULL;
     }
 
-    if (!lockedTarget)  //me123 allow reacusition
+    if ( not lockedTarget)  //me123 allow reacusition
     {
         // 2002-03-13 MODIFIED BY S.G. Fair enough but don't assume it's a battalion, planes can fire SARH but they always return FEC_RADAR_SEARCH_100. Removed all cast to BattalionClass and other unrequired class casting. Let the class hierarchy sort it out
         /*RadarClass* platformradar = NULL;
@@ -91,7 +91,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         }
     }
 
-    if (!lockedTarget)
+    if ( not lockedTarget)
     {
         return NULL;
     }
@@ -107,7 +107,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         {
             if (((MissileClass *)platform)->GetSeekerType() == SensorClass::RadarHoming)
             {
-                if (!((RadarDopplerClass *)radar)->IsSet(RadarDopplerClass::STTingTarget))
+                if ( not ((RadarDopplerClass *)radar)->IsSet(RadarDopplerClass::STTingTarget))
                 {
                     // That's it, he's off the hook...
                     if (lockedTarget)
@@ -146,7 +146,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
                 if (radarPlatform->IsExploding())
                     stat ++;
 
-                //if (!radarPlatform->IsEmitting())
+                //if ( not radarPlatform->IsEmitting())
                 //stat ++;
 
 
@@ -195,7 +195,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         }
         // end Cobra
         // Cobra - AI SARH ground support check
-        else if (!radarPlatform->IsAirplane() and radarPlatform->OnGround())
+        else if ( not radarPlatform->IsAirplane() and radarPlatform->OnGround())
         {
             if ((((MissileClass *)platform)->GetSeekerType() == SensorClass::RadarHoming)  and 
                 (((MissileClass *)platform)->GetRuntime() > 0.0f))
@@ -215,7 +215,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
                 if (radarPlatform->IsExploding())
                     stat ++;
 
-                //if (!radarPlatform->IsEmitting())
+                //if ( not radarPlatform->IsEmitting())
                 //stat ++;
 
                 if (stat)
@@ -245,7 +245,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         // end Cobra
 #endif
 
-        if (!radar->CurrentTarget() or radar->CurrentTarget()->BaseData() not_eq lockedTarget->BaseData())
+        if ( not radar->CurrentTarget() or radar->CurrentTarget()->BaseData() not_eq lockedTarget->BaseData())
         {
             if (lockedTarget)
                 SendTrackMsg(lockedTarget, Track_Unlock);
@@ -372,7 +372,7 @@ void BeamRiderClass::SetGuidancePlatform(FalconEntity* rdrPlat)
 
 void BeamRiderClass::SendTrackMsg(SimObjectType* tgtptr , unsigned int trackType, unsigned int hardpoint)
 {
-    if (!radarPlatform) return;
+    if ( not radarPlatform) return;
 
     VU_ID id = tgtptr->BaseData()->Id();
     static int count = 0;
@@ -383,13 +383,13 @@ void BeamRiderClass::SendTrackMsg(SimObjectType* tgtptr , unsigned int trackType
 
     if (tgtptr->localData->lockmsgsend == Track_None and trackType == 2) return;
 
-    if (!((SimBaseClass*)tgtptr->BaseData())->IsAirplane()) return;
+    if ( not ((SimBaseClass*)tgtptr->BaseData())->IsAirplane()) return;
 
     tgtptr->localData->lockmsgsend = trackType;
     // Create and fill in the message structure
     VuGameEntity *game = vuLocalSessionEntity->Game();
 
-    if (!game) return;
+    if ( not game) return;
 
     VuSessionsIterator Sessioniter(game);
     VuSessionEntity*   sess;
@@ -444,7 +444,7 @@ void BeamRiderClass::ConsiderDecoy(SimObjectType *target)
     int dummy = 0;
 
     // No counter measures deployed by campaign things
-    if (!target or !target->BaseData()->IsSim())
+    if ( not target or !target->BaseData()->IsSim())
     {
         return;
     }
@@ -467,7 +467,7 @@ void BeamRiderClass::ConsiderDecoy(SimObjectType *target)
         // Try to find the counter measure entity in the database
         cm = (FalconEntity*)vuDatabase->Find(id);
 
-        if (!cm)
+        if ( not cm)
         {
             // We'll have to wait until next time
             // (probably because the create event hasn't been processed locally yet)

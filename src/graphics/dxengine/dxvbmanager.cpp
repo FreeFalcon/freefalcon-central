@@ -243,7 +243,7 @@ void CDXVbManager::Setup(IDirect3D7 *pD3D)
     for (int i = 0; i < BASE_DRAWS; i++)
     {
         // if 1st item
-        if (!pVDrawItemPool) pVDrawItemPool = dp = new CDrawItem();
+        if ( not pVDrawItemPool) pVDrawItemPool = dp = new CDrawItem();
         else dp = dp->NextInPool = new CDrawItem();
     }
 
@@ -275,7 +275,7 @@ void CDXVbManager::Release(void)
 {
 
     // if already NON initialized exit here
-    if (!VBManagerInitialized) return;
+    if ( not VBManagerInitialized) return;
 
     // Release all eventually allocated models
     //for(int i=0; i<MAX_MANAGED_MODELS; i++) ReleaseModel(i);
@@ -336,7 +336,7 @@ DWORD CDXVbManager::VBAddObject(VBufferListType *Vbl, DWORD nVertices, DWORD ID)
 
         ///////////////// if Here, check for a chunk of space in the VB ///////////////////////////
         // if a free buffer, no VAT still assigned, assign it and exit
-        if (!Vbl->pVAT)
+        if ( not Vbl->pVAT)
         {
             // Create and assign the VAT
             Vbl->pVAT = new CVbVAT(NULL, NULL, ID, 0, nVertices, Vbl->Free);
@@ -399,17 +399,17 @@ bool CDXVbManager::VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices)
     int i = 0;
 
     // if invalid class, exit here
-    if (!Class) return false;
+    if ( not Class) return false;
 
     // Scan all possible VBs
     while (i < MAX_VERTEX_BUFFERS)
     {
 
         // if a still inexistant VB ( no class assigned ) create it !!!
-        if (!pVbList[i].Class) CreateVB(i, Class);
+        if ( not pVbList[i].Class) CreateVB(i, Class);
 
         // if a VB with wrong Class next VB and skip
-        if (!(pVbList[i].Class & Class))
+        if ( not (pVbList[i].Class & Class))
         {
             i++;
             continue;
@@ -460,7 +460,7 @@ bool CDXVbManager::SetupModel(DWORD ID, BYTE *Root, DWORD Class)
         return false;
 
     // If model not already present in list
-    if (!pVBuffers[ID].Valid)
+    if ( not pVBuffers[ID].Valid)
     {
 
 #ifdef CRYPTED_MODELS
@@ -474,7 +474,7 @@ bool CDXVbManager::SetupModel(DWORD ID, BYTE *Root, DWORD Class)
         if (Class == 0)
             Class = 7; // Airborne, probably cockpit
 
-        if (!VBCheckForBuffer(ID, Class, dwNVertices)) goto Failure;
+        if ( not VBCheckForBuffer(ID, Class, dwNVertices)) goto Failure;
 
         DWORD pVPool = ((DxDbHeader*)rt)->pVPool;
         //********************************************************************
@@ -483,7 +483,7 @@ bool CDXVbManager::SetupModel(DWORD ID, BYTE *Root, DWORD Class)
         // also the size of Header+Nodes
         void *ptr = NULL;
 
-        if (!(ptr = malloc(pVPool))) goto Failure;
+        if ( not (ptr = malloc(pVPool))) goto Failure;
 
         // Copy the nodes
         memcpy(ptr, Root, pVPool);
@@ -545,7 +545,7 @@ void CDXVbManager::ReleaseModel(DWORD ID)
         return;
 
     // Exit if not a valid model
-    if (!pVBuffers[ID].Valid) return;
+    if ( not pVBuffers[ID].Valid) return;
 
     // Enter the Critical section
     LOCK_VB_MANAGER; // FRB
@@ -587,7 +587,7 @@ DWORD CDXVbManager::GetTextureID(DWORD ID, DWORD TexIdx)
         return 0;
 
     // Consistency  checking
-    if (!pVBuffers[ID].Valid) return 0;
+    if ( not pVBuffers[ID].Valid) return 0;
 
     if (TexIdx >= pVBuffers[ID].NTex) return 0;
 
@@ -627,7 +627,7 @@ void CDXVbManager::AddDrawItem(VBufferListType *pVBDesc, DWORD ID, ObjectInstanc
 #endif
 
     // if Draw list for this VB is Empty
-    if (!pVBDesc->pDrawRoot)
+    if ( not pVBDesc->pDrawRoot)
     {
         // Assigns the Draw Item
         pVBDesc->pDrawPtr = pVBDesc->pDrawRoot = pDrawPoolPtr;
@@ -660,7 +660,7 @@ void CDXVbManager::AddDrawItem(VBufferListType *pVBDesc, DWORD ID, ObjectInstanc
 
 
     // check if no more Draw Items in the Draw Items Pool add a new one
-    if (!pDrawPoolPtr->NextInPool) pDrawPoolPtr->NextInPool = new CDrawItem();
+    if ( not pDrawPoolPtr->NextInPool) pDrawPoolPtr->NextInPool = new CDrawItem();
 
     // and select this as the next Draw Item to Use
     pDrawPoolPtr = pDrawPoolPtr->NextInPool;
@@ -683,7 +683,7 @@ void CDXVbManager::AddDrawRequest(ObjectInstance *objInst, DWORD ID, D3DXMATRIX 
         VBufferListType *pVBDesc;
 
         // if not a pit object
-        if (!TheDXEngine.GetPitMode())
+        if ( not TheDXEngine.GetPitMode())
             // Get the Vertex Buffer Descriptor
             pVBDesc = pVBuffers[ID].pVbList;
         else
@@ -790,17 +790,17 @@ bool CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *
     TheDXEngine.SetPitMode(false);
 
     // if No More draws then exit here
-    if (!TotalDraws) return false;
+    if ( not TotalDraws) return false;
 
     // if the Buffer has no VB assigned, we r at end of Used Buffer List... restart
-    if (!pVbList[BufferToDraw].Vb)
+    if ( not pVbList[BufferToDraw].Vb)
     {
         BufferToDraw = 0;
         Traversed = true;
     }
 
     // if no more Items to draw in the selected VBuffer, seeks in other Buffers
-    while (!pVbList[BufferToDraw].DrawsCount)
+    while ( not pVbList[BufferToDraw].DrawsCount)
     {
         // No more to Draw, then clear the DRAW ROOT
         pVbList[BufferToDraw].pDrawRoot = NULL;
@@ -808,7 +808,7 @@ bool CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *
         BufferToDraw++;
 
         // if the new Buffer has no VB assigned, we r at end of Used Buffer List...
-        if (!pVbList[BufferToDraw].Vb)
+        if ( not pVbList[BufferToDraw].Vb)
         {
             // CONSISTENCY CHECK - AVOID EVERLASTING LOOPS
             // if already traversed all buffer end here
@@ -837,7 +837,7 @@ bool CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *
         pVbList[BufferToDraw].pDrawRoot = RootItemToDraw->Next;
 
         // One Draw Less for this Buffer, if no more draws, clear the Draw pointer
-        if (!(--pVbList[BufferToDraw].DrawsCount)) pVbList[BufferToDraw].pDrawRoot = NULL;
+        if ( not (--pVbList[BufferToDraw].DrawsCount)) pVbList[BufferToDraw].pDrawRoot = NULL;
     }
     else
     {
@@ -859,7 +859,7 @@ bool CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *
 // The simple buffer opening function
 void CDXVbManager::OpenSimpleBuffer(void)
 {
-    if (!SimpleBuffer.VbPtr)
+    if ( not SimpleBuffer.VbPtr)
     {
         SimpleBuffer.Vb->Lock(DDLOCK_DISCARDCONTENTS | DDLOCK_NOSYSLOCK | DDLOCK_WAIT | DDLOCK_WRITEONLY, (void**)&TheVbManager.SimpleBuffer.VbPtr, NULL);
         SimpleBuffer.Points = SimpleBuffer.Lines = 0;

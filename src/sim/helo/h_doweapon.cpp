@@ -72,7 +72,7 @@ void HelicopterClass::DoWeapons(void)
                                                   &pos,
                                                   &vec);
 
-            if (!IsFiring())
+            if ( not IsFiring())
             {
                 // KCK: This has been moved to GunClass::Exec, since that's where we generate
                 // new bullets

@@ -227,12 +227,12 @@ void TextureBankClass::OpenTextureFile()
 {
     char filename[_MAX_PATH];
 
-    ShiAssert(!TexFileMap.IsReady());
+    ShiAssert( not TexFileMap.IsReady());
 
     strcpy(filename, baseName);
     strcat(filename, ".TEX");
 
-    if (!TexFileMap.Open(filename, FALSE, !g_bUseMappedFiles))
+    if ( not TexFileMap.Open(filename, FALSE, !g_bUseMappedFiles))
     {
         char message[256];
         sprintf(message, "Failed to open object texture file %s\n", filename);
@@ -283,7 +283,7 @@ void TextureBankClass::Reference(int id)
         TexturePool[id].tex.GetPalette()->Reference();
 
         // Mark for the request if not already marked
-        if (!TexFlags[id].OnOrder)
+        if ( not TexFlags[id].OnOrder)
         {
             TexFlags[id].OnOrder = true;
             // put into load cache
@@ -310,14 +310,14 @@ void TextureBankClass::Release(int id)
     ShiAssert(TexturePool[id].refCount > 0);
 
     // RED - no reference, no party... !!!!!
-    if (!TexturePool[id].refCount) 
+    if ( not TexturePool[id].refCount) 
         return;
 
     TexturePool[id].refCount--;
 
     if (TexturePool[id].refCount == 0)
     {
-        if (!TexFlags[id].OnRelease)
+        if ( not TexFlags[id].OnRelease)
         {
             TexFlags[id].OnRelease = true;
             // put into load cache
@@ -343,7 +343,7 @@ void TextureBankClass::ReadImageData(int id, bool forceNoDDS)
 
     ShiAssert(TexturePool[id].refCount);
 
-    if (!forceNoDDS and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+    if ( not forceNoDDS and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
         ReadImageDDS(id);
         ReadImageDDSN(id);
@@ -358,7 +358,7 @@ void TextureBankClass::ReadImageData(int id, bool forceNoDDS)
     }
     else
     {
-        if (!TexFileMap.ReadDataAt(TexturePool[id].fileOffset, CompressedBuffer, TexturePool[id].fileSize))
+        if ( not TexFileMap.ReadDataAt(TexturePool[id].fileOffset, CompressedBuffer, TexturePool[id].fileSize))
         {
             char message[120];
             sprintf(message, "%s: Bad object texture seek (%0d)", strerror(errno), TexturePool[id].fileOffset);
@@ -396,7 +396,7 @@ void TextureBankClass::SetDeferredLoad(BOOL state)
     // Allocate space for the async request
     request = new LoaderQ;
 
-    if (!request)
+    if ( not request)
         ShiError("Failed to allocate memory for a object texture load state change request");
 
     // Build the data transfer request to get the required object data
@@ -431,14 +431,14 @@ void TextureBankClass::LoaderCallBack(LoaderQ* request)
                 {
 
                     // Nope, go get it.
-                    if (!TexturePool[id].tex.imageData) ReadImageData(id);
+                    if ( not TexturePool[id].tex.imageData) ReadImageData(id);
 
                     TexturePool[id].tex.CreateTexture();
                     Count--;
                     //TexturePool[id].tex.FreeImage();
                 }
 
-            if (!Count) break;
+            if ( not Count) break;
         }
     }
 
@@ -502,7 +502,7 @@ void TextureBankClass::SyncDDSTextures(bool bForce)
         sprintf(szFile, "%s\\%d.dds", baseName, id);
         fp = fopen(szFile, "rb");
 
-        if (!fp or bForce)
+        if ( not fp or bForce)
         {
             if (fp)
                 fclose(fp);
@@ -561,7 +561,7 @@ void TextureBankClass::ReadImageDDS(DWORD id)
     fp = fopen(szFile, "rb");
 
     // RV - RED - Avoid CTD if a missing texture
-    if (!fp) return;
+    if ( not fp) return;
 
     fread(&dwMagic, 1, sizeof(DWORD), fp);
     ShiAssert(dwMagic == MAKEFOURCC('D', 'D', 'S', ' '));
@@ -668,7 +668,7 @@ void TextureBankClass::ReadImageDDSN(DWORD id)
     sprintf(szFile, "%s\\%dN.dds", baseName, id);
     fp = fopen(szFile, "rb");
 
-    if (!fp)
+    if ( not fp)
     {
         return;
     }
@@ -816,7 +816,7 @@ bool TextureBankClass::UpdateBank(void)
             id = CacheRelease[ReleaseOut++];
 
             // if not an order again, and no Referenced, release it
-            if (!TexFlags[id].OnOrder and !TexturePool[id].refCount and TexFlags[id].OnRelease) TexturePool[id].tex.FreeAll();
+            if ( not TexFlags[id].OnOrder and !TexturePool[id].refCount and TexFlags[id].OnRelease) TexturePool[id].tex.FreeAll();
 
             // clear flag, in any case
             TexFlags[id].OnRelease = false;
@@ -835,10 +835,10 @@ bool TextureBankClass::UpdateBank(void)
             id = CacheLoad[LoadOut++];
 
             // if Texture not yet loaded, load it
-            if (!TexturePool[id].tex.imageData) ReadImageData(id);
+            if ( not TexturePool[id].tex.imageData) ReadImageData(id);
 
             // if Texture not yet crated, crate it
-            if (!TexturePool[id].tex.TexHandle()) TexturePool[id].tex.CreateTexture();
+            if ( not TexturePool[id].tex.TexHandle()) TexturePool[id].tex.CreateTexture();
 
             // clear flag, in any case
             TexFlags[id].OnOrder = false;
@@ -865,7 +865,7 @@ void TextureBankClass::WaitUpdates(void)
     // Pause the Loader...
     TheLoader.SetPause(true);
 
-    while (!TheLoader.Paused());
+    while ( not TheLoader.Paused());
 
     // Not slow loading
     RatedLoad = false;

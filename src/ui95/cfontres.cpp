@@ -42,7 +42,7 @@ void C_Fontmgr::Setup(long ID, char *fontfile)
 
     fp = fopen(fontfile, "rb");
 
-    if (!fp)
+    if ( not fp)
     {
         MonoPrint("FONT error: %s not opened\n", fontfile);
         return;
@@ -88,7 +88,7 @@ void C_Fontmgr::Save(char *filename)
 
     fp = fopen(filename, "wb");
 
-    if (!fp)
+    if ( not fp)
     {
         MonoPrint("FONT error: can't create %s\n", filename);
         return;
@@ -163,14 +163,14 @@ long C_Fontmgr::Width(_TCHAR *str)
     long size;
     long thechar;
 
-    if (!str)
+    if ( not str)
         return(0);
 
     size = 0;
     i = 0;
 
     while (str[i])
-        //while(!F4IsBadReadPtr(&(str[i]), sizeof(_TCHAR)) and str[i]) // JB 010401 CTD (too much CPU)
+        //while( not F4IsBadReadPtr(&(str[i]), sizeof(_TCHAR)) and str[i]) // JB 010401 CTD (too much CPU)
     {
         thechar = str[i] & 0xff;
 
@@ -192,7 +192,7 @@ long C_Fontmgr::Width(_TCHAR *str, long len)
     long size;
     long thechar;
 
-    if (!str)
+    if ( not str)
         return(0);
 
     size = 0;
@@ -237,10 +237,10 @@ void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long
     WORD *dstart, *dptr, *dendh, *dendv;
     bool b32 = surface->bpp == 32;//XX
 
-    if (!fontData_)
+    if ( not fontData_)
         return;
 
-    if (!str)
+    if ( not str)
         return;
 
     idx = 0;
@@ -285,7 +285,7 @@ void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long
                 {
                     if (dptr < dendh)
                     {
-                        if (!(j & 0x7))
+                        if ( not (j & 0x7))
                             seg = *sptr++;
 
                         //XX
@@ -336,10 +336,10 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
     unsigned char *sstart, *sptr, seg = 0;
     WORD *dstart, *dptr, *dendh, *dendv;
 
-    if (!fontData_)
+    if ( not fontData_)
         return;
 
-    if (!str)
+    if ( not str)
         return;
 
     bool b32 = surface->bpp == 32;//XX
@@ -393,7 +393,7 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
 
                 for (j = 0; j < fontTable_[thechar].w; j++)
                 {
-                    if (!(j & 0x7))
+                    if ( not (j & 0x7))
                         seg = *sptr++;
 
                     if (dptr < dendh)
@@ -470,10 +470,10 @@ void C_Fontmgr::_Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, l
     WORD *dendh, *dendv;
     WORD *dclipx, *dclipy;
 
-    if (!fontData_)
+    if ( not fontData_)
         return;
 
-    if (!str)
+    if ( not str)
         return;
 
     idx = 0;
@@ -505,11 +505,11 @@ void C_Fontmgr::_Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, l
 
                     for (j = 0; j < fontTable_[thechar].w; j++)
                     {
-                        if (!(j & 0x7))
+                        if ( not (j & 0x7))
                         {
                             seg = *sptr++;
 
-                            if (!seg)
+                            if ( not seg)
                             {
                                 j += 7;
                                 dptr += 8;
@@ -558,10 +558,10 @@ void C_Fontmgr::_Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor
     DWORD *dendh, *dendv;
     DWORD *dclipx, *dclipy;
 
-    if (!fontData_)
+    if ( not fontData_)
         return;
 
-    if (!str)
+    if ( not str)
         return;
 
     DWORD *surfmem = (DWORD*) surface->mem;
@@ -596,11 +596,11 @@ void C_Fontmgr::_Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor
 
                     for (j = 0; j < fontTable_[thechar].w; j++)
                     {
-                        if (!(j & 0x7))
+                        if ( not (j & 0x7))
                         {
                             seg = *sptr++;
 
-                            if (!seg)
+                            if ( not seg)
                             {
                                 j += 7;
                                 dptr += 8;
@@ -658,10 +658,10 @@ void C_Fontmgr::_DrawSolid16(SCREEN *surface, _TCHAR *str, long length, WORD col
     WORD *dendh, *dendv;
     WORD *dclipx, *dclipy;
 
-    if (!fontData_)
+    if ( not fontData_)
         return;
 
-    if (!str)
+    if ( not str)
         return;
 
     idx = 0;
@@ -705,7 +705,7 @@ void C_Fontmgr::_DrawSolid16(SCREEN *surface, _TCHAR *str, long length, WORD col
                     {
                         if (dptr < dendh)
                         {
-                            if (!(j & 0x7))
+                            if ( not (j & 0x7))
                                 seg = *sptr++;
 
                             if (dptr >= dclipx)
@@ -758,10 +758,10 @@ void C_Fontmgr::_DrawSolid32(SCREEN *surface, _TCHAR *str, long length, DWORD co
     DWORD *dendh, *dendv;
     DWORD *dclipx, *dclipy;
 
-    if (!fontData_)
+    if ( not fontData_)
         return;
 
-    if (!str)
+    if ( not str)
         return;
 
     DWORD *surfmem = (DWORD*)surface->mem;
@@ -807,7 +807,7 @@ void C_Fontmgr::_DrawSolid32(SCREEN *surface, _TCHAR *str, long length, DWORD co
                     {
                         if (dptr < dendh)
                         {
-                            if (!(j & 0x7))
+                            if ( not (j & 0x7))
                                 seg = *sptr++;
 
                             if (dptr >= dclipx)

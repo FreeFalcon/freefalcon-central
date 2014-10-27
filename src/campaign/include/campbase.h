@@ -218,7 +218,7 @@ public:
         {
             CampBaseClass *cb = mapIt.second.get();
 
-            if ((!cb->IsAggregate()) and (cb->IsLocal()))
+            if (( not cb->IsAggregate()) and (cb->IsLocal()))
             {
                 cb->SendDeaggregateData(target.get());
             }

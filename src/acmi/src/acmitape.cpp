@@ -489,7 +489,7 @@ BOOL ReadRawACMIPositionData
      rawPositionData.entityPosData.yaw += 2.0f * PI;
     */
 
-    return (!result or result == EOF ? FALSE : TRUE);
+    return ( not result or result == EOF ? FALSE : TRUE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -646,7 +646,7 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
             case ACMIRecAircraftPosition:
 
                 // Read the data
-                if (!fread(&genpos, sizeof(ACMIGenPositionData), 1, flightFile))
+                if ( not fread(&genpos, sizeof(ACMIGenPositionData), 1, flightFile))
                 {
                     CleanupACMIImportPositionData(flightFile, rawPositionData);
                     return FALSE;
@@ -702,7 +702,7 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
             case ACMIRecTracerStart:
 
                 // Read the data
-                if (!fread(&tracer, sizeof(ACMITracerStartData), 1, flightFile))
+                if ( not fread(&tracer, sizeof(ACMITracerStartData), 1, flightFile))
                 {
                     CleanupACMIImportPositionData(flightFile, rawPositionData);
                     return FALSE;
@@ -737,7 +737,7 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
             case ACMIRecStationarySfx:
 
                 // Read the data
-                if (!fread(&sfx, sizeof(ACMIStationarySfxData), 1, flightFile))
+                if ( not fread(&sfx, sizeof(ACMIStationarySfxData), 1, flightFile))
                 {
                     CleanupACMIImportPositionData(flightFile, rawPositionData);
                     return FALSE;
@@ -771,7 +771,7 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
             case ACMIRecFeatureStatus:
 
                 // Read the data
-                if (!fread(&fs, sizeof(ACMIFeatureStatusData), 1, flightFile))
+                if ( not fread(&fs, sizeof(ACMIFeatureStatusData), 1, flightFile))
                 {
                     CleanupACMIImportPositionData(flightFile, rawPositionData);
                     return FALSE;
@@ -802,7 +802,7 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
             case ACMIRecMovingSfx:
 
                 // Read the data
-                if (!fread(&msfx, sizeof(ACMIMovingSfxData), 1, flightFile))
+                if ( not fread(&msfx, sizeof(ACMIMovingSfxData), 1, flightFile))
                 {
                     CleanupACMIImportPositionData(flightFile, rawPositionData);
                     return FALSE;
@@ -841,7 +841,7 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
             case ACMIRecSwitch:
 
                 // Read the data
-                if (!fread(&sd, sizeof(ACMISwitchData), 1, flightFile))
+                if ( not fread(&sd, sizeof(ACMISwitchData), 1, flightFile))
                 {
                     CleanupACMIImportPositionData(flightFile, rawPositionData);
                     return FALSE;
@@ -876,7 +876,7 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
             case ACMIRecDOF:
 
                 // Read the data
-                if (!fread(&dd, sizeof(ACMIDOFData), 1, flightFile))
+                if ( not fread(&dd, sizeof(ACMIDOFData), 1, flightFile))
                 {
                     CleanupACMIImportPositionData(flightFile, rawPositionData);
                     return FALSE;
@@ -911,7 +911,7 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
             case ACMIRecFeaturePosition:
 
                 // Read the data
-                if (!fread(&featpos, sizeof(ACMIFeaturePositionData), 1, flightFile))
+                if ( not fread(&featpos, sizeof(ACMIFeaturePositionData), 1, flightFile))
                 {
                     CleanupACMIImportPositionData(flightFile, rawPositionData);
                     return FALSE;
@@ -951,7 +951,7 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
             case ACMICallsignList:
 
                 // Read the data
-                if (!fread(&import_count, sizeof(long), 1, flightFile))
+                if ( not fread(&import_count, sizeof(long), 1, flightFile))
                 {
                     CleanupACMIImportPositionData(flightFile, rawPositionData);
                     return FALSE;
@@ -961,7 +961,7 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
                 Import_Callsigns = new ACMI_CallRec[import_count];
                 F4Assert(Import_Callsigns not_eq NULL);
 
-                if (!fread(Import_Callsigns, import_count * sizeof(ACMI_CallRec), 1, flightFile))
+                if ( not fread(Import_Callsigns, import_count * sizeof(ACMI_CallRec), 1, flightFile))
                 {
                     CleanupACMIImportPositionData(flightFile, rawPositionData);
                     return FALSE;
@@ -1516,7 +1516,7 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
     // write the header
     ret = fwrite(tapeHdr, sizeof(ACMITapeHeader), 1, tapeFile);
 
-    if (!ret)
+    if ( not ret)
         goto error_exit;
 
 
@@ -1530,7 +1530,7 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
 
         ret = fwrite(entityPtr, sizeof(ACMIEntityData), 1, tapeFile);
 
-        if (!ret)
+        if ( not ret)
             goto error_exit;
 
         entityListPtr = entityListPtr->next;
@@ -1546,7 +1546,7 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
 
         ret = fwrite(entityPtr, sizeof(ACMIEntityData), 1, tapeFile);
 
-        if (!ret)
+        if ( not ret)
             goto error_exit;
 
         entityListPtr = entityListPtr->next;
@@ -1590,7 +1590,7 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
 
         ret = fwrite(&posPtr->entityPosData, sizeof(ACMIEntityPositionData), 1, tapeFile);
 
-        if (!ret)
+        if ( not ret)
             goto error_exit;
 
         posListPtr = posListPtr->next;
@@ -1606,7 +1606,7 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
 
         ret = fwrite(&posPtr->entityPosData, sizeof(ACMIEntityPositionData), 1, tapeFile);
 
-        if (!ret)
+        if ( not ret)
             goto error_exit;
 
         posListPtr = posListPtr->next;
@@ -1631,7 +1631,7 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
 
         ret = fwrite(eventPtr, sizeof(ACMIEventHeader), 1, tapeFile);
 
-        if (!ret)
+        if ( not ret)
             goto error_exit;
 
         eventListPtr = eventListPtr->next;
@@ -1649,7 +1649,7 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
     {
         ret = fwrite(&importEventTrailerList[i], sizeof(ACMIEventTrailer), 1, tapeFile);
 
-        if (!ret)
+        if ( not ret)
             goto error_exit;
 
     } // end for events loop
@@ -1664,7 +1664,7 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
 
         ret = fwrite(&fePtr->data, sizeof(ACMIFeatEvent), 1, tapeFile);
 
-        if (!ret)
+        if ( not ret)
             goto error_exit;
 
         posListPtr = posListPtr->next;
@@ -2150,7 +2150,7 @@ void ACMITape::AdvanceGeneralEventHeadHeader(void)
         curr = next;
         _generalEventReadHeadHeader = curr->index;
 
-        if (!_eventList[ curr->index ])
+        if ( not _eventList[ curr->index ])
         {
             _eventList[curr->index] = InsertActiveEvent(curr, _simTime - curr->time);
         }
@@ -2185,7 +2185,7 @@ void ACMITape::AdvanceGeneralEventHeadTrailer(void)
 
         if (prev == NULL) return;
 
-        if (!_eventList[ curr->index ])
+        if ( not _eventList[ curr->index ])
         {
             e = GetGeneralEventData(curr->index);
             _eventList[curr->index] = InsertActiveEvent(e, _simTime - e->time);
@@ -2393,7 +2393,7 @@ long ACMITape::OpenTapeFile(char *fname)
     }
 
     // read in the tape header
-    if (!fread(&_tapeHdr, sizeof(ACMITapeHeader), 1, fd))
+    if ( not fread(&_tapeHdr, sizeof(ACMITapeHeader), 1, fd))
     {
         MonoPrint("Unable to to read tape header\n");
         fclose(fd);
@@ -2767,7 +2767,7 @@ void ACMITape::SetupSimTapeEntities()
 
         _simTapeFeatures[i].flags = e->flags;
 
-        // protect against bad indices(!?)
+        // protect against bad indices( not ?)
         // edg: I'm not sure what's going on but it seems like we
         // occasionally get a bad lead VU ID.  The imported can't find
         // it.  This is protected for in Import.  Also protect here...
@@ -3117,7 +3117,7 @@ void ACMITape::RemoveEntityFromFrame(int index)
     F4Assert(_simTapeEntities not_eq NULL);
     F4Assert(index < NumEntities());
 
-    if (!_simTapeEntities[index].objBase->drawPointer->InDisplayList())
+    if ( not _simTapeEntities[index].objBase->drawPointer->InDisplayList())
         return;
 
     _viewPoint->RemoveObject(_simTapeEntities[index].objBase->drawPointer);
@@ -3314,7 +3314,7 @@ void ACMITape::UpdateSimTapeEntities(void)
 
         // entity is in the frame .....
         // make sure we tell draw loop to draw it
-        if (!ep->objBase->drawPointer->InDisplayList())
+        if ( not ep->objBase->drawPointer->InDisplayList())
         {
             _viewPoint->InsertObject(ep->objBase->drawPointer);
         }
@@ -3322,7 +3322,7 @@ void ACMITape::UpdateSimTapeEntities(void)
         // likewise for 2d portion
         if (ep->obj2d)
         {
-            if (!ep->obj2d->InDisplayList())
+            if ( not ep->obj2d->InDisplayList())
                 _viewPoint->InsertObject(ep->obj2d);
 
             ep->obj2d->SetPosition(&pos);
@@ -3341,12 +3341,12 @@ void ACMITape::UpdateSimTapeEntities(void)
         }
         else if (_wingTrails and (ep->flags & ENTITY_FLAG_AIRCRAFT))
         {
-            if (_playVelocity < 0.0f and (!_paused or _simulateOnly))
+            if (_playVelocity < 0.0f and ( not _paused or _simulateOnly))
             {
                 ep->wtLength -= ep->wrTrail->RewindTrail((DWORD)(_simTime * 1000));
                 ep->wlTrail->RewindTrail((DWORD)(_simTime * 1000));
             }
-            else if (_playVelocity > 0.0f and (!_paused or _simulateOnly))
+            else if (_playVelocity > 0.0f and ( not _paused or _simulateOnly))
             {
                 ep->wtLength++;
                 wtpos.x = ep->objBase->dmx[1][0] * -20.0f * _tapeObjScale + ep->x;
@@ -3401,7 +3401,7 @@ void ACMITape::UpdateSimTapeEntities(void)
         }
 
         // check for trail
-        if (!ep->objTrail)
+        if ( not ep->objTrail)
             continue;
 
         // we need to deal with the trail....
@@ -3453,7 +3453,7 @@ void ACMITape::UpdateSimTapeEntities(void)
         // we need need to determine if we're moving forwards or
         // backwards in time, if back we rewind the trail, otherwise
         // add a new point
-        if (!ep->objTrail->InDisplayList())
+        if ( not ep->objTrail->InDisplayList())
         {
             _viewPoint->InsertObject(ep->objTrail);
         }
@@ -3489,11 +3489,11 @@ void ACMITape::UpdateSimTapeEntities(void)
 
 
 
-        if (_playVelocity < 0.0f and (!_paused or _simulateOnly))
+        if (_playVelocity < 0.0f and ( not _paused or _simulateOnly))
         {
             ep->objTrail->RewindTrail((DWORD)(_simTime * 1000));
         }
-        else if (_playVelocity > 0.0f and (!_paused or _simulateOnly))
+        else if (_playVelocity > 0.0f and ( not _paused or _simulateOnly))
         {
             ep->objTrail->AddPointAtHead(&newPoint, (DWORD)(_simTime * 1000));
         }
@@ -3875,7 +3875,7 @@ void ACMITape::SetWingTrails(BOOL turnOn)
         // get the tape entity data
         ep = &_simTapeEntities[i];
 
-        if (!(ep->flags & ENTITY_FLAG_AIRCRAFT))
+        if ( not (ep->flags & ENTITY_FLAG_AIRCRAFT))
         {
             continue;
         }
@@ -3883,10 +3883,10 @@ void ACMITape::SetWingTrails(BOOL turnOn)
         if (turnOn)
         {
             // turn trails on
-            if (!ep->wrTrail->InDisplayList())
+            if ( not ep->wrTrail->InDisplayList())
                 _viewPoint->InsertObject(ep->wrTrail);
 
-            if (!ep->wlTrail->InDisplayList())
+            if ( not ep->wlTrail->InDisplayList())
                 _viewPoint->InsertObject(ep->wlTrail);
         }
         else
@@ -3923,7 +3923,7 @@ AppendToEndOfList(LIST * list, LIST **end, void * node)
     newnode -> next = NULL;
 
     /* list was null */
-    if (!list)
+    if ( not list)
     {
         list = newnode;
         *end = list;
@@ -3951,7 +3951,7 @@ DestroyTheList(LIST * list)
     LIST * prev,
          * curr;
 
-    if (!list)
+    if ( not list)
         return;
 
     prev = list;
@@ -4027,7 +4027,7 @@ ACMITape::ImportTextEventList(FILE *fd, ACMITapeHeader *tapeHdr)
 
         ret = fwrite(&te, sizeof(ACMITextEvent), 1, fd);
 
-        if (!ret)
+        if ( not ret)
         {
             MonoPrint("Error writing TAPE event element\n");
             break;
@@ -4046,12 +4046,12 @@ ACMITape::ImportTextEventList(FILE *fd, ACMITapeHeader *tapeHdr)
     {
         ret = fwrite(&import_count, sizeof(long), 1, fd);
 
-        if (!ret)
+        if ( not ret)
             goto error_exit;
 
         ret = fwrite(Import_Callsigns, import_count * sizeof(ACMI_CallRec), 1, fd);
 
-        if (!ret)
+        if ( not ret)
             goto error_exit;
     }
 
@@ -4066,7 +4066,7 @@ ACMITape::ImportTextEventList(FILE *fd, ACMITapeHeader *tapeHdr)
 
     ret = fwrite(tapeHdr, sizeof(ACMITapeHeader), 1, fd);
 
-    if (!ret)
+    if ( not ret)
     {
         MonoPrint("Error writing TAPE header again\n");
     }
@@ -4214,7 +4214,7 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
         baseObject = theObject;
 
     // Some things require Base Objects (like bridges and airbases)
-    if (!((SimFeatureClass*)baseObject)->baseObject)
+    if ( not ((SimFeatureClass*)baseObject)->baseObject)
     {
         // Is this a bridge?
         if (theObject->IsSetCampaignFlag(FEAT_ELEV_CONTAINER))

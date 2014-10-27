@@ -65,7 +65,7 @@ void HeliBrain::TargetSelection(void)
     int campTactic;
 
     // sanity check
-    if (!campUnit)
+    if ( not campUnit)
         return;
 
     // check to see if our current ground target is a sim and exploding or
@@ -102,10 +102,10 @@ void HeliBrain::TargetSelection(void)
 
      simTarg = FindSimGroundTarget((CampBaseClass*)target, ((CampBaseClass*)target)->NumberOfComponents(), 0);
 
-     if (!simTarg) // another sanity check
+     if ( not simTarg) // another sanity check
      return;
 
-     if (!simTarg->IsExploding() and !simTarg->IsDead() and simTarg->pctStrength > 0.0f) // still alive?
+     if ( not simTarg->IsExploding() and !simTarg->IsDead() and simTarg->pctStrength > 0.0f) // still alive?
      SetTargetEntity( simTarg );
 
      return;
@@ -120,7 +120,7 @@ void HeliBrain::TargetSelection(void)
     campUnit->UnsetChecked();
 
     // choose target.  I assume if this returns 0, no target....
-    if (!campUnit->ChooseTarget())
+    if ( not campUnit->ChooseTarget())
     {
         ClearTarget();
         // alternately try and choose the waypoint's target
@@ -136,7 +136,7 @@ void HeliBrain::TargetSelection(void)
     campTactic = campUnit->GetUnitTactic();
 
     // sanity check and make sure its on ground, what to do if not?!...
-    if (!target ||
+    if ( not target ||
         campTactic == ATACTIC_RETROGRADE ||
         campTactic == ATACTIC_IGNORE ||
         campTactic == ATACTIC_AVOID ||
@@ -161,11 +161,11 @@ void HeliBrain::TargetSelection(void)
     {
         simTarg = FindSimGroundTarget((CampBaseClass*)target, ((CampBaseClass*)target)->NumberOfComponents(), 0);
 
-        if (!simTarg) // another sanity check
+        if ( not simTarg) // another sanity check
             return;
 
         // set it as our target
-        if (!simTarg->IsExploding() and !simTarg->IsDead() and simTarg->pctStrength > 0.0f) // still alive?
+        if ( not simTarg->IsExploding() and !simTarg->IsDead() and simTarg->pctStrength > 0.0f) // still alive?
             SetTargetEntity(simTarg);
 
         return;
@@ -195,7 +195,7 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
             flightMember[i] = (HelicopterClass *)self->GetCampaignObject()->GetComponentEntity(i);
 
             // Sanity check
-            if (!flightMember[i])
+            if ( not flightMember[i])
                 continue;
         }
     }
@@ -208,7 +208,7 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
         // Get the sim object associated to this entity number
         simTarg = targetGroup->GetComponentEntity(i);
 
-        if (!simTarg) //sanity check
+        if ( not simTarg) //sanity check
             continue;
 
         // Is it alive?
@@ -232,7 +232,7 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
             continue;
 
         // Mark this sim entity as the first target with a match (in case no emitting targets are left standing, or it's a feature)
-        if (!firstSimTarg)
+        if ( not firstSimTarg)
             firstSimTarg = simTarg;
 
         // Is it an objective, break out
@@ -341,7 +341,7 @@ void HeliBrain::TargetSelection(SimObjectType *tlist)
         theObject = (SimBaseClass*)tmpObj->BaseData();
 
         // edg : ERROR!
-        if (!theObject or !tmpObj->localData)
+        if ( not theObject or !tmpObj->localData)
         {
             // get next object
             tmpObj = tmpObj->next;

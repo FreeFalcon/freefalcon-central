@@ -125,7 +125,7 @@ void C_Panner::SetImage(short state, long ImageID)
             //Image_[state]->SetXY(tmp->x,tmp->y);
         }
 
-        if (!state and Image_[state])
+        if ( not state and Image_[state])
             SetWH(Image_[state]->GetW(), Image_[state]->GetH());
 
         if (Image_[0]->Ready())
@@ -300,7 +300,7 @@ BOOL C_Panner::Process(long, short HitType)
 
 void C_Panner::Refresh()
 {
-    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (BgImage_)
@@ -314,7 +314,7 @@ void C_Panner::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     int i;
 
-    if (!Ready()) return;
+    if ( not Ready()) return;
 
     if (GetFlags() & C_BIT_INVISIBLE)
         return;

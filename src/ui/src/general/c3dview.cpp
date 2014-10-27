@@ -287,7 +287,7 @@ BSPLIST *C_3dViewer::LoadDrawableFeature(long ID, Objective obj, short f, short 
 {
     BSPLIST *bspobj;
 
-    if (!Parent)
+    if ( not Parent)
     {
         bspobj = objects_->CreateContainer(ID, obj, f, fid, classPtr, fc);
 
@@ -376,7 +376,7 @@ BOOL C_3dViewer::AddToView(BSPLIST *obj)
 {
     if (obj)
     {
-        if (!((DrawableBSP*)obj->object)->InDisplayList())
+        if ( not ((DrawableBSP*)obj->object)->InDisplayList())
         {
             viewPoint_->InsertObject(obj->object);
             return(TRUE);
@@ -514,7 +514,7 @@ BOOL C_3dViewer::ViewGreyOTW()
          rendOTW_->context.FlushPolyLists();
          rendOTW_->EndDraw();
          rendOTW_->context.FinishFrame(NULL);
-         } while(!TheLoader.LoaderQueueEmpty());*/
+         } while( not TheLoader.LoaderQueueEmpty());*/
 
 
         //Wombat778 11-3-2003 Added to allow Latitude/Longitude to be drawn on the display.  A bit of a hack but works ok.
@@ -557,7 +557,7 @@ BOOL C_3dViewer::ViewGreyOTW()
             m_pImgGray = NULL;
         }
 
-        if (!m_pImgGray)
+        if ( not m_pImgGray)
         {
             // Create new work buffer
             m_pImgGray = new ImageBuffer;

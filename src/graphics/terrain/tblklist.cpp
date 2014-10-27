@@ -388,7 +388,7 @@ void TBlockList::InsertBlock(int row, int col)
     // Allocate memory for the new block list entry
     entry = new TListEntry;
 
-    if (!entry)
+    if ( not entry)
     {
         ShiError("Failed to allocate memory for terrain block list entry");
     }
@@ -399,7 +399,7 @@ void TBlockList::InsertBlock(int row, int col)
     entry->virtualCol = col;
     entry->block = myLevelPtr->RequestBlockOwnership(row, col);
 
-    if (!entry->block)
+    if ( not entry->block)
     {
         ShiError("I failed to find a terrain block!");
     }
@@ -416,7 +416,7 @@ void TBlockList::InsertBlock(int row, int col)
 
     head = entry;
 
-    if (!tail)
+    if ( not tail)
     {
         tail = entry;
     }

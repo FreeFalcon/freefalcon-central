@@ -70,7 +70,7 @@ void C_Cursor::Cleanup()
 
 void C_Cursor::Refresh()
 {
-    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(MinX_, MinY_, MaxX_ + 2, MaxY_ + 2, GetFlags(), GetClient());
@@ -80,7 +80,7 @@ void C_Cursor::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     UI95_RECT s, rect;
 
-    if (!Ready())
+    if ( not Ready())
         return;
 
     if (GetFlags() & C_BIT_INVISIBLE or !Parent_)
@@ -95,7 +95,7 @@ void C_Cursor::Draw(SCREEN *surface, UI95_RECT *cliprect)
         rect.bottom = rect.top + GetH() + 2;
         s = rect; // just so its set to something JPO
 
-        if (!Parent_->ClipToArea(&s, &rect, cliprect))
+        if ( not Parent_->ClipToArea(&s, &rect, cliprect))
             return;
 
         Parent_->BlitTranslucent(surface, BoxColor_, Percent_, &rect, Flags_, Client_);

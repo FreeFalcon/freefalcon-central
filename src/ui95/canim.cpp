@@ -119,10 +119,10 @@ void C_Anim::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
 BOOL C_Anim::TimerUpdate()
 {
-    if (!(GetFlags() & C_BIT_ENABLED))
+    if ( not (GetFlags() & C_BIT_ENABLED))
         return(FALSE);
 
-    if (!Ready()) return(FALSE);
+    if ( not Ready()) return(FALSE);
 
     switch (GetType())
     {

@@ -68,7 +68,7 @@ static void TallyUnitVehicles(Unit un)
 {
     int i, j, ID;
 
-    if (!un)
+    if ( not un)
         return;
 
     for (i = 0; i < 16; i++)
@@ -172,20 +172,20 @@ void SetupUnitInfoWindow(VU_ID unitID)
 
     win = gMainHandler->FindWindow(UNIT_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     un = (Unit)vuDatabase->Find(unitID);
 
-    if (!un)
+    if ( not un)
         return;
 
-    if (!un->IsBattalion() and !un->IsBrigade())
+    if ( not un->IsBattalion() and !un->IsBrigade())
         return;
 
     urec = (UI_Refresher*)gGps->Find(un->GetCampID());
 
-    if (!urec)
+    if ( not urec)
         return;
 
     Leave = UI_Enter(win);
@@ -489,7 +489,7 @@ void SetupDivisionInfoWindow(long DivID, short owner)
 
     win = gMainHandler->FindWindow(UNIT_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     div = GetFirstDivisionByCountry(owner);
@@ -497,12 +497,12 @@ void SetupDivisionInfoWindow(long DivID, short owner)
     while (div and div->nid not_eq (DivID))
         div = GetNextDivisionByCountry(div, owner);
 
-    if (!div)
+    if ( not div)
         return;
 
     urec = (UI_Refresher*)gGps->Find(div->nid | UR_DIVISION);
 
-    if (!urec)
+    if ( not urec)
         return;
 
     Leave = UI_Enter(win);
@@ -874,7 +874,7 @@ long GetRank(_TCHAR *str)
 
         if (rnk)
         {
-            if (!_tcsncicmp(rnk, str, _tcsclen(rnk)))
+            if ( not _tcsncicmp(rnk, str, _tcsclen(rnk)))
                 return(i);
         }
 
@@ -1152,10 +1152,10 @@ BOOL SortPilotByNameCB(TREELIST *list, TREELIST *newitem)
 {
     C_Button *btn1, *btn2;
 
-    if (!list or !newitem)
+    if ( not list or !newitem)
         return(FALSE);
 
-    if (!list->Item_ or !newitem->Item_)
+    if ( not list->Item_ or !newitem->Item_)
         return(FALSE);
 
     btn1 = (C_Button *)list->Item_;
@@ -1197,7 +1197,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
 
     ent = (CampEntity)vuDatabase->Find(TheID);
 
-    if (!ent)
+    if ( not ent)
         return;
 
     gLastSquadron = TheID;
@@ -1208,7 +1208,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
         sqdID = flt->GetUnitSquadronID();
         sqd = (Squadron)vuDatabase->Find(sqdID);
 
-        if (!sqd)
+        if ( not sqd)
             return;
 
         pilots = sqd->NumActivePilots();
@@ -1223,7 +1223,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
 
     urec = (UI_Refresher *)gGps->Find(sqd->GetCampID());
 
-    if (!urec)
+    if ( not urec)
         return;
 
     win = gMainHandler->FindWindow(AIR_UNIT_WIN);
@@ -1565,7 +1565,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL CampHotelSortCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list or !newitem)
+    if ( not list or !newitem)
         return(FALSE);
 
     if (((C_Custom*)newitem->Item_)->GetValue(1) > ((C_Custom*)list->Item_)->GetValue(1))
@@ -1597,14 +1597,14 @@ void UpdateSierraHotel()
     {
         sqd = FalconLocalSession->GetPlayerSquadron();
 
-        if (!sqd)
+        if ( not sqd)
             return;
 
         Leave = UI_Enter(win);
 
         tree = (C_TreeList*)win->FindControl(SH_PILOT_LIST);
 
-        if (!tree)
+        if ( not tree)
             return;
 
         tree->SetSortCallback(CampHotelSortCB);
@@ -1990,7 +1990,7 @@ WayPointClass* GetWayPointUnder(Unit unit)
     unit->GetLocation(&x, &y);
     gDragWPNum = 0;
 
-    if (!w)
+    if ( not w)
         return NULL;
 
     while (w)
@@ -2110,7 +2110,7 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
                 // Change our location
                 unit->SetLocation(bx, by);
 
-                if (!unit->IsFlight())
+                if ( not unit->IsFlight())
                     return;
 
                 // Add a new waypoint at current location or move the one we were sitting on

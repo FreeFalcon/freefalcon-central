@@ -102,7 +102,7 @@ void Render2D::Setup(ImageBuffer *imageBuffer)
     //result = context.Setup( (DWORD)imageBuffer->targetSurface(), (DWORD)imageBuffer->GetDisplayDevice()->GetMPRdevice());
     result = context.Setup(imageBuffer, imageBuffer->GetDisplayDevice()->GetDefaultRC());
 
-    if (!result)
+    if ( not result)
     {
         ShiError("Failed to setup rendering context");
     }
@@ -502,16 +502,16 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         pVtx[5].q = 1.0F;
 
         // Do a block clip
-        if (!(pVtx[0].x <= rightPixel and pVtx[0].x >= leftPixel and pVtx[0].y <= bottomPixel and pVtx[0].y >= topPixel))
+        if ( not (pVtx[0].x <= rightPixel and pVtx[0].x >= leftPixel and pVtx[0].y <= bottomPixel and pVtx[0].y >= topPixel))
             break;
 
-        if (!(pVtx[1].x <= rightPixel and pVtx[1].x >= leftPixel and pVtx[1].y <= bottomPixel and pVtx[1].y >= topPixel))
+        if ( not (pVtx[1].x <= rightPixel and pVtx[1].x >= leftPixel and pVtx[1].y <= bottomPixel and pVtx[1].y >= topPixel))
             break;
 
-        if (!(pVtx[2].x <= rightPixel and pVtx[2].x >= leftPixel and pVtx[2].y <= bottomPixel and pVtx[2].y >= topPixel))
+        if ( not (pVtx[2].x <= rightPixel and pVtx[2].x >= leftPixel and pVtx[2].y <= bottomPixel and pVtx[2].y >= topPixel))
             break;
 
-        if (!(pVtx[5].x <= rightPixel and pVtx[5].x >= leftPixel and pVtx[5].y <= bottomPixel and pVtx[5].y >= topPixel))
+        if ( not (pVtx[5].x <= rightPixel and pVtx[5].x >= leftPixel and pVtx[5].y <= bottomPixel and pVtx[5].y >= topPixel))
             break;
 
         x += pFontSet->fontData[pFontSet->fontNum][*string].pixelWidth;
@@ -607,7 +607,7 @@ void Render2D::Load2DFontSet()
 #ifdef USE_TEXTURE_FONT
 
     //Wombat778 12-12-2003 Added to allow fonts to be chosen based on the current resolution (code that runs under !g_bAutoScaleFonts is the original)
-    if (!g_bAutoScaleFonts)
+    if ( not g_bAutoScaleFonts)
     {
         if (Font2D.fontTexture[0].LoadImage("art\\ckptart\\6x4font.gif", MPR_TI_CHROMAKEY | MPR_TI_PALETTE, FALSE))
             Font2D.fontTexture[0].CreateTexture("6x4font.gif");
@@ -866,7 +866,7 @@ void Render2D::Load3DFontSet()
 {
 #ifdef USE_TEXTURE_FONT
 
-    if (!g_bAutoScaleFonts)
+    if ( not g_bAutoScaleFonts)
     {
         if (Font3D.fontTexture[0].LoadImage("art\\ckptart\\3dfont\\6x4font.gif", MPR_TI_CHROMAKEY | MPR_TI_PALETTE, FALSE))
             Font3D.fontTexture[0].CreateTexture("6x4font.gif");

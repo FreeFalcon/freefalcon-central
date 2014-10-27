@@ -55,7 +55,7 @@ SimPersistantClass::SimPersistantClass(void)
 
 SimPersistantClass::~SimPersistantClass(void)
 {
-    ShiAssert(!drawPointer);
+    ShiAssert( not drawPointer);
     // if (drawPointer)
     // OTWDriver.RemoveObject(drawPointer, TRUE);
     // drawPointer = NULL;
@@ -250,7 +250,7 @@ void NewTimedPersistantObject(int vistype, CampaignTime removalTime, float x, fl
 
     while (i not_eq persistantListTail and slot < 0)
     {
-        if (!PersistantObjects[i].InUse())
+        if ( not PersistantObjects[i].InUse())
             slot = i;
 
         i++;
@@ -283,7 +283,7 @@ void NewLinkedPersistantObject(int vistype, VU_ID campObjID, int campIdx, float 
 
     while (i not_eq persistantListTail and slot < 0)
     {
-        if (!PersistantObjects[i].InUse())
+        if ( not PersistantObjects[i].InUse())
             slot = i;
 
         i++;
@@ -461,7 +461,7 @@ void UpdatePersistantObjectsWakeState(float px, float py, float range, CampaignT
 
             if (dsq < rsq)
             {
-                if (!persist->drawPointer)
+                if ( not persist->drawPointer)
                     persist->Deaggregate();
             }
             else if (persist->drawPointer and dsq > rsq * 1.2F) // Reaggregate 20% further than we deaggregate
@@ -545,7 +545,7 @@ void AddRunwayCraters(Objective o, int f, int craters)
     }
 
     // Check for valid runway (could be a runway number or something)
-    if (!runway)
+    if ( not runway)
         return;
 
     rp = GetFirstPt(runway);
@@ -618,7 +618,7 @@ void UpdateNoCampaignParentObjectsWakeState(float px, float py, float range)
         if (object->IsLocal())
         {
             // All local objects should be awake (we need to manage them)
-            if (!object->IsAwake())
+            if ( not object->IsAwake())
             {
                 object->Wake();
             }
@@ -632,7 +632,7 @@ void UpdateNoCampaignParentObjectsWakeState(float px, float py, float range)
             {
                 // KCK: Probably should remove objects from this list when they're dead -
                 // But I wasn't sure how ACMI uses the unset dead functionality
-                if (!object->IsAwake() and !object->IsDead())
+                if ( not object->IsAwake() and !object->IsDead())
                     object->Wake();
             }
             else if (dsq > rsq * 1.2F)

@@ -508,7 +508,7 @@ int EjectedPilotClass::Sleep(void)
 {
     int retval = 0;
 
-    if (!IsAwake())
+    if ( not IsAwake())
         return retval;
 
     return SimMoverClass::Sleep();
@@ -527,7 +527,7 @@ int EjectedPilotClass::Exec()
     // Call superclass Exec.
     SimMoverClass::Exec();
 
-    if (!SimDriver.MotionOn())
+    if ( not SimDriver.MotionOn())
         return IsLocal();
 
     if (_delayTime > SimLibElapsedTime)   // not time yet
@@ -1042,7 +1042,7 @@ void EjectedPilotClass::AdvanceTime()
     _runTime += _deltaTime;
 
     // Advance stage if necessary.
-    if (!_hitGround and _collapseChute and _stage not_eq PD_FREE_FALL_WITH_COLLAPSED_CHUTE)
+    if ( not _hitGround and _collapseChute and _stage not_eq PD_FREE_FALL_WITH_COLLAPSED_CHUTE)
     {
         SetStage(PD_FREE_FALL_WITH_COLLAPSED_CHUTE);
         InitFreeFallWithCollapsedChute();
@@ -1651,7 +1651,7 @@ void EjectedPilotClass::CalculateAndSetPositionAndOrientationInCockpit()
 
     AircraftClass *aircraft = (AircraftClass*) vuDatabase->Find(_aircraftId);
 
-    if (!aircraft)
+    if ( not aircraft)
         return;
 
     // Orient the seat the same way as the plane.

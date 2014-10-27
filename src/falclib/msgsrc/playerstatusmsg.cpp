@@ -43,12 +43,12 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
         return 0;
     }
 
-    if (!session)
+    if ( not session)
     {
         return 0;
     }
 
-    if (!mover)
+    if ( not mover)
     {
         FalconPlayerStatusMessage *msg = new FalconPlayerStatusMessage(session->Id(), FalconLocalSession);
         _tcscpy(msg->dataBlock.callsign, dataBlock.callsign);
@@ -80,7 +80,7 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
             TheCampaign.MissionEvaluator->RegisterPlayerJoin(this);
         }
 
-        if (!mover)
+        if ( not mover)
         {
             return 0;
         }
@@ -97,7 +97,7 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
 
             while (theObject)
             {
-                if ((!theObject->IsAwake()) and (!theObject->IsSetFalcFlag(FEC_HASPLAYERS)))
+                if (( not theObject->IsAwake()) and ( not theObject->IsSetFalcFlag(FEC_HASPLAYERS)))
                 {
                     theObject->Wake();
                 }
@@ -116,7 +116,7 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
             TheCampaign.MissionEvaluator->ServerFileLog(this);
         }
 
-        if (!mover)
+        if ( not mover)
         {
             return 0;
         }

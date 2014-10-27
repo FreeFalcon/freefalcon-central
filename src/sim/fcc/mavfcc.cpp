@@ -41,7 +41,7 @@ void FireControlComputer::AirGroundMissileMode(void)
             break;
 
         default:
-            if (!releaseConsent)
+            if ( not releaseConsent)
             {
                 // Check for regeneration of weapon
                 if (postDrop and Sms->curWeapon == NULL)
@@ -160,7 +160,7 @@ void FireControlComputer::MaverickMode(void)
         // M.N. added full realism mode
         AircraftClass *pa = (AircraftClass *)platform;
 
-        if (!playerFCC or (pa->IsPlayer() and pa->AutopilotType() == AircraftClass::CombatAP) or ((PlayerOptions.GetAvionicsType() not_eq ATRealistic and PlayerOptions.GetAvionicsType() not_eq ATRealisticAV) and (subMode == SLAVE)))
+        if ( not playerFCC or (pa->IsPlayer() and pa->AutopilotType() == AircraftClass::CombatAP) or ((PlayerOptions.GetAvionicsType() not_eq ATRealistic and PlayerOptions.GetAvionicsType() not_eq ATRealisticAV) and (subMode == SLAVE)))
         {
             if (systemTarget and systemTarget->BaseData()->OnGround())
             {
@@ -380,7 +380,7 @@ void FireControlComputer::MaverickMode(void)
                         pitch += groundDesignateEl * trig.cos - groundDesignateAz * trig.sin;
                         yaw += groundDesignateEl * trig.sin + groundDesignateAz * trig.cos;
 
-                        if (!FindGroundIntersection(pitch, yaw, &tmpX, &tmpY, &tmpZ))
+                        if ( not FindGroundIntersection(pitch, yaw, &tmpX, &tmpY, &tmpZ))
                         {
                             groundDesignateX = 0.0F;
                             groundDesignateY = 0.0F;
@@ -408,7 +408,7 @@ void FireControlComputer::MaverickMode(void)
                     }
                 }
             }
-            else if (!preDesignate)
+            else if ( not preDesignate)
             {
                 if (theDisplay->IsLocked())
                 {
@@ -452,7 +452,7 @@ void FireControlComputer::MaverickMode(void)
                         isLimited = theMissile->SetSeekerPos(&yaw, &pitch);
                         theMissile->RunSeeker();
 
-                        if (!theMissile->targetPtr)
+                        if ( not theMissile->targetPtr)
                         {
                             if (subMode not_eq SLAVE)
                                 platform->SOIManager(SimVehicleClass::SOI_HUD);
@@ -577,7 +577,7 @@ void FireControlComputer::MaverickMode(void)
                                 yaw += xMove * g_fCursorSpeed * MAVERICK_SLEW_RATE * SimLibMajorFrameTime;
                             }
 
-                            if (!FindGroundIntersection(pitch, yaw, &tmpX, &tmpY, &tmpZ))
+                            if ( not FindGroundIntersection(pitch, yaw, &tmpX, &tmpY, &tmpZ))
                             {
                                 preDesignate = TRUE;
                                 groundPipperAz = 0.0F;
@@ -620,7 +620,7 @@ void FireControlComputer::MaverickMode(void)
                     yaw   = groundDesignateAz;
                     isLimited = theMissile->SetSeekerPos(&yaw, &pitch);
 
-                    if (!isLimited)
+                    if ( not isLimited)
                     {
                         curTarget = MavCheckLock(theMissile);
 
@@ -744,7 +744,7 @@ void FireControlComputer::MaverickMode(void)
         missileTarget = FALSE;
     }
 
-    if (!releaseConsent)
+    if ( not releaseConsent)
     {
         postDrop = FALSE;
     }
@@ -831,7 +831,7 @@ void FireControlComputer::CheckFeatures(MissileClass* theMissile)
     float groundRange;
     float curMin, dx, dy;
 
-    if (!targetPtr)
+    if ( not targetPtr)
     {
         groundRange = (float)sqrt((groundDesignateX - platform->XPos()) * (groundDesignateX - platform->XPos()) +
                                   (groundDesignateY - platform->YPos()) * (groundDesignateY - platform->YPos()) +
@@ -937,7 +937,7 @@ SimObjectType* FireControlComputer::MavCheckLock(MissileClass* theMissile)
     //MI fix for better Maverick target selection
     AircraftClass *pa = (AircraftClass *)platform;
 
-    if (!playerFCC or (pa->IsPlayer() and pa->AutopilotType() == AircraftClass::CombatAP))
+    if ( not playerFCC or (pa->IsPlayer() and pa->AutopilotType() == AircraftClass::CombatAP))
         minDist = 1.0F * DTR;
     else
     {
@@ -986,7 +986,7 @@ SimObjectType* FireControlComputer::MavCheckLock(MissileClass* theMissile)
 
     curTarget = theMissile->targetPtr;
 
-    if (!theMissile->targetPtr)
+    if ( not theMissile->targetPtr)
     {
         CheckFeatures(theMissile);
         curTarget = theMissile->targetPtr;

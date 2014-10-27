@@ -25,7 +25,7 @@ static WAVEFORMATEX stereo =
 
 void gMusicCallback(SOUNDSTREAM *Stream, int MessageID)
 {
-    if (!Stream or !gMusic)
+    if ( not Stream or !gMusic)
         return;
 
     switch (MessageID)
@@ -119,7 +119,7 @@ void C_Music::Setup(CSoundMgr *mngr)
 {
     Sound_ = mngr;
 
-    if (!Music_)
+    if ( not Music_)
     {
         Music_ = new C_Hash;
         Music_->Setup(10);
@@ -158,7 +158,7 @@ void C_Music::Cleanup()
 
 void C_Music::CreateStream()
 {
-    if (!Sound_)
+    if ( not Sound_)
         return;
 
     if (StreamID_[0] == SND_NO_HANDLE)
@@ -331,7 +331,7 @@ void C_Music::PlayQ()
     SOUND_RES *snd;
     int i;
 
-    if (!Sound_)
+    if ( not Sound_)
         return;
 
     if (Sound_->IsStreamPlaying(StreamID_[StreamUsed_]))
@@ -360,7 +360,7 @@ void C_Music::PlayQ()
 
         Queue_[_MUSIC_QUEUE_SIZE_ - 1] = SND_NO_HANDLE;
     }
-    while (!snd and Queue_[0] not_eq SND_NO_HANDLE);
+    while ( not snd and Queue_[0] not_eq SND_NO_HANDLE);
 }
 
 // HELLA HUGE KLUDGE to String 2 or more WAVE files together
@@ -371,7 +371,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
     long i, size, NumSamples;
     char fname[MAX_PATH];
 
-    if (!Sound_)
+    if ( not Sound_)
         return;
 
     do
@@ -415,7 +415,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
 
                 if (Header.wFormatTag == WAVE_FORMAT_IMA_ADPCM)
                 {
-                    if (!Stream->ImaInfo)
+                    if ( not Stream->ImaInfo)
                     {
                         Stream->Status  or_eq  SND_IS_IMAADPCM;
                         Stream->ImaInfo = new IMA_STREAM;
@@ -458,7 +458,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
 
                 Stream->Status  or_eq  SND_STREAM_CONTINUE | SND_STREAM_LOOP;
 
-                if (!(snd->flags & SOUND_LOOP))
+                if ( not (snd->flags & SOUND_LOOP))
                     Stream->Status xor_eq SND_STREAM_LOOP;
 
                 Stream->LoopOffset = snd->LoopPoint;
@@ -481,7 +481,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
 
         Queue_[_MUSIC_QUEUE_SIZE_ - 1] = SND_NO_HANDLE;
     }
-    while (!snd and Queue_[0] not_eq SND_NO_HANDLE);
+    while ( not snd and Queue_[0] not_eq SND_NO_HANDLE);
 }
 
 // Interactive stuff
@@ -489,7 +489,7 @@ void C_Music::AddInteractiveMusic(long Section, long Group, long MusicID)
 {
     long ID;
 
-    if (!Music_)
+    if ( not Music_)
         return;
 
     ID = Count_[Section][Group] | (Section << 16) | (Group << 8);

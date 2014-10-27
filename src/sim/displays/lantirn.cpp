@@ -526,7 +526,7 @@ float LantirnClass::GetGroundIntersection(AircraftClass* self, float yaw, float 
     vpp->Update(&airframepos);
     int res = vpp->GroundIntersection(&tfrviewDir, &point);
 
-    if (!res)
+    if ( not res)
     {
         type = 0;
         return gdist1;
@@ -679,7 +679,7 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
                             float Distance = (float)sqrt(collide.x * collide.x + collide.y * collide.y + collide.z * collide.z);
 
                             //Remember this one, either closest one, or tallest one from our point of view.
-                            if (!GreatestAspect)
+                            if ( not GreatestAspect)
                             {
                                 if (Distance < ClosestDistance)
                                 {

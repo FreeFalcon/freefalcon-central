@@ -99,7 +99,7 @@ int RadarDopplerClass::InResCell(SimObjectType* rdrObj, int i, int *rngCell,
         angCell[i] = j;
     }
 
-    return (!detflag);
+    return ( not detflag);
     //   return FALSE;
 }
 
@@ -241,7 +241,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
         // countermeasures only work when tracking (for now)
         //MI possible CTD? added !target->BaseData() check
 
-        if (!lockedTarget or !target or !target->BaseData() or !target->BaseData()->IsSim())
+        if ( not lockedTarget or !target or !target->BaseData() or !target->BaseData()->IsSim())
         {
             return (S >= 0.8f + 0.4f * (float)rand() / BIGGEST_RANDOM_NUMBER);
         }
@@ -265,7 +265,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
 
             // MonoPrint ("ConsiderDecoy %08x %f: ", cm, target->localData->range);
 
-            if (!cm)
+            if ( not cm)
             {
                 // We'll have to wait until next time
                 // (probably because the create event hasn't been processed locally yet)

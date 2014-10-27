@@ -639,7 +639,7 @@ void MFDClass::FreeDrawable()
             }
         }
 
-        if (!inUse)
+        if ( not inUse)
         {
             drawable->DisplayExit();
         }
@@ -763,7 +763,7 @@ void MFDClass::Exec(int clearFrame, int virtualCockpit)
         return;
     }
 
-    if (!ownship->HasPower(AircraftClass::MFDPower))
+    if ( not ownship->HasPower(AircraftClass::MFDPower))
         return;
 
     // ASSO: rewritten the virtual cockpit branch

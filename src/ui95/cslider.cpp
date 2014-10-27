@@ -117,7 +117,7 @@ void C_Slider::SetSliderPos(long Pos) //!
     {
         dist = (MaxPos_ - MinPos_) / Steps_;
 
-        if (!dist)
+        if ( not dist)
         {
             dist = 1;
         }
@@ -259,7 +259,7 @@ BOOL C_Slider::Process(long ID, short HitType)
 
 void C_Slider::Refresh()
 {
-    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX() + SX_, GetY() + SY_, GetX() + SX_ + GetW() + 1, GetY() + SY_ + GetH() + 1, GetFlags(), GetClient());
@@ -269,7 +269,7 @@ void C_Slider::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     UI95_RECT rect, s;
 
-    if (!Ready()) return;
+    if ( not Ready()) return;
 
     if (GetFlags() & C_BIT_INVISIBLE)
         return;
@@ -298,7 +298,7 @@ void C_Slider::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
         if (GetFlags() & C_BIT_ABSOLUTE)
         {
-            if (!Parent_->ClipToArea(&s, &rect, &Parent_->Area_))
+            if ( not Parent_->ClipToArea(&s, &rect, &Parent_->Area_))
                 return;
         }
         else
@@ -308,11 +308,11 @@ void C_Slider::Draw(SCREEN *surface, UI95_RECT *cliprect)
             rect.right += Parent_->VX_[GetClient()];
             rect.bottom += Parent_->VY_[GetClient()];
 
-            if (!Parent_->ClipToArea(&s, &rect, &Parent_->ClientArea_[GetClient()]))
+            if ( not Parent_->ClipToArea(&s, &rect, &Parent_->ClientArea_[GetClient()]))
                 return;
         }
 
-        if (!Parent_->ClipToArea(&s, &rect, cliprect))
+        if ( not Parent_->ClipToArea(&s, &rect, cliprect))
             return;
 
         rect.left += Parent_->GetX();
@@ -344,7 +344,7 @@ void C_Slider::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     else if (Flags_ & C_BIT_VCENTER)
         clip.top -= GetH() / 2;
 
-    if (!(Flags_ & C_BIT_ABSOLUTE))
+    if ( not (Flags_ & C_BIT_ABSOLUTE))
     {
         clip.left += Parent_->VX_[Client_];
         clip.top += Parent_->VY_[Client_];
@@ -353,11 +353,11 @@ void C_Slider::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     clip.right = clip.left + Slider_->Header->w;
     clip.bottom = clip.top + Slider_->Header->h;
 
-    if (!Parent_->ClipToArea(&tmp, &clip, cliprect))
+    if ( not Parent_->ClipToArea(&tmp, &clip, cliprect))
         return;
 
-    if (!(Flags_ & C_BIT_ABSOLUTE))
-        if (!Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
+    if ( not (Flags_ & C_BIT_ABSOLUTE))
+        if ( not Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
             return;
 
     Parent_->BlitTranslucent(surface, MouseOverColor_, MouseOverPercent_, &clip, C_BIT_ABSOLUTE, 0);

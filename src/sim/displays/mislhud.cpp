@@ -57,7 +57,7 @@ void HudClass::DrawDogfight()
              DrawMissileReticle(FCC->Aim120ASECRadius(targetData->range), FALSE, TRUE);
             }*/
             //MI changed
-            if (!g_bRealisticAvionics)
+            if ( not g_bRealisticAvionics)
                 DrawTDBox();
 
             //else
@@ -121,7 +121,7 @@ void HudClass::DrawDogfight()
             if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
             {
                 //MI changed
-                if (!g_bRealisticAvionics)
+                if ( not g_bRealisticAvionics)
                     DrawTDBox();
 
                 // Marco Edit - not TD Box in Dogfight mode
@@ -185,7 +185,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
             if (targetPtr)
             {
                 //MI changed
-                if (!g_bRealisticAvionics)
+                if ( not g_bRealisticAvionics)
                     DrawTDBox();
                 else
                     DrawAATDBox();
@@ -212,7 +212,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                         else
                         {
                             // if (((MissileClass*)wpn)->isCaged and !((MissileClass*)wpn)->isSpot)
-                            if (g_bRealisticAvionics and ((MissileClass*)wpn)->isSpot or (!((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
+                            if (g_bRealisticAvionics and ((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
                             {
                                 DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
                             }
@@ -239,7 +239,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                     else
                     {
                         // if (((MissileClass*)wpn)->isCaged and !((MissileClass*)wpn)->isSpot)
-                        if (g_bRealisticAvionics and wpn and (((MissileClass*)wpn)->isSpot or (!((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr)))
+                        if (g_bRealisticAvionics and wpn and (((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr)))
                         {
                             DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
                         }
@@ -271,7 +271,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                 }
 
                 //MI changed
-                if (!g_bRealisticAvionics)
+                if ( not g_bRealisticAvionics)
                     DrawTDBox();
                 else
                     DrawAATDBox();
@@ -335,7 +335,7 @@ void HudClass::DrawAirMissile(void)
             if (targetPtr)
             {
                 //MI changed
-                if (!g_bRealisticAvionics)
+                if ( not g_bRealisticAvionics)
                     DrawTDBox();
                 else
                     DrawAATDBox();
@@ -361,7 +361,7 @@ void HudClass::DrawAirMissile(void)
                         else
                         {
                             // if (((MissileClass*)wpn)->isCaged and !((MissileClass*)wpn)->isSpot)
-                            if (g_bRealisticAvionics and ((MissileClass*)wpn)->isSpot or (!((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
+                            if (g_bRealisticAvionics and ((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
                             {
                                 DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
                             }
@@ -391,7 +391,7 @@ void HudClass::DrawAirMissile(void)
                         else
                         {
                             // if (((MissileClass*)wpn)->isCaged and !((MissileClass*)wpn)->isSpot)
-                            if (g_bRealisticAvionics and ((MissileClass*)wpn)->isSpot or (!((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
+                            if (g_bRealisticAvionics and ((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
                             {
                                 DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
                             }
@@ -415,7 +415,7 @@ void HudClass::DrawAirMissile(void)
             if (targetPtr)
             {
                 //MI changed
-                if (!g_bRealisticAvionics)
+                if ( not g_bRealisticAvionics)
                     DrawTDBox();
                 else
                     DrawAATDBox();
@@ -479,7 +479,7 @@ void HudClass::DrawGroundMissile(void)
 
     // Marco edit - change size of Mav TD to approx DTOS size. (copied from DTOS code) - 6 Apr 2001 by Mirv's Suggestion
     // DrawDesignateMarker (Square, FCC->groundDesignateAz, FCC->groundDesignateEl, FCC->groundDesignateDroll);
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
         DrawDesignateMarker(Square, FCC->groundDesignateAz, FCC->groundDesignateEl, FCC->groundDesignateDroll);
     else
         DrawTDMarker(FCC->groundDesignateAz, FCC->groundDesignateEl, FCC->groundDesignateDroll, 0.03F);
@@ -677,7 +677,7 @@ void HudClass::DrawAim9Diamond(void)
     wpn = playerAC->Sms->GetCurrentWeapon();
 
     // Marco - this shouldn't happen
-    if (!wpn)
+    if ( not wpn)
         return ;
 
     ShiAssert(wpn->IsMissile());
@@ -692,7 +692,7 @@ void HudClass::DrawAim9Diamond(void)
         // Marco Edit - if seeker is Slave and/or SPOT and no target, then vibrate
         if (g_bRealisticAvionics and playerAC->Sms->curWeaponType == wtAim9)
         {
-            if (!((MissileClass*)wpn)->targetPtr and (((MissileClass*)wpn)->isCaged or ((MissileClass*)wpn)->isSpot))
+            if ( not ((MissileClass*)wpn)->targetPtr and (((MissileClass*)wpn)->isCaged or ((MissileClass*)wpn)->isSpot))
             {
                 if (FCC->Aim9AtGround)
                 {
@@ -736,7 +736,7 @@ void HudClass::DrawAim9Diamond(void)
                                    hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F)
     {
         //MI draw our diammond depending on seeker state (cage or not)
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             display->AdjustOriginInViewport(xPos, yPos);
             display->Line(0.0F,  0.03F,  0.03F, 0.0F); //me123 from 0.05 to 0.03
@@ -849,7 +849,7 @@ void HudClass::DrawAim9DLZ(void)
                     else
                     {
                         // if (((MissileClass*)wpn)->isCaged and !((MissileClass*)wpn)->isSpot)
-                        if (((MissileClass*)wpn)->isSpot or (!((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
+                        if (((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
                         {
                             DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
                         }
@@ -1123,7 +1123,7 @@ void HudClass::DrawAim120ASE(void)
               hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F + MISSILE_RETICLE_OFFSET;
 
     //MI possible CTD
-    if (!FCC)
+    if ( not FCC)
         return;
 
     display->AdjustOriginInViewport(0.0F, yCenter);
@@ -1215,7 +1215,7 @@ void HudClass::CheckBreakX(void)
     vector a, b, c, d;
 
     // Quit now if nothing to do
-    if (!targetPtr or Warnflash)
+    if ( not targetPtr or Warnflash)
         return;
 
     // Check the next 5 seconds.

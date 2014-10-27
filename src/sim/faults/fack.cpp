@@ -96,7 +96,7 @@ void FackClass::SetFault(
         }
     }
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         mMasterCaution = TRUE;
         NeedsWarnReset = TRUE; //MI Warn Reset
@@ -147,7 +147,7 @@ void FackClass::SetFault(
              function == FaultClass::hydr)
             { */
             // sfr: this was inverted
-            if (!playerAC->NeedsToPlayWarning)
+            if ( not playerAC->NeedsToPlayWarning)
             {
                 playerAC->WhenToPlayWarning = vuxGameTime + (unsigned long) 1.5 * CampaignSeconds;
             }
@@ -166,20 +166,20 @@ void FackClass::SetFault(type_CSubSystem subsystem)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
     {
         return;
     }
 
     //ShiAssert(SimDriver.GetPlayerEntity()->mFaults == this); // should only apply to us
-    if (!mCautions.GetCaution(subsystem))
+    if ( not mCautions.GetCaution(subsystem))
     {
         mCautions.SetCaution(subsystem);
 
         // No Master Caution for low_altitude warming - just bitchin' betty :-) - RH
         if (subsystem not_eq alt_low)
         {
-            if (!g_bRealisticAvionics)
+            if ( not g_bRealisticAvionics)
             {
                 mMasterCaution = TRUE;
                 NeedsWarnReset = TRUE;
@@ -196,7 +196,7 @@ void FackClass::SetFault(type_CSubSystem subsystem)
                     GetFault(dual_fc) ||
                     GetFault(to_ldg_config))
                 {
-                    if (!playerAC->NeedsToPlayWarning)
+                    if ( not playerAC->NeedsToPlayWarning)
                     {
                         playerAC->WhenToPlayWarning = vuxGameTime + (unsigned long) 1.5 * CampaignSeconds;
                     }
@@ -232,7 +232,7 @@ void FackClass::SetFault(type_CSubSystem subsystem)
                         GetFault(sec_fault) ||
                         GetFault(lef_fault))
                     {
-                        if (!playerAC->NeedsToPlayCaution and !cockpitFlightData.IsSet(FlightData::MasterCaution))
+                        if ( not playerAC->NeedsToPlayCaution and !cockpitFlightData.IsSet(FlightData::MasterCaution))
                         {
                             playerAC->WhenToPlayCaution = vuxGameTime + 7 * CampaignSeconds;
                         }
@@ -285,7 +285,7 @@ void FackClass::ClearFault(type_CSubSystem subsystem)
     if (g_bRealisticAvionics)
     {
         //warnings
-        if (!GetFault(tf_fail) and //never get's set currently
+        if ( not GetFault(tf_fail) and //never get's set currently
             !GetFault(obs_wrn) and //never get's set currently
             !GetFault(eng_fire)  and 
             !GetFault(eng2_fire) and //TJL 01/24/04 multi-engine
@@ -301,7 +301,7 @@ void FackClass::ClearFault(type_CSubSystem subsystem)
         }
 
         //Cautions
-        if (!GetFault(stores_config_fault)  and 
+        if ( not GetFault(stores_config_fault)  and 
             !GetFault(flt_cont_fault)  and 
             !GetFault(le_flaps_fault)  and 
             !GetFault(engine)  and 
@@ -400,10 +400,10 @@ void FackClass::TotalPowerFailure()
         mCautions.SetCaution(iff_fault);
     }
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
         mMasterCaution = TRUE;
 
-    /*if(!SimDriver.GetPlayerEntity()->NeedsToPlayCaution)
+    /*if( not SimDriver.GetPlayerEntity()->NeedsToPlayCaution)
      SimDriver.GetPlayerEntity()->WhenToPlayCaution = vuxGameTime + 7*CampaignSeconds;
     SimDriver.GetPlayerEntity()->NeedsToPlayCaution = TRUE;*/
 }
@@ -433,7 +433,7 @@ void FackClass::RandomFailure()
      mCautions.SetCaution(iff_fault);
      }*/
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
         mMasterCaution = TRUE;
 }
 
@@ -449,14 +449,14 @@ void FackClass::SetWarning(type_CSubSystem subsystem)
 
     ShiAssert(playerAC->mFaults == this); // should only apply to us
 
-    if (!mCautions.GetCaution(subsystem))
+    if ( not mCautions.GetCaution(subsystem))
     {
         mCautions.SetCaution(subsystem);
 
-        if (!playerAC->NeedsToPlayWarning)
+        if ( not playerAC->NeedsToPlayWarning)
             playerAC->WhenToPlayWarning = vuxGameTime + (unsigned long) 1.5 * CampaignSeconds;
 
-        if (!GetFault(fuel_low_fault)  and 
+        if ( not GetFault(fuel_low_fault)  and 
             !GetFault(fuel_home))//no betty for bingo
             playerAC->NeedsToPlayWarning = TRUE;// warning
 
@@ -474,11 +474,11 @@ void FackClass::SetCaution(type_CSubSystem subsystem)
 
     ShiAssert(playerAC->mFaults == this); // should only apply to us
 
-    if (!mCautions.GetCaution(subsystem))
+    if ( not mCautions.GetCaution(subsystem))
     {
         mCautions.SetCaution(subsystem);
 
-        if (!playerAC->NeedsToPlayCaution and !cockpitFlightData.IsSet(FlightData::MasterCaution))
+        if ( not playerAC->NeedsToPlayCaution and !cockpitFlightData.IsSet(FlightData::MasterCaution))
         {
             playerAC->WhenToPlayCaution = vuxGameTime + 7 * CampaignSeconds;
         }

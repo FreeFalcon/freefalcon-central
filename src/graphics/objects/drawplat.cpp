@@ -219,7 +219,7 @@ void DrawablePlatform::UpdateMetrics(long listNo, const Tpoint *pos, TransportSt
     {
 
         // Push the object back up to our parent list if it has moved beyond our area
-        if (!ObjectInside(obj))
+        if ( not ObjectInside(obj))
         {
             dynamicObjects.RemoveObject(obj);
             parentList->InsertObject(obj);

@@ -456,7 +456,7 @@ CockpitManager::CockpitManager(
 
     pcockpitDataFile = CP_OPEN(pCPFile, "r");
 
-    if (!pcockpitDataFile)
+    if ( not pcockpitDataFile)
     {
         if (mainCockpit)
         {
@@ -477,97 +477,97 @@ CockpitManager::CockpitManager(
     // Load Buffer creation for DEMO release
     mpLoadBuffer = NULL;
 
-    while (!quitFlag)
+    while ( not quitFlag)
     {
         presult = fgets(plineBuffer, lineLen, pcockpitDataFile);
         gDebugLineNum ++;
         quitFlag = (presult == NULL);
 
-        if ((*plineBuffer == '#') and (!quitFlag))
+        if ((*plineBuffer == '#') and ( not quitFlag))
         {
             sscanf((plineBuffer + 1), "%d %s", &idNum, ptype);
 
-            if (!strcmpi(ptype, TYPE_MANAGER_STR))
+            if ( not strcmpi(ptype, TYPE_MANAGER_STR))
             {
                 ParseManagerInfo(pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_TEXT_STR))
+            else if ( not strcmpi(ptype, TYPE_TEXT_STR))
             {
                 CreateText(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_CHEVRON_STR))
+            else if ( not strcmpi(ptype, TYPE_CHEVRON_STR))
             {
                 CreateChevron(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_LIFTLINE_STR))
+            else if ( not strcmpi(ptype, TYPE_LIFTLINE_STR))
             {
                 CreateLiftLine(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_SURFACE_STR))
+            else if ( not strcmpi(ptype, TYPE_SURFACE_STR))
             {
                 CreateSurface(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_PANEL_STR))
+            else if ( not strcmpi(ptype, TYPE_PANEL_STR))
             {
                 CreatePanel(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_LIGHT_STR))
+            else if ( not strcmpi(ptype, TYPE_LIGHT_STR))
             {
                 CreateLight(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_BUTTON_STR))
+            else if ( not strcmpi(ptype, TYPE_BUTTON_STR))
             {
                 CreateButton(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_BUTTONVIEW_STR))
+            else if ( not strcmpi(ptype, TYPE_BUTTONVIEW_STR))
             {
                 CreateButtonView(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_INDICATOR_STR))
+            else if ( not strcmpi(ptype, TYPE_INDICATOR_STR))
             {
                 CreateIndicator(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_DIGITS_STR))
+            else if ( not strcmpi(ptype, TYPE_DIGITS_STR))
             {
                 CreateDigits(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_ADI_STR))
+            else if ( not strcmpi(ptype, TYPE_ADI_STR))
             {
                 CreateAdi(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_DIAL_STR))
+            else if ( not strcmpi(ptype, TYPE_DIAL_STR))
             {
                 CreateDial(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_CURSOR_STR))
+            else if ( not strcmpi(ptype, TYPE_CURSOR_STR))
             {
                 CreateCursor(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_DED_STR))
+            else if ( not strcmpi(ptype, TYPE_DED_STR))
             {
                 CreateDed(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_MACHASI_STR))
+            else if ( not strcmpi(ptype, TYPE_MACHASI_STR))
             {
                 CreateMachAsi(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_HSI_STR))
+            else if ( not strcmpi(ptype, TYPE_HSI_STR))
             {
                 CreateHsiView(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_SOUND_STR))
+            else if ( not strcmpi(ptype, TYPE_SOUND_STR))
             {
                 CreateSound(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_KNEEVIEW_STR))
+            else if ( not strcmpi(ptype, TYPE_KNEEVIEW_STR))
             {
                 CreateKneeView(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_MIRROR_STR))
+            else if ( not strcmpi(ptype, TYPE_MIRROR_STR))
             {
                 CreateMirror(idNum, pcockpitDataFile);
             }
-            else if (!strcmpi(ptype, TYPE_BUFFER_STR))
+            else if ( not strcmpi(ptype, TYPE_BUFFER_STR))
             {
                 LoadBuffer(pcockpitDataFile);
             }
@@ -621,7 +621,7 @@ CockpitManager::CockpitManager(
     //setup a black imagebuffer the width of the screen
     //Only do this when not rendering
     /*
-    if (!DisplayOptions.bRender2DCockpit and g_bCockpitAutoScale and g_bRatioHack and ((float) DisplayOptions.DispWidth / (float) DisplayOptions.DispHeight) == 1.25) //Wombat778 11-04-2003 added g_bRatiohack in case user has an actual 1280x1024 pit 10-24-2003 added g_bCockpitAutoScale //so we are in a 1.25 ratio
+    if ( not DisplayOptions.bRender2DCockpit and g_bCockpitAutoScale and g_bRatioHack and ((float) DisplayOptions.DispWidth / (float) DisplayOptions.DispHeight) == 1.25) //Wombat778 11-04-2003 added g_bRatiohack in case user has an actual 1280x1024 pit 10-24-2003 added g_bCockpitAutoScale //so we are in a 1.25 ratio
     {
      RatioBuffer = new ImageBuffer;
      RatioBuffer->Setup(&FalconDisplay.theDisplayDevice,DisplayOptions.DispWidth,FloatToInt32((DisplayOptions.DispHeight-(float)DisplayOptions.DispHeight*0.9375f)+0.5f),SystemMem,None,FALSE);  //Wombat778 10-06 2003 Setup a new imagebuffer.  Should begin as black  //Wombat778 10-24-2003 make the calc the same as later for rounding accuracy
@@ -766,7 +766,7 @@ CockpitManager::~CockpitManager()
     //Wombat778 10-18-2003 Kill the temp ratiobuffer
     //Only do this when not rendering
 
-    /*if (!DisplayOptions.bRender2DCockpit and g_bCockpitAutoScale and g_bRatioHack and ((float) DisplayOptions.DispWidth / (float) DisplayOptions.DispHeight) == 1.25) //Wombat778 10-24-2003 added g_bCockpitAutoScale //so we are in a 1.25 ratio
+    /*if ( not DisplayOptions.bRender2DCockpit and g_bCockpitAutoScale and g_bRatioHack and ((float) DisplayOptions.DispWidth / (float) DisplayOptions.DispHeight) == 1.25) //Wombat778 10-24-2003 added g_bCockpitAutoScale //so we are in a 1.25 ratio
      delete RatioBuffer;*/
 
 }
@@ -781,7 +781,7 @@ void CockpitManager::SetupControlTemplate(char* pfileName, int width, int height
 
     char ptemplateFile[MAX_LINE_BUFFER];
 
-    if (!gpTemplateSurface)
+    if ( not gpTemplateSurface)
     {
 
         gpTemplateSurface = new ImageBuffer;
@@ -803,7 +803,7 @@ void CockpitManager::SetupControlTemplate(char* pfileName, int width, int height
             ReadImage(ptemplateFile, &gpTemplateImage, &gpTemplatePalette);
 
         //Wombat778 3-30-04 Save the template information for later use if the cockpit is rendered. This will save a lot of memory because we can free the imagebuffer itself
-        if (!TemplateInfo)
+        if ( not TemplateInfo)
         {
             TemplateInfo = new TemplateInfoClass;
             TemplateInfo->redShift = gpTemplateSurface->RedShift();
@@ -850,7 +850,7 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
 #if CPMANAGER_VERSION
 
     // sfr: parse version string. Must be first in manager because even manager can have new strings now
-    if (!strcmpi(ptoken, PROP_VERSION_STR))
+    if ( not strcmpi(ptoken, PROP_VERSION_STR))
     {
         ptoken = FindToken(&plinePtr, "=;\n");
         int ret = sscanf(ptoken, "%d.%d", &mVersion.major, &mVersion.minor);
@@ -882,12 +882,12 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_NUMSURFACES_STR))
+        if ( not strcmpi(ptoken, PROP_NUMSURFACES_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mNumSurfaces);
         }
-        else if (!strcmpi(ptoken, PROP_MFDLEFT_STR))
+        else if ( not strcmpi(ptoken, PROP_MFDLEFT_STR))
         {
 #ifdef USE_SH_POOLS
             mpViewBounds[BOUNDS_MFDLEFT] = (ViewportBounds *)MemAllocPtr(gCockMemPool, sizeof(ViewportBounds), FALSE);
@@ -902,7 +902,7 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
                    &viewBounds.right);
             ConvertRecttoVBounds(&viewBounds, mpViewBounds[BOUNDS_MFDLEFT], DisplayOptions.DispWidth, DisplayOptions.DispHeight, mHScale, mVScale);
         }
-        else if (!strcmpi(ptoken, PROP_MFDRIGHT_STR))
+        else if ( not strcmpi(ptoken, PROP_MFDRIGHT_STR))
         {
 #ifdef USE_SH_POOLS
             mpViewBounds[BOUNDS_MFDRIGHT] = (ViewportBounds *)MemAllocPtr(gCockMemPool, sizeof(ViewportBounds), FALSE);
@@ -918,7 +918,7 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
             ConvertRecttoVBounds(&viewBounds, mpViewBounds[BOUNDS_MFDRIGHT], DisplayOptions.DispWidth, DisplayOptions.DispHeight, mHScale, mVScale);
         }
         //Wombat778 4-12-04 Add support for extra in cockpit MFDs
-        else if (!strcmpi(ptoken, PROP_MFD3_STR))
+        else if ( not strcmpi(ptoken, PROP_MFD3_STR))
         {
 #ifdef USE_SH_POOLS
             mpViewBounds[BOUNDS_MFD3] = (ViewportBounds *)MemAllocPtr(gCockMemPool, sizeof(ViewportBounds), FALSE);
@@ -934,7 +934,7 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
             ConvertRecttoVBounds(&viewBounds, mpViewBounds[BOUNDS_MFD3], DisplayOptions.DispWidth, DisplayOptions.DispHeight, mHScale, mVScale);
         }
         //Wombat778 4-12-04 Add support for extra in cockpit MFDs
-        else if (!strcmpi(ptoken, PROP_MFD4_STR))
+        else if ( not strcmpi(ptoken, PROP_MFD4_STR))
         {
 #ifdef USE_SH_POOLS
             mpViewBounds[BOUNDS_MFD4] = (ViewportBounds *)MemAllocPtr(gCockMemPool, sizeof(ViewportBounds), FALSE);
@@ -951,7 +951,7 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
         }
 
 
-        else if (!strcmpi(ptoken, PROP_HUD_STR))
+        else if ( not strcmpi(ptoken, PROP_HUD_STR))
         {
 
 #ifdef USE_SH_POOLS
@@ -976,7 +976,7 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
 
             ConvertRecttoVBounds(&viewBounds, mpViewBounds[BOUNDS_HUD], DisplayOptions.DispWidth, DisplayOptions.DispHeight, mHScale, mVScale);
         }
-        else if (!strcmpi(ptoken, PROP_RWR_STR))
+        else if ( not strcmpi(ptoken, PROP_RWR_STR))
         {
 
 #ifdef USE_SH_POOLS
@@ -991,17 +991,17 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
                    &(viewBounds.right));
             ConvertRecttoVBounds(&viewBounds, mpViewBounds[BOUNDS_RWR], DisplayOptions.DispWidth, DisplayOptions.DispHeight, mHScale, mVScale);
         }
-        else if (!strcmpi(ptoken, PROP_NUMPANELS_STR))
+        else if ( not strcmpi(ptoken, PROP_NUMPANELS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mNumPanels);
         }
-        else if (!strcmpi(ptoken, PROP_NUMOBJECTS_STR))
+        else if ( not strcmpi(ptoken, PROP_NUMOBJECTS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mNumObjects);
         }
-        else if (!strcmpi(ptoken, PROP_NUMSOUNDS_STR))
+        else if ( not strcmpi(ptoken, PROP_NUMSOUNDS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &numSounds);
@@ -1015,67 +1015,67 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
                 mpSoundList = NULL;
             }
         }
-        else if (!strcmpi(ptoken, PROP_NUMBUTTONS_STR))
+        else if ( not strcmpi(ptoken, PROP_NUMBUTTONS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mNumButtons);
         }
-        else if (!strcmpi(ptoken, PROP_NUMBUTTONVIEWS_STR))
+        else if ( not strcmpi(ptoken, PROP_NUMBUTTONVIEWS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mNumButtonViews);
         }
-        else if (!strcmpi(ptoken, PROP_NUMCURSORS_STR))
+        else if ( not strcmpi(ptoken, PROP_NUMCURSORS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mNumCursors);
         }
-        else if (!strcmpi(ptoken, PROP_MOUSEBORDER_STR))
+        else if ( not strcmpi(ptoken, PROP_MOUSEBORDER_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mMouseBorder);
         }
-        else if (!strcmpi(ptoken, PROP_HUDFONT))
+        else if ( not strcmpi(ptoken, PROP_HUDFONT))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mHudFont);
         }
-        else if (!strcmpi(ptoken, PROP_MFDFONT))
+        else if ( not strcmpi(ptoken, PROP_MFDFONT))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mMFDFont);
         }
-        else if (!strcmpi(ptoken, PROP_DEDFONT))
+        else if ( not strcmpi(ptoken, PROP_DEDFONT))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mDEDFont);
         }
-        else if (!strcmpi(ptoken, PROP_POPFONT))
+        else if ( not strcmpi(ptoken, PROP_POPFONT))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mPopUpFont);
         }
-        else if (!strcmpi(ptoken, PROP_KNEEFONT))
+        else if ( not strcmpi(ptoken, PROP_KNEEFONT))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mKneeFont);
         }
-        else if (!strcmpi(ptoken, PROP_GENFONT))
+        else if ( not strcmpi(ptoken, PROP_GENFONT))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mGeneralFont);
         }
-        else if (!strcmpi(ptoken, PROP_SAFONT))
+        else if ( not strcmpi(ptoken, PROP_SAFONT))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mSABoxFont);
         }
-        else if (!strcmpi(ptoken, PROP_LABELFONT))
+        else if ( not strcmpi(ptoken, PROP_LABELFONT))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mLabelFont);
         }
-        else if (!strcmpi(ptoken, PROP_TEMPLATEFILE_STR))
+        else if ( not strcmpi(ptoken, PROP_TEMPLATEFILE_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mTemplateWidth);
@@ -1088,24 +1088,24 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
 
             SetupControlTemplate(ptemplateFileName, mTemplateWidth, mTemplateHeight);
         }
-        else if (!strcmpi(ptoken, PROP_DOGEOMETRY_STR))
+        else if ( not strcmpi(ptoken, PROP_DOGEOMETRY_STR))
         {
             dogeometry = true;
         }
-        else if (!strcmpi(ptoken, PROP_DO2DPIT_STR))
+        else if ( not strcmpi(ptoken, PROP_DO2DPIT_STR))
         {
             dogeometry = true;
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d", &twodpit[0], &twodpit[1]);
         }
         //Wombat778 4-13-04 Read in a panel number to use for a special keystroke
-        else if (!strcmpi(ptoken, PROP_ALTPANEL))
+        else if ( not strcmpi(ptoken, PROP_ALTPANEL))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mAltPanel);
         }
         //sfr added for lights. Remember, FreeFalcon uses 0xAABBGGRR format
-        else if (!strcmpi(ptoken, PROP_FLOODLIGHT))
+        else if ( not strcmpi(ptoken, PROP_FLOODLIGHT))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             unsigned int tempFlood;
@@ -1114,7 +1114,7 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
             mFloodLight[1] = (float)((tempFlood & 0x00ff00) >> 8) / 0xff;
             mFloodLight[0] = (float)((tempFlood & 0x0000ff) >> 0) / 0xff;
         }
-        else if (!strcmpi(ptoken, PROP_INSTLIGHT))
+        else if ( not strcmpi(ptoken, PROP_INSTLIGHT))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             unsigned int tempInst;
@@ -1123,7 +1123,7 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
             mInstLight[1] = (float)((tempInst & 0x00ff00) >> 8) / 0xff;
             mInstLight[0] = (float)((tempInst & 0x0000ff) >> 0) / 0xff;
         }
-        else if (!strcmpi(ptoken, PROP_HUDCOLOR_STR))
+        else if ( not strcmpi(ptoken, PROP_HUDCOLOR_STR))
         {
             unsigned int HudColor;
             ptoken = FindToken(&plinePtr, pseparators);
@@ -1132,7 +1132,7 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
         }
 
         // 2000-11-12 ADDED BY S.G. SO COMMENTED LINE DON'T TRIGGER AN ASSERT
-        else if (!strncmp(ptoken, "//", 2)) //Wombat778 4-19-04 converted from strcmpi to strncmp so that comments dont need spaces after
+        else if ( not strncmp(ptoken, "//", 2)) //Wombat778 4-19-04 converted from strcmpi to strncmp so that comments dont need spaces after
             ;
         // END OF ADDED SECTION
         else
@@ -1174,7 +1174,7 @@ void CockpitManager::CreateSound(int idNum, FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_ENTRY_STR))
+        if ( not strcmpi(ptoken, PROP_ENTRY_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d", &entry);
@@ -1232,7 +1232,7 @@ void CockpitManager::LoadBuffer(FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_FILENAME_STR))
+        if ( not strcmpi(ptoken, PROP_FILENAME_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%s", pfileName);
@@ -1250,20 +1250,20 @@ void CockpitManager::LoadBuffer(FILE* pcockpitDataFile)
             {
                 sprintf(psurfaceFile, "%s%d\\%s", cockpitFolder /*COCKPIT_DIR*/, MapVisId(m_eCPVisType), pfileName);
 
-                //if(!ResExistFile(psurfaceFile))
-                if (!FileExists(psurfaceFile))
+                //if( not ResExistFile(psurfaceFile))
+                if ( not FileExists(psurfaceFile))
                 {
                     //sprintf(psurfaceFile, "%s\\%s\\%s", cockpitFolder /*COCKPIT_DIR*/, m_eCPName, pfileName);
                     sprintf(psurfaceFile, "%s\\%s\\%s", cockpitFolder /*COCKPIT_DIR*/, tmp_eCPName.c_str(), pfileName);
 
-                    //if(!ResExistFile(psurfaceFile))
-                    if (!FileExists(psurfaceFile))
+                    //if( not ResExistFile(psurfaceFile))
+                    if ( not FileExists(psurfaceFile))
                     {
                         //sprintf(psurfaceFile, "%s\\%s\\%s", cockpitFolder /*COCKPIT_DIR*/, m_eCPNameNCTR, pfileName);
                         sprintf(psurfaceFile, "%s\\%s\\%s", cockpitFolder /*COCKPIT_DIR*/, tmp_eCPNameNCTR.c_str(), pfileName);
 
-                        //if(!ResExistFile(psurfaceFile))
-                        if (!FileExists(psurfaceFile))
+                        //if( not ResExistFile(psurfaceFile))
+                        if ( not FileExists(psurfaceFile))
                         {
                             // F16C fallback
                             //sprintf(psurfaceFile, "%s%s", cockpitFolder /*COCKPIT_DIR*/, pfileName);
@@ -1273,7 +1273,7 @@ void CockpitManager::LoadBuffer(FILE* pcockpitDataFile)
                 }
             }
         }
-        else if (!strcmpi(ptoken, PROP_BUFFERSIZE_STR))
+        else if ( not strcmpi(ptoken, PROP_BUFFERSIZE_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d", &mLoadBufferWidth, &mLoadBufferHeight);
@@ -1319,12 +1319,12 @@ void CockpitManager::CreateText(int idNum, FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_CYCLEBITS_STR))
+        if ( not strcmpi(ptoken, PROP_CYCLEBITS_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%x", &objectInitStr.cycleBits);
         }
-        else if (!strcmpi(ptoken, PROP_DESTLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_DESTLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(objectInitStr.destRect.top),
@@ -1332,12 +1332,12 @@ void CockpitManager::CreateText(int idNum, FILE* pcockpitDataFile)
                    &(objectInitStr.destRect.bottom),
                    &(objectInitStr.destRect.right));
         }
-        else if (!strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
+        else if ( not strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &objectInitStr.callbackSlot);
         }
-        else if (!strcmpi(ptoken, PROP_NUMSTRINGS_STR))
+        else if ( not strcmpi(ptoken, PROP_NUMSTRINGS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &numStrings);
@@ -1391,12 +1391,12 @@ void CockpitManager::CreateChevron(int idNum, FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_PANTILT_STR))
+        if ( not strcmpi(ptoken, PROP_PANTILT_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%f %f", &(chevInitStr.pan), &(chevInitStr.tilt));
         }
-        else if (!strcmpi(ptoken, PROP_PANTILTLABEL_STR))
+        else if ( not strcmpi(ptoken, PROP_PANTILTLABEL_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d", &(chevInitStr.panLabel), &(chevInitStr.tiltLabel));
@@ -1428,7 +1428,7 @@ void CockpitManager::CreateChevron(int idNum, FILE* pcockpitDataFile)
     CPChevron *p = new CPChevron(&objectInitStr, &chevInitStr);
     ShiAssert(p);
 
-    if (!p) return;
+    if ( not p) return;
 
     mpObjects.push_back(p);
     mObjectTally++;
@@ -1459,12 +1459,12 @@ void CockpitManager::CreateLiftLine(int idNum, FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_PANTILT_STR))
+        if ( not strcmpi(ptoken, PROP_PANTILT_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%f %f", &(liftInitStr.pan), &(liftInitStr.tilt));
         }
-        else if (!strcmpi(ptoken, PROP_PANTILTLABEL_STR))
+        else if ( not strcmpi(ptoken, PROP_PANTILTLABEL_STR))
         {
             liftInitStr.doLabel = TRUE;
 
@@ -1498,7 +1498,7 @@ void CockpitManager::CreateLiftLine(int idNum, FILE* pcockpitDataFile)
     CPLiftLine *p = new CPLiftLine(&objectInitStr, &liftInitStr);
     ShiAssert(p);
 
-    if (!p) return;
+    if ( not p) return;
 
     mpObjects.push_back(p);
     mObjectTally++;
@@ -1521,7 +1521,7 @@ void CockpitManager::CreateDed(int idNum, FILE* pcockpitDataFile)
     DedInitStr  dedInitStr;
 
     //MI fixup
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
         dedInitStr.color0 = 0xff38e0f8; // default JPO
     else
         dedInitStr.color0 = 0xFF00FF9C;
@@ -1536,12 +1536,12 @@ void CockpitManager::CreateDed(int idNum, FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_CYCLEBITS_STR))
+        if ( not strcmpi(ptoken, PROP_CYCLEBITS_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%x", &objectInitStr.cycleBits);
         }
-        else if (!strcmpi(ptoken, PROP_DESTLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_DESTLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(objectInitStr.destRect.top),
@@ -1549,25 +1549,25 @@ void CockpitManager::CreateDed(int idNum, FILE* pcockpitDataFile)
                    &(objectInitStr.destRect.bottom),
                    &(objectInitStr.destRect.right));
         }
-        else if (!strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
+        else if ( not strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &objectInitStr.callbackSlot);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR0_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR0_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &dedInitStr.color0);
         }
-        else if (!strcmpi(ptoken, PROP_DED_TYPE))
+        else if ( not strcmpi(ptoken, PROP_DED_TYPE))
         {
             ptoken = FindToken(&plinePtr, pseparators);
 
-            if (!strcmpi(ptoken, PROP_DED_DED))
+            if ( not strcmpi(ptoken, PROP_DED_DED))
             {
                 dedInitStr.dedtype = DEDT_DED;
             }
-            else if (!strcmpi(ptoken, PROP_DED_PFL))
+            else if ( not strcmpi(ptoken, PROP_DED_PFL))
             {
                 dedInitStr.dedtype = DEDT_PFL;
             }
@@ -1595,7 +1595,7 @@ void CockpitManager::CreateDed(int idNum, FILE* pcockpitDataFile)
     CPDed *p = new CPDed(&objectInitStr, &dedInitStr);
     ShiAssert(p);
 
-    if (!p) return;
+    if ( not p) return;
 
     mpObjects.push_back(p);
     mObjectTally++;
@@ -1622,7 +1622,7 @@ void CockpitManager::CreateCursor(int idNum, FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_SRCLOC_STR))
+        if ( not strcmpi(ptoken, PROP_SRCLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(cursorInitStruct.srcRect.top),
@@ -1630,7 +1630,7 @@ void CockpitManager::CreateCursor(int idNum, FILE* pcockpitDataFile)
                    &(cursorInitStruct.srcRect.bottom),
                    &(cursorInitStruct.srcRect.right));
         }
-        else if (!strcmpi(ptoken, PROP_HOTSPOT_STR))
+        else if ( not strcmpi(ptoken, PROP_HOTSPOT_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d", &cursorInitStruct.xhotSpot,
@@ -1654,7 +1654,7 @@ void CockpitManager::CreateCursor(int idNum, FILE* pcockpitDataFile)
     CPCursor *p = new CPCursor(&cursorInitStruct);
     ShiAssert(p);
 
-    if (!p) return;
+    if ( not p) return;
 
     mpCursors.push_back(p);
     mCursorTally++;
@@ -1698,12 +1698,12 @@ void CockpitManager::CreateDigits(int idNum, FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_CYCLEBITS_STR))
+        if ( not strcmpi(ptoken, PROP_CYCLEBITS_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%x", &objectInitStr.cycleBits);
         }
-        else if (!strcmpi(ptoken, PROP_NUMDIGITS_STR))
+        else if ( not strcmpi(ptoken, PROP_NUMDIGITS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &digitsInitStr.numDestDigits);
@@ -1720,7 +1720,7 @@ void CockpitManager::CreateDigits(int idNum, FILE* pcockpitDataFile)
 #endif
 
         }
-        else if (!strcmpi(ptoken, PROP_SRCLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_SRCLOC_STR))
         {
             F4Assert(srcIndex < 10);
             ptoken = FindToken(&plinePtr, "=;\n");
@@ -1730,7 +1730,7 @@ void CockpitManager::CreateDigits(int idNum, FILE* pcockpitDataFile)
                    &(psrcRects[srcIndex].right));
             srcIndex++;
         }
-        else if (!strcmpi(ptoken, PROP_DESTLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_DESTLOC_STR))
         {
             F4Assert(destIndex < digitsInitStr.numDestDigits);
 
@@ -1742,12 +1742,12 @@ void CockpitManager::CreateDigits(int idNum, FILE* pcockpitDataFile)
 
             destIndex++;
         }
-        else if (!strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
+        else if ( not strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &objectInitStr.callbackSlot);
         }
-        else if (!strcmpi(ptoken, PROP_PERSISTANT_STR))
+        else if ( not strcmpi(ptoken, PROP_PERSISTANT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &objectInitStr.persistant);
@@ -1804,7 +1804,7 @@ void CockpitManager::CreateDigits(int idNum, FILE* pcockpitDataFile)
     CPDigits *p = new CPDigits(&objectInitStr, &digitsInitStr);
     ShiAssert(p);
 
-    if (!p) return;
+    if ( not p) return;
 
     mpObjects.push_back(p);
     mObjectTally++;
@@ -1844,32 +1844,32 @@ void CockpitManager::CreateIndicator(int idNum, FILE* pcockpitDataFile)
 
     while (strcmpi(ptoken, END_MARKER))
     {
-        if (!strcmpi(ptoken, PROP_MINVAL_STR))
+        if ( not strcmpi(ptoken, PROP_MINVAL_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%f", &indicatorInitStr.minVal);
         }
-        else if (!strcmpi(ptoken, PROP_CYCLEBITS_STR))
+        else if ( not strcmpi(ptoken, PROP_CYCLEBITS_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%x", &objectInitStr.cycleBits);
         }
-        else if (!strcmpi(ptoken, PROP_MAXVAL_STR))
+        else if ( not strcmpi(ptoken, PROP_MAXVAL_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%f", &indicatorInitStr.maxVal);
         }
-        else if (!strcmpi(ptoken, PROP_MINPOS_STR))
+        else if ( not strcmpi(ptoken, PROP_MINPOS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &indicatorInitStr.minPos[destIndex]);
         }
-        else if (!strcmpi(ptoken, PROP_MAXPOS_STR))
+        else if ( not strcmpi(ptoken, PROP_MAXPOS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &indicatorInitStr.maxPos[destIndex]);
         }
-        else if (!strcmpi(ptoken, PROP_NUMTAPES_STR))
+        else if ( not strcmpi(ptoken, PROP_NUMTAPES_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &indicatorInitStr.numTapes);
@@ -1890,12 +1890,12 @@ void CockpitManager::CreateIndicator(int idNum, FILE* pcockpitDataFile)
             indicatorInitStr.maxPos = new int[indicatorInitStr.numTapes];
 #endif
         }
-        else if (!strcmpi(ptoken, PROP_CALIBRATIONVAL_STR))
+        else if ( not strcmpi(ptoken, PROP_CALIBRATIONVAL_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &indicatorInitStr.calibrationVal);
         }
-        else if (!strcmpi(ptoken, PROP_SRCLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_SRCLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(indicatorInitStr.psrcRect[destIndex].top),
@@ -1903,7 +1903,7 @@ void CockpitManager::CreateIndicator(int idNum, FILE* pcockpitDataFile)
                    &(indicatorInitStr.psrcRect[destIndex].bottom),
                    &(indicatorInitStr.psrcRect[destIndex].right));
         }
-        else if (!strcmpi(ptoken, PROP_DESTLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_DESTLOC_STR))
         {
             F4Assert(destIndex < indicatorInitStr.numTapes);
 
@@ -1927,26 +1927,26 @@ void CockpitManager::CreateIndicator(int idNum, FILE* pcockpitDataFile)
 
             destIndex++;
         }
-        else if (!strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
+        else if ( not strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &objectInitStr.callbackSlot);
         }
-        else if (!strcmpi(ptoken, PROP_PERSISTANT_STR))
+        else if ( not strcmpi(ptoken, PROP_PERSISTANT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &objectInitStr.persistant);
         }
-        else if (!strcmpi(ptoken, PROP_ORIENTATION_STR))
+        else if ( not strcmpi(ptoken, PROP_ORIENTATION_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%s", porientationStr);
 
-            if (!strcmpi(porientationStr, PROP_HORIZONTAL_STR))
+            if ( not strcmpi(porientationStr, PROP_HORIZONTAL_STR))
             {
                 indicatorInitStr.orientation = IND_HORIZONTAL;
             }
-            else if (!strcmpi(porientationStr, PROP_VERTICAL_STR))
+            else if ( not strcmpi(porientationStr, PROP_VERTICAL_STR))
             {
                 indicatorInitStr.orientation = IND_VERTICAL;
             }
@@ -2005,7 +2005,7 @@ void CockpitManager::CreateIndicator(int idNum, FILE* pcockpitDataFile)
     CPIndicator *p = new CPIndicator(&objectInitStr, &indicatorInitStr);
     ShiAssert(p);
 
-    if (!p) return;
+    if ( not p) return;
 
     delete [] indicatorInitStr.pdestRect;
     delete [] indicatorInitStr.psrcRect;
@@ -2044,7 +2044,7 @@ void CockpitManager::CreateDial(int idNum, FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_NUMENDPOINTS_STR))
+        if ( not strcmpi(ptoken, PROP_NUMENDPOINTS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &dialInitStr.endPoints);
@@ -2061,12 +2061,12 @@ void CockpitManager::CreateDial(int idNum, FILE* pcockpitDataFile)
             dialInitStr.pvalues = new float[dialInitStr.endPoints];
 #endif
         }
-        else if (!strcmpi(ptoken, PROP_CYCLEBITS_STR))
+        else if ( not strcmpi(ptoken, PROP_CYCLEBITS_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%x", &objectInitStr.cycleBits);
         }
-        else if (!strcmpi(ptoken, PROP_POINTS_STR))
+        else if ( not strcmpi(ptoken, PROP_POINTS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
 
@@ -2077,7 +2077,7 @@ void CockpitManager::CreateDial(int idNum, FILE* pcockpitDataFile)
                 pointsIndex++;
             }
         }
-        else if (!strcmpi(ptoken, PROP_VALUES_STR))
+        else if ( not strcmpi(ptoken, PROP_VALUES_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
 
@@ -2088,38 +2088,38 @@ void CockpitManager::CreateDial(int idNum, FILE* pcockpitDataFile)
                 valuesIndex++;
             }
         }
-        else if (!strcmpi(ptoken, PROP_RADIUS0_STR))
+        else if ( not strcmpi(ptoken, PROP_RADIUS0_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &dialInitStr.radius0);
         }
-        else if (!strcmpi(ptoken, PROP_RADIUS1_STR))
+        else if ( not strcmpi(ptoken, PROP_RADIUS1_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &dialInitStr.radius1);
         }
-        else if (!strcmpi(ptoken, PROP_RADIUS2_STR))
+        else if ( not strcmpi(ptoken, PROP_RADIUS2_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &dialInitStr.radius2);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR0_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR0_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &dialInitStr.color0);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR1_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR1_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &dialInitStr.color1);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR2_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR2_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &dialInitStr.color2);
         }
 
-        else if (!strcmpi(ptoken, PROP_SRCLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_SRCLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(dialInitStr.srcRect.top),
@@ -2127,7 +2127,7 @@ void CockpitManager::CreateDial(int idNum, FILE* pcockpitDataFile)
                    &(dialInitStr.srcRect.bottom),
                    &(dialInitStr.srcRect.right));
         }
-        else if (!strcmpi(ptoken, PROP_DESTLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_DESTLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(objectInitStr.destRect.top),
@@ -2137,18 +2137,18 @@ void CockpitManager::CreateDial(int idNum, FILE* pcockpitDataFile)
 
             objectInitStr.transparencyType = CPOPAQUE;
         }
-        else if (!strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
+        else if ( not strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &objectInitStr.callbackSlot);
         }
 
-        else if (!strcmpi(ptoken, PROP_PERSISTANT_STR))
+        else if ( not strcmpi(ptoken, PROP_PERSISTANT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &objectInitStr.persistant);
 
-            if (!objectInitStr.persistant)
+            if ( not objectInitStr.persistant)
             {
                 objectInitStr.bsrcRect.top = 0;
                 objectInitStr.bsrcRect.left = 0;
@@ -2159,7 +2159,7 @@ void CockpitManager::CreateDial(int idNum, FILE* pcockpitDataFile)
                 objectInitStr.bsurface = -1;
             }
         }
-        else if (!strcmpi(ptoken, PROP_BSRCLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_BSRCLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(objectInitStr.bsrcRect.top),
@@ -2167,7 +2167,7 @@ void CockpitManager::CreateDial(int idNum, FILE* pcockpitDataFile)
                    &(objectInitStr.bsrcRect.bottom),
                    &(objectInitStr.bsrcRect.right));
         }
-        else if (!strcmpi(ptoken, PROP_BDESTLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_BDESTLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(objectInitStr.bdestRect.top),
@@ -2175,12 +2175,12 @@ void CockpitManager::CreateDial(int idNum, FILE* pcockpitDataFile)
                    &(objectInitStr.bdestRect.bottom),
                    &(objectInitStr.bdestRect.right));
         }
-        else if (!strcmpi(ptoken, PROP_BSURFACE_STR))
+        else if ( not strcmpi(ptoken, PROP_BSURFACE_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d", &(objectInitStr.bsurface));
         }
-        else if (!strcmpi(ptoken, PROP_RENDER_NEEDLE))   //Wombat778 3-26-04 support for rendered textured needles
+        else if ( not strcmpi(ptoken, PROP_RENDER_NEEDLE))   //Wombat778 3-26-04 support for rendered textured needles
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d", &(dialInitStr.IsRendered));
@@ -2223,7 +2223,7 @@ void CockpitManager::CreateDial(int idNum, FILE* pcockpitDataFile)
     CPDial *p = new CPDial(&objectInitStr, &dialInitStr);
     ShiAssert(p);
 
-    if (!p) return;
+    if ( not p) return;
 
     mpObjects.push_back(p);
     mObjectTally++;
@@ -2259,7 +2259,7 @@ void CockpitManager::CreateSurface(int idNum, FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_FILENAME_STR))
+        if ( not strcmpi(ptoken, PROP_FILENAME_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%s", pfileName);
@@ -2271,20 +2271,20 @@ void CockpitManager::CreateSurface(int idNum, FILE* pcockpitDataFile)
                 sprintf(psurfaceFile, "%s%d\\%s", cockpitFolder /*COCKPIT_DIR*/, MapVisId(m_eCPVisType), pfileName);
 
                 // RV - Biker - No more res manager
-                //if(!ResExistFile(psurfaceFile))
-                if (!FileExists(psurfaceFile))
+                //if( not ResExistFile(psurfaceFile))
+                if ( not FileExists(psurfaceFile))
                 {
                     sprintf(psurfaceFile, "%s%s\\%s", cockpitFolder /*COCKPIT_DIR*/, m_eCPName, pfileName);
 
                     // RV - Biker - No more res manager
-                    //if(!ResExistFile(psurfaceFile))
-                    if (!FileExists(psurfaceFile))
+                    //if( not ResExistFile(psurfaceFile))
+                    if ( not FileExists(psurfaceFile))
                     {
                         sprintf(psurfaceFile, "%s%s\\%s", cockpitFolder /*COCKPIT_DIR*/, m_eCPNameNCTR, pfileName);
 
                         // RV - Biker - No more res manager
-                        //if(!ResExistFile(psurfaceFile))
-                        if (!FileExists(psurfaceFile))
+                        //if( not ResExistFile(psurfaceFile))
+                        if ( not FileExists(psurfaceFile))
                         {
                             // F16C fallback
                             sprintf(psurfaceFile, "%s%s", cockpitFolder /*COCKPIT_DIR*/, pfileName);
@@ -2293,7 +2293,7 @@ void CockpitManager::CreateSurface(int idNum, FILE* pcockpitDataFile)
                 }
             }
         }
-        else if (!strcmpi(ptoken, PROP_SRCLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_SRCLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(surfaceInitStruct.srcRect.top),
@@ -2335,7 +2335,7 @@ void CockpitManager::CreateSurface(int idNum, FILE* pcockpitDataFile)
     CPSurface *p = new CPSurface(&surfaceInitStruct);
     ShiAssert(p);
 
-    if (!p) return;
+    if ( not p) return;
 
     mpSurfaces.push_back(p);
     mSurfaceTally++;
@@ -2378,7 +2378,7 @@ void CockpitManager::SafeImageCopy(GLubyte* ploadBuffer,
     bool clearbuffer = false;
 
     //Wombat778 4-13-04 move the check for a bad pointer here.
-    if (!psrcBuffer)
+    if ( not psrcBuffer)
     {
         CockpitError(gDebugLineNum, 1);
         return;
@@ -2399,7 +2399,7 @@ void CockpitManager::SafeImageCopy(GLubyte* ploadBuffer,
 
         for (j = psrcRect->left; j < psrcRect->right; j++, n++)
         {
-            if (!clearbuffer)
+            if ( not clearbuffer)
                 psrcBuffer[n] = ploadBuffer[rowIndex + j];
             else
                 psrcBuffer[n] = 0; //Wombat778 4-13-04 fill the texture with the chroma value
@@ -2458,7 +2458,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_NUMSURFACES_STR))
+        if ( not strcmpi(ptoken, PROP_NUMSURFACES_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &ppanelInitStr->numSurfaces);
@@ -2473,11 +2473,11 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
             ppanelInitStr->psurfaceData = new PanelSurfaceStr[ppanelInitStr->numSurfaces];
 #endif
         }
-        else if (!strcmpi(ptoken, PROP_DOGEOMETRY_STR))
+        else if ( not strcmpi(ptoken, PROP_DOGEOMETRY_STR))
         {
             ppanelInitStr->doGeometry = TRUE;
         }
-        else if (!strcmpi(ptoken, PROP_MFDLEFT_STR))
+        else if ( not strcmpi(ptoken, PROP_MFDLEFT_STR))
         {
 
 #ifdef USE_SH_POOLS
@@ -2491,7 +2491,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
                    &(ppanelInitStr->pviewRects[BOUNDS_MFDLEFT]->bottom),
                    &(ppanelInitStr->pviewRects[BOUNDS_MFDLEFT]->right));
         }
-        else if (!strcmpi(ptoken, PROP_MFDRIGHT_STR))
+        else if ( not strcmpi(ptoken, PROP_MFDRIGHT_STR))
         {
 
 #ifdef USE_SH_POOLS
@@ -2506,7 +2506,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
                    &(ppanelInitStr->pviewRects[BOUNDS_MFDRIGHT]->right));
         }
         //Wombat778 4-12-04 add support for additional in-cockpit mfds
-        else if (!strcmpi(ptoken, PROP_MFD3_STR))
+        else if ( not strcmpi(ptoken, PROP_MFD3_STR))
         {
 
 #ifdef USE_SH_POOLS
@@ -2521,7 +2521,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
                    &(ppanelInitStr->pviewRects[BOUNDS_MFD3]->right));
         }
         //Wombat778 4-12-04 add support for additional in-cockpit mfds
-        else if (!strcmpi(ptoken, PROP_MFD4_STR))
+        else if ( not strcmpi(ptoken, PROP_MFD4_STR))
         {
 
 #ifdef USE_SH_POOLS
@@ -2536,7 +2536,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
                    &(ppanelInitStr->pviewRects[BOUNDS_MFD4]->right));
         }
 
-        else if (!strcmpi(ptoken, PROP_HUD_STR))
+        else if ( not strcmpi(ptoken, PROP_HUD_STR))
         {
 
 #ifdef USE_SH_POOLS
@@ -2550,7 +2550,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
                    &(ppanelInitStr->pviewRects[BOUNDS_HUD]->bottom),
                    &(ppanelInitStr->pviewRects[BOUNDS_HUD]->right));
         }
-        else if (!strcmpi(ptoken, PROP_RWR_STR))
+        else if ( not strcmpi(ptoken, PROP_RWR_STR))
         {
 
 #ifdef USE_SH_POOLS
@@ -2565,7 +2565,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
                    &(ppanelInitStr->pviewRects[BOUNDS_RWR]->right));
 
         }
-        else if (!strcmpi(ptoken, PROP_MOUSEBOUNDS_STR))
+        else if ( not strcmpi(ptoken, PROP_MOUSEBOUNDS_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(ppanelInitStr->mouseBounds.top),
@@ -2573,7 +2573,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
                    &(ppanelInitStr->mouseBounds.bottom),
                    &(ppanelInitStr->mouseBounds.right));
         }
-        else if (!strcmpi(ptoken, PROP_ADJPANELS_STR))
+        else if ( not strcmpi(ptoken, PROP_ADJPANELS_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d %d %d %d %d", &(ppanelInitStr->adjacentPanels.N),
@@ -2585,7 +2585,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
                    &(ppanelInitStr->adjacentPanels.W),
                    &(ppanelInitStr->adjacentPanels.NW));
         }
-        else if (!strcmpi(ptoken, PROP_SURFACES_STR))
+        else if ( not strcmpi(ptoken, PROP_SURFACES_STR))
         {
             ptoken = FindToken(&plinePtr, "\n=;");
             sscanf(ptoken, "%d %d %s %d %d %d %d", &ppanelInitStr->psurfaceData[surfaceIndex].surfaceNum,
@@ -2598,11 +2598,11 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
 
             ppanelInitStr->psurfaceData[surfaceIndex].psurface = NULL;
 
-            if (!strcmpi(ptransparencyStr, PROP_TRANSPARENT_STR))
+            if ( not strcmpi(ptransparencyStr, PROP_TRANSPARENT_STR))
             {
                 ppanelInitStr->psurfaceData[surfaceIndex].transparencyType = CPTRANSPARENT;
             }
-            else if (!strcmpi(ptransparencyStr, PROP_OPAQUE_STR))
+            else if ( not strcmpi(ptransparencyStr, PROP_OPAQUE_STR))
             {
                 ppanelInitStr->psurfaceData[surfaceIndex].transparencyType = CPOPAQUE;
             }
@@ -2613,7 +2613,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
 
             surfaceIndex++;
         }
-        else if (!strcmpi(ptoken, PROP_NUMOBJECTS_STR))
+        else if ( not strcmpi(ptoken, PROP_NUMOBJECTS_STR))
         {
             ptoken = FindToken(&plinePtr, "\n=;");
             sscanf(ptoken, "%d", &ppanelInitStr->numObjects);
@@ -2628,7 +2628,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
             ppanelInitStr->pobjectIDs = new int[ppanelInitStr->numObjects];
 #endif
         }
-        else if (!strcmpi(ptoken, PROP_OBJECTS_STR))
+        else if ( not strcmpi(ptoken, PROP_OBJECTS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
 
@@ -2639,12 +2639,12 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
                 objectIndex++;
             }
         }
-        else if (!strcmpi(ptoken, PROP_OFFSET_STR))
+        else if ( not strcmpi(ptoken, PROP_OFFSET_STR))
         {
             ptoken = FindToken(&plinePtr, "\n=;");
             sscanf(ptoken, "%d %d", &ppanelInitStr->xOffset, &ppanelInitStr->yOffset);
         }
-        else if (!strcmpi(ptoken, PROP_NUMBUTTONVIEWS_STR))
+        else if ( not strcmpi(ptoken, PROP_NUMBUTTONVIEWS_STR))
         {
             ptoken = FindToken(&plinePtr, "\n=;");
             sscanf(ptoken, "%d", &ppanelInitStr->numButtonViews);
@@ -2658,7 +2658,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
 #endif
             }
         }
-        else if (!strcmpi(ptoken, PROP_BUTTONVIEWS_STR))
+        else if ( not strcmpi(ptoken, PROP_BUTTONVIEWS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
 
@@ -2669,39 +2669,39 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
                 buttonViewIndex++;
             }
         }
-        else if (!strcmpi(ptoken, PROP_PANTILT_STR))
+        else if ( not strcmpi(ptoken, PROP_PANTILT_STR))
         {
             ptoken = FindToken(&plinePtr, "\n=;");
             sscanf(ptoken, "%f %f", &ppanelInitStr->pan, &ppanelInitStr->tilt);
             // RV - RED - Tilt must be conformed to vertical Scaling
             ppanelInitStr->tilt *= (mVScale / mHScale);
         }
-        else if (!strcmpi(ptoken, PROP_HUDFONT))
+        else if ( not strcmpi(ptoken, PROP_HUDFONT))
         {
             ptoken = FindToken(&plinePtr, "\n=;");
             sscanf(ptoken, "%d", &ppanelInitStr->hudFont);
         }
-        else if (!strcmpi(ptoken, PROP_MFDFONT))
+        else if ( not strcmpi(ptoken, PROP_MFDFONT))
         {
             ptoken = FindToken(&plinePtr, "\n=;");
             sscanf(ptoken, "%d", &ppanelInitStr->mfdFont);
         }
-        else if (!strcmpi(ptoken, PROP_DEDFONT))
+        else if ( not strcmpi(ptoken, PROP_DEDFONT))
         {
             ptoken = FindToken(&plinePtr, "\n=;");
             sscanf(ptoken, "%d", &ppanelInitStr->dedFont);
         }
-        else if (!strcmpi(ptoken, PROP_MASKTOP_STR))
+        else if ( not strcmpi(ptoken, PROP_MASKTOP_STR))
         {
             ptoken = FindToken(&plinePtr, "\n=;");
             sscanf(ptoken, "%d", &ppanelInitStr->maskTop);
         }
-        else if (!strcmpi(ptoken, PROP_CURSORID_STR))
+        else if ( not strcmpi(ptoken, PROP_CURSORID_STR))
         {
             ptoken = FindToken(&plinePtr, "\n=;");
             sscanf(ptoken, "%d", &ppanelInitStr->defaultCursor);
         }
-        else if (!strcmpi(ptoken, PROP_OSBLEFT_STR))
+        else if ( not strcmpi(ptoken, PROP_OSBLEFT_STR))
         {
             for (i = 0; i < 20; i++)
             {
@@ -2711,7 +2711,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
                 sscanf(ptoken, "%f", &ppanelInitStr->osbLocation[0][i][1]);
             }
         }
-        else if (!strcmpi(ptoken, PROP_OSBRIGHT_STR))
+        else if ( not strcmpi(ptoken, PROP_OSBRIGHT_STR))
         {
             for (i = 0; i < 20; i++)
             {
@@ -2724,7 +2724,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
 
         //Wombat778 4-12-04 add support for separate osb labelling for MFD 3 and 4
 
-        else if (!strcmpi(ptoken, PROP_OSB3_STR))
+        else if ( not strcmpi(ptoken, PROP_OSB3_STR))
         {
             osb3exists = true;
 
@@ -2736,7 +2736,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
                 sscanf(ptoken, "%f", &ppanelInitStr->osbLocation[2][i][1]);
             }
         }
-        else if (!strcmpi(ptoken, PROP_OSB4_STR))
+        else if ( not strcmpi(ptoken, PROP_OSB4_STR))
         {
             osb4exists = true;
 
@@ -2753,7 +2753,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
 
 
         // 2000-11-12 ADDED BY S.G. SO COMMENTED LINE DON'T TRIGGER AN ASSERT
-        else if (!strncmp(ptoken, "//", 2)) //Wombat778 4-19-04 converted from strcmpi to strncmp so that comments dont need spaces after
+        else if ( not strncmp(ptoken, "//", 2)) //Wombat778 4-19-04 converted from strcmpi to strncmp so that comments dont need spaces after
             ;
         // END OF ADDED SECTION
         else
@@ -2771,14 +2771,14 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
     F4Assert(objectIndex == ppanelInitStr->numObjects); // should have as many objects as specified in file
 
     //Wombat778 4-12-04  If no osb3 or osb4 lines exist, then fill that section with the info from osbleft and osbright
-    if (!osb3exists)
+    if ( not osb3exists)
         for (i = 0; i < 20; i++)
         {
             ppanelInitStr->osbLocation[2][i][0] = ppanelInitStr->osbLocation[0][i][0];
             ppanelInitStr->osbLocation[2][i][1] = ppanelInitStr->osbLocation[0][i][1];
         }
 
-    if (!osb4exists)
+    if ( not osb4exists)
         for (i = 0; i < 20; i++)
         {
             ppanelInitStr->osbLocation[3][i][0] = ppanelInitStr->osbLocation[1][i][0];
@@ -2797,7 +2797,7 @@ void CockpitManager::CreatePanel(int idNum, FILE* pcockpitDataFile)
     CPPanel *p = new CPPanel(ppanelInitStr);
     ShiAssert(p);
 
-    if (!p) return;
+    if ( not p) return;
 
     mpPanels.push_back(p);
     mPanelTally++;
@@ -2834,7 +2834,7 @@ void CockpitManager::ResolveReferences(void)
             k = 0;
 
             // search cpmanager's list of surface pointers
-            while ((!found) and (k < mSurfaceTally))
+            while (( not found) and (k < mSurfaceTally))
             {
                 if (mpSurfaces[k]->mIdNum == surfaceId)
                 {
@@ -2864,7 +2864,7 @@ void CockpitManager::ResolveReferences(void)
             k = 0;
 
             // search cpmanager's list of object pointers
-            while ((!found) and (k < mObjectTally))
+            while (( not found) and (k < mObjectTally))
             {
                 if (mpObjects[k]->mIdNum == objectId)
                 {
@@ -2888,7 +2888,7 @@ void CockpitManager::ResolveReferences(void)
         j = 0;
         buttonId = mpButtonViews[i]->GetParentButton();
 
-        while (!found and j < mButtonTally)
+        while ( not found and j < mButtonTally)
         {
 
             if (mpButtonObjects[j]->GetId() == buttonId)
@@ -2932,7 +2932,7 @@ void CockpitManager::ResolveReferences(void)
             k = 0;
 
             // search cpmanager's list of object pointers
-            while ((!found) and (k < mButtonViewTally))
+            while (( not found) and (k < mButtonViewTally))
             {
                 if (mpButtonViews[k]->GetId() == buttonViewId)
                 {
@@ -2958,7 +2958,7 @@ void CockpitManager::ResolveReferences(void)
         i = 0;
 
         // search cpmanager's list of button pointers
-        while ((!found) and (i < mButtonTally))
+        while (( not found) and (i < mButtonTally))
         {
             if (mpButtonObjects[i]->GetId() == buttonId)
             {
@@ -2979,7 +2979,7 @@ void CockpitManager::ResolveReferences(void)
         i = 0;
 
         // search cpmanager's list of button pointers
-        while ((!found) and (i < mButtonTally))
+        while (( not found) and (i < mButtonTally))
         {
             if (mpButtonObjects[i]->GetId() == buttonId)
             {
@@ -3028,12 +3028,12 @@ void CockpitManager::CreateKneeView(int idNum, FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_CYCLEBITS_STR))
+        if ( not strcmpi(ptoken, PROP_CYCLEBITS_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%x", &objectInitStr.cycleBits);
         }
-        else if (!strcmpi(ptoken, PROP_DESTLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_DESTLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(objectInitStr.destRect.top),
@@ -3063,7 +3063,7 @@ void CockpitManager::CreateKneeView(int idNum, FILE* pcockpitDataFile)
     CPKneeView *p = new CPKneeView(&objectInitStr, mpKneeBoard);
     ShiAssert(p);
 
-    if (!p) return;
+    if ( not p) return;
 
     mpObjects.push_back(p);
     mObjectTally++;
@@ -3093,12 +3093,12 @@ void CockpitManager::CreateMirror(int idNum, FILE* pcockpitDataFile)
 
     while (strcmpi(ptoken, END_MARKER))
     {
-        if (!strcmpi(ptoken, PROP_CYCLEBITS_STR))
+        if ( not strcmpi(ptoken, PROP_CYCLEBITS_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%x", &objectInitStr.cycleBits);
         }
-        else if (!strcmpi(ptoken, PROP_DESTLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_DESTLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%s %d %d %d %d",
@@ -3109,16 +3109,16 @@ void CockpitManager::CreateMirror(int idNum, FILE* pcockpitDataFile)
                    &(objectInitStr.destRect.right)
                   );
 
-            if (!strcmpi(ptransparencyStr, PROP_TRANSPARENT_STR))
+            if ( not strcmpi(ptransparencyStr, PROP_TRANSPARENT_STR))
             {
                 objectInitStr.transparencyType = CPTRANSPARENT;
             }
-            else if (!strcmpi(ptransparencyStr, PROP_OPAQUE_STR))
+            else if ( not strcmpi(ptransparencyStr, PROP_OPAQUE_STR))
             {
                 objectInitStr.transparencyType = CPOPAQUE;
             }
         }
-        else if (!strcmpi(ptoken, PROP_SRCLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_SRCLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d",
@@ -3158,7 +3158,7 @@ void CockpitManager::CreateMirror(int idNum, FILE* pcockpitDataFile)
 
     CPMirror *p = new CPMirror(objectInitStr);
 
-    if (!p) return;
+    if ( not p) return;
 
     mpObjects.push_back(p);
     mObjectTally++;
@@ -3201,7 +3201,7 @@ void CockpitManager::CreateLight(int idNum, FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_STATES_STR))
+        if ( not strcmpi(ptoken, PROP_STATES_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &lightButtonInitStr.states);
@@ -3216,22 +3216,22 @@ void CockpitManager::CreateLight(int idNum, FILE* pcockpitDataFile)
             lightButtonInitStr.psrcRect = new RECT[lightButtonInitStr.states];
 #endif
         }
-        else if (!strcmpi(ptoken, PROP_CYCLEBITS_STR))
+        else if ( not strcmpi(ptoken, PROP_CYCLEBITS_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%x", &objectInitStr.cycleBits);
         }
-        else if (!strcmpi(ptoken, PROP_CURSORID_STR))
+        else if ( not strcmpi(ptoken, PROP_CURSORID_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &lightButtonInitStr.cursorId);
         }
-        else if (!strcmpi(ptoken, PROP_INITSTATE_STR))
+        else if ( not strcmpi(ptoken, PROP_INITSTATE_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &lightButtonInitStr.initialState);
         }
-        else if (!strcmpi(ptoken, PROP_SRCLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_SRCLOC_STR))
         {
             F4Assert(state < lightButtonInitStr.states);
 
@@ -3244,7 +3244,7 @@ void CockpitManager::CreateLight(int idNum, FILE* pcockpitDataFile)
             lightButtonInitStr.psrcRect[state].right++;
             state++;
         }
-        else if (!strcmpi(ptoken, PROP_DESTLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_DESTLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%s %d %d %d %d", ptransparencyStr,
@@ -3253,11 +3253,11 @@ void CockpitManager::CreateLight(int idNum, FILE* pcockpitDataFile)
                    &(objectInitStr.destRect.bottom),
                    &(objectInitStr.destRect.right));
 
-            if (!strcmpi(ptransparencyStr, PROP_TRANSPARENT_STR))
+            if ( not strcmpi(ptransparencyStr, PROP_TRANSPARENT_STR))
             {
                 objectInitStr.transparencyType = CPTRANSPARENT;
             }
-            else if (!strcmpi(ptransparencyStr, PROP_OPAQUE_STR))
+            else if ( not strcmpi(ptransparencyStr, PROP_OPAQUE_STR))
             {
                 objectInitStr.transparencyType = CPOPAQUE;
             }
@@ -3266,12 +3266,12 @@ void CockpitManager::CreateLight(int idNum, FILE* pcockpitDataFile)
                 ShiWarning("Bad Transparency Type"); //couldn't read in transparency type
             }
         }
-        else if (!strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
+        else if ( not strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &objectInitStr.callbackSlot);
         }
-        else if (!strcmpi(ptoken, PROP_PERSISTANT_STR))
+        else if ( not strcmpi(ptoken, PROP_PERSISTANT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &objectInitStr.persistant);
@@ -3325,7 +3325,7 @@ void CockpitManager::CreateLight(int idNum, FILE* pcockpitDataFile)
     CPLight *p = new CPLight(&objectInitStr, &lightButtonInitStr);
     ShiAssert(p);
 
-    if (!p) return;
+    if ( not p) return;
 
     mpObjects.push_back(p);
     mObjectTally++;
@@ -3361,7 +3361,7 @@ void CockpitManager::CreateButtonView(int idNum, FILE* pcockpitDataFile)
     {
 
 
-        if (!strcmpi(ptoken, PROP_SRCLOC_STR))
+        if ( not strcmpi(ptoken, PROP_SRCLOC_STR))
         {
             F4Assert(state < buttonViewInitStr.states);
 
@@ -3375,7 +3375,7 @@ void CockpitManager::CreateButtonView(int idNum, FILE* pcockpitDataFile)
             state++;
         }
 
-        else if (!strcmpi(ptoken, PROP_STATES_STR))
+        else if ( not strcmpi(ptoken, PROP_STATES_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &buttonViewInitStr.states);
@@ -3390,12 +3390,12 @@ void CockpitManager::CreateButtonView(int idNum, FILE* pcockpitDataFile)
             buttonViewInitStr.pSrcRect = new RECT[buttonViewInitStr.states];
 #endif
         }
-        else if (!strcmpi(ptoken, PROP_PARENTBUTTON_STR))
+        else if ( not strcmpi(ptoken, PROP_PARENTBUTTON_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &buttonViewInitStr.parentButton);
         }
-        else if (!strcmpi(ptoken, PROP_DESTLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_DESTLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%s %d %d %d %d", ptransparencyStr,
@@ -3407,11 +3407,11 @@ void CockpitManager::CreateButtonView(int idNum, FILE* pcockpitDataFile)
             buttonViewInitStr.destRect.bottom++;
             buttonViewInitStr.destRect.right++;
 
-            if (!strcmpi(ptransparencyStr, PROP_TRANSPARENT_STR))
+            if ( not strcmpi(ptransparencyStr, PROP_TRANSPARENT_STR))
             {
                 buttonViewInitStr.transparencyType = CPTRANSPARENT;
             }
-            else if (!strcmpi(ptransparencyStr, PROP_OPAQUE_STR))
+            else if ( not strcmpi(ptransparencyStr, PROP_OPAQUE_STR))
             {
                 buttonViewInitStr.transparencyType = CPOPAQUE;
             }
@@ -3420,7 +3420,7 @@ void CockpitManager::CreateButtonView(int idNum, FILE* pcockpitDataFile)
                 ShiWarning("Bad Transparency Type"); //couldn't read in transparency type
             }
         }
-        else if (!strcmpi(ptoken, PROP_PERSISTANT_STR))
+        else if ( not strcmpi(ptoken, PROP_PERSISTANT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &buttonViewInitStr.persistant);
@@ -3477,7 +3477,7 @@ void CockpitManager::CreateButtonView(int idNum, FILE* pcockpitDataFile)
     CPButtonView *p = new CPButtonView(&buttonViewInitStr);
     ShiAssert(p);
 
-    if (!p) return;
+    if ( not p) return;
 
     mpButtonViews.push_back(p);
     mButtonViewTally++;
@@ -3511,42 +3511,42 @@ void CockpitManager::CreateButton(int idNum, FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_STATES_STR))
+        if ( not strcmpi(ptoken, PROP_STATES_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &buttonObjectInitStr.totalStates);
         }
-        else if (!strcmpi(ptoken, PROP_DELAY_STR))
+        else if ( not strcmpi(ptoken, PROP_DELAY_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &buttonObjectInitStr.delay);
         }
-        else if (!strcmpi(ptoken, PROP_CURSORID_STR))
+        else if ( not strcmpi(ptoken, PROP_CURSORID_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &buttonObjectInitStr.cursorIndex);
         }
-        else if (!strcmpi(ptoken, PROP_INITSTATE_STR))
+        else if ( not strcmpi(ptoken, PROP_INITSTATE_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &buttonObjectInitStr.normalState);
         }
-        else if (!strcmpi(ptoken, PROP_SOUND1_STR))
+        else if ( not strcmpi(ptoken, PROP_SOUND1_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &buttonObjectInitStr.sound1);
         }
-        else if (!strcmpi(ptoken, PROP_SOUND2_STR))
+        else if ( not strcmpi(ptoken, PROP_SOUND2_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &buttonObjectInitStr.sound2);
         }
-        else if (!strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
+        else if ( not strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &buttonObjectInitStr.callbackSlot);
         }
-        else if (!strcmpi(ptoken, PROP_NUMBUTTONVIEWS_STR))
+        else if ( not strcmpi(ptoken, PROP_NUMBUTTONVIEWS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &buttonObjectInitStr.totalViews);
@@ -3565,7 +3565,7 @@ void CockpitManager::CreateButton(int idNum, FILE* pcockpitDataFile)
     CPButtonObject *p = new CPButtonObject(&buttonObjectInitStr);
     ShiAssert(p);
 
-    if (!p) return;
+    if ( not p) return;
 
     mpButtonObjects.push_back(p);
     mButtonTally++;
@@ -3607,7 +3607,7 @@ void CockpitManager::CreateAdi(int idNum, FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_SRCLOC_STR))
+        if ( not strcmpi(ptoken, PROP_SRCLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(adiInitStr.srcRect.top),
@@ -3615,7 +3615,7 @@ void CockpitManager::CreateAdi(int idNum, FILE* pcockpitDataFile)
                    &(adiInitStr.srcRect.bottom),
                    &(adiInitStr.srcRect.right));
         }
-        else if (!strcmpi(ptoken, PROP_ILSLIMITS_STR))
+        else if ( not strcmpi(ptoken, PROP_ILSLIMITS_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(adiInitStr.ilsLimits.top),
@@ -3624,12 +3624,12 @@ void CockpitManager::CreateAdi(int idNum, FILE* pcockpitDataFile)
                    &(adiInitStr.ilsLimits.right));
 
         }
-        else if (!strcmpi(ptoken, PROP_CYCLEBITS_STR))
+        else if ( not strcmpi(ptoken, PROP_CYCLEBITS_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%x", &objectInitStr.cycleBits);
         }
-        else if (!strcmpi(ptoken, PROP_DESTLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_DESTLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%s %d %d %d %d", ptransparencyStr,
@@ -3638,11 +3638,11 @@ void CockpitManager::CreateAdi(int idNum, FILE* pcockpitDataFile)
                    &(objectInitStr.destRect.bottom),
                    &(objectInitStr.destRect.right));
 
-            if (!strcmpi(ptransparencyStr, PROP_TRANSPARENT_STR))
+            if ( not strcmpi(ptransparencyStr, PROP_TRANSPARENT_STR))
             {
                 objectInitStr.transparencyType = CPTRANSPARENT;
             }
-            else if (!strcmpi(ptransparencyStr, PROP_OPAQUE_STR))
+            else if ( not strcmpi(ptransparencyStr, PROP_OPAQUE_STR))
             {
                 objectInitStr.transparencyType = CPOPAQUE;
             }
@@ -3651,17 +3651,17 @@ void CockpitManager::CreateAdi(int idNum, FILE* pcockpitDataFile)
                 ShiWarning("Bad Transparency Type"); //couldn't read in transparency type
             }
         }
-        else if (!strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
+        else if ( not strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &objectInitStr.callbackSlot);
         }
-        else if (!strcmpi(ptoken, PROP_PERSISTANT_STR))
+        else if ( not strcmpi(ptoken, PROP_PERSISTANT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &objectInitStr.persistant);
 
-            if (!objectInitStr.persistant)
+            if ( not objectInitStr.persistant)
             {
                 objectInitStr.bsrcRect.top = 0;
                 objectInitStr.bsrcRect.left = 0;
@@ -3672,7 +3672,7 @@ void CockpitManager::CreateAdi(int idNum, FILE* pcockpitDataFile)
                 objectInitStr.bsurface = -1;
             }
         }
-        else if (!strcmpi(ptoken, PROP_BSRCLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_BSRCLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(objectInitStr.bsrcRect.top),
@@ -3680,7 +3680,7 @@ void CockpitManager::CreateAdi(int idNum, FILE* pcockpitDataFile)
                    &(objectInitStr.bsrcRect.bottom),
                    &(objectInitStr.bsrcRect.right));
         }
-        else if (!strcmpi(ptoken, PROP_BDESTLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_BDESTLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(objectInitStr.bdestRect.top),
@@ -3688,18 +3688,18 @@ void CockpitManager::CreateAdi(int idNum, FILE* pcockpitDataFile)
                    &(objectInitStr.bdestRect.bottom),
                    &(objectInitStr.bdestRect.right));
         }
-        else if (!strcmpi(ptoken, PROP_BSURFACE_STR))
+        else if ( not strcmpi(ptoken, PROP_BSURFACE_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d", &(objectInitStr.bsurface));
         }
 
-        else if (!strcmpi(ptoken, PROP_BLITBACKGROUND_STR))
+        else if ( not strcmpi(ptoken, PROP_BLITBACKGROUND_STR))
         {
             adiInitStr.doBackRect = TRUE;
             LoadBuffer(pcockpitDataFile);
         }
-        else if (!strcmpi(ptoken, PROP_BACKDEST_STR))
+        else if ( not strcmpi(ptoken, PROP_BACKDEST_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
 
@@ -3708,7 +3708,7 @@ void CockpitManager::CreateAdi(int idNum, FILE* pcockpitDataFile)
                    &(adiInitStr.backDest.bottom),
                    &(adiInitStr.backDest.right));
         }
-        else if (!strcmpi(ptoken, PROP_BACKSRC_STR))
+        else if ( not strcmpi(ptoken, PROP_BACKSRC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
 
@@ -3717,27 +3717,27 @@ void CockpitManager::CreateAdi(int idNum, FILE* pcockpitDataFile)
                    &(adiInitStr.backSrc.bottom),
                    &(adiInitStr.backSrc.right));
         }
-        else if (!strcmpi(ptoken, PROP_COLOR0_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR0_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &adiInitStr.color0);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR1_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR1_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &adiInitStr.color1);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR2_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR2_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &adiInitStr.color2);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR3_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR3_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &adiInitStr.color3);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR4_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR4_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &adiInitStr.color4);
@@ -3811,7 +3811,7 @@ void CockpitManager::CreateAdi(int idNum, FILE* pcockpitDataFile)
     CPAdi *p = new CPAdi(&objectInitStr, &adiInitStr);
     ShiAssert(p);
 
-    if (!p) return;
+    if ( not p) return;
 
     mpObjects.push_back(p);
     mObjectTally++;
@@ -3840,7 +3840,7 @@ void CockpitManager::CreateHsiView(int idNum, FILE* pcockpitDataFile)
 
 
     //MI
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         hsiInitStr.colors[HSI_COLOR_ARROWS] = 0xff1e6cff;
         hsiInitStr.colors[HSI_COLOR_ARROWGHOST] = 0xff1e6cff;
@@ -3875,7 +3875,7 @@ void CockpitManager::CreateHsiView(int idNum, FILE* pcockpitDataFile)
     while (strcmpi(ptoken, END_MARKER))
     {
 
-        if (!strcmpi(ptoken, PROP_SRCLOC_STR))
+        if ( not strcmpi(ptoken, PROP_SRCLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(source.top),
@@ -3898,12 +3898,12 @@ void CockpitManager::CreateHsiView(int idNum, FILE* pcockpitDataFile)
 
             srccount++;
         }
-        else if (!strcmpi(ptoken, PROP_CYCLEBITS_STR))
+        else if ( not strcmpi(ptoken, PROP_CYCLEBITS_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%x", &objectInitStr.cycleBits);
         }
-        else if (!strcmpi(ptoken, PROP_DESTLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_DESTLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%s %d %d %d %d", ptransparencyStr,
@@ -3912,11 +3912,11 @@ void CockpitManager::CreateHsiView(int idNum, FILE* pcockpitDataFile)
                    &(destination.bottom),
                    &(destination.right));
 
-            if (!strcmpi(ptransparencyStr, PROP_TRANSPARENT_STR))
+            if ( not strcmpi(ptransparencyStr, PROP_TRANSPARENT_STR))
             {
                 transparencyType = CPTRANSPARENT;
             }
-            else if (!strcmpi(ptransparencyStr, PROP_OPAQUE_STR))
+            else if ( not strcmpi(ptransparencyStr, PROP_OPAQUE_STR))
             {
                 objectInitStr.transparencyType = CPOPAQUE;
             }
@@ -3946,17 +3946,17 @@ void CockpitManager::CreateHsiView(int idNum, FILE* pcockpitDataFile)
 
             destcount++;
         }
-        else if (!strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
+        else if ( not strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &objectInitStr.callbackSlot);
         }
-        else if (!strcmpi(ptoken, PROP_PERSISTANT_STR))
+        else if ( not strcmpi(ptoken, PROP_PERSISTANT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &objectInitStr.persistant);
 
-            if (!objectInitStr.persistant)
+            if ( not objectInitStr.persistant)
             {
                 objectInitStr.bsrcRect.top = 0;
                 objectInitStr.bsrcRect.left = 0;
@@ -3967,7 +3967,7 @@ void CockpitManager::CreateHsiView(int idNum, FILE* pcockpitDataFile)
                 objectInitStr.bsurface = -1;
             }
         }
-        else if (!strcmpi(ptoken, PROP_WARNFLAG_STR))
+        else if ( not strcmpi(ptoken, PROP_WARNFLAG_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(hsiInitStr.warnFlag.top),
@@ -3975,7 +3975,7 @@ void CockpitManager::CreateHsiView(int idNum, FILE* pcockpitDataFile)
                    &(hsiInitStr.warnFlag.bottom),
                    &(hsiInitStr.warnFlag.right));
         }
-        else if (!strcmpi(ptoken, PROP_BSRCLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_BSRCLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(objectInitStr.bsrcRect.top),
@@ -3983,7 +3983,7 @@ void CockpitManager::CreateHsiView(int idNum, FILE* pcockpitDataFile)
                    &(objectInitStr.bsrcRect.bottom),
                    &(objectInitStr.bsrcRect.right));
         }
-        else if (!strcmpi(ptoken, PROP_BDESTLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_BDESTLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(objectInitStr.bdestRect.top),
@@ -3991,57 +3991,57 @@ void CockpitManager::CreateHsiView(int idNum, FILE* pcockpitDataFile)
                    &(objectInitStr.bdestRect.bottom),
                    &(objectInitStr.bdestRect.right));
         }
-        else if (!strcmpi(ptoken, PROP_BSURFACE_STR))
+        else if ( not strcmpi(ptoken, PROP_BSURFACE_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d", &(objectInitStr.bsurface));
         }
-        else if (!strcmpi(ptoken, PROP_COLOR0_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR0_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &hsiInitStr.colors[0]);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR1_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR1_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &hsiInitStr.colors[1]);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR2_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR2_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &hsiInitStr.colors[2]);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR3_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR3_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &hsiInitStr.colors[3]);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR4_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR4_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &hsiInitStr.colors[4]);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR5_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR5_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &hsiInitStr.colors[5]);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR6_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR6_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &hsiInitStr.colors[6]);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR7_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR7_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &hsiInitStr.colors[7]);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR8_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR8_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &hsiInitStr.colors[8]);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR9_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR9_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &hsiInitStr.colors[9]);
@@ -4090,7 +4090,7 @@ void CockpitManager::CreateHsiView(int idNum, FILE* pcockpitDataFile)
     CPHsiView *p = new CPHsiView(&objectInitStr, &hsiInitStr);
     ShiAssert(p);
 
-    if (!p) return;
+    if ( not p) return;
 
     mpObjects.push_back(p);
     mObjectTally++;
@@ -4126,12 +4126,12 @@ void CockpitManager::CreateMachAsi(int idNum, FILE* pcockpitDataFile)
     {
 
 
-        if (!strcmpi(ptoken, PROP_CYCLEBITS_STR))
+        if ( not strcmpi(ptoken, PROP_CYCLEBITS_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%x", &objectInitStr.cycleBits);
         }
-        else if (!strcmpi(ptoken, PROP_DESTLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_DESTLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%s %d %d %d %d", ptransparencyStr,
@@ -4140,11 +4140,11 @@ void CockpitManager::CreateMachAsi(int idNum, FILE* pcockpitDataFile)
                    &(objectInitStr.destRect.bottom),
                    &(objectInitStr.destRect.right));
 
-            if (!strcmpi(ptransparencyStr, PROP_TRANSPARENT_STR))
+            if ( not strcmpi(ptransparencyStr, PROP_TRANSPARENT_STR))
             {
                 objectInitStr.transparencyType = CPTRANSPARENT;
             }
-            else if (!strcmpi(ptransparencyStr, PROP_OPAQUE_STR))
+            else if ( not strcmpi(ptransparencyStr, PROP_OPAQUE_STR))
             {
                 objectInitStr.transparencyType = CPOPAQUE;
             }
@@ -4153,62 +4153,62 @@ void CockpitManager::CreateMachAsi(int idNum, FILE* pcockpitDataFile)
                 ShiWarning("Bad Transparency Type"); //couldn't read in transparency type
             }
         }
-        else if (!strcmpi(ptoken, PROP_COLOR0_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR0_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &machAsiInitStr.color0);
         }
-        else if (!strcmpi(ptoken, PROP_COLOR1_STR))
+        else if ( not strcmpi(ptoken, PROP_COLOR1_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &machAsiInitStr.color1);
         }
-        else if (!strcmpi(ptoken, PROP_ENDANGLE))
+        else if ( not strcmpi(ptoken, PROP_ENDANGLE))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%f", &machAsiInitStr.end_angle);
         }
-        else if (!strcmpi(ptoken, PROP_ENDLENGTH))
+        else if ( not strcmpi(ptoken, PROP_ENDLENGTH))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%f", &machAsiInitStr.end_radius);
         }
-        else if (!strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
+        else if ( not strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &objectInitStr.callbackSlot);
         }
-        else if (!strcmpi(ptoken, PROP_MINVAL_STR))
+        else if ( not strcmpi(ptoken, PROP_MINVAL_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%f", &machAsiInitStr.min_dial_value);
         }
-        else if (!strcmpi(ptoken, PROP_MAXVAL_STR))
+        else if ( not strcmpi(ptoken, PROP_MAXVAL_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%f", &machAsiInitStr.max_dial_value);
         }
-        else if (!strcmpi(ptoken, PROP_STARTANGLE_STR))
+        else if ( not strcmpi(ptoken, PROP_STARTANGLE_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%f", &machAsiInitStr.dial_start_angle);
         }
-        else if (!strcmpi(ptoken, PROP_ARCLENGTH_STR))
+        else if ( not strcmpi(ptoken, PROP_ARCLENGTH_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%f", &machAsiInitStr.dial_arc_length);
         }
-        else if (!strcmpi(ptoken, PROP_NEEDLERADIUS_STR))
+        else if ( not strcmpi(ptoken, PROP_NEEDLERADIUS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &machAsiInitStr.needle_radius);
         }
-        else if (!strcmpi(ptoken, PROP_PERSISTANT_STR))
+        else if ( not strcmpi(ptoken, PROP_PERSISTANT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &objectInitStr.persistant);
 
-            if (!objectInitStr.persistant)
+            if ( not objectInitStr.persistant)
             {
                 objectInitStr.bsrcRect.top = 0;
                 objectInitStr.bsrcRect.left = 0;
@@ -4219,7 +4219,7 @@ void CockpitManager::CreateMachAsi(int idNum, FILE* pcockpitDataFile)
                 objectInitStr.bsurface = -1;
             }
         }
-        else if (!strcmpi(ptoken, PROP_BSRCLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_BSRCLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(objectInitStr.bsrcRect.top),
@@ -4227,7 +4227,7 @@ void CockpitManager::CreateMachAsi(int idNum, FILE* pcockpitDataFile)
                    &(objectInitStr.bsrcRect.bottom),
                    &(objectInitStr.bsrcRect.right));
         }
-        else if (!strcmpi(ptoken, PROP_BDESTLOC_STR))
+        else if ( not strcmpi(ptoken, PROP_BDESTLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d %d %d %d", &(objectInitStr.bdestRect.top),
@@ -4235,7 +4235,7 @@ void CockpitManager::CreateMachAsi(int idNum, FILE* pcockpitDataFile)
                    &(objectInitStr.bdestRect.bottom),
                    &(objectInitStr.bdestRect.right));
         }
-        else if (!strcmpi(ptoken, PROP_BSURFACE_STR))
+        else if ( not strcmpi(ptoken, PROP_BSURFACE_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
             sscanf(ptoken, "%d", &(objectInitStr.bsurface));
@@ -4261,7 +4261,7 @@ void CockpitManager::CreateMachAsi(int idNum, FILE* pcockpitDataFile)
     CPMachAsi *p = new CPMachAsi(&objectInitStr, &machAsiInitStr);
     ShiAssert(p);
 
-    if (!p) return;
+    if ( not p) return;
 
     mpObjects.push_back(p);
     mObjectTally++;
@@ -4276,12 +4276,12 @@ void CockpitManager::Exec()
 
     mViewChanging = FALSE;
 
-    if (!mpActivePanel)
+    if ( not mpActivePanel)
     {
         return;
     }
 
-    if (!mpOwnship)
+    if ( not mpOwnship)
     {
         return;
     }
@@ -4370,7 +4370,7 @@ void CockpitManager::GeometryDraw(void)
             }
         }
 
-        if (!mpActivePanel->DoGeometry() or PlayerOptions.ObjectDetailLevel() < 1.5F)
+        if ( not mpActivePanel->DoGeometry() or PlayerOptions.ObjectDetailLevel() < 1.5F)
         {
             drawOrdinance = FALSE;
         }
@@ -4565,7 +4565,7 @@ CPButtonObject* CockpitManager::GetButtonPointer(int buttonId)
     int i = 0;
     CPButtonObject* preturnValue = NULL;
 
-    while (!found and i < mNumButtons)
+    while ( not found and i < mNumButtons)
     {
         if (mpButtonObjects[i]->GetId() == buttonId)
         {
@@ -4594,7 +4594,7 @@ void CockpitManager::Dispatch(int buttonId, int mouseSide)
     int i = 0;
     int event;
 
-    while (!found and i < mButtonTally)
+    while ( not found and i < mButtonTally)
     {
         if (mpButtonObjects[i]->GetId() == buttonId)
         {
@@ -4779,7 +4779,7 @@ bool CockpitManager::SetActivePanel(int panelId)   //Wombat778 changed return to
     {
 
         // loop thru all the panels
-        while ((!found) and (i < mPanelTally))
+        while (( not found) and (i < mPanelTally))
         {
             // if we find the panel with our id, make it active
             if (mpPanels[i]->mIdNum == panelId)
@@ -4945,14 +4945,14 @@ void CockpitManager::SetNextView(void)
 {
     F4EnterCriticalSection(mpCockpitCritSec);
 
-    if (!mIsNextInitialized and mpNextActivePanel)
+    if ( not mIsNextInitialized and mpNextActivePanel)
     {
         if (mpNextActivePanel not_eq mpActivePanel)
         {
 
             // OW
             // keep them all in video memory, otherwise the texture manger eats up all the video memory and we have to create them in system memory
-            // if(!PlayerOptions.bFast2DCockpit)
+            // if( not PlayerOptions.bFast2DCockpit)
             {
                 if (mpActivePanel)
                     mpActivePanel->DiscardLitSurfaces();
@@ -5370,7 +5370,7 @@ void CockpitManager::LoadCockpitDefaults(void)
                         break;
 
                     case 1: //AG
-                        if (!mpIcp->IsICPSet(ICPClass::MODE_A_G))
+                        if ( not mpIcp->IsICPSet(ICPClass::MODE_A_G))
                         {
                             SimICPAG(0, KEY_DOWN, NULL);
                         }
@@ -5378,7 +5378,7 @@ void CockpitManager::LoadCockpitDefaults(void)
                         break;
 
                     case 2: //AA
-                        if (!mpIcp->IsICPSet(ICPClass::MODE_A_A))
+                        if ( not mpIcp->IsICPSet(ICPClass::MODE_A_A))
                         {
                             SimICPAA(0, KEY_DOWN, NULL);
                         }
@@ -6281,7 +6281,7 @@ int CockpitManager::Set2DPanelDirection(float pan, float tilt)
     bool bestpan = false;
     bool besttilt = false;
 
-    while (!besttilt)
+    while ( not besttilt)
     {
         if (tilt > GetPanel(lastpanelnum)->mTilt)
             newpanel = GetPanel(lastpanelnum)->mAdjacentPanels.S;
@@ -6308,7 +6308,7 @@ int CockpitManager::Set2DPanelDirection(float pan, float tilt)
         lastpanelnum = newpanelnum;
     }
 
-    while (!bestpan)
+    while ( not bestpan)
     {
 
         if (pan > GetPanel(lastpanelnum)->mPan)

@@ -59,7 +59,7 @@ void INFOSetupRulesControls(void)
     if( FalconLocalGameEntity and FalconLocalSession  and 
      FalconLocalGameEntity->OwnerId() == FalconLocalSession->Id() )
      host = TRUE;
-    else if(!gCommsMgr->GetTargetGame() and !FalconLocalGameEntity)
+    else if( not gCommsMgr->GetTargetGame() and !FalconLocalGameEntity)
      host = TRUE;
 
     if(gCommsMgr->GetSettings()->Rules.GameStatus not_eq GAME_WAITING)
@@ -651,7 +651,7 @@ void UpdateRules(void)
     if (vuPlayerPoolGroup not_eq vuLocalGame)
         CurrRules.LoadRules(FalconLocalGame->rules.GetRules());
 
-    if (!gMainHandler)
+    if ( not gMainHandler)
         return;
 
     INFOSetupRulesControls();
@@ -749,7 +749,7 @@ void ComplyCB(long ID, short hittype, C_Base *control)
 
         if (game and OkCB)
         {
-            if (!game->CheckPassword(ebox->GetText()))
+            if ( not game->CheckPassword(ebox->GetText()))
             {
                 AreYouSure(TXT_ERROR, TXT_WRONGPASSWORD, NULL, CloseWindowCB);
                 return;
@@ -792,7 +792,7 @@ void CheckCompliance(void)
 {
     C_Window *win = gMainHandler->FindWindow(INFO_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     C_ListBox *lbox;
@@ -1104,7 +1104,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if (!CheckButtonCompliance(button, !CurrRules.UnlimitedFuel()))
+        if ( not CheckButtonCompliance(button, !CurrRules.UnlimitedFuel()))
             InCompliance = FALSE;
     }
 
@@ -1112,7 +1112,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if (!CheckButtonCompliance(button, !CurrRules.UnlimitedChaff()))
+        if ( not CheckButtonCompliance(button, !CurrRules.UnlimitedChaff()))
             InCompliance = FALSE;
     }
 
@@ -1120,7 +1120,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if (!CheckButtonCompliance(button, !CurrRules.NoCollisions()))
+        if ( not CheckButtonCompliance(button, !CurrRules.NoCollisions()))
             InCompliance = FALSE;
     }
 
@@ -1128,7 +1128,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if (!CheckButtonCompliance(button, !CurrRules.NoBlackout()))
+        if ( not CheckButtonCompliance(button, !CurrRules.NoBlackout()))
             InCompliance = FALSE;
     }
 
@@ -1137,7 +1137,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if (!CheckButtonCompliance(button, !CurrRules.NameTagsOn()))
+        if ( not CheckButtonCompliance(button, !CurrRules.NameTagsOn()))
             InCompliance = FALSE;
     }
 
@@ -1145,7 +1145,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if (!CheckButtonCompliance(button, CurrRules.WeatherOn()))
+        if ( not CheckButtonCompliance(button, CurrRules.WeatherOn()))
             InCompliance = FALSE;
     }
 
@@ -1154,7 +1154,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if (!CheckButtonCompliance(button, !CurrRules.InvulnerableOn()))
+        if ( not CheckButtonCompliance(button, !CurrRules.InvulnerableOn()))
             InCompliance = FALSE;
     }
 
@@ -1162,7 +1162,7 @@ void CheckCompliance(void)
     button=(C_Button *)win->FindControl(AUTO_SCALE);
     if(button not_eq NULL)
     {
-     if(!CheckButtonCompliance(button,!CurrRules.InvulnerableOn()) )
+     if( not CheckButtonCompliance(button,!CurrRules.InvulnerableOn()) )
      InCompliance = FALSE;
 
      if(button->GetState() == C_STATE_1)
@@ -1313,7 +1313,7 @@ static void SliderRuleControlCB(long, short hittype, C_Base *control)
 
 static void RuleControlCB(long, short hittype, C_Base *control)
 {
-    if (!control)
+    if ( not control)
         return;
 
     if ((hittype not_eq C_TYPE_LMOUSEUP) and (hittype not_eq C_TYPE_SELECT))
@@ -1355,7 +1355,7 @@ void INFOHookupControls()
 
     win = gMainHandler->FindWindow(INFO_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     button = (C_Button *)win->FindControl(CLOSE_WINDOW);
@@ -1584,7 +1584,7 @@ void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)())
 
     win = gMainHandler->FindWindow(INFO_WIN);
 
-    if (!win)
+    if ( not win)
     {
         if (tCancelCB)
             (*tCancelCB)();
@@ -1615,7 +1615,7 @@ void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)())
     CancelCB = tCancelCB;
 
 
-    if (!INFOLoaded)
+    if ( not INFOLoaded)
     {
         switch (gLangIDNum)
         {
@@ -1666,7 +1666,7 @@ static void INFOSaveRules(void)
     /*
      if(FalconLocalGameEntity and FalconLocalSession and FalconLocalGameEntity->OwnerId() == FalconLocalSession->Id())
      host = TRUE;
-     else if(!gCommsMgr->GetTargetGame() and !FalconLocalGameEntity)
+     else if( not gCommsMgr->GetTargetGame() and !FalconLocalGameEntity)
      */
     host = modify;
 

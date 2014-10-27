@@ -306,7 +306,7 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
 
     //======================================================
     // Cobra - Add "sim" path if Korea theater
-    if ((!strnicmp(td->m_name, "Korea", 5)) or (!strnicmp(td->m_name, "Eurowar", 7)))
+    if (( not strnicmp(td->m_name, "Korea", 5)) or ( not strnicmp(td->m_name, "Eurowar", 7)))
     {
         char tmpPath[256];
         sprintf(tmpPath, "%s\\sim", FalconDataDirectory); // JPO - so we can find raw sim files
@@ -327,7 +327,7 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
     sprintf(tmpPath, "%s\\%s", FalconDataDirectory, ZIPFILE_NAME);
     zipFile = fopen(tmpPath, "r");
 
-    if (!zipFile)
+    if ( not zipFile)
     {
         char string[300];
         sprintf(string, "Failed to open %s\n", tmpPath);
@@ -346,7 +346,7 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
             fscanf(zipFile, "%*c%s", tmp);
             sprintf(tmpPath, "%s\\%s", FalconZipsThrDirectory, tmp);
 
-            if (!strnicmp(td->m_name, "Korea", 5))
+            if ( not strnicmp(td->m_name, "Korea", 5))
                 resourceHandle[i] = ResAttach(FalconDataDirectory, tmpPath, FALSE);
             else
                 // FRB - Must use FalconDataDirectory and not FalconZipsThrDirectory (don't know why!?)

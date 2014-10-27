@@ -349,7 +349,7 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
     WNDCLASS wc;
     BOOL rc;
 
-    if (!hPrevInstance)
+    if ( not hPrevInstance)
     {
         wc.style = CS_HREDRAW | CS_VREDRAW;
         wc.lpfnWndProc = (WNDPROC)SimWndProc; // The client window procedure.
@@ -364,7 +364,7 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
         wc.lpszClassName = "Falcon4Class";
         rc = RegisterClass(&wc);
 
-        if (!rc)
+        if ( not rc)
         {
             return FALSE;
         }
@@ -533,7 +533,7 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
 
     g_voicemap.LoadVoices();
 
-    if (!initApplication(h_instance, h_previous_instance, command_show))
+    if ( not initApplication(h_instance, h_previous_instance, command_show))
         return FALSE;
 
 	MSG  msg;
@@ -639,7 +639,7 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                     break;
 
                 case ID_CAMPAIGN_LOAD:
-                    if (!OpenCampFile(hwnd))
+                    if ( not OpenCampFile(hwnd))
                     {
                         TheCampaign.EndCampaign();
                         return 0;
@@ -673,7 +673,7 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 
                 case ID_CAMPAIGN_DISPLAY:
 #ifdef CAMPTOOL
-                    if (!displayCampaign)
+                    if ( not displayCampaign)
                     {
                         CampMain(hInst, SW_SHOW);
                         displayCampaign = TRUE;
@@ -790,7 +790,7 @@ int get_ip(char *str)
     unsigned int
     addr = 0;
 
-    if (!str)
+    if ( not str)
         return 0;
 
     src = str;
@@ -863,10 +863,10 @@ void ParseCommandLine(LPSTR cmdLine)
     {
         do
         {
-            if (!stricmp(arg, "-file"))
+            if ( not stricmp(arg, "-file"))
                 SimDriver.doFile = 1 - SimDriver.doFile;
 
-            if (!stricmp(arg, "-event"))
+            if ( not stricmp(arg, "-event"))
                 SimDriver.doEvent = TRUE;
 
             if (_strnicmp(arg, "-repair", 2) == 0)
@@ -884,25 +884,25 @@ void ParseCommandLine(LPSTR cmdLine)
             if (_strnicmp(arg, "-UA", 3) == 0)
                 gUnlimitedAmmo ++;
 
-            if (!_strnicmp(arg, "-g", 2))
+            if ( not _strnicmp(arg, "-g", 2))
             {
                 int temp = atoi(&arg[2]);
                 GraphicSettingMult = temp >= 1 ? temp : 1;
             }
 
-            if (!stricmp(arg, "-window"))
+            if ( not stricmp(arg, "-window"))
                 FalconDisplay.displayFullScreen = false;
 
             if (stricmp(arg, "-hires") == 0)
                 HighResolutionHackFlag = TRUE;
 
-            if (!stricmp(arg, "-norudder"))
+            if ( not stricmp(arg, "-norudder"))
                 NoRudder = TRUE;
 
-            if (!stricmp(arg, "-nosmoothing"))
+            if ( not stricmp(arg, "-nosmoothing"))
                 DisableSmoothing = TRUE;
 
-            if (!stricmp(arg, "-numhats"))
+            if ( not stricmp(arg, "-numhats"))
                 if ((arg = strtok(NULL, " ")) not_eq NULL)
                     NumHats = atoi(arg);
 
@@ -969,7 +969,7 @@ void ParseCommandLine(LPSTR cmdLine)
 
 #endif
 
-            if (!stricmp(arg, "-bandwidth") or !stricmp(arg, "-bandwith") or !stricmp(arg, "-bw"))
+            if ( not stricmp(arg, "-bandwidth") or !stricmp(arg, "-bandwith") or !stricmp(arg, "-bw"))
                 if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     F4CommsBandwidth = atoi(arg);
@@ -978,7 +978,7 @@ void ParseCommandLine(LPSTR cmdLine)
                         F4CommsBandwidth *= -1;
                 }
 
-            if (!stricmp(arg, "-urview"))
+            if ( not stricmp(arg, "-urview"))
                 if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     UR_HEAD_VIEW = (float)atoi(arg);
@@ -990,7 +990,7 @@ void ParseCommandLine(LPSTR cmdLine)
                         UR_HEAD_VIEW = 160;
                 }
 
-            if (!stricmp(arg, "-latency"))
+            if ( not stricmp(arg, "-latency"))
                 if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     F4CommsLatency = atoi(arg);
@@ -999,7 +999,7 @@ void ParseCommandLine(LPSTR cmdLine)
                         F4CommsLatency *= -1;
                 }
 
-            if (!stricmp(arg, "-drop"))
+            if ( not stricmp(arg, "-drop"))
                 if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     F4CommsDropInterval = atoi(arg);
@@ -1008,34 +1008,34 @@ void ParseCommandLine(LPSTR cmdLine)
                         F4CommsDropInterval *= -1;
                 }
 
-            if (!stricmp(arg, "-session"))
+            if ( not stricmp(arg, "-session"))
                 if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     F4SessionUpdateTime = atoi(arg);
                 }
 
-            if ((!stricmp(arg, "-hostidx")) or (!stricmp(arg, "-hostid")))
+            if (( not stricmp(arg, "-hostidx")) or ( not stricmp(arg, "-hostid")))
                 if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     ComIPGetHostIDIndex = atoi(arg);
                 }
 
-            if (!stricmp(arg, "-alive"))
+            if ( not stricmp(arg, "-alive"))
                 if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     F4SessionAliveTimeout = atoi(arg);
                 }
 
-            if (!stricmp(arg, "-mono")) // turn on MONOCHROME support
+            if ( not stricmp(arg, "-mono")) // turn on MONOCHROME support
                 InitDebug(DEBUGGER_TEXT_MODE);
 
-            if (!stricmp(arg, "-nomono")) // turn off MONOCHROME support
+            if ( not stricmp(arg, "-nomono")) // turn off MONOCHROME support
                 InitDebug(-1);
 
-            if (!stricmp(arg, "-head")) // turn on head tracking support
+            if ( not stricmp(arg, "-head")) // turn on head tracking support
                 OTWDriver.SetHeadTracking(TRUE);
 
-            if (!stricmp(arg, "-swap"))
+            if ( not stricmp(arg, "-swap"))
                 if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     F4CommsLatency = atoi(arg);
@@ -1044,7 +1044,7 @@ void ParseCommandLine(LPSTR cmdLine)
                         F4CommsSwapInterval *= -1;
                 }
 
-            if (!stricmp(arg, "-mtu"))  // Booster and Unz At work
+            if ( not stricmp(arg, "-mtu"))  // Booster and Unz At work
             {
                 if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
@@ -1056,10 +1056,10 @@ void ParseCommandLine(LPSTR cmdLine)
             }
             else F4CommsMTU = 500; // Unz Ugly...but it works
 
-            if (!stricmp(arg, "-ef"))
+            if ( not stricmp(arg, "-ef"))
                 eyeFlyEnabled = 1 - eyeFlyEnabled;
 
-            if (!stricmp(arg, "-ip"))
+            if ( not stricmp(arg, "-ip"))
             {
                 if ((arg = strtok(NULL, " ")) not_eq NULL)
                     force_ip_address = atoi(arg);
@@ -1069,18 +1069,18 @@ void ParseCommandLine(LPSTR cmdLine)
 
             //sfr converts
             // added for ports
-            if (!_strnicmp(arg, "-port", 5))
+            if ( not _strnicmp(arg, "-port", 5))
                 if ((arg = strtok(NULL, " ")) not_eq NULL)
                     force_port = (unsigned short)atoi(arg);
 
             // sfr: no T&L checks
             // added for server and notebooks
-            if (!stricmp(arg, "-notnl"))
+            if ( not stricmp(arg, "-notnl"))
                 // exclude emulation devices drivers
                 DisplayOptionsClass::SetDevCaps(D3DDEVCAPS_HWRASTERIZATION);
 
             // force logbook
-            if (!_strnicmp(arg, "-lgbk", 5))
+            if ( not _strnicmp(arg, "-lgbk", 5))
                 if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     // select a given logbook if it exists
@@ -1088,20 +1088,20 @@ void ParseCommandLine(LPSTR cmdLine)
 
                 }
 
-            if (!stricmp(arg, "-smoke"))
+            if ( not stricmp(arg, "-smoke"))
                 flag_keep_smoke_trails = TRUE;
 
             // OW
-            if (!stricmp(arg, "-enumswdev"))
+            if ( not stricmp(arg, "-enumswdev"))
                 g_bEnumSoftwareDevices = true;
 
-            if (!stricmp(arg, "-nocockpitverifier"))
+            if ( not stricmp(arg, "-nocockpitverifier"))
                 cockpit_verifier = false;
 
-            if (!stricmp(arg, "-writesndtbl"))
+            if ( not stricmp(arg, "-writesndtbl"))
                 g_writeSndTbl = true;
 
-            if (!stricmp(arg, "-writemissiontbl"))
+            if ( not stricmp(arg, "-writemissiontbl"))
                 g_writeMissionTbl = true;
 
         }
@@ -1180,7 +1180,7 @@ void SystemLevelInit()
         SetCursor(gCursors[CRSR_WAIT]);
         g_theaters.SetNewTheater(td);
 
-        if (((!_strnicmp(td->m_name, "Korea", 5)) or (!_strnicmp(td->m_name, "Eurowar", 7))) and (SimPathHandle == -1))
+        if ((( not _strnicmp(td->m_name, "Korea", 5)) or ( not _strnicmp(td->m_name, "Eurowar", 7))) and (SimPathHandle == -1))
         {
             char tmpPath[256];
             sprintf(tmpPath, "%s\\sim", FalconDataDirectory); // JPO - so we can find raw sim files
@@ -1200,7 +1200,7 @@ void SystemLevelInit()
 
         ReadCampAIInputs("Falcon4");
 
-        if (!LoadClassTable("Falcon4"))
+        if ( not LoadClassTable("Falcon4"))
         {
             MessageBox(NULL, "No Entities Loaded.", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
             exit(0);
@@ -1208,7 +1208,7 @@ void SystemLevelInit()
 
         InitVU();
 
-        if (!LoadTactics("Falcon4"))
+        if ( not LoadTactics("Falcon4"))
         {
             MessageBox(NULL, "No Tactics Loaded.", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
             exit(0);
@@ -1288,7 +1288,7 @@ void SystemLevelInit()
     {
         winamp = new WinAmpFrontEnd();
 
-        if (!winamp)
+        if ( not winamp)
         {
             g_bPilotEntertainment = false;
         }
@@ -1384,7 +1384,7 @@ void SystemLevelExit(void)
 
 void CampaignAutoSave(FalconGameType gametype)
 {
-    if (!tactical_is_training())
+    if ( not tactical_is_training())
     {
         gCommsMgr->SaveStats();
 
@@ -1428,7 +1428,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
         case WM_NCACTIVATE:
             if (FalconDisplay.displayFullScreen)
             {
-                if (!wParam)
+                if ( not wParam)
                     return 0L;
             }
 
@@ -1626,7 +1626,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 			{
 				FalconGameEntity *game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
 
-				if (!game or (VuGameEntity*)game == vuPlayerPoolGroup)
+				if ( not game or (VuGameEntity*)game == vuPlayerPoolGroup)
 				{
 					MonoPrint("Campaign Join Error: Not a valid game.\n");
 					PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
@@ -1653,7 +1653,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 				}
 			}
 
-			if (!retval)
+			if ( not retval)
 				PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
 
             break;
@@ -1662,7 +1662,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             MonoPrint("Starting %s game.\n", (wParam) ? "remote" : "local");
             CampaignJoinSuccess();
 
-            if (!gMainHandler)
+            if ( not gMainHandler)
                 SendMessage(hwnd, FM_START_UI, 0, 0);
 
             break;
@@ -1687,10 +1687,10 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_ONLINE_STATUS:
-            if (!doUI)
+            if ( not doUI)
                 break;
 
-            if (!gMainHandler)
+            if ( not gMainHandler)
                 break;
 
             UI_CommsErrorMessage(static_cast<WORD>(wParam));
@@ -1761,7 +1761,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     gCampJoinTries = 0;
 
                     if (FalconLocalGame)
-                        CampaignPreloadSuccess(!FalconLocalGame->IsLocal());
+                        CampaignPreloadSuccess( not FalconLocalGame->IsLocal());
 
                     if (gMainHandler) // Removed GameType check - RH
                         RecieveScenarioInfo();
@@ -1770,7 +1770,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     break;
 
                 case CAMP_NEED_ENTITIES:
-                    if (!FalconLocalGame or vuPlayerPoolGroup == vuLocalGame)
+                    if ( not FalconLocalGame or vuPlayerPoolGroup == vuLocalGame)
                         break;
 
                     gCampJoinLastData = vuxRealTime;
@@ -1781,7 +1781,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     break;
 
                 case CAMP_NEED_WEATHER:
-                    if (!FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
+                    if ( not FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
                     gCampJoinLastData = vuxRealTime;
@@ -1792,7 +1792,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     break;
 
                 case CAMP_NEED_PERSIST:
-                    if (!FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
+                    if ( not FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
                     gCampJoinLastData = vuxRealTime;
@@ -1803,7 +1803,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     break;
 
                 case CAMP_NEED_OBJ_DELTAS:
-                    if (!FalconLocalGame or vuPlayerPoolGroup == vuLocalGame)
+                    if ( not FalconLocalGame or vuPlayerPoolGroup == vuLocalGame)
                         break;
 
                     gCampJoinLastData = vuxRealTime;
@@ -1814,7 +1814,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     break;
 
                 case CAMP_NEED_TEAM_DATA:
-                    if (!FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
+                    if ( not FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
                     gCampJoinLastData = vuxRealTime;
@@ -1825,7 +1825,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     break;
 
                 case CAMP_NEED_UNIT_DATA:
-                    if (!FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
+                    if ( not FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
                     gCampJoinLastData = vuxRealTime;
@@ -1836,7 +1836,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     break;
 
                 case CAMP_NEED_VC:
-                    if (!FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
+                    if ( not FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
                     gCampJoinLastData = vuxRealTime;
@@ -1847,7 +1847,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     break;
 
                 case CAMP_NEED_PRIORITIES:
-                    if (!FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
+                    if ( not FalconLocalGame or  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
                     gCampJoinLastData = vuxRealTime;
@@ -2050,7 +2050,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     case WM_MOUSEMOVE:
                     {
                         // we want to be notified when mouse leaves again
-                        if (!mouseIn)
+                        if ( not mouseIn)
                         {
                             // sfr: track mouseleave
                             TRACKMOUSEEVENT tme;
@@ -2113,7 +2113,7 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
         top = theRect.top;
         mode = MOVIE_MODE_INTERLACE;
 
-        if (!stricmp(FalconMovieMode, "Hurry"))
+        if ( not stricmp(FalconMovieMode, "Hurry"))
         {
             mode  or_eq  MOVIE_MODE_HURRY;
         }
@@ -2139,7 +2139,7 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
     {
         if (PeekMessage(&msg, NULL, 0 , 0, PM_NOREMOVE))
         {
-            if (!GetMessage(&msg, NULL, 0, 0))
+            if ( not GetMessage(&msg, NULL, 0, 0))
                 break;
 
             if (msg.message == WM_KEYUP) // any key press will stop the movie

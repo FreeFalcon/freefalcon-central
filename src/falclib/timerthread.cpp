@@ -39,7 +39,7 @@ static unsigned __stdcall timerThread(void)
             delta = MAX_TIME_DELTA;
 
         //ShiAssert(vuxGameTime + SimLibMajorFrameTime >= SimLibElapsedTime);
-        if (!gCompressTillTime or vuxGameTime + delta * gameCompressionRatio < gCompressTillTime)
+        if ( not gCompressTillTime or vuxGameTime + delta * gameCompressionRatio < gCompressTillTime)
         {
             vuxGameTime += delta * gameCompressionRatio; // Normal time advance
         }
@@ -109,7 +109,7 @@ void SetTimeCompression(int newComp)
         // Otherwise, set our compression directly
         lastStartTime = vuxRealTime;
 
-        if (!gameCompressionRatio and newComp)
+        if ( not gameCompressionRatio and newComp)
             SimDriver.lastRealTime = vuxGameTime;
 
         gameCompressionRatio = newComp;
@@ -141,7 +141,7 @@ void SetOnlineTimeCompression(int newComp)
 
     lastStartTime = vuxRealTime;
 
-    if (!gameCompressionRatio and newComp)
+    if ( not gameCompressionRatio and newComp)
         SimDriver.lastRealTime = vuxGameTime;
 
     gameCompressionRatio = newComp;
@@ -160,7 +160,7 @@ void SetTemporaryCompression(int newComp)
 
     lastStartTime = vuxRealTime;
 
-    if (!gameCompressionRatio and newComp)
+    if ( not gameCompressionRatio and newComp)
         SimDriver.lastRealTime = vuxGameTime;
 
     gameCompressionRatio = newComp;

@@ -56,7 +56,7 @@ RadarClass::RadarClass(int type, SimMoverClass* parentPlatform) : SensorClass(pa
     digiRadarMode = DigiRWS; // 2002-02-09 ADDED BY S.G. Need to init the radar mode the digi will be set to by default...
     flag = FirstSweep; // 2002-03-10 ADDED BY S.G. Tells the RadarDigi::Exec function that the radar is doing is first sweep since creation, don't apply TimeToLock
 
-    if (!radarData->RDRDataInd) radarData->RDRDataInd = type;
+    if ( not radarData->RDRDataInd) radarData->RDRDataInd = type;
 
     if (radarData->RDRDataInd < NumRadarDatFileTable)
         radarDatFile = &radarDatFileTable[radarData->RDRDataInd];
@@ -89,7 +89,7 @@ void RadarClass::SetPower(BOOL state)
     isOn = state;
     isEmitting = isEmitting and state;
 
-    if (!isEmitting)
+    if ( not isEmitting)
     {
         if (lockedTarget) SendTrackMsg(lockedTarget, Track_Unlock);
 
@@ -122,7 +122,7 @@ void RadarClass::SetEmitting(BOOL state)
 
     isEmitting = state and isOn;
 
-    if (!isEmitting)
+    if ( not isEmitting)
     {
         if (lockedTarget)
         {
@@ -143,7 +143,7 @@ void RadarClass::SetEmitting(BOOL state)
 
 void RadarClass::SetDesiredTarget(SimObjectType* newTarget)
 {
-    if (!newTarget or newTarget == lockedTarget)
+    if ( not newTarget or newTarget == lockedTarget)
     {
         return;
     }
@@ -178,7 +178,7 @@ void RadarClass::SetDesiredTarget(SimObjectType* newTarget)
 void RadarClass::SetSensorTarget(SimObjectType* newTarget)
 {
     // 2002-02-10 ADDED BY S.G. Reset the digi radar mode to RWS upon losing your target
-    if (!newTarget)
+    if ( not newTarget)
     {
         digiRadarMode = DigiRWS;
     }
@@ -307,7 +307,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
 
             if (ecmFlight)
             {
-                if (!ecmFlight->IsAreaJamming())
+                if ( not ecmFlight->IsAreaJamming())
                     ecmFlight = NULL;
             }
             else if (((FlightClass *)campBaseObj)->HasAreaJamming())
@@ -383,7 +383,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
         {
 
             //notch look up
-            if (!mainclutter)
+            if ( not mainclutter)
                 S *= min(1.0f, radarData->NotchPenalty * 1.5f);
 
             //notch look down
@@ -413,7 +413,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
     // Hammer the signal to zero if the target is "in" the terrain and
     // we don't have line of sight (if the target is above terrain, we
     // assume line of sight EVEN THOUGH we might be wrong if we are low)
-    if (!platform->CheckLOS(target))
+    if ( not platform->CheckLOS(target))
     {
         // 2001-05-14 MODIFIED BY S.G. SINCE THE RETURN VALUE IS ALWAYS LESS THAN SOMETHING
         // AND -1 IS LESS THAN 0, I'LL USE IT TO FLAG 'NoLOS' TO THE RadarDigi FUNCTION
@@ -441,7 +441,7 @@ void RadarClass::SendTrackMsg(SimObjectType* tgtptr, unsigned int trackType, uns
         (tgtptr == NULL) or (tgtptr->BaseData() == NULL) ||
         (tgtptr->localData->lockmsgsend == Track_None and trackType == Track_Unlock) ||
         (tgtptr->localData->lockmsgsend == Track_Launch and trackType == Track_Lock) ||
-        (!((SimBaseClass*)tgtptr->BaseData())->IsAirplane()) ||
+        ( not ((SimBaseClass*)tgtptr->BaseData())->IsAirplane()) ||
         (
             tgtptr->localData->lockmsgsend == trackType and (
                 trackType not_eq Track_Lock or tgtptr->localData->lastRadarMode == hardpoint
@@ -464,7 +464,7 @@ void RadarClass::SendTrackMsg(SimObjectType* tgtptr, unsigned int trackType, uns
     // Create and fill in the message structure
     VuGameEntity *game = vuLocalSessionEntity->Game();
 
-    if (!game) return;
+    if ( not game) return;
 
     VuSessionsIterator Sessioniter(game);
     VuSessionEntity*   sess;

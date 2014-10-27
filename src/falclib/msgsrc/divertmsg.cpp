@@ -97,7 +97,7 @@ int FalconDivertMessage::Process(uchar autodisp)
         if (target and target->IsUnit() and ((Unit)target)->Father())
             target = ((Unit)target)->GetFirstUnitElement();
 
-        if ((!target or (target->IsUnit() and ((UnitClass*)target)->IsDead())) and dataBlock.mission > 0)
+        if (( not target or (target->IsUnit() and ((UnitClass*)target)->IsDead())) and dataBlock.mission > 0)
             return 0;
 
         // Set with new element's ID
@@ -121,7 +121,7 @@ int FalconDivertMessage::Process(uchar autodisp)
         {
             // Trying to track down a potential bug here.. It's hard enough to
             // get diverts I figure I'll let QA do the testing..
-            // ShiAssert (!"Show this to Kevin K.");
+            // ShiAssert ( not "Show this to Kevin K.");
             memcpy(&sLastDivert.dataBlock, &dataBlock, sizeof(dataBlock));
             sDivertFlight = flight->Id();
             sLastReply = DIVERT_WAIT_FOR_REPLY;
@@ -146,7 +146,7 @@ int FalconDivertMessage::Process(uchar autodisp)
 // Returns -1 if no divert was pending, 0 if divert is no longer valid, 1 if reply accepted
 int CheckDivertStatus(int reply)
 {
-    if (!sNextRepost)
+    if ( not sNextRepost)
         return -1;
     else if (sNextRepost < vuxGameTime or reply not_eq DIVERT_NO_DIVERT)
     {
@@ -156,13 +156,13 @@ int CheckDivertStatus(int reply)
         // Clear repost time
         sNextRepost = 0;
 
-        if (!flight)
+        if ( not flight)
             return 0;
 
         // Check for target viability
         target = (CampEntity)vuDatabase->Find(sLastDivert.dataBlock.targetID);
 
-        if (!target or (target->IsUnit() and (((Unit)target)->IsDead() or ((Unit)target)->Broken())))
+        if ( not target or (target->IsUnit() and (((Unit)target)->IsDead() or ((Unit)target)->Broken())))
             return 0;
 
         if (flight not_eq FalconLocalSession->GetPlayerFlight())
@@ -284,7 +284,7 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
 
         return;
     }
-    else if (!newTarget)
+    else if ( not newTarget)
     {
         // Just a position update
         if (target->GetDomain() == DOMAIN_AIR)

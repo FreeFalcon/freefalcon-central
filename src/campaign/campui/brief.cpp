@@ -203,7 +203,7 @@ int BuildBriefString(C_Window *win, _TCHAR *brief)
         flight_ptr = flight_ptr->next_flight;
     }
 
-    if (g_bBriefHTML and (!win))
+    if (g_bBriefHTML and ( not win))
         AddStringToBuffer("</table>", current_line);
 
     AddHorizontalLineToBrief(win);
@@ -216,7 +216,7 @@ int BuildBriefString(C_Window *win, _TCHAR *brief)
         flight_ptr = flight_ptr->next_flight;
     }
 
-    if (g_bBriefHTML and (!win))
+    if (g_bBriefHTML and ( not win))
         AddStringToBuffer("</table>", current_line);
 
     AddHorizontalLineToBrief(win);
@@ -245,7 +245,7 @@ int BuildBriefString(C_Window *win, _TCHAR *brief)
         CWayPoint = CWayPoint->GetNextWP();
     }
 
-    if (g_bBriefHTML and (!win))
+    if (g_bBriefHTML and ( not win))
         AddStringToBuffer("</table>", current_line);
 
     AddHorizontalLineToBrief(win);
@@ -280,7 +280,7 @@ int BuildBriefString(C_Window *win, _TCHAR *brief)
         flight_ptr = flight_ptr->next_flight;
     }
 
-    if (g_bBriefHTML and (!win))
+    if (g_bBriefHTML and ( not win))
         AddStringToBuffer("</table>", current_line);
 
     TheCampaign.MissionEvaluator->curr_pilot = NULL;
@@ -289,7 +289,7 @@ int BuildBriefString(C_Window *win, _TCHAR *brief)
     ReadScriptedBriefFile("Weather.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
     AddHorizontalLineToBrief(win);
 
-    if (g_bBriefHTML and (!win))
+    if (g_bBriefHTML and ( not win))
         AddStringToBuffer("</table>", current_line);
 
     ReadScriptedBriefFile("Support.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
@@ -315,7 +315,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
     flight_data = TheCampaign.MissionEvaluator->player_element;
     ShiAssert(flight_data);//Cobra 10/31/04 TJL
 
-    if (!TheCampaign.MissionEvaluator->player_element or // MLR 3/25/2004 -
+    if ( not TheCampaign.MissionEvaluator->player_element or // MLR 3/25/2004 -
         !TheCampaign.MissionEvaluator->player_pilot)
     {
         // this prevents a CTD, but makes the debried window empty
@@ -343,7 +343,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
         {
             if (win)
             {
-                if (!inbox)
+                if ( not inbox)
                 {
                     _TCHAR tmp[40] = "";
                     eventListBox = new C_ListBox;
@@ -429,7 +429,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
                         _TCHAR event_str[256] = {0};
                         _TCHAR temp_line[256] = {0};
 
-                        if (!inbox)
+                        if ( not inbox)
                         {
                             AddEOLToBrief(current_line, win, brief);
                             CCurrentLine = 0;
@@ -471,7 +471,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
                     }
                     else
                     {
-                        if (!inbox)
+                        if ( not inbox)
                         {
                             ReadScriptedBriefFile("FOrdWeap.db", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
                             _tcscat(brief, "\n");
@@ -534,7 +534,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
             }
 
             // Find all players who were in this AC first
-            while (!done)
+            while ( not done)
             {
                 while (pilot_data and pilot_data->aircraft_slot not_eq i)
                     pilot_data = pilot_data->next_pilot;
@@ -553,7 +553,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
             }
 
             // Now check if a player's been added, and if not do the AI's stats
-            if (!players and ai_data)
+            if ( not players and ai_data)
             {
                 TheCampaign.MissionEvaluator->curr_pilot = ai_data;
                 ReadScriptedBriefFile("PElement.db", current_line, win, brief, TheCampaign.MissionEvaluator, flight_ptr);
@@ -589,10 +589,10 @@ int GetBriefingData(int query, int data, _TCHAR *buffer, int len)
     switch (query)
     {
         case GBD_PLAYER_ELEMENT:
-            if (!TheCampaign.MissionEvaluator->player_element)
+            if ( not TheCampaign.MissionEvaluator->player_element)
                 return -1;
 
-            if (!TheCampaign.MissionEvaluator->player_pilot)
+            if ( not TheCampaign.MissionEvaluator->player_pilot)
                 return -1;
 
             AddStringToBuffer(TheCampaign.MissionEvaluator->player_element->name, buffer);
@@ -600,7 +600,7 @@ int GetBriefingData(int query, int data, _TCHAR *buffer, int len)
             break;
 
         case GBD_PLAYER_TASK:
-            if (!TheCampaign.MissionEvaluator->player_element)
+            if ( not TheCampaign.MissionEvaluator->player_element)
                 return -1;
 
             ReadScriptedBriefFile("task.gbd", current_line, NULL, buffer, TheCampaign.MissionEvaluator, TheCampaign.MissionEvaluator->player_element);
@@ -611,7 +611,7 @@ int GetBriefingData(int query, int data, _TCHAR *buffer, int len)
             break;
 
         case GBD_PACKAGE_MISSION:
-            if (!TheCampaign.MissionEvaluator->package_element)
+            if ( not TheCampaign.MissionEvaluator->package_element)
                 return -1;
 
             ReadScriptedBriefFile("mission.gbd", current_line, NULL, buffer, TheCampaign.MissionEvaluator, TheCampaign.MissionEvaluator->package_element);
@@ -869,7 +869,7 @@ void AddHorizontalLineToBrief(C_Window *window)
 
 void AddStringToBrief(_TCHAR *buffer, C_Window *window, _TCHAR *output)
 {
-    if (!buffer[0])
+    if ( not buffer[0])
         return;
 
     if (window)
@@ -882,7 +882,7 @@ void AddStringToBrief(_TCHAR *buffer, C_Window *window, _TCHAR *output)
         ShiAssert(output not_eq buffer);
         _tcscat(output, buffer);
 
-        if (!CCurrentLine)
+        if ( not CCurrentLine)
             CCurrentLine = output;
 
 #if 0 // this isn't helping the print out.
@@ -1215,7 +1215,7 @@ void GetEntityName(CampEntity e, _TCHAR *name, char name_type, char objchar)
     if (objchar == 'O')
         object = TRUE;
 
-    if (!e)
+    if ( not e)
         ReadIndexedString(168, name, 80);
     else if (e->IsObjective())
         e->GetName(name, 80, object);
@@ -1254,7 +1254,7 @@ void GetEntityName(CampEntity e, _TCHAR *name, char name_type, char objchar)
 
 void GetEntityDestination(CampEntity e, _TCHAR *name)
 {
-    if (!e)
+    if ( not e)
         ReadIndexedString(38, name, 80);
     else if (e->IsUnit())
     {
@@ -1412,10 +1412,10 @@ void ConstructOrderedSentence(short maxsize, _TCHAR *string, _TCHAR *format, ...
 int GetGender(CampEntity entity, int div)
 {
     // Gender is hardcoded for now- no data exists
-    if (!entity or gLangIDNum < F4LANG_GERMAN)
+    if ( not entity or gLangIDNum < F4LANG_GERMAN)
         return F4LANG_MASCULINE;
 
-    if (div and (!entity->IsUnit() or !((Unit)entity)->GetUnitDivision()))
+    if (div and ( not entity->IsUnit() or !((Unit)entity)->GetUnitDivision()))
         div = 0;
 
     if (gLangIDNum == F4LANG_GERMAN)
@@ -1785,7 +1785,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
     _TCHAR eol[2] = { '\n', 0 };
     CampEntity target, ptarget;
 
-    if (!mec or !mec->flight_data or !mec->flight_data->camp_id)
+    if ( not mec or !mec->flight_data or !mec->flight_data->camp_id)
         return 0;
 
     if ((fp = OpenCampFile(filename, "", "r")) == NULL)
@@ -1797,12 +1797,12 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
     target = FindEntity(flight_data->target_id);
     ptarget = FindEntity(mec->package_target_id);
 
-    while (!done)
+    while ( not done)
     {
         ReadComments(fp);
         ReadToken(fp, token, 120);
 
-        if (!token[0])
+        if ( not token[0])
             continue;
 
         // Handle standard tokens
@@ -1810,7 +1810,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
         {
             curr_stack++;
 
-            if (!stack_active[curr_stack - 1])
+            if ( not stack_active[curr_stack - 1])
                 stack_active[curr_stack] = 0;
             else
                 stack_active[curr_stack] = 1;
@@ -1824,7 +1824,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
         }
         else if (strcmp(token, "#ENDIF") == 0)
         {
-            if (!curr_stack)
+            if ( not curr_stack)
                 MonoPrint("<Brief reading Error - unmatched #ENDIF>\n");
             else
                 curr_stack--;
@@ -1853,14 +1853,14 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 // Add all our if conditions here
                 if (strcmp(token, "#IF_HAVE_TARGET") == 0)
                 {
-                    if (!target)
+                    if ( not target)
                         stack_active[curr_stack] = 0;
                     else
                         stack_active[curr_stack] = 1;
                 }
                 else if (strcmp(token, "#IF_HAVE_PACKAGE_TARGET") == 0)
                 {
-                    if (!ptarget)
+                    if ( not ptarget)
                         stack_active[curr_stack] = 0;
                     else
                         stack_active[curr_stack] = 1;
@@ -2091,14 +2091,14 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 }
                 else if (strcmp(token, "#IF_HAVE_PILOT") == 0)
                 {
-                    if (!mec->curr_pilot)
+                    if ( not mec->curr_pilot)
                         stack_active[curr_stack] = 0;
                     else
                         stack_active[curr_stack] = 1;
                 }
                 else if (strcmp(token, "#IF_HAVE_WEAPON") == 0)
                 {
-                    if (!mec->curr_pilot)
+                    if ( not mec->curr_pilot)
                         stack_active[curr_stack] = 0;
                     else if (mec->curr_pilot->weapon_data[mec->curr_weapon].weapon_id)
                         stack_active[curr_stack] = 1;
@@ -2322,7 +2322,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             // special tokens
             if (strcmp(token, "#EOL") == 0)
             {
-                if (g_bBriefHTML and (!win))
+                if (g_bBriefHTML and ( not win))
                     AddStringToBuffer("<p>", current_line);
 
                 AddEOLToBrief(current_line, win, brief);
@@ -2330,7 +2330,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             }
             else if (strcmp(token, "#SPACE") == 0)
             {
-                if (g_bBriefHTML and (!win))
+                if (g_bBriefHTML and ( not win))
                     AddStringToBuffer("&nbsp;", current_line);
                 else
                     AddStringToBuffer(" ", current_line);
@@ -2410,7 +2410,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     else
                         slot = 0;
 
-                    while (!mec->curr_pilot and slot < PILOTS_PER_FLIGHT)
+                    while ( not mec->curr_pilot and slot < PILOTS_PER_FLIGHT)
                     {
                         mec->curr_pilot = mec->FindPilotDataFromAC(flight_data, slot);
                         slot++;
@@ -2632,7 +2632,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                 ent = FindEntity(mec->intercepting_ent);
 
-                if (!ent)
+                if ( not ent)
                     ent = ESquad; // Special case for fighters at airbases
 
                 if (ent and ent->GetClass() == CLASS_UNIT)
@@ -2955,7 +2955,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     }
 
                     // Now choose which format to use
-                    if (!tar or (tar->IsUnit() and (((Unit)tar)->Broken() or ((Unit)tar)->IsDead()))
+                    if ( not tar or (tar->IsUnit() and (((Unit)tar)->Broken() or ((Unit)tar)->IsDead()))
                         or (tar->IsObjective() and ((Objective)tar)->GetObjectiveStatus() < 10))
                     {
                         // Target is completely broken or destroyed
@@ -3444,7 +3444,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     }
                 }
 
-                if (!got)
+                if ( not got)
                 {
                     ReadScriptedBriefFile("NoSquad.b", current_line, win, brief, mec, mec->package_element);
                 }
@@ -3490,7 +3490,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 int i, j, f, skip;
                 _TCHAR names[MAX_TARGET_FEATURES][30];
 
-                if (!ptarget or !ptarget->IsObjective())
+                if ( not ptarget or !ptarget->IsObjective())
                     continue;
 
                 for (i = 0; i < MAX_TARGET_FEATURES; i++)
@@ -3511,7 +3511,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                         _tcscpy(names[i], fc->Name);
 
-                        if (!skip)
+                        if ( not skip)
                         {
                             CEntity = ptarget;
                             mec->curr_data = f;
@@ -3575,7 +3575,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             else if (strncmp(token, "<", 1) == 0)
             {
                 //if ((g_bBriefHTML) and (filename not_eq ""))
-                if ((g_bBriefHTML) and (!win))
+                if ((g_bBriefHTML) and ( not win))
                     AddStringToBuffer(token, current_line);
             }
 

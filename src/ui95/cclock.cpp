@@ -220,7 +220,7 @@ void C_Clock::SetSubParents(C_Window *Parent)
 {
     long  x, w, h;
 
-    if (!Parent)
+    if ( not Parent)
         return;
 
     x = 0;
@@ -314,13 +314,13 @@ long C_Clock::CheckHotSpots(long relX, long relY)
         if (Day_)
             Section_ = Day_->CheckHotSpots(relX, relY);
 
-        if (!Section_)
+        if ( not Section_)
             Section_ = Hour_->CheckHotSpots(relX, relY);
 
-        if (!Section_)
+        if ( not Section_)
             Section_ = Minute_->CheckHotSpots(relX, relY);
 
-        if (!Section_)
+        if ( not Section_)
             Section_ = Second_->GetID();
 
         return(GetID());
@@ -428,7 +428,7 @@ BOOL C_Clock::Process(long ID, short HitType)
 
 void C_Clock::Refresh()
 {
-    if (!Ready() or Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
@@ -436,7 +436,7 @@ void C_Clock::Refresh()
 
 void C_Clock::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (!Ready() or Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Sep0_)

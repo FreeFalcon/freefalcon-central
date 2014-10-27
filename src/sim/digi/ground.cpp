@@ -156,7 +156,7 @@ void DigitalBrain::GroundCheck(void)
                     //float slope = atan2(height, (g_fPullupTime * self->GetVt()));
                     //groundAvoidPStick = slope * RTD / 90.0f;
                     //float Time2Pull = dist / (self->GetVt()+1);
-                    if (!PullupNow)
+                    if ( not PullupNow)
                     {
                         PullupNow = (int)i;
                     }

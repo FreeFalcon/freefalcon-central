@@ -285,14 +285,14 @@ glCalculateAngle(GLfloat opposite,
     GLint       sign_opp, sign_adj;
     GLFixed0_14 angle;
 
-    if (!opposite)
+    if ( not opposite)
     {
         if (adjacent < 0.0f) return (8192); // 180 degree
 
         return(0);
     }
 
-    if (!adjacent)
+    if ( not adjacent)
     {
         if (opposite < 0.0f) return (12288); // 270 degree
 
@@ -315,7 +315,7 @@ glCalculateAngle(GLfloat opposite,
 
     angle = CalculateArcTan(opposite, adjacent);
 
-    if (!angle)   // either 0 or 180
+    if ( not angle)   // either 0 or 180
     {
         if (sign_adj) return (8192); // 180 degree
 

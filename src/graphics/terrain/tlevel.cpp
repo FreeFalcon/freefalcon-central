@@ -66,7 +66,7 @@ void TLevel::Setup(int level, int width, int height, const char *mapPath)
     // Allocate memory for the block pointer array
     blocks = new tBlockAddress[ blocks_wide * blocks_high ];
 
-    if (!blocks)
+    if ( not blocks)
     {
         ShiError("Failed to allocate memory for block pointer array");
     }
@@ -111,7 +111,7 @@ void TLevel::Setup(int level, int width, int height, const char *mapPath)
     {
 
         // We're dropping the top bit, so no legal offset can have it set
-        ShiAssert(!(blocks[i].offset & 0x80000000));
+        ShiAssert( not (blocks[i].offset & 0x80000000));
         blocks[i].offset = (blocks[i].offset << 1) | 1;
         ShiAssert((blocks[i].offset & 0x00000001));
     }
@@ -233,7 +233,7 @@ TBlock* TLevel::RequestBlockOwnership(int r, int c)
             // Block wasn't found, we we'll create one and ask the async loader to fetch the data.
             block = new TBlock;
 
-            if (!block)
+            if ( not block)
             {
                 ShiError("Failed to allocate memory for a block header");
             }
@@ -249,7 +249,7 @@ TBlock* TLevel::RequestBlockOwnership(int r, int c)
             // Allocate space for the data transfer and the message requesting it
             LoaderQ *request = new LoaderQ;
 
-            if (!request)
+            if ( not request)
             {
                 ShiError("Failed to allocate memory for a block read request");
             }
@@ -362,15 +362,15 @@ void TLevel::PreProcessBlock(LoaderQ* request)
 
     ShiAssert(IsReady());
     ShiAssert(block);
-    ShiAssert(!block->posts);
+    ShiAssert( not block->posts);
 
     if (g_LargeTerrainFormat)
     {
         TNewdiskPost *post;
 
-        if (!g_bUseMappedFiles)
+        if ( not g_bUseMappedFiles)
         {
-            if (!postFileMap.ReadDataAt(request->fileoffset, SharedNewPostIOBuffer,
+            if ( not postFileMap.ReadDataAt(request->fileoffset, SharedNewPostIOBuffer,
                                         sizeof(SharedNewPostIOBuffer)))
             {
                 char message[120];
@@ -399,7 +399,7 @@ void TLevel::PreProcessBlock(LoaderQ* request)
         postArray = new Tpost[ POSTS_PER_BLOCK ];
 #endif
 
-        if (!postArray)
+        if ( not postArray)
         {
             ShiError("Failed to allocate memory for an arriving post array");
         }
@@ -410,9 +410,9 @@ void TLevel::PreProcessBlock(LoaderQ* request)
     {
         TdiskPost *post;
 
-        if (!g_bUseMappedFiles)
+        if ( not g_bUseMappedFiles)
         {
-            if (!postFileMap.ReadDataAt(request->fileoffset, SharedPostIOBuffer, sizeof(SharedPostIOBuffer)))
+            if ( not postFileMap.ReadDataAt(request->fileoffset, SharedPostIOBuffer, sizeof(SharedPostIOBuffer)))
             {
                 char message[120];
                 sprintf(message, "%s:  Bad loader read (%0d)", strerror(errno), request->fileoffset);
@@ -440,7 +440,7 @@ void TLevel::PreProcessBlock(LoaderQ* request)
         postArray = new Tpost[ POSTS_PER_BLOCK ];
 #endif
 
-        if (!postArray)
+        if ( not postArray)
         {
             ShiError("Failed to allocate memory for an arriving post array");
         }
@@ -451,7 +451,7 @@ void TLevel::PreProcessBlock(LoaderQ* request)
     // If the block is no longer needed, throw it away
     EnterCriticalSection(&cs_blockArray);
 
-    if (!block->IsOwned())
+    if ( not block->IsOwned())
     {
 
         SetBlockPtr(block->Row(), block->Col(), NULL);
@@ -522,10 +522,10 @@ void TLevel::SetBlockPtr(UINT r, UINT c, TBlock *block)
         block = blocks[ r * blocks_wide + c ].ptr;
 
         // Durring debugging, make sure don't already have an offset
-        ShiAssert(!((DWORD)block & 0x00000001));
+        ShiAssert( not ((DWORD)block & 0x00000001));
 
         // Put the file offset back into the block pointer array
-        if (!F4IsBadReadPtr(block, sizeof(TBlock))) // JB 010408 CTD
+        if ( not F4IsBadReadPtr(block, sizeof(TBlock))) // JB 010408 CTD
             blocks[ r * blocks_wide + c ].offset = block->fileOffset;
         else
             blocks[ r * blocks_wide + c ].offset = NULL; // JB 010408 hmm... see what happens with this.
@@ -543,7 +543,7 @@ TBlock * TLevel::GetBlockPtr(UINT r, UINT c)
     {
         block = blocks[ r * blocks_wide + c ];
 
-        if (!(block.offset & 0x00000001))
+        if ( not (block.offset & 0x00000001))
         {
             return block.ptr;
         }

@@ -83,7 +83,7 @@ VuHashTable::~VuHashTable()
 
 VU_ERRCODE VuHashTable::Insert(VuEntity *entity)
 {
-    if (!entity)
+    if ( not entity)
     {
         return VU_NO_OP;
     }

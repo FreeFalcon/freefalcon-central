@@ -66,7 +66,7 @@ int LogBookData::Load(void)
         }
     }
 
-    if (!LoadData(Callsign()))
+    if ( not LoadData(Callsign()))
     {
         return FALSE;
     }
@@ -194,7 +194,7 @@ int LogBookData::LoadData(_TCHAR *callsign)
 
     fp = _tfopen(path, _T("rb"));
 
-    if (!fp)
+    if ( not fp)
     {
         MonoPrint(_T("Couldn't open %s's logbook.\n"), callsign);
         Initialize();
@@ -530,14 +530,14 @@ void LogBookData::UpdateCampaign(CAMP_MISS_STRUCT *MissStats)
     }
 
     //calculate new score using complexity, no mission pts if you get court martialed!
-    if (!(MissionResult & COURT_MARTIAL))
+    if ( not (MissionResult & COURT_MARTIAL))
         Pilot.Campaign.TotalScore += FloatToInt32(MissStats->Score * MissionComplexity(MissStats) * CampaignDifficulty() *
                                      PlayerOptions.Realism / 30.0F + MissStats->FlightHours);
 
     if (Pilot.Campaign.TotalScore < 0)
         Pilot.Campaign.TotalScore = 0;
 
-    if (!(MissStats->Flags & DONT_SCORE_MISSION))
+    if ( not (MissStats->Flags & DONT_SCORE_MISSION))
     {
         Pilot.Campaign.Missions++;
 
@@ -610,7 +610,7 @@ void LogBookData::UpdateCampaign(CAMP_MISS_STRUCT *MissStats)
         if (Pilot.Campaign.Naval < 0)
             Pilot.Campaign.Naval = 0;
 
-        if (!(MissionResult & COURT_MARTIAL))
+        if ( not (MissionResult & COURT_MARTIAL))
             AwardMedals(MissStats);
     }
 
@@ -708,7 +708,7 @@ void LogBookData::AwardMedals(CAMP_MISS_STRUCT *MissStats)
         if (MissStats->Flags & LANDED_AIRCRAFT)
             MedalPts++;
 
-        if (!MissStats->WingmenLost)
+        if ( not MissStats->WingmenLost)
             MedalPts++;
 
         MedalPts += MissStats->NavalUnitsKilled + MissStats->Kills +
@@ -749,7 +749,7 @@ void LogBookData::AwardMedals(CAMP_MISS_STRUCT *MissStats)
     }
     else
     {
-        if (!PlayerOptions.InvulnerableOn())
+        if ( not PlayerOptions.InvulnerableOn())
             Pilot.Campaign.ConsecMissions++;
     }
 

@@ -33,7 +33,7 @@ void AircraftClass::RunINS(void)
         INSOn(AircraftClass::INS_HSI_OFF_IN);
         INSOn(AircraftClass::INS_HSD_STUFF);
     }
-    else if (!HasAligned)
+    else if ( not HasAligned)
     {
         //ADI OFF Flag goes away
         INSOff(AircraftClass::INS_ADI_OFF_IN);
@@ -105,7 +105,7 @@ void AircraftClass::DoINSAlign(void)
         CheckUFC = TRUE;
 
     //Dont align if the UFC isn't powered
-    if (!HasPower(UFCPower))
+    if ( not HasPower(UFCPower))
         return;
 
     if (INSState(INS_AlignFlight))

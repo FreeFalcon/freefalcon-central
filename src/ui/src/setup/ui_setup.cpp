@@ -286,7 +286,7 @@ void LoadSetupWindows()
 
         if (line not_eq NULL)
         {
-            if (!IO.AnalogIsUsed(AXIS_YAW)) // Retro 31Dec2003
+            if ( not IO.AnalogIsUsed(AXIS_YAW)) // Retro 31Dec2003
                 line->SetColor(RGB(130, 130, 130)); //grey
 
             //if(Calibration.calibrated)
@@ -305,7 +305,7 @@ void LoadSetupWindows()
 
         if (line not_eq NULL)
         {
-            if (!IO.AnalogIsUsed(AXIS_THROTTLE)) // Retro 31Dec2003
+            if ( not IO.AnalogIsUsed(AXIS_THROTTLE)) // Retro 31Dec2003
                 line->SetColor(RGB(130, 130, 130)); //grey
 
             //if(Calibration.calibrated)
@@ -357,7 +357,7 @@ void LoadSetupWindows()
         // others are (or rather: should be) aligned to this one
         C_Window* win2 = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
-        if (!win2) return;
+        if ( not win2) return;
 
         C_Line* line = (C_Line *)win2->FindControl(SETUP_ADVANCED_THROTTLE_VAL);
 
@@ -1060,7 +1060,7 @@ void STPSetupControls(void)
     /* // M.N. Sky Color Stuff
     #if 0
      win=gMainHandler->FindWindow(SETUP_SKY_WIN);
-     if (!win)
+     if ( not win)
      return;
      lbox = (C_ListBox *) win->FindControl(SETUP_SKY_COLOR);
      if (lbox)
@@ -1070,7 +1070,7 @@ void STPSetupControls(void)
      }
     #else
      win=gMainHandler->FindWindow(SETUP_SKY_WIN);
-     if(!win) return;
+     if( not win) return;
      lbox=(C_ListBox *)win->FindControl(SETUP_SKY_COLOR);
      if (lbox)
      {
@@ -1088,7 +1088,7 @@ void STPSetupControls(void)
 
     // SetSkyColor();
 
-    if (!SetupCritSection)
+    if ( not SetupCritSection)
         SetupCritSection = F4CreateCriticalSection("SetupCrit");
 
     KeyVar.EditKey = FALSE;
@@ -1182,7 +1182,7 @@ void SetupRadioCB(long, short hittype, C_Base *control)
 
             if (button not_eq NULL)
             {
-                if (!hasPOV)
+                if ( not hasPOV)
                     button->SetFlagBitOn(C_BIT_INVISIBLE);
                 else
                     button->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -1711,7 +1711,7 @@ static void SaveValues(void)
 
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
-    if (!win) return;
+    if ( not win) return;
 
     //JAM 28Oct03
     button = (C_Button *)win->FindControl(SETUP_ADVANCED_ANISOTROPIC_FILTERING);
@@ -2429,7 +2429,7 @@ static void HookupSetupControls(long ID)
     // OW new stuff
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
-    if (!win) return;
+    if ( not win) return;
 
     // disable parent notification for close and cancel button
     button = (C_Button *)win->FindControl(AAPPLY);
@@ -2445,7 +2445,7 @@ static void HookupSetupControls(long ID)
 
     // M.N. SkyColor stuff
     /* win = gMainHandler->FindWindow(SETUP_SKY_WIN);
-     if(!win) return;
+     if( not win) return;
 
      // disable parent notification for close and cancel button
      listbox=(C_ListBox *)win->FindControl(SETUP_SKY_COLOR);

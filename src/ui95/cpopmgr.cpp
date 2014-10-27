@@ -129,11 +129,11 @@ BOOL C_PopupMgr::OpenMenu(long ID, long x, long y, C_Base *control)
 {
     POPUPMENU *cur;
 
-    if (!ID) return(FALSE);
+    if ( not ID) return(FALSE);
 
     CloseMenu();
 
-    if (!AMenuOpened())
+    if ( not AMenuOpened())
     {
         cur = Root_;
 
@@ -172,14 +172,14 @@ BOOL C_PopupMgr::OpenWindowMenu(C_Window *win, long x, long y)
     POPUPMENU *cur;
     long i;
 
-    if (!win) return(FALSE);
+    if ( not win) return(FALSE);
 
     if (win->IsMenu())
         return(FALSE);
 
     CloseMenu();
 
-    if (!AMenuOpened())
+    if ( not AMenuOpened())
     {
         for (i = 0; i < WIN_MAX_CLIENTS; i++)
         {

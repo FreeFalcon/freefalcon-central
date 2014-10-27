@@ -61,7 +61,7 @@ int LoadWeapon(int hp, int last_hp, short wid, int to_load, int max, Squadron sq
         // KCK NOTE: For non-visible (ie: internal) stores, load max
         if (max > 2)
         {
-            if (!(vc->VisibleFlags & (0x01 << hp)))
+            if ( not (vc->VisibleFlags & (0x01 << hp)))
                 to_load = max; // Bomb-bay or gun - So fill 'er up
             else
                 max = to_load = WeaponDataTable[wid].FireRate; // Otherwise, load one shot's
@@ -74,7 +74,7 @@ int LoadWeapon(int hp, int last_hp, short wid, int to_load, int max, Squadron sq
     {
         // We have plenty of weapons.. check for special case crapola
         // Bomb-bay or gun - one shot is considered the whole thing, so adjust to_load
-        if (!(vc->VisibleFlags & (0x01 << hp)))
+        if ( not (vc->VisibleFlags & (0x01 << hp)))
         {
             to_load += max - 1; // Adjust 1 pt worth of to_load to max;
 
@@ -105,7 +105,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
 {
     int score;
 
-    if (!wid or wid < 0 or wid >= NumWeaponTypes)
+    if ( not wid or wid < 0 or wid >= NumWeaponTypes)
         return 0;
 
     //LRKLUDGE
@@ -177,7 +177,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
         score = 0;
 
     // 2002-01-26 ADDED BY S.G. Don't use HARMS if not requested...
-    if (!guide_flags and (WeaponDataTable[wid].GuidanceFlags & WEAP_ANTIRADATION))
+    if ( not guide_flags and (WeaponDataTable[wid].GuidanceFlags & WEAP_ANTIRADATION))
         score = 0;
 
     // END OF ADDED SECTION 2002-01-26
@@ -210,7 +210,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
         score = score * WeaponDataTable[wid].Range / 100;
 
         if ((WeaponDataTable[wid].GuidanceFlags &  WEAP_LASER) ||
-            (!(WeaponDataTable[wid].Flags & WEAP_CLUSTER) and (WeaponDataTable[wid].Flags & WEAP_BOMBGPS)))
+            ( not (WeaponDataTable[wid].Flags & WEAP_CLUSTER) and (WeaponDataTable[wid].Flags & WEAP_BOMBGPS)))
             score = score / (WeaponDataTable[wid].Strength + 1) * 200;
 
         if (WeaponDataTable[wid].GuidanceFlags ==  WEAP_VISUALONLY and WeaponDataTable[wid].DamageType == PenetrationDam)
@@ -267,7 +267,7 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
 
     vc = (VehicleClassDataType*) Falcon4ClassTable[vindex].dataPtr;
 
-    if (!vc)
+    if ( not vc)
         return 0;
 
     if (squadron)
@@ -294,15 +294,15 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
         chp = (lhp / 2) + 1;
 
     // Check if we want a symetric load
-    if (!(num & 0x01))
+    if ( not (num & 0x01))
         sl = 1;
 
     for (hp = chp; hp <= lhp and num > 0; hp++)
     {
         // RV - Biker - Jammers now do overwrite AA and AG weapons
-        //if (!Weapon[hp] and (!sl or !Weapon[lhp+1-hp])) // Only check for empty hard points
-        if (!Weapon[hp] and (!sl or !Weapon[lhp + 1 - hp]) or ((type_flags & WEAP_ECM or type_flags & WEAP_LASER_POD) and !(WeaponDataTable[Weapon[hp]].Flags & (WEAP_FUEL | WEAP_RECON)))) // Only check for empty hard points
-            //if (!Weapon[hp] or (temp_flags & WEAP_LASER_POD))
+        //if ( not Weapon[hp] and ( not sl or !Weapon[lhp+1-hp])) // Only check for empty hard points
+        if ( not Weapon[hp] and ( not sl or !Weapon[lhp + 1 - hp]) or ((type_flags & WEAP_ECM or type_flags & WEAP_LASER_POD) and !(WeaponDataTable[Weapon[hp]].Flags & (WEAP_FUEL | WEAP_RECON)))) // Only check for empty hard points
+            //if ( not Weapon[hp] or (temp_flags & WEAP_LASER_POD))
         {
             if (vc->Weapons[hp] == 255) // This is a weapon list
             {
@@ -316,12 +316,12 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
                     // Better score for bomb-bays, essentially
                     ShiAssert(WeaponDataTable[wid].FireRate);
 
-                    if (!(vc->VisibleFlags & (0x01 << hp)) and WeaponDataTable[wid].FireRate)
+                    if ( not (vc->VisibleFlags & (0x01 << hp)) and WeaponDataTable[wid].FireRate)
                         score = score * vc->Weapons[hp] / WeaponDataTable[wid].FireRate;
 
                     if (score and uc)
                     {
-                        if (!((Squadron)squadron)->GetUnitStores(wid))
+                        if ( not ((Squadron)squadron)->GetUnitStores(wid))
                         {
 #ifndef INFINITE_AI_AMMO
 

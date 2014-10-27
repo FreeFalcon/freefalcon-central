@@ -89,7 +89,7 @@ public:
     };
     ~runwayQueueStruct()
     {
-        ShiAssert(!"We don't want to do this while testing (except for shutdown)");
+        ShiAssert( not "We don't want to do this while testing (except for shutdown)");
     };
 #else
 typedef struct runwayQueueStruct

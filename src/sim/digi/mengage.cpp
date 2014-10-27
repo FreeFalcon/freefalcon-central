@@ -74,7 +74,7 @@ void DigitalBrain::MissileEngageCheck(void)
     {
         if (targetData and targetData->range > 2000.0f) // JB 010208
         {
-            if (!targetPtr ||
+            if ( not targetPtr ||
                 !curMissile ||
                 targetData->range > maxAAWpnRange * 1.09F ||
                 // (targetData->range < 3000.0f * NM_TO_FT and (((AircraftClass *)self)->Guns)) and // Cobra - < 3000 NM??!!
@@ -105,7 +105,7 @@ void DigitalBrain::MissileEngage(void)
     float tof, rMax;
 
     // check for exit condition
-    if (!targetPtr or !curMissile)
+    if ( not targetPtr or !curMissile)
     {
         return;
     }
@@ -428,7 +428,7 @@ void DigitalBrain::WeaponSelection(void)
                     curMissileNum     = self->Sms->curWpnNum;
                 }
                 //me123 pick a ir missile if no cur missile.
-                else if (!curMissile  and 
+                else if ( not curMissile  and 
                          theMissile->sensorArray  and 
                          theMissile->sensorArray[0]->Type() == SensorClass::IRST)
                 {

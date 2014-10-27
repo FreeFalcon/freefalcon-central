@@ -25,7 +25,7 @@ void FlcsMfdDrawable::Display(VirtualDisplay* newDisplay)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
     RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
 
-    if (!theRadar)
+    if ( not theRadar)
     {
         ShiWarning("Oh Oh shouldn't be here without a radar!");
         return;

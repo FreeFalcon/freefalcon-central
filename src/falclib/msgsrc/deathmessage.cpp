@@ -58,7 +58,7 @@ int FalconDeathMessage::Process(uchar autodisp)
     // KCK: Chalk off a vehicle in the unit if the target is a Campaign Unit
     if (campTarget and campTarget->IsUnit())
     {
-        if (!campTarget->IsAggregate() and target and !target->IsSetFalcFlag(FEC_REGENERATING))
+        if ( not campTarget->IsAggregate() and target and !target->IsSetFalcFlag(FEC_REGENERATING))
             campTarget->GetComponents()->Remove(target);
 
         if (campTarget->IsLocal())
@@ -137,7 +137,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
     int kill_type = -1, tid, ps = PILOT_KIA;
     Squadron sq;
 
-    if (!campShooter or !campTarget)
+    if ( not campShooter or !campTarget)
         return;
 
     // Determine type of kill
@@ -213,7 +213,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
                 // territory.
                 // For sim spawned deaths, we assume KIA. Choose between MIA and rescued if and when we get an
                 // eject message
-                if (!dtm or dtm->dataBlock.dEntityID not_eq FalconNullId)
+                if ( not dtm or dtm->dataBlock.dEntityID not_eq FalconNullId)
                 {
                     if (((Flight)campTarget)->plane_stats[pilot] == AIRCRAFT_MISSING)
                     {

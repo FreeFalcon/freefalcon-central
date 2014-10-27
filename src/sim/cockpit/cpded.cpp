@@ -40,7 +40,7 @@ CPDed::CPDed(ObjectInitStr *pobjectInitStr, DedInitStr *pdedInitStr) : CPObject(
     mCycleBits = 0xFFFF;
 
     //MI changed for ICP Stuff
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
         yOffset = (mDestRect.bottom - mDestRect.top) / 3; // 3 lines of DED text
     else
         yOffset = (mDestRect.bottom - mDestRect.top) / 6; // 5 lines of DED text but spaced tighter
@@ -131,11 +131,11 @@ void CPDed::DisplayDraw(void)
 
     if (mpCPManager->mpIcp)
     {
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             if (mDedType == DEDT_DED)
             {
-                if (!playerAC->HasPower(AircraftClass::UFCPower))
+                if ( not playerAC->HasPower(AircraftClass::UFCPower))
                     return;
 
                 //MI original code
@@ -146,7 +146,7 @@ void CPDed::DisplayDraw(void)
 
                 OTWDriver.renderer->SetViewport(ViewPort.left, ViewPort.top, ViewPort.right, ViewPort.bottom);
 
-                if (!OTWDriver.renderer->GetGreenMode())
+                if ( not OTWDriver.renderer->GetGreenMode())
                     // JB 000819 Info from MI
                     //OTWDriver.renderer->SetColor(0xFF009FFF);
                     OTWDriver.renderer->SetColor(mColor[0]);
@@ -174,7 +174,7 @@ void CPDed::DisplayDraw(void)
         {
             OTWDriver.renderer->SetViewport(ViewPort.left, ViewPort.top, ViewPort.right, ViewPort.bottom);
 
-            if (!OTWDriver.renderer->GetGreenMode())
+            if ( not OTWDriver.renderer->GetGreenMode())
                 OTWDriver.renderer->SetColor(mColor[0]); //FF009FFF 00? 00B 00G 00R
             else
                 OTWDriver.renderer->SetColor(mColor[1]);
@@ -186,7 +186,7 @@ void CPDed::DisplayDraw(void)
             //we're a DED
             if (mDedType == DEDT_DED)
             {
-                if (!playerAC->HasPower(AircraftClass::UFCPower))
+                if ( not playerAC->HasPower(AircraftClass::UFCPower))
                     return;
 
                 //Wombat778 10-17-2003 Aeyes Ded spacing fix
@@ -221,7 +221,7 @@ void CPDed::DisplayDraw(void)
             //we're a PFL
             else
             {
-                if (!playerAC->HasPower(AircraftClass::PFDPower))
+                if ( not playerAC->HasPower(AircraftClass::PFDPower))
                 {
                     return;
                 }

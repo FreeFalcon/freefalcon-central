@@ -41,7 +41,7 @@ void HelicopterClass::ApplyDamage(FalconDamageMessage* damageMessage)
     {
        if (pctStrength < (1.0F - (1.0F/numSmokeTrails) * i))
        {
-          if (!smokeTrail[i]->InDisplayList())
+          if ( not smokeTrail[i]->InDisplayList())
              OTWDriver.InsertObject (smokeTrail[i]);
        }
     }
@@ -196,12 +196,12 @@ void HelicopterClass::RunExplosion(void)
         OTWDriver.CreateVisualObject(tmpSimBase, classPtr->visType[i + 2], &tp, &tr, OTWDriver.Scale());
         tmpSimBase->SetPosition(pos.x, pos.y, pos.z);
 
-        if (!i)
+        if ( not i)
         {
             tmpSimBase->SetDelta(XDelta(), YDelta(), ZDelta());
         }
 
-        if (!OnGround())
+        if ( not OnGround())
         {
             tmpSimBase->SetDelta(XDelta() + 50.0f * PRANDFloat(),
                                  YDelta() + 50.0f * PRANDFloat(),
@@ -216,7 +216,7 @@ void HelicopterClass::RunExplosion(void)
 
         tmpSimBase->SetYPR(Yaw(), Pitch(), Roll());
 
-        if (!i)
+        if ( not i)
         {
             // First peice is more steady and is flaming
             tmpSimBase->SetYPRDelta(0.0F, 0.0F, 10.0F + PRANDFloat() * 30.0F * DTR);

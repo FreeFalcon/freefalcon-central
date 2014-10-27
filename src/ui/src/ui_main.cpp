@@ -530,7 +530,7 @@ void CloseAllRenderers(long openID)
 void LeaveCurrentGame()
 {
     // KCK: This needs to NOT be here.
-    // if (!FalconLocalGame)
+    // if ( not FalconLocalGame)
     // return;
 
     switch (FalconLocalGame->GetGameType())
@@ -563,7 +563,7 @@ __forceinline void Encrypt(uchar startkey, uchar *buffer, long length)
     uchar *ptr;
     uchar nextkey;
 
-    if (!buffer or length <= 0)
+    if ( not buffer or length <= 0)
         return;
 
     idx = 0;
@@ -587,7 +587,7 @@ void Decrypt(uchar startkey, uchar *buffer, long length)
     uchar *ptr;
     uchar nextkey;
 
-    if (!buffer or length <= 0)
+    if ( not buffer or length <= 0)
         return;
 
     idx = 0;
@@ -860,7 +860,7 @@ static void OpenInstantActionCB(long , short hittype, C_Base *control)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if (!IALoaded)
+    if ( not IALoaded)
         LoadInstantActionWindows();
 
     if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
@@ -889,7 +889,7 @@ static void OpenDogFightCB(long , short hittype, C_Base *control)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if (!DFLoaded)
+    if ( not DFLoaded)
         LoadDogFightWindows();
 
     if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
@@ -920,7 +920,7 @@ static void OpenTacticalCB(long , short hittype, C_Base *control)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if (!TACSelLoaded)
+    if ( not TACSelLoaded)
         LoadTacEngSelectWindows();
 
     if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
@@ -950,7 +950,7 @@ void OpenMainCampaignCB(long , short hittype, C_Base *control)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if (!CPSelectLoaded)
+    if ( not CPSelectLoaded)
         LoadCampaignSelectWindows();
 
     if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
@@ -986,7 +986,7 @@ void OpenCommsCB(long , short hittype, C_Base *control)
 
     control->SetFlagBitOff(C_BIT_FORCEMOUSEOVER);
 
-    if (!gCommsMgr->Online())
+    if ( not gCommsMgr->Online())
     {
         gMainHandler->EnableWindowGroup(control->GetUserNumber(1));
     }
@@ -1004,7 +1004,7 @@ void OpenTacticalReferenceCB(long nID, short hittype, C_Base *control)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if (!TACREFLoaded)
+    if ( not TACREFLoaded)
         LoadTacticalReferenceWindows();
 
     CloseAllRenderers(TAC_REF_WIN);
@@ -1444,7 +1444,7 @@ void PlayCampaignMusic() // This function should figure out whether we are happy
 {
     // and play music accordingly
     // Team[MyTeam]... Initiative()  0->33 Bad 34->66 Medium 67->100 Good
-    if (!TeamInfo[FalconLocalSession->GetTeam()])
+    if ( not TeamInfo[FalconLocalSession->GetTeam()])
     {
         PlayUIMusic();
         return;
@@ -1467,7 +1467,7 @@ void PlayCampaignMusic() // This function should figure out whether we are happy
 
 void PlayThatFunkyMusicWhiteBoy()
 {
-    if (!gMusic or !MusicStopped)
+    if ( not gMusic or !MusicStopped)
         return;
 
     // if(GetCurrentTime() < (MusicStopped + 60000l))
@@ -1528,7 +1528,7 @@ void UI_LoadSkyWeatherData()
      [TOD file name] [Image1] [Image2] [Image3] [Image4]
      */
 
-    /* if(!(fp=fopen(file,"rt")))
+    /* if( not (fp=fopen(file,"rt")))
      return;
      NumberOfSkyColors = atoi(fgets(file,1024,fp));
 
@@ -1545,13 +1545,13 @@ void UI_LoadSkyWeatherData()
      sscanf(file, "%s %s %s %s %s",filename,image1,image2,image3,image4);
      strcpy(skycolor[i].todname,filename);
      strcpy(skycolor[i].image1,image1);
-     if (!strlen(image2)) // If we have no entry, use the main image
+     if ( not strlen(image2)) // If we have no entry, use the main image
      strcpy(image2,image1);
      strcpy(skycolor[i].image2,image2);
-     if (!strlen(image3))
+     if ( not strlen(image3))
      strcpy(image3,image1);
      strcpy(skycolor[i].image3,image3);
-     if (!strlen(image4))
+     if ( not strlen(image4))
      strcpy(image4,image1);
      strcpy(skycolor[i].image4,image4);
      strcpy(image1,"");
@@ -1566,7 +1566,7 @@ void UI_LoadSkyWeatherData()
 
      sprintf(file,"%s\\weather\\weathertable.dat",FalconTerrainDataDir);
 
-     if(!(fp=fopen(file,"rt")))
+     if( not (fp=fopen(file,"rt")))
      return;
      NumWeatherPatterns = atoi(fgets(file,1024,fp));
      i = 0;
@@ -1628,7 +1628,7 @@ int UI_Startup()
 
     UIBuildColorTable();
 
-    if (!gPlayerBook)
+    if ( not gPlayerBook)
     {
         gPlayerBook = new PhoneBook;
         gPlayerBook->Setup();
@@ -1768,7 +1768,7 @@ int UI_Startup()
 
     SetCursor(gCursors[CRSR_F16]);
 
-    if (!(LogState & LB_LOADED_ONCE))
+    if ( not (LogState & LB_LOADED_ONCE))
     {
         LogState  or_eq  LB_LOADED_ONCE;
         LogBook.Initialize();
@@ -1777,7 +1777,7 @@ int UI_Startup()
         DisplayOptions.Initialize();
     }
 
-    if (!LogBook.CheckPassword(_T("")) and !(LogState & LB_CHECKED))
+    if ( not LogBook.CheckPassword(_T("")) and !(LogState & LB_CHECKED))
         PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE, CheckPasswordCB, NoPasswordCB);
     else
     {
@@ -2164,7 +2164,7 @@ static void FillTheaterTree(C_TreeList *tree)
     TREELIST *item;
     TheaterDef *cthr = g_theaters.GetCurrentTheater();
 
-    if (!UniqueID)
+    if ( not UniqueID)
         UniqueID++;
 
     for (int i = 0; td = g_theaters.GetTheater(i); i++)

@@ -31,13 +31,13 @@ void TgpMfdDrawable::DisplayInit(ImageBuffer* image)
 {
     DisplayExit();
 
-    if (!g_bGreyScaleMFD)
+    if ( not g_bGreyScaleMFD)
         g_bGreyMFD = false;
 
     privateDisplay = new RenderIR;
     ((RenderIR*)privateDisplay)->Setup(image, OTWDriver.GetViewpoint());
 
-    if ((g_bGreyMFD) and (!bNVGmode))
+    if ((g_bGreyMFD) and ( not bNVGmode))
         privateDisplay->SetColor(GetMfdColor(MFD_WHITE));
     else
         privateDisplay->SetColor(0xff00ff00);
@@ -57,7 +57,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
     float cX, cY = 0;
     sprintf(Str, "");
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         display = privateDisplay;
         OffMode(display);
@@ -71,18 +71,18 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
     Sms = playerAC->Sms;
     display = newDisplay;
 
-    if (!theRadar or !pFCC or !self or !Sms)
+    if ( not theRadar or !pFCC or !self or !Sms)
     {
         ShiWarning("Oh Oh shouldn't be here without a radar or FCC or player or SMS!");
         return;
     }
-    else if (!laserPod)
+    else if ( not laserPod)
     {
         //display = privateDisplay; //Wombat778 3-24-04  CTD Fix in virtual cockpit.
         OffMode(display);
         return;
     }
-    else if (!self->HasPower(AircraftClass::RightHptPower))
+    else if ( not self->HasPower(AircraftClass::RightHptPower))
     {
         OffMode(display);
         BottomRow();
@@ -119,7 +119,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
     }
 
     // FRB - B&W display
-    if ((g_bGreyMFD) and (!bNVGmode))
+    if ((g_bGreyMFD) and ( not bNVGmode))
         display->SetColor(GetMfdColor(MFD_WHITE));
     else
         display->SetColor(0xff00ff00);
@@ -134,7 +134,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
     DrawMasterArm(display);
 
     //Ralt/Laser/Impact time/weapons indication
-    if (!MenuMode)
+    if ( not MenuMode)
     {
         DrawRALT(display);
         LaserIndicator(display);
@@ -240,7 +240,7 @@ void TgpMfdDrawable::PushButton(int whichButton, int whichMFD)
             break;
 
         case 19:
-            if ((g_bGreyMFD) or (!g_bGreyScaleMFD))
+            if ((g_bGreyMFD) or ( not g_bGreyScaleMFD))
                 g_bGreyMFD = false;
             else
                 g_bGreyMFD = true;
@@ -281,20 +281,20 @@ VirtualDisplay* TgpMfdDrawable::GetDisplay(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC or !playerAC->Sms)
+    if ( not playerAC or !playerAC->Sms)
         return privateDisplay;
 
     SensorClass* laserPod = FindLaserPod(playerAC->Sms->Ownship());
 
     if (laserPod)
     {
-        if (!laserPod->GetDisplay())
+        if ( not laserPod->GetDisplay())
         {
             if (privateDisplay)
             {
                 laserPod->DisplayInit(((Render2D*)(privateDisplay))->GetImageBuffer());
 
-                if ((g_bGreyMFD) and (!bNVGmode))
+                if ((g_bGreyMFD) and ( not bNVGmode))
                     privateDisplay->SetColor(0xff000000);
             }
 
@@ -434,7 +434,7 @@ void TgpMfdDrawable::DrawMasterArm(VirtualDisplay* display)
             case SMSBaseClass::Safe:
 
                 //MI not here in real
-                if (!g_bRealisticAvionics)
+                if ( not g_bRealisticAvionics)
                     mode = "SAF";
                 else
                     mode = "";
@@ -596,7 +596,7 @@ void TgpMfdDrawable::DrawRange(VirtualDisplay* display)
     FireControlComputer* pFCC = playerAC->Sms->Ownship()->GetFCC();
     float x, y = 0;
 
-    if (!pFCC)
+    if ( not pFCC)
         return;
 
     //don't draw range in slave mode

@@ -175,7 +175,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     if (autodisp or !shooter or !target or !shooter->IsUnit())
         return -1;
 
-    if (!target->IsAggregate())
+    if ( not target->IsAggregate())
     {
         // Whoops, this thing deaggregated out from under us.
         // If we're the host, actually start firing the stuff.
@@ -431,7 +431,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     if (shooter->GetDomain() == DOMAIN_AIR)
     {
         // 2002-02-21 ADDED BY S.G. If it's not spotted and it's NOT the player, use the 'Bandit' vehicle so we don't warn the player on the identity of the shooter
-        if (!shooter->GetIdentified(target->GetTeam()) and FalconLocalSession->GetTeam() not_eq shooter->GetTeam())
+        if ( not shooter->GetIdentified(target->GetTeam()) and FalconLocalSession->GetTeam() not_eq shooter->GetTeam())
             newEvent->dataBlock.data.textIds[0] = (short)(-1 * BANDIT_VEH);
         else
             // END OF ADDED SECTION 2002-02-21
@@ -448,7 +448,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
             newEvent->dataBlock.data.formatId = 1805;
 
             // 2002-02-21 ADDED BY S.G. If it's not spotted and it's NOT the player, use the 'Bandit' vehicle so we don't warn the player on the identity of the shooter
-            if (!target->GetIdentified(shooter->GetTeam()) and FalconLocalSession->GetTeam() not_eq target->GetTeam())
+            if ( not target->GetIdentified(shooter->GetTeam()) and FalconLocalSession->GetTeam() not_eq target->GetTeam())
                 newEvent->dataBlock.data.textIds[1] = (short)(-1 * BANDIT_VEH);
             else
                 // END OF ADDED SECTION 2002-02-21
@@ -499,7 +499,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         newEvent->dataBlock.data.formatId = 1825;
 
         // 2002-02-21 ADDED BY S.G. If it's not spotted and it's NOT the player, use the 'Bandit' vehicle so we don't warn the player on the identity of the shooter
-        if (!target->GetIdentified(shooter->GetTeam()) and FalconLocalSession->GetTeam() not_eq target->GetTeam())
+        if ( not target->GetIdentified(shooter->GetTeam()) and FalconLocalSession->GetTeam() not_eq target->GetTeam())
             newEvent->dataBlock.data.textIds[0] = (short)(-1 * BANDIT_VEH);
         else
             // END OF ADDED SECTION 2002-02-21
@@ -534,7 +534,7 @@ SimBaseClass* GetSimTarget(CampEntity target, uchar targetId)
     if (targetId not_eq 255)
         theObj = target->GetComponentNumber(targetId);
 
-    if (!theObj)
+    if ( not theObj)
     {
         // Fire at a random unit component, if campaign unit is deaggregated
         if (target->IsUnit())
@@ -564,7 +564,7 @@ void FireOnSimEntity(CampEntity shooter, CampEntity campTarg, short weapon[], uc
     int i;
 
     // don't run if OTWdrive not active
-    if (!OTWDriver.IsActive())
+    if ( not OTWDriver.IsActive())
         return;
 
     for (i = 0; i < shots[0]; i++)
@@ -826,7 +826,7 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
 
 
     // make sure OTWDriver is ready
-    if (!OTWDriver.IsActive())
+    if ( not OTWDriver.IsActive())
         return;
 
     player = FalconLocalSession->GetCameraEntity(0);
@@ -1213,7 +1213,7 @@ FireMissileAtSim(CampEntity shooter, SimBaseClass *simTarg, short weapId)
 
         // HACK!  This should never happen (hence Assert above), but since it happend tonight
         // and the data fix may not thourough by tomorrow, I'll put in this bail out case...
-        if (!shooter->GetRadarType())
+        if ( not shooter->GetRadarType())
         {
             // For now lets leak the missile since that should be safe.
             // Could we just delete it and be happy?

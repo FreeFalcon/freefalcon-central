@@ -98,7 +98,7 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
         distance = (float) sqrt(((self->XPos() - dx) * (self->XPos() - dx)) +
                                 ((self->YPos() - dy) * (self->YPos() - dy)));
 
-        // Assume we are at the current way point if we are very close (!)
+        // Assume we are at the current way point if we are very close ( not )
         //
         if (distance < MIN_DIST)
         {
@@ -242,8 +242,8 @@ void GNDAIClass::Fire(void)
             //if (SimLibElapsedTime > nextFire and !(self->isEmitter and !self->Sms->GetCurrentWeapon())) {
             nextTurretCalc = SimLibElapsedTime + TURRET_CALC_RATE;
 
-            if (!self->targetPtr->BaseData()->OnGround())
-                self->SelectWeapon(!battalionCommand->self->allowSamFire);
+            if ( not self->targetPtr->BaseData()->OnGround())
+                self->SelectWeapon( not battalionCommand->self->allowSamFire);
             else
                 self->SelectWeapon(FALSE);
 
@@ -302,13 +302,13 @@ void GNDAIClass::Fire(void)
                 SimWeaponClass *theWeapon = self->Sms->GetCurrentWeapon();
 
                 // RV - Biker - Adjust this
-                //if(!theWeapon)
-                if (!theWeapon and !self->isEmitter)
+                //if( not theWeapon)
+                if ( not theWeapon and !self->isEmitter)
                     return;
 
                 target = self->targetPtr->BaseData();
 
-                if (!target)
+                if ( not target)
                     return;
 
                 nextTurretCalc = SimLibElapsedTime + TURRET_CALC_RATE;

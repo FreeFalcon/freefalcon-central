@@ -29,7 +29,7 @@ VuGridIterator::~VuGridIterator()
 VuEntity *VuGridIterator::GetFirst()
 {
 
-    if (!collection_)
+    if ( not collection_)
     {
         return NULL;
     }

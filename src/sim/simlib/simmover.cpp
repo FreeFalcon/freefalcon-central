@@ -400,7 +400,7 @@ void SimMoverClass::CleanupData()
 void SimMoverClass::CleanupLocalData()
 {
     // sfr: @TODO remove this shit (for now im just calling base class cleanup)
-    if (numSensors > 0 and (!sensorArray or F4IsBadReadPtr(sensorArray, sizeof(SensorClass*))))
+    if (numSensors > 0 and ( not sensorArray or F4IsBadReadPtr(sensorArray, sizeof(SensorClass*))))
     {
         // JB 010223 CTD
         return; // JB 010223 CTD
@@ -785,7 +785,7 @@ int SimMoverClass::Exec(void)
 
                     }
                 }
-                else if (!nonLocalData->timer2)
+                else if ( not nonLocalData->timer2)
                 {
                     // we haven't yet started firing....
                     // will be set when recieving a fire message nonLocalData->flags  or_eq  NONLOCAL_GUNS_FIRING;
@@ -1170,11 +1170,11 @@ void SimMoverClass::UpdateLOS(SimObjectType *obj)
         obj->localData->SetCloudLOS(FALSE);
     }
 
-    if (!OnGround())
+    if ( not OnGround())
     {
         obj->localData->nextLOSCheck = SimLibElapsedTime + 200;
     }
-    else if (!obj->BaseData()->OnGround())
+    else if ( not obj->BaseData()->OnGround())
     {
         obj->localData->nextLOSCheck = SimLibElapsedTime + 1000;
     }
@@ -1186,7 +1186,7 @@ void SimMoverClass::UpdateLOS(SimObjectType *obj)
 
 int SimMoverClass::CheckLOS(SimObjectType *obj)
 {
-    if (!obj or !obj->BaseData())
+    if ( not obj or !obj->BaseData())
         return FALSE;
 
     if (SimLibElapsedTime > obj->localData->nextLOSCheck)
@@ -1197,7 +1197,7 @@ int SimMoverClass::CheckLOS(SimObjectType *obj)
 
 int SimMoverClass::CheckCompositeLOS(SimObjectType *obj)
 {
-    if (!obj or !obj->BaseData())
+    if ( not obj or !obj->BaseData())
         return FALSE;
 
     if (SimLibElapsedTime > obj->localData->nextLOSCheck)

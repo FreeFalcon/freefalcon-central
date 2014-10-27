@@ -213,7 +213,7 @@ void mlrVoice::Play(float PScale, float Vol, float X, float Y, float Z, float VX
     // Cobra - Treat thunder differently
     bool IsThunder = false;
 
-    if (!stricmp(sfx->fileName, "thunder.wav"))
+    if ( not stricmp(sfx->fileName, "thunder.wav"))
     {
         IsThunder = true;
     }
@@ -232,7 +232,7 @@ void mlrVoice::Play(float PScale, float Vol, float X, float Y, float Z, float VX
     // if(distsq > 510000000000.f)
     // return;
     // else if(distsq > sfx->distSq)
-    if (!IsThunder and (distsq > sfx->distSq))
+    if ( not IsThunder and (distsq > sfx->distSq))
     {
         return;
     }
@@ -247,7 +247,7 @@ void mlrVoice::Play(float PScale, float Vol, float X, float Y, float Z, float VX
     vz = VZ;
 
     /*
-    if(!(sfx->flags & SFX_POS_EXTERN))
+    if( not (sfx->flags & SFX_POS_EXTERN))
      priority = 1;
     else
      priority = vol - (distsq / sfx->distSq) * 10000;
@@ -280,7 +280,7 @@ bool mlrVoice::AllocateBuffers(void)
     }
 
     // incase we already have what we need
-    if (!DSoundBuffer)
+    if ( not DSoundBuffer)
     {
         // going to get info from Sample already loaded.
         if (gSoundDriver)
@@ -305,7 +305,7 @@ bool mlrVoice::AllocateBuffers(void)
     {
         if (is3d)
         {
-            if (!DSound3dBuffer)
+            if ( not DSound3dBuffer)
             {
                 if (/*sfx->flags & SFX_FLAGS_3D and */
                     g3dVoiceCount < 16
@@ -450,7 +450,7 @@ void mlrVoice::PreExec()
     // Cobra - Treat thunder differently
     bool IsThunder = false;
 
-    if (!stricmp(sfx->fileName, "thunder.wav"))
+    if ( not stricmp(sfx->fileName, "thunder.wav"))
     {
         IsThunder = true;
     }
@@ -491,7 +491,7 @@ void mlrVoice::PreExec()
             }
             else
             {
-                if (!IsThunder)
+                if ( not IsThunder)
                     vol += ExtAttenuation;
             }
         }
@@ -619,7 +619,7 @@ void mlrVoice::Exec()
     // Cobra - Treat thunder differently
     bool IsThunder = false;
 
-    if (!stricmp(sfx->fileName, "thunder.wav"))
+    if ( not stricmp(sfx->fileName, "thunder.wav"))
     {
         float fsign = 1.0f;
         IsThunder = true;
@@ -947,7 +947,7 @@ void mlrVoice::Exec()
         else
         {
             // TODO: adjust the volume of these sounds while they are still playing is we're not using D3d
-            if (!IsPlaying())
+            if ( not IsPlaying())
             {
                 // don't remove until the node has finished playing
                 if (status == VSPAUSED)

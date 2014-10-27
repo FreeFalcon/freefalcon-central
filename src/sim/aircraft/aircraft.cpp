@@ -815,7 +815,7 @@ void AircraftClass::Init(SimInitDataClass* initData)
         // that if we're in the air (ie haven't gone thru OnGroundInit() as
         // a result of being at a takeoff point), that we're above the terrain.
         // also the original check was inadequate.
-        if (!OnGround() and af->initialZ > OTWDriver.GetGroundLevel(af->x, af->y) - 500.0f)
+        if ( not OnGround() and af->initialZ > OTWDriver.GetGroundLevel(af->x, af->y) - 500.0f)
         {
             af->initialZ = OTWDriver.GetGroundLevel(af->x, af->y) - 500.0F;
             af->z = af->initialZ;
@@ -1043,7 +1043,7 @@ void AircraftClass::Init(SimInitDataClass* initData)
         /*--------------------*/
         /* Update shared data */
         /*--------------------*/
-        if (!OnGround())
+        if ( not OnGround())
         {
             SetPosition(af->x, af->y, af->z);
         }
@@ -1084,7 +1084,7 @@ void AircraftClass::Init(SimInitDataClass* initData)
             FCC->SetSubMode(FireControlComputer::Aim9);
         }
 
-        if (!g_bRealisticAvionics or !OnGround())  // JPO set up the systems
+        if ( not g_bRealisticAvionics or !OnGround())  // JPO set up the systems
         {
             PreFlight();
         }
@@ -1616,7 +1616,7 @@ int AircraftClass::Exec(void)
 
     if (IsExploding())
     {
-        if (!IsSetFlag(SHOW_EXPLOSION))
+        if ( not IsSetFlag(SHOW_EXPLOSION))
         {
             RunExplosion();
             SetFlag(SHOW_EXPLOSION);
@@ -1631,7 +1631,7 @@ int AircraftClass::Exec(void)
 
         return TRUE;
     }
-    else if (!IsDead())
+    else if ( not IsDead())
     {
         // Sound effects....
         if (pctStrength > 0.0f)
@@ -1663,7 +1663,7 @@ int AircraftClass::Exec(void)
                         af->auxaeroData->sndInt = vc->EngineSound;
                     }
 
-                    if (!IsLocal()) // MLR 2/29/2004 - for MP engine sounds
+                    if ( not IsLocal()) // MLR 2/29/2004 - for MP engine sounds
                     {
                         af->rpm  = specialData.powerOutput;
                         af->rpm2 = specialData.powerOutput2;
@@ -1701,7 +1701,7 @@ int AircraftClass::Exec(void)
                         {
                             p = pwr / .7f;
 
-                            if (!isDigital and inckpt and IsLocal())
+                            if ( not isDigital and inckpt and IsLocal())
                             {
                                 // internal sounds
                                 v = (1.0f - af->auxaeroData->sndIntChart.Lookup(pwr)) * -10000;
@@ -1790,7 +1790,7 @@ int AircraftClass::Exec(void)
                 else
                 {
                     // old engine style
-                    if (!isDigital and inckpt and IsLocal())
+                    if ( not isDigital and inckpt and IsLocal())
                     {
                         // inside sounds
                         if (PowerOutput() > 0.01f)
@@ -1843,7 +1843,7 @@ int AircraftClass::Exec(void)
             IsAcStatusBitsSet(ACSTATUS_EXT_LANDINGLIGHT) and IsAcStatusBitsSet(ACSTATUS_EXT_LIGHTS)
         )
         {
-            if (!pLandLitePool)
+            if ( not pLandLitePool)
             {
                 Tpoint pos;
                 pos.x = XPos();
@@ -1971,7 +1971,7 @@ int AircraftClass::Exec(void)
             gACMIRec.AircraftPositionRecord(&airPos);
         }
 
-        if (!IsLocal())
+        if ( not IsLocal())
         {
             ShowDamage();
             af->RemoteUpdate();
@@ -2087,7 +2087,7 @@ int AircraftClass::Exec(void)
         // this shouldn't really matter much, but it can be easily turned on
 
         //if ( !isDigital and PlayerOptions.CollisionsOn() ) // JB carrier
-        if (!isDigital)
+        if ( not isDigital)
         {
             // JB carrier
             CheckObjectCollision();
@@ -2118,7 +2118,7 @@ int AircraftClass::Exec(void)
         // RV - Biker - Don't blackout for AI -> they cannot handle atm
         if (SimDriver.GetPlayerEntity() == this /*|| g_bAIGloc*/)
         {
-            if (!PlayerOptions.BlackoutOn())
+            if ( not PlayerOptions.BlackoutOn())
             {
                 glocFactor = 0.0F;
             }
@@ -2136,13 +2136,13 @@ int AircraftClass::Exec(void)
         {
             flightIdx = flight->GetComponentIndex(this);
 
-            if (!AWACSsaidAbort and !flightIdx) // only for flight leaders of course
+            if ( not AWACSsaidAbort and !flightIdx) // only for flight leaders of course
             {
                 WayPoint w = flight->GetFirstUnitWP();
 
                 while (w)
                 {
-                    if (!(w->GetWPFlags() & WPF_TARGET))
+                    if ( not (w->GetWPFlags() & WPF_TARGET))
                     {
                         w = w->GetNextWP();
                         continue;
@@ -2338,7 +2338,7 @@ int AircraftClass::Exec(void)
         // greater than 50ft AGL
         // descent rate > 960 fpm
         // landing gear up
-        if (!isDigital  and 
+        if ( not isDigital  and 
             ZPos() - af->groundZ < -50.0f  and 
             af->gearPos <= 0.0f  and 
             af->zdot > 960.0f / 60.0f  and 
@@ -2404,7 +2404,7 @@ int AircraftClass::Exec(void)
             }
             else
             {
-                if (!SoundPos.IsPlaying(af->auxaeroData->sndBBPullup))
+                if ( not SoundPos.IsPlaying(af->auxaeroData->sndBBPullup))
                 {
                     SoundPos.Sfx(af->auxaeroData->sndBBPullup);
                 }
@@ -2413,7 +2413,7 @@ int AircraftClass::Exec(void)
 
             }
         }
-        else if (!isDigital)
+        else if ( not isDigital)
         {
             mFaults->ClearFault(alt_low);
         }
@@ -2446,7 +2446,7 @@ int AircraftClass::Exec(void)
             {
                 if (af->vt < 5.0F and af->throtl < 0.1F)
                 {
-                    if (!gPlayerExitMenuShown)
+                    if ( not gPlayerExitMenuShown)
                     {
                         gPlayerExitMenuShown = TRUE;
                         OTWDriver.EndFlight();
@@ -2472,7 +2472,7 @@ int AircraftClass::Exec(void)
                 ZPos() - af->groundZ <= -10.0f)
             {
                 //if we are over a runway, we don't want to kick up dust
-                if (!af->IsSet(AirframeClass::OverRunway) and af->gearPos <= 0.7F)
+                if ( not af->IsSet(AirframeClass::OverRunway) and af->gearPos <= 0.7F)
                 {
                     int groundType;
                     // Check ground type
@@ -2497,7 +2497,7 @@ int AircraftClass::Exec(void)
                         //RV - I-Hawk - Not using the dust trail anymore
 
                         ///*
-                        //if (!dustTrail){
+                        //if ( not dustTrail){
                         // /*
                         // if (dustTrail=new DrawableTrail(TRAIL_DUSTCLOUD))
                         // {
@@ -2508,7 +2508,7 @@ int AircraftClass::Exec(void)
                         //*/
 
                         //I-Hawk - Use PS for dust/mist effect
-                        if (!(groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
+                        if ( not (groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
                         {
                             theSFX = SFX_DUSTCLOUD;
                         }
@@ -2534,7 +2534,7 @@ int AircraftClass::Exec(void)
                 }
             }
 
-            if (!connected and dustConnect and dustTrail)
+            if ( not connected and dustConnect and dustTrail)
             {
                 //dustTrail->TrimTrail(0);
                 dustConnect = FALSE;
@@ -2579,7 +2579,7 @@ int AircraftClass::Exec(void)
             if (this not_eq SimDriver.GetPlayerEntity() and g_fAIRefuelSpeed)
                 refuelHelp = g_fAIRefuelSpeed;
 
-            if (!tanker or !tanker->IsAirplane() ||
+            if ( not tanker or !tanker->IsAirplane() ||
                 !af->AddFuel(refuelRate * SimLibMajorFrameTime * refuelHelp * refuelHelp)
                )
             {
@@ -2681,10 +2681,10 @@ int AircraftClass::Exec(void)
     //START_PROFILE("AC_EXEC_6");
 
     // If ownship update control surfaces
-    if (!IsExploding())
+    if ( not IsExploding())
         MoveSurfaces();
 
-    if (!IsDead())
+    if ( not IsDead())
         ShowDamage();
 
     //MI no parking brake while in Air
@@ -2697,7 +2697,7 @@ int AircraftClass::Exec(void)
     //Cobra 11/20/04 IFF Do we have it? Is it on? Is it working?
     if (
         (af->auxaeroData->hasIFF == 1 or g_bAllHaveIFF)  and 
-        HasPower(AircraftClass::IFFPower) and (!mFaults->GetFault(FaultClass::iff_fault))
+        HasPower(AircraftClass::IFFPower) and ( not mFaults->GetFault(FaultClass::iff_fault))
     )
     {
         iffEnabled = TRUE;
@@ -2788,13 +2788,13 @@ void AircraftClass::RunSensors(void)
     int i;
 
     // RV - MASTERFIX - if It's a player and there is no more the player entity, avoid all this stuff
-    if ((!isDigital) and (!SimDriver.GetPlayerAircraft())) return;
+    if (( not isDigital) and ( not SimDriver.GetPlayerAircraft())) return;
 
     // MD -- 20040110: if player is using analog cursor controls, grab values now if player
     // is not using CombatAP.  Both X and Y must be mapped for analog to work at all.
     if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
     {
-        if (!isDigital or autopilotType == CombatAP)
+        if ( not isDigital or autopilotType == CombatAP)
         {
             SetCursorCmdsByAnalog();
         }
@@ -2814,8 +2814,8 @@ void AircraftClass::RunSensors(void)
         }
 
         // Do player control processing
-        //if (!isDigital){
-        if (!isDigital or autopilotType == CombatAP)
+        //if ( not isDigital){
+        if ( not isDigital or autopilotType == CombatAP)
         {
             sensor->ExecModes(FCC->designateCmd, FCC->dropTrackCmd);
             sensor->UpdateState(FCC->cursorXCmd, FCC->cursorYCmd);
@@ -3042,7 +3042,7 @@ void AircraftClass::Eject(void)
                         FalconSendMessage(msg, FALSE); // Added - why not send when we've set it up ?
 
                         // RV - Biker - No SAR missions at all with this
-                        // if (!(rand()%5) and RequestSARMission ((FlightClass*)GetCampaignObject()))
+                        // if ( not (rand()%5) and RequestSARMission ((FlightClass*)GetCampaignObject()))
                         if (RequestSARMission((FlightClass*)GetCampaignObject()))
                         {
                             // Generate a SAR radio call from awacs
@@ -3343,7 +3343,7 @@ void AircraftClass::PreFlight()
     INSOff(INS_PowerOff);
     INSOff(INS_AlignNorm);
 
-    if (!g_bINS)
+    if ( not g_bINS)
     {
         INSOn(AircraftClass::INS_ADI_OFF_IN);
         INSOn(AircraftClass::BUP_ADI_OFF_IN);
@@ -3365,7 +3365,7 @@ void AircraftClass::PreFlight()
     //Targeting Pod cooled
     PodCooling = 0.0F;
     //MI HUD
-    // if(TheHud and this == SimDriver.GetPlayerEntity() and (!OnGround() ||
+    // if(TheHud and this == SimDriver.GetPlayerEntity() and ( not OnGround() ||
     // PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RAMP))
     //ATARIBABY/WOMBAT Hud sym wheel ramp start fix
     // MD -- 20041216: this has to move to MakePlayerVehicle().  For MP games, it turns out that
@@ -3445,7 +3445,7 @@ void AircraftClass::IncMainPower()
             mainPower = MainPowerBatt;
 
             //MI
-            if (!g_bINS)
+            if ( not g_bINS)
             {
                 INSOn(AircraftClass::INS_ADI_OFF_IN);
                 INSOn(AircraftClass::INS_ADI_AUX_IN);;
@@ -3479,7 +3479,7 @@ void AircraftClass::DecMainPower()
             mainPower = MainPowerOff;
 
             //MI
-            if (!g_bINS)
+            if ( not g_bINS)
             {
                 INSOff(AircraftClass::INS_ADI_OFF_IN);
                 INSOff(AircraftClass::INS_ADI_AUX_IN);;
@@ -3932,7 +3932,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
 
     while (w)
     {
-        if (!(w->GetWPFlags() & WPF_TARGET))
+        if ( not (w->GetWPFlags() & WPF_TARGET))
         {
             w = w->GetNextWP();
             continue;
@@ -3942,7 +3942,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
     }
 
     // FRB - Something is wrong!
-    if (!w)
+    if ( not w)
         return -1;
 
     JDAMtarget = NULL;
@@ -4019,7 +4019,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
             JDAMStep = 0;
         }
 
-        if (!((Objective)JDAMtarget)->IsAggregate() and isDigital and DBrain())
+        if ( not ((Objective)JDAMtarget)->IsAggregate() and isDigital and DBrain())
             JDAMtgtnum = DBrain()->FindJDAMGroundTarget((CampBaseClass*)JDAMtarget, featnum, 0);
 
         JDAMsbc = JDAMtarget->GetComponentEntity(JDAMtgtnum);
@@ -4055,7 +4055,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
             JDAMsbc = NULL;
         }
 
-        if (!fc)
+        if ( not fc)
         {
             fc = GetFeatureClassData(((Objective)JDAMtarget)->GetFeatureID(JDAMtgtnum));
         }
@@ -4067,7 +4067,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
 
         JDAMtarget->GetName(JDAMtargetName, 79, FALSE);
 
-        if (!JDAMsbc) // Aggregated
+        if ( not JDAMsbc) // Aggregated
             strcat(JDAMtargetName1, " >AGG");
     }
     else
@@ -4080,7 +4080,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
 
 void AircraftClass::MakeAircraftDirty(DirtyAircraft bits, Dirtyness score)
 {
-    if (!IsLocal())
+    if ( not IsLocal())
     {
         return;
     }
@@ -4123,7 +4123,7 @@ void AircraftClass::WriteDirty(unsigned char **sAdd)
 
 void AircraftClass::SetAcStatusBits(int bits)
 {
-    if (!IsAcStatusBitsSet(bits))
+    if ( not IsAcStatusBitsSet(bits))
     {
         status_bits  or_eq  bits;
         MakeAircraftDirty(DIRTY_ACSTATUS_BITS, SEND_NOW);

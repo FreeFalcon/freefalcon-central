@@ -81,7 +81,7 @@ VU_BOOL VuStandardFilter::Test(VuEntity* ent)
         (
             (localSession_ == DONT_CARE) ||
             ((localSession_ == TRUE) and (ent->IsLocal())) ||
-            ((localSession_ == FALSE) and (!ent->IsLocal()))
+            ((localSession_ == FALSE) and ( not ent->IsLocal()))
         )
     )
     {

@@ -146,7 +146,7 @@ bool DeviceManager::GetMode(int driverNum, int devNum, int modeNum, UINT *pWidth
     DDDriverInfo &DI = m_arrDDDrivers[driverNum];
     LPDDSURFACEDESC2 pddsd = DI.GetDisplayMode(modeNum);
 
-    if (!pddsd) return false;
+    if ( not pddsd) return false;
 
     *pWidth = pddsd->dwWidth;
     *pHeight = pddsd->dwHeight;
@@ -191,7 +191,7 @@ BOOL DeviceManager::ChooseDevice(int *usrDrvNum, int *usrDevNum, int *usrWidth)
                   NULL /* create parms */
               );
 
-    if (!listWin)
+    if ( not listWin)
     {
         ShiError("Failed to construct list box window");
     }
@@ -277,15 +277,15 @@ DXContext *DeviceManager::CreateContext(int driverNum, int devNum, int resNum, B
     {
         DDDriverInfo *pDDI = GetDriver(driverNum);
 
-        if (!pDDI) return NULL;
+        if ( not pDDI) return NULL;
 
         DDDriverInfo::D3DDeviceInfo *pD3DDI = pDDI->GetDevice(devNum);
 
-        if (!pD3DDI) return NULL;
+        if ( not pD3DDI) return NULL;
 
         LPDDSURFACEDESC2 pddsd = pDDI->GetDisplayMode(resNum);
 
-        if (!pddsd) return NULL;
+        if ( not pddsd) return NULL;
 
         DXContext *pCtx = new DXContext;
 
@@ -298,7 +298,7 @@ DXContext *DeviceManager::CreateContext(int driverNum, int devNum, int resNum, B
 
 #ifdef _DEBUG
 
-        if (!bFullscreen) ShiAssert(pDDI->CanRenderWindowed());
+        if ( not bFullscreen) ShiAssert(pDDI->CanRenderWindowed());
 
 #endif
 
@@ -318,7 +318,7 @@ void DeviceManager::EnumDDDrivers(DeviceManager *pThis)
 {
     HINSTANCE h = LoadLibrary("ddraw.dll");
 
-    if (!h) return;
+    if ( not h) return;
 
     m_arrDDDrivers.clear();
 
@@ -704,7 +704,7 @@ bool DXContext::SetRenderTarget(IDirectDrawSurface7 *pRenderTarget)
     // ASSO: may remove this try catch block from the loop
     try
     {
-        if (!m_pD3DD)
+        if ( not m_pD3DD)
         {
             // Check the display mode, and
             DDSURFACEDESC2 ddsd_disp;
@@ -832,7 +832,7 @@ void DXContext::AttachDepthBuffer(IDirectDrawSurface7 *p)
 
     EnumZBufferFormats(&arrZBFmts);
 
-    if (!arrZBFmts.empty())
+    if ( not arrZBFmts.empty())
     {
         // Match Z Buffer depth to the display depth
         DDPIXELFORMAT pixfmt;
@@ -884,64 +884,64 @@ void DXContext::CheckCaps()
     if (m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_TEXTURENONLOCALVIDMEM)
         MonoPrint(" Device supports AGP texturing\n");
 
-    if (!(m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_FLOATTLVERTEX))
+    if ( not (m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_FLOATTLVERTEX))
         MonoPrint(" Device does not accepts floating point for post-transform vertex data. \n");
 
-    if (!(m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_TLVERTEXSYSTEMMEMORY))
+    if ( not (m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_TLVERTEXSYSTEMMEMORY))
         MonoPrint(" Device does not accept TL VBs in system memory.\n");
 
-    if (!(m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_TLVERTEXVIDEOMEMORY))
+    if ( not (m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_TLVERTEXVIDEOMEMORY))
         MonoPrint(" Device does not accept TL VBs in video memory.\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_DITHER))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_DITHER))
         MonoPrint(" No dithering\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGRANGE))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGRANGE))
         MonoPrint(" No range based fog\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGVERTEX))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGVERTEX))
         MonoPrint(" No vertex fog\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ZTEST))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ZTEST))
         MonoPrint(" No Z Test support\n");
 
     if (m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps == D3DPCMPCAPS_ALWAYS ||
         m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps == D3DPCMPCAPS_NEVER)
         MonoPrint(" No Alpha Test support\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwSrcBlendCaps & D3DPBLENDCAPS_SRCALPHA))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwSrcBlendCaps & D3DPBLENDCAPS_SRCALPHA))
         MonoPrint(" SrcBlend SRCALPHA not supported\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwDestBlendCaps & D3DPBLENDCAPS_INVSRCALPHA))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwDestBlendCaps & D3DPBLENDCAPS_INVSRCALPHA))
         MonoPrint(" DestBlend INVSRCALPHA  not supported\n");
 
-    if (!(m_pcapsDD->dwCaps & DDCAPS_COLORKEY  and 
+    if ( not (m_pcapsDD->dwCaps & DDCAPS_COLORKEY  and 
           m_pcapsDD->dwCKeyCaps & DDCKEYCAPS_DESTBLT  and 
           m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_DRAWPRIMTLVERTEX))
         MonoPrint(" Insufficient color key support\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_ALPHAFLATBLEND))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_ALPHAFLATBLEND))
         MonoPrint(" No alpha blending with flat shading\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_COLORGOURAUDRGB))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_COLORGOURAUDRGB))
         MonoPrint(" No gouraud shading\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_SPECULARFLATRGB))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_SPECULARFLATRGB))
         MonoPrint(" No specular flat shading\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_SPECULARGOURAUDRGB))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_SPECULARGOURAUDRGB))
         MonoPrint(" No specular gouraud shading\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_FOGGOURAUD))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_FOGGOURAUD))
         MonoPrint(" No gouraud fog\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_ALPHA))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_ALPHA))
         MonoPrint(" No alpha textures\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_ALPHAPALETTE))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_ALPHAPALETTE))
         MonoPrint(" No palettized alpha textures\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_COLORKEYBLEND))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_COLORKEYBLEND))
         MonoPrint(" No color key blending support\n");
 
     if (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_POW2)
@@ -950,10 +950,10 @@ void DXContext::CheckCaps()
     if (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_SQUAREONLY)
         MonoPrint(" Textures must be square\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_TRANSPARENCY))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_TRANSPARENCY))
         MonoPrint(" No texture transparency\n");
 
-    if (!(m_pD3DHWDeviceDesc->dwTextureOpCaps & D3DTEXOPCAPS_BLENDDIFFUSEALPHA)) // required for MPR_TF_ALPHA
+    if ( not (m_pD3DHWDeviceDesc->dwTextureOpCaps & D3DTEXOPCAPS_BLENDDIFFUSEALPHA)) // required for MPR_TF_ALPHA
         MonoPrint(" No D3DTOP_BLENDDIFFUSEALPHA (MPR_TF_ALPHA wont work ie. smoke trails)\n");
 
     MonoPrint("-- DXContext - End of Caps report\n");

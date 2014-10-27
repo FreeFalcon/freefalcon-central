@@ -289,7 +289,7 @@ void HeliBrain::SelectNextWaypoint(void)
 
     waypointMode = 0;
 
-    if (!self->curWaypoint)
+    if ( not self->curWaypoint)
     {
         // go back to the beginning
         self->curWaypoint = self->waypoint;

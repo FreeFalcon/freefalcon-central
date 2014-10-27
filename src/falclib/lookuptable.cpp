@@ -103,7 +103,7 @@ float TwoDimensionTable::Lookup(float a, float b)
 {
     float arg[2];
 
-    if (!data) return 0;
+    if ( not data) return 0;
 
     arg[0] = a;
     arg[1] = b;

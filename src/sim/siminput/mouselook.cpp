@@ -105,7 +105,7 @@ void MouseView::Compute(float amount, bool mouseMoved)
 {
     if ((azDir) or mouseMoved)
     {
-        if (!mouseMoved)
+        if ( not mouseMoved)
             XTotal += (int)(1500.f * amount * azDir); // 1500.f is an empiric value..
 
         if (XTotal > MAX_AXIS_THROW)
@@ -118,7 +118,7 @@ void MouseView::Compute(float amount, bool mouseMoved)
 
     if ((elDir) or mouseMoved)
     {
-        if (!mouseMoved)
+        if ( not mouseMoved)
             YTotal += (int)(1500.f * amount * elDir); // 1500.f is an empiric value..
 
         if (YTotal > MAX_AXIS_THROW)

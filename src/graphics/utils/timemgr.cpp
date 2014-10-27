@@ -21,7 +21,7 @@ static const long CALLBACK_TIME_STEP = CALLBACK_CYCLE_TIME / MAX_TOD_CALLBACKS;
 
 void TimeManager::Setup(int startYear, int startDayOfYear)
 {
-    ShiAssert(!IsReady());
+    ShiAssert( not IsReady());
 
     // Store the day the clock started
     year = startYear;

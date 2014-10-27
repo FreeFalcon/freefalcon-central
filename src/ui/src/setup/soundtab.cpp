@@ -205,13 +205,13 @@ void TestButtonCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (!control)
+    if ( not control)
         return;
 
     switch (control->GetUserNumber(1))
     {
         case 1: // Voice Manager
-            if (!VM)
+            if ( not VM)
                 break;
 
             if (control->GetState())
@@ -356,7 +356,7 @@ void SoundFlagsCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (!control)
+    if ( not control)
         return;
 
     int ID = control->GetID();
@@ -377,7 +377,7 @@ void SoundFlagsCB(long, short hittype, C_Base *control)
             ID -= UI_ENABLE_3D_SOUNDS;
             int flagbit = 1 << ID;
 
-            if (!VM)
+            if ( not VM)
                 break;
 
             if (control->GetState())

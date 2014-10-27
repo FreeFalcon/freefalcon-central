@@ -92,7 +92,7 @@ unsigned int VuRedBlackTree::Purge(VU_BOOL all)
     {
         VuEntityBin &eb = it->second;
 
-        if (all or (!(eb->IsPrivate() and eb->IsPersistent()) and !eb->IsGlobal()))
+        if (all or ( not (eb->IsPrivate() and eb->IsPersistent()) and !eb->IsGlobal()))
         {
             it = map_.erase(it);
             ++ret;
@@ -165,7 +165,7 @@ VU_ERRCODE VuRedBlackTree::Handle(VuMessage *msg)
         {
             if (Find(ent))
             {
-                if (!filter_->Test(ent))
+                if ( not filter_->Test(ent))
                 {
                     // ent is in table, but doesn't belong there...
                     Remove(ent);
@@ -193,7 +193,7 @@ VU_ERRCODE VuRedBlackTree::ForcedInsert(VuEntity* entity)
 
     VuScopeLock l(GetMutex());
 
-    if (!filter_->RemoveTest(entity))
+    if ( not filter_->RemoveTest(entity))
     {
         return VU_NO_OP;
     }
@@ -211,7 +211,7 @@ VU_ERRCODE VuRedBlackTree::Insert(VuEntity* entity)
 
     VuScopeLock l(GetMutex());
 
-    if (!filter_->Test(entity))
+    if ( not filter_->Test(entity))
     {
         return VU_NO_OP;
     }
@@ -228,7 +228,7 @@ VU_ERRCODE VuRedBlackTree::Remove(VuEntity* entity)
 
     VuScopeLock l(GetMutex());
 
-    if (!filter_->RemoveTest(entity))
+    if ( not filter_->RemoveTest(entity))
     {
         return VU_NO_OP;
     }
@@ -277,7 +277,7 @@ unsigned int VuRedBlackTree::Purge(VU_BOOL all)
     {
         VuEntityBin &eb = it->second;
 
-        if (all or (!(eb->IsPrivate() and eb->IsPersistent()) and !eb->IsGlobal()))
+        if (all or ( not (eb->IsPrivate() and eb->IsPersistent()) and !eb->IsGlobal()))
         {
             it = map_.erase(it);
             ++ret;

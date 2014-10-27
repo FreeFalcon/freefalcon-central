@@ -186,13 +186,13 @@ ATCBrain::ATCBrain(ObjectiveClass* mySelf)
     int tempcall = callsign;
 
     //this will work for now
-    if (!gTacanList->GetCallsignFromCampID(self->GetCampId(), &tempcall))
+    if ( not gTacanList->GetCallsignFromCampID(self->GetCampId(), &tempcall))
     {
         callsign = 0;
 #ifdef DAVE_DBG
 
         if (self->GetType() == TYPE_AIRBASE)
-            ShiAssert(!"We have an airbase that is not listed in the tacan data file");
+            ShiAssert( not "We have an airbase that is not listed in the tacan data file");
 
 #endif
     }
@@ -299,7 +299,7 @@ void ATCBrain::ProcessInbound(void)
                 RemoveInbound(deleteInfo);
 
                 //if they are within 15nm we need to start giving them vectors
-                if (!inbound->IsPlayer() and inbound->pctStrength < 0.9F)
+                if ( not inbound->IsPlayer() and inbound->pctStrength < 0.9F)
                     RequestEmerClearance(inbound);
                 else
                     RequestClearance(inbound);
@@ -468,7 +468,7 @@ void ATCBrain::ProcessQueue(int queue)
     // RAS - if TO scheduled, and TO time has passed, get them off the ground ASAP
     if (nextTakeoff and nextTakeoff->schedTime < SimLibElapsedTime)
     {
-        if (!pNTOAircraft or (pNTOAircraft->IsAirplane() and pNTOAircraft->af->vt > 80.0F * KNOTS_TO_FTPSEC))
+        if ( not pNTOAircraft or (pNTOAircraft->IsAirplane() and pNTOAircraft->af->vt > 80.0F * KNOTS_TO_FTPSEC))
             accelerateTakeoffs = TRUE;
     }
 
@@ -482,7 +482,7 @@ void ATCBrain::ProcessQueue(int queue)
             //total hack to make sure this variable is correct
             aircraft->DBrain()->isWing = aircraft->GetCampaignObject()->GetComponentIndex(aircraft);
 
-            if (!aircraft->IsPlayer() and SimLibElapsedTime > info->schedTime + FalconLocalGame->rules.AiPullTime)
+            if ( not aircraft->IsPlayer() and SimLibElapsedTime > info->schedTime + FalconLocalGame->rules.AiPullTime)
             {
                 // sfr: we had an infinite loop in some situations, since info never got updated
                 // maybe this should go just after the while(info)
@@ -565,7 +565,7 @@ void ATCBrain::ProcessQueue(int queue)
 
                         info = info->next;
 
-                        if (!aircraft->IsPlayer() and !aircraft->OnGround())
+                        if ( not aircraft->IsPlayer() and !aircraft->OnGround())
                         {
                             RemoveTraffic(deleteInfo->aircraftID, queue);
                         }
@@ -646,7 +646,7 @@ void ATCBrain::ProcessQueue(int queue)
                                  pNTOAircraft->GetCampaignObject() not_eq aircraft->GetCampaignObject() and !IsOnRunway(pNTOAircraft))
                         {
                             //RAS - no aircraft on final and past T/O time + delta(60sec)
-                            if (!nextLand or SimLibElapsedTime + LAND_TIME_DELTA > nextLand->schedTime)
+                            if ( not nextLand or SimLibElapsedTime + LAND_TIME_DELTA > nextLand->schedTime)
                             {
                                 ReorderFlight(queue, (Flight)pNTOAircraft->GetCampaignObject(), tWait);
 
@@ -661,7 +661,7 @@ void ATCBrain::ProcessQueue(int queue)
 
                         info = info->next;
 
-                        if (!aircraft->IsPlayer() and !aircraft->OnGround())
+                        if ( not aircraft->IsPlayer() and !aircraft->OnGround())
                             RemoveTraffic(deleteInfo->aircraftID, queue);
 
                         break;
@@ -670,7 +670,7 @@ void ATCBrain::ProcessQueue(int queue)
                         if (nextTakeoff->aircraftID == info->aircraftID)
                         {
                             //RAS - no aircraft on final
-                            if (!waitforlanding)
+                            if ( not waitforlanding)
                             {
                                 info->status = tTakeoff;
                                 SendCmdMessage(aircraft, info);
@@ -683,7 +683,7 @@ void ATCBrain::ProcessQueue(int queue)
 
                         info = info->next;
 
-                        if (!aircraft->IsPlayer() and !aircraft->OnGround())
+                        if ( not aircraft->IsPlayer() and !aircraft->OnGround())
                             RemoveTraffic(deleteInfo->aircraftID, queue);
 
                         break;
@@ -706,7 +706,7 @@ void ATCBrain::ProcessQueue(int queue)
                                  pNTOAircraft->af->vt < 5.0F * KNOTS_TO_FTPSEC and info->schedTime < SimLibElapsedTime  and 
                                  pNTOAircraft->GetCampaignObject() not_eq aircraft->GetCampaignObject() and !IsOnRunway(pNTOAircraft))
                         {
-                            if (!nextLand or SimLibElapsedTime + LAND_TIME_DELTA > nextLand->schedTime)
+                            if ( not nextLand or SimLibElapsedTime + LAND_TIME_DELTA > nextLand->schedTime)
                             {
                                 ReorderFlight(queue, (Flight)pNTOAircraft->GetCampaignObject(), tWait);
 
@@ -721,7 +721,7 @@ void ATCBrain::ProcessQueue(int queue)
 
                         info = info->next;
 
-                        if (!aircraft->IsPlayer() and !aircraft->OnGround())
+                        if ( not aircraft->IsPlayer() and !aircraft->OnGround())
                             RemoveTraffic(deleteInfo->aircraftID, queue);
 
                         break;
@@ -747,7 +747,7 @@ void ATCBrain::ProcessQueue(int queue)
                         {
                             //RAS - within 30 seconds of T/O time and not waiting on landing or we're on rwy
                             if (info->schedTime < SimLibElapsedTime + 30 * CampaignSeconds  and 
-                                (!waitforlanding or IsOnRunway(aircraft)))
+                                ( not waitforlanding or IsOnRunway(aircraft)))
                             {
                                 info->status = tTakeoff;
                                 SendCmdMessage(aircraft, info);
@@ -760,7 +760,7 @@ void ATCBrain::ProcessQueue(int queue)
 
                         info = info->next;
 
-                        if (!aircraft->IsPlayer() and !aircraft->OnGround())
+                        if ( not aircraft->IsPlayer() and !aircraft->OnGround())
                             RemoveTraffic(deleteInfo->aircraftID, queue);
 
                         break;
@@ -787,7 +787,7 @@ void ATCBrain::ProcessQueue(int queue)
 
                         info = info->next;
 
-                        if (!aircraft->IsPlayer() and !aircraft->OnGround())
+                        if ( not aircraft->IsPlayer() and !aircraft->OnGround())
                             RemoveTraffic(deleteInfo->aircraftID, queue);
 
                         break;
@@ -801,7 +801,7 @@ void ATCBrain::ProcessQueue(int queue)
 
                         info = info->next;
 
-                        if (!aircraft->IsPlayer() and !aircraft->OnGround())
+                        if ( not aircraft->IsPlayer() and !aircraft->OnGround())
                             RemoveTraffic(deleteInfo->aircraftID, queue);
 
                         break;
@@ -827,7 +827,7 @@ void ATCBrain::ProcessQueue(int queue)
 
                         info = info->next;
 
-                        if (!aircraft->IsPlayer() and aircraft->OnGround())
+                        if ( not aircraft->IsPlayer() and aircraft->OnGround())
                             RemoveTraffic(deleteInfo->aircraftID, queue);
 
                         break;
@@ -842,7 +842,7 @@ void ATCBrain::ProcessQueue(int queue)
 
                         info = info->next;
 
-                        if (!aircraft->IsPlayer() and aircraft->OnGround())
+                        if ( not aircraft->IsPlayer() and aircraft->OnGround())
                             RemoveTraffic(deleteInfo->aircraftID, queue);
 
                         break;
@@ -863,7 +863,7 @@ void ATCBrain::ProcessQueue(int queue)
 
                         if (info->schedTime < SimLibElapsedTime and (temp or runwayStats[queue].nextEmergency not_eq FalconNullId))
                         {
-                            if (!aircraft->DBrain()->IsSetATC(DigitalBrain::ClearToLand) ||
+                            if ( not aircraft->DBrain()->IsSetATC(DigitalBrain::ClearToLand) ||
                                 info->schedTime + CampaignMinutes < SimLibElapsedTime)
                             {
                                 //if there is someone who needs to use the runway after us
@@ -889,7 +889,7 @@ void ATCBrain::ProcessQueue(int queue)
                     case tTaxiBack:
                         info = info->next;
 
-                        if (!aircraft->IsPlayer() and !aircraft->OnGround())
+                        if ( not aircraft->IsPlayer() and !aircraft->OnGround())
                             RemoveTraffic(deleteInfo->aircraftID, queue);
 
                         break;
@@ -897,7 +897,7 @@ void ATCBrain::ProcessQueue(int queue)
                     case lReqClearance:
                         info = info->next;
 
-                        if (!aircraft->IsPlayer() and aircraft->OnGround())
+                        if ( not aircraft->IsPlayer() and aircraft->OnGround())
                             RemoveTraffic(deleteInfo->aircraftID, queue);
 
                         break;
@@ -905,7 +905,7 @@ void ATCBrain::ProcessQueue(int queue)
                     case lReqEmerClearance:
                         info = info->next;
 
-                        if (!aircraft->IsPlayer() and aircraft->OnGround())
+                        if ( not aircraft->IsPlayer() and aircraft->OnGround())
                             RemoveTraffic(deleteInfo->aircraftID, queue);
 
                         break;
@@ -915,7 +915,7 @@ void ATCBrain::ProcessQueue(int queue)
                     case lEmergencyOnFinal:
                         info = info->next;
 
-                        if (!aircraft->IsPlayer() and aircraft->OnGround())
+                        if ( not aircraft->IsPlayer() and aircraft->OnGround())
                             RemoveTraffic(deleteInfo->aircraftID, queue);
 
                         break;
@@ -929,7 +929,7 @@ void ATCBrain::ProcessQueue(int queue)
                     case lAborted:
                         info = info->next;
 
-                        if (!aircraft->IsPlayer() and aircraft->OnGround())
+                        if ( not aircraft->IsPlayer() and aircraft->OnGround())
                             RemoveTraffic(deleteInfo->aircraftID, queue);
 
                         break;
@@ -951,7 +951,7 @@ void ATCBrain::ProcessQueue(int queue)
         {
             info = info->next;
 
-            if (!aircraft or (!aircraft->IsAirplane() and deleteInfo->schedTime + 30 * CampaignSeconds < SimLibElapsedTime))
+            if ( not aircraft or ( not aircraft->IsAirplane() and deleteInfo->schedTime + 30 * CampaignSeconds < SimLibElapsedTime))
                 RemoveTraffic(deleteInfo->aircraftID, queue);
 
             deleteInfo = info;
@@ -1149,7 +1149,7 @@ void ATCBrain::ProcessPlayers(void)
                             break;
 
                         case tTakeoff:
-                            if (!player->DBrain()->IsSetATC(DigitalBrain::MissionCanceled) and CheckTakeoff(player, playerInfo))
+                            if ( not player->DBrain()->IsSetATC(DigitalBrain::MissionCanceled) and CheckTakeoff(player, playerInfo))
                             {
                                 break;
                             }
@@ -1158,7 +1158,7 @@ void ATCBrain::ProcessPlayers(void)
                                 player->DBrain()->SetATCFlag(DigitalBrain::TakeoffAborted);
                                 OTWDriver.ExitMenu(DIK_E);
                             }
-                            else if (!player->af->IsSet(AirframeClass::GearBroken) and playerInfo->lastContacted + 60 * CampaignSeconds < SimLibElapsedTime)
+                            else if ( not player->af->IsSet(AirframeClass::GearBroken) and playerInfo->lastContacted + 60 * CampaignSeconds < SimLibElapsedTime)
                             {
                                 if (SimLibElapsedTime > playerInfo->schedTime + 4 * CampaignMinutes)  // 06FEB04 - FRB - was 2 minutes
                                 {
@@ -1221,7 +1221,7 @@ void ATCBrain::ProcessPlayers(void)
                             else
                             {
                                 //they may have landed without permission
-                                if (!player->DBrain()->IsSetATC(DigitalBrain::Landed))
+                                if ( not player->DBrain()->IsSetATC(DigitalBrain::Landed))
                                 {
                                     //landed without permission
                                     ObjectiveClass* curObj;
@@ -1247,7 +1247,7 @@ void ATCBrain::ProcessPlayers(void)
                                         }
                                     }
 
-                                    if (!curObj)
+                                    if ( not curObj)
                                     {
                                         // sfr: fixing xy order
                                         GridIndex gx, gy;
@@ -1312,7 +1312,7 @@ void ATCBrain::ProcessPlayers(void)
                                     }
                                 }
 
-                                if (!curObj)
+                                if ( not curObj)
                                 {
                                     // sfr: fixing xy order
                                     GridIndex gx, gy;
@@ -1368,7 +1368,7 @@ void ATCBrain::RequestClearance(AircraftClass* approaching, int addflight)
     runwayQueueStruct *info;
     float finalX, finalY, baseX, baseY, x , y;
 
-    if (!approaching or approaching->OnGround())
+    if ( not approaching or approaching->OnGround())
         return;
 
     // OW - sylvains refuelling fix
@@ -1376,7 +1376,7 @@ void ATCBrain::RequestClearance(AircraftClass* approaching, int addflight)
 
     // ADDED BY S.G. - FIX FOR THE CTD WHEN TUNED TO THE TANKER TACAN AND ASKING FOR LANDING
     // WHY SELF IS NULL, I DON'T KNOW, BUT IT IS :-(
-    if (!self)
+    if ( not self)
         return;
 
     // END OF ADDED SECTION
@@ -1410,7 +1410,7 @@ void ATCBrain::RequestClearance(AircraftClass* approaching, int addflight)
     rwindex = FindBestLandingRunway(approaching, TRUE);
     queue = GetQueue(rwindex);
 
-    if (!rwindex)
+    if ( not rwindex)
     {
         //all runways destroyed, divert 'em
         FalconATCCmdMessage* ATCCmdMessage = new FalconATCCmdMessage(approaching->Id(), FalconLocalGame);
@@ -1423,7 +1423,7 @@ void ATCBrain::RequestClearance(AircraftClass* approaching, int addflight)
 
     FindFinalPt(approaching, rwindex, &finalX, &finalY);
 
-    if (!addflight)
+    if ( not addflight)
     {
         RemoveFromAllATCs(approaching);
 
@@ -1433,7 +1433,7 @@ void ATCBrain::RequestClearance(AircraftClass* approaching, int addflight)
 
         info = AddTraffic(approaching->Id(), lHolding, rwindex, landTime);
 
-        if (!info)
+        if ( not info)
             return;
 
         if (landTime - SimLibElapsedTime < FINAL_TIME)
@@ -1459,7 +1459,7 @@ void ATCBrain::RequestClearance(AircraftClass* approaching, int addflight)
         Flight flight = (Flight)approaching->GetCampaignObject();
 
         // protect against no components
-        if (!flight->GetComponents())
+        if ( not flight->GetComponents())
             return;
 
         VuListIterator flightIter(flight->GetComponents());
@@ -1467,7 +1467,7 @@ void ATCBrain::RequestClearance(AircraftClass* approaching, int addflight)
 
         while (aircraft)
         {
-            if (!aircraft->OnGround())
+            if ( not aircraft->OnGround())
             {
                 RemoveFromAllATCs(aircraft);
 
@@ -1477,7 +1477,7 @@ void ATCBrain::RequestClearance(AircraftClass* approaching, int addflight)
 
                 info = AddTraffic(aircraft->Id(), lHolding, rwindex, landTime);
 
-                if (!info)
+                if ( not info)
                     return;
 
                 if (landTime - SimLibElapsedTime < FINAL_TIME)
@@ -1513,7 +1513,7 @@ void ATCBrain::RequestEmerClearance(AircraftClass* approaching)
     AtcStatusEnum status;
     FalconRadioChatterMessage *radioMessage = NULL;
 
-    if (!approaching or !self or approaching->OnGround())
+    if ( not approaching or !self or approaching->OnGround())
         return;
 
     if (GetTTRelations(self->GetTeam(), approaching->GetTeam()) >= Hostile)
@@ -1558,7 +1558,7 @@ void ATCBrain::RequestEmerClearance(AircraftClass* approaching)
     rwindex = FindBestLandingRunway(approaching, TRUE);
     queue = GetQueue(rwindex);
 
-    if (!rwindex)
+    if ( not rwindex)
     {
         //all runways destroyed, divert 'em
         FalconATCCmdMessage* ATCCmdMessage = new FalconATCCmdMessage(approaching->Id(), FalconLocalGame);
@@ -1599,7 +1599,7 @@ void ATCBrain::RequestEmerClearance(AircraftClass* approaching)
 
     info = AddTraffic(approaching->Id(), status, rwindex, landTime);
 
-    if (!info)
+    if ( not info)
         return;
 
     SendCmdMessage(approaching, info);
@@ -1627,7 +1627,7 @@ void ATCBrain::RequestTakeoff(AircraftClass* departing)
     runwayQueueStruct *info = NULL;
     runwayQueueStruct *nextTakeoff = NULL;
 
-    if (!departing or !self or !departing->OnGround())
+    if ( not departing or !self or !departing->OnGround())
         return;
 
     if (GetTTRelations(self->GetTeam(), departing->GetTeam()) >= Hostile)
@@ -1740,7 +1740,7 @@ void ATCBrain::RequestTakeoff(AircraftClass* departing)
 
 
         // protect against no components
-        if (!flight->GetComponents())
+        if ( not flight->GetComponents())
             return;
 
         {
@@ -1755,13 +1755,13 @@ void ATCBrain::RequestTakeoff(AircraftClass* departing)
             }
         }
 
-        if (!rwindex)
+        if ( not rwindex)
         {
             rwindex = FindBestTakeoffRunway(TRUE);
             queue = GetQueue(rwindex);
         }
 
-        if (!takeoffTime)
+        if ( not takeoffTime)
             takeoffTime = FindFlightTakeoffTime(flight, queue);
 
         VuListIterator flightIter(flight->GetComponents());
@@ -1771,7 +1771,7 @@ void ATCBrain::RequestTakeoff(AircraftClass* departing)
         {
             if (aircraft->OnGround())
             {
-                if (!FindBestTakeoffRunway(TRUE))
+                if ( not FindBestTakeoffRunway(TRUE))
                 {
                     if (aircraft->IsPlayer() or aircraft->vehicleInUnit == 0)
                     {
@@ -1808,7 +1808,7 @@ void ATCBrain::RequestTakeoff(AircraftClass* departing)
 
                 runwayQueueStruct *info = AddTraffic(aircraft->Id(), tTaxi, rwindex, time);
 
-                if (!info)
+                if ( not info)
                 {
                     aircraft = (AircraftClass*) flightIter.GetNext();
                     continue;
@@ -1878,7 +1878,7 @@ void ATCBrain::RequestTaxi(AircraftClass* departing)
     runwayQueueStruct *nextTakeoff = NULL;
     FalconRadioChatterMessage *radioMessage = NULL;
 
-    if (!departing or !self or !departing->OnGround())
+    if ( not departing or !self or !departing->OnGround())
         return;
 
     if (GetTTRelations(self->GetTeam(), departing->GetTeam()) >= Hostile)
@@ -1901,7 +1901,7 @@ void ATCBrain::RequestTaxi(AircraftClass* departing)
                         radioMessage = CreateCallFromATC(self, departing, rcEXPEDITEDEPARTURE, FalconLocalGame);
 
                         //if(runwayQueue[queue]->status == lOnFinal)
-                        if (!F4IsBadReadPtr(*runwayQueue, sizeof(runwayQueueStruct)) and runwayQueue[queue]->status == lOnFinal) // JB 010326 CTD
+                        if ( not F4IsBadReadPtr(*runwayQueue, sizeof(runwayQueueStruct)) and runwayQueue[queue]->status == lOnFinal) // JB 010326 CTD
                             radioMessage->dataBlock.edata[3] = 1;
                         else
                             radioMessage->dataBlock.edata[3] = 0;
@@ -1993,7 +1993,7 @@ void ATCBrain::RequestTaxi(AircraftClass* departing)
     //make sure we remove any placeholders even if we aren't legitimately requesting a takeoff
     RemovePlaceHolders(flight->Id());
 
-    if (!rwindex)
+    if ( not rwindex)
     {
         rwindex = FindBestTakeoffRunway(TRUE);
         queue = GetQueue(rwindex);
@@ -2001,7 +2001,7 @@ void ATCBrain::RequestTaxi(AircraftClass* departing)
 
     if (rwindex)
     {
-        if (!takeoffTime)
+        if ( not takeoffTime)
         {
             // takeoffTime = GetNextAvailRunwayTime(queue, flight->GetCurrentUnitWP()->GetWPDepartureTime(), TAKEOFF_TIME_DELTA*2);
             takeoffTime = GetNextAvailRunwayTime(queue, flight->GetCurrentUnitWP()->GetWPDepartureTime(), TAKEOFF_TIME_DELTA);   // 27JAN04 - FRB - Bunch flight TO's closer together
@@ -2014,7 +2014,7 @@ void ATCBrain::RequestTaxi(AircraftClass* departing)
 
         info = AddTraffic(departing->Id(), tTaxi, rwindex, takeoffTime);
 
-        if (!info)
+        if ( not info)
             return;
 
         if (IsOnRunway(departing))
@@ -2137,7 +2137,7 @@ void ATCBrain::SetEmergency(int queue)
         emer = emer->next;
 
     // Check for AC in the queue. If its not, don't remove it, just return LRKLUDGE
-    if (!emer)
+    if ( not emer)
         return;
 
     info = emer->prev;
@@ -2209,7 +2209,7 @@ void ATCBrain::ReschedulePlanes(int queue)
                 info = info->next;
                 RemoveTraffic(deleteInfo->aircraftID, queue);
 
-                if (!aircraft->DBrain()->isWing)
+                if ( not aircraft->DBrain()->isWing)
                 {
                     radioMessage = CreateCallFromATC(self, aircraft, rcATCCANCELMISSION, FalconLocalGame);
                     radioMessage->dataBlock.edata[3] = 32767;
@@ -2257,7 +2257,7 @@ void ATCBrain::RescheduleFlightTakeoff(int queue, Flight flight)
         deleteInfo = info;
     }
 
-    if (!rwindex)
+    if ( not rwindex)
     {
         rwindex = FindBestTakeoffRunway(TRUE);
         queue = GetQueue(rwindex);
@@ -2285,7 +2285,7 @@ void ATCBrain::RescheduleFlightTakeoff(int queue, Flight flight)
 
             info = AddTraffic(aircraft->Id(), tTaxi, rwindex, takeoffTime);
 
-            if (!info)
+            if ( not info)
             {
                 aircraft = (AircraftClass*) flightIter.GetNext();
                 continue;
@@ -2377,7 +2377,7 @@ int ATCBrain::FindBestTakeoffRunway(int checklist)
         }
     }
 
-    if (!checklist)
+    if ( not checklist)
         return rwindex;
 
     info = runwayQueue[PtHeaderDataTable[rwindex].runwayNum];
@@ -2680,7 +2680,7 @@ int ATCBrain::IsOnRunway(float x, float y)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int ATCBrain::IsOnRunway(AircraftClass* aircraft)
 {
-    if (!aircraft->OnGround())
+    if ( not aircraft->OnGround())
         return FALSE;
 
     return IsOverRunway(aircraft);
@@ -2786,9 +2786,9 @@ ulong ATCBrain::FindFlightTakeoffTime(FlightClass *flight, int queue)
     //according to Kevin this should never happen
     ShiAssert(flight->GetCurrentUnitWP());
 
-    if (!flight or !flight->GetCurrentUnitWP())
+    if ( not flight or !flight->GetCurrentUnitWP())
     {
-        if (!cur)
+        if ( not cur)
             return SimLibElapsedTime;
 
         while (cur->next)
@@ -2805,7 +2805,7 @@ ulong ATCBrain::FindFlightTakeoffTime(FlightClass *flight, int queue)
     if (takeoffTime < SimLibElapsedTime)
         takeoffTime = SimLibElapsedTime;
 
-    if (!cur)
+    if ( not cur)
         return takeoffTime;
 
     delta = flight->NumberOfComponents() * TAKEOFF_TIME_DELTA + LAND_TIME_DELTA;
@@ -2861,7 +2861,7 @@ ulong ATCBrain::GetNextAvailRunwayTime(int queue, ulong rwTime, ulong delta)
     runwayQueueStruct *prev = NULL;
     ulong tempDelta;
 
-    if (!cur)
+    if ( not cur)
     {
         //flights may ahve been given a time that is already past
         //when they deaggregate, but we don't want to give out ancient
@@ -3031,7 +3031,7 @@ int ATCBrain::FindBestLandingRunway(FalconEntity* landing, int checklist)
         }
     }
 
-    if (!checklist)
+    if ( not checklist)
     {
         return rwindex;
     }
@@ -3232,15 +3232,15 @@ runwayQueueStruct* ATCBrain::NextToTakeoff(int queue)
         {
             return temp;
         }
-        else if (!holdshort and temp->status == tHoldShort)
+        else if ( not holdshort and temp->status == tHoldShort)
         {
             holdshort = temp;
         }
-        else if (!wait and temp->status == tWait)
+        else if ( not wait and temp->status == tWait)
         {
             wait = temp;
         }
-        else if (!taxi and temp->status >= tTaxi and temp->status < tHoldShort)
+        else if ( not taxi and temp->status >= tTaxi and temp->status < tHoldShort)
         {
             taxi = temp;
         }
@@ -3722,7 +3722,7 @@ int ATCBrain::FindTakeoffPt(FlightClass* flight, int vehicleInUnit, int rwindex,
         *x += runwayStats[PtHeaderDataTable[rwindex].runwayNum].halfwidth / 2.0F * Trig.cos;
         *y += runwayStats[PtHeaderDataTable[rwindex].runwayNum].halfwidth / 2.0F * Trig.sin;
 
-        if (!(vehicleInUnit % 2))
+        if ( not (vehicleInUnit % 2))
         {
             *x += PtHeaderDataTable[rwindex].cosHeading * 100.0F;
             *y += PtHeaderDataTable[rwindex].sinHeading * 100.0F;
@@ -3905,7 +3905,7 @@ runwayQueueStruct* ATCBrain::InList(VU_ID aircraftID)
 
     // ADDED BY S.G. - FIX FOR THE CTD WHEN TUNED TO THE TANKER TACAN AND ASKING FOR LANDING
     // THERE ARE NO RUNWAYS ASSIGNED TO A TANKER!
-    //if (!runwayQueue) // JB 010304 CTD
+    //if ( not runwayQueue) // JB 010304 CTD
     //if (F4IsBadReadPtr(runwayQueue, sizeof(runwayQueueStruct*)) or !runwayQueue) // JB 010304 CTD
     if (
         F4IsBadReadPtr(this, sizeof(ATCBrain)) ||
@@ -3993,7 +3993,7 @@ runwayQueueStruct * ATCBrain::AddTraffic(VU_ID aircraftID, AtcStatusEnum status,
 
     if (newTraffic and entity->IsAirplane())
     {
-        ShiAssert(!(!newTraffic->rwindex and runwayQueue[queue] == newTraffic));
+        ShiAssert( not ( not newTraffic->rwindex and runwayQueue[queue] == newTraffic));
 
         //if we're already in list, pull us and reinsert us
         if (newTraffic->rwindex and runwayQueue[PtHeaderDataTable[newTraffic->rwindex].runwayNum] == newTraffic)
@@ -4130,7 +4130,7 @@ void ATCBrain::AddInbound(AircraftClass *aircraft)
     {
         info = new runwayQueueStruct;
 
-        if (!info)
+        if ( not info)
             return;
     }
 
@@ -4158,7 +4158,7 @@ void ATCBrain::AddInboundFlight(FlightClass *flight)
     AircraftClass *aircraft;
 
     // protect against no components
-    if (!flight->GetComponents())
+    if ( not flight->GetComponents())
         return;
 
     VuListIterator flightIter(flight->GetComponents());
@@ -4204,7 +4204,7 @@ void ATCBrain::GiveOrderToWingman(AircraftClass *us, AtcStatusEnum status)
     runwayQueueStruct *wingmanInfo = NULL;
     AircraftClass *wingman = NULL;
 
-    if (!us)
+    if ( not us)
         return;
 
     if (us->vehicleInUnit == 1 or us->vehicleInUnit == 3)
@@ -4237,7 +4237,7 @@ void ATCBrain::GiveOrderToSection(AircraftClass *us, AtcStatusEnum status, int s
     AircraftClass *aircraft = NULL;
     int i;
 
-    if (!us)
+    if ( not us)
         return;
 
     for (i = 0; i < 2; i++)
@@ -4819,7 +4819,7 @@ void ATCBrain::MakeVectorCall(AircraftClass *aircraft, VuTargetEntity *target)
         default:
             //we should never get here
             break;
-            //ShiAssert(!"We are in an undefined state, we shouldn't be here");
+            //ShiAssert( not "We are in an undefined state, we shouldn't be here");
     }
 
     delete radioMessage;
@@ -4920,7 +4920,7 @@ SimBaseClass* CheckPointGlobal(AircraftClass *self, float x, float y)
         // ignore objects under these conditions:
         // Ourself
         // Not on ground
-        if (!testObject->OnGround() ||
+        if ( not testObject->OnGround() ||
             testObject == self)
         {
             testObject = (SimBaseClass*) unitWalker.GetNext();
@@ -4966,7 +4966,7 @@ SimBaseClass* CheckPointGlobal(CampBaseClass *unit, float x, float y)
             // ignore objects under these conditions:
             // Ourself
             // Not on ground
-            if (!testObject->OnGround())
+            if ( not testObject->OnGround())
             {
                 testObject = (SimBaseClass*) unitWalker.GetNext();
                 continue;
@@ -5046,7 +5046,7 @@ SimBaseClass* CheckTaxiPointGlobal(AircraftClass *self, float x, float y)
         // ignore objects under these conditions:
         // Ourself
         // Not on ground
-        if (!testObject->OnGround() ||
+        if ( not testObject->OnGround() ||
             testObject == self)
         {
             testObject = (SimBaseClass*) unitWalker.GetNext();
@@ -5073,7 +5073,7 @@ SimBaseClass* CheckTaxiPointGlobal(AircraftClass *self, float x, float y)
         // if object is within a given range of the point return object
         if (testDist < testRad * testRad and testObject->GetVt() < self->GetVt() + 20.0F)
         {
-            if (!closest)
+            if ( not closest)
             {
                 closest = testObject;
                 minDist = testDist;
@@ -5100,7 +5100,7 @@ int ATCBrain::NumOperableRunways(void)
 {
     int num = 0, i;
 
-    if (!runwayStats) // JB 010531
+    if ( not runwayStats) // JB 010531
         return 0;
 
     for (i = 0; i < numRwys; i++)
@@ -5168,7 +5168,7 @@ int ATCBrain::CheckTakeoff(AircraftClass *aircraft, runwayQueueStruct* info)
 {
     FalconRadioChatterMessage *radioMessage;
 
-    if (!aircraft->OnGround() and aircraft->DBrain()->IsSetATC(DigitalBrain::Landed))
+    if ( not aircraft->OnGround() and aircraft->DBrain()->IsSetATC(DigitalBrain::Landed))
     {
         if (info)
         {
@@ -5192,7 +5192,7 @@ int ATCBrain::CheckTakeoff(AircraftClass *aircraft, runwayQueueStruct* info)
             // }
         }
 
-        if (!aircraft->DBrain()->IsSetATC(DigitalBrain::PermitTakeoff) and aircraft->DBrain()->IsSetATC(DigitalBrain::Landed))
+        if ( not aircraft->DBrain()->IsSetATC(DigitalBrain::PermitTakeoff) and aircraft->DBrain()->IsSetATC(DigitalBrain::Landed))
         {
             aircraft->DBrain()->SetATCFlag(DigitalBrain::PermitTakeoff);
             float groundZ = OTWDriver.GetGroundLevel(aircraft->XPos(), aircraft->YPos());
@@ -5253,7 +5253,7 @@ void ATCBrain::CheckFinalApproach(AircraftClass *aircraft, runwayQueueStruct *in
             info->status = lAborted;
             SendCmdMessage(aircraft, info);
         }
-        else if (!aircraft->DBrain()->IsSetATC(DigitalBrain::ClearToLand) and nextLand == info)
+        else if ( not aircraft->DBrain()->IsSetATC(DigitalBrain::ClearToLand) and nextLand == info)
         {
             aircraft->DBrain()->SetATCFlag(DigitalBrain::ClearToLand);
             info->status = lClearToLand;
@@ -5312,9 +5312,9 @@ int ATCBrain::CheckIfBlockingRunway(AircraftClass *aircraft, runwayQueueStruct* 
         if (nextLand and SimLibElapsedTime + LAND_TIME_DELTA - 2 * CampaignSeconds > nextLand->schedTime)
             waitforlanding = TRUE;
 
-        if (!nextTakeoff or waitforlanding)
+        if ( not nextTakeoff or waitforlanding)
             nextOnRunway = nextLand;
-        else if (!nextLand or nextLand->schedTime > nextTakeoff->schedTime)
+        else if ( not nextLand or nextLand->schedTime > nextTakeoff->schedTime)
             nextOnRunway = nextTakeoff;
         else
             nextOnRunway = nextLand;
@@ -5324,13 +5324,13 @@ int ATCBrain::CheckIfBlockingRunway(AircraftClass *aircraft, runwayQueueStruct* 
     {
         // OW: Jackals "scold-on-bounce" fix
 #if 0
-        if (!rwindex)
+        if ( not rwindex)
         {
             info->status = lTaxiOff;
 #else
 
         // JB 000421
-        if (!rwindex and aircraft->OnGround())
+        if ( not rwindex and aircraft->OnGround())
             // JB 000421
         {
             info->status = lTaxiOff;
@@ -5343,7 +5343,7 @@ int ATCBrain::CheckIfBlockingRunway(AircraftClass *aircraft, runwayQueueStruct* 
                   (rwindex not_eq info->rwindex and GetOppositeRunway(rwindex) not_eq info->rwindex)))
         {
             //yell at them to get off runway
-            if (!nextOnRunway)
+            if ( not nextOnRunway)
                 SendCallFromATC(self, aircraft, rcTAXICLEAR, FalconLocalGame);
             else if (nextOnRunway == nextTakeoff)
                 SendCallFromATC(self, aircraft, rcTAXICLEAR, FalconLocalGame);
@@ -5357,7 +5357,7 @@ int ATCBrain::CheckIfBlockingRunway(AircraftClass *aircraft, runwayQueueStruct* 
     else if (rwindex and !info and aircraft->DBrain()->WaitTime() + 90 * CampaignSeconds < SimLibElapsedTime)  // 06FEB04 - FRB - was 45 seconds
     {
         //yell at them to get off runway
-        if (!nextOnRunway)
+        if ( not nextOnRunway)
             SendCallFromATC(self, aircraft, rcTAXICLEAR, FalconLocalGame);
         else if (nextOnRunway == nextTakeoff)
             SendCallFromATC(self, aircraft, rcTAXICLEAR, FalconLocalGame);
@@ -5370,7 +5370,7 @@ int ATCBrain::CheckIfBlockingRunway(AircraftClass *aircraft, runwayQueueStruct* 
     else if (rwindex and info and info->lastContacted + 90 * CampaignSeconds < SimLibElapsedTime)  // 06FEB04 - FRB - was 45 seconds
     {
         //yell at them to get off runway
-        if (!nextOnRunway)
+        if ( not nextOnRunway)
             SendCallFromATC(self, aircraft, rcTAXICLEAR, FalconLocalGame);
         else if (nextOnRunway == nextTakeoff and nextOnRunway not_eq info)
             SendCallFromATC(self, aircraft, rcTAXICLEAR, FalconLocalGame);
@@ -5487,8 +5487,8 @@ void ATCBrain::CheckList(runwayQueueStruct *list)
 #ifdef DEBUG
     /* if(GetCurrentThreadId() not_eq gSimThreadID)
      {
-     ShiAssert(!"Tell Dave Power you hit the ATC assert (x4373) Don't ignore this!");
-     ShiAssert(!"Tell Dave Power you hit the ATC assert (x4373) Don't ignore this!");
+     ShiAssert( not "Tell Dave Power you hit the ATC assert (x4373) Don't ignore this!");
+     ShiAssert( not "Tell Dave Power you hit the ATC assert (x4373) Don't ignore this!");
      //*((unsigned int *) 0x00) = 0; //told you not to ignore it
      }*/
 
@@ -5501,9 +5501,9 @@ void ATCBrain::CheckList(runwayQueueStruct *list)
         if ((int)list->next == 0xdddddddd)
 #endif
         {
-            ShiAssert(!"Tell Dave Power you hit the ATC assert (x4373)");
-            ShiAssert(!"Tell Dave Power you hit the ATC assert (x4373) Don't ignore this!");
-            ShiAssert(!"Tell Dave Power you hit the ATC assert (x4373) Don't ignore this!");
+            ShiAssert( not "Tell Dave Power you hit the ATC assert (x4373)");
+            ShiAssert( not "Tell Dave Power you hit the ATC assert (x4373) Don't ignore this!");
+            ShiAssert( not "Tell Dave Power you hit the ATC assert (x4373) Don't ignore this!");
 
             //*((unsigned int *) 0x00) = 0; //told you not to ignore it
             if (prev)
@@ -5587,7 +5587,7 @@ ulong ATCBrain::RemovePlaceHolders(VU_ID id)
 
             if (deleteInfo->aircraftID == id)
             {
-                if (!takeoffTime)
+                if ( not takeoffTime)
                     takeoffTime = deleteInfo->schedTime;
 
                 RemoveTraffic(id, i);

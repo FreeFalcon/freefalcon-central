@@ -401,7 +401,7 @@ void CPButtonView::DisplayBlit(void)
     mDirtyFlag = TRUE;
 #endif
 
-    if (!mDirtyFlag)
+    if ( not mDirtyFlag)
     {
         return;
     }
@@ -476,12 +476,12 @@ void CPButtonView::DisplayBlit3D(void)
     mDirtyFlag = TRUE;
 #endif
 
-    if (!mDirtyFlag)
+    if ( not mDirtyFlag)
     {
         return;
     }
 
-    if (!DisplayOptions.bRender2DCockpit) //Handle these in displayblit
+    if ( not DisplayOptions.bRender2DCockpit) //Handle these in displayblit
         return;
 
     if (mpButtonObject->DoBlit() and mStates)
@@ -523,7 +523,7 @@ void CPButtonView::CreateLit(void)
             const DWORD dwMaxTextureHeight = mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
             m_pPalette = new PaletteHandle(mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-            if (!m_pPalette)
+            if ( not m_pPalette)
                 throw _com_error(E_OUTOFMEMORY);
 
             for (int i = 0; i < mStates; i++)
@@ -533,15 +533,15 @@ void CPButtonView::CreateLit(void)
                 {
                     TextureHandle *pTex = new TextureHandle;
 
-                    if (!pTex)
+                    if ( not pTex)
                         throw _com_error(E_OUTOFMEMORY);
 
                     m_pPalette->AttachToTexture(pTex);
 
-                    if (!pTex->Create("CPButtonView", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, mpSourceBuffer[i].mWidth, mpSourceBuffer[i].mHeight))
+                    if ( not pTex->Create("CPButtonView", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, mpSourceBuffer[i].mWidth, mpSourceBuffer[i].mHeight))
                         throw _com_error(E_FAIL);
 
-                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].buttonview, true, true)) // soon to be re-loaded by CPSurface::Translate3D
+                    if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].buttonview, true, true)) // soon to be re-loaded by CPSurface::Translate3D
                         throw _com_error(E_FAIL);
 
                     mpSourceBuffer[i].m_arrTex.push_back(pTex);

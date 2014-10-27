@@ -12,26 +12,26 @@ void ICPClass::ExecFACKMode(void)
 
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI original Code
 
         FaultClass::str_FNames faultNames;
         int faultCount;
 
-        if (!playerAC)
+        if ( not playerAC)
         {
             return;
         }
 
         faultCount = playerAC->mFaults->GetFFaultCount();
 
-        if (mUpdateFlags & FACK_UPDATE or (!(mUpdateFlags & FACK_UPDATE) and faultCount))
+        if (mUpdateFlags & FACK_UPDATE or ( not (mUpdateFlags & FACK_UPDATE) and faultCount))
         {
 
             mUpdateFlags and_eq !FACK_UPDATE;
 
-            if (!faultCount)
+            if ( not faultCount)
             {
 
                 sprintf(mpLine1, "      NO FAULTS");
@@ -53,7 +53,7 @@ void ICPClass::ExecFACKMode(void)
     }
     else
     {
-        if (!playerAC)
+        if ( not playerAC)
         {
             return;
         }
@@ -131,7 +131,7 @@ void ICPClass::PNUpdateFACKMode(int button, int)
     int testFunc;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
     {
         return;
     }
@@ -171,7 +171,7 @@ void ICPClass::PNUpdateFACKMode(int button, int)
 
                 failedFuncs = playerAC->mFaults->GetFault((FaultClass::type_FSubSystem) faultIdx);
             }
-            while (!failedFuncs and faultIdx not_eq mFaultNum);
+            while ( not failedFuncs and faultIdx not_eq mFaultNum);
 
 
             // Find highest failed sub-system
@@ -218,7 +218,7 @@ void ICPClass::PNUpdateFACKMode(int button, int)
 
                 failedFuncs = playerAC->mFaults->GetFault((FaultClass::type_FSubSystem) faultIdx);
             }
-            while (!failedFuncs and faultIdx not_eq mFaultNum);
+            while ( not failedFuncs and faultIdx not_eq mFaultNum);
 
             // Find lowest failed sub-system
             funcIdx = 1;

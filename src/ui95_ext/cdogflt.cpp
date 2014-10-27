@@ -157,7 +157,7 @@ void C_Dog_Flight::SetSubParents(C_Window *)
 {
     long w, h;
 
-    if (!Icon_ or !Callsign_ or !Aircraft_)
+    if ( not Icon_ or !Callsign_ or !Aircraft_)
         return;
 
     Callsign_->SetFont(Font_);

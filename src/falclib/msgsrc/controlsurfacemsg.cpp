@@ -43,7 +43,7 @@ int FalconControlSurfaceMsg::Process(uchar autodisp)
 
     if (theEntity)
     {
-        if (!theEntity->IsLocal())
+        if ( not theEntity->IsLocal())
         {
             theEntity->nonLocalData->timer3 = (float)SimLibElapsedTime / SEC_TO_MSEC;
         }

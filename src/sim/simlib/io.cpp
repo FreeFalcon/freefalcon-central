@@ -191,7 +191,7 @@ int SIMLIB_IO_CLASS::ReadFile(void)
 
     fp = fopen(path, "rb");
 
-    if (!fp)
+    if ( not fp)
         return FALSE;
 
     fseek(fp, 0, SEEK_END);
@@ -234,7 +234,7 @@ int SIMLIB_IO_CLASS::SaveFile(void)
 
     fp = fopen(path, "wb");
 
-    if (!fp)
+    if ( not fp)
         return FALSE;
 
     success = fwrite(analog, sizeof(SIMLIB_ANALOG_TYPE), SIMLIB_MAX_ANALOG, fp);
@@ -263,7 +263,7 @@ int SIMLIB_IO_CLASS::ReadAxisMappingFile()
 
     fp = fopen(path, "rb");
 
-    if (!fp)
+    if ( not fp)
         return FALSE;
 
     fseek(fp, 0, SEEK_END);
@@ -298,7 +298,7 @@ int SIMLIB_IO_CLASS::WriteAxisMappingFile()
 
     fp = fopen(path, "wb");
 
-    if (!fp)
+    if ( not fp)
         return FALSE;
 
     SaveGUIDAndCount();
@@ -427,7 +427,7 @@ int SIMLIB_IO_CLASS::LoadAxisCalibrationFile()
 
     fp = fopen(path, "rb");
 
-    if (!fp)
+    if ( not fp)
         return FALSE;
 
     fseek(fp, 0, SEEK_END);

@@ -245,7 +245,7 @@ void CBEAuxWarnPwrB(void *, int)
 
         if (theRwr)
         {
-            theRwr->SetPower(!theRwr->IsOn());
+            theRwr->SetPower( not theRwr->IsOn());
         }
     }
 }
@@ -1218,7 +1218,7 @@ void CBExICPPrimaryExclusive(void * pButton, int event)
 
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI original code
         if (OTWDriver.pCockpitManager->mpIcp->GetPrimaryExclusiveButton() == pButton)
@@ -1243,7 +1243,7 @@ void CBExICPSecondaryExclusive(void * pButton, int event)
 
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI original code
         if (OTWDriver.pCockpitManager->mpIcp->GetSecondaryExclusiveButton() == pButton)
@@ -1269,7 +1269,7 @@ void CBExICPTertiaryExclusive(void * pButton, int event)
 
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI original code
         if (OTWDriver.pCockpitManager->mpIcp->GetTertiaryExclusiveButton() == pButton)
@@ -3491,7 +3491,7 @@ void CBENwsToggle(void * pButton, int event)
         return;
     }
 
-    if (!playerAC->af->IsSet(AirframeClass::NoseSteerOn))
+    if ( not playerAC->af->IsSet(AirframeClass::NoseSteerOn))
     {
         playerAC->af->SetFlag(AirframeClass::NoseSteerOn);
     }
@@ -3554,7 +3554,7 @@ void CBExInhibitVMS(void * pButton, int event)
 
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
 
-    if (!playerAC->playBetty)
+    if ( not playerAC->playBetty)
     {
         pCPButton->SetCurrentState(1); // Betty Off
     }

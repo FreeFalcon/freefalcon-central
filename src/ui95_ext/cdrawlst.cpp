@@ -49,7 +49,7 @@ void C_DrawList::Cleanup(void)
 
 void C_DrawList::Add(MAPICONLIST *item)
 {
-    if (!Root_)
+    if ( not Root_)
         return;
 
     if (Root_->Find(item->ID))
@@ -60,7 +60,7 @@ void C_DrawList::Add(MAPICONLIST *item)
 
 void C_DrawList::Remove(long ID)
 {
-    if (!Root_)
+    if ( not Root_)
         return;
 
     Root_->Remove(ID);
@@ -82,7 +82,7 @@ long C_DrawList::CheckHotSpots(long relX, long relY)
 
     while (item)
     {
-        if (!(item->Flags & C_BIT_INVISIBLE) and item->Flags & C_BIT_ENABLED)
+        if ( not (item->Flags & C_BIT_INVISIBLE) and item->Flags & C_BIT_ENABLED)
         {
             x = item->x + item->Icon->GetX();
             y = item->y + item->Icon->GetY();
@@ -128,14 +128,14 @@ void C_DrawList::Refresh()
 
     while (item)
     {
-        if (!(item->Flags & C_BIT_INVISIBLE) and item->Flags & C_BIT_ENABLED)
+        if ( not (item->Flags & C_BIT_INVISIBLE) and item->Flags & C_BIT_ENABLED)
         {
             if (item->Icon)
             {
                 item->Owner->SetXY(item->x, item->y);
                 item->Icon->Refresh();
 
-                if (!(GetFlags() & C_BIT_NOLABEL))
+                if ( not (GetFlags() & C_BIT_NOLABEL))
                 {
                     if (item->Div)
                         item->Div->Refresh();
@@ -169,14 +169,14 @@ void C_DrawList::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     while (item)
     {
-        if (!(item->Flags & C_BIT_INVISIBLE) and item->Flags & C_BIT_ENABLED)
+        if ( not (item->Flags & C_BIT_INVISIBLE) and item->Flags & C_BIT_ENABLED)
         {
             if (item->Icon)
             {
                 item->Owner->SetXY(item->x, item->y);
                 item->Icon->Draw(surface, cliprect);
 
-                if (!(GetFlags() & C_BIT_NOLABEL))
+                if ( not (GetFlags() & C_BIT_NOLABEL))
                 {
                     if (item->Div)
                         item->Div->Draw(surface, cliprect);

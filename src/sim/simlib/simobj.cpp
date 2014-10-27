@@ -222,7 +222,7 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
         if (initData->createFlags & SIDC_SILENT_INSERT){
          vuDatabase->SilentInsert (retval);
         }
-        else if (!(initData->createFlags & SIDC_NO_INSERT)){
+        else if ( not (initData->createFlags & SIDC_NO_INSERT)){
          vuDatabase->QuickInsert (retval);
         }*/
         // sfr: flags now take care of sending creation events
@@ -336,7 +336,7 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
             switch (SimCompare(curInUse->BaseData(), curUpdate))
             {
                 case 0: // curUpdate == curInUse -- Means the current entry is still active
-                    if (!curUpdate->IsExploding() and CheckForConcern(curUpdate, self))
+                    if ( not curUpdate->IsExploding() and CheckForConcern(curUpdate, self))
                     {
                         lastInUse = curInUse;
                         curInUse = curInUse->next;
@@ -404,7 +404,7 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
                     break;
 
                 case -1: // curUpdate < curInUse -- Insert into the list
-                    if (!curUpdate->IsDead() and CheckForConcern(curUpdate, self))
+                    if ( not curUpdate->IsDead() and CheckForConcern(curUpdate, self))
                     {
                         // Add before curInUse
                         tmpInUse = new SimObjectType(curUpdate);

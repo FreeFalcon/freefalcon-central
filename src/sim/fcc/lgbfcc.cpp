@@ -47,9 +47,9 @@ void FireControlComputer::TargetingPodMode(void)
     SimObjectType *systemTarget;
     float minDist;
 
-    if (!targetingPod) return; // MLR 4/10/2004 - we're going to enable the TGP for non GBU types
+    if ( not targetingPod) return; // MLR 4/10/2004 - we're going to enable the TGP for non GBU types
 
-    if (!targetingPod->IsOn()) return; // can't do anything if off
+    if ( not targetingPod->IsOn()) return; // can't do anything if off
 
     // Get our platforms radar (if any)
     RadarClass* theRadar = (RadarClass*) FindSensor(platform, SensorClass::Radar);
@@ -61,7 +61,7 @@ void FireControlComputer::TargetingPodMode(void)
 
     // 2001-11-01 ADDED BY M.N. IT MAY BE THAT theRadar HAS LOST THE TARGET, BUT OUR TARGETING POD
     // STILL HAS IT. SO SEE IF WE HAVE ONE LOCKED WITH THE POD
-    if (!systemTarget and !F4IsBadReadPtr(targetingPod, sizeof(targetingPod))) // M.N. CTD fix
+    if ( not systemTarget and !F4IsBadReadPtr(targetingPod, sizeof(targetingPod))) // M.N. CTD fix
     {
         systemTarget = targetingPod->CurrentTarget();
 
@@ -553,7 +553,7 @@ void FireControlComputer::TargetingPodMode(void)
                             }
                         }
 
-                        if (!FindGroundIntersection(pitch, yaw, &tmpX, &tmpY, &tmpZ))
+                        if ( not FindGroundIntersection(pitch, yaw, &tmpX, &tmpY, &tmpZ))
                         {
                             preDesignate = TRUE;
                             groundPipperAz = 0.0F;
@@ -604,12 +604,12 @@ void FireControlComputer::TargetingPodMode(void)
                 isLimited = targetingPod->SetDesiredSeekerPos(&yaw, &pitch);
             }
 
-            if (!targetingPod->IsLocked())
+            if ( not targetingPod->IsLocked())
             {
-                if (!isLimited and onGround)
+                if ( not isLimited and onGround)
                 {
                     // 2000-09-30 ADDED BY S.G. SO WE LOOK AT OUR CURRENTLY LOCKED GROUND RADAR TARGET IF WE DON'T ALREADY HAVE A curTarget
-                    if (!curTarget and ((DigitalBrain *)platform->Brain())->GetGroundTarget())
+                    if ( not curTarget and ((DigitalBrain *)platform->Brain())->GetGroundTarget())
                     {
                         if (targetingPod->CanSeeObject(((DigitalBrain *)platform->Brain())->GetGroundTarget()) and targetingPod->CanDetectObject(((DigitalBrain *)platform->Brain())->GetGroundTarget()))
                             curTarget = ((DigitalBrain *)platform->Brain())->GetGroundTarget();
@@ -618,16 +618,16 @@ void FireControlComputer::TargetingPodMode(void)
                     // Here we will redo our test for CanSeeObject and CanDetectObject. That's because I don't want
                     // to change the source code too much because of exe editing. In source, this will be another story
                     // END OF ADDED SECTION
-                    if (!curTarget)
+                    if ( not curTarget)
                         curTarget = targetList;
 
                     // 2000-10-04 ADDED BY S.G. DON'T DO THE TARGET LIST IF ARE IN GM MODE
                     //MI CTD Fix
-                    if (!theRadar)
+                    if ( not theRadar)
                         curTarget = NULL;
                     // 2002-04-12 MN Changed as we now also have ground units on GM radar when they are standing still
                     //    else if(theRadar->IsAG() == RadarClass::GM)
-                    else if (!g_bAGRadarFixes and theRadar->IsAG() == RadarClass::GM)
+                    else if ( not g_bAGRadarFixes and theRadar->IsAG() == RadarClass::GM)
                         curTarget = NULL;
 
                     // 2000-09-30 MODIFIED BY S.G. WHY ONLY LOOK ONE DEGREE?!? WE CALL CanSeeObject ANYHOW!
@@ -659,7 +659,7 @@ void FireControlComputer::TargetingPodMode(void)
                     }
 
                     // Check Features?
-                    if (!targetingPod->CurrentTarget() and !isLimited)
+                    if ( not targetingPod->CurrentTarget() and !isLimited)
                     {
                         CheckFeatures(targetingPod);
                         curTarget = targetingPod->CurrentTarget();
@@ -741,7 +741,7 @@ void FireControlComputer::TargetingPodMode(void)
         inRange = FALSE;
     }
 
-    if (!releaseConsent)
+    if ( not releaseConsent)
     {
         postDrop = FALSE;
     }
@@ -822,7 +822,7 @@ void FireControlComputer::CheckFeatures(LaserPodClass* targetingPod)
     float groundRange;
     float curMin, dx, dy;
 
-    if (!targetPtr)
+    if ( not targetPtr)
     {
         // Actually slant range
         groundRange = (float)sqrt((groundDesignateX - platform->XPos()) * (groundDesignateX - platform->XPos()) +

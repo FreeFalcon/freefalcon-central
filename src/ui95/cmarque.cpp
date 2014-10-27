@@ -161,7 +161,7 @@ void C_Marque::SetBGImage(long ImageID)
 
 void C_Marque::Refresh()
 {
-    if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -171,12 +171,12 @@ void C_Marque::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     UI95_RECT dummy, rect;
 
-    if (!Ready()) return;
+    if ( not Ready()) return;
 
     if (GetFlags() & C_BIT_INVISIBLE)
         return;
 
-    if (!(GetFlags() & C_BIT_ENABLED))
+    if ( not (GetFlags() & C_BIT_ENABLED))
         return;
 
     rect.left = GetX();
@@ -241,7 +241,7 @@ void C_Marque::SetSubParents(C_Window *)
         }
     }
 
-    if (!GetW() or !GetH())
+    if ( not GetW() or !GetH())
         SetWH(Parent_->GetW(), Parent_->GetH());
 }
 

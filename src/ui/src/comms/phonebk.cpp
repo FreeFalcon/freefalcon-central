@@ -305,7 +305,7 @@ void Phone_Connect_CB(long n, short hittype, C_Base *control)
     //CopyDataFromWindow(localDescription,&localData);
     CopyDataFromWindow();
 
-    if (!gUICommsQ)
+    if ( not gUICommsQ)
     {
         CommsQueue *nq = new CommsQueue;
 

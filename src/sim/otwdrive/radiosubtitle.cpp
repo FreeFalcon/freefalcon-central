@@ -125,7 +125,7 @@ RadioSubTitle::RadioSubTitle(const int MaximumMessageNum, const unsigned long TT
 
 #endif // DYNAMIC_LINE_NUM
 
-    if (!ReadNewFile(THE_INPUT_FILE_NAME))
+    if ( not ReadNewFile(THE_INPUT_FILE_NAME))
     {
         throw Init_Error("Error reading the subtitles input file");
     }
@@ -232,7 +232,7 @@ void RadioSubTitle::NewMessage(const int theTalker, const int theFrag, const uns
 
     currentlyEditedNode = new SubTitleNode();
 
-    if (!currentlyEditedNode)
+    if ( not currentlyEditedNode)
     {
 #pragma warning(disable:4127)
         ShiAssert(false);
@@ -377,7 +377,7 @@ ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theT
     // Get the oldest message in the list..
     SubTitleNode* node = (SubTitleNode*)theRadioChatterList->GetHead();
 
-    if (!node)
+    if ( not node)
     {
         LeaveCriticalSection(&cs_radiosubtitle);
         return 0; // no messages to play..
@@ -402,7 +402,7 @@ ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theT
         node = (SubTitleNode*)theRadioChatterList->GetHead();
     }
 
-    if (!node)
+    if ( not node)
     {
         LeaveCriticalSection(&cs_radiosubtitle);
         return 0; // no messages to play.. (all messages were outdated)
@@ -411,7 +411,7 @@ ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theT
     // the calling routine has to delete that array..
     ColouredSubTitle** theMessages = (ColouredSubTitle**)calloc(sizeof(ColouredSubTitle*), LinkedListCount + 1);
 
-    if (!theMessages)
+    if ( not theMessages)
     {
         LeaveCriticalSection(&cs_radiosubtitle);
         return 0;
@@ -679,7 +679,7 @@ void RadioSubTitle::SetChannelColours(char* flight, char* toPackage, char* ToFro
 /*****************************************************************************/
 inline void RadioSubTitle::AppendToString(char** theOldOne, const char* theNewOne)
 {
-    if ((!theOldOne) or (!*theOldOne) or (!theNewOne))
+    if (( not theOldOne) or ( not *theOldOne) or ( not theNewOne))
     {
         assert(false);
         return;
@@ -705,7 +705,7 @@ inline void RadioSubTitle::AppendToString(char** theOldOne, const char* theNewOn
 /*****************************************************************************/
 inline void RadioSubTitle::OverWriteString(char** theOldOne, const char* theNewOne)
 {
-    if (!theNewOne)
+    if ( not theNewOne)
     {
         assert(false);
         return;
@@ -856,7 +856,7 @@ void RadioSubTitle::breakDownLine(csvLine_t* theTextString, char* theLine, const
         {
             if (end > start)
             {
-                if (!inDoubleQuotes)
+                if ( not inDoubleQuotes)
                 {
                     len = end - start + 1;
                     char* tmp = (char*)malloc(len);

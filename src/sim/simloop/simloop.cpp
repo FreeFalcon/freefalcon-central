@@ -367,7 +367,7 @@ void SimulationLoopControl::Loop(void)
 
             RebuildBubble(forced);
 
-            if (!forced)
+            if ( not forced)
             {
                 lastBubbleTime = vuxRealTime;
             }
@@ -391,7 +391,7 @@ void SimulationLoopControl::Loop(void)
             )
         )
         {
-            if ((!FalconLocalGame->IsLocal()) and (lastTimingMessage > 0))
+            if (( not FalconLocalGame->IsLocal()) and (lastTimingMessage > 0))
             {
                 static int last_ratio = 0;
                 int y, ratio, lookahead;
@@ -576,7 +576,7 @@ void SimulationLoopControl::Loop(void)
         switch (currentMode)
         {
             case StartRunningGraphics:
-                if (!SimDriver.lastRealTime)
+                if ( not SimDriver.lastRealTime)
                 {
                     SimDriver.lastRealTime = vuxGameTime;
                 }
@@ -722,7 +722,7 @@ void SimulationLoopControl::StartLoop(void)
             // Ask the game to send all deag entities to me
             VuTargetEntity* target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
 
-            if (!target->IsLocal())
+            if ( not target->IsLocal())
             {
                 FalconSimCampMessage *msg;
                 //here we ask for all deaggregated data
@@ -820,7 +820,7 @@ void SimulationLoopControl::StartLoop(void)
                 (gLeftToDeaggregate)  and 
                 (delayCounter)  and 
                 (SimDriver.GetPlayerEntity())  and 
-                (!(SimDriver.GetPlayerEntity()->IsLocal()))
+                ( not (SimDriver.GetPlayerEntity()->IsLocal()))
             )
             {
                 Sleep(100);
@@ -860,7 +860,7 @@ void SimulationLoopControl::StartLoop(void)
              if (wait_for_loaded)
              {
              delayCounter = 0;
-             while (!TheLoader.LoaderQueueEmpty())
+             while ( not TheLoader.LoaderQueueEmpty())
              {
              Sleep (100);
              delayCounter++;
@@ -876,7 +876,7 @@ void SimulationLoopControl::StartLoop(void)
              TheTextureBank.SetDeferredLoad( FALSE ); // Load all the deferred object textures
 
              delayCounter = 0;
-             while (!TheLoader.LoaderQueueEmpty())
+             while ( not TheLoader.LoaderQueueEmpty())
              {
              Sleep (100);
              delayCounter++;
@@ -921,7 +921,7 @@ void SimulationLoopControl::StartLoop(void)
 
             // Dogfights have some special case start code -
             // i.e. For match play and instant entry
-            if (!SimDriver.RunningDogfight() or SimDogfight.GetGameType() not_eq dog_TeamMatchplay)
+            if ( not SimDriver.RunningDogfight() or SimDogfight.GetGameType() not_eq dog_TeamMatchplay)
             {
                 GameManager.ReleasePlayer(FalconLocalSession);
             }
@@ -965,7 +965,7 @@ void SimulationLoopControl::StartLoop(void)
         }
         else
         {
-            if (!player)
+            if ( not player)
             {
                 MonoPrint("Failed to fly\n");
             }
@@ -1005,7 +1005,7 @@ void SimulationLoopControl::StartLoop(void)
         // MonoPrint("Requesting campain to do a final bubble rebuild\n");
         CampaignRequestSleep();
 
-        while (!CampaignAllAsleep())
+        while ( not CampaignAllAsleep())
         {
             Sleep(100);
             // 2002-02-19 REMOVED BY S.G. NO NO NO! Wrong thread to do this!

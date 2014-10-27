@@ -250,7 +250,7 @@ void FalconEntity::MakeDirty(Dirty_Class bits, Dirtyness score)
 
     // send only local units which are active (in DB) and if the unit is more dirty than currently is
     if (
-        (!IsLocal()) ||
+        ( not IsLocal()) ||
         (VuState() not_eq VU_MEM_ACTIVE) ||
         (score <= dirty_score) ||
         !(TheCampaign.Flags & CAMP_LOADED)
@@ -441,7 +441,7 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
 {
     static VU_TIME lastSent = 0;
 
-    if (!(TheCampaign.Flags & CAMP_LOADED) or ((realTime - lastSent) < SIMDIRTYDATA_INTERVAL))
+    if ( not (TheCampaign.Flags & CAMP_LOADED) or ((realTime - lastSent) < SIMDIRTYDATA_INTERVAL))
     {
         return;
     }
@@ -467,7 +467,7 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
 
         while ((current = static_cast<FalconEntity*>(campDirtyBuckets[bucket]->PopHead())) not_eq NULL)
 #else
-        while (!campDirtyBuckets[bucket]->empty())
+        while ( not campDirtyBuckets[bucket]->empty())
 #endif
         {
             //bucket 7 and 8 are OOB(out of band), the others must respect bw
@@ -516,7 +516,7 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
 void FalconEntity::DoSimDirtyData(VU_TIME realTime)
 {
     // only do if initialized
-    if (!(TheCampaign.Flags & CAMP_LOADED) or (simDirtyBuckets == NULL))
+    if ( not (TheCampaign.Flags & CAMP_LOADED) or (simDirtyBuckets == NULL))
     {
         return;
     }
@@ -550,7 +550,7 @@ void FalconEntity::DoSimDirtyData(VU_TIME realTime)
 
         while ((current = static_cast<FalconEntity*>(simDirtyBuckets[bucket]->PopHead())) not_eq NULL)
 #else
-        while (!simDirtyBuckets[bucket]->empty())
+        while ( not simDirtyBuckets[bucket]->empty())
 #endif
         {
             //bucket 7 and 8 are OOB (out of band), others must respect limit
@@ -608,7 +608,7 @@ void FalconEntity::MakeFlagsDirty(void)
 
 void FalconEntity::MakeFalconEntityDirty(Dirty_Falcon_Entity bits, Dirtyness score)
 {
-    if ((!IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
+    if (( not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }

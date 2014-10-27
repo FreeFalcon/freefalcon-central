@@ -175,7 +175,7 @@ void LoadTrails()
 
         types[ind].trimAmt = 1.0f;
 
-        if (!types[ind].lodBiasFactor)
+        if ( not types[ind].lodBiasFactor)
         {
             float msize;
             msize = max(types[ind].radiusStart , types[ind].radiusStart + types[ind].radiusChange);
@@ -286,7 +286,7 @@ DrawableTrail::DrawableTrail(int trailType, float scale)
     TrailTexture = TrailTex[Type->texID];
 
     //JAM 03Feb04
-    if (!TrailTexture)
+    if ( not TrailTexture)
         TrailTexture = TrailTex[0];
 
     Something = 0;
@@ -392,13 +392,13 @@ void DrawableTrail::AddPointAtHead(Tpoint *worldPos, DWORD)
         }
     }
 
-    if (!cn)
+    if ( not cn)
     {
         // if there's no chunk nodes, or if the previous
         // chunk node has more than X nodes, add a new ChunkNode
         cn = new ChunkNode(Type);
 
-        if (!cn) // out of ram?
+        if ( not cn) // out of ram?
             return;
 
         List.AddHead(cn);
@@ -563,7 +563,7 @@ int DrawableTrail::RewindTrail(DWORD now)
             n = n2;
         }
 
-        if (!cn->list.GetHead())
+        if ( not cn->list.GetHead())
         {
             // empty
             cn->Remove();
@@ -619,7 +619,7 @@ void DrawableTrail::TrimTrail(int len)   // len in seconds!
         }
         */
     }
-    else if (!len)
+    else if ( not len)
     {
         // if 0, do not connect the head node to the next addition visually
         ChunkNode *cn;
@@ -699,7 +699,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
 
         n = (TrailNode *)cn->list.GetHead();
 
-        if (!n)
+        if ( not n)
         {
             // chunk is empty
             // remove it.
@@ -769,7 +769,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
 
                     n->GetAge();
 
-                    if ((n->Age > Type->lifespan) and (!keepStaleSegs))
+                    if ((n->Age > Type->lifespan) and ( not keepStaleSegs))
                     {
                         n->Remove();
                         delete n;
@@ -1696,7 +1696,7 @@ int DrawableTrail::RewindTrail(DWORD now)
     DWORD htime;
     int numremoved = 0;
 
-    if (!head)
+    if ( not head)
         return numremoved;
 
     // get last absolute time
@@ -1797,7 +1797,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
     ShiAssert(type < sizeof(types) / sizeof(TrailTypeEntry));
 
     // If we don't have a least two points, we have nothing to do
-    if ((!head) or (!head->next))
+    if (( not head) or ( not head->next))
     {
         return;
     }
@@ -1992,7 +1992,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
 
         if (gTextured and !types[type].selfIlum)
         {
-            if (!types[type].selfIlum)
+            if ( not types[type].selfIlum)
             {
                 lightIntensity -= types[type].lightFade * current->next->time;
                 vE.r = max(gLight.r, lightIntensity);
@@ -2070,7 +2070,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
             // TODO: lineColor should be precalc'd class member(?)
             if (lineColor == 0)
             {
-                if (!sGreenMode)
+                if ( not sGreenMode)
                 {
                     lineColor = ((unsigned int)(alpha * 255.0f) << 24) + // alpha
                                 ((unsigned int)(types[type].bLite * 255.0f) << 16) + // blue
@@ -2119,7 +2119,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
 
             if (keepStaleSegs == FALSE)
             {
-                if (!F4IsBadWritePtr(current->next, sizeof(TrailElement))) // JB 010222 CTD
+                if ( not F4IsBadWritePtr(current->next, sizeof(TrailElement))) // JB 010222 CTD
                     delete current->next->next; // Recursivly deletes the rest of the trail
 
                 current->next->next = NULL; // Terminate the trail at the current point
@@ -2476,7 +2476,7 @@ void DrawableTrail::ConstructSegmentEnd(RenderOTW *renderer, Tpoint *start, Tpoi
     renderer->TransformCameraCentricPoint(&left,  xformLeft);
     renderer->TransformCameraCentricPoint(&right, xformRight);
 
-    if (!gTextured or sGreenMode)
+    if ( not gTextured or sGreenMode)
         return;
 
     // test for highest LOD

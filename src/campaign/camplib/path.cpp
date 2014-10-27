@@ -279,7 +279,7 @@ costtype CostToArrive(Unit u, int orders, GridIndex x, GridIndex y, Objective t)
 
     o = FindNearestObjective(x, y, NULL);
 
-    if (!o or !t or o == t)
+    if ( not o or !t or o == t)
         return 0;
 
     moveTeam = u->GetTeam();
@@ -458,7 +458,7 @@ int CheckPathThreats (WayPoint w, Team who, AltitudeType alt)
  int threats=0;
 
  ResetThreats();
- if (!w)
+ if ( not w)
  return 0;
  nw = w->GetNextWP();
  while (nw)
@@ -624,11 +624,11 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
         owner = (Team)n->GetTeam();
 
         // Check for allowable movement
-        if (!GetRoE(team, owner, ROE_GROUND_MOVE))
+        if ( not GetRoE(team, owner, ROE_GROUND_MOVE))
             return 255.0F;
 
         // Check for enemy movement
-        if (!(flags & PATH_BASIC) and GetRoE(team, owner, ROE_GROUND_FIRE))
+        if ( not (flags & PATH_BASIC) and GetRoE(team, owner, ROE_GROUND_FIRE))
         {
             if (flags & PATH_ENEMYOK)
             {
@@ -641,7 +641,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
                 else if (n->IsSecondary())
                     // return 255.0F;
                     mult = 4.0F;
-                else if (!t)
+                else if ( not t)
                     return 255.0F;
                 else if (n->GetObjectiveParentID() not_eq t->Id())
                 {

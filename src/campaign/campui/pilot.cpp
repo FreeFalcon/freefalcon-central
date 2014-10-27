@@ -261,7 +261,7 @@ int PilotAvailable (int pn)
  {
  if (pn >= NumPilots)
  return 0;
- if (!PilotData[pn].flags)
+ if ( not PilotData[pn].flags)
  return 1;
  return 0;
  }

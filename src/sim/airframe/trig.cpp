@@ -139,32 +139,32 @@ void AirframeClass::Trigenometry()
     pa.cosalp = trigAlpha.cos;
     pa.sinalp = trigAlpha.sin;
 
-    ShiAssert(!_isnan(trigAlpha.cos));
+    ShiAssert( not _isnan(trigAlpha.cos));
 
     mlSinCos(&trigBeta, beta * DTR);
     pa.cosbet = trigBeta.cos;
     pa.sinbet = trigBeta.sin;
     pa.tanbet = (float)tan(beta * DTR);
 
-    ShiAssert(!_isnan(trigBeta.cos));
+    ShiAssert( not _isnan(trigBeta.cos));
 
     mlSinCos(&trig, sigma);
     pa.cossig = trig.cos;
     pa.sinsig = trig.sin;
 
-    ShiAssert(!_isnan(trig.cos));
+    ShiAssert( not _isnan(trig.cos));
 
     mlSinCos(&trig, mu);
     pa.cosmu  = trig.cos;
     pa.sinmu  = trig.sin;
 
-    ShiAssert(!_isnan(trig.cos));
+    ShiAssert( not _isnan(trig.cos));
 
     mlSinCos(&trig, gmma);
     pa.cosgam = trig.cos;
     pa.singam = trig.sin;
 
-    ShiAssert(!_isnan(trig.cos));
+    ShiAssert( not _isnan(trig.cos));
 
     // Construct the rotation matrix for the velocity vector
     // We do this to get its basis vectors
@@ -256,17 +256,17 @@ void AirframeClass::Trigenometry()
     pa.cospsi = trig.cos;
     pa.sinpsi = trig.sin;
 
-    ShiAssert(!_isnan(trig.cos));
+    ShiAssert( not _isnan(trig.cos));
 
     mlSinCos(&trig, theta);
     pa.costhe = trig.cos;
     pa.sinthe = trig.sin;
 
-    ShiAssert(!_isnan(trig.cos));
+    ShiAssert( not _isnan(trig.cos));
 
     mlSinCos(&trig, phi);
     pa.cosphi = trig.cos;
     pa.sinphi = trig.sin;
 
-    ShiAssert(!_isnan(trig.cos));
+    ShiAssert( not _isnan(trig.cos));
 }

@@ -132,7 +132,7 @@ public:
     };
     void SetFalcFlag(int flag)
     {
-        if (!(falconFlags & flag))
+        if ( not (falconFlags & flag))
         {
             falconFlags  or_eq  flag;
             MakeFlagsDirty();

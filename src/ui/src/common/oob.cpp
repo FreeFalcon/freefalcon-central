@@ -273,7 +273,7 @@ void SetupOOBWindow()
 
                         team = gOOBTree->Find(TeamID);
 
-                        if (!team)
+                        if ( not team)
                         {
                             category = BuildCategory(TeamID);
 
@@ -321,7 +321,7 @@ BOOL FindChildren(TREELIST *list, short owner)
 {
     TREELIST *item;
 
-    if (!list or !owner)
+    if ( not list or !owner)
         return(FALSE);
 
     item = list;
@@ -345,14 +345,14 @@ BOOL FindOtherChildren(TREELIST *list, short owner)
 {
     TREELIST *item;
 
-    if (!list or !owner)
+    if ( not list or !owner)
         return(FALSE);
 
     item = list;
 
     while (item)
     {
-        if (!(item->Item_->GetFlags() & C_BIT_INVISIBLE))
+        if ( not (item->Item_->GetFlags() & C_BIT_INVISIBLE))
         {
             if (item->Item_->GetUserNumber(0) not_eq owner)
                 return(TRUE);
@@ -383,7 +383,7 @@ void ToggleOOBTeamCB(long, short hittype, C_Base *control)
 
     win = control->GetParent();
 
-    if (!win)
+    if ( not win)
         return;
 
     Leave = UI_Enter(control->Parent_);
@@ -432,7 +432,7 @@ void ToggleOOBTeamCB(long, short hittype, C_Base *control)
             }
         }
 
-        if (!DontTurnOff)
+        if ( not DontTurnOff)
             for (i = 0; i < 4; i++)
             {
                 root = gOOBTree->Find((TeamID << 24) | OOBCategories[i]);
@@ -697,7 +697,7 @@ C_Entity *BuildDivisionInfo(Division div, Unit unit)
     if (UnitPtr == NULL)
         return(NULL);
 
-    //if(!UnitPtr->IconIndex)
+    //if( not UnitPtr->IconIndex)
     // return(NULL);
 
     // Create new parent class
@@ -777,7 +777,7 @@ C_Entity *BuildUnitInfo(Unit unit)
     if (UnitPtr == NULL)
         return(NULL);
 
-    //if(!UnitPtr->IconIndex)
+    //if( not UnitPtr->IconIndex)
     // return(NULL);
 
     // Create new parent class
@@ -975,14 +975,14 @@ void TallyPlayerSquadrons()
                     cur = cur->Next;
             }
 
-            if (!cur)
+            if ( not cur)
             {
                 prev = new SQUADRONPLAYER;
                 prev->SquadronID = session->GetPlayerSquadronID();
                 prev->PlayerCount = 1;
                 prev->Next = NULL;
 
-                if (!gPlayerSquadrons)
+                if ( not gPlayerSquadrons)
                     gPlayerSquadrons = prev;
                 else
                 {
@@ -1253,7 +1253,7 @@ void UpdateCategory(C_Entity *category)
     long Type;
     _TCHAR buffer[200];
 
-    if (!category)
+    if ( not category)
         return;
 
     Type = category->GetID();
@@ -1285,24 +1285,24 @@ C_Entity *AddDivisionToOOB(Division div)
     C_Entity *oobitem = NULL;
     long TeamID, Cat;
 
-    if (!div)
+    if ( not div)
         return(NULL);
 
     un = div->GetFirstUnitElement();
 
-    if (!un)
+    if ( not un)
         return(NULL);
 
     while (un and un->GetSType() not_eq div->type)
         un = div->GetNextUnitElement();
 
-    if (!un)
+    if ( not un)
         un = div->GetFirstUnitElement();
 
     TeamID = (un->GetTeam() << 24);
     Cat = FindUnitCategory(un);
 
-    if (!Cat)
+    if ( not Cat)
         return(NULL);
 
     TeamID  or_eq  Cat;
@@ -1363,7 +1363,7 @@ C_Base *AddItemToOOB(CampEntity entity)
     else
         Cat = 0;
 
-    if (!Cat)
+    if ( not Cat)
         return(NULL);
 
     TeamID  or_eq  Cat;
@@ -1396,7 +1396,7 @@ C_Base *AddItemToOOB(CampEntity entity)
                     {
                         subcat = gOOBTree->Find(Base->GetCampID());
 
-                        if (!subcat)
+                        if ( not subcat)
                         {
                             BaseInfo = (C_Entity*)AddItemToOOB(Base);
 
@@ -1421,7 +1421,7 @@ C_Base *AddItemToOOB(CampEntity entity)
                     {
                         subcat = gOOBTree->Find(upar->GetCampID());
 
-                        if (!subcat)
+                        if ( not subcat)
                         {
                             BaseInfo = (C_Entity*)AddItemToOOB(upar);
 
@@ -1443,7 +1443,7 @@ C_Base *AddItemToOOB(CampEntity entity)
                         {
                             subcat = gOOBTree->Find((entity->GetTeam() << 24) | DivID | UR_DIVISION);
 
-                            if (!subcat)
+                            if ( not subcat)
                             {
                                 BaseInfo = AddDivisionToOOB(GetDivisionByUnit((Unit)entity));
 
@@ -1469,7 +1469,7 @@ C_Base *AddItemToOOB(CampEntity entity)
                     {
                         subcat = gOOBTree->Find((entity->GetTeam() << 24) | DivID | UR_DIVISION);
 
-                        if (!subcat)
+                        if ( not subcat)
                         {
                             BaseInfo = AddDivisionToOOB(GetDivisionByUnit((Unit)entity));
 
@@ -1498,7 +1498,7 @@ C_Base *AddItemToOOB(CampEntity entity)
                     Type = ObjectiveFilters[idx].UIType;
                     subcat = gOOBTree->Find((entity->GetTeam() << 24) | Type);
 
-                    if (!subcat)
+                    if ( not subcat)
                     {
                         txt = new C_Text;
                         txt->Setup(Type, 0);
@@ -1554,7 +1554,7 @@ void MoveOOBSquadron(Squadron sqd, C_Squadron *Squadron)
 
     item = Squadron->GetOwner();
 
-    if (!item)
+    if ( not item)
         return;
 
     Leave = UI_Enter(gOOBTree->GetParent());
@@ -1565,7 +1565,7 @@ void MoveOOBSquadron(Squadron sqd, C_Squadron *Squadron)
     {
         newloc = gOOBTree->Find(Base->GetCampID());
 
-        if (!newloc)
+        if ( not newloc)
         {
             BaseInfo = (C_Entity*)AddItemToOOB(Base);
 

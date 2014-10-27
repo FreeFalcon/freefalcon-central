@@ -160,7 +160,7 @@ void HarmTargetingPod::BoresightTarget(void)
 
         //if ((fabs(displayX) > 1.0f) or (fabs(displayY) > 1.0f))
         // RV - I-Hawk - Diplay only what's inside the ALIC video
-        if (!IsInsideALIC(displayX, displayY))
+        if ( not IsInsideALIC(displayX, displayY))
         {
             continue;
         }
@@ -229,7 +229,7 @@ void HarmTargetingPod::NextTarget(void)
 
         //if ((fabs(displayX) > 1.0f) or (fabs(displayY) > 1.0f))
         // RV - I-Hawk - Diplay only what's inside the ALIC video
-        if (!IsInsideALIC(displayX, displayY))
+        if ( not IsInsideALIC(displayX, displayY))
         {
             continue;
         }
@@ -309,7 +309,7 @@ void HarmTargetingPod::PrevTarget(void)
 
         //if ((fabs(displayX) > 1.0f) or (fabs(displayY) > 1.0f))
         // RV - I-Hawk - Diplay only what's inside the ALIC video
-        if (!IsInsideALIC(displayX, displayY))
+        if ( not IsInsideALIC(displayX, displayY))
         {
             continue;
         }
@@ -357,7 +357,7 @@ void HarmTargetingPod::SetDesiredTarget(SimObjectType* newTarget)
     }
 
     // NOTE: when called from the AI ground attack routine this will create the element if not found !
-    if (!tmpElement)
+    if ( not tmpElement)
     {
         tmpElement = new GroundListElement(newTarget->BaseData());
         tmpElement->next = FCC->GetFirstGroundElement();
@@ -733,7 +733,7 @@ void HarmTargetingPod::DrawWEZ(MissileClass *theMissile)
     float cur2X, cur2Y, next2X, next2Y, stepX, stepY;
 
     // If we don't have a missile, quit now
-    if (!theMissile)
+    if ( not theMissile)
     {
         return;
     }
@@ -874,7 +874,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
 
     // Cursor Control
     //MI
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         cursorX += xMove * g_fCursorSpeed * HTS_CURSOR_RATE * zoomFactor * SimLibMajorFrameTime;
         cursorY += yMove * g_fCursorSpeed * HTS_CURSOR_RATE * zoomFactor * SimLibMajorFrameTime;
@@ -911,7 +911,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
         tmpElement->HandoffBaseObject();
 
         // Removed?  (We really shouldn't do this -- once detected, things shouldn't disappear, just never emit)
-        if (!tmpElement->BaseObject())
+        if ( not tmpElement->BaseObject())
         {
             tmpElement = tmpElement->next;
             continue;
@@ -1102,7 +1102,7 @@ GroundListElement* HarmTargetingPod::FindTargetUnderCursor(void)
     {
         if (tmpElement->BaseObject() == NULL) continue;
 
-        if (!IsInPriorityList(tmpElement->symbol))
+        if ( not IsInPriorityList(tmpElement->symbol))
         {
             continue;
         }
@@ -1204,7 +1204,7 @@ GroundListElement* HarmTargetingPod::FindHASTargetUnderCursor(void)
     {
         if (tmpElement->BaseObject() == NULL) continue;
 
-        if (!IsInPriorityList(tmpElement->symbol))
+        if ( not IsInPriorityList(tmpElement->symbol))
         {
             continue;
         }
@@ -1284,7 +1284,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
 
     curWaypoint = ((SimVehicleClass*)platform)->curWaypoint; // Get the current waypoint
 
-    if (!curWaypoint) return;   // Don't do anything if waypoint is NULL
+    if ( not curWaypoint) return;   // Don't do anything if waypoint is NULL
 
     if (POSTargets[MAX_POS_TARGETS - 1]) return;  // Don't bother if POS targets list already full
 
@@ -1363,7 +1363,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
                 choice = tmpElement;
             }
 
-            if (!curTargetFound and curTarget and curTarget->BaseObject())
+            if ( not curTargetFound and curTarget and curTarget->BaseObject())
             {
                 if (tmpElement == curTarget or tmpElement->BaseObject() == curTarget->BaseObject())
                 {
@@ -1393,7 +1393,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
             }
         }
 
-        if (!curTargetFound)   // If the cur target no longer alive, NULL the curTarget pointer
+        if ( not curTargetFound)   // If the cur target no longer alive, NULL the curTarget pointer
         {
             curTarget = NULL;
         }
@@ -1478,7 +1478,7 @@ int HarmTargetingPod::ObjectDetected(FalconEntity* newEmmitter, int trackType, i
         // See if this one is already in our list
         tmpElement = FindEmmitter(newEmmitter);
 
-        if (!tmpElement)
+        if ( not tmpElement)
         {
             FireControlComputer* FCC = ((SimVehicleClass*)platform)->GetFCC();
 
@@ -1542,7 +1542,7 @@ void HarmTargetingPod::LockListElement(GroundListElement *choice)
         }
 
         // If we didn't find it in the target list, force the issue anyway...
-        if (!obj)
+        if ( not obj)
         {
             SetSensorTargetHack(choice->BaseObject());
         }
@@ -1699,7 +1699,7 @@ void HarmTargetingPod::UpdateDTSB(int symbol, float &displayX, float &displayY)
     }
 
     // Get into list only a "worthy" symbol, SAM or search radar
-    if (!IsInPriorityList(symbol))
+    if ( not IsInPriorityList(symbol))
     {
         return;
     }
@@ -1761,7 +1761,7 @@ void HarmTargetingPod::BoxTargetDTSB(int symbol, float &displayX, float &display
     bool found = false;
 
     // Get into list only a "worthy" symbol, SAM or search radar
-    if (!IsInPriorityList(symbol))
+    if ( not IsInPriorityList(symbol))
     {
         return;
     }
@@ -1835,7 +1835,7 @@ int HarmTargetingPod::FindWaypointNum(WayPointClass* theWP)
 
     tempWaypoint = ((SimVehicleClass*)platform)->waypoint;
 
-    if (!tempWaypoint) return -1;
+    if ( not tempWaypoint) return -1;
 
     WPnum = 1;
 

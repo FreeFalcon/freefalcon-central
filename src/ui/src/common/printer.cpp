@@ -33,9 +33,9 @@ SendStringToPrinter(_TCHAR *string, _TCHAR *title)
         return 1;
     }
 
-    // if (!g_nPrintToFile or g_nPrintToFile & 0x02) // 0x00 + 0x02 means print out
+    // if ( not g_nPrintToFile or g_nPrintToFile & 0x02) // 0x00 + 0x02 means print out
     //THW 2004-04-12 Never print out if HTML-Briefings are enabled
-    if (!g_bBriefHTML or !g_nPrintToFile or (g_nPrintToFile & 0x02)) // 0x00 + 0x02 means print out
+    if ( not g_bBriefHTML or !g_nPrintToFile or (g_nPrintToFile & 0x02)) // 0x00 + 0x02 means print out
     {
         CoInitialize(NULL);
         ComSup::RegisterServer("GMPrint.dll");
@@ -171,7 +171,7 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
 
     WriteFile(fileID, tmpString, strsize, &bytes, NULL);
 
-    if (!g_bBriefHTML)
+    if ( not g_bBriefHTML)
     {
         strsize = sprintf(tmpString, "generated at %s.\r\n", TimeBuffer);
         WriteFile(fileID, tmpString, strsize, &bytes, NULL);
@@ -195,7 +195,7 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
         }
 
         //Write to file and append "\r\n" sequence.
-        if (!WriteFile(fileID, from, size, &bytes, NULL)) bytes = -1;
+        if ( not WriteFile(fileID, from, size, &bytes, NULL)) bytes = -1;
 
         if (bytes not_eq size)
         {

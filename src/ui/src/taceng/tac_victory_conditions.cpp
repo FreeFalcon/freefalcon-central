@@ -292,7 +292,7 @@ void evaluate_flight_vc(WayPointClass *wp, double x, double y, double z, double 
 
 void victory_condition::enter_critical_section(void)
 {
-    if (!vc_critical)
+    if ( not vc_critical)
     {
         vc_critical = F4CreateCriticalSection("vc_critical");
     }

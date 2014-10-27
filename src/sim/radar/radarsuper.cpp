@@ -150,7 +150,7 @@ SimObjectType* RadarSuperClass::Exec(SimObjectType*)
 
 
     // Quit now if we're turned off
-    if (!isEmitting)
+    if ( not isEmitting)
     {
         if (lockedTarget) SendTrackMsg(lockedTarget, Track_Unlock);
 
@@ -320,7 +320,7 @@ void RadarSuperClass::ExecAG(void)
     {
 
         // Skip things not on the ground
-        if (!object->OnGround())
+        if ( not object->OnGround())
         {
             continue;
         }
@@ -358,7 +358,7 @@ void RadarSuperClass::ExecAG(void)
 
 
         // We're done unless we need to lock something up
-        if (!lockCmd)
+        if ( not lockCmd)
         {
             continue;
         }
@@ -396,7 +396,7 @@ void RadarSuperClass::ExecAG(void)
             case NEXT:
                 if (range < bestSoFar)
                 {
-                    if ((!lockedTarget) or (range > lockedTarget->localData->range))
+                    if (( not lockedTarget) or (range > lockedTarget->localData->range))
                     {
                         bestSoFar = range;
                         newLock = object;
@@ -409,7 +409,7 @@ void RadarSuperClass::ExecAG(void)
             case PREV:
                 if (range > bestSoFar)
                 {
-                    if ((!lockedTarget) or (range < lockedTarget->localData->range))
+                    if (( not lockedTarget) or (range < lockedTarget->localData->range))
                     {
                         bestSoFar = range;
                         newLock = object;
@@ -578,7 +578,7 @@ void RadarSuperClass::ExecAA(void)
         }
 
         // We're done unless we need to acquire a lock
-        if (!lockCmd)
+        if ( not lockCmd)
         {
             continue;
         }
@@ -637,7 +637,7 @@ void RadarSuperClass::ExecAA(void)
             case NEXT:
                 if (object->localData->range < bestSoFar)
                 {
-                    if ((!lockedTarget) or (object->localData->range > lockedTarget->localData->range))
+                    if (( not lockedTarget) or (object->localData->range > lockedTarget->localData->range))
                     {
                         bestSoFar = object->localData->range;
                         newLock = object;
@@ -650,7 +650,7 @@ void RadarSuperClass::ExecAA(void)
             case PREV:
                 if (object->localData->range > bestSoFar)
                 {
-                    if ((!lockedTarget) or (object->localData->range < lockedTarget->localData->range))
+                    if (( not lockedTarget) or (object->localData->range < lockedTarget->localData->range))
                     {
                         bestSoFar = object->localData->range;
                         newLock = object;
@@ -698,7 +698,7 @@ void RadarSuperClass::Display(VirtualDisplay *activeDisplay)
     display = activeDisplay;
 
     // Quit now if we're turned off
-    if (!isEmitting)
+    if ( not isEmitting)
     {
         return;
         display->TextCenter(0.0f, 0.0f, "RADAR OFF");
@@ -762,7 +762,7 @@ void RadarSuperClass::DisplayAGReturns(void)
     {
 
         // Skip things not on the ground
-        if (!object->OnGround())
+        if ( not object->OnGround())
         {
             continue;
         }
@@ -1040,7 +1040,7 @@ void RadarSuperClass::DrawLockedAirInfo(float h, float v)
     // Target ID (NCTR)
     classPtr = (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
 
-    if (lockedTarget->BaseData()->IsSim() and (!((SimBaseClass*)lockedTarget->BaseData())->IsExploding())  and 
+    if (lockedTarget->BaseData()->IsSim() and ( not ((SimBaseClass*)lockedTarget->BaseData())->IsExploding())  and 
         (classPtr->dataType == DTYPE_VEHICLE))
     {
         sprintf(str, "%s", ((VehicleClassDataType*)(classPtr->dataPtr))->Name);

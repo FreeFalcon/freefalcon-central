@@ -134,7 +134,7 @@ void CalcRelAzElRangeAta(SimBaseClass* ownObject, SimObjectType* targetPtr)
 
     theObject = targetPtr->BaseData();
 
-    if (!theObject)
+    if ( not theObject)
         return;
 
     xft = theObject->XPos() - ownObject->XPos();

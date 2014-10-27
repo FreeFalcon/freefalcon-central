@@ -765,7 +765,7 @@ void CBERefuelLight(void * pObject)
         }
     }
     //MI NWS light fix
-    //else if (!SimDriver.GetPlayerEntity()->af->IsEngineFlag(AirframeClass::FuelDoorOpen) and pCPLight->mState > CPLIGHT_AR_NWS_RDY )
+    //else if ( not SimDriver.GetPlayerEntity()->af->IsEngineFlag(AirframeClass::FuelDoorOpen) and pCPLight->mState > CPLIGHT_AR_NWS_RDY )
     else if (
         !playerAC->af->IsEngineFlag(AirframeClass::FuelDoorOpen)  and 
         !playerAC->af->IsSet(AirframeClass::NoseSteerOn)
@@ -898,7 +898,7 @@ void CBECaution5(void * pObject)
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
     // JPO fix
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         pCPLight->mState = faultSys->GetFault(FaultClass::amux_fault) not_eq 0;
     }
@@ -1507,7 +1507,7 @@ void CBEInteriorLight(void *pObject)
 
     pCPLight = (CPLight*) pObject;
 
-    if (!((AircraftClass*) pCPLight->mpOwnship)->HasPower(AircraftClass::InteriorLightPower))
+    if ( not ((AircraftClass*) pCPLight->mpOwnship)->HasPower(AircraftClass::InteriorLightPower))
         pCPLight->mState = CPLIGHT_OFF;
     else
     {
@@ -1535,7 +1535,7 @@ void CBEInstrumentLight(void *pObject)
 
     pCPLight = (CPLight*) pObject;
 
-    if (!((AircraftClass*) pCPLight->mpOwnship)->HasPower(AircraftClass::InstrumentLightPower))
+    if ( not ((AircraftClass*) pCPLight->mpOwnship)->HasPower(AircraftClass::InstrumentLightPower))
         pCPLight->mState = CPLIGHT_OFF;
     else
     {
@@ -1563,7 +1563,7 @@ void CBESpotLight(void *pObject)
 
     pCPLight = (CPLight*) pObject;
 
-    if (!((AircraftClass*) pCPLight->mpOwnship)->HasPower(AircraftClass::SpotLightPower))
+    if ( not ((AircraftClass*) pCPLight->mpOwnship)->HasPower(AircraftClass::SpotLightPower))
         pCPLight->mState = CPLIGHT_OFF;
     else
     {
@@ -1819,7 +1819,7 @@ void CBEGearHandleLight(void *pObject)
 
         if (playerAC->af->gearPos == 0.0F) //0 = gear up
         {
-            if (!playerAC->mFaults->GetFault(FaultClass::gear_fault)  and 
+            if ( not playerAC->mFaults->GetFault(FaultClass::gear_fault)  and 
                 !playerAC->mFaults->GetFault(to_ldg_config))
             {
                 pCPLight->mState = CPLIGHT_OFF; //Light off
@@ -1846,7 +1846,7 @@ void CBEGearHandleLight(void *pObject)
         //handle down. Here it's only on if our gear isn't locked
         if (playerAC->af->gearPos == 1.0F) //1 = gear down
         {
-            if (!playerAC->mFaults->GetFault(FaultClass::gear_fault))
+            if ( not playerAC->mFaults->GetFault(FaultClass::gear_fault))
             {
                 pCPLight->mState = 2; //Light off
             }
@@ -1882,7 +1882,7 @@ void CBEADIOff(void *pObject)
     CPLight* pCPLight;
     pCPLight = (CPLight*) pObject;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         pCPLight->mState = CPLIGHT_OFF;
         return;
@@ -1913,7 +1913,7 @@ void CBEADIAux(void *pObject)
     CPLight* pCPLight;
     pCPLight = (CPLight*) pObject;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         pCPLight->mState = CPLIGHT_OFF;
         return;
@@ -1945,7 +1945,7 @@ void CBEHSIOff(void *pObject)
     CPLight* pCPLight;
     pCPLight = (CPLight*) pObject;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         pCPLight->mState = CPLIGHT_OFF;
         return;
@@ -2021,7 +2021,7 @@ void CBEBUPADIFlag(void *pObject)
     CPLight* pCPLight;
     pCPLight = (CPLight*) pObject;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         pCPLight->mState = CPLIGHT_OFF;
         return;
@@ -2072,7 +2072,7 @@ void CBEGSFlag(void *pObject)
     CPLight* pCPLight;
     pCPLight = (CPLight*) pObject;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         pCPLight->mState = CPLIGHT_OFF;
         return;
@@ -2104,7 +2104,7 @@ void CBELOCFlag(void *pObject)
     CPLight* pCPLight;
     pCPLight = (CPLight*) pObject;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         pCPLight->mState = CPLIGHT_OFF;
         return;

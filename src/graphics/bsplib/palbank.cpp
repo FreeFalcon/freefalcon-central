@@ -113,7 +113,7 @@ void PaletteBankClass::FlushHandles(void)
 // Set the light level on the specified palette
 void PaletteBankClass::LightPalette(int id, Tcolor *light)
 {
-    if (!IsValidIndex(id))
+    if ( not IsValidIndex(id))
     {
         return;
     }
@@ -125,7 +125,7 @@ void PaletteBankClass::LightPalette(int id, Tcolor *light)
 // Set the light level on the specified palette (with special building lights)
 void PaletteBankClass::LightBuildingPalette(int id, Tcolor *light)
 {
-    if (!IsValidIndex(id))
+    if ( not IsValidIndex(id))
     {
         return;
     }
@@ -137,7 +137,7 @@ void PaletteBankClass::LightBuildingPalette(int id, Tcolor *light)
 // Set the light level on the specified palette (with special cockpit reflection alpha)
 void PaletteBankClass::LightReflectionPalette(int id, Tcolor *light)
 {
-    if (!IsValidIndex(id))
+    if ( not IsValidIndex(id))
     {
         return;
     }

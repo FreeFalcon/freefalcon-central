@@ -38,7 +38,7 @@ int FalconLandingMessage::Process(uchar autodisp)
     GridIndex x, y;
     int status;
 
-    if (!Entity() or autodisp)
+    if ( not Entity() or autodisp)
         return -1;
 
     // Check for friendly territory
@@ -51,7 +51,7 @@ int FalconLandingMessage::Process(uchar autodisp)
     else
     {
         status = PILOT_MIA;
-        // ShiAssert(!"Please show Kevin K this message!");
+        // ShiAssert( not "Please show Kevin K this message!");
     }
 
 #else

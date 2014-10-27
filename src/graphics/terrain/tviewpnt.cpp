@@ -34,7 +34,7 @@ void TViewPoint::Setup(int minimumLOD, int maximumLOD, float *fetchRanges)
 
     maxRange = new float[(maxLOD + 1) ];
 
-    if (!maxRange)
+    if ( not maxRange)
     {
         ShiError("Failed memory allocation for viewer's range list");
     }
@@ -45,7 +45,7 @@ void TViewPoint::Setup(int minimumLOD, int maximumLOD, float *fetchRanges)
     // Allocate memory for the array of block lists
     blockLists = new TBlockList[ nLists ];
 
-    if (!blockLists)
+    if ( not blockLists)
     {
         ShiError("Failed memory allocation for viewer's block list");
     }
@@ -247,7 +247,7 @@ BOOL TViewPoint::GetPath(int texID, int type, int offset, TpathFeature *target)
     // Get the requested path feature in tile space
     path = TheTerrTextures.GetPath(static_cast<TextureID>(texID), type, offset);
 
-    if (!path)
+    if ( not path)
     {
         return FALSE;
     }
@@ -275,7 +275,7 @@ BOOL TViewPoint::GetArea(int texID, int type, int offset, TareaFeature *target)
     // Get the requested area feature in tile space
     area = TheTerrTextures.GetArea(static_cast<TextureID>(texID), type, offset);
 
-    if (!area)
+    if ( not area)
     {
         return FALSE;
     }
@@ -821,7 +821,7 @@ BOOL TViewPoint::LineOfSight(Tpoint *p1, Tpoint *p2)
         dz *= 0.2f;
 
         // Call the single LOD Line of Sight function
-        if (!SingleLODLineOfSight(Px, Py, Qx, Qy, z, dz, LOD))
+        if ( not SingleLODLineOfSight(Px, Py, Qx, Qy, z, dz, LOD))
         {
             return FALSE;
         }
@@ -854,7 +854,7 @@ BOOL TViewPoint::SingleLODLineOfSight(int Px, int Py, int Qx, int Qy, float z, f
 
 
 #define OCTANT(f1, f2, f3, f4, f5, i1, s1, r1, r2) \
- for (f1, f2, f3, nr=0; ((f4) and (!hit)); f5) { \
+ for (f1, f2, f3, nr=0; ((f4) and ( not hit)); f5) { \
  z += dz; \
    if (nr < k) { \
  if (i1) { \
@@ -866,7 +866,7 @@ BOOL TViewPoint::SingleLODLineOfSight(int Px, int Py, int Qx, int Qy, float z, f
  s1; \
  if (nr -= k) { \
  hit  = r2(row,col,z,LOD); \
- if (!hit) { \
+ if ( not hit) { \
  hit = r1(row,col,z,LOD); \
  } \
  } else { \
@@ -917,7 +917,7 @@ BOOL TViewPoint::SingleLODLineOfSight(int Px, int Py, int Qx, int Qy, float z, f
     // Unlock the viewpoint
     LeaveCriticalSection(&cs_update);
 
-    return (!hit);
+    return ( not hit);
 }
 
 

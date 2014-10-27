@@ -37,7 +37,7 @@ unsigned int VuDatabase::Purge(VU_BOOL all)
         )
         {
             // run calling all callbacks and seting as removed... purge will do the actual removal
-            if (!(!all and ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
+            if ( not ( not all and ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
             {
                 toBePurged.push_back(VuEntityBin(e));
             }
@@ -69,7 +69,7 @@ int VuDatabase::Suspend(VU_BOOL all)
         )
         {
             // run calling all callbacks and seting as removed... purge will do the actual removal
-            if (!(!all and ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
+            if ( not ( not all and ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
             {
                 toBeSuspended.push_back(VuEntityBin(e));
                 e->RemovalCallback();
@@ -119,12 +119,12 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
     vuCollectionManager->AddToBirthList(entity);
     VuEntity::VU_SEND_TYPE sendType = entity->SendCreate();
 
-    if (entity->IsLocal() and (!entity->IsPrivate()) and (sendType not_eq VuEntity::VU_SC_DONT_SEND))
+    if (entity->IsLocal() and ( not entity->IsPrivate()) and (sendType not_eq VuEntity::VU_SC_DONT_SEND))
     {
         VuCreateEvent *event = 0;
         VuTargetEntity *target = vuGlobalGroup;
 
-        if (!entity->IsGlobal())
+        if ( not entity->IsGlobal())
         {
             target = vuLocalSessionEntity->Game();
         }
@@ -157,12 +157,12 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 
     VuEntity::VU_SEND_TYPE sendType = entity->SendCreate();
 
-    if (entity->IsLocal() and (!entity->IsPrivate()) and (sendType not_eq VuEntity::VU_SC_DONT_SEND))
+    if (entity->IsLocal() and ( not entity->IsPrivate()) and (sendType not_eq VuEntity::VU_SC_DONT_SEND))
     {
         VuCreateEvent *event = 0;
         VuTargetEntity *target = vuGlobalGroup;
 
-        if (!entity->IsGlobal())
+        if ( not entity->IsGlobal())
         {
             target = vuLocalSessionEntity->Game();
         }
@@ -188,7 +188,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 
 VU_ERRCODE VuDatabase::CommonRemove(VuEntity *entity)
 {
-    if (!entity or entity->VuState() not_eq VU_MEM_ACTIVE)
+    if ( not entity or entity->VuState() not_eq VU_MEM_ACTIVE)
     {
         return VU_NO_OP;
     }
@@ -309,7 +309,7 @@ unsigned int VuDatabase::Purge(VU_BOOL all)
             e = li.GetNext()
         )
         {
-            if (!(!all and ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
+            if ( not ( not all and ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
             {
                 e->SetVuState(VU_MEM_REMOVED);
             }
@@ -337,7 +337,7 @@ int VuDatabase::Suspend(VU_BOOL all)
             e = li.GetNext()
         )
         {
-            if (!(!all and ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
+            if ( not ( not all and ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
             {
                 e->RemovalCallback();
                 e->SetVuState(VU_MEM_REMOVED);
@@ -386,12 +386,12 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
     vuCollectionManager->AddToBirthList(entity);
     VuEntity::VU_SEND_TYPE sendType = entity->SendCreate();
 
-    if (entity->IsLocal() and (!entity->IsPrivate()) and (sendType not_eq VuEntity::VU_SC_DONT_SEND))
+    if (entity->IsLocal() and ( not entity->IsPrivate()) and (sendType not_eq VuEntity::VU_SC_DONT_SEND))
     {
         VuCreateEvent *event = 0;
         VuTargetEntity *target = vuGlobalGroup;
 
-        if (!entity->IsGlobal())
+        if ( not entity->IsGlobal())
         {
             target = vuLocalSessionEntity->Game();
         }
@@ -426,12 +426,12 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 
     VuEntity::VU_SEND_TYPE sendType = entity->SendCreate();
 
-    if (entity->IsLocal() and (!entity->IsPrivate()) and (sendType not_eq VuEntity::VU_SC_DONT_SEND))
+    if (entity->IsLocal() and ( not entity->IsPrivate()) and (sendType not_eq VuEntity::VU_SC_DONT_SEND))
     {
         VuCreateEvent *event = 0;
         VuTargetEntity *target = vuGlobalGroup;
 
-        if (!entity->IsGlobal())
+        if ( not entity->IsGlobal())
         {
             target = vuLocalSessionEntity->Game();
         }
@@ -455,7 +455,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 
 VU_ERRCODE VuDatabase::CommonRemove(VuEntity *entity)
 {
-    if (!entity or entity->VuState() not_eq VU_MEM_ACTIVE)
+    if ( not entity or entity->VuState() not_eq VU_MEM_ACTIVE)
     {
         return VU_NO_OP;
     }

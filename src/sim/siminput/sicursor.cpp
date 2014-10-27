@@ -169,7 +169,7 @@ BOOL CreateSimCursors()
                 const DWORD dwMaxTextureHeight = OTWDriver.OTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
                 gpSimCursors[i].CursorRenderPalette = new PaletteHandle(OTWDriver.OTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-                if (!gpSimCursors[i].CursorRenderPalette)
+                if ( not gpSimCursors[i].CursorRenderPalette)
                     throw _com_error(E_OUTOFMEMORY);
 
                 // Check if we can use a single texture
@@ -177,15 +177,15 @@ BOOL CreateSimCursors()
                 {
                     TextureHandle *pTex = new TextureHandle;
 
-                    if (!pTex)
+                    if ( not pTex)
                         throw _com_error(E_OUTOFMEMORY);
 
                     gpSimCursors[i].CursorRenderPalette->AttachToTexture(pTex);
 
-                    if (!pTex->Create("CPHsi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, gpSimCursors[i].Width, gpSimCursors[i].Height))
+                    if ( not pTex->Create("CPHsi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, gpSimCursors[i].Width, gpSimCursors[i].Height))
                         throw _com_error(E_FAIL);
 
-                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) gpSimCursors[i].CursorRenderBuffer, true, true)) // soon to be re-loaded by CPSurface::Translate3D
+                    if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) gpSimCursors[i].CursorRenderBuffer, true, true)) // soon to be re-loaded by CPSurface::Translate3D
                         throw _com_error(E_FAIL);
 
                     gpSimCursors[i].CursorRenderTexture.push_back(pTex);
@@ -313,7 +313,7 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
         CursorDest.bottom = displayHeight - 1;
     }
 
-    if (!DisplayOptions.bRender2DCockpit)
+    if ( not DisplayOptions.bRender2DCockpit)
         OTWDriver.OTWImage->ComposeTransparent(gpSimCursors[gSelectedCursor].CursorBuffer, &CursorSrc, &CursorDest);
     else
     {

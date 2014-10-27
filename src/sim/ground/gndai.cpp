@@ -351,7 +351,7 @@ GNDAIClass::GNDAIClass(GroundClass *s, GNDAIClass *l, short r, int unit_id, int 
     }
 
     // Update current trig values
-    if (!l or this == l)
+    if ( not l or this == l)
     {
         mlSinCos(&trig, ideal_h);
         isinh = trig.sin;
@@ -429,7 +429,7 @@ GNDAIClass::GNDAIClass(GroundClass *s, GNDAIClass *l, short r, int unit_id, int 
         nextAirFire = SimLibElapsedTime + ((int)(s->vehicleInUnit * 5 * SEC_TO_MSEC) % (int)airFireRate);
     }
 
-    if (!maxvel)
+    if ( not maxvel)
     {
         // If we can't move, set ourselves to halted
         moveState = GNDAI_MOVE_HALTED;
@@ -564,7 +564,7 @@ void GNDAIClass::ProcessTargeting(void)
         if (campTargetEntity)
         {
             // Create our shared ground target object (campaign target)
-            if (!gndTargetPtr or gndTargetPtr->BaseData() not_eq campTargetEntity)
+            if ( not gndTargetPtr or gndTargetPtr->BaseData() not_eq campTargetEntity)
             {
                 SetGroundTarget(new SimObjectType(campTargetEntity));
             }
@@ -584,7 +584,7 @@ void GNDAIClass::ProcessTargeting(void)
         if (campTargetEntity)
         {
             // Create our shared ground target object (campaign target)
-            if (!airTargetPtr or airTargetPtr->BaseData() not_eq campTargetEntity)
+            if ( not airTargetPtr or airTargetPtr->BaseData() not_eq campTargetEntity)
             {
                 SetAirTarget(new SimObjectType(campTargetEntity));
             }
@@ -647,7 +647,7 @@ void GNDAIClass::ProcessTargeting(void)
                 session = (FalconSessionEntity*) sit.GetNext();
             }
 
-            if (!best)
+            if ( not best)
             {
                 SetAirTarget(NULL);
             }
@@ -667,7 +667,7 @@ void GNDAIClass::ProcessTargeting(void)
 
     // Decide if we want to shoot at the battalion's air or ground target
     // If we are an emitter, we always choose the airtarget
-    if (self->isGroundCapable and (!self->isEmitter or self->isShip))   // JPO let ships decide.
+    if (self->isGroundCapable and ( not self->isEmitter or self->isShip))   // JPO let ships decide.
     {
         if (self->isAirCapable)
         {
@@ -714,7 +714,7 @@ void GNDAIClass::ProcessTargeting(void)
     // 3. our commander wants us to shoot at another unit
 
     // RV - Biker - Switch to next target if we did take a hit (pctStrength <= 0.0f)
-    //if(!self->targetPtr or self->targetPtr->BaseData()->IsDead() or newUnit not_eq oldUnit)
+    //if( not self->targetPtr or self->targetPtr->BaseData()->IsDead() or newUnit not_eq oldUnit)
     if (
         !self->targetPtr ||
         ((SimBaseClass *)self->targetPtr->BaseData())->pctStrength <= 0.0f ||
@@ -911,13 +911,13 @@ void GNDAIClass::ProcessTargeting(void)
 #endif
         }
 
-        if ((!self->isEmitter or self->isAirCapable) and this not_eq battalionCommand)
+        if (( not self->isEmitter or self->isAirCapable) and this not_eq battalionCommand)
         {
             self->SelectWeapon(FALSE);
             SimWeaponClass *theWeapon = self->Sms->GetCurrentWeapon();
 
             //if we can't shoot at the current target, don't shoot
-            if (!theWeapon)
+            if ( not theWeapon)
             {
                 self->SetTarget(NULL);
             }
@@ -1134,7 +1134,7 @@ void GNDAIClass::Order_Battalion(void)
         o = GetObjectiveByXY(cx, cy);
 
         // we may have 3 tile bridges in the future, so use g_nlookAroundWaterTiles instead of hardcoding
-        if (!o) // can be at 2 tile bridges -> scan around our parent units location for a bridge
+        if ( not o) // can be at 2 tile bridges -> scan around our parent units location for a bridge
         {
             for (j = delta; j < g_nlookAroundWaterTiles; j++)
             {
@@ -1187,7 +1187,7 @@ void GNDAIClass::Order_Battalion(void)
 
         NearCoast:
 
-            if (!onWater)
+            if ( not onWater)
             {
                 // that's it, we don't move anymore
                 moveState = GNDAI_MOVE_HALTED;
@@ -1224,7 +1224,7 @@ void GNDAIClass::Order_Company(void)
             }
         }
     }
-    else if (!(moveFlags & GNDAI_MOVE_FIXED_POSITIONS))
+    else if ( not (moveFlags & GNDAI_MOVE_FIXED_POSITIONS))
     {
         ideal_h = leader->ideal_h;
     }
@@ -1256,7 +1256,7 @@ void GNDAIClass::Order_Platoon(void)
             }
         }
     }
-    else if (!(moveFlags & GNDAI_MOVE_FIXED_POSITIONS))
+    else if ( not (moveFlags & GNDAI_MOVE_FIXED_POSITIONS))
     {
         ideal_h = leader->ideal_h;
     }
@@ -1295,7 +1295,7 @@ void GNDAIClass::Order_Squad(void)
             }
         }
     }
-    else if (!(moveFlags & GNDAI_MOVE_FIXED_POSITIONS))
+    else if ( not (moveFlags & GNDAI_MOVE_FIXED_POSITIONS))
     {
         ideal_h = leader->ideal_h;
     }
@@ -1313,7 +1313,7 @@ int GNDAIClass::CheckThrough(void)
         through_y = battalionCommand->through_y;
     }
 
-    if (!(moveFlags & GNDAI_WENT_THROUGH) and through_x and through_y)
+    if ( not (moveFlags & GNDAI_WENT_THROUGH) and through_x and through_y)
     {
         ideal_x = through_x;
         ideal_y = through_y;
@@ -1379,7 +1379,7 @@ void GNDAIClass::Move_Towards_Dest(void)
     // Check if we need to turn
     delh = ideal_h - self->Yaw();
 
-    if (!(moveFlags & GNDAI_MOVE_FIXED_POSITIONS) and delh not_eq 0.0F)
+    if ( not (moveFlags & GNDAI_MOVE_FIXED_POSITIONS) and delh not_eq 0.0F)
     {
         //if (delh >= PI or (delh < 0 and delh > -PI))
         // rotvel = -1.0F * OPTIMAL_VEHICLE_ROTATION;
@@ -1586,7 +1586,7 @@ void GNDAIClass::PromoteSubordinates(void)
     GroundClass *newLead = NULL;
 
     // sfr: @todo remove these checks
-    if (!self or F4IsBadWritePtr(self, sizeof(GroundClass)) or F4IsBadCodePtr((FARPROC) self->GetCampaignObject())) // JB 010318 CTD
+    if ( not self or F4IsBadWritePtr(self, sizeof(GroundClass)) or F4IsBadCodePtr((FARPROC) self->GetCampaignObject())) // JB 010318 CTD
     {
         if (F4IsBadWritePtr(this, sizeof(GNDAIClass)))
             return;
@@ -1600,7 +1600,7 @@ void GNDAIClass::PromoteSubordinates(void)
 
     // edg: changed from assert.  A unit may have been killed just after a
     // reagg and there may be no-one to promote!
-    if (!self->GetCampaignObject()->GetComponents())
+    if ( not self->GetCampaignObject()->GetComponents())
     {
         // set our own leader (if any) to NULL to deref
         SetLeader(NULL);
@@ -1694,7 +1694,7 @@ void GNDAIClass::PromoteSubordinates(void)
             // do we promote this guy?
             if (theObj->gai->leader == this)
             {
-                if (!newLead)
+                if ( not newLead)
                 {
                     // We're the new leader - set some stuff
                     newLead = theObj;

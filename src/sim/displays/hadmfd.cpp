@@ -48,12 +48,12 @@ void HadMfdDrawable::Display(VirtualDisplay* newDisplay)
     Sms = playerAC->Sms;
     HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
 
-    if (!theRadar or !pFCC or !self or !Sms)
+    if ( not theRadar or !pFCC or !self or !Sms)
     {
         return;
     }
 
-    if (!harmPod or !self->af->GetIsHtsAble())  // offMode if no HTS pod or equivalent system on board
+    if ( not harmPod or !self->af->GetIsHtsAble())  // offMode if no HTS pod or equivalent system on board
     {
         OffMode(display);
         return;
@@ -99,7 +99,7 @@ void HadMfdDrawable::Display(VirtualDisplay* newDisplay)
 
 void HadMfdDrawable::DrawDLZ(VirtualDisplay* display)
 {
-    if (!pFCC)
+    if ( not pFCC)
     {
         return;
     }
@@ -349,7 +349,7 @@ void HadMfdDrawable::HARMWpnMode()
 
         BottomRow();
 
-        if (!(playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+        if ( not (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
         {
             DWORD tempColor = display->Color();
             display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
@@ -415,7 +415,7 @@ void HadMfdDrawable::HARMWpnMode()
         LabelButton(16,  "TD", "TM");
         BottomRow();
 
-        if (!(playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+        if ( not (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
         {
             DWORD tempColor = display->Color();
             display->SetColor(GetMfdColor(MFD_WHITY_GRAY));

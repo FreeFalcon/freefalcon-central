@@ -200,9 +200,9 @@ void DigitalBrain::AiRefuel(void)
                 af->z = trackZ;
             }
 
-            ShiAssert(!_isnan(af->x));
-            ShiAssert(!_isnan(af->y));
-            ShiAssert(!_isnan(af->z));
+            ShiAssert( not _isnan(af->x));
+            ShiAssert( not _isnan(af->y));
+            ShiAssert( not _isnan(af->z));
 
             // 12DEC03 - FRB - update distance to refueling position
             dx = trackX - af->x;
@@ -225,7 +225,7 @@ void DigitalBrain::AiRefuel(void)
                 af->z = targetPos.z;
                 self->SetYPR(tanker->Yaw(), 0.0F, 0.0F); // change current heading to that of the tanker
 
-                if (!ReadySet)
+                if ( not ReadySet)
                 {
                     ((TankerBrain*)tanker->Brain())->AIReady(); // 28NOV03 - FRB - tell th tanker I'm in position
                     ReadySet = 1;
@@ -270,7 +270,7 @@ void DigitalBrain::AiRefuel(void)
 
                 /*
                  // JB 020311 Respond to "commands" from the tanker.
-                 if (!af->IsSet(AirframeClass::Refueling) and refuelstatus == refRefueling  and 
+                 if ( not af->IsSet(AirframeClass::Refueling) and refuelstatus == refRefueling  and 
                  (SimLibElapsedTime - lastBoomCommand) > 10000)
                  {
                  lastBoomCommand = SimLibElapsedTime;
@@ -511,9 +511,9 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
         }
     }
 
-    ShiAssert(!_isnan(af->x));
-    ShiAssert(!_isnan(af->y));
-    ShiAssert(!_isnan(af->z));
+    ShiAssert( not _isnan(af->x));
+    ShiAssert( not _isnan(af->y));
+    ShiAssert( not _isnan(af->z));
 
     refuelMode = PlayerOptions.GetRefuelingMode() - 1;
 
@@ -571,9 +571,9 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
         float a, oldrx, deceldistance;
         bool decelerating = false;
 
-        ShiAssert(!_isnan(af->x));
-        ShiAssert(!_isnan(af->y));
-        ShiAssert(!_isnan(af->z));
+        ShiAssert( not _isnan(af->x));
+        ShiAssert( not _isnan(af->y));
+        ShiAssert( not _isnan(af->z));
 
         // 2002-03-28 MN Hack to make full AI refueling control working in each and every situation:
         // if we are really close, just put us on the boom. Period ;-)
@@ -587,7 +587,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
             af->z = targetPos.z;
             self->SetYPR(tanker->Yaw(), 0.0F, 0.0F); // change current heading to that of the tanker
 
-            if (!ReadySet)
+            if ( not ReadySet)
             {
                 ((TankerBrain*)tanker->Brain())->AIReady(); // 28NOV03 - FRB - tell th tanker I'm in position
                 ReadySet = 1;
@@ -624,7 +624,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
 
             /*
              // JB 020311 Respond to "commands" from the tanker.
-             if (!af->IsSet(AirframeClass::Refueling) and refuelstatus == refRefueling  and 
+             if ( not af->IsSet(AirframeClass::Refueling) and refuelstatus == refRefueling  and 
              (SimLibElapsedTime - lastBoomCommand) > 10000)
              {
              lastBoomCommand = SimLibElapsedTime;
@@ -937,7 +937,7 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
         }
 
         // Check alternate field
-        if (!foundSomething)
+        if ( not foundSomething)
         {
             // Find the alternate field
             tmpWaypoint = self->waypoint;
@@ -969,7 +969,7 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
         }
 
         // Find nearest ?
-        if (!foundSomething)
+        if ( not foundSomething)
         {
             ObjectiveClass* nearest = FindNearestFriendlyRunway(
                                           self->GetTeam(), SimToGrid(self->XPos()), SimToGrid(self->YPos())
@@ -1004,7 +1004,7 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
                         break;
                     }
 
-                    if (!tmpWaypoint->GetNextWP())
+                    if ( not tmpWaypoint->GetNextWP())
                     {
                         break;
                     }

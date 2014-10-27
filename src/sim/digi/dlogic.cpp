@@ -81,7 +81,7 @@ void DigitalBrain::DecisionLogic(void)
             {
                 airtarget = FindSimAirTarget((CampBaseClass*)diverttarget, ((CampBaseClass*)diverttarget)->NumberOfComponents(), 0);
 
-                if (!airtarget) // We've all targets assigned now, clear the divert waypoint
+                if ( not airtarget) // We've all targets assigned now, clear the divert waypoint
                     flight->SetOverrideWP(NULL);
 
                 if (airtarget) // it's a new one no other flight member has chosen yet
@@ -112,7 +112,7 @@ void DigitalBrain::DecisionLogic(void)
                     if (isWing) // let them loose...
                         AiGoShooter();
 
-                    if (!isWing) // make a radio call to the team
+                    if ( not isWing) // make a radio call to the team
                     {
                         int flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
                         FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
@@ -208,8 +208,8 @@ void DigitalBrain::DecisionLogic(void)
 
     // If I'm a leader or a wingman with permission to shoot and not defensive or in waypoint mode
     // MODIFIED BY S.G. SO AI CAN STILL DEFEND THEMSELF WHEN RETURNING TO BASE (ODDLY ENOUGH, LandingMode IS WHEN RTBing
-    //  if((!isWing or mWeaponsAction == AI_WEAPONS_FREE) and targetPtr and curMode > DefensiveModes  and 
-    if ((!isWing or mWeaponsAction == AI_WEAPONS_FREE) and targetPtr and (curMode > DefensiveModes or curMode == LandingMode)  and 
+    //  if(( not isWing or mWeaponsAction == AI_WEAPONS_FREE) and targetPtr and curMode > DefensiveModes  and 
+    if (( not isWing or mWeaponsAction == AI_WEAPONS_FREE) and targetPtr and (curMode > DefensiveModes or curMode == LandingMode)  and 
         (curMode not_eq WaypointMode or agDoctrine == AGD_NONE))
     {
         // Weapon selection
@@ -301,7 +301,7 @@ void DigitalBrain::DecisionLogic(void)
 void DigitalBrain::RunDecisionRoutines(void)
 {
     // If you're on the ground, just taxi
-    if (!self->OnGround())
+    if ( not self->OnGround())
     {
         // Not done in AiRunDecisionRoutines and must be done by all flight members
         CollisionCheck();
@@ -314,7 +314,7 @@ void DigitalBrain::RunDecisionRoutines(void)
         //Cobra select radar mode
         chooseRadarMode();
 
-        if (!isWing)
+        if ( not isWing)
         {
             // Done in AiRunDecisionRoutines as well so limit it to lead in here
             GunsJinkCheck();
@@ -511,19 +511,19 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
     if (newTarget and // Assigning a target
         newTarget not_eq targetPtr and // It's a new target
         !newTarget->BaseData()->OnGround() and // It's not on the ground
-        (!mpActionFlags[AI_ENGAGE_TARGET] and missionClass == AAMission or missionComplete) and // We're not busy doing A/G stuff
+        ( not mpActionFlags[AI_ENGAGE_TARGET] and missionClass == AAMission or missionComplete) and // We're not busy doing A/G stuff
         newTarget not_eq threatPtr and // It's not a threat we're reacting to
         isWing and // We're a wingy
         mDesignatedObject == FalconNullId and // We're not being directed
         !self->OnGround()) // We're in the air
     {
-        //F4Assert (!newTarget->BaseData()->IsHelicopter()); // 2002-03-05 Choppers are fare game now under some conditions
+        //F4Assert ( not newTarget->BaseData()->IsHelicopter()); // 2002-03-05 Choppers are fare game now under some conditions
 
         // Ask for permission?
         // 2000-09-25 MODIFIED BY S.G. WHY ASK PERMISSION IF WE HAVE WEAPON FREE?
-        if (!mpActionFlags[AI_ENGAGE_TARGET] and mWeaponsAction == AI_WEAPONS_HOLD)
+        if ( not mpActionFlags[AI_ENGAGE_TARGET] and mWeaponsAction == AI_WEAPONS_HOLD)
         {
-            if (!IsSetATC(AskedToEngage))
+            if ( not IsSetATC(AskedToEngage))
             {
                 SetATCFlag(AskedToEngage);
                 edata[0] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
@@ -659,7 +659,7 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
         {
             IrstClass* theIrst = (IrstClass*)FindSensor(self, SensorClass::IRST);
 
-            if (!theIrst)
+            if ( not theIrst)
             {
                 theRadar->SetDesiredTarget(newTarget);
             }
@@ -818,7 +818,7 @@ void DigitalBrain::FireControl(void)
     // me123 commented out for now. it seems the incomign missiles are not getting cleared !
     // 2001-08-31 S.G. FIXED PREVIOUS CODE WAS ASSUMING targetPtr WAS ALWAYS A SIM. IT CAN BE A CAMPAIGN OBJECT AS WELL, HENCE THE CTD.
     // if ((((SimBaseClass *)targetPtr->BaseData())->incomingMissile and ((SimWeaponClass *)((SimBaseClass *)targetPtr->BaseData())->incomingMissile)->parent not_eq self))
-    if ((targetPtr->BaseData()->IsAirplane() and ((SimBaseClass *)targetPtr->BaseData())->incomingMissile[1]) or (!targetPtr->BaseData()->IsAirplane() and ((SimBaseClass *)targetPtr->BaseData())->incomingMissile[0]))
+    if ((targetPtr->BaseData()->IsAirplane() and ((SimBaseClass *)targetPtr->BaseData())->incomingMissile[1]) or ( not targetPtr->BaseData()->IsAirplane() and ((SimBaseClass *)targetPtr->BaseData())->incomingMissile[0]))
         return;
 
     //END OF ADDED SECTION
@@ -930,7 +930,7 @@ void DigitalBrain::FireControl(void)
         ClearATCFlag(InShootShoot);
     }
 
-    if (!IsSetATC(InShootShoot)) holdlongrangeshot = FALSE;
+    if ( not IsSetATC(InShootShoot)) holdlongrangeshot = FALSE;
 }
 
 

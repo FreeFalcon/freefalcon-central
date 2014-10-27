@@ -416,7 +416,7 @@ int SquadronClass::MoveUnit(CampaignTime time)
             // alert flight.
             for (i = 0; i < VEHICLE_GROUPS_PER_UNIT / 2; i++)
             {
-                if (!schedule[i])
+                if ( not schedule[i])
                     want_alert = 1;
             }
 
@@ -459,15 +459,15 @@ int SquadronClass::MoveUnit(CampaignTime time)
         ab_old = ab;
     }
 
-    ShiAssert(!ab or ab->IsObjective() or ab->IsTaskForce() or (ab == this and DontPlan()));
+    ShiAssert( not ab or ab->IsObjective() or ab->IsTaskForce() or (ab == this and DontPlan()));
 
-    if (!ab or ab->IsObjective() or ab == this)
+    if ( not ab or ab->IsObjective() or ab == this)
     {
         // Don't plan flag used to mean don't rebase for squadrons
         if (DontPlan())
         {
             // 2001-08-06 MODIFIED BY S.G. FRIENDLY BASE WILL DO THE JOB ALL RIGHT. NO NEED TO LIMIT IT TO OUR TEAM.
-            if (!ab or !GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
+            if ( not ab or !GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
             {
                 if (this == FalconLocalSession->GetPlayerSquadron())
                     PostMessage(FalconDisplay.appWin, FM_SQUADRON_RECALLED, 0, 0);
@@ -491,7 +491,7 @@ int SquadronClass::MoveUnit(CampaignTime time)
 
         // 2001-07-05 MODIFIED BY S.G. DON'T RELOCATE IF TOO FAR FROM FLOT IF GLOBALLY SET TO ACT THAT WAY
         // if (fd < 999.0F and (fd < range/30 or fd > range/3 or !ab)) // We're to close or to far from the front or don't have an airbase
-        if (fd < 999.0F and (fd < range / 30 or (!(g_nAirbaseReloc & AirBaseRelocNoFar) and fd > range / 3) or !ab)) // We're to close or to far from the front or don't have an airbase
+        if (fd < 999.0F and (fd < range / 30 or ( not (g_nAirbaseReloc & AirBaseRelocNoFar) and fd > range / 3) or !ab)) // We're to close or to far from the front or don't have an airbase
         {
             // Find a better base for us
             UnitClassDataType *uc = GetUnitClassData();
@@ -596,16 +596,16 @@ int SquadronClass::MoveUnit(CampaignTime time)
         ab_old = ab;
     }
 
-    ShiAssert(!ab or ab->IsObjective() or ab->IsTaskForce() or (ab == this and DontPlan()));
+    ShiAssert( not ab or ab->IsObjective() or ab->IsTaskForce() or (ab == this and DontPlan()));
 
-    if (!ab or ab->IsObjective() or ab == this)
+    if ( not ab or ab->IsObjective() or ab == this)
     {
         // Don't plan flag used to mean don't rebase for squadrons
         if (DontPlan())
         {
             // 2001-08-06 MODIFIED BY S.G. FRIENDLY BASE WILL DO THE JOB ALL RIGHT. NO NEED TO LIMIT IT TO OUR TEAM.
             // if (ab->GetTeam() not_eq GetTeam())
-            if (!ab or !GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
+            if ( not ab or !GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
             {
                 if (this == FalconLocalSession->GetPlayerSquadron())
                     PostMessage(FalconDisplay.appWin, FM_SQUADRON_RECALLED, 0, 0);
@@ -637,12 +637,12 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
 
     ab = FindEntity(airbase_id);
 
-    if (!ab or ab->IsObjective() or ab == this)
+    if ( not ab or ab->IsObjective() or ab == this)
     {
         // Don't plan flag used to mean don't rebase for squadrons
         if (DontPlan())
         {
-            if (!ab or !GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
+            if ( not ab or !GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
             {
                 KillUnit();
             }
@@ -674,7 +674,7 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
             reallocate = 2;
 
         // Reallocate if base is destroyed
-        if (!ab)
+        if ( not ab)
             reallocate = 3;
 
         // Find a better base for us
@@ -780,7 +780,7 @@ void SquadronClass::Scramble(void)
         // alert flight.
         for (i = 0; i < VEHICLE_GROUPS_PER_UNIT / 2; i++)
         {
-            if (!schedule[i])
+            if ( not schedule[i])
             {
                 want_alert = 1;
                 break;
@@ -841,7 +841,7 @@ int SquadronClass::GetUnitSupplyNeed(int have)
     // Squadrons need supply based on their munitions
     uc = GetUnitClassData();
 
-    if (!uc)
+    if ( not uc)
         return 0;
 
     for (i = 0; i < MAXIMUM_WEAPTYPES; i++)
@@ -863,7 +863,7 @@ int SquadronClass::GetUnitFuelNeed(int have)
 
     uc = GetUnitClassData();
 
-    if (!uc)
+    if ( not uc)
         return 0;
 
     // Squadrons want enough fuel to load each plane SQUADRON_MISSIONS_PER_HOUR times per hour for 2 supply periods
@@ -931,7 +931,7 @@ void SquadronClass::InitPilots(void)
         // GetPilotData(i)->ResetStats();
         GetPilotData(i)->ResetStats(TeamInfo[GetOwner()]->airExperience);
 
-        if (!i) // First slot is Colonel.
+        if ( not i) // First slot is Colonel.
             GetPilotData(i)->pilot_id = GetAvailablePilot(TeamInfo[GetOwner()]->firstColonel, TeamInfo[GetOwner()]->firstCommander, GetOwner());
         else if (i < last_commander) // First 1/3 are commanders
             GetPilotData(i)->pilot_id = GetAvailablePilot(TeamInfo[GetOwner()]->firstCommander, TeamInfo[GetOwner()]->firstWingman, GetOwner());
@@ -968,7 +968,7 @@ void SquadronClass::ReinforcePilots(int max_new_pilots)
         {
             result = rand() % 3;
 
-            if (!result) // 33% chance of a rescue
+            if ( not result) // 33% chance of a rescue
                 GetPilotData(i)->pilot_status = PILOT_RESCUED;
             else if (result == 1) // 33% chance of KIA
             {
@@ -982,7 +982,7 @@ void SquadronClass::ReinforcePilots(int max_new_pilots)
             // GetPilotData(i)->ResetStats();
             GetPilotData(i)->ResetStats(TeamInfo[GetOwner()]->airExperience);
 
-            if (!i) // First slot is Colonel.
+            if ( not i) // First slot is Colonel.
                 GetPilotData(i)->pilot_id = GetAvailablePilot(TeamInfo[GetOwner()]->firstColonel, TeamInfo[GetOwner()]->firstCommander, GetOwner());
             else if (i < PILOTS_PER_SQUADRON / 3) // First 1/3 are commanders
                 GetPilotData(i)->pilot_id = GetAvailablePilot(TeamInfo[GetOwner()]->firstCommander, TeamInfo[GetOwner()]->firstWingman, GetOwner());
@@ -1068,7 +1068,7 @@ void SquadronClass::ShiftSchedule(void)
 
     for (i = 0; i < VEHICLE_GROUPS_PER_UNIT; i++)
     {
-        if (!GetNumVehicles(i))
+        if ( not GetNumVehicles(i))
             SetSchedule(i, 0xFFFFFFFF); // Nothing here, set as used.
         else
             ShiftSchedule(i); // [i] = sq->schedule[i] >> 1;
@@ -1132,7 +1132,7 @@ int SquadronClass::FindAvailableAircraft(MissionRequest mis)
         }
     }
 
-    ShiAssert(!got or mis->slots[0] not_eq 255);
+    ShiAssert( not got or mis->slots[0] not_eq 255);
 #endif
 
     return got;
@@ -1262,7 +1262,7 @@ int SquadronClass::AssignPilots(Flight fl)
 
         if (fl->plane_stats[plane] == AIRCRAFT_AVAILABLE and fl->pilots[plane] == NO_PILOT)
         {
-            if (!plane)
+            if ( not plane)
             {
                 // Commander goes in first slot
                 for (pilot = 0; pilot < PILOTS_PER_SQUADRON / 3 and !got; pilot++)
@@ -1280,7 +1280,7 @@ int SquadronClass::AssignPilots(Flight fl)
                 }
             }
 
-            if (!got)
+            if ( not got)
             {
                 // Now Wingmen
                 for (pilot = PILOTS_PER_SQUADRON - 1; pilot >= 0 and !got; pilot--)
@@ -1326,7 +1326,7 @@ void SquadronClass::UpdateSquadronStores(
     // Consolidate the weapons (we need to do this to minimize rounding errors)
     for (i = 0; i < HARDPOINT_MAX; i++)
     {
-        if (!(WeaponDataTable[weapon[i]].Flags & WEAP_INFINITE_MASK))
+        if ( not (WeaponDataTable[weapon[i]].Flags & WEAP_INFINITE_MASK))
         {
             for (j = 0, done = 0; j < HARDPOINT_MAX and !done; j++)
             {
@@ -1365,7 +1365,7 @@ void SquadronClass::UpdateSquadronStores(
 
     SetSquadronFuel(f);
 
-    if (!IsLocal())
+    if ( not IsLocal())
     {
         // Send a message to host notifying him of the changes to the squadron's weapon loads
         VuSessionEntity *target = (VuSessionEntity*) vuDatabase->Find(OwnerId());
@@ -1401,7 +1401,7 @@ void SquadronClass::ResupplySquadronStores(
     // Consolidate the weapons (we need to do this to minimize rounding errors)
     for (i = 0; i < HARDPOINT_MAX; i++)
     {
-        if (!(WeaponDataTable[weapon[i]].Flags & WEAP_INFINITE_MASK))
+        if ( not (WeaponDataTable[weapon[i]].Flags & WEAP_INFINITE_MASK))
         {
             for (j = 0, done = 0; j < HARDPOINT_MAX and !done; j++)
             {
@@ -1442,7 +1442,7 @@ void SquadronClass::ResupplySquadronStores(
 
     SetSquadronFuel(f);
 
-    if (!IsLocal())
+    if ( not IsLocal())
     {
         // Send a message to host notifying him of the changes to the squadron's weapon loads
         VuSessionEntity *target = (VuSessionEntity*) vuDatabase->Find(OwnerId());
@@ -1684,12 +1684,12 @@ void SquadronClass::SetLastResupply(int s)
 
 void SquadronClass::MakeSquadronDirty(Dirty_Squadron bits, Dirtyness score)
 {
-    if ((!IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
+    if (( not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
 
-    if (!IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
+    if ( not IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
     {
         score = static_cast<Dirtyness>(score << 4);
     }

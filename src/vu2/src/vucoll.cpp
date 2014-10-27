@@ -31,7 +31,7 @@ VuCollection::~VuCollection()
 
 void VuCollection::Register()
 {
-    if (!registered)
+    if ( not registered)
     {
         vuCollectionManager->Register(this);
         registered = true;
@@ -50,7 +50,7 @@ void VuCollection::Unregister()
 
 VU_ERRCODE VuCollection::Handle(VuMessage *msg)
 {
-    if (!filter_)
+    if ( not filter_)
     {
         return VU_NO_OP;
     }
@@ -64,7 +64,7 @@ VU_ERRCODE VuCollection::Handle(VuMessage *msg)
             {
                 if (Find(ent))
                 {
-                    if (!filter_->Test(ent))
+                    if ( not filter_->Test(ent))
                     {
                         // ent is in table, but shouldnt
                         PrivateRemove(ent);

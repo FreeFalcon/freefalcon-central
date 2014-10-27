@@ -338,7 +338,7 @@ void AdvancedWeaponStation::DeletePylonBSP(void)
 
 DrawableBSP *AdvancedWeaponStation::DetachPylonBSP(void)
 {
-    if (!thePylon)
+    if ( not thePylon)
         return NULL;
 
     if (theParent and thePylon)
@@ -379,7 +379,7 @@ void AdvancedWeaponStation::DeleteRackBSP(void)
 
 DrawableBSP *AdvancedWeaponStation::DetachRackBSP(void)
 {
-    if (!theRack)
+    if ( not theRack)
         return NULL;
 
     if (thePylon)
@@ -485,12 +485,12 @@ void AdvancedWeaponStation::AttachAllWeaponBSP(void)
 
 void BasicWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
 {
-    if (!weapPtr or weapPtr not_eq weaponPointer) // only attach 1st weapon
+    if ( not weapPtr or weapPtr not_eq weaponPointer) // only attach 1st weapon
         return;
 
     DrawableBSP *weapBSP = (DrawableBSP *)weapPtr->drawPointer;
 
-    if (!weapBSP)
+    if ( not weapBSP)
     {
         Tpoint hpPos;
         Trotation viewRot = IMatrix;
@@ -529,7 +529,7 @@ void AdvancedWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
 {
     int weapslot;
 
-    if (!weapPtr)
+    if ( not weapPtr)
         return;
 
     weapslot = weapPtr->GetRackSlot();
@@ -564,7 +564,7 @@ void AdvancedWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
 
     DrawableBSP *weapBSP = (DrawableBSP *)weapPtr->drawPointer;
 
-    if (!weapBSP)
+    if ( not weapBSP)
     {
         Tpoint hpPos;
         Trotation viewRot = IMatrix;
@@ -746,12 +746,12 @@ void AdvancedWeaponStation::DeleteAllWeaponBSP(void)
 
 void BasicWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
 {
-    if (!weapPtr or weapPtr not_eq weaponPointer)
+    if ( not weapPtr or weapPtr not_eq weaponPointer)
         return;
 
     DrawableBSP *weapBSP = (DrawableBSP *)weapPtr->drawPointer;
 
-    if (!weapBSP)
+    if ( not weapBSP)
         return;
 
 
@@ -764,12 +764,12 @@ void BasicWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
 
 void AdvancedWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
 {
-    if (!weapPtr)
+    if ( not weapPtr)
         return;
 
     DrawableBSP *weapBSP = (DrawableBSP *)weapPtr->drawPointer;
 
-    if (!weapBSP)
+    if ( not weapBSP)
         return;
 
     if (theRack)

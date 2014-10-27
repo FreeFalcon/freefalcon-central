@@ -125,7 +125,7 @@ void AirframeClass::Roll(void)
     }
 
 
-    if (!IsSet(Simplified))
+    if ( not IsSet(Simplified))
     {
         switch (stallMode)
         {

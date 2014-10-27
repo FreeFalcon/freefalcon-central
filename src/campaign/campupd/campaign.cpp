@@ -216,7 +216,7 @@ int LoadTheater(char *theater)
     // This assumes the Class Table was loaded elsewhere
     CampEnterCriticalSection();
 
-    if (!LoadTheaterTerrain(theater))
+    if ( not LoadTheaterTerrain(theater))
     {
         MonoPrint("Failed to open theater: %s, using default theater.\n", theater);
         Map_Max_X = Map_Max_Y = 500;
@@ -541,7 +541,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
             {
                 want_in_sim_list = 1;
 
-                if (!e->IsAwake())
+                if ( not e->IsAwake())
                 {
                     e->Wake();
                 }
@@ -549,16 +549,16 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
             else
             {
                 // Update local sleep/wake state
-                if (e->IsAwake() and (!want_deaggregate or g_bSleepAll))
+                if (e->IsAwake() and ( not want_deaggregate or g_bSleepAll))
                 {
-                    if (!vuLocalSessionEntity->Game()->IsLocal() or g_bSleepAll)
+                    if ( not vuLocalSessionEntity->Game()->IsLocal() or g_bSleepAll)
                     {
                         e->Sleep();
                     }
 
                     if (vuLocalSessionEntity->Game()->IsLocal())
                     {
-                        if (!e->IsAirplane() and !e->IsHelicopter())
+                        if ( not e->IsAirplane() and !e->IsHelicopter())
                         {
                             e->Sleep();
                         }
@@ -571,7 +571,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
                             e->Sleep();
                     }
                 }
-                else if (!e->IsAwake() and inbobble and !g_bSleepAll)
+                else if ( not e->IsAwake() and inbobble and !g_bSleepAll)
                 {
                     e->Wake();
                 }
@@ -605,7 +605,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 
                 e->SetChecked();
             }
-            else if (!g_bSleepAll and !e->IsSetFalcFlag(FEC_PLAYER_ENTERING)  and // we are not in sleep all mode
+            else if ( not g_bSleepAll and !e->IsSetFalcFlag(FEC_PLAYER_ENTERING)  and // we are not in sleep all mode
                      (
                          !e->IsSetFalcFlag(FEC_PLAYERONLY) ||// not a human
                          (
@@ -620,7 +620,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
                      FalconLocalSession->GetFlyState() == FLYSTATE_WAITING))
                     // only wake if the server isn't transitign to/from ui
                 {
-                    if (!e->IsAwake())
+                    if ( not e->IsAwake())
                     {
                         e->Wake();
                     }
@@ -684,7 +684,7 @@ void ChooseNewSession(CampEntity ent)
             dy = y - ent->YPos();
             dist = dx * dx + dy * dy;
 
-            if ((!best_session) or (dist < best_dist))
+            if (( not best_session) or (dist < best_dist))
             {
                 best_dist = dist;
                 best_session = session;
@@ -753,7 +753,7 @@ void RebuildBubble(int forced)
 
                 while (object)
                 {
-                    if (!object->IsAwake()  and 
+                    if ( not object->IsAwake()  and 
                         !object->IsDead()  and 
                         (object->IsBomb() or object->IsMissile()))
                     {
@@ -792,7 +792,7 @@ void RebuildBubble(int forced)
 
 #if USE_VU_COLL_FOR_CAMPAIGN
 
-    if ((!FalconLocalGame) or (!deaggregatedEntities))
+    if (( not FalconLocalGame) or ( not deaggregatedEntities))
     {
         CampLeaveCriticalSection();
         return;
@@ -800,7 +800,7 @@ void RebuildBubble(int forced)
 
 #else
 
-    if ((!FalconLocalGame) or (!deaggregatedMap))
+    if (( not FalconLocalGame) or ( not deaggregatedMap))
     {
         CampLeaveCriticalSection();
         return;
@@ -893,7 +893,7 @@ void RebuildBubble(int forced)
         // Find the first camera
         player = session->GetCameraEntity(0);
 
-        /* if (!player and FalconLocalGame->IsLocal() and gCommsMgr->Online())
+        /* if ( not player and FalconLocalGame->IsLocal() and gCommsMgr->Online())
          player = FalconLocalSession->GetPlayerFlight();
          */
         if (player and (player not_eq FalconLocalSession or !sCampaignSleepRequested))
@@ -1020,14 +1020,14 @@ void RebuildBubble(int forced)
                 {
                     if (u->IsFlight() and (u->Final() or u == player))
                     {
-                        if (!u->Final())
+                        if ( not u->Final())
                         {
                             u->SetFinal(1);
                         }
 
                         WayPoint w = u->GetCurrentUnitWP();
 
-                        if (!w)
+                        if ( not w)
                         {
                             deag = 0;
                         }
@@ -1035,7 +1035,7 @@ void RebuildBubble(int forced)
                         {
                             deag = 1;
                         }
-                        else if (!u->IsAggregate())
+                        else if ( not u->IsAggregate())
                         {
                             deag = 1;
                         }
@@ -1067,7 +1067,7 @@ void RebuildBubble(int forced)
                                         if (gCommsMgr and gCommsMgr->Online())
                                         {
                                             //me123
-                                            if (!u->IsSetFalcFlag(FEC_PLAYER_ENTERING | FEC_HASPLAYERS))
+                                            if ( not u->IsSetFalcFlag(FEC_PLAYER_ENTERING | FEC_HASPLAYERS))
                                             {
                                                 minDeagTime = max(
                                                                   minDeagTime, nextTOTime - airbase->brain->MinDeagTime()
@@ -1154,7 +1154,7 @@ void RebuildBubble(int forced)
 
                         if (deag)
                         {
-                            if (!u->IsDead() and DeaggregationCheck(u, session) > 0)
+                            if ( not u->IsDead() and DeaggregationCheck(u, session) > 0)
                             {
                                 if (u->IsAggregate())
                                 {
@@ -1165,7 +1165,7 @@ void RebuildBubble(int forced)
                     }
                     else if ((u->IsBattalion() or u->IsTaskForce()) and !u->Inactive())
                     {
-                        if (!u->IsDead() and !u->Inactive() and DeaggregationCheck(u, session) > 0)
+                        if ( not u->IsDead() and !u->Inactive() and DeaggregationCheck(u, session) > 0)
                         {
                             if (u->IsAggregate())
                             {
@@ -1220,7 +1220,7 @@ void RebuildBubble(int forced)
                 {
                     if ((c->IsUnit()) and (c->GetDeagOwner() == session->Id()))
                     {
-                        if (!session->GetCameraEntity(0))
+                        if ( not session->GetCameraEntity(0))
                         {
                             ChooseNewSession(c);
                         }
@@ -1241,7 +1241,7 @@ void RebuildBubble(int forced)
 
                     if ((cb->IsUnit()) and (cb->GetDeagOwner() == session->Id()))
                     {
-                        if (!session->GetCameraEntity(0))
+                        if ( not session->GetCameraEntity(0))
                         {
                             ChooseNewSession(cb.get());
                         }
@@ -1271,7 +1271,7 @@ void RebuildBubble(int forced)
                 c = static_cast<CampEntity>(deagIt.GetNext())
             )
             {
-                if (!c->IsInterested())
+                if ( not c->IsInterested())
                 {
                     ok = TRUE;
 
@@ -1317,7 +1317,7 @@ void RebuildBubble(int forced)
             {
                 CampBaseBin cb = it->second;
 
-                if (!cb->IsInterested())
+                if ( not cb->IsInterested())
                 {
                     ok = TRUE;
 
@@ -1366,7 +1366,7 @@ void RebuildBubble(int forced)
 
             while (c)
             {
-                if (!c->IsInterested())
+                if ( not c->IsInterested())
                 {
                     ok = TRUE;
 
@@ -1387,7 +1387,7 @@ void RebuildBubble(int forced)
 
                         delete sit; //me123 memory leak
 
-                        if (!ok)
+                        if ( not ok)
                         {
                             // MonoPrint ("Reaggregating Flight that is a player flight %08x\n", c);
                         }
@@ -1447,7 +1447,7 @@ void RebuildBubble(int forced)
         {
             Unit next = static_cast<Unit>(cit.GetNext());
 
-            if (!u->IsChecked())
+            if ( not u->IsChecked())
             {
                 u->RemoveFromSimLists();
             }
@@ -1465,7 +1465,7 @@ void RebuildBubble(int forced)
         {
             Objective next = static_cast<Objective>(cit.GetNext());
 
-            if (!o->IsChecked())
+            if ( not o->IsChecked())
             {
                 o->RemoveFromSimLists();
             }
@@ -1504,7 +1504,7 @@ int InterestingSFX(float x, float y)
 
     player = FalconLocalSession->GetCameraEntity(0);
 
-    if (!player)        // or not in the cockpit
+    if ( not player)        // or not in the cockpit
         return 0;
 
     xd = player->XPos() - x;
@@ -1537,7 +1537,7 @@ int CreateCampFile(char *filename, char* path)
     fp = fopen(fullname, "wb");
     fclose(fp);
     // Now add the current save directory path, if we still can't find this file
-    // if (!ResExistFile(filename))
+    // if ( not ResExistFile(filename))
     // ResAddPath(path, FALSE);
     return 1;
 }
@@ -1631,7 +1631,7 @@ static int IsCampFile(FalconGameType type, char *filename)
 
     fp = fopen(path, "rb");
 
-    if (!fp)
+    if ( not fp)
         return 0;
 
     fclose(fp);
@@ -1683,7 +1683,7 @@ void StartReadCampFile(FalconGameType type, char *filename)
     if (reading_campressed_file)
     {
         MonoPrint("Already Reading Campressed File\n");
-        ShiAssert(!reading_campressed_file);
+        ShiAssert( not reading_campressed_file);
         return;
     }
 
@@ -2046,7 +2046,7 @@ FILE* OpenCampFile(char *filename, char *ext, char *mode)
         sprintf(path, FalconCampaignSaveDirectory);
 
     // Outdated by resmgr:
-    // if (!ResExistFile(filename))
+    // if ( not ResExistFile(filename))
     // ResAddPath(path, FALSE);
 
     sprintf(fullname, "%s\\%s.%s", path, filename, ext);
@@ -2128,7 +2128,7 @@ void ClearCampCache()
 
 void ChooseBullseye(void)
 {
-    if (!g_bFloatingBullseye) // JB/Codec 010115
+    if ( not g_bFloatingBullseye) // JB/Codec 010115
         return; // JB/Codec 010115
 
     // 2000-11-27 REMOVED BY S.G. SORRY KEVIN, NO MORE HARDCODED BULLSEYE :-)
@@ -2201,7 +2201,7 @@ void SetEntryTime(Flight flight)
     {
         timer = vuxGameTime - startvuxGameTime;
 
-        if (!timer) timer = 1;
+        if ( not timer) timer = 1;
     }
     else if (starttimer)
     {
@@ -2223,7 +2223,7 @@ void SetEntryTime(Flight flight)
     }
 
 
-    else if (!gCompressTillTime or lastchoice not_eq PlayerOptions.GetStartFlag())
+    else if ( not gCompressTillTime or lastchoice not_eq PlayerOptions.GetStartFlag())
     {
         // JPO - decide where we start
         switch (PlayerOptions.GetStartFlag())
@@ -2293,7 +2293,7 @@ int CompressCampaignUntilTakeoff(Flight flight)
                     (flt->GetCurrentUnitWP()->GetWPAction() == WP_TAKEOFF))
                 {
 
-                    if (!firstentrytime)
+                    if ( not firstentrytime)
                     {
                         firstentrytime = flt->GetCurrentUnitWP()->GetWPArrivalTime();
                     }
@@ -2381,7 +2381,7 @@ void DoCompressionLoop(void)
             CompressCampaignUntilTakeoff(pf);
 
         // Validate that the flight/ac combination the player is entering is still valid
-        if (!pf or pf->IsDead() or pf->Aborted())
+        if ( not pf or pf->IsDead() or pf->Aborted())
         {
             gCompressTillTime = 0;
             UI_HandleFlightCancel();
@@ -2671,7 +2671,7 @@ unsigned int __stdcall HandleCampaignThread(void)
             }
 
             //START_PROFILE("CAMPLOOP");
-            if (!(TheCampaign.Flags & CAMP_LIGHT) and TheCampaign.IsMaster())
+            if ( not (TheCampaign.Flags & CAMP_LIGHT) and TheCampaign.IsMaster())
             {
                 if (TheCampaign.Flags & CAMP_TACTICAL)
                 {
@@ -2714,7 +2714,7 @@ unsigned int __stdcall HandleCampaignThread(void)
             startup = 0;
         }
 
-        if (!doUI)
+        if ( not doUI)
         {
             gCampTime = GetTickCount() - sleepTic;
             gAveCampTime = (gAveCampTime * 7 + gCampTime) / 8;
@@ -2846,7 +2846,7 @@ void DoTacticalLoop(int startup)
     }
 
     // Update weather when in UI
-    if (!SimDriver.InSim())
+    if ( not SimDriver.InSim())
         ((WeatherClass*)realWeather)->UpdateWeather(); // Sim calls this otherwise
 }
 
@@ -2983,7 +2983,7 @@ void DoCampaignLoop(int startup)
     CheckDivertStatus(DIVERT_NO_DIVERT);
 
     // Update weather when in UI
-    if (!SimDriver.InSim())
+    if ( not SimDriver.InSim())
     {
         ((WeatherClass*)realWeather)->UpdateWeather(); // Sim calls this otherwise
     }
@@ -3170,7 +3170,7 @@ void RallyUnits(int minutes)
     {
         if (u->GetDomain() == DOMAIN_LAND)
         {
-            if (!u->Scripted() and !u->Engaged() and u->GetUnitOrders() == GORD_RESERVE)
+            if ( not u->Scripted() and !u->Engaged() and u->GetUnitOrders() == GORD_RESERVE)
                 u->RallyUnit(minutes);
 
             u->UpdateParentStatistics();

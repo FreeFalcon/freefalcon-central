@@ -1155,7 +1155,7 @@ AuxAeroData *AirframeAuxAeroRead(SimlibFileClass* inputFile)
 
     if (ParseSimlibFile(auxaeroData, AuxAeroDataDesc, inputFile) == false)
     {
-        //     F4Assert(!"Bad parsing of aux aero data");
+        //     F4Assert( not "Bad parsing of aux aero data");
     }
 
     // RV - Biker - That does not work so remove it

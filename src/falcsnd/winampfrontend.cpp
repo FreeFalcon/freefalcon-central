@@ -79,7 +79,7 @@ void WinAmpFrontEnd::InitWinAmp()
 /*****************************************************************************/
 void WinAmpFrontEnd::StopAndFadeout()
 {
-    if (!ampexists)
+    if ( not ampexists)
         return;
 
     copyCurTitle();
@@ -90,7 +90,7 @@ void WinAmpFrontEnd::StopAndFadeout()
 /*****************************************************************************/
 void WinAmpFrontEnd::Previous()
 {
-    if (!ampexists)
+    if ( not ampexists)
         return;
 
     copyCurTitle();
@@ -101,7 +101,7 @@ void WinAmpFrontEnd::Previous()
 /*****************************************************************************/
 void WinAmpFrontEnd::Start()
 {
-    if (!ampexists)
+    if ( not ampexists)
         return;
 
     copyCurTitle();
@@ -112,7 +112,7 @@ void WinAmpFrontEnd::Start()
 /*****************************************************************************/
 void WinAmpFrontEnd::Stop()
 {
-    if (!ampexists)
+    if ( not ampexists)
         return;
 
     copyCurTitle();
@@ -123,7 +123,7 @@ void WinAmpFrontEnd::Stop()
 /*****************************************************************************/
 void WinAmpFrontEnd::Next()
 {
-    if (!ampexists)
+    if ( not ampexists)
         return;
 
     copyCurTitle();
@@ -157,7 +157,7 @@ void WinAmpFrontEnd::VolDown()
 /*****************************************************************************/
 void WinAmpFrontEnd::TogglePlayback()
 {
-    if (!ampexists)
+    if ( not ampexists)
         return;
 
     int ret = SendMessage(winamp_win, WM_USER, 0, 104);
@@ -189,7 +189,7 @@ void WinAmpFrontEnd::TogglePlayback()
 /*****************************************************************************/
 void WinAmpFrontEnd::copyCurTitle()
 {
-    if (!ampexists) // should really not be necessary..
+    if ( not ampexists) // should really not be necessary..
         return;
 
     if (currentTrackTitle)
@@ -210,7 +210,7 @@ void WinAmpFrontEnd::copyCurTitle()
 
     while (p >= this_title)
     {
-        if (!strnicmp(p, "- Winamp", 8))
+        if ( not strnicmp(p, "- Winamp", 8))
         {
             break;
         }
@@ -256,7 +256,7 @@ void WinAmpFrontEnd::copyCurTitle()
 /*****************************************************************************/
 char* WinAmpFrontEnd::getCurTitle()
 {
-    if (!ampexists)
+    if ( not ampexists)
         return "No WinAMP 2.xx window found !";
 
     return currentTrackTitle;
@@ -270,7 +270,7 @@ char* WinAmpFrontEnd::getCurTitle()
 /*****************************************************************************/
 char* WinAmpFrontEnd::getDEDTitle(const int theLine)
 {
-    if (!ampexists)
+    if ( not ampexists)
         return "No WinAMP window found !";
 
     if ((theLine not_eq 0) and (theLine not_eq 1))
@@ -283,7 +283,7 @@ char* WinAmpFrontEnd::getDEDTitle(const int theLine)
 /*****************************************************************************/
 int WinAmpFrontEnd::getVolume()
 {
-    if (!ampexists)
+    if ( not ampexists)
         return 0;
 
     return volume;
@@ -295,7 +295,7 @@ int WinAmpFrontEnd::getVolume()
 /*****************************************************************************/
 void WinAmpFrontEnd::Refresh(unsigned long timer)
 {
-    if (!ampexists)
+    if ( not ampexists)
         return;
 
     if (timer > myTimer)

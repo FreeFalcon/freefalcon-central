@@ -44,7 +44,7 @@ void VuCollectionManager::Register(VuCollection* coll)
 
 void VuCollectionManager::DeRegister(VuCollection* coll)
 {
-    if (!this)
+    if ( not this)
         return;
 
     VuScopeLock l(collsMutex_);
@@ -118,7 +118,7 @@ int VuCollectionManager::HandleMove(VuEntity*  ent, BIG_SCALAR coord1, BIG_SCALA
     {
         VuGridTree *g = *it;
 
-        if (!g->suspendUpdates_)
+        if ( not g->suspendUpdates_)
         {
             g->Move(ent, coord1, coord2);
         }
@@ -215,7 +215,7 @@ void VuCollectionManager::CreateEntitiesAndRunGc()
     const unsigned int bmax = 5;
     unsigned int bcount = 0;
 
-    while (!birthlist_.empty() and (bcount < bmax))
+    while ( not birthlist_.empty() and (bcount < bmax))
     {
         ++bcount;
         VuEntityBin &eb = birthlist_.front();
@@ -227,7 +227,7 @@ void VuCollectionManager::CreateEntitiesAndRunGc()
     const unsigned int dmax = 5;
     unsigned int dcount = 0;
 
-    while (!gclist_.empty() and (dcount < dmax))
+    while ( not gclist_.empty() and (dcount < dmax))
     {
         ++dcount;
         VuEntityBin &eb = gclist_.front();

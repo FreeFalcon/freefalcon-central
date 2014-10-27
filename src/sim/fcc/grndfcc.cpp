@@ -84,12 +84,12 @@ void FireControlComputer::AirGroundMode(void)
                     airGroundDelayTime = 0.0F;
                 }
             }
-            else if (!releaseConsent)
+            else if ( not releaseConsent)
             {
                 preDesignate = TRUE;
             }
 
-            if (!preDesignate and !postDrop)
+            if ( not preDesignate and !postDrop)
             {
                 FindTargetError();
                 CheckForBombRelease();
@@ -105,11 +105,11 @@ void FireControlComputer::AirGroundMode(void)
             dz = platform->ZPos() - groundImpactZ;
             airGroundRange = (float)sqrt(dx * dx + dy * dy);
 
-            if (!releaseConsent)
+            if ( not releaseConsent)
             {
                 preDesignate = TRUE;
             }
-            else if (!postDrop and Sms->curWeapon)
+            else if ( not postDrop and Sms->curWeapon)
             {
                 bombPickle = TRUE;
             }
@@ -161,7 +161,7 @@ void FireControlComputer::AirGroundMode(void)
                 if (theBomb and ((AircraftClass*)platform->IsPlayer() and ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP)  and 
                     ((theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS) ||
                      (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW))  and 
-                    (!Sms->JDAMPowered))
+                    ( not Sms->JDAMPowered))
                 {
                     releaseConsent = FALSE;
                     Released = TRUE;
@@ -173,13 +173,13 @@ void FireControlComputer::AirGroundMode(void)
                     bombPickle = TRUE;
                 }
             }
-            else if (!releaseConsent and Released)
+            else if ( not releaseConsent and Released)
                 Released = FALSE;
 
             break;
     }
 
-    if (!releaseConsent)
+    if ( not releaseConsent)
     {
         postDrop = FALSE;
     }
@@ -329,7 +329,7 @@ void FireControlComputer::CalculateImpactPoint(void)
     }
 
 
-    if (!preDesignate and GetMasterMode() not_eq AirGroundLaser) //MI added check for Laser
+    if ( not preDesignate and GetMasterMode() not_eq AirGroundLaser) //MI added check for Laser
     {
 
         a = 0.5F * grav;
@@ -1013,7 +1013,7 @@ void FireControlComputer::CalculateReleaseRange(void)
     if ((Sms->CurHardpoint() >= 0) and (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags & SMSClass::Loftable))
     {
         //MI
-        if (!g_bRealisticAvionics or !playerFCC or (((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP))
+        if ( not g_bRealisticAvionics or !playerFCC or (((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP))
             tossAngle = 45.0F * DTR;
         else
         {
@@ -1103,7 +1103,7 @@ void FireControlComputer::CalculateReleaseRange(void)
 
         t = (curRange - airGroundMaxRange) / platform->GetVt();
 
-        if (!isJSOW)
+        if ( not isJSOW)
         {
             if (t >= 10.0F)
             {
@@ -1157,7 +1157,7 @@ void FireControlComputer::CalculateReleaseRange(void)
     if (tossAnticipationCue == NoCue ||
         (tossAnticipationCue == AwaitingRelease and tossAnticipationCue == lastCue)) // AwaitingRelease = lastCue
     {
-        if (!wayTooFar and releaseConsent and !postDrop and ((tmpTime < 0.1F ||
+        if ( not wayTooFar and releaseConsent and !postDrop and ((tmpTime < 0.1F ||
                 (airGroundDelayTime > 0.0 and airGroundDelayTime < maxDelay and tmpTime > airGroundDelayTime)) ||
                 bombReleaseOverride) and Sms->curWeapon)
         {
@@ -1236,7 +1236,7 @@ void FireControlComputer::DTOSMode(void)
     }
 
     // Do post designate work
-    if (!preDesignate)
+    if ( not preDesignate)
     {
         if (masterMode == AirGroundRocket)
             CalculateRocketImpactPoint();
@@ -1322,7 +1322,7 @@ void FireControlComputer::LADDMode(void)
     }
 
     // Do post designate work
-    if (!preDesignate)
+    if ( not preDesignate)
     {
         CalculateImpactPoint();
 
@@ -1479,7 +1479,7 @@ void FireControlComputer::CalculateLADDReleaseRange(void)
     if (laddAnticipationCue == NoCue ||
         (laddAnticipationCue == AwaitingRelease and laddAnticipationCue == lastCue))
     {
-        if (!wayTooFar and releaseConsent and !postDrop  and 
+        if ( not wayTooFar and releaseConsent and !postDrop  and 
             ((tmpTime < 0.1F or (airGroundDelayTime > 0.0 and airGroundDelayTime < maxDelay  and 
                                  tmpTime > airGroundDelayTime)) or bombReleaseOverride) and Sms->curWeapon)
         {

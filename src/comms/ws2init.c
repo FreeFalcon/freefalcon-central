@@ -87,7 +87,7 @@ int initialize_windows_sockets(WSADATA* windows_sockets_data)
 
 	const char DLL_NAME[] = "WSOCK32.DLL";
 
-    if (!windows_sockets_connections) // No successful connection yet?
+    if ( not windows_sockets_connections) // No successful connection yet?
     {
 		TCHAR output_buffer[MAX_PATH];
 		DWORD buffer_length;
@@ -113,7 +113,7 @@ int initialize_windows_sockets(WSADATA* windows_sockets_data)
 
 #endif
 
-        if (!CAPI_GetProcAddresses(h_windows_sockets_DLL))
+        if ( not CAPI_GetProcAddresses(h_windows_sockets_DLL))
         {
 #ifdef LOAD_DLLS
             FreeLibrary(h_windows_sockets_DLL);

@@ -337,7 +337,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
                 Callback_(GetID(), key, this);
             }
 
-            if (!NoChanges_)
+            if ( not NoChanges_)
             {
                 Activate();
                 return(TRUE);
@@ -358,7 +358,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
                 Callback_(GetID(), key, this);
             }
 
-            if (!NoChanges_)
+            if ( not NoChanges_)
             {
                 Activate();
                 return(TRUE);
@@ -387,7 +387,7 @@ BOOL C_EditBox::CheckChar(unsigned char key)
     switch (GetType())
     {
         case C_TYPE_IPADDRESS:
-            if (!isdigit(key))
+            if ( not isdigit(key))
             {
                 if (key == '.' and Parent_)
                     Parent_->SetNextControl();
@@ -398,7 +398,7 @@ BOOL C_EditBox::CheckChar(unsigned char key)
             break;
 
         case C_TYPE_INTEGER:
-            if (!isdigit(key) and key not_eq _T('-'))
+            if ( not isdigit(key) and key not_eq _T('-'))
                 return(FALSE);
 
             break;
@@ -427,7 +427,7 @@ BOOL C_EditBox::CheckChar(unsigned char key)
             EditText_[MaxLen_] = 0;
         }
 
-        if (!EditText_[Cursor_])
+        if ( not EditText_[Cursor_])
             EditText_[Cursor_ + 1] = 0;
 
         EditText_[Cursor_] = (_TCHAR)key;
@@ -476,7 +476,7 @@ BOOL C_EditBox::Process(long, short HitType)
 
 void C_EditBox::Refresh()
 {
-    if (!Ready() or (Flags_ & C_BIT_INVISIBLE) or Parent_ == NULL)
+    if ( not Ready() or (Flags_ & C_BIT_INVISIBLE) or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -530,7 +530,7 @@ void C_EditBox::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     clip.left = GetX();
     clip.top = GetY();
 
-    if (!(Flags_ & C_BIT_ABSOLUTE))
+    if ( not (Flags_ & C_BIT_ABSOLUTE))
     {
         clip.left += Parent_->VX_[Client_];
         clip.top += Parent_->VY_[Client_];
@@ -540,11 +540,11 @@ void C_EditBox::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     clip.bottom = clip.top + GetH();
     tmp = clip; // JPO - just so its initialised.
 
-    if (!Parent_->ClipToArea(&tmp, &clip, cliprect))
+    if ( not Parent_->ClipToArea(&tmp, &clip, cliprect))
         return;
 
-    if (!(Flags_ & C_BIT_ABSOLUTE))
-        if (!Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
+    if ( not (Flags_ & C_BIT_ABSOLUTE))
+        if ( not Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
             return;
 
     Parent_->BlitTranslucent(surface, MouseOverColor_, MouseOverPercent_, &clip, C_BIT_ABSOLUTE, 0);
@@ -633,7 +633,7 @@ void C_EditBox::SetText(_TCHAR *str)
 
     if (GetType() == C_TYPE_TEXT)
     {
-        if (!OrigText_)
+        if ( not OrigText_)
             OrigText_ = new _TCHAR[MaxLen_ + 1];
 
         _tcsncpy(OrigText_, Text_->GetText(), MaxLen_);

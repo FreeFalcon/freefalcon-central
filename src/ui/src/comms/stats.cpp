@@ -55,7 +55,7 @@ void PlayerStats::LoadStats()
         {
             DecryptBuffer(0x25, (uchar*)&rec, sizeof(StatRec));
 
-            if (!rec.CheckSum) // No tampering... keep it
+            if ( not rec.CheckSum) // No tampering... keep it
             {
                 if (rec.aa_kills or rec.ag_kills or rec.as_kills or rec.an_kills or rec.rating or rec.missions)
                 {
@@ -63,7 +63,7 @@ void PlayerStats::LoadStats()
                     newrec->Next = NULL;
                     memcpy(&newrec->data, &rec, sizeof(StatRec));
 
-                    if (!Root_)
+                    if ( not Root_)
                         Root_ = newrec;
                     else
                     {
@@ -81,7 +81,7 @@ void PlayerStats::LoadStats()
         fclose(fp);
     }
 
-    if (!Find(-1, -1, -1))
+    if ( not Find(-1, -1, -1))
     {
         cur = Root_;
 
@@ -103,7 +103,7 @@ void PlayerStats::SaveStats()
     StatList *cur;
     FILE *fp;
 
-    if (!Root_)
+    if ( not Root_)
         return;
 
     fp = fopen(SaveName_, "wb");
@@ -128,7 +128,7 @@ void PlayerStats::AddStat(long IP, long Date, long Rev, short aa, short ag, shor
 {
     StatList *newrec, *cur;
 
-    if (!aa and ! ag and !an and !as and !missions and !rating)
+    if ( not aa and ! ag and !an and !as and !missions and !rating)
         return;
 
     cur = Find(IP, Date, Rev);
@@ -170,7 +170,7 @@ void PlayerStats::AddStat(long IP, long Date, long Rev, short aa, short ag, shor
     newrec->data.rating = rating;
     newrec->data.CheckSum = 0;
 
-    if (!Root_)
+    if ( not Root_)
         Root_ = newrec;
     else
     {

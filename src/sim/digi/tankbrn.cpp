@@ -210,7 +210,7 @@ void TankerBrain::InitBoom(void)
 
     DROGUE = self->af->GetActiveDrogue();
 
-    if (!numBooms)
+    if ( not numBooms)
         DROGUE ++; // move to correct boom[] index
 
     BOOM = 0;
@@ -279,10 +279,10 @@ void TankerBrain::InitBoom(void)
                 drogueModel = 0;
             }
 
-            if (!DrogueExt)
+            if ( not DrogueExt)
                 DrogueExt = 70.0f;
 
-            if (!numBooms)
+            if ( not numBooms)
                 numBooms = 1;
 
             boom[BOOM].drawPointer = new DrawableBSP(MapVisId(boomModel), &simLoc, &IMatrix);
@@ -339,7 +339,7 @@ void TankerBrain::InitBoom(void)
             {
                 boomModel = VIS_RDROGUE1;
 
-                if (!numDrogues)
+                if ( not numDrogues)
                     numDrogues = 1;
 
                 // Drogue includes rack
@@ -348,7 +348,7 @@ void TankerBrain::InitBoom(void)
             {
                 boomModel = VIS_RDROGUE2;
 
-                if (!numDrogues)
+                if ( not numDrogues)
                     numDrogues = 1;
 
                 // Drogue includes rack
@@ -357,7 +357,7 @@ void TankerBrain::InitBoom(void)
             {
                 boomModel = VIS_RDROGUE3;
 
-                if (!numDrogues)
+                if ( not numDrogues)
                     numDrogues = 2;
 
                 // Drogue includes rack
@@ -366,7 +366,7 @@ void TankerBrain::InitBoom(void)
             {
                 boomModel = VIS_RDROGUE4;
 
-                if (!numDrogues)
+                if ( not numDrogues)
                     numDrogues = 2;
 
                 // Drogue includes rack
@@ -375,7 +375,7 @@ void TankerBrain::InitBoom(void)
             {
                 boomModel = VIS_RDROGUE5;
 
-                if (!numDrogues)
+                if ( not numDrogues)
                     numDrogues = 2;
 
                 // Drogue includes rack
@@ -384,19 +384,19 @@ void TankerBrain::InitBoom(void)
             {
                 boomModel = VIS_RDROGUE;
 
-                if (!numDrogues)
+                if ( not numDrogues)
                     numDrogues = 1;
 
                 boomModel = VIS_RDROGUE;
             }
 
 
-            if (!DrogueExt)
+            if ( not DrogueExt)
                 DrogueExt = 40.0f;
 
             numBooms = 0;  // These a/c can't have booms
 
-            if (!DROGUE)
+            if ( not DROGUE)
                 DROGUE = 1;
 
             if (DROGUE > numDrogues)
@@ -623,12 +623,12 @@ void TankerBrain::DriveBoom(void)
         tmpAz = 0;
         tempEl = 0;
 
-        if (!(flags & GivingGas) and (!tankingPtr or tankingPtr->localData->range > 800.0F) or (flags & ClearingPlane))
+        if ( not (flags & GivingGas) and ( not tankingPtr or tankingPtr->localData->range > 800.0F) or (flags & ClearingPlane))
         {
             tmpAz = 0.0F;
             tempEl = 0;
         }
-        else if (!(flags & GivingGas) and (!tankingPtr or tankingPtr->localData->range - DrogueExt > 30.0F))
+        else if ( not (flags & GivingGas) and ( not tankingPtr or tankingPtr->localData->range - DrogueExt > 30.0F))
         {
             tmpAz = 0.0F;
             tempEl = 0;
@@ -731,7 +731,7 @@ void TankerBrain::DriveBoom(void)
             ((DrawableBSP*)curThirsty->drawPointer)->SetLabel(label, ((DrawableBSP*)curThirsty->drawPointer)->LabelColor());
         }
 
-        if (!(flags & (GivingGas | ClearingPlane)) and tankingPtr)
+        if ( not (flags & (GivingGas | ClearingPlane)) and tankingPtr)
         {
             if ((fabs(totalrange) < 6.0F * /*FRB*/ ScaledRM  and 
                  fabs(boom[DROGUE].az - tmpAz)*RTD < 6.0F * /*FRB*/ ScaledRM  and 
@@ -827,7 +827,7 @@ void TankerBrain::DriveBoom(void)
 
     //====================================================
     // Boom service
-    if (!boom[BOOM].drawPointer)
+    if ( not boom[BOOM].drawPointer)
         return;
 
     // 28NOV03 - FRB - Get nose location to replace F-16 constant
@@ -838,13 +838,13 @@ void TankerBrain::DriveBoom(void)
 
     tmpRange = 0.0F;
 
-    if (!(flags & GivingGas) and (!tankingPtr or tankingPtr->localData->range > 800.0F) or (flags & ClearingPlane))
+    if ( not (flags & GivingGas) and ( not tankingPtr or tankingPtr->localData->range > 800.0F) or (flags & ClearingPlane))
     {
         tmpAz = 0.0F;
         tempEl =  self->af->GetBoomStoredAngle() * DTR; // 12DEC03 - FRB - Use tanker <ac>.dat stored angle
         tmpRange = 0.0F;
     }
-    else if (!(flags & GivingGas) and (!tankingPtr or tankingPtr->localData->range - 33.5F > rad)) // 28NOV03 - FRB - replaced 30.0F w/ rad
+    else if ( not (flags & GivingGas) and ( not tankingPtr or tankingPtr->localData->range - 33.5F > rad)) // 28NOV03 - FRB - replaced 30.0F w/ rad
     {
         tmpAz = 0.0F;
         tempEl = -15.0F * DTR;
@@ -944,7 +944,7 @@ void TankerBrain::DriveBoom(void)
     }
 
 
-    if (!(flags & (GivingGas | ClearingPlane)) and tankingPtr)
+    if ( not (flags & (GivingGas | ClearingPlane)) and tankingPtr)
     {
         if ((fabs(boom[BOOM].ext - tankingPtr->localData->range + 33.5F) < 1.0F * /*FRB*/ ScaledRM  and 
              fabs(boom[BOOM].az - tmpAz)*RTD < 1.0F * /*FRB*/ ScaledRM  and 
@@ -1032,7 +1032,7 @@ void TankerBrain::DriveLights(void)
     int lightVal;
 
     // possible CTD fix
-    if (!self->drawPointer)
+    if ( not self->drawPointer)
         return;
 
     if (tankingPtr)
@@ -1272,7 +1272,7 @@ void TankerBrain::FollowThirsty(void)
     FalconTankerMessage* tankMsg;
 
     // Find the thirsty one
-    if (!tankingPtr or tankingPtr->BaseData() not_eq curThirsty)
+    if ( not tankingPtr or tankingPtr->BaseData() not_eq curThirsty)
     {
         if (tankingPtr)
             tankingPtr->Release();
@@ -1285,7 +1285,7 @@ void TankerBrain::FollowThirsty(void)
         tankingPtr->Reference();
         dist = DistanceToFront(SimToGrid(self->YPos()), SimToGrid(self->XPos()));
 
-        if (!g_bUseTankerTrack and dist > 60.0F and dist < 100.0F)
+        if ( not g_bUseTankerTrack and dist > 60.0F and dist < 100.0F)
         {
             turnallow = true; // allow a new turn
             HeadsUp = true;
@@ -1484,7 +1484,7 @@ void TankerBrain::FollowThirsty(void)
             FalconSendMessage(tankMsg);
         }
 
-        if (!(flags & ClearingPlane))
+        if ( not (flags & ClearingPlane))
             // 25NOV03 - FRB - Give directions to drogue-refueling a/c
             // if(ServiceType not_eq DROGUE_SERVICE and !(flags & ClearingPlane))
         {
@@ -1592,7 +1592,7 @@ void TankerBrain::FollowThirsty(void)
         }
 
         // Too Eratic?
-        if (!(flags & ClearingPlane) and (flags & GivingGas) and (SimLibElapsedTime - lastStabalize) > 15000  and 
+        if ( not (flags & ClearingPlane) and (flags & GivingGas) and (SimLibElapsedTime - lastStabalize) > 15000  and 
             fabs(tankingPtr->localData->azFromdot) > 10.0F * DTR and fabs(tankingPtr->localData->elFromdot) > 10.0F * DTR)
         {
             lastStabalize = SimLibElapsedTime;
@@ -1758,7 +1758,7 @@ void TankerBrain::PurgeWaitQ(void)
 
 void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
 {
-    if (!(flags & (IsRefueling | ClearingPlane)))
+    if ( not (flags & (IsRefueling | ClearingPlane)))
     {
         DigitalBrain::FrameExec(tList, tPtr);
 
@@ -2146,7 +2146,7 @@ void TankerBrain::ReceptorRelPosition(Tpoint *pos, SimVehicleClass *thirsty)
     // Tpoint minB, maxB;
     float rad;
 
-    if (!thirsty->drawPointer)
+    if ( not thirsty->drawPointer)
     {
         pos->x = thirsty->XPos() - self->XPos();
         pos->y = thirsty->YPos() - self->YPos();
@@ -2278,7 +2278,7 @@ void TankerBrain::OptTankingPosition(Tpoint *pos)
 
     boompos.x = boompos.y = boompos.z = 0;
 
-    if (!self->drawPointer)
+    if ( not self->drawPointer)
     {
         pos->x = self->XPos();
         pos->y = self->YPos();

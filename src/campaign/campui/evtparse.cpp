@@ -40,7 +40,7 @@ EventElement* ReadEventFile (char* filename, uchar types[EVT_MESSAGE_BITS])
  while (fread(&(tmpEvent->idData), sizeof (EventIdData), 1, inFile) > 0)
  {
  tmpEvent->next = NULL;
- if (!gotmem)
+ if ( not gotmem)
  tmpEvent->eventData = new unsigned char[tmpEvent->idData.size];
  fread(tmpEvent->eventData, tmpEvent->idData.size, 1, inFile);
  if (types[tmpEvent->idData.type >> 3] & (0x01 << (tmpEvent->idData.type & 0x0007)))

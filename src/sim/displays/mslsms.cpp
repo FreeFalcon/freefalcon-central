@@ -39,14 +39,14 @@ int SMSClass::LaunchMissile(void)
     VehicleClassDataType* vc;
     int visFlag;
 
-    if (!FCC)
+    if ( not FCC)
     {
         ClearFlag(Firing);
         return retval;
     }
 
     // Check for SMS Failure or other reason not to launch
-    if (!CurStationOK() ||
+    if ( not CurStationOK() ||
         !curWeapon ||
         Ownship()->OnGround() ||
         MasterArm() not_eq Arm)
@@ -406,14 +406,14 @@ int SMSClass::LaunchRocket(void)
     static count = 0;
     float az, el, x, y, z;
 
-    if (!FCC)
+    if ( not FCC)
     {
         ClearFlag(Firing);
         return retval;
     }
 
     // Check for SMS Failure
-    if (!CurStationOK() ||
+    if ( not CurStationOK() ||
         !curWeapon ||
         Ownship()->OnGround() ||
         MasterArm() not_eq Arm)
@@ -602,7 +602,7 @@ void SMSBaseClass::ReplaceRocket(int station, MissileClass *theMissile)
         }
     }
 
-    if (!entryfound) // use generic 2.75mm rocket
+    if ( not entryfound) // use generic 2.75mm rocket
     {
         hardPoint[station]->weaponCount = 19;
         hardPoint[station]->weaponPointer = InitWeaponList(ownship, hardPoint[station]->weaponId,
@@ -621,7 +621,7 @@ int SMSClass::LaunchRocket(void)
 
     theLau = (BombClass *)curWeapon.get();
 
-    if (!theLau)
+    if ( not theLau)
     {
         WeaponStep(FALSE);
         theLau = (BombClass *)curWeapon.get();
@@ -651,7 +651,7 @@ int SMSClass::LaunchRocket(void)
 
             if (theLau->LauGetRoundsRemaining() == 0)
             {
-                if (!UnlimitedAmmo() and hardPoint and (curHardpoint >= 0))
+                if ( not UnlimitedAmmo() and hardPoint and (curHardpoint >= 0))
                 {
                     hardPoint[curHardpoint]->weaponCount--;
 
@@ -770,14 +770,14 @@ int SMSClass::SubLaunchRocket(int hpId)
     int wpnNum;
     float az, el, x, y, z;
 
-    if (!FCC)
+    if ( not FCC)
     {
         ClearFlag(Firing);
         return TRUE; // MLR 5/30/2004 - was false
     }
 
     // Check for SMS Failure
-    if (!CurStationOK() ||
+    if ( not CurStationOK() ||
         !curWeapon ||
         Ownship()->OnGround() ||
         MasterArm() not_eq Arm)
@@ -796,7 +796,7 @@ int SMSClass::SubLaunchRocket(int hpId)
     }
 
 
-    if (!theLau)
+    if ( not theLau)
         return 1;
 
     if (theLau->LauGetWeaponId() == 0)

@@ -158,7 +158,7 @@ float DirectionToFront(GridIndex x, GridIndex y)
 
         f = FindNearestObjective(x, y, NULL);
 
-        if (!f->IsFrontline())
+        if ( not f->IsFrontline())
         {
             return r; // This won't work unless we find a frontline objective. So just use the value from above
         }
@@ -308,7 +308,7 @@ float AngleTo(GridIndex ox, GridIndex oy, GridIndex tx, GridIndex ty)
     dx = tx - ox;
     dy = ty - oy;
 
-    if (!dx and !dy)
+    if ( not dx and !dy)
         return 0.0F;
 
     deg = (float)atan2((float)dx, (float)dy);
@@ -328,7 +328,7 @@ CampaignHeading DirectionTo(GridIndex ox, GridIndex oy, GridIndex tx, GridIndex 
     dx = tx - ox;
     dy = ty - oy;
 
-    if (!dx and !dy)
+    if ( not dx and !dy)
     {
         return Here;
     }
@@ -509,7 +509,7 @@ int GetAltitudeLevel(int alt)
 int GetAltitudeFromLevel(int level, int seed)
 {
     // This is a no-brainer.
-    if (!level)
+    if ( not level)
     {
         return 0;
     }
@@ -527,12 +527,12 @@ int GetAltitudeFromLevel(int level, int seed)
 // speed should be in [distance units]/[hour]
 CampaignTime TimeToArrive(float distance, float speed)
 {
-    if (!distance)
+    if ( not distance)
     {
         return 0;
     }
 
-    if (!speed)
+    if ( not speed)
     {
         return 0xffffffff;
     }
@@ -1307,12 +1307,12 @@ int ScoreThreatFast(GridIndex X, GridIndex Y, int altlevel, Team who)
     // Check vs territory ownership
     own = GetOwner(TheCampaign.CampMapData, X, Y);
 
-    if (!GetRoE(who, own, ROE_AIR_OVERFLY))
+    if ( not GetRoE(who, own, ROE_AIR_OVERFLY))
     {
         return 32000;
     }
 
-    if (!TheCampaign.SamMapData or !TheCampaign.RadarMapData)
+    if ( not TheCampaign.SamMapData or !TheCampaign.RadarMapData)
     {
         return 0;
     }
@@ -1472,7 +1472,7 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
 
  // Check lists
  while (pass < 2){
- if (!pass){
+ if ( not pass){
 #ifdef VU_GRID_TREE_Y_MAJOR
  myit = new VuGridIterator(RealUnitProxList, p.y, p.x, (BIG_SCALAR)GridToSim(MAX_AIR_SEARCH));
 #else
@@ -1508,7 +1508,7 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
  d = FloatToInt32(Distance(X,Y,x,y));
  if (flags & FIND_CAUTIOUS)
  d = FloatToInt32(0.8F*d);
- if (!(flags & FIND_NODETECT) and e->GetDetectionRange(mt) > d)
+ if ( not (flags & FIND_NODETECT) and e->GetDetectionRange(mt) > d)
  got++;
  hc = e->GetAproxHitChance(mt,d);
  if (hc > 0){
@@ -1562,7 +1562,7 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
     // Check lists
     while (pass < 2)
     {
-        if (!pass)
+        if ( not pass)
         {
             myit = new VuListIterator(AirDefenseList);
         }
@@ -1585,7 +1585,7 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
             }
 
             if (
-                (!e->IsUnit() or !((Unit)e)->Moving())  and 
+                ( not e->IsUnit() or !((Unit)e)->Moving())  and 
 #if VU_ALL_FILTERED
                 !foundlist->Find(e)
 #else
@@ -1601,7 +1601,7 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
                     foundlist->ForcedInsert(e);
                     retval  or_eq  NEED_SEAD;
                 }
-                else if (!(flags & FIND_NODETECT) and e->GetDetectionRange(mt) > d)
+                else if ( not (flags & FIND_NODETECT) and e->GetDetectionRange(mt) > d)
                 {
                     foundlist->ForcedInsert(e);
                     retval  or_eq  NEED_ECM;

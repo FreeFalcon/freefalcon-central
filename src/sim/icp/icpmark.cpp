@@ -19,7 +19,7 @@ void ICPClass::ExecMARKMode(void)
 
     NavigationSystem::Point_Type pointType;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         if (mUpdateFlags & MARK_UPDATE)
         {

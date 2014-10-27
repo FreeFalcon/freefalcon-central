@@ -84,7 +84,7 @@ void DrawableBSP::Update(const Tpoint *pos, const Trotation *rot)
 {
     ShiAssert(id >= 0);
 
-    ShiAssert(!_isnan(position.x));
+    ShiAssert( not _isnan(position.x));
     // Update the location of this object
     position.x = pos->x;
     position.y = pos->y;
@@ -109,11 +109,11 @@ void DrawableBSP::AttachChild(DrawableBSP *child, int slotNumber)
 
     // THIS IS A HACK TO TOLERATE OBJECTS WHICH DON'T YET HAVE SLOTS
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS
-    if (!instance.SlotChildren) return;
+    if ( not instance.SlotChildren) return;
 
     if (slotNumber >= instance.ParentObject->nSlots) return;
 
-    if (!child) return;
+    if ( not child) return;
 
     instance.SetSlotChild(slotNumber, &child->instance);
 }
@@ -142,7 +142,7 @@ void DrawableBSP::DetachChild(DrawableBSP *child, int slotNumber)
         return;
     }
 
-    if ((!instance.SlotChildren) or (instance.SlotChildren[slotNumber] not_eq &child->instance))
+    if (( not instance.SlotChildren) or (instance.SlotChildren[slotNumber] not_eq &child->instance))
     {
         //(*(int*)0) = 0;
         return;
@@ -570,7 +570,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
         return;
     }
 
-    if (!SetupVisibility(renderer)) return;
+    if ( not SetupVisibility(renderer)) return;
 
     // JB 010112
     float scalefactor = 1;
@@ -667,7 +667,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
     // Now compute the starting location for our label text
     if (drawLabels and labelLen)
     {
-        if (!g_bSmartScaling and !PlayerOptions.ObjectDynScalingOn())
+        if ( not g_bSmartScaling and !PlayerOptions.ObjectDynScalingOn())
             renderer->TransformPoint(&position, &labelPoint);   // JB 010112
 
         // JB 000807 Add near label limit and labels that get brighter as they get closer
@@ -682,7 +682,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
         // RV - RED - If ACMI force Label Limit to 150 nMiles
         long limit = (renderACMI ? 150 : g_nNearLabelLimit) * 6076 + 8, limitcheck;
 
-        if (!DrawablePoint::drawLabels)
+        if ( not DrawablePoint::drawLabels)
             limitcheck = (renderACMI ? 150 : g_nNearLabelLimit) * 6076 + 8;
         else limitcheck = 300 * 6076 + 8; //
 
@@ -763,7 +763,7 @@ void DrawableBSP::Draw(Render3D *renderer)
 
     ShiAssert(id >= 0);
 
-    if (!renderer)
+    if ( not renderer)
         return;
 
     // RED - NOPE - must be similar to any object
