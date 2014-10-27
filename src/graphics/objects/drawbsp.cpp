@@ -105,7 +105,7 @@ void DrawableBSP::AttachChild(DrawableBSP *child, int slotNumber)
     ShiAssert(child);
     ShiAssert(slotNumber >= 0);
     ShiAssert(slotNumber < instance.ParentObject->nSlots);
-    ShiAssert((instance.SlotChildren) && (instance.SlotChildren[slotNumber] == NULL));
+    ShiAssert((instance.SlotChildren) and (instance.SlotChildren[slotNumber] == NULL));
 
     // THIS IS A HACK TO TOLERATE OBJECTS WHICH DON'T YET HAVE SLOTS
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS
@@ -130,7 +130,7 @@ void DrawableBSP::DetachChild(DrawableBSP *child, int slotNumber)
     ShiAssert(child);
     ShiAssert(slotNumber >= 0);
     ShiAssert(slotNumber < instance.ParentObject->nSlots);
-    ShiAssert((instance.SlotChildren) && (instance.SlotChildren[slotNumber] == &child->instance));
+    ShiAssert((instance.SlotChildren) and (instance.SlotChildren[slotNumber] == &child->instance));
 
     Tpoint offset;
     Tpoint pos;
@@ -417,7 +417,7 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
     }
 
     // calculate T distances to candidate planes and accumulate the largest
-    if (quadrant[0] not_eq MIDDLE && vec.x not_eq 0.0f)
+    if (quadrant[0] not_eq MIDDLE and vec.x not_eq 0.0f)
     {
         tMax = (candidatePlane[0] - origin.x) / vec.x;
         whichPlane = 0;
@@ -427,7 +427,7 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
         tMax = -1.0f;
     }
 
-    if (quadrant[1] not_eq MIDDLE && vec.y not_eq 0.0f)
+    if (quadrant[1] not_eq MIDDLE and vec.y not_eq 0.0f)
     {
         t = (candidatePlane[1] - origin.y) / vec.y;
 
@@ -438,7 +438,7 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
         }
     }
 
-    if (quadrant[2] not_eq MIDDLE && vec.z not_eq 0.0f)
+    if (quadrant[2] not_eq MIDDLE and vec.z not_eq 0.0f)
     {
         t = (candidatePlane[2] - origin.z) / vec.z;
 
@@ -506,7 +506,7 @@ bool DrawableBSP::SetupVisibility(RenderOTW *renderer)
     z = renderer->ZDistanceFromCamera(&position);
 
     // RED - Linear Fog, if inside the layer, modulate with Hze, we can not use linear fog there
-    if (realWeather->weatherCondition > FAIR && position.z > (realWeather->HiOvercast))
+    if (realWeather->weatherCondition > FAIR and position.z > (realWeather->HiOvercast))
     {
         alpha = 1.0f - (-realWeather->HiOvercast + position.z) / (realWeather->stratusDepth / 2.0f);
         alpha *= alpha * alpha;
@@ -579,7 +579,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
     {
         renderer->TransformPoint(&position, &labelPoint);
 
-        if (radius <= 150 && (GetClass() == Guys or GetClass() == GroundVehicle or GetClass() == BSP))
+        if (radius <= 150 and (GetClass() == Guys or GetClass() == GroundVehicle or GetClass() == BSP))
             scalefactor = (labelPoint.csZ - 1200) / 6076 + 1;
 
         if (scalefactor < 1)
@@ -595,7 +595,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
 
     BOOL isShadow = FALSE;
 
-    if (PlayerOptions.ShadowsOn() && realWeather->weatherCondition == FAIR)
+    if (PlayerOptions.ShadowsOn() and realWeather->weatherCondition == FAIR)
     {
         Tpoint pv;
         Tcolor light;
@@ -648,7 +648,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
 #ifdef DEBUG_LOD_ID
 
     // Now compute the starting location for our label text
-    if (drawLabels && TheDXEngine.GetLodUsedLabel()[0])
+    if (drawLabels and TheDXEngine.GetLodUsedLabel()[0])
     {
         renderer->TransformPoint(&position, &labelPoint);
 
@@ -665,9 +665,9 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
 #else
 
     // Now compute the starting location for our label text
-    if (drawLabels && labelLen)
+    if (drawLabels and labelLen)
     {
-        if (!g_bSmartScaling && !PlayerOptions.ObjectDynScalingOn())
+        if (!g_bSmartScaling and !PlayerOptions.ObjectDynScalingOn())
             renderer->TransformPoint(&position, &labelPoint);   // JB 010112
 
         // JB 000807 Add near label limit and labels that get brighter as they get closer
@@ -775,7 +775,7 @@ void DrawableBSP::Draw(Render3D *renderer)
 #ifdef DEBUG_LOD_ID
 
     // Now compute the starting location for our label text
-    if (drawLabels && TheDXEngine.GetLodUsedLabel()[0])
+    if (drawLabels and TheDXEngine.GetLodUsedLabel()[0])
     {
         renderer->TransformPoint(&position, &labelPoint);
 
@@ -792,7 +792,7 @@ void DrawableBSP::Draw(Render3D *renderer)
 #else
 
     // Now compute the starting location for our label text
-    if (drawLabels && labelLen)
+    if (drawLabels and labelLen)
     {
         renderer->TransformPoint(&position, &labelPoint);
 

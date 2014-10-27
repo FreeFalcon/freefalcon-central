@@ -122,11 +122,11 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
     ShiAssert(!DisplayInCockpit());
 
     // Retro 17Jan2004
-    if ((!actionCameraMode) && (IO.AnalogIsUsed(AXIS_ZOOM) == true))
+    if ((!actionCameraMode) and (IO.AnalogIsUsed(AXIS_ZOOM) == true))
     {
         chaseRange = -IO.GetAxisValue(AXIS_ZOOM) / 15000.f * 900.f;
 
-        if (otwPlatform && otwPlatform->drawPointer)
+        if (otwPlatform and otwPlatform->drawPointer)
             // Retro: the "-4.f" is the max displacement (3.f) of the displacementcam with a bit of a buffer ;)
             chaseRange = min(-otwPlatform->drawPointer->Radius() - 4.F, chaseRange);
         else
@@ -216,7 +216,7 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
                               &cameraPos, &cameraRot);
 
         // Retro 25Dec2003
-        if ((otwPlatform->IsAirplane()) && (displaceCamera) && (!otwPlatform->OnGround()))
+        if ((otwPlatform->IsAirplane()) and (displaceCamera) and (!otwPlatform->OnGround()))
         {
             DisplaceTheCamera(dT);
         }
@@ -385,11 +385,11 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
         else
             platRoll = 0.0f;
 
-        if (platRoll < -90.0f * DTR && chaseCamRoll > 90.0f * DTR)
+        if (platRoll < -90.0f * DTR and chaseCamRoll > 90.0f * DTR)
         {
             dRoll = platRoll + (360.0f * DTR) - chaseCamRoll;
         }
-        else if (platRoll > 90.0f * DTR && chaseCamRoll < -90.0f * DTR)
+        else if (platRoll > 90.0f * DTR and chaseCamRoll < -90.0f * DTR)
         {
             dRoll = platRoll - (360.0f * DTR) - chaseCamRoll;
         }
@@ -515,7 +515,7 @@ void OTWDriverClass::DisplaceTheCamera(float dT)
         return;
 
     // only compute any additional displacement when NOT paused..
-    if (targetCompressionRatio && SimDriver.MotionOn()) // Retro 29Feb2004 - hope that takes care of 'FREEZE' state too
+    if (targetCompressionRatio and SimDriver.MotionOn()) // Retro 29Feb2004 - hope that takes care of 'FREEZE' state too
     {
         // have to keep dT in check.. too long (or too short ?) values mess up the movement of the cam..
         // dT is in seconds.. be sure..

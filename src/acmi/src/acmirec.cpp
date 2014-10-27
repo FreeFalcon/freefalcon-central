@@ -208,7 +208,7 @@ ACMIRecorder::StopRecording(void)
 
         i = ACMIIDTable->GetFirst(&rec, &idx);
 
-        while (rec && i >= 0 && i < count)
+        while (rec and i >= 0 and i < count)
         {
             strncpy(list[i].label, rec->label, 15);
             list[i].teamColor = rec->color;

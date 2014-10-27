@@ -261,7 +261,7 @@ static int MessageReceive(
         //but it would be good to know why message size is 0
         //have to compute message size here
         //for now, comment to force crash and see why we are getting 0 size
-        if ((size > 0) && (event not_eq NULL))
+        if ((size > 0) and (event not_eq NULL))
         {
             long rem = size;
 
@@ -441,7 +441,7 @@ VuSessionFilter::~VuSessionFilter()
 
 VU_BOOL VuSessionFilter::Test(VuEntity* ent)
 {
-    return static_cast<VU_BOOL>((ent->IsSession() && ((VuSessionEntity*)ent)->GameId() == groupId_) ? TRUE : FALSE);
+    return static_cast<VU_BOOL>((ent->IsSession() and ((VuSessionEntity*)ent)->GameId() == groupId_) ? TRUE : FALSE);
 }
 
 VU_BOOL VuSessionFilter::RemoveTest(VuEntity* ent)
@@ -648,13 +648,13 @@ int VuTargetEntity::BytesPending()
     int retval = 0;
 
     /*
-       if (GetCommsStatus() not_eq VU_CONN_INACTIVE && GetCommsHandle())
+       if (GetCommsStatus() not_eq VU_CONN_INACTIVE and GetCommsHandle())
        {
        retval += bestEffortComms_.normalSendPacketPtr_ - bestEffortComms_.normalSendPacket_;
        retval += bestEffortComms_.lowSendPacketPtr_    - bestEffortComms_.lowSendPacket_;
        }
      */
-    if (GetReliableCommsStatus() not_eq VU_CONN_INACTIVE && GetReliableCommsHandle())
+    if (GetReliableCommsStatus() not_eq VU_CONN_INACTIVE and GetReliableCommsHandle())
     {
         // retval += reliableComms_.normalSendPacketPtr_ - reliableComms_.normalSendPacket_;
         // retval += reliableComms_.lowSendPacketPtr_    - reliableComms_.lowSendPacket_;
@@ -675,7 +675,7 @@ int VuTargetEntity::MaxPacketSize()
     {
         VuTargetEntity *forward = ForwardingTarget();
 
-        if (forward && forward not_eq this)
+        if (forward and forward not_eq this)
         {
             return forward->MaxPacketSize();
         }
@@ -698,7 +698,7 @@ int VuTargetEntity::MaxMessageSize()
     {
         VuTargetEntity *forward = ForwardingTarget();
 
-        if (forward && forward not_eq this)
+        if (forward and forward not_eq this)
         {
             return forward->MaxMessageSize();
         }
@@ -720,7 +720,7 @@ int VuTargetEntity::MaxReliablePacketSize()
     {
         VuTargetEntity *forward = ForwardingTarget();
 
-        if (forward && forward not_eq this)
+        if (forward and forward not_eq this)
         {
             return forward->MaxReliablePacketSize();
         }
@@ -743,7 +743,7 @@ int VuTargetEntity::MaxReliableMessageSize()
     {
         VuTargetEntity *forward = ForwardingTarget();
 
-        if (forward && forward not_eq this)
+        if (forward and forward not_eq this)
         {
             return forward->MaxReliableMessageSize();
         }
@@ -777,7 +777,7 @@ void VuTargetEntity::SetCommsHandle(com_API_handle ch, int bufSize, int packSize
     delete [] bestEffortComms_.lowSendPacket_;
     delete [] bestEffortComms_.recBuffer_;
 
-    if (ch && bufSize > 0)
+    if (ch and bufSize > 0)
     {
         bestEffortComms_.handle_     = ch;
         bestEffortComms_.maxMsgSize_ = bufSize;
@@ -827,7 +827,7 @@ void VuTargetEntity::SetReliableCommsHandle(com_API_handle ch, int bufSize, int 
     delete [] reliableComms_.lowSendPacket_;
     delete [] reliableComms_.recBuffer_;
 
-    if (ch && (bufSize > 0))
+    if (ch and (bufSize > 0))
     {
         reliableComms_.handle_           = ch;
         reliableComms_.maxMsgSize_       = bufSize;
@@ -857,7 +857,7 @@ int VuTargetEntity::SendQueuedMessage(void)
 {
     int size;
 
-    if ((reliableComms_.handle_) && (reliableComms_.status_ == VU_CONN_ACTIVE))
+    if ((reliableComms_.handle_) and (reliableComms_.status_ == VU_CONN_ACTIVE))
     {
         size = ComAPISend(reliableComms_.handle_, 0, CAPI_COMMON_BWTYPE);
 
@@ -887,7 +887,7 @@ int VuTargetEntity::GetMessages()
     int ping = 0;
 
     // get reliable messages
-    if (reliableComms_.handle_ && reliableComms_.status_ == VU_CONN_ACTIVE)
+    if (reliableComms_.handle_ and reliableComms_.status_ == VU_CONN_ACTIVE)
     {
         count += MessagePoll(&reliableComms_);
         ping = ComAPIQuery(reliableComms_.handle_, COMAPI_PING_TIME);
@@ -945,7 +945,7 @@ int VuTargetEntity::GetMessages()
     }
 
     // get unreliable ones
-    if (bestEffortComms_.handle_ && bestEffortComms_.status_ == VU_CONN_ACTIVE)
+    if (bestEffortComms_.handle_ and bestEffortComms_.status_ == VU_CONN_ACTIVE)
     {
         count += MessagePoll(&bestEffortComms_);
     }
@@ -1086,12 +1086,12 @@ int VuTargetEntity::FlushOutboundMessageBuffer()
 
     int retval = -1;
 
-    if (GetReliableCommsStatus() == VU_CONN_ACTIVE && GetReliableCommsHandle())
+    if (GetReliableCommsStatus() == VU_CONN_ACTIVE and GetReliableCommsHandle())
     {
         retval = Flush(&reliableComms_);
     }
 
-    if (GetCommsStatus() == VU_CONN_ACTIVE && GetCommsHandle())
+    if (GetCommsStatus() == VU_CONN_ACTIVE and GetCommsHandle())
     {
         int retval2 = Flush(&bestEffortComms_);
 
@@ -1150,11 +1150,11 @@ int VuTargetEntity::SendNormalPriority(VuCommsContext* ctxt, VuMessage *msg)
     }
     else if (
         // data is waiting in queue
-        (ctxt->normalSendPacketPtr_ not_eq ctxt->normalSendPacket_) && (
+        (ctxt->normalSendPacketPtr_ not_eq ctxt->normalSendPacket_) and (
             // write would exceed packet size
             totsize + ctxt->normalSendPacketPtr_ - ctxt->normalSendPacket_ > ctxt->maxPackSize_ or (
                 // different origins
-                ctxt->normalSendPacketPtr_ not_eq ctxt->normalSendPacket_ && (
+                ctxt->normalSendPacketPtr_ not_eq ctxt->normalSendPacket_ and (
                     msg->Sender().creator_ not_eq ctxt->normalPendingSenderId_.creator_ ||
                     msg->Destination() not_eq ctxt->normalPendingSendTargetId_
                 )
@@ -1162,7 +1162,7 @@ int VuTargetEntity::SendNormalPriority(VuCommsContext* ctxt, VuMessage *msg)
         )
     )
     {
-        if (Flush(ctxt) > 0 && ctxt->normalSendPacketPtr_ == ctxt->normalSendPacket_)
+        if (Flush(ctxt) > 0 and ctxt->normalSendPacketPtr_ == ctxt->normalSendPacket_)
         {
             // try resending...
             retval = SendNormalPriority(ctxt, msg);
@@ -1217,11 +1217,11 @@ int VuTargetEntity::SendLowPriority(VuCommsContext* ctxt, VuMessage *msg)
         retval = COMAPI_MESSAGE_TOO_BIG;
     }
     else if (
-        ctxt->lowSendPacketPtr_ not_eq ctxt->lowSendPacket_ && (
+        ctxt->lowSendPacketPtr_ not_eq ctxt->lowSendPacket_ and (
             // data is waiting in queue
             totsize + ctxt->lowSendPacketPtr_ - ctxt->lowSendPacket_ > ctxt->maxPackSize_ or (
                 // write would exceed packet size
-                ctxt->lowSendPacketPtr_ not_eq ctxt->lowSendPacket_ && (
+                ctxt->lowSendPacketPtr_ not_eq ctxt->lowSendPacket_ and (
                     // different origins
                     msg->Sender().creator_ not_eq ctxt->lowPendingSenderId_.creator_ ||
                     msg->Destination() not_eq ctxt->lowPendingSendTargetId_
@@ -1230,7 +1230,7 @@ int VuTargetEntity::SendLowPriority(VuCommsContext* ctxt, VuMessage *msg)
         )
     )
     {
-        if (FlushLow(ctxt) > 0 && ctxt->lowSendPacketPtr_ == ctxt->lowSendPacket_)
+        if (FlushLow(ctxt) > 0 and ctxt->lowSendPacketPtr_ == ctxt->lowSendPacket_)
         {
             // try resending...
             retval = SendLowPriority(ctxt, msg);
@@ -1295,7 +1295,7 @@ int VuTargetEntity::SendMessage(VuMessage* msg)
     {
         VuTargetEntity *forward = ForwardingTarget(msg);
 
-        if (forward && forward not_eq this)
+        if (forward and forward not_eq this)
         {
             return forward->SendMessage(msg);
         }
@@ -1880,7 +1880,7 @@ VU_ERRCODE VuSessionEntity::AddGroup(VU_ID gid)
 {
     VU_ERRCODE retval = VU_ERROR;
 
-    if (vuGlobalGroup && gid == vuGlobalGroup->Id())
+    if (vuGlobalGroup and gid == vuGlobalGroup->Id())
     {
         return VU_NO_OP;
     }
@@ -1889,7 +1889,7 @@ VU_ERRCODE VuSessionEntity::AddGroup(VU_ID gid)
     VuGroupNode* gnode = groupHead_;
     // make certain group isn't already here
 
-    while (gnode && gnode->gid_ not_eq gid)
+    while (gnode and gnode->gid_ not_eq gid)
     {
         gnode = gnode->next_;
     }
@@ -1917,7 +1917,7 @@ VU_ERRCODE VuSessionEntity::RemoveGroup(VU_ID gid)
     VuGroupNode* gnode    = groupHead_;
     VuGroupNode* lastnode = 0;
 
-    while (gnode && gnode->gid_ not_eq gid)
+    while (gnode and gnode->gid_ not_eq gid)
     {
         lastnode = gnode;
         gnode    = gnode->next_;
@@ -2034,7 +2034,7 @@ VU_ERRCODE VuSessionEntity::InsertionCallback()
         {
             VuGroupEntity* group = (VuGroupEntity*)vuDatabase->Find(gnode->gid_);
 
-            if (group && group->IsGroup())
+            if (group and group->IsGroup())
             {
                 group->AddSession(this);
             }
@@ -2062,7 +2062,7 @@ VU_ERRCODE VuSessionEntity::RemovalCallback()
         {
             VuGroupEntity* group = (VuGroupEntity*)vuDatabase->Find(gnode->gid_);
 
-            if (group && group->IsGroup())
+            if (group and group->IsGroup())
             {
                 VuxGroupRemoveSession(group, this);
             }
@@ -2231,11 +2231,11 @@ void VuSessionEntity::CloseSession()
             nextEnt = iter.GetNext();
 
             // checks if entity belongs to session
-            if ((ent not_eq this) && (ent->OwnerId() == Id()) && (ent->IsGlobal()))
+            if ((ent not_eq this) and (ent->OwnerId() == Id()) and (ent->IsGlobal()))
             {
                 if (
                     (sess == NULL) or (ent->IsTransferrable() == 0) ||
-                    ((ent->IsGame() && ((VuGameEntity *)ent)->SessionCount() == 0))
+                    ((ent->IsGame() and ((VuGameEntity *)ent)->SessionCount() == 0))
                 )
                 {
                     // entity canot be transfered
@@ -2280,13 +2280,13 @@ VU_ERRCODE VuSessionEntity::JoinGroup(VuGroupEntity* newgroup)
         {
             VuSessionEvent *event = 0;
 
-            if (!newgroup->IsLocal() && newgroup->SessionCount() == 0 &&
+            if (!newgroup->IsLocal() and newgroup->SessionCount() == 0 &&
                 newgroup not_eq vuGlobalGroup)
             {
                 // we need to transfer it here...
                 VuTargetEntity* target = (VuTargetEntity*)vuDatabase->Find(newgroup->OwnerId());
 
-                if (target && target->IsTarget())
+                if (target and target->IsTarget())
                 {
                     VuMessage* pull = new VuPullRequest(newgroup->Id(), target);
                     // this would likely result in replicated p2p (evil!)
@@ -2313,7 +2313,7 @@ VU_ERRCODE VuSessionEntity::LeaveGroup(VuGroupEntity* group)
     {
         retval = RemoveGroup(group->Id());
 
-        if (retval == VU_SUCCESS && group->RemoveSession(this) >= 0 && IsLocal())
+        if (retval == VU_SUCCESS and group->RemoveSession(this) >= 0 and IsLocal())
         {
             VuSessionEvent *event = new VuSessionEvent(this, VU_SESSION_LEAVE_GROUP, vuGlobalGroup);
             VuMessageQueue::PostVuMessage(event);
@@ -2334,7 +2334,7 @@ VU_ERRCODE VuSessionEntity::LeaveAllGroups()
     {
         VuGroupEntity* gent = (VuGroupEntity*)vuDatabase->Find(gnode->gid_);
 
-        if (gent && gent->IsGroup())
+        if (gent and gent->IsGroup())
         {
             LeaveGroup(gent);
         }
@@ -2360,16 +2360,16 @@ VU_ERRCODE VuSessionEntity::JoinGame(VuGameEntity* newgame)
     VU_ERRCODE retval = VU_NO_OP;
     VuGameEntity *game = Game();
 
-    if (newgame && game == newgame)
+    if (newgame and game == newgame)
     {
         return VU_NO_OP;
     }
 
-    if (newgame && !game)
+    if (newgame and !game)
     {
         action_ = VU_JOIN_GAME_ACTION;
     }
-    else if (newgame && game)
+    else if (newgame and game)
     {
         action_ = VU_CHANGE_GAME_ACTION;
     }
@@ -2464,13 +2464,13 @@ VU_ERRCODE VuSessionEntity::JoinGame(VuGameEntity* newgame)
 
         if (IsLocal())
         {
-            if (!newgame->IsLocal() && newgame->SessionCount() == 0)
+            if (!newgame->IsLocal() and newgame->SessionCount() == 0)
             {
                 // we need to transfer it here...
                 VuTargetEntity* target =
                     (VuTargetEntity*)vuDatabase->Find(newgame->OwnerId());
 
-                if (target && target->IsTarget())
+                if (target and target->IsTarget())
                 {
                     VuMessage* pull = new VuPullRequest(newgame->Id(), target);
                     VuMessageQueue::PostVuMessage(pull);
@@ -2492,7 +2492,7 @@ VU_ERRCODE VuSessionEntity::JoinGame(VuGameEntity* newgame)
         VuMessageQueue::PostVuMessage(event);
     }
 
-    if (newgame == 0 && IsLocal() && vuPlayerPoolGroup)
+    if (newgame == 0 and IsLocal() and vuPlayerPoolGroup)
     {
         retval = JoinGame(vuPlayerPoolGroup);
     }
@@ -2506,7 +2506,7 @@ VuGameEntity *VuSessionEntity::Game()
     {
         VuEntity *g = vuDatabase->Find(gameId_);
 
-        if (g && g->IsGame())
+        if (g and g->IsGame())
         {
             game_.reset(static_cast<VuGameEntity*>(g));
         }
@@ -2529,17 +2529,17 @@ void VuSessionEntity::SetTimeSync(VU_BYTE newstate)
         masterTimeOwner_    = 0;
     }
 
-    if (timeSyncState_ not_eq oldstate && timeSyncState_ not_eq VU_NO_SYNC && this == vuLocalSessionEntity)
+    if (timeSyncState_ not_eq oldstate and timeSyncState_ not_eq VU_NO_SYNC and this == vuLocalSessionEntity)
     {
         VuMessage* msg = 0;
 
-        if (timeSyncState_ == VU_MASTER_SYNC && Game() && Game()->OwnerId() not_eq vuLocalSession)
+        if (timeSyncState_ == VU_MASTER_SYNC and Game() and Game()->OwnerId() not_eq vuLocalSession)
         {
             masterTimeOwner_ = Id().creator_;
             // transfer game ownership to new master
             VuTargetEntity* target = (VuTargetEntity*)vuDatabase->Find(Game()->OwnerId());
 
-            if (target && target->IsTarget())
+            if (target and target->IsTarget())
             {
                 msg = new VuPullRequest(GameId(), target);
                 msg->RequestReliableTransmit();
@@ -2566,7 +2566,7 @@ void VuSessionEntity::SetTimeSync(VU_BYTE newstate)
 
 void VuSessionEntity::SetLatency(VU_TIME latency)
 {
-    if (this == vuLocalSessionEntity && latency not_eq latency_)
+    if (this == vuLocalSessionEntity and latency not_eq latency_)
     {
         VU_TIME oldlatency = latency_;
         latency_ = latency;
@@ -2585,7 +2585,7 @@ VU_ERRCODE VuSessionEntity::Handle(VuEvent* event)
 #if !NO_RELEASE_EVENT
         case VU_RELEASE_EVENT:
 #endif
-            if (Game() && this not_eq vuLocalSessionEntity)
+            if (Game() and this not_eq vuLocalSessionEntity)
             {
                 JoinGame(vuPlayerPoolGroup);
             }
@@ -2707,7 +2707,7 @@ VU_ERRCODE VuSessionEntity::Handle(VuSessionEvent* event)
         {
             VuGameEntity* game = (VuGameEntity*)vuDatabase->Find(event->group_);
 
-            if (game && game->IsGame())
+            if (game and game->IsGame())
             {
                 game->Distribute(this);
                 JoinGame(game);
@@ -2753,7 +2753,7 @@ VU_ERRCODE VuSessionEntity::Handle(VuSessionEvent* event)
         {
             VuGroupEntity* group = (VuGroupEntity*)vuDatabase->Find(event->group_);
 
-            if (group && group->IsGroup())
+            if (group and group->IsGroup())
             {
                 JoinGroup(group);
             }
@@ -2769,7 +2769,7 @@ VU_ERRCODE VuSessionEntity::Handle(VuSessionEvent* event)
         {
             VuGroupEntity* group = (VuGroupEntity*)vuDatabase->Find(event->group_);
 
-            if (group && group->IsGroup())
+            if (group and group->IsGroup())
             {
                 LeaveGroup(group);
             }
@@ -2882,7 +2882,7 @@ void VuSessionEntity::SendBestEnqueuedPositionUpdatesAndClear(unsigned int qty, 
     // respect BW
     for (
         VuPositionUpdateQ::iterator it = positionUpdateQ_.begin();
-        it not_eq positionUpdateQ_.end() && (qty-- > 0);
+        it not_eq positionUpdateQ_.end() and (qty-- > 0);
         ++it
     )
     {
@@ -3154,7 +3154,7 @@ VU_BOOL VuGroupEntity::HasTarget(VU_ID id)
 
     VuSessionEntity* session = (VuSessionEntity*)vuDatabase->Find(id);
 
-    if (session && session->IsSession())
+    if (session and session->IsSession())
     {
         return SessionInGroup(session);
     }
@@ -3225,7 +3225,7 @@ VU_ERRCODE VuGroupEntity::AddSession(VU_ID sessionId)
 {
     VuSessionEntity* session = (VuSessionEntity*)vuDatabase->Find(sessionId);
 
-    if (session && session->IsSession())
+    if (session and session->IsSession())
     {
         return AddSession(session);
     }
@@ -3247,7 +3247,7 @@ VU_ERRCODE VuGroupEntity::RemoveSession(VU_ID sessionId)
 {
     VuSessionEntity* session = (VuSessionEntity*)vuDatabase->Find(sessionId);
 
-    if (session && session->IsSession())
+    if (session and session->IsSession())
     {
         return RemoveSession(session);
     }
@@ -3415,7 +3415,7 @@ VuGameEntity::VuGameEntity(VU_BYTE** stream, long *rem):
     {
         memcpychk(&latency, stream, sizeof(latency), rem);
 
-        if (selfIndex_ == i && this == vuLocalSessionEntity->Game())
+        if (selfIndex_ == i and this == vuLocalSessionEntity->Game())
         {
             vuLocalSessionEntity->SetLatency(latency);
         }
@@ -3670,7 +3670,7 @@ VU_ERRCODE VuGameEntity::RemovalCallback()
 
     for (
         VuSessionEntity* sess = iter.GetFirst(), *nextSess;
-        sess && (sess->Game() == this);
+        sess and (sess->Game() == this);
         sess = nextSess
     )
     {
@@ -3728,7 +3728,7 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
 
         cs = siter.GetFirst();
 
-        while (cs && cs not_eq vuLocalSessionEntity)
+        while (cs and cs not_eq vuLocalSessionEntity)
         {
             if (!sess or sess->Id() not_eq cs->Id())
             {
@@ -3762,9 +3762,9 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
                 {
                     next = dbiter.GetNext();
 
-                    if ((ent->OwnerId().creator_ == sess->SessionId()) && (sess not_eq ent) &&
+                    if ((ent->OwnerId().creator_ == sess->SessionId()) and (sess not_eq ent) &&
                         (sess->VuState() not_eq VU_MEM_ACTIVE ||
-                         (ent->IsTransferrable() && !ent->IsGlobal())))
+                         (ent->IsTransferrable() and !ent->IsGlobal())))
                     {
                         vuDatabase->Remove(ent);
                     }
@@ -3786,7 +3786,7 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
                 next = dbiter.GetNext();
 
                 if (!ent->IsTransferrable() &&
-                    sess && sess->VuState() not_eq VU_MEM_ACTIVE  &&
+                    sess and sess->VuState() not_eq VU_MEM_ACTIVE  &&
                     ent->OwnerId().creator_ == sess->SessionId())
                 {
                     vuDatabase->Remove(ent);
@@ -3804,7 +3804,7 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
 
                     if (index >= myseedlower[test_ent->Domain()] &&
                         index <= myseedupper[test_ent->Domain()] &&
-                        ent->IsTransferrable() && !ent->IsGlobal())
+                        ent->IsTransferrable() and !ent->IsGlobal())
                     {
                         ent->SetOwnerId(vuLocalSession);
                     }
@@ -3825,7 +3825,7 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
             while (ent)
             {
                 if (!ent->IsTransferrable() &&
-                    sess && sess->VuState() not_eq VU_MEM_ACTIVE  &&
+                    sess and sess->VuState() not_eq VU_MEM_ACTIVE  &&
                     ent->OwnerId().creator_ == sess->SessionId())
                 {
                     vuDatabase->Remove(ent);
@@ -3843,7 +3843,7 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
 
                     if (index >= myseedlower[test_ent->Domain()] &&
                         index <= myseedupper[test_ent->Domain()] &&
-                        ent->IsTransferrable() && !ent->IsGlobal() &&
+                        ent->IsTransferrable() and !ent->IsGlobal() &&
                         (!sess or sess->VuState() == VU_MEM_ACTIVE))
                     {
                         ent->SetOwnerId(vuLocalSession);
@@ -3904,7 +3904,7 @@ int VuPlayerPoolGame::Save(FILE*)
 VU_ERRCODE VuPlayerPoolGame::Distribute(VuSessionEntity *sess)
 {
     // just remove all ents managed by session
-    if (sess && (Id() == sess->GameId()))
+    if (sess and (Id() == sess->GameId()))
     {
         VuDatabaseIterator dbiter;
 
@@ -3919,7 +3919,7 @@ VU_ERRCODE VuPlayerPoolGame::Distribute(VuSessionEntity *sess)
             if (
                 (ent->OwnerId().creator_ == sess->SessionId()) &&
                 (!ent->IsPersistent()) &&
-                (sess->VuState() not_eq VU_MEM_ACTIVE or (ent->IsTransferrable() && !ent->IsGlobal()))
+                (sess->VuState() not_eq VU_MEM_ACTIVE or (ent->IsTransferrable() and !ent->IsGlobal()))
             )
             {
                 vuDatabase->Remove(ent);

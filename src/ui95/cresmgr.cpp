@@ -33,7 +33,7 @@ void C_Resmgr::ConvertToScreen()
     if (!Data_ or !Index_)
         return;
 
-    if (reds == 10 && greens == 5 && !blues)
+    if (reds == 10 and greens == 5 and !blues)
         return;
 
     rec = (IMAGE_RSC*)Index_->GetFirst(&current, &curidx);
@@ -235,7 +235,7 @@ void C_Resmgr::LoadIndex()
 
     ptr = Idx_;
 
-    while (ptr && size)
+    while (ptr and size)
     {
         rectype = (long *)ptr;
 

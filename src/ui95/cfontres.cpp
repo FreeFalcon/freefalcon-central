@@ -170,11 +170,11 @@ long C_Fontmgr::Width(_TCHAR *str)
     i = 0;
 
     while (str[i])
-        //while(!F4IsBadReadPtr(&(str[i]), sizeof(_TCHAR)) && str[i]) // JB 010401 CTD (too much CPU)
+        //while(!F4IsBadReadPtr(&(str[i]), sizeof(_TCHAR)) and str[i]) // JB 010401 CTD (too much CPU)
     {
         thechar = str[i] & 0xff;
 
-        if (thechar >= first_ && thechar <= last_)
+        if (thechar >= first_ and thechar <= last_)
         {
             thechar -= first_;
             size += fontTable_[thechar].lead + fontTable_[thechar].w + fontTable_[thechar].trail;
@@ -198,11 +198,11 @@ long C_Fontmgr::Width(_TCHAR *str, long len)
     size = 0;
     i = 0;
 
-    while (str[i] && i < len)
+    while (str[i] and i < len)
     {
         thechar = str[i] & 0xff;
 
-        if (thechar >= first_ && thechar <= last_)
+        if (thechar >= first_ and thechar <= last_)
         {
             thechar -= first_;
             size += fontTable_[thechar].lead + fontTable_[thechar].w + fontTable_[thechar].trail;
@@ -221,7 +221,7 @@ long C_Fontmgr::Height()
 
 CharStr *C_Fontmgr::GetChar(short ID)
 {
-    if (fontTable_ && ID >= first_ && ID <= last_)
+    if (fontTable_ and ID >= first_ and ID <= last_)
         return(&fontTable_[ID - first_]);
 
     return(NULL);
@@ -253,11 +253,11 @@ void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long
         dendv = surface->mem + surface->width * surface->height; // Make sure we don't go past the end of the surface
 
 
-    while (str[idx] && idx < length)
+    while (str[idx] and idx < length)
     {
         thechar = str[idx] & 0xff;
 
-        if (thechar >= (unsigned long)first_ && thechar <= (unsigned long)last_) //!
+        if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_) //!
         {
             thechar -= first_;
             xoffset += fontTable_[thechar].lead;
@@ -276,7 +276,7 @@ void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long
             }
 
 
-            for (i = 0; i < height_ && dstart < dendv; i++)
+            for (i = 0; i < height_ and dstart < dendv; i++)
             {
                 dptr = dstart;
                 sptr = sstart;
@@ -353,11 +353,11 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
     else
         dendv = surface->mem + surface->width * surface->height; // Make sure we don't go past the end of the surface
 
-    while (str[idx] && idx < length)
+    while (str[idx] and idx < length)
     {
         thechar = str[idx] & 0xff;
 
-        if (thechar >= (unsigned long)first_ && thechar <= (unsigned long)last_) //!
+        if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_) //!
         {
             thechar -= first_;
 
@@ -374,7 +374,7 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
                 dendh = surface->mem + (yoffset * surface->width) + surface->width;
             }
 
-            for (i = 0; i < height_ && dstart < dendv; i++)
+            for (i = 0; i < height_ and dstart < dendv; i++)
             {
                 dptr = dstart;
                 sptr = sstart;
@@ -482,11 +482,11 @@ void C_Fontmgr::_Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, l
     dclipy = surface->mem + (cliprect->top * surface->width);
     dendv = surface->mem + (cliprect->bottom * surface->width); // Make sure we don't go past the end of the surface
 
-    while (str[idx] && idx < length)
+    while (str[idx] and idx < length)
     {
         thechar = str[idx] & 0xff;
 
-        if (thechar >= (unsigned long)first_ && thechar <= (unsigned long)last_)
+        if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_)
         {
             thechar -= first_;
             xoffset += fontTable_[thechar].lead;
@@ -496,7 +496,7 @@ void C_Fontmgr::_Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, l
             dclipx = surface->mem + (yoffset * surface->width) + cliprect->left;
             dendh = dclipx + (cliprect->right - cliprect->left);
 
-            for (i = 0; i < height_ && dstart < dendv; i++)
+            for (i = 0; i < height_ and dstart < dendv; i++)
             {
                 if (dstart >= dclipy)
                 {
@@ -572,11 +572,11 @@ void C_Fontmgr::_Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor
     dclipy = surfmem + (cliprect->top * surface->width);
     dendv = surfmem + (cliprect->bottom * surface->width); // Make sure we don't go past the end of the surface
 
-    while (str[idx] && idx < length)
+    while (str[idx] and idx < length)
     {
         thechar = str[idx] & 0xff;
 
-        if (thechar >= (unsigned long)first_ && thechar <= (unsigned long)last_)
+        if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_)
         {
             thechar -= first_;
             xoffset += fontTable_[thechar].lead;
@@ -587,7 +587,7 @@ void C_Fontmgr::_Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor
             dclipx = surfmem + (yoffset * surface->width) + cliprect->left;
             dendh = dclipx + (cliprect->right - cliprect->left);
 
-            for (i = 0; i < height_ && dstart < dendv; i++)
+            for (i = 0; i < height_ and dstart < dendv; i++)
             {
                 if (dstart >= dclipy)
                 {
@@ -670,11 +670,11 @@ void C_Fontmgr::_DrawSolid16(SCREEN *surface, _TCHAR *str, long length, WORD col
     dclipy = surface->mem + (cliprect->top * surface->width);
     dendv = surface->mem + (cliprect->bottom * surface->width); // Make sure we don't go past the end of the surface
 
-    while (str[idx] && idx < length)
+    while (str[idx] and idx < length)
     {
         thechar = str[idx] & 0xff;
 
-        if (thechar >= (unsigned long)first_ && thechar <= (unsigned long)last_)
+        if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_)
         {
             thechar -= first_;
 
@@ -683,7 +683,7 @@ void C_Fontmgr::_DrawSolid16(SCREEN *surface, _TCHAR *str, long length, WORD col
             dclipx = surface->mem + (yoffset * surface->width) + cliprect->left;
             dendh = dclipx + (cliprect->right - cliprect->left);
 
-            for (i = 0; i < height_ && dstart < dendv; i++)
+            for (i = 0; i < height_ and dstart < dendv; i++)
             {
                 if (dstart >= dclipy)
                 {
@@ -772,11 +772,11 @@ void C_Fontmgr::_DrawSolid32(SCREEN *surface, _TCHAR *str, long length, DWORD co
     dclipy = surfmem + (cliprect->top * surface->width);
     dendv = surfmem + (cliprect->bottom * surface->width); // Make sure we don't go past the end of the surface
 
-    while (str[idx] && idx < length)
+    while (str[idx] and idx < length)
     {
         thechar = str[idx] & 0xff;
 
-        if (thechar >= (unsigned long)first_ && thechar <= (unsigned long)last_)
+        if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_)
         {
             thechar -= first_;
 
@@ -785,7 +785,7 @@ void C_Fontmgr::_DrawSolid32(SCREEN *surface, _TCHAR *str, long length, DWORD co
             dclipx = surfmem + (yoffset * surface->width) + cliprect->left;
             dendh = dclipx + (cliprect->right - cliprect->left);
 
-            for (i = 0; i < height_ && dstart < dendv; i++)
+            for (i = 0; i < height_ and dstart < dendv; i++)
             {
                 if (dstart >= dclipy)
                 {

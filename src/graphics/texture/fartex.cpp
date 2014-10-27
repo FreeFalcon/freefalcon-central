@@ -181,7 +181,7 @@ void FarTexDB::Cleanup(void)
 
     // sfr: changed casting here
     // Free the entire texture list
-    for (DWORD i = 0; (texCount > 0) && (i < ((DWORD)texCount)); ++i)
+    for (DWORD i = 0; (texCount > 0) and (i < ((DWORD)texCount)); ++i)
     {
         Deactivate(i);
         Free(i);
@@ -271,18 +271,18 @@ void FarTexDB::SetLightLevel(void)
 
             if (PlayerOptions.Season == 1) //Autumn
             {
-                if (!((tmpR == tmpG && tmpG == tmpB) or tmpG < 60 or (tmpR + tmpG + tmpB) / 3 > 225)) //Not Greyscale / green / not very bright
+                if (!((tmpR == tmpG and tmpG == tmpB) or tmpG < 60 or (tmpR + tmpG + tmpB) / 3 > 225)) //Not Greyscale / green / not very bright
                 {
                     RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-                    if (h >= 30 && h <= 165)  //Green
+                    if (h >= 30 and h <= 165)  //Green
                     {
                         //h *= 0.6f; // min27 (yellow/orange/terracota/brown)
                         h = h * 0.33f + 15; //Shift to brown
                         s *= 1.2f; //more saturated (intenser brown, just mudy green otherwise
                         v *= 0.9f; //darker
                     }
-                    else if (!(v > 0.9 && s > 0.9)) //Not a strong green, but neither very bright
+                    else if (!(v > 0.9 and s > 0.9)) //Not a strong green, but neither very bright
                     {
                         s *= 0.9f; //less saturated
                         v *= 0.85f; //darken a bit
@@ -297,13 +297,13 @@ void FarTexDB::SetLightLevel(void)
             }
             else if (PlayerOptions.Season == 2) //Winter
             {
-                if (!(tmpR == tmpG && tmpR == tmpB) or tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //|| (tmpR == 255 && tmpG == 255))) //Greyscale //or pure color
+                if (!(tmpR == tmpG and tmpR == tmpB) or tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //|| (tmpR == 255 and tmpG == 255))) //Greyscale //or pure color
                 {
                     RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
                     if (!(s <= 0.2 or h == -1))  //If Not Greyscale
                     {
-                        if (h >= 45 && h <= 150) //If Green
+                        if (h >= 45 and h <= 150) //If Green
                         {
                             s = 0;
                             v = 255; //Make white
@@ -317,7 +317,7 @@ void FarTexDB::SetLightLevel(void)
                     //else if (v<=200) v *= 0.9f; //Greyscale, but not white: darken a bit (to increase contrast)
                     //else if (v>=200) v *= 1.2f; //bright...make even brighter
 
-                    //if (s==0 && v < 240) v *= 0.85f; //Greyscale, but not white: darken a bit (to increase contrast)
+                    //if (s==0 and v < 240) v *= 0.85f; //Greyscale, but not white: darken a bit (to increase contrast)
                     //if (s>230) s = 255; //bright...make even brighter
                     if (v > 255) v = 255;
 
@@ -330,7 +330,7 @@ void FarTexDB::SetLightLevel(void)
 
                 if (!(s <= 0.1 or h == -1))  //Not Greyscale
                 {
-                    if (h >= 45 && h <= 160) //Green
+                    if (h >= 45 and h <= 160) //Green
                     {
                         s *= 0.8f;
                         v *= 1.2f;
@@ -517,7 +517,7 @@ void FarTexDB::Load(DWORD offset, bool forceNoDDS)
     ShiAssert(offset < (DWORD) texCount);
     ShiAssert(texArray[offset].bits == NULL);
 
-    if (!forceNoDDS && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+    if (!forceNoDDS and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
 #ifdef USE_SH_POOLS
         texArray[offset].bits = (BYTE *)MemAllocFS(gFartexMemPool);

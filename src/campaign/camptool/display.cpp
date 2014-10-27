@@ -103,7 +103,7 @@ void drawRoad(HDC DC, short ScreenX, short ScreenY, short Size, int i)
 {
     short sx = 0, sy = 0, tx = 0, ty = 0;
 
-    ShiAssert(i >= 0 && i <= 7);
+    ShiAssert(i >= 0 and i <= 7);
     i = max(0, min(i, 7));
 
     switch (i)
@@ -194,7 +194,7 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
     r = GetReliefType(TheCell);
     c = GetGroundCover(TheCell);
 
-    if (c == Water && DataMode < 5)
+    if (c == Water and DataMode < 5)
         DataMode = 0;
 
     switch (Size)
@@ -352,7 +352,7 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
             {
                 for (i = 0; i < 8; i += 2)
                 {
-                    if (side[i] && side[(i + 2) % 8])
+                    if (side[i] and side[(i + 2) % 8])
                     {
                         side[i] = side[(i + 2) % 8] = 0;
                         side[i + 1] = 1;
@@ -394,7 +394,7 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
             {
                 for (i = 0; i < 8; i += 2)
                 {
-                    if (side[i] && side[(i + 2) % 8])
+                    if (side[i] and side[(i + 2) % 8])
                     {
                         side[i] = side[(i + 2) % 8] = 0;
                         side[i + 1] = 1;

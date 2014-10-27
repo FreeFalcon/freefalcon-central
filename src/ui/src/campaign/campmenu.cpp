@@ -794,12 +794,12 @@ WayPointClass* GetSelectedWayPoint(void)
     if (caller == NULL)
         return NULL;
 
-    if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL && caller->_GetCType_() == _CNTL_WAYPOINT_)
+    if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL and caller->_GetCType_() == _CNTL_WAYPOINT_)
     {
         // Waypoint
         cwp = (C_Waypoint *)caller;
 
-        if (cwp && cwp->GetLast())
+        if (cwp and cwp->GetLast())
         {
             control = cwp->GetLast()->Icon;
 
@@ -819,7 +819,7 @@ WayPointClass* GetSelectedWayPoint(void)
 
                 tmpID = (VU_ID *)control->GetUserPtr(C_STATE_0);
 
-                if (tmpID && *tmpID not_eq gActiveFlightID)
+                if (tmpID and *tmpID not_eq gActiveFlightID)
                 {
                     gActiveFlightID = *tmpID;
                     gCurrentFlightID = *tmpID;
@@ -828,12 +828,12 @@ WayPointClass* GetSelectedWayPoint(void)
 
             unit = FindUnit(*tmpID);
 
-            if (unit && unit->IsFlight())
+            if (unit and unit->IsFlight())
             {
                 wp = unit->GetFirstUnitWP();
                 i = 1;
 
-                while (i < control->GetUserNumber(C_STATE_1) && wp)
+                while (i < control->GetUserNumber(C_STATE_1) and wp)
                 {
                     wp = wp->GetNextWP();
                     i++;
@@ -857,7 +857,7 @@ void SteerPointMenuOpenCB(C_Base *, C_Base *)
 
     menu = gPopupMgr->GetMenu(STEERPOINT_POP);
 
-    if (menu && wp)
+    if (menu and wp)
     {
         if (wp->GetWPFlags() & WPF_TIME_LOCKED)
             menu->SetItemState(MID_LOCK_TOS, 1);
@@ -927,7 +927,7 @@ void MenuUnitDeleteCB(long, short, C_Base *)
         {
             unit = (Unit)vuDatabase->Find(urec->GetID());
 
-            if (unit && unit->IsUnit())
+            if (unit and unit->IsUnit())
             {
                 pkg = NULL;
                 count = 0;
@@ -936,7 +936,7 @@ void MenuUnitDeleteCB(long, short, C_Base *)
                 {
                     pkg = (Package)unit->GetUnitParent();
 
-                    if (pkg && pkg->IsPackage())
+                    if (pkg and pkg->IsPackage())
                     {
                         sec = pkg->GetFirstUnitElement();
 
@@ -954,7 +954,7 @@ void MenuUnitDeleteCB(long, short, C_Base *)
 
                 unit->Remove();
 
-                if (pkg && !count)
+                if (pkg and !count)
                     pkg->Remove();
             }
         }
@@ -1174,13 +1174,13 @@ void MenuUnitStatusCB(long, short, C_Base *)
 
         if (win)
         {
-            if (urec && urec->GetType() == GPS_DIVISION)
+            if (urec and urec->GetType() == GPS_DIVISION)
                 SetupDivisionInfoWindow(urec->GetDivID(), urec->GetSide()); // Map & Tree save team # in top 8 bits (Needed to find division by team)
             else
             {
                 ent = (CampEntity)vuDatabase->Find(urec->GetID());
 
-                if (ent && ent->IsUnit())
+                if (ent and ent->IsUnit())
                 {
                     if (ent->IsFlight() or ent->IsSquadron())
                     {
@@ -1337,7 +1337,7 @@ void MenuAddWPCB(long, short, C_Base *)
 
     num = wps->ID & 0xff;
 
-    while ((num > 1) && (wp))
+    while ((num > 1) and (wp))
     {
         wp = wp->GetNextWP();
         num --;
@@ -1366,7 +1366,7 @@ void MenuDeleteWPCB(long, short hittype, C_Base *)
 
     wp = GetSelectedWayPoint();
 
-    if (wp && (wp->GetPrevWP()) && (wp->GetNextWP()))
+    if (wp and (wp->GetPrevWP()) and (wp->GetNextWP()))
     {
         rw = wp->GetPrevWP();
         un->DeleteUnitWP(wp);
@@ -1375,7 +1375,7 @@ void MenuDeleteWPCB(long, short hittype, C_Base *)
 
     gMapMgr->SetCurrentWaypointList(un->Id());
 
-    if ((TheCampaign.Flags & CAMP_TACTICAL_EDIT) && un->IsFlight())
+    if ((TheCampaign.Flags & CAMP_TACTICAL_EDIT) and un->IsFlight())
     {
         fixup_unit(un);
         gGps->Update();
@@ -2252,7 +2252,7 @@ void ObjMenuOpenCB(C_Base *themenu, C_Base *caller)
 
         icon = ((C_DrawList*)caller)->GetLastItem();
 
-        if (icon && icon->Owner)
+        if (icon and icon->Owner)
         {
             if (icon->Owner->GetType() == _OBTV_AIR_FIELDS)
             {

@@ -395,7 +395,7 @@ BOOL FindSquadronType(long ClassID, long teamid)
 
     while (entity)
     {
-        if (entity->GetTeam() == teamid && entity->IsSquadron() && !entity->IsDead())
+        if (entity->GetTeam() == teamid and entity->IsSquadron() and !entity->IsDead())
         {
             if (entity->Type() == ClassID)
             {
@@ -422,7 +422,7 @@ void FillListBoxWithACTypes(C_ListBox *lbox)
 
     LoadDfPlanes();
 
-    while (DFAIPlanes && DFAIPlanes[i].Type) //ctd fix
+    while (DFAIPlanes and DFAIPlanes[i].Type) //ctd fix
     {
         ID = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_SQUADRON, DFAIPlanes[i].UnitSType, DFAIPlanes[i].SPType, VU_ANY, VU_ANY, VU_ANY);
 
@@ -472,13 +472,13 @@ void SetCurrentGameState(C_TreeList *tree, short state)
 {
     TREELIST *group;
 
-    if (gCommsMgr->Online() && tree)
+    if (gCommsMgr->Online() and tree)
     {
         if (vuLocalGame not_eq vuPlayerPoolGroup)
         {
             group = StartTreeSearch(FalconLocalGame->Id(), tree->GetRoot(), tree);
 
-            if (group && group->Item_)
+            if (group and group->Item_)
             {
                 group->Item_->SetState(state);
                 group->Item_->Refresh();
@@ -540,7 +540,7 @@ void GameHasStarted(void)
 
 void ReallyJoinDogfightCB(void)
 {
-    // if ((SimDogfight.GetDogfightGameStatus() >= dog_Starting) && (SimDogfight.GetGameType() == dog_TeamMatchplay))
+    // if ((SimDogfight.GetDogfightGameStatus() >= dog_Starting) and (SimDogfight.GetGameType() == dog_TeamMatchplay))
     // {
     // GameHasStarted();
     // return;
@@ -669,7 +669,7 @@ void AddDogfightPlayerCB(long ID, short hittype, C_Base *)
     // b) Request a new player flight
     else
     {
-        if (flight && flight->GetTeam() == teamid)
+        if (flight and flight->GetTeam() == teamid)
             RequestACSlot(flight, flight->GetTeam(), 0, 0, (flight->Type() - VU_LAST_ENTITY_TYPE), 1);
         else
             RequestACSlot(NULL, teamid, 0, 0, type, 1);
@@ -1191,9 +1191,9 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
             // Find this player's session
             session = (FalconSessionEntity*) sit.GetFirst();
 
-            while (session && !found)
+            while (session and !found)
             {
-                if (session->GetAircraftNum() == ac && session->GetPlayerFlight() == flight && session->GetPilotSlot() == flight->player_slots[ac])
+                if (session->GetAircraftNum() == ac and session->GetPlayerFlight() == flight and session->GetPilotSlot() == flight->player_slots[ac])
                     found = 1;
                 else
                     session = (FalconSessionEntity*) sit.GetNext();
@@ -1303,7 +1303,7 @@ void EraseOldLimbs(C_TreeList *tree, TREELIST *first, long timestamp)
         item = cur;
         cur = cur->Next;
 
-        if (item->Item_ && item->Item_->GetUserNumber(0) not_eq timestamp)
+        if (item->Item_ and item->Item_->GetUserNumber(0) not_eq timestamp)
         {
             if (item->Child)
                 tree->DeleteBranch(item->Child);
@@ -1408,7 +1408,7 @@ void BuildDFPlayerList()
 
     while (unit)
     {
-        if (unit->IsFlight() && !unit->IsDead())
+        if (unit->IsFlight() and !unit->IsDead())
         {
             // Add this flight and all aircraft to our trees
             flight = (Flight)unit;
@@ -1483,7 +1483,7 @@ void BuildDFPlayerList()
                     if (teamplt)
                         teamplt->SetUserNumber(0, timestamp);
 
-                    if (gCurrentFlightID == flight->Id() && gCurrentAircraftNum == ac)
+                    if (gCurrentFlightID == flight->Id() and gCurrentAircraftNum == ac)
                     {
                         switch (SimDogfight.GetGameType())
                         {
@@ -1563,7 +1563,7 @@ uchar GetPlaneListID(long ID)
     LoadDfPlanes();
     i = 0;
 
-    while (DFAIPlanes[i].ID && i < 255)
+    while (DFAIPlanes[i].ID and i < 255)
     {
         if (DFAIPlanes[i].ID == ID)
             return(i);
@@ -1581,9 +1581,9 @@ long GetACIDFromFlight(Flight flight)
     LoadDfPlanes();
     i = 0;
 
-    while (DFAIPlanes[i].ID && i < 255)
+    while (DFAIPlanes[i].ID and i < 255)
     {
-        if (DFAIPlanes[i].UnitSType && DFAIPlanes[i].SPType && DFAIPlanes[i].UnitSType == stype && DFAIPlanes[i].SPType == sptype)
+        if (DFAIPlanes[i].UnitSType and DFAIPlanes[i].SPType and DFAIPlanes[i].UnitSType == stype and DFAIPlanes[i].SPType == sptype)
             return(DFAIPlanes[i].ID);
 
         i++;
@@ -1745,7 +1745,7 @@ void AddDogfightFlightCB(long, short hittype, C_Base *control)
         case dog_TeamFurball:
             flight = (Flight)vuDatabase->Find(gCurrentFlightID);
 
-            if (flight && flight->GetTeam() not_eq teamid)
+            if (flight and flight->GetTeam() not_eq teamid)
                 flight = NULL;
 
             break;
@@ -1770,7 +1770,7 @@ void AddDogfightAICB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (gCommsMgr && gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr and gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -1833,7 +1833,7 @@ void RemoveAICB(long ID, short hittype, C_Base *)
     if (!flight)
         return;
 
-    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -2182,7 +2182,7 @@ void CopyDFSettingsFromWindow(void)
 
     if (!gMainHandler) return;
 
-    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
         return;
 
     gMainHandler->EnterCritical();
@@ -2311,7 +2311,7 @@ static void DFGameModeCB(long, short hittype, C_Base *)
     if (hittype not_eq C_TYPE_SELECT)
         return;
 
-    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -2345,11 +2345,11 @@ void CheckFlyButton()
 
     Enabled = FALSE;
 
-    if (vuLocalGame not_eq vuPlayerPoolGroup && FalconLocalSession->GetTeam() not_eq 255 && FalconLocalSession->GetPilotSlot() not_eq 255)
+    if (vuLocalGame not_eq vuPlayerPoolGroup and FalconLocalSession->GetTeam() not_eq 255 and FalconLocalSession->GetPilotSlot() not_eq 255)
         Enabled = TRUE;
 
     // In dogfight games, check ready state
-    if (FalconLocalGame && FalconLocalGame->GetGameType() == game_Dogfight && !SimDogfight.ReadyToStart())
+    if (FalconLocalGame and FalconLocalGame->GetGameType() == game_Dogfight and !SimDogfight.ReadyToStart())
         Enabled = FALSE;
 
     if (Enabled)
@@ -2479,7 +2479,7 @@ static void DogFightSLDRCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
-    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -2541,7 +2541,7 @@ static void DogFightSLDRCB(long ID, short hittype, C_Base *control)
             return;
 
         // Minimum starting range
-        if (ID == RANGE_SLIDER && value < 5)
+        if (ID == RANGE_SLIDER and value < 5)
             value = 5;
 
         ebox->SetInteger(value);
@@ -2978,7 +2978,7 @@ static void ToggleGunCB(long, short hittype, C_Base *)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -2994,7 +2994,7 @@ static void ToggleECMCB(long, short hittype, C_Base *)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -3010,7 +3010,7 @@ static void MoveGameLocationCB(long, short hittype, C_Base *)
     if (hittype not_eq C_TYPE_LDROP)
         return;
 
-    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -3137,7 +3137,7 @@ static void DogfightFlyCB(long, short hittype, C_Base *)
     control.Cleanup();
 
     // Force Compliance... since they already agreed before
-    if ((gCommsMgr) && (gCommsMgr->Online()))
+    if ((gCommsMgr) and (gCommsMgr->Online()))
     {
         PlayerOptions.ComplyWRules(CurrRules.GetRules());
         PlayerOptions.SaveOptions();
@@ -3274,10 +3274,10 @@ void SeeDFGamesCB(long, short hittype, C_Base *control)
 
 void DogfightChangeTimeCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
-    if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();

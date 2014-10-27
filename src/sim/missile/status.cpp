@@ -32,7 +32,7 @@ void MissileClass::SetStatus(void)
 
     ShiAssert(wc);
 
-    if (wc && (wc->Flags & WEAP_BOMBWARHEAD) && (g_nMissileFix & 0x01))
+    if (wc and (wc->Flags & WEAP_BOMBWARHEAD) and (g_nMissileFix & 0x01))
     {
         bombwarhead = true;
     }
@@ -41,14 +41,14 @@ void MissileClass::SetStatus(void)
     ShiAssert(inputData);
 
     // Check for min speed and max time for all missiles first
-    if ((inputData && engineData) && (mach < inputData->mslVmin) &&
+    if ((inputData and engineData) and (mach < inputData->mslVmin) &&
         (runTime > engineData->times[engineData->numBreaks - 1]))
     {
         done = FalconMissileEndMessage::MinSpeed;
         return;
     }
 
-    if (inputData && runTime > inputData->maxTof)
+    if (inputData and runTime > inputData->maxTof)
     {
         done = FalconMissileEndMessage::ExceedTime;
         return;
@@ -62,7 +62,7 @@ void MissileClass::SetStatus(void)
     }
 
     // Do ground impact check for all missiles here
-    if (z >= groundZ && !(this->GetSWD()->weaponType == wtSAM && runTime < 1.0f))
+    if (z >= groundZ and !(this->GetSWD()->weaponType == wtSAM and runTime < 1.0f))
     {
         done = FalconMissileEndMessage::GroundImpact;
         return;
@@ -87,7 +87,7 @@ void MissileClass::SetStatus(void)
                 }
 
                 // warhead didn't have time to fuse
-                if (inputData && runTime < inputData->guidanceDelay)
+                if (inputData and runTime < inputData->guidanceDelay)
                 {
                     done = FalconMissileEndMessage::MinTime;
                 }
@@ -121,7 +121,7 @@ void MissileClass::SetStatus(void)
             // Check for vehicles
             else
             {
-                if (targetPtr && ricept * ricept < min(lethalRadiusSqrd, 10000.0f))
+                if (targetPtr and ricept * ricept < min(lethalRadiusSqrd, 10000.0f))
                 {
                     done = FalconMissileEndMessage::MissileKill;
                 }
@@ -144,7 +144,7 @@ void MissileClass::SetStatus(void)
                 // Check for vehicles
                 else
                 {
-                    if (targetPtr && ricept * ricept < min(lethalRadiusSqrd, 10000.0f))
+                    if (targetPtr and ricept * ricept < min(lethalRadiusSqrd, 10000.0f))
                     {
                         done = FalconMissileEndMessage::BombImpact;
                     }
@@ -163,7 +163,7 @@ void MissileClass::SetStatus(void)
                 // Check for vehicles
                 else
                 {
-                    if (targetPtr && ricept * ricept < min(lethalRadiusSqrd, 10000.0f))
+                    if (targetPtr and ricept * ricept < min(lethalRadiusSqrd, 10000.0f))
                     {
                         done = FalconMissileEndMessage::MissileKill;
                     }
@@ -189,7 +189,7 @@ void MissileClass::SetStatus(void)
                 }
 
                 // warhead didn't have time to fuse
-                if (inputData && runTime < inputData->guidanceDelay)
+                if (inputData and runTime < inputData->guidanceDelay)
                 {
                     done = FalconMissileEndMessage::MinTime;
                 }
@@ -238,7 +238,7 @@ void MissileClass::SetStatus(void)
 //
 // ShiAssert(wc);
 //
-// if (wc && (wc->Flags & WEAP_BOMBWARHEAD) && (g_nMissileFix & 0x01))
+// if (wc and (wc->Flags & WEAP_BOMBWARHEAD) and (g_nMissileFix & 0x01))
 // bombwarhead = true;
 //
 // ShiAssert(engineData);
@@ -258,7 +258,7 @@ void MissileClass::SetStatus(void)
 //// detonate when the target is within blast range (like JSOW)....
 //   //Cobra test  since ricept might not get updated enough, lets add range as well
 //   // COBRA - RED - SARH BUG - removed, causing unklocked missiles to explode as 'range' is 0 for them
-//   else if ( (ricept*ricept <= lethalRadiusSqrd/* or range * range < lethalRadiusSqrd*/) && !bombwarhead)
+//   else if ( (ricept*ricept <= lethalRadiusSqrd/* or range * range < lethalRadiusSqrd*/) and !bombwarhead)
 //   {
 //   // Marco Edit - check for our missile arming delay
 //   if (wc)
@@ -270,7 +270,7 @@ void MissileClass::SetStatus(void)
 //      /*----------------------------------*/
 //      /* warhead didn't have time to fuse */
 //      /*----------------------------------*/
-//      if (inputData && runTime < inputData->guidanceDelay) // possible CTD fix
+//      if (inputData and runTime < inputData->guidanceDelay) // possible CTD fix
 //      {
 //         done = FalconMissileEndMessage::MinTime;
 //      }
@@ -294,14 +294,14 @@ void MissileClass::SetStatus(void)
 //// target position is inside the lethal radius OR missile is higher than its maxalt,
 //// bring missile to an end. When we have missiles going high ballistic, intercept them at max altitude
 //// in case of lethalRadius, they might apply a bit of proximity damage to the target...
-// else if (runTime > 1.50f && (flags & SensorLostLock) && !targetPtr && ((g_nMissileFix & 0x20) &&
-// range * range < lethalRadiusSqrd or (wc && wc->MaxAlt && (fabs(z) > fabsf(wc->MaxAlt*1000.0f))))) //JAM 27Sep03 - Should be fabsf
+// else if (runTime > 1.50f and (flags & SensorLostLock) and !targetPtr and ((g_nMissileFix & 0x20) &&
+// range * range < lethalRadiusSqrd or (wc and wc->MaxAlt and (fabs(z) > fabsf(wc->MaxAlt*1000.0f))))) //JAM 27Sep03 - Should be fabsf
 // {
 // done = FalconMissileEndMessage::NotDone; //ExceedFOV;//Cobra we can't use Missed because it is out of range
 //
 //// 2002-04-14 MN Try a modification here. This code could result in missing mavericks and Aim-9 and others.
 //// So when our last target lock was really close to lethalRadius - let's still do a MissileKill...
-// if (range*range < lethalRadiusSqrd && ricept*ricept < lethalRadiusSqrd*g_fLethalRadiusModifier)
+// if (range*range < lethalRadiusSqrd and ricept*ricept < lethalRadiusSqrd*g_fLethalRadiusModifier)
 // done = FalconMissileEndMessage::MissileKill;
 // else
 // done = FalconMissileEndMessage::NotDone;
@@ -312,7 +312,7 @@ void MissileClass::SetStatus(void)
 //   /*-------------------*/
 //// 2002-03-28 MN added range^2 check, as ricept is not updated anymore if we lost our target.
 //// Fixes floating missiles on the ground
-//   else if ((flags & ClosestApprch) && (ricept*ricept > lethalRadiusSqrd or ((g_nMissileFix & 0x02) && range*range > lethalRadiusSqrd)))
+//   else if ((flags & ClosestApprch) and (ricept*ricept > lethalRadiusSqrd or ((g_nMissileFix & 0x02) and range*range > lethalRadiusSqrd)))
 //   {
 //      //done = FalconMissileEndMessage::Missed;
 // done = FalconMissileEndMessage::ExceedFOV;//Cobra we can't use Missed because it is out of range
@@ -320,12 +320,12 @@ void MissileClass::SetStatus(void)
 //   /*---------------*/
 //   /* ground impact */
 //   /*---------------*/
-//   else if ( z > groundZ && !bombwarhead) // bombwarhead missiles are handled below
+//   else if ( z > groundZ and !bombwarhead) // bombwarhead missiles are handled below
 //   {
 //      // edg: this is somewhat of a hack, but I haven't had much luck fixing it
 //      // otherwise... if the parent is a ground unit and the missile has just
 //      // been launched( runTime ), don't do a groundimpact check yet
-//   if ( (parent && parent->OnGround() && runTime < 1.50f) )
+//   if ( (parent and parent->OnGround() and runTime < 1.50f) )
 //   {
 //   }
 //   else
@@ -346,7 +346,7 @@ void MissileClass::SetStatus(void)
 // if (bombwarhead)
 // {
 // // bombwarhead missile - we've not hit our target on our way:
-// if (targetPtr && hitObj not_eq targetPtr->BaseData()) // CTD fix
+// if (targetPtr and hitObj not_eq targetPtr->BaseData()) // CTD fix
 // {
 // done = FalconMissileEndMessage::FeatureImpact;
 // // might as well send the msg now....
@@ -356,7 +356,7 @@ void MissileClass::SetStatus(void)
 // }
 // else // bombwarhead missile has hit assigned target or hit something else
 // {
-// if (targetPtr && ricept*ricept < lethalRadiusSqrd)
+// if (targetPtr and ricept*ricept < lethalRadiusSqrd)
 //   done = FalconMissileEndMessage::BombImpact;
 // else
 //       done = FalconMissileEndMessage::GroundImpact;
@@ -387,7 +387,7 @@ void MissileClass::SetStatus(void)
 //   /*--------------------------------*/
 //   /* min velocity only after burnout*/
 //   /*--------------------------------*/
-//   if (inputData && engineData && mach < inputData->mslVmin && // 2002-04-05 MN CTD fix
+//   if (inputData and engineData and mach < inputData->mslVmin and // 2002-04-05 MN CTD fix
 //         runTime > engineData->times[engineData->numBreaks-1])
 //   {
 ////      done = FalconMissileEndMessage::MinSpeed;
@@ -396,7 +396,7 @@ void MissileClass::SetStatus(void)
 //   /*----------*/
 //   /* max time */
 //   /*----------*/
-//   if (inputData && runTime > inputData->maxTof) // 2002-04-05 MN possible CTD fix
+//   if (inputData and runTime > inputData->maxTof) // 2002-04-05 MN possible CTD fix
 //   {
 ////      done = FalconMissileEndMessage::ExceedTime;
 // done = FalconMissileEndMessage::ExceedFOV; //Cobra ExceedTime doesn't seem to kill it

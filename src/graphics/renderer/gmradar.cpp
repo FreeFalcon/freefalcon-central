@@ -643,7 +643,7 @@ BOOL RenderGMRadar::SetRange(float newRange, int newLOD)
     TViewPoint *oldViewpoint;
 
     // Quit now if we don't need to make a change (really shouldn't happen)
-    if ((LOD == newLOD) && (newRange == range))
+    if ((LOD == newLOD) and (newRange == range))
     {
         // No change.  We didn't have to refresh our viewpoint
         return FALSE;

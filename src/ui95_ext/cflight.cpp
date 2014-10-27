@@ -194,7 +194,7 @@ void C_ATO_Flight::SetSubParents(C_Window *)
 
 long C_ATO_Flight::CheckHotSpots(long relX, long relY)
 {
-    if (relX >= GetX() && relX <= (GetX() + GetW()) && relY >= GetY() && relY <= (GetY() + GetH()))
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
     {
         if (Task_->CheckHotSpots(relX, relY))
             Section_ = 1;

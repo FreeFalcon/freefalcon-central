@@ -183,7 +183,7 @@ void FireControlComputer::SetPlayerFCC(int flag)
     tmpWaypoint = platform->waypoint;
     TheHud->waypointNum = 0;
 
-    while (tmpWaypoint && tmpWaypoint not_eq platform->curWaypoint)
+    while (tmpWaypoint and tmpWaypoint not_eq platform->curWaypoint)
     {
         tmpWaypoint = tmpWaypoint->GetNextWP();
         TheHud->waypointNum ++;
@@ -252,7 +252,7 @@ SimObjectType* FireControlComputer::Exec(SimObjectType* curTarget, SimObjectType
                 lastmissileActiveTime = 0;
             }
 
-            if (targetPtr && missileLaunched)
+            if (targetPtr and missileLaunched)
             {
                 lastMissileShootRng = targetPtr->localData->range;
                 lastMissileImpactTime = nextMissileImpactTime;
@@ -262,7 +262,7 @@ SimObjectType* FireControlComputer::Exec(SimObjectType* curTarget, SimObjectType
 
             missileLaunched = 0;
 
-            if (lastMissileImpactTime > 0.0F  && targetPtr)
+            if (lastMissileImpactTime > 0.0F  and targetPtr)
             {
                 //me123 addet this stuff
 
@@ -351,11 +351,11 @@ void FireControlComputer::SetSubMode(FCCSubMode newSubMode)
     if (newSubMode == CCRP &&
         Sms &&
         Sms->Ownship() &&
-        Sms->Ownship()->IsAirplane() && // MLR not always owned by a/c
+        Sms->Ownship()->IsAirplane() and // MLR not always owned by a/c
         ((AircraftClass *)(Sms->Ownship()))->af &&
         (!((AircraftClass *)Sms->Ownship())->af->IsSet(AirframeClass::IsDigital) ||
          (!(((AircraftClass *)(Sms->Ownship()))->AutopilotType() == AircraftClass::CombatAP))) &&
-        platform && RadarDataTable[platform->GetRadarType()].NominalRange == 0.0) // JB 011018
+        platform and RadarDataTable[platform->GetRadarType()].NominalRange == 0.0) // JB 011018
     {
         newSubMode = CCIP;
     }
@@ -395,9 +395,9 @@ void FireControlComputer::SetSubMode(FCCSubMode newSubMode)
         case Aim9:
             strcpy(subModeString, "SRM");
 
-            if (Sms && Sms->Ownship() && ((AircraftClass *)Sms->Ownship())->AutopilotType() == AircraftClass::CombatAP)
+            if (Sms and Sms->Ownship() and ((AircraftClass *)Sms->Ownship())->AutopilotType() == AircraftClass::CombatAP)
             {
-                if (Sms->GetCoolState() == SMSClass::WARM && Sms->MasterArm() == SMSClass::Arm)
+                if (Sms->GetCoolState() == SMSClass::WARM and Sms->MasterArm() == SMSClass::Arm)
                 {
                     // JPO aim9 cooling
                     Sms->SetCoolState(SMSClass::COOLING);
@@ -535,8 +535,8 @@ void FireControlComputer::SetSubMode(FCCSubMode newSubMode)
                 strcpy(subModeString, "HARM");
             }
 
-            if (Sms->GetCurrentWeaponHardpoint() >= 0  && // JPO CTD fix
-                Sms->CurHardpoint() >= 0 && // JB 010805 Possible CTD check curhardpoint
+            if (Sms->GetCurrentWeaponHardpoint() >= 0  and // JPO CTD fix
+                Sms->CurHardpoint() >= 0 and // JB 010805 Possible CTD check curhardpoint
                 Sms->hardPoint[Sms->CurHardpoint()] not_eq NULL) // Cobra - Sms->GetCurrentWeaponHardpoint() was causing a CTD (returned with a very large number)
             {
                 Sms->SetWeaponType(Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponType());
@@ -544,7 +544,7 @@ void FireControlComputer::SetSubMode(FCCSubMode newSubMode)
                 // RV - I-Hawk - Don't auto pass SOI to HARM if we are using the advanced HARM systems
                 HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(platform, SensorClass::HTS);
 
-                if (harmPod && (harmPod->GetSubMode() == HarmTargetingPod::HAS ||
+                if (harmPod and (harmPod->GetSubMode() == HarmTargetingPod::HAS ||
                                 harmPod->GetSubMode() == HarmTargetingPod::HAD))
                 {
                     platform->SOIManager(SimVehicleClass::SOI_RADAR);
@@ -569,8 +569,8 @@ void FireControlComputer::SetSubMode(FCCSubMode newSubMode)
             groundPipperEl = 0.0F;
             strcpy(subModeString, "GBU");
 
-            if (Sms->GetCurrentWeaponHardpoint() >= 0  && // JPO CTD fix
-                Sms->CurHardpoint() >= 0 && // JB 010805 Possible CTD check curhardpoint
+            if (Sms->GetCurrentWeaponHardpoint() >= 0  and // JPO CTD fix
+                Sms->CurHardpoint() >= 0 and // JB 010805 Possible CTD check curhardpoint
                 Sms->hardPoint[Sms->GetCurrentWeaponHardpoint()] not_eq NULL &&
                 Sms->hardPoint[Sms->GetCurrentWeaponHardpoint()]->weaponPointer)
                 Sms->SetWeaponType(Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponType());
@@ -640,11 +640,11 @@ void FireControlComputer::SetSubMode(FCCSubMode newSubMode)
         case AirGroundBomb:
             Sms->SetAGBSubMode(subMode);
             {
-                if (playerFCC && SimDriver.GetPlayerAircraft()->AutopilotType() not_eq AircraftClass::CombatAP)
+                if (playerFCC and SimDriver.GetPlayerAircraft()->AutopilotType() not_eq AircraftClass::CombatAP)
                 {
                     RadarDopplerClass* pradar = (RadarDopplerClass*) FindSensor(platform, SensorClass::Radar);
 
-                    if (g_bRealisticAvionics && pradar)
+                    if (g_bRealisticAvionics and pradar)
                     {
                         if (subMode == CCRP or subMode == MAN)
                         {
@@ -881,7 +881,7 @@ void FireControlComputer::WeaponStep(void)
         case AirGroundHARM:
             Sms->WeaponStep();
 
-            if (pradar && (masterMode == AirGroundMissile or masterMode == AirGroundHARM)) //MI fix
+            if (pradar and (masterMode == AirGroundMissile or masterMode == AirGroundHARM)) //MI fix
             {
                 pradar->SetScanDir(1.0F);
                 pradar->SelectLastAGMode();
@@ -901,11 +901,11 @@ void FireControlComputer::WeaponStep(void)
         case AirGroundBomb:
             // COBRA - RED - FIXING POSSIBLE CTDs
             // CCIP -> DTOS -> STRAF -> CCRP
-            /*if ((Sms->GetCurrentHardpoint() > 0) && (Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType()==wtGPS or  // Cobra - no rippling GPS
+            /*if ((Sms->GetCurrentHardpoint() > 0) and (Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType()==wtGPS or  // Cobra - no rippling GPS
              (((BombClass*)Sms->hardPoint[Sms->GetCurrentHardpoint()]->weaponPointer) &&
              ((BombClass*)Sms->hardPoint[Sms->GetCurrentHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW))))*/
         {
-            if (TheBomb && (TheBomb->IsSetBombFlag(BombClass::IsGPS) or TheBomb->IsSetBombFlag(BombClass::IsJSOW)))
+            if (TheBomb and (TheBomb->IsSetBombFlag(BombClass::IsGPS) or TheBomb->IsSetBombFlag(BombClass::IsJSOW)))
                 Sms->WeaponStep();
 
             break;
@@ -972,7 +972,7 @@ SimObjectType* FireControlComputer::TargetStep(SimObjectType* startObject, int c
         }
 
         // Did we go off the End of the objects?
-        if (!retObject && checkFeature)
+        if (!retObject and checkFeature)
         {
             // Check features
             {
@@ -1010,7 +1010,7 @@ SimObjectType* FireControlComputer::TargetStep(SimObjectType* startObject, int c
         }
 
         // Did we go off the end of the Features?
-        if (!retObject && !groundTarget)
+        if (!retObject and !groundTarget)
         {
             // Check the head of the object list
             curObject = targetList;
@@ -1027,7 +1027,7 @@ SimObjectType* FireControlComputer::TargetStep(SimObjectType* startObject, int c
                     {
                         curObject = curObject->next;
 
-                        if (curObject && curObject->localData->ata < 60.0F * DTR)
+                        if (curObject and curObject->localData->ata < 60.0F * DTR)
                         {
                             retObject = curObject;
                             break;
@@ -1047,7 +1047,7 @@ SimObjectType* FireControlComputer::TargetStep(SimObjectType* startObject, int c
                 testObject = featureWalker.GetFirst();
 
                 // Iterate up to our position in the list.
-                while (testObject && testObject not_eq targetPtr->BaseData())
+                while (testObject and testObject not_eq targetPtr->BaseData())
                     testObject = featureWalker.GetNext();
 
                 // And then get the next object
@@ -1084,7 +1084,7 @@ SimObjectType* FireControlComputer::TargetStep(SimObjectType* startObject, int c
         }
 
         // Off the end of the feature list?
-        if (!retObject && !groundTarget)
+        if (!retObject and !groundTarget)
         {
             // Check the head of the object list
             curObject = targetList;
@@ -1102,13 +1102,13 @@ SimObjectType* FireControlComputer::TargetStep(SimObjectType* startObject, int c
         }
 
         // Of the End of the object list ?
-        if (!retObject && checkFeature && !groundTarget)
+        if (!retObject and checkFeature and !groundTarget)
         {
             // Check features
             VuListIterator featureWalker(SimDriver.featureList);
             testObject = featureWalker.GetFirst();
 
-            while (testObject && testObject not_eq targetPtr->BaseData())
+            while (testObject and testObject not_eq targetPtr->BaseData())
             {
                 angOff = (float)atan2(testObject->YPos() - platform->YPos(),
                                       testObject->XPos() - platform->XPos()) - platform->Yaw();
@@ -1186,7 +1186,7 @@ void FireControlComputer::DisplayInit(ImageBuffer* image)
     privateDisplay = new Render2D;
     ((Render2D*)privateDisplay)->Setup(image);
 
-    if ((g_bGreyMFD) && (!bNVGmode))
+    if ((g_bGreyMFD) and (!bNVGmode))
         privateDisplay->SetColor(GetMfdColor(MFD_WHITE));
     else
         privateDisplay->SetColor(0xff00ff00);
@@ -1231,7 +1231,7 @@ void FireControlComputer::PushButton(int whichButton, int whichMFD)
     {
         if (playerAC)
         {
-            if (IsSOI && (whichButton >= 11 && whichButton <= 13))
+            if (IsSOI and (whichButton >= 11 and whichButton <= 13))
                 platform->StepSOI(2);
         }
     }
@@ -1357,7 +1357,7 @@ void FireControlComputer::BuildPrePlanned()
     FalconEntity* eHeader;
 
     // this is all based around waypoints.
-    if (SimDriver.RunningCampaignOrTactical() && theFlight)
+    if (SimDriver.RunningCampaignOrTactical() and theFlight)
         knownEmmitters = theFlight->GetKnownEmitters();
 
     if (knownEmmitters)
@@ -1424,7 +1424,7 @@ void FireControlComputer::UpdatePlanned()
         VuListIterator new_myit(AllAirList);
         nu = (Unit) new_myit.GetFirst();
 
-        while (nu && !jstar)
+        while (nu and !jstar)
         {
             cf = nu;
             nu = (Unit) new_myit.GetNext();
@@ -1432,7 +1432,7 @@ void FireControlComputer::UpdatePlanned()
             if (!cf->IsFlight() or cf->IsDead())
                 continue;
 
-            if (cf->GetUnitMission() == AMIS_JSTAR && cf->GetTeam() == us && cf->GetUnitTOT() + 5 * CampaignMinutes < Camp_GetCurrentTime() && cf->GetUnitTOT() + 95 * CampaignMinutes > Camp_GetCurrentTime())
+            if (cf->GetUnitMission() == AMIS_JSTAR and cf->GetTeam() == us and cf->GetUnitTOT() + 5 * CampaignMinutes < Camp_GetCurrentTime() and cf->GetUnitTOT() + 95 * CampaignMinutes > Camp_GetCurrentTime())
             {
                 // Check if JSTAR is in range for communication
                 if (Distance(platform->XPos(), platform->YPos(), cf->XPos(), cf->YPos()) * FT_TO_NM <= 250.0f)
@@ -1458,7 +1458,7 @@ void FireControlComputer::UpdatePlanned()
         for (e = (CampEntity) myit.GetFirst(); e; e = (Unit) myit.GetNext())
         {
             if (e->GetTeam() not_eq us /*&& e->GetSpotted(us) &&
- (!e->IsUnit() or !((Unit)e)->Moving())  && e->GetElectronicDetectionRange(Air)*/)
+ (!e->IsUnit() or !((Unit)e)->Moving())  and e->GetElectronicDetectionRange(Air)*/)
             {
                 float ex = e -> XPos();
                 float ey = e -> YPos();
@@ -1509,7 +1509,7 @@ void FireControlComputer::UpdatePlanned()
 
     for (e = (CampEntity) myit.GetFirst(); e; e = (CampEntity) myit.GetNext())
     {
-        if (e->IsUnit() && e->IsBattalion() && rand() % 100 > jstarDetectionChance)
+        if (e->IsUnit() and e->IsBattalion() and rand() % 100 > jstarDetectionChance)
             continue;
 
         if (e->IsGroundVehicle())
@@ -1641,14 +1641,14 @@ MASTERMODES FireControlComputer::GetMainMasterMode()
 
 int FireControlComputer::LastMissileWillMiss(float range)
 {
-    /* if (lastMissileImpactTime >0 && range > missileRMax )
+    /* if (lastMissileImpactTime >0 and range > missileRMax )
        {
             return 1;
        }
      else return 0;
       */  //me123 if the predicted total TOF is over xx seconds the missile is considered out of energy
 
-    if (lastMissileImpactTime > 0 && //me123 let's make sure there is a missile in the air
+    if (lastMissileImpactTime > 0 and //me123 let's make sure there is a missile in the air
         lastMissileImpactTime - ((lastMissileShootTime - SimLibElapsedTime) / 1000)  >= 80)
         return 1;
 
@@ -1677,7 +1677,7 @@ float FireControlComputer::Aim120ASECRadius(float range)
     }
 
     //MI make the size dependant on missile mode
-    if (Sms && Sms->curWeapon && ((MissileClass*)Sms->GetCurrentWeapon())->isSlave)
+    if (Sms and Sms->curWeapon and ((MissileClass*)Sms->GetCurrentWeapon())->isSlave)
         asecradius = max(min(0.3f, asecradius), 0.1f);
     else
         asecradius = max(min(0.6f, asecradius), 0.1f);
@@ -1751,10 +1751,10 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
 
     oldMode = masterMode;
 
-    if (masterMode not_eq Dogfight && masterMode not_eq MissileOverride) masterMode = newMode;//me123
+    if (masterMode not_eq Dogfight and masterMode not_eq MissileOverride) masterMode = newMode;//me123
 
     int isAI = !playerFCC ||
-               (playerFCC && ((AircraftClass *)Sms->Ownship())->AutopilotType() == AircraftClass::CombatAP) ;
+               (playerFCC and ((AircraftClass *)Sms->Ownship())->AutopilotType() == AircraftClass::CombatAP) ;
 
 
     switch (masterMode)
@@ -1762,7 +1762,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
         case Dogfight:
 
             // Clear out any non-air-to-air targets we had locked.
-            if (oldMode not_eq Dogfight && oldMode not_eq Missile && oldMode not_eq MissileOverride)
+            if (oldMode not_eq Dogfight and oldMode not_eq Missile and oldMode not_eq MissileOverride)
                 ClearCurrentTarget();
 
             //if (oldMode not_eq Dogfight)// MLR 4/11/2004 -  I'ld like to remove these, but the AI still calls SMM() directly
@@ -1777,7 +1777,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             else
                 SetSubMode(lastDogfightGunSubMode);
 
-            if (isAI && !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
                 if (!Sms->FindWeaponType(wtAim9))
                     Sms->FindWeaponType(wtAim120);
 
@@ -1792,12 +1792,12 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
                     break;
             }
 
-            if (theRadar && oldMode not_eq Dogfight)
+            if (theRadar and oldMode not_eq Dogfight)
             {
                 theRadar->SetSRMOverride();
             }
 
-            if (TheHud && playerFCC)
+            if (TheHud and playerFCC)
             {
                 TheHud->headingPos = HudClass::Low;
             }
@@ -1808,7 +1808,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
 
             //strcpy (subModeString, "MSL");  // JPG 20 Jan 04
             // Clear out any non-air-to-air targets we had locked.
-            if (oldMode not_eq Dogfight && oldMode not_eq Missile && oldMode not_eq MissileOverride)
+            if (oldMode not_eq Dogfight and oldMode not_eq Missile and oldMode not_eq MissileOverride)
                 ClearCurrentTarget();
 
             postDrop = FALSE;
@@ -1818,7 +1818,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             // Sms->SetCurrentHpByWeaponId(lastMissileOverrideWId);
 
 
-            if (isAI && !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
                 if (!Sms->FindWeaponType(wtAim120))
                     Sms->FindWeaponType(wtAim9);
 
@@ -1840,7 +1840,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
                 theRadar->SetMRMOverride();
             }
 
-            if (TheHud && playerFCC)
+            if (TheHud and playerFCC)
                 TheHud->headingPos = HudClass::Low;
 
             break;
@@ -1848,7 +1848,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
         case Missile:
 
             // Clear out any non-air-to-air targets we had locked.
-            if (oldMode not_eq Dogfight && oldMode not_eq MissileOverride)
+            if (oldMode not_eq Dogfight and oldMode not_eq MissileOverride)
                 ClearCurrentTarget();
 
             postDrop = FALSE;
@@ -1859,7 +1859,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             //MonoPrint("FCC:SetMasterMode - 1. CurrentWeaponType=%d\n",Sms->GetCurrentWeaponType());
 
             // make sure the AI get a proper weapon
-            if (isAI && !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
                 if (!Sms->FindWeaponType(wtAim120))
                     Sms->FindWeaponType(wtAim9);
 
@@ -1875,7 +1875,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
                     break;
             }
 
-            if (TheHud && playerFCC)
+            if (TheHud and playerFCC)
                 TheHud->headingPos = HudClass::Low;
 
             break;
@@ -1886,7 +1886,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             Sms->SetWeaponType(wtNone);
             Sms->FindWeaponClass(wcNoWpn);
 
-            if (TheHud && playerFCC)
+            if (TheHud and playerFCC)
                 TheHud->headingPos = HudClass::High;
 
             platform->SOIManager(SimVehicleClass::SOI_RADAR);
@@ -1906,7 +1906,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             bombPickle = FALSE;
 
             // Find currentwaypoint
-            if (TheHud && playerFCC)
+            if (TheHud and playerFCC)
             {
                 TheHud->headingPos = HudClass::Low;
             }
@@ -1923,7 +1923,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             postDrop = FALSE;
             inRange = TRUE;
 
-            if (isAI && !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
                 Sms->FindWeaponClass(wcBombWpn);
 
             if (g_bRealisticAvionics)
@@ -1940,7 +1940,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             // Sms->drawable->SetDisplayMode(SmsDrawable::Wpn);
             ///}
 
-            if (TheHud && playerFCC)
+            if (TheHud and playerFCC)
                 TheHud->headingPos = HudClass::High;
 
             break;
@@ -1952,7 +1952,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             postDrop = FALSE;
             inRange = TRUE;
 
-            if (isAI && !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
                 Sms->FindWeaponClass(wcRocketWpn);
 
             SetSubMode(OBSOLETERCKT);
@@ -1974,7 +1974,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             }
             */
 
-            if (TheHud && playerFCC)
+            if (TheHud and playerFCC)
                 TheHud->headingPos = HudClass::High;
 
             break;
@@ -1987,7 +1987,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             inRange = TRUE;
             missileTarget = FALSE;
 
-            if (isAI && !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
                 Sms->FindWeaponType(wtAgm65);
 
             if (WeaponClassMatchesMaster(Sms->curWeaponClass))
@@ -2019,7 +2019,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             /*
             if (Sms->curWeaponClass not_eq wcAgmWpn)
             {
-             if (Sms->FindWeaponClass (wcAgmWpn) && Sms->CurHardpoint() >= 0) // JB 010805 Possible CTD check curhardpoint
+             if (Sms->FindWeaponClass (wcAgmWpn) and Sms->CurHardpoint() >= 0) // JB 010805 Possible CTD check curhardpoint
              {
              Sms->SetWeaponType(Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponType());
              switch (Sms->curWeaponType)
@@ -2045,7 +2045,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
              }
             }
             */
-            if (TheHud && playerFCC)
+            if (TheHud and playerFCC)
                 TheHud->headingPos = HudClass::High;
 
             break;
@@ -2057,7 +2057,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             postDrop = FALSE;
 
             // RV - I-Hawk - Get into the right HARM modes
-            if (isAI && !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
             {
                 Sms->FindWeaponType(wtAgm88);
             }
@@ -2076,7 +2076,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             /*
             if (Sms->curWeaponClass not_eq wcHARMWpn)
             {
-             if (Sms->FindWeaponClass (wcHARMWpn, FALSE) && Sms->CurHardpoint() >= 0) // JB 010805 Possible CTD check curhardpoint
+             if (Sms->FindWeaponClass (wcHARMWpn, FALSE) and Sms->CurHardpoint() >= 0) // JB 010805 Possible CTD check curhardpoint
              {
              Sms->SetWeaponType(Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponType());
              switch (Sms->curWeaponType)
@@ -2099,7 +2099,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             }
             */
 
-            if (TheHud && playerFCC)
+            if (TheHud and playerFCC)
             {
                 TheHud->headingPos = HudClass::High;
             }
@@ -2112,7 +2112,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             preDesignate = TRUE;
             postDrop = FALSE;
 
-            if (isAI && !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
                 Sms->FindWeaponType(wtGBU);
 
             if (WeaponClassMatchesMaster(Sms->curWeaponClass))
@@ -2149,7 +2149,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             /*
             if (Sms->curWeaponClass not_eq wcGbuWpn)
             {
-             if (Sms->FindWeaponClass (wcGbuWpn, FALSE) && Sms->CurHardpoint() >= 0) // JB 010805 Possible CTD check curhardpoint
+             if (Sms->FindWeaponClass (wcGbuWpn, FALSE) and Sms->CurHardpoint() >= 0) // JB 010805 Possible CTD check curhardpoint
              {
              Sms->SetWeaponType(Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponType());
              switch (Sms->curWeaponType)
@@ -2167,7 +2167,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
              {
              InhibitFire = FALSE;
              // M.N. added full realism mode
-             if(PlayerOptions.GetAvionicsType() not_eq ATRealistic && PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
+             if(PlayerOptions.GetAvionicsType() not_eq ATRealistic and PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
              SetSubMode (BSGT);
              else
              SetSubMode (SLAVE);
@@ -2187,7 +2187,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
              }
             }
             */
-            if (TheHud && playerFCC)
+            if (TheHud and playerFCC)
                 TheHud->headingPos = HudClass::High;
 
             break;
@@ -2198,7 +2198,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             preDesignate = TRUE;
             postDrop = FALSE;
 
-            if (isAI && !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
                 Sms->FindWeaponClass(wcCamera);
 
             if (WeaponClassMatchesMaster(Sms->curWeaponClass))
@@ -2213,7 +2213,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             /*
             if (Sms->curWeaponClass not_eq wcCamera)
             {
-             if (Sms->FindWeaponClass (wcCamera, FALSE) && Sms->CurHardpoint() >= 0) // JB 010805 Possible CTD check curhardpoint
+             if (Sms->FindWeaponClass (wcCamera, FALSE) and Sms->CurHardpoint() >= 0) // JB 010805 Possible CTD check curhardpoint
              {
              Sms->SetWeaponType(Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponType());
              }
@@ -2229,7 +2229,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
              }
             }
             */
-            if (TheHud && playerFCC)
+            if (TheHud and playerFCC)
                 TheHud->headingPos = HudClass::High;
 
             strcpy(subModeString, "RPOD");
@@ -2253,7 +2253,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
         // lastAirAirHp = Sms->GetCurrentWeaponHardpoint();
         //lastAirAirWId=Sms->GetCurrentWeaponId();
 
-        if (TheHud && playerFCC)
+        if (TheHud and playerFCC)
             TheHud->headingPos = HudClass::Low;
     }
 
@@ -2271,7 +2271,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
         // lastAirGroundHp = Sms->GetCurrentWeaponHardpoint();
         //lastAirGroundWId=Sms->GetCurrentWeaponId(); //>GetCurrentWeaponHardpoint();
 
-        if (TheHud && playerFCC)
+        if (TheHud and playerFCC)
             TheHud->headingPos = HudClass::High;
     }
 
@@ -2423,7 +2423,7 @@ int FireControlComputer::CanStepToWeaponClass(WeaponClass wc)
     switch (masterMode)
     {
         case AAGun:
-            if ((wc == wcAimWpn && g_bWeaponStepToGun) ||
+            if ((wc == wcAimWpn and g_bWeaponStepToGun) ||
                 wc == wcGunWpn)
                 return 1;
 
@@ -2431,7 +2431,7 @@ int FireControlComputer::CanStepToWeaponClass(WeaponClass wc)
 
         case Missile:
             if (wc == wcAimWpn ||
-                (wc == wcGunWpn && g_bWeaponStepToGun))
+                (wc == wcGunWpn and g_bWeaponStepToGun))
                 return 1;
 
             return 0;
@@ -2446,7 +2446,7 @@ int FireControlComputer::CanStepToWeaponClass(WeaponClass wc)
         case AGGun:
             if (((wc == wcAgmWpn or wc == wcBombWpn ||
                   wc == wcRocketWpn or wc == wcHARMWpn ||
-                  wc == wcGbuWpn or wc == wcCamera) && g_bWeaponStepToGun) ||
+                  wc == wcGbuWpn or wc == wcCamera) and g_bWeaponStepToGun) ||
                 wc == wcGunWpn)
                 return 1;
 
@@ -2461,7 +2461,7 @@ int FireControlComputer::CanStepToWeaponClass(WeaponClass wc)
             if (wc == wcAgmWpn or wc == wcBombWpn ||
                 wc == wcRocketWpn or wc == wcHARMWpn ||
                 wc == wcGbuWpn or wc == wcCamera  ||
-                (wc == wcGunWpn && g_bWeaponStepToGun))
+                (wc == wcGunWpn and g_bWeaponStepToGun))
                 return 1;
 
             return 0;
@@ -2492,7 +2492,7 @@ int FireControlComputer::CanStepToWeaponClass(WeaponClass wc)
      if( wc==wcAgmWpn or wc==wcBombWpn ||
      wc==wcRocketWpn or wc==wcHARMWpn ||
      wc==wcGbuWpn or wc==wcCamera  ||
-     ( wc==wcGunWpn && g_bWeaponStepToGun ) )
+     ( wc==wcGunWpn and g_bWeaponStepToGun ) )
      return 1;
      return 0;
     }
@@ -2722,7 +2722,7 @@ void FireControlComputer::UpdateWeaponPtr(void)
                 }
             }
 
-            if (fccWeaponPtr && fccWeaponPtr->IsLauncher())
+            if (fccWeaponPtr and fccWeaponPtr->IsLauncher())
             {
                 wid = ((BombClass *)fccWeaponPtr.get())->LauGetWeaponId();
 
@@ -2835,11 +2835,11 @@ void FireControlComputer::SetSms(SMSClass *SMS)
 // RV - I-Hawk - Added function
 bool FireControlComputer::AllowMaddog()
 {
-    if (Sms && Sms->GetCurrentWeaponType() == wtAim120)
+    if (Sms and Sms->GetCurrentWeaponType() == wtAim120)
     {
         MissileClass* currMissile = (MissileClass*)Sms->GetCurrentWeapon();
 
-        if (!targetPtr && currMissile && currMissile->isSlave)
+        if (!targetPtr and currMissile and currMissile->isSlave)
         {
             return false;
         }

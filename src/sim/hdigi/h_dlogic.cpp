@@ -52,7 +52,7 @@ void HeliBrain::DecisionLogic(void)
     /*--------------*/
     /* fire control */
     /*--------------*/
-    // if (targetPtr && shooting)
+    // if (targetPtr and shooting)
     //     FireControl();
 }
 
@@ -105,7 +105,7 @@ void HeliBrain::TargetSelection(void)
      if (!simTarg) // another sanity check
      return;
 
-     if (!simTarg->IsExploding() && !simTarg->IsDead() && simTarg->pctStrength > 0.0f) // still alive?
+     if (!simTarg->IsExploding() and !simTarg->IsDead() and simTarg->pctStrength > 0.0f) // still alive?
      SetTargetEntity( simTarg );
 
      return;
@@ -157,7 +157,7 @@ void HeliBrain::TargetSelection(void)
     // we've a SIM target, go get a component
 
     // M.N. use S.G.'s FindSimGroundTarget function to choose a sim entity
-    if (target->IsSim() && target->OnGround())
+    if (target->IsSim() and target->OnGround())
     {
         simTarg = FindSimGroundTarget((CampBaseClass*)target, ((CampBaseClass*)target)->NumberOfComponents(), 0);
 
@@ -165,7 +165,7 @@ void HeliBrain::TargetSelection(void)
             return;
 
         // set it as our target
-        if (!simTarg->IsExploding() && !simTarg->IsDead() && simTarg->pctStrength > 0.0f) // still alive?
+        if (!simTarg->IsExploding() and !simTarg->IsDead() and simTarg->pctStrength > 0.0f) // still alive?
             SetTargetEntity(simTarg);
 
         return;
@@ -220,9 +220,9 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
 
         for (j = 0; j < usComponents; j++)
             if (flightMember[j]
-                && flightMember[j]->hBrain
-                && ((flightMember[j]->hBrain->targetPtr
-                     && flightMember[j]->hBrain->targetPtr->BaseData() == simTarg)
+                and flightMember[j]->hBrain
+                and ((flightMember[j]->hBrain->targetPtr
+                     and flightMember[j]->hBrain->targetPtr->BaseData() == simTarg)
                     or flightMember[j]->hBrain->targetHistory[0] == simTarg
                     or flightMember[j]->hBrain->targetHistory[1] == simTarg))
                 break;  // Yes, ignore it.
@@ -255,7 +255,7 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
         firstSimTarg = 0;
 
     // JB 011017 from Schumi if targetNumComponents is less than usComponents, then of course there is no target anymore for the wingmen to bomb, and firstSimTarg is NULL.
-    if (firstSimTarg == NULL && targetNumComponents && targetNumComponents < usComponents)
+    if (firstSimTarg == NULL and targetNumComponents and targetNumComponents < usComponents)
         firstSimTarg = targetGroup->GetComponentEntity(rand() % targetNumComponents);
 
     return firstSimTarg;
@@ -375,7 +375,7 @@ void HeliBrain::TargetSelection(SimObjectType *tlist)
         {
             // special case instant action -- only target ownship
             /*
-            if ( SimDriver.RunningInstantAction() && theObject->IsSetFlag( MOTION_OWNSHIP ) )
+            if ( SimDriver.RunningInstantAction() and theObject->IsSetFlag( MOTION_OWNSHIP ) )
             {
              SetTarget( tmpObj );
              return;
@@ -387,7 +387,7 @@ void HeliBrain::TargetSelection(SimObjectType *tlist)
                 GetRoE(side, b, ROE_AIR_ATTACK) == ROE_ALLOWED)
             {
                 // if the object is another helicopter, favor it
-                if (theObject->IsSim() && theObject->IsHelicopter())
+                if (theObject->IsSim() and theObject->IsHelicopter())
                     range = tmpObj->localData->range * 0.5f;
                 else
                     range = tmpObj->localData->range * 2.0f;

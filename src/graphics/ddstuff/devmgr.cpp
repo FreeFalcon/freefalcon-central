@@ -110,8 +110,8 @@ const char *DeviceManager::GetModeName(int driverNum, int devNum, int modeNum)
     {
         // For now we only allow 640x480, 800x600, 1280x960, 1600x1200
         // (MPR already does the 4:3 aspect ratio check for us)
-        if (pddsd->ddpfPixelFormat.dwRGBBitCount >= 16 && (pddsd->dwWidth == 640 or pddsd->dwWidth == 800 or pddsd->dwWidth == 1024 ||
-                (pddsd->dwWidth == 1280 && pddsd->dwHeight == 960) or pddsd->dwWidth == 1600 or HighResolutionHackFlag))
+        if (pddsd->ddpfPixelFormat.dwRGBBitCount >= 16 and (pddsd->dwWidth == 640 or pddsd->dwWidth == 800 or pddsd->dwWidth == 1024 ||
+                (pddsd->dwWidth == 1280 and pddsd->dwHeight == 960) or pddsd->dwWidth == 1600 or HighResolutionHackFlag))
         {
             if (modeNum == 0)
             {
@@ -438,7 +438,7 @@ int DeviceManager::DDDriverInfo::FindDisplayMode(int nWidth, int nHeight, int nB
 {
     for (int i = 0; i < (int) m_arrModes.size(); i++)
     {
-        if (m_arrModes[i].dwWidth == nWidth && m_arrModes[i].dwHeight == nHeight &&
+        if (m_arrModes[i].dwWidth == nWidth and m_arrModes[i].dwHeight == nHeight &&
             m_arrModes[i].ddpfPixelFormat.dwRGBBitCount == nBPP)
             return i;
     }
@@ -664,7 +664,7 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
 
         /*
          // Vendor specific workarounds
-         if(IsEqualGUID(m_pDevID->guidDeviceIdentifier, __uuidof(DEVGUID_3DFX_VOODOO2)) && !bFlip)
+         if(IsEqualGUID(m_pDevID->guidDeviceIdentifier, __uuidof(DEVGUID_3DFX_VOODOO2)) and !bFlip)
          {
          // The V2 (Beta 1.0 DX Driver) cannot render to offscreen plain surfaces only to flipping primary surfaces
          m_guidD3D = IID_IDirect3DRGBDevice; // force software renderer
@@ -843,7 +843,7 @@ void DXContext::AttachDepthBuffer(IDirectDrawSurface7 *p)
         {
             // RV - RED - OK, Restored old original Code, seems the Stencil search causes a 25% FPS drop, dunno why
             // as we use the setncil on a surface not having it now
-            // if(it->dwZBufferBitDepth >= ddsd_disp.ddpfPixelFormat.dwRGBBitCount && it->dwStencilBitDepth>=8)
+            // if(it->dwZBufferBitDepth >= ddsd_disp.ddpfPixelFormat.dwRGBBitCount and it->dwStencilBitDepth>=8)
             if (it->dwZBufferBitDepth == ddsd_disp.ddpfPixelFormat.dwRGBBitCount)
             {
                 pixfmt = *it;

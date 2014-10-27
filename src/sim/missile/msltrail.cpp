@@ -74,7 +74,7 @@ void MissileClass::InitTrail(void)
     // 2002-03-28 MN if we need the engine to model "lift", don't display trails or engine glows...
     wc = (WeaponClassDataType*)classPtr->dataPtr;
 
-    if (wc && (wc->Flags & WEAP_NO_TRAIL))
+    if (wc and (wc->Flags & WEAP_NO_TRAIL))
         return;
 
     // 2002-03-28 MN externalised missile trail types
@@ -89,7 +89,7 @@ void MissileClass::InitTrail(void)
     }
 
 
-    if (mistrail == 0 && misengGlow == 0 && misengGlowBSP == 0 && misgroundGlow == 0)
+    if (mistrail == 0 and misengGlow == 0 and misengGlowBSP == 0 and misgroundGlow == 0)
     {
         // differentiate trails and missile types
         if (g_nmissiletrial)
@@ -287,17 +287,17 @@ void MissileClass::UpdateTrail(void)
         else// if (trail->GetHead()) // MLR 12/11/2003 - commented out for new smoke trails
         {
 
-            if (engGlow && engGlow->InDisplayList())
+            if (engGlow and engGlow->InDisplayList())
             {
                 OTWDriver.RemoveObject(engGlow, FALSE);
             }
 
-            if (engGlowBSP1 && engGlowBSP1->InDisplayList())
+            if (engGlowBSP1 and engGlowBSP1->InDisplayList())
             {
                 OTWDriver.RemoveObject(engGlowBSP1, FALSE);
             }
 
-            if (groundGlow && groundGlow->InDisplayList())
+            if (groundGlow and groundGlow->InDisplayList())
             {
                 OTWDriver.RemoveObject(groundGlow, FALSE);
             }
@@ -309,7 +309,7 @@ void MissileClass::UpdateTrail(void)
 
         //if (trail)
         //OTWDriver.InsertObject(trail);
-        if (engGlow && !g_bDisableMissleEngGlow) // MLR 2003-10-11 Disble the star
+        if (engGlow and !g_bDisableMissleEngGlow) // MLR 2003-10-11 Disble the star
             OTWDriver.InsertObject(engGlow);
 
         if (engGlowBSP1)

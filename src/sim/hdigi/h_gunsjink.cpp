@@ -50,12 +50,12 @@ void HeliBrain::GunsJinkCheck(void)
                     {
                         twoSeconds = TRUE;
                     }
-                    else if (localData->azFrom > (4.0F * DTR) && localData->azFromdot < 0.0F)
+                    else if (localData->azFrom > (4.0F * DTR) and localData->azFromdot < 0.0F)
                     {
                         if (localData->azFrom + z * localData->azFromdot < (4.0F * DTR))
                             twoSeconds = TRUE;
                     }
-                    else if (localData->azFrom < (-4.0F * DTR) && localData->azFromdot > 0.0F)
+                    else if (localData->azFrom < (-4.0F * DTR) and localData->azFromdot > 0.0F)
                     {
                         if (localData->azFrom + z * localData->azFromdot > (-4.0F * DTR))
                             twoSeconds = TRUE;
@@ -65,16 +65,16 @@ void HeliBrain::GunsJinkCheck(void)
                     {
                         twoSeconds = FALSE;
 
-                        if (fabs(localData->elFrom) < (2.0F * DTR) && localData->elFrom > (-10.0F * DTR))
+                        if (fabs(localData->elFrom) < (2.0F * DTR) and localData->elFrom > (-10.0F * DTR))
                         {
                             twoSeconds = TRUE;
                         }
-                        else if (localData->elFrom > (2.0F * DTR) && localData->elFromdot < 0.0F)
+                        else if (localData->elFrom > (2.0F * DTR) and localData->elFromdot < 0.0F)
                         {
                             if (localData->elFrom + z * localData->elFromdot < (2.0F * DTR))
                                 twoSeconds = TRUE;
                         }
-                        else if (localData->elFrom < (-10.0F * DTR) && localData->elFromdot > 0.0F)
+                        else if (localData->elFrom < (-10.0F * DTR) and localData->elFromdot > 0.0F)
                         {
                             if (localData->elFrom + z * localData->elFromdot > (-10.0F * DTR))
                                 twoSeconds = TRUE;
@@ -103,7 +103,7 @@ void HeliBrain::GunsJinkCheck(void)
                     /*--------------*/
                     /* trigger jink */
                     /*--------------*/
-                    if (twoSeconds && tgt_time < att_time)
+                    if (twoSeconds and tgt_time < att_time)
                     {
                         gunsJinkPtr = obj;
                         AddMode(GunsJinkMode);

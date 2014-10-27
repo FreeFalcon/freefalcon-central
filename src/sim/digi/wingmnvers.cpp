@@ -94,7 +94,7 @@ void DigitalBrain::SimpleTrack(SimpleTrackMode mode, float value)
 
             bool sticklimitation = false;
 
-            if (self->TBrain() && self->TBrain()->ReachedFirstTrackPoint())
+            if (self->TBrain() and self->TBrain()->ReachedFirstTrackPoint())
                 sticklimitation = true; // tanker is entering the track pattern
 
             SimpleTrackSpeed(value); // value = desired speed (ft/sec)
@@ -201,7 +201,7 @@ float DigitalBrain::SimpleTrackDistance(float, float rx)
 float DigitalBrain::SimpleTrackSpeed(float v)
 {
     //TJL 02/20/04 They had v here in knots comparing to vt in FPS. I have commented this out
-    //if(af->Qsom()*af->Cnalpha() < 1.55F && v < af->vt + 5.0F)
+    //if(af->Qsom()*af->Cnalpha() < 1.55F and v < af->vt + 5.0F)
     // v = af->vt /* * */ + 5.0F; // 2001-10-27 M.N. removed "*", caused af->vt * 5
     // Lets Try MachHold on velocity (TJL) Again, more confusion with v in knots being converted to knots
     //MachHold (v * FTPSEC_TO_KNOTS , af->vt * FTPSEC_TO_KNOTS , FALSE);
@@ -217,7 +217,7 @@ float  DigitalBrain::SimpleGroundTrackSpeed(float v)
     else
         af->ClearFlag(AirframeClass::WheelBrakes);
 
-    if (af->vt > 20.0F && v > 20.0F)
+    if (af->vt > 20.0F and v > 20.0F)
     {
         float eProp = v - af->vt;
 
@@ -261,17 +261,17 @@ float DigitalBrain::SimpleTrackAzimuth(float rx, float ry, float)
         // Calculate azimuth error
         azErr = (float) atan2(ry, rx);
 
-        if (rx < 0.0F && (fabs(rx) < 3.0F * NM_TO_FT))
+        if (rx < 0.0F and (fabs(rx) < 3.0F * NM_TO_FT))
         {
 
             // If our track point is to the right and behind us
-            if ((azErr > 0.0F) && (azErr > 90 * DTR))
+            if ((azErr > 0.0F) and (azErr > 90 * DTR))
             {
 
                 // Change the azErr to be infront so that we don't backtrack
                 azErr = (180 * DTR) - azErr;
             }
-            else if ((azErr < 0.0F) && (azErr < -90 * DTR))   // else to the left and behind
+            else if ((azErr < 0.0F) and (azErr < -90 * DTR))   // else to the left and behind
             {
 
                 // Change the azErr to be infrom so that we don't backtrack
@@ -284,10 +284,10 @@ float DigitalBrain::SimpleTrackAzimuth(float rx, float ry, float)
         // rotation.  Let's make this 180 deg
 
         // 2002-01-31 ADDED BY S.G. Lets limit the roll of an AI controlled plane when going from one waypoint to the next
-        if (g_bPitchLimiterForAI && // We are asking to limit AI's turn agressiveness when flying to waypoints
-            !groundAvoidNeeded && // We're not trying to avoid the ground
-            (curMode == WingyMode or curMode == WaypointMode or curMode == RTBMode) &&  // Following waypoint or lead
-            agDoctrine == AGD_NONE && // Not doing any A2G attack (since it's in FollowWaypoints during that time)
+        if (g_bPitchLimiterForAI and // We are asking to limit AI's turn agressiveness when flying to waypoints
+            !groundAvoidNeeded and // We're not trying to avoid the ground
+            (curMode == WingyMode or curMode == WaypointMode or curMode == RTBMode) and  // Following waypoint or lead
+            agDoctrine == AGD_NONE and // Not doing any A2G attack (since it's in FollowWaypoints during that time)
             (!flightLead or !flightLead->IsSetFlag(MOTION_OWNSHIP)))   // The lead isn't the player (we must follow him whatever he does)
         {
 
@@ -345,17 +345,17 @@ float DigitalBrain::SimpleTrackElevation(float zft, float scale)
         altErr *= 0.5f;
 
     // limit climb based on airspeed
-    if (-zft > 0.0f && af->vt < 600.0f * KNOTS_TO_FTPSEC)
+    if (-zft > 0.0f and af->vt < 600.0f * KNOTS_TO_FTPSEC)
     {
         altErr *= af->vt / (600.0f * KNOTS_TO_FTPSEC);
     }
 
     // 2002-01-30 ADDED BY S.G. Lets limit the pitch when we're at max climb angle
-    if (g_bPitchLimiterForAI && !groundAvoidNeeded &&
+    if (g_bPitchLimiterForAI and !groundAvoidNeeded &&
         (curMode == WingyMode or curMode == WaypointMode or curMode == RTBMode) &&
-        /*agDoctrine == AGD_NONE && *///Cobra removed this // Not doing any A2G attack (since it's in FollowWaypoints during that time)
-        (!flightLead or !flightLead->IsSetFlag(MOTION_OWNSHIP) or ((AircraftClass *)flightLead)->autopilotType == AircraftClass::CombatAP) && // The lead isn't the player (we must follow him whatever he does)
-        altErr > 0.0f && self->Pitch() > 0.0f)
+        /*agDoctrine == AGD_NONE and *///Cobra removed this // Not doing any A2G attack (since it's in FollowWaypoints during that time)
+        (!flightLead or !flightLead->IsSetFlag(MOTION_OWNSHIP) or ((AircraftClass *)flightLead)->autopilotType == AircraftClass::CombatAP) and // The lead isn't the player (we must follow him whatever he does)
+        altErr > 0.0f and self->Pitch() > 0.0f)
     {
         float maxPitch = min(MAX_AF_PITCH, aeroDataset[self->af->VehicleIndex()].inputData[AeroDataSet::ThetaMax]);
         float curPitch = self->Pitch() * 0.85f; // Current pitch with some leadway
@@ -374,7 +374,7 @@ float DigitalBrain::SimpleTrackElevation(float zft, float scale)
         float curKias = self->GetKias(); // Current speed
 
         // If we're way above our best climb speed, lets pitch up a bit more to drain some speed and get some altitude
-        if (minVcas * 1.9f < curKias && minVcas not_eq 0.0f)
+        if (minVcas * 1.9f < curKias and minVcas not_eq 0.0f)
             altErr *=  curKias / (minVcas * 1.9f);
         else
         {

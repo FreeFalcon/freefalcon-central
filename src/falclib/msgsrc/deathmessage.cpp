@@ -56,9 +56,9 @@ int FalconDeathMessage::Process(uchar autodisp)
         target->ApplyDeathMessage(this);
 
     // KCK: Chalk off a vehicle in the unit if the target is a Campaign Unit
-    if (campTarget && campTarget->IsUnit())
+    if (campTarget and campTarget->IsUnit())
     {
-        if (!campTarget->IsAggregate() && target && !target->IsSetFalcFlag(FEC_REGENERATING))
+        if (!campTarget->IsAggregate() and target and !target->IsSetFalcFlag(FEC_REGENERATING))
             campTarget->GetComponents()->Remove(target);
 
         if (campTarget->IsLocal())
@@ -66,18 +66,18 @@ int FalconDeathMessage::Process(uchar autodisp)
 
         // Check for radar being killed
         // KCK NOTE: This will shut down radar for unit if ANY of our possibly multiple radar vehicles are killed
-        if (target && campTarget->IsBattalion() && target->GetSlot() == ((Unit)campTarget)->GetUnitClassData()->RadarVehicle && campTarget->IsEmitting())
+        if (target and campTarget->IsBattalion() and target->GetSlot() == ((Unit)campTarget)->GetUnitClassData()->RadarVehicle and campTarget->IsEmitting())
             campTarget->SetEmitting(0);
     }
 
     // KCK: update kill records for mission evaluator.
     EvaluateKill(this, shooter, campShooter, target, campTarget);
 
-    if (target && (target->IsAirplane() or !(rand() % 3)))
+    if (target and (target->IsAirplane() or !(rand() % 3)))
     {
-        if (shooter && shooter->IsAirplane() &&
-            (GetTTRelations(shooter->GetTeam(), target->GetTeam()) >= Hostile) && rand() % 2
-            && !shooter->IsPlayer())
+        if (shooter and shooter->IsAirplane() &&
+            (GetTTRelations(shooter->GetTeam(), target->GetTeam()) >= Hostile) and rand() % 2
+            and !shooter->IsPlayer())
         {
             FalconRadioChatterMessage *radioMessage = new FalconRadioChatterMessage(shooter->Id(), FalconLocalSession);
             radioMessage->dataBlock.from = shooter->Id();
@@ -142,7 +142,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
 
     // Determine type of kill
     // KCK: This check for being a player will probably not work
-    if (simTarget && simTarget->IsSetFalcFlag(FEC_HASPLAYERS))
+    if (simTarget and simTarget->IsSetFalcFlag(FEC_HASPLAYERS))
         kill_type = ASTAT_PKILL;
     else if (campTarget->IsObjective())
         kill_type = ASTAT_ASKILL;
@@ -153,8 +153,8 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
     else if (campTarget->IsTaskForce())
         kill_type = ASTAT_ANKILL;
 
-    // Credit kill if shooter was a flight && target was not on our team (not nessisarily ok for RoE)
-    if (campShooter->IsFlight() && campShooter->GetTeam() not_eq campTarget->GetTeam())
+    // Credit kill if shooter was a flight and target was not on our team (not nessisarily ok for RoE)
+    if (campShooter->IsFlight() and campShooter->GetTeam() not_eq campTarget->GetTeam())
     {
         int pilot, squadron_pilot;
 
@@ -163,7 +163,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
 
         // JB 010107
         //if (simShooter)
-        if (simShooter && (void*) simShooter not_eq (void*) campShooter) // JB 010107 CTD Sanity check
+        if (simShooter and (void*) simShooter not_eq (void*) campShooter) // JB 010107 CTD Sanity check
             // JB 010107
             pilot = ((SimMoverClass*)simShooter)->pilotSlot;
         else
@@ -175,7 +175,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
             squadron_pilot = 255; // Player kill, probably
 
         // Update squadron records
-        if (sq && squadron_pilot >= 0 && squadron_pilot < PILOTS_PER_SQUADRON && kill_type > -1)
+        if (sq and squadron_pilot >= 0 and squadron_pilot < PILOTS_PER_SQUADRON and kill_type > -1)
             sq->ScoreKill(squadron_pilot, kill_type);
     }
 
@@ -201,11 +201,11 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
         else
             squadron_pilot = 255; // Player kill, probably
 
-        if (sq && squadron_pilot >= 0 && squadron_pilot < PILOTS_PER_SQUADRON)
+        if (sq and squadron_pilot >= 0 and squadron_pilot < PILOTS_PER_SQUADRON)
         {
             pc = sq->GetPilotData(squadron_pilot);
 
-            if (pc && pc->pilot_status not_eq PILOT_RESCUED)
+            if (pc and pc->pilot_status not_eq PILOT_RESCUED)
             {
                 pc->pilot_status = PILOT_KIA;
 
@@ -233,7 +233,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
     }
 
     // Update mission evaluation records if either target or shooter is in our package
-    if (dtm && ((campTarget && (campTarget->InPackage() or g_bLogEvents)) or (campShooter && (campShooter->InPackage() or g_bLogEvents))))
+    if (dtm and ((campTarget and (campTarget->InPackage() or g_bLogEvents)) or (campShooter and (campShooter->InPackage() or g_bLogEvents))))
         TheCampaign.MissionEvaluator->RegisterKill(dtm, kill_type, ps);
 
     // Update some status flags as well for all hits

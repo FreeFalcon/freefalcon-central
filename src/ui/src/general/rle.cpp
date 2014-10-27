@@ -45,7 +45,7 @@ long CompressRLE8Bit(uchar *Src, uchar *Dest, long srcsize)
             run = 1;
             count = 1;
 
-            while (*Src == data && count < 127 && srcsize)
+            while (*Src == data and count < 127 and srcsize)
             {
                 count++;
                 Src++;
@@ -153,7 +153,7 @@ long DecompressRLE8Bit(uchar *Src, uchar *Dest, long Size)
         {
             OutSize += count;
 
-            while (count && Size)
+            while (count and Size)
             {
                 *Dest++ = *Src++;
                 count--;
@@ -201,7 +201,7 @@ long CompressRLE16Bit(WORD *Src, WORD *Dest, long srcsize)
             run = 1;
             count = 1;
 
-            while (*Src == data && count < 0xFFFF && srcsize)
+            while (*Src == data and count < 0xFFFF and srcsize)
             {
                 count++;
                 Src++;
@@ -308,7 +308,7 @@ long DecompressRLE16Bit(WORD *Src, WORD *Dest, long Size)
         {
             OutSize += count * sizeof(WORD);
 
-            while (count && Size)
+            while (count and Size)
             {
                 *Dest++ = *Src++;
                 count--;

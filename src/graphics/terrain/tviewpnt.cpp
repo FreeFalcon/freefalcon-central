@@ -354,8 +354,8 @@ int TViewPoint::GetGroundType(float x, float y)
     col = WORLD_TO_LEVEL_POST(y, LOD);
     xPos = x - LEVEL_POST_TO_WORLD(row, LOD);
     yPos = y - LEVEL_POST_TO_WORLD(col, LOD);
-    ShiAssert((xPos >= -0.5f) && (xPos <= LEVEL_POST_TO_WORLD(1, LOD) + 0.5f));
-    ShiAssert((yPos >= -0.5f) && (yPos <= LEVEL_POST_TO_WORLD(1, LOD) + 0.5f));
+    ShiAssert((xPos >= -0.5f) and (xPos <= LEVEL_POST_TO_WORLD(1, LOD) + 0.5f));
+    ShiAssert((yPos >= -0.5f) and (yPos <= LEVEL_POST_TO_WORLD(1, LOD) + 0.5f));
 
 
     // See if we have the data we'll need
@@ -379,7 +379,7 @@ int TViewPoint::GetGroundType(float x, float y)
 
     GET_NEXT_PATH;
 
-    while ((type == -1) && path)
+    while ((type == -1) and path)
     {
 
         r = path->width * 0.5f;
@@ -436,7 +436,7 @@ int TViewPoint::GetGroundType(float x, float y)
     i = 0;
     area = TheTerrTextures.GetArea(texID, 0, i++);
 
-    while ((type == -1) && area)
+    while ((type == -1) and area)
     {
         dx = xPos - area->x;
         dy = yPos - area->y;
@@ -598,7 +598,7 @@ float TViewPoint::GetGroundLevel(float x, float y, Tpoint *normal)
     Nz = -TheMap.Level(LOD)->FTperPOST(); // (remember positive Z is down)
 
     if (x_pos >= y_pos
-        && p1 && p3) // JB 011019 CTD fix
+        and p1 and p3) // JB 011019 CTD fix
     {
         // upper left triangle
         p2 = blockLists[LOD].GetPost(row + 1, col);
@@ -610,7 +610,7 @@ float TViewPoint::GetGroundLevel(float x, float y, Tpoint *normal)
             Ny = p3->z - p2->z; // (remember positive Z is down)
         }
     }
-    else if (p1 && p3)  // JB 011019 CTD fix
+    else if (p1 and p3)  // JB 011019 CTD fix
     {
         // lower right triangle
         p2 = blockLists[LOD].GetPost(row, col + 1);
@@ -854,7 +854,7 @@ BOOL TViewPoint::SingleLODLineOfSight(int Px, int Py, int Qx, int Qy, float z, f
 
 
 #define OCTANT(f1, f2, f3, f4, f5, i1, s1, r1, r2) \
- for (f1, f2, f3, nr=0; ((f4) && (!hit)); f5) { \
+ for (f1, f2, f3, nr=0; ((f4) and (!hit)); f5) { \
  z += dz; \
    if (nr < k) { \
  if (i1) { \
@@ -877,35 +877,35 @@ BOOL TViewPoint::SingleLODLineOfSight(int Px, int Py, int Qx, int Qy, float z, f
 
 
     // For reference purposes, let theta be the angle from P to Q
-    if ((deltax >= 0) && (deltay >= 0) && (deltay < deltax))   // theta < 45
+    if ((deltax >= 0) and (deltay >= 0) and (deltay < deltax))   // theta < 45
     {
         OCTANT(row = Px + 1, col = Py, k = deltax - deltay,  row < Qx, row++, nr += deltay, col++, TestEast, TestSouth);
     }
-    else if ((deltax > 0) && (deltay >= 0) && (deltay >= deltax))   // 45 <= theta < 90
+    else if ((deltax > 0) and (deltay >= 0) and (deltay >= deltax))   // 45 <= theta < 90
     {
         OCTANT(col = Py + 1, row = Px, k = deltay - deltax,  col < Qy, col++, nr += deltax, row++, TestNorth, TestWest);
     }
-    else if ((deltax <= 0) && (deltay >= 0) && (deltay > -deltax))  // 90 <= theta < 135
+    else if ((deltax <= 0) and (deltay >= 0) and (deltay > -deltax))  // 90 <= theta < 135
     {
         OCTANT(col = Py + 1, row = Px, k = deltay + deltax,  col < Qy, col++, nr -= deltax, row--, TestSouth, TestWest);
     }
-    else if ((deltax <= 0) && (deltay > 0) && (deltay <= -deltax))  // 135 <= theta < 180
+    else if ((deltax <= 0) and (deltay > 0) and (deltay <= -deltax))  // 135 <= theta < 180
     {
         OCTANT(row = Px - 1, col = Py, k = -deltax - deltay, row > Qx, row--, nr += deltay, col++, TestEast, TestNorth);
     }
-    else if ((deltax <= 0) && (deltay <= 0) && (deltay > deltax))   // 180 <= theta < 225
+    else if ((deltax <= 0) and (deltay <= 0) and (deltay > deltax))   // 180 <= theta < 225
     {
         OCTANT(row = Px - 1, col = Py, k = -deltax + deltay, row > Qx, row--, nr -= deltay, col--, TestWest, TestNorth);
     }
-    else if ((deltax < 0) && (deltay <= 0) && (deltay <= deltax))   // 225 <= theta < 270
+    else if ((deltax < 0) and (deltay <= 0) and (deltay <= deltax))   // 225 <= theta < 270
     {
         OCTANT(col = Py - 1, row = Px, k = -deltay + deltax, col > Qy, col--, nr -= deltax, row--, TestSouth, TestEast);
     }
-    else if ((deltax >= 0) && (deltay <= 0) && (-deltay > deltax))   // 270 <= theta < 315
+    else if ((deltax >= 0) and (deltay <= 0) and (-deltay > deltax))   // 270 <= theta < 315
     {
         OCTANT(col = Py - 1, row = Px, k = -deltay - deltax, col > Qy, col--, nr += deltax, row++, TestNorth, TestWest);
     }
-    else if ((deltax >= 0) && (deltay < 0) && (-deltay <= deltax))   // 315 <= theta < 360
+    else if ((deltax >= 0) and (deltay < 0) and (-deltay <= deltax))   // 315 <= theta < 360
     {
         OCTANT(row = Px + 1, col = Py, k = deltax + deltay,  row < Qx, row++, nr -= deltay, col--, TestWest, TestSouth);
     }
@@ -1147,7 +1147,7 @@ BOOL TViewPoint::horizontalEdgeTest(int row, int col, float, float y, float z, i
 
     // Compute the height of the edge at the point the line crosses it
     t = WORLD_TO_FLOAT_LEVEL_POST(y, LOD) - col;
-    ShiAssert((t > -0.1f) && (t < 1.1f));   // Make it more tolerant since it actually works anyway
+    ShiAssert((t > -0.1f) and (t < 1.1f));   // Make it more tolerant since it actually works anyway
     height = left->z + t * (right->z - left->z);
 
     // Return true if the line crosses below the edge (ie: is less negative)
@@ -1168,7 +1168,7 @@ BOOL TViewPoint::verticalEdgeTest(int row, int col, float x, float, float z, int
     t = WORLD_TO_FLOAT_LEVEL_POST(x, LOD) - row;
 
     // OW
-    //ShiAssert( (t >= -0.1f) && (t <= 1.1f) );
+    //ShiAssert( (t >= -0.1f) and (t <= 1.1f) );
     height = bottom->z + t * (top->z - bottom->z);
 
     // Return true if the line crosses below the edge (ie: is less negative)
@@ -1196,7 +1196,7 @@ void TViewPoint::LineSquareIntersection(int row, int col, Tpoint *dir, Tpoint *i
     NW = blockLists[LOD].GetPost(row + 1, col);
     NE = blockLists[LOD].GetPost(row + 1, col + 1);
     SE = blockLists[LOD].GetPost(row,   col + 1);
-    ShiAssert(SW && NW && NE && SE);
+    ShiAssert(SW and NW and NE and SE);
 
     // Store the world space location of the upper left and lower right corner posts
     SWx = LEVEL_POST_TO_WORLD(row, LOD);

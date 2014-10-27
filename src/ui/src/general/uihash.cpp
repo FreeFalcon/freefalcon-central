@@ -171,7 +171,7 @@ void *UI_Hash::GetFirst(UI_HASHNODE **current, unsigned long *curidx)
 
     cur = Table_[*curidx].Root_;
 
-    while (!cur && *curidx < (TableSize_ - 1))
+    while (!cur and *curidx < (TableSize_ - 1))
     {
         (*curidx)++;
         cur = Table_[*curidx].Root_;
@@ -198,7 +198,7 @@ void *UI_Hash::GetNext(UI_HASHNODE **current, unsigned long *curidx)
 
     cur = (*current)->Next;
 
-    while (!cur && *curidx < (TableSize_ - 1))
+    while (!cur and *curidx < (TableSize_ - 1))
     {
         (*curidx)++;
         cur = Table_[*curidx].Root_;

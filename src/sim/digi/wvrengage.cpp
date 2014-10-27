@@ -40,7 +40,7 @@ void DigitalBrain::WvrEngageCheck(void)
     /*---------------------*/
     /* return if no target */
     /*---------------------*/
-    if (targetPtr == NULL or (mpActionFlags[AI_ENGAGE_TARGET] not_eq AI_AIR_TARGET && missionClass not_eq AAMission && !missionComplete) or curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
+    if (targetPtr == NULL or (mpActionFlags[AI_ENGAGE_TARGET] not_eq AI_AIR_TARGET and missionClass not_eq AAMission and !missionComplete) or curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
     {
         //me123     ClearTarget();
         engagementTimer = 0;
@@ -48,8 +48,8 @@ void DigitalBrain::WvrEngageCheck(void)
     /*-------*/
     /* entry */
     /*-------*/
-    else if (curMode not_eq WVREngageMode && targetData->range < engageRange &&
-             (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter()) && // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
+    else if (curMode not_eq WVREngageMode and targetData->range < engageRange &&
+             (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter()) and // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
              SimLibElapsedTime > engagementTimer &&
              CanEngage(self, self->CombatClass(), targetPtr, WVRManeuver))  // 2002-03-11 MODIFIED BY S.G. Added parameter WVRManeuver
     {
@@ -475,9 +475,9 @@ void DigitalBrain::WvrChooseTactic(void)
     ManeuverChoiceTable *theIntercept;
     int aceAvoid = FALSE;
 
-    if (!IsSetATC(AceGunsEngage) && SkillLevel() >= 3)
+    if (!IsSetATC(AceGunsEngage) and SkillLevel() >= 3)
     {
-        if (maxAAWpnRange > 0 && maxAAWpnRange < 1.0F * NM_TO_FT)
+        if (maxAAWpnRange > 0 and maxAAWpnRange < 1.0F * NM_TO_FT)
             aceAvoid = TRUE;
     }
 
@@ -486,7 +486,7 @@ void DigitalBrain::WvrChooseTactic(void)
     if (targetPtr)
     {
         // Look up intercept type for all A/C
-        //    if (targetPtr->BaseData()->IsSim() && targetPtr->BaseData()->IsAirplane())
+        //    if (targetPtr->BaseData()->IsSim() and targetPtr->BaseData()->IsAirplane())
         if (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter()) // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
         {
             // Find the data table for these two types of A/C
@@ -515,7 +515,7 @@ void DigitalBrain::WvrChooseTactic(void)
                     wvrCurrTactic = WVR_AVOID;
                 else if (targetData->range > 15.0F * NM_TO_FT)
                     wvrCurrTactic = WVR_BEAM ;//me123 status test chenged from WVR_BEAM_RETURN
-                else if (targetData->range > 10.0F * NM_TO_FT && wvrCurrTactic not_eq WVR_BEAM_RETURN)//me123 status test chenged from >3
+                else if (targetData->range > 10.0F * NM_TO_FT and wvrCurrTactic not_eq WVR_BEAM_RETURN)//me123 status test chenged from >3
                 {
                     wvrCurrTactic = WVR_BEAM_RETURN;
                 }
@@ -542,8 +542,8 @@ void DigitalBrain::WvrChooseTactic(void)
         // we are pointing at him and him at us and we are too slow
         // so let's exploit that we are not emidiatly threatened and get some energy
         //TJL 12/06/03 Appears someone forgot a * DTR
-        //if (targetData->ata <= 90.0F * DTR && targetData->ataFrom <= 90.0F)
-        if (targetData->ata <= 90.0F * DTR && targetData->ataFrom <= 90.0F * DTR)
+        //if (targetData->ata <= 90.0F * DTR and targetData->ataFrom <= 90.0F)
+        if (targetData->ata <= 90.0F * DTR and targetData->ataFrom <= 90.0F * DTR)
         {
             // how stupid are we?
             // MODIFIED BY S.G. af->vt is in feet/second. cornerSpeed is in knot/hour!
@@ -755,23 +755,23 @@ void DigitalBrain::SetThreat(FalconEntity *obj)
 
     // don't pre-empt current threat with a new threat until we've been
     // dealing with the threat for a while unless the threat is NULL
-    if (obj not_eq NULL && threatTimer > 0.0f)
+    if (obj not_eq NULL and threatTimer > 0.0f)
         return;
 
     F4Assert(!obj or !obj->IsSim() or !obj->IsHelicopter());
 
-    if (obj && obj->OnGround())//Cobra We want to nail those targeting us!
+    if (obj and obj->OnGround())//Cobra We want to nail those targeting us!
     {
         SetGroundTarget(obj);
         return;
     }
 
-    if (obj && !obj->OnGround())
+    if (obj and !obj->OnGround())
     {
         // if the threat is the same as our target, we don't
         // need to do anything since we're already dealing
         // with it
-        if (targetPtr && targetPtr->BaseData() == obj)
+        if (targetPtr and targetPtr->BaseData() == obj)
         {
             return;
         }
@@ -944,7 +944,7 @@ int CanEngage(int combatClass, SimObjectType* targetPtr)
     int retval = TRUE; // Assume you can engage
 
     // Only check for A/C
-    // if (targetPtr->BaseData()->IsSim() && targetPtr->BaseData()->IsAirplane())
+    // if (targetPtr->BaseData()->IsSim() and targetPtr->BaseData()->IsAirplane())
     if (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter()) // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
     {
         // Find the data table for these two types of A/C

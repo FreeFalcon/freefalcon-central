@@ -207,7 +207,7 @@ void CPHsi::ExecNav(void)
         CalcTCNCrsDev(mpHsiValues[HSI_VAL_DESIRED_CRS]);
     }
 
-    if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 && mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
+    if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 and mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
     {
         mpHsiFlags[HSI_FLAG_TO_TRUE] = 2;
     }
@@ -271,7 +271,7 @@ void CPHsi::ExecTacan(void)
             mpHsiFlags[HSI_FLAG_CRS_WARN] = TRUE;
         }
 
-        if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 && mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
+        if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 and mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
             mpHsiFlags[HSI_FLAG_TO_TRUE] = 2;
         else
             mpHsiFlags[HSI_FLAG_TO_TRUE] = TRUE;
@@ -322,7 +322,7 @@ void CPHsi::ExecILSNav(void)
         CalcILSCrsDev(gpDew);
     }
 
-    if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 && mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
+    if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 and mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
     {
         mpHsiFlags[HSI_FLAG_TO_TRUE] = 2;
     }
@@ -372,7 +372,7 @@ void CPHsi::ExecBeaconProximity(float x1, float y1, float x2, float y2)
         LastHSIHeading = mpHsiValues[HSI_VAL_CURRENT_HEADING];
     }
 
-    if (g_bRealisticAvionics && g_bINS && !playerAC->INSState(AircraftClass::INS_HSI_OFF_IN))
+    if (g_bRealisticAvionics and g_bINS and !playerAC->INSState(AircraftClass::INS_HSI_OFF_IN))
     {
         mpHsiValues[HSI_VAL_CURRENT_HEADING] = LastHSIHeading;
     }
@@ -438,13 +438,13 @@ BOOL CPHsi::BeaconInRange(float rangeToBeacon, float nominalBeaconrange)
     //MonoPrint("alt = %i\n\n", alt);
 
     // above radio horizon and within detection range - good reception
-    if ((rangeToBeacon < radioHorizon) && (detectionChanceRange > 1) && (detectionChanceAlt > 1)) // definite receive
+    if ((rangeToBeacon < radioHorizon) and (detectionChanceRange > 1) and (detectionChanceAlt > 1)) // definite receive
         lastResult = TRUE;
     // outside of radio horizon or detection range or altitude detection range to low for reception - no reception
     else if ((rangeToBeacon > radioHorizon) or (detectionChanceRange <= 0) or (detectionChanceAlt <= 0.5))
         lastResult = FALSE;
     // detection range at max or detection altitude near min (intermitant reception)
-    else if ((detectionChanceRange > rndNum) && (detectionChanceAlt > rndNum))
+    else if ((detectionChanceRange > rndNum) and (detectionChanceAlt > rndNum))
         lastResult = TRUE;
     else lastResult = FALSE;
 
@@ -490,7 +490,7 @@ void CPHsi::Exec(void)
     }
 
     // Check for HSI Failure
-    if (playerAC->mFaults && playerAC->mFaults->GetFault(FaultClass::tcn_fault))
+    if (playerAC->mFaults and playerAC->mFaults->GetFault(FaultClass::tcn_fault))
     {
         return;
     }
@@ -581,7 +581,7 @@ void CPHsi::ExecILSTacan(void)
             // mpHsiValues[HSI_VAL_CRS_DEVIATION] = 0; // last value?
         }
 
-        if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 && mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
+        if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 and mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
             mpHsiFlags[HSI_FLAG_TO_TRUE] = 2;
         else
             mpHsiFlags[HSI_FLAG_TO_TRUE] = TRUE;
@@ -681,7 +681,7 @@ CPHsiView::CPHsiView(ObjectInitStr *pobjectInitStr, HsiInitStr *phsiInitStr) : C
     }
     //Wombat778 10-06-2003 Added following lines to set up a temporary buffer for the HSI
     //this is unnecessary in using rendered pit
-    else if (g_bCockpitAutoScale && ((mVScale not_eq 1.0f) or (mHScale not_eq 1.0f)))
+    else if (g_bCockpitAutoScale and ((mVScale not_eq 1.0f) or (mHScale not_eq 1.0f)))
     {
 
         CompassBuffer = new ImageBuffer;
@@ -705,7 +705,7 @@ CPHsiView::~CPHsiView(void)
     }
     //Wombat778 10-06-2003 Added following lines to destroy the temporary imagebuffer;
     //unnecessary if using rendered hsi
-    else if (g_bCockpitAutoScale && ((mVScale not_eq 1.0f) or (mHScale not_eq 1.0f)))
+    else if (g_bCockpitAutoScale and ((mVScale not_eq 1.0f) or (mHScale not_eq 1.0f)))
     {
         if (CompassBuffer)
         {
@@ -748,7 +748,7 @@ void CPHsiView::DisplayBlit()
     // Make the rotating blt call
 
     //Wombat778 10-06-2003, modified following lines. allows HSI to scale properly when using cockpit auto scaling
-    if (g_bCockpitAutoScale && ((mVScale not_eq 1.0f) or (mHScale not_eq 1.0f)))   //dont run this code if the var is set but no scaling is occuring
+    if (g_bCockpitAutoScale and ((mVScale not_eq 1.0f) or (mHScale not_eq 1.0f)))   //dont run this code if the var is set but no scaling is occuring
     {
 
         RECT temprect;
@@ -1197,7 +1197,7 @@ void CPHsiView::DrawCourse(float desiredCourse, float deviaiton)
                             courseDevBar[0][0], -courseDevBar[0][1]);
 
 
-    if (ilsWarnFlag) // && (gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN or gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV)) {
+    if (ilsWarnFlag) // and (gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN or gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV)) {
     {
 
         r = (float) sqrt(courseDevScale[1] * courseDevScale[1] + 0.2f * 0.2f);

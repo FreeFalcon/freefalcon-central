@@ -333,7 +333,7 @@ void GetJoystickInput()
     /*******************************************************************************/
     // Copy and process flight control (roll and pitch) info
     /*******************************************************************************/
-    if ((IO.AnalogIsUsed(AXIS_PITCH)) && (IO.AnalogIsUsed(AXIS_ROLL)))
+    if ((IO.AnalogIsUsed(AXIS_PITCH)) and (IO.AnalogIsUsed(AXIS_ROLL)))
     {
         ProcessJoystickInput(AXIS_PITCH, &device_axis_values[AxisMap.FlightControlDevice][AxisMap.Pitch.Axis]);
         ProcessJoystickInput(AXIS_ROLL, &device_axis_values[AxisMap.FlightControlDevice][AxisMap.Bank.Axis]);
@@ -659,7 +659,7 @@ void GetJoystickInput()
     {
         GetURHelmetInput();
     }
-    else if ((g_bEnableTrackIR) && (PlayerOptions.Get3dTrackIR() == true)) // Retro 26/09/03
+    else if ((g_bEnableTrackIR) and (PlayerOptions.Get3dTrackIR() == true)) // Retro 26/09/03
     {
         GetTrackIRInput();
     }
@@ -803,7 +803,7 @@ void ProcessJoyButtonAndPOVHat(void)
             InputFunctionType theFunc;
             int Direction = 0;
 
-            if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) && IO.povHatAngle[i] not_eq -1)
+            if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) and IO.povHatAngle[i] not_eq -1)
                 Direction = 0;
             else if (IO.povHatAngle[i] < 6750)
                 Direction = 1;
@@ -885,7 +885,7 @@ float ReadThrottle(void)
     HRESULT hRes;
     DIJOYSTATE joyState;
 
-    if ((gTotalJoy) && (IO.AnalogIsUsed(AXIS_THROTTLE) == true)) // Retro 4Jan2004
+    if ((gTotalJoy) and (IO.AnalogIsUsed(AXIS_THROTTLE) == true)) // Retro 4Jan2004
     {
 
         hRes = ((LPDIRECTINPUTDEVICE2)gpDIDevice[AxisMap.Throttle.Device])->Poll();
@@ -955,7 +955,7 @@ float ReadThrottle(void)
 
                 IO.analog[AXIS_THROTTLE].ioVal = theDeviceValue; // Retro 11Jan2004
 
-                if (IO.analog[AXIS_THROTTLE].center && theDeviceValue > IO.analog[AXIS_THROTTLE].center)
+                if (IO.analog[AXIS_THROTTLE].center and theDeviceValue > IO.analog[AXIS_THROTTLE].center)
                     IO.analog[AXIS_THROTTLE].engrValue = (15000.0F - theDeviceValue) / (15000.0F - IO.analog[AXIS_THROTTLE].center);
                 else if (IO.analog[AXIS_THROTTLE].center)
                     IO.analog[AXIS_THROTTLE].engrValue = 1.0F + (IO.analog[AXIS_THROTTLE].center - theDeviceValue) / (IO.analog[AXIS_THROTTLE].center * 2.0F);
@@ -967,7 +967,7 @@ float ReadThrottle(void)
             default:
                 AcquireDeviceInput(AxisMap.Throttle.Device, TRUE);
 
-                if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->OnGround())
+                if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->OnGround())
                     IO.analog[AXIS_THROTTLE].engrValue = 0.0f;
                 else
                     IO.analog[AXIS_THROTTLE].engrValue = 1.0f;
@@ -975,7 +975,7 @@ float ReadThrottle(void)
     }
     else
     {
-        if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->OnGround())
+        if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->OnGround())
             IO.analog[AXIS_THROTTLE].engrValue = 0.0f;
         else
             IO.analog[AXIS_THROTTLE].engrValue = 1.0f;
@@ -1820,7 +1820,7 @@ void JoystickReleaseEffects(void)
         return;
 
     // Get rid of any old effects
-    ShiAssert(gNumEffectsLoaded > 0 && gNumEffectsLoaded < 20); // arbitrary for now JPO
+    ShiAssert(gNumEffectsLoaded > 0 and gNumEffectsLoaded < 20); // arbitrary for now JPO
 
     if (gNumEffectsLoaded > 20)
         return; // arbitray sanity

@@ -157,7 +157,7 @@ VuEntity* VuLinkedList::Find(VU_ID eid) const
     {
         VuEntity *e = it->get();
 
-        if (e->Id() == eid && e->VuState() == VU_MEM_ACTIVE)
+        if (e->Id() == eid and e->VuState() == VU_MEM_ACTIVE)
         {
             return e;
         }
@@ -181,7 +181,7 @@ unsigned int VuLinkedList::Purge(VU_BOOL all)
     {
         VuEntityBin &ent = *it;
 
-        if (!all && (ent->IsGlobal() or (ent->IsPrivate() && ent->IsPersistent())))
+        if (!all and (ent->IsGlobal() or (ent->IsPrivate() and ent->IsPersistent())))
         {
             // dont remove global or private pesistant
             ++it;

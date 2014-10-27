@@ -160,8 +160,8 @@ void VoiceMapper::SetMyVoice(int n)
 // choose a voice at random that has the right attributes
 int VoiceMapper::PickVoice(int type, int side)
 {
-    ShiAssert(type > 0 && type < VOICE_SIDE_BASE);
-    ShiAssert((side >= 0 && side <= 7) or side == VOICE_SIDE_UNK);
+    ShiAssert(type > 0 and type < VOICE_SIDE_BASE);
+    ShiAssert((side >= 0 and side <= 7) or side == VOICE_SIDE_UNK);
     unsigned int match = type;
 
     if (side not_eq VOICE_SIDE_UNK)
@@ -188,8 +188,8 @@ int VoiceMapper::PickVoice(int type, int side)
 
 int VoiceMapper::GetNextVoice(int start, int type, int side)
 {
-    ShiAssert(type > 0 && type < VOICE_SIDE_BASE);
-    ShiAssert(side >= 0 && side <= 7);
+    ShiAssert(type > 0 and type < VOICE_SIDE_BASE);
+    ShiAssert(side >= 0 and side <= 7);
     unsigned int match = type | (VOICE_SIDE_BASE << side);
     int selected = 0;
     int recno = 0;

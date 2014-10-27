@@ -60,7 +60,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
         {
             simEntity = (SimBaseClass*) theEntity;
 
-            if (simEntity && !simEntity->IsLocal() && dataBlock.weaponType == GUN)
+            if (simEntity and !simEntity->IsLocal() and dataBlock.weaponType == GUN)
             {
                 if (simEntity->nonLocalData)
                 {
@@ -128,8 +128,8 @@ int FalconWeaponsFire::Process(uchar autodisp)
             // GetPilotVoiceId is a SimBaseClass member.
             // check for Sim.  I'm not sure what needs to be done if its a camp entity
             //Cobra added weaponType check so bombs don't fall through into this section
-            if (theTarget /* && theTarget->IsSim()*/ && dataBlock.weaponType < 3
-                && (theTarget->IsAirplane() or theTarget->IsHelicopter()) && (GetTTRelations(theTarget->GetTeam(), simEntity->GetTeam()) < Hostile))
+            if (theTarget /* and theTarget->IsSim()*/ and dataBlock.weaponType < 3
+                and (theTarget->IsAirplane() or theTarget->IsHelicopter()) and (GetTTRelations(theTarget->GetTeam(), simEntity->GetTeam()) < Hostile))
             {
                 float playMessage = TRUE;
 
@@ -144,7 +144,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
                         playMessage = FALSE;
                 }
 
-                if (playMessage && theTarget)
+                if (playMessage and theTarget)
                 {
                     FalconRadioChatterMessage *radioMessage = new FalconRadioChatterMessage(simEntity->Id(), FalconLocalSession);
                     radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
@@ -162,21 +162,21 @@ int FalconWeaponsFire::Process(uchar autodisp)
             }
 
             // Register the shot if it was by someone in our package me123 or we are server
-            if (dataBlock.fWeaponUID not_eq FalconNullId && simEntity->GetCampaignObject() && ((simEntity->GetCampaignObject())->InPackage() or FalconLocalGame->GetGameType() == game_InstantAction or g_bLogEvents))
+            if (dataBlock.fWeaponUID not_eq FalconNullId and simEntity->GetCampaignObject() and ((simEntity->GetCampaignObject())->InPackage() or FalconLocalGame->GetGameType() == game_InstantAction or g_bLogEvents))
                 TheCampaign.MissionEvaluator->RegisterShot(this);
 
         }
         else
         {
             // Register the shot if it was by someone in our package
-            if (dataBlock.fWeaponUID not_eq FalconNullId && theEntity->IsCampaign() && (((CampEntity)theEntity)->InPackage() or FalconLocalGame->GetGameType() == game_InstantAction or g_bLogEvents))
+            if (dataBlock.fWeaponUID not_eq FalconNullId and theEntity->IsCampaign() and (((CampEntity)theEntity)->InPackage() or FalconLocalGame->GetGameType() == game_InstantAction or g_bLogEvents))
                 TheCampaign.MissionEvaluator->RegisterShot(this);
         }
     }
 
     // Register the shot if it was at the player
-    if (TheCampaign.MissionEvaluator && dataBlock.targetId == FalconLocalSession->GetPlayerEntityID() or g_bLogEvents)
-        if (theTarget && theTarget->IsSetFalcFlag(FEC_HASPLAYERS) && theTarget->IsSim() && ((SimBaseClass*)theTarget)->GetCampaignObject())
+    if (TheCampaign.MissionEvaluator and dataBlock.targetId == FalconLocalSession->GetPlayerEntityID() or g_bLogEvents)
+        if (theTarget and theTarget->IsSetFalcFlag(FEC_HASPLAYERS) and theTarget->IsSim() and ((SimBaseClass*)theTarget)->GetCampaignObject())
             TheCampaign.MissionEvaluator->RegisterShotAtPlayer(this, ((SimBaseClass*)theTarget)->GetCampaignObject()->GetCampID(), ((SimMoverClass*)theTarget)->pilotSlot); //me123 added
 
     //else TheCampaign.MissionEvaluator->RegisterShotAtPlayer(this,NULL,NULL);//me123 maddog
@@ -188,19 +188,19 @@ int FalconWeaponsFire::Process(uchar autodisp)
     {
         SimBaseClass *theMissile = (SimBaseClass*)(vuDatabase->Find(dataBlock.fWeaponUID));
 
-        if (theTarget && theMissile && theTarget->IsSim())
+        if (theTarget and theMissile and theTarget->IsSim())
         {
             ((SimBaseClass*)theTarget)->SetIncomingMissile(theMissile);
 
-            if (simEntity && !simEntity->OnGround())
+            if (simEntity and !simEntity->OnGround())
                 ((SimBaseClass*)theTarget)->SetThreat(simEntity, THREAT_MISSILE);
         }
     }
-    else if (dataBlock.targetId not_eq vuNullId && dataBlock.weaponType == GUN)
+    else if (dataBlock.targetId not_eq vuNullId and dataBlock.weaponType == GUN)
     {
-        if (theTarget && theTarget->IsSim())
+        if (theTarget and theTarget->IsSim())
         {
-            if (simEntity && !simEntity->OnGround())
+            if (simEntity and !simEntity->OnGround())
                 ((SimBaseClass*)theTarget)->SetThreat(simEntity, THREAT_GUN);
         }
     }

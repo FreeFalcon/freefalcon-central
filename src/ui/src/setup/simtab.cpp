@@ -303,7 +303,7 @@ int SetRealism(C_Window *win)
 
 void SimControlCB(long, short hittype, C_Base *control)
 {
-    if ((hittype not_eq C_TYPE_LMOUSEUP) && (hittype not_eq C_TYPE_SELECT))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) and (hittype not_eq C_TYPE_SELECT))
         return;
 
     SetRealism(control->Parent_);
@@ -552,7 +552,7 @@ void SubTitleCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if ((PlayerOptions.getSubtitles() == false) && (!radioLabel)) // need to create a new object..
+    if ((PlayerOptions.getSubtitles() == false) and (!radioLabel)) // need to create a new object..
     {
         try
         {

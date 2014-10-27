@@ -57,7 +57,7 @@ void RadarSuperClass::ExecModes(int newDesignate, int newDrop)
     // Change ranges if such has been requested
     if (wantRange not_eq rangeNM)
     {
-        if ((wantRange >= 5.0f) && (wantRange <= 40.0f))
+        if ((wantRange >= 5.0f) and (wantRange <= 40.0f))
         {
 
             // Update the cursor position
@@ -111,7 +111,7 @@ void RadarSuperClass::UpdateState(int cursorXCmd, int cursorYCmd)
     // Handle any requests for cursor movement
     if (cursorXCmd)
     {
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
             cursorX += (cursorXCmd / 10000.0F) * CursorRate * SimLibMajorFrameTime;
         else
             cursorX += cursorXCmd * CursorRate * SimLibMajorFrameTime;
@@ -121,7 +121,7 @@ void RadarSuperClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
     if (cursorYCmd)
     {
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
             cursorY += (cursorYCmd / 10000.0F) * CursorRate * SimLibMajorFrameTime;
         else
             cursorY += cursorYCmd * CursorRate * SimLibMajorFrameTime;
@@ -675,11 +675,11 @@ void RadarSuperClass::ExecAA(void)
     else
     {
         // See if it is time to send a "lock" update
-        sendThisFrame = lockedTarget && (SimLibElapsedTime - lastTargetLockSend > TrackUpdateTime);
+        sendThisFrame = lockedTarget and (SimLibElapsedTime - lastTargetLockSend > TrackUpdateTime);
     }
 
     // Send our periodic lock message
-    if ((sendThisFrame) && (lockedTarget))
+    if ((sendThisFrame) and (lockedTarget))
     {
         SendTrackMsg(lockedTarget, Track_Lock);
         lastTargetLockSend = SimLibElapsedTime;
@@ -783,7 +783,7 @@ void RadarSuperClass::DisplayAGReturns(void)
         }
 
         // Draw the appropriate target symbol
-        if (lockedTarget && object == lockedTarget->BaseData())
+        if (lockedTarget and object == lockedTarget->BaseData())
         {
 
             DrawLockedGndInfo(x, y);
@@ -868,7 +868,7 @@ void RadarSuperClass::DisplayAAReturns(void)
             else
             {
                 // Dimmed
-                display->SetColor((tmpColor > 4) && 0xFF00);
+                display->SetColor((tmpColor > 4) and 0xFF00);
             }
 
             display->Tri(x - BLIP_SIZE, y - BLIP_SIZE, x - BLIP_SIZE, y + BLIP_SIZE, x + BLIP_SIZE, y + BLIP_SIZE);
@@ -1040,7 +1040,7 @@ void RadarSuperClass::DrawLockedAirInfo(float h, float v)
     // Target ID (NCTR)
     classPtr = (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
 
-    if (lockedTarget->BaseData()->IsSim() && (!((SimBaseClass*)lockedTarget->BaseData())->IsExploding()) &&
+    if (lockedTarget->BaseData()->IsSim() and (!((SimBaseClass*)lockedTarget->BaseData())->IsExploding()) &&
         (classPtr->dataType == DTYPE_VEHICLE))
     {
         sprintf(str, "%s", ((VehicleClassDataType*)(classPtr->dataPtr))->Name);
@@ -1124,7 +1124,7 @@ void RadarSuperClass::DrawLockedGndInfo(float h, float v)
 
 
     // Target ID (NCTR)
-    if (lockedTarget->BaseData()->IsSim() && !((SimBaseClass*)lockedTarget->BaseData())->IsExploding())
+    if (lockedTarget->BaseData()->IsSim() and !((SimBaseClass*)lockedTarget->BaseData())->IsExploding())
     {
         Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
 

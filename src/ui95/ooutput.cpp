@@ -193,7 +193,7 @@ void O_Output::SetText(_TCHAR *txt)
 
     if (Label_ == NULL)
     {
-        if (flags_ & C_BIT_FIXEDSIZE && LabelLen_ > 0)
+        if (flags_ & C_BIT_FIXEDSIZE and LabelLen_ > 0)
 #ifdef USE_SH_POOLS
             Label_ = (_TCHAR*)MemAllocPtr(UI_Pools[UI_GENERAL_POOL], sizeof(_TCHAR) * (LabelLen_), FALSE);
 
@@ -212,7 +212,7 @@ void O_Output::SetText(_TCHAR *txt)
         else
             Label_ = txt;
     }
-    else if (Label_ && (flags_ & C_BIT_FIXEDSIZE))
+    else if (Label_ and (flags_ & C_BIT_FIXEDSIZE))
         memset(Label_, 0, sizeof(_TCHAR) * (LabelLen_));
 
     SetInfo();
@@ -238,7 +238,7 @@ int O_Output::FitString(int idx) // returns # characters to keep on this line
     space = 0;
     count = 1;
 
-    while (Label_[idx + count] && gFontList->StrWidth(Font_, &Label_[idx], (short)count) < w) //!
+    while (Label_[idx + count] and gFontList->StrWidth(Font_, &Label_[idx], (short)count) < w) //!
     {
         if (Label_[idx + count] == ' ')
             space = count;
@@ -273,7 +273,7 @@ void O_Output::WordWrap()
 
     F4CSECTIONHANDLE *Leave = NULL;
 
-    if (Owner_ && Owner_->Parent_)
+    if (Owner_ and Owner_->Parent_)
         Leave = UI_Enter(Owner_->Parent_);
 
     if (Label_[0]) // pre-calc wordwrapping - 2 pass, 1st to figure out how many lines, 2nd to actually do it
@@ -303,7 +303,7 @@ void O_Output::WordWrap()
         {
             count++;
 
-            if (WWCount_ && WWCount_ not_eq count)
+            if (WWCount_ and WWCount_ not_eq count)
             {
                 WWCount_ = 0;
 
@@ -479,7 +479,7 @@ void O_Output::SetInfo()
                 else
                     SetWH(gFontList->StrWidth(Font_, Label_), gFontList->GetHeight(Font_));
 
-                if (Label_[0] && (flags_ & C_BIT_WORDWRAP) && Owner_ && GetW() > 50)
+                if (Label_[0] and (flags_ & C_BIT_WORDWRAP) and Owner_ and GetW() > 50)
                     WordWrap(); // Sets WH internally
 
                 if (flags_ & C_BIT_HCENTER)
@@ -522,7 +522,7 @@ void O_Output::SetInfo()
             break;
 
         case _OUT_SCALEBITMAP_:
-            if (Image_ && ScaleSet_)
+            if (Image_ and ScaleSet_)
                 SetReady(1);
             else
                 SetReady(0);
@@ -610,7 +610,7 @@ long O_Output::GetCursorPos(long relx, long rely) // Based on mouse location
     if (!cur)
         return(0);
 
-    if (WWCount_ && (flags_ & C_BIT_WORDWRAP))
+    if (WWCount_ and (flags_ & C_BIT_WORDWRAP))
     {
         if (rely < 0)
             return(0);
@@ -620,13 +620,13 @@ long O_Output::GetCursorPos(long relx, long rely) // Based on mouse location
 
         i = 0;
 
-        while (rely >= (Wrap_[i].y + cur->Height()) && i < (unsigned long)WWCount_) //!
+        while (rely >= (Wrap_[i].y + cur->Height()) and i < (unsigned long)WWCount_) //!
             i++;
 
         j = 0;
         w = (cur->Width(&Label_[Wrap_[i].Index + j], 1) - 1) / 2;
 
-        while (relx >= (cur->Width(&Label_[Wrap_[i].Index], j) - 1 + w) && j < (unsigned long)Wrap_[i].Length) //!
+        while (relx >= (cur->Width(&Label_[Wrap_[i].Index], j) - 1 + w) and j < (unsigned long)Wrap_[i].Length) //!
         {
             j++;
 
@@ -650,7 +650,7 @@ long O_Output::GetCursorPos(long relx, long rely) // Based on mouse location
         j = 0;
         w = (cur->Width(Label_, 1) - 1) / 2;
 
-        while (relx >= (cur->Width(Label_, j) - 1 + x + w) && j < _tcsclen(Label_))
+        while (relx >= (cur->Width(Label_, j) - 1 + x + w) and j < _tcsclen(Label_))
         {
             j++;
 
@@ -680,7 +680,7 @@ void O_Output::GetCharXY(short idx, long *cx, long *cy) // Based on cursor locat
     *cx = GetX();
     *cy = GetY();
 
-    if (WWCount_ && (flags_ & C_BIT_WORDWRAP))
+    if (WWCount_ and (flags_ & C_BIT_WORDWRAP))
     {
         for (i = 0; i < WWCount_; i++)
         {
@@ -745,7 +745,7 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
             x = GetX() + Owner_->GetX();
             y = GetY() + Owner_->GetY();
 
-            if (WWCount_ && (flags_ & C_BIT_WORDWRAP))
+            if (WWCount_ and (flags_ & C_BIT_WORDWRAP))
             {
                 if (!(Owner_->GetFlags() & C_BIT_ABSOLUTE))
                 {
@@ -785,7 +785,7 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
                             nx = 0;
                             lenout = 0;
 
-                            if (len && idx < OpStart_)
+                            if (len and idx < OpStart_)
                             {
                                 len = min(len, OpStart_ - idx);
                                 cur->Draw(surface, &Label_[idx], len, UI95_RGB24Bit(FgColor_), x, y + Wrap_[i].y, &rect);
@@ -795,7 +795,7 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
                                 nx = cur->Width(&Label_[Wrap_[i].Index], lenout) - 1;
                             }
 
-                            if (len && idx < OpEnd_)
+                            if (len and idx < OpEnd_)
                             {
                                 len = min(len, OpEnd_ - idx);
                                 cur->DrawSolid(surface, &Label_[idx], len, UI95_RGB24Bit(FgColor_), UI95_RGB24Bit(BgColor_), x + nx, y + Wrap_[i].y, &rect);
@@ -866,7 +866,7 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
                             nx = 0;
                             lenout = 0;
 
-                            if (len && idx < OpStart_)
+                            if (len and idx < OpStart_)
                             {
                                 len = min(len, OpStart_ - idx);
                                 cur->Draw(surface, _password_, len, UI95_RGB24Bit(FgColor_), x, y, &rect);
@@ -876,7 +876,7 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
                                 nx = cur->Width(_password_, lenout) - 1;
                             }
 
-                            if (len && idx < OpEnd_)
+                            if (len and idx < OpEnd_)
                             {
                                 len = min(len, OpEnd_ - idx);
                                 cur->DrawSolid(surface, &_password_[idx], len, UI95_RGB24Bit(FgColor_), UI95_RGB24Bit(BgColor_), x + nx, y, &rect);
@@ -903,7 +903,7 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
                             nx = 0;
                             lenout = 0;
 
-                            if (len && idx < OpStart_)
+                            if (len and idx < OpStart_)
                             {
                                 len = min(len, OpStart_ - idx);
                                 cur->Draw(surface, Label_, len, UI95_RGB24Bit(FgColor_), x, y, &rect);
@@ -913,7 +913,7 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
                                 nx = cur->Width(Label_, lenout) - 1;
                             }
 
-                            if (len && idx < OpEnd_)
+                            if (len and idx < OpEnd_)
                             {
                                 len = min(len, OpEnd_ - idx);
                                 cur->DrawSolid(surface, &Label_[idx], len, UI95_RGB24Bit(FgColor_), UI95_RGB24Bit(BgColor_), x + nx, y, &rect);
@@ -969,7 +969,7 @@ void O_Output::Draw(SCREEN *surface, UI95_RECT *cliprect)
             dest.left += Owner_->Parent_->GetX();
             dest.top += Owner_->Parent_->GetY();
 
-            if (flags_ & C_BIT_TRANSLUCENT && fperc_ < 100)
+            if (flags_ & C_BIT_TRANSLUCENT and fperc_ < 100)
                 Image_->Blend(surface, src.left, src.top, src.right - src.left, src.bottom - src.top, dest.left, dest.top, fperc_, 100 - fperc_);
             else
                 Image_->Blit(surface, src.left, src.top, src.right - src.left, src.bottom - src.top, dest.left, dest.top);
@@ -1293,7 +1293,7 @@ void O_Output::Extract16BitRLE(SCREEN *surface, long FrameNo, long destx, long d
     i = 0;
     FramePtr = (ANIM_FRAME *)&Anim_->Anim->Start[0];
 
-    while (i < FrameNo && i < Anim_->Anim->Frames)
+    while (i < FrameNo and i < Anim_->Anim->Frames)
     {
         FramePtr = (ANIM_FRAME *)&FramePtr->Data[FramePtr->Size];
         i++;
@@ -1343,7 +1343,7 @@ void O_Output::Extract16BitRLE(SCREEN *surface, long FrameNo, long destx, long d
             {
                 while (count > 0)
                 {
-                    if (dx >= clip->left && dx < clip->right)
+                    if (dx >= clip->left and dx < clip->right)
                     {
                         *dptr = *sptr;
                         dptr++;
@@ -1360,7 +1360,7 @@ void O_Output::Extract16BitRLE(SCREEN *surface, long FrameNo, long destx, long d
             {
                 while (count > 0)
                 {
-                    if (dx >= clip->left && dx < clip->right)
+                    if (dx >= clip->left and dx < clip->right)
                     {
                         *dptr = *sptr;
                         dptr++;
@@ -1405,7 +1405,7 @@ void O_Output::Extract16Bit(SCREEN *, long , long , long , UI95_RECT *, UI95_REC
     Frame = (ANIM_FRAME *)&Anim_->Anim->Start[0];
     dptr = (WORD *)Mem;
 
-    while (i < FrameNo && i < Anim_->Anim->Frames)
+    while (i < FrameNo and i < Anim_->Anim->Frames)
     {
         Frame = (ANIM_FRAME *)&Frame->Data[Frame->Size];
         i++;

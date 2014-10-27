@@ -372,7 +372,7 @@ void DrawableTrail::AddPointAtHead(Tpoint *worldPos, DWORD)
     // new TrailNodes are added to the head ChunkNode
     cn = (ChunkNode *)List.GetHead();
 
-    if (Something > 500 && cn && !(Type->flags & TTF_LINE))
+    if (Something > 500 and cn and !(Type->flags & TTF_LINE))
     {
         // time to make a new chunk node...
         ChunkNode *cn2;
@@ -407,7 +407,7 @@ void DrawableTrail::AddPointAtHead(Tpoint *worldPos, DWORD)
 
     n = (TrailNode *)cn->list.GetHead();
 
-    if (n && n->connected)
+    if (n and n->connected)
     {
         int lbit = n->lodBit;
         lbit = lbit << 1;
@@ -769,7 +769,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
 
                     n->GetAge();
 
-                    if ((n->Age > Type->lifespan) && (!keepStaleSegs))
+                    if ((n->Age > Type->lifespan) and (!keepStaleSegs))
                     {
                         n->Remove();
                         delete n;
@@ -904,7 +904,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
 
                                 /*
                                  // skip some nodes based on LOD level
-                                 for(int l=0;l<LOD && n;l++)
+                                 for(int l=0;l<LOD and n;l++)
                                  {
                                  n=(TrailNode *)n->GetSucc();
                                  }
@@ -920,7 +920,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
                             start = (TrailNode *)cn->list.GetHead();
                             end   = (TrailNode *)cn->list.GetTail();
 
-                            if (start && end)
+                            if (start and end)
                             {
                                 start->Update();
                                 end->Update();
@@ -951,7 +951,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
 
                                 int seglod;
 
-                                if (LOD < 10 && TrailSideTex[Type->texID])
+                                if (LOD < 10 and TrailSideTex[Type->texID])
                                 {
                                     seglod = 1;
                                     renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD);
@@ -1359,7 +1359,7 @@ connected=n->connected;
 n=(TrailNode *)n->GetSucc();
 
 
-while(n && c>0)
+while(n and c>0)
 {
  n2=n;
  n=(TrailNode *)n->GetSucc();
@@ -1804,7 +1804,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
 
 
     // Set up our drawing mode
-    if (renderer->GetObjectTextureState() && types[type].tex)// && !sGreenMode )
+    if (renderer->GetObjectTextureState() and types[type].tex)// and !sGreenMode )
     {
         gTextured = TRUE;
 
@@ -1983,14 +1983,14 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
         }
 
         // Update the alpha value for the end point now under consideration
-        if (type >= 0 && type < sizeof(types) / sizeof(TrailTypeEntry) && !F4IsBadReadPtr(current->next, sizeof(TrailElement))) // JB 010220 CTD
+        if (type >= 0 and type < sizeof(types) / sizeof(TrailTypeEntry) and !F4IsBadReadPtr(current->next, sizeof(TrailElement))) // JB 010220 CTD
             // Somehow the next line can CTD.  Wacky!  Let's do more checks and see if the CTD moves.
             alpha  -= types[type].disipation * current->next->time;
 
         radius += types[type].expandRate * current->next->time;
         radius = min(radius, types[type].maxRadius);
 
-        if (gTextured && !types[type].selfIlum)
+        if (gTextured and !types[type].selfIlum)
         {
             if (!types[type].selfIlum)
             {
@@ -2065,7 +2065,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
         }
 
         // just draw a line?
-        if (gTextured == FALSE && width1 < 0.9f && width2 < 0.9f)
+        if (gTextured == FALSE and width1 < 0.9f and width2 < 0.9f)
         {
             // TODO: lineColor should be precalc'd class member(?)
             if (lineColor == 0)
@@ -2098,7 +2098,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
 
                 if (keepStaleSegs == FALSE)
                 {
-                    if (current->next && current->next->next && !F4IsBadReadPtr(current->next, sizeof(TrailElement)) && !F4IsBadReadPtr(current->next->next, sizeof(TrailElement))) // JB 010220 CTD
+                    if (current->next and current->next->next and !F4IsBadReadPtr(current->next, sizeof(TrailElement)) and !F4IsBadReadPtr(current->next->next, sizeof(TrailElement))) // JB 010220 CTD
                         delete current->next->next; // Recursivly deletes the rest of the trail
 
                     current->next->next = NULL; // Terminate the trail at the current point
@@ -2259,7 +2259,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
 
             renderer->context.SelectTexture1(types[type].tex->TexHandle());
         }
-        else if (width2 >= HIGH_LOD_VAL && gTextured && !sGreenMode)
+        else if (width2 >= HIGH_LOD_VAL and gTextured and !sGreenMode)
         {
             if (width1 >= HIGH_LOD_VAL)
             {
@@ -2325,7 +2325,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
             }
 
         }
-        else if (width1 >= HIGH_LOD_VAL && gTextured && !sGreenMode)
+        else if (width1 >= HIGH_LOD_VAL and gTextured and !sGreenMode)
         {
             float vStep = 1.0f / (float)HALF_HIGH_LOD_VERTS;
             float v = 0.0;
@@ -2424,7 +2424,7 @@ void DrawableTrail::ConstructSegmentEnd(RenderOTW *renderer, Tpoint *start, Tpoi
     AT.y = end->y - start->y;
     AT.z = end->z - start->z;
 
-    if (AT.x == 0.0f && AT.y == 0.0f && AT.z == 0.0f)
+    if (AT.x == 0.0f and AT.y == 0.0f and AT.z == 0.0f)
     {
         renderer->GetAt(&AT);
     }
@@ -2555,7 +2555,7 @@ void DrawableTrail::ConstructSegmentEnd(RenderOTW *renderer, Tpoint *start, Tpoi
     mag = end->x * LOOK.x + end->y * LOOK.y + end->z * LOOK.z;
     mag2 = start->x * LOOK.x + start->y * LOOK.y + start->z * LOOK.z;
 
-    if (mag < 1.0f && mag2 < 1.0f)
+    if (mag < 1.0f and mag2 < 1.0f)
         return;
 
     if (mag < 20.0f)

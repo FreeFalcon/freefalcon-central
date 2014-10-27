@@ -59,7 +59,7 @@ BOOL FindMenuColorIndex(char* pColorName, int* pindex)
     BOOL found = FALSE;
     *pindex = 0;
 
-    while (!found && *pindex < MENU_TOTAL_COLORS)
+    while (!found and *pindex < MENU_TOTAL_COLORS)
     {
         if (strcmpi(gMenuColorTable[*pindex].mName, pColorName) == 0)
         {
@@ -120,7 +120,7 @@ MenuManager::MenuManager(int width, int height)
 
     for (i = 0; i < mTotalRes; i++)
     {
-        if (!found && mpResDimensions[i].xRes == width && mpResDimensions[i].yRes == height)
+        if (!found and mpResDimensions[i].xRes == width and mpResDimensions[i].yRes == height)
         {
             backDest.top = mpResDimensions[i].mDimensions.top;
             backDest.left = mpResDimensions[i].mDimensions.left;
@@ -336,7 +336,7 @@ void MenuManager::ParseMenuInfo(char* plinePtr, int* menuNumber, int* pageNumber
     id = 0;
     found = FALSE;
 
-    while (!found && id <= SimRoughPositionUpdateMsg)
+    while (!found and id <= SimRoughPositionUpdateMsg)
     {
 
         if (!strcmpi(pmsgName, TheEventStrings[FalconMsgIdStr[id]]))
@@ -450,7 +450,7 @@ void MenuManager::ParseItemInfo(char* plinePtr, int* menuNumber, int* pageNumber
 
     int i = 0;
 
-    while (*plinePtr not_eq '\n' && *plinePtr not_eq NULL)
+    while (*plinePtr not_eq '\n' and *plinePtr not_eq NULL)
     {
         pItem->mpText[i++] = *(plinePtr++);
     }
@@ -519,7 +519,7 @@ void MenuManager::InitPage()
     VuListIterator myit(AllAirList);
     nu = (Unit) myit.GetFirst();
 
-    while (nu && !mAWACSavail)
+    while (nu and !mAWACSavail)
     {
         cf = nu;
         nu = (Unit) myit.GetNext();
@@ -528,7 +528,7 @@ void MenuManager::InitPage()
         if (!cf->IsFlight() or cf->IsDead())
             continue;
 
-        if (cf->GetUnitMission() == AMIS_AWACS && cf->GetTeam() == SimDriver.GetPlayerEntity()->GetTeam())
+        if (cf->GetUnitMission() == AMIS_AWACS and cf->GetTeam() == SimDriver.GetPlayerEntity()->GetTeam())
         {
             mAWACSavail = true;
         }
@@ -561,17 +561,17 @@ void MenuManager::CheckItemConditions(BOOL poll)
                 mpPage->mpItems[i].mIsAvailable = TRUE;
                 mpPage->mpItems[i].mDrawColor = mpPage->mpItems[i].mNormColor;
             }
-            else if (condition == 5 && !mOnGround)
+            else if (condition == 5 and !mOnGround)
             {
                 mpPage->mpItems[i].mIsAvailable = TRUE;
                 mpPage->mpItems[i].mDrawColor = mpPage->mpItems[i].mNormColor;
             }
-            else if (condition == 6 && mAWACSavail)
+            else if (condition == 6 and mAWACSavail)
             {
                 mpPage->mpItems[i].mIsAvailable = TRUE;
                 mpPage->mpItems[i].mDrawColor = mpPage->mpItems[i].mNormColor;
             }
-            else if (condition == 7 && mOnGround)
+            else if (condition == 7 and mOnGround)
             {
                 mpPage->mpItems[i].mIsAvailable = TRUE;
                 mpPage->mpItems[i].mDrawColor = mpPage->mpItems[i].mNormColor;
@@ -668,7 +668,7 @@ void MenuManager::DisplayDraw(void)
         elementNum = 0;
         eType = -1;
 
-        while (eType < 0 && elementNum < numElements)
+        while (eType < 0 and elementNum < numElements)
         {
             eType = FalconMsgElementTypes[mesgNum][elementNum] - 1001;
             elementNum++;
@@ -829,7 +829,7 @@ void MenuManager::ProcessInput(unsigned long val, int state, int type, int exten
 
             for (i = 0; i < mNumMenus; i++)
             {
-                if (mpMenus[i].mMsgId == type && mpMenus[i].mWingExtent == extent)
+                if (mpMenus[i].mMsgId == type and mpMenus[i].mWingExtent == extent)
                 {
                     mCurMenu = i;
                 }
@@ -883,7 +883,7 @@ void MenuSendAtc(int enumId, int sendRequest)
 
     gNavigationSys->GetAirbase(&ATCId);
 
-    if (sendRequest && PlayerOptions.PlayerRadioVoice && playerAC)
+    if (sendRequest and PlayerOptions.PlayerRadioVoice and playerAC)
     {
         switch (enumId)
         {
@@ -925,9 +925,9 @@ void MenuSendAtc(int enumId, int sendRequest)
     }
 
     theATC = (ObjectiveClass*)vuDatabase->Find(ATCId);
-    ShiAssert(theATC && theATC->brain);
+    ShiAssert(theATC and theATC->brain);
 
-    if (theATC && theATC->brain)
+    if (theATC and theATC->brain)
         atcMsg = new FalconATCMessage(ATCId, FalconLocalGame);
     else
         atcMsg = new FalconATCMessage(FalconNullId, FalconLocalGame);
@@ -951,7 +951,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     // Send the 'call' message
-    if (sendRequest && PlayerOptions.PlayerRadioVoice)
+    if (sendRequest and PlayerOptions.PlayerRadioVoice)
     {
         switch (enumId)
         {
@@ -1000,7 +1000,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
                             {
                                 if (
                                     sms->hardPoint[hp] &&
-                                    sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->Domain() & wdAir
+                                    sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() & wdAir
                                 )
                                 {
                                     hasWeaps++;
@@ -1010,7 +1010,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
                             {
                                 if (
                                     sms->hardPoint[hp] &&
-                                    sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->Domain() & wdGround
+                                    sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() & wdGround
                                 )
                                 {
                                     hasWeaps++;
@@ -1020,7 +1020,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
                             {
                                 if (
                                     sms->hardPoint[hp] &&
-                                    sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->Domain() & wdGround
+                                    sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() & wdGround
                                 )
                                 {
                                     hasWeaps++;

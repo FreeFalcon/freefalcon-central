@@ -732,7 +732,7 @@ static void propogate_expanded(Prof_Zone_Stack *c)
         return;
     }
 
-    if (c->parent->zone && get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
+    if (c->parent->zone and get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
     {
         ((Prof_Report_Record *) c->parent->zone->highlevel)[0].prefix = '+';
         ((Prof_Report_Record *) c->parent->zone->highlevel)[1].prefix = '+';
@@ -747,7 +747,7 @@ static void propogate_expanded(Prof_Zone_Stack *c)
         r[2].values[1] += 1000 * get_value(&d->hierarchical_time);
         r[2].values[2] += get_value(&d->entry_count);
 
-        if (d->max_recursion > r[2].number && get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
+        if (d->max_recursion > r[2].number and get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
             r[2].number = d->max_recursion;
 
         // propogate it to the parents
@@ -759,7 +759,7 @@ static void propogate_expanded(Prof_Zone_Stack *c)
             r[1].values[2] += get_value(&d->entry_count);
             d = (Profile_Tracker_Data_Record *) c->parent->highlevel;
 
-            if (d->max_recursion > r[1].number && get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
+            if (d->max_recursion > r[1].number and get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
                 r[1].number = d->max_recursion;
         }
     }
@@ -771,7 +771,7 @@ static void propogate_expanded(Prof_Zone_Stack *c)
         r[0].values[1] += 1000 * get_value(&d->hierarchical_time);
         r[0].values[2] += get_value(&d->entry_count);
 
-        if (d->max_recursion > r[0].number && get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
+        if (d->max_recursion > r[0].number and get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
             r[0].number = d->max_recursion;
     }
 }

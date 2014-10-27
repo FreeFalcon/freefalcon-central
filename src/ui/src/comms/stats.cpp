@@ -128,7 +128,7 @@ void PlayerStats::AddStat(long IP, long Date, long Rev, short aa, short ag, shor
 {
     StatList *newrec, *cur;
 
-    if (!aa && ! ag && !an && !as && !missions && !rating)
+    if (!aa and ! ag and !an and !as and !missions and !rating)
         return;
 
     cur = Find(IP, Date, Rev);
@@ -143,7 +143,7 @@ void PlayerStats::AddStat(long IP, long Date, long Rev, short aa, short ag, shor
             cur->data.rating == rating)  // No reason to save if nothing changed
             return;
 
-        if (cur->data.IP == IP && cur->data.Date == Date && cur->data.Rev == Rev)
+        if (cur->data.IP == IP and cur->data.Date == Date and cur->data.Rev == Rev)
         {
             cur->data.aa_kills = aa;
             cur->data.ag_kills = ag;
@@ -194,7 +194,7 @@ StatList *PlayerStats::Find(long IP, long Date, long Rev)
 
     while (cur)
     {
-        if (cur->data.IP == IP && cur->data.Date == Date && cur->data.Rev <= Rev)
+        if (cur->data.IP == IP and cur->data.Date == Date and cur->data.Rev <= Rev)
         {
             Found = cur;
         }

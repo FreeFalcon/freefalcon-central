@@ -79,7 +79,7 @@ void ShowPackageWPs(VU_ID package)
 
     pkg = (Package)vuDatabase->Find(package);
 
-    if (pkg && pkg->Final())
+    if (pkg and pkg->Final())
     {
         flt = (Flight)pkg->GetFirstUnitElement();
 
@@ -98,7 +98,7 @@ void HidePackageWPs(VU_ID package)
 
     pkg = (Package)vuDatabase->Find(package);
 
-    if (pkg && pkg->Final())
+    if (pkg and pkg->Final())
     {
         flt = (Flight)pkg->GetFirstUnitElement();
 
@@ -155,7 +155,7 @@ void SelectATOItemCB(long, short hittype, C_Base *control)
     {
         item = ato->GetOwner()->Parent;
 
-        if (item && item->Item_)
+        if (item and item->Item_)
         {
             pkg = (C_ATO_Package*)item->Item_;
             pkg->SetState(1);
@@ -324,7 +324,7 @@ void ChangeFlightTypeCB(long, short hittype, C_Base *control)
 
     flight = (Flight) GetEntityByCampID(camp_id);
 
-    if (flight && !F4IsBadReadPtr(flight, sizeof(Flight))) // JB 010326 CTD
+    if (flight and !F4IsBadReadPtr(flight, sizeof(Flight))) // JB 010326 CTD
         flight->SetUnitMission(type);
 }
 

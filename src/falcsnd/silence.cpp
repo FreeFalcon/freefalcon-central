@@ -46,7 +46,7 @@
 #define START_THRESHOLD 5
 #define STOP_THRESHOLD  2
 #define SILENCE_CODE    0xff
-#define IS_SILENCE( c ) ( (c) > ( 0x7f - SILENCE_LIMIT ) && \
+#define IS_SILENCE( c ) ( (c) > ( 0x7f - SILENCE_LIMIT ) and \
                           (c) < ( 0x80 + SILENCE_LIMIT ) )
 
 /*
@@ -373,7 +373,7 @@ long ExpandCompressionBuffer(long bytesToRead, compression_buf_t *compbuf, unsig
     static short silence_run = 0;
 
 
-    if (compbuf->fileLength && (compbuf->fileLength == compbuf->bytesRead))
+    if (compbuf->fileLength and (compbuf->fileLength == compbuf->bytesRead))
     {
         return 0L;
     }
@@ -474,7 +474,7 @@ long ExpandCompressionBuffer( long bytesToRead, compression_buf_t *compbuf, unsi
     static int silence_run = 0;
 
 
-    if (compbuf->fileLength && (compbuf->fileLength == compbuf->bytesRead))
+    if (compbuf->fileLength and (compbuf->fileLength == compbuf->bytesRead))
  {
         return 0L;
  }

@@ -87,7 +87,7 @@ void TBlockList::Update(float x, float y)
     if (vx or vy)
     {
         // Call the appropriate worker function based on how far we moved
-        if ((abs(vx) <= 1) && (abs(vy) <= 1))
+        if ((abs(vx) <= 1) and (abs(vy) <= 1))
         {
             UpdateBlockList(vx, vy);
         }
@@ -336,7 +336,7 @@ void TBlockList::ReleaseDistantBlocks()
         dx = abs(entry->virtualRow - ourBlockRow);
         dy = abs(entry->virtualCol - ourBlockCol);
 
-        if ((dx < outBlockDistance) && (dy < outBlockDistance))
+        if ((dx < outBlockDistance) and (dy < outBlockDistance))
         {
 
             // This ones okay, so move on to the next entry in the list

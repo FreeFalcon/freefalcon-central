@@ -31,7 +31,7 @@ void BlankMfdDrawable::Display(VirtualDisplay* newDisplay)
     display = newDisplay;
 
     //MI
-    if (g_bRealisticAvionics && theRadar)
+    if (g_bRealisticAvionics and theRadar)
     {
         theRadar->GetCursorPosition(&cX, &cY);
     }
@@ -44,7 +44,7 @@ void BlankMfdDrawable::Display(VirtualDisplay* newDisplay)
         display->SetFont(ofont);
 
         //MI changed
-        if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+        if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
             OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
         {
             DrawBullseyeCircle(display, cX, cY);
@@ -104,7 +104,7 @@ void BlankMfdDrawable::PushButton(int whichButton, int whichMFD)
         }
 
         // Check other MFD if needed;
-        if (nextMode not_eq MFDClass::MfdOff && (otherMfd < 0 or MfdDisplay[otherMfd]->mode not_eq nextMode))
+        if (nextMode not_eq MFDClass::MfdOff and (otherMfd < 0 or MfdDisplay[otherMfd]->mode not_eq nextMode))
             MfdDisplay[whichMFD]->SetNewMode(nextMode);
     }
 }

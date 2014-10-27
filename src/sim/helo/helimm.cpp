@@ -1716,7 +1716,7 @@ HeliMMClass::HorizTail(void)
         }
 
         // trianglur downwash field
-        if (dw_ht_pos > 0 && dw_ht_pos < md->mr.radius)
+        if (dw_ht_pos > 0 and dw_ht_pos < md->mr.radius)
             eps_ht = 2.0F * (1 - dw_ht_pos / md->mr.radius);
         else
             eps_ht = 0.0F;

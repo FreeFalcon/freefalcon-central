@@ -964,7 +964,7 @@ void CTimeOfDay::RotateMoonMask(int angle)
                 uuu += duu;
                 vvv += duv;
 
-                if (tu >= 0 && tu < 64 && tv >= 0 && tv < 64)
+                if (tu >= 0 and tu < 64 and tv >= 0 and tv < 64)
                 {
                     int l = (tv << 3) + (tu >> 3);
                     unsigned char c = (unsigned char)(1 << (7 - (tu & 7)));
@@ -1032,11 +1032,11 @@ void CTimeOfDay::CreateMoonPhase(unsigned char *src, unsigned char *dest)
                 unsigned char c1 = *src++;
 #ifdef USE_TRANSPARENT_MOON
 
-                if (c1 && !(c & 0x80)) c1 = 0;
+                if (c1 and !(c & 0x80)) c1 = 0;
 
 #else
 
-                if (c1 && !(c & 0x80)) c1 += 48;
+                if (c1 and !(c & 0x80)) c1 += 48;
 
 #endif
                 c <<= 1;

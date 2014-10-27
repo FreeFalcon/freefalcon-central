@@ -50,7 +50,7 @@ void C_Custom::Setup(long ID, short Type, short NumCtrls)
 
     SetReady(0);
 
-    if (NumCtrls > 0 && NumCtrls < _CUSTOM_MAX_CTRLS_)
+    if (NumCtrls > 0 and NumCtrls < _CUSTOM_MAX_CTRLS_)
     {
         Count_ = NumCtrls;
         Items_ = new O_Output[Count_];
@@ -119,9 +119,9 @@ long C_Custom::CheckHotSpots(long relX, long relY)
 {
     short i;
 
-    if (Ready() && !(GetFlags() & C_BIT_INVISIBLE) && Parent_)
+    if (Ready() and !(GetFlags() & C_BIT_INVISIBLE) and Parent_)
     {
-        if (relX >= GetX() && relY >= GetY() && relX < (GetX() + GetW()) && relY < (GetY() + GetH()))
+        if (relX >= GetX() and relY >= GetY() and relX < (GetX() + GetW()) and relY < (GetY() + GetH()))
         {
             Section_ = 0;
 
@@ -130,8 +130,8 @@ long C_Custom::CheckHotSpots(long relX, long relY)
 
             for (i = 0; i < Count_; i++)
             {
-                if (relX >= Items_[i].GetX() && relX < (Items_[i].GetX() + Items_[i].GetW()) &&
-                    relY >= Items_[i].GetY() && relY < (Items_[i].GetY() + Items_[i].GetH()))
+                if (relX >= Items_[i].GetX() and relX < (Items_[i].GetX() + Items_[i].GetW()) &&
+                    relY >= Items_[i].GetY() and relY < (Items_[i].GetY() + Items_[i].GetH()))
                     Section_ = i;
             }
 

@@ -80,7 +80,7 @@ void SimMouseResumeProcessing(const int x, const int y)
 void OnSimMouseInput(HWND)
 {
     // sfr: touch buddy support
-    if (PlayerOptions.GetTouchBuddy() && !mouseIn)
+    if (PlayerOptions.GetTouchBuddy() and !mouseIn)
     {
         return;
     }
@@ -166,21 +166,21 @@ void OnSimMouseInput(HWND)
 
                 action = CP_CHECK_EVENT; //Wombat778 10-07-2003 apparently this is a fake event...seems like the right thing to do
             }
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON0 && !(ObjData[i].dwData & 0x80))
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON0 and !(ObjData[i].dwData & 0x80))
             {
                 action = CP_MOUSE_BUTTON0;
             }
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 && !(ObjData[i].dwData & 0x80))
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 and !(ObjData[i].dwData & 0x80))
             {
                 action = CP_MOUSE_BUTTON1;
                 oneDown = FALSE;
             }
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 && (ObjData[i].dwData & 0x80))
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 and (ObjData[i].dwData & 0x80))
             {
                 action = static_cast<unsigned long>(-1);
                 oneDown = TRUE;
             }
-            else if ((ObjData[i].dwOfs == DIMOFS_BUTTON3) && (ObjData[i].dwData & 0x80))   // Retro 22Jan2004
+            else if ((ObjData[i].dwOfs == DIMOFS_BUTTON3) and (ObjData[i].dwData & 0x80))   // Retro 22Jan2004
             {
 #if 0
                 PlayerOptions.SetClickablePitMode(!PlayerOptions.GetClickablePitMode()); //Wombat778 1-22-04 moved to playeroptions.
@@ -189,7 +189,7 @@ void OnSimMouseInput(HWND)
 #endif
             } // Retro 22Jan2004
 
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON2 && (ObjData[i].dwData & 0x80))   //Wombat778 10-07-2003 Added for middle mouse button support
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON2 and (ObjData[i].dwData & 0x80))   //Wombat778 10-07-2003 Added for middle mouse button support
             {
                 if (middlebuttonfunc) middlebuttonfunc(1, KEY_DOWN, NULL);
 
@@ -257,7 +257,7 @@ void OnSimMouseInput(HWND)
         // reinit when I exit/enter the 3d. it´s also not init correctly for all
         // axis (it inits to 0 which can be bad for some axis, ie FOV)
         /************************************************************************/
-        if ((dz) && (IO.MouseWheelExists() == true))
+        if ((dz) and (IO.MouseWheelExists() == true))
         {
             // Retro 18Jan2004
             theMouseWheelAxis.AddToAxisValue(dz * PlayerOptions.GetMouseWheelSensitivity());
@@ -399,7 +399,7 @@ void OnSimMouseInput(HWND)
                 }
             }
             // in most of the other views (external..)
-            else if ((!MouseMenuActive) && (PlayerOptions.GetMouseLook() == true))
+            else if ((!MouseMenuActive) and (PlayerOptions.GetMouseLook() == true))
             {
                 /************************************************************************/
                 // Retro 16Jan2004

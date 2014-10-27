@@ -32,9 +32,9 @@ void DigitalBrain::GroundCheck(void)
     // Let it follow waypoints close to the ground
     if ( //( curMode == WaypointMode or // also perform GroundCheck for leaders
         //curMode == LandingMode or // airbases with hilly terrain around need GroundCheck
-        /*(curMode == WaypointMode && agDoctrine not_eq AGD_NONE) ||*/ // 2002-03-11 ADDED BY S.G. GroundAttackMode has its own ground avoidance code
+        /*(curMode == WaypointMode and agDoctrine not_eq AGD_NONE) ||*/ // 2002-03-11 ADDED BY S.G. GroundAttackMode has its own ground avoidance code
         curMode == TakeoffMode //)
-        && threatPtr == NULL)
+        and threatPtr == NULL)
     {
         // edg: do we really ever need to do ground avoidance if we're in
         // waypoint mode!?  The waypoint code should be smart enough....
@@ -125,7 +125,7 @@ void DigitalBrain::GroundCheck(void)
         // Test the terrain along the likely path we will take.  Take into account the deltas along the ground
         // and the fact that we may be headed straight down so the deltas could be very small.  Since we still
         // need to test the terrain in case we're diving into a valley, test the terrain along the recovery path.
-        //  for (float i = 0.0; i < lookahead && !groundavoid; i += 0.5)
+        //  for (float i = 0.0; i < lookahead and !groundavoid; i += 0.5)
         for (float i = 0.0; i < lookahead; i += 0.5)
         {
             // Project a recovery path based on our pitch.
@@ -297,7 +297,7 @@ void DigitalBrain::PullUp(void)
     // if (pullupTimer < SimLibElapsedTime)
     // pullupTimer = 0; // This says us "stop pull up"
     // Cobra -
-    if ((groundAvoidNeeded) && (pullupTimer <= SimLibElapsedTime))
+    if ((groundAvoidNeeded) and (pullupTimer <= SimLibElapsedTime))
         pullupTimer = SimLibElapsedTime + ((unsigned long)(g_fPullupTime * CampaignSeconds)); // configureable for how long we pull at least once entered groundAvoidNeeded mode
     else
         pullupTimer = 0; // This says us "stop pull up"

@@ -1459,7 +1459,7 @@ CreateCurrentProcessMiniDumpW(MINIDUMP_TYPE        eType      ,
 
     // Have I even tried to get the exported MiniDumpWriteDump function
     // yet?
-    if ((NULL == g_pfnMDWD) && (eINVALID_ERROR == g_eIMDALastError))
+    if ((NULL == g_pfnMDWD) and (eINVALID_ERROR == g_eIMDALastError))
     {
         if (FALSE == IsMiniDumpFunctionAvailable())
         {

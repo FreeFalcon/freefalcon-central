@@ -92,10 +92,10 @@ float AirframeClass::Turbulence(float turb)
     //Sunny: mech, heat convection, calm twilight and evening
     if (weather == 1)
     {
-        if (time > 540 && time < 990)//0900 - 1630
+        if (time > 540 and time < 990)//0900 - 1630
         {
             if ((groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER ||
-                 groundType == COVERAGE_SWAMP) && (alt > -5000.0f))
+                 groundType == COVERAGE_SWAMP) and (alt > -5000.0f))
             {
                 if (turbOn == 0)
                 {
@@ -104,7 +104,7 @@ float AirframeClass::Turbulence(float turb)
 
                 if ((SimLibElapsedTime - turbTimer) >= turbOn)
                 {
-                    if (time > 540 && time < 720)//9-12
+                    if (time > 540 and time < 720)//9-12
                     {
                         turb = PRANDFloat() * ((rand() % 10) * 0.05f);
                         turbTimer = SimLibElapsedTime;
@@ -123,9 +123,9 @@ float AirframeClass::Turbulence(float turb)
                 }
             }
 
-            else if (groundType == COVERAGE_URBAN && (alt > -5000.0f && alt < -300.0f))
+            else if (groundType == COVERAGE_URBAN and (alt > -5000.0f and alt < -300.0f))
             {
-                if (alt > -1500.0f && alt < -300.0f)
+                if (alt > -1500.0f and alt < -300.0f)
                 {
                     if (turbOn == 0)
                     {
@@ -134,7 +134,7 @@ float AirframeClass::Turbulence(float turb)
 
                     if ((SimLibElapsedTime - turbTimer) >= turbOn)
                     {
-                        if (time > 540 && time < 720)//9-12
+                        if (time > 540 and time < 720)//9-12
                         {
                             turb = PRANDFloat() * ((rand() % 60) * 0.05f); //3.0 Max
                             turbTimer = SimLibElapsedTime;
@@ -148,7 +148,7 @@ float AirframeClass::Turbulence(float turb)
                         }
                     }
                 }
-                else if (alt <= -1500.0f && alt > -5000.0f)
+                else if (alt <= -1500.0f and alt > -5000.0f)
                 {
                     if (turbOn == 0)
                     {
@@ -169,7 +169,7 @@ float AirframeClass::Turbulence(float turb)
                 }
             }
             //all other terrain
-            else if (alt > -1500.0f && alt < -300.0f)
+            else if (alt > -1500.0f and alt < -300.0f)
             {
                 if (turbOn == 0)
                 {
@@ -193,7 +193,7 @@ float AirframeClass::Turbulence(float turb)
                     }
                 }
             }
-            else if (alt <= -1500.0f && alt > -5000.0f)
+            else if (alt <= -1500.0f and alt > -5000.0f)
             {
                 if (turbOn == 0)
                 {
@@ -208,7 +208,7 @@ float AirframeClass::Turbulence(float turb)
                 }
             }
 
-            else if (alt > -300.0f && alt <= -10.0f)//Mechanical turb
+            else if (alt > -300.0f and alt <= -10.0f)//Mechanical turb
             {
                 if (turbOn == 0)
                 {
@@ -237,7 +237,7 @@ float AirframeClass::Turbulence(float turb)
             }
             //Tropopause boudary area between Troposphere and Stratosphere
             //strong winds, moderate to severe turbulence
-            else if (platform->ZPos() <= -35250.0f && platform->ZPos() >= -36000.0f)
+            else if (platform->ZPos() <= -35250.0f and platform->ZPos() >= -36000.0f)
             {
                 if (turbOn == 0)
                 {
@@ -255,7 +255,7 @@ float AirframeClass::Turbulence(float turb)
         }
         else //general atmospherics 16:31 - 08:59
         {
-            if (alt > -300.0f && alt <= -10.0f)//Mechanical turb
+            if (alt > -300.0f and alt <= -10.0f)//Mechanical turb
             {
                 if (turbOn == 0)
                 {
@@ -285,7 +285,7 @@ float AirframeClass::Turbulence(float turb)
             }
 
 
-            else if (alt > -1500.0f && alt < -300.0f)
+            else if (alt > -1500.0f and alt < -300.0f)
             {
                 if (turbOn == 0)
                 {
@@ -309,7 +309,7 @@ float AirframeClass::Turbulence(float turb)
                     }
                 }
             }
-            else if (alt <= -1500.0f && alt > -5000.0f)
+            else if (alt <= -1500.0f and alt > -5000.0f)
             {
                 if (turbOn == 0)
                 {
@@ -326,7 +326,7 @@ float AirframeClass::Turbulence(float turb)
 
             //Tropopause boudary area between Troposphere and Stratosphere
             //strong winds, moderate to severe turbulence
-            else if (platform->ZPos() <= -35250.0f && platform->ZPos() >= -36000.0f)
+            else if (platform->ZPos() <= -35250.0f and platform->ZPos() >= -36000.0f)
             {
                 if (turbOn == 0)
                 {
@@ -392,15 +392,15 @@ float AirframeClass::Turbulence(float turb)
         }
 
         //Turb actions
-        if (cloudTurb == 1 && (zz > -3500.0f && zz < 2500.0f))
+        if (cloudTurb == 1 and (zz > -3500.0f and zz < 2500.0f))
         {
             turb = PRANDFloat() * ((rand() % 20) * 0.05f);
             cloudTurb = 0;
         }
-        else if (time > 540 && time < 990)//0900 - 1630
+        else if (time > 540 and time < 990)//0900 - 1630
         {
             if ((groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER ||
-                 groundType == COVERAGE_SWAMP) && (alt > -5000.0f))
+                 groundType == COVERAGE_SWAMP) and (alt > -5000.0f))
             {
                 if (turbOn == 0)
                 {
@@ -409,7 +409,7 @@ float AirframeClass::Turbulence(float turb)
 
                 if ((SimLibElapsedTime - turbTimer) >= turbOn)
                 {
-                    if (time > 540 && time < 720)//9-12
+                    if (time > 540 and time < 720)//9-12
                     {
                         turb = PRANDFloat() * ((rand() % 10) * 0.05f);
                         turbTimer = SimLibElapsedTime;
@@ -428,9 +428,9 @@ float AirframeClass::Turbulence(float turb)
                 }
             }
 
-            else if (groundType == COVERAGE_URBAN && (alt > -5000.0f && alt < -300.0f))
+            else if (groundType == COVERAGE_URBAN and (alt > -5000.0f and alt < -300.0f))
             {
-                if (alt > -1500.0f && alt < -300.0f)
+                if (alt > -1500.0f and alt < -300.0f)
                 {
                     if (turbOn == 0)
                     {
@@ -439,7 +439,7 @@ float AirframeClass::Turbulence(float turb)
 
                     if ((SimLibElapsedTime - turbTimer) >= turbOn)
                     {
-                        if (time > 540 && time < 720)//9-12
+                        if (time > 540 and time < 720)//9-12
                         {
                             turb = PRANDFloat() * ((rand() % 60) * 0.05f); //3.0 Max
                             turbTimer = SimLibElapsedTime;
@@ -453,7 +453,7 @@ float AirframeClass::Turbulence(float turb)
                         }
                     }
                 }
-                else if (alt <= -1500.0f && alt > -5000.0f)
+                else if (alt <= -1500.0f and alt > -5000.0f)
                 {
                     if (turbOn == 0)
                     {
@@ -474,7 +474,7 @@ float AirframeClass::Turbulence(float turb)
                 }
             }
             //all other terrain
-            else if (alt > -1500.0f && alt < -300.0f)
+            else if (alt > -1500.0f and alt < -300.0f)
             {
                 if (turbOn == 0)
                 {
@@ -498,7 +498,7 @@ float AirframeClass::Turbulence(float turb)
                     }
                 }
             }
-            else if (alt <= -1500.0f && alt > -5000.0f)
+            else if (alt <= -1500.0f and alt > -5000.0f)
             {
                 if (turbOn == 0)
                 {
@@ -513,7 +513,7 @@ float AirframeClass::Turbulence(float turb)
                 }
             }
 
-            else if (alt > -300.0f && alt <= -10.0f)//Mechanical turb
+            else if (alt > -300.0f and alt <= -10.0f)//Mechanical turb
             {
                 if (turbOn == 0)
                 {
@@ -542,7 +542,7 @@ float AirframeClass::Turbulence(float turb)
             }
             //Tropopause boudary area between Troposphere and Stratosphere
             //strong winds, moderate to severe turbulence
-            else if (platform->ZPos() <= -35250.0f && platform->ZPos() >= -36000.0f)
+            else if (platform->ZPos() <= -35250.0f and platform->ZPos() >= -36000.0f)
             {
                 if (turbOn == 0)
                 {
@@ -560,7 +560,7 @@ float AirframeClass::Turbulence(float turb)
         }
         else //general atmospherics 16:31 - 08:59
         {
-            if (alt > -300.0f && alt <= -10.0f)//Mechanical turb
+            if (alt > -300.0f and alt <= -10.0f)//Mechanical turb
             {
                 if (turbOn == 0)
                 {
@@ -590,7 +590,7 @@ float AirframeClass::Turbulence(float turb)
             }
 
 
-            else if (alt > -1500.0f && alt < -300.0f)
+            else if (alt > -1500.0f and alt < -300.0f)
             {
                 if (turbOn == 0)
                 {
@@ -614,7 +614,7 @@ float AirframeClass::Turbulence(float turb)
                     }
                 }
             }
-            else if (alt <= -1500.0f && alt > -5000.0f)
+            else if (alt <= -1500.0f and alt > -5000.0f)
             {
                 if (turbOn == 0)
                 {
@@ -631,7 +631,7 @@ float AirframeClass::Turbulence(float turb)
 
             //Tropopause boudary area between Troposphere and Stratosphere
             //strong winds, moderate to severe turbulence
-            else if (platform->ZPos() <= -35250.0f && platform->ZPos() >= -36000.0f)
+            else if (platform->ZPos() <= -35250.0f and platform->ZPos() >= -36000.0f)
             {
                 if (turbOn == 0)
                 {

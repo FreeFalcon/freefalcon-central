@@ -56,7 +56,7 @@ int FalconUnitAssignmentMessage::Process(uchar autodisp)
     else
         sprintf(name3, "<none>");
 
-    if (so && po)
+    if (so and po)
         MonoPrint("Assigning Unit %d to %s, %s, objective: %s\n", u->GetCampID(), name2, name1, name3);
 
 #endif

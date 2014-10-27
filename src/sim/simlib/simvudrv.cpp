@@ -136,7 +136,7 @@ VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME t
         CampBaseClass *pCampObj = pEntity->GetCampaignObject();
         CampBaseClass *eCampObj = entity->GetCampaignObject();
 
-        if ((pCampObj not_eq NULL) && (pCampObj == eCampObj))
+        if ((pCampObj not_eq NULL) and (pCampObj == eCampObj))
         {
             return SEND_SCORE(SEND_OOB, 0.0f);
         }
@@ -230,7 +230,7 @@ VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME t
     roughDistD2 *= roughDistD2;
 
     // if entity is in rough range of session entity, check rough (distance is already computed)
-    if ((pEntity not_eq NULL) && (sessionD2 <= roughDistD2))
+    if ((pEntity not_eq NULL) and (sessionD2 <= roughDistD2))
     {
         return SEND_SCORE(ENQUEUE_SEND, roughDistD2);
     }

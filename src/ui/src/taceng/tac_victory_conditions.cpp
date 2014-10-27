@@ -38,7 +38,7 @@ victory_condition::victory_condition(tactical_mission *mis)
 
     vc = mis->conditions;
 
-    while ((vc) && (vc->succ))
+    while ((vc) and (vc->succ))
     {
         vc = vc->succ;
     }

@@ -146,7 +146,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
         DrawBars();
     }
 
-    if (mode not_eq GM && mode not_eq GMT && mode not_eq SEA)
+    if (mode not_eq GM and mode not_eq GMT and mode not_eq SEA)
     {
         DrawAzElTicks(); // ASSOCIATOR 3/12/03: Reversed drawing order
         DrawScanMarkers();
@@ -181,7 +181,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
                 DrawBullseyeData(display, cX, cY);
             else
             {
-                if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+                if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
                     OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
                 {
                     DrawBullseyeCircle(display, cX, cY);
@@ -204,7 +204,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
             DrawAzLimitMarkers();
 
             //MI
-            if (g_bRealisticAvionics && DrawRCR)
+            if (g_bRealisticAvionics and DrawRCR)
                 DrawRCRCount();
 
             break;
@@ -226,7 +226,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
                 DrawBullseyeData(display, cX, cY);
             else
             {
-                if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+                if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
                     OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
                 {
                     DrawBullseyeCircle(display, cX, cY);
@@ -248,7 +248,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
             display->SetColor(tmpColor);
 
             //MI
-            if (g_bRealisticAvionics && DrawRCR)
+            if (g_bRealisticAvionics and DrawRCR)
                 DrawRCRCount();
 
             break;
@@ -271,7 +271,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
                 DrawBullseyeData(display, cX, cY);
             else
             {
-                if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+                if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
                     OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
                 {
                     DrawBullseyeCircle(display, cX, cY);
@@ -309,7 +309,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
                 DrawBullseyeData(display, cX, cY);
             else
             {
-                if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+                if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
                     OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
                 {
                     DrawBullseyeCircle(display, cX, cY);
@@ -330,7 +330,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
             display->SetColor(tmpColor);
 
             //MI
-            if (g_bRealisticAvionics && DrawRCR)
+            if (g_bRealisticAvionics and DrawRCR)
                 DrawRCRCount();
 
             break;
@@ -353,7 +353,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
                 DrawBullseyeData(display, cX, cY);
             else
             {
-                if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+                if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
                     OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
                 {
                     DrawBullseyeCircle(display, cX, cY);
@@ -391,7 +391,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
                 DrawBullseyeData(display, cX, cY);
             else
             {
-                if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+                if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
                     OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
                 {
                     DrawBullseyeCircle(display, cX, cY);
@@ -443,7 +443,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
                         DrawBullseyeData(display, cX, cY);
                     else
                     {
-                        if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+                        if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
                             OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
                         {
                             DrawBullseyeCircle(display, cX, cY);
@@ -474,7 +474,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
                     DrawBullseyeData(display, cX, cY);
                 else
                 {
-                    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+                    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
                         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
                     {
                         DrawBullseyeCircle(display, cX, cY);
@@ -517,7 +517,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
         DrawBorder(); // JPO SOI
     }
 
-    if (!isEmitting && mode not_eq OFF) // JPO
+    if (!isEmitting and mode not_eq OFF) // JPO
     {
         //MI not here in real
         if (!g_bRealisticAvionics)
@@ -536,7 +536,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
     // (works on all MFDs and not only here)
     for (int i = 0; i < 4; i++)
     {
-        if ((MfdDisplay[i])->GetTGPWarning() && (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
+        if ((MfdDisplay[i])->GetTGPWarning() and (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
         {
             TGPAttitudeWarning(display);
             break;
@@ -584,7 +584,7 @@ void RadarDopplerClass::STBYDisplay(void)
         DrawRangeArrows();
         GetCursorPosition(&cX, &cY);
 
-        if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+        if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
             OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
             DrawBullseyeCircle(display, cX, cY);
         else
@@ -889,7 +889,7 @@ void RadarDopplerClass::DrawRangeArrows(void)
     display->AdjustOriginInViewport(x19 + arrowW, y19 + arrowH / 2);
 
     //MI
-    if (g_bRealisticAvionics && (mode == GM or mode == GMT or mode == SEA))
+    if (g_bRealisticAvionics and (mode == GM or mode == GMT or mode == SEA))
     {
         if (mode == GMT or mode == SEA)
         {
@@ -991,7 +991,7 @@ void RadarDopplerClass::RWSDisplay(void)
     }
 
     //Cobra 11/20/04
-    if (iff && (self->iffModeChallenge not_eq 99))
+    if (iff and (self->iffModeChallenge not_eq 99))
         LabelButton(16, "SCAN");
 
     // Set the viewport
@@ -1059,7 +1059,7 @@ void RadarDopplerClass::RWSDisplay(void)
                 /*----------------------------*/
                 /* keep objects on the screen */
                 /*----------------------------*/
-                if (fabs(xPos) < AZL && fabs(yPos) < AZL)
+                if (fabs(xPos) < AZL and fabs(yPos) < AZL)
                 {
                     if (IsSet(EXP))
                     {
@@ -1104,31 +1104,31 @@ void RadarDopplerClass::RWSDisplay(void)
 
                     if (g_bRealisticAvionics)
                     {
-                        if (rdrData->rdrSy[i] >= Det && self->interrogating && isCpl)
+                        if (rdrData->rdrSy[i] >= Det and self->interrogating and isCpl)
                         {
                             rdrData->interrogated = TRUE;
                         }
-                        //else if (!rdrData->rdrSy[i] >= Det && isCpl) Cobra fix warning C4804
-                        else if ((!(rdrData->rdrSy[i] >= Det)) && isCpl)
+                        //else if (!rdrData->rdrSy[i] >= Det and isCpl) Cobra fix warning C4804
+                        else if ((!(rdrData->rdrSy[i] >= Det)) and isCpl)
                         {
                             rdrData->interrogated = FALSE;
                         }
-                        else if (self->interrogating && !rdrObj->BaseData()->OnGround())
+                        else if (self->interrogating and !rdrObj->BaseData()->OnGround())
                         {
                             rdrData->interrogated = TRUE;
                             wipeIFF = TRUE;
                             iffTimer = SimLibElapsedTime + 5000.0f;
                         }
 
-                        //if (wipeIFF == TRUE && (!rdrData->rdrSy[i] >= Det) && isCpl) Cobra fix warning c4804
-                        if (wipeIFF == TRUE && ((!(rdrData->rdrSy[i] >= Det)) && isCpl))
+                        //if (wipeIFF == TRUE and (!rdrData->rdrSy[i] >= Det) and isCpl) Cobra fix warning c4804
+                        if (wipeIFF == TRUE and ((!(rdrData->rdrSy[i] >= Det)) and isCpl))
                         {
                             rdrData->interrogated = FALSE;
                             wipeIFF = FALSE;
                         }
-                        //else if (wipeIFF == TRUE && (!rdrData->rdrSy[i] >= Det) Cobra fix warning c4804
-                        else if (wipeIFF == TRUE && (!(rdrData->rdrSy[i] >= Det))
-                                 && (iffTimer < SimLibElapsedTime))
+                        //else if (wipeIFF == TRUE and (!rdrData->rdrSy[i] >= Det) Cobra fix warning c4804
+                        else if (wipeIFF == TRUE and (!(rdrData->rdrSy[i] >= Det))
+                                 and (iffTimer < SimLibElapsedTime))
                         {
                             rdrData->interrogated = FALSE;
                             iffTimer = static_cast<float>(SimLibElapsedTime);
@@ -1151,12 +1151,12 @@ void RadarDopplerClass::RWSDisplay(void)
 
                             //Cobra 11/20 Test of IFF
                             //DrawSymbol(rdrData->rdrSy[i], vt/SCH_FACT, i);
-                            if (rdrData->rdrSy[i] >= Det && rdrData->interrogated && TeamInfo[platform->GetTeam()]->TStance(rdrObj->BaseData()->GetTeam()) == Allied && iff && isCpl)
+                            if (rdrData->rdrSy[i] >= Det and rdrData->interrogated and TeamInfo[platform->GetTeam()]->TStance(rdrObj->BaseData()->GetTeam()) == Allied and iff and isCpl)
                             {
                                 //
                                 DrawSymbol(InterogateFriend, vt / SCH_FACT, i);
                             }
-                            else if (rdrData->interrogated && TeamInfo[platform->GetTeam()]->TStance(rdrObj->BaseData()->GetTeam()) == Allied && iff)
+                            else if (rdrData->interrogated and TeamInfo[platform->GetTeam()]->TStance(rdrObj->BaseData()->GetTeam()) == Allied and iff)
                             {
                                 //
                                 DrawSymbol(InterogateFriend, vt / SCH_FACT, i);
@@ -1166,11 +1166,11 @@ void RadarDopplerClass::RWSDisplay(void)
                         //
                         DrawSymbol(rdrData->rdrSy[i], vt/SCH_FACT, i);
                         }*/ //Cobra original above but let's test
-                            else if (rdrData->rdrSy[i] == Det && rdrObj->BaseData()->IsSPJamming())
+                            else if (rdrData->rdrSy[i] == Det and rdrObj->BaseData()->IsSPJamming())
                             {
                                 DrawSymbol(Jam, vt / SCH_FACT, i);
                             }
-                            else if (rdrData->rdrSy[i] == Solid && rdrObj->BaseData()->IsSPJamming())
+                            else if (rdrData->rdrSy[i] == Solid and rdrObj->BaseData()->IsSPJamming())
                             {
                                 DrawSymbol(Jam, vt / SCH_FACT, i);
                                 DrawSymbol(rdrData->rdrSy[i], vt / SCH_FACT, i);
@@ -1321,7 +1321,7 @@ void RadarDopplerClass::SAMDisplay(void)
     else
     {
         // DLZ?
-        if (pFCC->GetSubMode() == FireControlComputer::Aim120 && pFCC->missileTarget)
+        if (pFCC->GetSubMode() == FireControlComputer::Aim120 and pFCC->missileTarget)
             DrawDLZSymbol();
 
         /*---------------------*/
@@ -1388,7 +1388,7 @@ void RadarDopplerClass::SAMDisplay(void)
             DrawNCTR(true);
         }
 
-        if (subMode == SAM_AUTO_MODE && lockedTargetData->range)
+        if (subMode == SAM_AUTO_MODE and lockedTargetData->range)
         {
             TargetToXY(lockedTargetData, 0, tdisplayRange, &cursorX, &cursorY);
             //cursorY += 0.09F;
@@ -1513,14 +1513,14 @@ void RadarDopplerClass::TWSDisplay(void)
     }
 
     // MD -- 20040120: use the STTmode() display if we are locked (versus merely bugged)
-    if (lockedTarget && IsSet(STTingTarget))
+    if (lockedTarget and IsSet(STTingTarget))
     {
         STTDisplay();
         return;
     }
 
     //Cobra 11/20/04
-    if (iff && (self->iffModeChallenge not_eq 99))
+    if (iff and (self->iffModeChallenge not_eq 99))
     {
         LabelButton(16, "SCAN");
     }
@@ -1575,7 +1575,7 @@ void RadarDopplerClass::TWSDisplay(void)
             DrawNCTR(true);
 
             // JPO - also do AIM120 DLZ
-            if (pFCC->GetSubMode() == FireControlComputer::Aim120 && pFCC->missileTarget)
+            if (pFCC->GetSubMode() == FireControlComputer::Aim120 and pFCC->missileTarget)
                 DrawDLZSymbol();
         }
     }
@@ -1642,13 +1642,13 @@ void RadarDopplerClass::TWSDisplay(void)
             /*----------------------------*/
             /* keep objects on the screen */
             /*----------------------------*/
-            if (fabs(xPos) < AZL && fabs(yPos) < AZL)
+            if (fabs(xPos) < AZL and fabs(yPos) < AZL)
             {
                 if (IsSet(EXP))
 #if 0 // check if its in the box
                     &&
-                    xPos > tgtx - brange && xPos < tgtx + brange &&
-                    yPos > tgty - brange && yPos < tgty + brange
+                    xPos > tgtx - brange and xPos < tgtx + brange &&
+                    yPos > tgty - brange and yPos < tgty + brange
 #endif
                 {
                     float dx = xPos - tgtx;
@@ -1690,7 +1690,7 @@ void RadarDopplerClass::TWSDisplay(void)
                 //Cobra
                 if (g_bRealisticAvionics)
                 {
-                    if (rdrData->rdrSy[0] >= Track && self->interrogating)
+                    if (rdrData->rdrSy[0] >= Track and self->interrogating)
                     {
                         rdrData->interrogated = TRUE;
                     }
@@ -1711,7 +1711,7 @@ void RadarDopplerClass::TWSDisplay(void)
                 {
                     /*if (rdrData->TWSTrackFileOpen)
                       {
-                      if (rdrData->extrapolateStart && (SimLibElapsedTime > (rdrData->extrapolateStart + TwsFlashTime)))
+                      if (rdrData->extrapolateStart and (SimLibElapsedTime > (rdrData->extrapolateStart + TwsFlashTime)))
                     // MD -- 20040121: provide data for flash check
                     DrawSymbol(rdrData->rdrSy[0], vt/SCH_FACT, 0, 1);
                     else
@@ -1736,31 +1736,31 @@ void RadarDopplerClass::TWSDisplay(void)
 
                     if (g_bRealisticAvionics)
                     {
-                        if (rdrData->rdrSy[0] >= Det && self->interrogating && isCpl)
+                        if (rdrData->rdrSy[0] >= Det and self->interrogating and isCpl)
                         {
                             rdrData->interrogated = TRUE;
                         }
-                        //else if (!rdrData->rdrSy[0] >= Det && isCpl) Cobra fix warning C4804
-                        else if ((!(rdrData->rdrSy[0] >= Det)) && isCpl)
+                        //else if (!rdrData->rdrSy[0] >= Det and isCpl) Cobra fix warning C4804
+                        else if ((!(rdrData->rdrSy[0] >= Det)) and isCpl)
                         {
                             rdrData->interrogated = FALSE;
                         }
-                        else if (self->interrogating && !rdrObj->BaseData()->OnGround())
+                        else if (self->interrogating and !rdrObj->BaseData()->OnGround())
                         {
                             rdrData->interrogated = TRUE;
                             wipeIFF = TRUE;
                             iffTimer = SimLibElapsedTime + 5000.0f;
                         }
 
-                        //if (wipeIFF == TRUE && (!rdrData->rdrSy[0] >= Det) && isCpl) Cobra fix warning C4804
-                        if (wipeIFF == TRUE && ((!(rdrData->rdrSy[0] >= Det)) && isCpl))
+                        //if (wipeIFF == TRUE and (!rdrData->rdrSy[0] >= Det) and isCpl) Cobra fix warning C4804
+                        if (wipeIFF == TRUE and ((!(rdrData->rdrSy[0] >= Det)) and isCpl))
                         {
                             rdrData->interrogated = FALSE;
                             wipeIFF = FALSE;
                         }
-                        //else if (wipeIFF == TRUE && (!rdrData->rdrSy[0] >= Det) Cobra fix warning C4804
-                        else if (wipeIFF == TRUE && (!(rdrData->rdrSy[0] >= Det))
-                                 && (iffTimer < SimLibElapsedTime))
+                        //else if (wipeIFF == TRUE and (!rdrData->rdrSy[0] >= Det) Cobra fix warning C4804
+                        else if (wipeIFF == TRUE and (!(rdrData->rdrSy[0] >= Det))
+                                 and (iffTimer < SimLibElapsedTime))
                         {
                             rdrData->interrogated = FALSE;
                             iffTimer = (float)SimLibElapsedTime;
@@ -1771,7 +1771,7 @@ void RadarDopplerClass::TWSDisplay(void)
 
                     if (rdrData->TWSTrackFileOpen)
                     {
-                        if (rdrData->extrapolateStart && (SimLibElapsedTime > (rdrData->extrapolateStart + TwsFlashTime)))
+                        if (rdrData->extrapolateStart and (SimLibElapsedTime > (rdrData->extrapolateStart + TwsFlashTime)))
                         {
                             if (
                                 rdrData->interrogated &&
@@ -1804,7 +1804,7 @@ void RadarDopplerClass::TWSDisplay(void)
                             {
                                 DrawSymbol(InterogateFriend, vt / SCH_FACT, 0);
                             }
-                            else if (rdrData->rdrSy[0] == Det && rdrObj->BaseData()->IsSPJamming())//Cobra added this
+                            else if (rdrData->rdrSy[0] == Det and rdrObj->BaseData()->IsSPJamming())//Cobra added this
                             {
                                 DrawSymbol(Jam, 0.0f, 0);
                             }//end
@@ -1831,21 +1831,21 @@ void RadarDopplerClass::TWSDisplay(void)
                             //This works, but we need more
                             /*if (g_bRealisticAvionics)
                               {
-                              if (rdrData->rdrSy[i] >= Det && self->interrogating)
+                              if (rdrData->rdrSy[i] >= Det and self->interrogating)
                               {
                               rdrData->interrogated = TRUE;
                               }
                               }*/
 
-                            if (rdrData->rdrSy[i] >= Det && rdrData->interrogated && TeamInfo[platform->GetTeam()]->TStance(rdrObj->BaseData()->GetTeam()) == Allied  && iff)
+                            if (rdrData->rdrSy[i] >= Det and rdrData->interrogated and TeamInfo[platform->GetTeam()]->TStance(rdrObj->BaseData()->GetTeam()) == Allied  and iff)
                             {
                                 DrawSymbol(InterogateFriend, vt / SCH_FACT, 0);
                             }
-                            else if (rdrData->rdrSy[i] == Det && rdrObj->BaseData()->IsSPJamming())//Cobra added this
+                            else if (rdrData->rdrSy[i] == Det and rdrObj->BaseData()->IsSPJamming())//Cobra added this
                             {
                                 DrawSymbol(Jam, 0.0f, 0);
                             }//end
-                            else if (rdrData->rdrSy[i] == Solid && rdrObj->BaseData()->IsSPJamming())
+                            else if (rdrData->rdrSy[i] == Solid and rdrObj->BaseData()->IsSPJamming())
                             {
                                 DrawSymbol(Jam, 0.0f, 0); //Cobra fixed for jamming aircraft
                                 DrawSymbol(rdrData->rdrSy[i], vt / SCH_FACT, 0);
@@ -1961,7 +1961,7 @@ void RadarDopplerClass::STTDisplay(void)
     if (!lockedTarget)
         return;
 
-    if (pFCC->GetSubMode() == FireControlComputer::Aim120 && pFCC->missileTarget)
+    if (pFCC->GetSubMode() == FireControlComputer::Aim120 and pFCC->missileTarget)
         DrawDLZSymbol();
 
     display->SetColor(GetMfdColor(MFD_TGT_CLOSURE_RATE));
@@ -2029,7 +2029,7 @@ void RadarDopplerClass::STTDisplay(void)
         /*----------------------------*/
         /* keep objects on the screen */
         /*----------------------------*/
-        if (fabs(xPos) < AZL && fabs(yPos) < AZL)
+        if (fabs(xPos) < AZL and fabs(yPos) < AZL)
         {
             display->AdjustOriginInViewport(xPos, yPos);
             // This _should_ be right -- based on 2D angle between target velocity
@@ -2076,7 +2076,7 @@ void RadarDopplerClass::STTDisplay(void)
             alt  = -lockedTarget->BaseData()->ZPos();
 
             // draw lose indication
-            if (pFCC->LastMissileWillMiss(lockedTargetData->range) && (vuxRealTime & 0x180))
+            if (pFCC->LastMissileWillMiss(lockedTargetData->range) and (vuxRealTime & 0x180))
             {
                 sprintf(str, "LOSE");
             }
@@ -2192,7 +2192,7 @@ void RadarDopplerClass::VSDisplay(void)
                     /*----------------------------*/
                     /* keep objects on the screen */
                     /*----------------------------*/
-                    if (fabs(xPos) < AZL && fabs(yPos) < AZL)
+                    if (fabs(xPos) < AZL and fabs(yPos) < AZL)
                     {
                         display->AdjustOriginInViewport(xPos, yPos);
                         // JPO work out the track color by reducing each component in turn
@@ -2264,7 +2264,7 @@ void RadarDopplerClass::DrawACQCursor(void)
         mlSinCos(&trig, platform->Roll());
         ang = theta + seekerElCenter * trig.cos - seekerAzCenter * trig.sin;
     }
-    else if (mode == TWS && lockedTarget)
+    else if (mode == TWS and lockedTarget)
     {
         theta = 0.0F;
     }
@@ -2522,7 +2522,7 @@ void RadarDopplerClass::DrawSymbol(int type, float schweemLen, int age, int flas
     /*-------------*/
     /* draw symbol */
     /*-------------*/
-    if ((type == FlashBug or type == FlashTrack) && flashOff)
+    if ((type == FlashBug or type == FlashTrack) and flashOff)
         return;
 
     // RV - RED - WARNING...!!!!
@@ -2579,7 +2579,7 @@ void RadarDopplerClass::DrawSymbol(int type, float schweemLen, int age, int flas
     {
         case AimFlash: // jpo draw filled square
         case AimRel:
-            if (g_bRealisticAvionics && (type == AimRel or vuxRealTime & 0x080))   //MI changed from or flash
+            if (g_bRealisticAvionics and (type == AimRel or vuxRealTime & 0x080))   //MI changed from or flash
             {
                 display->Tri(g_fRadarScale * trackTriH / 2.0f, g_fRadarScale * -trackTriV, //tail flashes faster then flash
                              g_fRadarScale * trackTriH / 2.0f, g_fRadarScale * -trackTriV - 0.035f,
@@ -2698,7 +2698,7 @@ int RadarDopplerClass::IsUnderCursor(SimObjectType* rdrObj, float heading)
         // MD -- 20040714: This function needs to worry about EXP modes for use with RWS and TWS
         // when there is a locked target (SAM or TWS with a bug respectively) so now we adjust
         // for EXP if need be.
-        if (IsSet(EXP) && lockedTargetData)
+        if (IsSet(EXP) and lockedTargetData)
         {
             float tgtx, tgty;
 
@@ -2713,8 +2713,8 @@ int RadarDopplerClass::IsUnderCursor(SimObjectType* rdrObj, float heading)
             yPos = tgty + dy;
         }
 
-        if (xPos > cursorX - 0.02F  && xPos < cursorX + 0.02F  &&
-            yPos > cursorY - 0.04F  && yPos < cursorY + 0.04F)
+        if (xPos > cursorX - 0.02F  and xPos < cursorX + 0.02F  &&
+            yPos > cursorY - 0.04F  and yPos < cursorY + 0.04F)
             retval = TRUE;
     }
 
@@ -2740,7 +2740,7 @@ int RadarDopplerClass::IsUnderVSCursor(SimObjectType* rdrObj, float heading)
         xPos = disDeg * az;
         yPos = -AZL + 2.0F * AZL * (rdrObj->localData->rdrY[0] / displayRange);
 
-        if (fabs(xPos - cursorX) < 0.04 && fabs(yPos - cursorY) < 0.04)
+        if (fabs(xPos - cursorX) < 0.04 and fabs(yPos - cursorY) < 0.04)
             retval = TRUE;
     }
 
@@ -2835,7 +2835,7 @@ void RadarDopplerClass::DrawSteerpoint(void)
         /*----------------------------*/
         /* keep objects on the screen */
         /*----------------------------*/
-        if (fabs(xPos) < AZL && fabs(yPos) < AZL)
+        if (fabs(xPos) < AZL and fabs(yPos) < AZL)
         {
             display->SetColor(GetMfdColor(MFD_CUR_STPT));
 
@@ -2879,7 +2879,7 @@ void RadarDopplerClass::DrawSteerpoint(void)
     /*----------------------------*/
     /* keep objects on the screen */
     /*----------------------------*/
-    if (fabs(xPos) < AZL && fabs(yPos) < AZL)
+    if (fabs(xPos) < AZL and fabs(yPos) < AZL)
     {
         // Possible CATA Circle
         display->Circle(xPos, yPos, 0.07F);
@@ -3019,7 +3019,7 @@ void RadarDopplerClass::DrawDLZSymbol(void)
         }
 
         // Draw the ASEC symbol. if its flashing, or outside the NE zone JPO
-        if (g_bRealisticAvionics && ((vuxRealTime & 0x200) or lockedTargetData->range > pFCC->missileRneMax * 0.7f ||
+        if (g_bRealisticAvionics and ((vuxRealTime & 0x200) or lockedTargetData->range > pFCC->missileRneMax * 0.7f ||
                                      lockedTargetData->range < pFCC->missileRneMin))
         {
             display -> SetColor(GetMfdColor(MFD_STEER_ERROR_CUE));
@@ -3100,7 +3100,7 @@ int RadarDopplerClass::GetBuggedData(float *x, float *y, float *dir, float *spee
     //MI I haven't seen a rdrSy[0] state of Bug.. thus we only get it in STT.
     //if (lockedTargetData->rdrSy[0] >= Bug ||
     /*if(lockedTarget ||
-      (IsSet(STTingTarget) && !lockedTarget->BaseData()->OnGround())) */
+      (IsSet(STTingTarget) and !lockedTarget->BaseData()->OnGround())) */
     if (lockedTarget)//Cobra allow ground bug to show TODO work on symbology
     {
         *x = lockedTarget->BaseData()->XPos();
@@ -3130,7 +3130,7 @@ void RadarDopplerClass::AABottomRow()
 
         FackClass* mFaults = ((AircraftClass*)(SimDriver.GetPlayerAircraft()))->mFaults;
 
-        if (mFaults && !(mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::xmtr))
+        if (mFaults and !(mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::xmtr))
         {
             float x, y;
             char *mode = "";
@@ -3142,9 +3142,9 @@ void RadarDopplerClass::AABottomRow()
                 mode = "SIM";
             else if (SimDriver.GetPlayerAircraft()->Sms->MasterArm() == SMSBaseClass::Arm)
             {
-                if (SimDriver.GetPlayerAircraft()->Sms->curWeapon && SimDriver.GetPlayerAircraft()->Sms->CurStationOK())
+                if (SimDriver.GetPlayerAircraft()->Sms->curWeapon and SimDriver.GetPlayerAircraft()->Sms->CurStationOK())
                     mode = "RDY";
-                else if (SimDriver.GetPlayerAircraft()->Sms->curWeapon && !SimDriver.GetPlayerAircraft()->Sms->CurStationOK())
+                else if (SimDriver.GetPlayerAircraft()->Sms->curWeapon and !SimDriver.GetPlayerAircraft()->Sms->CurStationOK())
                     mode = "MAL";
             }
 
@@ -3170,7 +3170,7 @@ void RadarDopplerClass::TargetToXY(SimObjectLocalData *localData, int hist,
                                    float drange, float *x, float *y)
 {
     // JB 010730 cursor position gets messed up.
-    if (localData->rdrX[hist] == 0 && localData->rdrY[hist] == 0)
+    if (localData->rdrX[hist] == 0 and localData->rdrY[hist] == 0)
         return;
 
     float az;
@@ -3215,8 +3215,8 @@ void RadarDopplerClass::DrawNCTR(bool TWS)
     // NCTR strength > 2.5 for TWS, 1.9 for NCTR
     if (lockedTarget->BaseData()->IsSim() &&
         !((SimBaseClass*)lockedTarget->BaseData())->IsExploding() &&
-        ((!TWS && ReturnStrength(lockedTarget) > 1.9f)
-         or (TWS && ReturnStrength(lockedTarget) > 2.5f)))
+        ((!TWS and ReturnStrength(lockedTarget) > 1.9f)
+         or (TWS and ReturnStrength(lockedTarget) > 2.5f)))
     {
         if (
 #if 1 // original marco
@@ -3327,7 +3327,7 @@ void RadarDopplerClass::AGRangingDisplay(void)
 
     display->SetColor(GetMfdColor(MFD_BULLSEYE));
 
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
         DrawBullseyeCircle(display, cX, cY);
     else
@@ -3350,7 +3350,7 @@ void RadarDopplerClass::DrawReference(VirtualDisplay* display)
 
     float offset = 0.0f;
 
-    ShiAssert(self not_eq NULL && TheHud not_eq NULL);
+    ShiAssert(self not_eq NULL and TheHud not_eq NULL);
 
     if (TheHud->waypointValid)
     {
@@ -3376,9 +3376,9 @@ void RadarDopplerClass::DrawReference(VirtualDisplay* display)
         case FireControlComputer::Dogfight:
         case FireControlComputer::MissileOverride:
         case FireControlComputer::AAGun:
-            //case (FireControlComputer::Gun && FCC->GetSubMode() not_eq FireControlComputer::STRAF):
+            //case (FireControlComputer::Gun and FCC->GetSubMode() not_eq FireControlComputer::STRAF):
         {
-            if (lockedTarget && lockedTarget->BaseData() && !FCC->IsAGMasterMode())
+            if (lockedTarget and lockedTarget->BaseData() and !FCC->IsAGMasterMode())
             {
                 float   dx = 0.0F, dy = 0.0F, xPos = 0.0F, tgtx = 0.0F, yPos = 0.0F;
                 vector  collPoint;
@@ -3452,7 +3452,7 @@ void RadarDopplerClass::DrawReference(VirtualDisplay* display)
 
     if (g_bINS)
     {
-        if (SimDriver.GetPlayerAircraft() && !SimDriver.GetPlayerAircraft()->INSState(AircraftClass::INS_HSD_STUFF))
+        if (SimDriver.GetPlayerAircraft() and !SimDriver.GetPlayerAircraft()->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 

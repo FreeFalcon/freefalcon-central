@@ -371,9 +371,9 @@ VuEntityType* VuxType(ushort id)
 {
     VuEntityType *retval = 0;
 
-    F4Assert(id >= VU_LAST_ENTITY_TYPE && id - VU_LAST_ENTITY_TYPE < NumEntities);
+    F4Assert(id >= VU_LAST_ENTITY_TYPE and id - VU_LAST_ENTITY_TYPE < NumEntities);
 
-    if (id >= VU_LAST_ENTITY_TYPE && id - VU_LAST_ENTITY_TYPE < NumEntities)
+    if (id >= VU_LAST_ENTITY_TYPE and id - VU_LAST_ENTITY_TYPE < NumEntities)
         retval = (VuEntityType*) & (Falcon4ClassTable[id - VU_LAST_ENTITY_TYPE]);
 
     return retval;

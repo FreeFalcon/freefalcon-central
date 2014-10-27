@@ -61,7 +61,7 @@ void FireControlComputer::TargetingPodMode(void)
 
     // 2001-11-01 ADDED BY M.N. IT MAY BE THAT theRadar HAS LOST THE TARGET, BUT OUR TARGETING POD
     // STILL HAS IT. SO SEE IF WE HAVE ONE LOCKED WITH THE POD
-    if (!systemTarget && !F4IsBadReadPtr(targetingPod, sizeof(targetingPod))) // M.N. CTD fix
+    if (!systemTarget and !F4IsBadReadPtr(targetingPod, sizeof(targetingPod))) // M.N. CTD fix
     {
         systemTarget = targetingPod->CurrentTarget();
 
@@ -70,8 +70,8 @@ void FireControlComputer::TargetingPodMode(void)
 
 
     // Is the currently aimed target dead or exploding ? If so, delete the pod targetpointer
-    if (systemTarget && (systemTarget->BaseData()->IsDead() or systemTarget->BaseData()->IsExploding())
-        && !F4IsBadWritePtr(targetingPod, sizeof(targetingPod)))  // CTD fix
+    if (systemTarget and (systemTarget->BaseData()->IsDead() or systemTarget->BaseData()->IsExploding())
+        and !F4IsBadWritePtr(targetingPod, sizeof(targetingPod)))  // CTD fix
     {
         systemTarget = NULL;
         targetingPod->SetDesiredTarget(NULL);
@@ -106,15 +106,15 @@ void FireControlComputer::TargetingPodMode(void)
     {
         // Simple radars, look at locked target if any, otherwise look at cursors
         // 2001-04-16 MODIFIED BY S.G. CombatAP GETS TO USE THIS STUFF AS WELL.
-        //    if  (playerFCC && (PlayerOptions.GetAvionicsType() not_eq ATRealistic) && (subMode == SLAVE))
+        //    if  (playerFCC and (PlayerOptions.GetAvionicsType() not_eq ATRealistic) and (subMode == SLAVE))
         // M.N. added full realism mode
-        if ((playerFCC && (PlayerOptions.GetAvionicsType() not_eq ATRealistic && PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
-             && (subMode == SLAVE)) or ((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP)
+        if ((playerFCC and (PlayerOptions.GetAvionicsType() not_eq ATRealistic and PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
+             and (subMode == SLAVE)) or ((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP)
         {
-            if (systemTarget && systemTarget->BaseData()->OnGround())
+            if (systemTarget and systemTarget->BaseData()->OnGround())
             {
                 /*  JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
-                if (systemTarget->BaseData()->IsSim() && ((SimBaseClass*)systemTarget->BaseData())->IsAwake())
+                if (systemTarget->BaseData()->IsSim() and ((SimBaseClass*)systemTarget->BaseData())->IsAwake())
                 {
                 ((SimBaseClass*)systemTarget->BaseData())->drawPointer->GetPosition( &pos );
                 systemTarget->BaseData()->SetPosition( systemTarget->BaseData()->XPos(),
@@ -160,7 +160,7 @@ void FireControlComputer::TargetingPodMode(void)
             {
                 CalcRelGeom(platform, systemTarget, NULL, 1.0F / SimLibMajorFrameTime);
 
-                if (targetingPod->CanSeeObject(systemTarget) && targetingPod->CanDetectObject(systemTarget))
+                if (targetingPod->CanSeeObject(systemTarget) and targetingPod->CanDetectObject(systemTarget))
                     targetingPod->SetDesiredTarget(systemTarget);
                 else
                     targetingPod->SetDesiredTarget(NULL);
@@ -247,7 +247,7 @@ void FireControlComputer::TargetingPodMode(void)
                             /*
                             if(designateCmd)
                             {
-                             if (targetingPod->CanSeeObject(systemTarget) && targetingPod->CanDetectObject(systemTarget))
+                             if (targetingPod->CanSeeObject(systemTarget) and targetingPod->CanDetectObject(systemTarget))
                              {
                              targetingPod->SetDesiredTarget(systemTarget);
                              }
@@ -298,13 +298,13 @@ void FireControlComputer::TargetingPodMode(void)
             {
                 if (subMode == SLAVE)
                 {
-                    if (targetPtr && targetPtr->BaseData()->OnGround())
+                    if (targetPtr and targetPtr->BaseData()->OnGround())
                     {
                         groundDesignateX = targetPtr->BaseData()->XPos();
                         groundDesignateY = targetPtr->BaseData()->YPos();
                         groundDesignateZ = targetPtr->BaseData()->ZPos();
                     }
-                    else if (theRadar && theRadar->IsAG())
+                    else if (theRadar and theRadar->IsAG())
                     {
                         theRadar->GetAGCenter(&groundDesignateX, &groundDesignateY);
                         groundDesignateZ = OTWDriver.GetGroundLevel(groundDesignateX, groundDesignateY);
@@ -343,7 +343,7 @@ void FireControlComputer::TargetingPodMode(void)
                     targetingPod->SetYPR(yaw, pitch, roll);
                     inRange = FALSE;
 
-                    if (designateCmd && !lastDesignate)
+                    if (designateCmd and !lastDesignate)
                     {
                         preDesignate = FALSE;
                         inRange = TRUE;
@@ -377,7 +377,7 @@ void FireControlComputer::TargetingPodMode(void)
                         groundDesignateZ = tmpZ;
 
                         // Must be looking at the ground to designate
-                        if (designateCmd && !lastDesignate)
+                        if (designateCmd and !lastDesignate)
                         {
                             preDesignate = FALSE;
                             inRange = TRUE;
@@ -397,7 +397,7 @@ void FireControlComputer::TargetingPodMode(void)
 
                 if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
                 {
-                    if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+                    if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
                     {
                         yMove = (float)cursorYCmd / 10000.0F;
                         xMove = (float)cursorXCmd / 10000.0F;
@@ -409,7 +409,7 @@ void FireControlComputer::TargetingPodMode(void)
                     }
                 }
 
-                if (((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0)) && !targetingPod->IsLocked())
+                if (((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0)) and !targetingPod->IsLocked())
                 {
                     if (g_bLgbFixes) // a.s. 26.Febr.2002. begin: New Code for slewing LGBs. With this code, not the angles are altered, but
                         // directly the designated point. A non-orthogonal rotation of the co-ordinate system is necessary
@@ -606,12 +606,12 @@ void FireControlComputer::TargetingPodMode(void)
 
             if (!targetingPod->IsLocked())
             {
-                if (!isLimited && onGround)
+                if (!isLimited and onGround)
                 {
                     // 2000-09-30 ADDED BY S.G. SO WE LOOK AT OUR CURRENTLY LOCKED GROUND RADAR TARGET IF WE DON'T ALREADY HAVE A curTarget
-                    if (!curTarget && ((DigitalBrain *)platform->Brain())->GetGroundTarget())
+                    if (!curTarget and ((DigitalBrain *)platform->Brain())->GetGroundTarget())
                     {
-                        if (targetingPod->CanSeeObject(((DigitalBrain *)platform->Brain())->GetGroundTarget()) && targetingPod->CanDetectObject(((DigitalBrain *)platform->Brain())->GetGroundTarget()))
+                        if (targetingPod->CanSeeObject(((DigitalBrain *)platform->Brain())->GetGroundTarget()) and targetingPod->CanDetectObject(((DigitalBrain *)platform->Brain())->GetGroundTarget()))
                             curTarget = ((DigitalBrain *)platform->Brain())->GetGroundTarget();
                     }
 
@@ -627,13 +627,13 @@ void FireControlComputer::TargetingPodMode(void)
                         curTarget = NULL;
                     // 2002-04-12 MN Changed as we now also have ground units on GM radar when they are standing still
                     //    else if(theRadar->IsAG() == RadarClass::GM)
-                    else if (!g_bAGRadarFixes && theRadar->IsAG() == RadarClass::GM)
+                    else if (!g_bAGRadarFixes and theRadar->IsAG() == RadarClass::GM)
                         curTarget = NULL;
 
                     // 2000-09-30 MODIFIED BY S.G. WHY ONLY LOOK ONE DEGREE?!? WE CALL CanSeeObject ANYHOW!
                     // 2000-10-05 WE'LL LIMIT THE PLAYER'S TARGETING POD TO ONE DEGREE SO IT DOESN'T WANDER TOO FAR OFF
                     //             minDist = 1.0F * DTR;
-                    if (playerFCC && SimDriver.GetPlayerAircraft() && ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP)
+                    if (playerFCC and SimDriver.GetPlayerAircraft() and ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP)
                         minDist = 0.2F * DTR;   // a.s. statt 1.0F 0.2F
                     else
                         minDist = 10.0f; // Above 2*pi
@@ -643,12 +643,12 @@ void FireControlComputer::TargetingPodMode(void)
                     {
                         // 2000-10-04 MODIFIED BY S.G. DON'T TARGET AIR VEHICLE!
                         //                if (fabs(curTarget->localData->az - yaw) < minDist &&
-                        if (curTarget->BaseData()->OnGround() && fabs(curTarget->localData->az - yaw) < minDist &&
+                        if (curTarget->BaseData()->OnGround() and fabs(curTarget->localData->az - yaw) < minDist &&
                             fabs(curTarget->localData->el - pitch) < minDist &&
                             curTarget->BaseData()->IsSim() &&
                             !curTarget->BaseData()->IsWeapon())
                         {
-                            if (targetingPod->CanSeeObject(curTarget) && targetingPod->CanDetectObject(curTarget))
+                            if (targetingPod->CanSeeObject(curTarget) and targetingPod->CanDetectObject(curTarget))
                             {
                                 targetingPod->SetDesiredTarget(curTarget);
                                 minDist = (float)min(fabs(curTarget->localData->az - yaw), fabs(curTarget->localData->el - pitch));
@@ -659,7 +659,7 @@ void FireControlComputer::TargetingPodMode(void)
                     }
 
                     // Check Features?
-                    if (!targetingPod->CurrentTarget() && !isLimited)
+                    if (!targetingPod->CurrentTarget() and !isLimited)
                     {
                         CheckFeatures(targetingPod);
                         curTarget = targetingPod->CurrentTarget();
@@ -677,7 +677,7 @@ void FireControlComputer::TargetingPodMode(void)
                 SetTarget(targetingPod->CurrentTarget());
             }
 
-            if (targetingPod->CurrentTarget() && !preDesignate && designateCmd && !lastDesignate)
+            if (targetingPod->CurrentTarget() and !preDesignate and designateCmd and !lastDesignate)
             {
                 targetingPod->LockTarget();
             }
@@ -747,7 +747,7 @@ void FireControlComputer::TargetingPodMode(void)
     }
 
     //MI no Laser Above 25k ft
-    if (g_bRealisticAvionics && playerFCC && ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP)
+    if (g_bRealisticAvionics and playerFCC and ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP)
     {
         // RV - Biker - New systems (e.g. LANTIRN on F-14D) can do laser above 25k ft!!!
         //if(platform->ZPos() > -25000.0F)
@@ -760,10 +760,10 @@ void FireControlComputer::TargetingPodMode(void)
                 LaserWasFired = TRUE;
             }
             //auto lasing, if check needed, not inhibited, and hasn't been fired manually between the drop
-            else if (CheckForLaserFire && !InhibitFire && !LaserWasFired)
+            else if (CheckForLaserFire and !InhibitFire and !LaserWasFired)
             {
                 //Get the time before impact at which we want to lase
-                if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp)
+                if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp)
                     time = OTWDriver.pCockpitManager->mpIcp->LaserTime;
                 else
                     time = 8;
@@ -773,7 +773,7 @@ void FireControlComputer::TargetingPodMode(void)
                 {
                     Timer = 0.0F;
 
-                    if ((ImpactTime <= time) && LaserArm)
+                    if ((ImpactTime <= time) and LaserArm)
                         LaserFire = TRUE;
                     else
                         LaserFire = FALSE;
@@ -783,7 +783,7 @@ void FireControlComputer::TargetingPodMode(void)
                 LaserFire = FALSE;
 
             // MN only start the timer when we fired the laser and the bomb impacted
-            if (LaserFire && ImpactTime <= 0.5F)
+            if (LaserFire and ImpactTime <= 0.5F)
             {
                 Timer += SimLibMajorFrameTime;
 
@@ -848,12 +848,12 @@ void FireControlComputer::CheckFeatures(LaserPodClass* targetingPod)
 
                 // 2001-11-01 Added IsDead ||
                 //IsExploding check by M.N. - we don't want to bomb something that is already destroyed
-                if ((CurRange < curMin) && !(testObject->IsDead() or testObject->IsExploding()))
+                if ((CurRange < curMin) and !(testObject->IsDead() or testObject->IsExploding()))
                 {
                     //simTarg = (SimBaseClass*)testObject;
                     //if (simTarg->IsStatic())
                     //fc = GetFeatureClassData(((Objective)simTarg)->GetFeatureID(0));
-                    //if (fc && !F4IsBadReadPtr(fc, sizeof (fc)) && fc->Priority > 2)
+                    //if (fc and !F4IsBadReadPtr(fc, sizeof (fc)) and fc->Priority > 2)
                     // higher priority number = lower priority
                     closestObj = testObject;
                     curMin = CurRange;
@@ -921,7 +921,7 @@ void FireControlComputer::ToggleLaserArm(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->Sms->MasterArm() not_eq SMSBaseClass::Arm)
+    if (playerAC and playerAC->Sms->MasterArm() not_eq SMSBaseClass::Arm)
         return;
 
     LaserArm = !LaserArm;
@@ -938,7 +938,7 @@ void FireControlComputer::RecalcPos(void)
 
     if (targetingPod)
     {
-        if (theRadar && theRadar->IsAG())
+        if (theRadar and theRadar->IsAG())
         {
             theRadar->GetAGCenter(&groundDesignateX, &groundDesignateY);
             groundDesignateZ = OTWDriver.GetGroundLevel(groundDesignateX, groundDesignateY);

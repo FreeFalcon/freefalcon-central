@@ -84,7 +84,7 @@ void OTWDriverClass::CreateVisualObject(SimBaseClass* theObject, int visType, fl
 
 void OTWDriverClass::InsertObjectIntoDrawList(SimBaseClass* theObject)
 {
-    if (theObject->drawPointer && !theObject->drawPointer->InDisplayList())
+    if (theObject->drawPointer and !theObject->drawPointer->InDisplayList())
     {
         // KCK: Let's try just going ahead and adding these to the list directly -
         // Assuming, of course that this is called by the Sim/Graphics thread
@@ -220,7 +220,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                 SimBaseClass *prevObj = NULL, *nextObj = NULL;
 
                 // In many cases, our visType should be modified by our neighbors.
-                if ((theObject->Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED && (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM or ((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM))
+                if ((theObject->Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED and (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM or ((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM))
                 {
                     // KCK: Can we just use our slot number? Or will this break something?
                     // int idx = theObject->GetCampaignObject()->GetComponentIndex (theObject);
@@ -229,19 +229,19 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                     prevObj = theObject->GetCampaignObject()->GetComponentEntity(idx - 1);
                     nextObj = theObject->GetCampaignObject()->GetComponentEntity(idx + 1);
 
-                    if (prevObj && ((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM && (prevObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
+                    if (prevObj and ((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM and (prevObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
                     {
-                        if (nextObj && ((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM && (nextObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
+                        if (nextObj and ((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM and (nextObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
                             visType = classPtr->visType[VIS_BOTH_DEST];
                         else
                             visType = classPtr->visType[VIS_LEFT_DEST];
                     }
-                    else if (nextObj && ((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM && (nextObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
+                    else if (nextObj and ((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM and (nextObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
                         visType = classPtr->visType[VIS_RIGHT_DEST];
                 }
 
                 // Check for change - and don't bother if there is none.
-                if (theObject->drawPointer && ((DrawableBSP*)theObject->drawPointer)->GetID() == visType)
+                if (theObject->drawPointer and ((DrawableBSP*)theObject->drawPointer)->GetID() == visType)
                     return;
 
                 // edg: arghhh.  As far as I can tell, calls were being made
@@ -254,7 +254,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                 // should be no calls to OTWDrive list functions.  oh well for
                 // now since there are other calls in here (I thought kevin
                 // was supposed to fix this!?).
-                if (theObject->drawPointer && theObject->drawPointer->InDisplayList())
+                if (theObject->drawPointer and theObject->drawPointer->InDisplayList())
                 {
                     // KCK: In some cases we still need this pointer (specifically
                     // when we replace bridge segments), so let's save it here - we'll
@@ -270,7 +270,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                     baseObject = NULL;
 
                 // Some things require Base Objects (like bridges and airbases)
-                if (baseObject && !((SimFeatureClass*)baseObject)->baseObject)
+                if (baseObject and !((SimFeatureClass*)baseObject)->baseObject)
                 {
                     // Is this a bridge?
                     if (baseObject->IsSetCampaignFlag(FEAT_ELEV_CONTAINER))
@@ -298,12 +298,12 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                 // Add another building to this grouping of buildings, or replace the drawable
                 // of one which is here.
                 // Is the container a bridge?
-                if (baseObject && baseObject->IsSetCampaignFlag(FEAT_ELEV_CONTAINER))
+                if (baseObject and baseObject->IsSetCampaignFlag(FEAT_ELEV_CONTAINER))
                 {
                     // Make the new BRIDGE object
                     if (visType)
                     {
-                        if (theObject->IsSetCampaignFlag(FEAT_NEXT_IS_TOP) && theObject->Status() not_eq VIS_DESTROYED)
+                        if (theObject->IsSetCampaignFlag(FEAT_NEXT_IS_TOP) and theObject->Status() not_eq VIS_DESTROYED)
                             theObject->drawPointer = new DrawableRoadbed(visType, visType + 1, &simView, theObject->Yaw(), 10.0f, (float)atan(20.0f / 280.0f));
                         else
                             theObject->drawPointer = new DrawableRoadbed(visType, -1, &simView, theObject->Yaw(), 10.0f, (float)atan(20.0f / 280.0f));
@@ -325,7 +325,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                     }
                 }
                 // Is the container a big flat thing (airbase)?
-                else if (baseObject && baseObject->IsSetCampaignFlag(FEAT_FLAT_CONTAINER))
+                else if (baseObject and baseObject->IsSetCampaignFlag(FEAT_FLAT_CONTAINER))
                 {
                     // Everything on a platform is a Building
                     // That means it sticks straight up the -Z axis
@@ -410,9 +410,9 @@ void SetLabel(SimBaseClass* theObject)
             campObj = theObject->GetCampaignObject();
 
             // FRB - Remove the Deagg condition.  Seifer new Deagg method broke the callsign in the label
-            if (campObj && campObj->IsFlight() /*&& !campObj->IsAggregate() /*&& campObj->InPackage()*/
+            if (campObj and campObj->IsFlight() /*&& !campObj->IsAggregate() /*&& campObj->InPackage()*/
                 // 2001-10-31 M.N. show flight names of our team
-                && flight && (flight->GetTeam() == campObj->GetTeam()))
+                and flight and (flight->GetTeam() == campObj->GetTeam()))
             {
                 char temp[40];
                 GetCallsign(((Flight)campObj)->callsign_id, ((Flight)campObj)->callsign_num, temp);
@@ -490,7 +490,7 @@ int make_callsign_string(char *str, char *insert, SimBaseClass *theObject)
     {
         campObj = theObject->GetCampaignObject();
 
-        if (campObj && campObj->IsFlight() && campObj->InPackage())
+        if (campObj and campObj->IsFlight() and campObj->InPackage())
         {
             char temp[40];
 
@@ -522,7 +522,7 @@ int make_callsign_string(char *str, char *insert, SimBaseClass *theObject)
         }
     }
 
-    if ((callsign[0]) && (flight[0]))
+    if ((callsign[0]) and (flight[0]))
     {
         strcpy(str, callsign);
         strcat(str, insert);

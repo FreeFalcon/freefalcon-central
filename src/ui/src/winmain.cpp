@@ -333,7 +333,7 @@ void BuildAscii()
                 Key_Chart[scan].Ascii[shiftstates] = static_cast<char>(i);
                 Key_Chart[scan].Flags[shiftstates]  or_eq  _IS_ASCII_;
 
-                if (i >= '0' && i <= '9')
+                if (i >= '0' and i <= '9')
                     Key_Chart[scan].Flags[shiftstates]  or_eq  _IS_DIGIT_;
 
                 if (isalpha(i))
@@ -1180,7 +1180,7 @@ void SystemLevelInit()
         SetCursor(gCursors[CRSR_WAIT]);
         g_theaters.SetNewTheater(td);
 
-        if (((!_strnicmp(td->m_name, "Korea", 5)) or (!_strnicmp(td->m_name, "Eurowar", 7))) && (SimPathHandle == -1))
+        if (((!_strnicmp(td->m_name, "Korea", 5)) or (!_strnicmp(td->m_name, "Eurowar", 7))) and (SimPathHandle == -1))
         {
             char tmpPath[256];
             sprintf(tmpPath, "%s\\sim", FalconDataDirectory); // JPO - so we can find raw sim files
@@ -1439,7 +1439,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             // until then UI is only thing that can handle surface lost
         case WM_ACTIVATEAPP:
         case WM_ACTIVATE:
-            if (doUI && FalconDisplay.displayFullScreen)
+            if (doUI and FalconDisplay.displayFullScreen)
             {
                 RECT rect;
 
@@ -1454,7 +1454,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case WM_KILLFOCUS:
-            if (KeepFocus && FalconDisplay.displayFullScreen)
+            if (KeepFocus and FalconDisplay.displayFullScreen)
                 PostMessage(hwnd, FM_GIVE_FOCUS, 0, 0);
 
             break;
@@ -1953,19 +1953,19 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
 
         case FM_PLAY_UI_MOVIE:
-            if (gMainHandler && ReadyToPlayMovie)
+            if (gMainHandler and ReadyToPlayMovie)
                 PlayUIMovieQ();
 
             break;
 
         case FM_REPLAY_UI_MOVIE:
-            if (gMainHandler && ReadyToPlayMovie)
+            if (gMainHandler and ReadyToPlayMovie)
                 ReplayUIMovie(lParam);
 
             break;
 
         case FM_REMOTE_LOGBOOK:
-            if (gMainHandler && gCommsMgr)
+            if (gMainHandler and gCommsMgr)
                 ViewRemoteLogbook(lParam);
 
             break;

@@ -134,10 +134,10 @@ _say_error(int error, const char * msg, int line, const char * filename);
 
 #ifdef SFX
 #  define UNKN_COMPR \
-    (crec.compression_method not_eq STORED && crec.compression_method not_eq DEFLATED)
+    (crec.compression_method not_eq STORED and crec.compression_method not_eq DEFLATED)
 #else
 #  define UNKN_COMPR \
-    (crec.compression_method>IMPLODED && crec.compression_method not_eq DEFLATED)
+    (crec.compression_method>IMPLODED and crec.compression_method not_eq DEFLATED)
 #endif
 
 
@@ -539,7 +539,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
         path[ path_idx + 1 ] = '\0';
         path[ path_idx + 2 ] = '\0';
 
-        if (path_idx && strcmp(path, path_was))      /* new directory! */
+        if (path_idx and strcmp(path, path_was))      /* new directory! */
         {
             strcpy(path_was, path);
 
@@ -1246,7 +1246,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
             {
                 //                if((native(*((int*)arc -> tmp_in_ptr)) == 'P') &&
                 //                    !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))  /* GFG 31/01/98
-                if (((*(char*)(arc -> tmp_in_ptr)) == 'P') && !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
+                if (((*(char*)(arc -> tmp_in_ptr)) == 'P') and !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
 
                 {
                     arc -> tmp_in_count -= (int)arc -> tmp_in_ptr - (int)arc -> tmp_in_buffer;
@@ -1276,7 +1276,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
                  arc -> tmp_in_ptr = arc -> tmp_in_ptr - 1
                 )
             {
-                if (((*(char*)(arc -> tmp_in_ptr)) == 'P') && !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
+                if (((*(char*)(arc -> tmp_in_ptr)) == 'P') and !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
                 {
                     arc -> tmp_in_count -= (int)arc -> tmp_in_ptr - (int)arc -> tmp_in_buffer;
                     found = TRUE;
@@ -1301,7 +1301,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
 
         /*   ==amount=   ==done==   ==rounding==    =blksiz=  */
 
-        for (i = 1;  !found && (i <= numblks);  ++i)
+        for (i = 1;  !found and (i <= numblks);  ++i)
         {
             arc -> start_buffer -= arc -> tmp_in_size;
             lseek(arc -> os_handle, arc -> start_buffer, SEEK_SET);
@@ -1314,7 +1314,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
                  arc -> tmp_in_ptr = arc -> tmp_in_ptr - 1
                 )
             {
-                if ((*(char *)arc -> tmp_in_ptr == 'P')  && !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
+                if ((*(char *)arc -> tmp_in_ptr == 'P')  and !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
                 {
                     arc -> tmp_in_count -= ((int)arc -> tmp_in_ptr - (int)arc -> tmp_in_buffer);
                     found = TRUE;
@@ -1341,7 +1341,7 @@ fail:
 #ifdef MSWIN
         MessageBeep(1);
 #endif
-        //  if (qflag or (zipinfo_mode && !hflag))
+        //  if (qflag or (zipinfo_mode and !hflag))
         //        fprintf(stderr, "[%s]\n", zipfn);
         //  fprintf(stderr, "\
         //    End-of-central-directory signature not found.  Either this file is not\n\

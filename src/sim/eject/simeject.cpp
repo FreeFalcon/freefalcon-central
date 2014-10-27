@@ -354,7 +354,7 @@ void EjectedPilotClass::InitLocalData(AircraftClass *ac, int mode, int no)
     SetTypeFlag(FalconEntity::FalconSimEntity);
 
     // Is it ourselves - Find out from the aircraft.
-    if (ac && no == 0)
+    if (ac and no == 0)
     {
         _isPlayer = (SimDriver.GetPlayerEntity() == ac) ? TRUE : FALSE;
     }
@@ -589,7 +589,7 @@ int EjectedPilotClass::Exec()
             else if (prevframe > NUM_FRAMES)
                 prevframe = NUM_FRAMES;
 
-            if (gACMIRec.IsRecording() && prevframe not_eq frame)
+            if (gACMIRec.IsRecording() and prevframe not_eq frame)
             {
                 acmiSwitch.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
                 acmiSwitch.data.type = Type();
@@ -677,7 +677,7 @@ int EjectedPilotClass::Exec()
     SetYPR(_rot[I_YAW], _rot[I_PITCH], _rot[I_ROLL]);
     SetYPRDelta(_aVel[I_YAW], _aVel[I_PITCH], _aVel[I_ROLL]);
 
-    if (gACMIRec.IsRecording() && (SimLibFrameCount & 3) == 0)
+    if (gACMIRec.IsRecording() and (SimLibFrameCount & 3) == 0)
     {
         genPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
         genPos.data.type = Type();
@@ -1042,7 +1042,7 @@ void EjectedPilotClass::AdvanceTime()
     _runTime += _deltaTime;
 
     // Advance stage if necessary.
-    if (!_hitGround && _collapseChute && _stage not_eq PD_FREE_FALL_WITH_COLLAPSED_CHUTE)
+    if (!_hitGround and _collapseChute and _stage not_eq PD_FREE_FALL_WITH_COLLAPSED_CHUTE)
     {
         SetStage(PD_FREE_FALL_WITH_COLLAPSED_CHUTE);
         InitFreeFallWithCollapsedChute();
@@ -1067,7 +1067,7 @@ void EjectedPilotClass::AdvanceTime()
     }
     else
     {
-        while (_stage < PD_FREE_FALL_WITH_OPEN_CHUTE && _runTime >= StageEndTime())
+        while (_stage < PD_FREE_FALL_WITH_OPEN_CHUTE and _runTime >= StageEndTime())
         {
             switch (AdvanceStage())
             {
@@ -1168,7 +1168,7 @@ void EjectedPilotClass::SetModel(int model)
     F4Assert(drawPointer not_eq NULL);
 
     // Set the label.
-    if (drawPointer && strlen(_label) > 0)
+    if (drawPointer and strlen(_label) > 0)
     {
         drawPointer->SetLabel(_label, _labelColor);
         OTWDriver.InsertObject(drawPointer);
@@ -1198,7 +1198,7 @@ void EjectedPilotClass::InitJettisonCanopy()
         // deleted and a new one created in its place in the SetModel() call...
         SetModel(MD_PILOT_AND_SEAT);
 
-        if (IsPlayerPilot() && session == FalconLocalSession)
+        if (IsPlayerPilot() and session == FalconLocalSession)
         {
             // The sim driver now needs to know that the ejected pilot is the player entity.
             // KCK: We unfortunately need to do this outside of our exec loop, since it will

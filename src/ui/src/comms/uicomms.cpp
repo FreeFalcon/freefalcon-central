@@ -125,7 +125,7 @@ void UIComms::SetStatsFile(char *filename)
     GameStats_->SetName(filename);
     GameStats_->LoadStats();
 
-    if (FalconLocalGame && (FalconLocalGame->GetGameType() == game_Campaign or FalconLocalGame->GetGameType() == game_TacticalEngagement))
+    if (FalconLocalGame and (FalconLocalGame->GetGameType() == game_Campaign or FalconLocalGame->GetGameType() == game_TacticalEngagement))
     {
         LoadStats();
     }

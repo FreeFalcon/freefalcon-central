@@ -136,7 +136,7 @@ GunClass::GetDamageAssessment(SimBaseClass *target, float range)
         }
     }
 
-    if (gunDomain == wdGround && target->OnGround())
+    if (gunDomain == wdGround and target->OnGround())
     {
         if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
             return 0.1f + PRANDFloatPos();
@@ -144,7 +144,7 @@ GunClass::GetDamageAssessment(SimBaseClass *target, float range)
             return 0.3f + PRANDFloatPos();
     }
 
-    if (gunDomain == wdAir && !target->OnGround())
+    if (gunDomain == wdAir and !target->OnGround())
     {
         if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
         {
@@ -189,7 +189,7 @@ GunClass::FireShell(SimObjectType *newTarget)
         return;
 
     // cannot set a new target if shell is flying
-    if (shellTargetPtr && newTarget)
+    if (shellTargetPtr and newTarget)
         return;
 
     // are we nulling out our target
@@ -281,7 +281,7 @@ GunClass::UpdateShell(void)
             rangeSquare *= 40.0f * rand() / 32767.0f * (float)sqrt(shellTargetPtr->localData->range * ((SimMoverClass *)shellTargetPtr->BaseData())->GetKias() / g_fBiasFactorForFlaks);
 
             // 2002-03-12 ADDED BY S.G. Use the ground troop skill if requested
-            if (g_bUseSkillForFlaks && parent && parent->IsGroundVehicle())
+            if (g_bUseSkillForFlaks and parent and parent->IsGroundVehicle())
             {
                 GroundClass *gc = static_cast<GroundClass*>(parent.get());
                 rangeSquare *= static_cast<float>(

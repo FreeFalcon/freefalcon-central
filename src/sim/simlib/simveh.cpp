@@ -164,7 +164,7 @@ void SimVehicleClass::Init(SimInitDataClass* initData)
 
         // Note, until there is a vehicle definition for radar vehicles
         // do it as a special case here and below.
-        if (IsGroundVehicle() && GetRadarType() not_eq RDR_NO_RADAR)
+        if (IsGroundVehicle() and GetRadarType() not_eq RDR_NO_RADAR)
         {
             sensorArray = new SensorClass*[numSensors + 1];
         }
@@ -173,7 +173,7 @@ void SimVehicleClass::Init(SimInitDataClass* initData)
             sensorArray = new SensorClass*[numSensors];
         }
 
-        for (i = 0; i < numSensors && mvrDefinition && mvrDefinition->sensorData; i++)
+        for (i = 0; i < numSensors and mvrDefinition and mvrDefinition->sensorData; i++)
         {
             switch (mvrDefinition->sensorData[i * 2])
             {
@@ -201,7 +201,7 @@ void SimVehicleClass::Init(SimInitDataClass* initData)
 
         // Note, until there is a vehicle definition for radar vehicles
         // do it as a special case here and above.
-        if (IsGroundVehicle() && GetRadarType() not_eq RDR_NO_RADAR)
+        if (IsGroundVehicle() and GetRadarType() not_eq RDR_NO_RADAR)
         {
             numSensors ++;
             sensorArray[i] = new RadarDigiClass(GetRadarType(), this);
@@ -387,7 +387,7 @@ int SimVehicleClass::Exec(void)
     if (ioPerturb > 0.0f)
     {
         // JB 010730
-        if (ioPerturb > 0.5f && g_bDisableFunkyChicken && (rand() & 63) == 63)
+        if (ioPerturb > 0.5f and g_bDisableFunkyChicken and (rand() & 63) == 63)
         {
             float randamt  =   PRANDFloatPos();
 
@@ -417,7 +417,7 @@ int SimVehicleClass::Exec(void)
     // bleed off strength when below 0.  This will allow time for
     // other effects (fire trails, ejection, etc...).  When we've reached
     // an absolute min, explode
-    if (pctStrength <= 0.0f && !IsExploding())
+    if (pctStrength <= 0.0f and !IsExploding())
     {
         // debug non local
         /*
@@ -435,7 +435,7 @@ int SimVehicleClass::Exec(void)
 
         // RV - I-Hawk - if we are at DOMAIN_AIR, dying SFX is handled at AircraftClass or
         // HelicopterClass Exec functions
-        if (gSfxLOD >= 0.5f && GetDomain() == DOMAIN_AIR)
+        if (gSfxLOD >= 0.5f and GetDomain() == DOMAIN_AIR)
         {
         }
 
@@ -848,9 +848,9 @@ int SimVehicleClass::Exec(void)
         //    {
         //
         //    if ( pctStrength > -0.6f ||
-        //    pctStrength > -0.7f && pctStrength < -0.65 ||
-        //    pctStrength > -0.8f && pctStrength < -0.75 ||
-        //    pctStrength > -0.9f && pctStrength < -0.85 )
+        //    pctStrength > -0.7f and pctStrength < -0.65 ||
+        //    pctStrength > -0.8f and pctStrength < -0.75 ||
+        //    pctStrength > -0.9f and pctStrength < -0.85 )
         //    {
         //    float randamt  =   PRANDFloatPos();
         //
@@ -946,7 +946,7 @@ int SimVehicleClass::Exec(void)
         {
             dyingTimer += SimLibMajorFrameTime;
 
-            if (dyingTimer > 2.5f && rand() & 0x03)
+            if (dyingTimer > 2.5f and rand() & 0x03)
             {
                 dyingTimer = 0.0f;
                 pos.x = XPos();
@@ -1019,7 +1019,7 @@ int SimVehicleClass::Exec(void)
         // Have a look how AC behave when on ground
         if (pctStrength <= -1.0f /*|| OnGround()*/)
         {
-            if (GetDomain() == DOMAIN_LAND && GetType() not_eq TYPE_FOOT)
+            if (GetDomain() == DOMAIN_LAND and GetType() not_eq TYPE_FOOT)
             {
                 dyingTimer = 0.0f;
                 pos.x = XPos();
@@ -1158,7 +1158,7 @@ void SimVehicleClass::SOIManager(SOI newSOI)
         weapon = Sms->GetCurrentWeapon();
     }
 
-    if (weapon && weapon->IsMissile())
+    if (weapon and weapon->IsMissile())
     {
         MissileClass* theMissile = static_cast<MissileClass*>(weapon);
         int dType = theMissile->GetDisplayType();
@@ -1183,7 +1183,7 @@ void SimVehicleClass::SOIManager(SOI newSOI)
             if (theRadar)
                 theRadar->SetSOI(FALSE);
 
-            if (TheHud && this == SimDriver.GetPlayerEntity())//Cobra test
+            if (TheHud and this == SimDriver.GetPlayerEntity())//Cobra test
                 TheHud->SetSOI(TRUE);
 
             if (mslDisplay)
@@ -1198,7 +1198,7 @@ void SimVehicleClass::SOIManager(SOI newSOI)
             break;
 
         case SOI_RADAR:
-            if (TheHud && this == SimDriver.GetPlayerEntity())//Cobra test
+            if (TheHud and this == SimDriver.GetPlayerEntity())//Cobra test
                 TheHud->SetSOI(FALSE);
 
             if (theRadar)
@@ -1219,7 +1219,7 @@ void SimVehicleClass::SOIManager(SOI newSOI)
             if (theRadar)
                 theRadar->SetSOI(FALSE);
 
-            if (TheHud && this == SimDriver.GetPlayerEntity())//Cobra test // JB/JPO 010614 CTD
+            if (TheHud and this == SimDriver.GetPlayerEntity())//Cobra test // JB/JPO 010614 CTD
                 TheHud->SetSOI(FALSE);
 
             if (mslDisplay)
@@ -1245,7 +1245,7 @@ void SimVehicleClass::SOIManager(SOI newSOI)
             if (tPodDisplay)
                 tPodDisplay->SetSOI(FALSE);
 
-            if (TheHud && this == SimDriver.GetPlayerEntity())//Test // JB/JPO 010614 CTD
+            if (TheHud and this == SimDriver.GetPlayerEntity())//Test // JB/JPO 010614 CTD
                 TheHud->SetSOI(FALSE);
 
             if (FCC)
@@ -1278,7 +1278,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
     PSvec.z = 0;
 
     // RV - Biker - No more kamikaze on carriers allowed
-    if (GetDomain() == DOMAIN_SEA && GetType() == TYPE_CAPITAL_SHIP && damageMessage->dataBlock.damageType == FalconDamageType::ObjectCollisionDamage)
+    if (GetDomain() == DOMAIN_SEA and GetType() == TYPE_CAPITAL_SHIP and damageMessage->dataBlock.damageType == FalconDamageType::ObjectCollisionDamage)
     {
         return;
     }
@@ -1489,7 +1489,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
     // If this is our own aircraft and if we have disabled the damage jitter or a 25% chance
     // Or otherwise a 13% chance (AI controlled aircraft won't be able to fly with a bias so we want the % to be low)
     if (hitPoints > 0 &&
-        ((IsSetFlag(MOTION_OWNSHIP) && (g_bDisableFunkyChicken or (rand() & 0x3) == 0x3)) ||
+        ((IsSetFlag(MOTION_OWNSHIP) and (g_bDisableFunkyChicken or (rand() & 0x3) == 0x3)) ||
          (rand() & 0x7) == 0x7))
     {
         rBias += ioPerturb / 2 * PRANDFloat();
@@ -1498,14 +1498,14 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
     }
 
     // JB 010121 adjusted to work in MP
-    if (g_bNewDamageEffects && IsSetFlag(MOTION_OWNSHIP) && // hitPoints > 0 && 2002-04-11 REMOVED BY S.G. Done below after ->af since it's now externalized
-        // SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity()->AutopilotType() not_eq AircraftClass::CombatAP &&
-        // !(gCommsMgr && gCommsMgr->Online()) &&
+    if (g_bNewDamageEffects and IsSetFlag(MOTION_OWNSHIP) and // hitPoints > 0 and 2002-04-11 REMOVED BY S.G. Done below after ->af since it's now externalized
+        // SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity()->AutopilotType() not_eq AircraftClass::CombatAP &&
+        // !(gCommsMgr and gCommsMgr->Online()) &&
         IsAirplane() &&
-        // (rand() & 0x7) == 0x7 && // 13% chance 2002-04-11 MOVED BY S.G. After the ->af and used the external var now
+        // (rand() & 0x7) == 0x7 and // 13% chance 2002-04-11 MOVED BY S.G. After the ->af and used the external var now
         ((AircraftClass*)this)->af &&
-        ((AircraftClass*)this)->af->GetEngineDamageHitThreshold() < hitPoints && // 2002-04-11 ADDED BY S.G. hitPoints 'theshold' is no longer 1 or above but externalized
-        ((AircraftClass*)this)->af->GetEngineDamageStopThreshold() > rand() % 100 && // 2002-04-11 ADDED BY S.G. instead of a fixed 13%, now uses an aiframe aux var
+        ((AircraftClass*)this)->af->GetEngineDamageHitThreshold() < hitPoints and // 2002-04-11 ADDED BY S.G. hitPoints 'theshold' is no longer 1 or above but externalized
+        ((AircraftClass*)this)->af->GetEngineDamageStopThreshold() > rand() % 100 and // 2002-04-11 ADDED BY S.G. instead of a fixed 13%, now uses an aiframe aux var
         ((AircraftClass*)this)->AutopilotType() not_eq AircraftClass::CombatAP
        )
     {
@@ -1531,7 +1531,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
         SoundPos.Sfx(soundIdx, 0, 1, 0);
 
     // send out death message if strength below zero
-    if (pctStrength <= 0.0F && dyingTimer < 0.0F)
+    if (pctStrength <= 0.0F and dyingTimer < 0.0F)
     {
         // ground vehicles die immediately
         if (IsGroundVehicle())
@@ -1552,7 +1552,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
             lastToHit = (SimVehicleClass*)vuDatabase->Find(LastShooter());
 
-            if (lastToHit && !lastToHit->IsEject() && lastToHit->Id() not_eq damageMessage->dataBlock.fEntityID)
+            if (lastToHit and !lastToHit->IsEject() and lastToHit->Id() not_eq damageMessage->dataBlock.fEntityID)
             {
                 deathMessage->dataBlock.fEntityID = lastToHit->Id();
                 deathMessage->dataBlock.fIndex = lastToHit->Type();
@@ -1627,7 +1627,7 @@ void SimVehicleClass::SendFireMessage(SimWeaponClass* curWeapon, int type, int s
 
     // For rockets, get the pod id instead of the weapon ID
     // JB 010104 Marco Edit
-    //if (IsAirplane() && type == FalconWeaponsFire::Rocket)
+    //if (IsAirplane() and type == FalconWeaponsFire::Rocket)
     //   fireMsg->dataBlock.fWeaponID = static_cast<ushort>(((AircraftClass*)this)->Sms->hardPoint[((AircraftClass*)this)->Sms->CurHardpoint()]->GetRackId());
     //else
     // JB 010104 Marco Edit
@@ -1806,7 +1806,7 @@ void SimVehicleClass::StepSOI(int dir)
 
 
 
-    if (theMissile && theMissile->IsMissile())
+    if (theMissile and theMissile->IsMissile())
     {
         if (theMissile->GetDisplayType() == MissileClass::DisplayBW ||
             theMissile->GetDisplayType() == MissileClass::DisplayIR ||
@@ -1858,7 +1858,7 @@ void SimVehicleClass::StepSOI(int dir)
                 //if we are in AG MasterMode, there's not many possibilities
                 if (FCC->IsAGMasterMode())
                 {
-                    if (FCC->GetSubMode() not_eq FireControlComputer::CCIP && FCC->GetSubMode() not_eq FireControlComputer::DTOSS)
+                    if (FCC->GetSubMode() not_eq FireControlComputer::CCIP and FCC->GetSubMode() not_eq FireControlComputer::DTOSS)
                     {
                         SOIManager(SOI_RADAR);
                     }
@@ -1875,7 +1875,7 @@ void SimVehicleClass::StepSOI(int dir)
                 //No, currently not SOI. If we have the HSD visible, we're going to set it there
                 if (FCC->CouldBeSOI)
                     SOIManager(SOI_FCC);
-                else if ((mslDisplay && !mslDisplay->IsSOI()) or (tPodDisplay && !tPodDisplay->IsSOI()))
+                else if ((mslDisplay and !mslDisplay->IsSOI()) or (tPodDisplay and !tPodDisplay->IsSOI()))
                     SOIManager(SOI_WEAPON);
                 else
                     SOIManager(SOI_RADAR);

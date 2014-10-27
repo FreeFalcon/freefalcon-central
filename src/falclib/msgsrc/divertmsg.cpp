@@ -94,10 +94,10 @@ int FalconDivertMessage::Process(uchar autodisp)
         // Check for target viability
         target = (CampEntity)vuDatabase->Find(dataBlock.targetID);
 
-        if (target && target->IsUnit() && ((Unit)target)->Father())
+        if (target and target->IsUnit() and ((Unit)target)->Father())
             target = ((Unit)target)->GetFirstUnitElement();
 
-        if ((!target or (target->IsUnit() && ((UnitClass*)target)->IsDead())) && dataBlock.mission > 0)
+        if ((!target or (target->IsUnit() and ((UnitClass*)target)->IsDead())) and dataBlock.mission > 0)
             return 0;
 
         // Set with new element's ID
@@ -107,7 +107,7 @@ int FalconDivertMessage::Process(uchar autodisp)
         PlayDivertRadioCalls(target, dataBlock.mission, flight, 0);
 
         // Return receipt
-        if (flight->IsLocal() && (dataBlock.flags & REQF_NEEDRESPONSE))
+        if (flight->IsLocal() and (dataBlock.flags & REQF_NEEDRESPONSE))
         {
             CampEntity e = (CampEntity) vuDatabase->Find(dataBlock.requesterID);
 
@@ -117,7 +117,7 @@ int FalconDivertMessage::Process(uchar autodisp)
 
         // KCK: This is kinda hackish - Basically, for player leads, keep reposting this message
         // (every few seconds) until the player replies.
-        if (flight->GetComponentLead() == FalconLocalSession->GetPlayerEntity() && flight == FalconLocalSession->GetPlayerFlight())
+        if (flight->GetComponentLead() == FalconLocalSession->GetPlayerEntity() and flight == FalconLocalSession->GetPlayerFlight())
         {
             // Trying to track down a potential bug here.. It's hard enough to
             // get diverts I figure I'll let QA do the testing..
@@ -162,7 +162,7 @@ int CheckDivertStatus(int reply)
         // Check for target viability
         target = (CampEntity)vuDatabase->Find(sLastDivert.dataBlock.targetID);
 
-        if (!target or (target->IsUnit() && (((Unit)target)->IsDead() or ((Unit)target)->Broken())))
+        if (!target or (target->IsUnit() and (((Unit)target)->IsDead() or ((Unit)target)->Broken())))
             return 0;
 
         if (flight not_eq FalconLocalSession->GetPlayerFlight())
@@ -232,7 +232,7 @@ void ApplyDivert(Flight flight, FalconDivertMessage *fdm)
 
     // Generate a scramble message dialog box if this is an intercept divert on one of the
     // player squadron's alert missions.
-    if (doUI && oldmission == AMIS_ALERT && fdm->dataBlock.mission == AMIS_INTERCEPT && flight->GetUnitSquadronID() == FalconLocalSession->GetPlayerSquadronID())
+    if (doUI and oldmission == AMIS_ALERT and fdm->dataBlock.mission == AMIS_INTERCEPT and flight->GetUnitSquadronID() == FalconLocalSession->GetPlayerSquadronID())
     {
         gInterceptersId = flight->Id();
         PostMessage(FalconDisplay.appWin, FM_ATTACK_WARNING, 0, 0);
@@ -340,7 +340,7 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
     {
         msg = CreateCallFromAwacs(flight, rcATTACKMYTARGET, to);
 
-        if (target->IsUnit() && ((Unit)target)->GetUnitFormation() == GFORM_COLUMN)
+        if (target->IsUnit() and ((Unit)target)->GetUnitFormation() == GFORM_COLUMN)
             msg->dataBlock.edata[4] = (short)((target->Type() - VU_LAST_ENTITY_TYPE) * 6 + 1); // "X column"
         else
             msg->dataBlock.edata[4] = (short)((target->Type() - VU_LAST_ENTITY_TYPE) * 6 + 2); // "X unit"
@@ -371,7 +371,7 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
     }
 
     // This is the flight saying that they're diverting (should be delayed a little..)
-    if (SimDriver.GetPlayerEntity() && flight->GetComponentLead() not_eq SimDriver.GetPlayerEntity())
+    if (SimDriver.GetPlayerEntity() and flight->GetComponentLead() not_eq SimDriver.GetPlayerEntity())
     {
         msg = CreateCallToAWACS(flight, rcAWACSDIVERT, to);
         msg->dataBlock.edata[0] = msg->dataBlock.edata[2];

@@ -47,7 +47,7 @@ BasicWeaponStation::~BasicWeaponStation()
 
 GunClass* BasicWeaponStation::GetGun(void)
 {
-    if (weaponPointer && weaponPointer->IsGun())
+    if (weaponPointer and weaponPointer->IsGun())
         return (GunClass*) weaponPointer.get();
     else
         return NULL;
@@ -95,7 +95,7 @@ AdvancedWeaponStation::~AdvancedWeaponStation(void)
 void AdvancedWeaponStation::Cleanup(void)
 {
     // 2002-03-26 MN CTD fix, only delete when we used "new" below
-    if (xSub not_eq &xPos && numPoints not_eq 1)
+    if (xSub not_eq &xPos and numPoints not_eq 1)
     {
         if (xSub)
             delete [] xSub;
@@ -159,7 +159,7 @@ DrawableBSP* AdvancedWeaponStation::GetTopDrawable(void)
     if (theRack)
         return theRack;
 
-    if (weaponPointer && weaponPointer->drawPointer)
+    if (weaponPointer and weaponPointer->drawPointer)
         return (DrawableBSP *)weaponPointer->drawPointer;
 
     return NULL;
@@ -194,7 +194,7 @@ void AdvancedWeaponStation::SetParentDrawPtr(DrawableBSP* Parent)
     ShiAssert(hpId > 0);
     theParent = Parent;
 
-    if (theParent && hpId > 0)
+    if (theParent and hpId > 0)
     {
         Tpoint hpPos = {0, 0, 0};
 
@@ -247,7 +247,7 @@ void AdvancedWeaponStation::AttachPylonBSP(void)
     }
 
 
-    if (theParent && thePylon)
+    if (theParent and thePylon)
     {
         theParent->AttachChild(thePylon, hpId - 1); // for UI compatibility
     }
@@ -341,7 +341,7 @@ DrawableBSP *AdvancedWeaponStation::DetachPylonBSP(void)
     if (!thePylon)
         return NULL;
 
-    if (theParent && thePylon)
+    if (theParent and thePylon)
     {
         theParent->DetachChild(thePylon, hpId - 1);
 
@@ -519,7 +519,7 @@ void BasicWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
             weapBSP->SetSwitchMask(0, 1);
     }
 
-    if (weapBSP && theParent)
+    if (weapBSP and theParent)
     {
         theParent->AttachChild(weapBSP, hpId - 1);
     }
@@ -922,7 +922,7 @@ int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int Weap
         int rack = FindBestRackIDByPlaneAndWeapon(HPGroup, WeaponDataTable[weaponId].SimweapIndex, WeaponCount);
         ShiAssert(rack < MaxRackObjects); // -1 means nothing defined currently fallback to old scheme
 
-        if (rack > 0 && rack < MaxRackObjects)
+        if (rack > 0 and rack < MaxRackObjects)
         {
             RackObject *rackp = &RackObjectTable[rack];
             SetupPoints(rackp->maxoccupancy);
@@ -941,7 +941,7 @@ int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int Weap
     }
 
     // fallback
-    // Find the proper rack id && max points
+    // Find the proper rack id and max points
 
     if (GetWeaponClass() == wcRocketWpn)
     {
@@ -961,7 +961,7 @@ int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int Weap
             SetRackId(gRackId_Single_Rack);
         }
     }
-    else if (WeaponCount <= 2 && GetWeaponClass() == wcAimWpn)
+    else if (WeaponCount <= 2 and GetWeaponClass() == wcAimWpn)
     {
         SetupPoints(2);
         SetRackId(gRackId_Two_Rack);

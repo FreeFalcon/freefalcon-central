@@ -449,7 +449,7 @@ BOOL Texture::LoadAndCreate(char *filename, DWORD newFlags)
 // Release the MPR palette and palette data we're holding.
 void Texture::FreePalette()
 {
-    if ((palette not_eq NULL) && (palette->Release() == 0))
+    if ((palette not_eq NULL) and (palette->Release() == 0))
     {
         // sfr: added palette check and corectedx the > to >=
         if (
@@ -546,7 +546,7 @@ TextureHandle::~TextureHandle()
         }
     }
 
-    if (m_pImageData && m_bImageDataOwned)
+    if (m_pImageData and m_bImageDataOwned)
     {
         DWORD dwSize = m_nImageDataStride * m_nHeight;
         /* InterlockedExchangeAdd((long *)&m_dwTotalBytes,-dwSize);
@@ -556,13 +556,13 @@ TextureHandle::~TextureHandle()
 #endif
 
     // JB 010318 CTD
-    if (m_pDDS && !F4IsBadReadPtr(m_pDDS, sizeof(IDirectDrawSurface7))) m_pDDS->Release();
+    if (m_pDDS and !F4IsBadReadPtr(m_pDDS, sizeof(IDirectDrawSurface7))) m_pDDS->Release();
 
     m_pDDS = NULL;
 
     if (m_pPalAttach) m_pPalAttach->DetachFromTexture(this);
 
-    if (m_pImageData && m_bImageDataOwned) delete[] m_pImageData;
+    if (m_pImageData and m_bImageDataOwned) delete[] m_pImageData;
 }
 
 bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width, UInt16 height, DWORD dwFlags)
@@ -629,7 +629,7 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
         }
 
         // Force square
-        if (ddsd.dwWidth not_eq ddsd.dwHeight && (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_SQUAREONLY))
+        if (ddsd.dwWidth not_eq ddsd.dwHeight and (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_SQUAREONLY))
         {
             ddsd.dwWidth = ddsd.dwHeight = max(ddsd.dwWidth, ddsd.dwHeight);
         }
@@ -640,7 +640,7 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
             dwFlags  or_eq  FLAG_NOTMANAGED | FLAG_MATCHPRIMARY;
 
             // HW devices cannot render to system memory surfaces
-            if (rc && (rc->m_eDeviceCategory >= DXContext::D3DDeviceCategory_Hardware))
+            if (rc and (rc->m_eDeviceCategory >= DXContext::D3DDeviceCategory_Hardware))
             {
                 dwFlags  or_eq  FLAG_INLOCALVIDMEM;
             }
@@ -649,7 +649,7 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
         }
 
         // Turn on texture management for HW devices
-        if (rc && (rc->m_eDeviceCategory >= DXContext::D3DDeviceCategory_Hardware))
+        if (rc and (rc->m_eDeviceCategory >= DXContext::D3DDeviceCategory_Hardware))
         {
             if (!(dwFlags & FLAG_NOTMANAGED))
             {
@@ -770,7 +770,7 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
         {
             case D3DX_SF_PALETTE8:
             {
-                if (m_pDDS && m_pPalAttach)
+                if (m_pDDS and m_pPalAttach)
                     m_pDDS->SetPalette(m_pPalAttach->m_pIDDP);
 
                 break;
@@ -875,12 +875,12 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
 
     m_nImageDataStride = nImageDataStride not_eq -1 ? nImageDataStride : m_nWidth;
 
-    if ((m_dwFlags & MPR_TI_PALETTE) && m_eSurfFmt not_eq D3DX_SF_PALETTE8)
+    if ((m_dwFlags & MPR_TI_PALETTE) and m_eSurfFmt not_eq D3DX_SF_PALETTE8)
     {
         DWORD dwSize = m_nImageDataStride * m_nHeight;
 
         // Free previously allocated surface memory copy
-        if (m_pImageData && m_bImageDataOwned)
+        if (m_pImageData and m_bImageDataOwned)
         {
 #ifdef _DEBUG
             //InterlockedExchangeAdd((long *)&m_dwTotalBytes,-dwSize);
@@ -921,7 +921,7 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
             if (!Reload())
             {
                 // If loading failed free memory
-                if (m_pImageData && m_bImageDataOwned) delete[] m_pImageData;
+                if (m_pImageData and m_bImageDataOwned) delete[] m_pImageData;
 
                 m_pImageData = NULL;
                 m_bImageDataOwned = false;
@@ -935,7 +935,7 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
     else
     {
         // Free previously allocated surface memory copy
-        if (m_pImageData && m_bImageDataOwned)
+        if (m_pImageData and m_bImageDataOwned)
         {
 #ifdef _DEBUG
             InterlockedExchangeAdd((long *)&m_dwTotalBytes, -(m_nImageDataStride * m_nHeight));
@@ -1050,7 +1050,7 @@ bool TextureHandle::Reload()
         }
 
         // Can be larger but not smaller
-        ShiAssert(m_nWidth <= (int) ddsd.dwWidth && m_nHeight <= (int) ddsd.dwHeight);
+        ShiAssert(m_nWidth <= (int) ddsd.dwWidth and m_nHeight <= (int) ddsd.dwHeight);
 
         // Reloading is a different story - because this is called VERY frequently we have to be very fast with whatever we are doing here
 
@@ -1076,7 +1076,7 @@ bool TextureHandle::Reload()
                     DWORD dwPitch = ddsd.lPitch;
 
                     // If source and destination pitch match, use single loop
-                    if (dwPitch == m_nWidth && m_nImageDataStride == m_nWidth)
+                    if (dwPitch == m_nWidth and m_nImageDataStride == m_nWidth)
                         memcpy(pDst, pSrc, m_nWidth * m_nHeight);
                     else
                     {
@@ -1116,7 +1116,7 @@ bool TextureHandle::Reload()
                     DWORD *pDst = (DWORD *) ddsd.lpSurface;
                     DWORD dwPitch = ddsd.lPitch >> 2;
 
-                    if (dwPitch == m_nWidth && m_nImageDataStride == m_nWidth)
+                    if (dwPitch == m_nWidth and m_nImageDataStride == m_nWidth)
                     {
                         DWORD dwSize = m_nWidth * m_nHeight;
 
@@ -1167,7 +1167,7 @@ bool TextureHandle::Reload()
 
                     DWORD dwPitch = ddsd.lPitch >> 1;
 
-                    if (dwPitch == m_nWidth && m_nImageDataStride == m_nWidth)
+                    if (dwPitch == m_nWidth and m_nImageDataStride == m_nWidth)
                     {
                         // If source and destination pitch match, use single loop
                         DWORD dwSize = m_nWidth * m_nHeight;
@@ -1213,7 +1213,7 @@ bool TextureHandle::Reload()
                     WORD *pDst = (WORD *)ddsd.lpSurface;
                     DWORD dwPitch = ddsd.lPitch >> 1;
 
-                    if (dwPitch == m_nWidth && m_nImageDataStride == m_nWidth)
+                    if (dwPitch == m_nWidth and m_nImageDataStride == m_nWidth)
                     {
                         // If source and destination pitch match, use single loop
                         DWORD dwSize = m_nWidth * m_nHeight;
@@ -1256,7 +1256,7 @@ bool TextureHandle::Reload()
                     WORD *pDst = (WORD *)ddsd.lpSurface;
                     DWORD dwPitch = ddsd.lPitch >> 1;
 
-                    if (dwPitch == m_nWidth && m_nImageDataStride == m_nWidth)
+                    if (dwPitch == m_nWidth and m_nImageDataStride == m_nWidth)
                     {
                         // If source and destination pitch match, use single loop
                         DWORD dwSize = m_nWidth * m_nHeight;
@@ -1299,7 +1299,7 @@ bool TextureHandle::Reload()
                     WORD *pDst = (WORD *)ddsd.lpSurface;
                     DWORD dwPitch = ddsd.lPitch >> 1;
 
-                    if (dwPitch == m_nWidth && m_nImageDataStride == m_nWidth)
+                    if (dwPitch == m_nWidth and m_nImageDataStride == m_nWidth)
                     {
                         // If source and destination pitch match, use single loop
                         DWORD dwSize = m_nWidth * m_nHeight;
@@ -1355,7 +1355,7 @@ bool TextureHandle::Reload()
 
 void TextureHandle::RestoreAll()
 {
-    if (m_pDDS && m_pDDS->IsLost() == DDERR_SURFACELOST)
+    if (m_pDDS and m_pDDS->IsLost() == DDERR_SURFACELOST)
     {
         HRESULT hr = m_pDDS->Restore();
 
@@ -1389,7 +1389,7 @@ void TextureHandle::Clear()
         CheckHR(m_pDDS->Lock(NULL, &ddsd, DDLOCK_WAIT | DDLOCK_WRITEONLY | DDLOCK_SURFACEMEMORYPTR, NULL));
 
         // Can be larger but not smaller
-        ShiAssert(m_nWidth <= (int) ddsd.dwWidth && m_nHeight <= (int) ddsd.dwHeight);
+        ShiAssert(m_nWidth <= (int) ddsd.dwWidth and m_nHeight <= (int) ddsd.dwHeight);
 
         if (ddsd.lPitch == ddsd.dwWidth)
         {
@@ -1439,7 +1439,7 @@ bool TextureHandle::SetPriority(DWORD dwPrio)
 
 void TextureHandle::PreLoad()
 {
-    if (m_pDDS && m_pD3DD)
+    if (m_pDDS and m_pD3DD)
     {
         m_pD3DD->PreLoad(m_pDDS);
     }
@@ -1590,12 +1590,12 @@ HRESULT CALLBACK TextureHandle::TextureSearchCallback(DDPIXELFORMAT* pddpf, VOID
     }
 
     // Make sure current alpha format agrees with requested format type
-    if ((ptsi->dwDesiredAlphaBPP) && !(pddpf->dwFlags & DDPF_ALPHAPIXELS) or wAlphaBits < ptsi->dwDesiredAlphaBPP)
+    if ((ptsi->dwDesiredAlphaBPP) and !(pddpf->dwFlags & DDPF_ALPHAPIXELS) or wAlphaBits < ptsi->dwDesiredAlphaBPP)
     {
         return DDENUMRET_OK;
     }
 
-    if ((!ptsi->dwDesiredAlphaBPP) && (pddpf->dwFlags & DDPF_ALPHAPIXELS))
+    if ((!ptsi->dwDesiredAlphaBPP) and (pddpf->dwFlags & DDPF_ALPHAPIXELS))
     {
         return DDENUMRET_OK;
     }

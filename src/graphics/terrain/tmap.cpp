@@ -66,7 +66,7 @@ int TMap::Setup(const char *mapPath)
         ShiError(message);
     }
 
-    ShiAssert((FeetPerPost > 0.0f) && (FeetPerPost < 50000.0f)); // 50,000 is arbitrary, just want to check reasonableness here.
+    ShiAssert((FeetPerPost > 0.0f) and (FeetPerPost < 50000.0f)); // 50,000 is arbitrary, just want to check reasonableness here.
 
 
     // Read the width and height of the MEA table
@@ -96,7 +96,7 @@ int TMap::Setup(const char *mapPath)
         ShiError(message);
     }
 
-    ShiAssert((nLevels > 0) && (nLevels < 9)); // 9 is arbitrary, just want to check reasonableness here.
+    ShiAssert((nLevels > 0) and (nLevels < 9)); // 9 is arbitrary, just want to check reasonableness here.
 
 
     // Read the number of the last level which has conventional textures applied
@@ -111,7 +111,7 @@ int TMap::Setup(const char *mapPath)
         ShiError(message);
     }
 
-    ShiAssert((lastNearTexturedLOD >= 0) && (lastNearTexturedLOD < nLevels));
+    ShiAssert((lastNearTexturedLOD >= 0) and (lastNearTexturedLOD < nLevels));
 
 
     // Read the number of the last level which has far textures applied
@@ -126,7 +126,7 @@ int TMap::Setup(const char *mapPath)
         ShiError(message);
     }
 
-    ShiAssert((lastFarTexturedLOD >= lastNearTexturedLOD) && (lastFarTexturedLOD < nLevels));
+    ShiAssert((lastFarTexturedLOD >= lastNearTexturedLOD) and (lastFarTexturedLOD < nLevels));
 
 
     // Read the map's color table
@@ -149,7 +149,7 @@ int TMap::Setup(const char *mapPath)
         // Read the width and height in blocks of this level
         retval = ReadFile(headerFile, &width, sizeof(width), &bytesRead, NULL);
 
-        if ((retval) && (bytesRead == sizeof(nLevels)))
+        if ((retval) and (bytesRead == sizeof(nLevels)))
         {
             retval = ReadFile(headerFile, &height, sizeof(height), &bytesRead, NULL);
         }
@@ -163,8 +163,8 @@ int TMap::Setup(const char *mapPath)
             ShiError(message);
         }
 
-        ShiAssert((width  > 0) && (width  < 5000)); // 1000 is arbitrary, just want to check reasonableness here.
-        ShiAssert((height > 0) && (height < 5000)); // 1000 is arbitrary, just want to check reasonableness here.
+        ShiAssert((width  > 0) and (width  < 5000)); // 1000 is arbitrary, just want to check reasonableness here.
+        ShiAssert((height > 0) and (height < 5000)); // 1000 is arbitrary, just want to check reasonableness here.
 
         // Setup the level
         Levels[i].Setup(i, width, height, mapPath);
@@ -184,7 +184,7 @@ int TMap::Setup(const char *mapPath)
         retval = ReadFile(headerFile, &longitude, sizeof(longitude), &bytesRead, NULL);
         retval = ReadFile(headerFile, &latitude, sizeof(latitude), &bytesRead, NULL);
 
-        if (retval && bytesRead == sizeof(latitude))
+        if (retval and bytesRead == sizeof(latitude))
         {
             SetLatLong(latitude, longitude);
         }

@@ -265,7 +265,7 @@ GLint ReadBMP(CImageFileMemory *fi)
 
     if (bmpinfo.biCompression) return (BAD_COMPRESSION);
 
-    if (bmpinfo.biBitCount not_eq 8 && bmpinfo.biBitCount not_eq 24)
+    if (bmpinfo.biBitCount not_eq 8 and bmpinfo.biBitCount not_eq 24)
         return (BAD_COLORDEPTH);
 
     i = bmpinfo.biClrUsed;
@@ -570,7 +570,7 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
     {
         if (bitsleft == 8)
         {
-            if (++p >= q && (((blocksize = fi->glReadCharMem()) < 1) ||
+            if (++p >= q and (((blocksize = fi->glReadCharMem()) < 1) ||
                              (q = (p = b) + fi->glReadMem(b, blocksize)) < (b + blocksize)))
                 return(UNEXPECTED_EOF);
 
@@ -586,7 +586,7 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
         }
         else
         {
-            if (++p >= q && (((blocksize = fi->glReadCharMem()) < 1) ||
+            if (++p >= q and (((blocksize = fi->glReadCharMem()) < 1) ||
                              (q = (p = b) + fi->glReadMem(b, blocksize)) < (b + blocksize)))
                 return(UNEXPECTED_EOF);
 
@@ -599,7 +599,7 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
             }
             else
             {
-                if (++p >= q && (((blocksize = fi->glReadCharMem()) < 1) ||
+                if (++p >= q and (((blocksize = fi->glReadCharMem()) < 1) ||
                                  (q = (p = b) + fi->glReadMem(b, blocksize)) < (b + blocksize)))
                     return(UNEXPECTED_EOF);
 
@@ -705,12 +705,12 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
             thiscode = *--u;
         };
 
-        if (nextcode < 4096 && oldcode not_eq NO_CODE)
+        if (nextcode < 4096 and oldcode not_eq NO_CODE)
         {
             codestack[nextcode] = oldcode;
             lastcodestack[nextcode] = (GLubyte) oldtoken;
 
-            if (++nextcode >= codesize2 && codesize < 12)
+            if (++nextcode >= codesize2 and codesize < 12)
                 codesize2 = 1 << ++codesize;
         }
 
@@ -749,7 +749,7 @@ void GIF_SkipExtension(CImageFileMemory *fi)
                         for (i = 0; i < n; ++i) fi->glReadCharMem();
                     }
                 }
-                while (n > 0 && n not_eq EOF);
+                while (n > 0 and n not_eq EOF);
             }
 
             break;
@@ -766,7 +766,7 @@ void GIF_SkipExtension(CImageFileMemory *fi)
                     for (i = 0; i < n; ++i) fi->glReadCharMem();
                 }
             }
-            while (n > 0 && n not_eq EOF);
+            while (n > 0 and n not_eq EOF);
 
             break;
 
@@ -780,7 +780,7 @@ void GIF_SkipExtension(CImageFileMemory *fi)
                         for (i = 0; i < n; ++i) fi->glReadCharMem();
                     }
                 }
-                while (n > 0 && n not_eq EOF);
+                while (n > 0 and n not_eq EOF);
             }
 
             break;
@@ -1195,8 +1195,8 @@ GLint WritePCX(int fileHandle, GLImageInfo *image)
             ShiAssert(inP - image->image == i * image->width + c);
 
             // Add to the current run
-            while ((value == *inP) && // Must have same value
-                   (c < image->width) && // Must not cross row boundries
+            while ((value == *inP) and // Must have same value
+                   (c < image->width) and // Must not cross row boundries
                    (run + 1 < 64))   // Run less than 64 bytes
             {
                 inP++;
@@ -1207,7 +1207,7 @@ GLint WritePCX(int fileHandle, GLImageInfo *image)
             ShiAssert(inP - image->image == i * image->width + c);
 
             // Write out the run
-            if ((run == 1) && ((value & 0xC0) not_eq 0xC0))
+            if ((run == 1) and ((value & 0xC0) not_eq 0xC0))
             {
                 // Can just write the value byte
                 *outP++ = value;

@@ -187,7 +187,7 @@ void InputFunctionHashTable::RemoveFunction(int key, int flags)
         tmpEntry = tmpEntry->next;
     }
 
-    if (tmpEntry && tmpEntry->flags == flags)
+    if (tmpEntry and tmpEntry->flags == flags)
     {
         if (lastEntry)
             lastEntry->next = tmpEntry->next;
@@ -395,19 +395,19 @@ void CallInputFunction(unsigned long val, int state)
     int flags, buttonId, mouseSide;
 
     // Special String builder
-    if (CommandsKeyCombo == -1 && CommandsKeyComboMod == -1)
+    if (CommandsKeyCombo == -1 and CommandsKeyComboMod == -1)
     {
         if (keyDown)
         {
             InputBuildString(val);
         }
     }
-    else if (CommandsKeyCombo == -2 && CommandsKeyComboMod == -2)
+    else if (CommandsKeyCombo == -2 and CommandsKeyComboMod == -2)
     {
         if (keyDown)
         {
             //dangling else - JPO
-            if (!(state & 0x6) && DIK_IsAscii(val, state))
+            if (!(state & 0x6) and DIK_IsAscii(val, state))
             {
                 StandardAsciiInput(val, state);
             }
@@ -417,7 +417,7 @@ void CallInputFunction(unsigned long val, int state)
             }
         }
     }
-    else if (OTWDriver.InExitMenu() && keyDown)
+    else if (OTWDriver.InExitMenu() and keyDown)
     {
         if (keyDown)
         {
@@ -436,8 +436,8 @@ void CallInputFunction(unsigned long val, int state)
         /* // ASSOCIATOR: Commented this out so that Comms menu will not deactivate while pressing other keys
         // Cancel the combo, whether it is handled or not
         if (
-         CommandsKeyCombo && keyDown && theFunc not_eq ScreenShot &&
-         theFunc not_eq RadioMessageSend && theFunc not_eq OTWRadioMenuStep && theFunc not_eq OTWRadioMenuStepBack
+         CommandsKeyCombo and keyDown and theFunc not_eq ScreenShot &&
+         theFunc not_eq RadioMessageSend and theFunc not_eq OTWRadioMenuStep and theFunc not_eq OTWRadioMenuStepBack
         ){
          CommandsKeyCombo = 0;
          CommandsKeyComboMod = 0;
@@ -448,8 +448,8 @@ void CallInputFunction(unsigned long val, int state)
 
         // ASSOCIATOR: Added so that other keys can be pressed while in Comms menus
         if (
-            CommandsKeyComboMod && CommandsKeyCombo && keyDown &&
-            theFunc not_eq ScreenShot && theFunc not_eq RadioMessageSend && theFunc not_eq OTWRadioMenuStep &&
+            CommandsKeyComboMod and CommandsKeyCombo and keyDown &&
+            theFunc not_eq ScreenShot and theFunc not_eq RadioMessageSend and theFunc not_eq OTWRadioMenuStep &&
             theFunc not_eq OTWRadioMenuStepBack
         )
         {
@@ -459,13 +459,13 @@ void CallInputFunction(unsigned long val, int state)
         }
 
         // ASSOCIATOR: Added so that other keys can be pressed while in Comms menus
-        if (OTWDriver.pMenuManager->IsActive() && val >= DIK_1 && val <= DIK_9)
+        if (OTWDriver.pMenuManager->IsActive() and val >= DIK_1 and val <= DIK_9)
         {
             theFunc = RadioMessageSend;
         }
 
         // ASSOCIATOR: Added so that other keys can be pressed while in Comms menus
-        if (OTWDriver.pMenuManager->IsActive() && val == DIK_ESCAPE)
+        if (OTWDriver.pMenuManager->IsActive() and val == DIK_ESCAPE)
         {
             CommandsKeyCombo    = 0;
             CommandsKeyComboMod = 0;
@@ -478,7 +478,7 @@ void CallInputFunction(unsigned long val, int state)
 
         // ASSOCIATOR: Added so that other keys can be pressed while in Comms menus
         if (
-            CommandsKeyCombo && theFunc not_eq ScreenShot &&
+            CommandsKeyCombo and theFunc not_eq ScreenShot &&
             theFunc not_eq RadioMessageSend &&
             theFunc not_eq OTWRadioMenuStep &&
             theFunc not_eq OTWRadioMenuStepBack
@@ -744,13 +744,13 @@ void StandardAsciiInput(unsigned long key, int state)
     switch (AsciiAllowed)
     {
         case 1: // Integers
-            if (!DIK_IsDigit(key, state) && asciival not_eq '-')
+            if (!DIK_IsDigit(key, state) and asciival not_eq '-')
                 return;
 
             break;
 
         case 2: // Floats
-            if (!DIK_IsDigit(key, state) && asciival not_eq '-' && asciival not_eq '.')
+            if (!DIK_IsDigit(key, state) and asciival not_eq '-' and asciival not_eq '.')
                 return;
 
             break;
@@ -784,7 +784,7 @@ void ExtendedKeyInput(unsigned long key, int)
     switch (key)
     {
         case DIK_NUMPAD6:
-            if (chatterCount < MaxInputLength && chatterStr[chatterCount])
+            if (chatterCount < MaxInputLength and chatterStr[chatterCount])
             {
                 chatterCount++;
             }
@@ -816,7 +816,7 @@ void ExtendedKeyInput(unsigned long key, int)
             break;
 
         case DIK_NUMPAD1:
-            while (chatterStr[chatterCount] && chatterCount < (MaxInputLength - 1))
+            while (chatterStr[chatterCount] and chatterCount < (MaxInputLength - 1))
                 chatterCount++;
 
             break;
@@ -831,7 +831,7 @@ void ExtendedKeyInput(unsigned long key, int)
 
                 if (i < MaxInputLength)
                 {
-                    while (chatterStr[i] && i < MaxInputLength)
+                    while (chatterStr[i] and i < MaxInputLength)
                     {
                         chatterStr[i - 1] = chatterStr[i];
                         i++;

@@ -153,7 +153,7 @@ int FalconSimCampMessage::Process(uchar autodisp)
                     c = static_cast<CampEntity>(deagIt.GetNext())
                 )
                 {
-                    if ((!c->IsAggregate()) && (c->IsLocal()))
+                    if ((!c->IsAggregate()) and (c->IsLocal()))
                     {
                         c->SendDeaggregateData(FalconLocalGame);
                     }

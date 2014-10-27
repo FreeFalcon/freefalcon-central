@@ -223,14 +223,14 @@ void SimulationLoopControl::StartGraphics(void)
     g_bSleepAll = TRUE;//me123 host it's ok to sleep
 
     // gRebuildBubbleNow = TRUE;
-    while (someoneawake && (delayCounter))
+    while (someoneawake and (delayCounter))
     {
         someoneawake = FALSE;
         SimBaseClass* theObject;
         VuListIterator objectWalker(SimDriver.objectList);
         theObject = (SimBaseClass*)objectWalker.GetFirst();
 
-        while (theObject && !someoneawake)
+        while (theObject and !someoneawake)
         {
             if (theObject->IsAwake())
             {
@@ -243,7 +243,7 @@ void SimulationLoopControl::StartGraphics(void)
         VuListIterator objecttiveswalker(SimDriver.campObjList);
         theObject = (SimBaseClass*)objecttiveswalker.GetFirst();
 
-        while (theObject && !someoneawake)
+        while (theObject and !someoneawake)
         {
             if (theObject->IsAwake())
             {
@@ -386,12 +386,12 @@ void SimulationLoopControl::Loop(void)
         real_delta = delta = (vuxRealTime - lastStartTime);
 
         if (
-            FalconLocalGame && (
-                ((vuPlayerPoolGroup) && (FalconLocalGame->Id() not_eq vuPlayerPoolGroup->Id())) or !vuPlayerPoolGroup
+            FalconLocalGame and (
+                ((vuPlayerPoolGroup) and (FalconLocalGame->Id() not_eq vuPlayerPoolGroup->Id())) or !vuPlayerPoolGroup
             )
         )
         {
-            if ((!FalconLocalGame->IsLocal()) && (lastTimingMessage > 0))
+            if ((!FalconLocalGame->IsLocal()) and (lastTimingMessage > 0))
             {
                 static int last_ratio = 0;
                 int y, ratio, lookahead;
@@ -411,12 +411,12 @@ void SimulationLoopControl::Loop(void)
                 {
                     //  me123 changed this to ajust fluently
                     // we are less then 2 sec infront
-                    if ((y >= lookahead) && (delta))
+                    if ((y >= lookahead) and (delta))
                     {
                         // we are behind
                         delta = delta * (min(10, (y - lookahead) / 10) + 100) / 100; //
                     }
-                    else if ((y <= lookahead) && (delta))
+                    else if ((y <= lookahead) and (delta))
                     {
                         // we are infront
                         delta = delta * ((100 - min(10, (lookahead - y) / 10)) / 100); //
@@ -473,7 +473,7 @@ void SimulationLoopControl::Loop(void)
 
                 for (
                     VuSessionEntity *sess = sessionIter.GetFirst(), *nextSess;
-                    sess not_eq NULL && !flying;
+                    sess not_eq NULL and !flying;
                     sess = nextSess
                 )
                 {
@@ -496,8 +496,8 @@ void SimulationLoopControl::Loop(void)
                 }
 
                 if (
-                    flying && gameCompressionRatio > 4
-                    && (gCommsMgr && gCommsMgr->Online())
+                    flying and gameCompressionRatio > 4
+                    and (gCommsMgr and gCommsMgr->Online())
                 )
                 {
                     SetTimeCompression(1) ;
@@ -508,7 +508,7 @@ void SimulationLoopControl::Loop(void)
 
             if (
                 FalconLocalSession->GetFlyState() not_eq  FLYSTATE_FLYING &&
-                gCompressTillTime && tmpTime > gLaunchTime + 1000
+                gCompressTillTime and tmpTime > gLaunchTime + 1000
             )
             {
                 if (vuxGameTime < gCompressTillTime)
@@ -660,7 +660,7 @@ void SimulationLoopControl::StartLoop(void)
         TheTimeOfDay.Setup(theaterdir); // load the new one
 
         // Our pause/suspend state varies by type of game and online status - set appropriately
-        if (gCommsMgr && !gCommsMgr->Online())
+        if (gCommsMgr and !gCommsMgr->Online())
         {
             TheCampaign.Suspend();
         }
@@ -761,14 +761,14 @@ void SimulationLoopControl::StartLoop(void)
         // Wait until our flight is deaggregated
         g_bSleepAll = FALSE;//me123 host it's ok to wake again now you are attached
 
-        while (flight && flight->IsAggregate() && (delayCounter))
+        while (flight and flight->IsAggregate() and (delayCounter))
         {
             Sleep(1000);
             delayCounter --;
         }
 
         // If we didn't deaggregate ourselves - RH
-        if (flight && flight->IsAggregate())
+        if (flight and flight->IsAggregate())
         {
             MonoPrint("Flight didn't deaggregate before timeout.\n");
             player = NULL;
@@ -792,7 +792,7 @@ void SimulationLoopControl::StartLoop(void)
         }
 
         // Check if the player was successfully attached (They could have been killed in the meantime)
-        if (player && !player->IsDead())
+        if (player and !player->IsDead())
         {
             GameManager.AnnounceEntry();
 #define START_GRAPHICS_WAIT_FOR_SIMDRIVE 1
@@ -1129,7 +1129,7 @@ void RewakeSessions(void)
         theObject = (SimBaseClass*) session->GetPlayerEntity();
         theUnit = (UnitClass*) session->GetPlayerFlight();
 
-        if (theObject && theUnit && theUnit->IsAwake() && !theObject->IsAwake() && !theObject->IsDead() && !theObject->IsExploding())
+        if (theObject and theUnit and theUnit->IsAwake() and !theObject->IsAwake() and !theObject->IsDead() and !theObject->IsExploding())
             SimDriver.WakeObject(theObject);
 
         session = (FalconSessionEntity*)sessionWalker.GetNext();

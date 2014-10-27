@@ -272,7 +272,7 @@ _TCHAR *C_Hash::FindText(long ID)
 
     cur = Table_[idx].Root_;
 
-    for (i = 0; i < (unsigned long)(ID & 0x0000ffff) && cur; i++)
+    for (i = 0; i < (unsigned long)(ID & 0x0000ffff) and cur; i++)
         cur = cur->Next;
 
     if (cur)
@@ -325,7 +325,7 @@ long C_Hash::FindTextID(long ID)
 
     cur = Table_[idx].Root_;
 
-    for (i = 0; i < (ID & 0x0000ffff) && cur; i++)
+    for (i = 0; i < (ID & 0x0000ffff) and cur; i++)
         cur = cur->Next;
 
     if (cur)
@@ -409,7 +409,7 @@ void C_Hash::RemoveOld()
 
     for (i = 0; i < TableSize_; i++)
     {
-        while (Table_[i].Root_ && Table_[i].Root_->Check not_eq Check_)
+        while (Table_[i].Root_ and Table_[i].Root_->Check not_eq Check_)
         {
             prev = Table_[i].Root_;
             Table_[i].Root_ = Table_[i].Root_->Next;
@@ -474,7 +474,7 @@ void *C_Hash::GetFirstOld(C_HASHNODE **current, long *curidx)
 
     while (cur)
     {
-        if (cur->Record && cur->Check not_eq Check_)
+        if (cur->Record and cur->Check not_eq Check_)
         {
             *current = cur;
             return(cur->Record);
@@ -482,7 +482,7 @@ void *C_Hash::GetFirstOld(C_HASHNODE **current, long *curidx)
 
         cur = cur->Next;
 
-        while (!cur && *curidx < (TableSize_ - 1))
+        while (!cur and *curidx < (TableSize_ - 1))
         {
             (*curidx)++;
             cur = Table_[*curidx].Root_;
@@ -501,17 +501,17 @@ void *C_Hash::GetNextOld(C_HASHNODE **current, long *curidx)
 
     cur = (*current)->Next;
 
-    while (!cur && *curidx < (TableSize_ - 1))
+    while (!cur and *curidx < (TableSize_ - 1))
     {
         (*curidx)++;
         cur = Table_[*curidx].Root_;
     }
 
-    while (cur && cur->Check == Check_ && cur->Record)
+    while (cur and cur->Check == Check_ and cur->Record)
     {
         cur = cur->Next;
 
-        while (!cur && *curidx < (TableSize_ - 1))
+        while (!cur and *curidx < (TableSize_ - 1))
         {
             (*curidx)++;
             cur = Table_[*curidx].Root_;
@@ -540,7 +540,7 @@ void *C_Hash::GetFirst(C_HASHNODE **current, long *curidx)
 
     cur = Table_[*curidx].Root_;
 
-    while (!cur && *curidx < (TableSize_ - 1))
+    while (!cur and *curidx < (TableSize_ - 1))
     {
         (*curidx)++;
         cur = Table_[*curidx].Root_;
@@ -567,7 +567,7 @@ void *C_Hash::GetNext(C_HASHNODE **current, long *curidx)
 
     cur = (*current)->Next;
 
-    while (!cur && *curidx < (TableSize_ - 1))
+    while (!cur and *curidx < (TableSize_ - 1))
     {
         (*curidx)++;
         cur = Table_[*curidx].Root_;

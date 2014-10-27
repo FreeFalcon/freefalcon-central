@@ -47,7 +47,7 @@ BOOL RequestACSlot(Flight flight, uchar team, uchar plane_slot, uchar skill, int
     {
         msg->dataBlock.request_type = REQUEST_SLOT_JOIN_PLAYER;
 
-        if (FalconLocalSession->GetPlayerFlight() == flight && FalconLocalSession->GetPilotSlot() < 255)
+        if (FalconLocalSession->GetPlayerFlight() == flight and FalconLocalSession->GetPilotSlot() < 255)
             msg->dataBlock.current_pilot_slot = FalconLocalSession->GetPilotSlot();
         else
             msg->dataBlock.current_pilot_slot = 255;

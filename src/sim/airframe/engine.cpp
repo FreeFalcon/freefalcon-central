@@ -98,13 +98,13 @@ void AirframeClass::EngineModel(float dt)
     {
         // MD -- 20040531: adding test to make sure that the EPU keeps running when you land if it was
         // already running (previous logic shut EPU off on touchdown)
-        if ((GetEpuSwitch() == ON) or (GeneratorRunning(GenEpu) && (GetEpuSwitch() not_eq OFF)))
+        if ((GetEpuSwitch() == ON) or (GeneratorRunning(GenEpu) and (GetEpuSwitch() not_eq OFF)))
         {
             // pilot command
             GeneratorOn(GenEpu);
         }
         // auto mode
-        else if (!GeneratorRunning(GenMain) && !GeneratorRunning(GenStdby) && IsSet(InAir))
+        else if (!GeneratorRunning(GenMain) and !GeneratorRunning(GenStdby) and IsSet(InAir))
         {
             GeneratorOn(GenEpu);
         }
@@ -164,7 +164,7 @@ void AirframeClass::EngineModel(float dt)
     }
 
     // JPO: charge the JFS accumulators, up to 100%
-    if (rpm > auxaeroData->jfsMinRechargeRpm && jfsaccumulator < 100.0f /* 2002-04-11 ADDED BY S.G. If less than 0, don't recharge */ && jfsaccumulator >= 0.0f)
+    if (rpm > auxaeroData->jfsMinRechargeRpm and jfsaccumulator < 100.0f /* 2002-04-11 ADDED BY S.G. If less than 0, don't recharge */ and jfsaccumulator >= 0.0f)
     {
         jfsaccumulator += 100.0f * dt / auxaeroData->jfsRechargeTime;
         jfsaccumulator = min(jfsaccumulator, 100.0f);
@@ -247,7 +247,7 @@ void AirframeClass::EngineModel(float dt)
 
         // MD -- 20040210: add check for throttle up to idle to trigger engine light
         // use with caution...this was done at speed and not extensively tested.
-        if (g_bUseAnalogIdleCutoff && (rpm >= 0.20F) && !IO.IsAxisCutOff(AXIS_THROTTLE))
+        if (g_bUseAnalogIdleCutoff and (rpm >= 0.20F) and !IO.IsAxisCutOff(AXIS_THROTTLE))
         {
             ClearFlag(AirframeClass::EngineStopped);
             platform->mFaults->ClearFault(FaultClass::eng_fault, FaultClass::fl_out);
@@ -259,7 +259,7 @@ void AirframeClass::EngineModel(float dt)
         /* get gross thrust */
         /*------------------*/
         if ((platform->mFaults->GetFault(FaultClass::eng_fault) & FaultClass::fl_out) ||
-            (g_bUseAnalogIdleCutoff && IO.IsAxisCutOff(AXIS_THROTTLE)))
+            (g_bUseAnalogIdleCutoff and IO.IsAxisCutOff(AXIS_THROTTLE)))
         {
             SetFlag(EngineStopped); //JPO - engine is now stopped!
             throtl = 0.0F;
@@ -275,7 +275,7 @@ void AirframeClass::EngineModel(float dt)
         {
             //me123 if in deep stall and in ab lets stall the engine
             // JPO - 10% chance, each time we check...
-            if (stallMode >= DeepStall && pwrlev >= 1.0F && rand() % 10 == 1)
+            if (stallMode >= DeepStall and pwrlev >= 1.0F and rand() % 10 == 1)
             {
                 SetFlag(EngineStopped);
                 // mark it as a flame out
@@ -354,7 +354,7 @@ void AirframeClass::EngineModel(float dt)
         }
 
         //else if (pwrlev <= 1.0)
-        if ((pwrlev <= 1.0f && rpm <= 1.0f) or (pwrlev > 1.0f && rpm <= 1.0f))
+        if ((pwrlev <= 1.0f and rpm <= 1.0f) or (pwrlev > 1.0f and rpm <= 1.0f))
         {
             /*-------------------*/
             /* Mil power or less */
@@ -670,7 +670,7 @@ void AirframeClass::EngineModel(float dt)
         /*------------*/
         /* net thrust */
         /*------------*/
-        if (platform->IsPlayer() && supercruise)
+        if (platform->IsPlayer() and supercruise)
         {
             thrust = tgross * ethrst * 1.5F;
         }
@@ -682,7 +682,7 @@ void AirframeClass::EngineModel(float dt)
         //Cobra Thrust Reverse
         if (auxaeroData->hasThrRev)
         {
-            if (platform->OnGround() && thrustReverse == 2)
+            if (platform->OnGround() and thrustReverse == 2)
             {
                 thrust = (-thrust * 0.40f);
             }
@@ -690,12 +690,12 @@ void AirframeClass::EngineModel(float dt)
             //Cobra Thrust Reverse
             static int doOnce = 0;
 
-            if (platform->IsPlayer() && thrustReverse == 2 && doOnce == 0)
+            if (platform->IsPlayer() and thrustReverse == 2 and doOnce == 0)
             {
                 OTWDriver.ToggleThrustReverseDisplay();
                 doOnce = 1;
             }
-            else if (platform->IsPlayer() && thrustReverse == 0 && doOnce == 1)
+            else if (platform->IsPlayer() and thrustReverse == 0 and doOnce == 1)
             {
                 OTWDriver.ToggleThrustReverseDisplay();
                 doOnce = 0;
@@ -717,7 +717,7 @@ void AirframeClass::EngineModel(float dt)
 
             if (g_bUseAnalogIdleCutoff)
             {
-                if (!IO.IsAxisCutOff(AXIS_THROTTLE) && (rpm > 0.20F))
+                if (!IO.IsAxisCutOff(AXIS_THROTTLE) and (rpm > 0.20F))
                     ClearFlag(ThrottleCheck);
             }
             else
@@ -751,7 +751,7 @@ void AirframeClass::EngineModel(float dt)
     }
 
     // turn on stdby generator
-    if (rpm > auxaeroData->stbyGenRpm && platform->MainPowerOn())
+    if (rpm > auxaeroData->stbyGenRpm and platform->MainPowerOn())
     {
         GeneratorOn(GenStdby);
     }
@@ -759,14 +759,14 @@ void AirframeClass::EngineModel(float dt)
         GeneratorOff(GenStdby);
 
     // tunr on main generator
-    if (rpm > auxaeroData->mainGenRpm && platform->MainPowerOn())
+    if (rpm > auxaeroData->mainGenRpm and platform->MainPowerOn())
     {
         GeneratorOn(GenMain);
     }
     else
         GeneratorOff(GenMain);
 
-    if (IsSet(OnObject) && vcas < 175) // JB carrier
+    if (IsSet(OnObject) and vcas < 175) // JB carrier
         // RV - Biker - Use catapult thrust multiplier from FMs
         //thrust *= 4;
         thrust *= GetCatapultThrustMultiplier();
@@ -861,7 +861,7 @@ void AirframeClass::MultiEngineModel(float dt)
             GeneratorOn(GenEpu);
         }
         // auto mode
-        else if (!GeneratorRunning(GenMain) && !GeneratorRunning(GenStdby) && IsSet(InAir))
+        else if (!GeneratorRunning(GenMain) and !GeneratorRunning(GenStdby) and IsSet(InAir))
         {
             GeneratorOn(GenEpu);
         }
@@ -927,7 +927,7 @@ void AirframeClass::MultiEngineModel(float dt)
     //*****************************************************
     // #4
     // JPO: charge the JFS accumulators, up to 100%
-    if (rpm > auxaeroData->jfsMinRechargeRpm && jfsaccumulator < 100.0f /* 2002-04-11 ADDED BY S.G. If less than 0, don't recharge */ && jfsaccumulator >= 0.0f)
+    if (rpm > auxaeroData->jfsMinRechargeRpm and jfsaccumulator < 100.0f /* 2002-04-11 ADDED BY S.G. If less than 0, don't recharge */ and jfsaccumulator >= 0.0f)
     {
         jfsaccumulator += 100.0f * dt / auxaeroData->jfsRechargeTime;
         jfsaccumulator = min(jfsaccumulator, 100.0f);
@@ -996,7 +996,7 @@ void AirframeClass::MultiEngineModel(float dt)
             rpmCmd = 0.0f; // engine must be seized, not going to start or windmill
         }
         //else if (IsSet (JfsStart))
-        else if (IsSet(JfsStart) && UserStickInputs.getCurrentEngine() == UserStickInputs.Left_Engine)
+        else if (IsSet(JfsStart) and UserStickInputs.getCurrentEngine() == UserStickInputs.Left_Engine)
         {
             rpmCmd = 0.25f; // JFS should take us up to 25%
             spoolrate = 15.0f;
@@ -1035,7 +1035,7 @@ void AirframeClass::MultiEngineModel(float dt)
         {
             //me123 if in deep stall and in ab lets stall the engine
             // JPO - 10% chance, each time we check...
-            if (stallMode >= DeepStall && pwrlevEngine1 >= 1.0F && rand() % 10 == 1)
+            if (stallMode >= DeepStall and pwrlevEngine1 >= 1.0F and rand() % 10 == 1)
             {
                 SetFlag(EngineStopped);
                 // mark it as a flame out
@@ -1132,7 +1132,7 @@ void AirframeClass::MultiEngineModel(float dt)
         }
         //7.6 MIL Power Engine 1
         //if (pwrlevEngine1 <= 1.0f)
-        else if ((pwrlevEngine1 <= 1.0f && rpm <= 1.0f) or (pwrlevEngine1 > 1.0f && rpm <= 1.0f))
+        else if ((pwrlevEngine1 <= 1.0f and rpm <= 1.0f) or (pwrlevEngine1 > 1.0f and rpm <= 1.0f))
         {
             /*-------------------*/
             /* Mil power or less */
@@ -1497,7 +1497,7 @@ void AirframeClass::MultiEngineModel(float dt)
             rpmCmd2 = 0.0f; // engine must be seized, not going to start or windmill
         }
         //else if (IsSet (JfsStart))
-        else if (IsSet(JfsStart) && UserStickInputs.getCurrentEngine() == UserStickInputs.Right_Engine)
+        else if (IsSet(JfsStart) and UserStickInputs.getCurrentEngine() == UserStickInputs.Right_Engine)
         {
             rpmCmd2 = 0.25f; // JFS should take us up to 25%
             spoolrate2 = 15.0f;
@@ -1541,7 +1541,7 @@ void AirframeClass::MultiEngineModel(float dt)
         {
             //me123 if in deep stall and in ab lets stall the engine
             // JPO - 10% chance, each time we check...
-            if (stallMode >= DeepStall && pwrlevEngine2 >= 1.0F && rand() % 10 == 1)
+            if (stallMode >= DeepStall and pwrlevEngine2 >= 1.0F and rand() % 10 == 1)
             {
                 SetEngineFlag(EngineStopped2);
                 // mark it as a flame out
@@ -1635,7 +1635,7 @@ void AirframeClass::MultiEngineModel(float dt)
 
         //7.6 MIL Power Engine 2
         //if (pwrlevEngine2 <= 1.0f)
-        else if ((pwrlevEngine2 <= 1.0f && rpm2 <= 1.0f) or (pwrlevEngine2 > 1.0f && rpm2 <= 1.0f))
+        else if ((pwrlevEngine2 <= 1.0f and rpm2 <= 1.0f) or (pwrlevEngine2 > 1.0f and rpm2 <= 1.0f))
         {
             /*-------------------*/
             /* Mil power or less */
@@ -1989,7 +1989,7 @@ void AirframeClass::MultiEngineModel(float dt)
     //Cobra Thrust Reverse
     if (auxaeroData->hasThrRev)
     {
-        if (platform->OnGround() && thrustReverse == 2)
+        if (platform->OnGround() and thrustReverse == 2)
         {
             thrust = (-thrust * 0.40f);
         }
@@ -1997,12 +1997,12 @@ void AirframeClass::MultiEngineModel(float dt)
         //Cobra Thrust Reverse
         static int doOnce = 0;
 
-        if (platform->IsPlayer() && thrustReverse == 2 && doOnce == 0)
+        if (platform->IsPlayer() and thrustReverse == 2 and doOnce == 0)
         {
             OTWDriver.ToggleThrustReverseDisplay();
             doOnce = 1;
         }
-        else if (platform->IsPlayer() && thrustReverse == 0 && doOnce == 1)
+        else if (platform->IsPlayer() and thrustReverse == 0 and doOnce == 1)
         {
             OTWDriver.ToggleThrustReverseDisplay();
             doOnce = 0;
@@ -2020,7 +2020,7 @@ void AirframeClass::MultiEngineModel(float dt)
 
 
     // turn on stdby generator
-    if (rpm > auxaeroData->stbyGenRpm && platform->MainPowerOn())
+    if (rpm > auxaeroData->stbyGenRpm and platform->MainPowerOn())
     {
         GeneratorOn(GenStdby);
     }
@@ -2028,14 +2028,14 @@ void AirframeClass::MultiEngineModel(float dt)
         GeneratorOff(GenStdby);
 
     // tunr on main generator
-    if (rpm > auxaeroData->mainGenRpm && platform->MainPowerOn())
+    if (rpm > auxaeroData->mainGenRpm and platform->MainPowerOn())
     {
         GeneratorOn(GenMain);
     }
     else
         GeneratorOff(GenMain);
 
-    if (IsSet(OnObject) && vcas < 175) // JB carrier
+    if (IsSet(OnObject) and vcas < 175) // JB carrier
         // RV - Biker - Use catapult thrust multiplier from FMs
         //thrust *= 4;
         thrust *= GetCatapultThrustMultiplier();
@@ -2113,13 +2113,13 @@ void AirframeClass::HydrBreak(int sys)
 void AirframeClass::HydrRestore(int sys)
 {
     // restore A if not broke
-    if ((sys & HYDR_A_SYSTEM) && (hydrAB & HYDR_A_BROKE) == 0)
+    if ((sys & HYDR_A_SYSTEM) and (hydrAB & HYDR_A_BROKE) == 0)
     {
         hydrAB  or_eq  HYDR_A_SYSTEM;
     }
 
     // restore B if not broke
-    if ((sys & HYDR_B_SYSTEM) && (hydrAB & HYDR_B_BROKE) == 0)
+    if ((sys & HYDR_B_SYSTEM) and (hydrAB & HYDR_B_BROKE) == 0)
     {
         hydrAB  or_eq  HYDR_B_SYSTEM;
     }
@@ -2268,7 +2268,7 @@ float AirframeClass::AvailableFuel()
         return externalFuel + fuel;
     else if (IsEngineFlag(MasterFuelOff))
         return 0.0f;
-    else if (fuelPump == FP_OFF && nzcgb < -0.5f) // -ve G
+    else if (fuelPump == FP_OFF and nzcgb < -0.5f) // -ve G
         return 0.0f;
 
     switch (fuelPump)
@@ -2384,7 +2384,7 @@ void AirframeClass::FuelTransfer(float dt)
             else
                 platform->mFaults->SetCaution(fwd_fuel_low_fault);
         }
-        else if (fuelSwitch not_eq FS_TEST && platform->mFaults->GetFault(fwd_fuel_low_fault))
+        else if (fuelSwitch not_eq FS_TEST and platform->mFaults->GetFault(fwd_fuel_low_fault))
             platform->mFaults->ClearFault(fwd_fuel_low_fault);
 
         if (m_tanks[TANK_AFTRES] < auxaeroData->fuelMinAft)
@@ -2395,7 +2395,7 @@ void AirframeClass::FuelTransfer(float dt)
             else
                 platform->mFaults->SetCaution(aft_fuel_low_fault);
         }
-        else if (fuelSwitch not_eq FS_TEST && platform->mFaults->GetFault(aft_fuel_low_fault))
+        else if (fuelSwitch not_eq FS_TEST and platform->mFaults->GetFault(aft_fuel_low_fault))
             platform->mFaults->ClearFault(aft_fuel_low_fault);
     }
 
@@ -2406,14 +2406,14 @@ void AirframeClass::FuelTransfer(float dt)
     // there's a chance that the CAT limiter needs adjusting.  For now this only operates on the
     // centerline tank but it may need to take dollies into account as well at some point.
 
-    if ((m_tankcap[TANK_CLINE] > 0.0F) && (m_tanks[TANK_CLINE] <= 0.0F))
+    if ((m_tankcap[TANK_CLINE] > 0.0F) and (m_tanks[TANK_CLINE] <= 0.0F))
         platform->Sms->ChooseLimiterMode(1);
 }
 
 // loose a tank.
 void AirframeClass::DropTank(int n)
 {
-    ShiAssert(n >= 0 && n < MAX_FUEL);
+    ShiAssert(n >= 0 and n < MAX_FUEL);
     m_tanks[n] = 0.0f;
     m_tankcap[n] = 0.0f;
     float fuelBefore = externalFuel;
@@ -2614,7 +2614,7 @@ int AirframeClass::CheckTrapped()
 int AirframeClass::CheckHome(void)
 {
     //Calc how much fuel we have at our selected homepoint
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp)
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp)
     {
         WayPointClass *wp = platform->GetWayPointNo(
                                 OTWDriver.pCockpitManager->mpIcp->HomeWP);
@@ -2694,7 +2694,7 @@ float AirframeClass::EngineRpmMods(float rpmCmd)
     if (auxaeroData->typeEngine == 1 or auxaeroData->typeEngine == 2)
     {
         //TJL -1 says idle RPM increases from 0.84 till it is MIL power at 1.4 Mach
-        if (mach >= 0.84f && mach <= 1.4f)
+        if (mach >= 0.84f and mach <= 1.4f)
             rpmCmd = max(mach / 1.4f, rpmCmd);
         else if (mach > 1.4f)
             rpmCmd = max(0.99f, rpmCmd);
@@ -2708,19 +2708,19 @@ float AirframeClass::EngineRpmMods(float rpmCmd)
 
         //AB Schedule per -1
         //Area 3 Seg 5 no light
-        if ((platform->ZPos() <= -35000.0f && platform->ZPos() >= -45000.0f) &&
-            (mach <= 0.8f && mach > 0.4f))
+        if ((platform->ZPos() <= -35000.0f and platform->ZPos() >= -45000.0f) &&
+            (mach <= 0.8f and mach > 0.4f))
             rpmCmd = min(1.025f, rpmCmd);
 
         //Area 2 Only Seg 1 will light
-        if ((platform->ZPos() <= -45000.0f && platform->ZPos() >= -55000.0f) &&
-            (mach <= 0.95f && mach > 0.4f))
+        if ((platform->ZPos() <= -45000.0f and platform->ZPos() >= -55000.0f) &&
+            (mach <= 0.95f and mach > 0.4f))
             rpmCmd = min(1.01f, rpmCmd);
 
         //Area 1 No AB available
-        if ((platform->ZPos() <= -30000.0f && platform->ZPos() > -55000.0f) && mach <= 0.4f)
+        if ((platform->ZPos() <= -30000.0f and platform->ZPos() > -55000.0f) and mach <= 0.4f)
             rpmCmd = min(0.99f, rpmCmd);
-        else if ((platform->ZPos() <= -55000.0f) && mach <= 0.95f)
+        else if ((platform->ZPos() <= -55000.0f) and mach <= 0.95f)
             rpmCmd = min(0.99f, rpmCmd);
 
     }//end
@@ -2730,13 +2730,13 @@ float AirframeClass::EngineRpmMods(float rpmCmd)
     if (auxaeroData->typeEngine == 3 or auxaeroData->typeEngine == 4 or auxaeroData->typeEngine == 5)
     {
         //Reduced Speed Excursion Logic 0.5 - 0.6 is the switch range, we'll call it 5.5 for coding
-        if (mach > 0.55f && mach < 1.1f)
+        if (mach > 0.55f and mach < 1.1f)
         {
             rpmRSE = 0.79f;
             rpmCmd = max(rpmCmd, rpmRSE);
         }
         //Idle schedule to MIL from 1.1 to 1.4 MACH
-        else if (mach >= 1.1f && mach <= 1.4f)
+        else if (mach >= 1.1f and mach <= 1.4f)
             rpmCmd = max(mach / 1.4f, rpmCmd);
         else if (mach > 1.4f)
             rpmCmd = max(0.99f, rpmCmd);
@@ -2751,17 +2751,17 @@ float AirframeClass::EngineRpmMods(float rpmCmd)
         }
 
         //Reduce AB schedule
-        if ((platform->ZPos() < -50000.0F) && vcas < 250.0F)
+        if ((platform->ZPos() < -50000.0F) and vcas < 250.0F)
         {
             rpmCmd = min(1.01f, rpmCmd);
         }
 
 
         //Zone 2 AB no lights or delayed lights possible
-        if ((platform->ZPos() < -30000.0F) && vcas < 225.0F)
+        if ((platform->ZPos() < -30000.0F) and vcas < 225.0F)
         {
             // if ((SimLibElapsedTime - engEventTimer) >= 5000)
-            if (rpm <= 1.0F && engFlag1 == 0)
+            if (rpm <= 1.0F and engFlag1 == 0)
             {
                 int randnum = rand() % 100;
 
@@ -2810,7 +2810,7 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
         or auxaeroData->typeEngine == 11)
     {
         //TJL -1 says idle RPM increases from 0.84 till it is MIL power at 1.4 Mach
-        if (mach >= 0.84f && mach <= 1.4f)
+        if (mach >= 0.84f and mach <= 1.4f)
             rpmCmd = max(mach / 1.4f, rpmCmd);
         else if (mach > 1.4f)
             rpmCmd = max(0.99f, rpmCmd);
@@ -2828,7 +2828,7 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
     if (auxaeroData->typeEngine == 1 or auxaeroData->typeEngine == 2)
     {
         //TJL -1 says idle RPM increases from 0.84 till it is MIL power at 1.4 Mach
-        if (mach >= 0.84f && mach <= 1.4f)
+        if (mach >= 0.84f and mach <= 1.4f)
             rpmCmd = max(mach / 1.4f, rpmCmd);
         else if (mach > 1.4f)
             rpmCmd = max(0.99f, rpmCmd);
@@ -2842,19 +2842,19 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
 
         //AB Schedule per -1
         //Area 3 Seg 5 no light
-        if ((platform->ZPos() <= -35000.0f && platform->ZPos() >= -45000.0f) &&
-            (mach <= 0.8f && mach > 0.4f))
+        if ((platform->ZPos() <= -35000.0f and platform->ZPos() >= -45000.0f) &&
+            (mach <= 0.8f and mach > 0.4f))
             rpmCmd = min(1.025f, rpmCmd);
 
         //Area 2 Only Seg 1 will light
-        if ((platform->ZPos() <= -45000.0f && platform->ZPos() >= -55000.0f) &&
-            (mach <= 0.95f && mach > 0.4f))
+        if ((platform->ZPos() <= -45000.0f and platform->ZPos() >= -55000.0f) &&
+            (mach <= 0.95f and mach > 0.4f))
             rpmCmd = min(1.01f, rpmCmd);
 
         //Area 1 No AB available
-        if ((platform->ZPos() <= -30000.0f && platform->ZPos() > -55000.0f) && mach <= 0.4f)
+        if ((platform->ZPos() <= -30000.0f and platform->ZPos() > -55000.0f) and mach <= 0.4f)
             rpmCmd = min(0.99f, rpmCmd);
-        else if ((platform->ZPos() <= -55000.0f) && mach <= 0.95f)
+        else if ((platform->ZPos() <= -55000.0f) and mach <= 0.95f)
             rpmCmd = min(0.99f, rpmCmd);
 
     }//end
@@ -2864,13 +2864,13 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
     if (auxaeroData->typeEngine == 3 or auxaeroData->typeEngine == 4 or auxaeroData->typeEngine == 5)
     {
         //Reduced Speed Excursion Logic 0.5 - 0.6 is the switch range, we'll call it 5.5 for coding
-        if (mach > 0.55f && mach < 1.1f)
+        if (mach > 0.55f and mach < 1.1f)
         {
             rpmRSE = 0.79f;
             rpmCmd = max(rpmCmd, rpmRSE);
         }
         //Idle schedule to MIL from 1.1 to 1.4 MACH
-        else if (mach >= 1.1f && mach <= 1.4f)
+        else if (mach >= 1.1f and mach <= 1.4f)
             rpmCmd = max(mach / 1.4f, rpmCmd);
         else if (mach > 1.4f)
             rpmCmd = max(0.99f, rpmCmd);
@@ -2885,17 +2885,17 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
         }
 
         //Reduce AB schedule
-        if ((platform->ZPos() < -50000.0F) && vcas < 250.0F)
+        if ((platform->ZPos() < -50000.0F) and vcas < 250.0F)
         {
             rpmCmd = min(1.01f, rpmCmd);
         }
 
 
         //Zone 2 AB no lights or delayed lights possible
-        if ((platform->ZPos() < -30000.0F) && vcas < 225.0F)
+        if ((platform->ZPos() < -30000.0F) and vcas < 225.0F)
         {
             // if ((SimLibElapsedTime - engEventTimer) >= 5000)
-            if (rpm <= 1.0F && engFlag1 == 0)
+            if (rpm <= 1.0F and engFlag1 == 0)
             {
                 int randnum = rand() % 100;
 
@@ -2928,7 +2928,7 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
     if (auxaeroData->typeEngine == 6 or auxaeroData->typeEngine == 7
         or auxaeroData->typeAC == 8 or auxaeroData->typeAC == 9)
     {
-        if (mach >= 0.9f && mach <= 1.23f)
+        if (mach >= 0.9f and mach <= 1.23f)
             rpmCmd = max(mach / 1.23f, rpmCmd);
         else if (mach > 1.23f)
             rpmCmd = max(0.99f, rpmCmd);
@@ -2945,7 +2945,7 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
     //F18E/F RPM to MIL at 1.23 mach
     if (auxaeroData->typeEngine == 8 or auxaeroData->typeAC == 10)
     {
-        if (mach >= 1.18f && mach <= 1.23f)
+        if (mach >= 1.18f and mach <= 1.23f)
             rpmCmd = max(mach / 1.23f, rpmCmd);
         else if (mach > 1.23f)
             rpmCmd = max(0.99f, rpmCmd);
@@ -2964,19 +2964,19 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
     if ((auxaeroData->typeAC == 6 or auxaeroData->typeAC == 7) ||
         (auxaeroData->typeEngine == 9 or auxaeroData->typeEngine == 10))
     {
-        if (alpha >= 18.0F && mach <= 0.9F)
+        if (alpha >= 18.0F and mach <= 0.9F)
             rpmCmd = max(0.85f, rpmCmd);
 
         //Rich Stability cutback reduced operation
-        if ((platform->ZPos() <= -40000.0f) && mach <= 0.45f)
+        if ((platform->ZPos() <= -40000.0f) and mach <= 0.45f)
             rpmCmd = min(1.015f, rpmCmd);
-        else if ((platform->ZPos() <= -45000.0f) && mach <= 0.6f)
+        else if ((platform->ZPos() <= -45000.0f) and mach <= 0.6f)
             rpmCmd = min(1.015f, rpmCmd);
-        else if ((platform->ZPos() <= -50000.0f) && mach <= 1.0f)
+        else if ((platform->ZPos() <= -50000.0f) and mach <= 1.0f)
             rpmCmd = min(1.01f, rpmCmd);
-        else if ((platform->ZPos() <= -55000.0f) && mach <= 1.1f)
+        else if ((platform->ZPos() <= -55000.0f) and mach <= 1.1f)
             rpmCmd = min(1.01f, rpmCmd);
-        else if ((platform->ZPos() <= -60000.0f) && mach <= 1.2f)
+        else if ((platform->ZPos() <= -60000.0f) and mach <= 1.2f)
             rpmCmd = min(1.01f, rpmCmd);
 
     }
@@ -2986,7 +2986,7 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
     {
         if ((SimLibElapsedTime - engEventTimer) >= 1000)
         {
-            if (platform->ZPos() < -10000.0F && vcas < 150.0F)
+            if (platform->ZPos() < -10000.0F and vcas < 150.0F)
             {
                 if (1 == (rand() % 30))
                 {
@@ -2997,7 +2997,7 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
                     engEventTimer = SimLibElapsedTime;
             }
 
-            if (platform->ZPos() < -10000.0F && alpha > 28.0F && rpm >= 1.0f)
+            if (platform->ZPos() < -10000.0F and alpha > 28.0F and rpm >= 1.0f)
             {
                 if (1 == (rand() % 30))
                 {
@@ -3011,7 +3011,7 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
                 engEventTimer = SimLibElapsedTime;
         }
 
-        if (platform->ZPos() < -50000.0F && vcas < 300.0F)
+        if (platform->ZPos() < -50000.0F and vcas < 300.0F)
         {
             rpmCmd = min(0.99F, rpmCmd);
 
@@ -3035,7 +3035,7 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
         or auxaeroData->typeEngine == 11)
     {
         //TJL -1 says idle RPM increases from 0.84 till it is MIL power at 1.4 Mach
-        if (mach >= 0.84f && mach <= 1.4f)
+        if (mach >= 0.84f and mach <= 1.4f)
             rpmCmd2 = max(mach / 1.4f, rpmCmd2);
         else if (mach > 1.4f)
             rpmCmd2 = max(0.99f, rpmCmd2);
@@ -3053,7 +3053,7 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
     if (auxaeroData->typeEngine == 1 or auxaeroData->typeEngine == 2)
     {
         //TJL -1 says idle RPM increases from 0.84 till it is MIL power at 1.4 Mach
-        if (mach >= 0.84f && mach <= 1.4f)
+        if (mach >= 0.84f and mach <= 1.4f)
             rpmCmd2 = max(mach / 1.4f, rpmCmd2);
         else if (mach > 1.4f)
             rpmCmd2 = max(0.99f, rpmCmd2);
@@ -3067,19 +3067,19 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
 
         //AB Schedule per -1
         //Area 3 Seg 5 no light
-        if ((platform->ZPos() <= -35000.0f && platform->ZPos() >= -45000.0f) &&
-            (mach <= 0.8f && mach > 0.4f))
+        if ((platform->ZPos() <= -35000.0f and platform->ZPos() >= -45000.0f) &&
+            (mach <= 0.8f and mach > 0.4f))
             rpmCmd2 = min(1.025f, rpmCmd2);
 
         //Area 2 Only Seg 1 will light
-        if ((platform->ZPos() <= -45000.0f && platform->ZPos() >= -55000.0f) &&
-            (mach <= 0.95f && mach > 0.4f))
+        if ((platform->ZPos() <= -45000.0f and platform->ZPos() >= -55000.0f) &&
+            (mach <= 0.95f and mach > 0.4f))
             rpmCmd2 = min(1.01f, rpmCmd2);
 
         //Area 1 No AB available
-        if ((platform->ZPos() <= -30000.0f && platform->ZPos() > -55000.0f) && mach <= 0.4f)
+        if ((platform->ZPos() <= -30000.0f and platform->ZPos() > -55000.0f) and mach <= 0.4f)
             rpmCmd2 = min(0.99f, rpmCmd2);
-        else if ((platform->ZPos() <= -55000.0f) && mach <= 0.95f)
+        else if ((platform->ZPos() <= -55000.0f) and mach <= 0.95f)
             rpmCmd2 = min(0.99f, rpmCmd2);
 
     }//end
@@ -3089,13 +3089,13 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
     if (auxaeroData->typeEngine == 3 or auxaeroData->typeEngine == 4 or auxaeroData->typeEngine == 5)
     {
         //Reduced Speed Excursion Logic 0.5 - 0.6 is the switch range, we'll call it 5.5 for coding
-        if (mach > 0.55f && mach < 1.1f)
+        if (mach > 0.55f and mach < 1.1f)
         {
             rpmRSE = 0.79f;
             rpmCmd2 = max(rpmCmd2, rpmRSE);
         }
         //Idle schedule to MIL from 1.1 to 1.4 MACH
-        else if (mach >= 1.1f && mach <= 1.4f)
+        else if (mach >= 1.1f and mach <= 1.4f)
             rpmCmd2 = max(mach / 1.4f, rpmCmd2);
         else if (mach > 1.4f)
             rpmCmd2 = max(0.99f, rpmCmd2);
@@ -3110,17 +3110,17 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
         }
 
         //Reduce AB schedule
-        if ((platform->ZPos() < -50000.0F) && vcas < 250.0F)
+        if ((platform->ZPos() < -50000.0F) and vcas < 250.0F)
         {
             rpmCmd2 = min(1.01f, rpmCmd2);
         }
 
 
         //Zone 2 AB no lights or delayed lights possible
-        if ((platform->ZPos() < -30000.0F) && vcas < 225.0F)
+        if ((platform->ZPos() < -30000.0F) and vcas < 225.0F)
         {
             // if ((SimLibElapsedTime - engEventTimer) >= 5000)
-            if (rpm2 <= 1.0F && engFlag2 == 0)
+            if (rpm2 <= 1.0F and engFlag2 == 0)
             {
                 int randnum = rand() % 100;
 
@@ -3152,7 +3152,7 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
     if (auxaeroData->typeEngine == 6 or auxaeroData->typeEngine == 7
         or auxaeroData->typeAC == 8 or auxaeroData->typeAC == 9)
     {
-        if (mach >= 0.9f && mach <= 1.23f)
+        if (mach >= 0.9f and mach <= 1.23f)
             rpmCmd2 = max(mach / 1.23f, rpmCmd2);
         else if (mach > 1.23f)
             rpmCmd2 = max(0.99f, rpmCmd2);
@@ -3170,7 +3170,7 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
     //F18E/F RPM to MIL at 1.23 mach
     if (auxaeroData->typeEngine == 8 or auxaeroData->typeAC == 10)
     {
-        if (mach >= 1.18f && mach <= 1.23f)
+        if (mach >= 1.18f and mach <= 1.23f)
             rpmCmd2 = max(mach / 1.23f, rpmCmd2);
         else if (mach > 1.23f)
             rpmCmd2 = max(0.99f, rpmCmd2);
@@ -3188,19 +3188,19 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
     if ((auxaeroData->typeAC == 6 or auxaeroData->typeAC == 7) ||
         (auxaeroData->typeEngine == 9 or auxaeroData->typeEngine == 10))
     {
-        if (alpha >= 18.0F && mach <= 0.9F)
+        if (alpha >= 18.0F and mach <= 0.9F)
             rpmCmd2 = max(0.85f, rpmCmd2);
 
         //Rich Stability cutback reduced operation
-        if ((platform->ZPos() <= -40000.0f) && mach <= 0.45f)
+        if ((platform->ZPos() <= -40000.0f) and mach <= 0.45f)
             rpmCmd2 = min(1.015f, rpmCmd2);
-        else if ((platform->ZPos() <= -45000.0f) && mach <= 0.6f)
+        else if ((platform->ZPos() <= -45000.0f) and mach <= 0.6f)
             rpmCmd2 = min(1.015f, rpmCmd2);
-        else if ((platform->ZPos() <= -50000.0f) && mach <= 1.0f)
+        else if ((platform->ZPos() <= -50000.0f) and mach <= 1.0f)
             rpmCmd2 = min(1.01f, rpmCmd2);
-        else if ((platform->ZPos() <= -55000.0f) && mach <= 1.1f)
+        else if ((platform->ZPos() <= -55000.0f) and mach <= 1.1f)
             rpmCmd2 = min(1.01f, rpmCmd2);
-        else if ((platform->ZPos() <= -60000.0f) && mach <= 1.2f)
+        else if ((platform->ZPos() <= -60000.0f) and mach <= 1.2f)
             rpmCmd2 = min(1.01f, rpmCmd2);
 
     }
@@ -3210,7 +3210,7 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
     {
         if ((SimLibElapsedTime - engEventTimer2) >= 1000)
         {
-            if (platform->ZPos() < -10000.0F && vcas < 150.0F)
+            if (platform->ZPos() < -10000.0F and vcas < 150.0F)
             {
                 if (1 == (rand() % 30))
                 {
@@ -3221,7 +3221,7 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
                     engEventTimer2 = SimLibElapsedTime;
             }
 
-            if (platform->ZPos() < -10000.0F && alpha > 28.0F && rpm2 >= 1.0f)
+            if (platform->ZPos() < -10000.0F and alpha > 28.0F and rpm2 >= 1.0f)
             {
                 if (1 == (rand() % 30))
                 {
@@ -3235,7 +3235,7 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
                 engEventTimer2 = SimLibElapsedTime;
         }
 
-        if (platform->ZPos() < -50000.0F && vcas < 300.0F)
+        if (platform->ZPos() < -50000.0F and vcas < 300.0F)
         {
             rpmCmd2 = min(0.99F, rpmCmd2);
 
@@ -3256,7 +3256,7 @@ float AirframeClass::CalcFtit(float tmpLeft, float tmpRight)
     //start to idle
     if (rpm < 0.69f)
         ftitLeft = rpm * auxaeroData->FTITStart;
-    else if (rpm >= 0.69f && rpm < 0.85f)
+    else if (rpm >= 0.69f and rpm < 0.85f)
         ftitLeft = rpm * auxaeroData->FTITIdle;
     else
         ftitLeft = rpm * auxaeroData->FTITMax;
@@ -3265,7 +3265,7 @@ float AirframeClass::CalcFtit(float tmpLeft, float tmpRight)
     //start to idle
     if (rpm2 < 0.69f)
         ftitRight = rpm2 * auxaeroData->FTITStart;
-    else if (rpm2 >= 0.69f && rpm2 < 0.85f)
+    else if (rpm2 >= 0.69f and rpm2 < 0.85f)
         ftitRight = rpm2 * auxaeroData->FTITIdle;
     else
         ftitRight = rpm2 * auxaeroData->FTITMax;

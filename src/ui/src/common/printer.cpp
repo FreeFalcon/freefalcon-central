@@ -78,7 +78,7 @@ SendStringToPrinter(_TCHAR *string, _TCHAR *title)
         CComBSTR bstr(title);
         p_prt->write(GMPRINTLib::GMP_LT_HEAD, (BSTR)bstr);
 
-        if (retval == 1 && FAILED(p_prt->print(GMPRINTLib::GMP_DEFAULT)))
+        if (retval == 1 and FAILED(p_prt->print(GMPRINTLib::GMP_DEFAULT)))
             retval = 0;
 
         p_prt.Release();
@@ -139,7 +139,7 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
     //It might be better for briefing processing programs to always have only one
     //briefing in the file...Make it configurable.
 
-    if (g_bAppendToBriefingFile && !g_bBriefHTML) //No sense in appending HTML briefings
+    if (g_bAppendToBriefingFile and !g_bBriefHTML) //No sense in appending HTML briefings
     {
         fileID = CreateFile(fullname, GENERIC_WRITE, 0, NULL, OPEN_ALWAYS,
                             FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, NULL);

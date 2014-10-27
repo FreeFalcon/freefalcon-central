@@ -127,7 +127,7 @@ int AircraftClass::Wake(void)
         Sms->AddWeaponGraphics();
 
     // easter egg: need to check af NULL since we may be non-local
-    if (0)//me123 af && af->GetSimpleMode() == SIMPLE_MODE_HF )
+    if (0)//me123 af and af->GetSimpleMode() == SIMPLE_MODE_HF )
     {
         OTWDriver.RemoveObject((DrawableBSP*)drawPointer, TRUE);
         drawPointer = NULL;
@@ -148,7 +148,7 @@ int AircraftClass::Wake(void)
         //int squad = ((FlightClass*)GetCampaignObject())->GetUnitSquadron()->GetUnitNameID();
         int squad = 0;
 
-        if (GetCampaignObject() && ((FlightClass*)GetCampaignObject())->GetUnitSquadron())
+        if (GetCampaignObject() and ((FlightClass*)GetCampaignObject())->GetUnitSquadron())
         {
             // JB 010806 CTD
             squad = ((FlightClass*)GetCampaignObject())->GetUnitSquadron()->GetUnitNameID();
@@ -212,7 +212,7 @@ int AircraftClass::Wake(void)
             }
         }
 
-        if (set3DTexture not_eq -1 && ((FlightClass*)GetCampaignObject())->IsPlayer())
+        if (set3DTexture not_eq -1 and ((FlightClass*)GetCampaignObject())->IsPlayer())
         {
             ((DrawableBSP*)drawPointer)->SetTextureSet(set3DTexture);
         }
@@ -295,7 +295,7 @@ int AircraftClass::Sleep(void)
     // potentially we could get removed prior to exploding.   Check that
     // here for nonlocal entities
 
-    if (!IsLocal() && pctStrength <= 0.0f && !IsSetFlag(SHOW_EXPLOSION))
+    if (!IsLocal() and pctStrength <= 0.0f and !IsSetFlag(SHOW_EXPLOSION))
     {
         RunExplosion();
         SetFlag(SHOW_EXPLOSION);
@@ -413,7 +413,7 @@ void AircraftClass::MakePlayerVehicle(void)
     if (curWaypoint->GetWPAction() == WP_TAKEOFF)
     {
         //JPO check for preflighting the aircraft. Doit unless we are right at the begining
-        //if (!DBrain()->IsSetATC(DigitalBrain::DonePreflight) && !DBrain()->IsAtFirstTaxipoint()) {
+        //if (!DBrain()->IsSetATC(DigitalBrain::DonePreflight) and !DBrain()->IsAtFirstTaxipoint()) {
         //RAS-11Nov04-Fix for Ramp Start: When entering Ramp Start, jet would already be running.  Removed line
         //above and replaced with this one
         if (!DBrain()->IsSetATC(DigitalBrain::DonePreflight))
@@ -587,7 +587,7 @@ void AircraftClass::MakePlayerVehicle(void)
                         sensorArray[i] = new Radar360Class(RDR_F16_360, this);
 
                         // JB 011213 If awacs set the radar range
-                        if (af && af->platform && GetCampaignObject() && GetCampaignObject()->GetSType() == STYPE_UNIT_AWACS)
+                        if (af and af->platform and GetCampaignObject() and GetCampaignObject()->GetSType() == STYPE_UNIT_AWACS)
                         {
                             ((Radar360Class*) sensorArray[i])->SetAWACSMode(true);
                             ((Radar360Class*) sensorArray[i])->SetMaxRange(RadarDataTable[af->platform->GetRadarType()].NominalRange * FT_TO_NM);
@@ -680,12 +680,12 @@ void AircraftClass::ConfigurePlayerAvionics(void)
 
     // Configure the avionics appropriatly
     if (SimDriver.RunningDogfight() ||
-        (SimDriver.RunningInstantAction() && instant_action::is_fighter_sweep()))
+        (SimDriver.RunningInstantAction() and instant_action::is_fighter_sweep()))
     {
         CPButtonObject* pButton = OTWDriver.pCockpitManager->GetButtonPointer(ICP_AA_BUTTON_ID);
         SimICPAA(ICP_AA_BUTTON_ID, KEY_DOWN, pButton);
     }
-    else if (SimDriver.RunningInstantAction() && instant_action::is_moving_mud())
+    else if (SimDriver.RunningInstantAction() and instant_action::is_moving_mud())
     {
         CPButtonObject* pButton = OTWDriver.pCockpitManager->GetButtonPointer(ICP_AG_BUTTON_ID);
         SimICPAG(ICP_AG_BUTTON_ID, KEY_DOWN, pButton);
@@ -714,7 +714,7 @@ void AircraftClass::MakeNonPlayerVehicle()
         af->SetSimpleMode(SIMPLE_MODE_AF);
     }
 
-    if ((GetCampaignObject()->GetDeagOwner() not_eq OwnerId()) && (!IsSetFlag(OBJ_DEAD)))
+    if ((GetCampaignObject()->GetDeagOwner() not_eq OwnerId()) and (!IsSetFlag(OBJ_DEAD)))
     {
         //MonoPrint(
         // "AircraftClass::Change owner to deag owner %08x %08x%08x\n", this, GetCampaignObject()->GetDeagOwner()
@@ -731,7 +731,7 @@ void AircraftClass::MakeNonPlayerVehicle()
 
     if (
         !HasPilot() ||
-        ((DBrain()->ATCStatus() < tReqTaxi) && OnGround() && !af->IsSet(AirframeClass::OnObject))
+        ((DBrain()->ATCStatus() < tReqTaxi) and OnGround() and !af->IsSet(AirframeClass::OnObject))
     )
     {
         if (this == FalconLocalSession->GetPlayerEntity())
@@ -743,7 +743,7 @@ void AircraftClass::MakeNonPlayerVehicle()
             SetAutopilot(CombatAP);
         }
 
-        if ((DBrain()->ATCStatus() not_eq lLanded) && (DBrain()->ATCStatus() not_eq lTaxiOff))
+        if ((DBrain()->ATCStatus() not_eq lLanded) and (DBrain()->ATCStatus() not_eq lTaxiOff))
         {
             // JB 010811 Prevent aircraft KIA after landing.
             SetAcStatusBits(ACSTATUS_PILOT_EJECTED);
@@ -990,7 +990,7 @@ void AircraftClass::Regenerate(float, float, float, float)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
     RadarClass* theRadar = (RadarClass*)FindSensor(playerAC, SensorClass::Radar);
 
-    if (theRadar && playerAC->FCC)
+    if (theRadar and playerAC->FCC)
     {
         FireControlComputer *fcc = playerAC->FCC;
 

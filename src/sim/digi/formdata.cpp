@@ -94,7 +94,7 @@ int ACFormationData::FindFormation(int msgNum)
     int i = 0;
     BOOL done = FALSE;
 
-    while (!done && i < numFormations)
+    while (!done and i < numFormations)
     {
         if (positionData[i][0].formNum == msgNum)
         {

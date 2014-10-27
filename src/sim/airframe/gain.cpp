@@ -130,9 +130,9 @@ void AirframeClass::Gains(void)
     {
         limiter = gLimiterMgr->GetLimiter(CatIIICommandType, vehicleIndex);
 
-        if (IsSet(CATLimiterIII) && limiter)
+        if (IsSet(CATLimiterIII) and limiter)
         {
-            if (alpha  < limiter->Limit(vcas) && (!gearPos or IsSet(GearBroken)))
+            if (alpha  < limiter->Limit(vcas) and (!gearPos or IsSet(GearBroken)))
                 ClearFlag(AOACmdMode);
             else
                 SetFlag(AOACmdMode);
@@ -143,12 +143,12 @@ void AirframeClass::Gains(void)
 
             if (limiter)
             {
-                if (alpha < limiter->Limit(alpha) && (!gearPos or IsSet(GearBroken)))
+                if (alpha < limiter->Limit(alpha) and (!gearPos or IsSet(GearBroken)))
                     ClearFlag(AOACmdMode);
                 else
                     SetFlag(AOACmdMode);
             }
-            else if (gsAvail > maxGs && (!gearPos or IsSet(GearBroken)))
+            else if (gsAvail > maxGs and (!gearPos or IsSet(GearBroken)))
                 ClearFlag(AOACmdMode);
             else
                 SetFlag(AOACmdMode);
@@ -181,7 +181,7 @@ void AirframeClass::Gains(void)
     tp01 = 0.200F;
     zp01 = 0.900F;
 
-    if (!IsSet(Simplified) && simpleMode not_eq SIMPLE_MODE_AF)
+    if (!IsSet(Simplified) and simpleMode not_eq SIMPLE_MODE_AF)
     {
         //tp01 *= (1.0F + (loadingFraction - 1.3F) *0.1F);
         zp01 *= (1.0F - 0.15F * (max(0.0F, 1.0F - qbar / 25.0F)) - zpdamp - max(0.0F, (loadingFraction - 1.3F) * 0.01F));
@@ -289,7 +289,7 @@ void AirframeClass::Gains(void)
     //wy01 = (0.8F/tr01);
     wy01 = (0.3F / tr01);
 
-    if (!IsSet(Simplified) && simpleMode not_eq SIMPLE_MODE_AF)
+    if (!IsSet(Simplified) and simpleMode not_eq SIMPLE_MODE_AF)
         wy01 *= (1.0F - loadingFraction * 0.1F);
 
     ky01 = 1.000F;

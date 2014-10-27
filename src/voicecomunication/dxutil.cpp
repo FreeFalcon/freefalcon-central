@@ -312,7 +312,7 @@ FLOAT __stdcall DXUtil_Timer(TIMER_COMMAND command)
 
         // Get either the current time or the stop time, depending
         // on whether we're stopped and what command was sent
-        if (m_llStopTime not_eq 0 && command not_eq TIMER_START && command not_eq TIMER_GETABSOLUTETIME)
+        if (m_llStopTime not_eq 0 and command not_eq TIMER_START and command not_eq TIMER_GETABSOLUTETIME)
             qwTime.QuadPart = m_llStopTime;
         else
             QueryPerformanceCounter(&qwTime);
@@ -389,7 +389,7 @@ FLOAT __stdcall DXUtil_Timer(TIMER_COMMAND command)
 
         // Get either the current time or the stop time, depending
         // on whether we're stopped and what command was sent
-        if (m_fStopTime not_eq 0.0 && command not_eq TIMER_START && command not_eq TIMER_GETABSOLUTETIME)
+        if (m_fStopTime not_eq 0.0 and command not_eq TIMER_START and command not_eq TIMER_GETABSOLUTETIME)
             fTime = m_fStopTime;
         else
             fTime = timeGetTime() * 0.001;

@@ -433,18 +433,18 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
 
         if (PlayerOptions.Season == 1) //Autumn
         {
-            if (!((tmpR == tmpG && tmpG == tmpB) or tmpG < 60 or (tmpR + tmpG + tmpB) / 3 > 225)) //Not Greyscale / green / not very bright
+            if (!((tmpR == tmpG and tmpG == tmpB) or tmpG < 60 or (tmpR + tmpG + tmpB) / 3 > 225)) //Not Greyscale / green / not very bright
             {
                 RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-                if (h >= 30 && h <= 165)  //Green
+                if (h >= 30 and h <= 165)  //Green
                 {
                     //h *= 0.6f; // min27 (yellow/orange/terracota/brown)
                     h = h * 0.33f + 15; //Shift to brown
                     s *= 1.2f; //more saturated (intenser brown, just mudy green otherwise
                     v *= 0.9f; //darker
                 }
-                else if (!(v > 0.9 && s > 0.9)) //Not a strong green, but neither very bright
+                else if (!(v > 0.9 and s > 0.9)) //Not a strong green, but neither very bright
                 {
                     s *= 0.9f; //less saturated
                     v *= 0.85f; //darken a bit
@@ -459,13 +459,13 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
         }
         else if (PlayerOptions.Season == 2) //Winter
         {
-            if (!(tmpR == tmpG && tmpR == tmpB) or tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //|| (tmpR == 255 && tmpG == 255))) //Greyscale //or pure color
+            if (!(tmpR == tmpG and tmpR == tmpB) or tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //|| (tmpR == 255 and tmpG == 255))) //Greyscale //or pure color
             {
                 RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
                 if (!(s <= 0.2 or h == -1))  //If Not Greyscale
                 {
-                    if (h >= 45 && h <= 150) //If Green
+                    if (h >= 45 and h <= 150) //If Green
                     {
                         s = 0;
                         v = 255; //Make white
@@ -479,7 +479,7 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
                 //else if (v<=200) v *= 0.9f; //Greyscale, but not white: darken a bit (to increase contrast)
                 //else if (v>=200) v *= 1.2f; //bright...make even brighter
 
-                //if (s==0 && v < 240) v *= 0.85f; //Greyscale, but not white: darken a bit (to increase contrast)
+                //if (s==0 and v < 240) v *= 0.85f; //Greyscale, but not white: darken a bit (to increase contrast)
                 //if (s>230) s = 255; //bright...make even brighter
                 if (v > 255) v = 255;
 
@@ -492,7 +492,7 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
 
             if (!(s <= 0.1 or h == -1))  //Not Greyscale
             {
-                if (h >= 45 && h <= 160) //Green
+                if (h >= 45 and h <= 160) //Green
                 {
                     s *= 0.8f;
                     v *= 1.2f;
@@ -715,14 +715,14 @@ TexPath* TextureDB::GetPath(TextureID texID, int type, int offset)
 
     // Find the first entry of the required type
     if (type)
-        while ((a < stop) && (a->type not_eq type))
+        while ((a < stop) and (a->type not_eq type))
             a++;
 
     // Step to the requested offset
     a += offset;
 
     // We didn't find enough (or any) matching types
-    if ((a >= stop) or ((type) && (a->type not_eq type)))
+    if ((a >= stop) or ((type) and (a->type not_eq type)))
         return NULL;
 
     // We found a match
@@ -746,14 +746,14 @@ TexArea* TextureDB::GetArea(TextureID texID, int type, int offset)
 
     // Find the first entry of the required type
     if (type)
-        while ((a < stop) && (a->type not_eq type))
+        while ((a < stop) and (a->type not_eq type))
             a++;
 
     // Step to the requested offset
     a += offset;
 
     // We didn't find enough (or any) matching types
-    if ((a >= stop) or ((type) && (a->type not_eq type)))
+    if ((a >= stop) or ((type) and (a->type not_eq type)))
         return NULL;
 
     // We found a match
@@ -787,7 +787,7 @@ void TextureDB::Load(SetEntry* pSet, TileEntry* pTile, int res, bool forceNoDDS)
     ShiAssert(!pTile->handle[res]);
     ShiAssert(!pTile->handle[res]);
 
-    if (!forceNoDDS && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+    if (!forceNoDDS and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
         ReadImageDDS(pTile, res);
         pSet->palette = NULL;
@@ -1130,7 +1130,7 @@ void TextureDB::Select(ContextMPR *localContext, TextureID texID)
     ShiAssert(tile < TextureSets[set].numTiles);
 
     // JB 010318 CTD
-    if (!(set >= 0 && set < numSets && tile >= 0 && tile < TextureSets[set].numTiles))
+    if (!(set >= 0 and set < numSets and tile >= 0 and tile < TextureSets[set].numTiles))
         return;
 
     // Make sure the texture we're trying to use is local to MPR
@@ -1145,7 +1145,7 @@ void TextureDB::Select(ContextMPR *localContext, TextureID texID)
     localContext->SelectTexture1(TextureSets[set].tiles[tile].handle[res]);
 
     // Night texture
-    if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS && lightLevel < 0.5f)
+    if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS and lightLevel < 0.5f)
     {
         ShiAssert(TextureSets[set].tiles[tile].handleN[res]);
         localContext->SelectTexture2(TextureSets[set].tiles[tile].handleN[res]);

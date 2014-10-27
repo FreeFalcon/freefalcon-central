@@ -110,7 +110,7 @@ F4CSECTIONHANDLE* F4CreateCriticalSection(const char *name)
     F4CSECTIONHANDLE* theSection;
     theSection = new F4CSECTIONHANDLE;
 
-    if (theSection && (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) && (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
+    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) and (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
     {
         //if (theSection){
         memset(&(theSection->criticalSection), 0, sizeof(CRITICAL_SECTION));
@@ -127,7 +127,7 @@ F4CSECTIONHANDLE* F4CreateCriticalSection(const char *name)
 
 void F4DestroyCriticalSection(F4CSECTIONHANDLE* theSection)
 {
-    if (theSection && (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) && (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
+    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) and (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
     {
         //if (theSection){
         DeleteCriticalSection(&(theSection->criticalSection));
@@ -140,7 +140,7 @@ void F4DestroyCriticalSection(F4CSECTIONHANDLE* theSection)
 #include <stdio.h>
 void F4EnterCriticalSection(F4CSECTIONHANDLE* theSection)
 {
-    if (theSection && (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) && (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
+    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) and (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
     {
         //if (theSection){
         DWORD now = GetTickCount();
@@ -163,7 +163,7 @@ BOOL F4TryEnterCriticalSection(F4CSECTIONHANDLE* theSection)
 {
     HANDLE tid = (HANDLE)GetCurrentThreadId();
 
-    if (theSection && (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) && (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
+    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) and (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
     {
         //if (theSection){
         if ((int)theSection->owningThread < 0 or theSection->owningThread == tid)
@@ -186,9 +186,9 @@ int F4CheckHasCriticalSection(F4CSECTIONHANDLE* theSection)
 {
     HANDLE tid = (HANDLE)GetCurrentThreadId();
 
-    if (theSection && (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) && (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
+    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) and (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
     {
-        if (theSection && theSection->owningThread == tid && theSection->count > 0)
+        if (theSection and theSection->owningThread == tid and theSection->count > 0)
         {
             return true;
         }
@@ -201,7 +201,7 @@ int F4CheckHasCriticalSection(F4CSECTIONHANDLE* theSection)
 
 void F4LeaveCriticalSection(F4CSECTIONHANDLE* theSection)
 {
-    if (theSection && (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) && (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
+    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) and (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
     {
         //if (theSection){
         theSection->count --;
@@ -218,7 +218,7 @@ void F4LeaveCriticalSection(F4CSECTIONHANDLE* theSection)
         DWORD endt = GetTickCount();
         int time = endt - theSection->time;
 
-        if (theSection->count == 0 && time > interesttime)
+        if (theSection->count == 0 and time > interesttime)
         {
             MonoPrint("Has held critical section %s for %d\n", theSection->name, time);
         }

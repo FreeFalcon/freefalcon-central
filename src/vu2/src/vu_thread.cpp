@@ -114,7 +114,7 @@ void VuBaseThread::Update(int mxTime)
         DWORD now = GetTickCount();
         timeRemaining = now - start > limit ? false : true;
     }
-    while (nm && timeRemaining);
+    while (nm and timeRemaining);
 }
 #else
 void VuBaseThread::Update()
@@ -383,13 +383,13 @@ void VuMainThread::Update()
             nextGame = (VuGameEntity*)grp_iter.GetNext();
 
             // removes empty games that are not player pool
-            if (game->IsLocal() && (game not_eq vuPlayerPoolGroup) && (game->SessionCount() == 0))
+            if (game->IsLocal() and (game not_eq vuPlayerPoolGroup) and (game->SessionCount() == 0))
             {
                 vuDatabase->Remove(game);
             }
 
             // broadcast game data if its our game
-            if (game->IsLocal() && ((game->LastTransmissionTime() + game->UpdateRate()) < vuxRealTime))
+            if (game->IsLocal() and ((game->LastTransmissionTime() + game->UpdateRate()) < vuxRealTime))
             {
                 if (game->IsDirty())
                 {
@@ -535,13 +535,13 @@ void VuMainThread::Update()
             nextGame = (VuGameEntity*)grp_iter.GetNext();
 
             // removes empty games that are not player pool
-            if (game->IsLocal() && (game not_eq vuPlayerPoolGroup) && (game->SessionCount() == 0))
+            if (game->IsLocal() and (game not_eq vuPlayerPoolGroup) and (game->SessionCount() == 0))
             {
                 vuDatabase->Remove(game);
             }
 
             // broadcast game data if its our game
-            if (game->IsLocal() && ((game->LastTransmissionTime() + game->UpdateRate()) < vuxRealTime))
+            if (game->IsLocal() and ((game->LastTransmissionTime() + game->UpdateRate()) < vuxRealTime))
             {
                 if (game->IsDirty())
                 {
@@ -688,7 +688,7 @@ void VuMainThread::FlushOutboundMessages()
     target = static_cast<VuTargetEntity*>(tli.GetFirst());
 
     // attempt to send one packet for each comhandle
-    while (target && (current = target->FlushOutboundMessageBuffer()) not_eq 0)
+    while (target and (current = target->FlushOutboundMessageBuffer()) not_eq 0)
     {
         if (current > 0)
         {
@@ -708,7 +708,7 @@ void VuMainThread::UpdateGroupData(VuGroupEntity* group)
     {
         next = iter.GetNext();
 
-        if ((sess not_eq vuLocalSessionEntity) && (sess->GetReliableCommsStatus() == VU_CONN_ERROR))
+        if ((sess not_eq vuLocalSessionEntity) and (sess->GetReliableCommsStatus() == VU_CONN_ERROR))
         {
             // time out this session
             sess->CloseSession();
@@ -808,9 +808,9 @@ int VuMainThread::SendQueuedMessages()
             int best = -1;
             int size = 0x7fffffff;
 
-            for (index = 0; (targets[index]) && (index < MAX_TARGETS); ++index)
+            for (index = 0; (targets[index]) and (index < MAX_TARGETS); ++index)
             {
-                if ((!used[index]) && (lru_size[index] < size))
+                if ((!used[index]) and (lru_size[index] < size))
                 {
                     best = index;
                     size = lru_size[index];

@@ -98,10 +98,10 @@ void RenderOTW::DrawTerrainSquare(int r, int c, int LOD)
         v3->u = post->u + post->d;
         v3->v = post->v - post->d;
 
-        // ShiAssert(v0->u <= 1.0f && v1->u <= 1.0f && v2->u <= 1.0f);
-        // ShiAssert(v0->v <= 1.0f && v1->v <= 1.0f && v2->v <= 1.0f);
-        // ShiAssert(v0->u >= 0.0 && v1->u >= 0.0 && v2->u >= 0.0);
-        // ShiAssert(v0->v >= 0.0 && v1->v >= 0.0 && v2->v >= 0.0);
+        // ShiAssert(v0->u <= 1.0f and v1->u <= 1.0f and v2->u <= 1.0f);
+        // ShiAssert(v0->v <= 1.0f and v1->v <= 1.0f and v2->v <= 1.0f);
+        // ShiAssert(v0->u >= 0.0 and v1->u >= 0.0 and v2->u >= 0.0);
+        // ShiAssert(v0->v >= 0.0 and v1->v >= 0.0 and v2->v >= 0.0);
 
 #if defined( SET_FG_COLOR_ON_FLAT )
     }
@@ -163,7 +163,7 @@ void RenderOTW::DrawUpConnector(int r, int c, int LOD)
 
     // If required, get the post which will provide the texture for this segment
     if (v0->RenderingStateHandle > STATE_GOURAUD
-        && !F4IsBadReadPtr(viewpoint, sizeof(RViewPoint)))   // JB 010408 CTD
+        and !F4IsBadReadPtr(viewpoint, sizeof(RViewPoint)))   // JB 010408 CTD
     {
         post = viewpoint->GetPost(lowRow - 1 + LODdata[LOD + 1].centerRow,
                                   lowCol   + LODdata[LOD + 1].centerCol, LOD + 1);

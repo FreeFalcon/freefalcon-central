@@ -340,11 +340,11 @@ long CSoundMgr::FillRiffInfo(char *memory, RIFF_FILE *riff)
 
     riff->data = ptr;
 
-    if (ptr && !strncmp(ptr, "WAVE", 4))
+    if (ptr and !strncmp(ptr, "WAVE", 4))
     {
         ptr += 4;
 
-        while (ptr && !riff->Start && ptr < (riff->data + datasize))
+        while (ptr and !riff->Start and ptr < (riff->data + datasize))
         {
             hdr = ptr;
             ptr += 4;
@@ -415,11 +415,11 @@ RIFF_FILE *CSoundMgr::LoadRiff(char *filename)
 
     ptr = filedata->data;
 
-    if (ptr && !strncmp(ptr, "WAVE", 4))
+    if (ptr and !strncmp(ptr, "WAVE", 4))
     {
         ptr += 4;
 
-        while (ptr && !filedata->Start && ptr < (filedata->data + datasize))
+        while (ptr and !filedata->Start and ptr < (filedata->data + datasize))
         {
             hdr = ptr;
             ptr += 4;
@@ -478,7 +478,7 @@ long CSoundMgr::SkipRiffHeader(FILE *fp)
     bytesread += 4 + sizeof(long);
     totalsize -= 8;
 
-    while (totalsize > 0 && strncmp(buffer, "data", 4))
+    while (totalsize > 0 and strncmp(buffer, "data", 4))
     {
         while (size > 256)
         {
@@ -531,7 +531,7 @@ long CSoundMgr::SkipRiffHeader(HANDLE fp)
     bytesread += 4 + sizeof(long);
     totalsize -= 8;
 
-    while (totalsize > 0 && strncmp(buffer, "data", 4))
+    while (totalsize > 0 and strncmp(buffer, "data", 4))
     {
         while (size > 256)
         {
@@ -602,7 +602,7 @@ long CSoundMgr::LoadRiffFormat(HANDLE fp, WAVEFORMATEX *Format, long *HeaderSize
     ReadFile(fp, &size, sizeof(long), &br, NULL);
     bytesread += br;
 
-    while (bytesread < totalsize && strncmp(buffer, "data", 4))
+    while (bytesread < totalsize and strncmp(buffer, "data", 4))
     {
         if (!strncmp(buffer, "fmt ", 4))
         {
@@ -691,7 +691,7 @@ long CSoundMgr::LoadWaveFile(char *Filename, long Flags, SFX_DEF_ENTRY *sfx)
                     if (g_bOldSoundAlg == false)
                         dsbdesc.dwFlags  or_eq  DSBCAPS_CTRLPOSITIONNOTIFY;
 
-                    if (g_bUse3dSound && (sfx->flags & SFX_FLAGS_3D))
+                    if (g_bUse3dSound and (sfx->flags & SFX_FLAGS_3D))
                     {
                         dsbdesc.dwFlags  or_eq  DSBCAPS_CTRL3D | DSBCAPS_MUTE3DATMAXDISTANCE;
                     }
@@ -930,7 +930,7 @@ BOOL CSoundMgr::PlaySample(long ID, long Flags)
             if (Sample not_eq NULL)
             {
                 /*
-                if(IsSamplePlaying(ID,0) && !(Flags & SND_OVERRIDE))
+                if(IsSamplePlaying(ID,0) and !(Flags & SND_OVERRIDE))
                 {
                  if(Sample->Flags & SND_EXCLUSIVE)
                  return(FALSE);
@@ -1146,11 +1146,11 @@ BOOL CSoundMgr::SetSamplePosition(long ID, float x, float y, float z, float vx, 
     SoundList * Sample;
     HRESULT hr;
 
-    if (gSoundDriver && DSound)
+    if (gSoundDriver and DSound)
     {
         Sample = FindSample(ID);
 
-        if (Sample not_eq NULL && Sample->DSound3dBuffer)
+        if (Sample not_eq NULL and Sample->DSound3dBuffer)
         {
             if (Sample->is3d == FALSE)
             {
@@ -1230,7 +1230,7 @@ BOOL CSoundMgr::SetSamplePosition(long ID, float x, float y, float z, float pitc
     {
 #endif
 
-        if (gSoundDriver && DSound)
+        if (gSoundDriver and DSound)
         {
             if (Sample = FindSample(ID))
             {
@@ -1404,7 +1404,7 @@ void CSoundMgr::AssignSamples(void)
         MonoPrint("AssignSamples()=========================================\n");
 #endif
 
-        if (gSoundDriver && DSound)
+        if (gSoundDriver and DSound)
         {
             S = SampleList;
 
@@ -1496,7 +1496,7 @@ void CSoundMgr::AssignSamples(void)
 #endif
 
 
-                                if (S->Buf[i].DSound3dBuffer && S->Buf[i].Is3d)
+                                if (S->Buf[i].DSound3dBuffer and S->Buf[i].Is3d)
                                 {
                                     // sound is 3d
                                     S->Buf[i].DSound3dBuffer->SetMode(DS3DMODE_NORMAL, DS3D_DEFERRED);
@@ -1636,7 +1636,7 @@ void CSoundMgr::AssignSamples(void)
                                 else
                                 {
                                     // NON Looped sounds
-                                    if (g_bSoundDistanceEffect && (S->Flags & SFX_POS_EXTERN))
+                                    if (g_bSoundDistanceEffect and (S->Flags & SFX_POS_EXTERN))
                                     {
                                         // delay external sounds
                                         float time,     // Elapsed time since sound was created.
@@ -1721,7 +1721,7 @@ void CSoundMgr::AssignSamples(void)
                             }
                             else
                             {
-                                if (S->Flags & SFX_POS_LOOPED && S->Buf[i].distsq == -1) // don't stop non-looping sounds, let them finish on thier own.
+                                if (S->Flags & SFX_POS_LOOPED and S->Buf[i].distsq == -1) // don't stop non-looping sounds, let them finish on thier own.
                                 {
                                     // MLR 1/21/2004 - Changed so that the sound is Stop()ed only if distsq is -1
                                     //                 which may have been causeing trouble with Direct Sound.
@@ -1760,7 +1760,7 @@ BOOL CSoundMgr::Disable3dSample(long ID)
 {
     SoundList * Sample;
 
-    if (gSoundDriver && DSound)
+    if (gSoundDriver and DSound)
     {
         Sample = FindSample(ID);
 
@@ -2066,7 +2066,7 @@ long CSoundMgr::CreateStream(WAVEFORMATEX *Format, float StreamSeconds) // Quesi
     HRESULT hr;
     long Size;
 
-    if (gSoundDriver && DSound)
+    if (gSoundDriver and DSound)
     {
         Size = (long)(StreamSeconds * (float)(Format->nSamplesPerSec * (Format->wBitsPerSample / 8) * Format->nChannels));
 
@@ -2489,7 +2489,7 @@ void CSoundMgr::RestartStream(SoundStream *Stream)
 {
     if (Stream->Status & SND_STREAM_FILE)
     {
-        if (Stream->LoopOffset && Stream->LoopOffset < Stream->OriginalSize) // NOT supported for IMA_ADPCM
+        if (Stream->LoopOffset and Stream->LoopOffset < Stream->OriginalSize) // NOT supported for IMA_ADPCM
         {
             SetFilePointer(Stream->fp, Stream->HeaderOffset + Stream->LoopOffset, NULL, FILE_BEGIN);
             Stream->StreamSize = Stream->LoopOffset;
@@ -2547,7 +2547,7 @@ void CSoundMgr::SilenceStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
                 hr = Stream->DSoundBuffer->Lock(Buffer, Length, (void**)&mem, &Len, NULL, NULL, NULL);
             }
 
-            if (Len && hr == DS_OK)
+            if (Len and hr == DS_OK)
             {
                 memset((char *)mem, 0, Length);
                 Stream->DSoundBuffer->Unlock(mem, Length, NULL, NULL);
@@ -2578,7 +2578,7 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
                 Stream->DSoundBuffer->Lock(Buffer, Length, (void**)&mem, &Len, NULL, NULL, NULL);
             }
 
-            if (Len && hr == DS_OK)
+            if (Len and hr == DS_OK)
             {
                 if (Stream->Status & SND_STREAM_FILE)
                 {
@@ -2593,7 +2593,7 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
 
                     if (bytesread < Length)
                     {
-                        if (Stream->Status & SND_STREAM_LOOP && (Stream->LoopCount > 0 or Stream->LoopCount == -1))
+                        if (Stream->Status & SND_STREAM_LOOP and (Stream->LoopCount > 0 or Stream->LoopCount == -1))
                         {
                             RestartStream(Stream);
 
@@ -2609,7 +2609,7 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
                             if (Stream->LoopCount > 0)
                                 Stream->LoopCount--;
 
-                            if (!Stream->LoopCount && Stream->FadeOut < Stream->Volume) // Do fade out
+                            if (!Stream->LoopCount and Stream->FadeOut < Stream->Volume) // Do fade out
                             {
                                 if (Stream->StreamMessage)
                                     (*Stream->StreamMessage)(Stream, SND_MSG_START_FADE);
@@ -2671,7 +2671,7 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
 
                     if (bytesread < Length)
                     {
-                        if (Stream->Status & SND_STREAM_LOOP && (Stream->LoopCount > 0 or Stream->LoopCount == -1))
+                        if (Stream->Status & SND_STREAM_LOOP and (Stream->LoopCount > 0 or Stream->LoopCount == -1))
                         {
                             RestartStream(Stream);
 
@@ -2700,7 +2700,7 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
                             if (Stream->LoopCount > 0)
                                 Stream->LoopCount--;
 
-                            if (!Stream->LoopCount && Stream->FadeOut < Stream->Volume) // Do fade out
+                            if (!Stream->LoopCount and Stream->FadeOut < Stream->Volume) // Do fade out
                             {
                                 if (Stream->StreamMessage)
                                     (*Stream->StreamMessage)(Stream, SND_MSG_START_FADE);
@@ -3309,7 +3309,7 @@ void CSoundMgr::ThreadHandler()
                     break;
 
                 default:
-                    if (result > WAIT_OBJECT_0 && result < (WAIT_OBJECT_0 + nHandles))
+                    if (result > WAIT_OBJECT_0 and result < (WAIT_OBJECT_0 + nHandles))
                     {
                         Stream = sstreams[result - WAIT_OBJECT_0];
                         //MonoPrint("Sound triggered on stream %x\n", Stream);
@@ -3750,7 +3750,7 @@ LPDIRECTSOUNDBUFFER CSoundMgr::LoadWaveFile(char *Filename, SFX_DEF_ENTRY *sfx)
                 //if (g_bOldSoundAlg == false)
                 //  dsbdesc.dwFlags  or_eq  DSBCAPS_CTRLPOSITIONNOTIFY;
 
-                if (g_bUse3dSound && (sfx->flags & SFX_FLAGS_3D))
+                if (g_bUse3dSound and (sfx->flags & SFX_FLAGS_3D))
                 {
                     dsbdesc.dwFlags  or_eq  DSBCAPS_CTRL3D | DSBCAPS_MUTE3DATMAXDISTANCE;
                 }

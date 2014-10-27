@@ -233,8 +233,8 @@ int SimlibFileClass::ReadLine(char *buf, int max_len)
         //RESMANAGER KLUDGE
         SwapCRLF(buf);
 
-        //            if (buf[0] not_eq ';' && buf[0] not_eq '\r')
-        if (buf[0] not_eq ';' && buf[0] not_eq '\n')
+        //            if (buf[0] not_eq ';' and buf[0] not_eq '\r')
+        if (buf[0] not_eq ';' and buf[0] not_eq '\n')
             break;
     }
 

@@ -177,7 +177,7 @@ void SimMoverClass::MakeSimple()
     numVertices = AIRCRAFT_MAX_DVERTEX;
     AllocateSwitchAndDof();
 
-    for (i = 2; i < 6 && i < numDofs; i++)
+    for (i = 2; i < 6 and i < numDofs; i++)
     {
         DOFType[i] = NoDof;
     }
@@ -282,7 +282,7 @@ void SimMoverClass::InitLocalData()
         {
             if (GetType() == TYPE_AIRPLANE)
             {
-                if (GetSType() == STYPE_AIR_FIGHTER_BOMBER && GetSPType() == SPTYPE_F16C)
+                if (GetSType() == STYPE_AIR_FIGHTER_BOMBER and GetSPType() == SPTYPE_F16C)
                 {
                     MakeComplex();
                 }
@@ -400,7 +400,7 @@ void SimMoverClass::CleanupData()
 void SimMoverClass::CleanupLocalData()
 {
     // sfr: @TODO remove this shit (for now im just calling base class cleanup)
-    if (numSensors > 0 && (!sensorArray or F4IsBadReadPtr(sensorArray, sizeof(SensorClass*))))
+    if (numSensors > 0 and (!sensorArray or F4IsBadReadPtr(sensorArray, sizeof(SensorClass*))))
     {
         // JB 010223 CTD
         return; // JB 010223 CTD
@@ -485,7 +485,7 @@ bool SimMoverClass::UpdatePositionFromLastOwner(unsigned long ms)
         ::Sleep(SLEEP_IVAL_MS);
         delay += SLEEP_IVAL_MS;
     }
-    while (waitingUpdateFromServer && delay < ms);
+    while (waitingUpdateFromServer and delay < ms);
 
     waitingUpdateFromServer = false;
     return delay < ms ? true : false;
@@ -506,7 +506,7 @@ int SimMoverClass::Wake(void)
     // SetDelta(0.0F, 0.0F, 0.0F);
     // SetYPRDelta(0.0F, 0.0F, 0.0F);
 
-    if (drawPointer && !IsExploding())
+    if (drawPointer and !IsExploding())
     {
         for (i = 0; i < numSwitches; i++)
         {
@@ -667,7 +667,7 @@ int SimMoverClass::Exec(void)
     if (GetCampaignObject())
         ((UnitClass*)GetCampaignObject())->SetUnitLastMove(TheCampaign.CurrentTime);
 
-    if (drawPointer && !IsExploding())
+    if (drawPointer and !IsExploding())
     {
         for (i = 0; i < numSwitches; i++)
         {
@@ -694,7 +694,7 @@ int SimMoverClass::Exec(void)
 
     if (IsLocal())
     {
-        if ((requestCount > 0 && (SimLibFrameCount & 0x2F) == 0) or ((SimLibFrameCount & 0x1FF) == 0))
+        if ((requestCount > 0 and (SimLibFrameCount & 0x2F) == 0) or ((SimLibFrameCount & 0x1FF) == 0))
         {
             //newControlData = new FalconControlSurfaceMsg(Id(), FalconLocalGame);
             //newControlData->dataBlock.gameTime = SimLibElapsedTime;
@@ -1022,7 +1022,7 @@ int SimMoverClass::Handle(VuPositionUpdateEvent *event)
 {
     UnitClass *campObj = (UnitClass*) GetCampaignObject();
 
-    if (campObj && campObj->IsLocal() && campObj->GetComponentLead() == this)
+    if (campObj and campObj->IsLocal() and campObj->GetComponentLead() == this)
     {
         campObj->SimSetLocation(event->x_, event->y_, event->z_);
 
@@ -1150,7 +1150,7 @@ void SimMoverClass::UpdateLOS(SimObjectType *obj)
     OTWDriver.GetAreaFloorAndCeiling(&bottom, &top);
 
     if (
-        (ZPos() < top && obj->BaseData()->ZPos() < top) ||
+        (ZPos() < top and obj->BaseData()->ZPos() < top) ||
         (OTWDriver.CheckLOS(this, obj->BaseData()))
     )
     {
@@ -1330,7 +1330,7 @@ SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
                                 }
                                 else
                                 {
-                                    if (FalconLocalSession && this == FalconLocalSession->GetPlayerEntity())
+                                    if (FalconLocalSession and this == FalconLocalSession->GetPlayerEntity())
                                         g_intellivibeData.CollisionCounter++;
 
                                     return testFeature;
@@ -1348,7 +1348,7 @@ SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
         objective = (CampBaseClass*)gridIt.GetNext();
     }
 
-    if (foundFeature && FalconLocalSession && this == FalconLocalSession->GetPlayerEntity())
+    if (foundFeature and FalconLocalSession and this == FalconLocalSession->GetPlayerEntity())
         g_intellivibeData.CollisionCounter++;
 
     return foundFeature;

@@ -146,7 +146,7 @@ void C_Squadron::SetFont(long ID)
 
 long C_Squadron::CheckHotSpots(long relX, long relY)
 {
-    if (relX >= GetX() && relX <= (GetX() + GetW()) && relY >= GetY() && relY <= (GetY() + GetH()))
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
         return(GetID());
 
     return(0);

@@ -129,7 +129,7 @@ BOOL C_3dViewer::InitOTW(float, BOOL Preload)
 
     viewPoint_->Update(&currentPos_);
 
-    if (Preload && tempVP)
+    if (Preload and tempVP)
     {
         tempVP->Cleanup();
         delete tempVP;
@@ -454,7 +454,7 @@ BOOL C_3dViewer::View3d(long ID)
 
 BOOL C_3dViewer::ViewOTW()
 {
-    if (rendOTW_ && viewPoint_)
+    if (rendOTW_ and viewPoint_)
     {
         viewPoint_->Update(&currentPos_);
         gMainHandler->Unlock();
@@ -486,7 +486,7 @@ BOOL C_3dViewer::ViewGreyOTW()
     WORD *mem;
 
     //long i,j,x; // JB 010118 unreferenced variable
-    if (rendOTW_ && viewPoint_)
+    if (rendOTW_ and viewPoint_)
     {
         viewPoint_->Update(&currentPos_);
         gMainHandler->Unlock();
@@ -550,7 +550,7 @@ BOOL C_3dViewer::ViewGreyOTW()
         RECT rcDst = { 0, 0, nWidth, nHeight };
 
         // Cleanup old buffer if it doesnt fit
-        if (m_pImgGray && (m_pImgGray->targetXres() not_eq nWidth or m_pImgGray->targetYres() not_eq nHeight))
+        if (m_pImgGray and (m_pImgGray->targetXres() not_eq nWidth or m_pImgGray->targetYres() not_eq nHeight))
         {
             m_pImgGray->Cleanup();
             delete m_pImgGray;

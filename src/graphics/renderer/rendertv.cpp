@@ -91,7 +91,7 @@ void RenderTV::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float distan
     vert->a = 1.f;
 
     // FRB - B&W
-    if ((g_bGreyMFD) && (!bNVGmode))
+    if ((g_bGreyMFD) and (!bNVGmode))
         vert->r = vert->b = vert->g;
 
     vert->RenderingStateHandle = state_far;

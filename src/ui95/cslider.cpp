@@ -370,8 +370,8 @@ BOOL C_Slider::MouseOver(long relx, long rely, C_Base *)
     if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
         return(FALSE);
 
-    if (relx >= (GetX() + SX_) && relx < (GetX() + GetW() + SX_) &&
-        rely >= (GetY() + SY_) && rely < (GetY() + GetH() + SY_))
+    if (relx >= (GetX() + SX_) and relx < (GetX() + GetW() + SX_) &&
+        rely >= (GetY() + SY_) and rely < (GetY() + GetH() + SY_))
     {
         return(TRUE);
     }

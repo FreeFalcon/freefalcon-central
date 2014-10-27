@@ -343,7 +343,7 @@ void TextureBankClass::ReadImageData(int id, bool forceNoDDS)
 
     ShiAssert(TexturePool[id].refCount);
 
-    if (!forceNoDDS && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+    if (!forceNoDDS and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
         ReadImageDDS(id);
         ReadImageDDSN(id);
@@ -416,7 +416,7 @@ void TextureBankClass::LoaderCallBack(LoaderQ* request)
     //EnterCriticalSection(&ObjectLOD::cs_ObjectLOD);
 
     // If we're turning deferred loads off, go back and do all the loads we held up
-    if (deferredLoadState && !state)
+    if (deferredLoadState and !state)
     {
         DWORD Count = 5;
 
@@ -481,7 +481,7 @@ void TextureBankClass::SelectHandle(DWORD TexHandle)
 
 BOOL TextureBankClass::IsValidIndex(int id)
 {
-    return((id >= 0) && (id < nTextures));
+    return((id >= 0) and (id < nTextures));
 }
 
 void TextureBankClass::RestoreAll()
@@ -792,7 +792,7 @@ DWORD TextureBankClass::GetHandle(DWORD id)
     if (TexFlags[id].OnRelease) return NULL;
 
     // if the Handle is prsent, return it
-    if (IsValidIndex(id) && TexturePool[id].tex.TexHandle()) return TexturePool[id].tex.TexHandle();
+    if (IsValidIndex(id) and TexturePool[id].tex.TexHandle()) return TexturePool[id].tex.TexHandle();
 
     // return  a null pointer that means BLANK SURFACE
     return NULL;
@@ -816,7 +816,7 @@ bool TextureBankClass::UpdateBank(void)
             id = CacheRelease[ReleaseOut++];
 
             // if not an order again, and no Referenced, release it
-            if (!TexFlags[id].OnOrder && !TexturePool[id].refCount && TexFlags[id].OnRelease) TexturePool[id].tex.FreeAll();
+            if (!TexFlags[id].OnOrder and !TexturePool[id].refCount and TexFlags[id].OnRelease) TexturePool[id].tex.FreeAll();
 
             // clear flag, in any case
             TexFlags[id].OnRelease = false;
@@ -860,7 +860,7 @@ bool TextureBankClass::UpdateBank(void)
 void TextureBankClass::WaitUpdates(void)
 {
     // if no data to wait, exit here
-    if (LoadIn == LoadOut && ReleaseIn == ReleaseOut) return;
+    if (LoadIn == LoadOut and ReleaseIn == ReleaseOut) return;
 
     // Pause the Loader...
     TheLoader.SetPause(true);

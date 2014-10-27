@@ -163,7 +163,7 @@ void ICPClass::FifeButton(int mode)
         LeaveCNIPage();
 
         //Only set this when not here
-        if (!Cruise_HOME && !Cruise_RNG && !Cruise_TOS)
+        if (!Cruise_HOME and !Cruise_RNG and !Cruise_TOS)
             SetICPFlag(ICPClass::EDIT_STPT);
 
         //CRUS PAGE
@@ -299,7 +299,7 @@ void ICPClass::ZeroButton(int mode)
 
     if (IsICPSet(ICPClass::MODE_LIST))
     {
-        if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == EIGHT_BUTTON)
+        if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == EIGHT_BUTTON)
             UpdateMODEMode();
         else
         {
@@ -341,7 +341,7 @@ void ICPClass::ZeroButton(int mode)
         }
     }
     //ILS
-    else if (IsICPSet(ICPClass::MODE_CNI) && mICPSecondaryMode == ONE_BUTTON)
+    else if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == ONE_BUTTON)
     {
         if (ILSPageSel == 1)
         {

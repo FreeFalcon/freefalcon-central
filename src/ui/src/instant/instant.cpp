@@ -126,7 +126,7 @@ _TCHAR *AddCommas(_TCHAR *buf)
 
     while (i)
     {
-        if ((i % 3) == 0 && i > 1 && i < len)
+        if ((i % 3) == 0 and i > 1 and i < len)
             newbuf[j++] = comma[0];
 
         newbuf[j++] = buf[k++];
@@ -498,7 +498,7 @@ void CheckEject(VU_ID Pilot, float damage, float fuel)
 {
     if (Pilot == IAPlayerID)
     {
-        if (damage > 80.0f && fuel > 100.0f)
+        if (damage > 80.0f and fuel > 100.0f)
             LivingBonus = -50000;
         else
             LivingBonus = 50000;
@@ -703,7 +703,7 @@ static void InsertScoreCB(long, short hittype, C_Base *)
 
     i = 0;
 
-    while (i < MAX_SCORES && TotalScore <= Scores.Scores[i].Score && Scores.Scores[i].Name[0] not_eq 0)
+    while (i < MAX_SCORES and TotalScore <= Scores.Scores[i].Score and Scores.Scores[i].Name[0] not_eq 0)
         i++;
 
     idx = MAX_SCORES;
@@ -808,7 +808,7 @@ void ChangeTimeCB(long, short hittype, C_Base *control)
     short dir = 0;
     long value, flag;
 
-    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
     dir = static_cast<short>(control->GetUserNumber(1));
@@ -1663,7 +1663,7 @@ void CheckHighScore(long TotalScore)
 
     i = 0;
 
-    while (i < MAX_SCORES && TotalScore <= Scores.Scores[i].Score && Scores.Scores[i].Name[0] not_eq 0)
+    while (i < MAX_SCORES and TotalScore <= Scores.Scores[i].Score and Scores.Scores[i].Name[0] not_eq 0)
         i++;
 
     if (TotalScore < 0)
@@ -1701,14 +1701,14 @@ void CheckHighScore(long TotalScore)
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if (i >= 2 && i <= 6)
+    else if (i >= 2 and i <= 6)
     {
         SoundID = gInstantBites->Pick(IA6);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if (i >= 7 && i <= 11)
+    else if (i >= 7 and i <= 11)
     {
         SoundID = gInstantBites->Pick(IA5);
 

@@ -106,7 +106,7 @@ void DrawCursorBullseyeData(VirtualDisplay* display, float cursorX, float cursor
 
     if (theRadar)
     {
-        if (theRadar->CurrentTarget() && theRadar->CurrentTarget()->BaseData() && theRadar->IsSet(RadarDopplerClass::STTingTarget))
+        if (theRadar->CurrentTarget() and theRadar->CurrentTarget()->BaseData() and theRadar->IsSet(RadarDopplerClass::STTingTarget))
         {
             float yPos = theRadar->CurrentTarget()->BaseData()->YPos();
             float xPos = theRadar->CurrentTarget()->BaseData()->XPos();
@@ -136,7 +136,7 @@ void DrawCursorBullseyeData(VirtualDisplay* display, float cursorX, float cursor
 
     if (g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
         {
             display->CenterOriginInViewport();
             return;
@@ -161,7 +161,7 @@ void DrawSteerPointCursorData(VirtualDisplay* display, FalconEntity* platform, f
     mlTrig trig;
 
     // Find current steerpoint
-    if (platform && ((SimVehicleClass*)platform)->curWaypoint)
+    if (platform and ((SimVehicleClass*)platform)->curWaypoint)
     {
         ((SimVehicleClass*)platform)->curWaypoint->GetLocation(&steerpointX, &steerpointY, &steerpointZ);
 
@@ -177,7 +177,7 @@ void DrawSteerPointCursorData(VirtualDisplay* display, FalconEntity* platform, f
 
         if (theRadar)
         {
-            if (theRadar->CurrentTarget() && theRadar->CurrentTarget()->BaseData() && theRadar->IsSet(RadarDopplerClass::STTingTarget))
+            if (theRadar->CurrentTarget() and theRadar->CurrentTarget()->BaseData() and theRadar->IsSet(RadarDopplerClass::STTingTarget))
             {
                 float yPos = theRadar->CurrentTarget()->BaseData()->YPos();
                 float xPos = theRadar->CurrentTarget()->BaseData()->XPos();
@@ -207,7 +207,7 @@ void DrawSteerPointCursorData(VirtualDisplay* display, FalconEntity* platform, f
 
         if (g_bINS)
         {
-            if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+            if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             {
                 display->CenterOriginInViewport();
                 return;
@@ -308,7 +308,7 @@ void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY)
     {
         if (g_bINS)
         {
-            if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+            if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             {
                 // Draw the circle symbol
                 display->Circle(0.0F, 0.0F, 0.1F);

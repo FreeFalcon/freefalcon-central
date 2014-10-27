@@ -586,8 +586,8 @@ void WayPointClass::GetLocation(float *x, float *y, float *z) const
     {
         //Check that the Sim position and the Grid position are in sync.  If so, return the sim position
         if (
-            //(GridX == SimToGrid(SimX)) && (GridY == SimToGrid(SimY)) &&
-            (GridX == gx) && (GridY == gy) &&
+            //(GridX == SimToGrid(SimX)) and (GridY == SimToGrid(SimY)) &&
+            (GridX == gx) and (GridY == gy) &&
             (GridZ == (short)((-1.0F * SimZ) / GRIDZ_SCALE_FACTOR))
         )
         {
@@ -693,12 +693,12 @@ CampaignTime SetWPTimes(WayPoint w, CampaignTime start, int speed, int flags)
 
         mission_time = w->GetWPDepartureTime();
 
-        if (mission_time > land && (w->GetWPFlags() & WPF_LAND))
+        if (mission_time > land and (w->GetWPFlags() & WPF_LAND))
         {
             land = mission_time;
         }
 
-        if ((w->GetWPFlags() & WPF_ALTERNATE) && !(flags & WPTS_SET_ALTERNATE_TIMES))
+        if ((w->GetWPFlags() & WPF_ALTERNATE) and !(flags & WPTS_SET_ALTERNATE_TIMES))
         {
             w->SetWPTimes(0);
         }
@@ -747,12 +747,12 @@ CampaignTime SetWPTimes(WayPoint w, long delta, int flags)
 
         mission_time = w->GetWPDepartureTime();
 
-        if (mission_time > land && (w->GetWPFlags() & WPF_LAND))
+        if (mission_time > land and (w->GetWPFlags() & WPF_LAND))
         {
             land = mission_time;
         }
 
-        if ((w->GetWPFlags() & WPF_ALTERNATE) && !(flags & WPTS_SET_ALTERNATE_TIMES))
+        if ((w->GetWPFlags() & WPF_ALTERNATE) and !(flags & WPTS_SET_ALTERNATE_TIMES))
         {
             w->SetWPTimes(0);
         }
@@ -787,7 +787,7 @@ WayPoint CloneWPToList(WayPoint w, WayPoint stop)
 
     lw = list = NULL;
 
-    while ((w) && (w not_eq stop))
+    while ((w) and (w not_eq stop))
     {
         nw = new WayPointClass();
         nw->CloneWP(w);
@@ -877,9 +877,9 @@ float AdjustAltitudeForMSL_AGL(float x, float y, float z)
     // 2001-03-24 MODIFIED BY S.G. THIS IS COMPLETELY FOOBAR...
 #if 1 // NOT TESTED SO BROUGHT BACK TO ORIGINAL. FOR LATER I GUESS
 
-    if (z < 0.0F && z <= MINIMUM_ASL_ALTITUDE) // AGL
+    if (z < 0.0F and z <= MINIMUM_ASL_ALTITUDE) // AGL
         return z - terrain_level;
-    else if (z < 0.0F && z - terrain_level < 500.0F) // Avoid hills
+    else if (z < 0.0F and z - terrain_level < 500.0F) // Avoid hills
         return -500.0F - terrain_level;
     else // MSL
         return z;
@@ -888,9 +888,9 @@ float AdjustAltitudeForMSL_AGL(float x, float y, float z)
 
     // Do we need to test for z being negative, it should anyhow. Also, MINIMUM_ASL_ALTITUDE is POSITIVE!
     // terrain_level IS ALSO POSITIVE!
-    if (z < 0.0F && z > -MINIMUM_ASL_ALTITUDE) // z is AGL if it's 'below' this altitude
+    if (z < 0.0F and z > -MINIMUM_ASL_ALTITUDE) // z is AGL if it's 'below' this altitude
         return z - terrain_level; // This returns the altitude above MSL
-    else if (z < 0.0F && z + terrain_level > -500.0F) // If our -MSL height plus the terrain height is less than -500
+    else if (z < 0.0F and z + terrain_level > -500.0F) // If our -MSL height plus the terrain height is less than -500
         return -500.0F - terrain_level; // return 500 feet 'above' the terrain
     else // We ok (not flagged AGL and above high hills), use the MSL height 'as is'
         return z;

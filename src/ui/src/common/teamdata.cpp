@@ -881,7 +881,7 @@ uchar AssignUISquadronID(short SquadronNo)
 
     i = 0;
 
-    while (SquadronMatchIDs[i][0] && SquadronMatchIDs[i][1])
+    while (SquadronMatchIDs[i][0] and SquadronMatchIDs[i][1])
     {
         if (SquadronMatchIDs[i][1] == SquadronNo)
             return(static_cast<uchar>(i));

@@ -52,7 +52,7 @@ static const InputDataDesc AuxBombDataDesc[] =
 
 void BombClass::ReadInput(int idx)
 {
-    if (BombDataset && idx < numBombDatasets)
+    if (BombDataset and idx < numBombDatasets)
     {
         auxData =
             BombDataset[min(idx, numBombDatasets - 1)].auxData;
@@ -362,7 +362,7 @@ BombRangeData* BombRangeRead(SimlibFileClass* inputFile)
     /* Altitude breakpoints */
     /*----------------------*/
     rangeData->numAltBreakpoints = atoi(inputFile->GetNext());
-    ShiAssert(rangeData->numAltBreakpoints > 0 && rangeData->numAltBreakpoints < 100); // JPO some checks.
+    ShiAssert(rangeData->numAltBreakpoints > 0 and rangeData->numAltBreakpoints < 100); // JPO some checks.
     numAlt = rangeData->numAltBreakpoints;
 #ifdef USE_SH_POOLS
     rangeData->altBreakpoints = (float *)MemAllocPtr(gReadInMemPool, sizeof(float) * numAlt, 0);
@@ -377,7 +377,7 @@ BombRangeData* BombRangeRead(SimlibFileClass* inputFile)
     /* Velocity breakpoints */
     /*----------------------*/
     rangeData->numVelBreakpoints = atoi(inputFile->GetNext());
-    ShiAssert(rangeData->numVelBreakpoints > 0 && rangeData->numVelBreakpoints < 100); // JPO some checks.
+    ShiAssert(rangeData->numVelBreakpoints > 0 and rangeData->numVelBreakpoints < 100); // JPO some checks.
     numVel = rangeData->numVelBreakpoints;
 #ifdef USE_SH_POOLS
     rangeData->velBreakpoints = (float *)MemAllocPtr(gReadInMemPool, sizeof(float) * numVel, 0);
@@ -393,7 +393,7 @@ BombRangeData* BombRangeRead(SimlibFileClass* inputFile)
     /*--------------------*/
     rangeData->numAspectBreakpoints = atoi(inputFile->GetNext());
     numAspect = rangeData->numAspectBreakpoints;
-    ShiAssert(rangeData->numAspectBreakpoints > 0 && rangeData->numAspectBreakpoints < 100); // JPO some checks.
+    ShiAssert(rangeData->numAspectBreakpoints > 0 and rangeData->numAspectBreakpoints < 100); // JPO some checks.
 #ifdef USE_SH_POOLS
     rangeData->aspectBreakpoints = (float *)MemAllocPtr(gReadInMemPool, sizeof(float) * numAspect, 0);
 #else

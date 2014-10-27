@@ -359,7 +359,7 @@ ObjectiveClass::ObjectiveClass(VU_BYTE **stream, long *rem) : CampBaseClass(stre
 
     // Clear out objectives owned by non-existant teams
     // KCK NOTE: This doesn't work in multi-player remote, as we often don't have teams at this point
-    if (FalconLocalGame && FalconLocalGame->IsLocal())
+    if (FalconLocalGame and FalconLocalGame->IsLocal())
     {
         if (!TeamInfo[GetObjectiveOldown()])
             SetObjectiveOldown(GetOwner());
@@ -935,15 +935,15 @@ int ObjectiveClass::TransferOwnership(FalconSessionEntity* session)
     // Change the owner of the deaggregated entities
     SetDeagOwner(session->Id());
 
-    // Record current state of components && change ownership locally
+    // Record current state of components and change ownership locally
     RecordCurrentState(session, FALSE);
 
     // Update our local wake status
-    if (IsAwake() && !FalconLocalSession->InSessionBubble(this, REAGREGATION_RATIO))
+    if (IsAwake() and !FalconLocalSession->InSessionBubble(this, REAGREGATION_RATIO))
     {
         Sleep();
     }
-    else if (!IsAwake() && (session == FalconLocalSession or FalconLocalSession->InSessionBubble(this, 1.0F) > 0))
+    else if (!IsAwake() and (session == FalconLocalSession or FalconLocalSession->InSessionBubble(this, 1.0F) > 0))
     {
         Wake();
     }
@@ -1248,12 +1248,12 @@ void ObjectiveClass::TransferOwnershipFromData(VU_BYTE* data, long size)
     }
 
     // Update our local wake status
-    if (IsAwake() && !FalconLocalSession->InSessionBubble(this, REAGREGATION_RATIO))
+    if (IsAwake() and !FalconLocalSession->InSessionBubble(this, REAGREGATION_RATIO))
     {
         Sleep();
     }
     else if (
-        !IsAwake() && (
+        !IsAwake() and (
             GetDeagOwner() == FalconLocalSession->Id() or FalconLocalSession->InSessionBubble(this, 1.0F) > 0
         )
     )
@@ -1293,16 +1293,16 @@ int ObjectiveClass::ApplyDamage(FalconCampWeaponsFire *cwfm, uchar bonusToHit)
     range = FloatToInt32(Distance(sx, sy, tx, ty));
 
     // Unit type specific stuff
-    if (shooter->IsFlight() && cwfm->dataBlock.dPilotId == 255)
+    if (shooter->IsFlight() and cwfm->dataBlock.dPilotId == 255)
     {
         WayPoint w = shooter->GetCurrentUnitWP();
 
         // If we're attacking our pre-assigned WP target, check for a specific feature ID
-        if (w && w->GetWPTargetID() == shooter->GetTargetID())
+        if (w and w->GetWPTargetID() == shooter->GetTargetID())
             cwfm->dataBlock.dPilotId = w->GetWPTargetBuilding();
     }
 
-    for (i = 0; i < MAX_TYPES_PER_CAMP_FIRE_MESSAGE && cwfm->dataBlock.weapon[i] && cwfm->dataBlock.shots[i]; i++)
+    for (i = 0; i < MAX_TYPES_PER_CAMP_FIRE_MESSAGE and cwfm->dataBlock.weapon[i] and cwfm->dataBlock.shots[i]; i++)
     {
         hc = GetWeaponHitChance(cwfm->dataBlock.weapon[i], NoMove, range) + bonusToHit;
 
@@ -1320,7 +1320,7 @@ int ObjectiveClass::ApplyDamage(FalconCampWeaponsFire *cwfm, uchar bonusToHit)
         // end removed
 
         // HARMs will snap to current radar feature, if we're emitting
-        if ((WeaponDataTable[cwfm->dataBlock.weapon[i]].GuidanceFlags & WEAP_ANTIRADATION) && IsEmitting())
+        if ((WeaponDataTable[cwfm->dataBlock.weapon[i]].GuidanceFlags & WEAP_ANTIRADATION) and IsEmitting())
             cwfm->dataBlock.dPilotId = static_data.class_data->RadarFeature;
 
         // Tally the losses
@@ -1342,7 +1342,7 @@ int ObjectiveClass::ApplyDamage(FalconCampWeaponsFire *cwfm, uchar bonusToHit)
                 str += strength;
                 losses += ApplyDamage(dt, &str, cwfm->dataBlock.dPilotId, (short)flags);
             }
-            else if (shooter->IsFlight() && addcrater < 3)
+            else if (shooter->IsFlight() and addcrater < 3)
             {
                 // Add a few craters if it's an air attack
                 addcrater++;
@@ -1390,16 +1390,16 @@ int ObjectiveClass::ApplyDamage(DamType d, int *str, int f, short flags)
     int fid, hp, lost = 0, count = 0, s, this_pass;
     FeatureClassDataType* fc;
 
-    while (*str > 0 && count < MAX_DAMAGE_TRIES)
+    while (*str > 0 and count < MAX_DAMAGE_TRIES)
     {
         count++;
 
         if (f >= static_data.class_data->Features or f < 0 or GetFeatureStatus(f) == VIS_DESTROYED or !GetFeatureID(f))
         {
             // Find something to bomb
-            for (fid = 0, f = 255; fid < static_data.class_data->Features && f >= static_data.class_data->Features ; fid++)
+            for (fid = 0, f = 255; fid < static_data.class_data->Features and f >= static_data.class_data->Features ; fid++)
             {
-                if (GetFeatureStatus(fid) not_eq VIS_DESTROYED && GetFeatureClassData(GetFeatureID(fid))->DamageMod[d] > 0)
+                if (GetFeatureStatus(fid) not_eq VIS_DESTROYED and GetFeatureClassData(GetFeatureID(fid))->DamageMod[d] > 0)
                     f = fid;
             }
 
@@ -1409,12 +1409,12 @@ int ObjectiveClass::ApplyDamage(DamType d, int *str, int f, short flags)
         fid = GetFeatureID(f);
         fc = GetFeatureClassData(fid);
 
-        if (fc && fc->DamageMod[d] > 0)
+        if (fc and fc->DamageMod[d] > 0)
         {
             hp = fc->HitPoints * 100 / fc->DamageMod[d];
 
             // Check if high explosive damage will do more
-            if ((flags & WEAP_AREA) && fc->DamageMod[HighExplosiveDam] > fc->DamageMod[d])
+            if ((flags & WEAP_AREA) and fc->DamageMod[HighExplosiveDam] > fc->DamageMod[d])
                 hp = fc->HitPoints * 100 / fc->DamageMod[HighExplosiveDam];
 
             s = GetFeatureStatus(f);
@@ -1424,11 +1424,11 @@ int ObjectiveClass::ApplyDamage(DamType d, int *str, int f, short flags)
 
             this_pass = 1;
 
-            //if (s not_eq VIS_DESTROYED && *str > rand()%hp)
-            if (s not_eq VIS_DESTROYED && (hp == 0 or *str > rand() % hp)) // JB 010401 CTD
+            //if (s not_eq VIS_DESTROYED and *str > rand()%hp)
+            if (s not_eq VIS_DESTROYED and (hp == 0 or *str > rand() % hp)) // JB 010401 CTD
                 s = VIS_DESTROYED;
-            //else if (s not_eq VIS_DESTROYED && s not_eq VIS_DAMAGED && *str > rand()%(hp/2))
-            else if (s not_eq VIS_DESTROYED && s not_eq VIS_DAMAGED && (hp < 2 or *str > rand() % (hp / 2))) // JB 010401 CTD
+            //else if (s not_eq VIS_DESTROYED and s not_eq VIS_DAMAGED and *str > rand()%(hp/2))
+            else if (s not_eq VIS_DESTROYED and s not_eq VIS_DAMAGED and (hp < 2 or *str > rand() % (hp / 2))) // JB 010401 CTD
                 s = VIS_DAMAGED;
             else
             {
@@ -1536,8 +1536,8 @@ int ObjectiveClass::DecodeDamageData(uchar *data, Unit shooter, FalconDeathMessa
 
         // The local entity sends atm a message if there's a chance we lost a runway
         // 2001-08-01 MODIFIED BY S.G. ARMYBASE SHOULD BE DEALT WITH TOO SINCE THEY CARRY CHOPPERS
-        // if (islocal && GetType() == TYPE_AIRBASE && GetObjectiveStatus() < 51)
-        if (islocal && (GetType() == TYPE_AIRBASE or GetType() == TYPE_ARMYBASE) && GetObjectiveStatus() < 51)
+        // if (islocal and GetType() == TYPE_AIRBASE and GetObjectiveStatus() < 51)
+        if (islocal and (GetType() == TYPE_AIRBASE or GetType() == TYPE_ARMYBASE) and GetObjectiveStatus() < 51)
             TeamInfo[GetTeam()]->atm->SendATMMessage(Id(), GetTeam(), FalconAirTaskingMessage::atmZapAirbase, 0, 0, NULL, 0);
     }
 
@@ -1645,7 +1645,7 @@ int ObjectiveClass::GetDetectionRange(int mt)
 
     ShiAssert(oc);
 
-    if (IsEmitting() && oc->RadarFeature < 255 && GetFeatureStatus(oc->RadarFeature) not_eq VIS_DESTROYED)
+    if (IsEmitting() and oc->RadarFeature < 255 and GetFeatureStatus(oc->RadarFeature) not_eq VIS_DESTROYED)
         // 2001-04-21 MODIFIED BY S.G. ABOVE 250 HAS A NEW MEANING SO USE THE UNIT ELECTRONIC DETECTION RANGE INSTEAD...
         // dr = oc->Detection[mt];
     {
@@ -1662,7 +1662,7 @@ int ObjectiveClass::GetDetectionRange(int mt)
 
 int ObjectiveClass::GetElectronicDetectionRange(int mt)
 {
-    if (static_data.class_data->RadarFeature < 255 && GetFeatureStatus(static_data.class_data->RadarFeature) not_eq VIS_DESTROYED)
+    if (static_data.class_data->RadarFeature < 255 and GetFeatureStatus(static_data.class_data->RadarFeature) not_eq VIS_DESTROYED)
         // 2001-04-21 MODIFIED BY S.G. ABOVE 250 HAS A NEW MEANING SO USE THE UNIT ELECTRONIC DETECTION RANGE INSTEAD...
         // return static_data.class_data->Detection[mt];
     {
@@ -1928,7 +1928,7 @@ void ObjectiveClass::AddObjectiveNeighbor(Objective o, uchar c[MOVEMENT_TYPES])
     {
         n = (Objective)(vuDatabase->Find(link_data[i].id));
 
-        if (n && n == o)
+        if (n and n == o)
         {
             SetNeighborCosts(i, c);
             return;
@@ -2088,7 +2088,7 @@ _TCHAR* ObjectiveClass::GetName(_TCHAR* name, int size, int mode)
     else
         _sntprintf(name, size, "%s", ReadNameString(nid, buffer, 79));
 
-    if (mode && _istlower(name[0]))
+    if (mode and _istlower(name[0]))
         name[0] = (char)_toupper(name[0]);
 
     // _sntprintf should do this for us, but for some reason it sometimes doesn't
@@ -2124,7 +2124,7 @@ void ObjectiveClass::DisposeObjective(void)
 
 int ObjectiveClass::IsPrimary(void)
 {
-    if (GetType() == TYPE_CITY && obj_data.priority > PRIMARY_OBJ_PRIORITY)
+    if (GetType() == TYPE_CITY and obj_data.priority > PRIMARY_OBJ_PRIORITY)
         return 1;
 
     return 0;
@@ -2133,7 +2133,7 @@ int ObjectiveClass::IsPrimary(void)
 int ObjectiveClass::IsSecondary(void)
 {
     // Only cities and towns can be secondary objectives, and ALL automatically are
-    if ((GetType() == TYPE_CITY or GetType() == TYPE_TOWN) && obj_data.priority > SECONDARY_OBJ_PRIORITY)
+    if ((GetType() == TYPE_CITY or GetType() == TYPE_TOWN) and obj_data.priority > SECONDARY_OBJ_PRIORITY)
         return 1;
 
     return 0;
@@ -2143,7 +2143,7 @@ int ObjectiveClass::IsSupplySource(void)
 {
     if (GetType() == TYPE_CITY or GetType() == TYPE_PORT or GetType() == TYPE_DEPOT or GetType() == TYPE_ARMYBASE)
     {
-        if (!IsFrontline() && !IsSecondline())
+        if (!IsFrontline() and !IsSecondline())
         {
             return 1;
         }
@@ -2340,10 +2340,10 @@ void ObjectiveClass::SetFeatureStatus(int f, int n, int from)
     // Check for critical links and set those features accordingly.
     if (n == VIS_DESTROYED or n == VIS_REPAIRED)
     {
-        if (from not_eq f - 1 && (FeatureEntryDataTable[static_data.class_data->FirstFeature + f].Flags & FEAT_PREV_CRIT))
+        if (from not_eq f - 1 and (FeatureEntryDataTable[static_data.class_data->FirstFeature + f].Flags & FEAT_PREV_CRIT))
             SetFeatureStatus(f - 1, n, f);
 
-        if (from not_eq f + 1 && (FeatureEntryDataTable[static_data.class_data->FirstFeature + f].Flags & FEAT_NEXT_CRIT))
+        if (from not_eq f + 1 and (FeatureEntryDataTable[static_data.class_data->FirstFeature + f].Flags & FEAT_NEXT_CRIT))
             SetFeatureStatus(f + 1, n, f);
     }
 
@@ -2462,7 +2462,7 @@ void ObjectiveClass::ResetObjectiveStatus(void)
     if (GetType() == TYPE_AIRBASE)
     {
         // AIRBASE version
-        for (f = 0; s && f < static_data.class_data->Features; f++)
+        for (f = 0; s and f < static_data.class_data->Features; f++)
         {
             // Only adjust status for non-runways
             if (Falcon4ClassTable[GetFeatureID(f)].vuClassData.classInfo_[VU_TYPE] not_eq TYPE_RUNWAY) // (IS_RUNWAY)
@@ -2508,7 +2508,7 @@ void ObjectiveClass::ResetObjectiveStatus(void)
     }
     else
     {
-        for (f = 0; s > 0 && f < static_data.class_data->Features; f++)
+        for (f = 0; s > 0 and f < static_data.class_data->Features; f++)
         {
             if (GetFeatureStatus(f) == VIS_DAMAGED)
                 s -= GetFeatureValue(f) / 2;
@@ -2576,7 +2576,7 @@ uchar ObjectiveClass::GetBestTarget(void)
     {
         v = GetFeatureValue(i);
 
-        if (v > bv && GetFeatureStatus(i) not_eq VIS_DESTROYED)
+        if (v > bv and GetFeatureStatus(i) not_eq VIS_DESTROYED)
         {
             bv = v;
             f = i;
@@ -2634,7 +2634,7 @@ void ObjectiveClass::RecalculateParent(void)
     }
     else if (IsSecondary())
     {
-        // Secondary Objective. Find closest Primary (Modify distances by relations && scores)
+        // Secondary Objective. Find closest Primary (Modify distances by relations and scores)
         GetLocation(&x, &y);
         own = GetTeam();
         {
@@ -2697,7 +2697,7 @@ void ObjectiveClass::RecalculateParent(void)
         {
             n = GetNeighbor(i);
 
-            if (n && n->IsSecondary())
+            if (n and n->IsSecondary())
             {
                 SetObjectiveParent(n->Id());
                 // KCK WARNING: Am I using this?
@@ -2718,11 +2718,11 @@ void ObjectiveClass::RecalculateParent(void)
             n = GetNeighbor(i);
             j = 0;
 
-            while (n && j < n->static_data.links)
+            while (n and j < n->static_data.links)
             {
                 s = n->GetNeighbor(j);
 
-                if (s && s->IsSecondary() && s->GetObjectivePriority() > bd)
+                if (s and s->IsSecondary() and s->GetObjectivePriority() > bd)
                 {
                     bp = s;
                     bd = s->GetObjectivePriority();
@@ -3079,7 +3079,7 @@ int BestRepairFeature(Objective o, int *hours)
     {
         s = o->GetFeatureStatus(f);
 
-        if (s not_eq VIS_NORMAL && s not_eq VIS_REPAIRED)
+        if (s not_eq VIS_NORMAL and s not_eq VIS_REPAIRED)
         {
             v = o->GetFeatureValue(f);
 
@@ -3099,7 +3099,7 @@ int BestRepairFeature(Objective o, int *hours)
             }
         }
 
-        // if (s not_eq VIS_DESTROYED && !o->GetFeatureID(f))
+        // if (s not_eq VIS_DESTROYED and !o->GetFeatureID(f))
         // o->SetFeatureStatus(f,VIS_DESTROYED);
     }
 
@@ -3126,7 +3126,7 @@ int BestTargetFeature(Objective o, uchar targeted[])
     {
         s = o->GetFeatureStatus(f);
 
-        if (s not_eq VIS_DESTROYED && targeted && !targeted[f])
+        if (s not_eq VIS_DESTROYED and targeted and !targeted[f])
         {
             score = o->GetFeatureValue(f);
 
@@ -3175,16 +3175,16 @@ void AddChildObjectives(Objective o, Objective p, F4PFList list, int maxdist, in
     {
         n = o->GetNeighbor(i);
 
-        if (!n or (CampSearch[n->GetCampID()] && n->GetObjectiveScore() <= level + 1))
+        if (!n or (CampSearch[n->GetCampID()] and n->GetObjectiveScore() <= level + 1))
             continue;
 
-        if (flags & FIND_THISOBJONLY && n->GetObjectiveParentID() not_eq p->Id())
+        if (flags & FIND_THISOBJONLY and n->GetObjectiveParentID() not_eq p->Id())
             continue;
 
-        if (flags & FIND_STANDARDONLY && n->IsSecondary())
+        if (flags & FIND_STANDARDONLY and n->IsSecondary())
             continue;
 
-        if (flags & FIND_FINDFRIENDLY && !GetRoE(o->GetTeam(), n->GetTeam(), ROE_GROUND_MOVE))
+        if (flags & FIND_FINDFRIENDLY and !GetRoE(o->GetTeam(), n->GetTeam(), ROE_GROUND_MOVE))
             continue;
 
         AddChildObjectives(n, p, list, maxdist - 1, level + 1, flags);
@@ -3502,7 +3502,7 @@ void ObjectiveClass::MakeObjectiveDirty(Dirty_Objective bits, Dirtyness score)
         return;
     }
 
-    if (!IsAggregate() && (score not_eq SEND_RELIABLEANDOOB))
+    if (!IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
     {
         score = static_cast<Dirtyness>(score << 4);
     }

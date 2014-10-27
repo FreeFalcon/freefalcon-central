@@ -91,7 +91,7 @@ DWORD CDXLight::AddDynamicLight(DWORD ID, DXLightType *Light, D3DXMATRIX *RotMat
     while (Index < MAX_DYNAMIC_LIGHTS)
     {
         // if found the Light at te Max Range
-        if (LightList[Index].CameraDistance == MaxRange && (!Assigned))
+        if (LightList[Index].CameraDistance == MaxRange and (!Assigned))
         {
             // substitute with new light
             LightList[Index].Light = Light->Light;
@@ -168,7 +168,7 @@ void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
         // Enable the lights + 1 ( light #0 is the Sun )
         idx = 0;
 
-        // while(idx<MAX_DYNAMIC_LIGHTS && LightList[idx].CameraDistance<=DYNAMIC_LIGHT_INSIDE_RANGE){
+        // while(idx<MAX_DYNAMIC_LIGHTS and LightList[idx].CameraDistance<=DYNAMIC_LIGHT_INSIDE_RANGE){
         while (idx < DynamicLights)
         {
             m_pD3DD->SetLight(idx + 1, &LightList[idx++].Light);
@@ -187,7 +187,7 @@ void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
     //for each light in list setup a distance list
     idx = 0;
 
-    //while(idx<MAX_DYNAMIC_LIGHTS && LightList[idx].CameraDistance<=DYNAMIC_LIGHT_INSIDE_RANGE){
+    //while(idx<MAX_DYNAMIC_LIGHTS and LightList[idx].CameraDistance<=DYNAMIC_LIGHT_INSIDE_RANGE){
     while (idx < DynamicLights)
     {
 
@@ -195,14 +195,14 @@ void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
         LightsToOn[idx] = false;
 
         // if this is a light illuminating ONLY THE OWNER, and we r not the owners, skip
-        if (LightList[idx].Flags.OwnLight && LightList[idx].LightID not_eq ID)
+        if (LightList[idx].Flags.OwnLight and LightList[idx].LightID not_eq ID)
         {
             idx++;
             continue;
         }
 
         // if this is a light illuminating NOT THE OWNER, and we r the owners, skip
-        if (LightList[idx].Flags.NotSelfLight && LightList[idx].LightID == ID)
+        if (LightList[idx].Flags.NotSelfLight and LightList[idx].LightID == ID)
         {
             idx++;
             continue;
@@ -320,7 +320,7 @@ void CDXLight::EnableMappedLights(void)
     for (DWORD idx = 0; idx < DynamicLights; idx++)
     {
         // if light to be disabled
-        if ((!LightsToOn[idx]) && LightList[idx].On)
+        if ((!LightsToOn[idx]) and LightList[idx].On)
         {
             m_pD3DD->LightEnable(idx + 1, false);
             LightList[idx].On = false;
@@ -329,7 +329,7 @@ void CDXLight::EnableMappedLights(void)
 
     for (DWORD idx = 0; idx < DynamicLights; idx++)
     {
-        if (LightsToOn[idx] && (!LightList[idx].On))
+        if (LightsToOn[idx] and (!LightList[idx].On))
         {
             m_pD3DD->LightEnable(idx + 1, true);
             LightList[idx].On = true;

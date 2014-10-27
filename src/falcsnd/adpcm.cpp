@@ -106,7 +106,7 @@ long CSoundMgr::StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen)
     didx = 0;
 
     //step through each byte of IMA ADPCM and decode it to PCM
-    while (Info->sidx < Info->slen && didx < dlen && Info->didx < Info->dlen)
+    while (Info->sidx < Info->slen and didx < dlen and Info->didx < Info->dlen)
     {
         if (!Info->blockLength)
         {
@@ -133,7 +133,7 @@ long CSoundMgr::StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen)
             Info->count = 0;
         }
 
-        while (Info->blockLength && didx < dlen && Info->didx < Info->dlen)
+        while (Info->blockLength and didx < dlen and Info->didx < Info->dlen)
         {
             if (!Info->count)
             {
@@ -145,7 +145,7 @@ long CSoundMgr::StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen)
                 Info->count = 2;
             }
 
-            while (Info->count && didx < dlen && Info->didx < Info->dlen)
+            while (Info->count and didx < dlen and Info->didx < Info->dlen)
             {
                 encSample = (short)(Info->leftSamples & 0x0F);
                 stepSize = step[Info->stepIndexL];
@@ -185,7 +185,7 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
     didx = 0;
 
     //step through each byte of IMA ADPCM and decode it to PCM
-    while (Info->sidx < Info->slen && didx < dlen && Info->didx < Info->dlen)
+    while (Info->sidx < Info->slen and didx < dlen and Info->didx < Info->dlen)
     {
         if (!Info->blockLength)
         {
@@ -240,7 +240,7 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
             Info->count = 0;
         }
 
-        while (Info->blockLength && didx < dlen && Info->didx < Info->dlen)
+        while (Info->blockLength and didx < dlen and Info->didx < Info->dlen)
         {
             if (!Info->count)
             {
@@ -254,7 +254,7 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
                 Info->count = 8;
             }
 
-            while (Info->count && didx < dlen && Info->didx < Info->dlen)
+            while (Info->count and didx < dlen and Info->didx < Info->dlen)
             {
                 //left channel
                 encSampleL = (short)(Info->leftSamples & 0x0F);
@@ -597,7 +597,7 @@ short CSoundMgr::IMA_NextStepIndex(short nEncodedSample, short nStepIndex)
 BOOL CSoundMgr::IMA_ValidStepIndex(short nStepIndex)
 {
 
-    if (nStepIndex >= 0 && nStepIndex <= 88)
+    if (nStepIndex >= 0 and nStepIndex <= 88)
         return TRUE;
     else
         return FALSE;

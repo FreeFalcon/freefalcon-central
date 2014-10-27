@@ -56,10 +56,10 @@ void INFOSetupRulesControls(void)
     //host = TRUE;
     //if this is true, we are the host
     /*
-    if( FalconLocalGameEntity && FalconLocalSession &&
+    if( FalconLocalGameEntity and FalconLocalSession &&
      FalconLocalGameEntity->OwnerId() == FalconLocalSession->Id() )
      host = TRUE;
-    else if(!gCommsMgr->GetTargetGame() && !FalconLocalGameEntity)
+    else if(!gCommsMgr->GetTargetGame() and !FalconLocalGameEntity)
      host = TRUE;
 
     if(gCommsMgr->GetSettings()->Rules.GameStatus not_eq GAME_WAITING)
@@ -704,7 +704,7 @@ void ComplyCB(long ID, short hittype, C_Base *control)
 
         head = name;
 
-        while (*head && !_istalnum(*head))
+        while (*head and !_istalnum(*head))
             head++;
 
         tail = head;
@@ -712,7 +712,7 @@ void ComplyCB(long ID, short hittype, C_Base *control)
         while (*tail)
             tail++;
 
-        while (tail not_eq head && !_istalnum(*tail))
+        while (tail not_eq head and !_istalnum(*tail))
             tail--;
 
         tail++;
@@ -747,7 +747,7 @@ void ComplyCB(long ID, short hittype, C_Base *control)
     {
         game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
 
-        if (game && OkCB)
+        if (game and OkCB)
         {
             if (!game->CheckPassword(ebox->GetText()))
             {
@@ -768,13 +768,13 @@ void ComplyCB(long ID, short hittype, C_Base *control)
 
 int CheckButtonCompliance(C_Button *button, int test)
 {
-    if (button->GetState() == C_STATE_1 && test)
+    if (button->GetState() == C_STATE_1 and test)
     {
         button->SetState(C_STATE_2);
         button->Refresh();
         return FALSE;
     }
-    else if (button->GetState() == C_STATE_2 && !test)
+    else if (button->GetState() == C_STATE_2 and !test)
     {
         button->SetState(C_STATE_1);
         button->Refresh();
@@ -817,7 +817,7 @@ void CheckCompliance(void)
 
         line = (C_Line *)win->FindControl(FLTMOD_LINE);
 
-        if (MakeRed && line)
+        if (MakeRed and line)
         {
             //lbox->SetNormColor(RGB(255,0,0));
             //lbox->Refresh();
@@ -874,7 +874,7 @@ void CheckCompliance(void)
 
         line = (C_Line *)win->FindControl(RADAR_LINE);
 
-        if (MakeRed && line)
+        if (MakeRed and line)
         {
             //lbox->SetNormColor(RGB(255,0,0));
             //lbox->Refresh();
@@ -922,7 +922,7 @@ void CheckCompliance(void)
 
         line = (C_Line *)win->FindControl(WEAPEFF_LINE);
 
-        if (MakeRed && line)
+        if (MakeRed and line)
         {
             //lbox->SetNormColor(RGB(255,0,0));
             //lbox->Refresh();
@@ -970,7 +970,7 @@ void CheckCompliance(void)
 
         line = (C_Line *)win->FindControl(AUTOPILOT_LINE);
 
-        if (MakeRed && line)
+        if (MakeRed and line)
         {
             //lbox->SetNormColor(RGB(255,0,0));
             //lbox->Refresh();
@@ -1034,7 +1034,7 @@ void CheckCompliance(void)
 
         line = (C_Line *)win->FindControl(PADLOCK_LINE);
 
-        if (MakeRed && line)
+        if (MakeRed and line)
         {
             //lbox->SetNormColor(RGB(255,0,0));
             //lbox->Refresh();
@@ -1082,7 +1082,7 @@ void CheckCompliance(void)
 
         line = (C_Line *)win->FindControl(REFUELING_LINE);
 
-        if (MakeRed && line)
+        if (MakeRed and line)
         {
             //lbox->SetNormColor(RGB(255,0,0));
             //lbox->Refresh();
@@ -1316,10 +1316,10 @@ static void RuleControlCB(long, short hittype, C_Base *control)
     if (!control)
         return;
 
-    if ((hittype not_eq C_TYPE_LMOUSEUP) && (hittype not_eq C_TYPE_SELECT))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) and (hittype not_eq C_TYPE_SELECT))
         return;
 
-    if (modify && control->_GetCType_() == _CNTL_BUTTON_) // if host I assume
+    if (modify and control->_GetCType_() == _CNTL_BUTTON_) // if host I assume
     {
         if (control->GetState())
             control->SetState(0);
@@ -1664,9 +1664,9 @@ static void INFOSaveRules(void)
 
     int host = FALSE;
     /*
-     if(FalconLocalGameEntity && FalconLocalSession && FalconLocalGameEntity->OwnerId() == FalconLocalSession->Id())
+     if(FalconLocalGameEntity and FalconLocalSession and FalconLocalGameEntity->OwnerId() == FalconLocalSession->Id())
      host = TRUE;
-     else if(!gCommsMgr->GetTargetGame() && !FalconLocalGameEntity)
+     else if(!gCommsMgr->GetTargetGame() and !FalconLocalGameEntity)
      */
     host = modify;
 
@@ -1676,7 +1676,7 @@ static void INFOSaveRules(void)
 
         if (ebox)
         {
-            //if(FalconLocalGame && _tcscmp( FalconLocalGame->GameName(),ebox->GetText() ) )
+            //if(FalconLocalGame and _tcscmp( FalconLocalGame->GameName(),ebox->GetText() ) )
             // FalconLocalGame->SetGameName(ebox->GetText());
             _tcscpy(GameName, ebox->GetText());
         }
@@ -1939,7 +1939,7 @@ static void INFOSaveValues(void)
 
     int host = FALSE;
 
-    if (FalconLocalGame && FalconLocalSession && FalconLocalGame->OwnerId() == FalconLocalSession->Id())
+    if (FalconLocalGame and FalconLocalSession and FalconLocalGame->OwnerId() == FalconLocalSession->Id())
         host = TRUE;
 
     lbox = (C_ListBox *)win->FindControl(FLTMOD_CUR);

@@ -183,7 +183,7 @@ TBlock* TLevel::GetOwnedBlock(int r, int c)
 
     // Look for a pointer to this block in memory
     block = GetBlockPtr(r, c);
-    ShiAssert(block && block->IsOwned());
+    ShiAssert(block and block->IsOwned());
 
     return block;
 }
@@ -502,7 +502,7 @@ void TLevel::PreProcessBlock(LoaderQ* request)
 // and replace the file offset.
 void TLevel::SetBlockPtr(UINT r, UINT c, TBlock *block)
 {
-    ShiAssert((c < blocks_wide) && (r < blocks_high));
+    ShiAssert((c < blocks_wide) and (r < blocks_high));
 
     if (block)
     {
@@ -539,7 +539,7 @@ TBlock * TLevel::GetBlockPtr(UINT r, UINT c)
 {
     tBlockAddress block;
 
-    if ((c < blocks_wide) && (r < blocks_high))
+    if ((c < blocks_wide) and (r < blocks_high))
     {
         block = blocks[ r * blocks_wide + c ];
 

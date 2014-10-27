@@ -91,7 +91,7 @@ int UpdateUnit(Unit u, CampaignTime DeltaTime)
     //START_PROFILE("UU REMOVE");
     // sfr: real and father units never removed here
     // @todo remove
-    if (u->IsDead() && !u->Real() && !u->Father())
+    if (u->IsDead() and !u->Real() and !u->Father())
     {
         // Check if our death timeout is up
         // Otherwise, keep this guy around for a while - for new events or other stuff
@@ -123,7 +123,7 @@ int UpdateUnit(Unit u, CampaignTime DeltaTime)
         u->SetLastCheck(TheCampaign.CurrentTime);
         //STOP_PROFILE("UU SET");
 
-        if (u->Real() && !u->GetRoster())
+        if (u->Real() and !u->GetRoster())
         {
             //START_PROFILE("UU KILL");
             u->KillUnit(); // Unit is out of vehicles, kill it off
@@ -157,7 +157,7 @@ int UpdateUnit(Unit u, CampaignTime DeltaTime)
 
     //START_PROFILE("UU COMBAT");
     // Check for combat
-    if (u->Real() && u->IsAggregate() && u->GetCombatTime() > u->CombatTime())
+    if (u->Real() and u->IsAggregate() and u->GetCombatTime() > u->CombatTime())
     {
         u->ChooseTarget();
         u->DoCombat();
@@ -182,10 +182,10 @@ void DetectOneWay(CampEntity a, FalconEntity *e, int d, int *det, int *ran)
     if (a->CanDetect(e))
         *det = 1;
 
-    // if (a->IsUnit() && a->GetAproxWeaponRange(em) >= d && a->GetWeaponRange(em) >= d) // REMOVED BY S.G.
+    // if (a->IsUnit() and a->GetAproxWeaponRange(em) >= d and a->GetWeaponRange(em) >= d) // REMOVED BY S.G.
     // WILL MAKE SURE BOTH OBJECTS ARE PLANE, SHOOTER HAS MORE THEN JUST GUN (1 NM) AND TARGET WITHIN AT LEAST 20 NM OF US
     //Cobra changed to d <= 100 from 37 (only 20 nm)
-    if (a->IsUnit() && a->GetAproxWeaponRange(em) >= d && ((am == Air && em == Air && d <= 100  && a->GetWeaponRange(em) > 1) or a->GetWeaponRange(em, e) >= d)) // 2002-03-08 MODIFIED BY S.G. Added 'e' at the end of a->GetWeaponRange so we test the min/max weapon range against this guy
+    if (a->IsUnit() and a->GetAproxWeaponRange(em) >= d and ((am == Air and em == Air and d <= 100  and a->GetWeaponRange(em) > 1) or a->GetWeaponRange(em, e) >= d)) // 2002-03-08 MODIFIED BY S.G. Added 'e' at the end of a->GetWeaponRange so we test the min/max weapon range against this guy
         *ran = 1;
 }
 
@@ -257,7 +257,7 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
     // 2001-06-13 ADDED BY S.G. BEFORE WE CAN REALLY COMBAT, WE MUST SEE BE ABLE TO DETECT THE TARGET OURSELF BUT ONLY IF WE ARE A BATTALION
     // This is only called by aggregated UNITS so I safely call CanDetect from att as a unit against def
     // Since this is for SOJ, limit it to battalions...
-    if (((UnitClass *)att)->IsBattalion() && !((UnitClass *)att)->CanDetect(def))
+    if (((UnitClass *)att)->IsBattalion() and !((UnitClass *)att)->CanDetect(def))
     {
         att->StepRadar(0, 0, 1);
         return 0;
@@ -272,7 +272,7 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
     damageMods = def->GetDamageModifiers();
     defmt = def->GetMovementType();
 
-    if (def->IsFlight() && !((Flight)def)->Moving())
+    if (def->IsFlight() and !((Flight)def)->Moving())
         defmt = NoMove; // Aircraft on the ground! bomb away!
 
     memset(weapon, 0, sizeof(weapon));
@@ -323,7 +323,7 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
         bonus = 0.01F;
 
     // Adjust by combat bonus
-    for (i = 0; i < MAX_TYPES_PER_CAMP_FIRE_MESSAGE && weapon[i] && wcount[i]; i++)
+    for (i = 0; i < MAX_TYPES_PER_CAMP_FIRE_MESSAGE and weapon[i] and wcount[i]; i++)
     {
         wcount[i] = FloatToInt32(wcount[i] * bonus);
 
@@ -337,10 +337,10 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
         return 0;
 
     // Mark us as taking a shot (only vs other air)
-    if (att->IsFlight() && def->IsFlight())
+    if (att->IsFlight() and def->IsFlight())
         ((Flight)att)->SetFired(1);
 
-    // if (att->IsFlight() && def->Id() == ((Flight)att)->GetUnitMissionTargetID())
+    // if (att->IsFlight() and def->Id() == ((Flight)att)->GetUnitMissionTargetID())
     // SetAtTarget((Flight)att);
 
     // Apply the damage
@@ -480,7 +480,7 @@ int DoWPAction(Flight u)
 
             // If we've got a FAC flight attached to us, send it a message
             // there has to be someone alive to talk
-            if (fac && lead)
+            if (fac and lead)
             {
                 SendCallToAWACS(lead, rcFACCONTACT);
                 // SendCallToAWACS(lead, rcFACREADY); // JPO removed so it doesn't collide with previous - could delay instead.
@@ -493,7 +493,7 @@ int DoWPAction(Flight u)
             // Check if we're planning to take off again!
             pw = w->GetNextWP();
 
-            if (!pw or (!(w->GetWPFlags() & WPF_TAKEOFF) && pw->GetWPAction() not_eq WP_TAKEOFF))
+            if (!pw or (!(w->GetWPFlags() & WPF_TAKEOFF) and pw->GetWPAction() not_eq WP_TAKEOFF))
             {
                 UpdateSquadronStatus(u, TRUE, FALSE);
                 return -1;
@@ -531,7 +531,7 @@ int DoWPAction(Flight u)
         case WP_PICKUP:
 
             // Pick up a unit
-            if (u->GetUnitMission() == AMIS_AIRCAV && !u->Cargo())
+            if (u->GetUnitMission() == AMIS_AIRCAV and !u->Cargo())
                 u->LoadUnit(NULL);
 
             break;
@@ -546,7 +546,7 @@ int DoWPAction(Flight u)
         speed = u->GetCruiseSpeed();
 
         // Check if we've been here long enough
-        if (Camp_GetCurrentTime() > w->GetWPDepartureTime() && !(w->GetWPFlags() & WPF_REPEAT_CONTINUOUS))
+        if (Camp_GetCurrentTime() > w->GetWPDepartureTime() and !(w->GetWPFlags() & WPF_REPEAT_CONTINUOUS))
         {
             // If so, go on to the next wp and adjust their times from now.
             u->SetCurrentUnitWP(w->GetNextWP());
@@ -576,7 +576,7 @@ int DoWPAction(Flight u)
 
     if (w->GetWPFlags() & WPF_CP)
     {
-        if (u->GetUnitPriority() > 0 && u->GetUnitMission() == AMIS_AWACS)
+        if (u->GetUnitPriority() > 0 and u->GetUnitMission() == AMIS_AWACS)
         {
             // AWACs on station
             msg = new FalconRadioChatterMessage(FalconNullId, FalconLocalGame);
@@ -588,7 +588,7 @@ int DoWPAction(Flight u)
             msg->dataBlock.edata[1] = u->GetFlightLeadCallNumber();
             FalconSendMessage(msg, FALSE);
         }
-        else if (u->GetUnitMission() == AMIS_TANKER && !u->IsTacan())
+        else if (u->GetUnitMission() == AMIS_TANKER and !u->IsTacan())
         {
             // Tanker on station
             u->SetTacan(1);
@@ -597,7 +597,7 @@ int DoWPAction(Flight u)
         u->SetUnitPriority(0); // We're just hanging out here... waiting for something to do.
     }
 
-    if (w->GetWPFlags() & WPF_TARGET && !(w->GetWPFlags() & WPF_LAND) && !(w->GetWPFlags() & WPF_TAKEOFF) && !(w->GetWPFlags() & WPF_CP) && !(w->GetWPFlags() & WPF_REPEAT))
+    if (w->GetWPFlags() & WPF_TARGET and !(w->GetWPFlags() & WPF_LAND) and !(w->GetWPFlags() & WPF_TAKEOFF) and !(w->GetWPFlags() & WPF_CP) and !(w->GetWPFlags() & WPF_REPEAT))
     {
         // Radio Chatter message
         FalconRadioChatterMessage *msg = new FalconRadioChatterMessage(u->Id(), FalconLocalGame);

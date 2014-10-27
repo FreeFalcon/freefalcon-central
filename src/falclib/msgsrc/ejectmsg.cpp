@@ -50,7 +50,7 @@ int FalconEjectMessage::Process(uchar autodisp)
     // Determine success of this ejection and adjust squadron/pilot statistics appropriately
     falcEnt = (FalconEntity*)vuDatabase->Find(dataBlock.eFlightID);
 
-    if (falcEnt && falcEnt->IsFlight())
+    if (falcEnt and falcEnt->IsFlight())
     {
         flight = (Flight)falcEnt;
         flight->GetLocation(&x, &y);
@@ -67,7 +67,7 @@ int FalconEjectMessage::Process(uchar autodisp)
         // Record the pilot in the squadron records
         sq = (Squadron) flight->GetUnitSquadron();
 
-        if (sq && dataBlock.ePilotID < PILOTS_PER_FLIGHT)
+        if (sq and dataBlock.ePilotID < PILOTS_PER_FLIGHT)
         {
             squadron_pilot = flight->pilots[dataBlock.ePilotID];
 

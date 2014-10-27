@@ -31,7 +31,7 @@ static void IntersectNear(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color, B
     // Compute the parametric location of the intersection of the edge and the clip plane
     t = (NEAR_CLIP_DISTANCE                      - TheStateStack.ClipInfoPool[v1->xyz].csZ) /
         (TheStateStack.ClipInfoPool[v2->xyz].csZ - TheStateStack.ClipInfoPool[v1->xyz].csZ);
-    ShiAssert((t >= -0.001f) && (t <= 1.001f));
+    ShiAssert((t >= -0.001f) and (t <= 1.001f));
 
     // Compute the camera space intersection point
     TheStateStack.ClipInfoPool[v->xyz].csZ = z = NEAR_CLIP_DISTANCE;
@@ -120,7 +120,7 @@ static inline void IntersectSide(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL c
                  dy,
                  dz,
                  flag);
-    ShiAssert((t >= -0.002f) && (t <= 1.002f));
+    ShiAssert((t >= -0.002f) and (t <= 1.002f));
 
     // Compute the camera space intersection point
     TheStateStack.ClipInfoPool[v->xyz].csZ = z = TheStateStack.ClipInfoPool[v1->xyz].csZ + t * (dz);

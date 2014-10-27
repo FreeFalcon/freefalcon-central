@@ -10,9 +10,9 @@
 
 void AircraftClass::RunINS(void)
 {
-    if (INSAlign && INSState(INS_AlignNorm) or INSState(INS_AlignFlight))
+    if (INSAlign and INSState(INS_AlignNorm) or INSState(INS_AlignFlight))
     {
-        if ((OnGround() && GetKias() <= 2.0F && !INS60kts) ||
+        if ((OnGround() and GetKias() <= 2.0F and !INS60kts) ||
             INSState(INS_AlignFlight))
             DoINSAlign();
         else
@@ -20,7 +20,7 @@ void AircraftClass::RunINS(void)
 
 
     }
-    else if (INSState(INS_AlignNorm) && !INS60kts)
+    else if (INSState(INS_AlignNorm) and !INS60kts)
     {
         INSAlign = TRUE;
     }
@@ -67,7 +67,7 @@ void AircraftClass::RunINS(void)
     else
         INSLatDrift = 0.0F;
 
-    if (GetKias() >= 60 && OnGround() && INSState(INS_AlignNorm))
+    if (GetKias() >= 60 and OnGround() and INSState(INS_AlignNorm))
         INS60kts = TRUE; //needs to be turned off
 
     //Check for power
@@ -90,7 +90,7 @@ void AircraftClass::DoINSAlign(void)
     //if they enter the coords after 2 mins of alignment, we start from the beginning
     if (CheckUFC)
     {
-        if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+        if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
             OTWDriver.pCockpitManager->mpIcp->INSEnterPush())
         {
             CheckUFC = FALSE;
@@ -173,7 +173,7 @@ void AircraftClass::SwitchINSToAlign(void)
     INSAlign = TRUE;
 
     //Set the UFC
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp)
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp)
     {
         OTWDriver.pCockpitManager->mpIcp->ClearStrings();
         OTWDriver.pCockpitManager->mpIcp->LeaveCNI();
@@ -215,7 +215,7 @@ void AircraftClass::SwitchINSToInFLT(void)
     INSTimeDiff = 0.0F;
 
     //Set the UFC
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp)
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp)
     {
         OTWDriver.pCockpitManager->mpIcp->ClearStrings();
         OTWDriver.pCockpitManager->mpIcp->LeaveCNI();
@@ -227,7 +227,7 @@ void AircraftClass::SwitchINSToInFLT(void)
 void AircraftClass::CheckINSStatus(void)
 {
     if (INSState(AircraftClass::INS_PowerOff) ||
-        (INSState(AircraftClass::INS_Nav) && !HasAligned))
+        (INSState(AircraftClass::INS_Nav) and !HasAligned))
     {
         INSOff(AircraftClass::INS_ADI_OFF_IN);
         INSOff(AircraftClass::INS_ADI_AUX_IN);
@@ -236,7 +236,7 @@ void AircraftClass::CheckINSStatus(void)
         INSOff(AircraftClass::INS_HUD_STUFF);
         INSOff(AircraftClass::INS_HSD_STUFF);
     }
-    else if (INSState(AircraftClass::INS_Nav) && HasAligned)
+    else if (INSState(AircraftClass::INS_Nav) and HasAligned)
     {
         INSOn(AircraftClass::INS_HUD_FPM);
         INSOn(AircraftClass::INS_HUD_STUFF);
@@ -327,7 +327,7 @@ static const float const2 = PI;
 static const float const3 = const1 / 90;
 void AircraftClass::CalcINSOffset(void)
 {
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp)
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp)
     {
         float Curlatitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) / EARTH_RADIUS_FT;
         float CosCurlat = (float)cos(Curlatitude);

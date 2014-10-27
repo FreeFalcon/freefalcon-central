@@ -356,7 +356,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
     //JAM 15Dec03
     BOOL bToggle = FALSE;
 
-    if (context.bZBuffering && DisplayOptions.bZBuffering)
+    if (context.bZBuffering and DisplayOptions.bZBuffering)
     {
         bToggle = TRUE;
         context.SetZBuffering(FALSE);
@@ -502,16 +502,16 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         pVtx[5].q = 1.0F;
 
         // Do a block clip
-        if (!(pVtx[0].x <= rightPixel && pVtx[0].x >= leftPixel && pVtx[0].y <= bottomPixel && pVtx[0].y >= topPixel))
+        if (!(pVtx[0].x <= rightPixel and pVtx[0].x >= leftPixel and pVtx[0].y <= bottomPixel and pVtx[0].y >= topPixel))
             break;
 
-        if (!(pVtx[1].x <= rightPixel && pVtx[1].x >= leftPixel && pVtx[1].y <= bottomPixel && pVtx[1].y >= topPixel))
+        if (!(pVtx[1].x <= rightPixel and pVtx[1].x >= leftPixel and pVtx[1].y <= bottomPixel and pVtx[1].y >= topPixel))
             break;
 
-        if (!(pVtx[2].x <= rightPixel && pVtx[2].x >= leftPixel && pVtx[2].y <= bottomPixel && pVtx[2].y >= topPixel))
+        if (!(pVtx[2].x <= rightPixel and pVtx[2].x >= leftPixel and pVtx[2].y <= bottomPixel and pVtx[2].y >= topPixel))
             break;
 
-        if (!(pVtx[5].x <= rightPixel && pVtx[5].x >= leftPixel && pVtx[5].y <= bottomPixel && pVtx[5].y >= topPixel))
+        if (!(pVtx[5].x <= rightPixel and pVtx[5].x >= leftPixel and pVtx[5].y <= bottomPixel and pVtx[5].y >= topPixel))
             break;
 
         x += pFontSet->fontData[pFontSet->fontNum][*string].pixelWidth;
@@ -537,7 +537,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         float y2 = yTop + pFontSet->fontData[pFontSet->fontNum][32].pixelHeight;
 
         // Only draw the box if it is entirely on screen
-        if ((x1 > leftPixel) && (x2 < rightPixel) && (y1 > topPixel) && (y2 < bottomPixel))
+        if ((x1 > leftPixel) and (x2 < rightPixel) and (y1 > topPixel) and (y2 < bottomPixel))
         {
             Render2DLine(x1, y1, x2, y1);
             Render2DLine(x2, y1, x2, y2);
@@ -559,7 +559,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         x1 = max(x1, leftPixel + 1.0F);
 
         // Only draw the box if it is entirely on screen
-        if ((x1 > leftPixel) && (x2 < rightPixel) && (y1 > topPixel) && (y2 < bottomPixel))
+        if ((x1 > leftPixel) and (x2 < rightPixel) and (y1 > topPixel) and (y2 < bottomPixel))
         {
             Render2DLine(x0, y0, x1, y1);
             Render2DLine(x0, y0, x1, y2);
@@ -582,7 +582,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         // Only draw the box if it is entirely on screen
         x1 = max(x1, leftPixel + 1.0F);
 
-        if ((x1 > leftPixel) && (x2 < rightPixel) && (y1 > topPixel) && (y2 < bottomPixel))
+        if ((x1 > leftPixel) and (x2 < rightPixel) and (y1 > topPixel) and (y2 < bottomPixel))
         {
             Render2DLine(x0, y0, x2, y1);
             Render2DLine(x0, y0, x2, y2);
@@ -593,7 +593,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
     }
 
     //JAM 15Dec03
-    if (bToggle && DisplayOptions.bZBuffering)
+    if (bToggle and DisplayOptions.bZBuffering)
     {
         context.SetZBuffering(TRUE);
         context.SetState(MPR_STA_ENABLES, MPR_SE_Z_BUFFERING);
@@ -1144,7 +1144,7 @@ int FontSet::ReadFontMetrics(int index, char*fileName) // JPO return status
     static char
     buffer[16000];
 
-    ShiAssert(index < NUM_FONT_RESOLUTIONS && index >= 0);
+    ShiAssert(index < NUM_FONT_RESOLUTIONS and index >= 0);
     ShiAssert(FALSE == IsBadStringPtr(fileName, _MAX_PATH));
 
     file = GR_OPEN(fileName, O_RDONLY);
@@ -1157,7 +1157,7 @@ int FontSet::ReadFontMetrics(int index, char*fileName) // JPO return status
 
         str = buffer;
 
-        while (str && *str)
+        while (str and *str)
         {
             int n = sscanf(str, "%d %d %d %d %d %d %d", &idx, &left, &top, &width, &height, &lead, &trail);
             ShiAssert(n == 7);
@@ -1199,7 +1199,7 @@ int FontSet::ReadFontMetrics(int index, char*fileName) // JPO return status
 
             str = strstr(str, "\n");
 
-            while ((str) && ((*str == '\n') or (*str == '\r')))
+            while ((str) and ((*str == '\n') or (*str == '\r')))
             {
                 str ++;
             }

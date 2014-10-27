@@ -378,7 +378,7 @@ int CampBaseClass::GetSpotted(Team t)
 
     // sfr: bad usage here! use sum instead, since in MP clients can receive future updates
     // also, in MP, messages take time to get, this is reseting spot, so added IsLocal()
-    if (IsLocal() && Camp_GetCurrentTime()  > ReconLossTime[mt] + spotTime)
+    if (IsLocal() and Camp_GetCurrentTime()  > ReconLossTime[mt] + spotTime)
     {
         spotted = 0;
     }
@@ -403,7 +403,7 @@ int CampBaseClass::GetSpotted(Team t)
             break;
 
         case Naval:
-            if (TeamInfo[t] && TeamInfo[t]->HasSatelites()) // 2002-03-06 MN CTD fix
+            if (TeamInfo[t] and TeamInfo[t]->HasSatelites()) // 2002-03-06 MN CTD fix
             {
                 // Check for cloud cover
                 GridIndex x, y;
@@ -424,7 +424,7 @@ int CampBaseClass::GetSpotted(Team t)
             // KCK: Experimental - Autospotted during first 12 hours of combat
             if (Camp_GetCurrentTime() < CampaignDay / 2)
                 return 1;
-            else if (TeamInfo[t] && TeamInfo[t]->HasSatelites()) // 2002-03-06 MN CTD fix
+            else if (TeamInfo[t] and TeamInfo[t]->HasSatelites()) // 2002-03-06 MN CTD fix
             {
                 // Check for cloud cover
                 GridIndex x, y;
@@ -456,7 +456,7 @@ void CampBaseClass::SetLocation(GridIndex x, GridIndex y)
     {
         vector v;
 
-        //ShiAssert (x >= 0 && y >= 0 && x < Map_Max_X && y < Map_Max_Y)
+        //ShiAssert (x >= 0 and y >= 0 and x < Map_Max_X and y < Map_Max_Y)
         if ((x < 1) or (x >= Map_Max_X - 1) or (y < 1) or (y >= Map_Max_Y - 1))
         {
             // KCK Hack: Teleport units off map back onto map
@@ -502,12 +502,12 @@ void CampBaseClass::SetSpotted(Team t, CampaignTime time, int identified)
 {
     // Make this dirty if we wern't previously spotted or our time has expired
     // 2002-02-11 MODIFIED BY S.G. Or we were not identified and now we are
-    if (ReSpot() or !((spotted >> t) & 0x01) or (!((spotted >> (t + 8)) & 0x01) && identified))
+    if (ReSpot() or !((spotted >> t) & 0x01) or (!((spotted >> (t + 8)) & 0x01) and identified))
     {
         spotTime = time;
 
         // 2002-04-02 ADDED BY S.G. Need to send sooner if it gets identified.
-        if (!((spotted >> (t + 8)) & 0x01) && identified)
+        if (!((spotted >> (t + 8)) & 0x01) and identified)
         {
             //MakeCampBaseDirty (DIRTY_SPOTTED, DDP[2].priority);
             MakeCampBaseDirty(DIRTY_SPOTTED, SEND_RELIABLE);
@@ -625,22 +625,22 @@ void CampBaseClass::SetJammed(int j)
 void CampBaseClass::SetTacan(int t)
 {
 
-    if (!t && IsTacan() && gTacanList)
+    if (!t and IsTacan() and gTacanList)
     {
-        if (IsObjective() && GetType() == TYPE_AIRBASE)
+        if (IsObjective() and GetType() == TYPE_AIRBASE)
         {
             gTacanList->RemoveTacan(Id(), NavigationSystem::AIRBASE);
         }
-        else if (EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT && EntityType()->classInfo_[VU_TYPE] == TYPE_FLIGHT)
+        else if (EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT and EntityType()->classInfo_[VU_TYPE] == TYPE_FLIGHT)
         {
             gTacanList->RemoveTacan(Id(), NavigationSystem::TANKER);
         }
-        else if (EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT && EntityType()->classInfo_[VU_TYPE] == TYPE_TASKFORCE && EntityType()->classInfo_[VU_STYPE])
+        else if (EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT and EntityType()->classInfo_[VU_TYPE] == TYPE_TASKFORCE and EntityType()->classInfo_[VU_STYPE])
         {
             gTacanList->RemoveTacan(Id(), NavigationSystem::CARRIER);
         }
     }
-    else if (t && (!IsTacan() or (IsObjective() && GetType() == TYPE_AIRBASE)) && gTacanList)
+    else if (t and (!IsTacan() or (IsObjective() and GetType() == TYPE_AIRBASE)) and gTacanList)
     {
         gTacanList->AddTacan(this);
     }
@@ -726,7 +726,7 @@ int CampBaseClass::GetComponentIndex(VuEntity* me) // My call
 
         cur = cit.GetFirst();
 
-        while (cur && cur not_eq me)
+        while (cur and cur not_eq me)
         {
             idx ++;
             cur = cit.GetNext();
@@ -1080,7 +1080,7 @@ void CampBaseClass::MakeCampBaseDirty(Dirty_Campaign_Base bits, Dirtyness score)
         return;
     }
 
-    if (!IsAggregate() && (score not_eq SEND_RELIABLEANDOOB))
+    if (!IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
     {
         score = static_cast<Dirtyness>(score << 4);
     }

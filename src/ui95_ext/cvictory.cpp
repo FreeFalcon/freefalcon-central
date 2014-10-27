@@ -153,23 +153,23 @@ void C_Victory::SetState(short state)
 
 long C_Victory::CheckHotSpots(long relx, long rely)
 {
-    if (relx >= GetX() && rely >= GetY() && relx <= (GetX() + GetW()) && rely <= (GetY() + GetH()))
+    if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= (GetY() + GetH()))
     {
         Section_ = 0;
 
         if (Team_)
             Section_ = static_cast<short>(Team_->CheckHotSpots(relx, rely));
 
-        if (Action_ && !Section_)
+        if (Action_ and !Section_)
             Section_ = static_cast<short>(Action_->CheckHotSpots(relx, rely));
 
-        if (Target_ && !Section_)
+        if (Target_ and !Section_)
             Section_ = static_cast<short>(Target_->CheckHotSpots(relx, rely));
 
-        if (Args_ && !Section_)
+        if (Args_ and !Section_)
             Section_ = static_cast<short>(Args_->CheckHotSpots(relx, rely));
 
-        if (Points_ && !Section_)
+        if (Points_ and !Section_)
             Section_ = static_cast<short>(Points_->CheckHotSpots(relx, rely));
 
         SetRelXY(relx - GetX(), rely - GetY());

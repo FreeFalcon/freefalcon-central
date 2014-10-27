@@ -43,7 +43,7 @@ int LoadWeapon(int hp, int last_hp, short wid, int to_load, int max, Squadron sq
     if (wid < 0 or wid >= NumWeaponTypes)
         return 0;
 
-    if (squadron && !squadron->GetUnitStores(wid))
+    if (squadron and !squadron->GetUnitStores(wid))
     {
 #ifndef INFINITE_AI_AMMO
         // Check for infinite weapons
@@ -52,7 +52,7 @@ int LoadWeapon(int hp, int last_hp, short wid, int to_load, int max, Squadron sq
         ShiAssert(uc);
         index = uc->SpecialIndex;
 
-        if (wid not_eq SquadronStoresDataTable[index].infiniteAA && wid not_eq SquadronStoresDataTable[index].infiniteAG && wid not_eq SquadronStoresDataTable[index].infiniteGun)
+        if (wid not_eq SquadronStoresDataTable[index].infiniteAA and wid not_eq SquadronStoresDataTable[index].infiniteAG and wid not_eq SquadronStoresDataTable[index].infiniteGun)
             return 0;
 
 #endif
@@ -78,7 +78,7 @@ int LoadWeapon(int hp, int last_hp, short wid, int to_load, int max, Squadron sq
         {
             to_load += max - 1; // Adjust 1 pt worth of to_load to max;
 
-            if (last_hp + 1 - hp not_eq hp && to_load > max)
+            if (last_hp + 1 - hp not_eq hp and to_load > max)
                 to_load += max - 1; // Symetrical - Adjust another point
         }
     }
@@ -133,7 +133,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
             break;
 
         case WEAP_LASER_POD:
-            if ((type_flags & WEAP_LASER_POD) && (WeaponDataTable[wid].Flags & WEAP_RECON) && (WeaponDataTable[wid].GuidanceFlags & WEAP_LASER))
+            if ((type_flags & WEAP_LASER_POD) and (WeaponDataTable[wid].Flags & WEAP_RECON) and (WeaponDataTable[wid].GuidanceFlags & WEAP_LASER))
                 score = 10000;
             else
                 score = 0;
@@ -150,7 +150,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
             return score;
 
         case WEAP_CHAFF_POD:
-            if ((type_flags & WEAP_CHAFF_POD) && (WeaponDataTable[wid].Flags & WEAP_RECON) && (WeaponDataTable[wid].Flags & WEAP_ECM))
+            if ((type_flags & WEAP_CHAFF_POD) and (WeaponDataTable[wid].Flags & WEAP_RECON) and (WeaponDataTable[wid].Flags & WEAP_ECM))
                 score = 10000;
             else
                 score = 0;
@@ -164,26 +164,26 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
 
 
 
-    if (type_flags && !(type_flags & WeaponDataTable[wid].Flags) && !(type_flags & WEAP_BAI_LOADOUT) && !(type_flags & WEAP_DEAD_LOADOUT))
+    if (type_flags and !(type_flags & WeaponDataTable[wid].Flags) and !(type_flags & WEAP_BAI_LOADOUT) and !(type_flags & WEAP_DEAD_LOADOUT))
         score = 0;
 
-    if (type_flags && type_flags & WeaponDataTable[wid].Flags)
+    if (type_flags and type_flags & WeaponDataTable[wid].Flags)
         score += 100; // Needed so we load non-combat type things
 
-    if ((guide_flags & WEAP_GUIDED_MASK) && (guide_flags & WeaponDataTable[wid].GuidanceFlags) not_eq guide_flags)
+    if ((guide_flags & WEAP_GUIDED_MASK) and (guide_flags & WeaponDataTable[wid].GuidanceFlags) not_eq guide_flags)
         score = 0;
 
-    if (guide_flags == WEAP_DUMB_ONLY && (WeaponDataTable[wid].GuidanceFlags & WEAP_GUIDED_MASK))
+    if (guide_flags == WEAP_DUMB_ONLY and (WeaponDataTable[wid].GuidanceFlags & WEAP_GUIDED_MASK))
         score = 0;
 
     // 2002-01-26 ADDED BY S.G. Don't use HARMS if not requested...
-    if (!guide_flags && (WeaponDataTable[wid].GuidanceFlags & WEAP_ANTIRADATION))
+    if (!guide_flags and (WeaponDataTable[wid].GuidanceFlags & WEAP_ANTIRADATION))
         score = 0;
 
     // END OF ADDED SECTION 2002-01-26
     if (type_flags & WEAP_BAI_LOADOUT)
     {
-        if (((WeaponDataTable[wid].GuidanceFlags & WEAP_LASER) && (wid not_eq 68 or wid not_eq 310)) or // 2002-01-24 MODIFIED BY S.G. Added () around the '&' statements since it has lower precedence than &&
+        if (((WeaponDataTable[wid].GuidanceFlags & WEAP_LASER) and (wid not_eq 68 or wid not_eq 310)) or // 2002-01-24 MODIFIED BY S.G. Added () around the '&' statements since it has lower precedence than &&
             (WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR) ||
             (WeaponDataTable[wid].GuidanceFlags & WEAP_ANTIRADATION))
             score = 0;
@@ -193,7 +193,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
             score = 0;
 
         // RV - Biker - Check for PEN type weapons here also
-        if (WeaponDataTable[wid].GuidanceFlags == WEAP_VISUALONLY && WeaponDataTable[wid].DamageType == PenetrationDam)
+        if (WeaponDataTable[wid].GuidanceFlags == WEAP_VISUALONLY and WeaponDataTable[wid].DamageType == PenetrationDam)
             score = 0;
 
         /*FILE *fp = fopen("BAI.log","a");
@@ -210,19 +210,19 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
         score = score * WeaponDataTable[wid].Range / 100;
 
         if ((WeaponDataTable[wid].GuidanceFlags &  WEAP_LASER) ||
-            (!(WeaponDataTable[wid].Flags & WEAP_CLUSTER) && (WeaponDataTable[wid].Flags & WEAP_BOMBGPS)))
+            (!(WeaponDataTable[wid].Flags & WEAP_CLUSTER) and (WeaponDataTable[wid].Flags & WEAP_BOMBGPS)))
             score = score / (WeaponDataTable[wid].Strength + 1) * 200;
 
-        if (WeaponDataTable[wid].GuidanceFlags ==  WEAP_VISUALONLY && WeaponDataTable[wid].DamageType == PenetrationDam)
+        if (WeaponDataTable[wid].GuidanceFlags ==  WEAP_VISUALONLY and WeaponDataTable[wid].DamageType == PenetrationDam)
             score = 0;
 
-        if (WeaponDataTable[wid].GuidanceFlags ==  WEAP_LASER && WeaponDataTable[wid].DamageType == PenetrationDam)
+        if (WeaponDataTable[wid].GuidanceFlags ==  WEAP_LASER and WeaponDataTable[wid].DamageType == PenetrationDam)
             score = 0;
     }
 
     //Cobra 11/23/04 Removed the random thing; not needed.
     //Cobra 12/27/04 Put it back because Jim didn't get random loads of A/A weapons ;)
-    if (score > 0 && randomize && FalconLocalGame && FalconLocalGame->GetGameType() not_eq game_Dogfight)
+    if (score > 0 and randomize and FalconLocalGame and FalconLocalGame->GetGameType() not_eq game_Dogfight)
     {
         // Add some randomness in this
         if (rand() % 2)
@@ -290,25 +290,25 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
     }
 
     // We have a centerline, and only need one of these
-    if (num == 1 && (lhp & 0x01))
+    if (num == 1 and (lhp & 0x01))
         chp = (lhp / 2) + 1;
 
     // Check if we want a symetric load
     if (!(num & 0x01))
         sl = 1;
 
-    for (hp = chp; hp <= lhp && num > 0; hp++)
+    for (hp = chp; hp <= lhp and num > 0; hp++)
     {
         // RV - Biker - Jammers now do overwrite AA and AG weapons
-        //if (!Weapon[hp] && (!sl or !Weapon[lhp+1-hp])) // Only check for empty hard points
-        if (!Weapon[hp] && (!sl or !Weapon[lhp + 1 - hp]) or ((type_flags & WEAP_ECM or type_flags & WEAP_LASER_POD) && !(WeaponDataTable[Weapon[hp]].Flags & (WEAP_FUEL | WEAP_RECON)))) // Only check for empty hard points
+        //if (!Weapon[hp] and (!sl or !Weapon[lhp+1-hp])) // Only check for empty hard points
+        if (!Weapon[hp] and (!sl or !Weapon[lhp + 1 - hp]) or ((type_flags & WEAP_ECM or type_flags & WEAP_LASER_POD) and !(WeaponDataTable[Weapon[hp]].Flags & (WEAP_FUEL | WEAP_RECON)))) // Only check for empty hard points
             //if (!Weapon[hp] or (temp_flags & WEAP_LASER_POD))
         {
             if (vc->Weapons[hp] == 255) // This is a weapon list
             {
                 wl = vc->Weapon[hp];
 
-                for (i = 0, bs = INT_MIN, bw = -1, wid = -1; i < MAX_WEAPONS_IN_LIST && wid; i++)
+                for (i = 0, bs = INT_MIN, bw = -1, wid = -1; i < MAX_WEAPONS_IN_LIST and wid; i++)
                 {
                     wid = GetListEntryWeapon(wl, i);
                     score = WeaponLoadScore(wid, lw, dam, mt, type_flags, guide_flags, TRUE);
@@ -316,17 +316,17 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
                     // Better score for bomb-bays, essentially
                     ShiAssert(WeaponDataTable[wid].FireRate);
 
-                    if (!(vc->VisibleFlags & (0x01 << hp)) && WeaponDataTable[wid].FireRate)
+                    if (!(vc->VisibleFlags & (0x01 << hp)) and WeaponDataTable[wid].FireRate)
                         score = score * vc->Weapons[hp] / WeaponDataTable[wid].FireRate;
 
-                    if (score && uc)
+                    if (score and uc)
                     {
                         if (!((Squadron)squadron)->GetUnitStores(wid))
                         {
 #ifndef INFINITE_AI_AMMO
 
                             // Check for infinite weapons
-                            if (wid not_eq SquadronStoresDataTable[uc->SpecialIndex].infiniteAA && wid not_eq SquadronStoresDataTable[uc->SpecialIndex].infiniteAG)
+                            if (wid not_eq SquadronStoresDataTable[uc->SpecialIndex].infiniteAA and wid not_eq SquadronStoresDataTable[uc->SpecialIndex].infiniteAG)
                                 score = 0;
 
 #else
@@ -336,12 +336,12 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
                         else if (((Squadron)squadron)->GetUnitStores(wid) < 100)
                         {
                             // Lower score of rare things
-                            if (wid not_eq SquadronStoresDataTable[uc->SpecialIndex].infiniteAA && wid not_eq SquadronStoresDataTable[uc->SpecialIndex].infiniteAG)
+                            if (wid not_eq SquadronStoresDataTable[uc->SpecialIndex].infiniteAA and wid not_eq SquadronStoresDataTable[uc->SpecialIndex].infiniteAG)
                                 score = max(((score * ((Squadron)squadron)->GetUnitStores(wid)) / 100), 1);
                         }
                     }
 
-                    if (score && score > bs)
+                    if (score and score > bs)
                     {
                         bs = score;
                         bw = i;
@@ -392,11 +392,11 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
 
 #endif
 
-        if (hp && !lw && Weapon[hp])
+        if (hp and !lw and Weapon[hp])
             lw = Weapon[hp];
 
         // RV - Biker - Maybe need to rework this
-        if (type_flags & WEAP_LASER_POD && num == 0)
+        if (type_flags & WEAP_LASER_POD and num == 0)
             break;
 
         // We checked the center, now do a normal search
@@ -415,7 +415,7 @@ uchar AdjustedWeaponCount(int *total, uchar max_this_station, short wid)
     if (rate > max_this_station)
         rate = max_this_station;
 
-    if (*total == 1 && max_this_station > 0)
+    if (*total == 1 and max_this_station > 0)
     {
         count = rate; // Load one shot's worth
         *total -= 1;

@@ -125,7 +125,7 @@ void C_Panner::SetImage(short state, long ImageID)
             //Image_[state]->SetXY(tmp->x,tmp->y);
         }
 
-        if (!state && Image_[state])
+        if (!state and Image_[state])
             SetWH(Image_[state]->GetW(), Image_[state]->GetH());
 
         if (Image_[0]->Ready())
@@ -250,21 +250,21 @@ BOOL C_Panner::Process(long, short HitType)
                     break;
 
                 case C_TYPE_DRAGXY:
-                    if (SX_ < 0 && SY_ < 0)
+                    if (SX_ < 0 and SY_ < 0)
                         state_ = 2;
-                    else if (SX_ == 0 && SY_ < 0)
+                    else if (SX_ == 0 and SY_ < 0)
                         state_ = 3;
-                    else if (SX_ > 0 && SY_ < 0)
+                    else if (SX_ > 0 and SY_ < 0)
                         state_ = 4;
-                    else if (SX_ < 0 && SY_ == 0)
+                    else if (SX_ < 0 and SY_ == 0)
                         state_ = 5;
-                    else if (SX_ > 0 && SY_ == 0)
+                    else if (SX_ > 0 and SY_ == 0)
                         state_ = 6;
-                    else if (SX_ < 0 && SY_ > 0)
+                    else if (SX_ < 0 and SY_ > 0)
                         state_ = 7;
-                    else if (SX_ == 0 && SY_ > 0)
+                    else if (SX_ == 0 and SY_ > 0)
                         state_ = 8;
-                    else if (SX_ > 0 && SY_ > 0)
+                    else if (SX_ > 0 and SY_ > 0)
                         state_ = 9;
                     else
                         state_ = 1;
@@ -351,9 +351,9 @@ BOOL C_Panner::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
     SX_ = (short)(MouseX - Parent_->GetX() - GetX() - DeadX_); //!
     SY_ = (short)(MouseY - Parent_->GetY() - GetY() - DeadY_); //!
 
-    if (SX_ > -DeadW_ && SX_ < DeadW_) SX_ = 0;
+    if (SX_ > -DeadW_ and SX_ < DeadW_) SX_ = 0;
 
-    if (SY_ > -DeadH_ && SY_ < DeadH_) SY_ = 0;
+    if (SY_ > -DeadH_ and SY_ < DeadH_) SY_ = 0;
 
     switch (GetType())
     {
@@ -382,21 +382,21 @@ BOOL C_Panner::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
         case C_TYPE_DRAGXY:
             state_ = 1;
 
-            if (SX_ < 0 && SY_ < 0)
+            if (SX_ < 0 and SY_ < 0)
                 state_ = 2;
-            else if (SX_ == 0 && SY_ < 0)
+            else if (SX_ == 0 and SY_ < 0)
                 state_ = 3;
-            else if (SX_ > 0 && SY_ < 0)
+            else if (SX_ > 0 and SY_ < 0)
                 state_ = 4;
-            else if (SX_ < 0 && SY_ == 0)
+            else if (SX_ < 0 and SY_ == 0)
                 state_ = 5;
-            else if (SX_ > 0 && SY_ == 0)
+            else if (SX_ > 0 and SY_ == 0)
                 state_ = 6;
-            else if (SX_ < 0 && SY_ > 0)
+            else if (SX_ < 0 and SY_ > 0)
                 state_ = 7;
-            else if (SX_ == 0 && SY_ > 0)
+            else if (SX_ == 0 and SY_ > 0)
                 state_ = 8;
-            else if (SX_ > 0 && SY_ > 0)
+            else if (SX_ > 0 and SY_ > 0)
                 state_ = 9;
 
             Refresh();

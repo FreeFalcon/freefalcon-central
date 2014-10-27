@@ -40,11 +40,11 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
 
         ShiAssert(wc);
 
-        if (wc && (wc->Flags & WEAP_BOMBGPS))
+        if (wc and (wc->Flags & WEAP_BOMBGPS))
             return true;
     }
 
-    if (platform->IsMissile() && ((MissileClass*)platform)->parent && ((MissileClass*)platform)->parent->OnGround())
+    if (platform->IsMissile() and ((MissileClass*)platform)->parent and ((MissileClass*)platform)->parent->OnGround())
     {
         // TODO: Fix this case to deal with localData->az being heading instead of relative az
         return TRUE;
@@ -52,7 +52,7 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
     //else if (!g_bHardCoreReal) MI
     else if (!g_bRealisticAvionics)
     {
-        if (obj == lockedTarget && obj->localData->ata < typeData->GimbalLimitHalfAngle)
+        if (obj == lockedTarget and obj->localData->ata < typeData->GimbalLimitHalfAngle)
         {
             return TRUE;
         }
@@ -64,12 +64,12 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
     else if (platform->IsMissile())//me123 status bad. make the heatseekers limited to 28 degree radar slew and 6 degree cone in bore.
     {
         // Marco Edit - if missile is both slaved and caged (ie. radar points it to target)
-        if (((MissileClass*)platform)->isSlave == TRUE && ((MissileClass*)platform)->isCaged == TRUE)
+        if (((MissileClass*)platform)->isSlave == TRUE and ((MissileClass*)platform)->isCaged == TRUE)
         {
             tracking = FALSE ;
 
             //me123 slave mode
-            if (obj == lockedTarget && obj->localData->ata < (typeData->GimbalLimitHalfAngle / 1.5))
+            if (obj == lockedTarget and obj->localData->ata < (typeData->GimbalLimitHalfAngle / 1.5))
             {
                 return TRUE;
             }
@@ -239,7 +239,7 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
 
         ShiAssert(wc);
 
-        if (wc && (wc->Flags & WEAP_BOMBGPS))
+        if (wc and (wc->Flags & WEAP_BOMBGPS))
             return true;
     }
 
@@ -248,7 +248,7 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
 
     // TODO:  Eliminate this once each vehicle has its own IR signal strength in the class table
     // Cut the signature for being on the ground
-    if (obj->BaseData()->IsSim() && ((SimBaseClass*)obj->BaseData())->OnGround())
+    if (obj->BaseData()->IsSim() and ((SimBaseClass*)obj->BaseData())->OnGround())
         signature *= typeData->GroundFactor;
 
     // Scale for range squared
@@ -258,14 +258,14 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
     // Bonus for being locked target
 
     //MI
-    //if (g_bHardCoreReal && tracking == TRUE)//me123 we have uncaged on a target and it's tracking
-    if (g_bRealisticAvionics && tracking == TRUE)
+    //if (g_bHardCoreReal and tracking == TRUE)//me123 we have uncaged on a target and it's tracking
+    if (g_bRealisticAvionics and tracking == TRUE)
     {
         signature *= 1.2F;
     }
 
-    //if (!g_bHardCoreReal && obj == lockedTarget) MI
-    if (!g_bRealisticAvionics && obj == lockedTarget)
+    //if (!g_bHardCoreReal and obj == lockedTarget) MI
+    if (!g_bRealisticAvionics and obj == lockedTarget)
     {
         signature *= 1.5F;
     }
@@ -306,7 +306,7 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
         return FALSE;
 
     }
-    else if ((signature > 0.75F)  && (signature > PRANDFloatPos()))
+    else if ((signature > 0.75F)  and (signature > PRANDFloatPos()))
     {
         return TRUE;
     }

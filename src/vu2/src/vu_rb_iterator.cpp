@@ -82,7 +82,7 @@ VuEntity *VuRBIterator::GetNext()
     }
     ret = CurrEnt();
 
-    if (ret not_eq NULL && ret->VuState() not_eq VU_MEM_ACTIVE)
+    if (ret not_eq NULL and ret->VuState() not_eq VU_MEM_ACTIVE)
     {
         return GetNext();
     }

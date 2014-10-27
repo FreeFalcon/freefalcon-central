@@ -149,7 +149,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
             rdrData = obj->localData;
 
             // if the expected possition is too far from the actual hammer signal to zero
-            if (rdrData->rdrSy[0] && rdrData->rdrSy[1]) // we have a track history
+            if (rdrData->rdrSy[0] and rdrData->rdrSy[1]) // we have a track history
             {
                 float expectedY =  rdrData->rdrY[0]  + (rdrData->rdrY[0] - rdrData->rdrY[1]);
                 float expectedX = (rdrData->rdrX[0] + (rdrData->rdrHd[0] - platform->Yaw())) +
@@ -161,7 +161,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
                 float realaz = rdrData->rdrX[0] + (rdrData->rdrHd[0] - platform->Yaw());
                 realaz = RES180(realaz);
 
-                if (radarDatFile && (fabs(realaz - expectedX) > radarDatFile->MaxAngleDiffSam * DTR ||
+                if (radarDatFile and (fabs(realaz - expectedX) > radarDatFile->MaxAngleDiffSam * DTR ||
                                      (fabs(obj->localData->range - expectedY)) > (expectedY * radarDatFile->MaxRangeDiffSam) / 100.0f))
                 {
                     S *= 0.0f; //hammer to zero
@@ -187,7 +187,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
         rdrData = obj->localData;
 
         // if the expected possition is too far from the actual hammer signal to zero
-        if (rdrData->rdrSy[0] && rdrData->rdrSy[1]) // we have a track history
+        if (rdrData->rdrSy[0] and rdrData->rdrSy[1]) // we have a track history
         {
             float expectedY =  rdrData->rdrY[0]  + (rdrData->rdrY[0] - rdrData->rdrY[1]);
             float expectedX = (rdrData->rdrX[1] + (rdrData->rdrHd[1] - platform->Yaw())) +
@@ -199,7 +199,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
             float realaz = rdrData->rdrX[1] + (rdrData->rdrHd[1] - platform->Yaw());
             realaz = RES180(realaz);
 
-            if (radarDatFile && (fabs(realaz - expectedX) > radarDatFile->MaxAngleDiffTws * DTR ||
+            if (radarDatFile and (fabs(realaz - expectedX) > radarDatFile->MaxAngleDiffTws * DTR ||
                                  (fabs(obj->localData->range - expectedY)) > (expectedY * radarDatFile->MaxRangeDiffTws) / 100.0f))
             {
                 S *= 0.0f; //hammer to zero

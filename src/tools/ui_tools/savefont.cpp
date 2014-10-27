@@ -602,7 +602,7 @@ void IncreaseLead(long, short hittype, C_Base *control)
 
     if (cur)
     {
-        if (CurrentChar >= cur->First() && CurrentChar <= cur->Last())
+        if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
             txt = (C_Text*)control->Parent_->FindControl(REFUEL_1);
 
@@ -635,7 +635,7 @@ void DecreaseLead(long , short hittype, C_Base *control)
 
     if (cur)
     {
-        if (CurrentChar >= cur->First() && CurrentChar <= cur->Last())
+        if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
             txt = (C_Text*)control->Parent_->FindControl(REFUEL_1);
 
@@ -668,7 +668,7 @@ void IncreaseTrail(long, short hittype, C_Base *control)
 
     if (cur)
     {
-        if (CurrentChar >= cur->First() && CurrentChar <= cur->Last())
+        if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
             txt = (C_Text*)control->Parent_->FindControl(REFUEL_3);
 
@@ -701,7 +701,7 @@ void DecreaseTrail(long, short hittype, C_Base *control)
 
     if (cur)
     {
-        if (CurrentChar >= cur->First() && CurrentChar <= cur->Last())
+        if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
             txt = (C_Text*)control->Parent_->FindControl(REFUEL_3);
 
@@ -734,7 +734,7 @@ void IncreaseWidth(long, short hittype, C_Base *control)
 
     if (cur)
     {
-        if (CurrentChar >= cur->First() && CurrentChar <= cur->Last())
+        if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
             txt = (C_Text*)control->Parent_->FindControl(REFUEL_2);
 
@@ -767,7 +767,7 @@ void DecreaseWidth(long, short hittype, C_Base *control)
 
     if (cur)
     {
-        if (CurrentChar >= cur->First() && CurrentChar <= cur->Last())
+        if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
             txt = (C_Text*)control->Parent_->FindControl(REFUEL_2);
 
@@ -813,7 +813,7 @@ void ChooseCharCB(long ID, short hittype, C_Base *control)
     control->Refresh();
     fnt = gFontList->Find(CurrentFontID);
 
-    if (fnt && CurrentChar  > 0)
+    if (fnt and CurrentChar  > 0)
     {
         chr = fnt->GetChar(static_cast<short>(CurrentChar));
 

@@ -138,7 +138,7 @@ void OTWDriverClass::VCock_CheckStopStates(float dT)
 {
     if (stopState == STOP_STATE0)
     {
-        if ((azDir > 0.0F && eyePan <= PAN_LIMIT * DTR) or (azDir < 0.0F && eyePan >= PAN_LIMIT * DTR))
+        if ((azDir > 0.0F and eyePan <= PAN_LIMIT * DTR) or (azDir < 0.0F and eyePan >= PAN_LIMIT * DTR))
         {
 
             stopState = STOP_STATE1;
@@ -152,7 +152,7 @@ void OTWDriverClass::VCock_CheckStopStates(float dT)
     }
     else if (stopState == STOP_STATE1)
     {
-        if ((azDir > 0.0F && eyePan <= -PAN_LIMIT * DTR) or (azDir < 0.0F && eyePan >= PAN_LIMIT * DTR))
+        if ((azDir > 0.0F and eyePan <= -PAN_LIMIT * DTR) or (azDir < 0.0F and eyePan >= PAN_LIMIT * DTR))
         {
             stopState = STOP_STATE1;
         }
@@ -167,7 +167,7 @@ void OTWDriverClass::VCock_CheckStopStates(float dT)
     }
     else if (stopState == STOP_STATE2)
     {
-        if ((azDir > 0.0F && eyePan <= -PAN_LIMIT * DTR) or (azDir < 0.0F && eyePan >= PAN_LIMIT * DTR))
+        if ((azDir > 0.0F and eyePan <= -PAN_LIMIT * DTR) or (azDir < 0.0F and eyePan >= PAN_LIMIT * DTR))
         {
             headMotion = HEAD_TRANSISTION1;
             initialTilt = eyeTilt;
@@ -406,7 +406,7 @@ void OTWDriverClass::VCock_GiveGilmanHead(float dT)
                 BuildHeadMatrix(TRUE, YAW_PITCH, eyePan, eyeTilt, 0.0F);
                 headMotion = HEAD_TRANSISTION2;
             }
-            else if (initialTilt > -90.0F * DTR && eyeTilt > -92.0F * DTR)
+            else if (initialTilt > -90.0F * DTR and eyeTilt > -92.0F * DTR)
             {
 
                 eyeTilt -= slewRate * 10.0F * dT;
@@ -433,7 +433,7 @@ void OTWDriverClass::VCock_GiveGilmanHead(float dT)
         {
 
 
-            if ((snapDir == RTOL or snapDir == LTOR) && ((eyePan >= PAN_LIMIT * DTR) or (eyePan <= -PAN_LIMIT * DTR)))
+            if ((snapDir == RTOL or snapDir == LTOR) and ((eyePan >= PAN_LIMIT * DTR) or (eyePan <= -PAN_LIMIT * DTR)))
             {
                 eyePan -= snapDir * slewRate * 10.0F * dT;
 
@@ -1405,7 +1405,7 @@ float OTWDriverClass::MoveByRate(float oldval, float newval, float rate)
 // COBRA DX - Red - Head is calculated once for all
 void OTWDriverClass::VCock_HeadCalc(void)
 {
-    if ((mUseHeadTracking) && (g_n6DOFTIR)) // Retro 24Dez2004
+    if ((mUseHeadTracking) and (g_n6DOFTIR)) // Retro 24Dez2004
     {
 
         // Use TIR 6 DOF - Cobra
@@ -1502,19 +1502,19 @@ void OTWDriverClass::VCock_HeadCalc(void)
 
                 // my old crappy execution
                 //Head roll move damping
-                // if (actualrollrate < BobbingRollRate && BobbingRollRate > -0.5F )
+                // if (actualrollrate < BobbingRollRate and BobbingRollRate > -0.5F )
                 // BobbingRollRate = BobbingRollRate - 0.001F;
-                // if (actualrollrate > BobbingRollRate && BobbingRollRate < 0.5F)
+                // if (actualrollrate > BobbingRollRate and BobbingRollRate < 0.5F)
                 // BobbingRollRate = BobbingRollRate + 0.001F;
                 //Head tilt move damping
-                // if (actualtilt < BobbingTilt && BobbingTilt > -0.5F)
+                // if (actualtilt < BobbingTilt and BobbingTilt > -0.5F)
                 // BobbingTilt = BobbingTilt - 0.001F;
-                // if (actualtilt > BobbingTilt && BobbingTilt < 0.5F)
+                // if (actualtilt > BobbingTilt and BobbingTilt < 0.5F)
                 // BobbingTilt = BobbingTilt + 0.001F;
                 //Head pan move damping
-                // if (actualpan < BobbingPan && BobbingPan > -0.5F)
+                // if (actualpan < BobbingPan and BobbingPan > -0.5F)
                 // BobbingPan = BobbingPan - 0.001F;
-                // if (actualpan > BobbingPan && BobbingPan < 0.5F)
+                // if (actualpan > BobbingPan and BobbingPan < 0.5F)
                 // BobbingPan = BobbingPan + 0.001F;
 
                 BobbingPreviousTime = vuxGameTime;
@@ -1683,7 +1683,7 @@ void OTWDriverClass::VCock_Exec(void)
     // sfr: will test this using callbacks
 #if 1
 
-    if (cockpitFlightData.IsSet(FlightData::MasterCaution) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+    if (cockpitFlightData.IsSet(FlightData::MasterCaution) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
         vrCockpit->SetSwitchMask(2, 1);
     else
         vrCockpit->SetSwitchMask(2, 0);
@@ -1699,68 +1699,68 @@ void OTWDriverClass::VCock_Exec(void)
         //******************************************
 
         // AR/RDY light
-        if (cockpitFlightData.IsSet(FlightData::RefuelRDY) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::RefuelRDY) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARRDY_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARRDY_LIGHT, 0);
 
         // AR/NWS light
-        if (cockpitFlightData.IsSet(FlightData::RefuelAR) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::RefuelAR) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARNWS_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARNWS_LIGHT, 0);
 
         // AR/DISC light
-        if (cockpitFlightData.IsSet(FlightData::RefuelDSC) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::RefuelDSC) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARDISC_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARDISC_LIGHT, 0);
 
         // AOA BELOW light
-        if (cockpitFlightData.IsSet(FlightData::AOABelow) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::AOABelow) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOABELOW_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOABELOW_LIGHT, 0);
 
         // AOA ON light
-        if (cockpitFlightData.IsSet(FlightData::AOAOn) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::AOAOn) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOAON_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOAON_LIGHT, 0);
 
         // AOA ABOVE light
-        if (cockpitFlightData.IsSet(FlightData::AOAAbove) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::AOAAbove) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOAABOVE_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOAABOVE_LIGHT, 0);
 
         //EYEBROW CAUTION lights
         //ENG FIRE
-        if (cockpitFlightData.IsSet(FlightData::ENG_FIRE) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::ENG_FIRE) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_ENGFIRE, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_ENGFIRE, 0);
 
         //ENGINE
-        if (cockpitFlightData.IsSet(FlightData::EngineFault) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::EngineFault) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_ENGINE, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_ENGINE, 0);
 
         //HYD/OIL
-        if ((cockpitFlightData.IsSet(FlightData::HYD) or cockpitFlightData.IsSet(FlightData::OIL)) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if ((cockpitFlightData.IsSet(FlightData::HYD) or cockpitFlightData.IsSet(FlightData::OIL)) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_HYDOIL, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_HYDOIL, 0);
 
         //FLCS
-        if ((cockpitFlightData.IsSet(FlightData::FltControlSys) or cockpitFlightData.IsSet(FlightData::DUAL)) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if ((cockpitFlightData.IsSet(FlightData::FltControlSys) or cockpitFlightData.IsSet(FlightData::DUAL)) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_FLCS, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_FLCS, 0);
 
         //TO/LDG config
-        if (cockpitFlightData.IsSet(FlightData::T_L_CFG) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::T_L_CFG) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_TOLDG, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_TOLDG, 0);
@@ -1773,13 +1773,13 @@ void OTWDriverClass::VCock_Exec(void)
         else
             canopyopen = SimDriver.GetPlayerAircraft()->GetDOFValue(SIMP_CANOPY_DOF) > 0;
 
-        if ((cockpitFlightData.IsSet(FlightData::CAN) or cockpitFlightData.IsSet(FlightData::OXY_LOW) or canopyopen) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if ((cockpitFlightData.IsSet(FlightData::CAN) or cockpitFlightData.IsSet(FlightData::OXY_LOW) or canopyopen) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_CANOPY, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_CANOPY, 0);
 
         //TF-FAIL
-        if (cockpitFlightData.IsSet(FlightData::TF) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::TF) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_TFFAIL, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_TFFAIL, 0);
@@ -1800,7 +1800,7 @@ void OTWDriverClass::VCock_Exec(void)
         }
 
         //Instrument lights
-        if ((SimDriver.GetPlayerAircraft()->GetInstrumentLight()) && !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if ((SimDriver.GetPlayerAircraft()->GetInstrumentLight()) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_INSTRUMENT_LIGHTS, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_INSTRUMENT_LIGHTS, 0);
@@ -1959,7 +1959,7 @@ void OTWDriverClass::VCock_Exec(void)
         //******************************************
 
         //ADI and BACKUP ADI stuff
-        if (g_bRealisticAvionics && g_bINS)
+        if (g_bRealisticAvionics and g_bINS)
         {
             if (SimDriver.GetPlayerAircraft()->INSState(AircraftClass::BUP_ADI_OFF_IN))
             {
@@ -2055,20 +2055,20 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetDOFangle(COMP_3DPIT_ILSH_NEEDLE, -hILSneedle / 10.0F);
 
             //i use this timer for other needles as well
-            if (SimDriver.GetPlayerAircraft()->af->HydraulicA() && HYDA3d < 3.64F)
+            if (SimDriver.GetPlayerAircraft()->af->HydraulicA() and HYDA3d < 3.64F)
             {
                 HYDA3d = HYDA3d + 0.1F;
             }
-            else if (!SimDriver.GetPlayerAircraft()->af->HydraulicA() && HYDA3d > 0.0F)
+            else if (!SimDriver.GetPlayerAircraft()->af->HydraulicA() and HYDA3d > 0.0F)
             {
                 HYDA3d = HYDA3d - 0.1F;
             }
 
-            if (SimDriver.GetPlayerAircraft()->af->HydraulicB() &&  HYDB3d < 3.64F)
+            if (SimDriver.GetPlayerAircraft()->af->HydraulicB() and  HYDB3d < 3.64F)
             {
                 HYDB3d = HYDB3d + 0.1F;
             }
-            else if (!SimDriver.GetPlayerAircraft()->af->HydraulicB() &&  HYDB3d > 0.0F)
+            else if (!SimDriver.GetPlayerAircraft()->af->HydraulicB() and  HYDB3d > 0.0F)
             {
                 HYDB3d = HYDB3d - 0.1F;
             }
@@ -2348,20 +2348,20 @@ void OTWDriverClass::VCock_Exec(void)
         vrCockpit->SetDOFangle(COMP_3DPIT_FTIT_NEEDLE, needle);
 
         //HYD A/B
-        if (SimDriver.GetPlayerAircraft()->af->HydraulicA() && HYDA3d < 3.64F)
+        if (SimDriver.GetPlayerAircraft()->af->HydraulicA() and HYDA3d < 3.64F)
         {
             HYDA3d = MoveByRate(HYDA3d, 3.64F, 200);
         }
-        else if (!SimDriver.GetPlayerAircraft()->af->HydraulicA() && HYDA3d > 0.0F)
+        else if (!SimDriver.GetPlayerAircraft()->af->HydraulicA() and HYDA3d > 0.0F)
         {
             HYDA3d = MoveByRate(HYDA3d, 0.0F, 200);
         }
 
-        if (SimDriver.GetPlayerAircraft()->af->HydraulicB() &&  HYDB3d < 3.64F)
+        if (SimDriver.GetPlayerAircraft()->af->HydraulicB() and  HYDB3d < 3.64F)
         {
             HYDB3d = MoveByRate(HYDB3d, 3.64F, 200);
         }
-        else if (!SimDriver.GetPlayerAircraft()->af->HydraulicB() &&  HYDB3d > 0.0F)
+        else if (!SimDriver.GetPlayerAircraft()->af->HydraulicB() and  HYDB3d > 0.0F)
         {
             HYDB3d = MoveByRate(HYDB3d, 0.0F, 200);
         }
@@ -2457,7 +2457,7 @@ void OTWDriverClass::VCock_Exec(void)
         // RWR Launch warning light
         if (theRwr)
         {
-            if (theRwr->LaunchIndication() && (vuxRealTime & 0x200))
+            if (theRwr->LaunchIndication() and (vuxRealTime & 0x200))
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_LAUNCH, 1);
             else
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_LAUNCH, 0);
@@ -2790,7 +2790,7 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_RF_QUIET, 1); //QUIET --> no Radar
 
         // RWR power switch
-        if (theRwr && theRwr->IsOn())
+        if (theRwr and theRwr->IsOn())
             vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_PWR, 2);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_PWR, 1);
@@ -3011,7 +3011,7 @@ void OTWDriverClass::VCock_Exec(void)
         //
         rwr = (PlayerRwrClass*)FindSensor((SimMoverClass *)otwPlatform.get(), SensorClass::RWR);
 
-        if (vRWRrenderer && rwr)
+        if (vRWRrenderer and rwr)
         {
             vRWRrenderer->AdjustRttViewport();
 
@@ -3041,7 +3041,7 @@ void OTWDriverClass::VCock_Exec(void)
         //PLF and DED can be fitted into each "character boxes" (26x5 matrix) by changing
         //PLF and DED RTT surface resolution to match pixel size of fonts.
 
-        if (pCockpitManager->mpIcp && vDEDrenderer)
+        if (pCockpitManager->mpIcp and vDEDrenderer)
         {
             vDEDrenderer->AdjustRttViewport();
             vHUDrenderer->SetFont(pCockpitManager->DEDFont());
@@ -3109,7 +3109,7 @@ void OTWDriverClass::VCock_Exec(void)
                             buf[0] = pCockpitManager->mpIcp->DEDLines[j][i];
                             buf[1] = '\0';
 
-                            if (buf[0] not_eq ' ' && pCockpitManager->mpIcp->Invert[j][i] == 0)
+                            if (buf[0] not_eq ' ' and pCockpitManager->mpIcp->Invert[j][i] == 0)
                                 vDEDrenderer->TextLeft(x, y, buf, pCockpitManager->mpIcp->Invert[j][i]);
                             else if (pCockpitManager->mpIcp->Invert[j][i] == 2)
                                 vDEDrenderer->TextLeft(x, y, buf, pCockpitManager->mpIcp->Invert[j][i]);
@@ -3132,7 +3132,7 @@ void OTWDriverClass::VCock_Exec(void)
         // Do PFL
         //
 
-        if (hasPFL && pCockpitManager->mpIcp && vPFLrenderer)
+        if (hasPFL and pCockpitManager->mpIcp and vPFLrenderer)
         {
             vPFLrenderer->AdjustRttViewport();
             vHUDrenderer->SetFont(pCockpitManager->DEDFont());
@@ -3197,7 +3197,7 @@ void OTWDriverClass::VCock_Exec(void)
                             buf[0] = pCockpitManager->mpIcp->PFLLines[j][i];
                             buf[1] = '\0';
 
-                            if (buf[0] not_eq ' ' && pCockpitManager->mpIcp->PFLInvert[j][i] == 0)
+                            if (buf[0] not_eq ' ' and pCockpitManager->mpIcp->PFLInvert[j][i] == 0)
                                 vPFLrenderer->TextLeft(x, y, buf, pCockpitManager->mpIcp->PFLInvert[j][i]);
                             else if (pCockpitManager->mpIcp->PFLInvert[j][i] == 2)
                                 vPFLrenderer->TextLeft(x, y, buf, pCockpitManager->mpIcp->PFLInvert[j][i]);
@@ -3264,7 +3264,7 @@ void OTWDriverClass::VCock_Exec(void)
 
         if (g_b3dMFDLeft)
         {
-            if (MfdDisplay[0]->GetDrawable() && MfdDisplay[0]->GetDrawable()->GetDisplay())
+            if (MfdDisplay[0]->GetDrawable() and MfdDisplay[0]->GetDrawable()->GetDisplay())
             {
                 MfdDisplay[0]->GetDrawable()->GetDisplay()->DrawRttQuad();
             }
@@ -3272,7 +3272,7 @@ void OTWDriverClass::VCock_Exec(void)
 
         if (g_b3dMFDRight)
         {
-            if (MfdDisplay[1]->GetDrawable() &&  MfdDisplay[1]->GetDrawable()->GetDisplay())
+            if (MfdDisplay[1]->GetDrawable() and  MfdDisplay[1]->GetDrawable()->GetDisplay())
             {
                 MfdDisplay[1]->GetDrawable()->GetDisplay()->DrawRttQuad();
             }
@@ -3316,7 +3316,7 @@ void OTWDriverClass::VCock_Exec(void)
     ThreeDVertex t1;
     gSelectedCursor = 9; //Wombat778 10-11-2003 set the cursor to the default green cursor
 
-    if ((vuxRealTime - gTimeLastMouseMove < SI_MOUSE_TIME_DELTA) && !InExitMenu()) //Wombat778 10-15-2003 added so mouse cursor would disappear after a few seconds standing still. Also dont want two cursors when exit menu is up
+    if ((vuxRealTime - gTimeLastMouseMove < SI_MOUSE_TIME_DELTA) and !InExitMenu()) //Wombat778 10-15-2003 added so mouse cursor would disappear after a few seconds standing still. Also dont want two cursors when exit menu is up
     {
         //Wombat778 10-15-2003 Added the following so that mouse cursor could be drawn in green if over a button, red otherwise
         if (g_b3DClickableCursorChange)
@@ -3522,7 +3522,7 @@ void OTWDriverClass::VCock_Exec(void)
     // 2001-01-31 ADDED BY S.G. SO HMS EQUIPPED PLANE HAS TWO GREEN CONCENTRIC CIRCLE IN PADLOCK VIEW
     VehicleClassDataType *vc = (VehicleClassDataType *)Falcon4ClassTable[otwPlatform->Type() - VU_LAST_ENTITY_TYPE].dataPtr;
 
-    if (vc && vc->Flags & 0x20000000)
+    if (vc and vc->Flags & 0x20000000)
     {
         MissileClass* theMissile;
         theMissile = (MissileClass*)(SimDriver.GetPlayerAircraft()->Sms->GetCurrentWeapon());
@@ -3530,7 +3530,7 @@ void OTWDriverClass::VCock_Exec(void)
         // First, make sure we have a Aim9 in uncage mode selected...
         if (SimDriver.GetPlayerAircraft()->Sms->curWeaponType == wtAim9)
         {
-            if (theMissile && theMissile->isCaged == 0)
+            if (theMissile and theMissile->isCaged == 0)
             {
                 theMissile->RunSeeker();
 

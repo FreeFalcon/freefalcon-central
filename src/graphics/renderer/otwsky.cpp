@@ -60,7 +60,7 @@ void RenderOTW::SetRoofMode(BOOL state)
     }
 
     // Get the textures we'll need if the roof is being turned on
-    if (state && !texRoofTop.TexHandle())
+    if (state and !texRoofTop.TexHandle())
     {
         Tcolor light;
 
@@ -158,8 +158,8 @@ void RenderOTW::DrawSkyNoRoof(void)
     BOOL canSeeBelowClear = bottom < bandAngleUp;
     BOOL canSeeBelowHorizon = bottom < 0.0f;
 
-    BOOL drawFiller = canSeeAboveTerrain && canSeeBelowHorizon;
-    BOOL drawTop = canSeeAboveHorizon && canSeeBelowClear;
+    BOOL drawFiller = canSeeAboveTerrain and canSeeBelowHorizon;
+    BOOL drawTop = canSeeAboveHorizon and canSeeBelowClear;
     BOOL drawClear = canSeeAboveTop;
 
 
@@ -288,8 +288,8 @@ void RenderOTW::DrawSkyBelow(void)
     BOOL canSeeBelowClear = bottom < angleOfInclination;
     BOOL canSeeBelowHorizon = bottom < 0.0f;
 
-    BOOL drawFiller = canSeeAboveTerrain && canSeeBelowHorizon;
-    BOOL drawTop = canSeeAboveHorizon && canSeeBelowClear;
+    BOOL drawFiller = canSeeAboveTerrain and canSeeBelowHorizon;
+    BOOL drawTop = canSeeAboveHorizon and canSeeBelowClear;
     BOOL drawClear = canSeeAboveTop;
 
 
@@ -505,8 +505,8 @@ void RenderOTW::DrawSkyAbove(void)
     BOOL canSeeBelowHorizon = bottom < 0.0f;
     BOOL canSeeCloudLayer = bottom < -angleOfDepression;
 
-    BOOL drawFiller = canSeeAboveClouds && canSeeBelowHorizon;
-    BOOL drawTop = canSeeAboveHorizon && canSeeBelowClear;
+    BOOL drawFiller = canSeeAboveClouds and canSeeBelowHorizon;
+    BOOL drawTop = canSeeAboveHorizon and canSeeBelowClear;
     BOOL drawClear = canSeeAboveTop;
     BOOL drawClouds = canSeeCloudLayer;
 

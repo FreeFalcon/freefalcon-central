@@ -133,7 +133,7 @@ VuEntity *VuFullGridIterator::GetFirst()
 VuEntity *VuFullGridIterator::GetNext()
 {
     // sfr: smartpointer
-    while ((curnode_ == 0) && (++currow_ < ((VuGridTree *)collection_)->rowcount_))
+    while ((curnode_ == 0) and (++currow_ < ((VuGridTree *)collection_)->rowcount_))
     {
         curRB_++;
         curnode_ = curRB_->root_;

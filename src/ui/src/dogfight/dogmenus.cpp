@@ -299,7 +299,7 @@ static void DeletePilotCB(long, short hittype, C_Base *)
         {
             pilot = (C_Pilot*)item->Item_;
 
-            if (pilot && !pilot->GetPlayer())
+            if (pilot and !pilot->GetPlayer())
             {
                 flt = (Flight)vuDatabase->Find(pilot->GetVUID());
 
@@ -484,7 +484,7 @@ static void SetAIPilotSkillCB(long ID, short hittype, C_Base *)
 
             item = child->Parent;
 
-            if (item && pilot)
+            if (item and pilot)
             {
                 dfflight = (C_Dog_Flight*)item->Item_;
 

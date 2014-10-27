@@ -39,7 +39,7 @@ void DigitalBrain::GunsJinkCheck(void)
         {
             localData = obj->localData;
 
-            if ((localData->range > 0.0f) && (localData->range < 6000.0f))//localData->rangedot > -240.0f * FTPSEC_TO_KNOTS )//me123 don't jink if he's got a high closure, he probaly woun't shoot a low Pk shot
+            if ((localData->range > 0.0f) and (localData->range < 6000.0f))//localData->rangedot > -240.0f * FTPSEC_TO_KNOTS )//me123 don't jink if he's got a high closure, he probaly woun't shoot a low Pk shot
             {
                 if (localData->range < INIT_GUN_VEL)
                 {
@@ -50,16 +50,16 @@ void DigitalBrain::GunsJinkCheck(void)
                     jinkTime = -1;
                     z = localData->range / INIT_GUN_VEL;
 
-                    if (localData->azFrom > -15.0F * DTR && localData->azFrom < (15.0F * DTR)) //me123 status test. changed from 2.0 to 5.0 multible places here becourse we are not always in plane when gunning
+                    if (localData->azFrom > -15.0F * DTR and localData->azFrom < (15.0F * DTR)) //me123 status test. changed from 2.0 to 5.0 multible places here becourse we are not always in plane when gunning
                     {
                         twoSeconds = TRUE;
                     }
-                    else if (localData->azFrom > (5.0F * DTR) && localData->azFromdot < 0.0F)
+                    else if (localData->azFrom > (5.0F * DTR) and localData->azFromdot < 0.0F)
                     {
                         if (localData->azFrom + z * localData->azFromdot < (5.0F * DTR))
                             twoSeconds = TRUE;
                     }
-                    else if (localData->azFrom < (-5.0F * DTR) && localData->azFromdot > 0.0F)
+                    else if (localData->azFrom < (-5.0F * DTR) and localData->azFromdot > 0.0F)
                     {
                         if (localData->azFrom + z * localData->azFromdot > (-5.0F * DTR))
                             twoSeconds = TRUE;
@@ -69,17 +69,17 @@ void DigitalBrain::GunsJinkCheck(void)
                     {
                         twoSeconds = FALSE;
 
-                        if (localData->elFrom < (4.0F * DTR) && localData->elFrom > (-10.0F * DTR)) //me123 status test. changed all
+                        if (localData->elFrom < (4.0F * DTR) and localData->elFrom > (-10.0F * DTR)) //me123 status test. changed all
                         {
                             twoSeconds = TRUE;
                         }
 
-                        //   else if (localData->elFrom > (-2.0F *DTR) && localData->elFromdot < 0.0F)
+                        //   else if (localData->elFrom > (-2.0F *DTR) and localData->elFromdot < 0.0F)
                         //   {
                         //  if (localData->elFrom + z* localData->elFromdot < (-2.0F *DTR))
                         // twoSeconds = TRUE;
                         //   }
-                        //   else if (localData->elFrom < (-13.0F * DTR) && localData->elFromdot > 0.0F)
+                        //   else if (localData->elFrom < (-13.0F * DTR) and localData->elFromdot > 0.0F)
                         //   {
                         //  if (localData->elFrom + z* localData->elFromdot > (-13.0F * DTR))
                         // twoSeconds = TRUE;
@@ -102,7 +102,7 @@ void DigitalBrain::GunsJinkCheck(void)
 
                         //  if (tgt_time < 0.0F)//me123 status test,
                         //  tgt_time = 99.0F;//me123 status test,
-                        if (localData->ataFrom > -13.0f * DTR && localData->ataFrom < 13.0f * DTR)
+                        if (localData->ataFrom > -13.0f * DTR and localData->ataFrom < 13.0f * DTR)
                         {
                             tgt_time = 0.0f;   //me123 status test,
                         }
@@ -114,7 +114,7 @@ void DigitalBrain::GunsJinkCheck(void)
 
                         // if (att_time < 0.0F)//me123 status test,
                         //  att_time = 99.0F;//me123 status test,
-                        if (localData->ata > -13.0f * DTR && localData->ata < 13.0f * DTR)
+                        if (localData->ata > -13.0f * DTR and localData->ata < 13.0f * DTR)
                         {
                             att_time = 0.0f;   //me123 status test,
                         }
@@ -123,7 +123,7 @@ void DigitalBrain::GunsJinkCheck(void)
                     /*--------------*/
                     /* trigger jink */
                     /*--------------*/
-                    if (twoSeconds && tgt_time <= att_time)
+                    if (twoSeconds and tgt_time <= att_time)
                     {
                         AddMode(GunsJinkMode);
                     }
@@ -155,7 +155,7 @@ void DigitalBrain::GunsJink(void)
     /* threat is still around             */
     /*------------------------------------*/
     if (targetPtr == NULL or targetPtr->BaseData()->IsExploding() ||
-        targetPtr && targetPtr->localData->range > 4000)
+        targetPtr and targetPtr->localData->range > 4000)
     {
         // bail, no target
         jinkTime = -1;
@@ -211,15 +211,15 @@ void DigitalBrain::GunsJink(void)
         else
         {
             /* special in-plane crossing case, go the opposite direction */
-            if (targetPtr && ((targetPtr->BaseData()->Yaw()   - self->Yaw() < 15.0F * DTR) &&
+            if (targetPtr and ((targetPtr->BaseData()->Yaw()   - self->Yaw() < 15.0F * DTR) &&
                               (targetPtr->BaseData()->Pitch() - self->Pitch() < 15.0F * DTR) &&
                               (targetPtr->BaseData()->Roll()  - self->Roll() < 15.0F * DTR)))
             {
-                if (gunsJinkData->droll >= 0.0F && gunsJinkData->az > 0.0F)
+                if (gunsJinkData->droll >= 0.0F and gunsJinkData->az > 0.0F)
                 {
                     newroll = self->Roll() + 90.0F * DTR;
                 }
-                else if (gunsJinkData->droll < 0.0F && gunsJinkData->az < 0.0F)
+                else if (gunsJinkData->droll < 0.0F and gunsJinkData->az < 0.0F)
                 {
                     newroll = self->Roll() - 90.0F * DTR;
                 }
@@ -245,9 +245,9 @@ void DigitalBrain::GunsJink(void)
             /*--------------------------------------------*/
             if (self->GetKias() <= 0.8F * cornerSpeed)//me123 status test. changed from 0.6
             {
-                if (newroll >= 0.0F && newroll <= 45.0F * DTR)
+                if (newroll >= 0.0F and newroll <= 45.0F * DTR)
                     newroll += 30.0F * DTR;//me123 status test changed from 20
-                else if (newroll <= 0.0F && newroll >= -45.0F * DTR)
+                else if (newroll <= 0.0F and newroll >= -45.0F * DTR)
                     newroll -= 30.0F * DTR;//me123 status test changed from 20
             }
         }

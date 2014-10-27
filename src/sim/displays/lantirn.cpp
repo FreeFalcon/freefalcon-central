@@ -69,7 +69,7 @@ void LantirnClass::DisplayInit(ImageBuffer* image)
 {
     RenderIR *irrend = (RenderIR *) privateDisplay;
 
-    if (irrend && irrend->GetImageBuffer() == image)
+    if (irrend and irrend->GetImageBuffer() == image)
         return;
 
     DisplayExit();
@@ -331,7 +331,7 @@ void LantirnClass::Exec(AircraftClass* self)
 
         //compare feature distance and ground distance
         //If distance to feature is closer then ground distance use feature distance instead
-        if (featureDistance > 0 && featureDistance < gdist && featureAngle > 0)
+        if (featureDistance > 0 and featureDistance < gdist and featureAngle > 0)
             if (featureHeight > gAlt)
                 gdist = featureDistance;
 
@@ -342,7 +342,7 @@ void LantirnClass::Exec(AircraftClass* self)
 
         //adjust gamma correction according to feature distance
         //Adjust gammaCorr for the angle to avoid feature if we are below it.
-        if ((featureDistance2 < 2.5 * min_Radius && featureDistance2 > 0 && featureAngle2 > 0) or featureAngle2 > 1.0F)
+        if ((featureDistance2 < 2.5 * min_Radius and featureDistance2 > 0 and featureAngle2 > 0) or featureAngle2 > 1.0F)
         {
             gammaCorr += featureAngle2 * 1.3F;
         }
@@ -395,7 +395,7 @@ void LantirnClass::Exec(AircraftClass* self)
         {
             float rangetopos = sqrt(gdist * gdist + m_tfr_alt * m_tfr_alt);
 
-            if (gdist > 0 && rangetopos < turnradius && type) // danger danger
+            if (gdist > 0 and rangetopos < turnradius and type) // danger danger
                 evasize = 2;
             else if (rangetopos - m_tfr_alt * 2 > turnradius)
                 evasize = 0;
@@ -422,7 +422,7 @@ float LantirnClass::GetGLimit()
 
     if (g_bTFRFixes)
     {
-        if (playerAC && playerAC->af)
+        if (playerAC and playerAC->af)
         {
             switch (m_tfr_ride)
             {
@@ -537,7 +537,7 @@ float LantirnClass::GetGroundIntersection(AircraftClass* self, float yaw, float 
     dz = self->ZPos() - point.z;
     gdist2 = (float)sqrt(dx * dx + dy * dy);
 
-    if (gdist1 >= 0 && gdist1 < gdist2)
+    if (gdist1 >= 0 and gdist1 < gdist2)
         return gdist1;
 
     return gdist2;
@@ -667,7 +667,7 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
                         //only for horizontal checks
                         float NewBoxScale = boxScale;
 
-                        if ((groundRadius < 2.2F * Clearance) && MeasureHorizontally)
+                        if ((groundRadius < 2.2F * Clearance) and MeasureHorizontally)
                             NewBoxScale = boxScale * (2.2F * Clearance + groundRadius) / groundRadius;
 
                         //Check to see if out flight vector line intersects feature's box * boxScale (safety margin)
@@ -691,7 +691,7 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
                             {
                                 float newAspect = RTD * (float)atan2(sizeZ - (-self->ZPos() + self->af->groundZ), Distance);
 
-                                if (newAspect > Aspect && Distance < 2 * MaxDistance)
+                                if (newAspect > Aspect and Distance < 2 * MaxDistance)
                                 {
                                     Aspect = newAspect;
                                     ClosestDistance = Distance;

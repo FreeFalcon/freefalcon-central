@@ -560,7 +560,7 @@ int huft_build(unsigned * b, unsigned n, unsigned s, ush * d, ush * e, struct hu
                     }
                 }
 
-                if (w + j > el && (unsigned)w < el)
+                if (w + j > el and (unsigned)w < el)
                     j = el - w;           /* make EOB code end at table */
 
                 z = 1 << j;             /* table entries for j-bit table */
@@ -647,7 +647,7 @@ int huft_build(unsigned * b, unsigned n, unsigned s, ush * d, ush * e, struct hu
 
 
     /* Return true (1) if we were given an incomplete table */
-    return y not_eq 0 && g not_eq 1;
+    return y not_eq 0 and g not_eq 1;
 }
 
 
@@ -1125,7 +1125,7 @@ int inflate_dynamic(COMPRESSED_FILE * cmp)
 
     if ((i = huft_build(ll, nl, 257, cplens, cplext, &tl, &bl)) not_eq 0)
     {
-        //    if (i == 1 && !qflag) {
+        //    if (i == 1 and !qflag) {
         //      fprintf(stderr, "(incomplete l-tree)  ");
         //      huft_free(tl);
         //    }
@@ -1136,7 +1136,7 @@ int inflate_dynamic(COMPRESSED_FILE * cmp)
 
     if ((i = huft_build(ll + nl, nd, 0, cpdist, cpdext, &td, &bd)) not_eq 0)
     {
-        //    if (i == 1 && !qflag) {
+        //    if (i == 1 and !qflag) {
         //      fprintf(stderr, "(incomplete d-tree)  ");
         //      i = 0;
         //    }

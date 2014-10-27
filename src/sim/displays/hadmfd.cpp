@@ -89,7 +89,7 @@ void HadMfdDrawable::Display(VirtualDisplay* newDisplay)
     // (works on all MFDs and not only here)
     for (int i = 0; i < 4; i++)
     {
-        if ((MfdDisplay[i])->GetTGPWarning() && (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
+        if ((MfdDisplay[i])->GetTGPWarning() and (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
         {
             TGPAttitudeWarning(display);
             break;
@@ -152,7 +152,7 @@ void HadMfdDrawable::PushButton(int whichButton, int whichMFD)
     FireControlComputer* pFCC = playerAC->Sms->Ownship()->GetFCC();
     HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
 
-    if (harmPod && harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
+    if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
     {
         switch (whichButton)
         {
@@ -196,7 +196,7 @@ void HadMfdDrawable::PushButton(int whichButton, int whichMFD)
         }
     }
 
-    else if (harmPod && harmPod->GetSubMode() == HarmTargetingPod::HAD)   // HAD screen
+    else if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::HAD)   // HAD screen
     {
         switch (whichButton)
         {
@@ -254,9 +254,9 @@ void HadMfdDrawable::PushButton(int whichButton, int whichMFD)
 
 void HadMfdDrawable::DrawRALT(VirtualDisplay* display)
 {
-    if (TheHud && !(self->mFaults && self->mFaults->GetFault(FaultClass::ralt_fault))
-        && self->af->platform->RaltReady() &&
-        TheHud->FindRollAngle(-TheHud->hat) && TheHud->FindPitchAngle(-TheHud->hat))
+    if (TheHud and !(self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
+        and self->af->platform->RaltReady() &&
+        TheHud->FindRollAngle(-TheHud->hat) and TheHud->FindPitchAngle(-TheHud->hat))
     {
         float x, y = 0;
         GetButtonPos(5, &x, &y);
@@ -435,7 +435,7 @@ void HadMfdDrawable::OffMode(VirtualDisplay* display)
     display->SetFont(ofont);
     theRadar->GetCursorPosition(&cX, &cY);
 
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&  // JPG 14 Dec 03 - Added BE/ownship info
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and  // JPG 14 Dec 03 - Added BE/ownship info
         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
     {
         DrawBullseyeCircle(display, cX, cY);

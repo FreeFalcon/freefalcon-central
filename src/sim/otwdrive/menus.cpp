@@ -212,11 +212,11 @@ void OTWDriverClass::ShowEngine(void)
 // RV - Biker - This is for showing AC is attached to carrier catapult
 void OTWDriverClass::ShowCatMessage(void)
 {
-    if (otwPlatform.get() && otwPlatform.get() == SimDriver.GetPlayerAircraft() && otwPlatform->IsAirplane())
+    if (otwPlatform.get() and otwPlatform.get() == SimDriver.GetPlayerAircraft() and otwPlatform->IsAirplane())
     {
         AirframeClass *af = ((AircraftClass*)otwPlatform.get())->af;
 
-        if (af->IsSet(AirframeClass::OnObject) && af->IsSet(AirframeClass::Hook))
+        if (af->IsSet(AirframeClass::OnObject) and af->IsSet(AirframeClass::Hook))
         {
             renderer->SetColor(0xff0000ff);
             char tmp[80];
@@ -390,7 +390,7 @@ void OTWDriverClass::DrawExitMenu(void)
             endsAvail[0] = TRUE;
             endsAvail[1] = TRUE;
 
-            if (tactical_is_training() or (gCommsMgr && gCommsMgr->Online()))
+            if (tactical_is_training() or (gCommsMgr and gCommsMgr->Online()))
             {
                 endDialogObject->SetSwitchMask(2, FALSE);
                 endsAvail[2] = FALSE;
@@ -491,7 +491,7 @@ void OTWDriverClass::ExitMenu(unsigned long i)
     {
         SetExitMenu(FALSE);
     }
-    else if ((i == DIK_E && endsAvail[0]) or (i == DIK_D && endsAvail[2]))
+    else if ((i == DIK_E and endsAvail[0]) or (i == DIK_D and endsAvail[2]))
     {
         g_intellivibeData.IsEndFlight = true;
         memcpy(gSharedIntellivibe, &g_intellivibeData, sizeof(g_intellivibeData));
@@ -549,10 +549,10 @@ void OTWDriverClass::ExitMenu(unsigned long i)
 #endif
         }
     }
-    else if (i == DIK_R && endsAvail[1])
+    else if (i == DIK_R and endsAvail[1])
     {
         // Start E3 HACK
-        if (SimDriver.RunningInstantAction() && SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP))
+        if (SimDriver.RunningInstantAction() and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP))
         {
             SimDriver.GetPlayerAircraft()->ResetFuel();
         }
@@ -580,17 +580,17 @@ int OTWDriverClass::HandleMouseClick(long x, long y)
         logicalX = (float)x / xRes;
         logicalY = (float)y / yRes;
 
-        if (logicalX >= 230.0F / 640.0F && logicalX <= 250.0F / 640.0F)
+        if (logicalX >= 230.0F / 640.0F and logicalX <= 250.0F / 640.0F)
         {
-            if (logicalY >= 200.0F / 480.0F && logicalY <= 220.0F / 480.0F && endsAvail[0])
+            if (logicalY >= 200.0F / 480.0F and logicalY <= 220.0F / 480.0F and endsAvail[0])
             {
                 key = DIK_E;
             }
-            else if (logicalY >= 235.0F / 480.0F && logicalY <= 255.0F / 480.0F && endsAvail[1])
+            else if (logicalY >= 235.0F / 480.0F and logicalY <= 255.0F / 480.0F and endsAvail[1])
             {
                 key = DIK_R;
             }
-            else if (logicalY >= 270.0F / 480.0F && logicalY <= 290.0F / 480.0F && endsAvail[2])
+            else if (logicalY >= 270.0F / 480.0F and logicalY <= 290.0F / 480.0F and endsAvail[2])
             {
                 key = DIK_D;
             }
@@ -713,7 +713,7 @@ void OTWDriverClass::ShowThrustReverse(void)
     {
         AirframeClass *af = ((AircraftClass*)otwPlatform.get())->af;
 
-        if (SimDriver.GetPlayerAircraft()->OnGround() && af->thrustReverse == 2)
+        if (SimDriver.GetPlayerAircraft()->OnGround() and af->thrustReverse == 2)
         {
             renderer->SetColor(0xff00ff00);
             renderer->TextRight(0.95F, 0.9F, "Thrust Reverser ACTIVATED");

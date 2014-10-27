@@ -130,7 +130,7 @@ void CPDigits::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered digi
         return;
 
     //Wombat778 new rendering code. Taken from cpsurface.cpp
-    if (!g_bRealisticAvionics or (g_bRealisticAvionics && active))
+    if (!g_bRealisticAvionics or (g_bRealisticAvionics and active))
     {
         OTWDriver.renderer->CenterOriginInViewport();
         OTWDriver.renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F);
@@ -215,7 +215,7 @@ void CPDigits::SetDigitValues(long value)
         {
             for (i = mDestDigits - fieldlen, j = 0; i < mDestDigits; i++, j++)
             {
-                ShiAssert(i >= 0 && i < mDestDigits);
+                ShiAssert(i >= 0 and i < mDestDigits);
                 mpValues[i] = mpDestString[j] - 0x30;
             }
         }
@@ -242,7 +242,7 @@ void CPDigits::CreateLit(void)
             for (int i = 0; i < 10; i++)
             {
                 // Check if we can use a single texture
-                if ((int)dwMaxTextureWidth >= mpSourceBuffer[i].mWidth && (int)dwMaxTextureHeight >= mpSourceBuffer[i].mHeight)
+                if ((int)dwMaxTextureWidth >= mpSourceBuffer[i].mWidth and (int)dwMaxTextureHeight >= mpSourceBuffer[i].mHeight)
                 {
                     TextureHandle *pTex = new TextureHandle;
 

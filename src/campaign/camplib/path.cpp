@@ -141,7 +141,7 @@ int GetGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, in
     //MonoPrint("Finding Grid Path: %d,%d -> %d,%d   Time to find: %d (Result: %d)\n",x,y,xx,yy,newtime-time,retval);
 #ifdef CAMPTOOL
 
-    if (ShowSearch && MOVE_AIR(moveType))
+    if (ShowSearch and MOVE_AIR(moveType))
         Sleep(5000);
 
 #endif
@@ -193,7 +193,7 @@ int GetObjectivePath(Path p, Objective o, Objective t, int type, int who, int fl
     moveType = type;
     moveFlags = flags;
 
-    if (type == NoMove && o not_eq t)
+    if (type == NoMove and o not_eq t)
         return -1;
 
 #ifdef CAMPTOOL
@@ -318,7 +318,7 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
         case Foot:
         case Wheeled:
         case Tracked:
-            if (GetRoad(x, y) && !(h & 0x01))
+            if (GetRoad(x, y) and !(h & 0x01))
             {
                 // It's a bridge or port, check if intact
                 if (cost > MAX_COST)
@@ -348,7 +348,7 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
                         // RV - Biker - Check for engineer type maybe we need some more check
                         if (u->GetSType() == STYPE_UNIT_ENGINEER or u->GetSType() == STYPE_WHEELED_ENGINEER)
                         {
-                            if (dist <= 1.0f && u->GetTeam() == o->GetTeam())
+                            if (dist <= 1.0f and u->GetTeam() == o->GetTeam())
                             {
                                 assignedEng = true;
                                 break;
@@ -358,13 +358,13 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
                         u = GetNextUnit(&uit);
                     }
 
-                    if (o && (o->GetType() == TYPE_PORT or (o->GetType() == TYPE_BRIDGE && (o->GetObjectiveStatus() > 0 or flags & PATH_ENGINEER))))
+                    if (o and (o->GetType() == TYPE_PORT or (o->GetType() == TYPE_BRIDGE and (o->GetObjectiveStatus() > 0 or flags & PATH_ENGINEER))))
                         cost = 0.5F;
 
-                    if (o && o->GetType() == TYPE_BRIDGE && o->GetObjectiveStatus() < 30 && assignedEng)
+                    if (o and o->GetType() == TYPE_BRIDGE and o->GetObjectiveStatus() < 30 and assignedEng)
                         cost = 5.0F;
                 }
-                else if (flags & PATH_ROADOK && GetRoad((GridIndex)(x - dx[h]), (GridIndex)(y - dy[h])))
+                else if (flags & PATH_ROADOK and GetRoad((GridIndex)(x - dx[h]), (GridIndex)(y - dy[h])))
                     cost = 0.5F; // Use roads when we're allowed to
                 else
                     cost *= 0.5F; // Otherwise, lesser bonus
@@ -384,10 +384,10 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
                 {
                     o = FindNearestObjective(x, y, NULL);
 
-                    if (o->GetType() == TYPE_PORT or (o->GetType() == TYPE_BRIDGE && (o->GetObjectiveStatus() > 0 or flags & PATH_ENGINEER)))
+                    if (o->GetType() == TYPE_PORT or (o->GetType() == TYPE_BRIDGE and (o->GetObjectiveStatus() > 0 or flags & PATH_ENGINEER)))
                         cost = 0.5F;
                 }
-                else if (flags & PATH_RAILOK && GetRail((GridIndex)(x - dx[h]), (GridIndex)(y - dy[h]))) // Use rails when we're allowed to
+                else if (flags & PATH_RAILOK and GetRail((GridIndex)(x - dx[h]), (GridIndex)(y - dy[h]))) // Use rails when we're allowed to
                     cost = 0.5F;
             }
 
@@ -398,7 +398,7 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
             {
                 o = FindNearestObjective(x, y, NULL);
 
-                if (o && (o->GetType() == TYPE_PORT or o->GetType() == TYPE_BEACH) && o->GetObjectiveStatus() > 0)
+                if (o and (o->GetType() == TYPE_PORT or o->GetType() == TYPE_BEACH) and o->GetObjectiveStatus() > 0)
                     cost = 1.0F;
             }
 
@@ -493,14 +493,14 @@ void GetNeighborCoord(AS_DataClass* asd, void* o, void* t)
 
     if (MOVE_AIR(moveType))
         leftmod = 4.0f;
-    else if (MOVE_GROUND(moveType) && moveFlags & PATH_ROADOK)
+    else if (MOVE_GROUND(moveType) and moveFlags & PATH_ROADOK)
         leftmod = 0.75f;
     else
         leftmod = 3.0f;
 
 #ifdef CAMPTOOL
 
-    if (ShowSearch && MOVE_AIR(moveType))
+    if (ShowSearch and MOVE_AIR(moveType))
         ShowWP(NULL, ox, oy, DColor);
 
 #endif
@@ -518,7 +518,7 @@ void GetNeighborCoord(AS_DataClass* asd, void* o, void* t)
 
         cost = GetMovementCost(x, y, (MoveType)moveType, moveFlags, (CampaignHeading)d);
 
-        if (MOVE_AIR(moveType) && !(moveFlags & PATH_BASIC))
+        if (MOVE_AIR(moveType) and !(moveFlags & PATH_BASIC))
         {
             // Add cost for air threats
             // Essentially, tcost is 0-100. This translates into # of km out of our
@@ -628,7 +628,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
             return 255.0F;
 
         // Check for enemy movement
-        if (!(flags & PATH_BASIC) && GetRoE(team, owner, ROE_GROUND_FIRE))
+        if (!(flags & PATH_BASIC) and GetRoE(team, owner, ROE_GROUND_FIRE))
         {
             if (flags & PATH_ENEMYOK)
             {
@@ -647,7 +647,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
                 {
                     p = n->GetObjectiveParent();
 
-                    if (p && p->GetTeam() not_eq team)
+                    if (p and p->GetTeam() not_eq team)
                         // return 255.0F;
                         mult = 4.0F;
                 }
@@ -665,7 +665,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
 
         cost = o->GetNeighborCost(neighbor, type);
 
-        if (flags & PATH_ENEMYCOST && cost < 255.0F)
+        if (flags & PATH_ENEMYCOST and cost < 255.0F)
         {
             cost *= mult;
 
@@ -674,7 +674,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
         }
 
         // RV - Biker - Search for engineers then build pontoon bridge
-        if ((MOVE_GROUND(type) or type == NoMove) && n->GetType() == TYPE_BRIDGE && !n->GetObjectiveStatus() && !(flags & PATH_ENGINEER))
+        if ((MOVE_GROUND(type) or type == NoMove) and n->GetType() == TYPE_BRIDGE and !n->GetObjectiveStatus() and !(flags & PATH_ENGINEER))
         {
             // Bridge is broke, can't go here.
             // But let's send engineers, if we havn't already
@@ -707,7 +707,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
                 // RV - Biker - Check for engineer type maybe we need some more check
                 if (u->GetSType() == STYPE_UNIT_ENGINEER or u->GetSType() == STYPE_WHEELED_ENGINEER)
                 {
-                    if (dist <= 1.0f && u->GetTeam() == n->GetTeam())
+                    if (dist <= 1.0f and u->GetTeam() == n->GetTeam())
                     {
                         assignedEng = true;
                         break;

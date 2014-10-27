@@ -63,7 +63,7 @@ int GameManagerClass::AllPlayersReady(VuGameEntity *game)
 
         MonoPrint("APR %s %d\n", session->GetPlayerCallsign(), session->GetFlyState());
 
-        if ((session->GetFlyState() not_eq FLYSTATE_WAITING) && (session->GetFlyState() not_eq FLYSTATE_FLYING))
+        if ((session->GetFlyState() not_eq FLYSTATE_WAITING) and (session->GetFlyState() not_eq FLYSTATE_FLYING))
         {
             ok = FALSE;
         }
@@ -123,9 +123,9 @@ int GameManagerClass::CheckPlayerStatus(FalconEntity *entity)
 
     session = (FalconSessionEntity*)sessionWalker.GetFirst();
 
-    while (session && !player)
+    while (session and !player)
     {
-        if (entity->IsSim() && entity == session->GetPlayerEntity())
+        if (entity->IsSim() and entity == session->GetPlayerEntity())
         {
             player = 1;
         }
@@ -292,11 +292,11 @@ SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int ve
      // Hack Hack Hack Hack HACK - This is a HACK - RH
      count = 0;
 
-     while ((!simEntity) && (count < 100))
+     while ((!simEntity) and (count < 100))
      {
      simEntity = (SimMoverClass*) flit.GetFirst();
 
-     while (simEntity && simEntity->vehicleInUnit not_eq vehSlot)
+     while (simEntity and simEntity->vehicleInUnit not_eq vehSlot)
      {
      simEntity = (SimMoverClass*) flit.GetNext();
      }
@@ -478,7 +478,7 @@ void GameManagerClass::ReleasePlayer(FalconSessionEntity *player)
         // sfr: why OnGround its not disabled ???
         // this is causing players to begin with AP on.
         // commentted out
-        if (simEntity->IsAirplane()/* && !simEntity->OnGround()*/)
+        if (simEntity->IsAirplane()/* and !simEntity->OnGround()*/)
         {
             ((AircraftClass *)simEntity)->SetAutopilot(AircraftClass::APOff);
         }
@@ -487,7 +487,7 @@ void GameManagerClass::ReleasePlayer(FalconSessionEntity *player)
         TheCampaign.Resume();
         OTWDriver.SetOTWDisplayMode(OTWDriverClass::Mode2DCockpit);
 
-        if (simEntity->OnGround() && simEntity->IsAirplane())
+        if (simEntity->OnGround() and simEntity->IsAirplane())
         {
             gBumpFlag = TRUE;
             gBumpTime = SimLibElapsedTime + FalconLocalGame->GetRules()->BumpTimer;

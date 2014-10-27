@@ -337,19 +337,19 @@ BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, 
     if (visType >= 0)
     {
         // In many cases, our visType should be modified by our neighbors.
-        if ((obj->GetFeatureStatus(f) & VIS_TYPE_MASK) not_eq VIS_DESTROYED && (FeatureEntryDataTable[fid].Flags & (FEAT_PREV_NORM | FEAT_NEXT_NORM)))
+        if ((obj->GetFeatureStatus(f) & VIS_TYPE_MASK) not_eq VIS_DESTROYED and (FeatureEntryDataTable[fid].Flags & (FEAT_PREV_NORM | FEAT_NEXT_NORM)))
         {
             prevFlags = GetFeatureFlags(obj, static_cast<short>(f - 1));
             nextFlags = GetFeatureFlags(obj, static_cast<short>(f + 1));
 
-            if (prevFlags && (prevFlags & FEAT_PREV_NORM) && (obj->GetFeatureStatus(f - 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
+            if (prevFlags and (prevFlags & FEAT_PREV_NORM) and (obj->GetFeatureStatus(f - 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
             {
-                if (nextFlags && (nextFlags & FEAT_NEXT_NORM) && (obj->GetFeatureStatus(f + 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
+                if (nextFlags and (nextFlags & FEAT_NEXT_NORM) and (obj->GetFeatureStatus(f + 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
                     visType = classPtr->visType[VIS_BOTH_DEST];
                 else
                     visType = classPtr->visType[VIS_LEFT_DEST];
             }
-            else if (nextFlags && (nextFlags & FEAT_NEXT_NORM) && (obj->GetFeatureStatus(f + 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
+            else if (nextFlags and (nextFlags & FEAT_NEXT_NORM) and (obj->GetFeatureStatus(f + 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
                 visType = classPtr->visType[VIS_RIGHT_DEST];
         }
 
@@ -409,26 +409,26 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
     if (visType >= 0)
     {
         // In many cases, our visType should be modified by our neighbors.
-        if ((obj->GetFeatureStatus(f) & VIS_TYPE_MASK) not_eq VIS_DESTROYED && (FeatureEntryDataTable[fid].Flags & (FEAT_PREV_NORM | FEAT_NEXT_NORM)))
+        if ((obj->GetFeatureStatus(f) & VIS_TYPE_MASK) not_eq VIS_DESTROYED and (FeatureEntryDataTable[fid].Flags & (FEAT_PREV_NORM | FEAT_NEXT_NORM)))
         {
             prevFlags = GetFeatureFlags(obj, static_cast<short>(f - 1));
             nextFlags = GetFeatureFlags(obj, static_cast<short>(f + 1));
 
-            if (prevFlags && (prevFlags & FEAT_PREV_NORM) && (obj->GetFeatureStatus(f - 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
+            if (prevFlags and (prevFlags & FEAT_PREV_NORM) and (obj->GetFeatureStatus(f - 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
             {
-                if (nextFlags && (nextFlags & FEAT_NEXT_NORM) && (obj->GetFeatureStatus(f + 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
+                if (nextFlags and (nextFlags & FEAT_NEXT_NORM) and (obj->GetFeatureStatus(f + 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
                     visType = classPtr->visType[VIS_BOTH_DEST];
                 else
                     visType = classPtr->visType[VIS_LEFT_DEST];
             }
-            else if (nextFlags && (nextFlags & FEAT_NEXT_NORM) && (obj->GetFeatureStatus(f + 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
+            else if (nextFlags and (nextFlags & FEAT_NEXT_NORM) and (obj->GetFeatureStatus(f + 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
                 visType = classPtr->visType[VIS_RIGHT_DEST];
         }
 
         // Add another building to this grouping of buildings, or replace the drawable
         // of one which is here.
         // Is the container a bridge?
-        if (Parent && Parent->type == FEAT_ELEV_CONTAINER)
+        if (Parent and Parent->type == FEAT_ELEV_CONTAINER)
         {
             // Make the new BRIDGE object
             if (visType)
@@ -446,7 +446,7 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
                 bspobj->owner = Parent;
                 bspobj->Next = NULL;
 
-                if ((fc->Flags & FEAT_NEXT_IS_TOP) && (obj->GetFeatureStatus(f) & VIS_TYPE_MASK) not_eq VIS_DESTROYED)
+                if ((fc->Flags & FEAT_NEXT_IS_TOP) and (obj->GetFeatureStatus(f) & VIS_TYPE_MASK) not_eq VIS_DESTROYED)
                     bspobj->object = new DrawableRoadbed(visType, visType + 1, objPos, Yaw, 10.0f, static_cast<float>(atan(20.0f / 280.0f)));
                 else
                     bspobj->object = new DrawableRoadbed(visType, -1, objPos, Yaw, 10.0f, static_cast<float>(atan(20.0f / 280.0f)));
@@ -459,7 +459,7 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
             }
         }
         // Is the container a big flat thing (airbase)?
-        else if (Parent && Parent->type == FEAT_FLAT_CONTAINER)
+        else if (Parent and Parent->type == FEAT_FLAT_CONTAINER)
         {
             // Everything on a platform is a Building
             // That means it sticks straight up the -Z axis
@@ -525,7 +525,7 @@ BSPLIST *C_BSPList::LoadDrawableUnit(long ID, long visType, Tpoint *objPos, floa
     bspobj->owner = NULL;
     bspobj->Next = NULL;
 
-    if (domain == DOMAIN_AIR && objPos->z < -10.0f)
+    if (domain == DOMAIN_AIR and objPos->z < -10.0f)
     {
         Tpoint tmpPos;
         PositandOrientSetData(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, facing, &tmpPos, &objRot);
@@ -538,7 +538,7 @@ BSPLIST *C_BSPList::LoadDrawableUnit(long ID, long visType, Tpoint *objPos, floa
     }
     else
     {
-        if (type == TYPE_FOOT && stype == STYPE_FOOT_SQUAD)
+        if (type == TYPE_FOOT and stype == STYPE_FOOT_SQUAD)
         {
             // Make the ground personel as desired
             bspobj->object = new DrawableGuys(visType, objPos, facing, 1, 1.0f);

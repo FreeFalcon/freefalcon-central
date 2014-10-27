@@ -382,7 +382,7 @@ void ACMIView::Draw()
     Tpoint posb;
     ThreeDVertex spos;
 
-    if (TapeHasLoaded() && Tape() not_eq NULL && Tape()->IsLoaded())
+    if (TapeHasLoaded() and Tape() not_eq NULL and Tape()->IsLoaded())
     {
         gMainHandler->Unlock(); // Make surface available...
 
@@ -400,7 +400,7 @@ void ACMIView::Draw()
         /*
         ** Remove Bing-ism
         ** causing a crash ....
-        if(TESTBUTTONPUSH == 0 && TESTBUTTONPUSH not_eq lastButton)
+        if(TESTBUTTONPUSH == 0 and TESTBUTTONPUSH not_eq lastButton)
         {
          lastButton = TESTBUTTONPUSH;
          TheTerrTextures.SetOverrideTexture( wireTexture.TexHandle() );
@@ -503,7 +503,7 @@ void ACMIView::Draw()
                         _renderer->Render3DLine(&pos, &posb);
 
                     }
-                    else if (_cameraState not_eq FREE_CAM && i == CameraObject())
+                    else if (_cameraState not_eq FREE_CAM and i == CameraObject())
                     {
                         // current attached camera object's target
                         if (targep->flags & ENTITY_FLAG_AIRCRAFT)
@@ -527,7 +527,7 @@ void ACMIView::Draw()
 
             // if we're in internal cam and we're the target object
             // display the "hud"
-            if ((_cameraState == INTERNAL_CAM) && i == CameraObject())
+            if ((_cameraState == INTERNAL_CAM) and i == CameraObject())
             {
 
                 //HEADING
@@ -938,7 +938,7 @@ void ACMIView::UpdateViewPosRot(void)
     // if we're tracking an object we need to set a new rotation
     // matrix
     // determine if we're tracking an object or not
-    if (_cameraState == TRACKING_CAM && camObj not_eq trackObj)
+    if (_cameraState == TRACKING_CAM and camObj not_eq trackObj)
     {
         // get the diff between desired and current camera pos
         // for look at vector

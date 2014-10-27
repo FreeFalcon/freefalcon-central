@@ -111,7 +111,7 @@ void HelicopterClass::DoWeapons(void)
 
     /*
     ** edg: no more FCC stuff here.  All done in hdigi now
-    if ( FCC->releaseConsent && Sms->curWeapon )
+    if ( FCC->releaseConsent and Sms->curWeapon )
     {
        if (FCC->GetMasterMode() == FireControlComputer::Missile ||
         FCC->GetMasterMode() == FireControlComputer::Dogfight ||
@@ -142,7 +142,7 @@ void HelicopterClass::DoWeapons(void)
        else if (FCC->GetMasterMode() == FireControlComputer::AirGroundBomb &&
           FCC->GetSubMode() == FireControlComputer::RCKT)
        {
-          if (FCC->bombPickle && Sms->curWeapon && !OnGround())
+          if (FCC->bombPickle and Sms->curWeapon and !OnGround())
           {
              // Play the sound
              F4SoundFXSetPos( SFX_RCKTLOOP, TRUE, XPos(), YPos(), ZPos(), 1.0f );

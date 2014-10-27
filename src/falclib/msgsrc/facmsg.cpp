@@ -56,7 +56,7 @@ int FalconFACMessage::Process(uchar autodisp)
     switch (dataBlock.type)
     {
         case CheckIn:
-            if (theEntity && theEntity->IsLocal())
+            if (theEntity and theEntity->IsLocal())
                 ((FACBrain*)theEntity->Brain())->AddToQ(theFighter);
 
             // Play message here
@@ -106,25 +106,25 @@ int FalconFACMessage::Process(uchar autodisp)
             break;
 
         case RequestTarget:
-            if (theEntity && theFighter && theEntity->IsLocal())
+            if (theEntity and theFighter and theEntity->IsLocal())
                 ((FACBrain*)theEntity->Brain())->RequestTarget(theFighter);
 
             break;
 
         case RequestBDA:
-            if (theEntity && theFighter && theEntity->IsLocal())
+            if (theEntity and theFighter and theEntity->IsLocal())
                 ((FACBrain*)theEntity->Brain())->RequestBDA(theFighter);
 
             break;
 
         case RequestLocation:
-            if (theEntity && theEntity->IsLocal())
+            if (theEntity and theEntity->IsLocal())
                 ((FACBrain*)theEntity->Brain())->RequestLocation();
 
             break;
 
         case RequestTACAN:
-            if (theEntity && theEntity->IsLocal())
+            if (theEntity and theEntity->IsLocal())
                 ((FACBrain*)theEntity->Brain())->RequestTACAN();
 
             break;
@@ -151,7 +151,7 @@ int FalconFACMessage::Process(uchar autodisp)
             break;
 
         case ReattackQuery:
-            if (theFighter && theFighter->IsLocal())
+            if (theFighter and theFighter->IsLocal())
             {
             }
 
@@ -161,7 +161,7 @@ int FalconFACMessage::Process(uchar autodisp)
             break;
 
         case HartsOpen:
-            if (theFighter && theFighter->IsLocal())
+            if (theFighter and theFighter->IsLocal())
             {
             }
 
@@ -174,7 +174,7 @@ int FalconFACMessage::Process(uchar autodisp)
             break;
 
         case AttackMyTarget:
-            if (theFighter && theFighter->IsLocal())
+            if (theFighter and theFighter->IsLocal())
             {
             }
 

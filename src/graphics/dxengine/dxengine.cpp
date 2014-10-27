@@ -669,7 +669,7 @@ void CDXEngine::SetViewMode(void)
         case DX_TV:
 
             // FRB - B&W
-            if ((m_RenderState == DX_TV) && (!bNVGmode) && (g_bGreyMFD))
+            if ((m_RenderState == DX_TV) and (!bNVGmode) and (g_bGreyMFD))
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, 0x00a0a0a0);
             else
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, 0x0000a000 /*NVG_T_FACTOR*/);
@@ -864,7 +864,7 @@ void CDXEngine::DrawSurface()
     // Switching Emissive surfaces feature, setup the flags for the surface
     m_pD3DD->SetRenderState(D3DRENDERSTATE_EMISSIVEMATERIALSOURCE, D3DMCS_COLOR2);
 
-    if (m_TheObjectInstance->SwitchValues && (NewFlags.b.SwEmissive))
+    if (m_TheObjectInstance->SwitchValues and (NewFlags.b.SwEmissive))
     {
         if (!(m_TheObjectInstance->SwitchValues[m_NODE.SURFACE->SwitchNumber]&m_NODE.SURFACE->SwitchMask))
             m_pD3DD->SetRenderState(D3DRENDERSTATE_EMISSIVEMATERIALSOURCE, D3DMCS_MATERIAL);
@@ -912,7 +912,7 @@ void CDXEngine::DrawSurface()
     ////////////////////// ZBIAS Checking done every time ////////////////////
 #ifdef DEBUG_ENGINE
 
-    if (UseZBias && m_LastZBias not_eq m_NODE.SURFACE->dwzBias)
+    if (UseZBias and m_LastZBias not_eq m_NODE.SURFACE->dwzBias)
     {
         m_LastZBias = m_NODE.SURFACE->dwzBias;
         m_pD3DD->SetRenderState(D3DRENDERSTATE_ZBIAS, m_LastZBias);
@@ -1035,7 +1035,7 @@ float CDXEngine::Process_DOFRot(float dofrot, int dofNumber, int flags, float mi
     }
 
     // Scaled 0-1 DOF
-    if (flags & XDOF_SUBRANGE && min not_eq max)
+    if (flags & XDOF_SUBRANGE and min not_eq max)
     {
         dofrot -= min;
         dofrot /= max - min;
@@ -1255,7 +1255,7 @@ void CDXEngine::SWITCHManage()
     if (m_NODE.DOF->Type == XSWITCH) Value = compl Value;
 
     // Traverse the Switch Items
-    while (m_NODE.DOF->SwitchNumber == SWNumber && (m_NODE.DOF->Type == SWITCH or m_NODE.DOF->Type == XSWITCH))
+    while (m_NODE.DOF->SwitchNumber == SWNumber and (m_NODE.DOF->Type == SWITCH or m_NODE.DOF->Type == XSWITCH))
     {
         // If value found then Exit here pointing the SWITCH, next to it is the SURFACE
         if (Value & (1 << m_NODE.DOF->SwitchBranch))
@@ -1460,7 +1460,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
             // hoping it is updated...
 
             // * Any class not air/ground get a normal draw
-            if (Model->VBClass not_eq VB_CLASS_DOMAIN_GROUND && Model->VBClass not_eq VB_CLASS_DOMAIN_AIR) Si = 0.2f;
+            if (Model->VBClass not_eq VB_CLASS_DOMAIN_GROUND and Model->VBClass not_eq VB_CLASS_DOMAIN_AIR) Si = 0.2f;
 
             // Ground vehicles, hi Q reflection index
             if (Model->VBClass == VB_CLASS_DOMAIN_GROUND)
@@ -1499,8 +1499,8 @@ LightCheck:
 #endif
 
     // if inside Lights visibility range, check for lights --- FRB - Bad dwLightsNr check and SwitchValues
-    //if(LODRange<=DYNAMIC_LIGHT_INSIDE_RANGE && Model->dwLightsNr && (Model->dwLightsNr<11) && (objInst->SwitchValues))
-    if (LODRange <= DYNAMIC_LIGHT_INSIDE_RANGE && Model->dwLightsNr)
+    //if(LODRange<=DYNAMIC_LIGHT_INSIDE_RANGE and Model->dwLightsNr and (Model->dwLightsNr<11) and (objInst->SwitchValues))
+    if (LODRange <= DYNAMIC_LIGHT_INSIDE_RANGE and Model->dwLightsNr)
     {
         // Get the Lights area in the model
         DXLightType *Light = (DXLightType*)((char*)Model + Model->pLightsPool);
@@ -1586,7 +1586,7 @@ inline void CDXEngine::DrawNode(ObjectInstance *objInst, DWORD LightOwner, DWORD
 
 #endif
 
-            if (m_NODE.SURFACE->dwFlags.b.Texture && m_NODE.SURFACE->TexID[0] not_eq -1) m_TexID = m_TexUsed[m_NODE.SURFACE->TexID[0]];
+            if (m_NODE.SURFACE->dwFlags.b.Texture and m_NODE.SURFACE->TexID[0] not_eq -1) m_TexID = m_TexUsed[m_NODE.SURFACE->TexID[0]];
             else m_TexID = -1;
 
 
@@ -1696,7 +1696,7 @@ void CDXEngine::FlushObjects(void)
     {
 
         // ok, just entered Pit Mode
-        if (m_PitMode && !WasInPitMode)
+        if (m_PitMode and !WasInPitMode)
         {
             //START_PROFILE("3D PIT");
             // enable stenciling in Write Mode
@@ -1707,7 +1707,7 @@ void CDXEngine::FlushObjects(void)
         }
 
         // ok, just Exited Pit Mode
-        if (!m_PitMode && WasInPitMode)
+        if (!m_PitMode and WasInPitMode)
         {
             // Save transformation State
             D3DXMATRIX OldState = AppliedState;

@@ -187,7 +187,7 @@ void TallyStores()
     int i, j, k, wid;
 
     // JB 020219 Limit munition planecount to less than five otherwise we overwrite memory.
-    for (i = 0; i < PlaneCount && i < 4; i++)
+    for (i = 0; i < PlaneCount and i < 4; i++)
     {
         // Zero out all stores totals
         for (j = 0; j < HARDPOINT_MAX; j++)
@@ -228,7 +228,7 @@ void UpdateInventoryCount()
     short i, j;
 
     // JB 020219 Limit munition planecount to less than five otherwise we overwrite memory.
-    for (i = 0; i < PlaneCount && i < 4; i++)
+    for (i = 0; i < PlaneCount and i < 4; i++)
         for (j = 0; j < HARDPOINT_MAX; j++)
         {
             if (Quantity[i][1][j] > 0)
@@ -263,7 +263,7 @@ short TotalAvailable(short weaponID)
         onboard = 0;
 
         // JB 020219 Limit munition planecount to less than five otherwise we overwrite memory.
-        for (i = 0; i < PlaneCount && i < 4; i++)
+        for (i = 0; i < PlaneCount and i < 4; i++)
             for (j = 0; j < HARDPOINT_MAX; j++)
             {
                 if (Quantity[i][0][j] == weaponID)
@@ -298,7 +298,7 @@ void PlaceLoadedWeapons(LoadoutStruct *loadout)
                 if (gStores)
                     cur = gStores->Find(loadout->WeaponID[j]);
 
-                if (cur && loadout->WeaponCount[j])
+                if (cur and loadout->WeaponCount[j])
                 {
                     count = loadout->WeaponCount[j];
 
@@ -377,7 +377,7 @@ BOOL GetJRackAndWeapon(VehicleClassDataType* vc, Falcon4EntityClassType *classPt
     int rackno = FindBestRackIDByPlaneAndWeapon(planerg, weaponrg, count);
     if (rackno == -1) return FALSE;
     RackObject *rackptr = &RackObjectTable[rackno];
-    ShiAssert(rackptr->ctind > 0 && rackptr->ctind < NumEntities);
+    ShiAssert(rackptr->ctind > 0 and rackptr->ctind < NumEntities);
     rackClassPtr = &Falcon4ClassTable[rackptr->ctind];
     */
 
@@ -642,7 +642,7 @@ void ClearHardPoint(long plane, long hardpoint, long, RailInfo *rail)
      Rack=gUIViewer->Find((plane << 24) + (hardpoint << 16));
      if(Rack)
      {
-     if(rail->weaponID && rail->startBits)
+     if(rail->weaponID and rail->startBits)
      {
      bits=rail->startBits;
      i=0;
@@ -693,7 +693,7 @@ void ClearAllHardPointBSPs(void)
     {
         for (j = 1; j < HARDPOINT_MAX; j++)
         {
-            if (j && j < HardPoints)
+            if (j and j < HardPoints)
             {
                 ClearHardPoint(i, j, HardPoints / 2, &gCurRails[i].rail[j]);
             }
@@ -774,7 +774,7 @@ void LoadHardPoint(long plane, long hardpoint, long, RailInfo *rail)
 
     if (lo)
     {
-        for (i = 0; i < rail->weaponCount && weapPtr; i++)
+        for (i = 0; i < rail->weaponCount and weapPtr; i++)
         {
             weapPtr->SetRackSlot(lo[i]);
             weapPtr = weapPtr->nextOnRail;
@@ -795,7 +795,7 @@ void LoadHardPoint(long plane, long hardpoint, long, RailInfo *rail)
      {
      ((DrawableBSP*)Plane->object)->AttachChild(((DrawableBSP*)Rack->object),hardpoint-1);
 
-     if(rail->weaponID && rail->startBits)
+     if(rail->weaponID and rail->startBits)
      {
      weapPtr=&Falcon4ClassTable[rail->weaponID];
      bits=rail->startBits;
@@ -846,7 +846,7 @@ void LoadHardPoint(long plane, long num, long center)
     {
         Weapon = gUIViewer->Find((plane << 24) + (num << 16) + i + 1);
 
-        if (Rack && Weapon)
+        if (Rack and Weapon)
         {
             if (LastCount[plane][num] == 2)
             {
@@ -896,7 +896,7 @@ void LoadHardPoint(long plane, long num, long center)
 
     if (classPtr)
     {
-        for (i = 0; i < gCurStores[plane].WeaponCount[num] && i < _WPN_MAX_; i++)
+        for (i = 0; i < gCurStores[plane].WeaponCount[num] and i < _WPN_MAX_; i++)
         {
             Weapon = gUIViewer->LoadBSP((plane << 24) + (num << 16) + i + 1, classPtr->visType[0]);
 
@@ -983,10 +983,10 @@ void LoadFlight(VU_ID flightID)
     loads = flt->GetNumberOfLoadouts();
 
     // JB 020219 Limit munition planecount to less than five otherwise we overwrite memory.
-    ShiAssert(ac > 0 && loads > 0 && ac < 4);
+    ShiAssert(ac > 0 and loads > 0 and ac < 4);
 
     // save info from what is in the flight
-    for (v = 0; v < ac && v < 4; v++)
+    for (v = 0; v < ac and v < 4; v++)
     {
         if (v < loads)
             memcpy(&gCurStores[v], flt->GetLoadout(v), sizeof(LoadoutStruct));
@@ -1157,7 +1157,7 @@ void SetPlaneToArm(long Plane, BOOL ArmIt)
     PlaneEditList[Plane] = ArmIt;
 
     // JB 020219 Limit munition planecount to less than five otherwise we overwrite memory.
-    for (i = 0; i < PlaneCount && i < 4; i++)
+    for (i = 0; i < PlaneCount and i < 4; i++)
         if (PlaneEditList[i])
         {
             FirstPlane = i;
@@ -1363,7 +1363,7 @@ void DetermineWeight(VU_ID FlightID)
                 // Add up pylon weight & drag
                 int pylonid = gCurRails[i].rail[j].hardPoint.GetPylonId();
 
-                if (pylonid && gCurRails[i].rail[j].weaponCount)
+                if (pylonid and gCurRails[i].rail[j].weaponCount)
                 {
                     rackPtr = &Falcon4ClassTable[WeaponDataTable[pylonid].Index]; // MLR 2/29/2004 -
 
@@ -1384,7 +1384,7 @@ void DetermineWeight(VU_ID FlightID)
                 // Add rack weight & drag
                 int rackid = gCurRails[i].rail[j].hardPoint.GetRackId();
 
-                if (rackid && gCurRails[i].rail[j].weaponCount)
+                if (rackid and gCurRails[i].rail[j].weaponCount)
                 {
                     rackPtr = &Falcon4ClassTable[WeaponDataTable[rackid].Index]; // MLR 2/29/2004 -
 
@@ -1405,7 +1405,7 @@ void DetermineWeight(VU_ID FlightID)
                 // Add weapon(s) weight & drag
                 int weapid = gCurRails[i].rail[j].hardPoint.weaponId;
 
-                if (weapid && gCurRails[i].rail[j].weaponCount)
+                if (weapid and gCurRails[i].rail[j].weaponCount)
                 {
                     weapPtr = &Falcon4ClassTable[WeaponDataTable[weapid].Index];
 
@@ -1430,7 +1430,7 @@ void DetermineWeight(VU_ID FlightID)
 
             for (j = 1; j < HardPoints; j++)
             {
-                if (gCurRails[i].rail[j].hardPoint.GetRackId() && gCurRails[i].rail[j].currentBits) // MLR 2/25/2004 - Added currentBits
+                if (gCurRails[i].rail[j].hardPoint.GetRackId() and gCurRails[i].rail[j].currentBits) // MLR 2/25/2004 - Added currentBits
                 {
                     rackPtr = &Falcon4ClassTable[gCurRails[i].rail[j].hardPoint.GetRackId()]; // MLR 2/29/2004 -
 
@@ -1462,7 +1462,7 @@ void DetermineWeight(VU_ID FlightID)
             // Add up visible stores weights
             for (j = 1; j < HardPoints; j++)
             {
-                if (gCurRails[i].rail[j].hardPoint.weaponId && gCurRails[i].rail[j].currentBits)
+                if (gCurRails[i].rail[j].hardPoint.weaponId and gCurRails[i].rail[j].currentBits)
                 {
                     bitflag = gCurRails[i].rail[j].currentBits;
                     count = 0;
@@ -1493,7 +1493,7 @@ void DetermineWeight(VU_ID FlightID)
             // Add up internal stores weights
             for (j = 1; j < HardPoints; j++)
             {
-                if (!(vc->VisibleFlags & (1 << j)) && gCurStores[i].WeaponID[j])
+                if (!(vc->VisibleFlags & (1 << j)) and gCurStores[i].WeaponID[j])
                 {
                     store = NULL;
                     ShiAssert(gStores);
@@ -1620,7 +1620,7 @@ void SetupMunitionsWindow(VU_ID FlightID)
     {
         txt->SetTimerCallback(MuniTimeCB);
 
-        if ((!(TheCampaign.Flags & CAMP_TACTICAL_EDIT)) && (!(TheCampaign.Flags & CAMP_LIGHT)))
+        if ((!(TheCampaign.Flags & CAMP_TACTICAL_EDIT)) and (!(TheCampaign.Flags & CAMP_LIGHT)))
         {
             status = GetFlightStatusID(flt);
 
@@ -1919,7 +1919,7 @@ void InternalArmPlaneCB(long ID, short hittype, C_Base *control)
     STORESLIST *store;
     int i;
 
-    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
     hp = ID >> 16;
@@ -1947,10 +1947,10 @@ void InternalArmPlaneCB(long ID, short hittype, C_Base *control)
     if (count > control->GetUserNumber(1))
         count = control->GetUserNumber(1);
 
-    if (count && !TotalAvailable(static_cast<short>(weaponID)))
+    if (count and !TotalAvailable(static_cast<short>(weaponID)))
         count--;
 
-    if (!count && count == startcount) //None available
+    if (!count and count == startcount) //None available
     {
         return;
     }
@@ -1991,7 +1991,7 @@ void InternalArmPlaneCB(long ID, short hittype, C_Base *control)
         {
             gCurStores[i].WeaponID[hp] = static_cast<short>(weaponID);
 
-            if (count && !TotalAvailable(static_cast<short>(weaponID)))
+            if (count and !TotalAvailable(static_cast<short>(weaponID)))
                 count--;
 
             gCurStores[i].WeaponCount[hp] = static_cast<uchar>(count);
@@ -2032,10 +2032,10 @@ void ArmPlaneCB(long ID, short hittype, C_Base *control)
     if (count > control->GetUserNumber(1))
         count = 0;
 
-    if (count &&  !TotalAvailable(static_cast<short>(weaponID)))
+    if (count and  !TotalAvailable(static_cast<short>(weaponID)))
         count--;
 
-    if (!count && count == startcount) //None available
+    if (!count and count == startcount) //None available
     {
         return;
     }
@@ -2079,7 +2079,7 @@ void ArmPlaneCB(long ID, short hittype, C_Base *control)
             int ok;
             gCurStores[i].WeaponID[hp] = static_cast<short>(weaponID);
 
-            if (count && !TotalAvailable(static_cast<short>(weaponID)))
+            if (count and !TotalAvailable(static_cast<short>(weaponID)))
                 count--;
 
             gCurStores[i].WeaponCount[hp] = static_cast<uchar>(count);
@@ -2130,7 +2130,7 @@ void SetCurrentLoadout()
 
                     for (i = 0; i < 4; i++)
                     {
-                        if (PlaneEditList[i] && (gCurStores[FirstPlane].WeaponID[j] not_eq gCurStores[i].WeaponID[j] or gCurStores[FirstPlane].WeaponCount[j] not_eq gCurStores[i].WeaponCount[j]))
+                        if (PlaneEditList[i] and (gCurStores[FirstPlane].WeaponID[j] not_eq gCurStores[i].WeaponID[j] or gCurStores[FirstPlane].WeaponCount[j] not_eq gCurStores[i].WeaponCount[j]))
                             Diff = 1;
                     }
 
@@ -2150,13 +2150,13 @@ void SetCurrentLoadout()
 
                     for (i = 0; i < 4; i++)
                     {
-                        if (PlaneEditList[i] && (cur->Control_->GetID() == ((j << 16) | gCurStores[i].WeaponID[j]) && i not_eq FirstPlane))
+                        if (PlaneEditList[i] and (cur->Control_->GetID() == ((j << 16) | gCurStores[i].WeaponID[j]) and i not_eq FirstPlane))
                             Diff = 1;
                     }
 
                     cur->Control_->SetUserNumber(0, 0);
 
-                    if (gCurStores[FirstPlane].WeaponCount[j] && !Diff)
+                    if (gCurStores[FirstPlane].WeaponCount[j] and !Diff)
                         cur->Control_->SetState(C_STATE_DISABLED);
                     else
                         cur->Control_->SetState(static_cast<short>(Diff));
@@ -2202,7 +2202,7 @@ void SetupLoadoutDisplay()
 
     for (i = 1; i < HardPoints; i++)
     {
-        if (vc->Weapon[i] && vc->Weapons[i])
+        if (vc->Weapon[i] and vc->Weapons[i])
         {
             if (vc->Weapons[i] == 255)
             {
@@ -2210,7 +2210,7 @@ void SetupLoadoutDisplay()
                 {
                     ShiAssert(gStores);
 
-                    if (GetListEntryWeapon(vc->Weapon[i], j) && gStores)
+                    if (GetListEntryWeapon(vc->Weapon[i], j) and gStores)
                     {
                         wpn = gStores->Find(GetListEntryWeapon(vc->Weapon[i], j));
 
@@ -2508,9 +2508,9 @@ void MakeStoresList(C_Window *win, long client)
             Drawit = FALSE;
 
             // JB 020219 Limit munition planecount to less than five otherwise we overwrite memory.
-            for (i = 0; i < PlaneCount && Drawit == FALSE && i < 4; i++)
-                for (j = 1; j < HardPoints && Drawit == FALSE; j++)
-                    if (cur->ID == gCurStores[i].WeaponID[j] && gCurStores[i].WeaponCount[j])
+            for (i = 0; i < PlaneCount and Drawit == FALSE and i < 4; i++)
+                for (j = 1; j < HardPoints and Drawit == FALSE; j++)
+                    if (cur->ID == gCurStores[i].WeaponID[j] and gCurStores[i].WeaponCount[j])
                         Drawit = TRUE;
         }
         else
@@ -2649,7 +2649,7 @@ void MakeStoresList(C_Window *win, long client)
                                             btn->SetImage(C_STATE_5, LAU2L_DIFF);
                                             btn->SetImage(C_STATE_DISABLED, LAU2L_DIS);
                                         }
-                                        else if (i == (HardPoints / 2) && !(HardPoints & 1))
+                                        else if (i == (HardPoints / 2) and !(HardPoints & 1))
                                         {
                                             btn->SetBackImage(LAU2C_EMPTY);
                                             btn->SetImage(C_STATE_0, LAU2C_EMPTY);
@@ -2713,7 +2713,7 @@ void MakeStoresList(C_Window *win, long client)
                                             btn->SetImage(C_STATE_4, LAU2L_FULL);
                                             btn->SetImage(C_STATE_5, LAU2L_DIFF);
                                         }
-                                        else if (i == (HardPoints / 2) && !(HardPoints & 1))
+                                        else if (i == (HardPoints / 2) and !(HardPoints & 1))
                                         {
                                             btn->SetImage(C_STATE_4, LAU2C_FULL);
                                             btn->SetImage(C_STATE_5, LAU2C_DIFF);
@@ -2884,7 +2884,7 @@ void RestoreStores(C_Window *win)
 
     ac = flt->GetTotalVehicles();
     loads = flt->GetNumberOfLoadouts();
-    ShiAssert(ac > 0 && loads > 0);
+    ShiAssert(ac > 0 and loads > 0);
 
     for (v = 0; v < ac; v++)
     {
@@ -2900,7 +2900,7 @@ void RestoreStores(C_Window *win)
     {
         for (j = 0; j < HARDPOINT_MAX; j++)
         {
-            if (j && j < HardPoints)
+            if (j and j < HardPoints)
             {
                 int ok;
                 ClearHardPoint(i, j, HardPoints / 2, &gCurRails[i].rail[j]);
@@ -2935,7 +2935,7 @@ void ClearStores(C_Window *win)
                 gCurStores[i].WeaponID[j] = 0;
                 gCurStores[i].WeaponCount[j] = 0;
 
-                if (j && j < HardPoints)
+                if (j and j < HardPoints)
                 {
                     ClearHardPoint(i, j, HardPoints / 2, &gCurRails[i].rail[j]);
                 }

@@ -133,12 +133,12 @@ void CockpitError(int line, int errorpriority)
         return;
 
     //Wombat778 4-11-04 rewrote to be better
-    if (errorpriority == 1 && g_nShow2DPitErrors >= errorpriority)
+    if (errorpriority == 1 and g_nShow2DPitErrors >= errorpriority)
     {
         sprintf(temp, "Critical 2D Cockpit Error Detected in Block Before Line %d.  System Stability May Be Compromised.", line);
         MessageBox(NULL, temp, "Critical Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
     }
-    else if (errorpriority == 2 && g_nShow2DPitErrors >= errorpriority)
+    else if (errorpriority == 2 and g_nShow2DPitErrors >= errorpriority)
     {
         sprintf(temp, "2D Cockpit Error Detected in Block Before Line %d.", line);
         MessageBox(NULL, temp, "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
@@ -483,7 +483,7 @@ CockpitManager::CockpitManager(
         gDebugLineNum ++;
         quitFlag = (presult == NULL);
 
-        if ((*plineBuffer == '#') && (!quitFlag))
+        if ((*plineBuffer == '#') and (!quitFlag))
         {
             sscanf((plineBuffer + 1), "%d %s", &idNum, ptype);
 
@@ -621,7 +621,7 @@ CockpitManager::CockpitManager(
     //setup a black imagebuffer the width of the screen
     //Only do this when not rendering
     /*
-    if (!DisplayOptions.bRender2DCockpit && g_bCockpitAutoScale && g_bRatioHack && ((float) DisplayOptions.DispWidth / (float) DisplayOptions.DispHeight) == 1.25) //Wombat778 11-04-2003 added g_bRatiohack in case user has an actual 1280x1024 pit 10-24-2003 added g_bCockpitAutoScale //so we are in a 1.25 ratio
+    if (!DisplayOptions.bRender2DCockpit and g_bCockpitAutoScale and g_bRatioHack and ((float) DisplayOptions.DispWidth / (float) DisplayOptions.DispHeight) == 1.25) //Wombat778 11-04-2003 added g_bRatiohack in case user has an actual 1280x1024 pit 10-24-2003 added g_bCockpitAutoScale //so we are in a 1.25 ratio
     {
      RatioBuffer = new ImageBuffer;
      RatioBuffer->Setup(&FalconDisplay.theDisplayDevice,DisplayOptions.DispWidth,FloatToInt32((DisplayOptions.DispHeight-(float)DisplayOptions.DispHeight*0.9375f)+0.5f),SystemMem,None,FALSE);  //Wombat778 10-06 2003 Setup a new imagebuffer.  Should begin as black  //Wombat778 10-24-2003 make the calc the same as later for rounding accuracy
@@ -766,7 +766,7 @@ CockpitManager::~CockpitManager()
     //Wombat778 10-18-2003 Kill the temp ratiobuffer
     //Only do this when not rendering
 
-    /*if (!DisplayOptions.bRender2DCockpit && g_bCockpitAutoScale && g_bRatioHack && ((float) DisplayOptions.DispWidth / (float) DisplayOptions.DispHeight) == 1.25) //Wombat778 10-24-2003 added g_bCockpitAutoScale //so we are in a 1.25 ratio
+    /*if (!DisplayOptions.bRender2DCockpit and g_bCockpitAutoScale and g_bRatioHack and ((float) DisplayOptions.DispWidth / (float) DisplayOptions.DispHeight) == 1.25) //Wombat778 10-24-2003 added g_bCockpitAutoScale //so we are in a 1.25 ratio
      delete RatioBuffer;*/
 
 }
@@ -2200,7 +2200,7 @@ void CockpitManager::CreateDial(int idNum, FILE* pcockpitDataFile)
     //Wombat778 3-26-04 Code for rendering the dials instead of line drawing
     //Wombat778 4-11-04 added some error reporting
 
-    if (DisplayOptions.bRender2DCockpit && dialInitStr.IsRendered)
+    if (DisplayOptions.bRender2DCockpit and dialInitStr.IsRendered)
     {
         //Wombat778 4-13-04 prevent a heap error with pit errors
         if ((dialInitStr.srcRect.bottom - dialInitStr.srcRect.top) * (dialInitStr.srcRect.right - dialInitStr.srcRect.left) > 0) //Wombat778 4-22-04 changed from >=  to >
@@ -2834,7 +2834,7 @@ void CockpitManager::ResolveReferences(void)
             k = 0;
 
             // search cpmanager's list of surface pointers
-            while ((!found) && (k < mSurfaceTally))
+            while ((!found) and (k < mSurfaceTally))
             {
                 if (mpSurfaces[k]->mIdNum == surfaceId)
                 {
@@ -2864,7 +2864,7 @@ void CockpitManager::ResolveReferences(void)
             k = 0;
 
             // search cpmanager's list of object pointers
-            while ((!found) && (k < mObjectTally))
+            while ((!found) and (k < mObjectTally))
             {
                 if (mpObjects[k]->mIdNum == objectId)
                 {
@@ -2888,7 +2888,7 @@ void CockpitManager::ResolveReferences(void)
         j = 0;
         buttonId = mpButtonViews[i]->GetParentButton();
 
-        while (!found && j < mButtonTally)
+        while (!found and j < mButtonTally)
         {
 
             if (mpButtonObjects[j]->GetId() == buttonId)
@@ -2932,7 +2932,7 @@ void CockpitManager::ResolveReferences(void)
             k = 0;
 
             // search cpmanager's list of object pointers
-            while ((!found) && (k < mButtonViewTally))
+            while ((!found) and (k < mButtonViewTally))
             {
                 if (mpButtonViews[k]->GetId() == buttonViewId)
                 {
@@ -2958,7 +2958,7 @@ void CockpitManager::ResolveReferences(void)
         i = 0;
 
         // search cpmanager's list of button pointers
-        while ((!found) && (i < mButtonTally))
+        while ((!found) and (i < mButtonTally))
         {
             if (mpButtonObjects[i]->GetId() == buttonId)
             {
@@ -2979,7 +2979,7 @@ void CockpitManager::ResolveReferences(void)
         i = 0;
 
         // search cpmanager's list of button pointers
-        while ((!found) && (i < mButtonTally))
+        while ((!found) and (i < mButtonTally))
         {
             if (mpButtonObjects[i]->GetId() == buttonId)
             {
@@ -4353,7 +4353,7 @@ void CockpitManager::GeometryDraw(void)
     BOOL drawOrdinance = TRUE;
     AircraftClass *pac = SimDriver.GetPlayerAircraft();
 
-    if (mpActivePanel && mpGeometry)
+    if (mpActivePanel and mpGeometry)
     {
         {
             // MLR 2003-10-05 Get Texture set
@@ -4379,7 +4379,7 @@ void CockpitManager::GeometryDraw(void)
         // This switch seems to be unused by the 3d pits anyhow. 7 is put to better use
         // a few lines down from here.
         // MLR 2003-10-12 Uncommented this out, we'll just work around it later.
-        if (mpActivePanel->DoGeometry() && PlayerOptions.ObjectDetailLevel() >= 1.0F)
+        if (mpActivePanel->DoGeometry() and PlayerOptions.ObjectDetailLevel() >= 1.0F)
         {
             mpGeometry->SetSwitchMask(7, 1);
         }
@@ -4477,14 +4477,14 @@ void CockpitManager::DisplayBlit()
         return;
     }
 
-    if (mIsInitialized && mpActivePanel)
+    if (mIsInitialized and mpActivePanel)
     {
         mpActivePanel->DisplayBlit();
     }
 
 #else
 
-    if (mIsInitialized && mpActivePanel)
+    if (mIsInitialized and mpActivePanel)
     {
         mpActivePanel->DisplayBlit();
     }
@@ -4502,14 +4502,14 @@ void CockpitManager::DisplayBlit3D()
         return;
     }
 
-    if (mIsInitialized && mpActivePanel)
+    if (mIsInitialized and mpActivePanel)
     {
         mpActivePanel->DisplayBlit3D();
     }
 
 #else
 
-    if (mIsInitialized && mpActivePanel)
+    if (mIsInitialized and mpActivePanel)
     {
         mpActivePanel->DisplayBlit3D();
     }
@@ -4531,7 +4531,7 @@ void CockpitManager::DisplayDraw()
         return;
     }
 
-    if (mIsInitialized && mpActivePanel)
+    if (mIsInitialized and mpActivePanel)
     {
         OTWDriver.renderer->StartDraw();
         OTWDriver.renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F);
@@ -4544,7 +4544,7 @@ void CockpitManager::DisplayDraw()
 
 #else
 
-    if (mIsInitialized && mpActivePanel)
+    if (mIsInitialized and mpActivePanel)
     {
         OTWDriver.renderer->StartDraw();
         OTWDriver.renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F);
@@ -4565,7 +4565,7 @@ CPButtonObject* CockpitManager::GetButtonPointer(int buttonId)
     int i = 0;
     CPButtonObject* preturnValue = NULL;
 
-    while (!found && i < mNumButtons)
+    while (!found and i < mNumButtons)
     {
         if (mpButtonObjects[i]->GetId() == buttonId)
         {
@@ -4594,7 +4594,7 @@ void CockpitManager::Dispatch(int buttonId, int mouseSide)
     int i = 0;
     int event;
 
-    while (!found && i < mButtonTally)
+    while (!found and i < mButtonTally)
     {
         if (mpButtonObjects[i]->GetId() == buttonId)
         {
@@ -4721,7 +4721,7 @@ float CockpitManager::GetCockpitMaskTop()
 
 #if DO_HIRESCOCK_HACK
 
-    if (mpActivePanel && !gDoCockpitHack)
+    if (mpActivePanel and !gDoCockpitHack)
     {
         returnValue = mpActivePanel->mMaskTop;
     }
@@ -4779,7 +4779,7 @@ bool CockpitManager::SetActivePanel(int panelId)   //Wombat778 changed return to
     {
 
         // loop thru all the panels
-        while ((!found) && (i < mPanelTally))
+        while ((!found) and (i < mPanelTally))
         {
             // if we find the panel with our id, make it active
             if (mpPanels[i]->mIdNum == panelId)
@@ -4814,7 +4814,7 @@ BOOL CockpitManager::ShowRwr(void)
     {
         return(TRUE);
     }
-    else if (mpActivePanel && mpActivePanel->mpViewBounds[BOUNDS_RWR])
+    else if (mpActivePanel and mpActivePanel->mpViewBounds[BOUNDS_RWR])
     {
         return(TRUE);
     }
@@ -4833,7 +4833,7 @@ BOOL CockpitManager::ShowHud(void)
     {
         return(TRUE);
     }
-    else if (mpActivePanel && mpActivePanel->mpViewBounds[BOUNDS_HUD])
+    else if (mpActivePanel and mpActivePanel->mpViewBounds[BOUNDS_HUD])
     {
         return(TRUE);
     }
@@ -4847,11 +4847,11 @@ BOOL CockpitManager::ShowHud(void)
 BOOL CockpitManager::ShowMfd(void)
 {
 
-    if (mpViewBounds[BOUNDS_MFDLEFT] && mpViewBounds[BOUNDS_MFDRIGHT])
+    if (mpViewBounds[BOUNDS_MFDLEFT] and mpViewBounds[BOUNDS_MFDRIGHT])
     {
         return(TRUE);
     }
-    else if (mpActivePanel && mpActivePanel->mpViewBounds[BOUNDS_MFDLEFT] && mpActivePanel->mpViewBounds[BOUNDS_MFDRIGHT])
+    else if (mpActivePanel and mpActivePanel->mpViewBounds[BOUNDS_MFDLEFT] and mpActivePanel->mpViewBounds[BOUNDS_MFDRIGHT])
     {
         return(TRUE);
     }
@@ -4915,7 +4915,7 @@ BOOL CockpitManager::GetViewportBounds(ViewportBounds* bounds, int viewPort)
     BOOL returnValue = FALSE;
 #if DO_HIRESCOCK_HACK
 
-    if (mpActivePanel && !gDoCockpitHack)
+    if (mpActivePanel and !gDoCockpitHack)
     {
         returnValue = mpActivePanel->GetViewportBounds(bounds, viewPort);
     }
@@ -4945,7 +4945,7 @@ void CockpitManager::SetNextView(void)
 {
     F4EnterCriticalSection(mpCockpitCritSec);
 
-    if (!mIsNextInitialized && mpNextActivePanel)
+    if (!mIsNextInitialized and mpNextActivePanel)
     {
         if (mpNextActivePanel not_eq mpActivePanel)
         {
@@ -4978,7 +4978,7 @@ void CockpitManager::SetNextView(void)
 float CockpitManager::GetPan(void)
 {
 
-    if (mpActivePanel && !gDoCockpitHack)
+    if (mpActivePanel and !gDoCockpitHack)
     {
         return (mpActivePanel->mPan);
     }
@@ -4989,7 +4989,7 @@ float CockpitManager::GetPan(void)
 float CockpitManager::GetTilt(void)
 {
 
-    if (mpActivePanel && !gDoCockpitHack)
+    if (mpActivePanel and !gDoCockpitHack)
     {
         return (mpActivePanel->mTilt);
     }
@@ -5301,7 +5301,7 @@ void CockpitManager::SaveCockpitDefaults(void)
     WritePrivateProfileString("COMMS", "Comm2", tmpStr, dataFileName);
 
     // Master Arm switch
-    if (playerAC && playerAC->Sms) // JB 010628 CTD // JPO CTD fix
+    if (playerAC and playerAC->Sms) // JB 010628 CTD // JPO CTD fix
     {
         sprintf(tmpStr, "%d", playerAC->Sms->MasterArm());
         WritePrivateProfileString("Weapons", "MasterArm", tmpStr, dataFileName);
@@ -5351,7 +5351,7 @@ void CockpitManager::LoadCockpitDefaults(void)
     {
         int Mode = GetPrivateProfileInt("ICP", "MasterMode", -1, dataFileName);
 
-        if (Mode >= 0 && Mode < 3)
+        if (Mode >= 0 and Mode < 3)
         {
             if (mpIcp)
             {
@@ -5529,7 +5529,7 @@ void CockpitManager::LoadCockpitDefaults(void)
     }
 
     //MI EWS stuff
-    if (mpIcp && SimDriver.GetPlayerEntity() && !F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass)))
+    if (mpIcp and SimDriver.GetPlayerEntity() and !F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass)))
     {
         //Chaff and Flare Bingo
         mpIcp->FlareBingo = GetPrivateProfileInt("EWS", "Flare Bingo",
@@ -5633,7 +5633,7 @@ void CockpitManager::LoadCockpitDefaults(void)
     }
 
     //MI save Cockpit selection
-    if (SimDriver.GetPlayerEntity() && !F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass)))
+    if (SimDriver.GetPlayerEntity() and !F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass)))
     {
         sprintf(tmpStr, "WideView");
         int temp = GetPrivateProfileInt("Cockpit View", tmpStr, 0, dataFileName);

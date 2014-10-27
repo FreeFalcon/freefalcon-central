@@ -440,7 +440,7 @@ void DisplayDebugLine(int x0, int y0, int x1, int y1)
     y = y0;
     pixcount = 0;
 
-    if (dy >= 0 && dy <= dx)
+    if (dy >= 0 and dy <= dx)
     {
         d = 2 * dy - dx;
         ince = 2 * dy;
@@ -467,7 +467,7 @@ void DisplayDebugLine(int x0, int y0, int x1, int y1)
             pixcount ++;
         }
     }
-    else if (dy < 0 && -dy < dx)
+    else if (dy < 0 and -dy < dx)
     {
         d = -2 * dy - dx;
         ince = -2 * dy;
@@ -493,7 +493,7 @@ void DisplayDebugLine(int x0, int y0, int x1, int y1)
             pixcount ++;
         }
     }
-    else if (dx >= 0 && dy >= 0)
+    else if (dx >= 0 and dy >= 0)
     {
         d = 2 * dx - dy;
         ince = 2 * dx;
@@ -761,7 +761,7 @@ unsigned long WINAPI update_mono(void *ptr)
     char *src;
     CHAR_INFO *dst;
 
-    while (ptr && hStdoutDbg)
+    while (ptr and hStdoutDbg)
     {
         SMALL_RECT rc = { 0, 0, 80, 25 };
 
@@ -788,7 +788,7 @@ unsigned long WINAPI update_mono(void *ptr)
     COORD dwBufferCoord = { 0, 0 };
     DWORD cb;
 
-    while (ptr && hStdoutDbg)
+    while (ptr and hStdoutDbg)
     {
         if (!SetConsoleCursorPosition(hStdoutDbg, dwBufferCoord))
             OutputDebugString("Warning: WriteConsoleOutputA failed\n");

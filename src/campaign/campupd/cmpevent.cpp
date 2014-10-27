@@ -496,7 +496,7 @@ int ReadScriptedTriggerFile(char* filename)
         }
         else if (strcmp(token, "#ELSE") == 0)
         {
-            if (curr_stack > 0 && stack_active[curr_stack - 1])
+            if (curr_stack > 0 and stack_active[curr_stack - 1])
                 stack_active[curr_stack] = !stack_active[curr_stack];
 
             continue;
@@ -579,7 +579,7 @@ int ReadScriptedTriggerFile(char* filename)
                     {
                         POData pod = GetPOData(o);
 
-                        if (pod && pod->ground_assigned[team])
+                        if (pod and pod->ground_assigned[team])
                             stack_active[curr_stack] = 1;
                         else
                             stack_active[curr_stack] = 0;
@@ -607,11 +607,11 @@ int ReadScriptedTriggerFile(char* filename)
                         // And logic
                         stack_active[curr_stack] = 1;
 
-                        while (stack_active[curr_stack] && sptr && atoi(sptr))
+                        while (stack_active[curr_stack] and sptr and atoi(sptr))
                         {
                             o = (Objective) GetEntityByCampID(atoi(sptr));
 
-                            if (o && o->GetTeam() not_eq team)
+                            if (o and o->GetTeam() not_eq team)
                                 stack_active[curr_stack] = 0;
 
                             if (sptr = strchr(sptr, ' '))
@@ -623,11 +623,11 @@ int ReadScriptedTriggerFile(char* filename)
                         // Or logic
                         stack_active[curr_stack] = 0;
 
-                        while (!stack_active[curr_stack] && sptr && atoi(sptr))
+                        while (!stack_active[curr_stack] and sptr and atoi(sptr))
                         {
                             o = (Objective) GetEntityByCampID(atoi(sptr));
 
-                            if (o && o->GetTeam() == team)
+                            if (o and o->GetTeam() == team)
                                 stack_active[curr_stack] = 1;
 
                             if (sptr = strchr(sptr, ' '))
@@ -768,7 +768,7 @@ int ReadScriptedTriggerFile(char* filename)
 
                     team = atoi(sptr);
 
-                    if (TeamInfo[team] && TeamInfo[team]->GetGroundAction() && TeamInfo[team]->GetGroundAction()->actionType == GACTION_OFFENSIVE)
+                    if (TeamInfo[team] and TeamInfo[team]->GetGroundAction() and TeamInfo[team]->GetGroundAction()->actionType == GACTION_OFFENSIVE)
                         stack_active[curr_stack] = 1;
                     else
                         stack_active[curr_stack] = 0;
@@ -846,9 +846,9 @@ int ReadScriptedTriggerFile(char* filename)
                     ratio = os * 10 / ts;
                     stack_active[curr_stack] = 0;
 
-                    if (func == 'G' && ratio >= i)
+                    if (func == 'G' and ratio >= i)
                         stack_active[curr_stack] = 1;
-                    else if (func == 'L' && ratio <= i)
+                    else if (func == 'L' and ratio <= i)
                         stack_active[curr_stack] = 1;
                 }
                 else if (strncmp(token, "#IF_BORDOM_HOURS", 16) == 0)
@@ -967,7 +967,7 @@ int ReadScriptedTriggerFile(char* filename)
 
                 rel = atoi(sptr);
 
-                if (TeamInfo[team] && TeamInfo[with])
+                if (TeamInfo[team] and TeamInfo[with])
                 {
                     SetTTRelations(team, with, rel);
 
@@ -985,7 +985,7 @@ int ReadScriptedTriggerFile(char* filename)
 
                 i = atoi(sptr);
 
-                if (i < CE_Events && i > 0)
+                if (i < CE_Events and i > 0)
                     CampEvents[i]->DoEvent();
 
                 continue;
@@ -1009,7 +1009,7 @@ int ReadScriptedTriggerFile(char* filename)
 
                 amount = atoi(sptr);
 
-                if (TeamInfo[team] && TeamInfo[to])
+                if (TeamInfo[team] and TeamInfo[to])
                     TransferInitiative(team, to, amount);
 
                 continue;
@@ -1021,7 +1021,7 @@ int ReadScriptedTriggerFile(char* filename)
 
                 i = atoi(sptr);
 
-                if (i < CE_Events && i > 0)
+                if (i < CE_Events and i > 0)
                     CampEvents[i]->SetEvent(0);
 
                 continue;
@@ -1105,7 +1105,7 @@ int ReadScriptedTriggerFile(char* filename)
 
                 i = atoi(sptr);
 
-                if (e && e->IsObjective())
+                if (e and e->IsObjective())
                 {
                     pod = GetPOData((Objective)e);
 #ifdef DEBUG

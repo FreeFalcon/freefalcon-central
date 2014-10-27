@@ -177,7 +177,7 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
         Myvec.y = YDelta();
         Myvec.z = ZDelta();
 
-        if (object && object->IsSim())
+        if (object and object->IsSim())
         {
             Objvec.x = object->XDelta();
             Objvec.y = object->YDelta();
@@ -277,8 +277,8 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
     }
 
     // do any type specific stuff here:
-    //   if (IsLocal() && !(this == (SimBaseClass*)SimDriver.GetPlayerEntity() && PlayerOptions.InvulnerableOn()))
-    if (IsLocal() && !IsSetFalcFlag(FEC_INVULNERABLE))
+    //   if (IsLocal() and !(this == (SimBaseClass*)SimDriver.GetPlayerEntity() and PlayerOptions.InvulnerableOn()))
+    if (IsLocal() and !IsSetFalcFlag(FEC_INVULNERABLE))
     {
         // Randomly break something based on the damage inflicted
         // Find out who did it
@@ -335,13 +335,13 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
                 //            MonoPrint ("Upper Left Front Damage\n");
                 //MI add LEF damage
-                if (g_bRealisticAvionics && g_bNewDamageEffects)
+                if (g_bRealisticAvionics and g_bNewDamageEffects)
                 {
                     //random canopy damage
                     if (rand() % 100 < 10) //low chance
                         CanopyDamaged = TRUE;
 
-                    if (rand() % 100 < 25 && !LEFState(LT_LEF_OUT)) //25% we're taking damage
+                    if (rand() % 100 < 25 and !LEFState(LT_LEF_OUT)) //25% we're taking damage
                     {
                         if (LEFState(LT_LEF_DAMAGED))
                         {
@@ -386,12 +386,12 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
                 //            MonoPrint ("Upper Right Front Damage\n");
                 //MI add LEF damage
-                if (g_bRealisticAvionics && g_bNewDamageEffects)
+                if (g_bRealisticAvionics and g_bNewDamageEffects)
                 {
                     if (rand() % 100 < 10) //low chance
                         CanopyDamaged = TRUE;
 
-                    if (rand() % 100 < 25 && !LEFState(RT_LEF_OUT)) //25% we're taking damage
+                    if (rand() % 100 < 25 and !LEFState(RT_LEF_OUT)) //25% we're taking damage
                     {
                         if (LEFState(RT_LEF_DAMAGED))
                         {
@@ -431,9 +431,9 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
                 //            MonoPrint ("Lower Left Front Damage\n");
                 //MI add LEF damage
-                if (g_bRealisticAvionics && g_bNewDamageEffects)
+                if (g_bRealisticAvionics and g_bNewDamageEffects)
                 {
-                    if (rand() % 100 < 25 && !LEFState(LT_LEF_OUT)) //25% we're taking damage
+                    if (rand() % 100 < 25 and !LEFState(LT_LEF_OUT)) //25% we're taking damage
                     {
                         if (LEFState(LT_LEF_DAMAGED))
                         {
@@ -474,9 +474,9 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
                 //            MonoPrint ("Lower Right Front Damage\n");
                 //MI add LEF damage
-                if (g_bRealisticAvionics && g_bNewDamageEffects)
+                if (g_bRealisticAvionics and g_bNewDamageEffects)
                 {
-                    if (rand() % 100 < 25 && !LEFState(RT_LEF_OUT)) //25% we're taking damage
+                    if (rand() % 100 < 25 and !LEFState(RT_LEF_OUT)) //25% we're taking damage
                     {
                         if (LEFState(RT_LEF_DAMAGED))
                         {
@@ -967,7 +967,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
 
     if (damagetype)
     {
-        if (speed > 200.0f && speed < 500.0f)
+        if (speed > 200.0f and speed < 500.0f)
         {
             if (damagetype & 0x4) damagetype  or_eq  8;
         }
@@ -1561,7 +1561,7 @@ void AircraftClass::AddEngineTrails(int ttype, DWORD *tlist, DWORD *tlist_trail)
 
         Tpoint *tp;
 
-        if (tlist not_eq conTrails && tlist not_eq colorConTrails)
+        if (tlist not_eq conTrails and tlist not_eq colorConTrails)
         {
             tp = &af->auxaeroData->engineLocation[i];
         }
@@ -1623,12 +1623,12 @@ void AircraftClass::AddEngineTrails(int ttype, DWORD *tlist, DWORD *tlist_trail)
         //trail is contrail... use 10% of ContrailLow value as margin for fade-in/out
         else
         {
-            if (-ZPos() > (contrailLow90Percent) && -ZPos() < contrailLowValue)
+            if (-ZPos() > (contrailLow90Percent) and -ZPos() < contrailLowValue)
             {
                 engineTrailMargin *= (-ZPos() - contrailLow90Percent) / contrailLow10Percent;
             }
 
-            if (-ZPos() > (contrailHighValue) && -ZPos() < contrailHigh110Percent)
+            if (-ZPos() > (contrailHighValue) and -ZPos() < contrailHigh110Percent)
             {
                 engineTrailMargin *= (fabs(-ZPos() - contrailHigh110Percent)) / contrailLow10Percent;
             }
@@ -1828,7 +1828,7 @@ void AircraftClass::ShowDamage(void)
     if (!OnGround() &&
         af->EngineTrail() >= 0)
     {
-        //       if ( OTWDriver.renderer && OTWDriver.renderer->GetAlphaMode() )
+        //       if ( OTWDriver.renderer and OTWDriver.renderer->GetAlphaMode() )
         hasMilSmoke = af->EngineTrail();
     }
 
@@ -1857,7 +1857,7 @@ void AircraftClass::ShowDamage(void)
     }
 
     //RV I-Hawk - Separated player smoke from contrails... but emmit trail only if not declared damaged
-    if (playerSmokeOn && pctStrength > 0.50f)
+    if (playerSmokeOn and pctStrength > 0.50f)
     {
         //Pick different color based on UI munition screen setting
         AddEngineTrails(colorContrail, colorConTrails, colorConTrails_trail);
@@ -1898,20 +1898,20 @@ void AircraftClass::ShowDamage(void)
              -ZPos() > minwingvortexalt &&
              -ZPos() < maxwingvortexalt) &&
 
-            ((currentAOA > wingvortexAlpha && currentG > wingvortexgs) ||
-             (currentAOA > wingvortexAlphaHigh && currentAOA < wingvortexAlphaLimit &&
+            ((currentAOA > wingvortexAlpha and currentG > wingvortexgs) ||
+             (currentAOA > wingvortexAlphaHigh and currentAOA < wingvortexAlphaLimit &&
               currentVCAS > vortexMinSpeedLimit)))
         {
             dotrails = 1;
         }
 
         //RV - I-Hawk - adding new Vortex trails and PS instead of the 3D model switch
-        if (OTWDriver.renderer && currentG > vortexG && vortexCondition && -ZPos() < vortexMaxaltLimit)
+        if (OTWDriver.renderer and currentG > vortexG and vortexCondition and -ZPos() < vortexMaxaltLimit)
         {
             doGVortex = 1;
         }
 
-        if (OTWDriver.renderer && currentAOA > vortexAOA &&
+        if (OTWDriver.renderer and currentAOA > vortexAOA &&
             currentAOA < vortexAOALimit &&
             vortexCondition &&
             -ZPos() < vortexMaxaltLimit)
@@ -1921,7 +1921,7 @@ void AircraftClass::ShowDamage(void)
 
         if (g_bWakeTurbulence)
         {
-            if (lVortex && rVortex)
+            if (lVortex and rVortex)
             {
                 //if(GetKias() > 40)
                 if (af->IsSet(AirframeClass::InAir))
@@ -1991,7 +1991,7 @@ void AircraftClass::ShowDamage(void)
                         wingvtxTrailAlphaCx += (currentG - 5) * 0.1f;
                     }
 
-                    if (currentVCAS < 250 && currentVCAS > vortexMinSpeedLimit)
+                    if (currentVCAS < 250 and currentVCAS > vortexMinSpeedLimit)
                     {
                         wingvtxTrailAlphaCx *= (currentVCAS - vortexMinSpeedLimit) / (250.0f - vortexMinSpeedLimit);
                     }
@@ -2082,7 +2082,7 @@ void AircraftClass::ShowDamage(void)
 
                     //normalize by AOA
                     //If both G and AOA conditions are filled, use only G values to calculate Cxs
-                    if (doAOAVortex && !doGVortex)
+                    if (doAOAVortex and !doGVortex)
                     {
                         vortex1AlphaCx += (currentAOA - vortexAOALimit) * (1.0f / vortexAOALimit);
                         vortex1SizeCx += (currentAOA - vortexAOA) * 0.03f;
@@ -2126,7 +2126,7 @@ void AircraftClass::ShowDamage(void)
                     //using bits 5,6,7 of largeVortex to decide if this position will be used
                     //as a trail or as PS. This leavs option for some ACs to have
                     //wide vortex over the entire body and wings.
-                    if (vtx2.y && !(largeVortex & 32) && !(largeVortex & 64) && !(largeVortex & 128))
+                    if (vtx2.y and !(largeVortex & 32) and !(largeVortex & 64) and !(largeVortex & 128))
                     {
                         Tpoint lvtx2, rvtx2;
 
@@ -2234,7 +2234,7 @@ void AircraftClass::ShowDamage(void)
                         if (doGVortex)
                             PSCx += currentG / 9.0f;
 
-                        if (doAOAVortex && !doGVortex)
+                        if (doAOAVortex and !doGVortex)
                             PSCx += currentAOA / vortexAOALimit;
 
                         //Get altitude factor as vortex should get thinner with altitude
@@ -2258,21 +2258,21 @@ void AircraftClass::ShowDamage(void)
                             enablePS3 = 2;
                         }
 
-                        if (PSCx <= 0.8f && PSCx > 0.6f)
+                        if (PSCx <= 0.8f and PSCx > 0.6f)
                         {
                             enablePS1 = 3;
                             enablePS2 = 2;
                             enablePS3 = 2;
                         }
 
-                        if (PSCx <= 0.6f && PSCx > 0.4f)
+                        if (PSCx <= 0.6f and PSCx > 0.4f)
                         {
                             enablePS1 = 2;
                             enablePS2 = 2;
                             enablePS3 = 1;
                         }
 
-                        if (PSCx <= 0.4f && PSCx > 0.2f)
+                        if (PSCx <= 0.4f and PSCx > 0.2f)
                         {
                             enablePS1 = 2;
                             enablePS2 = 1;
@@ -2288,7 +2288,7 @@ void AircraftClass::ShowDamage(void)
 
                         //Execute the PS
 
-                        if (enablePS1 && vtx3.y)
+                        if (enablePS1 and vtx3.y)
                         {
 
                             AssignACOrientation(orientation, vtx3, lvtxPS1, pos, false);
@@ -2334,7 +2334,7 @@ void AircraftClass::ShowDamage(void)
                                 (theSFX + 1), &lvtxPS1, &PSvec);
 
                             //the second trail position is used as a PS, so add a PS1 type there...
-                            if (vtx2.y && largeVortex & 32)
+                            if (vtx2.y and largeVortex & 32)
                             {
                                 Tpoint lvtx2, rvtx2;
 
@@ -2349,7 +2349,7 @@ void AircraftClass::ShowDamage(void)
                             }
                         }
 
-                        if (enablePS2 && vtx4.y)
+                        if (enablePS2 and vtx4.y)
                         {
 
                             AssignACOrientation(orientation, vtx4, lvtxPS2, pos, false);
@@ -2393,7 +2393,7 @@ void AircraftClass::ShowDamage(void)
                                 (theSFX + 1), &lvtxPS2, &PSvec);
 
                             //the second trail position is used as a PS, so add a PS2 type there...
-                            if (vtx2.y && largeVortex & 64)
+                            if (vtx2.y and largeVortex & 64)
                             {
                                 Tpoint lvtx2, rvtx2;
 
@@ -2408,7 +2408,7 @@ void AircraftClass::ShowDamage(void)
                             }
                         }
 
-                        if (enablePS3 && vtx5.y)
+                        if (enablePS3 and vtx5.y)
                         {
 
                             AssignACOrientation(orientation, vtx5, lvtxPS3, pos, false);
@@ -2452,7 +2452,7 @@ void AircraftClass::ShowDamage(void)
                                 (theSFX + 1), &lvtxPS3, &PSvec);
 
                             //the second trail position is used as a PS, so add a PS3 type there...
-                            if (vtx2.y && largeVortex & 64)
+                            if (vtx2.y and largeVortex & 64)
                             {
                                 Tpoint lvtx2, rvtx2;
 
@@ -2534,8 +2534,8 @@ void AircraftClass::ShowDamage(void)
     // do military power smoke if its that type of craft
     // PowerOutput() runs from 0.7 (flight idle) to 1.5 (max ab) with 1.0 being mil power
     // M.N. added Poweroutput > 0.65, stops smoke trails when engine is shut down.
-    //if ( !OnGround() && af->EngineTrail() >= 0 && OTWDriver.renderer /*&& OTWDriver.renderer->GetAlphaMode()*/) {
-    /* if (PowerOutput() <= 1.0f && PowerOutput() > 0.65f)
+    //if ( !OnGround() and af->EngineTrail() >= 0 and OTWDriver.renderer /*&& OTWDriver.renderer->GetAlphaMode()*/) {
+    /* if (PowerOutput() <= 1.0f and PowerOutput() > 0.65f)
      {
      AddEngineTrails(af->EngineTrail(), engineTrails); // smoke
      }
@@ -2544,9 +2544,9 @@ void AircraftClass::ShowDamage(void)
     //Cobra TJL 11/12/04 Allow engine smoke on ground and make it between 80% to 100% power
     //Cobra limit smoke to under 10000 feet
     //RV I-Hawk - allow engine smoke till 11000, 1K feet as a fade in/out margin band...
-    if (af->EngineTrail() >= 0 && OTWDriver.renderer)
+    if (af->EngineTrail() >= 0 and OTWDriver.renderer)
     {
-        if (PowerOutput() <= 1.0f && PowerOutput() > 0.80f && -ZPos() < 11000.0f)
+        if (PowerOutput() <= 1.0f and PowerOutput() > 0.80f and -ZPos() < 11000.0f)
         {
             AddEngineTrails(af->EngineTrail(), engineTrails, engineTrails_trail); // smoke
         }
@@ -2558,7 +2558,7 @@ void AircraftClass::ShowDamage(void)
 
     if (pctStrength > 0.50f)
     {
-        if (!hasMilSmoke && smokeTrail[TRAIL_DAMAGE] /*&& smokeTrail[TRAIL_DAMAGE]->InDisplayList(*/)
+        if (!hasMilSmoke and smokeTrail[TRAIL_DAMAGE] /*&& smokeTrail[TRAIL_DAMAGE]->InDisplayList(*/)
         {
             /* RV - I-Hawk - RV new trails call changes
             OTWDriver.AddSfxRequest(
@@ -2728,7 +2728,7 @@ void AircraftClass::ShowDamage(void)
         if (orientation)
         {
             if (af->auxaeroData->nEngines >= 3 or (af->auxaeroData->nEngines == 2
-                                                   && (fabs(af->auxaeroData->engineLocation[0].y - af->auxaeroData->engineLocation[1].y) > 15.0f))
+                                                   and (fabs(af->auxaeroData->engineLocation[0].y - af->auxaeroData->engineLocation[1].y) > 15.0f))
                )
             {
                 radius = 3.0f;
@@ -2813,7 +2813,7 @@ void AircraftClass::ShowDamage(void)
 
         //// occasionalyy add a smoke cloud
         ///*
-        //if ( sfxTimer > 0.2f && (rand() & 0x3) == 0x3 )
+        //if ( sfxTimer > 0.2f and (rand() & 0x3) == 0x3 )
         //{
         //sfxTimer = 0.0f;
         //OTWDriver.AddSfxRequest(
@@ -2827,8 +2827,8 @@ void AircraftClass::ShowDamage(void)
 
     // occasionally, perturb the controls
     // JB 010104
-    //if ( pctStrength < 0.5f && (rand() & 0xf) == 0xf)
-    if (!g_bDisableFunkyChicken && pctStrength < 0.5f && (rand() & 0xf) == 0xf)
+    //if ( pctStrength < 0.5f and (rand() & 0xf) == 0xf)
+    if (!g_bDisableFunkyChicken and pctStrength < 0.5f and (rand() & 0xf) == 0xf)
     {
         // JB 010104
         ioPerturb = 0.5f + (1.0f - pctStrength);
@@ -2884,14 +2884,14 @@ void AircraftClass::CheckObjectCollision(void)
     bool setOnObject = false; // JB carrier
 
     // no detection on ground when not moving
-    //if (!af->IsSet(AirframeClass::OnObject) && // JB carrier
-    // OnGround() && af->vt == 0.0f )
+    //if (!af->IsSet(AirframeClass::OnObject) and // JB carrier
+    // OnGround() and af->vt == 0.0f )
     //{
     // return;
     //}
     //
-    //if (!af->IsSet(AirframeClass::OnObject) && // JB carrier
-    // OnGround() && af->vcas <= 50.0f  && gCommsMgr && gCommsMgr->Online()) // JB 010107
+    //if (!af->IsSet(AirframeClass::OnObject) and // JB carrier
+    // OnGround() and af->vcas <= 50.0f  and gCommsMgr and gCommsMgr->Online()) // JB 010107
     //{
     // return; // JB 010107
     //} //Cobra Test removal
@@ -2908,12 +2908,12 @@ void AircraftClass::CheckObjectCollision(void)
         }
 
         // RV - Biker - Don't collide with weapons belonging to us
-        if (theObject->IsWeapon() && ((SimWeaponClass*)theObject)->Parent() == this)
+        if (theObject->IsWeapon() and ((SimWeaponClass*)theObject)->Parent() == this)
         {
             continue;
         }
 
-        if (F4IsBadReadPtr(theObject, sizeof(SimBaseClass)) or !theObject->IsSim() or (OnGround() && !theObject->OnGround()))
+        if (F4IsBadReadPtr(theObject, sizeof(SimBaseClass)) or !theObject->IsSim() or (OnGround() and !theObject->OnGround()))
         {
             continue;
         }
@@ -3018,7 +3018,7 @@ void AircraftClass::CheckObjectCollision(void)
         //***********************************************
 
         // JB carrier start
-        if (IsAirplane() && theObject->GetDomain() == DOMAIN_SEA && theObject->GetClass() == CLASS_VEHICLE && theObject->GetType() == TYPE_CAPITAL_SHIP)
+        if (IsAirplane() and theObject->GetDomain() == DOMAIN_SEA and theObject->GetClass() == CLASS_VEHICLE and theObject->GetType() == TYPE_CAPITAL_SHIP)
         {
             if (carrierInitTimer < 30.0f)
                 carrierInitTimer += SimLibMajorFrameTime;
@@ -3029,7 +3029,7 @@ void AircraftClass::CheckObjectCollision(void)
             ((DrawableBSP*) theObject->drawPointer)->GetBoundingBox(&minB, &maxB);
 
             // JB 010731 Hack for unfixed hitboxes.
-            //if (minB.z < -193.0f && minB.z > -194.0f)
+            //if (minB.z < -193.0f and minB.z > -194.0f)
             // minB.z = -72.0f;
 
             // RV - Biker - Try to get the values from slot data
@@ -3049,7 +3049,7 @@ void AircraftClass::CheckObjectCollision(void)
             int numDynamics = ((DrawableBSP*) theObject->drawPointer)->GetNumDynamicVertices();
 
             // RV - Biker - Choose take-off slot randomly
-            if (numSlots > 0 && takeoffSlot > numSlots - 1)
+            if (numSlots > 0 and takeoffSlot > numSlots - 1)
             {
                 takeoffSlot = rand() % numSlots;
             }
@@ -3074,7 +3074,7 @@ void AircraftClass::CheckObjectCollision(void)
             startAngle.x = max(min(startAngle.x, 45.0f), -45.0f) * DTR;
 
             // RV - Biker - Rotate AC with carrier
-            if (af->vt <= 1.0f && af->Thrust() <= 1.0f && (carrierInitTimer < 10.0f or theObject->YawDelta() not_eq 0.0f))
+            if (af->vt <= 1.0f and af->Thrust() <= 1.0f and (carrierInitTimer < 10.0f or theObject->YawDelta() not_eq 0.0f))
             {
                 af->sigma = theObject->Yaw() + startAngle.x;
                 af->ResetOrientation();
@@ -3092,14 +3092,14 @@ void AircraftClass::CheckObjectCollision(void)
                 startPos.z = tmpPos.z;
             }
 
-            if (startPos.z not_eq 0.0f && numSlots > 0)
+            if (startPos.z not_eq 0.0f and numSlots > 0)
                 minB.z = startPos.z;
 
             float deltaX = abs(af->x - theObject->XPos());
             float deltaY = abs(af->y - theObject->YPos());
 
             // RV - Biker - Move AC in correct position
-            if (af->vt <= 1.0f && af->Thrust() <= 1.0f && carrierInitTimer < 25.0f)
+            if (af->vt <= 1.0f and af->Thrust() <= 1.0f and carrierInitTimer < 25.0f)
             {
                 if ((deltaX < abs(startPos.x) - 2.5f or deltaX > abs(startPos.x) + 2.5f))
                 {
@@ -3123,7 +3123,7 @@ void AircraftClass::CheckObjectCollision(void)
             {
                 onCatPosition = true;
             }
-            else if (numSlots > 0 && af->vt <= 1.0f)
+            else if (numSlots > 0 and af->vt <= 1.0f)
             {
                 af->ClearFlag(AirframeClass::Hook);
             }
@@ -3134,7 +3134,7 @@ void AircraftClass::CheckObjectCollision(void)
                 float changeval;
                 float cdof = ((DrawableBSP*) theObject->drawPointer)->GetDOFangle(takeoffSlot + 10);
 
-                if (af->IsSet(AirframeClass::Hook) && onCatPosition == true)
+                if (af->IsSet(AirframeClass::Hook) and onCatPosition == true)
                 {
                     if (cdof < 55.0f * DTR)
                     {
@@ -3257,14 +3257,14 @@ void AircraftClass::CheckObjectCollision(void)
             PSvec.y = (theObject->YDelta());
             PSvec.z = 0;
 
-            if (af->vcas > 40.0f && af->vcas < 180.0f && af->IsSet(AirframeClass::OnObject) && !(af->IsSet(AirframeClass::Hook)))
+            if (af->vcas > 40.0f and af->vcas < 180.0f and af->IsSet(AirframeClass::OnObject) and !(af->IsSet(AirframeClass::Hook)))
             {
                 DrawableParticleSys::PS_AddParticleEx(
                     (SFX_CAT_LAUNCH + 1), &noseGear, &PSvec);
             }
 
-            //if(/*(ZPos() <= minB.z * /*.96*/.90f && ZPos() > minB.z * /*1.02*/1.1f or */(ZPos() > -g_fCarrierStartTolerance && af->vcas < 10.0f /*.01*/))//Cobra aircraft coming in at 6.5 knots and thus failing this check
-            if ((ZPos() <= minB.z * 0.96f && ZPos() > minB.z - 0.5f) or (ZPos() > -g_fCarrierStartTolerance && af->vcas < 10.0f))
+            //if(/*(ZPos() <= minB.z * /*.96*/.90f and ZPos() > minB.z * /*1.02*/1.1f or */(ZPos() > -g_fCarrierStartTolerance and af->vcas < 10.0f /*.01*/))//Cobra aircraft coming in at 6.5 knots and thus failing this check
+            if ((ZPos() <= minB.z * 0.96f and ZPos() > minB.z - 0.5f) or (ZPos() > -g_fCarrierStartTolerance and af->vcas < 10.0f))
             {
                 // the eagle has landed
                 attachedEntity = theObject;
@@ -3274,7 +3274,7 @@ void AircraftClass::CheckObjectCollision(void)
 
                 // Set our anchor so that when we're moving slowly we can accumulate our position in high precision
                 // RV - Biker - Do the offset if desired
-                if (carrierStartPosEngaged == 0 && abs(theObject->YawDelta()) < 0.25f && carrierInitTimer > 1.0f)
+                if (carrierStartPosEngaged == 0 and abs(theObject->YawDelta()) < 0.25f and carrierInitTimer > 1.0f)
                 {
                     carrierStartPosEngaged = 1;
                     af->x = af->x + startPos.x;
@@ -3297,7 +3297,7 @@ void AircraftClass::CheckObjectCollision(void)
 
                 if (af->IsSet(af->GearBroken) or af->gearPos <= 0.1F)
                 {
-                    if (af->platform->DBrain() && !af->platform->IsSetFalcFlag(FEC_INVULNERABLE))
+                    if (af->platform->DBrain() and !af->platform->IsSetFalcFlag(FEC_INVULNERABLE))
                     {
                         af->platform->DBrain()->SetATCFlag(DigitalBrain::Landed);
                         af->platform->DBrain()->SetATCStatus(lCrashed);
@@ -3363,8 +3363,8 @@ void AircraftClass::CheckObjectCollision(void)
 
         //Cobra Lest Dewdog whine forever
         //This should keep online players from "colliding"
-        if (!af->IsSet(AirframeClass::OnObject) && OnGround() && af->vcas <= 50.0f
-            && gCommsMgr && gCommsMgr->Online())
+        if (!af->IsSet(AirframeClass::OnObject) and OnGround() and af->vcas <= 50.0f
+            and gCommsMgr and gCommsMgr->Online())
         {
             continue;
         }
@@ -3481,7 +3481,7 @@ void AircraftClass::CheckObjectCollision(void)
     } // end target list loop
 
     // JB carrier start
-    if (!setOnObject && af->IsSet(AirframeClass::OnObject))
+    if (!setOnObject and af->IsSet(AirframeClass::OnObject))
     {
         attachedEntity = NULL;
         af->ClearFlag(AirframeClass::OverRunway);

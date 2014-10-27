@@ -494,7 +494,7 @@ void TankerBrain::CallNext(void)
             sess = Sessioniter.GetFirst();
             int foundone = FALSE;
 
-            while (sess && !foundone)
+            while (sess and !foundone)
             {
                 if (sess->GetCameraEntity(0) == curThirsty)
                 {
@@ -572,7 +572,7 @@ void TankerBrain::DriveBoom(void)
 
     // 29NOV03 - FRB
     // Type of refueling required by this aircraft?
-    if (curThirsty && numBooms >= 1 && numDrogues >= 1) // Tanker has both services?
+    if (curThirsty and numBooms >= 1 and numDrogues >= 1) // Tanker has both services?
         if (((AircraftClass*)curThirsty)->af)
             if (((AircraftClass*)curThirsty)->af->GetnDrogues() >= 1.0f)
                 ServiceType = DROGUE_SERVICE;
@@ -585,7 +585,7 @@ void TankerBrain::DriveBoom(void)
     {
         int range = 0;
 
-        if (tankingPtr && tankingPtr->localData->range < 1500) // FRB - Changed 800' to 1500' to give more time to extend the drogue
+        if (tankingPtr and tankingPtr->localData->range < 1500) // FRB - Changed 800' to 1500' to give more time to extend the drogue
         {
             range = static_cast<int>(-DrogueExt);
 
@@ -623,12 +623,12 @@ void TankerBrain::DriveBoom(void)
         tmpAz = 0;
         tempEl = 0;
 
-        if (!(flags & GivingGas) && (!tankingPtr or tankingPtr->localData->range > 800.0F) or (flags & ClearingPlane))
+        if (!(flags & GivingGas) and (!tankingPtr or tankingPtr->localData->range > 800.0F) or (flags & ClearingPlane))
         {
             tmpAz = 0.0F;
             tempEl = 0;
         }
-        else if (!(flags & GivingGas) && (!tankingPtr or tankingPtr->localData->range - DrogueExt > 30.0F))
+        else if (!(flags & GivingGas) and (!tankingPtr or tankingPtr->localData->range - DrogueExt > 30.0F))
         {
             tmpAz = 0.0F;
             tempEl = 0;
@@ -666,7 +666,7 @@ void TankerBrain::DriveBoom(void)
         tmpRange = boom[DROGUE].ext;
 
         //     Tpoint minB, maxB;
-        if (curThirsty && curThirsty->drawPointer)
+        if (curThirsty and curThirsty->drawPointer)
         {
             // ((DrawableBSP*)curThirsty->drawPointer)->GetBoundingBox(&minB, &maxB);
             // tmpRange -= maxB.x;
@@ -708,14 +708,14 @@ void TankerBrain::DriveBoom(void)
         float totalrange = 999.9F;
 
         // 2002-03-09 MN changed to use aircraft datafile value - safer for fixing IL78 for each aircraft
-        if (curThirsty && tankingPtr && curThirsty)
+        if (curThirsty and tankingPtr and curThirsty)
         {
             totalrange = tankingPtr->localData->range + tmpRange; // 23NOV03 - FRB
             //  totalrange = tankingPtr->localData->range;
             // 23NOV03 - FRB   totalrange = tmpRange + ((AircraftClass*)curThirsty)->af->GetIL78Factor() + tankingPtr->localData->range;
         }
 
-        if (curThirsty && g_nShowDebugLabels & 0x4000)
+        if (curThirsty and g_nShowDebugLabels & 0x4000)
         {
             char label[31];
             //  sprintf(label,"%5.1f %5.1f %5.1f",totalrange, tankingPtr->localData->range, boom[DROGUE].rx);
@@ -723,7 +723,7 @@ void TankerBrain::DriveBoom(void)
             ((DrawableBSP*)curThirsty->drawPointer)->SetLabel(label, ((DrawableBSP*)curThirsty->drawPointer)->LabelColor());
         }
 
-        if (curThirsty && g_nShowDebugLabels & 0x40000)
+        if (curThirsty and g_nShowDebugLabels & 0x40000)
         {
             char label[31];
             //  sprintf(label,"%5.1f %5.1f %5.1f",totalrange, tankingPtr->localData->range, boom[DROGUE].rx);
@@ -731,7 +731,7 @@ void TankerBrain::DriveBoom(void)
             ((DrawableBSP*)curThirsty->drawPointer)->SetLabel(label, ((DrawableBSP*)curThirsty->drawPointer)->LabelColor());
         }
 
-        if (!(flags & (GivingGas | ClearingPlane)) && tankingPtr)
+        if (!(flags & (GivingGas | ClearingPlane)) and tankingPtr)
         {
             if ((fabs(totalrange) < 6.0F * /*FRB*/ ScaledRM &&
                  fabs(boom[DROGUE].az - tmpAz)*RTD < 6.0F * /*FRB*/ ScaledRM &&
@@ -741,7 +741,7 @@ void TankerBrain::DriveBoom(void)
                  fabs(boom[DROGUE].az)*RTD < 20.0F * /*FRB*/ ScaledRM &&
                  fabs(tankingPtr->BaseData()->Roll())*RTD < 4.0F * /* S.G.*/ ScaledRM &&
                  fabs(tankingPtr->BaseData()->Pitch())*RTD < 6.0F * /* S.G.*/ ScaledRM)
-                or ((flags & AIready) && (tmpRefuelMode >= 3))) // 27NOV03 - FRB  AI is in position
+                or ((flags & AIready) and (tmpRefuelMode >= 3))) // 27NOV03 - FRB  AI is in position
             {
                 flags  or_eq  GivingGas;
                 tankMsg = new FalconTankerMessage(self->Id(), FalconLocalGame);
@@ -751,7 +751,7 @@ void TankerBrain::DriveBoom(void)
                 FalconSendMessage(tankMsg);
             }
         }
-        else if (tankingPtr && !(flags & ClearingPlane))
+        else if (tankingPtr and !(flags & ClearingPlane))
         {
             tmpAz = tankingPtr->localData->az;
 
@@ -773,7 +773,7 @@ void TankerBrain::DriveBoom(void)
                 FalconSendMessage(tankMsg);
             }
         }
-        else if ((flags & ClearingPlane) && tankingPtr &&
+        else if ((flags & ClearingPlane) and tankingPtr &&
                  tankingPtr->localData->range > 0.04F * NM_TO_FT)
         {
             VuEntity *entity = NULL;
@@ -788,7 +788,7 @@ void TankerBrain::DriveBoom(void)
                 }
             }
 
-            if (entity && ((SimBaseClass*)entity)->GetCampaignObject() == curThirsty->GetCampaignObject())
+            if (entity and ((SimBaseClass*)entity)->GetCampaignObject() == curThirsty->GetCampaignObject())
             {
                 AddToWaitQ(curThirsty);
             }
@@ -831,20 +831,20 @@ void TankerBrain::DriveBoom(void)
         return;
 
     // 28NOV03 - FRB - Get nose location to replace F-16 constant
-    if (curThirsty && curThirsty->drawPointer)
+    if (curThirsty and curThirsty->drawPointer)
     {
         rad = ((DrawableBSP*)curThirsty->drawPointer)->Radius(); // Use Parent record radius since BoundingBox +X may be changed to decrease a/c hitbox
     }
 
     tmpRange = 0.0F;
 
-    if (!(flags & GivingGas) && (!tankingPtr or tankingPtr->localData->range > 800.0F) or (flags & ClearingPlane))
+    if (!(flags & GivingGas) and (!tankingPtr or tankingPtr->localData->range > 800.0F) or (flags & ClearingPlane))
     {
         tmpAz = 0.0F;
         tempEl =  self->af->GetBoomStoredAngle() * DTR; // 12DEC03 - FRB - Use tanker <ac>.dat stored angle
         tmpRange = 0.0F;
     }
-    else if (!(flags & GivingGas) && (!tankingPtr or tankingPtr->localData->range - 33.5F > rad)) // 28NOV03 - FRB - replaced 30.0F w/ rad
+    else if (!(flags & GivingGas) and (!tankingPtr or tankingPtr->localData->range - 33.5F > rad)) // 28NOV03 - FRB - replaced 30.0F w/ rad
     {
         tmpAz = 0.0F;
         tempEl = -15.0F * DTR;
@@ -864,7 +864,7 @@ void TankerBrain::DriveBoom(void)
         else
             tmpAz = tankingPtr->localData->az;
 
-        if (boom[BOOM].el * RTD > -27.2F && !(flags & GivingGas))
+        if (boom[BOOM].el * RTD > -27.2F and !(flags & GivingGas))
             tmpRange = 6.0F;
         else
             tmpRange = tankingPtr->localData->range - 33.5F;
@@ -935,7 +935,7 @@ void TankerBrain::DriveBoom(void)
     // THERE WILL BE FOUR USE OF tmpRefuelMode IN THE NEXT if/else if/else statement. THESE USED TO BE PlayerOptions.GetRefuelingMode()
     // END OF ADDED SECTION
 
-    if (curThirsty && g_nShowDebugLabels & 0x4000)
+    if (curThirsty and g_nShowDebugLabels & 0x4000)
     {
         char label[31];
         //  sprintf(label,"tot*%5.1f tmp*%5.1f R*%5.1f",totalrange, tmpRange, tankingPtr->localData->range);
@@ -944,15 +944,15 @@ void TankerBrain::DriveBoom(void)
     }
 
 
-    if (!(flags & (GivingGas | ClearingPlane)) && tankingPtr)
+    if (!(flags & (GivingGas | ClearingPlane)) and tankingPtr)
     {
         if ((fabs(boom[BOOM].ext - tankingPtr->localData->range + 33.5F) < 1.0F * /*FRB*/ ScaledRM &&
              fabs(boom[BOOM].az - tmpAz)*RTD < 1.0F * /*FRB*/ ScaledRM &&
              fabs(boom[BOOM].el - tankingPtr->localData->el)*RTD < 1.0F * /*FRB*/ ScaledRM &&
-             boom[BOOM].el * RTD < -26.1F && boom[BOOM].el * RTD > -38.9F && fabs(boom[BOOM].az)*RTD < 20.0F /* &&
+             boom[BOOM].el * RTD < -26.1F and boom[BOOM].el * RTD > -38.9F and fabs(boom[BOOM].az)*RTD < 20.0F /* &&
  fabs(tankingPtr->BaseData()->Roll())*RTD < 4.0F * /* S.G.*/ // ScaledRM &&
              // fabs(tankingPtr->BaseData()->Pitch())*RTD < 4.0F * /* S.G.*/ ScaledRM) */  JPG 14 Jan03 - End of Line 881 thru 883 - pitch and roll isn't needed
-             or ((flags & AIready) && (tmpRefuelMode >= 3.0f)))) // 27NOV03 - FRB  AI is in position
+             or ((flags & AIready) and (tmpRefuelMode >= 3.0f)))) // 27NOV03 - FRB  AI is in position
         {
             flags  or_eq  GivingGas;
             flags &= compl AIready;
@@ -963,7 +963,7 @@ void TankerBrain::DriveBoom(void)
             FalconSendMessage(tankMsg);
         }
     }
-    else if (tankingPtr && !(flags & ClearingPlane))
+    else if (tankingPtr and !(flags & ClearingPlane))
     {
         if (fabs(boom[BOOM].ext - tankingPtr->localData->range + 33.5F) > 2.0F ||
             fabs(boom[BOOM].az - tmpAz)*RTD > 2.0F * /*FRB*/ ScaledRM ||
@@ -982,7 +982,7 @@ void TankerBrain::DriveBoom(void)
             FalconSendMessage(tankMsg);
         }
     }
-    else if ((flags & ClearingPlane) && tankingPtr && tankingPtr->localData->range > 0.04F * NM_TO_FT)
+    else if ((flags & ClearingPlane) and tankingPtr and tankingPtr->localData->range > 0.04F * NM_TO_FT)
     {
         VuEntity *entity = NULL;
         {
@@ -992,7 +992,7 @@ void TankerBrain::DriveBoom(void)
                 entity = myit.GetNext();
         }
 
-        if (entity && ((SimBaseClass*)entity)->GetCampaignObject() == curThirsty->GetCampaignObject())
+        if (entity and ((SimBaseClass*)entity)->GetCampaignObject() == curThirsty->GetCampaignObject())
         {
             AddToWaitQ(curThirsty);
         }
@@ -1051,13 +1051,13 @@ void TankerBrain::DriveLights(void)
         Tpoint boompos;
         boompos.x = boompos.z = 0;
 
-        if (curThirsty && curThirsty->IsAirplane() && ((AircraftClass*)curThirsty)->af)
+        if (curThirsty and curThirsty->IsAirplane() and ((AircraftClass*)curThirsty)->af)
         {
             ((AircraftClass*)curThirsty)->af->GetRefuelPosition(&boompos);
 
             // 15NOV03 - FRB - Adjust F-16 rf boom position to match current a/c rf port location
             // if nothing set, use F-16 default
-            if (boompos.x == 0 && boompos.y == 0 && boompos.z == 0)
+            if (boompos.x == 0 and boompos.y == 0 and boompos.z == 0)
             {
                 boompos.x = STDPOSX;
                 boompos.y = 0.0f;
@@ -1285,7 +1285,7 @@ void TankerBrain::FollowThirsty(void)
         tankingPtr->Reference();
         dist = DistanceToFront(SimToGrid(self->YPos()), SimToGrid(self->XPos()));
 
-        if (!g_bUseTankerTrack && dist > 60.0F && dist < 100.0F)
+        if (!g_bUseTankerTrack and dist > 60.0F and dist < 100.0F)
         {
             turnallow = true; // allow a new turn
             HeadsUp = true;
@@ -1358,7 +1358,7 @@ void TankerBrain::FollowThirsty(void)
             else
                 trackPointDistance = (0.5f + g_fTankerBackupDistance) * NM_TO_FT * (0.5f + g_fTankerBackupDistance) * NM_TO_FT;
 
-            if ((dist < (g_fTankerHeadsupDistance) * NM_TO_FT * (g_fTankerHeadsupDistance) * NM_TO_FT) && HeadsUp)
+            if ((dist < (g_fTankerHeadsupDistance) * NM_TO_FT * (g_fTankerHeadsupDistance) * NM_TO_FT) and HeadsUp)
             {
                 reachedFirstTrackpoint = true; // from now on limit rStick, pStick and flight model (afsimple.cpp) until refueling is done
                 HeadsUp = false;
@@ -1371,7 +1371,7 @@ void TankerBrain::FollowThirsty(void)
             }
 
             // distance to trackpoint increases again or we are closer than g_fTankerTrackFactor nm ? -> switch to next trackpoint
-            if ((dist > trackPointDistance or (dist < (g_fTankerTrackFactor) * NM_TO_FT * (g_fTankerTrackFactor) * NM_TO_FT)) && turnallow)
+            if ((dist > trackPointDistance or (dist < (g_fTankerTrackFactor) * NM_TO_FT * (g_fTankerTrackFactor) * NM_TO_FT)) and turnallow)
             {
                 HeadsUp = true;
                 turnallow = false;
@@ -1394,12 +1394,12 @@ void TankerBrain::FollowThirsty(void)
         {
             dist = DistanceToFront(SimToGrid(self->YPos()), SimToGrid(self->XPos()));
 
-            if (dist > 45.0F && dist < 140.0F or dist > 200.0F)
+            if (dist > 45.0F and dist < 140.0F or dist > 200.0F)
             {
                 HeadsUp = true; // and a HeadsUp call
             }
 
-            if ((dist <= 36.0F or dist >= 149.0F) && HeadsUp)
+            if ((dist <= 36.0F or dist >= 149.0F) and HeadsUp)
             {
                 HeadsUp = false;
                 turnallow = true;
@@ -1468,10 +1468,10 @@ void TankerBrain::FollowThirsty(void)
         // Set the lights
         if (stype == TNKR_KC10)
             DriveLights();
-        else if (stype == TNKR_KC135 && g_bLightsKC135) // when we have the lights on the KC-135 model
+        else if (stype == TNKR_KC135 and g_bLightsKC135) // when we have the lights on the KC-135 model
             DriveLights();
 
-        if (xyRange < 500.0F && !(flags & PrecontactPos) &&
+        if (xyRange < 500.0F and !(flags & PrecontactPos) &&
             fabs(tankingPtr->localData->rangedot) < 100.0F &&
             fabs(tankingPtr->localData->az) < 35.0F * DTR)
         {
@@ -1486,9 +1486,9 @@ void TankerBrain::FollowThirsty(void)
 
         if (!(flags & ClearingPlane))
             // 25NOV03 - FRB - Give directions to drogue-refueling a/c
-            // if(ServiceType not_eq DROGUE_SERVICE && !(flags & ClearingPlane))
+            // if(ServiceType not_eq DROGUE_SERVICE and !(flags & ClearingPlane))
         {
-            if (xyRange < 200.0F && !(flags & GivingGas) &&
+            if (xyRange < 200.0F and !(flags & GivingGas) &&
                 (SimLibElapsedTime - lastBoomCommand) > 10000)
             {
                 lastBoomCommand = SimLibElapsedTime;
@@ -1501,7 +1501,7 @@ void TankerBrain::FollowThirsty(void)
                 Tpoint boompos;
                 boompos.x = boompos.z = 0;
 
-                if (curThirsty && curThirsty->IsAirplane() && ((AircraftClass*)curThirsty)->af)
+                if (curThirsty and curThirsty->IsAirplane() and ((AircraftClass*)curThirsty)->af)
                 {
                     ((AircraftClass*)curThirsty)->af->GetRefuelPosition(&boompos);
 
@@ -1509,7 +1509,7 @@ void TankerBrain::FollowThirsty(void)
                     if (ServiceType == BOOM_SERVICE)
                     {
                         // if nothing set, use F-16 default
-                        if (boompos.x == 0 && boompos.y == 0 && boompos.z == 0)
+                        if (boompos.x == 0 and boompos.y == 0 and boompos.z == 0)
                         {
                             boompos.x = STDPOSX;
                             boompos.y = 0.0f;
@@ -1531,11 +1531,11 @@ void TankerBrain::FollowThirsty(void)
                         // 18NOV03 - FRB - Added direction commands to drogue tanker
                         // 15NOV03 - FRB - Adjust droque rf position to match current a/c rf port location
                         // if nothing set, use nose of a/c
-                        if (boompos.x == 0 && boompos.y == 0 && boompos.z == 0)
+                        if (boompos.x == 0 and boompos.y == 0 and boompos.z == 0)
                         {
                             float rad;
 
-                            if (curThirsty && curThirsty->drawPointer)
+                            if (curThirsty and curThirsty->drawPointer)
                             {
                                 rad = ((DrawableBSP*)curThirsty->drawPointer)->Radius(); // Use Parent record radius since BoundingBox +X may be changed to decrease a/c hitbox
                                 boompos.x = -rad - DrogueExt;
@@ -1564,7 +1564,7 @@ void TankerBrain::FollowThirsty(void)
                 // pos rx is towards the front of the tanker
                 // pos ry is to the right of the tanker
                 // pos rz is to the bottom of the tanker
-                if (fabs(relPos.x) > fabs(relPos.y) && fabs(relPos.x) > fabs(relPos.z))
+                if (fabs(relPos.x) > fabs(relPos.y) and fabs(relPos.x) > fabs(relPos.z))
                 {
                     if (relPos.x < 0.0f)
                         tankMsg->dataBlock.data1 = MOVE_FORWARD;
@@ -1592,8 +1592,8 @@ void TankerBrain::FollowThirsty(void)
         }
 
         // Too Eratic?
-        if (!(flags & ClearingPlane) && (flags & GivingGas) && (SimLibElapsedTime - lastStabalize) > 15000 &&
-            fabs(tankingPtr->localData->azFromdot) > 10.0F * DTR && fabs(tankingPtr->localData->elFromdot) > 10.0F * DTR)
+        if (!(flags & ClearingPlane) and (flags & GivingGas) and (SimLibElapsedTime - lastStabalize) > 15000 &&
+            fabs(tankingPtr->localData->azFromdot) > 10.0F * DTR and fabs(tankingPtr->localData->elFromdot) > 10.0F * DTR)
         {
             lastStabalize = SimLibElapsedTime;
             // Call stablize command
@@ -1765,12 +1765,12 @@ void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
         // Lights Off
         if (stype == TNKR_KC10)
             DriveLights();
-        else if (stype == TNKR_KC135 && g_bLightsKC135) // when we have the lights on the KC-135 model
+        else if (stype == TNKR_KC135 and g_bLightsKC135) // when we have the lights on the KC-135 model
             DriveLights();
 
 #ifdef DAVE_DBG
 
-        if (MoveBoom && ServiceType == BOOM_SERVICE)
+        if (MoveBoom and ServiceType == BOOM_SERVICE)
         {
             boomAzTest = max(min(boomAzTest,  23.0F * DTR), -23.0F * DTR);
             boomElTest = max(min(boomElTest, 4.0F * DTR), -40.0F * DTR);
@@ -1937,7 +1937,7 @@ void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
                 }
 
                 // the closest FLOT point is "east" of us
-                if (heading >= 0.0f && heading < PI / 2.0f or heading > PI && heading < PI + PI / 2.0f)
+                if (heading >= 0.0f and heading < PI / 2.0f or heading > PI and heading < PI + PI / 2.0f)
                 {
                     boxside = true;
                 }// this creates a track box to the right, which should be away from the FLOT, false = to the left
@@ -2102,7 +2102,7 @@ void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
         FollowThirsty();
 #ifdef DAVE_DBG
 
-        if (MoveBoom && ServiceType == BOOM_SERVICE)
+        if (MoveBoom and ServiceType == BOOM_SERVICE)
         {
             boomAzTest = max(min(boomAzTest,  23.0F * DTR), -23.0F * DTR);
             boomElTest = max(min(boomElTest, 4.0F * DTR), -40.0F * DTR);
@@ -2161,7 +2161,7 @@ void TankerBrain::ReceptorRelPosition(Tpoint *pos, SimVehicleClass *thirsty)
     ((AircraftClass*)thirsty)->af->GetRefuelPosition(&recThirstyRelPos);
 
     // Use F-16 position if 0,0,0 refuelingLocation in <fm>.dat
-    if (recThirstyRelPos.x == 0.0F && recThirstyRelPos.y == 0.0F && recThirstyRelPos.z == 0.0F)
+    if (recThirstyRelPos.x == 0.0F and recThirstyRelPos.y == 0.0F and recThirstyRelPos.z == 0.0F)
     {
         if (ServiceType == BOOM_SERVICE)
         {
@@ -2250,7 +2250,7 @@ void TankerBrain::BoomTipPosition(Tpoint *pos)
         // boompos.x = -boom[DROGUE].ext;
         /*
         // Tpoint minB, maxB;
-         if (curThirsty && curThirsty->drawPointer)
+         if (curThirsty and curThirsty->drawPointer)
          {
         //     ((DrawableBSP*)curThirsty->drawPointer)->GetBoundingBox(&minB, &maxB);
         //     boompos.x -= maxB.x;
@@ -2290,13 +2290,13 @@ void TankerBrain::OptTankingPosition(Tpoint *pos)
 
     if (ServiceType == BOOM_SERVICE)
     {
-        if (curThirsty && curThirsty->IsAirplane() && ((AircraftClass*)curThirsty)->af)
+        if (curThirsty and curThirsty->IsAirplane() and ((AircraftClass*)curThirsty)->af)
         {
             ((AircraftClass*)curThirsty)->af->GetRefuelPosition(&boompos);
 
             // 15NOV03 - FRB - Adjust F-16 rf boom position to match current a/c rf port location
             // if nothing set, use F-16 default
-            if (boompos.x == 0 && boompos.y == 0 && boompos.z == 0)
+            if (boompos.x == 0 and boompos.y == 0 and boompos.z == 0)
             {
                 boompos.x = STDPOSX;
                 // boompos.y = BoomRFPos.y;
@@ -2327,18 +2327,18 @@ void TankerBrain::OptTankingPosition(Tpoint *pos)
     }
     else
     {
-        if (curThirsty && curThirsty->IsAirplane() && ((AircraftClass*)curThirsty)->af)
+        if (curThirsty and curThirsty->IsAirplane() and ((AircraftClass*)curThirsty)->af)
         {
             ((AircraftClass*)curThirsty)->af->GetRefuelPosition(&boompos);
 
             // 15NOV03 - FRB - Adjust droque rf position to match current a/c rf port location
             // if nothing set, use nose of a/c
-            if (boompos.x == 0 && boompos.y == 0 && boompos.z == 0)
+            if (boompos.x == 0 and boompos.y == 0 and boompos.z == 0)
             {
                 float rad;
 
                 // Tpoint minB, maxB;
-                if (curThirsty && curThirsty->drawPointer)
+                if (curThirsty and curThirsty->drawPointer)
                 {
                     // ((DrawableBSP*)curThirsty->drawPointer)->GetBoundingBox(&minB, &maxB);
                     rad = ((DrawableBSP*)curThirsty->drawPointer)->Radius(); // FRB - Use Parent record radius since BoundingBox +X may be changed to decrease a/c hitbox
@@ -2365,7 +2365,7 @@ void TankerBrain::OptTankingPosition(Tpoint *pos)
             float rad;
 
             // Tpoint minB, maxB;
-            if (curThirsty && curThirsty->drawPointer)
+            if (curThirsty and curThirsty->drawPointer)
             {
                 // ((DrawableBSP*)curThirsty->drawPointer)->GetBoundingBox(&minB, &maxB);
                 rad = ((DrawableBSP*)curThirsty->drawPointer)->Radius(); // FRB - Use Parent record radius since BoundingBox +X may be changed to decrease a/c hitbox

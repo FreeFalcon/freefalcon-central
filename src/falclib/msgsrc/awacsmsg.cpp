@@ -181,7 +181,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
 
     plane = (AircraftClass*)vuDatabase->Find(EntityId());
 
-    if (plane && plane->IsSim())
+    if (plane and plane->IsSim())
     {
         flight = (Flight)plane->GetCampaignObject();
 
@@ -205,7 +205,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         continue;
 
                     // 2002-03-07 MN of course only AWACS from our team - doh!
-                    if (cf->GetUnitMission() == AMIS_AWACS && cf->GetTeam() == plane->GetTeam())
+                    if (cf->GetUnitMission() == AMIS_AWACS and cf->GetTeam() == plane->GetTeam())
                     {
                         awacs = (Flight) cf;
                         break;
@@ -367,7 +367,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     {
                         FalconEntity* newTarg = (FalconEntity*)vuDatabase->Find(tgtId);
 
-                        if (newTarg && (newTarg->IsFlight() or newTarg->IsAirplane()))
+                        if (newTarg and (newTarg->IsFlight() or newTarg->IsAirplane()))
                         {
                             if (newTarg->IsFlight())
                                 pEnemyFlight = (FlightClass *) newTarg;
@@ -382,7 +382,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     {
                         simThreat = SimDriver.FindNearestThreat(plane, &X, &Y, &altitude);
 
-                        if (simThreat && (simThreat->IsFlight() or simThreat->IsAirplane()))
+                        if (simThreat and (simThreat->IsFlight() or simThreat->IsAirplane()))
                         {
                             if (simThreat->IsFlight())
                                 pEnemyFlight = (FlightClass *) simThreat;
@@ -395,7 +395,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         {
                             campThreat = SimDriver.FindNearestCampThreat(plane, &X, &Y, &altitude);
 
-                            if (campThreat && (campThreat->IsFlight()))
+                            if (campThreat and (campThreat->IsFlight()))
                             {
                                 if (campThreat->IsFlight())
                                     pEnemyFlight = (FlightClass *) campThreat;
@@ -403,7 +403,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         }
                     }
 
-                    if (pEnemyFlight && !pEnemyFlight->Aborted())
+                    if (pEnemyFlight and !pEnemyFlight->Aborted())
                     {
                         RequestIntercept(pEnemyFlight, plane->GetTeam(), RI_HELP);
                         // This is the awacs's response
@@ -441,17 +441,17 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         {
                             if (role == ARO_CA)
                             {
-                                if (sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->Domain() & wdAir)
+                                if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() & wdAir)
                                     hasWeaps++;
                             }
                             else if (role == ARO_S or role == ARO_GA or role == ARO_SB or role == ARO_SEAD)
                             {
-                                if (sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->Domain() & wdGround)
+                                if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() & wdGround)
                                     hasWeaps++;
                             }
                             else if (role == ARO_ASW or role == ARO_ASHIP)
                             {
-                                if (sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->Domain() & wdGround)
+                                if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() & wdGround)
                                     hasWeaps++;
                             }
 
@@ -480,8 +480,8 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         meflags = flight_ptr->status_flags;
 
                     // What's that ?? Only true if FEVAL_GOT_TO_TARGET is true and false at the same time ??
-                    // if (!hasFuel or !hasWeaps or ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) && (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) && !(flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET)))
-                    if (!hasFuel or !hasWeaps or ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) && (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) && (meflags & MISEVAL_FLIGHT_STATION_OVER)))
+                    // if (!hasFuel or !hasWeaps or ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) and !(flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET)))
+                    if (!hasFuel or !hasWeaps or ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) and (meflags & MISEVAL_FLIGHT_STATION_OVER)))
                     {
                         if (rand() % 2)
                             radioMessage = CreateCallFromAwacs(flight, rcRELIEVED);
@@ -611,7 +611,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         FalconSendMessage(radioMessage, FALSE);
                     }
                     //TJL If an Air Target, Ignore
-                    else if (target->IsUnit() && target->GetDomain() == DOMAIN_AIR)
+                    else if (target->IsUnit() and target->GetDomain() == DOMAIN_AIR)
                     {
                         //TJL AWACS tells you to hold at CP Alpha
                         radioMessage = CreateCallFromAwacsPlane(plane, rcHOLDATCP);
@@ -674,7 +674,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
 
                 airbase = (Objective)vuDatabase->Find(plane->HomeAirbase());
 
-                if (flight  && airbase)
+                if (flight  and airbase)
                 {
                     //awacs response
                     radioMessage = CreateCallFromAwacs(flight, rcVECTORHOME);
@@ -759,7 +759,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     // Awacs response
                     radioMessage = CreateCallFromAwacs(flight, rcVECTORALTERNATE);
 
-                    while (w && !(w->GetWPFlags() & WPF_ALTERNATE))
+                    while (w and !(w->GetWPFlags() & WPF_ALTERNATE))
                         w = w->GetNextWP();
 
                     if (w)
@@ -824,7 +824,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
 
 #else
 
-                    if (flight->GetACCount() > 1 && leadElement)
+                    if (flight->GetACCount() > 1 and leadElement)
                     {
                         radioMessage = CreateCallFromAwacs(flight, rcVECTORTOFLIGHT);
                         radioMessage->dataBlock.time_to_play = delay;//wait a little bit so the request will play first
@@ -1035,7 +1035,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     {
                         radioMessage = CreateCallFromAwacs(flight, rcNOTARGETS);
                     }
-                    else if (target->IsUnit() && target->GetDomain() == DOMAIN_AIR)
+                    else if (target->IsUnit() and target->GetDomain() == DOMAIN_AIR)
                     {
                         radioMessage = CreateCallFromAwacs(flight, rcAIRTARGETBRA);
                         target->GetLocation(&radioMessage->dataBlock.edata[4], &radioMessage->dataBlock.edata[5]);
@@ -1084,7 +1084,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     {
                         targetId = theRadar->TargetUnderCursor();
 
-                        if (targetId == FalconNullId && theRadar->CurrentTarget() && theRadar->CurrentTarget()->BaseData())
+                        if (targetId == FalconNullId and theRadar->CurrentTarget() and theRadar->CurrentTarget()->BaseData())
                         {
                             targetId = theRadar->CurrentTarget()->BaseData()->Id();
                         }
@@ -1119,7 +1119,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
 
                     // END OF ADDED SECTION
 
-                    if (campThing && campThing->GetIdentified(plane->GetTeam()))
+                    if (campThing and campThing->GetIdentified(plane->GetTeam()))
                     {
 
                         // flight and got identified (only flights can be "GetIdentified = true",
@@ -1169,7 +1169,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                                 radioMessage->dataBlock.edata[4] = 2;
                                 radioMessage->dataBlock.message = rcGENERALID;
                             }
-                            else if (randNum < 20 && GetTTRelations(otherThing->GetTeam(), plane->GetTeam()) < War)
+                            else if (randNum < 20 and GetTTRelations(otherThing->GetTeam(), plane->GetTeam()) < War)
                             {
                                 radioMessage->dataBlock.edata[4] = 1;
                             }
@@ -1240,7 +1240,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                                 radioMessage->dataBlock.edata[4] = 3;
                             else if (randNum < 5)
                                 radioMessage->dataBlock.edata[4] = 2;
-                            else if (randNum < 20 && GetTTRelations(otherThing->GetTeam(), plane->GetTeam()) < War)
+                            else if (randNum < 20 and GetTTRelations(otherThing->GetTeam(), plane->GetTeam()) < War)
                                 radioMessage->dataBlock.edata[4] = 1;
                             else
                                 radioMessage->dataBlock.edata[4] = 0;

@@ -117,7 +117,7 @@ long C_Cursor::CheckHotSpots(long relx, long rely)
     if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED))
         return(0);
 
-    if (relx >= (GetX()) && rely >= (GetY()) && relx <= (GetX() + GetW()) && rely <= (GetY() + GetH()))
+    if (relx >= (GetX()) and rely >= (GetY()) and relx <= (GetX() + GetW()) and rely <= (GetY() + GetH()))
     {
         SetRelXY(relx - GetX(), rely - GetY());
         return(GetID());

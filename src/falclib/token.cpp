@@ -68,7 +68,7 @@ int TokenFlags(char *str, int def, char *flagstr)
         {
             int l;
 
-            for (l = 0; l < 32 && flagstr[l]; l++)
+            for (l = 0; l < 32 and flagstr[l]; l++)
             {
                 if (*arg == flagstr[l])
                 {

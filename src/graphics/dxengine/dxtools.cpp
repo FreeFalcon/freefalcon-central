@@ -240,9 +240,9 @@ bool DXScript_Beacon(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 
     if (fabs(RelAngle) <= 3.0f) sw  or_eq  0x7; // Flash on, has flashed, visible
 
-    if (RelAngle >= 162.0f && RelAngle <= 168.0f) sw  or_eq  0x700; // Flash on, has flashed, visible
+    if (RelAngle >= 162.0f and RelAngle <= 168.0f) sw  or_eq  0x700; // Flash on, has flashed, visible
 
-    if (RelAngle >= -168.0f && RelAngle <= -162.0f) sw  or_eq  0x70; // Flash on, has flashed, visible
+    if (RelAngle >= -168.0f and RelAngle <= -162.0f) sw  or_eq  0x70; // Flash on, has flashed, visible
 
     // Now store the computed results
     obj->DOFValues[0].rotation = (float)fmod(Delta, 2.0f * PI);
@@ -305,7 +305,7 @@ bool DXScript_MeatBall(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 
     for (int i = 0; i < NANGLES - 1; i++)
     {
-        if (angle < angles[i] && angle > angles[i + 1]) obj->SetSwitch(i, 1);
+        if (angle < angles[i] and angle > angles[i + 1]) obj->SetSwitch(i, 1);
         else obj->SetSwitch(i, 0);
     }
 

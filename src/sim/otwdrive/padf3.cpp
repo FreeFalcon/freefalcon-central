@@ -255,7 +255,7 @@ void OTWDriverClass::PadlockF3_CalcCamera(float dT)
     float tiltLimit;
     float term;
 
-    // if(snapStatus == POSTSNAP && mPadlockTimeout > 0.0F) {
+    // if(snapStatus == POSTSNAP and mPadlockTimeout > 0.0F) {
     // return;
     // }
 
@@ -350,7 +350,7 @@ int OTWDriverClass::PadlockF3_SlamCamera(float* prevPRate, float desPan, float* 
     float curTError;
     float currentRate;
 
-    if (*prevPError > stopCritera && stopCritera not_eq 0.0F)
+    if (*prevPError > stopCritera and stopCritera not_eq 0.0F)
     {
         curPError = desPan - eyePan;
         currentRate = (curPError / (*prevPError)) * momentum * *prevPRate;
@@ -381,7 +381,7 @@ int OTWDriverClass::PadlockF3_SlamCamera(float* prevPRate, float desPan, float* 
     }
 
 
-    if (*prevTError > stopCritera && stopCritera not_eq 0.0F)
+    if (*prevTError > stopCritera and stopCritera not_eq 0.0F)
     {
         curTError = desTilt - eyeTilt;
         currentRate = (curTError / (*prevTError)) * momentum * *prevTRate;
@@ -412,7 +412,7 @@ int OTWDriverClass::PadlockF3_SlamCamera(float* prevPRate, float desPan, float* 
     }
 
 
-    return (panDone && tiltDone);
+    return (panDone and tiltDone);
 }
 
 
@@ -496,7 +496,7 @@ int OTWDriverClass::PadlockF3_SlewCamera(float startPan, float startTilt, float 
     condD = (fabs(percentTiltErr) < stopCritera);
 
     // If both pan and tilt are less than the stopCritera
-    if ((condB && condD) or (condB && condC) or (condA && condD) or (condA && condC))
+    if ((condB and condD) or (condB and condC) or (condA and condD) or (condA and condC))
     {
         eyePan = desPan; // Close enough, Force the new pan and tilt to be the desired pan and tilt
         eyeTilt = desTilt;
@@ -604,18 +604,18 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
     else
     {
 
-        if (mpPadlockPriorityObject && (snapStatus == PRESNAP or snapStatus == TRACKING))
+        if (mpPadlockPriorityObject and (snapStatus == PRESNAP or snapStatus == TRACKING))
         {
             visObj = ((SimMoverClass*)otwPlatform.get())->targetList;
         }
 
         // Find the padlock Obj
-        while (visObj && visObj->BaseData() not_eq mpPadlockPriorityObject)
+        while (visObj and visObj->BaseData() not_eq mpPadlockPriorityObject)
         {
             visObj = visObj->next;
         }
 
-        if (visObj && visObj->BaseData() == mpPadlockPriorityObject)
+        if (visObj and visObj->BaseData() == mpPadlockPriorityObject)
         {
             // find relative location
             CalcRelAzEl(

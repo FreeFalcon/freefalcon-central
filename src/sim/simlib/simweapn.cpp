@@ -265,7 +265,7 @@ int SimWeaponClass::Handle(VuTransferEvent *event)
 
 void SimWeaponClass::SetDead(int flag)
 {
-    if (flag/* && parentReferenced*/)
+    if (flag/* and parentReferenced*/)
     {
         /*parentReferenced = FALSE;
         VuDeReferenceEntity (parent);*/
@@ -312,7 +312,7 @@ void SimWeaponClass::SendDamageMessage(FalconEntity *testObject, float rangeSqua
     //air to air missiles ... however with  new calculation of damage we should always let the damage happen
     //or modify this to be less sensitive
     /*
-    if (normBlastDist < lethalCone && PRANDFloatPos() * 2.0f > normBlastDist)
+    if (normBlastDist < lethalCone and PRANDFloatPos() * 2.0f > normBlastDist)
     {
      return;
     }
@@ -336,7 +336,7 @@ void SimWeaponClass::SendDamageMessage(FalconEntity *testObject, float rangeSqua
     message->dataBlock.dCampID = testObject->GetCampID();
     message->dataBlock.dSide   = static_cast<uchar>(testObject->GetCountry());
 
-    if (testObject->IsSim() && testObject->IsMover())
+    if (testObject->IsSim() and testObject->IsMover())
         message->dataBlock.dPilotID   = ((SimMoverClass*)testObject)->pilotSlot;
     else
         message->dataBlock.dPilotID   = 255;
@@ -344,7 +344,7 @@ void SimWeaponClass::SendDamageMessage(FalconEntity *testObject, float rangeSqua
     message->dataBlock.dIndex     = testObject->Type();
 
     //MI special case nukes
-    if (wc && wc->DamageType == NuclearDam)
+    if (wc and wc->DamageType == NuclearDam)
     {
         message->dataBlock.damageStrength = normBlastDist * (wc->Strength * 2000000.0F);
         message->dataBlock.damageRandomFact = 5.0F; // nukes have exaggerated Damage factor

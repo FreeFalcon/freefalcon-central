@@ -37,7 +37,7 @@ WORD RGB8toRGB565(DWORD sc)
 
 // Drawing with Palettes
 
-// This is for src size <= dest && same width
+// This is for src size <= dest and same width
 void IMAGE_RSC::Blit8BitFast(WORD *dest)
 {
     unsigned char *sptr;
@@ -79,7 +79,7 @@ void IMAGE_RSC::Blit8BitFast(WORD *dest)
 #endif
 }
 
-// This is for src size <= dest && same width
+// This is for src size <= dest and same width
 void IMAGE_RSC::Blit8BitTransparentFast(WORD *dest)
 {
     unsigned char *sptr;
@@ -399,7 +399,7 @@ void IMAGE_RSC::_Blit8BitTransparentPartTo32(long soffset, long scopy, long ssiz
 
 // Straight Bliting
 
-// This is for src size <= dest && same width
+// This is for src size <= dest and same width
 void IMAGE_RSC::Blit16BitFast(WORD *dest)
 {
     WORD *sptr;
@@ -425,7 +425,7 @@ void IMAGE_RSC::Blit16BitFast(WORD *dest)
 #endif
 }
 
-// This is for src size <= dest && same width
+// This is for src size <= dest and same width
 void IMAGE_RSC::Blit16BitTransparentFast(WORD *dest)
 {
     WORD *sptr;
@@ -844,7 +844,7 @@ void IMAGE_RSC::Blit16BitTransparentPart(long soffset, long scopy, long ssize, l
 
 // Translucent Blending code
 
-// This is for src size <= dest && same width
+// This is for src size <= dest and same width
 void IMAGE_RSC::Blend8BitFast(WORD *dest, long front, long back)
 {
     unsigned char *sptr;
@@ -883,7 +883,7 @@ void IMAGE_RSC::Blend8BitFast(WORD *dest, long front, long back)
     }
 }
 
-// This is for src size <= dest && same width
+// This is for src size <= dest and same width
 void IMAGE_RSC::Blend8BitTransparentFast(WORD *dest, long front, long back)
 {
     unsigned char *sptr;
@@ -1297,7 +1297,7 @@ void IMAGE_RSC::Blend8BitTransparentPart(long soffset, long scopy, long ssize, l
 
 // Straight Blending
 
-// This is for src size <= dest && same width
+// This is for src size <= dest and same width
 void IMAGE_RSC::Blend16BitFast(WORD *dest, long front, long back)
 {
     WORD *sptr;
@@ -1337,7 +1337,7 @@ void IMAGE_RSC::Blend16BitFast(WORD *dest, long front, long back)
     }
 }
 
-// This is for src size <= dest && same width
+// This is for src size <= dest and same width
 void IMAGE_RSC::Blend16BitTransparentFast(WORD *dest, long front, long back)
 {
     WORD *sptr;
@@ -1739,7 +1739,7 @@ void IMAGE_RSC::Blit(SCREEN *surface, long sx, long sy, long sw, long sh, long d
     if (sx >= Header->w or sy >= Header->h)
         return;
 
-    if (!sx && !sy && sw >= Header->w && sh >= Header->h)
+    if (!sx and !sy and sw >= Header->w and sh >= Header->h)
     {
         if (Header->flags & _RSC_USECOLORKEY_)
         {
@@ -1865,7 +1865,7 @@ void IMAGE_RSC::Blend(SCREEN *surface, long sx, long sy, long sw, long sh, long 
     if (sx >= Header->w or sy >= Header->h)
         return;
 
-    if (!sx && !sy && sw >= Header->w && sh >= Header->h)
+    if (!sx and !sy and sw >= Header->w and sh >= Header->h)
     {
         if (Header->flags & _RSC_USECOLORKEY_)
         {

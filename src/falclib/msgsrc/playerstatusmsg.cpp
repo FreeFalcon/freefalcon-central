@@ -89,7 +89,7 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
         GameManager.AttachPlayerToVehicle(session, mover, dataBlock.pilotID);
 
         // Wake the vehicle's drawable, if it's a player only vehicle
-        if (mover->IsSetFalcFlag(FEC_PLAYERONLY) && !mover->IsAwake() && mover->GetCampaignObject()->IsAwake())
+        if (mover->IsSetFalcFlag(FEC_PLAYERONLY) and !mover->IsAwake() and mover->GetCampaignObject()->IsAwake())
         {
             VuListIterator flit(mover->GetCampaignObject()->GetComponents());
             theObject = (SimBaseClass*) flit.GetFirst();
@@ -97,7 +97,7 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
 
             while (theObject)
             {
-                if ((!theObject->IsAwake()) && (!theObject->IsSetFalcFlag(FEC_HASPLAYERS)))
+                if ((!theObject->IsAwake()) and (!theObject->IsSetFalcFlag(FEC_HASPLAYERS)))
                 {
                     theObject->Wake();
                 }
@@ -122,7 +122,7 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
         }
 
         // Sleep this vehicle if it's a player only vehicle
-        if (mover->IsSetFalcFlag(FEC_PLAYERONLY) && mover->IsAwake())
+        if (mover->IsSetFalcFlag(FEC_PLAYERONLY) and mover->IsAwake())
         {
             mover->Sleep();
         }
@@ -145,7 +145,7 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
     else if (dataBlock.state == PSM_STATE_TRANSFERED)
     {
         //MonoPrint ("  State Transfered\n");
-        if (mover && session)
+        if (mover and session)
         {
             SimMoverClass *oldMover = (SimMoverClass*) vuDatabase->Find(dataBlock.oldID);
             uchar oldpslot = 255;

@@ -759,7 +759,7 @@ void BuildingDetailCB(long, short hittype, C_Base *control)
             {
                 for (int i = 0; i < NumFeatures; i++)
                 {
-                    if ((Features[i].Priority <= objdetail) && (Features[i].Priority > prevdetail))
+                    if ((Features[i].Priority <= objdetail) and (Features[i].Priority > prevdetail))
                         SetupViewer->AddToView(i + 100);
                 }
             }
@@ -768,7 +768,7 @@ void BuildingDetailCB(long, short hittype, C_Base *control)
         {
             for (int i = 0; i < NumFeatures; i++)
             {
-                if ((Features[i].Priority > objdetail) && (Features[i].Priority <= prevdetail))
+                if ((Features[i].Priority > objdetail) and (Features[i].Priority <= prevdetail))
                     RemoveObjFromView(i + 100);
             }
         }
@@ -1157,7 +1157,7 @@ void BuildVideoCardList(C_ListBox *lbox)
             // check for software device
             DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI->GetDevice(i);
 
-            if (pD3DDI && !pD3DDI->IsHardware())
+            if (pD3DDI and !pD3DDI->IsHardware())
             {
                 i++;
                 continue;
@@ -1233,23 +1233,23 @@ void BuildResolutionList(C_ListBox *lbox)
     {
         // For now we only allow 640x480, 800x600, 1280x960, 1600x1200
         // (MPR already does the 4:3 aspect ratio check for us)
-        if (height > 400 && ((width == 640 or width == 800 or width == 1024 ||
-                              (width == 1280 && height == 960) or width == 1600 or HighResolutionHackFlag)))
+        if (height > 400 and ((width == 640 or width == 800 or width == 1024 ||
+                              (width == 1280 and height == 960) or width == 1600 or HighResolutionHackFlag)))
         {
             if (depth == 8 or depth == 24)
                 continue;
 
-            // if(depth == 16 && !(pD3DDI->m_devDesc.dwDeviceRenderBitDepth & DDBD_16))
+            // if(depth == 16 and !(pD3DDI->m_devDesc.dwDeviceRenderBitDepth & DDBD_16))
             if (depth == 16)
                 continue;
-            else if (depth == 32 && !(pD3DDI->m_devDesc.dwDeviceRenderBitDepth & DDBD_32))
+            else if (depth == 32 and !(pD3DDI->m_devDesc.dwDeviceRenderBitDepth & DDBD_32))
                 continue;
 
             sprintf(buf2, "%0dx%0d - %d Bit", width, height, depth);
             lbox->AddItem(i - 1, C_TYPE_ITEM, buf2);
 
             // remember index for current mode
-            if (width == DisplayOptions.DispWidth && height == DisplayOptions.DispHeight && depth == DisplayOptions.DispDepth)
+            if (width == DisplayOptions.DispWidth and height == DisplayOptions.DispHeight and depth == DisplayOptions.DispDepth)
                 isel = i - 1;
 
             nNumItems++;

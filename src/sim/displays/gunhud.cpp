@@ -104,9 +104,9 @@ void HudClass::DrawGuns(void)
     {
         if (targetPtr)
         {
-            if ((ownship->fireGun or ownship->GunFire) && ownship->Sms->MasterArm() not_eq SMSBaseClass::Safe)
+            if ((ownship->fireGun or ownship->GunFire) and ownship->Sms->MasterArm() not_eq SMSBaseClass::Safe)
             {
-                if (!HideFunnel && !SetHideTimer)
+                if (!HideFunnel and !SetHideTimer)
                 {
                     HideFunnelTimer = SimLibElapsedTime + 150;
                     SetHideTimer = TRUE;
@@ -127,7 +127,7 @@ void HudClass::DrawGuns(void)
             else
             {
                 //Make it appear again 1 second after we released the trigger
-                if (SetHideTimer && !SetShowTimer)
+                if (SetHideTimer and !SetShowTimer)
                 {
                     SetHideTimer = FALSE;
                     SetShowTimer = TRUE;
@@ -323,19 +323,19 @@ void HudClass::DrawFunnel(void)
 
         if (g_bRealisticAvionics)
         {
-            if (HideFunnel && targetPtr)
+            if (HideFunnel and targetPtr)
             {
                 DrawBATR();
             }
         }
 
         //MI in SIM we want FEDS, but only if no locked target
-        if (g_bRealisticAvionics && !targetPtr)
+        if (g_bRealisticAvionics and !targetPtr)
         {
             //document shows that we get this even when the gun is fired for real.
             if (!ownship->OnGround() /*&& (ownship->Sms->MasterArm() == SMSBaseClass::Sim)*/)
             {
-                if (ownship->fireGun && ownship->Sms->FEDS)
+                if (ownship->fireGun and ownship->Sms->FEDS)
                     FlyFEDSBullets(TRUE);
                 else if (ownship->Sms->FEDS)
                     FlyFEDSBullets(FALSE);
@@ -408,7 +408,7 @@ void HudClass::DrawTDCircle(void)
         xPos = offset * trig.cos;
         yPos = offset * trig.sin;
 
-        while (fabs(xPos) < 0.825F && fabs(yPos + hudWinY[BORESIGHT_CROSS_WINDOW] +
+        while (fabs(xPos) < 0.825F and fabs(yPos + hudWinY[BORESIGHT_CROSS_WINDOW] +
                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.825F)
         {
             offset += 0.02F;

@@ -17,7 +17,7 @@ int SimCompare(VuEntity *ent1, VuEntity *ent2)
 {
     int retval = 0;
 
-    if (ent1 && ent2 && ent1->Id() not_eq ent2->Id())
+    if (ent1 and ent2 and ent1->Id() not_eq ent2->Id())
     {
         retval = (ent2->Id() > ent1->Id() ? 1 : -1);
     }
@@ -144,7 +144,7 @@ VU_BOOL SimFeatureFilter::Test(VuEntity* ent1)
                   !(((FalconEntity*)ent1)->IsPersistant()) &&
                   !(((SimFeatureClass*)ent1)->IsSetCampaignFlag(FEAT_CONTAINER_TOP)))
         */
-        if (classPtr->classInfo_[VU_DOMAIN] && classPtr->classInfo_[VU_CLASS] == CLASS_FEATURE)
+        if (classPtr->classInfo_[VU_DOMAIN] and classPtr->classInfo_[VU_CLASS] == CLASS_FEATURE)
         {
             retval = TRUE;
         }
@@ -263,9 +263,9 @@ VU_BOOL SimObjectFilter::Test(VuEntity* ent1)
 
     classPtr = ent1->EntityType();
 
-    if (ent1->Type() > VU_LAST_ENTITY_TYPE && classPtr->classInfo_[VU_DOMAIN] > DOMAIN_ABSTRACT)
+    if (ent1->Type() > VU_LAST_ENTITY_TYPE and classPtr->classInfo_[VU_DOMAIN] > DOMAIN_ABSTRACT)
     {
-        if ((classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE or classPtr->classInfo_[VU_CLASS] == CLASS_WEAPON) && ((FalconEntity*)ent1)->IsSim())
+        if ((classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE or classPtr->classInfo_[VU_CLASS] == CLASS_WEAPON) and ((FalconEntity*)ent1)->IsSim())
             return TRUE;;
     }
 
@@ -302,7 +302,7 @@ SimSurfaceFilter::~SimSurfaceFilter(void)
 
 VU_BOOL SimSurfaceFilter::Test (VuEntity* ent1)
 {
- if (ent1->Type() > VU_LAST_ENTITY_TYPE && ((FalconEntity*)ent1)->IsSim())
+ if (ent1->Type() > VU_LAST_ENTITY_TYPE and ((FalconEntity*)ent1)->IsSim())
  {
  VuEntityType* classPtr = ent1->EntityType();
  if (classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE)

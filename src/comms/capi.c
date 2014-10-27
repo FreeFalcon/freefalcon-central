@@ -75,7 +75,7 @@ int ComAPISend(com_API_handle c, int msgsize, int type)
     // sfr: another hack by JB...
     isBad = F4IsBadReadPtrC(c, sizeof(ComAPI)) or F4IsBadCodePtrC((FARPROC)(*c->send_func));
 
-    if (c && !isBad)
+    if (c and !isBad)
     {
         if (info_callback)
         {
@@ -163,9 +163,9 @@ int ComAPIGet(com_API_handle c)
     enter_cs();
 
     // sfr: another hack by JB...
-    isBad = c && (F4IsBadReadPtrC(c, sizeof(ComAPI)) or F4IsBadCodePtrC((FARPROC)(*c->recv_func)));
+    isBad = c and (F4IsBadReadPtrC(c, sizeof(ComAPI)) or F4IsBadCodePtrC((FARPROC)(*c->recv_func)));
 
-    if (c && !isBad) // JB 010404 CTD
+    if (c and !isBad) // JB 010404 CTD
     {
         size = (*c->recv_func)(c);
 
@@ -244,9 +244,9 @@ char *ComAPIRecvBufferGet(com_API_handle c)
     enter_cs();
 
     // sfr: another hack by JB...
-    isBad = c && (F4IsBadReadPtrC(c, sizeof(ComAPI)) or F4IsBadCodePtrC((FARPROC)(*c->recv_buf_func)));
+    isBad = c and (F4IsBadReadPtrC(c, sizeof(ComAPI)) or F4IsBadCodePtrC((FARPROC)(*c->recv_buf_func)));
 
-    if (c && !isBad)
+    if (c and !isBad)
     {
         ret_val = (*c->recv_buf_func)(c);
     }
@@ -540,10 +540,10 @@ int com_API_private_IP(unsigned long ip)
     w = (ip & 0x000000FF);
 
     if (
-        ((x == 127) && (y == 0) && (z == 0) && (w == 1)) or // localhost
+        ((x == 127) and (y == 0) and (z == 0) and (w == 1)) or // localhost
         (x == 10) or // class A reserved
-        ((x == 172) && ((y >= 16) && (y < 31))) or  // class B reserver
-        ((x == 192) && (y == 168) && ((z >= 0) && (z < 255))) // class C reserved
+        ((x == 172) and ((y >= 16) and (y < 31))) or  // class B reserver
+        ((x == 192) and (y == 168) and ((z >= 0) and (z < 255))) // class C reserved
     )
     {
         return 1;

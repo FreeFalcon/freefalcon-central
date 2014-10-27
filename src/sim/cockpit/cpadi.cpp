@@ -153,13 +153,13 @@ CPAdi::CPAdi(ObjectInitStr *pobjectInitStr, ADIInitStr *padiInitStr) : CPObject(
     LastBUPRoll = 0.0F;
 
 
-    if (DisplayOptions.bRender2DCockpit && !mDoBackRect)
+    if (DisplayOptions.bRender2DCockpit and !mDoBackRect)
     {
         mpSourceBuffer = padiInitStr->sourceadi;
     }
     //Wombat778 10-06-2003 Added following lines to set up a temporary buffer for the ADI
     //this is unnecessary in using rendered pit
-    else if (g_bCockpitAutoScale && ((mHScale not_eq 1.0f) or (mVScale not_eq 1.0f)))
+    else if (g_bCockpitAutoScale and ((mHScale not_eq 1.0f) or (mVScale not_eq 1.0f)))
     {
         ADIBuffer = new ImageBuffer;
         ADIBuffer->Setup(&FalconDisplay.theDisplayDevice,
@@ -195,7 +195,7 @@ CPAdi::~CPAdi(void)
     }
     //Wombat778 10-06-2003 Added following lines to destroy the temporary imagebuffer;
     //this is unnecessary in using rendered pit
-    else if (g_bCockpitAutoScale && ((mHScale not_eq 1.0f) or (mVScale not_eq 1.0f)))
+    else if (g_bCockpitAutoScale and ((mHScale not_eq 1.0f) or (mVScale not_eq 1.0f)))
     {
         if (ADIBuffer)
         {
@@ -233,7 +233,7 @@ void CPAdi::CreateLit(void)
                 throw _com_error(E_OUTOFMEMORY);
 
             // Check if we can use a single texture
-            if ((LONG)dwMaxTextureWidth >= (mSrcRect.right - mSrcRect.left) && (LONG)dwMaxTextureHeight >= (mSrcRect.bottom - mSrcRect.top))
+            if ((LONG)dwMaxTextureWidth >= (mSrcRect.right - mSrcRect.left) and (LONG)dwMaxTextureHeight >= (mSrcRect.bottom - mSrcRect.top))
             {
                 TextureHandle *pTex = new TextureHandle;
 
@@ -264,15 +264,15 @@ void CPAdi::CreateLit(void)
         // revert to legacy rendering if we can't use a single texture even if Fast 2D Cockpit is active
         if (!DisplayOptions.bRender2DCockpit ||
             (DisplayOptions.bRender2DCockpit &&
-             (mDoBackRect && ((LONG)dwMaxTextureWidth < mBackSrc.right or (LONG)dwMaxTextureHeight < mBackSrc.bottom))))
+             (mDoBackRect and ((LONG)dwMaxTextureWidth < mBackSrc.right or (LONG)dwMaxTextureHeight < mBackSrc.bottom))))
         {
             if (mDoBackRect)
             {
                 mpSurfaceBuffer = new ImageBuffer;
 
-                MPRSurfaceType front = (FalconDisplay.theDisplayDevice.IsHardware() && DisplayOptions.bRender2DCockpit) ? LocalVideoMem : SystemMem;
+                MPRSurfaceType front = (FalconDisplay.theDisplayDevice.IsHardware() and DisplayOptions.bRender2DCockpit) ? LocalVideoMem : SystemMem;
 
-                if (!mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mBackSrc.right, mBackSrc.bottom, front, None) && front == LocalVideoMem)
+                if (!mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mBackSrc.right, mBackSrc.bottom, front, None) and front == LocalVideoMem)
                 {
                     // Retry with system memory if ouf video memory
 #ifdef _DEBUG
@@ -359,11 +359,11 @@ void CPAdi::Exec(SimBaseClass *pSimBaseClass)
     mpOwnship = pSimBaseClass;
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
         AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-        if (playerAC && Persistant == 1)  //backup ADI, continue to function until out of energy
+        if (playerAC and Persistant == 1)  //backup ADI, continue to function until out of energy
         {
             if (playerAC->INSState(AircraftClass::BUP_ADI_OFF_IN))
             {
@@ -379,7 +379,7 @@ void CPAdi::Exec(SimBaseClass *pSimBaseClass)
                 mRoll = LastBUPRoll;
             }
         }
-        else if (playerAC && !playerAC->INSState(AircraftClass::INS_ADI_OFF_IN))
+        else if (playerAC and !playerAC->INSState(AircraftClass::INS_ADI_OFF_IN))
         {
             //stay where you currently are
             mPitch = LastMainADIPitch;
@@ -424,7 +424,7 @@ void CPAdi::ExecILS()
     float gpDeviation;
     float gsDeviation;
 
-    if (mpCPManager->mHiddenFlag && (gNavigationSys->GetInstrumentMode() == NavigationSystem::TACAN or gNavigationSys->GetInstrumentMode() == NavigationSystem::NAV))
+    if (mpCPManager->mHiddenFlag and (gNavigationSys->GetInstrumentMode() == NavigationSystem::TACAN or gNavigationSys->GetInstrumentMode() == NavigationSystem::NAV))
         return;
 
     if ((gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN ||
@@ -459,7 +459,7 @@ void CPAdi::ExecILS()
         if (mpCPManager->mHiddenFlag)
             return;
 
-        else if (mVertBarPos <= mDestRect.left && mHorizBarPos >= mDestRect.bottom)
+        else if (mVertBarPos <= mDestRect.left and mHorizBarPos >= mDestRect.bottom)
         {
             mpCPManager->mHiddenFlag = TRUE;
             mVertBarPos = mDestRect.left;
@@ -664,7 +664,7 @@ void CPAdi::DisplayBlit(void)
     if (DisplayOptions.bRender2DCockpit) //Handle in Displayblit3d
         return;
 
-    if (mDoBackRect && m_arrTex.size() == 0)
+    if (mDoBackRect and m_arrTex.size() == 0)
     {
         if (mpSurfaceBuffer)
             mpOTWImage->Compose(mpSurfaceBuffer, &mBackSrc, &mBackDest);
@@ -681,7 +681,7 @@ void CPAdi::DisplayBlit(void)
 
 
     //Wombat778 10-06-2003, modified following lines. allows ADI to scale properly when using cockpit auto scaling
-    if (g_bCockpitAutoScale && ((mHScale not_eq 1.0f) or (mVScale not_eq 1.0f)))   //dont run this code if the var is set but no scaling is occuring
+    if (g_bCockpitAutoScale and ((mHScale not_eq 1.0f) or (mVScale not_eq 1.0f)))   //dont run this code if the var is set but no scaling is occuring
     {
 
         RECT temprect;

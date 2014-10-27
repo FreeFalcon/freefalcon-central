@@ -112,7 +112,7 @@ int VuMessageQueue::DispatchMessages(int max, VU_BOOL autod)
 
     int i = 0;
 
-    while (DispatchVuMessage(autod) && (++i < max)) ;
+    while (DispatchVuMessage(autod) and (++i < max)) ;
 
     return i;
 }
@@ -172,16 +172,16 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
 
     msg->Activate(ent);
 
-    if (ent && !msg->IsLocal() && !ent->IsLocal())
+    if (ent and !msg->IsLocal() and !ent->IsLocal())
     {
         ent->SetTransmissionTime(msg->postTime_);
     }
 
     // outgoing message, try send. If fails, add to send queue
     if (
-        vuGlobalGroup && vuGlobalGroup->Connected() &&
-        msg->Target() && msg->Target() not_eq vuLocalSessionEntity &&
-        msg->DoSend() && (!ent or !ent->IsPrivate()) &&
+        vuGlobalGroup and vuGlobalGroup->Connected() &&
+        msg->Target() and msg->Target() not_eq vuLocalSessionEntity &&
+        msg->DoSend() and (!ent or !ent->IsPrivate()) &&
         (vuLocalSession.creator_ not_eq VU_SESSION_NULL_CONNECTION.creator_)
     )
     {
@@ -189,7 +189,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
         VuPendingSendQueue *sq = vuMainThread->SendQueue();
 
         if (
-            (retval == 0) && sq &&
+            (retval == 0) and sq &&
             (msg->Flags() & VU_SEND_FAILED_MSG_FLAG) &&
             ((msg->Flags() & VU_RELIABLE_MSG_FLAG) or (msg->Flags() & VU_KEEPALIVE_MSG_FLAG))
         )
@@ -209,7 +209,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
     // if message is remote or is a local message loopback, place in local queues
     if (
         !msg->IsLocal() ||
-        ((msg->Flags() & VU_LOOPBACK_MSG_FLAG) && msg->IsLocal())
+        ((msg->Flags() & VU_LOOPBACK_MSG_FLAG) and msg->IsLocal())
     )
     {
         VuMessageQueue* cur = queuecollhead_;
@@ -217,7 +217,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
         while (cur)
         {
             // sfr: this is only for received messages. exclude send queues
-            if (/*cur not_eq vuLowSendQueue && */cur not_eq vuMainThread->SendQueue())
+            if (/*cur not_eq vuLowSendQueue and */cur not_eq vuMainThread->SendQueue())
             {
                 cur->AddMessage(msg);
             }
@@ -322,7 +322,7 @@ VU_BOOL VuMessageQueue::AddMessage(VuMessage* event)
         return 0;
     }
 
-    if (filter_->Test(event) && event->Type() not_eq VU_TIMER_EVENT)
+    if (filter_->Test(event) and event->Type() not_eq VU_TIMER_EVENT)
     {
         event->Ref();
         *write_++ = event;
@@ -332,9 +332,9 @@ VU_BOOL VuMessageQueue::AddMessage(VuMessage* event)
             write_ = head_;
         }
 
-        if (write_ == read_ && *read_)
+        if (write_ == read_ and *read_)
         {
-            if (!ReallocQueue() && write_ == read_ && *read_)
+            if (!ReallocQueue() and write_ == read_ and *read_)
             {
                 // do simple dispatch -- cannot be handled by user
                 // danm_note: should we issue a warning here?
@@ -364,7 +364,7 @@ VU_BOOL VuMainMessageQueue::DispatchVuMessage(VU_BOOL autod)
 {
     VuEnterCriticalSection();
 
-    while (timerlisthead_ && timerlisthead_->mark_ < vuxRealTime)
+    while (timerlisthead_ and timerlisthead_->mark_ < vuxRealTime)
     {
         // message timer mark is older than current timestamp
         VuTimerEvent* oldhead = timerlisthead_;
@@ -387,7 +387,7 @@ VU_BOOL VuMainMessageQueue::AddMessage(VuMessage* msg)
         VuTimerEvent* last = 0;
         VuTimerEvent* cur = timerlisthead_;
 
-        while (cur && cur->mark_ <= insert->mark_)
+        while (cur and cur->mark_ <= insert->mark_)
         {
             last = cur;
             cur  = cur->next_;

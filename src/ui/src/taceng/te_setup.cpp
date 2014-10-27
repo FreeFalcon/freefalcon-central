@@ -517,7 +517,7 @@ void ChangeStartTimeCB(long ID, short hittype, C_Base *control)
     C_Clock *clk;
     long time, deltatime;
 
-    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
     clk = (C_Clock*)control->Parent_->FindControl(control->GetUserNumber(0));
@@ -539,7 +539,7 @@ void ChangeEndTimeCB(long ID, short hittype, C_Base *control)
     C_Clock *clk;
     unsigned long time;
 
-    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
     clk = (C_Clock*)control->Parent_->FindControl(control->GetUserNumber(0));
@@ -567,7 +567,7 @@ void ChangeCurrentTimeCB(long ID, short hittype, C_Base *control)
     C_Clock *clk;
     Unit un;
 
-    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
     clk = (C_Clock*)control->Parent_->FindControl(control->GetUserNumber(0));
@@ -583,7 +583,7 @@ void ChangeCurrentTimeCB(long ID, short hittype, C_Base *control)
         gGps->Update();
         un = (Unit)vuDatabase->Find(gMapMgr->GetCurWPID());
 
-        if (un && un->IsFlight())
+        if (un and un->IsFlight())
             gMapMgr->UpdateWaypoint((Flight)un);
 
         gMapMgr->DrawMap();
@@ -686,7 +686,7 @@ void adjust_all_taceng_unit_times(CampaignTime dt)
 
 int tactical_is_training(void)
 {
-    if (current_tactical_mission && current_tactical_mission->get_type() == tt_training)
+    if (current_tactical_mission and current_tactical_mission->get_type() == tt_training)
         return TRUE;
 
     return FALSE;

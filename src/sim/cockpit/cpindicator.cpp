@@ -316,7 +316,7 @@ void CPIndicator::CreateLit(void)
             for (int i = 0; i < mNumTapes; i++)
             {
                 // Check if we can use a single texture
-                if ((int)dwMaxTextureWidth >= mpSourceBuffer[i].mWidth && (int)dwMaxTextureHeight >= mpSourceBuffer[i].mHeight)
+                if ((int)dwMaxTextureWidth >= mpSourceBuffer[i].mWidth and (int)dwMaxTextureHeight >= mpSourceBuffer[i].mHeight)
                 {
                     TextureHandle *pTex = new TextureHandle;
 

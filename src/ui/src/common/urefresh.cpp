@@ -123,14 +123,14 @@ void UI_Refresher::Update(CampEntity entity, long allow)
 
     if (Mission_)
         UpdateMission(entity);
-    else if ((allow & UR_MISSION) && !(Allowed_ & UR_MISSION))
+    else if ((allow & UR_MISSION) and !(Allowed_ & UR_MISSION))
         AddMission(entity);
     else if (entity->IsFlight())
         AddMission(entity);
 
     if (MapItem_)
         UpdateMapItem(entity);
-    else if ((allow & UR_MAP) && !(Allowed_ & UR_MAP))
+    else if ((allow & UR_MAP) and !(Allowed_ & UR_MAP))
         AddMapItem(entity);
     else if (entity->IsFlight())
         AddMapItem(entity);
@@ -142,7 +142,7 @@ void UI_Refresher::Update(CampEntity entity, long allow)
 
     if (OOB_)
         UpdateOOBItem(entity);
-    else if ((allow & UR_OOB) && !(Allowed_ & UR_OOB))
+    else if ((allow & UR_OOB) and !(Allowed_ & UR_OOB))
         AddOOBItem(entity);
 
     Allowed_  or_eq  allow;
@@ -152,12 +152,12 @@ void UI_Refresher::Update(Division div, long allow)
 {
     if (MapItem_)
         UpdateMapItem(div);
-    else if ((allow & UR_MAP) && !(Allowed_ & UR_MAP))
+    else if ((allow & UR_MAP) and !(Allowed_ & UR_MAP))
         AddMapItem(div);
 
     if (OOB_)
         UpdateOOBItem(div);
-    else if ((allow & UR_OOB) && !(Allowed_ & UR_OOB))
+    else if ((allow & UR_OOB) and !(Allowed_ & UR_OOB))
         AddOOBItem(div);
 
     Allowed_  or_eq  allow;
@@ -183,7 +183,7 @@ void UI_Refresher::Remove()
 
 void UI_Refresher::AddMission(CampEntity entity)
 {
-    if (entity->IsFlight() && ((FlightClass*)entity)->Final())
+    if (entity->IsFlight() and ((FlightClass*)entity)->Final())
     {
         if (((FlightClass*)entity)->GetUnitMission() not_eq AMIS_ALERT)
         {
@@ -227,7 +227,7 @@ void UI_Refresher::UpdateMission(CampEntity entity)
         if (GetFlightStatusID((Flight)entity) not_eq Mission_->GetStatusID())
             MissionUpdateStatus((Flight)entity, Mission_);
 
-        if (((Flight)entity)->Final() && ((Flight)entity)->GetUnitMission() not_eq AMIS_ALERT)
+        if (((Flight)entity)->Final() and ((Flight)entity)->GetUnitMission() not_eq AMIS_ALERT)
             Mission_->SetFlagBitOff(C_BIT_INVISIBLE);
     }
     else
@@ -248,12 +248,12 @@ void UI_Refresher::AddMapItem(CampEntity entity)
 {
     WayPoint wp;
 
-    if (entity->IsFlight() && ((Flight)entity)->Final() && !entity->IsDead())
+    if (entity->IsFlight() and ((Flight)entity)->Final() and !entity->IsDead())
     {
         MapItem_ = Owner_->Map_->AddFlight((Flight)entity);
         wp = ((Flight)entity)->GetFirstUnitWP();
 
-        if (wp && MapItem_)
+        if (wp and MapItem_)
         {
             if (vuxGameTime < wp->GetWPDepartureTime())
                 MapItem_->Flags &= compl C_BIT_ENABLED;
@@ -275,7 +275,7 @@ void UI_Refresher::AddMapItem(CampEntity entity)
     {
         MapItem_ = Owner_->Map_->AddUnit((Unit)entity);
 
-        if (MapItem_ && entity->GetTeam() not_eq Owner_->TeamNo_)
+        if (MapItem_ and entity->GetTeam() not_eq Owner_->TeamNo_)
             Threat_ = Owner_->Map_->AddThreat(entity);
     }
     else if (entity->IsBrigade())
@@ -288,25 +288,25 @@ void UI_Refresher::AddMapItem(CampEntity entity)
     {
         MapItem_ = Owner_->Map_->AddObjective((Objective)entity);
 
-        if (MapItem_ && entity->GetTeam() not_eq Owner_->TeamNo_)
+        if (MapItem_ and entity->GetTeam() not_eq Owner_->TeamNo_)
             Threat_ = Owner_->Map_->AddThreat(entity);
     }
 
-    if (MapItem_ && entity->IsUnit())
+    if (MapItem_ and entity->IsUnit())
     {
         if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
         {
             MapItem_->Flags  or_eq  C_BIT_DRAGABLE;
         }
 
-        if (entity->IsUnit() && ((Unit)entity)->Inactive())
+        if (entity->IsUnit() and ((Unit)entity)->Inactive())
         {
             MapItem_->Flags  or_eq  C_BIT_INVISIBLE;
         }
 
-        if (entity->GetTeam() not_eq Owner_->TeamNo_ && Owner_->TeamNo_ >= 0 && !entity->IsSquadron())
+        if (entity->GetTeam() not_eq Owner_->TeamNo_ and Owner_->TeamNo_ >= 0 and !entity->IsSquadron())
         {
-            if (!entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) && entity->GetMovementType() not_eq NoMove)
+            if (!entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) and entity->GetMovementType() not_eq NoMove)
             {
                 MapItem_->Flags  or_eq  C_BIT_INVISIBLE;
 
@@ -358,7 +358,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
                 // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified
                 //and not editing a TE, change the IconIndex of the unit to ICON_UKN
                 //and its label to 'Bandit'
-                if (g_nUnidentifiedInUI && (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && MapItem_ && entity->GetTeam() not_eq Owner_->TeamNo_))
+                if (g_nUnidentifiedInUI and (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) and MapItem_ and entity->GetTeam() not_eq Owner_->TeamNo_))
                 {
                     if (entity->GetIdentified(static_cast<uchar>(Owner_->TeamNo_)))
                     {
@@ -403,7 +403,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
                     if (gGps->GetTeamNo() == entity->GetTeam())
                         GetCallsign(flt, name);
                     // 2002-02-24 ADDED BY S.G. Don't give AWACS more info than it can get...
-                    else if (g_nUnidentifiedInUI && (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && MapItem_ && entity->IsFlight() && entity->GetTeam() not_eq Owner_->TeamNo_ && !entity->GetIdentified(static_cast<uchar>(Owner_->TeamNo_))))
+                    else if (g_nUnidentifiedInUI and (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) and MapItem_ and entity->IsFlight() and entity->GetTeam() not_eq Owner_->TeamNo_ and !entity->GetIdentified(static_cast<uchar>(Owner_->TeamNo_))))
                         strcpy(name, "Bandit");
                     else
                     {
@@ -495,7 +495,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
      }
      }
     */
-    if (MapItem_ && entity->IsUnit() && entity->GetTeam() not_eq Owner_->TeamNo_)
+    if (MapItem_ and entity->IsUnit() and entity->GetTeam() not_eq Owner_->TeamNo_)
     {
         if (Owner_->TeamNo_ < 0)
         {
@@ -518,7 +518,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
         }
         else
         {
-            if (!entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) && entity->GetMovementType() not_eq NoMove)
+            if (!entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) and entity->GetMovementType() not_eq NoMove)
             {
                 MapItem_->Flags  or_eq  C_BIT_INVISIBLE;
 
@@ -558,13 +558,13 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
             }
         }
 
-        if (entity->IsUnit() && ((Unit)entity)->Inactive())
+        if (entity->IsUnit() and ((Unit)entity)->Inactive())
         {
             MapItem_->Flags  or_eq  C_BIT_INVISIBLE;
         }
 
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified, not editing a TE and 'showUnknown' isn't set, hide it
-        if (g_nUnidentifiedInUI && !gShowUnknown && MapItem_->ImageID == ICON_UKN)
+        if (g_nUnidentifiedInUI and !gShowUnknown and MapItem_->ImageID == ICON_UKN)
             MapItem_->Flags  or_eq  C_BIT_INVISIBLE;
 
         // END OF ADDED SECTION 2002-02-21
@@ -612,7 +612,7 @@ void UI_Refresher::RemoveMapItem()
 
 void UI_Refresher::AddATOItem(CampEntity entity)
 {
-    if (entity->IsPackage() && ((Package)entity)->Final())
+    if (entity->IsPackage() and ((Package)entity)->Final())
     {
         Package_ = AddPackagetoATO((Package)entity);
 
@@ -621,7 +621,7 @@ void UI_Refresher::AddATOItem(CampEntity entity)
 
         Owner_->SetFlags(Owner_->GetFlags() | _GPS_ATO_RESIZE_);
     }
-    else if (entity->IsFlight() && ((Flight)entity)->Final())
+    else if (entity->IsFlight() and ((Flight)entity)->Final())
     {
         ATO_ = AddFlighttoATO((Flight)entity);
 
@@ -637,7 +637,7 @@ void UI_Refresher::UpdateATOItem(CampEntity entity)
     if (Package_)
     {
     }
-    else if (entity->IsPackage() && ((Package)entity)->Final())
+    else if (entity->IsPackage() and ((Package)entity)->Final())
     {
         Package_ = AddPackagetoATO((Package)entity);
 
@@ -651,7 +651,7 @@ void UI_Refresher::UpdateATOItem(CampEntity entity)
     {
         // Status changes...
     }
-    else if (entity->IsFlight() && ((Flight)entity)->Final())
+    else if (entity->IsFlight() and ((Flight)entity)->Final())
     {
         ATO_ = AddFlighttoATO((Flight)entity);
 

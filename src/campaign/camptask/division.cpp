@@ -86,7 +86,7 @@ Unit DivisionClass::GetUnitElement(int en)
 {
     Unit ret = NULL;
 
-    if (en < elements && element[c_element])
+    if (en < elements and element[c_element])
     {
         ret = (Unit)vuDatabase->Find(element[en]);
 
@@ -242,7 +242,7 @@ void BuildDivisionData(void)
                 tempteam = u->GetTeam(); // JB 010220 CTD
                 tempdivision = u->GetUnitDivision(); // JB 010220 CTD
 
-                if (tempteam >= 0 && tempteam < NUM_TEAMS && tempdivision >= 0 && tempdivision < MAX_DIVISION) // JB 010220 CTD
+                if (tempteam >= 0 and tempteam < NUM_TEAMS and tempdivision >= 0 and tempdivision < MAX_DIVISION) // JB 010220 CTD
                     divels[tempteam][tempdivision]++; // JB 010220 CTD
 
                 //divels[u->GetTeam()][u->GetUnitDivision()]++; // JB 010220 CTD
@@ -286,7 +286,7 @@ void BuildDivisionData(void)
                         dc->element = (VU_ID *)MemAllocPtr(gDivVUIDs, sizeof(VU_ID) * divels[t][d], FALSE);
 #else
 
-                        if (t >= 0 && t < NUM_TEAMS && d >= 0 && d < MAX_DIVISION) // JB 010223 CTD
+                        if (t >= 0 and t < NUM_TEAMS and d >= 0 and d < MAX_DIVISION) // JB 010223 CTD
                             dc->element = new VU_ID[divels[t][d]];
 
 #endif
@@ -294,7 +294,7 @@ void BuildDivisionData(void)
                         dd[t] = dc;
                     }
 
-                    if (!F4IsBadWritePtr(dc, sizeof(DivisionClass)) && dc->elements >= 0 && !F4IsBadWritePtr(&(dc->element[dc->elements]), sizeof(VU_ID))) // JB 010223 CTD
+                    if (!F4IsBadWritePtr(dc, sizeof(DivisionClass)) and dc->elements >= 0 and !F4IsBadWritePtr(&(dc->element[dc->elements]), sizeof(VU_ID))) // JB 010223 CTD
                     {
                         dc->element[dc->elements] = u->Id();
                         dc->elements++;
@@ -378,7 +378,7 @@ void BuildDivisionData (void)
  u = GetFirstUnit(&myit);
  while (u)
  {
- if (u->GetDomain() == DOMAIN_LAND && u->GetUnitDivision())
+ if (u->GetDomain() == DOMAIN_LAND and u->GetUnitDivision())
  {
  d = u->GetUnitDivision();
  c = u->GetOwner();
@@ -455,7 +455,7 @@ Division GetDivisionByUnit(Unit u)
 
     while (d)
     {
-        if (d->nid == u->GetUnitDivision() && d->owner == u->GetOwner())
+        if (d->nid == u->GetUnitDivision() and d->owner == u->GetOwner())
             return d;
 
         d = d->next;
@@ -475,7 +475,7 @@ Division FindDivisionByXY(GridIndex x, GridIndex y)
 
         while (d)
         {
-            if (d->x == x && d->y == y)
+            if (d->x == x and d->y == y)
                 return d;
 
             d = d->next;

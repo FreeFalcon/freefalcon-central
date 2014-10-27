@@ -277,7 +277,7 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
     {
         pixel = &WorkBuffer[ y * originalWidth ];
 
-        for (x = 0; x < originalWidth && imagePtr ; x ++)
+        for (x = 0; x < originalWidth and imagePtr ; x ++)
         {
             *pixel = tweakedPalette[*imagePtr];
             pixel ++;

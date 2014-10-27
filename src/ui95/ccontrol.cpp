@@ -699,7 +699,7 @@ long C_Base::GetUserNumber(long idx)
     {
         usr = (USERDATA*)User_->Find(idx);
 
-        if (usr && usr->type == CSB_IS_VALUE)
+        if (usr and usr->type == CSB_IS_VALUE)
             return(usr->data.number);
     }
 
@@ -714,7 +714,7 @@ void *C_Base::GetUserPtr(long idx)
     {
         usr = (USERDATA*)User_->Find(idx);
 
-        if (usr && (usr->type == CSB_IS_PTR or usr->type == CSB_IS_CLEANUP_PTR))
+        if (usr and (usr->type == CSB_IS_PTR or usr->type == CSB_IS_CLEANUP_PTR))
             return(usr->data.ptr);
     }
 
@@ -726,7 +726,7 @@ BOOL C_Control::MouseOver(long relx, long rely, C_Base *me)
     if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
         return(FALSE);
 
-    if (relx >= GetX() && rely >= GetY() && relx <= (GetX() + GetW()) && rely <= GetY() + GetH())
+    if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= GetY() + GetH())
     {
         if ((C_Base*)this not_eq me)
             gSoundMgr->PlaySound(GetSound(C_TYPE_MOUSEOVER));

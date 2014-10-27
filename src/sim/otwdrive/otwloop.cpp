@@ -291,7 +291,7 @@ void OTWDriverClass::Cycle(void)
 
 
     // do we run the acton camera?
-    if (actionCameraMode && actionCameraTimer <= vuxRealTime)
+    if (actionCameraMode and actionCameraTimer <= vuxRealTime)
     {
         RunActionCamera();
     }
@@ -312,7 +312,7 @@ void OTWDriverClass::Cycle(void)
         // make sure stuff is set correctly here (ie no hud, etc...)
         SetOTWDisplayMode(ModeChase);
 
-        if (SimDriver.GetPlayerAircraft() && !SimDriver.GetPlayerAircraft()->IsEject())
+        if (SimDriver.GetPlayerAircraft() and !SimDriver.GetPlayerAircraft()->IsEject())
         {
             // make sure autopilot is on
             AircraftClass *playerAircraft = (AircraftClass *)SimDriver.GetPlayerAircraft();
@@ -364,7 +364,7 @@ void OTWDriverClass::Cycle(void)
         }
     }
 
-    if (textTimeLeft[0] && textTimeLeft[0] < vuxRealTime)
+    if (textTimeLeft[0] and textTimeLeft[0] < vuxRealTime)
     {
         ScrollMessages();
     }
@@ -624,7 +624,7 @@ void OTWDriverClass::DisplayInfoBar(void)
         // a) string could be longer as the locally allocated one (bad thing (tm)) - however that´s unlikely, see above
         // b) string could be longer than physical screen size.. FreeFalcon then displays nothing.. also a bit suboptimal..
         // solution for b) need to get renderer->TextWidth() working, if it is >1 then we don´t add a chunk.. or so..
-        if ((!otwPlatform->IsGroundVehicle()) && (!otwPlatform->IsBomb()))
+        if ((!otwPlatform->IsGroundVehicle()) and (!otwPlatform->IsBomb()))
         {
             char tmp[30];
 
@@ -801,7 +801,7 @@ void OTWDriverClass::DisplayFrontText(void)
     if (vuxRealTime & 0x200) // Blink every half second
     {
         // Display the PAUSE/X2/X4 compression strings HERE
-        if ((vuxRealTime & 0x200) && (remoteCompressionRequests or targetCompressionRatio not_eq 1))
+        if ((vuxRealTime & 0x200) and (remoteCompressionRequests or targetCompressionRatio not_eq 1))
         {
             float offset = 0.0f;
             long color;
@@ -821,7 +821,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((!targetCompressionRatio) && ((!FalconLocalSession->GetReqCompression()) && (remoteCompressionRequests & REMOTE_REQUEST_PAUSE) or !gCommsMgr->Online()))
+                if ((!targetCompressionRatio) and ((!FalconLocalSession->GetReqCompression()) and (remoteCompressionRequests & REMOTE_REQUEST_PAUSE) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((!FalconLocalSession->GetReqCompression()))
                     color = 0xff00ff00;
@@ -844,7 +844,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 2) && ((FalconLocalSession->GetReqCompression() == 2) && (remoteCompressionRequests & REMOTE_REQUEST_2) or !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 2) and ((FalconLocalSession->GetReqCompression() == 2) and (remoteCompressionRequests & REMOTE_REQUEST_2) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 2))
                     color = 0xff00ff00;
@@ -866,7 +866,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 4) && ((FalconLocalSession->GetReqCompression() == 4) && (remoteCompressionRequests & REMOTE_REQUEST_4) or !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 4) and ((FalconLocalSession->GetReqCompression() == 4) and (remoteCompressionRequests & REMOTE_REQUEST_4) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 4))
                     color = 0xff00ff00;
@@ -889,7 +889,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 8) && ((FalconLocalSession->GetReqCompression() == 8) && (remoteCompressionRequests & REMOTE_REQUEST_8) or !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 8) and ((FalconLocalSession->GetReqCompression() == 8) and (remoteCompressionRequests & REMOTE_REQUEST_8) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 8))
                     color = 0xff00ff00;
@@ -911,7 +911,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 16) && ((FalconLocalSession->GetReqCompression() == 16) && (remoteCompressionRequests & REMOTE_REQUEST_16) or !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 16) and ((FalconLocalSession->GetReqCompression() == 16) and (remoteCompressionRequests & REMOTE_REQUEST_16) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 16))
                     color = 0xff00ff00;
@@ -933,7 +933,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 32) && ((FalconLocalSession->GetReqCompression() == 32) && (remoteCompressionRequests & REMOTE_REQUEST_32) or !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 32) and ((FalconLocalSession->GetReqCompression() == 32) and (remoteCompressionRequests & REMOTE_REQUEST_32) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 32))
                     color = 0xff00ff00;
@@ -955,7 +955,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 64) && ((FalconLocalSession->GetReqCompression() == 64) && (remoteCompressionRequests & REMOTE_REQUEST_64) or !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 64) and ((FalconLocalSession->GetReqCompression() == 64) and (remoteCompressionRequests & REMOTE_REQUEST_64) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 64))
                     color = 0xff00ff00;
@@ -977,7 +977,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 128) && ((FalconLocalSession->GetReqCompression() == 128) && (remoteCompressionRequests & REMOTE_REQUEST_128) or !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 128) and ((FalconLocalSession->GetReqCompression() == 128) and (remoteCompressionRequests & REMOTE_REQUEST_128) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 128))
                     color = 0xff00ff00;
@@ -999,7 +999,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 256) && ((FalconLocalSession->GetReqCompression() == 256) && (remoteCompressionRequests & REMOTE_REQUEST_256) or !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 256) and ((FalconLocalSession->GetReqCompression() == 256) and (remoteCompressionRequests & REMOTE_REQUEST_256) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 256))
                     color = 0xff00ff00;
@@ -1021,7 +1021,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 512) && ((FalconLocalSession->GetReqCompression() == 512) && (remoteCompressionRequests & REMOTE_REQUEST_512) or !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 512) and ((FalconLocalSession->GetReqCompression() == 512) and (remoteCompressionRequests & REMOTE_REQUEST_512) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 512))
                     color = 0xff00ff00;
@@ -1043,7 +1043,7 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 1024) && ((FalconLocalSession->GetReqCompression() == 1024) && (remoteCompressionRequests & REMOTE_REQUEST_1024) or !gCommsMgr->Online()))
+                if ((targetCompressionRatio == 1024) and ((FalconLocalSession->GetReqCompression() == 1024) and (remoteCompressionRequests & REMOTE_REQUEST_1024) or !gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 1024))
                     color = 0xff00ff00;
@@ -1058,14 +1058,14 @@ void OTWDriverClass::DisplayFrontText(void)
             // JB 010109
         }
 
-        if (gameCompressionRatio && !SimDriver.MotionOn())
+        if (gameCompressionRatio and !SimDriver.MotionOn())
         {
             renderer->SetColor(0xff0000ff);
             renderer->ScreenText(centerx - OTWDriver.renderer->ScreenTextWidth(CompressionStr[4]) * 0.5f, COMPRESS_Y, CompressionStr[4]);
         }
     }
 
-    if (!g_bACMIRecordMsgOff && gACMIRec.IsRecording())
+    if (!g_bACMIRecordMsgOff and gACMIRec.IsRecording())
     {
         int pct;
         int j;
@@ -1148,11 +1148,11 @@ void OTWDriverClass::DisplayFrontText(void)
     }
 
     // Display any Text Messages sent TO me
-    if (showFrontText & (SHOW_MESSAGES) && textMessage[0][0]) // Check to see if there are any
+    if (showFrontText & (SHOW_MESSAGES) and textMessage[0][0]) // Check to see if there are any
     {
         chat_cnt = 0;
 
-        while (chat_cnt < MAX_CHAT_LINES && textMessage[chat_cnt][0])
+        while (chat_cnt < MAX_CHAT_LINES and textMessage[chat_cnt][0])
         {
             if (TheHud)
                 renderer->SetColor(TheHud->GetHudColor());
@@ -1169,7 +1169,7 @@ void OTWDriverClass::DisplayFrontText(void)
     if (showFrontText & (SHOW_CHATBOX))
         DisplayChatBox();
 
-    if ((drawInfoBar) && (!DisplayInCockpit())) // Retro 16Dec2003
+    if ((drawInfoBar) and (!DisplayInCockpit())) // Retro 16Dec2003
     {
         DisplayInfoBar(); // Retro 16Dec2003
     }
@@ -1187,11 +1187,11 @@ void OTWDriverClass::DisplayFrontText(void)
             {
                 cameraID = ACTION_CAMERA;
             }
-            else if (GetOTWDisplayMode() == ModeChase && flybyTimer)
+            else if (GetOTWDisplayMode() == ModeChase and flybyTimer)
             {
                 cameraID = FLY_BY_CAMERA;
             }
-            else if (GetOTWDisplayMode() == ModeChase && !flybyTimer)
+            else if (GetOTWDisplayMode() == ModeChase and !flybyTimer)
             {
                 cameraID = CHASE_CAMERA;
             }
@@ -1460,7 +1460,7 @@ void OTWDriverClass::DisplayFrontText(void)
     DisplayAxisValues(); // Retro 1Jan2004
 #endif
 
-    // if ((SimDriver.GetPlayerAircraft()) && (SimDriver.GetPlayerAircraft()->IsSetFalcFlag (FEC_INVULNERABLE)) && (vuxRealTime & 0x200))
+    // if ((SimDriver.GetPlayerAircraft()) and (SimDriver.GetPlayerAircraft()->IsSetFalcFlag (FEC_INVULNERABLE)) and (vuxRealTime & 0x200))
     // {
     // renderer->SetColor (0xfffefefe); // Keeps this color from randomly changing
     // renderer->TextCenter (0.0F, 0.5F, "Invincible");
@@ -1627,7 +1627,7 @@ void OTWDriverClass::RenderFrame()
     // Should be coordinated with wombat´s keypresses: if this active
     // is used, then the keypresses (and maybe the 'l' key) should
     // be deactivated
-    if ((!actionCameraMode) && (!MouseMenuActive))
+    if ((!actionCameraMode) and (!MouseMenuActive))
     {
         // Retro 20Feb2004 - no FOV control in actioncam and when the 'Exit mission' menu is active
         if (IO.AnalogIsUsed(AXIS_FOV))
@@ -1642,9 +1642,9 @@ void OTWDriverClass::RenderFrame()
 
     // JAM 17Dec03 - Tidied up a little
     // If we're sitting in our own aircraft...
-    if ((otwPlatform.get() not_eq NULL) && (otwPlatform.get() == SimDriver.GetPlayerAircraft()))
+    if ((otwPlatform.get() not_eq NULL) and (otwPlatform.get() == SimDriver.GetPlayerAircraft()))
     {
-        if (GetOTWDisplayMode() == ModePadlockF3 or (GetOTWDisplayMode() == Mode3DCockpit && mDoSidebar == TRUE))
+        if (GetOTWDisplayMode() == ModePadlockF3 or (GetOTWDisplayMode() == Mode3DCockpit and mDoSidebar == TRUE))
         {
             pPadlockCPManager->SetNextView();
         }
@@ -1676,8 +1676,8 @@ void OTWDriverClass::RenderFrame()
 
                 //Wombat778 10-31-2003 changed looking at narrowFOV to checking actual FOV
                 if (
-                    OTWDriver.GetFOV() not_eq 60.0f && pCockpitManager->ShowHud()
-                    && pCockpitManager->GetViewportBounds(&hudViewportBounds, BOUNDS_HUD)
+                    OTWDriver.GetFOV() not_eq 60.0f and pCockpitManager->ShowHud()
+                    and pCockpitManager->GetViewportBounds(&hudViewportBounds, BOUNDS_HUD)
                 )
                 {
                     //make sure we don't div with 0
@@ -1735,12 +1735,12 @@ void OTWDriverClass::RenderFrame()
         okToDoCockpitStuff = FALSE;
     }
 
-    if ((GetOTWDisplayMode() == ModePadlockF3 or GetOTWDisplayMode() == Mode3DCockpit) && mDoSidebar)
+    if ((GetOTWDisplayMode() == ModePadlockF3 or GetOTWDisplayMode() == Mode3DCockpit) and mDoSidebar)
     {
         // Set viewport for Padlock
         renderer->SetViewport(padlockWindow[0][0], padlockWindow[0][1], padlockWindow[0][2], padlockWindow[0][3]);
     }
-    else if (otwPlatform.get() == SimDriver.GetPlayerAircraft() && pCockpitManager)
+    else if (otwPlatform.get() == SimDriver.GetPlayerAircraft() and pCockpitManager)
     {
         renderer->SetViewport(-1.0F, 1.0F, 1.0F, pCockpitManager->GetCockpitMaskTop());
     }
@@ -1753,7 +1753,7 @@ void OTWDriverClass::RenderFrame()
     UpdateVehicleDrawables();
 
     // Add the F3 Padlock if required
-    if ((GetOTWDisplayMode() == ModePadlockF3) && (otwPlatform.get() == SimDriver.GetPlayerAircraft()))
+    if ((GetOTWDisplayMode() == ModePadlockF3) and (otwPlatform.get() == SimDriver.GetPlayerAircraft()))
     {
         if (tgtStep)
         {
@@ -1765,7 +1765,7 @@ void OTWDriverClass::RenderFrame()
     //START_PROFILE("RENDER 3DPIT");
     // Update flight instrument data used by HUD and cockpit
     // 2002-02-15 MODIFIED BY S.G. Added okToDoCockpitStuff so this is done only when the cockpit is from our plane
-    if ((otwPlatform.get() not_eq NULL) && (otwPlatform->IsAirplane()) && okToDoCockpitStuff)
+    if ((otwPlatform.get() not_eq NULL) and (otwPlatform->IsAirplane()) and okToDoCockpitStuff)
     {
         AircraftClass *ac = static_cast<AircraftClass*>(otwPlatform.get());
         FackClass* mFaults = ac->mFaults;
@@ -1957,7 +1957,7 @@ void OTWDriverClass::RenderFrame()
         }
 
         // HSI States
-        if (okToDoCockpitStuff && pCockpitManager->mpHsi && SimDriver.GetPlayerAircraft())
+        if (okToDoCockpitStuff and pCockpitManager->mpHsi and SimDriver.GetPlayerAircraft())
         {
             pCockpitManager->mpHsi->Exec();
         }
@@ -2124,7 +2124,7 @@ void OTWDriverClass::RenderFrame()
         {
             //if (!mHelmetIsUR)
             // Retro 8Jan2004 - almost killed the shared mem for good, silly me :/
-            if ((!mHelmetIsUR) && (!g_bEnableTrackIR))
+            if ((!mHelmetIsUR) and (!g_bEnableTrackIR))
             {
                 cockpitFlightData.headYaw = ((FlightData*)gSharedMemPtr)->headYaw;
                 cockpitFlightData.headPitch = ((FlightData*)gSharedMemPtr)->headPitch;
@@ -2183,7 +2183,7 @@ void OTWDriverClass::RenderFrame()
     ObserverPitch = flyingEye->Pitch();
     ObserverRoll = flyingEye->Roll();
 
-    if ((otwPlatform.get() not_eq NULL) && /*otwPlatform->IsAirplane() &&*/ gSharedIntellivibe)
+    if ((otwPlatform.get() not_eq NULL) and /*otwPlatform->IsAirplane() &&*/ gSharedIntellivibe)
     {
         g_intellivibeData.eyex = viewPos.x;
         g_intellivibeData.eyey = viewPos.y;
@@ -2297,8 +2297,8 @@ void OTWDriverClass::RenderFrame()
 
     // Set up the black out effects
     if (
-        DisplayInCockpit() && doGLOC &&
-        (otwPlatform.get() == SimDriver.GetPlayerAircraft()) && (otwPlatform.get() not_eq NULL)
+        DisplayInCockpit() and doGLOC &&
+        (otwPlatform.get() == SimDriver.GetPlayerAircraft()) and (otwPlatform.get() not_eq NULL)
     )
     {
         AircraftClass *ac = static_cast<AircraftClass*>(otwPlatform.get());
@@ -2505,7 +2505,7 @@ void OTWDriverClass::RenderFrame()
     }
     else
     {
-        if ((otwPlatform.get() not_eq NULL) && otwPlatform->drawPointer)
+        if ((otwPlatform.get() not_eq NULL) and otwPlatform->drawPointer)
         {
             if (!otwPlatform->OnGround()) DrawExternalViewTarget();
         }
@@ -2583,7 +2583,7 @@ void OTWDriverClass::RenderFrame()
         // Should we draw the EFOV window?
         SimMoverClass *mover = static_cast<SimMoverClass*>(otwPlatform.get());
 
-        if ((GetOTWDisplayMode() == ModePadlockEFOV) && (mover->targetList))
+        if ((GetOTWDisplayMode() == ModePadlockEFOV) and (mover->targetList))
         {
             // SCR: Was a condition above, but in EFOV view it MUST be the player, right?
             ShiAssert(otwPlatform->IsLocal());
@@ -2634,7 +2634,7 @@ void OTWDriverClass::RenderFrame()
                 //START_PROFILE("RWR");
                 theRwr = (PlayerRwrClass*)FindSensor(playerAircraft, SensorClass::RWR);
 
-                if (pCockpitManager->ShowRwr() && theRwr)
+                if (pCockpitManager->ShowRwr() and theRwr)
                 {
                     if (!gDoCockpitHack)
                     {
@@ -2696,7 +2696,7 @@ void OTWDriverClass::RenderFrame()
         }
         else if (GetOTWDisplayMode() == ModePadlockF3 or GetOTWDisplayMode() == Mode3DCockpit)
         {
-            if (mDoSidebar && pPadlockCPManager)
+            if (mDoSidebar and pPadlockCPManager)
             {
                 // Draw in the 2D reference panels
                 pPadlockCPManager->Exec();
@@ -2746,8 +2746,8 @@ void OTWDriverClass::RenderFrame()
 
     // Draw GLOC effect
     if (
-        doGLOC && (otwPlatform.get() not_eq NULL) &&
-        (otwPlatform.get() == SimDriver.GetPlayerAircraft()) && otwPlatform->IsLocal()
+        doGLOC and (otwPlatform.get() not_eq NULL) &&
+        (otwPlatform.get() == SimDriver.GetPlayerAircraft()) and otwPlatform->IsLocal()
     )
     {
         renderer->DrawTunnelBorder();
@@ -2758,7 +2758,7 @@ void OTWDriverClass::RenderFrame()
     }
 
     //JAM 18Nov03
-    if (weatherCondition == INCLEMENT && cameraPos.z > realWeather->stratusZ)
+    if (weatherCondition == INCLEMENT and cameraPos.z > realWeather->stratusZ)
     {
         if (DisplayInCockpit())
         {
@@ -2810,7 +2810,7 @@ void OTWDriverClass::RenderFrame()
              GetOTWDisplayMode() == ModePadlockF3 ||
              GetOTWDisplayMode() == ModePadlockEFOV
             ) &&
-            (gSelectedCursor >= 0) && (otwPlatform.get() == SimDriver.GetPlayerAircraft())
+            (gSelectedCursor >= 0) and (otwPlatform.get() == SimDriver.GetPlayerAircraft())
         )
         {
             ClipAndDrawCursor(
@@ -2881,7 +2881,7 @@ void OTWDriverClass::SetInternalCameraPosition(float dT)
     // Adjust for head angle (if enabled)
     if (GetOTWDisplayMode() == Mode2DCockpit)
     {
-        if ((g_bEnableTrackIR) && (PlayerOptions.Get2dTrackIR() == true) && !GetHybridPitMode()) // Retro 27/09/03  //Wombat778 11-18-04 Dont run the 2d trackir code in hybrid mode
+        if ((g_bEnableTrackIR) and (PlayerOptions.Get2dTrackIR() == true) and !GetHybridPitMode()) // Retro 27/09/03  //Wombat778 11-18-04 Dont run the 2d trackir code in hybrid mode
         {
 #ifdef DEBUG_TRACKIR_STUFF
             FILE* fp = fopen("TIR_Debug_2.txt", "at");
@@ -2931,7 +2931,7 @@ void OTWDriverClass::SetInternalCameraPosition(float dT)
         // PadlockF3_CalcCamera(dT);
         if (g_nPadlockMode & PLockModeBreakLock)
         {
-            if (azDir == 0.0F && elDir == 0.0F)
+            if (azDir == 0.0F and elDir == 0.0F)
             {
                 Padlock_CheckPadlock(dT);
                 PadlockF3_CalcCamera(dT);

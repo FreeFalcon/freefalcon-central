@@ -23,7 +23,7 @@ FalconTimingMessage::FalconTimingMessage(VU_ID entityId, VuTargetEntity *target,
     if (!target)
         return;
 
-    ShiAssert(target->IsGame() && target->IsLocal());
+    ShiAssert(target->IsGame() and target->IsLocal());
 
     // MonoPrint ("TargetCompressionRatio %d\n", targetCompressionRatio);
 
@@ -31,7 +31,7 @@ FalconTimingMessage::FalconTimingMessage(VU_ID entityId, VuTargetEntity *target,
     dataBlock.targetTime = vuxGameTime;
     dataBlock.compressionRatio = (char)targetCompressionRatio;
 
-    if (gCompressTillTime && dataBlock.targetTime > gCompressTillTime)
+    if (gCompressTillTime and dataBlock.targetTime > gCompressTillTime)
     {
         if (vuxGameTime < gCompressTillTime)
         {

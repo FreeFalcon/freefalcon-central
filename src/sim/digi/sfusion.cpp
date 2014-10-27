@@ -114,7 +114,7 @@ void DigitalBrain::SensorFusion(void)
         /* if (!g_bRP5Comp) {
           // Aces get to use GCI
           // Idiots find out about you inside 1 mile anyway
-          if (localData->range > 3.0F * NM_TO_FT && // gci is crap inside 3nm
+          if (localData->range > 3.0F * NM_TO_FT and // gci is crap inside 3nm
           (SkillLevel() >= 2 &&
            localData->range < 25.0F * NM_TO_FT||
            SkillLevel() >=3  &&
@@ -127,12 +127,12 @@ void DigitalBrain::SensorFusion(void)
           }
 
           // You can always see your designated target
-          if (baseObj->Id() == mDesignatedObject && localData->range > 8.0F * NM_TO_FT)
+          if (baseObj->Id() == mDesignatedObject and localData->range > 8.0F * NM_TO_FT)
           {
           canSee = TRUE;//me123
           }
 
-          for (i = 0; i<self->numSensors && !canSee; i++)
+          for (i = 0; i<self->numSensors and !canSee; i++)
           {
           if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack ||
           localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime)
@@ -147,18 +147,18 @@ void DigitalBrain::SensorFusion(void)
         /*#if 0
          // Aces get to use GCI
          // Idiots find out about you inside 1 mile anyway
-         if (SkillLevel() >= 3 && localData->range < 15.0F * NM_TO_FT or localData->range < 1.0F * NM_TO_FT)
+         if (SkillLevel() >= 3 and localData->range < 15.0F * NM_TO_FT or localData->range < 1.0F * NM_TO_FT)
          {
          canSee = TRUE;
          }
 
          // You can always see your designated target
-         if (baseObj->Id() == mDesignatedObject && localData->range > 8.0F * NM_TO_FT)
+         if (baseObj->Id() == mDesignatedObject and localData->range > 8.0F * NM_TO_FT)
          {
          canSee = TRUE;
          }
 
-         for (i = 0; i<self->numSensors && !canSee; i++)
+         for (i = 0; i<self->numSensors and !canSee; i++)
          {
          if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack ||
          localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime)
@@ -181,11 +181,11 @@ void DigitalBrain::SensorFusion(void)
         // This is our GCI implementation... Ace and Veteran gets to use GCI.
         // Only if we have a valid base object...
         // This code is to make sure our GCI targets are prioritized, just like other targets
-        if (campBaseObj && SkillLevel() >= g_nLowestSkillForGCI && localData->range < 30.0F * NM_TO_FT)
+        if (campBaseObj and SkillLevel() >= g_nLowestSkillForGCI and localData->range < 30.0F * NM_TO_FT)
          if (campBaseObj->GetSpotted(self->GetTeam()))
          canSee = TRUE;
         // You can always see your designated target
-        if (baseObj->Id() == mDesignatedObject && localData->range > 8.0F * NM_TO_FT)
+        if (baseObj->Id() == mDesignatedObject and localData->range > 8.0F * NM_TO_FT)
          canSee = TRUE;*/
 
         //if (SimDriver.RunningDogfight()) // 2002-02-17 ADDED BY S.G. If in dogfight, don't loose sight of your opponent.
@@ -193,9 +193,9 @@ void DigitalBrain::SensorFusion(void)
 
         // Go through all your sensors. If you 'see' the target and are bright enough, flag it as spotted and ask for an intercept if this FLIGHT is spotted for the first time...
         //for (i = 0; i<self->numSensors; i++) {
-        //if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack or localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime) { // 2002-04-18 MODIFIED BY S.G. Reverted to && instead of ||. *MY* logic was flawed. It gaves a 'delay' (grace period) after the sensor becomes 'NoLock'.
-        //if (campBaseObj && /*&& SkillLevel() >= g_nLowestSkillForGCI &&*/ !((UnitClass *)self->GetCampaignObject())->Broken()) {//Cobra removed GCI test here...not needed
-        //if (!campBaseObj->GetSpotted(self->GetTeam()) && campBaseObj->IsFlight())
+        //if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack or localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime) { // 2002-04-18 MODIFIED BY S.G. Reverted to and instead of ||. *MY* logic was flawed. It gaves a 'delay' (grace period) after the sensor becomes 'NoLock'.
+        //if (campBaseObj and /*&& SkillLevel() >= g_nLowestSkillForGCI &&*/ !((UnitClass *)self->GetCampaignObject())->Broken()) {//Cobra removed GCI test here...not needed
+        //if (!campBaseObj->GetSpotted(self->GetTeam()) and campBaseObj->IsFlight())
         //RequestIntercept((FlightClass *)campBaseObj, self->GetTeam());
 
         // 2002-02-11 ADDED BY S.G. If the sensor can identify the target, mark it identified as well
@@ -206,7 +206,7 @@ void DigitalBrain::SensorFusion(void)
          identified = TRUE;
         }
         else if (self->sensorArray[i]->Type() == SensorClass::Radar) {
-         if (((RadarClass *)self->sensorArray[i])->GetRadarDatFile() && (((RadarClass *)self->sensorArray[i])->radarData->flag & RAD_NCTR) && localData->ataFrom < 45.0f * DTR && localData->range < ((RadarClass *)self->sensorArray[i])->GetRadarDatFile()->MaxNctrRange / (2.0f * (16.0f - (float)SkillLevel()) / 16.0f)) // 2002-03-05 MODIFIED BY S.G. target's aspect and skill used in the equation
+         if (((RadarClass *)self->sensorArray[i])->GetRadarDatFile() and (((RadarClass *)self->sensorArray[i])->radarData->flag & RAD_NCTR) and localData->ataFrom < 45.0f * DTR and localData->range < ((RadarClass *)self->sensorArray[i])->GetRadarDatFile()->MaxNctrRange / (2.0f * (16.0f - (float)SkillLevel()) / 16.0f)) // 2002-03-05 MODIFIED BY S.G. target's aspect and skill used in the equation
          identified = TRUE;
         }
         else
@@ -295,7 +295,7 @@ void DigitalBrain::SensorFusion(void)
             {
                 //Score combatclass
 
-                if (hisCombatClass <= 4 && hisCombatClass >= 2)
+                if (hisCombatClass <= 4 and hisCombatClass >= 2)
                     totalThreat += 50;
                 else
                     totalThreat += 30;
@@ -307,7 +307,7 @@ void DigitalBrain::SensorFusion(void)
                     totalThreat += 20;
 
                 if (missionType == AMIS_BARCAP or missionType == AMIS_BARCAP2 or missionComplete
-                    or (missionClass == AGMission && !IsSetATC(HasAGWeapon)))
+                    or (missionClass == AGMission and !IsSetATC(HasAGWeapon)))
                 {
                     if (isHelo or hisCombatClass >= 7)
                         totalThreat = 5;
@@ -324,7 +324,7 @@ void DigitalBrain::SensorFusion(void)
                 else
                     campObj = (CampBaseClass *)baseObj;
 
-                int isMissionTarget = campObj && (((FlightClass *)(self->GetCampaignObject()))-> GetUnitMissionTargetID() == campObj->Id() ||
+                int isMissionTarget = campObj and (((FlightClass *)(self->GetCampaignObject()))-> GetUnitMissionTargetID() == campObj->Id() ||
                                                   ((FlightClass *)(self->GetCampaignObject()))->GetAssignedTarget() == campObj->Id());
 
                 if (isMissionTarget)
@@ -383,7 +383,7 @@ void DigitalBrain::SensorFusion(void)
                     else localData->threatTime = MAX_THREAT_TIME;
                  }
 
-                 else if ((baseObj->IsAirplane() or (baseObj->IsFlight() && !baseObj->IsHelicopter())) && pcId not_eq ID_NONE && pcId < ID_NEUTRAL && GuestimateCombatClass(self, baseObj) < MnvrClassA10)
+                 else if ((baseObj->IsAirplane() or (baseObj->IsFlight() and !baseObj->IsHelicopter())) and pcId not_eq ID_NONE and pcId < ID_NEUTRAL and GuestimateCombatClass(self, baseObj) < MnvrClassA10)
                  {
 
           //TJL 11/07/03 VO log says there is an radian error in this code
@@ -441,7 +441,7 @@ void DigitalBrain::SensorFusion(void)
         // Have to be at war against us
         // Chopper must be our assigned or mission target or we must be on sweep (not a AMIS_SWEEP but still has OnSweep set)
         // Must be worth shooting at, unless it's our assigned or mission target (new addition so AI can go after an AWACS for example if it's their target...
-        //    if (canSee && baseObj->IsAirplane() && pcId < ID_NEUTRAL &&
+        //    if (canSee and baseObj->IsAirplane() and pcId < ID_NEUTRAL &&
         //       (IsSetATC(OnSweep) or ((AircraftClass*)baseObj)->CombatClass() < MnvrClassA10))
         // 2002-03-11 MODIFIED BY S.G. Don't call CombatClass directly but through GuestimateCombatClass which doesn't assume you have an ID on the target
         // Since I'm going to check for this twice in the next if statement, do it once here but also do the 'canSee' test which is not CPU intensive and will prevent the test from being performed if can't see.
@@ -452,10 +452,10 @@ void DigitalBrain::SensorFusion(void)
            campObj = ((SimBaseClass *)baseObj)->GetCampaignObject();
            else
            campObj = (CampBaseClass *)baseObj;
-           int isMissionTarget = canSee && campObj && (((FlightClass *)(self->GetCampaignObject()))->GetUnitMissionTargetID() == campObj->Id() or ((FlightClass *)(self->GetCampaignObject()))->GetAssignedTarget() == campObj->Id());
+           int isMissionTarget = canSee and campObj and (((FlightClass *)(self->GetCampaignObject()))->GetUnitMissionTargetID() == campObj->Id() or ((FlightClass *)(self->GetCampaignObject()))->GetAssignedTarget() == campObj->Id());
 
               if (canSee &&
-           (baseObj->IsAirplane() or (baseObj->IsFlight() && !baseObj->IsHelicopter()) or (baseObj->IsHelicopter() && ((missionType not_eq AMIS_SWEEP && IsSetATC(OnSweep)) or isMissionTarget))) &&
+           (baseObj->IsAirplane() or (baseObj->IsFlight() and !baseObj->IsHelicopter()) or (baseObj->IsHelicopter() and ((missionType not_eq AMIS_SWEEP and IsSetATC(OnSweep)) or isMissionTarget))) &&
            pcId < ID_NEUTRAL &&
            (GuestimateCombatClass(self, baseObj) < MnvrClassA10 or IsSetATC(OnSweep) or isMissionTarget)) // 2002-03-11 Don't assume you know the combat class
         // END OF MODIFIED SECTION 2002-03-05

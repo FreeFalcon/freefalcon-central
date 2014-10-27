@@ -77,7 +77,7 @@ static void TallyUnitVehicles(Unit un)
 
         if (ID)
         {
-            for (j = 0; j < Count && Count < 256; j++)
+            for (j = 0; j < Count and Count < 256; j++)
                 if (VehList[j][0] == ID)
                 {
                     VehList[j][1] += un->GetNumVehicles(i);
@@ -102,7 +102,7 @@ void AddVehiclesToWindow(C_Window *win, long client)
 
     for (i = 0; i < 16; i++)
     {
-        if (VehList[i][0] && VehList[i][1])
+        if (VehList[i][0] and VehList[i][1])
         {
             vc = GetVehicleClassData(VehList[i][0]);
 
@@ -180,7 +180,7 @@ void SetupUnitInfoWindow(VU_ID unitID)
     if (!un)
         return;
 
-    if (!un->IsBattalion() && !un->IsBrigade())
+    if (!un->IsBattalion() and !un->IsBrigade())
         return;
 
     urec = (UI_Refresher*)gGps->Find(un->GetCampID());
@@ -250,7 +250,7 @@ void SetupUnitInfoWindow(VU_ID unitID)
     {
         bmp->Refresh();
 
-        if (urec->MapItem_ && urec->MapItem_->Icon)
+        if (urec->MapItem_ and urec->MapItem_->Icon)
         {
             bmp->SetImage(urec->MapItem_->Icon->GetImage());
             bmp->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -494,7 +494,7 @@ void SetupDivisionInfoWindow(long DivID, short owner)
 
     div = GetFirstDivisionByCountry(owner);
 
-    while (div && div->nid not_eq (DivID))
+    while (div and div->nid not_eq (DivID))
         div = GetNextDivisionByCountry(div, owner);
 
     if (!div)
@@ -562,7 +562,7 @@ void SetupDivisionInfoWindow(long DivID, short owner)
     {
         bmp->Refresh();
 
-        if (urec->MapItem_ && urec->MapItem_->Icon)
+        if (urec->MapItem_ and urec->MapItem_->Icon)
         {
             bmp->SetImage(urec->MapItem_->Icon->GetImage());
             bmp->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -930,7 +930,7 @@ void BuildPilotList(C_TreeList *tree, Squadron sqd)
                 {
                     lbptr = (RemoteLB*)gCommsMgr->GetRemoteLB(session->Id().creator_);
 
-                    if (lbptr && lbptr->Pilot_.PictureResource)
+                    if (lbptr and lbptr->Pilot_.PictureResource)
                     {
                         btn->SetUserNumber(C_STATE_0, lbptr->Pilot_.PictureResource); // Image ID goes here
                     }
@@ -1142,7 +1142,7 @@ void SquadronFindCB(long, short hittype, C_Base *)
 
     sqd = (Squadron)vuDatabase->Find(gLastSquadron);
 
-    if (sqd && sqd->IsSquadron())
+    if (sqd and sqd->IsSquadron())
     {
         FindMapIcon(sqd->GetCampID());
     }
@@ -1254,7 +1254,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
         {
             bmp->Refresh();
 
-            if (urec->MapItem_ && urec->MapItem_->Icon)
+            if (urec->MapItem_ and urec->MapItem_->Icon)
             {
                 bmp->SetImage(urec->MapItem_->Icon->GetImage());
                 bmp->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -1643,7 +1643,7 @@ void UpdateSierraHotel()
                         {
                             lbptr = (RemoteLB*)gCommsMgr->GetRemoteLB(session->Id().creator_);
 
-                            if (lbptr && lbptr->Pilot_.PictureResource)
+                            if (lbptr and lbptr->Pilot_.PictureResource)
                             {
                                 ctrl->SetUserNumber(C_STATE_0, lbptr->Pilot_.PictureResource); // Image ID goes here
                             }
@@ -1998,7 +1998,7 @@ WayPointClass* GetWayPointUnder(Unit unit)
         gDragWPNum++;
         w->GetWPLocation(&wx, &wy);
 
-        if (wx == x && wy == y)
+        if (wx == x and wy == y)
             return w;
 
         w = w->GetNextWP();
@@ -2024,7 +2024,7 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
     {
         entity = GetEntityByCampID(ID);
 
-        if (entity && entity->IsUnit())
+        if (entity and entity->IsUnit())
         {
             unit = (UnitClass *) entity;
 
@@ -2058,7 +2058,7 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
     {
         entity = GetEntityByCampID(ID);
 
-        if (entity && entity->IsUnit())
+        if (entity and entity->IsUnit())
         {
             unit = (UnitClass *) entity;
 
@@ -2082,7 +2082,7 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
     {
         entity = GetEntityByCampID(ID);
 
-        if (entity && entity->IsUnit())
+        if (entity and entity->IsUnit())
         {
             unit = (UnitClass *) entity;
 
@@ -2121,7 +2121,7 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
                     gDragWPNum = 1;
                     wp = unit->GetFirstUnitWP();
 
-                    while (wp && wp not_eq unit->GetCurrentUnitWP())
+                    while (wp and wp not_eq unit->GetCurrentUnitWP())
                     {
                         gDragWPNum++;
                         wp = wp->GetNextWP();
@@ -2168,7 +2168,7 @@ void fixup_unit(Unit unit)
 
     wp = unit->GetFirstUnitWP();
 
-    while (wp && (wp->GetWPDepartureTime() < current_time) && wp->GetWPAction() not_eq WP_LAND)
+    while (wp and (wp->GetWPDepartureTime() < current_time) and wp->GetWPAction() not_eq WP_LAND)
     {
         // Some special case stuff for air mobile
         if (wp->GetWPAction() == WP_PICKUP)

@@ -192,7 +192,7 @@ int F4LoadData(char filename[], void* buffer, int length)
 
     if (F4FindFile(filename, path, 256, &offset, &len))
     {
-        if (len && len < length)
+        if (len and len < length)
         {
             sprintf(ebuf, "File %s has insufficient data\n", path);
             F4Warning(ebuf);
@@ -243,7 +243,7 @@ int F4SaveData(char filename[], void* buffer, int length)
 
     if (F4FindFile(filename, path, 256, &offset, &len))
     {
-        if (len && len < length)
+        if (len and len < length)
         {
             sprintf(ebuf, "Data block at %s has insufficient space\n", path);
             F4Warning(ebuf);

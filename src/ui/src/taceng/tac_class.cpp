@@ -79,27 +79,27 @@ void MakeTacEngScoreList();
 
 int tactical_mission::hide_enemy_on(void)
 {
-    return (TheCampaign.TE_flags & tf_hide_enemy) && TRUE;
+    return (TheCampaign.TE_flags & tf_hide_enemy) and TRUE;
 }
 
 int tactical_mission::lock_ato_on(void)
 {
-    return (TheCampaign.TE_flags & tf_lock_ato) && TRUE;
+    return (TheCampaign.TE_flags & tf_lock_ato) and TRUE;
 }
 
 int tactical_mission::lock_oob_on(void)
 {
-    return (TheCampaign.TE_flags & tf_lock_oob) && TRUE;
+    return (TheCampaign.TE_flags & tf_lock_oob) and TRUE;
 }
 
 int tactical_mission::start_paused_on(void)
 {
-    return (TheCampaign.TE_flags & tf_start_paused) && TRUE;
+    return (TheCampaign.TE_flags & tf_start_paused) and TRUE;
 }
 
 int tactical_mission::is_flag_on(long value)
 {
-    return (TheCampaign.TE_flags & value) && TRUE;
+    return (TheCampaign.TE_flags & value) and TRUE;
 }
 
 void tactical_mission::set_flag(long value)
@@ -454,7 +454,7 @@ void tactical_mission::process_load(char *data, int size, int)
 
             if ((*ptr == '\r') or (*ptr == '\n'))
             {
-                while ((size) && ((*data == '\n') or (*data == '\r') or (*data == '\t') or (*data == ' ')))
+                while ((size) and ((*data == '\n') or (*data == '\r') or (*data == '\t') or (*data == ' ')))
                 {
                     data ++;
                     size --;
@@ -1376,7 +1376,7 @@ void tactical_mission::evaluate_victory_conditions(void)
                 {
                     objective = (Objective) FindEntity(vc->id);
 
-                    if (objective && objective->IsObjective())
+                    if (objective and objective->IsObjective())
                     {
                         if (vc->team == objective->GetOwner())
                             vc->active = TRUE;
@@ -1392,7 +1392,7 @@ void tactical_mission::evaluate_victory_conditions(void)
                 {
                     objective = (Objective) FindEntity(vc->id);
 
-                    if (objective && objective->IsObjective())
+                    if (objective and objective->IsObjective())
                     {
                         int i;
                         int classID;
@@ -1427,7 +1427,7 @@ void tactical_mission::evaluate_victory_conditions(void)
                 {
                     objective = (Objective) FindEntity(vc->id);
 
-                    if (objective && objective->IsObjective())
+                    if (objective and objective->IsObjective())
                     {
                         //MonoPrint ("%08x = %d ", objective, objective->GetObjectiveStatus ());
 
@@ -1495,7 +1495,7 @@ void tactical_mission::evaluate_victory_conditions(void)
                         }
                     }
 
-                    if ((unit) && (vc->max_vehicles))
+                    if ((unit) and (vc->max_vehicles))
                     {
                         // MonoPrint ("%08x = %d:%d ", unit, vc->number, unit->GetTotalVehicles ());
 
@@ -1532,7 +1532,7 @@ void tactical_mission::evaluate_victory_conditions(void)
                 changed = 1;
 
                 // Send message to remote players
-                if (TheCampaign.IsMaster() && gCommsMgr->Online())
+                if (TheCampaign.IsMaster() and gCommsMgr->Online())
                 {
                     vcdone = new UISendMsg(FalconNullId, FalconLocalGame);
                     vcdone->dataBlock.from = FalconLocalSessionId;
@@ -1619,7 +1619,7 @@ void tactical_mission::evaluate_parameters(void *arg_wp, double x, double y, dou
 
     wp = (WayPointClass *) arg_wp;
 
-    while ((wp) && (wp->GetPrevWP()))
+    while ((wp) and (wp->GetPrevWP()))
     {
         wp = wp->GetPrevWP();
     }
@@ -1642,7 +1642,7 @@ void tactical_mission::evaluate_parameters(void *arg_wp, double x, double y, dou
 
             num = vc->data.steerpoint;
 
-            while ((wp) && (num > 1))
+            while ((wp) and (num > 1))
             {
                 wp = wp->GetNextWP();
 
@@ -1663,13 +1663,13 @@ void tactical_mission::evaluate_parameters(void *arg_wp, double x, double y, dou
         {
             case vt_tos:
             {
-                if ((fabs(dp) < 10000) && (fabs(dz) < 1000))
+                if ((fabs(dp) < 10000) and (fabs(dz) < 1000))
                 {
                     dt = ((float)wp->GetWPArrivalTime() - SimLibElapsedTime) / SEC_TO_MSEC;
 
                     //MonoPrint ("%d TOS %f ", count, dt);
 
-                    if ((vc->tolerance >= 1) && (vc->tolerance <= 5) && (fabs(dt) < tos_table[vc->tolerance]))
+                    if ((vc->tolerance >= 1) and (vc->tolerance <= 5) and (fabs(dt) < tos_table[vc->tolerance]))
                     {
                         //MonoPrint ("TRUE\n");
                         vc->active = TRUE;
@@ -1685,13 +1685,13 @@ void tactical_mission::evaluate_parameters(void *arg_wp, double x, double y, dou
 
             case vt_airspeed:
             {
-                if ((fabs(dp) < 10000) && (fabs(dz) < 1000))
+                if ((fabs(dp) < 10000) and (fabs(dz) < 1000))
                 {
                     dv = s - wp->GetWPSpeed();
 
                     //MonoPrint ("%d AirSpeed %f ", count, dv);
 
-                    if ((vc->tolerance >= 1) && (vc->tolerance <= 5) && (fabs(dt) < airspeed_table[vc->tolerance]))
+                    if ((vc->tolerance >= 1) and (vc->tolerance <= 5) and (fabs(dt) < airspeed_table[vc->tolerance]))
                     {
                         //MonoPrint ("TRUE\n");
                         vc->active = TRUE;
@@ -1707,11 +1707,11 @@ void tactical_mission::evaluate_parameters(void *arg_wp, double x, double y, dou
 
             case vt_altitude:
             {
-                if ((fabs(dp) < 10000) && (fabs(dz) < 1000))
+                if ((fabs(dp) < 10000) and (fabs(dz) < 1000))
                 {
                     //MonoPrint ("%d Alititude %f ", count, dz);
 
-                    if ((vc->tolerance >= 1) && (vc->tolerance <= 5) && (abs(dz) < altitude_table[vc->tolerance]))
+                    if ((vc->tolerance >= 1) and (vc->tolerance <= 5) and (abs(dz) < altitude_table[vc->tolerance]))
                     {
                         //MonoPrint ("TRUE\n");
                         vc->active = TRUE;
@@ -1727,11 +1727,11 @@ void tactical_mission::evaluate_parameters(void *arg_wp, double x, double y, dou
 
             case vt_position:
             {
-                if ((fabs(dp) < 10000) && (fabs(dz) < 1000))
+                if ((fabs(dp) < 10000) and (fabs(dz) < 1000))
                 {
                     //MonoPrint ("%d Position %f ", count, dp);
 
-                    if ((vc->tolerance >= 1) && (vc->tolerance <= 5) && (fabs(dp) < position_table[vc->tolerance]))
+                    if ((vc->tolerance >= 1) and (vc->tolerance <= 5) and (fabs(dp) < position_table[vc->tolerance]))
                     {
                         //MonoPrint ("TRUE\n");
                         vc->active = TRUE;
@@ -1813,7 +1813,7 @@ int tactical_mission::determine_victor(void)
     {
         set_game_over(1);
 
-        if (TheCampaign.IsMaster() && gCommsMgr->Online())
+        if (TheCampaign.IsMaster() and gCommsMgr->Online())
         {
             vcdone = new UISendMsg(FalconNullId, FalconLocalGame);
             vcdone->dataBlock.from = FalconLocalSessionId;
@@ -1832,7 +1832,7 @@ int tactical_mission::determine_victor(void)
     {
         if (team_pts[i] >= points_required)
         {
-            if (TheCampaign.IsMaster() && gCommsMgr->Online())
+            if (TheCampaign.IsMaster() and gCommsMgr->Online())
             {
                 vcdone = new UISendMsg(FalconNullId, FalconLocalGame);
                 vcdone->dataBlock.from = FalconLocalSessionId;
@@ -1881,7 +1881,7 @@ int tactical_mission::determine_rating(void)
 
     for (int i = 0; i < 8; i++)
     {
-        if ((team_pts[i] > best_opp) && (i not_eq team))
+        if ((team_pts[i] > best_opp) and (i not_eq team))
             best_opp = team_pts[i];
     }
 

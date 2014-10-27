@@ -72,7 +72,7 @@ int SMSClass::LaunchMissile(void)
             if ((curWeapon->parent &&
                  ((AircraftClass *)curWeapon->parent.get())->IsPlayer() &&
                  !(((AircraftClass *)curWeapon->parent.get())->AutopilotType() == AircraftClass::CombatAP) &&
-                 !Powered) && curWeapon->GetType() == TYPE_MISSILE &&
+                 !Powered) and curWeapon->GetType() == TYPE_MISSILE &&
                 curWeapon->GetSType() == STYPE_MISSILE_AIR_GROUND &&
                 (curWeapon->GetSPType() == SPTYPE_AGM65A ||
                  curWeapon->GetSPType() == SPTYPE_AGM65B ||
@@ -87,7 +87,7 @@ int SMSClass::LaunchMissile(void)
             if ((curWeapon->parent &&
                  ((AircraftClass *)curWeapon->parent.get())->IsPlayer() &&
                  !(((AircraftClass *)curWeapon->parent.get())->AutopilotType() == AircraftClass::CombatAP) &&
-                 !GetHARMPowerState()) && curWeapon->GetType() == TYPE_MISSILE &&
+                 !GetHARMPowerState()) and curWeapon->GetType() == TYPE_MISSILE &&
                 curWeapon->GetSType() == STYPE_MISSILE_AIR_GROUND &&
                 (curWeapon->GetSPType() == SPTYPE_AGM88))
             {
@@ -97,7 +97,7 @@ int SMSClass::LaunchMissile(void)
 
         // JB 010109 CTD sanity check
         //if (theMissile->launchState == MissileClass::PreLaunch)
-        if (theMissile->launchState == MissileClass::PreLaunch && curHardpoint not_eq -1)
+        if (theMissile->launchState == MissileClass::PreLaunch and curHardpoint not_eq -1)
             // JB 010109 CTD sanity check
         {
             // Set the missile position on the AC
@@ -115,7 +115,7 @@ int SMSClass::LaunchMissile(void)
             theMissile->SetLaunchRotation(az, el);
 
             // 2001-03-02 MOVED HERE BY S.G.
-            if (theMissile->sensorArray && theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming)
+            if (theMissile->sensorArray and theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming)
             {
                 // Have the missile use the launcher's radar for guidance
                 ((BeamRiderClass*)theMissile->sensorArray[0])->SetGuidancePlatform(ownship);
@@ -124,7 +124,7 @@ int SMSClass::LaunchMissile(void)
             // END OF MOVED SECTION
 
             // Don't hand off ground targets to radar guided air to air missiles
-            if (curWeaponType not_eq wtAim120 or (tmpTargetPtr && !tmpTargetPtr->BaseData()->OnGround()))
+            if (curWeaponType not_eq wtAim120 or (tmpTargetPtr and !tmpTargetPtr->BaseData()->OnGround()))
             {
                 theMissile->Start(tmpTargetPtr);
             }
@@ -135,7 +135,7 @@ int SMSClass::LaunchMissile(void)
 
             /* 2001-03-02 MOVED BY S.G. ABOVE THE ABOVE IF. I NEED radarPlatform TO BE SET BEFORE I CAN CALL theMissile->Start SINCE I'LL CALL THE BeamRiderClass SendTrackMsg MESSAGE WHICH REQUIRES IT
              // Need to give beam riders a pointer to the illuminating radar platform
-             if ( theMissile->sensorArray && theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming )
+             if ( theMissile->sensorArray and theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming )
              {
              // Have the missile use the launcher's radar for guidance
              ((BeamRiderClass*)theMissile->sensorArray[0])->SetGuidancePlatform( ownship );
@@ -152,7 +152,7 @@ int SMSClass::LaunchMissile(void)
                 int sfxid = 0;
 
                 //RV - I-Hawk - Include all missiles types here, AA and AG
-                if (theMissile && theMissile->parent && FCC && (FCC->GetMasterMode() == FireControlComputer::AirGroundMissile ||
+                if (theMissile and theMissile->parent and FCC and (FCC->GetMasterMode() == FireControlComputer::AirGroundMissile ||
                         FCC->GetMasterMode() == FireControlComputer::AirGroundHARM ||
                         FCC->GetMasterMode() == FireControlComputer::Missile ||
                         FCC->GetMasterMode() == FireControlComputer::MissileOverride ||
@@ -169,7 +169,7 @@ int SMSClass::LaunchMissile(void)
                             wc = (WeaponClassDataType*)classPtr->dataPtr; // this is important
                         }
 
-                        if (wc && (wc->Flags & WEAP_BOMBDROPSOUND)) // for JSOW, JDAM...
+                        if (wc and (wc->Flags & WEAP_BOMBDROPSOUND)) // for JSOW, JDAM...
                         {
                             sfxid = SFX_BOMBDROP;
                         }
@@ -188,7 +188,7 @@ int SMSClass::LaunchMissile(void)
                 }
                 else
                 {
-                    if (theMissile && !theMissile->parent)
+                    if (theMissile and !theMissile->parent)
                     {
                         sfxid = SFX_MISSILE2;
                     }
@@ -242,7 +242,7 @@ int SMSClass::LaunchMissile(void)
             vc = GetVehicleClassData(ownship->Type() - VU_LAST_ENTITY_TYPE);
             visFlag = vc->VisibleFlags;
 
-            if (visFlag & (1 << curHardpoint) && theMissile->drawPointer)
+            if (visFlag & (1 << curHardpoint) and theMissile->drawPointer)
             {
                 // Detach visual from parent
                 hardPoint[wpnStation]->DetachWeaponBSP(theMissile); // MLR 2/21/2004 -
@@ -251,7 +251,7 @@ int SMSClass::LaunchMissile(void)
                 {
                  OTWDriver.DetachObject(hardPoint[wpnStation]->GetRackOrPylon(), (DrawableBSP*)(theMissile->drawPointer), theMissile->GetRackSlot());// MLR 2/20/2004 - added OrPylon
                 }
-                else if (ownship->drawPointer && wpnStation)
+                else if (ownship->drawPointer and wpnStation)
                 {
                  OTWDriver.DetachObject((DrawableBSP*)(ownship->drawPointer), (DrawableBSP*)(theMissile->drawPointer), wpnStation-1);
                 }
@@ -294,7 +294,7 @@ int SMSClass::LaunchMissile(void)
     //MI SOI after firing Mav
     if (g_bRealisticAvionics)
     {
-        if (curWeapon && curWeapon->parent &&
+        if (curWeapon and curWeapon->parent &&
             ((AircraftClass *)curWeapon->parent.get())->IsPlayer() &&
             (curWeapon->GetSPType() == SPTYPE_AGM65A ||
              curWeapon->GetSPType() == SPTYPE_AGM65B ||
@@ -426,7 +426,7 @@ int SMSClass::LaunchRocket(void)
 
     // MLR 1/27/2004 - For gun pods, we won't allocate 1200 (or whatever) rounds of ammo
     //                 that would be silly.  We will allocate them as needed.
-    if (hardPoint[curHardpoint]->weaponCount && !hardPoint[curHardpoint]->weaponPointer)
+    if (hardPoint[curHardpoint]->weaponCount and !hardPoint[curHardpoint]->weaponPointer)
     {
         hardPoint[curHardpoint]->weaponPointer = InitWeaponList(ownship, hardPoint[curHardpoint]->weaponId,
                 hardPoint[curHardpoint]->GetWeaponClass(), min(10, hardPoint[curHardpoint]->weaponCount), InitAMissile);
@@ -437,13 +437,13 @@ int SMSClass::LaunchRocket(void)
 
     // MLR 1/12/2004 - wtf, why fire every other call? (due to count)
     // I'm not going to change it.
-    if (theMissile && count == 0)
+    if (theMissile and count == 0)
     {
         if (hardPoint[curHardpoint]->GetRack()) // MLR 1/12/2004 - just incase the pylon is the pod (as in the IA).
             hardPoint[curHardpoint]->GetRack()->SetSwitchMask(0, 0);
 
         // MLR 1/12/2004 - If the Pod is attached, set switch 0 to 0
-        if (hardPoint[curHardpoint]->podPointer && hardPoint[curHardpoint]->podPointer->drawPointer)
+        if (hardPoint[curHardpoint]->podPointer and hardPoint[curHardpoint]->podPointer->drawPointer)
         {
             ((DrawableBSP*)(hardPoint[curHardpoint]->podPointer->drawPointer))->SetSwitchMask(0, 0);
         }
@@ -512,7 +512,7 @@ int SMSClass::LaunchRocket(void)
         wpnNum = curHardpoint;
 
         // Reload if possible / wanted
-        if (theMissile && UnlimitedAmmo())
+        if (theMissile and UnlimitedAmmo())
             ReplaceRocket(wpnNum, theMissile);
 
         lastWeapon = curWeapon;
@@ -627,7 +627,7 @@ int SMSClass::LaunchRocket(void)
         theLau = (BombClass *)curWeapon.get();
     }
 
-    if (theLau && !theLau->IsLauncher())
+    if (theLau and !theLau->IsLauncher())
     {
         return 1;
     }
@@ -645,13 +645,13 @@ int SMSClass::LaunchRocket(void)
     {
         theLau = (BombClass *)curWeapon.get();
 
-        if (theLau && theLau->IsLauncher() && theLau->LauGetRoundsRemaining())
+        if (theLau and theLau->IsLauncher() and theLau->LauGetRoundsRemaining())
         {
             theLau->LauFireSalvo(); // tell lau to add a salvo to the firecount
 
             if (theLau->LauGetRoundsRemaining() == 0)
             {
-                if (!UnlimitedAmmo() && hardPoint && (curHardpoint >= 0))
+                if (!UnlimitedAmmo() and hardPoint and (curHardpoint >= 0))
                 {
                     hardPoint[curHardpoint]->weaponCount--;
 
@@ -790,7 +790,7 @@ int SMSClass::SubLaunchRocket(int hpId)
     if (theLau->IsLauncher() == 0)
         return 1;
 
-    while (theLau && theLau->LauGetRoundsRemaining() == 0)
+    while (theLau and theLau->LauGetRoundsRemaining() == 0)
     {
         theLau = (BombClass *)theLau->GetNextOnRail();
     }
@@ -808,7 +808,7 @@ int SMSClass::SubLaunchRocket(int hpId)
     // MLR 1/27/2004 - For gun pods, we won't allocate 1200 (or whatever) rounds of ammo
     //                 that would be silly.  We will allocate them as needed.
     /*
-    if(hardPoint[hpId]->weaponCount && !hardPoint[hpId]->weaponPointer)
+    if(hardPoint[hpId]->weaponCount and !hardPoint[hpId]->weaponPointer)
     {
      hardPoint[hpId]->weaponPointer = InitWeaponList (ownship, hardPoint[hpId]->weaponId,
      hardPoint[hpId]->GetWeaponClass(), min( 10, hardPoint[hpId]->weaponCount ), InitAMissile);
@@ -919,7 +919,7 @@ void SMSBaseClass::ReplaceRocket(int station)
 
     theLau = (BombClass *)hardPoint[station]->weaponPointer.get();
 
-    if (theLau && theLau->IsLauncher())
+    if (theLau and theLau->IsLauncher())
     {
         while (theLau)
         {

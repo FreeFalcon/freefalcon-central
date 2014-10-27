@@ -26,7 +26,7 @@ static inline void SetSpecularFog()
 
 static inline void SelectState(GLint state)
 {
-    /* if(DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS && TheTerrTextures.lightLevel < 0.5f)
+    /* if(DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS and TheTerrTextures.lightLevel < 0.5f)
      {
      TheStateStack.context->RestoreState(STATE_MULTITEXTURE_ALPHA);
      }
@@ -108,7 +108,7 @@ void DrawPrimPoint(PrimPointFC *point)
     //JAM 15Dec03
     BOOL bToggle = FALSE;
 
-    if (TheStateStack.context->bZBuffering && DisplayOptions.bZBuffering)
+    if (TheStateStack.context->bZBuffering and DisplayOptions.bZBuffering)
     {
         bToggle = TRUE;
         TheStateStack.context->SetZBuffering(FALSE);
@@ -123,7 +123,7 @@ void DrawPrimPoint(PrimPointFC *point)
     pvtDraw2DPrim(PointF, point->nVerts, point->xyz);
 
     //JAM 15Dec03
-    if (bToggle && DisplayOptions.bZBuffering)
+    if (bToggle and DisplayOptions.bZBuffering)
         TheStateStack.context->SetZBuffering(TRUE);
 }
 
@@ -132,7 +132,7 @@ void DrawPrimFPoint(PrimPointFC *point)
     //JAM 15Dec03
     BOOL bToggle = FALSE;
 
-    if (TheStateStack.context->bZBuffering && DisplayOptions.bZBuffering)
+    if (TheStateStack.context->bZBuffering and DisplayOptions.bZBuffering)
     {
         bToggle = TRUE;
         TheStateStack.context->SetZBuffering(FALSE);
@@ -148,7 +148,7 @@ void DrawPrimFPoint(PrimPointFC *point)
     pvtDraw2DPrim(PointF, point->nVerts, point->xyz);
 
     //JAM 15Dec03
-    if (bToggle && DisplayOptions.bZBuffering)
+    if (bToggle and DisplayOptions.bZBuffering)
         TheStateStack.context->SetZBuffering(TRUE);
 }
 
@@ -157,7 +157,7 @@ void DrawPrimLine(PrimLineFC *line)
     //JAM 15Dec03
     BOOL bToggle = FALSE;
 
-    if (TheStateStack.context->bZBuffering && DisplayOptions.bZBuffering)
+    if (TheStateStack.context->bZBuffering and DisplayOptions.bZBuffering)
     {
         bToggle = TRUE;
         TheStateStack.context->SetZBuffering(FALSE);
@@ -173,7 +173,7 @@ void DrawPrimLine(PrimLineFC *line)
     pvtDraw2DLine(line->xyz);
 
     //JAM 15Dec03
-    if (bToggle && DisplayOptions.bZBuffering)
+    if (bToggle and DisplayOptions.bZBuffering)
         TheStateStack.context->SetZBuffering(TRUE);
 }
 
@@ -182,7 +182,7 @@ void DrawPrimFLine(PrimLineFC *line)
     //JAM 15Dec03
     BOOL bToggle = FALSE;
 
-    if (TheStateStack.context->bZBuffering && DisplayOptions.bZBuffering)
+    if (TheStateStack.context->bZBuffering and DisplayOptions.bZBuffering)
     {
         bToggle = TRUE;
         TheStateStack.context->SetZBuffering(FALSE);
@@ -200,7 +200,7 @@ void DrawPrimFLine(PrimLineFC *line)
     pvtDraw2DLine(line->xyz);
 
     //JAM 15Dec03
-    if (bToggle && DisplayOptions.bZBuffering)
+    if (bToggle and DisplayOptions.bZBuffering)
         TheStateStack.context->SetZBuffering(TRUE);
 }
 

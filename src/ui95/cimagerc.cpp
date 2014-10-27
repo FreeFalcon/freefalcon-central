@@ -555,7 +555,7 @@ C_Resmgr *C_Image::LoadImage(long ID, char *file, short x, short y)
     newentry->Header->Type = _RSC_IS_IMAGE_;
     newentry->Header->ID[0] = 0;
 
-    if (x == -1 && y == -1)
+    if (x == -1 and y == -1)
     {
         x = (short)(bmi.bmiHeader.biWidth  / 2);//!
         y = (short)(bmi.bmiHeader.biHeight / 2);//!
@@ -571,7 +571,7 @@ C_Resmgr *C_Image::LoadImage(long ID, char *file, short x, short y)
 #if 0
     colors = BuildColorTable((WORD*)cptr, bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 0);
 
-    if (colors && colors <= 256)
+    if (colors and colors <= 256)
     {
 #ifdef USE_SH_POOLS
         Image8 = (unsigned char*)MemAllocPtr(UI_Pools[UI_ART_POOL], sizeof(unsigned char) * (bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight + colors * 2), FALSE);
@@ -653,7 +653,7 @@ C_Resmgr *C_Image::LoadFile(long ID, char *file, short x, short y)
     newentry->Header->Type = _RSC_IS_IMAGE_;
     newentry->Header->ID[0] = 0;
 
-    if (x == -1 && y == -1)
+    if (x == -1 and y == -1)
     {
         x = (short)(bmi.bmiHeader.biWidth  / 2);
         y = (short)(bmi.bmiHeader.biHeight / 2);
@@ -669,7 +669,7 @@ C_Resmgr *C_Image::LoadFile(long ID, char *file, short x, short y)
 #if 0
     colors = BuildColorTable((WORD*)cptr, bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 0);
 
-    if (colors && colors <= 256)
+    if (colors and colors <= 256)
     {
         Image8 = new unsigned char[bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight + colors * 2];
         ConvertTo8Bit((WORD*)cptr, Image8, bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight);
@@ -769,7 +769,7 @@ IMAGE_RSC *C_Image::GetImage(long ID)
 
     tmp = (IMAGE_RSC *)Finder_->Find(ID);
 
-    if (tmp && tmp->Header->Type == _RSC_IS_IMAGE_)
+    if (tmp and tmp->Header->Type == _RSC_IS_IMAGE_)
         return(tmp);
 
     return(NULL);

@@ -284,7 +284,7 @@ void instant_action::check_next_wave(void)
                 {
                     if ((unit->GetDomain() == DOMAIN_AIR) or (unit->GetDomain() == DOMAIN_LAND))
                     {
-                        if ((!unit->IsDead()) && (unit->IsBattalion()))
+                        if ((!unit->IsDead()) and (unit->IsBattalion()))
                         {
                             unit->GetLocation(&ux, &uy);
 
@@ -300,7 +300,7 @@ void instant_action::check_next_wave(void)
                             }
                         }
 
-                        if ((!unit->IsDead()) && (unit->IsFlight()))
+                        if ((!unit->IsDead()) and (unit->IsFlight()))
                         {
                             aircraft_left += unit->GetTotalVehicles();
 
@@ -340,7 +340,7 @@ void instant_action::check_next_wave(void)
 
                 // MonoPrint ("Flights %d\n", count_flights);
 
-                if (((count_flights == 0) or ((wave_time) && (TheCampaign.CurrentTime > wave_time))) && (aircraft_left < 4))
+                if (((count_flights == 0) or ((wave_time) and (TheCampaign.CurrentTime > wave_time))) and (aircraft_left < 4))
                 {
                     current_wave ++;
 
@@ -357,7 +357,7 @@ void instant_action::check_next_wave(void)
 
 void instant_action::set_start_wave(int wave)
 {
-    ShiAssert(wave >= 0 && wave <= 4); // Since its used as sim skill it had better be this way...
+    ShiAssert(wave >= 0 and wave <= 4); // Since its used as sim skill it had better be this way...
 
     current_wave = wave;
     generic_skill = wave;
@@ -456,7 +456,7 @@ void instant_action::create_wave(void)
 
         while (*str)
         {
-            if ((*str not_eq ' ') && (*str not_eq '\t'))
+            if ((*str not_eq ' ') and (*str not_eq '\t'))
             {
                 break;
             }
@@ -464,7 +464,7 @@ void instant_action::create_wave(void)
             str ++;
         }
 
-        if ((*str >= '0') && (*str <= '9'))
+        if ((*str >= '0') and (*str <= '9'))
         {
             value = atoi(str);
 
@@ -782,7 +782,7 @@ void instant_action::create_player_flight(void)
 
             while (*str)
             {
-                if ((*str not_eq ' ') && (*str not_eq '\t'))
+                if ((*str not_eq ' ') and (*str not_eq '\t'))
                 {
                     break;
                 }
@@ -790,7 +790,7 @@ void instant_action::create_player_flight(void)
                 str ++;
             }
 
-            if ((*str >= '0') && (*str <= '9'))
+            if ((*str >= '0') and (*str <= '9'))
             {
                 value = atoi(str);
 
@@ -1820,7 +1820,7 @@ void instant_action::create_flight(ia_data &data)
         new_flight->LoadWeapons(NULL, DefaultDamageMods, Air, 2, 0, WEAP_BAI_LOADOUT);
     }
 
-    //if (!(data.guns) && !(data.heat) && !(data.radar))
+    //if (!(data.guns) and !(data.heat) and !(data.radar))
     else
     {
         new_flight->LoadWeapons(NULL, DefaultDamageMods, NoMove, 0, 0, 0);
@@ -1830,7 +1830,7 @@ void instant_action::create_flight(ia_data &data)
 
     // if this is a kc10 and its allied, and we don't have a player_flight's package,
     // then create a package, and set the tanker stuff up.
-    if ((data.type == ia_kc10) && (data.side == 1)) // allied kc10
+    if ((data.type == ia_kc10) and (data.side == 1)) // allied kc10
     {
         if (!player_flight->GetUnitPackage())
         {
@@ -1995,10 +1995,10 @@ void instant_action::create_battalion(ia_data &data)
         {
             classPtr = &(Falcon4ClassTable[GetWeaponDescriptionIndex(vc->Weapon[i])]);
 
-            if (!InstantActionSettings.SamSites && classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE)
+            if (!InstantActionSettings.SamSites and classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE)
                 new_battalion->SetUnitSupply(0);
 
-            if (!InstantActionSettings.AAASites && classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_GUN)
+            if (!InstantActionSettings.AAASites and classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_GUN)
                 new_battalion->SetUnitSupply(0);
         }
     }

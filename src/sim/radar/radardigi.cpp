@@ -167,7 +167,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
             if (ret < 1.0f)
             {
                 // Ok so it's too low, but is it jamming? If so, follow anyway...
-                if (ret not_eq -1.0f && tmpPtr->BaseData()->IsSPJamming())
+                if (ret not_eq -1.0f and tmpPtr->BaseData()->IsSPJamming())
                     canSee  or_eq  SG_JAMMING; // That's our second bit being used
                 // So it's too low and were are not jamming. When did we loose the signal?
                 else if (SimLibElapsedTime - tmpPtr->localData->rdrLastHit > radarData->CoastTime)
@@ -200,11 +200,11 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
                     canSee  or_eq  SG_FADING; // this will make the sensor state max set to detection
             }
 
-            // 2002-03-10 ADDED BY S.G. Added the "(flag & FirstSweep) && "
+            // 2002-03-10 ADDED BY S.G. Added the "(flag & FirstSweep) and "
             // so when a radar is doing its first sweep after creation,
             // don't fade the signal or the SARH missile launched
             // by an aggregated battalion that just deaggregated will lose its sensor lock
-            if ((flag & FirstSweep) && radarDatFile)
+            if ((flag & FirstSweep) and radarDatFile)
             {
                 tmpPtr->localData->rdrLastHit = SimLibElapsedTime - (unsigned)radarDatFile->TimeToLock - 1;
             }
@@ -247,7 +247,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
         // Now is it time to do lockedTarget housekeeping stuff?
         // 2000-09-18 S.G. We need to check the base data because
         // targetList item and lockedData might not be the same
-        if (lockedTarget && tmpPtr->BaseData() == lockedTarget->BaseData())
+        if (lockedTarget and tmpPtr->BaseData() == lockedTarget->BaseData())
         {
 #ifdef SAMDEBUG
 

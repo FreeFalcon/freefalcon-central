@@ -286,7 +286,7 @@ void AircraftClass::CalculateLef(float qfactor)
         {
             leftLEFAngle = rightLEFAngle = af->auxaeroData->lefGround * DTR;
         }
-        else if (!g_bNewFm && af->mach > af->auxaeroData->lefMaxMach)
+        else if (!g_bNewFm and af->mach > af->auxaeroData->lefMaxMach)
         {
             leftLEFAngle = rightLEFAngle = 0;;
         }
@@ -296,7 +296,7 @@ void AircraftClass::CalculateLef(float qfactor)
             rightLEFAngle = leftLEFAngle;
 
             //MI additions
-            if (g_bRealisticAvionics && g_bNewFm)
+            if (g_bRealisticAvionics and g_bNewFm)
             {
                 if (g_bNewDamageEffects)
                 {
@@ -311,7 +311,7 @@ void AircraftClass::CalculateLef(float qfactor)
             rightLEFAngle = leftLEFAngle;
         }
 
-        if (LEFLocked && g_bRealisticAvionics && g_bNewFm)
+        if (LEFLocked and g_bRealisticAvionics and g_bNewFm)
         {
             if (IsComplex())
             {
@@ -383,7 +383,7 @@ void AircraftClass::MoveDof(int dof, float newval, float rate, int ssfx, int lsf
         SetDOF(dof, cdof);
     }
 
-    if (SFX_DEF && ssfx >= 0)
+    if (SFX_DEF and ssfx >= 0)
     {
         // something to play
         // MLR 12/30/2003 - reorganized for clarity
@@ -393,7 +393,7 @@ void AircraftClass::MoveDof(int dof, float newval, float rate, int ssfx, int lsf
         }
         else
         {
-            if (!SoundPos.IsPlaying(ssfx) &&  // MLR 12/30/2003 - changed IsPlaying sound call
+            if (!SoundPos.IsPlaying(ssfx) and  // MLR 12/30/2003 - changed IsPlaying sound call
                 !SoundPos.IsPlaying(lsfx))
                 SoundPos.Sfx(ssfx);
             else
@@ -404,7 +404,7 @@ void AircraftClass::MoveDof(int dof, float newval, float rate, int ssfx, int lsf
 
 void AircraftClass::DeployDragChute(int type)
 {
-    if (af->vcas < 20.0f && af->dragChute == AirframeClass::DRAGC_DEPLOYED)
+    if (af->vcas < 20.0f and af->dragChute == AirframeClass::DRAGC_DEPLOYED)
         af->dragChute = AirframeClass::DRAGC_TRAILING;
 
     if (af->dragChute == AirframeClass::DRAGC_DEPLOYED &&
@@ -434,7 +434,7 @@ void AircraftClass::MoveSurfaces(void)
     qFactor = 100.0F / (max(af->vcas, 100.0F));
 
     // are we in easter-egg heli mode?
-    if (af && af->GetSimpleMode() == SIMPLE_MODE_HF)
+    if (af and af->GetSimpleMode() == SIMPLE_MODE_HF)
     {
         /*
         Switch and Dof settings for Helo
@@ -631,7 +631,7 @@ void AircraftClass::MoveSurfaces(void)
         // Thrust Reverser - FRB
         if (af->auxaeroData->hasThrRev)
         {
-            if (OnGround() && af->thrustReverse == 2)
+            if (OnGround() and af->thrustReverse == 2)
             {
                 float thrpos = af->auxaeroData->animThrRevAngle * DTR;
                 MoveDof(COMP_REVERSE_THRUSTER, thrpos, af->auxaeroData->animThrRevRate);
@@ -641,11 +641,11 @@ void AircraftClass::MoveSurfaces(void)
         }
 
         // Cobra - FRB animated pilot's head
-        if ((g_bAnimPilotHead) && ((!IsPlayer()) or ((IsPlayer()) && (!g_bEnableTrackIR))
-                                   or ((IsPlayer()) && (g_bEnableTrackIR)
-                                       && ((PlayerOptions.Get3dTrackIR() == false)
+        if ((g_bAnimPilotHead) and ((!IsPlayer()) or ((IsPlayer()) and (!g_bEnableTrackIR))
+                                   or ((IsPlayer()) and (g_bEnableTrackIR)
+                                       and ((PlayerOptions.Get3dTrackIR() == false)
                                            or (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode2DCockpit
-                                               && OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode3DCockpit)))))
+                                               and OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode3DCockpit)))))
         {
             long  nHoldSec = 3;
 
@@ -825,12 +825,12 @@ void AircraftClass::MoveSurfaces(void)
         }
 
         // Pilot animation tied to stick
-        if (g_bAnimPilotHead && af->AnimPilotAct == 0)
+        if (g_bAnimPilotHead and af->AnimPilotAct == 0)
         {
 
-            if ((!g_bEnableTrackIR) or (!IsPlayer()) or ((g_bEnableTrackIR) && (!PlayerOptions.Get3dTrackIR())))
+            if ((!g_bEnableTrackIR) or (!IsPlayer()) or ((g_bEnableTrackIR) and (!PlayerOptions.Get3dTrackIR())))
             {
-                if ((af->rstick > -0.1f) && (af->rstick < 0.1f))
+                if ((af->rstick > -0.1f) and (af->rstick < 0.1f))
                 {
                     MoveDof(COMP_HEAD_LR, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
                     MoveDof(COMP_HEAD2_LR, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
@@ -841,7 +841,7 @@ void AircraftClass::MoveSurfaces(void)
                     MoveDof(COMP_HEAD2_LR, (-af->rstick * 120.0f * DTR), g_fPilotHeadMoveRate, -1);
                 }
 
-                if ((af->pstick > -0.1f) && (af->pstick < 0.1f))
+                if ((af->pstick > -0.1f) and (af->pstick < 0.1f))
                 {
                     MoveDof(COMP_HEAD_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
                     MoveDof(COMP_HEAD2_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
@@ -1310,7 +1310,7 @@ void AircraftClass::MoveSurfaces(void)
     // Check for stick shake
     if (this == SimDriver.GetPlayerEntity())
     {
-        if (GetAlpha() > 15.0F && GetAlpha() < 20.0F)
+        if (GetAlpha() > 15.0F and GetAlpha() < 20.0F)
         {
             if (!stallShake)
             {
@@ -1415,7 +1415,7 @@ void AircraftClass::RunLightSurfaces(void)
     {
         // check flags
         // gear: landing lights on and gear down
-        SetSwitch(COMP_LAND_LIGHTS, IsAcStatusBitsSet(ACSTATUS_EXT_LANDINGLIGHT) && (af->gearPos == 1.0F));
+        SetSwitch(COMP_LAND_LIGHTS, IsAcStatusBitsSet(ACSTATUS_EXT_LANDINGLIGHT) and (af->gearPos == 1.0F));
 
         //----------------------------
         // animWingFlashOnTime  0.4 * 1000.0f = 400
@@ -1553,7 +1553,7 @@ void AircraftClass::RunGearSurfaces(void)
 
     if (IsLocal())
     {
-        if ((af->gearHandle > 0.0F or OnGround()) && !af->IsSet(AirframeClass::GearBroken))
+        if ((af->gearHandle > 0.0F or OnGround()) and !af->IsSet(AirframeClass::GearBroken))
         {
             SetAcStatusBits(ACSTATUS_GEAR_DOWN);
         }
@@ -1585,7 +1585,7 @@ void AircraftClass::RunGearSurfaces(void)
     for (i = 0; i < numgear; i++)
     {
         //move the door
-        if (!(af->gear[i].flags & GearData::DoorStuck) && !(af->gear[i].flags & GearData::DoorBroken))
+        if (!(af->gear[i].flags & GearData::DoorStuck) and !(af->gear[i].flags & GearData::DoorBroken))
         {
             float pos = af->gearPos * 2;
 
@@ -1599,7 +1599,7 @@ void AircraftClass::RunGearSurfaces(void)
             SetDOF(ComplexGearDoorDOF[i], af->GetAeroData(AeroDataSet::NosGearRng) * DTR);
 
         //move the gear
-        if (!(af->gear[i].flags & GearData::GearStuck) && !(af->gear[i].flags & GearData::GearBroken))
+        if (!(af->gear[i].flags & GearData::GearStuck) and !(af->gear[i].flags & GearData::GearBroken))
         {
             float pos = (af->gearPos - .5f) * 2;
 
@@ -1612,7 +1612,7 @@ void AircraftClass::RunGearSurfaces(void)
         else
             SetDOF(ComplexGearDOF[i], af->GetAeroData(AeroDataSet::NosGearRng) * 0.6f * DTR);
 
-        if (af->gearPos >= 0.9F && ((af->gear[i].flags & GearData::DoorBroken)
+        if (af->gearPos >= 0.9F and ((af->gear[i].flags & GearData::DoorBroken)
                                     or (af->gear[i].flags & GearData::DoorStuck)
                                     or (af->gear[i].flags & GearData::GearStuck)
                                     or (af->gear[i].flags & GearData::GearBroken)))
@@ -1654,7 +1654,7 @@ void AircraftClass::RunGearSurfaces(void)
             // lastRStick and lastYPedal defined in EOM.cpp
             // RAS 06Apr04 changed 30.0F to 50.0F to make graphical nose wheel match rate of turn.  Acutal turn radius needs to be
             // looked at.  Real F-16 nose wheel turns 32.0 degrees
-            if (IO.AnalogIsUsed(AXIS_YAW) && !af->IsSet(AirframeClass::IsDigital) or !g_bRollLinkedNWSRudder)  // Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_YAW) and !af->IsSet(AirframeClass::IsDigital) or !g_bRollLinkedNWSRudder)  // Retro 31Dec2003
             {
                 SetDOF(COMP_NOS_GEAR_ROT, -af->lastYPedal * 50.0F * DTR * (0.5F + (80.0F * KNOTS_TO_FTPSEC - af->vt) / (160.0F * KNOTS_TO_FTPSEC)));
             }
@@ -1674,7 +1674,7 @@ void AircraftClass::RunGearSurfaces(void)
     else
         SetDOF(COMP_NOS_GEAR_ROT, GetDOFValue(COMP_NOS_GEAR_ROT) * 0.9F);
 
-    if (GetDOFValue(ComplexGearDOF[0]) == af->GetAeroData(AeroDataSet::NosGearRng)*DTR && !(af->gear[0].flags & GearData::DoorBroken))
+    if (GetDOFValue(ComplexGearDOF[0]) == af->GetAeroData(AeroDataSet::NosGearRng)*DTR and !(af->gear[0].flags & GearData::DoorBroken))
         SetSwitch(COMP_NOS_GEAR_ROD, TRUE);
     else
         SetSwitch(COMP_NOS_GEAR_ROD, FALSE);

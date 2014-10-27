@@ -159,7 +159,7 @@ com_API_handle ComUDPOpen(
 
     c->buffer_size = sizeof(ComAPIHeader) + buffersize;
 
-    if ((c->max_buffer_size > 0) && (c->buffer_size  > c->max_buffer_size))
+    if ((c->max_buffer_size > 0) and (c->buffer_size  > c->max_buffer_size))
     {
         c->buffer_size = c->max_buffer_size;
     }
@@ -297,7 +297,7 @@ com_API_handle ComUDPOpenSendClone(
 
     c->buffer_size =   max(parentCom->buffer_size, (int)(sizeof(ComAPIHeader) + buffersize));
 
-    if ((c->max_buffer_size > 0) && (c->buffer_size  > c->max_buffer_size))
+    if ((c->max_buffer_size > 0) and (c->buffer_size  > c->max_buffer_size))
     {
         c->buffer_size = c->max_buffer_size;
     }
@@ -649,7 +649,7 @@ int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
 
 #ifdef checkbandwidth
 
-    if (test < 20 && oob == 2)
+    if (test < 20 and oob == 2)
     {
         MonoPrint("posupd size %d", bytesSent);
         test ++;
@@ -1204,7 +1204,7 @@ void ComAPISetReceiveThreadPriority(com_API_handle c, int priority)
             }
         }
 
-        if (threadhandle && SetPriority not_eq 0xFFFFFFFF)
+        if (threadhandle and SetPriority not_eq 0xFFFFFFFF)
         {
             SetThreadPriority(threadhandle, SetPriority);
         }

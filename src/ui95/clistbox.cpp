@@ -186,7 +186,7 @@ void C_ListBox::SetBgFill(int x, int y, int w, int h)
     BgRect_.right = BgRect_.left + w;
     BgRect_.bottom = BgRect_.top + h;
 
-    if (w > 0 && h > 0)
+    if (w > 0 and h > 0)
     {
         SetFlagBitOn(C_BIT_USEBGFILL);
     }
@@ -314,7 +314,7 @@ C_ListBox *C_ListBox::AddItem(long ID, short, _TCHAR *Str)
 
     newitem->Label_->SetXY(5, (Count_ - 1)*gFontList->GetHeight(Font_));
 
-    if (Root_ && Root_->Label_ && Root_->Label_->Ready())
+    if (Root_ and Root_->Label_ and Root_->Label_->Ready())
     {
         SetReady(1);
     }
@@ -359,7 +359,7 @@ void C_ListBox::SetRoot(LISTBOX *NewRoot)
         cur = cur->Next;
     }
 
-    if (!i && Root_)
+    if (!i and Root_)
     {
         LabelVal_ = Root_->Label_->GetID();
         Label_->SetText(Root_->Label_->GetText(C_STATE_0));
@@ -454,7 +454,7 @@ void C_ListBox::SetValue(long ID)
         cur = cur->Next;
     }
 
-    if (!found && Root_)
+    if (!found and Root_)
     {
         Label_->SetText(Root_->Label_->GetText(C_STATE_0));
         LabelVal_ = Root_->Label_->GetID();
@@ -472,7 +472,7 @@ void C_ListBox::SetValueText(long inText)
 
     int width;
 
-    while (cur && !found)
+    while (cur and !found)
     {
         width = atoi(cur->Label_->GetText(C_STATE_0));
 
@@ -491,7 +491,7 @@ void C_ListBox::SetValueText(long inText)
         cur = cur->Next;
     }
 
-    if (!found && Root_)
+    if (!found and Root_)
     {
         Label_->SetText(Root_->Label_->GetText(C_STATE_0));
         LabelVal_ = Root_->Label_->GetID();
@@ -622,7 +622,7 @@ void C_ListBox::Draw(SCREEN *surface, UI95_RECT *cliprect)
         Label_->Draw(surface, cliprect);
     }
 
-    if (DropDown_ && (GetFlags() & C_BIT_ENABLED))
+    if (DropDown_ and (GetFlags() & C_BIT_ENABLED))
         DropDown_->Draw(surface, cliprect);
 
     if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
@@ -673,7 +673,7 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
     h = (short)(i * fh + 8); //!
 
     // if bigger than 7 elements and scrollable
-    if ((h > (fh * 7 + 8)) && (ScrollBar_))
+    if ((h > (fh * 7 + 8)) and (ScrollBar_))
     {
         virtualh = h;
         UseScrollBar = 1;
@@ -712,7 +712,7 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
     Window_->AddControl(box);
     // END KCK added shit
 
-    if (ScrollBar_ && UseScrollBar)
+    if (ScrollBar_ and UseScrollBar)
     {
         sb_w = (short)ScrollBar_->GetW(); //!
         Window_->ClientArea_[0].right -= sb_w;
@@ -757,7 +757,7 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
 
             if (cur->Label_->GetState())
             {
-                if (ScrollBar_ && UseScrollBar)
+                if (ScrollBar_ and UseScrollBar)
                 {
                     Window_->SetVirtualY(draw_y - 2, 0);
                 }

@@ -46,7 +46,7 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
             VuSessionsIterator sit(FalconLocalGame);
             session = (FalconSessionEntity*) sit.GetFirst();
 
-            while (session && (!friendly or !inrange))
+            while (session and (!friendly or !inrange))
             {
                 if (session->GetPlayerEntity())
                     player = (FalconEntity*)session->GetPlayerEntity();
@@ -87,10 +87,10 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
     int printit = 0;
 
     if (monoall == 0 ||
-        ((theEvent->Flags() & VU_RELIABLE_MSG_FLAG) && monoall == 1) ||
-        ((theEvent->Flags() & VU_OUT_OF_BAND_MSG_FLAG) && monoall == 2) ||
+        ((theEvent->Flags() & VU_RELIABLE_MSG_FLAG) and monoall == 1) ||
+        ((theEvent->Flags() & VU_OUT_OF_BAND_MSG_FLAG) and monoall == 2) ||
         ((theEvent->Flags() & VU_RELIABLE_MSG_FLAG) &&
-         (theEvent->Flags() & VU_OUT_OF_BAND_MSG_FLAG) && monoall == 3)
+         (theEvent->Flags() & VU_OUT_OF_BAND_MSG_FLAG) and monoall == 3)
        )
         printit = 1;
 
@@ -602,7 +602,7 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
 
     }
 
-    if ((printit) && theEvent->Type() not_eq 30)
+    if ((printit) and theEvent->Type() not_eq 30)
         MonoPrint("Sent Message: time %d,  Keepalive %d, LowPrio %d , reliable %d, oob %d, , size %d, target %d\n" ,
                   vuxGameTime,
                   theEvent->Flags() & VU_KEEPALIVE_MSG_FLAG,
@@ -650,7 +650,7 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
 
         //MonoPrint("reliable %d, oob %d, total %d \n", sendreliable, msgoob, sendtotal);
         //MonoPrint("TOTreliable %d, TOToob %d, TOTtotal %d \n", TOTsendreliable, TOToob, TOTsendtotal);
-        if ((printit) && count > 5 && theEvent->Type() not_eq 30)
+        if ((printit) and count > 5 and theEvent->Type() not_eq 30)
         {
             MonoPrint("Avgreliable %d, Avgoob %d, Avgtotal %d mescount %d \n",
                       (TOTsendreliable / count), (TOToob / count), (TOTsendtotal / count), msgcount);
@@ -689,13 +689,13 @@ FalconEvent::FalconEvent(VU_MSG_TYPE type, HandlingThread threadID, VU_ID entity
     // because I'll explicitly set it to FALSE here if you're not included in the target.
     if (loopback)
     {
-        // if (!target && !FalconLocalGame)
+        // if (!target and !FalconLocalGame)
         // RequestLoopback();
         if (!target)
             loopback = FALSE;
-        else if (target->IsGroup() && !((VuGroupEntity*)target)->SessionInGroup(FalconLocalSession))
+        else if (target->IsGroup() and !((VuGroupEntity*)target)->SessionInGroup(FalconLocalSession))
             loopback = FALSE;
-        else if (target->IsSession() && target not_eq FalconLocalSession)
+        else if (target->IsSession() and target not_eq FalconLocalSession)
             loopback = FALSE;
         else
             RequestLoopback();
@@ -761,7 +761,7 @@ int FalconEvent::Activate(VuEntity *theEntity)
     VuMessage::Activate(theEntity);
 
     // Only record sim events to disk if ACMI is recording
-    if (F4EventFile && gACMIRec.IsRecording() && handlingThread == SimThread && Type() not_eq ControlSurfaceMsg)
+    if (F4EventFile and gACMIRec.IsRecording() and handlingThread == SimThread and Type() not_eq ControlSurfaceMsg)
     {
         idData.size = (unsigned short)Size();
         idData.type = Type();

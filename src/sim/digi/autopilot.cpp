@@ -271,7 +271,7 @@ void DigitalBrain::RealisticAP(void)
     //Right switch
     if (self->IsOn(AircraftClass::AltHold)) //up
         AltHold();
-    else if (self->IsOn(AircraftClass::AttHold) && self->IsOn(AircraftClass::RollHold)) //down
+    else if (self->IsOn(AircraftClass::AttHold) and self->IsOn(AircraftClass::RollHold)) //down
         PitchRollHold();
     else
         AcceptManual();
@@ -480,7 +480,7 @@ void DigitalBrain::FollowWP(void)
     float wpX, wpY, wpZ;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (self == playerAC && playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCWaypoint &&
+    if (self == playerAC and playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCWaypoint &&
         playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCMarkpoint &&
         playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCDLinkpoint)
     {
@@ -488,7 +488,7 @@ void DigitalBrain::FollowWP(void)
         return;
     }
 
-    if (self && self->curWaypoint)
+    if (self and self->curWaypoint)
         self->curWaypoint->GetLocation(&wpX, &wpY, &wpZ);
     else
     {
@@ -497,7 +497,7 @@ void DigitalBrain::FollowWP(void)
     }
 
     //MI add in INS Drift
-    if (g_bINS && g_bRealisticAvionics)
+    if (g_bINS and g_bRealisticAvionics)
     {
         if (playerAC not_eq NULL)
         {

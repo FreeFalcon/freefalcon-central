@@ -81,7 +81,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
     ObjectiveClass *divertBase = NULL;
     ObjectiveClass *altBase = NULL;
 
-    if (dataBlock.type == Release && aircraft && aircraft->DBrain())
+    if (dataBlock.type == Release and aircraft and aircraft->DBrain())
     {
         if (!aircraft->IsPlayer() or aircraft->AutopilotType() not_eq AircraftClass::CombatAP)
         {
@@ -91,20 +91,20 @@ int FalconATCCmdMessage::Process(uchar autodisp)
         aircraft->DBrain()->ClearATCFlag(DigitalBrain::Landed);
         aircraft->DBrain()->SetATCFlag(DigitalBrain::PermitTakeoff);
     }
-    else if (dataBlock.type == Landed && aircraft && aircraft->DBrain())
+    else if (dataBlock.type == Landed and aircraft and aircraft->DBrain())
     {
         aircraft->DBrain()->ClearATCFlag(DigitalBrain::PermitTakeoff);
         aircraft->DBrain()->SetATCFlag(DigitalBrain::Landed);
     }
 
-    if (aircraft && atc && aircraft->IsAirplane() && atc->IsObjective())
+    if (aircraft and atc and aircraft->IsAirplane() and atc->IsObjective())
     {
         DigitalBrain *acBrain = aircraft->DBrain();
         ATCBrain* atcBrain = atc->brain;
 
         //curWaypoint = aircraft->curWaypoint;
 
-        if (acBrain && atcBrain)
+        if (acBrain and atcBrain)
         {
             //I am sending an actual time instead of a delta, because of the huge time differences between different
             //machines at startup
@@ -370,7 +370,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                         acBrain->CalculateNextTurnDistance();
                     }
 
-                    if (!aircraft->IsPlayer() && rand() % 3)
+                    if (!aircraft->IsPlayer() and rand() % 3)
                     {
                         radioMessage = CreateCallFromATC(atc, aircraft, rcATCGOAROUND2, FalconLocalSession);
                         //M.N. changed to 32767 -> flexibly use randomized value of max available eval indexes

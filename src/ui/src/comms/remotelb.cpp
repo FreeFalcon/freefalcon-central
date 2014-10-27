@@ -29,12 +29,12 @@ RemoteLB::~RemoteLB()
 
 void RemoteLB::Cleanup()
 {
-    if (Photo_ && (flags_ & PHOTO_CLEANUP))
+    if (Photo_ and (flags_ & PHOTO_CLEANUP))
         delete Photo_;
 
     Photo_ = NULL;
 
-    if (Patch_ && (flags_ & PATCH_CLEANUP))
+    if (Patch_ and (flags_ & PATCH_CLEANUP))
         delete Patch_;
 
     Patch_ = NULL;

@@ -487,7 +487,7 @@ int RemoveDanglingSession(VuSessionEntity *newSess)
         )
         {
             // new sessions have no handle and old one does. exchange them
-            if ((newSess->GetCommsHandle() == NULL) && (session->GetCommsHandle() not_eq NULL))
+            if ((newSess->GetCommsHandle() == NULL) and (session->GetCommsHandle() not_eq NULL))
             {
                 newSess->SetCommsHandle(
                     session->GetCommsHandle(), F4CommsMaxUDPMessageSize, F4CommsIdealUDPPacketSize
@@ -499,7 +499,7 @@ int RemoveDanglingSession(VuSessionEntity *newSess)
                 session->SetCommsHandle(NULL);
             }
 
-            if ((newSess->GetReliableCommsHandle() == NULL) && (session->GetReliableCommsHandle() not_eq NULL))
+            if ((newSess->GetReliableCommsHandle() == NULL) and (session->GetReliableCommsHandle() not_eq NULL))
             {
                 newSess->SetReliableCommsHandle(
                     session->GetReliableCommsHandle(), F4CommsMaxTCPMessageSize, F4CommsIdealTCPPacketSize
@@ -631,10 +631,10 @@ void TcpConnectCallback(ComAPIHandle ch, int ret)
         {
             RemoveDanglingSession(s);
 
-            if (ch && s->GetCommsHandle() == ch)
+            if (ch and s->GetCommsHandle() == ch)
                 s->SetCommsStatus(VU_CONN_ACTIVE);
 
-            if (ch && s->GetReliableCommsHandle() == ch)
+            if (ch and s->GetReliableCommsHandle() == ch)
                 s->SetReliableCommsStatus(VU_CONN_ACTIVE);
 
             VuExitCriticalSection();
@@ -777,13 +777,13 @@ void ResyncTimes()
             }
         }
 
-        if (session->GetReqCompression() > 1 && session->GetReqCompression() < best_comp)
+        if (session->GetReqCompression() > 1 and session->GetReqCompression() < best_comp)
         {
             best_comp = session->GetReqCompression();
             remoteCompressionRequests  or_eq  1 << (best_comp - 1);
         }
 
-        if (session->GetReqCompression() < 1 && session->GetReqCompression() > best_comp)
+        if (session->GetReqCompression() < 1 and session->GetReqCompression() > best_comp)
         {
             best_comp = session->GetReqCompression();
             remoteCompressionRequests  or_eq  REMOTE_REQUEST_PAUSE;
@@ -794,7 +794,7 @@ void ResyncTimes()
             best_comp = session->GetReqCompression();
         }
 
-        if (session->GetReqCompression() == 0 && best_comp > 1)
+        if (session->GetReqCompression() == 0 and best_comp > 1)
         {
             best_comp = 1;
         }
@@ -804,7 +804,7 @@ void ResyncTimes()
 
     VuExitCriticalSection();
 
-    if (FalconLocalGame && FalconLocalGame->IsLocal())
+    if (FalconLocalGame and FalconLocalGame->IsLocal())
     {
         lastStartTime = vuxRealTime;
 
@@ -858,7 +858,7 @@ int VuxGroupConnect(VuGroupEntity *group)
     // Check for existing connections
     if (!group->GetCommsHandle())
     {
-        if (!(FalconConnectionProtocol & FCP_UDP_AVAILABLE) && !(FalconConnectionProtocol & FCP_SERIAL_AVAILABLE))
+        if (!(FalconConnectionProtocol & FCP_UDP_AVAILABLE) and !(FalconConnectionProtocol & FCP_SERIAL_AVAILABLE))
         {
             // No udp connections available
             group->SetCommsHandle(NULL);
@@ -869,13 +869,13 @@ int VuxGroupConnect(VuGroupEntity *group)
             group->SetCommsHandle(NULL); // We'll inherit from our global group
             group->SetCommsStatus(VU_CONN_ACTIVE);
         }
-        else if (FalconConnectionType & FCT_SERVER_AVAILABLE && FalconGlobalUDPHandle)
+        else if (FalconConnectionType & FCT_SERVER_AVAILABLE and FalconGlobalUDPHandle)
         {
             // Point us to our server's UDP connection
             group->SetCommsHandle(NULL); // We'll inherit from our global group
             group->SetCommsStatus(VU_CONN_ACTIVE);
         }
-        else if (FalconConnectionType & FCT_BCAST_AVAILABLE && FalconGlobalUDPHandle)
+        else if (FalconConnectionType & FCT_BCAST_AVAILABLE and FalconGlobalUDPHandle)
         {
             // Since we have broadcast available, pass our broadcast handle
             group->SetCommsHandle(NULL); // We'll inherit from our global group
@@ -904,7 +904,7 @@ int VuxGroupConnect(VuGroupEntity *group)
 
     if (!group->GetReliableCommsHandle())
     {
-        if (!(FalconConnectionProtocol & FCP_TCP_AVAILABLE) && !(FalconConnectionProtocol & FCP_SERIAL_AVAILABLE) && !(FalconConnectionProtocol & FCP_RUDP_AVAILABLE))
+        if (!(FalconConnectionProtocol & FCP_TCP_AVAILABLE) and !(FalconConnectionProtocol & FCP_SERIAL_AVAILABLE) and !(FalconConnectionProtocol & FCP_RUDP_AVAILABLE))
         {
             // No reliable connections available
             group->SetReliableCommsHandle(NULL);
@@ -915,7 +915,7 @@ int VuxGroupConnect(VuGroupEntity *group)
             group->SetCommsHandle(NULL); // We'll inherit from our global group
             group->SetCommsStatus(VU_CONN_ACTIVE);
         }
-        else if (FalconConnectionType & FCT_SERVER_AVAILABLE && FalconGlobalTCPHandle)
+        else if (FalconConnectionType & FCT_SERVER_AVAILABLE and FalconGlobalTCPHandle)
         {
             // Point us to our server's tcp connection
             group->SetCommsHandle(NULL); // We'll inherit from our global group
@@ -942,7 +942,7 @@ int VuxGroupConnect(VuGroupEntity *group)
         }
     }
 
-    if (gUICommsQ && group->IsGame())
+    if (gUICommsQ and group->IsGame())
         gUICommsQ->Add(_Q_GAME_ADD_, FalconNullId, group->Id());
 
     return 0;
@@ -966,7 +966,7 @@ void VuxGroupDisconnect(VuGroupEntity *group)
     group->SetCommsHandle(NULL);
     group->SetCommsStatus(VU_CONN_INACTIVE);
 
-    if (ch && ch not_eq FalconGlobalUDPHandle)
+    if (ch and ch not_eq FalconGlobalUDPHandle)
         ComAPIClose(ch);
 
     // Disconnect TCP
@@ -974,10 +974,10 @@ void VuxGroupDisconnect(VuGroupEntity *group)
     group->SetReliableCommsHandle(NULL);
     group->SetReliableCommsStatus(VU_CONN_INACTIVE);
 
-    if (ch && ch not_eq FalconGlobalTCPHandle)
+    if (ch and ch not_eq FalconGlobalTCPHandle)
         ComAPIClose(ch);
 
-    if (gUICommsQ && group->IsGame())
+    if (gUICommsQ and group->IsGame())
         gUICommsQ->Add(_Q_GAME_REMOVE_, FalconNullId, group->Id());
 }
 
@@ -995,8 +995,8 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
 
         if (
             (gConnectionStatus == F4COMMS_CONNECTED ||
-             (g_ipadress && !strcmpi(g_ipadress, "0.0.0.0"))) &&
-            !stoppingvoice && !g_pDPServer && !g_pDPClient  && (g_ipadress)
+             (g_ipadress and !strcmpi(g_ipadress, "0.0.0.0"))) &&
+            !stoppingvoice and !g_pDPServer and !g_pDPClient  and (g_ipadress)
         )
         {
             startupvoice(g_ipadress);//me123
@@ -1057,7 +1057,7 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
     gh = group->GetCommsHandle();
     sh = session->GetCommsHandle();
 
-    if (gh && sh && gh not_eq sh)
+    if (gh and sh and gh not_eq sh)
     {
         ComAPIAddToGroup(gh, sh);
     }
@@ -1065,13 +1065,13 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
     gh = group->GetReliableCommsHandle();
     sh = session->GetReliableCommsHandle();
 
-    if (gh && sh && gh not_eq sh)
+    if (gh and sh and gh not_eq sh)
     {
         ComAPIAddToGroup(gh, sh);
     }
 
     // UI Related
-    if (gUICommsQ && group->IsGame())
+    if (gUICommsQ and group->IsGame())
     {
         gUICommsQ->Add(_Q_SESSION_ADD_, session->Id(), group->Id());
     }
@@ -1120,17 +1120,17 @@ int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session)
     gh = group->GetCommsHandle();
     sh = session->GetCommsHandle();
 
-    if (gh && sh && (gh not_eq sh))
+    if (gh and sh and (gh not_eq sh))
     {
         ComAPIDeleteFromGroup(gh, sh);
     }
 
-    // if (sh == FalconInitialUDPHandle && gh == FalconGlobalUDPHandle)
+    // if (sh == FalconInitialUDPHandle and gh == FalconGlobalUDPHandle)
     // FalconInitialUDPHandle = NULL;
     gh = group->GetReliableCommsHandle();
     sh = session->GetReliableCommsHandle();
 
-    if (gh && sh && gh not_eq sh)
+    if (gh and sh and gh not_eq sh)
     {
         ComAPIDeleteFromGroup(gh, sh);
     }
@@ -1141,7 +1141,7 @@ int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session)
     }
 
     // VWF 12/1/98: Added this to clean up player's flight when he leaves game
-    if ((FalconLocalGame == group) && (FalconLocalGame->IsLocal()))
+    if ((FalconLocalGame == group) and (FalconLocalGame->IsLocal()))
     {
         Flight flight = ((FalconSessionEntity*)session)->GetAssignedPlayerFlight();
 
@@ -1262,7 +1262,7 @@ void VuxSessionDisconnect(VuSessionEntity *session)
     Flight playerFlight = (Flight)((FalconSessionEntity*)session)->GetAssignedPlayerFlight();
     int acnumber = ((FalconSessionEntity*)session)->GetAssignedAircraftNum();
 
-    if (g_bACPlayerCTDFix && playerFlight && FalconLocalGame->IsLocal()) // only the host...
+    if (g_bACPlayerCTDFix and playerFlight and FalconLocalGame->IsLocal()) // only the host...
     {
         FalconPlayerStatusMessage *msg = new FalconPlayerStatusMessage(((FalconSessionEntity*)session)->Id(), FalconLocalGame);
         SimBaseClass *playerEntity = (SimBaseClass*)((FalconSessionEntity*)session)->GetPlayerEntity();
@@ -1335,13 +1335,13 @@ void VuxSessionDisconnect(VuSessionEntity *session)
     ch = session->GetCommsHandle();
     session->SetCommsHandle(NULL);
     session->SetCommsStatus(VU_CONN_INACTIVE);
-    if (session && ch && ch not_eq FalconGlobalUDPHandle)
+    if (session and ch and ch not_eq FalconGlobalUDPHandle)
     ComAPIClose(ch);
     // Disconnect TCP
     ch = session->GetReliableCommsHandle();
     session->SetReliableCommsHandle(NULL);
     session->SetReliableCommsStatus(VU_CONN_INACTIVE);
-    if (session && ch && ch not_eq FalconGlobalTCPHandle)
+    if (session and ch and ch not_eq FalconGlobalTCPHandle)
     ComAPIClose(ch);
     */
 }

@@ -103,7 +103,7 @@ int FalconRequestCampaignData::Encode(VU_BYTE **buf)
     *buf += sizeof(uchar);
     size += sizeof(uchar);
 
-    if (dataBlock.size > 0 && dataBlock.data)
+    if (dataBlock.size > 0 and dataBlock.data)
     {
         memcpy(*buf, dataBlock.data, dataBlock.size);
         *buf += dataBlock.size;
@@ -173,11 +173,11 @@ void SendRequestedData(void)
         uchar *dataptr = request->dataBlock.data;
         FalconSessionEntity *requester = (FalconSessionEntity*)vuDatabase->Find(request->dataBlock.who);
 
-        if ((requester not_eq NULL) && TheCampaign.IsLoaded())
+        if ((requester not_eq NULL) and TheCampaign.IsLoaded())
         {
             TheCampaign.SetOnlineStatus(1);
 
-            if ((!(request->dataBlock.dataNeeded & CAMP_NEED_PRELOAD)) && (CheckNumberPlayers() < 0))
+            if ((!(request->dataBlock.dataNeeded & CAMP_NEED_PRELOAD)) and (CheckNumberPlayers() < 0))
             {
                 FalconRequestCampaignData *msg;
                 MonoPrint("Too Many Players");
@@ -186,7 +186,7 @@ void SendRequestedData(void)
                 msg->dataBlock.dataNeeded = CAMP_GAME_FULL;
                 FalconSendMessage(msg, TRUE);
             }
-            else if ((!(request->dataBlock.dataNeeded & CAMP_NEED_PRELOAD)) && (MatchPlayStarted()))
+            else if ((!(request->dataBlock.dataNeeded & CAMP_NEED_PRELOAD)) and (MatchPlayStarted()))
             {
                 FalconRequestCampaignData *msg;
                 MonoPrint("Send Match Play In Progress");
@@ -264,7 +264,7 @@ void SendRequestedData(void)
                     requester->unitDataSendSet = 0;
                 }
 
-                if (request->dataBlock.dataNeeded & CAMP_NEED_ENTITIES && request->dataBlock.who not_eq vuLocalSession)
+                if (request->dataBlock.dataNeeded & CAMP_NEED_ENTITIES and request->dataBlock.who not_eq vuLocalSession)
                 {
                     MonoPrint("Sending Entity Data\n");
                     // KCK: I don't think there's anything we need here -
@@ -278,7 +278,7 @@ void SendRequestedData(void)
                      ent = iter.GetFirst();
                      while (ent)
                      {
-                     if (!ent->IsPrivate() && ent->IsLocal() && (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE && (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT && (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_MANAGER)
+                     if (!ent->IsPrivate() and ent->IsLocal() and (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE and (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT and (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_MANAGER)
                      {
                      resp = new VuFullUpdateEvent(ent, requester);
                      resp->RequestReliableTransmit();
@@ -289,21 +289,21 @@ void SendRequestedData(void)
                     */
                 }
 
-                if (request->dataBlock.dataNeeded & CAMP_NEED_TEAM_DATA && request->dataBlock.who not_eq vuLocalSession)
+                if (request->dataBlock.dataNeeded & CAMP_NEED_TEAM_DATA and request->dataBlock.who not_eq vuLocalSession)
                 {
                     MonoPrint("Sending Team Data\n");
 
-                    // We really only want to send manager entities && team entities
+                    // We really only want to send manager entities and team entities
                     for (int t = 0; t < NUM_TEAMS; t++)
                     {
-                        if (TeamInfo[t] && TeamInfo[t]->IsLocal())
+                        if (TeamInfo[t] and TeamInfo[t]->IsLocal())
                         {
                             TeamInfo[t]->DoFullUpdate(requester);
                         }
                     }
                 }
 
-                if (request->dataBlock.dataNeeded & CAMP_NEED_VC && request->dataBlock.who not_eq vuLocalSession)
+                if (request->dataBlock.dataNeeded & CAMP_NEED_VC and request->dataBlock.who not_eq vuLocalSession)
                 {
                     MonoPrint("Sending VC Data\n");
                     SendVCData(requester);

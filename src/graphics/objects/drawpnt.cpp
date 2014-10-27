@@ -93,11 +93,11 @@ void DrawablePoint::Draw(RenderOTW *renderer, int LOD)
 {
     ThreeDVertex labelPoint;
 
-    if (DrawablePoint::drawLabels && labelLen)
+    if (DrawablePoint::drawLabels and labelLen)
     {
 
         // See if we need to update our ground position
-        if (onGround == TRUE && LOD not_eq previousLOD)
+        if (onGround == TRUE and LOD not_eq previousLOD)
         {
             // Update our height to reflect the terrain beneath us
             position.z = renderer->viewpoint->GetGroundLevel(position.x, position.y, NULL);

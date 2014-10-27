@@ -427,7 +427,7 @@ void ContextMPR::StartFrame(void)
         }
     }
 
-#if defined _DEBUG && defined _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT_REPLACE
+#if defined _DEBUG and defined _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT_REPLACE
 
     if (bEnableRenderStateHighlightReplace)
     {
@@ -615,7 +615,7 @@ void ContextMPR::SetState(WORD State, DWORD Value)
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_GOURAUD);
             }
 
-            if ((Value & MPR_SE_SCISSORING) && !m_bEnableScissors)
+            if ((Value & MPR_SE_SCISSORING) and !m_bEnableScissors)
             {
                 FlushVB();
 
@@ -688,7 +688,7 @@ void ContextMPR::SetState(WORD State, DWORD Value)
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE, TRUE);
             }
 
-            if ((Value & MPR_SE_SCISSORING) && m_bEnableScissors)
+            if ((Value & MPR_SE_SCISSORING) and m_bEnableScissors)
             {
                 FlushVB();
 
@@ -1228,7 +1228,7 @@ void ContextMPR::SetCurrentState(GLint state, GLint flag)
 
             SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
 
-            if (PlayerOptions.FilteringOn() && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
             {
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
@@ -1270,7 +1270,7 @@ void ContextMPR::SetCurrentState(GLint state, GLint flag)
 
             SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
 
-            if (PlayerOptions.FilteringOn() && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
             {
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
@@ -1312,7 +1312,7 @@ void ContextMPR::SetCurrentState(GLint state, GLint flag)
 
             SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
 
-            if (PlayerOptions.FilteringOn() && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
             {
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
@@ -1396,7 +1396,7 @@ void ContextMPR::SetCurrentState(GLint state, GLint flag)
 
             SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
 
-            if (PlayerOptions.FilteringOn() && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
             {
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
@@ -1438,7 +1438,7 @@ void ContextMPR::SetCurrentState(GLint state, GLint flag)
 
             SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
 
-            if (PlayerOptions.FilteringOn() && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
             {
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
@@ -1480,7 +1480,7 @@ void ContextMPR::SetCurrentState(GLint state, GLint flag)
 
             SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
 
-            if (PlayerOptions.FilteringOn() && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
             {
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
@@ -1846,7 +1846,7 @@ inline void ContextMPR::SetStateTable(GLint state, GLint flag)
     SetCurrentState(state, flag);
 
     hr = m_pD3DD->EndStateBlock((DWORD *)&StateTable[state]);
-    ShiAssert(SUCCEEDED(hr) && StateTable[state]);
+    ShiAssert(SUCCEEDED(hr) and StateTable[state]);
 
     // Record internal state
     m_bUseSetStateInternal = true;
@@ -1964,7 +1964,7 @@ void ContextMPR::SelectTexture1(GLint texID)
         if (!bZBuffering)
         {
             // JB 010326 CTD (too much CPU)
-            if (g_bSlowButSafe && F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
+            if (g_bSlowButSafe and F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
                 return;
 
             FlushVB();
@@ -2004,7 +2004,7 @@ void ContextMPR::SelectTexture2(GLint texID)
         if (!bZBuffering)
         {
             // JB 010326 CTD (too much CPU)
-            if (g_bSlowButSafe && F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
+            if (g_bSlowButSafe and F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
                 return;
 
             FlushVB();
@@ -2042,7 +2042,7 @@ void ContextMPR::ApplyStateBlock(GLint state)
 {
     if (state == -1) return;
 
-    ShiAssert(state >= 0 && state < MAXIMUM_MPR_STATE);
+    ShiAssert(state >= 0 and state < MAXIMUM_MPR_STATE);
 
     if (state not_eq lastState)
     {
@@ -2057,9 +2057,9 @@ void ContextMPR::ApplyStateBlock(GLint state)
 void ContextMPR::RestoreState(GLint state)
 {
     ShiAssert(state not_eq -1);
-    ShiAssert(state >= 0 && state < MAXIMUM_MPR_STATE);
+    ShiAssert(state >= 0 and state < MAXIMUM_MPR_STATE);
 
-#if defined _DEBUG && defined _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT_REPLACE
+#if defined _DEBUG and defined _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT_REPLACE
 
     if (GetKeyState(VK_F4) & compl 1)
     {
@@ -2067,7 +2067,7 @@ void ContextMPR::RestoreState(GLint state)
             bEnableRenderStateHighlightReplace = true;
     }
 
-    if (bEnableRenderStateHighlightReplace && (state == bRenderStateHighlightReplaceTargetState))
+    if (bEnableRenderStateHighlightReplace and (state == bRenderStateHighlightReplaceTargetState))
     {
         state = STATE_SOLID;
         m_colFG = 0xffff0000;
@@ -2086,7 +2086,7 @@ void ContextMPR::RestoreState(GLint state)
         m_setStatesUsed.insert(state);
 #endif
 
-        if (currentState == -1 or (StateTableInternal[currentState].SE_TEXTURING && !StateTableInternal[state].SE_TEXTURING))
+        if (currentState == -1 or (StateTableInternal[currentState].SE_TEXTURING and !StateTableInternal[state].SE_TEXTURING))
             currentTexture1 = -1;
 
         currentState = state;
@@ -2109,12 +2109,12 @@ void ContextMPR::UpdateSpecularFog(DWORD specular)
 
 void ContextMPR::SetZBuffering(BOOL state)
 {
-    if (!bZBuffering && state)
+    if (!bZBuffering and state)
     {
         FlushVB();
         bZBuffering = state;
     }
-    else if (bZBuffering && !state)
+    else if (bZBuffering and !state)
     {
         bZBuffering = state;
     }
@@ -2558,7 +2558,7 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
 
 
 
-    if ((pHead->renderState >= STATE_ALPHA_SOLID) && (pHead->renderState <= STATE_ALPHA_TEXTURE_PERSPECTIVE_CLAMP))
+    if ((pHead->renderState >= STATE_ALPHA_SOLID) and (pHead->renderState <= STATE_ALPHA_TEXTURE_PERSPECTIVE_CLAMP))
     {
         offset = DWORD(&pHead->zBuffer) - DWORD(pHead);
         pHead = (SPolygon *)RadixSortDescending((radix_sort_t *)pHead, offset);
@@ -2611,7 +2611,7 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
                 ApplyStateBlock(pCur->renderState);
 
                 if (
-                    (pCur->renderState > STATE_GOURAUD && pCur->renderState < STATE_ALPHA_SOLID)
+                    (pCur->renderState > STATE_GOURAUD and pCur->renderState < STATE_ALPHA_SOLID)
                     or pCur->renderState > STATE_ALPHA_GOURAUD
                 )
                 {
@@ -2658,7 +2658,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
     ShiAssert(FALSE == F4IsBadReadPtr(poly, sizeof * poly));
     ShiAssert(poly->nVerts >= 3);
     ShiAssert(xyzIdxPtr);
-    ShiAssert(!bUseFGColor or (bUseFGColor && rgbaIdxPtr == NULL));
+    ShiAssert(!bUseFGColor or (bUseFGColor and rgbaIdxPtr == NULL));
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::DrawPoly(0x%X,0x%X,0x%X,0x%X,0x%X,0x%X,%s)\n",
@@ -2733,7 +2733,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
             pVtx->specular = m_colFOG;
 
             // End Mission box
-            if (texID > 25 && texID < 32)
+            if (texID > 25 and texID < 32)
                 pVtx->color = 0xFFFFFFFF;
             else if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit)
             {
@@ -2874,7 +2874,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
             sVertex->specular = m_colFOG;
 
             // End Mission box
-            if (texID > 25 && texID < 32)
+            if (texID > 25 and texID < 32)
                 sVertex->color = 0xFFFFFFFF;
             else
                 sVertex->color = TheColorBank.TODcolor;
@@ -3137,7 +3137,7 @@ void ContextMPR::Draw2DPoint(float x, float y)
 
 void ContextMPR::Draw2DLine(Tpoint *v0, Tpoint *v1)
 {
-    ShiAssert(v0 && v1);
+    ShiAssert(v0 and v1);
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::Draw2DLine(0x%X,0x%X)\n", v0, v1);
@@ -3422,7 +3422,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtx_
     ShiAssert(!(VtxInfo & MPR_VI_COLOR));
 
     // Ensure no degenerate nPrimTypeitives
-    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS && nVerts >= 1) or (nPrimType <= MPR_PRM_POLYLINE && nVerts >= 2));
+    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS and nVerts >= 1) or (nPrimType <= MPR_PRM_POLYLINE and nVerts >= 2));
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::DrawPrimitive(%d,0x%X,%d,0x%X,%d)\n", nPrimType, VtxInfo, nVerts, pData, Stride);
@@ -3521,7 +3521,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
     TLVERTEX *pVtx;
 
     // Ensure no degenerate nPrimTypeitives
-    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS && nVerts >= 1) or (nPrimType <= MPR_PRM_POLYLINE && nVerts >= 2));
+    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS and nVerts >= 1) or (nPrimType <= MPR_PRM_POLYLINE and nVerts >= 2));
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::DrawPrimitive2(%d,0x%X,%d,0x%X,%d)\n", nPrimType, VtxInfo, nVerts, pData, Stride);
@@ -3644,7 +3644,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
     float PolyZAvg = 0;
 
     // Ensure no degenerate nPrimTypeitives
-    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS && nVerts >= 1) or (nPrimType <= MPR_PRM_POLYLINE && nVerts >= 2));
+    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS and nVerts >= 1) or (nPrimType <= MPR_PRM_POLYLINE and nVerts >= 2));
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::DrawPrimitive3(%d,0x%X,%d,0x%X)\n", nPrimType, VtxInfo, nVerts, pData);

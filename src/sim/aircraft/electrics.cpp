@@ -27,7 +27,7 @@ const unsigned long AircraftClass::systemStates[PowerMaxState] =
 
 BOOL AircraftClass::HasPower(AvionicsPowerFlags fl)
 {
-    ShiAssert(currentPower >= 0 && currentPower < PowerMaxState);
+    ShiAssert(currentPower >= 0 and currentPower < PowerMaxState);
     return (powerFlags & systemStates[currentPower] & fl) == (unsigned int)fl ? 1 : 0;
 #if 0
     return (powerFlags & fl) == (unsigned int)fl ? 1 : 0;

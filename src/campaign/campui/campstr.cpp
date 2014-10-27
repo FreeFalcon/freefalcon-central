@@ -73,7 +73,7 @@ _TCHAR* GetNumberName(int nameid, _TCHAR *buffer)
 {
     _TCHAR tmp[5];
 
-    if (nameid % 10 == 1 && nameid not_eq 11)
+    if (nameid % 10 == 1 and nameid not_eq 11)
     {
         if (gLangIDNum == F4LANG_FRENCH)
         {
@@ -85,9 +85,9 @@ _TCHAR* GetNumberName(int nameid, _TCHAR *buffer)
         else
             ReadIndexedString(15, tmp, 5);
     }
-    else if (nameid % 10 == 2 && nameid not_eq 12)
+    else if (nameid % 10 == 2 and nameid not_eq 12)
         ReadIndexedString(16, tmp, 5);
-    else if (nameid % 10 == 3 && nameid not_eq 13)
+    else if (nameid % 10 == 3 and nameid not_eq 13)
         ReadIndexedString(17, tmp, 5);
     else
         ReadIndexedString(18, tmp, 5);
@@ -211,7 +211,7 @@ void ForeignToUpper(_TCHAR *buffer)
         if (gLangIDNum not_eq F4LANG_ENGLISH)
         {
             // Check for special characters
-            if ((uchar)(buffer[i]) >= 224 && (uchar)(buffer[i]) <= 253)
+            if ((uchar)(buffer[i]) >= 224 and (uchar)(buffer[i]) <= 253)
                 buffer[i] -= 32;
             else if (_istlower(buffer[i]))
                 buffer[i] = _toupper(buffer[i]);

@@ -248,7 +248,7 @@ void NewTimedPersistantObject(int vistype, CampaignTime removalTime, float x, fl
 
     ShiAssert(persistantListTail < MAX_PERSISTANT_OBJECTS);
 
-    while (i not_eq persistantListTail && slot < 0)
+    while (i not_eq persistantListTail and slot < 0)
     {
         if (!PersistantObjects[i].InUse())
             slot = i;
@@ -281,7 +281,7 @@ void NewLinkedPersistantObject(int vistype, VU_ID campObjID, int campIdx, float 
 
     ShiAssert(persistantListTail < MAX_PERSISTANT_OBJECTS);
 
-    while (i not_eq persistantListTail && slot < 0)
+    while (i not_eq persistantListTail and slot < 0)
     {
         if (!PersistantObjects[i].InUse())
             slot = i;
@@ -380,7 +380,7 @@ int EncodePersistantList(VU_BYTE** stream, int maxSize)
     size = sizeof(short);
 
     // Save 'em
-    for (i = 0; i < MAX_PERSISTANT_OBJECTS && i < count; i++)
+    for (i = 0; i < MAX_PERSISTANT_OBJECTS and i < count; i++)
     {
         if (PersistantObjects[i].InUse())
             size += PersistantObjects[i].Save(stream);
@@ -464,9 +464,9 @@ void UpdatePersistantObjectsWakeState(float px, float py, float range, CampaignT
                 if (!persist->drawPointer)
                     persist->Deaggregate();
             }
-            else if (persist->drawPointer && dsq > rsq * 1.2F) // Reaggregate 20% further than we deaggregate
+            else if (persist->drawPointer and dsq > rsq * 1.2F) // Reaggregate 20% further than we deaggregate
                 persist->Reaggregate();
-            else if (persist->IsTimed() && now > persist->unionData.removeTime)
+            else if (persist->IsTimed() and now > persist->unionData.removeTime)
                 persist->Cleanup();
         }
     }
@@ -530,11 +530,11 @@ void AddRunwayCraters(Objective o, int f, int craters)
     oc = o->GetObjectiveClassData();
     rwindex = oc->PtDataIndex;
 
-    while (rwindex && !runway)
+    while (rwindex and !runway)
     {
         if (PtHeaderDataTable[rwindex].type == RunwayPt)
         {
-            for (i = 0; i < MAX_FEAT_DEPEND && !runway; i++)
+            for (i = 0; i < MAX_FEAT_DEPEND and !runway; i++)
             {
                 if (PtHeaderDataTable[rwindex].features[i] == f)
                     runway = rwindex;
@@ -632,12 +632,12 @@ void UpdateNoCampaignParentObjectsWakeState(float px, float py, float range)
             {
                 // KCK: Probably should remove objects from this list when they're dead -
                 // But I wasn't sure how ACMI uses the unset dead functionality
-                if (!object->IsAwake() && !object->IsDead())
+                if (!object->IsAwake() and !object->IsDead())
                     object->Wake();
             }
             else if (dsq > rsq * 1.2F)
             {
-                if (object->IsAwake() && //me123 host needs to drive missiles and bombs
+                if (object->IsAwake() and //me123 host needs to drive missiles and bombs
                     (
                         !vuLocalSessionEntity->Game()->IsLocal() ||
                         vuLocalSessionEntity->Game()->IsLocal() &&

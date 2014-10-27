@@ -259,7 +259,7 @@ void OTWDriverClass::InsertObject(DrawableObject *dObj)
 
     ShiAssert(dObj); // Could tolerate this by returning, but I don't think it happens.
 
-    if (viewPoint && viewPoint->IsReady())
+    if (viewPoint and viewPoint->IsReady())
     {
         viewPoint->InsertObject(dObj);
     }
@@ -273,13 +273,13 @@ void OTWDriverClass::RemoveObject(DrawableObject *dObj, int deleteObject)
         ShiWarning("RemoveObject being called outside of the sim thread");
     }
 
-    //if (g_bNeedSimThreadToRemoveObject && GetCurrentThreadId() not_eq gSimThreadID)
+    //if (g_bNeedSimThreadToRemoveObject and GetCurrentThreadId() not_eq gSimThreadID)
     // return;
     //JAM
 
     //if (dObj) // JB 010221 CTD
     // sfr: @todo remove JB check
-    if (dObj && !F4IsBadCodePtr((FARPROC) dObj))  // JB 010221 CTD
+    if (dObj and !F4IsBadCodePtr((FARPROC) dObj))  // JB 010221 CTD
     {
 #if NEW_DRAWABLE_DESTRUCTION
 
@@ -290,14 +290,14 @@ void OTWDriverClass::RemoveObject(DrawableObject *dObj, int deleteObject)
 
 #else
 
-        if (dObj->InDisplayList() && viewPoint)
+        if (dObj->InDisplayList() and viewPoint)
         {
             viewPoint->RemoveObject(dObj);
         }
 
 #endif
 
-        if (deleteObject && !F4IsBadWritePtr(dObj, sizeof(DrawableObject)))  // JB 010221 CTD
+        if (deleteObject and !F4IsBadWritePtr(dObj, sizeof(DrawableObject)))  // JB 010221 CTD
         {
             delete dObj;
         }

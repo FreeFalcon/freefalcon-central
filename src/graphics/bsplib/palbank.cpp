@@ -5,6 +5,7 @@
 
     Provides the bank of palettes used by all the BSP objects.
 \***************************************************************************/
+#include <cISO646>
 #include "stdafx.h"
 #include <io.h>
 #include "PalBank.h"
@@ -147,5 +148,5 @@ void PaletteBankClass::LightReflectionPalette(int id, Tcolor *light)
 
 BOOL PaletteBankClass::IsValidIndex(int id)
 {
-    return ((id >= 0) && (id < nPalettes));
+    return ((id >= 0) and (id < nPalettes));
 }

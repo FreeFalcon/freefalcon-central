@@ -41,7 +41,7 @@ CPButtonObject::CPButtonObject(ButtonObjectInitStr *pInitStr)
     mSound2 = pInitStr->sound2;
 
     // JPO - lets be careful out there
-    if (mCallbackSlot >= 0 && mCallbackSlot < TOTAL_BUTTONCALLBACK_SLOTS)
+    if (mCallbackSlot >= 0 and mCallbackSlot < TOTAL_BUTTONCALLBACK_SLOTS)
     {
 
         mTransStateToAero = ButtonCallbackArray[mCallbackSlot].TransStateToAero;
@@ -101,7 +101,7 @@ void CPButtonObject::HandleMouseEvent(int event)
     {
 
         //Wombat778 3-09-04 Check if this function is being blocked by the training script
-        //if( mTransStateToAero && !TrainingScript->IsBlocked(NULL,mCallbackSlot) )
+        //if( mTransStateToAero and !TrainingScript->IsBlocked(NULL,mCallbackSlot) )
         if (mTransStateToAero)
         {
             mTransStateToAero(this, event);     //translate button click to aero
@@ -409,7 +409,7 @@ void CPButtonView::DisplayBlit(void)
     if (DisplayOptions.bRender2DCockpit) //Handle these in displayblit3d
         return;
 
-    if (mpButtonObject->DoBlit() && mStates)
+    if (mpButtonObject->DoBlit() and mStates)
     {
         if (mTransparencyType == CPTRANSPARENT)
         {
@@ -484,7 +484,7 @@ void CPButtonView::DisplayBlit3D(void)
     if (!DisplayOptions.bRender2DCockpit) //Handle these in displayblit
         return;
 
-    if (mpButtonObject->DoBlit() && mStates)
+    if (mpButtonObject->DoBlit() and mStates)
     {
 
         if (mTransparencyType == CPTRANSPARENT)
@@ -529,7 +529,7 @@ void CPButtonView::CreateLit(void)
             for (int i = 0; i < mStates; i++)
             {
                 // Check if we can use a single texture
-                if ((int)dwMaxTextureWidth >= mpSourceBuffer[i].mWidth && (int)dwMaxTextureHeight >= mpSourceBuffer[i].mHeight)
+                if ((int)dwMaxTextureWidth >= mpSourceBuffer[i].mWidth and (int)dwMaxTextureHeight >= mpSourceBuffer[i].mHeight)
                 {
                     TextureHandle *pTex = new TextureHandle;
 

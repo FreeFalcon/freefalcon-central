@@ -35,7 +35,7 @@ void TestBounds(int position, int dimension, int* pcursorIndex, int cursor0, int
             *pcursorIndex = cursor1;
         }
     }
-    else if (position > dimension / 4 && position < 3 * dimension / 4)
+    else if (position > dimension / 4 and position < 3 * dimension / 4)
     {
         *pcursorIndex = cursor1;
     }
@@ -443,7 +443,7 @@ BOOL CPPanel::Dispatch(int* cursorIndex, int event, int xpos, int ypos)
 
     if (mDefaultCursor >= 0)
     {
-        while ((!found) && (i < mNumButtonViews))
+        while ((!found) and (i < mNumButtonViews))
         {
             found = mpButtonViews[i]->HandleEvent(cursorIndex, event, xpos, ypos);
             i++;
@@ -842,7 +842,7 @@ void CPPanel::SetTOD(float lightLevel)
     }
 
     // Now convert all the 8 bit sources to 16 bit lit versions
-    if (gpTemplateSurface && gpTemplateImage)
+    if (gpTemplateSurface and gpTemplateImage)
         Translate8to32(palette16,
                        gpTemplateImage, // 8 bit color indexes of template
                        gpTemplateSurface); // 16 bit ImageBuffer

@@ -43,7 +43,7 @@ VU_ERRCODE VuFilteredHashTable::Handle(VuMessage *msg)
     {
         VuEntity *ent = msg->Entity();
 
-        if (ent && filter_->RemoveTest(ent))
+        if (ent and filter_->RemoveTest(ent))
         {
             if (Find(ent->Id()))
             {

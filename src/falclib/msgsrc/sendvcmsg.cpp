@@ -235,7 +235,7 @@ void SendVCData(FalconSessionEntity *requester)
 
         ptr = (char *) msg->dataBlock.data;
 
-        while ((count) && (vc))
+        while ((count) and (vc))
         {
             *(int*)ptr = vc->get_team();
             ptr += 4;

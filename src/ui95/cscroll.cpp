@@ -558,7 +558,7 @@ BOOL C_ScrollBar::Process(long, short HitType)
         case 4: // Minus Button
             Minus_->Process(4, HitType);
 
-            if (HitType not_eq C_TYPE_LMOUSEUP && HitType not_eq C_TYPE_REPEAT)
+            if (HitType not_eq C_TYPE_LMOUSEUP and HitType not_eq C_TYPE_REPEAT)
                 break;
 
             switch (GetType())
@@ -591,7 +591,7 @@ BOOL C_ScrollBar::Process(long, short HitType)
         case 5: // Plus Button
             Plus_->Process(5, HitType);
 
-            if (HitType not_eq C_TYPE_LMOUSEUP && HitType not_eq C_TYPE_REPEAT)
+            if (HitType not_eq C_TYPE_LMOUSEUP and HitType not_eq C_TYPE_REPEAT)
                 break;
 
             switch (GetType())
@@ -902,7 +902,7 @@ void C_ScrollBar::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CSCR_SETDISTANCE:
-            if (P[0] >= 1 && P[0] < 50)
+            if (P[0] >= 1 and P[0] < 50)
                 SetDistance(P[0]);
 
             break;

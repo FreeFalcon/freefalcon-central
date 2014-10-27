@@ -247,7 +247,7 @@ long FindObjectiveIndex(Objective Obj)
 
     while (ObjectiveFilters[i].UIType)
     {
-        if (Obj->GetClass() == ObjectiveFilters[i].Class && Obj->GetType() == ObjectiveFilters[i].Type)
+        if (Obj->GetClass() == ObjectiveFilters[i].Class and Obj->GetType() == ObjectiveFilters[i].Type)
             return(i);
 
         i++;
@@ -264,7 +264,7 @@ long GetObjectiveType(CampBaseClass *ent)
 
     while (ObjectiveFilters[i].UIType)
     {
-        if (ent->GetDomain() == ObjectiveFilters[i].Domain && ent->GetClass() == ObjectiveFilters[i].Class && ent->GetType() == ObjectiveFilters[i].Type)
+        if (ent->GetDomain() == ObjectiveFilters[i].Domain and ent->GetClass() == ObjectiveFilters[i].Class and ent->GetType() == ObjectiveFilters[i].Type)
             return(ObjectiveFilters[i].UIType);
 
         i++;
@@ -281,7 +281,7 @@ long GetObjectiveCategory(Objective Obj)
 
     while (ObjectiveFilters[i].UIType)
     {
-        if (Obj->GetClass() == ObjectiveFilters[i].Class && Obj->GetType() == ObjectiveFilters[i].Type)
+        if (Obj->GetClass() == ObjectiveFilters[i].Class and Obj->GetType() == ObjectiveFilters[i].Type)
             return(ObjectiveFilters[i].OOBCategory);
 
         i++;
@@ -332,7 +332,7 @@ long FindUnitType(Unit unit)
 
     while (UnitFilters[i].UIType)
     {
-        if (unit->GetDomain() == UnitFilters[i].Domain && unit->GetClass() == UnitFilters[i].Class && unit->GetType() == UnitFilters[i].Type && unit->GetSType() == UnitFilters[i].SubType)
+        if (unit->GetDomain() == UnitFilters[i].Domain and unit->GetClass() == UnitFilters[i].Class and unit->GetType() == UnitFilters[i].Type and unit->GetSType() == UnitFilters[i].SubType)
             return(UnitFilters[i].UIType);
 
         i++;
@@ -349,7 +349,7 @@ long FindUnitCategory(Unit unit)
 
     while (UnitFilters[i].Domain)
     {
-        if (unit->GetDomain() == UnitFilters[i].Domain && unit->GetClass() == UnitFilters[i].Class && unit->GetType() == UnitFilters[i].Type && (unit->GetSType() == UnitFilters[i].SubType or UnitFilters[i].SubType == UI_VU_ANY))
+        if (unit->GetDomain() == UnitFilters[i].Domain and unit->GetClass() == UnitFilters[i].Class and unit->GetType() == UnitFilters[i].Type and (unit->GetSType() == UnitFilters[i].SubType or UnitFilters[i].SubType == UI_VU_ANY))
             return(UnitFilters[i].OOBCategory);
 
         i++;

@@ -211,7 +211,7 @@ extern  "C" {
         MPR_BF_DST_INV,                // Only MPR_STA_SRC_BLEND_FUNCTION
     };
 
-    // Possible values for: MPR_STA_ALPHA_OP_FUNCTION && MPR_STA_TEXTURE_OP_FUNCTION
+    // Possible values for: MPR_STA_ALPHA_OP_FUNCTION and MPR_STA_TEXTURE_OP_FUNCTION
     enum
     {
         MPR_TO_DISABLE = 1,

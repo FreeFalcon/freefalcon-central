@@ -69,11 +69,11 @@ float FALCON_ORIGIN_LONG = DEF_LONG;
 
 float ConvertRadtoNav(float radAngle)
 {
-    if (radAngle <= HALFPI && radAngle >= -PI)
+    if (radAngle <= HALFPI and radAngle >= -PI)
     {
         return((HALFPI - radAngle) * RTD);
     }
-    else if (radAngle <= PI && radAngle >= HALFPI)
+    else if (radAngle <= PI and radAngle >= HALFPI)
     {
         return(((5 * HALFPI) - radAngle) * RTD);
     }
@@ -91,7 +91,7 @@ float ConvertRadtoNav(float radAngle)
 //------------------------------------------------------
 float ConvertNavtoRad(float navAngle)
 {
-    if ((navAngle > 0.0F) && (navAngle < 90.0F))
+    if ((navAngle > 0.0F) and (navAngle < 90.0F))
     {
         return(HALFPI - (navAngle * DTR));
     }
@@ -460,7 +460,7 @@ void NavigationSystem::ExecIls(void)
     mpCurrentIls.gpDeviation = -180.0F * DTR;
     mpCurrentIls.gsDeviation = 180.0F * DTR;
 
-    if (SimDriver.GetPlayerAircraft() && mpCurrentIls.rwyidx not_eq 0 && mpCurrentIls.vuID not_eq FalconNullId && (GetInstrumentMode() == NavigationSystem::ILS_TACAN or GetInstrumentMode() == NavigationSystem::ILS_NAV))
+    if (SimDriver.GetPlayerAircraft() and mpCurrentIls.rwyidx not_eq 0 and mpCurrentIls.vuID not_eq FalconNullId and (GetInstrumentMode() == NavigationSystem::ILS_TACAN or GetInstrumentMode() == NavigationSystem::ILS_NAV))
     {
 
         xfrontdiff = mpCurrentIls.frontx - SimDriver.GetPlayerAircraft()->XPos();
@@ -472,7 +472,7 @@ void NavigationSystem::ExecIls(void)
 
         bearingToLocalizer = (float) atan2(xbackdiff, ybackdiff); // radians +-pi, xaxis = 0deg
 
-        if (bearingToLocalizer >= -90.0F * DTR && bearingToLocalizer <= 180.0F * DTR)
+        if (bearingToLocalizer >= -90.0F * DTR and bearingToLocalizer <= 180.0F * DTR)
         {
             bearingToLocalizer = 90.0F * DTR - bearingToLocalizer;
         }
@@ -523,7 +523,7 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, float* value)
 
     // MD -- 20040605: adding a reception check here -- you should not be able to get a signal and therefore
     // needles should remain inactive if range to station is greater than ~25nm (150k feet)
-    if (mpCurrentIls.vuID not_eq FalconNullId && mpCurrentIls.rwyidx not_eq 0 && (distToToLocalizer < 150000.0F))
+    if (mpCurrentIls.vuID not_eq FalconNullId and mpCurrentIls.rwyidx not_eq 0 and (distToToLocalizer < 150000.0F))
     {
         //MI check to make sure we are allowed to get the ILS
         if (g_bRealisticAvionics)
@@ -577,7 +577,7 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, float* value)
             *value = mpCurrentIls.gpDeviation;
             returnVal = TRUE;
 
-            if (g_bRealisticAvionics && g_bINS && SimDriver.GetPlayerAircraft())
+            if (g_bRealisticAvionics and g_bINS and SimDriver.GetPlayerAircraft())
                 SimDriver.GetPlayerAircraft()->LOCValid = TRUE; //Flag not visible
         }
         else if (attribute == GS_DEV)
@@ -585,14 +585,14 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, float* value)
             *value = mpCurrentIls.gsDeviation;
             returnVal = TRUE;
 
-            if (g_bRealisticAvionics && g_bINS && SimDriver.GetPlayerAircraft())
+            if (g_bRealisticAvionics and g_bINS and SimDriver.GetPlayerAircraft())
                 SimDriver.GetPlayerAircraft()->GSValid = TRUE; //Flag not visible
         }
     }
     else
     {
         //MI additions
-        if (g_bRealisticAvionics && g_bINS && SimDriver.GetPlayerAircraft())
+        if (g_bRealisticAvionics and g_bINS and SimDriver.GetPlayerAircraft())
         {
             SimDriver.GetPlayerAircraft()->LOCValid = FALSE; //Flag visible
             SimDriver.GetPlayerAircraft()->GSValid = FALSE; //Flag visible
@@ -615,7 +615,7 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, char* pRwyNum)
 
     *pRwyNum = NULL;
 
-    if (mpCurrentIls.vuID not_eq FalconNullId && mpCurrentIls.rwyidx not_eq 0)
+    if (mpCurrentIls.vuID not_eq FalconNullId and mpCurrentIls.rwyidx not_eq 0)
     {
 
         if (attribute == RWY_NUM)
@@ -879,7 +879,7 @@ void NavigationSystem::StepPreviousTacan(void)
 
     Tacan_Data_LL_Str* p_current;
 
-    if (mpCurrentMissionTacan && mpCurrentMissionTacan->pData->vuID not_eq FalconNullId)
+    if (mpCurrentMissionTacan and mpCurrentMissionTacan->pData->vuID not_eq FalconNullId)
     {
         if (mpCurrentMissionTacan->pPrevious == NULL)
         {
@@ -914,7 +914,7 @@ void NavigationSystem::StepPreviousTacan(void)
 void NavigationSystem::StepNextTacan(void)   // For ICP Only
 {
 
-    if (mpCurrentMissionTacan && mpCurrentMissionTacan->pData->vuID not_eq FalconNullId)
+    if (mpCurrentMissionTacan and mpCurrentMissionTacan->pData->vuID not_eq FalconNullId)
     {
 
         if (mpCurrentMissionTacan->pNext == NULL)
@@ -1270,7 +1270,7 @@ void NavigationSystem::StepInstrumentMode(void)
 
 
     //MI additions
-    if (g_bRealisticAvionics && g_bINS && SimDriver.GetPlayerAircraft())
+    if (g_bRealisticAvionics and g_bINS and SimDriver.GetPlayerAircraft())
     {
         SimDriver.GetPlayerAircraft()->LOCValid = TRUE; //Flag not visible
         SimDriver.GetPlayerAircraft()->GSValid = TRUE; //Flag not visible
@@ -1788,7 +1788,7 @@ void NavigationSystem::SetDataLinks(char totalPoints,
         mpDLinkPoints[i].pWaypoint->SetWPArrive(parriveTime[i]);
 
 
-        if (i && mpDLinkPoints[i].pointType == FalconDLinkMessage::TGT && mpDLinkPoints[i - 1].pointType == FalconDLinkMessage::IP)
+        if (i and mpDLinkPoints[i].pointType == FalconDLinkMessage::TGT and mpDLinkPoints[i - 1].pointType == FalconDLinkMessage::IP)
         {
 
             mpDLinkPoints[i].pWaypoint->GetLocation(&tgtx, &tgty, &tgtz);
@@ -1894,7 +1894,7 @@ void NavigationSystem::SetTacanChannel(Tacan_Channel_Src src, int digit, int val
         return;
     }
 
-    if (digit == 2 && (value < 0 or value > 1))
+    if (digit == 2 and (value < 0 or value > 1))
     {
         // Element #2 can only take values of 0 or 1
         ShiWarning("Bad TACAN Number");
@@ -1937,7 +1937,7 @@ void NavigationSystem::FindTacanStation(Tacan_Channel_Src src,
     *type = 0;
     *ilsfreq = 0;
 
-    if (set == TacanList::Y && mpCurrentDomain[src] == TacanList::AA)   // this only works for tankers now
+    if (set == TacanList::Y and mpCurrentDomain[src] == TacanList::AA)   // this only works for tankers now
     {
 
         FlightClass* p_flight;
@@ -1947,7 +1947,7 @@ void NavigationSystem::FindTacanStation(Tacan_Channel_Src src,
         *id = FalconNullId;
         p_flight = (FlightClass*)findWalker.GetFirst();
 
-        while (p_flight && result == FALSE)
+        while (p_flight and result == FALSE)
         {
 
             if (((int)p_flight->tacan_channel) == channel)
@@ -2052,7 +2052,7 @@ int NavigationSystem::GetTacanChannel(Tacan_Channel_Src src)
 void NavigationSystem::SetTacanBand(Tacan_Channel_Src src, TacanList::StationSet set)
 {
 
-    if (set not_eq TacanList::X && set not_eq TacanList::Y)
+    if (set not_eq TacanList::X and set not_eq TacanList::Y)
     {
         ShiWarning("Bad TACAN Band");
         return;
@@ -2101,7 +2101,7 @@ void NavigationSystem::SetTacanChannel(Tacan_Channel_Src src, int channel, Tacan
         return;
     }
 
-    if (set not_eq TacanList::X && set not_eq TacanList::Y)
+    if (set not_eq TacanList::X and set not_eq TacanList::Y)
     {
         ShiWarning("Bad TACAN Band");
         return;
@@ -2317,7 +2317,7 @@ void NavigationSystem::GetAirbase(VU_ID* pATCId)
     {
         pcurrentWaypoint = SimDriver.GetPlayerAircraft()->curWaypoint;
 
-        if (pcurrentWaypoint && pcurrentWaypoint->GetWPAction() == WP_LAND)
+        if (pcurrentWaypoint and pcurrentWaypoint->GetWPAction() == WP_LAND)
         {
             *pATCId = pcurrentWaypoint->GetWPTargetID();
         }
@@ -2354,7 +2354,7 @@ BOOL NavigationSystem::IsTCNTanker(void)
     GetTacanVUID(GetControlSrc(), &VuId);
     pCampBase = (CampBaseClass*) vuDatabase->Find(VuId);
 
-    if (pCampBase && pCampBase->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT && pCampBase->EntityType()->classInfo_[VU_TYPE] == TYPE_FLIGHT)
+    if (pCampBase and pCampBase->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT and pCampBase->EntityType()->classInfo_[VU_TYPE] == TYPE_FLIGHT)
     {
         pFlight = (FlightClass*) pCampBase;
 
@@ -2381,7 +2381,7 @@ BOOL NavigationSystem::IsTCNCarrier(void)
     GetTacanVUID(GetControlSrc(), &VuId);
     pCampBase = (CampBaseClass*) vuDatabase->Find(VuId);
 
-    if (pCampBase && pCampBase->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT && pCampBase->EntityType()->classInfo_[VU_TYPE] == TYPE_TASKFORCE && pCampBase->EntityType()->classInfo_[VU_STYPE] == STYPE_UNIT_CARRIER)
+    if (pCampBase and pCampBase->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT and pCampBase->EntityType()->classInfo_[VU_TYPE] == TYPE_TASKFORCE and pCampBase->EntityType()->classInfo_[VU_STYPE] == STYPE_UNIT_CARRIER)
     {
         return TRUE;
     }
@@ -2403,7 +2403,7 @@ BOOL NavigationSystem::IsTCNAirbase(void)
     GetTacanVUID(GetControlSrc(), &VuId);
     pCampBase = (CampBaseClass*) vuDatabase->Find(VuId);
 
-    if (pCampBase && pCampBase->IsObjective() && pCampBase->EntityType()->classInfo_[VU_TYPE] == TYPE_AIRBASE)
+    if (pCampBase and pCampBase->IsObjective() and pCampBase->EntityType()->classInfo_[VU_TYPE] == TYPE_AIRBASE)
     {
         return TRUE;
     }
@@ -2444,7 +2444,7 @@ void NavigationSystem::SetIlsFromTacan()
     int rwindex = 0;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC and playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         // Find the VU_ID for the entity that the TACAN channel represents
         GetTacanVUID(GetControlSrc(), &ATCId);
@@ -2455,7 +2455,7 @@ void NavigationSystem::SetIlsFromTacan()
             atc = (ObjectiveClass*)vuDatabase->Find(ATCId);
 
             // is the objective selected actually an airbase??
-            if (atc && atc->IsObjective() && atc->EntityType()->classInfo_[VU_TYPE] == TYPE_AIRBASE)
+            if (atc and atc->IsObjective() and atc->EntityType()->classInfo_[VU_TYPE] == TYPE_AIRBASE)
             {
                 // if so, figure out which runway player should use at selected airbase
                 rwindex = atc->brain->FindBestLandingRunway(playerAC, FALSE);

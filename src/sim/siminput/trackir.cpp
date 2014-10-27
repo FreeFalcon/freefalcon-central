@@ -526,7 +526,7 @@ void TrackIR::GetTrackIR_ViewValues(float* yaw, float* pitch)
 
             missedFrameCount = 0;
 
-            if ((isActive == false) && (g_bTrackIRon))
+            if ((isActive == false) and (g_bTrackIRon))
             {
                 OTWDriver.SetHeadTracking(TRUE); // Retro 26/09/03
                 isActive = true;

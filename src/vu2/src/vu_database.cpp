@@ -37,7 +37,7 @@ unsigned int VuDatabase::Purge(VU_BOOL all)
         )
         {
             // run calling all callbacks and seting as removed... purge will do the actual removal
-            if (!(!all && ((e->IsPrivate() && e->IsPersistent()) or e->IsGlobal())))
+            if (!(!all and ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
             {
                 toBePurged.push_back(VuEntityBin(e));
             }
@@ -69,7 +69,7 @@ int VuDatabase::Suspend(VU_BOOL all)
         )
         {
             // run calling all callbacks and seting as removed... purge will do the actual removal
-            if (!(!all && ((e->IsPrivate() && e->IsPersistent()) or e->IsGlobal())))
+            if (!(!all and ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
             {
                 toBeSuspended.push_back(VuEntityBin(e));
                 e->RemovalCallback();
@@ -119,7 +119,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
     vuCollectionManager->AddToBirthList(entity);
     VuEntity::VU_SEND_TYPE sendType = entity->SendCreate();
 
-    if (entity->IsLocal() && (!entity->IsPrivate()) && (sendType not_eq VuEntity::VU_SC_DONT_SEND))
+    if (entity->IsLocal() and (!entity->IsPrivate()) and (sendType not_eq VuEntity::VU_SC_DONT_SEND))
     {
         VuCreateEvent *event = 0;
         VuTargetEntity *target = vuGlobalGroup;
@@ -157,7 +157,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 
     VuEntity::VU_SEND_TYPE sendType = entity->SendCreate();
 
-    if (entity->IsLocal() && (!entity->IsPrivate()) && (sendType not_eq VuEntity::VU_SC_DONT_SEND))
+    if (entity->IsLocal() and (!entity->IsPrivate()) and (sendType not_eq VuEntity::VU_SC_DONT_SEND))
     {
         VuCreateEvent *event = 0;
         VuTargetEntity *target = vuGlobalGroup;
@@ -214,7 +214,7 @@ VU_ERRCODE VuDatabase::Remove(VuEntity *entity)
 
 #if NO_RELEASE_EVENT
 
-    if (entity->IsLocal() && !entity->IsPrivate())
+    if (entity->IsLocal() and !entity->IsPrivate())
     {
         VuEvent *event = new VuDeleteEvent(entity);
         event->RequestReliableTransmit();
@@ -224,7 +224,7 @@ VU_ERRCODE VuDatabase::Remove(VuEntity *entity)
 #else
     VuEvent *event;
 
-    if (entity->IsLocal() && !entity->IsPrivate())
+    if (entity->IsLocal() and !entity->IsPrivate())
     {
         event = new VuDeleteEvent(entity);
         event->RequestReliableTransmit();
@@ -309,7 +309,7 @@ unsigned int VuDatabase::Purge(VU_BOOL all)
             e = li.GetNext()
         )
         {
-            if (!(!all && ((e->IsPrivate() && e->IsPersistent()) or e->IsGlobal())))
+            if (!(!all and ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
             {
                 e->SetVuState(VU_MEM_REMOVED);
             }
@@ -337,7 +337,7 @@ int VuDatabase::Suspend(VU_BOOL all)
             e = li.GetNext()
         )
         {
-            if (!(!all && ((e->IsPrivate() && e->IsPersistent()) or e->IsGlobal())))
+            if (!(!all and ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
             {
                 e->RemovalCallback();
                 e->SetVuState(VU_MEM_REMOVED);
@@ -386,7 +386,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
     vuCollectionManager->AddToBirthList(entity);
     VuEntity::VU_SEND_TYPE sendType = entity->SendCreate();
 
-    if (entity->IsLocal() && (!entity->IsPrivate()) && (sendType not_eq VuEntity::VU_SC_DONT_SEND))
+    if (entity->IsLocal() and (!entity->IsPrivate()) and (sendType not_eq VuEntity::VU_SC_DONT_SEND))
     {
         VuCreateEvent *event = 0;
         VuTargetEntity *target = vuGlobalGroup;
@@ -426,7 +426,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 
     VuEntity::VU_SEND_TYPE sendType = entity->SendCreate();
 
-    if (entity->IsLocal() && (!entity->IsPrivate()) && (sendType not_eq VuEntity::VU_SC_DONT_SEND))
+    if (entity->IsLocal() and (!entity->IsPrivate()) and (sendType not_eq VuEntity::VU_SC_DONT_SEND))
     {
         VuCreateEvent *event = 0;
         VuTargetEntity *target = vuGlobalGroup;
@@ -478,7 +478,7 @@ VU_ERRCODE VuDatabase::Remove(VuEntity *entity)
 
     VuEvent *event;
 
-    if (entity->IsLocal() && !entity->IsPrivate())
+    if (entity->IsLocal() and !entity->IsPrivate())
     {
         event = new VuDeleteEvent(entity);
         event->RequestReliableTransmit();

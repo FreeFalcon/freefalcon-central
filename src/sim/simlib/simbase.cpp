@@ -343,7 +343,7 @@ void SimBaseClass::ChangeOwner(VU_ID new_owner)
 
         campObj = GetCampaignObject();
 
-        if (campObj && campObj->IsFlight() && campObj->InPackage())
+        if (campObj and campObj->IsFlight() and campObj->InPackage())
         {
             char temp[40];
             GetCallsign(((Flight)campObj)->callsign_id, ((Flight)campObj)->callsign_num, temp);
@@ -356,7 +356,7 @@ void SimBaseClass::ChangeOwner(VU_ID new_owner)
     }
 
     // LEON TODO: Fill in various sub class's MakeRemote() functions
-    if (IsLocal() && new_owner not_eq FalconLocalSession->Id())
+    if (IsLocal() and new_owner not_eq FalconLocalSession->Id())
     {
         MakeRemote();
     }
@@ -475,7 +475,7 @@ int SimBaseClass::Sleep(void)
 
 #if 0 // The code screws up IA by violently removing vehicles from the campaign unit prior to reagg, thus "losing" them.
     /*
-     if (SimDriver.RunningInstantAction() && !IsSetFlag(MOTION_OWNSHIP))
+     if (SimDriver.RunningInstantAction() and !IsSetFlag(MOTION_OWNSHIP))
      {
      // This is an instant action game - We want to remove the object
      // and regenate a new one
@@ -641,7 +641,7 @@ void SimBaseClass::SetDead(int flag)
     if (flag)
     {
         // Pdromote another flight member, if this is the lead
-        if (campaignObject && campaignObject->GetComponents() && campaignObject->GetComponentLead() == this)
+        if (campaignObject and campaignObject->GetComponents() and campaignObject->GetComponentLead() == this)
         {
             FalconWingmanMsg* wingCommand =
                 new FalconWingmanMsg(campaignObject->Id(), vuLocalSessionEntity.get());
@@ -957,7 +957,7 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
     float dx = 0.0F, dy = 0.0F;
 
     // Is the target the player
-    if (missile && this == SimDriver.GetPlayerEntity())
+    if (missile and this == SimDriver.GetPlayerEntity())
     {
         // Does he have a wingman?
         // Component list is zero based
@@ -966,7 +966,7 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
         else
             speaker = SimDriver.GetPlayerEntity()->GetCampaignObject()->GetComponentNumber(1);
 
-        if (speaker && incomingMissile[0] not_eq missile)
+        if (speaker and incomingMissile[0] not_eq missile)
         {
             // 2000-10-02 ADDED BY S.G. Wingman NEEDS TO BE CLOSE TO THE SHOOTER AND NOT DEFENSIVE (UNLESS ACE) BEFORE A LAUNCH WARNING IS SAID
             float dx, dy, dz, rangeSquare;
@@ -980,10 +980,10 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
             dz = speaker->ZPos() - missile->ZPos();
             rangeSquare = dx * dx + dy * dy + dz * dz;
 
-            if (rangeSquare < 6.0f * NM_TO_FT * 6.0f * NM_TO_FT && // Range is below 6 NM AND
+            if (rangeSquare < 6.0f * NM_TO_FT * 6.0f * NM_TO_FT and // Range is below 6 NM AND
                 (SimDriver.RunningInstantAction() or // We're in instant action (in thise case rangeSquare will be 0 because it's the player) OR
                  ((SimVehicleClass *)speaker)->Brain()->SkillLevel() == 4 or // Skill of wingman is ace OR
-                 (((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode() not_eq DigitalBrain::GunsJinkMode && // Wingman not defensive
+                 (((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode() not_eq DigitalBrain::GunsJinkMode and // Wingman not defensive
                   ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode()  not_eq DigitalBrain::MissileDefeatMode &&
                   ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode()  not_eq DigitalBrain::DefensiveModes)))
             {
@@ -1071,13 +1071,13 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
     // If it's not an airplane or the target is the player, no need to do our fancy tests...
     if (!IsAirplane() or this == SimDriver.GetPlayerEntity())
     {
-        if (incomingMissile[0] && (missile == NULL or incomingMissile[0]->IsDead()))
+        if (incomingMissile[0] and (missile == NULL or incomingMissile[0]->IsDead()))
         {
             VuDeReferenceEntity(incomingMissile[0]);
             incomingMissile[0] = NULL;
         }
 
-        if (missile && incomingMissile[0] == NULL)
+        if (missile and incomingMissile[0] == NULL)
         {
             incomingMissile[0] = missile;
             VuReferenceEntity(incomingMissile[0]);
@@ -1088,14 +1088,14 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
     {
         // Because FF doesn't clean up its act, need to make sure exploded missiles are not accounted for
         // We do the holding spot first
-        if (incomingMissile[1] && incomingMissile[1]->IsDead())
+        if (incomingMissile[1] and incomingMissile[1]->IsDead())
         {
             VuDeReferenceEntity(incomingMissile[1]);
             incomingMissile[1] = NULL;
         }
 
         // then the incoming missile spot, this one also check is missile is NULL, then it uses what's in our holding spot for the incoming. That's why we tested it first
-        if (incomingMissile[0] && (missile == NULL or incomingMissile[0]->IsDead()))
+        if (incomingMissile[0] and (missile == NULL or incomingMissile[0]->IsDead()))
         {
             VuDeReferenceEntity(incomingMissile[0]);
 
@@ -1166,7 +1166,7 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
                     }
                 }
                 // The missile was launched uncaged and we cannot see it and the pilot is either an ace or a veteran...
-                else if (!canSee && ((SimVehicleClass *)this)->Brain()->SkillLevel() > 2)
+                else if (!canSee and ((SimVehicleClass *)this)->Brain()->SkillLevel() > 2)
                 {
                     // Roll the dice to see if he will 'see' it based on his skill
                     if (4 - ((SimVehicleClass *)this)->Brain()->SkillLevel() + 8 <= rand() % 10)

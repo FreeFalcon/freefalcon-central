@@ -385,7 +385,7 @@ void VirtualDisplay::Point(float x1, float y1)
     y = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 + dmatrix.translationY;
 
     // Clipping
-    if ((x >= -1.0f) && (x <= 1.0f) && (y <= 1.0f) && (y >= -1.0f))
+    if ((x >= -1.0f) and (x <= 1.0f) and (y <= 1.0f) and (y >= -1.0f))
     {
 
         // Convert to pixel coordinates and draw the point on the display
@@ -1311,7 +1311,7 @@ void VirtualDisplay::InitializeFonts(void)
 
 void VirtualDisplay::SetFont(int newfont)
 {
-    ShiAssert(newfont >= 0 && newfont < NUM_FONT_RESOLUTIONS);
+    ShiAssert(newfont >= 0 and newfont < NUM_FONT_RESOLUTIONS);
 
     if (newfont >= pFontSet->totalFont)
         newfont = pFontSet->totalFont - 1;
@@ -1408,7 +1408,7 @@ void VirtualDisplay::SetRttRect(int tLeft_, int tTop_, int tRight_, int tBottom_
     xRes = tRight - tLeft;
     yRes = tBottom - tTop;
 
-    if (rt_ && renderTexture)
+    if (rt_ and renderTexture)
     {
         txRes = renderTexture->m_nActualWidth;
         tyRes = renderTexture->m_nActualHeight;

@@ -264,7 +264,7 @@ static void LocalCloseWindowCB(long, short hittype, C_Base *control)
     if (m_bCloseWindowPending)
         return;
 
-    if (m_pUpdater && m_pUpdater->IsUpdating())
+    if (m_pUpdater and m_pUpdater->IsUpdating())
     {
         m_bCloseWindowPending = true;
         m_pUpdater->CancelUpdate();
@@ -537,7 +537,7 @@ static BOOL MainKBCallback(unsigned char DKScanCode, unsigned char Ascii, unsign
         case DIK_RETURN:
         case DIK_NUMPADENTER:
         {
-            if (RepeatCount == 1 && m_pSelectedItem)
+            if (RepeatCount == 1 and m_pSelectedItem)
             {
                 OnClickedPlay(0, C_TYPE_LMOUSEUP, m_pWnd->FindControl(JETNET_BROWSER_PLAY));
                 return TRUE;
@@ -1109,7 +1109,7 @@ int C_ServerItem::TrimString(char *str, int nMaxPixelWidth)
 
     int nLength = strlen(str);
 
-    while (nLength && gFontList->StrWidth(Font_, str, nLength) > nMaxPixelWidth)
+    while (nLength and gFontList->StrWidth(Font_, str, nLength) > nMaxPixelWidth)
         nLength--;
 
     return nLength;
@@ -1144,7 +1144,7 @@ long C_ServerItem::CheckHotSpots(long relx, long rely)
     if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
         return(0);
 
-    if (relx >= GetX() && rely >= GetY() && relx <= (GetX() + GetW()) && rely <= (GetY() + GetH()))
+    if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= (GetY() + GetH()))
         return(GetID());
 
     return(0);

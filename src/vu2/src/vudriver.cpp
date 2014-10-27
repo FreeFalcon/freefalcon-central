@@ -303,7 +303,7 @@ unsigned int VuMaster::SendsPerPlayer()
 {
     int otherPlayers = vuLocalSessionEntity->Game()->SessionCount() - 1;
     // avoids division by zero
-    return ((otherPlayers > 0) && (toSend > 0)) ? (MaxSends() / otherPlayers) : 0;
+    return ((otherPlayers > 0) and (toSend > 0)) ? (MaxSends() / otherPlayers) : 0;
 }
 
 VuMaster::VuMaster(VuEntity* entity) : VuDeadReckon(entity)
@@ -400,7 +400,7 @@ void VuMaster::Exec(VU_TIME timestamp)
             s->EnqueueOobPositionUpdate(entity_);
             --toSend;
         }
-        else if ((score.first == ENQUEUE_SEND) && (toSend > 0))
+        else if ((score.first == ENQUEUE_SEND) and (toSend > 0))
         {
             // enqeue send, dont decrement to sent (will be done during enqueued sends)
             // do this to optimize enqueued PU (they wont be sent if OOB)

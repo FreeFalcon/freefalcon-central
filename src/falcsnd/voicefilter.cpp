@@ -363,7 +363,7 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
                 break;
 
             case rcfProx:
-                if ((radiofilter & TOFROM_FLIGHT) or ((IN_PROXIMITY & radiofilter) && ((radiofilter & TO_TEAM) or (TO_PACKAGE & radiofilter))))
+                if ((radiofilter & TOFROM_FLIGHT) or ((IN_PROXIMITY & radiofilter) and ((radiofilter & TO_TEAM) or (TO_PACKAGE & radiofilter))))
                     retval[i]  or_eq  IN_PROXIMITY;
 
                 break;
@@ -383,7 +383,7 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
             case rcfTower:
                 if (radiofilter & TOFROM_FLIGHT)
                     retval[i]  or_eq  TOFROM_FLIGHT;
-                else if ((TOFROM_TOWER & radiofilter) && gNavigationSys)
+                else if ((TOFROM_TOWER & radiofilter) and gNavigationSys)
                 {
                     VU_ID ATCId;
                     gNavigationSys->GetAirbase(&ATCId);
@@ -451,12 +451,12 @@ void VoiceFilter::PlayRadioMessage(
     {
         int player = 0, exit = 0;
 
-        if (pEntity && pEntity->IsEject())
+        if (pEntity and pEntity->IsEject())
         {
             player = 1;
         }
 
-        if (VM && VM->falconVoices[channel].exitChannel)
+        if (VM and VM->falconVoices[channel].exitChannel)
         {
             exit = 1;
         }
@@ -492,7 +492,7 @@ void VoiceFilter::PlayRadioMessage(
     // setup message structure with appropriate values
     message.message = msgid;
     message.status = SLOT_IN_USE;
-    ShiAssert(talker >= 0 && talker < fragfile.MaxVoices());
+    ShiAssert(talker >= 0 and talker < fragfile.MaxVoices());
 
     if (talker < 0)
     {
@@ -643,7 +643,7 @@ void VoiceFilter::PlayRadioMessage(
         }
 
         // Retro 20Dec2003 start
-        if ((radioLabel) && (SimDriver.InSim()))
+        if ((radioLabel) and (SimDriver.InSim()))
         {
             // however there´s a prob as there are a few 'continues' up so maybe I´m missing some chunks here..
             char theChannel = CanUserHearThisMessage(radiofilter, from, to);
@@ -933,7 +933,7 @@ short VoiceFilter::EvaluateElement(short evalHdrNumber, short evalElement)
 
     //index into evaldata to get appropriate offset
     //  dEvalData = evalData + (evalHdrNumber * sizeof( EVAL_FILE_INFO ));
-    ShiAssert(evalHdrNumber >= 0 && evalHdrNumber < evalfile.MaxEvals());
+    ShiAssert(evalHdrNumber >= 0 and evalHdrNumber < evalfile.MaxEvals());
     eEvalData = evalfile.GetEval(evalHdrNumber);
     ShiAssert(FALSE == F4IsBadReadPtr(eEvalData, sizeof * eEvalData));
 
@@ -1155,8 +1155,8 @@ int VoiceFilter::GetBullseyeComm(int *mesgID, short *data)
                 dist = abs(Distance(xs1, ys1, xs2, ys2));
         }
 
-        if (((commHdrInfo->bullseye > -1) && PlayerOptions.BullseyeOn()
-             && dist * FT_TO_NM > 25 // JB 010121 if the dist is less than 25 miles don't use a bullseye call
+        if (((commHdrInfo->bullseye > -1) and PlayerOptions.BullseyeOn()
+             and dist * FT_TO_NM > 25 // JB 010121 if the dist is less than 25 miles don't use a bullseye call
             ) or !SimDriver.InSim() ||
             (commHdrInfo->bullseye == *mesgID))
         {
@@ -1377,7 +1377,7 @@ void IncDecDataToPlay(int delta)
                     VToolMsgData.data[i] += delta;
                     fragNumber = voiceFilter->IndexElement(VToolMsgData.eval[i], VToolMsgData.data[i]);
 
-                    while (fragsPlayed[fragNumber + (VToolMsgData.talker * voiceFilter->fragfile.MaxFrags())] && (VToolMsgData.data[i] < VToolMsgData.maxs[i]))
+                    while (fragsPlayed[fragNumber + (VToolMsgData.talker * voiceFilter->fragfile.MaxFrags())] and (VToolMsgData.data[i] < VToolMsgData.maxs[i]))
                     {
                         evalLastFrag[VToolMsgData.eval[i] * voiceFilter->fragfile.MaxVoices() + VToolMsgData.talker] = VToolMsgData.data[i];
                         VToolMsgData.data[i] += delta;

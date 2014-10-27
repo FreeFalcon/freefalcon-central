@@ -184,7 +184,7 @@ int VuCollectionManager::FindEnt(VuEntity* ent)
 #else
         VuEntity *ent2 = c->Find(ent);
 
-        if (ent2 && ent2 == ent)
+        if (ent2 and ent2 == ent)
         {
             retval++;
         }
@@ -215,7 +215,7 @@ void VuCollectionManager::CreateEntitiesAndRunGc()
     const unsigned int bmax = 5;
     unsigned int bcount = 0;
 
-    while (!birthlist_.empty() && (bcount < bmax))
+    while (!birthlist_.empty() and (bcount < bmax))
     {
         ++bcount;
         VuEntityBin &eb = birthlist_.front();
@@ -227,7 +227,7 @@ void VuCollectionManager::CreateEntitiesAndRunGc()
     const unsigned int dmax = 5;
     unsigned int dcount = 0;
 
-    while (!gclist_.empty() && (dcount < dmax))
+    while (!gclist_.empty() and (dcount < dmax))
     {
         ++dcount;
         VuEntityBin &eb = gclist_.front();

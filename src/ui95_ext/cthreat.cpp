@@ -130,7 +130,7 @@ void C_Threat::BuildOverlay(BYTE *overlay, long w, long h, float pixelsperkm)
         // if(!(circle->Flags & C_BIT_INVISIBLE)) {
         UI_Refresher *gpsItem = NULL;
 
-        if (!(circle->Flags & C_BIT_INVISIBLE) && ((gpsItem = (UI_Refresher*)gGps->Find(circle->ID)) && gpsItem->MapItem_ && !(gpsItem->MapItem_->Flags & C_BIT_INVISIBLE)))
+        if (!(circle->Flags & C_BIT_INVISIBLE) and ((gpsItem = (UI_Refresher*)gGps->Find(circle->ID)) and gpsItem->MapItem_ and !(gpsItem->MapItem_->Flags & C_BIT_INVISIBLE)))
         {
             myCircle.SetCenter(static_cast<long>(static_cast<float>(circle->x) * pixelsperkm),
                                static_cast<long>(static_cast<float>(circle->y) * pixelsperkm));

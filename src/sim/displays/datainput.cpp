@@ -503,7 +503,7 @@ void SmsDrawable::InputPushButton(int whichButton, int whichMFD)
         inputstr[STR_LEN - 1] = '\0';
     }
 
-    if (InputsMade == PossibleInputs && CheckButton(whichButton))
+    if (InputsMade == PossibleInputs and CheckButton(whichButton))
         return;
     else if (CheckButton(whichButton))
         InputsMade++;
@@ -696,7 +696,7 @@ void SmsDrawable::FillInputString(void)
             inputstr[MAX_DIGITS + 1] = 'T';
         }
     }
-    else if (InputModus == ARMING_DELAY or InputModus == C1 or (InputModus == C2 && InputLine <= 0))
+    else if (InputModus == ARMING_DELAY or InputModus == C1 or (InputModus == C2 and InputLine <= 0))
     {
         inputstr[8] = 'S';
         inputstr[9] = 'E';
@@ -739,7 +739,7 @@ void SmsDrawable::FillInputString(void)
         else
             inputstr[0] = ' ';
     }
-    else if (InputModus == BURST_ALT or (InputModus == C2 && InputLine > 0))
+    else if (InputModus == BURST_ALT or (InputModus == C2 and InputLine > 0))
     {
         for (int i = 0; i < MAX_DIGITS; i++)
         {
@@ -829,10 +829,10 @@ void SmsDrawable::CheckInput(void)
         case C1:
             var = AddUp();
 
-            if (Manual_Input && InputLine <= 0)
+            if (Manual_Input and InputLine <= 0)
                 //Sms->C1AD1 = var; // MLR 4/3/2004 -
                 Sms->SetAGBC1ArmDelay1((float)var);
-            else if (Manual_Input && InputLine > 0)
+            else if (Manual_Input and InputLine > 0)
                 //Sms->C1AD2 = var; // MLR 4/3/2004 -
                 Sms->SetAGBC1ArmDelay2((float)var);
 
@@ -842,10 +842,10 @@ void SmsDrawable::CheckInput(void)
         case C2:
             var = AddUp();
 
-            if (Manual_Input && InputLine <= 0)
+            if (Manual_Input and InputLine <= 0)
                 //Sms->C2AD = var;
                 Sms->SetAGBC2ArmDelay((float)var);
-            else if (Manual_Input && InputLine > 0)
+            else if (Manual_Input and InputLine > 0)
                 //Sms->C2BA = var;
                 Sms->SetAGBBurstAlt(var);
 

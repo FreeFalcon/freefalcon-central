@@ -485,13 +485,13 @@ void LogBookData::UpdateCampaign(CAMP_MISS_STRUCT *MissStats)
 
     UpdateFlightHours(MissStats->FlightHours);
 
-    if (MissStats->Flags & CRASH_UNDAMAGED && !g_bDisableCrashEjectCourtMartials) // JB 010118
+    if (MissStats->Flags & CRASH_UNDAMAGED and !g_bDisableCrashEjectCourtMartials) // JB 010118
     {
         Pilot.Campaign.TotalScore -= 25;
         MissionResult  or_eq  CM_CRASH | COURT_MARTIAL;
     }
 
-    if (MissStats->Flags & EJECT_UNDAMAGED && !g_bDisableCrashEjectCourtMartials) // JB 010118
+    if (MissStats->Flags & EJECT_UNDAMAGED and !g_bDisableCrashEjectCourtMartials) // JB 010118
     {
         Pilot.Campaign.TotalScore -= 50;
         MissionResult  or_eq  CM_EJECT | COURT_MARTIAL;
@@ -623,16 +623,16 @@ void LogBookData::CalcRank(void)
 {
     LB_RANK NewRank = SEC_LT;
 
-    if ((Pilot.Campaign.TotalScore > 3200) && Pilot.Campaign.GamesWon)
+    if ((Pilot.Campaign.TotalScore > 3200) and Pilot.Campaign.GamesWon)
     {
         NewRank = COLONEL;
     }
-    else if ((Pilot.Campaign.TotalScore > 1600) && \
+    else if ((Pilot.Campaign.TotalScore > 1600) and \
              (Pilot.Campaign.GamesWon or Pilot.Campaign.GamesTied))
     {
         NewRank = LT_COL;
     }
-    else if ((Pilot.Campaign.TotalScore > 800) && \
+    else if ((Pilot.Campaign.TotalScore > 800) and \
              (Pilot.Campaign.GamesWon or Pilot.Campaign.GamesTied or Pilot.Campaign.GamesLost))
     {
         NewRank = MAJOR;
@@ -716,19 +716,19 @@ void LogBookData::AwardMedals(CAMP_MISS_STRUCT *MissStats)
 
         MedalPts = FloatToInt32(PlayerOptions.Realism * MedalPts * CampaignDifficulty() * MissStats->Score * MissionComplexity(MissStats));
 
-        if ((MedalPts > 9600) && (PlayerOptions.Realism > 0.9f) && MissStats->Score >= 4)
+        if ((MedalPts > 9600) and (PlayerOptions.Realism > 0.9f) and MissStats->Score >= 4)
         {
             MissionResult  or_eq  AWARD_MEDAL | MDL_AFCROSS;
             Pilot.Medals[AIR_FORCE_CROSS]++;
             Pilot.Campaign.TotalScore += 20;
         }
-        else if ((MedalPts > 7800) && (PlayerOptions.Realism > 0.7f))
+        else if ((MedalPts > 7800) and (PlayerOptions.Realism > 0.7f))
         {
             MissionResult  or_eq  AWARD_MEDAL | MDL_SILVERSTAR;
             Pilot.Medals[SILVER_STAR]++;
             Pilot.Campaign.TotalScore += 15;
         }
-        else if (MedalPts > 6000 && (PlayerOptions.Realism > 0.5f))
+        else if (MedalPts > 6000 and (PlayerOptions.Realism > 0.5f))
         {
             MissionResult  or_eq  AWARD_MEDAL | MDL_DIST_FLY;
             Pilot.Medals[DIST_FLY_CROSS]++;

@@ -1762,8 +1762,8 @@ void RenderOTW::ComputeBounds(void)
         back_edge.Normalize();
     }
 
-    ShiAssert((leftX1 == rightX1 && leftY1 == rightY1) or right_edge.RightOf(leftX1, leftY1));
-    ShiAssert((leftX1 == rightX1 && leftY1 == rightY1) or left_edge.LeftOf(rightX1, rightY1));
+    ShiAssert((leftX1 == rightX1 and leftY1 == rightY1) or right_edge.RightOf(leftX1, leftY1));
+    ShiAssert((leftX1 == rightX1 and leftY1 == rightY1) or left_edge.LeftOf(rightX1, rightY1));
     ShiAssert(right_edge.RightOf(leftX2, leftY2));
     ShiAssert(left_edge.LeftOf(rightX2, rightY2));
 #endif

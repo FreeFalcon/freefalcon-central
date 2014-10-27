@@ -355,7 +355,7 @@ void MFDClass::DestroyDrawables(void)
 
 char *MFDClass::ModeName(int n)
 {
-    ShiAssert(n >= 0 && n < MAXMODES);
+    ShiAssert(n >= 0 and n < MAXMODES);
     return ModeNames[n];
 }
 
@@ -373,7 +373,7 @@ void MFDClass::SetOwnship(AircraftClass *newOwnship)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->IsSetFlag(MOTION_OWNSHIP) && ownship == playerAC && newOwnship not_eq playerAC)
+    if (playerAC and playerAC->IsSetFlag(MOTION_OWNSHIP) and ownship == playerAC and newOwnship not_eq playerAC)
     {
         // If we are jumping to another vehicle view ...
         restoreMode = mode; // ... save the current MFD state
@@ -384,7 +384,7 @@ void MFDClass::SetOwnship(AircraftClass *newOwnship)
     drawable = NULL;
 
     // If we are jumping back into our F16
-    if (playerAC && playerAC->IsSetFlag(MOTION_OWNSHIP) && ownship == playerAC)
+    if (playerAC and playerAC->IsSetFlag(MOTION_OWNSHIP) and ownship == playerAC)
     {
         SetMode(restoreMode); // restore the saved MFD state
     }
@@ -396,7 +396,7 @@ void MFDClass::SetOwnship(AircraftClass *newOwnship)
 
 void MFDClass::NextMode(void)
 {
-    if (g_bRealisticAvionics && id < 2)
+    if (g_bRealisticAvionics and id < 2)
     {
         cursel[curmm] --;
 
@@ -432,7 +432,7 @@ void MFDClass::NextMode(void)
             case RWRMode:
 
                 // M.N. added full realism mode
-                if (PlayerOptions.GetAvionicsType() not_eq ATRealistic && PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
+                if (PlayerOptions.GetAvionicsType() not_eq ATRealistic and PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
                 {
                     SetMode(MfdOff);
                 }
@@ -452,7 +452,7 @@ void MFDClass::NextMode(void)
             case MfdOff:
 
                 // M.N. added full realism mode
-                if (PlayerOptions.GetAvionicsType() not_eq ATRealistic && PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
+                if (PlayerOptions.GetAvionicsType() not_eq ATRealistic and PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
                 {
                     SetMode(FCCMode);
                 }
@@ -464,7 +464,7 @@ void MFDClass::NextMode(void)
                 break;
 
             case MfdMenu:
-                if (theLantirn && theLantirn->IsEnabled())
+                if (theLantirn and theLantirn->IsEnabled())
                     SetMode(TFRMode);
                 else
                     SetMode(FCCMode);
@@ -622,13 +622,13 @@ void MFDClass::FreeDrawable()
     int inUse = FALSE;
 
     // Don't bother if we don't have a drawable and a private display
-    if (drawable && drawable->GetDisplay())
+    if (drawable and drawable->GetDisplay())
     {
         if (mode not_eq MfdOff)
         {
             for (i = 0; i < NUM_MFDS; i++)
             {
-                if (MfdDisplay[i] && (this not_eq MfdDisplay[i]))
+                if (MfdDisplay[i] and (this not_eq MfdDisplay[i]))
                 {
                     if (MfdDisplay[i]->mode == mode)
                     {
@@ -657,7 +657,7 @@ void MFDClass::ButtonPushed(int whichButton, int whichMFD)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC and playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         if (drawable)
         {
@@ -668,7 +668,7 @@ void MFDClass::ButtonPushed(int whichButton, int whichMFD)
 
 void MFDClass::SetNewMasterMode(int n)
 {
-    ShiAssert(n >= 0 && n < MAXMM);
+    ShiAssert(n >= 0 and n < MAXMM);
     changeMode = TRUE_MODESWITCH;
     newmm = n;
 }
@@ -682,7 +682,7 @@ void MFDClass::SetNewMode(MfdMode newMfdMode)
 
 void MFDClass::SetNewModeAndPos(int n, MfdMode newMfdMode)
 {
-    ShiAssert(n >= 0 && n < 3);
+    ShiAssert(n >= 0 and n < 3);
     cursel[curmm] = n;
     newMode = newMfdMode;
     changeMode = TRUE_ABSOLUTE;
@@ -751,12 +751,12 @@ void MFDClass::Exec(int clearFrame, int virtualCockpit)
         }
     }
 
-    if (ownship && ownship->mFaults &&
+    if (ownship and ownship->mFaults &&
         (
             (ownship->mFaults->GetFault(FaultClass::flcs_fault) & FaultClass::dmux) ||
             ownship->mFaults->GetFault(FaultClass::dmux_fault) ||
-            ((ownship->mFaults->GetFault(FaultClass::mfds_fault) & FaultClass::lfwd) && (id % 2 == 0)) ||
-            ((ownship->mFaults->GetFault(FaultClass::mfds_fault) & FaultClass::rfwd) && (id % 2 == 1))
+            ((ownship->mFaults->GetFault(FaultClass::mfds_fault) & FaultClass::lfwd) and (id % 2 == 0)) ||
+            ((ownship->mFaults->GetFault(FaultClass::mfds_fault) & FaultClass::rfwd) and (id % 2 == 1))
         )
        )
     {
@@ -831,7 +831,7 @@ void MFDClass::Exec(int clearFrame, int virtualCockpit)
     }
     else
     {
-        if (drawable && !(mode == MfdOff && clearFrame))
+        if (drawable and !(mode == MfdOff and clearFrame))
         {
             drawable->SetMFD(id);
 
@@ -1143,7 +1143,7 @@ void MfdDrawable::DrawReference(AircraftClass *self)
 
     float offset = 0.0f;
 
-    ShiAssert(self not_eq NULL && TheHud not_eq NULL);
+    ShiAssert(self not_eq NULL and TheHud not_eq NULL);
     FireControlComputer *FCC = self->GetFCC();
     ShiAssert(FCC not_eq NULL);
 
@@ -1163,12 +1163,12 @@ void MfdDrawable::DrawReference(AircraftClass *self)
         case FireControlComputer::Dogfight:
         case FireControlComputer::MissileOverride:
         case FireControlComputer::AAGun:
-            //case (FireControlComputer::Gun && FCC->GetSubMode() not_eq FireControlComputer::STRAF):
+            //case (FireControlComputer::Gun and FCC->GetSubMode() not_eq FireControlComputer::STRAF):
         {
             //MI target
             RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
 
-            if (theRadar && theRadar->CurrentTarget() && theRadar->CurrentTarget()->BaseData() &&
+            if (theRadar and theRadar->CurrentTarget() and theRadar->CurrentTarget()->BaseData() &&
                 !FCC->IsAGMasterMode())
             {
                 float   dx, dy, xPos = 0.0F, tgtx, yPos = 0.0F;
@@ -1239,7 +1239,7 @@ void MfdDrawable::DrawReference(AircraftClass *self)
 
     if (g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 

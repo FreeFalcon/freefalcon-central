@@ -78,7 +78,7 @@ CPDial::~CPDial()
     delete [] mpSinPoints;
     delete [] mpCosPoints;
 
-    if (IsRendered && DisplayOptions.bRender2DCockpit)
+    if (IsRendered and DisplayOptions.bRender2DCockpit)
     {
         glReleaseMemory((char*) mpSourceBuffer);
     }
@@ -157,14 +157,14 @@ void CPDial::Exec(SimBaseClass* pOwnship)
 
             angle = mpPoints[mEndPoints - 1]; //Wombat778 7-09-04
         }
-        else if ((mDialValue >= mpValues[i]) && (mDialValue < mpValues[i + 1]))
+        else if ((mDialValue >= mpValues[i]) and (mDialValue < mpValues[i + 1]))
         {
             found = TRUE;
 
             delta = mpPoints[i + 1] - mpPoints[i];
 
             // sfr: removing this makes it possible to have CW and CCW rotation
-            if ((mpCPManager->GetMajorVersion() == 0) && ((mpCPManager->GetMinorVersion() == 0)))
+            if ((mpCPManager->GetMajorVersion() == 0) and ((mpCPManager->GetMinorVersion() == 0)))
             {
                 if (delta > 0.0F)
                 {
@@ -228,7 +228,7 @@ void CPDial::Exec(SimBaseClass* pOwnship)
             i++;
         }
     }
-    while ((!found) && (i < mEndPoints));
+    while ((!found) and (i < mEndPoints));
 
     SetDirtyFlag(); //VWF FOR NOW
 }
@@ -243,7 +243,7 @@ void CPDial::DisplayDraw()
         return;
     }
 
-    if (IsRendered && DisplayOptions.bRender2DCockpit)
+    if (IsRendered and DisplayOptions.bRender2DCockpit)
     {
         //Handle in DisplayBlit3D
         return;
@@ -371,7 +371,7 @@ void CPDial::DisplayBlit3D()
 
 void CPDial::CreateLit(void)
 {
-    if (IsRendered && DisplayOptions.bRender2DCockpit)
+    if (IsRendered and DisplayOptions.bRender2DCockpit)
     {
         try
         {

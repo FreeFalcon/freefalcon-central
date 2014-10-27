@@ -162,7 +162,7 @@ SmsDrawable::~SmsDrawable(void)
 
     // sfr: this seems quite odd...
     // 2002-01-28 ADDED BY S.G. Clean up our act once we get destroyed
-    //if (thePrevMissile && thePrevMissileIsRef){
+    //if (thePrevMissile and thePrevMissileIsRef){
     // VuDeReferenceEntity((VuEntity *)thePrevMissile);
     //}
     //thePrevMissileIsRef = FALSE;
@@ -192,7 +192,7 @@ VirtualDisplay* SmsDrawable::GetDisplay(void)
         case wcAgmWpn:
             if (Sms->curWeaponType == wtAgm65)
             {
-                if (theMissile && theMissile->IsMissile())
+                if (theMissile and theMissile->IsMissile())
                 {
                     theDisplay = (MaverickDisplayClass*)theMissile->display;
 
@@ -274,7 +274,7 @@ void SmsDrawable::UpdateGroundSpot(void)
     // 2002-01-28 ADDED BY S.G. Keep a note on the previous missile if we currently have no missile selected...
     /*if (thePrevMissile) {
      // If it's a new missile, switch to it
-     if (theMissile && (thePrevMissile not_eq theMissile)){
+     if (theMissile and (thePrevMissile not_eq theMissile)){
      if (thePrevMissileIsRef){
      VuDeReferenceEntity((VuEntity *)thePrevMissile);
      }
@@ -298,7 +298,7 @@ void SmsDrawable::UpdateGroundSpot(void)
     }
 
     // If our previous missile is now dead
-    if (thePrevMissile && (thePrevMissile not_eq theMissile) && thePrevMissile->IsDead()) {
+    if (thePrevMissile and (thePrevMissile not_eq theMissile) and thePrevMissile->IsDead()) {
      if (thePrevMissileIsRef)
      VuDeReferenceEntity((VuEntity *)thePrevMissile);
      thePrevMissileIsRef = FALSE;
@@ -306,13 +306,13 @@ void SmsDrawable::UpdateGroundSpot(void)
     }
 
     // Now check if it's time to reference our thePrevMissile
-    if (thePrevMissile && thePrevMissileIsRef == FALSE && thePrevMissile->RefCount() > 0) {
+    if (thePrevMissile and thePrevMissileIsRef == FALSE and thePrevMissile->RefCount() > 0) {
      VuReferenceEntity((VuEntity *)thePrevMissile);
      thePrevMissileIsRef = TRUE;
     }
 
     // If we don't currently have a missile but had one, use it.
-    if (thePrevMissile && !theMissile){
+    if (thePrevMissile and !theMissile){
      theMissile = thePrevMissile.get();
     }*/
     // END OF ADDED SECTION
@@ -325,7 +325,7 @@ void SmsDrawable::UpdateGroundSpot(void)
             case wcAgmWpn:
                 if (Sms->curWeaponType == wtAgm65)
                 {
-                    if (theMissile && theMissile->IsMissile())
+                    if (theMissile and theMissile->IsMissile())
                     {
                         theMissile->GetTargetPosition(&rx, &ry, &rz);
 
@@ -341,7 +341,7 @@ void SmsDrawable::UpdateGroundSpot(void)
                 break;
 
             case wcHARMWpn:
-                if (theMissile && theMissile->IsMissile())
+                if (theMissile and theMissile->IsMissile())
                 {
                     theMissile->GetTargetPosition(&rx, &ry, &rz);
 
@@ -384,7 +384,7 @@ void SmsDrawable::UpdateGroundSpot(void)
 
     // Add the camera if needed
     // edg: only do it if the display is in the cockpit
-    if (needCamera && OTWDriver.DisplayInCockpit())
+    if (needCamera and OTWDriver.DisplayInCockpit())
     {
         needCamera = FALSE;
         groundSpot->EntityDriver()->Exec(vuxGameTime);
@@ -487,8 +487,8 @@ void SmsDrawable::Display(VirtualDisplay* newDisplay)
                     static_cast<BombClass*>(Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer.get())
                     ;
 
-    if ((Sms->GetCurrentWeapon() not_eq NULL) && (Sms->GetCurrentHardpoint() > 0) &&
-        bc && bc->IsSetBombFlag(BombClass::IsJSOW))
+    if ((Sms->GetCurrentWeapon() not_eq NULL) and (Sms->GetCurrentHardpoint() > 0) &&
+        bc and bc->IsSetBombFlag(BombClass::IsJSOW))
     {
         isJSOW = TRUE;
     }
@@ -497,8 +497,8 @@ void SmsDrawable::Display(VirtualDisplay* newDisplay)
         isJSOW = FALSE;
     }
 
-    if ((Sms->GetCurrentWeapon() not_eq NULL) && (Sms->GetCurrentHardpoint() > 0) &&
-        bc && bc->IsSetBombFlag(BombClass::IsGPS))
+    if ((Sms->GetCurrentWeapon() not_eq NULL) and (Sms->GetCurrentHardpoint() > 0) &&
+        bc and bc->IsSetBombFlag(BombClass::IsGPS))
     {
         isJDAM = TRUE;
     }
@@ -536,7 +536,7 @@ void SmsDrawable::Display(VirtualDisplay* newDisplay)
 
             // JPG 14 Dec 03 - Added BE/ownship info
             if (
-                OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+                OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
                 OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo
             )
             {
@@ -661,7 +661,7 @@ void SmsDrawable::Display(VirtualDisplay* newDisplay)
     // (works on all MFDs and not only here)
     for (int i = 0; i < 4; i++)
     {
-        if ((MfdDisplay[i])->GetTGPWarning() && (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
+        if ((MfdDisplay[i])->GetTGPWarning() and (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
         {
             TGPAttitudeWarning(display);
             break;
@@ -779,7 +779,7 @@ void SmsDrawable::WpnPushButton(int whichButton, int whichMFD)
         case 1:
             if (g_bRealisticAvionics)
             {
-                if (Sms->curWeaponType == wtAgm65 && Sms->curWeapon)
+                if (Sms->curWeaponType == wtAgm65 and Sms->curWeapon)
                 {
                     Sms->StepMavSubMode();
                 }
@@ -946,7 +946,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
             break;
 
         case 2:
-            if (Sms->curWeaponType == wtAgm65 && Sms->curWeapon)
+            if (Sms->curWeaponType == wtAgm65 and Sms->curWeapon)
             {
                 ShiAssert(Sms->curWeapon->IsMissile());
                 MaverickDisplayClass* mavDisplay =
@@ -999,12 +999,12 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
         case 6:
             if (isJDAM or isJSOW)
             {
-                if (!Sms->JDAMPowered && Sms->curWeapon)
+                if (!Sms->JDAMPowered and Sms->curWeapon)
                 {
                     Sms->JDAMPowered = TRUE;
                     break;
                 }
-                else if (Sms->JDAMPowered && !Sms->curWeapon)
+                else if (Sms->JDAMPowered and !Sms->curWeapon)
                 {
                     Sms->JDAMPowered = FALSE;
                     break;
@@ -1041,7 +1041,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
             break;
 
         case 7:
-            if (g_bRealisticAvionics && Sms->CurHardpoint() >= 0) //MI
+            if (g_bRealisticAvionics and Sms->CurHardpoint() >= 0) //MI
             {
                 if ((pFCC->GetMasterMode() == FireControlComputer::AirGroundBomb) or  //me123 status test. addet four lines
                     (pFCC->GetMasterMode() == FireControlComputer::AirGroundLaser) ||
@@ -1067,7 +1067,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
             break;
 
         case 8:
-            if (g_bRealisticAvionics && Sms->CurHardpoint() >= 0) //MI
+            if (g_bRealisticAvionics and Sms->CurHardpoint() >= 0) //MI
             {
                 if ((pFCC->GetMasterMode() == FireControlComputer::AirGroundBomb) or //me123 status test. addet four lines
                     (pFCC->GetMasterMode() == FireControlComputer::AirGroundLaser))
@@ -1084,7 +1084,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
             break;
 
         case 9:
-            if (g_bRealisticAvionics && Sms->CurHardpoint() >= 0) //MI
+            if (g_bRealisticAvionics and Sms->CurHardpoint() >= 0) //MI
             {
                 if (pFCC->GetMasterMode() == FireControlComputer::AirGroundMissile)
                     pFCC->WeaponStep();
@@ -1105,7 +1105,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
             break;
 
         case 15:
-            if (g_bRealisticAvionics && Sms->CurHardpoint() >= 0) //MI
+            if (g_bRealisticAvionics and Sms->CurHardpoint() >= 0) //MI
             {
                 if (pFCC->GetMasterMode() == FireControlComputer::AirGroundMissile)
                     pFCC->WeaponStep();
@@ -1142,7 +1142,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
 
             //MI
         case 17:
-            if (g_bRealisticAvionics && Sms->CurHardpoint() >= 0)
+            if (g_bRealisticAvionics and Sms->CurHardpoint() >= 0)
             {
                 if (pFCC->GetMasterMode() == FireControlComputer::AirGroundBomb)
                 {
@@ -1183,7 +1183,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
                     // RV - Biker - If we have a locked target on laser pod go to TOO
                     LaserPodClass* laserPod = (LaserPodClass*)FindLaserPod(Sms->ownship);
 
-                    if (laserPod && laserPod->IsLocked())
+                    if (laserPod and laserPod->IsLocked())
                         laserPod->SetDesiredTarget(NULL);
 
                     // RV - Biker - Only allow auto step when in PB
@@ -1198,7 +1198,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
                 }
             }
 
-            if (Sms->curHardpoint >= 0 && Sms->hardPoint[Sms->curHardpoint]->GetWeaponData()->flags & SMSClass::HasBurstHeight)
+            if (Sms->curHardpoint >= 0 and Sms->hardPoint[Sms->curHardpoint]->GetWeaponData()->flags & SMSClass::HasBurstHeight)
             {
                 //MI not here in real
                 if (g_bRealisticAvionics)
@@ -1212,7 +1212,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
             // //SimHSDRangeStepDown (0, KEY_DOWN, NULL);
             //}
 
-            else if (g_bRealisticAvionics && pFCC->GetMasterMode() == FireControlComputer::AirGroundMissile && Sms->curWeaponType == wtAgm65)
+            else if (g_bRealisticAvionics and pFCC->GetMasterMode() == FireControlComputer::AirGroundMissile and Sms->curWeaponType == wtAgm65)
                 pFCC->WeaponStep();
 
             break;
@@ -1326,7 +1326,7 @@ void SmsDrawable::WpnOtherPushButton(int whichButton, int whichMFD)
             break;
 
         case 1:
-            if (pFCC->GetMasterMode() == FireControlComputer::Dogfight && g_bRealisticAvionics)
+            if (pFCC->GetMasterMode() == FireControlComputer::Dogfight and g_bRealisticAvionics)
             {
                 pFCC->NextSubMode(); // MLR 4/2/2004 -
                 break;
@@ -1588,9 +1588,9 @@ void SmsDrawable::DogfightDisplay(void)
     //MI 29/01/02 changed to be more accurate
     if (g_bRealisticAvionics)
     {
-        ShiAssert(Sms->curWeapon && Sms->curWeapon->IsMissile());
+        ShiAssert(Sms->curWeapon and Sms->curWeapon->IsMissile());
 
-        if (Sms->curWeaponType == wtAim9 && ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
+        if (Sms->curWeaponType == wtAim9 and ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
         {
             // JPO new Aim9 code
             switch (Sms->GetCoolState())
@@ -1622,7 +1622,7 @@ void SmsDrawable::DogfightDisplay(void)
             }
 
             // Marco Edit - TD/BP Mode
-            if (((MissileClass*)Sms->GetCurrentWeapon())->isTD && ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
+            if (((MissileClass*)Sms->GetCurrentWeapon())->isTD and ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
             {
                 LabelButton(17, "TD");
             }
@@ -1659,7 +1659,7 @@ void SmsDrawable::DogfightDisplay(void)
             LabelButton(16, "ID", idnum);
             LabelButton(17, "TM", "OFF");   // JPG 12 Jan 03 - ON is for telemetry missile
 
-            if (Sms && Sms->GetCurrentWeapon() && ((MissileClass*)Sms->GetCurrentWeapon())->isSlave)
+            if (Sms and Sms->GetCurrentWeapon() and ((MissileClass*)Sms->GetCurrentWeapon())->isSlave)
             {
                 LabelButton(18, "SLAV");
             }
@@ -1670,7 +1670,7 @@ void SmsDrawable::DogfightDisplay(void)
         }
     }
     // AIM9Ps only have Bore/Slave to worry about
-    else if (Sms->curWeapon && ((CampBaseClass*)wpn)->GetSPType() == SPTYPE_AIM9P)
+    else if (Sms->curWeapon and ((CampBaseClass*)wpn)->GetSPType() == SPTYPE_AIM9P)
     {
         ShiAssert(Sms->curWeapon->IsMissile());
 
@@ -1683,7 +1683,7 @@ void SmsDrawable::DogfightDisplay(void)
             LabelButton(18, "BORE");
         }
     }
-    else if (Sms->curWeapon && ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
+    else if (Sms->curWeapon and ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
     {
         // Keep non-full avionics mode as is display wise
         ShiAssert(Sms->curWeapon->IsMissile());
@@ -1728,7 +1728,7 @@ void SmsDrawable::MissileOverrideDisplay(void)
             {
                 ShiAssert(Sms->curWeapon->IsMissile());
 
-                if (((MissileClass*)Sms->GetCurrentWeapon())->isSlave) // && Sms->curWeaponType == wtAim9)
+                if (((MissileClass*)Sms->GetCurrentWeapon())->isSlave) // and Sms->curWeaponType == wtAim9)
                 {
                     LabelButton(18, "SLAV");
                 }
@@ -1738,9 +1738,9 @@ void SmsDrawable::MissileOverrideDisplay(void)
                 }
             }
         }
-        else if (Sms->curWeaponType == wtAim9 && wpn && ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
+        else if (Sms->curWeaponType == wtAim9 and wpn and ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
         {
-            ShiAssert(Sms->curWeapon && Sms->curWeapon->IsMissile());
+            ShiAssert(Sms->curWeapon and Sms->curWeapon->IsMissile());
 
             // JPO new Aim9 code
             switch (Sms->GetCoolState())
@@ -1762,7 +1762,7 @@ void SmsDrawable::MissileOverrideDisplay(void)
                     break;
             }
 
-            if (Sms && Sms->GetCurrentWeapon() && ((MissileClass*)Sms->GetCurrentWeapon())->isSlave)
+            if (Sms and Sms->GetCurrentWeapon() and ((MissileClass*)Sms->GetCurrentWeapon())->isSlave)
             {
                 LabelButton(18, "SLAV");
             }
@@ -1772,21 +1772,21 @@ void SmsDrawable::MissileOverrideDisplay(void)
             }
 
             // Marco Edit - TD/BP Mode
-            if (Sms && Sms->curWeapon && ((MissileClass*)Sms->GetCurrentWeapon())->isTD && wpn && ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
+            if (Sms and Sms->curWeapon and ((MissileClass*)Sms->GetCurrentWeapon())->isTD and wpn and ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
             {
                 LabelButton(17, "TD");
             }
-            else if (wpn && ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
+            else if (wpn and ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
             {
                 LabelButton(17, "BP");
             }
 
             // Marco Edit - SPOT/SCAN Mode
-            if (Sms && Sms->curWeapon && ((MissileClass*)Sms->GetCurrentWeapon())->isSpot && wpn && ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
+            if (Sms and Sms->curWeapon and ((MissileClass*)Sms->GetCurrentWeapon())->isSpot and wpn and ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
             {
                 LabelButton(2, "SPOT");
             }
-            else if (wpn && ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
+            else if (wpn and ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
             {
                 LabelButton(2, "SCAN");
             }
@@ -1908,7 +1908,7 @@ void SmsDrawable::ShowMissiles(int buttonNum)
     GetButtonPos(buttonNum, &x, &y);
 
     //MI
-    if (g_bRealisticAvionics && Sms->curWeaponType == wtAgm65 && Sms->curWeapon)
+    if (g_bRealisticAvionics and Sms->curWeaponType == wtAgm65 and Sms->curWeapon)
     {
         if (!Sms->Powered or Sms->MavCoolTimer > 0.0F)
             sprintf(tmpStr, "");
@@ -1986,14 +1986,14 @@ void SmsDrawable::MaverickDisplay(void)
     // OSS Button Labels
     LabelButton(0, "OPER");
     //MI
-    //if (mavDisplay && mavDisplay->CurFOV() > (3.0F * DTR))
+    //if (mavDisplay and mavDisplay->CurFOV() > (3.0F * DTR))
 
     // RV - Biker - Make FOV switching this dynamic
-    //if (mavDisplay && mavDisplay->CurFOV() > (3.5F * DTR))
+    //if (mavDisplay and mavDisplay->CurFOV() > (3.5F * DTR))
     float ZoomMin;
     float ZoomMax;
 
-    if ((MissileClass*)Sms->GetCurrentWeapon() && ((MissileClass*)Sms->GetCurrentWeapon())->GetEXPLevel() > 0 && ((MissileClass*)Sms->GetCurrentWeapon())->GetFOVLevel() > 0)
+    if ((MissileClass*)Sms->GetCurrentWeapon() and ((MissileClass*)Sms->GetCurrentWeapon())->GetEXPLevel() > 0 and ((MissileClass*)Sms->GetCurrentWeapon())->GetFOVLevel() > 0)
     {
         ZoomMin = ((MissileClass*)Sms->GetCurrentWeapon())->GetFOVLevel();
         ZoomMax = ((MissileClass*)Sms->GetCurrentWeapon())->GetEXPLevel();
@@ -2005,7 +2005,7 @@ void SmsDrawable::MaverickDisplay(void)
         ZoomMax = 6.0f;
     }
 
-    if (mavDisplay && mavDisplay->CurFOV() > 12.0f / (ZoomMax - (ZoomMax - ZoomMin) / 2.0f) * DTR)
+    if (mavDisplay and mavDisplay->CurFOV() > 12.0f / (ZoomMax - (ZoomMax - ZoomMin) / 2.0f) * DTR)
         LabelButton(2, "FOV");
     else
         LabelButton(2, "EXP", NULL, 1);
@@ -2072,17 +2072,17 @@ void SmsDrawable::GBUDisplay(void)
     LabelButton(0, "OPER");
 
     //MI
-    //if (laserPod && laserPod->CurFOV() < (3.0F * DTR))
+    //if (laserPod and laserPod->CurFOV() < (3.0F * DTR))
     if (!g_bRealisticAvionics)
     {
-        if (laserPod && laserPod->CurFOV() < (3.5F * DTR))
+        if (laserPod and laserPod->CurFOV() < (3.5F * DTR))
             LabelButton(2, "EXP", NULL, 1);
         else
             LabelButton(2, "FOV");
     }
     else
     {
-        if (laserPod && laserPod->CurFOV() < (3.5F * DTR))
+        if (laserPod and laserPod->CurFOV() < (3.5F * DTR))
             LabelButton(2, "NARO", NULL);
         else
             LabelButton(2, "WIDE", NULL);
@@ -2118,7 +2118,7 @@ void SmsDrawable::AAMDisplay(void)
         LabelButton(7, "BIT");
         LabelButton(8, "ALBIT");
     }
-    else if (Sms->curWeaponType == wtAim9 && ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
+    else if (Sms->curWeaponType == wtAim9 and ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
     {
         // JPO new Aim9 code
         switch (Sms->GetCoolState())
@@ -2150,11 +2150,11 @@ void SmsDrawable::AAMDisplay(void)
         LabelButton(17, "TM", "OFF");  // JPG 20 Jan 04 - telemetry OFF
     }
 
-    if (g_bRealisticAvionics && Sms->curWeapon)
+    if (g_bRealisticAvionics and Sms->curWeapon)
     {
         ShiAssert(Sms->curWeapon->IsMissile());
 
-        if (((MissileClass*)Sms->GetCurrentWeapon())->isSlave && ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P) // && Sms->curWeaponType == wtAim9)
+        if (((MissileClass*)Sms->GetCurrentWeapon())->isSlave and ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P) // and Sms->curWeaponType == wtAim9)
         {
             LabelButton(18, "SLAV");
         }
@@ -2164,11 +2164,11 @@ void SmsDrawable::AAMDisplay(void)
         }
 
         // Marco Edit - TD/BP Mode
-        if (((MissileClass*)Sms->GetCurrentWeapon())->isTD && Sms->curWeaponType == wtAim9 && ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
+        if (((MissileClass*)Sms->GetCurrentWeapon())->isTD and Sms->curWeaponType == wtAim9 and ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
         {
             LabelButton(17, "TD");
         }
-        else if (Sms->curWeaponType == wtAim9 && ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
+        else if (Sms->curWeaponType == wtAim9 and ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
         {
             LabelButton(17, "BP");
         }
@@ -2182,7 +2182,7 @@ void SmsDrawable::AAMDisplay(void)
         {
             LabelButton(2, "SPOT");
         }
-        else if (Sms->curWeaponType == wtAim9 && ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
+        else if (Sms->curWeaponType == wtAim9 and ((CampBaseClass*)wpn)->GetSPType() not_eq SPTYPE_AIM9P)
         {
             LabelButton(2, "SCAN");
         }
@@ -2198,7 +2198,7 @@ void SmsDrawable::WpnAAMissileButton(int whichButton, int whichMfd)
     {
             // Marco Edit - SPOT/SCAN Mode
         case 2:
-            if (g_bRealisticAvionics && cw && Sms->curWeaponType == wtAim9)
+            if (g_bRealisticAvionics and cw and Sms->curWeaponType == wtAim9)
             {
                 //MI fixup... only toggle for the 9M
                 if (cw->GetSPType() not_eq SPTYPE_AIM9P)
@@ -2268,7 +2268,7 @@ void SmsDrawable::WpnAAMissileButton(int whichButton, int whichMfd)
             if (Sms->curWeaponType == wtAim9)
             {
                 // Marco Edit - Auto Uncage TD/BP Mode
-                if (g_bRealisticAvionics && cw && Sms->curWeaponType == wtAim9)
+                if (g_bRealisticAvionics and cw and Sms->curWeaponType == wtAim9)
                 {
                     //MI fixup... only toggle for pM
                     if (cw->GetSPType() not_eq SPTYPE_AIM9P)
@@ -2283,7 +2283,7 @@ void SmsDrawable::WpnAAMissileButton(int whichButton, int whichMfd)
         case 18:
 
             //MI fixup... only for the M
-            if (g_bRealisticAvionics && cw && cw->GetSPType() not_eq SPTYPE_AIM9P)
+            if (g_bRealisticAvionics and cw and cw->GetSPType() not_eq SPTYPE_AIM9P)
             {
                 ((MissileClass*)cw)->isSlave = !((MissileClass*)cw)->isSlave;
             }
@@ -2312,12 +2312,12 @@ void SmsDrawable::HarmDisplay(void)
         LabelButton(6,  "PWR", "OFF");
     }
 
-    else if (Sms->GetHARMPowerState() && Sms->GetHARMInitTimer() > 1.75f)
+    else if (Sms->GetHARMPowerState() and Sms->GetHARMInitTimer() > 1.75f)
     {
         LabelButton(6,  "ALIGN");
     }
 
-    else if (Sms->GetHARMPowerState() && Sms->GetHARMInitTimer() > 1.0f)
+    else if (Sms->GetHARMPowerState() and Sms->GetHARMInitTimer() > 1.0f)
     {
         LabelButton(6,  "INIT");
     }
@@ -2400,14 +2400,14 @@ void SmsDrawable::BombDisplay(void)
         sprintf(tmpStr, "%d", Sms->GetAGBRippleCount() + 1);
         LabelButton(9, "RP", tmpStr);
 
-        if (g_bRealisticAvionics && !g_bMLU)
+        if (g_bRealisticAvionics and !g_bMLU)
         {
             char tempstr[12]; //JAM 27Sep03 - Changed from 10, stack over run
             sprintf(tempstr, "AD %.2fSEC", Sms->armingdelay / 100);
 
             display->TextLeft(-0.3F, 0.2F, tempstr);
 
-            if (pFCC && (pFCC->GetSubMode() == FireControlComputer::LADD ||
+            if (pFCC and (pFCC->GetSubMode() == FireControlComputer::LADD ||
                          pFCC->GetSubMode() == FireControlComputer::CCRP ||
                          pFCC->GetSubMode() == FireControlComputer::DTOSS))
             {
@@ -2422,7 +2422,7 @@ void SmsDrawable::BombDisplay(void)
                 display->TextLeft(-0.3F, 0.1F, tempstr);
             }
 
-            if (pFCC && pFCC->GetSubMode() == FireControlComputer::LADD)
+            if (pFCC and pFCC->GetSubMode() == FireControlComputer::LADD)
             {
                 display->TextCenter(-0.3F, -0.1F, "PR 25000");
                 display->TextCenter(-0.3F, -0.2F, "TOF 28.00");
@@ -2432,7 +2432,7 @@ void SmsDrawable::BombDisplay(void)
 
         //OWLOOK we need a switch here for arming delay
         //if (g_bArmingDelay) MI
-        if (g_bRealisticAvionics && g_bMLU)
+        if (g_bRealisticAvionics and g_bMLU)
         {
             sprintf(tmpStr, "AD %.0f", Sms->armingdelay); //me123
             LabelButton(15,  tmpStr); //me123
@@ -2551,7 +2551,7 @@ void SmsDrawable::TopRow(int isinv)
             LabelButton(0, "MSL");
 
             // ASSOCIATOR 03/12/03: Added the combined SnapShot LCOS Gunmode SSLC
-            if (g_bRealisticAvionics && Sms->curWeaponType == wtGuns)
+            if (g_bRealisticAvionics and Sms->curWeaponType == wtGuns)
             {
                 switch (FCC->GetSubMode())
                 {
@@ -2639,7 +2639,7 @@ void SmsDrawable::TopRow(int isinv)
                 //MI temporary till we get LGB's going
                 if (g_bRealisticAvionics)
                 {
-                    if (FCC->GetMasterMode() == FireControlComputer::AirGroundLaser or Sms && Sms->curWeaponDomain not_eq wdGround)
+                    if (FCC->GetMasterMode() == FireControlComputer::AirGroundLaser or Sms and Sms->curWeaponDomain not_eq wdGround)
                         LabelButton(1, "");
                     else
                         LabelButton(1, FCC->subModeString);
@@ -2703,7 +2703,7 @@ void SmsDrawable::BottomRow(void)
         //MI changed
         if (g_bRealisticAvionics)
         {
-            if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+            if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
                 OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
             {
                 DrawBullseyeCircle(display, cX, cY);
@@ -2740,7 +2740,7 @@ void SmsDrawable::EmergJetDisplay(void)
 #else
         if (!(((AircraftClass *)Sms->ownship)->IsF16() &&
               (curStation == 1 or curStation == 9 or Sms->hardPoint[curStation]->GetWeaponClass() == wcECM or Sms->hardPoint[curStation]->GetWeaponClass() == wcAimWpn)) &&
-            (Sms->hardPoint[curStation]->GetRack() or curStation == 5 && Sms->hardPoint[curStation]->GetWeaponClass() == wcTank))//me123 in the line above addet a check so we don't emergency jettison a-a missiles
+            (Sms->hardPoint[curStation]->GetRack() or curStation == 5 and Sms->hardPoint[curStation]->GetWeaponClass() == wcTank))//me123 in the line above addet a check so we don't emergency jettison a-a missiles
 #endif
         {
             hardPointSelected  or_eq  (1 << curStation);
@@ -2960,7 +2960,7 @@ void SmsDrawable::MavSMSDisplay(void)
     LabelButton(1, tempstr);
     LabelButton(3, "INV");
 
-    if ((Sms->Powered) && (!CAPplayer))
+    if ((Sms->Powered) and (!CAPplayer))
         LabelButton(6, "PWR", "ON");
     else
         LabelButton(6, "PWR", "OFF");
@@ -3025,11 +3025,11 @@ void SmsDrawable::JDAMDisplay(void)
         {
             if (!Sms->JDAMPowered) // MLR 4/3/2004 -
                 LabelButton(6,  "PWR", "OFF");
-            else if (Sms->JDAMPowered && !Sms->curWeapon)
+            else if (Sms->JDAMPowered and !Sms->curWeapon)
                 LabelButton(6,  "PWR", "OFF");
-            else if (Sms->JDAMPowered && Sms->JDAMInitTimer > 7)
+            else if (Sms->JDAMPowered and Sms->JDAMInitTimer > 7)
                 LabelButton(6,  "ALIGN");
-            else if (Sms->JDAMPowered && Sms->JDAMInitTimer > 4)
+            else if (Sms->JDAMPowered and Sms->JDAMInitTimer > 4)
                 LabelButton(6,  "INIT");
             else
                 LabelButton(6,  "RDY");
@@ -3060,10 +3060,10 @@ void SmsDrawable::JDAMDisplay(void)
         LabelButton(9, "RP", tmpStr);
 
         // RV - Biker - Only display target name if we're in PB
-        //if(g_bRealisticAvionics && !g_bMLU)
-        if (g_bRealisticAvionics && !g_bMLU)
+        //if(g_bRealisticAvionics and !g_bMLU)
+        if (g_bRealisticAvionics and !g_bMLU)
         {
-            if ((Sms->JDAMtargeting == SMSBaseClass::PB && self->JDAMtargetRange > 0) or (CAPplayer))
+            if ((Sms->JDAMtargeting == SMSBaseClass::PB and self->JDAMtargetRange > 0) or (CAPplayer))
             {
                 char tempstr[80]; //JAM 27Sep03 - Changed from 10, stack over run
                 //sprintf(tempstr, "AD %.2fSEC", Sms->armingdelay / 100);
@@ -3120,7 +3120,7 @@ void SmsDrawable::JDAMDisplay(void)
 
         //OWLOOK we need a switch here for arming delay
         //if (g_bArmingDelay) MI
-        if (g_bRealisticAvionics && g_bMLU)
+        if (g_bRealisticAvionics and g_bMLU)
         {
             sprintf(tmpStr, "AD %.0f", Sms->armingdelay); //me123
             LabelButton(15,  tmpStr); //me123
@@ -3164,7 +3164,7 @@ void SmsDrawable::JDAMDisplay(void)
             LabelButton(18, "PB");
 
             // RV - Biker - Automaically designate JDAMs???  FRB - Yes...Targets are Pre-Programmed
-            if (self->JDAMAllowAutoStep && Sms->JDAMPowered && Sms->JDAMInitTimer <= 4.0f && pFCC->designateCmd == FALSE)
+            if (self->JDAMAllowAutoStep and Sms->JDAMPowered and Sms->JDAMInitTimer <= 4.0f and pFCC->designateCmd == FALSE)
             {
                 pFCC->designateCmd = TRUE;
             }

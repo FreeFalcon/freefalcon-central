@@ -300,12 +300,12 @@ void SetupMapWindow()
     win = gMainHandler->FindWindow(CS_MAP_WIN);
 
     // MN turn off the occupation maps for now for 128x128 theaters - they cause CTD's...
-    if (win && !g_LargeTheater)
+    if (win and !g_LargeTheater)
     {
         DeleteGroupList(CS_MAP_WIN);
 
         // Create Occupation Map
-        if (gOccupationMap == NULL && (TheCampaign.TheaterSizeX && TheCampaign.TheaterSizeY))
+        if (gOccupationMap == NULL and (TheCampaign.TheaterSizeX and TheCampaign.TheaterSizeY))
             gOccupationMap = CreateOccupationMap(1, TheCampaign.TheaterSizeX / MAP_RATIO, TheCampaign.TheaterSizeY / MAP_RATIO, 16);
 
         if (gOccupationMap)
@@ -314,7 +314,7 @@ void SetupMapWindow()
         // MN big occupation map when HiResUI
         if (g_bHiResUI)
         {
-            if (gBigOccupationMap == NULL && (TheCampaign.TheaterSizeX && TheCampaign.TheaterSizeY))
+            if (gBigOccupationMap == NULL and (TheCampaign.TheaterSizeX and TheCampaign.TheaterSizeY))
                 gBigOccupationMap = CreateOccupationMap(2, TheCampaign.TheaterSizeX / (MAP_RATIO / 2), TheCampaign.TheaterSizeY / (MAP_RATIO / 2), 16);
 
             if (gBigOccupationMap)
@@ -325,7 +325,7 @@ void SetupMapWindow()
 
         if (bmp)
         {
-            /* if(gOccupationMap == NULL && (TheCampaign.TheaterSizeX && TheCampaign.TheaterSizeY))
+            /* if(gOccupationMap == NULL and (TheCampaign.TheaterSizeX and TheCampaign.TheaterSizeY))
              {
              // Create Occupation map...
              gOccupationMap=CreateOccupationMap(1,TheCampaign.TheaterSizeX/MAP_RATIO,TheCampaign.TheaterSizeY/MAP_RATIO,16);*/
@@ -422,7 +422,7 @@ void AddSquadronsToMap()
                 int mapratio = MAP_RATIO;
 
                 // 2002-02-01 MN This fixes squad selection map in hires UI - still need a solution for lowres UI
-                if (g_bHiResUI && !g_LargeTheater)
+                if (g_bHiResUI and !g_LargeTheater)
                 {
                     mapratio /= 2;
                 }
@@ -449,7 +449,7 @@ void AddSquadronsToMap()
                 {
                     rsc = (IMAGE_RSC*)res->Find(IconID);
 
-                    if (rsc && rsc->Header->Type == _RSC_IS_IMAGE_)
+                    if (rsc and rsc->Header->Type == _RSC_IS_IMAGE_)
                         btn->SetImage(C_STATE_0, rsc);
                 }
 
@@ -457,7 +457,7 @@ void AddSquadronsToMap()
                 {
                     rsc = (IMAGE_RSC*)res_w->Find(IconID);
 
-                    if (rsc && rsc->Header->Type == _RSC_IS_IMAGE_)
+                    if (rsc and rsc->Header->Type == _RSC_IS_IMAGE_)
                         btn->SetImage(C_STATE_1, rsc);
                 }
 
@@ -522,17 +522,17 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
                 // 2001-12-12 M.N. adapted for 1024 UI
                 mapratio = MAP_RATIO;
 
-                if (g_bHiResUI && !g_LargeTheater)
+                if (g_bHiResUI and !g_LargeTheater)
                     mapratio /= 2;
 
                 x = x / (FEET_PER_KM * mapratio);
                 y = (maxy - y) / (FEET_PER_KM * mapratio);
 
-                if ((int)x == airbasex && (int)y == airbasey)
+                if ((int)x == airbasex and (int)y == airbasey)
                 {
                     SquadPtr = &TheCampaign.CampaignSquadronData[i];
 
-                    if (!NameShown && SquadPtr)
+                    if (!NameShown and SquadPtr)
                     {
                         // Airbase Name
                         txt = new C_Text;
@@ -602,7 +602,7 @@ void LoadSquadronInfo()
 
             for (int i = 0; i < TheCampaign.NumAvailSquadrons; i++)
             {
-                if ((TheCampaign.IsValidSquadron(i) or _IsF16_) && (gSelectedSquadronID < 0 or TheCampaign.CampaignSquadronData[i].id.num_ < TheCampaign.CampaignSquadronData[gSelectedSquadronID].id.num_))
+                if ((TheCampaign.IsValidSquadron(i) or _IsF16_) and (gSelectedSquadronID < 0 or TheCampaign.CampaignSquadronData[i].id.num_ < TheCampaign.CampaignSquadronData[gSelectedSquadronID].id.num_))
                     gSelectedSquadronID = i;
             }
         }
@@ -632,9 +632,9 @@ void LoadSquadronInfo()
             // status (# humans,%strength)
             txt = (C_Text *)win->FindControl(STATUS_FIELD);
 
-            if (txt && vc)
+            if (txt and vc)
             {
-                if (CampSelMode == 2 && gCommsMgr && gCommsMgr->GetTargetGame())
+                if (CampSelMode == 2 and gCommsMgr and gCommsMgr->GetTargetGame())
                 {
                     // Online game - Count # of players
                     int players = 0;
@@ -943,7 +943,7 @@ void SelectScenarioCB(long ID, short hittype, C_Base *control)
 
     for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
     {
-        if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID && (TheCampaign.IsValidSquadron(i) or _IsF16_))
+        if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID and (TheCampaign.IsValidSquadron(i) or _IsF16_))
             gSelectedSquadronID = i;
     }
 
@@ -1004,7 +1004,7 @@ void RecieveScenarioInfo()
 
         for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
         {
-            if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID && (TheCampaign.IsValidSquadron(i) or _IsF16_))
+            if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID and (TheCampaign.IsValidSquadron(i) or _IsF16_))
                 gSelectedSquadronID = i;
         }
 
@@ -1025,7 +1025,7 @@ void RecieveScenarioInfo()
 
         for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
         {
-            if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID && (TheCampaign.IsValidSquadron(i) or _IsF16_))
+            if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID and (TheCampaign.IsValidSquadron(i) or _IsF16_))
                 gSelectedSquadronID = i;
         }
 

@@ -734,13 +734,13 @@ RES_EXPORT int ResInit(HWND hwnd)
 
             /* Initialize default entries into the system path tables */
 
-            if ((dev -> type == DRIVE_CDROM) && !RES_PATH[ RES_DIR_CD ])
+            if ((dev -> type == DRIVE_CDROM) and !RES_PATH[ RES_DIR_CD ])
             {
                 GLOBAL_CD_DEVICE = drive - 1; /* NEED A BETTER WAY!! */
                 RES_PATH[ RES_DIR_CD ] = MemStrDup(root);
             }
 
-            if ((drive == 3) && (dev -> type == DRIVE_FIXED))
+            if ((drive == 3) and (dev -> type == DRIVE_FIXED))
                 RES_PATH[ RES_DIR_HD ] = MemStrDup(root);
         }
         else
@@ -2573,7 +2573,7 @@ RES_EXPORT RES_DIR * ResOpenDirectory(char * pathname)
 
     entry = hash_find(dirpath, GLOBAL_HASH_TABLE);
 
-    if (entry && entry -> dir)
+    if (entry and entry -> dir)
     {
         hsh = (HASH_TABLE *)entry -> dir;
 
@@ -2887,7 +2887,7 @@ RES_EXPORT int ResSeekFile(int handle, size_t offset, int origin)
         return(-1);
     }
 
-    if ((origin not_eq SEEK_CUR) && (origin not_eq SEEK_SET) && (origin not_eq SEEK_END))
+    if ((origin not_eq SEEK_CUR) and (origin not_eq SEEK_SET) and (origin not_eq SEEK_END))
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResSeekFile");
         return(-1);
@@ -3887,9 +3887,9 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
             }
             else      /* if we want to add an entire directory tree, recurse is TRUE */
             {
-                if (recurse && !full_yet)
+                if (recurse and !full_yet)
                 {
-                    if (strcmp(data.name, ".") && strcmp(data.name, ".."))
+                    if (strcmp(data.name, ".") and strcmp(data.name, ".."))
                     {
                         int idx, ln;
 
@@ -3997,7 +3997,7 @@ RES_EXPORT int ResBuildPathname(int index, char * path_in, char * path_out)
     }
 
 
-    if ((index not_eq RES_DIR_NONE) && (RES_PATH[ index ] == NULL))
+    if ((index not_eq RES_DIR_NONE) and (RES_PATH[ index ] == NULL))
     {
         SAY_ERROR(RES_ERR_NO_SYSTEM_PATH, "ResBuildPathname");
         *path_out = '\0';
@@ -4033,7 +4033,7 @@ RES_EXPORT int ResBuildPathname(int index, char * path_in, char * path_out)
 
         len = strlen(tmp);
 
-        if (len && (tmp[len - 1] not_eq ASCII_BACKSLASH))
+        if (len and (tmp[len - 1] not_eq ASCII_BACKSLASH))
         {
             tmp[len++] = ASCII_BACKSLASH;
             tmp[len] = '\0';
@@ -4112,7 +4112,7 @@ RES_EXPORT int ResCountDirectory(char * path , struct _finddata_t **file_data)
 #if 0
     entry = hash_find(fullpath, GLOBAL_HASH_TABLE);
 
-    if (entry && entry -> dir)
+    if (entry and entry -> dir)
         return(((HASH_TABLE *)entry -> dir) -> num_entries);
 
 #endif
@@ -4252,7 +4252,7 @@ RES_EXPORT void ResAssignPath(int index, char * path)
 
     len = strlen(ptr);
 
-    if (len && (ptr[ len - 1 ] not_eq ASCII_BACKSLASH))
+    if (len and (ptr[ len - 1 ] not_eq ASCII_BACKSLASH))
     {
         ptr[len++] = ASCII_BACKSLASH;
         ptr[len] = '\0';
@@ -4522,7 +4522,7 @@ RES_EXPORT void ResPurge(const char * archive, const char * volume, const int * 
 {
     LIST * list;
 
-    if (!archive && !volume && !directory && !filename)
+    if (!archive and !volume and !directory and !filename)
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResPurge");
         return;
@@ -4746,7 +4746,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
     entry = hash_find(name, GLOBAL_HASH_TABLE);     /* look in the root hash table (flat model) */
 #endif
 
-    if (!entry && table && !write_flag)
+    if (!entry and table and !write_flag)
     {
         SAY_ERROR(RES_ERR_FILE_NOT_FOUND, name);
         SHOULD_I_CALL_WITH(CALLBACK_OPEN_FILE, -1, retval);
@@ -4760,7 +4760,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
            Creating a file for writing
        ------------------------------------- */
 
-    if (!entry && write_flag)     /* FILE NOT FOUND */
+    if (!entry and write_flag)     /* FILE NOT FOUND */
     {
 
         /* if the user is trying to create a file on the harddrive,
@@ -4869,7 +4869,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
     /* Make sure the user isn't trying to write to an archive file.
        Someday this may be possible, but not for a while. */
 
-    if (entry && (entry -> archive not_eq -1) && write_flag)
+    if (entry and (entry -> archive not_eq -1) and write_flag)
     {
         SAY_ERROR(RES_ERR_CANT_WRITE_ARCHIVE, "ResFOpen");
 #if (RES_MULTITHREAD)
@@ -5390,7 +5390,7 @@ long __cdecl RES_FTELL(FILE * stream)
 
         /* GFG_NOV06        count = (int)( stream -> _ptr - stream -> _base ); *//* should be safe (key word: SHOULD) */
 
-        if (handle < 0 or handle > MAX_FILE_HANDLES or (FILE_HANDLES[ handle ].os_handle == -1 && !(stream -> _flag & _IOLOOSE)))
+        if (handle < 0 or handle > MAX_FILE_HANDLES or (FILE_HANDLES[ handle ].os_handle == -1 and !(stream -> _flag & _IOLOOSE)))
         {
             SAY_ERROR(RES_ERR_ILLEGAL_FILE_HANDLE, "ftell");
             UNLOCK_STREAM(stream);
@@ -5648,7 +5648,7 @@ size_t __cdecl RES_FREAD(void *buffer, size_t size, size_t num, FILE *stream)
     {
         /* if the buffer exists and has characters, copy them to user
            buffer */
-        if (anybuf(stream) && stream->_cnt not_eq 0)
+        if (anybuf(stream) and stream->_cnt not_eq 0)
         {
             /* how much do we want? */
             nbytes = (count < (unsigned)stream->_cnt) ? count : stream->_cnt;
@@ -5668,7 +5668,7 @@ size_t __cdecl RES_FREAD(void *buffer, size_t size, size_t num, FILE *stream)
 
 
         }              //          |<---------- MODIFIED ----------->|
-        else if ((count >= bufsize) && !(stream -> _flag & _IOARCHIVE))
+        else if ((count >= bufsize) and !(stream -> _flag & _IOARCHIVE))
         {
             //          |<---------- MODIFIED ----------->|
             /* If we have more than bufsize chars to read, get data
@@ -5908,7 +5908,7 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
         }
 
 
-        if ((stream -> _flag & _IOARCHIVE) && (pos not_eq -1))
+        if ((stream -> _flag & _IOARCHIVE) and (pos not_eq -1))
             FILE_HANDLES[ stream -> _file ].current_pos = pos;
     }
 
@@ -6109,7 +6109,7 @@ int __cdecl _filbuf(FILE * stream)
         }
 
         //  Don't think I need this, but... _osfile_safe(i) expands to (_pioinfo_safe(i)->osfile)
-        //  if( !(stream -> _flag & ( _IOWRT | _IORW )) && ((_osfile_safe(_fileno(stream)) & (FTEXT|FEOFLAG)) == (FTEXT|FEOFLAG)))
+        //  if( !(stream -> _flag & ( _IOWRT | _IORW )) and ((_osfile_safe(_fileno(stream)) & (FTEXT|FEOFLAG)) == (FTEXT|FEOFLAG)))
         //      stream -> _flag  or_eq  _IOCTRLZ;
 
         /* Check for small _bufsiz (_SMALL_BUFSIZ). If it is small and
@@ -6241,7 +6241,7 @@ RES_EXPORT void ResDbgPrintf(char * msg, ...)
 
     length = vsprintf(buffer, msg, data);
 
-    if (RES_DEBUG_OPEN_LOG && RES_DEBUG_LOGGING)
+    if (RES_DEBUG_OPEN_LOG and RES_DEBUG_LOGGING)
         _write(RES_DEBUG_FILE, buffer, length);
 
 #ifdef RES_DEBUG_STDIO
@@ -6292,7 +6292,7 @@ RES_EXPORT void ResDbgDump(void)
     LIST         * list;
     int            i;
 
-    if (RES_DEBUG_LOGGING && RES_DEBUG_OPEN_LOG)
+    if (RES_DEBUG_LOGGING and RES_DEBUG_OPEN_LOG)
     {
 
         IF_LOG(LOG("\n\n-------------\n"));
@@ -6762,7 +6762,7 @@ int hash(const char * string, int size)
     return(i);
 }
 
-#if( USE_AFU && USE_SEDGEWICK )
+#if( USE_AFU and USE_SEDGEWICK )
 #   error   You cannot use both hashing algorithms
 #endif /* USE_BOTH? */
 
@@ -7401,10 +7401,10 @@ void hash_purge(HASH_TABLE * hsh, const char * archive, const char * volume, con
 
             while (curr)
             {
-                if ((volume && (curr -> volume == *volume)) ||
-                    (archive && (curr -> archive == *archive)) ||
-                    (directory && (curr -> directory == *directory)) ||
-                    (filename && !strcmp(entry -> name, filename)))
+                if ((volume and (curr -> volume == *volume)) ||
+                    (archive and (curr -> archive == *archive)) ||
+                    (directory and (curr -> directory == *directory)) ||
+                    (filename and !strcmp(entry -> name, filename)))
                 {
                     if (curr -> dir)
                         hash_destroy((HASH_TABLE*)prev -> dir);
@@ -7424,10 +7424,10 @@ void hash_purge(HASH_TABLE * hsh, const char * archive, const char * volume, con
             }
         }
 
-        if ((volume && (entry -> volume == *volume)) ||
-            (archive && (entry -> archive == *archive)) ||
-            (directory && (entry -> directory == *directory)) ||
-            (filename && !strcmp(entry -> name, filename)))
+        if ((volume and (entry -> volume == *volume)) ||
+            (archive and (entry -> archive == *archive)) ||
+            (directory and (entry -> directory == *directory)) ||
+            (filename and !strcmp(entry -> name, filename)))
         {
             if (entry -> dir)
             {
@@ -7558,7 +7558,7 @@ HASH_ENTRY * hash_find_table(const char * name, HASH_TABLE ** table)
         strcpy(fullpath, name);
         wild_len = strlen(name);
 
-        for (wild_len; (name[wild_len] not_eq ASCII_BACKSLASH) && wild_len; wild_len--) ;
+        for (wild_len; (name[wild_len] not_eq ASCII_BACKSLASH) and wild_len; wild_len--) ;
 
         if (wild_len)
         {
@@ -7573,7 +7573,7 @@ HASH_ENTRY * hash_find_table(const char * name, HASH_TABLE ** table)
 
     /* check to see if a directory name is specified */
 
-    if (!wild_path && (strchr(name, ASCII_BACKSLASH) or (name[0] == ASCII_DOT)))
+    if (!wild_path and (strchr(name, ASCII_BACKSLASH) or (name[0] == ASCII_DOT)))
     {
         /* utterly non-portable */
         /* create a full path name from what could be a partial path */
@@ -7859,7 +7859,7 @@ void _say_error(int error, const char * msg, int line, const char * filename)
             break;
 
         default:    /* an error that is specific to this file */
-            if ((error > RES_ERR_FIRST_ERROR) && (error < RES_ERR_LAST_ERROR))
+            if ((error > RES_ERR_FIRST_ERROR) and (error < RES_ERR_LAST_ERROR))
             {
                 /* error values run from -5000 up, so error will always be negative,
                    and so will (RES_ERR_OR_FIRST+1).  We want to normalize this to
@@ -8218,7 +8218,7 @@ char * res_fullpath(char * abs_buffer, const char * rel_buffer, int maxlen)
 
     len = strlen(current_path) - 2;
 
-    for (i = len; i && chop; i--)
+    for (i = len; i and chop; i--)
         if (current_path[i] == ASCII_BACKSLASH)
             chop--;
 

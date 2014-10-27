@@ -408,7 +408,7 @@ void UpdateVCs()
 {
     victory_condition *vc;
 
-    if (current_tactical_mission && gMapMgr)
+    if (current_tactical_mission and gMapMgr)
     {
         vc = current_tactical_mission->get_first_unfiltered_victory_condition();
 
@@ -666,7 +666,7 @@ void tactical_play_setup()
             if (!TeamInfo[i]->GetColor())
                 TeamInfo[i]->SetColor(static_cast<uchar>(i));
 
-            if (i && !(TeamInfo[i]->flags & TEAM_ACTIVE))
+            if (i and !(TeamInfo[i]->flags & TEAM_ACTIVE))
                 TeamInfo[i]->flags  or_eq  TEAM_ACTIVE;
         }
     }
@@ -680,7 +680,7 @@ void tactical_play_setup()
 
     gGps->SetAllowed(0xffffffff);
 
-    if (!g_bServer && current_tactical_mission->get_type() == tt_engagement)
+    if (!g_bServer and current_tactical_mission->get_type() == tt_engagement)
     {
         InitTimeCompressionBox(1);
         SetTimeCompression(1);
@@ -827,7 +827,7 @@ void tactical_edit_mission(tactical_mission *)
             if (!TeamInfo[i]->GetColor())
                 TeamInfo[i]->SetColor(static_cast<uchar>(i));
 
-            if (i && !(TeamInfo[i]->flags & TEAM_ACTIVE))
+            if (i and !(TeamInfo[i]->flags & TEAM_ACTIVE))
                 TeamInfo[i]->flags  or_eq  TEAM_ACTIVE;
         }
     }

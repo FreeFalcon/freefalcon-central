@@ -41,11 +41,11 @@ void MissileClass::CheckGuidePhase(void)
     {
 
         // only do this for the player
-        if (g_bRealisticAvionics && parent && ((SimVehicleClass *)parent.get())->IsPlayer())
+        if (g_bRealisticAvionics and parent and ((SimVehicleClass *)parent.get())->IsPlayer())
         {
             FireControlComputer* theFCC = ((SimVehicleClass*)parent.get())->GetFCC();
 
-            if (theFCC && theFCC->LaserArm && theFCC->LaserFire)
+            if (theFCC and theFCC->LaserArm and theFCC->LaserFire)
             {
                 SimObjectType *tgt;
 
@@ -111,7 +111,7 @@ void MissileClass::CheckGuidePhase(void)
     {
         if (range < inputData->terminalguiderange)
             guidencephase = 2;
-        else if (inputData->terminalguiderange < 0 && inputData->mslActiveTtg > 0 && sensorArray[0]->Type() == SensorClass::Radar)
+        else if (inputData->terminalguiderange < 0 and inputData->mslActiveTtg > 0 and sensorArray[0]->Type() == SensorClass::Radar)
             guidencephase = 2;
     }
 }
@@ -153,7 +153,7 @@ void MissileClass::CommandGuide(void)
     CheckGuidePhase();
 
     // RV - Biker - This is debug stuff don't do the checks all the time
-    if (g_bActivateDebugStuff && g_bActivateMissileDebug)
+    if (g_bActivateDebugStuff and g_bActivateMissileDebug)
     {
         if (g_nboostguidesec)
             inputData->boostguidesec = g_nboostguidesec;//me123 how many sec we are in boostguide mode
@@ -231,7 +231,7 @@ void MissileClass::CommandGuide(void)
     // No Target
     if (runTime > inputData->guidanceDelay)
     {
-        if (g_bNewSensorPrecision && flags & SensorLostLock &&  sensorArray && sensorArray[0] && sensorArray[0]->Type() == SensorClass::RadarHoming)
+        if (g_bNewSensorPrecision and flags & SensorLostLock and  sensorArray and sensorArray[0] and sensorArray[0]->Type() == SensorClass::RadarHoming)
         {
             ifd->augCommand.yaw = 0.0f;
             ifd->augCommand.pitch = 0.0f;
@@ -245,7 +245,7 @@ void MissileClass::CommandGuide(void)
             // Inertial Line of Sight Vector
             float rangeplatform = 0;
 
-            if (auxData && auxData->errorfromparrent && sensorArray && sensorArray[0] && sensorArray[0]->Type() == SensorClass::RadarHoming)
+            if (auxData and auxData->errorfromparrent and sensorArray and sensorArray[0] and sensorArray[0]->Type() == SensorClass::RadarHoming)
             {
                 FalconEntity* RadarPlt = ((BeamRiderClass*)this->sensorArray[0])->Getplatform();
 				RadarClass* theRadar = NULL;
@@ -333,7 +333,7 @@ void MissileClass::CommandGuide(void)
             invRngSq  = 1.0F / (range * range);
         }
         // we've lost our target, but want to continue our flight to the last known location
-        else if (targetX not_eq -1.0F && targetY not_eq -1.0F && targetZ not_eq -1.0F)
+        else if (targetX not_eq -1.0F and targetY not_eq -1.0F and targetZ not_eq -1.0F)
         {
             hasTarget = TRUE;
 
@@ -386,7 +386,7 @@ void MissileClass::CommandGuide(void)
         wkc = (dxi * dydoti - dyi * dxdoti) * invRngSq;
 
         // Lofting Bias
-        if (runTime > inputData->guidanceDelay && runTime < inputData->guidanceDelay + inputData->mslLoftTime)
+        if (runTime > inputData->guidanceDelay and runTime < inputData->guidanceDelay + inputData->mslLoftTime)
         {
             loftBias = -inputData->mslBiasn - 1.0F; // In units of G
         }
@@ -465,7 +465,7 @@ void MissileClass::CommandGuide(void)
     //#define MISSILEDEBUG 1
 #ifdef MISSILEDEBUG
 
-    if (sensorArray && sensorArray[0] && sensorArray[0]->Type() == SensorClass::RWR && launchState == InFlight)
+    if (sensorArray and sensorArray[0] and sensorArray[0]->Type() == SensorClass::RWR and launchState == InFlight)
     {
         static int file = -1;
         static int binfile = -1;

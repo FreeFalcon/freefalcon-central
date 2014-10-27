@@ -135,7 +135,7 @@ VuEntity *VuLineIterator::GetFirst()
         {
             curnode_ = curnode_->LowerBound(key2min_);
 
-            if (curnode_ && curnode_->head_ && curnode_->key_ < key2max_)
+            if (curnode_ and curnode_->head_ and curnode_->key_ < key2max_)
             {
                 curlink_ = curnode_->head_;
 
@@ -153,7 +153,7 @@ VuEntity *VuLineIterator::GetFirst()
 VuEntity *VuLineIterator::GetNext()
 {
     // sfr: smartpointer
-    while (curnode_ == 0 && key1cur_ < key1max_)
+    while (curnode_ == 0 and key1cur_ < key1max_)
     {
         // danm_TBD: what about non-wrapping edges?
         key1cur_ += ((VuGridTree *)collection_)->rowheight_;
@@ -164,7 +164,7 @@ VuEntity *VuLineIterator::GetNext()
         {
             curnode_ = curnode_->LowerBound(key2min_);
 
-            if (curnode_ && curnode_->head_ && curnode_->key_ < key2max_)
+            if (curnode_ and curnode_->head_ and curnode_->key_ < key2max_)
             {
                 curlink_ = curnode_->head_;
 

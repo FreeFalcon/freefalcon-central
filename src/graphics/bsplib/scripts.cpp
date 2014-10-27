@@ -457,7 +457,7 @@ static void MeatBall(void)
 
     for (int i = 0; i < NANGLES - 1; i++)
     {
-        if (angle < angles[i] && angle > angles[i + 1])
+        if (angle < angles[i] and angle > angles[i + 1])
             TheStateStack.CurrentInstance->SetSwitch(i, 1);
         else
             TheStateStack.CurrentInstance->SetSwitch(i, 0);

@@ -26,7 +26,7 @@ void HeliBrain::MissileEngageCheck(void)
     /*-------*/
     /* entry */
     /*-------*/
-    if (curMode not_eq MissileEngageMode && curMissile)
+    if (curMode not_eq MissileEngageMode and curMissile)
     {
         //   MonoPrint( "HELO BRAIN ENTERING Missile Engange 1\n" );
         AddMode(MissileEngageMode);

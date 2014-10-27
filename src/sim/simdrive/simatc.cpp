@@ -18,7 +18,7 @@ void SimulationDriver::UpdateATC(void)
 
         while (curObj)
         {
-            if (curObj->IsLocal() && curObj->brain)
+            if (curObj->IsLocal() and curObj->brain)
             {
                 curObj->brain->Exec();
             }

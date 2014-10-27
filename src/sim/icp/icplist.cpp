@@ -74,7 +74,7 @@ void ICPClass::ExecDESTMode(void)
     xCurr = yCurr = zCurr = 0;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->curWaypoint)
+    if (playerAC and playerAC->curWaypoint)
         playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
 
     latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + xCurr) / EARTH_RADIUS_FT;
@@ -102,7 +102,7 @@ void ICPClass::ExecDESTMode(void)
         sprintf(longStr, "%3d*%2.2f\'", longDeg, longMin);
 
     //Line2
-    if (IsICPSet(ICPClass::EDIT_LAT) && Manual_Input)
+    if (IsICPSet(ICPClass::EDIT_LAT) and Manual_Input)
     {
         FillDEDMatrix(1, 5, "LAT  N");
         PossibleInputs = 6;
@@ -128,7 +128,7 @@ void ICPClass::ExecDESTMode(void)
     }
 
     //Line3
-    if (IsICPSet(ICPClass::EDIT_LONG) && Manual_Input)
+    if (IsICPSet(ICPClass::EDIT_LONG) and Manual_Input)
     {
         FillDEDMatrix(2, 5, "LNG  E");
         PossibleInputs = 7;
@@ -419,7 +419,7 @@ void ICPClass::ExecINSMode(void)
             FillDEDMatrix(3, 4, "SALT");
             FillDEDMatrix(4, 3, "THDG");
 
-            if (INSLine == 0 && Manual_Input)
+            if (INSLine == 0 and Manual_Input)
             {
                 //LAT line
                 PossibleInputs = 6;
@@ -444,7 +444,7 @@ void ICPClass::ExecINSMode(void)
                 }
             }
 
-            if (INSLine == 1 && Manual_Input)
+            if (INSLine == 1 and Manual_Input)
             {
                 //LONG line
                 PossibleInputs = 7;
@@ -469,7 +469,7 @@ void ICPClass::ExecINSMode(void)
                 }
             }
 
-            if (INSLine == 2 && Manual_Input)
+            if (INSLine == 2 and Manual_Input)
             {
                 //ALT line
                 PossibleInputs = 5;
@@ -498,7 +498,7 @@ void ICPClass::ExecINSMode(void)
                 }
             }
 
-            if (INSLine == 3 && Manual_Input)
+            if (INSLine == 3 and Manual_Input)
             {
                 //THDG line
                 PossibleInputs = 4;
@@ -802,12 +802,12 @@ void ICPClass::ExecMODEMode(void)
 }
 void ICPClass::UpdateMODEMode(void)
 {
-    if (IN_AA && mICPPrimaryMode not_eq AA_MODE)
+    if (IN_AA and mICPPrimaryMode not_eq AA_MODE)
     {
         CPButtonObject* pButton = OTWDriver.pCockpitManager->GetButtonPointer(ICP_AA_BUTTON_ID);
         SimICPAA1(ICP_AA_BUTTON_ID, KEY_DOWN, pButton);
     }
-    else if (IN_AG && mICPPrimaryMode not_eq AG_MODE)
+    else if (IN_AG and mICPPrimaryMode not_eq AG_MODE)
     {
         CPButtonObject* pButton = OTWDriver.pCockpitManager->GetButtonPointer(ICP_NAV_BUTTON_ID);
         SimICPAG1(ICP_AG_BUTTON_ID, KEY_DOWN, pButton);
@@ -898,7 +898,7 @@ void ICPClass::ExecINTGMode(void)
     }
 
     //Line1
-    if (playerAC && !playerAC->HasPower(AircraftClass::IFFPower))
+    if (playerAC and !playerAC->HasPower(AircraftClass::IFFPower))
         FillDEDMatrix(0, 1, "INTG OFF");
     else
         FillDEDMatrix(0, 1, "INTG ON");

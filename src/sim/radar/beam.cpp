@@ -20,7 +20,7 @@ void RadarDopplerClass::MoveBeam(void)
     float az, el, theta;
 
     //MI no radar if RF Switch in SILENT or QUIET
-    if (SimDriver.GetPlayerAircraft() && (SimDriver.GetPlayerAircraft()->RFState == 1 ||
+    if (SimDriver.GetPlayerAircraft() and (SimDriver.GetPlayerAircraft()->RFState == 1 ||
                                           SimDriver.GetPlayerAircraft()->RFState == 2))
     {
         SetEmitting(FALSE);
@@ -102,7 +102,7 @@ void RadarDopplerClass::MoveBeam(void)
                 beamEl = elScan;
         }
 
-        if (beamAz == -azScan && beamEl == elScan)
+        if (beamAz == -azScan and beamEl == elScan)
             ClearFlagBit(HomingBeam);
     }
     /*-----------------*/
@@ -222,8 +222,8 @@ void RadarDopplerClass::MoveBeam(void)
                     el += (-MAX_ANT_EL - theta);
 
                 // target in beam ?
-                if ((az >= curScanLeft && az <= curScanRight &&
-                     el <= curScanTop && el >= curScanBottom) or scanDir == ScanRev)
+                if ((az >= curScanLeft and az <= curScanRight &&
+                     el <= curScanTop and el >= curScanBottom) or scanDir == ScanRev)
                 {
                     // Can See, or, have seen so head home
                     scanDir = ScanRev;
@@ -259,7 +259,7 @@ void RadarDopplerClass::MoveBeam(void)
                             beamEl = elScan;
                     }
 
-                    if (beamAz == azScan && beamEl == elScan)
+                    if (beamAz == azScan and beamEl == elScan)
                     {
                         ClearFlagBit(SAMingTarget);
                         ClearFlagBit(ChangingBars);
@@ -415,7 +415,7 @@ void RadarDopplerClass::MoveBeam(void)
 #if 0 // This will be nice but is a bit broken inside GMComposit.cpp  SCR 8/14/98
 
                 // In GM DBS modes, the beam always sweeps from left to right
-                if ((mode == GM) && ((flags & DBS1) or (flags & DBS2)))
+                if ((mode == GM) and ((flags & DBS1) or (flags & DBS2)))
                 {
                     beamAz = max(-azScan, -MAX_ANT_EL + seekerAzCenter);
                 }
@@ -472,8 +472,8 @@ int RadarDopplerClass::LookingAtObject(SimObjectType* target)
 
     if (!IsSet(SpaceStabalized))
     {
-        if (targetData->az >= curScanLeft && targetData->az <= curScanRight &&
-            targetData->el <= curScanTop && targetData->el >= curScanBottom)
+        if (targetData->az >= curScanLeft and targetData->az <= curScanRight &&
+            targetData->el <= curScanTop and targetData->el >= curScanBottom)
             retval = TRUE;
         else
             retval = FALSE;
@@ -490,8 +490,8 @@ int RadarDopplerClass::LookingAtObject(SimObjectType* target)
         else if (theta < -MAX_ANT_EL)
             el += (-MAX_ANT_EL - theta);
 
-        if (az >= curScanLeft && az <= curScanRight &&
-            el <= curScanTop && el >= curScanBottom)
+        if (az >= curScanLeft and az <= curScanRight &&
+            el <= curScanTop and el >= curScanBottom)
             retval = TRUE;
         else
             retval = FALSE;

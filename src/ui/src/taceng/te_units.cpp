@@ -584,7 +584,7 @@ void PickTeamCB(long, short hittype, C_Base *)
         if (gSelectedTeam >= NUM_TEAMS)
             gSelectedTeam = 1;
     }
-    while (!TeamInfo[gSelectedTeam] && gSelectedTeam not_eq StartTeam);
+    while (!TeamInfo[gSelectedTeam] and gSelectedTeam not_eq StartTeam);
 
     gLastEquipment = 0;
     PickTeamColors();
@@ -632,7 +632,7 @@ void tactical_new_flight_select(long, short hittype, C_Base *control)
     item = tree->GetLastItem();
     tree->SetAllControlStates(0, tree->GetRoot());
 
-    if (item && item->Item_)
+    if (item and item->Item_)
     {
         item->Item_->SetState(1);
         gNewSelectFlight = ((C_ATO_Flight*)item->Item_)->GetVUID();
@@ -663,7 +663,7 @@ void FillListBoxWithSquadrons(C_ListBox *lbox, long team, long aircraft_dindex)
     {
         if (entity->IsSquadron())
         {
-            if (entity->GetTeam() == team && entity->GetSType() == Falcon4ClassTable[aircraft_dindex].vuClassData.classInfo_[VU_STYPE] && entity->GetSPType() == Falcon4ClassTable[aircraft_dindex].vuClassData.classInfo_[VU_SPTYPE])
+            if (entity->GetTeam() == team and entity->GetSType() == Falcon4ClassTable[aircraft_dindex].vuClassData.classInfo_[VU_STYPE] and entity->GetSPType() == Falcon4ClassTable[aircraft_dindex].vuClassData.classInfo_[VU_SPTYPE])
             {
                 entity->GetName(buffer, 40, FALSE);
                 lbox->AddItem(entity->GetCampID(), C_TYPE_ITEM, buffer);
@@ -720,7 +720,7 @@ void tac_select_squadron_airbase(long, short hittype, C_Base *control)
 
     airbase = GetEntityByCampID(((C_ListBox*)control)->GetTextID());
 
-    if (airbase && airbase->IsObjective() && airbase->GetType() == TYPE_AIRBASE)
+    if (airbase and airbase->IsObjective() and airbase->GetType() == TYPE_AIRBASE)
     {
         gLastAirbaseID = airbase->Id();
         gLastAirbase = airbase->GetCampID();
@@ -802,7 +802,7 @@ void tactical_add_squadron(VU_ID id)
 
         while (o)
         {
-            if (o->GetType() == TYPE_AIRBASE && GetRoE(gSelectedTeam, o->GetTeam(), ROE_AIR_USE_BASES) == ROE_ALLOWED)
+            if (o->GetType() == TYPE_AIRBASE and GetRoE(gSelectedTeam, o->GetTeam(), ROE_AIR_USE_BASES) == ROE_ALLOWED)
             {
                 // Add airbase name to listbox
                 o->GetName(name, 79, TRUE);
@@ -894,7 +894,7 @@ void LockTakeoffTimeCB(long, short hittype, C_Base *)
     {
         btn = (C_Button*)win->FindControl(PAK_TAKEOFF_LOCK);
 
-        if (btn && btn->GetState() == 1)
+        if (btn and btn->GetState() == 1)
         {
             // Clear lock on TOT, if any
             btn = (C_Button*)win->FindControl(PAK_TOT_LOCK);
@@ -932,7 +932,7 @@ void LockTimeOnTargetCB(long, short hittype, C_Base *)
     {
         btn = (C_Button*)win->FindControl(PAK_TOT_LOCK);
 
-        if (btn && btn->GetState() == 1)
+        if (btn and btn->GetState() == 1)
         {
             // Clear lock on TOT, if any
             btn = (C_Button*)win->FindControl(PAK_TAKEOFF_LOCK);
@@ -1063,7 +1063,7 @@ void tactical_update_package(void)
         gTakeoffTime = gPackageTOT = 0;
         btn = (C_Button*)win->FindControl(PAK_TOT_LOCK);
 
-        if (btn && btn->GetState() == 1)
+        if (btn and btn->GetState() == 1)
         {
             // Get our _locked_ time on target
             clock = (C_Clock*)win->FindControl(PAK_TOT_TIME);
@@ -1083,7 +1083,7 @@ void tactical_update_package(void)
 
         btn = (C_Button*)win->FindControl(PAK_TAKEOFF_LOCK);
 
-        if (btn && btn->GetState() == 1 && !gPackageTOT)
+        if (btn and btn->GetState() == 1 and !gPackageTOT)
         {
             // Get our _locked_ takeoff time
             clock = (C_Clock*)win->FindControl(PAK_TAKEOFF_TIME);
@@ -1097,7 +1097,7 @@ void tactical_update_package(void)
                 gTakeoffTime = start_day * CampaignDay + hr * CampaignHours + mn * CampaignMinutes + se * CampaignSeconds;
 
                 // Check for bad takeoff time in running mode
-                if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && gTakeoffTime < TheCampaign.CurrentTime)
+                if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) and gTakeoffTime < TheCampaign.CurrentTime)
                 {
                     gTakeoffTime = TheCampaign.CurrentTime + CampaignSeconds;
                     hr = gTakeoffTime / CampaignHours;
@@ -1135,7 +1135,7 @@ void SetupPackageControls(C_Window *win, C_Base *caller)
     takeoff = TheCampaign.CurrentTime + 2 * CampaignMinutes;
     tot = TheCampaign.CurrentTime + 30 * CampaignMinutes;
 
-    if (new_package && new_package->GetUnitElement(0))
+    if (new_package and new_package->GetUnitElement(0))
     {
         // Set times based off of first flight in package
         Flight flight = (Flight) new_package->GetUnitElement(0);
@@ -1144,7 +1144,7 @@ void SetupPackageControls(C_Window *win, C_Base *caller)
         if (w)
             takeoff = w->GetWPDepartureTime();
 
-        while (w && !(w->GetWPFlags() & WPF_TARGET))
+        while (w and !(w->GetWPFlags() & WPF_TARGET))
             w = w->GetNextWP();
 
         if (w)
@@ -1153,7 +1153,7 @@ void SetupPackageControls(C_Window *win, C_Base *caller)
 
     // sfr: addpackage
     if ( /*!(TheCampaign.Flags & (CAMP_TACTICAL|CAMP_TACTICAL_EDIT)) ||*/
-        (EdittingPackage && !(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && takeoff < TheCampaign.CurrentTime))
+        (EdittingPackage and !(TheCampaign.Flags & CAMP_TACTICAL_EDIT) and takeoff < TheCampaign.CurrentTime))
     {
         // Disable these controls in campaign, or in run mode if the package has departed
         btn = (C_Button*)win->FindControl(ADD_PACKAGE_FLIGHT);
@@ -1292,7 +1292,7 @@ void SetupPackageControls(C_Window *win, C_Base *caller)
             lbox->SetFlagBitOff(C_BIT_ENABLED);
     }
 
-    if (EdittingPackage && new_package)
+    if (EdittingPackage and new_package)
     {
         _TCHAR buffer[40];
 
@@ -1649,7 +1649,7 @@ void KeepPackage(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (new_package && !new_package->GetFirstUnitElement())
+    if (new_package and !new_package->GetFirstUnitElement())
         DiscardPackage(ID, hittype, control);
 
     gNewSelectFlight = FalconNullId;
@@ -1776,7 +1776,7 @@ void SetPackageTimes(Package new_package, CampaignTime takeoffTime, CampaignTime
     {
         w = flight->GetFirstUnitWP();
 
-        if (w && !flight->Moving())
+        if (w and !flight->Moving())
         {
             if (takeoffTime)
                 delta = takeoffTime - w->GetWPDepartureTime();
@@ -1785,7 +1785,7 @@ void SetPackageTimes(Package new_package, CampaignTime takeoffTime, CampaignTime
                 delta += MissionData[flight->GetUnitMission()].separation * CampaignSeconds;
             else if (targetTime)
             {
-                while (w && !(w->GetWPFlags() & WPF_TARGET))
+                while (w and !(w->GetWPFlags() & WPF_TARGET))
                     w = w->GetNextWP();
 
                 if (w)
@@ -2005,7 +2005,7 @@ void tac_select_squadron(long ID, short hittype, C_Base *control)
                 airbase = sqd->GetUnitAirbase();
 
                 //if(airbase)
-                if (airbase && !F4IsBadReadPtr(airbase, sizeof(CampBaseClass))) // JB 010326 CTD
+                if (airbase and !F4IsBadReadPtr(airbase, sizeof(CampBaseClass))) // JB 010326 CTD
                 {
                     airbase->GetName(buffer, 40, TRUE);
                     lbox->AddItem(airbase->GetCampID(), C_TYPE_ITEM, buffer);
@@ -2026,7 +2026,7 @@ void tac_select_squadron(long ID, short hittype, C_Base *control)
 
             while (o)
             {
-                if (o->GetType() == TYPE_AIRBASE && GetRoE(gSelectedTeam, o->GetTeam(), ROE_AIR_USE_BASES) == ROE_ALLOWED)
+                if (o->GetType() == TYPE_AIRBASE and GetRoE(gSelectedTeam, o->GetTeam(), ROE_AIR_USE_BASES) == ROE_ALLOWED)
                 {
                     // Add airbase name to listbox
                     o->GetName(name, 79, TRUE);
@@ -2317,7 +2317,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
                 target = NULL;
 
             // Set our package targe to our target if we're the first element
-            if (new_package && !new_package->GetFirstUnitElement())
+            if (new_package and !new_package->GetFirstUnitElement())
                 new_package_target = target;
         }
 
@@ -2411,7 +2411,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
             mis.tot = TheCampaign.CurrentTime + CampaignMinutes;
         }
 
-        if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && mis.tot < TheCampaign.CurrentTime)
+        if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) and mis.tot < TheCampaign.CurrentTime)
             mis.tot = TheCampaign.CurrentTime + 3 * CampaignSeconds;
 
         // Adjust for additional flights (flights is # of previous flights in the package)
@@ -2474,7 +2474,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
             }
             else
             {
-                if ((w->GetWPFlags() & WPF_TARGET) && !done)
+                if ((w->GetWPFlags() & WPF_TARGET) and !done)
                 {
                     w->SetWPFlag(WPF_TIME_LOCKED);
                     done = 1;
@@ -2666,7 +2666,7 @@ void tactical_add_battalion(VU_ID id, C_Base *caller)
     // Determine target (or target location)
     ent = (CampEntity) vuDatabase->Find(id);
 
-    if (ent && ent->IsObjective())
+    if (ent and ent->IsObjective())
     {
         ent->GetLocation(&MapX, &MapY);
         gLastBattalionObjID = ent->Id();
@@ -2698,7 +2698,7 @@ void tactical_add_battalion(VU_ID id, C_Base *caller)
             lbox->SetValue(toe_us);
     }
 
-    if (gLastEquipment && gLastUnitType not_eq -1)
+    if (gLastEquipment and gLastUnitType not_eq -1)
     {
         lbox = (C_ListBox *) win->FindControl(UNIT_TYPE);
 
@@ -2730,7 +2730,7 @@ Objective FindValidObjective(Battalion bat, VU_ID current_obj, GridIndex x, Grid
      // Air defense units need to snap to SAM sites
      if (!o)
      o = FindNearestObjective(x,y,&last,999);
-     while (o && !o->SamSite())
+     while (o and !o->SamSite())
      o = FindNearestObjective(x,y,&last,999);
      }
     */
@@ -2762,7 +2762,7 @@ void tactical_set_orders(Battalion bat, VU_ID obj, GridIndex tx, GridIndex ty)
     {
         role = bat->GetUnitNormalRole();
 
-        if (role == GRO_AIRDEFENSE && o->SamSite())
+        if (role == GRO_AIRDEFENSE and o->SamSite())
             bat->SetUnitOrders(GORD_AIRDEFENSE, o->Id());
         else if (role == GRO_FIRESUPPORT)
             bat->SetUnitOrders(GORD_SUPPORT, o->Id());
@@ -2803,7 +2803,7 @@ void tactical_set_orders(Battalion bat, VU_ID obj, GridIndex tx, GridIndex ty)
         // Tack on a waypoint at our destination location, if we don't have one or need at least two waypoints
         bat->GetUnitDestination(&xd, &yd);
 
-        while (wp && wp->GetNextWP())
+        while (wp and wp->GetNextWP())
         {
             wp = wp->GetNextWP();
         }
@@ -3016,7 +3016,7 @@ static void update_new_battalion_window(void)
                         {
                             vc = (VehicleClassDataType*) Falcon4ClassTable[uc->VehicleType[0]].dataPtr;
 
-                            if ((vc) && (uc->VehicleType[0]))
+                            if ((vc) and (uc->VehicleType[0]))
                             {
                                 sprintf(buffer, "%s - %s", uc->Name, vc->Name);
                                 list->AddItem(loop, C_TYPE_ITEM, buffer);

@@ -53,19 +53,19 @@ void HeliBrain::LandMe(void)
             break;
 
         case Landing:
-            if ((selfAlt >= (groundAlt - 0.25f)) && (selfAlt < groundAlt) or SimLibElapsedTime > jinkTime)
+            if ((selfAlt >= (groundAlt - 0.25f)) and (selfAlt < groundAlt) or SimLibElapsedTime > jinkTime)
             {
                 onStation = Landed;
                 jinkTime = SimLibElapsedTime + (90 + rand() % 90) * 1000;
                 self->SetFlag(ON_GROUND);
                 break;
             }
-            else if ((selfAlt >= (groundAlt - 3.5f) or SimLibElapsedTime > (jinkTime - 10000)) && (selfAlt < groundAlt))
+            else if ((selfAlt >= (groundAlt - 3.5f) or SimLibElapsedTime > (jinkTime - 10000)) and (selfAlt < groundAlt))
             {
                 LevelTurn(0.0f, 0.0f, TRUE);
                 MachHold(0.0f, -10.0f, FALSE);
             }
-            else if ((selfAlt >= (groundAlt - 10.0f) or SimLibElapsedTime > (jinkTime - 15000)) && (selfAlt < groundAlt))
+            else if ((selfAlt >= (groundAlt - 10.0f) or SimLibElapsedTime > (jinkTime - 15000)) and (selfAlt < groundAlt))
             {
                 LevelTurn(0.0f, 0.0f, TRUE);
                 MachHold(0.0f, -3.5f, FALSE);
@@ -113,7 +113,7 @@ void HeliBrain::LandMe(void)
             cargo = (Unit) self->curWaypoint->GetWPTarget();
             unit = (Unit)self->GetCampaignObject();
 
-            if (cargo && unit)
+            if (cargo and unit)
             {
                 unit->SetCargoId(cargo->Id());
                 cargo->SetCargoId(unit->Id());
@@ -129,7 +129,7 @@ void HeliBrain::LandMe(void)
             cargo = (Unit) self->curWaypoint->GetWPTarget();
             unit = (Unit)self->GetCampaignObject();
 
-            if (cargo && unit && unit->Cargo())
+            if (cargo and unit and unit->Cargo())
             {
                 unit->UnloadUnit();
                 cargo->SetCargoId(FalconNullId);

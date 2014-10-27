@@ -307,7 +307,7 @@ long C_Clock::CheckHotSpots(long relX, long relY)
     if (Flags_ & C_BIT_INVISIBLE or !(Flags_ & C_BIT_ENABLED) or !Ready())
         return(0);
 
-    if (relX >= GetX() && relX <= (GetX() + GetW()) && relY >= GetY() && relY <= (GetY() + GetH()))
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
     {
         Section_ = 0;
 

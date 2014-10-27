@@ -75,7 +75,7 @@ public:
 
     void FillLeftEdge(long cx, long cy)
     {
-        if (cy >= 0 && cy < MaxHeight && cx < MaxWidth)
+        if (cy >= 0 and cy < MaxHeight and cx < MaxWidth)
         {
             if (cx < 0) cx = 0;
 
@@ -85,7 +85,7 @@ public:
 
     void FillRightEdge(long cx, long cy)
     {
-        if (cy >= 0 && cy < MaxHeight && cx > 0)
+        if (cy >= 0 and cy < MaxHeight and cx > 0)
         {
             if (cx > MaxWidth1) cx = MaxWidth1;
 
@@ -95,19 +95,19 @@ public:
 
     void FillLeftEdgeY(long cx, long cy)
     {
-        if (cy >= 0 && cy < MaxHeight)
+        if (cy >= 0 and cy < MaxHeight)
             Edge[cy].Left = cx;
     };
 
     void FillRightEdgeY(long cx, long cy)
     {
-        if (cy >= 0 && cy < MaxHeight)
+        if (cy >= 0 and cy < MaxHeight)
             Edge[cy].Right = cx;
     };
 
     void FillCirclePoints(long x, long y, long width)
     {
-        if (y >= 0 && y < MaxHeight && x < MaxWidth)
+        if (y >= 0 and y < MaxHeight and x < MaxWidth)
         {
             long x1 = x + width;
 

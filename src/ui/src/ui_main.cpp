@@ -470,11 +470,11 @@ void CloseAllRenderers(long openID)
 
     gMainHandler->EnterCritical();
 
-    if (openID not_eq RECON_WIN && openID not_eq RECON_LIST_WIN)
+    if (openID not_eq RECON_WIN and openID not_eq RECON_LIST_WIN)
     {
         win = gMainHandler->FindWindow(RECON_WIN);
 
-        if (win && (gMainHandler->GetWindowFlags(RECON_WIN) & C_BIT_ENABLED))
+        if (win and (gMainHandler->GetWindowFlags(RECON_WIN) & C_BIT_ENABLED))
         {
             btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
 
@@ -484,7 +484,7 @@ void CloseAllRenderers(long openID)
 
         win = gMainHandler->FindWindow(RECON_LIST_WIN);
 
-        if (win && (gMainHandler->GetWindowFlags(RECON_LIST_WIN) & C_BIT_ENABLED))
+        if (win and (gMainHandler->GetWindowFlags(RECON_LIST_WIN) & C_BIT_ENABLED))
         {
             btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
 
@@ -495,7 +495,7 @@ void CloseAllRenderers(long openID)
 
     win = gMainHandler->FindWindow(MUNITIONS_WIN);
 
-    if (win && (gMainHandler->GetWindowFlags(MUNITIONS_WIN) & C_BIT_ENABLED))
+    if (win and (gMainHandler->GetWindowFlags(MUNITIONS_WIN) & C_BIT_ENABLED))
     {
         btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
 
@@ -863,7 +863,7 @@ static void OpenInstantActionCB(long , short hittype, C_Base *control)
     if (!IALoaded)
         LoadInstantActionWindows();
 
-    if (MainLastGroup not_eq 0 && MainLastGroup not_eq control->GetGroup())
+    if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->DisableWindowGroup(MainLastGroup);
     }
@@ -892,7 +892,7 @@ static void OpenDogFightCB(long , short hittype, C_Base *control)
     if (!DFLoaded)
         LoadDogFightWindows();
 
-    if (MainLastGroup not_eq 0 && MainLastGroup not_eq control->GetGroup())
+    if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->DisableWindowGroup(MainLastGroup);
     }
@@ -923,7 +923,7 @@ static void OpenTacticalCB(long , short hittype, C_Base *control)
     if (!TACSelLoaded)
         LoadTacEngSelectWindows();
 
-    if (MainLastGroup not_eq 0 && MainLastGroup not_eq control->GetGroup())
+    if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
         gMainHandler->DisableWindowGroup(MainLastGroup);
 
     if (MainLastGroup not_eq control->GetGroup())
@@ -953,7 +953,7 @@ void OpenMainCampaignCB(long , short hittype, C_Base *control)
     if (!CPSelectLoaded)
         LoadCampaignSelectWindows();
 
-    if (MainLastGroup not_eq 0 && MainLastGroup not_eq control->GetGroup())
+    if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->DisableWindowGroup(MainLastGroup);
     }
@@ -964,7 +964,7 @@ void OpenMainCampaignCB(long , short hittype, C_Base *control)
     {
         btn = (C_Button*)win->FindControl(CS_NEW_CTRL);
 
-        if (btn && btn->GetState())
+        if (btn and btn->GetState())
         {
             SetCampaignSelectCB(CS_NEW_CTRL, C_TYPE_LMOUSEUP, btn);
             SelectScenarioCB(CS_LOAD_SCENARIO1, C_TYPE_LMOUSEUP, NULL);
@@ -1419,7 +1419,7 @@ void PlayUIMusic()
     MusicTypePlayed = 1; // Main UI Music
     LastTypePlayed = 1;
 
-    if (LastUIPlayed not_eq SND_AMBIENT1 && LastUIPlayed not_eq SND_AMBIENT2)
+    if (LastUIPlayed not_eq SND_AMBIENT1 and LastUIPlayed not_eq SND_AMBIENT2)
     {
         if (rand() & 1)
             LastUIPlayed = SND_AMBIENT1;
@@ -1494,7 +1494,7 @@ void PlayUIMovie(long ID)
 
     win = gMainHandler->FindWindow(VIDEO_WIN);
 
-    if ((win) && (gMovieMgr->GetMovie(ID)))
+    if ((win) and (gMovieMgr->GetMovie(ID)))
     {
         gMoviePlaying = TRUE;
         gMusic->FadeOut_Pause();
@@ -1691,7 +1691,7 @@ int UI_Startup()
         // Returning from the sim - Post eval our flight
         // KCK: Added the check for a pilot list so that we don't post-eval after a
         // discarded mission
-        if (TheCampaign.MissionEvaluator && TheCampaign.MissionEvaluator->flight_data)
+        if (TheCampaign.MissionEvaluator and TheCampaign.MissionEvaluator->flight_data)
             TheCampaign.MissionEvaluator->PostMissionEval();
 
         if (MainLastGroup == 1000)
@@ -1777,7 +1777,7 @@ int UI_Startup()
         DisplayOptions.Initialize();
     }
 
-    if (!LogBook.CheckPassword(_T("")) && !(LogState & LB_CHECKED))
+    if (!LogBook.CheckPassword(_T("")) and !(LogState & LB_CHECKED))
         PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE, CheckPasswordCB, NoPasswordCB);
     else
     {
@@ -2004,7 +2004,7 @@ void UI_Cleanup()
         if (gCursors[i])
             DeleteObject(gCursors[i]);
 
-    if (gScreenShotEnabled && gScreenShotBuffer)
+    if (gScreenShotEnabled and gScreenShotBuffer)
     {
         delete gScreenShotBuffer;
         gScreenShotBuffer = NULL;
@@ -2224,7 +2224,7 @@ static void SelectTheater(TheaterDef *td)
         btn->ClearImage(0, UI_THEATER_BITMAP);
         gImageMgr->RemoveImage(UI_THEATER_BITMAP);
 
-        if (td && td->m_bitmap)
+        if (td and td->m_bitmap)
         {
             gImageMgr->LoadImage(UI_THEATER_BITMAP, td->m_bitmap, 0, 0);
             btn->SetImage(0, UI_THEATER_BITMAP);
@@ -2272,7 +2272,7 @@ void TheaterButtonCB(long ID, short hittype, C_Base *control)
     DisableScenarioInfo();
     LeaveCurrentGame();
 
-    if (MainLastGroup not_eq 0 && MainLastGroup not_eq control->GetGroup())
+    if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->DisableWindowGroup(MainLastGroup);
     }

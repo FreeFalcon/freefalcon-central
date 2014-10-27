@@ -87,7 +87,7 @@ extern WORD RGB8toRGB565(DWORD);
 // NEVER CALL THESE FUNCTIONS YOURSELF
 F4CSECTIONHANDLE* UI_Enter(C_Window *Parent)
 {
-    if (Parent && Parent->GetCritical())
+    if (Parent and Parent->GetCritical())
     {
         F4EnterCriticalSection(Parent->GetCritical());
         return(Parent->GetCritical());
@@ -254,7 +254,7 @@ void C_Window::Cleanup()
 {
     CONTROLLIST *cur, *last;
 
-    if (Controls_ && !(Flags_ & C_BIT_NOCLEANUP))
+    if (Controls_ and !(Flags_ & C_BIT_NOCLEANUP))
     {
         cur = Controls_;
 
@@ -377,7 +377,7 @@ void C_Window::ScanClientArea(long client)
     if (client >= WIN_MAX_CLIENTS)
         return;
 
-    if (!VScroll_[client] && !HScroll_[client])
+    if (!VScroll_[client] and !HScroll_[client])
         return;
 
     VW_[client] = 0;
@@ -387,7 +387,7 @@ void C_Window::ScanClientArea(long client)
 
     while (cur)
     {
-        if (cur->Control_ && !(cur->Control_->GetFlags() & C_BIT_ABSOLUTE) && !(cur->Control_->GetFlags() & C_BIT_INVISIBLE) && cur->Control_->GetClient() == client)
+        if (cur->Control_ and !(cur->Control_->GetFlags() & C_BIT_ABSOLUTE) and !(cur->Control_->GetFlags() & C_BIT_INVISIBLE) and cur->Control_->GetClient() == client)
         {
             if ((cur->Control_->GetX() + cur->Control_->GetW()) > VW_[client])
                 VW_[client] = cur->Control_->GetX() + cur->Control_->GetW();
@@ -535,7 +535,7 @@ long C_Window::SetCheckedUpdateRect(long x1, long y1, long x2, long y2)
 
     if (rectcount_ < WIN_MAX_RECTS)
     {
-        for (i = 0; (i < rectcount_) && (x1 <= x2) && (y1 <= y2); i++)
+        for (i = 0; (i < rectcount_) and (x1 <= x2) and (y1 <= y2); i++)
         {
             if (rectflag_[i])
             {
@@ -650,7 +650,7 @@ long C_Window::SetCheckedUpdateRect(long x1, long y1, long x2, long y2)
             }
         }
 
-        if (x1 < x2 && y1 < y2)
+        if (x1 < x2 and y1 < y2)
         {
             AddUpdateRect(x1, y1, x2, y2);
             return(1);
@@ -731,7 +731,7 @@ void C_Window::ClearCheckedUpdateRect(long x1, long y1, long x2, long y2)
 
     if (rectcount_ < WIN_MAX_RECTS)
     {
-        for (i = 0; (i < rectcount_) && (x1 < x2) && (y1 < y2); i++)
+        for (i = 0; (i < rectcount_) and (x1 < x2) and (y1 < y2); i++)
         {
             if (rectflag_[i])
             {
@@ -881,7 +881,7 @@ void C_Window::ClearUpdateRect(long x1, long y1, long x2, long y2)
     if (x1 > GetW() or x2 < 0 or y1 > GetH() or y2 < 0 or !rectcount_)
         return;
 
-    if (x1 <= 0 && y1 <= 0 && x2 >= GetW() && y2 >= GetH())
+    if (x1 <= 0 and y1 <= 0 and x2 >= GetW() and y2 >= GetH())
     {
         rectcount_ = 0;
         return;
@@ -1185,7 +1185,7 @@ void C_Window::RemoveAllControls()
 
 BOOL C_Window::InsideClientWidth(long left, long right, long Client)
 {
-    if ((left + VX_[Client] + VW_[Client]) < ClientArea_[Client].right && (right + VX_[Client]) >= ClientArea_[Client].left)
+    if ((left + VX_[Client] + VW_[Client]) < ClientArea_[Client].right and (right + VX_[Client]) >= ClientArea_[Client].left)
         return(TRUE);
 
     return(FALSE);
@@ -1193,7 +1193,7 @@ BOOL C_Window::InsideClientWidth(long left, long right, long Client)
 
 BOOL C_Window::InsideClientHeight(long top, long bottom, long Client)
 {
-    if ((top + VY_[Client]) < ClientArea_[Client].bottom && (bottom + VY_[Client]) >= ClientArea_[Client].top)
+    if ((top + VY_[Client]) < ClientArea_[Client].bottom and (bottom + VY_[Client]) >= ClientArea_[Client].top)
         return(TRUE);
 
     return(FALSE);
@@ -1435,7 +1435,7 @@ C_Base *C_Window::GetControl(long *ID, long relX, long relY)
             }
             else
             {
-                if (relX >= ClientArea_[cur->Control_->GetClient()].left && relX <= ClientArea_[cur->Control_->GetClient()].right && relY >= ClientArea_[cur->Control_->GetClient()].top && relY <= ClientArea_[cur->Control_->GetClient()].bottom)
+                if (relX >= ClientArea_[cur->Control_->GetClient()].left and relX <= ClientArea_[cur->Control_->GetClient()].right and relY >= ClientArea_[cur->Control_->GetClient()].top and relY <= ClientArea_[cur->Control_->GetClient()].bottom)
                 {
                     thisID = cur->Control_->CheckHotSpots(relX - VX_[cur->Control_->GetClient()], relY - VY_[cur->Control_->GetClient()]);
 
@@ -1579,7 +1579,7 @@ BOOL C_Window::ClipToArea(UI95_RECT *src, UI95_RECT *dst, UI95_RECT *ClipArea)
         dst->bottom -= offset;
     }
 
-    if (dst->left < dst->right && dst->top < dst->bottom)
+    if (dst->left < dst->right and dst->top < dst->bottom)
         return(TRUE); // Draw it
 
     return(FALSE);
@@ -1865,7 +1865,7 @@ void C_Window::CustomBlitTranslucent(SCREEN *surface, COLORREF color, long Perc,
             if (dr < 16)
                 subx += SubTable[dr];
 
-            if (subx && suby)
+            if (subx and suby)
                 sub = (long)sqrt((float)(subx * subx + suby * suby));
             else
                 sub = subx + suby;
@@ -2208,13 +2208,13 @@ void C_Window::DrawVLine(SCREEN *surface, COLORREF color, long x, long y, long h
 
 BOOL C_Window::CheckLine(long x1, long y1, long x2, long y2, long minx, long miny, long maxx, long maxy)
 {
-    if (x1 < minx && x2 < minx) return(FALSE);
+    if (x1 < minx and x2 < minx) return(FALSE);
 
-    if (y1 < miny && y2 < miny) return(FALSE);
+    if (y1 < miny and y2 < miny) return(FALSE);
 
-    if (x1 > maxx && x2 > maxx) return(FALSE);
+    if (x1 > maxx and x2 > maxx) return(FALSE);
 
-    if (y1 > maxy && y2 > maxy) return(FALSE);
+    if (y1 > maxy and y2 > maxy) return(FALSE);
 
     return(TRUE);
 }
@@ -2259,7 +2259,7 @@ BOOL C_Window::ClipLine(long *x1, long *y1, long *x2, long *y2, UI95_RECT *clip)
     if (*y2 > clip->bottom)
         flag2  or_eq  LINE_CLIP_BOTTOM;
 
-    if (!flag1 && !flag2) // return, because both points are inside clip rect
+    if (!flag1 and !flag2) // return, because both points are inside clip rect
         return(TRUE);
 
     if (((flag1 & flag2) & LINE_CLIP_LEFT) or // If both points are on the same side of the clip rect... don't draw
@@ -2629,7 +2629,7 @@ void C_Window::SetGroupState(long GroupID, short state)
 
     while (cur)
     {
-        if (cur->Control_->GetGroup() == GroupID && cur->Control_->IsControl())
+        if (cur->Control_->GetGroup() == GroupID and cur->Control_->IsControl())
         {
             if (cur->Control_->GetState() not_eq state)
             {
@@ -2725,7 +2725,7 @@ void C_Window::SetPrevControl() // Called when SHIFT & TAB are pressed
 
         while (cur)
         {
-            if (cur->Control_->GetFlags() & C_BIT_SELECTABLE && cur->Control_->GetFlags() & C_BIT_ENABLED && !(cur->Control_->GetFlags() & C_BIT_INVISIBLE))
+            if (cur->Control_->GetFlags() & C_BIT_SELECTABLE and cur->Control_->GetFlags() & C_BIT_ENABLED and !(cur->Control_->GetFlags() & C_BIT_INVISIBLE))
             {
                 CurControl_ = cur->Control_;
                 CurControl_->Activate();
@@ -2749,7 +2749,7 @@ void C_Window::SetPrevControl() // Called when SHIFT & TAB are pressed
 
         while (cur->Control_ not_eq CurControl_)
         {
-            if (cur->Control_->GetFlags() & C_BIT_SELECTABLE && cur->Control_->GetFlags() & C_BIT_ENABLED && !(cur->Control_->GetFlags() & C_BIT_INVISIBLE))
+            if (cur->Control_->GetFlags() & C_BIT_SELECTABLE and cur->Control_->GetFlags() & C_BIT_ENABLED and !(cur->Control_->GetFlags() & C_BIT_INVISIBLE))
             {
                 CurControl_ = cur->Control_;
                 CurControl_->Activate();
@@ -2777,7 +2777,7 @@ void C_Window::SetNextControl() // Called when TAB is pressed
 
         while (cur)
         {
-            if (cur->Control_->GetFlags() & C_BIT_SELECTABLE && cur->Control_->GetFlags() & C_BIT_ENABLED && !(cur->Control_->GetFlags() & C_BIT_INVISIBLE))
+            if (cur->Control_->GetFlags() & C_BIT_SELECTABLE and cur->Control_->GetFlags() & C_BIT_ENABLED and !(cur->Control_->GetFlags() & C_BIT_INVISIBLE))
             {
                 CurControl_ = cur->Control_;
                 CurControl_->Activate();
@@ -2801,7 +2801,7 @@ void C_Window::SetNextControl() // Called when TAB is pressed
 
         while (cur->Control_ not_eq CurControl_)
         {
-            if (cur->Control_->GetFlags() & C_BIT_SELECTABLE && cur->Control_->GetFlags() & C_BIT_ENABLED && !(cur->Control_->GetFlags() & C_BIT_INVISIBLE))
+            if (cur->Control_->GetFlags() & C_BIT_SELECTABLE and cur->Control_->GetFlags() & C_BIT_ENABLED and !(cur->Control_->GetFlags() & C_BIT_INVISIBLE))
             {
                 CurControl_ = cur->Control_;
                 CurControl_->Activate();
@@ -2856,7 +2856,7 @@ BOOL C_Window::CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii, unsi
 
     if (Ascii)
     {
-        if (CurControl_ && CurControl_->CheckKeyboard(DKScanCode, Ascii, ShiftStates, RepeatCount))
+        if (CurControl_ and CurControl_->CheckKeyboard(DKScanCode, Ascii, ShiftStates, RepeatCount))
             return(TRUE);
     }
     else

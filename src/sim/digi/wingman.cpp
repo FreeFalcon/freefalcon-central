@@ -260,7 +260,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
             case FalconWingmanMsg::WMPwideLT:
             case FalconWingmanMsg::WMPShortLT:
             case FalconWingmanMsg::WMPDefensive:
-                if (flightLead && ((AircraftClass *)flightLead)->DBrain())
+                if (flightLead and ((AircraftClass *)flightLead)->DBrain())
                     ((AircraftClass *)flightLead)->DBrain()->SetBvrCurrProfile(BvrLookup[command - FalconWingmanMsg::WMPlevel1a]);
 
                 fromIndex = self->GetCampaignObject()->GetComponentIndex(self);
@@ -550,7 +550,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
             case FalconWingmanMsg::WMPwideLT:
             case FalconWingmanMsg::WMPShortLT:
             case FalconWingmanMsg::WMPDefensive:
-                if (flightLead && ((AircraftClass *)flightLead)->DBrain())
+                if (flightLead and ((AircraftClass *)flightLead)->DBrain())
                     ((AircraftClass *)flightLead)->DBrain()->SetBvrCurrProfile(BvrLookup[command - FalconWingmanMsg::WMPlevel1a]);
 
                 fromIndex = self->GetCampaignObject()->GetComponentIndex(self);

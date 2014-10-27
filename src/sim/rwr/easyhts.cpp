@@ -119,7 +119,7 @@ void EasyHarmTargetingPod::Display(VirtualDisplay* activeDisplay)
         DrawEmitterSymbol(tmpElement->symbol, boxed);
 
         // Mark the locked target
-        if (lockedTarget && tmpElement->BaseObject() == lockedTarget->BaseData())
+        if (lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
         {
             display->SetColor(0xFF00FF00);
             display->Circle(0.0F, 0.0F, 0.08F);

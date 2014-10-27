@@ -104,7 +104,7 @@ void HeliBrain::SensorFusion(void)
         /*----------*/
         /* aircraft */
         /*----------*/
-        else if ((pcId not_eq ID_NONE) && (pcId < ID_NEUTRAL))
+        else if ((pcId not_eq ID_NONE) and (pcId < ID_NEUTRAL))
         {
             /*-------------------------*/
             /* time to turn to ownship */
@@ -157,7 +157,7 @@ void HeliBrain::SensorFusion(void)
         /*----------------------------------------------------*/
         localData->targetTime = 2.0F * MAX_TARGET_TIME;
 
-        if (!obj->BaseData()->IsMissile() && pcId < ID_NEUTRAL)
+        if (!obj->BaseData()->IsMissile() and pcId < ID_NEUTRAL)
         {
             /*------------------*/
             /* closing velocity */

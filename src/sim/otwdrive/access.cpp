@@ -210,13 +210,13 @@ void OTWDriverClass::Select2DCockpitMode(bool viewreset) //Wombat778 11-18-04  a
     if (pCockpitManager)
     {
         //MI
-        if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->WideView)
+        if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->WideView)
             pCockpitManager->SetDefaultPanel(COCKPIT_DEFAULT_PANEL + 90000);
         else
             pCockpitManager->SetDefaultPanel(COCKPIT_DEFAULT_PANEL);
 
         //Wombat778 11-17-04
-        if (g_bSync2D3DPit && !viewreset)
+        if (g_bSync2D3DPit and !viewreset)
             pCockpitManager->Set2DPanelDirection(eyePan, eyeTilt);
     }
 }
@@ -405,7 +405,7 @@ void OTWDriverClass::SelectExternal()
         chaseCamPos.x += PRANDFloat() * 700.0f;
         chaseCamPos.y += PRANDFloat() * 700.0f;
 
-        if (otwPlatform && otwPlatform->drawPointer)
+        if (otwPlatform and otwPlatform->drawPointer)
         {
             chaseRange = -1.5F * otwPlatform->drawPointer->Radius();
             chaseRange += -PRANDFloatPos() * 400.0f;
@@ -462,7 +462,7 @@ void OTWDriverClass::ToggleHybridPitMode(void)
     if (!HybridPitModeEnabled)
     {
         if (g_bSync2D3DPit)
-            if (g_bEnableTrackIR && PlayerOptions.Get3dTrackIR() == true) //added check for 3d TIR being enabled
+            if (g_bEnableTrackIR and PlayerOptions.Get3dTrackIR() == true) //added check for 3d TIR being enabled
                 HybridPitModeEnabled = 1;
             else
                 HybridPitModeEnabled = 2;
@@ -490,7 +490,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
     }
 
     // reset our chase ranges etc to default or zero out slew stuff
-    // if(!(mode == mOTWDisplayMode && mode == ModePadlockF3)) {
+    // if(!(mode == mOTWDisplayMode and mode == ModePadlockF3)) {
     // ViewReset();
     // }
 
@@ -733,7 +733,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 Padlock_FindEnhancedPriority( TRUE );
 
                 // if we got a candidate we use that
-                if ( mpPadlockCandidate && mpPadlockCandidate->IsSim() )
+                if ( mpPadlockCandidate and mpPadlockCandidate->IsSim() )
                 {
                  if ( mpPadlockPriorityObject &&
                   mpPadlockPriorityObject not_eq mpPadlockCandidate )
@@ -750,7 +750,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                  mpPadlockCandidate = NULL;
                 }
 
-                if ( mpPadlockPriorityObject && mpPadlockPriorityObject->IsSim() )
+                if ( mpPadlockPriorityObject and mpPadlockPriorityObject->IsSim() )
                 {
                  SetGraphicsOwnship( mpPadlockPriorityObject );
                  SetTrackPlatform( SimDriver.GetPlayerAircraft() );
@@ -1045,7 +1045,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
 
 
                 // if we got a candidate we use that
-                if ( mpPadlockCandidate && mpPadlockCandidate->IsSim() )
+                if ( mpPadlockCandidate and mpPadlockCandidate->IsSim() )
                 {
                  if ( mpPadlockPriorityObject &&
                   mpPadlockPriorityObject not_eq mpPadlockCandidate )
@@ -1062,7 +1062,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                  mpPadlockCandidate = NULL;
                 }
 
-                if ( mpPadlockPriorityObject && mpPadlockPriorityObject->IsSim() )
+                if ( mpPadlockPriorityObject and mpPadlockPriorityObject->IsSim() )
                 {
                  SetGraphicsOwnship( mpPadlockPriorityObject );
                  SetTrackPlatform( SimDriver.GetPlayerAircraft() );
@@ -1079,7 +1079,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                  SetGraphicsOwnship( SimDriver.GetPlayerAircraft() );
                  Padlock_FindEnhancedPriority( TRUE );
 
-                 if ( mpPadlockCandidate && mpPadlockCandidate->IsSim() )
+                 if ( mpPadlockCandidate and mpPadlockCandidate->IsSim() )
                  {
                  if ( mpPadlockPriorityObject &&
                   mpPadlockPriorityObject not_eq mpPadlockCandidate )
@@ -1096,7 +1096,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                  mpPadlockCandidate = NULL;
                  }
 
-                 if ( mpPadlockPriorityObject && mpPadlockPriorityObject->IsSim() )
+                 if ( mpPadlockPriorityObject and mpPadlockPriorityObject->IsSim() )
                  {
                  SetGraphicsOwnship( mpPadlockPriorityObject );
                  SetTrackPlatform( SimDriver.GetPlayerAircraft() );
@@ -1253,7 +1253,7 @@ void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastm
             if (otwPlatform.get() not_eq SimDriver.GetPlayerAircraft())
                 SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
 
-            if (g_bSync2D3DPit && lastmode == Mode3DCockpit) //consider adding padlock modes
+            if (g_bSync2D3DPit and lastmode == Mode3DCockpit) //consider adding padlock modes
                 Select2DCockpitMode(0);
             else
             {
@@ -1274,9 +1274,9 @@ void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastm
                 eyeTilt = g_f3DHeadTilt * DTR; // Cobra
                 SetFOV(g_f3DPitFOV * DTR);   // Cobra
             }
-            else if (g_bSync2D3DPit && lastmode == Mode2DCockpit)
+            else if (g_bSync2D3DPit and lastmode == Mode2DCockpit)
             {
-                if (eyePan == 0.0f && fabs(eyeTilt) < 0.3f)  // Cobra - Default 3D pit view when 2D pit view is straight forward view (panel 1100)
+                if (eyePan == 0.0f and fabs(eyeTilt) < 0.3f)  // Cobra - Default 3D pit view when 2D pit view is straight forward view (panel 1100)
                 {
                     eyePan = 0.0f;
                     eyeTilt = g_f3DHeadTilt * DTR; // Cobra
@@ -1443,22 +1443,22 @@ void OTWDriverClass::SetDetail(int newlevel)
         // Find any existing parent drawable
         parentDrawable = NULL;
 
-        if (parentObject && parentObject->IsSetCampaignFlag(FEAT_ELEV_CONTAINER))
+        if (parentObject and parentObject->IsSetCampaignFlag(FEAT_ELEV_CONTAINER))
             parentDrawable = parentObject->baseObject;
-        else if (parentObject && parentObject->IsSetCampaignFlag(FEAT_FLAT_CONTAINER))
+        else if (parentObject and parentObject->IsSetCampaignFlag(FEAT_FLAT_CONTAINER))
             parentDrawable = parentObject->drawPointer;
 
         // KCK: For now, if we've got a parent drawable object, don't fuck with it.
         if (!parentDrawable)
         {
-            if (theObject->drawPointer && theObject->displayPriority <= oldlevel && theObject->displayPriority > newlevel)
+            if (theObject->drawPointer and theObject->displayPriority <= oldlevel and theObject->displayPriority > newlevel)
             {
                 // We don't want to display this anymore
                 OTWDriver.RemoveObject(theObject->drawPointer);
                 SimDriver.featureList->Remove(theObject);
             }
 
-            if (theObject->drawPointer && theObject->displayPriority > oldlevel && theObject->displayPriority <= newlevel)
+            if (theObject->drawPointer and theObject->displayPriority > oldlevel and theObject->displayPriority <= newlevel)
             {
                 // We want to display this now
                 OTWDriver.InsertObject(theObject->drawPointer);
@@ -1532,7 +1532,7 @@ void OTWDriverClass::ToggleEyeFly(void)
         if (SimDriver.GetPlayerEntity())
         {
             // Make sure we don't leave it hidden
-            if (otwPlatform && otwPlatform->drawPointer)
+            if (otwPlatform and otwPlatform->drawPointer)
             {
                 otwPlatform->drawPointer->SetInhibitFlag(FALSE);
             }
@@ -1617,7 +1617,7 @@ void OTWDriverClass::EndFlight(void)
 
 void OTWDriverClass::ViewTiltUp(void)
 {
-    if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && mOTWDisplayMode == Mode2DCockpit)
+    if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode2DCockpit)
     {
         SimDriver.POVKludgeFunction(POV_N);
     }
@@ -1644,7 +1644,7 @@ void OTWDriverClass::ViewTiltUp(void)
 
 void OTWDriverClass::ViewTiltDown(void)
 {
-    if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && mOTWDisplayMode == Mode2DCockpit)
+    if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode2DCockpit)
     {
         SimDriver.POVKludgeFunction(POV_S);
     }
@@ -1669,7 +1669,7 @@ void OTWDriverClass::ViewTiltDown(void)
 
 void OTWDriverClass::ViewTiltHold(void)
 {
-    if (!(SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && mOTWDisplayMode == Mode2DCockpit))
+    if (!(SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode2DCockpit))
     {
         {
             elDir = 0.0F;
@@ -1682,7 +1682,7 @@ void OTWDriverClass::ViewTiltHold(void)
 
 void OTWDriverClass::ViewSpinLeft(void)
 {
-    if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && mOTWDisplayMode == Mode2DCockpit)
+    if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode2DCockpit)
     {
         SimDriver.POVKludgeFunction(POV_W);
     }
@@ -1707,7 +1707,7 @@ void OTWDriverClass::ViewSpinLeft(void)
 
 void OTWDriverClass::ViewSpinRight(void)
 {
-    if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && mOTWDisplayMode == Mode2DCockpit)
+    if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode2DCockpit)
     {
         SimDriver.POVKludgeFunction(POV_E);
     }
@@ -1732,7 +1732,7 @@ void OTWDriverClass::ViewSpinRight(void)
 
 void OTWDriverClass::ViewSpinHold(void)
 {
-    if (!(SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && mOTWDisplayMode == Mode2DCockpit))
+    if (!(SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode2DCockpit))
     {
         {
             azDir = 0.0F;
@@ -1950,7 +1950,7 @@ void OTWDriverClass::EyeFlyStateStep(void)
 
 int OTWDriverClass::ViewRelativePanTilt(float Pan, float Tilt)
 {
-    if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && mOTWDisplayMode == Mode3DCockpit)
+    if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode3DCockpit)
     {
         eyePan += Pan * DTR;
         eyeTilt += Tilt * DTR;

@@ -162,7 +162,7 @@ TacanList::TacanList()
             ShiWarning("Invalid Tacan band\n"); // Band can only be type X or Y
         }
 
-        F4Assert(channel > 0 && channel <= NUM_CHANNELS); // Channel must be between 1 - 126 inclusive
+        F4Assert(channel > 0 and channel <= NUM_CHANNELS); // Channel must be between 1 - 126 inclusive
 
         if (StoreStation(&p_stations, (short)stationId, channel, band, callsign,
                          range, tactype, ilsfreq))   // Insert into ordered linked list
@@ -388,11 +388,11 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
     *ttype = 0;
     *ilsfreq = 0;
 
-    if (set == X && domain == AG)
+    if (set == X and domain == AG)
     {
         p_current = mpTList;
 
-        while (p_current && (p_current->channel not_eq channel or p_current->set not_eq set or p_current->domain not_eq domain))
+        while (p_current and (p_current->channel not_eq channel or p_current->set not_eq set or p_current->domain not_eq domain))
         {
             p_current = p_current->p_next;
         }
@@ -412,12 +412,12 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
             result = TRUE;
         }
     }
-    else if (set == Y && domain == AA)   // Note this only works for the host machine
+    else if (set == Y and domain == AA)   // Note this only works for the host machine
     {
 
         p_current = mpAssigned;
 
-        while (p_current && (p_current->channel not_eq channel or p_current->set not_eq set or p_current->domain not_eq domain))
+        while (p_current and (p_current->channel not_eq channel or p_current->set not_eq set or p_current->domain not_eq domain))
         {
             p_current = p_current->p_next;
         }
@@ -430,12 +430,12 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
             result = TRUE;
         }
     }
-    else if (set == Y && domain == AG)   // M.N. for Carrier Tacans
+    else if (set == Y and domain == AG)   // M.N. for Carrier Tacans
     {
 
         p_current = mpAssigned;
 
-        while (p_current && (p_current->channel not_eq channel or p_current->set not_eq set or p_current->domain not_eq domain))
+        while (p_current and (p_current->channel not_eq channel or p_current->set not_eq set or p_current->domain not_eq domain))
         {
             p_current = p_current->p_next;
         }
@@ -524,7 +524,7 @@ BOOL TacanList::GetPointerFromVUID(LinkedTacanVUStr* p_list, VU_ID id, LinkedTac
     LinkedTacanVUStr* p_previous = NULL;
 
 
-    while (p_current && p_current->vuID < id)
+    while (p_current and p_current->vuID < id)
     {
         p_previous = p_current;
         p_current = p_current->p_next;
@@ -533,7 +533,7 @@ BOOL TacanList::GetPointerFromVUID(LinkedTacanVUStr* p_list, VU_ID id, LinkedTac
     *p_after = p_current;
     *p_before = p_previous;
 
-    if (*p_after && (*p_after)->vuID == id)
+    if (*p_after and (*p_after)->vuID == id)
     {
         result = TRUE;
     }
@@ -603,7 +603,7 @@ void TacanList::InsertIntoTacanList(LinkedTacanVUStr** p_previous,
     p_tacanVUStr->p_previous = NULL;
     p_tacanVUStr->p_next = NULL;
 
-    if (*p_previous && *p_next)   // If there are links that follow this link
+    if (*p_previous and *p_next)   // If there are links that follow this link
     {
         p_tacanVUStr->p_previous = *p_previous;
         p_tacanVUStr->p_next = *p_next; // The link that follows is the next link
@@ -729,7 +729,7 @@ BOOL TacanList::StoreStation(LinkedCampStationStr** p_list,
         return FALSE;
     }
 
-    if (band not_eq X && band not_eq Y)   // Channels are constrained to
+    if (band not_eq X and band not_eq Y)   // Channels are constrained to
     {
         //F4Assert(FALSE); // X or Y band.
         ShiWarning("invalid band\n");
@@ -1059,7 +1059,7 @@ void TacanList::RetireChannel(VU_ID vuID)
 
     pTacanStr = mpAssigned;
 
-    while (!found && pTacanStr)
+    while (!found and pTacanStr)
     {
 
         if (pTacanStr->vuID == vuID)

@@ -83,7 +83,7 @@ void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
     static int show = 0;
     static bool oldcount = false;
 
-    if (flash && ((oldcount && show not_eq 0) or (!oldcount && show == 0)))
+    if (flash and ((oldcount and show not_eq 0) or (!oldcount and show == 0)))
     {
         ++show;
 
@@ -91,7 +91,7 @@ void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
             show = oldcount = 0;
     }
 
-    if (!flash && ((oldcount && show == 0) or (!oldcount && show not_eq 0)))
+    if (!flash and ((oldcount and show == 0) or (!oldcount and show not_eq 0)))
     {
         ++show;
         oldcount = show not_eq 0;

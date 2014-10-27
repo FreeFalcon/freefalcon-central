@@ -564,7 +564,7 @@ void LoadPAKPriorities()
 
             Pal[idx] = PAKPalette[PAKPriorities[idx][teamid][0]];
 
-            if (CampControl && POD->flags & GTMOBJ_PLAYER_SET_PRIORITY)
+            if (CampControl and POD->flags & GTMOBJ_PLAYER_SET_PRIORITY)
                 CampControl = 0;
         }
 
@@ -1210,7 +1210,7 @@ void SavePAKPriorities()
             // KCK: Technically, the player should only be able to modify priorities for his team
             i = FalconLocalSession->GetTeam();
 
-            if (i > 0 && i < NUM_TEAMS && TeamInfo[i])
+            if (i > 0 and i < NUM_TEAMS and TeamInfo[i])
                 // for(i=0;i<NUM_TEAMS;i++)
             {
                 POD->player_priority[i] = PAKPriorities[idx][i][0];
@@ -1290,7 +1290,7 @@ void UsePriotityCB(long ID, short hittype, C_Base *control)
 
     btn = (C_Button*)control->Parent_->FindControl(HQ_FLAG);
 
-    if (btn && !btn->GetState())
+    if (btn and !btn->GetState())
     {
         SaveTargetPriorities();
         SaveMissionPriorities();

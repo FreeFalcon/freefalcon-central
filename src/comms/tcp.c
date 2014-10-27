@@ -511,7 +511,7 @@ static void AcceptConnection(LPVOID cvoid)
 
                 continue;
             }
-            else if (ctcpListen->ThreadActive not_eq THREAD_ACTIVE && err == WSAENOTSOCK)
+            else if (ctcpListen->ThreadActive not_eq THREAD_ACTIVE and err == WSAENOTSOCK)
             {
                 break;
             }
@@ -696,7 +696,7 @@ static void RequestConnection(LPVOID cvoid)
             }
 
             /* after the first WSAEWOULDBLOCK, WASEISCONN means successfull connection */
-            if (error == WSAEISCONN && !FirstWouldblock) /* got a good connection */
+            if (error == WSAEISCONN and !FirstWouldblock) /* got a good connection */
             {
                 break;
             }
@@ -722,7 +722,7 @@ static void RequestConnection(LPVOID cvoid)
             }
             else
             {
-                if ((error == WSAEINVAL) && (endtime  < c->timeoutsecs))
+                if ((error == WSAEINVAL) and (endtime  < c->timeoutsecs))
                 {
                     continue;
                 }
@@ -863,7 +863,7 @@ void ComTCPClose(com_API_handle c)
 
     ctcp->lock = 0;  /* clear it */
 
-    if ((ctcp->handletype not_eq GROUP) && (ctcp->state not_eq COMAPI_STATE_CONNECTION_PENDING))
+    if ((ctcp->handletype not_eq GROUP) and (ctcp->state not_eq COMAPI_STATE_CONNECTION_PENDING))
     {
         windows_sockets_connections--;   /* decrement the INIT reference count */
     }
@@ -1432,8 +1432,8 @@ int ComTCPGetNbytes(com_API_handle c, int BytesToGet)
 
     if (c)
     {
-        // while(BytesGotten < BytesToGet && bytesRecvd > 0)
-        while (BytesToGet && bytesRecvd > 0)
+        // while(BytesGotten < BytesToGet and bytesRecvd > 0)
+        while (BytesToGet and bytesRecvd > 0)
         {
             bytesRecvd = ComTCPRecv(c, BytesToGet);
 
@@ -1582,7 +1582,7 @@ CAPIList *CAPIListRemove(CAPIList * list, com_API_handle com)
         prev = NULL;
         curr = list;
 
-        while ((curr) && (curr -> com not_eq com))
+        while ((curr) and (curr -> com not_eq com))
         {
             prev = curr;
             curr = curr -> next;
@@ -1651,7 +1651,7 @@ CAPIList *CAPIListFindTCPListenPort(CAPIList * list, short port)
     {
         if (curr->com->protocol == CAPI_TCP_PROTOCOL)
         {
-            if ((((ComTCP *)(curr -> com))->ListenPort == port) && (((ComTCP *)(curr -> com))->handletype == LISTENER))
+            if ((((ComTCP *)(curr -> com))->ListenPort == port) and (((ComTCP *)(curr -> com))->handletype == LISTENER))
             {
                 return curr;
             }
@@ -1684,7 +1684,7 @@ CAPIList *CAPIListFindTCPIPaddress(CAPIList * list, unsigned long IPaddress, uns
             c = (ComTCP *)curr->com;
             cip = c->Addr.sin_addr.s_addr;
 
-            if ((cip == IPaddress) && (c->Addr.sin_port == tcpPort))
+            if ((cip == IPaddress) and (c->Addr.sin_port == tcpPort))
             {
                 return curr;
             }
@@ -1709,7 +1709,7 @@ static CAPIList *CAPIListFindTCPAcceptPendingExpired(CAPIList * list)
         {
             c = (ComTCP *)curr->com;
 
-            if ((c->state == COMAPI_STATE_CONNECTION_PENDING) && (c->timeoutsecs))
+            if ((c->state == COMAPI_STATE_CONNECTION_PENDING) and (c->timeoutsecs))
             {
                 if (c->timeoutsecs <= ((clock() - c->bytes_needed_for_message) / 1000))
                 {
@@ -2183,7 +2183,7 @@ int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
                 this_ctcp = (ComTCP *)curr->com;
 
                 //if(this_ctcp)
-                if (this_ctcp && !IsBadCodePtr((FARPROC)(*curr->com->send_func)))  // JB 010401 CTD
+                if (this_ctcp and !IsBadCodePtr((FARPROC)(*curr->com->send_func)))  // JB 010401 CTD
                 {
                     save_send_buffer = this_ctcp->send_buffer.buf;
                     this_ctcp->send_buffer.buf = group->send_buffer + group->TCP_buffer_shift;
@@ -2203,8 +2203,8 @@ int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
 
                 //if(this_cudp) // JB 010222 CTD
                 if (
-                    this_cudp  && (this_cudp->send_buffer.buf) &&
-                    !F4IsBadReadPtrC(this_cudp->send_buffer.buf, sizeof(char)) && // JB 010222 CTD
+                    this_cudp  and (this_cudp->send_buffer.buf) &&
+                    !F4IsBadReadPtrC(this_cudp->send_buffer.buf, sizeof(char)) and // JB 010222 CTD
                     !F4IsBadCodePtrC((FARPROC)(*curr->com->send_func))
                     // JB 010401 CTD
                 )
@@ -2234,7 +2234,7 @@ int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
                 this_cudp = (ComIP *)curr->com;
 
                 //if(this_cudp)
-                if (this_cudp && !IsBadCodePtr((FARPROC)(*curr->com->send_func)))  // JB 010401 CTD
+                if (this_cudp and !IsBadCodePtr((FARPROC)(*curr->com->send_func)))  // JB 010401 CTD
                 {
                     save_send_buffer = this_cudp->send_buffer.buf;
                     this_cudp->send_buffer.buf = group->send_buffer + group->RUDP_buffer_shift;
@@ -2262,7 +2262,7 @@ int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
                 this_group = (ComGROUP *) curr->com;
 
                 //if(this_group)
-                if (this_group && !F4IsBadCodePtrC((FARPROC)(*curr->com->send_func))) // JB 010401 CTD
+                if (this_group and !F4IsBadCodePtrC((FARPROC)(*curr->com->send_func))) // JB 010401 CTD
                 {
                     save_send_buffer = this_group->send_buffer;
                     this_group->send_buffer = group->send_buffer;

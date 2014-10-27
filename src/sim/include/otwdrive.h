@@ -283,7 +283,7 @@ public:
     // other camera view
     inline BOOL DisplayInCockpit(void)
     {
-        if (mOTWDisplayMode >= ModeHud && mOTWDisplayMode <= ModePadlockEFOV)
+        if (mOTWDisplayMode >= ModeHud and mOTWDisplayMode <= ModePadlockEFOV)
             return TRUE;
 
         return FALSE;

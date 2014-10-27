@@ -77,14 +77,14 @@ void AircraftClass::DoCountermeasures(void)
 
     // END OF ADDED SECTION
 
-    if (mFaults && (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::bus))
+    if (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::bus))
         return;
 
     if (!IsSetFlag(ON_GROUND))
     {
         if (dropFlareCmd)
         {
-            if (!(mFaults && (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::flar)))
+            if (!(mFaults and (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::flar)))
             {
                 DropFlare();
             }
@@ -93,7 +93,7 @@ void AircraftClass::DoCountermeasures(void)
         }
         else if (dropChaffCmd)
         {
-            if (!(mFaults && (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::chaf)))
+            if (!(mFaults and (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::chaf)))
             {
                 DropChaff();
             }
@@ -185,7 +185,7 @@ void AircraftClass::DropChaff(void)
 
         int i;
 
-        for (i = 0; i < NumToLaunch && counterMeasureStation[CHAFF_STATION].weaponCount > 0; i++)
+        for (i = 0; i < NumToLaunch and counterMeasureStation[CHAFF_STATION].weaponCount > 0; i++)
         {
             counterMeasureStation[CHAFF_STATION].weaponCount--;
             Tpoint work;
@@ -245,7 +245,7 @@ void AircraftClass::DropChaff(void)
     }
 
     //MI for EWS stuff
-    if (g_bRealisticAvionics && this == FalconLocalSession->GetPlayerEntity())
+    if (g_bRealisticAvionics and this == FalconLocalSession->GetPlayerEntity())
     {
         if (counterMeasureStation[CHAFF_STATION].weaponCount == 0)
         {
@@ -266,7 +266,7 @@ void AircraftClass::DropChaff(void)
 
 
     // If this is the player and they want unlimited chaff, let 'em have it
-    if (IsSetFlag(MOTION_OWNSHIP) && PlayerOptions.UnlimitedChaff())
+    if (IsSetFlag(MOTION_OWNSHIP) and PlayerOptions.UnlimitedChaff())
         counterMeasureStation[CHAFF_STATION].weaponCount++;
 }
 
@@ -305,7 +305,7 @@ void AircraftClass::DropFlare(void)
 
         int i;
 
-        for (i = 0; i < NumToLaunch && counterMeasureStation[FLARE_STATION].weaponCount > 0; i++)
+        for (i = 0; i < NumToLaunch and counterMeasureStation[FLARE_STATION].weaponCount > 0; i++)
         {
             counterMeasureStation[FLARE_STATION].weaponCount--;
 
@@ -364,7 +364,7 @@ void AircraftClass::DropFlare(void)
     }
 
     //MI for EWS stuff
-    if (g_bRealisticAvionics && this == FalconLocalSession->GetPlayerEntity())
+    if (g_bRealisticAvionics and this == FalconLocalSession->GetPlayerEntity())
     {
         if (counterMeasureStation[FLARE_STATION].weaponCount == 0)
         {
@@ -387,7 +387,7 @@ void AircraftClass::DropFlare(void)
     }
 
     // If this is the player and they want unlimited chaff, let 'em have it
-    if (IsSetFlag(MOTION_OWNSHIP) && PlayerOptions.UnlimitedChaff())
+    if (IsSetFlag(MOTION_OWNSHIP) and PlayerOptions.UnlimitedChaff())
         counterMeasureStation[FLARE_STATION].weaponCount++;
 }
 
@@ -438,7 +438,7 @@ void AircraftClass::EWSChaffBurst(void)
 {
     PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
 
-    if (mFaults && (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::bus))
+    if (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::bus))
         return;
 
     if (theRwr)
@@ -460,7 +460,7 @@ void AircraftClass::EWSFlareBurst(void)
 {
     PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
 
-    if (mFaults && (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::bus))
+    if (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::bus))
         return;
 
     if (theRwr)
@@ -485,7 +485,7 @@ void AircraftClass::ReleaseManualProgram(void)
         return;
 
     if (static_cast<unsigned int>(ChaffCount) >= OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum] &&
-        ChaffSalvoCount not_eq 0 && !theRwr->ChaffCheck)
+        ChaffSalvoCount not_eq 0 and !theRwr->ChaffCheck)
     {
         //Set our timer
         ChaffBurstInterval = static_cast<VU_TIME>(SimLibElapsedTime + (OTWDriver.pCockpitManager->mpIcp->fCHAFF_SI[EWSProgNum] * CampaignSeconds));
@@ -498,7 +498,7 @@ void AircraftClass::ReleaseManualProgram(void)
     }
 
     if (FlareCount == OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum] &&
-        FlareSalvoCount not_eq 0 && !theRwr->FlareCheck)
+        FlareSalvoCount not_eq 0 and !theRwr->FlareCheck)
     {
         //Set our timer
         FlareBurstInterval = static_cast<VU_TIME>(SimLibElapsedTime + (OTWDriver.pCockpitManager->mpIcp->fFLARE_SI[EWSProgNum] * CampaignSeconds));
@@ -526,7 +526,7 @@ void AircraftClass::ReleaseManualProgram(void)
 
     if (FlareCount == OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum] &&
         ChaffCount == OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum] &&
-        ChaffSalvoCount <= 0 && FlareSalvoCount <= 0)
+        ChaffSalvoCount <= 0 and FlareSalvoCount <= 0)
     {
         theRwr->ReleaseManual = FALSE;
     }

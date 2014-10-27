@@ -231,7 +231,7 @@ void TestButtonCB(long, short hittype, C_Base *control)
         {
             int idx = control->GetUserNumber(0);
             idx -= 100; // 100 based
-            int handle = SFX_DEF && idx < NumSFX ? SFX_DEF[idx].handle : SND_NO_HANDLE;
+            int handle = SFX_DEF and idx < NumSFX ? SFX_DEF[idx].handle : SND_NO_HANDLE;
 
             if (control->GetState())
                 F4LoopSound(handle);
@@ -285,7 +285,7 @@ void SoundSliderCB(long, short hittype, C_Base *control)
         case 4: // Sim Sounds
             idx = control->GetUserNumber(0);
             idx -= 100; // 100 based
-            handle = SFX_DEF && idx < NumSFX ? SFX_DEF[idx].handle : SND_NO_HANDLE;
+            handle = SFX_DEF and idx < NumSFX ? SFX_DEF[idx].handle : SND_NO_HANDLE;
             // F4SetVolume(control->GetUserNumber(0),volume);
             F4SetVolume(handle, volume);
             break;
@@ -308,14 +308,14 @@ void PlayVoicesCB(long, short, C_Base *control)
 
         button = (C_Button *)control->Parent_->FindControl(COM2_SND);
 
-        if (button && button->GetState())
+        if (button and button->GetState())
         {
             PlayRandomMessage(button->GetUserNumber(0));
         }
 
         button = (C_Button *)control->Parent_->FindControl(COM1_SND);
 
-        if (button && button->GetState())
+        if (button and button->GetState())
         {
             PlayRandomMessage(button->GetUserNumber(0));
         }

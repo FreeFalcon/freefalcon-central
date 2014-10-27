@@ -421,10 +421,10 @@ bool ObjectLOD::UpdateLods(void)
         {
             // the amount of data loaded
             DWORD LoadSize = 0;
-            // while( LoadSize < MAX_LOD_LOAD_SIZE && LoadOut not_eq LoadIn){
+            // while( LoadSize < MAX_LOD_LOAD_SIZE and LoadOut not_eq LoadIn){
             ObjectLOD &Lod = TheObjectLODs[CacheLoad[LoadOut++]];
 
-            if (!Lod.root && Lod.OnOrder) LoadSize += Lod.Load(), Sleep(20);
+            if (!Lod.root and Lod.OnOrder) LoadSize += Lod.Load(), Sleep(20);
 
             // Load is done IN ANY CASE
             Lod.OnOrder = false;
@@ -443,7 +443,7 @@ bool ObjectLOD::UpdateLods(void)
 
             if (!F4IsBadReadPtr(Lod.root, sizeof(ObjectLOD)))
             {
-                if (Lod.root && Lod.OnRelease)
+                if (Lod.root and Lod.OnRelease)
                     Lod.Free();
             }
             else
@@ -468,7 +468,7 @@ bool ObjectLOD::UpdateLods(void)
 void ObjectLOD::WaitUpdates(void)
 {
     // if no data to wait, exit here
-    if (LoadIn == LoadOut && ReleaseIn == ReleaseOut) return;
+    if (LoadIn == LoadOut and ReleaseIn == ReleaseOut) return;
 
     // Pause the Loader...
     TheLoader.SetPause(true);

@@ -111,7 +111,7 @@ void CDXEngine::LoadTexture(char *FileName)
             continue;
 
         // Skip initial Spaces or TABs
-        for (b = 0; b < sizeof(Buffer) && (Buffer[b] == ' ' or Buffer[b] == '\t'); b++);
+        for (b = 0; b < sizeof(Buffer) and (Buffer[b] == ' ' or Buffer[b] == '\t'); b++);
 
         // Ok, get the Item Name
         Name = strtok(&Buffer[b], "=\n");
@@ -484,7 +484,7 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
 #ifdef DATE_PROTECTION
     extern bool DateOff;
 
-    if (DateOff && PRANDFloat() < 0.3f) return;
+    if (DateOff and PRANDFloat() < 0.3f) return;
 
 #endif
 
@@ -1105,7 +1105,7 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
     if (Draws2D[Start].Flags & POLY_LINE) LineMode = true;
 
     // thru all the list
-    while (Start not_eq 0xffffffff && Index < MAX_VERTICES_PER_DRAW)
+    while (Start not_eq 0xffffffff and Index < MAX_VERTICES_PER_DRAW)
     {
         DrawItemType &Draw = Draws2D[Start];
 #if MAX_2D_BUFFERS > 1
@@ -1486,7 +1486,7 @@ void CDXEngine::DX2D_SetViewMode(void)
         case DX_TV:
 
             // FRB - B&W
-            if ((g_bGreyMFD) && (!bNVGmode))
+            if ((g_bGreyMFD) and (!bNVGmode))
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, 0x00a0a0a0);
             else
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, 0x0000a000 /*NVG_T_FACTOR*/);
@@ -1676,7 +1676,7 @@ void CDXEngine::DX2D_Flush2DObjects(void)
 
         if (Layer == LAYER_TOP) m_pD3DD->SetRenderState(D3DRENDERSTATE_ZENABLE, TRUE);
     }
-    while (Layer not_eq LAYER_TOP && l <= LAYER_TOP); // END with TOP LAYER in any case
+    while (Layer not_eq LAYER_TOP and l <= LAYER_TOP); // END with TOP LAYER in any case
 
 
     // buffer is flushed

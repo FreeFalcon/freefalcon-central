@@ -364,11 +364,11 @@ void GroundClass::Init(SimInitDataClass* initData)
 
     Sms->SetCurHardpoint(-1);
 
-    if ((GetType() == TYPE_WHEELED && GetSType() == STYPE_WHEELED_AIR_DEFENSE) ||
-        (GetType() == TYPE_WHEELED && GetSType() == STYPE_WHEELED_AAA) ||
-        (GetType() == TYPE_TRACKED && GetSType() == STYPE_TRACKED_AIR_DEFENSE) ||
-        (GetType() == TYPE_TRACKED && GetSType() == STYPE_TRACKED_AAA) ||
-        (GetType() == TYPE_TOWED && GetSType() == STYPE_TOWED_AAA))
+    if ((GetType() == TYPE_WHEELED and GetSType() == STYPE_WHEELED_AIR_DEFENSE) ||
+        (GetType() == TYPE_WHEELED and GetSType() == STYPE_WHEELED_AAA) ||
+        (GetType() == TYPE_TRACKED and GetSType() == STYPE_TRACKED_AIR_DEFENSE) ||
+        (GetType() == TYPE_TRACKED and GetSType() == STYPE_TRACKED_AAA) ||
+        (GetType() == TYPE_TOWED and GetSType() == STYPE_TOWED_AAA))
     {
         isAirDefense = TRUE;
         // If we're an airdefense thingy, elevate our gun, and point in a random direction
@@ -537,7 +537,7 @@ int GroundClass::Exec(void)
             //RV - I-Hawk - seperating explosion type for ground/sea domains. also
             //adding a check so soldiers will not explode like ground vehicles...
 
-            if (GetDomain() == DOMAIN_LAND && GetType() not_eq TYPE_FOOT)
+            if (GetDomain() == DOMAIN_LAND and GetType() not_eq TYPE_FOOT)
             {
                 //pos.z -= 20.0f;
                 /*
@@ -593,7 +593,7 @@ int GroundClass::Exec(void)
 
 
     // Movement/Targeting for local entities
-    if (IsLocal() && SimDriver.MotionOn())
+    if (IsLocal() and SimDriver.MotionOn())
     {
         //I commented this out, because it is done in gai->ProcessTargeting down below DSP 4/30/99
         // Refresh our target pointer (if any)
@@ -604,7 +604,7 @@ int GroundClass::Exec(void)
         // RV - Biker - Switch on lights for ground/naval vehicles
         int isNight = TimeOfDayGeneral(TheCampaign.CurrentTime) < TOD_DAWNDUSK ? true : false;
 
-        if (drawPointer && ((DrawableBSP *)drawPointer)->GetNumSwitches() >= AIRDEF_LIGHT_SWITCH)
+        if (drawPointer and ((DrawableBSP *)drawPointer)->GetNumSwitches() >= AIRDEF_LIGHT_SWITCH)
         {
             if (isShip)
             {
@@ -624,7 +624,7 @@ int GroundClass::Exec(void)
                 float range = 999.9f * NM_TO_FT;
 
                 // Consider each potential target in our environment
-                while (object && !hasThreat)
+                while (object and !hasThreat)
                 {
                     // Skip sleeping sim objects
                     if (object->IsSim())
@@ -662,7 +662,7 @@ int GroundClass::Exec(void)
                 }
 
                 // If no enemy nearby and not heavy damaged switch on lights
-                if (!hasThreat && pctStrength > 0.75f)
+                if (!hasThreat and pctStrength > 0.75f)
                 {
                     ((DrawableBSP *)drawPointer)->SetSwitchMask(AIRDEF_LIGHT_SWITCH, isNight);
                 }
@@ -678,7 +678,7 @@ int GroundClass::Exec(void)
         }
 
         // RV - Biker - Do also switch on lights for tractor vehicles
-        if (truckDrawable && truckDrawable->GetNumSwitches() >= AIRDEF_LIGHT_SWITCH)
+        if (truckDrawable and truckDrawable->GetNumSwitches() >= AIRDEF_LIGHT_SWITCH)
         {
             if (GetVt() > 1.0f)
             {
@@ -688,7 +688,7 @@ int GroundClass::Exec(void)
                 float range = 999.9f * NM_TO_FT;
 
                 // Consider each potential target in our environment
-                while (object && !hasThreat)
+                while (object and !hasThreat)
                 {
                     // Skip sleeping sim objects
                     if (object->IsSim())
@@ -726,7 +726,7 @@ int GroundClass::Exec(void)
                 }
 
                 // If no enemy nearby and not heavy damaged switch on lights
-                if (!hasThreat && pctStrength > 0.75f)
+                if (!hasThreat and pctStrength > 0.75f)
                 {
                     truckDrawable->SetSwitchMask(AIRDEF_LIGHT_SWITCH, isNight);
                 }
@@ -742,7 +742,7 @@ int GroundClass::Exec(void)
         }
 
         // RV - Biker - Shut down ship radar if damaged
-        if (isShip && radarDown == false && pctStrength < 0.9f && rand() % 50 > (pctStrength - 0.50f) * 100)
+        if (isShip and radarDown == false and pctStrength < 0.9f and rand() % 50 > (pctStrength - 0.50f) * 100)
         {
             isEmitter = false;
             RadarClass *radar = (RadarClass*)FindSensor(this, SensorClass::Radar);
@@ -798,7 +798,7 @@ int GroundClass::Exec(void)
         // check for sending radar emmisions
         // 2002-02-26 MODIFIED BY S.G.
         // Added the nextTargetUpdate check to prevent the radar code to run on every frame!
-        if (isEmitter && nextTargetUpdate < SimLibElapsedTime)
+        if (isEmitter and nextTargetUpdate < SimLibElapsedTime)
         {
             // 2002-02-26 ADDED BY S.G. Next radar scan is 1 sec for aces, 2 for vets, etc ...
             nextTargetUpdate = SimLibElapsedTime + (5 - gai->skillLevel) * SEC_TO_MSEC;
@@ -834,14 +834,14 @@ int GroundClass::Exec(void)
                 }
 
                 // JB 011002 If campBaseObj is NULL the target may be chaff
-                if (campBaseObj && !(campBaseObj->GetSpotted(GetTeam())) && campBaseObj->IsFlight())
+                if (campBaseObj and !(campBaseObj->GetSpotted(GetTeam())) and campBaseObj->IsFlight())
                 {
                     RequestIntercept((FlightClass *)campBaseObj, GetTeam());
                 }
 
                 spottedSet = TRUE;
 
-                if (campBaseObj && radar->GetRadarDatFile())
+                if (campBaseObj and radar->GetRadarDatFile())
                 {
                     campBaseObj->SetSpotted(
                         GetTeam(), TheCampaign.CurrentTime,
@@ -866,7 +866,7 @@ int GroundClass::Exec(void)
         // 2002-02-11 MODIFED BY S.G.
         // Since I only identify visually, need to perform this even if spotted by radar in case I can ID it.
         if (
-            /*!spottedSet &&  gai->skillLevel >= 3 && */
+            /*!spottedSet and  gai->skillLevel >= 3 and */
             ((UnitClass *)GetCampaignObject())->GetSType() == STYPE_UNIT_AIR_DEFENSE &&
             gai == gai->battalionCommand &&
             !((UnitClass *)GetCampaignObject())->Broken() &&
@@ -883,7 +883,7 @@ int GroundClass::Exec(void)
 
             // JB 011002 If campBaseObj is NULL the target may be chaff
 
-            if (!spottedSet && campBaseObj && !(campBaseObj->GetSpotted(GetTeam())) && campBaseObj->IsFlight())
+            if (!spottedSet and campBaseObj and !(campBaseObj->GetSpotted(GetTeam())) and campBaseObj->IsFlight())
                 RequestIntercept((FlightClass *)campBaseObj, GetTeam());
 
             if (campBaseObj)
@@ -913,15 +913,15 @@ int GroundClass::Exec(void)
         SimWeaponClass *theWeapon = Sms->GetCurrentWeapon();
 
         // FRB - This version seems to give SAMs a little more activity
-        if (SimLibElapsedTime > nextSamFireTime  && !allowSamFire)
+        if (SimLibElapsedTime > nextSamFireTime  and !allowSamFire)
         {
             allowSamFire = TRUE;
         }
 
         // Biker's version
-        //if(SimLibElapsedTime > nextSamFireTime  && !allowSamFire)
+        //if(SimLibElapsedTime > nextSamFireTime  and !allowSamFire)
         //{
-        // if (radarDown == false or (theWeapon && theWeapon->IsMissile() && theWeapon->sensorArray[0]->Type() == SensorClass::IRST))
+        // if (radarDown == false or (theWeapon and theWeapon->IsMissile() and theWeapon->sensorArray[0]->Type() == SensorClass::IRST))
         // allowSamFire = TRUE;
         //}
 
@@ -961,7 +961,7 @@ int GroundClass::Exec(void)
     // do some extra LOD stuff: if the unit is not a lead veh amd the
     // distLOD is less than a certain value, remove it from the draw
     // list.
-    if (drawPointer && gai->rank not_eq GNDAI_BATTALION_COMMANDER)
+    if (drawPointer and gai->rank not_eq GNDAI_BATTALION_COMMANDER)
     {
         // distLOD cutoff by ranking (KCK: This is explicit for testing, could be a formula/table)
         if (gai->rank & GNDAI_COMPANY_LEADER)
@@ -1098,7 +1098,7 @@ int GroundClass::Exec(void)
         }
     }
     // We're not a foot squad, so do the vehicle stuff
-    else if (!IsSetLocalFlag(IS_HIDDEN) && speedScale > 300.0f)
+    else if (!IsSetLocalFlag(IS_HIDDEN) and speedScale > 300.0f)
     {
         // speedScale /= ( 900.0f * KPH_TO_FPS * KPH_TO_FPS); // essentially 1.0F at 30 mph
 
@@ -1111,7 +1111,7 @@ int GroundClass::Exec(void)
         if (GetCampaignObject()->IsBattalion())
         {
             //if (vc)
-            if (vc && vc->EngineSound not_eq 34) // kludge prevent 34 from playing
+            if (vc and vc->EngineSound not_eq 34) // kludge prevent 34 from playing
             {
                 SoundPos.Sfx(vc->EngineSound, 0, 1.0, 0);  // MLR 5/16/2004 -
             }
@@ -1246,7 +1246,7 @@ int GroundClass::Exec(void)
                     theSFX = SFX_WATER_WAKE_SMALL;
                 }
 
-                else if (radius >= 200.0f && radius < 400.0f)
+                else if (radius >= 200.0f and radius < 400.0f)
                 {
                     theSFX = SFX_WATER_WAKE_MEDIUM;
                 }
@@ -1284,7 +1284,7 @@ int GroundClass::Exec(void)
     }
 
     // ACMI Output
-    if (gACMIRec.IsRecording() && (SimLibFrameCount & 0x0f) == 0)
+    if (gACMIRec.IsRecording() and (SimLibFrameCount & 0x0f) == 0)
     {
         ACMIGenPositionRecord genPos;
         genPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
@@ -1347,13 +1347,13 @@ int GroundClass::Wake(void)
     // edg: I'm not sure if drawpointer has valid position yet?
     drawPointer->GetPosition(&pos);
     SetPosition(XPos(), YPos(), pos.z - 0.7f);
-    ShiAssert(XPos() > 0.0F && YPos() > 0.0F)
+    ShiAssert(XPos() > 0.0F and YPos() > 0.0F)
 
     // determine if its a foot squad or not -- Real thinking done in addobj.cpp
     isFootSquad = (drawPointer->GetClass() == DrawableObject::Guys);
 
     // Determine if this vehicle has a truck and create it, if needed
-    if (drawPointer && isTowed)
+    if (drawPointer and isTowed)
     {
         // Place truck 20 feet behind us
         Tpoint simView;
@@ -1364,7 +1364,7 @@ int GroundClass::Wake(void)
         // RV - Biker - Make the tracktor random
         tracktorType = (rand() % 3);
         bool teamUs = (
-                          TeamInfo[GetCountry()] && (
+                          TeamInfo[GetCountry()] and (
                               TeamInfo[GetCountry()]->equipment == toe_us or TeamInfo[GetCountry()]->equipment == toe_rok
                           )
                       );
@@ -1400,7 +1400,7 @@ int GroundClass::Wake(void)
 
     // when we wake the object, default it to not labeled unless
     // it's the main guy
-    if (drawPointer && gai->rank not_eq GNDAI_BATTALION_COMMANDER)
+    if (drawPointer and gai->rank not_eq GNDAI_BATTALION_COMMANDER)
     {
         drawPointer->SetLabel("", 0xff00ff00); // Don't label
         SetLocalFlag(NOT_LABELED);

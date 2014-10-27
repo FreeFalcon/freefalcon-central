@@ -107,7 +107,7 @@ int UI_RequestAircraftSlot::Process(uchar autodisp)
 #if 0
 
     // sfr: test
-    if (FalconLocalGame->IsLocal() && dataBlock.request_type not_eq REQUEST_UI_UPDATE)
+    if (FalconLocalGame->IsLocal() and dataBlock.request_type not_eq REQUEST_UI_UPDATE)
     {
         UI_RequestAircraftSlot* msga = new UI_RequestAircraftSlot(FalconNullId, FalconLocalGame);
         msga->dataBlock.request_type = REQUEST_UI_UPDATE;
@@ -337,7 +337,7 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
         // an empty one.
         if (FalconLocalGame->GetGameType() == game_Dogfight)
         {
-            for (i = 0; i < PILOTS_PER_FLIGHT && !retval; i++)
+            for (i = 0; i < PILOTS_PER_FLIGHT and !retval; i++)
             {
                 if (flight->plane_stats[i] == AIRCRAFT_NOT_ASSIGNED)
                 {
@@ -405,7 +405,7 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
                 MonoPrint("  Slot %d Stats %d\n", flight->player_slots[i], flight->plane_stats[i]);
             }
 
-            if (flight->player_slots[dataBlock.requested_slot] == 255 && flight->plane_stats[dataBlock.requested_slot] == AIRCRAFT_AVAILABLE)
+            if (flight->player_slots[dataBlock.requested_slot] == 255 and flight->plane_stats[dataBlock.requested_slot] == AIRCRAFT_AVAILABLE)
             {
                 // The requested aircraft slot is empty
                 if (dataBlock.current_pilot_slot == 255)
@@ -424,9 +424,9 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
             else
             {
                 // Try and find an empty one
-                for (i = 0; i < PILOTS_PER_FLIGHT && !retval; i++)
+                for (i = 0; i < PILOTS_PER_FLIGHT and !retval; i++)
                 {
-                    if (flight->player_slots[i] == 255 && flight->plane_stats[i] == AIRCRAFT_AVAILABLE)
+                    if (flight->player_slots[i] == 255 and flight->plane_stats[i] == AIRCRAFT_AVAILABLE)
                     {
                         if (dataBlock.current_pilot_slot == 255)
                         {

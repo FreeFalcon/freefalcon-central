@@ -456,7 +456,7 @@ bool CDXVbManager::SetupModel(DWORD ID, BYTE *Root, DWORD Class)
     DWORD *rt = (DWORD*)Root;
 
     // FRB - Hack to skip huge bad model (dwNVertices > 2 million verts!!)
-    if ((ID == 0) && (((DxDbHeader*)rt)->dwNVertices) > 100)
+    if ((ID == 0) and (((DxDbHeader*)rt)->dwNVertices) > 100)
         return false;
 
     // If model not already present in list
@@ -622,7 +622,7 @@ void CDXVbManager::AddDrawItem(VBufferListType *pVBDesc, DWORD ID, ObjectInstanc
 #ifdef DATE_PROTECTION
     extern IntellivibeData g_intellivibeData;
 
-    if (DateOff && g_intellivibeData.In3D && PRANDFloat() < 0.3f) return;
+    if (DateOff and g_intellivibeData.In3D and PRANDFloat() < 0.3f) return;
 
 #endif
 

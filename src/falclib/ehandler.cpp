@@ -177,7 +177,7 @@ static void RecordModuleList(HANDLE LogFile)
                 // Adjust the page number to skip over this block of memory.
                 pageNum += MemInfo.RegionSize / PageSize;
 
-                if (MemInfo.State == MEM_COMMIT && MemInfo.AllocationBase >
+                if (MemInfo.State == MEM_COMMIT and MemInfo.AllocationBase >
                     LastAllocationBase)
                 {
                     // Look for new blocks of committed memory, and try
@@ -244,7 +244,7 @@ static void RecordSystemInformation(HANDLE LogFile)
     if (g_CardDetails[0])
         hprintf(LogFile, "Card: %s\r\n", g_CardDetails);
 
-    if (vuLocalSessionEntity && FalconLocalGame)
+    if (vuLocalSessionEntity and FalconLocalGame)
     {
         __try   // just in case this is screwd up
         {
@@ -274,7 +274,7 @@ static void RecordSystemInformation(HANDLE LogFile)
             }
 
             hprintf(LogFile, "Game is %s type %s\r\n", gtype,
-                    gCommsMgr && gCommsMgr->Online() ? "Networked" : "Local");
+                    gCommsMgr and gCommsMgr->Online() ? "Networked" : "Local");
         }
         __except (EXCEPTION_EXECUTE_HANDLER)
         {

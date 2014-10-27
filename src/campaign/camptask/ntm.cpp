@@ -124,7 +124,7 @@ void NavalTaskingManagerClass::DoCalculations(void)
 
     while (unit)
     {
-        if (unit->IsTaskForce() && GetRoE(owner, unit->GetTeam(), ROE_NAVAL_FIRE) == ROE_ALLOWED)
+        if (unit->IsTaskForce() and GetRoE(owner, unit->GetTeam(), ROE_NAVAL_FIRE) == ROE_ALLOWED)
         {
             mis.requesterID = FalconNullId;
             unit->GetLocation(&mis.tx, &mis.ty);
@@ -140,7 +140,7 @@ void NavalTaskingManagerClass::DoCalculations(void)
             // Determine if they're active or static
             o = FindNearestObjective(mis.tx, mis.ty, NULL, 2);
 
-            if (o && o->GetType() == TYPE_PORT)
+            if (o and o->GetType() == TYPE_PORT)
             {
                 if (unit->GetSType() == STYPE_UNIT_SEA_TANKER or unit->GetSType() == STYPE_UNIT_SEA_TRANSPORT)
                 {

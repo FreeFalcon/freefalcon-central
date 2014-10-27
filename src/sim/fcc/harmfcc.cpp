@@ -31,7 +31,7 @@ void FireControlComputer::HarmMode(void)
         else
             platform->SOIManager(SimVehicleClass::SOI_WEAPON);  // FRB - Test
 
-        if (designateCmd && !lastDesignate)
+        if (designateCmd and !lastDesignate)
         {
             // In POS mode the Lock is done via WPN OSBs
             if (theHTS->GetSubMode() == HarmTargetingPod::HAS or theHTS->GetSubMode() == HarmTargetingPod::HAD)
@@ -74,7 +74,7 @@ void FireControlComputer::HarmMode(void)
             if (theMissile)
             {
                 /* JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
-                if (targetPtr->BaseData()->IsSim() && ((SimBaseClass*)targetPtr->BaseData())->IsAwake())
+                if (targetPtr->BaseData()->IsSim() and ((SimBaseClass*)targetPtr->BaseData())->IsAwake())
                 {
                  ((SimBaseClass*)targetPtr->BaseData())->drawPointer->GetPosition (&pos);
                  ((SimBaseClass*)targetPtr->BaseData())->SetPosition (pos.x, pos.y, pos.z);

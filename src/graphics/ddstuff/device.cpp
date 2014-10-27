@@ -69,7 +69,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
     {
         if (FalconDisplay.devmgr.GetMode(driverNum, devNum, resNum, &w, &h, &d))
         {
-            if ((w == (unsigned) width) && (h == (unsigned)height) && (d == (unsigned)depth))
+            if ((w == (unsigned) width) and (h == (unsigned)height) and (d == (unsigned)depth))
             {
                 // Found it
                 break;

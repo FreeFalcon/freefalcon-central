@@ -222,7 +222,7 @@ void ACMIView::SetupEntityUIMappings()
     // _tape->_simTapeEntities[i].name;
 
     F4Assert(_entityUIMappings == NULL);
-    F4Assert(_tape not_eq NULL && _tape->IsLoaded());
+    F4Assert(_tape not_eq NULL and _tape->IsLoaded());
 
     numEntities = _tape->NumEntities();
     _entityUIMappings = new ACMIEntityUIMap[numEntities];

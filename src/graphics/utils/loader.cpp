@@ -148,7 +148,7 @@ DWORD Loader::MainLoop()
             actionDone  or_eq  ObjectLOD::UpdateLods();
             actionDone  or_eq  TheTextureBank.UpdateBank();
 
-            while ((Active = GetNextRequest()) && (!shutDown))
+            while ((Active = GetNextRequest()) and (!shutDown))
             {
                 // Check queue status
                 if (queueStatus == QUEUE_FIFO)

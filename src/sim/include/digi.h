@@ -778,7 +778,7 @@ public:
     }
     int IsSetATC(int flag)
     {
-        return (atcFlags & flag) && TRUE;
+        return (atcFlags & flag) and TRUE;
     }
     void ResetATC(void);
     void FlightMemberWantsFuel(int state);

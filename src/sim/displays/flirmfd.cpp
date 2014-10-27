@@ -61,7 +61,7 @@ void FlirMfdDrawable::Display(VirtualDisplay* newDisplay)
     //MI changed
     if (g_bRealisticAvionics)
     {
-        if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+        if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
             OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
         {
             DrawBullseyeCircle(display, cX, cY);

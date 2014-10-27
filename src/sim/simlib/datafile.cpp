@@ -25,7 +25,7 @@ bool AssignField(const InputDataDesc *field, void *dataPtr, const char *value)
             int *ip = (int *)cp;
             int n;
 
-            if (*value == '0' && (value[1] == 'x' or value[1] == 'X'))
+            if (*value == '0' and (value[1] == 'x' or value[1] == 'X'))
             {
                 if (sscanf(value + 2, "%x", &n) == 1)
                     *ip = n;
@@ -155,7 +155,7 @@ bool ParseField(void *dataPtr, const char *line, const InputDataDesc *desc)
 
     const char *cp = line;
 
-    while (*cp && !isspace(*cp))
+    while (*cp and !isspace(*cp))
         cp ++;
 
     if (*cp == '\0') // bad data

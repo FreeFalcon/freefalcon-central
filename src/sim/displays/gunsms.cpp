@@ -20,7 +20,7 @@ void SmsDrawable::GunDisplay(void)
     BottomRow();
 
     //MI
-    if (g_bRealisticAvionics && FCC && FCC->GetSubMode() ==
+    if (g_bRealisticAvionics and FCC and FCC->GetSubMode() ==
         FireControlComputer::EEGS)
     {
         char tempstr[4] = "";

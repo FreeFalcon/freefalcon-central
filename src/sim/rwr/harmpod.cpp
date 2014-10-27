@@ -462,7 +462,7 @@ void HarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
     //MI
     if (g_bRealisticAvionics)
     {
-        if (((AircraftClass*)platform)->Sms->curWeapon && ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
+        if (((AircraftClass*)platform)->Sms->curWeapon and ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
         {
             if (((AircraftClass*)SimDriver.GetPlayerAircraft())->GetSOI() == SimVehicleClass::SOI_WEAPON)
             {
@@ -501,7 +501,7 @@ void HarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
     //MI
     if (g_bRealisticAvionics)
     {
-        if (((AircraftClass*)platform)->Sms->curWeapon && ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
+        if (((AircraftClass*)platform)->Sms->curWeapon and ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
         {
             if (((AircraftClass*)SimDriver.GetPlayerAircraft())->GetSOI() == SimVehicleClass::SOI_WEAPON)
             {
@@ -608,7 +608,7 @@ void HarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
     //MI
     if (g_bRealisticAvionics)
     {
-        if (((AircraftClass*)platform)->Sms->curWeapon && ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
+        if (((AircraftClass*)platform)->Sms->curWeapon and ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
         {
             if (((AircraftClass*)SimDriver.GetPlayerAircraft())->GetSOI() == SimVehicleClass::SOI_WEAPON)
             {
@@ -674,7 +674,7 @@ void HarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
     //MI
     if (g_bRealisticAvionics)
     {
-        if (((AircraftClass*)platform)->Sms->curWeapon && ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
+        if (((AircraftClass*)platform)->Sms->curWeapon and ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
         {
             if (((AircraftClass*)SimDriver.GetPlayerAircraft())->GetSOI() == SimVehicleClass::SOI_WEAPON)
             {
@@ -716,7 +716,7 @@ void HarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
     //MI
     if (g_bRealisticAvionics)
     {
-        if (((AircraftClass*)platform)->Sms->curWeapon && ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
+        if (((AircraftClass*)platform)->Sms->curWeapon and ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
         {
             if (((AircraftClass*)SimDriver.GetPlayerAircraft())->GetSOI() == SimVehicleClass::SOI_WEAPON)
             {
@@ -858,7 +858,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
     float xMove = 0.0F, yMove = 0.0F;
 
     if ((FCC->cursorXCmd not_eq 0) or (FCC->cursorYCmd not_eq 0))
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
             yMove = (float)FCC->cursorYCmd / 10000.0F;
             xMove = (float)FCC->cursorXCmd / 10000.0F;
@@ -882,7 +882,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
 
     else
     {
-        if (((AircraftClass*)SimDriver.GetPlayerAircraft()) && ((AircraftClass*)SimDriver.GetPlayerAircraft())->GetSOI() == SimVehicleClass::SOI_WEAPON)
+        if (((AircraftClass*)SimDriver.GetPlayerAircraft()) and ((AircraftClass*)SimDriver.GetPlayerAircraft())->GetSOI() == SimVehicleClass::SOI_WEAPON)
         {
             cursorX += xMove * g_fCursorSpeed * HTS_CURSOR_RATE * SimLibMajorFrameTime;
             cursorY += yMove * g_fCursorSpeed * HTS_CURSOR_RATE * SimLibMajorFrameTime;
@@ -957,7 +957,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
          continue;
         } */
 
-        if (curObj->BaseData()->IsSim() && curObj->BaseData()->GetRadarType())
+        if (curObj->BaseData()->IsSim() and curObj->BaseData()->GetRadarType())
         {
             // Localize the info
             curSimObj = (SimBaseClass*)curObj->BaseData();
@@ -967,7 +967,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
             if (SimLibElapsedTime > localData->sensorLoopCount[HTS] + curSimObj->RdrCycleTime() * SEC_TO_MSEC)
             {
                 // Can we hear it?
-                if (BeingPainted(curObj) && CanDetectObject(curObj))
+                if (BeingPainted(curObj) and CanDetectObject(curObj))
                 {
                     ObjectDetected(curObj->BaseData(), Track_Ping);
                     localData->sensorLoopCount[HTS] = SimLibElapsedTime;
@@ -994,9 +994,9 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
 
         // Check if aggregated unit can detect
         if (
-            curEmitter->IsAggregate() &&                      // A campaign thing
-            curEmitter->CanDetect(platform) &&                // That has us spotted
-            curEmitter->GetRadarMode() not_eq FEC_RADAR_OFF &&    // And is emmitting
+            curEmitter->IsAggregate() and                      // A campaign thing
+            curEmitter->CanDetect(platform) and                // That has us spotted
+            curEmitter->GetRadarMode() not_eq FEC_RADAR_OFF and    // And is emmitting
             // JB 011016 CanDetectObject (platform))          // And there is line of sight
             CanDetectObject(curEmitter)                       // And there is line of sight // JB 011016
         )
@@ -1066,7 +1066,7 @@ VU_ID HarmTargetingPod::FindIDUnderCursor(void)
     GroundListElement *choice = FindTargetUnderCursor();
     VU_ID tgtId = FalconNullId;
 
-    if (choice && choice->BaseObject())
+    if (choice and choice->BaseObject())
     {
         tgtId = choice->BaseObject()->Id();
     }
@@ -1251,7 +1251,7 @@ GroundListElement* HarmTargetingPod::FindHASTargetUnderCursor(void)
 
 GroundListElement* HarmTargetingPod::FindPOSTarget()
 {
-    if (POSTargetIndex >= 0 && POSTargetIndex <= 3)
+    if (POSTargetIndex >= 0 and POSTargetIndex <= 3)
     {
         return POSTargets[POSTargetIndex];
     }
@@ -1305,7 +1305,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
 
     else // Find the first waypoint
     {
-        while (curWaypoint->GetPrevWP() && (curWaypoint->GetPrevWP())->GetWPAction() not_eq WP_TAKEOFF)
+        while (curWaypoint->GetPrevWP() and (curWaypoint->GetPrevWP())->GetWPAction() not_eq WP_TAKEOFF)
         {
             curWaypoint = curWaypoint->GetPrevWP();
         }
@@ -1316,7 +1316,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
     tempWP = firstValidWP;
 
     // Now move on to find the last valid WP
-    while (tempWP->GetNextWP() && (tempWP->GetNextWP())->GetWPAction() not_eq WP_LAND)
+    while (tempWP->GetNextWP() and (tempWP->GetNextWP())->GetWPAction() not_eq WP_LAND)
     {
         tempWP = tempWP->GetNextWP();
     }
@@ -1363,7 +1363,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
                 choice = tmpElement;
             }
 
-            if (!curTargetFound && curTarget && curTarget->BaseObject())
+            if (!curTargetFound and curTarget and curTarget->BaseObject())
             {
                 if (tmpElement == curTarget or tmpElement->BaseObject() == curTarget->BaseObject())
                 {
@@ -1371,7 +1371,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
                 }
             }
 
-            if (lockedTarget && lockedTarget->BaseData() == tmpElement->BaseObject())
+            if (lockedTarget and lockedTarget->BaseData() == tmpElement->BaseObject())
             {
                 if (displayY < 0.0f)
                 {
@@ -1422,7 +1422,7 @@ void HarmTargetingPod::GetAGCenter(float* x, float* y)
 // ListElement* curElement = NULL;
 // FalconEntity* eHeader;
 //
-// if (SimDriver.RunningCampaignOrTactical() && theFlight)
+// if (SimDriver.RunningCampaignOrTactical() and theFlight)
 // knownEmmitters = theFlight->GetKnownEmitters();
 //
 // if (knownEmmitters)
@@ -1839,7 +1839,7 @@ int HarmTargetingPod::FindWaypointNum(WayPointClass* theWP)
 
     WPnum = 1;
 
-    while (tempWaypoint && tempWaypoint not_eq theWP)
+    while (tempWaypoint and tempWaypoint not_eq theWP)
     {
         tempWaypoint = tempWaypoint->GetNextWP();
         WPnum++;
@@ -1862,7 +1862,7 @@ bool HarmTargetingPod::IsInPriorityList(int symbol)
 
         case HP: // Get only high priority threats, basically only SAMs and AAA radars
             if (symbol < RWRSYM_HAWK ||
-                (symbol > 23 && symbol not_eq 111 && symbol not_eq 112 &&
+                (symbol > 23 and symbol not_eq 111 and symbol not_eq 112 &&
                  symbol not_eq 117) &&
                 symbol not_eq RWRSYM_KSAM ||
                 symbol == RWRSYM_SEARCH)
@@ -1879,7 +1879,7 @@ bool HarmTargetingPod::IsInPriorityList(int symbol)
 
         case HA: // Get only high altitude threats, basically all large SAMs
 
-            if ((symbol >= RWRSYM_HAWK && symbol <= RWRSYM_SA6) ||
+            if ((symbol >= RWRSYM_HAWK and symbol <= RWRSYM_SA6) ||
                 symbol == RWRSYM_SA10 ||
                 symbol == RWRSYM_NIKE ||
                 symbol == 111 ||
@@ -1905,7 +1905,7 @@ bool HarmTargetingPod::IsInPriorityList(int symbol)
                 symbol == RWRSYM_CHAPARAL ||
                 symbol == RWRSYM_CHAPARAL ||
                 symbol == RWRSYM_SA15 ||
-                (symbol >= 21 && symbol <= 23) ||
+                (symbol >= 21 and symbol <= 23) ||
                 symbol == RWRSYM_KSAM
                )
             {

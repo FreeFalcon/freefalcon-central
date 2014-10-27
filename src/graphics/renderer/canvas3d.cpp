@@ -163,7 +163,7 @@ void Canvas3D::Point(float x1, float y1)
     y = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 + dmatrix.translationY;
 
     // Clipping
-    if ((x >= -1.0f) && (x <= 1.0f) && (y <= 1.0f) && (y >= -1.0f))
+    if ((x >= -1.0f) and (x <= 1.0f) and (y <= 1.0f) and (y >= -1.0f))
     {
         xres = canScaleX * x;
         yres = -canScaleY * y;
@@ -403,7 +403,7 @@ void Canvas3D::TextLeft(float x1, float y1, const char *string, int boxed)
     y = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 + dmatrix.translationY;
 
     // Clipping
-    if ((x >= -1.0f) && (x <= 1.0f) && (y <= 1.0f) && (y >= -1.0f))
+    if ((x >= -1.0f) and (x <= 1.0f) and (y <= 1.0f) and (y >= -1.0f))
     {
         xres = canScaleX * x;
         yres = -canScaleY * y;
@@ -453,7 +453,7 @@ void Canvas3D::TextLeft(float x1, float y1, const char *string, int boxed)
             s[0] = string[i];
 
             // specifically check for blanks (DED text has a lot)
-            if (*s == ' ' && !boxed)
+            if (*s == ' ' and !boxed)
             {
                 ps1.x += 3.0f;
                 ps1.y += slope * 3.0f;

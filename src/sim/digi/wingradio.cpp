@@ -54,7 +54,7 @@ void AiMakeRadioCall(SimBaseClass* p_sender,
     }
     else
     {
-        ShiAssert(p_radioMsgs->dataBlock.message >= 0 && p_radioMsgs->dataBlock.message < LastComm);
+        ShiAssert(p_radioMsgs->dataBlock.message >= 0 and p_radioMsgs->dataBlock.message < LastComm);
         FalconSendMessage(p_radioMsgs, FALSE);
     }
 

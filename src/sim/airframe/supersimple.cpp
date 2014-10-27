@@ -16,13 +16,13 @@ void AirframeClass::SuperSimpleFCS(void)
     // Roll 'dynamics'
     pstab = 0.75F * rstick * 300.0F * DTR + 0.26F * pstab;
 
-    if (rstick == 0.0F && fabs(pstab) < 0.1F)
+    if (rstick == 0.0F and fabs(pstab) < 0.1F)
         pstab = 0.0F;
 
     // Yaw rate
     rstab = 0.75F * ypedal * 3.0F + 0.25F * rstab;
 
-    if (ypedal == 0.0F && fabs(rstab) < 0.1F)
+    if (ypedal == 0.0F and fabs(rstab) < 0.1F)
         rstab = 0.0F;
 
     // Pitch 'Dynamics
@@ -149,7 +149,7 @@ float AirframeClass::SustainedGs(int maxAB)
                                   aeroData->cdrag, aeroData->numMach, aeroData->numAlpha, &curMachBreak, &i) *
                   aeroData->cdFactor;;
     }
-    while (alphaMax < aoamax && curDrag < desThrust);
+    while (alphaMax < aoamax and curDrag < desThrust);
 
     // Given alpha, find max gs
     retval = alphaMax * qsom * clalph0 / GRAVITY;

@@ -163,7 +163,7 @@ void MissileClass::Launch(void)
         // via FindRocketGroundImpact
         // MLR - drawPointer is valid due to a bug somewhere else
         //       added FindingImpact flag
-        if (drawPointer && !(flags & FindingImpact))
+        if (drawPointer and !(flags & FindingImpact))
         {
 
             // MLR - Note - this is causing the smoke trail when rockets are selected.
@@ -207,7 +207,7 @@ void MissileClass::SetLaunchData(void)
 {
     vt    = parent->GetVt();
 
-    if (parent && parent->IsSim())
+    if (parent and parent->IsSim())
     {
         SimBaseClass *ptr = (SimBaseClass*)parent.get();
 
@@ -226,7 +226,7 @@ void MissileClass::SetLaunchData(void)
 
         float disp_az, disp_el; // MLR 1/17/2004 - Added random dispersion
 
-        if (flags && FindingImpact)
+        if (flags and FindingImpact)
         {
             // MLR - if we are computing the Impact Point, don't randomize the azimuth & elevation,
             // MLR - or the HUD's impact predictor jumps around wildly
@@ -246,7 +246,7 @@ void MissileClass::SetLaunchData(void)
         psi   = pv->Yaw() + initAz + disp_az; // MLR 1/18/2004 - added disp_az
 
         // M.N. add vt > 200.0F check fixes hovering helicopters firing missiles not going ballistic
-        if (!parent->OnGround() && vt > 200.0F)
+        if (!parent->OnGround() and vt > 200.0F)
         {
             p     = pv->GetP();
             q     = pv->GetQ();

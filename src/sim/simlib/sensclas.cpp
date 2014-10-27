@@ -132,16 +132,16 @@ SensorClass* FindSensor(SimMoverClass* theObject, int sensorType)
 
     //JAM 25Nov03 - CTD Fix (Why am I getting spiked by an object with no sensor array, and an insane number of sensors???)
     // MLR 1/26/2004 - something is bent somewhere, the sensorArray may be NULL with numSensors>0
-    if (theObject && theObject->sensorArray && theObject->numSensors && theObject->numSensors < 12)
+    if (theObject and theObject->sensorArray and theObject->numSensors and theObject->numSensors < 12)
     {
-        for (i = 0; theObject && i < theObject->numSensors; i++)
+        for (i = 0; theObject and i < theObject->numSensors; i++)
         {
             ShiAssert(theObject->sensorArray[i]);
 
             if (((theObject->sensorArray[i]) == (SensorClass*)0xbaadf00d) or ((theObject->sensorArray[i]) == (SensorClass*)0xfeeefeee))
                 continue;
 
-            if (theObject && (theObject->sensorArray[i]) && (theObject->sensorArray[i]->Type() == sensorType))
+            if (theObject and (theObject->sensorArray[i]) and (theObject->sensorArray[i]->Type() == sensorType))
             {
                 retval = theObject->sensorArray[i];
                 break;

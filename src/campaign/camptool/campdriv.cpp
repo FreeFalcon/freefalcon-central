@@ -512,11 +512,11 @@ void RedrawUnit(Unit u)
 // return 0 or 1 depending on if this unit is a type we want to display
 int DisplayOk(Unit u)
 {
-    if (ShowReal == 1 && u->Real() && !u->Inactive())
+    if (ShowReal == 1 and u->Real() and !u->Inactive())
         return 1;
-    else if (!ShowReal && u->Parent() && !u->Inactive())
+    else if (!ShowReal and u->Parent() and !u->Inactive())
         return 1;
-    else if (ShowReal == 2 && u->Inactive())
+    else if (ShowReal == 2 and u->Inactive())
         return 1;
 
     return 0;
@@ -639,7 +639,7 @@ void ShowSAMs(MapData md, HDC DC)
         else
             range = e->GetWeaponRange(LowAir);
 
-        if (range > 0 && (e->IsObjective() or (e->GetDomain() not_eq DOMAIN_AIR && e->IsUnit() && !((Unit)e)->Moving())))
+        if (range > 0 and (e->IsObjective() or (e->GetDomain() not_eq DOMAIN_AIR and e->IsUnit() and !((Unit)e)->Moving())))
         {
             e->GetLocation(&x, &y);
             DisplaySideRange(DC, e->GetOwner(), (short)(POSX(x) + (md->CellSize >> 1)), (short)(POSY(y) + (md->CellSize >> 1)), range * md->CellSize);
@@ -933,7 +933,7 @@ F4PFList GetSquadsFlightList(VU_ID id)
 
     while (u)
     {
-        if (u->GetUnitParentID() == id && u->GetDomain() == DOMAIN_AIR && u->GetType() == TYPE_FLIGHT)
+        if (u->GetUnitParentID() == id and u->GetDomain() == DOMAIN_AIR and u->GetType() == TYPE_FLIGHT)
         {
             list->ForcedInsert(u);
         }
@@ -1123,7 +1123,7 @@ void MatchObjectiveTypes(void)
             {
                 oc = (ObjClassDataType*) Falcon4ClassTable[j].dataPtr;
 
-                if (oc && strncmp(oc->Name, file, 3) == 0)
+                if (oc and strncmp(oc->Name, file, 3) == 0)
                 {
                     //record values for matches, so we can choose later
 
@@ -1172,7 +1172,7 @@ void MatchObjectiveTypes(void)
             index = GetClassID(DOMAIN_LAND, CLASS_OBJECTIVE, (uchar)i, (uchar)j, 0, 0, 0, 0);
             oc = (ObjClassDataType*) Falcon4ClassTable[index].dataPtr;
 
-            for (k = 0; k < MaxTextureType + 1 && index; k++)
+            for (k = 0; k < MaxTextureType + 1 and index; k++)
             {
                 if (!counts[k * NumEntities + index])
                     continue;
@@ -1181,7 +1181,7 @@ void MatchObjectiveTypes(void)
 
                 if (counts[k * NumEntities + index] > 0)
                     sprintf(buffer, "%s - %s on texture %s: %d - x: %d  y: %d\n", ObjectiveStr[i], oc->Name, file, counts[k * NumEntities + index], locs[(k * NumEntities + index) * 2], locs[(k * NumEntities + index) * 2 + 1]);
-                else if (counts[k * NumEntities + index] < 0 && index)
+                else if (counts[k * NumEntities + index] < 0 and index)
                     sprintf(buffer, "%s - %s on texture %s: %d - NEEDED x: %d  y: %d\n", ObjectiveStr[i], oc->Name, file, -counts[k * NumEntities + index], locs[(k * NumEntities + index) * 2], locs[(k * NumEntities + index) * 2 + 1]); //DSP
 
                 fwrite(buffer, strlen(buffer), 1, fp);
@@ -1420,7 +1420,7 @@ void DeleteUnit(Unit unit)
     // Remove parent, if we're the last element
     E = unit->GetUnitParent();
 
-    if (E && !E->GetFirstUnitElement())
+    if (E and !E->GetFirstUnitElement())
         vuDatabase->Remove(E);
 
     GlobUnit = NULL;
@@ -1834,7 +1834,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
                 OneUnit->GetLocation(&x, &y);
                 DisplayUnit(DC, OneUnit, (short)(POSX(x + xd) + (md->CellSize >> 3)*scale), (short)(POSY(y + yd) + (md->CellSize >> 2)*scale), (short)((md->CellSize >> 1)*scale));
 
-                if (ShowPaths && OneUnit->IsBattalion())
+                if (ShowPaths and OneUnit->IsBattalion())
                 {
                     if (OneUnit->GetType() == TYPE_BATTALION)
                     {
@@ -1848,7 +1848,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
 
 #ifdef USE_FLANKS
 
-                if (ShowFlanks && OneUnit->GetDomain() == DOMAIN_LAND)
+                if (ShowFlanks and OneUnit->GetDomain() == DOMAIN_LAND)
                 {
                     GridIndex fx, fy;
                     OneUnit->GetLeftFlank(&fx, &fy);
@@ -1993,7 +1993,7 @@ LRESULT CALLBACK ToolWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 _outgtext(DC, time);
 
                 if (OneUnit)
-                    if (OneUnit->GetType() == TYPE_BATTALION && OneUnit->GetDomain() == DOMAIN_LAND)
+                    if (OneUnit->GetType() == TYPE_BATTALION and OneUnit->GetDomain() == DOMAIN_LAND)
                     {
                         if (((GroundUnitClass *)OneUnit)->GetDivision())
                         {
@@ -2011,7 +2011,7 @@ LRESULT CALLBACK ToolWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                             sprintf(time, "%s               ", OneUnit->GetName(buffer, 60, FALSE));
                         }
                     }
-                    else if (OneUnit->GetType() == TYPE_BRIGADE && OneUnit->GetDomain() == DOMAIN_LAND)
+                    else if (OneUnit->GetType() == TYPE_BRIGADE and OneUnit->GetDomain() == DOMAIN_LAND)
                     {
                         if (((GroundUnitClass *)OneUnit)->GetDivision())
                         {
@@ -2035,7 +2035,7 @@ LRESULT CALLBACK ToolWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
                 if (Linking)
                     sprintf(time, "Linking..");
-                else if (LinkTool && FromObjective)
+                else if (LinkTool and FromObjective)
                     sprintf(time, "Linking #%d    ", FromObjective->GetCampID());
                 else
                     sprintf(time, "                                 ");
@@ -2435,7 +2435,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                         SetRoadCell(GetCell(ox, oy), 1);
 
                         // Attempt to find an adjacent land space
-                        for (i = 0, done = 0; i < 8 && !done; i += 2)
+                        for (i = 0, done = 0; i < 8 and !done; i += 2)
                         {
                             if (GetCover(ox + dx[i], oy + dy[i]) not_eq Water)
                             {
@@ -2445,7 +2445,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                         }
 
                         // Attempt to find a diagonal if no luck
-                        for (i = 1; i < 8 && !done; i += 2)
+                        for (i = 1; i < 8 and !done; i += 2)
                         {
                             if (GetCover(ox + dx[i], oy + dy[i]) not_eq Water)
                             {
@@ -2474,7 +2474,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                 {
                     ToObjective = FromObjective->GetNeighbor(i);
 
-                    if (ToObjective && !CampSearch[ToObjective->GetCampID()])
+                    if (ToObjective and !CampSearch[ToObjective->GetCampID()])
                         LinkCampaignObjectives(&path, FromObjective, ToObjective);
                 }
 
@@ -2958,7 +2958,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
         }
 
         case ID_PB_CENTERONPLAYERBUBBLE:
-            if (PBubble && FalconLocalSession->GetPlayerEntity())
+            if (PBubble and FalconLocalSession->GetPlayerEntity())
             {
                 TheCampaign.GetPlayerLocation(&MainMapData->CenX, &MainMapData->CenY);
                 SetRefresh(MainMapData);
@@ -3069,7 +3069,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
                     CenX = Map_Max_X;
             }
 
-            if (ReBlt && nScrollCode not_eq 8)
+            if (ReBlt and nScrollCode not_eq 8)
             {
                 MainMapData->CenX = CenX;
                 MainMapData->CenY = CenY;
@@ -3131,7 +3131,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
                     CenY = 0;
             }
 
-            if (ReBlt && nScrollCode not_eq 8)
+            if (ReBlt and nScrollCode not_eq 8)
             {
                 MainMapData->CenX = CenX;
                 MainMapData->CenY = CenY;
@@ -3151,7 +3151,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
             fwKeys = wParam;         // key flags
             /*
-             if (fwKeys == MK_LBUTTON && Drawing)
+             if (fwKeys == MK_LBUTTON and Drawing)
              {
              xPos = LOWORD(lParam);
              yPos = HIWORD(lParam);
@@ -3166,7 +3166,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             CurX = (WORD)(xPos + MainMapData->PFX) / MainMapData->CellSize; // Get grid location in Campaign terms
             CurY = (MainMapData->PLY - 1 - yPos) / MainMapData->CellSize;
 
-            if (fwKeys == MK_LBUTTON && Drawing)
+            if (fwKeys == MK_LBUTTON and Drawing)
                 ChangeCell(CurX, CurY);
 
             coffx = xPos % CellSize; // Find our offset, if any
@@ -3186,7 +3186,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             else if (ShowReal == 2)
             {
                 OneUnit = FindUnitByXY(InactiveList, CurX, CurY, 0);
-                /* if (OneUnit && !OneUnit->Real())
+                /* if (OneUnit and !OneUnit->Real())
                  {
                  int foundone=0;
                  GridIndex x,y;
@@ -3195,16 +3195,16 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
                  // Next unit in stack.
                  e = (Unit) myit.GetFirst();
-                 while (e && e not_eq OneUnit)
+                 while (e and e not_eq OneUnit)
                  e = GetNextUnit(&myit); // Get to current location in list
                  // e should be OneUnit or be null here
                  if (e)
                  {
                  e = GetNextUnit(&myit);
-                 while (e && !foundone)
+                 while (e and !foundone)
                  {
                  e->GetLocation(&x,&y);
-                 if (x==CurX && y==CurY && e not_eq OneUnit)
+                 if (x==CurX and y==CurY and e not_eq OneUnit)
                  foundone = 1;
                  else
                  e = GetNextUnit(&myit);
@@ -3242,10 +3242,10 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             if (C == 16)
                 shifted = TRUE;
 
-            //if(isalpha(C) && shifted)
+            //if(isalpha(C) and shifted)
             //C += 0x20;
 
-            if (isalpha(C) && !(GetKeyState(VK_SHIFT) & 0x80))
+            if (isalpha(C) and !(GetKeyState(VK_SHIFT) & 0x80))
                 C += 0x20;
 
             ProcessCommand(C);
@@ -3343,7 +3343,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
             // if (fwKeys=MK_SHIFT)
             // ;
-            if (MainMapData->ShowWPs && WPUnit)
+            if (MainMapData->ShowWPs and WPUnit)
             {
                 WayPoint w;
                 GridIndex x, y;
@@ -3354,7 +3354,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
                 {
                     w->GetWPLocation(&x, &y);
 
-                    if (x == CurX && y == CurY)
+                    if (x == CurX and y == CurY)
                     {
                         GlobWP = w;
                         WPDrag = TRUE;
@@ -3662,7 +3662,7 @@ void ProcessCommand(int Key)
                         if (i < 1)
                             MessageBox(NULL, "No valid path found!", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
 
-                        if (MainMapData->ShowLinks && i > 0)
+                        if (MainMapData->ShowLinks and i > 0)
                         {
                             RECT r;
                             PAINTSTRUCT ps;
@@ -3721,7 +3721,7 @@ void ProcessCommand(int Key)
                 OneObjective = FindNearestObjective(X, Y, NULL);
                 OneObjective->GetLocation(&x, &y);
 
-                if (x == X && y == Y)
+                if (x == X and y == Y)
                 {
                     RedrawCell(MainMapData, X, Y);
                 }
@@ -3896,11 +3896,11 @@ void ProcessCommand(int Key)
 
                 w = WPUnit->GetFirstUnitWP();
 
-                while (w && !gotone)
+                while (w and !gotone)
                 {
                     w->GetWPLocation(&x, &y);
 
-                    if (x == X && y == Y)
+                    if (x == X and y == Y)
                     {
                         GlobWP = w;
                         DialogBox(hInst, MAKEINTRESOURCE(IDD_WPDIALOG), hMainWnd, (DLGPROC)EditWayPoint);
@@ -3938,7 +3938,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'W':
-            if (WPUnit && !MainMapData->ShowWPs)
+            if (WPUnit and !MainMapData->ShowWPs)
                 MainMapData->ShowWPs = TRUE;
             else
                 MainMapData->ShowWPs = FALSE;

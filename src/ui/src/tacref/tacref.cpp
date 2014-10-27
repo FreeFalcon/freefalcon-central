@@ -137,7 +137,7 @@ Entity *TacticalReference::FindFirst(long GroupID, long SubGroupID)
 
     while (rec)
     {
-        if (rec->GroupID == GroupID && rec->SubGroupID == SubGroupID)
+        if (rec->GroupID == GroupID and rec->SubGroupID == SubGroupID)
             return((Entity*)rec);
 
         rec = GetNext(&Offset);
@@ -169,7 +169,7 @@ Entity *TacticalReference::GetNext(long *offset)
     *offset += sizeof(Header) + hdr->size;
     hdr = (Header*)(Data_ + *offset);
 
-    if (*offset < Size_ && hdr->type == _ENTITY_)  // JPO - reorder condition to stop bad array ref
+    if (*offset < Size_ and hdr->type == _ENTITY_)  // JPO - reorder condition to stop bad array ref
         return((Entity*)hdr->Data);
 
     return(NULL);
@@ -293,7 +293,7 @@ TextString *Description::GetNext(long *offset)
     txt = (TextString*)&Data[*offset];
     *offset += sizeof(TextString) + txt->length;
 
-    if (*offset < size && txt->length)
+    if (*offset < size and txt->length)
         return((TextString*)&Data[*offset]);
 
     return(NULL);
@@ -360,7 +360,7 @@ Statistics *Entity::GetStats()
     offset = 0;
     hdr = (Header*)&Data[offset];
 
-    while (hdr && hdr->type not_eq _STATS_)
+    while (hdr and hdr->type not_eq _STATS_)
     {
         offset += sizeof(Header) + hdr->size;
         hdr = (Header*)&Data[offset];
@@ -377,7 +377,7 @@ Description *Entity::GetDescription()
     offset = 0;
     hdr = (Header*)&Data[offset];
 
-    while (hdr && hdr->type not_eq _DESCRIPTION_)
+    while (hdr and hdr->type not_eq _DESCRIPTION_)
     {
         offset += sizeof(Header) + hdr->size;
         hdr = (Header*)&Data[offset];
@@ -394,7 +394,7 @@ RWR *Entity::GetRWR()
     offset = 0;
     hdr = (Header*)&Data[offset];
 
-    while (hdr && hdr->type not_eq _RWR_MAIN_ && hdr->type not_eq _ENTITY_)
+    while (hdr and hdr->type not_eq _RWR_MAIN_ and hdr->type not_eq _ENTITY_)
     {
         offset += sizeof(Header) + hdr->size;
         hdr = (Header*)&Data[offset];

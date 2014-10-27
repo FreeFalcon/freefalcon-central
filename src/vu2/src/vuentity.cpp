@@ -150,7 +150,7 @@ extern void *debugPtr;
 int VuReferenceEntity(VuEntity* ent)
 {
     // sfr: temp test
-    //if (ent && ent == debugPtr){
+    //if (ent and ent == debugPtr){
     // printf("bla");
     //}
     if (ent)
@@ -167,7 +167,7 @@ int VuReferenceEntity(VuEntity* ent)
 int VuDeReferenceEntity(VuEntity* ent)
 {
     // sfr: temp test
-    //if (ent && ent == debugPtr){
+    //if (ent and ent == debugPtr){
     // printf("bla");
     //}
     if (ent == NULL)
@@ -335,7 +335,7 @@ void VuEntity::SetEntityType(ushort entityType)
     share_.flags_.breakdown_.global_     = entityTypePtr_->global_;
     share_.flags_.breakdown_.persistent_ = entityTypePtr_->persistent_;
 
-    if (share_.flags_.breakdown_.persistent_ && share_.flags_.breakdown_.transfer_)
+    if (share_.flags_.breakdown_.persistent_ and share_.flags_.breakdown_.transfer_)
     {
         share_.flags_.breakdown_.transfer_ = 0;
     }
@@ -425,7 +425,7 @@ void VuEntity::SetDelta(SM_SCALAR dx, SM_SCALAR dy, SM_SCALAR dz)
 #include "IsBad.h"
 VuDriver *VuEntity::SetDriver(VuDriver* newdriver)
 {
-    if ((newdriver not_eq NULL) && (F4IsBadReadPtr(newdriver, sizeof(*newdriver))))
+    if ((newdriver not_eq NULL) and (F4IsBadReadPtr(newdriver, sizeof(*newdriver))))
     {
         printf("bad driver being assigned");
     }
@@ -438,7 +438,7 @@ VuDriver *VuEntity::SetDriver(VuDriver* newdriver)
 void VuEntity::SetOwnerId(VU_ID ownerId)
 {
     // New owner sends xfer message: check for locality after set
-    if (vuLocalSession == ownerId && share_.ownerId_ not_eq ownerId)
+    if (vuLocalSession == ownerId and share_.ownerId_ not_eq ownerId)
     {
         share_.ownerId_ = ownerId;
         VuTargetEntity* target = vuGlobalGroup;
@@ -703,7 +703,7 @@ VU_ERRCODE VuEntity::Handle(VuFullUpdateEvent* event)
         if (driver_->Handle(event) > 0)
             return VU_SUCCESS;
     }
-    else if (event->Entity() && event->Entity() not_eq this)
+    else if (event->Entity() and event->Entity() not_eq this)
     {
         share_  = event->Entity()->share_;
         pos_    = event->Entity()->pos_;
@@ -798,8 +798,8 @@ collisionLineEntity1D(BIG_SCALAR d1,
                       BIG_SCALAR objd,
                       BIG_SCALAR radius)
 {
-    if (((d1 < d2) && (d2 > (objd - radius)) && (d1 < (objd + radius))) ||
-        ((d1 >= d2) && (d1 >= (objd - radius)) && (d2 <= (objd + radius))))
+    if (((d1 < d2) and (d2 > (objd - radius)) and (d1 < (objd + radius))) ||
+        ((d1 >= d2) and (d1 >= (objd - radius)) and (d2 <= (objd + radius))))
     {
         return TRUE;
     }

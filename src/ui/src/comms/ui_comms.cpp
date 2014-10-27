@@ -424,7 +424,7 @@ void ServerChatCommand(_TCHAR *msg)
 
     if (g_nShowDebugLabels)
     {
-        if (arga && argb && !stricmp(arga, ".trail"))
+        if (arga and argb and !stricmp(arga, ".trail"))
         {
             if (atoi(argb))
             {
@@ -438,23 +438,23 @@ void ServerChatCommand(_TCHAR *msg)
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
-        if (arga && !stricmp(arga, ".trailreload"))
+        if (arga and !stricmp(arga, ".trailreload"))
         {
             LoadTrails();
         }
 
-        if (arga && !stricmp(arga, ".psreload"))
+        if (arga and !stricmp(arga, ".psreload"))
         {
             DrawableParticleSys::LoadParameters();
         }
 
-        if (arga && !stricmp(arga, ".sndreload"))
+        if (arga and !stricmp(arga, ".sndreload"))
         {
             F4ReloadSFX();
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
-        if (arga && argb && !stricmp(arga, ".snd"))
+        if (arga and argb and !stricmp(arga, ".snd"))
         {
             if (atoi(argb))
             {
@@ -468,26 +468,26 @@ void ServerChatCommand(_TCHAR *msg)
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
-        if (arga && argb && !stricmp(arga, ".sndms"))
+        if (arga and argb and !stricmp(arga, ".sndms"))
         {
             g_nSoundUpdateMS = atoi(argb);
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
-        if (arga && argb && !stricmp(arga, ".snddop"))
+        if (arga and argb and !stricmp(arga, ".snddop"))
         {
             g_fSoundDopplerFactor = (float)atof(argb);
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
-        if (arga && argb && !stricmp(arga, ".sndro"))
+        if (arga and argb and !stricmp(arga, ".sndro"))
         {
             g_fSoundRolloffFactor = (float)atof(argb);
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
         // COBRA - RED - SFX Activating cheat '.sfx {SfxNr}'
-        if ((arga && argb && !stricmp(arga, ".sfx")) or (arga && !stricmp(arga, ".")))
+        if ((arga and argb and !stricmp(arga, ".sfx")) or (arga and !stricmp(arga, ".")))
         {
             static int sfx = 0;
             static float Dist = 300;
@@ -521,14 +521,14 @@ void ServerChatCommand(_TCHAR *msg)
 
 
         // 2002-02-21 MN Allow to change the set of debug labels via the chat line
-        if (arga && argb && !stricmp(arga, ".label") && g_bActivateDebugStuff)
+        if (arga and argb and !stricmp(arga, ".label") and g_bActivateDebugStuff)
         {
             int newlabels = strtol(argb, NULL, 0); // atoi(argb); 2002-04-01 MODIFIED BY S.G. strtol will parse the inpuy string looking for standard base like 0x
             g_nShowDebugLabels = newlabels;
         }
 
         // Changes fuel level of players aircraft - for refuel testings
-        if (arga && argb && !stricmp(arga, ".fuel") && g_bActivateDebugStuff)
+        if (arga and argb and !stricmp(arga, ".fuel") and g_bActivateDebugStuff)
         {
             unsigned long newfuel = atol(argb);
             gFuelState = newfuel;
@@ -536,7 +536,7 @@ void ServerChatCommand(_TCHAR *msg)
 
         if (g_bServer)
         {
-            if (arga && argb && !stricmp(arga, ".loadte"))
+            if (arga and argb and !stricmp(arga, ".loadte"))
             {
                 DisableScenarioInfo();
                 LeaveCurrentGame();
@@ -561,7 +561,7 @@ void ServerChatCommand(_TCHAR *msg)
                 MainLastGroup = 3000;
             }
 
-            if (arga && argb && !stricmp(arga, ".acmi"))
+            if (arga and argb and !stricmp(arga, ".acmi"))
             {
                 if (!stricmp(argb, "on"))
                 {
@@ -591,7 +591,7 @@ void ServerChatCommand(_TCHAR *msg)
                 }
             }
 
-            if (0 && arga && argb && !stricmp(arga, ".loadcam"))
+            if (0 and arga and argb and !stricmp(arga, ".loadcam"))
             {
                 DisableScenarioInfo();
                 LeaveCurrentGame();
@@ -614,7 +614,7 @@ void ServerChatCommand(_TCHAR *msg)
                 MainLastGroup = 3000;
             }
 
-            if (arga && !stricmp(arga, ".quit"))
+            if (arga and !stricmp(arga, ".quit"))
             {
                 tactical_mission_loaded = FALSE;
                 RemoveTacticalEdit();
@@ -630,11 +630,11 @@ void ServerChatCommand(_TCHAR *msg)
             }
         }
 
-        if (arga && argb && !stricmp(arga, ".mistrail") && g_bActivateDebugStuff)
+        if (arga and argb and !stricmp(arga, ".mistrail") and g_bActivateDebugStuff)
         {
             g_nmissiletrial = atoi(argb);
         }
-        else if (arga && !stricmp(arga, ".boundb") && g_bActivateDebugStuff)
+        else if (arga and !stricmp(arga, ".boundb") and g_bActivateDebugStuff)
         {
             if (g_bDrawBoundingBox)
                 g_bDrawBoundingBox = false;
@@ -642,79 +642,79 @@ void ServerChatCommand(_TCHAR *msg)
                 g_bDrawBoundingBox = true;
         }
         // RV - Biker - Who does need - we do!!
-        else if (arga && argb && !stricmp(arga, ".bgs") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".bgs") and g_bActivateDebugStuff)
         {
             g_nboostguidesec = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".tgr") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".tgr") and g_bActivateDebugStuff)
         {
             g_nterminalguiderange = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".bgsp") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".bgsp") and g_bActivateDebugStuff)
         {
             g_nboostguideSensorPrecision = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".sgsp") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".sgsp") and g_bActivateDebugStuff)
         {
             g_nsustainguideSensorPrecision = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".tgsp") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".tgsp") and g_bActivateDebugStuff)
         {
             g_nterminalguideSensorPrecision = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".bgl") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".bgl") and g_bActivateDebugStuff)
         {
             g_nboostguideLead = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".sgl") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".sgl") and g_bActivateDebugStuff)
         {
             g_nsustainguideLead = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".tgl") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".tgl") and g_bActivateDebugStuff)
         {
             g_nterminalguideLead = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".bggn") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".bggn") and g_bActivateDebugStuff)
         {
             g_nboostguideGnav = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".sggn") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".sggn") and g_bActivateDebugStuff)
         {
             g_nsustainguideGnav = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".tggn") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".tggn") and g_bActivateDebugStuff)
         {
             g_nterminalguideGnav = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".bgbw") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".bgbw") and g_bActivateDebugStuff)
         {
             g_nboostguideBwap = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".sgbw") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".sgbw") and g_bActivateDebugStuff)
         {
             g_nsustainguideBwap = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".tgbw") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".tgbw") and g_bActivateDebugStuff)
         {
             g_nterminalguideBwap = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".cbw") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".cbw") and g_bActivateDebugStuff)
         {
             //clientbwforupdatesmodifyer = float(atoi(argb)/1000.0f);
         }
-        else if (arga && argb && !stricmp(arga, ".hbw") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".hbw") and g_bActivateDebugStuff)
         {
             //hostbwforupdatesmodifyer = float(atoi(argb)/1000.0f);
         }
-        else if (arga && argb && !stricmp(arga, ".tf") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".tf") and g_bActivateDebugStuff)
         {
             g_nMpdelaytweakfactor = float(atoi(argb));
         }
-        else if (arga && argb && !stricmp(arga, ".mbw") && g_bActivateDebugStuff)
+        else if (arga and argb and !stricmp(arga, ".mbw") and g_bActivateDebugStuff)
         {
             //MinBwForOtherData = float(atoi(argb));
         }
-        else if (arga && argb && !stricmp(arga, ".pos"))
+        else if (arga and argb and !stricmp(arga, ".pos"))
         {
             //Posupdsize = float(atoi(argb));
         }
@@ -864,7 +864,7 @@ BOOL FilterIncommingMessage(FalconSessionEntity *session)
                 {
                     pkg = (Package)flt->GetUnitParent();
 
-                    if (pkg && pkg->Id() == MyPackageID)
+                    if (pkg and pkg->Id() == MyPackageID)
                         retval = TRUE;
                 }
 
@@ -946,7 +946,7 @@ BOOL FilterIncommingMessage(FalconSessionEntity *session)
                 {
                     pkg = (Package)flt->GetUnitParent();
 
-                    if (pkg && pkg->Id() == MyPackageID)
+                    if (pkg and pkg->Id() == MyPackageID)
                         retval = TRUE;
                 }
 
@@ -1039,7 +1039,7 @@ void ProcessChatStr(CHATSTR *msg)
         {
             plyr = (C_Player*)item->Item_;
 
-            if (plyr && (plyr->GetMute())) // Filter out Chat messages we don't want to hear
+            if (plyr and (plyr->GetMute())) // Filter out Chat messages we don't want to hear
                 return;
         }
 
@@ -1099,11 +1099,11 @@ void SendChatStringCB(long, short hittype, C_Base *control)
         {
             plyr = (C_Player*)cur->Item_;
 
-            if (plyr && plyr->GetState() && !plyr->GetIgnore())
+            if (plyr and plyr->GetState() and !plyr->GetIgnore())
             {
                 FalconSessionEntity *session = (FalconSessionEntity*) vuDatabase->Find(plyr->GetVUID());
 
-                if (session && session not_eq FalconLocalSession)
+                if (session and session not_eq FalconLocalSession)
                 {
                     chat = new UI_SendChatMessage(FalconNullId, session);
 
@@ -1487,7 +1487,7 @@ static void RemoveOldPeopleTreeCB(TREELIST *old)
     ReceiveChatString(FalconNullId, buffer);
 
     // Begin Uplink stuff
-    if (m_pUplink not_eq NULL && FalconLocalGame && FalconLocalGame->IsLocal())
+    if (m_pUplink not_eq NULL and FalconLocalGame and FalconLocalGame->IsLocal())
     {
         try
         {
@@ -1641,7 +1641,7 @@ static void CheckPlayerGroup(FalconSessionEntity *session, C_Player *plyr)
         me = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
         player = (Flight)vuDatabase->Find(session->GetPlayerFlightID());
 
-        if (me && player)
+        if (me and player)
         {
             if (me->GetUnitPackage() == player->GetUnitPackage())
             {
@@ -1662,7 +1662,7 @@ static void CheckPlayerGroup(FalconSessionEntity *session, C_Player *plyr)
     }
     else if (PeopleChatType == 4) // CHAT_FLIGHT
     {
-        if (FalconLocalSession->GetPlayerFlightID() == session->GetPlayerFlightID() && FalconLocalSession->GetPlayerFlightID() not_eq FalconNullId)
+        if (FalconLocalSession->GetPlayerFlightID() == session->GetPlayerFlightID() and FalconLocalSession->GetPlayerFlightID() not_eq FalconNullId)
         {
             plyr->SetState(1);
             plyr->SetMute(0);
@@ -1846,7 +1846,7 @@ void UpdateLocalGameTree()
                 ReceiveChatString(FalconNullId, buffer);
 
                 // Begin Uplink stuff
-                if (m_pUplink not_eq NULL && FalconLocalGame && FalconLocalGame->IsLocal())
+                if (m_pUplink not_eq NULL and FalconLocalGame and FalconLocalGame->IsLocal())
                 {
                     try
                     {
@@ -1896,7 +1896,7 @@ void RebuildGameTree()
     if (CampaignGames)
         CampaignGames->Refresh();
 
-    if ((gCommsMgr) && (gCommsMgr->Online()))
+    if ((gCommsMgr) and (gCommsMgr->Online()))
     {
         UpdateLocalGameTree(); // Updates Game in Chat window (Current area we are in)
 
@@ -2137,7 +2137,7 @@ void UI_UpdateGameList()
                 game = (FalconGameEntity*)vuDatabase->Find(q->GameID);
                 session = (FalconSessionEntity*)vuDatabase->Find(q->SessionID);
 
-                if (game && session)
+                if (game and session)
                 {
                     if (game == FalconLocalGame)
                         UpdateLocalGameTree();
@@ -2419,7 +2419,7 @@ void SendTextToPackage()
         {
             pkg = (Package)flt->GetUnitParent();
 
-            if (pkg && pkg->Id() == MyPackageID)
+            if (pkg and pkg->Id() == MyPackageID)
             {
                 chat = new UI_SendChatMessage(FalconNullId, session);
 

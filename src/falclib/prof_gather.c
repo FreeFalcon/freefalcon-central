@@ -103,7 +103,7 @@ Prof_extern_C Prof_Zone_Stack *Prof_StackAppend(Prof_Zone *zone)
     int x = h & zone_hash_mask;
     Prof_Zone_Stack *z = zone_hash[x];
 
-    if (z->parent == Prof_stack && z->zone == zone) return z;
+    if (z->parent == Prof_stack and z->zone == zone) return z;
 
     if (z not_eq &Prof_dummy)
     {
@@ -117,7 +117,7 @@ Prof_extern_C Prof_Zone_Stack *Prof_StackAppend(Prof_Zone *zone)
             x = (x + s) & zone_hash_mask;
             z = zone_hash[x];
 
-            if (z->parent == Prof_stack && z->zone == zone) return z;
+            if (z->parent == Prof_stack and z->zone == zone) return z;
 
             if (z == &Prof_dummy) break;
         }

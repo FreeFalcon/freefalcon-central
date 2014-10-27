@@ -243,22 +243,22 @@ void C_TreeList::DeleteItem(TREELIST *item)
     //#define CTREE_FIX 1
 #if CTREE_FIX
 
-    if ((item->Parent) && (item->Parent->Child == item))
+    if ((item->Parent) and (item->Parent->Child == item))
     {
         item->Parent->Child = item->Next;
     }
 
     // sfr: shouldnt we also fix children stuff?
-    if ((item->Child) && (item->Child->Parent == item))
+    if ((item->Child) and (item->Child->Parent == item))
     {
         item->Child->Parent = item->Parent;
     }
 
 #else
 
-    if (!F4IsBadReadPtr(item->Parent, sizeof(TREELIST)) && // JB 010317 CTD
-        !F4IsBadReadPtr(item->Parent->Child, sizeof(TREELIST)) && // M.N. 011209 CTD
-        (item->Parent) && (item->Parent->Child == item))
+    if (!F4IsBadReadPtr(item->Parent, sizeof(TREELIST)) and // JB 010317 CTD
+        !F4IsBadReadPtr(item->Parent->Child, sizeof(TREELIST)) and // M.N. 011209 CTD
+        (item->Parent) and (item->Parent->Child == item))
     {
         item->Parent->Child = item->Next;
     }
@@ -331,12 +331,12 @@ void C_TreeList::Add(TREELIST *current, TREELIST *NewItem)
     }
     else
     {
-        while (current->Next && current->Type_ < NewItem->Type_)
+        while (current->Next and current->Type_ < NewItem->Type_)
             current = current->Next;
 
         if (SortType_ == TREE_SORT_BY_ID)
         {
-            while (current->Next && current->ID_ <= NewItem->ID_)
+            while (current->Next and current->ID_ <= NewItem->ID_)
                 current = current->Next;
 
             if (NewItem->Type_ < current->Type_)
@@ -352,15 +352,15 @@ void C_TreeList::Add(TREELIST *current, TREELIST *NewItem)
 
                 NewItem->Next = current;
 
-                if (current->Parent && !current->Prev)
+                if (current->Parent and !current->Prev)
                     current->Parent->Child = NewItem;
 
                 current->Prev = NewItem;
             }
-            else if (NewItem->Type_ == current->Type_ && NewItem->ID_ < current->ID_)
+            else if (NewItem->Type_ == current->Type_ and NewItem->ID_ < current->ID_)
             {
                 // Insert before
-                if (current->Parent && current->Parent->Child == current)
+                if (current->Parent and current->Parent->Child == current)
                     current->Parent->Child = NewItem;
 
                 if (Root_ == current)
@@ -374,7 +374,7 @@ void C_TreeList::Add(TREELIST *current, TREELIST *NewItem)
 
                 NewItem->Next = current;
 
-                if (current->Parent && !current->Prev)
+                if (current->Parent and !current->Prev)
                     current->Parent->Child = NewItem;
 
                 current->Prev = NewItem;
@@ -393,7 +393,7 @@ void C_TreeList::Add(TREELIST *current, TREELIST *NewItem)
         }
         else if (SortType_ == TREE_SORT_BY_ITEM_ID)
         {
-            while (current->Next && current->Item_->GetID() <= NewItem->Item_->GetID())
+            while (current->Next and current->Item_->GetID() <= NewItem->Item_->GetID())
                 current = current->Next;
 
             if (NewItem->Type_ < current->Type_)
@@ -409,15 +409,15 @@ void C_TreeList::Add(TREELIST *current, TREELIST *NewItem)
 
                 NewItem->Next = current;
 
-                if (current->Parent && !current->Prev)
+                if (current->Parent and !current->Prev)
                     current->Parent->Child = NewItem;
 
                 current->Prev = NewItem;
             }
-            else if (NewItem->Type_ == current->Type_ && NewItem->Item_->GetID() < current->Item_->GetID())
+            else if (NewItem->Type_ == current->Type_ and NewItem->Item_->GetID() < current->Item_->GetID())
             {
                 // Insert before
-                if (current->Parent && current->Parent->Child == current)
+                if (current->Parent and current->Parent->Child == current)
                     current->Parent->Child = NewItem;
 
                 if (Root_ == current)
@@ -431,7 +431,7 @@ void C_TreeList::Add(TREELIST *current, TREELIST *NewItem)
 
                 NewItem->Next = current;
 
-                if (current->Parent && !current->Prev)
+                if (current->Parent and !current->Prev)
                     current->Parent->Child = NewItem;
 
                 current->Prev = NewItem;
@@ -448,15 +448,15 @@ void C_TreeList::Add(TREELIST *current, TREELIST *NewItem)
                     NewItem->Next->Prev = NewItem;
             }
         }
-        else if (SortType_ == TREE_SORT_CALLBACK && SortCB_)
+        else if (SortType_ == TREE_SORT_CALLBACK and SortCB_)
         {
-            while (current->Next && !(*SortCB_)(current, NewItem))
+            while (current->Next and !(*SortCB_)(current, NewItem))
                 current = current->Next;
 
-            if ((NewItem->Type_ < current->Type_) or (NewItem->Type_ == current->Type_ && (*SortCB_)(current, NewItem)))
+            if ((NewItem->Type_ < current->Type_) or (NewItem->Type_ == current->Type_ and (*SortCB_)(current, NewItem)))
             {
                 // Insert before
-                if (current->Parent && current->Parent->Child == current)
+                if (current->Parent and current->Parent->Child == current)
                     current->Parent->Child = NewItem;
 
                 if (Root_ == current)
@@ -470,7 +470,7 @@ void C_TreeList::Add(TREELIST *current, TREELIST *NewItem)
 
                 NewItem->Next = current;
 
-                if (current->Parent && !current->Prev)
+                if (current->Parent and !current->Prev)
                     current->Parent->Child = NewItem;
 
                 current->Prev = NewItem;
@@ -539,7 +539,7 @@ BOOL C_TreeList::AddChildItem(TREELIST *par, TREELIST *NewItem)
 
 BOOL C_TreeList::AddItem(TREELIST *current, TREELIST *NewItem)
 {
-    if ((!current && Root_) or !NewItem or !NewItem->Item_)
+    if ((!current and Root_) or !NewItem or !NewItem->Item_)
         return(FALSE);
 
     if (Hash_->Find(NewItem->ID_))
@@ -565,7 +565,7 @@ void C_TreeList::MoveChildItem(TREELIST *Parent, TREELIST *item)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if (item && Parent && item not_eq Parent)
+    if (item and Parent and item not_eq Parent)
     {
         Leave = UI_Enter(Parent_);
 
@@ -578,7 +578,7 @@ void C_TreeList::MoveChildItem(TREELIST *Parent, TREELIST *item)
         if (item->Prev)
             item->Prev->Next = item->Next;
 
-        if (item->Parent && item->Parent->Child == item)
+        if (item->Parent and item->Parent->Child == item)
             item->Parent->Child = item->Next;
 
         if (LastFound_ == item)
@@ -740,7 +740,7 @@ void C_TreeList::SetAllControlStates(short newstate, TREELIST *me)
 
 long C_TreeList::GetMenu()
 {
-    if (LastFound_ && LastFound_->Item_ && LastFound_->Item_->GetMenu())
+    if (LastFound_ and LastFound_->Item_ and LastFound_->Item_->GetMenu())
         return(LastFound_->Item_->GetMenu());
 
     return(C_Control::GetMenu());
@@ -766,7 +766,7 @@ void C_TreeList::RemoveOldBranch(long UserSlot, long Age, TREELIST *me)
         {
             if (me->Item_)
             {
-                if (me->Item_->GetUserNumber(UserSlot) && me->Item_->GetUserNumber(UserSlot) not_eq Age)
+                if (me->Item_->GetUserNumber(UserSlot) and me->Item_->GetUserNumber(UserSlot) not_eq Age)
                 {
                     DeleteItem(me);
                 }
@@ -781,7 +781,7 @@ void C_TreeList::RemoveOldBranch(long UserSlot, long Age, TREELIST *me)
         {
             if (me->Item_)
             {
-                if ((me->Item_->GetUserNumber(UserSlot)) && (me->Item_->GetUserNumber(UserSlot) < Age))
+                if ((me->Item_->GetUserNumber(UserSlot)) and (me->Item_->GetUserNumber(UserSlot) < Age))
                 {
                     DeleteItem(me);
                 }
@@ -825,7 +825,7 @@ long C_TreeList::CalculateTreePositions(TREELIST *top, long offx, long offy)
 
     while (current)
     {
-        if (current->Item_ && !(current->Item_->GetFlags() & C_BIT_INVISIBLE))
+        if (current->Item_ and !(current->Item_->GetFlags() & C_BIT_INVISIBLE))
         {
             current->x_ = offx;
             current->y_ = offy;
@@ -842,7 +842,7 @@ long C_TreeList::CalculateTreePositions(TREELIST *top, long offx, long offy)
             if (width > treew_)
                 treew_ = width;
 
-            if (current->state_ && current->Child)
+            if (current->state_ and current->Child)
                 offy = CalculateTreePositions(current->Child, offx + xoffset_, offy);
         }
 
@@ -860,12 +860,12 @@ TREELIST *C_TreeList::CheckBranch(TREELIST *me, long mx, long my)
 
     while (cur)
     {
-        if (cur->Item_ && !(cur->Item_->GetFlags() & C_BIT_INVISIBLE))
+        if (cur->Item_ and !(cur->Item_->GetFlags() & C_BIT_INVISIBLE))
         {
-            if (cur->Child && ChildImage_[0] && FindVisible(cur->Child))
+            if (cur->Child and ChildImage_[0] and FindVisible(cur->Child))
             {
-                if (mx >= (cur->x_ + 2) && mx <= (cur->x_ + (ChildImage_[0]->Header->w)) &&
-                    my >= (cur->y_ + 2) && my <= (cur->y_ + ChildImage_[0]->Header->h))
+                if (mx >= (cur->x_ + 2) and mx <= (cur->x_ + (ChildImage_[0]->Header->w)) &&
+                    my >= (cur->y_ + 2) and my <= (cur->y_ + ChildImage_[0]->Header->h))
                 {
                     CheckFlag_ = C_TYPE_MENU;
                     return(cur);
@@ -878,7 +878,7 @@ TREELIST *C_TreeList::CheckBranch(TREELIST *me, long mx, long my)
                 return(cur);
             }
 
-            if (cur->state_ && cur->Child)
+            if (cur->state_ and cur->Child)
             {
                 tmp = CheckBranch(cur->Child, mx, my);
 
@@ -945,10 +945,10 @@ void C_TreeList::Activate()
     if (LastActive_ == LastFound_)
         return;
 
-    if (LastActive_ && LastActive_->Item_)
+    if (LastActive_ and LastActive_->Item_)
         LastActive_->Item_->Deactivate();
 
-    if (LastFound_ && LastFound_->Item_)
+    if (LastFound_ and LastFound_->Item_)
     {
         LastActive_ = LastFound_;
         LastFound_->Item_->Activate();
@@ -957,7 +957,7 @@ void C_TreeList::Activate()
 
 void C_TreeList::Deactivate()
 {
-    if (LastActive_ && LastActive_->Item_)
+    if (LastActive_ and LastActive_->Item_)
         LastActive_->Item_->Deactivate();
 
     LastActive_ = NULL;
@@ -978,7 +978,7 @@ C_Base *C_TreeList::GetMe()
 
 BOOL C_TreeList::CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount)
 {
-    if (LastFound_ && LastFound_->Item_)
+    if (LastFound_ and LastFound_->Item_)
         return(LastFound_->Item_->CheckKeyboard(DKScanCode, Ascii, ShiftStates, RepeatCount));
 
     return(FALSE);
@@ -1068,13 +1068,13 @@ void C_TreeList::DrawBranch(SCREEN *surface, TREELIST *branch, UI95_RECT *clipre
 
     while (current)
     {
-        if (current->Item_ && !(current->Item_->GetFlags() & C_BIT_INVISIBLE))
+        if (current->Item_ and !(current->Item_->GetFlags() & C_BIT_INVISIBLE))
         {
             if (Parent_->InsideClientHeight(current->y_ - current->Item_->GetH(), current->y_ + current->Item_->GetH(), GetClient()))
             {
                 if (current->Type_ not_eq C_TYPE_INFO)
                 {
-                    if (current->Child && FindVisible(current->Child))
+                    if (current->Child and FindVisible(current->Child))
                     {
                         if (ChildImage_[current->state_])
                         {
@@ -1133,7 +1133,7 @@ void C_TreeList::DrawBranch(SCREEN *surface, TREELIST *branch, UI95_RECT *clipre
                     current->Item_->Draw(surface, cliprect);
             }
 
-            if (current->state_ && current->Child)
+            if (current->state_ and current->Child)
                 DrawBranch(surface, current->Child, cliprect);
         }
 
@@ -1159,7 +1159,7 @@ void C_TreeList::HighLite(SCREEN *surface, UI95_RECT *cliprect)
 {
     UI95_RECT clip, tmp;
 
-    if (MouseFound_ && CheckFlag_ == C_TYPE_MENU)
+    if (MouseFound_ and CheckFlag_ == C_TYPE_MENU)
     {
         clip.left = MouseFound_->x_ + 2;
         clip.top = MouseFound_->y_ + 2;
@@ -1498,7 +1498,7 @@ void C_TreeList::SetHelpItemImage(long ID, long ImageID, long x, long y)
 
     item = Find(ID);
 
-    if (item && item->Item_)
+    if (item and item->Item_)
     {
         if (item->Item_->_GetCType_() == _CNTL_HELP_)
         {
@@ -1513,7 +1513,7 @@ void C_TreeList::SetHelpItemText(long ID, long TextID, long x, long y, long w, l
 
     item = Find(ID);
 
-    if (item && item->Item_)
+    if (item and item->Item_)
     {
         if (item->Item_->_GetCType_() == _CNTL_HELP_)
         {
@@ -1529,7 +1529,7 @@ void C_TreeList::SetHelpFlagOn(long ID, long Flag)
 
     item = Find(ID);
 
-    if (item && item->Item_)
+    if (item and item->Item_)
     {
         if (item->Item_->_GetCType_() == _CNTL_HELP_)
         {
@@ -1544,7 +1544,7 @@ void C_TreeList::SetHelpFlagOff(long ID, long Flag)
 
     item = Find(ID);
 
-    if (item && item->Item_)
+    if (item and item->Item_)
     {
         if (item->Item_->_GetCType_() == _CNTL_HELP_)
         {
@@ -1559,7 +1559,7 @@ void C_TreeList::SetHelpItemFont(long ID, long FontID)
 
     item = Find(ID);
 
-    if (item && item->Item_)
+    if (item and item->Item_)
     {
         if (item->Item_->_GetCType_() == _CNTL_HELP_)
         {

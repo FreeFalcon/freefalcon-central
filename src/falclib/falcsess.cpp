@@ -348,7 +348,7 @@ void FalconSessionEntity::SetPlayerName(_TCHAR* pname)
     _tcscpy(name, pname);
     name[_NAME_LEN_] = 0;
 
-    if (gUICommsQ && Game())
+    if (gUICommsQ and Game())
     {
         gUICommsQ->Add(_Q_SESSION_UPDATE_, Id(), Game()->Id());
         UI_Refresh();
@@ -365,7 +365,7 @@ void FalconSessionEntity::SetPlayerCallsign(_TCHAR* pcallsign)
     _tcscpy(callSign, pcallsign);
     callSign[_CALLSIGN_LEN_] = 0;
 
-    if (gUICommsQ && Game())
+    if (gUICommsQ and Game())
     {
         gUICommsQ->Add(_Q_SESSION_UPDATE_, Id(), Game()->Id());
         UI_Refresh();
@@ -423,7 +423,7 @@ void FalconSessionEntity::SetPlayerSquadron(SquadronClass* ent)
     {
         playerSquadron = playerSquadronPtr->Id();
         country = playerSquadronPtr->GetOwner();
-        ShiAssert(country > 0 && country < 255);
+        ShiAssert(country > 0 and country < 255);
         GameManager.CheckPlayerStatus(playerSquadronPtr.get());
         //VuReferenceEntity(playerSquadronPtr);
     }
@@ -432,7 +432,7 @@ void FalconSessionEntity::SetPlayerSquadron(SquadronClass* ent)
         playerSquadron = FalconNullId;
     }
 
-    if (gUICommsQ && Game())
+    if (gUICommsQ and Game())
     {
         gUICommsQ->Add(_Q_SESSION_UPDATE_, Id(), Game()->Id());
         UI_Refresh();
@@ -451,7 +451,7 @@ void FalconSessionEntity::SetPlayerFlight(FlightClass* ent)
     CampEnterCriticalSection();
     SetDirty();
 
-    if (gCompressTillTime && IsLocal())
+    if (gCompressTillTime and IsLocal())
     {
         gCompressTillTime = 0; // Cancle our current takeoff flight.
         SetTimeCompression(1);
@@ -479,7 +479,7 @@ void FalconSessionEntity::SetPlayerFlight(FlightClass* ent)
         playerFlight = FalconNullId;
     }
 
-    if (gUICommsQ && Game())
+    if (gUICommsQ and Game())
     {
         gUICommsQ->Add(_Q_SESSION_UPDATE_, Id(), Game()->Id());
         UI_Refresh();
@@ -528,7 +528,7 @@ void FalconSessionEntity::SetPlayerEntity(FalconEntity* ent)
     CampEnterCriticalSection();
 
     // Update cameras if local (remote cameras are sent to us via the update/create event)
-    if (IsLocal() && ent)
+    if (IsLocal() and ent)
     {
         // KCK: Clear any previous camera and snap to this new entity.
         ClearCameras();
@@ -546,7 +546,7 @@ void FalconSessionEntity::SetPlayerEntity(FalconEntity* ent)
         //VuDeReferenceEntity(oldPlayerPtr);
 #if 0//NEW_SERVER_VIEWPOINT
 
-        if (!IsLocal() && Game()->IsLocal())
+        if (!IsLocal() and Game()->IsLocal())
         {
             // viewpoint for the session if remote
             OTWDriver.RemoveViewpoint(this);
@@ -561,16 +561,16 @@ void FalconSessionEntity::SetPlayerEntity(FalconEntity* ent)
         GameManager.CheckPlayerStatus(playerEntityPtr.get());
         //VuReferenceEntity(playerEntityPtr);
         int newcountry = playerEntityPtr->GetCountry();
-        ShiAssert(newcountry > 0 && newcountry < 255);
+        ShiAssert(newcountry > 0 and newcountry < 255);
 
-        if (newcountry > 0 && newcountry < 255)
+        if (newcountry > 0 and newcountry < 255)
         {
             country = (uchar)newcountry;
         }
 
 #if 0//NEW_SERVER_VIEWPOINT
 
-        if (!IsLocal() && Game()->IsLocal())
+        if (!IsLocal() and Game()->IsLocal())
         {
             // viewpoint for the session if remote
             OTWDriver.AddViewpoint(this);
@@ -596,7 +596,7 @@ void FalconSessionEntity::SetCountry(uchar c)
     country = c;
     ShiAssert(country > 0);
 
-    if (gUICommsQ && Game())
+    if (gUICommsQ and Game())
     {
         gUICommsQ->Add(_Q_SESSION_UPDATE_, Id(), Game()->Id());
         UI_Refresh();
@@ -723,7 +723,7 @@ int FalconSessionEntity::InSessionBubble(FalconEntity* ent, float bubble_multipl
     {
         ent_bubble_range = ent->EntityType()->bubbleRange_; // We don't adjust objective's bubble
     }
-    else if (ent->IsFlight() && gGameType == game_Dogfight)
+    else if (ent->IsFlight() and gGameType == game_Dogfight)
     {
         // KCK HACK: Basically, we want to always keep flights in our bubble in dogfight
         // sfr: is this necessary??
@@ -865,19 +865,19 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
 
     // Tell the flight to hold short if this guy is coming into the sim.
     // sfr: taking this out. This prevents flights from taking off
-    //if (flyState == FLYSTATE_LOADING && playerFlightPtr && playerFlightPtr->IsLocal())
+    //if (flyState == FLYSTATE_LOADING and playerFlightPtr and playerFlightPtr->IsLocal())
     // playerFlightPtr->SetFalcFlag(FEC_HOLDSHORT);
 
     memcpy(&reqCompression, &tmpSess->reqCompression, sizeof(short));
 
-    if (tmpSess->Game() && (Game() not_eq tmpSess->Game()))
+    if (tmpSess->Game() and (Game() not_eq tmpSess->Game()))
     {
         JoinGame(tmpSess->Game());
     }
 
     // MonoPrint("Got info for session: %s - team %d - #%d\n", name, country, reqCompression);
 
-    if (gUICommsQ && (dirty & 0x00ff) && Game())
+    if (gUICommsQ and (dirty & 0x00ff) and Game())
     {
         gUICommsQ->Add(_Q_SESSION_UPDATE_, Id(), Game()->Id());
         UI_Refresh();
@@ -889,7 +889,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
 
     // KCK: if we're the host, check to see if Assigned aircraft is different than the one
     // the session thinks it has and correct any errors by sending an SendAircraftSlot message
-    if (FalconLocalGame && Game() == FalconLocalGame && FalconLocalGame->IsLocal())
+    if (FalconLocalGame and Game() == FalconLocalGame and FalconLocalGame->IsLocal())
     {
         if (
             assignedAircraftNum not_eq aircraftNum ||
@@ -953,7 +953,7 @@ void FalconSessionEntity::UpdatePlayer(void)
     squadron_ptr = (Squadron) vuDatabase->Find(playerSquadron);
     flight_ptr = (Flight) vuDatabase->Find(playerFlight);
 
-    if ((!flight_ptr) && (playerFlight not_eq vuNullId))
+    if ((!flight_ptr) and (playerFlight not_eq vuNullId))
     {
         static int now, last_time;
         now = GetTickCount();

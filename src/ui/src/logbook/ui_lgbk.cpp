@@ -591,7 +591,7 @@ void GetPilotList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[],
         {
             i = 0;
 
-            while (excludelist[i] && !ignore)
+            while (excludelist[i] and !ignore)
             {
                 if (stricmp(excludelist[i], filedata.cFileName) == 0)
                     ignore = TRUE;

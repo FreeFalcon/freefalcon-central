@@ -65,11 +65,11 @@ void HeliBrain::GoToCurrentWaypoint(void)
     unit = (Unit)self->GetCampaignObject();
 
     // RV - Biker - If we did miss our pickup do it now
-    if (self->curWaypoint->GetWPAction() == WP_AIRDROP && !unit->GetCargo() && onStation == NotThereYet)
+    if (self->curWaypoint->GetWPAction() == WP_AIRDROP and !unit->GetCargo() and onStation == NotThereYet)
     {
         cargo = (Unit) self->curWaypoint->GetWPTarget();
 
-        if (cargo && unit)
+        if (cargo and unit)
         {
             unit->SetCargoId(cargo->Id());
             cargo->SetCargoId(unit->Id());
@@ -78,7 +78,7 @@ void HeliBrain::GoToCurrentWaypoint(void)
         }
     }
 
-    if (self->curWaypoint->GetWPAction() == WP_PICKUP && onStation == NotThereYet)
+    if (self->curWaypoint->GetWPAction() == WP_PICKUP and onStation == NotThereYet)
     {
         cargo = (Unit) self->curWaypoint->GetWPTarget();
 
@@ -168,7 +168,7 @@ void HeliBrain::GoToCurrentWaypoint(void)
         {
             onStation = Arrived;
         }
-        else if (onStation == OnStation && SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime())
+        else if (onStation == OnStation and SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime())
         {
             SelectNextWaypoint();
         }
@@ -231,7 +231,7 @@ void HeliBrain::GoToCurrentWaypoint(void)
     }
 
     // if we're close, just point to spot then go
-    if (fabs(rollLoad) > 0.1f && rng < 1000.0f * 1000.0f)
+    if (fabs(rollLoad) > 0.1f and rng < 1000.0f * 1000.0f)
         desSpeed = 0.5f;
 
     LevelTurn(rollLoad, rollDir, TRUE);
@@ -249,7 +249,7 @@ void HeliBrain::SelectNextWaypoint(void)
 
     // first get our current waypoint index in the list
     for (waypointIndex = 0;
-         wlist && wlist not_eq tmpWaypoint;
+         wlist and wlist not_eq tmpWaypoint;
          wlist = wlist->GetNextWP(), waypointIndex++);
 
     // see if we're running in tactical or campaign.  If so, we want to

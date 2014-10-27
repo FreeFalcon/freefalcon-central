@@ -53,7 +53,7 @@ int CalculateVehicleHitChance(int id, int mt)
     {
         wid = vc->Weapon[i];
 
-        if (wid && vc->Weapons[i])
+        if (wid and vc->Weapons[i])
         {
             if (vc->Weapons[i] == 255)
             {
@@ -93,7 +93,7 @@ int GetAproxVehicleCombatStrength(int id, int mt, int range)
 
     vc = GetVehicleClassData(id);
 
-    if (vc && vc->Range[mt] >= range)
+    if (vc and vc->Range[mt] >= range)
         return vc->Strength[mt];
 
     return 0;
@@ -114,7 +114,7 @@ int CalculateVehicleCombatStrength(int id, int mt)
     {
         wid = vc->Weapon[i];
 
-        if (wid && vc->Weapons[i])
+        if (wid and vc->Weapons[i])
         {
             if (vc->Weapons[i] == 255)
             {
@@ -173,7 +173,7 @@ int CalculateVehicleRange(int id, int mt)
     {
         wid = vc->Weapon[i];
 
-        if (wid && vc->Weapons[i])
+        if (wid and vc->Weapons[i])
         {
             if (vc->Weapons[i] == 255)
             {
@@ -236,7 +236,7 @@ int GetBestVehicleWeapon(int id, uchar* dam, MoveType m, int range, int *hard_po
         ws = vc->Weapons[i];
         ShiAssert(ws < 255)
 
-        if (w && ws)
+        if (w and ws)
         {
             str = GetWeaponScore(w, dam, m, range);
 

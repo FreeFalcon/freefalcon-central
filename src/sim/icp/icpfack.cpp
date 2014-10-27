@@ -26,7 +26,7 @@ void ICPClass::ExecFACKMode(void)
 
         faultCount = playerAC->mFaults->GetFFaultCount();
 
-        if (mUpdateFlags & FACK_UPDATE or (!(mUpdateFlags & FACK_UPDATE) && faultCount))
+        if (mUpdateFlags & FACK_UPDATE or (!(mUpdateFlags & FACK_UPDATE) and faultCount))
         {
 
             mUpdateFlags &= !FACK_UPDATE;
@@ -136,7 +136,7 @@ void ICPClass::PNUpdateFACKMode(int button, int)
         return;
     }
 
-    if (button == PREV_BUTTON && playerAC->mFaults->GetFFaultCount() >= 1)
+    if (button == PREV_BUTTON and playerAC->mFaults->GetFFaultCount() >= 1)
     {
 
         faultIdx = mFaultNum;
@@ -145,7 +145,7 @@ void ICPClass::PNUpdateFACKMode(int button, int)
         // previous failures on the System?
         testFunc = mFaultFunc - 1;
 
-        if (mFaultFunc && (failedFuncs & ((1 << testFunc) - 1)) > 0)
+        if (mFaultFunc and (failedFuncs & ((1 << testFunc) - 1)) > 0)
         {
             mFaultFunc -= 2;
             funcIdx = (1 << mFaultFunc);
@@ -171,7 +171,7 @@ void ICPClass::PNUpdateFACKMode(int button, int)
 
                 failedFuncs = playerAC->mFaults->GetFault((FaultClass::type_FSubSystem) faultIdx);
             }
-            while (!failedFuncs && faultIdx not_eq mFaultNum);
+            while (!failedFuncs and faultIdx not_eq mFaultNum);
 
 
             // Find highest failed sub-system
@@ -188,7 +188,7 @@ void ICPClass::PNUpdateFACKMode(int button, int)
         mFaultNum = faultIdx;
         mFaultFunc ++;
     }
-    else if (button == NEXT_BUTTON && playerAC->mFaults->GetFFaultCount() >= 1)
+    else if (button == NEXT_BUTTON and playerAC->mFaults->GetFFaultCount() >= 1)
     {
 
         faultIdx = mFaultNum;
@@ -218,7 +218,7 @@ void ICPClass::PNUpdateFACKMode(int button, int)
 
                 failedFuncs = playerAC->mFaults->GetFault((FaultClass::type_FSubSystem) faultIdx);
             }
-            while (!failedFuncs && faultIdx not_eq mFaultNum);
+            while (!failedFuncs and faultIdx not_eq mFaultNum);
 
             // Find lowest failed sub-system
             funcIdx = 1;

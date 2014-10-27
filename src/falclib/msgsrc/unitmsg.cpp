@@ -53,7 +53,7 @@ int FalconUnitMessage::Process(uchar autodisp)
         case unitSchedulePilots:
             ShiAssert(dataBlock.data1 < PILOTS_PER_SQUADRON);
 
-            if (u->GetType() == TYPE_SQUADRON && u->GetDomain() == DOMAIN_AIR)
+            if (u->GetType() == TYPE_SQUADRON and u->GetDomain() == DOMAIN_AIR)
             {
                 ((Squadron)u)->SetPilotStatus(dataBlock.data1, (uchar)dataBlock.data2);
 
@@ -66,7 +66,7 @@ int FalconUnitMessage::Process(uchar autodisp)
         case unitScheduleAC:
             ShiAssert(dataBlock.data1 < VEHICLE_GROUPS_PER_UNIT);
 
-            if (u->GetType() == TYPE_SQUADRON && u->GetDomain() == DOMAIN_AIR)
+            if (u->GetType() == TYPE_SQUADRON and u->GetDomain() == DOMAIN_AIR)
                 ((Squadron)u)->SetSchedule(dataBlock.data1, dataBlock.data2 | dataBlock.data3);
 
             break;
@@ -77,7 +77,7 @@ int FalconUnitMessage::Process(uchar autodisp)
             else if (dataBlock.data1 == UMSG_FROM_RESERVE)
             {
                 // if this is a squadron, we need to increment our losses
-                if (u->GetType() == TYPE_SQUADRON && u->GetDomain() == DOMAIN_AIR)
+                if (u->GetType() == TYPE_SQUADRON and u->GetDomain() == DOMAIN_AIR)
                 {
                     // KCK HACK: Fake # of losses to make them look more like what you'd expect
                     // in real life..
@@ -91,9 +91,9 @@ int FalconUnitMessage::Process(uchar autodisp)
                         dataBlock.data2 = (short)losses;
                 }
 
-                for (i = VEHICLE_GROUPS_PER_UNIT - 1; i >= 0 && dataBlock.data2; i--)
+                for (i = VEHICLE_GROUPS_PER_UNIT - 1; i >= 0 and dataBlock.data2; i--)
                 {
-                    while (u->GetNumVehicles(i) && dataBlock.data2)
+                    while (u->GetNumVehicles(i) and dataBlock.data2)
                     {
                         u->SetNumVehicles(i, u->GetNumVehicles(i) - 1);
                         dataBlock.data2--;
@@ -102,7 +102,7 @@ int FalconUnitMessage::Process(uchar autodisp)
             }
 
             // If this is a flight, set the slot data.
-            if (u->GetType() == TYPE_FLIGHT && u->GetDomain() == DOMAIN_AIR)
+            if (u->GetType() == TYPE_FLIGHT and u->GetDomain() == DOMAIN_AIR)
             {
                 for (i = 0; i < PILOTS_PER_FLIGHT; i++)
                 {

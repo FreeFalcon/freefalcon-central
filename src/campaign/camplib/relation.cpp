@@ -18,7 +18,7 @@
 // This returns the team a country belongs to
 Team GetTeam(Control country)
 {
-    if ((country < NUM_TEAMS) && (TeamInfo[country] not_eq NULL))
+    if ((country < NUM_TEAMS) and (TeamInfo[country] not_eq NULL))
     {
         return TeamInfo[country]->cteam;
     }
@@ -85,13 +85,13 @@ void SetTeam(Control country, int team)
     // Leave the old teams
     for (i = 0; i < NUM_TEAMS; i++)
     {
-        if (i not_eq team && TeamInfo[i] && TeamInfo[i]->member[country])
+        if (i not_eq team and TeamInfo[i] and TeamInfo[i]->member[country])
         {
             TeamInfo[i]->member[country] = 0;
         }
     }
 
-    ShiAssert(team > 0 && team < NUM_TEAMS);
+    ShiAssert(team > 0 and team < NUM_TEAMS);
     TeamInfo[country]->cteam = (Team)team;
     TeamInfo[team]->member[country] = 1;
     //TeamInfo[team]->MakeTeamDirty (DIRTY_TEAM_RELATIONS, DDP[10].priority);

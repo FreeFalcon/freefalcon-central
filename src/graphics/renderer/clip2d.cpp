@@ -310,7 +310,7 @@ void Render2D::IntersectBottom(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v)
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     t = (bottomPixel - v1->y) / (v2->y - v1->y);
-    ShiAssert((t >= -0.001f) && (t <= 1.001f));
+    ShiAssert((t >= -0.001f) and (t <= 1.001f));
 
     // Compute the camera space intersection point
     v->y = bottomPixel;
@@ -344,7 +344,7 @@ void Render2D::IntersectTop(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v)
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     t = (topPixel - v1->y) / (v2->y - v1->y);
-    ShiAssert((t >= -0.001f) && (t <= 1.001f));
+    ShiAssert((t >= -0.001f) and (t <= 1.001f));
 
     // Compute the camera space intersection point
     v->y = topPixel;
@@ -378,7 +378,7 @@ void Render2D::IntersectRight(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v)
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     t = (rightPixel - v1->x) / (v2->x - v1->x);
-    ShiAssert((t >= -0.001f) && (t <= 1.001f));
+    ShiAssert((t >= -0.001f) and (t <= 1.001f));
 
     // Compute the camera space intersection point
     v->x = rightPixel;
@@ -398,7 +398,7 @@ void Render2D::IntersectLeft(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v)
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     t = (leftPixel - v1->x) / (v2->x - v1->x);
-    ShiAssert((t >= -0.001f) && (t <= 1.001f));
+    ShiAssert((t >= -0.001f) and (t <= 1.001f));
 
     // Compute the camera space intersection point
     v->x = leftPixel;

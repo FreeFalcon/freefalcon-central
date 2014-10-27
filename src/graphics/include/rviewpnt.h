@@ -42,7 +42,7 @@ public:
 
     BOOL IsReady(void)
     {
-        return (objectLists not_eq NULL) && (TViewPoint::IsReady());
+        return (objectLists not_eq NULL) and (TViewPoint::IsReady());
     };
 
     // Add/remove drawable objects from this viewpoint's display list

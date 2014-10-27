@@ -488,7 +488,7 @@ int TaskForceClass::MoveUnit(CampaignTime time)
     o = FindNearestObjective(x, y, NULL, 1);
 
     // RV - Biker - If we are in port and have no WPs do nothing
-    if (o && o->GetType() == TYPE_PORT && !w)
+    if (o and o->GetType() == TYPE_PORT and !w)
     {
         return TRUE;
     }
@@ -622,7 +622,7 @@ int TaskForceClass::DoCombat(void)
             combat = 0;
             react = DetectVs(e, &d, &combat, &spot);
 
-            if (!e->IsFlight() && react >= best_reaction && d < react_distance)
+            if (!e->IsFlight() and react >= best_reaction and d < react_distance)
             {
                 // React vs a ground/Naval target
                 best_reaction = react;
@@ -631,7 +631,7 @@ int TaskForceClass::DoCombat(void)
                 SetEngaged(1);
                 SetCombat(combat);
             }
-            else if (e->IsFlight() && react >= best_air_react && d < air_react_distance)
+            else if (e->IsFlight() and react >= best_air_react and d < air_react_distance)
             {
                 // React vs an air target -
                 best_air_react = react;
@@ -695,7 +695,7 @@ int TaskForceClass::DoCombat(void)
             SetTarget(NULL);
         else
         {
-            if (Combat() && IsAggregate())
+            if (Combat() and IsAggregate())
             {
                 combat = ::DoCombat(this, e);
 
@@ -707,7 +707,7 @@ int TaskForceClass::DoCombat(void)
         // Check vs our Air Target
         if (!a)
             SetAirTarget(NULL);
-        else if (Combat() && IsAggregate())
+        else if (Combat() and IsAggregate())
         {
             combat = ::DoCombat(this, a);
 
@@ -732,7 +732,7 @@ int TaskForceClass::Reaction(CampEntity e, int knowledge, float range)
     tmt = e->GetMovementType();
 
     // Aircraft on ground are ignored (technically, we could shoot at them.. but..)
-    if (e->IsFlight() && !((Flight)e)->Moving())
+    if (e->IsFlight() and !((Flight)e)->Moving())
         return 0;
 
     // Score their threat to us
@@ -753,7 +753,7 @@ int TaskForceClass::Reaction(CampEntity e, int knowledge, float range)
         score += GetAproxHitChance(tmt, FloatToInt32(range / 2.0F)) / 5;
 
     // Added bonus for them attacking
-    if (et && (tmt == Air or tmt == LowAir))
+    if (et and (tmt == Air or tmt == LowAir))
         score += GetAproxHitChance(tmt, 0) / 5 * enemy_threat_bonus;
 
     return score;
@@ -770,7 +770,7 @@ int TaskForceClass::Reaction(CampEntity e, int knowledge, float range)
 
    e = ac->GetCampaignObject();
    react = Reaction(e,det,*d);
-   if (det & ENEMY_IN_RANGE && react)
+   if (det & ENEMY_IN_RANGE and react)
  *combat = 1;
  if (det & FRIENDLY_DETECTED)
  {
@@ -807,7 +807,7 @@ int TaskForceClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spot
 
     react = Reaction(e, detTmp, *d);
 
-    if (det & ENEMY_IN_RANGE && react)
+    if (det & ENEMY_IN_RANGE and react)
         *combat = 1;
 
     // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
@@ -816,7 +816,7 @@ int TaskForceClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spot
     if (det & FRIENDLY_DETECTED)
     {
         // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
-        if ((e->IsAggregate() && CheckValidType(e, this)) or (e->IsFlight() && e->GetSType() == STYPE_UNIT_AWACS))
+        if ((e->IsAggregate() and CheckValidType(e, this)) or (e->IsFlight() and e->GetSType() == STYPE_UNIT_AWACS))
         {
             SetSpotted(e->GetTeam(), TheCampaign.CurrentTime, CanItIdentify(this, e, *d, e->GetMovementType())); // 2002-02-11 MODIFIED BY S.G. Added 'CanItIdentify' which query if the target can be identified
             *spot = 1;
@@ -837,7 +837,7 @@ int TaskForceClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spot
    react = Reaction(e,det,*d);
    if (det & ENEMY_DETECTED)
    e->SetSpotted(GetTeam(),TheCampaign.CurrentTime);
-   if (det & ENEMY_IN_RANGE && react)
+   if (det & ENEMY_IN_RANGE and react)
  *combat = 1;
  if (det & FRIENDLY_DETECTED)
  {
@@ -873,17 +873,17 @@ int TaskForceClass::DetectVs(CampEntity e, float *d, int *combat, int *spot)
     // We'll spot our enemy if we're not broken
     if (det & ENEMY_DETECTED)
     {
-        if (IsAggregate() && CheckValidType(this, e))
+        if (IsAggregate() and CheckValidType(this, e))
             e->SetSpotted(GetTeam(), TheCampaign.CurrentTime, (CanItIdentify(this, e, *d, e->GetMovementType()))); // 2002-02-11 MODIFIED BY S.G. Say 'identified if it has the hability to identify
     }
 
-    if (det & ENEMY_IN_RANGE && react)
+    if (det & ENEMY_IN_RANGE and react)
         *combat = 1;
 
     if (det & FRIENDLY_DETECTED)
     {
         // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
-        if ((e->IsAggregate() && CheckValidType(e, this)) or (e->IsFlight() && e->GetSType() == STYPE_UNIT_AWACS))
+        if ((e->IsAggregate() and CheckValidType(e, this)) or (e->IsFlight() and e->GetSType() == STYPE_UNIT_AWACS))
         {
             SetSpotted(e->GetTeam(), TheCampaign.CurrentTime, 1); // 2002-02-11 Modified by S.G. Ground units are always identified (doesn't change a thing)
             *spot = 1;
@@ -906,7 +906,7 @@ int TaskForceClass::CheckTactic(int tid)
 
 CampaignTime TaskForceClass::GetMoveTime(void)
 {
-    if (last_move && TheCampaign.CurrentTime > last_move)
+    if (last_move and TheCampaign.CurrentTime > last_move)
         return TheCampaign.CurrentTime - last_move;
 
     last_move = TheCampaign.CurrentTime;
@@ -952,7 +952,7 @@ WayPoint ResetCurrentWP(TaskForce tf)
 
     w = tf->GetCurrentUnitWP();
 
-    while (w && w->GetWPDepartureTime() < Camp_GetCurrentTime())
+    while (w and w->GetWPDepartureTime() < Camp_GetCurrentTime())
     {
         if (w->GetWPFlags()) // Make sure we actually get here, it's important
         {
@@ -1017,7 +1017,7 @@ WayPoint DoWPAction(TaskForce tf, WayPoint w)
 //MI added function for movement
 int TaskForceClass::DetectOnMove(void)
 {
-    if (!Engaged() && !(GetUnitMoved() % 5))
+    if (!Engaged() and !(GetUnitMoved() % 5))
         return 0;
 
     return ChooseTarget();
@@ -1026,7 +1026,7 @@ int TaskForceClass::DetectOnMove(void)
 // JPO addtions
 int TaskForceClass::CanShootWeapon(int wid)
 {
-    if (WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR && missiles_flying > 1)
+    if (WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR and missiles_flying > 1)
         return FALSE;
 
     // Check for radar guidance, and make adjustments if necessary
@@ -1038,7 +1038,7 @@ int TaskForceClass::CanShootWeapon(int wid)
 
 void TaskForceClass::ReturnToSearch(void)
 {
-    if (missiles_flying < 1 && IsEmitting())
+    if (missiles_flying < 1 and IsEmitting())
     {
         radar_mode = search_mode;
 
@@ -1074,7 +1074,7 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
             SetRadarMode(FEC_RADAR_AQUIRE);
 
             // KCK: Good operators could shoot before going to guide mode. Check skill and return TRUE
-            if (GetRadarMode() == FEC_RADAR_AQUIRE && rand() % 100 < TeamInfo[GetOwner()]->airDefenseExperience - MINIMUM_EXP_TO_FIRE_PREGUIDE)
+            if (GetRadarMode() == FEC_RADAR_AQUIRE and rand() % 100 < TeamInfo[GetOwner()]->airDefenseExperience - MINIMUM_EXP_TO_FIRE_PREGUIDE)
                 SetRadarMode(FEC_RADAR_GUIDE);
 
             return GetRadarMode();
@@ -1111,9 +1111,9 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
     float timetosearch ;
     float timetoaquire ;
 
-    if (!d && !t) SetRadarMode(search_mode);
+    if (!d and !t) SetRadarMode(search_mode);
 
-    if (GetRadarMode() == FEC_RADAR_CHANGEMODE && search_mode >= FEC_RADAR_SEARCH_1)
+    if (GetRadarMode() == FEC_RADAR_CHANGEMODE and search_mode >= FEC_RADAR_SEARCH_1)
         SetRadarMode(search_mode);// we are changing mode.. realy not off
 
     switch (GetRadarMode())
@@ -1121,10 +1121,10 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
         case FEC_RADAR_OFF:
             timetosearch = radarData->Timetosearch1 - skill;
 
-            if (range <= radarData->Rangetosearch1 && !SEARCHtimer) SEARCHtimer = SimLibElapsedTime;
+            if (range <= radarData->Rangetosearch1 and !SEARCHtimer) SEARCHtimer = SimLibElapsedTime;
             else if (range >= radarData->Rangetosearch1 or SimLibElapsedTime - SEARCHtimer > timetosearch + 6000.0f)SEARCHtimer = 0;
 
-            if (range <= radarData->Rangetosearch1 && SEARCHtimer && SimLibElapsedTime - SEARCHtimer > timetosearch)
+            if (range <= radarData->Rangetosearch1 and SEARCHtimer and SimLibElapsedTime - SEARCHtimer > timetosearch)
             {
                 SEARCHtimer = SimLibElapsedTime;
                 search_mode = FEC_RADAR_SEARCH_1 ;
@@ -1140,7 +1140,7 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 
             timetosearch = radarData->Timetosearch1 - skill;
 
-            if (d && range <= radarData->Rangetosearch2 && SimLibElapsedTime - SEARCHtimer >= timetosearch)
+            if (d and range <= radarData->Rangetosearch2 and SimLibElapsedTime - SEARCHtimer >= timetosearch)
             {
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
                 search_mode = FEC_RADAR_SEARCH_2;
@@ -1155,7 +1155,7 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 
             if (!SEARCHtimer) SEARCHtimer = SimLibElapsedTime;
 
-            if (d && range <= radarData->Rangetosearch3 &&  SimLibElapsedTime - SEARCHtimer >= timetosearch)
+            if (d and range <= radarData->Rangetosearch3 and  SimLibElapsedTime - SEARCHtimer >= timetosearch)
             {
                 search_mode = FEC_RADAR_SEARCH_3;
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
@@ -1177,7 +1177,7 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
             if (!SEARCHtimer) SEARCHtimer = SimLibElapsedTime;
 
             // goto aquire ?
-            if (d && range <= radarData->Rangetoacuire && SimLibElapsedTime - SEARCHtimer >= timetosearch)
+            if (d and range <= radarData->Rangetoacuire and SimLibElapsedTime - SEARCHtimer >= timetosearch)
             {
                 search_mode = FEC_RADAR_AQUIRE;
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
@@ -1197,12 +1197,12 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
             timetoaquire = radarData->Timetoacuire - skill;
 
             // only allow to be in aquire for the coast amount of time
-            if (!t && !d && SimLibElapsedTime - AQUIREtimer >= (unsigned)radarData->Timetocoast)
+            if (!t and !d and SimLibElapsedTime - AQUIREtimer >= (unsigned)radarData->Timetocoast)
             {
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
                 search_mode = FEC_RADAR_SEARCH_3 ;
             }
-            else if (t && range <= radarData->Rangetoguide && SimLibElapsedTime - AQUIREtimer >= timetoaquire)
+            else if (t and range <= radarData->Rangetoguide and SimLibElapsedTime - AQUIREtimer >= timetoaquire)
             {
                 search_mode = FEC_RADAR_GUIDE;
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
@@ -1225,7 +1225,7 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
     /* else if (SimLibElapsedTime - AQUIREtimer > timetoaquire)
      {
     // KCK: Good operators could shoot before going to guide mode. Check skill and return TRUE
-    if (GetRadarMode() == FEC_RADAR_AQUIRE && rand()%100 < TeamInfo[GetOwner()]->airDefenseExperience - MINIMUM_EXP_TO_FIRE_PREGUIDE)
+    if (GetRadarMode() == FEC_RADAR_AQUIRE and rand()%100 < TeamInfo[GetOwner()]->airDefenseExperience - MINIMUM_EXP_TO_FIRE_PREGUIDE)
     {
     search_mode = FEC_RADAR_AQUIRE ;
     SetRadarMode(FEC_RADAR_GUIDE);
@@ -1289,7 +1289,7 @@ int TaskForceClass::ChooseTarget(void)
             combat = 0;
             react = DetectVs(e, &d, &combat, &spot);
 
-            if (!e->IsFlight() && react >= best_reaction && d < react_distance)
+            if (!e->IsFlight() and react >= best_reaction and d < react_distance)
             {
                 // React vs a ground/Naval target
                 best_reaction = react;
@@ -1298,7 +1298,7 @@ int TaskForceClass::ChooseTarget(void)
                 SetEngaged(1);
                 SetCombat(combat);
             }
-            else if (e->IsFlight() && react >= best_air_react && d < air_react_distance)
+            else if (e->IsFlight() and react >= best_air_react and d < air_react_distance)
             {
                 // React vs an air target -
                 best_air_react = react;
@@ -1337,7 +1337,7 @@ int TaskForceClass::ChooseTarget(void)
                 }
 
                 // Make sure our radar is on (if we have one)
-                if (!IsEmitting() && class_data->RadarVehicle < 255 && GetNumVehicles(class_data->RadarVehicle))
+                if (!IsEmitting() and class_data->RadarVehicle < 255 and GetNumVehicles(class_data->RadarVehicle))
                     SetEmitting(1);
 
                 SetEngaged(1);
@@ -1350,7 +1350,7 @@ int TaskForceClass::ChooseTarget(void)
 
     SetOdds((GetTotalVehicles() * 10) / (estr + 10));
 
-    if (!Parent() && best_reaction > 1)
+    if (!Parent() and best_reaction > 1)
         EngageParent(this, react_against);
 
     if (air_react_against)
@@ -1365,7 +1365,7 @@ int TaskForceClass::ChooseTarget(void)
         SetTargeted(0);
         retval = 1;
     }
-    else if (artTarget && (!artTarget->IsUnit() or ((Unit)artTarget)->Engaged()) && orders == GORD_SUPPORT)
+    else if (artTarget and (!artTarget->IsUnit() or ((Unit)artTarget)->Engaged()) and orders == GORD_SUPPORT)
     {
         // Keep blowing away this target until the target gets out of range, disengages, or we get new orders
         // (Target will get reset after a null DoCombat result)

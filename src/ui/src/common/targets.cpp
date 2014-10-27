@@ -112,7 +112,7 @@ C_Entity *BuildObjective(Objective obj)
     {
         rsc = (IMAGE_RSC*)res->Find(ObjPtr->IconIndex);
 
-        if (rsc && rsc->Header->Type == _RSC_IS_IMAGE_)
+        if (rsc and rsc->Header->Type == _RSC_IS_IMAGE_)
             type = rsc->Header->h;
         else
             type = 0;
@@ -242,7 +242,7 @@ C_Entity *BuildUnitParent(Unit unit)
             Flight flt = (Flight)unit;
             planecount = 0;
 
-            while (flt->plane_stats[planecount] not_eq AIRCRAFT_NOT_ASSIGNED && planecount < PILOTS_PER_FLIGHT)
+            while (flt->plane_stats[planecount] not_eq AIRCRAFT_NOT_ASSIGNED and planecount < PILOTS_PER_FLIGHT)
                 planecount++;
 
             if (planecount)
@@ -262,7 +262,7 @@ C_Entity *BuildUnitParent(Unit unit)
     {
         rsc = (IMAGE_RSC*)res->Find(UnitPtr->IconIndex);
 
-        if (rsc && rsc->Header->Type == _RSC_IS_IMAGE_)
+        if (rsc and rsc->Header->Type == _RSC_IS_IMAGE_)
             type = rsc->Header->h;
         else
             type = 0;
@@ -280,7 +280,7 @@ C_Entity *BuildUnitParent(Unit unit)
 
     // Set Name
     // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified and not editing a TE, change its label to 'Bandit'
-    if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && unit->IsFlight() && gGps->GetTeamNo() >= 0 && unit->GetTeam() not_eq gGps->GetTeamNo() && !unit->GetIdentified(static_cast<uchar>(gGps->GetTeamNo())))
+    if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) and unit->IsFlight() and gGps->GetTeamNo() >= 0 and unit->GetTeam() not_eq gGps->GetTeamNo() and !unit->GetIdentified(static_cast<uchar>(gGps->GetTeamNo())))
         _stprintf(buffer, "Bandit");
     else
         // END OF ADDED SECTION 2002-02-21
@@ -313,7 +313,7 @@ C_Feature *BuildUnit(Unit un, long vehno, long vehid, Tpoint *)
         veh->InitEntity();
 
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified and not editing a TE, change its label to 'Bandit'
-        if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && un->IsFlight() && gGps->GetTeamNo() >= 0 && un->GetTeam() not_eq gGps->GetTeamNo() && !un->GetIdentified(static_cast<uchar>(gGps->GetTeamNo())))
+        if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) and un->IsFlight() and gGps->GetTeamNo() >= 0 and un->GetTeam() not_eq gGps->GetTeamNo() and !un->GetIdentified(static_cast<uchar>(gGps->GetTeamNo())))
             veh->SetName(25, 0, "Bandit");
         else
             // END OF ADDED SECTION 2002-02-21
@@ -340,8 +340,8 @@ void AddUnitToTargetTree(Unit unit)
     C_Entity *recon_ent;
     C_Feature *veh;
 
-    if (gGps->GetTeamNo() >= 0 && unit->GetTeam() not_eq gGps->GetTeamNo())
-        if (!unit->GetSpotted(static_cast<uchar>(gGps->GetTeamNo())) && !unit->IsFlight())
+    if (gGps->GetTeamNo() >= 0 and unit->GetTeam() not_eq gGps->GetTeamNo())
+        if (!unit->GetSpotted(static_cast<uchar>(gGps->GetTeamNo())) and !unit->IsFlight())
             return;
 
     if (TargetTree)
@@ -352,7 +352,7 @@ void AddUnitToTargetTree(Unit unit)
         VehicleClassDataType *vc;
 
         // Check for possible problems
-        if (unit->IsFlight() && !unit->ShouldDeaggregate())
+        if (unit->IsFlight() and !unit->ShouldDeaggregate())
             return;
 
         // Now add all the vehicles
@@ -372,7 +372,7 @@ void AddUnitToTargetTree(Unit unit)
         }
 
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified and not editing a TE, don't break it down by vehicle so it can't be reconed either NOTE THE '!' IN FRONT OF THE WHOLE STATEMENT TO REVERSE IT
-        if (!(!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) && unit->IsFlight() && gGps->GetTeamNo() >= 0 && unit->GetTeam() not_eq gGps->GetTeamNo() && !unit->GetIdentified(static_cast<uchar>(gGps->GetTeamNo()))))
+        if (!(!(TheCampaign.Flags & CAMP_TACTICAL_EDIT) and unit->IsFlight() and gGps->GetTeamNo() >= 0 and unit->GetTeam() not_eq gGps->GetTeamNo() and !unit->GetIdentified(static_cast<uchar>(gGps->GetTeamNo()))))
         {
             // END OF ADDED DATA 2002-02-21
             simdata.vehicleInUnit = -1;
@@ -383,7 +383,7 @@ void AddUnitToTargetTree(Unit unit)
                 classID = unit->GetVehicleID(v);
                 inslot = 0;
 
-                while (vehs && classID)
+                while (vehs and classID)
                 {
                     vc = GetVehicleClassData(classID);
                     simdata.campBase = unit;
@@ -489,7 +489,7 @@ void AddObjectiveToTargetTree(Objective obj)
                     if (drawptr not_eq NULL)
                     {
                         // 2002-02-28 ADDED BY S.G. If runway, adjust texture so runway number is accurate
-                        if (Falcon4ClassTable[fc->Index].vuClassData.classInfo_[VU_TYPE] == TYPE_RUNWAY && Falcon4ClassTable[fc->Index].vuClassData.classInfo_[VU_STYPE] == STYPE_RUNWAY_NUM)
+                        if (Falcon4ClassTable[fc->Index].vuClassData.classInfo_[VU_TYPE] == TYPE_RUNWAY and Falcon4ClassTable[fc->Index].vuClassData.classInfo_[VU_STYPE] == STYPE_RUNWAY_NUM)
                         {
                             ShiAssert(obj->brain);
 
@@ -546,8 +546,8 @@ void GetGroundUnitsNear(float x, float y, float range)
         if (deltay < 0) deltay = -deltay;
 
         // KCK: I made the following change here. Not sure what was intended
-        // if((deltax < range & deltay < range) && !un->IsSquadron())
-        if (deltax < range && deltay < range && !un->IsSquadron())
+        // if((deltax < range & deltay < range) and !un->IsSquadron())
+        if (deltax < range and deltay < range and !un->IsSquadron())
             AddUnitToTargetTree(un);
 
         un = GetNextUnit(&myit);
@@ -573,7 +573,7 @@ void GetObjectivesNear(float x, float y, float range)
 
         // KCK: I made the following change here. Not sure what was intended
         // if(deltax < range & deltay < range)
-        if (deltax < range && deltay < range)
+        if (deltax < range and deltay < range)
             AddObjectiveToTargetTree(Obj);
 
         Obj = GetNextObjective(&myit);

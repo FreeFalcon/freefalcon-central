@@ -96,7 +96,7 @@ void CampHackButton5CB(long, short hittype, C_Base *)
 
     // KCK: Added the check for a pilot list so that we don't debrief after a
     // discarded mission
-    if (win && TheCampaign.MissionEvaluator && TheCampaign.MissionEvaluator->flight_data)
+    if (win and TheCampaign.MissionEvaluator and TheCampaign.MissionEvaluator->flight_data)
     {
         // TheCampaign.MissionEvaluator->PostMissionEval();
         BuildCampDebrief(win);

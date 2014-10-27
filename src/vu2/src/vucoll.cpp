@@ -60,7 +60,7 @@ VU_ERRCODE VuCollection::Handle(VuMessage *msg)
         {
             VuEntity *ent = msg->Entity();
 
-            if (ent && filter_->RemoveTest(ent))
+            if (ent and filter_->RemoveTest(ent))
             {
                 if (Find(ent))
                 {
@@ -146,7 +146,7 @@ bool VuCollection::Find(VuEntity *entity) const
         return false;
     }
 
-    if ((filter_ not_eq NULL) && !filter_->Test(entity))
+    if ((filter_ not_eq NULL) and !filter_->Test(entity))
     {
         return false;
     }

@@ -179,7 +179,7 @@ int SimFeatureClass::Wake()
         }
 
         // Is This a runway number?
-        if (EntityType()->classInfo_[VU_TYPE] == TYPE_RUNWAY && EntityType()->classInfo_[VU_STYPE] == STYPE_RUNWAY_NUM)
+        if (EntityType()->classInfo_[VU_TYPE] == TYPE_RUNWAY and EntityType()->classInfo_[VU_STYPE] == STYPE_RUNWAY_NUM)
         {
             ShiAssert(GetCampaignObject());
 
@@ -227,7 +227,7 @@ int SimFeatureClass::Sleep(void)
     }
 
     // Is this something we were managing in our time of day list?
-    if (IsSetCampaignFlag(FEAT_HAS_LIGHT_SWITCH) && drawPointer)
+    if (IsSetCampaignFlag(FEAT_HAS_LIGHT_SWITCH) and drawPointer)
     {
         OTWDriver.RemoveFromLitList((DrawableBSP *)drawPointer);
     }

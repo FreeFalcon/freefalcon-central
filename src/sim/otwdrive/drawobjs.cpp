@@ -43,7 +43,7 @@ void OTWDriverClass::UpdateVehicleDrawables(void)
 
 
     // Deal with the current object of interest as a special case
-    if (otwPlatform && otwPlatform->drawPointer)
+    if (otwPlatform and otwPlatform->drawPointer)
     {
         // Record ownship's position and orientation.
         ObjectSetData(otwPlatform.get(), &ownshipPos, &ownshipRot);

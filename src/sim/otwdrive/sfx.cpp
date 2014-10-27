@@ -197,7 +197,7 @@ int SfxClass::TryParticleEffect(void)
     SimBaseClass *otwPlatform = OTWDriver.GraphicsOwnship();
 
     // Cobra - Use old dust trails?
-    if (type == SFX_VEHICLE_DUST && g_bOldDustTrail)
+    if (type == SFX_VEHICLE_DUST and g_bOldDustTrail)
     {
         return 0;
     }
@@ -207,7 +207,7 @@ int SfxClass::TryParticleEffect(void)
         // Cobra - Kludge to fix no PS effects above overcast layer
         /*
         if (
-         otwPlatform && realWeather->weatherCondition > FAIR &&
+         otwPlatform and realWeather->weatherCondition > FAIR &&
          (otwPlatform->ZPos() < (realWeather->stratusZ-realWeather->stratusDepth)))
          return 0;
         */
@@ -409,9 +409,9 @@ SfxClass::SfxClass(int  typeSfx,
     endMessage = NULL;
     damMessage = NULL;
 
-    if (pos.x > -10000.0f && pos.x < 10000000.0f &&
-        pos.y > -10000.0f && pos.y < 10000000.0f &&
-        pos.z < 8000.0f && pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f &&
+        pos.y > -10000.0f and pos.y < 10000000.0f &&
+        pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
@@ -927,9 +927,9 @@ SfxClass::SfxClass(int typeSfx,
     endMessage = NULL;
     damMessage = NULL;
 
-    if (pos.x > -10000.0f && pos.x < 10000000.0f &&
-        pos.y > -10000.0f && pos.y < 10000000.0f &&
-        pos.z < 8000.0f && pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f &&
+        pos.y > -10000.0f and pos.y < 10000000.0f &&
+        pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
@@ -1015,9 +1015,9 @@ SfxClass::SfxClass(int typeSfx,
     endMessage = NULL;
     damMessage = NULL;
 
-    if (pos.x > -10000.0f && pos.x < 10000000.0f &&
-        pos.y > -10000.0f && pos.y < 10000000.0f &&
-        pos.z < 8000.0f && pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f &&
+        pos.y > -10000.0f and pos.y < 10000000.0f &&
+        pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
@@ -1121,9 +1121,9 @@ SfxClass::SfxClass(
     viewPoint = OTWDriver.GetViewpoint();
     flags = SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES;
 
-    if (pos.x > -10000.0f && pos.x < 10000000.0f &&
-        pos.y > -10000.0f && pos.y < 10000000.0f &&
-        pos.z < 8000.0f && pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f &&
+        pos.y > -10000.0f and pos.y < 10000000.0f &&
+        pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
@@ -1248,9 +1248,9 @@ SfxClass::SfxClass(int  typeSfx,
     damMessage = NULL;
     travelDist = 0.0f;
 
-    if (pos.x > -10000.0f && pos.x < 10000000.0f &&
-        pos.y > -10000.0f && pos.y < 10000000.0f &&
-        pos.z < 8000.0f && pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f &&
+        pos.y > -10000.0f and pos.y < 10000000.0f &&
+        pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
@@ -1422,9 +1422,9 @@ SfxClass::SfxClass(int  typeSfx,
     endMessage = NULL;
     damMessage = NULL;
 
-    if (pos.x > -10000.0f && pos.x < 10000000.0f &&
-        pos.y > -10000.0f && pos.y < 10000000.0f &&
-        pos.z < 8000.0f && pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f &&
+        pos.y > -10000.0f and pos.y < 10000000.0f &&
+        pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
@@ -1934,7 +1934,7 @@ SfxClass::SfxClass(int  typeSfx,
                    float scaleSfx)
 {
 
-    // ShiAssert(baseobjSfx && !vuDatabase->Find(baseobjSfx->Id()) && baseobjSfx->VuState() == VU_MEM_CREATED);
+    // ShiAssert(baseobjSfx and !vuDatabase->Find(baseobjSfx->Id()) and baseobjSfx->VuState() == VU_MEM_CREATED);
 
     inACMI = FALSE;
     type = typeSfx;
@@ -1958,12 +1958,12 @@ SfxClass::SfxClass(int  typeSfx,
     damMessage = NULL;
     travelDist = 0.0f;
 
-    F4Assert(vec.x > -10000.0F && vec.y > -10000.0F && vec.z > -10000.0F);
-    F4Assert(vec.x <  10000.0F && vec.y <  10000.0F && vec.z <  10000.0F);
+    F4Assert(vec.x > -10000.0F and vec.y > -10000.0F and vec.z > -10000.0F);
+    F4Assert(vec.x <  10000.0F and vec.y <  10000.0F and vec.z <  10000.0F);
 
-    if (pos.x > -10000.0f && pos.x < 10000000.0f &&
-        pos.y > -10000.0f && pos.y < 10000000.0f &&
-        pos.z < 8000.0f && pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f &&
+        pos.y > -10000.0f and pos.y < 10000000.0f &&
+        pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
@@ -2129,7 +2129,7 @@ SfxClass::SfxClass(int typeSfx,
 
             //RV - I-Hawk - Removing old trails calls, not needed anymore
             //objTrail = new DrawableTrail(TRAIL_SMOKE);
-            if (gTotSfx <= gSfxLODTotCutoff && gSfxCount[ SFX_AIR_SMOKECLOUD ] < gSfxLODCutoff)
+            if (gTotSfx <= gSfxLODTotCutoff and gSfxCount[ SFX_AIR_SMOKECLOUD ] < gSfxLODCutoff)
             {
                 timeToLive += 90.0f;
                 flags &= compl SFX_EXPLODE_WHEN_DONE;
@@ -2206,7 +2206,7 @@ SfxClass::~SfxClass(void)
 
         if (baseObj)
         {
-            if (type not_eq SFX_SMOKING_FEATURE && type not_eq SFX_STEAMING_FEATURE)
+            if (type not_eq SFX_SMOKING_FEATURE and type not_eq SFX_STEAMING_FEATURE)
             {
                 if (baseObj->drawPointer)
                 {
@@ -2298,7 +2298,7 @@ SfxClass::~SfxClass(void)
     // update counters
     gTotSfx--;
 
-    if (type >= 0 && !F4IsBadReadPtr(gSfxCount, sizeof(int))) // JB 010318 CTD
+    if (type >= 0 and !F4IsBadReadPtr(gSfxCount, sizeof(int))) // JB 010318 CTD
         gSfxCount[ type ]--;
 }
 
@@ -2415,7 +2415,7 @@ SfxClass::Start(void)
 
     if (baseObj)
     {
-        if (type not_eq SFX_SMOKING_FEATURE && type not_eq SFX_STEAMING_FEATURE)   // MLR 12/20/2003 - added
+        if (type not_eq SFX_SMOKING_FEATURE and type not_eq SFX_STEAMING_FEATURE)   // MLR 12/20/2003 - added
         {
             OTWDriver.InsertObject(baseObj->drawPointer);
         }
@@ -2706,7 +2706,7 @@ BOOL SfxClass::Exec()
 
 
     // run any secondary effects here
-    if (secondaryCount > 0 && SIM_ELAPSED_SEC >= secondaryTimer)
+    if (secondaryCount > 0 and SIM_ELAPSED_SEC >= secondaryTimer)
     {
         secondaryCount--;
         secondaryTimer =
@@ -2731,7 +2731,7 @@ BOOL SfxClass::Exec()
     }
 
     ///////////////////////////////////////
-    if (baseObj && flags & SFX_F16CRASHLANDING)
+    if (baseObj and flags & SFX_F16CRASHLANDING)
     {
 
         Tpoint GroundNormal;
@@ -2749,12 +2749,12 @@ BOOL SfxClass::Exec()
         int lastHit = hitGround;
         int CrashSoundMask = 0;
 
-        if (hitGround && coverage)
+        if (hitGround and coverage)
         {
             flags &= compl SFX_F16CRASHLANDING;
             flags &= compl SFX_MOVES;
         }
-        else if (hitGround && !coverage)
+        else if (hitGround and !coverage)
         {
             hitGround = FALSE;
             float scale = 15.0f;
@@ -2825,7 +2825,7 @@ BOOL SfxClass::Exec()
                 }
             }
 
-            if ((flags & SFX_MOVES) && !(flags & SFX_F16CRASH_STOP))
+            if ((flags & SFX_MOVES) and !(flags & SFX_F16CRASH_STOP))
             {
                 flags  or_eq  SFX_F16CRASH_ADJUSTANGLE;
             }
@@ -2878,7 +2878,7 @@ BOOL SfxClass::Exec()
         // update position based on vector
         if (flags & SFX_MOVES)
         {
-            if (fabs(vec.x) < 2.0f && fabs(vec.y) < 2.0f)
+            if (fabs(vec.x) < 2.0f and fabs(vec.y) < 2.0f)
             {
                 baseObj->SetYPRDelta(
                     baseObj->YawDelta() * 0.95f,
@@ -2895,7 +2895,7 @@ BOOL SfxClass::Exec()
                         baseObj->Pitch(),
                         baseObj->Roll());
 
-                    if ((flags & SFX_F16CRASH_OBJECT) && (fabs(baseObj->YawDelta()) > 20.0f * DTR))
+                    if ((flags & SFX_F16CRASH_OBJECT) and (fabs(baseObj->YawDelta()) > 20.0f * DTR))
                     {
                         CrashSoundMask  or_eq  F16CRASH_DRAGMASK;
                         PlayCrashSound(F16CRASH_DRAGMASK, SFX_TAILSCRAPE);
@@ -2955,7 +2955,7 @@ BOOL SfxClass::Exec()
                     PlayCrashSound(F16CRASH_FELLMASK, SFX_FLAPLOOP);
                 }
             }
-            else if (!lastHit && !(flags & SFX_F16CRASH_SKIPGRAVITY)) vec.z += GRAVITY * sfxFrameTime;
+            else if (!lastHit and !(flags & SFX_F16CRASH_SKIPGRAVITY)) vec.z += GRAVITY * sfxFrameTime;
 
             CalcTransformMatrix(baseObj.get());
             Tpoint point;
@@ -2976,7 +2976,7 @@ BOOL SfxClass::Exec()
             {
                 pos.z = gZ;
 
-                if (fabs(vec.x) < 1.0f && fabs(vec.y) < 1.0f && vec.z < GRAVITY)
+                if (fabs(vec.x) < 1.0f and fabs(vec.y) < 1.0f and vec.z < GRAVITY)
                 {
                     flags  or_eq  SFX_F16CRASH_SKIPGRAVITY;
                     vec.z = 0.0f;
@@ -3064,7 +3064,7 @@ BOOL SfxClass::Exec()
 
 
     // check for hit with ground
-    if ((flags & SFX_MOVES) && !(flags & SFX_NO_GROUND_CHECK))
+    if ((flags & SFX_MOVES) and !(flags & SFX_NO_GROUND_CHECK))
     {
         // 1st get approximation
         groundZ = OTWDriver.GetApproxGroundLevel(pos.x, pos.y);
@@ -3084,7 +3084,7 @@ BOOL SfxClass::Exec()
     int coverage = (groundType == COVERAGE_WATER) or (groundType == COVERAGE_RIVER);
 
     // does this object bounce?
-    if (hitGround && (flags & (SFX_BOUNCES | SFX_BOUNCES_HARD)) && !coverage)
+    if (hitGround and (flags & (SFX_BOUNCES | SFX_BOUNCES_HARD)) and !coverage)
     {
         // calcuate the new movement vector
         GroundReflection();
@@ -3104,7 +3104,7 @@ BOOL SfxClass::Exec()
             vec.z *= 0.80f;
         }
 
-        if (fabs(vec.x) < 10.0f && fabs(vec.y) < 10.0f && fabs(vec.z) < 10.0f)
+        if (fabs(vec.x) < 10.0f and fabs(vec.y) < 10.0f and fabs(vec.z) < 10.0f)
         {
             flags &= compl SFX_MOVES;
         }
@@ -3157,7 +3157,7 @@ BOOL SfxClass::Exec()
         vec.z += GRAVITY * sfxFrameTime;
     }
 
-    if ((flags & SFX_NO_DOWN_VECTOR) && vec.z > 0.0f)
+    if ((flags & SFX_NO_DOWN_VECTOR) and vec.z > 0.0f)
     {
         vec.z = 0.0f;
     }
@@ -3201,7 +3201,7 @@ SfxClass::Draw(void)
         return TRUE;
 
     // this type has no drawing
-    if ((!(flags & SFX_F16CRASHLANDING) && !(flags & SFX_MOVES)) or (flags & SFX_TIMER_FLAG))
+    if ((!(flags & SFX_F16CRASHLANDING) and !(flags & SFX_MOVES)) or (flags & SFX_TIMER_FLAG))
     {
         if (obj2d)
         {
@@ -3636,7 +3636,7 @@ SfxClass::RunSecondarySfx(void)
             if (gSfxCount[ SFX_WATER_WAKE_LARGE ] > gSfxLODCutoff ||
                 gSfxCount[ SFX_SPARK_TRACER ] > gSfxLODCutoff ||
                 gTotSfx >= gSfxLODTotCutoff ||
-                (approxDist > 30000.0f && scale < 50.0f))
+                (approxDist > 30000.0f and scale < 50.0f))
             {
                 break;
             }
@@ -3782,7 +3782,7 @@ SfxClass::RunSecondarySfx(void)
             else
             {
                 // try a reduction in the number of effects running
-                // if ( approxDist > 10000.0f && gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff )
+                // if ( approxDist > 10000.0f and gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff )
                 if (gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff ||
                     gTotSfx >= gSfxLODTotCutoff)
                     break;
@@ -6122,7 +6122,7 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
     */
 
     // all trails get timed out
-    if (objTrail && type not_eq SFX_TIMER)
+    if (objTrail and type not_eq SFX_TIMER)
     {
         OTWDriver.AddSfxRequest(
             new SfxClass(
@@ -6267,7 +6267,7 @@ SfxClass::ACMIExec(float currTime)
     }
 
     // check for hit with ground
-    if ((flags & SFX_MOVES) && !(flags & SFX_NO_GROUND_CHECK))
+    if ((flags & SFX_MOVES) and !(flags & SFX_NO_GROUND_CHECK))
     {
         // 1st get approximation
         groundZ = OTWDriver.GetApproxGroundLevel(pos.x, pos.y);
@@ -6286,7 +6286,7 @@ SfxClass::ACMIExec(float currTime)
 
     // does this object bounce?
     /*
-    if ( hitGround && (flags & SFX_BOUNCES) && groundType > 2 )
+    if ( hitGround and (flags & SFX_BOUNCES) and groundType > 2 )
     {
      // calcuate the new movement vector
      GroundReflection();
@@ -6382,7 +6382,7 @@ SfxClass::ACMIExec(float currTime)
         baseObj->SetPosition(newpos.x, newpos.y, newpos.z);
         baseObj->SetDelta(newvec.x, newvec.y, newvec.z);
 
-        if (newvec.x == 0.0f && newvec.y == 0.0f && newvec.z == 0.0f)
+        if (newvec.x == 0.0f and newvec.y == 0.0f and newvec.z == 0.0f)
         {
             baseObj->SetYPR(0.0f, 0.0f, 0.0f);
         }

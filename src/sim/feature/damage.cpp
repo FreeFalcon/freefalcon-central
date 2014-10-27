@@ -118,7 +118,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
     // get bounding box for sfx
     // do it now, prior to any potential destruction and replacement of
     // damaged drawpointer
-    if (IsAwake() && drawPointer)
+    if (IsAwake() and drawPointer)
     {
         ((DrawableBSP *)drawPointer)->GetBoundingBox(&minB, &maxB);
         drawPointer->GetPosition(&pos);
@@ -150,7 +150,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
             // END OF ADDED FUNCTION
 
             // Is this something we were managing in our time of day list?
-            if (IsSetCampaignFlag(FEAT_HAS_LIGHT_SWITCH) && drawPointer)
+            if (IsSetCampaignFlag(FEAT_HAS_LIGHT_SWITCH) and drawPointer)
             {
                 OTWDriver.RemoveFromLitList((DrawableBSP *)drawPointer);
             }
@@ -193,7 +193,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
             {
                 SimFeatureClass *prevObj = (SimFeatureClass*) GetCampaignObject()->GetComponentEntity(GetCampaignObject()->GetComponentIndex(this) - 1);
 
-                if (prevObj && featureFlags & FEAT_PREV_CRIT && (prevObj->Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED)
+                if (prevObj and featureFlags & FEAT_PREV_CRIT and (prevObj->Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED)
                 {
                     MonoPrint("ID %d taking previous neighbor with it!\n", GetCampaignObject()->GetComponentIndex(this));
                     prevObj->ApplyDamage(damageMessage);
@@ -206,7 +206,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
             {
                 SimFeatureClass *nextObj = (SimFeatureClass*) GetCampaignObject()->GetComponentEntity(GetCampaignObject()->GetComponentIndex(this) + 1);
 
-                if (nextObj && featureFlags & FEAT_NEXT_CRIT && (nextObj->Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED)
+                if (nextObj and featureFlags & FEAT_NEXT_CRIT and (nextObj->Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED)
                 {
                     MonoPrint("ID %d taking next neighbor with it!\n", GetCampaignObject()->GetComponentIndex(this));
                     nextObj->ApplyDamage(damageMessage);
@@ -219,7 +219,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
         // Update the drawable, to reflect our new state
         UpdateDrawableObject(this);
     }
-    else if (pctStrength <= 0.75F && (Status() & VIS_TYPE_MASK) not_eq VIS_DAMAGED)
+    else if (pctStrength <= 0.75F and (Status() & VIS_TYPE_MASK) not_eq VIS_DAMAGED)
     {
         // MonoPrint ("Feature %d DAMAGED at %8ld\n", Id().num_, SimLibElapsedTime);
 
@@ -238,7 +238,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
         SetStatusBit(VIS_DAMAGED);
 
         // Is this something we were managing in our time of day list?
-        if (IsSetCampaignFlag(FEAT_HAS_LIGHT_SWITCH) && drawPointer)
+        if (IsSetCampaignFlag(FEAT_HAS_LIGHT_SWITCH) and drawPointer)
         {
             OTWDriver.RemoveFromLitList((DrawableBSP *)drawPointer);
         }
@@ -249,7 +249,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
 
     // show damage and destruction effects here....
-    if (pctDamage > 0.0f && IsAwake() && drawPointer)
+    if (pctDamage > 0.0f and IsAwake() and drawPointer)
     {
         // get x and y bbox vals depending on objs rotation
         x1 =
@@ -367,7 +367,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
             SoundPos.Sfx(SFX_BOOMG1 + PRANDInt5());  // MLR 5/16/2004 -
         }
 
-        if (pctStrength <= 0.0f && !IsSetFlag(SHOW_EXPLOSION))
+        if (pctStrength <= 0.0f and !IsSetFlag(SHOW_EXPLOSION))
         {
             SetFlag(SHOW_EXPLOSION);
 

@@ -545,7 +545,7 @@ public:
     float RALTCoolTime; //Cooling is in progress
     int RaltReady()
     {
-        return (RALTCoolTime < 0.0F && RALTStatus == RON) ? 1 : 0;
+        return (RALTCoolTime < 0.0F and RALTStatus == RON) ? 1 : 0;
     };
     void RaltOn()
     {
@@ -737,7 +737,7 @@ public:
     void IncEWSProg();
     void SetEWSProg(int num)
     {
-        if ((num >= 0) && (num <= 3)) EWSProgNum = num;    // MD: 4 position knob
+        if ((num >= 0) and (num <= 3)) EWSProgNum = num;    // MD: 4 position knob
     }
     //Prog select switch
     unsigned int EWSProgNum;

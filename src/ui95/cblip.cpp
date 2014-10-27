@@ -142,7 +142,7 @@ void C_Blip::Update(long curtime) // time is in minutes
 
     Refresh();
 
-    while (Root_ && Root_->time < (curtime - CUTOFF_TIME))
+    while (Root_ and Root_->time < (curtime - CUTOFF_TIME))
     {
         cur = Root_;
         Root_ = Root_->Next;
@@ -155,7 +155,7 @@ void C_Blip::Update(long curtime) // time is in minutes
 
     cur = Root_;
 
-    while (cur && cur not_eq Last_)
+    while (cur and cur not_eq Last_)
     {
         if (cur->time < (curtime - STATE_7_TIME))
             cur->state = 7;

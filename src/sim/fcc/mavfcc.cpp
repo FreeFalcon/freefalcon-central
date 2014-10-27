@@ -44,7 +44,7 @@ void FireControlComputer::AirGroundMissileMode(void)
             if (!releaseConsent)
             {
                 // Check for regeneration of weapon
-                if (postDrop && Sms->curWeapon == NULL)
+                if (postDrop and Sms->curWeapon == NULL)
                 {
                     Sms->ResetCurrentWeapon();
                     Sms->WeaponStep();
@@ -92,7 +92,7 @@ void FireControlComputer::MaverickMode(void)
     float xMove = 0.0F, yMove = 0.0F;
 
     if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
             yMove = (float)cursorYCmd / 10000.0F;
             xMove = (float)cursorXCmd / 10000.0F;
@@ -115,7 +115,7 @@ void FireControlComputer::MaverickMode(void)
     // COBRA - RED - FIXING CTDs - Make the display to be available before using it...
     theMissile = (MissileClass *)(Sms->GetCurrentWeapon());
 
-    if (theMissile && (MaverickDisplayClass*)(theMissile->display) && Sms->CurHardpoint() >= 0)
+    if (theMissile and (MaverickDisplayClass*)(theMissile->display) and Sms->CurHardpoint() >= 0)
     {
         theDisplay = (MaverickDisplayClass*)(theMissile->display);
         // RV - Biker - Get WEZ max/min and convert to ft
@@ -124,7 +124,7 @@ void FireControlComputer::MaverickMode(void)
     }
 
     //sfr: added display check
-    if ((theDisplay not_eq NULL) && systemTarget && systemTarget->BaseData()->IsAirplane()) // Cobra - Target only ground targets
+    if ((theDisplay not_eq NULL) and systemTarget and systemTarget->BaseData()->IsAirplane()) // Cobra - Target only ground targets
     {
         if (theDisplay) theDisplay->DropTarget();
 
@@ -135,7 +135,7 @@ void FireControlComputer::MaverickMode(void)
     }
 
     // Make sure relative geometry is updated for the system target
-    if (systemTarget && systemTarget->BaseData()->IsStatic())
+    if (systemTarget and systemTarget->BaseData()->IsStatic())
     {
         SimObjectType* tmpPtr = systemTarget->next;
         systemTarget->next = NULL;
@@ -160,12 +160,12 @@ void FireControlComputer::MaverickMode(void)
         // M.N. added full realism mode
         AircraftClass *pa = (AircraftClass *)platform;
 
-        if (!playerFCC or (pa->IsPlayer() && pa->AutopilotType() == AircraftClass::CombatAP) or ((PlayerOptions.GetAvionicsType() not_eq ATRealistic && PlayerOptions.GetAvionicsType() not_eq ATRealisticAV) && (subMode == SLAVE)))
+        if (!playerFCC or (pa->IsPlayer() and pa->AutopilotType() == AircraftClass::CombatAP) or ((PlayerOptions.GetAvionicsType() not_eq ATRealistic and PlayerOptions.GetAvionicsType() not_eq ATRealisticAV) and (subMode == SLAVE)))
         {
-            if (systemTarget && systemTarget->BaseData()->OnGround())
+            if (systemTarget and systemTarget->BaseData()->OnGround())
             {
                 /* JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
-                 if (systemTarget->BaseData()->IsSim() && ((SimBaseClass*)systemTarget->BaseData())->IsAwake())
+                 if (systemTarget->BaseData()->IsSim() and ((SimBaseClass*)systemTarget->BaseData())->IsAwake())
                 {
                    ((SimBaseClass*)systemTarget->BaseData())->drawPointer->GetPosition (&pos);
                    systemTarget->BaseData()->SetPosition (systemTarget->BaseData()->XPos(),
@@ -641,7 +641,7 @@ void FireControlComputer::MaverickMode(void)
                             platform->SOIManager(SimVehicleClass::SOI_RADAR);
                     }
 
-                    if (theMissile->targetPtr && designateCmd && !lastDesignate)
+                    if (theMissile->targetPtr and designateCmd and !lastDesignate)
                     {
                         SetTarget(curTarget);
                         theDisplay->LockTarget();
@@ -772,7 +772,7 @@ void FireControlComputer::MaverickMode(void)
     MissileClass *curWeapon = NULL;
     curWeapon = ((MissileClass*)Sms->GetCurrentWeapon());
 
-    if (g_bRealisticAvionics && Sms && playerFCC)
+    if (g_bRealisticAvionics and Sms and playerFCC)
     {
         AircraftClass *pa = (AircraftClass *)curWeapon->parent.get();
 
@@ -849,7 +849,7 @@ void FireControlComputer::CheckFeatures(MissileClass* theMissile)
                 //in his head when he wrote this! Fix for the jumping cursors
                 float CurRange = (float)sqrt(dx * dx + dy * dy);
 
-                if ((CurRange < curMin) && !(testObject->IsDead() or testObject->IsExploding()))
+                if ((CurRange < curMin) and !(testObject->IsDead() or testObject->IsExploding()))
                 {
                     closestObj = testObject;
                     curMin = CurRange;
@@ -907,7 +907,7 @@ void FireControlComputer::UpdateGroundObjectRelativeGeometry(void)
     float tmp;
 
     /* JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
-     if (targetPtr->BaseData()->IsSim() && ((SimBaseClass*)targetPtr->BaseData())->IsAwake())
+     if (targetPtr->BaseData()->IsSim() and ((SimBaseClass*)targetPtr->BaseData())->IsAwake())
     {
        ((SimBaseClass*)targetPtr->BaseData())->drawPointer->GetPosition (&pos);
        targetPtr->BaseData()->SetPosition (pos.x, pos.y, pos.z);
@@ -937,7 +937,7 @@ SimObjectType* FireControlComputer::MavCheckLock(MissileClass* theMissile)
     //MI fix for better Maverick target selection
     AircraftClass *pa = (AircraftClass *)platform;
 
-    if (!playerFCC or (pa->IsPlayer() && pa->AutopilotType() == AircraftClass::CombatAP))
+    if (!playerFCC or (pa->IsPlayer() and pa->AutopilotType() == AircraftClass::CombatAP))
         minDist = 1.0F * DTR;
     else
     {

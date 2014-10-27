@@ -77,7 +77,7 @@ void AircraftClass::GatherInputs(void)
         // No autopilot for ownship if broken
         if (
             !IsSetFlag(MOTION_OWNSHIP) ||
-            !(mFaults && mFaults->GetFault(FaultClass::flcs_fault) == FaultClass::a_p)
+            !(mFaults and mFaults->GetFault(FaultClass::flcs_fault) == FaultClass::a_p)
         )
         {
             switch (autopilotType)
@@ -85,7 +85,7 @@ void AircraftClass::GatherInputs(void)
                 case LantirnAP: // JPO - lantirn style autopilot
 
                     //MI no TFR for RF SILENT
-                    if (theLantirn && theLantirn->GetTFRMode() == LantirnClass::TFR_STBY && g_bTFRFixes)
+                    if (theLantirn and theLantirn->GetTFRMode() == LantirnClass::TFR_STBY and g_bTFRFixes)
                     {
                         theLantirn->PID_MX = 0.0F;
                         theLantirn->PID_lastErr = 0.0F;
@@ -392,7 +392,7 @@ void AircraftClass::GatherInputs(void)
                     af->ypedal = 0.5F * af->ypedal + 0.5F * UserStickInputs.rudder;
                 }
 
-                if (glocFactor < 0.1F && fabs(UserStickInputs.pstick) < 0.1F)
+                if (glocFactor < 0.1F and fabs(UserStickInputs.pstick) < 0.1F)
                 {
                     acFlags &= compl InRecovery;
                 }
@@ -423,7 +423,7 @@ void AircraftClass::GatherInputs(void)
                 //we are attempting to refuel, if we're close enough we get some help
                 tanker = (AircraftClass*)vuDatabase->Find(DBrain()->Tanker());
 
-                if (tanker && tanker->IsAirplane())
+                if (tanker and tanker->IsAirplane())
                 {
                     DBrain()->HelpRefuel(tanker);
                 }
@@ -468,7 +468,7 @@ void AircraftClass::GatherInputs(void)
             ((DrawableBSP*)drawPointer)->SetLabel(label, ((DrawableBSP*)drawPointer)->LabelColor());
         }
     }
-    else if ((g_nShowDebugLabels & 0x100 or g_nShowDebugLabels & g_nMaxDebugLabel) && DBrain())
+    else if ((g_nShowDebugLabels & 0x100 or g_nShowDebugLabels & g_nMaxDebugLabel) and DBrain())
     {
         DBrain()->ReSetLabel(this);
     }
@@ -542,31 +542,31 @@ void AircraftClass::GatherInputs(void)
         float maxSpeed = 1.0F;
 
         // JB 000815 change == comparison to &
-        if (mFaults && mFaults->GetFault(FaultClass::flcs_fault) & FaultClass::dual)
+        if (mFaults and mFaults->GetFault(FaultClass::flcs_fault) & FaultClass::dual)
         {
             maxSpeed -= 0.05F;
             perturb = TRUE;
         }
 
-        if (mFaults && mFaults->GetFault(FaultClass::eng_fault) & FaultClass::efire)
+        if (mFaults and mFaults->GetFault(FaultClass::eng_fault) & FaultClass::efire)
         {
             maxSpeed -= 0.05F;
             perturb = TRUE;
         }
 
-        if (mFaults && mFaults->GetFault(FaultClass::eng_fault) & FaultClass::hydr)
+        if (mFaults and mFaults->GetFault(FaultClass::eng_fault) & FaultClass::hydr)
         {
             maxSpeed -= 0.05F;
             perturb = TRUE;
         }
 
-        if (mFaults && mFaults->GetFault(FaultClass::isa_fault) & FaultClass::all)
+        if (mFaults and mFaults->GetFault(FaultClass::isa_fault) & FaultClass::all)
         {
             maxSpeed -= 0.05F;
             perturb = TRUE;
         }
 
-        if (mFaults && mFaults->GetFault(FaultClass::isa_fault) & FaultClass::rudr)
+        if (mFaults and mFaults->GetFault(FaultClass::isa_fault) & FaultClass::rudr)
         {
             af->ypedal = 0.0F;
         }
@@ -574,7 +574,7 @@ void AircraftClass::GatherInputs(void)
         // JB 000815 change == comparison to &
 
         // JPO - total hydraulic failure - no control.
-        if (af->HydraulicA() == 0 && af -> HydraulicB() == 0)
+        if (af->HydraulicA() == 0 and af -> HydraulicB() == 0)
         {
             af->rstick = 0.0f;
             af->pstick = 0.0f;
@@ -583,7 +583,7 @@ void AircraftClass::GatherInputs(void)
 
         // JB 000820
         //if (perturb)
-        if (perturb && !g_bDisableFunkyChicken)
+        if (perturb and !g_bDisableFunkyChicken)
         {
             // JB 000820
             ioPerturb += (af->mach - maxSpeed);
@@ -592,7 +592,7 @@ void AircraftClass::GatherInputs(void)
 
     // JB 000814
     // JB 010104 add CombatAP check
-    if (g_bNewDamageEffects && autopilotType not_eq CombatAP)
+    if (g_bNewDamageEffects and autopilotType not_eq CombatAP)
     {
         af->ypedal += yBias;
         af->rstick += rBias;
@@ -602,7 +602,7 @@ void AircraftClass::GatherInputs(void)
     // JB 000814
 
     //MI asynchronous lift
-    if (g_bRealisticAvionics && g_bNewDamageEffects && autopilotType not_eq CombatAP && !isDigital)
+    if (g_bRealisticAvionics and g_bNewDamageEffects and autopilotType not_eq CombatAP and !isDigital)
     {
         //produce asynchronous "lift"
         if (LEFState(LEFSASYNCH))
@@ -620,7 +620,7 @@ void AircraftClass::GatherInputs(void)
                 rlef = SIMP_RT_LEF;
             }
 
-            if (mFaults && !mFaults->GetFault(lef_fault))
+            if (mFaults and !mFaults->GetFault(lef_fault))
             {
                 mFaults->SetCaution(lef_fault);
             }
@@ -654,7 +654,7 @@ void AircraftClass::GatherInputs(void)
         }
         else
         {
-            if (mFaults->GetFault(lef_fault) && !LEFLocked)
+            if (mFaults->GetFault(lef_fault) and !LEFLocked)
             {
                 mFaults->ClearFault(lef_fault);
             }
@@ -664,7 +664,7 @@ void AircraftClass::GatherInputs(void)
     }
 
     // apply any perturbations to stick input
-    if (ioPerturb > 0.0f && !OnGround())
+    if (ioPerturb > 0.0f and !OnGround())
     {
         af->ypedal += PRANDFloat() * ioPerturb;
         af->rstick += PRANDFloat() * ioPerturb;
@@ -712,7 +712,7 @@ void AircraftClass::SetAutopilot(AutoPilotType flag)
 
             // sfr: this should happen for player only, careful folks
             // Reset weapons for combat AP
-            if ((this == vuLocalSessionEntity) && (lastType == CombatAP))
+            if ((this == vuLocalSessionEntity) and (lastType == CombatAP))
             {
                 FCC->SetMasterMode(playerLastMasterMode);
                 FCC->SetSubMode(playerLastSubMode);
@@ -771,7 +771,7 @@ void AircraftClass::SetAutopilot(AutoPilotType flag)
             playerLastMasterMode = FCC->GetMasterMode();
             playerLastSubMode = FCC->GetSubMode();
 
-            if (g_bTFRFixes && theLantirn)
+            if (g_bTFRFixes and theLantirn)
             {
                 theLantirn->PID_MX = 0.0F;
                 theLantirn->PID_lastErr = 0.0F;

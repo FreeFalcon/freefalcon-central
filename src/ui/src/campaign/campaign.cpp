@@ -405,7 +405,7 @@ void UI_UpdateEventList()
 
 void StartMovieQ()
 {
-    if (gMainHandler && ReadyToPlayMovie && !MovieQInUse)
+    if (gMainHandler and ReadyToPlayMovie and !MovieQInUse)
         if (MovieCount > 0)
             PostMessage(gMainHandler->GetAppWnd(), FM_PLAY_UI_MOVIE, 0, 0);
 }
@@ -489,7 +489,7 @@ void PlayUIMovieQ()
 {
     int i;
 
-    if (gMainHandler && ReadyToPlayMovie && !MovieQInUse)
+    if (gMainHandler and ReadyToPlayMovie and !MovieQInUse)
     {
         MovieQInUse = 1;
 
@@ -523,7 +523,7 @@ void PlayUIMovieQ()
 
 void ReplayUIMovie(long MovieID)
 {
-    if (gMainHandler && ReadyToPlayMovie && !MovieQInUse)
+    if (gMainHandler and ReadyToPlayMovie and !MovieQInUse)
     {
         MovieQInUse = 1;
         TheCampaign.Suspend();
@@ -725,13 +725,13 @@ void UI_AddMovieToList(long ID, long timestamp, _TCHAR *Description)
         MovieCount++;
     }
 
-    if (gMainHandler && ReadyToPlayMovie)
+    if (gMainHandler and ReadyToPlayMovie)
         StartMovieQ();
 }
 
 void UI_UpdateOccupationMap()
 {
-    if (gOccupationMap && gMainHandler)
+    if (gOccupationMap and gMainHandler)
     {
         C_Window *win;
         C_Bitmap *bmp;
@@ -763,7 +763,7 @@ void UI_UpdateOccupationMap()
 void AircraftLaunch(Flight f)
 {
     // TJL 10/26/03 Added Config variable to turn off this sound
-    if (f && gMainHandler && FalconLocalSession->GetPlayerSquadronID() && g_bTakeoffSound)
+    if (f and gMainHandler and FalconLocalSession->GetPlayerSquadronID() and g_bTakeoffSound)
     {
         if (f->GetUnitSquadronID() == FalconLocalSession->GetPlayerSquadronID())
             CampEventSoundID = SND_TAKEOFF;
@@ -813,7 +813,7 @@ void SetupMapMgr(bool noawacsmap)
 
         // 2002-01-30 MN special AWACS map background, e.g. black with country outlines
         // 2002-03-06 MN don't display Awacsmap in TE edit mode
-        if (g_bAWACSSupport && g_bAWACSBackground && !noawacsmap)
+        if (g_bAWACSSupport and g_bAWACSBackground and !noawacsmap)
         {
             if (gImageMgr->GetImage(BIG_AWACS_MAP_ID))
                 gMapMgr->SetMapImage(BIG_AWACS_MAP_ID);
@@ -831,7 +831,7 @@ void SetupMapMgr(bool noawacsmap)
         // Set Icon Image IDs (Really the C_Resmgr ID)
         for (i = 0; i < NUM_TEAMS; i++)
         {
-            if (TeamInfo[i] && (TeamInfo[i]->flags & TEAM_ACTIVE))
+            if (TeamInfo[i] and (TeamInfo[i]->flags & TEAM_ACTIVE))
                 idx = TeamInfo[i]->GetColor();
             else
                 idx = 0;
@@ -1160,7 +1160,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
         {
             for (i = 0; i < 8; i++)
             {
-                if (TeamInfo[i] && TeamInfo[i]->flags & TEAM_ACTIVE)
+                if (TeamInfo[i] and TeamInfo[i]->flags & TEAM_ACTIVE)
                 {
                     for (j = 0; j < 8; j++)
                         blip->SetImage(BLIP_IDS[TeamInfo[i]->GetColor()][j], static_cast<uchar>(i), static_cast<uchar>(j));
@@ -1202,7 +1202,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
 
         // KCK: Added the check for a pilot list so that we don't debrief after a
         // discarded mission
-        if (win && TheCampaign.MissionEvaluator && TheCampaign.MissionEvaluator->flight_data)
+        if (win and TheCampaign.MissionEvaluator and TheCampaign.MissionEvaluator->flight_data)
         {
             BuildCampDebrief(win);
             gMainHandler->EnableWindowGroup(win->GetGroup());
@@ -1218,7 +1218,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     gMainHandler->AddUserCallback(CampaignSoundEventCB);
 
     // Choose our next mission (default)
-    if (!gTimeModeServer && !g_bServer)
+    if (!gTimeModeServer and !g_bServer)
     {
         FindMissionInBriefing(CB_MISSION_SCREEN);
     }
@@ -1452,7 +1452,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
         {
             for (i = 0; i < 8; i++)
             {
-                if (TeamInfo[i] && TeamInfo[i]->flags & TEAM_ACTIVE)
+                if (TeamInfo[i] and TeamInfo[i]->flags & TEAM_ACTIVE)
                 {
                     for (j = 0; j < 8; j++)
                         blip->SetImage(BLIP_IDS[TeamInfo[i]->GetColor()][j], static_cast<uchar>(i), static_cast<uchar>(j));
@@ -1510,7 +1510,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
 
     CheckCampaignFlyButton();
 
-    if (!gTimeModeServer && !g_bServer)
+    if (!gTimeModeServer and !g_bServer)
     {
         FindMissionInBriefing(TAC_AIRCRAFT);
     }
@@ -1612,7 +1612,7 @@ void CampaignListCB()
             {
                 if (flt->GetTotalVehicles() < 1 or flt->IsDead())
                 {
-                    if (!gTimeModeServer && !g_bServer)
+                    if (!gTimeModeServer and !g_bServer)
                     {
                         FindMissionInBriefing(CB_MISSION_SCREEN);
                     }
@@ -1622,7 +1622,7 @@ void CampaignListCB()
             }
             else
             {
-                if (!gTimeModeServer && !g_bServer)
+                if (!gTimeModeServer and !g_bServer)
                 {
                     FindMissionInBriefing(CB_MISSION_SCREEN);
                     UpdateMissionWindow(CB_MISSION_SCREEN);
@@ -1660,7 +1660,7 @@ void TacEngListCB()
             {
                 if (flt->GetTotalVehicles() < 1 or flt->IsDead())
                 {
-                    if (!gTimeModeServer && !g_bServer)
+                    if (!gTimeModeServer and !g_bServer)
                     {
                         FindMissionInBriefing(TAC_AIRCRAFT);
                     }
@@ -1670,7 +1670,7 @@ void TacEngListCB()
             }
             else
             {
-                if (!gTimeModeServer && !g_bServer)
+                if (!gTimeModeServer and !g_bServer)
                 {
                     FindMissionInBriefing(TAC_AIRCRAFT);
                     UpdateMissionWindow(TAC_AIRCRAFT);
@@ -1803,13 +1803,13 @@ void CampaignButtonCB(long, short hittype, C_Base *)
             if (fl)
                 ent = fl->GetUnitAirbase();
 
-            if (ent && ent->IsTaskForce())
+            if (ent and ent->IsTaskForce())
                 PlayerOptions.SetStartFlag(PlayerOptionsClass::START_RUNWAY);
 
             // Open Countdown window if we're waiting for takeoff
             win = gMainHandler->FindWindow(CP_COUNTDOWN_WIN);
 
-            if (win && entryType < 0)
+            if (win and entryType < 0)
             {
                 gMainHandler->EnterCritical();
 
@@ -1817,7 +1817,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
 
                 if (btn)
                 {
-                    if (0)//(gCommsMgr) && (gCommsMgr->Online ()))
+                    if (0)//(gCommsMgr) and (gCommsMgr->Online ()))
                     {
                         btn->SetFlagBitOn(C_BIT_INVISIBLE);
                     }
@@ -1838,7 +1838,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
 
                 if (btn)
                 {
-                    if (g_bMPStartRestricted && gCommsMgr && gCommsMgr->Online())
+                    if (g_bMPStartRestricted and gCommsMgr and gCommsMgr->Online())
                     {
                         btn->SetFlagBitOn(C_BIT_INVISIBLE);
                     }
@@ -1859,7 +1859,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
 
                 if (btn)
                 {
-                    if (g_bMPStartRestricted && gCommsMgr && gCommsMgr->Online())
+                    if (g_bMPStartRestricted and gCommsMgr and gCommsMgr->Online())
                     {
                         btn->SetFlagBitOn(C_BIT_INVISIBLE);
                     }
@@ -1890,7 +1890,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
     gMusic->FadeOut_Stop();
 
     // Force Compliance... since they already agreed before
-    if (gCommsMgr && gCommsMgr->Online())
+    if (gCommsMgr and gCommsMgr->Online())
     {
         PlayerOptions.ComplyWRules(CurrRules.GetRules());
         PlayerOptions.SaveOptions();
@@ -2021,7 +2021,7 @@ static void OpenCampaignCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(CP_TOOLBAR);
 
-    if (CampaignLastGroup not_eq 0 && CampaignLastGroup not_eq control->GetGroup())
+    if (CampaignLastGroup not_eq 0 and CampaignLastGroup not_eq control->GetGroup())
     {
         gMainHandler->DisableWindowGroup(CampaignLastGroup);
 
@@ -2316,7 +2316,7 @@ static void SmallMapZoomInCB(long, short hittype, C_Base *control)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((hittype not_eq C_TYPE_LMOUSEUP) && (hittype not_eq C_TYPE_REPEAT))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) and (hittype not_eq C_TYPE_REPEAT))
         return;
 
     Leave = UI_Enter(control->Parent_);
@@ -2329,7 +2329,7 @@ static void SmallMapZoomOutCB(long, short hittype, C_Base *control)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((hittype not_eq C_TYPE_LMOUSEUP) && (hittype not_eq C_TYPE_REPEAT))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) and (hittype not_eq C_TYPE_REPEAT))
         return;
 
     Leave = UI_Enter(control->Parent_);
@@ -2408,7 +2408,7 @@ void PickCampaignPlaneCB(long ID, short hittype, C_Base *)
         return;
     }
 
-    if ((gCommsMgr) && (gCommsMgr->Online()))
+    if ((gCommsMgr) and (gCommsMgr->Online()))
     {
         // Don't care about restricting access when online
     }
@@ -2447,7 +2447,7 @@ void PickCampaignPlaneCB(long ID, short hittype, C_Base *)
     }
 
     // playerPlane = flight->GetAdjustedAircraftSlot(playerPlane);
-    if (!gTimeModeServer && !g_bServer)
+    if (!gTimeModeServer and !g_bServer)
     {
         RequestACSlot(flight, 0, static_cast<uchar>(playerPlane), 0, 0, 1);
     }

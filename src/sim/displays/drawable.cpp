@@ -171,7 +171,7 @@ void DrawableClass::LabelButton(int idx, char* str1, char* str2, int inverse)
 
     if (str2 == NULL or *str2 == '\0') // JPO - ignore 2nd string null
     {
-        if (idx > 4 && idx < 10)
+        if (idx > 4 and idx < 10)
         {
             display->TextRight(xPos, yPos, str1, inverse);
         }
@@ -189,7 +189,7 @@ void DrawableClass::LabelButton(int idx, char* str1, char* str2, int inverse)
             display->TextCenter(xPos, yPos, str1, inverse);
             display->TextCenter(xPos, yPos - multiLineOffset, str2, inverse);
         }
-        else if (idx > 4 && idx < 10)
+        else if (idx > 4 and idx < 10)
         {
             display->TextRight(xPos, yPos + multiLineOffset * 0.5F, str1, inverse);
             display->TextRight(xPos, yPos - multiLineOffset * 0.5F, str2, inverse);

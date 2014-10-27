@@ -200,7 +200,7 @@ private:
     Instrument_Mode mInstrumentMode; // (Instrument Mode Sel Switch)
     Tacan_Channel_Src mCurrentTCNSrc; // (AUXCOMM Master Switch)
     Tacan_Data_Str mpCurrentTCN[TOTAL_SRC]; // Tacan station that the ICP and AUXCOMM currently point to
-    TacanList::Domain mpCurrentDomain[TOTAL_SRC]; // (AUXCOMM TR/AA_TR Switch && ICP Tacan Type)
+    TacanList::Domain mpCurrentDomain[TOTAL_SRC]; // (AUXCOMM TR/AA_TR Switch and ICP Tacan Type)
 
     Ils_Data_Str mpCurrentIls;
 

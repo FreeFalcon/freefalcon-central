@@ -164,7 +164,7 @@ static void tactical_start_engagement (long ID, short hittype, C_Base *ctrl)
  fl = FalconLocalSession->GetPlayerFlight();
  pilotSlot = FalconLocalSession->GetPilotSlot();
 
- if (tactical_mission_loaded && fl && pilotSlot)
+ if (tactical_mission_loaded and fl and pilotSlot)
  {
  OTWDriver.todOffset = 0.0F;
 
@@ -479,7 +479,7 @@ void do_tactical_debrief(void)
 
         // KCK: Added the check for a pilot list so that we don't debrief after a
         // discarded mission
-        if (win && TheCampaign.MissionEvaluator && TheCampaign.MissionEvaluator->flight_data && TheCampaign.MissionEvaluator->flight_data->mission not_eq AMIS_TRAINING)
+        if (win and TheCampaign.MissionEvaluator and TheCampaign.MissionEvaluator->flight_data and TheCampaign.MissionEvaluator->flight_data->mission not_eq AMIS_TRAINING)
         {
             BuildCampDebrief(win);
             gMainHandler->EnableWindowGroup(win->GetGroup());

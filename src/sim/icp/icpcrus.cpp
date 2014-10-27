@@ -72,12 +72,12 @@ void ICPClass::ExecCRUSMode(void)
 
                     //check the steerpoint list
                     //get current steerpoint
-                    if (action == WP_LAND && !(wpflags & WPF_ALTERNATE))
+                    if (action == WP_LAND and !(wpflags & WPF_ALTERNATE))
                     {
 
                         sprintf(mpLine1, "CRUISE HOME");
                     }
-                    else if (action == WP_LAND && wpflags & WPF_ALTERNATE)
+                    else if (action == WP_LAND and wpflags & WPF_ALTERNATE)
                     {
 
                         sprintf(mpLine1, "CRUISE ALTERNATE %d", mCruiseWPIndex + 1);
@@ -289,7 +289,7 @@ void ICPClass::PNUpdateCRUSMode(int button, int)
 
                     mpCruiseWP = playerAC->waypoint;
 
-                    while (mpCruiseWP && mpCruiseWP->GetNextWP())
+                    while (mpCruiseWP and mpCruiseWP->GetNextWP())
                     {
                         mpCruiseWP = mpCruiseWP->GetNextWP();
                         mCruiseWPIndex++;
@@ -394,7 +394,7 @@ void ICPClass::CruiseRNG(void)
     FillDEDMatrix(4, 8, "WIND");
     GetWind();
 
-    if (windSpeed > 1 && windSpeed < 9)
+    if (windSpeed > 1 and windSpeed < 9)
         sprintf(tempstr, "%d*   %dKTS", heading, (int)windSpeed);
     else if (windSpeed > 9)
         sprintf(tempstr, "%d*  %dKTS", heading, (int)windSpeed);
@@ -483,7 +483,7 @@ void ICPClass::CruiseHOME(void)
     FillDEDMatrix(4, 8, "WIND");
     GetWind();
 
-    if (windSpeed > 1 && windSpeed < 9)
+    if (windSpeed > 1 and windSpeed < 9)
         sprintf(tempstr, "%d*   %dKTS", heading, (int)windSpeed);
     else if (windSpeed > 9)
         sprintf(tempstr, "%d*  %dKTS", heading, (int)windSpeed);
@@ -553,7 +553,7 @@ void ICPClass::CruiseEDR(void)
     FillDEDMatrix(4, 8, "WIND");
     GetWind();
 
-    if (windSpeed > 1 && windSpeed < 9)
+    if (windSpeed > 1 and windSpeed < 9)
         sprintf(tempstr, "%d*   %dKTS", heading, (int)windSpeed);
     else if (windSpeed > 9)
         sprintf(tempstr, "%d*  %dKTS", heading, (int)windSpeed);
@@ -723,7 +723,7 @@ int ICPClass::GetHOMERNGSTPTNum(int var, int mode)
     {
         curWaypoint = playerAC->GetWayPointNo(tempvar);
 
-        if (curWaypoint && curWaypoint->GetNextWP()) // OW
+        if (curWaypoint and curWaypoint->GetNextWP()) // OW
             nextWaypoint = curWaypoint->GetNextWP();
         else
             nextWaypoint = NULL;
@@ -737,7 +737,7 @@ int ICPClass::GetHOMERNGSTPTNum(int var, int mode)
     {
         curWaypoint = playerAC->GetWayPointNo(tempvar);
 
-        if (curWaypoint && curWaypoint->GetPrevWP())
+        if (curWaypoint and curWaypoint->GetPrevWP())
             nextWaypoint = curWaypoint->GetPrevWP();
         else
             nextWaypoint = NULL;
@@ -746,7 +746,7 @@ int ICPClass::GetHOMERNGSTPTNum(int var, int mode)
             tempvar--;
         else
         {
-            while (curWaypoint && curWaypoint->GetNextWP())
+            while (curWaypoint and curWaypoint->GetNextWP())
             {
                 curWaypoint = curWaypoint->GetNextWP();
                 tempvar++;

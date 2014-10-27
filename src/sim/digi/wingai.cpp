@@ -304,7 +304,7 @@ void  DigitalBrain::AiClearLeadersSix(FalconWingmanMsg* msg)
         mDesignatedObject = msg->dataBlock.newTarget;
         ptgt = (AircraftClass*) vuDatabase->Find(mDesignatedObject);
 
-        if (ptgt && pfrom && !F4IsBadReadPtr(ptgt, sizeof(AircraftClass)) && !F4IsBadReadPtr(pfrom, sizeof(AircraftClass))) // JB 010318 CTD
+        if (ptgt and pfrom and !F4IsBadReadPtr(ptgt, sizeof(AircraftClass)) and !F4IsBadReadPtr(pfrom, sizeof(AircraftClass))) // JB 010318 CTD
         {
             if (ptgt->ZPos() - pfrom->ZPos() < -500.0F)
             {
@@ -361,11 +361,11 @@ void  DigitalBrain::AiClearLeadersSix(FalconWingmanMsg* msg)
 
             rz = ptgt->ZPos() - pfrom->ZPos();
 
-            if (rz < 300.0F && rz > -300.0F)   // check relative alt and select correct frag
+            if (rz < 300.0F and rz > -300.0F)   // check relative alt and select correct frag
             {
                 edata[2] = 1;
             }
-            else if (rz < -300.0F && rz > -1000.0F)
+            else if (rz < -300.0F and rz > -1000.0F)
             {
                 edata[2] = 2;
             }
@@ -431,11 +431,11 @@ void DigitalBrain::AiEngageThreatAtSix(VU_ID threat)
 
         rz = ptgt->ZPos() - self->ZPos();
 
-        if (rz < 300.0F && rz > -300.0F)   // check relative alt and select correct frag
+        if (rz < 300.0F and rz > -300.0F)   // check relative alt and select correct frag
         {
             edata[2] = 1;
         }
-        else if (rz < -300.0F && rz > -1000.0F)
+        else if (rz < -300.0F and rz > -1000.0F)
         {
             edata[2] = 2;
         }
@@ -644,7 +644,7 @@ void DigitalBrain::AiInitSSOffset(FalconWingmanMsg* msg)
 
     flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
 
-    if (flightIdx && msg)
+    if (flightIdx and msg)
     {
         AiSplitFlight(msg->dataBlock.to, msg->dataBlock.from, flightIdx); // this has nothing to do witht he doSplit variable
     }
@@ -802,9 +802,9 @@ void DigitalBrain::AiInitPince(FalconWingmanMsg* msg, int doSplit)
     mlSinCos(&firstTrig, trigYaw);
 
     // S.G. isWing has the index position of the plane in the flight. It is ALWAYS less than the number of planes
-    // if (doSplit && isWing > self->GetCampaignObject()->NumberOfComponents())
+    // if (doSplit and isWing > self->GetCampaignObject()->NumberOfComponents())
     // Instead, odd plane number (wingmen) have the 1.0F side. Leaders (flight and element) have the -1.0F side
-    if (doSplit && (isWing & 1))
+    if (doSplit and (isWing & 1))
         side = 1.0F;
     else
         side = -1.0F;
@@ -822,7 +822,7 @@ void DigitalBrain::AiInitPince(FalconWingmanMsg* msg, int doSplit)
 
     flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
 
-    if (flightIdx && msg)
+    if (flightIdx and msg)
     {
         AiSplitFlight(msg->dataBlock.to, msg->dataBlock.from, flightIdx); // this has nothing to do witht he doSplit variable
     }
@@ -926,7 +926,7 @@ void DigitalBrain::AiInitTrig(mlTrig* firstTrig, mlTrig* secondTrig)
     // For a 2 ship 0 goes right, 1 goes left
     // In a 4 ship 0 & 1 go right, 2 & 3 go left
 
-    if (isWing >= 2 or (isWing == 1 && self->GetCampaignObject()->NumberOfComponents() < 3))
+    if (isWing >= 2 or (isWing == 1 and self->GetCampaignObject()->NumberOfComponents() < 3))
     {
         firstTrig->cos = -firstTrig->cos;
         firstTrig->sin = -firstTrig->sin;
@@ -1148,7 +1148,7 @@ void DigitalBrain::AiRejoin(FalconWingmanMsg* msg, AiHint hint)
 
     // This will set our current waypoint to the leads waypoint
     // 2001-10-20 Modified by M.N. Added ->GetNextWP() to assure that we get a valid waypoint
-    while (wlistUs->GetNextWP() && wlistLead && wlistLead->GetNextWP() && wlistLead not_eq ((AircraftClass *)flightLead)->curWaypoint)
+    while (wlistUs->GetNextWP() and wlistLead and wlistLead->GetNextWP() and wlistLead not_eq ((AircraftClass *)flightLead)->curWaypoint)
     {
         wlistUs   = wlistUs->GetNextWP();
         wlistLead = wlistLead->GetNextWP();
@@ -1177,7 +1177,7 @@ void DigitalBrain::AiRejoin(FalconWingmanMsg* msg, AiHint hint)
 
     // 2001-06-30 ADDED BY S.G. WHEN REJOINING, THE HasAGWeapon IS REFLECTED INTO HasCanUseAGWeapon SO IF THE LEAD WITH ONLY HARMS FIRED THEM AT A ENROUTE TARGET, WHEN SWITCHING TO THE ATTACK TARGET, HE DOESN'T ABORT THINKING NO ONE CAN FIRE ANYTHING...
     // 2001-10-23 MODIFIED BY S.G. Only if the rejoin comes from the lead and not from yourself rejoining on your own so the lead doesn't think your HARMS can be used on the target you were bombing
-    if (hint == AI_REJOIN && IsSetATC(HasAGWeapon))
+    if (hint == AI_REJOIN and IsSetATC(HasAGWeapon))
         SetATCFlag(HasCanUseAGWeapon);
 
     // END OF ADDED SECTION
@@ -1186,7 +1186,7 @@ void DigitalBrain::AiRejoin(FalconWingmanMsg* msg, AiHint hint)
 
     // 2002-03-10 MN when ordered AI to rejoin, rejoin immediately, not only when connected to the boom!
     // if(self->af->IsSet(Refueling)) {
-    if (refuelstatus not_eq refNoTanker && refuelstatus not_eq refDone)
+    if (refuelstatus not_eq refNoTanker and refuelstatus not_eq refDone)
     {
         VuEntity* theTanker = vuDatabase->Find(tankerId);
         FalconTankerMessage* TankerMsg;
@@ -1209,7 +1209,7 @@ void DigitalBrain::AiRejoin(FalconWingmanMsg* msg, AiHint hint)
     if (msg)
         AiGlueFlight(msg->dataBlock.to, msg->dataBlock.from, flightIdx);
 
-    if (msg && AiIsFullResponse(flightIdx, msg->dataBlock.to))
+    if (msg and AiIsFullResponse(flightIdx, msg->dataBlock.to))
     {
         edata[0] = -1;
         edata[1] = -1;
@@ -1267,13 +1267,13 @@ void DigitalBrain::AiDesignateTarget(FalconWingmanMsg* msg)
     {
         // 2001-07-17 ADDED BY S.G. WHEN TOLD TO DESIGNATE AND IT'S A PLAYER'S WING, LOOSE YOUR HISTORY BECAUSE YOU MIGHT HAVE CHOSEN SOMETHING TO HIT BY YOURSELF ALREADY
         //            THE TARGET HERE WILL BE A CAMPAIGN OBJECT BUT ONCE THE HISTORY IS REMOVED, THE SAME SIM OBJECT CAN BE CHOSEN.
-        if (flightLead && flightLead->IsSetFlag(MOTION_OWNSHIP))
+        if (flightLead and flightLead->IsSetFlag(MOTION_OWNSHIP))
             gndTargetHistory[0] = NULL;
 
         // END OF ADDED SECTION
 
         // Try not to attack friendlies
-        if (newTarg->GetTeam() not_eq self->GetTeam() or (SkillLevel() < 2 && rand() % 10 > SkillLevel() + 8))
+        if (newTarg->GetTeam() not_eq self->GetTeam() or (SkillLevel() < 2 and rand() % 10 > SkillLevel() + 8))
         {
             mWeaponsAction = AI_WEAPONS_FREE;
 
@@ -1344,7 +1344,7 @@ void DigitalBrain::AiDesignateTarget(FalconWingmanMsg* msg)
                 // 2002-03-07 MODIFIED BY S.G. Make sure flightlead and myLead are non NULL before doing a ->IsPlayer on them...
                 int leadIsPlayer = FALSE;
 
-                if (flightLead && flightLead->IsPlayer())
+                if (flightLead and flightLead->IsPlayer())
                     leadIsPlayer = TRUE;
                 else
                 {
@@ -1353,7 +1353,7 @@ void DigitalBrain::AiDesignateTarget(FalconWingmanMsg* msg)
                         AircraftClass *myLead;
                         myLead = (AircraftClass *)self->GetCampaignObject()->GetComponentNumber(2);
 
-                        if (myLead && myLead->IsPlayer())
+                        if (myLead and myLead->IsPlayer())
                             leadIsPlayer = TRUE;
                     }
                 }
@@ -1414,7 +1414,7 @@ void DigitalBrain::AiDesignateGroup(FalconWingmanMsg* msg)
 
     // VWF caution what about things that are not vehicles?
     // if it is a vehicle
-    if (psimBase && psimBase->campaignObject->components)
+    if (psimBase and psimBase->campaignObject->components)
     {
         VuListIterator elementWalker(psimBase->campaignObject->components);
         // pick the closest to my side of formation
@@ -1455,7 +1455,7 @@ void DigitalBrain::AiSetWeaponsAction(FalconWingmanMsg* msg, DigitalBrain::AiWea
 
     //Cobra TJL let's remove the WaitingPermission.  If I give weaponsfree I'm expecting the AI
     //to get its game on and find targets!
-    if (action == AI_WEAPONS_FREE && missionClass == AGMission /*&& IsSetATC(WaitingPermission)*/)
+    if (action == AI_WEAPONS_FREE and missionClass == AGMission /*&& IsSetATC(WaitingPermission)*/)
     {
         missileShotTimer = 0;
 
@@ -1890,11 +1890,11 @@ void DigitalBrain::AiGiveBra(FalconWingmanMsg* msg)
          edata[1] = 0;
          }
         */
-        if (rz < 300.0F && rz > -300.0F)   // check relative alt and select correct frag
+        if (rz < 300.0F and rz > -300.0F)   // check relative alt and select correct frag
         {
             edata[2] = 1;
         }
-        else if (rz < -300.0F && rz > -1000.0F)
+        else if (rz < -300.0F and rz > -1000.0F)
         {
             edata[2] = 2;
         }
@@ -1951,7 +1951,7 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
 
     flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
 
-    if ((curMode == GunsJinkMode or curMode == MissileDefeatMode) && pmytarget && (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
+    if ((curMode == GunsJinkMode or curMode == MissileDefeatMode) and pmytarget and (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
     {
 
         xdiff = self->XPos() - pmytarget->XPos();
@@ -1980,7 +1980,7 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
             response = rcENGDEFENSIVEC;
         }
     }
-    else if (pmytarget && (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
+    else if (pmytarget and (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
     {
 
         edata[0] = -1;
@@ -2028,7 +2028,7 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
     else if ((curMode == GunsEngageMode ||
               curMode == MissileEngageMode ||
               curMode == WVREngageMode ||
-              curMode == BVREngageMode) && pmytarget && (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
+              curMode == BVREngageMode) and pmytarget and (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
     {
         xdiff = self->XPos() - pmytarget->XPos();
         ydiff = self->YPos() - pmytarget->YPos();
@@ -2077,11 +2077,11 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
 
             rz = pmytarget->ZPos() - pfrom->ZPos();
 
-            if (rz < 300.0F && rz > -300.0F)   // check relative alt and select correct frag
+            if (rz < 300.0F and rz > -300.0F)   // check relative alt and select correct frag
             {
                 edata[2] = 1;
             }
-            else if (rz < -300.0F && rz > -1000.0F)
+            else if (rz < -300.0F and rz > -1000.0F)
             {
                 edata[2] = 2;
             }
@@ -2097,7 +2097,7 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
             response = rcENGAGINGC;
         }
     }
-    else if (pmytarget && (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
+    else if (pmytarget and (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
     {
         // and i am spiked
         response =  rcSPIKE;
@@ -2357,32 +2357,32 @@ void DigitalBrain::AiGiveWeaponsStatus(void)
     {
         for (hp = 1; hp < sms->NumHardpoints(); hp++)
         {
-            if (sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->GetWeaponType() == wtAim120)
+            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtAim120)
                 hasRadar += sms->hardPoint[hp]->weaponCount;
 
-            if (sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->GetWeaponType() == wtAim9)
+            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtAim9)
                 hasHeat += sms->hardPoint[hp]->weaponCount;
 
-            if (sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->GetWeaponType() == wtAgm88)
+            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtAgm88)
                 hasHARM += sms->hardPoint[hp]->weaponCount;
 
-            if (sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->GetWeaponType() == wtAgm65)
+            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtAgm65)
                 hasAGM += sms->hardPoint[hp]->weaponCount;
 
-            if (sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->GetWeaponType() == wtMk82)
+            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtMk82)
                 hasBomb += sms->hardPoint[hp]->weaponCount;
 
-            if (sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->GetWeaponType() == wtMk84)
+            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtMk84)
                 hasBomb += sms->hardPoint[hp]->weaponCount;
 
-            if (sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->GetWeaponType() == wtGBU)
+            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtGBU)
                 hasLGB += sms->hardPoint[hp]->weaponCount;
 
-            if (sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->GetWeaponType() == wtLAU && sms->hardPoint[hp]->GetWeaponClass() == wcRocketWpn)
+            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtLAU and sms->hardPoint[hp]->GetWeaponClass() == wcRocketWpn)
                 // hasRockets += sms->hardPoint[hp]->weaponCount;
                 hasRockets++;
 
-            //if (sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->GetWeaponType() == wtGuns)
+            //if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtGuns)
             // hasGuns = 1;
         }
     }
@@ -2715,7 +2715,7 @@ void DigitalBrain::AiCheckInPositionCall(float trX, float trY, float trZ)
         // 2002-02-12 ADDED BY S.G. If the lead is climbing (or is the player since I can't tell what altitude he wants), be more relax about z
         float maxZDiff;
 
-        if (g_bPitchLimiterForAI && flightLead && (flightLead->IsSetFlag(MOTION_OWNSHIP) or (((AircraftClass*)flightLead)->DBrain() && fabs(flightLead->ZPos() - ((AircraftClass*)flightLead)->DBrain()->trackZ) > 2000.0f)))
+        if (g_bPitchLimiterForAI and flightLead and (flightLead->IsSetFlag(MOTION_OWNSHIP) or (((AircraftClass*)flightLead)->DBrain() and fabs(flightLead->ZPos() - ((AircraftClass*)flightLead)->DBrain()->trackZ) > 2000.0f)))
             maxZDiff = 2000.0f;
         else
             maxZDiff = 250.0f;
@@ -2726,7 +2726,7 @@ void DigitalBrain::AiCheckInPositionCall(float trX, float trY, float trZ)
         ydiff = trY - self->YPos();
         zdiff = trZ - self->ZPos();
 
-        if ((xdiff * xdiff + ydiff * ydiff <  250.0F * 250.0F) && fabs(zdiff) < maxZDiff)  // 2002-02-12 MODIFIED BY S.G. It's "ydiff * ydiff" not "ydiff + ydiff"! plus replaced 250.0f for maxZDiff
+        if ((xdiff * xdiff + ydiff * ydiff <  250.0F * 250.0F) and fabs(zdiff) < maxZDiff)  // 2002-02-12 MODIFIED BY S.G. It's "ydiff * ydiff" not "ydiff + ydiff"! plus replaced 250.0f for maxZDiff
         {
             mInPositionFlag = TRUE;
             edata[0] = self->GetCampaignObject()->GetComponentIndex(self);
@@ -2735,7 +2735,7 @@ void DigitalBrain::AiCheckInPositionCall(float trX, float trY, float trZ)
             vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
             flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
-            if (flightIdx == AiElementLead && vehInFlight == 4)
+            if (flightIdx == AiElementLead and vehInFlight == 4)
             {
                 AiMakeCommandMsg((SimBaseClass*) self, FalconWingmanMsg::WMGlue, AiWingman, FalconNullId);
             }
@@ -2752,18 +2752,18 @@ void DigitalBrain::AiCheckPosition(void)
     AircraftClass* paircraft;
     int vehInFlight, flightIdx;
 
-    if (flightLead && flightLead not_eq self)
+    if (flightLead and flightLead not_eq self)
     {
         // Get wingman slot position relative to the leader
         vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
         flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
-        if (flightIdx == AiFirstWing && vehInFlight == 2)
+        if (flightIdx == AiFirstWing and vehInFlight == 2)
         {
             curPosition = &(acFormationData->twoposData[mFormation]); // The four ship #2 slot position is copied in to the 2 ship formation array.
             paircraft = (AircraftClass*) flightLead;
         }
-        else if (flightIdx == AiSecondWing && mSplitFlight)
+        else if (flightIdx == AiSecondWing and mSplitFlight)
         {
             curPosition = &(acFormationData->twoposData[mFormation]);
             paircraft = (AircraftClass*)((FlightClass*)self->GetCampaignObject())->GetComponentEntity(AiElementLead);
@@ -2822,7 +2822,7 @@ void DigitalBrain::AiCheckFormStrip(void)
 {
     short edata[10];
 
-    if (mpActionFlags[AI_FOLLOW_FORMATION] == TRUE && mInPositionFlag)
+    if (mpActionFlags[AI_FOLLOW_FORMATION] == TRUE and mInPositionFlag)
     {
         mInPositionFlag = FALSE;
         edata[0] = self->GetCampaignObject()->GetComponentIndex(self);

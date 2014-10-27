@@ -50,7 +50,7 @@ void WpnMfdDrawable::DisplayInit(ImageBuffer* image)
     privateDisplay = new RenderIR;
     ((RenderIR*)privateDisplay)->Setup(image, OTWDriver.GetViewpoint());
 
-    if ((g_bGreyMFD) && (!bNVGmode))
+    if ((g_bGreyMFD) and (!bNVGmode))
         privateDisplay->SetColor(GetMfdColor(MFD_WHITE));
     else
         privateDisplay->SetColor(0xff00ff00);
@@ -81,7 +81,7 @@ VirtualDisplay* WpnMfdDrawable::GetDisplay(void)
     if (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponClass() == wcAgmWpn &&
         Sms->curWeaponType == wtAgm65)
     {
-        if (theMissile && theMissile->IsMissile())
+        if (theMissile and theMissile->IsMissile())
         {
             mavDisplay = (MaverickDisplayClass*)theMissile->display;
 
@@ -135,13 +135,13 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
         return;
     }
 
-    if (!g_bRealisticAvionics or !Sms->curWeapon or (Sms->curWeaponType not_eq wtAgm65 && Sms->curWeaponType not_eq wtAgm88))
+    if (!g_bRealisticAvionics or !Sms->curWeapon or (Sms->curWeaponType not_eq wtAgm65 and Sms->curWeaponType not_eq wtAgm88))
     {
         OffMode(display);
         return;
     }
 
-    if (harmPod && Sms->curWeaponType == wtAgm88)
+    if (harmPod and Sms->curWeaponType == wtAgm88)
     {
         // This makes sure we are in the correct FCC submode
         if (pFCC->GetSubMode() not_eq FireControlComputer::HARM)
@@ -153,18 +153,18 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
         HARMWpnMode();
     }
 
-    if (Sms->curWeapon && Sms->curWeaponType == wtAgm65) // RV-I-Hawk - No do for HARM WPN
+    if (Sms->curWeapon and Sms->curWeaponType == wtAgm65) // RV-I-Hawk - No do for HARM WPN
     {
         ShiAssert(Sms->curWeapon->IsMissile());
         mavDisplay = (MaverickDisplayClass*)((MissileClass*)Sms->GetCurrentWeapon())->display;
 
         // FRB - B&W display
-        if ((g_bGreyMFD) && (!bNVGmode))
+        if ((g_bGreyMFD) and (!bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
             display->SetColor(0xff00ff00);
 
-        if (mavDisplay && (!((MissileClass*)Sms->GetCurrentWeapon())->Covered or playerAC->AutopilotType() == AircraftClass::CombatAP) && Sms->MavCoolTimer <= 0.0F)
+        if (mavDisplay and (!((MissileClass*)Sms->GetCurrentWeapon())->Covered or playerAC->AutopilotType() == AircraftClass::CombatAP) and Sms->MavCoolTimer <= 0.0F)
         {
             mavDisplay->SetIntensity(GetIntensity());
             mavDisplay->viewPoint = viewPoint;
@@ -172,7 +172,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
             //DLZ
             DrawDLZ(display);
         }
-        else if (Sms->MavCoolTimer > 0.0F && Sms->Powered)
+        else if (Sms->MavCoolTimer > 0.0F and Sms->Powered)
         {
             display->TextCenter(0.0F, 0.7F, "NOT TIMED OUT");
         }
@@ -181,10 +181,10 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     }
 
     // RV-I-Hawk - No do for HARM WPN in HTSSubmode
-    if (Sms->curWeaponType == wtAgm65 or (Sms->curWeaponType == wtAgm88 && harmPod->GetSubMode() not_eq HarmTargetingPod::HarmModeChooser))
+    if (Sms->curWeaponType == wtAgm65 or (Sms->curWeaponType == wtAgm88 and harmPod->GetSubMode() not_eq HarmTargetingPod::HarmModeChooser))
     {
         // FRB - B&W display
-        if ((g_bGreyMFD) && (!bNVGmode))
+        if ((g_bGreyMFD) and (!bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
             display->SetColor(0xff00ff00);
@@ -197,7 +197,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     if (Sms->curWeaponType == wtAgm65)
     {
         // FRB - B&W display
-        if ((g_bGreyMFD) && (!bNVGmode))
+        if ((g_bGreyMFD) and (!bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
             display->SetColor(0xff00ff00);
@@ -209,11 +209,11 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     //Reference symbol
     theRadar->GetCursorPosition(&cX, &cY);
 
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
     {
         // FRB - B&W display
-        if ((g_bGreyMFD) && (!bNVGmode))
+        if ((g_bGreyMFD) and (!bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
             display->SetColor(0xff00ff00);
@@ -237,7 +237,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     // (works on all MFDs and not only here)
     for (int i = 0; i < 4; i++)
     {
-        if ((MfdDisplay[i])->GetTGPWarning() && (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
+        if ((MfdDisplay[i])->GetTGPWarning() and (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
         {
             TGPAttitudeWarning(display);
             break;
@@ -551,11 +551,11 @@ void WpnMfdDrawable::OSBLabels(VirtualDisplay* display)
         LabelButton(19, "GRAY", "ON");
 
     // RV - Biker - Make FOV switching this dynamic
-    //if (mavDisplay && mavDisplay->CurFOV() > (3.5F * DTR))
+    //if (mavDisplay and mavDisplay->CurFOV() > (3.5F * DTR))
     float ZoomMin;
     float ZoomMax;
 
-    if ((MissileClass*)Sms->GetCurrentWeapon() && ((MissileClass*)Sms->GetCurrentWeapon())->GetEXPLevel() > 0 && ((MissileClass*)Sms->GetCurrentWeapon())->GetFOVLevel() > 0)
+    if ((MissileClass*)Sms->GetCurrentWeapon() and ((MissileClass*)Sms->GetCurrentWeapon())->GetEXPLevel() > 0 and ((MissileClass*)Sms->GetCurrentWeapon())->GetFOVLevel() > 0)
     {
         ZoomMin = ((MissileClass*)Sms->GetCurrentWeapon())->GetFOVLevel();
         ZoomMax = ((MissileClass*)Sms->GetCurrentWeapon())->GetEXPLevel();
@@ -567,7 +567,7 @@ void WpnMfdDrawable::OSBLabels(VirtualDisplay* display)
         ZoomMax = 6.0f;
     }
 
-    if (mavDisplay && mavDisplay->CurFOV() > 12.0f / (ZoomMax - (ZoomMax - ZoomMin) / 2.0f) * DTR)
+    if (mavDisplay and mavDisplay->CurFOV() > 12.0f / (ZoomMax - (ZoomMax - ZoomMin) / 2.0f) * DTR)
         LabelButton(2, "FOV");
     else
         LabelButton(2, "EXP", NULL, 1);
@@ -594,7 +594,7 @@ void WpnMfdDrawable::OSBLabels(VirtualDisplay* display)
 
     char *mode = "";
 
-    if (Sms->Powered && Sms->MavCoolTimer <= 0.0F)
+    if (Sms->Powered and Sms->MavCoolTimer <= 0.0F)
     {
         switch (Sms->MasterArm())
         {
@@ -619,9 +619,9 @@ void WpnMfdDrawable::OSBLabels(VirtualDisplay* display)
 }
 void WpnMfdDrawable::DrawRALT(VirtualDisplay* display)
 {
-    if (TheHud && !(self->mFaults && self->mFaults->GetFault(FaultClass::ralt_fault))
-        && self->af->platform->RaltReady() &&
-        TheHud->FindRollAngle(-TheHud->hat) && TheHud->FindPitchAngle(-TheHud->hat))
+    if (TheHud and !(self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
+        and self->af->platform->RaltReady() &&
+        TheHud->FindRollAngle(-TheHud->hat) and TheHud->FindPitchAngle(-TheHud->hat))
     {
         float x, y = 0;
         GetButtonPos(5, &x, &y);
@@ -865,7 +865,7 @@ void WpnMfdDrawable::OffMode(VirtualDisplay* display)
     display->SetFont(ofont);
     theRadar->GetCursorPosition(&cX, &cY);
 
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&  // JPG 14 Dec 03 - Added BE/ownship info
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and  // JPG 14 Dec 03 - Added BE/ownship info
         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
     {
         DrawBullseyeCircle(display, cX, cY);

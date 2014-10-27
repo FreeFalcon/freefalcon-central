@@ -218,7 +218,7 @@ public:
         {
             CampBaseClass *cb = mapIt.second.get();
 
-            if ((!cb->IsAggregate()) && (cb->IsLocal()))
+            if ((!cb->IsAggregate()) and (cb->IsLocal()))
             {
                 cb->SendDeaggregateData(target.get());
             }
@@ -466,7 +466,7 @@ public:
     // sfr: added for new driver
     virtual int HasEntity(VuEntity *e) const
     {
-        return ((components && (components->Find(e) not_eq NULL)) or (this == e));
+        return ((components and (components->Find(e) not_eq NULL)) or (this == e));
     }
     int HasDelta(void)
     {

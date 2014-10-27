@@ -115,7 +115,7 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
     {
         SetDesiredTarget(newLock);
     }
-    else if (lockedTarget && canGuide && (SimLibElapsedTime - lastTargetLockSend > TrackUpdateTime))
+    else if (lockedTarget and canGuide and (SimLibElapsedTime - lastTargetLockSend > TrackUpdateTime))
     {
         // Tell our current target he's locked (if he's not a countermeasure)
         if (!lockedTarget->BaseData()->IsWeapon())

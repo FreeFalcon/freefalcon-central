@@ -104,7 +104,7 @@ void mlrVoiceManager::Exec(Tpoint *campos, Trotation *camrot, Tpoint *camvel)
     // filter out what will be played
     while (n = (mlrVoice *)temp.RemHead())
     {
-        if ((n->status == mlrVoice::VSSTART or n->status == mlrVoice::VSPLAYING) && channels > 0)
+        if ((n->status == mlrVoice::VSSTART or n->status == mlrVoice::VSPLAYING) and channels > 0)
         {
             PlayList.AddTail(n); // maintain sortedness
             channels--;
@@ -232,7 +232,7 @@ void mlrVoice::Play(float PScale, float Vol, float X, float Y, float Z, float VX
     // if(distsq > 510000000000.f)
     // return;
     // else if(distsq > sfx->distSq)
-    if (!IsThunder && (distsq > sfx->distSq))
+    if (!IsThunder and (distsq > sfx->distSq))
     {
         return;
     }
@@ -287,7 +287,7 @@ bool mlrVoice::AllocateBuffers(void)
         {
             Sample = gSoundDriver->FindSample(sfx->handle);
 
-            if (Sample && Sample->Buf[0].DSoundBuffer)  // MLR 3/7/2004 - prevent CTDs
+            if (Sample and Sample->Buf[0].DSoundBuffer)  // MLR 3/7/2004 - prevent CTDs
             {
                 /////////////
                 gSoundDriver->DSound->DuplicateSoundBuffer(Sample->Buf[0].DSoundBuffer, &DSoundBuffer);
@@ -307,7 +307,7 @@ bool mlrVoice::AllocateBuffers(void)
         {
             if (!DSound3dBuffer)
             {
-                if (/*sfx->flags & SFX_FLAGS_3D && */
+                if (/*sfx->flags & SFX_FLAGS_3D and */
                     g3dVoiceCount < 16
                 )
                 {
@@ -372,7 +372,7 @@ bool mlrVoice::AllocateBuffers(void)
     {
         Sample = gSoundDriver->FindSample(sfx->handle);
 
-        if (Sample && Sample->Buf[0].DSoundBuffer)
+        if (Sample and Sample->Buf[0].DSoundBuffer)
         {
             // MLR 3/7/2004 - prevent CTDs
             /////////////
@@ -383,7 +383,7 @@ bool mlrVoice::AllocateBuffers(void)
                 gVoiceCount++;
                 freq = Sample->Frequency;
 
-                if (sfx->flags & SFX_FLAGS_3D && g_bUse3dSound)
+                if (sfx->flags & SFX_FLAGS_3D and g_bUse3dSound)
                 {
                     DSoundBuffer->QueryInterface(IID_IDirectSound3DBuffer, (LPVOID *)&DSound3dBuffer);
 
@@ -485,7 +485,7 @@ void mlrVoice::PreExec()
         if (sfx->flags & SFX_POS_EXTERN)
         {
             // don't cut the volume of sounds that are self originating from the player
-            if ((sfx->flags & SFX_POS_SELF && isplayer))
+            if ((sfx->flags & SFX_POS_SELF and isplayer))
             {
                 is3d = 0;
             }
@@ -516,14 +516,14 @@ void mlrVoice::PreExec()
         if (sfx->flags & SFX_POS_INSIDE)     // don't play internal sound
             status = VSSTOP;
 
-        if (sfx->flags & SFX_FLAGS_VMS && !g_bSoundHearVMSExternal)
+        if (sfx->flags & SFX_FLAGS_VMS and !g_bSoundHearVMSExternal)
             status = VSSTOP;
     }
 
     vol += sfx->maxVol;
 
     // RV - Biker - Check if we are in array index limits
-    if (sfx->soundGroup >= 0 && sfx->soundGroup < NUM_SOUND_GROUPS)
+    if (sfx->soundGroup >= 0 and sfx->soundGroup < NUM_SOUND_GROUPS)
     {
         vol += PlayerOptions.GroupVol[ sfx->soundGroup ];
     }
@@ -537,12 +537,12 @@ void mlrVoice::PreExec()
     }
     else
     {
-        if (is3d && !IsThunder && owner->SPos->inMachShadow)
+        if (is3d and !IsThunder and owner->SPos->inMachShadow)
         {
             status = VSSTOP;
         }
 
-        if (is3d && !IsThunder && (sfx->flags & SFX_FLAGS_CONE))
+        if (is3d and !IsThunder and (sfx->flags & SFX_FLAGS_CONE))
         {
             Tpoint delta = { x - gVoiceManager.listenerPosition.x,
                              y - gVoiceManager.listenerPosition.y,
@@ -705,7 +705,7 @@ void mlrVoice::Exec()
         vvz  = owner->SPos->vel.z;
         */
 
-        if (g_bEnableDopplerSound && !IsThunder)
+        if (g_bEnableDopplerSound and !IsThunder)
         {
             float d2, xx, yy, zz, m;
 
@@ -755,7 +755,7 @@ void mlrVoice::Exec()
             DSound3dBuffer->SetMode(DS3DMODE_NORMAL, DS3D_DEFERRED);
 #define DISTEFF_THRESHOLD 100
 
-            if (g_bSoundDistanceEffect && sfx->flags & SFX_POS_LOOPED)
+            if (g_bSoundDistanceEffect and sfx->flags & SFX_POS_LOOPED)
             {
                 // MLR 12/3/2003 - Only applied to looping sounds
                 // sounds lag behind high speed objects
@@ -879,7 +879,7 @@ void mlrVoice::Exec()
         else
         {
             // NON Looped sounds
-            if (g_bSoundDistanceEffect && is3d)
+            if (g_bSoundDistanceEffect and is3d)
             {
                 //(sfx->flags & SFX_POS_EXTERN))
                 // delay external sounds
@@ -913,7 +913,7 @@ void mlrVoice::Exec()
                 }
                 else
                 {
-                    if ((distsq > sfx->maxDistSq) && !IsThunder)
+                    if ((distsq > sfx->maxDistSq) and !IsThunder)
                     {
                         // MLR 12/2/2003 - Terminate sounds that can't be heard because they've traveled to far.
                         // the sound has outlasted it's lifespan and could not be heard anymore.

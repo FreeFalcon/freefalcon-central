@@ -27,7 +27,7 @@ void BombClass::LauInit(void)
     if (wpnDefinition->weaponClass == wcRocketWpn)
     {
 
-        if (auxData && auxData->lauWeaponId)
+        if (auxData and auxData->lauWeaponId)
         {
             lauRounds    = lauMaxRounds = auxData->lauRounds;
             lauWeaponId  = auxData->lauWeaponId;
@@ -191,6 +191,6 @@ void BombClass::LauFireSalvo(void)
 
 int BombClass::LauIsFiring(void)
 {
-    return(lauRounds > 0 && lauFireCount > 0);
+    return(lauRounds > 0 and lauFireCount > 0);
 }
 

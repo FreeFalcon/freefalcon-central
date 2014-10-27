@@ -629,7 +629,7 @@ bool SubPartMovementOrientation::Run(RenderOTW *renderer, ParticleNode *owner)
 
 SubPartTrail::SubPartTrail(ParticleNode *owner) : SubPart(owner)
 {
-    if (owner->ppn->trailId && owner->elapsedTime)
+    if (owner->ppn->trailId and owner->elapsedTime)
     {
         trailObj = new DrawableTrail(owner->ppn->trailId, 1);
     }
@@ -668,7 +668,7 @@ SubPartSound::~SubPartSound()
 
 bool SubPartSound::Run(RenderOTW *renderer, ParticleNode *owner)
 {
-    if (playSound && owner->elapsedTime)
+    if (playSound and owner->elapsedTime)
     {
         float sndVol, sndPitch;
         sndVol = owner->EvalTimedFloat(VolumeStage, owner->ppn->sndVolStages,   owner->ppn->sndVol);
@@ -934,7 +934,7 @@ SubPartEmitter::SubPartEmitter(ParticleNode *owner) : SubPart(owner)
 
     if (owner->ppn->emitOneRandomly)
     {
-        for (count = 0; owner->ppn->emitter[count].stages && count < PSMAX_EMITTERS; count++);
+        for (count = 0; owner->ppn->emitter[count].stages and count < PSMAX_EMITTERS; count++);
 
         if (count)
         {
@@ -950,10 +950,10 @@ SubPartEmitter::SubPartEmitter(ParticleNode *owner) : SubPart(owner)
 
         float Test = PRANDFloatPos();
 
-        for (count = 0; owner->ppn->emitter[count].stages && count < PSMAX_EMITTERS; count++)
+        for (count = 0; owner->ppn->emitter[count].stages and count < PSMAX_EMITTERS; count++)
         {
             // Ok... check the probability to enable this emitter...
-            if (Test >= owner->ppn->ParticleEmitterMin[count] && Test < owner->ppn->ParticleEmitterMax[count])
+            if (Test >= owner->ppn->ParticleEmitterMin[count] and Test < owner->ppn->ParticleEmitterMax[count])
             {
                 SubPart *sub = new SubEmitter(owner, &owner->ppn->emitter[count]);
                 sub->next = emitters;
@@ -1097,7 +1097,7 @@ bool SubEmitter::Run(RenderOTW *renderer, ParticleNode *owner)
 
         case PSEM_ONCE:
         {
-            while (LastStage < pep->stages && (pep->rate[LastStage].time + RndTime) <= owner->life)
+            while (LastStage < pep->stages and (pep->rate[LastStage].time + RndTime) <= owner->life)
             {
                 // Add quantity and go to next stage
                 qty += pep->rate[LastStage++].value;
@@ -1284,7 +1284,7 @@ void ParticleNode::Init(int ID, Tpoint *Pos, Tpoint *Vel, Tpoint *Aim, float fRo
     }
 
     /*int l;
-    for(l = 0; ppn->emitter[l].stages && l<PSMAX_EMITTERS; l++)
+    for(l = 0; ppn->emitter[l].stages and l<PSMAX_EMITTERS; l++)
     {
      SubPart *sub = new SubPartEmitter(this);
      sub->next = firstSubPart;
@@ -1477,7 +1477,7 @@ void ParticleNode::Draw(class RenderOTW *renderer, int LOD)
     elapsedTime = (float)(curTime - lastTime) * .001f;
     life        = age / lifespan;
 
-    if (life > 1.0f && plife < 1.0f)
+    if (life > 1.0f and plife < 1.0f)
     {
         life = 1.0f; // just to make sure we do the last stages
     }
@@ -1543,7 +1543,7 @@ void ParticleNode::Draw(class RenderOTW *renderer, int LOD)
             pos.z = GroundLevel;
             vel.z *= -ppn->bounce;
 
-            if (ppn->dieOnGround && lifespan > age) // this will make the particle die
+            if (ppn->dieOnGround and lifespan > age) // this will make the particle die
             {
                 // will also run the emitters
 
@@ -1577,7 +1577,7 @@ void ParticleNode::Draw(class RenderOTW *renderer, int LOD)
 
 #ifdef DEBUG_PS_ID
 
-    if (DrawableBSP::drawLabels/* && ppn->name[0]=='$'*/)
+    if (DrawableBSP::drawLabels/* and ppn->name[0]=='$'*/)
     {
         // Now compute the starting location for our label text
         ThreeDVertex labelPoint;
@@ -2159,7 +2159,7 @@ bool DrawableParticleSys::LoadParameters(void)
 
 int DrawableParticleSys::IsValidPSId(int id)
 {
-    if (id < PPNCount && PPN[id])
+    if (id < PPNCount and PPN[id])
     {
         return 1;
     }
@@ -2175,11 +2175,11 @@ int DrawableParticleSys::GetNameId(char *name)
     {
 #ifdef USE_NEW_PS
 
-        if (PPN[l] && PS_PPN[(DWORD)PPN[l]].name && stricmp(name, PS_PPN[(DWORD)PPN[l]].name) == 0) return l;
+        if (PPN[l] and PS_PPN[(DWORD)PPN[l]].name and stricmp(name, PS_PPN[(DWORD)PPN[l]].name) == 0) return l;
 
 #else
 
-        if (PPN[l] && PPN[l]->name && stricmp(name, PPN[l]->name) == 0) return l;
+        if (PPN[l] and PPN[l]->name and stricmp(name, PPN[l]->name) == 0) return l;
 
 #endif
     }
@@ -2808,7 +2808,7 @@ void  DrawableParticleSys::PS_SoundRun(void)
         PS_PPType &ppn = PS_PPN[Sound.PPN];
 
         // * OK, the SOUND STUFF *
-        if (Sound.Play && PS_ElapsedTime)
+        if (Sound.Play and PS_ElapsedTime)
         {
             SndVol = PS_EvalTimedFloat(Life, Sound.VolumeStage, ppn.sndVolStages,   ppn.sndVol);
             SndPitch = PS_EvalTimedFloat(Life, Sound.PitchStage, ppn.sndPitchStages,  ppn.sndPitch);
@@ -3000,7 +3000,7 @@ void  DrawableParticleSys::PS_PolyRun(void)
             ClusterPosType &Cluster = ((ClusterPosType*)PS_Lists[PS_CLUSTERS_IDX].ObjectList)[Part.CLUSTER];
 
             // Update light in status if an emitting poly
-            LightIn = Cluster.LightIn && ppn.EmitLight;
+            LightIn = Cluster.LightIn and ppn.EmitLight;
 
             // 2 cases, based on light in stuff
             // ************* NOT IN LIGHT RANGE *************
@@ -3023,7 +3023,7 @@ void  DrawableParticleSys::PS_PolyRun(void)
                 if (Cluster.Out) Visible = false;
 
                 // if not fully in but visible, check for visibility
-                if (Visible && !Cluster.In)
+                if (Visible and !Cluster.In)
                     if (!TheDXEngine.DX2D_GetVisibility((D3DXVECTOR3*) &Part.pos, (ppn.EmitLight) ? size : LightRadius)) Visible = false;
 
                 // if still visible, compute distance
@@ -3041,13 +3041,13 @@ void  DrawableParticleSys::PS_PolyRun(void)
             if (Distance > ppn.visibleDistance) goto Skip;
 
             // Update light in parameter if an emissive poly
-            if (ppn.EmitLight && Distance < LightRadius) LightIn = true;
+            if (ppn.EmitLight and Distance < LightRadius) LightIn = true;
 
             // Perform visibility check
             if (!TheDXEngine.DX2D_GetVisibility((D3DXVECTOR3*) &Part.pos, (ppn.EmitLight) ? size : LightRadius)) Visible = false;
 
             // skip all if not visible and not even in light range
-            if (!Visible && !LightIn) goto Skip;
+            if (!Visible and !LightIn) goto Skip;
         }
 
         /////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -3086,7 +3086,7 @@ void  DrawableParticleSys::PS_PolyRun(void)
         }
 
         // if a light assigned
-        if (ppn.EmitLight && Part.LIGHT not_eq PS_NOPTR)
+        if (ppn.EmitLight and Part.LIGHT not_eq PS_NOPTR)
         {
             LightPartType &Light = (((LightPartType*)PS_Lists[PS_LIGHTS_IDX].ObjectList)[Part.LIGHT]);
             Light.Alive = true;
@@ -3255,7 +3255,7 @@ void  DrawableParticleSys::PS_EmitterRun(void)
 
                 // * ONCE EMISSION *
             case PSEM_ONCE:
-                    while (Emitter.LastStage < Emitter.PEP->stages && (Emitter.PEP->rate[Emitter.LastStage].time + Emitter.RndTime) <= Part.life)
+                    while (Emitter.LastStage < Emitter.PEP->stages and (Emitter.PEP->rate[Emitter.LastStage].time + Emitter.RndTime) <= Part.life)
                     {
                         // Add quantity and go to next stage
                         qty += Emitter.PEP->rate[Emitter.LastStage++].value;
@@ -3361,12 +3361,12 @@ void DrawableParticleSys::PS_GenerateEmitters(PS_PTR owner, PS_PPType &PPN)
     Light = (((ParticleNodeType*)PS_Lists[PS_PARTICLES_IDX].ObjectList)[owner]).LIGHT;
 
     // if not a light already assigned and a light Root, get a new light to pass to emitters
-    if (Light == PS_NOPTR && PPN.LightRoot) Light = PS_AddItem(PS_LIGHTS_IDX);
+    if (Light == PS_NOPTR and PPN.LightRoot) Light = PS_AddItem(PS_LIGHTS_IDX);
 
     // just one Random Emitter
     if (PPN.emitOneRandomly)
     {
-        for (count = 0; PPN.emitter[count].stages && count < PSMAX_EMITTERS; count++);
+        for (count = 0; PPN.emitter[count].stages and count < PSMAX_EMITTERS; count++);
 
         if (count)
         {
@@ -3379,10 +3379,10 @@ void DrawableParticleSys::PS_GenerateEmitters(PS_PTR owner, PS_PPType &PPN)
         // More randomic emitters
         float Test = PRANDFloatPos();
 
-        for (count = 0; PPN.emitter[count].stages && count < PSMAX_EMITTERS; count++)
+        for (count = 0; PPN.emitter[count].stages and count < PSMAX_EMITTERS; count++)
         {
             // Ok... check the probability to enable this emitter...
-            if (Test >= PPN.ParticleEmitterMin[count] && Test < PPN.ParticleEmitterMax[count]) PS_AddEmitter(owner, &PPN.emitter[count], Light);
+            if (Test >= PPN.ParticleEmitterMin[count] and Test < PPN.ParticleEmitterMax[count]) PS_AddEmitter(owner, &PPN.emitter[count], Light);
         }
     }
 }
@@ -3663,7 +3663,7 @@ void DrawableParticleSys::PS_ParticleRun(void)
                 Part.pos.z = Part.GroundLevel;
                 Part.vel.z *= -ppn.bounce * PRANDFloatPos();
 
-                if (ppn.dieOnGround && Part.lifespan > age) // this will make the particle die
+                if (ppn.dieOnGround and Part.lifespan > age) // this will make the particle die
                 {
                     // will also run the emitters
 
@@ -3703,7 +3703,7 @@ void DrawableParticleSys::PS_ParticleRun(void)
 
 #ifdef DEBUG_PS_ID
 
-        if (DrawableBSP::drawLabels/* && ppn->name[0]=='$'*/)
+        if (DrawableBSP::drawLabels/* and ppn->name[0]=='$'*/)
         {
             // Now compute the starting location for our label text
             ThreeDVertex labelPoint;
@@ -4044,7 +4044,7 @@ void DrawableParticleSys::PS_TrailRun(void)
         PS_TPType &TPN = PS_TPN[Trail.ID];
 
         // If part is dead, remove it, all last stages have been already killed/exucuted
-        if (Trail.OWNER not_eq PS_NOPTR && !(((ParticleNodeType*)PS_Lists[PS_PARTICLES_IDX].ObjectList)[Trail.OWNER]).Alive) Trail.Alive = false;
+        if (Trail.OWNER not_eq PS_NOPTR and !(((ParticleNodeType*)PS_Lists[PS_PARTICLES_IDX].ObjectList)[Trail.OWNER]).Alive) Trail.Alive = false;
 
         if (!Trail.Run) goto Skip;
 
@@ -4053,7 +4053,7 @@ void DrawableParticleSys::PS_TrailRun(void)
         Trail.Wind = ((WeatherClass*)realWeather)->GetWindVector();
 
 
-        if (Trail.Alive && Trail.OWNER not_eq PS_NOPTR)
+        if (Trail.Alive and Trail.OWNER not_eq PS_NOPTR)
         {
             Trail.Life +=  PS_ElapsedTime * Trail.LifeCx;
 
@@ -4079,7 +4079,7 @@ void DrawableParticleSys::PS_TrailRun(void)
         SV = *(D3DXVECTOR3*)&Trail.Pos - *(D3DXVECTOR3*)&Trail.LastPos;
         SV = RED_NormalizeVector(&SV);
 
-        if (Trail.Alive && Trail.Updated && Trail.Elapsed >= Trail.Interval)
+        if (Trail.Alive and Trail.Updated and Trail.Elapsed >= Trail.Interval)
         {
             float Life = Trail.Life;
 
@@ -4160,7 +4160,7 @@ void DrawableParticleSys::PS_TrailRun(void)
 
         // if here and Trail.Elapsed is more than twice the interval, means trail may have been
         // suspended and splitted...
-        if (!Trail.Split && Trail.Elapsed >= (Trail.Interval * 2))
+        if (!Trail.Split and Trail.Elapsed >= (Trail.Interval * 2))
         {
             // flag the split
             Part.Exit = Part.Split = true;
@@ -4216,7 +4216,7 @@ void DrawableParticleSys::PS_TrailRun(void)
         if (!Trail.Alive) Trail.Handle = NULL;
 
         // check for dead, can be dead also when the trail time has elapsed since last Sub Part geneation
-        if ((!Trail.Alive && Trail.Entry == Trail.Last) or Trail.Elapsed >= TPN.LifeSpan)
+        if ((!Trail.Alive and Trail.Entry == Trail.Last) or Trail.Elapsed >= TPN.LifeSpan)
         {
             // Release memory
             Trail.Handle = NULL;
@@ -4478,7 +4478,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
 
 
             // if to be integrated, Skip the requested nodes
-            /* if(Integrate && !TrailCompleted){
+            /* if(Integrate and !TrailCompleted){
              // 1 less, as the index is alerady postincremented in upper function code
              Integrate-=1;
              // theck for Exit Index as limit
@@ -4504,7 +4504,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
              }*/
 
             // if to be integrated, Skip the requested nodes
-            if (Integrate && !TrailCompleted && Index not_eq Exit)
+            if (Integrate and !TrailCompleted and Index not_eq Exit)
             {
                 // 1 less, as the index is alerady postincremented in upper function code
                 Integrate -= 1;
@@ -4879,7 +4879,7 @@ TRAIL_HANDLE DrawableParticleSys::PS_EmitTrail(TRAIL_HANDLE Handle, int TrailId,
     DWORD TrailNr = Handle & (PS_MAX_TRAILS - 1), ID = PS_TrailsID[TrailId];
 
     // Check it is an acceptable Trail Refernce
-    if (Handle && TrailNr < PS_MAX_TRAILS)
+    if (Handle and TrailNr < PS_MAX_TRAILS)
     {
         // Get the trail
         TrailEmitterType &Trail = (((TrailEmitterType*)PS_Lists[PS_TRAILS_IDX].ObjectList)[TrailNr]);
@@ -4913,7 +4913,7 @@ void DrawableParticleSys::PS_KillTrail(TRAIL_HANDLE Handle)
     DWORD TrailNr = Handle & (PS_MAX_TRAILS - 1);
 
     // Check it is an acceptable Trail Refernce
-    if (Handle && TrailNr < PS_MAX_TRAILS)
+    if (Handle and TrailNr < PS_MAX_TRAILS)
     {
         // Get the trail
         TrailEmitterType &Trail = (((TrailEmitterType*)PS_Lists[PS_TRAILS_IDX].ObjectList)[TrailNr]);
@@ -4954,7 +4954,7 @@ void DrawableParticleSys::PS_Exec(class RenderOTW *renderer)
         case DX_TV:
                 PS_TV = true;
 
-            if ((g_bGreyMFD) && (!bNVGmode))
+            if ((g_bGreyMFD) and (!bNVGmode))
                 PS_HiLightCx.r = 0.2f, PS_HiLightCx.g = 0.2f, PS_HiLightCx.b = 0.2f, PS_LoLightCx = PS_HiLightCx;
             else
                 PS_HiLightCx.r = 0.0f, PS_HiLightCx.g = 1.0f, PS_HiLightCx.b = 0.0f, PS_LoLightCx = PS_HiLightCx;
@@ -5162,7 +5162,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
 
         int b;
 
-        for (b = 0; b < 1024 && (buffer[b] == ' ' or buffer[b] == '\t'); b++);
+        for (b = 0; b < 1024 and (buffer[b] == ' ' or buffer[b] == '\t'); b++);
 
         com = strtok(&buffer[b], "=\n");
         arg = strtok(0, "\n\0");
@@ -5209,7 +5209,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                     DWORD c = 0;
 
                     // Check if already a PPN with same name
-                    while (c < MAX_PARTICLE_PARAMETERS && strncmp(PS_PPN[c].name, i, PS_NAMESIZE)) c++;
+                    while (c < MAX_PARTICLE_PARAMETERS and strncmp(PS_PPN[c].name, i, PS_NAMESIZE)) c++;
 
                     // if found copy it's values and skip the rest
                     if (c < MAX_PARTICLE_PARAMETERS)
@@ -5272,7 +5272,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                     DWORD c = 0;
 
                     // Check if already a PPN with same name
-                    while (c < MAX_TRAIL_PARAMETERS && strncmp(PS_TPN[c].Name, i, PS_NAMESIZE)) c++;
+                    while (c < MAX_TRAIL_PARAMETERS and strncmp(PS_TPN[c].Name, i, PS_NAMESIZE)) c++;
 
                     // if found copy it's values and skip the rest
                     if (c < MAX_TRAIL_PARAMETERS)
@@ -5334,7 +5334,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
         }
 
         // we need a valid ppn or pan pointer
-        if ((!tpn) && (!ppn) && (!pan) && (!GroupNode))
+        if ((!tpn) and (!ppn) and (!pan) and (!GroupNode))
         {
             continue;
         }

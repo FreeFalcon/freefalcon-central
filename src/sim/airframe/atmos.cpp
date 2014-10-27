@@ -281,7 +281,7 @@ int AirframeClass::EngineTrail()
 
         default:
 
-            /*if (auxaeroData->engineSmokes > 3 && auxaeroData->engineSmokes - 3 < TRAIL_MAX)
+            /*if (auxaeroData->engineSmokes > 3 and auxaeroData->engineSmokes - 3 < TRAIL_MAX)
                 return auxaeroData->engineSmokes - 3;*/
             if (auxaeroData->engineSmokes > 3)
                 return auxaeroData->engineSmokes;//Cobra Allow for more engine trails

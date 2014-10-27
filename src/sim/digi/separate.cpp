@@ -40,14 +40,14 @@ void DigitalBrain::SeparateCheck(void)
         return;
 
     // Check for RTB
-    if (((SimDriver.RunningTactical() && current_tactical_mission &&
+    if (((SimDriver.RunningTactical() and current_tactical_mission &&
           current_tactical_mission->get_type() == tt_training)))
     {
         inTraining = TRUE;
     }
 
     // 2001-08-31 BROUGHT BACK TO LIKE IT IS WAS ORIGINALLY (ALSO LIKE IN RP4/5)
-    if (missionClass == AAMission && !IsSetATC(AceGunsEngage))
+    if (missionClass == AAMission and !IsSetATC(AceGunsEngage))
         aaAbort = FALSE;
 
     // 2002-02-12 added by MN - Aircraftclass checks for target being occupied and sets AWACSsaidAbort
@@ -59,9 +59,9 @@ void DigitalBrain::SeparateCheck(void)
     }
 
     // 2001-12-28 MN this prevents FAC aircraft from aborting missions in 3D (they have no weapons..)
-    /* if (missionClass == AGMission && !IsSetATC(HasAGWeapon) && missionType not_eq AMIS_FAC)
+    /* if (missionClass == AGMission and !IsSetATC(HasAGWeapon) and missionType not_eq AMIS_FAC)
      {
-        if ((missionType not_eq AMIS_BDA && missionType not_eq AMIS_RECON) or !hasCamera)
+        if ((missionType not_eq AMIS_BDA and missionType not_eq AMIS_RECON) or !hasCamera)
     // 2001-05-12 ADDED BY S.G. ABORT ONLY WHEN THE MISSION IS NOT COMPLETED OR WE ARE AT THE ATTACK WAYPOINT, OTHERWISE FOLLOW WAYPOINTS HOME
     // 2001-06-21 MODIFIED BY S.G. BROUGHT BACK TO WHAT IS RELEASED
     //    if (!missionComplete or !self->curWaypoint or self->curWaypoint->GetWPFlags() & WPF_TARGET)
@@ -78,10 +78,10 @@ void DigitalBrain::SeparateCheck(void)
     if (self->pctStrength < 0.50F)
         damageAbort = TRUE;
 
-    if ((aaAbort or agAbort or campAbort or damageAbort) && !inTraining)
+    if ((aaAbort or agAbort or campAbort or damageAbort) and !inTraining)
     {
         // If pre IP go to landing, else step past target
-        if (curMode not_eq RTBMode && curMode not_eq LandingMode && curMode not_eq TakeoffMode)
+        if (curMode not_eq RTBMode and curMode not_eq LandingMode and curMode not_eq TakeoffMode)
         {
             // Drop ground target if any
             if (groundTargetPtr)
@@ -105,7 +105,7 @@ void DigitalBrain::SeparateCheck(void)
                     tmpWaypoint = tmpWaypoint->GetNextWP();
                 }
 
-                if (tmpWaypoint && !isWing)
+                if (tmpWaypoint and !isWing)
                 {
                     self->curWaypoint = tmpWaypoint;
                     SetWaypointSpecificStuff();
@@ -138,7 +138,7 @@ void DigitalBrain::SeparateCheck(void)
                     tmpWaypoint = tmpWaypoint->GetNextWP();
                 }
 
-                if (tmpWaypoint && !isWing)
+                if (tmpWaypoint and !isWing)
                 {
                     self->curWaypoint = tmpWaypoint;
                     SetWaypointSpecificStuff();
@@ -160,10 +160,10 @@ void DigitalBrain::SeparateCheck(void)
         }
     }
 
-    if ((!isWing or IsSetATC(SaidBingo)) && curMode == RTBMode)
+    if ((!isWing or IsSetATC(SaidBingo)) and curMode == RTBMode)
         AddMode(RTBMode);
 
-    if (isWing && mpActionFlags[AI_RTB])
+    if (isWing and mpActionFlags[AI_RTB])
         AddMode(RTBMode);
 
     if (!targetPtr)
@@ -178,10 +178,10 @@ void DigitalBrain::SeparateCheck(void)
 
     // go no further unless separation is desired
     if (IsSetATC(SaidBingo)  ||
-        curMode == WVREngageMode && (aaAbort or agAbort or campAbort or damageAbort))
+        curMode == WVREngageMode and (aaAbort or agAbort or campAbort or damageAbort))
     {
         // Entry
-        if (curMode not_eq SeparateMode && targetData->range < 2.0f * NM_TO_FT)
+        if (curMode not_eq SeparateMode and targetData->range < 2.0f * NM_TO_FT)
         {
             // Find range where tail chase would begin
             sepRange = RangeAtTailChase(self, targetPtr);
@@ -196,7 +196,7 @@ void DigitalBrain::SeparateCheck(void)
                 rMaxNe = 6000.0F;
 
             // Enter if separation range > rne
-            if (rMaxNe < sepRange && IsSetATC(SaidJoker))
+            if (rMaxNe < sepRange and IsSetATC(SaidJoker))
             {
                 // If inside one turn radius threat needs to be ahead of 3/9 line
                 // else behind 3/9 line
@@ -225,7 +225,7 @@ void DigitalBrain::SeparateCheck(void)
 
     //TJL 11/08/03 Bugout code courtesy of Jam/Mike
     // Is the AI deep six? ataFrom is from target nose.
-    if (targetData->ataFrom > 135.0F * DTR && FalconLocalGame->GetGameType() not_eq game_Dogfight)
+    if (targetData->ataFrom > 135.0F * DTR and FalconLocalGame->GetGameType() not_eq game_Dogfight)
     {
         if (!bugoutTimer)
         {
@@ -452,14 +452,14 @@ void DigitalBrain::FuelCheck(void)
                 SetATCFlag(SaidBingo);
                 AiSendCommand(self, FalconWingmanMsg::WMBingoFuel, AiAllButSender);
             }
-            else if (fuelRemain < af->GetFumes() && !IsSetATC(SaidFumes))
+            else if (fuelRemain < af->GetFumes() and !IsSetATC(SaidFumes))
             {
                 // Say Fumes
                 //               MonoPrint ("Digi fumes fuel\n");
                 SetATCFlag(SaidFumes);
                 AiSendCommand(self, FalconWingmanMsg::WMFumes, AiAllButSender);
             }
-            else if (af->Fuel() == 0.0F && !IsSetATC(SaidFlameout))
+            else if (af->Fuel() == 0.0F and !IsSetATC(SaidFlameout))
             {
                 // Say Flameout
                 //               MonoPrint ("Digi flameout\n");

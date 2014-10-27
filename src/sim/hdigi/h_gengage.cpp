@@ -66,7 +66,7 @@ void HeliBrain::GunsEngageCheck(void)
 
     for (int i = 1; i < self->Sms->NumHardpoints(); i++)
     {
-        if (self->Sms->hardPoint[i]->GetWeaponType() not_eq wtAim9 && self->Sms->hardPoint[i]->GetWeaponType() not_eq wtAim120)
+        if (self->Sms->hardPoint[i]->GetWeaponType() not_eq wtAim9 and self->Sms->hardPoint[i]->GetWeaponType() not_eq wtAim120)
             hasAgWeapons = hasAgWeapons + self->Sms->hardPoint[i]->weaponCount;
         else
             hasAaWeapons = hasAaWeapons + self->Sms->hardPoint[i]->weaponCount;
@@ -81,7 +81,7 @@ void HeliBrain::GunsEngageCheck(void)
     yft = theObject->YPos() - self->YPos();
     zft = theObject->ZPos() - self->ZPos();
 
-    if (!theObject->OnGround() && hasAaWeapons == 0)
+    if (!theObject->OnGround() and hasAaWeapons == 0)
     {
         if (curMode == GunsEngageMode)
         {
@@ -101,7 +101,7 @@ void HeliBrain::GunsEngageCheck(void)
         }
     }
 
-    if (theObject->OnGround() && hasAgWeapons == 0)
+    if (theObject->OnGround() and hasAgWeapons == 0)
     {
         if (curMode == GunsEngageMode)
         {
@@ -219,13 +219,13 @@ void HeliBrain::GunsEngage(void)
     yft = theObject->YPos() - self->YPos();
 
     // error for airplanes
-    if (theObject->IsAirplane() && !theObject->OnGround())
+    if (theObject->IsAirplane() and !theObject->OnGround())
     {
         xft += PRANDFloat() * 2500.0f;
         yft += PRANDFloat() * 2500.0f;
     }
 
-    if (theObject->IsSim() && theObject->OnGround() && theObject->drawPointer)
+    if (theObject->IsSim() and theObject->OnGround() and theObject->drawPointer)
     {
         Tpoint pos;
         theObject->drawPointer->GetPosition(&pos);
@@ -261,8 +261,8 @@ void HeliBrain::GunsEngage(void)
 
     // 2001-07-06 MODIDIED BY S.G. WE DON'T WANT THE ROCKETS TO FIRE ONE PER 15 SECONDS! LAUNCH AT FRAME SPEED (JUST LIKE FOR PLANES)
     //if ( mslCheckTimer > 15.0f )
-    //if ( mslCheckTimer > 15.0f or (mslCheckTimer > 0.25f && self->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb && self->FCC->GetSubMode() == FireControlComputer::RCKT))
-    if (mslCheckTimer > 15.0f or (mslCheckTimer > 0.25f && self->FCC->GetMasterMode() == FireControlComputer::AirGroundRocket))
+    //if ( mslCheckTimer > 15.0f or (mslCheckTimer > 0.25f and self->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb and self->FCC->GetSubMode() == FireControlComputer::RCKT))
+    if (mslCheckTimer > 15.0f or (mslCheckTimer > 0.25f and self->FCC->GetMasterMode() == FireControlComputer::AirGroundRocket))
     {
         WeaponSelection();
 
@@ -275,8 +275,8 @@ void HeliBrain::GunsEngage(void)
     }
     // should we fire?
     // 2001-07-05 MODIFIED BY S.G. CHANGE THE ORDER
-    //else if ( mslCheckTimer < 4.0f && targetData->ata < ataerror * DTR && targetData->range < INIT_GUN_VEL)
-    else if (mslCheckTimer < 4.0f && targetData->range < INIT_GUN_VEL && targetData->ata < ataerror)
+    //else if ( mslCheckTimer < 4.0f and targetData->ata < ataerror * DTR and targetData->range < INIT_GUN_VEL)
+    else if (mslCheckTimer < 4.0f and targetData->range < INIT_GUN_VEL and targetData->ata < ataerror)
     {
         float tof;
         float az, el;
@@ -384,17 +384,17 @@ void HeliBrain::GunsEngage(void)
     // TJL 11/15/03 Hellfires/AGMs between 3 to 5 miles
     if (self->FCC->GetMasterMode() == FireControlComputer::Missile or self->FCC->GetMasterMode() == FireControlComputer::AirGroundMissile)
     {
-        //if ( targetData->range >= 2000.0f && targetData->range <= 12000.0F)
-        if (targetData->range >= 12000.0f && targetData->range <= 24000.0F)
+        //if ( targetData->range >= 2000.0f and targetData->range <= 12000.0F)
+        if (targetData->range >= 12000.0f and targetData->range <= 24000.0F)
             desSpeed = 0.0f;
     }
     // Rockets
     //TJL 11/15/03 Rockets have max range of 3 miles
-    else //if ( self->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb && self->FCC->GetSubMode() == FireControlComputer::RCKT ) {
+    else //if ( self->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb and self->FCC->GetSubMode() == FireControlComputer::RCKT ) {
         if (self->FCC->GetMasterMode() == FireControlComputer::AirGroundRocket)    // MLR 4/3/2004 -
         {
-            //if ( targetData->range >= 1000.0f && targetData->range <= 10000.0F)
-            if (targetData->range >= 6000.0f && targetData->range <= 15000.0F)
+            //if ( targetData->range >= 1000.0f and targetData->range <= 10000.0F)
+            if (targetData->range >= 6000.0f and targetData->range <= 15000.0F)
                 desSpeed = 0.0f;
         }
 
@@ -403,7 +403,7 @@ void HeliBrain::GunsEngage(void)
 
     if (targetPtr->BaseData()->OnGround())
     {
-        if (desSpeed > 0.2f && rng < 6000.0f)
+        if (desSpeed > 0.2f and rng < 6000.0f)
         {
             rollLoad = 0.0f;
         }
@@ -412,7 +412,7 @@ void HeliBrain::GunsEngage(void)
     }
     else
     {
-        if (fabs(desSpeed) > 0.2f && rng < 6000.0f)
+        if (fabs(desSpeed) > 0.2f and rng < 6000.0f)
         {
             rollLoad = 0.0f;
         }
@@ -695,7 +695,7 @@ void HeliBrain::FireControl(void)
 //   curMissileStation = -1;
 //   curMissileNum     = -1;
 //
-//   if (targetPtr && self->Sms->FindWeaponClass (SMSClass::AimWpn))
+//   if (targetPtr and self->Sms->FindWeaponClass (SMSClass::AimWpn))
 //   {
 //      // Find all weapons w/in parameters
 //      startStation = self->Sms->curWpnStation;
@@ -710,7 +710,7 @@ void HeliBrain::FireControl(void)
 // thisPctRange = targetData->range / thisRmax;
 // thisASE  = DTR * theMissile->GetASE(-self->ZPos(), self->GetVt(), targetData->ataFrom, targetPtr->BaseData()->GetVt(), targetData->range);
 //
-//            if (thisPctRange < pctRange && thisRmin < targetData->range)
+//            if (thisPctRange < pctRange and thisRmin < targetData->range)
 //            {
 //    theMissile->SetTarget( targetPtr );
 //               pctRange = thisPctRange;
@@ -757,7 +757,7 @@ void HeliBrain::FireControl(void)
 // for (i=0; i<self->Sms->NumHardpoints(); i++)
 // {
 // // Do I have AA Missiles?
-// if ( curAA == NULL && self->Sms->hardPoint[i]->GetWeaponClass() == wcAimWpn )
+// if ( curAA == NULL and self->Sms->hardPoint[i]->GetWeaponClass() == wcAimWpn )
 // {
 // self->Sms->curWeapon = NULL;
 //// 2001-07-05 MODIFIED BY S.G. SO THEY ACTUALLY CHOOSE A WEAPON
@@ -782,7 +782,7 @@ void HeliBrain::FireControl(void)
 // }
 // }
 // }
-// else if ( curAG == NULL && self->Sms->hardPoint[i]->GetWeaponClass() == wcAgmWpn )
+// else if ( curAG == NULL and self->Sms->hardPoint[i]->GetWeaponClass() == wcAgmWpn )
 // {
 // self->Sms->curWeapon = NULL;
 //// 2001-07-05 MODIFIED BY S.G. SO THEY ACTUALLY CHOOSE A WEAPON

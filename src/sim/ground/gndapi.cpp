@@ -228,7 +228,7 @@ void GNDAIClass::Fire(void)
 
         for (int i = 0; i < HARDPOINT_MAX; i++)
         {
-            if (vc->Weapon[i] && vc->Weapons[i])
+            if (vc->Weapon[i] and vc->Weapons[i])
             {
                 hasWeapons = 1;
                 break;
@@ -236,10 +236,10 @@ void GNDAIClass::Fire(void)
         }
 
         // RV - Biker - Radar vehicles shouldn't do this
-        if (SimLibElapsedTime > nextFire && !(self->isEmitter && !hasWeapons))
+        if (SimLibElapsedTime > nextFire and !(self->isEmitter and !hasWeapons))
         {
             // FRB - The weapns search above seems to break the SAM firing (decreases it or stops it)
-            //if (SimLibElapsedTime > nextFire && !(self->isEmitter && !self->Sms->GetCurrentWeapon())) {
+            //if (SimLibElapsedTime > nextFire and !(self->isEmitter and !self->Sms->GetCurrentWeapon())) {
             nextTurretCalc = SimLibElapsedTime + TURRET_CALC_RATE;
 
             if (!self->targetPtr->BaseData()->OnGround())
@@ -293,7 +293,7 @@ void GNDAIClass::Fire(void)
 
             // RV - Biker - Radar vehicles without weapons should do this also
             //if(SimLibElapsedTime > nextTurretCalc) {
-            if (SimLibElapsedTime > nextTurretCalc or (self->isEmitter && !self->Sms->GetCurrentWeapon()))
+            if (SimLibElapsedTime > nextTurretCalc or (self->isEmitter and !self->Sms->GetCurrentWeapon()))
             {
                 float xft, yft, zft;
                 float realRange, tof;
@@ -303,7 +303,7 @@ void GNDAIClass::Fire(void)
 
                 // RV - Biker - Adjust this
                 //if(!theWeapon)
-                if (!theWeapon && !self->isEmitter)
+                if (!theWeapon and !self->isEmitter)
                     return;
 
                 target = self->targetPtr->BaseData();
@@ -320,7 +320,7 @@ void GNDAIClass::Fire(void)
 
                 // RV - Biker - Check if we have a weapon first
                 //if(theWeapon->IsGun()) {
-                if (theWeapon && theWeapon->IsGun())
+                if (theWeapon and theWeapon->IsGun())
                 {
                     GunClass *Gun = (GunClass*)theWeapon;
 

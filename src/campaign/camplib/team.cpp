@@ -200,10 +200,10 @@ TeamClass::TeamClass(VU_BYTE **stream, long *rem)
 
     // Start reading the shit
     memcpychk(&who, stream, sizeof(Team), rem);
-    ShiAssert(TeamInfo[who] && TeamInfo[who]->share_.id_ == share_.id_)
+    ShiAssert(TeamInfo[who] and TeamInfo[who]->share_.id_ == share_.id_)
 
     memcpychk(&cteam, stream, sizeof(Team), rem);
-    ShiAssert((cteam > 0 or who == 0) && cteam < NUM_TEAMS);
+    ShiAssert((cteam > 0 or who == 0) and cteam < NUM_TEAMS);
     memcpychk(&flags, stream, sizeof(short), rem);
     memcpychk(member, stream, sizeof(uchar)*NUM_COUNS, rem);
     memcpychk(stance, stream, sizeof(short)*NUM_TEAMS, rem);
@@ -299,7 +299,7 @@ TeamClass::TeamClass(FILE *file) :
     SetEntityType(teamManagerDIndex);
     fread(&who, sizeof(Team), 1, file);
     fread(&cteam, sizeof(Team), 1, file);
-    ShiAssert((cteam > 0 or who == 0) && cteam < NUM_TEAMS);
+    ShiAssert((cteam > 0 or who == 0) and cteam < NUM_TEAMS);
     fread(&flags, sizeof(short), 1, file);
 
     if (gCampDataVersion > 2)
@@ -416,7 +416,7 @@ TeamClass::TeamClass(FILE *file) :
     if (gCampDataVersion < 41)
     {
         // Hand set colors correctly
-        if (FalconLocalGame && FalconLocalGame->GetGameType() == game_Campaign)
+        if (FalconLocalGame and FalconLocalGame->GetGameType() == game_Campaign)
         {
             _TCHAR owner[41];
             ReadIndexedString(40 + who, owner, 40);
@@ -424,7 +424,7 @@ TeamClass::TeamClass(FILE *file) :
             teamColor = who;
             teamFlag = who;
         }
-        else if (FalconLocalGame && FalconLocalGame->GetGameType() == game_TacticalEngagement)
+        else if (FalconLocalGame and FalconLocalGame->GetGameType() == game_TacticalEngagement)
         {
             if (who == 1)
                 teamColor = 2;
@@ -452,7 +452,7 @@ TeamClass::TeamClass(FILE *file) :
     }
 
     // KCK HACK: Hand clobber instant action and dogfight colors
-    if (FalconLocalGame && FalconLocalGame->GetGameType() == game_Dogfight)
+    if (FalconLocalGame and FalconLocalGame->GetGameType() == game_Dogfight)
     {
         if (who == 0)
             teamColor = 0;
@@ -469,7 +469,7 @@ TeamClass::TeamClass(FILE *file) :
 
         SetName(DogfightTeamNames[who]);
     }
-    else if (FalconLocalGame && FalconLocalGame->GetGameType() == game_InstantAction)
+    else if (FalconLocalGame and FalconLocalGame->GetGameType() == game_InstantAction)
     {
         if (who == 0)
             teamColor = 1;
@@ -489,15 +489,15 @@ TeamClass::TeamClass(FILE *file) :
     }
 
     // SCR HACK: Hand clobber instant action skill levels
-    if (FalconLocalGame && FalconLocalGame->GetGameType() == game_InstantAction)
+    if (FalconLocalGame and FalconLocalGame->GetGameType() == game_InstantAction)
     {
-        ShiAssert(InstantActionSettings.PilotLevel >= 0  &&  InstantActionSettings.PilotLevel <= 4);
+        ShiAssert(InstantActionSettings.PilotLevel >= 0  and  InstantActionSettings.PilotLevel <= 4);
         airExperience = 60 + 10 * InstantActionSettings.PilotLevel;
         airDefenseExperience = 60 + 10 * InstantActionSettings.PilotLevel;
     }
 
     // KCK HACK: For campaign (and localization), clobber team names
-    if (FalconLocalGame && FalconLocalGame->GetGameType() == game_Campaign)
+    if (FalconLocalGame and FalconLocalGame->GetGameType() == game_Campaign)
         ReadIndexedString(40 + who, name, MAX_TEAM_NAME_SIZE);
 
     if (gCampDataVersion > 32)
@@ -540,7 +540,7 @@ TeamClass::TeamClass(FILE *file) :
         supplyAvail = fuelAvail = 1000;
     }
 
-    if (gCampDataVersion < 60 && FalconLocalGame && FalconLocalGame->GetGameType() == game_Campaign)
+    if (gCampDataVersion < 60 and FalconLocalGame and FalconLocalGame->GetGameType() == game_Campaign)
     {
         if (who == COUN_US)
             equipment = toe_us;
@@ -589,7 +589,7 @@ TeamClass::TeamClass(FILE *file) :
     }
 
     // Set the owner to the game master.
-    if ((FalconLocalGame) && (!FalconLocalGame->IsLocal()))
+    if ((FalconLocalGame) and (!FalconLocalGame->IsLocal()))
     {
         SetOwner(FalconLocalGame->OwnerId());
         flags &= compl TEAM_UPDATED; // We're not updated until we get data from the master
@@ -974,7 +974,7 @@ int TeamClass::CheckControl(GridIndex X, GridIndex Y)
         return 1;
 
     /* Don't do this right now
-     if (!bo->Targeted() && bo->GetObjectiveStatus() > rand()%100) // The message got through (trigger a mission)
+     if (!bo->Targeted() and bo->GetObjectiveStatus() > rand()%100) // The message got through (trigger a mission)
      {
      MissionRequestClass mis;
      bo->SetTargeted(1);
@@ -1061,7 +1061,7 @@ int TeamClass::Handle(VuFullUpdateEvent *event)
     memcpy(&share_.entityType_, &tmpTeam->share_.entityType_, sizeof(ushort));
     memcpy(&who, &tmpTeam->who, sizeof(Team));
     memcpy(&cteam, &tmpTeam->cteam, sizeof(Team));
-    ShiAssert((cteam > 0 or cteam == 0) && cteam < NUM_TEAMS);
+    ShiAssert((cteam > 0 or cteam == 0) and cteam < NUM_TEAMS);
     memcpy(&flags, &tmpTeam->flags, sizeof(short));
     memcpy(member, tmpTeam->member, sizeof(uchar)*NUM_COUNS);
     memcpy(stance, tmpTeam->stance, sizeof(short)*NUM_TEAMS);
@@ -1094,7 +1094,7 @@ int TeamClass::Handle(VuFullUpdateEvent *event)
     // Mark team data as received if we have all the teams.
     for (int i = 0; i < NUM_TEAMS; i++)
     {
-        if ((TeamInfo[i]) && (!(TeamInfo[i]->flags & TEAM_UPDATED)))
+        if ((TeamInfo[i]) and (!(TeamInfo[i]->flags & TEAM_UPDATED)))
             return retval;
     }
 
@@ -1215,7 +1215,7 @@ void TeamClass::SelectGroundAction(void)
 
                 // KCK: I Hope Nearfront() is sufficient to allow the team to consolidate around this objective
                 // before going on to the next. Maybe I should use distance to front
-                if (pd->ground_priority[who] > best && (o->IsNearfront() or GetRoE(who, o->GetTeam(), ROE_GROUND_CAPTURE) == ROE_ALLOWED))
+                if (pd->ground_priority[who] > best and (o->IsNearfront() or GetRoE(who, o->GetTeam(), ROE_GROUND_CAPTURE) == ROE_ALLOWED))
                 {
                     bo = o;
                     best = pd->ground_priority[who];
@@ -1289,12 +1289,12 @@ void TeamClass::SelectGroundAction(void)
         // A.S. begin, 2001-12-09  if initiative < 40 then consolidate
         if (NewInitiativePoints)
         {
-            if (groundAction.actionPoints && bo && initiative >= 40)
+            if (groundAction.actionPoints and bo and initiative >= 40)
                 return; // We've still got umph, or havn't started yet, and havn't captured our objective
         }
         else   // *** old code ***
         {
-            if (groundAction.actionPoints && bo) //  && GetRoE(who,bo->GetTeam(),ROE_GROUND_CAPTURE) == ROE_ALLOWED)
+            if (groundAction.actionPoints and bo) //  and GetRoE(who,bo->GetTeam(),ROE_GROUND_CAPTURE) == ROE_ALLOWED)
                 return; // We've still got umph, or havn't started yet, and havn't captured our objective
         }
 
@@ -1307,7 +1307,7 @@ void TeamClass::SelectGroundAction(void)
             // Validate enemy actions
             for (t = 0; t < NUM_TEAMS; t++)
             {
-                if (GetRoE(t, who, ROE_GROUND_CAPTURE) == ROE_ALLOWED && (TeamInfo[t]->GetGroundActionType() == GACTION_OFFENSIVE or TeamInfo[t]->GetGroundActionType() == GACTION_MINOROFFENSIVE))
+                if (GetRoE(t, who, ROE_GROUND_CAPTURE) == ROE_ALLOWED and (TeamInfo[t]->GetGroundActionType() == GACTION_OFFENSIVE or TeamInfo[t]->GetGroundActionType() == GACTION_MINOROFFENSIVE))
                     return;
             }
         }
@@ -1364,7 +1364,7 @@ void TeamClass::SelectAirActions(void)
     {
         mis = (MissionRequest) lp->GetUserData();
 
-        if (!mis->action_type && !(MissionData[mis->mission].flags & AMIS_FLYALWAYS))
+        if (!mis->action_type and !(MissionData[mis->mission].flags & AMIS_FLYALWAYS))
             missions_requested++;
 
         lp = lp->GetPrev();
@@ -1400,7 +1400,7 @@ void TeamClass::SelectAirActions(void)
 
 
     // Couple of special cases
-    if ((groundAction.actionType == GACTION_OFFENSIVE) && (action == AACTION_DCA) && (airRatio > 40))
+    if ((groundAction.actionType == GACTION_OFFENSIVE) and (action == AACTION_DCA) and (airRatio > 40))
     {
         action = AACTION_OCA;
     }
@@ -1484,7 +1484,7 @@ void TeamClass::SelectAirActions(void)
             {
                 o->GetLocation(&tx, &ty);
 
-                if (o not_eq bo && DistSqu(x, y, tx, ty) < SIDE_CHECK_DISTANCE * SIDE_CHECK_DISTANCE)
+                if (o not_eq bo and DistSqu(x, y, tx, ty) < SIDE_CHECK_DISTANCE * SIDE_CHECK_DISTANCE)
                 {
                     found = 0;
                     lp = objectiveList->GetFirstElement();
@@ -1572,7 +1572,7 @@ void AddTeam(int teamNum, int defaultStance)
 
     for (j = 0; j < NUM_TEAMS; j++)
     {
-        if (teamNum not_eq j && teamNum && j)
+        if (teamNum not_eq j and teamNum and j)
             temp->stance[j] = defaultStance;
         else if (teamNum not_eq j)
             temp->stance[j] = Neutral;
@@ -1701,7 +1701,7 @@ int SaveTeams(char* scenario)
 
     while (i < NUM_TEAMS)
     {
-        if (TeamInfo[i] && TeamInfo[i]->VuState() == VU_MEM_ACTIVE)
+        if (TeamInfo[i] and TeamInfo[i]->VuState() == VU_MEM_ACTIVE)
         {
             teams++;
         }
@@ -1714,7 +1714,7 @@ int SaveTeams(char* scenario)
 
     while (i < NUM_TEAMS)
     {
-        if (TeamInfo[i] && TeamInfo[i]->VuState() == VU_MEM_ACTIVE)
+        if (TeamInfo[i] and TeamInfo[i]->VuState() == VU_MEM_ACTIVE)
         {
             TeamInfo[i]->Save(fp);
         }
@@ -1806,7 +1806,7 @@ int GetRoE(Team a, Team b, int type)
 
 void TransferInitiative(Team from, Team to, int i)
 {
-    if ((TeamInfo[to]) && (TeamInfo[from]))
+    if ((TeamInfo[to]) and (TeamInfo[from]))
     {
         // MonoPrint ("Transfering %d initiative from %d to %d.\n",i,from,to);
         TeamInfo[to]->AddInitiative(i);
@@ -1923,7 +1923,7 @@ void ApplyBonus(Team who, VU_ID poid, int rating)
     if (rating < 0 or applied)
         return;
 
-    for (i = 0; i < MAX_BONUSES && !applied; i++)
+    for (i = 0; i < MAX_BONUSES and !applied; i++)
     {
         if (TeamInfo[who]->bonusObjs[i] == FalconNullId)
         {
@@ -2024,12 +2024,12 @@ void ApplyPlayerInput(Team who, VU_ID poid, int rating)
     // Modify our or our enemy's action points
     pts = TeamInfo[who]->GetGroundAction()->actionPoints + (rating / 2);
 
-    if (pts > 0 && pts < 100)
+    if (pts > 0 and pts < 100)
         TeamInfo[who]->GetGroundAction()->actionPoints = pts;
 
     pts = TeamInfo[et]->GetGroundAction()->actionPoints - (rating / 2);
 
-    if (pts > 0 && pts < 100)
+    if (pts > 0 and pts < 100)
         TeamInfo[et]->GetGroundAction()->actionPoints = pts;
 
     // MonoPrint("Applying player input: Rating: %d, Location: %d, i:%d,r:%3.3f\n",rating,poid.num_,TeamInfo[who]->GetInitiative(),TeamInfo[who]->playerRating);
@@ -2101,7 +2101,7 @@ void NewInitiativePointSetting(Team who)
 
     for (i = 0; i < NUM_TEAMS; i++) // old code for the other teams (replaces same code in UpdateTeamStatistics-procedure)
     {
-        if (i not_eq who  &&  i not_eq et  &&  TeamInfo[i]->flags & TEAM_ACTIVE)
+        if (i not_eq who  and  i not_eq et  and  TeamInfo[i]->flags & TEAM_ACTIVE)
         {
             if (TeamInfo[i]->GetInitiative() < 40)
                 TeamInfo[i]->AddInitiative((INITIATIVE_LEAK_PER_HOUR * MIN_RECALCULATE_STATISTICS) / 60);
@@ -2141,24 +2141,24 @@ if (TeamInfo[who]->bonusObjs[i] == poid)
 {
 if (TeamInfo[who]->bonusTime[i] >= 0)
 {
-if (TeamInfo[who]->bonusTime[i] > currtime && time > 0)
+if (TeamInfo[who]->bonusTime[i] > currtime and time > 0)
 TeamInfo[who]->bonusTime[i] += time;
-else if (TeamInfo[who]->bonusTime[i] > currtime && time < 0)
+else if (TeamInfo[who]->bonusTime[i] > currtime and time < 0)
 TeamInfo[who]->bonusTime[i] = -currtime + time + (TeamInfo[who]->bonusTime[i]-currtime);
-else if (TeamInfo[who]->bonusTime[i] < currtime && time > 0)
+else if (TeamInfo[who]->bonusTime[i] < currtime and time > 0)
 TeamInfo[who]->bonusTime[i] = currtime + time;
-else if (TeamInfo[who]->bonusTime[i] < currtime && time < 0)
+else if (TeamInfo[who]->bonusTime[i] < currtime and time < 0)
 TeamInfo[who]->bonusTime[i] = -currtime + time;
 }
 else
 {
-if (TeamInfo[who]->bonusTime[i] > -currtime && time > 0)
+if (TeamInfo[who]->bonusTime[i] > -currtime and time > 0)
 TeamInfo[who]->bonusTime[i] = currtime + time;
-else if (TeamInfo[who]->bonusTime[i] > -currtime && time < 0)
+else if (TeamInfo[who]->bonusTime[i] > -currtime and time < 0)
 TeamInfo[who]->bonusTime[i] = -currtime + time;
-else if (TeamInfo[who]->bonusTime[i] < -currtime && time > 0)
+else if (TeamInfo[who]->bonusTime[i] < -currtime and time > 0)
 TeamInfo[who]->bonusTime[i] = currtime + time + (TeamInfo[who]->bonusTime[i]+currtime);
-else if (TeamInfo[who]->bonusTime[i] < -currtime && time < 0)
+else if (TeamInfo[who]->bonusTime[i] < -currtime and time < 0)
 TeamInfo[who]->bonusTime[i] += time;
 }
 return;
@@ -2215,7 +2215,7 @@ int GetPriority(MissionRequest mis)
     mis->priority = 0;
     e = (CampEntity) vuDatabase->Find(mis->targetID);
 
-    if (e && e->IsPackage())
+    if (e and e->IsPackage())
         e = ((Package)e)->GetFirstUnitElement();
 
     // KCK: Make sure we ignore any requests if the player has specified 0 priority
@@ -2254,7 +2254,7 @@ int GetPriority(MissionRequest mis)
         if (!po)
             po = FindNearestObjective(POList, mis->tx, mis->ty, NULL);
     }
-    else if (e->IsUnit() && e->GetDomain() == DOMAIN_LAND)
+    else if (e->IsUnit() and e->GetDomain() == DOMAIN_LAND)
     {
         // KCK: Make sure we ignore any requests if the player has specified 0 priority
         if (!TeamInfo[mis->who]->GetUnitTypePriority(e->GetSType()))
@@ -2328,7 +2328,7 @@ int GetPriority(MissionRequest mis)
         else
             distance_priority = 0; // 0
 
-        if (d > 100 && !mis->action_type && mis->mission == AMIS_SWEEP)
+        if (d > 100 and !mis->action_type and mis->mission == AMIS_SWEEP)
         {
             priority = -1;
             return -1;
@@ -2340,7 +2340,7 @@ int GetPriority(MissionRequest mis)
 
     // KCK HACK:
     // Special case adjustments (it'd be nice to do this to the priorities themselves)
-    if ((mis->mission == AMIS_CAS or mis->mission == AMIS_ONCALLCAS or mis->mission == AMIS_PRPLANCAS or mis->mission == AMIS_BAI) && mis->vs)
+    if ((mis->mission == AMIS_CAS or mis->mission == AMIS_ONCALLCAS or mis->mission == AMIS_PRPLANCAS or mis->mission == AMIS_BAI) and mis->vs)
     {
         // Bonus/penalty based on ground force ratios.
         float ratio = (float)sqrt((float)TeamInfo[mis->who]->GetCurrentStats()->groundVehs / (float)TeamInfo[mis->vs]->GetCurrentStats()->groundVehs);
@@ -2411,7 +2411,7 @@ void AddReinforcements(Team who, int inc)
     while (u)
     {
         // Activate any waiting reinforcements (note: cargoed units are inactive too, so keep an eye out)
-        if (u->GetTeam() == who && !u->Cargo() && u->GetUnitReinforcementLevel() <= TeamInfo[who]->GetReinforcement() && u->Parent())
+        if (u->GetTeam() == who and !u->Cargo() and u->GetUnitReinforcementLevel() <= TeamInfo[who]->GetReinforcement() and u->Parent())
         {
             added = 0;
 
@@ -2432,7 +2432,7 @@ void AddReinforcements(Team who, int inc)
 
                 if (!o or o->GetTeam() == who)
                 {
-                    // Activate this unit && force list reinsertion
+                    // Activate this unit and force list reinsertion
                     e->BroadcastUnitMessage(e->Id(), FalconUnitMessage::unitActivate, 0, 0, 0);
 #ifdef DEBUG
                     gReinforcementsAdded[who]++;
@@ -2734,7 +2734,7 @@ int GetTeamSituation(Team t)
 
      for (i=0; i<NUM_TEAMS; i++)
      {
-     if ((GetTTRelations(t,i) == War) && (TeamInfo[i]))
+     if ((GetTTRelations(t,i) == War) and (TeamInfo[i]))
      {
      etotal += TeamInfo[i]->GetCurrentStats()->airDefenseVehs +
      TeamInfo[i]->GetCurrentStats()->aircraft * 2.0F +
@@ -2743,7 +2743,7 @@ int GetTeamSituation(Team t)
      TeamInfo[i]->GetCurrentStats()->supplyLevel * 100.0F;
      TeamInfo[i]->GetCurrentStats()->fuelLevel * 100.0F;
      }
-     if ((GetTTRelations(t,i) == Allied or t == i) && (TeamInfo[i]))
+     if ((GetTTRelations(t,i) == Allied or t == i) and (TeamInfo[i]))
      {
      mytotal += TeamInfo[i]->GetCurrentStats()->airDefenseVehs +
      TeamInfo[i]->GetCurrentStats()->aircraft * 2.0F +
@@ -2825,7 +2825,7 @@ void InsertIntoSortedList(priority_structure *el)
 
     tmp = PriorityList;
 
-    while (tmp && tmp->average_score > el->average_score)
+    while (tmp and tmp->average_score > el->average_score)
     {
         last = tmp;
         tmp = tmp->next;
@@ -3221,7 +3221,7 @@ void TeamClass::ReadDirty(unsigned char **stream, long *rem)
     {
         memcpychk(&cteam, stream, sizeof(uchar), rem);
 
-        if (!((cteam > 0) && (cteam < NUM_TEAMS)))
+        if (!((cteam > 0) and (cteam < NUM_TEAMS)))
         {
             char err[200];
             sprintf(err, "%s %d: error reading dirty, invalid cteam", __FILE__, __LINE__);

@@ -176,7 +176,7 @@ BOOL NT4GetLoadedModules(DWORD     dwPID        ,
 
     // If bRet was FALSE, and the user was not just asking for the
     //  total, there was a problem.
-    if (((FALSE == bRet) && (uiCount > 0)) or (0 == dwTotal))
+    if (((FALSE == bRet) and (uiCount > 0)) or (0 == dwTotal))
     {
         ASSERT(FALSE) ;
         TRACE0("EnumProcessModules failed!\n") ;
@@ -186,7 +186,7 @@ BOOL NT4GetLoadedModules(DWORD     dwPID        ,
     // If the total returned in puiRealCount is larger than the value in
     //  uiCount, then return an error.  If uiCount is zero, then it is
     //  not an error.
-    if ((*puiRealCount > uiCount) && (uiCount > 0))
+    if ((*puiRealCount > uiCount) and (uiCount > 0))
     {
         ASSERT(FALSE) ;
         TRACE0("Buffer is too small in NT4GetLoadedModules!\n") ;

@@ -44,7 +44,7 @@ void ICPClass::CNIBackup(void)
     {
         GetWind();
 
-        if (windSpeed > 1 && windSpeed < 9)
+        if (windSpeed > 1 and windSpeed < 9)
             sprintf(tempstr, "%d*00%d", heading, (int)windSpeed);
         else if (windSpeed > 9)
             sprintf(tempstr, "%d*0%d", heading, (int)windSpeed);
@@ -109,7 +109,7 @@ void ICPClass::ILSBackup(void)
     //Line1
     FillDEDMatrix(0, 1, "TCN ON");
 
-    if (gNavigationSys && gNavigationSys->GetTacanBand(NavigationSystem::AUXCOMM) == TacanList::X &&
+    if (gNavigationSys and gNavigationSys->GetTacanBand(NavigationSystem::AUXCOMM) == TacanList::X &&
         id not_eq FalconNullId)
         FillDEDMatrix(0, 18, "ILS ON");
     else

@@ -73,7 +73,7 @@ void DigitalBrain::Actions(void)
             WayPoint w = flight->GetFirstUnitWP();
             bool found = false;
 
-            while (w && !found)
+            while (w and !found)
             {
                 if (w->GetWPFlags() & WPF_TARGET)
                     found = true;
@@ -98,7 +98,7 @@ void DigitalBrain::Actions(void)
 #endif
 
     // handle threat above all else
-    if (threatPtr && curMode not_eq TakeoffMode)
+    if (threatPtr and curMode not_eq TakeoffMode)
     {
         if (curMode == MissileDefeatMode)
         {
@@ -129,7 +129,7 @@ void DigitalBrain::Actions(void)
     else
     {
         // Mode radar appropriately
-        if (curMode not_eq WaypointMode && theRadar && theRadar->IsAG())
+        if (curMode not_eq WaypointMode and theRadar and theRadar->IsAG())
         {
             theRadar->SetMode(RadarClass::AA);
         }
@@ -193,7 +193,7 @@ void DigitalBrain::Actions(void)
                 Land();
 #ifdef SHOW_MANEUVERLABELS
                 sprintf(label, "Landing %s",
-                        atcstatus >= 0 && atcstatus < MAXATCSTATUS ? ATCModes[atcstatus] : "");
+                        atcstatus >= 0 and atcstatus < MAXATCSTATUS ? ATCModes[atcstatus] : "");
 #endif
                 break;
 
@@ -201,7 +201,7 @@ void DigitalBrain::Actions(void)
                 TakeOff();
 #ifdef SHOW_MANEUVERLABELS
                 sprintf(label, "TakeOff %s",
-                        atcstatus >= 0 && atcstatus < MAXATCSTATUS ? ATCModes[atcstatus] : "");
+                        atcstatus >= 0 and atcstatus < MAXATCSTATUS ? ATCModes[atcstatus] : "");
 #endif
                 break;
 
@@ -294,7 +294,7 @@ void DigitalBrain::Actions(void)
                 /*----------*/
             case SeparateMode:
             case BugoutMode:
-                if (lastMode not_eq BugoutMode && lastMode not_eq SeparateMode && targetPtr)
+                if (lastMode not_eq BugoutMode and lastMode not_eq SeparateMode and targetPtr)
                 {
                     // 2001-10-28 CHANGED BACK M.N. holdAlt is used in AltitudeHold, which needs a positive value
                     // altitude error is calculated as holdAlt + self->ZPos() there !!!
@@ -404,7 +404,7 @@ void DigitalBrain::Actions(void)
 
         if (g_nShowDebugLabels & 0x1000)
         {
-            if (SimDriver.GetPlayerEntity() && self->GetCampaignObject() && self->GetCampaignObject()->GetIdentified(SimDriver.GetPlayerEntity()->GetTeam()))
+            if (SimDriver.GetPlayerEntity() and self->GetCampaignObject() and self->GetCampaignObject()->GetIdentified(SimDriver.GetPlayerEntity()->GetTeam()))
                 strcat(label, "IDed");
             else
                 strcat(label, "Not IDed");
@@ -447,7 +447,7 @@ void DigitalBrain::Actions(void)
 #endif
 
     // have we got a surprise for you!!
-    if ((targetPtr or threatPtr) && IsSetATC(HasTrainable) && self->HasPilot())
+    if ((targetPtr or threatPtr) and IsSetATC(HasTrainable) and self->HasPilot())
     {
         TrainableGunsEngage();
     }
@@ -517,7 +517,7 @@ void DigitalBrain::AirbaseCheck()
 
     // when on Bingo, check distance to closest airbase when not having a target and not being threatened
     // return if distance is greater than g_fBingoReturnDistance
-    if (IsSetATC(SaidBingo) && !IsSetATC(SaidFumes) && !targetPtr && !threatPtr && !airbasediverted)
+    if (IsSetATC(SaidBingo) and !IsSetATC(SaidFumes) and !targetPtr and !threatPtr and !airbasediverted)
     {
         pos.x = self->XPos();
         pos.y = self->YPos();
@@ -587,7 +587,7 @@ void DigitalBrain::AirbaseCheck()
         // END OF ADDED SECTION 2002-04-02
 
         // change home base, of course only if it is another than our current one...
-        if (obj && obj->Id() not_eq airbase)
+        if (obj and obj->Id() not_eq airbase)
         {
             airbase = obj->Id();
             moreFlags  or_eq  NewHomebase; // set this so that ResetATC doesn't reset our new airbase

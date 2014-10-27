@@ -96,7 +96,7 @@ void SetTimeCompression(int newComp)
     if (TheCampaign.EndgameResult)
         newComp = 0;
 
-    if (gCommsMgr && gCommsMgr->Online() && FalconLocalGame)
+    if (gCommsMgr and gCommsMgr->Online() and FalconLocalGame)
     {
         // For online games, we only set our session's requested time compression.
         FalconLocalSession->SetReqCompression((short)newComp);
@@ -109,7 +109,7 @@ void SetTimeCompression(int newComp)
         // Otherwise, set our compression directly
         lastStartTime = vuxRealTime;
 
-        if (!gameCompressionRatio && newComp)
+        if (!gameCompressionRatio and newComp)
             SimDriver.lastRealTime = vuxGameTime;
 
         gameCompressionRatio = newComp;
@@ -141,7 +141,7 @@ void SetOnlineTimeCompression(int newComp)
 
     lastStartTime = vuxRealTime;
 
-    if (!gameCompressionRatio && newComp)
+    if (!gameCompressionRatio and newComp)
         SimDriver.lastRealTime = vuxGameTime;
 
     gameCompressionRatio = newComp;
@@ -160,7 +160,7 @@ void SetTemporaryCompression(int newComp)
 
     lastStartTime = vuxRealTime;
 
-    if (!gameCompressionRatio && newComp)
+    if (!gameCompressionRatio and newComp)
         SimDriver.lastRealTime = vuxGameTime;
 
     gameCompressionRatio = newComp;

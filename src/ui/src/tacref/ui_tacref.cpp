@@ -179,7 +179,7 @@ static void TACREF_PannerCB(long, short hittype, C_Base *control)
     float dx, dy;
     C_Panner *pnr;
 
-    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
     pnr = static_cast<C_Panner *>(control);
@@ -217,7 +217,7 @@ static void TACREF_ZoomCB(long, short hittype, C_Base *control)
     C_Panner *pnr;
 
 
-    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
 
@@ -470,7 +470,7 @@ static void Unload3dModel()
     long i, visFlag;
     BSPLIST *obj, *Weapon;
 
-    if (CurrentWeapon && CurrentModel)
+    if (CurrentWeapon and CurrentModel)
     {
         obj = TAC_Viewer->Find(CurrentModel);
         Weapon = TAC_Viewer->Find(CurrentWeapon);
@@ -1058,7 +1058,7 @@ static void PlaySoundCB(long, short hittype, C_Base *control)
 
         LastLockTone = control->GetUserNumber(0);
 
-        if (SFX_DEF && LastLockTone not_eq -1) // JB 010425
+        if (SFX_DEF and LastLockTone not_eq -1) // JB 010425
             F4LoopSound(SFX_DEF[LastLockTone].handle);
     }
     else if (LastLockTone not_eq -1)

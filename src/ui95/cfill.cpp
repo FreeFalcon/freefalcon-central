@@ -154,7 +154,7 @@ void C_Fill::SetDither(short size, short range)
 
 void C_Fill::Cleanup(void)
 {
-    if (DitherPattern_ && DitherSize_)
+    if (DitherPattern_ and DitherSize_)
     {
 #ifdef USE_SH_POOLS
         MemFreePtr(DitherPattern_);
@@ -335,7 +335,7 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
     }
     else
     {
-        if ((Flags_ & C_BIT_TRANSLUCENT) && (Start_ < 100) && Start_)
+        if ((Flags_ & C_BIT_TRANSLUCENT) and (Start_ < 100) and Start_)
         {
             Parent_->BlitTranslucent(surface, Color_, Start_, &d, C_BIT_ABSOLUTE, 0);
         }

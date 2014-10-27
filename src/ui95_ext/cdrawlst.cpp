@@ -82,14 +82,14 @@ long C_DrawList::CheckHotSpots(long relX, long relY)
 
     while (item)
     {
-        if (!(item->Flags & C_BIT_INVISIBLE) && item->Flags & C_BIT_ENABLED)
+        if (!(item->Flags & C_BIT_INVISIBLE) and item->Flags & C_BIT_ENABLED)
         {
             x = item->x + item->Icon->GetX();
             y = item->y + item->Icon->GetY();
             w = item->Icon->GetW();
             h = item->Icon->GetH();
 
-            if (relX >= x && relY >= y && relX < (x + w) && relY < (y + h))
+            if (relX >= x and relY >= y and relX < (x + w) and relY < (y + h))
             {
                 Last_ = item;
                 SetMenu(Last_->Owner->GetMenu());
@@ -109,7 +109,7 @@ BOOL C_DrawList::Process(long ID, short HitType)
 {
     gSoundMgr->PlaySound(GetSound(HitType));
 
-    if (Last_ && Last_->Owner)
+    if (Last_ and Last_->Owner)
         return(Last_->Owner->Process(ID, HitType));
 
     return(FALSE);
@@ -128,7 +128,7 @@ void C_DrawList::Refresh()
 
     while (item)
     {
-        if (!(item->Flags & C_BIT_INVISIBLE) && item->Flags & C_BIT_ENABLED)
+        if (!(item->Flags & C_BIT_INVISIBLE) and item->Flags & C_BIT_ENABLED)
         {
             if (item->Icon)
             {
@@ -169,7 +169,7 @@ void C_DrawList::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     while (item)
     {
-        if (!(item->Flags & C_BIT_INVISIBLE) && item->Flags & C_BIT_ENABLED)
+        if (!(item->Flags & C_BIT_INVISIBLE) and item->Flags & C_BIT_ENABLED)
         {
             if (item->Icon)
             {
@@ -187,7 +187,7 @@ void C_DrawList::Draw(SCREEN *surface, UI95_RECT *cliprect)
                     if (item->Bat)
                         item->Bat->Draw(surface, cliprect);
 
-                    if (item->Label && !item->Div && !item->Brig && !item->Bat)
+                    if (item->Label and !item->Div and !item->Brig and !item->Bat)
                         item->Label->Draw(surface, cliprect);
                 }
             }

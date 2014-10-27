@@ -109,7 +109,7 @@ void CPKneeView::DisplayDraw(void)
     {
         // If we're not in Realistic mode, draw the current position marker
         // M.N. Added Full realism mode
-        if (PlayerOptions.GetAvionicsType() not_eq ATRealistic && PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
+        if (PlayerOptions.GetAvionicsType() not_eq ATRealistic and PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
         {
             DrawCurrentPosition(mpOTWImage, renderer, (SimVehicleClass*)mpOwnship);
         }
@@ -159,11 +159,11 @@ void CPKneeView::DrawMissionText(Render2D *renderer, SimVehicleClass *platform)
         }
 
         //MI display GPS coords when on ground, for INS alignment stuff
-        if (g_bRealisticAvionics && g_bINS)
+        if (g_bRealisticAvionics and g_bINS)
         {
             v -= 2 * LINE_HEIGHT;
 
-            if (((AircraftClass*)SimDriver.GetPlayerEntity()) && ((AircraftClass*)SimDriver.GetPlayerEntity())->OnGround())
+            if (((AircraftClass*)SimDriver.GetPlayerEntity()) and ((AircraftClass*)SimDriver.GetPlayerEntity())->OnGround())
             {
                 char latStr[20] = "";
                 char longStr[20] = "";

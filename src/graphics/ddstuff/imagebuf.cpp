@@ -434,7 +434,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
             }
         }
 
-        if (clip && m_pDDSFront)
+        if (clip and m_pDDSFront)
         {
             ShiAssert(!fullScreen);
             IDirectDrawClipperPtr pDDCLP;
@@ -623,7 +623,7 @@ void ImageBuffer::UpdateFrontWindowRect(RECT *rect)
     // ShiAssert( frontType == Primary ); // This is only useful for the primary surface
     if (rect) m_rcFront = *rect;
 
-    m_bFrontRectValid = rect && (m_rcFront.left or m_rcFront.right);
+    m_bFrontRectValid = rect and (m_rcFront.left or m_rcFront.right);
 }
 
 // Fix in memory and return and pointer to the memory associated with our back buffer
@@ -660,7 +660,7 @@ Retry:
     {
         MonoPrint("ImageBuffer::Lock - Lock failed with 0x%X\n", hr);
 
-        if (hr == DDERR_SURFACELOST && nRetries)
+        if (hr == DDERR_SURFACELOST and nRetries)
         {
             RestoreAll();
             nRetries--;
@@ -860,9 +860,9 @@ void ImageBuffer::Compose(ImageBuffer *srcBuffer, RECT *dstRect, RECT *srcRect)
     bool bStretch = ((srcRect->right - srcRect->left) not_eq (dstRect->right - dstRect->left)) or ((srcRect->bottom - srcRect->top) not_eq (dstRect->bottom - dstRect->top));
     HRESULT hr;
 
-    if (!m_bFrontRectValid && !bStretch)
+    if (!m_bFrontRectValid and !bStretch)
     {
-        if (srcRect && m_pBltTarget not_eq m_pDDSBack)
+        if (srcRect and m_pBltTarget not_eq m_pDDSBack)
         {
             RECT rcSrc = *srcRect;
             rcSrc.left += m_rcFront.left;
@@ -876,7 +876,7 @@ void ImageBuffer::Compose(ImageBuffer *srcBuffer, RECT *dstRect, RECT *srcRect)
 
     else
     {
-        if (m_bFrontRectValid && srcRect && m_pBltTarget not_eq m_pDDSBack)
+        if (m_bFrontRectValid and srcRect and m_pBltTarget not_eq m_pDDSBack)
         {
             RECT rcSrc = *srcRect;
             rcSrc.left += m_rcFront.left;
@@ -907,9 +907,9 @@ void ImageBuffer::ComposeTransparent(ImageBuffer *srcBuffer, RECT *dstRect, RECT
     bool bStretch = ((srcRect->right - srcRect->left) not_eq (dstRect->right - dstRect->left)) or ((srcRect->bottom - srcRect->top) not_eq (dstRect->bottom - dstRect->top));
     HRESULT hr;
 
-    if (!m_bFrontRectValid && !bStretch)
+    if (!m_bFrontRectValid and !bStretch)
     {
-        if (srcRect && m_pBltTarget not_eq m_pDDSBack)
+        if (srcRect and m_pBltTarget not_eq m_pDDSBack)
         {
             RECT rcSrc = *srcRect;
             rcSrc.left += m_rcFront.left;
@@ -923,7 +923,7 @@ void ImageBuffer::ComposeTransparent(ImageBuffer *srcBuffer, RECT *dstRect, RECT
 
     else
     {
-        if (m_bFrontRectValid && srcRect && m_pBltTarget not_eq m_pDDSBack)
+        if (m_bFrontRectValid and srcRect and m_pBltTarget not_eq m_pDDSBack)
         {
             RECT rcSrc = *srcRect;
             rcSrc.left += m_rcFront.left;
@@ -1050,7 +1050,7 @@ void ImageBuffer::SwapBuffers(bool bDontFlip)
 
     //STOP_PROFILE("SWAP WAIT : ");
     // OW
-    if (!bDontFlip && (m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_FLIP))
+    if (!bDontFlip and (m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_FLIP))
     {
         hr = m_pDDSFront->Flip(NULL, DDFLIP_WAIT);
         // hr = m_pDDSFront->Flip(NULL, DDFLIP_NOVSYNC);

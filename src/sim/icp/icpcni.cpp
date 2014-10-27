@@ -246,12 +246,12 @@ void ICPClass::ExecCNIMode()
         //END WAYPOINT INFO
         //Up
         // MD -- 20040204: UHF should always appear in line 1, VHF in line 3
-        //if(IsICPSet(ICPClass::EDIT_VHF) && WhichRadio == 1)
+        //if(IsICPSet(ICPClass::EDIT_VHF) and WhichRadio == 1)
         // FillDEDMatrix(0,5,"\x01");
         //else
         if (IsICPSet(ICPClass::EDIT_VHF))
             FillDEDMatrix(2, 5, "\x01");
-        else if (IsICPSet(ICPClass::EDIT_UHF)) // && WhichRadio == 0)
+        else if (IsICPSet(ICPClass::EDIT_UHF)) // and WhichRadio == 0)
             FillDEDMatrix(0, 5, "\x01");
 
         //else if(IsICPSet(ICPClass::EDIT_UHF))
@@ -263,7 +263,7 @@ void ICPClass::ExecCNIMode()
         {
             GetWind();
 
-            if (windSpeed > 1 && windSpeed < 9)
+            if (windSpeed > 1 and windSpeed < 9)
                 sprintf(tempstr, "%d*00%d", heading, (int)windSpeed);
             else if (windSpeed > 9)
                 sprintf(tempstr, "%d*0%d", heading, (int)windSpeed);

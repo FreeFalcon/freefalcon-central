@@ -18,7 +18,7 @@ void DigitalBrain::CommandFlight(void)
         // 2002-03-08 MODIFIED BY S.G. If in WaypointMode it means we don't care so why should our wing care but flag us as having a target switch so if we ever get out of WaypointMode, send the target to our wings
         if (targetPtr)
         {
-            if (((moreFlags & KeepTryingAttack) or lastTarget == NULL or (lastTarget && (targetPtr->BaseData() not_eq lastTarget->BaseData()))))
+            if (((moreFlags & KeepTryingAttack) or lastTarget == NULL or (lastTarget and (targetPtr->BaseData() not_eq lastTarget->BaseData()))))
             {
                 if (curMode not_eq WaypointMode)
                 {
@@ -53,7 +53,7 @@ void DigitalBrain::CommandFlight(void)
                     moreFlags  or_eq  KeepTryingAttack;
             }
         }
-        else if ((moreFlags & KeepTryingRejoin) or lastTarget && targetPtr == NULL) // 2002-03-08 MODIFIED BY S.G. keep trying to rejoin until it can
+        else if ((moreFlags & KeepTryingRejoin) or lastTarget and targetPtr == NULL) // 2002-03-08 MODIFIED BY S.G. keep trying to rejoin until it can
         {
             int usComponents = self->GetCampaignObject()->NumberOfComponents();
             int i;
@@ -65,9 +65,9 @@ void DigitalBrain::CommandFlight(void)
             {
                 flightMember = (AircraftClass *)self->GetCampaignObject()->GetComponentEntity(i);
 
-                if (flightMember && (flightMember->IsDigital() or flightMember->IsLocal()))
+                if (flightMember and (flightMember->IsDigital() or flightMember->IsLocal()))
                 {
-                    if (flightMember->DBrain() && flightMember->DBrain()->GetAGDoctrine() not_eq AGD_NONE)
+                    if (flightMember->DBrain() and flightMember->DBrain()->GetAGDoctrine() not_eq AGD_NONE)
                     {
                         stillengaging = true;
                         break;
@@ -75,7 +75,7 @@ void DigitalBrain::CommandFlight(void)
                 }
             }
 
-            if (!stillengaging && !threatPtr) // If we are threatened, call the wingmen back regardless what they do
+            if (!stillengaging and !threatPtr) // If we are threatened, call the wingmen back regardless what they do
             {
                 AiSendCommand(self, FalconWingmanMsg::WMRejoin, AiFlight, FalconNullId);
                 AiSendCommand(self, FalconWingmanMsg::WMCoverMode, AiFlight, FalconNullId);

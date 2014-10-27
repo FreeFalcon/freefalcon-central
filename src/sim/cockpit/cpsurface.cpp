@@ -76,9 +76,9 @@ void CPSurface::CreateLit(void)
         // OW
         // mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mWidth, mHeight, SystemMem, None);
 
-        MPRSurfaceType front = (FalconDisplay.theDisplayDevice.IsHardware() && DisplayOptions.bRender2DCockpit) ? LocalVideoMem : SystemMem;
+        MPRSurfaceType front = (FalconDisplay.theDisplayDevice.IsHardware() and DisplayOptions.bRender2DCockpit) ? LocalVideoMem : SystemMem;
 
-        if (!mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mWidth, mHeight, front, None) && front == LocalVideoMem)
+        if (!mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mWidth, mHeight, front, None) and front == LocalVideoMem)
         {
             // Retry with system memory if ouf video memory
 #ifdef _DEBUG
@@ -106,7 +106,7 @@ void CPSurface::CreateLit(void)
                 throw _com_error(E_OUTOFMEMORY);
 
             // Check if we can use a single texture
-            if ((int)dwMaxTextureWidth >= mWidth && (int)dwMaxTextureHeight >= mHeight)
+            if ((int)dwMaxTextureWidth >= mWidth and (int)dwMaxTextureHeight >= mHeight)
             {
                 TextureHandle *pTex = new TextureHandle;
 

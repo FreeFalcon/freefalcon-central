@@ -409,7 +409,7 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
     gMapMgr->SetAllGroundUnitCallbacks(UnitCB);
     gMapMgr->SetAllNavalUnitCallbacks(UnitCB);
 
-    if (CurMapTool && CurMapTool == control)
+    if (CurMapTool and CurMapTool == control)
     {
         CurMapTool->SetState(0);
         CurMapTool->Refresh();
@@ -722,7 +722,7 @@ static void gMapMgr_zoom_in(long, short hittype, C_Base *ctrl)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((hittype not_eq C_TYPE_LMOUSEUP) && (hittype not_eq C_TYPE_REPEAT))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) and (hittype not_eq C_TYPE_REPEAT))
         return;
 
     Leave = UI_Enter(ctrl->Parent_);
@@ -739,7 +739,7 @@ static void gMapMgr_zoom_out(long, short hittype, C_Base *ctrl)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((hittype not_eq C_TYPE_LMOUSEUP) && (hittype not_eq C_TYPE_REPEAT))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) and (hittype not_eq C_TYPE_REPEAT))
         return;
 
     Leave = UI_Enter(ctrl->Parent_);

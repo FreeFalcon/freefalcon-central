@@ -113,10 +113,10 @@ void C_ATO_Package::SetFont(long ID)
 
 long C_ATO_Package::CheckHotSpots(long relX, long relY)
 {
-    if (relX >= GetX() && relX <= (GetX() + GetW()) && relY >= GetY() && relY <= (GetY() + GetH()))
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
     {
-        if (relX >= (GetX() + ShowWP_->GetX()) && relX <= (GetX() + ShowWP_->GetX() + ShowWP_->GetW())
-            && relY >= (GetY() + ShowWP_->GetY()) && relY <= (GetY() + ShowWP_->GetY() + ShowWP_->GetH()))
+        if (relX >= (GetX() + ShowWP_->GetX()) and relX <= (GetX() + ShowWP_->GetX() + ShowWP_->GetW())
+            and relY >= (GetY() + ShowWP_->GetY()) and relY <= (GetY() + ShowWP_->GetY() + ShowWP_->GetH()))
             Section_ = 1;
         else
             Section_ = 0;

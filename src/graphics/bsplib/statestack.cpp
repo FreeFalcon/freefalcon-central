@@ -360,9 +360,9 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
             cz *= sz;
         }
 
-        ShiAssert((sx > 0.0f) && (sx <= 1.0f));
-        ShiAssert((sy > 0.0f) && (sy <= 1.0f));
-        ShiAssert((sz > 0.0f) && (sz <= 1.0f));
+        ShiAssert((sx > 0.0f) and (sx <= 1.0f));
+        ShiAssert((sy > 0.0f) and (sy <= 1.0f));
+        ShiAssert((sz > 0.0f) and (sz <= 1.0f));
 
         Pmatrix stretchM = { cx, 0.f, 0.f,
                                 0.f, cy, 0.f,
@@ -407,7 +407,7 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
 
     if (objInst->ParentObject)
     {
-        if (g_bSlowButSafe && F4IsBadCodePtr((FARPROC) objInst->ParentObject)) // JB 010220 CTD (too much CPU)
+        if (g_bSlowButSafe and F4IsBadCodePtr((FARPROC) objInst->ParentObject)) // JB 010220 CTD (too much CPU)
             CurrentLOD = 0; // JB 010220 CTD
         else // JB 010220 CTD
             if (objInst->id < 0 or objInst->id >= TheObjectListLength or objInst->TextureSet < 0) // JB 010705 CTD second try
@@ -724,7 +724,7 @@ void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
 
         // Cobra - RED - Zero is Zero both in Float and Long...but Long is faster
         // ...........(lightSpecular).........................................
-        if (!LODused && ((*(long*)&lightSpecular) & 0x7fffffff) && DisplayOptions.bSpecularLighting)
+        if (!LODused and ((*(long*)&lightSpecular) & 0x7fffffff) and DisplayOptions.bSpecularLighting)
         {
             viewVector.x = ObjSpaceEye.x - p->x;
             viewVector.y = ObjSpaceEye.y - p->y;

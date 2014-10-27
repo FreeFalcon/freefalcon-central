@@ -381,7 +381,7 @@ ListFree(void * unit)
 
     do
     {
-        if ((unit >= tbl -> min) && (unit < tbl -> max))
+        if ((unit >= tbl -> min) and (unit < tbl -> max))
         {
             tbl -> avail++;
 
@@ -401,7 +401,7 @@ ListFree(void * unit)
         }
 
     }
-    while (tbl && !done);
+    while (tbl and !done);
 
     if (!done)
         ERROR("Couldn't find list in allocation table\n");
@@ -663,7 +663,7 @@ ListNth(LIST * list, int n)
 
     curr = list;
 
-    for (i = 0 ; i < n && curr; i++)
+    for (i = 0 ; i < n and curr; i++)
         curr = curr -> next;
 
     return(curr);
@@ -726,7 +726,7 @@ ListRemove(LIST * list, void * node)
     prev = NULL;
     curr = list;
 
-    while (curr && (curr -> node not_eq node))
+    while (curr and (curr -> node not_eq node))
     {
         prev = curr;
         curr = curr -> next;

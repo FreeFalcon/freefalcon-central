@@ -639,7 +639,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
     */
 
     // OW
-    //   if ( ddPointer && ( videoMode not_eq MOVIE_MODE_INTERLACE ) )
+    //   if ( ddPointer and ( videoMode not_eq MOVIE_MODE_INTERLACE ) )
     if (1)
     {
         item->sbType  or_eq  SURFACE_TYPE_DDRAW;

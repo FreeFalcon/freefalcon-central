@@ -235,7 +235,7 @@ void CopyPBToWindow(long ID, long Client)
         UI_Leave(Leave);
     }
 
-    if ((localID == 0) && (btn == NULL))
+    if ((localID == 0) and (btn == NULL))
     {
         //_tcscpy(localDescription,gStringMgr->GetString(TXT_DEFAULT));
         localID = 1;
@@ -321,7 +321,7 @@ void Phone_Connect_CB(long n, short hittype, C_Base *control)
     LeaveDogfight();
     CheckFlyButton();
 
-    if (gCommsMgr->Online() && control->Parent_)
+    if (gCommsMgr->Online() and control->Parent_)
     {
         gMainHandler->DisableWindowGroup(control->Parent_->GetGroup());
     }

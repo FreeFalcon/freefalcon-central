@@ -235,7 +235,7 @@ void MonochromeDisplay::Render2DLine(float x0in, float y0in, float x1in, float y
     pixcount = 0;
 
     // Select which of four possible octants we're in (0, 1, 6, or 7)
-    if (dy >= 0 && dy <= dx)
+    if (dy >= 0 and dy <= dx)
     {
         d = 2 * dy - dx;
         ince = 2 * dy;
@@ -260,7 +260,7 @@ void MonochromeDisplay::Render2DLine(float x0in, float y0in, float x1in, float y
             pixcount ++;
         }
     }
-    else if (dy < 0 && -dy < dx)
+    else if (dy < 0 and -dy < dx)
     {
         d = -2 * dy - dx;
         ince = -2 * dy;
@@ -284,7 +284,7 @@ void MonochromeDisplay::Render2DLine(float x0in, float y0in, float x1in, float y
             pixcount ++;
         }
     }
-    else if (dx >= 0 && dy >= 0)
+    else if (dx >= 0 and dy >= 0)
     {
         d = 2 * dx - dy;
         ince = 2 * dx;

@@ -2027,7 +2027,7 @@ void ACMICloseCB(long, short hittype, C_Base *control)
 
 void ACMIStopCB(long, short hittype, C_Base *control)
 {
-    if (hittype == C_TYPE_LMOUSEUP && ACMIViewIsReady())
+    if (hittype == C_TYPE_LMOUSEUP and ACMIViewIsReady())
     {
         acmiView->Tape()->Pause();
         // ACMITransportButton( STOP_BUTTON );
@@ -2045,7 +2045,7 @@ void ACMIStopCB(long, short hittype, C_Base *control)
 
 void ACMIPlayCB(long, short hittype, C_Base *control)
 {
-    if (hittype == C_TYPE_LMOUSEUP && ACMIViewIsReady())
+    if (hittype == C_TYPE_LMOUSEUP and ACMIViewIsReady())
     {
         acmiView->Tape()->Pause();
         acmiView->Tape()->SetPlayVelocity(1.0);
@@ -2068,7 +2068,7 @@ void ACMIPlayCB(long, short hittype, C_Base *control)
 
 void ACMIPlayBackwardsCB(long, short hittype, C_Base *control)
 {
-    if (hittype == C_TYPE_LMOUSEUP && ACMIViewIsReady())
+    if (hittype == C_TYPE_LMOUSEUP and ACMIViewIsReady())
     {
         acmiView->Tape()->Pause();
         acmiView->Tape()->SetPlayVelocity(-1.0);
@@ -2093,7 +2093,7 @@ void ACMIStepFowardCB(long, short hittype, C_Base *control)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((hittype == C_TYPE_LMOUSEUP or hittype == C_TYPE_REPEAT) && ACMIViewIsReady())
+    if ((hittype == C_TYPE_LMOUSEUP or hittype == C_TYPE_REPEAT) and ACMIViewIsReady())
     {
         Leave = UI_Enter(control->Parent_);
         acmiView->Tape()->Pause();
@@ -2115,7 +2115,7 @@ void ACMIStepReverseCB(long, short hittype, C_Base *control)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((hittype == C_TYPE_LMOUSEUP or hittype == C_TYPE_REPEAT) && ACMIViewIsReady())
+    if ((hittype == C_TYPE_LMOUSEUP or hittype == C_TYPE_REPEAT) and ACMIViewIsReady())
     {
         Leave = UI_Enter(control->Parent_);
         acmiView->Tape()->Pause();
@@ -2135,7 +2135,7 @@ void ACMIStepReverseCB(long, short hittype, C_Base *control)
 
 void ACMIRewindCB(long, short hittype, C_Base *control)
 {
-    if (hittype == C_TYPE_LMOUSEUP && ACMIViewIsReady())
+    if (hittype == C_TYPE_LMOUSEUP and ACMIViewIsReady())
     {
         acmiView->Tape()->Pause();
         acmiView->Tape()->SetPlayVelocity(-1.0);
@@ -2158,7 +2158,7 @@ void ACMIRewindCB(long, short hittype, C_Base *control)
 
 void ACMIFastForwardCB(long, short hittype, C_Base *control)
 {
-    if (hittype == C_TYPE_LMOUSEUP && ACMIViewIsReady())
+    if (hittype == C_TYPE_LMOUSEUP and ACMIViewIsReady())
     {
         acmiView->Tape()->Pause();
         acmiView->Tape()->SetPlayVelocity(1.0);
@@ -2275,7 +2275,7 @@ void ACMIPannerCB(long, short hittype, C_Base *control)
     vert = 0.0F;
 
 
-    if ((hittype == C_TYPE_LMOUSEDOWN or hittype == C_TYPE_REPEAT) && ACMIViewIsReady())
+    if ((hittype == C_TYPE_LMOUSEDOWN or hittype == C_TYPE_REPEAT) and ACMIViewIsReady())
     {
         panner = (C_Panner *) control;
         horz = (float)panner->GetHRange();
@@ -2303,7 +2303,7 @@ void ACMIHArrowsCB(long, short hittype, C_Base *control)
     vert = 0.0F;
 
 
-    if ((hittype == C_TYPE_LMOUSEDOWN or hittype == C_TYPE_REPEAT) && ACMIViewIsReady())
+    if ((hittype == C_TYPE_LMOUSEDOWN or hittype == C_TYPE_REPEAT) and ACMIViewIsReady())
     {
         panner = (C_Panner *) control;
         horz = (float)panner->GetHRange();
@@ -2331,7 +2331,7 @@ void ACMIVArrowsCB(long, short hittype, C_Base *control)
     vert = 0.0F;
 
 
-    if ((hittype == C_TYPE_LMOUSEDOWN or hittype == C_TYPE_REPEAT) && ACMIViewIsReady())
+    if ((hittype == C_TYPE_LMOUSEDOWN or hittype == C_TYPE_REPEAT) and ACMIViewIsReady())
     {
         panner = (C_Panner *) control;
         horz = (float)panner->GetHRange();
@@ -2354,7 +2354,7 @@ void ACMICameraCB(long, short hittype, C_Base *control)
     C_Window *win;
     long i, cluster;
 
-    if (hittype == C_TYPE_SELECT && ACMIViewIsReady())
+    if (hittype == C_TYPE_SELECT and ACMIViewIsReady())
     {
         ACMIListBox = (C_ListBox *)control;
         gCameraMode = ACMIListBox->GetTextID();
@@ -2372,7 +2372,7 @@ void ACMICameraCB(long, short hittype, C_Base *control)
                 i = 10; // Joe's starting ID for stuff to hide
                 cluster = item->GetUserNumber(i);
 
-                while (cluster && i < 20)
+                while (cluster and i < 20)
                 {
                     win->HideCluster(cluster);
                     i++;
@@ -2382,7 +2382,7 @@ void ACMICameraCB(long, short hittype, C_Base *control)
                 i = 0; // Joe's starting ID for stuff to enable
                 cluster = item->GetUserNumber(i);
 
-                while (cluster && i < 10)
+                while (cluster and i < 10)
                 {
                     win->UnHideCluster(cluster);
                     i++;
@@ -2472,7 +2472,7 @@ void ACMICamTrackingPrevCB(long, short hittype, C_Base *control)
 
     lbox = (C_ListBox *)winme->FindControl(TRACKED_OBJECT_FIELD);
 
-    if (hittype == C_TYPE_LMOUSEUP && ACMIViewIsReady())
+    if (hittype == C_TYPE_LMOUSEUP and ACMIViewIsReady())
     {
         acmiView->IncrementTrackingObject(-1);
 
@@ -2499,7 +2499,7 @@ void ACMICamTrackingNextCB(long, short hittype, C_Base *control)
 
     lbox = (C_ListBox *)winme->FindControl(TRACKED_OBJECT_FIELD);
 
-    if (hittype == C_TYPE_LMOUSEUP && ACMIViewIsReady())
+    if (hittype == C_TYPE_LMOUSEUP and ACMIViewIsReady())
     {
         acmiView->IncrementTrackingObject(1);
 
@@ -2557,7 +2557,7 @@ void ACMISubCameraPrevCB(long, short hittype, C_Base *control)
 
     lbox = (C_ListBox *)winme->FindControl(SUBCAMERA_FIELD);
 
-    if (hittype == C_TYPE_LMOUSEUP && ACMIViewIsReady())
+    if (hittype == C_TYPE_LMOUSEUP and ACMIViewIsReady())
     {
         acmiView->IncrementCameraObject(-1);
 
@@ -2584,7 +2584,7 @@ void ACMISubCameraNextCB(long, short hittype, C_Base *control)
 
     lbox = (C_ListBox *)winme->FindControl(SUBCAMERA_FIELD);
 
-    if (hittype == C_TYPE_LMOUSEUP && ACMIViewIsReady())
+    if (hittype == C_TYPE_LMOUSEUP and ACMIViewIsReady())
     {
         acmiView->IncrementCameraObject(1);
 

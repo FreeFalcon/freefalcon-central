@@ -121,7 +121,7 @@ void C_PopupList::SetFont(long Font)
         if (cur->Label_)
             cur->Label_->SetFont(Font);
 
-        if (cur->SubMenu_ && cur->Type_ == C_TYPE_MENU)
+        if (cur->SubMenu_ and cur->Type_ == C_TYPE_MENU)
             cur->SubMenu_->SetFont(Font);
 
         cur = cur->Next;
@@ -141,7 +141,7 @@ void C_PopupList::SetFlags(long flags)
         if (cur->Label_)
             cur->Label_->SetFlags(flags);
 
-        if (cur->SubMenu_ && cur->Type_ == C_TYPE_MENU)
+        if (cur->SubMenu_ and cur->Type_ == C_TYPE_MENU)
             cur->SubMenu_->SetFlags(flags);
 
         cur = cur->Next;
@@ -152,10 +152,10 @@ BOOL C_PopupList::AddItem(long ID, short Type, _TCHAR *Str, long ParentID)
 {
     POPUPLIST *newitem, *cur;
 
-    if (FindID(ID) && Type not_eq C_TYPE_NOTHING)
+    if (FindID(ID) and Type not_eq C_TYPE_NOTHING)
         return(FALSE);
 
-    if (!Str && Type not_eq C_TYPE_NOTHING)
+    if (!Str and Type not_eq C_TYPE_NOTHING)
         return(FALSE);
 
     if (ParentID)
@@ -195,7 +195,7 @@ BOOL C_PopupList::AddItem(long ID, short Type, _TCHAR *Str, long ParentID)
     newitem->CheckIcon_ = NULL;
     newitem->State_ = 0;
 
-    if (Str && Type not_eq C_TYPE_NOTHING)
+    if (Str and Type not_eq C_TYPE_NOTHING)
     {
         newitem->Label_ = new O_Output;
         newitem->Label_->SetOwner(this);
@@ -204,14 +204,14 @@ BOOL C_PopupList::AddItem(long ID, short Type, _TCHAR *Str, long ParentID)
         newitem->Label_->SetText(gStringMgr->GetText(gStringMgr->AddText(Str)));
         newitem->Label_->SetX(20);
 
-        if (Type == C_TYPE_MENU && MenuIconID_)
+        if (Type == C_TYPE_MENU and MenuIconID_)
         {
             newitem->MenuIcon_ = new O_Output;
             newitem->MenuIcon_->SetOwner(this);
             newitem->MenuIcon_->SetFlags(GetFlags());
             newitem->MenuIcon_->SetImage(MenuIconID_);
         }
-        else if ((Type == C_TYPE_RADIO or Type == C_TYPE_TOGGLE) && CheckIconID_)
+        else if ((Type == C_TYPE_RADIO or Type == C_TYPE_TOGGLE) and CheckIconID_)
         {
             newitem->CheckIcon_ = new O_Output;
             newitem->CheckIcon_->SetOwner(this);
@@ -305,7 +305,7 @@ POPUPLIST *C_PopupList::FindID(long pID)
     {
         if (Pop->ID_ == pID)
             return(Pop);
-        else if (Pop->Type_ == C_TYPE_MENU && Pop->SubMenu_)
+        else if (Pop->Type_ == C_TYPE_MENU and Pop->SubMenu_)
         {
             ret = Pop->SubMenu_->FindID(pID);
 
@@ -382,7 +382,7 @@ void C_PopupList::SetItemState(long ID, short val)
     {
         if (cur->Type_ == C_TYPE_TOGGLE)
             cur->State_ = static_cast<short>(val & 1); //!
-        else if (cur->Type_ == C_TYPE_RADIO && cur->Group_)
+        else if (cur->Type_ == C_TYPE_RADIO and cur->Group_)
         {
             ClearRadioGroup(cur->Group_);
             cur->State_ = static_cast<short>(val & 1); //!
@@ -432,9 +432,9 @@ void C_PopupList::ClearRadioGroup(long GroupID)
 
     while (Pop)
     {
-        if (Pop->Type_ == C_TYPE_RADIO && Pop->Group_ == GroupID)
+        if (Pop->Type_ == C_TYPE_RADIO and Pop->Group_ == GroupID)
             Pop->State_ = 0;
-        else if (Pop->Type_ == C_TYPE_MENU && Pop->SubMenu_)
+        else if (Pop->Type_ == C_TYPE_MENU and Pop->SubMenu_)
             Pop->SubMenu_->ClearRadioGroup(GroupID);
 
         Pop = Pop->Next;
@@ -527,7 +527,7 @@ long C_PopupList::CheckHotSpots(long relX, long relY)
 
     i = 0;
 
-    while (cur && i < Selected_)
+    while (cur and i < Selected_)
     {
         if (!(cur->flags_ & C_BIT_INVISIBLE))
             i++;
@@ -535,7 +535,7 @@ long C_PopupList::CheckHotSpots(long relX, long relY)
         cur = cur->Next;
     }
 
-    while (cur && (cur->flags_ & C_BIT_INVISIBLE))
+    while (cur and (cur->flags_ & C_BIT_INVISIBLE))
         cur = cur->Next;
 
     if (cur == NULL)
@@ -544,7 +544,7 @@ long C_PopupList::CheckHotSpots(long relX, long relY)
     if (!(cur->flags_ & C_BIT_ENABLED))
         cur = NULL;
 
-    if (cur && cur->Type_ not_eq C_TYPE_NOTHING)
+    if (cur and cur->Type_ not_eq C_TYPE_NOTHING)
     {
         SetRelXY(relX - GetX(), relY - GetY());
         return(cur->ID_);
@@ -559,7 +559,7 @@ BOOL C_PopupList::Process(long ID, short HitType)
 
     gSoundMgr->PlaySound(GetSound(HitType));
 
-    if (HitType not_eq C_TYPE_LMOUSEUP && HitType not_eq C_TYPE_RMOUSEUP)
+    if (HitType not_eq C_TYPE_LMOUSEUP and HitType not_eq C_TYPE_RMOUSEUP)
         return(FALSE);
 
     cur = FindID(ID);
@@ -622,7 +622,7 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
         {
             if (cur->flags_ & C_BIT_ENABLED)
             {
-                if (cur->Type_ == C_TYPE_MENU && cur->SubMenu_)
+                if (cur->Type_ == C_TYPE_MENU and cur->SubMenu_)
                 {
                     if (cur->SubMenu_->Window_)
                     {
@@ -639,7 +639,7 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
 
         cur = Root_;
 
-        while (cur && i < item)
+        while (cur and i < item)
         {
             if (!(cur->flags_ & C_BIT_INVISIBLE))
                 i++;
@@ -647,7 +647,7 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
             cur = cur->Next;
         }
 
-        while (cur && (cur->flags_ & C_BIT_INVISIBLE))
+        while (cur and (cur->flags_ & C_BIT_INVISIBLE))
             cur = cur->Next;
 
         if (cur == NULL)
@@ -656,7 +656,7 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
             return(TRUE);
         }
 
-        if (cur->flags_ & C_BIT_ENABLED && !(cur->flags_ & C_BIT_INVISIBLE))
+        if (cur->flags_ & C_BIT_ENABLED and !(cur->flags_ & C_BIT_INVISIBLE))
         {
             if (cur->Type_ == C_TYPE_MENU)
             {
@@ -733,7 +733,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
     cur = Root_;
     i = 0;
 
-    while (cur && i < Selected_ && i < Count_)
+    while (cur and i < Selected_ and i < Count_)
     {
         if (!(cur->flags_ & C_BIT_INVISIBLE))
             i++;
@@ -741,7 +741,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
         cur = cur->Next;
     }
 
-    while (cur && (cur->flags_ & C_BIT_INVISIBLE))
+    while (cur and (cur->flags_ & C_BIT_INVISIBLE))
         cur = cur->Next;
 
     if (cur)
@@ -750,7 +750,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
             cur = NULL;
     }
 
-    if (Selected_ >= 0 && Selected_ < Count_ && cur)
+    if (Selected_ >= 0 and Selected_ < Count_ and cur)
     {
         drect.left = 2;
         drect.top = 5 + (Selected_ * fh);
@@ -787,11 +787,11 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
                     cur->Label_->Draw(surface, cliprect);
                 }
 
-                if (cur->flags_ & C_BIT_ENABLED && cur->Type_ == C_TYPE_MENU && cur->SubMenu_ && cur->MenuIcon_)
+                if (cur->flags_ & C_BIT_ENABLED and cur->Type_ == C_TYPE_MENU and cur->SubMenu_ and cur->MenuIcon_)
                 {
                     cur->MenuIcon_->Draw(surface, cliprect);
                 }
-                else if (cur->flags_ & C_BIT_ENABLED && (cur->Type_ == C_TYPE_TOGGLE or cur->Type_ == C_TYPE_RADIO) && cur->State_ && cur->CheckIcon_)
+                else if (cur->flags_ & C_BIT_ENABLED and (cur->Type_ == C_TYPE_TOGGLE or cur->Type_ == C_TYPE_RADIO) and cur->State_ and cur->CheckIcon_)
                 {
                     cur->CheckIcon_->Draw(surface, cliprect);
                 }

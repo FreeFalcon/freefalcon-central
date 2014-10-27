@@ -232,7 +232,7 @@ void FackClass::SetFault(type_CSubSystem subsystem)
                         GetFault(sec_fault) ||
                         GetFault(lef_fault))
                     {
-                        if (!playerAC->NeedsToPlayCaution && !cockpitFlightData.IsSet(FlightData::MasterCaution))
+                        if (!playerAC->NeedsToPlayCaution and !cockpitFlightData.IsSet(FlightData::MasterCaution))
                         {
                             playerAC->WhenToPlayCaution = vuxGameTime + 7 * CampaignSeconds;
                         }
@@ -285,10 +285,10 @@ void FackClass::ClearFault(type_CSubSystem subsystem)
     if (g_bRealisticAvionics)
     {
         //warnings
-        if (!GetFault(tf_fail) && //never get's set currently
-            !GetFault(obs_wrn) && //never get's set currently
+        if (!GetFault(tf_fail) and //never get's set currently
+            !GetFault(obs_wrn) and //never get's set currently
             !GetFault(eng_fire) &&
-            !GetFault(eng2_fire) && //TJL 01/24/04 multi-engine
+            !GetFault(eng2_fire) and //TJL 01/24/04 multi-engine
             !GetFault(hyd) &&
             !GetFault(oil_press) &&
             !GetFault(dual_fc) &&
@@ -478,7 +478,7 @@ void FackClass::SetCaution(type_CSubSystem subsystem)
     {
         mCautions.SetCaution(subsystem);
 
-        if (!playerAC->NeedsToPlayCaution && !cockpitFlightData.IsSet(FlightData::MasterCaution))
+        if (!playerAC->NeedsToPlayCaution and !cockpitFlightData.IsSet(FlightData::MasterCaution))
         {
             playerAC->WhenToPlayCaution = vuxGameTime + 7 * CampaignSeconds;
         }

@@ -175,7 +175,7 @@ long C_EditBox::CheckHotSpots(long relX, long relY)
     if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED))
         return(0);
 
-    if (relX >= GetX() && relX < (GetX() + GetW()) && relY >= GetY() && relY < (GetY() + GetH()))
+    if (relX >= GetX() and relX < (GetX() + GetW()) and relY >= GetY() and relY < (GetY() + GetH()))
     {
         SetRelXY(relX - GetX(), relY - GetY());
         return(GetID());
@@ -211,7 +211,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
             End_ = Cursor_;
             Text_->SetFlags(Text_->GetFlags() & compl C_BIT_OPAQUE);
 
-            if (Cursor_ < MaxLen_ && EditText_[Cursor_])
+            if (Cursor_ < MaxLen_ and EditText_[Cursor_])
             {
                 Cursor_++;
             }
@@ -260,7 +260,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
             End_ = Cursor_;
             Text_->SetFlags(Text_->GetFlags() & compl C_BIT_OPAQUE);
 
-            while (EditText_[Cursor_] && Cursor_ < (MaxLen_))
+            while (EditText_[Cursor_] and Cursor_ < (MaxLen_))
                 Cursor_++;
 
             Refresh();
@@ -286,7 +286,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
 
                 if (i <= MaxLen_)
                 {
-                    while (EditText_[i] && i < MaxLen_)
+                    while (EditText_[i] and i < MaxLen_)
                     {
                         EditText_[i - 1] = EditText_[i];
                         i++;
@@ -389,7 +389,7 @@ BOOL C_EditBox::CheckChar(unsigned char key)
         case C_TYPE_IPADDRESS:
             if (!isdigit(key))
             {
-                if (key == '.' && Parent_)
+                if (key == '.' and Parent_)
                     Parent_->SetNextControl();
 
                 return FALSE;
@@ -398,7 +398,7 @@ BOOL C_EditBox::CheckChar(unsigned char key)
             break;
 
         case C_TYPE_INTEGER:
-            if (!isdigit(key) && key not_eq _T('-'))
+            if (!isdigit(key) and key not_eq _T('-'))
                 return(FALSE);
 
             break;
@@ -500,7 +500,7 @@ void C_EditBox::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
         Text_->Draw(surface, cliprect);
 
-        if (UseCursor_ && (End_ <= Start_))
+        if (UseCursor_ and (End_ <= Start_))
         {
             h = gFontList->GetHeight(Font_);
             Text_->GetCharXY(Cursor_, &x, &y);

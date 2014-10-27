@@ -42,7 +42,7 @@ static BOOL GPSTreeSortCB(TREELIST *list, TREELIST *newitem)
     _TCHAR *first, *second;
     long fval, sval;
 
-    if (list && newitem)
+    if (list and newitem)
     {
         if (list->Item_->_GetCType_() == _CNTL_SQUAD_)
             first = ((C_Squadron*)list->Item_)->GetName();
@@ -65,7 +65,7 @@ static BOOL GPSTreeSortCB(TREELIST *list, TREELIST *newitem)
         if (!first or !second)
             return(FALSE);
 
-        if (isdigit(*first) && isdigit(*second))
+        if (isdigit(*first) and isdigit(*second))
         {
             fval = atol(first);
             sval = atol(second);
@@ -357,7 +357,7 @@ void GlobalPositioningSystem::Update()
 
             if (!cur)
             {
-                if (entity->IsUnit() && ((Unit)entity)->Inactive())
+                if (entity->IsUnit() and ((Unit)entity)->Inactive())
                 {
                 }
                 else
@@ -378,7 +378,7 @@ void GlobalPositioningSystem::Update()
                 {
                     GPS_Hash->Remove(entity->GetCampID());
 
-                    if (entity->IsUnit() && ((Unit)entity)->Inactive())
+                    if (entity->IsUnit() and ((Unit)entity)->Inactive())
                     {
                     }
                     else
@@ -406,13 +406,13 @@ void GlobalPositioningSystem::Update()
 
     GPS_Hash->RemoveOld();
 
-    if (MisTree_ && (Flags & _GPS_RESORT_MISSION_))
+    if (MisTree_ and (Flags & _GPS_RESORT_MISSION_))
     {
         MisTree_->ReorderBranch(MisTree_->GetRoot());
         Flags  or_eq  _GPS_MISSION_RESIZE_;
     }
 
-    if (MisTree_ && (Flags & _GPS_MISSION_RESIZE_))
+    if (MisTree_ and (Flags & _GPS_MISSION_RESIZE_))
     {
         MisTree_->RecalcSize();
 
@@ -420,7 +420,7 @@ void GlobalPositioningSystem::Update()
             MisTree_->GetParent()->RefreshClient(MisTree_->GetClient());
     }
 
-    if (AtoTree_ && (Flags & _GPS_ATO_RESIZE_))
+    if (AtoTree_ and (Flags & _GPS_ATO_RESIZE_))
     {
         AtoTree_->RecalcSize();
 
@@ -428,7 +428,7 @@ void GlobalPositioningSystem::Update()
             AtoTree_->GetParent()->RefreshClient(AtoTree_->GetClient());
     }
 
-    if (OOBTree_ && (Flags & _GPS_OOB_RESIZE_))
+    if (OOBTree_ and (Flags & _GPS_OOB_RESIZE_))
     {
         OOBTree_->RecalcSize();
 

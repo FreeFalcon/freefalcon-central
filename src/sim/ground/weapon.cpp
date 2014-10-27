@@ -78,7 +78,7 @@ void GroundClass::WeaponKeepAlive(void)
                     keepAliveCheck = TRUE;
 
                     // allow a limited number of tracers to be firing in the keepalive stage
-                    if (IsGunFiring(i) && Gun->numFlying < numToFly)
+                    if (IsGunFiring(i) and Gun->numFlying < numToFly)
                     {
                         fire = TRUE;
                         SoundPos.Sfx(SFX_MCGUN, 0, 1.0, 0);
@@ -182,10 +182,10 @@ BOOL GroundClass::DoWeapons(void)
     }
 
     // RV - Biker - Don't do missiles when heavy damaged
-    //if (theWeapon->IsMissile() && pctStrength < 0.5f) { return FALSE; }
+    //if (theWeapon->IsMissile() and pctStrength < 0.5f) { return FALSE; }
 
     // RV - Biker - Don't do guns when heavy damaged
-    //if (theWeapon->IsGun() && pctStrength < 0.0f) { return FALSE; }
+    //if (theWeapon->IsGun() and pctStrength < 0.0f) { return FALSE; }
 
     if (theWeapon->IsGun())
     {
@@ -229,7 +229,7 @@ BOOL GroundClass::DoWeapons(void)
         {
             if (1/*IsGunFiring(Sms->GetCurrentWeaponHardpoint())*/)
             {
-                if (Gun->FiremsgsendTime && vuxRealTime - Gun->FiremsgsendTime > 20000)
+                if (Gun->FiremsgsendTime and vuxRealTime - Gun->FiremsgsendTime > 20000)
                 {
                     //me123 disabled for now...its looking realy strange in mp
                     SendFireMessage((SimWeaponClass*)Gun, FalconWeaponsFire::GUN, FALSE, targetPtr);
@@ -294,7 +294,7 @@ BOOL GroundClass::DoWeapons(void)
                 {
                     RadarDataSet* radarData = &radarDatFileTable[GetCampaignObject()->GetRadarType()];
 
-                    if (radarData->AirFireRate && GetCampaignObject()->GetRadarType())
+                    if (radarData->AirFireRate and GetCampaignObject()->GetRadarType())
                     {
                         rate = radarData->AirFireRate;
                     }
@@ -304,7 +304,7 @@ BOOL GroundClass::DoWeapons(void)
                 {
                     RadarDataSet* radarData = &radarDatFileTable[GetRadarType()];
 
-                    if (radarData->AirFireRate && GetRadarType())
+                    if (radarData->AirFireRate and GetRadarType())
                     {
                         rate = radarData->AirFireRate;
                     }
@@ -320,7 +320,7 @@ BOOL GroundClass::DoWeapons(void)
             SendFireMessage(theMissile, FalconWeaponsFire::MRM, TRUE, targetPtr);
 
             // Special case for beam riders
-            if (theMissile->sensorArray && theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming)
+            if (theMissile->sensorArray and theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming)
             {
                 // Have the missile use the radar vehicle's radar for guidance
                 ((BeamRiderClass*)theMissile->sensorArray[0])->SetGuidancePlatform(battalionFireControl);
@@ -386,7 +386,7 @@ void GroundClass::RotateTurret(void)
     }
     else
     {
-        if (!targetPtr->BaseData()->OnGround() && !isAirDefense)
+        if (!targetPtr->BaseData()->OnGround() and !isAirDefense)
         {
             newAz = 0.0F;
             newEl = 0.0F;
@@ -484,10 +484,10 @@ int GroundClass::GunTrack(void)
 
     // make guns less accurate by randomizing target position when in air, unless its AAA
     // 2000-10-19 MODIFIED BY S.G. NEW TEST FOR AAA AND REGULAR GUNS. IF FIRST BIT OF NEW FIELD IS A 1, IT'S AN AAA GUN.
-    // if (!target->OnGround() && !isAirDefense)
+    // if (!target->OnGround() and !isAirDefense)
     float tracerError; // JB 010106
 
-    if ((((unsigned char *)Gun->wcPtr)[31] & 1) == (g_bToggleAAAGunFlag & 1) && !target->OnGround()) // 2002-03-12 MODIFIED BY S.G. Added the 'g_bToggleAAAGunFlag' check to possibly reverse the check. RP5 reversed the check so this deals with it
+    if ((((unsigned char *)Gun->wcPtr)[31] & 1) == (g_bToggleAAAGunFlag & 1) and !target->OnGround()) // 2002-03-12 MODIFIED BY S.G. Added the 'g_bToggleAAAGunFlag' check to possibly reverse the check. RP5 reversed the check so this deals with it
     {
         //float tracerError; // JB 010106
         tracerError = PRANDFloatPos() / (float)(gai->skillLevel + 1);
@@ -552,7 +552,7 @@ int GroundClass::GunTrack(void)
     if (target->OnGround() or isAirDefense)
     {
         // Check our limits
-        if (el > 85 * DTR or (el < 5 * DTR && !target->OnGround()))
+        if (el > 85 * DTR or (el < 5 * DTR and !target->OnGround()))
             return FALSE;
 
         delta = (float)fabs(GetDOFValue(AIRDEF_AZIMUTH) - az);
@@ -752,7 +752,7 @@ int GroundClass::MissileTrack(void)
 
     // RV - Biker - Think here is a problem
     // FRB - Increased VT = 1 to VT = 3, same as GMT threshold
-    if (!isShip && (GetVt() > 3.0f && !g_bFireOntheMove))
+    if (!isShip and (GetVt() > 3.0f and !g_bFireOntheMove))
         return FALSE;
 
     // check for radar-guided missiles
@@ -779,7 +779,7 @@ int GroundClass::MissileTrack(void)
                     SetTarget(radar->CurrentTarget());
 
                 // ADDED BY S.G. SO SAM DO NOT NORMALLY FIRE WHEN JAMMED. DEPENDING ON THE SKILL, THEY MIGHT FIRE THOUGH
-                if (radar->CurrentTarget() && radar->CurrentTarget()->localData->sensorState[SensorClass::Radar] not_eq SensorClass::SensorTrack && (rand() % 1000 >= (4 - gai->skillLevel) * (4 - gai->skillLevel) * 10))
+                if (radar->CurrentTarget() and radar->CurrentTarget()->localData->sensorState[SensorClass::Radar] not_eq SensorClass::SensorTrack and (rand() % 1000 >= (4 - gai->skillLevel) * (4 - gai->skillLevel) * 10))
                     return FALSE;
 
                 // END OF ADDED SECTION
@@ -913,9 +913,9 @@ int GroundClass::MissileTrack(void)
         // SCR 11/20/98  Lets let the seeker and kinematics deal with this...
         /*
          // Check for aspect (KCK WARNING: This assumes ataFrom is -PI to PI, not 0 to 2*PI
-         if (wc->Flags & WEAP_FRONT_ASPECT && fabs(targetPtr->localData->ataFrom) > 90*DTR)
+         if (wc->Flags & WEAP_FRONT_ASPECT and fabs(targetPtr->localData->ataFrom) > 90*DTR)
          return FALSE;
-         if (wc->Flags & WEAP_REAR_ASPECT && fabs(targetPtr->localData->ataFrom) < 90*DTR)
+         if (wc->Flags & WEAP_REAR_ASPECT and fabs(targetPtr->localData->ataFrom) < 90*DTR)
          return FALSE;
         */
     }
@@ -942,7 +942,7 @@ int GroundClass::MissileTrack(void)
     //if (el < 45.0f*DTR) {
     float BUMP;
 
-    if (GetCampaignObject() &&   // MLR 5/27/2004 - CTD ?
+    if (GetCampaignObject() and   // MLR 5/27/2004 - CTD ?
         /*!((BattalionClass*)GetCampaignObject())->GetMissilesFlying())*/
         //Cobra TJL 10/30/04
         !GetCampaignObject()->GetMissilesFlying())
@@ -1052,7 +1052,7 @@ GroundClass::FindBattalionFireControl(void)
     // Search the list for a battalion radar vehicle
     while (firectl)
     {
-        if (firectl->GetRadarType() == battRadarType && !firectl->IsDead())
+        if (firectl->GetRadarType() == battRadarType and !firectl->IsDead())
         {
             battalionFireControl = firectl;
             VuReferenceEntity(battalionFireControl);

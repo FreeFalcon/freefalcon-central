@@ -33,7 +33,7 @@ int VisualClass::CanSeeObject(SimObjectType* obj)
     // 2002-04-17 MN "GPS type" weapons can see and detect always
 
     // RV - Biker - Add check for bomb or missile to avoid AI AC to always see target
-    if ((g_nMissileFix & 0x100) && (platform->IsBomb() or platform->IsMissile()))
+    if ((g_nMissileFix & 0x100) and (platform->IsBomb() or platform->IsMissile()))
     {
 
         Falcon4EntityClassType* classPtr = NULL;
@@ -47,7 +47,7 @@ int VisualClass::CanSeeObject(SimObjectType* obj)
 
         ShiAssert(wc);
 
-        if (wc && (wc->Flags & WEAP_BOMBGPS))
+        if (wc and (wc->Flags & WEAP_BOMBGPS))
             return true;
     }
 
@@ -118,7 +118,7 @@ int VisualClass::CanDetectObject(SimObjectType* obj)
 
             ShiAssert(wc);
 
-            if (wc && (wc->Flags & WEAP_BOMBGPS))
+            if (wc and (wc->Flags & WEAP_BOMBGPS))
                 return true;
         }
     }
@@ -129,7 +129,7 @@ int VisualClass::CanDetectObject(SimObjectType* obj)
     // object is a ground vehicle.  If so, see if it has its inView variable
     // set.  If not return FALSE immediately since that vehicle will be LOD'd
     // out
-    if (obj->BaseData()->IsSim() && ((SimBaseClass *)obj->BaseData())->IsSetLocalFlag(IS_HIDDEN))
+    if (obj->BaseData()->IsSim() and ((SimBaseClass *)obj->BaseData())->IsSetLocalFlag(IS_HIDDEN))
     {
         return FALSE;
     }

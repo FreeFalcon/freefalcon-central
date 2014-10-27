@@ -226,7 +226,7 @@ void FalconEntity::ClearDirty(void)
     int bin;
     VuEnterCriticalSection();
     bin = calc_dirty_bucket();
-    assert((bin >= 0) && (bin < MAX_DIRTY_BUCKETS));
+    assert((bin >= 0) and (bin < MAX_DIRTY_BUCKETS));
     dirty_classes = 0;
     dirty_score = 0;
     DirtyBucket[bin]->Remove(this);
@@ -471,7 +471,7 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
 #endif
         {
             //bucket 7 and 8 are OOB(out of band), the others must respect bw
-            if ((bucket < 7) && (toSend < 0) && (sent))
+            if ((bucket < 7) and (toSend < 0) and (sent))
             {
                 break;
             }
@@ -554,7 +554,7 @@ void FalconEntity::DoSimDirtyData(VU_TIME realTime)
 #endif
         {
             //bucket 7 and 8 are OOB (out of band), others must respect limit
-            if ((bucket < 7) && (toSend < 0) && (sent))
+            if ((bucket < 7) and (toSend < 0) and (sent))
             {
                 break;
             }

@@ -173,7 +173,7 @@ BOOL CreateSimCursors()
                     throw _com_error(E_OUTOFMEMORY);
 
                 // Check if we can use a single texture
-                if (dwMaxTextureWidth >= gpSimCursors[i].Width && dwMaxTextureHeight >= gpSimCursors[i].Height)
+                if (dwMaxTextureWidth >= gpSimCursors[i].Width and dwMaxTextureHeight >= gpSimCursors[i].Height)
                 {
                     TextureHandle *pTex = new TextureHandle;
 

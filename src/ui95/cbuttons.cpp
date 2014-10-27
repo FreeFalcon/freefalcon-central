@@ -931,7 +931,7 @@ void C_Button::SetSubParents(C_Window *)
                 btn->Image_->SetInfo();
             }
 
-            if (!cur->ID && btn->Image_)
+            if (!cur->ID and btn->Image_)
                 SetWH(btn->Image_->GetW(), btn->Image_->GetH());
 
             btn = (BUTTONLIST*)Root_->GetNext(&cur, &curidx);
@@ -953,7 +953,7 @@ BOOL C_Button::TimerUpdate()
 
     i = state_;
 
-    if (!i && Parent_->GetHandler()->Over() == this)
+    if (!i and Parent_->GetHandler()->Over() == this)
         i = C_STATE_MOUSE;
 
     btn = (BUTTONLIST*)Root_->Find(i);
@@ -1041,7 +1041,7 @@ void C_Button::Refresh()
             i = state_;
             btn = (BUTTONLIST*)Root_->Find(i);
 
-            if (!btn && i)
+            if (!btn and i)
                 btn = (BUTTONLIST*)Root_->Find(0);
 
             if (btn)
@@ -1056,13 +1056,13 @@ void C_Button::Refresh()
         }
     }
 
-    if ((GetFlags() & C_BIT_USEBGIMAGE) && BgImage_)
+    if ((GetFlags() & C_BIT_USEBGIMAGE) and BgImage_)
         BgImage_->Refresh();
 
     i = state_;
     btn = (BUTTONLIST*)Root_->Find(i);
 
-    if (!btn && i)
+    if (!btn and i)
         btn = (BUTTONLIST*)Root_->Find(0);
 
     if (btn)
@@ -1070,7 +1070,7 @@ void C_Button::Refresh()
         if (btn->Image_)
             btn->Image_->Refresh();
 
-        if (!(GetFlags() & C_BIT_NOLABEL) && btn->Label_)
+        if (!(GetFlags() & C_BIT_NOLABEL) and btn->Label_)
             btn->Label_->Refresh();
     }
 }
@@ -1099,7 +1099,7 @@ void C_Button::HighLite(SCREEN *surface, UI95_RECT *cliprect)
             if (!btn)
                 btn = (BUTTONLIST*)Root_->Find(0);
 
-            if (btn && btn->Image_)
+            if (btn and btn->Image_)
             {
                 clip.left = GetX() + btn->Image_->GetX() + HotSpot_.left;
                 clip.top = GetY() + btn->Image_->GetY() + HotSpot_.top;
@@ -1117,7 +1117,7 @@ void C_Button::HighLite(SCREEN *surface, UI95_RECT *cliprect)
         if (!btn)
             btn = (BUTTONLIST*)Root_->Find(0);
 
-        if (btn && btn->Image_)
+        if (btn and btn->Image_)
         {
             clip.left = GetX() + btn->Image_->GetX();
             clip.top = GetY() + btn->Image_->GetY();
@@ -1166,21 +1166,21 @@ void C_Button::Draw(SCREEN *surface, UI95_RECT *cliprect)
     else
         i = state_;
 
-    if (!state_ && Parent_ && Parent_->GetHandler()->Over() == this)
+    if (!state_ and Parent_ and Parent_->GetHandler()->Over() == this)
         i = C_STATE_MOUSE;
 
     btn = (BUTTONLIST*)Root_->Find(i);
 
-    if (!btn && i)
+    if (!btn and i)
         btn = (BUTTONLIST*)Root_->Find(0);
 
     if (BgImage_)
         BgImage_->Draw(surface, cliprect);
 
-    if (btn && btn->Image_)
+    if (btn and btn->Image_)
         btn->Image_->Draw(surface, cliprect);
 
-    if (!(GetFlags() & C_BIT_NOLABEL) && btn && btn->Label_)
+    if (!(GetFlags() & C_BIT_NOLABEL) and btn and btn->Label_)
         btn->Label_->Draw(surface, cliprect);
 
     if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
@@ -1192,7 +1192,7 @@ long C_Button::CheckHotSpots(long relx, long rely)
     BUTTONLIST *btn;
     long x, y, w, h;
 
-    if (!Root_ or (GetFlags() & C_BIT_INVISIBLE) or !(GetFlags() & C_BIT_ENABLED) or (!Ready() && !UseHotSpot_))
+    if (!Root_ or (GetFlags() & C_BIT_INVISIBLE) or !(GetFlags() & C_BIT_ENABLED) or (!Ready() and !UseHotSpot_))
         return(0);
 
 
@@ -1200,7 +1200,7 @@ long C_Button::CheckHotSpots(long relx, long rely)
     {
         if (FixedHotSpot_)
         {
-            if (relx >= (GetX() + HotSpot_.left) && rely >= (GetY() + HotSpot_.top) && relx <= (GetX() + HotSpot_.right) && rely <= (GetY() + HotSpot_.bottom))
+            if (relx >= (GetX() + HotSpot_.left) and rely >= (GetY() + HotSpot_.top) and relx <= (GetX() + HotSpot_.right) and rely <= (GetY() + HotSpot_.bottom))
             {
                 SetRelXY(relx - GetX() - HotSpot_.left, rely - GetY() - HotSpot_.top);
                 return(GetID());
@@ -1213,15 +1213,15 @@ long C_Button::CheckHotSpots(long relx, long rely)
             if (!btn)
                 btn = (BUTTONLIST*)Root_->Find(0);
 
-            if (btn && btn->Image_)
+            if (btn and btn->Image_)
             {
                 x = GetX() + btn->Image_->GetX() + HotSpot_.left;
                 y = GetY() + btn->Image_->GetY() + HotSpot_.top;
                 w = GetX() + btn->Image_->GetX() + btn->Image_->GetW() + HotSpot_.right;
                 h = GetY() + btn->Image_->GetX() + btn->Image_->GetH() + HotSpot_.bottom;
 
-                if (relx >= (x) && relx < (w) &&
-                    rely >= (y) && rely < (h))
+                if (relx >= (x) and relx < (w) &&
+                    rely >= (y) and rely < (h))
                 {
                     SetRelXY(relx - GetX() - HotSpot_.left, rely - GetY() - HotSpot_.top);
                     return(GetID());
@@ -1233,15 +1233,15 @@ long C_Button::CheckHotSpots(long relx, long rely)
     {
         btn = (BUTTONLIST*)Root_->Find(0);
 
-        if (btn && btn->Image_)
+        if (btn and btn->Image_)
         {
             x = GetX() + btn->Image_->GetX();
             y = GetY() + btn->Image_->GetY();
             w = btn->Image_->GetW();
             h = btn->Image_->GetH();
 
-            if (relx >= (x) && relx < (x + w) &&
-                rely >= (y) && rely < (y + h))
+            if (relx >= (x) and relx < (x + w) &&
+                rely >= (y) and rely < (y + h))
             {
                 SetRelXY(relx - x, rely - y);
                 return(GetID());
@@ -1273,7 +1273,7 @@ BOOL C_Button::Process(long ID, short HitType)
         case C_TYPE_LMOUSEUP:
             if (GetType() == C_TYPE_NORMAL)
                 state_ = 0;
-            else if ((GetType() == C_TYPE_RADIO) && state_ not_eq 1)
+            else if ((GetType() == C_TYPE_RADIO) and state_ not_eq 1)
             {
                 Parent_->SetGroupState(GetGroup(), 0);
                 state_ = 1;
@@ -1285,17 +1285,17 @@ BOOL C_Button::Process(long ID, short HitType)
                     state_++;
                     btn = (BUTTONLIST*)Root_->Find(state_);
 
-                    if (!btn && state_)
+                    if (!btn and state_)
                         state_ = 0;
                 }
-                while (!btn && state_ not_eq startstate && (!btn && state_));
+                while (!btn and state_ not_eq startstate and (!btn and state_));
             }
             else if (GetType() == C_TYPE_TOGGLE)
                 state_ = (short)((1 - state_) & 1); //!
 
             if (GetFlags() & C_BIT_CLOSEWINDOW)
             {
-                if (Owner_ && Owner_->_GetCType_() == _CNTL_LISTBOX_)
+                if (Owner_ and Owner_->_GetCType_() == _CNTL_LISTBOX_)
                 {
                     ((C_ListBox *)Owner_)->CloseWindow();
                 }
@@ -1317,7 +1317,7 @@ BOOL C_Button::Process(long ID, short HitType)
 
     // JB 000812 // Callbacks were called twice (mousedown and mouseup)
     //if(Callback_)
-    if (Callback_ && HitType not_eq C_TYPE_LMOUSEDOWN)
+    if (Callback_ and HitType not_eq C_TYPE_LMOUSEDOWN)
         // JB 000812
         (*Callback_)(ID, HitType, this);
 
@@ -1336,7 +1336,7 @@ BOOL C_Button::MouseOver(long relx, long rely, C_Base *me)
     {
         if (FixedHotSpot_)
         {
-            if (relx >= (GetX() + HotSpot_.left) && rely >= (GetY() + HotSpot_.top) && relx <= (GetX() + HotSpot_.right) && rely <= (GetY() + HotSpot_.bottom))
+            if (relx >= (GetX() + HotSpot_.left) and rely >= (GetY() + HotSpot_.top) and relx <= (GetX() + HotSpot_.right) and rely <= (GetY() + HotSpot_.bottom))
             {
                 // Set cursor...
                 if (this not_eq (C_Button *)me)
@@ -1354,15 +1354,15 @@ BOOL C_Button::MouseOver(long relx, long rely, C_Base *me)
             if (!btn)
                 btn = (BUTTONLIST*)Root_->Find(0);
 
-            if (btn && btn->Image_)
+            if (btn and btn->Image_)
             {
                 x = GetX() + btn->Image_->GetX() + HotSpot_.left;
                 y = GetY() + btn->Image_->GetY() + HotSpot_.top;
                 w = GetX() + btn->Image_->GetX() + btn->Image_->GetW() + HotSpot_.right;
                 h = GetY() + btn->Image_->GetX() + btn->Image_->GetH() + HotSpot_.bottom;
 
-                if (relx >= (x) && relx < (w) &&
-                    rely >= (y) && rely < (h))
+                if (relx >= (x) and relx < (w) &&
+                    rely >= (y) and rely < (h))
                 {
                     // Set cursor...
                     if (this not_eq (C_Button *)me)
@@ -1382,15 +1382,15 @@ BOOL C_Button::MouseOver(long relx, long rely, C_Base *me)
         if (!btn)
             btn = (BUTTONLIST*)Root_->Find(0);
 
-        if (btn && btn->Image_)
+        if (btn and btn->Image_)
         {
             x = GetX() + btn->Image_->GetX();
             y = GetY() + btn->Image_->GetY();
             w = btn->Image_->GetW();
             h = btn->Image_->GetH();
 
-            if (relx >= (x) && relx < (x + w) &&
-                rely >= (y) && rely < (y + h))
+            if (relx >= (x) and relx < (x + w) &&
+                rely >= (y) and rely < (y + h))
             {
                 // Set cursor...
                 if (this not_eq (C_Button *)me)

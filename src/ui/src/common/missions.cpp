@@ -97,7 +97,7 @@ short GetFlightStatusID(Flight element)
             found;
             ID = _MIS_RTB;
 
-            while ((found == 0) && (wp))
+            while ((found == 0) and (wp))
             {
                 if (wp->GetWPAction() == WP_ASSEMBLE)
                 {
@@ -147,7 +147,7 @@ short GetFlightStatusID(Flight element)
             }
         }
 
-        if ((TheCampaign.Flags & CAMP_TACTICAL) && (!found))
+        if ((TheCampaign.Flags & CAMP_TACTICAL) and (!found))
         {
             ID = _MIS_ENROUTE;
         }
@@ -171,26 +171,26 @@ void CheckCampaignFlyButton()
     flt = FalconLocalSession->GetPlayerFlight();
     plane = FalconLocalSession->GetPilotSlot();
 
-    if ((gCommsMgr) && (gCommsMgr->Online()))
+    if ((gCommsMgr) and (gCommsMgr->Online()))
     {
         // Don't care about restricting access when online
-        if (flt && plane not_eq 255)
+        if (flt and plane not_eq 255)
             Enabled = 1;
     }
     else
     {
         // OW - sylvains checkfly fix
 #if 1
-        if (flt && plane not_eq 255 && GetFlightStatusID(flt) < _MIS_EGRESS)
+        if (flt and plane not_eq 255 and GetFlightStatusID(flt) < _MIS_EGRESS)
             // ADDED BY S.G. SO UNINITIALIZED FLIGHTS CAN'T TAKE OFF
         {
             int i, dontEnable = 0;
 
             if (GetFlightStatusID(flt) > _MIS_BRIEFING)
             {
-                for (i = 0; i < 4 && dontEnable == 0; i++)
+                for (i = 0; i < 4 and dontEnable == 0; i++)
                 {
-                    if (FalconLocalSession->GetPlayerFlight()->plane_stats[i] == AIRCRAFT_AVAILABLE && FalconLocalSession->GetPlayerFlight()->pilots[i] == NO_PILOT)
+                    if (FalconLocalSession->GetPlayerFlight()->plane_stats[i] == AIRCRAFT_AVAILABLE and FalconLocalSession->GetPlayerFlight()->pilots[i] == NO_PILOT)
                         dontEnable = 1;
                 }
             }
@@ -202,7 +202,7 @@ void CheckCampaignFlyButton()
 
 #else
 
-        if (flt && plane not_eq 255 && GetFlightStatusID(flt) < _MIS_EGRESS)
+        if (flt and plane not_eq 255 and GetFlightStatusID(flt) < _MIS_EGRESS)
             Enabled = 1;
 
 #endif
@@ -286,7 +286,7 @@ static void MissionSelectCB(long, short hittype, C_Base *control)
         gSelectedFlightID = gCurrentFlightID;
         flight = (Flight)vuDatabase->Find(gCurrentFlightID);
 
-        if (flight && !flight->IsDead())
+        if (flight and !flight->IsDead())
         {
             TheCampaign.MissionEvaluator->PreMissionEval(flight, 255);
             UpdateMissionWindow(win->GetID());
@@ -324,7 +324,7 @@ static void SelectMission(C_Base *control)
         gSelectedFlightID = gCurrentFlightID;
         flight = (Flight)vuDatabase->Find(gCurrentFlightID);
 
-        if (flight && !flight->IsDead())
+        if (flight and !flight->IsDead())
         {
             TheCampaign.MissionEvaluator->PreMissionEval(flight, 255);
             UpdateMissionWindow(win->GetID());
@@ -357,7 +357,7 @@ void FindMissionInBriefing(long ID)
 
             while (cur)
             {
-                if (cur->Item_ && !(cur->Item_->GetFlags() & C_BIT_INVISIBLE))
+                if (cur->Item_ and !(cur->Item_->GetFlags() & C_BIT_INVISIBLE))
                 {
                     if (((C_Mission*)cur->Item_)->GetStatusID() < _MIS_EGRESS)
                     {
@@ -402,7 +402,7 @@ UI_Refresher *FindMissionItem(Flight flight)
 
     urec = (UI_Refresher*)gGps->Find(flight->GetCampID());
 
-    if (urec && urec->Mission_)
+    if (urec and urec->Mission_)
     {
         MissionSelectCB(urec->Mission_->GetID(), C_TYPE_LMOUSEUP, urec->Mission_);
         return urec;

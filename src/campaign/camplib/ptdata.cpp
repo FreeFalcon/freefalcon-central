@@ -23,7 +23,7 @@ int GetTaxiPosition(int point, int rwindex)
     int count = 0;
     int pt = PtHeaderDataTable[rwindex].first;
 
-    while (pt && pt not_eq point)
+    while (pt and pt not_eq point)
     {
         if (pt > point) break;  // 24JAN04 - FRB - Cover case of a/c on parking spot (not TaxiPt)
 
@@ -75,7 +75,7 @@ int GetNextTaxiPt(int ptindex)
 
     ptindex = GetNextPt(ptindex);
 
-    while (ptindex && PtDataTable[ptindex].type not_eq TaxiPt && PtDataTable[ptindex].type not_eq CritTaxiPt)
+    while (ptindex and PtDataTable[ptindex].type not_eq TaxiPt and PtDataTable[ptindex].type not_eq CritTaxiPt)
     {
         ptindex = GetNextPt(ptindex);
     }
@@ -101,7 +101,7 @@ int GetNextPtCrit(int ptindex)
     if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
-    if (PtDataTable[ptindex].type not_eq CritTaxiPt && !(PtDataTable[ptindex].flags & PT_LAST))
+    if (PtDataTable[ptindex].type not_eq CritTaxiPt and !(PtDataTable[ptindex].flags & PT_LAST))
         return ptindex + 1;
 
     return 0;
@@ -125,7 +125,7 @@ int GetPrevTaxiPt(int ptindex)
 
     ptindex = GetPrevPt(ptindex);
 
-    while (ptindex && PtDataTable[ptindex].type not_eq TaxiPt && PtDataTable[ptindex].type not_eq CritTaxiPt)
+    while (ptindex and PtDataTable[ptindex].type not_eq TaxiPt and PtDataTable[ptindex].type not_eq CritTaxiPt)
         ptindex = GetPrevPt(ptindex);
 
     return ptindex;
@@ -147,7 +147,7 @@ int GetPrevPtCrit(int ptindex)
     if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
-    if (PtDataTable[ptindex].type not_eq CritTaxiPt && !(PtDataTable[ptindex].flags & PT_FIRST))
+    if (PtDataTable[ptindex].type not_eq CritTaxiPt and !(PtDataTable[ptindex].flags & PT_FIRST))
         return ptindex - 1;
 
     return 0;
@@ -163,7 +163,7 @@ void TranslatePointData(CampEntity e, int ptindex, float *x, float *y)
     if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
-    if (e && e->IsObjective())
+    if (e and e->IsObjective())
     {
         // KCK TODO: Rotate these points by objective's heading before translating
         // SCR 11/29/98  I don't think objectives HAVE headings, so this is correct.
@@ -179,11 +179,11 @@ int CheckHeaderStatus(CampEntity e, int index)
 {
     int status = VIS_NORMAL, i = 0, fs;
 
-    while (status not_eq VIS_DESTROYED && i < MAX_FEAT_DEPEND)
+    while (status not_eq VIS_DESTROYED and i < MAX_FEAT_DEPEND)
     {
         if (PtHeaderDataTable[index].features[i] < 255)
         {
-            if (e && e->IsObjective())
+            if (e and e->IsObjective())
             {
                 fs = ((Objective)e)->GetFeatureStatus(PtHeaderDataTable[index].features[i]);
                 // ShiAssert(((Objective)e)->GetFeatureValue(PtHeaderDataTable[index].features[i]) > 0);

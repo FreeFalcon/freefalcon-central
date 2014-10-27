@@ -167,7 +167,7 @@ float DirectionToFront(GridIndex x, GridIndex y)
         {
             n = f->GetNeighbor(i);
 
-            if (n && n->GetTeam() not_eq f->GetTeam())
+            if (n and n->GetTeam() not_eq f->GetTeam())
             {
                 n->GetLocation(&fx, &fy);
                 d = Distance(x, y, fx, fy);
@@ -239,7 +239,7 @@ float DirectionTowardFriendly(GridIndex x, GridIndex y, int team)
         {
             n = f->GetNeighbor(i);
 
-            if (n && n->GetTeam() not_eq f->GetTeam())
+            if (n and n->GetTeam() not_eq f->GetTeam())
             {
                 n->GetLocation(&fx, &fy);
                 d = Distance(x, y, fx, fy);
@@ -308,7 +308,7 @@ float AngleTo(GridIndex ox, GridIndex oy, GridIndex tx, GridIndex ty)
     dx = tx - ox;
     dy = ty - oy;
 
-    if (!dx && !dy)
+    if (!dx and !dy)
         return 0.0F;
 
     deg = (float)atan2((float)dx, (float)dy);
@@ -328,7 +328,7 @@ CampaignHeading DirectionTo(GridIndex ox, GridIndex oy, GridIndex tx, GridIndex 
     dx = tx - ox;
     dy = ty - oy;
 
-    if (!dx && !dy)
+    if (!dx and !dy)
     {
         return Here;
     }
@@ -354,7 +354,7 @@ CampaignHeading DirectionTo(GridIndex ox, GridIndex oy, GridIndex tx, GridIndex 
     dx = tx - ox;
     dy = ty - oy;
 
-    if (cx == tx && cy == ty)
+    if (cx == tx and cy == ty)
         return Here;
 
     td = Distance(ox, oy, tx, ty);
@@ -568,7 +568,7 @@ Objective FindObjective(VU_ID id)
     VuEntity* e;
     e = vuDatabase->Find(id);
 
-    if (e && GetEntityClass(e) == CLASS_OBJECTIVE)
+    if (e and GetEntityClass(e) == CLASS_OBJECTIVE)
     {
         return (Objective)e;
     }
@@ -581,7 +581,7 @@ Unit FindUnit(VU_ID id)
     VuEntity* e;
     e = vuDatabase->Find(id);
 
-    if (e && GetEntityClass(e) == CLASS_UNIT)
+    if (e and GetEntityClass(e) == CLASS_UNIT)
     {
         return (Unit)e;
     }
@@ -594,7 +594,7 @@ CampEntity FindEntity(VU_ID id)
     VuEntity* e;
     e = vuDatabase->Find(id);
 
-    if (e && (GetEntityClass(e) == CLASS_OBJECTIVE or GetEntityClass(e) == CLASS_UNIT))
+    if (e and (GetEntityClass(e) == CLASS_OBJECTIVE or GetEntityClass(e) == CLASS_UNIT))
     {
         return (CampEntity)e;
     }
@@ -648,7 +648,7 @@ Objective FindNearestSupplySource(Objective o)
         {
             c = o->GetNeighbor(n);
 
-            if (c && !CampSearch[c->GetCampID()])
+            if (c and !CampSearch[c->GetCampID()])
             {
                 cost = GetObjectiveMovementCost(o, NULL, n, Wheeled, who, PATH_MARINE);
 
@@ -677,7 +677,7 @@ Objective FindNearestSupplySource(Objective o)
         {
             c = o->GetNeighbor(n);
 
-            if (c && !CampSearch[c->GetCampID()])
+            if (c and !CampSearch[c->GetCampID()])
             {
                 cost = GetObjectiveMovementCost(o, NULL, n, Wheeled, (uchar)who, PATH_MARINE);
 
@@ -727,7 +727,7 @@ Unit FindNearestEnemyUnit(GridIndex X, GridIndex Y, GridIndex mx)
         u->GetLocation(&x, &y);
         d = FloatToInt32(Distance(X, Y, x, y));
 
-        if (d > ld && d < nd)
+        if (d > ld and d < nd)
         {
             n = u;
             nd = d;
@@ -775,7 +775,7 @@ Unit FindNearestRealUnit(GridIndex X, GridIndex Y, float *last, GridIndex mx)
         u->GetLocation(&x, &y);
         ds = (float)DistSqu(X, Y, x, y);
 
-        if (ds > lds && ds < nds)
+        if (ds > lds and ds < nds)
         {
             n = u;
             nds = ds;
@@ -815,7 +815,7 @@ Unit FindNearestUnit(VuFilteredList* l, GridIndex X, GridIndex Y, float *last)
         u->GetLocation(&x, &y);
         ds = (float)DistSqu(X, Y, x, y);
 
-        if (ds > lds && ds < nds && x >= 0 && y >= 0)
+        if (ds > lds and ds < nds and x >= 0 and y >= 0)
         {
             n = u;
             nds = ds;
@@ -850,7 +850,7 @@ Unit FindUnitByXY(VuFilteredList* l, GridIndex X, GridIndex Y, int domain)
     {
         u->GetLocation(&x, &y);
 
-        if (x == X && y == Y && (u->GetDomain() == domain or domain < 1))
+        if (x == X and y == Y and (u->GetDomain() == domain or domain < 1))
         {
             return u;
         }
@@ -880,7 +880,7 @@ Unit GetUnitByXY(GridIndex X, GridIndex Y)
     {
         u->GetLocation(&x, &y);
 
-        if (x == X && y == Y)
+        if (x == X and y == Y)
         {
             return u;
         }
@@ -914,7 +914,7 @@ Objective FindNearestObjective(VuFilteredList* l, GridIndex X, GridIndex Y, floa
         o->GetLocation(&x, &y);
         ds = (float) DistSqu(X, Y, x, y);
 
-        if (ds > lds && ds < nds)
+        if (ds > lds and ds < nds)
         {
             n = o;
             nds = ds;
@@ -962,7 +962,7 @@ Objective FindNearestObjective(GridIndex X, GridIndex Y, float *last, GridIndex 
         o->GetLocation(&x, &y);
         ds = (float) DistSqu(X, Y, x, y);
 
-        if (ds > lds && ds < nds)
+        if (ds > lds and ds < nds)
         {
             n = o;
             nds = ds;
@@ -1084,7 +1084,7 @@ Objective FindNearestFriendlyAirbase(Team who, GridIndex X, GridIndex Y)
         if (
             (GetTTRelations(o->GetTeam(), who) <= Neutral) &&
             o->GetType() == TYPE_AIRBASE &&
-            o->brain && o->brain->NumOperableRunways() // JB 010729 CTD
+            o->brain and o->brain->NumOperableRunways() // JB 010729 CTD
         )
         {
             o->GetLocation(&x, &y);
@@ -1171,7 +1171,7 @@ Objective FindNearestFriendlyObjective(Team who, GridIndex *x, GridIndex *y, int
     {
         if (GetTTRelations(o->GetTeam(), who) <= Neutral)
         {
-            if (flags & FF_SECONDLINE && o->IsFrontline())
+            if (flags & FF_SECONDLINE and o->IsFrontline())
             {
                 o = (Objective) myit.GetNext();
                 continue;
@@ -1211,7 +1211,7 @@ Objective FindNearestFriendlyObjective(VuFilteredList* l, Team who, GridIndex *x
     {
         if (GetTTRelations(o->GetTeam(), who) <= Neutral)
         {
-            if (flags & FF_SECONDLINE && o->IsFrontline())
+            if (flags & FF_SECONDLINE and o->IsFrontline())
             {
                 o = GetNextObjective(&myit);
                 continue;
@@ -1286,7 +1286,7 @@ Objective GetObjectiveByXY(GridIndex X, GridIndex Y)
     {
         o->GetLocation(&x, &y);
 
-        if (x == X && y == Y)
+        if (x == X and y == Y)
         {
             return o;
         }
@@ -1345,7 +1345,7 @@ int ScoreThreatFast(GridIndex X, GridIndex Y, int altlevel, Team who)
             score += ((TheCampaign.SamMapData[i] >> (ix + 2)) & 0x03) * 2;
 
             //score += ((TheCampaign.RadarMapData[i] >> ix) & 0x03) * 3;
-            if (own && own not_eq 0xF && GetRoE(who, own, ROE_AIR_FIRE))
+            if (own and own not_eq 0xF and GetRoE(who, own, ROE_AIR_FIRE))
                 score += 10; // 'General' threat for flying over enemy territory
 
             break;
@@ -1403,16 +1403,16 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
             d = da = FloatToInt32(0.8F * d);
         }
 
-        if (e->GetDetectionRange(mt) > d && GetRoE(e->GetTeam(), who, roe_check))
+        if (e->GetDetectionRange(mt) > d and GetRoE(e->GetTeam(), who, roe_check))
         {
             if (
-                e->IsUnit() && !(flags & FIND_NOAIR && e->GetDomain() == DOMAIN_AIR) &&
-                !(flags & FIND_NOMOVERS && ((Unit)e)->Moving())
+                e->IsUnit() and !(flags & FIND_NOAIR and e->GetDomain() == DOMAIN_AIR) &&
+                !(flags & FIND_NOMOVERS and ((Unit)e)->Moving())
             )
             {
                 d = d; // placeholder. This unit is valid
             }
-            else if (e->IsObjective() && ((Objective)e)->GetObjectiveStatus() > 30)
+            else if (e->IsObjective() and ((Objective)e)->GetObjectiveStatus() > 30)
             {
                 d = d; // placeholder. This objective is valid
             }
@@ -1432,7 +1432,7 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
             {
                 threats += 4;
             }
-            else if (d > VisualDetectionRange[mt] && !(flags & FIND_NODETECT))
+            else if (d > VisualDetectionRange[mt] and !(flags & FIND_NODETECT))
             {
                 threats++;
             }
@@ -1466,7 +1466,7 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
  mt = LowAir;
 
  // Set up roe checks
- for (d=0; d<NUM_TEAMS && TeamInfo[d]; d++){
+ for (d=0; d<NUM_TEAMS and TeamInfo[d]; d++){
  tteam[d] = (uchar)GetRoE((uchar)d,who,ROE_AIR_ENGAGE);
  }
 
@@ -1493,8 +1493,8 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
  if (tteam[e->GetTeam()])
  {
  if (e->IsUnit() &&
- !(flags & FIND_NOMOVERS && ((Unit)e)->Moving()) &&
- !(flags & FIND_NOAIR && e->GetDomain() == DOMAIN_AIR) &&
+ !(flags & FIND_NOMOVERS and ((Unit)e)->Moving()) &&
+ !(flags & FIND_NOAIR and e->GetDomain() == DOMAIN_AIR) &&
  (flags & FIND_FINDUNSPOTTED or e->GetSpotted(who)))
  d = d; // placeholder. This unit is valid
  else if (e->IsObjective())
@@ -1508,7 +1508,7 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
  d = FloatToInt32(Distance(X,Y,x,y));
  if (flags & FIND_CAUTIOUS)
  d = FloatToInt32(0.8F*d);
- if (!(flags & FIND_NODETECT) && e->GetDetectionRange(mt) > d)
+ if (!(flags & FIND_NODETECT) and e->GetDetectionRange(mt) > d)
  got++;
  hc = e->GetAproxHitChance(mt,d);
  if (hc > 0){
@@ -1517,7 +1517,7 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
  if (hc > 0)
  got = 1;
  }
- if (got && foundlist)
+ if (got and foundlist)
  foundlist->ForcedInsert(e);
  found += got;
  }
@@ -1554,7 +1554,7 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
     }
 
     // Set up roe checks
-    for (d = 0; d < NUM_TEAMS && TeamInfo[d]; d++)
+    for (d = 0; d < NUM_TEAMS and TeamInfo[d]; d++)
     {
         tteam[d] = GetRoE((uchar)d, who, ROE_AIR_ENGAGE);
     }
@@ -1601,7 +1601,7 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
                     foundlist->ForcedInsert(e);
                     retval  or_eq  NEED_SEAD;
                 }
-                else if (!(flags & FIND_NODETECT) && e->GetDetectionRange(mt) > d)
+                else if (!(flags & FIND_NODETECT) and e->GetDetectionRange(mt) > d)
                 {
                     foundlist->ForcedInsert(e);
                     retval  or_eq  NEED_ECM;
@@ -1650,12 +1650,12 @@ void FillDistanceList(List list, Team who, int  i, int j)
             else
                 d = DistanceToFront(x, y);
 
-            if (d > (float)i && d < (float)j)
+            if (d > (float)i and d < (float)j)
             {
                 good = 1;
                 lp = list->GetFirstElement();
 
-                while (lp && good)
+                while (lp and good)
                 {
                     loc = lp->GetUserData();
                     UnpackXY(loc, &lx, &ly);
@@ -1690,7 +1690,7 @@ FalconSessionEntity* FindPlayer(Flight flight, uchar planeNum)
 
         while (curSession)
         {
-            if (curSession->GetPlayerFlightID() == flight->Id() && curSession->GetAircraftNum() == planeNum)
+            if (curSession->GetPlayerFlightID() == flight->Id() and curSession->GetAircraftNum() == planeNum)
             {
                 return (curSession);
             }

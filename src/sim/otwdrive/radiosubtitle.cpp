@@ -275,7 +275,7 @@ void RadioSubTitle::NewMessage(const int theTalker, const int theFrag, const uns
 
     SubTitleNode* index = (SubTitleNode*)theRadioChatterList->GetHead();
 
-    while ((index) && (index->messageStartTime < thePlayTime))
+    while ((index) and (index->messageStartTime < thePlayTime))
     {
         index = (SubTitleNode*)index->GetSucc();
     }
@@ -297,7 +297,7 @@ void RadioSubTitle::AddToMessage(const int theTalker, const int theFrag)
 
     char* rchunk = GetRadioChunk(theTalker, theFrag);
 
-    if ((rchunk) && (currentlyEditedNode))
+    if ((rchunk) and (currentlyEditedNode))
     {
         AppendToString(&currentlyEditedNode->theSpokenLine, " ");
         AppendToString(&currentlyEditedNode->theSpokenLine, rchunk);
@@ -314,7 +314,7 @@ char* RadioSubTitle::GetRadioChunk(const int theTalker, const int theFrag)
 {
 #ifdef SHOW_FRAG_AND_TALKER___BUT_MEM_LEAK
 
-    if ((theStrings[theFrag]) && (theTalker < MAX_VOICE_NUM))
+    if ((theStrings[theFrag]) and (theTalker < MAX_VOICE_NUM))
     {
         char* bla = (char*)malloc(strlen(theStrings[theFrag]->Voices[theTalker]) + 30); // mem leak but it´s only for test anyway
 
@@ -337,14 +337,14 @@ char* RadioSubTitle::GetRadioChunk(const int theTalker, const int theFrag)
 #else
 #ifdef NDEBUG
 
-    if ((theFrag < FragCount) && (theStrings[theFrag]) && (theTalker < MAX_VOICE_NUM) && !F4IsBadReadPtr(theStrings[theFrag], sizeof(csvLine)))
+    if ((theFrag < FragCount) and (theStrings[theFrag]) and (theTalker < MAX_VOICE_NUM) and !F4IsBadReadPtr(theStrings[theFrag], sizeof(csvLine)))
     {
         return theStrings[theFrag]->Voices[theTalker];
     }
 
 #else
 
-    if ((theFrag < FragCount) && (theStrings[theFrag]) && (theTalker < MAX_VOICE_NUM))
+    if ((theFrag < FragCount) and (theStrings[theFrag]) and (theTalker < MAX_VOICE_NUM))
     {
         if (F4IsBadReadPtr(theStrings[theFrag], sizeof(csvLine)))
         {
@@ -389,7 +389,7 @@ ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theT
     // these messages are going to be removed actually..
     // this is done for every message (node) till I find one that is still to be drawn - and as the list is
     // sorted by time, all following ones have also to be drawn so I break from the loop
-    while ((node) && (node->messageStartTime  + messageTTL < theTime))
+    while ((node) and (node->messageStartTime  + messageTTL < theTime))
     {
         SubTitleNode* nodeToDelete = (SubTitleNode*)theRadioChatterList->RemHead();
 
@@ -428,7 +428,7 @@ ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theT
             break;
         }
 
-        if ((node->messageStartTime < theTime) && (theTime < node->messageStartTime + messageTTL))
+        if ((node->messageStartTime < theTime) and (theTime < node->messageStartTime + messageTTL))
         {
 #if 0 // Retro 23May2004
             theMessages[i] = (ColouredSubTitle*)malloc(sizeof(ColouredSubTitle));

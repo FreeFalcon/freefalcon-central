@@ -459,12 +459,12 @@ void FaultClass::AddMflList(VU_TIME thetime, FaultClass::type_FSubSystem type, i
 
 bool FaultClass::GetMflEntry(int n, const char **name, int *subsys, int *count, char timestr[])
 {
-    ShiAssert(n >= 0 && n < mLastMfl);
+    ShiAssert(n >= 0 and n < mLastMfl);
 
     if (n < 0 or n >= mLastMfl)
         return false;
 
-    ShiAssert(mMflList[n].type >= 0 && mMflList[n].type < TotalFaultStrings);
+    ShiAssert(mMflList[n].type >= 0 and mMflList[n].type < TotalFaultStrings);
     *name = mpFaultData[mMflList[n].type].mpFSSName;
     *subsys = mMflList[n].subtype;
     *count = mMflList[n].no;

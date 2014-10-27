@@ -252,7 +252,7 @@ void C_ScaleBitmap::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     if (Image_)
     {
-        if (Overlay_ && UseOverlay_)
+        if (Overlay_ and UseOverlay_)
             Image_->Blend4Bit(surface, Overlay_, Palette_, cliprect);
         else
             Image_->Draw(surface, cliprect);

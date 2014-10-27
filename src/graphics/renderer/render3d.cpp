@@ -897,7 +897,7 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
     }
 
     // If culling or clipping took care of both triangles, quit now
-    if (useFirst && useLast)
+    if (useFirst and useLast)
         count = 4;
     else
     {

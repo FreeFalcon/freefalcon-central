@@ -480,7 +480,7 @@ int WeatherClass::CampLoad(char* name, int type)
 
     data_ptr = cd.data;
 
-    if (type not_eq game_Campaign && type not_eq game_PlayerPool)
+    if (type not_eq game_Campaign and type not_eq game_PlayerPool)
     {
         if (gCampDataVersion >= 75)
         {

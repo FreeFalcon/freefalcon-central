@@ -380,7 +380,7 @@ void AirframeClass::InitData(int idx)
 void AirframeClass::Init(int idx)
 {
     // stuff that ought to be read in (JPO)
-    if (auxaeroData->fuelFwdRes == 0 && auxaeroData->fuelAftRes == 0)
+    if (auxaeroData->fuelFwdRes == 0 and auxaeroData->fuelAftRes == 0)
     {
         // everything else - guess based on F16 proportions.
 #if 0
@@ -508,8 +508,8 @@ void AirframeClass::Init(int idx)
             groundDeltaY = 0.0f;
 
             //MI CATIII as default
-            //if(g_bCATIIIDefault && g_bEnableCATIIIExtension) MI
-            if (g_bCATIIIDefault && g_bRealisticAvionics)
+            //if(g_bCATIIIDefault and g_bEnableCATIIIExtension) MI
+            if (g_bCATIIIDefault and g_bRealisticAvionics)
             {
                 if (platform->IsPlayer())
                 {
@@ -599,8 +599,8 @@ void AirframeClass::Init(int idx)
             }
 
             //MI CATIII as default
-            //if(g_bCATIIIDefault && g_bEnableCATIIIExtension) MI
-            if (g_bCATIIIDefault && g_bRealisticAvionics)
+            //if(g_bCATIIIDefault and g_bEnableCATIIIExtension) MI
+            if (g_bCATIIIDefault and g_bRealisticAvionics)
             {
                 if (platform->IsPlayer())
                 {
@@ -636,14 +636,14 @@ void AirframeClass::Init(int idx)
             // 2002-03-28 MN for refuel debugging
             AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-            if (gFuelState && (playerAC) && (this == playerAC->af))
+            if (gFuelState and (playerAC) and (this == playerAC->af))
             {
                 AllocateFuel(static_cast<float>(gFuelState));
                 gFuelState = 0;
             }
 
             // helicopter mode easter egg
-            if (hf && simpleMode == SIMPLE_MODE_HF)
+            if (hf and simpleMode == SIMPLE_MODE_HF)
             {
                 RunHeliModel();
                 return;
@@ -660,7 +660,7 @@ void AirframeClass::Init(int idx)
 
             // simple flight model for AI's
             if (simpleMode == SIMPLE_MODE_AF
-                && !IsSet(AirframeClass::OnObject)
+                and !IsSet(AirframeClass::OnObject)
                )
             {
                 // JB carrier
@@ -754,7 +754,7 @@ void AirframeClass::Init(int idx)
 
             float xydelta = (float)sqrt(xdot * xdot + ydot * ydot);
 
-            if (xydelta && !platform->OnGround())
+            if (xydelta and !platform->OnGround())
             {
                 newSigma = (float)atan2(ydot, xdot);
             }
@@ -943,15 +943,15 @@ void AirframeClass::Init(int idx)
                         }
 
                         if (!IsSet(Simplified) &&
-                            ((!platform->OnGround() && vcas < 180.0f) ||
-                             (fabs(pshape) > 0.85F  && fabs(rshape) > 0.85F) ||
+                            ((!platform->OnGround() and vcas < 180.0f) ||
+                             (fabs(pshape) > 0.85F  and fabs(rshape) > 0.85F) ||
                              (fabs(alpha)  > 18.0F) or //&& IsSet(LowSpdHorn) ) ||
-                             (fabs(pshape) > 0.6F && fabs(rshape) > 0.6F && IsSet(LowSpdHorn))))
+                             (fabs(pshape) > 0.6F and fabs(rshape) > 0.6F and IsSet(LowSpdHorn))))
                         {
                             loadingFraction = weight / emptyWeight; //me123
 
-                            if ((!platform->OnGround() && vcas < 60.0f ||
-                                 !platform->OnGround() && fabs(alpha)  > 18.0F &&
+                            if ((!platform->OnGround() and vcas < 60.0f ||
+                                 !platform->OnGround() and fabs(alpha)  > 18.0F &&
                                  vcas < 60.0f +
                                  60 * (loadingFraction - 1.3F) +
                                  10 * fabs(assymetry / weight) * 10.0F) ||
@@ -1025,20 +1025,20 @@ void AirframeClass::Init(int idx)
                         break;
 
                     case EnteringDeepStall:
-                        if (platform->platformAngles.sinthe < -0.766044F && fabs(alpha * (rand() / (float)RAND_MAX + platform->platformAngles.cosphi)) < 15.0F)
+                        if (platform->platformAngles.sinthe < -0.766044F and fabs(alpha * (rand() / (float)RAND_MAX + platform->platformAngles.cosphi)) < 15.0F)
                         {
                             stallMode = Recovering;
                         }
-                        else if (platform->platformAngles.sinthe < 0.342F && fabs(platform->platformAngles.cosphi) > 0.82F)
+                        else if (platform->platformAngles.sinthe < 0.342F and fabs(platform->platformAngles.cosphi) > 0.82F)
                         {
-                            if (alpha > 0.0f && fabs(alpha - (60.0f + oscillationTimer * stallMagnitude * max(0.0F, (0.3F - fabs(r)) * 3.3F))) < 10.0F &&
+                            if (alpha > 0.0f and fabs(alpha - (60.0f + oscillationTimer * stallMagnitude * max(0.0F, (0.3F - fabs(r)) * 3.3F))) < 10.0F &&
                                 oscillationSlope * q > 0.0F)
                             {
                                 stallMode = DeepStall;
 
                                 oldp02[5] = alpha - 60.0F;
                             }
-                            else if (alpha < 0.0f && fabs(alpha - (-40.0f + oscillationTimer * stallMagnitude * max(0.0F, (0.3F - fabs(r)) * 3.3F))) < 10.0F &&
+                            else if (alpha < 0.0f and fabs(alpha - (-40.0f + oscillationTimer * stallMagnitude * max(0.0F, (0.3F - fabs(r)) * 3.3F))) < 10.0F &&
                                      oscillationSlope * q > 0.0F)
                             {
                                 stallMode = DeepStall;
@@ -1055,7 +1055,7 @@ void AirframeClass::Init(int idx)
                         pitch *= 0.9F;
 
                         //you leave the DeepStall in pitch.cpp
-                        if (stallMode == DeepStall && fabs(slice) > 0.3F && alpha < -10.0F)
+                        if (stallMode == DeepStall and fabs(slice) > 0.3F and alpha < -10.0F)
                         {
                             stallMode = Spinning;
                             oldp02[5] = alpha;
@@ -1068,7 +1068,7 @@ void AirframeClass::Init(int idx)
 
                     case Recovering:
 
-                        if ((alpha > g_fRecoveryAOA or alpha < -11.0f) && platform->platformAngles.sinthe > 0.342F)
+                        if ((alpha > g_fRecoveryAOA or alpha < -11.0f) and platform->platformAngles.sinthe > 0.342F)
                         {
                             stallMode = EnteringDeepStall;
                             stallMagnitude += (1.0f - rand() / (float)RAND_MAX * 2.0f) * 5.0f;
@@ -1076,7 +1076,7 @@ void AirframeClass::Init(int idx)
                             desiredMagnitude = stallMagnitude;
                         }
 
-                        if (qbar > 30.0F && alpha < 18.0f)
+                        if (qbar > 30.0F and alpha < 18.0f)
                             stallMode = None;
 
                         mlSinCos(&Trig, vuxGameTime / (1200.0f / loadingFraction));
@@ -1086,8 +1086,8 @@ void AirframeClass::Init(int idx)
                 }
 
                 //check for low speed warning tone
-                if (platform->platformAngles.sinthe > .707 && 1.8888F * theta * RTD + 45.0F > vcas ||
-                    (g_bRealisticAvionics && gearPos > 0.9F && cockpitFlightData.alpha >= 15.0F))
+                if (platform->platformAngles.sinthe > .707 and 1.8888F * theta * RTD + 45.0F > vcas ||
+                    (g_bRealisticAvionics and gearPos > 0.9F and cockpitFlightData.alpha >= 15.0F))
                 {
 
                     if (!IsSet(HornSilenced))
@@ -1275,7 +1275,7 @@ void AirframeClass::Init(int idx)
             BIG_SCALAR py = y;
             BIG_SCALAR pz = z;
 
-            if ((IsSet(InAir)) && (pz > -TheMap.GetMEA(px, py)))
+            if ((IsSet(InAir)) and (pz > -TheMap.GetMEA(px, py)))
             {
                 //Tpoint normal;
                 //float groundZ;
@@ -1307,7 +1307,7 @@ void AirframeClass::Init(int idx)
             // RV - Biker - Check if CL tank is our last weapon (don't count guns)
             for (int i = center + 1; i < platform->Sms->NumHardpoints(); i++)
             {
-                if (platform->Sms->hardPoint[i] && platform->Sms->hardPoint[i]->GetWeaponType() not_eq wtNone)
+                if (platform->Sms->hardPoint[i] and platform->Sms->hardPoint[i]->GetWeaponType() not_eq wtNone)
                     weapons++;
             }
 
@@ -1429,7 +1429,7 @@ void AirframeClass::Init(int idx)
             // RV - Biker - Check if CL tank is our last weapon (don't count guns)
             for (int i = center + 1; i < platform->Sms->NumHardpoints(); i++)
             {
-                if (platform->Sms->hardPoint[i] && platform->Sms->hardPoint[i]->GetWeaponType() not_eq wtNone)
+                if (platform->Sms->hardPoint[i] and platform->Sms->hardPoint[i]->GetWeaponType() not_eq wtNone)
                     weapons++;
             }
 
@@ -1506,7 +1506,7 @@ void AirframeClass::Init(int idx)
 
                 // MD -- 20031006: setting the fault was done in the cockpit callback but it will work better
                 // here and ensure the shared memory state is updated even when we aren't looking at the panel
-                if (faultSys && faultSys->GetFault(hook_fault) && ((AircraftClass*)(SimDriver.GetPlayerEntity()))->af->platform->IsF16())
+                if (faultSys and faultSys->GetFault(hook_fault) and ((AircraftClass*)(SimDriver.GetPlayerEntity()))->af->platform->IsF16())
                     faultSys->ClearFault(hook_fault);
 
                 if (gACMIRec.IsRecording())
@@ -1529,7 +1529,7 @@ void AirframeClass::Init(int idx)
 
                 // MD -- 20031006: setting the fault was done in the cockpit callback but it will work better
                 // here and ensure the shared memory state is updated even when we aren't looking at the panel
-                if (faultSys && ((AircraftClass*)(SimDriver.GetPlayerEntity()))->af->platform->IsF16())
+                if (faultSys and ((AircraftClass*)(SimDriver.GetPlayerEntity()))->af->platform->IsF16())
                     faultSys->SetCaution(hook_fault);
 
                 if (gACMIRec.IsRecording())
@@ -1563,7 +1563,7 @@ void AirframeClass::Init(int idx)
 
                 // MD -- 20031006: setting the fault was done in the cockpit callback but it will work better
                 // here and ensure the shared memory state is updated even when we aren't looking at the panel
-                if (faultSys && faultSys->GetFault(hook_fault) && ((AircraftClass*)(SimDriver.GetPlayerEntity()))->af->platform->IsF16())
+                if (faultSys and faultSys->GetFault(hook_fault) and ((AircraftClass*)(SimDriver.GetPlayerEntity()))->af->platform->IsF16())
                     faultSys->ClearFault(hook_fault);
 
                 if (gACMIRec.IsRecording())
@@ -1595,7 +1595,7 @@ void AirframeClass::Init(int idx)
 
                 // MD -- 20031006: setting the fault was done in the cockpit callback but it will work better
                 // here and ensure the shared memory state is updated even when we aren't looking at the panel
-                if (faultSys && ((AircraftClass*)(SimDriver.GetPlayerEntity()))->af->platform->IsF16())
+                if (faultSys and ((AircraftClass*)(SimDriver.GetPlayerEntity()))->af->platform->IsF16())
                     faultSys->SetCaution(hook_fault);
 
                 if (gACMIRec.IsRecording())
@@ -1780,20 +1780,20 @@ void AirframeClass::Init(int idx)
             //F15A/B, C, E
             if (auxaeroData->typeAC == 3 or auxaeroData->typeAC == 4 or auxaeroData->typeAC == 5)
             {
-                if (tefPos > 0 && (flapPos == 0 or flapPos == 4))
+                if (tefPos > 0 and (flapPos == 0 or flapPos == 4))
                 {
                     flapPos = 1;
                     tefState = tefPos;
                 }
 
-                if (vcas > vflapmax && flapPos == 1)
+                if (vcas > vflapmax and flapPos == 1)
                 {
                     TEFClose();
                     flapPos = 2;
 
                 }
 
-                if (vcas < vflapmax && flapPos == 2)
+                if (vcas < vflapmax and flapPos == 2)
                 {
                     tefPos = tefState;
                     flapPos = 1;
@@ -1808,9 +1808,9 @@ void AirframeClass::Init(int idx)
                 {
                     tefPos = 0;
                 }
-                else if (mach < 1.05f && mach >= 0.9f)
+                else if (mach < 1.05f and mach >= 0.9f)
                 {
-                    if (alpha > 0.0f && alpha <= 15.0f)
+                    if (alpha > 0.0f and alpha <= 15.0f)
                     {
                         tefPos = min(alpha, 9);
                     }
@@ -1819,9 +1819,9 @@ void AirframeClass::Init(int idx)
                         tefPos = 0;
                     }
                 }
-                else if (mach < 0.9f &&  mach >= 0.6f)
+                else if (mach < 0.9f and  mach >= 0.6f)
                 {
-                    if (alpha > 0.0f && alpha <= 17.0f)
+                    if (alpha > 0.0f and alpha <= 17.0f)
                     {
                         tefPos = min(alpha, 17);
                     }
@@ -1831,9 +1831,9 @@ void AirframeClass::Init(int idx)
                     }
 
                 }
-                else if (mach < 0.6f && mach > 0.1 && flapPos <= 10)
+                else if (mach < 0.6f and mach > 0.1 and flapPos <= 10)
                 {
-                    if (alpha > 0.0f && alpha <= 17.0f)
+                    if (alpha > 0.0f and alpha <= 17.0f)
                     {
                         tefPos = min(alpha, 17);
                     }
@@ -1846,9 +1846,9 @@ void AirframeClass::Init(int idx)
                 //F18A-D
                 else if (auxaeroData->typeAC == 8 or auxaeroData->typeAC == 9)
                 {
-                    if (mach < 0.6f && vcas > 250.f)
+                    if (mach < 0.6f and vcas > 250.f)
                     {
-                        if (alpha > 0.0f && alpha <= 17.0f)
+                        if (alpha > 0.0f and alpha <= 17.0f)
                         {
                             tefPos = min(alpha, 17);
                         }
@@ -1861,12 +1861,12 @@ void AirframeClass::Init(int idx)
                     //Flap HALF Setting
                     if (!platform->OnGround())
                     {
-                        if (flapPos == 20 && vcas < 250.0f)
+                        if (flapPos == 20 and vcas < 250.0f)
                         {
                             tefPos = min(4500 / vcas, 30);
                         }
                         //Flap FULL Setting
-                        else if (flapPos == 30 && vcas < 250.0f)
+                        else if (flapPos == 30 and vcas < 250.0f)
                         {
                             tefPos = min(6500 / vcas, 45);
                         }
@@ -1888,9 +1888,9 @@ void AirframeClass::Init(int idx)
                 //F18E/F
                 else if (auxaeroData->typeAC == 10)
                 {
-                    if (mach < 0.6f && vcas > 240.f)
+                    if (mach < 0.6f and vcas > 240.f)
                     {
-                        if (alpha > 0.0f && alpha <= 17.0f)
+                        if (alpha > 0.0f and alpha <= 17.0f)
                         {
                             tefPos = min(alpha, 17);
                         }
@@ -1904,12 +1904,12 @@ void AirframeClass::Init(int idx)
                     //Flap HALF Setting
                     if (!platform->OnGround())
                     {
-                        if (flapPos == 20 && vcas < 240.0f)
+                        if (flapPos == 20 and vcas < 240.0f)
                         {
                             tefPos = min(4500 / vcas, 30);
                         }
                         //Flap FULL Setting
-                        else if (flapPos == 30 && vcas < 240.0f)
+                        else if (flapPos == 30 and vcas < 240.0f)
                         {
                             tefPos = min(6500 / vcas, 40);
                         }
@@ -1952,7 +1952,7 @@ void AirframeClass::Init(int idx)
 
         void AirframeClass::RandomFailureModel()
         {
-            if (g_bEnableRandomFailures && platform->IsPlayer())
+            if (g_bEnableRandomFailures and platform->IsPlayer())
             {
                 //isplayer shouldnt be necessary, but just in case.
                 float MTBF = g_fMeanTimeBetweenFailures;

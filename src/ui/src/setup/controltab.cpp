@@ -271,7 +271,7 @@ long GetListBoxItemData(C_ListBox* theLB, const int theItemIndex, const long the
             item = theLB->FindID(theIndex);
         }
 
-        if ((item) && (item->Label_))
+        if ((item) and (item->Label_))
             return item->Label_->GetUserNumber(theItemIndex);
     }
 
@@ -1012,7 +1012,7 @@ void AxisChangeCB(long, short hittype, C_Base *me)
     if (index == -2) // whoops, error in the above routine..
         return;
 
-    if ((index == -1) && (UIInputStuff[i].theDeviceAxis->Device == -1) && (UIInputStuff[i].theDeviceAxis->Axis == -1))
+    if ((index == -1) and (UIInputStuff[i].theDeviceAxis->Device == -1) and (UIInputStuff[i].theDeviceAxis->Axis == -1))
     {
         return; // no change
     }
@@ -1275,7 +1275,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
 
     if (button not_eq NULL)
     {
-        if ((g_bEnableTrackIR == true) && (PlayerOptions.Get2dTrackIR() == true))
+        if ((g_bEnableTrackIR == true) and (PlayerOptions.Get2dTrackIR() == true))
             button->SetState(C_STATE_1);
         else
             button->SetState(C_STATE_0);
@@ -1291,7 +1291,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
 
     if (button not_eq NULL)
     {
-        if ((g_bEnableTrackIR == true) && (PlayerOptions.Get3dTrackIR() == true))
+        if ((g_bEnableTrackIR == true) and (PlayerOptions.Get3dTrackIR() == true))
             button->SetState(C_STATE_1);
         else
             button->SetState(C_STATE_0);
@@ -1327,7 +1327,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
 
     if (button not_eq NULL)
     {
-        if ((hasForceFeedback) && (PlayerOptions.GetFFB()))
+        if ((hasForceFeedback) and (PlayerOptions.GetFFB()))
             button->SetState(C_STATE_1);
         else
             button->SetState(C_STATE_0);
@@ -1525,7 +1525,7 @@ void RefreshJoystickCB(long, short, C_Base *)
     GetJoystickInput();
 
     // Retro 14Feb2004 - autocenter
-    if ((hasForceFeedback) && (PlayerOptions.GetFFB()))
+    if ((hasForceFeedback) and (PlayerOptions.GetFFB()))
     {
         JoystickPlayEffect(JoyAutoCenter, 10000);
     }
@@ -1559,7 +1559,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
             //test to see if rudder moved, if so update the control
-            if (((IO.analog[AXIS_YAW].engrValue not_eq RudderPrev) or InitializeValueBars) && state) // Retro 31Dec2003
+            if (((IO.analog[AXIS_YAW].engrValue not_eq RudderPrev) or InitializeValueBars) and state) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(RUDDER);
@@ -1585,7 +1585,7 @@ void RefreshJoystickCB(long, short, C_Base *)
         {
             //test to see if throttle moved, if so update the control
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
-            if (((IO.analog[AXIS_THROTTLE].engrValue not_eq ThrottlePrev) or InitializeValueBars) && state) // Retro 31Dec2003
+            if (((IO.analog[AXIS_THROTTLE].engrValue not_eq ThrottlePrev) or InitializeValueBars) and state) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(THROTTLE);
@@ -1687,10 +1687,10 @@ void RefreshJoystickCB(long, short, C_Base *)
             {
                 int theIndex = (AxisMap.FlightControlDevice - SIM_JOYSTICK1) * SIMLIB_MAX_DIGITAL;
 
-                if ((i >= (unsigned long) theIndex) && (i  < (unsigned long) theIndex + 8))
+                if ((i >= (unsigned long) theIndex) and (i  < (unsigned long) theIndex + 8))
                 {
                     // Retro 14Feb2004 - only do this when FFB is available (duh!)
-                    if ((hasForceFeedback) && (PlayerOptions.GetFFB()))
+                    if ((hasForceFeedback) and (PlayerOptions.GetFFB()))
                     {
                         if (IO.digital[theIndex])
                         {
@@ -1809,7 +1809,7 @@ void RefreshJoystickCB(long, short, C_Base *)
         {
             Direction = 0;
 
-            if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) && IO.povHatAngle[i] not_eq -1)
+            if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) and IO.povHatAngle[i] not_eq -1)
             {
                 flags  or_eq  0x01;
                 Direction = 0;
@@ -1850,7 +1850,7 @@ void RefreshJoystickCB(long, short, C_Base *)
                 Direction = 7;
             }
 
-            if (KeyVar.EditKey && IO.povHatAngle[i] not_eq -1)
+            if (KeyVar.EditKey and IO.povHatAngle[i] not_eq -1)
             {
                 C_Button *button;
 
@@ -1863,7 +1863,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
             C_Text *text = (C_Text *)win->FindControl(FUNCTION_LIST);
 
-            if (text && IO.povHatAngle[i] not_eq -1)
+            if (text and IO.povHatAngle[i] not_eq -1)
             {
                 C_Text *text2 = (C_Text *)win->FindControl(CONTROL_KEYS);
 
@@ -1924,7 +1924,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
         button = (C_Button *)win->FindControl(UP_HAT);
 
-        if (button not_eq NULL && button->GetState() not_eq C_STATE_DISABLED)
+        if (button not_eq NULL and button->GetState() not_eq C_STATE_DISABLED)
         {
             if (flags & 0x01)
                 button->SetState(C_STATE_1);
@@ -1936,7 +1936,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
         button = (C_Button *)win->FindControl(RIGHT_HAT);
 
-        if (button not_eq NULL && button->GetState() not_eq C_STATE_DISABLED)
+        if (button not_eq NULL and button->GetState() not_eq C_STATE_DISABLED)
         {
             if (flags & 0x02)
                 button->SetState(C_STATE_1);
@@ -1948,7 +1948,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
         button = (C_Button *)win->FindControl(DOWN_HAT);
 
-        if (button not_eq NULL && button->GetState() not_eq C_STATE_DISABLED)
+        if (button not_eq NULL and button->GetState() not_eq C_STATE_DISABLED)
         {
             if (flags & 0x04)
                 button->SetState(C_STATE_1);
@@ -1960,7 +1960,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
         button = (C_Button *)win->FindControl(LEFT_HAT);
 
-        if (button not_eq NULL && button->GetState() not_eq C_STATE_DISABLED)
+        if (button not_eq NULL and button->GetState() not_eq C_STATE_DISABLED)
         {
             if (flags & 0x08)
                 button->SetState(C_STATE_1);
@@ -2245,7 +2245,7 @@ SIM_INT Calibrate ( void )
  if(Calibration.disp_text)
  {
  MonoPrint ("Move the throttle to the ends and push a button\n");
- if(text not_eq NULL && IO.analog[2].isUsed)
+ if(text not_eq NULL and IO.analog[2].isUsed)
  {
  text->Refresh();
  text->SetText(TXT_MV_THR);
@@ -2279,7 +2279,7 @@ SIM_INT Calibrate ( void )
  if(Calibration.disp_text)
  {
  MonoPrint ("Move the rudder to the ends and push a button\n");
- if(text not_eq NULL && IO.analog[3].isUsed)
+ if(text not_eq NULL and IO.analog[3].isUsed)
  {
  text->Refresh();
  text->SetText(TXT_MV_RUD);
@@ -2508,13 +2508,13 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
 
                     //there is a function mapped but it's not visible
                     //don't allow user to remap this key combo
-                    if (!ID && oldFunc)
+                    if (!ID and oldFunc)
                         return TRUE;
 
 
                     temp = (C_Button *)win->FindControl(ID);
 
-                    if (temp && (temp->GetUserNumber(EDITABLE) < 1))
+                    if (temp and (temp->GetUserNumber(EDITABLE) < 1))
                     {
                         //this keycombo is not remappable
                         return TRUE;
@@ -2543,7 +2543,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
                 _TCHAR totalDescrip[MAX_PATH] = {0};
 
                 // JPO crash log detection.
-                ShiAssert(DKScanCode >= 0 && DKScanCode < 256);
+                ShiAssert(DKScanCode >= 0 and DKScanCode < 256);
                 ShiAssert(FALSE == IsBadStringPtr(KeyDescrips[DKScanCode], MAX_PATH));
 
                 if (KeyVar.CommandsKeyCombo > 0)
@@ -2710,7 +2710,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
                     else
                         text->SetText(TXT_NO_FUNCTION);
 
-                    if (!KeyVar.EditKey && temp)
+                    if (!KeyVar.EditKey and temp)
                     {
                         UI95_RECT Client;
                         Client = win->GetClientArea(temp->GetClient());
@@ -2753,7 +2753,7 @@ void KeycodeCB(long ID, short hittype, C_Base *control)
         SetButtonColor(button);
     }
 
-    if (KeyVar.CurrControl == ID && KeyVar.EditKey)
+    if (KeyVar.CurrControl == ID and KeyVar.EditKey)
     {
         KeyVar.EditKey = FALSE;
         return;
@@ -3949,7 +3949,7 @@ void BuildControllerList(C_ListBox *lbox)
 
             lbox->AddItem(i + SIM_JOYSTICK1 + 1, C_TYPE_ITEM, gDIDevNames[SIM_JOYSTICK1 + i]);
 
-            if (mHelmetIsUR && i == mHelmetID)
+            if (mHelmetIsUR and i == mHelmetID)
                 lbox->SetItemFlags(i + SIM_JOYSTICK1 + 1, 0);
         }
     }

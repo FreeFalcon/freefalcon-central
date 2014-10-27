@@ -51,7 +51,7 @@ VU_ERRCODE VuGridTree::Move(VuEntity *ent, BIG_SCALAR coord1, BIG_SCALAR coord2)
     VuScopeLock l(GetMutex());
     VuBiKeyFilter *bkf = GetBiKeyFilter();
 
-    if ((ent not_eq NULL) && (ent->VuState() == VU_MEM_ACTIVE) && bkf->RemoveTest(ent))
+    if ((ent not_eq NULL) and (ent->VuState() == VU_MEM_ACTIVE) and bkf->RemoveTest(ent))
     {
         VuEntityBin safe(ent);
         VU_KEY ck1 = bkf->Key1(ent);
@@ -213,7 +213,7 @@ VU_ERRCODE VuGridTree::Move(VuEntity *ent, BIG_SCALAR coord1, BIG_SCALAR coord2)
 {
     VuScopeLock l(GetMutex());
 
-    if ((ent not_eq NULL) && (ent->VuState() == VU_MEM_ACTIVE) && filter_->RemoveTest(ent))
+    if ((ent not_eq NULL) and (ent->VuState() == VU_MEM_ACTIVE) and filter_->RemoveTest(ent))
     {
         VuEntityBin safe(ent);
         VU_KEY ck1 = filter_->Key1(ent);

@@ -312,7 +312,7 @@ int AS_DataClass::ASSearch(Path p, void* origin, void* target, void (*extend)(AS
     p->ClearPath();
     max_length = p->GetMaxLength();
 
-    while (count < maxSearch && waste)
+    while (count < maxSearch and waste)
     {
         (*extend)(this, location->where, target);
         AS_merge(count);
@@ -363,7 +363,7 @@ int AS_DataClass::ASSearch(Path p, void* origin, void* target, void (*extend)(AS
         }
 
         // Check for exceeding max cost and abort if so
-        if (maxCost && location->cost > maxCost)
+        if (maxCost and location->cost > maxCost)
             count = maxSearch;
 
         count++;
@@ -378,7 +378,7 @@ int AS_DataClass::ASSearch(Path p, void* origin, void* target, void (*extend)(AS
 
         while (T not_eq NULL)
         {
-            if (T->cost > 0 && T->to_go < best)
+            if (T->cost > 0 and T->to_go < best)
             {
                 best = T->to_go;
                 p->CopyPath(&T->path);
@@ -391,7 +391,7 @@ int AS_DataClass::ASSearch(Path p, void* origin, void* target, void (*extend)(AS
 
         while (T not_eq NULL)
         {
-            if (T->cost > 0 && T->to_go < best)
+            if (T->cost > 0 and T->to_go < best)
             {
                 best = T->to_go;
                 p->CopyPath(&T->path);
@@ -519,13 +519,13 @@ void AS_DataClass::AS_merge(int)
                 // Either way, quit searching
                 break;
             }
-            else if (!insert_after && neighbors[n].cost + neighbors[n].to_go < T->next->cost + T->next->to_go)
+            else if (!insert_after and neighbors[n].cost + neighbors[n].to_go < T->next->cost + T->next->to_go)
                 insert_after = T;
 
             T = T->next;
         }
 
-        if (T && !insert_after && !T->next)
+        if (T and !insert_after and !T->next)
             // Insert at end of the queue
             insert_after = T;
 
@@ -553,7 +553,7 @@ ASNode AS_DataClass::AS_get_new_node(int n)
     {
         // KCK: The following line is only usefull if the user's huristic overestimates -
         // And even then, it only gets slightly better answers for a moderate cost.
-        // if (T->where == neighbors[n].where && neighbors[n].cost+neighbors[n].to_go > T->cost + T->to_go)
+        // if (T->where == neighbors[n].where and neighbors[n].cost+neighbors[n].to_go > T->cost + T->to_go)
         if (T->where == neighbors[n].where)
             return NULL;
 

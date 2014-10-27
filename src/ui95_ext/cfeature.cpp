@@ -123,7 +123,7 @@ void C_Feature::SetFont(long ID)
 
 long C_Feature::CheckHotSpots(long relX, long relY)
 {
-    if (relX >= GetX() && relX <= (GetX() + GetW()) && relY >= GetY() && relY <= (GetY() + GetH()))
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
         return(GetID());
 
     return(0);

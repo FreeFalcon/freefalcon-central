@@ -102,7 +102,7 @@ void MissileClass::SetTarget(SimObjectType* newTarget)
 
     // If we're still on the rail, update our seeker as well -- otherwise let it do its thing
     // TODO:  Might be nice if the missile always used the seeker's target instead of keeping its own.
-    if (sensorArray && launchState not_eq InFlight)
+    if (sensorArray and launchState not_eq InFlight)
     {
         ShiAssert(sensorArray[0]);
 

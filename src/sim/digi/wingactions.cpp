@@ -150,8 +150,8 @@ void DigitalBrain::AiMonitorTargets()
     // else if(mpSearchFlags[AI_TOTAL_SEARCH_TYPES] == AI_MONITOR_TARGET) {
     else if (mpSearchFlags[AI_MONITOR_TARGET])
     {
-        // else if(mpSearchFlags[AI_MONITOR_TARGET] && flightLead->IsSetFlag(MOTION_OWNSHIP)) {
-        if (targetPtr && vuxGameTime > mLastReportTime + 120000)
+        // else if(mpSearchFlags[AI_MONITOR_TARGET] and flightLead->IsSetFlag(MOTION_OWNSHIP)) {
+        if (targetPtr and vuxGameTime > mLastReportTime + 120000)
         {
 
             mLastReportTime = vuxGameTime;
@@ -188,7 +188,7 @@ void DigitalBrain::AiMonitorTargets()
     //else if(mpSearchFlags[AI_TOTAL_SEARCH_TYPES] == AI_SEARCH_FOR_TARGET) {
     else if (mpSearchFlags[AI_SEARCH_FOR_TARGET])
     {
-        if (targetPtr && targetPtr not_eq mpLastTargetPtr && vuxGameTime > (mLastReportTime + 120000))
+        if (targetPtr and targetPtr not_eq mpLastTargetPtr and vuxGameTime > (mLastReportTime + 120000))
         {
 
             mLastReportTime = vuxGameTime;
@@ -213,7 +213,7 @@ void DigitalBrain::AiSetInPosition(void)
     vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
     flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
-    if (flightIdx == AiElementLead && vehInFlight == 4)
+    if (flightIdx == AiElementLead and vehInFlight == 4)
     {
         mInPositionFlag = FALSE;
     }
@@ -241,7 +241,7 @@ void DigitalBrain::AiCheckPlayerInPosition(void)
     vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
     flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
-    if (flightIdx == AiElementLead && vehInFlight == 4)
+    if (flightIdx == AiElementLead and vehInFlight == 4)
     {
         curPosition = &(acFormationData->positionData[mFormation][flightIdx - 1]);
         paircraft = (AircraftClass*) flightLead;
@@ -275,12 +275,12 @@ void DigitalBrain::AiCheckPlayerInPosition(void)
         ydiff = trkY - self->YPos();
         zdiff = trkZ - self->ZPos();
 
-        if ((xdiff * xdiff + ydiff + ydiff <  2000.0F * 2000.0F) && fabs(zdiff) < 500.0F && mInPositionFlag == FALSE)
+        if ((xdiff * xdiff + ydiff + ydiff <  2000.0F * 2000.0F) and fabs(zdiff) < 500.0F and mInPositionFlag == FALSE)
         {
             mInPositionFlag = TRUE;
             AiMakeCommandMsg((SimBaseClass*) self, FalconWingmanMsg::WMGlue, AiWingman, FalconNullId);
         }
-        else if (((xdiff * xdiff + ydiff + ydiff >  2500.0F * 2500.0F) or fabs(zdiff) > 3000.0F) && mInPositionFlag == TRUE)
+        else if (((xdiff * xdiff + ydiff + ydiff >  2500.0F * 2500.0F) or fabs(zdiff) > 3000.0F) and mInPositionFlag == TRUE)
         {
             mInPositionFlag = FALSE;
             AiMakeCommandMsg((SimBaseClass*) self, FalconWingmanMsg::WMSplit, AiWingman, FalconNullId);
@@ -313,12 +313,12 @@ void DigitalBrain::AiFollowLead(void)
         vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
         flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
-        if (flightIdx == AiFirstWing && vehInFlight == 2)
+        if (flightIdx == AiFirstWing and vehInFlight == 2)
         {
             curPosition = &(acFormationData->twoposData[mFormation]); // The four ship #2 slot position is copied in to the 2 ship formation array.
             paircraft = (AircraftClass*) flightLead;
         }
-        else if (flightIdx == AiSecondWing && mSplitFlight)
+        else if (flightIdx == AiSecondWing and mSplitFlight)
         {
             curPosition = &(acFormationData->twoposData[mFormation]);
             paircraft = (AircraftClass*)((FlightClass*)self->GetCampaignObject())->GetComponentEntity(AiElementLead);
@@ -396,7 +396,7 @@ void DigitalBrain::AiFollowLead(void)
 
         // This will set our current waypoint to the leads waypoint
         // 2001-10-20 M.N. Added ->GetNextWP() to while (...) to assure a valid WP is chosen
-        while (wlistUs->GetNextWP() && wlistLead && wlistLead->GetNextWP() && wlistLead not_eq ((AircraftClass *)flightLead)->curWaypoint)
+        while (wlistUs->GetNextWP() and wlistLead and wlistLead->GetNextWP() and wlistLead not_eq ((AircraftClass *)flightLead)->curWaypoint)
         {
             wlistUs   = wlistUs->GetNextWP();
             wlistLead = wlistLead->GetNextWP();
@@ -521,7 +521,7 @@ void DigitalBrain::AiExecPosthole(void)
 // ----------------------------------------------------
 void DigitalBrain::AiExecChainsaw(void)
 {
-    if (targetPtr && curMissile)
+    if (targetPtr and curMissile)
     {
         mpActionFlags[AI_USE_COMPLEX] = TRUE;
         FireControl();

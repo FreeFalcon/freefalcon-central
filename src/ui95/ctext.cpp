@@ -211,7 +211,7 @@ void C_Text::Refresh()
     if (!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    if (BgImage_ && GetFlags() & C_BIT_USEBGIMAGE)
+    if (BgImage_ and GetFlags() & C_BIT_USEBGIMAGE)
         BgImage_->Refresh();
 
     if (Text_)
@@ -227,7 +227,7 @@ void C_Text::Draw(SCREEN *surface, UI95_RECT *cliprect)
         if ((GetY() + GetH() + Parent_->VY_[GetClient()]) < Parent_->ClientArea_[GetClient()].top)
             return;
 
-    if (BgImage_ && GetFlags() & C_BIT_USEBGIMAGE)
+    if (BgImage_ and GetFlags() & C_BIT_USEBGIMAGE)
         BgImage_->Draw(surface, cliprect);
 
     if (Text_)

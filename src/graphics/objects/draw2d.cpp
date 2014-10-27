@@ -1069,7 +1069,7 @@ Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p)
     : DrawableObject(scale)
 {
     // sanity check
-    ShiAssert(type2d < DRAW2D_MAXTYPES && type2d >= 0);
+    ShiAssert(type2d < DRAW2D_MAXTYPES and type2d >= 0);
 
     // save type
     type = type2d;
@@ -1125,7 +1125,7 @@ Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p, Trotation *rot)
     type = type2d;
 
     // sanity check
-    ShiAssert(type2d < DRAW2D_MAXTYPES && type2d >= 0);
+    ShiAssert(type2d < DRAW2D_MAXTYPES and type2d >= 0);
 
     // get typeData ptr
     typeData = gTypeTable[ type2d ];
@@ -1186,7 +1186,7 @@ Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p, int nVerts, Tpoint *v
     type = type2d;
 
     // sanity check
-    ShiAssert(type2d < DRAW2D_MAXTYPES && type2d >= 0);
+    ShiAssert(type2d < DRAW2D_MAXTYPES and type2d >= 0);
 
     // at the moment we only allow 4 verts
     ShiAssert(nVerts == 4);
@@ -1590,7 +1590,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
 
         // immediately cull any non-oriented billboards
         // that are behind near clip
-        if (hasOrientation == FALSE && v0.csZ < 1.0f)
+        if (hasOrientation == FALSE and v0.csZ < 1.0f)
             return;
 
         ws.x = position.x + dl.x + du.x;
@@ -1845,17 +1845,17 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
 
     for (i = 0; i < NUM_TEX_SHEETS; i++)
     {
-        if (i >= 0 && i < NUM_TEXTURES_USED or i >= 15 && i < 15 + NUM_TEXTURES_USED)
+        if (i >= 0 and i < NUM_TEXTURES_USED or i >= 15 and i < 15 + NUM_TEXTURES_USED)
         {
             sprintf(texfile, "bom00%02d.gif", i + 1);
 
             // it looks like the way we share a palette is to set the texture
             // palette prior to LoadAndCreate
-            if (i > 0 && i < NUM_TEXTURES_USED)
+            if (i > 0 and i < NUM_TEXTURES_USED)
             {
                 gGlobTextures[i].SetPalette(gGlobTextures[0].GetPalette());
             }
-            else if (i > 15 && i < 15 + NUM_TEXTURES_USED)
+            else if (i > 15 and i < 15 + NUM_TEXTURES_USED)
             {
                 gGlobTextures[i].SetPalette(gGlobTextures[15].GetPalette());
             }
@@ -2223,7 +2223,7 @@ void Drawable2D::ReleaseTexturesOnDevice(DXContext *rc)
     // release sheets
     for (i = 0; i < NUM_TEX_SHEETS; i++)
     {
-        if (i >= 0 && i < NUM_TEXTURES_USED or i >= 15 && i < 15 + NUM_TEXTURES_USED)
+        if (i >= 0 and i < NUM_TEXTURES_USED or i >= 15 and i < 15 + NUM_TEXTURES_USED)
         {
             gGlobTextures[i].FreeAll();
         }
@@ -2354,7 +2354,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
             v0.a -= alpha * NRANDPOS * 0.9f;
 
         }
-        else if ((typeData.flags & GROUND_GLOW) && type not_eq DRAW2D_MISSILE_GROUND_GLOW)
+        else if ((typeData.flags & GROUND_GLOW) and type not_eq DRAW2D_MISSILE_GROUND_GLOW)
         {
             v0.r = 1.0f;
             v0.g = 0.3f + NRANDPOS * 0.5f;
@@ -2465,7 +2465,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
         for (i = 1; i < typeData.numGlowVerts; i++)
         {
             // get 3rd point of triangle
-            if (!(i & 1) && (type == DRAW2D_SPARKS))
+            if (!(i & 1) and (type == DRAW2D_SPARKS))
             {
                 float randradius;
 
@@ -2475,7 +2475,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
                 os.y = typeData.glowVerts[i].y * scale2d * randradius;
                 os.z = typeData.glowVerts[i].z * scale2d * randradius;
             }
-            else if (!(i & 1) && (typeData.flags & GLOW_RAND_POINTS))
+            else if (!(i & 1) and (typeData.flags & GLOW_RAND_POINTS))
             {
                 float randradius;
 
@@ -2533,7 +2533,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
         for (i = 1; i < typeData.numGlowVerts; i++)
         {
             // get 3rd point of triangle
-            if (!(i & 1) && (typeData.flags & GLOW_RAND_POINTS))
+            if (!(i & 1) and (typeData.flags & GLOW_RAND_POINTS))
             {
                 float randradius;
 
@@ -3189,7 +3189,7 @@ int Drawable2D::GetAnimFrame(int dT, DWORD start)
         }
 
         // hack for fireball
-        if (type >= DRAW2D_FIRE1 && type <= DRAW2D_FIRE6)
+        if (type >= DRAW2D_FIRE1 and type <= DRAW2D_FIRE6)
         {
             if (curBFrame >= 6)
             {
@@ -3387,7 +3387,7 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
 
     // a nicer effect: put a point in the center of a square, make it
     // a dark alpha and have the edges fade to 0.  LOD this effect.
-    // doFivePoints = !(typeData.flags & NO_FIVE_POINTS ) && ( scaleZ * sLOD > 0.4f or type == DRAW2D_LONG_HANGING_SMOKE2 );
+    // doFivePoints = !(typeData.flags & NO_FIVE_POINTS ) and ( scaleZ * sLOD > 0.4f or type == DRAW2D_LONG_HANGING_SMOKE2 );
     doFivePoints = !(typeData.flags & NO_FIVE_POINTS);
 
     // setup rendering context
@@ -3558,7 +3558,7 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
         if (typeData.flags & SEQ_SCATTER_ANIM)
         {
             // hack for fireball
-            if (type >= DRAW2D_FIRE1 && type <= DRAW2D_FIRE6)
+            if (type >= DRAW2D_FIRE1 and type <= DRAW2D_FIRE6)
             {
                 if (curBFrame >= 6)
                 {
@@ -3577,7 +3577,7 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
         }
 
         // hack, only randomize alpha if fire texture
-        if (doFivePoints && texseq >= 0 && texseq <= 5)
+        if (doFivePoints and texseq >= 0 and texseq <= 5)
         {
             vm.a = alpha * 0.1f + alpha * 0.9f * NRANDPOS;
 
@@ -3765,7 +3765,7 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
     renderer->context.SetState(MPR_STA_ALPHA_OP_FUNCTION, MPR_TO_MODULATE); //JAM 18Oct03
     renderer->context.SelectTexture1(curTex->TexHandle());
 
-    if (type == DRAW2D_LONG_HANGING_SMOKE2 && doFivePoints)
+    if (type == DRAW2D_LONG_HANGING_SMOKE2 and doFivePoints)
         numToPlot = (NUM_EXPLODE_SCATTER_POINTS);
     else if (typeData.flags & FIRE_SCATTER_PLOT)
         numToPlot = max(1, (int)(NUM_FIRE_SCATTER_POINTS * scaleZ * sLOD));

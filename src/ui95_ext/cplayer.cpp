@@ -91,7 +91,7 @@ void C_Player::SetFont(long ID)
 
 long C_Player::CheckHotSpots(long relX, long relY)
 {
-    if (relX >= GetX() && relX <= (GetX() + GetW()) && relY >= GetY() && relY <= (GetY() + GetH()))
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
         return(GetID());
 
     return(0);
@@ -136,7 +136,7 @@ void C_Player::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Name_)
         Name_->Draw(surface, cliprect);
 
-    if (Status_ && muted_)
+    if (Status_ and muted_)
         Status_->Draw(surface, cliprect);
 
     if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))

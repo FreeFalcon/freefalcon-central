@@ -291,7 +291,7 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
     MissionEvaluator = new MissionEvaluationClass();
     MissionEvaluator->PreDogfightEval();
 
-    if (joingame && joingame->GetGameType() == gametype)
+    if (joingame and joingame->GetGameType() == gametype)
     {
         newgame = joingame;
     }
@@ -320,7 +320,7 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
         newgame = new FalconGameEntity(FalconLocalSession->Domain(), gamename);
         newgame->gameType = gametype;
 
-        if (gCommsMgr && gCommsMgr->Online())
+        if (gCommsMgr and gCommsMgr->Online())
         {
             newgame->UpdateRules(gRules[RuleMode].GetRules());
         }
@@ -442,7 +442,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
         EndCampaign();
     }
 
-    if (!IsPreLoaded() && !LoadScenarioStats(gametype, savefile))
+    if (!IsPreLoaded() and !LoadScenarioStats(gametype, savefile))
     {
         EndCampaign();
         return 0;
@@ -557,7 +557,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
         BuildDivisionData();
     }
 
-    if (!(Flags & CAMP_LIGHT) && !(Flags & CAMP_TACTICAL))
+    if (!(Flags & CAMP_LIGHT) and !(Flags & CAMP_TACTICAL))
     {
         // KCK: By telling weathermap that we're instant action, it won't
         // cause a reloading of weather for multiple instant action runs.
@@ -607,7 +607,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
                 }
                 else
                 {
-                    if (load[0].WeaponID[0] && !load[0].WeaponCount[0])
+                    if (load[0].WeaponID[0] and !load[0].WeaponCount[0])
                         load[0].WeaponCount[0] = 50;
                 }
             }
@@ -854,7 +854,7 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
     FILE* fp;
     char to[MAX_PATH], from[MAX_PATH];
 
-    if (!IsLoaded() or (Flags & CAMP_LIGHT && save_mode not_eq CAMP_SAVE_LIGHT))
+    if (!IsLoaded() or (Flags & CAMP_LIGHT and save_mode not_eq CAMP_SAVE_LIGHT))
         return 0;
 
     StartWriteCampFile(gametype, savefile);
@@ -1007,7 +1007,7 @@ void CampaignClass::EndCampaign()
 
     gMainThread->JoinGame(vuPlayerPoolGroup);
 
-    if ((oldGame not_eq NULL) && (oldGame->SessionCount() == 0))
+    if ((oldGame not_eq NULL) and (oldGame->SessionCount() == 0))
     {
         vuDatabase->Remove(oldGame);
     }
@@ -1079,7 +1079,7 @@ void CampaignClass::EndCampaign()
 
     gMainThread->JoinGame(vuPlayerPoolGroup);
 
-    if ((oldGame not_eq NULL) && (oldGame->SessionCount() == 0))
+    if ((oldGame not_eq NULL) and (oldGame->SessionCount() == 0))
     {
         vuDatabase->Remove(oldGame);
     }
@@ -1599,7 +1599,7 @@ int CampaignClass::Encode(VU_BYTE **stream)
     memcpy(buffer, &EndgameResult, sizeof(uchar));
     buffer += sizeof(uchar);
 
-    if (FalconLocalSession->GetTeam() < NUM_TEAMS && TeamInfo[FalconLocalSession->GetTeam()])
+    if (FalconLocalSession->GetTeam() < NUM_TEAMS and TeamInfo[FalconLocalSession->GetTeam()])
     {
         Situation = TeamInfo[FalconLocalSession->GetTeam()]->Initiative() / 20;
     }
@@ -1899,7 +1899,7 @@ void CampaignClass::Suspend(void)
     ThreadManager::fast_campaign();
     Flags  or_eq  CAMP_SUSPEND_REQUEST;
 
-    while (!IsSuspended() && (Flags & CAMP_SUSPEND_REQUEST))
+    while (!IsSuspended() and (Flags & CAMP_SUSPEND_REQUEST))
     {
         Sleep(100); // Wait until the campaign is actually suspended
     }
@@ -2303,7 +2303,7 @@ int CampaignClass::IsValidSquadron(int id)
 
 void CampaignClass::ChillTypes(void)
 {
-    if (NumberOfValidTypes > 0 && NumberOfValidTypes not_eq CAMP_FLY_ANY_AIRCRAFT)
+    if (NumberOfValidTypes > 0 and NumberOfValidTypes not_eq CAMP_FLY_ANY_AIRCRAFT)
     {
         NumberOfValidTypes = 0;
         delete [] ValidAircraftTypes;

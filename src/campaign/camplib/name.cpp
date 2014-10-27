@@ -189,7 +189,7 @@ int AddName(_TCHAR *name)
         LoadNameStream();
 
     // Find a free spot
-    for (i = 2; i < NameEntries && !nid; i++)
+    for (i = 2; i < NameEntries and !nid; i++)
     {
         // And entry is free if it has a zero (or negative) length
         if (NameIndex[i + 1] - NameIndex[i] <= 0)
@@ -350,12 +350,12 @@ int AddName (char* name)
  {
  int i,nid=0;
 
- for (i=2; i<NameEntries && !nid; i++)
+ for (i=2; i<NameEntries and !nid; i++)
  {
  if (NameTable[i][0] == 0 or !strcmp(NameTable[i],"<None>"))
  nid = i;
  }
- if (!nid && NameEntries < MAX_NAMES)
+ if (!nid and NameEntries < MAX_NAMES)
  {
  nid = NameEntries;
  NameEntries++;

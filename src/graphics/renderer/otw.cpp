@@ -453,7 +453,7 @@ void RenderOTW::SetupStates(void)
     else
     {
         // RED - WTF..!!! if u Eneter that light is hi, u would not get lights on when light go down...
-        if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS/* && TheTerrTextures.lightLevel < 0.5f*/)
+        if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS/* and TheTerrTextures.lightLevel < 0.5f*/)
         {
             state_fore = STATE_MULTITEXTURE;
             state_near = STATE_MULTITEXTURE;
@@ -513,7 +513,7 @@ void RenderOTW::SetTunnelPercent(float percent, DWORD color)
     else if (percent < 0.0f) percent = 0.0f;
 
     // Apply adjustments if we're in NVG mode
-    if (TheTimeOfDay.GetNVGmode() && (percent < NVG_TUNNEL_PERCENT))
+    if (TheTimeOfDay.GetNVGmode() and (percent < NVG_TUNNEL_PERCENT))
     {
         percent = NVG_TUNNEL_PERCENT;
 
@@ -947,7 +947,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
      snowFactor = 0;
         }
 
-        if (thundertimer > 0 && thundertimer < vuxRealTime)
+        if (thundertimer > 0 and thundertimer < vuxRealTime)
      {
      thunder = true;
      thundertimer = 0;
@@ -960,7 +960,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
          opacity = max(opacity, 1.0 - visibility);
 
      // Handle the entering/inside/leaving cloud effects
-     if (opacity <= 0.0f && !Lightning)
+     if (opacity <= 0.0f and !Lightning)
      {
     */ // We're not being affected by a cloud, the only effect is sun glare (if any)
     PreSceneCloudOcclusion(SunGlareWashout, 0xFFFFFFFF);
@@ -1009,7 +1009,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
      color.b = (opacity*color.b + SunGlareWashout) * scaler;
 
      // JB 010618 vary the brightness on cloud thickness
-     if (g_bEnableWeatherExtensions && !thunderAndLightning)
+     if (g_bEnableWeatherExtensions and !thunderAndLightning)
      {
      float thickness = fabs(viewpoint->GetLocalCloudTops() - position.z);
      if (thickness > 0)
@@ -1063,7 +1063,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     //JAM 15Dec03
     BOOL bToggle = FALSE;
 
-    if (context.bZBuffering && DisplayOptions.bZBuffering)
+    if (context.bZBuffering and DisplayOptions.bZBuffering)
     {
         bToggle = TRUE;
         context.SetZBuffering(FALSE);
@@ -1076,7 +1076,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
 
     //realWeather->Draw();
     //JAM 15Dec03
-    if (bToggle && DisplayOptions.bZBuffering)
+    if (bToggle and DisplayOptions.bZBuffering)
     {
         context.SetZBuffering(TRUE);
         context.SetState(MPR_STA_ENABLES, MPR_SE_Z_WRITE);
@@ -1123,7 +1123,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     realWeather->Draw();
 
     // Special case if we're above the roof and the roof is diplayed
-    if ((containingList == 4) && (skyRoof))
+    if ((containingList == 4) and (skyRoof))
     {
         viewpoint->ObjectsAboveRoof()->DrawBeyond(0.0f, 0, this);
 
@@ -1422,7 +1422,7 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
     // COBRA - RED - Seems completely wrong condition, completely wrong way to do it to me
     // these condition ( corrected ) should be placed above
     //JAM 13Nov03
-    /* if(!(realWeather->weatherCondition > FAIR && (-viewpoint->Z()) > (-realWeather->stratusZ)))
+    /* if(!(realWeather->weatherCondition > FAIR and (-viewpoint->Z()) > (-realWeather->stratusZ)))
      {
      // If we're above the overcast layer, ground objects are not visible.
      objectList->DrawBeyond(0.f,-1,this);
@@ -1724,7 +1724,7 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
         {
             vert->RenderingStateHandle = state_fore;
         }
-        else if (!hazed && distance < haze_start)
+        else if (!hazed and distance < haze_start)
         {
             vert->RenderingStateHandle = state_near;
         }
@@ -1876,7 +1876,7 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
             b *= iTot;
         }
 
-        if (PlayerOptions.ShadowsOn() && realWeather->weatherCondition == FAIR)
+        if (PlayerOptions.ShadowsOn() and realWeather->weatherCondition == FAIR)
         {
             for (row = realWeather->shadowCell; row < realWeather->numCells - realWeather->shadowCell; row++)
             {

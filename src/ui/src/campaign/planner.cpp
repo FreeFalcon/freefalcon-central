@@ -312,7 +312,7 @@ static void ViewPannerCB(long, short hittype, C_Base *control)
     float dx, dy;
     C_Panner *pnr;
 
-    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
     pnr = (C_Panner*)control;
@@ -355,7 +355,7 @@ static void ZoomPannerCB(long, short hittype, C_Base *control)
     _TCHAR buffer[20];
     int dx;
 
-    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
     dx = pnr->GetVRange();
@@ -392,7 +392,7 @@ void AssignTargetCB(long ID, short hittype, C_Base *control)
 
     CloseReconWindowCB(ID, hittype, control);
 
-    if (FeatureID not_eq FalconNullId && FeatureNo >= 0)
+    if (FeatureID not_eq FalconNullId and FeatureNo >= 0)
     {
         // Set Target
         flight = (Flight)vuDatabase->Find(gActiveFlightID);
@@ -402,7 +402,7 @@ void AssignTargetCB(long ID, short hittype, C_Base *control)
             i = 1;
             wp = flight->GetFirstUnitWP();
 
-            while (i < gActiveWPNum && wp)
+            while (i < gActiveWPNum and wp)
             {
                 wp = wp->GetNextWP();
                 i++;
@@ -430,7 +430,7 @@ void CloseReconWindowCB(long, short hittype, C_Base *control)
     Flags1 = gMainHandler->GetWindowFlags(RECON_WIN);
     Flags2 = gMainHandler->GetWindowFlags(RECON_LIST_WIN);
 
-    if (!(Flags1 & C_BIT_ENABLED) && !(Flags2 & C_BIT_ENABLED))
+    if (!(Flags1 & C_BIT_ENABLED) and !(Flags2 & C_BIT_ENABLED))
     {
         if (gUIViewer)
         {
@@ -510,7 +510,7 @@ static void OpenReconWindowCB(long, short hittype, C_Base *)
         i = 1;
         wp = flight->GetFirstUnitWP();
 
-        while (i < gActiveWPNum && wp)
+        while (i < gActiveWPNum and wp)
         {
             wp = wp->GetNextWP();
             i++;
@@ -578,7 +578,7 @@ static void ObjectPannerCB(long, short hittype, C_Base *control)
     float dx, dy;
     C_Panner *pnr;
 
-    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
     pnr = (C_Panner*)control;
@@ -613,7 +613,7 @@ static void ObjectZoomCB(long, short hittype, C_Base *control)
     float dy;
     C_Panner *pnr;
 
-    if (hittype not_eq C_TYPE_LMOUSEUP && hittype not_eq C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
     pnr = (C_Panner*)control;
@@ -1079,7 +1079,7 @@ static void CampaignTaxiCB(long ID, short hittype, C_Base *)
     if (fl)
         ent = fl->GetUnitAirbase();
 
-    if (ent && ent->IsTaskForce())
+    if (ent and ent->IsTaskForce())
         ID = WAIT_TAKEOFF;
 
     switch (ID)
@@ -1130,7 +1130,7 @@ static BOOL CampaignCountDownCB(C_Base *me)
     {
         w = fl->GetCurrentUnitWP();
 
-        if (w && w->GetWPAction() == WP_TAKEOFF)
+        if (w and w->GetWPAction() == WP_TAKEOFF)
             deltaTime = (w->GetWPArrivalTime() - vuxGameTime) / VU_TICS_PER_SECOND;
     }
 

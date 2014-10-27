@@ -41,7 +41,7 @@ VU_ERRCODE VuHashTable::Remove(VU_ID entityId)
 
     for (VuEntity *e = it.GetFirst(); e not_eq NULL; e = it.GetNext())
     {
-        if ((e->VuState() == VU_MEM_ACTIVE) && (e->Id() == entityId))
+        if ((e->VuState() == VU_MEM_ACTIVE) and (e->Id() == entityId))
         {
             it.RemoveCurrent();
             return VU_SUCCESS;
@@ -58,7 +58,7 @@ VuEntity *VuHashTable::Find(VU_ID entityId) const
 
     for (VuEntity *e = it.GetFirst(); e not_eq NULL; e = it.GetNext())
     {
-        if ((e->VuState() == VU_MEM_ACTIVE) && (e->Id() == entityId))
+        if ((e->VuState() == VU_MEM_ACTIVE) and (e->Id() == entityId))
         {
             return e;
         }

@@ -67,7 +67,7 @@ public:
 
     int CloudLOS(void)
     {
-        return (detFlags & 0x01) && TRUE;
+        return (detFlags & 0x01) and TRUE;
     }
     void SetCloudLOS(int value)
     {
@@ -76,7 +76,7 @@ public:
     }
     int TerrainLOS(void)
     {
-        return (detFlags & 0x02) && TRUE;
+        return (detFlags & 0x02) and TRUE;
     }
     void SetTerrainLOS(int value)
     {

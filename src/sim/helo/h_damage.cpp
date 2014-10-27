@@ -266,7 +266,7 @@ void HelicopterClass::RunExplosion(void)
 
 void HelicopterClass::ShowDamage(void)
 {
-    if (pctStrength < 0.65f && pctStrength > 0.0f)
+    if (pctStrength < 0.65f and pctStrength > 0.0f)
     {
         if (sfxTimer > (max(pctStrength, 0.1f) + PRANDFloatPos() * 0.3f))
         {

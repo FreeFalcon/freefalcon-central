@@ -394,7 +394,7 @@ void MoveViewTimerCB(long, short, C_Base *control)
 
     if (control->GetUserNumber(_UI95_TIMER_COUNTER_) < 1)
     {
-        if (Recon.Direction == 0) // && TheLoader.LoaderQueueEmpty())
+        if (Recon.Direction == 0) // and TheLoader.LoaderQueueEmpty())
             return;
 
         Recon.Heading += Recon.Direction;

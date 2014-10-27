@@ -196,7 +196,7 @@ int FilterMessage(CONVERSATION *node)
     if (!node or node->message == -1)
         return FALSE;
 
-    if (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING && SimDriver.RunningCampaign())
+    if (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING and SimDriver.RunningCampaign())
     {
         if (noUIcomms or FalconLocalSession->GetFlyState() not_eq FLYSTATE_IN_UI)
             return FALSE;
@@ -241,7 +241,7 @@ int FilterMessage(CONVERSATION *node)
             break;
 
         case rcfProx:
-            if ((node->filter & TOFROM_FLIGHT) or ((IN_PROXIMITY & node->filter) && ((node->filter & TO_TEAM) or (TO_PACKAGE & node->filter))))
+            if ((node->filter & TOFROM_FLIGHT) or ((IN_PROXIMITY & node->filter) and ((node->filter & TO_TEAM) or (TO_PACKAGE & node->filter))))
                 retval = TRUE;
 
             break;
@@ -261,7 +261,7 @@ int FilterMessage(CONVERSATION *node)
         case rcfTower:
             if (node->filter & TOFROM_FLIGHT)
                 retval = TRUE;
-            else if ((TOFROM_TOWER & node->filter) && gNavigationSys)
+            else if ((TOFROM_TOWER & node->filter) and gNavigationSys)
             {
                 VU_ID ATCId;
                 gNavigationSys->GetAirbase(&ATCId);
@@ -316,7 +316,7 @@ int FilterMessage(CONVERSATION *node)
             break;
 
         case rcfProx:
-            if ((node->filter & TOFROM_FLIGHT) or ((IN_PROXIMITY & node->filter) && ((node->filter & TO_TEAM) or (TO_PACKAGE & node->filter))))
+            if ((node->filter & TOFROM_FLIGHT) or ((IN_PROXIMITY & node->filter) and ((node->filter & TO_TEAM) or (TO_PACKAGE & node->filter))))
                 retval = TRUE;
 
             break;
@@ -336,7 +336,7 @@ int FilterMessage(CONVERSATION *node)
         case rcfTower:
             if (node->filter & TOFROM_FLIGHT)
                 retval = TRUE;
-            else if ((TOFROM_TOWER & node->filter) && gNavigationSys && gTacanList)
+            else if ((TOFROM_TOWER & node->filter) and gNavigationSys and gTacanList)
             {
                 VU_ID ATCId;
                 gNavigationSys->GetAirbase(&ATCId);
@@ -389,7 +389,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
             // 1- from player
             // 2- to player
             // 3- priority field
-            for (pVC = voiceChannelQueue[i]; pVC && (pVC->node->playTime <= vuxGameTime); pVC = pVCnext)
+            for (pVC = voiceChannelQueue[i]; pVC and (pVC->node->playTime <= vuxGameTime); pVC = pVCnext)
             {
                 // we need this to get next if current message gets removed
                 pVCnext = pVC->next;
@@ -469,7 +469,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
             // breaking means we are interrupting an ongoing conversation to play a new one
             breakin = FALSE;
 
-            if (SimDriver.GetPlayerAircraft() && (best not_eq NULL))
+            if (SimDriver.GetPlayerAircraft() and (best not_eq NULL))
             {
                 if (
                     (
@@ -482,7 +482,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                         best->node->from == FalconLocalSession->GetPlayerEntityID()
                     ) ||
                     (
-                        (best && best->node->priority == rpLifeThreatening) &&
+                        (best and best->node->priority == rpLifeThreatening) &&
                         (VM->decompQueue[i].priority not_eq rpLifeThreatening)
                     )
                 )
@@ -567,7 +567,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                     curChannel = i;
                 }
             }
-            else if (voiceChannelQueue[i] && (waketime > voiceChannelQueue[i]->node->playTime))
+            else if (voiceChannelQueue[i] and (waketime > voiceChannelQueue[i]->node->playTime))
             {
                 // set wake time for this channel event
                 waketime = voiceChannelQueue[i]->node->playTime;
@@ -736,7 +736,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
         }
 
         // sfr: organized logic here
-        if (!sleep && waketime)
+        if (!sleep and waketime)
         {
             sleeptime = waketime - vuxGameTime;//should be divided by time compression
         }
@@ -793,7 +793,7 @@ void VoiceManager::AddToConversationQueue(CONVERSATION *newConv)
         return;
     }
 
-    //if(decompQueue[newConv->channelIndex].from == newConv->from && decompQueue[newConv->channelIndex].message == newConv->message)
+    //if(decompQueue[newConv->channelIndex].from == newConv->from and decompQueue[newConv->channelIndex].message == newConv->message)
     // return;
 
     // must change currConversation to a list for voice manager
@@ -982,7 +982,7 @@ void VoiceManager::VMHearVoices(void)
 
 void VoiceManager::VMHearChannel(int channel)
 {
-    if (channel < NUM_VOICE_CHANNELS && channel >= 0)
+    if (channel < NUM_VOICE_CHANNELS and channel >= 0)
         falconVoices[channel].UnsilenceVoices(channel + COM1_SOUND_GROUP);
 }
 
@@ -996,7 +996,7 @@ void VoiceManager::VMSilenceVoices(void)
 
 void VoiceManager::VMSilenceChannel(int channel)
 {
-    if (channel < NUM_VOICE_CHANNELS && channel >= 0)
+    if (channel < NUM_VOICE_CHANNELS and channel >= 0)
         falconVoices[channel].SilenceVoices();
 }
 void VoiceManager::VMCleanup(void)
@@ -1077,7 +1077,7 @@ VM_CONVLIST *VoiceManager::VMConvListInsert(VM_CONVLIST *list, VM_CONVLIST *newn
     switch (insType)
     {
         case SORT_TIME:
-            while (cur && (newnode->node->playTime >= cur->node->playTime))
+            while (cur and (newnode->node->playTime >= cur->node->playTime))
             {
                 prev = cur;
                 cur = cur->next;
@@ -1105,13 +1105,13 @@ VM_CONVLIST *VoiceManager::VMConvListInsert(VM_CONVLIST *list, VM_CONVLIST *newn
             break;
 
         case SORT_TIME_PRIORITY:
-            while (cur && (newnode->node->playTime >= cur->node->playTime))
+            while (cur and (newnode->node->playTime >= cur->node->playTime))
             {
                 prev = cur;
                 cur = cur->next;
             }
 
-            while (cur && (newnode->node->priority <= cur->node->priority) &&
+            while (cur and (newnode->node->priority <= cur->node->priority) &&
                    (newnode->node->playTime == cur->node->playTime))
             {
                 prev = cur;
@@ -1193,7 +1193,7 @@ void VoiceManager::RemoveDuplicateMessages(VU_ID from, VU_ID to, int msgid)
             pVCnext = pVC->next;
 
             // Fix for Weapons Call
-            if (pVC->node->from == from && pVC->node->to == to && pVC->node->message == msgid && pVC->node->message not_eq rcDAMREPORT && pVC->node->message not_eq rcWEAPONSCHECKRSP)
+            if (pVC->node->from == from and pVC->node->to == to and pVC->node->message == msgid and pVC->node->message not_eq rcDAMREPORT and pVC->node->message not_eq rcWEAPONSCHECKRSP)
                 VMListRemoveVCQ(&voiceChannelQueue[i], pVC);
 
             pVC = pVCnext;
@@ -1211,7 +1211,7 @@ int VoiceManager::IsMessagePlaying(VU_ID from, VU_ID to, int msgid)
 
     for (int i = 0 ; i < NUM_VOICE_CHANNELS ; i++)
     {
-        if (decompQueue[i].from == from &&  decompQueue[i].to == to && decompQueue[i].message == msgid)
+        if (decompQueue[i].from == from and  decompQueue[i].to == to and decompQueue[i].message == msgid)
         {
             retval = TRUE;
             break;
@@ -1555,7 +1555,7 @@ int VoiceManager::GetRadioFreq(int radio)
 {
     if (this)
     {
-        if (radio >= 0 && radio <= 1)
+        if (radio >= 0 and radio <= 1)
             return radiofilter[radio];
 
         return radiofilter[0];
@@ -1607,7 +1607,7 @@ void VoiceManager::ChangeRadioFreq(int filter, int radio)
 {
     F4EnterCriticalSection(VM->vmCriticalSection);
 
-    if (radio >= 0 && radio <= 1)
+    if (radio >= 0 and radio <= 1)
         radiofilter[radio] = filter;
 
     for (int i = 0; i < NUM_VOICE_CHANNELS; i++)
@@ -1673,7 +1673,7 @@ int VoiceManager::BuffersEmpty(int channel)
 
 void VoiceManager::SetChannelVolume(int channel, int volume)
 {
-    if (channel >= 0 && channel < NUM_VOICE_CHANNELS && !falconVoices[channel].exitChannel)
+    if (channel >= 0 and channel < NUM_VOICE_CHANNELS and !falconVoices[channel].exitChannel)
     {
         F4SetStreamVolume(falconVoices[channel].FalcVoiceHandle, volume);
     }
@@ -1700,7 +1700,7 @@ void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from, int c
             // AWACS/FAC callsign
             awacs = flight->GetFlightController();
 
-            if (awacs && awacs->Id() == from)
+            if (awacs and awacs->Id() == from)
                 nonoise = TRUE;
 
         }
@@ -1708,7 +1708,7 @@ void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from, int c
 
     fromEnt = vuDatabase->Find(from);
 
-    if (fromEnt && ownship && fromEnt not_eq SimDriver.GetPlayerEntity() && !nonoise && SimDriver.InSim())
+    if (fromEnt and ownship and fromEnt not_eq SimDriver.GetPlayerEntity() and !nonoise and SimDriver.InSim())
     {
         dx = fromEnt->XPos() - ownship->XPos();
         dy = fromEnt->YPos() - ownship->YPos();

@@ -97,7 +97,7 @@ void SetVoiceVolumes(void)
 
 void SetVoiceVolume(int channel)
 {
-    if (VM && channel >= 0 && channel < NUM_VOICE_CHANNELS && !VM->falconVoices[channel].exitChannel)
+    if (VM and channel >= 0 and channel < NUM_VOICE_CHANNELS and !VM->falconVoices[channel].exitChannel)
     {
         F4SetStreamVolume(VM->falconVoices[channel].FalcVoiceHandle,
                           PlayerOptions.GroupVol[COM1_SOUND_GROUP + channel]);
@@ -298,7 +298,7 @@ DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
         if (thisFV->voiceBuffers[1 - thisFV->voiceStruct->streamBuffer].status not_eq BUFFER_FILLED)
         {
             // sfr: i think this is causing the buffer to stop being consumed
-            /*if(gSoundDriver && (thisFV->silenceWritten > 16000) )
+            /*if(gSoundDriver and (thisFV->silenceWritten > 16000) )
             {
              gSoundDriver->PauseStream(thisFV->FalcVoiceHandle);
             }*/

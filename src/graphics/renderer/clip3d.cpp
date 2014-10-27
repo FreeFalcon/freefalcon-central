@@ -353,7 +353,7 @@ void Render3D::IntersectNear(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     t = (NEAR_CLIP - v1->csZ) / (v2->csZ - v1->csZ);
-    ShiAssert((t >= -0.001f) && (t <= 1.001f));
+    ShiAssert((t >= -0.001f) and (t <= 1.001f));
 
     // Compute the camera space intersection point
     v->csZ = z = NEAR_CLIP;
@@ -388,7 +388,7 @@ void Render3D::IntersectBottom(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex 
     dy = v2->csY - v1->csY;
     dz = v2->csZ - v1->csZ;
     t = (v1->csY - v1->csZ) / (dz - dy);
-    ShiAssert((t >= -0.001f) && (t <= 1.001f));
+    ShiAssert((t >= -0.001f) and (t <= 1.001f));
 
     // Compute the camera space intersection point
     v->csZ = z = v1->csZ + t * (dz);
@@ -422,7 +422,7 @@ void Render3D::IntersectTop(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v)
     dy = v2->csY - v1->csY;
     dz = v2->csZ - v1->csZ;
     t = (v1->csZ + v1->csY) / (-dz - dy);
-    ShiAssert((t >= -0.001f) && (t <= 1.001f));
+    ShiAssert((t >= -0.001f) and (t <= 1.001f));
 
     // Compute the camera space intersection point
     v->csZ = z = v1->csZ + t * (dz);
@@ -456,7 +456,7 @@ void Render3D::IntersectRight(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *
     dy = v2->csY - v1->csY;
     dz = v2->csZ - v1->csZ;
     t = (v1->csX - v1->csZ) / (dz - dx);
-    ShiAssert((t >= -0.001f) && (t <= 1.001f));
+    ShiAssert((t >= -0.001f) and (t <= 1.001f));
 
     // Compute the camera space intersection point
     v->csZ = z = v1->csZ + t * (dz);
@@ -492,7 +492,7 @@ void Render3D::IntersectLeft(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v
     dy = v2->csY - v1->csY;
     dz = v2->csZ - v1->csZ;
     t = (v1->csZ + v1->csX) / (-dz - dx);
-    ShiAssert((t >= -0.001f) && (t <= 1.001f));
+    ShiAssert((t >= -0.001f) and (t <= 1.001f));
 
     // Compute the camera space intersection point
     v->csZ = z = v1->csZ + t * (dz);

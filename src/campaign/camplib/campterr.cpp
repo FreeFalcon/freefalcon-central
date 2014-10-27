@@ -128,13 +128,13 @@ int SaveTheaterTerrain(char* name)
 
 CellData GetCell(GridIndex x, GridIndex y)
 {
-    ShiAssert(x >= 0 && x < Map_Max_X && y >= 0 && y < Map_Max_Y);
+    ShiAssert(x >= 0 and x < Map_Max_X and y >= 0 and y < Map_Max_Y);
     return &TheaterCells[x * Map_Max_Y + y];
 }
 
 ReliefType GetRelief(GridIndex x, GridIndex y)
 {
-    ShiAssert(x >= 0 && x < Map_Max_X && y >= 0 && y < Map_Max_Y);
+    ShiAssert(x >= 0 and x < Map_Max_X and y >= 0 and y < Map_Max_Y);
     return (ReliefType)((TheaterCells[x * Map_Max_Y + y] & ReliefMask) >> ReliefShift);
 }
 
@@ -148,13 +148,13 @@ CoverType GetCover(GridIndex x, GridIndex y)
 
 char GetRoad(GridIndex x, GridIndex y)
 {
-    ShiAssert(x >= 0 && x < Map_Max_X && y >= 0 && y < Map_Max_Y);
+    ShiAssert(x >= 0 and x < Map_Max_X and y >= 0 and y < Map_Max_Y);
     return (char)((TheaterCells[x * Map_Max_Y + y] & RoadMask) >> RoadShift);
 }
 
 char GetRail(GridIndex x, GridIndex y)
 {
-    ShiAssert(x >= 0 && x < Map_Max_X && y >= 0 && y < Map_Max_Y);
+    ShiAssert(x >= 0 and x < Map_Max_X and y >= 0 and y < Map_Max_Y);
     return (char)((TheaterCells[x * Map_Max_Y + y] & RailMask) >> RailShift);
 }
 

@@ -206,7 +206,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     if (shooter->IsAggregate())
     {
         // Send a radio chatter message to LOCAL MACHINE if shooter is a flight
-        if (shooter->IsFlight() && !SimDriver.InSim() && !(rand() % 20))
+        if (shooter->IsFlight() and !SimDriver.InSim() and !(rand() % 20))
         {
             // Send the chatter message;
             FalconRadioChatterMessage *msg = new FalconRadioChatterMessage(shooter->Id(), FalconLocalSession);
@@ -232,7 +232,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         }
 
         // Synthisize a shot message for flight shooters in our package
-        if (shooter->IsFlight() && (shooter->InPackage() or g_bLogEvents))
+        if (shooter->IsFlight() and (shooter->InPackage() or g_bLogEvents))
         {
             FalconWeaponsFire wfm(FalconNullId, FalconLocalSession);
             wfm.dataBlock.fCampID = shooter->GetCampID();
@@ -248,7 +248,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         // Do visual Effects (Aggregate shooters only)
         if (InterestingSFX(target->XPos(), target->YPos()))
         {
-            for (i = 0; i < MAX_TYPES_PER_CAMP_FIRE_MESSAGE && dataBlock.weapon[i] && dataBlock.shots[i]; i++)
+            for (i = 0; i < MAX_TYPES_PER_CAMP_FIRE_MESSAGE and dataBlock.weapon[i] and dataBlock.shots[i]; i++)
                 DoDistanceVisualEffects(shooter, target, dataBlock.weapon[i], dataBlock.shots[i]);
         }
     }
@@ -346,7 +346,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         delete dtm;
 
     // Send a RadioChatter message to LOCAL MACHINE if shooter is a flight and scored a kill
-    if (losses && shooter->IsFlight())
+    if (losses and shooter->IsFlight())
     {
         FalconRadioChatterMessage *msg = new FalconRadioChatterMessage(target->Id(), FalconLocalSession);
         msg->dataBlock.from = shooter->Id();
@@ -431,7 +431,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     if (shooter->GetDomain() == DOMAIN_AIR)
     {
         // 2002-02-21 ADDED BY S.G. If it's not spotted and it's NOT the player, use the 'Bandit' vehicle so we don't warn the player on the identity of the shooter
-        if (!shooter->GetIdentified(target->GetTeam()) && FalconLocalSession->GetTeam() not_eq shooter->GetTeam())
+        if (!shooter->GetIdentified(target->GetTeam()) and FalconLocalSession->GetTeam() not_eq shooter->GetTeam())
             newEvent->dataBlock.data.textIds[0] = (short)(-1 * BANDIT_VEH);
         else
             // END OF ADDED SECTION 2002-02-21
@@ -448,7 +448,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
             newEvent->dataBlock.data.formatId = 1805;
 
             // 2002-02-21 ADDED BY S.G. If it's not spotted and it's NOT the player, use the 'Bandit' vehicle so we don't warn the player on the identity of the shooter
-            if (!target->GetIdentified(shooter->GetTeam()) && FalconLocalSession->GetTeam() not_eq target->GetTeam())
+            if (!target->GetIdentified(shooter->GetTeam()) and FalconLocalSession->GetTeam() not_eq target->GetTeam())
                 newEvent->dataBlock.data.textIds[1] = (short)(-1 * BANDIT_VEH);
             else
                 // END OF ADDED SECTION 2002-02-21
@@ -490,7 +490,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     SendCampUIMessage(newEvent);
 
     // Send a CampEvent message for losses to the LOCAL MACHINE
-    if (target->IsFlight() && losses)
+    if (target->IsFlight() and losses)
     {
         FalconCampEventMessage *newEvent = new FalconCampEventMessage(target->Id(), FalconLocalGame);
         newEvent->dataBlock.team = GetEnemyTeam(target->GetTeam());
@@ -499,7 +499,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         newEvent->dataBlock.data.formatId = 1825;
 
         // 2002-02-21 ADDED BY S.G. If it's not spotted and it's NOT the player, use the 'Bandit' vehicle so we don't warn the player on the identity of the shooter
-        if (!target->GetIdentified(shooter->GetTeam()) && FalconLocalSession->GetTeam() not_eq target->GetTeam())
+        if (!target->GetIdentified(shooter->GetTeam()) and FalconLocalSession->GetTeam() not_eq target->GetTeam())
             newEvent->dataBlock.data.textIds[0] = (short)(-1 * BANDIT_VEH);
         else
             // END OF ADDED SECTION 2002-02-21
@@ -509,7 +509,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         SendCampUIMessage(newEvent);
     }
 
-    if (gMainHandler && FalconLocalSession->GetPlayerSquadron() && target->Id() == FalconLocalSession->GetPlayerSquadron()->GetUnitAirbaseID())
+    if (gMainHandler and FalconLocalSession->GetPlayerSquadron() and target->Id() == FalconLocalSession->GetPlayerSquadron()->GetUnitAirbaseID())
         PostMessage(FalconDisplay.appWin, FM_AIRBASE_ATTACK, 0, 0);
 
     return 0;
@@ -1205,7 +1205,7 @@ FireMissileAtSim(CampEntity shooter, SimBaseClass *simTarg, short weapId)
 
 
     // Need to give beam riders a pointer to the illuminating radar platform
-    if (theMissile->sensorArray && theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming)
+    if (theMissile->sensorArray and theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming)
     {
         // Shooter better have a radar to use this kind of weapon...
         // TODO:  Check to also ensure the radar vehicle is still alive...

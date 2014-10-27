@@ -85,7 +85,7 @@ extern _TCHAR *NameStream;
 // Returns 1 if x,y is within rectangle
 int inButton(RECT *but, WORD xPos, WORD yPos)
 {
-    if (xPos >= but->left && xPos <= but->right && yPos >= but->top && yPos <= but->bottom)
+    if (xPos >= but->left and xPos <= but->right and yPos >= but->top and yPos <= but->bottom)
         return 1;
     else
         return 0;
@@ -277,7 +277,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 sptr = ReadNameString(i, buffer, 79);
 
-                if (sptr[0] && sptr[0] not_eq '<')
+                if (sptr[0] and sptr[0] not_eq '<')
                     SendMessage(GetDlgItem(hDlg, IDC_OBJ_NAMECOMBO), CB_ADDSTRING, 0, (LPARAM)ReadNameString(i, buffer, 79));
             }
 
@@ -348,7 +348,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             // Zero invalid features
             for (i = 0; i < O->GetTotalFeatures(); i++)
             {
-                if (O->GetFeatureStatus(i) > 0 && !O->GetFeatureID(i))
+                if (O->GetFeatureStatus(i) > 0 and !O->GetFeatureID(i))
                     O->SetFeatureStatus(i, VIS_DESTROYED);
             }
 
@@ -385,7 +385,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             PostMessage(GetDlgItem(hDlg, IDC_OBJ_OCCVAL), WM_PAINT, 0, 0);
             j = O->GetObjectiveNameID();
 
-            if (O->IsSecondary() && !j)
+            if (O->IsSecondary() and !j)
                 PostMessage(hDlg, WM_COMMAND, IDC_OBJ_RENAME, 0);
 
             if (GetUpdateRect(hDlg, &rect, FALSE))
@@ -507,7 +507,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     if (HIWORD(wParam) == CBN_EDITCHANGE)
                         renaming = 1;
 
-                    if (HIWORD(wParam) == CBN_KILLFOCUS && renaming)
+                    if (HIWORD(wParam) == CBN_KILLFOCUS and renaming)
                     {
                         GetDlgItemText(hDlg, IDC_OBJ_NAMECOMBO, buffer, 79);
                         SendMessage(GetDlgItem(hDlg, IDC_OBJ_NAMECOMBO), CB_ADDSTRING, 0, (LPARAM)buffer);
@@ -545,9 +545,9 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                         j = O->GetObjectiveNameID();
 
-                        if (O->IsSecondary() && !j)
+                        if (O->IsSecondary() and !j)
                             PostMessage(hDlg, WM_COMMAND, IDC_OBJ_RENAME, 0);
-                        else if (!O->IsSecondary() && j == 1)
+                        else if (!O->IsSecondary() and j == 1)
                             O->SetObjectiveNameID(0);
 
                         UpdateNames(hDlg, O);
@@ -2022,7 +2022,7 @@ BOOL WINAPI CampClipperProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
                         {
                             ent->GetLocation(&x, &y);
 
-                            if (x >= left && x <= right && y >= bottom && y <= top)
+                            if (x >= left and x <= right and y >= bottom and y <= top)
                             {
                                 // It's a keeper
                                 x = x - left + newleft;
@@ -2129,7 +2129,7 @@ BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             target = FindEntity(TheCampaign.MissionEvaluator->player_element->target_id);
             SetWindowText(GetDlgItem(hDlg, IDC_FIST_TARGET_FEATURE), "None");
 
-            if (target && target->GetClass() == CLASS_OBJECTIVE)
+            if (target and target->GetClass() == CLASS_OBJECTIVE)
             {
                 i = TheCampaign.MissionEvaluator->player_element->target_building;
 
@@ -2208,7 +2208,7 @@ BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                                 int count = 0;
                                 target_b = rand() % ((Objective)target)->GetTotalFeatures();
 
-                                while (count < 20 && (((Objective)target)->GetFeatureStatus(target_b) == VIS_DESTROYED or !((Objective)target)->GetFeatureValue(target_b)))
+                                while (count < 20 and (((Objective)target)->GetFeatureStatus(target_b) == VIS_DESTROYED or !((Objective)target)->GetFeatureValue(target_b)))
                                 {
                                     count++;
                                     target_b = rand() % ((Objective)target)->GetTotalFeatures();
@@ -2225,7 +2225,7 @@ BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                                 int count = 0, veh, n;
                                 veh = rand() % VEHICLE_GROUPS_PER_UNIT;
 
-                                while (count < 20 && ((Unit)target)->GetNumVehicles(veh) == 0)
+                                while (count < 20 and ((Unit)target)->GetNumVehicles(veh) == 0)
                                 {
                                     count++;
                                     veh = rand() % VEHICLE_GROUPS_PER_UNIT;
@@ -2284,18 +2284,18 @@ int DoACheatFlight(void)
         VuListIterator flit(AllAirList);
         u = (Unit) flit.GetFirst();
 
-        while (u && !done)
+        while (u and !done)
         {
-            if (u->IsFlight() && ((Flight)u)->GetUnitSquadronID() == FalconLocalSession->GetPlayerSquadronID())
+            if (u->IsFlight() and ((Flight)u)->GetUnitSquadronID() == FalconLocalSession->GetPlayerSquadronID())
             {
                 flight = (Flight)u;
 
                 if (!best)
                     best = flight;
 
-                if (gCheatPriority == 0 && flight->GetUnitPriority() > best->GetUnitPriority())
+                if (gCheatPriority == 0 and flight->GetUnitPriority() > best->GetUnitPriority())
                     best = flight;
-                else if (gCheatPriority == 1 && flight->GetUnitPriority() < best->GetUnitPriority())
+                else if (gCheatPriority == 1 and flight->GetUnitPriority() < best->GetUnitPriority())
                     best = flight;
                 else if (gCheatPriority == 2)
                     done = 1;
@@ -2329,7 +2329,7 @@ int DoACheatFlight(void)
 
 void CheckForCheatFlight(ulong time)
 {
-    if (gCheatingOn && time > gCheatNextTime)
+    if (gCheatingOn and time > gCheatNextTime)
     {
         if (DoACheatFlight())
             gCheatNextTime = time + gCheatTimeInterval;

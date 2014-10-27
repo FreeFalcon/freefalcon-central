@@ -429,7 +429,7 @@ float Process_DOFRot(int dofNumber, int flags, float min, float max, float multi
             dofrot = max;
     }
 
-    if (flags & XDOF_SUBRANGE && min not_eq max)
+    if (flags & XDOF_SUBRANGE and min not_eq max)
     {
         // rescales dofrot so it is 0.0 at Min and 1.0 at Max
         // it could exceed those bounds, unless MINMAX is set.
@@ -479,7 +479,7 @@ void BXDofNode::Draw(void)
      dofrot=max;
     }
 
-    if(flags & XDOF_SUBRANGE && min not_eq max)
+    if(flags & XDOF_SUBRANGE and min not_eq max)
     {
       // rescales dofrot so it is 0.0 at Min and 1.0 at Max
       // it could exceed those bounds, unless MINMAX is set.

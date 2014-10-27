@@ -297,7 +297,7 @@ void HudClass::DrawRCKT(void)
     float maxRng = 36500.0f;
     float minRng = 18500.0F;
 
-    if (fabs(pipperEl) < 0.90F && fabs(pipperAz + vOffset) < 0.90F && FCC->airGroundRange < maxRng && !FCC->noSolution)
+    if (fabs(pipperEl) < 0.90F and fabs(pipperAz + vOffset) < 0.90F and FCC->airGroundRange < maxRng and !FCC->noSolution)
     {
         if (FCC->airGroundRange < minRng)
         {
@@ -365,7 +365,7 @@ void HudClass::DrawRCKT(void)
 #if 0 // FRB - Removed PUAC for rockets.
 
     //PUAC for max Range
-    if (FCC->airGroundRange < maxRng && FCC->airGroundRange >= minRng)
+    if (FCC->airGroundRange < maxRng and FCC->airGroundRange >= minRng)
     {
         // now we use the PUAC to "count down" to in-range
         puacY = ((FCC->airGroundRange - minRng) / (maxRng - minRng));
@@ -429,8 +429,8 @@ void HudClass::DrawStrafe(void)
     display->AdjustOriginInViewport(0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] +
                                     hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F);
 
-    if (fabs(pipperEl) < 0.90F && fabs(pipperAz + hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                       hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F && !FCC->noSolution)
+    if (fabs(pipperEl) < 0.90F and fabs(pipperAz + hudWinY[BORESIGHT_CROSS_WINDOW] +
+                                       hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F and !FCC->noSolution)
     {
         if (FCC->airGroundRange < 8000.0F)// me123 status ok. changed from 8000. TJL 11/20/03 Back to 8000 per MIRV
         {
@@ -603,7 +603,7 @@ void HudClass::DrawTargetingPod(void)
     {
         LaserPodClass* laserPod = (LaserPodClass*)FindLaserPod(playerAC);
 
-        if (laserPod && FCC->LaserArm)
+        if (laserPod and FCC->LaserArm)
         {
             //armed and fired
             if (FCC->LaserFire)
@@ -649,12 +649,12 @@ void HudClass::DrawSteeringToRelease(void)
     {
         BombClass* theBomb = (BombClass *)FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]->weaponPointer.get();
 
-        if (theBomb && theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
+        if (theBomb and theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
             isJSOW = true;
     }
 
     // Steering Line
-    if (FCC->inRange && !isJSOW)
+    if (FCC->inRange and !isJSOW)
     {
         steeringLineX = FCC->airGroundBearing / (20.0F * DTR);
         steeringLineX += betaHudUnits;
@@ -682,7 +682,7 @@ void HudClass::DrawSteeringToRelease(void)
 
         // Toss Anticipation Cue
         if (FCC->tossAnticipationCue == FireControlComputer::PreToss ||
-            (FCC->tossAnticipationCue == FireControlComputer::PullUp && flash))
+            (FCC->tossAnticipationCue == FireControlComputer::PullUp and flash))
         {
             display->Circle(0.0F, RadToHudUnits(-3.0F * DTR) +
                             hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F,
@@ -778,9 +778,9 @@ void HudClass::DrawSteeringToRelease(void)
         {
             HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(ownship, SensorClass::HTS);
 
-            if (harmPod && harmPod->GetSubMode() == HarmTargetingPod::HAS ||
-                harmPod && harmPod->GetSubMode() == HarmTargetingPod::Handoff ||
-                harmPod && harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
+            if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::HAS ||
+                harmPod and harmPod->GetSubMode() == HarmTargetingPod::Handoff ||
+                harmPod and harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
             {
                 displayRange = false;
             }
@@ -856,7 +856,7 @@ void HudClass::DrawSteeringToRelease(void)
             display->TextLeft(0.45F, -0.50F, tmpStr);
     }
     // RV - Biker - Some diff HUD symboligy for JSOWs
-    else if (FCC->Sms->JDAMPowered && FCC->Sms->JDAMInitTimer <= 4.0f)
+    else if (FCC->Sms->JDAMPowered and FCC->Sms->JDAMInitTimer <= 4.0f)
     {
         steeringLineX = FCC->airGroundBearing / (20.0F * DTR);
         steeringLineX += betaHudUnits;

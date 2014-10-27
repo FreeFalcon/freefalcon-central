@@ -216,7 +216,7 @@ void DigitalBrain::AiRefuel(void)
 
             // 2002-03-28 MN Hack to make AI refueling working in each and every situation: if they are really close, just put them on the boom. Period ;-)
             // this also helps them in a tanker turn, which really can only do a human ;-)
-            if (dist < af->GetAIBoomDistance() && g_bPutAIToBoom && refuelstatus == refRefueling)
+            if (dist < af->GetAIBoomDistance() and g_bPutAIToBoom and refuelstatus == refRefueling)
             {
                 // 26NOV03 - FRB - Get a more recent position
                 ((TankerBrain*)tanker->Brain())->OptTankingPosition(&targetPos);
@@ -253,7 +253,7 @@ void DigitalBrain::AiRefuel(void)
             {
                 decelerating = true;
 
-                if ((self->drawPointer) && !((DrawableBSP*)self->drawPointer)->GetDOFangle(41))
+                if ((self->drawPointer) and !((DrawableBSP*)self->drawPointer)->GetDOFangle(41))
                 {
                     ((DrawableBSP*)self->drawPointer)->SetSwitchMask(13, 1);  // 29NOV03 - FRB - Open refueling door/ Display probe
                     ((DrawableBSP*)self->drawPointer)->SetDOFangle(41, self->af->GetRefuelAngle()*DTR);  // 29NOV03 - FRB - Open refueling door/ Extend probe
@@ -270,7 +270,7 @@ void DigitalBrain::AiRefuel(void)
 
                 /*
                  // JB 020311 Respond to "commands" from the tanker.
-                 if (!af->IsSet(AirframeClass::Refueling) && refuelstatus == refRefueling &&
+                 if (!af->IsSet(AirframeClass::Refueling) and refuelstatus == refRefueling &&
                  (SimLibElapsedTime - lastBoomCommand) > 10000)
                  {
                  lastBoomCommand = SimLibElapsedTime;
@@ -281,7 +281,7 @@ void DigitalBrain::AiRefuel(void)
                  boompos.x = boompos.y = boompos.z = 0;
 
                  af->GetRefuelPosition(&boompos);
-                 if (boompos.x == 0 && boompos.y ==0 && boompos.z == 0)
+                 if (boompos.x == 0 and boompos.y ==0 and boompos.z == 0)
                  boompos.x = -39.63939795321F;
 
                  relPos.x -= boompos.x;
@@ -577,8 +577,8 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
 
         // 2002-03-28 MN Hack to make full AI refueling control working in each and every situation:
         // if we are really close, just put us on the boom. Period ;-)
-        if (dist < af->GetAIBoomDistance() && g_bPutAIToBoom && refuelstatus == refRefueling &&
-            (PlayerOptions.GetRefuelingMode() == ARSimplistic or PlayerOptions.GetRefuelingMode() == ARModerated && af->IsSet(AirframeClass::Refueling)))
+        if (dist < af->GetAIBoomDistance() and g_bPutAIToBoom and refuelstatus == refRefueling &&
+            (PlayerOptions.GetRefuelingMode() == ARSimplistic or PlayerOptions.GetRefuelingMode() == ARModerated and af->IsSet(AirframeClass::Refueling)))
         {
             // 26NOV03 - FRB - Get a more recent position
             ((TankerBrain*)tanker->Brain())->OptTankingPosition(&targetPos);
@@ -624,7 +624,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
 
             /*
              // JB 020311 Respond to "commands" from the tanker.
-             if (!af->IsSet(AirframeClass::Refueling) && refuelstatus == refRefueling &&
+             if (!af->IsSet(AirframeClass::Refueling) and refuelstatus == refRefueling &&
              (SimLibElapsedTime - lastBoomCommand) > 10000)
              {
              lastBoomCommand = SimLibElapsedTime;
@@ -634,7 +634,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
              Tpoint boompos;
              boompos.x = boompos.y = boompos.z = 0;
              af->GetRefuelPosition(&boompos);
-             if (boompos.x == 0 && boompos.y ==0 && boompos.z == 0)
+             if (boompos.x == 0 and boompos.y ==0 and boompos.z == 0)
              boompos.x = -39.63939795321F;
 
              relPos.x -= boompos.x;
@@ -770,7 +770,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
         if (g_bNewRefuelHelp)
         {
             // 2002-03-06 MN in moderated mode (Simplified), once we're stuck to the boom, no stick input needed anymore
-            if (PlayerOptions.GetRefuelingMode() == ARModerated && !af->IsSet(AirframeClass::Refueling))
+            if (PlayerOptions.GetRefuelingMode() == ARModerated and !af->IsSet(AirframeClass::Refueling))
             {
                 af->pstick = (UserStickInputs.pstick - pStick) * 0.3F + pStick;
                 af->rstick = (UserStickInputs.rstick - rStick) * 0.3F + rStick;
@@ -779,7 +779,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
             }
             // Easy means no player input needed at all, also in Simplified when connected to the boom
             else if (PlayerOptions.GetRefuelingMode() == ARSimplistic ||
-                     PlayerOptions.GetRefuelingMode() == ARModerated && af->IsSet(AirframeClass::Refueling))
+                     PlayerOptions.GetRefuelingMode() == ARModerated and af->IsSet(AirframeClass::Refueling))
             {
                 af->pstick =  pStick;
                 af->rstick =  rStick;

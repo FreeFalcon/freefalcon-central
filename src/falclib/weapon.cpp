@@ -20,7 +20,7 @@ extern short NumWeaponTypes;
 
 int GetWeaponStrength(int w)
 {
-    ShiAssert(w >= 0 && w < NumWeaponTypes);
+    ShiAssert(w >= 0 and w < NumWeaponTypes);
 
     if (w < 0 or w >= NumWeaponTypes) return 0;
 
@@ -29,7 +29,7 @@ int GetWeaponStrength(int w)
 
 int GetWeaponRange(int w, int mt)
 {
-    ShiAssert(w >= 0 && w < NumWeaponTypes);
+    ShiAssert(w >= 0 and w < NumWeaponTypes);
 
     if ((w < 0) or (w >= NumWeaponTypes))
         return 0;
@@ -47,7 +47,7 @@ int GetWeaponRange(int w, int mt)
     if (WeaponDataTable[w].HitChance[mt] > 0)
     {
         // KCK Hack: If vs LowAir and weapon has an Air hit chance, scale range
-        if (mt == LowAir && WeaponDataTable[w].HitChance[Air])
+        if (mt == LowAir and WeaponDataTable[w].HitChance[Air])
         {
             return (int)((WeaponDataTable[w].Range * LOWAIR_RANGE_MODIFIER) + 0.99F);
         }
@@ -60,7 +60,7 @@ int GetWeaponRange(int w, int mt)
 
 int GetWeaponHitChance(int w, int mt)
 {
-    ShiAssert(w >= 0 && w < NumWeaponTypes);
+    ShiAssert(w >= 0 and w < NumWeaponTypes);
 
     if (w < 0 or w >= NumWeaponTypes) return 0;
 
@@ -69,8 +69,8 @@ int GetWeaponHitChance(int w, int mt)
 
 int GetWeaponHitChance(int w, int mt, int range)
 {
-    ShiAssert(w >= 0 && w < NumWeaponTypes);
-    ShiAssert(mt >= 0 && mt < 8);
+    ShiAssert(w >= 0 and w < NumWeaponTypes);
+    ShiAssert(mt >= 0 and mt < 8);
 
     if (w < 0 or w >= NumWeaponTypes) return 0;
 
@@ -86,7 +86,7 @@ int GetWeaponHitChance(int w, int mt, int range)
 
 int GetWeaponHitChance(int w, int mt, int range, int wrange)
 {
-    ShiAssert(w >= 0 && w < NumWeaponTypes);
+    ShiAssert(w >= 0 and w < NumWeaponTypes);
 
     if (w < 0 or w >= NumWeaponTypes) return 0;
 
@@ -95,7 +95,7 @@ int GetWeaponHitChance(int w, int mt, int range, int wrange)
 
 int GetWeaponFireRate(int w)
 {
-    ShiAssert(w >= 0 && w < NumWeaponTypes);
+    ShiAssert(w >= 0 and w < NumWeaponTypes);
 
     if (w < 0 or w >= NumWeaponTypes) return 0;
 
@@ -104,7 +104,7 @@ int GetWeaponFireRate(int w)
 
 int GetWeaponScore(int w, int mt, int range)
 {
-    ShiAssert(w >= 0 && w < NumWeaponTypes);
+    ShiAssert(w >= 0 and w < NumWeaponTypes);
 
     if (w < 0 or w >= NumWeaponTypes) return 0;
 
@@ -118,7 +118,7 @@ int GetWeaponScore(int w, int mt, int range)
 
 int GetWeaponScore(int w, int mt, int range, int wrange)
 {
-    ShiAssert(w >= 0 && w < NumWeaponTypes);
+    ShiAssert(w >= 0 and w < NumWeaponTypes);
 
     if (w < 0 or w >= NumWeaponTypes) return 0;
 
@@ -127,7 +127,7 @@ int GetWeaponScore(int w, int mt, int range, int wrange)
 
 int GetWeaponScore(int w, uchar* dam, int mt, int range)
 {
-    ShiAssert(w >= 0 && w < NumWeaponTypes);
+    ShiAssert(w >= 0 and w < NumWeaponTypes);
 
     if (w < 0 or w >= NumWeaponTypes) return 0;
 
@@ -139,7 +139,7 @@ int GetWeaponScore(int w, uchar* dam, int mt, int range)
 
 int GetWeaponScore(int w, uchar* dam, int mt, int range, int wrange)
 {
-    ShiAssert(w >= 0 && w < NumWeaponTypes);
+    ShiAssert(w >= 0 and w < NumWeaponTypes);
 
     if (w < 0 or w >= NumWeaponTypes) return 0;
 
@@ -148,7 +148,7 @@ int GetWeaponScore(int w, uchar* dam, int mt, int range, int wrange)
 
 int GetWeaponDamageType(int w)
 {
-    ShiAssert(w >= 0 && w < NumWeaponTypes);
+    ShiAssert(w >= 0 and w < NumWeaponTypes);
 
     if (w < 0 or w >= NumWeaponTypes) return 0;
 
@@ -157,7 +157,7 @@ int GetWeaponDamageType(int w)
 
 int GetWeaponDescriptionIndex(int w)
 {
-    ShiAssert(w >= 0 && w < NumWeaponTypes);
+    ShiAssert(w >= 0 and w < NumWeaponTypes);
 
     if (w < 0 or w >= NumWeaponTypes) return 0;
 
@@ -171,7 +171,7 @@ int GetWeaponIdFromDescriptionIndex(int index)
 
 int GetWeaponFlags(int w)
 {
-    ShiAssert(w >= 0 && w < NumWeaponTypes);
+    ShiAssert(w >= 0 and w < NumWeaponTypes);
 
     if (w < 0 or w >= NumWeaponTypes) return 0;
 
@@ -184,7 +184,7 @@ int GetWeaponFlags(int w)
 
 int GetListEntryWeapon(int list, int num)
 {
-    ShiAssert(list >= 0 && list < NumWeaponTypes);
+    ShiAssert(list >= 0 and list < NumWeaponTypes);
 
     if (list < 0 or list >= NumWeaponTypes) return 0;
 
@@ -193,14 +193,14 @@ int GetListEntryWeapon(int list, int num)
 
 int GetListEntryWeapons(int list, int num)
 {
-    ShiAssert(list >= 0 && list < NumWeaponTypes);
+    ShiAssert(list >= 0 and list < NumWeaponTypes);
 
     if (list < 0 or list >= NumWeaponTypes) return 0;
 
 #ifdef DEBUG
 
     // KCK HACK FOR BAD DATA
-    if (WeaponListDataTable[list].WeaponID[num] && !WeaponListDataTable[list].Quantity[num])
+    if (WeaponListDataTable[list].WeaponID[num] and !WeaponListDataTable[list].Quantity[num])
         return 1;
 
 #endif
@@ -209,7 +209,7 @@ int GetListEntryWeapons(int list, int num)
 
 char* GetListName(int list)
 {
-    ShiAssert(list >= 0 && list < NumWeaponTypes);
+    ShiAssert(list >= 0 and list < NumWeaponTypes);
 
     if (list < 0 or list >= NumWeaponTypes) return 0;
 

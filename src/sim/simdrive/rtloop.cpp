@@ -35,7 +35,7 @@ void RealTimeFunction(unsigned long, void*)
     static unsigned long update_time = 0, send_time = 0;
 
     // Check to see if some time events have occured (compression ratio change, etc)
-    if ((vuxRealTime > send_time) && (FalconLocalGame))
+    if ((vuxRealTime > send_time) and (FalconLocalGame))
     {
         ResyncTimes();
         send_time = vuxRealTime + RESYNC_TIME;

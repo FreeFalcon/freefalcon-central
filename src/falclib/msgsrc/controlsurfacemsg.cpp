@@ -50,7 +50,7 @@ int FalconControlSurfaceMsg::Process(uchar autodisp)
     }
     else
     {
-        if (OTWDriver.IsActive() && SimDriver.GetPlayerEntity())
+        if (OTWDriver.IsActive() and SimDriver.GetPlayerEntity())
         {
             MonoPrint("Control Surfaces for an entity I don't have\n");
         }

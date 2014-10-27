@@ -151,7 +151,7 @@ void PilotInputs::Update()
     {
         AirframeClass *af = playerAC->af;
 
-        if ((af) && (af->GetNumberEngines() == 2))
+        if ((af) and (af->GetNumberEngines() == 2))
         {
             /*******************************************************************************/
             // keyboard only, right engine axis is not even evalutated !
@@ -174,7 +174,7 @@ void PilotInputs::Update()
             // both axis mapped. state of 3-way variable not important
             // keyboard not considered
             /*******************************************************************************/
-            else if ((IO.AnalogIsUsed(AXIS_THROTTLE2)) && (IO.AnalogIsUsed(AXIS_THROTTLE)))
+            else if ((IO.AnalogIsUsed(AXIS_THROTTLE2)) and (IO.AnalogIsUsed(AXIS_THROTTLE)))
             {
                 engineThrottle[Left_Engine] = IO.ReadAnalog(AXIS_THROTTLE);
                 engineThrottle[Right_Engine] = IO.ReadAnalog(AXIS_THROTTLE2);
@@ -205,7 +205,7 @@ void PilotInputs::Update()
         }
         else   // end Retro 12Jan2004 (this is the old, single-engine code)
         {
-            if (IO.AnalogIsUsed(AXIS_THROTTLE) && !UseKeyboardThrottle)  // Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_THROTTLE) and !UseKeyboardThrottle)  // Retro 31Dec2003
             {
                 //throttle = 1.5F - (IO.ReadAnalog(2) * 1.05F + 1.0F) * 0.75F;
                 throttle = IO.ReadAnalog(AXIS_THROTTLE); // Retro 31Dec2003
@@ -264,7 +264,7 @@ void PilotInputs::Update()
     {
         if (
             (!g_bRealisticAvionics) ||
-            ((playerAC) && (!playerAC->TrimAPDisc))
+            ((playerAC) and (!playerAC->TrimAPDisc))
         )
         {
             ptrim += pitchElevatorTrimRate * SimLibMajorFrameTime;
@@ -285,7 +285,7 @@ void PilotInputs::Update()
     {
         if (
             (!g_bRealisticAvionics) or // TrimAPDisc only works in realistic avionics..
-            ((playerAC) && (!playerAC->TrimAPDisc))
+            ((playerAC) and (!playerAC->TrimAPDisc))
         )
         {
             rtrim += pitchAileronTrimRate * SimLibMajorFrameTime;
@@ -306,7 +306,7 @@ void PilotInputs::Update()
     {
         if (
             (!g_bRealisticAvionics) or // TrimAPDisc only works in realistic avionics..
-            ((playerAC) && (!playerAC->TrimAPDisc))
+            ((playerAC) and (!playerAC->TrimAPDisc))
         )
         {
             ytrim += pitchRudderTrimRate * SimLibMajorFrameTime;
@@ -330,12 +330,12 @@ void PilotInputs::Update()
 
         // COBRA - RED - The Pickle Stuff
         // RV - I-Hawk - Added a check to allow ARH "Maddog" launch only in boresight mode
-        if ((SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsAirplane()))
+        if ((SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsAirplane()))
         {
             if (keyboardPickleOverride or PickleOverride)
             {
                 if (!PickleTime) PickleTime = SimLibElapsedTime;
-                else if ((SimLibElapsedTime - PickleTime) > playerAC->FCC->GetPickleTime() && pickleButton == Off &&
+                else if ((SimLibElapsedTime - PickleTime) > playerAC->FCC->GetPickleTime() and pickleButton == Off &&
                          playerAC->FCC->AllowMaddog())
                     pickleButton = On;
             }

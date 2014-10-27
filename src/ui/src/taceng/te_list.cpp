@@ -712,7 +712,7 @@ static void update_sua_load_list(void)
 
     win = gMainHandler->FindWindow(TAC_SUA_WIN);
 
-    if (current_tactical_mission && win)
+    if (current_tactical_mission and win)
     {
         gSelectedTeam = 0;
         //! gSelectedTeam=-1;
@@ -884,7 +884,7 @@ static void update_pua_list(void)
             {
                 long textid = TRN_MISSION_01 + atol(current_tactical_mission->get_title()) - 1;
 
-                if (textid >= TRN_MISSION_01 && textid <= TRN_MISSION_31)
+                if (textid >= TRN_MISSION_01 and textid <= TRN_MISSION_31)
                     txt->SetText(textid);
                 else
                     txt->SetText((char*)TheCampaign.team_motto[gSelectedTeam]);

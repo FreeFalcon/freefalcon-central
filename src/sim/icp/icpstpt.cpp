@@ -139,9 +139,9 @@ void ICPClass::ExecSTPTMode()
     if (!g_bRealisticAvionics)
     {
         //MI Original code
-        if (playerAC && playerAC->curWaypoint)  // && !playerAC->FCC->InTransistion()
+        if (playerAC and playerAC->curWaypoint)  // and !playerAC->FCC->InTransistion()
         {
-            //&& mUpdateFlags & STPT_UPDATE && !((AircraftClass*)(mpOwnship))->FCC->waypointStepCmd) {
+            //&& mUpdateFlags & STPT_UPDATE and !((AircraftClass*)(mpOwnship))->FCC->waypointStepCmd) {
 
             // Clear the update flag
 
@@ -287,7 +287,7 @@ void ICPClass::ExecSTPTMode()
 
         //Line2
         //Get the current waypoint location
-        if (playerAC && playerAC->curWaypoint)
+        if (playerAC and playerAC->curWaypoint)
             playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
 
         latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + xCurr) / EARTH_RADIUS_FT;

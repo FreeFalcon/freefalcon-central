@@ -296,7 +296,7 @@ int GunClass::Exec(
             numRoundsRemaining = min(initialRounds, numRoundsRemaining + inc);
             fractionalRoundsRemaining -= (float)inc;
 
-            if (*fire && this->parent.get() == FalconLocalSession->GetPlayerEntity())
+            if (*fire and this->parent.get() == FalconLocalSession->GetPlayerEntity())
             {
                 g_intellivibeData.BulletsFired++;
             }
@@ -327,12 +327,12 @@ int GunClass::Exec(
     // edg: why go thru this exec stuff every time if there's no bullets
     // flying or the fire button isn't pressed?   Added numFlying counter
     // to determine bullets in air
-    if (!(*fire) && !numFlying)
+    if (!(*fire) and !numFlying)
         return whatWasHit;
 
 
     // scale the y start position if we're in the cockpit and ownship
-    if (isOwnship && OTWDriver.DisplayInCockpit())
+    if (isOwnship and OTWDriver.DisplayInCockpit())
     {
         yOffset = yPos * 2.0f;
     }
@@ -364,7 +364,7 @@ int GunClass::Exec(
         // see if we should move the bullets up towards end
         if (advanceQueue)
         {
-            if (i == numTracers - 1 && bullet[i].flying)
+            if (i == numTracers - 1 and bullet[i].flying)
                 numFlying--;
 
             if (i > 0)
@@ -640,10 +640,10 @@ int GunClass::Exec(
             {
                 if
                 (
-                    testObject->BaseData() && testObject->BaseData()->IsSim() &&
+                    testObject->BaseData() and testObject->BaseData()->IsSim() &&
                     (!testObject->BaseData()->IsWeapon() or testObject->BaseData()->IsEject()) &&
                     !((SimBaseClass*)testObject->BaseData())->IsExploding() &&
-                    testObject->localData && testObject->localData->range < initBulletVelocity * (2.5F) &&
+                    testObject->localData and testObject->localData->range < initBulletVelocity * (2.5F) &&
                     ((SimBaseClass*)testObject->BaseData())->drawPointer not_eq NULL
                 )
                 {
@@ -654,7 +654,7 @@ int GunClass::Exec(
                     // END OF MODIFIED SECTION
                     ((SimBaseClass*)testObject->BaseData())->drawPointer->GetPosition(&fpos);
 
-                    if (fabs(p1.x - fpos.x) < vt + p3.x && fabs(p1.y - fpos.y) < vt + p3.y && fabs(p1.z - fpos.z) < vt + p3.z)
+                    if (fabs(p1.x - fpos.x) < vt + p3.x and fabs(p1.y - fpos.y) < vt + p3.y and fabs(p1.z - fpos.z) < vt + p3.z)
                     {
                         // Back up 1/2 of the vector traveled.
                         org.x = p2.x - 0.5F * vec.x;
@@ -767,7 +767,7 @@ int GunClass::Exec(
             // see if bullet is within 1 time step of impacting the //
             // ground and linearly extrapolate to get impact point. //
             //------------------------------------------------------//
-            if (parent->OnGround() && bulptr->z + bulptr->zdot * SimLibMajorFrameTime >= groundZ + 1500.0f)
+            if (parent->OnGround() and bulptr->z + bulptr->zdot * SimLibMajorFrameTime >= groundZ + 1500.0f)
             {
                 // in this case the firing object is a ground vehicle.  We don't
                 // really do any ground detect for them since they're too close
@@ -776,7 +776,7 @@ int GunClass::Exec(
                 bulptr->flying = FALSE;
                 numFlying--;
             }
-            else if (!parent->OnGround() && bulptr->z + bulptr->zdot * SimLibMajorFrameTime >= groundZ)
+            else if (!parent->OnGround() and bulptr->z + bulptr->zdot * SimLibMajorFrameTime >= groundZ)
             {
                 // check to see if bullet already below ground
                 if (bulptr->z > groundZ)
@@ -800,7 +800,7 @@ int GunClass::Exec(
                 // only do sound and smoke effect for lead bullet....
                 // hack: seems like ground vehicles shoot into ground
                 // for some reason -- don't place craters
-                if (hitGround == FALSE && !parent->OnGround())
+                if (hitGround == FALSE and !parent->OnGround())
                 {
                     if (!isOwnship)
                         hitGround = TRUE;
@@ -956,16 +956,16 @@ int GunClass::Exec(
 
                 ystagger = NRAND * 0.40f;
 
-                if (ystagger <= 0.0f && ystagger > -0.20f)
+                if (ystagger <= 0.0f and ystagger > -0.20f)
                     ystagger = -0.20f;
-                else if (ystagger >= 0.0f && ystagger < 0.20f)
+                else if (ystagger >= 0.0f and ystagger < 0.20f)
                     ystagger = 0.20f;
 
                 zstagger = NRAND * 0.40f;
 
-                if (zstagger <= 0.0f && zstagger > -0.20f)
+                if (zstagger <= 0.0f and zstagger > -0.20f)
                     zstagger = -0.20f;
-                else if (zstagger >= 0.0f && zstagger < 0.20f)
+                else if (zstagger >= 0.0f and zstagger < 0.20f)
                     zstagger = 0.20f;
 
                 // alpha falls off the further out the tracer gets
@@ -1023,7 +1023,7 @@ int GunClass::Exec(
     }
 
     // if firing, insert an new round into the queue at 1st position
-    if (*fire && (!bulptr->flying or advanceQueue))
+    if (*fire and (!bulptr->flying or advanceQueue))
     {
         bulptr->x = parent->XPos();
         bulptr->y = parent->YPos();
@@ -1095,7 +1095,7 @@ int GunClass::Exec(
         // edg: it is observed that geomData for ground vehicles is (sometimes?)
         // invalid.  Since they don't move all that fast anyway, just use
         // bullet velocity for dot vals
-        if (!parent->OnGround() && parent->IsAirplane())
+        if (!parent->OnGround() and parent->IsAirplane())
         {
             vt = parent->GetVt();
             bulptr->xdot = vt * geomData->cosgam * geomData->cossig + initBulletVelocity * dmx[0][0];
@@ -1162,13 +1162,13 @@ int GunClass::Exec(
             numRoundsRemaining = max(0, numRoundsRemaining + inc);
             fractionalRoundsRemaining -= (float)inc;
 
-            if (*fire && this->parent.get() == FalconLocalSession->GetPlayerEntity())
+            if (*fire and this->parent.get() == FalconLocalSession->GetPlayerEntity())
             {
                 g_intellivibeData.BulletsFired++;
             }
         }
     }
-    else if (*fire && !advanceQueue && bulptr->flying)
+    else if (*fire and !advanceQueue and bulptr->flying)
     {
         bulptr->x += bulptr->xdot * SimLibMajorFrameTime;
         bulptr->y += bulptr->ydot * SimLibMajorFrameTime;

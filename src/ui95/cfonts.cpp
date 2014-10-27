@@ -341,7 +341,7 @@ int C_Font::StrWidth(long fontID, _TCHAR *Str, int len)
     {
         i = 0;
 
-        while (Str[i] && i < len)
+        while (Str[i] and i < len)
         {
             c = Str[i];
 

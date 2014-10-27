@@ -38,7 +38,7 @@ enum MissionTypeEnum;
 #define U_ENGAGED 0x40
 #define U_B1 0x80
 #define U_SCRIPTED 0x100 // Mission/Route scripted- Don't run planning AI
-#define U_COMMANDO 0x200 // Act like a commando (hit commando sites && kill ourselves after x time)
+#define U_COMMANDO 0x200 // Act like a commando (hit commando sites and kill ourselves after x time)
 #define U_MOVING 0x400
 #define U_REFUSED 0x800 // A request for transport was refused
 #define U_HASECM 0x1000 // This unit has defensive electronic countermeasures

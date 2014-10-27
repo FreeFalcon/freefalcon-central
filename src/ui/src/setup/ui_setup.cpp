@@ -1155,7 +1155,7 @@ void SetupRadioCB(long, short hittype, C_Base *control)
         int hasPOV = FALSE;
         extern AxisMapping AxisMap;
 
-        if ((gTotalJoy) && (AxisMap.FlightControlDevice not_eq -1))
+        if ((gTotalJoy) and (AxisMap.FlightControlDevice not_eq -1))
         {
             DIDEVCAPS devcaps;
             devcaps.dwSize = sizeof(DIDEVCAPS);

@@ -61,7 +61,7 @@ VuStandardFilter::~VuStandardFilter()
 VU_BOOL
 VuStandardFilter::Notice(VuMessage* event)
 {
-    if ((localSession_ not_eq DONT_CARE) && ((event->Type() == VU_TRANSFER_EVENT)))
+    if ((localSession_ not_eq DONT_CARE) and ((event->Type() == VU_TRANSFER_EVENT)))
     {
         return TRUE;
     }
@@ -80,8 +80,8 @@ VU_BOOL VuStandardFilter::Test(VuEntity* ent)
         ((ushort)(ent->FlagValue()) & idmask_.val_) &&
         (
             (localSession_ == DONT_CARE) ||
-            ((localSession_ == TRUE) && (ent->IsLocal())) ||
-            ((localSession_ == FALSE) && (!ent->IsLocal()))
+            ((localSession_ == TRUE) and (ent->IsLocal())) ||
+            ((localSession_ == FALSE) and (!ent->IsLocal()))
         )
     )
     {

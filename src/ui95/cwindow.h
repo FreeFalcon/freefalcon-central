@@ -513,7 +513,7 @@ public:
     }
     BOOL Minimized()
     {
-        if (w_ == MinW_ && h_ == MinH_) return(TRUE);
+        if (w_ == MinW_ and h_ == MinH_) return(TRUE);
 
         return(FALSE);
     }

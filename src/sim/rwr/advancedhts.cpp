@@ -104,7 +104,7 @@ void AdvancedHarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
         // JB 010726 Clear the designated target if behind the 3/9 line.
         if (displayY - HTS_Y_OFFSET < 0)
         {
-            if (lockedTarget && tmpElement->BaseObject() == lockedTarget->BaseData())
+            if (lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
             {
                 FCC->dropTrackCmd = TRUE;
             }
@@ -114,7 +114,7 @@ void AdvancedHarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
 
         // Mark the locked target
         // Mark the locked target
-        if (displayY - HTS_Y_OFFSET > 0 && lockedTarget && tmpElement->BaseObject() == lockedTarget->BaseData())
+        if (displayY - HTS_Y_OFFSET > 0 and lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
         {
             display->SetColor(GetMfdColor(MFD_WHITE));
             display->Line(-CURSOR_SIZE, -CURSOR_SIZE, -CURSOR_SIZE, CURSOR_SIZE);
@@ -253,7 +253,7 @@ void AdvancedHarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
         // JB 010726 Clear the designated target if behind the 3/9 line.
         if (origDisplayY - HTS_Y_OFFSET < 0)
         {
-            if (lockedTarget && tmpElement->BaseObject() == lockedTarget->BaseData())
+            if (lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
             {
                 FCC->dropTrackCmd = TRUE;
             }
@@ -262,7 +262,7 @@ void AdvancedHarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
         DrawEmitter(tmpElement, displayX, displayY, origDisplayY);
 
         // Mark the locked target
-        if (origDisplayY - HTS_Y_OFFSET > 0 && lockedTarget && tmpElement->BaseObject() == lockedTarget->BaseData())
+        if (origDisplayY - HTS_Y_OFFSET > 0 and lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
         {
             tempColor = display->Color();
             display->SetColor(GetMfdColor(MFD_WHITE));
@@ -444,7 +444,7 @@ void AdvancedHarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
         // JB 010726 Clear the designated target if behind the 3/9 line.
         if (NormDisplayY - HTS_Y_OFFSET < 0.0f)
         {
-            if (lockedTarget && tmpElement->BaseObject() == lockedTarget->BaseData())
+            if (lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
             {
                 FCC->dropTrackCmd = TRUE;
             }
@@ -466,7 +466,7 @@ void AdvancedHarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
     HASNumTargets = numOfDrawnTargets;
 
     // RV - I-Hawk - If we have a locked target, go to handoff mode
-    if (lockedTarget && lockedTarget->BaseData())
+    if (lockedTarget and lockedTarget->BaseData())
     {
         SetSubMode(Handoff);
         preHandoffMode = Has;
@@ -564,7 +564,7 @@ void AdvancedHarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
             // JB 010726 Clear the designated target if behind the 3/9 line.
             if (NormDisplayY - HTS_Y_OFFSET < 0.0f)
             {
-                if (lockedTarget && tmpElement->BaseObject() == lockedTarget->BaseData())
+                if (lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
                 {
                     FCC->dropTrackCmd = TRUE;
                 }
@@ -574,7 +574,7 @@ void AdvancedHarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
             BoxTargetDTSB(tmpElement->symbol, displayX, displayY);
 
             // Mark the locked target
-            if (displayY - HTS_Y_OFFSET > 0 && lockedTarget && tmpElement->BaseObject() == lockedTarget->BaseData())
+            if (displayY - HTS_Y_OFFSET > 0 and lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
             {
                 display->SetColor(GetMfdColor(MFD_WHITE));
                 display->Line(-CURSOR_SIZE, -CURSOR_SIZE, -CURSOR_SIZE, CURSOR_SIZE);
@@ -639,7 +639,7 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
         Sms = playerAC->Sms;
     }
 
-    if (Sms && !curMissile)
+    if (Sms and !curMissile)
     {
         curMissile = (MissileClass*)(Sms->GetCurrentWeapon());
     }
@@ -669,7 +669,7 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
             display->SetColor(GetMfdColor(MFD_WHITY_GRAY));  // "whity" gray
 
             // This one is the current target
-            if (i == POSTargetIndex && tmpElement && lockedTarget &&
+            if (i == POSTargetIndex and tmpElement and lockedTarget &&
                 tmpElement->BaseObject() == lockedTarget->BaseData())
             {
                 curTarget = POSTargets[i];
@@ -699,7 +699,7 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
                 display->TextCenter(-0.54f, LDLVerticalPos - 0.15f + HTS_Y_OFFSET, str);
 
                 // Get missile TOF. Should also be with the under-LSDL pre-launch info
-                if (curMissile && curTarget && curTarget->BaseObject())
+                if (curMissile and curTarget and curTarget->BaseObject())
                 {
                     // Get the range to the tmpElement which is the current target "candidate"
                     dx = fabs(playerAC->XPos() - curTarget->BaseObject()->XPos());
@@ -760,7 +760,7 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
     }
 
     // In case of a launch, save the target's symbol and WP
-    if (curMissile && curMissile->launchState not_eq MissileClass::PreLaunch && lockedTarget)
+    if (curMissile and curMissile->launchState not_eq MissileClass::PreLaunch and lockedTarget)
     {
         // Stop tracking the missile
         curMissile = NULL;
@@ -820,7 +820,7 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
 
     // RV - I-Hawk - If we have a locked target, go to handoff mode
 
-    if (lockedTarget && lockedTarget->BaseData())
+    if (lockedTarget and lockedTarget->BaseData())
     {
         preHandoffMode = Pos;
 

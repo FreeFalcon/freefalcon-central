@@ -114,7 +114,7 @@ extern "C" {
 #define ASSERTMACRO(a,x)                                            \
     do                                                              \
     {                                                               \
-        if ( !(x)                                               &&  \
+        if ( !(x)                                               and  \
              DiagAssert ( a , _T ( #x ) , __FILE__  , __LINE__)    )\
         {                                                           \
                 DebugBreak ( ) ;                                    \

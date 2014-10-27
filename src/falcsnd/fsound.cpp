@@ -567,7 +567,7 @@ int F4CreateStream(WAVEFORMATEX *fmt, float seconds)
  */
 void F4RemoveStream(int StreamID)
 {
-    if (gSoundDriver && StreamID not_eq SND_NO_HANDLE)
+    if (gSoundDriver and StreamID not_eq SND_NO_HANDLE)
         gSoundDriver->RemoveStream(StreamID);
 }
 
@@ -612,7 +612,7 @@ int F4StartStream(char *filename, long flags)
 */
 BOOL F4LoopStream(int StreamID, char *filename)
 {
-    if (gSoundDriver && StreamID not_eq SND_NO_HANDLE)
+    if (gSoundDriver and StreamID not_eq SND_NO_HANDLE)
         return(gSoundDriver->StartFileStream(StreamID, filename, SND_STREAM_LOOP));
 
     return(FALSE);
@@ -620,7 +620,7 @@ BOOL F4LoopStream(int StreamID, char *filename)
 
 BOOL F4StartRawStream(int StreamID, char *Data, long size)
 {
-    if (gSoundDriver && StreamID not_eq SND_NO_HANDLE)
+    if (gSoundDriver and StreamID not_eq SND_NO_HANDLE)
         return(gSoundDriver->StartMemoryStream(StreamID, Data, size));
 
     return(FALSE);
@@ -628,7 +628,7 @@ BOOL F4StartRawStream(int StreamID, char *Data, long size)
 
 BOOL F4StartCallbackStream(int StreamID, void *ptr, DWORD (*cb)(void *, char *, DWORD))
 {
-    if (gSoundDriver && StreamID not_eq SND_NO_HANDLE)
+    if (gSoundDriver and StreamID not_eq SND_NO_HANDLE)
         return(gSoundDriver->StartCallbackStream(StreamID, ptr, cb));
 
     return(FALSE);
@@ -636,7 +636,7 @@ BOOL F4StartCallbackStream(int StreamID, void *ptr, DWORD (*cb)(void *, char *, 
 
 void F4StopStream(int StreamID)
 {
-    if (gSoundDriver && StreamID not_eq SND_NO_HANDLE)
+    if (gSoundDriver and StreamID not_eq SND_NO_HANDLE)
     {
         gSoundDriver->StopStream(StreamID);
         gSoundDriver->RemoveStream(StreamID);
@@ -698,7 +698,7 @@ long F4StreamPlayed(int StreamID)
  */
 void F4PanSound(int soundIdx, int PanDir)
 {
-    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
         gSoundDriver->SetSamplePan(soundIdx, PanDir);
 }
 
@@ -709,7 +709,7 @@ SND_EXPORT int AudioSetPitch( int handle, int pitch )
  */
 void F4PitchBend(int soundIdx, float Pitch)
 {
-    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
         gSoundDriver->SetSamplePitch(soundIdx, Pitch);
 }
 
@@ -719,7 +719,7 @@ void F4PitchBend(int soundIdx, float Pitch)
 // Volume is in dBs (-10000 -> 0)
 long F4SetVolume(int soundIdx, int Volume)
 {
-    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
         return(gSoundDriver->SetSampleVolume(soundIdx, Volume));
 
     return(-10000);
@@ -739,7 +739,7 @@ void F4SetSoundFlags(int soundIdx, long flags)
 {
     SOUNDLIST *snd;
 
-    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
     {
         snd = gSoundDriver->FindSample(soundIdx);
 
@@ -752,7 +752,7 @@ void F4SetSoundFlags(int soundIdx, long flags)
 void F4SetStreamFlags(int, long)
 {
     /*
-     if(gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
+     if(gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
      {
      }
     */
@@ -760,7 +760,7 @@ void F4SetStreamFlags(int, long)
 
 int F4GetVolume(int soundIdx)
 {
-    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
         return(gSoundDriver->GetSampleVolume(soundIdx));
 
     return(0);
@@ -772,13 +772,13 @@ int F4GetVolume(int soundIdx)
  */
 void F4PlaySound(int soundIdx)
 {
-    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
         gSoundDriver->PlaySample(soundIdx, 0);
 }
 
 void F4PlaySound(int soundIdx, int flags)
 {
-    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
         gSoundDriver->PlaySample(soundIdx, flags);
 }
 
@@ -787,7 +787,7 @@ void F4PlaySound(int soundIdx, int flags)
  */
 int F4IsSoundPlaying(int theSound, int UID)
 {
-    if (gSoundDriver && theSound not_eq SND_NO_HANDLE)
+    if (gSoundDriver and theSound not_eq SND_NO_HANDLE)
         return(gSoundDriver->IsSamplePlaying(theSound, UID));
 
     return(0);
@@ -810,7 +810,7 @@ int F4SoundFXPlaying(int sfxId, int UID)
  */
 void F4LoopSound(int soundIdx)
 {
-    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
         //gSoundDriver->PlaySample(soundIdx,SND_LOOP_SAMPLE | SND_EXCLUSIVE);
         gSoundDriver->PlaySample(soundIdx, SFX_POS_LOOPED);
 }
@@ -821,7 +821,7 @@ void F4LoopSound(int soundIdx)
  */
 void F4StopSound(int soundIdx)
 {
-    if (gSoundDriver && soundIdx not_eq SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
         gSoundDriver->StopSample(soundIdx);
 }
 
@@ -896,7 +896,7 @@ BOOL ReadSFXTable(char *sndtable)
         return TRUE;
     }
 
-    ShiAssert(nsfx >= SFX_LAST && nsfx < 32767); // arbitrary test
+    ShiAssert(nsfx >= SFX_LAST and nsfx < 32767); // arbitrary test
 
     if (nsfx < SFX_LAST)
     {
@@ -1506,12 +1506,12 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
         if (playerAC)
         {
             if (
-                OTWDriver.DisplayInCockpit() && playerAC->OnGround() ||
+                OTWDriver.DisplayInCockpit() and playerAC->OnGround() ||
                 !playerAC->playBetty or !playerAC->IsSetFlag(MOTION_OWNSHIP)
             )
             {
                 // MD -- 20031125: except if the MAL/IND test button is being pressed to test the warning sound
-                if (!((sfxId == SFX_BB_ALLWORDS) && playerAC->TestLights))
+                if (!((sfxId == SFX_BB_ALLWORDS) and playerAC->TestLights))
                 {
                     return;
                 }
@@ -1706,7 +1706,7 @@ void F4SoundPos::UpdatePos(SimBaseClass  *owner)
 
 void F4SoundPos::PositionalData(void)
 {
-    if (platform && platform->drawPointer)
+    if (platform and platform->drawPointer)
     {
         orientation = ((DrawableBSP *)(platform->drawPointer))->orientation;
     }
@@ -1730,11 +1730,11 @@ void F4SoundPos::PositionalData(void)
     // dist from camera
     distance = (float)sqrt(relPos.x * relPos.x + relPos.y * relPos.y + relPos.z * relPos.z);
 
-    if (g_bSoundSonicBoom && platform && ((SimBaseClass *)platform)->IsAirplane())
+    if (g_bSoundSonicBoom and platform and ((SimBaseClass *)platform)->IsAirplane())
     {
         // platform is really a SimBaseClass object
         // object exceeding mach 1?
-        if (velocity > 1100 && distance)
+        if (velocity > 1100 and distance)
         {
             // determine the angle between the velocity vector, the object, and the camera.
             float rvx, rvy, rvz;
@@ -1763,7 +1763,7 @@ void F4SoundPos::PositionalData(void)
             }
         }
 
-        if (wasInMachShadow && !inMachShadow) // don't do booms with a view change
+        if (wasInMachShadow and !inMachShadow) // don't do booms with a view change
         {
             sonicBoom = 1000;
         }
@@ -1802,7 +1802,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol)
     // sfr: @todo remove this hack
     if (F4IsBadReadPtr(sfxp, sizeof(sfxp))) return;
 
-    if (g_bRealisticAvionics && (sfxp->flags & SFX_FLAGS_VMS))
+    if (g_bRealisticAvionics and (sfxp->flags & SFX_FLAGS_VMS))
     {
         AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -1810,12 +1810,12 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol)
         if (playerAC)
         {
             if (
-                OTWDriver.DisplayInCockpit() && playerAC->OnGround() ||
+                OTWDriver.DisplayInCockpit() and playerAC->OnGround() ||
                 !playerAC->playBetty or !playerAC->IsSetFlag(MOTION_OWNSHIP)
             )
             {
                 // MD -- 20031125: except if the MAL/IND test button is being pressed to test the warning sound
-                if (!((SfxID == SFX_BB_ALLWORDS) && playerAC->TestLights))
+                if (!((SfxID == SFX_BB_ALLWORDS) and playerAC->TestLights))
                     return;
             }
         }
@@ -1920,7 +1920,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol, float X, float
     ShiAssert(SfxID < NumSFX);
     ShiAssert(SfxID > 0);
 
-    if (SfxID < NumSFX && SfxID > 0)
+    if (SfxID < NumSFX and SfxID > 0)
     {
         if (vh = new mlrVoiceHandle(this, SfxID, SID))
         {

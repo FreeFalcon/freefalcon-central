@@ -503,7 +503,7 @@ void C_MapIcon::Refresh(MAPICONLIST *icon)
         return;
 
     // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified, not editing a TE and 'showUnknown' isn't set, hide it
-    if (!gShowUnknown && icon->ImageID == ICON_UKN)
+    if (!gShowUnknown and icon->ImageID == ICON_UKN)
     {
         icon->Flags  or_eq  C_BIT_INVISIBLE;
         Leave = UI_Enter(Parent_);
@@ -512,7 +512,7 @@ void C_MapIcon::Refresh(MAPICONLIST *icon)
         UI_Leave(Leave);
     }
 
-    if ((!gShowUnknown or icon->ImageID not_eq ICON_UKN) && (GetFlags() & C_BIT_INVISIBLE)) // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
+    if ((!gShowUnknown or icon->ImageID not_eq ICON_UKN) and (GetFlags() & C_BIT_INVISIBLE)) // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
         return;
 
     // END OF ADDED SECTION 2002-02-21
@@ -563,18 +563,18 @@ void C_MapIcon::Refresh()
     while (cur)
     {
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified, not editing a TE and 'showUnknown' isn't set, hide it
-        if (!gShowUnknown && cur->ImageID == ICON_UKN)
+        if (!gShowUnknown and cur->ImageID == ICON_UKN)
         {
             cur->Flags  or_eq  C_BIT_INVISIBLE;
             SetXY(cur->x, cur->y);
             cur->Icon->Refresh();
         }
 
-        // if (!(!(gShowUnknown && cur->ImageID == ICON_UKN) && (GetFlags() & C_BIT_INVISIBLE))) { // (From above) If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
-        if ((gShowUnknown && cur->ImageID == ICON_UKN) or !(GetFlags() & C_BIT_INVISIBLE))   // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
+        // if (!(!(gShowUnknown and cur->ImageID == ICON_UKN) and (GetFlags() & C_BIT_INVISIBLE))) { // (From above) If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
+        if ((gShowUnknown and cur->ImageID == ICON_UKN) or !(GetFlags() & C_BIT_INVISIBLE))   // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
         {
             // END OF ADDED SECTION 2002-02-21
-            if (!(cur->Flags & C_BIT_INVISIBLE) && cur->Flags & C_BIT_ENABLED)
+            if (!(cur->Flags & C_BIT_INVISIBLE) and cur->Flags & C_BIT_ENABLED)
             {
                 if (cur->Icon)
                 {
@@ -621,19 +621,19 @@ void C_MapIcon::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     // 2020-02-21 MODIFIED BY S.G. Even if that type of airplane isn't showned, if it's an Unknown, deal with it if we ask for unknown to be seen
     // if(!Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL) return;
-    if (!Ready() or (!gShowUnknown && (GetFlags() & C_BIT_INVISIBLE)) or Parent_ == NULL)
+    if (!Ready() or (!gShowUnknown and (GetFlags() & C_BIT_INVISIBLE)) or Parent_ == NULL)
         return;
 
     // 2002-02-23 ADDED BY S.G. Test if it's an AirUnits C_MapIcon and only those will go in if the invisible flag is set
     int airUnit = FALSE;
 
-    if (gShowUnknown && gMapMgr && (GetFlags() & C_BIT_INVISIBLE))
+    if (gShowUnknown and gMapMgr and (GetFlags() & C_BIT_INVISIBLE))
     {
-        for (int i = 0; i < _MAX_TEAMS_ && !airUnit; i++)
+        for (int i = 0; i < _MAX_TEAMS_ and !airUnit; i++)
         {
             if (gMapMgr->GetTeam(i).AirUnits)
             {
-                for (int j = 0; j < _MAP_NUM_AIR_TYPES_ && !airUnit; j++)
+                for (int j = 0; j < _MAP_NUM_AIR_TYPES_ and !airUnit; j++)
                 {
                     if (gMapMgr->GetTeam(i).AirUnits->Type[j] == this)
                         airUnit = TRUE;
@@ -652,19 +652,19 @@ void C_MapIcon::Draw(SCREEN *surface, UI95_RECT *cliprect)
     while (cur)
     {
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified, not editing a TE and 'showUnknown' isn't set, hide it
-        if (!gShowUnknown && cur->ImageID == ICON_UKN)
+        if (!gShowUnknown and cur->ImageID == ICON_UKN)
             cur->Flags  or_eq  C_BIT_INVISIBLE;
 
-        if ((gShowUnknown && cur->ImageID == ICON_UKN) or !(GetFlags() & C_BIT_INVISIBLE))   // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
+        if ((gShowUnknown and cur->ImageID == ICON_UKN) or !(GetFlags() & C_BIT_INVISIBLE))   // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
         {
             // END OF ADDED SECTION 2002-02-21
-            if (!(cur->Flags & C_BIT_INVISIBLE) && cur->Flags & C_BIT_ENABLED)
+            if (!(cur->Flags & C_BIT_INVISIBLE) and cur->Flags & C_BIT_ENABLED)
             {
                 if (cur->Icon)
                 {
                     SetXY(cur->x, cur->y);
 
-                    if (cur->Detect && ShowCircles_)
+                    if (cur->Detect and ShowCircles_)
                     {
                         if (ShowCircles_ & LOW_SAM)
                         {
@@ -686,7 +686,7 @@ void C_MapIcon::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
                         if (ShowCircles_ & LOW_RADAR)
                         {
-                            if (cur->Detect->LowRadar && cur->Detect->LowRadar->arcs && cur->Detect->LowRadar->arcs[0].range)
+                            if (cur->Detect->LowRadar and cur->Detect->LowRadar->arcs and cur->Detect->LowRadar->arcs[0].range)
                                 Parent_->DrawCircle(surface, 0xff0000, cur->x, cur->y, cur->Detect->LowRadar->arcs[0].range * scale_, Flags_, Client_, cliprect);
                         }
                     }
@@ -704,7 +704,7 @@ void C_MapIcon::Draw(SCREEN *surface, UI95_RECT *cliprect)
                         if (cur->Bat)
                             cur->Bat->Draw(surface, cliprect);
 
-                        if (cur->Label && (!cur->Div && !cur->Brig && !cur->Bat))
+                        if (cur->Label and (!cur->Div and !cur->Brig and !cur->Bat))
                             cur->Label->Draw(surface, cliprect);
                     }
                 }
@@ -748,7 +748,7 @@ BOOL C_MapIcon::UpdateInfo(MAPICONLIST *icon, float x, float y, long newstatus, 
 
         if (ox not_eq ((icon->worldx * scale_)) or oy not_eq (icon->worldy * scale_))
         {
-            if (!(icon->Flags & C_BIT_INVISIBLE) && icon->Flags & C_BIT_ENABLED)
+            if (!(icon->Flags & C_BIT_INVISIBLE) and icon->Flags & C_BIT_ENABLED)
             {
                 Leave = UI_Enter(icon->Owner->GetParent());
                 Refresh(icon);
@@ -795,7 +795,7 @@ BOOL C_MapIcon::UpdateInfo(long ID, float x, float y, long newstatus, long newst
         cur->x = (short)(cur->worldx * scale_);
         cur->y = (short)(cur->worldy * scale_);
 
-        if ((ox not_eq cur->x or oy not_eq cur->y) && !(cur->Flags & C_BIT_INVISIBLE))
+        if ((ox not_eq cur->x or oy not_eq cur->y) and !(cur->Flags & C_BIT_INVISIBLE))
             return(TRUE);
     }
 
@@ -816,14 +816,14 @@ long C_MapIcon::CheckHotSpots(long relX, long relY)
 
     while (cur)
     {
-        if (!(cur->Flags & C_BIT_INVISIBLE) && cur->Flags & C_BIT_ENABLED)
+        if (!(cur->Flags & C_BIT_INVISIBLE) and cur->Flags & C_BIT_ENABLED)
         {
             x = cur->x + cur->Icon->GetX();
             y = cur->y + cur->Icon->GetY();
             w = cur->Icon->GetW();
             h = cur->Icon->GetH();
 
-            if (relX >= x && relY >= y && relX < (x + w) && relY < (y + h))
+            if (relX >= x and relY >= y and relX < (x + w) and relY < (y + h))
                 Last_ = cur;
         }
 
@@ -853,14 +853,14 @@ BOOL C_MapIcon::MouseOver(long relX, long relY, C_Base *)
 
     while (cur)
     {
-        if (!(cur->Flags & C_BIT_INVISIBLE) && cur->Flags & C_BIT_ENABLED)
+        if (!(cur->Flags & C_BIT_INVISIBLE) and cur->Flags & C_BIT_ENABLED)
         {
             x = cur->x + cur->Icon->GetX();
             y = cur->y + cur->Icon->GetY();
             w = cur->Icon->GetW();
             h = cur->Icon->GetH();
 
-            if (relX >= x && relY >= y && relX < (x + w) && relY < (y + h))
+            if (relX >= x and relY >= y and relX < (x + w) and relY < (y + h))
                 OverLast_ = cur;
         }
 

@@ -78,7 +78,7 @@ void C_Tile::SetImage(long ID)
     Image_->SetFlags(GetFlags());
     Image_->SetImage(ID);
 
-    if (Image_->GetW() && Image_->GetH())
+    if (Image_->GetW() and Image_->GetH())
         SetReady(1);
 }
 
@@ -96,7 +96,7 @@ void C_Tile::SetImage(IMAGE_RSC *tmp)
     Image_->SetFlags(GetFlags());
     Image_->SetImage(tmp);
 
-    if (Image_->GetW() && Image_->GetH())
+    if (Image_->GetW() and Image_->GetH())
         SetReady(1);
 }
 

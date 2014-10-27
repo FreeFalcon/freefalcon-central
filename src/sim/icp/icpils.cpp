@@ -78,7 +78,7 @@ void ICPClass::ExecILSMode(void)
                         sprintf(mpLine2, "ALTERNATE RUNWAY ");
                     }
 
-                    if (id == ilsid && isValidILS && isValidRWY)
+                    if (id == ilsid and isValidILS and isValidRWY)
                     {
                         strcat(mpLine2, rwyNum);
                     }
@@ -147,7 +147,7 @@ void ICPClass::ExecILSMode(void)
                         sprintf(mpLine2, "ALTERNATE RUNWAY ");
                     }
 
-                    if (id == ilsid && isValidILS && isValidRWY)
+                    if (id == ilsid and isValidILS and isValidRWY)
                     {
                         strcat(mpLine2, rwyNum);
                     }

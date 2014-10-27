@@ -76,7 +76,7 @@ void DrawablePoled::Draw(class RenderOTW *renderer, int LOD)
         renderer->SetColor(0xffff0000);    //0xff00ffff
 
         // now we draw the data labels if enabled
-        if (drawSpeed && speedLen)
+        if (drawSpeed and speedLen)
         {
             x = labelPoint.x - speedLen; // Centers text
             renderer->ScreenText(x, y, speed);
@@ -84,35 +84,35 @@ void DrawablePoled::Draw(class RenderOTW *renderer, int LOD)
         }
 
 
-        if (drawAlt && altLen)
+        if (drawAlt and altLen)
         {
             x = labelPoint.x - altLen; // Centers text
             renderer->ScreenText(x, y, alt);
             y += 10.0f;
         }
 
-        if (drawHeading && headingLen)
+        if (drawHeading and headingLen)
         {
             x = labelPoint.x - headingLen; // Centers text
             renderer->ScreenText(x, y, heading);
             y += 10.0f;
         }
 
-        if (drawlockrange && lockrangeLen)
+        if (drawlockrange and lockrangeLen)
         {
             x = labelPoint.x - lockrangeLen; // Centers text
             renderer->ScreenText(x, y, lockrange);
             y += 10.0f;
         }
 
-        if (drawTurnRate && turnRateLen)
+        if (drawTurnRate and turnRateLen)
         {
             x = labelPoint.x - turnRateLen; // Centers text
             renderer->ScreenText(x, y, turnRate);
             y += 10.0f;
         }
 
-        if (drawTurnRadius && turnRadiusLen)
+        if (drawTurnRadius and turnRadiusLen)
         {
             x = labelPoint.x - turnRadiusLen; // Centers text
             renderer->ScreenText(x, y, turnRadius);

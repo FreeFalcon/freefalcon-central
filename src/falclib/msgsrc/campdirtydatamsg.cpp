@@ -120,7 +120,7 @@ int CampDirtyData::Process(uchar autodisp)
 
     // Only accept data if this is a remote entity
     //sfr: added size check, as we are receiving empy messages
-    if ((!ent->IsLocal())/* && (dataBlock.size not_eq 0)*/)
+    if ((!ent->IsLocal())/* and (dataBlock.size not_eq 0)*/)
     {
         //sfr: was size = ent->DecodeDirty (&data);
         //we do this because we consume the buffer, and will need to free

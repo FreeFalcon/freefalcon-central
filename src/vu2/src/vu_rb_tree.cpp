@@ -67,7 +67,7 @@ bool VuRedBlackTree::PrivateFind(VuEntity *ent) const
     {
         VuEntityBin eb = it->second;
 
-        if ((eb->VuState() == VU_MEM_ACTIVE) && (eb.get() == ent))
+        if ((eb->VuState() == VU_MEM_ACTIVE) and (eb.get() == ent))
         {
             return true;
         }
@@ -92,7 +92,7 @@ unsigned int VuRedBlackTree::Purge(VU_BOOL all)
     {
         VuEntityBin &eb = it->second;
 
-        if (all or (!(eb->IsPrivate() && eb->IsPersistent()) && !eb->IsGlobal()))
+        if (all or (!(eb->IsPrivate() and eb->IsPersistent()) and !eb->IsGlobal()))
         {
             it = map_.erase(it);
             ++ret;
@@ -157,11 +157,11 @@ VuRedBlackTree::~VuRedBlackTree()
 
 VU_ERRCODE VuRedBlackTree::Handle(VuMessage *msg)
 {
-    if (filter_ && filter_->Notice(msg))
+    if (filter_ and filter_->Notice(msg))
     {
         VuEntity *ent = msg->Entity();
 
-        if (ent && filter_->RemoveTest(ent))
+        if (ent and filter_->RemoveTest(ent))
         {
             if (Find(ent))
             {
@@ -277,7 +277,7 @@ unsigned int VuRedBlackTree::Purge(VU_BOOL all)
     {
         VuEntityBin &eb = it->second;
 
-        if (all or (!(eb->IsPrivate() && eb->IsPersistent()) && !eb->IsGlobal()))
+        if (all or (!(eb->IsPrivate() and eb->IsPersistent()) and !eb->IsGlobal()))
         {
             it = map_.erase(it);
             ++ret;
@@ -337,7 +337,7 @@ VuEntity *VuRedBlackTree::Find(VuEntity *ent) const
     {
         VuEntityBin eb = it->second;
 
-        if ((eb->VuState() == VU_MEM_ACTIVE) && (eb.get() == ent))
+        if ((eb->VuState() == VU_MEM_ACTIVE) and (eb.get() == ent))
         {
             return ent;
         }

@@ -32,7 +32,7 @@ void CBEECMPwrLight(void * pObject)
 {
     CPLight *pCPLight = (CPLight*) pObject;
 
-    if (SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity()->HasSPJamming())
+    if (SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity()->HasSPJamming())
     {
         pCPLight->mState = SimDriver.GetPlayerEntity()->IsSetFlag(ECM_ON) not_eq FALSE;
     }
@@ -102,7 +102,7 @@ void CBEAuxWarnActL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
@@ -129,7 +129,7 @@ void CBELaunchL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
@@ -157,7 +157,7 @@ void CBEHandoffL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
@@ -185,7 +185,7 @@ void CBEPriModeL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
@@ -213,7 +213,7 @@ void CBEUnknownL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
@@ -240,7 +240,7 @@ void CBENavalL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
@@ -267,7 +267,7 @@ void CBETgtSepL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
@@ -295,7 +295,7 @@ void CBEAuxWarnSearchL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
@@ -323,7 +323,7 @@ void CBEAuxWarnAltL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
@@ -351,7 +351,7 @@ void CBEAuxWarnPwrL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
@@ -388,7 +388,7 @@ void CBEAuxWarnSearch(void * pObject)
 {
     CPLight *pCPLight = (CPLight*) pObject;
 
-    if ((SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if ((SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
 
         ALR56Class* theRwr = (ALR56Class*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
@@ -405,7 +405,7 @@ void CBEAuxWarnActPwr(void * pObject)
 {
     CPLight *pCPLight = (CPLight*) pObject;
 
-    if ((SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if ((SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
 
         ALR56Class* theRwr = (ALR56Class*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
@@ -422,7 +422,7 @@ void CBEAuxWarnAlt(void * pObject)
 {
     CPLight *pCPLight = (CPLight*) pObject;
 
-    if ((SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if ((SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
 
         ALR56Class* theRwr = (ALR56Class*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
@@ -471,7 +471,7 @@ void CheckLandingGearHandle(void * pObject)
 
     if (playerAC->af->gearHandle <= 0.0F)
     {
-        if (playerAC->af->gearPos == 0.0F && !playerAC->mFaults->GetFault(FaultClass::gear_fault))
+        if (playerAC->af->gearPos == 0.0F and !playerAC->mFaults->GetFault(FaultClass::gear_fault))
         {
             currentState = 0; // handle up & wheels locked
         }
@@ -482,7 +482,7 @@ void CheckLandingGearHandle(void * pObject)
     }
     else
     {
-        if (playerAC->af->gearPos == 1.0F && !playerAC->mFaults->GetFault(FaultClass::gear_fault))
+        if (playerAC->af->gearPos == 1.0F and !playerAC->mFaults->GetFault(FaultClass::gear_fault))
         {
             currentState = 2; // handle down & wheels locked
         }
@@ -509,7 +509,7 @@ void CheckThreatWarn(void * pObject, type_TWSubSystem subSystem)
 
         case missile_launch:
             // If we have a launch warning and we're in the "ON" part of the blink cycle
-            val = theRwr->LaunchIndication() && (vuxRealTime & 0x200);
+            val = theRwr->LaunchIndication() and (vuxRealTime & 0x200);
             break;
 
         case pri_mode:
@@ -641,7 +641,7 @@ void CBEAOAIndLight(void * pObject)
     currentAOAVal = cockpitFlightData.alpha;
 
     //MI in realistic these only work with gear down  //JPG 2 Jan 04 - Nosir, -1 says AoA indexer is operational regardless of gear position
-    /* if(g_bRealisticAvionics && SimDriver.GetPlayerEntity() &&
+    /* if(g_bRealisticAvionics and SimDriver.GetPlayerEntity() &&
      SimDriver.GetPlayerEntity()->af->gearPos < 0.8F)
      {
      pCPLight->mState = CPLIGHT_AOA_OFF;
@@ -658,7 +658,7 @@ void CBEAOAIndLight(void * pObject)
             {
                 pCPLight->mState = CPLIGHT_AOA_SLOW;
             }
-            else if ((currentAOAVal < 9.3F) && (currentAOAVal >= 6.9F))
+            else if ((currentAOAVal < 9.3F) and (currentAOAVal >= 6.9F))
             {
                 pCPLight->mState = CPLIGHT_AOA_ON;
             }
@@ -675,7 +675,7 @@ void CBEAOAIndLight(void * pObject)
             {
                 pCPLight->mState = CPLIGHT_AOA_SLOW;
             }
-            else if ((currentAOAVal < 15.5F) && (currentAOAVal >= 14.5F))
+            else if ((currentAOAVal < 15.5F) and (currentAOAVal >= 14.5F))
             {
                 pCPLight->mState = CPLIGHT_AOA_ON;
             }
@@ -691,7 +691,7 @@ void CBEAOAIndLight(void * pObject)
             {
                 pCPLight->mState = CPLIGHT_AOA_SLOW;
             }
-            else if ((currentAOAVal < 14.0F) && (currentAOAVal >= 11.5F))
+            else if ((currentAOAVal < 14.0F) and (currentAOAVal >= 11.5F))
             {
                 pCPLight->mState = CPLIGHT_AOA_ON;
             }
@@ -712,7 +712,7 @@ extern void CBEAOAFastLight(void * pObject)
     currentAOAVal = cockpitFlightData.alpha;
 
     //MI in realistic these only work with gear down //JPG 2 Jan 04 - Nosir, -1 says AoA indexer is operational regardless of gear position
-    /* if(g_bRealisticAvionics && SimDriver.GetPlayerEntity() &&
+    /* if(g_bRealisticAvionics and SimDriver.GetPlayerEntity() &&
      SimDriver.GetPlayerEntity()->af->gearPos < 0.8F)
      {
      pCPLight->mState = CPLIGHT_AOA_OFF;
@@ -744,7 +744,7 @@ void CBERefuelLight(void * pObject)
 
     // MD -- 20031215: moving this to cautions.cpp to ensure that the state is set independent of whether the lamp is being
     // drawn in the OTW view currently or not,
-    // if(OTWDriver.pCockpitManager->mMiscStates.mRefuelState == 3 && (vuxGameTime > (OTWDriver.pCockpitManager->mMiscStates.mRefuelTimer + 3000))) {
+    // if(OTWDriver.pCockpitManager->mMiscStates.mRefuelState == 3 and (vuxGameTime > (OTWDriver.pCockpitManager->mMiscStates.mRefuelTimer + 3000))) {
     // OTWDriver.pCockpitManager->mMiscStates.SetRefuelState(0);
     // }
 
@@ -765,7 +765,7 @@ void CBERefuelLight(void * pObject)
         }
     }
     //MI NWS light fix
-    //else if (!SimDriver.GetPlayerEntity()->af->IsEngineFlag(AirframeClass::FuelDoorOpen) && pCPLight->mState > CPLIGHT_AR_NWS_RDY )
+    //else if (!SimDriver.GetPlayerEntity()->af->IsEngineFlag(AirframeClass::FuelDoorOpen) and pCPLight->mState > CPLIGHT_AR_NWS_RDY )
     else if (
         !playerAC->af->IsEngineFlag(AirframeClass::FuelDoorOpen) &&
         !playerAC->af->IsSet(AirframeClass::NoseSteerOn)
@@ -1006,7 +1006,7 @@ void CBECaution13(void * pObject)
     {
         if (g_bTO_LDG_LightFix)
         {
-            if (playerAC->mFaults && playerAC->mFaults->GetFault(to_ldg_config))
+            if (playerAC->mFaults and playerAC->mFaults->GetFault(to_ldg_config))
             {
                 pCPLight->mState = TRUE;
             }
@@ -1067,7 +1067,7 @@ void CBECaution14(void * pObject)
         canopyopen = playerAC->GetDOFValue(SIMP_CANOPY_DOF) > 0;
     }
 
-    if (canopyopen or (faultSys && faultSys->GetFault(canopy)))
+    if (canopyopen or (faultSys and faultSys->GetFault(canopy)))
     {
         pCPLight->mState = 1;
     }
@@ -1753,7 +1753,7 @@ void CBECanopyLight(void *pObject)
         canopyopen = playerAC->GetDOFValue(SIMP_CANOPY_DOF) > 0;
     }
 
-    if (canopyopen or (faultSys && faultSys->GetFault(canopy)))
+    if (canopyopen or (faultSys and faultSys->GetFault(canopy)))
     {
         pCPLight->mState = CPLIGHT_ON;
     }
@@ -2173,7 +2173,7 @@ void CBECkptWingLight(void *pObject)
     CPLight* pCPLight;
     pCPLight = (CPLight*) pObject;
 
-    if (playerAC->CockpitWingLight && PlayerOptions.ObjDetailLevel > 1.0F)
+    if (playerAC->CockpitWingLight and PlayerOptions.ObjDetailLevel > 1.0F)
     {
         pCPLight->mState = CPLIGHT_ON;
     }

@@ -356,7 +356,7 @@ protected:
     };
     int IsAADclt(int flg)
     {
-        return IsSet(AADecluttered) && IsAADcltBit(flg);
+        return IsSet(AADecluttered) and IsAADcltBit(flg);
     };
     void SetAADcltBit(int newFlag)
     {
@@ -373,7 +373,7 @@ protected:
 
     int IsAGDclt(int flg)
     {
-        return IsSet(AGDecluttered) && IsAGDcltBit(flg);
+        return IsSet(AGDecluttered) and IsAGDcltBit(flg);
     };
     int  IsAGDcltBit(int newFlag)
     {

@@ -56,7 +56,7 @@ AirframeClass::SetSimpleMode(int mode)
     if (mode == simpleMode)
         return;
 
-    if (simpleMode not_eq SIMPLE_MODE_OFF && mode == SIMPLE_MODE_OFF)
+    if (simpleMode not_eq SIMPLE_MODE_OFF and mode == SIMPLE_MODE_OFF)
     {
         Reinit();
         // MonoPrint("Reinit() Called \n");
@@ -117,7 +117,7 @@ AirframeClass::SimpleModel(void)
 
         // pitch rate
         // Modify pitch rate if going really slow
-        if (qsom * cnalpha < 1.5F && !(playerFlightModelHack &&
+        if (qsom * cnalpha < 1.5F and !(playerFlightModelHack &&
                                        platform == SimDriver.GetPlayerEntity() &&
                                        platform->AutopilotType() == AircraftClass::APOff))
         {
@@ -150,7 +150,7 @@ AirframeClass::SimpleModel(void)
             maxBank = min(MAX_AF_ROLL, aeroDataset[vehicleIndex].inputData[AeroDataSet::MaxRoll]);
 
             //me123 dont bank more then you can keep the nose up with your max gs availeble
-            if (g_bSimpleFMUpdates && gearPos < 0.7F && platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::LandingMode && platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::RefuelingMode)
+            if (g_bSimpleFMUpdates and gearPos < 0.7F and platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::LandingMode and platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::RefuelingMode)
                 maxBank = min(maxBank, acos(1 / (max(min(curMaxGs, gsAvail), 1.5f))));
 
             tmp = ctlroll * maxBank * 1.2F;
@@ -171,10 +171,10 @@ AirframeClass::SimpleModel(void)
             // JPG 15 Jan 04 - Fixed major crackhead tanker turns...what a big pile of goo
             // We want tankers to turn smooth ALL the time (except when landing) so in MP we aren't chasing them when they turn back like an F-15 to the first
             // track point.
-            if ((g_bTankerFMFix && platform->DBrain() && platform->DBrain()->IsTanker() &&
-                 platform->TBrain() /* && platform->TBrain()->IsSet(TankerBrain::IsRefueling)  &&
+            if ((g_bTankerFMFix and platform->DBrain() and platform->DBrain()->IsTanker() &&
+                 platform->TBrain() /* and platform->TBrain()->IsSet(TankerBrain::IsRefueling)  &&
  platform->TBrain()->ReachedFirstTrackPoint() */) ||
-                (g_bSimpleFMUpdates && vt > 1 && gearPos < 0.7F &&
+                (g_bSimpleFMUpdates and vt > 1 and gearPos < 0.7F &&
                  platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::LandingMode &&
                  platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::RefuelingMode))
                 r = (360.0f * GRAVITY * tan(turnangle) / (2 * PI * vt)) * DTR;
@@ -215,7 +215,7 @@ AirframeClass::SimpleModel(void)
         // only can pull back on ground when we can achieve 1G with 10 degrees AOA
         //note: we want to make sure the plane takes off, so even if we couldn't
         //get off the ground, we lift off
-        //if ( ctlpitch > 0.0f && (-zaero > GRAVITY or oldp03[2] == 13.0F) ) Cobra old rotation code
+        //if ( ctlpitch > 0.0f and (-zaero > GRAVITY or oldp03[2] == 13.0F) ) Cobra old rotation code
         float cltakeoff = Math.TwodInterp(mach, 12.0f, aeroData->mach, aeroData->alpha,
                                           aeroData->clift, aeroData->numMach,
                                           aeroData->numAlpha, &curMachBreak, &curAlphaBreak) *
@@ -225,7 +225,7 @@ AirframeClass::SimpleModel(void)
         ctlpitch += 0.1f;
         int tstatusf = platform->DBrain()->ATCStatus();
 
-        if (vcas > rotate && tstatusf > tTaxi)  //cobra
+        if (vcas > rotate and tstatusf > tTaxi)  //cobra
         {
             // pitch where we want to be
             tmp = ctlpitch * MAX_AF_PITCH;
@@ -341,7 +341,7 @@ AirframeClass::SimpleModel(void)
 
 
 
-    if (vt && !(playerFlightModelHack &&
+    if (vt and !(playerFlightModelHack &&
                 platform == SimDriver.GetPlayerEntity() &&
                 platform->AutopilotType() == AircraftClass::APOff))
     {
@@ -451,10 +451,10 @@ AirframeClass::SimpleModel(void)
         {
             ClearFlag(Planted);
             //Cobra test
-            //if ((-zaero > GRAVITY or oldp03[2] == 13.0F) && gmma - gndGmma > 0.0F && ctlpitch > 0.0f)
+            //if ((-zaero > GRAVITY or oldp03[2] == 13.0F) and gmma - gndGmma > 0.0F and ctlpitch > 0.0f)
             int tstatus = platform->DBrain()->ATCStatus();
 
-            if (vcas > rotate && tstatus > tTaxi) //Cobra
+            if (vcas > rotate and tstatus > tTaxi) //Cobra
             {
 #ifdef DEBUG
                 ShiAssert(platform->DBrain()->ATCStatus() not_eq lLanded);

@@ -371,7 +371,7 @@ void CBEStoresJettison(void *, int)
 
     SimEmergencyJettison(0, KEY_DOWN, NULL);
 
-    if (playerAC->Sms not_eq NULL && playerAC->Sms->DidEmergencyJettison())
+    if (playerAC->Sms not_eq NULL and playerAC->Sms->DidEmergencyJettison())
     {
         SimEmergencyJettison(0, 0, NULL);
     }
@@ -1836,7 +1836,7 @@ void CBExExteriorLite(void * pButton, int)
         return;
     }
 
-    if (playerAC->af->IsSet(AirframeClass::HasComplexGear) && playerAC->GetSwitch(COMP_NAV_LIGHTS))
+    if (playerAC->af->IsSet(AirframeClass::HasComplexGear) and playerAC->GetSwitch(COMP_NAV_LIGHTS))
     {
         pCPButton->SetCurrentState(1);
     }
@@ -2865,14 +2865,14 @@ void CBExHookToggle(void * pButton, int)
     {
         pCPButton->SetCurrentState(1);
         //MI
-        //if(faultSys && playerAC->af->platform->IsF16())
+        //if(faultSys and playerAC->af->platform->IsF16())
         // faultSys->SetCaution(hook_fault);
     }
     else
     {
         pCPButton->SetCurrentState(0);
         //MI
-        //if(faultSys && faultSys->GetFault(hook_fault) && playerAC->af->platform->IsF16())
+        //if(faultSys and faultSys->GetFault(hook_fault) and playerAC->af->platform->IsF16())
         // faultSys->ClearFault(hook_fault);
     }
 }
@@ -4167,23 +4167,23 @@ void CBExTrimYaw(void * pButton, int event)
 
     if (state <= -50)
         pCPButton->SetCurrentState(1);
-    else if (state <= -40 && state > -50)
+    else if (state <= -40 and state > -50)
         pCPButton->SetCurrentState(2);
-    else if (state <= -30 && state > -40)
+    else if (state <= -30 and state > -40)
         pCPButton->SetCurrentState(3);
-    else if (state <= -20 && state > -30)
+    else if (state <= -20 and state > -30)
         pCPButton->SetCurrentState(4);
-    else if (state <= -10 && state > -20)
+    else if (state <= -10 and state > -20)
         pCPButton->SetCurrentState(5);
-    else if (state <= 9 && state > -10)
+    else if (state <= 9 and state > -10)
         pCPButton->SetCurrentState(6);
-    else if (state >= 10 && state < 20)
+    else if (state >= 10 and state < 20)
         pCPButton->SetCurrentState(7);
-    else if (state >= 20 && state < 30)
+    else if (state >= 20 and state < 30)
         pCPButton->SetCurrentState(8);
-    else if (state >= 30 && state < 40)
+    else if (state >= 30 and state < 40)
         pCPButton->SetCurrentState(9);
-    else if (state >= 40 && state < 50)
+    else if (state >= 40 and state < 50)
         pCPButton->SetCurrentState(10);
     else if (state >= 50)
         pCPButton->SetCurrentState(11);
@@ -4509,7 +4509,7 @@ void CBExComm1Vol(void * pButton, int event)
 {
     int pos = 0;
 
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp)
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp)
     {
         pos = OTWDriver.pCockpitManager->mpIcp->Comm1Volume;
     }
@@ -4579,7 +4579,7 @@ void CBExComm2Vol(void * pButton, int event)
 {
     int pos = 0;
 
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp)
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp)
         pos = OTWDriver.pCockpitManager->mpIcp->Comm2Volume;
 
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();

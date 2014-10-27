@@ -42,7 +42,7 @@ MaverickDisplayClass::MaverickDisplayClass(SimMoverClass* newPlatform) : Missile
 
     // RV - Biker - New FOV data from missile FMs
     //curFOV = g_fMavFOVLevel * DTR; //Wombat778 9-28-2003
-    if ((MissileClass*)platform && ((MissileClass*)platform)->GetFOVLevel() > 0)
+    if ((MissileClass*)platform and ((MissileClass*)platform)->GetFOVLevel() > 0)
         curFOV = 12.0f / ((MissileClass*)platform)->GetFOVLevel() * DTR;
     else
         curFOV = g_fMavFOVLevel * DTR;
@@ -90,7 +90,7 @@ void MaverickDisplayClass::DisplayInit(ImageBuffer* image)
 
     SetReady(TRUE);
 
-    if ((g_bGreyMFD) && (!bNVGmode))
+    if ((g_bGreyMFD) and (!bNVGmode))
         privateDisplay->SetColor(GetMfdColor(MFD_WHITE));
     else
         privateDisplay->SetColor(0xff00ff00);
@@ -111,7 +111,7 @@ void MaverickDisplayClass::Display(VirtualDisplay* newDisplay)
     else
         onMainScreen = FALSE;
 
-    if ((g_bGreyMFD) && (!bNVGmode))
+    if ((g_bGreyMFD) and (!bNVGmode))
         display->SetColor(GetMfdColor(MFD_WHITE));
     else
         display->SetColor(GetMfdColor(MFD_GREEN));
@@ -129,7 +129,7 @@ void MaverickDisplayClass::DrawDisplay(void)
     float ZoomMin;
     float ZoomMax;
 
-    if ((MissileClass*)platform && ((MissileClass*)platform)->GetEXPLevel() > 0 && ((MissileClass*)platform)->GetFOVLevel() > 0)
+    if ((MissileClass*)platform and ((MissileClass*)platform)->GetEXPLevel() > 0 and ((MissileClass*)platform)->GetFOVLevel() > 0)
     {
         ZoomMin = ((MissileClass*)platform)->GetFOVLevel();
         ZoomMax = ((MissileClass*)platform)->GetEXPLevel();
@@ -141,7 +141,7 @@ void MaverickDisplayClass::DrawDisplay(void)
         ZoomMax = 12.0f / g_fMavEXPLevel;
     }
 
-    if (onMainScreen && display->type == VirtualDisplay::DISPLAY_GENERAL)
+    if (onMainScreen and display->type == VirtualDisplay::DISPLAY_GENERAL)
     {
         display->EndDraw();
 
@@ -174,13 +174,13 @@ void MaverickDisplayClass::DrawDisplay(void)
 
         ShiAssert(platform->IsMissile());
 
-        if (((MissileClass*)platform)->parent->IsAirplane() && ((AircraftClass*)((MissileClass*)platform)->parent.get())->Sms->MasterArm() not_eq SMSBaseClass::Safe)
+        if (((MissileClass*)platform)->parent->IsAirplane() and ((AircraftClass*)((MissileClass*)platform)->parent.get())->Sms->MasterArm() not_eq SMSBaseClass::Safe)
             DrawTerrain();
 
         display->StartDraw();
     }
 
-    if ((g_bGreyMFD) && (!bNVGmode))
+    if ((g_bGreyMFD) and (!bNVGmode))
         display->SetColor(GetMfdColor(MFD_WHITE));
     else
         display->SetColor(tmpColor);
@@ -227,7 +227,7 @@ void MaverickDisplayClass::DrawDisplay(void)
         }
         else
         {
-            if ((g_bGreyMFD) && (!bNVGmode))
+            if ((g_bGreyMFD) and (!bNVGmode))
                 display->SetColor(GetMfdColor(MFD_WHITE));
             else
                 display->SetColor(GetMfdColor(MFD_GREEN));
@@ -280,7 +280,7 @@ void MaverickDisplayClass::DrawDisplay(void)
         {
             // RV - Biker - Make FOV switching this dynamic
             //if(curFOV > 3.0f * DTR)
-            if ((g_bGreyMFD) && (!bNVGmode))
+            if ((g_bGreyMFD) and (!bNVGmode))
                 display->SetColor(GetMfdColor(MFD_WHITE));
             else
                 display->SetColor(GetMfdColor(MFD_GREEN));
@@ -313,7 +313,7 @@ void MaverickDisplayClass::DrawDisplay(void)
         }
         else
         {
-            if ((g_bGreyMFD) && (!bNVGmode))
+            if ((g_bGreyMFD) and (!bNVGmode))
                 display->SetColor(GetMfdColor(MFD_WHITE));
             else
                 display->SetColor(GetMfdColor(MFD_GREEN));
@@ -326,7 +326,7 @@ void MaverickDisplayClass::DrawDisplay(void)
     }
 
     // FRB - B&W display
-    if ((g_bGreyMFD) && (!bNVGmode))
+    if ((g_bGreyMFD) and (!bNVGmode))
         display->SetColor(GetMfdColor(MFD_WHITE));
     else
         display->SetColor(GetMfdColor(MFD_GREEN));
@@ -341,7 +341,7 @@ void MaverickDisplayClass::DrawDisplay(void)
     }
     else
     {
-        if ((g_bGreyMFD) && (!bNVGmode))
+        if ((g_bGreyMFD) and (!bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
             display->SetColor(GetMfdColor(MFD_GREEN));
@@ -364,7 +364,7 @@ void MaverickDisplayClass::DrawDisplay(void)
     }
     else
     {
-        if (totalAngle < 30.0F * DTR && IsLocked())
+        if (totalAngle < 30.0F * DTR and IsLocked())
         {
             display->AdjustOriginInViewport(platform->sensorArray[0]->SeekerAz(), platform->sensorArray[0]->SeekerEl());
             display->Line(0.0F,  0.15F,  0.0F, -0.15F);
@@ -520,7 +520,7 @@ int MaverickDisplayClass::IsCentered(SimBaseClass* testObject)
     DrawableBSP* drawPointer = (DrawableBSP*)testObject->drawPointer;
     int didSee = FALSE;
 
-    if (drawPointer && display)
+    if (drawPointer and display)
     {
         from.x = ((Render3D*)display)->X();
         from.y = ((Render3D*)display)->Y();

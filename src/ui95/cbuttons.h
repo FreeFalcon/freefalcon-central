@@ -88,7 +88,7 @@ public:
     {
         HotSpot_ = hotspot;
 
-        if (hotspot.left == -1 && hotspot.right == -1) UseHotSpot_ = 0;
+        if (hotspot.left == -1 and hotspot.right == -1) UseHotSpot_ = 0;
         else UseHotSpot_ = 1;
     }
     void SetHotSpot(long x, long y, long x2, long y2)
@@ -98,7 +98,7 @@ public:
         HotSpot_.right = x2;
         HotSpot_.bottom = y2;
 
-        if (x == -1 && x2 == -1) UseHotSpot_ = 0;
+        if (x == -1 and x2 == -1) UseHotSpot_ = 0;
         else UseHotSpot_ = 1;
     }
     UI95_RECT GetHotSpot(void)

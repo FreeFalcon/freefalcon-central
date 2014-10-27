@@ -128,7 +128,7 @@ void MfdMenuDrawable::Display(VirtualDisplay* newDisplay)
         //MI changed
         if (g_bRealisticAvionics)
         {
-            if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+            if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp &&
                 OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
             {
                 DrawBullseyeCircle(display, cX, cY);
@@ -236,7 +236,7 @@ void MfdMenuDrawable::PushButton(int whichButton, int whichMFD)
         }
 
         // Check other MFD if needed;
-        if (nextMode not_eq MFDClass::MfdOff && (otherMfd < 0 or MfdDisplay[otherMfd]->mode not_eq nextMode))
+        if (nextMode not_eq MFDClass::MfdOff and (otherMfd < 0 or MfdDisplay[otherMfd]->mode not_eq nextMode))
             MfdDisplay[whichMFD]->SetNewMode(nextMode);
     }
 }

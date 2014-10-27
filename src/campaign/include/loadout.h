@@ -50,9 +50,9 @@ struct LoadoutStruct
      {
      bool bResult = true;
 
-     for (int i = 0; i < HARDPOINT_MAX && bResult; ++i)
+     for (int i = 0; i < HARDPOINT_MAX and bResult; ++i)
      {
-     bResult = (WeaponID[i] == rhs.WeaponID[i]) && (WeaponCount[i] == rhs.WeaponCount[i]);
+     bResult = (WeaponID[i] == rhs.WeaponID[i]) and (WeaponCount[i] == rhs.WeaponCount[i]);
      }
 
      return bResult;
@@ -62,7 +62,7 @@ struct LoadoutStruct
      {
      bool bResult = false;
 
-     for (int i = 0; i < HARDPOINT_MAX && !bResult; ++i)
+     for (int i = 0; i < HARDPOINT_MAX and !bResult; ++i)
      {
      bResult = (WeaponID[i] not_eq rhs.WeaponID[i]) or (WeaponCount[i] not_eq rhs.WeaponCount[i]);
      }

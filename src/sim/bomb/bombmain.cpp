@@ -68,7 +68,7 @@ BombClass::BombClass(VU_BYTE** stream, long *rem) : SimWeaponClass(stream, rem)
     memcpychk(&bt, stream, sizeof(bt), rem);
     InitLocalData(bt);
 
-    if (parent && !IsLocal())
+    if (parent and !IsLocal())
     {
         flags  or_eq  FirstFrame;
         //VuReferenceEntity (parent);
@@ -337,7 +337,7 @@ int BombClass::Exec(void)
 
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC and playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         armingdelay = playerAC->Sms->armingdelay;//me123
     }
@@ -352,7 +352,7 @@ int BombClass::Exec(void)
     UpdateTrail();
 
     // ACMI Output
-    if (gACMIRec.IsRecording() && (SimLibFrameCount & 0x07) == 0)
+    if (gACMIRec.IsRecording() and (SimLibFrameCount & 0x07) == 0)
     {
         genPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
         genPos.data.type = Type();
@@ -556,7 +556,7 @@ int BombClass::Exec(void)
         // realistic section would be ran. If no parent, run this
         // There is no danger of a CTD if parent is NULL because the
         // OR will have it enter the if statement without running the 'IsPlayer'.
-        //   if(!g_bRealisticAvionics or ( parent && !((AircraftClass *)parent)->IsPlayer()))
+        //   if(!g_bRealisticAvionics or ( parent and !((AircraftClass *)parent)->IsPlayer()))
         // Cobra - Forcing all non-Player (AI) into this section causes their bombs
         // to not be guided, thus randon hit pattern
         //   if(!g_bRealisticAvionics or !parent)
@@ -569,12 +569,12 @@ int BombClass::Exec(void)
             !g_bRealisticAvionics or !parent or !(flags & GUIDED_BOMB)
             or ((((!((AircraftClass *)parent.get())->IsPlayer())
                   or (((AircraftClass *)parent.get())->IsPlayer())
-                  && ((AircraftClass *)parent.get())->AutopilotType() == AircraftClass::CombatAP))
-                && (flags & IsLGB))
+                  and ((AircraftClass *)parent.get())->AutopilotType() == AircraftClass::CombatAP))
+                and (flags & IsLGB))
         )
         {
             // RV - Biker - Add 2.0 sec delay for guidance
-            if (flags & IsLGB && (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
+            if (flags & IsLGB and (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
             {
                 if (targetPtr)
                 {
@@ -659,13 +659,13 @@ int BombClass::Exec(void)
             }
         }
         // RV - Biker - Add 2 sec delay for guidance
-        else if ((flags & IsLGB) && g_bRealisticAvionics && (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
+        else if ((flags & IsLGB) and g_bRealisticAvionics and (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
         {
             AircraftClass *parentAC = parent->IsAirplane() ? static_cast<AircraftClass*>(parent.get()) : NULL;
 
             //AI's don't need to keep a lock until impact
             // sfr: since someone removed the player check here, im using the parent instead
-            //if(parent /* && ((AircraftClass *)parent)->IsPlayer()*/ )
+            //if(parent /* and ((AircraftClass *)parent)->IsPlayer()*/ )
             if (parentAC)
             {
                 radical = 0;
@@ -721,7 +721,7 @@ int BombClass::Exec(void)
                 */
                 if (
                     Abs(acosf(rx / range)) <= 18.f * DTR &&
-                    (parentAC->IsPlayer() && parentAC->FCC->LaserFire) ||
+                    (parentAC->IsPlayer() and parentAC->FCC->LaserFire) ||
                     !parentAC->IsPlayer()
                 )
                 {
@@ -737,7 +737,7 @@ int BombClass::Exec(void)
                 }
                 else
                 {
-                    if (!(desDxPrev == 0.0f && desDyPrev == 0.0f && desDzPrev == 0.0f))
+                    if (!(desDxPrev == 0.0f and desDyPrev == 0.0f and desDzPrev == 0.0f))
                     {
                         // 2001-04-17 ADDED BY S.G. WE'LL KEEP GOING WHERE WE WERE GOING...
                         Falcon4EntityClassType *classPtr = &Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE];
@@ -760,7 +760,7 @@ int BombClass::Exec(void)
                     }
                 }
 
-                if (targetPtr && targetPtr->BaseData() && parentAC->IsPlayer())
+                if (targetPtr and targetPtr->BaseData() and parentAC->IsPlayer())
                 {
                     if (!((SimBaseClass*)(targetPtr->BaseData()))->IsSetFlag(IS_LASED))
                     {
@@ -772,13 +772,13 @@ int BombClass::Exec(void)
         }
         //Wombat778 3-09-04 If this is a GPS weapon, guide to the GPS coordinates. A ripoff from the LGB code above
         // RV - Biker - Add 2 sec delay for guidance
-        else if (((flags & IsGPS) or (flags & IsJSOW)) && (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
+        else if (((flags & IsGPS) or (flags & IsJSOW)) and (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
         {
             FalconEntity *target = NULL;
             // SimBaseClass *simTarg;
 
             // Cobra - Check that we have a valid auxData->JDAMLift for JSOWs
-            if (EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW && (auxData->JDAMLift <= 5.0f))
+            if (EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW and (auxData->JDAMLift <= 5.0f))
                 auxData->JDAMLift = g_fJDAMLift;
 
 
@@ -790,7 +790,7 @@ int BombClass::Exec(void)
             // FRB - JSOW Test monitor
             if (range < 10.0f * NM_TO_FT)
             {
-                if ((flags & IsJSOW) && targetPtr)
+                if ((flags & IsJSOW) and targetPtr)
                 {
                     // First get the campaign object if it's still a sim entity
                     /*
@@ -800,7 +800,7 @@ int BombClass::Exec(void)
                     else
                      campBaseObj = (CampBaseClass *)targetPtr->BaseData();
                     // Now find out if our campaign object is aggregated
-                    if ((campBaseObj && !campBaseObj->IsAggregate()))
+                    if ((campBaseObj and !campBaseObj->IsAggregate()))
                     {
                     target = targetPtr->BaseData();
                     // Get the sim object associated to this entity number
@@ -920,7 +920,7 @@ int BombClass::Exec(void)
 
         // check for feature collision impact
 
-        if (bombType == None &&  z - terrainHeight > -800.0f)
+        if (bombType == None and  z - terrainHeight > -800.0f)
         {
             hitObj = FeatureCollision(terrainHeight);
 
@@ -928,11 +928,11 @@ int BombClass::Exec(void)
             {
                 //me123 OWLOOK make your armingdelay switch here.
                 //MI
-                //if (g_bArmingDelay && (SimLibElapsedTime - timeOfDeath > armingdelay *10  or ((AircraftClass *)parent)->isDigital))
+                //if (g_bArmingDelay and (SimLibElapsedTime - timeOfDeath > armingdelay *10  or ((AircraftClass *)parent)->isDigital))
                 if (
                     g_bRealisticAvionics &&
                     (SimLibElapsedTime - timeOfDeath > armingdelay * 10  ||
-                     (parent && ((AircraftClass *)parent.get())->IsDigital()))
+                     (parent and ((AircraftClass *)parent.get())->IsDigital()))
                 )
                 {
                     //me123 addet arming check, for now digi's dont's have arming delay, becourse they will fuck up the delivery
@@ -974,7 +974,7 @@ int BombClass::Exec(void)
             }
             else if (z >= terrainHeight)
             {
-                if (bombType == None && (SimLibElapsedTime - timeOfDeath > armingdelay * 10.0f or (parent && ((AircraftClass *)parent.get())->IsDigital()))) //me123 addet arming check
+                if (bombType == None and (SimLibElapsedTime - timeOfDeath > armingdelay * 10.0f or (parent and ((AircraftClass *)parent.get())->IsDigital()))) //me123 addet arming check
                 {
                     // Interpolate
                     delta = (z - terrainHeight) / (z - ZPos());
@@ -1005,7 +1005,7 @@ int BombClass::Exec(void)
 
         //MI this else is causing our CBU's to not burst with a BA < 900 because of the check above
         //else
-        if (bheight > 0 && z >= terrainHeight - bheight && !IsSetFlag(SHOW_EXPLOSION) && bombType == BombClass::None)   //me123 check addet to making flares stop exploding
+        if (bheight > 0 and z >= terrainHeight - bheight and !IsSetFlag(SHOW_EXPLOSION) and bombType == BombClass::None)   //me123 check addet to making flares stop exploding
         {
             // for altitude detonations we start the effect here
             SetFlag(SHOW_EXPLOSION);
@@ -1023,7 +1023,7 @@ int BombClass::Exec(void)
                     campBaseObj = (CampBaseClass *)targetPtr->BaseData();
 
                 // Now find out if our campaign object is aggregated
-                if (campBaseObj && campBaseObj->IsAggregate())
+                if (campBaseObj and campBaseObj->IsAggregate())
                 {
                     // Yes, send a damage message right away otherwise the other code is not going to deal with it...
                     SendDamageMessage(campBaseObj, 0, FalconDamageType::BombDamage);
@@ -1147,7 +1147,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
     wc = (WeaponClassDataType *)(Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr);
     float modifier = 1.0F;
 
-    if (wc && wc->DamageType == NuclearDam)
+    if (wc and wc->DamageType == NuclearDam)
         modifier = g_fNukeDamageRadius;
 
 #ifdef VU_GRID_TREE_Y_MAJOR
@@ -1185,7 +1185,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
         strength = 1.0f;
     }
 
-    if (/*parentReferenced && */SimDriver.objectList)
+    if (/*parentReferenced and */SimDriver.objectList)
     {
         // Damage multiplier for damage type
         switch (wc->DamageType)
@@ -1218,8 +1218,8 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
             // until digi's are smarter about thier bombing, prevent them
             // from dying in their own blast
             // 2002-04-21 MN check for damage type and only skip if it is not a nuclear
-            if (wc->DamageType not_eq NuclearDam && (testObject == parent &&
-                                                 parent && parent->IsAirplane() &&
+            if (wc->DamageType not_eq NuclearDam and (testObject == parent &&
+                                                 parent and parent->IsAirplane() &&
                                                  (((AircraftClass *)parent.get())->IsDigital() ||
                                                   ((AircraftClass *)parent.get())->AutopilotType() == AircraftClass::CombatAP)))
             {
@@ -1243,7 +1243,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
                 }
 
                 //MI special case for airplane. Use the "MaxAlt" field to determine if you blow up or not
-                if (testObject && testObject->IsAirplane() && wc && wc->DamageType == NuclearDam)
+                if (testObject and testObject->IsAirplane() and wc and wc->DamageType == NuclearDam)
                 {
                     //if you're below the entered setting, you're screwed
                     if (fabsf((wc->MaxAlt) * 1000.0f) >= fabs(hat)) //JAM 27Sep03 - Should be fabsf
@@ -1251,7 +1251,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
                         SendDamageMessage(testObject, rangeSquare * strength * /*damageMod*/ g_fNukeStrengthFactor, FalconDamageType::ProximityDamage);
                 }
                 // 2002-03-25 MN some more fixes for nukes
-                else if (wc && wc->DamageType == NuclearDam)
+                else if (wc and wc->DamageType == NuclearDam)
                 {
                     if (rangeSquare < damageRadiusSqrd * g_fNukeDamageMod)
                     {
@@ -1288,7 +1288,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
 
                     rangeSquare = tmpX * tmpX + tmpY * tmpY;; // + tmpZ*tmpZ;
 
-                    if (wc && wc->DamageType == NuclearDam)
+                    if (wc and wc->DamageType == NuclearDam)
                     {
                         if (rangeSquare < damageRadiusSqrd * g_fNukeDamageMod)
                         {

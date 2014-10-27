@@ -88,7 +88,7 @@ FalconEntity* SimCampHandoff(FalconEntity *current, HandOffType style)
                     {
                         ShiAssert(simobj->IsSim());
 
-                        if (simobj->GetRadarType() == campRadarType && !simobj->IsDead())
+                        if (simobj->GetRadarType() == campRadarType and !simobj->IsDead())
                         {
                             break;
                         }
@@ -114,7 +114,7 @@ FalconEntity* SimCampHandoff(FalconEntity *current, HandOffType style)
                             simobj = ((CampBaseClass*)current)->GetComponentLead();
                         }
 
-                        if (simobj && simobj->IsDead())
+                        if (simobj and simobj->IsDead())
                             simobj = NULL;
                     }
                     else
@@ -238,7 +238,7 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
                     // Search the list for a battalion radar vehicle
                     while (simobj)
                     {
-                        if (!simobj->IsDead() && simobj->IsAwake() && simobj->GetRadarType() == campRadarType)
+                        if (!simobj->IsDead() and simobj->IsAwake() and simobj->GetRadarType() == campRadarType)
                         {
                             break;
                         }
@@ -264,7 +264,7 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
                             simobj = campobj->GetComponentLead();
                         }
 
-                        if (simobj && (simobj->IsDead() or !simobj->IsAwake()))
+                        if (simobj and (simobj->IsDead() or !simobj->IsAwake()))
                         {
                             return NULL;
                         }

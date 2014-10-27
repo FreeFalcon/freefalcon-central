@@ -174,7 +174,7 @@ void ObjectDisplayList::UpdateMetrics(const Tpoint *pos)
     p = head;
 
     //while ( p )
-    while (p && !F4IsBadReadPtr(p, sizeof(DrawableObject)))  // JB 010318 CTD
+    while (p and !F4IsBadReadPtr(p, sizeof(DrawableObject)))  // JB 010318 CTD
     {
         // Update the distance metric (not less than 0)
         p->distance = max((float)fabs(x - p->position.x), (float)fabs(y - p->position.y));
@@ -237,7 +237,7 @@ void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportS
 
         _cur_ = head;
 
-        while (_cur_ && count < 10000)
+        while (_cur_ and count < 10000)
         {
             if (_cur_->parentList not_eq this)
                 return;
@@ -282,11 +282,11 @@ void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportS
 
         if (transList)
         {
-            if (p->position.z >= transList->bottom[listNo] && listNo)
+            if (p->position.z >= transList->bottom[listNo] and listNo)
             {
                 i = listNo - 1;
 
-                while (i > 0 && p->position.z >= transList->bottom[i])
+                while (i > 0 and p->position.z >= transList->bottom[i])
                     i--;
 
                 // remove object from objectList
@@ -295,11 +295,11 @@ void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportS
                 p->next = transList->list[i];
                 transList->list[i] = p;
             }
-            else if (p->position.z < transList->top[listNo] && listNo < (_NUM_OBJECT_LISTS_ - 1))
+            else if (p->position.z < transList->top[listNo] and listNo < (_NUM_OBJECT_LISTS_ - 1))
             {
                 i = listNo + 1;
 
-                while (i < (_NUM_OBJECT_LISTS_ - 1) && p->position.z < transList->top[i])
+                while (i < (_NUM_OBJECT_LISTS_ - 1) and p->position.z < transList->top[i])
                     i++;
 
                 // remove object from objectList
@@ -326,7 +326,7 @@ void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportS
 
         _cur_ = head;
 
-        while (_cur_ && count < 10000)
+        while (_cur_ and count < 10000)
         {
             _cur_ = _cur_->next;
             count++;
@@ -359,7 +359,7 @@ void ObjectDisplayList::InsertionSortLink(DrawableObject **listhead, DrawableObj
     {
         DrawableObject **pnewlink;
 
-        for (pnewlink = &newlist; *pnewlink not_eq listend && walk->distance <= (*pnewlink)->distance; pnewlink = &((*pnewlink)->next));
+        for (pnewlink = &newlist; *pnewlink not_eq listend and walk->distance <= (*pnewlink)->distance; pnewlink = &((*pnewlink)->next));
 
         save = walk->next;
         walk->next = *pnewlink;
@@ -456,7 +456,7 @@ void ObjectDisplayList::SortForViewpoint(void)
 
     _cur_ = head;
 
-    while (_cur_ && count < 10000)
+    while (_cur_ and count < 10000)
     {
         _cur_ = _cur_->next;
         count++;
@@ -505,7 +505,7 @@ void ObjectDisplayList::SortForViewpoint(void)
     _cur_ = head;
     count = 0;
 
-    while (_cur_ && count < 10000)
+    while (_cur_ and count < 10000)
     {
         _cur_ = _cur_->next;
         count++;
@@ -548,8 +548,8 @@ void ObjectDisplayList::SortForViewpoint(void)
         // Decide where to place this element in the list
         q = p;
 
-        while ((q->prev) && (q->prev->distance < p->distance)) // JB 010306 CTD
-            //while ((q->prev) && (!F4IsBadReadPtr(q->prev, sizeof(DrawableObject))) && (q->prev->distance < p->distance)) // JB 010306 CTD (too much CPU)
+        while ((q->prev) and (q->prev->distance < p->distance)) // JB 010306 CTD
+            //while ((q->prev) and (!F4IsBadReadPtr(q->prev, sizeof(DrawableObject))) and (q->prev->distance < p->distance)) // JB 010306 CTD (too much CPU)
         {
             q = q->prev;
         }
@@ -623,7 +623,7 @@ void ObjectDisplayList::PreLoad(class RenderOTW *renderer)
 void ObjectDisplayList::DrawBeyond(float ringDistance, int LOD, class RenderOTW *renderer)
 {
     //START_PROFILE("-->DRAW LIST");
-    while (nextToDraw && (nextToDraw->distance >= ringDistance))
+    while (nextToDraw and (nextToDraw->distance >= ringDistance))
     {
         //COUNT_PROFILE("DRAW OBJECTS");
         // setup the object remove as false
@@ -660,7 +660,7 @@ void ObjectDisplayList::DrawBeyond(float ringDistance, int LOD, class RenderOTW 
 \*****************************************************************************/
 void ObjectDisplayList::DrawBeyond(float ringDistance, class Render3D *renderer)
 {
-    while (nextToDraw && (nextToDraw->distance >= ringDistance))
+    while (nextToDraw and (nextToDraw->distance >= ringDistance))
     {
         nextToDraw->Draw(renderer);
         nextToDraw = nextToDraw->next;

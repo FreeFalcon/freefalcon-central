@@ -38,7 +38,7 @@ void ICPClass::ExecIFFMode(void)
         }
 
         //Line1
-        if (playerAC && playerAC->HasPower(AircraftClass::IFFPower))
+        if (playerAC and playerAC->HasPower(AircraftClass::IFFPower))
             FillDEDMatrix(0, 2, "IFF  ON");
         else
             FillDEDMatrix(0, 2, "IFF  OFF");

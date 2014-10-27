@@ -91,7 +91,7 @@ CampManagerClass::CampManagerClass(FILE *file)
     //#endif
 
     // Set the owner to the game master.
-    if ((FalconLocalGame) && (!FalconLocalGame->IsLocal()))
+    if ((FalconLocalGame) and (!FalconLocalGame->IsLocal()))
         SetOwnerId(FalconLocalGame->OwnerId());
 
     fread(&managerFlags, sizeof(short), 1, file);
@@ -196,7 +196,7 @@ void CampManagerClass::SendMessage(VU_ID from, short msg, short d1, short d2, sh
     VuTargetEntity *target = (VuTargetEntity*) vuDatabase->Find(OwnerId());
     FalconCampTaskingMessage *message = new FalconCampTaskingMessage(Id(), target);
 
-    if (managerFlags & CTM_MUST_BE_OWNED && !IsLocal())
+    if (managerFlags & CTM_MUST_BE_OWNED and !IsLocal())
         return;
 
     message->dataBlock.from = from;

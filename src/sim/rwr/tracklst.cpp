@@ -48,7 +48,7 @@ VehRwrClass::DetectListElement* VehRwrClass::AddTrack(FalconEntity* object, floa
     }
 
     // Does this track qualify for addition to the list?
-    if (i <= numContacts && i < MaxRWRTracks)
+    if (i <= numContacts and i < MaxRWRTracks)
     {
         // Drop the last entry if the list is full
         if (detectionList[MaxRWRTracks - 1].entity)
@@ -194,7 +194,7 @@ void VehRwrClass::ResortList(VehRwrClass::DetectListElement* theElement)
         detectionList[newId] = tmpElement;
 
         // Bring the selected flag back if we pushed it out of the default slot
-        if ((newId == 0) && (detectionList[1].selected))
+        if ((newId == 0) and (detectionList[1].selected))
         {
             detectionList[1].selected = 0;
             detectionList[0].selected = 1;
@@ -214,7 +214,7 @@ void VehRwrClass::ResortList(VehRwrClass::DetectListElement* theElement)
         detectionList[newId] = tmpElement;
 
         // Put the selected flag back if we took it with us out of the default slot
-        if ((thisId == 0) && (detectionList[newId].selected))
+        if ((thisId == 0) and (detectionList[newId].selected))
         {
             detectionList[newId].selected = 0;
             detectionList[0].selected = 1;

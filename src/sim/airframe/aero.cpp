@@ -147,7 +147,7 @@ void AirframeClass::Aerodynamics(void)
     float addTurb = 0.0f;
     float turb = 0.0f;
 
-    if (g_bTurb && (gameCompressionRatio == 1))
+    if (g_bTurb and (gameCompressionRatio == 1))
     {
         addTurb = Turbulence(turb);
     }
@@ -233,8 +233,8 @@ void AirframeClass::Aerodynamics(void)
 
     F4Assert(!_isnan(cnalpha));
 
-    //F4Assert (!IsSet(Trimming) && cnalpha not_eq 0.0F);
-    //F4Assert (!IsSet(Trimming) && clalpha not_eq 0.0F);
+    //F4Assert (!IsSet(Trimming) and cnalpha not_eq 0.0F);
+    //F4Assert (!IsSet(Trimming) and clalpha not_eq 0.0F);
 
     /*------------------*/
     /* lift curve slope */
@@ -264,7 +264,7 @@ void AirframeClass::Aerodynamics(void)
     //Ground Effect
     BIG_SCALAR pz = platform->ZPos();
 
-    if (!IsSet(IsDigital) && pz > -groundZ - 200.0F)
+    if (!IsSet(IsDigital) and pz > -groundZ - 200.0F)
     {
         float span, factor;
 
@@ -292,7 +292,7 @@ void AirframeClass::Aerodynamics(void)
 
     //TJL 09/05/04 Stall Model
     //Equation to determine stall: VI = 17.16 * SQRT ((W/S)/CL)
-    if (auxaeroData->criticalAOA > 0.0f && IsSet(InAir) && platform->IsPlayer())
+    if (auxaeroData->criticalAOA > 0.0f and IsSet(InAir) and platform->IsPlayer())
     {
         float stallSpeed = 0.0f;
 

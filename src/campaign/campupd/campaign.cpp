@@ -293,7 +293,7 @@ int LinkCampaignObjectives(Path path, Objective O1, Objective O2)
 
         // KCK Hack: If we can get there by road, fool it into thinking it's a 254 cost link for
         // any otherwise unfound paths.
-        if (costs[i] == 255 && (i == Foot or i == Wheeled or i == Tracked) && costs[NoMove] < 255)
+        if (costs[i] == 255 and (i == Foot or i == Wheeled or i == Tracked) and costs[NoMove] < 255)
             costs[i] = 254;
     }
 
@@ -487,7 +487,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 
     if (e->IsAggregate())
     {
-        if (session->InSessionBubble(e, 1.0F) && !g_bSleepAll)
+        if (session->InSessionBubble(e, 1.0F) and !g_bSleepAll)
         {
             // It's in our bubble, post deaggregate message if host
             if (e->IsLocal())
@@ -498,11 +498,11 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 
                 //me123 let the host own all the planes
                 // sfr: host will own battallions too, since battallion 3d movement depends on 2d
-                if ((e->IsBattalion()) or e->IsFlight() or (g_bServer && g_bServerHostAll))
+                if ((e->IsBattalion()) or e->IsFlight() or (g_bServer and g_bServerHostAll))
                 {
                     msg->dataBlock.from = vuLocalSessionEntity->Game()->OwnerId();
 
-                    if (g_bLogEvents && e->IsSetFalcFlag(FEC_HASPLAYERS))
+                    if (g_bLogEvents and e->IsSetFalcFlag(FEC_HASPLAYERS))
                     {
                         TheCampaign.MissionEvaluator->PreEvalFlight((Flight)e, NULL);
                     }
@@ -537,7 +537,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
             // Update local sleep/wake state
             // me123 this handles local wake/sleep
             // for the host dont' handle airplanes and helicopters
-            if (e->IsUnit()  && !g_bSleepAll)
+            if (e->IsUnit()  and !g_bSleepAll)
             {
                 want_in_sim_list = 1;
 
@@ -549,7 +549,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
             else
             {
                 // Update local sleep/wake state
-                if (e->IsAwake() && (!want_deaggregate or g_bSleepAll))
+                if (e->IsAwake() and (!want_deaggregate or g_bSleepAll))
                 {
                     if (!vuLocalSessionEntity->Game()->IsLocal() or g_bSleepAll)
                     {
@@ -558,20 +558,20 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 
                     if (vuLocalSessionEntity->Game()->IsLocal())
                     {
-                        if (!e->IsAirplane() && !e->IsHelicopter())
+                        if (!e->IsAirplane() and !e->IsHelicopter())
                         {
                             e->Sleep();
                         }
                         else if (
                             !e->IsObjective() ||
                             (
-                                e->IsObjective() && (e->GetType() not_eq TYPE_AIRBASE) && (e->GetType() not_eq TYPE_AIRSTRIP)
+                                e->IsObjective() and (e->GetType() not_eq TYPE_AIRBASE) and (e->GetType() not_eq TYPE_AIRSTRIP)
                             )
                         )
                             e->Sleep();
                     }
                 }
-                else if (!e->IsAwake() && inbobble && !g_bSleepAll)
+                else if (!e->IsAwake() and inbobble and !g_bSleepAll)
                 {
                     e->Wake();
                 }
@@ -586,8 +586,8 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
                 //handle airplanes helicopters and airbases
                 g_bSleepAll ||
                 e->IsAirplane() or e->IsHelicopter()  ||
-                (e->IsObjective() && ((e->GetType() == TYPE_AIRBASE) or (e->GetType() == TYPE_AIRSTRIP))) ||
-                (g_bServer && g_bServerHostAll && e->IsUnit())
+                (e->IsObjective() and ((e->GetType() == TYPE_AIRBASE) or (e->GetType() == TYPE_AIRSTRIP))) ||
+                (g_bServer and g_bServerHostAll and e->IsUnit())
                 //and airbases
             )
         )  //dedicated host wake all ents
@@ -605,12 +605,12 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 
                 e->SetChecked();
             }
-            else if (!g_bSleepAll && !e->IsSetFalcFlag(FEC_PLAYER_ENTERING) &&// we are not in sleep all mode
+            else if (!g_bSleepAll and !e->IsSetFalcFlag(FEC_PLAYER_ENTERING) &&// we are not in sleep all mode
                      (
                          !e->IsSetFalcFlag(FEC_PLAYERONLY) ||// not a human
                          (
                              //human but he's attached
-                             e->IsSetFalcFlag(FEC_PLAYERONLY) && e->IsSetFalcFlag(FEC_HASPLAYERS)
+                             e->IsSetFalcFlag(FEC_PLAYERONLY) and e->IsSetFalcFlag(FEC_HASPLAYERS)
                          )
                      )
                     )
@@ -634,10 +634,10 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 
     }
 
-    if (session == FalconLocalSession && !didsimlistcrap)
+    if (session == FalconLocalSession and !didsimlistcrap)
     {
         // Update the entity's Sim List state
-        if (want_in_sim_list)//me123 oldmp && InSimLists() )
+        if (want_in_sim_list)//me123 oldmp and InSimLists() )
         {
             e->RemoveFromSimLists();
         }
@@ -734,7 +734,7 @@ void RebuildBubble(int forced)
     CampEnterCriticalSection();
 
 
-    if (forced && FalconLocalGame && g_brebuildbobbleFix)
+    if (forced and FalconLocalGame and g_brebuildbobbleFix)
     {
         // host wake missiles and bombs
         //MonoPrint ("FORCED SHORT REBUILD");
@@ -875,7 +875,7 @@ void RebuildBubble(int forced)
         }
     }
 
-    if ((FalconLocalGame) && (FalconLocalGame->IsLocal()))
+    if ((FalconLocalGame) and (FalconLocalGame->IsLocal()))
     {
         // Check all cameras
         sit = new VuSessionsIterator(FalconLocalGame);
@@ -893,10 +893,10 @@ void RebuildBubble(int forced)
         // Find the first camera
         player = session->GetCameraEntity(0);
 
-        /* if (!player && FalconLocalGame->IsLocal() && gCommsMgr->Online())
+        /* if (!player and FalconLocalGame->IsLocal() and gCommsMgr->Online())
          player = FalconLocalSession->GetPlayerFlight();
          */
-        if (player && (player not_eq FalconLocalSession or !sCampaignSleepRequested))
+        if (player and (player not_eq FalconLocalSession or !sCampaignSleepRequested))
         {
             u = session->GetPlayerFlight();
 
@@ -908,7 +908,7 @@ void RebuildBubble(int forced)
             // We're in the cockpit
 #ifdef CAMPTOOL
 
-            if (PBubble && hMainWnd)
+            if (PBubble and hMainWnd)
             {
                 PostMessage(hMainWnd, WM_COMMAND, ID_CAMP_REFRESHPB, ID_CAMP_REFRESHPB);
             }
@@ -964,7 +964,7 @@ void RebuildBubble(int forced)
                     while (object)
                     {
                         if (
-                            !object->IsAwake() && !object->IsDead() &&
+                            !object->IsAwake() and !object->IsDead() &&
                             (object->IsBomb() or object->IsMissile())
                         )
                         {
@@ -1018,7 +1018,7 @@ void RebuildBubble(int forced)
 
                 while (u)
                 {
-                    if (u->IsFlight() && (u->Final() or u == player))
+                    if (u->IsFlight() and (u->Final() or u == player))
                     {
                         if (!u->Final())
                         {
@@ -1045,7 +1045,7 @@ void RebuildBubble(int forced)
                             Objective airbase = (Objective)u->GetUnitAirbase();
 
                             // We'll deaggregate a few minutes before takeoff for objective airbases
-                            if (airbase && airbase->IsObjective() && airbase->brain)
+                            if (airbase and airbase->IsObjective() and airbase->brain)
                             {
                                 if (GetTTRelations(airbase->GetTeam(), u->GetTeam()) <= Neutral)
                                 {
@@ -1064,7 +1064,7 @@ void RebuildBubble(int forced)
 
                                         minDeagTime = w->GetWPArrivalTime() - airbase->brain->MinDeagTime();
 
-                                        if (gCommsMgr && gCommsMgr->Online())
+                                        if (gCommsMgr and gCommsMgr->Online())
                                         {
                                             //me123
                                             if (!u->IsSetFalcFlag(FEC_PLAYER_ENTERING | FEC_HASPLAYERS))
@@ -1124,7 +1124,7 @@ void RebuildBubble(int forced)
                                 minDeagTime = w->GetWPArrivalTime(); // Carrier takeoff
 
                                 // JB carrier start
-                                if (u->IsSetFalcFlag(FEC_PLAYER_ENTERING | FEC_HASPLAYERS) && u->IsFlight())
+                                if (u->IsSetFalcFlag(FEC_PLAYER_ENTERING | FEC_HASPLAYERS) and u->IsFlight())
                                 {
                                     //JPO we need some extra time before takeoff if starting cold.
                                     if (((Flight)u)->GetEvalFlags() & FEVAL_START_COLD)
@@ -1154,7 +1154,7 @@ void RebuildBubble(int forced)
 
                         if (deag)
                         {
-                            if (!u->IsDead() && DeaggregationCheck(u, session) > 0)
+                            if (!u->IsDead() and DeaggregationCheck(u, session) > 0)
                             {
                                 if (u->IsAggregate())
                                 {
@@ -1163,9 +1163,9 @@ void RebuildBubble(int forced)
                             }
                         }
                     }
-                    else if ((u->IsBattalion() or u->IsTaskForce()) && !u->Inactive())
+                    else if ((u->IsBattalion() or u->IsTaskForce()) and !u->Inactive())
                     {
-                        if (!u->IsDead() && !u->Inactive() && DeaggregationCheck(u, session) > 0)
+                        if (!u->IsDead() and !u->Inactive() and DeaggregationCheck(u, session) > 0)
                         {
                             if (u->IsAggregate())
                             {
@@ -1218,7 +1218,7 @@ void RebuildBubble(int forced)
                     c = static_cast<CampEntity>(deagIt.GetNext())
                 )
                 {
-                    if ((c->IsUnit()) && (c->GetDeagOwner() == session->Id()))
+                    if ((c->IsUnit()) and (c->GetDeagOwner() == session->Id()))
                     {
                         if (!session->GetCameraEntity(0))
                         {
@@ -1239,7 +1239,7 @@ void RebuildBubble(int forced)
                 {
                     CampBaseBin cb = it->second;
 
-                    if ((cb->IsUnit()) && (cb->GetDeagOwner() == session->Id()))
+                    if ((cb->IsUnit()) and (cb->GetDeagOwner() == session->Id()))
                     {
                         if (!session->GetCameraEntity(0))
                         {
@@ -1745,7 +1745,7 @@ CampaignData ReadCampFile(char *filename, char *ext)
 
     if (reading_campressed_file)
     {
-        if ((strcmp(filename, camp_file_name) not_eq 0) && IsCampFile(camp_game_type, filename))
+        if ((strcmp(filename, camp_file_name) not_eq 0) and IsCampFile(camp_game_type, filename))
         {
             EndReadCampFile();
             StartReadCampFile(camp_game_type, filename);
@@ -1918,7 +1918,7 @@ FILE* OpenCampFile(char *filename, char *ext, char *mode)
     {
         for (index = 0; index < MAX_WCH_FILES; index ++)
         {
-            if ((wch_fp[index]) && (strcmp(wch_filename[index], filename) == 0))
+            if ((wch_fp[index]) and (strcmp(wch_filename[index], filename) == 0))
             {
                 fseek(wch_fp[index], 0, 0);
 
@@ -1933,9 +1933,9 @@ FILE* OpenCampFile(char *filename, char *ext, char *mode)
 
     // 2002-03-25 MN added check for not being WCH file - otherwise can crash sometimes
     // especially after theater switching situations !
-    if ((reading_campressed_file) && (mode[0] == 'r') && strcmp(ext, "wch") not_eq 0)
+    if ((reading_campressed_file) and (mode[0] == 'r') and strcmp(ext, "wch") not_eq 0)
     {
-        if (strcmp(filename, camp_file_name) not_eq 0 && IsCampFile(camp_game_type, filename))
+        if (strcmp(filename, camp_file_name) not_eq 0 and IsCampFile(camp_game_type, filename))
         {
             EndReadCampFile();
             StartReadCampFile(camp_game_type, filename);
@@ -1959,7 +1959,7 @@ FILE* OpenCampFile(char *filename, char *ext, char *mode)
         // MonoPrint ("Cannot OpenCampFile while we are reading a campressed file\n");
     }
 
-    if ((writing_campressed_file) && (mode[0] == 'w'))
+    if ((writing_campressed_file) and (mode[0] == 'w'))
     {
         strcpy(fullname, filename);
         strcat(fullname, ".");
@@ -2052,7 +2052,7 @@ FILE* OpenCampFile(char *filename, char *ext, char *mode)
     sprintf(fullname, "%s\\%s.%s", path, filename, ext);
     fp = fopen(fullname, mode);
 
-    if ((fp) && (strcmp(ext, "wch") == 0))
+    if ((fp) and (strcmp(ext, "wch") == 0))
     {
         index = next_wch_file ++;
 
@@ -2217,7 +2217,7 @@ void SetEntryTime(Flight flight)
 
     static int lastchoice = 0;
 
-    if (g_bMPStartRestricted && gCommsMgr && gCommsMgr->Online())
+    if (g_bMPStartRestricted and gCommsMgr and gCommsMgr->Online())
     {
         gCompressTillTime = sTakeoffTime - g_nMPStartTime * CampaignMinutes;
     }
@@ -2239,7 +2239,7 @@ void SetEntryTime(Flight flight)
                 break;
 
             case PlayerOptionsClass::START_RUNWAY:
-                if (gCommsMgr && gCommsMgr->Online())
+                if (gCommsMgr and gCommsMgr->Online())
                     gCompressTillTime = sTakeoffTime - CampaignMinutes;
                 else
                     gCompressTillTime = sTakeoffTime;
@@ -2257,7 +2257,7 @@ void SetEntryTime(Flight flight)
 
 
     //me123 give the player a few sec to make a change.
-    if ((PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY) &&  timer &&
+    if ((PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY) and  timer &&
         (timer < (VU_TIME)(3 * CampaignSeconds)) &&
         (gLaunchTime < (CampaignTime)(vuxGameTime + 3 * CampaignSeconds)))
     {
@@ -2276,7 +2276,7 @@ int CompressCampaignUntilTakeoff(Flight flight)
     /////////////////me123 check all clients takeoff time if we are host
     int firstentrytime = 0;
 
-    if (FalconLocalGame && FalconLocalGame->IsLocal())
+    if (FalconLocalGame and FalconLocalGame->IsLocal())
     {
         VuSessionsIterator sessionWalker(FalconLocalGame);
         FalconSessionEntity *sess;
@@ -2320,7 +2320,7 @@ int CompressCampaignUntilTakeoff(Flight flight)
 
     w = flight->GetCurrentUnitWP();
 
-    if (w && w->GetWPAction() == WP_TAKEOFF)
+    if (w and w->GetWPAction() == WP_TAKEOFF)
     {
         // Tell the flight to hold short if we're coming into the sim.
         flight->SetFalcFlag(FEC_HOLDSHORT);
@@ -2341,7 +2341,7 @@ int CompressCampaignUntilTakeoff(Flight flight)
                 break;
 
             case PlayerOptionsClass::START_RUNWAY:
-                if (gCommsMgr && gCommsMgr->Online())
+                if (gCommsMgr and gCommsMgr->Online())
                     gLaunchTime -= CampaignMinutes;
 
                 break;
@@ -2404,7 +2404,7 @@ void DoCompressionLoop(void)
          */
 
         // Check for sim entry
-        if (gLaunchTime <= vuxGameTime  && gCompressTillTime <= vuxGameTime)
+        if (gLaunchTime <= vuxGameTime  and gCompressTillTime <= vuxGameTime)
         {
             // Now stop moving time forward and resync the campaign
             SetTimeCompression(0);
@@ -2419,7 +2419,7 @@ void DoCompressionLoop(void)
 
                 // OW FIXME: sometimes gets called when mainhandler is already freed!
                 // if (gMainHandler->GetAppWnd ())
-                if (gMainHandler && gMainHandler->GetAppWnd())
+                if (gMainHandler and gMainHandler->GetAppWnd())
                 {
                     switch (FalconLocalGame->GetGameType())
                     {
@@ -2508,11 +2508,11 @@ int gAveCampTime = 0;
 void UpdatePlayerSessions()
 {
 #define NEW_UPDATE_PLAYER_SESSION 1
-#if NO_CAMP_LOCK && NEW_UPDATE_PLAYER_SESSION
+#if NO_CAMP_LOCK and NEW_UPDATE_PLAYER_SESSION
 #else
     CampEnterCriticalSection();
 #endif
-#if NO_VU_LOCK && NEW_UPDATE_PLAYER_SESSION
+#if NO_VU_LOCK and NEW_UPDATE_PLAYER_SESSION
 #else
     VuEnterCriticalSection();
 #endif
@@ -2530,11 +2530,11 @@ void UpdatePlayerSessions()
         session->UpdatePlayer();
     }
 
-#if NO_VU_LOCK && NEW_UPDATE_PLAYER_SESSION
+#if NO_VU_LOCK and NEW_UPDATE_PLAYER_SESSION
 #else
     VuExitCriticalSection();
 #endif
-#if NO_CAMP_LOCK && NEW_UPDATE_PLAYER_SESSION
+#if NO_CAMP_LOCK and NEW_UPDATE_PLAYER_SESSION
 #else
     CampLeaveCriticalSection();
 #endif
@@ -2657,7 +2657,7 @@ unsigned int __stdcall HandleCampaignThread(void)
         TheCampaign.CurrentTime += deltatime;
         TheCampaign.TimeOfDay = TheCampaign.CurrentTime % CampaignDay;
 
-        if (deltatime > 0 && (TheCampaign.Flags & CAMP_LOADED))
+        if (deltatime > 0 and (TheCampaign.Flags & CAMP_LOADED))
         {
             if (sCampaignStartingUp == CAMP_STARTING_UP)
             {
@@ -2671,7 +2671,7 @@ unsigned int __stdcall HandleCampaignThread(void)
             }
 
             //START_PROFILE("CAMPLOOP");
-            if (!(TheCampaign.Flags & CAMP_LIGHT) && TheCampaign.IsMaster())
+            if (!(TheCampaign.Flags & CAMP_LIGHT) and TheCampaign.IsMaster())
             {
                 if (TheCampaign.Flags & CAMP_TACTICAL)
                 {
@@ -2833,7 +2833,7 @@ void DoTacticalLoop(int startup)
         for (t = 0; t < NUM_TEAMS; t++)
         {
             // sfr: check vu state...
-            if (TeamInfo[t] && TeamInfo[t]->VuState() == VU_MEM_ACTIVE)
+            if (TeamInfo[t] and TeamInfo[t]->VuState() == VU_MEM_ACTIVE)
             {
                 TeamInfo[t]->atm->DoCalculations();
             }
@@ -2991,7 +2991,7 @@ void DoCampaignLoop(int startup)
     // Task air
     for (t = 0; t < NUM_TEAMS; t++)
     {
-        if (TeamInfo[t] && TeamInfo[t]->atm)
+        if (TeamInfo[t] and TeamInfo[t]->atm)
         {
             TeamInfo[t]->atm->Task();
         }
@@ -3063,13 +3063,13 @@ void UpdateRealUnits(CampaignTime deltatime)
     {
         next = static_cast<UnitClass*>(rit.GetNext());
 
-        if (u && u->Inactive())
+        if (u and u->Inactive())
         {
             //START_PROFILE("CA UPD REAL INACTIVATE");
             InactivateUnit(u);
             //STOP_PROFILE("CA UPD REAL INACTIVATE");
         }
-        else if (u && u->IsDead())
+        else if (u and u->IsDead())
         {
             //START_PROFILE("CA UPD REAL DEAD");
             // wait a bit before removing
@@ -3170,7 +3170,7 @@ void RallyUnits(int minutes)
     {
         if (u->GetDomain() == DOMAIN_LAND)
         {
-            if (!u->Scripted() && !u->Engaged() && u->GetUnitOrders() == GORD_RESERVE)
+            if (!u->Scripted() and !u->Engaged() and u->GetUnitOrders() == GORD_RESERVE)
                 u->RallyUnit(minutes);
 
             u->UpdateParentStatistics();

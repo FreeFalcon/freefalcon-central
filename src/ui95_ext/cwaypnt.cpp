@@ -210,7 +210,7 @@ void C_Waypoint::EraseWaypointGroup(long groupid)
     if (Root_ == NULL or Parent_ == NULL)
         return;
 
-    while (Root_ && Root_->Group == groupid)
+    while (Root_ and Root_->Group == groupid)
     {
         last = Root_;
         Root_ = Root_->Next;
@@ -523,7 +523,7 @@ BOOL C_Waypoint::UpdateInfo(long ID, float x, float y)
             wk1 = FindID(ID - 1);
             wk2 = FindID(0x40000000 + ID);
 
-            if (wk1 && wk2)
+            if (wk1 and wk2)
             {
                 dx = (cur->worldx - wk1->worldx);
                 dy = (cur->worldy - wk1->worldy);
@@ -540,7 +540,7 @@ BOOL C_Waypoint::UpdateInfo(long ID, float x, float y)
             wk1 = FindID(ID + 1);
             wk2 = FindID(0x60000000 + ID + 1);
 
-            if (wk1 && wk2)
+            if (wk1 and wk2)
             {
                 dx = (wk1->worldx - cur->worldx);
                 dy = (wk1->worldy - cur->worldy);
@@ -555,7 +555,7 @@ BOOL C_Waypoint::UpdateInfo(long ID, float x, float y)
             }
         }
 
-        if ((ox not_eq cur->x or oy not_eq cur->y) && !(cur->Flags & C_BIT_INVISIBLE))
+        if ((ox not_eq cur->x or oy not_eq cur->y) and !(cur->Flags & C_BIT_INVISIBLE))
             return(TRUE);
     }
 
@@ -571,7 +571,7 @@ long C_Waypoint::CheckHotSpots(long relX, long relY)
 
     while (cur)
     {
-        if (!(cur->Flags & C_BIT_INVISIBLE) && cur->Flags & C_BIT_ENABLED)
+        if (!(cur->Flags & C_BIT_INVISIBLE) and cur->Flags & C_BIT_ENABLED)
         {
             if (cur->Icon->CheckHotSpots(relX, relY))
                 LastWP_ = cur;
@@ -597,9 +597,9 @@ BOOL C_Waypoint::MouseOver(long relX, long relY, C_Base *)
 
     while (cur)
     {
-        if (!(cur->Flags & C_BIT_INVISIBLE) && cur->Flags & C_BIT_ENABLED)
+        if (!(cur->Flags & C_BIT_INVISIBLE) and cur->Flags & C_BIT_ENABLED)
         {
-            if (cur->Icon && cur->Icon->MouseOver(relX, relY, cur->Icon)) // possible CTD fix
+            if (cur->Icon and cur->Icon->MouseOver(relX, relY, cur->Icon)) // possible CTD fix
             {
                 return(TRUE);
             }
@@ -655,7 +655,7 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     {
         prev = cur;
 
-        while (cur->Next && cur->Next not_eq Waypoint)
+        while (cur->Next and cur->Next not_eq Waypoint)
         {
             prev = cur;
             cur = cur->Next;
@@ -760,7 +760,7 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
         wk1 = FindID(Waypoint->ID - 1);
         wk2 = FindID(0x40000000 + Waypoint->ID);
 
-        if (wk1 && wk2)
+        if (wk1 and wk2)
         {
             dx = (Waypoint->worldx - wk1->worldx);
             dy = (Waypoint->worldy - wk1->worldy);
@@ -777,7 +777,7 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
         wk1 = FindID(Waypoint->ID + 1);
         wk2 = FindID(0x40000000 + Waypoint->ID + 1);
 
-        if (wk1 && wk2)
+        if (wk1 and wk2)
         {
             dx = (wk1->worldx - Waypoint->worldx);
             dy = (wk1->worldy - Waypoint->worldy);

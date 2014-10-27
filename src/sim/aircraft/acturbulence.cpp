@@ -72,7 +72,7 @@ int ClosestApproachLinePoint(Tpoint &A, Tpoint &B, Tpoint &C, float &PercentOfAB
     //D = A + ABnorm * lengthAD;
     PercentOfAB = lengthAD / (lengthAB + .00000001f);
 
-    if (PercentOfAB >= 0 && PercentOfAB <= 1)
+    if (PercentOfAB >= 0 and PercentOfAB <= 1)
         return 1;
 
     return 0;

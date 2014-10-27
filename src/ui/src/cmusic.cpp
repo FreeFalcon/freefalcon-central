@@ -130,7 +130,7 @@ void C_Music::Cleanup()
 {
     int i, j;
 
-    if (Sound_ && StreamID_[0] not_eq SND_NO_HANDLE or StreamID_[1] not_eq SND_NO_HANDLE)
+    if (Sound_ and StreamID_[0] not_eq SND_NO_HANDLE or StreamID_[1] not_eq SND_NO_HANDLE)
     {
         RemoveStream();
         StreamID_[0] = SND_NO_HANDLE;
@@ -310,7 +310,7 @@ void C_Music::AddQ(long ID)
 
     i = 0;
 
-    while (Queue_[i] not_eq SND_NO_HANDLE && i < _MUSIC_QUEUE_SIZE_)
+    while (Queue_[i] not_eq SND_NO_HANDLE and i < _MUSIC_QUEUE_SIZE_)
         i++;
 
     if (i == _MUSIC_QUEUE_SIZE_)
@@ -360,7 +360,7 @@ void C_Music::PlayQ()
 
         Queue_[_MUSIC_QUEUE_SIZE_ - 1] = SND_NO_HANDLE;
     }
-    while (!snd && Queue_[0] not_eq SND_NO_HANDLE);
+    while (!snd and Queue_[0] not_eq SND_NO_HANDLE);
 }
 
 // HELLA HUGE KLUDGE to String 2 or more WAVE files together
@@ -401,14 +401,14 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
 
             if (Stream->fp not_eq INVALID_HANDLE_VALUE)
             {
-                if (snd->Sound && snd->flags & SOUND_RES_STREAM)
+                if (snd->Sound and snd->flags & SOUND_RES_STREAM)
                 {
                     SetFilePointer(Stream->fp, snd->Sound->Header->offset, NULL, FILE_BEGIN);
                 }
 
                 size = Sound_->LoadRiffFormat(Stream->fp, &Header, &Stream->HeaderOffset, &NumSamples);
 
-                if (snd->Sound && snd->flags & SOUND_RES_STREAM)
+                if (snd->Sound and snd->flags & SOUND_RES_STREAM)
                 {
                     Stream->HeaderOffset += snd->Sound->Header->offset;
                 }
@@ -481,7 +481,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
 
         Queue_[_MUSIC_QUEUE_SIZE_ - 1] = SND_NO_HANDLE;
     }
-    while (!snd && Queue_[0] not_eq SND_NO_HANDLE);
+    while (!snd and Queue_[0] not_eq SND_NO_HANDLE);
 }
 
 // Interactive stuff

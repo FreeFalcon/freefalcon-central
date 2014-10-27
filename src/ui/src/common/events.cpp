@@ -59,12 +59,12 @@ void AddtoEventList(EventElement *theEvent)
 
         cur = SortedEventList;
 
-        while (cur && cur->eventTime < newone->eventTime)
+        while (cur and cur->eventTime < newone->eventTime)
         {
             last = cur;
 
             // Sanity check
-            if (cur->next && cur->next->eventTime < cur->eventTime)
+            if (cur->next and cur->next->eventTime < cur->eventTime)
             {
                 ShiAssert(0);
                 break;
@@ -454,10 +454,10 @@ BOOL CheckAlreadyCollided(VU_ID ID1, VU_ID ID2, long gameTime)
 {
     if ((gameTime - SaveCollidedTime) < 3000)
     {
-        if (ID1 == SaveCollided1 && ID2 == SaveCollided2)
+        if (ID1 == SaveCollided1 and ID2 == SaveCollided2)
             return(TRUE);
 
-        if (ID2 == SaveCollided1 && ID1 == SaveCollided2)
+        if (ID2 == SaveCollided1 and ID1 == SaveCollided2)
             return(TRUE);
     }
 
@@ -573,7 +573,7 @@ void SaveEventList(FILE *ofp,unsigned char mask[],int DebriefType)
  {
  TrackFlag=FALSE;
  Done=FALSE;
- while(eventMessage && !Done)
+ while(eventMessage and !Done)
  {
  if(TrackID == FalconNullId)
  Done=TRUE;

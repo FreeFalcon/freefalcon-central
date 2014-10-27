@@ -200,7 +200,7 @@ BOOL SetupDIMouseAndKeyboard(HINSTANCE, HWND hWnd)
      SetupResult = FALSE;
     }
 
-    if(SetupResult && !MouseSetupResult){
+    if(SetupResult and !MouseSetupResult){
      SetupResult = DIMessageBox(999, MB_YESNO, SSI_NO_MOUSE_INIT);
     }
     else if (MouseSetupResult)
@@ -209,7 +209,7 @@ BOOL SetupDIMouseAndKeyboard(HINSTANCE, HWND hWnd)
     }
     */
 
-    if (SetupResult && !CursorSetupResult)
+    if (SetupResult and !CursorSetupResult)
     {
         SetupResult = DIMessageBox(999, MB_YESNO, SSI_NO_CURSOR_INIT);
     }
@@ -274,7 +274,7 @@ void SetupGameAxis()
             if (*AxisSetup[GameAxisIndex].device == DeviceIndex)
             {
                 // look what axis on that real device is mapped to that game axis..
-                if ((*AxisSetup[GameAxisIndex].axis not_eq -1) && (*AxisSetup[GameAxisIndex].axis < 8)) // 8 is again the max DX axiscount..
+                if ((*AxisSetup[GameAxisIndex].axis not_eq -1) and (*AxisSetup[GameAxisIndex].axis < 8)) // 8 is again the max DX axiscount..
                 {
                     // ok there´s one mapped. now see if it is indeed located on the device..
                     if (gpDIDevice[DeviceIndex]->GetObjectInfo(&devobj, AxisOffsets[*AxisSetup[GameAxisIndex].axis], DIPH_BYOFFSET) == DI_OK)
@@ -310,7 +310,7 @@ void SetupGameAxis()
                         // Custom axis shaping.. setting the CPOINTS correctly is done by the outside
                         // program.
                         /*****************************************************************************/
-                        if ((PlayerOptions.GetAxisShaping() == true) && (AxisShapes.active[GameAxisIndex] == true))
+                        if ((PlayerOptions.GetAxisShaping() == true) and (AxisShapes.active[GameAxisIndex] == true))
                         {
                             DIPROPCPOINTS dipcp;
 
@@ -331,7 +331,7 @@ void SetupGameAxis()
                             // if a deadzone is defined, apply it.. values are from 10000 (100%) to 0 (0%) of
                             // physical range to both sides of the '0' point. Default to 100 (1%)
                             // unipolar axis don´t have a deadzone !
-                            if ((AxisSetup[GameAxisIndex].deadzone) && (*AxisSetup[GameAxisIndex].deadzone))
+                            if ((AxisSetup[GameAxisIndex].deadzone) and (*AxisSetup[GameAxisIndex].deadzone))
                             {
                                 DIPROPDWORD dipdw = {{sizeof(DIPROPDWORD), sizeof(DIPROPHEADER), 0, DIPH_DEVICE}, DJOYSTICK_BUFFERSIZE};
                                 dipdw.dwData = *AxisSetup[GameAxisIndex].deadzone;
@@ -566,7 +566,7 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
         // configure them. Else everything is set to keyboard and the user has to
         // reconfigure.
         /*******************************************************************************/
-        if ((AxisMap.totalDeviceCount == gTotalJoy) && (AxisMap.FlightControlDevice not_eq -1)/*&&(CheckDeviceArray() == true)*/)
+        if ((AxisMap.totalDeviceCount == gTotalJoy) and (AxisMap.FlightControlDevice not_eq -1)/*&&(CheckDeviceArray() == true)*/)
         {
             DIDEVICEINSTANCE devinst;
             devinst.dwSize = sizeof(DIDEVICEINSTANCE);
@@ -643,8 +643,8 @@ BOOL CleanupDIMouseAndKeyboard()
     AcquireDeviceInput(SIM_MOUSE, FALSE);
     AcquireDeviceInput(SIM_KEYBOARD, FALSE);
 
-    CleanupResult = CleanupResult && CleanupDIDevice(SIM_MOUSE);
-    CleanupResult = CleanupResult && CleanupDIDevice(SIM_KEYBOARD);
+    CleanupResult = CleanupResult and CleanupDIDevice(SIM_MOUSE);
+    CleanupResult = CleanupResult and CleanupDIDevice(SIM_KEYBOARD);
 
     CleanupSimCursors();
 
@@ -697,7 +697,7 @@ BOOL CleanupDIJoystick(void)
 
     while (gTotalJoy > 0)
     {
-        CleanupResult = CleanupResult && CleanupDIDevice(SIM_JOYSTICK1 + gTotalJoy - 1);
+        CleanupResult = CleanupResult and CleanupDIDevice(SIM_JOYSTICK1 + gTotalJoy - 1);
         delete gDIDevNames[SIM_JOYSTICK1 + gTotalJoy - 1];
         gDIDevNames[SIM_JOYSTICK1 + gTotalJoy - 1] = NULL;
         gTotalJoy--;
@@ -752,7 +752,7 @@ BOOL CleanupDIJoystickMk2(void)
 
     while (gTotalJoy > 0)
     {
-        // CleanupResult = CleanupResult && CleanupDIDevice(SIM_JOYSTICK1 + gTotalJoy - 1);
+        // CleanupResult = CleanupResult and CleanupDIDevice(SIM_JOYSTICK1 + gTotalJoy - 1);
         if (gpDIDevice[SIM_JOYSTICK1 + gTotalJoy - 1])
         {
             HRESULT hr = gpDIDevice[SIM_JOYSTICK1 + gTotalJoy - 1]->Unacquire();

@@ -300,7 +300,7 @@ ACMITape::ACMITape(char *name, RenderOTW *renderer, RViewPoint *viewPoint)
         // Setup Callsigns...
         callsigns = (char*)GetCallsignList(&numcalls);
 
-        if (((char *)callsigns - (char *)_tape) < length && numcalls > 0) // there are callsigns...
+        if (((char *)callsigns - (char *)_tape) < length and numcalls > 0) // there are callsigns...
         {
             ACMI_Callsigns = new ACMI_CallRec[numcalls];
             memcpy(ACMI_Callsigns, callsigns, sizeof(ACMI_CallRec)*numcalls);
@@ -1174,7 +1174,7 @@ void ACMITape::ParseEntities(void)
             {
                 thing2 = (ACMIEntityData*)list2->node;
 
-                if (thing2->type == thing1->type && thing2->count == 0)
+                if (thing2->type == thing1->type and thing2->count == 0)
                 {
                     thing2->count = objCount;
                     objCount ++;
@@ -1724,7 +1724,7 @@ BOOL ACMITape::GetEntityPosition
     turnrate = 0.0f;
     turnradius = 0.0f;
 
-    F4Assert(index >= 0 && index < NumEntities());
+    F4Assert(index >= 0 and index < NumEntities());
 
     pos1 = CurrentEntityPositionHead(index);
 
@@ -1947,7 +1947,7 @@ void ACMITape::Update(float newSimTime)
             deltaRealTime = deltaLimit;
 
     }
-    else if (_unpause && _paused)
+    else if (_unpause and _paused)
     {
         deltaRealTime = 0.0;
         _paused = FALSE;
@@ -2001,7 +2001,7 @@ void ACMITape::AdvanceEntityPositionHead(int index)
     *next,
     *prev;
 
-    F4Assert(index >= 0 && index < NumEntities());
+    F4Assert(index >= 0 and index < NumEntities());
 
     // Backward.
     curr = CurrentEntityPositionHead(index);
@@ -2048,7 +2048,7 @@ void ACMITape::AdvanceEntityEventHead(int index)
     *prev;
     SimTapeEntity *e;
 
-    F4Assert(index >= 0 && index < NumEntities());
+    F4Assert(index >= 0 and index < NumEntities());
 
     // get the entity if we need to change switch settings
     e = &_simTapeEntities[ index ];
@@ -2511,9 +2511,9 @@ float ACMITape::AngleInterp(float begAng, float endAng, float dT)
 
 
     /*
-    if ( endAng < -0.5f * PI && begAng > 0.5f * PI )
+    if ( endAng < -0.5f * PI and begAng > 0.5f * PI )
      dAng = endAng + ( 2.0f * PI ) - begAng;
-    else if ( endAng > 0.5f * PI && begAng < -0.5f * PI )
+    else if ( endAng > 0.5f * PI and begAng < -0.5f * PI )
      dAng = endAng - ( 2.0f * PI ) - begAng;
     else
      dAng = endAng - begAng;
@@ -3029,7 +3029,7 @@ BOOL ACMITape::IsEntityInFrame(int index)
     *pos1,
     *pos2;
 
-    F4Assert(index >= 0 && index < NumEntities());
+    F4Assert(index >= 0 and index < NumEntities());
 
     pos1 = CurrentEntityPositionHead(index);
 
@@ -3065,7 +3065,7 @@ int ACMITape::GetEntityCurrentTarget(int index)
     *pos1,
     *pos2;
 
-    F4Assert(index >= 0 && index < NumEntities());
+    F4Assert(index >= 0 and index < NumEntities());
 
     pos1 = CurrentEntityPositionHead(index);
 
@@ -3168,26 +3168,26 @@ void ACMITape::UpdateSimTapeEntities(void)
                 _viewPoint->RemoveObject(ep->objBase->drawPointer);
 
                 // remove trail too
-                if (ep->objTrail && ep->objTrail->InDisplayList() && _simTime < ep->trailStartTime)
+                if (ep->objTrail and ep->objTrail->InDisplayList() and _simTime < ep->trailStartTime)
                 {
                     ep->objTrail->TrimTrail(0);
                     _viewPoint->RemoveObject(ep->objTrail);
                 }
 
                 // remove Bsp1 too
-                if (ep->objBsp1 && ep->objBsp1->InDisplayList() && _simTime < ep->trailStartTime)
+                if (ep->objBsp1 and ep->objBsp1->InDisplayList() and _simTime < ep->trailStartTime)
                 {
                     _viewPoint->RemoveObject(ep->objBsp1);
                 }
 
                 // remove Bsp2 too
-                if (ep->objBsp2 && ep->objBsp2->InDisplayList() && _simTime < ep->trailStartTime)
+                if (ep->objBsp2 and ep->objBsp2->InDisplayList() and _simTime < ep->trailStartTime)
                 {
                     _viewPoint->RemoveObject(ep->objBsp2);
                 }
 
                 // remove 2d too
-                if (ep->obj2d && ep->obj2d->InDisplayList())
+                if (ep->obj2d and ep->obj2d->InDisplayList())
                 {
                     _viewPoint->RemoveObject(ep->obj2d);
                 }
@@ -3333,20 +3333,20 @@ void ACMITape::UpdateSimTapeEntities(void)
         // continue from dead pos to new position.  Since we don't have the
         // info to detect a regen, if we see that the airspeed is too high
         // trim the trails back to 0
-        if (_wingTrails && (ep->flags & ENTITY_FLAG_AIRCRAFT) && CalcKIAS(ep->aveSpeed, -ep->z) > 1100.0f)
+        if (_wingTrails and (ep->flags & ENTITY_FLAG_AIRCRAFT) and CalcKIAS(ep->aveSpeed, -ep->z) > 1100.0f)
         {
             ep->wrTrail->TrimTrail(0);
             ep->wlTrail->TrimTrail(0);
             ep->wtLength = 0;
         }
-        else if (_wingTrails && (ep->flags & ENTITY_FLAG_AIRCRAFT))
+        else if (_wingTrails and (ep->flags & ENTITY_FLAG_AIRCRAFT))
         {
-            if (_playVelocity < 0.0f && (!_paused or _simulateOnly))
+            if (_playVelocity < 0.0f and (!_paused or _simulateOnly))
             {
                 ep->wtLength -= ep->wrTrail->RewindTrail((DWORD)(_simTime * 1000));
                 ep->wlTrail->RewindTrail((DWORD)(_simTime * 1000));
             }
-            else if (_playVelocity > 0.0f && (!_paused or _simulateOnly))
+            else if (_playVelocity > 0.0f and (!_paused or _simulateOnly))
             {
                 ep->wtLength++;
                 wtpos.x = ep->objBase->dmx[1][0] * -20.0f * _tapeObjScale + ep->x;
@@ -3410,13 +3410,13 @@ void ACMITape::UpdateSimTapeEntities(void)
         if (_simTime > ep->trailEndTime)
         {
             // remove Bsp1 too
-            if (ep->objBsp1 && ep->objBsp1->InDisplayList())
+            if (ep->objBsp1 and ep->objBsp1->InDisplayList())
             {
                 _viewPoint->RemoveObject(ep->objBsp1);
             }
 
             // remove Bsp2 too
-            if (ep->objBsp2 && ep->objBsp2->InDisplayList())
+            if (ep->objBsp2 and ep->objBsp2->InDisplayList())
             {
                 _viewPoint->RemoveObject(ep->objBsp2);
             }
@@ -3435,13 +3435,13 @@ void ACMITape::UpdateSimTapeEntities(void)
             }
 
             // remove Bsp1 too
-            if (ep->objBsp1 && ep->objBsp1->InDisplayList())
+            if (ep->objBsp1 and ep->objBsp1->InDisplayList())
             {
                 _viewPoint->RemoveObject(ep->objBsp1);
             }
 
             // remove Bsp2 too
-            if (ep->objBsp2 && ep->objBsp2->InDisplayList())
+            if (ep->objBsp2 and ep->objBsp2->InDisplayList())
             {
                 _viewPoint->RemoveObject(ep->objBsp2);
             }
@@ -3459,13 +3459,13 @@ void ACMITape::UpdateSimTapeEntities(void)
         }
 
         // insert Bsp1 too
-        if (ep->objBsp1 && !ep->objBsp1->InDisplayList())
+        if (ep->objBsp1 and !ep->objBsp1->InDisplayList())
         {
             _viewPoint->InsertObject(ep->objBsp1);
         }
 
         // insert Bsp2 too
-        if (ep->objBsp2 && !ep->objBsp2->InDisplayList())
+        if (ep->objBsp2 and !ep->objBsp2->InDisplayList())
         {
             _viewPoint->InsertObject(ep->objBsp2);
         }
@@ -3489,11 +3489,11 @@ void ACMITape::UpdateSimTapeEntities(void)
 
 
 
-        if (_playVelocity < 0.0f && (!_paused or _simulateOnly))
+        if (_playVelocity < 0.0f and (!_paused or _simulateOnly))
         {
             ep->objTrail->RewindTrail((DWORD)(_simTime * 1000));
         }
-        else if (_playVelocity > 0.0f && (!_paused or _simulateOnly))
+        else if (_playVelocity > 0.0f and (!_paused or _simulateOnly))
         {
             ep->objTrail->AddPointAtHead(&newPoint, (DWORD)(_simTime * 1000));
         }
@@ -4197,7 +4197,7 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
         ((DrawableBSP*)theObject->drawPointer)->GetID() == visType)
         return;
 
-    if (theObject->drawPointer && theObject->drawPointer->InDisplayList())
+    if (theObject->drawPointer and theObject->drawPointer->InDisplayList())
     {
         // KCK: In some cases we still need this pointer (specifically
         // when we replace bridge segments), so let's save it here - we'll
@@ -4247,7 +4247,7 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
         // Make the new BRIDGE object
         if (visType)
         {
-            if (theObject->IsSetCampaignFlag(FEAT_NEXT_IS_TOP) && theObject->Status() not_eq VIS_DESTROYED)
+            if (theObject->IsSetCampaignFlag(FEAT_NEXT_IS_TOP) and theObject->Status() not_eq VIS_DESTROYED)
                 theObject->drawPointer = new DrawableRoadbed(visType, visType + 1, &simView, theObject->Yaw(), 10.0f, (float)atan(20.0f / 280.0f));
             else
                 theObject->drawPointer = new DrawableRoadbed(visType, -1, &simView, theObject->Yaw(), 10.0f, (float)atan(20.0f / 280.0f));

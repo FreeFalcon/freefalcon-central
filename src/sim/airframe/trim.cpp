@@ -99,7 +99,7 @@ void AirframeClass::TrimModel(void)
 
         for (i = 0; i < 50; i++)
         {
-            if (fabs(accx2) < error && fabs(accz2) < error)
+            if (fabs(accx2) < error and fabs(accz2) < error)
             {
                 isTrimmed = TRUE;
                 break;
@@ -141,7 +141,7 @@ void AirframeClass::TrimModel(void)
         }
 
         // Too slow for weight, make it faster
-        if (!isTrimmed && (_isnan(accz2) or fabs(accz2) > error))
+        if (!isTrimmed and (_isnan(accz2) or fabs(accz2) > error))
         {
             ii ++;
 

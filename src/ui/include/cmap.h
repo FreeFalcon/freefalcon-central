@@ -11,7 +11,7 @@
 
 enum // Draw Flags
 {
-    _MAP_TEAM_0 = 0x00000001, // Calculation= (1 << i) (where i>=0 && i < _MAX_TEAMS_)
+    _MAP_TEAM_0 = 0x00000001, // Calculation= (1 << i) (where i>=0 and i < _MAX_TEAMS_)
     _MAP_TEAM_1 = 0x00000002,
     _MAP_TEAM_2 = 0x00000004,
     _MAP_TEAM_3 = 0x00000008,
@@ -225,21 +225,21 @@ public:
     void SetWPZWindow(C_Window *win);
     void SetTeamFlags(long TeamID, long flags)
     {
-        if (TeamID >= 0 && TeamID < _MAX_TEAMS_) TeamFlags_[TeamID] = flags;
+        if (TeamID >= 0 and TeamID < _MAX_TEAMS_) TeamFlags_[TeamID] = flags;
     }
     long GetTeamFlags(long TeamID)
     {
-        if (TeamID >= 0 && TeamID < _MAX_TEAMS_) return(TeamFlags_[TeamID]);
+        if (TeamID >= 0 and TeamID < _MAX_TEAMS_) return(TeamFlags_[TeamID]);
 
         return(0);
     }
     void SetTeamColor(long TeamID, COLORREF color)
     {
-        if (TeamID >= 0 && TeamID < _MAX_TEAMS_) TeamColor_[TeamID] = color;
+        if (TeamID >= 0 and TeamID < _MAX_TEAMS_) TeamColor_[TeamID] = color;
     }
     COLORREF GetTeamColor(long TeamID)
     {
-        if (TeamID >= 0 && TeamID < _MAX_TEAMS_) return(TeamColor_[TeamID]);
+        if (TeamID >= 0 and TeamID < _MAX_TEAMS_) return(TeamColor_[TeamID]);
 
         return(0);
     }

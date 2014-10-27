@@ -256,7 +256,7 @@ void DrawablePlatform::SortForViewpoint(void)
     checkDistance = distance + 2.0f * Radius();
     obj = prev;
 
-    while (obj && (obj->distance < checkDistance))
+    while (obj and (obj->distance < checkDistance))
     {
 
         // Pull object down from our parent list if it's inside our area
@@ -276,7 +276,7 @@ void DrawablePlatform::SortForViewpoint(void)
     checkDistance = distance;
     obj = next;
 
-    while (obj && (obj->distance > checkDistance))
+    while (obj and (obj->distance > checkDistance))
     {
 
         // Pull object down from our parent list if it's inside our area

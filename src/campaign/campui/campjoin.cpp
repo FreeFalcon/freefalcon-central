@@ -158,7 +158,7 @@ void StartCampaignGame(int local, int game_type)
 // This is called any time we've received Campaign Scenario Status data (preload data)
 void CampaignPreloadSuccess(int remote_game)
 {
-    if (remote_game && !TheCampaign.IsLoaded() && gCampJoinStatus == JOIN_REQUEST_ALL_DATA)
+    if (remote_game and !TheCampaign.IsLoaded() and gCampJoinStatus == JOIN_REQUEST_ALL_DATA)
     {
         // We want the rest of the data too.
         gCampJoinStatus = JOIN_CAMP_DATA_ONLY;
@@ -223,7 +223,7 @@ void CampaignJoinSuccess(void)
 
         ps = (CampEntity) FindUnit(gPlayerSquadronId);
 
-        if (ps && ps->IsSquadron())
+        if (ps and ps->IsSquadron())
             FalconLocalSession->SetPlayerSquadron((Squadron)ps);
 
         if (gMainHandler)

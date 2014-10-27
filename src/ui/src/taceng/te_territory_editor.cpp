@@ -112,7 +112,7 @@ void tactical_territory_editor_restore(long, short hittype, C_Base *)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if ((TheCampaign.CampMapData) && (te_restore_map))
+    if ((TheCampaign.CampMapData) and (te_restore_map))
     {
         memcpy(TheCampaign.CampMapData, te_restore_map, TheCampaign.CampMapSize);
         UpdateOccupationMap();
@@ -316,7 +316,7 @@ void tactical_territory_map_edit(long, short hittype, C_Base *control)
                 {
                     py = y + ly;
 
-                    if ((px >= 0) && (px < width) && (py >= 0) && (py < height))
+                    if ((px >= 0) and (px < width) and (py >= 0) and (py < height))
                     {
                         cover = static_cast<uchar>(get_group_cover(px * MAP_RATIO, py * MAP_RATIO));
 
@@ -362,7 +362,7 @@ void SetupOccupationMap(void)
     C_Button *but;
     C_Bitmap *bmp;
 
-    if (gOccupationMap == NULL && (TheCampaign.TheaterSizeX && TheCampaign.TheaterSizeY && TheCampaign.CampMapData))
+    if (gOccupationMap == NULL and (TheCampaign.TheaterSizeX and TheCampaign.TheaterSizeY and TheCampaign.CampMapData))
     {
         // Create Occupation map...
         gOccupationMap = CreateOccupationMap(1, TheCampaign.TheaterSizeX / MAP_RATIO, TheCampaign.TheaterSizeY / MAP_RATIO, 16);
@@ -500,7 +500,7 @@ short GetMapTeam(short x, short y)
     pixel = TheCampaign.CampMapData[y * width + x];
     pixel = static_cast<uchar>((pixel >>(bit * 4)) & 0x0f);
 
-    if (pixel > 0 && pixel < NUM_TEAMS)
+    if (pixel > 0 and pixel < NUM_TEAMS)
         return(pixel);
 
     // KCK: Added this to try and avoid accidental painting of team 0 stuff
@@ -509,12 +509,12 @@ short GetMapTeam(short x, short y)
     {
         indx = (y + tryy[i]) * width + x + tryx[i];
 
-        if (indx >= 0 && indx < TheCampaign.CampMapSize)
+        if (indx >= 0 and indx < TheCampaign.CampMapSize)
         {
             pixel = TheCampaign.CampMapData[indx];
             pixel = static_cast<uchar>((pixel >>(bit * 4)) & 0x0f);
 
-            if (pixel > 0 && pixel < NUM_TEAMS)
+            if (pixel > 0 and pixel < NUM_TEAMS)
                 return(pixel);
         }
     }
@@ -537,7 +537,7 @@ void UpdateObjectiveOwnership()
 
         team = static_cast<uchar>(GetMapTeam(x, y));
 
-        if ((team < NUM_TEAMS) && (TeamInfo[team]))
+        if ((team < NUM_TEAMS) and (TeamInfo[team]))
         {
             if (obj->GetOwner() not_eq team)
                 obj->SetOwner(team);
@@ -581,7 +581,7 @@ void UpdateUnitOwnership(void)
     {
         theUnit->GetLocation(&unitX, &unitY);
         team = GetOwner(TheCampaign.CampMapData, unitX, unitY);
-        ShiAssert(team < NUM_TEAMS && TeamInfo[team]);
+        ShiAssert(team < NUM_TEAMS and TeamInfo[team]);
         theUnit->SetOwner(team);
 
         theUnit = GetNextUnit(&myit);

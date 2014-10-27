@@ -153,7 +153,7 @@ void SetupTeamFlags()
     for (i = 0; i < NUM_TEAMS; i++)
     {
         // Setup flags used
-        if (TeamInfo[i] && (TeamInfo[i]->flags & TEAM_ACTIVE))
+        if (TeamInfo[i] and (TeamInfo[i]->flags & TEAM_ACTIVE))
         {
             if (EditMap)
                 EditMap->SetImage(i, FlagImageID[TeamInfo[i]->GetFlag()][SMALL_HORIZ]);
@@ -304,7 +304,7 @@ void SetupTeamListValues()
 
         for (i = 0; i < NUM_TEAMS; i++)
         {
-            if (TeamInfo[i] && (TeamInfo[i]->flags & TEAM_ACTIVE))
+            if (TeamInfo[i] and (TeamInfo[i]->flags & TEAM_ACTIVE))
             {
                 if (FlagImageID[TeamInfo[i]->GetFlag()][FLAG_STATUS])
                     TeamInfo[i]->SetFlag(GetUnusedFlag());
@@ -450,7 +450,7 @@ void MakeNewTeamCB(long, short hittype, C_Base *)
 
     i = 1;
 
-    while (TeamInfo[i] && i < NUM_TEAMS)
+    while (TeamInfo[i] and i < NUM_TEAMS)
         i++;
 
     if (i < NUM_TEAMS)
@@ -507,7 +507,7 @@ static void RemoveTeamCB(long, short hittype, C_Base *)
 
     for (i = 0; i < NUM_TEAMS; i++)
     {
-        if (TeamInfo[i] && (TeamInfo[i]->flags & TEAM_ACTIVE))
+        if (TeamInfo[i] and (TeamInfo[i]->flags & TEAM_ACTIVE))
             TeamCount++;
     }
 
@@ -557,7 +557,7 @@ static void RemoveTeamCB(long, short hittype, C_Base *)
     }
 
     // Pick a team to give all our stuff to.
-    for (i = 7; i < NUM_TEAMS && !TeamInfo[i]; i--);
+    for (i = 7; i < NUM_TEAMS and !TeamInfo[i]; i--);
 
     new_owner = i;
 
@@ -790,12 +790,12 @@ static void SetTeamNameCB(long, short hittype, C_Base *base)
 {
     C_EditBox *ebox;
 
-    if (hittype not_eq DIK_RETURN && hittype)
+    if (hittype not_eq DIK_RETURN and hittype)
         return;
 
     ebox = (C_EditBox*)base;
 
-    if (ebox && TeamInfo[gSelectedTeam])
+    if (ebox and TeamInfo[gSelectedTeam])
         TeamInfo[gSelectedTeam]->SetName(ebox->GetText());
 
     UpdateTeamName(gSelectedTeam);
@@ -811,7 +811,7 @@ static void SetTeamStatementCB(long, short hittype, C_Base *base)
 
     ebox = (C_EditBox*)base;
 
-    if (ebox && TeamInfo[gSelectedTeam])
+    if (ebox and TeamInfo[gSelectedTeam])
         TeamInfo[gSelectedTeam]->SetMotto(ebox->GetText());
 }
 
@@ -826,7 +826,7 @@ static void SetTeamExperience(long ID, short hittype, C_Base *base)
     lbox = (C_ListBox*)base;
     int value = 0;
 
-    if (lbox && TeamInfo[gSelectedTeam])
+    if (lbox and TeamInfo[gSelectedTeam])
     {
         switch (lbox->GetTextID())
         {

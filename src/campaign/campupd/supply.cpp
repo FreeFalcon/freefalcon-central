@@ -73,7 +73,7 @@ int ProduceSupplies(CampaignTime deltaTime)
 
             //Cobra Added Army, depot, and port per JimG
             if ((type == TYPE_FACTORY or type == TYPE_ARMYBASE or type == TYPE_DEPOT or type == TYPE_PORT)
-                && o->GetObjectiveOldown() == o->GetOwner()) // Supply
+                and o->GetObjectiveOldown() == o->GetOwner()) // Supply
             {
                 if (g_bPowerGrid)
                 {
@@ -132,7 +132,7 @@ int ProduceSupplies(CampaignTime deltaTime)
                     }
                 }
             }
-            else if (type == TYPE_REFINERY && o->GetObjectiveOldown() == o->GetOwner()) // Fuel
+            else if (type == TYPE_REFINERY and o->GetObjectiveOldown() == o->GetOwner()) // Fuel
             {
                 if (g_bPowerGrid)
                 {
@@ -266,7 +266,7 @@ int SendSupply(Objective s, Objective d, int *supply, int *fuel)
     PathClass path;
     int i, l, n, loss, type;
 
-    if (!*supply && !*fuel)
+    if (!*supply and !*fuel)
         return 0;
 
     if (GetObjectivePath(&path, s, d, Foot, s->GetTeam(), PATH_MARINE) < 1)
@@ -290,7 +290,7 @@ int SendSupply(Objective s, Objective d, int *supply, int *fuel)
             *fuel = *fuel * (100 - l) / 100;
         }
 
-        if (!*supply && !*fuel)
+        if (!*supply and !*fuel)
             return 0;
     }
 
@@ -304,7 +304,7 @@ void SupplyUnit(Unit u, int sneed, int supply, int fneed, int fuel)
 
     if (u->IsBattalion() or u->IsSquadron())
     {
-        if (!supply && !fuel)
+        if (!supply and !fuel)
             return;
 
         // KCK: We can add supply and fuel directly now, since we're asserting all
@@ -386,14 +386,14 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
 
         while (unit)
         {
-            if (unit->GetTeam() == who && (unit->IsBattalion() or unit->IsSquadron()))
+            if (unit->GetTeam() == who and (unit->IsBattalion() or unit->IsSquadron()))
             {
                 sneeded += unit->GetUnitSupplyNeed(FALSE);
                 fneeded += unit->GetUnitFuelNeed(FALSE);
                 rneeded += unit->GetFullstrengthVehicles() - unit->GetTotalVehicles();
 
                 // A.S. begin
-                if (unit->IsSquadron() && NoTypeBonusRepl) // A.S. extra calculation for squadrons
+                if (unit->IsSquadron() and NoTypeBonusRepl) // A.S. extra calculation for squadrons
                 {
                     rneeded_a += unit->GetFullstrengthVehicles() - unit->GetTotalVehicles();
                 }
@@ -491,7 +491,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
         {
             // We only supply/repair Battalions and Squadrons
             if (
-                unit->GetTeam() == who && (unit->IsBattalion() or unit->IsSquadron()) &&
+                unit->GetTeam() == who and (unit->IsBattalion() or unit->IsSquadron()) &&
                 TheCampaign.CurrentTime - unit->GetLastResupplyTime() > unit->GetUnitSupplyTime()
             )
             {
@@ -533,7 +533,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
                         prob = rand() % 100;
                         repl_a = FloatToInt32((unit->GetFullstrengthVehicles() - unit->GetTotalVehicles()) * (lambda) * rratio_a);
 
-                        if (TeamInfo[who]->GetReplacementsAvail() >= 1  && prob < 51  && (((float)unit->GetTotalVehicles()) / unit->GetFullstrengthVehicles() <= 0.8F))  // rounding up with probability 0.5
+                        if (TeamInfo[who]->GetReplacementsAvail() >= 1  and prob < 51  and (((float)unit->GetTotalVehicles()) / unit->GetFullstrengthVehicles() <= 0.8F))  // rounding up with probability 0.5
                             repl_a = FloatToInt32((float) ceil((unit->GetFullstrengthVehicles() - unit->GetTotalVehicles()) * (lambda) * rratio_a));
 
                         if (repl_a > 0)
@@ -548,7 +548,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
                         prob = rand() % 100;
                         repl_v = FloatToInt32((unit->GetFullstrengthVehicles() - unit->GetTotalVehicles()) * (1 - lambda) * rratio_v);
 
-                        if (TeamInfo[who]->GetReplacementsAvail() > 12  && prob < 51  && (((float)unit->GetTotalVehicles()) / unit->GetFullstrengthVehicles() <= 0.85F))  // rounding up
+                        if (TeamInfo[who]->GetReplacementsAvail() > 12  and prob < 51  and (((float)unit->GetTotalVehicles()) / unit->GetFullstrengthVehicles() <= 0.85F))  // rounding up
                             repl_v = FloatToInt32((float) ceil((unit->GetFullstrengthVehicles() - unit->GetTotalVehicles()) * (1 - lambda) * rratio_v));
 
                         if (repl_v > 0)

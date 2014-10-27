@@ -28,7 +28,7 @@ ListElementClass::~ListElementClass(void)
 
 void ListElementClass::SetUserData(void *newData)
 {
-    if (user_data && (flags & LADT_FREE_USER_DATA))
+    if (user_data and (flags & LADT_FREE_USER_DATA))
         delete user_data;
 
     user_data = newData;
@@ -93,7 +93,7 @@ void ListClass::Insert(ListElementClass *newElement)
         {
             ListNode current = front;
 
-            while (current && current->key < newElement->key)
+            while (current and current->key < newElement->key)
                 current = current->next;
 
             ShiAssert(current not_eq front);
@@ -200,13 +200,13 @@ int ListClass::SanityCheck(void)
 {
     ListElementClass *cur, *next;
 
-    if (!front && !end)
+    if (!front and !end)
         return 1;
 
-    if (front == end && (front->prev or front->next))
+    if (front == end and (front->prev or front->next))
         return 0;
 
-    if ((front && !end) or (!front && end))
+    if ((front and !end) or (!front and end))
         return 0;
 
     if (front == (void*)0xdddddddd or front == (void*)0xfcfcfcfc)
@@ -218,7 +218,7 @@ int ListClass::SanityCheck(void)
     cur = front;
     next = cur->next;
 
-    while (cur && next)
+    while (cur and next)
     {
         if (next->prev not_eq cur)
             return 0;
@@ -230,7 +230,7 @@ int ListClass::SanityCheck(void)
     cur = end;
     next = cur->prev;
 
-    while (cur && next)
+    while (cur and next)
     {
         if (next->next not_eq cur)
             return 0;

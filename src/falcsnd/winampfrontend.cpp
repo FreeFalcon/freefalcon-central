@@ -26,7 +26,7 @@ WinAmpFrontEnd::WinAmpFrontEnd()
     for (int i = 0; i < 2; i++)
         sprintf(DEDString[i], "Not initialized");
 
-    if ((g_nWinAmpInitVolume >= 0) && (g_nWinAmpInitVolume <= 255))
+    if ((g_nWinAmpInitVolume >= 0) and (g_nWinAmpInitVolume <= 255))
         volume = g_nWinAmpInitVolume;
     else
         volume = INITIAL_VOLUME;
@@ -134,7 +134,7 @@ void WinAmpFrontEnd::Next()
 /*****************************************************************************/
 void WinAmpFrontEnd::VolUp()
 {
-    if ((ampexists) && (volume < 255))
+    if ((ampexists) and (volume < 255))
     {
         volume++;
         SendMessage(winamp_win, WM_COMMAND, WINAMP_VOLUMEUP, 0);
@@ -145,7 +145,7 @@ void WinAmpFrontEnd::VolUp()
 /*****************************************************************************/
 void WinAmpFrontEnd::VolDown()
 {
-    if ((ampexists) && (volume > 0))
+    if ((ampexists) and (volume > 0))
     {
         volume--;
         SendMessage(winamp_win, WM_COMMAND, WINAMP_VOLUMEDOWN, 0);
@@ -223,7 +223,7 @@ void WinAmpFrontEnd::copyCurTitle()
         p--;
     }
 
-    while (p >= this_title && *p == ' ')
+    while (p >= this_title and *p == ' ')
     {
         p--;
     }
@@ -273,7 +273,7 @@ char* WinAmpFrontEnd::getDEDTitle(const int theLine)
     if (!ampexists)
         return "No WinAMP window found !";
 
-    if ((theLine not_eq 0) && (theLine not_eq 1))
+    if ((theLine not_eq 0) and (theLine not_eq 1))
         return 0;
 
     return DEDString[theLine];

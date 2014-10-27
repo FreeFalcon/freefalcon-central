@@ -82,7 +82,7 @@ int SMSClass::DropBomb(int allowRipple)
         }
     }
 
-    if (curWeapon && fabs(ownship->Roll()) < 60.0F * DTR)
+    if (curWeapon and fabs(ownship->Roll()) < 60.0F * DTR)
     {
         F4Assert(curWeapon->IsBomb());
 
@@ -128,7 +128,7 @@ int SMSClass::DropBomb(int allowRipple)
         AircraftClass *self = ((AircraftClass*)playerAC);
 
         //AircraftClass *self = ((AircraftClass*)ownship->DriveEntity);
-        if (theBomb && ownship->GetFCC())
+        if (theBomb and ownship->GetFCC())
         {
             // Cobra - targets for all
             if (theBomb->IsSetBombFlag(BombClass::IsGPS)
@@ -180,7 +180,7 @@ int SMSClass::DropBomb(int allowRipple)
         vc = GetVehicleClassData(ownship->Type() - VU_LAST_ENTITY_TYPE);
         visFlag = vc->VisibleFlags;
 
-        if (visFlag & (1 << curHardpoint) && theBomb->drawPointer)
+        if (visFlag & (1 << curHardpoint) and theBomb->drawPointer)
         {
             // Detach visual from parent
             hardPoint[curHardpoint]->DetachWeaponBSP(theBomb.get()); // MLR 2/21/2004 -
@@ -190,7 +190,7 @@ int SMSClass::DropBomb(int allowRipple)
              OTWDriver.DetachObject(hardPoint[curHardpoint]->GetRackOrPylon(),
              (DrawableBSP*)(theBomb->drawPointer), theBomb->GetRackSlot());// MLR 2/20/2004 - added OrPylon
             }
-            else if (ownship->drawPointer && curHardpoint && theBomb->drawPointer)
+            else if (ownship->drawPointer and curHardpoint and theBomb->drawPointer)
             {
              OTWDriver.DetachObject((DrawableBSP*)(ownship->drawPointer), (DrawableBSP*)(theBomb->drawPointer), slotId);
             }
@@ -252,10 +252,10 @@ int SMSClass::DropBomb(int allowRipple)
         }
 
         // Want to drop a pair - No pairs w/ only one rack of bombs unless from centerline
-        //if (pair && allowRipple && (curHardpoint not_eq matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
+        //if (pair and allowRipple and (curHardpoint not_eq matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
         // Cobra -
-        //if (GetAGBPair() && allowRipple && (curHardpoint not_eq matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
-        if (GetAGBPair() && (curHardpoint not_eq matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
+        //if (GetAGBPair() and allowRipple and (curHardpoint not_eq matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
+        if (GetAGBPair() and (curHardpoint not_eq matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
         {
             theBomb.reset((BombClass *)curWeapon.get());
 
@@ -277,11 +277,11 @@ int SMSClass::DropBomb(int allowRipple)
                 // in case the target is aggregated and an AI is bombing it
 
                 //Wombat778 03-09-04 Copy the current ground designated point into the bomb
-                if (theBomb && ownship->GetFCC())
+                if (theBomb and ownship->GetFCC())
                 {
                     // Cobra - targets for all
                     //if (theBomb->IsSetBombFlag(BombClass::IsGPS))
-                    //if (ownship->IsPlayer() && (theBomb->IsSetBombFlag(BombClass::IsGPS)
+                    //if (ownship->IsPlayer() and (theBomb->IsSetBombFlag(BombClass::IsGPS)
                     // FRB - for all
                     if ((theBomb->IsSetBombFlag(BombClass::IsGPS) or theBomb->IsSetBombFlag(BombClass::IsJSOW)))
                     {

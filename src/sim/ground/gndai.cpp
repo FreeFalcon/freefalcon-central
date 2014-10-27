@@ -300,8 +300,8 @@ GNDAIClass *NewGroundAI(GroundClass *us, int position, BOOL isFirst, int skill)
     if (position)
     {
         // Check if our leader exists -
-        //while (position && !simb[BattalionHeir[position].leader_idx]) // JB 010220 CTD
-        while (position && BattalionHeir[position].leader_idx >= 0 && !simb[BattalionHeir[position].leader_idx]) // JB 010220 CTD
+        //while (position and !simb[BattalionHeir[position].leader_idx]) // JB 010220 CTD
+        while (position and BattalionHeir[position].leader_idx >= 0 and !simb[BattalionHeir[position].leader_idx]) // JB 010220 CTD
             position = BattalionHeir[position].leader_idx;
 
         if (BattalionHeir[position].leader_idx >= 0) // JB 001203 //+
@@ -434,7 +434,7 @@ GNDAIClass::GNDAIClass(GroundClass *s, GNDAIClass *l, short r, int unit_id, int 
         // If we can't move, set ourselves to halted
         moveState = GNDAI_MOVE_HALTED;
     }
-    else if (SimDriver.RunningCampaignOrTactical() && !parent_unit->IsTaskForce())
+    else if (SimDriver.RunningCampaignOrTactical() and !parent_unit->IsTaskForce())
     {
         moveState = GNDAI_MOVE_GENERAL;
     }
@@ -458,7 +458,7 @@ void GNDAIClass::SetLeader(GNDAIClass* newLeader)
     if (newLeader not_eq oldLeader)
     {
     leader = newLeader;
-    if (oldLeader && oldLeader->self not_eq self)
+    if (oldLeader and oldLeader->self not_eq self)
     {
     VuDeReferenceEntity(oldLeader->self);
     }
@@ -546,7 +546,7 @@ void GNDAIClass::ProcessTargeting(void)
     //        flag so the visual object can change state
     //        too.  Should have an intermediate state with
     //        no motion OR firing to model "set up/tear down".
-    if (self->isTowed && (self->GetVt() > 0.1f) && !g_bFireOntheMove)
+    if (self->isTowed and (self->GetVt() > 0.1f) and !g_bFireOntheMove)
     {
         self->SetTarget(NULL);
         return;
@@ -620,7 +620,7 @@ void GNDAIClass::ProcessTargeting(void)
             {
                 player = (AircraftClass*) session->GetPlayerEntity();
 
-                if (player && player->IsAirplane() && GetRoE(who, player->GetTeam(), ROE_GROUND_FIRE) == ROE_ALLOWED)
+                if (player and player->IsAirplane() and GetRoE(who, player->GetTeam(), ROE_GROUND_FIRE) == ROE_ALLOWED)
                 {
                     int react, det;
                     float d;
@@ -667,7 +667,7 @@ void GNDAIClass::ProcessTargeting(void)
 
     // Decide if we want to shoot at the battalion's air or ground target
     // If we are an emitter, we always choose the airtarget
-    if (self->isGroundCapable && (!self->isEmitter or self->isShip))   // JPO let ships decide.
+    if (self->isGroundCapable and (!self->isEmitter or self->isShip))   // JPO let ships decide.
     {
         if (self->isAirCapable)
         {
@@ -730,7 +730,7 @@ void GNDAIClass::ProcessTargeting(void)
 
     if (self->targetPtr)
     {
-        if (self->isEmitter && !self->targetPtr->BaseData()->OnGround())
+        if (self->isEmitter and !self->targetPtr->BaseData()->OnGround())
         {
             RadarClass* radar = (RadarClass*)FindSensor(self, SensorClass::Radar);
             ShiAssert(radar);
@@ -759,7 +759,7 @@ void GNDAIClass::ProcessTargeting(void)
             if (
                 localData->ataFrom == 0.0f &&
                 localData->az == 0.0f  &&
-                localData->el == 0.0f && localData->range == 0.0f
+                localData->el == 0.0f and localData->range == 0.0f
             )
             {
                 CalcRelAzElRangeAta(self, self->targetPtr);
@@ -911,7 +911,7 @@ void GNDAIClass::ProcessTargeting(void)
 #endif
         }
 
-        if ((!self->isEmitter or self->isAirCapable) && this not_eq battalionCommand)
+        if ((!self->isEmitter or self->isAirCapable) and this not_eq battalionCommand)
         {
             self->SelectWeapon(FALSE);
             SimWeaponClass *theWeapon = self->Sms->GetCurrentWeapon();
@@ -952,7 +952,7 @@ void GNDAIClass::Process(void)
     // edg: I'm not entirely sure this is working correctly in IA.
     // additionally check for leader == NULL ( meaning I'm a batallion )
     // and follow waypoints....
-    if (leader == NULL && self->curWaypoint && rank not_eq GNDAI_BATTALION_COMMANDER)
+    if (leader == NULL and self->curWaypoint and rank not_eq GNDAI_BATTALION_COMMANDER)
     {
         rank = GNDAI_BATTALION_COMMANDER;
     }
@@ -976,7 +976,7 @@ void GNDAIClass::Process(void)
                 break;
         }
 
-    if ((moveState == GNDAI_MOVE_WAYPOINT) && (ideal_x == self->XPos()) && (ideal_y == self->YPos()))
+    if ((moveState == GNDAI_MOVE_WAYPOINT) and (ideal_x == self->XPos()) and (ideal_y == self->YPos()))
     {
         // if in waypoint mode choose another
         if (self->curWaypoint)
@@ -1031,7 +1031,7 @@ void GNDAIClass::Order_Battalion(void)
         if (distToDestSqu < 50.0f)
         {
             // Move towards other ground targets (first priority)
-            if (self->targetPtr && self->targetPtr->BaseData()->OnGround())
+            if (self->targetPtr and self->targetPtr->BaseData()->OnGround())
             {
                 deltaX = self->targetPtr->BaseData()->XPos()  - self->XPos() ;
                 deltaY = self->targetPtr->BaseData()->YPos()  - self->YPos() ;
@@ -1064,7 +1064,7 @@ void GNDAIClass::Order_Battalion(void)
                     ideal_y = self->YPos() + deltaY;
                 }
             }
-            else if ((moveState == GNDAI_MOVE_GENERAL) && parent_unit)
+            else if ((moveState == GNDAI_MOVE_GENERAL) and parent_unit)
             {
                 // Follow path
                 lastGridX = gridX;
@@ -1159,7 +1159,7 @@ void GNDAIClass::Order_Battalion(void)
 
         if (parent_unit->IsBattalion())
         {
-            if (GetCover(cx, cy) == Water && !(o && o->GetType() == TYPE_BRIDGE))
+            if (GetCover(cx, cy) == Water and !(o and o->GetType() == TYPE_BRIDGE))
             {
                 // that's it, we don't move anymore
                 moveState = GNDAI_MOVE_HALTED;
@@ -1313,7 +1313,7 @@ int GNDAIClass::CheckThrough(void)
         through_y = battalionCommand->through_y;
     }
 
-    if (!(moveFlags & GNDAI_WENT_THROUGH) && through_x && through_y)
+    if (!(moveFlags & GNDAI_WENT_THROUGH) and through_x and through_y)
     {
         ideal_x = through_x;
         ideal_y = through_y;
@@ -1379,14 +1379,14 @@ void GNDAIClass::Move_Towards_Dest(void)
     // Check if we need to turn
     delh = ideal_h - self->Yaw();
 
-    if (!(moveFlags & GNDAI_MOVE_FIXED_POSITIONS) && delh not_eq 0.0F)
+    if (!(moveFlags & GNDAI_MOVE_FIXED_POSITIONS) and delh not_eq 0.0F)
     {
-        //if (delh >= PI or (delh < 0 && delh > -PI))
+        //if (delh >= PI or (delh < 0 and delh > -PI))
         // rotvel = -1.0F * OPTIMAL_VEHICLE_ROTATION;
         //else if (delh <= -PI or delh > 0)
         // rotvel = OPTIMAL_VEHICLE_ROTATION;
 
-        if (delh >= PI or (delh < 0 && delh > -PI))
+        if (delh >= PI or (delh < 0 and delh > -PI))
         {
             rotvel *= -1.0F;
         }
@@ -1460,7 +1460,7 @@ void GNDAIClass::Move_Towards_Dest(void)
         //MI
         /*
         // sfr: removed VT
-        if(g_bRealisticAvionics && g_bAGRadarFixes){
+        if(g_bRealisticAvionics and g_bAGRadarFixes){
          self->SetVt(speed);
         }*/
     }
@@ -1469,7 +1469,7 @@ void GNDAIClass::Move_Towards_Dest(void)
     //MI
     else
     {
-     if(g_bRealisticAvionics && g_bAGRadarFixes){
+     if(g_bRealisticAvionics and g_bAGRadarFixes){
      self->SetVt(0.0F);
      }
     }*/
@@ -1514,7 +1514,7 @@ void FindVehiclePosition(SimInitDataClass *initData)
     // KCK: for now, place in formation (essentially, option 3 without checking for obsticals)
     cur_leader_idx = BattalionHeir[position].leader_idx;
 
-    while (cur_leader_idx >= 0 && position)
+    while (cur_leader_idx >= 0 and position)
     {
         if (BattalionHeir[position].rank == GNDAI_SQUAD_LEADER)
         {
@@ -1645,7 +1645,7 @@ void GNDAIClass::PromoteSubordinates(void)
             VuListIterator vehicleWalker(self->GetCampaignObject()->GetComponents());
             theObj = (GroundClass*)vehicleWalker.GetFirst();
 
-            while (theObj && theObj not_eq self && (theObj->IsExploding() or theObj->IsDead()))
+            while (theObj and theObj not_eq self and (theObj->IsExploding() or theObj->IsDead()))
                 theObj = (GroundClass*)vehicleWalker.GetNext();
         }
 

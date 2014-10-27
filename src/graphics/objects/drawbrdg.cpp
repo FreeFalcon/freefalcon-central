@@ -313,13 +313,13 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
     checkDistance = distance + 2.0f * Radius();
     obj = prev;
 
-    while (obj && (obj->distance < checkDistance))
+    while (obj and (obj->distance < checkDistance))
     {
 
         // Pull object down from our parent list if it's inside our area
         objNext = obj->prev;
 
-        if (ObjectInside(obj) && (obj->GetClass() == GroundVehicle))
+        if (ObjectInside(obj) and (obj->GetClass() == GroundVehicle))
         {
             parentList->RemoveObject(obj);
             dynamicObjects.InsertObject(obj);
@@ -334,13 +334,13 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
     checkDistance = distance;
     obj = next;
 
-    while (obj && (obj->distance > checkDistance))
+    while (obj and (obj->distance > checkDistance))
     {
 
         // Pull object down from our parent list if it's inside our area
         objNext = obj->next;
 
-        if (ObjectInside(obj) && (obj->GetClass() == GroundVehicle))
+        if (ObjectInside(obj) and (obj->GetClass() == GroundVehicle))
         {
             parentList->RemoveObject(obj);
             dynamicObjects.InsertObject(obj);
@@ -385,7 +385,7 @@ BOOL DrawableBridge::ObjectInside(DrawableObject *obj)
     obj->GetPosition(&objPos);
 
     // return our conclusion
-    return ((objPos.x >= minX) && (objPos.x <= maxX) && (objPos.y >= minY) && (objPos.y <= maxY));
+    return ((objPos.x >= minX) and (objPos.x <= maxX) and (objPos.y >= minY) and (objPos.y <= maxY));
 }
 
 

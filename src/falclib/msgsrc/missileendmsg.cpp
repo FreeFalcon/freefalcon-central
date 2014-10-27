@@ -112,7 +112,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
     // what happened to the missile (or bomb)
 
     // first check to see if it hit ground and if its a missile
-    if (dataBlock.groundType >= 0 && (type == TYPE_MISSILE))
+    if (dataBlock.groundType >= 0 and (type == TYPE_MISSILE))
     {
         pos.z -= 40.0f;
 
@@ -155,7 +155,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
 
     // MISSILES
     /*
-    if ( type == TYPE_MISSILE && stype == STYPE_ROCKET  )
+    if ( type == TYPE_MISSILE and stype == STYPE_ROCKET  )
     {
      // try and "back up" the placement for explosion so that
      // it will sort before the feature
@@ -566,7 +566,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
     {
         //Cobra TJL add in SFX_NUKE and comment out all these.
         //MI Nuke explosions
-        if (wc && wc->DamageType == NuclearDam)
+        if (wc and wc->DamageType == NuclearDam)
         {
             /*
             OTWDriver.AddSfxRequest(
@@ -772,7 +772,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
         }
 
         // hit building
-        if (dataBlock.endCode == FeatureImpact && wc->DamageType not_eq HighExplosiveDam)
+        if (dataBlock.endCode == FeatureImpact and wc->DamageType not_eq HighExplosiveDam)
         {
             pos.x -= dataBlock.xDelta * 0.32f;
             pos.y -= dataBlock.yDelta * 0.32f;

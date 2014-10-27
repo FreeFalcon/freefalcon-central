@@ -71,7 +71,7 @@ EventElement* ReadEventFile (char* filename, uchar types[EVT_MESSAGE_BITS])
 
 void InsertEventToList(EventElement* theEvent, EventElement* baseEvent)
 {
-    ShiAssert(baseEvent && theEvent);
+    ShiAssert(baseEvent and theEvent);
 
     if (baseEvent)
     {
