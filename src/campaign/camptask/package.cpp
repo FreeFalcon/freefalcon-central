@@ -2073,13 +2073,13 @@ void FinalizeFlight(Unit flight, int flights)
     while (w)
     {
         if (w->GetWPFlags() & WPF_BREAKPOINT && !assem)
-            w->SetWPFlags(w->GetWPFlags() ^ WPF_BREAKPOINT); // Clear our flag
+            w->SetWPFlags(w->GetWPFlags() xor WPF_BREAKPOINT); // Clear our flag
 
         if (w->GetWPFlags() & WPF_ASSEMBLE && !assem)
         {
             w->SetWPAction(WP_NOTHING); // Clear our action
             w->SetWPRouteAction(MissionData[flight->GetUnitMission()].routewp);
-            w->SetWPFlags(w->GetWPFlags() ^ WPF_ASSEMBLE); // Clear our flag
+            w->SetWPFlags(w->GetWPFlags() xor WPF_ASSEMBLE); // Clear our flag
         }
 
         if (w->GetWPAction() == WP_NOTHING && !(w->GetWPFlags() & 0x4FF))

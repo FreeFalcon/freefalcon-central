@@ -5,6 +5,7 @@
 
     Provides clipping functions for 3D polygons of various types.
 \***************************************************************************/
+#include <ciso646>
 #include "stdafx.h"
 #include "StateStack.h"
 #include "ColorBank.h"
@@ -440,7 +441,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (CLIP_NEAR & (TheStateStack.ClipInfoPool[p->xyz].clipFlag ^ TheStateStack.ClipInfoPool[v->xyz].clipFlag))
+            if (CLIP_NEAR & (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
             {
                 ShiAssert(TheStateStack.IsValidPosIndex(extraVertIdx.xyz));
                 *nextOut = extraVertIdx;
@@ -488,7 +489,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (CLIP_BOTTOM & (TheStateStack.ClipInfoPool[p->xyz].clipFlag ^ TheStateStack.ClipInfoPool[v->xyz].clipFlag))
+            if (CLIP_BOTTOM & (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
             {
                 ShiAssert(TheStateStack.IsValidPosIndex(extraVertIdx.xyz));
                 *nextOut = extraVertIdx;
@@ -529,7 +530,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (CLIP_TOP & (TheStateStack.ClipInfoPool[p->xyz].clipFlag ^ TheStateStack.ClipInfoPool[v->xyz].clipFlag))
+            if (CLIP_TOP & (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
             {
                 ShiAssert(TheStateStack.IsValidPosIndex(extraVertIdx.xyz));
                 *nextOut = extraVertIdx;
@@ -570,7 +571,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (CLIP_RIGHT & (TheStateStack.ClipInfoPool[p->xyz].clipFlag ^ TheStateStack.ClipInfoPool[v->xyz].clipFlag))
+            if (CLIP_RIGHT & (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
             {
                 ShiAssert(TheStateStack.IsValidPosIndex(extraVertIdx.xyz));
                 *nextOut = extraVertIdx;
@@ -611,7 +612,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (CLIP_LEFT & (TheStateStack.ClipInfoPool[p->xyz].clipFlag ^ TheStateStack.ClipInfoPool[v->xyz].clipFlag))
+            if (CLIP_LEFT & (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
             {
                 ShiAssert(TheStateStack.IsValidPosIndex(extraVertIdx.xyz));
                 *nextOut = extraVertIdx;

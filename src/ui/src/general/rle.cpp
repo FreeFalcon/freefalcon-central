@@ -52,7 +52,7 @@ long CompressRLE8Bit(uchar *Src, uchar *Dest, long srcsize)
                 srcsize--;
             }
 
-            *Dest++ = static_cast<uchar>(count ^ 0xff);
+            *Dest++ = static_cast<uchar>(count xor 0xff);
             *Dest++ = data;
             Size += 2;
             run = 0;
@@ -77,7 +77,7 @@ long CompressRLE8Bit(uchar *Src, uchar *Dest, long srcsize)
         {
             if (run)
             {
-                *Dest++ = static_cast<uchar>(count ^ 0xff);
+                *Dest++ = static_cast<uchar>(count xor 0xff);
                 *Dest++ = data;
                 Size += 2;
             }
@@ -103,7 +103,7 @@ long CompressRLE8Bit(uchar *Src, uchar *Dest, long srcsize)
     {
         if (run)
         {
-            *Dest++ = static_cast<uchar>(count ^ 0xff);
+            *Dest++ = static_cast<uchar>(count xor 0xff);
             *Dest++ = data;
             Size += 2;
         }
@@ -208,7 +208,7 @@ long CompressRLE16Bit(WORD *Src, WORD *Dest, long srcsize)
                 srcsize -= sizeof(WORD);
             }
 
-            *Dest++ = static_cast<unsigned short>(count ^ 0xFFFF);
+            *Dest++ = static_cast<unsigned short>(count xor 0xFFFF);
             *Dest++ = data;
             Size += 2 * sizeof(WORD);
             run = 0;
@@ -233,7 +233,7 @@ long CompressRLE16Bit(WORD *Src, WORD *Dest, long srcsize)
         {
             if (run)
             {
-                *Dest++ = static_cast<unsigned short>(count ^ 0xFFFF);
+                *Dest++ = static_cast<unsigned short>(count xor 0xFFFF);
                 *Dest++ = data;
                 Size += 2 * sizeof(WORD);
             }
@@ -259,7 +259,7 @@ long CompressRLE16Bit(WORD *Src, WORD *Dest, long srcsize)
     {
         if (run)
         {
-            *Dest++ = static_cast<unsigned short>(count ^ 0xFFFF);
+            *Dest++ = static_cast<unsigned short>(count xor 0xFFFF);
             *Dest++ = data;
             Size += 2 * sizeof(WORD);
         }

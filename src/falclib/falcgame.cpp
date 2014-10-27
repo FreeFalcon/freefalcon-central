@@ -223,7 +223,7 @@ void FalconGameEntity::EncipherPassword(char *data, long size)
     int i;
 
     for (i = 0; i < size; i++)
-        data[i] = (char)((data[i] ^ PasswordKey1[i]) ^ PasswordKey2[i]);
+        data[i] = (char)((data[i] xor PasswordKey1[i]) xor PasswordKey2[i]);
 }
 
 long FalconGameEntity::CheckPassword(_TCHAR *passwd)

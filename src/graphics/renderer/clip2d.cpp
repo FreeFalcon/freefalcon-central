@@ -6,6 +6,7 @@
     This is a portion of the implemention for Render2D (see Render2D.h)
  These function provides 2D viewport clipping services.
 \***************************************************************************/
+#include <cISO646>
 #include "Render2D.h"
 
 
@@ -137,7 +138,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag ^ (*v)->clipFlag) & CLIP_BOTTOM)
+                if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_BOTTOM)
                 {
                     ShiAssert(extraVertCount < MAX_VERT_LIST);
                     *nextOut = &extraVerts[extraVertCount];
@@ -173,7 +174,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag ^ (*v)->clipFlag) & CLIP_TOP)
+                if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_TOP)
                 {
                     ShiAssert(extraVertCount < MAX_VERT_LIST);
                     *nextOut = &extraVerts[extraVertCount];
@@ -209,7 +210,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag ^ (*v)->clipFlag) & CLIP_RIGHT)
+                if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_RIGHT)
                 {
                     ShiAssert(extraVertCount < MAX_VERT_LIST);
                     *nextOut = &extraVerts[extraVertCount];
@@ -245,7 +246,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag ^ (*v)->clipFlag) & CLIP_LEFT)
+                if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_LEFT)
                 {
                     ShiAssert(extraVertCount < MAX_VERT_LIST);
                     *nextOut = &extraVerts[extraVertCount];

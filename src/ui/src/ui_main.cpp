@@ -1078,7 +1078,7 @@ static void LoadArtwork()
 static void LoadSoundFiles()
 {
     gMainParser->LoadSoundList("sounds.lst");
-    gSoundMgr->SetFlags(SND_FLY, gSoundMgr->GetFlags(SND_FLY) ^ SOUND_STOPONEXIT);
+    gSoundMgr->SetFlags(SND_FLY, gSoundMgr->GetFlags(SND_FLY) xor SOUND_STOPONEXIT);
 }
 
 static void LoadStringFiles()

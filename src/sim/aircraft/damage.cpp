@@ -324,7 +324,7 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 break;
 
             case 1: // Front, Left, Upper
-                failuresPossible = 2 ^ FaultClass::NumFaultListSubSystems - 1 -
+                failuresPossible = 2 xor FaultClass::NumFaultListSubSystems - 1 -
                                    (1 << FaultClass::dmux_fault) -
                                    (1 << FaultClass::eng_fault) -
                                    (1 << FaultClass::eng2_fault) -
@@ -375,7 +375,7 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 break;
 
             case 3:  // Front Right, Upper
-                failuresPossible = 2 ^ FaultClass::NumFaultListSubSystems - 1 -
+                failuresPossible = 2 xor FaultClass::NumFaultListSubSystems - 1 -
                                    (1 << FaultClass::dmux_fault) -
                                    (1 << FaultClass::eng_fault) -
                                    (1 << FaultClass::eng2_fault) -
@@ -412,7 +412,7 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 break;
 
             case 4: // Back, Left, Upper
-                failuresPossible = 2 ^ FaultClass::NumFaultListSubSystems - 1 -
+                failuresPossible = 2 xor FaultClass::NumFaultListSubSystems - 1 -
                                    (1 << FaultClass::hud_fault) -
                                    (1 << FaultClass::mfds_fault) -
                                    (1 << FaultClass::ufc_fault);
@@ -421,7 +421,7 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 break;
 
             case 5: // Front, Left, Lower
-                failuresPossible = 2 ^ FaultClass::NumFaultListSubSystems - 1 -
+                failuresPossible = 2 xor FaultClass::NumFaultListSubSystems - 1 -
                                    (1 << FaultClass::eng_fault) -
                                    (1 << FaultClass::eng2_fault) -
                                    (1 << FaultClass::hud_fault) -
@@ -454,7 +454,7 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 break;
 
             case 6:  // Back Right, Lower
-                failuresPossible = 2 ^ FaultClass::NumFaultListSubSystems - 1 -
+                failuresPossible = 2 xor FaultClass::NumFaultListSubSystems - 1 -
                                    (1 << FaultClass::hud_fault) -
                                    (1 << FaultClass::mfds_fault) -
                                    (1 << FaultClass::ufc_fault);
@@ -464,7 +464,7 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
             case 7:  // Front Right, Lower
             default:
-                failuresPossible = 2 ^ FaultClass::NumFaultListSubSystems - 1 -
+                failuresPossible = 2 xor FaultClass::NumFaultListSubSystems - 1 -
                                    (1 << FaultClass::eng_fault) -
                                    (1 << FaultClass::eng2_fault) -
                                    (1 << FaultClass::hud_fault) -
@@ -1130,7 +1130,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
             else i |= DAMAGEF16_LWING | DAMAGEF16_LSTAB;
         }
 
-        int j = i ^ 0x7f;
+        int j = i xor 0x7f;
         int k;
         int l = 1;
 

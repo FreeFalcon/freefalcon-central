@@ -78,7 +78,7 @@ public:
     }
     void SetFlagBitOff(long flags)
     {
-        Flags_ &= (0xffffffff ^ flags);
+        Flags_ &= (0xffffffff xor flags);
     }
     short GetCallingType()
     {

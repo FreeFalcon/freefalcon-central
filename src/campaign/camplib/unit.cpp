@@ -4982,7 +4982,7 @@ void UnitClass::BuildElements(void)
 
     for (i = 0; i < mv; i++)
     {
-        R = R ^ (class_data->NumElements[i]) << (i * 2);
+        R = R xor (class_data->NumElements[i]) << (i * 2);
     }
 
     roster = R;

@@ -339,7 +339,7 @@ void GlobalPositioningSystem::Update()
     CampEntity entity;
     UI_Refresher *cur;
 
-    GPS_Hash->SetCheck(GPS_Hash->GetCheck() ^ 1);
+    GPS_Hash->SetCheck(GPS_Hash->GetCheck() xor 1);
 
     UpdateDivisions();
 

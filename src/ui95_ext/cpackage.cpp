@@ -144,7 +144,7 @@ BOOL C_ATO_Package::Process(long ID, short HitType)
     if (HitType == C_TYPE_LMOUSEUP)
     {
         if (Section_)
-            SetWPState(static_cast<short>(WPState_ ^ 1));
+            SetWPState(static_cast<short>(WPState_ xor 1));
     }
 
     if (Callback_)

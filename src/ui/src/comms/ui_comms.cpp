@@ -2267,7 +2267,7 @@ static void PeopleSelectCB(long, short hittype, C_Base *)
     if (!player)
         return;
 
-    player->SetState(static_cast<short>(player->GetState() ^ 1));
+    player->SetState(static_cast<short>(player->GetState() xor 1));
     player->Refresh();
 }
 

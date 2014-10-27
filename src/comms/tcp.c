@@ -1395,7 +1395,7 @@ static int isHeader(char *data)
         }
         else
         {
-            ret = ((header->inv_size ^ header->size) == 0xFFFF) ? header->size : 0;
+            ret = ((header->inv_size xor header->size) == 0xFFFF) ? header->size : 0;
         }
     }
 

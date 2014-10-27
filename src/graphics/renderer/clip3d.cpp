@@ -8,6 +8,7 @@
  It is assumed that all 3D coordinates have been transformed such
  that the clipping volume is z >= 1 and -z <= x <= z and -z <= y <= z.
 \***************************************************************************/
+#include <cISO646>
 #include "Render3D.h"
 
 
@@ -70,7 +71,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (((*p)->clipFlag ^ (*v)->clipFlag) & CLIP_NEAR)
+            if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_NEAR)
             {
                 ShiAssert(extraVertCount < MAX_EXTRA_VERTS);
                 *nextOut = &extraVerts[extraVertCount];
@@ -176,7 +177,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag ^ (*v)->clipFlag) & CLIP_BOTTOM)
+                if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_BOTTOM)
                 {
                     ShiAssert(extraVertCount < MAX_EXTRA_VERTS);
                     *nextOut = &extraVerts[extraVertCount];
@@ -212,7 +213,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag ^ (*v)->clipFlag) & CLIP_TOP)
+                if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_TOP)
                 {
                     ShiAssert(extraVertCount < MAX_EXTRA_VERTS);
                     *nextOut = &extraVerts[extraVertCount];
@@ -248,7 +249,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag ^ (*v)->clipFlag) & CLIP_RIGHT)
+                if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_RIGHT)
                 {
                     ShiAssert(extraVertCount < MAX_EXTRA_VERTS);
                     *nextOut = &extraVerts[extraVertCount];
@@ -284,7 +285,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag ^ (*v)->clipFlag) & CLIP_LEFT)
+                if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_LEFT)
                 {
                     ShiAssert(extraVertCount < MAX_EXTRA_VERTS);
                     *nextOut = &extraVerts[extraVertCount];

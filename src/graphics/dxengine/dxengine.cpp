@@ -880,7 +880,7 @@ void CDXEngine::DrawSurface()
 
     // Selects changed Flags
     DXFlagsType ChangedFlags, DisabledFlags, EnabledFlags;
-    ChangedFlags.w = m_LastFlags.w ^ NewFlags.w;
+    ChangedFlags.w = m_LastFlags.w xor NewFlags.w;
     DisabledFlags.w = ChangedFlags.w & (compl NewFlags.w);
     EnabledFlags.w = ChangedFlags.w & NewFlags.w;
 

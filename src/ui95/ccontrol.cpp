@@ -859,7 +859,7 @@ void C_Base::BaseFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CNTL_SETFLAGTOGGLE:
-            SetFlags(GetFlags() ^ P[0]);
+            SetFlags(GetFlags() xor P[0]);
             break;
 
         case CNTL_SETFONT:

@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <windows.h>
 #include "chandler.h"
 
@@ -74,6 +75,7 @@ void IMAGE_RSC::Blit8BitFast(WORD *dest)
         stosw
         loop  loop_here
     };
+#define xor ^
 #endif
 }
 
@@ -437,7 +439,7 @@ void IMAGE_RSC::Blit16BitTransparentFast(WORD *dest)
 
     while (count--)
     {
-        if (*sptr ^ Owner->ColorKey_)
+        if (*sptr xor Owner->ColorKey_)
             *dptr++ = *sptr++;
         else
         {
@@ -586,7 +588,7 @@ void IMAGE_RSC::_Blit16BitTransparentTo32(long doffset, long dwidth, DWORD *dest
 
         while (i--)
         {
-            if (*sptr ^ Owner->ColorKey_)
+            if (*sptr xor Owner->ColorKey_)
             {
                 sc = *sptr++;
                 dc = RGB565toRGB8(sc);
@@ -662,7 +664,7 @@ void IMAGE_RSC::_Blit16BitTransparentPartTo32(long soffset, long scopy, long ssi
 
         while (i--)
         {
-            if (*sptr ^ Owner->ColorKey_)
+            if (*sptr xor Owner->ColorKey_)
             {
                 //*dptr++=*sptr++;
                 sc = *sptr++;
@@ -705,7 +707,7 @@ void IMAGE_RSC::Blit16BitTransparent(long doffset, long dwidth, WORD *dest)
 
         while (i--)
         {
-            if (*sptr ^ Owner->ColorKey_)
+            if (*sptr xor Owner->ColorKey_)
                 *dptr++ = *sptr++;
             else
             {
@@ -823,7 +825,7 @@ void IMAGE_RSC::Blit16BitTransparentPart(long soffset, long scopy, long ssize, l
 
         while (i--)
         {
-            if (*sptr ^ Owner->ColorKey_)
+            if (*sptr xor Owner->ColorKey_)
                 *dptr++ = *sptr++;
             else
             {
@@ -1352,7 +1354,7 @@ void IMAGE_RSC::Blend16BitTransparentFast(WORD *dest, long front, long back)
 
     while (count--)
     {
-        if (*sptr ^ Owner->ColorKey_)
+        if (*sptr xor Owner->ColorKey_)
         {
             WORD dc;
             dc = *dptr;
@@ -1481,7 +1483,7 @@ void IMAGE_RSC::Blend16BitTransparent(long doffset, long dwidth, WORD *dest, lon
 
         while (i--)
         {
-            if (*sptr ^ Owner->ColorKey_)
+            if (*sptr xor Owner->ColorKey_)
             {
                 WORD dc;
 
@@ -1637,7 +1639,7 @@ void IMAGE_RSC::Blend16BitTransparentPart(long soffset, long scopy, long ssize, 
 
         while (i--)
         {
-            if (*sptr ^ Owner->ColorKey_)
+            if (*sptr xor Owner->ColorKey_)
             {
                 WORD dc;
 
