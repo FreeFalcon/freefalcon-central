@@ -277,7 +277,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
 
             if (classPtr->dataType == DTYPE_VEHICLE)
             {
-                int iJammerStrenght = (((VehicleClassDataType*)(classPtr->dataPtr))->Name[14] & 0x7f);
+                int iJammerStrenght = (((VehicleClassDataType*)(classPtr->dataPtr))->Name[14] bitand 0x7f);
 
                 if (iJammerStrenght)
                     S /= (float)iJammerStrenght / 10.0f;

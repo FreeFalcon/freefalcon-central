@@ -160,7 +160,7 @@ void HeliBrain::GunsJink(void)
 
     if (jinkTime == -1)
     {
-        if (rand() & 1)
+        if (rand() bitand 1)
             newroll = -1.00f;
         else
             newroll = 1.00f;

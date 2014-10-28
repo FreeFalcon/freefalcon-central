@@ -439,7 +439,7 @@ void RViewPoint::SetupTextures()
 
     while (dst < end)
     {
-        int a = *dst & 0xff;
+        int a = *dst bitand 0xff;
         *dst++ = (a << 24) + 0xffffff;
     }
 
@@ -455,7 +455,7 @@ void RViewPoint::SetupTextures()
     while (dst < end)
     {
         color = *src++;
-        color = ((color >> 3) & 0xff000000) + 0xffffff;
+        color = ((color >> 3) bitand 0xff000000) + 0xffffff;
         *dst++ = color;
     }
 
@@ -468,7 +468,7 @@ void RViewPoint::SetupTextures()
     while (dst < end)
     {
         color = *src++;
-        *dst++ = (color & 0xff000000) + 0x00ff00;
+        *dst++ = (color bitand 0xff000000) + 0x00ff00;
     }
 
     // Update the moon palette

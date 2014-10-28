@@ -130,7 +130,7 @@ void GroundClass::WeaponKeepAlive(void)
                         UnSetGunFiring(i);
 
                         // debug....
-                        if (whatWasHit & TRACER_HIT_GROUND)
+                        if (whatWasHit bitand TRACER_HIT_GROUND)
                         {
                             MonoPrint("Tracer keepalive stopped.  Zpos = %3.3f Ground = %3.3f, GunZ = %3.3f\n",
                                       ZPos(),
@@ -216,7 +216,7 @@ BOOL GroundClass::DoWeapons(void)
                 // 2000-10-12 MODIFIED BY S.G. THIS IS TO SAY WE TOOK A TRACER GUN SHOT
                 // 2000-10-27 ADDED BY S.G.
                 // SO GUNS CAN HAVE DIFFERENT FIRE RATE... BUT NOT IN RP4 SO REMOVED FROM HERE AS WELL
-                //if (Gun->wcPtr->Flags & 0x80)
+                //if (Gun->wcPtr->Flags bitand 0x80)
                 return TRUE + 1; // Slow fire rate gun
                 //else
                 // return TRUE + 2; // Fast fire rate gun
@@ -290,7 +290,7 @@ BOOL GroundClass::DoWeapons(void)
 
                 // If the vehicle's VEH_USES_UNIT_RADAR flag is set,
                 // forget about your own (if you have one) and use the unit's radar vehicle
-                if (vc->Flags & VEH_USES_UNIT_RADAR)
+                if (vc->Flags bitand VEH_USES_UNIT_RADAR)
                 {
                     RadarDataSet* radarData = &radarDatFileTable[GetCampaignObject()->GetRadarType()];
 
@@ -487,7 +487,7 @@ int GroundClass::GunTrack(void)
     // if ( not target->OnGround() and !isAirDefense)
     float tracerError; // JB 010106
 
-    if ((((unsigned char *)Gun->wcPtr)[31] & 1) == (g_bToggleAAAGunFlag & 1) and !target->OnGround()) // 2002-03-12 MODIFIED BY S.G. Added the 'g_bToggleAAAGunFlag' check to possibly reverse the check. RP5 reversed the check so this deals with it
+    if ((((unsigned char *)Gun->wcPtr)[31] bitand 1) == (g_bToggleAAAGunFlag bitand 1) and !target->OnGround()) // 2002-03-12 MODIFIED BY S.G. Added the 'g_bToggleAAAGunFlag' check to possibly reverse the check. RP5 reversed the check so this deals with it
     {
         //float tracerError; // JB 010106
         tracerError = PRANDFloatPos() / (float)(gai->skillLevel + 1);
@@ -650,7 +650,7 @@ int GroundClass::GunTrack(void)
         //    target->OnGround() ? "Ground Unit" : "Air Unit" );
 
         // sound effect
-        if (rand() & 1)
+        if (rand() bitand 1)
             SoundPos.Sfx(SFX_BIGGUN1, 0, 1.0, 0);
         else
             SoundPos.Sfx(SFX_BIGGUN2, 0, 1.0, 0);
@@ -913,9 +913,9 @@ int GroundClass::MissileTrack(void)
         // SCR 11/20/98  Lets let the seeker and kinematics deal with this...
         /*
          // Check for aspect (KCK WARNING: This assumes ataFrom is -PI to PI, not 0 to 2*PI
-         if (wc->Flags & WEAP_FRONT_ASPECT and fabs(targetPtr->localData->ataFrom) > 90*DTR)
+         if (wc->Flags bitand WEAP_FRONT_ASPECT and fabs(targetPtr->localData->ataFrom) > 90*DTR)
          return FALSE;
-         if (wc->Flags & WEAP_REAR_ASPECT and fabs(targetPtr->localData->ataFrom) < 90*DTR)
+         if (wc->Flags bitand WEAP_REAR_ASPECT and fabs(targetPtr->localData->ataFrom) < 90*DTR)
          return FALSE;
         */
     }

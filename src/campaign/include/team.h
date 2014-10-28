@@ -199,7 +199,7 @@ public:
     };
     int IsSet(int val)
     {
-        return simFlags & val;
+        return simFlags bitand val;
     };
     void Set(int val)
     {
@@ -416,7 +416,7 @@ public:
     }
     int HasSatelites(void)
     {
-        return flags & TEAM_HASSATS;
+        return flags bitand TEAM_HASSATS;
     }
     ATM GetATM(void)
     {

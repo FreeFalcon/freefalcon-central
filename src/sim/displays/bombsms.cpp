@@ -180,7 +180,7 @@ int SMSClass::DropBomb(int allowRipple)
         vc = GetVehicleClassData(ownship->Type() - VU_LAST_ENTITY_TYPE);
         visFlag = vc->VisibleFlags;
 
-        if (visFlag & (1 << curHardpoint) and theBomb->drawPointer)
+        if (visFlag bitand (1 << curHardpoint) and theBomb->drawPointer)
         {
             // Detach visual from parent
             hardPoint[curHardpoint]->DetachWeaponBSP(theBomb.get()); // MLR 2/21/2004 -
@@ -428,7 +428,7 @@ void SMSBaseClass::ReplaceBomb(int station, BombClass *theBomb)
     vc = GetVehicleClassData(ownship->Type() - VU_LAST_ENTITY_TYPE);
     visFlag = vc->VisibleFlags;
 
-    if (visFlag & 1 << curHardpoint)
+    if (visFlag bitand 1 << curHardpoint)
     {
         CreateDrawable(newBomb.get(), OTWDriver.Scale());
 

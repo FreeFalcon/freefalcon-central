@@ -105,9 +105,9 @@ void DigitalBrain::WvrEngage(void)
 #ifdef MANEUVER_DEBUG
         strcpy(tmpchr, "Wvr NoTarget");
 
-        if (g_nShowDebugLabels & 0x10)
+        if (g_nShowDebugLabels bitand 0x10)
         {
-            if (g_nShowDebugLabels & 0x8000)
+            if (g_nShowDebugLabels bitand 0x8000)
             {
                 if (((AircraftClass*) self)->af->GetSimpleMode())
                     strcat(tmpchr, " SIMP");
@@ -425,9 +425,9 @@ void DigitalBrain::WvrEngage(void)
     wvrPrevTactic = wvrCurrTactic;
 #ifdef MANEUVER_DEBUG
 
-    if (g_nShowDebugLabels & 0x10)
+    if (g_nShowDebugLabels bitand 0x10)
     {
-        if (g_nShowDebugLabels & 0x50) // add radar mode
+        if (g_nShowDebugLabels bitand 0x50) // add radar mode
         {
             RadarClass* theRadar = (RadarClass*)FindSensor(self, SensorClass::Radar);
 
@@ -447,7 +447,7 @@ void DigitalBrain::WvrEngage(void)
             }
         }
 
-        if (g_nShowDebugLabels & 0x8000)
+        if (g_nShowDebugLabels bitand 0x8000)
         {
             if (((AircraftClass*) self)->af->GetSimpleMode())
                 strcat(tmpchr, " SIMP");
@@ -885,7 +885,7 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
 
         theIntercept = &(DigitalBrain::maneuverData[combatClass][hisCombatClass]);
 
-        if (type & DigitalBrain::WVRManeuver)
+        if (type bitand DigitalBrain::WVRManeuver)
         {
             // If no capability, don't go say you can engage!!!
             if (theIntercept->numMerges == 0)
@@ -910,7 +910,7 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
             retWvr = FALSE;
 
         // Check for intercepts if in BVR...
-        if (type & DigitalBrain::BVRManeuver)
+        if (type bitand DigitalBrain::BVRManeuver)
         {
             if (theIntercept->numIntercepts == 0)
                 retBvr = FALSE;

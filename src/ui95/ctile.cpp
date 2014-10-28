@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -110,7 +110,7 @@ void C_Tile::SetFlags(long flags)
 
 void C_Tile::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE or !Ready() or !Parent_)
+    if (GetFlags() bitand C_BIT_INVISIBLE or !Ready() or !Parent_)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -121,12 +121,12 @@ void C_Tile::Draw(SCREEN *surface, UI95_RECT *cliprect)
     UI95_RECT clip;
     long x, y;
 
-    if (GetFlags() & C_BIT_INVISIBLE or !Ready() or !Parent_)
+    if (GetFlags() bitand C_BIT_INVISIBLE or !Ready() or !Parent_)
         return;
 
     clip = *cliprect;
 
-    if (GetFlags() & C_BIT_ABSOLUTE)
+    if (GetFlags() bitand C_BIT_ABSOLUTE)
     {
         if (clip.left < GetX()) clip.left = GetX();
 
@@ -149,13 +149,13 @@ void C_Tile::Draw(SCREEN *surface, UI95_RECT *cliprect)
             Image_->SetInfo();
             Image_->Draw(surface, &clip);
 
-            if (GetFlags() & C_BIT_HORIZONTAL)
+            if (GetFlags() bitand C_BIT_HORIZONTAL)
                 x += Image_->GetW();
             else
                 x = GetW();
         }
 
-        if (GetFlags() & C_BIT_VERTICAL)
+        if (GetFlags() bitand C_BIT_VERTICAL)
             y += Image_->GetH();
         else
             y = GetH();

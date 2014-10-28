@@ -454,7 +454,7 @@ void WeatherClass::ReceiveWeather(FalconWeatherMessage* message)
     ShadingFactor = message->dataBlock.ShadingFactor;
     WeatherQuality = message->dataBlock.weatherQuality;
 
-    if (TheCampaign.Flags & CAMP_NEED_WEATHER)
+    if (TheCampaign.Flags bitand CAMP_NEED_WEATHER)
     {
         GenerateClouds(FALSE);
         TheCampaign.Flags and_eq compl CAMP_NEED_WEATHER;

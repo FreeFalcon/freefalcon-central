@@ -165,7 +165,7 @@ static void Beacon(void)
     {
         if (da < 0.0f)
         {
-            if ((sw & 0x4) == 0)
+            if ((sw bitand 0x4) == 0)
             {
                 sw  or_eq  0x7; // Flash on, has flashed, visible
             }
@@ -194,7 +194,7 @@ static void Beacon(void)
     {
         if (da < 0.0f)
         {
-            if ((sw & 0x40) == 0)
+            if ((sw bitand 0x40) == 0)
             {
                 sw  or_eq  0x70; // Flash on, has flashed, visible
             }
@@ -223,7 +223,7 @@ static void Beacon(void)
     {
         if (da < 0.0f)
         {
-            if ((sw & 0x400) == 0)
+            if ((sw bitand 0x400) == 0)
             {
                 sw  or_eq  0x700; // Flash on, has flashed, visible
             }

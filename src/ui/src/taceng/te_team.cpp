@@ -153,7 +153,7 @@ void SetupTeamFlags()
     for (i = 0; i < NUM_TEAMS; i++)
     {
         // Setup flags used
-        if (TeamInfo[i] and (TeamInfo[i]->flags & TEAM_ACTIVE))
+        if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
         {
             if (EditMap)
                 EditMap->SetImage(i, FlagImageID[TeamInfo[i]->GetFlag()][SMALL_HORIZ]);
@@ -188,7 +188,7 @@ void SetupTeamFlags()
 
 void SetupTeamColors()
 {
-    // Set ATO & OOB & Camp Map
+    // Set ATO bitand OOB bitand Camp Map
     C_Window *win;
     C_Line   *line;
 
@@ -251,7 +251,7 @@ void SetupTeamColors()
 
 void SetupTeamNames()
 {
-    // Set ATO & OOB & Camp Map
+    // Set ATO bitand OOB bitand Camp Map
     RebuildTeamLists();
     SetupOOBWindow();
     update_team_victory_window();
@@ -286,7 +286,7 @@ void UpdateBigMapColors(long team)
     gMapMgr->RemapTeamColors(team);
 }
 
-// NOTE: Automatically fixes duplicate flags & colors
+// NOTE: Automatically fixes duplicate flags bitand colors
 void SetupTeamListValues()
 {
     C_Window *win;
@@ -304,7 +304,7 @@ void SetupTeamListValues()
 
         for (i = 0; i < NUM_TEAMS; i++)
         {
-            if (TeamInfo[i] and (TeamInfo[i]->flags & TEAM_ACTIVE))
+            if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
             {
                 if (FlagImageID[TeamInfo[i]->GetFlag()][FLAG_STATUS])
                     TeamInfo[i]->SetFlag(GetUnusedFlag());
@@ -507,7 +507,7 @@ static void RemoveTeamCB(long, short hittype, C_Base *)
 
     for (i = 0; i < NUM_TEAMS; i++)
     {
-        if (TeamInfo[i] and (TeamInfo[i]->flags & TEAM_ACTIVE))
+        if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
             TeamCount++;
     }
 

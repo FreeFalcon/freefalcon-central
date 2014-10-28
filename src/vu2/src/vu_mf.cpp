@@ -7,8 +7,8 @@
 VU_BOOL VuResendMsgFilter::Test(VuMessage *message) const
 {
     if (
-        (message->Flags() & VU_SEND_FAILED_MSG_FLAG)  and 
-        (message->Flags() & (VU_RELIABLE_MSG_FLAG | VU_KEEPALIVE_MSG_FLAG))
+        (message->Flags() bitand VU_SEND_FAILED_MSG_FLAG)  and 
+        (message->Flags() bitand (VU_RELIABLE_MSG_FLAG | VU_KEEPALIVE_MSG_FLAG))
     )
     {
         return TRUE;
@@ -30,12 +30,12 @@ VU_BOOL VuStandardMsgFilter::Test(VuMessage *message) const
 {
     ulong eventBit = 1 << message->Type();
 
-    if ((eventBit & msgTypeBitfield_) == 0)
+    if ((eventBit bitand msgTypeBitfield_) == 0)
     {
         return FALSE;
     }
 
-    if (eventBit & (VU_DELETE_EVENT_BITS | VU_CREATE_EVENT_BITS))
+    if (eventBit bitand (VU_DELETE_EVENT_BITS | VU_CREATE_EVENT_BITS))
     {
         return TRUE;
     }
@@ -56,6 +56,6 @@ VU_BOOL VuStandardMsgFilter::Test(VuMessage *message) const
 
 VU_BOOL VuMessageTypeFilter::Test(VuMessage *event) const
 {
-    return static_cast<VU_BOOL>((1 << event->Type() & msgTypeBitfield_) ? TRUE : FALSE);
+    return static_cast<VU_BOOL>((1 << event->Type() bitand msgTypeBitfield_) ? TRUE : FALSE);
 }
 #endif

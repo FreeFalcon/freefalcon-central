@@ -127,7 +127,7 @@ void InitVU(void)
 #endif
 
 extern const char* FREE_FALCON_VERSION;
-#ifdef DEBUG // Differentiate Debug & Release versions so they can't be seen by each other (PJW)
+#ifdef DEBUG // Differentiate Debug bitand Release versions so they can't be seen by each other (PJW)
 	sprintf(tmpStr, "K %s\0", FREE_FALCON_VERSION);
 #else
 	sprintf(tmpStr, "R %s\0", FREE_FALCON_VERSION);
@@ -374,7 +374,7 @@ VuEntityType* VuxType(ushort id)
     F4Assert(id >= VU_LAST_ENTITY_TYPE and id - VU_LAST_ENTITY_TYPE < NumEntities);
 
     if (id >= VU_LAST_ENTITY_TYPE and id - VU_LAST_ENTITY_TYPE < NumEntities)
-        retval = (VuEntityType*) & (Falcon4ClassTable[id - VU_LAST_ENTITY_TYPE]);
+        retval = (VuEntityType*) bitand (Falcon4ClassTable[id - VU_LAST_ENTITY_TYPE]);
 
     return retval;
 }

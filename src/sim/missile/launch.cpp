@@ -163,7 +163,7 @@ void MissileClass::Launch(void)
         // via FindRocketGroundImpact
         // MLR - drawPointer is valid due to a bug somewhere else
         //       added FindingImpact flag
-        if (drawPointer and !(flags & FindingImpact))
+        if (drawPointer and !(flags bitand FindingImpact))
         {
 
             // MLR - Note - this is causing the smoke trail when rockets are selected.
@@ -228,7 +228,7 @@ void MissileClass::SetLaunchData(void)
 
         if (flags and FindingImpact)
         {
-            // MLR - if we are computing the Impact Point, don't randomize the azimuth & elevation,
+            // MLR - if we are computing the Impact Point, don't randomize the azimuth bitand elevation,
             // MLR - or the HUD's impact predictor jumps around wildly
             disp_az = 0;
             disp_el = 0;

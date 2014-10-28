@@ -2,7 +2,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -381,11 +381,11 @@ void C_PopupList::SetItemState(long ID, short val)
     if (cur)
     {
         if (cur->Type_ == C_TYPE_TOGGLE)
-            cur->State_ = static_cast<short>(val & 1); //!
+            cur->State_ = static_cast<short>(val bitand 1); //!
         else if (cur->Type_ == C_TYPE_RADIO and cur->Group_)
         {
             ClearRadioGroup(cur->Group_);
-            cur->State_ = static_cast<short>(val & 1); //!
+            cur->State_ = static_cast<short>(val bitand 1); //!
         }
     }
 }
@@ -453,7 +453,7 @@ void C_PopupList::GetSize(short *width, short *height)
 
     while (cur)
     {
-        if ( not (cur->flags_ & C_BIT_INVISIBLE))
+        if ( not (cur->flags_ bitand C_BIT_INVISIBLE))
         {
             if (cur->Type_ not_eq C_TYPE_NOTHING)
             {
@@ -515,7 +515,7 @@ long C_PopupList::CheckHotSpots(long relX, long relY)
     POPUPLIST *cur;
     short i;
 
-    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED))
+    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED))
         return(0);
 
     if (relX < Parent_->ClientArea_[GetClient()].left or relX > Parent_->ClientArea_[GetClient()].right ||
@@ -529,19 +529,19 @@ long C_PopupList::CheckHotSpots(long relX, long relY)
 
     while (cur and i < Selected_)
     {
-        if ( not (cur->flags_ & C_BIT_INVISIBLE))
+        if ( not (cur->flags_ bitand C_BIT_INVISIBLE))
             i++;
 
         cur = cur->Next;
     }
 
-    while (cur and (cur->flags_ & C_BIT_INVISIBLE))
+    while (cur and (cur->flags_ bitand C_BIT_INVISIBLE))
         cur = cur->Next;
 
     if (cur == NULL)
         return(0);
 
-    if ( not (cur->flags_ & C_BIT_ENABLED))
+    if ( not (cur->flags_ bitand C_BIT_ENABLED))
         cur = NULL;
 
     if (cur and cur->Type_ not_eq C_TYPE_NOTHING)
@@ -620,7 +620,7 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
 
         while (cur)
         {
-            if (cur->flags_ & C_BIT_ENABLED)
+            if (cur->flags_ bitand C_BIT_ENABLED)
             {
                 if (cur->Type_ == C_TYPE_MENU and cur->SubMenu_)
                 {
@@ -641,13 +641,13 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
 
         while (cur and i < item)
         {
-            if ( not (cur->flags_ & C_BIT_INVISIBLE))
+            if ( not (cur->flags_ bitand C_BIT_INVISIBLE))
                 i++;
 
             cur = cur->Next;
         }
 
-        while (cur and (cur->flags_ & C_BIT_INVISIBLE))
+        while (cur and (cur->flags_ bitand C_BIT_INVISIBLE))
             cur = cur->Next;
 
         if (cur == NULL)
@@ -656,7 +656,7 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
             return(TRUE);
         }
 
-        if (cur->flags_ & C_BIT_ENABLED and !(cur->flags_ & C_BIT_INVISIBLE))
+        if (cur->flags_ bitand C_BIT_ENABLED and !(cur->flags_ bitand C_BIT_INVISIBLE))
         {
             if (cur->Type_ == C_TYPE_MENU)
             {
@@ -697,7 +697,7 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
 
 void C_PopupList::Refresh()
 {
-    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->update_  or_eq  C_DRAW_REFRESHALL;
@@ -714,7 +714,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if ( not Ready())
         return;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
     // Draw border
@@ -735,18 +735,18 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     while (cur and i < Selected_ and i < Count_)
     {
-        if ( not (cur->flags_ & C_BIT_INVISIBLE))
+        if ( not (cur->flags_ bitand C_BIT_INVISIBLE))
             i++;
 
         cur = cur->Next;
     }
 
-    while (cur and (cur->flags_ & C_BIT_INVISIBLE))
+    while (cur and (cur->flags_ bitand C_BIT_INVISIBLE))
         cur = cur->Next;
 
     if (cur)
     {
-        if (cur->Type_ == C_TYPE_NOTHING or !(cur->flags_ & C_BIT_ENABLED))
+        if (cur->Type_ == C_TYPE_NOTHING or !(cur->flags_ bitand C_BIT_ENABLED))
             cur = NULL;
     }
 
@@ -766,7 +766,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     while (cur)
     {
-        if ( not (cur->flags_ & C_BIT_INVISIBLE))
+        if ( not (cur->flags_ bitand C_BIT_INVISIBLE))
         {
             if (cur->Type_ == C_TYPE_NOTHING)
             {
@@ -777,7 +777,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
             {
                 if (cur->Label_)
                 {
-                    if ( not (cur->flags_ & C_BIT_ENABLED))
+                    if ( not (cur->flags_ bitand C_BIT_ENABLED))
                         cur->Label_->SetFgColor(DisColor_);
                     else if (Selected_ == i)
                         cur->Label_->SetFgColor(SelColor_);
@@ -787,11 +787,11 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
                     cur->Label_->Draw(surface, cliprect);
                 }
 
-                if (cur->flags_ & C_BIT_ENABLED and cur->Type_ == C_TYPE_MENU and cur->SubMenu_ and cur->MenuIcon_)
+                if (cur->flags_ bitand C_BIT_ENABLED and cur->Type_ == C_TYPE_MENU and cur->SubMenu_ and cur->MenuIcon_)
                 {
                     cur->MenuIcon_->Draw(surface, cliprect);
                 }
-                else if (cur->flags_ & C_BIT_ENABLED and (cur->Type_ == C_TYPE_TOGGLE or cur->Type_ == C_TYPE_RADIO) and cur->State_ and cur->CheckIcon_)
+                else if (cur->flags_ bitand C_BIT_ENABLED and (cur->Type_ == C_TYPE_TOGGLE or cur->Type_ == C_TYPE_RADIO) and cur->State_ and cur->CheckIcon_)
                 {
                     cur->CheckIcon_->Draw(surface, cliprect);
                 }
@@ -833,7 +833,7 @@ BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
 
     while (cur)
     {
-        if ( not (cur->flags_ & C_BIT_INVISIBLE))
+        if ( not (cur->flags_ bitand C_BIT_INVISIBLE))
         {
             if (cur->MenuIcon_)
             {
@@ -870,7 +870,7 @@ BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
     Window_->SetOwner(this);
     Window_->SetMenuFlags(1);
 
-    if (GetFlags() & C_BIT_TRANSLUCENT)
+    if (GetFlags() bitand C_BIT_TRANSLUCENT)
         Window_->SetFlagBitOn(C_BIT_TRANSLUCENT);
 
     if ((x + w) > Handler_->GetW()) x = static_cast<short>(Handler_->GetW() - w - 1); //!
@@ -888,7 +888,7 @@ BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
 
     while (cur)
     {
-        if ( not (cur->flags_ & C_BIT_INVISIBLE))
+        if ( not (cur->flags_ bitand C_BIT_INVISIBLE))
         {
             if (cur->MenuIcon_)
             {
@@ -906,7 +906,7 @@ BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
     fill->SetXYWH(0, 0, w, h);
     fill->SetFlagBitOn(C_BIT_ABSOLUTE);
 
-    if (GetFlags() & C_BIT_TRANSLUCENT)
+    if (GetFlags() bitand C_BIT_TRANSLUCENT)
         fill->SetFlagBitOn(C_BIT_TRANSLUCENT);
 
     fill->SetColor(BgColor_);
@@ -1012,7 +1012,7 @@ void C_PopupList::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *Hndlr)
             break;
 
         case CPU_SETBORDERCOLOR:
-            SetBorderColor(P[0] | ((P[1] & 0xff) << 8) | ((P[2] & 0xff) << 16));
+            SetBorderColor(P[0] | ((P[1] bitand 0xff) << 8) | ((P[2] bitand 0xff) << 16));
             break;
     }
 }

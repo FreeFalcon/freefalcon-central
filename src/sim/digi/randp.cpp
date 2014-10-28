@@ -269,7 +269,7 @@ void DigitalBrain::RollAndPull(void)
 
 #ifdef MANEUVER_DEBUG
 
-    if (g_nShowDebugLabels & 0x20)
+    if (g_nShowDebugLabels bitand 0x20)
     {
         if (self->drawPointer)
             ((DrawableBSP*)self->drawPointer)->SetLabel(tmpchr, ((DrawableBSP*)self->drawPointer)->LabelColor());

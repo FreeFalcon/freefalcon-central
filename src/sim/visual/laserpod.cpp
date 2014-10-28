@@ -196,9 +196,9 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
         else if (lockedTarget)
         {
             unsigned long tmp = vuxRealTime;
-            float offset = (float)(tmp & 0x3FF) / 0x400;
+            float offset = (float)(tmp bitand 0x3FF) / 0x400;
 
-            if (tmp & 0x400)
+            if (tmp bitand 0x400)
                 offset = 1.0F - offset;
 
             offset *= LOCK_RING_MAX_SIZE - LOCK_RING_MIN_SIZE;

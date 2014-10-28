@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {

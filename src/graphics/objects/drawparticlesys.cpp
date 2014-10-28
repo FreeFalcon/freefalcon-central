@@ -710,7 +710,7 @@ SubPartPoly::SubPartPoly(ParticleNode *owner)
     ParticleTextureNode *pt = ppn->Texture;
 
     // check if depending on group texture
-    if (ppn->GroupFlags & GRP_TEXTURE)
+    if (ppn->GroupFlags bitand GRP_TEXTURE)
     {
         // if depending from a group, ask for a random texture node
         pt = (ParticleTextureNode*)(((ParticleGroupNode*)(ppn->Texture))->GetRandomArgument());
@@ -1170,7 +1170,7 @@ GLint ParticleAnimationNode::Run(int &Frame, float &TimeRest, float Elapsed, Tpo
 
         if (Frame >= NFrames)   // Animation update
         {
-            if (Flags & ANIM_LOOPING) Frame = 0; // * LOOPING CHECK *
+            if (Flags bitand ANIM_LOOPING) Frame = 0; // * LOOPING CHECK *
             else Frame = NFrames - 1;
         }
 
@@ -1183,7 +1183,7 @@ GLint ParticleAnimationNode::Run(int &Frame, float &TimeRest, float Elapsed, Tpo
         TimeRest += Elapsed; // just update Frame Time Counter
     }
 
-    if (Flags & ANIM_DNVIEW)  // * DOWN VIEW ALPHA *
+    if (Flags bitand ANIM_DNVIEW)  // * DOWN VIEW ALPHA *
     {
         float cx = sqrt((pos.x - ObserverPosition.x) * (pos.x - ObserverPosition.x) //
                         + (pos.y - ObserverPosition.y) * (pos.y - ObserverPosition.y)); // ground distance from object
@@ -1191,7 +1191,7 @@ GLint ParticleAnimationNode::Run(int &Frame, float &TimeRest, float Elapsed, Tpo
         alpha *= abs(cos(cx));
     }
 
-    if (Flags & ANIM_UPVIEW)  // * DOWN VIEW ALPHA *
+    if (Flags bitand ANIM_UPVIEW)  // * DOWN VIEW ALPHA *
     {
         float cx = sqrt((pos.x - ObserverPosition.x) * (pos.x - ObserverPosition.x) //
                         + (pos.y - ObserverPosition.y) * (pos.y - ObserverPosition.y)); // ground distance from object
@@ -2922,7 +2922,7 @@ void DrawableParticleSys::PS_AddPoly(PS_PTR owner, PS_PTR ID)
     ParticleTextureNode *pt = ppn.Texture;
 
     // check if depending on group texture
-    if (ppn.GroupFlags & GRP_TEXTURE)
+    if (ppn.GroupFlags bitand GRP_TEXTURE)
         // if depending from a group, ask for a random texture node
         pt = (ParticleTextureNode*)(((ParticleGroupNode*)(ppn.Texture))->GetRandomArgument());
 
@@ -3775,7 +3775,7 @@ void DrawableParticleSys::PS_ParticleRun(void)
 
                         if ( not Visibility) Cluster.In = true;
 
-                        if (Visibility & D3DSTATUS_DEFAULT) Cluster.Out = true;
+                        if (Visibility bitand D3DSTATUS_DEFAULT) Cluster.Out = true;
                     }
                 }
             }
@@ -3886,7 +3886,7 @@ void DrawableParticleSys::PS_ClustersRun(void)
 
             if ( not Visibility) Cluster.In = true;
 
-            if (Visibility & D3DSTATUS_DEFAULT) Cluster.Out = true;
+            if (Visibility bitand D3DSTATUS_DEFAULT) Cluster.Out = true;
         }
 
 
@@ -3979,7 +3979,7 @@ TRAIL_HANDLE DrawableParticleSys::PS_AddTrail(int ID, Tpoint *Pos, PS_PTR OWNER,
     Trail.Nodes = (int)(tpn.LifeSpan / tpn.Interval);
 
     //always get even nodes number, for Odd/Even graphic stuff
-    if (Trail.Nodes & 0x01) Trail.Nodes++;
+    if (Trail.Nodes bitand 0x01) Trail.Nodes++;
 
     // allocate memory for such nodes
     Trail.TRAIL = (TrailSubPartType *)calloc(Trail.Nodes, sizeof(TrailSubPartType));
@@ -4266,7 +4266,7 @@ void DrawableParticleSys::PS_AddSubTrail(TrailSubPartType &Part, int ID, float A
     ParticleTextureNode *pt = TPN.SideTexture;
 
     // check if depending on group texture
-    if (TPN.GroupFlags & GRP_TEXTURE2)
+    if (TPN.GroupFlags bitand GRP_TEXTURE2)
         // if depending from a group, ask for a random texture node
         pt = (ParticleTextureNode*)(((ParticleGroupNode*)(TPN.SideTexture))->GetRandomArgument());
 
@@ -4876,7 +4876,7 @@ TRAIL_HANDLE DrawableParticleSys::PS_EmitTrail(TRAIL_HANDLE Handle, int TrailId,
     }
 
     // Get the trail Number form the Handle, and the corresponding trails ID
-    DWORD TrailNr = Handle & (PS_MAX_TRAILS - 1), ID = PS_TrailsID[TrailId];
+    DWORD TrailNr = Handle bitand (PS_MAX_TRAILS - 1), ID = PS_TrailsID[TrailId];
 
     // Check it is an acceptable Trail Refernce
     if (Handle and TrailNr < PS_MAX_TRAILS)
@@ -4910,7 +4910,7 @@ TRAIL_HANDLE DrawableParticleSys::PS_EmitTrail(TRAIL_HANDLE Handle, int TrailId,
 void DrawableParticleSys::PS_KillTrail(TRAIL_HANDLE Handle)
 {
     // Get the trail Number form the Handle, and the corresponding trails ID
-    DWORD TrailNr = Handle & (PS_MAX_TRAILS - 1);
+    DWORD TrailNr = Handle bitand (PS_MAX_TRAILS - 1);
 
     // Check it is an acceptable Trail Refernce
     if (Handle and TrailNr < PS_MAX_TRAILS)

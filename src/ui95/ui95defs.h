@@ -125,7 +125,7 @@ enum // Bit table
 {
     C_BIT_NOTHING           = 0x00000000, // Place holder... don't do jack
     C_BIT_FIXEDSIZE = 0x00000001, // Used EXCLUSIVELY for marking that the text has a fixed with buffer
-    C_BIT_LEADINGZEROS = 0x00000002, // Used in cclock & ceditbox to put leading zeros in from of numeric values
+    C_BIT_LEADINGZEROS = 0x00000002, // Used in cclock bitand ceditbox to put leading zeros in from of numeric values
     C_BIT_VERTICAL = 0x00000004, // Used in ctile for tiling vertically
     C_BIT_HORIZONTAL = 0x00000008, // Used in ctile for tiling horizontally
     C_BIT_USEOUTLINE = 0x00000010, // Used to draw an outline on the control's x,y,w,h corners
@@ -153,7 +153,7 @@ enum // Bit table
     C_BIT_REMOVE = 0x04000000, // flag used to tell cleanup code to cleanup (or NOT cleanup) a control
     C_BIT_NOCLEANUP = 0x08000000, // flag used by cwindow to tell it NOT to cleanup ANY of it's controls
     C_BIT_MOUSEOVER = 0x10000000, // flag used to disable MOUSEOVER hi-liting
-    C_BIT_TRANSLUCENT = 0x20000000, // flag used to draw translucent bitmaps & fills, or mark a window as translucent so it refreshes windows behind itself also
+    C_BIT_TRANSLUCENT = 0x20000000, // flag used to draw translucent bitmaps bitand fills, or mark a window as translucent so it refreshes windows behind itself also
     C_BIT_USEBGFILL = 0x40000000, // Similar to USEBGIMAGE, fills the x,y,w,h with the bgcolor
     C_BIT_USEGRADIENT = 0x80000000, // used to do a gradient fill in a window... not currently used in scripts
 };

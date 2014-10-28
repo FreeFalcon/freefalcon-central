@@ -62,9 +62,9 @@ GLubyte *ConvertImage(GLImageInfo *fi, GLint mode, GLuint *chromakey)
         for (i = 0; i < 256; i++)
         {
             r = (GLint)(*lptr++);
-            g = (r >>  8) & 0xFF;
-            b = (r >> 16) & 0xFF;
-            a = (r >> 24) & 0xFF;
+            g = (r >>  8) bitand 0xFF;
+            b = (r >> 16) bitand 0xFF;
+            a = (r >> 24) bitand 0xFF;
             r and_eq 0xFF;
             j = 0;
 
@@ -238,7 +238,7 @@ GLint ReadDDS(CImageFileMemory *fi)
     fi->image.palette = NULL;
 
     // Read first compressed mipmap
-    ShiAssert(ddsd.dwFlags & DDSD_LINEARSIZE);
+    ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE);
 
     fi->image.image = (GLubyte *)glAllocateMemory(ddsd.dwLinearSize, 0);
 
@@ -296,7 +296,7 @@ GLint ReadBMP(CImageFileMemory *fi)
     fi -> image.width = bmpinfo.biWidth;
     fi -> image.height = bmpinfo.biHeight;
 
-    padBytes = bmpinfo.biWidth & 0x3;
+    padBytes = bmpinfo.biWidth bitand 0x3;
 
     j = bmpinfo.biBitCount >> 3;
     i = j * (fi -> image.width * fi -> image.height);
@@ -410,9 +410,9 @@ GLint UnpackGIF(CImageFileMemory *fi)
     fi -> image.palette = NULL;
 
     // get colour map if there is one
-    if (gh.flags & 0x80)
+    if (gh.flags bitand 0x80)
     {
-        c = 3 * (1 << ((gh.flags & 7) + 1));
+        c = 3 * (1 << ((gh.flags bitand 7) + 1));
 
         if (fi -> glReadMem(tempPalette, c) not_eq c)
         {
@@ -457,9 +457,9 @@ GLint UnpackGIF(CImageFileMemory *fi)
                 return (BAD_ALLOC);
             }
 
-            if (iblk.flags & 0x80)
+            if (iblk.flags bitand 0x80)
             {
-                b = 3 * (1 << ((iblk.flags & 0x0007) + 1));
+                b = 3 * (1 << ((iblk.flags bitand 0x0007) + 1));
 
                 if (fi->glReadMem(tempPalette, b) not_eq c)
                 {
@@ -658,7 +658,7 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
 
                 byte = 0;
 
-                if (currentFlag & 0x40)
+                if (currentFlag bitand 0x40)
                 {
                     line += inctable[pass];
 
@@ -692,7 +692,7 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
 
                 byte = 0;
 
-                if (currentFlag & 0x40)
+                if (currentFlag bitand 0x40)
                 {
                     line += inctable[pass];
 
@@ -879,7 +879,7 @@ GLulong *ReadLBMColorMap(CImageFileMemory *fi)
 
         if (memcmp(header, (GLubyte *) "CMAP", 4))
         {
-            if (size & 1)   size++;                 // All offsets on an even boundary
+            if (size bitand 1)   size++;                 // All offsets on an even boundary
 
             fi->glSetFilePosMem(size, SEEK_CUR);
         }
@@ -932,7 +932,7 @@ GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
 
         if (memcmp((GLubyte *) header, (GLubyte *)  "BODY", 4))
         {
-            if (size & 1)   size++;                 // All offsets on an even boundary
+            if (size bitand 1)   size++;                 // All offsets on an even boundary
 
             fi->glSetFilePosMem(size, SEEK_CUR);
         }
@@ -971,13 +971,13 @@ GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
 
             do
             {
-                c = fi->glReadCharMem() & 0xff;
+                c = fi->glReadCharMem() bitand 0xff;
 
-                if (c & 0x80)
+                if (c bitand 0x80)
                 {
                     if (c not_eq 0x80)
                     {
-                        j = ((compl c) & 0xff) + 2;
+                        j = ((compl c) bitand 0xff) + 2;
                         c = fi->glReadCharMem();
 
                         while (j--) p[n++] = (GLubyte) c;
@@ -985,7 +985,7 @@ GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
                 }
                 else
                 {
-                    j = (c & 0xff) + 1;
+                    j = (c bitand 0xff) + 1;
 
                     while (j--)
                         p[n++] = (GLubyte) fi->glReadCharMem();
@@ -1005,7 +1005,7 @@ GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
 
             m = fi->image.width >> 3;
 
-            if (fi->image.width & 0x07) m++;
+            if (fi->image.width bitand 0x07) m++;
 
             for (k = 0; k < fi->image.width; k++)
             {
@@ -1014,7 +1014,7 @@ GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
 
                 for (l = 0; l < lpHeader->nPlanes; l++)
                 {
-                    if (line[k >> 3] & masktable[k & 0x0007])
+                    if (line[k >> 3] bitand masktable[k bitand 0x0007])
                         lpBmp[k]  or_eq  bittable[l];
 
                     line += m;
@@ -1085,9 +1085,9 @@ GLint UnpackPCX(CImageFileMemory *fi)
         {
             c = (GLubyte) fi->glReadCharMem();
 
-            if ((c & 0xc0) == 0xc0)
+            if ((c bitand 0xc0) == 0xc0)
             {
-                j = c & 0x3f;
+                j = c bitand 0x3f;
                 c = (GLubyte) fi->glReadCharMem();
 
                 while (j--) image[n++] = c;
@@ -1207,7 +1207,7 @@ GLint WritePCX(int fileHandle, GLImageInfo *image)
             ShiAssert(inP - image->image == i * image->width + c);
 
             // Write out the run
-            if ((run == 1) and ((value & 0xC0) not_eq 0xC0))
+            if ((run == 1) and ((value bitand 0xC0) not_eq 0xC0))
             {
                 // Can just write the value byte
                 *outP++ = value;

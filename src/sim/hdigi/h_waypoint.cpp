@@ -99,7 +99,7 @@ void HeliBrain::GoToCurrentWaypoint(void)
     }
 
     // If we are at starting WP stay on ground
-    if (self->curWaypoint->GetWPFlags() & WPF_TAKEOFF   and 
+    if (self->curWaypoint->GetWPFlags() bitand WPF_TAKEOFF   and 
         self->curWaypoint->GetWPDepartureTime() > SimLibElapsedTime  and 
         self->curWaypoint->GetPrevWP() == NULL)
     {
@@ -187,7 +187,7 @@ void HeliBrain::GoToCurrentWaypoint(void)
     // On Station ?
     if (onStation == Arrived)
     {
-        if (self->curWaypoint->GetWPFlags() & WPF_LAND)
+        if (self->curWaypoint->GetWPFlags() bitand WPF_LAND)
         {
             LandMe();
             return;

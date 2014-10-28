@@ -127,7 +127,7 @@ public:
     };
     int IsSetBombFlag(int newFlag)
     {
-        return flags & newFlag ? TRUE : FALSE;
+        return flags bitand newFlag ? TRUE : FALSE;
     };
     void ReadInput(int idx);
 

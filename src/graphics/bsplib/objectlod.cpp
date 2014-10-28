@@ -162,7 +162,7 @@ void ObjectLOD::SetupTable(int file, char *basename)
         if (ObjectLodMap.ReadDataAt(Lod->fileoffset, &rt, sizeof(DxDbHeader)))
         {
             // if a bad version, skip
-            if ((rt.Version & 0xffff) == (compl rt.Version >> 16))
+            if ((rt.Version bitand 0xffff) == (compl rt.Version >> 16))
             {
                 // assign the number of textures to the model
                 Lod->NrTextures = rt.dwTexNr;

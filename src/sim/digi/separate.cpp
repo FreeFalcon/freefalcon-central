@@ -64,7 +64,7 @@ void DigitalBrain::SeparateCheck(void)
         if ((missionType not_eq AMIS_BDA and missionType not_eq AMIS_RECON) or !hasCamera)
     // 2001-05-12 ADDED BY S.G. ABORT ONLY WHEN THE MISSION IS NOT COMPLETED OR WE ARE AT THE ATTACK WAYPOINT, OTHERWISE FOLLOW WAYPOINTS HOME
     // 2001-06-21 MODIFIED BY S.G. BROUGHT BACK TO WHAT IS RELEASED
-    //    if ( not missionComplete or !self->curWaypoint or self->curWaypoint->GetWPFlags() & WPF_TARGET)
+    //    if ( not missionComplete or !self->curWaypoint or self->curWaypoint->GetWPFlags() bitand WPF_TARGET)
         if ( not missionComplete)
     // END OF ADDED SECTION
              agAbort = TRUE;
@@ -92,7 +92,7 @@ void DigitalBrain::SeparateCheck(void)
             // 2001-05-13 MODIFIED BY S.G. TO MAKE IT SIMILAR TO THE ABOVE agAbort CODE
             // 2001-06-21 RESTATED BY S.G. BROUGHT BACK TO WHAT IS RELEASED
             if ( not IsSetATC(ReachedIP))
-                //      if ( not missionComplete or !self->curWaypoint or self->curWaypoint->GetWPFlags() & WPF_TARGET)
+                //      if ( not missionComplete or !self->curWaypoint or self->curWaypoint->GetWPFlags() bitand WPF_TARGET)
             {
                 // Find the landing waypoint, and make it the current one
                 while (tmpWaypoint)
@@ -129,7 +129,7 @@ void DigitalBrain::SeparateCheck(void)
                 {
                     // 2001-05-13 MODIFIED BY S.G. WPF_TARGET IS A FLAG WITHIN MANY, DON'T TEST FOR EQUALITY!
                     //  if (tmpWaypoint->GetWPFlags() == WPF_TARGET)
-                    if (tmpWaypoint->GetWPFlags() & WPF_TARGET)
+                    if (tmpWaypoint->GetWPFlags() bitand WPF_TARGET)
                     {
                         tmpWaypoint = tmpWaypoint->GetNextWP();
                         break;

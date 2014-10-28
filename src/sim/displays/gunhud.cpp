@@ -363,7 +363,7 @@ void HudClass::DrawMRGS(void)
     // Decide what percent of full spread to draw the angled lines
     // (For now we're just drawing arbitrary lines)
     // NOTE:  0xFFF = 4095 or 4.095 seconds since sim time is in milliseconds.
-    lineSpace = (float)fabs(1.0f - (float)(SimLibElapsedTime & 0xFFF) / 0x7FF);
+    lineSpace = (float)fabs(1.0f - (float)(SimLibElapsedTime bitand 0xFFF) / 0x7FF);
     angle = (2.0f - lineSpace) * DTR * 3.0F;
 
     for (i = 0; i < 4; i++)

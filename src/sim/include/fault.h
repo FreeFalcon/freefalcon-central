@@ -167,7 +167,7 @@ public:
         type_FFunction mBreakable; // the functions
         float mSProb; // system probability
         float *mFProb; // function probability
-        int mCount; // count of these & breakables
+        int mCount; // count of these bitand breakables
         unsigned int flags;
     } mpFaultData[TotalFaultStrings];
     static const char* mpFFunctionNames[NumFaultFunctions];

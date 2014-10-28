@@ -40,7 +40,7 @@ static int randIntTab5[16] =
 inline int PRANDInt5(void)
 {
     randCtr1++;
-    return randIntTab5[(randCtr1 & 0x0000000f) ];
+    return randIntTab5[(randCtr1 bitand 0x0000000f) ];
 }
 
 
@@ -53,7 +53,7 @@ static int randIntTab3[8] =
 inline int PRANDInt3(void)
 {
     randCtr2++;
-    return randIntTab3[(randCtr2 & 0x00000007) ];
+    return randIntTab3[(randCtr2 bitand 0x00000007) ];
 }
 
 // rand floats from -1.0 to 1.0
@@ -68,7 +68,7 @@ static float randFloatTab[16] =
 inline float PRANDFloat(void)
 {
     randCtr3++;
-    return randFloatTab[(randCtr3 & 0x0000000f) ];
+    return randFloatTab[(randCtr3 bitand 0x0000000f) ];
 }
 
 // rand floats from 0.0 to 1.0
@@ -83,7 +83,7 @@ static float randFloatTabPos[16] =
 inline float PRANDFloatPos(void)
 {
     randCtr4++;
-    return randFloatTabPos[(randCtr4 & 0x0000000f) ];
+    return randFloatTabPos[(randCtr4 bitand 0x0000000f) ];
 }
 
 // random int from 0 to 5
@@ -98,7 +98,7 @@ static int randIntTab6[16] =
 inline int PRANDInt6(void)
 {
     randCtr5++;
-    return randIntTab6[(randCtr5 & 0x0000000f) ];
+    return randIntTab6[(randCtr5 bitand 0x0000000f) ];
 }
 
 #else  // "real" randomness for above functions
@@ -130,14 +130,14 @@ inline long GenerateFastRandom(void)
 inline int PRANDInt5(void)
 {
     // return FloatToInt32(NRANDPOS * 4.9999f);
-    int x = (int)GenerateFastRandom() & 0x07;
+    int x = (int)GenerateFastRandom() bitand 0x07;
     return((x < 5) ? x : x - 5);
 }
 
 inline int PRANDInt3(void)
 {
     // return FloatToInt32(NRANDPOS * 2.9999f);
-    int x = (int)GenerateFastRandom() & 0x03;
+    int x = (int)GenerateFastRandom() bitand 0x03;
     return((x < 3) ? x : x - 3);
 }
 
@@ -145,21 +145,21 @@ inline int PRANDInt3(void)
 inline float PRANDFloat(void)
 {
     // return NRAND;
-    float x = (float)(GenerateFastRandom() & 0xffff);
+    float x = (float)(GenerateFastRandom() bitand 0xffff);
     return(1 - 2 * x / 65535.0f);
 }
 
 inline float PRANDFloatPos(void)
 {
     // return NRANDPOS;
-    float x = (float)(GenerateFastRandom() & 0xffff);
+    float x = (float)(GenerateFastRandom() bitand 0xffff);
     return(x / 65535.0f);
 }
 
 inline int PRANDInt6(void)
 {
     // return FloatToInt32( (float)(NRANDPOS * 5.9999f) );
-    int x = (int)GenerateFastRandom() & 0x07;
+    int x = (int)GenerateFastRandom() bitand 0x07;
     return((x < 6) ? x : x - 6);
 }
 

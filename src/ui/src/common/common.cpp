@@ -1,6 +1,6 @@
 /*
 
-  UI Common... Common Files between Campaign & Tactical Engagement
+  UI Common... Common Files between Campaign bitand Tactical Engagement
 
 */
 
@@ -109,7 +109,7 @@ void AwardWindow(void)
     C_Window *win;
     C_Button *btn;
 
-    if ( not (MissionResult & AWARD_MEDAL))
+    if ( not (MissionResult bitand AWARD_MEDAL))
     {
         PromotionWindow();
         return;
@@ -127,37 +127,37 @@ void AwardWindow(void)
 
         if (btn)
         {
-            if (MissionResult & MDL_AFCROSS)
+            if (MissionResult bitand MDL_AFCROSS)
             {
                 btn->SetState(AIR_FORCE_CROSS);
                 gSoundMgr->PlaySound(CDECAFCE);
                 lastSound = CDECAFCE;
             }
-            else if (MissionResult & MDL_SILVERSTAR)
+            else if (MissionResult bitand MDL_SILVERSTAR)
             {
                 btn->SetState(SILVER_STAR);
                 gSoundMgr->PlaySound(CDECSSE);
                 lastSound = CDECSSE;
             }
-            else if (MissionResult & MDL_DIST_FLY)
+            else if (MissionResult bitand MDL_DIST_FLY)
             {
                 btn->SetState(DIST_FLY_CROSS);
                 gSoundMgr->PlaySound(CDECDFCE);
                 lastSound = CDECDFCE;
             }
-            else if (MissionResult & MDL_AIR_MDL)
+            else if (MissionResult bitand MDL_AIR_MDL)
             {
                 btn->SetState(AIR_MEDAL);
                 gSoundMgr->PlaySound(CDECAME);
                 lastSound = CDECAME;
             }
-            else if (MissionResult & MDL_KOR_CAMP)
+            else if (MissionResult bitand MDL_KOR_CAMP)
             {
                 btn->SetState(KOREA_CAMPAIGN);
                 gSoundMgr->PlaySound(CDECKFME);
                 lastSound = CDECKFME;
             }
-            else if (MissionResult & MDL_LONGEVITY)
+            else if (MissionResult bitand MDL_LONGEVITY)
             {
                 btn->SetState(LONGEVITY);
                 gSoundMgr->PlaySound(CDECAFLE);
@@ -182,7 +182,7 @@ void AwardWindow(void)
 
 void DoResultsWindows(void)
 {
-    if (MissionResult & COURT_MARTIAL)
+    if (MissionResult bitand COURT_MARTIAL)
         CourtMartialWindow();
     else
         AwardWindow();//this calls promotion window too
@@ -193,7 +193,7 @@ void PromotionWindow(void)
     C_Window *win;
     C_Button *btn;
 
-    if ( not (MissionResult & PROMOTION))
+    if ( not (MissionResult bitand PROMOTION))
     {
         MissionResult = 0;
         return;
@@ -247,31 +247,31 @@ void CourtMartialWindow(void)
 
         if (lbox)
         {
-            if (MissionResult & CM_FR_FIRE1)
+            if (MissionResult bitand CM_FR_FIRE1)
             {
                 lbox->SetValue(FRIENDLY_FIRE1);
                 gSoundMgr->PlaySound(CMFF1E);
                 lastSound = CMFF1E;
             }
-            else if (MissionResult & CM_FR_FIRE2)
+            else if (MissionResult bitand CM_FR_FIRE2)
             {
                 lbox->SetValue(FRIENDLY_FIRE2);
                 gSoundMgr->PlaySound(CMFF2E);
                 lastSound = CMFF2E;
             }
-            else if (MissionResult & CM_FR_FIRE3)
+            else if (MissionResult bitand CM_FR_FIRE3)
             {
                 lbox->SetValue(FRIENDLY_FIRE3);
                 gSoundMgr->PlaySound(CMFF3E);
                 lastSound = CMFF3E;
             }
-            else if (MissionResult & CM_CRASH)
+            else if (MissionResult bitand CM_CRASH)
             {
                 lbox->SetValue(CRASH_LANDING);
                 gSoundMgr->PlaySound(CMCLE);
                 lastSound = CMCLE;
             }
-            else if (MissionResult & CM_EJECT)
+            else if (MissionResult bitand CM_EJECT)
             {
                 lbox->SetValue(EJECT);
                 gSoundMgr->PlaySound(CMEE);
@@ -341,7 +341,7 @@ void HookupCommonControls(long ID)
         if (btn)
             btn->SetCallback(CloseWindowCB);
 
-        // TOTIME... Get in Aircraft & go
+        // TOTIME... Get in Aircraft bitand go
         btn = (C_Button *)win->FindControl(FLY);
 
         if (btn)

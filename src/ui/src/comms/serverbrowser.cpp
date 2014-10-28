@@ -491,7 +491,7 @@ static void OnSelchangeServerList(long n, short hittype, C_Base *control)
             // F4CSECTIONHANDLE *Leave = UI_Enter(control->Parent_);
             if (m_pSelectedItem)
             {
-                m_pSelectedItem->SetState(static_cast<short>(control->GetState() & compl 1));
+                m_pSelectedItem->SetState(static_cast<short>(control->GetState() bitand compl 1));
                 m_pSelectedItem->Refresh();
             }
 
@@ -991,7 +991,7 @@ C_ServerItem::C_ServerItem() : C_Control()
     Color_[0] = 0xd0d0d0; // Not Selected
     Color_[1] = 0xC8; // Selected
     Color_[2] = 0xffff00; // Player is in this mission
-    Color_[3] = 0x00ff00; // Player is in this mission & current mission
+    Color_[3] = 0x00ff00; // Player is in this mission bitand current mission
 
     ZeroMemory(m_arrOutput, sizeof(m_arrOutput));
     Owner_ = NULL;
@@ -1141,7 +1141,7 @@ void C_ServerItem::SetFont(long id)
 
 long C_ServerItem::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !Ready())
         return(0);
 
     if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= (GetY() + GetH()))
@@ -1168,7 +1168,7 @@ BOOL C_ServerItem::Process(long ID, short HitType)
 
 void C_ServerItem::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -1176,7 +1176,7 @@ void C_ServerItem::Refresh()
 
 void C_ServerItem::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or !Ready())
         return;
 
     short x = GetState();
@@ -1193,7 +1193,7 @@ void C_ServerItem::Draw(SCREEN *surface, UI95_RECT *cliprect)
         }
     }
 
-    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
@@ -1222,7 +1222,7 @@ void C_ServerItem::Save(FILE *)
 
 void C_ServerItem::SetState(short state)
 {
-    State_ = static_cast<short>(state & 3);
+    State_ = static_cast<short>(state bitand 3);
 }
 
 short C_ServerItem::GetState()

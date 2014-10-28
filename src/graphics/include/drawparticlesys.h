@@ -322,7 +322,7 @@ typedef struct
         DWORD Exit : 1; // this is the exit of a segment
         DWORD Split : 1; // This is a split of a segment
     };
-    // Position & Wind
+    // Position bitand Wind
     Tpoint Pos, Wind, Offset;
     // Randomic CX
     float SizeRnd, ColorRnd, AlphaRnd;

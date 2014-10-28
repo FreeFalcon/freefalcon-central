@@ -185,7 +185,7 @@ class VuSessionEntity : public VuTargetEntity
 {
     friend class VuMainThread;
 public:
-    // constructors & destructor
+    // constructors bitand destructor
     VuSessionEntity(ulong domainMask, const char *callsign);
     VuSessionEntity(VU_BYTE **stream, long *rem);
     VuSessionEntity(FILE *file);
@@ -403,7 +403,7 @@ class VuGroupEntity : public VuTargetEntity
     friend class VuSessionEntity;
 
 public:
-    // constructors & destructor
+    // constructors bitand destructor
     VuGroupEntity(char *groupname);
     //sfr: added rem
     VuGroupEntity(VU_BYTE **stream, long *rem);
@@ -476,7 +476,7 @@ class VuGameEntity : public VuGroupEntity
     friend class VuSessionEntity;
 
 public:
-    // constructors & destructor
+    // constructors bitand destructor
     VuGameEntity(ulong domainMask, char *gamename);
     VuGameEntity(VU_BYTE **stream, long *rem);
     VuGameEntity(FILE *file);
@@ -538,7 +538,7 @@ protected:
 class VuPlayerPoolGame : public VuGameEntity
 {
 public:
-    // constructors & destructor
+    // constructors bitand destructor
     VuPlayerPoolGame(ulong domainMask);
 
     virtual ~VuPlayerPoolGame();
@@ -564,7 +564,7 @@ protected:
 class VuGlobalGroup : public VuGroupEntity
 {
 public:
-    // constructors & destructor
+    // constructors bitand destructor
     VuGlobalGroup();
 
     virtual ~VuGlobalGroup();

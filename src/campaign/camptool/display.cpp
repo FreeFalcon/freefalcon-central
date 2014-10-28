@@ -96,7 +96,7 @@ extern int ShowReal;
 char* GetFilename(short x, short y);
 
 // --------------------------------------
-// Campaign Cell Display & Edit Functions
+// Campaign Cell Display bitand Edit Functions
 // --------------------------------------
 
 void drawRoad(HDC DC, short ScreenX, short ScreenY, short Size, int i)
@@ -217,13 +217,13 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
                     //JAM - FIXME
                     // if (w >= FIRST_OVC_TYPE)
                     // w = FIRST_OVC_TYPE;
-                    i = (x & 0x01) + 2 * (y & 0x01);
+                    i = (x bitand 0x01) + 2 * (y bitand 0x01);
                     SetPixel(DC, ScreenX, ScreenY, CloudCol[w][i]);
                     break;
 
                 case 6:
                     w = ((WeatherClass*)realWeather)->GetCloudLevel(x, y) / 32;
-                    i = (x & 0x01) & (y & 0x01);
+                    i = (x bitand 0x01) bitand (y bitand 0x01);
                     SetPixel(DC, ScreenX, ScreenY, GradCol[w][i]);
                     break;
 
@@ -232,7 +232,7 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
                     mx = x / MAP_RATIO;
                     my = y / MAP_RATIO;
                     i = my * MRX + mx;
-                    w = (TheCampaign.SamMapData[i] >> (4 + 2 * (DataMode - 10))) & 0x03;
+                    w = (TheCampaign.SamMapData[i] >> (4 + 2 * (DataMode - 10))) bitand 0x03;
                     SetPixel(DC, ScreenX, ScreenY, SamCol[w]);
                     break;
 
@@ -244,8 +244,8 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
             return;
 
         case 8:
-            ofx = 8 * (x & 1);
-            ofy = 8 * (y & 1);
+            ofx = 8 * (x bitand 1);
+            ofy = 8 * (y bitand 1);
             break;
 
         default:
@@ -325,7 +325,7 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
             mx = x / MAP_RATIO;
             my = y / MAP_RATIO;
             i = my * MRX + mx;
-            w = (TheCampaign.SamMapData[i] >> (4 + 2 * (DataMode - 10))) & 0x03;
+            w = (TheCampaign.SamMapData[i] >> (4 + 2 * (DataMode - 10))) bitand 0x03;
             _drawbmap(DC, SamCoverBMap[w], ScreenX, ScreenY, Size, ofx, ofy);
             break;
     }
@@ -418,7 +418,7 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
 }
 
 // ----------------------------------
-// Objective Display & Edit Functions
+// Objective Display bitand Edit Functions
 // ----------------------------------
 
 void DisplayObjective(HDC DC, Objective O, short ScreenX, short ScreenY, short Size)
@@ -514,7 +514,7 @@ void ObjFeatureStr(Objective O, char buffer[])
 }
 
 // ---------------------------------
-// Unit Display & Edit Functions
+// Unit Display bitand Edit Functions
 // ---------------------------------
 
 void DisplayUnit(HDC DC, Unit U, short ScreenX, short ScreenY, short Size)

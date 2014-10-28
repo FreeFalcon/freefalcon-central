@@ -147,9 +147,9 @@ int aviOpen(char *aviFileName, char *audioFileName,
        Read audio stream header.
     */
 
-    if (streams->audioFlag & STREAM_AUDIO_ON)
+    if (streams->audioFlag bitand STREAM_AUDIO_ON)
     {
-        if (streams->audioFlag & STREAM_AUDIO_EXTERNAL)
+        if (streams->audioFlag bitand STREAM_AUDIO_EXTERNAL)
         {
 
             /*
@@ -184,7 +184,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
                 return RIFF_BAD_AUDIO_FORMAT;
 
             if (AVI_READ(streams->externalSoundHandle, \
-                         & (streams->waveFormat), subChunk.subChunkLength)
+                         bitand (streams->waveFormat), subChunk.subChunkLength)
                 not_eq subChunk.subChunkLength)
                 return RIFF_BAD_AUDIO_FORMAT;
 
@@ -371,9 +371,9 @@ int aviOpen(char *aviFileName, char *audioFileName,
     streams->timePerFrame = (ONE_SECOND + streams->frameRate - 1) / streams->frameRate;
     streams->initialFrames = streams->mainAVIHeader.dwInitialFrames ;
 
-    if (streams->audioFlag & STREAM_AUDIO_ON)
+    if (streams->audioFlag bitand STREAM_AUDIO_ON)
     {
-        if (streams->audioFlag & STREAM_AUDIO_PRELOAD)
+        if (streams->audioFlag bitand STREAM_AUDIO_PRELOAD)
         {
             i = streams->audioToReadPerFrame = streams->totalAudioRemaining;
 
@@ -396,7 +396,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
         }
         else
         {
-            if ((streams->audioFlag & STREAM_AUDIO_EXTERNAL)  and 
+            if ((streams->audioFlag bitand STREAM_AUDIO_EXTERNAL)  and 
                 !streams->initialFrames)
                 streams->initialFrames = 1 + (streams->frameRate * 3 / 4);
 
@@ -585,7 +585,7 @@ int aviReadRecord(PAVISTREAMS streams)
                 AVI_SEEK(streams->handle, recordLen, SEEK_CUR);
 
                 if (AVI_READ(streams->handle, \
-                             & (streams->preRECSubChunk), \
+                             bitand (streams->preRECSubChunk), \
                              RIFF_SUB_CHUNK) not_eq RIFF_SUB_CHUNK)
                     return RIFF_BAD_FORMAT;
 
@@ -613,8 +613,8 @@ int aviReadRecord(PAVISTREAMS streams)
 
                 recordLen -= (chunkLength + 8);
 
-                if ((streams->audioFlag & STREAM_AUDIO_EXTERNAL) ||
-                    !(streams->audioFlag & STREAM_AUDIO_ON))
+                if ((streams->audioFlag bitand STREAM_AUDIO_EXTERNAL) ||
+                    !(streams->audioFlag bitand STREAM_AUDIO_ON))
                     AVI_SEEK(streams->handle, chunkLength, \
                              SEEK_CUR);
                 else
@@ -753,7 +753,7 @@ int waveReadBlock(PAVISTREAMS streams)
     long           ptr, newPtr, len, size;
     long           blockLen;
 
-    if ( not (streams->audioFlag & STREAM_AUDIO_ON))
+    if ( not (streams->audioFlag bitand STREAM_AUDIO_ON))
         return RIFF_OK;
 
     blockLen = streams->audioToReadPerFrame;

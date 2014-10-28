@@ -293,7 +293,7 @@ void RenderOTW::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
     }
 
 
-    // Allocate memory for the array of information stored for each LOD (viewer location & vectors)
+    // Allocate memory for the array of information stored for each LOD (viewer location bitand vectors)
     LODdata = new LODdataBlock[(viewpoint->GetMaxLOD() + 1) ];
 
     if ( not LODdata)
@@ -524,9 +524,9 @@ void RenderOTW::SetTunnelPercent(float percent, DWORD color)
         else
         {
             float t = percent / NVG_TUNNEL_PERCENT;
-            color = (FloatToInt32((color & 0x00FF0000) * t) & 0x000000FF) |
-                    (FloatToInt32((color & 0x00FF0000) * t) & 0x0000FF00) |
-                    (FloatToInt32((color & 0x00FF0000) * t) & 0x00FF0000);
+            color = (FloatToInt32((color bitand 0x00FF0000) * t) bitand 0x000000FF) |
+                    (FloatToInt32((color bitand 0x00FF0000) * t) bitand 0x0000FF00) |
+                    (FloatToInt32((color bitand 0x00FF0000) * t) bitand 0x00FF0000);
         }
 
         if (g_bFullScreenNVG)
@@ -555,7 +555,7 @@ void RenderOTW::PreSceneCloudOcclusion(float percent, DWORD color)
     {
 
         // Save the cloud color with alpha for post processing use.
-        cloudColor = (color & 0x00FFFFFF) | (FloatToInt32(percent * 255.9f) << 24);
+        cloudColor = (color bitand 0x00FFFFFF) | (FloatToInt32(percent * 255.9f) << 24);
 
     }
     else
@@ -570,9 +570,9 @@ void RenderOTW::PreSceneCloudOcclusion(float percent, DWORD color)
         float correction = 1.0f + percent * percent * 100.0f;
 
         // Red
-        if (((color & 0x000000FF) == 0x0)  and 
-            ((color & 0x0000FF00) >= 0x10)  and 
-            ((color & 0x00FF0000) == 0x0))
+        if (((color bitand 0x000000FF) == 0x0)  and 
+            ((color bitand 0x0000FF00) >= 0x10)  and 
+            ((color bitand 0x00FF0000) == 0x0))
         {
 
             // Guess that we're on a green display
@@ -604,7 +604,7 @@ void RenderOTW::PostSceneCloudOcclusion(void)
     {
 
         // Drop out if alpha is 0
-        if ((cloudColor & 0xFF000000) == 0)
+        if ((cloudColor bitand 0xFF000000) == 0)
         {
             return;
         }
@@ -704,9 +704,9 @@ void RenderOTW::DrawTunnelBorder(void)
     SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
 
     // Initialize all the verticies
-    float r = (float)((tunnelColor)     & 0xFF) / 255.9f;
-    float g = (float)((tunnelColor >> 8)  & 0xFF) / 255.9f;
-    float b = (float)((tunnelColor >> 16) & 0xFF) / 255.9f;
+    float r = (float)((tunnelColor)     bitand 0xFF) / 255.9f;
+    float g = (float)((tunnelColor >> 8)  bitand 0xFF) / 255.9f;
+    float b = (float)((tunnelColor >> 16) bitand 0xFF) / 255.9f;
 
     for (i = 0; i < NumPoints; i++)
     {
@@ -1141,9 +1141,9 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     // Upward order (don't draw the one we're in)
     if (containingList > 0)
     {
-        //START_PROFILE("Grnd & Objects");
+        //START_PROFILE("Grnd bitand Objects");
         DrawGroundAndObjects(viewpoint->ObjectsInTerrain());
-        //STOP_PROFILE("Grnd & Objects");
+        //STOP_PROFILE("Grnd bitand Objects");
 
         if (containingList > 1)
         {
@@ -1151,10 +1151,10 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
 
             if (containingList > 2)
             {
-                //START_PROFILE("Clouds & Objects");
+                //START_PROFILE("Clouds bitand Objects");
                 DrawCloudsAndObjects(viewpoint->Clouds(), viewpoint->ObjectsInClouds());
 
-                //STOP_PROFILE("Clouds & Objects");
+                //STOP_PROFILE("Clouds bitand Objects");
                 if (containingList > 3)
                 {
                     viewpoint->ObjectsAboveClouds()->DrawBeyond(0.f, 0, this);
@@ -1180,9 +1180,9 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
 
                 if (containingList < 1)
                 {
-                    //START_PROFILE("Grnd & Objects");
+                    //START_PROFILE("Grnd bitand Objects");
                     DrawGroundAndObjects(viewpoint->ObjectsInTerrain());
-                    //STOP_PROFILE("Grnd & Objects");
+                    //STOP_PROFILE("Grnd bitand Objects");
                 }
             }
         }
@@ -1594,7 +1594,7 @@ void RenderOTW::TransformRun(int row, int col, int run, int LOD, BOOL do_row)
 
 
             // Finally, do the perspective divide and scale and shift into screen space
-            if ( not (vert->clipFlag & CLIP_NEAR))
+            if ( not (vert->clipFlag bitand CLIP_NEAR))
             {
                 ShiAssert(scratch_z > 0.0f);
                 register float OneOverZ = 1.0f / scratch_z;

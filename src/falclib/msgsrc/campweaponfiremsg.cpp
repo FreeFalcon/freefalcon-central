@@ -611,7 +611,7 @@ void FireOnSimEntity(CampEntity shooter, SimBaseClass *simTarg, short weaponId)
     if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_WEAPON  and 
         classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_GUN)
     {
-        if (wc->Flags & WEAP_TRACER)
+        if (wc->Flags bitand WEAP_TRACER)
         {
             // don't handle tracers
             // MonoPrint("Campaign unit unable to fire on sim entity due to gun code not existing.\n");
@@ -625,7 +625,7 @@ void FireOnSimEntity(CampEntity shooter, SimBaseClass *simTarg, short weaponId)
         if (wc->BlastRadius == 0)
         {
             // must be a direct hit!  1-8 fer now
-            if ((rand() & 7) == 7)
+            if ((rand() bitand 7) == 7)
             {
                 hitSomething = TRUE;
                 damMessage = GetSimDamageMessage(shooter,
@@ -1102,7 +1102,7 @@ void DoShortDistanceVisualEffects(CampEntity shooter, CampEntity target, int wea
     if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_WEAPON  and 
         classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_GUN)
     {
-        if (wc->Flags & WEAP_TRACER)
+        if (wc->Flags bitand WEAP_TRACER)
         {
             // don't handle tracers
             return;

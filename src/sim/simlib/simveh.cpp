@@ -387,7 +387,7 @@ int SimVehicleClass::Exec(void)
     if (ioPerturb > 0.0f)
     {
         // JB 010730
-        if (ioPerturb > 0.5f and g_bDisableFunkyChicken and (rand() & 63) == 63)
+        if (ioPerturb > 0.5f and g_bDisableFunkyChicken and (rand() bitand 63) == 63)
         {
             float randamt  =   PRANDFloatPos();
 
@@ -946,7 +946,7 @@ int SimVehicleClass::Exec(void)
         {
             dyingTimer += SimLibMajorFrameTime;
 
-            if (dyingTimer > 2.5f and rand() & 0x03)
+            if (dyingTimer > 2.5f and rand() bitand 0x03)
             {
                 dyingTimer = 0.0f;
                 pos.x = XPos();
@@ -1489,8 +1489,8 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
     // If this is our own aircraft and if we have disabled the damage jitter or a 25% chance
     // Or otherwise a 13% chance (AI controlled aircraft won't be able to fly with a bias so we want the % to be low)
     if (hitPoints > 0  and 
-        ((IsSetFlag(MOTION_OWNSHIP) and (g_bDisableFunkyChicken or (rand() & 0x3) == 0x3)) ||
-         (rand() & 0x7) == 0x7))
+        ((IsSetFlag(MOTION_OWNSHIP) and (g_bDisableFunkyChicken or (rand() bitand 0x3) == 0x3)) ||
+         (rand() bitand 0x7) == 0x7))
     {
         rBias += ioPerturb / 2 * PRANDFloat();
         pBias += ioPerturb / 2 * PRANDFloat();
@@ -1502,7 +1502,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
         // SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity()->AutopilotType() not_eq AircraftClass::CombatAP  and 
         // !(gCommsMgr and gCommsMgr->Online())  and 
         IsAirplane()  and 
-        // (rand() & 0x7) == 0x7 and // 13% chance 2002-04-11 MOVED BY S.G. After the ->af and used the external var now
+        // (rand() bitand 0x7) == 0x7 and // 13% chance 2002-04-11 MOVED BY S.G. After the ->af and used the external var now
         ((AircraftClass*)this)->af  and 
         ((AircraftClass*)this)->af->GetEngineDamageHitThreshold() < hitPoints and // 2002-04-11 ADDED BY S.G. hitPoints 'theshold' is no longer 1 or above but externalized
         ((AircraftClass*)this)->af->GetEngineDamageStopThreshold() > rand() % 100 and // 2002-04-11 ADDED BY S.G. instead of a fixed 13%, now uses an aiframe aux var
@@ -1513,7 +1513,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
         // ((AircraftClass*)this)->af->SetFlag(AirframeClass::EpuRunning);
 
         // MODIFIED BY S.G. Instead of 50%, now uses an aiframe aux var
-        // if ((rand() & 0x1) == 0x1) // JB 010115 half the time (13%/2) you won't be able to restart.
+        // if ((rand() bitand 0x1) == 0x1) // JB 010115 half the time (13%/2) you won't be able to restart.
         if (((AircraftClass*)this)->af->GetEngineDamageNoRestartThreshold() > rand() % 100)
             ((AircraftClass*)this)->af->jfsaccumulator = -3600;
     }
@@ -1598,7 +1598,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
         // short delay before vehicle starts death throw effects
         dyingTimer = 0.0f;
         // dyingType = PRANDInt5();
-        dyingType = rand() & 0x07;
+        dyingType = rand() bitand 0x07;
 
         //MonoPrint ("Vehicle %d in death throws at %8ld\n", Id().num_, SimLibElapsedTime);
         //MonoPrint ("Dying Type = %d\n", dyingType);

@@ -465,7 +465,7 @@ void CloseAllRenderers(long openID)
     C_Window *win;
     C_Button *btn;
 
-    if (gMainHandler->GetWindowFlags(openID) & C_BIT_ENABLED)
+    if (gMainHandler->GetWindowFlags(openID) bitand C_BIT_ENABLED)
         return;
 
     gMainHandler->EnterCritical();
@@ -474,7 +474,7 @@ void CloseAllRenderers(long openID)
     {
         win = gMainHandler->FindWindow(RECON_WIN);
 
-        if (win and (gMainHandler->GetWindowFlags(RECON_WIN) & C_BIT_ENABLED))
+        if (win and (gMainHandler->GetWindowFlags(RECON_WIN) bitand C_BIT_ENABLED))
         {
             btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
 
@@ -484,7 +484,7 @@ void CloseAllRenderers(long openID)
 
         win = gMainHandler->FindWindow(RECON_LIST_WIN);
 
-        if (win and (gMainHandler->GetWindowFlags(RECON_LIST_WIN) & C_BIT_ENABLED))
+        if (win and (gMainHandler->GetWindowFlags(RECON_LIST_WIN) bitand C_BIT_ENABLED))
         {
             btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
 
@@ -495,7 +495,7 @@ void CloseAllRenderers(long openID)
 
     win = gMainHandler->FindWindow(MUNITIONS_WIN);
 
-    if (win and (gMainHandler->GetWindowFlags(MUNITIONS_WIN) & C_BIT_ENABLED))
+    if (win and (gMainHandler->GetWindowFlags(MUNITIONS_WIN) bitand C_BIT_ENABLED))
     {
         btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
 
@@ -1421,7 +1421,7 @@ void PlayUIMusic()
 
     if (LastUIPlayed not_eq SND_AMBIENT1 and LastUIPlayed not_eq SND_AMBIENT2)
     {
-        if (rand() & 1)
+        if (rand() bitand 1)
             LastUIPlayed = SND_AMBIENT1;
     }
 
@@ -1482,7 +1482,7 @@ void PlayThatFunkyMusicWhiteBoy()
     }
     else
     {
-        gMusic->StartInteractive(rand() & 0x01, 0);
+        gMusic->StartInteractive(rand() bitand 0x01, 0);
         LastTypePlayed = 2;
     }
 }
@@ -1732,11 +1732,11 @@ int UI_Startup()
 
             DoResultsWindows();
             /*
-            if(MissionResult & PROMOTION)
+            if(MissionResult bitand PROMOTION)
              PromotionWindow();
-            if(MissionResult & AWARD_MEDAL)
+            if(MissionResult bitand AWARD_MEDAL)
              AwardWindow();
-            else if(MissionResult & COURT_MARTIAL)
+            else if(MissionResult bitand COURT_MARTIAL)
              CourtMartialWindow();
             */
 
@@ -1768,7 +1768,7 @@ int UI_Startup()
 
     SetCursor(gCursors[CRSR_F16]);
 
-    if ( not (LogState & LB_LOADED_ONCE))
+    if ( not (LogState bitand LB_LOADED_ONCE))
     {
         LogState  or_eq  LB_LOADED_ONCE;
         LogBook.Initialize();
@@ -1777,7 +1777,7 @@ int UI_Startup()
         DisplayOptions.Initialize();
     }
 
-    if ( not LogBook.CheckPassword(_T("")) and !(LogState & LB_CHECKED))
+    if ( not LogBook.CheckPassword(_T("")) and !(LogState bitand LB_CHECKED))
         PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE, CheckPasswordCB, NoPasswordCB);
     else
     {

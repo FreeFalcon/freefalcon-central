@@ -225,11 +225,11 @@ void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
         if (LightList[idx].Light.dltType == D3DLIGHT_SPOT)
         {
 
-            // Get the Distance btw Light & Object
+            // Get the Distance btw Light bitand Object
             //float dx=Pos.d3d.x-LightList[idx].Light.dvPosition.x;
             //float dy=Pos.d3d.y-LightList[idx].Light.dvPosition.y;
             //float dz=Pos.d3d.z-LightList[idx].Light.dvPosition.z;
-            // Calculate Horizontal and Vertical Angle btw Light & Object
+            // Calculate Horizontal and Vertical Angle btw Light bitand Object
             float ax = atan2(Acc.d3d.x, Acc.d3d.y);
             float ay = atan2(Acc.d3d.z, sqrtf(Square.d3d.x + Square.d3d.y));
 

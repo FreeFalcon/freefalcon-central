@@ -108,19 +108,19 @@ public:
     }
     int IsCampaign(void)
     {
-        return (falconType & FalconCampaignEntity) ? TRUE : FALSE;
+        return (falconType bitand FalconCampaignEntity) ? TRUE : FALSE;
     };
     int IsSim(void)
     {
-        return (falconType & FalconSimEntity) ? TRUE : FALSE;
+        return (falconType bitand FalconSimEntity) ? TRUE : FALSE;
     };
     int IsSimObjective(void)
     {
-        return (falconType & FalconSimObjective) ? TRUE : FALSE;
+        return (falconType bitand FalconSimObjective) ? TRUE : FALSE;
     };
     int IsPersistant(void)
     {
-        return (falconType & FalconPersistantEntity) ? TRUE : FALSE;
+        return (falconType bitand FalconPersistantEntity) ? TRUE : FALSE;
     };
     void SetTypeFlag(int flag)
     {
@@ -132,7 +132,7 @@ public:
     };
     void SetFalcFlag(int flag)
     {
-        if ( not (falconFlags & flag))
+        if ( not (falconFlags bitand flag))
         {
             falconFlags  or_eq  flag;
             MakeFlagsDirty();
@@ -140,7 +140,7 @@ public:
     };
     void UnSetFalcFlag(int flag)
     {
-        if (falconFlags & flag)
+        if (falconFlags bitand flag)
         {
             falconFlags and_eq compl flag;
             MakeFlagsDirty();
@@ -148,7 +148,7 @@ public:
     };
     int IsSetFalcFlag(int flag)
     {
-        return falconFlags & flag;
+        return falconFlags bitand flag;
     };
     int IsPlayer(void)
     {
@@ -373,7 +373,7 @@ public:
     };
     int IsSetFELocalFlag(int flag)
     {
-        return feLocalFlags & flag;
+        return feLocalFlags bitand flag;
     };
 };
 // sfr: FalconEntity container

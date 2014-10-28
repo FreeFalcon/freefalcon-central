@@ -7,7 +7,7 @@
 #include "vutypes.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// statics & globals
+// statics bitand globals
 // static VuListIterator* vuTargetListIter     = 0;
 #if VU_ALL_FILTERED
 VuLinkedList*        vuGameList           = 0;

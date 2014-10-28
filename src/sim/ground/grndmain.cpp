@@ -166,8 +166,8 @@ void GroundClass::Init(SimInitDataClass* initData)
     isEmitter = FALSE;
     needKeepAlive = FALSE;
 
-    hasCrew = (vc->Flags & VEH_HAS_CREW) ? TRUE : FALSE;
-    isTowed = (vc->Flags & VEH_IS_TOWED) ? TRUE : FALSE;
+    hasCrew = (vc->Flags bitand VEH_HAS_CREW) ? TRUE : FALSE;
+    isTowed = (vc->Flags bitand VEH_IS_TOWED) ? TRUE : FALSE;
     isShip = (GetDomain() == DOMAIN_SEA) ? TRUE : FALSE;
 
     // RV - Biker
@@ -488,7 +488,7 @@ int GroundClass::Exec(void)
             //RV - I-Hawk - Commenting all this if statement... not necessary
 
             /*
-            if ( rand() & 1 ){
+            if ( rand() bitand 1 ){
              destroyedPtr = new DrawableGroundVehicle(
              classPtr->visType[3],
              &pos,
@@ -845,7 +845,7 @@ int GroundClass::Exec(void)
                 {
                     campBaseObj->SetSpotted(
                         GetTeam(), TheCampaign.CurrentTime,
-                        (radar->radarData->flag & RAD_NCTR) not_eq 0  and 
+                        (radar->radarData->flag bitand RAD_NCTR) not_eq 0  and 
                         radar->CurrentTarget()->localData  and 
                         radar->CurrentTarget()->localData->ataFrom < 45.0f * DTR  and 
                         radar->CurrentTarget()->localData->range <
@@ -964,12 +964,12 @@ int GroundClass::Exec(void)
     if (drawPointer and gai->rank not_eq GNDAI_BATTALION_COMMANDER)
     {
         // distLOD cutoff by ranking (KCK: This is explicit for testing, could be a formula/table)
-        if (gai->rank & GNDAI_COMPANY_LEADER)
+        if (gai->rank bitand GNDAI_COMPANY_LEADER)
         {
             labelLOD = .5F;
             drawLOD = .25F;
         }
-        else if (gai->rank & GNDAI_PLATOON_LEADER)
+        else if (gai->rank bitand GNDAI_PLATOON_LEADER)
         {
             labelLOD = .925F;
             drawLOD = .5F;
@@ -1123,7 +1123,7 @@ int GroundClass::Exec(void)
             // (b) Make dust
             // dustTimer += SimLibMajorFrameTime;
             // if ( dustTimer > max( 0.2f,  4.5f - speedScale - gai->distLOD * 3.3f ) )
-            if (((rand() & 7) == 7)  and 
+            if (((rand() bitand 7) == 7)  and 
                 gSfxCount[ SFX_GROUND_DUSTCLOUD ] < gSfxLODCutoff  and 
                 gTotSfx < gSfxLODTotCutoff
                )
@@ -1195,7 +1195,7 @@ int GroundClass::Exec(void)
             }
 
             //RV - I-Hawk - Do wakes only at some cases
-            if ((rand() & 7) == 7)
+            if ((rand() bitand 7) == 7)
             {
                 //I-Hawk - not using all this anymore
                 //
@@ -1284,7 +1284,7 @@ int GroundClass::Exec(void)
     }
 
     // ACMI Output
-    if (gACMIRec.IsRecording() and (SimLibFrameCount & 0x0f) == 0)
+    if (gACMIRec.IsRecording() and (SimLibFrameCount bitand 0x0f) == 0)
     {
         ACMIGenPositionRecord genPos;
         genPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
@@ -1385,7 +1385,7 @@ int GroundClass::Wake(void)
                 break;
         }
 
-        vistype = Falcon4ClassTable[vtIdx].visType[Status() & VIS_TYPE_MASK];
+        vistype = Falcon4ClassTable[vtIdx].visType[Status() bitand VIS_TYPE_MASK];
 
         mlSinCos(&trig, Yaw());
         simView.x = XPos() - 20.0F * trig.cos;

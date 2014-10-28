@@ -1110,18 +1110,18 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
             ptoken = FindToken(&plinePtr, pseparators);
             unsigned int tempFlood;
             sscanf(ptoken, "%x", &tempFlood);
-            mFloodLight[2] = (float)((tempFlood & 0xff0000) >> 16) / 0xff;
-            mFloodLight[1] = (float)((tempFlood & 0x00ff00) >> 8) / 0xff;
-            mFloodLight[0] = (float)((tempFlood & 0x0000ff) >> 0) / 0xff;
+            mFloodLight[2] = (float)((tempFlood bitand 0xff0000) >> 16) / 0xff;
+            mFloodLight[1] = (float)((tempFlood bitand 0x00ff00) >> 8) / 0xff;
+            mFloodLight[0] = (float)((tempFlood bitand 0x0000ff) >> 0) / 0xff;
         }
         else if ( not strcmpi(ptoken, PROP_INSTLIGHT))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             unsigned int tempInst;
             sscanf(ptoken, "%x", &tempInst);
-            mInstLight[2] = (float)((tempInst & 0xff0000) >> 16) / 0xff;
-            mInstLight[1] = (float)((tempInst & 0x00ff00) >> 8) / 0xff;
-            mInstLight[0] = (float)((tempInst & 0x0000ff) >> 0) / 0xff;
+            mInstLight[2] = (float)((tempInst bitand 0xff0000) >> 16) / 0xff;
+            mInstLight[1] = (float)((tempInst bitand 0x00ff00) >> 8) / 0xff;
+            mInstLight[0] = (float)((tempInst bitand 0x0000ff) >> 0) / 0xff;
         }
         else if ( not strcmpi(ptoken, PROP_HUDCOLOR_STR))
         {
@@ -5710,9 +5710,9 @@ DWORD CockpitManager::ApplyLightingToRGB(DWORD inColor, bool useInst)
     float *light = (useInst) ? iLight : cLight;
 
     //invert color components
-    DWORD red = inColor & 0xff0000;
-    DWORD green = inColor & 0x00ff00;
-    DWORD blue = inColor & 0x0000ff;
+    DWORD red = inColor bitand 0xff0000;
+    DWORD green = inColor bitand 0x00ff00;
+    DWORD blue = inColor bitand 0x0000ff;
     DWORD colorBGR = (red) | (green << 8) | (blue << 16);
 
     return (OTWDriver.renderer->GetGreenMode()) ?
@@ -5870,10 +5870,10 @@ DWORD CalculateColor(DWORD inColor, float rf, float gf, float bf)
     DWORD outColor;
 
     //we get RGB and preserve alpha
-    blue = (int)(((inColor & 0x00ff0000) >> 16) *  bf);
-    green = (int)(((inColor & 0x0000ff00) >>  8) *  gf);
-    red = (int)(((inColor & 0x000000ff) >>  0) *  rf);
-    alpha = inColor & 0xff000000;
+    blue = (int)(((inColor bitand 0x00ff0000) >> 16) *  bf);
+    green = (int)(((inColor bitand 0x0000ff00) >>  8) *  gf);
+    red = (int)(((inColor bitand 0x000000ff) >>  0) *  rf);
+    alpha = inColor bitand 0xff000000;
     outColor = (alpha) | (red << 0) | (green << 8) | (blue << 16);
 
     return outColor;
@@ -5884,9 +5884,9 @@ DWORD InvertRGBOrder(DWORD inColor)
 {
     int c1, c2, c3;
 
-    c1 = (inColor & 0xff0000);
-    c2 = (inColor & 0x00ff00);
-    c3 = (inColor & 0x0000ff);
+    c1 = (inColor bitand 0xff0000);
+    c2 = (inColor bitand 0x00ff00);
+    c3 = (inColor bitand 0x0000ff);
 
     DWORD outColor = (c1 >> 16) | (c2) | (c3 << 16);
     return outColor;
@@ -5907,10 +5907,10 @@ DWORD CalculateNVGColor(DWORD inColor)
     int green;
     int blue;
 
-    red = (inColor & 0x000000ff);
-    green = (inColor & 0x0000ff00) >> 8;
-    blue = (inColor & 0x00ff0000) >> 16;
-    alpha = inColor & 0xff000000;
+    red = (inColor bitand 0x000000ff);
+    green = (inColor bitand 0x0000ff00) >> 8;
+    blue = (inColor bitand 0x00ff0000) >> 16;
+    alpha = inColor bitand 0xff000000;
 
     nvgColor = (red + green + blue) / 3;
     nvgColor = (nvgColor << 8) | alpha;
@@ -6172,31 +6172,31 @@ WORD TemplateInfoClass::Pixel32toPixel16(UInt32 ABGR)
     // RED
     if (redShift >= 0)
     {
-        color = (ABGR >>  redShift) & dwRBitMask;
+        color = (ABGR >>  redShift) bitand dwRBitMask;
     }
     else
     {
-        color = (ABGR << -redShift) & dwRBitMask;
+        color = (ABGR << -redShift) bitand dwRBitMask;
     }
 
     // GREEN
     if (greenShift >= 0)
     {
-        color  or_eq  (ABGR >>  greenShift) & dwGBitMask;
+        color  or_eq  (ABGR >>  greenShift) bitand dwGBitMask;
     }
     else
     {
-        color  or_eq  (ABGR << -greenShift) & dwGBitMask;
+        color  or_eq  (ABGR << -greenShift) bitand dwGBitMask;
     }
 
     // BLUE
     if (blueShift >= 0)
     {
-        color  or_eq  (ABGR >>  blueShift) & dwBBitMask;
+        color  or_eq  (ABGR >>  blueShift) bitand dwBBitMask;
     }
     else
     {
-        color  or_eq  (ABGR << -blueShift) & dwBBitMask;
+        color  or_eq  (ABGR << -blueShift) bitand dwBBitMask;
     }
 
     return (WORD)color;
@@ -6209,34 +6209,34 @@ DWORD TemplateInfoClass::Pixel32toPixel32(UInt32 ABGR)
     // RED
     if (redShift >= 0)
     {
-        color = (ABGR >>  redShift) & dwRBitMask;
+        color = (ABGR >>  redShift) bitand dwRBitMask;
     }
     else
     {
-        color = (ABGR << -redShift) & dwRBitMask;
+        color = (ABGR << -redShift) bitand dwRBitMask;
     }
 
     // GREEN
     if (greenShift >= 0)
     {
-        color  or_eq  (ABGR >>  greenShift) & dwGBitMask;
+        color  or_eq  (ABGR >>  greenShift) bitand dwGBitMask;
     }
     else
     {
-        color  or_eq  (ABGR << -greenShift) & dwGBitMask;
+        color  or_eq  (ABGR << -greenShift) bitand dwGBitMask;
     }
 
     // BLUE
     if (blueShift >= 0)
     {
-        color  or_eq  (ABGR >>  blueShift) & dwBBitMask;
+        color  or_eq  (ABGR >>  blueShift) bitand dwBBitMask;
     }
     else
     {
-        color  or_eq  (ABGR << -blueShift) & dwBBitMask;
+        color  or_eq  (ABGR << -blueShift) bitand dwBBitMask;
     }
 
-    color  or_eq  ABGR & 0xff000000;
+    color  or_eq  ABGR bitand 0xff000000;
 
     return color;
 }

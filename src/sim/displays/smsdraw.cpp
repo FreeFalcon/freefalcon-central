@@ -1198,7 +1198,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
                 }
             }
 
-            if (Sms->curHardpoint >= 0 and Sms->hardPoint[Sms->curHardpoint]->GetWeaponData()->flags & SMSClass::HasBurstHeight)
+            if (Sms->curHardpoint >= 0 and Sms->hardPoint[Sms->curHardpoint]->GetWeaponData()->flags bitand SMSClass::HasBurstHeight)
             {
                 //MI not here in real
                 if (g_bRealisticAvionics)
@@ -1532,20 +1532,20 @@ void SmsDrawable::StepSelectiveJettisonMode(int hp)
 {
     int bit = 1 << hp;
 
-    //if(Sms->hardPoint[hp]->GetRackDataFlags() & RDF_BMSDEFINITION)
+    //if(Sms->hardPoint[hp]->GetRackDataFlags() bitand RDF_BMSDEFINITION)
     {
         switch (sjSelected[hp])
         {
             case JettisonNone:
                 sjSelected[hp] = SelectiveWeapon;
 
-                if ((Sms->hardPoint[hp]->GetRackDataFlags() & RDF_SELECTIVE_JETT_WEAPON))
+                if ((Sms->hardPoint[hp]->GetRackDataFlags() bitand RDF_SELECTIVE_JETT_WEAPON))
                     break;
 
             case SelectiveWeapon:
                 sjSelected[hp] = SelectiveRack;
 
-                if ((Sms->hardPoint[hp]->GetRackDataFlags() & RDF_SELECTIVE_JETT_RACK))
+                if ((Sms->hardPoint[hp]->GetRackDataFlags() bitand RDF_SELECTIVE_JETT_RACK))
                     break;
 
             case SelectiveRack:
@@ -2057,7 +2057,7 @@ void SmsDrawable::MaverickDisplay(void)
 
 void SmsDrawable::GBUDisplay(void)
 {
-    flash = (vuxRealTime & 0x200);
+    flash = (vuxRealTime bitand 0x200);
 
     LaserPodClass* laserPod = (LaserPodClass*)FindLaserPod(Sms->ownship);
     FireControlComputer* pFCC = Sms->ownship->GetFCC();
@@ -2416,7 +2416,7 @@ void SmsDrawable::BombDisplay(void)
             }
 
             if (Sms->curHardpoint >= 0  and 
-                Sms->hardPoint[Sms->curHardpoint]->GetWeaponData()->flags & SMSClass::HasBurstHeight)
+                Sms->hardPoint[Sms->curHardpoint]->GetWeaponData()->flags bitand SMSClass::HasBurstHeight)
             {
                 sprintf(tempstr, "BA %.0fFT", Sms->burstHeight);
                 display->TextLeft(-0.3F, 0.1F, tempstr);
@@ -2465,7 +2465,7 @@ void SmsDrawable::BombDisplay(void)
         if ( not g_bRealisticAvionics)
         {
             if (Sms->curHardpoint >= 0  and 
-                Sms->hardPoint[Sms->curHardpoint]->GetWeaponData()->flags & SMSClass::HasBurstHeight)
+                Sms->hardPoint[Sms->curHardpoint]->GetWeaponData()->flags bitand SMSClass::HasBurstHeight)
             {
                 sprintf(tmpStr, "BA %.0f", Sms->burstHeight);
                 LabelButton(18,  tmpStr);
@@ -2766,7 +2766,7 @@ void SmsDrawable::ChangeToInput(int button)
             InputModus = CONTROL_PAGE;
 
             if (Sms->curHardpoint >= 0  and 
-                Sms->hardPoint[Sms->curHardpoint]->GetWeaponData()->flags & SMSClass::HasBurstHeight)
+                Sms->hardPoint[Sms->curHardpoint]->GetWeaponData()->flags bitand SMSClass::HasBurstHeight)
             {
                 C1Weap = FALSE;
                 C2Weap = TRUE;
@@ -2880,7 +2880,7 @@ void SmsDrawable::SetWeapParams(void)
 {
     if (Sms->curHardpoint >= 0)
     {
-        if (Sms->hardPoint[Sms->curHardpoint]->GetWeaponData()->flags & SMSClass::HasBurstHeight)
+        if (Sms->hardPoint[Sms->curHardpoint]->GetWeaponData()->flags bitand SMSClass::HasBurstHeight)
         {
             //Sms->armingdelay = Sms->C2AD;
             Sms->armingdelay = Sms->GetAGBC2ArmDelay();

@@ -75,7 +75,7 @@ void DigitalBrain::Actions(void)
 
             while (w and !found)
             {
-                if (w->GetWPFlags() & WPF_TARGET)
+                if (w->GetWPFlags() bitand WPF_TARGET)
                     found = true;
 
                 w = w->GetNextWP();
@@ -365,13 +365,13 @@ void DigitalBrain::Actions(void)
 
 #ifdef SHOW_MANEUVERLABELS
 
-    if (g_nShowDebugLabels & 0x01)
+    if (g_nShowDebugLabels bitand 0x01)
     {
         char element[40];
         sprintf(element, " %d%d W%d R%d V%d", isWing + 1, SkillLevel(), detRWR, detRAD, detVIS);
         strcat(label, element);
 
-        if (g_nShowDebugLabels & 0x40)
+        if (g_nShowDebugLabels bitand 0x40)
         {
             RadarClass* theRadar = (RadarClass*)FindSensor(self, SensorClass::Radar);
 
@@ -394,7 +394,7 @@ void DigitalBrain::Actions(void)
         if (groundAvoidNeeded or pullupTimer)
             strcat(label, " Pullup");
 
-        if (g_nShowDebugLabels & 0x8000)
+        if (g_nShowDebugLabels bitand 0x8000)
         {
             if (((AircraftClass*) self)->af->GetSimpleMode())
                 strcat(label, " SIMP");
@@ -402,7 +402,7 @@ void DigitalBrain::Actions(void)
                 strcat(label, " COMP");
         }
 
-        if (g_nShowDebugLabels & 0x1000)
+        if (g_nShowDebugLabels bitand 0x1000)
         {
             if (SimDriver.GetPlayerEntity() and self->GetCampaignObject() and self->GetCampaignObject()->GetIdentified(SimDriver.GetPlayerEntity()->GetTeam()))
                 strcat(label, "IDed");
@@ -414,7 +414,7 @@ void DigitalBrain::Actions(void)
             ((DrawableBSP*)self->drawPointer)->SetLabel(label, ((DrawableBSP*)self->drawPointer)->LabelColor());
     }
 
-    if (g_nShowDebugLabels & 0x200000)
+    if (g_nShowDebugLabels bitand 0x200000)
     {
         sprintf(label, "%.0f %.0f %.0f", trackX, trackY, trackZ);
 
@@ -422,7 +422,7 @@ void DigitalBrain::Actions(void)
             ((DrawableBSP*)self->drawPointer)->SetLabel(label, ((DrawableBSP*)self->drawPointer)->LabelColor());
     }
 
-    if (g_nShowDebugLabels & 0x100000)
+    if (g_nShowDebugLabels bitand 0x100000)
     {
         float yaw = self->Yaw();
 
@@ -436,7 +436,7 @@ void DigitalBrain::Actions(void)
             ((DrawableBSP*)self->drawPointer)->SetLabel(label, ((DrawableBSP*)self->drawPointer)->LabelColor());
     }
 
-    if (g_nShowDebugLabels & 0x800000)
+    if (g_nShowDebugLabels bitand 0x800000)
     {
         sprintf(label, "0x%x leader: 0x%x", self, flightLead);
 
@@ -548,7 +548,7 @@ void DigitalBrain::AirbaseCheck()
 
     if (returnHomebase)
     {
-        if ( not (moreFlags & SaidImADot))
+        if ( not (moreFlags bitand SaidImADot))
         {
             moreFlags  or_eq  SaidImADot;
             int flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
@@ -564,7 +564,7 @@ void DigitalBrain::AirbaseCheck()
 
         AddMode(RTBMode); // changed from LandingMode to RTBMode
 
-        if (g_nShowDebugLabels & 0x40000)
+        if (g_nShowDebugLabels bitand 0x40000)
         {
             sprintf(label, "RTB Homebase");
 
@@ -606,7 +606,7 @@ void DigitalBrain::AirbaseCheck()
 
         AddMode(LandingMode);
 
-        if (g_nShowDebugLabels & 0x40000)
+        if (g_nShowDebugLabels bitand 0x40000)
         {
             sprintf(label, "RTB near ab, pct-Strgth: %1.2f", self->pctStrength);
 

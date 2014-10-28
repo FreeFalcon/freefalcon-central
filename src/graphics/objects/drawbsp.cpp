@@ -711,11 +711,11 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
             if (colorsub > 180) // let's not reduce brightness too much, keep a glimpse of the original color
                 colorsub = 180;
 
-            int red = (labelColor & 0x000000ff);
+            int red = (labelColor bitand 0x000000ff);
             red -= min(red, colorsub);
-            int green = (labelColor & 0x0000ff00) >> 8;
+            int green = (labelColor bitand 0x0000ff00) >> 8;
             green -= min(green, colorsub + 30); // green would be too light -> +30
-            int blue = (labelColor & 0x00ff0000) >> 16;
+            int blue = (labelColor bitand 0x00ff0000) >> 16;
             blue -= min(blue, colorsub);
 
             long newlabelColor = blue << 16 | green << 8 | red;

@@ -461,7 +461,7 @@ void DisplayDebugLine(int x0, int y0, int x1, int y1)
                 y ++;
             }
 
-            if (styles[linestyle] & (1 << (pixcount % 16)))
+            if (styles[linestyle] bitand (1 << (pixcount % 16)))
                 WriteDebugPixel(x, y);
 
             pixcount ++;
@@ -487,7 +487,7 @@ void DisplayDebugLine(int x0, int y0, int x1, int y1)
                 y --;
             }
 
-            if (styles[linestyle] & (1 << (pixcount % 16)))
+            if (styles[linestyle] bitand (1 << (pixcount % 16)))
                 WriteDebugPixel(x, y);
 
             pixcount ++;
@@ -514,7 +514,7 @@ void DisplayDebugLine(int x0, int y0, int x1, int y1)
                 y ++;
             }
 
-            if (styles[linestyle] & (1 << (pixcount % 16)))
+            if (styles[linestyle] bitand (1 << (pixcount % 16)))
                 WriteDebugPixel(x, y);
 
             pixcount ++;
@@ -541,7 +541,7 @@ void DisplayDebugLine(int x0, int y0, int x1, int y1)
                 x ++;
             }
 
-            if (styles[linestyle] & (1 << (pixcount % 16)))
+            if (styles[linestyle] bitand (1 << (pixcount % 16)))
                 WriteDebugPixel(x, y);
 
             pixcount ++;
@@ -667,7 +667,7 @@ void DisplayDebugCharacter(int num, int x, int y)
 
             for (j = 0; j < 5; j++)
             {
-                if (c & 0x80)
+                if (c bitand 0x80)
                     WriteDebugPixel(x + j, y + i);
 
                 c = (char)(c << 1);
@@ -703,7 +703,7 @@ void set_spinner1(int s)
     *dst;
 
     dst = (char *) MONO_TEXT;
-    dst[156] = spin[spinner1 & 3];;
+    dst[156] = spin[spinner1 bitand 3];;
     dst[157] = 7;
 #endif
 #endif
@@ -724,7 +724,7 @@ void set_spinner2(int s)
     *dst;
 
     dst = (char *) MONO_TEXT;
-    dst[154] = spin[spinner2 & 3];;
+    dst[154] = spin[spinner2 bitand 3];;
     dst[155] = 7;
 #endif
 #endif
@@ -745,7 +745,7 @@ void set_spinner3(int s)
     *dst;
 
     dst = (char *) MONO_TEXT;
-    dst[154] = spin[spinner3 & 3];;
+    dst[154] = spin[spinner3 bitand 3];;
     dst[155] = 7;
 #endif
 #endif
@@ -830,16 +830,16 @@ unsigned long WINAPI update_mono(void *ptr)
         }
 
         dst = (char *) MONO_TEXT;
-        dst[158] = spin[(spinner ++) & 3];;
+        dst[158] = spin[(spinner ++) bitand 3];;
         dst[159] = 7;
 
-        dst[156] = spin[spinner1 & 3];;
+        dst[156] = spin[spinner1 bitand 3];;
         dst[157] = 7;
 
-        dst[154] = spin[spinner2 & 3];;
+        dst[154] = spin[spinner2 bitand 3];;
         dst[155] = 7;
 
-        dst[152] = spin[spinner3 & 3];;
+        dst[152] = spin[spinner3 bitand 3];;
         dst[153] = 7;
 
         Sleep(25);

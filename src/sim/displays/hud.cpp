@@ -400,7 +400,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
     // Various ways to be broken
     if (ownship->mFaults  and 
         (
-            (ownship->mFaults->GetFault(FaultClass::flcs_fault) & FaultClass::dmux) ||
+            (ownship->mFaults->GetFault(FaultClass::flcs_fault) bitand FaultClass::dmux) ||
             ownship->mFaults->GetFault(FaultClass::dmux_fault) ||
             ownship->mFaults->GetFault(FaultClass::hud_fault)
         )
@@ -424,8 +424,8 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
     // COBRA - RED - ALPHA forced for HUD Display
     display->ForceAlpha = gTranslucent;
     // Do we draw flashing things this frame?
-    flash = (vuxRealTime & 0x200);
-    Warnflash = (vuxRealTime & 0x080);
+    flash = (vuxRealTime bitand 0x200);
+    Warnflash = (vuxRealTime bitand 0x080);
     mlSinCos(&rollTrig, cockpitFlightData.roll);
     alphaHudUnits = RadToHudUnitsX(cockpitFlightData.alpha * DTR - cockpitFlightData.windOffset * rollTrig.sin);
 
@@ -2333,7 +2333,7 @@ DWORD HudClass::GetHudColor(void)
 
     //Set Up the Contrast, the Hud Color and the Light Level and Apply them
     SetLightLevel();
-    curHudColor = curHudColor & 0xff000000; // mantain alpha
+    curHudColor = curHudColor bitand 0xff000000; // mantain alpha
     curHudColor += ((int)(Color.b * 255 * (0.5F + HudContrast / 2))) << 16;
     curHudColor += ((int)(Color.g * 255 * (0.5F + HudContrast / 2))) << 8;
     curHudColor += ((int)(Color.r * 255 * (0.5F + HudContrast / 2)));
@@ -2366,13 +2366,13 @@ void HudClass::SetHudColor(DWORD newColor)
         SymWheelPos = 0.5F;
     }
 
-    hudColor.a = ((float)((HUDcolor[curColorIdx] & 0xff000000) >> 24)) / 255.0f;
-    hudColor.b = ((float)((HUDcolor[curColorIdx] & 0xff0000) >> 16)) / 255.0f;
-    hudColor.g = ((float)((HUDcolor[curColorIdx] & 0xff00) >> 8)) / 255.0f;
-    hudColor.r = ((float)(HUDcolor[curColorIdx] & 0xff)) / 255.0f;
+    hudColor.a = ((float)((HUDcolor[curColorIdx] bitand 0xff000000) >> 24)) / 255.0f;
+    hudColor.b = ((float)((HUDcolor[curColorIdx] bitand 0xff0000) >> 16)) / 255.0f;
+    hudColor.g = ((float)((HUDcolor[curColorIdx] bitand 0xff00) >> 8)) / 255.0f;
+    hudColor.r = ((float)(HUDcolor[curColorIdx] bitand 0xff)) / 255.0f;
     //Set Up the Contrast, the Hud Color and the Light Level and Apply them
     SetLightLevel();
-    curHudColor = curHudColor & 0xff000000; // mantain alpha
+    curHudColor = curHudColor bitand 0xff000000; // mantain alpha
     curHudColor += ((int)(hudColor.b * 255 * (0.5F + HudContrast / 2))) << 16;
     curHudColor += ((int)(hudColor.g * 255 * (0.5F + HudContrast / 2))) << 8;
     curHudColor += ((int)(hudColor.r * 255 * (0.5F + HudContrast / 2)));
@@ -2394,7 +2394,7 @@ void HudClass::HudColorStep(void)
 void HudClass::CalculateBrightness(float percent, DWORD* color)
 {
     HudBrightness = 1.0f * percent;
-    *color = (*color & 0x00ffffff) | ((FloatToInt32(255 * percent)) << 24);
+    *color = (*color bitand 0x00ffffff) | ((FloatToInt32(255 * percent)) << 24);
 }
 
 // COBRA - RED - Completely rewritten
@@ -2784,7 +2784,7 @@ void HudClass::DrawF18HUD(void)
     //Cobra.  Let's fix this to increment by 10 and add in the delay factor
     int vvi = (((FloatToInt32(-cockpitFlightData.zDot * 60)) + 5) / 10) * 10;
 
-    if (vuxRealTime & 0x040)
+    if (vuxRealTime bitand 0x040)
         vvid = vvi;
 
     sprintf(tmpStr, "%d", vvid);
@@ -2861,7 +2861,7 @@ void HudClass::DrawF14HUD(void)
     //Cobra.  Let's fix this to increment by 10 and add in the delay factor
     int vvi = (((FloatToInt32(-cockpitFlightData.zDot * 60)) + 5) / 10) * 10;
 
-    if (vuxRealTime & 0x040)
+    if (vuxRealTime bitand 0x040)
         vvid = vvi;
 
     sprintf(tmpStr, "%d", vvid);
@@ -2951,7 +2951,7 @@ void HudClass::DrawF15HUD(void)
     //Cobra.  Let's fix this to increment by 10 and add in the delay factor
     int vvi = (((FloatToInt32(-cockpitFlightData.zDot * 60)) + 5) / 10) * 10;
 
-    if (vuxRealTime & 0x040)
+    if (vuxRealTime bitand 0x040)
         vvid = vvi;
 
     sprintf(tmpStr, "%d", vvid);

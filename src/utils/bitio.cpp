@@ -85,7 +85,7 @@ void OutputBit(BIT_FILE *bit_file, int bit)
     {
         if (putc(bit_file->rack, bit_file->file) not_eq bit_file->rack)
             printf("Fatal error in OutputBit!");
-        else if ((bit_file->pacifier_counter++ & PACIFIER_COUNT) == 0)
+        else if ((bit_file->pacifier_counter++ bitand PACIFIER_COUNT) == 0)
             putc('.', stdout);
 
         bit_file->rack = 0;
@@ -101,7 +101,7 @@ void OutputBits(BIT_FILE *bit_file, unsigned long code, int count)
 
     while (mask not_eq 0)
     {
-        if (mask & code)
+        if (mask bitand code)
             bit_file->rack  or_eq  bit_file->mask;
 
         bit_file->mask >>= 1;
@@ -110,7 +110,7 @@ void OutputBits(BIT_FILE *bit_file, unsigned long code, int count)
         {
             if (putc(bit_file->rack, bit_file->file) not_eq bit_file->rack)
                 printf("Fatal error in OutputBit!");
-            else if ((bit_file->pacifier_counter++ & PACIFIER_COUNT) == 0)
+            else if ((bit_file->pacifier_counter++ bitand PACIFIER_COUNT) == 0)
                 putc('.', stdout);
 
             bit_file->rack = 0;
@@ -135,11 +135,11 @@ int InputBit(BIT_FILE *bit_file)
         if (bit_file->rack == EOF)
             return (unsigned long)EOF;
 
-        if ((bit_file->pacifier_counter++ & PACIFIER_COUNT) == 0)
+        if ((bit_file->pacifier_counter++ bitand PACIFIER_COUNT) == 0)
             putc('.', stdout);
     }
 
-    value = bit_file->rack & bit_file->mask;
+    value = bit_file->rack bitand bit_file->mask;
     bit_file->mask >>= 1;
 
     if (bit_file->mask == 0)
@@ -174,7 +174,7 @@ unsigned long InputBits(BIT_FILE *bit_file, int bit_count)
                 return (unsigned long)EOF;
         }
 
-        if (bit_file->rack & bit_file->mask)
+        if (bit_file->rack bitand bit_file->mask)
             return_value  or_eq  mask;
 
         /*
@@ -199,7 +199,7 @@ void FilePrintBinary(FILE *file, unsigned int code, int bits)
 
     while (mask not_eq 0)
     {
-        if (code & mask)
+        if (code bitand mask)
             fputc('1', file);
         else
             fputc('0', file);

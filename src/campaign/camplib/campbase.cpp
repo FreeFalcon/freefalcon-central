@@ -383,7 +383,7 @@ int CampBaseClass::GetSpotted(Team t)
         spotted = 0;
     }
 
-    if ((spotted >> t) & 0x01)
+    if ((spotted >> t) bitand 0x01)
     {
         return 1;
     }
@@ -502,12 +502,12 @@ void CampBaseClass::SetSpotted(Team t, CampaignTime time, int identified)
 {
     // Make this dirty if we wern't previously spotted or our time has expired
     // 2002-02-11 MODIFIED BY S.G. Or we were not identified and now we are
-    if (ReSpot() or !((spotted >> t) & 0x01) or ( not ((spotted >> (t + 8)) & 0x01) and identified))
+    if (ReSpot() or !((spotted >> t) bitand 0x01) or ( not ((spotted >> (t + 8)) bitand 0x01) and identified))
     {
         spotTime = time;
 
         // 2002-04-02 ADDED BY S.G. Need to send sooner if it gets identified.
-        if ( not ((spotted >> (t + 8)) & 0x01) and identified)
+        if ( not ((spotted >> (t + 8)) bitand 0x01) and identified)
         {
             //MakeCampBaseDirty (DIRTY_SPOTTED, DDP[2].priority);
             MakeCampBaseDirty(DIRTY_SPOTTED, SEND_RELIABLE);
@@ -525,7 +525,7 @@ void CampBaseClass::SetSpotted(Team t, CampaignTime time, int identified)
     // 2002-02-11 ADDED BY S.G.
     // The upper 8 bits of spotted is now used to know if the target has been identified by that team.
     // The only time you lose your identification is when you lose your spotting
-    spotted  or_eq  ((identified & 0x01) << (t + 8));
+    spotted  or_eq  ((identified bitand 0x01) << (t + 8));
 }
 
 void CampBaseClass::SetEmitting(int e)
@@ -604,7 +604,7 @@ void CampBaseClass::SetJammed(int j)
 {
     if (j)
     {
-        if ( not (base_flags & CBC_JAMMED))
+        if ( not (base_flags bitand CBC_JAMMED))
         {
             base_flags  or_eq  CBC_JAMMED;
             //MakeCampBaseDirty (DIRTY_BASE_FLAGS, DDP[6].priority);
@@ -613,7 +613,7 @@ void CampBaseClass::SetJammed(int j)
     }
     else
     {
-        if (base_flags & CBC_JAMMED)
+        if (base_flags bitand CBC_JAMMED)
         {
             base_flags and_eq compl CBC_JAMMED;
             //MakeCampBaseDirty (DIRTY_BASE_FLAGS, DDP[7].priority);
@@ -1099,7 +1099,7 @@ void CampBaseClass::WriteDirty(unsigned char **stream)
     *ptr = (unsigned char) dirty_camp_base;
     ptr += sizeof(unsigned char);
 
-    if (dirty_camp_base & DIRTY_POSITION)
+    if (dirty_camp_base bitand DIRTY_POSITION)
     {
         GridIndex x, y;
 
@@ -1110,13 +1110,13 @@ void CampBaseClass::WriteDirty(unsigned char **stream)
         ptr += sizeof(short);
     }
 
-    if (dirty_camp_base & DIRTY_ALTITUDE)
+    if (dirty_camp_base bitand DIRTY_ALTITUDE)
     {
         *(float*)ptr = ZPos();
         ptr += sizeof(float);
     }
 
-    if (dirty_camp_base & DIRTY_SPOTTED)
+    if (dirty_camp_base bitand DIRTY_SPOTTED)
     {
         *(short*)ptr = spotted;
         ptr += sizeof(short);
@@ -1124,7 +1124,7 @@ void CampBaseClass::WriteDirty(unsigned char **stream)
         ptr += sizeof(CampaignTime);
     }
 
-    if (dirty_camp_base & DIRTY_BASE_FLAGS)
+    if (dirty_camp_base bitand DIRTY_BASE_FLAGS)
     {
         *(short*)ptr = base_flags;
         ptr += sizeof(short);
@@ -1141,7 +1141,7 @@ void CampBaseClass::ReadDirty(VU_BYTE **stream, long *rem)
 
     memcpychk(&bits, stream, sizeof(char), rem);
 
-    if (bits & DIRTY_POSITION)
+    if (bits bitand DIRTY_POSITION)
     {
         GridIndex x, y;
 
@@ -1159,7 +1159,7 @@ void CampBaseClass::ReadDirty(VU_BYTE **stream, long *rem)
         }
     }
 
-    if (bits & DIRTY_ALTITUDE)
+    if (bits bitand DIRTY_ALTITUDE)
     {
         float z;
 
@@ -1173,13 +1173,13 @@ void CampBaseClass::ReadDirty(VU_BYTE **stream, long *rem)
         }
     }
 
-    if (bits & DIRTY_SPOTTED)
+    if (bits bitand DIRTY_SPOTTED)
     {
         memcpychk(&spotted, stream, sizeof(short), rem);
         memcpychk(&spotTime, stream, sizeof(CampaignTime), rem);
     }
 
-    if (bits & DIRTY_BASE_FLAGS)
+    if (bits bitand DIRTY_BASE_FLAGS)
     {
         memcpychk((void*)(&base_flags), stream, sizeof(short), rem);
     }

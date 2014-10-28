@@ -339,7 +339,7 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
             case rcfFlight2:
             case rcfFlight3:
             case rcfFlight4:
-                if (TOFROM_FLIGHT & radiofilter)
+                if (TOFROM_FLIGHT bitand radiofilter)
                     retval[i]  or_eq  TOFROM_FLIGHT;
 
                 break;
@@ -349,7 +349,7 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
             case rcfPackage2:
             case rcfPackage3:
             case rcfPackage4:
-                if ((TO_PACKAGE & radiofilter) or (radiofilter & TOFROM_FLIGHT))
+                if ((TO_PACKAGE bitand radiofilter) or (radiofilter bitand TOFROM_FLIGHT))
                 {
                     retval[i]  or_eq  TO_PACKAGE;
                 }
@@ -357,33 +357,33 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
                 break;
 
             case rcfFromPackage:
-                if ((TOFROM_PACKAGE & radiofilter) or (radiofilter & TOFROM_FLIGHT))
+                if ((TOFROM_PACKAGE bitand radiofilter) or (radiofilter bitand TOFROM_FLIGHT))
                     retval[i]  or_eq  TOFROM_PACKAGE;
 
                 break;
 
             case rcfProx:
-                if ((radiofilter & TOFROM_FLIGHT) or ((IN_PROXIMITY & radiofilter) and ((radiofilter & TO_TEAM) or (TO_PACKAGE & radiofilter))))
+                if ((radiofilter bitand TOFROM_FLIGHT) or ((IN_PROXIMITY bitand radiofilter) and ((radiofilter bitand TO_TEAM) or (TO_PACKAGE bitand radiofilter))))
                     retval[i]  or_eq  IN_PROXIMITY;
 
                 break;
 
             case rcfTeam:
-                if ((TO_TEAM & radiofilter) or (radiofilter & TOFROM_FLIGHT) or (TOFROM_PACKAGE & radiofilter))
+                if ((TO_TEAM bitand radiofilter) or (radiofilter bitand TOFROM_FLIGHT) or (TOFROM_PACKAGE bitand radiofilter))
                     retval[i]  or_eq  TO_TEAM;
 
                 break;
 
             case rcfAll:
-                if ((TO_WORLD & radiofilter) or (radiofilter & TOFROM_FLIGHT) or (TOFROM_PACKAGE & radiofilter) or (TO_TEAM & radiofilter))
+                if ((TO_WORLD bitand radiofilter) or (radiofilter bitand TOFROM_FLIGHT) or (TOFROM_PACKAGE bitand radiofilter) or (TO_TEAM bitand radiofilter))
                     retval[i]  or_eq  TO_WORLD;
 
                 break;
 
             case rcfTower:
-                if (radiofilter & TOFROM_FLIGHT)
+                if (radiofilter bitand TOFROM_FLIGHT)
                     retval[i]  or_eq  TOFROM_FLIGHT;
-                else if ((TOFROM_TOWER & radiofilter) and gNavigationSys)
+                else if ((TOFROM_TOWER bitand radiofilter) and gNavigationSys)
                 {
                     VU_ID ATCId;
                     gNavigationSys->GetAirbase(&ATCId);

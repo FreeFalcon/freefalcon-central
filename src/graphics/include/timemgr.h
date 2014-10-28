@@ -64,7 +64,7 @@ public:
     };
     DWORD GetDayOfLunarMonth(void)
     {
-        return today & 31;
+        return today bitand 31;
     };
     DWORD GetTimeOfDay(void)
     {

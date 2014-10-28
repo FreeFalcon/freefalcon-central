@@ -627,7 +627,7 @@ static const InputDataDesc AuxAeroDataDesc[] =
     { "pitchGearGain", InputDataDesc::ID_FLOAT, OFFSET(pitchGearGain), "0.8"},
     { "sinkRate", InputDataDesc::ID_FLOAT, OFFSET(sinkRate), "15"},
     { "tefMaxAngle", InputDataDesc::ID_FLOAT, OFFSET(tefMaxAngle), "20"}, // divide angle of TEF by this to get amount of influence on CL and CD
-    { "hasFlapperons", InputDataDesc::ID_INT, OFFSET(hasFlapperons), "1"}, // has flapperons are opposed to ailerons & flaps
+    { "hasFlapperons", InputDataDesc::ID_INT, OFFSET(hasFlapperons), "1"}, // has flapperons are opposed to ailerons bitand flaps
     { "hasTef", InputDataDesc::ID_INT, OFFSET(hasTef), "2"}, // has TEF 0 - no, 1 manual, 2 aoa
     { "CLtefFactor", InputDataDesc::ID_FLOAT, OFFSET(CLtefFactor), "0.05"}, // how much the TEF affect the CL
     { "CDtefFactor", InputDataDesc::ID_FLOAT, OFFSET(CDtefFactor), "0.05"}, // how much the TEF affect the CD

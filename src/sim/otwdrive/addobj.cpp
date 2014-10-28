@@ -191,7 +191,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
     simView.y     = theObject->YPos();
     simView.z     = theObject->ZPos();
 
-    visType = classPtr->visType[theObject->Status() & VIS_TYPE_MASK];
+    visType = classPtr->visType[theObject->Status() bitand VIS_TYPE_MASK];
 
     if (visType >= 0 or theObject->drawPointer)
     {
@@ -220,7 +220,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                 SimBaseClass *prevObj = NULL, *nextObj = NULL;
 
                 // In many cases, our visType should be modified by our neighbors.
-                if ((theObject->Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED and (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM or ((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM))
+                if ((theObject->Status() bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED and (((SimFeatureClass*)theObject)->featureFlags bitand FEAT_NEXT_NORM or ((SimFeatureClass*)theObject)->featureFlags bitand FEAT_PREV_NORM))
                 {
                     // KCK: Can we just use our slot number? Or will this break something?
                     // int idx = theObject->GetCampaignObject()->GetComponentIndex (theObject);
@@ -229,14 +229,14 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                     prevObj = theObject->GetCampaignObject()->GetComponentEntity(idx - 1);
                     nextObj = theObject->GetCampaignObject()->GetComponentEntity(idx + 1);
 
-                    if (prevObj and ((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM and (prevObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
+                    if (prevObj and ((SimFeatureClass*)theObject)->featureFlags bitand FEAT_PREV_NORM and (prevObj->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED)
                     {
-                        if (nextObj and ((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM and (nextObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
+                        if (nextObj and ((SimFeatureClass*)theObject)->featureFlags bitand FEAT_NEXT_NORM and (nextObj->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED)
                             visType = classPtr->visType[VIS_BOTH_DEST];
                         else
                             visType = classPtr->visType[VIS_LEFT_DEST];
                     }
-                    else if (nextObj and ((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM and (nextObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
+                    else if (nextObj and ((SimFeatureClass*)theObject)->featureFlags bitand FEAT_NEXT_NORM and (nextObj->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED)
                         visType = classPtr->visType[VIS_RIGHT_DEST];
                 }
 

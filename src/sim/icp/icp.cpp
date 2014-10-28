@@ -775,7 +775,7 @@ void ICPClass::Exec()
     else
     {
         //for flashing stuff
-        flash = (vuxRealTime & 0x180);
+        flash = (vuxRealTime bitand 0x180);
 
         //do this once here
         if (FillStrings)

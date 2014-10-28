@@ -135,7 +135,7 @@ long DecompressRLE8Bit(uchar *Src, uchar *Dest, long Size)
         count = *Src++;
         Size--;
 
-        if (count & 0x80)
+        if (count bitand 0x80)
         {
             count xor_eq 0xff;
             OutSize += count;
@@ -290,7 +290,7 @@ long DecompressRLE16Bit(WORD *Src, WORD *Dest, long Size)
         count = *Src++;
         Size -= sizeof(WORD);
 
-        if (count & 0x8000)
+        if (count bitand 0x8000)
         {
             count xor_eq 0xFFFF;
             OutSize += count * sizeof(WORD);

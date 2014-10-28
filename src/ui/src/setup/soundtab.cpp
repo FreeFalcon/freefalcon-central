@@ -147,7 +147,7 @@ void InitSoundSetup()
 
             if (button not_eq NULL)
             {
-                if (PlayerOptions.SoundFlags & 1 << l)
+                if (PlayerOptions.SoundFlags bitand 1 << l)
                     button->SetState(C_STATE_1);
                 else
                     button->SetState(C_STATE_0);

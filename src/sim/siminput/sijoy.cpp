@@ -304,7 +304,7 @@ void GetJoystickInput()
         /*******************************************************************************/
         for (int j = 0; j < SIMLIB_MAX_DIGITAL; j++)
         {
-            IO.digital[j + (SIMLIB_MAX_DIGITAL * (i - SIM_JOYSTICK1))] = (short)(joyState.rgbButtons[j] & BUTTON_PRESSED);
+            IO.digital[j + (SIMLIB_MAX_DIGITAL * (i - SIM_JOYSTICK1))] = (short)(joyState.rgbButtons[j] bitand BUTTON_PRESSED);
         }
 
         /*******************************************************************************/
@@ -1260,7 +1260,7 @@ int CheckForForceFeedback(const int theJoyIndex)
     {
         // a total shit sandwich here.. FFB only for the primary device ! if nothing is yet mapped
         // then it will have to wait till the user selects it in the appropriate screen
-        if (devcaps.dwFlags & DIDC_FORCEFEEDBACK)
+        if (devcaps.dwFlags bitand DIDC_FORCEFEEDBACK)
         {
             //Got it
             OutputDebugString("ForceFeedback device found.\n");

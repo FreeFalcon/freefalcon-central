@@ -35,7 +35,7 @@ struct LoadoutStruct
         memset(WeaponCount, 0, (sizeof(uchar) * HARDPOINT_MAX));
     }
 
-    const LoadoutStruct & operator = (const LoadoutStruct &rhs)
+    const LoadoutStruct bitand operator = (const LoadoutStruct &rhs)
     {
         if (&rhs not_eq this)
         {
@@ -46,7 +46,7 @@ struct LoadoutStruct
         return *this;
     }
     /*
-     bool operator == (LoadoutStruct & rhs)
+     bool operator == (LoadoutStruct bitand rhs)
      {
      bool bResult = true;
 
@@ -58,7 +58,7 @@ struct LoadoutStruct
      return bResult;
      }
 
-     bool operator not_eq (LoadoutStruct & rhs)
+     bool operator not_eq (LoadoutStruct bitand rhs)
      {
      bool bResult = false;
 

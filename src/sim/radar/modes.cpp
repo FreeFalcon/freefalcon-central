@@ -135,7 +135,7 @@ void RadarDopplerClass::RWSMode()
             /*----------------------*/
             /* detection this frame */
             /*----------------------*/
-            if (rdrData->rdrDetect & 0x10)
+            if (rdrData->rdrDetect bitand 0x10)
             {
                 AddToHistory(rdrObj, Solid);
             }
@@ -151,7 +151,7 @@ void RadarDopplerClass::RWSMode()
         /*-------------*/
         // 2002-03-25 MN add a check if the target is in our radar cone - if not, we not even have an UnreliableTrack
         // This fixes the AI oscillating target acquisition and losing
-        if ((rdrData->rdrDetect & 0x1f) and (fabs(rdrData->ata) < radarData->ScanHalfAngle))
+        if ((rdrData->rdrDetect bitand 0x1f) and (fabs(rdrData->ata) < radarData->ScanHalfAngle))
             rdrData->sensorState[Radar] = UnreliableTrack;
 
         /*--------------------------------*/
@@ -160,7 +160,7 @@ void RadarDopplerClass::RWSMode()
         if (IsSet(Designating) and (mode == RWS or mode == LRS) and rdrObj->BaseData()->Id() == targetUnderCursor)
         {
             // Always lock if it is bright green (detected last time around)
-            if (rdrData->rdrDetect & 0x10)
+            if (rdrData->rdrDetect bitand 0x10)
             {
                 rdrData->rdrDetect = 0x1f;
                 SetSensorTarget(rdrObj);
@@ -296,7 +296,7 @@ void RadarDopplerClass::SAMMode(void)
                 {
                     // Move sam target to something else.
                     // Lock anything detected at last chance
-                    if (rdrObj->localData->rdrDetect & 0x10)
+                    if (rdrObj->localData->rdrDetect bitand 0x10)
                     {
                         if (lockedTarget)
                         {
@@ -331,7 +331,7 @@ void RadarDopplerClass::SAMMode(void)
                 /*----------------------*/
                 /* detection this frame */
                 /*----------------------*/
-                if (rdrObj->localData->rdrDetect & 0x10)
+                if (rdrObj->localData->rdrDetect bitand 0x10)
                 {
                     AddToHistory(rdrObj, Solid);
                 }
@@ -353,7 +353,7 @@ void RadarDopplerClass::SAMMode(void)
 
         if (lockedTargetData->painted)
         {
-            if (lockedTargetData->rdrDetect & 0x10)
+            if (lockedTargetData->rdrDetect bitand 0x10)
             {
                 lockedTargetData->sensorState[Radar] = SensorTrack;
                 AddToHistory(lockedTarget, Track);
@@ -643,7 +643,7 @@ void RadarDopplerClass::TWSMode(void)
             /*----------------------*/
             /* detection this frame */
             /*----------------------*/
-            if (rdrData->rdrDetect & 0x10)
+            if (rdrData->rdrDetect bitand 0x10)
             {
                 if (totHits > HITS_FOR_TRACK)
                 {
@@ -666,7 +666,7 @@ void RadarDopplerClass::TWSMode(void)
     {
         if (lockedTargetData->painted)
         {
-            if (lockedTargetData->rdrDetect & 0x10)
+            if (lockedTargetData->rdrDetect bitand 0x10)
             {
                 lockedTargetData->sensorState[Radar] = SensorTrack;
                 AddToHistory(lockedTarget, Bug);
@@ -937,7 +937,7 @@ void RadarDopplerClass::TWSMode(void)
             /*----------------------*/
             /* detection this frame */
             /*----------------------*/
-            if (rdrData->rdrDetect & 0x10)
+            if (rdrData->rdrDetect bitand 0x10)
             {
                 if ( not rdrData->TWSTrackFileOpen)
                 {
@@ -1433,7 +1433,7 @@ void RadarDopplerClass::VSMode(void)
                 /*----------------------*/
                 /* detection this frame */
                 /*----------------------*/
-                if (rdrData->rdrDetect & 0x10 and rdrData->rangedot < 0.0F)
+                if (rdrData->rdrDetect bitand 0x10 and rdrData->rangedot < 0.0F)
                 {
                     tmpRange = rdrData->range;
                     rdrData->range = -rdrData->rangedot * FTPSEC_TO_KNOTS;
@@ -1653,7 +1653,7 @@ int RadarDopplerClass::HitsOnTrack(SimObjectLocalData* rdrData)
 
     for (i = 0; i < 5; i++)
     {
-        totHits += detect & 0x0001;
+        totHits += detect bitand 0x0001;
         detect = detect >> 1;
     }
 

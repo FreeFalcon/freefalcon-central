@@ -445,7 +445,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     if (button not_eq NULL)
     {
-        if (Presets[Index].flags & SIM_UNLIMITED_AMMO)
+        if (Presets[Index].flags bitand SIM_UNLIMITED_AMMO)
             button->SetState(C_STATE_1);
         else
             button->SetState(C_STATE_0);
@@ -457,7 +457,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     if (button not_eq NULL)
     {
-        if (Presets[Index].flags & SIM_UNLIMITED_FUEL)
+        if (Presets[Index].flags bitand SIM_UNLIMITED_FUEL)
             button->SetState(C_STATE_1);
         else
             button->SetState(C_STATE_0);
@@ -469,7 +469,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     if (button not_eq NULL)
     {
-        if (Presets[Index].flags & SIM_UNLIMITED_CHAFF)
+        if (Presets[Index].flags bitand SIM_UNLIMITED_CHAFF)
             button->SetState(C_STATE_1);
         else
             button->SetState(C_STATE_0);
@@ -482,7 +482,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     if (button not_eq NULL)
     {
-        if (Presets[Index].flags & SIM_NO_COLLISIONS)
+        if (Presets[Index].flags bitand SIM_NO_COLLISIONS)
             button->SetState(C_STATE_1);
         else
             button->SetState(C_STATE_0);
@@ -494,7 +494,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     if (button not_eq NULL)
     {
-        if (Presets[Index].flags & SIM_NO_BLACKOUT)
+        if (Presets[Index].flags bitand SIM_NO_BLACKOUT)
             button->SetState(C_STATE_1);
         else
             button->SetState(C_STATE_0);
@@ -506,7 +506,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 
     if (button not_eq NULL)
     {
-        if (Presets[Index].flags & SIM_NAMETAGS)
+        if (Presets[Index].flags bitand SIM_NAMETAGS)
             button->SetState(C_STATE_1);
         else
             button->SetState(C_STATE_0);

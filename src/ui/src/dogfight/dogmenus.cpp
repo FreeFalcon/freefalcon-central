@@ -44,7 +44,7 @@ void HookupSelectACTypes(C_PopupList *menu, void (*cb)(long, short, C_Base *))
 
         while (DFAIPlanes[i].ID)
         {
-            if (gUI_Tracking_Flag & _UI_TRACK_FLAG02)
+            if (gUI_Tracking_Flag bitand _UI_TRACK_FLAG02)
                 menu->AddItem(DFAIPlanes[i].ID, C_TYPE_RADIO, DFAIPlanes[i].TextID, MID_DF_TYPE);
 
             menu->SetCallback(DFAIPlanes[i].ID, cb);

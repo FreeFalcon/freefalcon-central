@@ -152,7 +152,7 @@ public:
 
     int IsSOI(void)
     {
-        return (drawFlags & SOI ? TRUE : FALSE);
+        return (drawFlags bitand SOI ? TRUE : FALSE);
     };
     void SetSOI(int newVal)
     {

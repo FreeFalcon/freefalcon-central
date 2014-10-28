@@ -256,7 +256,7 @@ void TACREF_ViewTimerAnimCB(long, short, C_Base *control)
             }
         }
 
-        if (control->GetFlags() & C_BIT_ABSOLUTE)
+        if (control->GetFlags() bitand C_BIT_ABSOLUTE)
         {
             control->Parent_->RefreshWindow();
         }
@@ -480,7 +480,7 @@ static void Unload3dModel()
 
         for (i = 0; i < HARDPOINT_MAX; i++)
         {
-            if (visFlag & (1 << i))
+            if (visFlag bitand (1 << i))
             {
                 // This is a visible weapon, so detach
                 ((DrawableBSP*)obj->object)->DetachChild(((DrawableBSP*)Weapon->object), i);
@@ -737,7 +737,7 @@ static void Load3dModel(Entity *ent)
 
                     for (i = 0; i < HARDPOINT_MAX; i++)
                     {
-                        if (visFlag & (1 << i))
+                        if (visFlag bitand (1 << i))
                         {
                             // This is a visible weapon, so attach
                             ((DrawableBSP*)obj->object)->AttachChild(((DrawableBSP*)Weapon->object), i);

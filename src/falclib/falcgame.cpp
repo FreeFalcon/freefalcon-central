@@ -28,7 +28,7 @@ void INFOSetupRulesControls(void);
 static char PasswordKey1[] = "Coming soon to Stores Everywhere... FreeFalcon!!";
 static char PasswordKey2[] = "This is another stupid advertisement... hehehe!!";
 
-// constructors & destructor
+// constructors bitand destructor
 FalconGameEntity::FalconGameEntity(ulong domainMask, char *gameName) : VuGameEntity(domainMask, gameName)
 {
     gameType = game_PlayerPool;

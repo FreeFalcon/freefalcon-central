@@ -372,7 +372,7 @@ static BOOL NewEvents = FALSE;
 
 void ViewTimerCB(long, short, C_Base *control)
 {
-    if (control->GetFlags() & C_BIT_ABSOLUTE)
+    if (control->GetFlags() bitand C_BIT_ABSOLUTE)
     {
         control->Parent_->RefreshWindow();
     }
@@ -384,7 +384,7 @@ void ViewTimerAnimCB(long, short, C_Base *control)
 {
     if (control->GetUserNumber(_UI95_TIMER_COUNTER_) < 1)
     {
-        if (control->GetFlags() & C_BIT_ABSOLUTE)
+        if (control->GetFlags() bitand C_BIT_ABSOLUTE)
         {
             control->Parent_->RefreshWindow();
         }
@@ -831,7 +831,7 @@ void SetupMapMgr(bool noawacsmap)
         // Set Icon Image IDs (Really the C_Resmgr ID)
         for (i = 0; i < NUM_TEAMS; i++)
         {
-            if (TeamInfo[i] and (TeamInfo[i]->flags & TEAM_ACTIVE))
+            if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
                 idx = TeamInfo[i]->GetColor();
             else
                 idx = 0;
@@ -847,7 +847,7 @@ void SetupMapMgr(bool noawacsmap)
         }
     }
 
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
         win = gMainHandler->FindWindow(MB_CSECT_WIN);
     else
         win = gMainHandler->FindWindow(CSECT_WIN);
@@ -930,7 +930,7 @@ static void CampSaveFileCB(long, short hittype, C_Base *control)
         if (gCommsMgr->Online())
         {
             // Send messages to remote players with new Iter Number
-            // So they can save their stats & update Iter in their campaign
+            // So they can save their stats bitand update Iter in their campaign
             gCommsMgr->UpdateGameIter();
         }
     }
@@ -1160,7 +1160,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
         {
             for (i = 0; i < 8; i++)
             {
-                if (TeamInfo[i] and TeamInfo[i]->flags & TEAM_ACTIVE)
+                if (TeamInfo[i] and TeamInfo[i]->flags bitand TEAM_ACTIVE)
                 {
                     for (j = 0; j < 8; j++)
                         blip->SetImage(BLIP_IDS[TeamInfo[i]->GetColor()][j], static_cast<uchar>(i), static_cast<uchar>(j));
@@ -1268,7 +1268,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
     TallyPlayerSquadrons();
 
     // Mode 0=Play,1=Edit)
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
     {
         SetupTacEngMenus(1);
         win = gMainHandler->FindWindow(TAC_VC_WIN);
@@ -1452,7 +1452,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
         {
             for (i = 0; i < 8; i++)
             {
-                if (TeamInfo[i] and TeamInfo[i]->flags & TEAM_ACTIVE)
+                if (TeamInfo[i] and TeamInfo[i]->flags bitand TEAM_ACTIVE)
                 {
                     for (j = 0; j < 8; j++)
                         blip->SetImage(BLIP_IDS[TeamInfo[i]->GetColor()][j], static_cast<uchar>(i), static_cast<uchar>(j));
@@ -1483,7 +1483,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
     gLastUpdateGround = 0l;
     gLastUpdateAir = 0l;
 
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
     {
         gMoveBattalion = TRUE;
         gGps->SetTeamNo(-1); // Perfect Intel
@@ -1714,7 +1714,7 @@ static void OpenFlightPlanWindowCB(long, short hittype, C_Base *control)
 
     if (win)
     {
-        if ( not (gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) & C_BIT_ENABLED))
+        if ( not (gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) bitand C_BIT_ENABLED))
         {
             wp = flt->GetFirstUnitWP();
 
@@ -2470,7 +2470,7 @@ void UpdateEventBlipsCB(long, short, C_Base *control)
         {
             Leave = UI_Enter(win);
 
-            if (control->GetUserNumber(_UI95_TIMER_COUNTER_) & 1)
+            if (control->GetUserNumber(_UI95_TIMER_COUNTER_) bitand 1)
                 Blip->BlinkLast();
 
             if (control->GetUserNumber(_UI95_TIMER_COUNTER_) < 1)
@@ -3181,11 +3181,11 @@ void UpdateRemoteCompression()
 
     remreq = 1;
 
-    if (remoteCompressionRequests & REMOTE_REQUEST_2)
+    if (remoteCompressionRequests bitand REMOTE_REQUEST_2)
         remreq = 2;
-    else if (remoteCompressionRequests & REMOTE_REQUEST_4)
+    else if (remoteCompressionRequests bitand REMOTE_REQUEST_4)
         remreq = 4;
-    else if (remoteCompressionRequests & REMOTE_REQUEST_PAUSE)
+    else if (remoteCompressionRequests bitand REMOTE_REQUEST_PAUSE)
         remreq = 0;
 
     if ( not gCommsMgr->Online())

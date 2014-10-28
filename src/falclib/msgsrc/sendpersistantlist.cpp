@@ -93,7 +93,7 @@ int FalconSendPersistantList::Process(uchar autodisp)
     if (autodisp or !TheCampaign.IsPreLoaded())
         return -1;
 
-    if (TheCampaign.Flags & CAMP_NEED_PERSIST)
+    if (TheCampaign.Flags bitand CAMP_NEED_PERSIST)
     {
         CampaignJoinKeepAlive();
 

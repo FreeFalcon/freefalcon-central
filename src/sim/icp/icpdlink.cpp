@@ -21,7 +21,7 @@ void ICPClass::ExecDLINKMode(void)
 
     if ( not g_bRealisticAvionics)
     {
-        if (mUpdateFlags & DLINK_UPDATE)
+        if (mUpdateFlags bitand DLINK_UPDATE)
         {
             mUpdateFlags and_eq !DLINK_UPDATE;
 

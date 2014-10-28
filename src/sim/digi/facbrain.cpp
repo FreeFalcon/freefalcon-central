@@ -130,7 +130,7 @@ void FACBrain::AddToQ(SimVehicleClass* theFighter)
 {
     fighterQ->ForcedInsert(theFighter);
 
-    if (flags & FlightInbound)
+    if (flags bitand FlightInbound)
     {
         // Say hold message
         FalconFACMessage* facMsg = new FalconFACMessage(theFighter->Id(), FalconLocalGame);

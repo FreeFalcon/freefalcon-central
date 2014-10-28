@@ -407,7 +407,7 @@ void ICPClass::ExecINSMode(void)
             else if (playerAC->INSState(AircraftClass::INS_AlignNorm)  and 
                      playerAC->INSState(AircraftClass::INS_Aligned))
             {
-                if (vuxRealTime & 0x200)
+                if (vuxRealTime bitand 0x200)
                     FillDEDMatrix(0, 17, "RDY");
                 else
                     FillDEDMatrix(0, 17, "   ");
@@ -632,7 +632,7 @@ void ICPClass::ExecEWSMode(void)
         FillDEDMatrix(2, (10 - strlen(tempstr)), tempstr);
     }
 
-    FillDEDMatrix(2, 13, "FDBK"); //JPG 12 Jun 04 - Ideally, it would be nice to turn this & REQCTR on/off to coincide w/
+    FillDEDMatrix(2, 13, "FDBK"); //JPG 12 Jun 04 - Ideally, it would be nice to turn this bitand REQCTR on/off to coincide w/
     FillDEDMatrix(2, 21, " ON"); //the Betty words, but it's more trouble than it's worth.
     //Line4
     FillDEDMatrix(3, 2, "O1");

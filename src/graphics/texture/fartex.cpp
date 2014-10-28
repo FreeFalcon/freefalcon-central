@@ -159,7 +159,7 @@ BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
         if ( not fp) return TRUE;
 
         fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
-        ShiAssert(ddsd.dwFlags & DDSD_LINEARSIZE)
+        ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
         linearSize = ddsd.dwLinearSize;
 
@@ -358,7 +358,7 @@ void FarTexDB::SetLightLevel(void)
         // Turn on the lights if it is dark enough
         if (lightLevel < 0.5f)
         {
-            to = (BYTE *) & (scratchPal[252]);
+            to = (BYTE *) bitand (scratchPal[252]);
 
             if (TheTimeOfDay.GetNVGmode())
             {
@@ -747,7 +747,7 @@ void FarTexDB::FlushHandles()
         if ( not fp) return;
 
         fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
-        ShiAssert(ddsd.dwFlags & DDSD_LINEARSIZE)
+        ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
         linearSize = ddsd.dwLinearSize;
 
@@ -930,11 +930,11 @@ void FarTexDB::RGBtoHSV(float r, float g, float b, float *h, float *s, float *v)
     else
     {
         if (r == *v)
-            *h = (g - b) / delta; // between yellow & magenta
+            *h = (g - b) / delta; // between yellow bitand magenta
         else if (g == *v)
-            *h = 2 + (b - r) / delta; // between cyan & yellow
+            *h = 2 + (b - r) / delta; // between cyan bitand yellow
         else
-            *h = 4 + (r - g) / delta; // between magenta & cyan
+            *h = 4 + (r - g) / delta; // between magenta bitand cyan
     }
 
     *h *= 60; // degrees

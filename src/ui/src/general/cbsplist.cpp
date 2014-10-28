@@ -332,30 +332,30 @@ BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, 
     long prevFlags, nextFlags;
     BSPLIST *bspobj = NULL;
 
-    visType = classPtr->visType[obj->GetFeatureStatus(f) & VIS_TYPE_MASK];
+    visType = classPtr->visType[obj->GetFeatureStatus(f) bitand VIS_TYPE_MASK];
 
     if (visType >= 0)
     {
         // In many cases, our visType should be modified by our neighbors.
-        if ((obj->GetFeatureStatus(f) & VIS_TYPE_MASK) not_eq VIS_DESTROYED and (FeatureEntryDataTable[fid].Flags & (FEAT_PREV_NORM | FEAT_NEXT_NORM)))
+        if ((obj->GetFeatureStatus(f) bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED and (FeatureEntryDataTable[fid].Flags bitand (FEAT_PREV_NORM | FEAT_NEXT_NORM)))
         {
             prevFlags = GetFeatureFlags(obj, static_cast<short>(f - 1));
             nextFlags = GetFeatureFlags(obj, static_cast<short>(f + 1));
 
-            if (prevFlags and (prevFlags & FEAT_PREV_NORM) and (obj->GetFeatureStatus(f - 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
+            if (prevFlags and (prevFlags bitand FEAT_PREV_NORM) and (obj->GetFeatureStatus(f - 1) bitand VIS_TYPE_MASK) == VIS_DESTROYED)
             {
-                if (nextFlags and (nextFlags & FEAT_NEXT_NORM) and (obj->GetFeatureStatus(f + 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
+                if (nextFlags and (nextFlags bitand FEAT_NEXT_NORM) and (obj->GetFeatureStatus(f + 1) bitand VIS_TYPE_MASK) == VIS_DESTROYED)
                     visType = classPtr->visType[VIS_BOTH_DEST];
                 else
                     visType = classPtr->visType[VIS_LEFT_DEST];
             }
-            else if (nextFlags and (nextFlags & FEAT_NEXT_NORM) and (obj->GetFeatureStatus(f + 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
+            else if (nextFlags and (nextFlags bitand FEAT_NEXT_NORM) and (obj->GetFeatureStatus(f + 1) bitand VIS_TYPE_MASK) == VIS_DESTROYED)
                 visType = classPtr->visType[VIS_RIGHT_DEST];
         }
 
         // Some things require Base Objects (like bridges and airbases)
         // if we have a parent...but NO drawable
-        if (fc->Flags & FEAT_ELEV_CONTAINER)
+        if (fc->Flags bitand FEAT_ELEV_CONTAINER)
         {
             // baseObject is the "container" object for all parts of the bridge
             // There is only one container for the entire bridge, stored in the lead element
@@ -373,7 +373,7 @@ BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, 
             bspobj->owner = NULL;
         }
         // Is this a big flat thing with things on it (like an airbase?)
-        else if (fc->Flags & FEAT_FLAT_CONTAINER)
+        else if (fc->Flags bitand FEAT_FLAT_CONTAINER)
         {
             // baseObject is the "container" object for all parts of the platform
             // There is only one container for the entire platform, stored in the
@@ -404,24 +404,24 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
 
     Yaw = (float)FeatureEntryDataTable[fid].Facing * DEG_TO_RADIANS;
 
-    visType = classPtr->visType[obj->GetFeatureStatus(f) & VIS_TYPE_MASK];
+    visType = classPtr->visType[obj->GetFeatureStatus(f) bitand VIS_TYPE_MASK];
 
     if (visType >= 0)
     {
         // In many cases, our visType should be modified by our neighbors.
-        if ((obj->GetFeatureStatus(f) & VIS_TYPE_MASK) not_eq VIS_DESTROYED and (FeatureEntryDataTable[fid].Flags & (FEAT_PREV_NORM | FEAT_NEXT_NORM)))
+        if ((obj->GetFeatureStatus(f) bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED and (FeatureEntryDataTable[fid].Flags bitand (FEAT_PREV_NORM | FEAT_NEXT_NORM)))
         {
             prevFlags = GetFeatureFlags(obj, static_cast<short>(f - 1));
             nextFlags = GetFeatureFlags(obj, static_cast<short>(f + 1));
 
-            if (prevFlags and (prevFlags & FEAT_PREV_NORM) and (obj->GetFeatureStatus(f - 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
+            if (prevFlags and (prevFlags bitand FEAT_PREV_NORM) and (obj->GetFeatureStatus(f - 1) bitand VIS_TYPE_MASK) == VIS_DESTROYED)
             {
-                if (nextFlags and (nextFlags & FEAT_NEXT_NORM) and (obj->GetFeatureStatus(f + 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
+                if (nextFlags and (nextFlags bitand FEAT_NEXT_NORM) and (obj->GetFeatureStatus(f + 1) bitand VIS_TYPE_MASK) == VIS_DESTROYED)
                     visType = classPtr->visType[VIS_BOTH_DEST];
                 else
                     visType = classPtr->visType[VIS_LEFT_DEST];
             }
-            else if (nextFlags and (nextFlags & FEAT_NEXT_NORM) and (obj->GetFeatureStatus(f + 1) & VIS_TYPE_MASK) == VIS_DESTROYED)
+            else if (nextFlags and (nextFlags bitand FEAT_NEXT_NORM) and (obj->GetFeatureStatus(f + 1) bitand VIS_TYPE_MASK) == VIS_DESTROYED)
                 visType = classPtr->visType[VIS_RIGHT_DEST];
         }
 
@@ -446,7 +446,7 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
                 bspobj->owner = Parent;
                 bspobj->Next = NULL;
 
-                if ((fc->Flags & FEAT_NEXT_IS_TOP) and (obj->GetFeatureStatus(f) & VIS_TYPE_MASK) not_eq VIS_DESTROYED)
+                if ((fc->Flags bitand FEAT_NEXT_IS_TOP) and (obj->GetFeatureStatus(f) bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED)
                     bspobj->object = new DrawableRoadbed(visType, visType + 1, objPos, Yaw, 10.0f, static_cast<float>(atan(20.0f / 280.0f)));
                 else
                     bspobj->object = new DrawableRoadbed(visType, -1, objPos, Yaw, 10.0f, static_cast<float>(atan(20.0f / 280.0f)));
@@ -478,7 +478,7 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
             bspobj->object = new DrawableBuilding(visType, objPos, Yaw, 1.0F);
 
             // Am I Flat (can things drive across it)?
-            if (fc->Flags & (FEAT_FLAT_CONTAINER | FEAT_ELEV_CONTAINER))
+            if (fc->Flags bitand (FEAT_FLAT_CONTAINER | FEAT_ELEV_CONTAINER))
                 ((DrawablePlatform*)Parent->object)->InsertStaticSurface((DrawableBuilding*)bspobj->object);
             else
                 ((DrawablePlatform*)Parent->object)->InsertStaticObject(bspobj->object);

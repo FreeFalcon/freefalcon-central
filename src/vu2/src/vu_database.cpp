@@ -86,7 +86,7 @@ int VuDatabase::Suspend(VU_BOOL all)
 
 VU_ERRCODE VuDatabase::Handle(VuMessage *msg)
 {
-    // note: this should work on Create & Delete messages, but those are
+    // note: this should work on Create bitand Delete messages, but those are
     // currently handled elsewhere... for now... just pass on to collection mgr
     return vuCollectionManager->Handle(msg);
 }
@@ -352,7 +352,7 @@ int VuDatabase::Suspend(VU_BOOL all)
 
 VU_ERRCODE VuDatabase::Handle(VuMessage *msg)
 {
-    // note: this should work on Create & Delete messages, but those are
+    // note: this should work on Create bitand Delete messages, but those are
     // currently handled elsewhere... for now... just pass on to collection mgr
     vuCollectionManager->Handle(msg);
     return VU_SUCCESS;

@@ -66,7 +66,7 @@ void AirframeClass::Yaw(void)
     float betcmd, nycmd, gsAvail, alphaError;
     Limiter *limiter = NULL;
 
-    //if( IsSet(Planted) or (IsSet(NoseSteerOn) and !(gear[0].flags & GearData::GearStuck)) )
+    //if( IsSet(Planted) or (IsSet(NoseSteerOn) and !(gear[0].flags bitand GearData::GearStuck)) )
     if ( not IsSet(InAir))
         return;
 

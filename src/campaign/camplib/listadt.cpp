@@ -22,13 +22,13 @@ ListElementClass::ListElementClass(short newKey, void *newData, uchar newFlags)
 
 ListElementClass::~ListElementClass(void)
 {
-    if (flags & LADT_FREE_USER_DATA)
+    if (flags bitand LADT_FREE_USER_DATA)
         delete user_data;
 }
 
 void ListElementClass::SetUserData(void *newData)
 {
-    if (user_data and (flags & LADT_FREE_USER_DATA))
+    if (user_data and (flags bitand LADT_FREE_USER_DATA))
         delete user_data;
 
     user_data = newData;
@@ -59,7 +59,7 @@ void ListClass::Insert(ListElementClass *newElement)
         return;
     }
 
-    if ( not flags & LADT_SORTED_LIST)
+    if ( not flags bitand LADT_SORTED_LIST)
     {
         newElement->next = front;
         front->prev = newElement;
@@ -115,7 +115,7 @@ void ListClass::InsertAtEnd(ListElementClass *newElement)
     if ( not newElement)
         return;
 
-    if (flags & LADT_SORTED_LIST)
+    if (flags bitand LADT_SORTED_LIST)
     {
         Insert(newElement);
         return;

@@ -219,7 +219,7 @@ int FilterMessage(CONVERSATION *node)
         case rcfFlight2:
         case rcfFlight3:
         case rcfFlight4:
-            if (TOFROM_FLIGHT & node->filter)
+            if (TOFROM_FLIGHT bitand node->filter)
                 retval = TRUE;
 
             break;
@@ -229,39 +229,39 @@ int FilterMessage(CONVERSATION *node)
         case rcfPackage2:
         case rcfPackage3:
         case rcfPackage4:
-            if ((TO_PACKAGE & node->filter) or (node->filter & TOFROM_FLIGHT))
+            if ((TO_PACKAGE bitand node->filter) or (node->filter bitand TOFROM_FLIGHT))
                 retval = TRUE;
 
             break;
 
         case rcfFromPackage:
-            if ((TOFROM_PACKAGE & node->filter) or (node->filter & TOFROM_FLIGHT))
+            if ((TOFROM_PACKAGE bitand node->filter) or (node->filter bitand TOFROM_FLIGHT))
                 retval = TRUE;
 
             break;
 
         case rcfProx:
-            if ((node->filter & TOFROM_FLIGHT) or ((IN_PROXIMITY & node->filter) and ((node->filter & TO_TEAM) or (TO_PACKAGE & node->filter))))
+            if ((node->filter bitand TOFROM_FLIGHT) or ((IN_PROXIMITY bitand node->filter) and ((node->filter bitand TO_TEAM) or (TO_PACKAGE bitand node->filter))))
                 retval = TRUE;
 
             break;
 
         case rcfTeam:
-            if ((TO_TEAM & node->filter) or (node->filter & TOFROM_FLIGHT) or (TOFROM_PACKAGE & node->filter))
+            if ((TO_TEAM bitand node->filter) or (node->filter bitand TOFROM_FLIGHT) or (TOFROM_PACKAGE bitand node->filter))
                 retval = TRUE;
 
             break;
 
         case rcfAll:
-            if ((TO_WORLD & node->filter) or (node->filter & TOFROM_FLIGHT) or (TOFROM_PACKAGE & node->filter) or (TO_TEAM & node->filter))
+            if ((TO_WORLD bitand node->filter) or (node->filter bitand TOFROM_FLIGHT) or (TOFROM_PACKAGE bitand node->filter) or (TO_TEAM bitand node->filter))
                 retval = TRUE;
 
             break;
 
         case rcfTower:
-            if (node->filter & TOFROM_FLIGHT)
+            if (node->filter bitand TOFROM_FLIGHT)
                 retval = TRUE;
-            else if ((TOFROM_TOWER & node->filter) and gNavigationSys)
+            else if ((TOFROM_TOWER bitand node->filter) and gNavigationSys)
             {
                 VU_ID ATCId;
                 gNavigationSys->GetAirbase(&ATCId);
@@ -293,7 +293,7 @@ int FilterMessage(CONVERSATION *node)
         case rcfFlight3:
         case rcfFlight4:
 
-            if (TOFROM_FLIGHT & node->filter)
+            if (TOFROM_FLIGHT bitand node->filter)
                 retval = TRUE;
 
             break;
@@ -304,39 +304,39 @@ int FilterMessage(CONVERSATION *node)
         case rcfPackage3:
         case rcfPackage4:
 
-            if ((TO_PACKAGE & node->filter) or (node->filter & TOFROM_FLIGHT))
+            if ((TO_PACKAGE bitand node->filter) or (node->filter bitand TOFROM_FLIGHT))
                 retval = TRUE;
 
             break;
 
         case rcfFromPackage:
-            if ((TOFROM_PACKAGE & node->filter) or (node->filter & TOFROM_FLIGHT))
+            if ((TOFROM_PACKAGE bitand node->filter) or (node->filter bitand TOFROM_FLIGHT))
                 retval = TRUE;
 
             break;
 
         case rcfProx:
-            if ((node->filter & TOFROM_FLIGHT) or ((IN_PROXIMITY & node->filter) and ((node->filter & TO_TEAM) or (TO_PACKAGE & node->filter))))
+            if ((node->filter bitand TOFROM_FLIGHT) or ((IN_PROXIMITY bitand node->filter) and ((node->filter bitand TO_TEAM) or (TO_PACKAGE bitand node->filter))))
                 retval = TRUE;
 
             break;
 
         case rcfTeam:
-            if ((TO_TEAM & node->filter) or (node->filter & TOFROM_FLIGHT) or (TOFROM_PACKAGE & node->filter))
+            if ((TO_TEAM bitand node->filter) or (node->filter bitand TOFROM_FLIGHT) or (TOFROM_PACKAGE bitand node->filter))
                 retval = TRUE;
 
             break;
 
         case rcfAll:
-            if ((TO_WORLD & node->filter) or (node->filter & TOFROM_FLIGHT) or (TOFROM_PACKAGE & node->filter) or (TO_TEAM & node->filter))
+            if ((TO_WORLD bitand node->filter) or (node->filter bitand TOFROM_FLIGHT) or (TOFROM_PACKAGE bitand node->filter) or (TO_TEAM bitand node->filter))
                 retval = TRUE;
 
             break;
 
         case rcfTower:
-            if (node->filter & TOFROM_FLIGHT)
+            if (node->filter bitand TOFROM_FLIGHT)
                 retval = TRUE;
-            else if ((TOFROM_TOWER & node->filter) and gNavigationSys and gTacanList)
+            else if ((TOFROM_TOWER bitand node->filter) and gNavigationSys and gTacanList)
             {
                 VU_ID ATCId;
                 gNavigationSys->GetAirbase(&ATCId);
@@ -949,7 +949,7 @@ void VoiceManager::VMResetVoices(void)
             falconVoices[i].PopVCAddQueue();
         }
 
-        if (g_nSoundSwitchFix & 0x02) // I assume that garbage in this after theater switch
+        if (g_nSoundSwitchFix bitand 0x02) // I assume that garbage in this after theater switch
             falconVoices[i].exitChannel = FALSE; // can cause voices to fail to play...
     }
 

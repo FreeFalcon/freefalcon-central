@@ -11,7 +11,7 @@
 extern class CDXVbManager TheVbManager;
 
 
-// Macros to enter & leave VB Critical section
+// Macros to enter bitand leave VB Critical section
 #define LOCK_VB_MANAGER EnterCriticalSection(&cs_VbManager);
 #define UNLOCK_VB_MANAGER LeaveCriticalSection(&cs_VbManager);
 
@@ -88,7 +88,7 @@ public:
     CDrawItem();
     DWORD ID; // Id
     CDrawItem *NextInPool; // Next intem in the Draw Items Pool
-    CDrawItem *Next, *Prev; // Next & Previous Draw item in list
+    CDrawItem *Next, *Prev; // Next bitand Previous Draw item in list
     void *Object; // Object Instance Pointer
     D3DXMATRIX RotMatrix; // Object Rotation
     Ppoint Pos; // Object Position
@@ -276,7 +276,7 @@ protected:
     CDrawItem ThePitItem; // The 3D Pit Draw Item
 
     DWORD BufferToDraw; // VBuffer to go under Draw
-    CDrawItem *RootItemToDraw, *NextItemToDraw; // Root & Next Item to be Drawn
+    CDrawItem *RootItemToDraw, *NextItemToDraw; // Root bitand Next Item to be Drawn
 
     DWORD DrawHits[MAX_MANAGED_MODELS]; // Cache Hits Used in drawing Models
     DWORD DrawPass; // Draw Cycle

@@ -26,7 +26,7 @@ VU_SESSION_ID vuNullSession(0);
 VU_SESSION_ID vuKnownConnectionId(0);
 
 //-----------------------------------------------------------------------------
-//  packet & message header stuff
+//  packet bitand message header stuff
 //-----------------------------------------------------------------------------
 struct VuPacketHeader
 {
@@ -111,7 +111,7 @@ static int ReadMessageHeader(VU_BYTE *data, VuMessageHeader* hdr)
     memcpy(&hdr->type_, data, sizeof(hdr->type_));
     data += sizeof(hdr->type_);
 
-    if (*data & 0x80)     // test for high bit set
+    if (*data bitand 0x80)     // test for high bit set
     {
         hdr->length_  = static_cast<ushort>(((data[0] << 8) | data[1]));
         hdr->length_ and_eq 0x7fff; // mask off huffman bit
@@ -136,8 +136,8 @@ static int WriteMessageHeader(VU_BYTE *data, VuMessageHeader* hdr)
     if (hdr->length_ > 0x7f)
     {
         ushort huff = static_cast<ushort>(0x8000 | hdr->length_);
-        data[0] = static_cast<VU_BYTE>((huff >> 8) & 0xff);
-        data[1] = static_cast<VU_BYTE>(huff & 0xff);
+        data[0] = static_cast<VU_BYTE>((huff >> 8) bitand 0xff);
+        data[1] = static_cast<VU_BYTE>(huff bitand 0xff);
         retsize = MAX_MSG_HDR_SIZE;
     }
     else
@@ -466,7 +466,7 @@ int VuSessionFilter::Compare(VuEntity* ent1, VuEntity* ent2)
 VU_BOOL VuSessionFilter::Notice(VuMessage* event)
 {
     // danm_TBD: do we need VU_FULL_UPDATE event as well?
-    if ((1 << event->Type()) & VU_TRANSFER_EVENT)
+    if ((1 << event->Type()) bitand VU_TRANSFER_EVENT)
     {
         return TRUE;
     }
@@ -1275,7 +1275,7 @@ int VuTargetEntity::SendMessage(VuMessage* msg)
     // find the comms handle to send message
     VuCommsContext* ctxt = 0;
 
-    if (msg->Flags() & VU_RELIABLE_MSG_FLAG)
+    if (msg->Flags() bitand VU_RELIABLE_MSG_FLAG)
     {
         if (GetReliableCommsHandle())
         {
@@ -1308,11 +1308,11 @@ int VuTargetEntity::SendMessage(VuMessage* msg)
     // note: this counts events which are overwritten by Read()
     // note2: don't reassign id's for resubmitted messages (delay)
     // note3: 5/27/98 -- probably not needed anymore
-    if (msg->Flags() & VU_OUT_OF_BAND_MSG_FLAG)
+    if (msg->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG)
     {
         retval = SendOutOfBand(ctxt, msg);
     }
-    else if (msg->Flags() & VU_NORMAL_PRIORITY_MSG_FLAG)
+    else if (msg->Flags() bitand VU_NORMAL_PRIORITY_MSG_FLAG)
     {
         retval = SendNormalPriority(ctxt, msg);
     }
@@ -1322,7 +1322,7 @@ int VuTargetEntity::SendMessage(VuMessage* msg)
     }
 
     if (
-        (msg->Flags() & VU_RELIABLE_MSG_FLAG)  and 
+        (msg->Flags() bitand VU_RELIABLE_MSG_FLAG)  and 
         (retval == COMAPI_WOULDBLOCK or retval == COMAPI_CONNECTION_PENDING)
     )
     {
@@ -3709,7 +3709,7 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
             {
                 for (i = 0; i < 32; i++)
                 {
-                    if (1 << i & cs->DomainMask())
+                    if (1 << i bitand cs->DomainMask())
                     {
                         count[i] += cs->LoadMetric();
                         totalcount++;
@@ -3734,7 +3734,7 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
             {
                 for (i = 0; i < 32; i++)
                 {
-                    if (1 << i & cs->DomainMask())
+                    if (1 << i bitand cs->DomainMask())
                     {
                         myseedlower[i] += cs->LoadMetric();
                         myseedupper[i] += cs->LoadMetric();
@@ -3792,7 +3792,7 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
                     vuDatabase->Remove(ent);
                 }
                 else if (( not sess or (ent->OwnerId().creator_ == sess->SessionId()))  and 
-                         ((1 << ent->Domain()) & vuLocalSessionEntity->DomainMask()))
+                         ((1 << ent->Domain()) bitand vuLocalSessionEntity->DomainMask()))
                 {
                     if (ent->Association() not_eq vuNullId  and 
                         (ent2 = vuDatabase->Find(ent->Association())) not_eq 0)
@@ -3831,7 +3831,7 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
                     vuDatabase->Remove(ent);
                 }
                 else if (( not sess or (ent->OwnerId().creator_ == sess->SessionId()))  and 
-                         ((1 << ent->Domain()) & vuLocalSessionEntity->DomainMask()))
+                         ((1 << ent->Domain()) bitand vuLocalSessionEntity->DomainMask()))
                 {
                     if (ent->Association() not_eq vuNullId  and 
                         (ent2 = vuDatabase->Find(ent->Association())) not_eq 0)

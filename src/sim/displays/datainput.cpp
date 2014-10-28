@@ -45,7 +45,7 @@ extern int maxripple; // M.N.
 
 void SmsDrawable::InputDisplay(void)
 {
-    InputFlash = (vuxRealTime & 0x180);
+    InputFlash = (vuxRealTime bitand 0x180);
 
     switch (InputModus)
     {

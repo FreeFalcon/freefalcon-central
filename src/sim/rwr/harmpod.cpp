@@ -375,7 +375,7 @@ void HarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
     display = activeDisplay;
 
     // Do we draw flashing things this frame ?
-    flash = vuxRealTime & 0x200;
+    flash = vuxRealTime bitand 0x200;
 
     display->SetColor(0xFF00FF00);
 
@@ -482,7 +482,7 @@ void HarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
     display = activeDisplay;
 
     // Do we draw flashing things this frame ?
-    flash = vuxRealTime & 0x200;
+    flash = vuxRealTime bitand 0x200;
 
     display->SetColor(0xFF00FF00);
 
@@ -522,7 +522,7 @@ void HarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
     display = activeDisplay;
 
     // Do we draw flashing things this frame ?
-    flash = vuxRealTime & 0x200;
+    flash = vuxRealTime bitand 0x200;
 
     display->SetColor(0xFF00FF00);
 
@@ -624,7 +624,7 @@ void HarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
     display = activeDisplay;
 
     // Do we draw flashing things this frame ?
-    flash = vuxRealTime & 0x200;
+    flash = vuxRealTime bitand 0x200;
 
     display->SetColor(0xFF00FF00);
 
@@ -690,7 +690,7 @@ void HarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
     display = activeDisplay;
 
     // Do we draw flashing things this frame ?
-    flash = vuxRealTime & 0x200;
+    flash = vuxRealTime bitand 0x200;
 
     display->SetColor(0xFF00FF00);
 
@@ -790,7 +790,7 @@ void HarmTargetingPod::DrawWEZ(MissileClass *theMissile)
 
             for (int j = 0; j < 4; j++)
             {
-                int draw = j & 1;
+                int draw = j bitand 1;
 
                 if (draw)
                 {

@@ -79,27 +79,27 @@ void MakeTacEngScoreList();
 
 int tactical_mission::hide_enemy_on(void)
 {
-    return (TheCampaign.TE_flags & tf_hide_enemy) and TRUE;
+    return (TheCampaign.TE_flags bitand tf_hide_enemy) and TRUE;
 }
 
 int tactical_mission::lock_ato_on(void)
 {
-    return (TheCampaign.TE_flags & tf_lock_ato) and TRUE;
+    return (TheCampaign.TE_flags bitand tf_lock_ato) and TRUE;
 }
 
 int tactical_mission::lock_oob_on(void)
 {
-    return (TheCampaign.TE_flags & tf_lock_oob) and TRUE;
+    return (TheCampaign.TE_flags bitand tf_lock_oob) and TRUE;
 }
 
 int tactical_mission::start_paused_on(void)
 {
-    return (TheCampaign.TE_flags & tf_start_paused) and TRUE;
+    return (TheCampaign.TE_flags bitand tf_start_paused) and TRUE;
 }
 
 int tactical_mission::is_flag_on(long value)
 {
-    return (TheCampaign.TE_flags & value) and TRUE;
+    return (TheCampaign.TE_flags bitand value) and TRUE;
 }
 
 void tactical_mission::set_flag(long value)
@@ -354,7 +354,7 @@ void tactical_mission::save(char *filename)
 {
     long saveIP, saveIter;
 
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
     {
         TheCampaign.SetCreatorIP(0);
         TheCampaign.SetCreationTime(0);
@@ -372,7 +372,7 @@ void tactical_mission::save(char *filename)
             if (gCommsMgr->Online())
             {
                 // Send messages to remote players with new Iter Number
-                // So they can save their stats & update Iter in their campaign
+                // So they can save their stats bitand update Iter in their campaign
                 gCommsMgr->UpdateGameIter();
             }
         }

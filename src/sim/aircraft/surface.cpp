@@ -32,7 +32,7 @@ extern bool g_bEnableTrackIR; // Cobra - Animated Pilot's head
 extern float g_fTIR2DPitchPercentage, g_fTIR2DYawPercentage;
 extern TrackIR theTrackIRObject; // Retro 27/09/03
 
-// MLR 2/22/2004 - these arrays make it easy to access the gear related DOFs & Switches
+// MLR 2/22/2004 - these arrays make it easy to access the gear related DOFs bitand Switches
 //                 because the ID numbers are out of order.
 int ComplexGearDOF[] =
 {
@@ -169,7 +169,7 @@ void AircraftClass::CalculateSweepAndSpoiler(float &sweep, float &sl1, float &sr
     sweep = 0;
     cursweep = 0;
 
-    if (acFlags & hasSwing)
+    if (acFlags bitand hasSwing)
     {
         if (af->auxaeroData->animSwingWingStages)
         {
@@ -480,7 +480,7 @@ void AircraftClass::MoveSurfaces(void)
 
 
     {
-        // MLR 2003-10-12 Throttle DOF (works on complex & simple - same ID)
+        // MLR 2003-10-12 Throttle DOF (works on complex bitand simple - same ID)
         //SetDOF(COMP_THROTTLE,af->Throtl()); // simple eh?
         //ATARIBABY change for 2 engine ACs to be correct, help from Mike
         if (af->auxaeroData->nEngines == 2)
@@ -1273,7 +1273,7 @@ void AircraftClass::MoveSurfaces(void)
 
 
         {
-            // MLR - 2003-09-30 Spoiler & Wing Sweep code
+            // MLR - 2003-09-30 Spoiler bitand Wing Sweep code
             //TJL 01/04/04 adding wingSweep;
             float spoiler1l, spoiler1r, spoiler2l, spoiler2r, sweep;
             CalculateSweepAndSpoiler(sweep, spoiler1l, spoiler1r, spoiler2l, spoiler2r);
@@ -1283,7 +1283,7 @@ void AircraftClass::MoveSurfaces(void)
             MoveDof(SIMP_RT_SPOILER2, spoiler2r, af->auxaeroData->animSpoiler2Rate);
             wingSweep = sweep;
 
-            if (acFlags & hasSwing)
+            if (acFlags bitand hasSwing)
             {
                 static const int swdofs[] =
                 {
@@ -1545,7 +1545,7 @@ void AircraftClass::RunGearSurfaces(void)
     //this function is only valid for airplanes with complex gear
     int i;
 
-    // MLR 2003-10-04  must limit the original MPS code to animating 3 gear & door sets,
+    // MLR 2003-10-04  must limit the original MPS code to animating 3 gear bitand door sets,
     // there are no DOFs for the rest
     numgear = af->NumGear();
 
@@ -1585,7 +1585,7 @@ void AircraftClass::RunGearSurfaces(void)
     for (i = 0; i < numgear; i++)
     {
         //move the door
-        if ( not (af->gear[i].flags & GearData::DoorStuck) and !(af->gear[i].flags & GearData::DoorBroken))
+        if ( not (af->gear[i].flags bitand GearData::DoorStuck) and !(af->gear[i].flags bitand GearData::DoorBroken))
         {
             float pos = af->gearPos * 2;
 
@@ -1599,7 +1599,7 @@ void AircraftClass::RunGearSurfaces(void)
             SetDOF(ComplexGearDoorDOF[i], af->GetAeroData(AeroDataSet::NosGearRng) * DTR);
 
         //move the gear
-        if ( not (af->gear[i].flags & GearData::GearStuck) and !(af->gear[i].flags & GearData::GearBroken))
+        if ( not (af->gear[i].flags bitand GearData::GearStuck) and !(af->gear[i].flags bitand GearData::GearBroken))
         {
             float pos = (af->gearPos - .5f) * 2;
 
@@ -1612,18 +1612,18 @@ void AircraftClass::RunGearSurfaces(void)
         else
             SetDOF(ComplexGearDOF[i], af->GetAeroData(AeroDataSet::NosGearRng) * 0.6f * DTR);
 
-        if (af->gearPos >= 0.9F and ((af->gear[i].flags & GearData::DoorBroken)
-                                    or (af->gear[i].flags & GearData::DoorStuck)
-                                    or (af->gear[i].flags & GearData::GearStuck)
-                                    or (af->gear[i].flags & GearData::GearBroken)))
+        if (af->gearPos >= 0.9F and ((af->gear[i].flags bitand GearData::DoorBroken)
+                                    or (af->gear[i].flags bitand GearData::DoorStuck)
+                                    or (af->gear[i].flags bitand GearData::GearStuck)
+                                    or (af->gear[i].flags bitand GearData::GearBroken)))
         {
-            if ((af->gear[i].flags & GearData::DoorBroken) or (af->gear[i].flags & GearData::DoorStuck))
+            if ((af->gear[i].flags bitand GearData::DoorBroken) or (af->gear[i].flags bitand GearData::DoorStuck))
                 SetSwitch(ComplexGearDoorSwitch[i], TRUE);
 
-            if ((af->gear[i].flags & GearData::DoorBroken) or (af->gear[i].flags & GearData::DoorStuck))
+            if ((af->gear[i].flags bitand GearData::DoorBroken) or (af->gear[i].flags bitand GearData::DoorStuck))
                 SetSwitch(ComplexGearHoleSwitch[i], TRUE);
 
-            if ((af->gear[i].flags & GearData::GearBroken) or (af->gear[i].flags & GearData::GearStuck))
+            if ((af->gear[i].flags bitand GearData::GearBroken) or (af->gear[i].flags bitand GearData::GearStuck))
                 SetSwitch(ComplexGearSwitch[i], TRUE);
         }
         else
@@ -1647,7 +1647,7 @@ void AircraftClass::RunGearSurfaces(void)
 
     if (af->IsSet(AirframeClass::NoseSteerOn))
     {
-        if ( not (af->gear[0].flags & GearData::GearStuck))
+        if ( not (af->gear[0].flags bitand GearData::GearStuck))
         {
             // ASSOCIATOR 30/11/03 Added g_bRollLinkedNWSRudder for roll unlinked rudder on the ground
             // RAS 05Apr04 chanded ypedal to lastYPedal and rstick to lastRStick so that nosewheel will track movement of plane
@@ -1674,7 +1674,7 @@ void AircraftClass::RunGearSurfaces(void)
     else
         SetDOF(COMP_NOS_GEAR_ROT, GetDOFValue(COMP_NOS_GEAR_ROT) * 0.9F);
 
-    if (GetDOFValue(ComplexGearDOF[0]) == af->GetAeroData(AeroDataSet::NosGearRng)*DTR and !(af->gear[0].flags & GearData::DoorBroken))
+    if (GetDOFValue(ComplexGearDOF[0]) == af->GetAeroData(AeroDataSet::NosGearRng)*DTR and !(af->gear[0].flags bitand GearData::DoorBroken))
         SetSwitch(COMP_NOS_GEAR_ROD, TRUE);
     else
         SetSwitch(COMP_NOS_GEAR_ROD, FALSE);

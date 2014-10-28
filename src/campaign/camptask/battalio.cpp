@@ -319,7 +319,7 @@ void BattalionClass::InitLocalData(Unit parent)
     {
         SetReinforcement(parent->GetReinforcement());
         // Inherit parent's inactive status;
-        SetUnitFlags(parent->GetUnitFlags() & U_INACTIVE);
+        SetUnitFlags(parent->GetUnitFlags() bitand U_INACTIVE);
     }
     else
     {
@@ -1505,14 +1505,14 @@ int BattalionClass::CanShootWeapon(int wid)
     {
         RadarDataSet* radarData = &radarDatFileTable[((VehicleClassDataType *)Falcon4ClassTable[class_data->VehicleType[class_data->RadarVehicle]].dataPtr)->RadarType];
 
-        if (radarData and WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR and missiles_flying >= radarData->Maxmissilesintheair)
+        if (radarData and WeaponDataTable[wid].GuidanceFlags bitand WEAP_RADAR and missiles_flying >= radarData->Maxmissilesintheair)
             return FALSE;
     }
-    else if (WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR and missiles_flying >= 1)
+    else if (WeaponDataTable[wid].GuidanceFlags bitand WEAP_RADAR and missiles_flying >= 1)
         return FALSE;
 
     // Check for radar guidance, and make adjustments if necessary
-    if ( not (WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR) or GetRadarMode() == FEC_RADAR_GUIDE or GetRadarMode() == FEC_RADAR_SEARCH_100)
+    if ( not (WeaponDataTable[wid].GuidanceFlags bitand WEAP_RADAR) or GetRadarMode() == FEC_RADAR_GUIDE or GetRadarMode() == FEC_RADAR_SEARCH_100)
         return TRUE;
 
     return FALSE;
@@ -1561,7 +1561,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 #ifdef DEBUG
         extern int g_nShowDebugLabels;
 
-        if (g_nShowDebugLabels & 0x04)
+        if (g_nShowDebugLabels bitand 0x04)
         {
             switch (newMode)
             {
@@ -1601,7 +1601,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 
             if (draw_pointer)
             {
-                if (g_nShowDebugLabels & 0x04)
+                if (g_nShowDebugLabels bitand 0x04)
                     draw_pointer->SetLabel(label, draw_pointer->LabelColor());
                 else
                 {
@@ -2067,11 +2067,11 @@ int BattalionClass::GetDeaggregationPoint(int slot, CampEntity *installation)
             type = RadarPt;
         else if (ptListType == AAAListType and slot == uc->RadarVehicle)
             type = RadarPt;
-        else if (ptListType == SAMListType and (vc->Flags & VEH_IS_AIR_DEFENSE))
+        else if (ptListType == SAMListType and (vc->Flags bitand VEH_IS_AIR_DEFENSE))
             type = SAMPt;
-        else if (ptListType == AAAListType and (vc->Flags & VEH_IS_AIR_DEFENSE))
+        else if (ptListType == AAAListType and (vc->Flags bitand VEH_IS_AIR_DEFENSE))
             type = AAAPt;
-        else if (ptListType == ArtListType and (vc->Flags & VEH_IS_ARTILLERY))
+        else if (ptListType == ArtListType and (vc->Flags bitand VEH_IS_ARTILLERY))
             type = ArtilleryPt;
         else
             type = SupportPt;
@@ -2199,10 +2199,10 @@ int BattalionClass::Reaction(CampEntity e, int knowledge, float range)
         return 0;
 
     // Score their threat to us
-    if (knowledge & FRIENDLY_DETECTED)
+    if (knowledge bitand FRIENDLY_DETECTED)
         enemy_threat_bonus++;
 
-    if (knowledge & FRIENDLY_IN_RANGE)
+    if (knowledge bitand FRIENDLY_IN_RANGE)
         enemy_threat_bonus += 2;
 
     et = ((Unit)e)->GetCampTarget();
@@ -2220,7 +2220,7 @@ int BattalionClass::Reaction(CampEntity e, int knowledge, float range)
         score += (e->GetAproxHitChance(omt, 0) * enemy_threat_bonus) / 5;
 
     // Bonus if we can shoot them
-    if (knowledge & ENEMY_IN_RANGE)
+    if (knowledge bitand ENEMY_IN_RANGE)
         score += (GetAproxHitChance(tmt, FloatToInt32(range / 2.0F)) + 4) / 5;
 
     // Bonus for them being our target
@@ -2470,7 +2470,7 @@ void BattalionClass::SimSetLocation(float x, float y, float z)
 
 void BattalionClass::GetRealPosition(float *x, float *y, float *z)
 {
-    // This will use the last move time to determine the real x,y & z of the unit
+    // This will use the last move time to determine the real x,y bitand z of the unit
     float movetime = (float)(SimLibElapsedTime - last_move) / VU_TICS_PER_SECOND;
     float speed;
     float heading;
@@ -2617,26 +2617,26 @@ void BattalionClass::WriteDirty(unsigned char **stream)
     *(uchar*)ptr = (uchar) dirty_battalion;
     ptr += sizeof(uchar);
 
-    if (dirty_battalion & DIRTY_SUPPLY)
+    if (dirty_battalion bitand DIRTY_SUPPLY)
     {
         *(Percentage*)ptr = supply;
         ptr += sizeof(Percentage);
     }
 
-    if (dirty_battalion & DIRTY_MORALE)
+    if (dirty_battalion bitand DIRTY_MORALE)
     {
         *(Percentage*)ptr = morale;
         ptr += sizeof(Percentage);
     }
 
-    if (dirty_battalion & DIRTY_FATIGUE)
+    if (dirty_battalion bitand DIRTY_FATIGUE)
     {
         *(Percentage*)ptr = fatigue;
         ptr += sizeof(Percentage);
     }
 
     /*
-    if (dirty_battalion & DIRTY_SMALLPATH){
+    if (dirty_battalion bitand DIRTY_SMALLPATH){
      // this call updates stream
      path->Save(stream);
     }*/
@@ -2657,23 +2657,23 @@ void BattalionClass::ReadDirty(VU_BYTE **stream, long *rem)
     memcpychk(&bits, stream, sizeof(unsigned char), rem);
 
 
-    if (bits & DIRTY_SUPPLY)
+    if (bits bitand DIRTY_SUPPLY)
     {
         memcpychk(&supply, stream, sizeof(Percentage), rem);
     }
 
-    if (bits & DIRTY_MORALE)
+    if (bits bitand DIRTY_MORALE)
     {
         memcpychk(&morale, stream, sizeof(Percentage), rem);
     }
 
-    if (bits & DIRTY_FATIGUE)
+    if (bits bitand DIRTY_FATIGUE)
     {
         memcpychk(&fatigue, stream, sizeof(Percentage), rem);
     }
 
     // sfr: dirty smallpath: recompute it
-    if (bits & DIRTY_SMALLPATH)
+    if (bits bitand DIRTY_SMALLPATH)
     {
         short x, y, nx, ny;
         GetLocation(&x, &y);

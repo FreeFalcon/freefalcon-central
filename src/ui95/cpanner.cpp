@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -135,7 +135,7 @@ void C_Panner::SetImage(short state, long ImageID)
 
 long C_Panner::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready() or !Parent_)
+    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !Ready() or !Parent_)
     {
         return(0);
     }
@@ -300,7 +300,7 @@ BOOL C_Panner::Process(long, short HitType)
 
 void C_Panner::Refresh()
 {
-    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (BgImage_)
@@ -316,7 +316,7 @@ void C_Panner::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     if ( not Ready()) return;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
     if (BgImage_)
@@ -329,7 +329,7 @@ void C_Panner::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Image_[i])
         Image_[i]->Draw(surface, cliprect);
 
-    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
@@ -341,7 +341,7 @@ BOOL C_Panner::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
 
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return(FALSE);
 
     Leave = UI_Enter(Parent_);

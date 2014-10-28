@@ -33,7 +33,7 @@ int NoFlyZoneClass::InZone(GridIndex x, GridIndex y, Team who, int flags)
 
     d = Distance(x, y, zonex, zoney);
 
-    if (flags & FIND_CAUTIOUS)
+    if (flags bitand FIND_CAUTIOUS)
         d *= 0.8F;
 
     if (d < radius)

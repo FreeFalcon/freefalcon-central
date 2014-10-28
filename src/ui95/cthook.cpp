@@ -63,7 +63,7 @@ BOOL C_TimerHook::TimerUpdate()
 
 void C_TimerHook::Refresh()
 {
-    if ( not Ready() or (GetFlags() & C_BIT_INVISIBLE))
+    if ( not Ready() or (GetFlags() bitand C_BIT_INVISIBLE))
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -75,10 +75,10 @@ void C_TimerHook::Refresh()
 // This will ONLY Get Calle
 void C_TimerHook::Draw(SCREEN *, UI95_RECT *cliprect)
 {
-    if ( not Ready() or (GetFlags() & C_BIT_INVISIBLE))
+    if ( not Ready() or (GetFlags() bitand C_BIT_INVISIBLE))
         return;
 
-    if (GetFlags() & C_BIT_TIMER)
+    if (GetFlags() bitand C_BIT_TIMER)
         SetReady(0);
 
     if (DrawCallback_)

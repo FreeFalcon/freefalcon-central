@@ -56,7 +56,7 @@ void ICPClass::ExecCRUSMode(void)
 
     if ( not g_bRealisticAvionics)
     {
-        if (mUpdateFlags & CRUS_UPDATE)
+        if (mUpdateFlags bitand CRUS_UPDATE)
         {
             mUpdateFlags and_eq !CRUS_UPDATE;
 
@@ -72,12 +72,12 @@ void ICPClass::ExecCRUSMode(void)
 
                     //check the steerpoint list
                     //get current steerpoint
-                    if (action == WP_LAND and !(wpflags & WPF_ALTERNATE))
+                    if (action == WP_LAND and !(wpflags bitand WPF_ALTERNATE))
                     {
 
                         sprintf(mpLine1, "CRUISE HOME");
                     }
-                    else if (action == WP_LAND and wpflags & WPF_ALTERNATE)
+                    else if (action == WP_LAND and wpflags bitand WPF_ALTERNATE)
                     {
 
                         sprintf(mpLine1, "CRUISE ALTERNATE %d", mCruiseWPIndex + 1);

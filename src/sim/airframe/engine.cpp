@@ -222,7 +222,7 @@ void AirframeClass::EngineModel(float dt)
         thrust = 0.0f;
 
         // broken engine - anything but a flame out?
-        if ((platform->mFaults->GetFault(FaultClass::eng_fault) & compl FaultClass::fl_out) not_eq 0)
+        if ((platform->mFaults->GetFault(FaultClass::eng_fault) bitand compl FaultClass::fl_out) not_eq 0)
         {
             rpmCmd = 0.0f; // engine must be seized, not going to start or windmill
         }
@@ -258,7 +258,7 @@ void AirframeClass::EngineModel(float dt)
         /*------------------*/
         /* get gross thrust */
         /*------------------*/
-        if ((platform->mFaults->GetFault(FaultClass::eng_fault) & FaultClass::fl_out) ||
+        if ((platform->mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::fl_out) ||
             (g_bUseAnalogIdleCutoff and IO.IsAxisCutOff(AXIS_THROTTLE)))
         {
             SetFlag(EngineStopped); //JPO - engine is now stopped!
@@ -285,12 +285,12 @@ void AirframeClass::EngineModel(float dt)
 
         if (platform->IsSetFlag(MOTION_OWNSHIP))
         {
-            if (platform->mFaults->GetFault(FaultClass::eng_fault) & FaultClass::a_b)
+            if (platform->mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::a_b)
             {
                 pwrlev = min(pwrlev, 0.99F);
             }
 
-            if (platform->mFaults->GetFault(FaultClass::eng_fault) & FaultClass::efire)
+            if (platform->mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::efire)
             {
                 pwrlev *= 0.5F;
 
@@ -991,7 +991,7 @@ void AirframeClass::MultiEngineModel(float dt)
 
 
         // broken engine - anything but a flame out?
-        if ((platform->mFaults->GetFault(FaultClass::eng_fault) & compl FaultClass::fl_out) not_eq 0)
+        if ((platform->mFaults->GetFault(FaultClass::eng_fault) bitand compl FaultClass::fl_out) not_eq 0)
         {
             rpmCmd = 0.0f; // engine must be seized, not going to start or windmill
         }
@@ -1021,7 +1021,7 @@ void AirframeClass::MultiEngineModel(float dt)
 
     {
         //7.1 Engine flame out, shut down
-        if (platform->mFaults->GetFault(FaultClass::eng_fault) & FaultClass::fl_out)
+        if (platform->mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::fl_out)
         {
             SetFlag(EngineStopped);
             engine1Throttle = 0.0F;
@@ -1048,16 +1048,16 @@ void AirframeClass::MultiEngineModel(float dt)
         {
             //7.3.1 Lost AB
             //TODO Make Engine 2 Faults
-            if (platform->mFaults->GetFault(FaultClass::eng_fault) & FaultClass::a_b)
+            if (platform->mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::a_b)
             {
                 pwrlevEngine1 = min(engine1Throttle, 0.99F);
             }
 
             //7.3.2 Engine Fire
-            if ((platform->mFaults->GetFault(FaultClass::eng_fault) & FaultClass::efire))
+            if ((platform->mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::efire))
             {
                 //Engine 1
-                if (platform->mFaults->GetFault(FaultClass::eng_fault) & FaultClass::efire)
+                if (platform->mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::efire)
                 {
                     pwrlevEngine1 *= 0.5F;
 
@@ -1492,7 +1492,7 @@ void AirframeClass::MultiEngineModel(float dt)
 
         // broken engine - anything but a flame out?
         //TODO Chase down faults to fault Engine 2
-        if ((platform->mFaults->GetFault(FaultClass::eng_fault) & compl FaultClass::fl_out) not_eq 0)
+        if ((platform->mFaults->GetFault(FaultClass::eng_fault) bitand compl FaultClass::fl_out) not_eq 0)
         {
             rpmCmd2 = 0.0f; // engine must be seized, not going to start or windmill
         }
@@ -1527,7 +1527,7 @@ void AirframeClass::MultiEngineModel(float dt)
 
     {
         //7.1 Engine flame out, shut down
-        if (platform->mFaults->GetFault(FaultClass::eng2_fault) & FaultClass::fl_out)
+        if (platform->mFaults->GetFault(FaultClass::eng2_fault) bitand FaultClass::fl_out)
         {
             SetEngineFlag(EngineStopped2);
             engine2Throttle = 0.0F;
@@ -1554,16 +1554,16 @@ void AirframeClass::MultiEngineModel(float dt)
         {
             //7.3.1 Lost AB
             //TODO Make Engine 2 Faults
-            if (platform->mFaults->GetFault(FaultClass::eng2_fault) & FaultClass::a_b)
+            if (platform->mFaults->GetFault(FaultClass::eng2_fault) bitand FaultClass::a_b)
             {
                 pwrlevEngine2 = min(engine2Throttle, 0.99F);
             }
 
             //7.3.2 Engine Fire
-            if (platform->mFaults->GetFault(FaultClass::eng2_fault) & FaultClass::efire)
+            if (platform->mFaults->GetFault(FaultClass::eng2_fault) bitand FaultClass::efire)
             {
                 //Engine 2
-                if (platform->mFaults->GetFault(FaultClass::eng2_fault) & FaultClass::efire)
+                if (platform->mFaults->GetFault(FaultClass::eng2_fault) bitand FaultClass::efire)
                 {
                     pwrlevEngine2 *= 0.5F;
 
@@ -2097,13 +2097,13 @@ void AirframeClass::MultiEngineModel(float dt)
 // JPO new support routines for hydraulics
 void AirframeClass::HydrBreak(int sys)
 {
-    if (sys & HYDR_A_SYSTEM)   // mark A system as down and broke
+    if (sys bitand HYDR_A_SYSTEM)   // mark A system as down and broke
     {
         hydrAB and_eq compl  HYDR_A_SYSTEM;
         hydrAB  or_eq  HYDR_A_BROKE;
     }
 
-    if (sys & HYDR_B_SYSTEM)   // mark A system as down and broke
+    if (sys bitand HYDR_B_SYSTEM)   // mark A system as down and broke
     {
         hydrAB and_eq compl  HYDR_B_SYSTEM;
         hydrAB  or_eq  HYDR_B_BROKE;
@@ -2113,13 +2113,13 @@ void AirframeClass::HydrBreak(int sys)
 void AirframeClass::HydrRestore(int sys)
 {
     // restore A if not broke
-    if ((sys & HYDR_A_SYSTEM) and (hydrAB & HYDR_A_BROKE) == 0)
+    if ((sys bitand HYDR_A_SYSTEM) and (hydrAB bitand HYDR_A_BROKE) == 0)
     {
         hydrAB  or_eq  HYDR_A_SYSTEM;
     }
 
     // restore B if not broke
-    if ((sys & HYDR_B_SYSTEM) and (hydrAB & HYDR_B_BROKE) == 0)
+    if ((sys bitand HYDR_B_SYSTEM) and (hydrAB bitand HYDR_B_BROKE) == 0)
     {
         hydrAB  or_eq  HYDR_B_SYSTEM;
     }
@@ -2360,7 +2360,7 @@ void AirframeClass::FuelTransfer(float dt)
     // only happens if externals are pressurized.
     if (airSource == AS_NORM or airSource == AS_DUMP)
     {
-        if (((engineFlags & WingFirst) ||
+        if (((engineFlags bitand WingFirst) ||
              m_tanks[TANK_CLINE] <= 0.0f)  and 
             (m_tanks[TANK_REXT] > 0.0f ||
              m_tanks[TANK_LEXT] > 0.0f))

@@ -21,7 +21,7 @@ void ICPClass::ExecMARKMode(void)
 
     if ( not g_bRealisticAvionics)
     {
-        if (mUpdateFlags & MARK_UPDATE)
+        if (mUpdateFlags bitand MARK_UPDATE)
         {
 
             mUpdateFlags and_eq !MARK_UPDATE;

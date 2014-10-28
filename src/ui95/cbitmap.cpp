@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -121,7 +121,7 @@ BOOL C_Bitmap::TimerUpdate()
 }
 void C_Bitmap::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Image_)
@@ -130,7 +130,7 @@ void C_Bitmap::Refresh()
 
 void C_Bitmap::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
     if (Image_)

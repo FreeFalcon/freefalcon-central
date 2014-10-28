@@ -27,7 +27,7 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
     ShiAssert(platform);
 
     // 2002-04-17 MN "GPS type" weapons can see and detect always
-    if (g_nMissileFix & 0x100)
+    if (g_nMissileFix bitand 0x100)
     {
         Falcon4EntityClassType* classPtr = NULL;
         classPtr = (Falcon4EntityClassType*)platform->EntityType();
@@ -40,7 +40,7 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
 
         ShiAssert(wc);
 
-        if (wc and (wc->Flags & WEAP_BOMBGPS))
+        if (wc and (wc->Flags bitand WEAP_BOMBGPS))
             return true;
     }
 
@@ -226,7 +226,7 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
     float sunFactor;
 
     // 2002-04-17 MN "GPS type" weapons can see and detect always
-    if (g_nMissileFix & 0x100)
+    if (g_nMissileFix bitand 0x100)
     {
         Falcon4EntityClassType* classPtr = NULL;
         classPtr = (Falcon4EntityClassType*)platform->EntityType();
@@ -239,7 +239,7 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
 
         ShiAssert(wc);
 
-        if (wc and (wc->Flags & WEAP_BOMBGPS))
+        if (wc and (wc->Flags bitand WEAP_BOMBGPS))
             return true;
     }
 

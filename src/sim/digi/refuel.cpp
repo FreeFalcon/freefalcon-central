@@ -393,7 +393,7 @@ void DigitalBrain::AiRefuel(void)
                 }
             }
 
-            if (g_nShowDebugLabels & 0x800)
+            if (g_nShowDebugLabels bitand 0x800)
             {
                 char tmpchr[32];
 
@@ -409,7 +409,7 @@ void DigitalBrain::AiRefuel(void)
                     ((DrawableBSP*)self->drawPointer)->SetLabel(tmpchr, ((DrawableBSP*)self->drawPointer)->LabelColor());
             }
 
-            if (g_nShowDebugLabels & 0x20000)
+            if (g_nShowDebugLabels bitand 0x20000)
             {
                 char tmpchr[32];
                 float tX, tY, tZ;
@@ -753,7 +753,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
             }
         }
 
-        if (g_nShowDebugLabels & 0x800)
+        if (g_nShowDebugLabels bitand 0x800)
         {
             char tmpchr[32];
 

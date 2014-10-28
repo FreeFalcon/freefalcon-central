@@ -374,7 +374,7 @@ void CPKneeView::RenderMap(SimVehicleClass *platform)
     // Copy the map image into the target buffer
     DrawMap();
 
-    // OW FIXME: the following StartFrame() call will result in a call to IDirect3DDevice7::SetRenderTarget. We can't do this on the Voodoo 1 & 2 ;(
+    // OW FIXME: the following StartFrame() call will result in a call to IDirect3DDevice7::SetRenderTarget. We can't do this on the Voodoo 1 bitand 2 ;(
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(DisplayOptions.DispVideoDriver);
 
     if ( not pDI->SupportsSRT())
@@ -554,7 +554,7 @@ void CPKneeView::DrawCurrentPosition(ImageBuffer *targetBuffer, Render2D *render
             v = -0.95f;
         }
 
-        if (vuxRealTime & 0x200)
+        if (vuxRealTime bitand 0x200)
         {
             // Don't draw to implement a flashing icon when the real postion is off screen.
             return;
@@ -572,7 +572,7 @@ void CPKneeView::DrawCurrentPosition(ImageBuffer *targetBuffer, Render2D *render
             h = -0.95f;
         }
 
-        if (vuxRealTime & 0x200)
+        if (vuxRealTime bitand 0x200)
         {
             // Don't draw to implement a flashing icon when the real postion is off screen.
             return;

@@ -190,7 +190,7 @@ enum SFX_TYPES
     //JPO added for ships
     SFX_BB_COUNTER, // 180
     SFX_SHIP,
-    //MI Uncaged & locked AIM-9
+    //MI Uncaged bitand locked AIM-9
     SFX_NO_CAGE,
     //MI EWS
     SFX_BB_CHAFLARE,

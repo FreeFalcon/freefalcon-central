@@ -145,7 +145,7 @@ void DrawableGuys::Draw(class RenderOTW *renderer, int LOD)
     if (moving)
     {
         // cycle animation at about 4 fps
-        animFrame = (TheTimeManager.GetClockTime() >> 8) & 0x3;
+        animFrame = (TheTimeManager.GetClockTime() >> 8) bitand 0x3;
 
         // switch 0 is for the moving case
         mask = (1 << ((animShift << 2) + animFrame));

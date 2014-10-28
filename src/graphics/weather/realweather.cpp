@@ -136,7 +136,7 @@ inline void RealWeather::DrawStratus2(Tpoint *position, int txtIndex)
     if (UnderOvercast()) return;
 
     // if stratus invisible, do not draw it
-    if ( not (Stratus2Color & 0xff000000) or ShadingFactor < 2.0f) return;
+    if ( not (Stratus2Color bitand 0xff000000) or ShadingFactor < 2.0f) return;
 
     // COBRA - DX - Setup the Squares in the 2D DX Engine for clouds
     TheDXEngine.DX2D_SetupSquareCx(1.0f, 1.0f);
@@ -776,7 +776,7 @@ void RealWeather::UpdateDrawables()
     }
 
 
-    // COBRA - DX - setup the Hi & Lo colours for the Clouds
+    // COBRA - DX - setup the Hi bitand Lo colours for the Clouds
     // RV - I-Hawk - added alpha and lowered shading
 
 #if CLOUDS_FIX

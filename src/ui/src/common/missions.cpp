@@ -109,7 +109,7 @@ short GetFlightStatusID(Flight element)
                     ID = _MIS_EGRESS;
                     found = 1;
                 }
-                else if (wp->GetWPFlags() & WPF_TARGET)
+                else if (wp->GetWPFlags() bitand WPF_TARGET)
                 {
                     if
                     (
@@ -147,7 +147,7 @@ short GetFlightStatusID(Flight element)
             }
         }
 
-        if ((TheCampaign.Flags & CAMP_TACTICAL) and ( not found))
+        if ((TheCampaign.Flags bitand CAMP_TACTICAL) and ( not found))
         {
             ID = _MIS_ENROUTE;
         }
@@ -357,7 +357,7 @@ void FindMissionInBriefing(long ID)
 
             while (cur)
             {
-                if (cur->Item_ and !(cur->Item_->GetFlags() & C_BIT_INVISIBLE))
+                if (cur->Item_ and !(cur->Item_->GetFlags() bitand C_BIT_INVISIBLE))
                 {
                     if (((C_Mission*)cur->Item_)->GetStatusID() < _MIS_EGRESS)
                     {
@@ -424,7 +424,7 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
     if ( not element->Final())
         return(NULL);
 
-    if (TheCampaign.Flags & CAMP_TACTICAL)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL)
     {
         if (element->GetOwner() not_eq FalconLocalSession->GetTeam())
         {
@@ -495,7 +495,7 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
     mission->SetPriorityID(static_cast<short>(255 - package->GetMissionRequest()->priority));
 
     // Set a callback incase someone actually wants to see this mission
-    // if (TheCampaign.Flags & CAMP_TACTICAL)
+    // if (TheCampaign.Flags bitand CAMP_TACTICAL)
     // {
     // mission->SetCallback (TacMissionSelectCB);
     // }
@@ -539,7 +539,7 @@ void MissionUpdateStatus(Flight element, C_Mission *mission)
     {
         if (mission->GetStatusID() >= _MIS_EGRESS)
         {
-            mission->SetState(static_cast<short>(mission->GetState() & 1));
+            mission->SetState(static_cast<short>(mission->GetState() bitand 1));
             FalconLocalSession->SetPlayerFlight(NULL);
             FalconLocalSession->SetPilotSlot(255);
             gPlayerFlightID = FalconNullId;
@@ -601,7 +601,7 @@ void RemoveMissionCB(TREELIST *item)
 
     if (gCurrentFlightID == mis->GetVUID()) // our mission is being removed... find the next mission in briefing
     {
-        if (TheCampaign.Flags & CAMP_TACTICAL)
+        if (TheCampaign.Flags bitand CAMP_TACTICAL)
         {
             if (gTimeModeServer or g_bServer)
             {

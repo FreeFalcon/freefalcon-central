@@ -442,9 +442,9 @@ THREAT_LIST *C_Map::AddThreat(CampEntity ent)
     // if(ent->IsUnit() and ent->IsEmitting())
     if (ent->IsUnit())
         // THIS IS WHAT I DO IN 1.08i2 BUT NOT REQUIRED IN 1.07 (SEE AT END OF FUNCTION FOR DETAIL)
-        // if(ent->IsUnit() and !((Unit)ent)->Inactive() and (FindUnitType(ent) & (_UNIT_AIR_DEFENSE | _UNIT_BATTALION)))
+        // if(ent->IsUnit() and !((Unit)ent)->Inactive() and (FindUnitType(ent) bitand (_UNIT_AIR_DEFENSE | _UNIT_BATTALION)))
         // UI_Refresher *gpsItem=NULL;
-        // if(ent->IsUnit() and (gpsItem=(UI_Refresher*)gGps->Find(ent->GetCampID())) and gpsItem->MapItem_ and !(gpsItem->MapItem_->Flags & C_BIT_INVISIBLE))
+        // if(ent->IsUnit() and (gpsItem=(UI_Refresher*)gGps->Find(ent->GetCampID())) and gpsItem->MapItem_ and !(gpsItem->MapItem_->Flags bitand C_BIT_INVISIBLE))
     {
         ent->GetLocation(&x, &y);
         ShiAssert(Map_Max_Y > 0);
@@ -618,8 +618,8 @@ MAPICONLIST *C_Map::AddDivision(Division div)
 
     if (u)
     {
-        UnitType = FindDivisionType(div->GetDivisionType()) & 0xffffff;
-        Type = FindTypeIndex(UnitType & 0x0fff, GND_TypeList, _MAP_NUM_GND_TYPES_);
+        UnitType = FindDivisionType(div->GetDivisionType()) bitand 0xffffff;
+        Type = FindTypeIndex(UnitType bitand 0x0fff, GND_TypeList, _MAP_NUM_GND_TYPES_);
 
         // Figure out Status
         curstr = u->GetTotalVehicles();
@@ -682,18 +682,18 @@ MAPICONLIST *C_Map::AddUnit(Unit u)
 
     if (perc > 100.0f) perc = 100.0f;
 
-    if (UnitType & _UNIT_GROUND_MASK)
+    if (UnitType bitand _UNIT_GROUND_MASK)
     {
-        TypeID = FindTypeIndex(UnitType & 0x0fff, GND_TypeList, _MAP_NUM_GND_TYPES_);
+        TypeID = FindTypeIndex(UnitType bitand 0x0fff, GND_TypeList, _MAP_NUM_GND_TYPES_);
 
         if (TypeID not_eq -1)
-            LevelID = FindTypeIndex(UnitType & _UNIT_GROUND_MASK, GND_LevelList, _MAP_NUM_GND_LEVELS_);
+            LevelID = FindTypeIndex(UnitType bitand _UNIT_GROUND_MASK, GND_LevelList, _MAP_NUM_GND_LEVELS_);
         else
             LevelID = -1;
     }
-    else if (UnitType & _UNIT_NAVAL_MASK)
+    else if (UnitType bitand _UNIT_NAVAL_MASK)
     {
-        TypeID = FindTypeIndex(UnitType & 0x0fff, NAV_TypeList, _MAP_NUM_NAV_TYPES_);
+        TypeID = FindTypeIndex(UnitType bitand 0x0fff, NAV_TypeList, _MAP_NUM_NAV_TYPES_);
         LevelID = 1;
     }
 
@@ -703,7 +703,7 @@ MAPICONLIST *C_Map::AddUnit(Unit u)
 
         if (UnitPtr)
         {
-            if (UnitType & _UNIT_GROUND_MASK)
+            if (UnitType bitand _UNIT_GROUND_MASK)
             {
                 if (LevelID == 1)
                 {
@@ -789,7 +789,7 @@ MAPICONLIST *C_Map::AddUnit(Unit u)
                            (long)perc, 0, detect)
                       );
             }
-            else if (UnitType & _UNIT_NAVAL_MASK)
+            else if (UnitType bitand _UNIT_NAVAL_MASK)
             {
                 u->GetName(Buffer, 49, FALSE);
                 return(Team_[u->GetTeam()].NavalUnits->Type[TypeID]->AddIconToList(
@@ -845,7 +845,7 @@ MAPICONLIST *C_Map::AddFlight(Flight flight)
                             static_cast<short>(gMoveBattalion),
                             Buffer,
                             0,
-                            ((Flight)flight)->GetLastDirection() & 0x7
+                            ((Flight)flight)->GetLastDirection() bitand 0x7
                         ));
             }
         }
@@ -1071,7 +1071,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
     CurIcons_->Cleanup();
     CurIcons_->Setup(CurIcons_->GetID(), 0);
 
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
     {
         CurWP_->SetFlagBitOn(C_BIT_DRAGABLE);
         CurWPZ_->SetFlagBitOn(C_BIT_DRAGABLE);
@@ -1109,7 +1109,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
         if (y > CurWPArea_.bottom or CurWPArea_.bottom < 0)
             CurWPArea_.bottom = static_cast<long>(y);
 
-        if (wp->GetWPFlags() & WPF_TARGET)
+        if (wp->GetWPFlags() bitand WPF_TARGET)
         {
             // Set 2d Waypoint
             wpl = CurWP_->AddWaypointToList(0x20000000 + campID + i, 0, ASSIGNED_TGT_CUR, ASSIGNED_TGT_CUR, ASSIGNED_TGT_CUR, y, maxy - x, FALSE);
@@ -1160,13 +1160,13 @@ void C_Map::BuildCurrentWPList(Unit unit)
         if ( not wp->GetNextWP())
             lastwp = 1;
 
-        if (wp->GetWPFlags() & WPF_TARGET)
+        if (wp->GetWPFlags() bitand WPF_TARGET)
         {
             normID = TGT_CUR;
             selID = TGT_CUR_SEL;
             othrID = TGT_CUR_ERROR;
         }
-        else if (wp->GetWPFlags() & WPF_IP)
+        else if (wp->GetWPFlags() bitand WPF_IP)
         {
             normID = IP_CUR;
             selID = IP_CUR_SEL;
@@ -1210,7 +1210,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
                 CurWP_->SetLabelColor(0x40000000 + campID + i, 0x00ffffff, 0x0000ffff, 0x000000ff);
                 CurWP_->SetLineColor(0x40000000 + campID + i, 0x00ffffff, 0x0000ffff, 0x000000ff);
 
-                if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+                if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
                 {
                     if (firstwp not_eq unit->GetCurrentUnitWP())
                     {
@@ -1309,7 +1309,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
                     wpl->Icon->SetUserCleanupPtr(C_STATE_0, tmpID);
                     wpl->Icon->SetUserNumber(C_STATE_1, i);
 
-                    if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+                    if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
                         if (firstwp not_eq unit->GetCurrentUnitWP())
                             wpl->Dragable = 0;
                 }
@@ -1385,7 +1385,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
                 wpl->Icon->SetUserCleanupPtr(C_STATE_0, tmpID);
                 wpl->Icon->SetUserNumber(C_STATE_1, -1);
 
-                if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+                if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
                     if (firstwp not_eq unit->GetCurrentUnitWP())
                         wpl->Dragable = 0;
             }
@@ -1463,13 +1463,13 @@ void C_Map::BuildWPList(C_Waypoint *wplist, C_Waypoint *, Unit unit)
         if ( not wp->GetNextWP())
             lastwp = 1;
 
-        if (wp->GetWPFlags() & WPF_TARGET)
+        if (wp->GetWPFlags() bitand WPF_TARGET)
         {
             normID = TGT_OTR;
             selID = TGT_OTR_SEL;
             othrID = TGT_OTR_OTHER;
         }
-        else if (wp->GetWPFlags() & WPF_IP)
+        else if (wp->GetWPFlags() bitand WPF_IP)
         {
             normID = IP_OTR;
             selID = IP_OTR_SEL;
@@ -1671,7 +1671,7 @@ void C_Map::UpdateWaypoint(Flight flt)
             wp = wp->GetNextWP();
         }
 
-        if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+        if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
         {
             if (i > 1)
             {
@@ -1679,7 +1679,7 @@ void C_Map::UpdateWaypoint(Flight flt)
 
                 while (nub)
                 {
-                    if (nub->ID & 0x40000000)
+                    if (nub->ID bitand 0x40000000)
                     {
                         nub->Icon->SetText(0, TXT_SPACE);
                         nub->Icon->SetText(1, TXT_SPACE);
@@ -1849,7 +1849,7 @@ void C_Map::RemapTeamColors(long team)
 
 void C_Map::FitFlightPlan()
 {
-    // Based on CurWP_'s x & y (ie: CurWPArea_)
+    // Based on CurWP_'s x bitand y (ie: CurWPArea_)
     long cx, cy;
     long w, h;
 
@@ -1890,7 +1890,7 @@ void C_Map::ShowObjectiveType(long mask)
         if (Team_[i].Objectives)
         {
             for (j = 0; j < _MAP_NUM_OBJ_TYPES_; j++)
-                if ( not Team_[i].Objectives->Flags[j] and (ObjectiveMask_ & (1 << j)))
+                if ( not Team_[i].Objectives->Flags[j] and (ObjectiveMask_ bitand (1 << j)))
                 {
                     Team_[i].Objectives->Flags[j] = 1;
                     Team_[i].Objectives->Type[j]->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -1915,7 +1915,7 @@ void C_Map::HideObjectiveType(long mask)
         if (Team_[i].Objectives)
         {
             for (j = 0; j < _MAP_NUM_OBJ_TYPES_; j++)
-                if (Team_[i].Objectives->Flags[j] and (offflag & (1 << j)))
+                if (Team_[i].Objectives->Flags[j] and (offflag bitand (1 << j)))
                 {
                     Team_[i].Objectives->Type[j]->Refresh();
                     Team_[i].Objectives->Flags[j] = 0;
@@ -1941,7 +1941,7 @@ void C_Map::ShowUnitType(long mask)
         {
             for (j = 0; j < _MAP_NUM_GND_TYPES_; j++)
             {
-                if ( not Team_[i].Units->Flags[j] and (UnitMask_ & (1 << j)))
+                if ( not Team_[i].Units->Flags[j] and (UnitMask_ bitand (1 << j)))
                 {
                     Team_[i].Units->Flags[j] = 1;
 
@@ -1975,7 +1975,7 @@ void C_Map::HideUnitType(long mask)
         {
             for (j = 0; j < _MAP_NUM_GND_TYPES_; j++)
             {
-                if (Team_[i].Units->Flags[j] and (offflag & (1 << j)))
+                if (Team_[i].Units->Flags[j] and (offflag bitand (1 << j)))
                 {
                     Team_[i].Units->Flags[j] = 0;
 
@@ -2055,7 +2055,7 @@ void C_Map::ShowAirUnitType(long mask)
         if (Team_[i].AirUnits)
         {
             for (j = 0; j < _MAP_NUM_AIR_TYPES_; j++)
-                if ( not Team_[i].AirUnits->Flags[j] and (AirUnitMask_ & (1 << j)))
+                if ( not Team_[i].AirUnits->Flags[j] and (AirUnitMask_ bitand (1 << j)))
                 {
                     Team_[i].AirUnits->Flags[j] = 1;
                     Team_[i].AirUnits->Type[j]->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -2080,7 +2080,7 @@ void C_Map::HideAirUnitType(long mask)
         if (Team_[i].AirUnits)
         {
             for (j = 0; j < _MAP_NUM_AIR_TYPES_; j++)
-                if (Team_[i].AirUnits->Flags[j] and (offflag & (1 << j)))
+                if (Team_[i].AirUnits->Flags[j] and (offflag bitand (1 << j)))
                 {
                     Team_[i].AirUnits->Type[j]->Refresh();
                     Team_[i].AirUnits->Flags[j] = 0;
@@ -2125,7 +2125,7 @@ void C_Map::ShowNavalUnitType(long mask)
         if (Team_[i].NavalUnits)
         {
             for (j = 0; j < _MAP_NUM_NAV_TYPES_; j++)
-                if ( not Team_[i].NavalUnits->Flags[j] and (NavalUnitMask_ & (1 << j)))
+                if ( not Team_[i].NavalUnits->Flags[j] and (NavalUnitMask_ bitand (1 << j)))
                 {
                     Team_[i].NavalUnits->Flags[j] = 1;
                     Team_[i].NavalUnits->Type[j]->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -2150,7 +2150,7 @@ void C_Map::HideNavalUnitType(long mask)
         if (Team_[i].NavalUnits)
         {
             for (j = 0; j < _MAP_NUM_NAV_TYPES_; j++)
-                if (Team_[i].NavalUnits->Flags[j] and (offflag & (1 << j)))
+                if (Team_[i].NavalUnits->Flags[j] and (offflag bitand (1 << j)))
                 {
                     Team_[i].NavalUnits->Type[j]->Refresh();
                     Team_[i].NavalUnits->Flags[j] = 0;
@@ -2178,7 +2178,7 @@ void C_Map::ShowThreatType(long mask)
         if (Team_[i].Threats)
         {
             for (j = 0; j < _MAP_NUM_THREAT_TYPES_; j++)
-                if ( not Team_[i].Threats->Flags[j] and (ThreatMask_ & (1 << j)))
+                if ( not Team_[i].Threats->Flags[j] and (ThreatMask_ bitand (1 << j)))
                 {
                     Team_[i].Threats->Flags[j] = 1;
                     Team_[i].Threats->Type[j]->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -2186,7 +2186,7 @@ void C_Map::ShowThreatType(long mask)
                 }
         }
 
-    if (ThreatMask_ & _THR_SAM_LOW)
+    if (ThreatMask_ bitand _THR_SAM_LOW)
     {
         Map_->PreparePalette(0x0000ff);
         Map_->ClearOverlay();
@@ -2202,7 +2202,7 @@ void C_Map::ShowThreatType(long mask)
 
         Map_->UseOverlay();
     }
-    else if (ThreatMask_ & _THR_SAM_HIGH)
+    else if (ThreatMask_ bitand _THR_SAM_HIGH)
     {
         Map_->PreparePalette(0x00ffff);
         Map_->ClearOverlay();
@@ -2218,7 +2218,7 @@ void C_Map::ShowThreatType(long mask)
 
         Map_->UseOverlay();
     }
-    else if (ThreatMask_ & _THR_RADAR_LOW)
+    else if (ThreatMask_ bitand _THR_RADAR_LOW)
     {
         Map_->PreparePalette(0xffff00);
         Map_->ClearOverlay();
@@ -2234,7 +2234,7 @@ void C_Map::ShowThreatType(long mask)
 
         Map_->UseOverlay();
     }
-    else if (ThreatMask_ & _THR_RADAR_HIGH)
+    else if (ThreatMask_ bitand _THR_RADAR_HIGH)
     {
         Map_->PreparePalette(0xff0000);
         Map_->ClearOverlay();
@@ -2279,7 +2279,7 @@ void C_Map::HideThreatType(long mask)
         if (Team_[i].Threats)
         {
             for (j = 0; j < _MAP_NUM_THREAT_TYPES_; j++)
-                if (Team_[i].Threats->Flags[j] and (offflag & (1 << j)))
+                if (Team_[i].Threats->Flags[j] and (offflag bitand (1 << j)))
                 {
                     Team_[i].Threats->Type[j]->Refresh();
                     Team_[i].Threats->Flags[j] = 0;
@@ -2632,7 +2632,7 @@ void C_Map::AddListsToWindow()
                 Team_[i].Threats->Type[j] = new C_Threat;
                 Team_[i].Threats->Type[j]->Setup(0, 0);
 
-                if (ThreatMask_ & (1 << j))
+                if (ThreatMask_ bitand (1 << j))
                 {
                     Team_[i].Threats->Flags[j] = 1;
                     Team_[i].Threats->Type[j]->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -2669,7 +2669,7 @@ void C_Map::AddListsToWindow()
                 Team_[i].Objectives->Type[j]->SetCursorID(CRSR_F16_RM);
                 Team_[i].Objectives->Type[j]->SetFlagBitOn(C_BIT_NOLABEL);
 
-                if (ObjectiveMask_ & (1 << j))
+                if (ObjectiveMask_ bitand (1 << j))
                 {
                     Team_[i].Objectives->Flags[j] = 1;
                     Team_[i].Objectives->Type[j]->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -2706,12 +2706,12 @@ void C_Map::AddListsToWindow()
                 Team_[i].NavalUnits->Type[j]->SetCursorID(CRSR_F16_RM);
                 Team_[i].NavalUnits->Type[j]->SetFlagBitOn(C_BIT_NOLABEL);
 
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                     Team_[i].NavalUnits->Type[j]->SetFlagBitOn(C_BIT_DRAGABLE);
                 else
                     Team_[i].NavalUnits->Type[j]->SetFlagBitOff(C_BIT_DRAGABLE);
 
-                if (NavalUnitMask_ & (1 << j))
+                if (NavalUnitMask_ bitand (1 << j))
                 {
                     Team_[i].NavalUnits->Flags[j] = 1;
                     Team_[i].NavalUnits->Type[j]->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -2754,12 +2754,12 @@ void C_Map::AddListsToWindow()
                     Team_[i].Units->Type[j]->Levels[k]->SetFlagBitOn(C_BIT_NOLABEL);
                     Team_[i].Units->Type[j]->Levels[k]->SetCallback(UnitCB);
 
-                    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                         Team_[i].Units->Type[j]->Levels[k]->SetFlagBitOn(C_BIT_DRAGABLE);
                     else
                         Team_[i].Units->Type[j]->Levels[k]->SetFlagBitOff(C_BIT_DRAGABLE);
 
-                    if (UnitMask_ & (1 << j))
+                    if (UnitMask_ bitand (1 << j))
                     {
                         Team_[i].Units->Type[j]->Flags[k] = 1;
                         Team_[i].Units->Type[j]->Levels[k]->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -2843,7 +2843,7 @@ void C_Map::AddListsToWindow()
 
                 Team_[i].AirUnits->Type[j]->SetFlagBitOn(C_BIT_NOLABEL);
 
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                     Team_[i].AirUnits->Type[j]->SetFlagBitOn(C_BIT_DRAGABLE);
                 else
                     Team_[i].AirUnits->Type[j]->SetFlagBitOff(C_BIT_DRAGABLE);
@@ -2852,7 +2852,7 @@ void C_Map::AddListsToWindow()
                 Team_[i].AirUnits->Type[j]->SetMenu(AIRUNIT_MENU);
                 Team_[i].AirUnits->Type[j]->SetCallback(UnitCB);
 
-                if (AirUnitMask_ & (1 << j))
+                if (AirUnitMask_ bitand (1 << j))
                 {
                     Team_[i].AirUnits->Flags[j] = 1;
                     Team_[i].AirUnits->Type[j]->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -3005,7 +3005,7 @@ void C_Map::DrawMap()
     short i, j, k;
     short x, y;
 
-    if (flags_ & (I_NEED_TO_DRAW | I_NEED_TO_DRAW_MAP))
+    if (flags_ bitand (I_NEED_TO_DRAW | I_NEED_TO_DRAW_MAP))
     {
         // 2002-04-16 MN update the bullseye location when it changed
         TheCampaign.GetBullseyeLocation(&x, &y);
@@ -3013,7 +3013,7 @@ void C_Map::DrawMap()
         if (x not_eq BullsEyeX_ or y not_eq BullsEyeY_)
             SetBullsEye(x * FEET_PER_KM, (TheCampaign.TheaterSizeY - y) * FEET_PER_KM);
 
-        if (flags_ & I_NEED_TO_DRAW_MAP)
+        if (flags_ bitand I_NEED_TO_DRAW_MAP)
         {
 
             if (Map_)
@@ -3028,7 +3028,7 @@ void C_Map::DrawMap()
             BullsEye_->Refresh();
 
         for (i = 0; i < _MAX_TEAMS_; i++)
-            if ((TeamFlags_[i] & _MAP_OBJECTIVES_) and Team_[i].Objectives)
+            if ((TeamFlags_[i] bitand _MAP_OBJECTIVES_) and Team_[i].Objectives)
             {
                 for (j = 0; j < _MAP_NUM_OBJ_TYPES_; j++)
                 {
@@ -3038,7 +3038,7 @@ void C_Map::DrawMap()
             }
 
         for (i = 0; i < _MAX_TEAMS_; i++)
-            if ((TeamFlags_[i] & _MAP_NAVAL_UNITS_) and Team_[i].NavalUnits)
+            if ((TeamFlags_[i] bitand _MAP_NAVAL_UNITS_) and Team_[i].NavalUnits)
             {
                 for (j = 0; j < _MAP_NUM_NAV_TYPES_; j++)
                 {
@@ -3048,7 +3048,7 @@ void C_Map::DrawMap()
             }
 
         for (i = 0; i < _MAX_TEAMS_; i++)
-            if ((TeamFlags_[i] & _MAP_UNITS_) and Team_[i].Units)
+            if ((TeamFlags_[i] bitand _MAP_UNITS_) and Team_[i].Units)
             {
                 for (j = 0; j < _MAP_NUM_GND_TYPES_; j++)
                 {
@@ -3064,11 +3064,11 @@ void C_Map::DrawMap()
             }
 
         for (i = 0; i < _MAX_TEAMS_; i++)
-            if ((TeamFlags_[i] & _MAP_WAYPOINTS_) and Team_[i].Waypoints)
+            if ((TeamFlags_[i] bitand _MAP_WAYPOINTS_) and Team_[i].Waypoints)
                 Team_[i].Waypoints->Refresh();
 
         for (i = 0; i < _MAX_TEAMS_; i++)
-            if ((TeamFlags_[i] & _MAP_AIR_UNITS_) and Team_[i].AirUnits)
+            if ((TeamFlags_[i] bitand _MAP_AIR_UNITS_) and Team_[i].AirUnits)
             {
                 for (j = 0; j < _MAP_NUM_AIR_TYPES_; j++)
                 {

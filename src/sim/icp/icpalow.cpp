@@ -45,7 +45,7 @@ void ICPClass::ExecALOWMode(void)
         long alt;
         int alt1, alt2;
 
-        // if(mUpdateFlags & ALOW_UPDATE) {
+        // if(mUpdateFlags bitand ALOW_UPDATE) {
 
         mUpdateFlags and_eq !ALOW_UPDATE;
 

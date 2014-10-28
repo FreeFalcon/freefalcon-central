@@ -74,16 +74,16 @@ void UI_Refresher::Setup(CampEntity entity, GlobalPositioningSystem *own, long a
     SetType(entity->GetType());
     SetCampID(entity->GetCampID());
 
-    if (allow & UR_MISSION)
+    if (allow bitand UR_MISSION)
         AddMission(entity);
 
-    if (allow & UR_MAP)
+    if (allow bitand UR_MAP)
         AddMapItem(entity);
 
-    if (allow & UR_ATO)
+    if (allow bitand UR_ATO)
         AddATOItem(entity);
 
-    if (allow & UR_OOB)
+    if (allow bitand UR_OOB)
         AddOOBItem(entity);
 
     Allowed_ = static_cast<short>(allow);
@@ -97,10 +97,10 @@ void UI_Refresher::Setup(Division div, GlobalPositioningSystem *own, long allow)
     SetType(GPS_DIVISION);
     SetSide(static_cast<uchar>(div->owner));
 
-    if (allow & UR_MAP)
+    if (allow bitand UR_MAP)
         AddMapItem(div);
 
-    if (allow & UR_OOB)
+    if (allow bitand UR_OOB)
         AddOOBItem(div);
 
     Allowed_ = static_cast<short>(allow);
@@ -123,26 +123,26 @@ void UI_Refresher::Update(CampEntity entity, long allow)
 
     if (Mission_)
         UpdateMission(entity);
-    else if ((allow & UR_MISSION) and !(Allowed_ & UR_MISSION))
+    else if ((allow bitand UR_MISSION) and !(Allowed_ bitand UR_MISSION))
         AddMission(entity);
     else if (entity->IsFlight())
         AddMission(entity);
 
     if (MapItem_)
         UpdateMapItem(entity);
-    else if ((allow & UR_MAP) and !(Allowed_ & UR_MAP))
+    else if ((allow bitand UR_MAP) and !(Allowed_ bitand UR_MAP))
         AddMapItem(entity);
     else if (entity->IsFlight())
         AddMapItem(entity);
 
-    if (Allowed_ & UR_ATO)
+    if (Allowed_ bitand UR_ATO)
         UpdateATOItem(entity);
-    else if (allow & UR_ATO)
+    else if (allow bitand UR_ATO)
         AddATOItem(entity);
 
     if (OOB_)
         UpdateOOBItem(entity);
-    else if ((allow & UR_OOB) and !(Allowed_ & UR_OOB))
+    else if ((allow bitand UR_OOB) and !(Allowed_ bitand UR_OOB))
         AddOOBItem(entity);
 
     Allowed_  or_eq  allow;
@@ -152,12 +152,12 @@ void UI_Refresher::Update(Division div, long allow)
 {
     if (MapItem_)
         UpdateMapItem(div);
-    else if ((allow & UR_MAP) and !(Allowed_ & UR_MAP))
+    else if ((allow bitand UR_MAP) and !(Allowed_ bitand UR_MAP))
         AddMapItem(div);
 
     if (OOB_)
         UpdateOOBItem(div);
-    else if ((allow & UR_OOB) and !(Allowed_ & UR_OOB))
+    else if ((allow bitand UR_OOB) and !(Allowed_ bitand UR_OOB))
         AddOOBItem(div);
 
     Allowed_  or_eq  allow;
@@ -294,7 +294,7 @@ void UI_Refresher::AddMapItem(CampEntity entity)
 
     if (MapItem_ and entity->IsUnit())
     {
-        if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+        if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
         {
             MapItem_->Flags  or_eq  C_BIT_DRAGABLE;
         }
@@ -358,7 +358,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
                 // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified
                 //and not editing a TE, change the IconIndex of the unit to ICON_UKN
                 //and its label to 'Bandit'
-                if (g_nUnidentifiedInUI and ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT) and MapItem_ and entity->GetTeam() not_eq Owner_->TeamNo_))
+                if (g_nUnidentifiedInUI and ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and MapItem_ and entity->GetTeam() not_eq Owner_->TeamNo_))
                 {
                     if (entity->GetIdentified(static_cast<uchar>(Owner_->TeamNo_)))
                     {
@@ -403,7 +403,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
                     if (gGps->GetTeamNo() == entity->GetTeam())
                         GetCallsign(flt, name);
                     // 2002-02-24 ADDED BY S.G. Don't give AWACS more info than it can get...
-                    else if (g_nUnidentifiedInUI and ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT) and MapItem_ and entity->IsFlight() and entity->GetTeam() not_eq Owner_->TeamNo_ and !entity->GetIdentified(static_cast<uchar>(Owner_->TeamNo_))))
+                    else if (g_nUnidentifiedInUI and ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and MapItem_ and entity->IsFlight() and entity->GetTeam() not_eq Owner_->TeamNo_ and !entity->GetIdentified(static_cast<uchar>(Owner_->TeamNo_))))
                         strcpy(name, "Bandit");
                     else
                     {
@@ -441,7 +441,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
                 }
 
                 // JPO end
-                if ( not (MapItem_->Flags & C_BIT_ENABLED))
+                if ( not (MapItem_->Flags bitand C_BIT_ENABLED))
                 {
                     wp = ((Flight)entity)->GetFirstUnitWP();
 

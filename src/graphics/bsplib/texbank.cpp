@@ -587,7 +587,7 @@ void TextureBankClass::ReadImageDDS(DWORD id)
     }
 
 
-    ShiAssert(ddsd.dwFlags & DDSD_LINEARSIZE)
+    ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
     switch (ddsd.ddpfPixelFormat.dwFourCC)
     {
@@ -700,7 +700,7 @@ void TextureBankClass::ReadImageDDSN(DWORD id)
         }
     }
 
-    ShiAssert(ddsd.dwFlags & DDSD_LINEARSIZE)
+    ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
     switch (ddsd.ddpfPixelFormat.dwFourCC)
     {

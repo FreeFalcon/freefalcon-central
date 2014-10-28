@@ -111,7 +111,7 @@ int MissionRequestClass::RequestMission(void)
     if ( not mission or priority < 0 or (vs and !GetRoE(who, vs, roe_check)))
         return -1;
 
-    if ((TeamInfo[who]) and (TeamInfo[who]->atm) and (TeamInfo[who]->flags & TEAM_ACTIVE))
+    if ((TeamInfo[who]) and (TeamInfo[who]->atm) and (TeamInfo[who]->flags bitand TEAM_ACTIVE))
     {
         VuTargetEntity *target = (VuTargetEntity*) vuDatabase->Find(TeamInfo[who]->atm->OwnerId());
         FalconMissionRequestMessage *message =
@@ -261,7 +261,7 @@ void SetupAltitudes(Flight flight, MissionRequestClass *mis)
     sCruiseSpeed = flight->GetCruiseSpeed();
     sMissionSpeed = flight->GetCombatSpeed();
 
-    if (mis->speed and MissionData[mis->mission].flags & AMIS_MATCHSPEED)
+    if (mis->speed and MissionData[mis->mission].flags bitand AMIS_MATCHSPEED)
         sMissionSpeed = mis->speed;
 
     // Pick a profile (This could be done as a result of searching for an ingress path)
@@ -461,28 +461,28 @@ void FinalizeWayPoint(WayPoint cw, int reset = FALSE)
         sMissionMode = MMODE_ENROUTE;
 
     // Check if at assembly point (will be Ingress)
-    if (cw->GetWPFlags() & WPF_ASSEMBLE and sMissionMode < MMODE_INGRESS)
+    if (cw->GetWPFlags() bitand WPF_ASSEMBLE and sMissionMode < MMODE_INGRESS)
     {
         sMissionMode = MMODE_AT_ASSEMBLY;
         nextmode = MMODE_INGRESS;
     }
 
     // Check if at break point
-    if (cw->GetWPFlags() & WPF_BREAKPOINT)
+    if (cw->GetWPFlags() bitand WPF_BREAKPOINT)
         sMissionMode = MMODE_AT_BREAKPOINT;
 
     // Check if in target area (Airlift/Aircav missions don't want takeoff waypoints to be in target area)
-    if (sMissionMode > MMODE_TAKEOFF and (cw->GetWPFlags() & WPF_IP or cw->GetWPFlags() & WPF_TARGET or cw->GetWPFlags() & WPF_CP))
+    if (sMissionMode > MMODE_TAKEOFF and (cw->GetWPFlags() bitand WPF_IP or cw->GetWPFlags() bitand WPF_TARGET or cw->GetWPFlags() bitand WPF_CP))
         sMissionMode = MMODE_IN_TARGET_AREA;
     // Check if at turn point
-    else if (cw->GetWPFlags() & WPF_TURNPOINT)
+    else if (cw->GetWPFlags() bitand WPF_TURNPOINT)
         sMissionMode = MMODE_AT_TURNPOINT;
     // Check for Egress
     else if (sMissionMode >= MMODE_IN_TARGET_AREA and sMissionMode < MMODE_EGRESS)
         sMissionMode = MMODE_EGRESS;
 
     // Check for Post assembly (will be RTB)
-    if ((cw->GetWPFlags() & WPF_ASSEMBLE) and sMissionMode >= MMODE_EGRESS and sMissionMode < MMODE_RETURN_TO_BASE)
+    if ((cw->GetWPFlags() bitand WPF_ASSEMBLE) and sMissionMode >= MMODE_EGRESS and sMissionMode < MMODE_RETURN_TO_BASE)
     {
         sMissionMode = MMODE_AT_POSTASSEMBLY;
         nextmode = MMODE_RETURN_TO_BASE;
@@ -639,7 +639,7 @@ int BuildPathToTarget(Flight u, MissionRequestClass *mis, VU_ID airbaseID)
     FinalizeWayPoint(cw, TRUE);
     SetCurrentAltitude();
 
-    if ( not (MissionData[mis->mission].flags & AMIS_TARGET_ONLY))
+    if ( not (MissionData[mis->mission].flags bitand AMIS_TARGET_ONLY))
     {
         if (mis->mission == AMIS_AIRCAV)
         {
@@ -725,7 +725,7 @@ int BuildPathToTarget(Flight u, MissionRequestClass *mis, VU_ID airbaseID)
             break;
     }
 
-    if ( not (MissionData[mis->mission].flags & AMIS_TARGET_ONLY))
+    if ( not (MissionData[mis->mission].flags bitand AMIS_TARGET_ONLY))
     {
         // Egress Route
         pack->GetUnitAssemblyPoint(1, &ax, &ay);
@@ -801,13 +801,13 @@ void BuildDivertPath(Flight flight, MissionRequestClass *mis)
     else
     {
         // Otherwise only set up the override waypoint
-        if (MissionData[mis->mission].flags & AMIS_ASSIGNED_TAR)
+        if (MissionData[mis->mission].flags bitand AMIS_ASSIGNED_TAR)
         {
             // Just assign us a target and an override waypoint
             flight->SetAssignedTarget(mis->targetID);
             FinalizeWayPoint(tw, TRUE);
 
-            if (mis->flags & AMIS_HELP_REQUEST)
+            if (mis->flags bitand AMIS_HELP_REQUEST)
                 flight->SetOverrideWP(tw, true);
             else
                 flight->SetOverrideWP(tw);
@@ -860,7 +860,7 @@ WayPoint SetupIngressPoints(WayPoint cw, Flight u, MissionRequestClass *mis)
     FinalizeWayPoint(aw);
     pack->SetUnitAssemblyPoint(0, iax, iay);
 
-    if ( not (MissionData[mis->mission].flags & AMIS_NO_BREAKPT))
+    if ( not (MissionData[mis->mission].flags bitand AMIS_NO_BREAKPT))
     {
         // Find a good breakpoint
         nw = AddDistanceWaypoint(aw, tw, BREAKPOINT_DISTANCE * 2);
@@ -895,7 +895,7 @@ WayPoint AddIngressPath(WayPoint cw, Flight u, MissionRequestClass *mis)
     nw = CloneWPList(((Package)pack)->GetIngress());
     cw->InsertWP(nw);
 
-    if (MissionData[mis->mission].flags & AMIS_DONT_COORD)
+    if (MissionData[mis->mission].flags bitand AMIS_DONT_COORD)
     {
         // Reset ingress times to 0
         WayPoint temp = nw;
@@ -1204,7 +1204,7 @@ WayPoint AddEgressPath(WayPoint cw, Flight u, MissionRequestClass *mis)
     pack = (Package)u->GetUnitParent();
     nw = CloneWPList(pack->GetEgress());
 
-    if (MissionData[mis->mission].flags & AMIS_DONT_COORD)
+    if (MissionData[mis->mission].flags bitand AMIS_DONT_COORD)
     {
         // Don't tie egress times to package
         WayPoint temp = nw;
@@ -1316,7 +1316,7 @@ void AddInformationWPs(Flight flight, MissionRequestClass *mis)
 
     while (lw and lw->GetNextWP())
     {
-        if ( not x and lw->GetWPFlags() & WPF_ASSEMBLE)
+        if ( not x and lw->GetWPFlags() bitand WPF_ASSEMBLE)
         {
             lw->GetWPLocation(&x, &y);
             time = lw->GetWPArrivalTime();
@@ -1370,7 +1370,7 @@ void ClearDivertWayPoints(Flight flight)
 
     while (w)
     {
-        if (w->GetWPFlags() & WPF_DIVERT)
+        if (w->GetWPFlags() bitand WPF_DIVERT)
         {
             nw = w;
             w = w->GetPrevWP();
@@ -1407,7 +1407,7 @@ int AddTankerWayPoint(Flight u, int refuel)
 
     // Okay, we will now - hopefully at least added one regular tanker waypoint,
     // remove a possible tanker information waypoint, which is not
-    // needed anymore, and get takeoff & land waypoint for excess elimination
+    // needed anymore, and get takeoff bitand land waypoint for excess elimination
 
     lw = u->wp_list;
 
@@ -1416,7 +1416,7 @@ int AddTankerWayPoint(Flight u, int refuel)
         bw = lw;
 
         // only delete tanker information WP, not regular refueling WP
-        if (bw->GetWPAction() == WP_REFUEL and (bw->GetWPFlags() & WPF_REFUEL_INFORMATION))
+        if (bw->GetWPAction() == WP_REFUEL and (bw->GetWPFlags() bitand WPF_REFUEL_INFORMATION))
             bw->DeleteWP();
 
         if (lw->GetWPAction() == WP_TAKEOFF)
@@ -1676,7 +1676,7 @@ long SetWPTimes(Flight u, MissionRequestClass *mis)
         // Fixed ingrss time
         tw = fw;
 
-        while (tw and !(tw->GetWPFlags() & WPF_IN_PACKAGE))
+        while (tw and !(tw->GetWPFlags() bitand WPF_IN_PACKAGE))
             tw = tw->GetNextWP();
 
         if (tw)
@@ -1688,19 +1688,19 @@ long SetWPTimes(Flight u, MissionRequestClass *mis)
         if (w->GetWPArrivalTime())
             w->SetWPTimes(w->GetWPArrivalTime() + offset);
 
-        if (w->GetWPFlags() & WPF_TARGET and !tw)
+        if (w->GetWPFlags() bitand WPF_TARGET and !tw)
         {
             tw = w;
             w->SetWPTimes(mis->tot);
         }
 
-        if (w->GetWPFlags() & WPF_TURNPOINT and !tw)
+        if (w->GetWPFlags() bitand WPF_TURNPOINT and !tw)
             tw = w;
 
         // Lock time in some cases
         w->UnSetWPFlag(WPF_SPEED_LOCKED);
 
-        if (w->GetWPAction() == WP_TAKEOFF or (w->GetWPFlags() & WPF_TARGET) or (w->GetWPFlags() & WPF_ASSEMBLE))
+        if (w->GetWPAction() == WP_TAKEOFF or (w->GetWPFlags() bitand WPF_TARGET) or (w->GetWPFlags() bitand WPF_ASSEMBLE))
             w->SetWPFlag(WPF_TIME_LOCKED);
 
         w = w->GetNextWP();
@@ -1818,7 +1818,7 @@ long SetWPTimes(Flight u, MissionRequestClass *mis)
     // Calculate length and check for impossible takeoff times
     // 2001-10-31 MODIFIED by M.N. Added new flag check for TE Missions.
     // In TE Planner, to < CurrentTime is always the case, thus we get a wrong mission length
-    if (mis->flags & REQF_TE_MISSION)
+    if (mis->flags bitand REQF_TE_MISSION)
         return land - to;
 
     if (to < TheCampaign.CurrentTime)
@@ -1878,7 +1878,7 @@ long SetWPTimesTanker(Flight u, MissionRequestClass *mis, bool type, CampaignTim
         // Fixed ingrss time
         tw = fw;
 
-        while (tw and !(tw->GetWPFlags() & WPF_IN_PACKAGE))
+        while (tw and !(tw->GetWPFlags() bitand WPF_IN_PACKAGE))
             tw = tw->GetNextWP();
 
         if (tw)
@@ -1887,19 +1887,19 @@ long SetWPTimesTanker(Flight u, MissionRequestClass *mis, bool type, CampaignTim
 
     while (w)
     {
-        if (w->GetWPFlags() & WPF_TARGET and !tw)
+        if (w->GetWPFlags() bitand WPF_TARGET and !tw)
         {
             tw = w;
             w->SetWPTimes(mis->tot);
         }
 
-        if (w->GetWPFlags() & WPF_TURNPOINT and !tw)
+        if (w->GetWPFlags() bitand WPF_TURNPOINT and !tw)
             tw = w;
 
         // Lock time in some cases - only lock target waypoint if we have to refuel somewhere..
         w->UnSetWPFlag(WPF_SPEED_LOCKED);
 
-        if (/*w->GetWPAction() == WP_TAKEOFF ||*/ (w->GetWPFlags() & WPF_TARGET) /*|| (w->GetWPFlags() & WPF_ASSEMBLE)*/)
+        if (/*w->GetWPAction() == WP_TAKEOFF ||*/ (w->GetWPFlags() bitand WPF_TARGET) /*|| (w->GetWPFlags() bitand WPF_ASSEMBLE)*/)
             w->SetWPFlag(WPF_TIME_LOCKED);
 
         w = w->GetNextWP();
@@ -1942,7 +1942,7 @@ long SetWPTimesTanker(Flight u, MissionRequestClass *mis, bool type, CampaignTim
             y = ny;
         }
 
-        if (mis->flags & REQF_TE_MISSION)
+        if (mis->flags bitand REQF_TE_MISSION)
             return mission_time - time;
 
         if (mission_time < TheCampaign.CurrentTime)
@@ -1979,7 +1979,7 @@ long SetWPTimesTanker(Flight u, MissionRequestClass *mis, bool type, CampaignTim
         }
     }
 
-    if (mis->flags & REQF_TE_MISSION)
+    if (mis->flags bitand REQF_TE_MISSION)
         return time - mission_time;
 
     if (mission_time < TheCampaign.CurrentTime)
@@ -2030,7 +2030,7 @@ int ScoreThreatsOnWPLeg(WayPoint w1, WayPoint w2, Team who, int type)
     d = Distance(x1, y1, x2, y2);
 
     // al = GetAltitudeLevel(sCurrentAlt);
-    if (w2->GetWPFlags() & WPF_HOLDCURRENT)
+    if (w2->GetWPFlags() bitand WPF_HOLDCURRENT)
         al = GetAltitudeLevel(w1->GetWPAltitude());
     else
         al = GetAltitudeLevel(w2->GetWPAltitude());
@@ -2280,7 +2280,7 @@ WayPoint EliminateExcessWaypoints(WayPoint w1, WayPoint w2, int who)
     while (w and mw and nw and w not_eq w2 and mw not_eq w2)
     {
         // Check to see if this is a filler way point
-        if (mw->GetWPAction() == WP_NOTHING and !(mw->GetWPFlags() & WPF_CRITICAL_MASK))
+        if (mw->GetWPAction() == WP_NOTHING and !(mw->GetWPFlags() bitand WPF_CRITICAL_MASK))
         {
             // Basically, I want to trim this if:
             // a) it's co-linear with next waypoint or greater than our max angle
@@ -2625,7 +2625,7 @@ int TargetThreats(Team team, int priority, F4PFList list, MoveType mt, CampaignT
             }
         }
 
-        if (do_request and (target_flags & AMIS_ADDOCASTRIKE))
+        if (do_request and (target_flags bitand AMIS_ADDOCASTRIKE))
         {
             // Plan a type of oca Strike mission
             e->GetLocation(&x, &y);
@@ -2696,7 +2696,7 @@ int TargetThreats (Team team, int priority, F4PFList list, MoveType mt, Campaign
  }
  }
  ThreatSearch[e->GetCampID()] = 2;
- if (oca and (target_flags & AMIS_ADDOCASTRIKE))
+ if (oca and (target_flags bitand AMIS_ADDOCASTRIKE))
  {
  // Plan a type of oca Strike mission
  e->GetLocation(&x,&y);

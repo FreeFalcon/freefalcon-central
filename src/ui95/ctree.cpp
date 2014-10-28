@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -143,7 +143,7 @@ void C_TreeList::DeleteBranch(TREELIST *top)
 
         if (last->Item_)
         {
-            if (last->Item_->GetFlags() & C_BIT_REMOVE)
+            if (last->Item_->GetFlags() bitand C_BIT_REMOVE)
             {
                 if (Parent_)
                     Parent_->RemovingControl(last->Item_);
@@ -282,7 +282,7 @@ void C_TreeList::DeleteItem(TREELIST *item)
 
     if (item->Item_)
     {
-        if (item->Item_->GetFlags() & C_BIT_REMOVE)
+        if (item->Item_->GetFlags() bitand C_BIT_REMOVE)
         {
             item->Item_->Cleanup();
             delete item->Item_;
@@ -690,7 +690,7 @@ void C_TreeList::SetItemState(long ItemID, short newstate)
     item = Find(ItemID);
 
     if (item)
-        item->state_ = newstate & 1;
+        item->state_ = newstate bitand 1;
 }
 
 void C_TreeList::ToggleItemState(long ItemID)
@@ -711,7 +711,7 @@ void C_TreeList::SetAllBranches(long Mask, short newstate, TREELIST *me)
     while (cur)
     {
         if (cur->Type_ == Mask)
-            cur->state_ = newstate & 1;
+            cur->state_ = newstate bitand 1;
 
         if (cur->Child)
             SetAllBranches(Mask, newstate, cur->Child);
@@ -807,7 +807,7 @@ BOOL C_TreeList::FindVisible(TREELIST *top)
 
     while (item)
     {
-        if ( not (item->Item_->GetFlags() & C_BIT_INVISIBLE))
+        if ( not (item->Item_->GetFlags() bitand C_BIT_INVISIBLE))
             return(TRUE);
 
         item = item->Next;
@@ -825,7 +825,7 @@ long C_TreeList::CalculateTreePositions(TREELIST *top, long offx, long offy)
 
     while (current)
     {
-        if (current->Item_ and !(current->Item_->GetFlags() & C_BIT_INVISIBLE))
+        if (current->Item_ and !(current->Item_->GetFlags() bitand C_BIT_INVISIBLE))
         {
             current->x_ = offx;
             current->y_ = offy;
@@ -860,7 +860,7 @@ TREELIST *C_TreeList::CheckBranch(TREELIST *me, long mx, long my)
 
     while (cur)
     {
-        if (cur->Item_ and !(cur->Item_->GetFlags() & C_BIT_INVISIBLE))
+        if (cur->Item_ and !(cur->Item_->GetFlags() bitand C_BIT_INVISIBLE))
         {
             if (cur->Child and ChildImage_[0] and FindVisible(cur->Child))
             {
@@ -918,7 +918,7 @@ long C_TreeList::CheckHotSpots(long relX, long relY)
 {
     TREELIST *cur;
 
-    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED))
+    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED))
         return(0);
 
     CheckFlag_ = C_BIT_NOTHING; // (0)
@@ -986,7 +986,7 @@ BOOL C_TreeList::CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii, un
 
 BOOL C_TreeList::Process(long cID, short HitType)
 {
-    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED))
+    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED))
         return(0);
 
     if (CheckFlag_ == C_BIT_NOTHING) return(FALSE); // CheckFlag is the segment of the button pressed (0=Nothing)
@@ -1052,7 +1052,7 @@ BOOL C_TreeList::Process(long cID, short HitType)
 
 void C_TreeList::Refresh()
 {
-    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1, GetY() + GetH() + 1, GetFlags(), GetClient());
@@ -1068,7 +1068,7 @@ void C_TreeList::DrawBranch(SCREEN *surface, TREELIST *branch, UI95_RECT *clipre
 
     while (current)
     {
-        if (current->Item_ and !(current->Item_->GetFlags() & C_BIT_INVISIBLE))
+        if (current->Item_ and !(current->Item_->GetFlags() bitand C_BIT_INVISIBLE))
         {
             if (Parent_->InsideClientHeight(current->y_ - current->Item_->GetH(), current->y_ + current->Item_->GetH(), GetClient()))
             {
@@ -1085,7 +1085,7 @@ void C_TreeList::DrawBranch(SCREEN *surface, TREELIST *branch, UI95_RECT *clipre
 
                             dest.left = current->x_ + 2;
 
-                            if (Flags_ & C_BIT_VCENTER)
+                            if (Flags_ bitand C_BIT_VCENTER)
                                 dest.top = current->y_ + current->Item_->GetH() / 2 - (src.bottom - src.top) / 2;
                             else
                                 dest.top = current->y_ + 2;
@@ -1095,7 +1095,7 @@ void C_TreeList::DrawBranch(SCREEN *surface, TREELIST *branch, UI95_RECT *clipre
 
                             doit = TRUE;
 
-                            if (GetFlags() & C_BIT_ABSOLUTE)
+                            if (GetFlags() bitand C_BIT_ABSOLUTE)
                             {
                                 if ( not Parent_->ClipToArea(&src, &dest, &Parent_->Area_))
                                     doit = FALSE;
@@ -1140,7 +1140,7 @@ void C_TreeList::DrawBranch(SCREEN *surface, TREELIST *branch, UI95_RECT *clipre
         current = current->Next;
     }
 
-    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
@@ -1149,7 +1149,7 @@ void C_TreeList::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if ( not Ready())
         return;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
     DrawBranch(surface, Root_, cliprect);
@@ -1164,7 +1164,7 @@ void C_TreeList::HighLite(SCREEN *surface, UI95_RECT *cliprect)
         clip.left = MouseFound_->x_ + 2;
         clip.top = MouseFound_->y_ + 2;
 
-        if ( not (Flags_ & C_BIT_ABSOLUTE))
+        if ( not (Flags_ bitand C_BIT_ABSOLUTE))
         {
             clip.left += Parent_->VX_[Client_];
             clip.top += Parent_->VY_[Client_];
@@ -1176,7 +1176,7 @@ void C_TreeList::HighLite(SCREEN *surface, UI95_RECT *cliprect)
         if ( not Parent_->ClipToArea(&tmp, &clip, cliprect))
             return;
 
-        if ( not (Flags_ & C_BIT_ABSOLUTE))
+        if ( not (Flags_ bitand C_BIT_ABSOLUTE))
             if ( not Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
                 return;
 
@@ -1186,7 +1186,7 @@ void C_TreeList::HighLite(SCREEN *surface, UI95_RECT *cliprect)
 
 BOOL C_TreeList::MouseOver(long relx, long rely, C_Base *me)
 {
-    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED))
+    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED))
         return(FALSE);
 
     CheckFlag_ = C_BIT_NOTHING; // (0)

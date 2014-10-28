@@ -792,7 +792,7 @@ void AdvancedWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
     }
 
     // DetachChild won't place the BSP in the correct position when it is detached
-    // from thePylon or theRack, because thePylon & theRack  are the children of
+    // from thePylon or theRack, because thePylon bitand theRack  are the children of
     // another object.
     // DetachChild doesn't work for (great)grandchildren.
 
@@ -927,7 +927,7 @@ int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int Weap
             RackObject *rackp = &RackObjectTable[rack];
             SetupPoints(rackp->maxoccupancy);
 
-            if ((wc->Flags & WEAP_ALWAYSRACK) == 0)
+            if ((wc->Flags bitand WEAP_ALWAYSRACK) == 0)
             {
                 int rackid = (short)(((int)
                                       Falcon4ClassTable[rackp->ctind].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType)

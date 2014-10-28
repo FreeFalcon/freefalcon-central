@@ -1127,7 +1127,7 @@ BOOL WINAPI EditRelations(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 if (TeamInfo[i]->HasSatelites())
                     PostMessage(GetDlgItem(hDlg, (IDC_TEAM_SAT1 - 1 + i)), BM_SETCHECK, 1, 0);
 
-                if (TeamInfo[i]->flags & TEAM_ACTIVE)
+                if (TeamInfo[i]->flags bitand TEAM_ACTIVE)
                     PostMessage(GetDlgItem(hDlg, (IDC_TEAM_ACT1 - 1 + i)), BM_SETCHECK, 1, 0);
             }
 
@@ -1203,7 +1203,7 @@ BOOL WINAPI EditRelations(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 case IDC_TEAM_ACT6:
                     j = i - IDC_TEAM_ACT1 + 1;
 
-                    if (TeamInfo[j]->flags & TEAM_ACTIVE)
+                    if (TeamInfo[j]->flags bitand TEAM_ACTIVE)
                         TeamInfo[j]->SetActive(0);
                     else
                         TeamInfo[j]->SetActive(1);
@@ -1396,7 +1396,7 @@ BOOL WINAPI EditTeams(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 else
                     PostMessage(GetDlgItem(hDlg, (IDC_SATS)), BM_SETCHECK, BST_UNCHECKED, 0);
 
-                if (tempTeam->flags & TEAM_ACTIVE)
+                if (tempTeam->flags bitand TEAM_ACTIVE)
                     PostMessage(GetDlgItem(hDlg, (IDC_ACTIVE)), BM_SETCHECK, 1, 0);
                 else
                     PostMessage(GetDlgItem(hDlg, (IDC_ACTIVE)), BM_SETCHECK, BST_UNCHECKED, 0);
@@ -1834,7 +1834,7 @@ BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                             case IDC_MAP_SAMS1:
                             case IDC_MAP_SAMS2:
                             case IDC_MAP_SAMS3:
-                                dat = (map_data[i] >> s) & 0x03;
+                                dat = (map_data[i] >> s) bitand 0x03;
 
                                 if ( not dat)
                                     SetPixel(DC, x, y, RGB_BLACK);
@@ -1850,7 +1850,7 @@ BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                             case IDC_MAP_OWNERSHIP:
                             default:
                                 hi = 4 * (i % 2);
-                                dat = (map_data[i / 2] >> hi) & 0xF;
+                                dat = (map_data[i / 2] >> hi) bitand 0xF;
 
                                 if (dat == 0xF)
                                     SetPixel(DC, x, y, RGB_GRAY);
@@ -2591,7 +2591,7 @@ BOOL CheckFile(HWND hWnd, OPENFILENAME file)
     WORD wStyle;
     CHAR buf[256];
 
-    if (file.Flags & OFN_FILEMUSTEXIST)
+    if (file.Flags bitand OFN_FILEMUSTEXIST)
         wStyle = OF_READWRITE;
     else
         wStyle = OF_READWRITE | OF_CREATE;

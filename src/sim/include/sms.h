@@ -147,7 +147,7 @@ public:
     };
     int  IsSet(int newFlag)
     {
-        return flags & newFlag;
+        return flags bitand newFlag;
     };
 
     float GetWeaponRangeFeet(int hardpoint);
@@ -304,11 +304,11 @@ public:
     void AGJettison(void);
     int  DidEmergencyJettison(void)
     {
-        return flags & EmergencyJettisonFlag;
+        return flags bitand EmergencyJettisonFlag;
     }
     int  DidJettisonedTank(void)
     {
-        return flags & TankJettisonFlag;    // 2002-02-20 ADDED BY S.G. Helper to know if our tanks where jettisoned
+        return flags bitand TankJettisonFlag;    // 2002-02-20 ADDED BY S.G. Helper to know if our tanks where jettisoned
     }
     void TankJettison(void);  // 2002-02-20 ADDED BY S.G. Will jettison the tanks (if empty) and set TankJettisonFlag
     int  WeaponStep(int symFlag = FALSE);
@@ -321,21 +321,21 @@ public:
     void SetUnlimitedGuns(int flag);
     int UnlimitedAmmo(void)
     {
-        return flags & UnlimitedAmmoFlag;
+        return flags bitand UnlimitedAmmoFlag;
     };
     void SetUnlimitedAmmo(int newFlag);
     int  HasHarm(void)
     {
-        return (flags & HTSOnBoard ? TRUE : FALSE);
+        return (flags bitand HTSOnBoard ? TRUE : FALSE);
     };
     int  HasLGB(void)
     {
-        return (flags & LGBOnBoard ? TRUE : FALSE);
+        return (flags bitand LGBOnBoard ? TRUE : FALSE);
     };
     int  HasTrainable(void);
     int  HasSPJammer(void)
     {
-        return (flags & SPJamOnBoard ? TRUE : FALSE);
+        return (flags bitand SPJamOnBoard ? TRUE : FALSE);
     };
     int  HasWeaponClass(WeaponClass classDesired);
     void FreeWeapons(void);
@@ -418,7 +418,7 @@ public:
     // AirGroundBomb Profile access
     void NextAGBProfile(void)
     {
-        curProfile = (curProfile + 1) & 1;
+        curProfile = (curProfile + 1) bitand 1;
     }
     void SetAGBProfile(int i)
     {

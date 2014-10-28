@@ -373,15 +373,15 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
     color = Color();
 
     // COBRA - RED - is forced alpha get it from the color else dafaults to 1
-    if (ForceAlpha) a = ((color & 0xFF000000) >> 24) / 255.0F;
+    if (ForceAlpha) a = ((color bitand 0xFF000000) >> 24) / 255.0F;
     else a = 1.0f;
 
     // Draw two tris to make a square;
     if (boxed not_eq 2)
     {
-        r = (color & 0xFF) / 255.0F;
-        g = ((color & 0xFF00) >> 8) / 255.0F;
-        b = ((color & 0xFF0000) >> 16) / 255.0F;
+        r = (color bitand 0xFF) / 255.0F;
+        g = ((color bitand 0xFF00) >> 8) / 255.0F;
+        b = ((color bitand 0xFF0000) >> 16) / 255.0F;
     }
     else
     {
@@ -433,7 +433,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
 
     if (ForceAlpha)
     {
-        // force the Hud mode & text gets color from the Vertices
+        // force the Hud mode bitand text gets color from the Vertices
         context.RestoreState(STATE_CHROMA_TEXTURE_GOURAUD2); // COBRA - RED - Alpha Option
         context.TexColorDiffuse();
     }

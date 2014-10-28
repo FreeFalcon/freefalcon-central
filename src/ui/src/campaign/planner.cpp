@@ -430,7 +430,7 @@ void CloseReconWindowCB(long, short hittype, C_Base *control)
     Flags1 = gMainHandler->GetWindowFlags(RECON_WIN);
     Flags2 = gMainHandler->GetWindowFlags(RECON_LIST_WIN);
 
-    if ( not (Flags1 & C_BIT_ENABLED) and !(Flags2 & C_BIT_ENABLED))
+    if ( not (Flags1 bitand C_BIT_ENABLED) and !(Flags2 bitand C_BIT_ENABLED))
     {
         if (gUIViewer)
         {

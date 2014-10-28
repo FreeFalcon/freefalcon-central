@@ -32,11 +32,11 @@ static int hash(Prof_Zone *z, Prof_Zone_Stack *s)
 static void insert_node(Prof_Zone_Stack *q)
 {
     int h = hash(q->zone, q->parent);
-    int x = h & zone_hash_mask;
+    int x = h bitand zone_hash_mask;
     int s = ((h << 4) + (h >> 4)) | 1;
 
     while (zone_hash[x] not_eq &Prof_dummy)
-        x = (x + s) & zone_hash_mask;
+        x = (x + s) bitand zone_hash_mask;
 
     zone_hash[x] = q;
 
@@ -100,7 +100,7 @@ static void Prof_init_lowlevel(void);
 Prof_extern_C Prof_Zone_Stack *Prof_StackAppend(Prof_Zone *zone)
 {
     int h = hash(zone, Prof_stack), s;
-    int x = h & zone_hash_mask;
+    int x = h bitand zone_hash_mask;
     Prof_Zone_Stack *z = zone_hash[x];
 
     if (z->parent == Prof_stack and z->zone == zone) return z;
@@ -114,7 +114,7 @@ Prof_extern_C Prof_Zone_Stack *Prof_StackAppend(Prof_Zone *zone)
 
         for (;;)
         {
-            x = (x + s) & zone_hash_mask;
+            x = (x + s) bitand zone_hash_mask;
             z = zone_hash[x];
 
             if (z->parent == Prof_stack and z->zone == zone) return z;

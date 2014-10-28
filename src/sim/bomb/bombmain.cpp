@@ -103,9 +103,9 @@ int BombClass::Save(VU_BYTE **stream)
 {
     int saveSize = SimWeaponClass::Save(stream);
 
-    if (flags & IsChaff)
+    if (flags bitand IsChaff)
         bombType = Chaff;
-    else if (flags & IsFlare)
+    else if (flags bitand IsFlare)
         bombType = Flare;
 
     memcpy(*stream, &bombType, sizeof(int));
@@ -117,9 +117,9 @@ int BombClass::Save(FILE *file)
 {
     int saveSize = SimWeaponClass::Save(file);
 
-    if (flags & IsChaff)
+    if (flags bitand IsChaff)
         bombType = Chaff;
-    else if (flags & IsFlare)
+    else if (flags bitand IsFlare)
         bombType = Flare;
 
     fwrite(&bombType, sizeof(int), 1, file);
@@ -187,7 +187,7 @@ void BombClass::Init()
     SimWeaponDataType* wpnDefinition;
     int dataIdx;
 
-    // MLR 2003-11-10 cut & paste from MissleClass
+    // MLR 2003-11-10 cut bitand paste from MissleClass
     auxData = NULL;
     classPtr = (Falcon4EntityClassType*)EntityType();
     wc = (WeaponClassDataType*)classPtr->dataPtr;
@@ -295,7 +295,7 @@ void BombClass::Start(vector* pos, vector* rate, float cD, SimObjectType *target
         wc = (WeaponClassDataType *)classPtr->dataPtr;
 
         // if we're not a cluster type, we should have no burst height
-        if ( not (wc->Flags & WEAP_CLUSTER))
+        if ( not (wc->Flags bitand WEAP_CLUSTER))
         {
             burstHeight = 0.0f;
         }
@@ -343,7 +343,7 @@ int BombClass::Exec(void)
     }
 
 
-    if (IsDead() or (flags & FirstFrame))
+    if (IsDead() or (flags bitand FirstFrame))
     {
         flags and_eq compl FirstFrame;
         return TRUE;
@@ -352,7 +352,7 @@ int BombClass::Exec(void)
     UpdateTrail();
 
     // ACMI Output
-    if (gACMIRec.IsRecording() and (SimLibFrameCount & 0x07) == 0)
+    if (gACMIRec.IsRecording() and (SimLibFrameCount bitand 0x07) == 0)
     {
         genPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
         genPos.data.type = Type();
@@ -364,9 +364,9 @@ int BombClass::Exec(void)
         genPos.data.pitch = Pitch();
         genPos.data.yaw = Yaw();
 
-        if (flags & IsFlare)
+        if (flags bitand IsFlare)
             gACMIRec.FlarePositionRecord((ACMIFlarePositionRecord *)&genPos);
-        else if (flags & IsChaff)
+        else if (flags bitand IsChaff)
             gACMIRec.ChaffPositionRecord((ACMIChaffPositionRecord *)&genPos);
         else
             gACMIRec.GenPositionRecord(&genPos);
@@ -501,8 +501,8 @@ int BombClass::Exec(void)
         dmx[2][2] = trigPitch.cos;
 
         // special case durandal -- when fired remove chute
-        if ((flags & IsDurandal)  and 
-            (flags & FireDurandal)  and 
+        if ((flags bitand IsDurandal)  and 
+            (flags bitand FireDurandal)  and 
             drawPointer  and 
             ((DrawableBSP*)drawPointer)->GetNumSwitches() > 0)
         {
@@ -511,8 +511,8 @@ int BombClass::Exec(void)
 
         // special case durandal.  If x and y vel reaches 0 we fire it
         // by starting the special effect
-        if ((flags & IsDurandal)  and 
-            !(flags & FireDurandal)  and 
+        if ((flags bitand IsDurandal)  and 
+            !(flags bitand FireDurandal)  and 
             dx == 0.0f  and 
             dy == 0.0f)
         {
@@ -566,15 +566,15 @@ int BombClass::Exec(void)
         // ( the targeting sysem would CTD if AI managed by player code,
         // As the PlayerEntity is not the one to use )
         if (
-            !g_bRealisticAvionics or !parent or !(flags & GUIDED_BOMB)
+            !g_bRealisticAvionics or !parent or !(flags bitand GUIDED_BOMB)
             or (((( not ((AircraftClass *)parent.get())->IsPlayer())
                   or (((AircraftClass *)parent.get())->IsPlayer())
                   and ((AircraftClass *)parent.get())->AutopilotType() == AircraftClass::CombatAP))
-                and (flags & IsLGB))
+                and (flags bitand IsLGB))
         )
         {
             // RV - Biker - Add 2.0 sec delay for guidance
-            if (flags & IsLGB and (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
+            if (flags bitand IsLGB and (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
             {
                 if (targetPtr)
                 {
@@ -630,7 +630,7 @@ int BombClass::Exec(void)
 
                         // If a 3rg gen LGB, fins are more precised, even when no longer lased...
                         //#define WEAP_LGB_3RD_GEN 0x40 moved to campwp.h and changed to 0x80
-                        if (wc->Flags & WEAP_LGB_3RD_GEN)
+                        if (wc->Flags bitand WEAP_LGB_3RD_GEN)
                             SetDelta(0.8F * XDelta() + 0.2f * desDxPrev, 0.8f * YDelta() + 0.2f * desDyPrev, ZDelta());
                         else // 2001-10-19 MODIFIED BY S.G. IT'S * 1.05f AND NOT * 2.0f!
                             SetDelta((0.8F * XDelta() + 0.2f * desDxPrev) * 1.05f, (0.8f * YDelta() + 0.2f * desDyPrev) * 1.05f, ZDelta());
@@ -651,7 +651,7 @@ int BombClass::Exec(void)
 
                     // If a 3rg gen LGB, fins are more precised, even when no longer lased...
                     //#define WEAP_LGB_3RD_GEN 0x40 moved to campwp.h and changed to 0x80
-                    if (wc->Flags & WEAP_LGB_3RD_GEN)
+                    if (wc->Flags bitand WEAP_LGB_3RD_GEN)
                         SetDelta(0.8F * XDelta() + 0.2f * desDxPrev, 0.8f * YDelta() + 0.2f * desDyPrev, ZDelta());
                     else // 2001-10-19 MODIFIED BY S.G. IT'S * 1.05f AND NOT * 2.0f!
                         SetDelta((0.8F * XDelta() + 0.2f * desDxPrev) * 1.05f, (0.8f * YDelta() + 0.2f * desDyPrev) * 1.05f, ZDelta());
@@ -659,7 +659,7 @@ int BombClass::Exec(void)
             }
         }
         // RV - Biker - Add 2 sec delay for guidance
-        else if ((flags & IsLGB) and g_bRealisticAvionics and (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
+        else if ((flags bitand IsLGB) and g_bRealisticAvionics and (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
         {
             AircraftClass *parentAC = parent->IsAirplane() ? static_cast<AircraftClass*>(parent.get()) : NULL;
 
@@ -744,7 +744,7 @@ int BombClass::Exec(void)
                         WeaponClassDataType *wc = (WeaponClassDataType *)classPtr->dataPtr;
 
                         // If a 3rg gen LGB, fins are more precised, even when no longer lased...
-                        if (wc->Flags & WEAP_LGB_3RD_GEN)
+                        if (wc->Flags bitand WEAP_LGB_3RD_GEN)
                         {
                             SetDelta(0.8F * XDelta() + 0.2f * desDxPrev, 0.8f * YDelta() + 0.2f * desDyPrev, ZDelta());
                         }
@@ -772,7 +772,7 @@ int BombClass::Exec(void)
         }
         //Wombat778 3-09-04 If this is a GPS weapon, guide to the GPS coordinates. A ripoff from the LGB code above
         // RV - Biker - Add 2 sec delay for guidance
-        else if (((flags & IsGPS) or (flags & IsJSOW)) and (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
+        else if (((flags bitand IsGPS) or (flags bitand IsJSOW)) and (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
         {
             FalconEntity *target = NULL;
             // SimBaseClass *simTarg;
@@ -790,7 +790,7 @@ int BombClass::Exec(void)
             // FRB - JSOW Test monitor
             if (range < 10.0f * NM_TO_FT)
             {
-                if ((flags & IsJSOW) and targetPtr)
+                if ((flags bitand IsJSOW) and targetPtr)
                 {
                     // First get the campaign object if it's still a sim entity
                     /*

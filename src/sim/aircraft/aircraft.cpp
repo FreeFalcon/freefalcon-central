@@ -264,7 +264,7 @@ void AircraftClass::InitLocalData(int flag)
     colorContrail = TRAIL_CONTRAIL; //RV - I-Hawk
 
     //RV - I-Hawk - determine if the burning position will follow damageLocation or not...
-    if (rand() & 1)
+    if (rand() bitand 1)
         burnEffectPosition = true;
     else
         burnEffectPosition = false;
@@ -1365,7 +1365,7 @@ int AircraftClass::Exec(void)
     Flight flight = NULL;
     int flightIdx;
 
-    if (g_nShowDebugLabels & 0x2000)
+    if (g_nShowDebugLabels bitand 0x2000)
     {
         if (drawPointer)
         {
@@ -1386,7 +1386,7 @@ int AircraftClass::Exec(void)
         // When doing a QuickPreflight, it can happen that the HUD is not yet setup and
         // it stays dark when entering the simulation.
         if (g_bDarkHudFix and TheHud and this == SimDriver.GetPlayerEntity()  and 
-            DBrain() and !(DBrain()->moreFlags & DigitalBrain::HUDSetup)  and 
+            DBrain() and !(DBrain()->moreFlags bitand DigitalBrain::HUDSetup)  and 
             PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RAMP)
         {
             TheHud->SymWheelPos = 1.0F;
@@ -1839,7 +1839,7 @@ int AircraftClass::Exec(void)
 
         // COBRA - RED - Check for Lite Pool
         if (
-            af->gearPos == 1.0F and !(af->gear[1].flags & GearData::GearBroken)  and 
+            af->gearPos == 1.0F and !(af->gear[1].flags bitand GearData::GearBroken)  and 
             IsAcStatusBitsSet(ACSTATUS_EXT_LANDINGLIGHT) and IsAcStatusBitsSet(ACSTATUS_EXT_LIGHTS)
         )
         {
@@ -1929,7 +1929,7 @@ int AircraftClass::Exec(void)
         }
 
         // ACMI Output
-        if (gACMIRec.IsRecording() and (SimLibFrameCount & 0x0000000f) == 0)
+        if (gACMIRec.IsRecording() and (SimLibFrameCount bitand 0x0000000f) == 0)
         {
             airPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             airPos.data.type = Type();
@@ -2142,7 +2142,7 @@ int AircraftClass::Exec(void)
 
                 while (w)
                 {
-                    if ( not (w->GetWPFlags() & WPF_TARGET))
+                    if ( not (w->GetWPFlags() bitand WPF_TARGET))
                     {
                         w = w->GetNextWP();
                         continue;
@@ -3124,7 +3124,7 @@ VU_ID AircraftClass::DivertAirbase(void)
 
     while (tmpWaypoint)
     {
-        if (tmpWaypoint->GetWPFlags() & WPF_ALTERNATE)
+        if (tmpWaypoint->GetWPFlags() bitand WPF_ALTERNATE)
         {
             airbase = tmpWaypoint->GetWPTargetID();
             break;
@@ -3328,7 +3328,7 @@ void AircraftClass::PreFlight()
     }
     else
     {
-        PowerOn(AvionicsPowerFlags(AllPower & compl DLPower));
+        PowerOn(AvionicsPowerFlags(AllPower bitand compl DLPower));
         PowerOff(DLPower);
     }
 
@@ -3932,7 +3932,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
 
     while (w)
     {
-        if ( not (w->GetWPFlags() & WPF_TARGET))
+        if ( not (w->GetWPFlags() bitand WPF_TARGET))
         {
             w = w->GetNextWP();
             continue;
@@ -4039,7 +4039,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
             // Not Deagg'ed, so calculate where the Feature is placed in the Objective
             fc = GetFeatureClassData(((Objective)JDAMtarget)->GetFeatureID(JDAMtgtnum));
 
-            if (fc and !F4IsBadReadPtr(fc, sizeof(fc)) and !(fc->Flags & FEAT_VIRTUAL))
+            if (fc and !F4IsBadReadPtr(fc, sizeof(fc)) and !(fc->Flags bitand FEAT_VIRTUAL))
             {
                 ((Objective)JDAMtarget)->GetFeatureOffset(JDAMtgtnum, &yy, &xx, &zz);
                 w->GetLocation(&x, &y, &z);
@@ -4093,7 +4093,7 @@ void AircraftClass::ReadDirty(unsigned char **stream, long *rem)
 {
     memcpychk(&dirty_aircraft, stream, sizeof(dirty_aircraft), rem);
 
-    if (dirty_aircraft & DIRTY_ACSTATUS_BITS)
+    if (dirty_aircraft bitand DIRTY_ACSTATUS_BITS)
     {
         memcpychk(&status_bits, stream, sizeof(status_bits), rem);
     }
@@ -4111,7 +4111,7 @@ void AircraftClass::WriteDirty(unsigned char **sAdd)
     memcpy(stream, &dirty_aircraft, sizeof(dirty_aircraft));
     stream += sizeof(dirty_aircraft);
 
-    if (dirty_aircraft & DIRTY_ACSTATUS_BITS)
+    if (dirty_aircraft bitand DIRTY_ACSTATUS_BITS)
     {
         memcpy(stream, &status_bits, sizeof(status_bits));
         stream += sizeof(status_bits);

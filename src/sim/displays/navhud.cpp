@@ -1138,7 +1138,7 @@ void HudClass::DrawHeading(void)
             {
                 vert[1][0] = vert[0][0];
 
-                if (a & 1)
+                if (a bitand 1)
                     vert[1][1] = vert[0][1] - smallTickLen;
                 else
                 {
@@ -1184,7 +1184,7 @@ void HudClass::DrawHeading(void)
             {
                 vert[1][0] = vert[0][0];
 
-                if (a & 1)
+                if (a bitand 1)
                     vert[1][1] = vert[0][1] - smallTickLen;
                 else
                 {
@@ -1721,7 +1721,7 @@ void HudClass::DrawWaypoint(void)
                     } //End of HUD fix.
 
                     if (playerAC and playerAC->curWaypoint  and 
-                        playerAC->curWaypoint->GetWPFlags() & WPF_TARGET  and 
+                        playerAC->curWaypoint->GetWPFlags() bitand WPF_TARGET  and 
                         FCC and FCC->IsAGMasterMode()  and 
                         FCC->GetSubMode() not_eq FireControlComputer::CCIP)
                     {
@@ -1865,7 +1865,7 @@ void HudClass::TimeToSteerpoint(void)
     if ( not g_bRealisticAvionics)
         DrawWindowString(13, tmpStr1);
     else
-        display->TextLeft(0.45F, -0.43F, tmpStr1);   // JPG .40F & .44F
+        display->TextLeft(0.45F, -0.43F, tmpStr1);   // JPG .40F bitand .44F
 }
 
 void HudClass::RangeToSteerpoint(void)

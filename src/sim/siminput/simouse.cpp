@@ -166,21 +166,21 @@ void OnSimMouseInput(HWND)
 
                 action = CP_CHECK_EVENT; //Wombat778 10-07-2003 apparently this is a fake event...seems like the right thing to do
             }
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON0 and !(ObjData[i].dwData & 0x80))
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON0 and !(ObjData[i].dwData bitand 0x80))
             {
                 action = CP_MOUSE_BUTTON0;
             }
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 and !(ObjData[i].dwData & 0x80))
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 and !(ObjData[i].dwData bitand 0x80))
             {
                 action = CP_MOUSE_BUTTON1;
                 oneDown = FALSE;
             }
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 and (ObjData[i].dwData & 0x80))
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 and (ObjData[i].dwData bitand 0x80))
             {
                 action = static_cast<unsigned long>(-1);
                 oneDown = TRUE;
             }
-            else if ((ObjData[i].dwOfs == DIMOFS_BUTTON3) and (ObjData[i].dwData & 0x80))   // Retro 22Jan2004
+            else if ((ObjData[i].dwOfs == DIMOFS_BUTTON3) and (ObjData[i].dwData bitand 0x80))   // Retro 22Jan2004
             {
 #if 0
                 PlayerOptions.SetClickablePitMode( not PlayerOptions.GetClickablePitMode()); //Wombat778 1-22-04 moved to playeroptions.
@@ -189,7 +189,7 @@ void OnSimMouseInput(HWND)
 #endif
             } // Retro 22Jan2004
 
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON2 and (ObjData[i].dwData & 0x80))   //Wombat778 10-07-2003 Added for middle mouse button support
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON2 and (ObjData[i].dwData bitand 0x80))   //Wombat778 10-07-2003 Added for middle mouse button support
             {
                 if (middlebuttonfunc) middlebuttonfunc(1, KEY_DOWN, NULL);
 

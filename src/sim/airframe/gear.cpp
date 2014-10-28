@@ -44,7 +44,7 @@
 
 extern VU_TIME vuxGameTime;
 
-// All headers cut & paste from eom.cpp
+// All headers cut bitand paste from eom.cpp
 // this code provides the animations for gear strut compression and rolling wheels.
 void AirframeClass::RunLandingGear(void)
 {

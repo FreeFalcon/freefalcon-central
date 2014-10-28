@@ -200,7 +200,7 @@ void DigitalBrain::GroundAttackMode(void)
 
 
     // 2002-03-08 ADDED BY S.G. Turn off the lasing flag we were lasing (fail safe)
-    if (SimLibElapsedTime > waitingForShot and (moreFlags & KeepLasing))
+    if (SimLibElapsedTime > waitingForShot and (moreFlags bitand KeepLasing))
     {
         moreFlags and_eq compl KeepLasing;
     }
@@ -897,9 +897,9 @@ DownwindBypass:
                         wc = (WeaponClassDataType*)classPtr->dataPtr;
 
                         // Cobra - GPS weapons
-                        if (wc and (wc->Flags & WEAP_BOMBGPS))
+                        if (wc and (wc->Flags bitand WEAP_BOMBGPS))
                         {
-                            //if (wc->Flags & WEAP_CLUSTER) // Cobra - JSOW
+                            //if (wc->Flags bitand WEAP_CLUSTER) // Cobra - JSOW
                             if (hasJSOW)
                                 ipZ = -self->GetA2GJSOWAlt();
                             else
@@ -1513,7 +1513,7 @@ DownwindBypass:
             // FRB - end
             // COBRA - RED - FIXED WITH '0.1f' THE HD BOMBS UNDROPPED BUG... PROBLEM WAS GOING INTO FINAL1 TOO FAR FROM TARGET
             // IT WAS 2.5f
-            else if (approxRange < 0.1f * NM_TO_FT) // was 1.5 & 75.0
+            else if (approxRange < 0.1f * NM_TO_FT) // was 1.5 bitand 75.0
             {
                 //waitingForShot = SimLibElapsedTime + 5000;  // FRB
                 onStation = Final1;
@@ -1672,7 +1672,7 @@ DownwindBypass:
                         break;
                     }
                     //else if (hasAGMissile) // Mavericks
-                    else if (hasAGMissile or hasHARM) // Mavericks & Harms
+                    else if (hasAGMissile or hasHARM) // Mavericks bitand Harms
                     {
                         // Cobra - pull away from target
                         AGflyOut();
@@ -1944,7 +1944,7 @@ DownwindBypass:
                         break;
                     }
                     //else if (hasAGMissile) // Mavericks
-                    else if (hasAGMissile or hasHARM) // Mavericks & Harms
+                    else if (hasAGMissile or hasHARM) // Mavericks bitand Harms
                     {
                         // Cobra - pull away from target
                         AGflyOut();
@@ -2331,7 +2331,7 @@ void DigitalBrain::SelectGroundWeapon(void)
             }
             else if (Sms->hardPoint[i]->GetWeaponData()->cd >= 0.9f) // S.G. used edg kludge: drag coeff >= 1.0 is a durandal (w/chute) BUT 0.9 is hardcode for high drag :-(
                 hasBomb = TRUE + 1;
-            else if (Sms->hardPoint[i]->GetWeaponData()->flags & SMSClass::HasBurstHeight) // S.G. If it has burst height, it's a cluster bomb
+            else if (Sms->hardPoint[i]->GetWeaponData()->flags bitand SMSClass::HasBurstHeight) // S.G. If it has burst height, it's a cluster bomb
             {
                 if (theBomb and theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
                     hasBomb = TRUE + 4;
@@ -2491,7 +2491,7 @@ void DigitalBrain::SelectGroundWeapon(void)
     }
 
     // 2002-03-08 ADDED BY S.G. Don't run away if designating...
-    if ((moreFlags & KeepLasing) and runAway == TRUE)
+    if ((moreFlags bitand KeepLasing) and runAway == TRUE)
         runAway = FALSE;
 
     // END OF ADDED SECTION 2002-03-08
@@ -2514,7 +2514,7 @@ void DigitalBrain::SelectGroundWeapon(void)
 
             while (tmpWaypoint)
             {
-                if (tmpWaypoint->GetWPFlags() & WPF_TARGET)
+                if (tmpWaypoint->GetWPFlags() bitand WPF_TARGET)
                 {
                     tmpWaypoint = tmpWaypoint->GetNextWP();
                     break;
@@ -3239,7 +3239,7 @@ void DigitalBrain::IPCheck(void)
             // Find the IP waypoint
             while (tmpWaypoint)
             {
-                if (tmpWaypoint->GetWPFlags() & WPF_TARGET)
+                if (tmpWaypoint->GetWPFlags() bitand WPF_TARGET)
                     break;
 
                 tmpWaypoint = tmpWaypoint->GetNextWP();
@@ -3450,7 +3450,7 @@ void DigitalBrain::DropBomb(float approxRange, float ata, RadarClass* theRadar)
             //int rcount = Sms->RippleCount() + 1;
             int rcount = Sms->GetAGBRippleCount() + 1;
 
-            if ( not (rcount & 1)) // If not odd
+            if ( not (rcount bitand 1)) // If not odd
                 rcount--;
 
             //if (FCC->airGroundRange < Sms->NumCurrentWpn() * 2.0F * Sms->RippleInterval())
@@ -3526,7 +3526,7 @@ void DigitalBrain::DropBomb(float approxRange, float ata, RadarClass* theRadar)
 
             int rcount = Sms->GetAGBRippleCount() + 1;
 
-            if ( not (rcount & 1)) // If not odd
+            if ( not (rcount bitand 1)) // If not odd
                 rcount--;
 
             if (Sms->GetAGBRippleCount() > 0 and FCC->airGroundRange < (rcount * Sms->GetAGBRippleInterval()) / 2)
@@ -3537,7 +3537,7 @@ void DigitalBrain::DropBomb(float approxRange, float ata, RadarClass* theRadar)
             }
 
             // 2001-10-24 ADDED BY M.N. Planes can start to circle around their target if we don't do
-            // a range & ata check to the target here.
+            // a range bitand ata check to the target here.
 
             if (approxRange < 1.2f * NM_TO_FT and ata > 75.0f * DTR)
             {
@@ -3904,7 +3904,7 @@ void DigitalBrain::FireAGMissile(float approxRange, float ata)
         // 2001-05-03 MODIFIED BY S.G. WE STOP FIRING WHEN WE HAVE AN ODD NUMBER OF MISSILE LEFT (MEANT WE FIRED ONE ALREADY) THIS WILL LIMIT IT TO 2 MISSILES PER TARGET
         // if (Sms->NumCurrentWpn() == 1 )
 
-        if ((hasBomb not_eq TRUE + 4) and Sms->NumCurrentWpn() & 1)
+        if ((hasBomb not_eq TRUE + 4) and Sms->NumCurrentWpn() bitand 1)
         {
             hasRocket = FALSE;
             hasGun = FALSE;
@@ -4099,11 +4099,11 @@ int DigitalBrain::FireRocket(float approxRange, float ata)
                 if (fp and self->IsPlayer())
                     fprintf(fp, "RocketJink\n");
 
-                //if(SimLibElapsedTime & 4096)
+                //if(SimLibElapsedTime bitand 4096)
                 //MoveStick(rStick, 45 * DTR , 45 * DTR); // Cobra - was 90
                 //else
                 //MoveStick(rStick, -45 * DTR , 45 * DTR); // Cobra - was -90
-                if (SimLibElapsedTime & 8192)
+                if (SimLibElapsedTime bitand 8192)
                     MoveStick(rStick, 40 * DTR , 10 * DTR);
                 else
                     MoveStick(rStick, -40 * DTR , 10 * DTR);

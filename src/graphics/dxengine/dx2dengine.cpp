@@ -373,12 +373,12 @@ bool CDXEngine::DX2D_GetVisibility(D3DXVECTOR3 *Pos, float Radius, DWORD Flags)
     // get the position and make it camera relative
     XMMPos.Xmm = _mm_loadu_ps((float*)Pos);
 
-    if ( not (Flags & CAMERA_VERTICES)) XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
+    if ( not (Flags bitand CAMERA_VERTICES)) XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
 
     // Check for object visibility, return NULL is not visible
     m_pD3DD->ComputeSphereVisibility((D3DVECTOR*)&XMMPos.d3d, &Radius2D, 1, 0, &ClipResult);
 
-    if (ClipResult & D3DSTATUS_DEFAULT) return false;
+    if (ClipResult bitand D3DSTATUS_DEFAULT) return false;
 
     return true;
 }
@@ -406,12 +406,12 @@ float CDXEngine::DX2D_GetDistance(D3DXVECTOR3 *Pos, float Radius, DWORD Flags)
     // get the position and make it camera relative
     XMMPos.Xmm = _mm_loadu_ps((float*)Pos);
 
-    if ( not (Flags & CAMERA_VERTICES))XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
+    if ( not (Flags bitand CAMERA_VERTICES))XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
 
     // Check for object visibility, return NULL is not visible
     m_pD3DD->ComputeSphereVisibility((D3DVECTOR*)&XMMPos.d3d, &Radius2D, 1, 0, &ClipResult);
 
-    if (ClipResult & D3DSTATUS_DEFAULT) return -1.0f;
+    if (ClipResult bitand D3DSTATUS_DEFAULT) return -1.0f;
 
     // setup the DISTANCE FROM CAMERA
     XMMStore.Xmm = _mm_mul_ps(XMMPos.Xmm, XMMPos.Xmm);
@@ -424,7 +424,7 @@ float CDXEngine::DX2D_GetDistance(D3DXVECTOR3 *Pos, DWORD Flags)
     // get the position and make it camera relative
     XMMPos.Xmm = _mm_loadu_ps((float*)Pos);
 
-    if ( not (Flags & CAMERA_VERTICES))XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
+    if ( not (Flags bitand CAMERA_VERTICES))XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
 
     // setup the DISTANCE FROM CAMERA
     XMMStore.Xmm = _mm_mul_ps(XMMPos.Xmm, XMMPos.Xmm);
@@ -500,7 +500,7 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
     // Get Distance from a previous test if POLY DECLARED VISIBLE, or calcualte if from scratch
     float Distance;
 
-    if (Flags & POLY_VISIBLE) Distance = TestDistance;
+    if (Flags bitand POLY_VISIBLE) Distance = TestDistance;
     else
     {
         Distance = DX2D_GetDistance(Pos, Radius, Flags);
@@ -509,9 +509,9 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
     }
 
     // if Camera vertices, the passed position is the real one
-    if (Flags & CAMERA_VERTICES) *(D3DXVECTOR3*)&XMMPos.d3d = *Pos;
+    if (Flags bitand CAMERA_VERTICES) *(D3DXVECTOR3*)&XMMPos.d3d = *Pos;
 
-    if (Flags & CALC_DISTANCE) Distance = DX2D_GetDistance(Pos, Flags);
+    if (Flags bitand CALC_DISTANCE) Distance = DX2D_GetDistance(Pos, Flags);
 
     // check if layer initialized, if not, initialize it
     if (Layers[Layer].Start == -1) Layers[Layer].Start = Total2DItems;
@@ -528,7 +528,7 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
     Layers[Layer].End = Total2DItems;
 
     // * VERTEX CREATION REQUIRED ONLY FOR QUAD - IT CAMES FROM RADIUS *
-    if (Flags & POLY_CREATE)
+    if (Flags bitand POLY_CREATE)
     {
         // Prepare radius CX
         XMMRadius.d3d.x = XMMRadius.d3d.y = XMMRadius.d3d.z = Radius;
@@ -546,12 +546,12 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
     }
 
     // * BILLBOARD VERTICES * - go directly into Vertex Buffer
-    if (Flags & POLY_BB) DX2D_TransformBB(&XMMPos, V, &Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex], 4);
+    if (Flags bitand POLY_BB) DX2D_TransformBB(&XMMPos, V, &Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex], 4);
     // if not BillBoarded, add Distance here and put into Vertex Buffer
     else
     {
         // if passed coords in already camera vertex, just copy
-        if (Flags & CAMERA_VERTICES)
+        if (Flags bitand CAMERA_VERTICES)
         {
             _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0], V[0].Xmm);
             _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 1], V[1].Xmm);
@@ -580,7 +580,7 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
 
     // get the Draw under setting
     DrawItemType &Draw = Draws2D[Total2DItems];
-    // * setup the items to track & sort the Quad *
+    // * setup the items to track bitand sort the Quad *
     // The Scaled Distance for sorting
     Draw.Dist256 = F_I32(Distance * 256.0f);
     // The Texture Handle
@@ -603,7 +603,7 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
     Draw.Height = Pos->z;
 
     // if local coords, update with camera Z
-    if (Flags & CAMERA_VERTICES) Draw.Height += CameraPos.z;
+    if (Flags bitand CAMERA_VERTICES) Draw.Height += CameraPos.z;
 
     // Update the Sort Buffer
     SortBuffer[Total2DItems].Index = Total2DItems;
@@ -635,7 +635,7 @@ void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVE
     if ( not CheckBufferSpace(VbIndex, 3)) return;
 
     // Get Distance from a previous test if POLY DECLARED VISIBLE, or calcualte if from scratch
-    float Distance = (Flags & POLY_VISIBLE) ? TestDistance : DX2D_GetDistance(Pos, Radius);
+    float Distance = (Flags bitand POLY_VISIBLE) ? TestDistance : DX2D_GetDistance(Pos, Radius);
 
     if (Distance < 0.0f) return;
 
@@ -658,7 +658,7 @@ void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVE
     V[2].Xmm = _mm_loadu_ps((float*)&Tri[2].pos);
 
     // * BILLBOARD VERTICES * - go directly into Vertex Buffer
-    if (Flags & POLY_BB) DX2D_TransformBB(&XMMPos, V, &Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex], 3);
+    if (Flags bitand POLY_BB) DX2D_TransformBB(&XMMPos, V, &Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex], 3);
     // if not BillBoarded, add Distance here and put into Vertex Buffer
     else
     {
@@ -675,7 +675,7 @@ void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVE
 
     // get the Draw under setting
     DrawItemType &Draw = Draws2D[Total2DItems];
-    // * setup the items to track & sort the Quad *
+    // * setup the items to track bitand sort the Quad *
     // The Scaled Distance for sorting
     Draw.Dist256 = F_I32(Distance * 256.0f);
     // The Texture Handle
@@ -694,7 +694,7 @@ void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVE
     Draw.Height = Pos->z;
 
     // if local coords, update with camera Z
-    if (Flags & CAMERA_VERTICES) Draw.Height += CameraPos.z;
+    if (Flags bitand CAMERA_VERTICES) Draw.Height += CameraPos.z;
 
     // Update the Sort Buffer
     SortBuffer[Total2DItems].Index = Total2DItems;
@@ -727,7 +727,7 @@ void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVER
     // Get Distance from a previous test if POLY DECLARED VISIBLE, or calcualte if from scratch
     float Distance;
 
-    if (Flags & POLY_VISIBLE) Distance = TestDistance;
+    if (Flags bitand POLY_VISIBLE) Distance = TestDistance;
     else
     {
         Distance = DX2D_GetDistance(Pos, Radius, Flags);
@@ -736,9 +736,9 @@ void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVER
     }
 
     // if Camera vertices, the passed position is the real one
-    if (Flags & CAMERA_VERTICES) *(D3DXVECTOR3*)&XMMPos.d3d = *Pos;
+    if (Flags bitand CAMERA_VERTICES) *(D3DXVECTOR3*)&XMMPos.d3d = *Pos;
 
-    if (Flags & CALC_DISTANCE) Distance = DX2D_GetDistance(Pos, Flags);
+    if (Flags bitand CALC_DISTANCE) Distance = DX2D_GetDistance(Pos, Flags);
 
     // check if layer initialized, if not, initialize it
     if (Layers[Layer].Start == -1) Layers[Layer].Start = Total2DItems;
@@ -758,7 +758,7 @@ void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVER
     V[1].Xmm = _mm_loadu_ps((float*)&Segment[1].pos);
 
     // if passed coords in already camera vertex, just copy
-    if (Flags & CAMERA_VERTICES)
+    if (Flags bitand CAMERA_VERTICES)
     {
         _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0], V[0].Xmm);
         _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 1], V[1].Xmm);
@@ -778,7 +778,7 @@ void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVER
     _mm_storeu_ps((float*)ptr++, _mm_loadu_ps((float*)src++));
 
     // if this is a tape entry
-    if (Flags & TAPE_ENTRY)
+    if (Flags bitand TAPE_ENTRY)
     {
         // Just store vertices and update tape pointers
         Dyn2DVertexBuffer[VBSelected].LastTapeIndex = VbIndex;
@@ -788,7 +788,7 @@ void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVER
     {
         // get the Draw under setting
         DrawItemType &Draw = Draws2D[Total2DItems];
-        // * setup the items to track & sort the Quad *
+        // * setup the items to track bitand sort the Quad *
         // The Scaled Distance for sorting
         Draw.Dist256 = F_I32(Distance * 256.0f);
         // The Texture Handle
@@ -799,9 +799,9 @@ void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVER
         Draw.Index = VbIndex, Draw.Index2 = Dyn2DVertexBuffer[VBSelected].LastTapeIndex;
 
         // vertices of the item, vertices for a quad are 6 ( 2 triangles )
-        if (Flags & POLY_LINE) Draw.NrVertices = 2;
+        if (Flags bitand POLY_LINE) Draw.NrVertices = 2;
 
-        if (Flags & POLY_TAPE) Draw.NrVertices = 6;
+        if (Flags bitand POLY_TAPE) Draw.NrVertices = 6;
 
         // Final Item in the list
         Draw.Next = 0xffffffff;
@@ -811,7 +811,7 @@ void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVER
         Draw.Height = Pos->z;
 
         // if local coords, update with camera Z
-        if (Flags & CAMERA_VERTICES) Draw.Height += CameraPos.z;
+        if (Flags bitand CAMERA_VERTICES) Draw.Height += CameraPos.z;
 
         // Update the Sort Buffer
         SortBuffer[Total2DItems].Index = Total2DItems;
@@ -849,7 +849,7 @@ void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDY
     // Get Distance from a previous test if POLY DECLARED VISIBLE, or calcualte if from scratch
     float Distance;
 
-    if (Flags & POLY_VISIBLE) Distance = TestDistance;
+    if (Flags bitand POLY_VISIBLE) Distance = TestDistance;
     else
     {
         Distance = DX2D_GetDistance(Pos, Radius, Flags);
@@ -858,9 +858,9 @@ void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDY
     }
 
     // if Camera vertices, the passed position is the real one
-    if (Flags & CAMERA_VERTICES) *(D3DXVECTOR3*)&XMMPos.d3d = *Pos;
+    if (Flags bitand CAMERA_VERTICES) *(D3DXVECTOR3*)&XMMPos.d3d = *Pos;
 
-    if (Flags & CALC_DISTANCE) Distance = DX2D_GetDistance(Pos, Flags);
+    if (Flags bitand CALC_DISTANCE) Distance = DX2D_GetDistance(Pos, Flags);
 
     // check if layer initialized, if not, initialize it
     if (Layers[Layer].Start == -1) Layers[Layer].Start = Total2DItems;
@@ -879,7 +879,7 @@ void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDY
     V.Xmm = _mm_loadu_ps((float*)&Segment->pos);
 
     // if passed coords in already camera vertex, just copy
-    if (Flags & CAMERA_VERTICES)
+    if (Flags bitand CAMERA_VERTICES)
     {
         _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0], V.Xmm);
 
@@ -896,7 +896,7 @@ void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDY
     _mm_storeu_ps((float*)ptr++, _mm_loadu_ps((float*)src++));
 
     // if this is a tape entry
-    if (Flags & TAPE_ENTRY)
+    if (Flags bitand TAPE_ENTRY)
     {
         // Just store vertices and update tape pointers
         Dyn2DVertexBuffer[VBSelected].LastTapeIndex = VbIndex;
@@ -906,7 +906,7 @@ void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDY
     {
         // get the Draw under setting
         DrawItemType &Draw = Draws2D[Total2DItems];
-        // * setup the items to track & sort the Quad *
+        // * setup the items to track bitand sort the Quad *
         // The Scaled Distance for sorting
         Draw.Dist256 = F_I32(Distance * 256.0f);
         // The Texture Handle
@@ -917,7 +917,7 @@ void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDY
         Draw.Index = VbIndex, Draw.Index2 = Dyn2DVertexBuffer[VBSelected].LastTapeIndex;
 
         // vertices of the item, vertices for a quad are 6 ( 2 triangles )
-        if (Flags & POLY_LINE) Draw.NrVertices = 2;
+        if (Flags bitand POLY_LINE) Draw.NrVertices = 2;
         else Draw.NrVertices = 1;
 
         // Final Item in the list
@@ -928,7 +928,7 @@ void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDY
         Draw.Height = Pos->z;
 
         // if local coords, update with camera Z
-        if (Flags & CAMERA_VERTICES) Draw.Height += CameraPos.z;
+        if (Flags bitand CAMERA_VERTICES) Draw.Height += CameraPos.z;
 
         // Update the Sort Buffer
         SortBuffer[Total2DItems].Index = Total2DItems;
@@ -961,7 +961,7 @@ void CDXEngine::DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
     if ( not CheckBufferSpace(VbIndex, Vertices)) return;
 
     // Get Distance from a previous test if POLY DECLARED VISIBLE, or calcualte if from scratch
-    float Distance = (Flags & POLY_VISIBLE) ? TestDistance : DX2D_GetDistance(Pos, Radius);
+    float Distance = (Flags bitand POLY_VISIBLE) ? TestDistance : DX2D_GetDistance(Pos, Radius);
 
     if (Distance < 0.0f) return;
 
@@ -984,7 +984,7 @@ void CDXEngine::DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
         V.Xmm = _mm_loadu_ps((float*)&Poly[a].pos);
 
         // * BILLBOARD VERTICES * - go directly into Vertex Buffer
-        if (Flags & POLY_BB) DX2D_TransformBB(&XMMPos, &V, &Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + a], 1);
+        if (Flags bitand POLY_BB) DX2D_TransformBB(&XMMPos, &V, &Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + a], 1);
         // if not BillBoarded, add Distance here and put into Vertex Buffer
         else _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + a], _mm_add_ps(XMMPos.Xmm, V.Xmm));
 
@@ -995,7 +995,7 @@ void CDXEngine::DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
 
     // get the Draw under setting
     DrawItemType &Draw = Draws2D[Total2DItems];
-    // * setup the items to track & sort the Quad *
+    // * setup the items to track bitand sort the Quad *
     // The Scaled Distance for sorting
     Draw.Dist256 = F_I32(Distance * 256.0f);
     // The Texture Handle
@@ -1014,7 +1014,7 @@ void CDXEngine::DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
     Draw.Height = Pos->z;
 
     // if local coords, update with camera Z
-    if (Flags & CAMERA_VERTICES) Draw.Height += CameraPos.z;
+    if (Flags bitand CAMERA_VERTICES) Draw.Height += CameraPos.z;
 
     // Update the Sort Buffer
     SortBuffer[Total2DItems].Index = Total2DItems;
@@ -1052,7 +1052,7 @@ void CDXEngine::DX2D_AddObject(DWORD ID, DWORD Layer, SurfaceStackType *Stack, D
 
     // get the Draw under setting
     DrawItemType &Draw = Draws2D[Total2DItems];
-    // * setup the items to track & sort the Quad *
+    // * setup the items to track bitand sort the Quad *
     // The Scaled Distance for sorting
     Draw.Dist256 = F_I32(Distance * 256.0f);
     // The Texture Handle
@@ -1102,7 +1102,7 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
     DWORD Tex = Draws2D[Start].TexHandle;
 
     // Setup for lines
-    if (Draws2D[Start].Flags & POLY_LINE) LineMode = true;
+    if (Draws2D[Start].Flags bitand POLY_LINE) LineMode = true;
 
     // thru all the list
     while (Start not_eq 0xffffffff and Index < MAX_VERTICES_PER_DRAW)
@@ -1119,7 +1119,7 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
         if (Draw.TexHandle not_eq Tex) return Start;
 
         // * SORTED 3D OBJECT *
-        if (Draw.Flags & POLY_3DOBJECT)
+        if (Draw.Flags bitand POLY_3DOBJECT)
         {
             //if 1st item, return it
             if ( not Index) return Draw.Next;
@@ -1127,13 +1127,13 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
         }
 
         // * LINE INDEXED *
-        if (Draw.Flags & POLY_LINE)
+        if (Draw.Flags bitand POLY_LINE)
         {
             // if it was not a Line mode, close here
             if ( not LineMode) return Start;
 
             //  if a line Tape
-            if (Draw.Flags & POLY_TAPE) DrawIndexes[Index++] = (unsigned short)Draw.Index, DrawIndexes[Index++] = (unsigned short)Draw.Index2;
+            if (Draw.Flags bitand POLY_TAPE) DrawIndexes[Index++] = (unsigned short)Draw.Index, DrawIndexes[Index++] = (unsigned short)Draw.Index2;
             else DrawIndexes[Index++] = (unsigned short)Draw.Index, DrawIndexes[Index++] = (unsigned short)Draw.Index + 1;
 
             // number of indexed vertices
@@ -1149,7 +1149,7 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
             if (LineMode) return Start;
 
         // * FAN INDEXED *
-        if (Draw.Flags & POLY_FAN)
+        if (Draw.Flags bitand POLY_FAN)
         {
             // Check if indexing overflows the draw limit
             if ((Index + (Draw.NrVertices - 2) * 3) > MAX_VERTICES_PER_DRAW) return Start;
@@ -1175,7 +1175,7 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
         }
 
         // * STRIP INDEXED *
-        if (Draw.Flags & POLY_STRIP)
+        if (Draw.Flags bitand POLY_STRIP)
         {
             unsigned short  Count = (unsigned short)Draw.Index;
             DrawIndexes[Index++] = Count++;
@@ -1199,7 +1199,7 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
         }
 
         // * TAPE INDEXED *
-        if (Draw.Flags & POLY_TAPE)
+        if (Draw.Flags bitand POLY_TAPE)
         {
             unsigned short  Count1 = (unsigned short)Draw.Index;
             unsigned short  Count2 = (unsigned short)Draw.Index2;
@@ -1585,7 +1585,7 @@ void CDXEngine::DX2D_Flush2DObjects(void)
         if (Layer == LAYER_NODRAW) continue;
 
         // check if Layer need to be sorted and eventually sort it
-        if (1 or Layers[Layer].Flags & LAYER_SORT) DrawStart = DX2D_SortIndexes(DrawStart);
+        if (1 or Layers[Layer].Flags bitand LAYER_SORT) DrawStart = DX2D_SortIndexes(DrawStart);
 
 #ifdef DEBUG_2D_ENGINE
         STOP_PROFILE("DYN SORT:");
@@ -1614,10 +1614,10 @@ void CDXEngine::DX2D_Flush2DObjects(void)
 
             /////////////////// DRAWING A 3D ALPHA OBJECT HERE ////////////////////////////////
             // Check if a solid 3D object
-            if (Draw.Flags & POLY_3DOBJECT)
+            if (Draw.Flags bitand POLY_3DOBJECT)
             {
                 // Draw the sorted object setting u the right mode if not already in 3D mode
-                DrawSortedAlpha(Draw.Flags & (0xffffff), !Mode_3D);
+                DrawSortedAlpha(Draw.Flags bitand (0xffffff), !Mode_3D);
                 // Mark that we are in 3D mode
                 Mode_2D = false;
                 Mode_3D = true;
@@ -1643,7 +1643,7 @@ void CDXEngine::DX2D_Flush2DObjects(void)
                 }
 
                 // Chweck if a set of lines
-                if (Draw.Flags & POLY_LINE)
+                if (Draw.Flags bitand POLY_LINE)
                 {
                     m_pD3DD->DrawIndexedPrimitiveVB(D3DPT_LINELIST, Draw.Vb, 0, MAX_2D_VERTICES,
                                                     (LPWORD)&DrawIndexes, Indexed2D, 0);

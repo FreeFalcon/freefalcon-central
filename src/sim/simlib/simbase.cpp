@@ -312,12 +312,12 @@ void SimBaseClass::Init(SimInitDataClass* initData)
         SetFlagSilent(initData->specialFlags); // sfr: was missing special flags here
         displayPriority = initData->displayPriority;
 
-        if (initData->createFlags & SIDC_FORCE_ID)
+        if (initData->createFlags bitand SIDC_FORCE_ID)
         {
             share_.id_ = initData->forcedId;
         }
 
-        SetSendCreate(initData->createFlags & SIDC_SILENT_INSERT ? VU_SC_DONT_SEND : VU_SC_SEND_OOB);
+        SetSendCreate(initData->createFlags bitand SIDC_SILENT_INSERT ? VU_SC_DONT_SEND : VU_SC_SEND_OOB);
 
         SetCallsign(initData->callsignIdx);
         SetSlot(initData->campSlot);
@@ -1271,43 +1271,43 @@ void SimBaseClass::WriteDirty(uchar **stream)
     *(short*)*stream = (short)dirty_simbase;
     *stream += sizeof(short);
 
-    if (dirty_simbase & DIRTY_SIM_FLAGS)
+    if (dirty_simbase bitand DIRTY_SIM_FLAGS)
     {
         *(int*)*stream = specialData.flags;
         *stream += sizeof(specialData.flags);
     }
 
-    if (dirty_simbase & DIRTY_SIM_COUNTRY)
+    if (dirty_simbase bitand DIRTY_SIM_COUNTRY)
     {
         *(int*)*stream = specialData.country;
         *stream += sizeof(specialData.country);
     }
 
-    if (dirty_simbase & DIRTY_SIM_CHAFF)
+    if (dirty_simbase bitand DIRTY_SIM_CHAFF)
     {
         *(VU_ID*)*stream = specialData.ChaffID;
         *stream += sizeof(specialData.ChaffID);
     }
 
-    if (dirty_simbase & DIRTY_SIM_FLARE)
+    if (dirty_simbase bitand DIRTY_SIM_FLARE)
     {
         *(VU_ID*)*stream = specialData.FlareID;
         *stream += sizeof(specialData.FlareID);
     }
 
-    if (dirty_simbase & DIRTY_SIM_STATUS)
+    if (dirty_simbase bitand DIRTY_SIM_STATUS)
     {
         *(long*)*stream = specialData.status;
         *stream += sizeof(specialData.status);
     }
 
-    if (dirty_simbase & DIRTY_SIM_POWER_OUTPUT)
+    if (dirty_simbase bitand DIRTY_SIM_POWER_OUTPUT)
     {
         *(unsigned char*)*stream = specialData.powerOutputNet;
         *stream += sizeof(specialData.powerOutputNet);
     }
 
-    if (dirty_simbase & DIRTY_SIM_RADAR)
+    if (dirty_simbase bitand DIRTY_SIM_RADAR)
     {
         *(float*)*stream = specialData.rdrAz;
         *stream += sizeof(specialData.rdrAz);
@@ -1315,7 +1315,7 @@ void SimBaseClass::WriteDirty(uchar **stream)
         *stream += sizeof(specialData.rdrEl);
     }
 
-    if (dirty_simbase & DIRTY_SIM_RADAR_SLOW)
+    if (dirty_simbase bitand DIRTY_SIM_RADAR_SLOW)
     {
         *(float*)*stream = specialData.rdrNominalRng;
         *stream += sizeof(specialData.rdrNominalRng);
@@ -1323,19 +1323,19 @@ void SimBaseClass::WriteDirty(uchar **stream)
         *stream += sizeof(specialData.rdrCycleTime);
     }
 
-    if (dirty_simbase & DIRTY_SIM_AFTERBURNER)
+    if (dirty_simbase bitand DIRTY_SIM_AFTERBURNER)
     {
         *(unsigned char*)*stream = specialData.afterburner_stage;
         *stream += sizeof(specialData.afterburner_stage);
     }
 
-    if (dirty_simbase & DIRTY_SIM_POWER_OUTPUT1)
+    if (dirty_simbase bitand DIRTY_SIM_POWER_OUTPUT1)
     {
         *(unsigned char*)*stream = specialData.powerOutputNet;
         *stream += sizeof(specialData.powerOutputNet);
     }
 
-    if (dirty_simbase & DIRTY_SIM_POWER_OUTPUT2)
+    if (dirty_simbase bitand DIRTY_SIM_POWER_OUTPUT2)
     {
         *(unsigned char*)*stream = specialData.powerOutputNet2;
         *stream += sizeof(specialData.powerOutputNet2);
@@ -1353,32 +1353,32 @@ void SimBaseClass::ReadDirty(uchar **stream, long *rem)
 
     memcpychk(&bits, stream, sizeof(short), rem);
 
-    if (bits & DIRTY_SIM_FLAGS)
+    if (bits bitand DIRTY_SIM_FLAGS)
     {
         memcpychk(&specialData.flags, stream, sizeof(int), rem);
     }
 
-    if (bits & DIRTY_SIM_COUNTRY)
+    if (bits bitand DIRTY_SIM_COUNTRY)
     {
         memcpychk(&specialData.country, stream, sizeof(int), rem);
     }
 
-    if (bits & DIRTY_SIM_CHAFF)
+    if (bits bitand DIRTY_SIM_CHAFF)
     {
         memcpychk(&specialData.ChaffID, stream, sizeof(VU_ID), rem);
     }
 
-    if (bits & DIRTY_SIM_FLARE)
+    if (bits bitand DIRTY_SIM_FLARE)
     {
         memcpychk(&specialData.FlareID, stream, sizeof(VU_ID), rem);
     }
 
-    if (bits & DIRTY_SIM_STATUS)
+    if (bits bitand DIRTY_SIM_STATUS)
     {
         memcpychk(&specialData.status, stream, sizeof(int), rem);
     }
 
-    if (bits & DIRTY_SIM_POWER_OUTPUT)
+    if (bits bitand DIRTY_SIM_POWER_OUTPUT)
     {
         // MonoPrint ("ReadDirty DIRTY_SIM_POWER_OUTPUT");
         // MLR 3/24/2004 - Copy to both pwr levels
@@ -1394,7 +1394,7 @@ void SimBaseClass::ReadDirty(uchar **stream, long *rem)
         // END OF ADDED SECTION
     }
 
-    if (bits & DIRTY_SIM_RADAR)
+    if (bits bitand DIRTY_SIM_RADAR)
     {
         //MonoPrint ("ReadDirty DIRTY_SIM_RADAR");
         memcpychk(&specialData.rdrAz, stream, sizeof(float), rem);
@@ -1406,26 +1406,26 @@ void SimBaseClass::ReadDirty(uchar **stream, long *rem)
         // *stream += sizeof(specialData.rdrElCenter);
     }
 
-    if (bits & DIRTY_SIM_RADAR_SLOW)
+    if (bits bitand DIRTY_SIM_RADAR_SLOW)
     {
         //MonoPrint ("ReadDirty DIRTY_SIM_RADAR_SLOW");
         memcpychk(&specialData.rdrNominalRng, stream, sizeof(float), rem);
         memcpychk(&specialData.rdrCycleTime , stream, sizeof(float), rem);
     }
 
-    if (bits & DIRTY_SIM_AFTERBURNER)
+    if (bits bitand DIRTY_SIM_AFTERBURNER)
     {
         // MonoPrint ("ReadDirty DIRTY_SIM_AFTERBURNER");
         memcpychk(&specialData.afterburner_stage, stream, sizeof(unsigned char), rem);
     }
 
-    if (bits & DIRTY_SIM_POWER_OUTPUT1) // MLR 3/24/2004 -
+    if (bits bitand DIRTY_SIM_POWER_OUTPUT1) // MLR 3/24/2004 -
     {
         memcpychk(&specialData.powerOutputNet, stream, sizeof(unsigned char), rem);
         specialData.powerOutput = (float)specialData.powerOutputNet * 1.5f / 255.0f;
     }
 
-    if (bits & DIRTY_SIM_POWER_OUTPUT2)
+    if (bits bitand DIRTY_SIM_POWER_OUTPUT2)
     {
         // MLR 3/24/2004 -
         memcpychk(&specialData.powerOutputNet2, stream, sizeof(unsigned char), rem);
@@ -1454,7 +1454,7 @@ void SimBaseClass::MakeSimBaseDirty(Dirty_Sim_Base bits, Dirtyness score)
 
 void SimBaseClass::SetFlag(int flag)
 {
-    if ( not (specialData.flags & flag))
+    if ( not (specialData.flags bitand flag))
     {
         specialData.flags  or_eq  flag;
         //MakeSimBaseDirty (DIRTY_SIM_FLAGS, DDP[163].priority);
@@ -1464,7 +1464,7 @@ void SimBaseClass::SetFlag(int flag)
 
 void SimBaseClass::UnSetFlag(int flag)
 {
-    if (specialData.flags & flag)
+    if (specialData.flags bitand flag)
     {
         specialData.flags and_eq compl (flag);
         //MakeSimBaseDirty (DIRTY_SIM_FLAGS, DDP[164].priority);
@@ -1478,7 +1478,7 @@ void SimBaseClass::UnSetFlag(int flag)
 
 void SimBaseClass::SetFlagSilent(int flag)
 {
-    if ( not (specialData.flags & flag))
+    if ( not (specialData.flags bitand flag))
     {
         specialData.flags  or_eq  flag;
     }
@@ -1486,7 +1486,7 @@ void SimBaseClass::SetFlagSilent(int flag)
 
 void SimBaseClass::UnSetFlagSilent(int flag)
 {
-    if (specialData.flags & flag)
+    if (specialData.flags bitand flag)
     {
         specialData.flags and_eq compl (flag);
     }
@@ -1550,7 +1550,7 @@ void SimBaseClass::SetStatus(int status)
 
 void SimBaseClass::SetStatusBit(int status)
 {
-    if ( not (specialData.status & status))
+    if ( not (specialData.status bitand status))
     {
         specialData.status  or_eq  status;
         MakeSimBaseDirty(DIRTY_SIM_STATUS, SEND_SOON);
@@ -1563,7 +1563,7 @@ void SimBaseClass::SetStatusBit(int status)
 
 void SimBaseClass::ClearStatusBit(int status)
 {
-    if (specialData.status & status)
+    if (specialData.status bitand status)
     {
         specialData.status and_eq compl status;
         MakeSimBaseDirty(DIRTY_SIM_STATUS, SEND_RELIABLE);

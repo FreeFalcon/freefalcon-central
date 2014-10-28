@@ -230,7 +230,7 @@ public:
         flags_ and_eq 0xf0;
     }
 
-    // app needs to Ref & UnRef messages they keep around
+    // app needs to Ref bitand UnRef messages they keep around
     //  most often this need not be done
     int Ref();
     int UnRef();

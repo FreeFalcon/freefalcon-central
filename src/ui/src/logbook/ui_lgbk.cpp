@@ -263,7 +263,7 @@ void PasswordWindow(long TitleID, long MessageID, void (*YesCB)(long, short, C_B
     if ( not YesCB or !NoCB)
         return;
 
-    if (LogState & LB_CHECKED)
+    if (LogState bitand LB_CHECKED)
         return;
 
     win = gMainHandler->FindWindow(PASSWORD_WIN);
@@ -634,7 +634,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (button not_eq NULL)
         {
-            if (LogState & LB_OPPONENT)
+            if (LogState bitand LB_OPPONENT)
                 button->SetFlagBitOn(C_BIT_INVISIBLE);
             else
                 button->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -644,7 +644,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (button not_eq NULL)
         {
-            if (LogState & LB_OPPONENT)
+            if (LogState bitand LB_OPPONENT)
                 button->SetFlagBitOn(C_BIT_INVISIBLE);
             else
                 button->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -654,7 +654,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (button not_eq NULL)
         {
-            if (LogState & LB_OPPONENT)
+            if (LogState bitand LB_OPPONENT)
                 button->SetFlagBitOn(C_BIT_INVISIBLE);
             else
                 button->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -664,7 +664,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (button not_eq NULL)
         {
-            if (LogState & LB_OPPONENT)
+            if (LogState bitand LB_OPPONENT)
                 button->SetFlagBitOn(C_BIT_INVISIBLE);
             else
                 button->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -675,7 +675,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (button)
         {
-            if ( not (LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
+            if ( not (LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
                 button->SetFlagBitOff(C_BIT_ENABLED);
             else
                 button->SetFlagBitOn(C_BIT_ENABLED);
@@ -712,7 +712,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (button)
         {
-            if ( not (LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
+            if ( not (LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
                 button->SetFlagBitOff(C_BIT_ENABLED);
             else
                 button->SetFlagBitOn(C_BIT_ENABLED);
@@ -752,7 +752,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if ( not (LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
+            if ( not (LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -774,7 +774,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if ( not (LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
+            if ( not (LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -787,7 +787,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if ( not (LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
+            if ( not (LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -796,7 +796,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
             ebox->Refresh();
         }
 
-        if (LogState & LB_REFRESH_PILOT)
+        if (LogState bitand LB_REFRESH_PILOT)
         {
             lbox = (C_ListBox *)win->FindControl(LOGBOOK_LIST);
 
@@ -824,7 +824,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if ( not (LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
+            if ( not (LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -837,7 +837,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if ( not (LogState & LB_EDITABLE) or LogState & LB_OPPONENT)
+            if ( not (LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -1408,7 +1408,7 @@ void LoadVirtualTGACB(long, short hittype, C_Base *control)
 
 void ChangeImageCB(long ID, short hittype, C_Base *control)
 {
-    if (LogState & LB_OPPONENT or !(LogState & LB_EDITABLE))
+    if (LogState bitand LB_OPPONENT or !(LogState bitand LB_EDITABLE))
         return;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -1750,7 +1750,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
         //return if current logbook is selected
         if ( not _tcscmp(Pilot, UI_logbk.Callsign()))
         {
-            if (LogState & LB_INVALID_CALLSIGN)
+            if (LogState bitand LB_INVALID_CALLSIGN)
             {
                 AreYouSure(TXT_ERROR, TXT_INVALID_CALLSIGN, CloseWindowCB, NULL);
                 LogState and_eq compl LB_INVALID_CALLSIGN;
@@ -1801,7 +1801,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
                 }
 
                 //notify user the callsign entered was invalid
-                if (LogState & LB_INVALID_CALLSIGN)
+                if (LogState bitand LB_INVALID_CALLSIGN)
                 {
                     AreYouSure(TXT_ERROR, TXT_INVALID_CALLSIGN, CloseWindowCB, NULL);
                     LogState and_eq compl LB_INVALID_CALLSIGN;
@@ -1897,7 +1897,7 @@ void OpenLogBookCB(long, short hittype, C_Base *control)
 
 void NewLogbookCB(long, short hittype, C_Base *)
 {
-    if (LogState & LB_OPPONENT)
+    if (LogState bitand LB_OPPONENT)
         return;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -1921,7 +1921,7 @@ void ClearCB(long, short hittype, C_Base *control)
 
 void ClearLogBookCB(long, short hittype, C_Base *)
 {
-    if (LogState & LB_OPPONENT)
+    if (LogState bitand LB_OPPONENT)
         return;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -2098,7 +2098,7 @@ void SaveLogBookCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (LogState & LB_OPPONENT or !(LogState & LB_EDITABLE))
+    if (LogState bitand LB_OPPONENT or !(LogState bitand LB_EDITABLE))
     {
         CloseLogWindowCB(ID, hittype, control);
         return;

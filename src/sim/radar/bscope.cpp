@@ -975,7 +975,7 @@ void RadarDopplerClass::RWSDisplay(void)
 
     //MI added EXP mode to RWS
     if (IsAADclt(Fov) == FALSE)
-        LabelButton(2, IsSet(EXP) ? "EXP" : "NORM", NULL, IsSet(EXP) ? (vuxRealTime & 0x080) : 0);
+        LabelButton(2, IsSet(EXP) ? "EXP" : "NORM", NULL, IsSet(EXP) ? (vuxRealTime bitand 0x080) : 0);
 
     if (IsAADclt(Ovrd) == FALSE) LabelButton(3, "OVRD", NULL, isEmitting == 0);
 
@@ -1196,7 +1196,7 @@ void RadarDopplerClass::RWSDisplay(void)
 
                             if (rdrObj == lockedTarget  and 
                                 pFCC->LastMissileWillMiss(lockedTargetData->range)  and 
-                                (vuxRealTime & 0x180))
+                                (vuxRealTime bitand 0x180))
                             {
                                 sprintf(str, "LOSE");
                                 ShiAssert(strlen(str) < sizeof(str));
@@ -1228,7 +1228,7 @@ void RadarDopplerClass::RWSDisplay(void)
                         {
                             // Draw X
                             if (pFCC->MissileImpactTimeFlash - SimLibElapsedTime  > 5.0f * CampaignSeconds ||
-                                (vuxRealTime & 0x200))
+                                (vuxRealTime bitand 0x200))
                             {
                                 DrawSymbol(HitInd, 0, 0);
                             }
@@ -1490,7 +1490,7 @@ void RadarDopplerClass::TWSDisplay(void)
     if (IsAADclt(Fov) == FALSE)
     {
         // flash faster
-        LabelButton(2, IsSet(EXP) ? "EXP" : "NORM", NULL, IsSet(EXP) ? (vuxRealTime & 0x080) : 0);
+        LabelButton(2, IsSet(EXP) ? "EXP" : "NORM", NULL, IsSet(EXP) ? (vuxRealTime bitand 0x080) : 0);
     }
 
     if (IsAADclt(Ovrd) == FALSE)
@@ -1871,7 +1871,7 @@ void RadarDopplerClass::TWSDisplay(void)
 
                     if (rdrObj == lockedTarget  and 
                         pFCC->LastMissileWillMiss(lockedTargetData->range)  and 
-                        (vuxRealTime & 0x180))
+                        (vuxRealTime bitand 0x180))
                         sprintf(str, "LOSE");
                     else
                         sprintf(str, "%02d", (int)((alt + 500.0F) * 0.001));
@@ -1884,7 +1884,7 @@ void RadarDopplerClass::TWSDisplay(void)
                         pFCC->MissileImpactTimeFlash > SimLibElapsedTime)   // Draw X
                     {
                         if (pFCC->MissileImpactTimeFlash - SimLibElapsedTime  > 5.0f * CampaignSeconds ||
-                            (vuxRealTime & 0x200))
+                            (vuxRealTime bitand 0x200))
                         {
                             DrawSymbol(HitInd, 0, 0);
                         }
@@ -2008,7 +2008,7 @@ void RadarDopplerClass::STTDisplay(void)
     ShiAssert(strlen(str) < sizeof(str));
     display->TextRight(0.45F, SECOND_LINE_Y, str);
 
-    // Add NCTR data for any bugged target //me123 addet check on ground & jamming
+    // Add NCTR data for any bugged target //me123 addet check on ground bitand jamming
     if ( not lockedTarget->BaseData()->OnGround() or !lockedTarget->BaseData()->IsSPJamming())
     {
         DrawNCTR(false);
@@ -2076,7 +2076,7 @@ void RadarDopplerClass::STTDisplay(void)
             alt  = -lockedTarget->BaseData()->ZPos();
 
             // draw lose indication
-            if (pFCC->LastMissileWillMiss(lockedTargetData->range) and (vuxRealTime & 0x180))
+            if (pFCC->LastMissileWillMiss(lockedTargetData->range) and (vuxRealTime bitand 0x180))
             {
                 sprintf(str, "LOSE");
             }
@@ -2093,7 +2093,7 @@ void RadarDopplerClass::STTDisplay(void)
             if (pFCC->MissileImpactTimeFlash > SimLibElapsedTime)   // Draw X
             {
                 if (pFCC->MissileImpactTimeFlash - SimLibElapsedTime > 5.0f * CampaignSeconds ||
-                    (vuxRealTime & 0x200))
+                    (vuxRealTime bitand 0x200))
                 {
                     DrawSymbol(HitInd, 0, 0);
                 }
@@ -2517,7 +2517,7 @@ void RadarDopplerClass::DrawSymbol(int type, float schweemLen, int age, int flas
     static const float trackTriH = trackScale * (float)cos(DTR * 30.0f);
     static const float trackTriV = trackScale * (float)sin(DTR * 30.0f);
     // MD -- 20040121: use flash parameter to pass flash enable
-    int flashOff = flash * (vuxRealTime & 0x200);
+    int flashOff = flash * (vuxRealTime bitand 0x200);
 
     /*-------------*/
     /* draw symbol */
@@ -2579,7 +2579,7 @@ void RadarDopplerClass::DrawSymbol(int type, float schweemLen, int age, int flas
     {
         case AimFlash: // jpo draw filled square
         case AimRel:
-            if (g_bRealisticAvionics and (type == AimRel or vuxRealTime & 0x080))   //MI changed from or flash
+            if (g_bRealisticAvionics and (type == AimRel or vuxRealTime bitand 0x080))   //MI changed from or flash
             {
                 display->Tri(g_fRadarScale * trackTriH / 2.0f, g_fRadarScale * -trackTriV, //tail flashes faster then flash
                              g_fRadarScale * trackTriH / 2.0f, g_fRadarScale * -trackTriV - 0.035f,
@@ -3019,7 +3019,7 @@ void RadarDopplerClass::DrawDLZSymbol(void)
         }
 
         // Draw the ASEC symbol. if its flashing, or outside the NE zone JPO
-        if (g_bRealisticAvionics and ((vuxRealTime & 0x200) or lockedTargetData->range > pFCC->missileRneMax * 0.7f ||
+        if (g_bRealisticAvionics and ((vuxRealTime bitand 0x200) or lockedTargetData->range > pFCC->missileRneMax * 0.7f ||
                                      lockedTargetData->range < pFCC->missileRneMin))
         {
             display -> SetColor(GetMfdColor(MFD_STEER_ERROR_CUE));
@@ -3191,7 +3191,7 @@ void RadarDopplerClass::TargetToXY(SimObjectLocalData *localData, int hist,
 void RadarDopplerClass::DrawNCTR(bool TWS)
 {
     // 2002-02-25 ADDED BY S.G. If not capable of handling NCTR, then don't do it!
-    if ( not (radarData->flag & RAD_NCTR))
+    if ( not (radarData->flag bitand RAD_NCTR))
         return;
 
     // END OF ADDED SECTION 2002-02-25

@@ -113,7 +113,7 @@ int BasePathClass::GetNextDirection(void)
 
     int i = current_location / PATH_DIV;
     int o = current_location % PATH_DIV;
-    return (path[i] >> (o * PATH_BITS)) & PATH_MASK;
+    return (path[i] >> (o * PATH_BITS)) bitand PATH_MASK;
 }
 
 int BasePathClass::GetPreviousDirection(int num)
@@ -125,7 +125,7 @@ int BasePathClass::GetPreviousDirection(int num)
 
     int i = l / PATH_DIV;
     int o = l % PATH_DIV;
-    return (path[i] >> (o * PATH_BITS)) & PATH_MASK;
+    return (path[i] >> (o * PATH_BITS)) bitand PATH_MASK;
 }
 
 int BasePathClass::GetDirection(int num)
@@ -135,7 +135,7 @@ int BasePathClass::GetDirection(int num)
 
     int i = num / PATH_DIV;
     int o = num % PATH_DIV;
-    return (path[i] >> (o * PATH_BITS)) & PATH_MASK;
+    return (path[i] >> (o * PATH_BITS)) bitand PATH_MASK;
 }
 
 void BasePathClass::SetDirection(int num, int d)
@@ -349,7 +349,7 @@ int AS_DataClass::ASSearch(Path p, void* origin, void* target, void (*extend)(AS
         // Check for exceeding the passed path's length
         if (location->path.GetLength() >= max_length)
         {
-            if (flags & RETURN_PARTIAL_ON_MAX)
+            if (flags bitand RETURN_PARTIAL_ON_MAX)
             {
                 // return a partial path
                 p->CopyPath(&location->path);
@@ -370,7 +370,7 @@ int AS_DataClass::ASSearch(Path p, void* origin, void* target, void (*extend)(AS
     }
 
     // No solution found (timed out).
-    if (flags & RETURN_PARTIAL_ON_FAIL)
+    if (flags bitand RETURN_PARTIAL_ON_FAIL)
     {
         // Return a path to the best location so far
         T = queue;

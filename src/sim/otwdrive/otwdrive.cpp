@@ -1053,7 +1053,7 @@ void OTWDriverClass::RunActionCamera(void)
                 SetFOV(60.0F * DTR);
             }
         }
-        else if (rand() & 0x00000004)
+        else if (rand() bitand 0x00000004)
         {
             if (GetFOV() > 30.0F * DTR)
             {

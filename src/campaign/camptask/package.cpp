@@ -693,21 +693,21 @@ int PackageClass::CheckNeedRequests(void)
     {
         // 2001-09-16 REMOVED by M.N. We don't need this anymore - is done by AddTankerWaypoints result
         // -> If no tanker, packageelement->KillUnit();
-        /* if (wait_for & AMIS_NEEDTANKER)
+        /* if (wait_for bitand AMIS_NEEDTANKER)
          {
         // Cancel package if no tanker planned
         wait_for = 0;
         KillUnit();
         return 0;
         } */
-        if ((wait_for & AMIS_BARCAP) or (wait_for & AMIS_SWEEP))
+        if ((wait_for bitand AMIS_BARCAP) or (wait_for bitand AMIS_SWEEP))
         {
             // if we're still waiting on these, they arn't planned yet and probably won't be.
             wait_for  or_eq  AMIS_BARCAP | AMIS_SWEEP;
             wait_for xor_eq AMIS_BARCAP | AMIS_SWEEP;
         }
 
-        if ((package_flags & AMIS_ADDBDA) and (mis_request.priority > MINIMUM_BDA_PRIORITY))
+        if ((package_flags bitand AMIS_ADDBDA) and (mis_request.priority > MINIMUM_BDA_PRIORITY))
         {
             MissionRequestClass mis;
             Objective target;
@@ -751,7 +751,7 @@ int PackageClass::CheckNeedRequests(void)
 
         if (g_bTankerWaypoints)
         {
-            if ((wait_for & AMIS_ADDTANKER) and (package_flags & AMIS_NEEDTANKER))
+            if ((wait_for bitand AMIS_ADDTANKER) and (package_flags bitand AMIS_NEEDTANKER))
             {
                 e = GetFirstUnitElement();
                 Flight f = (Flight)e;
@@ -960,9 +960,9 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
     if (mis->priority > ATM_HIGH_PRIORITY and ls and hs)
         targetd  or_eq  NEED_SEAD;
 
-    if (package_flags & AMIS_HIGHTHREAT)
+    if (package_flags bitand AMIS_HIGHTHREAT)
         tar = MAX_FLYMISSION_HIGHTHREAT;
-    else if (package_flags & AMIS_NOTHREAT)
+    else if (package_flags bitand AMIS_NOTHREAT)
         tar = MAX_FLYMISSION_NOTHREAT;
     else
         tar = MAX_FLYMISSION_THREAT;
@@ -1032,7 +1032,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
         // This is kinda annoying, because we have to fuck with the flights counter, etc..
         // But if I need to convert my ONCALLCAS to a PRPLANCAS I only want to have to
         // convert one.
-        if (flights == 1 and (package_flags & AMIS_ADDFAC))
+        if (flights == 1 and (package_flags bitand AMIS_ADDFAC))
         {
             // Add FAC directly
             newmis = *mis;
@@ -1113,7 +1113,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
 
 
     // 3. Trigger required mission requests
-    if ((package_flags & AMIS_ADDSEAD) and (targetd & NEED_SEAD))
+    if ((package_flags bitand AMIS_ADDSEAD) and (targetd bitand NEED_SEAD))
     {
         // Add SEAD directly
         newmis = *mis;
@@ -1160,7 +1160,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
     }
 
     // Marco edit - We want Escort regardless of threat
-    if ((package_flags & AMIS_ADDESCORT))  // and mis->vs and TeamInfo[mis->vs]->atm->averageCAStrength > aa_strength)
+    if ((package_flags bitand AMIS_ADDESCORT))  // and mis->vs and TeamInfo[mis->vs]->atm->averageCAStrength > aa_strength)
     {
         // Add ESCORT directly
         newmis = *mis;
@@ -1170,7 +1170,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
             newmis.mission = escort_type; // 2001-11-10 Modified by M.N. use requested escort type
         else
         {
-            if (rand() & 1)
+            if (rand() bitand 1)
             {
                 newmis.mission = AMIS_SEADESCORT;
             }
@@ -1206,7 +1206,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
     }
 
 
-    if (package_flags & AMIS_ADDBARCAP)
+    if (package_flags bitand AMIS_ADDBARCAP)
     {
         // Request and enemy BARCAP mission
         newmis.requesterID = Id();
@@ -1228,7 +1228,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
 
         newmis.flags = REQF_NEEDRESPONSE | REQF_ONETRY;
 
-        if (mis->flags & REQF_PART_OF_ACTION)
+        if (mis->flags bitand REQF_PART_OF_ACTION)
             newmis.flags  or_eq  REQF_PART_OF_ACTION;
 
         newmis.action_type = mis->action_type;
@@ -1245,7 +1245,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
 #endif
     }
 
-    if (package_flags & AMIS_ADDSWEEP)
+    if (package_flags bitand AMIS_ADDSWEEP)
     {
         // Request an enemy Sweep mission
         newmis.requesterID = Id();
@@ -1267,7 +1267,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
         else
             newmis.context = enemySupportAircraftPresent;
 
-        if (mis->flags & REQF_PART_OF_ACTION)
+        if (mis->flags bitand REQF_PART_OF_ACTION)
             newmis.flags  or_eq  REQF_PART_OF_ACTION;
 
         newmis.action_type = mis->action_type;
@@ -1317,31 +1317,31 @@ int PackageClass::RecordFlightAddition(Flight flight, MissionRequest mis, int ta
         mis_request.tot = flight->GetUnitTOT();
 
         // If we can add SEAD, and havn't already decided to, check if we need to
-        if ((package_flags & AMIS_ADDSEAD) and !(targetd & NEED_SEAD))
+        if ((package_flags bitand AMIS_ADDSEAD) and !(targetd bitand NEED_SEAD))
             targetd  or_eq  CheckPathThreats(flight);
         // If we can add ECM, check if we need to
-        else if (package_flags & AMIS_ADDECM)
+        else if (package_flags bitand AMIS_ADDECM)
             targetd  or_eq  CheckPathThreats(flight);
 
-        if ( not (MissionData[mis->mission].flags & AMIS_TARGET_ONLY))
+        if ( not (MissionData[mis->mission].flags bitand AMIS_TARGET_ONLY))
         {
             // Find assembly points
             w = flight->GetFirstUnitWP();
 
             while (w)
             {
-                if (w->GetWPFlags() & WPF_ASSEMBLE and !aw)
+                if (w->GetWPFlags() bitand WPF_ASSEMBLE and !aw)
                     aw = w;
 
-                if (w->GetWPFlags() & WPF_BREAKPOINT)
+                if (w->GetWPFlags() bitand WPF_BREAKPOINT)
                     bw = w;
 
-                if (w->GetWPFlags() & WPF_TARGET or w->GetWPFlags() & WPF_IP or w->GetWPFlags() & WPF_CP or /* w->GetWPFlags() & WPF_TURNPOINT or */ w->GetWPFlags() & WPF_REPEAT)
+                if (w->GetWPFlags() bitand WPF_TARGET or w->GetWPFlags() bitand WPF_IP or w->GetWPFlags() bitand WPF_CP or /* w->GetWPFlags() bitand WPF_TURNPOINT or */ w->GetWPFlags() bitand WPF_REPEAT)
                 {
                     if ( not bw)
                         bw = lw;
 
-                    if (lw->GetWPFlags() & WPF_TARGET or lw->GetWPFlags() & WPF_CP)
+                    if (lw->GetWPFlags() bitand WPF_TARGET or lw->GetWPFlags() bitand WPF_CP)
                         tw = w; // Just passed the target waypoint
 
                     intarget = 1;
@@ -1354,14 +1354,14 @@ int PackageClass::RecordFlightAddition(Flight flight, MissionRequest mis, int ta
                 else
                     intarget = 0;
 
-                if (w->GetWPFlags() & WPF_ASSEMBLE)
+                if (w->GetWPFlags() bitand WPF_ASSEMBLE)
                     eaw = w;
 
                 lw = w;
                 w = w->GetNextWP();
             }
 
-            if ( not bw and MissionData[mis->mission].flags & AMIS_NO_BREAKPT)
+            if ( not bw and MissionData[mis->mission].flags bitand AMIS_NO_BREAKPT)
                 bw = tw;
 
             ShiAssert(bw and tw and aw and eaw)
@@ -1380,7 +1380,7 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
 {
     MissionRequestClass newmis;
 
-    if ( not (package_flags & AMIS_SUPPORT_MASK))
+    if ( not (package_flags bitand AMIS_SUPPORT_MASK))
         return;
 
     if (TeamInfo[GetTeam()] and TeamInfo[GetTeam()]->atm and TeamInfo[GetTeam()]->atm->packageList)
@@ -1409,7 +1409,7 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
 
             if (flight and !flight->Aborted() and pmis->tot < startTime)
             {
-                if ((package_flags & AMIS_ADDAWACS) and flight->GetUnitMission() == AMIS_AWACS)
+                if ((package_flags bitand AMIS_ADDAWACS) and flight->GetUnitMission() == AMIS_AWACS)
                 {
                     pack->GetUnitDestination(&px, &py);
                     dist = (float)DistSqu(mis->tx, mis->ty, px, py);
@@ -1421,7 +1421,7 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
                     }
                 }
 
-                if ((package_flags & AMIS_ADDJSTAR) and flight->GetUnitMission() == AMIS_JSTAR)
+                if ((package_flags bitand AMIS_ADDJSTAR) and flight->GetUnitMission() == AMIS_JSTAR)
                 {
                     pack->GetUnitDestination(&px, &py);
                     dist = (float)DistSqu(mis->tx, mis->ty, px, py);
@@ -1433,7 +1433,7 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
                     }
                 }
 
-                if ((package_flags & AMIS_ADDECM) and (targetd & NEED_ECM) and flight->GetUnitMission() == AMIS_ECM)
+                if ((package_flags bitand AMIS_ADDECM) and (targetd bitand NEED_ECM) and flight->GetUnitMission() == AMIS_ECM)
                 {
                     pack->GetUnitDestination(&px, &py);
                     dist = (float)DistSqu(mis->tx, mis->ty, px, py);
@@ -1445,7 +1445,7 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
                     }
                 }
 
-                if ((package_flags & AMIS_ADDTANKER) and flight->GetUnitMission() == AMIS_TANKER)
+                if ((package_flags bitand AMIS_ADDTANKER) and flight->GetUnitMission() == AMIS_TANKER)
                 {
                     GridIndex x, y;
                     pack->GetUnitDestination(&px, &py);
@@ -1469,7 +1469,7 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
     }
 
     // Now request anything we couldn't find
-    if ((package_flags & AMIS_ADDAWACS) and awacs == FalconNullId)
+    if ((package_flags bitand AMIS_ADDAWACS) and awacs == FalconNullId)
     {
         newmis.requesterID = Id();
         newmis.targetID = FalconNullId;
@@ -1488,7 +1488,7 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
         newmis.RequestMission();
     }
 
-    if ((package_flags & AMIS_ADDJSTAR) and jstar == FalconNullId)
+    if ((package_flags bitand AMIS_ADDJSTAR) and jstar == FalconNullId)
     {
         newmis.requesterID = Id();
         newmis.targetID = FalconNullId;
@@ -1508,7 +1508,7 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
     }
 
     // 4. Trigger conditional mission requests.
-    if ((package_flags & AMIS_ADDECM) and (targetd & NEED_ECM) and ecm == FalconNullId)
+    if ((package_flags bitand AMIS_ADDECM) and (targetd bitand NEED_ECM) and ecm == FalconNullId)
     {
         newmis.requesterID = Id();
         newmis.targetID = FalconNullId;
@@ -1527,7 +1527,7 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
         newmis.RequestMission();
     }
 
-    if ((package_flags & AMIS_ADDTANKER) and tanker == FalconNullId)
+    if ((package_flags bitand AMIS_ADDTANKER) and tanker == FalconNullId)
     {
         GridIndex x, y;
         // Make sure some tankers are going to be here - later only ask for it if we'll be
@@ -1604,7 +1604,7 @@ void PackageClass::HandleRequestReceipt(int type, int them, VU_ID triggered_flig
             mis.roe_check = ROE_AIR_ENGAGE;
             mis.priority = (mis.match_strength) / 2;
 
-            if (mis_request.flags & REQF_PART_OF_ACTION)
+            if (mis_request.flags bitand REQF_PART_OF_ACTION)
             {
                 mis.flags = REQF_PART_OF_ACTION;
                 mis.action_type = mis_request.action_type;
@@ -1948,7 +1948,7 @@ Flight AttachFlight(MissionRequest mis, Package pack)
 
     pack->GetLocation(&bx, &by);
 
-    if (mis->flags & AMIS_IMMEDIATE)
+    if (mis->flags bitand AMIS_IMMEDIATE)
     {
         flight = TeamInfo[mis->who]->atm->FindBestAirFlight(mis); // We steal the aircraft from a current flight (all the aircraft)
 
@@ -2045,7 +2045,7 @@ void FinalizeFlight(Unit flight, int flights)
 #if 0
 #ifdef DEBUG
 
-    if (flight->GetTotalVehicles() <= PILOTS_PER_FLIGHT) // and (MissionData[mis->mission].flags & AMIS_DONT_USE_AC))
+    if (flight->GetTotalVehicles() <= PILOTS_PER_FLIGHT) // and (MissionData[mis->mission].flags bitand AMIS_DONT_USE_AC))
     {
         // Verify a few things are correct for this flight
         int acp, acr = flight->GetTotalVehicles();
@@ -2063,7 +2063,7 @@ void FinalizeFlight(Unit flight, int flights)
 #endif
 #endif
 
-    if (flights > 1 and !(MissionData[flight->GetUnitMission()].flags & AMIS_DONT_COORD) and !(MissionData[flight->GetUnitMission()].flags & AMIS_TARGET_ONLY))
+    if (flights > 1 and !(MissionData[flight->GetUnitMission()].flags bitand AMIS_DONT_COORD) and !(MissionData[flight->GetUnitMission()].flags bitand AMIS_TARGET_ONLY))
         assem = 1;
     else
         assem = 0;
@@ -2072,17 +2072,17 @@ void FinalizeFlight(Unit flight, int flights)
 
     while (w)
     {
-        if (w->GetWPFlags() & WPF_BREAKPOINT and !assem)
+        if (w->GetWPFlags() bitand WPF_BREAKPOINT and !assem)
             w->SetWPFlags(w->GetWPFlags() xor WPF_BREAKPOINT); // Clear our flag
 
-        if (w->GetWPFlags() & WPF_ASSEMBLE and !assem)
+        if (w->GetWPFlags() bitand WPF_ASSEMBLE and !assem)
         {
             w->SetWPAction(WP_NOTHING); // Clear our action
             w->SetWPRouteAction(MissionData[flight->GetUnitMission()].routewp);
             w->SetWPFlags(w->GetWPFlags() xor WPF_ASSEMBLE); // Clear our flag
         }
 
-        if (w->GetWPAction() == WP_NOTHING and !(w->GetWPFlags() & 0x4FF))
+        if (w->GetWPAction() == WP_NOTHING and !(w->GetWPFlags() bitand 0x4FF))
         {
             // This is an unused waypoint (Nothing action and no flags set)
             // Check if in line or co-existant with other wps, if so, remove
@@ -2254,25 +2254,25 @@ void PackageClass::WriteDirty(unsigned char **stream)
     *(uchar *)*stream = dirty_package;
     *stream += sizeof(uchar);
 
-    if (dirty_package & DIRTY_TANKER)
+    if (dirty_package bitand DIRTY_TANKER)
     {
         *(VU_ID*)*stream = tanker;
         *stream += sizeof(VU_ID);
     }
 
-    if (dirty_package & DIRTY_PACKAGE_FLAGS)
+    if (dirty_package bitand DIRTY_PACKAGE_FLAGS)
     {
         *(ulong*)*stream = package_flags;
         *stream += sizeof(ulong);
     }
 
-    if (dirty_package & DIRTY_TAKEOFF)
+    if (dirty_package bitand DIRTY_TAKEOFF)
     {
         *(CampaignTime*)*stream = takeoff;
         *stream += sizeof(CampaignTime);
     }
 
-    if (dirty_package & DIRTY_TP_TIME)
+    if (dirty_package bitand DIRTY_TP_TIME)
     {
         *(CampaignTime*)*stream = tp_time;
         *stream += sizeof(CampaignTime);
@@ -2292,22 +2292,22 @@ void PackageClass::ReadDirty(VU_BYTE **stream, long *rem)
     //read bitfield
     memcpychk(&bits, stream, sizeof(uchar), rem);
 
-    if (bits & DIRTY_TANKER)
+    if (bits bitand DIRTY_TANKER)
     {
         memcpychk(&tanker, stream, sizeof(VU_ID), rem);
     }
 
-    if (bits & DIRTY_PACKAGE_FLAGS)
+    if (bits bitand DIRTY_PACKAGE_FLAGS)
     {
         memcpychk(&package_flags, stream, sizeof(ulong), rem);
     }
 
-    if (bits & DIRTY_TAKEOFF)
+    if (bits bitand DIRTY_TAKEOFF)
     {
         memcpychk(&takeoff, stream, sizeof(CampaignTime), rem);
     }
 
-    if (bits & DIRTY_TP_TIME)
+    if (bits bitand DIRTY_TP_TIME)
     {
         memcpychk(&tp_time, stream, sizeof(CampaignTime), rem);
     }

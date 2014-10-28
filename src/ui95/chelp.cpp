@@ -86,7 +86,7 @@ void C_Help::SetText(long x, long y, long w, long TextID)
 
 long C_Help::CheckHotSpots(long , long)
 {
-    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !Ready())
         return(0);
 
     return(0);
@@ -104,7 +104,7 @@ BOOL C_Help::Process(long ID, short HitType)
 
 void C_Help::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -112,7 +112,7 @@ void C_Help::Refresh()
 
 void C_Help::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Picture_)

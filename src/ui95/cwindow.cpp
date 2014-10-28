@@ -3,7 +3,7 @@
 #include "chandler.h"
 #include "f4error.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -103,10 +103,10 @@ void UI_Leave(F4CSECTIONHANDLE* Section)
 }
 
 // 8th of a circle (0->45 degrees)
-// Multiply these values by the radius to get the x & y values
+// Multiply these values by the radius to get the x bitand y values
 // Skip points or smaller circles
 // (The smaller it gets, the more points you skip)
-// Then do x,y swaps & sign swaps to do the other 8 sections of a full circle
+// Then do x,y swaps bitand sign swaps to do the other 8 sections of a full circle
 // Connect the dots with drawline()
 //
 // Referenced in cthread.cpp... so if modified, must modify #define there also
@@ -254,7 +254,7 @@ void C_Window::Cleanup()
 {
     CONTROLLIST *cur, *last;
 
-    if (Controls_ and !(Flags_ & C_BIT_NOCLEANUP))
+    if (Controls_ and !(Flags_ bitand C_BIT_NOCLEANUP))
     {
         cur = Controls_;
 
@@ -263,7 +263,7 @@ void C_Window::Cleanup()
             last = cur;
             cur = cur->Next;
 
-            if (last->Control_->GetFlags() & C_BIT_REMOVE)
+            if (last->Control_->GetFlags() bitand C_BIT_REMOVE)
             {
                 last->Control_->Cleanup();
                 delete last->Control_;
@@ -387,7 +387,7 @@ void C_Window::ScanClientArea(long client)
 
     while (cur)
     {
-        if (cur->Control_ and !(cur->Control_->GetFlags() & C_BIT_ABSOLUTE) and !(cur->Control_->GetFlags() & C_BIT_INVISIBLE) and cur->Control_->GetClient() == client)
+        if (cur->Control_ and !(cur->Control_->GetFlags() bitand C_BIT_ABSOLUTE) and !(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE) and cur->Control_->GetClient() == client)
         {
             if ((cur->Control_->GetX() + cur->Control_->GetW()) > VW_[client])
                 VW_[client] = cur->Control_->GetX() + cur->Control_->GetW();
@@ -669,7 +669,7 @@ void C_Window::SetUpdateRect(long x1, long y1, long x2, long y2, long flags, lon
 
     if (Handler_ == NULL) return;
 
-    if ( not (flags & C_BIT_ABSOLUTE))
+    if ( not (flags bitand C_BIT_ABSOLUTE))
     {
         x1 += VX_[client];
         y1 += VY_[client];
@@ -989,7 +989,7 @@ void C_Window::AddControlTop(C_Base *NewControl)
     NewControl->SetParent(this);
     NewControl->SetSubParents(this);
 
-    if ( not (NewControl->GetFlags() & C_BIT_ABSOLUTE))
+    if ( not (NewControl->GetFlags() bitand C_BIT_ABSOLUTE))
     {
         if (VScroll_[NewControl->GetClient()])
         {
@@ -1055,7 +1055,7 @@ void C_Window::AddControl(C_Base *NewControl)
     NewControl->SetSubParents(this);
     ControlCount_++;
 
-    if ( not (NewControl->GetFlags() & C_BIT_ABSOLUTE))
+    if ( not (NewControl->GetFlags() bitand C_BIT_ABSOLUTE))
     {
         if (VScroll_[NewControl->GetClient()])
         {
@@ -1141,7 +1141,7 @@ CONTROLLIST *C_Window::RemoveControl(CONTROLLIST *ctrl)
     if (ctrl->Control_->GetID() > 0)
         Hash_->Remove(ctrl->Control_->GetID());
 
-    if (ctrl->Control_->GetFlags() & C_BIT_REMOVE)
+    if (ctrl->Control_->GetFlags() bitand C_BIT_REMOVE)
     {
         ctrl->Control_->Cleanup();
         delete ctrl->Control_;
@@ -1167,7 +1167,7 @@ void C_Window::RemoveAllControls()
         last = cur;
         cur = cur->Next;
 
-        if (last->Control_->GetFlags() & C_BIT_REMOVE)
+        if (last->Control_->GetFlags() bitand C_BIT_REMOVE)
         {
             last->Control_->Cleanup();
             delete last->Control_;
@@ -1296,7 +1296,7 @@ void C_Window::HideGroup(long ID)
     {
         if (cur->Control_->GetGroup() == ID)
         {
-            if ( not (cur->Control_->GetFlags() & C_BIT_INVISIBLE))
+            if ( not (cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
                 cur->Control_->Refresh();
 
             cur->Control_->SetFlagBitOn(C_BIT_INVISIBLE);
@@ -1368,7 +1368,7 @@ void C_Window::HideCluster(long ID)
     {
         if (cur->Control_->GetCluster() == ID)
         {
-            if ( not (cur->Control_->GetFlags() & C_BIT_INVISIBLE))
+            if ( not (cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
                 cur->Control_->Refresh();
 
             cur->Control_->SetFlagBitOn(C_BIT_INVISIBLE);
@@ -1388,7 +1388,7 @@ void C_Window::DrawTimerControls()
 
     while (cur)
     {
-        if (cur->Control_->GetFlags() & C_BIT_TIMER)
+        if (cur->Control_->GetFlags() bitand C_BIT_TIMER)
             cur->Control_->Refresh();
 
         cur = cur->Next;
@@ -1423,7 +1423,7 @@ C_Base *C_Window::GetControl(long *ID, long relX, long relY)
     {
         if (cur->Control_->IsControl())
         {
-            if (cur->Control_->GetFlags() & C_BIT_ABSOLUTE)
+            if (cur->Control_->GetFlags() bitand C_BIT_ABSOLUTE)
             {
                 thisID = cur->Control_->CheckHotSpots(relX, relY);
 
@@ -1506,7 +1506,7 @@ C_Base *C_Window::MouseOver(long relx, long rely, C_Base *lastover)
 
     while (cur)
     {
-        if (cur->Control_->GetFlags() & C_BIT_ABSOLUTE)
+        if (cur->Control_->GetFlags() bitand C_BIT_ABSOLUTE)
         {
             if (cur->Control_->MouseOver(relx, rely, lastover))
             {
@@ -1607,13 +1607,13 @@ void C_Window::Blend(WORD *front, UI95_RECT *frect, short fwidth, WORD *back, UI
 
         for (j = drect->left; j < drect->right; j++)
         {
-            rf = UIColorTable[fperc][(front[fidx] & r_mask_) >> r_shift_];
-            gf = UIColorTable[fperc][(front[fidx] & g_mask_) >> g_shift_];
-            bf = UIColorTable[fperc][(front[fidx] & b_mask_) >> b_shift_];
+            rf = UIColorTable[fperc][(front[fidx] bitand r_mask_) >> r_shift_];
+            gf = UIColorTable[fperc][(front[fidx] bitand g_mask_) >> g_shift_];
+            bf = UIColorTable[fperc][(front[fidx] bitand b_mask_) >> b_shift_];
 
-            rb = UIColorTable[bperc][(back[bidx] & r_mask_) >> r_shift_];
-            gb = UIColorTable[bperc][(back[bidx] & g_mask_) >> g_shift_];
-            bb = UIColorTable[bperc][(back[bidx] & b_mask_) >> b_shift_];
+            rb = UIColorTable[bperc][(back[bidx] bitand r_mask_) >> r_shift_];
+            gb = UIColorTable[bperc][(back[bidx] bitand g_mask_) >> g_shift_];
+            bb = UIColorTable[bperc][(back[bidx] bitand b_mask_) >> b_shift_];
 
             dest[didx] = static_cast<WORD>(rShift[UIColorTable[100][rf + rb]] | gShift[UIColorTable[100][gf + gb]] | bShift[UIColorTable[100][bf + bb]]); //!
             fidx++;
@@ -1651,13 +1651,13 @@ void C_Window::BlendTransparent(WORD Mask, WORD *front, UI95_RECT *frect, short 
         {
             if (front[fidx] not_eq Mask)
             {
-                rf = UIColorTable[fperc][(front[fidx] & r_mask_) >> r_shift_];
-                gf = UIColorTable[fperc][(front[fidx] & g_mask_) >> g_shift_];
-                bf = UIColorTable[fperc][(front[fidx] & b_mask_) >> b_shift_];
+                rf = UIColorTable[fperc][(front[fidx] bitand r_mask_) >> r_shift_];
+                gf = UIColorTable[fperc][(front[fidx] bitand g_mask_) >> g_shift_];
+                bf = UIColorTable[fperc][(front[fidx] bitand b_mask_) >> b_shift_];
 
-                rb = UIColorTable[bperc][(back[bidx] & r_mask_) >> r_shift_];
-                gb = UIColorTable[bperc][(back[bidx] & g_mask_) >> g_shift_];
-                bb = UIColorTable[bperc][(back[bidx] & b_mask_) >> b_shift_];
+                rb = UIColorTable[bperc][(back[bidx] bitand r_mask_) >> r_shift_];
+                gb = UIColorTable[bperc][(back[bidx] bitand g_mask_) >> g_shift_];
+                bb = UIColorTable[bperc][(back[bidx] bitand b_mask_) >> b_shift_];
 
                 dest[didx] = static_cast<WORD>(rShift[UIColorTable[100][rf + rb]] | gShift[UIColorTable[100][gf + gb]] | bShift[UIColorTable[100][bf + bb]]); //!
             }
@@ -1695,9 +1695,9 @@ void C_Window::Translucency(WORD *front, UI95_RECT *frect, short fwidth, WORD *d
 
         for (j = drect->left; j < drect->right; j++)
         {
-            rf = UIColorTable[0][(front[fidx] & r_mask_) >> r_shift_];
-            gf = UIColorTable[0][(front[fidx] & g_mask_) >> g_shift_];
-            bf = UIColorTable[0][(front[fidx] & b_mask_) >> b_shift_];
+            rf = UIColorTable[0][(front[fidx] bitand r_mask_) >> r_shift_];
+            gf = UIColorTable[0][(front[fidx] bitand g_mask_) >> g_shift_];
+            bf = UIColorTable[0][(front[fidx] bitand b_mask_) >> b_shift_];
 
             dest[j + i * dwidth] = static_cast<WORD>(rShift[rf] | gShift[gf] | bShift[bf]); //!
             fidx++;
@@ -1721,7 +1721,7 @@ void C_Window::BlitTranslucent(SCREEN *surface, COLORREF color, long Perc, UI95_
 
     d = *rect;
 
-    if (Flags & C_BIT_ABSOLUTE)
+    if (Flags bitand C_BIT_ABSOLUTE)
     {
         if ( not ClipToArea(&s, &d, &Area_))
             return;
@@ -1742,9 +1742,9 @@ void C_Window::BlitTranslucent(SCREEN *surface, COLORREF color, long Perc, UI95_
     d.right += GetX();
     d.bottom += GetY();
 
-    rc = UIColorTable[Perc][(color >>  3) & 0x1f];
-    gc = UIColorTable[Perc][(color >> 11) & 0x1f];
-    bc = UIColorTable[Perc][(color >> 19) & 0x1f];
+    rc = UIColorTable[Perc][(color >>  3) bitand 0x1f];
+    gc = UIColorTable[Perc][(color >> 11) bitand 0x1f];
+    bc = UIColorTable[Perc][(color >> 19) bitand 0x1f];
 
     bgperc = 100 - Perc;
 
@@ -1769,9 +1769,9 @@ void C_Window::BlitTranslucent(SCREEN *surface, COLORREF color, long Perc, UI95_
             else
                 dc = surface->mem[didx];
 
-            r = UIColorTable[operc][rc + UIColorTable[bgperc][(dc >> r_shift_) & 0x1f]];
-            g = UIColorTable[operc][gc + UIColorTable[bgperc][(dc >> g_shift_) & 0x1f]];
-            b = UIColorTable[operc][bc + UIColorTable[bgperc][(dc >> b_shift_) & 0x1f]];
+            r = UIColorTable[operc][rc + UIColorTable[bgperc][(dc >> r_shift_) bitand 0x1f]];
+            g = UIColorTable[operc][gc + UIColorTable[bgperc][(dc >> g_shift_) bitand 0x1f]];
+            b = UIColorTable[operc][bc + UIColorTable[bgperc][(dc >> b_shift_) bitand 0x1f]];
 
             if (surface->bpp == 32) //XX
                 ((DWORD*)surface->mem)[ didx ] = RGB565toRGB8(static_cast<WORD>((rShift[r] | gShift[g] | bShift[b])));
@@ -1797,7 +1797,7 @@ void C_Window::CustomBlitTranslucent(SCREEN *surface, COLORREF color, long Perc,
 
     d = *rect;
 
-    if (Flags & C_BIT_ABSOLUTE)
+    if (Flags bitand C_BIT_ABSOLUTE)
     {
         orig = d;
 
@@ -1825,9 +1825,9 @@ void C_Window::CustomBlitTranslucent(SCREEN *surface, COLORREF color, long Perc,
     orig.right += GetX();
     orig.bottom += GetY();
 
-    rc = (color >>  3) & 0x1f;
-    gc = (color >> 11) & 0x1f;
-    bc = (color >> 19) & 0x1f;
+    rc = (color >>  3) bitand 0x1f;
+    gc = (color >> 11) bitand 0x1f;
+    bc = (color >> 19) bitand 0x1f;
     bgperc = 100 - Perc;
 
     if (bgperc < 0) bgperc = 0;
@@ -1885,9 +1885,9 @@ void C_Window::CustomBlitTranslucent(SCREEN *surface, COLORREF color, long Perc,
                     dc = surface->mem[didx];
                 }
 
-                r = UIColorTable[operc][UIColorTable[Perc - sub][rc] + UIColorTable[bgperc + sub][(dc >> r_shift_) & 0x1f]];
-                g = UIColorTable[operc][UIColorTable[Perc - sub][gc] + UIColorTable[bgperc + sub][(dc >> g_shift_) & 0x1f]];
-                b = UIColorTable[operc][UIColorTable[Perc - sub][bc] + UIColorTable[bgperc + sub][(dc >> b_shift_) & 0x1f]];
+                r = UIColorTable[operc][UIColorTable[Perc - sub][rc] + UIColorTable[bgperc + sub][(dc >> r_shift_) bitand 0x1f]];
+                g = UIColorTable[operc][UIColorTable[Perc - sub][gc] + UIColorTable[bgperc + sub][(dc >> g_shift_) bitand 0x1f]];
+                b = UIColorTable[operc][UIColorTable[Perc - sub][bc] + UIColorTable[bgperc + sub][(dc >> b_shift_) bitand 0x1f]];
 
                 if (surface->bpp == 32)//XX
                     ((DWORD*)surface->mem)[didx] = RGB565toRGB8(static_cast<short>(rShift[r] | gShift[g] | bShift[b]));
@@ -1917,7 +1917,7 @@ void C_Window::DitherFill(SCREEN *surface, COLORREF color, long Perc, short size
 
     d = *rect;
 
-    if (Flags & C_BIT_ABSOLUTE)
+    if (Flags bitand C_BIT_ABSOLUTE)
     {
         if ( not ClipToArea(&s, &d, &Area_))
             return;
@@ -1941,9 +1941,9 @@ void C_Window::DitherFill(SCREEN *surface, COLORREF color, long Perc, short size
     d.bottom += GetY();
 
     convcolor = UI95_RGB24Bit(color);
-    rc = UIColorTable[Perc][(convcolor & r_mask_) >> r_shift_];
-    gc = UIColorTable[Perc][(convcolor & g_mask_) >> g_shift_];
-    bc = UIColorTable[Perc][(convcolor & b_mask_) >> b_shift_];
+    rc = UIColorTable[Perc][(convcolor bitand r_mask_) >> r_shift_];
+    gc = UIColorTable[Perc][(convcolor bitand g_mask_) >> g_shift_];
+    bc = UIColorTable[Perc][(convcolor bitand b_mask_) >> b_shift_];
 
     didxstart = d.top * surface->width;
 
@@ -1954,9 +1954,9 @@ void C_Window::DitherFill(SCREEN *surface, COLORREF color, long Perc, short size
 
         for (j = d.left; j < d.right; j++)
         {
-            rf = (WORD)rc + pattern[(k & mask) * size + (l & mask)];
-            gf = (WORD)gc + pattern[(k & mask) * size + (l & mask)];
-            bf = (WORD)bc + pattern[(k & mask) * size + (l & mask)];
+            rf = (WORD)rc + pattern[(k bitand mask) * size + (l bitand mask)];
+            gf = (WORD)gc + pattern[(k bitand mask) * size + (l bitand mask)];
+            bf = (WORD)bc + pattern[(k bitand mask) * size + (l bitand mask)];
 
             if (rf < 0) rf = 0;
 
@@ -2045,7 +2045,7 @@ void C_Window::BlitFill(SCREEN *surface, COLORREF Color, UI95_RECT *dst, long Fl
 
     d = *dst;
 
-    if (Flags & C_BIT_ABSOLUTE)
+    if (Flags bitand C_BIT_ABSOLUTE)
     {
         if ( not ClipToArea(&s, &d, &Area_))
             return;
@@ -2076,7 +2076,7 @@ void C_Window::GradientFill(SCREEN *surface, COLORREF Color, long Perc, UI95_REC
 
     d = *dst;
 
-    if (Flags & C_BIT_ABSOLUTE)
+    if (Flags bitand C_BIT_ABSOLUTE)
     {
         if ( not ClipToArea(&s, &d, &Area_))
             return;
@@ -2098,9 +2098,9 @@ void C_Window::GradientFill(SCREEN *surface, COLORREF Color, long Perc, UI95_REC
     d.bottom += GetY();
 
     col = UI95_RGB24Bit(Color);
-    r = UIColorTable[Perc][(col & r_mask_) >> r_shift_];
-    g = UIColorTable[Perc][(col & g_mask_) >> g_shift_];
-    b = UIColorTable[Perc][(col & b_mask_) >> b_shift_];
+    r = UIColorTable[Perc][(col bitand r_mask_) >> r_shift_];
+    g = UIColorTable[Perc][(col bitand g_mask_) >> g_shift_];
+    b = UIColorTable[Perc][(col bitand b_mask_) >> b_shift_];
 
     col = rShift[r] | gShift[g] | bShift[b];
 
@@ -2117,7 +2117,7 @@ void C_Window::BlitFill(SCREEN *surface, COLORREF Color, long x, long y, long w,
     d.right = x + w;
     d.bottom = y + h;
 
-    if (Flags & C_BIT_ABSOLUTE)
+    if (Flags bitand C_BIT_ABSOLUTE)
     {
         if ( not ClipToArea(&s, &d, &Area_))
             return;
@@ -2149,7 +2149,7 @@ void C_Window::DrawHLine(SCREEN *surface, COLORREF color, long x, long y, long w
     rect.bottom = y + 1;
     s = rect; // JPO initialise to something
 
-    if (Flags & C_BIT_ABSOLUTE)
+    if (Flags bitand C_BIT_ABSOLUTE)
     {
         if ( not ClipToArea(&s, &rect, &Area_))
             return;
@@ -2184,7 +2184,7 @@ void C_Window::DrawVLine(SCREEN *surface, COLORREF color, long x, long y, long h
     rect.bottom = y + h;
     s = rect; // JPO - initialise to something.
 
-    if (Flags & C_BIT_ABSOLUTE)
+    if (Flags bitand C_BIT_ABSOLUTE)
     {
         if ( not ClipToArea(&s, &rect, &Area_))
             return;
@@ -2262,81 +2262,81 @@ BOOL C_Window::ClipLine(long *x1, long *y1, long *x2, long *y2, UI95_RECT *clip)
     if ( not flag1 and !flag2) // return, because both points are inside clip rect
         return(TRUE);
 
-    if (((flag1 & flag2) & LINE_CLIP_LEFT) or // If both points are on the same side of the clip rect... don't draw
-        ((flag1 & flag2) & LINE_CLIP_TOP) ||
-        ((flag1 & flag2) & LINE_CLIP_RIGHT) ||
-        ((flag1 & flag2) & LINE_CLIP_BOTTOM))
+    if (((flag1 bitand flag2) bitand LINE_CLIP_LEFT) or // If both points are on the same side of the clip rect... don't draw
+        ((flag1 bitand flag2) bitand LINE_CLIP_TOP) ||
+        ((flag1 bitand flag2) bitand LINE_CLIP_RIGHT) ||
+        ((flag1 bitand flag2) bitand LINE_CLIP_BOTTOM))
         return(FALSE);
 
     if (*x1 == *x2) // if x's are the same... no math required
     {
-        if (flag1 & LINE_CLIP_TOP)
+        if (flag1 bitand LINE_CLIP_TOP)
             *y1 = clip->top;
-        else if (flag1 & LINE_CLIP_BOTTOM)
+        else if (flag1 bitand LINE_CLIP_BOTTOM)
             *y1 = clip->bottom;
 
-        if (flag2 & LINE_CLIP_TOP)
+        if (flag2 bitand LINE_CLIP_TOP)
             *y2 = clip->top;
-        else if (flag2 & LINE_CLIP_BOTTOM)
+        else if (flag2 bitand LINE_CLIP_BOTTOM)
             *y2 = clip->bottom;
     }
     else if (*y1 == *y2)
     {
-        if (flag1 & LINE_CLIP_LEFT)
+        if (flag1 bitand LINE_CLIP_LEFT)
             *x1 = clip->left;
-        else if (flag1 & LINE_CLIP_RIGHT)
+        else if (flag1 bitand LINE_CLIP_RIGHT)
             *x1 = clip->right;
 
-        if (flag2 & LINE_CLIP_LEFT)
+        if (flag2 bitand LINE_CLIP_LEFT)
             *x2 = clip->left;
-        else if (flag2 & LINE_CLIP_RIGHT)
+        else if (flag2 bitand LINE_CLIP_RIGHT)
             *x2 = clip->right;
     }
     else
     {
-        if ((flag1 | flag2) & (LINE_CLIP_LEFT | LINE_CLIP_RIGHT))
+        if ((flag1 | flag2) bitand (LINE_CLIP_LEFT | LINE_CLIP_RIGHT))
             slope1 = (float)(*y2 - *y1) / (float)(*x2 - *x1);
 
-        if ((flag1 | flag2) & (LINE_CLIP_TOP | LINE_CLIP_BOTTOM))
+        if ((flag1 | flag2) bitand (LINE_CLIP_TOP | LINE_CLIP_BOTTOM))
             slope2 = (float)(*x2 - *x1) / (float)(*y2 - *y1);
 
-        if (flag1 & LINE_CLIP_LEFT)
+        if (flag1 bitand LINE_CLIP_LEFT)
         {
             *y1 = FloatToInt32(*y1 + (clip->left - *x1) * slope1);
             *x1 = clip->left;
         }
-        else if (flag1 & LINE_CLIP_RIGHT)
+        else if (flag1 bitand LINE_CLIP_RIGHT)
         {
             *y1 = FloatToInt32(*y1 + (clip->right - *x1) * slope1);
             *x1 = clip->right;
         }
-        else if (flag1 & LINE_CLIP_TOP)
+        else if (flag1 bitand LINE_CLIP_TOP)
         {
             *x1 = FloatToInt32(*x1 + (clip->top - *y1) * slope2);
             *y1 = clip->top;
         }
-        else if (flag1 & LINE_CLIP_BOTTOM)
+        else if (flag1 bitand LINE_CLIP_BOTTOM)
         {
             *x1 = FloatToInt32(*x1 + (clip->bottom - *y1) * slope2);
             *y1 = clip->bottom;
         }
 
-        if (flag2 & LINE_CLIP_LEFT)
+        if (flag2 bitand LINE_CLIP_LEFT)
         {
             *y2 = FloatToInt32(*y2 + (clip->left - *x2) * slope1);
             *x2 = clip->left;
         }
-        else if (flag2 & LINE_CLIP_RIGHT)
+        else if (flag2 bitand LINE_CLIP_RIGHT)
         {
             *y2 = FloatToInt32(*y2 + (clip->right - *x2) * slope1);
             *x2 = clip->right;
         }
-        else if (flag2 & LINE_CLIP_TOP)
+        else if (flag2 bitand LINE_CLIP_TOP)
         {
             *x2 = FloatToInt32(*x2 + (clip->top - *y2) * slope2);
             *y2 = clip->top;
         }
-        else if (flag2 & LINE_CLIP_BOTTOM)
+        else if (flag2 bitand LINE_CLIP_BOTTOM)
         {
             *x2 = FloatToInt32(*x2 + (clip->bottom - *y2) * slope2);
             *y2 = clip->bottom;
@@ -2359,7 +2359,7 @@ void C_Window::DrawLine(SCREEN *surface, COLORREF color, long x1, long y1, long 
 
     clipper = *clip;
 
-    if ( not (Flags & C_BIT_ABSOLUTE))
+    if ( not (Flags bitand C_BIT_ABSOLUTE))
     {
         x1 += VX_[Client];
         y1 += VY_[Client];
@@ -2485,7 +2485,7 @@ void C_Window::DrawCircle(SCREEN *surface, COLORREF color, long x, long y, float
 
     clipper = *clip;
 
-    if ( not (Flags & C_BIT_ABSOLUTE))
+    if ( not (Flags bitand C_BIT_ABSOLUTE))
     {
         x += VX_[Client];
         y += VY_[Client];
@@ -2612,7 +2612,7 @@ BOOL C_Window::UpdateTimerControls()
         me = cur;
         cur = cur->Next;
 
-        if (me->Control_->GetFlags() & C_BIT_TIMER)
+        if (me->Control_->GetFlags() bitand C_BIT_TIMER)
             if (me->Control_->TimerUpdate())
                 retval = TRUE;
     }
@@ -2676,7 +2676,7 @@ void C_Window::SetControl(long ID) // Called when mouse is used over this contro
 
     if (cur)
     {
-        if (cur->GetFlags() & C_BIT_SELECTABLE)
+        if (cur->GetFlags() bitand C_BIT_SELECTABLE)
         {
             if (CurControl_)
             {
@@ -2712,7 +2712,7 @@ void C_Window::SetControl(long ID) // Called when mouse is used over this contro
     }
 }
 
-void C_Window::SetPrevControl() // Called when SHIFT & TAB are pressed
+void C_Window::SetPrevControl() // Called when SHIFT bitand TAB are pressed
 {
     CONTROLLIST *cur;
 
@@ -2725,7 +2725,7 @@ void C_Window::SetPrevControl() // Called when SHIFT & TAB are pressed
 
         while (cur)
         {
-            if (cur->Control_->GetFlags() & C_BIT_SELECTABLE and cur->Control_->GetFlags() & C_BIT_ENABLED and !(cur->Control_->GetFlags() & C_BIT_INVISIBLE))
+            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and cur->Control_->GetFlags() bitand C_BIT_ENABLED and !(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
             {
                 CurControl_ = cur->Control_;
                 CurControl_->Activate();
@@ -2749,7 +2749,7 @@ void C_Window::SetPrevControl() // Called when SHIFT & TAB are pressed
 
         while (cur->Control_ not_eq CurControl_)
         {
-            if (cur->Control_->GetFlags() & C_BIT_SELECTABLE and cur->Control_->GetFlags() & C_BIT_ENABLED and !(cur->Control_->GetFlags() & C_BIT_INVISIBLE))
+            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and cur->Control_->GetFlags() bitand C_BIT_ENABLED and !(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
             {
                 CurControl_ = cur->Control_;
                 CurControl_->Activate();
@@ -2777,7 +2777,7 @@ void C_Window::SetNextControl() // Called when TAB is pressed
 
         while (cur)
         {
-            if (cur->Control_->GetFlags() & C_BIT_SELECTABLE and cur->Control_->GetFlags() & C_BIT_ENABLED and !(cur->Control_->GetFlags() & C_BIT_INVISIBLE))
+            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and cur->Control_->GetFlags() bitand C_BIT_ENABLED and !(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
             {
                 CurControl_ = cur->Control_;
                 CurControl_->Activate();
@@ -2801,7 +2801,7 @@ void C_Window::SetNextControl() // Called when TAB is pressed
 
         while (cur->Control_ not_eq CurControl_)
         {
-            if (cur->Control_->GetFlags() & C_BIT_SELECTABLE and cur->Control_->GetFlags() & C_BIT_ENABLED and !(cur->Control_->GetFlags() & C_BIT_INVISIBLE))
+            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and cur->Control_->GetFlags() bitand C_BIT_ENABLED and !(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
             {
                 CurControl_ = cur->Control_;
                 CurControl_->Activate();

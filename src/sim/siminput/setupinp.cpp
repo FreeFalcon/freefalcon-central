@@ -390,7 +390,7 @@ CallFunc(InputFunctionType theFunc, unsigned long val, int state, void* pButton)
 
 void CallInputFunction(unsigned long val, int state)
 {
-    int keyDown = (state & KEY_DOWN ? 1 : 0);
+    int keyDown = (state bitand KEY_DOWN ? 1 : 0);
     InputFunctionType theFunc;
     int flags, buttonId, mouseSide;
 
@@ -407,7 +407,7 @@ void CallInputFunction(unsigned long val, int state)
         if (keyDown)
         {
             //dangling else - JPO
-            if ( not (state & 0x6) and DIK_IsAscii(val, state))
+            if ( not (state bitand 0x6) and DIK_IsAscii(val, state))
             {
                 StandardAsciiInput(val, state);
             }
@@ -427,7 +427,7 @@ void CallInputFunction(unsigned long val, int state)
     else
     {
         flags =
-            (state & MODS_MASK) +
+            (state bitand MODS_MASK) +
             (CommandsKeyCombo << SECOND_KEY_SHIFT) +
             (CommandsKeyComboMod << SECOND_KEY_MOD_SHIFT)
             ;
@@ -489,7 +489,7 @@ void CallInputFunction(unsigned long val, int state)
             CommandsKeyCombo = 0;
             CommandsKeyComboMod = 0;
             flags =
-                (state & MODS_MASK) +
+                (state bitand MODS_MASK) +
                 (CommandsKeyCombo << SECOND_KEY_SHIFT) +
                 (CommandsKeyComboMod << SECOND_KEY_MOD_SHIFT)
                 ;
@@ -868,7 +868,7 @@ void ExtendedKeyInput(unsigned long key, int)
             memset(chatterStr, 0, sizeof(chatterStr));
             UseInputFn = NULL;
             DiscardInputFn = NULL;
-            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() & compl SHOW_CHATBOX);
+            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitand compl SHOW_CHATBOX);
             break;
 
         case DIK_ESCAPE:
@@ -883,7 +883,7 @@ void ExtendedKeyInput(unsigned long key, int)
             memset(chatterStr, 0, sizeof(chatterStr));
             UseInputFn = NULL;
             DiscardInputFn = NULL;
-            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() & compl SHOW_CHATBOX);
+            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitand compl SHOW_CHATBOX);
             break;
     }
 }

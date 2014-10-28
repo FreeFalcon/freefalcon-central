@@ -1117,7 +1117,7 @@ int ReadScriptedTriggerFile(char* filename)
 #endif
                     pod->ground_priority[team] = pod->air_priority[team] = i;
                     // KCK: player_priority only used now if >= 0
-                    // if ( not (pod->flags & GTMOBJ_PLAYER_SET_PRIORITY))
+                    // if ( not (pod->flags bitand GTMOBJ_PLAYER_SET_PRIORITY))
                     // pod->player_priority[team] =  i;
                     pod->flags  or_eq  GTMOBJ_SCRIPTED_PRIORITY;
                 }

@@ -66,7 +66,7 @@ void AircraftClass::GatherInputs(void)
         af->throtl = 0.0F;
 
         //TJL 01/12/04 Multi-engine
-        if (acFlags & hasTwoEngines)
+        if (acFlags bitand hasTwoEngines)
         {
             af->engine1Throttle = 0.0F;
             af->engine2Throttle = 0.0F;
@@ -289,7 +289,7 @@ void AircraftClass::GatherInputs(void)
 
         // Add GLOC effects
         // 2002-02-17 MN a try on having the AI better handle GLOC
-        if (acFlags & InRecovery)
+        if (acFlags bitand InRecovery)
         {
             if (glocFactor > 0.75F)
             {
@@ -377,7 +377,7 @@ void AircraftClass::GatherInputs(void)
                 //af->ClearFlag(AirframeClass::SuperSimple);
             }
 
-            if (acFlags & InRecovery)
+            if (acFlags bitand InRecovery)
             {
                 if (glocFactor > 0.25F)
                 {
@@ -446,12 +446,12 @@ void AircraftClass::GatherInputs(void)
 
 #ifdef DEBUGLABEL
 
-    if (g_nShowDebugLabels & 0x80)
+    if (g_nShowDebugLabels bitand 0x80)
     {
         char label[40];
         sprintf(label, "P%1.3f R%1.3f T%1.3f Y%1.3f", af->pstick, af->rstick, af->throtl, af->ypedal);
 
-        if (g_nShowDebugLabels & 0x8000)
+        if (g_nShowDebugLabels bitand 0x8000)
         {
             if (af->GetSimpleMode())
             {
@@ -468,7 +468,7 @@ void AircraftClass::GatherInputs(void)
             ((DrawableBSP*)drawPointer)->SetLabel(label, ((DrawableBSP*)drawPointer)->LabelColor());
         }
     }
-    else if ((g_nShowDebugLabels & 0x100 or g_nShowDebugLabels & g_nMaxDebugLabel) and DBrain())
+    else if ((g_nShowDebugLabels bitand 0x100 or g_nShowDebugLabels bitand g_nMaxDebugLabel) and DBrain())
     {
         DBrain()->ReSetLabel(this);
     }
@@ -542,31 +542,31 @@ void AircraftClass::GatherInputs(void)
         float maxSpeed = 1.0F;
 
         // JB 000815 change == comparison to &
-        if (mFaults and mFaults->GetFault(FaultClass::flcs_fault) & FaultClass::dual)
+        if (mFaults and mFaults->GetFault(FaultClass::flcs_fault) bitand FaultClass::dual)
         {
             maxSpeed -= 0.05F;
             perturb = TRUE;
         }
 
-        if (mFaults and mFaults->GetFault(FaultClass::eng_fault) & FaultClass::efire)
+        if (mFaults and mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::efire)
         {
             maxSpeed -= 0.05F;
             perturb = TRUE;
         }
 
-        if (mFaults and mFaults->GetFault(FaultClass::eng_fault) & FaultClass::hydr)
+        if (mFaults and mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::hydr)
         {
             maxSpeed -= 0.05F;
             perturb = TRUE;
         }
 
-        if (mFaults and mFaults->GetFault(FaultClass::isa_fault) & FaultClass::all)
+        if (mFaults and mFaults->GetFault(FaultClass::isa_fault) bitand FaultClass::all)
         {
             maxSpeed -= 0.05F;
             perturb = TRUE;
         }
 
-        if (mFaults and mFaults->GetFault(FaultClass::isa_fault) & FaultClass::rudr)
+        if (mFaults and mFaults->GetFault(FaultClass::isa_fault) bitand FaultClass::rudr)
         {
             af->ypedal = 0.0F;
         }

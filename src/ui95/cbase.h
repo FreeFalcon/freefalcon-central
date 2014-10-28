@@ -169,7 +169,7 @@ public:
     virtual void SetRelXY(long x, long y) {}
     void EnableGroup(long ID)
     {
-        SetFlags(Flags_ & compl C_BIT_INVISIBLE);
+        SetFlags(Flags_ bitand compl C_BIT_INVISIBLE);
     }
     void DisableGroup(long ID)
     {

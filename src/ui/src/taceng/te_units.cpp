@@ -649,7 +649,7 @@ void FillListBoxWithSquadrons(C_ListBox *lbox, long team, long aircraft_dindex)
     CampEntity entity, sq = NULL;
     short count = 0;
 
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
     {
         // Add the new item
         lbox->AddItem(1, C_TYPE_ITEM, TXT_NEW);
@@ -1097,7 +1097,7 @@ void tactical_update_package(void)
                 gTakeoffTime = start_day * CampaignDay + hr * CampaignHours + mn * CampaignMinutes + se * CampaignSeconds;
 
                 // Check for bad takeoff time in running mode
-                if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT) and gTakeoffTime < TheCampaign.CurrentTime)
+                if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and gTakeoffTime < TheCampaign.CurrentTime)
                 {
                     gTakeoffTime = TheCampaign.CurrentTime + CampaignSeconds;
                     hr = gTakeoffTime / CampaignHours;
@@ -1144,7 +1144,7 @@ void SetupPackageControls(C_Window *win, C_Base *caller)
         if (w)
             takeoff = w->GetWPDepartureTime();
 
-        while (w and !(w->GetWPFlags() & WPF_TARGET))
+        while (w and !(w->GetWPFlags() bitand WPF_TARGET))
             w = w->GetNextWP();
 
         if (w)
@@ -1152,8 +1152,8 @@ void SetupPackageControls(C_Window *win, C_Base *caller)
     }
 
     // sfr: addpackage
-    if ( /*!(TheCampaign.Flags & (CAMP_TACTICAL|CAMP_TACTICAL_EDIT)) ||*/
-        (EdittingPackage and !(TheCampaign.Flags & CAMP_TACTICAL_EDIT) and takeoff < TheCampaign.CurrentTime))
+    if ( /*!(TheCampaign.Flags bitand (CAMP_TACTICAL|CAMP_TACTICAL_EDIT)) ||*/
+        (EdittingPackage and !(TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and takeoff < TheCampaign.CurrentTime))
     {
         // Disable these controls in campaign, or in run mode if the package has departed
         btn = (C_Button*)win->FindControl(ADD_PACKAGE_FLIGHT);
@@ -1276,7 +1276,7 @@ void SetupPackageControls(C_Window *win, C_Base *caller)
             btn->SetFlagBitOn(C_BIT_INVISIBLE);
     }
 
-    if (TheCampaign.Flags & CAMP_TACTICAL)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL)
     {
         // These are allowed always in tactical engagement
         lbox = (C_ListBox*)win->FindControl(PACKAGE_PRIORITY_LIST);
@@ -1785,7 +1785,7 @@ void SetPackageTimes(Package new_package, CampaignTime takeoffTime, CampaignTime
                 delta += MissionData[flight->GetUnitMission()].separation * CampaignSeconds;
             else if (targetTime)
             {
-                while (w and !(w->GetWPFlags() & WPF_TARGET))
+                while (w and !(w->GetWPFlags() bitand WPF_TARGET))
                     w = w->GetNextWP();
 
                 if (w)
@@ -2411,7 +2411,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
             mis.tot = TheCampaign.CurrentTime + CampaignMinutes;
         }
 
-        if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT) and mis.tot < TheCampaign.CurrentTime)
+        if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and mis.tot < TheCampaign.CurrentTime)
             mis.tot = TheCampaign.CurrentTime + 3 * CampaignSeconds;
 
         // Adjust for additional flights (flights is # of previous flights in the package)
@@ -2474,7 +2474,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
             }
             else
             {
-                if ((w->GetWPFlags() & WPF_TARGET) and !done)
+                if ((w->GetWPFlags() bitand WPF_TARGET) and !done)
                 {
                     w->SetWPFlag(WPF_TIME_LOCKED);
                     done = 1;

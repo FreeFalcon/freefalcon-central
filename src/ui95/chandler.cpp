@@ -151,7 +151,7 @@ void C_Handler::Setup(HWND hwnd, ImageBuffer *, ImageBuffer *Primary)
         // OW FIXME: hack export a function from device or somewhere
         DXContext *pCtx = FalconDisplay.theDisplayDevice.GetDefaultRC();
 
-        if ( not (pCtx->m_pcapsDD->dwCaps2 & DDCAPS2_CANRENDERWINDOWED))
+        if ( not (pCtx->m_pcapsDD->dwCaps2 bitand DDCAPS2_CANRENDERWINDOWED))
         {
             int nWidth = 16;
             int nHeight = 16;
@@ -300,7 +300,7 @@ void C_Handler::Cleanup()
         prev = cur;
         cur = cur->Next;
 
-        if (prev->Flags & C_BIT_REMOVE)
+        if (prev->Flags bitand C_BIT_REMOVE)
         {
             prev->win->Cleanup();
             delete prev->win;
@@ -405,7 +405,7 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
     {
         Root_ = newwin;
     }
-    else if (thewin->GetDepth() < Root_->win->GetDepth() and thewin->GetDepth() or (thewin->GetFlags() & C_BIT_CANTMOVE and !(Root_->win->GetFlags() & C_BIT_CANTMOVE)))
+    else if (thewin->GetDepth() < Root_->win->GetDepth() and thewin->GetDepth() or (thewin->GetFlags() bitand C_BIT_CANTMOVE and !(Root_->win->GetFlags() bitand C_BIT_CANTMOVE)))
     {
         newwin->Next = Root_;
         Root_->Prev = newwin;
@@ -417,7 +417,7 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
 
         while (cur and newwin)
         {
-            if (thewin->GetDepth() < cur->win->GetDepth() and thewin->GetDepth() or (thewin->GetFlags() & C_BIT_CANTMOVE and !(cur->win->GetFlags() & C_BIT_CANTMOVE)))
+            if (thewin->GetDepth() < cur->win->GetDepth() and thewin->GetDepth() or (thewin->GetFlags() bitand C_BIT_CANTMOVE and !(cur->win->GetFlags() bitand C_BIT_CANTMOVE)))
             {
                 newwin->Next = cur;
                 newwin->Prev = cur->Prev;
@@ -440,7 +440,7 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
     thewin->update_  or_eq  C_DRAW_REFRESHALL;
     thewin->RefreshWindow();
 
-    if (thewin->GetFlags() & C_BIT_ENABLED)
+    if (thewin->GetFlags() bitand C_BIT_ENABLED)
         CurWindow_ = thewin;
 
     // sfr: before adding window, correct its constraints to screen
@@ -458,7 +458,7 @@ BOOL C_Handler::ShowWindow(C_Window *thewin)
 
     while (cur)
     {
-        if (cur->win == thewin and !(cur->Flags & C_BIT_ENABLED))
+        if (cur->win == thewin and !(cur->Flags bitand C_BIT_ENABLED))
         {
             cur->win->SetCritical(UI_Critical);
             cur->Flags  or_eq  C_BIT_ENABLED;
@@ -483,7 +483,7 @@ BOOL C_Handler::HideWindow(C_Window *thewin)
 
     while (cur)
     {
-        if (cur->win == thewin and (cur->Flags & C_BIT_ENABLED))
+        if (cur->win == thewin and (cur->Flags bitand C_BIT_ENABLED))
         {
             cur->Flags and_eq compl C_BIT_ENABLED;
             SetBehindWindow(cur->win);
@@ -659,7 +659,7 @@ void C_Handler::WindowToFront(C_Window *thewin) // move to end of list
 
     if (Root_->win == thewin)
     {
-        if (Root_->Flags & C_BIT_CANTMOVE or !(Root_->Flags & C_BIT_ENABLED))
+        if (Root_->Flags bitand C_BIT_CANTMOVE or !(Root_->Flags bitand C_BIT_ENABLED))
             return;
 
         found = Root_;
@@ -685,7 +685,7 @@ void C_Handler::WindowToFront(C_Window *thewin) // move to end of list
         {
             if (cur->Next->win == thewin and found == NULL)
             {
-                if (cur->Next->Flags & C_BIT_CANTMOVE or !(cur->Next->Flags & C_BIT_ENABLED))
+                if (cur->Next->Flags bitand C_BIT_CANTMOVE or !(cur->Next->Flags bitand C_BIT_ENABLED))
                     return;
 
                 found = cur->Next;
@@ -797,12 +797,12 @@ void C_Handler::CheckTranslucentWindows()
     {
         infront = cur->Next;
 
-        if (cur->Flags & C_BIT_ENABLED)
+        if (cur->Flags bitand C_BIT_ENABLED)
             while (infront)
             {
-                if ((infront->win->GetFlags() & C_BIT_TRANSLUCENT)
-                    and (infront->win->update_ & (C_DRAW_COPYWINDOW | C_DRAW_REFRESH | C_DRAW_REFRESHALL))
-                    and (infront->Flags & C_BIT_ENABLED))
+                if ((infront->win->GetFlags() bitand C_BIT_TRANSLUCENT)
+                    and (infront->win->update_ bitand (C_DRAW_COPYWINDOW | C_DRAW_REFRESH | C_DRAW_REFRESHALL))
+                    and (infront->Flags bitand C_BIT_ENABLED))
                 {
                     for (i = 0; i < infront->win->rectcount_; i++)
                     {
@@ -921,7 +921,7 @@ void C_Handler::RefreshAll(UI95_RECT *updaterect)
 
     while (cur)
     {
-        if (cur->Flags & C_BIT_ENABLED)
+        if (cur->Flags bitand C_BIT_ENABLED)
         {
             rect = *updaterect;
             rect.left -= cur->win->GetX();
@@ -951,7 +951,7 @@ void C_Handler::ClearHiddenRects(WHLIST *me)
 
         while (cur)
         {
-            if ((cur->Flags & C_BIT_ENABLED) and !(cur->win->GetFlags() & C_BIT_TRANSLUCENT))
+            if ((cur->Flags bitand C_BIT_ENABLED) and !(cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
             {
                 me->win->ClearUpdateRect(cur->win->GetX() - me->win->GetX(),
                                          cur->win->GetY() - me->win->GetY(),
@@ -972,13 +972,13 @@ void C_Handler::ClearAllHiddenRects()
 
     while (me)
     {
-        if (me->Flags & C_BIT_ENABLED)
+        if (me->Flags bitand C_BIT_ENABLED)
         {
             cur = me->Next;
 
             while (cur)
             {
-                if ((cur->Flags & C_BIT_ENABLED) and !(cur->win->GetFlags() & C_BIT_TRANSLUCENT))
+                if ((cur->Flags bitand C_BIT_ENABLED) and !(cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
                 {
                     me->win->ClearUpdateRect(cur->win->GetX() - me->win->GetX(),
                                              cur->win->GetY() - me->win->GetY(),
@@ -1078,13 +1078,13 @@ void C_Handler::CheckDrawThrough()
 
     while (me)
     {
-        if ((me->Flags & C_BIT_ENABLED) and (me->win->update_ & C_DRAW_REFRESH))
+        if ((me->Flags bitand C_BIT_ENABLED) and (me->win->update_ bitand C_DRAW_REFRESH))
         {
             cur = me->Next;
 
             while (cur)
             {
-                if ((cur->Flags & C_BIT_ENABLED) and (cur->win->GetFlags() & C_BIT_TRANSLUCENT))
+                if ((cur->Flags bitand C_BIT_ENABLED) and (cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
                 {
                     for (i = 0; i < me->win->rectcount_; i++)
                     {
@@ -1118,7 +1118,7 @@ void C_Handler::Update()
     UI95_RECT src, dst;
     short i;
 
-    if ( not (UpdateFlag & C_DRAW_REFRESH) or !DrawFlags)
+    if ( not (UpdateFlag bitand C_DRAW_REFRESH) or !DrawFlags)
         return;
 
     Lock();
@@ -1134,9 +1134,9 @@ void C_Handler::Update()
 
     while (cur)
     {
-        if ((cur->Flags & C_BIT_ENABLED) and (cur->win->update_ & C_DRAW_REFRESH))
+        if ((cur->Flags bitand C_BIT_ENABLED) and (cur->win->update_ bitand C_DRAW_REFRESH))
         {
-            if (cur->win->update_ & C_DRAW_REFRESH)
+            if (cur->win->update_ bitand C_DRAW_REFRESH)
             {
                 //#if 0
                 ClearHiddenRects(cur);
@@ -1144,7 +1144,7 @@ void C_Handler::Update()
                 cur->win->DrawWindow(&surface_);
             }
 
-            if (cur->win->update_ & C_DRAW_COPYWINDOW)
+            if (cur->win->update_ bitand C_DRAW_COPYWINDOW)
             {
                 for (i = 0; i < cur->win->rectcount_; i++)
                 {
@@ -1164,7 +1164,7 @@ void C_Handler::Update()
 
                         while (infront)
                         {
-                            if (infront->Flags & C_BIT_ENABLED and (infront->win->GetFlags() & C_BIT_TRANSLUCENT))
+                            if (infront->Flags bitand C_BIT_ENABLED and (infront->win->GetFlags() bitand C_BIT_TRANSLUCENT))
                                 infront->win->SetUpdateRect(dst.left - infront->win->GetX(), dst.top - infront->win->GetY(), dst.right - infront->win->GetX(), dst.bottom - infront->win->GetY(), C_BIT_ABSOLUTE, 0);
 
                             infront = infront->Next;
@@ -1326,7 +1326,7 @@ void C_Handler::UpdateTimerControls(void)
 
     while (cur)
     {
-        if (cur->Flags & C_BIT_ENABLED)
+        if (cur->Flags bitand C_BIT_ENABLED)
         {
             if (cur->win->UpdateTimerControls())
                 cur->win->DrawTimerControls();
@@ -1335,7 +1335,7 @@ void C_Handler::UpdateTimerControls(void)
         cur = cur->Next;
     }
 
-    if (UpdateFlag & (C_DRAW_REFRESH | C_DRAW_REFRESHALL))
+    if (UpdateFlag bitand (C_DRAW_REFRESH | C_DRAW_REFRESHALL))
         SetEvent(WakeOutput_);
 }
 
@@ -1374,11 +1374,11 @@ void C_Handler::EnableWindowGroup(long ID)
 
     while (cur)
     {
-        if (cur->win->GetGroup() == ID and !(cur->Flags & C_BIT_ENABLED))
+        if (cur->win->GetGroup() == ID and !(cur->Flags bitand C_BIT_ENABLED))
         {
             ShowWindow(cur->win);
 
-            if ( not (cur->win->GetFlags() & C_BIT_CANTMOVE))
+            if ( not (cur->win->GetFlags() bitand C_BIT_CANTMOVE))
             {
                 next = cur->Next;
                 WindowToFront(cur->win);
@@ -1403,7 +1403,7 @@ void C_Handler::DisableWindowGroup(long ID)
 
     while (cur)
     {
-        if (cur->win->GetGroup() == ID and (cur->Flags & C_BIT_ENABLED))
+        if (cur->win->GetGroup() == ID and (cur->Flags bitand C_BIT_ENABLED))
             HideWindow(cur->win);
 
         cur = cur->Next;
@@ -1421,7 +1421,7 @@ void C_Handler::DisableSection(long ID)
 
     while (cur)
     {
-        if (cur->win->GetSection() == ID and (cur->Flags & C_BIT_ENABLED))
+        if (cur->win->GetSection() == ID and (cur->Flags bitand C_BIT_ENABLED))
             HideWindow(cur->win);
 
         cur = cur->Next;
@@ -1523,7 +1523,7 @@ C_Window *C_Handler::GetWindow(short x, short y)
 
     while (cur)
     {
-        if (cur->Flags & C_BIT_ENABLED)
+        if (cur->Flags bitand C_BIT_ENABLED)
         {
             if (x >= cur->win->GetX() and y >= cur->win->GetY()  and 
                 x <= (cur->win->GetX() + cur->win->GetW())  and 
@@ -1559,7 +1559,7 @@ void C_Handler::SetBehindWindow(C_Window *thewin)
     {
         if (cur->win not_eq thewin)
         {
-            if (cur->Flags & C_BIT_ENABLED)
+            if (cur->Flags bitand C_BIT_ENABLED)
                 cur->win->SetUpdateRect(x - cur->win->GetX(), y - cur->win->GetY(), w - cur->win->GetX(), h - cur->win->GetY(), C_BIT_ABSOLUTE, 0);
 
             cur = cur->Next;
@@ -1675,10 +1675,10 @@ void C_Handler::DoOutputLoop()
 
             EnterCritical();
 
-            if (UpdateFlag & C_DRAW_REFRESH)
+            if (UpdateFlag bitand C_DRAW_REFRESH)
                 Update();
 
-            if (UpdateFlag & C_DRAW_COPYWINDOW)
+            if (UpdateFlag bitand C_DRAW_COPYWINDOW)
                 CopyToPrimary();
 
             LeaveCritical();
@@ -1886,7 +1886,7 @@ BOOL C_Handler::CheckHotKeys(unsigned char DKScanCode, unsigned char Ascii, unsi
 
     while (cur)
     {
-        if (cur->Flags & C_BIT_ENABLED)
+        if (cur->Flags bitand C_BIT_ENABLED)
             if (cur->win->CheckHotKeys(DKScanCode, Ascii, ShiftStates, RepeatCount))
                 return(TRUE);
 
@@ -1929,7 +1929,7 @@ BOOL C_Handler::GrabItem(WORD MouseX, WORD MouseY, C_Window *overme, long GrabTy
     }
     else
     {
-        if (overme->GetFlags() & C_BIT_DRAGABLE)
+        if (overme->GetFlags() bitand C_BIT_DRAGABLE)
         {
             if (MouseX < overme->GetX() or MouseY < overme->GetY() or MouseX > (overme->GetX() + overme->GetW()) or MouseY > (overme->GetY() + overme->GetDragH()))
             {
@@ -1978,7 +1978,7 @@ void C_Handler::StartDrag()
     }
     else if (Grab_.Window_)
     {
-        if (Grab_.Window_->GetFlags() & C_BIT_DRAGABLE)
+        if (Grab_.Window_->GetFlags() bitand C_BIT_DRAGABLE)
         {
             Drag_ = Grab_;
             //ShowCursor(FALSE);
@@ -2303,7 +2303,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
                 if (ret and Grab_.Control_)
                 {
-                    if (Grab_.Control_->GetFlags() & C_BIT_ABSOLUTE)
+                    if (Grab_.Control_->GetFlags() bitand C_BIT_ABSOLUTE)
                     {
                         Grab_.Control_->SetRelXY(
                             MouseX - Grab_.Window_->GetX() - Grab_.Control_->GetX(),
@@ -2464,7 +2464,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
             if (overme == NULL)
             {
-                if (OldMouseControl_ and OldMouseControl_->GetFlags() & C_BIT_MOUSEOVER)
+                if (OldMouseControl_ and OldMouseControl_->GetFlags() bitand C_BIT_MOUSEOVER)
                 {
                     OldMouseControl_->SetMouseOver(0);
                     OldMouseControl_->Refresh();
@@ -2500,7 +2500,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             {
                 if (Grab_.Control_ and Grab_.Window_)
                 {
-                    if (Grab_.Control_->GetFlags() & C_BIT_ABSOLUTE)
+                    if (Grab_.Control_->GetFlags() bitand C_BIT_ABSOLUTE)
                         Grab_.Control_->SetRelXY(MouseX - Grab_.Window_->GetX() - Grab_.Control_->GetX(), MouseY - Grab_.Window_->GetY() - Grab_.Control_->GetY());
                     else
                         Grab_.Control_->SetRelXY(MouseX - Grab_.Window_->GetX()
@@ -2517,13 +2517,13 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             {
                 MouseControl_ = overme->MouseOver(MouseX - overme->GetX(), MouseY - overme->GetY(), OldMouseControl_);
 
-                if (OldMouseControl_ and MouseControl_ not_eq OldMouseControl_ and OldMouseControl_->GetFlags() & C_BIT_MOUSEOVER)
+                if (OldMouseControl_ and MouseControl_ not_eq OldMouseControl_ and OldMouseControl_->GetFlags() bitand C_BIT_MOUSEOVER)
                 {
                     OldMouseControl_->SetMouseOver(0);
                     OldMouseControl_->Refresh();
                 }
 
-                if (MouseControl_ and MouseControl_ not_eq OldMouseControl_ and MouseControl_->GetFlags() & C_BIT_MOUSEOVER)
+                if (MouseControl_ and MouseControl_ not_eq OldMouseControl_ and MouseControl_->GetFlags() bitand C_BIT_MOUSEOVER)
                 {
                     MouseControl_->SetMouseOver(1);
                     MouseControl_->Refresh();
@@ -2816,7 +2816,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 if (gScreenShotEnabled)
                     gUI_TakeScreenShot = 1; // Set to take screen shot after screen is refreshed (2=Save to file)...
 
-                lParam = (lParam & 0xff00ffff) | DIK_SYSRQ;
+                lParam = (lParam bitand 0xff00ffff) | DIK_SYSRQ;
             }
             else
 
@@ -2832,30 +2832,30 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 break;
             }
 
-            Repeat = lParam & 0xffff;
+            Repeat = lParam bitand 0xffff;
 
-            Key = (uchar)(((lParam >> 16) & 0xff) | ((lParam >> 17) & 0x80)); //!
+            Key = (uchar)(((lParam >> 16) bitand 0xff) | ((lParam >> 17) bitand 0x80)); //!
 
-            if (GetKeyState(VK_SHIFT) & 0x80)
+            if (GetKeyState(VK_SHIFT) bitand 0x80)
                 ShiftStates  or_eq  _SHIFT_DOWN_;
 
-            if (GetKeyState(VK_MENU) & 0x80)
+            if (GetKeyState(VK_MENU) bitand 0x80)
                 ShiftStates  or_eq  _ALT_DOWN_;
 
-            if (GetKeyState(VK_CONTROL) & 0x80)
+            if (GetKeyState(VK_CONTROL) bitand 0x80)
                 ShiftStates  or_eq  _CTRL_DOWN_;
 
-            if (GetKeyState(VK_CAPITAL) & 0x01)
+            if (GetKeyState(VK_CAPITAL) bitand 0x01)
                 if ((Key >= DIK_Q and Key <= DIK_P) or (Key >= DIK_A and Key <= DIK_L) or (Key >= DIK_Z and Key <= DIK_M))
                     ShiftStates xor_eq _SHIFT_DOWN_;
 
-            if (GetKeyState(VK_NUMLOCK) & 0x01)
+            if (GetKeyState(VK_NUMLOCK) bitand 0x01)
                 if ((Key >= DIK_NUMPAD7 and Key <= DIK_NUMPAD9) or (Key >= DIK_NUMPAD4 and Key <= DIK_NUMPAD6) or (Key >= DIK_NUMPAD1 and Key <= DIK_DECIMAL))
                     ShiftStates  or_eq  _SHIFT_DOWN_;
 
             Ascii = AsciiChar(Key, ShiftStates);
 
-            // Handle Hot Keys & Keyboard input
+            // Handle Hot Keys bitand Keyboard input
             if (CurWindow_)
             {
                 if ( not CurWindow_->CheckKeyboard(Key, Ascii, ShiftStates, Repeat))
@@ -2879,7 +2879,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
              retval=0;
              if(OldInputMessage())
              break;
-             // Handle Hot Keys & Keyboard input
+             // Handle Hot Keys bitand Keyboard input
              if(CurWindow_ == NULL)
              break;
 
@@ -2889,7 +2889,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
              break;
             */
         case C_WM_UPDATE:
-                //if(UpdateFlag & C_DRAW_REFRESH)
+                //if(UpdateFlag bitand C_DRAW_REFRESH)
                 // SetEvent(WakeOutput_);
                 retval = 0;
             break;
@@ -2941,7 +2941,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                         rectcount_ = 0;
                         RefreshAll(&upme);
                         LeaveCritical();
-                        //if(UpdateFlag & C_DRAW_REFRESH)
+                        //if(UpdateFlag bitand C_DRAW_REFRESH)
                         // SetEvent(WakeOutput_);
                     }
                 }

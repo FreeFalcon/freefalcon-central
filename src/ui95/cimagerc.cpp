@@ -169,7 +169,7 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, UI95_RECT *rect, short x, shor
     neww = rect->right  - rect->left;
     newh = rect->bottom - rect->top;
 
-    if (prior->Header->flags & _RSC_8_BIT_)
+    if (prior->Header->flags bitand _RSC_8_BIT_)
     {
 #ifdef USE_SH_POOLS
         data8 = (char*)MemAllocPtr(UI_Pools[UI_ART_POOL], sizeof(char) * (neww * newh + (prior->Header->palettesize * 2)), FALSE);
@@ -232,7 +232,7 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, UI95_RECT *rect, short x, shor
     newentry->Header->h = (short)newh; //!
     newentry->Header->imageoffset = 0;
 
-    if (newentry->Header->flags & _RSC_8_BIT_)
+    if (newentry->Header->flags bitand _RSC_8_BIT_)
     {
         newres->SetData(data8);
         newentry->Header->palettesize = prior->Header->palettesize;
@@ -311,7 +311,7 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, short x, short y, short w, sho
     neww = w;
     newh = h;
 
-    if (prior->Header->flags & _RSC_8_BIT_)
+    if (prior->Header->flags bitand _RSC_8_BIT_)
     {
 #ifdef USE_SH_POOLS
         data8 = (char*)MemAllocPtr(UI_Pools[UI_ART_POOL], sizeof(char) * (neww * newh + (prior->Header->palettesize * 2)), FALSE);
@@ -374,7 +374,7 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, short x, short y, short w, sho
     newentry->Header->h = (short)newh; //!
     newentry->Header->imageoffset = 0;
 
-    if (newentry->Header->flags & _RSC_8_BIT_)
+    if (newentry->Header->flags bitand _RSC_8_BIT_)
     {
         newres->SetData(data8);
         newentry->Header->palettesize = prior->Header->palettesize;

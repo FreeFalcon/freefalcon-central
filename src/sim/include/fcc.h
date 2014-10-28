@@ -54,7 +54,7 @@ public:
     };
     int IsSet(int flag)
     {
-        return (flags & flag) ? 1 : 0;
+        return (flags bitand flag) ? 1 : 0;
     };
     void ClearFlag(int flag)
     {
@@ -382,7 +382,7 @@ public:
     };
     BOOL IsHsdState(HsdStates st)
     {
-        return (hsdstates & st) == (unsigned int) st ? TRUE : FALSE;
+        return (hsdstates bitand st) == (unsigned int) st ? TRUE : FALSE;
     };
     void MissileLaunch();
 

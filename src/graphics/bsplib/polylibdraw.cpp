@@ -46,12 +46,12 @@ static inline void SetForegroundColor(DWORD opFlag, int rgbaIdx, int IIdx)
 #endif
 
 
-    if (opFlag & PRIM_COLOP_COLOR)
+    if (opFlag bitand PRIM_COLOP_COLOR)
     {
         ShiAssert(rgbaIdx >= 0);
         rgba = &TheColorBank.ColorPool[rgbaIdx];
 
-        if (opFlag & PRIM_COLOP_INTENSITY)
+        if (opFlag bitand PRIM_COLOP_INTENSITY)
         {
             ShiAssert(IIdx >= 0);
             I = TheStateStack.IntensityPool[IIdx];
@@ -72,7 +72,7 @@ static inline void SetForegroundColor(DWORD opFlag, int rgbaIdx, int IIdx)
         else
             color  or_eq  FloatToInt32(rgba->a * 255.9f) << 24;
     }
-    else if (opFlag & PRIM_COLOP_INTENSITY)
+    else if (opFlag bitand PRIM_COLOP_INTENSITY)
     {
         ShiAssert(IIdx >= 0);
 

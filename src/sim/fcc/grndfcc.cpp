@@ -1010,7 +1010,7 @@ void FireControlComputer::CalculateReleaseRange(void)
                    (groundDesignateY - platform->YPos()) * (groundDesignateY - platform->YPos()));
 
     // Bomb Range w/ loft  Assume 45 Degree Toss.
-    if ((Sms->CurHardpoint() >= 0) and (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags & SMSClass::Loftable))
+    if ((Sms->CurHardpoint() >= 0) and (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags bitand SMSClass::Loftable))
     {
         //MI
         if ( not g_bRealisticAvionics or !playerFCC or (((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP))
@@ -1031,7 +1031,7 @@ void FireControlComputer::CalculateReleaseRange(void)
 
     tossAnticipationCue = NoCue;
 
-    if ((Sms->CurHardpoint() >= 0) and (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags & SMSClass::Loftable))
+    if ((Sms->CurHardpoint() >= 0) and (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags bitand SMSClass::Loftable))
     {
         // 4 G pull-up to release
 
@@ -1390,7 +1390,7 @@ void FireControlComputer::CalculateLADDReleaseRange(void)
 
     laddAnticipationCue = NoLADDCue;
 
-    if ((Sms->CurHardpoint() >= 0) and (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags & SMSClass::Loftable))
+    if ((Sms->CurHardpoint() >= 0) and (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags bitand SMSClass::Loftable))
     {
 
         //OK, so it's loftable. Since we want to set a distance from the TGT where we want to make our

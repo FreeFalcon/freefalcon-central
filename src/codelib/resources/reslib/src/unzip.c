@@ -24,7 +24,7 @@
     NOTE:  MSVC users - don't even bother trying to 'Update Dependencies'.
            Uggh!  06/30/96 - This should work now
 
- Created     Mark Adler & Jean-loup Gailly (GCC)
+ Created     Mark Adler bitand Jean-loup Gailly (GCC)
     Modified    Roger Fujii (STTNG:AFU)
     Big Purge   Kevin Ray   (RESMGR)
 
@@ -92,7 +92,7 @@ int process_local_file_hdr(local_file_hdr * lrec, char * buffer);
 
 /* -------------------------------------------------------------------------
 
-    E X T E R N A L   P R O T O T Y P E S   &   D A T A
+    E X T E R N A L   P R O T O T Y P E S   bitand   D A T A
 
    ------------------------------------------------------------------------- */
 
@@ -1559,7 +1559,7 @@ int process_local_file_hdr(local_file_hdr * lrec, char * buffer)      /* return 
     lrec->filename_length = makeword(&byterec[L_FILENAME_LENGTH]);
     lrec->extra_field_length = makeword(&byterec[L_EXTRA_FIELD_LENGTH]);
 
-    if ((lrec->general_purpose_bit_flag & 8) not_eq 0)
+    if ((lrec->general_purpose_bit_flag bitand 8) not_eq 0)
     {
         /* can't trust local header, use central directory
            If this is the problem, you should probably extract the

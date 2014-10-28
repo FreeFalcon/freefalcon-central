@@ -415,12 +415,12 @@ float Process_DOFRot(int dofNumber, int flags, float min, float max, float multi
 {
     float dofrot = TheStateStack.CurrentInstance->DOFValues[dofNumber].rotation;
 
-    if (flags & XDOF_NEGATE)
+    if (flags bitand XDOF_NEGATE)
     {
         dofrot = -dofrot;
     }
 
-    if (flags & XDOF_MINMAX)
+    if (flags bitand XDOF_MINMAX)
     {
         if (dofrot < min)
             dofrot = min;
@@ -429,7 +429,7 @@ float Process_DOFRot(int dofNumber, int flags, float min, float max, float multi
             dofrot = max;
     }
 
-    if (flags & XDOF_SUBRANGE and min not_eq max)
+    if (flags bitand XDOF_SUBRANGE and min not_eq max)
     {
         // rescales dofrot so it is 0.0 at Min and 1.0 at Max
         // it could exceed those bounds, unless MINMAX is set.
@@ -437,7 +437,7 @@ float Process_DOFRot(int dofNumber, int flags, float min, float max, float multi
         dofrot /= max - min;
 
         // for dofs, convert it to 1 radian
-        if (flags & XDOF_ISDOF)
+        if (flags bitand XDOF_ISDOF)
             dofrot *= (float)(3.14159 / 180.0);
 
         // then it get's rescaled below.
@@ -466,12 +466,12 @@ void BXDofNode::Draw(void)
     /*
     float dofrot=TheStateStack.CurrentInstance->DOFValues[dofNumber].rotation;
 
-    if(flags & XDOF_NEGATE)
+    if(flags bitand XDOF_NEGATE)
     {
       dofrot=-dofrot;
     }
 
-    if(flags & XDOF_MINMAX)
+    if(flags bitand XDOF_MINMAX)
     {
       if(dofrot<min)
      dofrot=min;
@@ -479,7 +479,7 @@ void BXDofNode::Draw(void)
      dofrot=max;
     }
 
-    if(flags & XDOF_SUBRANGE and min not_eq max)
+    if(flags bitand XDOF_SUBRANGE and min not_eq max)
     {
       // rescales dofrot so it is 0.0 at Min and 1.0 at Max
       // it could exceed those bounds, unless MINMAX is set.
@@ -542,22 +542,22 @@ float Process_a(float dofRotScalar, int DofID, int flags)
  {
  a = TheStateStack.CurrentInstance->DOFValues[DofID].rotation / dofRotScalar;
 
- if(flags & BNF_NEGATE)
+ if(flags bitand BNF_NEGATE)
  {
  a=-a;
  }
 
- if(flags  & BNF_POSITIVE_ONLY)
+ if(flags  bitand BNF_POSITIVE_ONLY)
  {
    if(a<0) a=0;
  }
 
- if(flags  & BNF_NEGATIVE_ONLY)
+ if(flags  bitand BNF_NEGATIVE_ONLY)
  {
    if(a>0) a=0;
  }
 
- if(flags  & BNF_CLAMP)
+ if(flags  bitand BNF_CLAMP)
  {
    if(a>1) a=1;
    if(a<-1) a=-1;
@@ -680,7 +680,7 @@ void BSwitchNode::Draw(void)
         {
 
             // Only draw this subtree if the corresponding switch bit is set
-            if (mask & 1)
+            if (mask bitand 1)
             {
                 TheStateStack.PushVerts();
                 subTrees[i]->Draw();
@@ -709,7 +709,7 @@ void BXSwitchNode::Draw(void)
 
     mask = TheStateStack.CurrentInstance->SwitchValues[switchNumber];
 
-    if (flags & XSWT_REVERSED_EFFECT)
+    if (flags bitand XSWT_REVERSED_EFFECT)
         mask = compl mask;
 
 
@@ -718,7 +718,7 @@ void BXSwitchNode::Draw(void)
         if (subTrees[i])
         {
             // Only draw this subtree if the corresponding switch bit is set
-            if (mask & 1)
+            if (mask bitand 1)
             {
                 TheStateStack.PushVerts();
                 subTrees[i]->Draw();

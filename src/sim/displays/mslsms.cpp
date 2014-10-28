@@ -158,7 +158,7 @@ int SMSClass::LaunchMissile(void)
                         FCC->GetMasterMode() == FireControlComputer::MissileOverride ||
                         FCC->GetMasterMode() == FireControlComputer::Dogfight))
                 {
-                    if (g_nMissileFix & 0x80)
+                    if (g_nMissileFix bitand 0x80)
                     {
                         Falcon4EntityClassType* classPtr;
                         classPtr = (Falcon4EntityClassType*)theMissile->EntityType();
@@ -169,7 +169,7 @@ int SMSClass::LaunchMissile(void)
                             wc = (WeaponClassDataType*)classPtr->dataPtr; // this is important
                         }
 
-                        if (wc and (wc->Flags & WEAP_BOMBDROPSOUND)) // for JSOW, JDAM...
+                        if (wc and (wc->Flags bitand WEAP_BOMBDROPSOUND)) // for JSOW, JDAM...
                         {
                             sfxid = SFX_BOMBDROP;
                         }
@@ -242,7 +242,7 @@ int SMSClass::LaunchMissile(void)
             vc = GetVehicleClassData(ownship->Type() - VU_LAST_ENTITY_TYPE);
             visFlag = vc->VisibleFlags;
 
-            if (visFlag & (1 << curHardpoint) and theMissile->drawPointer)
+            if (visFlag bitand (1 << curHardpoint) and theMissile->drawPointer)
             {
                 // Detach visual from parent
                 hardPoint[wpnStation]->DetachWeaponBSP(theMissile); // MLR 2/21/2004 -
@@ -336,7 +336,7 @@ void SMSBaseClass::ReplaceMissile(int station, MissileClass *theMissile)
     nm->isTD = FALSE;
     visFlag = GetVehicleClassData(ownship->Type() - VU_LAST_ENTITY_TYPE)->VisibleFlags;
 
-    if (visFlag & (1 << station))
+    if (visFlag bitand (1 << station))
     {
         ShiAssert(slotId >= 0);
 

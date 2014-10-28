@@ -319,21 +319,21 @@ bool DXScript_Chaff(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 {
 #ifdef DEBUG_ENGINE
     // Get the timings
-    DWORD Delta = (GetTickCount() & 0xffffff) / 100;
+    DWORD Delta = (GetTickCount() bitand 0xffffff) / 100;
 #else
     // Get the timings
-    DWORD Delta = (TheTimeManager.GetClockTime() & 0xffffff) / 100;
+    DWORD Delta = (TheTimeManager.GetClockTime() bitand 0xffffff) / 100;
 #endif
 
     // consistency check
     if (obj->ParentObject->nSwitches <= 0) return true;
 
     // if 1st frame set the starting time
-    if ((obj->SwitchValues[0] & 0xffff0000) == 0x0000) obj->SwitchValues[0] = (Delta << 16) & 0xffff0000;
+    if ((obj->SwitchValues[0] bitand 0xffff0000) == 0x0000) obj->SwitchValues[0] = (Delta << 16) bitand 0xffff0000;
 
     // update frame number every 100 mSec
-    if ( not (obj->SwitchValues[0] & 0x8000))
-        obj->SwitchValues[0] = (obj->SwitchValues[0] & 0xffff0000) | (1 << ((Delta & 0xffff) - (obj->SwitchValues[0] >> 16) & 0x00ffff));
+    if ( not (obj->SwitchValues[0] bitand 0x8000))
+        obj->SwitchValues[0] = (obj->SwitchValues[0] bitand 0xffff0000) | (1 << ((Delta bitand 0xffff) - (obj->SwitchValues[0] >> 16) bitand 0x00ffff));
 
     return true;
 }

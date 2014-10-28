@@ -375,16 +375,16 @@ GNDAIClass::GNDAIClass(GroundClass *s, GNDAIClass *l, short r, int unit_id, int 
     }
 
     // KCK: Not sure why he need all these, but I'll fix them to work right...
-    if (rank & GNDAI_BATTALION_LEADER)
+    if (rank bitand GNDAI_BATTALION_LEADER)
     {
         squad_id = platoon_id = company_id = 0;
     }
-    else if (rank & GNDAI_COMPANY_LEADER)
+    else if (rank bitand GNDAI_COMPANY_LEADER)
     {
         squad_id = platoon_id = 0;
         company_id = unit_id;
     }
-    else if (rank & GNDAI_PLATOON_LEADER)
+    else if (rank bitand GNDAI_PLATOON_LEADER)
     {
         squad_id = 0;
         platoon_id = unit_id;
@@ -627,9 +627,9 @@ void GNDAIClass::ProcessTargeting(void)
 
                     det = Detected(parent_unit, player, &d);
 
-                    //if (det & ENEMY_DETECTED) // JB SOJ
+                    //if (det bitand ENEMY_DETECTED) // JB SOJ
                     // 2001-03-24 ADDED BY S.G. NEED TO CHECK IF DETECTED BEFORE WE CAN REACT...
-                    if (det & REACTION_MASK)
+                    if (det bitand REACTION_MASK)
                     {
                         // END OF ADDED SECTION EXCEPT FOR INDENTATION
                         react = parent_unit->Reaction(player->GetCampaignObject(), det, d);
@@ -874,7 +874,7 @@ void GNDAIClass::ProcessTargeting(void)
 
             if (self->drawPointer)
             {
-                if (g_nShowDebugLabels & 0x04)
+                if (g_nShowDebugLabels bitand 0x04)
                 {
                     ((DrawableBSP*)self->drawPointer)->SetLabel(
                         label, ((DrawableBSP*)self->drawPointer)->LabelColor()
@@ -1224,7 +1224,7 @@ void GNDAIClass::Order_Company(void)
             }
         }
     }
-    else if ( not (moveFlags & GNDAI_MOVE_FIXED_POSITIONS))
+    else if ( not (moveFlags bitand GNDAI_MOVE_FIXED_POSITIONS))
     {
         ideal_h = leader->ideal_h;
     }
@@ -1256,7 +1256,7 @@ void GNDAIClass::Order_Platoon(void)
             }
         }
     }
-    else if ( not (moveFlags & GNDAI_MOVE_FIXED_POSITIONS))
+    else if ( not (moveFlags bitand GNDAI_MOVE_FIXED_POSITIONS))
     {
         ideal_h = leader->ideal_h;
     }
@@ -1295,7 +1295,7 @@ void GNDAIClass::Order_Squad(void)
             }
         }
     }
-    else if ( not (moveFlags & GNDAI_MOVE_FIXED_POSITIONS))
+    else if ( not (moveFlags bitand GNDAI_MOVE_FIXED_POSITIONS))
     {
         ideal_h = leader->ideal_h;
     }
@@ -1313,7 +1313,7 @@ int GNDAIClass::CheckThrough(void)
         through_y = battalionCommand->through_y;
     }
 
-    if ( not (moveFlags & GNDAI_WENT_THROUGH) and through_x and through_y)
+    if ( not (moveFlags bitand GNDAI_WENT_THROUGH) and through_x and through_y)
     {
         ideal_x = through_x;
         ideal_y = through_y;
@@ -1379,7 +1379,7 @@ void GNDAIClass::Move_Towards_Dest(void)
     // Check if we need to turn
     delh = ideal_h - self->Yaw();
 
-    if ( not (moveFlags & GNDAI_MOVE_FIXED_POSITIONS) and delh not_eq 0.0F)
+    if ( not (moveFlags bitand GNDAI_MOVE_FIXED_POSITIONS) and delh not_eq 0.0F)
     {
         //if (delh >= PI or (delh < 0 and delh > -PI))
         // rotvel = -1.0F * OPTIMAL_VEHICLE_ROTATION;
@@ -1491,7 +1491,7 @@ void GNDAIClass::Move_Towards_Dest(void)
 
 // KCK: This is where 99% of the visibility will occur, and of course, Mark hasn't touched it yet..
 // Basically, this determines where we're going to place a vehicle before we've even created it.
-// It should fill the initData stucture with an x & y position, which is passed the the vehicle
+// It should fill the initData stucture with an x bitand y position, which is passed the the vehicle
 // and broadcast to remote machines in the deaggregation message
 // There are the following cases:
 // a) We're on a road, in column: place appropriately along road using the tile features.

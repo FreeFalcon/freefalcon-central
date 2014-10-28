@@ -277,7 +277,7 @@ int check_victory_conditions(void)
 #if 0 // Not currently supported anymore
 void evaluate_flight_vc(WayPointClass *wp, double x, double y, double z, double s)
 {
-    if (TheCampaign.Flags & CAMP_TACTICAL)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL)
     {
         if (current_tactical_mission)
         {

@@ -72,7 +72,7 @@ public:
     uchar cycle; // which planning block we're in.
     CampaignTime scheduleTime; // Last time we updated our blocks
 public:
-    // constructors & serial functions
+    // constructors bitand serial functions
     AirTaskingManagerClass(ushort type, Team t);
     //sfr: changed proto
     //AirTaskingManagerClass(VU_BYTE **stream);

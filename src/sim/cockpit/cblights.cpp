@@ -473,22 +473,22 @@ void CheckLandingGearHandle(void * pObject)
     {
         if (playerAC->af->gearPos == 0.0F and !playerAC->mFaults->GetFault(FaultClass::gear_fault))
         {
-            currentState = 0; // handle up & wheels locked
+            currentState = 0; // handle up bitand wheels locked
         }
         else
         {
-            currentState = 1; // handle up & wheels moving
+            currentState = 1; // handle up bitand wheels moving
         }
     }
     else
     {
         if (playerAC->af->gearPos == 1.0F and !playerAC->mFaults->GetFault(FaultClass::gear_fault))
         {
-            currentState = 2; // handle down & wheels locked
+            currentState = 2; // handle down bitand wheels locked
         }
         else
         {
-            currentState = 3; // handle down & wheels moving
+            currentState = 3; // handle down bitand wheels moving
         }
     }
 
@@ -509,7 +509,7 @@ void CheckThreatWarn(void * pObject, type_TWSubSystem subSystem)
 
         case missile_launch:
             // If we have a launch warning and we're in the "ON" part of the blink cycle
-            val = theRwr->LaunchIndication() and (vuxRealTime & 0x200);
+            val = theRwr->LaunchIndication() and (vuxRealTime bitand 0x200);
             break;
 
         case pri_mode:
@@ -1125,7 +1125,7 @@ void CBECaution16(void * pObject)
             break;
 
         default: // either just something else or both
-            if (faultSys->GetFault(FaultClass::eng_fault) & eng_fire)
+            if (faultSys->GetFault(FaultClass::eng_fault) bitand eng_fire)
                 pCPLight->mState = 2;
             else
                 pCPLight->mState = 1;
@@ -1161,7 +1161,7 @@ void CBECaution16(void * pObject)
         engine = 1;
     }
 
-    if (faultSys->GetFault(FaultClass::eng_fault) & eng_fire)
+    if (faultSys->GetFault(FaultClass::eng_fault) bitand eng_fire)
     {
         fire = 2;
     }
@@ -1205,7 +1205,7 @@ void CBEEng2WarningLight(void * pObject)
         engine = 1;
     }
 
-    if (faultSys->GetFault(FaultClass::eng2_fault) & eng_fire)
+    if (faultSys->GetFault(FaultClass::eng2_fault) bitand eng_fire)
     {
         fire = 2;
     }
@@ -1228,7 +1228,7 @@ void CBEFrontLandGearLight(void * pObject)
 
     pCPLight = (CPLight*) pObject;
 
-    if (((AircraftClass*) pCPLight->mpOwnship)->af->gear[0].flags & GearData::GearProblem)
+    if (((AircraftClass*) pCPLight->mpOwnship)->af->gear[0].flags bitand GearData::GearProblem)
     {
         pCPLight->mState = 2;  // Damaged
     }
@@ -1260,7 +1260,7 @@ void CBELeftLandGearLight(void * pObject)
 
     int gear = min(1, ((AircraftClass*) pCPLight->mpOwnship)->af->NumGear());
 
-    if (((AircraftClass*) pCPLight->mpOwnship)->af->gear[gear].flags & GearData::GearProblem)
+    if (((AircraftClass*) pCPLight->mpOwnship)->af->gear[gear].flags bitand GearData::GearProblem)
     {
         pCPLight->mState = 2;  // Damaged
     }
@@ -1292,7 +1292,7 @@ void CBERightLandGearLight(void * pObject)
 
     int gear = min(2, ((AircraftClass*) pCPLight->mpOwnship)->af->NumGear());
 
-    if (((AircraftClass*) pCPLight->mpOwnship)->af->gear[gear].flags & GearData::GearProblem)
+    if (((AircraftClass*) pCPLight->mpOwnship)->af->gear[gear].flags bitand GearData::GearProblem)
     {
         pCPLight->mState = 2;  // Damaged
     }

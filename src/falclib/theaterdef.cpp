@@ -401,7 +401,7 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
 
 void TheaterList::DoSoundSetup() // must be done after END_UI !!
 {
-    if (g_nSoundSwitchFix & 0x01)
+    if (g_nSoundSwitchFix bitand 0x01)
     {
         ExitSoundManager();
         InitSoundManager(FalconDisplay.appWin, 0, FalconDataDirectory);

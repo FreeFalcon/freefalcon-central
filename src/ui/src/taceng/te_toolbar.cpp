@@ -274,7 +274,7 @@ static void tactical_flight_plan_button(long, short hittype, C_Base *ctrl)
 
     if (win)
     {
-        if ( not (gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) & C_BIT_ENABLED))
+        if ( not (gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) bitand C_BIT_ENABLED))
         {
             gActiveFlightID = gSelectedFlightID;
 

@@ -44,7 +44,7 @@ void C_MapMover::Cleanup()
 
 long C_MapMover::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !Ready())
         return(0);
 
     if (relX >= (GetX()) and relX <= (GetX() + GetW()) and relY >= (GetY()) and relY <= (GetY() + GetH()))
@@ -91,7 +91,7 @@ BOOL C_MapMover::Process(long, short HitType)
 
 void C_MapMover::Refresh()
 {
-    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1, GetY() + GetH() + 1, GetFlags(), GetClient());
@@ -101,7 +101,7 @@ void C_MapMover::Draw(SCREEN *, UI95_RECT *)
 {
     if ( not Ready()) return;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
     if (DrawCallback_)
@@ -112,7 +112,7 @@ BOOL C_MapMover::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
 {
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return(FALSE);
 
     Leave = UI_Enter(Parent_);

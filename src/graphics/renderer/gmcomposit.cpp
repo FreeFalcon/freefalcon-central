@@ -67,7 +67,7 @@ static inline BYTE Noise(int input)
 
     random = random * 214013L + 2531011L; // Stolen from C Runtime RAND() function
 
-    input = input + ((random >> 16) & 0x3F);
+    input = input + ((random >> 16) bitand 0x3F);
 
     // Gee, I sure whould like to get rid of this if...
     return (BYTE)min(input, 0xFF);

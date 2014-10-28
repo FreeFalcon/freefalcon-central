@@ -244,14 +244,14 @@ void ATCBrain::Exec(void)
      we had AI taking off at 09:37, us at 09:36, and AI waiting in front of us. Reversing
      ProcessPlayers and ProcessRunways fixes that. */
 
-    if (g_nATCTaxiOrderFix & 0x01)
+    if (g_nATCTaxiOrderFix bitand 0x01)
     {
         ProcessPlayers();
         ProcessRunways();
         ProcessInbound();
     }
     // to experiment...
-    else if (g_nATCTaxiOrderFix & 0x02)
+    else if (g_nATCTaxiOrderFix bitand 0x02)
     {
         ProcessInbound();
         ProcessPlayers();

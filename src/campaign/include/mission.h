@@ -35,10 +35,10 @@ enum MissionTypeEnum          // NOTE: This must fit int a uchar!
     AMIS_ESCORT         = 10,
     AMIS_SEADSTRIKE     = 11,
     AMIS_SEADESCORT     = 12,
-    AMIS_OCASTRIKE      = 13, // OCA strike (direct w/escort & sead)
+    AMIS_OCASTRIKE      = 13, // OCA strike (direct w/escort bitand sead)
     AMIS_INTSTRIKE      = 14, // Interdiction (direct, alone)
     AMIS_STRIKE         = 15, //
-    AMIS_DEEPSTRIKE     = 16, // Deep strike (safe path, w/escort & sead)
+    AMIS_DEEPSTRIKE     = 16, // Deep strike (safe path, w/escort bitand sead)
     AMIS_STSTRIKE       = 17, // Stealth strike (safe path, alone)
     AMIS_STRATBOMB      = 18,
     AMIS_FAC            = 19,

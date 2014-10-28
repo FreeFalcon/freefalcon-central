@@ -518,7 +518,7 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
     // Turn on the lights if it is dark enough
     if (lightLevel < 0.5f)
     {
-        to = (BYTE *) & (palette[252]);
+        to = (BYTE *) bitand (palette[252]);
 
         if (TheTimeOfDay.GetNVGmode())
         {
@@ -870,35 +870,35 @@ namespace
 {
     int getDDSWidth(int flags)
     {
-        if (flags & MPR_TI_16)
+        if (flags bitand MPR_TI_16)
         {
             return 16;
         }
-        else if (flags & MPR_TI_32)
+        else if (flags bitand MPR_TI_32)
         {
             return 32;
         }
-        else if (flags & MPR_TI_64)
+        else if (flags bitand MPR_TI_64)
         {
             return 64;
         }
-        else if (flags & MPR_TI_128)
+        else if (flags bitand MPR_TI_128)
         {
             return 128;
         }
-        else if (flags & MPR_TI_256)
+        else if (flags bitand MPR_TI_256)
         {
             return 256;
         }
-        else if (flags & MPR_TI_512)
+        else if (flags bitand MPR_TI_512)
         {
             return 512;
         }
-        else if (flags & MPR_TI_1024)
+        else if (flags bitand MPR_TI_1024)
         {
             return 1024;
         }
-        else if (flags & MPR_TI_2048)
+        else if (flags bitand MPR_TI_2048)
         {
             return 2048;
         }
@@ -1344,7 +1344,7 @@ bool TextureDB::DumpImageToFile(TileEntry* pTile, DWORD *palette, int res, bool 
             to++, from++; // Alpha
         }
 
-        to = (BYTE *) & (npal[252]);
+        to = (BYTE *) bitand (npal[252]);
 
         *to = 115;
         to++; // Red
@@ -1459,7 +1459,7 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     }
 
 
-    ShiAssert(ddsd.dwFlags & DDSD_LINEARSIZE)
+    ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
     // Note: HACK (using height for flags)
     pTile->height[res] = MPR_TI_DDS;
@@ -1590,7 +1590,7 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
             ShiAssert(false);
     }
 
-    ShiAssert(ddsd.dwFlags & DDSD_LINEARSIZE);
+    ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE);
     pTile->widthN[res] = ddsd.dwLinearSize;
     pTile->bitsN[res] = (BYTE *)glAllocateMemory(pTile->widthN[res], FALSE);
     fread(pTile->bitsN[res], 1, pTile->widthN[res], fp);
@@ -1650,11 +1650,11 @@ void TextureDB::RGBtoHSV(float r, float g, float b, float *h, float *s, float *v
     else
     {
         if (r == *v)
-            *h = (g - b) / delta; // between yellow & magenta
+            *h = (g - b) / delta; // between yellow bitand magenta
         else if (g == *v)
-            *h = 2 + (b - r) / delta; // between cyan & yellow
+            *h = 2 + (b - r) / delta; // between cyan bitand yellow
         else
-            *h = 4 + (r - g) / delta; // between magenta & cyan
+            *h = 4 + (r - g) / delta; // between magenta bitand cyan
     }
 
     *h *= 60; // degrees

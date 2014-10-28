@@ -175,8 +175,8 @@ void MonochromeDisplay::Render2DPoint(float x, float y)
     x1 = FloatToInt32(x);
     y1 = FloatToInt32(y);
 
-    the_byte = 0x2000 * (y1 & 0x3) + 90 * (y1 >> 2) + (x1 >> 3);
-    the_bit  = 7 - (x1 & 0x7);
+    the_byte = 0x2000 * (y1 bitand 0x3) + 90 * (y1 >> 2) + (x1 >> 3);
+    the_bit  = 7 - (x1 bitand 0x7);
 
     currentValue   = (char *)(screen_buffer[page] + the_byte);
     *currentValue  or_eq  (char)(1 << the_bit);
@@ -193,8 +193,8 @@ void MonochromeDisplay::Render2DPoint(int x1, int y1)
     int the_bit;
     char *currentValue;
 
-    the_byte = 0x2000 * (y1 & 0x3) + 90 * (y1 >> 2) + (x1 >> 3);
-    the_bit  = 7 - (x1 & 0x7);
+    the_byte = 0x2000 * (y1 bitand 0x3) + 90 * (y1 >> 2) + (x1 >> 3);
+    the_bit  = 7 - (x1 bitand 0x7);
 
     currentValue   = (char *)(screen_buffer[page] + the_byte);
     *currentValue  or_eq  (char)(1 << the_bit);

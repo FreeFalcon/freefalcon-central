@@ -87,10 +87,10 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
     int printit = 0;
 
     if (monoall == 0 ||
-        ((theEvent->Flags() & VU_RELIABLE_MSG_FLAG) and monoall == 1) ||
-        ((theEvent->Flags() & VU_OUT_OF_BAND_MSG_FLAG) and monoall == 2) ||
-        ((theEvent->Flags() & VU_RELIABLE_MSG_FLAG)  and 
-         (theEvent->Flags() & VU_OUT_OF_BAND_MSG_FLAG) and monoall == 3)
+        ((theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG) and monoall == 1) ||
+        ((theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG) and monoall == 2) ||
+        ((theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG)  and 
+         (theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG) and monoall == 3)
        )
         printit = 1;
 
@@ -605,10 +605,10 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
     if ((printit) and theEvent->Type() not_eq 30)
         MonoPrint("Sent Message: time %d,  Keepalive %d, LowPrio %d , reliable %d, oob %d, , size %d, target %d\n" ,
                   vuxGameTime,
-                  theEvent->Flags() & VU_KEEPALIVE_MSG_FLAG,
-                  theEvent->Flags() & 0xf0,
-                  theEvent->Flags() & VU_RELIABLE_MSG_FLAG,
-                  theEvent->Flags() & VU_OUT_OF_BAND_MSG_FLAG ,
+                  theEvent->Flags() bitand VU_KEEPALIVE_MSG_FLAG,
+                  theEvent->Flags() bitand 0xf0,
+                  theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG,
+                  theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG ,
                   theEvent->Size(),
                   theEvent->Target());
 
@@ -629,13 +629,13 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
     static int count = 0;
     msgcount ++;
 
-    if (theEvent->Flags() & VU_RELIABLE_MSG_FLAG)
+    if (theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG)
     {
         sendreliable += theEvent->Size();
         TOTsendreliable += theEvent->Size();
     }
 
-    if (theEvent->Flags() & VU_OUT_OF_BAND_MSG_FLAG)
+    if (theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG)
     {
         msgoob += theEvent->Size();
         TOToob += theEvent->Size();
@@ -810,7 +810,7 @@ VU_BOOL FalconMessageFilter::Test(VuMessage * event) const
     if (event->Type() > VU_LAST_EVENT)
     {
         // This is a FreeFalcon Event
-        if ((((FalconEvent*)event)->handlingThread & filterThread) == 0)
+        if ((((FalconEvent*)event)->handlingThread bitand filterThread) == 0)
         {
             // message not intended for this thread
             retval = FALSE;
@@ -832,7 +832,7 @@ VU_BOOL FalconMessageFilter::Test(VuMessage * event) const
         // This is a Vu Event. Compare vs filter bits
         // sfr: fixed shift adding -1
         if ( not 
-            ((1 << (event->Type() - 1)) & vuFilterBits)
+            ((1 << (event->Type() - 1)) bitand vuFilterBits)
            )
         {
             retval = FALSE;

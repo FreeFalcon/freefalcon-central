@@ -173,7 +173,7 @@ int VoiceMapper::PickVoice(int type, int side)
 
     for (int i = 0; i < totalvoices; i++)
     {
-        if ((voiceflags[i] & match) not_eq match)
+        if ((voiceflags[i] bitand match) not_eq match)
             continue;
 
         recno ++;
@@ -198,7 +198,7 @@ int VoiceMapper::GetNextVoice(int start, int type, int side)
     {
         start = (start + 1) % totalvoices;
 
-        if ((voiceflags[start] & match) == match)
+        if ((voiceflags[start] bitand match) == match)
             return start;
     }
 

@@ -200,7 +200,7 @@ void CampaignJoinSuccess(void)
     {
         tactical_mission_loaded = TRUE;
 
-        if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+        if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
         {
             tactical_play_setup();
 

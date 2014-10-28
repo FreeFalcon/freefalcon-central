@@ -103,7 +103,7 @@ void DigitalBrain::FollowWaypoints(void)
     // if we are, see if the next waypoint is a ground attack type.
     // if it is, setup a GA profile for the attack
 
-    if (((self->curWaypoint->GetWPFlags() & WPF_IP) or (GetTargetWPIndex() >= 0 and GetWaypointIndex() == GetTargetWPIndex() - 1))  and 
+    if (((self->curWaypoint->GetWPFlags() bitand WPF_IP) or (GetTargetWPIndex() >= 0 and GetWaypointIndex() == GetTargetWPIndex() - 1))  and 
         agDoctrine == AGD_NONE)
     {
         AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
@@ -411,9 +411,9 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
     if (rng < 2.0f or (onStation not_eq NotThereYet) or (SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime()))
     {
         // Should we repeat?
-        if (self and self->curWaypoint and self->curWaypoint->GetWPFlags() & (WPF_REPEAT | WPF_REPEAT_CONTINUOUS))
+        if (self and self->curWaypoint and self->curWaypoint->GetWPFlags() bitand (WPF_REPEAT | WPF_REPEAT_CONTINUOUS))
         {
-            if ((self->curWaypoint->GetWPFlags() & WPF_REPEAT_CONTINUOUS) ||
+            if ((self->curWaypoint->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS) ||
                 SimLibElapsedTime < self->curWaypoint->GetWPDepartureTime())
             {
                 // Find prev waypoint
@@ -430,7 +430,7 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
                 self->curWaypoint->SetWPArrive(self->curWaypoint->GetWPArrivalTime() + 2 * timeDelta);
 
                 // If continuous, reset current departure time
-                if (self->curWaypoint->GetWPFlags() & WPF_REPEAT_CONTINUOUS)
+                if (self->curWaypoint->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS)
                 {
                     self->curWaypoint->SetWPDepartTime(self->curWaypoint->GetWPArrivalTime() + 2 * timeDelta);
                 }
@@ -483,7 +483,7 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
             //already so this shouldn't be a problem?
             if (((onStation == Crosswind or (onStation == NotThereYet and missionComplete))  and 
                  groundTargetPtr == NULL) or onStation == OnStation or !(g_bAGTargetWPFix  and 
-                         self->curWaypoint->GetWPFlags() & WPF_TARGET and !missionComplete and missionClass == AGMission  and 
+                         self->curWaypoint->GetWPFlags() bitand WPF_TARGET and !missionComplete and missionClass == AGMission  and 
                          curMode not_eq RTBMode and curMode not_eq LandingMode))
             {
                 // 2002-04-08 MN removed again - this stops AI from going to landing mode at all...
@@ -610,9 +610,9 @@ void DigitalBrain::GoToCurrentWaypoint(void)
         SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime())
     {
         // Should we repeat?
-        if (self->curWaypoint->GetWPFlags() & (WPF_REPEAT | WPF_REPEAT_CONTINUOUS))
+        if (self->curWaypoint->GetWPFlags() bitand (WPF_REPEAT | WPF_REPEAT_CONTINUOUS))
         {
-            if ((self->curWaypoint->GetWPFlags() & WPF_REPEAT_CONTINUOUS) ||
+            if ((self->curWaypoint->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS) ||
                 SimLibElapsedTime < self->curWaypoint->GetWPDepartureTime())
             {
                 // Find prev waypoint
@@ -629,7 +629,7 @@ void DigitalBrain::GoToCurrentWaypoint(void)
                 self->curWaypoint->SetWPArrive(self->curWaypoint->GetWPArrivalTime() + 2 * timeDelta);
 
                 // If continuous, reset current departure time
-                if (self->curWaypoint->GetWPFlags() & WPF_REPEAT_CONTINUOUS)
+                if (self->curWaypoint->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS)
                 {
                     self->curWaypoint->SetWPDepartTime(self->curWaypoint->GetWPArrivalTime() + 2 * timeDelta);
                 }
@@ -660,7 +660,7 @@ void DigitalBrain::GoToCurrentWaypoint(void)
 
             // mind the ! check here !!!
             if (onStation == OnStation or !(g_bAGTargetWPFix  and 
-                                            self->curWaypoint->GetWPFlags() & WPF_TARGET  and 
+                                            self->curWaypoint->GetWPFlags() bitand WPF_TARGET  and 
                                             !missionComplete and missionClass == AGMission  and 
                                             curMode not_eq RTBMode and curMode not_eq LandingMode))
             {
@@ -876,15 +876,15 @@ void DigitalBrain::SelectNextWaypoint(void)
             campUnit->SetCurrentUnitWP(campUnit->GetFirstUnitWP());
         }
     }
-    else if ( not (tmpWaypoint->GetWPFlags() & WPF_REPEAT)  and 
-             (self->curWaypoint->GetWPFlags() & WPF_REPEAT))
+    else if ( not (tmpWaypoint->GetWPFlags() bitand WPF_REPEAT)  and 
+             (self->curWaypoint->GetWPFlags() bitand WPF_REPEAT))
     {
-        if (self->curWaypoint->GetWPFlags() & WPF_IP)
+        if (self->curWaypoint->GetWPFlags() bitand WPF_IP)
         {
             SetATCFlag(ReachedIP);
         }
 
-        if ( not (moreFlags & SaidSunrise)) // only say sunrise once and only insert once into FAC list
+        if ( not (moreFlags bitand SaidSunrise)) // only say sunrise once and only insert once into FAC list
         {
             moreFlags  or_eq  SaidSunrise;
 
@@ -911,8 +911,8 @@ void DigitalBrain::SelectNextWaypoint(void)
             }
         }
     }
-    else if ((tmpWaypoint->GetWPFlags() & WPF_REPEAT)  and 
-             !(self->curWaypoint->GetWPFlags() & WPF_REPEAT))
+    else if ((tmpWaypoint->GetWPFlags() bitand WPF_REPEAT)  and 
+             !(self->curWaypoint->GetWPFlags() bitand WPF_REPEAT))
     {
         switch (tmpWaypoint->GetWPAction())
         {
@@ -1114,7 +1114,7 @@ int DigitalBrain::GetTargetWPIndex(void)
     // get the target waypoint index in the list
     while (wlist)
     {
-        if (wlist->GetWPFlags() & WPF_TARGET)
+        if (wlist->GetWPFlags() bitand WPF_TARGET)
             break;
 
         wlist = wlist->GetNextWP();

@@ -376,14 +376,14 @@ void RenderGMRadar::DrawFeatures(void)
     for (r = boxCenterRow - drawRadius; r < boxCenterRow + drawRadius; r++)
     {
 
-        if (r & mask)  continue; // Could take care of this in loop control
+        if (r bitand mask)  continue; // Could take care of this in loop control
 
         scene_x = LEVEL_POST_TO_WORLD(r, LOD) - centerPos.x;
 
         for (c = boxCenterCol - drawRadius; c < boxCenterCol + drawRadius; c++)
         {
 
-            if (c & mask)  continue; // Could take care of this in loop control
+            if (c bitand mask)  continue; // Could take care of this in loop control
 
             scene_y = LEVEL_POST_TO_WORLD(c, LOD) - centerPos.y;
 

@@ -169,7 +169,7 @@ FaultClass::type_FSubSystem FaultClass::PickSubSystem(int subsystemBits)
 
     for (i = 0; i < FaultClass::NumFaultListSubSystems; i++)
     {
-        if (subsystemBits & (1 << i))
+        if (subsystemBits bitand (1 << i))
         {
             failedThings[j] = i;
             j++;
@@ -210,7 +210,7 @@ FaultClass::type_FFunction FaultClass::PickFunction(FaultClass::type_FSubSystem 
     {
         counter ++;
 
-        if (breakable & (1 << counter))
+        if (breakable bitand (1 << counter))
             i --;
     }
 
@@ -357,7 +357,7 @@ BOOL FaultClass::FindFirstFunction(type_FSubSystem sys, int *functionp)
 {
     for (int i = 0; i < NumFaultFunctions - 1; i++)
     {
-        if (mpFaultList[sys].elFunction & (1U << i))
+        if (mpFaultList[sys].elFunction bitand (1U << i))
         {
             *functionp = i + 1;
             return TRUE;
@@ -371,7 +371,7 @@ BOOL FaultClass::FindNextFunction(type_FSubSystem sys, int *functionp)
 {
     for (int i = *functionp; i < NumFaultFunctions - 1; i++)
     {
-        if (mpFaultList[sys].elFunction & (1U << i))
+        if (mpFaultList[sys].elFunction bitand (1U << i))
         {
             *functionp = i + 1;
             return TRUE;
@@ -398,7 +398,7 @@ void FaultClass::TotalPowerFailure() // JPO
                     break;
 
                 default:
-                    if (mpFaultData[i].mBreakable & (1 << j))
+                    if (mpFaultData[i].mBreakable bitand (1 << j))
                     {
                         SetFault((type_FSubSystem)i, (type_FFunction)(1 << j), fail, TRUE);
                     }
@@ -425,7 +425,7 @@ void FaultClass::RandomFailure() // THW 2003-11-20 Make up some random failures,
                     //case ldgr: // skip landing gear
                     //break;
                     //default:
-                    if (mpFaultData[i].mBreakable & (1 << j))
+                    if (mpFaultData[i].mBreakable bitand (1 << j))
                     {
                         SetFault((type_FSubSystem)i, (type_FFunction)(1 << j), fail, TRUE);
                     }

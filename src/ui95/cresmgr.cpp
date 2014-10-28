@@ -4,7 +4,7 @@
 #define _IDX_HASH_SIZE_ 10
 
 // MACRO to convert to screen format from TARGA format (0rrrrrgggggbbbbb)
-#define COLOR15BIT(color,rs,gs,bs) ((((color >> 10) & 0x1f) << rs) | (((color >> 5) & 0x1f) << gs) | (((color) & 0x1f) << bs))
+#define COLOR15BIT(color,rs,gs,bs) ((((color >> 10) bitand 0x1f) << rs) | (((color >> 5) bitand 0x1f) << gs) | (((color) bitand 0x1f) << bs))
 
 extern C_Parser *gMainParser;
 extern char FalconUIArtDirectory[];
@@ -44,12 +44,12 @@ void C_Resmgr::ConvertToScreen()
         {
             hdr = rec->Header;
 
-            if (hdr->flags & _RSC_8_BIT_)
+            if (hdr->flags bitand _RSC_8_BIT_)
             {
                 count = hdr->palettesize;
                 color = (WORD*)(Data_ + hdr->paletteoffset);
             }
-            else if (hdr->flags & _RSC_16_BIT_)
+            else if (hdr->flags bitand _RSC_16_BIT_)
             {
                 count = hdr->w * hdr->h;
                 color = (WORD*)(Data_ + hdr->imageoffset);

@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -101,7 +101,7 @@ void C_Anim::SetFlags(long flags)
 
 void C_Anim::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or !Ready())
         return;
 
     if (Anim_)
@@ -110,7 +110,7 @@ void C_Anim::Refresh()
 
 void C_Anim::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or !Ready())
         return;
 
     if (Anim_)
@@ -119,7 +119,7 @@ void C_Anim::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
 BOOL C_Anim::TimerUpdate()
 {
-    if ( not (GetFlags() & C_BIT_ENABLED))
+    if ( not (GetFlags() bitand C_BIT_ENABLED))
         return(FALSE);
 
     if ( not Ready()) return(FALSE);

@@ -217,7 +217,7 @@ int CStar::LeapYear(int year)
 {
     int leap = 0;
 
-    if ( not (year & 3))
+    if ( not (year bitand 3))
     {
         if ( not (year % 400)) leap = 1;
         else if (year % 100) leap = 1;

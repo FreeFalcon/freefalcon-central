@@ -1352,7 +1352,7 @@ int OTWDriverClass::Padlock_RankAGPriority(SimBaseClass* pObj, BOOL isPainted)
         // 2002-04-08 MN don't padlock tree features
         fc = GetFeatureClassData(pObj->Type() - VU_LAST_ENTITY_TYPE);
 
-        if ((g_nPadlockMode & PLockNoTrees) and fc and (fc->Flags & FEAT_NO_HITEVAL))
+        if ((g_nPadlockMode bitand PLockNoTrees) and fc and (fc->Flags bitand FEAT_NO_HITEVAL))
             priority = 100;
         else
 
@@ -1969,7 +1969,7 @@ void OTWDriverClass::Padlock_DrawSquares(BOOL highlightPriority)
             // Only for vehicle eqipped with HMS...
             VehicleClassDataType *vc = (VehicleClassDataType *)Falcon4ClassTable[otwPlatform->Type() - VU_LAST_ENTITY_TYPE].dataPtr;
 
-            if (vc and vc->Flags & 0x20000000)
+            if (vc and vc->Flags bitand 0x20000000)
             {
                 MissileClass* theMissile;
                 theMissile = (MissileClass*)(pac->Sms->GetCurrentWeapon());
@@ -2082,7 +2082,7 @@ void OTWDriverClass::Padlock_DrawSquares(BOOL highlightPriority)
                 mpPadlockPriorityObject->drawPointer)  // JB 001202
             {
                 // 2000-11-24 ADDED BY S.G. IF ASKED, THE COLOR OF THE BOX IS THE COLOR OF THE NEAR LABEL AND THE INTENSITY WILL VARY AS WELL
-                if (g_nPadlockMode & PLockModeNearLabelColor)
+                if (g_nPadlockMode bitand PLockModeNearLabelColor)
                 {
                     // Joel, I hope you don't mind I reuse your label code? :-)
                     long limit = g_nNearLabelLimit * 6076 + 8;
@@ -2096,11 +2096,11 @@ void OTWDriverClass::Padlock_DrawSquares(BOOL highlightPriority)
 
                         int colorsub = int((objectPoint.csZ / (limit >> 3))) << 5;
 
-                        int red = (labelColor & 0x000000ff);
+                        int red = (labelColor bitand 0x000000ff);
                         red -= min(red, colorsub);
-                        int green = (labelColor & 0x0000ff00) >> 8;
+                        int green = (labelColor bitand 0x0000ff00) >> 8;
                         green -= min(green, colorsub);
-                        int blue = (labelColor & 0x00ff0000) >> 16;
+                        int blue = (labelColor bitand 0x00ff0000) >> 16;
                         blue -= min(blue, colorsub);
 
                         long newlabelColor = blue << 16 | green << 8 | red;
@@ -2320,7 +2320,7 @@ void OTWDriverClass::SetmpPadlockPriorityObject(SimBaseClass* newObject)
             {
                 VehicleClassDataType *vc = (VehicleClassDataType *)Falcon4ClassTable[otwPlatform->Type() - VU_LAST_ENTITY_TYPE].dataPtr;
 
-                if (vc and vc->Flags & 0x20000000)
+                if (vc and vc->Flags bitand 0x20000000)
                 {
                     MissileClass* theMissile;
                     theMissile = (MissileClass*)(SimDriver.GetPlayerAircraft()->Sms->GetCurrentWeapon());

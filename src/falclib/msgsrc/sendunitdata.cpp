@@ -101,7 +101,7 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
         return (init - *rem);
     }
 
-    if (TheCampaign.Flags & CAMP_NEED_UNIT_DATA)
+    if (TheCampaign.Flags bitand CAMP_NEED_UNIT_DATA)
     {
         if (dataBlock.set not_eq session->unitDataReceiveSet)
         {
@@ -145,7 +145,7 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
         for (int i = 0; i < dataBlock.totalBlocks; i++)
         {
             // if ( not StillNeeded(dataBlock.block, session->unitDataReceived))
-            if ( not (session->unitDataReceived[i / 8] & (1 << (i % 8))))
+            if ( not (session->unitDataReceived[i / 8] bitand (1 << (i % 8))))
             {
                 //return size;
                 return init - *rem;
@@ -297,7 +297,7 @@ int StillNeeded(int block, uchar gotData[])
 
     ShiAssert(block < FS_MAXBLK);
 
-    if (gotData[block / 8] & (1 << (block % 8)))
+    if (gotData[block / 8] bitand (1 << (block % 8)))
         return 1;
 
     return 0;

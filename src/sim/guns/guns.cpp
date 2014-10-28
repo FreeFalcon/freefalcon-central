@@ -143,7 +143,7 @@ void GunClass::InitLocalData(int type)
     {
         typeOfGun = GUN_SHELL;
     }
-    else if (wcPtr->Flags & WEAP_TRACER)
+    else if (wcPtr->Flags bitand WEAP_TRACER)
     {
         Falcon4EntityClassType* classPtr = (Falcon4EntityClassType*)EntityType();
 
@@ -351,7 +351,7 @@ int GunClass::Exec(
     // 2000-10-17 MODIFIED BY S.G. SO BULLETS STAY IN THE AIR LONGER (WE'LL USE AN UNUSED FIELD IN THE WCD FILE)
     // This var will take the first 3 bits of that field and use it for 1 to 8 seconds.
     // if ( qTimer >= SimLibMajorFrameTime * 4.0f )
-    if (qTimer >= SimLibMajorFrameTime * (float)(((((unsigned char *)wcPtr)[45] & 7) + 1) * 2))
+    if (qTimer >= SimLibMajorFrameTime * (float)(((((unsigned char *)wcPtr)[45] bitand 7) + 1) * 2))
     {
         advanceQueue = TRUE;
         qTimer = 0.0f;

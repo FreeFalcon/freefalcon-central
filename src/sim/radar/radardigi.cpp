@@ -48,7 +48,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
     {
 #ifdef SAMDEBUG
 
-        if (g_nShowDebugLabels & 0x200)
+        if (g_nShowDebugLabels bitand 0x200)
         {
             if (platform->drawPointer)
                 ((DrawableBSP*)platform->drawPointer)->SetLabel(
@@ -196,15 +196,15 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
                 // 2002-03-21 ADDED BY S.G. When a radar is doing its first sweep
                 // after creation, don't fade the signal or the SARH missile launched
                 // by an aggregated battalion that just deaggregated will lose its sensor lock
-                if ( not (flag & FirstSweep))
+                if ( not (flag bitand FirstSweep))
                     canSee  or_eq  SG_FADING; // this will make the sensor state max set to detection
             }
 
-            // 2002-03-10 ADDED BY S.G. Added the "(flag & FirstSweep) and "
+            // 2002-03-10 ADDED BY S.G. Added the "(flag bitand FirstSweep) and "
             // so when a radar is doing its first sweep after creation,
             // don't fade the signal or the SARH missile launched
             // by an aggregated battalion that just deaggregated will lose its sensor lock
-            if ((flag & FirstSweep) and radarDatFile)
+            if ((flag bitand FirstSweep) and radarDatFile)
             {
                 tmpPtr->localData->rdrLastHit = SimLibElapsedTime - (unsigned)radarDatFile->TimeToLock - 1;
             }
@@ -221,14 +221,14 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
             }
 
             // Can we see it (either with a valid lock, a jammed or fading signal?
-            if (canSee & (SG_JAMMING | SG_FADING)) // Is it a jammed or fading signal?
+            if (canSee bitand (SG_JAMMING | SG_FADING)) // Is it a jammed or fading signal?
                 // Yep, say so (weapon can't lock on 'Detection' but digi plane can track it)
                 tmpPtr->localData->sensorState[Radar] = Detection;
             else
                 // It's a valid lock, mark it as such. Even when fading, we can launch
                 tmpPtr->localData->sensorState[Radar] = SensorTrack;
 
-            if ( not (canSee & SG_FADING))   // Is the signal fading?
+            if ( not (canSee bitand SG_FADING))   // Is the signal fading?
             {
                 // No, so update the last hit field
                 tmpPtr->localData->rdrLastHit = SimLibElapsedTime;
@@ -251,17 +251,17 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
         {
 #ifdef SAMDEBUG
 
-            if (g_nShowDebugLabels & 0x400)
+            if (g_nShowDebugLabels bitand 0x400)
             {
                 sprintf(label, "%04.3f", ret);
 
-                if (canSee & SG_JAMMING)
+                if (canSee bitand SG_JAMMING)
                     strcat(label, "Jamming");
 
-                if (canSee & SG_FADING)
+                if (canSee bitand SG_FADING)
                     strcat(label, "Fading");
 
-                if (canSee & SG_NOLOCK)
+                if (canSee bitand SG_NOLOCK)
                     strcat(label, "No lock");
 
                 if (platform->drawPointer)
@@ -297,7 +297,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
                 platform->SetRdrElCenter(tmpPtr->localData->el);
 
                 // Tag the target as seen from this frame, unless the target is fading
-                if ( not (canSee & SG_FADING))
+                if ( not (canSee bitand SG_FADING))
                 {
                     if (sendThisFrame)
                     {

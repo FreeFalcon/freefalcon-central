@@ -349,8 +349,8 @@ uchar GetOwner(uchar* map_data, GridIndex x, GridIndex y)
     if (i < 0 or i > MAXOI)
         return 0;
 
-    hi = 4 * (i & 1);
-    return ((map_data[i / 2] >> hi) & 0x0F);
+    hi = 4 * (i bitand 1);
+    return ((map_data[i / 2] >> hi) bitand 0x0F);
 }
 
 int FriendlyTerritory(GridIndex x, GridIndex y, int team)
@@ -376,7 +376,7 @@ int GetAproxDetection(Team who, GridIndex x, GridIndex y)
     else
         ix = 0;
 
-    return (TheCampaign.RadarMapData[i] >> ix) & 0x03;
+    return (TheCampaign.RadarMapData[i] >> ix) bitand 0x03;
 }
 
 int GetAproxThreat(Team who, GridIndex x, GridIndex y)
@@ -394,7 +394,7 @@ int GetAproxThreat(Team who, GridIndex x, GridIndex y)
     else
         ix = 0;
 
-    return (TheCampaign.SamMapData[i] >> ix) & 0x03;
+    return (TheCampaign.SamMapData[i] >> ix) bitand 0x03;
 }
 
 
@@ -442,7 +442,7 @@ int AddToThreatMap(CampEntity e, uchar* map_data, int who)
         {
             i = y * MRX + x;
             d = Distance(x, y, X, Y) - 1.0F;
-            c = (map_data[i] >> li) & 0x03;
+            c = (map_data[i] >> li) bitand 0x03;
 
             if (ld >= d and c < 3 and e->GetAproxHitChance(LowAir, FloatToInt32(d * MAP_RATIO)))
             {
@@ -450,7 +450,7 @@ int AddToThreatMap(CampEntity e, uchar* map_data, int who)
                 map_data[i]  or_eq  ((c + 1) << li);
             }
 
-            c = (map_data[i] >> hi) & 0x03;
+            c = (map_data[i] >> hi) bitand 0x03;
 
             if (hd >= d and c < 3 and e->GetAproxHitChance(Air, FloatToInt32(d * MAP_RATIO)))
             {
@@ -529,7 +529,7 @@ int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
         {
             i = y * MRX + x;
             d = Distance(x, y, X, Y) - 1.0F;
-            c = (map_data[i] >> li) & 0x03;
+            c = (map_data[i] >> li) bitand 0x03;
             oct = OctantTo(X, Y, x, y);
 
             if (ld[oct] >= d and c < 3)
@@ -538,7 +538,7 @@ int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
                 map_data[i]  or_eq  ((c + 1) << li);
             }
 
-            c = (map_data[i] >> hi) & 0x03;
+            c = (map_data[i] >> hi) bitand 0x03;
 
             if (hd >= d and c < 3)
             {

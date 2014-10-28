@@ -491,7 +491,7 @@ int SquadronClass::MoveUnit(CampaignTime time)
 
         // 2001-07-05 MODIFIED BY S.G. DON'T RELOCATE IF TOO FAR FROM FLOT IF GLOBALLY SET TO ACT THAT WAY
         // if (fd < 999.0F and (fd < range/30 or fd > range/3 or !ab)) // We're to close or to far from the front or don't have an airbase
-        if (fd < 999.0F and (fd < range / 30 or ( not (g_nAirbaseReloc & AirBaseRelocNoFar) and fd > range / 3) or !ab)) // We're to close or to far from the front or don't have an airbase
+        if (fd < 999.0F and (fd < range / 30 or ( not (g_nAirbaseReloc bitand AirBaseRelocNoFar) and fd > range / 3) or !ab)) // We're to close or to far from the front or don't have an airbase
         {
             // Find a better base for us
             UnitClassDataType *uc = GetUnitClassData();
@@ -509,7 +509,7 @@ int SquadronClass::MoveUnit(CampaignTime time)
                     // (o->GetType() == TYPE_ARMYBASE and IsHelicopter() and GetRoE(o->GetTeam(),us,ROE_AIR_USE_BASES)))
                     int enter = FALSE;
 
-                    if (g_nAirbaseReloc & AirBaseRelocTeamOnly)
+                    if (g_nAirbaseReloc bitand AirBaseRelocTeamOnly)
                     {
                         if ((o->GetType() == TYPE_AIRBASE and !IsHelicopter() and o->GetTeam() == us) ||
                             (o->GetType() == TYPE_ARMYBASE and IsHelicopter() and o->GetTeam() == us))
@@ -670,7 +670,7 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
             reallocate = 1;
 
         // Reallocate if to far from front
-        if (fd < 999.0F and fd > maxDist and !(g_nAirbaseReloc & AirBaseRelocNoFar))
+        if (fd < 999.0F and fd > maxDist and !(g_nAirbaseReloc bitand AirBaseRelocNoFar))
             reallocate = 2;
 
         // Reallocate if base is destroyed
@@ -697,7 +697,7 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
 
                 int enter = FALSE;
 
-                if (g_nAirbaseReloc & AirBaseRelocTeamOnly)
+                if (g_nAirbaseReloc bitand AirBaseRelocTeamOnly)
                 {
                     if (o->GetTeam() == us)
                         enter = TRUE;
@@ -1084,7 +1084,7 @@ int SquadronClass::FindAvailableAircraft(MissionRequest mis)
     if (mis->start_block >= ATM_MAX_CYCLES)
         return 0;
 
-    if (mis->flags & REQF_USERESERVES)
+    if (mis->flags bitand REQF_USERESERVES)
         tav = GetTotalVehicles(); // Use any available aircraft
     //sfr: WTF are those FloatToInt32??? we dont need that
     else if ((int)(GetTotalVehicles() * g_npercentage_available_aircraft / 100.0f) >
@@ -1106,7 +1106,7 @@ int SquadronClass::FindAvailableAircraft(MissionRequest mis)
     {
         for (i = 0; i < ls; i++)
         {
-            if (GetSchedule(i) & (1 << cb))
+            if (GetSchedule(i) bitand (1 << cb))
                 free[i] = 0;
         }
     }
@@ -1149,7 +1149,7 @@ void SquadronClass::ScheduleAircraft(Flight fl, MissionRequest mis)
 
     role = MissionData[mis->mission].skill;
 
-    if (MissionData[mis->mission].flags & AMIS_DONT_USE_AC)
+    if (MissionData[mis->mission].flags bitand AMIS_DONT_USE_AC)
     {
         // Just fill up our slots sequentially
         for (i = 0; i < VEHICLE_GROUPS_PER_UNIT; i++)
@@ -1326,7 +1326,7 @@ void SquadronClass::UpdateSquadronStores(
     // Consolidate the weapons (we need to do this to minimize rounding errors)
     for (i = 0; i < HARDPOINT_MAX; i++)
     {
-        if ( not (WeaponDataTable[weapon[i]].Flags & WEAP_INFINITE_MASK))
+        if ( not (WeaponDataTable[weapon[i]].Flags bitand WEAP_INFINITE_MASK))
         {
             for (j = 0, done = 0; j < HARDPOINT_MAX and !done; j++)
             {
@@ -1401,7 +1401,7 @@ void SquadronClass::ResupplySquadronStores(
     // Consolidate the weapons (we need to do this to minimize rounding errors)
     for (i = 0; i < HARDPOINT_MAX; i++)
     {
-        if ( not (WeaponDataTable[weapon[i]].Flags & WEAP_INFINITE_MASK))
+        if ( not (WeaponDataTable[weapon[i]].Flags bitand WEAP_INFINITE_MASK))
         {
             for (j = 0, done = 0; j < HARDPOINT_MAX and !done; j++)
             {
@@ -1716,91 +1716,91 @@ void SquadronClass::WriteDirty(unsigned char **stream)
     *(ushort*)ptr = (ushort) dirty_squadron;
     ptr += sizeof(ushort);
 
-    if (dirty_squadron & DIRTY_SCHEDULE)
+    if (dirty_squadron bitand DIRTY_SCHEDULE)
     {
         memcpy(ptr, schedule, sizeof(schedule));
         ptr += sizeof(schedule);
     }
 
-    if (dirty_squadron & DIRTY_RATING)
+    if (dirty_squadron bitand DIRTY_RATING)
     {
         memcpy(ptr, rating, sizeof(rating));
         ptr += sizeof(rating);
     }
 
-    if (dirty_squadron & DIRTY_ASSIGNED)
+    if (dirty_squadron bitand DIRTY_ASSIGNED)
     {
         *(uchar*)ptr = assigned;
         ptr += sizeof(uchar);
     }
 
-    if (dirty_squadron & DIRTY_PILOT_LOSSES)
+    if (dirty_squadron bitand DIRTY_PILOT_LOSSES)
     {
         *(uchar*)ptr = pilot_losses;
         ptr += sizeof(uchar);
     }
 
-    if (dirty_squadron & DIRTY_TOTAL_LOSSES)
+    if (dirty_squadron bitand DIRTY_TOTAL_LOSSES)
     {
         *(uchar*)ptr = total_losses;
         ptr += sizeof(uchar);
     }
 
-    if (dirty_squadron & DIRTY_MISSION_SCORE)
+    if (dirty_squadron bitand DIRTY_MISSION_SCORE)
     {
         *(short*)ptr = mission_score;
         ptr += sizeof(short);
     }
 
-    if (dirty_squadron & DIRTY_MISSIONS_FLOWN)
+    if (dirty_squadron bitand DIRTY_MISSIONS_FLOWN)
     {
         *(short*)ptr = missions_flown;
         ptr += sizeof(short);
     }
 
-    if (dirty_squadron & DIRTY_AAKILLS)
+    if (dirty_squadron bitand DIRTY_AAKILLS)
     {
         *(short*)ptr = aa_kills;
         ptr += sizeof(short);
     }
 
-    if (dirty_squadron & DIRTY_AGKILLS)
+    if (dirty_squadron bitand DIRTY_AGKILLS)
     {
         *(short*)ptr = ag_kills;
         ptr += sizeof(short);
     }
 
-    if (dirty_squadron & DIRTY_ANKILLS)
+    if (dirty_squadron bitand DIRTY_ANKILLS)
     {
         *(short*)ptr = an_kills;
         ptr += sizeof(short);
     }
 
-    if (dirty_squadron & DIRTY_HOT_SPOT)
+    if (dirty_squadron bitand DIRTY_HOT_SPOT)
     {
         *(VU_ID*)ptr = hot_spot;
         ptr += sizeof(VU_ID);
     }
 
-    if (dirty_squadron & DIRTY_AIRBASE)
+    if (dirty_squadron bitand DIRTY_AIRBASE)
     {
         *(VU_ID*)ptr = airbase_id;
         ptr += sizeof(VU_ID);
     }
 
-    if (dirty_squadron & DIRTY_FUEL)
+    if (dirty_squadron bitand DIRTY_FUEL)
     {
         *(long*)ptr = fuel;
         ptr += sizeof(long);
     }
 
-    if (dirty_squadron & DIRTY_SQUAD_STORES)
+    if (dirty_squadron bitand DIRTY_SQUAD_STORES)
     {
         memcpy(ptr, stores, sizeof(stores));
         ptr += sizeof(stores);
     }
 
-    if (dirty_squadron & DIRTY_SQUAD_RESUP)
+    if (dirty_squadron bitand DIRTY_SQUAD_RESUP)
     {
         memcpy(ptr, &last_resupply, sizeof(uchar));
         ptr += sizeof(uchar);
@@ -1824,78 +1824,78 @@ void SquadronClass::ReadDirty(VU_BYTE **stream, long *rem)
     //read bitfield
     memcpychk(&bits, stream, sizeof(unsigned short), rem);
 
-    if (bits & DIRTY_SCHEDULE)
+    if (bits bitand DIRTY_SCHEDULE)
     {
         memcpychk(schedule, stream, sizeof(schedule), rem);
     }
 
-    if (bits & DIRTY_RATING)
+    if (bits bitand DIRTY_RATING)
     {
         memcpychk(rating, stream, sizeof(rating), rem);
     }
 
-    if (bits & DIRTY_ASSIGNED)
+    if (bits bitand DIRTY_ASSIGNED)
     {
         memcpychk(&assigned, stream, sizeof(uchar), rem);
     }
 
-    if (bits & DIRTY_PILOT_LOSSES)
+    if (bits bitand DIRTY_PILOT_LOSSES)
     {
         memcpychk(&pilot_losses, stream, sizeof(uchar), rem);
     }
 
-    if (bits & DIRTY_TOTAL_LOSSES)
+    if (bits bitand DIRTY_TOTAL_LOSSES)
     {
         memcpychk(&total_losses, stream, sizeof(uchar), rem);
     }
 
-    if (bits & DIRTY_MISSION_SCORE)
+    if (bits bitand DIRTY_MISSION_SCORE)
     {
         memcpychk(&mission_score, stream, sizeof(short), rem);
     }
 
-    if (bits & DIRTY_MISSIONS_FLOWN)
+    if (bits bitand DIRTY_MISSIONS_FLOWN)
     {
         memcpychk(&missions_flown, stream, sizeof(short), rem);
     }
 
-    if (bits & DIRTY_AAKILLS)
+    if (bits bitand DIRTY_AAKILLS)
     {
         memcpychk(&aa_kills, stream, sizeof(short), rem);
     }
 
-    if (bits & DIRTY_AGKILLS)
+    if (bits bitand DIRTY_AGKILLS)
     {
         memcpychk(&ag_kills, stream, sizeof(short), rem);
     }
 
-    if (bits & DIRTY_ANKILLS)
+    if (bits bitand DIRTY_ANKILLS)
     {
         memcpychk(&an_kills, stream, sizeof(short), rem);
     }
 
-    if (bits & DIRTY_HOT_SPOT)
+    if (bits bitand DIRTY_HOT_SPOT)
     {
         memcpychk(&hot_spot, stream, sizeof(VU_ID), rem);
     }
 
-    if (bits & DIRTY_AIRBASE)
+    if (bits bitand DIRTY_AIRBASE)
     {
         memcpychk(&airbase_id, stream, sizeof(VU_ID), rem);
     }
 
-    if (bits & DIRTY_FUEL)
+    if (bits bitand DIRTY_FUEL)
     {
         memcpychk(&fuel, stream, sizeof(long), rem);
     }
 
-    if (bits & DIRTY_SQUAD_STORES)
+    if (bits bitand DIRTY_SQUAD_STORES)
     {
         //check this! what is the size of stores?? 600 or 1?
         memcpychk(stores, stream, sizeof(stores), rem);
     }
 
-    if (bits & DIRTY_SQUAD_RESUP)
+    if (bits bitand DIRTY_SQUAD_RESUP)
     {
         memcpychk(&last_resupply, stream, sizeof(uchar), rem);
     }

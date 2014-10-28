@@ -293,7 +293,7 @@ BOOL C_Sound::LoadSound(long ID, char *file, long flags)
     if (GetSound(ID))
         return(FALSE);
 
-    snd = F4LoadSound(file, flags/* & SND_EXCLUSIVE */); // MLR 12/6/2003 - SND_ flags are obsolete
+    snd = F4LoadSound(file, flags/* bitand SND_EXCLUSIVE */); // MLR 12/6/2003 - SND_ flags are obsolete
 
     if (snd == NULL)
         return(FALSE);
@@ -401,11 +401,11 @@ BOOL C_Sound::PlaySound(SOUND_RES *Snd)
     gSoundDriver->StopStream(Mono_);
     gSoundDriver->StopStream(Stereo_);
 
-    if (Snd->flags & SOUND_IN_RES)
+    if (Snd->flags bitand SOUND_IN_RES)
     {
         if (Snd->Sound)
         {
-            if (Snd->flags & SOUND_RES_STREAM)
+            if (Snd->flags bitand SOUND_RES_STREAM)
             {
                 if (Snd->Sound->Header->Channels == 2) // Stereo
                     Snd->Sound->Stream(Stereo_);
@@ -421,12 +421,12 @@ BOOL C_Sound::PlaySound(SOUND_RES *Snd)
             }
         }
     }
-    else if (Snd->flags & SOUND_STREAM)
+    else if (Snd->flags bitand SOUND_STREAM)
     {
         // Get header... stream in Mono_ or Stereo_ stream
         SND_FLAGS = 0;
 
-        if (Snd->flags & SOUND_LOOP)
+        if (Snd->flags bitand SOUND_LOOP)
             SND_FLAGS  or_eq  SND_STREAM_LOOP;
 
         Snd->SoundID = F4StartStream(Snd->filename, SND_FLAGS);
@@ -451,7 +451,7 @@ BOOL C_Sound::LoopSound(SOUND_RES *Snd)
     gSoundDriver->StopStream(Mono_);
     gSoundDriver->StopStream(Stereo_);
 
-    if (Snd->flags & SOUND_IN_RES)
+    if (Snd->flags bitand SOUND_IN_RES)
     {
         if (Snd->Sound)
         {
@@ -461,7 +461,7 @@ BOOL C_Sound::LoopSound(SOUND_RES *Snd)
                 Snd->Sound->Loop(Mono_);
         }
     }
-    else if (Snd->flags & SOUND_STREAM)
+    else if (Snd->flags bitand SOUND_STREAM)
     {
         // Get header... stream in Mono_ or Stereo_ stream
         SND_FLAGS = SND_STREAM_LOOP;
@@ -514,7 +514,7 @@ void C_Sound::SetAllVolumes(long Volume)
      while(cur not_eq NULL)
      {
      cur->Volume=Volume;
-     if(cur->flags & SOUND_STREAM)
+     if(cur->flags bitand SOUND_STREAM)
      F4SetStreamVolume(cur->SoundID,Volume);
      else
      F4SetVolume(cur->SoundID,Volume);

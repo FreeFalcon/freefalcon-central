@@ -196,7 +196,7 @@ int IsValidMission(int dindex, int mission)
         case AMIS_STSTRIKE:
             uc = (UnitClassDataType*)(Falcon4ClassTable[dindex].dataPtr);
 
-            if (uc->Scores[role] and (uc->Flags & VEH_STEALTH))
+            if (uc->Scores[role] and (uc->Flags bitand VEH_STEALTH))
                 return TRUE;
 
             break;
@@ -291,7 +291,7 @@ int IsValidTarget(Team team, int mission, CampEntity target)
         {
             case AMIS_OCASTRIKE:
 
-                // Enemy airbases, airstrips, radar, & CCC
+                // Enemy airbases, airstrips, radar, bitand CCC
                 if (GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE)  and 
                     (target->GetType() == TYPE_AIRBASE or target->GetType() == TYPE_AIRSTRIP or target->GetType() == TYPE_RADAR or target->GetType() == TYPE_COM_CONTROL))
                     return TRUE;

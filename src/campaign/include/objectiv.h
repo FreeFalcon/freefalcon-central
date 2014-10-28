@@ -219,34 +219,34 @@ public:
     }
     int IsFrontline(void)
     {
-        return (int)(O_FRONTLINE & obj_data.obj_flags);
+        return (int)(O_FRONTLINE bitand obj_data.obj_flags);
     }
     int IsSecondline(void)
     {
-        return (int)(O_SECONDLINE & obj_data.obj_flags);
+        return (int)(O_SECONDLINE bitand obj_data.obj_flags);
     }
     int IsThirdline(void)
     {
-        return (int)(O_THIRDLINE & obj_data.obj_flags);
+        return (int)(O_THIRDLINE bitand obj_data.obj_flags);
     }
     int IsNearfront(void)
     {
-        return (int)((O_THIRDLINE | O_SECONDLINE | O_FRONTLINE) & obj_data.obj_flags);
+        return (int)((O_THIRDLINE | O_SECONDLINE | O_FRONTLINE) bitand obj_data.obj_flags);
     }
     int IsBeach(void)
     {
-        return (int)(O_BEACH & obj_data.obj_flags);
+        return (int)(O_BEACH bitand obj_data.obj_flags);
     }
     int IsPrimary(void);
     int IsSecondary(void);
     int IsSupplySource(void);
     int IsGCI(void)
     {
-        return (int)(O_IS_GCI & obj_data.obj_flags);    // 2002-02-13 ADDED BY S.G.
+        return (int)(O_IS_GCI bitand obj_data.obj_flags);    // 2002-02-13 ADDED BY S.G.
     }
     int HasNCTR(void)
     {
-        return (int)(O_HAS_NCTR & obj_data.obj_flags);    // 2002-02-13 ADDED BY S.G.
+        return (int)(O_HAS_NCTR bitand obj_data.obj_flags);    // 2002-02-13 ADDED BY S.G.
     }
     int HasRadarRanges(void);
     void UpdateObjectiveLists(void);
@@ -258,62 +258,62 @@ public:
     void SetManual(int s);
     int ManualSet(void)
     {
-        return obj_data.obj_flags & O_MANUAL_SET;
+        return obj_data.obj_flags bitand O_MANUAL_SET;
     }
     void SetJammed(int j);
     int Jammed(void)
     {
-        return obj_data.obj_flags & O_JAMMED;
+        return obj_data.obj_flags bitand O_JAMMED;
     }
     void SetSamSite(int j);
     int SamSite(void)
     {
-        return obj_data.obj_flags & O_SAM_SITE;
+        return obj_data.obj_flags bitand O_SAM_SITE;
     }
     void SetArtillerySite(int j);
     int ArtillerySite(void)
     {
-        return obj_data.obj_flags & O_ARTILLERY_SITE;
+        return obj_data.obj_flags bitand O_ARTILLERY_SITE;
     }
     void SetAmbushCAPSite(int j);
     int AmbushCAPSite(void)
     {
-        return obj_data.obj_flags & O_AMBUSHCAP_SITE;
+        return obj_data.obj_flags bitand O_AMBUSHCAP_SITE;
     }
     void SetBorderSite(int j);
     int BorderSite(void)
     {
-        return obj_data.obj_flags & O_BORDER_SITE;
+        return obj_data.obj_flags bitand O_BORDER_SITE;
     }
     void SetMountainSite(int j);
     int MountainSite(void)
     {
-        return obj_data.obj_flags & O_MOUNTAIN_SITE;
+        return obj_data.obj_flags bitand O_MOUNTAIN_SITE;
     }
     void SetCommandoSite(int j);
     int CommandoSite(void)
     {
-        return obj_data.obj_flags & O_COMMANDO_SITE;
+        return obj_data.obj_flags bitand O_COMMANDO_SITE;
     }
     void SetFlatSite(int j);
     int FlatSite(void)
     {
-        return obj_data.obj_flags & O_FLAT_SITE;
+        return obj_data.obj_flags bitand O_FLAT_SITE;
     }
     void SetRadarSite(int j);
     int RadarSite(void)
     {
-        return obj_data.obj_flags & O_RADAR_SITE;
+        return obj_data.obj_flags bitand O_RADAR_SITE;
     }
     void SetAbandoned(int t);
     int Abandoned(void)
     {
-        return obj_data.obj_flags & O_ABANDONED;
+        return obj_data.obj_flags bitand O_ABANDONED;
     }
     void SetNeedRepair(int t);
     int NeedRepair(void)
     {
-        return obj_data.obj_flags & O_NEED_REPAIR;
+        return obj_data.obj_flags bitand O_NEED_REPAIR;
     }
 
     // Dirty Functions

@@ -34,7 +34,7 @@ void ICPClass::ExecILSMode(void)
         static int frame = 0;
 
 
-        if (mUpdateFlags & ILS_UPDATE)
+        if (mUpdateFlags bitand ILS_UPDATE)
         {
             mUpdateFlags and_eq compl ILS_UPDATE;
 

@@ -430,7 +430,7 @@ void FillListBoxWithACTypes(C_ListBox *lbox)
         {
             ID += VU_LAST_ENTITY_TYPE;
 
-            if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+            if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
             {
                 if (FindSquadronType(ID, FalconLocalSession->GetTeam()))
                     lbox->AddItem(ID, C_TYPE_ITEM, DFAIPlanes[i].TextID);
@@ -1175,7 +1175,7 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
         }
     }
 
-    flt = list->Find(ID & 0xffffff00);
+    flt = list->Find(ID bitand 0xffffff00);
 
     if ( not flt)
         return(NULL);
@@ -2582,7 +2582,7 @@ void ClearDFTeamLists()
             list->DeleteBranch(list->GetRoot());
             list->RecalcSize();
 
-            if ( not (list->GetFlags() & C_BIT_INVISIBLE))
+            if ( not (list->GetFlags() bitand C_BIT_INVISIBLE))
                 win->RefreshClient(list->GetClient());
         }
 
@@ -2593,7 +2593,7 @@ void ClearDFTeamLists()
             list->DeleteBranch(list->GetRoot());
             list->RecalcSize();
 
-            if ( not (list->GetFlags() & C_BIT_INVISIBLE))
+            if ( not (list->GetFlags() bitand C_BIT_INVISIBLE))
                 win->RefreshClient(list->GetClient());
         }
 
@@ -2604,7 +2604,7 @@ void ClearDFTeamLists()
             list->DeleteBranch(list->GetRoot());
             list->RecalcSize();
 
-            if ( not (list->GetFlags() & C_BIT_INVISIBLE))
+            if ( not (list->GetFlags() bitand C_BIT_INVISIBLE))
                 win->RefreshClient(list->GetClient());
         }
 
@@ -2615,7 +2615,7 @@ void ClearDFTeamLists()
             list->DeleteBranch(list->GetRoot());
             list->RecalcSize();
 
-            if ( not (list->GetFlags() & C_BIT_INVISIBLE))
+            if ( not (list->GetFlags() bitand C_BIT_INVISIBLE))
                 win->RefreshClient(list->GetClient());
         }
 
@@ -2626,7 +2626,7 @@ void ClearDFTeamLists()
             list->DeleteBranch(list->GetRoot());
             list->RecalcSize();
 
-            if ( not (list->GetFlags() & C_BIT_INVISIBLE))
+            if ( not (list->GetFlags() bitand C_BIT_INVISIBLE))
                 win->RefreshClient(list->GetClient());
         }
     }

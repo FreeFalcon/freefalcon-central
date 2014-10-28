@@ -33,7 +33,7 @@ int VisualClass::CanSeeObject(SimObjectType* obj)
     // 2002-04-17 MN "GPS type" weapons can see and detect always
 
     // RV - Biker - Add check for bomb or missile to avoid AI AC to always see target
-    if ((g_nMissileFix & 0x100) and (platform->IsBomb() or platform->IsMissile()))
+    if ((g_nMissileFix bitand 0x100) and (platform->IsBomb() or platform->IsMissile()))
     {
 
         Falcon4EntityClassType* classPtr = NULL;
@@ -47,7 +47,7 @@ int VisualClass::CanSeeObject(SimObjectType* obj)
 
         ShiAssert(wc);
 
-        if (wc and (wc->Flags & WEAP_BOMBGPS))
+        if (wc and (wc->Flags bitand WEAP_BOMBGPS))
             return true;
     }
 
@@ -102,7 +102,7 @@ float VisualClass::GetSignature(SimObjectType*)
 int VisualClass::CanDetectObject(SimObjectType* obj)
 {
     // 2002-04-17 MN "GPS type" weapons can see and detect always
-    if (g_nMissileFix & 0x100)
+    if (g_nMissileFix bitand 0x100)
     {
         Falcon4EntityClassType* classPtr = NULL;
         classPtr = (Falcon4EntityClassType*)platform->EntityType();
@@ -118,7 +118,7 @@ int VisualClass::CanDetectObject(SimObjectType* obj)
 
             ShiAssert(wc);
 
-            if (wc and (wc->Flags & WEAP_BOMBGPS))
+            if (wc and (wc->Flags bitand WEAP_BOMBGPS))
                 return true;
         }
     }

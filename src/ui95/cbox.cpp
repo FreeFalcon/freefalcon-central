@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -63,7 +63,7 @@ void C_Box::SetColor(COLORREF color)
 }
 void C_Box::Refresh()
 {
-    if (Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
+    if (Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1, GetY() + GetH() + 1, GetFlags(), GetClient());
@@ -71,7 +71,7 @@ void C_Box::Refresh()
 
 void C_Box::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
+    if (Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->DrawHLine(surface, Color_, GetX(), GetY(), GetW() + 1, GetFlags(), GetClient(), cliprect);

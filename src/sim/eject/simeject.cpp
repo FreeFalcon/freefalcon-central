@@ -677,7 +677,7 @@ int EjectedPilotClass::Exec()
     SetYPR(_rot[I_YAW], _rot[I_PITCH], _rot[I_ROLL]);
     SetYPRDelta(_aVel[I_YAW], _aVel[I_PITCH], _aVel[I_ROLL]);
 
-    if (gACMIRec.IsRecording() and (SimLibFrameCount & 3) == 0)
+    if (gACMIRec.IsRecording() and (SimLibFrameCount bitand 3) == 0)
     {
         genPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
         genPos.data.type = Type();

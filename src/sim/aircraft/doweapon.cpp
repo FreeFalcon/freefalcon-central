@@ -190,7 +190,7 @@ void AircraftClass::DoWeapons()
                             VuReferenceEntity((VuEntity *)(DBrain()->missileFiredEntity));
                             // Clear the lsb so we know we have just set it
                             // (we'll be off by a milisecond, so what!)
-                            DBrain()->missileFiredTime = SimLibElapsedTime & 0xfffffffe;
+                            DBrain()->missileFiredTime = SimLibElapsedTime bitand 0xfffffffe;
                         }
 
                         // END OF ADDED SECTION
@@ -249,7 +249,7 @@ void AircraftClass::DoWeapons()
                         FCC->MissileLaunch(); //me123 used for "TOF" que modifed JPO
 
                         fireMissile = FALSE;
-                        // MLR Note: Maybe we should have the missle emit the sound (new & looped!)
+                        // MLR Note: Maybe we should have the missle emit the sound (new bitand looped!)
 
                         //RV - I-Hawk - commenting this call. all missiles launches sound
                         //now handled in SMSClass::LaunchMissile()
@@ -286,7 +286,7 @@ void AircraftClass::DoWeapons()
 
                     // 2002-04-14 MN moved into MislSms::LaunchMissile - if WEAP_BOMBDROPSOUND is set, play it, if not, missile launch sound
                     // do that only if we don't want the above...
-                    if ( not (g_nMissileFix & 0x80))
+                    if ( not (g_nMissileFix bitand 0x80))
                         SoundPos.Sfx(SFX_MISSILE2);
                 }
 
@@ -396,7 +396,7 @@ void AircraftClass::DoWeapons()
 
                     // * From here, code for bumb bombs *
                     // *** CLUSTERS STUFF *** it has burnt height
-                    if (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags & SMSClass::HasBurstHeight)
+                    if (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags bitand SMSClass::HasBurstHeight)
                     {
                         // If not Player drop in Couples
                         if ( not isPlayer) Sms->SetAGBPair(TRUE);

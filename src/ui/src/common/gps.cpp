@@ -75,7 +75,7 @@ static BOOL GPSTreeSortCB(TREELIST *list, TREELIST *newitem)
             else if (fval < sval)
                 return(FALSE);
 
-            // if(fval & sval are equal... let strcmp figure it out
+            // if(fval bitand sval are equal... let strcmp figure it out
         }
         else if (isdigit(*first))
             return(FALSE);
@@ -406,13 +406,13 @@ void GlobalPositioningSystem::Update()
 
     GPS_Hash->RemoveOld();
 
-    if (MisTree_ and (Flags & _GPS_RESORT_MISSION_))
+    if (MisTree_ and (Flags bitand _GPS_RESORT_MISSION_))
     {
         MisTree_->ReorderBranch(MisTree_->GetRoot());
         Flags  or_eq  _GPS_MISSION_RESIZE_;
     }
 
-    if (MisTree_ and (Flags & _GPS_MISSION_RESIZE_))
+    if (MisTree_ and (Flags bitand _GPS_MISSION_RESIZE_))
     {
         MisTree_->RecalcSize();
 
@@ -420,7 +420,7 @@ void GlobalPositioningSystem::Update()
             MisTree_->GetParent()->RefreshClient(MisTree_->GetClient());
     }
 
-    if (AtoTree_ and (Flags & _GPS_ATO_RESIZE_))
+    if (AtoTree_ and (Flags bitand _GPS_ATO_RESIZE_))
     {
         AtoTree_->RecalcSize();
 
@@ -428,7 +428,7 @@ void GlobalPositioningSystem::Update()
             AtoTree_->GetParent()->RefreshClient(AtoTree_->GetClient());
     }
 
-    if (OOBTree_ and (Flags & _GPS_OOB_RESIZE_))
+    if (OOBTree_ and (Flags bitand _GPS_OOB_RESIZE_))
     {
         OOBTree_->RecalcSize();
 

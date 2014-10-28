@@ -1030,7 +1030,7 @@ void STPSetupControls(void)
         lbox->Refresh();
     }
 
-    //if (S_joycaps.wCaps & JOYCAPS_HASZ)
+    //if (S_joycaps.wCaps bitand JOYCAPS_HASZ)
     if (IO.AnalogIsUsed(AXIS_THROTTLE)) // Retro 31Dec2003
     {
         button = (C_Button *)win->FindControl(THROTTLE_CHECK);

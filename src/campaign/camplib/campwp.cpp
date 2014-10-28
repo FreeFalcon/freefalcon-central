@@ -115,7 +115,7 @@ WayPointClass::WayPointClass(VU_BYTE **stream, long *rem)
         memcpychk(&Flags, stream, sizeof(ulong), rem);
     }
 
-    if (haves & WP_HAVE_TARGET)
+    if (haves bitand WP_HAVE_TARGET)
     {
         memcpychk(&TargetID, stream, sizeof(VU_ID), rem);
         memcpychk(&TargetBuilding, stream, sizeof(uchar), rem);
@@ -126,7 +126,7 @@ WayPointClass::WayPointClass(VU_BYTE **stream, long *rem)
         TargetBuilding = 255;
     }
 
-    if (haves & WP_HAVE_DEPTIME)
+    if (haves bitand WP_HAVE_DEPTIME)
     {
         memcpychk(&Depart, stream, sizeof(CampaignTime), rem);
     }
@@ -169,7 +169,7 @@ WayPointClass::WayPointClass(FILE* fp)
         fread(&Flags, sizeof(ulong), 1, fp);
     }
 
-    if (haves & WP_HAVE_TARGET)
+    if (haves bitand WP_HAVE_TARGET)
     {
         fread(&TargetID, sizeof(VU_ID), 1, fp);
 #ifdef DEBUG
@@ -183,7 +183,7 @@ WayPointClass::WayPointClass(FILE* fp)
         TargetBuilding = 255;
     }
 
-    if (haves & WP_HAVE_DEPTIME)
+    if (haves bitand WP_HAVE_DEPTIME)
         fread(&Depart, sizeof(CampaignTime), 1, fp);
     else
         Depart = Arrive;
@@ -251,7 +251,7 @@ int WayPointClass::Save(VU_BYTE **stream)
     *stream  += sizeof(ulong);
 
 
-    if (haves & WP_HAVE_TARGET)
+    if (haves bitand WP_HAVE_TARGET)
     {
 #ifdef CAMPTOOL
 
@@ -267,7 +267,7 @@ int WayPointClass::Save(VU_BYTE **stream)
         *stream += sizeof(uchar);
     }
 
-    if (haves & WP_HAVE_DEPTIME)
+    if (haves bitand WP_HAVE_DEPTIME)
     {
         memcpy(*stream, &Depart, sizeof(CampaignTime));
         *stream += sizeof(CampaignTime);
@@ -309,7 +309,7 @@ int WayPointClass::Save(FILE* fp)
     fwrite(&Formation, sizeof(uchar), 1, fp);
     fwrite(&Flags, sizeof(ulong), 1, fp);
 
-    if (haves & WP_HAVE_TARGET)
+    if (haves bitand WP_HAVE_TARGET)
     {
 #ifdef CAMPTOOL
 
@@ -323,7 +323,7 @@ int WayPointClass::Save(FILE* fp)
         fwrite(&TargetBuilding, sizeof(uchar), 1, fp);
     }
 
-    if (haves & WP_HAVE_DEPTIME)
+    if (haves bitand WP_HAVE_DEPTIME)
         fwrite(&Depart, sizeof(CampaignTime), 1, fp);
 
     // fwrite(&Tactic, sizeof(short), 1, fp);
@@ -458,7 +458,7 @@ void WayPointClass::SplitWP()
     x = (short)((first_wp->GridX + second_wp->GridX) / 2);
     y = (short)((first_wp->GridY + second_wp->GridY) / 2);
 
-    if (second_wp->GetWPFlags() & WPF_HOLDCURRENT)
+    if (second_wp->GetWPFlags() bitand WPF_HOLDCURRENT)
     {
         z = first_wp->GridZ;
     }
@@ -664,7 +664,7 @@ CampaignTime SetWPTimes(WayPoint w, CampaignTime start, int speed, int flags)
     }
 
     // If the first waypoint passed is an alternate - assume we want it's time set
-    if (w->GetWPFlags() & WPF_ALTERNATE)
+    if (w->GetWPFlags() bitand WPF_ALTERNATE)
     {
         flags  or_eq  WPTS_SET_ALTERNATE_TIMES;
     }
@@ -677,7 +677,7 @@ CampaignTime SetWPTimes(WayPoint w, CampaignTime start, int speed, int flags)
         w->GetWPLocation(&nx, &ny);
         mission_time += TimeToArrive(Distance(x, y, nx, ny), (float)speed);
 
-        if (flags & WPTS_KEEP_DEPARTURE_TIMES)
+        if (flags bitand WPTS_KEEP_DEPARTURE_TIMES)
         {
             w->SetWPArrive(mission_time);
 
@@ -693,12 +693,12 @@ CampaignTime SetWPTimes(WayPoint w, CampaignTime start, int speed, int flags)
 
         mission_time = w->GetWPDepartureTime();
 
-        if (mission_time > land and (w->GetWPFlags() & WPF_LAND))
+        if (mission_time > land and (w->GetWPFlags() bitand WPF_LAND))
         {
             land = mission_time;
         }
 
-        if ((w->GetWPFlags() & WPF_ALTERNATE) and !(flags & WPTS_SET_ALTERNATE_TIMES))
+        if ((w->GetWPFlags() bitand WPF_ALTERNATE) and !(flags bitand WPTS_SET_ALTERNATE_TIMES))
         {
             w->SetWPTimes(0);
         }
@@ -722,7 +722,7 @@ CampaignTime SetWPTimes(WayPoint w, long delta, int flags)
         return 0;
 
     // If the first waypoint passed is an alternate - assume we want it's time set
-    if (w->GetWPFlags() & WPF_ALTERNATE)
+    if (w->GetWPFlags() bitand WPF_ALTERNATE)
         flags  or_eq  WPTS_SET_ALTERNATE_TIMES;
 
     length = w->GetWPArrivalTime() + delta;
@@ -731,7 +731,7 @@ CampaignTime SetWPTimes(WayPoint w, long delta, int flags)
     {
         mission_time = w->GetWPArrivalTime() + delta;
 
-        if (flags & WPTS_KEEP_DEPARTURE_TIMES)
+        if (flags bitand WPTS_KEEP_DEPARTURE_TIMES)
         {
             w->SetWPArrive(mission_time);
 
@@ -747,12 +747,12 @@ CampaignTime SetWPTimes(WayPoint w, long delta, int flags)
 
         mission_time = w->GetWPDepartureTime();
 
-        if (mission_time > land and (w->GetWPFlags() & WPF_LAND))
+        if (mission_time > land and (w->GetWPFlags() bitand WPF_LAND))
         {
             land = mission_time;
         }
 
-        if ((w->GetWPFlags() & WPF_ALTERNATE) and !(flags & WPTS_SET_ALTERNATE_TIMES))
+        if ((w->GetWPFlags() bitand WPF_ALTERNATE) and !(flags bitand WPTS_SET_ALTERNATE_TIMES))
         {
             w->SetWPTimes(0);
         }

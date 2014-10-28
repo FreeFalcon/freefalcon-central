@@ -31,7 +31,7 @@ extern SensorClass* FindLaserPod(SimMoverClass* theObject);
 void WingmanWedge(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMWedge, AiWingman);
     }
@@ -40,7 +40,7 @@ void WingmanWedge(unsigned long, int state, void*)
 void ElementWedge(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMWedge, AiElement);
     }
@@ -49,7 +49,7 @@ void ElementWedge(unsigned long, int state, void*)
 void FlightWedge(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMWedge, AiFlight);
     }
@@ -60,7 +60,7 @@ void FlightWedge(unsigned long, int state, void*)
 void WingmanArrow(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMArrowHead, AiWingman);
     }
@@ -69,7 +69,7 @@ void WingmanArrow(unsigned long, int state, void*)
 void ElementArrow(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMArrowHead, AiElement);
     }
@@ -78,7 +78,7 @@ void ElementArrow(unsigned long, int state, void*)
 void FlightArrow(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMArrowHead, AiFlight);
     }
@@ -89,7 +89,7 @@ void FlightArrow(unsigned long, int state, void*)
 void WingmanBox(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMBox, AiWingman);
     }
@@ -98,7 +98,7 @@ void WingmanBox(unsigned long, int state, void*)
 void ElementBox(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMBox, AiElement);
     }
@@ -107,7 +107,7 @@ void ElementBox(unsigned long, int state, void*)
 void FlightBox(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMBox, AiFlight);
     }
@@ -119,7 +119,7 @@ void FlightBox(unsigned long, int state, void*)
 void WingmanResCell(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMResCell, AiWingman);
     }
@@ -128,7 +128,7 @@ void WingmanResCell(unsigned long, int state, void*)
 void ElementResCell(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMResCell, AiElement);
     }
@@ -137,7 +137,7 @@ void ElementResCell(unsigned long, int state, void*)
 void FlightResCell(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMResCell, AiFlight);
     }
@@ -148,7 +148,7 @@ void FlightResCell(unsigned long, int state, void*)
 void WingmanTrail(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMTrail, AiWingman);
     }
@@ -157,7 +157,7 @@ void WingmanTrail(unsigned long, int state, void*)
 void ElementTrail(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMTrail, AiElement);
     }
@@ -166,7 +166,7 @@ void ElementTrail(unsigned long, int state, void*)
 void FlightTrail(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMTrail, AiFlight);
     }
@@ -179,7 +179,7 @@ void FlightTrail(unsigned long, int state, void*)
 void WingmanSpread(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMSpread, AiWingman);
     }
@@ -188,7 +188,7 @@ void WingmanSpread(unsigned long, int state, void*)
 void ElementSpread(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMSpread, AiElement);
     }
@@ -197,7 +197,7 @@ void ElementSpread(unsigned long, int state, void*)
 void FlightSpread(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMSpread, AiFlight);
     }
@@ -207,7 +207,7 @@ void FlightSpread(unsigned long, int state, void*)
 void WingmanFluid(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMFluidFour, AiWingman);
     }
@@ -216,7 +216,7 @@ void WingmanFluid(unsigned long, int state, void*)
 void ElementFluid(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMFluidFour, AiElement);
     }
@@ -225,7 +225,7 @@ void ElementFluid(unsigned long, int state, void*)
 void FlightFluid(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMFluidFour, AiFlight);
     }
@@ -236,7 +236,7 @@ void FlightFluid(unsigned long, int state, void*)
 void WingmanLadder(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMLadder, AiWingman);
     }
@@ -245,7 +245,7 @@ void WingmanLadder(unsigned long, int state, void*)
 void ElementLadder(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMLadder, AiElement);
     }
@@ -254,7 +254,7 @@ void ElementLadder(unsigned long, int state, void*)
 void FlightLadder(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMLadder, AiFlight);
     }
@@ -265,7 +265,7 @@ void FlightLadder(unsigned long, int state, void*)
 void WingmanStack(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMStack, AiWingman);
     }
@@ -274,7 +274,7 @@ void WingmanStack(unsigned long, int state, void*)
 void ElementStack(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMStack, AiElement);
     }
@@ -283,7 +283,7 @@ void ElementStack(unsigned long, int state, void*)
 void FlightStack(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMStack, AiFlight);
     }
@@ -295,7 +295,7 @@ void FlightStack(unsigned long, int state, void*)
 void WingmanVic(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMVic, AiWingman);
     }
@@ -304,7 +304,7 @@ void WingmanVic(unsigned long, int state, void*)
 void ElementVic(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMVic, AiElement);
     }
@@ -313,7 +313,7 @@ void ElementVic(unsigned long, int state, void*)
 void FlightVic(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMVic, AiFlight);
     }
@@ -325,7 +325,7 @@ void FlightVic(unsigned long, int state, void*)
 void WingmanFinger4(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMFinger4, AiWingman);
     }
@@ -334,7 +334,7 @@ void WingmanFinger4(unsigned long, int state, void*)
 void ElementFinger4(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMFinger4, AiElement);
     }
@@ -343,7 +343,7 @@ void ElementFinger4(unsigned long, int state, void*)
 void FlightFinger4(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMFinger4, AiFlight);
     }
@@ -355,7 +355,7 @@ void FlightFinger4(unsigned long, int state, void*)
 void WingmanEchelon(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMEchelon, AiWingman);
     }
@@ -364,7 +364,7 @@ void WingmanEchelon(unsigned long, int state, void*)
 void ElementEchelon(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMEchelon, AiElement);
     }
@@ -373,7 +373,7 @@ void ElementEchelon(unsigned long, int state, void*)
 void FlightEchelon(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMEchelon, AiFlight);
     }
@@ -384,7 +384,7 @@ void FlightEchelon(unsigned long, int state, void*)
 void WingmanForm1(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMForm1, AiWingman);
     }
@@ -393,7 +393,7 @@ void WingmanForm1(unsigned long, int state, void*)
 void ElementForm1(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMForm1, AiElement);
     }
@@ -402,7 +402,7 @@ void ElementForm1(unsigned long, int state, void*)
 void FlightForm1(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMForm1, AiFlight);
     }
@@ -413,7 +413,7 @@ void FlightForm1(unsigned long, int state, void*)
 void WingmanForm2(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMForm2, AiWingman);
     }
@@ -422,7 +422,7 @@ void WingmanForm2(unsigned long, int state, void*)
 void ElementForm2(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMForm2, AiElement);
     }
@@ -431,7 +431,7 @@ void ElementForm2(unsigned long, int state, void*)
 void FlightForm2(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMForm2, AiFlight);
     }
@@ -442,7 +442,7 @@ void FlightForm2(unsigned long, int state, void*)
 void WingmanForm3(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMForm3, AiWingman);
     }
@@ -451,7 +451,7 @@ void WingmanForm3(unsigned long, int state, void*)
 void ElementForm3(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMForm3, AiElement);
     }
@@ -460,7 +460,7 @@ void ElementForm3(unsigned long, int state, void*)
 void FlightForm3(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMForm3, AiFlight);
     }
@@ -471,7 +471,7 @@ void FlightForm3(unsigned long, int state, void*)
 void WingmanForm4(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMForm4, AiWingman);
     }
@@ -480,7 +480,7 @@ void WingmanForm4(unsigned long, int state, void*)
 void ElementForm4(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMForm4, AiElement);
     }
@@ -489,7 +489,7 @@ void ElementForm4(unsigned long, int state, void*)
 void FlightForm4(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMForm4, AiFlight);
     }
@@ -503,7 +503,7 @@ void FlightForm4(unsigned long, int state, void*)
 void WingmanKickout(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMKickout, AiWingman);
     }
@@ -512,7 +512,7 @@ void WingmanKickout(unsigned long, int state, void*)
 void ElementKickout(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMKickout, AiElement);
     }
@@ -521,7 +521,7 @@ void ElementKickout(unsigned long, int state, void*)
 void FlightKickout(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMKickout, AiFlight);
     }
@@ -532,7 +532,7 @@ void FlightKickout(unsigned long, int state, void*)
 void WingmanCloseup(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMCloseup, AiWingman);
     }
@@ -541,7 +541,7 @@ void WingmanCloseup(unsigned long, int state, void*)
 void ElementCloseup(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMCloseup, AiElement);
     }
@@ -550,7 +550,7 @@ void ElementCloseup(unsigned long, int state, void*)
 void FlightCloseup(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMCloseup, AiFlight);
     }
@@ -560,7 +560,7 @@ void FlightCloseup(unsigned long, int state, void*)
 void WingmanToggleSide(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMToggleSide, AiWingman);
     }
@@ -569,7 +569,7 @@ void WingmanToggleSide(unsigned long, int state, void*)
 void ElementToggleSide(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMToggleSide, AiElement);
     }
@@ -578,7 +578,7 @@ void ElementToggleSide(unsigned long, int state, void*)
 void FlightToggleSide(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMToggleSide, AiFlight);
     }
@@ -589,7 +589,7 @@ void FlightToggleSide(unsigned long, int state, void*)
 void WingmanIncreaseRelAlt(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMIncreaseRelAlt, AiWingman);
     }
@@ -598,7 +598,7 @@ void WingmanIncreaseRelAlt(unsigned long, int state, void*)
 void ElementIncreaseRelAlt(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMIncreaseRelAlt, AiElement);
     }
@@ -607,7 +607,7 @@ void ElementIncreaseRelAlt(unsigned long, int state, void*)
 void FlightIncreaseRelAlt(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMIncreaseRelAlt, AiFlight);
     }
@@ -618,7 +618,7 @@ void FlightIncreaseRelAlt(unsigned long, int state, void*)
 void WingmanDecreaseRelAlt(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMDecreaseRelAlt, AiWingman);
     }
@@ -627,7 +627,7 @@ void WingmanDecreaseRelAlt(unsigned long, int state, void*)
 void ElementDecreaseRelAlt(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMDecreaseRelAlt, AiElement);
     }
@@ -636,7 +636,7 @@ void ElementDecreaseRelAlt(unsigned long, int state, void*)
 void FlightDecreaseRelAlt(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMDecreaseRelAlt, AiFlight);
     }
@@ -651,7 +651,7 @@ void FlightDecreaseRelAlt(unsigned long, int state, void*)
 void WingmanDesignateTarget(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         VU_ID tgtId = FalconNullId;
 
@@ -664,7 +664,7 @@ void WingmanDesignateTarget(unsigned long, int state, void*)
 void ElementDesignateTarget(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         VU_ID tgtId = FalconNullId;
 
@@ -677,7 +677,7 @@ void ElementDesignateTarget(unsigned long, int state, void*)
 void FlightDesignateTarget(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         VU_ID tgtId = FalconNullId;
 
@@ -691,7 +691,7 @@ void FlightDesignateTarget(unsigned long, int state, void*)
 void WingmanDesignateGroup(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         VU_ID tgtId = FalconNullId;
 
@@ -704,7 +704,7 @@ void WingmanDesignateGroup(unsigned long, int state, void*)
 void ElementDesignateGroup(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         VU_ID tgtId = FalconNullId;
 
@@ -717,7 +717,7 @@ void ElementDesignateGroup(unsigned long, int state, void*)
 void FlightDesignateGroup(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         VU_ID tgtId = FalconNullId;
 
@@ -825,7 +825,7 @@ VU_ID FindAircraftTarget(AircraftClass* theAC)
 void WingmanPince(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMPince, AiWingman);
     }
@@ -834,7 +834,7 @@ void WingmanPince(unsigned long, int state, void*)
 void ElementPince(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMPince, AiElement);
     }
@@ -843,7 +843,7 @@ void ElementPince(unsigned long, int state, void*)
 void FlightPince(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMPince, AiFlight);
     }
@@ -854,7 +854,7 @@ void FlightPince(unsigned long, int state, void*)
 void FlightBreakRight(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMBreakRight, AiFlight);
     }
@@ -864,7 +864,7 @@ void FlightBreakRight(unsigned long, int state, void*)
 void ElementBreakRight(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMBreakRight, AiElement);
     }
@@ -873,7 +873,7 @@ void ElementBreakRight(unsigned long, int state, void*)
 void WingmanBreakRight(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMBreakRight, AiWingman);
     }
@@ -884,7 +884,7 @@ void WingmanBreakRight(unsigned long, int state, void*)
 void FlightBreakLeft(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMBreakLeft, AiFlight);
     }
@@ -893,7 +893,7 @@ void FlightBreakLeft(unsigned long, int state, void*)
 void ElementBreakLeft(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMBreakLeft, AiElement);
     }
@@ -902,7 +902,7 @@ void ElementBreakLeft(unsigned long, int state, void*)
 void WingmanBreakLeft(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMBreakLeft, AiWingman);
     }
@@ -913,7 +913,7 @@ void WingmanBreakLeft(unsigned long, int state, void*)
 void WingmanPosthole(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMPosthole, AiWingman);
     }
@@ -922,7 +922,7 @@ void WingmanPosthole(unsigned long, int state, void*)
 void ElementPosthole(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMPosthole, AiElement);
     }
@@ -931,7 +931,7 @@ void ElementPosthole(unsigned long, int state, void*)
 void FlightPosthole(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMPosthole, AiFlight);
     }
@@ -942,7 +942,7 @@ void FlightPosthole(unsigned long, int state, void*)
 void WingmanChainsaw(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMChainsaw, AiWingman);
     }
@@ -951,7 +951,7 @@ void WingmanChainsaw(unsigned long, int state, void*)
 void ElementChainsaw(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMChainsaw, AiElement);
     }
@@ -960,7 +960,7 @@ void ElementChainsaw(unsigned long, int state, void*)
 void FlightChainsaw(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMChainsaw, AiFlight);
     }
@@ -971,7 +971,7 @@ void FlightChainsaw(unsigned long, int state, void*)
 void WingmanFlex(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMFlex, AiWingman);
     }
@@ -980,7 +980,7 @@ void WingmanFlex(unsigned long, int state, void*)
 void ElementFlex(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMFlex, AiElement);
     }
@@ -989,7 +989,7 @@ void ElementFlex(unsigned long, int state, void*)
 void FlightFlex(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMFlex, AiFlight);
     }
@@ -1000,7 +1000,7 @@ void FlightFlex(unsigned long, int state, void*)
 void WingmanClearSix(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMClearSix, AiWingman);
     }
@@ -1009,7 +1009,7 @@ void WingmanClearSix(unsigned long, int state, void*)
 void ElementClearSix(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMClearSix, AiElement);
     }
@@ -1018,7 +1018,7 @@ void ElementClearSix(unsigned long, int state, void*)
 void FlightClearSix(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMClearSix, AiFlight);
     }
@@ -1028,7 +1028,7 @@ void FlightClearSix(unsigned long, int state, void*)
 void WingmanCheckSix(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMCheckSix, AiWingman);
     }
@@ -1037,7 +1037,7 @@ void WingmanCheckSix(unsigned long, int state, void*)
 void ElementCheckSix(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMCheckSix, AiElement);
     }
@@ -1046,7 +1046,7 @@ void ElementCheckSix(unsigned long, int state, void*)
 void FlightCheckSix(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMCheckSix, AiFlight);
     }
@@ -1060,7 +1060,7 @@ void FlightCheckSix(unsigned long, int state, void*)
 void WingmanRejoin(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMRejoin, AiWingman);
     }
@@ -1069,7 +1069,7 @@ void WingmanRejoin(unsigned long, int state, void*)
 void ElementRejoin(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMRejoin, AiElement);
     }
@@ -1078,7 +1078,7 @@ void ElementRejoin(unsigned long, int state, void*)
 void FlightRejoin(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMRejoin, AiFlight);
     }
@@ -1089,7 +1089,7 @@ void FlightRejoin(unsigned long, int state, void*)
 void WingmanGiveBra(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMGiveBra, AiWingman);
     }
@@ -1098,7 +1098,7 @@ void WingmanGiveBra(unsigned long, int state, void*)
 void ElementGiveBra(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMGiveBra, AiElement);
     }
@@ -1107,7 +1107,7 @@ void ElementGiveBra(unsigned long, int state, void*)
 void FlightGiveBra(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMGiveBra, AiFlight);
     }
@@ -1118,7 +1118,7 @@ void FlightGiveBra(unsigned long, int state, void*)
 void WingmanRTB(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMRTB, AiWingman);
     }
@@ -1127,7 +1127,7 @@ void WingmanRTB(unsigned long, int state, void*)
 void ElementRTB(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMRTB, AiElement);
     }
@@ -1136,7 +1136,7 @@ void ElementRTB(unsigned long, int state, void*)
 void FlightRTB(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMRTB, AiFlight);
     }
@@ -1147,7 +1147,7 @@ void FlightRTB(unsigned long, int state, void*)
 void WingmanGiveStatus(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMGiveStatus, AiWingman);
     }
@@ -1156,7 +1156,7 @@ void WingmanGiveStatus(unsigned long, int state, void*)
 void ElementGiveStatus(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMGiveStatus, AiElement);
     }
@@ -1165,7 +1165,7 @@ void ElementGiveStatus(unsigned long, int state, void*)
 void FlightGiveStatus(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMGiveStatus, AiFlight);
     }
@@ -1176,7 +1176,7 @@ void FlightGiveStatus(unsigned long, int state, void*)
 void WingmanGiveDamageReport(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMGiveDamageReport, AiWingman);
     }
@@ -1185,7 +1185,7 @@ void WingmanGiveDamageReport(unsigned long, int state, void*)
 void ElementGiveDamageReport(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMGiveDamageReport, AiElement);
     }
@@ -1194,7 +1194,7 @@ void ElementGiveDamageReport(unsigned long, int state, void*)
 void FlightGiveDamageReport(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMGiveDamageReport, AiFlight);
     }
@@ -1205,7 +1205,7 @@ void FlightGiveDamageReport(unsigned long, int state, void*)
 void WingmanGiveFuelState(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMGiveFuelState, AiWingman);
     }
@@ -1214,7 +1214,7 @@ void WingmanGiveFuelState(unsigned long, int state, void*)
 void ElementGiveFuelState(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMGiveFuelState, AiElement);
     }
@@ -1222,7 +1222,7 @@ void ElementGiveFuelState(unsigned long, int state, void*)
 void FlightGiveFuelState(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMGiveFuelState, AiFlight);
     }
@@ -1233,7 +1233,7 @@ void FlightGiveFuelState(unsigned long, int state, void*)
 void WingmanGiveWeaponsCheck(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMGiveWeaponsCheck, AiWingman);
     }
@@ -1242,7 +1242,7 @@ void WingmanGiveWeaponsCheck(unsigned long, int state, void*)
 void ElementGiveWeaponsCheck(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMGiveWeaponsCheck, AiElement);
     }
@@ -1251,7 +1251,7 @@ void ElementGiveWeaponsCheck(unsigned long, int state, void*)
 void FlightGiveWeaponsCheck(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMGiveWeaponsCheck, AiFlight);
     }
@@ -1260,7 +1260,7 @@ void FlightGiveWeaponsCheck(unsigned long, int state, void*)
 // M.N.
 void WingmanDropStores(unsigned long, int state, void*)
 {
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMDropStores, AiWingman);
     }
@@ -1268,7 +1268,7 @@ void WingmanDropStores(unsigned long, int state, void*)
 
 void ElementDropStores(unsigned long, int state, void*)
 {
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMDropStores, AiElement);
     }
@@ -1276,7 +1276,7 @@ void ElementDropStores(unsigned long, int state, void*)
 
 void FlightDropStores(unsigned long, int state, void*)
 {
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMDropStores, AiFlight);
     }
@@ -1289,7 +1289,7 @@ void FlightDropStores(unsigned long, int state, void*)
 void WingmanGoCoverMode(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMCoverMode, AiWingman);
     }
@@ -1298,7 +1298,7 @@ void WingmanGoCoverMode(unsigned long, int state, void*)
 void ElementGoCoverMode(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMCoverMode, AiElement);
     }
@@ -1307,7 +1307,7 @@ void ElementGoCoverMode(unsigned long, int state, void*)
 void FlightGoCoverMode(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMCoverMode, AiFlight);
     }
@@ -1318,7 +1318,7 @@ void FlightGoCoverMode(unsigned long, int state, void*)
 void WingmanGoShooterMode(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMShooterMode, AiWingman);
     }
@@ -1327,7 +1327,7 @@ void WingmanGoShooterMode(unsigned long, int state, void*)
 void ElementGoShooterMode(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMShooterMode, AiElement);
     }
@@ -1336,7 +1336,7 @@ void ElementGoShooterMode(unsigned long, int state, void*)
 void FlightGoShooterMode(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMShooterMode, AiFlight);
     }
@@ -1349,7 +1349,7 @@ void FlightGoShooterMode(unsigned long, int state, void*)
 void WingmanWeaponsHold(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMWeaponsHold, AiWingman);
     }
@@ -1358,7 +1358,7 @@ void WingmanWeaponsHold(unsigned long, int state, void*)
 void ElementWeaponsHold(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMWeaponsHold, AiElement);
     }
@@ -1367,7 +1367,7 @@ void ElementWeaponsHold(unsigned long, int state, void*)
 void FlightWeaponsHold(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMWeaponsHold, AiFlight);
     }
@@ -1377,7 +1377,7 @@ void FlightWeaponsHold(unsigned long, int state, void*)
 void WingmanWeaponsFree(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMWeaponsFree, AiWingman);
     }
@@ -1386,7 +1386,7 @@ void WingmanWeaponsFree(unsigned long, int state, void*)
 void ElementWeaponsFree(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMWeaponsFree, AiElement);
     }
@@ -1395,7 +1395,7 @@ void ElementWeaponsFree(unsigned long, int state, void*)
 void FlightWeaponsFree(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMWeaponsFree, AiFlight);
     }
@@ -1407,7 +1407,7 @@ void FlightWeaponsFree(unsigned long, int state, void*)
 void WingmanSearchAir(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMSearchAir, AiWingman);
     }
@@ -1416,7 +1416,7 @@ void WingmanSearchAir(unsigned long, int state, void*)
 void ElementSearchAir(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMSearchAir, AiElement);
     }
@@ -1425,7 +1425,7 @@ void ElementSearchAir(unsigned long, int state, void*)
 void FlightSearchAir(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMSearchAir, AiFlight);
     }
@@ -1435,7 +1435,7 @@ void FlightSearchAir(unsigned long, int state, void*)
 void WingmanSearchGround(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMSearchGround, AiWingman);
     }
@@ -1444,7 +1444,7 @@ void WingmanSearchGround(unsigned long, int state, void*)
 void ElementSearchGround(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMSearchGround, AiElement);
     }
@@ -1453,7 +1453,7 @@ void ElementSearchGround(unsigned long, int state, void*)
 void FlightSearchGround(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMSearchGround, AiFlight);
     }
@@ -1464,7 +1464,7 @@ void FlightSearchGround(unsigned long, int state, void*)
 void WingmanResumeNormal(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMResumeNormal, AiWingman);
     }
@@ -1473,7 +1473,7 @@ void WingmanResumeNormal(unsigned long, int state, void*)
 void ElementResumeNormal(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMResumeNormal, AiElement);
     }
@@ -1482,7 +1482,7 @@ void ElementResumeNormal(unsigned long, int state, void*)
 void FlightResumeNormal(unsigned long, int state, void*)
 {
 
-    if ((state & KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
+    if ((state bitand KEY_DOWN) and (SimDriver.GetPlayerAircraft()))
     {
         AiSendPlayerCommand(FalconWingmanMsg::WMResumeNormal, AiFlight);
     }

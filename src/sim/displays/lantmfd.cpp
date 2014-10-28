@@ -41,7 +41,7 @@ void LantirnDrawable::Display(VirtualDisplay* newDisplay)
 
     display = newDisplay;
     ShiAssert(theLantirn);
-    flash = vuxRealTime & 0x200;
+    flash = vuxRealTime bitand 0x200;
 
     if (display->type == VirtualDisplay::DISPLAY_GENERAL)
         DrawTerrain();

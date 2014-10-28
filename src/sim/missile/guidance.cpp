@@ -37,7 +37,7 @@ void MissileClass::CheckGuidePhase(void)
     // supply targetXYZ.
 
     // laser targetting code
-    if (GetWCD()->GuidanceFlags & WEAP_LASER)
+    if (GetWCD()->GuidanceFlags bitand WEAP_LASER)
     {
 
         // only do this for the player
@@ -231,7 +231,7 @@ void MissileClass::CommandGuide(void)
     // No Target
     if (runTime > inputData->guidanceDelay)
     {
-        if (g_bNewSensorPrecision and flags & SensorLostLock and  sensorArray and sensorArray[0] and sensorArray[0]->Type() == SensorClass::RadarHoming)
+        if (g_bNewSensorPrecision and flags bitand SensorLostLock and  sensorArray and sensorArray[0] and sensorArray[0]->Type() == SensorClass::RadarHoming)
         {
             ifd->augCommand.yaw = 0.0f;
             ifd->augCommand.pitch = 0.0f;
@@ -347,7 +347,7 @@ void MissileClass::CommandGuide(void)
             dzdoti = targetDZ - zdot;
 
             // 2002-04-07 MN diminish targetDZ so missile won't go too ballistic...
-            if (g_nMissileFix & 0x40)
+            if (g_nMissileFix bitand 0x40)
             {
                 if (targetDZ > 0.0F)
                 {
@@ -430,7 +430,7 @@ void MissileClass::CommandGuide(void)
     char tmpStr[40];
     char label[20];
 
-    if (g_nShowDebugLabels & 0x02)
+    if (g_nShowDebugLabels bitand 0x02)
     {
         if (drawPointer)
         {
@@ -439,7 +439,7 @@ void MissileClass::CommandGuide(void)
             else
                 sprintf(tmpStr, "NoLock ");
 
-            if (flags & SensorLostLock)
+            if (flags bitand SensorLostLock)
                 strcat(tmpStr, "OTgtL ");
 
             if ( not guidencephase)

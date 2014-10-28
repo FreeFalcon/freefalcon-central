@@ -127,7 +127,7 @@ public:
     };
     int  IsSetFlag(int flag)
     {
-        return (flags & flag) ? 1 : 0;
+        return (flags bitand flag) ? 1 : 0;
     };
     void SetLocalFlag(int flag)
     {
@@ -139,7 +139,7 @@ public:
     };
     int  IsSetLocalFlag(int flag)
     {
-        return (localFlags & flag) ? 1 : 0;
+        return (localFlags bitand flag) ? 1 : 0;
     };
 
     DogfightType GetGameType(void)

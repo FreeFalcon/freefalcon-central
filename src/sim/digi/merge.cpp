@@ -73,10 +73,10 @@ void DigitalBrain::MergeManeuver(void)
         mergeTimer = SimLibElapsedTime + 3 * SEC_TO_MSEC;//me123 from 5
         mnverFlags = maneuverClassData[self->CombatClass()].flags;
 
-        switch (mnverFlags & (CanLevelTurn | CanSlice | CanUseVertical))
+        switch (mnverFlags bitand (CanLevelTurn | CanSlice | CanUseVertical))
         {
             case CanLevelTurn:
-                if ((mnverFlags & CanOneCircle) and (self->GetKias() < cornerSpeed))//me123
+                if ((mnverFlags bitand CanOneCircle) and (self->GetKias() < cornerSpeed))//me123
                 {
                     // One Circle, turn away from the target
                     newroll = (targetData->az > 0.0F ? -90.0F * DTR : 90.0F * DTR);
@@ -117,7 +117,7 @@ void DigitalBrain::MergeManeuver(void)
                 if ((self->GetKias() > cornerSpeed) and -self->ZPos() > 3000.0f)//me123
                 {
                     // Level Turn
-                    if ((mnverFlags & CanOneCircle) and (self->GetKias() < cornerSpeed))
+                    if ((mnverFlags bitand CanOneCircle) and (self->GetKias() < cornerSpeed))
                     {
                         // One Circle, turn away from the target
                         newroll = (targetData->az > 0.0F ? -90.0F * DTR : 90.0F * DTR);
@@ -152,7 +152,7 @@ void DigitalBrain::MergeManeuver(void)
                 if (self->GetKias() < cornerSpeed * 1.2) //me123
                 {
                     // Level Turn
-                    if ((mnverFlags & CanOneCircle) and (self->GetKias() < cornerSpeed))
+                    if ((mnverFlags bitand CanOneCircle) and (self->GetKias() < cornerSpeed))
                     {
                         // One Circle, turn away from the target
                         newroll = (targetData->az > 0.0F ? -90.0F * DTR : 90.0F * DTR);
@@ -204,7 +204,7 @@ void DigitalBrain::MergeManeuver(void)
                 // slice, level turn, or vertical?
                 if ((self->GetKias() < cornerSpeed * 0.7) and -self->ZPos() > 3000.0f) //me123
                 {
-                    if ((mnverFlags & CanOneCircle))
+                    if ((mnverFlags bitand CanOneCircle))
                     {
                         // One Circle, turn away from the target
                         newroll = (targetData->az > 0.0F ? -135.0F * DTR : 135.0F * DTR);
@@ -220,7 +220,7 @@ void DigitalBrain::MergeManeuver(void)
                 else if ((self->GetKias() < cornerSpeed * 1.2))//me123
                 {
                     // Level Turn
-                    if ((mnverFlags & CanOneCircle) and (self->GetKias() < cornerSpeed))
+                    if ((mnverFlags bitand CanOneCircle) and (self->GetKias() < cornerSpeed))
                     {
                         // One Circle, turn away from the target
                         newroll = (targetData->az > 0.0F ? -90.0F * DTR : 90.0F * DTR);

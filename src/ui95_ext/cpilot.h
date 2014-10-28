@@ -52,7 +52,7 @@ public:
     void SetCallsign(short x, short y, _TCHAR *call);
     void SetColor(short state, COLORREF color)
     {
-        Color_[state & 1] = color;
+        Color_[state bitand 1] = color;
     }
     void SetFont(long ID)
     {

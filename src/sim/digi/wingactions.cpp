@@ -86,9 +86,9 @@ void DigitalBrain::AiPerformManeuver(void)
 
 #ifdef MANEUVER_DEBUG
 
-    if ((g_nShowDebugLabels & 0x08) or (g_nShowDebugLabels & 0x400000))
+    if ((g_nShowDebugLabels bitand 0x08) or (g_nShowDebugLabels bitand 0x400000))
     {
-        if (g_nShowDebugLabels & 0x40)
+        if (g_nShowDebugLabels bitand 0x40)
         {
             RadarClass* theRadar = (RadarClass*)FindSensor(self, SensorClass::Radar);
 
@@ -108,7 +108,7 @@ void DigitalBrain::AiPerformManeuver(void)
             }
         }
 
-        if (g_nShowDebugLabels & 0x8000)
+        if (g_nShowDebugLabels bitand 0x8000)
         {
             if (((AircraftClass*) self)->af->GetSimpleMode())
                 strcat(tmpchr, " SIMP");

@@ -104,7 +104,7 @@ public:
 #define LAYER_NODRAW 0xffffffff // No layer to Draw
 
 
-// The structure used to map & sort 2D Quads
+// The structure used to map bitand sort 2D Quads
 typedef struct
 {
     DWORD Next; // Next Item in sorting

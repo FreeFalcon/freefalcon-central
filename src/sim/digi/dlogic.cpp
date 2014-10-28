@@ -73,7 +73,7 @@ void DigitalBrain::DecisionLogic(void)
         dwp = flight->GetOverrideWP();
 
         // only if we're not threatened...
-        if (threatPtr == NULL and dwp and (dwp->GetWPFlags() & WPF_REQHELP)) // we've a divert waypoint from a help request
+        if (threatPtr == NULL and dwp and (dwp->GetWPFlags() bitand WPF_REQHELP)) // we've a divert waypoint from a help request
         {
             diverttarget = dwp->GetWPTarget();
 
@@ -708,7 +708,7 @@ void DigitalBrain::PrintOnline(char *str)
     }
 
     MonoPrint("%8ld %-25s %3d - %-3d -> %3d - %-3d\n", SimLibElapsedTime, str,
-              att & 0xFFFF, att >> 16, tid & 0xFFFF, tid >> 16);
+              att bitand 0xFFFF, att >> 16, tid bitand 0xFFFF, tid >> 16);
 }
 
 // Check to see if we are just going around in circles, and not getting anywhere

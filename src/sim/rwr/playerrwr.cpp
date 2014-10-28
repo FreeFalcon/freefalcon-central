@@ -193,7 +193,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
     who = platformCampObj->GetTeam();
     enemy = GetEnemyTeam(who);
 
-    if ((Camp_GetCurrentTime() - platformCampObj->GetSpotTime() <= ReconLossTime[platformCampObj->GetMovementType()] / 8 and ((platformCampObj->GetSpotted() >> enemy) & 0x01)))
+    if ((Camp_GetCurrentTime() - platformCampObj->GetSpotTime() <= ReconLossTime[platformCampObj->GetMovementType()] / 8 and ((platformCampObj->GetSpotted() >> enemy) bitand 0x01)))
         spotted = 1;
     else
     {
@@ -447,7 +447,7 @@ void PlayerRwrClass::Display(VirtualDisplay *activeDisplay)
     }
 
     // Do we draw flashing things this frame?
-    flash = vuxRealTime & 0x200;
+    flash = vuxRealTime bitand 0x200;
 
     // See if we need to switch between rightsideup and upsidedown presentations
     if (flipFactor > 0)

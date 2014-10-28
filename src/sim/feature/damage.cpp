@@ -46,7 +46,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
     PSvec.y = 0;
     PSvec.z = 0;
 
-    if (IsExploding() or IsDead() or pctStrength < 0.0F or (Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
+    if (IsExploding() or IsDead() or pctStrength < 0.0F or (Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED)
     {
         // Just double check the drawable object and return
         UpdateDrawableObject(this);
@@ -128,7 +128,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
     if (pctStrength <= 0.0F)
     {
         // Kill us
-        if ((Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED)
+        if ((Status() bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED)
         {
 
             if (gACMIRec.IsRecording())
@@ -136,7 +136,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 featStat.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
                 featStat.data.uniqueID = ACMIIDTable->Add(Id(), NULL, 0); //.num_;
                 featStat.data.newStatus = VIS_DESTROYED;
-                featStat.data.prevStatus = (Status() & VIS_TYPE_MASK);
+                featStat.data.prevStatus = (Status() bitand VIS_TYPE_MASK);
                 gACMIRec.FeatureStatusRecord(&featStat);
             }
 
@@ -189,11 +189,11 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
             damageMessage->dataBlock.damageType = FalconDamageType::FODDamage;
             damageMessage->dataBlock.damageRandomFact = 0.0F;
 
-            if ((featureFlags & FEAT_PREV_CRIT or featureFlags & FEAT_PREV_NORM))
+            if ((featureFlags bitand FEAT_PREV_CRIT or featureFlags bitand FEAT_PREV_NORM))
             {
                 SimFeatureClass *prevObj = (SimFeatureClass*) GetCampaignObject()->GetComponentEntity(GetCampaignObject()->GetComponentIndex(this) - 1);
 
-                if (prevObj and featureFlags & FEAT_PREV_CRIT and (prevObj->Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED)
+                if (prevObj and featureFlags bitand FEAT_PREV_CRIT and (prevObj->Status() bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED)
                 {
                     MonoPrint("ID %d taking previous neighbor with it!\n", GetCampaignObject()->GetComponentIndex(this));
                     prevObj->ApplyDamage(damageMessage);
@@ -202,11 +202,11 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                     UpdateDrawableObject(prevObj);
             }
 
-            if ((featureFlags & FEAT_NEXT_CRIT or featureFlags & FEAT_NEXT_NORM))
+            if ((featureFlags bitand FEAT_NEXT_CRIT or featureFlags bitand FEAT_NEXT_NORM))
             {
                 SimFeatureClass *nextObj = (SimFeatureClass*) GetCampaignObject()->GetComponentEntity(GetCampaignObject()->GetComponentIndex(this) + 1);
 
-                if (nextObj and featureFlags & FEAT_NEXT_CRIT and (nextObj->Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED)
+                if (nextObj and featureFlags bitand FEAT_NEXT_CRIT and (nextObj->Status() bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED)
                 {
                     MonoPrint("ID %d taking next neighbor with it!\n", GetCampaignObject()->GetComponentIndex(this));
                     nextObj->ApplyDamage(damageMessage);
@@ -219,7 +219,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
         // Update the drawable, to reflect our new state
         UpdateDrawableObject(this);
     }
-    else if (pctStrength <= 0.75F and (Status() & VIS_TYPE_MASK) not_eq VIS_DAMAGED)
+    else if (pctStrength <= 0.75F and (Status() bitand VIS_TYPE_MASK) not_eq VIS_DAMAGED)
     {
         // MonoPrint ("Feature %d DAMAGED at %8ld\n", Id().num_, SimLibElapsedTime);
 
@@ -230,7 +230,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
             featStat.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             featStat.data.uniqueID = ACMIIDTable->Add(Id(), NULL, 0); //.num_;
             featStat.data.newStatus = VIS_DAMAGED;
-            featStat.data.prevStatus = (Status() & VIS_TYPE_MASK);
+            featStat.data.prevStatus = (Status() bitand VIS_TYPE_MASK);
             gACMIRec.FeatureStatusRecord(&featStat);
         }
 
@@ -285,7 +285,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
             if (pctDamage * PRANDFloatPos() > 0.02f)
             {
-                if ((fc->Flags & FEAT_CAN_BURN))
+                if ((fc->Flags bitand FEAT_CAN_BURN))
                 {
                     fireScale = max(x1, y1) * 0.30f + max(x1, y1) * 0.70f * PRANDFloatPos();
                     fireScale = min((float)fabs(minB.z) * 2.0f, fireScale);
@@ -319,7 +319,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                                                           &PSvec);
                 }
 
-                else if ((fc->Flags & FEAT_CAN_SMOKE))
+                else if ((fc->Flags bitand FEAT_CAN_SMOKE))
                 {
                     ppos.z = pos.z + PRANDFloatPos() * minB.z * 0.5f + minB.z * 0.5f;;
                     ppos.x = pos.x + PRANDFloat() * x1;
@@ -340,9 +340,9 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
         }
 
         // possible explosion
-        if ((fc->Flags & FEAT_CAN_EXPLODE)  and 
+        if ((fc->Flags bitand FEAT_CAN_EXPLODE)  and 
             (pctDamage > 0.1f or pctStrength < 0.3f)  and 
-            !(rand() & 0x03))
+            !(rand() bitand 0x03))
         {
             ppos.z = pos.z + PRANDFloatPos() * minB.z * 0.5f + minB.z * 0.5f;
             ppos.x = pos.x + PRANDFloat() * x1;
@@ -373,8 +373,8 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
             // grande finale
             // edg note: explode them all for now
-            // if ( fc->Flags & FEAT_CAN_EXPLODE )
-            if (fc->Flags & (FEAT_CAN_BURN | FEAT_CAN_EXPLODE))
+            // if ( fc->Flags bitand FEAT_CAN_EXPLODE )
+            if (fc->Flags bitand (FEAT_CAN_BURN | FEAT_CAN_EXPLODE))
             {
                 ppos = pos;
                 ppos.z += minB.z * 0.15f;
@@ -391,7 +391,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 // vec.z  );
 
                 // number to do is based on LOD
-                if (fc->Flags & (FEAT_CAN_EXPLODE))
+                if (fc->Flags bitand (FEAT_CAN_EXPLODE))
                     i = (int)(8.0f * (0.5f + gSfxLOD));
                 else
                     i = 1;
@@ -412,7 +412,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
 
                 // apply chain reaction if feature can explode
-                if (fc->Flags & (FEAT_CAN_EXPLODE))
+                if (fc->Flags bitand (FEAT_CAN_EXPLODE))
                 {
                     // vec.x is actually our explosion radius
                     vec.x = max(x1, y1) * 8.0f;
@@ -441,10 +441,10 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                     ppos.y = pos.y + PRANDFloat() * y1;
                     timeToLive = 30.0f + PRANDFloatPos() * 120.0f;
 
-                    if (rand() & 1)
+                    if (rand() bitand 1)
                     {
                         //RV I-Hawk Added a check to seperate CAN_EXPLODE and CAN_BURN features, burn type
-                        if ( not (fc->Flags & (FEAT_CAN_EXPLODE)))
+                        if ( not (fc->Flags bitand (FEAT_CAN_EXPLODE)))
                             /*
                             OTWDriver.AddSfxRequest(
                              new SfxClass (SFX_FIRE, // type
@@ -495,7 +495,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                                                           &PSvec);
                 } // end for # firesfx
             } // end if can burn or explode
-            else if (fc->Flags & (FEAT_CAN_SMOKE))
+            else if (fc->Flags bitand (FEAT_CAN_SMOKE))
             {
                 ppos.z = pos.z - 4.0f;
                 vec.z = -70.0f;
@@ -535,7 +535,7 @@ void UpdateDrawableObject(SimFeatureClass *theFeature)
         OTWDriver.CreateVisualObject(theFeature, OTWDriver.Scale()); // FRB
 
     // if we're damaged,, use the damaged texture set
-    if ((theFeature->Status() & VIS_TYPE_MASK) == VIS_DAMAGED or (theFeature->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
+    if ((theFeature->Status() bitand VIS_TYPE_MASK) == VIS_DAMAGED or (theFeature->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED)
     {
         if (theFeature->drawPointer)
         {

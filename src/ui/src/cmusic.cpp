@@ -201,16 +201,16 @@ void C_Music::Play(SOUND_RES *snd)
 
         SND_FLAGS = 0;
 
-        if (snd->flags & SOUND_LOOP)
+        if (snd->flags bitand SOUND_LOOP)
             SND_FLAGS  or_eq  SND_STREAM_LOOP;
 
-        if (snd->flags & SOUND_FADE_IN)
+        if (snd->flags bitand SOUND_FADE_IN)
             SND_FLAGS  or_eq  SND_STREAM_FADE_IN;
 
-        if (snd->flags & SOUND_FADE_OUT)
+        if (snd->flags bitand SOUND_FADE_OUT)
             SND_FLAGS  or_eq  SND_STREAM_FADE_OUT;
 
-        if (snd->flags & SOUND_RES_STREAM)
+        if (snd->flags bitand SOUND_RES_STREAM)
         {
             strcpy(fname, snd->Sound->Owner->ResName());
             strcat(fname, ".rsc");
@@ -386,7 +386,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
                 Stream->fp = INVALID_HANDLE_VALUE;
             }
 
-            if (snd->flags & SOUND_IN_RES)
+            if (snd->flags bitand SOUND_IN_RES)
             {
                 strcpy(fname, snd->Sound->Owner->ResName());
                 strcat(fname, ".rsc");
@@ -401,14 +401,14 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
 
             if (Stream->fp not_eq INVALID_HANDLE_VALUE)
             {
-                if (snd->Sound and snd->flags & SOUND_RES_STREAM)
+                if (snd->Sound and snd->flags bitand SOUND_RES_STREAM)
                 {
                     SetFilePointer(Stream->fp, snd->Sound->Header->offset, NULL, FILE_BEGIN);
                 }
 
                 size = Sound_->LoadRiffFormat(Stream->fp, &Header, &Stream->HeaderOffset, &NumSamples);
 
-                if (snd->Sound and snd->flags & SOUND_RES_STREAM)
+                if (snd->Sound and snd->flags bitand SOUND_RES_STREAM)
                 {
                     Stream->HeaderOffset += snd->Sound->Header->offset;
                 }
@@ -458,13 +458,13 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
 
                 Stream->Status  or_eq  SND_STREAM_CONTINUE | SND_STREAM_LOOP;
 
-                if ( not (snd->flags & SOUND_LOOP))
+                if ( not (snd->flags bitand SOUND_LOOP))
                     Stream->Status xor_eq SND_STREAM_LOOP;
 
                 Stream->LoopOffset = snd->LoopPoint;
                 Stream->LoopCount = snd->Count;
 
-                if (snd->flags & SOUND_FADE_OUT)
+                if (snd->flags bitand SOUND_FADE_OUT)
                 {
                     Stream->FadeOut = DSBVOLUME_MIN;
                     MusicFlags_ = MUSIC_STOP;
@@ -517,7 +517,7 @@ void C_Music::StartInteractive(long Section, long Group)
         Section_ = Section;
         Group_ = Group;
         GroupRepeat_ = static_cast<short>(2 + rand() % 4);
-        CurPiece_ = ID & 0xff;
+        CurPiece_ = ID bitand 0xff;
         SectionCount_ = 0;
         GroupCount_ = 1;
         // Start it playing
@@ -572,7 +572,7 @@ void C_Music::PlayNextInteractive()
 
     if (MusicID)
     {
-        CurPiece_ = ID & 0xff;
+        CurPiece_ = ID bitand 0xff;
         // Start it playing
         AddQ(MusicID);
 

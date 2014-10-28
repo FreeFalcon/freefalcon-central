@@ -59,11 +59,11 @@ void ICPClass::ExecCNIMode()
                 wpflags = 0;
             }
 
-            if (wpflags & WPF_TARGET)
+            if (wpflags bitand WPF_TARGET)
             {
                 type = Way_TGT;
             }
-            else if (wpflags & WPF_IP)
+            else if (wpflags bitand WPF_IP)
             {
                 type = Way_IP;
             }
@@ -234,9 +234,9 @@ void ICPClass::ExecCNIMode()
         else
             wpflags = 0;
 
-        if (wpflags & WPF_TARGET)
+        if (wpflags bitand WPF_TARGET)
             sprintf(tempstr, "TGT");
-        else if (wpflags & WPF_IP)
+        else if (wpflags bitand WPF_IP)
             sprintf(tempstr, "IP");
         else
             sprintf(tempstr, "STPT");

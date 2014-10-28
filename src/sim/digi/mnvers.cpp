@@ -25,7 +25,7 @@ extern bool g_bFuelUseVtDot; // 2002-03-14 S.G. For better fuel consumption twea
 extern float g_fFuelVtClip; // 2002-03-14 S.G. For better fuel consumption tweaking
 extern float g_fFuelVtDotMult; // 2002-03-14 S.G. For better fuel consumption tweaking
 extern bool g_bFuelLimitBecauseVtDot; // 2002-03-14 S.G. For better fuel consumption tweaking
-extern float g_fWaypointBurnerDelta; // 2002-03-27 MN BurnerDelta in WaypointMode & WingyMode
+extern float g_fWaypointBurnerDelta; // 2002-03-27 MN BurnerDelta in WaypointMode bitand WingyMode
 extern float g_fePropFactor; // 2002-04-05 MN ePr
 
 int HoldCorner(int combatClass, SimObjectType* targetPtr);
@@ -647,7 +647,7 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
     throtl = min(max(throtl, 0.0F), 1.5F);
 #ifdef MANEUVER_DEBUG
 
-    if (g_nShowDebugLabels & 0x10000)
+    if (g_nShowDebugLabels bitand 0x10000)
     {
         char tmpchr[128];
         sprintf(tmpchr, "%.0f %.0f %.0f %.3f %.2f %.2f", m1, m2, eProp, thr, autoThrottle, throtl);

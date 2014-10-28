@@ -236,13 +236,13 @@ inline GLint ReadTextureImage(CImageFileMemory *fi)
 
 inline GLint   motr2intl(GLint l)
 {
-    return(((l & 0xff000000L) >> 24) + ((l & 0x00ff0000L) >> 8) +
-           ((l & 0x0000ff00L) << 8) + ((l & 0x000000ffL) << 24));
+    return(((l bitand 0xff000000L) >> 24) + ((l bitand 0x00ff0000L) >> 8) +
+           ((l bitand 0x0000ff00L) << 8) + ((l bitand 0x000000ffL) << 24));
 }
 
 inline GLint motr2inti(GLint n)
 {
-    return(((n & 0xff00) >> 8) | ((n & 0x00ff) << 8));
+    return(((n bitand 0xff00) >> 8) | ((n bitand 0x00ff) << 8));
 }
 
 //___________________________________________________________________________

@@ -67,7 +67,7 @@ void Radar360Class::ExecModes(int newDesignate, int newDrop)
     {
         if ((wantRange >= 5.0f) and (wantRange <= max(40.0, maxRangeNM * 1.5)))
         {
-            if ( not (flags & CursorMoving))
+            if ( not (flags bitand CursorMoving))
             {
                 cursorY = 0.0F;
             }

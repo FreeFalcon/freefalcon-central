@@ -204,35 +204,35 @@ public:
     virtual void MakeRemote();
     virtual int OnGround()
     {
-        return (specialData.flags & ON_GROUND ? TRUE : FALSE);
+        return (specialData.flags bitand ON_GROUND ? TRUE : FALSE);
     }
     virtual int IsExploding()
     {
-        return (specialData.flags & OBJ_EXPLODING ? TRUE : FALSE);
+        return (specialData.flags bitand OBJ_EXPLODING ? TRUE : FALSE);
     }
     virtual int IsDead() const
     {
-        return (specialData.flags & OBJ_DEAD ? true : false);
+        return (specialData.flags bitand OBJ_DEAD ? true : false);
     }
     int IsDying() const
     {
-        return (specialData.flags & OBJ_DYING ? TRUE : FALSE);
+        return (specialData.flags bitand OBJ_DYING ? TRUE : FALSE);
     }
     int IsFiring() const
     {
-        return (specialData.flags & OBJ_FIRING_GUN ? TRUE : FALSE);
+        return (specialData.flags bitand OBJ_FIRING_GUN ? TRUE : FALSE);
     }
     int IsAwake() const
     {
-        return localFlags & OBJ_AWAKE;
+        return localFlags bitand OBJ_AWAKE;
     }
     int  IsSetFlag(int flag) const
     {
-        return ((specialData.flags & flag) ? TRUE : FALSE);
+        return ((specialData.flags bitand flag) ? TRUE : FALSE);
     }
     int  IsSetLocalFlag(int flag) const
     {
-        return ((localFlags & flag) ? TRUE : FALSE);
+        return ((localFlags bitand flag) ? TRUE : FALSE);
     }
     void SetLocalFlag(int flag)
     {
@@ -244,7 +244,7 @@ public:
     }
     int  IsSetCampaignFlag(int flag) const
     {
-        return ((campaignFlags & flag) ? TRUE : FALSE);
+        return ((campaignFlags bitand flag) ? TRUE : FALSE);
     }
     void SetCampaignFlag(int flag)
     {
@@ -256,7 +256,7 @@ public:
     }
     int IsSetRemoveFlag() const
     {
-        return localFlags & REMOVE_NEXT_FRAME;
+        return localFlags bitand REMOVE_NEXT_FRAME;
     }
     void SetRemoveFlag();
     void SetRemoveSilentFlag();

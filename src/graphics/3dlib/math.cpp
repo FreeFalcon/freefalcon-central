@@ -61,10 +61,10 @@ glGetSinCos(GLfloat *sinOut, GLfloat *cosOut, GLFixed0_14 angle)
 {
     angle and_eq 0x3fff;
 
-    if (angle & 0x1000)
+    if (angle bitand 0x1000)
     {
         // angle between 270-360
-        if (angle & 0x2000)
+        if (angle bitand 0x2000)
         {
             *sinOut = (GLfloat) - CosineTable[angle - 0x3000];
             *cosOut = (GLfloat) CosineTable[0x4000 - angle];
@@ -78,7 +78,7 @@ glGetSinCos(GLfloat *sinOut, GLfloat *cosOut, GLFixed0_14 angle)
     }
     else
     {
-        if (angle & 0x2000)
+        if (angle bitand 0x2000)
         {
             // angle between 180-270
             *sinOut = (GLfloat) - CosineTable[0x3000 - angle];
@@ -98,10 +98,10 @@ glGetSinCos(GLdouble *sinOut, GLdouble *cosOut, GLFixed0_14 angle)
 {
     angle and_eq 0x3fff;
 
-    if (angle & 0x1000)
+    if (angle bitand 0x1000)
     {
         // angle between 270-360
-        if (angle & 0x2000)
+        if (angle bitand 0x2000)
         {
             *sinOut = -CosineTable[angle - 0x3000];
             *cosOut = CosineTable[0x4000 - angle];
@@ -115,7 +115,7 @@ glGetSinCos(GLdouble *sinOut, GLdouble *cosOut, GLFixed0_14 angle)
     }
     else
     {
-        if (angle & 0x2000)
+        if (angle bitand 0x2000)
         {
             // angle between 180-270
             *sinOut = -CosineTable[0x3000 - angle];
@@ -137,10 +137,10 @@ glGetSine(GLFixed0_14 angle)
 {
     angle and_eq 0x3fff;
 
-    if (angle & 0x1000)
+    if (angle bitand 0x1000)
     {
         // angle between 270-360
-        if (angle & 0x2000)
+        if (angle bitand 0x2000)
         {
             return -CosineTable[angle - 0x3000];
         }
@@ -152,7 +152,7 @@ glGetSine(GLFixed0_14 angle)
     }
     else
     {
-        if (angle & 0x2000)
+        if (angle bitand 0x2000)
         {
             // angle between 180-270
             return -CosineTable[0x3000 - angle];
@@ -172,10 +172,10 @@ glGetCosine(GLFixed0_14 angle)
 {
     angle and_eq 0x3fff;
 
-    if (angle & 0x1000)
+    if (angle bitand 0x1000)
     {
         // angle between 270-360
-        if (angle & 0x2000)
+        if (angle bitand 0x2000)
         {
             return CosineTable[0x4000 - angle];
         }
@@ -187,7 +187,7 @@ glGetCosine(GLFixed0_14 angle)
     }
     else
     {
-        if (angle & 0x2000)
+        if (angle bitand 0x2000)
         {
             // angle between 180-270
             return -CosineTable[angle - 0x2000];

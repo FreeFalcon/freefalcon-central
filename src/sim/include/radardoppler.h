@@ -317,7 +317,7 @@ protected:
 public:
     int  IsSet(int newFlag)
     {
-        return (newFlag & flags) ? TRUE : FALSE;
+        return (newFlag bitand flags) ? TRUE : FALSE;
     }; //MI moved to public
     void SetFlagBit(int newFlag)
     {
@@ -352,7 +352,7 @@ protected:
     // DCLT variables
     int  IsAADcltBit(int newFlag)
     {
-        return (newFlag & aadclt) ? TRUE : FALSE;
+        return (newFlag bitand aadclt) ? TRUE : FALSE;
     };
     int IsAADclt(int flg)
     {
@@ -377,7 +377,7 @@ protected:
     };
     int  IsAGDcltBit(int newFlag)
     {
-        return (newFlag & agdclt) ? TRUE : FALSE;
+        return (newFlag bitand agdclt) ? TRUE : FALSE;
     };
     void SetAGDcltBit(int newFlag)
     {
@@ -497,7 +497,7 @@ protected :
     };
     int IsModeFlag(int flag)
     {
-        return (radarmodeflags & flag) ? 1 : 0;
+        return (radarmodeflags bitand flag) ? 1 : 0;
     };
 
     //Cobra CPL and DCPL for IFF TJL 11/24/04
@@ -521,7 +521,7 @@ protected :
     };
     int IsIFFFlags(int flag)
     {
-        return (iffmodeflags & flag) ? 1 : 0;
+        return (iffmodeflags bitand flag) ? 1 : 0;
     };
 
 

@@ -727,54 +727,54 @@ void Render3D::Render3DLine(Tpoint* p1, Tpoint* p2)
     TransformPoint(p2, &ps2);
 
     // Quit now if both ends are clipped by the same edge
-    if (ps1.clipFlag & ps2.clipFlag)  return;
+    if (ps1.clipFlag bitand ps2.clipFlag)  return;
 
     // Clip the line as necessary
-    if (ps1.clipFlag & CLIP_NEAR)
+    if (ps1.clipFlag bitand CLIP_NEAR)
     {
         IntersectNear(&ps1, &ps2, &ps1);
     }
-    else if (ps2.clipFlag & CLIP_NEAR)
+    else if (ps2.clipFlag bitand CLIP_NEAR)
     {
         IntersectNear(&ps1, &ps2, &ps2);
     }
 
-    if (ps1.clipFlag & ps2.clipFlag)  return;
+    if (ps1.clipFlag bitand ps2.clipFlag)  return;
 
-    if (ps1.clipFlag & CLIP_BOTTOM)
+    if (ps1.clipFlag bitand CLIP_BOTTOM)
     {
         IntersectBottom(&ps1, &ps2, &ps1);
     }
-    else if (ps2.clipFlag & CLIP_BOTTOM)
+    else if (ps2.clipFlag bitand CLIP_BOTTOM)
     {
         IntersectBottom(&ps1, &ps2, &ps2);
     }
 
-    if (ps1.clipFlag & CLIP_TOP)
+    if (ps1.clipFlag bitand CLIP_TOP)
     {
         IntersectTop(&ps1, &ps2, &ps1);
     }
-    else if (ps2.clipFlag & CLIP_TOP)
+    else if (ps2.clipFlag bitand CLIP_TOP)
     {
         IntersectTop(&ps1, &ps2, &ps2);
     }
 
-    if (ps1.clipFlag & ps2.clipFlag)  return;
+    if (ps1.clipFlag bitand ps2.clipFlag)  return;
 
-    if (ps1.clipFlag & CLIP_RIGHT)
+    if (ps1.clipFlag bitand CLIP_RIGHT)
     {
         IntersectRight(&ps1, &ps2, &ps1);
     }
-    else if (ps2.clipFlag & CLIP_RIGHT)
+    else if (ps2.clipFlag bitand CLIP_RIGHT)
     {
         IntersectRight(&ps1, &ps2, &ps2);
     }
 
-    if (ps1.clipFlag & CLIP_LEFT)
+    if (ps1.clipFlag bitand CLIP_LEFT)
     {
         IntersectLeft(&ps1, &ps2, &ps1);
     }
-    else if (ps2.clipFlag & CLIP_LEFT)
+    else if (ps2.clipFlag bitand CLIP_LEFT)
     {
         IntersectLeft(&ps1, &ps2, &ps2);
     }
@@ -833,7 +833,7 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
     if (v0->clipFlag | v1->clipFlag | v2->clipFlag | v3->clipFlag)
     {
         // If all verticies are clipped by the same edge, skip this square
-        if (v0->clipFlag & v1->clipFlag & v2->clipFlag & v3->clipFlag)
+        if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand v3->clipFlag)
             return;
 
         ThreeDVertex *vertPointers[4];
@@ -929,7 +929,7 @@ void Render3D::DrawTriangle(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2
     if (v0->clipFlag | v1->clipFlag | v2->clipFlag)
     {
         // If all verticies are clipped by the same edge, skip this triangle
-        if (v0->clipFlag & v1->clipFlag & v2->clipFlag)
+        if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag)
             return;
 
         // If any verteces are clipped, do them as a special case

@@ -753,10 +753,10 @@ void MFDClass::Exec(int clearFrame, int virtualCockpit)
 
     if (ownship and ownship->mFaults  and 
         (
-            (ownship->mFaults->GetFault(FaultClass::flcs_fault) & FaultClass::dmux) ||
+            (ownship->mFaults->GetFault(FaultClass::flcs_fault) bitand FaultClass::dmux) ||
             ownship->mFaults->GetFault(FaultClass::dmux_fault) ||
-            ((ownship->mFaults->GetFault(FaultClass::mfds_fault) & FaultClass::lfwd) and (id % 2 == 0)) ||
-            ((ownship->mFaults->GetFault(FaultClass::mfds_fault) & FaultClass::rfwd) and (id % 2 == 1))
+            ((ownship->mFaults->GetFault(FaultClass::mfds_fault) bitand FaultClass::lfwd) and (id % 2 == 0)) ||
+            ((ownship->mFaults->GetFault(FaultClass::mfds_fault) bitand FaultClass::rfwd) and (id % 2 == 1))
         )
        )
     {
@@ -976,7 +976,7 @@ void MFDClass::DecreaseBrightness()
 // JPO Default color - green tempered by mask
 int MFDClass::Color()
 {
-    return 0xff00 & MFDMasks[intensity];
+    return 0xff00 bitand MFDMasks[intensity];
 }
 
 // default intensity mask
@@ -1250,7 +1250,7 @@ void MfdDrawable::DrawReference(AircraftClass *self)
 void MfdDrawable::DrawRedBreak(VirtualDisplay* display)
 {
     int tmpColor = display->Color();
-    int tmpWarnflash = (vuxRealTime & 0x080);
+    int tmpWarnflash = (vuxRealTime bitand 0x080);
 
     if (tmpWarnflash)
     {
@@ -1268,7 +1268,7 @@ void MfdDrawable::TGPAttitudeWarning(VirtualDisplay* display)
 {
     int tmpColor = display->Color();
     int tempFont = display->CurFont();
-    int tmpWarnflash = (vuxRealTime & 0x100);
+    int tmpWarnflash = (vuxRealTime bitand 0x100);
 
     if (tmpWarnflash)
     {

@@ -68,10 +68,10 @@ does for watcom, etc.
 # define MEM_DEBUG_PRINTF               YES         /* console i/o to print 
 debug information       */
 
-# define MEM_REPLACE_MALLOC             NO          /* redefine malloc & free as
+# define MEM_REPLACE_MALLOC             NO          /* redefine malloc bitand free as
 MemMalloc, MemFree */
 
-# define MEM_TRAP_MALLOC                NO          /* redefine malloc & free as
+# define MEM_TRAP_MALLOC                NO          /* redefine malloc bitand free as
 #error             */
 
 /* ----- RESOURCE MANAGER GUIDE ----- */

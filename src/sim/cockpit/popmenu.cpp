@@ -709,7 +709,7 @@ void MenuManager::DisplayDraw(void)
 
 void MenuManager::StepNextPage(int state)
 {
-    if (state & KEY_DOWN)
+    if (state bitand KEY_DOWN)
     {
         if (mpMenus[mCurMenu].mNumPages > 1)
         {
@@ -730,7 +730,7 @@ void MenuManager::StepNextPage(int state)
 
 void MenuManager::StepPrevPage(int state)
 {
-    if (state & KEY_DOWN)
+    if (state bitand KEY_DOWN)
     {
         if (mpMenus[mCurMenu].mNumPages > 1)
         {
@@ -771,7 +771,7 @@ void MenuManager::ProcessInput(unsigned long val, int state, int type, int exten
     ItemStruct* pitem;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (state & KEY_DOWN)
+    if (state bitand KEY_DOWN)
     {
 
         if (mIsActive)
@@ -1000,7 +1000,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
                             {
                                 if (
                                     sms->hardPoint[hp]  and 
-                                    sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() & wdAir
+                                    sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() bitand wdAir
                                 )
                                 {
                                     hasWeaps++;
@@ -1010,7 +1010,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
                             {
                                 if (
                                     sms->hardPoint[hp]  and 
-                                    sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() & wdGround
+                                    sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() bitand wdGround
                                 )
                                 {
                                     hasWeaps++;
@@ -1020,7 +1020,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
                             {
                                 if (
                                     sms->hardPoint[hp]  and 
-                                    sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() & wdGround
+                                    sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() bitand wdGround
                                 )
                                 {
                                     hasWeaps++;

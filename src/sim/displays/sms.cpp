@@ -173,7 +173,7 @@ SMSBaseClass::SMSBaseClass(SimVehicleClass *newOwnship, short *weapId, uchar *we
             wd = &WeaponDataTable[hardPoint[i]->weaponId];
             ShiAssert(wd);
 
-            if (wd->Flags & WEAP_ONETENTH)
+            if (wd->Flags bitand WEAP_ONETENTH)
                 hardPoint[i]->weaponCount *= 10;
 
             // sfr: in DF and IA we dont respect these hardpoint limitations
@@ -181,7 +181,7 @@ SMSBaseClass::SMSBaseClass(SimVehicleClass *newOwnship, short *weapId, uchar *we
             createCount = (
                               (FalconLocalGame->gameType == game_Dogfight) ||
                               (FalconLocalGame->gameType == game_InstantAction) ||
-                              (rackFlag & (1 << i))
+                              (rackFlag bitand (1 << i))
                           ) ? hardPoint[i]->weaponCount : 1;
             classPtr = &Falcon4ClassTable[wd->Index];
 
@@ -435,7 +435,7 @@ void SMSBaseClass::LaunchWeapon(void)
 
         if (theWeapon->IsMissile() and ownship->drawPointer)
         {
-            if (visFlag & (1 << curHardpoint))
+            if (visFlag bitand (1 << curHardpoint))
             {
                 ((DrawableBSP*)ownship->drawPointer)->GetChildOffset(slotId, &simLoc);
             }
@@ -486,7 +486,7 @@ void SMSBaseClass::LaunchWeapon(void)
 
         // If next weapon is a visible weapon, attach it to the hardpoint (note: some delay to this would be cool)
         /*
-        if (hardPoint[curHardpoint]->weaponPointer and visFlag & (1 << curHardpoint)){
+        if (hardPoint[curHardpoint]->weaponPointer and visFlag bitand (1 << curHardpoint)){
          OTWDriver.CreateVisualObject(hardPoint[curHardpoint]->weaponPointer);
          OTWDriver.AttachObject(
          ownship->drawPointer, (DrawableBSP*)hardPoint[curHardpoint]->weaponPointer->drawPointer, curHardpoint
@@ -719,7 +719,7 @@ void SMSBaseClass::AddWeaponGraphics(void)
     {
         if (hardPoint[i] and hardPoint[i]->weaponPointer)
         {
-            if (visFlag & (1 << i))
+            if (visFlag bitand (1 << i))
             {
                 // This is a visible weapon, however, only the first one should get a drawPointer
                 OTWDriver.CreateVisualObject(hardPoint[i]->weaponPointer.get());
@@ -792,13 +792,13 @@ int SMSBaseClass::StationOK(int n)
         mFaults = ((AircraftClass*)ownship)->mFaults;
         broken = mFaults->GetFault(FaultClass::sms_fault);
 
-        if (broken & FaultClass::bus & FaultClass::fail)
+        if (broken bitand FaultClass::bus bitand FaultClass::fail)
         {
             retval = FALSE;
         }
         else if (n >= 1)
         {
-            if (broken & (FaultClass::sta1 << (n - 1)) & FaultClass::fail)
+            if (broken bitand (FaultClass::sta1 << (n - 1)) bitand FaultClass::fail)
             {
                 retval = FALSE;
             }
@@ -989,7 +989,7 @@ SMSClass::SMSClass(SimVehicleClass *newOwnship, short *weapId, uchar *weapCnt) :
             hardPoint[i]->GetWeaponData()->flags = wpnDefinition->flags;
 
             // Set CBU flag appropriatly
-            if (wc->Flags & WEAP_CLUSTER)
+            if (wc->Flags bitand WEAP_CLUSTER)
                 hardPoint[i]->GetWeaponData()->flags  or_eq  HasBurstHeight;
 
             strcpy(hardPoint[i]->GetWeaponData()->mnemonic, wpnDefinition->mnemonic);
@@ -1008,7 +1008,7 @@ SMSClass::SMSClass(SimVehicleClass *newOwnship, short *weapId, uchar *weapCnt) :
             }
 
             // Setup rack data
-            //if (rackFlag & (1 << i))
+            //if (rackFlag bitand (1 << i))
             {
                 // 2002-03-24 MN Helicopter also create a SMS class, but don't have auxaerodata, so add a check for Airplane
                 if (ownship->IsAirplane() and ((AircraftClass*)ownship)->af and wc)
@@ -1053,7 +1053,7 @@ SMSClass::SMSClass(SimVehicleClass *newOwnship, short *weapId, uchar *weapCnt) :
 
     // 2000-11-17 MODIFIED BY S.G. SO INTERNAL ECMS ARE ACCOUNTING FOR
     // if (numOnBoard[wcECM] > 0)
-    if (numOnBoard[wcECM] > 0 or vc->Flags & VEH_HAS_JAMMER)
+    if (numOnBoard[wcECM] > 0 or vc->Flags bitand VEH_HAS_JAMMER)
     {
         SetFlag(SPJamOnBoard);
     }
@@ -1202,7 +1202,7 @@ void SMSClass::AddWeaponGraphics(void)
             {
                 if (i > 0)
                 {
-                    if (visFlag & (1 << i))
+                    if (visFlag bitand (1 << i))
                     {
                         drawPtr->GetChildOffset(i - 1, &simView);
                     }
@@ -1217,20 +1217,20 @@ void SMSClass::AddWeaponGraphics(void)
                     hardPoint[i]->SetPosition(simView.x, simView.y, simView.z);
 
 
-                    if (rackFlag & (1 << i))
+                    if (rackFlag bitand (1 << i))
                     {
                         // create the pylon
                         if (hardPoint[i]->GetPylonId())
                         {
                             hardPoint[i]->AttachPylonBSP();
-                            AddStore(i, hardPoint[i]->GetPylonId(), (visFlag & (1 << i)));
+                            AddStore(i, hardPoint[i]->GetPylonId(), (visFlag bitand (1 << i)));
                         }
 
                         // create the rack
                         if (hardPoint[i]->GetRackId())
                         {
                             hardPoint[i]->AttachRackBSP();
-                            AddStore(i, hardPoint[i]->GetRackId(), (visFlag & (1 << i)));
+                            AddStore(i, hardPoint[i]->GetRackId(), (visFlag bitand (1 << i)));
                         }
                     }
 
@@ -1248,7 +1248,7 @@ void SMSClass::AddWeaponGraphics(void)
                      weapPtr = hardPoint[i]->weaponPointer;
                      while(weapPtr)
                      {
-                     AddStore(i, hardPoint[i]->weaponId, (visFlag & (1 << i)));
+                     AddStore(i, hardPoint[i]->weaponId, (visFlag bitand (1 << i)));
                      weapPtr=weapPtr->GetNextOnRail();
                      }
 
@@ -1262,14 +1262,14 @@ void SMSClass::AddWeaponGraphics(void)
 
                     while (weapPtr)
                     {
-                        if (visFlag & (1 << i)  and 
+                        if (visFlag bitand (1 << i)  and 
                             (first or hardPoint[i]->GetRack()))
 
                         {
                             hardPoint[i]->AttachWeaponBSP(weapPtr);
                         }
 
-                        AddStore(i, hardPoint[i]->weaponId, (visFlag & (1 << i)));
+                        AddStore(i, hardPoint[i]->weaponId, (visFlag bitand (1 << i)));
 
                         // MLR 3/15/2004 - Add Launchers munition
                         if (weapPtr->IsLauncher())
@@ -1331,7 +1331,7 @@ void SMSClass::AddWeaponGraphics(void)
             {
                 if (i > 0)
                 {
-                    if (visFlag & (1 << i))
+                    if (visFlag bitand (1 << i))
                     {
                         drawPtr->GetChildOffset(i - 1, &simView);
                     }
@@ -1349,7 +1349,7 @@ void SMSClass::AddWeaponGraphics(void)
                                        *parentBSP = drawPtr; // parent is who the weapons will be attached too
 
 
-                    if (rackFlag & (1 << i))
+                    if (rackFlag bitand (1 << i))
                     {
                         // create the pylon
                         int pylonid = hardPoint[i]->GetPylonId();
@@ -1359,7 +1359,7 @@ void SMSClass::AddWeaponGraphics(void)
                             pylonBSP = new DrawableBSP(Falcon4ClassTable[WeaponDataTable[pylonid].Index].visType[0], &simView, &viewRot, OTWDriver.Scale());
                             hardPoint[i]->SetPylon(pylonBSP);
                             OTWDriver.AttachObject(parentBSP, pylonBSP, i - 1);
-                            AddStore(i, pylonid, (visFlag & (1 << i)));
+                            AddStore(i, pylonid, (visFlag bitand (1 << i)));
                             parentBSP = pylonBSP;
 
                             // update the HP's bogus "postion"
@@ -1383,7 +1383,7 @@ void SMSClass::AddWeaponGraphics(void)
                             else
                                 OTWDriver.AttachObject(parentBSP, rackBSP, i - 1);
 
-                            AddStore(i, hardPoint[i]->GetRackId(), (visFlag & (1 << i)));
+                            AddStore(i, hardPoint[i]->GetRackId(), (visFlag bitand (1 << i)));
                             parentBSP = rackBSP;
                         }
                     }
@@ -1417,7 +1417,7 @@ void SMSClass::AddWeaponGraphics(void)
                      }
 
                      // if we don't have a rackBSP, then we can only attach 1 weapon
-                     if(  visFlag & (1 << i)  and  ( rackBSP or weapPtr == firstPtr)  )
+                     if(  visFlag bitand (1 << i)  and  ( rackBSP or weapPtr == firstPtr)  )
                      {
                      OTWDriver.CreateVisualObject(weapPtr);
                      ((DrawableBSP*)(weapPtr->drawPointer))->SetSwitchMask(0,1);
@@ -1426,7 +1426,7 @@ void SMSClass::AddWeaponGraphics(void)
 
                      hardPoint[i]->SetSubPosition(j, xOff + simView.x, yOff + simView.y, zOff + simView.z);
                      hardPoint[i]->SetSubRotation(j, 0.0F, 0.0F);
-                     AddStore(i, hardPoint[i]->weaponId, (visFlag & (1 << i)));
+                     AddStore(i, hardPoint[i]->weaponId, (visFlag bitand (1 << i)));
                      weapPtr = weapPtr->GetNextOnRail();
                     }
                     */
@@ -1439,7 +1439,7 @@ void SMSClass::AddWeaponGraphics(void)
 
                         while (weapPtr)
                         {
-                            AddStore(i, hardPoint[i]->weaponId, (visFlag & (1 << i)));
+                            AddStore(i, hardPoint[i]->weaponId, (visFlag bitand (1 << i)));
                             weapPtr = weapPtr->GetNextOnRail();
                         }
 
@@ -1479,7 +1479,7 @@ void SMSClass::AddWeaponGraphics(void)
                         weapPtr->SetRackSlot(j);
 
                         // if we don't have a rackBSP, then we can only attach 1 weapon
-                        if (visFlag & (1 << i)  and 
+                        if (visFlag bitand (1 << i)  and 
                             (rackBSP or weapPtr == firstPtr))
                         {
                             OTWDriver.CreateVisualObject(weapPtr);
@@ -1489,7 +1489,7 @@ void SMSClass::AddWeaponGraphics(void)
                                 ((DrawableBSP*)(weapPtr->drawPointer))->SetSwitchMask(0, 1);
                         }
 
-                        AddStore(i, hardPoint[i]->weaponId, (visFlag & (1 << i)));
+                        AddStore(i, hardPoint[i]->weaponId, (visFlag bitand (1 << i)));
 
                         if (weapPtr->IsGun())  // init  gun pod // MLR 1/28/2004 -
                         {
@@ -1571,7 +1571,7 @@ void SMSClass::FreeWeaponGraphics(void)
             }
             */
 
-            // remove the pylon & rack
+            // remove the pylon bitand rack
 
             // 1st determine what the rack is attached to
             parentBSP = drawPtr;
@@ -1837,7 +1837,7 @@ void SMSClass::SelectiveJettison(void)
     {
         for (curStation = numHardpoints - 1; curStation > 0; curStation--)
         {
-            //if(drawable->hardPointSelected & (1 << curStation) and MasterArm() not_eq Safe)
+            //if(drawable->hardPointSelected bitand (1 << curStation) and MasterArm() not_eq Safe)
             if (drawable->sjSelected[curStation] not_eq JettisonNone and MasterArm() not_eq Safe)
             {
                 MonoPrint("Jettison station %d at %ld\n", curStation, SimLibElapsedTime);
@@ -1884,7 +1884,7 @@ void SMSClass::EmergencyJettison(void)
     int jettSuccess = 0;
 
     //me123 make sure we don't keep doing this...a mp messages is tranmitted every time.
-    if (flags & EmergencyJettisonFlag) return;
+    if (flags bitand EmergencyJettisonFlag) return;
 
     //MI
     if ( not g_bRealisticAvionics)
@@ -1924,7 +1924,7 @@ void SMSClass::EmergencyJettison(void)
         else
         {
 
-            if ( not (hardPoint[curStation]->GetRackDataFlags() & RDF_BMSDEFINITION))
+            if ( not (hardPoint[curStation]->GetRackDataFlags() bitand RDF_BMSDEFINITION))
             {
                 if (((AircraftClass *)ownship)->IsF16())
                 {
@@ -1985,7 +1985,7 @@ void SMSClass::AGJettison(void)
             continue;
 
         // MLR-NOTE GetRack??? should prevent A-10 from Jetting???
-        if (hardPoint[curStation] and hardPoint[curStation]->GetRack() and (hardPoint[curStation]->Domain() & wdGround))
+        if (hardPoint[curStation] and hardPoint[curStation]->GetRack() and (hardPoint[curStation]->Domain() bitand wdGround))
         {
             // MonoPrint ("Jettison station %d at %ld\n", curStation, SimLibElapsedTime);
             ReleaseCurWeapon(-1);
@@ -2004,7 +2004,7 @@ void SMSClass::TankJettison(void)
     int curStation;
     int jettSuccess = 0;
 
-    if ( not (flags & TankJettisonFlag) and ownship->IsAirplane() and ((AircraftClass*)ownship)->af->ExternalFuel() < 0.1f)   // We're an airplane and our external fuel is almost zero (to trap floating point precision error), then jettison the tanks
+    if ( not (flags bitand TankJettisonFlag) and ownship->IsAirplane() and ((AircraftClass*)ownship)->af->ExternalFuel() < 0.1f)   // We're an airplane and our external fuel is almost zero (to trap floating point precision error), then jettison the tanks
     {
         for (curStation = numHardpoints - 1; curStation > 0; curStation--)
         {
@@ -2826,7 +2826,7 @@ WeaponType SMSClass::GetNextWeapon(WeaponDomain domainDesired)
         stationUnderTest = (i + 1 + curHardpoint) % numHardpoints;
 
         // Marco edit - non-zero weapon check due to problems with weapon cycling
-        if (hardPoint[stationUnderTest] and (hardPoint[stationUnderTest]->GetWeaponData()->domain & domainDesired)  and 
+        if (hardPoint[stationUnderTest] and (hardPoint[stationUnderTest]->GetWeaponData()->domain bitand domainDesired)  and 
             (hardPoint[stationUnderTest]->weaponCount not_eq 0 ||
              hardPoint[stationUnderTest]->GetWeaponType() == wtGuns
              or hardPoint[stationUnderTest]->GetWeaponType() == wtAgm88
@@ -3055,7 +3055,7 @@ int SMSClass::HasTrainable(void)
 
     for (i = 0; i < numHardpoints; i++)
     {
-        if (hardPoint[i] and hardPoint[i]->GetWeaponData()->flags & SMSClass::Trainable)
+        if (hardPoint[i] and hardPoint[i]->GetWeaponData()->flags bitand SMSClass::Trainable)
         {
             retval = TRUE;
             break;
@@ -3350,7 +3350,7 @@ void SMSClass::Incrementarmingdelay(void) //me123 status ok. addet this subclass
 }
 void SMSClass::IncrementBurstHeight(void)
 {
-    if (curHardpoint >= 0 and hardPoint[curHardpoint]->GetWeaponData()->flags & SMSClass::HasBurstHeight)
+    if (curHardpoint >= 0 and hardPoint[curHardpoint]->GetWeaponData()->flags bitand SMSClass::HasBurstHeight)
     {
         if (burstHeight < 900)
             burstHeight += 200;
@@ -3374,7 +3374,7 @@ void SMSClass::IncrementBurstHeight(void)
 
 void SMSClass::DecrementBurstHeight(void)
 {
-    if (curHardpoint >= 0 and hardPoint[curHardpoint]->GetWeaponData()->flags & SMSClass::HasBurstHeight)
+    if (curHardpoint >= 0 and hardPoint[curHardpoint]->GetWeaponData()->flags bitand SMSClass::HasBurstHeight)
     {
         if (burstHeight > 1800)
             burstHeight -= 400;
@@ -3443,16 +3443,16 @@ int SMSClass::JettisonStation(int stationNum, JettisonMode mode)
         Tpoint pos , vec;
         int rdflags = hardPoint[stationNum]->GetRackDataFlags();
 
-        int jettpylon = ((rdflags & RDF_EMERGENCY_JETT_PYLON) and (mode == Emergency)) ||
-                        ((rdflags & RDF_SELECTIVE_JETT_PYLON) and (mode == SelectivePylon));
+        int jettpylon = ((rdflags bitand RDF_EMERGENCY_JETT_PYLON) and (mode == Emergency)) ||
+                        ((rdflags bitand RDF_SELECTIVE_JETT_PYLON) and (mode == SelectivePylon));
 
         int jettrack  = jettpylon ||
-                        ((rdflags & RDF_EMERGENCY_JETT_RACK) and (mode == Emergency)) ||
-                        ((rdflags & RDF_SELECTIVE_JETT_RACK) and (mode == SelectiveRack));
+                        ((rdflags bitand RDF_EMERGENCY_JETT_RACK) and (mode == Emergency)) ||
+                        ((rdflags bitand RDF_SELECTIVE_JETT_RACK) and (mode == SelectiveRack));
 
         int jettweapon = jettrack ||
-                         ((rdflags & RDF_EMERGENCY_JETT_WEAPON) and (mode == Emergency)) ||
-                         ((rdflags & RDF_SELECTIVE_JETT_WEAPON) and (mode == SelectiveWeapon));
+                         ((rdflags bitand RDF_EMERGENCY_JETT_WEAPON) and (mode == Emergency)) ||
+                         ((rdflags bitand RDF_SELECTIVE_JETT_WEAPON) and (mode == SelectiveWeapon));
 
         MonoPrint("JettisonStation(%d,%d) : rdflags=%8x  jettpylon=%d  jettrack=%d jettweapon=%d",
                   stationNum, mode, rdflags, jettpylon, jettrack, jettweapon);
@@ -4038,7 +4038,7 @@ void SMSClass::RemoveStore(int station, int storeId)
                 ((AircraftClass *)ownship)->af->RemoveWeapon(WeaponDataTable[storeId].Weight - 283.0F, WeaponDataTable[storeId].DragIndex - 11.0F, y);
             else if (((AircraftClass *)ownship)->IsF16() and (station == 1 or station == 9))
                 ((AircraftClass *)ownship)->af->RemoveWeapon(WeaponDataTable[storeId].Weight, 0.0F, y);
-            else if (vc->VisibleFlags & (1 << station))
+            else if (vc->VisibleFlags bitand (1 << station))
                 ((AircraftClass *)ownship)->af->RemoveWeapon(WeaponDataTable[storeId].Weight,
                         WeaponDataTable[storeId].DragIndex,
                         y);
@@ -4082,7 +4082,7 @@ VuBin<SimWeaponClass> InitWeaponList(
         // MLR 2003-10-16 - make this optional, FF crew has gone mad. :)
         if (g_bSMSPylonLoadingFix or parent->IsHelicopter())
         {
-            rackSize = num; // MLR fixes issue with 2 & 5 slotted A2G racks not being loaded correctly
+            rackSize = num; // MLR fixes issue with 2 bitand 5 slotted A2G racks not being loaded correctly
         }
         else
         {

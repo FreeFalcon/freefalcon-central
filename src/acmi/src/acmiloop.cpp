@@ -444,7 +444,7 @@ void ACMIView::Draw()
             ep = Tape()->GetSimTapeEntity(i);
 
             // do these only for aircraft
-            if (ep->flags & ENTITY_FLAG_AIRCRAFT)
+            if (ep->flags bitand ENTITY_FLAG_AIRCRAFT)
             {
                 // default target box to off
                 ((DrawablePoled *)ep->objBase->drawPointer)->SetTarget(FALSE);
@@ -458,7 +458,7 @@ void ACMIView::Draw()
 
             // is it in existance at the moment?
             // also no poles or anything on chaff and flares
-            if ((ep->flags & (ENTITY_FLAG_CHAFF | ENTITY_FLAG_FLARE)) ||
+            if ((ep->flags bitand (ENTITY_FLAG_CHAFF | ENTITY_FLAG_FLARE)) ||
                 !Tape()->IsEntityInFrame(i))
             {
                 continue;
@@ -493,7 +493,7 @@ void ACMIView::Draw()
                     if (_cameraState not_eq FREE_CAM)  // and  targindex == CameraObject() )//me123 we wanna see all lock lines
                     {
                         // current attached camera object is target
-                        if (targep->flags & ENTITY_FLAG_AIRCRAFT)
+                        if (targep->flags bitand ENTITY_FLAG_AIRCRAFT)
                         {
                             ((DrawablePoled *)targep->objBase->drawPointer)->SetTarget(TRUE);
                             ((DrawablePoled *)targep->objBase->drawPointer)->SetTargetBoxColor(0xff00ffff);
@@ -506,7 +506,7 @@ void ACMIView::Draw()
                     else if (_cameraState not_eq FREE_CAM and i == CameraObject())
                     {
                         // current attached camera object's target
-                        if (targep->flags & ENTITY_FLAG_AIRCRAFT)
+                        if (targep->flags bitand ENTITY_FLAG_AIRCRAFT)
                         {
                             ((DrawablePoled *)targep->objBase->drawPointer)->SetTarget(TRUE);
                             ((DrawablePoled *)targep->objBase->drawPointer)->SetTargetBoxColor(0xffffffff);

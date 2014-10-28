@@ -75,7 +75,7 @@ void DigitalBrain::ResetATC()
 {
     SetATCStatus(noATC);
 
-    if ( not (moreFlags & NewHomebase))
+    if ( not (moreFlags bitand NewHomebase))
     {
         // we set a new airbase to head to (for example because of fumes fuel -> Actions.cpp)
         airbase = self->HomeAirbase();
@@ -1944,7 +1944,7 @@ void DigitalBrain::TakeOff()
         }
     }
 
-    if (g_nShowDebugLabels & 0x80000)
+    if (g_nShowDebugLabels bitand 0x80000)
     {
         char label [32];
         sprintf(label, "TaxiPt %d, type: ", curTaxiPoint);
@@ -2888,7 +2888,7 @@ void DigitalBrain::DealWithBlocker(SimBaseClass *inTheWay, ObjectiveClass *Airba
     }
 }
 
-void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeoff() & ResetTaxiState()
+void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeoff() bitand ResetTaxiState()
 {
     int pt = 0;
     BOOL HP_Is_Leader = FALSE;
@@ -3357,7 +3357,7 @@ void DigitalBrain::TaxiBack(ObjectiveClass *Airbase)
 
     if (self not_eq SimDriver.GetPlayerEntity())
     {
-        if ( not curTaxiPoint or PtDataTable[curTaxiPoint].flags & PT_LAST)
+        if ( not curTaxiPoint or PtDataTable[curTaxiPoint].flags bitand PT_LAST)
         {
             // 02JAN04 - FRB - Make parking spot available for others
             PtDataTable[curTaxiPoint].flags and_eq compl PT_OCCUPIED;
@@ -3677,7 +3677,7 @@ int DigitalBrain::FindDesiredTaxiPoint(ulong takeoffTime)
         // 17JAN04 - FRB - Locate a suitable parking spot
         if ((PtDataTable[tp].type == SmallParkPt) or (PtDataTable[tp].type == LargeParkPt))
         {
-            if (PtDataTable[tp].flags & PT_OCCUPIED)
+            if (PtDataTable[tp].flags bitand PT_OCCUPIED)
             {
                 time_til_takeoff--;
                 continue;  // Taken

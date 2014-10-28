@@ -2,7 +2,7 @@
 #include "chandler.h"
 #include "shi/ConvFtoI.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -167,7 +167,7 @@ void C_Fill::Cleanup(void)
 
 void C_Fill::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     F4CSECTIONHANDLE* Leave = UI_Enter(Parent_);
@@ -180,7 +180,7 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
     UI95_RECT s, d;
     float startg;
 
-    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     d.left = GetX();
@@ -188,7 +188,7 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
     d.right = d.left + GetW();
     d.bottom = d.top + GetH();
 
-    if ( not (Flags_ & C_BIT_ABSOLUTE))
+    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
     {
         d.left += Parent_->VX_[GetClient()];
         d.top += Parent_->VY_[GetClient()];
@@ -199,13 +199,13 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if ( not Parent_->ClipToArea(&s, &d, cliprect))
         return;
 
-    if ( not (Flags_ & C_BIT_ABSOLUTE))
+    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
         if ( not Parent_->ClipToArea(&s, &d, &Parent_->ClientArea_[GetClient()]))
             return;
 
-    if (Flags_ & C_BIT_USEGRADIENT)
+    if (Flags_ bitand C_BIT_USEGRADIENT)
     {
-        if (Flags_ & C_BIT_TRANSLUCENT)
+        if (Flags_ bitand C_BIT_TRANSLUCENT)
         {
             if (Type_ == C_TYPE_HORIZONTAL)
             {
@@ -335,7 +335,7 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
     }
     else
     {
-        if ((Flags_ & C_BIT_TRANSLUCENT) and (Start_ < 100) and Start_)
+        if ((Flags_ bitand C_BIT_TRANSLUCENT) and (Start_ < 100) and Start_)
         {
             Parent_->BlitTranslucent(surface, Color_, Start_, &d, C_BIT_ABSOLUTE, 0);
         }

@@ -148,10 +148,10 @@ void CTimeOfDay::Setup(char *dataPath)
 
         if (j >= TotalTimeOfDay) j = 0;
 
-        if ( not (TimeOfDay[j].Flag & GL_TIME_OF_DAY_USE_SUN))
+        if ( not (TimeOfDay[j].Flag bitand GL_TIME_OF_DAY_USE_SUN))
             TimeOfDay[i].Flag and_eq compl GL_TIME_OF_DAY_USE_SUN;
 
-        if ( not (TimeOfDay[j].Flag & GL_TIME_OF_DAY_USE_MOON))
+        if ( not (TimeOfDay[j].Flag bitand GL_TIME_OF_DAY_USE_MOON))
             TimeOfDay[i].Flag and_eq compl GL_TIME_OF_DAY_USE_MOON;
 
         int k = 0;
@@ -967,9 +967,9 @@ void CTimeOfDay::RotateMoonMask(int angle)
                 if (tu >= 0 and tu < 64 and tv >= 0 and tv < 64)
                 {
                     int l = (tv << 3) + (tu >> 3);
-                    unsigned char c = (unsigned char)(1 << (7 - (tu & 7)));
+                    unsigned char c = (unsigned char)(1 << (7 - (tu bitand 7)));
 
-                    if (MoonPhaseMask[l] & c) c1  or_eq  1;
+                    if (MoonPhaseMask[l] bitand c) c1  or_eq  1;
                 }
             }
 
@@ -1032,11 +1032,11 @@ void CTimeOfDay::CreateMoonPhase(unsigned char *src, unsigned char *dest)
                 unsigned char c1 = *src++;
 #ifdef USE_TRANSPARENT_MOON
 
-                if (c1 and !(c & 0x80)) c1 = 0;
+                if (c1 and !(c bitand 0x80)) c1 = 0;
 
 #else
 
-                if (c1 and !(c & 0x80)) c1 += 48;
+                if (c1 and !(c bitand 0x80)) c1 += 48;
 
 #endif
                 c <<= 1;
@@ -1049,8 +1049,8 @@ void CTimeOfDay::CreateMoonPhase(unsigned char *src, unsigned char *dest)
 DWORD CTimeOfDay::MakeColor(Tcolor *col)
 {
     return
-        (FloatToInt32(col->r * 255.9f) & 0xFF) |
-        ((FloatToInt32(col->g * 255.9f) & 0xFF) <<  8) |
-        ((FloatToInt32(col->b * 255.9f) & 0xFF) << 16) |
+        (FloatToInt32(col->r * 255.9f) bitand 0xFF) |
+        ((FloatToInt32(col->g * 255.9f) bitand 0xFF) <<  8) |
+        ((FloatToInt32(col->b * 255.9f) bitand 0xFF) << 16) |
         0xff000000;
 }

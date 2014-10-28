@@ -173,7 +173,7 @@ void GroundTaskingManagerClass::DoCalculations(void)
     POData pd;
 
     // Don't do this if we're not active, or not owned by this machine
-    if ( not (TeamInfo[owner]->flags & TEAM_ACTIVE) or !IsLocal())
+    if ( not (TeamInfo[owner]->flags bitand TEAM_ACTIVE) or !IsLocal())
         return;
 
     topPriority = 0;
@@ -231,12 +231,12 @@ void GroundTaskingManagerClass::DoCalculations(void)
             score = 1;
 
         // KCK: AI's air and ground priorities are identical for now
-        if ( not (pd->flags & GTMOBJ_SCRIPTED_PRIORITY))
+        if ( not (pd->flags bitand GTMOBJ_SCRIPTED_PRIORITY))
         {
             pd->ground_priority[owner] = score;
             pd->air_priority[owner] = score;
             // KCK: player_priority only used now if it's >= 0
-            // if ( not (pd->flags & GTMOBJ_PLAYER_SET_PRIORITY))
+            // if ( not (pd->flags bitand GTMOBJ_PLAYER_SET_PRIORITY))
             // pd->player_priority[owner] = pd->air_priority[owner];
         }
 
@@ -263,7 +263,7 @@ int GroundTaskingManagerClass::Task(void)
     int action;
 
     // Don't do this if we're not active, or not owned by this machine
-    if ( not (TeamInfo[owner]->flags & TEAM_ACTIVE) or !IsLocal())
+    if ( not (TeamInfo[owner]->flags bitand TEAM_ACTIVE) or !IsLocal())
         return 0;
 
     action = TeamInfo[owner]->GetGroundActionType();
@@ -634,7 +634,7 @@ int GroundTaskingManagerClass::BuildObjectiveLists(int to_collect)
                 ps = po->GetObjectivePriority();
             }
 
-            if (add_now & (COLLECT_RESERVE | COLLECT_CAPTURE | COLLECT_SECURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_DEFEND | GORD_SUPPORT))
+            if (add_now bitand (COLLECT_RESERVE | COLLECT_CAPTURE | COLLECT_SECURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_DEFEND | GORD_SUPPORT))
             {
                 GridIndex ox, oy;
                 o->GetLocation(&ox, &oy);
@@ -644,7 +644,7 @@ int GroundTaskingManagerClass::BuildObjectiveLists(int to_collect)
             // Now insert it in the proper lists
             for (int i = 0; i < GORD_LAST; i++)
             {
-                if ( not (add_now & (0x01 << i)))
+                if ( not (add_now bitand (0x01 << i)))
                     continue;
 
                 if (i == GORD_CAPTURE)
@@ -710,7 +710,7 @@ void GroundTaskingManagerClass::AddToLists(Unit u, int to_collect)
     {
         int orders = u->GetUnitOrders();
 
-        if ((to_collect & (0x01 << orders)) and IsValidObjective(orders, u->GetUnitObjective()))
+        if ((to_collect bitand (0x01 << orders)) and IsValidObjective(orders, u->GetUnitObjective()))
         {
             Objective o = u->GetUnitObjective();
             GODNode curo = objList[orders];
@@ -790,7 +790,7 @@ void GroundTaskingManagerClass::AddToLists(Unit u, int to_collect)
     // Add it to a list for each type of orders it's capible of performing
     for (i = 0; i < GORD_LAST; i++)
     {
-        if ( not (to_collect & (0x01 << i)))
+        if ( not (to_collect bitand (0x01 << i)))
             continue;
 
         if (i == GORD_ASSAULT and u->GetUnitNormalRole() not_eq GRO_ASSAULT)
@@ -1313,7 +1313,7 @@ short EncodePrimaryObjectiveList(uchar teammask, uchar **buffer)
     {
         if ( not TeamInfo[team])
             teammask and_eq compl (1 << team);
-        else if (teammask & (1 << team))
+        else if (teammask bitand (1 << team))
             teams++;
     }
 
@@ -1345,7 +1345,7 @@ short EncodePrimaryObjectiveList(uchar teammask, uchar **buffer)
 
         for (team = 0; team < NUM_TEAMS; team++)
         {
-            if (teammask & (1 << team))
+            if (teammask bitand (1 << team))
             {
                 memcpy(data, &pod->player_priority[team], sizeof(short));
                 data += sizeof(short);
@@ -1391,7 +1391,7 @@ void DecodePrimaryObjectiveList(uchar *datahead, FalconEntity *fe)
 
         for (team = 0; team < NUM_TEAMS; team++)
         {
-            if (teammask & (1 << team))
+            if (teammask bitand (1 << team))
             {
                 memcpy(&priority, data, sizeof(short));
                 data += sizeof(short);
@@ -1427,7 +1427,7 @@ void SendPrimaryObjectiveList(uchar teammask)
 
     for (team = 0; team < NUM_TEAMS; team++)
     {
-        if (teammask & (1 << team))
+        if (teammask bitand (1 << team))
             ShiAssert(TeamInfo[team]);
     }
 

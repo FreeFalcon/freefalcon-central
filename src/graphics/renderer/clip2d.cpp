@@ -70,7 +70,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
     // have to check all triangles instead of stopping after the second reject loop below.
     // If a new set of un-culled triangles was encountered, we'd have to make a new polygon
     // and resubmit it.
-    if (gifPicture /*|| g_nGfxFix & 0x08*/)  // removed again, caused AG radar not to be displayed on Matrox G400
+    if (gifPicture /*|| g_nGfxFix bitand 0x08*/)  // removed again, caused AG radar not to be displayed on Matrox G400
     {
         temp = inList;
         inList = outList;
@@ -126,7 +126,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
 
 
         // Clip to the bottom plane
-        if (clipTest & CLIP_BOTTOM)
+        if (clipTest bitand CLIP_BOTTOM)
         {
             temp = inList;
             inList = outList;
@@ -138,7 +138,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_BOTTOM)
+                if (((*p)->clipFlag xor (*v)->clipFlag) bitand CLIP_BOTTOM)
                 {
                     ShiAssert(extraVertCount < MAX_VERT_LIST);
                     *nextOut = &extraVerts[extraVertCount];
@@ -147,7 +147,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
                 }
 
                 // If this vert isn't clipped, use it
-                if ( not ((*v)->clipFlag & CLIP_BOTTOM))
+                if ( not ((*v)->clipFlag bitand CLIP_BOTTOM))
                 {
                     *nextOut++ = *v;
                 }
@@ -162,7 +162,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
 
 
         // Clip to the top plane
-        if (clipTest & CLIP_TOP)
+        if (clipTest bitand CLIP_TOP)
         {
             temp = inList;
             inList = outList;
@@ -174,7 +174,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_TOP)
+                if (((*p)->clipFlag xor (*v)->clipFlag) bitand CLIP_TOP)
                 {
                     ShiAssert(extraVertCount < MAX_VERT_LIST);
                     *nextOut = &extraVerts[extraVertCount];
@@ -183,7 +183,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
                 }
 
                 // If this vert isn't clipped, use it
-                if ( not ((*v)->clipFlag & CLIP_TOP))
+                if ( not ((*v)->clipFlag bitand CLIP_TOP))
                 {
                     *nextOut++ = *v;
                 }
@@ -198,7 +198,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
 
 
         // Clip to the right plane
-        if (clipTest & CLIP_RIGHT)
+        if (clipTest bitand CLIP_RIGHT)
         {
             temp = inList;
             inList = outList;
@@ -210,7 +210,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_RIGHT)
+                if (((*p)->clipFlag xor (*v)->clipFlag) bitand CLIP_RIGHT)
                 {
                     ShiAssert(extraVertCount < MAX_VERT_LIST);
                     *nextOut = &extraVerts[extraVertCount];
@@ -219,7 +219,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
                 }
 
                 // If this vert isn't clipped, use it
-                if ( not ((*v)->clipFlag & CLIP_RIGHT))
+                if ( not ((*v)->clipFlag bitand CLIP_RIGHT))
                 {
                     *nextOut++ = *v;
                 }
@@ -234,7 +234,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
 
 
         // Clip to the left plane
-        if (clipTest & CLIP_LEFT)
+        if (clipTest bitand CLIP_LEFT)
         {
             temp = inList;
             inList = outList;
@@ -246,7 +246,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_LEFT)
+                if (((*p)->clipFlag xor (*v)->clipFlag) bitand CLIP_LEFT)
                 {
                     ShiAssert(extraVertCount < MAX_VERT_LIST);
                     *nextOut = &extraVerts[extraVertCount];
@@ -255,7 +255,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
                 }
 
                 // If this vert isn't clipped, use it
-                if ( not ((*v)->clipFlag & CLIP_LEFT))
+                if ( not ((*v)->clipFlag bitand CLIP_LEFT))
                 {
                     *nextOut++ = *v;
                 }

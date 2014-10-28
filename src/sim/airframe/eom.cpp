@@ -287,7 +287,7 @@ void AirframeClass::CalcBodyRates(float dt)
 
                 OldGearExt = GearExt;
 
-                if ( not (gear[i].flags & GearData::GearBroken))
+                if ( not (gear[i].flags bitand GearData::GearBroken))
                 {
                     gear[i].vel = gear[i].vel * 0.3F - GearExt * 0.2F / dt;
 
@@ -875,7 +875,7 @@ void AirframeClass::CalcGroundTurnRate(float dt)
 
     if (gearPos >= 0.9F and !IsSet(GearBroken) and vt > 0.0F)
     {
-        if (IsSet(NoseSteerOn) and !(gear[0].flags & GearData::GearStuck)
+        if (IsSet(NoseSteerOn) and !(gear[0].flags bitand GearData::GearStuck)
             and platform->OnGround())
         {
             //MI need to filter Trim out here
@@ -1168,7 +1168,7 @@ float AirframeClass::CalcMuFric(int groundType)
 
         if (NumGear() > 1)
         {
-            wheelbrakes = IsSet(WheelBrakes) * (( not (gear[1].flags & GearData::GearBroken) and TRUE) + ( not (gear[2].flags & GearData::GearBroken) and TRUE)) * 0.5F;
+            wheelbrakes = IsSet(WheelBrakes) * (( not (gear[1].flags bitand GearData::GearBroken) and TRUE) + ( not (gear[2].flags bitand GearData::GearBroken) and TRUE)) * 0.5F;
         }
         else
             wheelbrakes = (float)IsSet(WheelBrakes);
@@ -1587,7 +1587,7 @@ float AirframeClass::CalculateVt(float dt)
         {
             int which = rand() % NumGear();
 
-            //if(NumGear() > 1 and platform->IsComplex() and !(gear[which].flags & GearData::GearBroken))
+            //if(NumGear() > 1 and platform->IsComplex() and !(gear[which].flags bitand GearData::GearBroken))
             if (NumGear() > 1 and which < NumGear() and platform->IsComplex())
             {
                 if ( not IsSet(IsDigital))
@@ -1980,7 +1980,7 @@ float AirframeClass::CheckHeight(void) const
 
         for (int i = 0; i < NumGear(); i++)
         {
-            if ( not (gear[i].flags & GearData::GearBroken))
+            if ( not (gear[i].flags bitand GearData::GearBroken))
             {
                 PtRelPos.x = cgloc - GetAeroData(AeroDataSet::NosGearX + i * 4);
                 PtRelPos.y = GetAeroData(AeroDataSet::NosGearY + i * 4);

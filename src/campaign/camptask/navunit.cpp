@@ -279,7 +279,7 @@ int TaskForceClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
             // At sea
             dist = (simdata->vehicleInUnit - 1) >> 2;
 
-            switch ((simdata->vehicleInUnit - 1) & 0x3)
+            switch ((simdata->vehicleInUnit - 1) bitand 0x3)
             {
                 case 0:
                     simdata->x = XPos() - 1500.0f - 1500.0f * dist;
@@ -554,17 +554,17 @@ int TaskForceClass::MoveUnit(CampaignTime time)
             if (h > last_direction)
             {
                 if (h - last_direction < 5)
-                    h = (last_direction + 1) & 0x07;
+                    h = (last_direction + 1) bitand 0x07;
                 else
-                    h = (last_direction + 7) & 0x07;
+                    h = (last_direction + 7) bitand 0x07;
             }
 
             else if (h < last_direction)
             {
                 if (last_direction - h < 5)
-                    h = (last_direction + 7) & 0x07;
+                    h = (last_direction + 7) bitand 0x07;
                 else
-                    h = (last_direction + 1) & 0x07;
+                    h = (last_direction + 1) bitand 0x07;
             }
 
             //this moves the unit
@@ -736,10 +736,10 @@ int TaskForceClass::Reaction(CampEntity e, int knowledge, float range)
         return 0;
 
     // Score their threat to us
-    if (knowledge & FRIENDLY_DETECTED)
+    if (knowledge bitand FRIENDLY_DETECTED)
         enemy_threat_bonus++;
 
-    if (knowledge & FRIENDLY_IN_RANGE)
+    if (knowledge bitand FRIENDLY_IN_RANGE)
         enemy_threat_bonus += 2;
 
     et = ((Unit)e)->GetCampTarget();
@@ -749,7 +749,7 @@ int TaskForceClass::Reaction(CampEntity e, int knowledge, float range)
         score += e->GetAproxHitChance(omt, 0) / 5 * enemy_threat_bonus;
 
     // Bonus if we can shoot them
-    if (knowledge & ENEMY_IN_RANGE)
+    if (knowledge bitand ENEMY_IN_RANGE)
         score += GetAproxHitChance(tmt, FloatToInt32(range / 2.0F)) / 5;
 
     // Added bonus for them attacking
@@ -765,14 +765,14 @@ int TaskForceClass::Reaction(CampEntity e, int knowledge, float range)
    int react,det = Detected(this,ac,d);
    CampEntity e;
 
-   if ( not (det & REACTION_MASK))
+   if ( not (det bitand REACTION_MASK))
    return 0;
 
    e = ac->GetCampaignObject();
    react = Reaction(e,det,*d);
-   if (det & ENEMY_IN_RANGE and react)
+   if (det bitand ENEMY_IN_RANGE and react)
  *combat = 1;
- if (det & FRIENDLY_DETECTED)
+ if (det bitand FRIENDLY_DETECTED)
  {
  SetSpotted(e->GetTeam(),TheCampaign.CurrentTime);
  *spot = 1;
@@ -802,18 +802,18 @@ int TaskForceClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spot
     if (CheckValidType(e, this))
         detTmp  or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
 
-    if ( not (detTmp & REACTION_MASK))
+    if ( not (detTmp bitand REACTION_MASK))
         return 0;
 
     react = Reaction(e, detTmp, *d);
 
-    if (det & ENEMY_IN_RANGE and react)
+    if (det bitand ENEMY_IN_RANGE and react)
         *combat = 1;
 
     // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
     // I can't let SensorFusion handle the spotting for AWAC because this will put a too big toll on the CPU
     // e has to be a flight since it is derived from an aircraft class so less checks needs to be done here then against flights below
-    if (det & FRIENDLY_DETECTED)
+    if (det bitand FRIENDLY_DETECTED)
     {
         // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
         if ((e->IsAggregate() and CheckValidType(e, this)) or (e->IsFlight() and e->GetSType() == STYPE_UNIT_AWACS))
@@ -832,14 +832,14 @@ int TaskForceClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spot
    int react,det;
 
    det = Detected(this,e,d);
-   if ( not (det & REACTION_MASK))
+   if ( not (det bitand REACTION_MASK))
    return 0;
    react = Reaction(e,det,*d);
-   if (det & ENEMY_DETECTED)
+   if (det bitand ENEMY_DETECTED)
    e->SetSpotted(GetTeam(),TheCampaign.CurrentTime);
-   if (det & ENEMY_IN_RANGE and react)
+   if (det bitand ENEMY_IN_RANGE and react)
  *combat = 1;
- if (det & FRIENDLY_DETECTED)
+ if (det bitand FRIENDLY_DETECTED)
  {
  SetSpotted(e->GetTeam(),TheCampaign.CurrentTime);
  *spot = 1;
@@ -865,22 +865,22 @@ int TaskForceClass::DetectVs(CampEntity e, float *d, int *combat, int *spot)
     if (CheckValidType(e, this))
         detTmp  or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
 
-    if ( not (detTmp & REACTION_MASK))
+    if ( not (detTmp bitand REACTION_MASK))
         return 0;
 
     react = Reaction(e, detTmp, *d);
 
     // We'll spot our enemy if we're not broken
-    if (det & ENEMY_DETECTED)
+    if (det bitand ENEMY_DETECTED)
     {
         if (IsAggregate() and CheckValidType(this, e))
             e->SetSpotted(GetTeam(), TheCampaign.CurrentTime, (CanItIdentify(this, e, *d, e->GetMovementType()))); // 2002-02-11 MODIFIED BY S.G. Say 'identified if it has the hability to identify
     }
 
-    if (det & ENEMY_IN_RANGE and react)
+    if (det bitand ENEMY_IN_RANGE and react)
         *combat = 1;
 
-    if (det & FRIENDLY_DETECTED)
+    if (det bitand FRIENDLY_DETECTED)
     {
         // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
         if ((e->IsAggregate() and CheckValidType(e, this)) or (e->IsFlight() and e->GetSType() == STYPE_UNIT_AWACS))
@@ -916,7 +916,7 @@ CampaignTime TaskForceClass::GetMoveTime(void)
 
 void TaskForceClass::GetRealPosition(float *x, float *y, float *z)
 {
-    // This will use the last move time to determine the real x,y & z of the unit
+    // This will use the last move time to determine the real x,y bitand z of the unit
     float movetime = (float)(SimLibElapsedTime - last_move) / VU_TICS_PER_SECOND;
     float speed;
     float heading;
@@ -993,7 +993,7 @@ WayPoint DoWPAction(TaskForce tf, WayPoint w)
      */
 
     // Check Flags
-    if (w->GetWPFlags() & WPF_REPEAT)
+    if (w->GetWPFlags() bitand WPF_REPEAT)
     {
         // Check if we've been here long enough
         if (Camp_GetCurrentTime() > w->GetWPDepartureTime())
@@ -1026,11 +1026,11 @@ int TaskForceClass::DetectOnMove(void)
 // JPO addtions
 int TaskForceClass::CanShootWeapon(int wid)
 {
-    if (WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR and missiles_flying > 1)
+    if (WeaponDataTable[wid].GuidanceFlags bitand WEAP_RADAR and missiles_flying > 1)
         return FALSE;
 
     // Check for radar guidance, and make adjustments if necessary
-    if ( not (WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR) or GetRadarMode() == FEC_RADAR_GUIDE or GetRadarMode() == FEC_RADAR_SEARCH_100)
+    if ( not (WeaponDataTable[wid].GuidanceFlags bitand WEAP_RADAR) or GetRadarMode() == FEC_RADAR_GUIDE or GetRadarMode() == FEC_RADAR_SEARCH_100)
         return TRUE;
 
     return FALSE;

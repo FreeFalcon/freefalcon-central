@@ -1044,7 +1044,7 @@ void update_missions_details(long winID)
 
             while (wp)
             {
-                if (wp->GetWPFlags() & WPF_TARGET)
+                if (wp->GetWPFlags() bitand WPF_TARGET)
                 {
                     GetTimeString(wp->GetWPArrivalTime(), TOT);
                     wp = NULL;

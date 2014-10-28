@@ -107,7 +107,7 @@ int FalconDivertMessage::Process(uchar autodisp)
         PlayDivertRadioCalls(target, dataBlock.mission, flight, 0);
 
         // Return receipt
-        if (flight->IsLocal() and (dataBlock.flags & REQF_NEEDRESPONSE))
+        if (flight->IsLocal() and (dataBlock.flags bitand REQF_NEEDRESPONSE))
         {
             CampEntity e = (CampEntity) vuDatabase->Find(dataBlock.requesterID);
 

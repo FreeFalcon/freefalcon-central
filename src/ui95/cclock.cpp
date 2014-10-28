@@ -2,7 +2,7 @@
 #include "chandler.h"
 
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -304,7 +304,7 @@ void C_Clock::SetSubParents(C_Window *Parent)
 
 long C_Clock::CheckHotSpots(long relX, long relY)
 {
-    if (Flags_ & C_BIT_INVISIBLE or !(Flags_ & C_BIT_ENABLED) or !Ready())
+    if (Flags_ bitand C_BIT_INVISIBLE or !(Flags_ bitand C_BIT_ENABLED) or !Ready())
         return(0);
 
     if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
@@ -428,7 +428,7 @@ BOOL C_Clock::Process(long ID, short HitType)
 
 void C_Clock::Refresh()
 {
-    if ( not Ready() or Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
@@ -436,7 +436,7 @@ void C_Clock::Refresh()
 
 void C_Clock::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if ( not Ready() or Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Sep0_)
@@ -460,7 +460,7 @@ void C_Clock::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Second_)
         Second_->Draw(surface, cliprect);
 
-    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 

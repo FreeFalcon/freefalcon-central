@@ -65,7 +65,7 @@ BOOL C_Waypoint::ShowByType(long typemask)
 
     while (cur)
     {
-        if (cur->Type & typemask)
+        if (cur->Type bitand typemask)
         {
             cur->Flags and_eq (0xffffffff xor C_BIT_INVISIBLE);
             retval = TRUE;
@@ -86,7 +86,7 @@ BOOL C_Waypoint::HideByType(long typemask)
 
     while (cur)
     {
-        if (cur->Type & typemask)
+        if (cur->Type bitand typemask)
         {
             cur->Flags  or_eq  C_BIT_INVISIBLE;
             retval = TRUE;
@@ -131,9 +131,9 @@ WAYPOINTLIST *C_Waypoint::AddWaypointToList(long CampID, short type, long NormID
     newitem->Icon->SetImage(C_STATE_2, OthrID);
 
     if (Dragable)
-        newitem->Icon->SetFlags((GetFlags() & compl (C_BIT_DRAGABLE)) | C_BIT_DRAGABLE);
+        newitem->Icon->SetFlags((GetFlags() bitand compl (C_BIT_DRAGABLE)) | C_BIT_DRAGABLE);
     else
-        newitem->Icon->SetFlags((GetFlags() & compl (C_BIT_DRAGABLE)));
+        newitem->Icon->SetFlags((GetFlags() bitand compl (C_BIT_DRAGABLE)));
 
     newitem->Icon->SetClient(GetClient());
     newitem->Icon->SetParent(Parent_);
@@ -413,7 +413,7 @@ void C_Waypoint::Refresh()
     WAYPOINTLIST *cur;
     UI95_RECT rect;
 
-    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     rect.left = 5000;
@@ -425,7 +425,7 @@ void C_Waypoint::Refresh()
 
     while (cur)
     {
-        if ( not (cur->Flags & C_BIT_INVISIBLE))
+        if ( not (cur->Flags bitand C_BIT_INVISIBLE))
         {
             if (cur->Icon->GetX() < rect.left)
                 rect.left = cur->Icon->GetX();
@@ -461,9 +461,9 @@ void C_Waypoint::Draw(SCREEN *surface, UI95_RECT *cliprect)
     {
         if (cur->ID)
         {
-            if ( not (cur->Flags & C_BIT_INVISIBLE))
+            if ( not (cur->Flags bitand C_BIT_INVISIBLE))
             {
-                if (cur->Flags & C_BIT_USELINE)
+                if (cur->Flags bitand C_BIT_USELINE)
                     if (prev not_eq cur)
                         if (prev->Group == cur->Group)
                             Parent_->DrawLine(surface, cur->LineColor_[cur->state], prev->x, prev->y, cur->x, cur->y, GetFlags(), GetClient(), cliprect);
@@ -518,7 +518,7 @@ BOOL C_Waypoint::UpdateInfo(long ID, float x, float y)
         cur->y = (short)(cur->worldy * scale_);
         cur->Icon->SetXY(cur->x - cur->Icon->GetW() / 2, cur->y - cur->Icon->GetH() / 2);
 
-        if ( not (ID & 0x60000000))
+        if ( not (ID bitand 0x60000000))
         {
             wk1 = FindID(ID - 1);
             wk2 = FindID(0x40000000 + ID);
@@ -555,7 +555,7 @@ BOOL C_Waypoint::UpdateInfo(long ID, float x, float y)
             }
         }
 
-        if ((ox not_eq cur->x or oy not_eq cur->y) and !(cur->Flags & C_BIT_INVISIBLE))
+        if ((ox not_eq cur->x or oy not_eq cur->y) and !(cur->Flags bitand C_BIT_INVISIBLE))
             return(TRUE);
     }
 
@@ -571,7 +571,7 @@ long C_Waypoint::CheckHotSpots(long relX, long relY)
 
     while (cur)
     {
-        if ( not (cur->Flags & C_BIT_INVISIBLE) and cur->Flags & C_BIT_ENABLED)
+        if ( not (cur->Flags bitand C_BIT_INVISIBLE) and cur->Flags bitand C_BIT_ENABLED)
         {
             if (cur->Icon->CheckHotSpots(relX, relY))
                 LastWP_ = cur;
@@ -597,7 +597,7 @@ BOOL C_Waypoint::MouseOver(long relX, long relY, C_Base *)
 
     while (cur)
     {
-        if ( not (cur->Flags & C_BIT_INVISIBLE) and cur->Flags & C_BIT_ENABLED)
+        if ( not (cur->Flags bitand C_BIT_INVISIBLE) and cur->Flags bitand C_BIT_ENABLED)
         {
             if (cur->Icon and cur->Icon->MouseOver(relX, relY, cur->Icon)) // possible CTD fix
             {
@@ -620,13 +620,13 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     _TCHAR buf[15];
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Dragable(0))
+    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !Dragable(0))
         return(FALSE);
 
     if (over not_eq Parent_)
         return(FALSE);
 
-    if ( not (GetFlags() & C_BIT_ABSOLUTE))
+    if ( not (GetFlags() bitand C_BIT_ABSOLUTE))
     {
         relx = MouseX - over->GetX();
         rely = MouseY - over->GetY();
@@ -641,7 +641,7 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     if (LastWP_ == NULL)
         return(FALSE);
 
-    if ( not (LastWP_->Flags & C_BIT_DRAGABLE))
+    if ( not (LastWP_->Flags bitand C_BIT_DRAGABLE))
         return(FALSE);
 
     Leave = UI_Enter(Parent_);
@@ -755,7 +755,7 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
 
     Waypoint->Icon->SetXY(x - Waypoint->Icon->GetW() / 2, y - Waypoint->Icon->GetH() / 2);
 
-    if ( not (Waypoint->ID & 0x60000000))
+    if ( not (Waypoint->ID bitand 0x60000000))
     {
         wk1 = FindID(Waypoint->ID - 1);
         wk2 = FindID(0x40000000 + Waypoint->ID);

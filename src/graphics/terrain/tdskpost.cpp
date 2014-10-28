@@ -43,8 +43,8 @@ void DiskblockToMemblock(Tpost *memPost, TdiskPost *diskPost,
         static const float stop = 1.0f - start;
         static const float minStep = (stop - start) * 0.25f;
 
-        memPost->u = start + ((i << LOD) & 0x3) * minStep;
-        memPost->v = stop - (((i >> POST_OFFSET_BITS) << LOD) & 0x3) * minStep;
+        memPost->u = start + ((i << LOD) bitand 0x3) * minStep;
+        memPost->v = stop - (((i >> POST_OFFSET_BITS) << LOD) bitand 0x3) * minStep;
         memPost->d = LOD < TheMap.LastNearTexLOD() ? (1 << LOD) * minStep : stop;
 
         // Copy the color index
@@ -110,8 +110,8 @@ void LargeDiskblockToMemblock(Tpost *memPost, TNewdiskPost *diskPost, int LOD, f
         static const float stop = 1.0f - start;
         static const float minStep = (stop - start) * 0.25f;
 
-        memPost->u = start + ((i << LOD) & 0x3) * minStep;
-        memPost->v = stop - (((i >> POST_OFFSET_BITS) << LOD) & 0x3) * minStep;
+        memPost->u = start + ((i << LOD) bitand 0x3) * minStep;
+        memPost->v = stop - (((i >> POST_OFFSET_BITS) << LOD) bitand 0x3) * minStep;
         memPost->d = LOD < TheMap.LastNearTexLOD() ? (1 << LOD) * minStep : stop;
 
         // Copy the color index

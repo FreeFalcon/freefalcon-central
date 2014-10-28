@@ -1094,11 +1094,11 @@ int TeamClass::Handle(VuFullUpdateEvent *event)
     // Mark team data as received if we have all the teams.
     for (int i = 0; i < NUM_TEAMS; i++)
     {
-        if ((TeamInfo[i]) and ( not (TeamInfo[i]->flags & TEAM_UPDATED)))
+        if ((TeamInfo[i]) and ( not (TeamInfo[i]->flags bitand TEAM_UPDATED)))
             return retval;
     }
 
-    if (TheCampaign.Flags & CAMP_SLAVE)
+    if (TheCampaign.Flags bitand CAMP_SLAVE)
     {
         TheCampaign.Flags and_eq compl CAMP_NEED_TEAM_DATA;
         TheCampaign.GotJoinData();
@@ -1179,7 +1179,7 @@ void TeamClass::SelectGroundAction(void)
     Team t;
     TeamGndActionType enemyAction;
 
-    if ( not (flags & TEAM_ACTIVE) or !IsLocal())
+    if ( not (flags bitand TEAM_ACTIVE) or !IsLocal())
         return;
 
     // A.S. begin, 2001-12-09
@@ -1341,7 +1341,7 @@ void TeamClass::SelectAirActions(void)
     MissionRequest mis;
     CampaignTime current_time;
 
-    if ( not (flags & TEAM_ACTIVE) or !IsLocal())
+    if ( not (flags bitand TEAM_ACTIVE) or !IsLocal())
         return;
 
     if (TheCampaign.CurrentTime > defensiveAirAction.actionStopTime)
@@ -1364,7 +1364,7 @@ void TeamClass::SelectAirActions(void)
     {
         mis = (MissionRequest) lp->GetUserData();
 
-        if ( not mis->action_type and !(MissionData[mis->mission].flags & AMIS_FLYALWAYS))
+        if ( not mis->action_type and !(MissionData[mis->mission].flags bitand AMIS_FLYALWAYS))
             missions_requested++;
 
         lp = lp->GetPrev();
@@ -1463,7 +1463,7 @@ void TeamClass::SelectAirActions(void)
         offensiveAirAction.lastActionObjective = bo->Id();
         objectiveList = new ListClass(LADT_SORTED_LIST);
 
-        // Calculate our clear path & build list of all additional target PAKs
+        // Calculate our clear path bitand build list of all additional target PAKs
         // This is a very rough way to find all PAKs along the path to our target PAK
         bo->GetLocation(&tx, &ty);
         fo = FindNearestObjective(FrontList, tx, ty, NULL);
@@ -2101,7 +2101,7 @@ void NewInitiativePointSetting(Team who)
 
     for (i = 0; i < NUM_TEAMS; i++) // old code for the other teams (replaces same code in UpdateTeamStatistics-procedure)
     {
-        if (i not_eq who  and  i not_eq et  and  TeamInfo[i]->flags & TEAM_ACTIVE)
+        if (i not_eq who  and  i not_eq et  and  TeamInfo[i]->flags bitand TEAM_ACTIVE)
         {
             if (TeamInfo[i]->GetInitiative() < 40)
                 TeamInfo[i]->AddInitiative((INITIATIVE_LEAK_PER_HOUR * MIN_RECALCULATE_STATISTICS) / 60);
@@ -2223,7 +2223,7 @@ int GetPriority(MissionRequest mis)
         return -1;
 
     // Mission priority (0 - 100)
-    if (mis->flags & REQF_PART_OF_ACTION)
+    if (mis->flags bitand REQF_PART_OF_ACTION)
         mission_priority = DefaultMissionPriority[mis->action_type - 1][mis->mission];
     else
         mission_priority = TeamInfo[mis->who]->GetMissionPriority(mis->mission);
@@ -2242,7 +2242,7 @@ int GetPriority(MissionRequest mis)
             return -1;
 
         // o Objective Target Type component (0-50)
-        if (mis->flags & REQF_PART_OF_ACTION)
+        if (mis->flags bitand REQF_PART_OF_ACTION)
             target_priority = DefaultObjtypePriority[mis->action_type - 1][e->GetType()] / 2;
         else
             target_priority = TeamInfo[mis->who]->GetObjTypePriority(e->GetType()) / 2;
@@ -2261,7 +2261,7 @@ int GetPriority(MissionRequest mis)
             return -1;
 
         // o Unit Target Type component (0-50)
-        if (mis->flags & REQF_PART_OF_ACTION)
+        if (mis->flags bitand REQF_PART_OF_ACTION)
             target_priority = DefaultUnittypePriority[mis->action_type - 1][e->GetSType()] / 2;
         else
             target_priority = TeamInfo[mis->who]->GetUnitTypePriority(e->GetSType()) / 2;
@@ -2315,7 +2315,7 @@ int GetPriority(MissionRequest mis)
     mis->pakID = po->Id();
 
     // Distance priority (0 - 200)
-    if (MissionData[mis->mission].flags & AMIS_NO_DIST_BONUS)
+    if (MissionData[mis->mission].flags bitand AMIS_NO_DIST_BONUS)
         distance_priority = mission_priority * 2;
     else
     {
@@ -2400,7 +2400,7 @@ void AddReinforcements(Team who, int inc)
     GridIndex x, y;
     int added;
 
-    if ((inc <= 0) or (TeamInfo[who] == NULL) or ( not (TeamInfo[who]->flags & TEAM_ACTIVE)))
+    if ((inc <= 0) or (TeamInfo[who] == NULL) or ( not (TeamInfo[who]->flags bitand TEAM_ACTIVE)))
         return;
 
     TeamInfo[who]->AddReinforcement(inc);
@@ -2550,7 +2550,7 @@ void UpdateTeamStatistics(void)
     // If we havn't gotten a start score yet, set it.
     for (i = 0; i < NUM_TEAMS; i++)
     {
-        if (TeamInfo[i]->flags & TEAM_ACTIVE)
+        if (TeamInfo[i]->flags bitand TEAM_ACTIVE)
         {
             // Do supply and fuel
             TeamInfo[i]->SetCurrentStats()->supply = TeamInfo[i]->GetSupplyAvail();
@@ -2636,7 +2636,7 @@ void UpdateTeamStatistics(void)
     short d, count;
     UnitHistoryType hist;
 
-    // SPLIT SAVE FILE into 2 FILES SO I DON'T HAVE TO READ & DISCARD A BUNCH OF DATA
+    // SPLIT SAVE FILE into 2 FILES SO I DON'T HAVE TO READ bitand DISCARD A BUNCH OF DATA
     // Teaminfo => .frc
     // History  => .his
     // PJW
@@ -3076,25 +3076,25 @@ void TeamClass::WriteDirty(unsigned char **stream)
     *(ushort*)ptr = (ushort) dirty_team;
     ptr += sizeof(ushort);
 
-    if (dirty_team & DIRTY_MISSION_PRIORITY)
+    if (dirty_team bitand DIRTY_MISSION_PRIORITY)
     {
         memcpy(ptr, mission_priority, sizeof(mission_priority));
         ptr += sizeof(mission_priority);
     }
 
-    if (dirty_team & DIRTY_UNITTYPE_PRIORITY)
+    if (dirty_team bitand DIRTY_UNITTYPE_PRIORITY)
     {
         memcpy(ptr, unittype_priority, sizeof(unittype_priority));
         ptr += sizeof(unittype_priority);
     }
 
-    if (dirty_team & DIRTY_OBJTYPE_PRIORITY)
+    if (dirty_team bitand DIRTY_OBJTYPE_PRIORITY)
     {
         memcpy(ptr, objtype_priority, sizeof(objtype_priority));
         ptr += sizeof(objtype_priority);
     }
 
-    if (dirty_team & DIRTY_SUPPLY_FUEL_AVAIL)
+    if (dirty_team bitand DIRTY_SUPPLY_FUEL_AVAIL)
     {
         *(ushort*)ptr = supplyAvail;
         ptr += sizeof(ushort);
@@ -3106,45 +3106,45 @@ void TeamClass::WriteDirty(unsigned char **stream)
         ptr += sizeof(ushort);
     }
 
-    if (dirty_team & DIRTY_TEAM_INITIATIVE)
+    if (dirty_team bitand DIRTY_TEAM_INITIATIVE)
     {
         *(short*)ptr = initiative;
         ptr += sizeof(short);
     }
 
-    if (dirty_team & DIRTY_TEAM_REINFORCEMENT)
+    if (dirty_team bitand DIRTY_TEAM_REINFORCEMENT)
     {
         *(short*)ptr = reinforcement;
         ptr += sizeof(short);
     }
 
-    if (dirty_team & DIRTY_CURRENT_STATS)
+    if (dirty_team bitand DIRTY_CURRENT_STATS)
     {
         memcpy(ptr, &currentStats, sizeof(currentStats));
         ptr += sizeof(currentStats);
     }
 
-    if (dirty_team & DIRTY_GROUND_ACTION)
+    if (dirty_team bitand DIRTY_GROUND_ACTION)
     {
         memcpy(ptr, &groundAction, sizeof(groundAction));
         ptr += sizeof(groundAction);
     }
 
-    if (dirty_team & DIRTY_OFFAIR_ACTION)
+    if (dirty_team bitand DIRTY_OFFAIR_ACTION)
     {
         memcpy(ptr, &offensiveAirAction, sizeof(offensiveAirAction));
         ptr += sizeof(offensiveAirAction);
     }
 
-    if (dirty_team & DIRTY_DEFAIR_ACTION)
+    if (dirty_team bitand DIRTY_DEFAIR_ACTION)
     {
         memcpy(ptr, &defensiveAirAction, sizeof(defensiveAirAction));
         ptr += sizeof(defensiveAirAction);
     }
 
-    if (dirty_team & DIRTY_TEAM_RELATIONS)
+    if (dirty_team bitand DIRTY_TEAM_RELATIONS)
     {
-        ShiAssert((cteam & 0xff) not_eq 0xfc);
+        ShiAssert((cteam bitand 0xff) not_eq 0xfc);
         memcpy(ptr, &cteam, sizeof(uchar));
         ptr += sizeof(uchar);
         memcpy(ptr, member, sizeof(uchar) * NUM_COUNS);
@@ -3165,59 +3165,59 @@ void TeamClass::ReadDirty(unsigned char **stream, long *rem)
     // Encode it up
     memcpychk(&bits, stream, sizeof(ushort), rem);
 
-    if (bits & DIRTY_MISSION_PRIORITY)
+    if (bits bitand DIRTY_MISSION_PRIORITY)
     {
         memcpychk(mission_priority, stream, sizeof(mission_priority), rem);
     }
 
-    if (bits & DIRTY_UNITTYPE_PRIORITY)
+    if (bits bitand DIRTY_UNITTYPE_PRIORITY)
     {
         memcpychk(unittype_priority, stream, sizeof(unittype_priority), rem);
     }
 
-    if (bits & DIRTY_OBJTYPE_PRIORITY)
+    if (bits bitand DIRTY_OBJTYPE_PRIORITY)
     {
         memcpychk(objtype_priority, stream, sizeof(objtype_priority), rem);
     }
 
-    if (bits & DIRTY_SUPPLY_FUEL_AVAIL)
+    if (bits bitand DIRTY_SUPPLY_FUEL_AVAIL)
     {
         memcpychk(&supplyAvail, stream, sizeof(ushort), rem);
         memcpychk(&fuelAvail, stream, sizeof(ushort), rem);
         memcpychk(&replacementsAvail, stream, sizeof(ushort), rem);
     }
 
-    if (bits & DIRTY_TEAM_INITIATIVE)
+    if (bits bitand DIRTY_TEAM_INITIATIVE)
     {
         memcpychk(&initiative, stream, sizeof(short), rem);
     }
 
-    if (bits & DIRTY_TEAM_REINFORCEMENT)
+    if (bits bitand DIRTY_TEAM_REINFORCEMENT)
     {
         memcpychk(&reinforcement, stream, sizeof(short), rem);
     }
 
-    if (bits & DIRTY_CURRENT_STATS)
+    if (bits bitand DIRTY_CURRENT_STATS)
     {
         memcpychk(&currentStats, stream, sizeof(currentStats), rem);
     }
 
-    if (bits & DIRTY_GROUND_ACTION)
+    if (bits bitand DIRTY_GROUND_ACTION)
     {
         memcpychk(&groundAction, stream, sizeof(groundAction), rem);
     }
 
-    if (bits & DIRTY_OFFAIR_ACTION)
+    if (bits bitand DIRTY_OFFAIR_ACTION)
     {
         memcpychk(&offensiveAirAction, stream, sizeof(offensiveAirAction), rem);
     }
 
-    if (bits & DIRTY_DEFAIR_ACTION)
+    if (bits bitand DIRTY_DEFAIR_ACTION)
     {
         memcpychk(&defensiveAirAction, stream, sizeof(defensiveAirAction), rem);
     }
 
-    if (bits & DIRTY_TEAM_RELATIONS)
+    if (bits bitand DIRTY_TEAM_RELATIONS)
     {
         memcpychk(&cteam, stream, sizeof(uchar), rem);
 

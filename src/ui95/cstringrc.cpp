@@ -106,10 +106,10 @@ _TCHAR *C_String::GetString(long ID)
     if (ID < IDSize_)
     {
         if (IDTable_[ID] >= 0)
-            return(Root_->FindText(IDTable_[ID] & 0x3fffffff));
+            return(Root_->FindText(IDTable_[ID] bitand 0x3fffffff));
     }
     else if (ID > 0)
-        return(Root_->FindText(ID & 0x3fffffff));
+        return(Root_->FindText(ID bitand 0x3fffffff));
 
     return(NULL);
 }
@@ -123,7 +123,7 @@ long C_String::AddText(const _TCHAR *str)
 _TCHAR *C_String::GetText(long ID)
 {
     if (ID > 0)
-        return(Root_->FindText(ID & 0x3fffffff));
+        return(Root_->FindText(ID bitand 0x3fffffff));
 
     return(NULL);
 }

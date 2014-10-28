@@ -456,7 +456,7 @@ void DigitalBrain::TrainableGunsEngage(void)
     for (i = 0; i < self->Sms->NumHardpoints(); i++)
     {
         //!
-        if ((self->Sms->hardPoint[i]->GetWeaponData()->flags & SMSClass::Trainable)  and 
+        if ((self->Sms->hardPoint[i]->GetWeaponData()->flags bitand SMSClass::Trainable)  and 
             (theGun = self->Sms->hardPoint[i]->GetGun()))
         {
             // Tail guns point out the rear (obviously)

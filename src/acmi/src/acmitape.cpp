@@ -1077,7 +1077,7 @@ void ACMITape::ParseEntities(void)
         // rawList = LIST_NTH(importPosList, count);
         entityType = (ACMIRawPositionData *)rawList->node;
 
-        if (entityType->flags & ENTITY_FLAG_FEATURE)
+        if (entityType->flags bitand ENTITY_FLAG_FEATURE)
         {
             // look for existing entity
             entityPtr = importFeatList;
@@ -2591,7 +2591,7 @@ void ACMITape::SetupSimTapeEntities()
 
         _simTapeEntities[i].flags = e->flags;
 
-        if (e->flags & ENTITY_FLAG_FEATURE)
+        if (e->flags bitand ENTITY_FLAG_FEATURE)
         {
             // edg: I believe this code path should no longer be in use
             // since features are in a different list
@@ -2622,7 +2622,7 @@ void ACMITape::SetupSimTapeEntities()
 
         // create thge drawable object
         // special case chaff and flares
-        if (e->flags & ENTITY_FLAG_CHAFF)
+        if (e->flags bitand ENTITY_FLAG_CHAFF)
         {
             pos.x = p->posData.x;
             pos.y = p->posData.y;
@@ -2631,7 +2631,7 @@ void ACMITape::SetupSimTapeEntities()
                 new DrawableBSP(MapVisId(VIS_CHAFF), &pos, &IMatrix, 1.0f);
             ((DrawableBSP *)_simTapeEntities[i].objBase->drawPointer)->SetLabel("", 0);
         }
-        else if (e->flags & ENTITY_FLAG_FLARE)
+        else if (e->flags bitand ENTITY_FLAG_FLARE)
         {
 
             pos.x = p->posData.x;
@@ -2641,7 +2641,7 @@ void ACMITape::SetupSimTapeEntities()
                 new Drawable2D(DRAW2D_FLARE, 2.0f, &pos);
         }
         // aircraft use special Drawable Poled class
-        else if (e->flags & ENTITY_FLAG_AIRCRAFT)
+        else if (e->flags bitand ENTITY_FLAG_AIRCRAFT)
         {
             short visType;
 
@@ -2652,7 +2652,7 @@ void ACMITape::SetupSimTapeEntities()
             pos.x = p->posData.x;
             pos.y = p->posData.y;
             pos.z = p->posData.z;
-            visType = classPtr->visType[theObject->Status() & VIS_TYPE_MASK];
+            visType = classPtr->visType[theObject->Status() bitand VIS_TYPE_MASK];
             theObject->drawPointer = new DrawablePoled(visType, &pos, &IMatrix, 1.0f);
 
             F4Assert(theObject->drawPointer not_eq NULL);
@@ -2684,7 +2684,7 @@ void ACMITape::SetupSimTapeEntities()
                 pos.x = p->posData.x;
                 pos.y = p->posData.y;
                 pos.z = p->posData.z;
-                visType = classPtr->visType[theObject->Status() & VIS_TYPE_MASK];
+                visType = classPtr->visType[theObject->Status() bitand VIS_TYPE_MASK];
                 theObject->drawPointer = new DrawableBSP(MapVisId(VIS_EJECT1), &pos, &IMatrix, 1.0f);
                 ((DrawableBSP *)theObject->drawPointer)->SetLabel("Ejected Pilot", 0x0000FF00);
             }
@@ -2693,7 +2693,7 @@ void ACMITape::SetupSimTapeEntities()
         }
 
         // features get put into draw list and positioned here.
-        if (e->flags & ENTITY_FLAG_FEATURE)
+        if (e->flags bitand ENTITY_FLAG_FEATURE)
         {
             // edg: I believe this code path should no longer be in use
             // since features are in a different list
@@ -2713,7 +2713,7 @@ void ACMITape::SetupSimTapeEntities()
 
 
         // a missile -- it needs drawable trail set up
-        if ((e->flags & ENTITY_FLAG_MISSILE))
+        if ((e->flags bitand ENTITY_FLAG_MISSILE))
         {
             _simTapeEntities[i].objTrail = new DrawableTrail(TRAIL_SAM);
             _simTapeEntities[i].objBsp1 = new DrawableBSP(MapVisId(VIS_MFLAME_L), &origin, (struct Trotation *)&IMatrix, 1.0f);
@@ -2722,7 +2722,7 @@ void ACMITape::SetupSimTapeEntities()
             _simTapeEntities[i].trailEndTime = p->time + 120.0F; //me123 to 30 we wanna see the trials in acmi// trail lasts 3 sec
         }
         // a flare -- it needs drawable trail set up and a glow sphere
-        else if ((e->flags & ENTITY_FLAG_FLARE))
+        else if ((e->flags bitand ENTITY_FLAG_FLARE))
         {
             _simTapeEntities[i].objTrail = new DrawableTrail(TRAIL_SAM);
             _simTapeEntities[i].objTrail->KeepStaleSegs(TRUE);
@@ -2733,7 +2733,7 @@ void ACMITape::SetupSimTapeEntities()
         }
 
         // a aircraft -- it needs drawable wing trails set up
-        else if ((e->flags & ENTITY_FLAG_AIRCRAFT))
+        else if ((e->flags bitand ENTITY_FLAG_AIRCRAFT))
         {
             _simTapeEntities[i].wlTrail = new DrawableTrail(TRAIL_LWING);
             _simTapeEntities[i].wlTrail->KeepStaleSegs(true);   // MLR 12/14/2003 -
@@ -3208,7 +3208,7 @@ void ACMITape::UpdateSimTapeEntities(void)
         ep->objBase->drawPointer->SetScale(_tapeObjScale);
 
         // if the entity is an aircraft we set its labels
-        if (ep->flags & ENTITY_FLAG_AIRCRAFT)
+        if (ep->flags bitand ENTITY_FLAG_AIRCRAFT)
         {
             float tmp;
             char tmpstr[32];
@@ -3297,7 +3297,7 @@ void ACMITape::UpdateSimTapeEntities(void)
         ObjectSetData(ep->objBase, &pos, &rot);
 
         // update the BSP
-        if (ep->flags & ENTITY_FLAG_FLARE)
+        if (ep->flags bitand ENTITY_FLAG_FLARE)
             ((Drawable2D *)ep->objBase->drawPointer)->SetPosition(&pos);
         else
             ((DrawableBSP *)ep->objBase->drawPointer)->Update(&pos, &rot);
@@ -3333,13 +3333,13 @@ void ACMITape::UpdateSimTapeEntities(void)
         // continue from dead pos to new position.  Since we don't have the
         // info to detect a regen, if we see that the airspeed is too high
         // trim the trails back to 0
-        if (_wingTrails and (ep->flags & ENTITY_FLAG_AIRCRAFT) and CalcKIAS(ep->aveSpeed, -ep->z) > 1100.0f)
+        if (_wingTrails and (ep->flags bitand ENTITY_FLAG_AIRCRAFT) and CalcKIAS(ep->aveSpeed, -ep->z) > 1100.0f)
         {
             ep->wrTrail->TrimTrail(0);
             ep->wlTrail->TrimTrail(0);
             ep->wtLength = 0;
         }
-        else if (_wingTrails and (ep->flags & ENTITY_FLAG_AIRCRAFT))
+        else if (_wingTrails and (ep->flags bitand ENTITY_FLAG_AIRCRAFT))
         {
             if (_playVelocity < 0.0f and ( not _paused or _simulateOnly))
             {
@@ -3875,7 +3875,7 @@ void ACMITape::SetWingTrails(BOOL turnOn)
         // get the tape entity data
         ep = &_simTapeEntities[i];
 
-        if ( not (ep->flags & ENTITY_FLAG_AIRCRAFT))
+        if ( not (ep->flags bitand ENTITY_FLAG_AIRCRAFT))
         {
             continue;
         }
@@ -4149,7 +4149,7 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
     simView.y     = theObject->YPos();
     simView.z     = theObject->ZPos();
 
-    visType = classPtr->visType[theObject->Status() & VIS_TYPE_MASK];
+    visType = classPtr->visType[theObject->Status() bitand VIS_TYPE_MASK];
 
     // make sure things are sane
     F4Assert(visType >= 0 or theObject->drawPointer);
@@ -4160,9 +4160,9 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
     SimBaseClass *prevObj = NULL, *nextObj = NULL;
 
     // In many cases, our visType should be modified by our neighbors.
-    if ((theObject->Status() & VIS_TYPE_MASK) not_eq VIS_DESTROYED  and 
-        (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM ||
-         ((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM))
+    if ((theObject->Status() bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED  and 
+        (((SimFeatureClass*)theObject)->featureFlags bitand FEAT_NEXT_NORM ||
+         ((SimFeatureClass*)theObject)->featureFlags bitand FEAT_PREV_NORM))
     {
         int idx = feat->slot;
 
@@ -4170,12 +4170,12 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
         nextObj = FindComponentFeature(feat->leadIndex, idx + 1);
 
         if (prevObj  and 
-            (((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM)  and 
-            (prevObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
+            (((SimFeatureClass*)theObject)->featureFlags bitand FEAT_PREV_NORM)  and 
+            (prevObj->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED)
         {
             if (nextObj  and 
-                (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM)  and 
-                (nextObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
+                (((SimFeatureClass*)theObject)->featureFlags bitand FEAT_NEXT_NORM)  and 
+                (nextObj->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED)
             {
                 visType = classPtr->visType[VIS_BOTH_DEST];
             }
@@ -4185,8 +4185,8 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
             }
         }
         else if (nextObj  and 
-                 (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM)  and 
-                 (nextObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
+                 (((SimFeatureClass*)theObject)->featureFlags bitand FEAT_NEXT_NORM)  and 
+                 (nextObj->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED)
         {
             visType = classPtr->visType[VIS_RIGHT_DEST];
         }

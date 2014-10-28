@@ -116,7 +116,7 @@ void C_Threat::BuildOverlay(BYTE *overlay, long w, long h, float pixelsperkm)
     long curidx;
     long i;
 
-    if (Flags_ & C_BIT_INVISIBLE or !Root_ or !overlay)
+    if (Flags_ bitand C_BIT_INVISIBLE or !Root_ or !overlay)
         return;
 
     myCircle.SetBuffer((char*)overlay);
@@ -127,10 +127,10 @@ void C_Threat::BuildOverlay(BYTE *overlay, long w, long h, float pixelsperkm)
     while (circle)
     {
         // 2001-05-10 MODIFIED BY S.G. NEED TO LOOK UP THE MAP ITEM FLAG TO SEE IF IT CAN BE DISPLAYED OR NOT...
-        // if( not (circle->Flags & C_BIT_INVISIBLE)) {
+        // if( not (circle->Flags bitand C_BIT_INVISIBLE)) {
         UI_Refresher *gpsItem = NULL;
 
-        if ( not (circle->Flags & C_BIT_INVISIBLE) and ((gpsItem = (UI_Refresher*)gGps->Find(circle->ID)) and gpsItem->MapItem_ and !(gpsItem->MapItem_->Flags & C_BIT_INVISIBLE)))
+        if ( not (circle->Flags bitand C_BIT_INVISIBLE) and ((gpsItem = (UI_Refresher*)gGps->Find(circle->ID)) and gpsItem->MapItem_ and !(gpsItem->MapItem_->Flags bitand C_BIT_INVISIBLE)))
         {
             myCircle.SetCenter(static_cast<long>(static_cast<float>(circle->x) * pixelsperkm),
                                static_cast<long>(static_cast<float>(circle->y) * pixelsperkm));

@@ -61,7 +61,7 @@ extern int gShowUnknown; // 2002-02-21 S.G.
 #define MID_UNITS_SQUAD_UNKNOWN 86051 // 2002-02-21 S.G. Until I add it to userids.h
 extern GlobalPositioningSystem *gGps; // 2002-02-21 S.G.
 
-// Used for enabling & disabling menus based on TE/Camp/Edit modes
+// Used for enabling bitand disabling menus based on TE/Camp/Edit modes
 static long GameType;
 static long EditMode;
 
@@ -859,17 +859,17 @@ void SteerPointMenuOpenCB(C_Base *, C_Base *)
 
     if (menu and wp)
     {
-        if (wp->GetWPFlags() & WPF_TIME_LOCKED)
+        if (wp->GetWPFlags() bitand WPF_TIME_LOCKED)
             menu->SetItemState(MID_LOCK_TOS, 1);
         else
             menu->SetItemState(MID_LOCK_TOS, 0);
 
-        if (wp->GetWPFlags() & WPF_SPEED_LOCKED)
+        if (wp->GetWPFlags() bitand WPF_SPEED_LOCKED)
             menu->SetItemState(MID_LOCK_SPEED, 1);
         else
             menu->SetItemState(MID_LOCK_SPEED, 0);
 
-        if (wp->GetWPFlags() & WPF_HOLDCURRENT)
+        if (wp->GetWPFlags() bitand WPF_HOLDCURRENT)
             menu->SetItemState(CLIMB_DELAY, 1);
         else
             menu->SetItemState(CLIMB_IMMEDIATE, 1);
@@ -1035,7 +1035,7 @@ void MenuReconCB(long, short, C_Base *)
             scale = gMapMgr->GetMapScale();
             maxy = gMapMgr->GetMaxY();
 
-            // x & y are reversed for SIM
+            // x bitand y are reversed for SIM
             y = relx / scale;
             x = maxy - rely / scale;
         }
@@ -1048,7 +1048,7 @@ void MenuReconCB(long, short, C_Base *)
             {
                 // 2002-02-21 ADDED BY S.G. If not spotted by the player's team or not editing a TE, can't recon...
                 if (
-                    !(TheCampaign.Flags & CAMP_TACTICAL_EDIT)  and 
+                    !(TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)  and 
                     ent->IsFlight()  and 
                     (gGps->GetTeamNo() not_eq ent->GetTeam())  and 
                     !ent->GetIdentified(static_cast<Team>(gGps->GetTeamNo()))
@@ -1164,7 +1164,7 @@ void MenuUnitStatusCB(long, short, C_Base *)
         if (item)
         {
             iconid = item->ID_;
-            urec = (UI_Refresher *)gGps->Find(item->ID_ & 0x00ffffff); // strip off team (incase it is a division)
+            urec = (UI_Refresher *)gGps->Find(item->ID_ bitand 0x00ffffff); // strip off team (incase it is a division)
         }
     }
 
@@ -1175,7 +1175,7 @@ void MenuUnitStatusCB(long, short, C_Base *)
         if (win)
         {
             if (urec and urec->GetType() == GPS_DIVISION)
-                SetupDivisionInfoWindow(urec->GetDivID(), urec->GetSide()); // Map & Tree save team # in top 8 bits (Needed to find division by team)
+                SetupDivisionInfoWindow(urec->GetDivID(), urec->GetSide()); // Map bitand Tree save team # in top 8 bits (Needed to find division by team)
             else
             {
                 ent = (CampEntity)vuDatabase->Find(urec->GetID());
@@ -1186,7 +1186,7 @@ void MenuUnitStatusCB(long, short, C_Base *)
                     {
                         // 2002-02-21 ADDED BY S.G. If not spotted by the player's team or not editing a TE, can't get its status...
                         if (
-                            (TheCampaign.Flags & CAMP_TACTICAL_EDIT) ||
+                            (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) ||
                             (gGps->GetTeamNo() == ent->GetTeam()) ||
                             ent->GetIdentified(static_cast<Team>(gGps->GetTeamNo()))
                         )
@@ -1265,7 +1265,7 @@ void MenuFormationCB(long ID, short, C_Base *)
 
     if (wp)
     {
-        formation = ID & 0xff;
+        formation = ID bitand 0xff;
         wp->SetWPFormation(formation - 1);
         refresh_waypoint(wp);
     }
@@ -1282,7 +1282,7 @@ void MenuEnrouteCB(long ID, short, C_Base *)
 
     if (wp)
     {
-        action = ID & 0xff;
+        action = ID bitand 0xff;
         wp->SetWPRouteAction(action);
         refresh_waypoint(wp);
     }
@@ -1299,7 +1299,7 @@ void MenuActionCB(long ID, short, C_Base *)
 
     if (wp)
     {
-        action = ID & 0xff;
+        action = ID bitand 0xff;
         set_waypoint_action(wp, action);
         refresh_waypoint(wp);
     }
@@ -1335,7 +1335,7 @@ void MenuAddWPCB(long, short, C_Base *)
 
     wps = cwp->GetLast();
 
-    num = wps->ID & 0xff;
+    num = wps->ID bitand 0xff;
 
     while ((num > 1) and (wp))
     {
@@ -1375,7 +1375,7 @@ void MenuDeleteWPCB(long, short hittype, C_Base *)
 
     gMapMgr->SetCurrentWaypointList(un->Id());
 
-    if ((TheCampaign.Flags & CAMP_TACTICAL_EDIT) and un->IsFlight())
+    if ((TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and un->IsFlight())
     {
         fixup_unit(un);
         gGps->Update();
@@ -1420,7 +1420,7 @@ void MenuEditPackageCB(long, short, C_Base *control)
         if (item)
         {
             iconid = item->ID_;
-            urec = (UI_Refresher *)gGps->Find(item->ID_ & 0x00ffffff); // strip off team (incase it is a division)
+            urec = (UI_Refresher *)gGps->Find(item->ID_ bitand 0x00ffffff); // strip off team (incase it is a division)
         }
     }
 

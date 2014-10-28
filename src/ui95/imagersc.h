@@ -111,7 +111,7 @@ public:
     WORD *GetPalette();
 
     // VITAL NOTE:
-    //  it is VERY important that all the source & destination parameters are
+    //  it is VERY important that all the source bitand destination parameters are
     //  within the DESTINATION
     //  source checking is provided...
     //  DESTINATION is NOT checked whatsoever

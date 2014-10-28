@@ -45,10 +45,10 @@ void OnSimKeyboardInput()
 
             //MonoPrint (
             // "i:%d  Key Id %d state %d Array %d\n",
-            // ObjData[i].dwOfs, ObjData[i].dwData & 0x7F, ObjData[i].dwData & 0x80
+            // ObjData[i].dwOfs, ObjData[i].dwData bitand 0x7F, ObjData[i].dwData bitand 0x80
             //);
 
-            if (ObjData[i].dwData & 0x80)
+            if (ObjData[i].dwData bitand 0x80)
             {
                 // key is down
                 switch (ObjData[i].dwOfs)
@@ -113,7 +113,7 @@ void OnSimKeyboardInput()
 
         if (hResult == DI_OK)
         {
-            if (buffer[DIK_LSHIFT] & 0x80)
+            if (buffer[DIK_LSHIFT] bitand 0x80)
             {
                 ShiftCount = 1;
             }
@@ -122,12 +122,12 @@ void OnSimKeyboardInput()
                 ShiftCount = 0;
             }
 
-            if (buffer[DIK_RSHIFT] & 0x80)
+            if (buffer[DIK_RSHIFT] bitand 0x80)
             {
                 ShiftCount++;
             }
 
-            if (buffer[DIK_LCONTROL] & 0x80)
+            if (buffer[DIK_LCONTROL] bitand 0x80)
             {
                 CtrlCount = 1;
             }
@@ -136,12 +136,12 @@ void OnSimKeyboardInput()
                 CtrlCount = 0;
             }
 
-            if (buffer[DIK_RCONTROL] & 0x80)
+            if (buffer[DIK_RCONTROL] bitand 0x80)
             {
                 CtrlCount++;
             }
 
-            if (buffer[DIK_LMENU] & 0x80)
+            if (buffer[DIK_LMENU] bitand 0x80)
             {
                 AltCount = 1;
             }
@@ -150,7 +150,7 @@ void OnSimKeyboardInput()
                 AltCount = 0;
             }
 
-            if (buffer[DIK_RMENU] & 0x80)
+            if (buffer[DIK_RMENU] bitand 0x80)
             {
                 AltCount++;
             }

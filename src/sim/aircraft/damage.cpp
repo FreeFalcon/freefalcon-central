@@ -645,7 +645,7 @@ void AircraftClass::CleanupVortex()
 
 int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int type, int flag, int mask, float speed)
 {
-    if ( not (type & mask)) return 0;
+    if ( not (type bitand mask)) return 0;
 
     piece -> damage = MapVisId(DAMAGEF16_ID);
     piece -> mask = type;
@@ -775,7 +775,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
             piece -> dx = 1.5f;
             piece -> dx += PRANDFloatPos();
 
-            if (flag & DAMAGEF16_TOLEFTRIGHT)
+            if (flag bitand DAMAGEF16_TOLEFTRIGHT)
             {
                 piece -> dy += PRANDFloatPos();
             }
@@ -786,7 +786,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
             piece -> sfxflag  or_eq  SFX_BOUNCES;
             piece -> index = DAMAGEF16_RWING_SLOTINDEX;
 
-            if (flag & DAMAGEF16_TOLEFT)
+            if (flag bitand DAMAGEF16_TOLEFT)
             {
                 speed += 30.0f;
                 piece -> dy = 0.75f;
@@ -797,7 +797,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
                 piece -> dy = 1.5f;
             }
 
-            if (flag & DAMAGEF16_TOFRONT)
+            if (flag bitand DAMAGEF16_TOFRONT)
             {
                 piece -> dx += PRANDFloatPos();
             }
@@ -811,7 +811,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
             piece -> sfxflag  or_eq  SFX_BOUNCES;
             piece -> index = DAMAGEF16_LWING_SLOTINDEX;
 
-            if (flag & DAMAGEF16_TORIGHT)
+            if (flag bitand DAMAGEF16_TORIGHT)
             {
                 speed += 30.0f;
                 piece -> dy = 0.75f;
@@ -822,7 +822,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
                 piece -> dy = 1.5f;
             }
 
-            if (flag & DAMAGEF16_TOFRONT)
+            if (flag bitand DAMAGEF16_TOFRONT)
             {
                 piece -> dx += PRANDFloatPos();
             }
@@ -836,7 +836,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
             piece -> sfxflag  or_eq  SFX_BOUNCES;
             piece -> index = DAMAGEF16_LSTAB_SLOTINDEX;
 
-            if (flag & DAMAGEF16_TORIGHT)
+            if (flag bitand DAMAGEF16_TORIGHT)
             {
                 speed += 40.0f;
                 piece -> dy = 0.75f;
@@ -847,7 +847,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
                 piece -> dy = 1.5f;
             }
 
-            if (flag & DAMAGEF16_TOFRONT)
+            if (flag bitand DAMAGEF16_TOFRONT)
             {
                 piece -> dx += PRANDFloatPos();
             }
@@ -860,7 +860,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
             piece -> sfxflag  or_eq  SFX_BOUNCES;
             piece -> index = DAMAGEF16_RSTAB_SLOTINDEX;
 
-            if (flag & DAMAGEF16_TOLEFT)
+            if (flag bitand DAMAGEF16_TOLEFT)
             {
                 speed += 40.0f;
                 piece -> dy = 0.75f;
@@ -871,7 +871,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
                 piece -> dy = 1.5f;
             }
 
-            if (flag & DAMAGEF16_TOFRONT)
+            if (flag bitand DAMAGEF16_TOFRONT)
             {
                 piece -> dx += PRANDFloatPos();
             }
@@ -898,16 +898,16 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
     angle1 *= s;
     angle2 *= s;
 
-    if (flag & DAMAGEF16_TOLEFTRIGHT)
+    if (flag bitand DAMAGEF16_TOLEFTRIGHT)
     {
-        if (flag & DAMAGEF16_TOFRONT)
+        if (flag bitand DAMAGEF16_TOFRONT)
         {
             angle *= 2.5f;
             angle1 *= 2.0f;
             angle2 *= 1.5f;
         }
 
-        if (flag & DAMAGEF16_TOLEFT)
+        if (flag bitand DAMAGEF16_TOLEFT)
         {
             angle = -angle;
             angle1 = -angle1;
@@ -969,7 +969,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
     {
         if (speed > 200.0f and speed < 500.0f)
         {
-            if (damagetype & 0x4) damagetype  or_eq  8;
+            if (damagetype bitand 0x4) damagetype  or_eq  8;
         }
         else if (speed > 500.0f) damagetype  or_eq  0x10;
     }
@@ -977,10 +977,10 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
     int dirflag = DAMAGEF16_TOFRONT;
     int numpiece = 0;
 
-    if (damagetype & 0x10)
+    if (damagetype bitand 0x10)
     {
         // full damage
-        if (damagetype & 0xc)   // damage to the front
+        if (damagetype bitand 0xc)   // damage to the front
         {
             dirflag = DAMAGEF16_TOFRONT;
             numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_LWING, dirflag, *mask, speed);
@@ -992,10 +992,10 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
             numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_BACK,  dirflag, *mask, speed);
             *mask and_eq DAMAGEF16_BACK;
         }
-        else if (damagetype & 0x3)
+        else if (damagetype bitand 0x3)
         {
             // damage to the left or right
-            if (damagetype & 0x1)
+            if (damagetype bitand 0x1)
                 dirflag = DAMAGEF16_TOLEFT;
             else
                 dirflag = DAMAGEF16_TORIGHT;
@@ -1010,12 +1010,12 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
     }
     else
     {
-        if (damagetype & 0x1)
+        if (damagetype bitand 0x1)
         {
             // damage to the left
             dirflag = DAMAGEF16_TOLEFT;
 
-            if (damagetype & 0x4)   // damage to the nose
+            if (damagetype bitand 0x4)   // damage to the nose
             {
                 dirflag  or_eq  DAMAGEF16_TOFRONT;
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_LWING, dirflag, *mask, speed);
@@ -1024,7 +1024,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NOLEFTANDNOSE, dirflag, *mask, speed);
                 *mask and_eq DAMAGEF16_NOLEFTANDNOSE;
             }
-            else if (damagetype & 0x8)   // damage to the front
+            else if (damagetype bitand 0x8)   // damage to the front
             {
                 dirflag  or_eq  DAMAGEF16_TOFRONT;
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_LWING, dirflag, *mask, speed);
@@ -1042,12 +1042,12 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
                 *mask and_eq DAMAGEF16_NOLEFT;
             }
         }
-        else if (damagetype & 0x2)
+        else if (damagetype bitand 0x2)
         {
             // damage to the right
             dirflag = DAMAGEF16_TORIGHT;
 
-            if (damagetype & 0x4)   // damage to the nose
+            if (damagetype bitand 0x4)   // damage to the nose
             {
                 dirflag  or_eq  DAMAGEF16_TOFRONT;
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_RWING, dirflag, *mask, speed);
@@ -1056,7 +1056,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NORIGHTANDNOSE, dirflag, *mask, speed);
                 *mask and_eq DAMAGEF16_NORIGHTANDNOSE;
             }
-            else if (damagetype & 0x8)   // damage to the front
+            else if (damagetype bitand 0x8)   // damage to the front
             {
                 dirflag  or_eq  DAMAGEF16_TOFRONT;
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_RWING, dirflag, *mask, speed);
@@ -1074,7 +1074,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
                 *mask and_eq DAMAGEF16_NORIGHT;
             }
         }
-        else if (damagetype & 0x4)
+        else if (damagetype bitand 0x4)
         {
             // damage to the nose
             dirflag = DAMAGEF16_TOFRONT;
@@ -1082,7 +1082,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
             numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NONOSE, dirflag, *mask, speed);
             *mask and_eq DAMAGEF16_NONOSE;
         }
-        else if (damagetype & 0x8)
+        else if (damagetype bitand 0x8)
         {
             // damage to the front
             dirflag = DAMAGEF16_TOFRONT;
@@ -1136,7 +1136,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
 
         for (k = 0; k < 7; k++)
         {
-            if (l & j)
+            if (l bitand j)
             {
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), l, dirflag, *mask, speed);
             }
@@ -1167,11 +1167,11 @@ void AircraftClass::SetupDamageF16Effects(DamageF16PieceStructure *piece)
     DrawableBSP *ptr = (DrawableBSP *) tmpSimBase -> drawPointer;
     ptr -> SetSwitchMask(DAMAGEF16_SWITCH, piece->mask);
 
-    if (piece -> mask & DAMAGEF16_BACK)
+    if (piece -> mask bitand DAMAGEF16_BACK)
     {
-        if (piece -> mask & DAMAGEF16_FRONT)
+        if (piece -> mask bitand DAMAGEF16_FRONT)
         {
-            if ( not (piece -> mask & DAMAGEF16_NOSE))
+            if ( not (piece -> mask bitand DAMAGEF16_NOSE))
             {
                 ptr -> SetSwitchMask(DAMAGEF16_NOSEBREAK_SWITCH, 1);
             }
@@ -1183,19 +1183,19 @@ void AircraftClass::SetupDamageF16Effects(DamageF16PieceStructure *piece)
             ptr -> SetSwitchMask(DAMAGEF16_FRONTBREAK_SWITCH, 1);
         }
 
-        if ( not (piece -> mask & DAMAGEF16_RWING))
+        if ( not (piece -> mask bitand DAMAGEF16_RWING))
         {
             ptr -> SetSwitchMask(DAMAGEF16_RWINGBREAK_SWITCH, 1);
         }
 
-        if ( not (piece -> mask & DAMAGEF16_LWING))
+        if ( not (piece -> mask bitand DAMAGEF16_LWING))
         {
             ptr -> SetSwitchMask(DAMAGEF16_LWINGBREAK_SWITCH, 1);
         }
     }
-    else if (piece -> mask & DAMAGEF16_FRONT)
+    else if (piece -> mask bitand DAMAGEF16_FRONT)
     {
-        if ( not (piece -> mask & DAMAGEF16_NOSE))
+        if ( not (piece -> mask bitand DAMAGEF16_NOSE))
         {
             ptr -> SetSwitchMask(DAMAGEF16_NOSEBREAK_SWITCH, 1);
         }
@@ -1203,7 +1203,7 @@ void AircraftClass::SetupDamageF16Effects(DamageF16PieceStructure *piece)
         ptr -> SetSwitchMask(DAMAGEF16_FRONTBREAK_SWITCH, 1);
         // ptr -> SetSwitchMask(DAMAGEF16_CANOPYBREAK_SWITCH, 1);
     }
-    else if (piece -> mask & DAMAGEF16_NOSE)
+    else if (piece -> mask bitand DAMAGEF16_NOSE)
     {
         ptr -> SetSwitchMask(DAMAGEF16_NOSEBREAK_SWITCH, 1);
     }
@@ -1695,7 +1695,7 @@ void AircraftClass::ShowDamage(void)
 
                 // 2- damage location depends on space between the engines
             case 2:
-                if (rand() & 1)
+                if (rand() bitand 1)
                 {
                     damageTrailLocation0 = af->auxaeroData->engineLocation[0];
                     damageTrailLocation1 = af->auxaeroData->engineLocation[1];
@@ -1892,7 +1892,7 @@ void AircraftClass::ShowDamage(void)
             vortexCondition = true;
         }
 
-        //RV - I-Hawk - do wingtip vortex trails based on G & AOA or based on AOA only if above certain value...
+        //RV - I-Hawk - do wingtip vortex trails based on G bitand AOA or based on AOA only if above certain value...
         if ((OTWDriver.renderer  and 
              /*OTWDriver.renderer->GetAlphaMode()  and */
              -ZPos() > minwingvortexalt  and 
@@ -2108,7 +2108,7 @@ void AircraftClass::ShowDamage(void)
 
                     if (lvortex1 == NULL or rvortex1 == NULL)
                     {
-                        if (largeVortex & 1)   //check if bit 0 of largeVortex is set
+                        if (largeVortex bitand 1)   //check if bit 0 of largeVortex is set
                         {
                             lvortex1 = rvortex1 = TRAIL_VORTEX_LARGE;
                         }
@@ -2126,7 +2126,7 @@ void AircraftClass::ShowDamage(void)
                     //using bits 5,6,7 of largeVortex to decide if this position will be used
                     //as a trail or as PS. This leavs option for some ACs to have
                     //wide vortex over the entire body and wings.
-                    if (vtx2.y and !(largeVortex & 32) and !(largeVortex & 64) and !(largeVortex & 128))
+                    if (vtx2.y and !(largeVortex bitand 32) and !(largeVortex bitand 64) and !(largeVortex bitand 128))
                     {
                         Tpoint lvtx2, rvtx2;
 
@@ -2139,7 +2139,7 @@ void AircraftClass::ShowDamage(void)
 
                         if (lvortex2 == NULL or rvortex2 == NULL)
                         {
-                            if (largeVortex & 2)   //check if bit 1 of largeVortex is set
+                            if (largeVortex bitand 2)   //check if bit 1 of largeVortex is set
                             {
                                 lvortex2 = rvortex2 = TRAIL_VORTEX_LARGE;
                             }
@@ -2172,17 +2172,17 @@ void AircraftClass::ShowDamage(void)
                         vtx5.z -= 1.0f;
 
                         // if we are using the larger vortex PS, give it another feet up correction
-                        if (largeVortex & 4)
+                        if (largeVortex bitand 4)
                         {
                             vtx3.z -= 1.0f;
                         }
 
-                        if (largeVortex & 8)
+                        if (largeVortex bitand 8)
                         {
                             vtx4.z -= 1.0f;
                         }
 
-                        if (largeVortex & 16)
+                        if (largeVortex bitand 16)
                         {
                             vtx5.z -= 1.0f;
                         }
@@ -2203,7 +2203,7 @@ void AircraftClass::ShowDamage(void)
                         //wing as less as possible
                         if (currentG > 7.0f)
                         {
-                            if (largeVortex & 4)
+                            if (largeVortex bitand 4)
                             {
                                 Zoffset = (currentG - 7.0f) * 1.0f;
                             }
@@ -2219,7 +2219,7 @@ void AircraftClass::ShowDamage(void)
 
                             // check if bits 5,6 or 7 are set, means that vortex2 is used as a PS
                             // so fix it as well...
-                            if (largeVortex & 224)
+                            if (largeVortex bitand 224)
                             {
                                 vtx2.z += Zoffset;
                             }
@@ -2299,7 +2299,7 @@ void AircraftClass::ShowDamage(void)
                                 case 1:
                                     theSFX = SFX_VORTEX_WEAK;
 
-                                    if (largeVortex & 4)   //check if bit 2 of largeVortex is set
+                                    if (largeVortex bitand 4)   //check if bit 2 of largeVortex is set
                                     {
                                         theSFX = SFX_VORTEX_LARGE_WEAK;
                                     }
@@ -2309,7 +2309,7 @@ void AircraftClass::ShowDamage(void)
                                 case 2:
                                     theSFX = SFX_VORTEX_MEDIUM;
 
-                                    if (largeVortex & 4)
+                                    if (largeVortex bitand 4)
                                         theSFX = SFX_VORTEX_LARGE_MEDIUM;
 
                                     break;
@@ -2317,7 +2317,7 @@ void AircraftClass::ShowDamage(void)
                                 case 3:
                                     theSFX = SFX_VORTEX_STRONG;
 
-                                    if (largeVortex & 4)
+                                    if (largeVortex bitand 4)
                                         theSFX = SFX_VORTEX_LARGE_STRONG;
 
                                     break;
@@ -2334,7 +2334,7 @@ void AircraftClass::ShowDamage(void)
                                 (theSFX + 1), &lvtxPS1, &PSvec);
 
                             //the second trail position is used as a PS, so add a PS1 type there...
-                            if (vtx2.y and largeVortex & 32)
+                            if (vtx2.y and largeVortex bitand 32)
                             {
                                 Tpoint lvtx2, rvtx2;
 
@@ -2360,7 +2360,7 @@ void AircraftClass::ShowDamage(void)
                                 case 1:
                                     theSFX = SFX_VORTEX_WEAK;
 
-                                    if (largeVortex & 8)   //check if bit 3 of largeVortex is set
+                                    if (largeVortex bitand 8)   //check if bit 3 of largeVortex is set
                                         theSFX = SFX_VORTEX_LARGE_WEAK;
 
                                     break;
@@ -2368,7 +2368,7 @@ void AircraftClass::ShowDamage(void)
                                 case 2:
                                     theSFX = SFX_VORTEX_MEDIUM;
 
-                                    if (largeVortex & 8)
+                                    if (largeVortex bitand 8)
                                         theSFX = SFX_VORTEX_LARGE_MEDIUM;
 
                                     break;
@@ -2376,7 +2376,7 @@ void AircraftClass::ShowDamage(void)
                                 case 3:
                                     theSFX = SFX_VORTEX_STRONG;
 
-                                    if (largeVortex & 8)
+                                    if (largeVortex bitand 8)
                                         theSFX = SFX_VORTEX_LARGE_STRONG;
 
                                     break;
@@ -2393,7 +2393,7 @@ void AircraftClass::ShowDamage(void)
                                 (theSFX + 1), &lvtxPS2, &PSvec);
 
                             //the second trail position is used as a PS, so add a PS2 type there...
-                            if (vtx2.y and largeVortex & 64)
+                            if (vtx2.y and largeVortex bitand 64)
                             {
                                 Tpoint lvtx2, rvtx2;
 
@@ -2419,7 +2419,7 @@ void AircraftClass::ShowDamage(void)
                                 case 1:
                                     theSFX = SFX_VORTEX_WEAK;
 
-                                    if (largeVortex & 16)   //check if bit 4 of largeVortex is set
+                                    if (largeVortex bitand 16)   //check if bit 4 of largeVortex is set
                                         theSFX = SFX_VORTEX_LARGE_WEAK;
 
                                     break;
@@ -2427,7 +2427,7 @@ void AircraftClass::ShowDamage(void)
                                 case 2:
                                     theSFX = SFX_VORTEX_MEDIUM;
 
-                                    if (largeVortex & 16)
+                                    if (largeVortex bitand 16)
                                         theSFX = SFX_VORTEX_LARGE_MEDIUM;
 
                                     break;
@@ -2435,7 +2435,7 @@ void AircraftClass::ShowDamage(void)
                                 case 3:
                                     theSFX = SFX_VORTEX_STRONG;
 
-                                    if (largeVortex & 16)
+                                    if (largeVortex bitand 16)
                                         theSFX = SFX_VORTEX_LARGE_STRONG;
 
                                     break;
@@ -2452,7 +2452,7 @@ void AircraftClass::ShowDamage(void)
                                 (theSFX + 1), &lvtxPS3, &PSvec);
 
                             //the second trail position is used as a PS, so add a PS3 type there...
-                            if (vtx2.y and largeVortex & 64)
+                            if (vtx2.y and largeVortex bitand 64)
                             {
                                 Tpoint lvtx2, rvtx2;
 
@@ -2813,7 +2813,7 @@ void AircraftClass::ShowDamage(void)
 
         //// occasionalyy add a smoke cloud
         ///*
-        //if ( sfxTimer > 0.2f and (rand() & 0x3) == 0x3 )
+        //if ( sfxTimer > 0.2f and (rand() bitand 0x3) == 0x3 )
         //{
         //sfxTimer = 0.0f;
         //OTWDriver.AddSfxRequest(
@@ -2827,8 +2827,8 @@ void AircraftClass::ShowDamage(void)
 
     // occasionally, perturb the controls
     // JB 010104
-    //if ( pctStrength < 0.5f and (rand() & 0xf) == 0xf)
-    if ( not g_bDisableFunkyChicken and pctStrength < 0.5f and (rand() & 0xf) == 0xf)
+    //if ( pctStrength < 0.5f and (rand() bitand 0xf) == 0xf)
+    if ( not g_bDisableFunkyChicken and pctStrength < 0.5f and (rand() bitand 0xf) == 0xf)
     {
         // JB 010104
         ioPerturb = 0.5f + (1.0f - pctStrength);
@@ -3185,7 +3185,7 @@ void AircraftClass::CheckObjectCollision(void)
 
                     //Randomize the vector a bit... Yaw pushes the smoke away more
                     //quickly, Delta make it hover a bit longer over the deck...
-                    if ((rand() & 3) not_eq 3)
+                    if ((rand() bitand 3) not_eq 3)
                     {
                         vec.x = theObject->Yaw();
                         vec.y = theObject->Yaw();
@@ -3507,8 +3507,8 @@ void AircraftClass::AddFault(int failures, unsigned int failuresPossible, int, i
     }
 
     // JPO - break hydraulics occasionally
-    if ((failuresPossible & FaultClass::eng_fault)  and 
-        (mFaults->GetFault(FaultClass::eng_fault) & FaultClass::hydr))
+    if ((failuresPossible bitand FaultClass::eng_fault)  and 
+        (mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::hydr))
     {
         if (rand() % 100 < 20)   // 20% failure chance of A system
         {
@@ -3522,7 +3522,7 @@ void AircraftClass::AddFault(int failures, unsigned int failuresPossible, int, i
     }
 
     // also break the generators now and then
-    if (failuresPossible & FaultClass::eng_fault)
+    if (failuresPossible bitand FaultClass::eng_fault)
     {
         if (rand() % 7 == 1)
             af->GeneratorBreak(AirframeClass::GenStdby);
@@ -3544,7 +3544,7 @@ void AircraftClass::AddFault(int failures, unsigned int failuresPossible, int, i
 
     for (i = 0; i < FaultClass::NumFaultListSubSystems; i++)
     {
-        if (failuresPossible & (1 << i))
+        if (failuresPossible bitand (1 << i))
         {
             failedThings[j] = i;
             j++;
@@ -3573,7 +3573,7 @@ void AircraftClass::AddFault(int failures, unsigned int failuresPossible, int, i
                     {
                         numFunctions ++;
 
-                        if (FaultClass::sngl & (1 << numFunctions))
+                        if (FaultClass::sngl bitand (1 << numFunctions))
                             failedFunc --;
                     }
                 }
@@ -3584,7 +3584,7 @@ void AircraftClass::AddFault(int failures, unsigned int failuresPossible, int, i
                     // How many functions?
                     while (canFail)
                     {
-                        if (canFail & 0x1)
+                        if (canFail bitand 0x1)
                             numFunctions ++;
 
                         canFail = canFail >> 1;
@@ -3601,7 +3601,7 @@ void AircraftClass::AddFault(int failures, unsigned int failuresPossible, int, i
                     {
                         numFunctions ++;
 
-                        if (canFail & (1 << numFunctions))
+                        if (canFail bitand (1 << numFunctions))
                             failedFunc --;
                     }
                 }

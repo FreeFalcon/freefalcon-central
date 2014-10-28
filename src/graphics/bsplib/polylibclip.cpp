@@ -153,7 +153,7 @@ static inline void IntersectSide(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL c
     }
 
     // Now determine if the point is out to the sides
-    if (flag & (CLIP_TOP | CLIP_BOTTOM))
+    if (flag bitand (CLIP_TOP | CLIP_BOTTOM))
     {
         TheStateStack.ClipInfoPool[v->xyz].clipFlag = GetHorizontalClipFlags(x, z);
     }
@@ -291,76 +291,76 @@ static inline void pvtClipPrimLine(PrimLineFC *line, DrawPrimFp drawFn)
         TheStateStack.ClipInfoPool[v1.xyz] = TheStateStack.ClipInfoPool[xyzIdxPtr[1]];
 
         // Clip near
-        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag & CLIP_NEAR)
+        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand CLIP_NEAR)
         {
             IntersectNear(&v0, &v1, &v0, FALSE, FALSE, FALSE);
         }
-        else if (TheStateStack.ClipInfoPool[v1.xyz].clipFlag & CLIP_NEAR)
+        else if (TheStateStack.ClipInfoPool[v1.xyz].clipFlag bitand CLIP_NEAR)
         {
             IntersectNear(&v0, &v1, &v1, FALSE, FALSE, FALSE);
         }
 
-        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag & TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
+        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
         {
             continue;
         }
 
         // Clip bottom
-        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag & CLIP_BOTTOM)
+        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand CLIP_BOTTOM)
         {
             IntersectBottom(&v0, &v1, &v0, FALSE, FALSE, FALSE);
         }
-        else if (TheStateStack.ClipInfoPool[v1.xyz].clipFlag & CLIP_BOTTOM)
+        else if (TheStateStack.ClipInfoPool[v1.xyz].clipFlag bitand CLIP_BOTTOM)
         {
             IntersectBottom(&v0, &v1, &v1, FALSE, FALSE, FALSE);
         }
 
-        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag & TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
+        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
         {
             continue;
         }
 
         // Clip top
-        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag & CLIP_TOP)
+        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand CLIP_TOP)
         {
             IntersectTop(&v0, &v1, &v0, FALSE, FALSE, FALSE);
         }
-        else if (TheStateStack.ClipInfoPool[v1.xyz].clipFlag & CLIP_TOP)
+        else if (TheStateStack.ClipInfoPool[v1.xyz].clipFlag bitand CLIP_TOP)
         {
             IntersectTop(&v0, &v1, &v1, FALSE, FALSE, FALSE);
         }
 
-        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag & TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
+        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
         {
             continue;
         }
 
         // Clip right
-        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag & CLIP_RIGHT)
+        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand CLIP_RIGHT)
         {
             IntersectRight(&v0, &v1, &v0, FALSE, FALSE, FALSE);
         }
-        else if (TheStateStack.ClipInfoPool[v1.xyz].clipFlag & CLIP_RIGHT)
+        else if (TheStateStack.ClipInfoPool[v1.xyz].clipFlag bitand CLIP_RIGHT)
         {
             IntersectRight(&v0, &v1, &v1, FALSE, FALSE, FALSE);
         }
 
-        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag & TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
+        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
         {
             continue;
         }
 
         // Clip left
-        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag & CLIP_LEFT)
+        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand CLIP_LEFT)
         {
             IntersectLeft(&v0, &v1, &v0, FALSE, FALSE, FALSE);
         }
-        else if (TheStateStack.ClipInfoPool[v1.xyz].clipFlag & CLIP_LEFT)
+        else if (TheStateStack.ClipInfoPool[v1.xyz].clipFlag bitand CLIP_LEFT)
         {
             IntersectLeft(&v0, &v1, &v1, FALSE, FALSE, FALSE);
         }
 
-        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag & TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
+        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
         {
             continue;
         }
@@ -429,7 +429,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
 
     // Clip to the near plane
-    if (clipTest & CLIP_NEAR)
+    if (clipTest bitand CLIP_NEAR)
     {
         temp = inList;
         inList = outList;
@@ -441,7 +441,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (CLIP_NEAR & (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
+            if (CLIP_NEAR bitand (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
             {
                 ShiAssert(TheStateStack.IsValidPosIndex(extraVertIdx.xyz));
                 *nextOut = extraVertIdx;
@@ -457,7 +457,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
             }
 
             // If this vert isn't clipped, use it
-            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag & CLIP_NEAR))
+            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag bitand CLIP_NEAR))
             {
                 *nextOut++ = *v;
             }
@@ -477,7 +477,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
 
     // Clip to the bottom plane
-    if (clipTest & CLIP_BOTTOM)
+    if (clipTest bitand CLIP_BOTTOM)
     {
         temp = inList;
         inList = outList;
@@ -489,7 +489,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (CLIP_BOTTOM & (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
+            if (CLIP_BOTTOM bitand (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
             {
                 ShiAssert(TheStateStack.IsValidPosIndex(extraVertIdx.xyz));
                 *nextOut = extraVertIdx;
@@ -503,7 +503,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
             }
 
             // If this vert isn't clipped, use it
-            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag & CLIP_BOTTOM))
+            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag bitand CLIP_BOTTOM))
             {
                 *nextOut++ = *v;
             }
@@ -518,7 +518,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
 
     // Clip to the top plane
-    if (clipTest & CLIP_TOP)
+    if (clipTest bitand CLIP_TOP)
     {
         temp = inList;
         inList = outList;
@@ -530,7 +530,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (CLIP_TOP & (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
+            if (CLIP_TOP bitand (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
             {
                 ShiAssert(TheStateStack.IsValidPosIndex(extraVertIdx.xyz));
                 *nextOut = extraVertIdx;
@@ -544,7 +544,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
             }
 
             // If this vert isn't clipped, use it
-            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag & CLIP_TOP))
+            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag bitand CLIP_TOP))
             {
                 *nextOut++ = *v;
             }
@@ -559,7 +559,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
 
     // Clip to the right plane
-    if (clipTest & CLIP_RIGHT)
+    if (clipTest bitand CLIP_RIGHT)
     {
         temp = inList;
         inList = outList;
@@ -571,7 +571,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (CLIP_RIGHT & (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
+            if (CLIP_RIGHT bitand (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
             {
                 ShiAssert(TheStateStack.IsValidPosIndex(extraVertIdx.xyz));
                 *nextOut = extraVertIdx;
@@ -585,7 +585,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
             }
 
             // If this vert isn't clipped, use it
-            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag & CLIP_RIGHT))
+            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag bitand CLIP_RIGHT))
             {
                 *nextOut++ = *v;
             }
@@ -600,7 +600,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
 
     // Clip to the left plane
-    if (clipTest & CLIP_LEFT)
+    if (clipTest bitand CLIP_LEFT)
     {
         temp = inList;
         inList = outList;
@@ -612,7 +612,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (CLIP_LEFT & (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
+            if (CLIP_LEFT bitand (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
             {
                 ShiAssert(TheStateStack.IsValidPosIndex(extraVertIdx.xyz));
                 *nextOut = extraVertIdx;
@@ -626,7 +626,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
             }
 
             // If this vert isn't clipped, use it
-            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag & CLIP_LEFT))
+            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag bitand CLIP_LEFT))
             {
                 *nextOut++ = *v;
             }

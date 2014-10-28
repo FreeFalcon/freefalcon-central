@@ -182,9 +182,9 @@ void C_Animation::Convert16BitRLE(ANIMATION *Data)
     {
         dptr = (WORD *)&AnimPtr->Data[0];
 
-        while ( not (*dptr & RLE_END))
+        while ( not (*dptr bitand RLE_END))
         {
-            if ( not (*dptr & RLE_KEYMASK))
+            if ( not (*dptr bitand RLE_KEYMASK))
             {
                 cnt = *dptr;
                 dptr++;
@@ -196,7 +196,7 @@ void C_Animation::Convert16BitRLE(ANIMATION *Data)
                     cnt--;
                 }
             }
-            else if (*dptr & RLE_REPEAT)
+            else if (*dptr bitand RLE_REPEAT)
             {
                 dptr++;
                 *dptr = UI95_RGB15Bit(*dptr);

@@ -182,7 +182,7 @@ DiagAssert(DWORD     dwOverrideOpts  ,
     }
 
     // Am I supposed to show the stack trace too?
-    if (DA_SHOWSTACKTRACE == (DA_SHOWSTACKTRACE & dwOpts))
+    if (DA_SHOWSTACKTRACE == (DA_SHOWSTACKTRACE bitand dwOpts))
     {
         DoStackTrace(pCurrPos ,
                      sizeof(szBuff) -
@@ -191,7 +191,7 @@ DiagAssert(DWORD     dwOverrideOpts  ,
     }
 
     // Is this supposed to go to ODS?
-    if (DA_SHOWODS == (DA_SHOWODS & dwOpts))
+    if (DA_SHOWODS == (DA_SHOWODS bitand dwOpts))
     {
         OutputDebugString(szBuff) ;
     }
@@ -200,7 +200,7 @@ DiagAssert(DWORD     dwOverrideOpts  ,
     //  the case the user does not want the MessageBox.
     int iRet = IDIGNORE ;
 
-    if (DA_SHOWMSGBOX == (DA_SHOWMSGBOX & dwOpts))
+    if (DA_SHOWMSGBOX == (DA_SHOWMSGBOX bitand dwOpts))
     {
         HWND hWndParent = GetActiveWindow() ;
 

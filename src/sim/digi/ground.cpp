@@ -14,7 +14,7 @@
 extern float g_MaximumTheaterAltitude;
 extern float g_fPullupTime;
 extern bool g_bOtherGroundCheck; // = OldGroundCheck function
-extern float g_fGALookAheadTime; // Cobra - How far to look ahead (times deltaX & deltaY) for lower elevations
+extern float g_fGALookAheadTime; // Cobra - How far to look ahead (times deltaX bitand deltaY) for lower elevations
 extern float g_fAIMinAlt; // Cobra - minimum alt AI will fly
 extern float g_fGApStickFac; // Cobra - Smooth out Ground Avoidance pitch (pStick * g_fGApStickFac)
 extern int g_nCriticalPullup; // Cobra - <= g_fGALookAheadTime tick full pStick pullup

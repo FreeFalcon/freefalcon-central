@@ -723,7 +723,7 @@ void *C_Base::GetUserPtr(long idx)
 
 BOOL C_Control::MouseOver(long relx, long rely, C_Base *me)
 {
-    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !Ready())
         return(FALSE);
 
     if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= GetY() + GetH())
@@ -744,17 +744,17 @@ void C_Control::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     clip.left = GetX();
     clip.top = GetY();
 
-    if (Flags_ & C_BIT_RIGHT)
+    if (Flags_ bitand C_BIT_RIGHT)
         clip.left -= GetW();
-    else if (Flags_ & C_BIT_HCENTER)
+    else if (Flags_ bitand C_BIT_HCENTER)
         clip.left -= GetW() / 2;
 
-    if (Flags_ & C_BIT_BOTTOM)
+    if (Flags_ bitand C_BIT_BOTTOM)
         clip.top -= GetH();
-    else if (Flags_ & C_BIT_VCENTER)
+    else if (Flags_ bitand C_BIT_VCENTER)
         clip.top -= GetH() / 2;
 
-    if ( not (Flags_ & C_BIT_ABSOLUTE))
+    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
     {
         clip.left += Parent_->VX_[Client_];
         clip.top += Parent_->VY_[Client_];
@@ -767,7 +767,7 @@ void C_Control::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     if ( not Parent_->ClipToArea(&tmp, &clip, cliprect))
         return;
 
-    if ( not (Flags_ & C_BIT_ABSOLUTE))
+    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
         if ( not Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
             return;
 
@@ -855,7 +855,7 @@ void C_Base::BaseFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CNTL_SETFLAGBITOFF:
-            SetFlags(GetFlags() & compl P[0]);
+            SetFlags(GetFlags() bitand compl P[0]);
             break;
 
         case CNTL_SETFLAGTOGGLE:

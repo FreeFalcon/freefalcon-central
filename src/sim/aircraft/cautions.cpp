@@ -1061,7 +1061,7 @@ void AircraftClass::StoreToDamage(WeaponClass thing)
                     if ( not mFaults->GetFault(FaultClass::flcs_fault))
                         mFaults->SetFault(FaultClass::flcs_fault, FaultClass::dual, FaultClass::fail, FALSE);
 
-                    if ( not mFaults->GetFault(FaultClass::sms_fault) & FaultClass::bus & FaultClass::fail)
+                    if ( not mFaults->GetFault(FaultClass::sms_fault) bitand FaultClass::bus bitand FaultClass::fail)
                         mFaults->SetFault(FaultClass::sms_fault, FaultClass::bus, FaultClass::fail, FALSE);
 
                     if (GSoundsNFuel == 3)
@@ -1317,14 +1317,14 @@ void AircraftClass::SetExternalData(void)
         cockpitFlightData.ClearLightBit(FlightData::Overheat);
 
     // These are not faults, they are cautions
-    if (mFaults->GetFault(FaultClass::eng_fault) & FaultClass::efire)
+    if (mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::efire)
         cockpitFlightData.SetLightBit(FlightData::ENG_FIRE);
     else
         cockpitFlightData.ClearLightBit(FlightData::ENG_FIRE);
 
     // TJL 01/24/04 multi-engine
     // These are not faults, they are cautions
-    if (mFaults->GetFault(FaultClass::eng2_fault) & FaultClass::efire)
+    if (mFaults->GetFault(FaultClass::eng2_fault) bitand FaultClass::efire)
         cockpitFlightData.SetLightBit3(FlightData::Eng2_Fire);
     else
         cockpitFlightData.ClearLightBit3(FlightData::Eng2_Fire);

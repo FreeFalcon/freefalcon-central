@@ -740,7 +740,7 @@ void RebuildBubble(int forced)
         //MonoPrint ("FORCED SHORT REBUILD");
         if (FalconLocalGame->IsLocal())
         {
-            // wake all missiles & bombs
+            // wake all missiles bitand bombs
             if (FalconLocalGame->IsLocal())
             {
                 // host wake missiles and bombs so we can drive them
@@ -1075,7 +1075,7 @@ void RebuildBubble(int forced)
                                             }
                                             else if (
                                                 u->IsFlight()  and 
-                                                (((Flight)u)->GetEvalFlags() & FEVAL_START_COLD)
+                                                (((Flight)u)->GetEvalFlags() bitand FEVAL_START_COLD)
                                             )
                                             {
                                                 minDeagTime -= CampaignMinutes * PlayerOptionsClass::RAMP_MINUTES;
@@ -1087,7 +1087,7 @@ void RebuildBubble(int forced)
                                         )
                                         {
                                             //JPO we need some extra time before takeoff if starting cold.
-                                            if (((Flight)u)->GetEvalFlags() & FEVAL_START_COLD)
+                                            if (((Flight)u)->GetEvalFlags() bitand FEVAL_START_COLD)
                                             {
                                                 minDeagTime -= CampaignMinutes * PlayerOptionsClass::RAMP_MINUTES;
                                             }
@@ -1127,7 +1127,7 @@ void RebuildBubble(int forced)
                                 if (u->IsSetFalcFlag(FEC_PLAYER_ENTERING | FEC_HASPLAYERS) and u->IsFlight())
                                 {
                                     //JPO we need some extra time before takeoff if starting cold.
-                                    if (((Flight)u)->GetEvalFlags() & FEVAL_START_COLD)
+                                    if (((Flight)u)->GetEvalFlags() bitand FEVAL_START_COLD)
                                     {
                                         minDeagTime -= CampaignMinutes * PlayerOptionsClass::RAMP_MINUTES;
                                     }
@@ -1568,7 +1568,7 @@ wch_filename[MAX_WCH_FILES][MAX_PATH];
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-// Campressed files ".CAM" & ".TAC" files information is stored in these
+// Campressed files ".CAM" bitand ".TAC" files information is stored in these
 // variables. These are all static, and adjusted by the functions below.
 
 static int
@@ -2141,7 +2141,7 @@ void ChooseBullseye(void)
     GridIndex cx, cy, x, y, bestx = -1, besty = -1;
     float d, bestd = 999.9F;
 
-    if (g_nChooseBullseyeFix & 0x01)
+    if (g_nChooseBullseyeFix bitand 0x01)
     {
         cx = TheaterXPosition; // from falcon4.aii - theater dependant
         cy = TheaterYPosition;
@@ -2582,7 +2582,7 @@ unsigned int __stdcall HandleCampaignThread(void)
         CampLeaveCriticalSection();
         //STOP_PROFILE("CA VU UPD");
 
-        if (TheCampaign.Flags & CAMP_SUSPEND_REQUEST)
+        if (TheCampaign.Flags bitand CAMP_SUSPEND_REQUEST)
         {
             // Someone's asked us to suspend
             TheCampaign.Flags  or_eq  CAMP_SUSPENDED;
@@ -2603,7 +2603,7 @@ unsigned int __stdcall HandleCampaignThread(void)
         FalconEntity::DoCampaignDirtyData(vuxRealTime);
 #endif
 
-        if ((TheCampaign.Flags & CAMP_SUSPENDED) or (TheCampaign.Flags & CAMP_TACTICAL_PAUSE))
+        if ((TheCampaign.Flags bitand CAMP_SUSPENDED) or (TheCampaign.Flags bitand CAMP_TACTICAL_PAUSE))
         {
             // sfr: placed this one inside cs like the others
             CampEnterCriticalSection();
@@ -2657,7 +2657,7 @@ unsigned int __stdcall HandleCampaignThread(void)
         TheCampaign.CurrentTime += deltatime;
         TheCampaign.TimeOfDay = TheCampaign.CurrentTime % CampaignDay;
 
-        if (deltatime > 0 and (TheCampaign.Flags & CAMP_LOADED))
+        if (deltatime > 0 and (TheCampaign.Flags bitand CAMP_LOADED))
         {
             if (sCampaignStartingUp == CAMP_STARTING_UP)
             {
@@ -2671,9 +2671,9 @@ unsigned int __stdcall HandleCampaignThread(void)
             }
 
             //START_PROFILE("CAMPLOOP");
-            if ( not (TheCampaign.Flags & CAMP_LIGHT) and TheCampaign.IsMaster())
+            if ( not (TheCampaign.Flags bitand CAMP_LIGHT) and TheCampaign.IsMaster())
             {
-                if (TheCampaign.Flags & CAMP_TACTICAL)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL)
                 {
                     DoTacticalLoop(startup);
                 }
@@ -3104,7 +3104,7 @@ void CheckNewDay(void)
         // 2002-04-02 MNLOOK does this make problems in MP ?
         // Now that we've a floating bullseye, perhaps it should be put back in
         // Also, what happens to SMS if Bullseye changes while in-flight ?
-        if (g_nChooseBullseyeFix & 0x02)
+        if (g_nChooseBullseyeFix bitand 0x02)
         {
             ChooseBullseye();
         }

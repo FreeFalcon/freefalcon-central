@@ -252,9 +252,9 @@ void MaverickDisplayClass::DrawDisplay(void)
         if ( not g_bRealisticAvionics)
         {
             unsigned long tmp = vuxRealTime;
-            float offset = (float)(tmp & 0x3FF) / 0x400;
+            float offset = (float)(tmp bitand 0x3FF) / 0x400;
 
-            if (tmp & 0x400)
+            if (tmp bitand 0x400)
                 offset = 1.0F - offset;
 
             offset *= LOCK_RING_MAX_SIZE - LOCK_RING_MIN_SIZE;
@@ -354,7 +354,7 @@ void MaverickDisplayClass::DrawDisplay(void)
     //MI
     if ( not g_bRealisticAvionics)
     {
-        if ((totalAngle < 30.0F * DTR) or vuxRealTime & 0x200)
+        if ((totalAngle < 30.0F * DTR) or vuxRealTime bitand 0x200)
         {
             display->AdjustOriginInViewport(platform->sensorArray[0]->SeekerAz(), platform->sensorArray[0]->SeekerEl());
             display->Line(0.0F,  0.2F,  0.0F, -0.2F);
@@ -373,7 +373,7 @@ void MaverickDisplayClass::DrawDisplay(void)
         }
         else
         {
-            if (vuxRealTime & 0x100)
+            if (vuxRealTime bitand 0x100)
             {
                 display->AdjustOriginInViewport(platform->sensorArray[0]->SeekerAz(), platform->sensorArray[0]->SeekerEl());
                 display->Line(0.0F,  0.15F,  0.0F, -0.15F);

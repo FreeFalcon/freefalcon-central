@@ -85,7 +85,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
     // RED
     reds = 0;
 
-    while (r_mask and  !(r_mask & 1))   // JPO cater for no reds - weird!
+    while (r_mask and  !(r_mask bitand 1))   // JPO cater for no reds - weird!
     {
         r_mask >>= 1;
         reds++;
@@ -93,7 +93,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
 
     redc = 0;
 
-    while (r_mask & 1)
+    while (r_mask bitand 1)
     {
         r_mask >>= 1;
         redc++;
@@ -105,7 +105,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
     // GREEN
     greens = 0;
 
-    while (g_mask and !(g_mask & 1))
+    while (g_mask and !(g_mask bitand 1))
     {
         g_mask >>= 1;
         greens++;
@@ -113,7 +113,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
 
     greenc = 0;
 
-    while (g_mask & 1)
+    while (g_mask bitand 1)
     {
         g_mask >>= 1;
         greenc++;
@@ -125,7 +125,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
     // BLUE
     blues = 0;
 
-    while (b_mask and !(b_mask & 1))
+    while (b_mask and !(b_mask bitand 1))
     {
         b_mask >>= 1;
         blues++;
@@ -133,7 +133,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
 
     bluec = 0;
 
-    while (b_mask & 1)
+    while (b_mask bitand 1)
     {
         b_mask >>= 1;
         bluec++;
@@ -170,29 +170,29 @@ void UI95_GetScreenColorInfo(DWORD &r_mask, WORD &r_shift, DWORD &g_mask, WORD &
 
 WORD UI95_RGB15Bit(WORD rgb)
 {
-    return static_cast<WORD>(rShift[(rgb >> 10) & 0x1f] | gShift[(rgb >> 5) & 0x1f] | bShift[rgb & 0x1f]); //!
+    return static_cast<WORD>(rShift[(rgb >> 10) bitand 0x1f] | gShift[(rgb >> 5) bitand 0x1f] | bShift[rgb bitand 0x1f]); //!
 }
 
 
 WORD UI95_RGB24Bit(unsigned long rgb)
 {
-    return static_cast<WORD>(rShift[(rgb >> 3) & 0x1f] | gShift[(rgb >> 11) & 0x1f] | bShift[(rgb >> 19) & 0x1f]);//!
+    return static_cast<WORD>(rShift[(rgb >> 3) bitand 0x1f] | gShift[(rgb >> 11) bitand 0x1f] | bShift[(rgb >> 19) bitand 0x1f]);//!
 }
 
 WORD UI95_ScreenToTga(WORD color)
 {
     long r, g, b;
 
-    r = ((color >> reds)   & 0x1f) << 10;
-    g = ((color >> greens) & 0x1f) << 5;
-    b = ((color >> blues)  & 0x1f);
+    r = ((color >> reds)   bitand 0x1f) << 10;
+    g = ((color >> greens) bitand 0x1f) << 5;
+    b = ((color >> blues)  bitand 0x1f);
 
     return static_cast<WORD>(r | g | b); //!
 }
 
 WORD UI95_ScreenToGrey(WORD color)
 {
-    long grey = Grey_3[(color  >> reds) & 0x1f] + Grey_6[(color  >> greens) & 0x1f] + Grey_1[(color  >> blues) & 0x1f];
+    long grey = Grey_3[(color  >> reds) bitand 0x1f] + Grey_6[(color  >> greens) bitand 0x1f] + Grey_1[(color  >> blues) bitand 0x1f];
 
     return static_cast<WORD>(rShift[grey] | gShift[grey] | bShift[grey]); //!
 }
@@ -206,12 +206,12 @@ void UI95_GetScreenFormat(DDSURFACEDESC *desc)
 
  mask = UI95_ScreenFormat.ddpfPixelFormat.dwRBitMask;
  reds = 0;
- while( !(mask & 1) ) {
+ while( !(mask bitand 1) ) {
  mask >>= 1;
  reds++;
  }
  redc=0;
- while( mask & 1 ) {
+ while( mask bitand 1 ) {
  mask >>= 1;
  redc++;
  }
@@ -221,12 +221,12 @@ void UI95_GetScreenFormat(DDSURFACEDESC *desc)
  // GREEN
  mask = UI95_ScreenFormat.ddpfPixelFormat.dwGBitMask;
  greens = 0;
- while( !(mask & 1) ) {
+ while( !(mask bitand 1) ) {
  mask >>= 1;
  greens++;
  }
  greenc=0;
- while( mask & 1 ) {
+ while( mask bitand 1 ) {
  mask >>= 1;
  greenc++;
  }
@@ -236,12 +236,12 @@ void UI95_GetScreenFormat(DDSURFACEDESC *desc)
  // BLUE
  mask = UI95_ScreenFormat.ddpfPixelFormat.dwBBitMask;
  blues = 0;
- while( !(mask & 1) ) {
+ while( !(mask bitand 1) ) {
  mask >>= 1;
  blues++;
  }
  bluec=0;
- while( mask & 1 ) {
+ while( mask bitand 1 ) {
  mask >>= 1;
  bluec++;
  }
@@ -328,7 +328,7 @@ GLImageInfo *LoadImageFile(char *filename)
  height = texFile.image.height;
 
  // Do things differently for 8 bit and RGB images
- if (flags & MPR_TI_PALETTE) {
+ if (flags bitand MPR_TI_PALETTE) {
 
  imageData = texFile.image.image;
 

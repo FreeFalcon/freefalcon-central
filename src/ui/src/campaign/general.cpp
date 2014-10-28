@@ -668,7 +668,7 @@ static void LoadSaveSelectFileCB(long, short hittype, C_Base *control)
             {
                 btn = (C_Button*)win->FindControl(LOAD);
 
-                if (btn and !(btn->GetFlags() & C_BIT_INVISIBLE))
+                if (btn and !(btn->GetFlags() bitand C_BIT_INVISIBLE))
                 {
                     if (btn->GetCallback())
                     {
@@ -680,7 +680,7 @@ static void LoadSaveSelectFileCB(long, short hittype, C_Base *control)
 
                 btn = (C_Button*)win->FindControl(LOAD_VIRTUAL);
 
-                if (btn and !(btn->GetFlags() & C_BIT_INVISIBLE))
+                if (btn and !(btn->GetFlags() bitand C_BIT_INVISIBLE))
                 {
                     if (btn->GetCallback())
                     {
@@ -692,7 +692,7 @@ static void LoadSaveSelectFileCB(long, short hittype, C_Base *control)
 
                 btn = (C_Button*)win->FindControl(SAVE);
 
-                if (btn and !(btn->GetFlags() & C_BIT_INVISIBLE))
+                if (btn and !(btn->GetFlags() bitand C_BIT_INVISIBLE))
                 {
                     if (btn->GetCallback())
                     {
@@ -1269,7 +1269,7 @@ void MakeOccupationMap(IMAGE_RSC *Map)
     {
         Palette[0] = UI95_RGB24Bit(0);
 
-        if (TheCampaign.Flags & CAMP_TACTICAL)
+        if (TheCampaign.Flags bitand CAMP_TACTICAL)
         {
             for (i = 1; i < NUM_TEAMS; i++)
             {
@@ -1311,7 +1311,7 @@ void MakeOccupationMap(IMAGE_RSC *Map)
         {
             ShiAssert(src >=  TheCampaign.CampMapData  and 
                       src < TheCampaign.CampMapData + TheCampaign.CampMapSize);
-            *dst++ = static_cast<uchar>((*src) & 0x0f);
+            *dst++ = static_cast<uchar>((*src) bitand 0x0f);
             *dst++ = static_cast<uchar>((*src) >> 4);
             src++;
             x += 2;
@@ -1351,7 +1351,7 @@ void MakeBigOccupationMap(IMAGE_RSC *Map)
     {
         Palette[0] = UI95_RGB24Bit(0);
 
-        if (TheCampaign.Flags & CAMP_TACTICAL)
+        if (TheCampaign.Flags bitand CAMP_TACTICAL)
         {
             for (i = 1; i < NUM_TEAMS; i++)
             {
@@ -1394,9 +1394,9 @@ void MakeBigOccupationMap(IMAGE_RSC *Map)
         {
             ShiAssert(src >=  TheCampaign.CampMapData  and 
                       src < TheCampaign.CampMapData + TheCampaign.CampMapSize);
-            *dst++ = static_cast<uchar>((*src) & 0x0f);
+            *dst++ = static_cast<uchar>((*src) bitand 0x0f);
             *dst++ = static_cast<uchar>((*src) >> 4);
-            *dst++ = static_cast<uchar>((*src) & 0x0f);
+            *dst++ = static_cast<uchar>((*src) bitand 0x0f);
             *dst++ = static_cast<uchar>((*src) >> 4);
             src++;
             x += 4;
@@ -1411,9 +1411,9 @@ void MakeBigOccupationMap(IMAGE_RSC *Map)
 
         while (x < (h - 4) and x < w)
         {
-            *dst++ = static_cast<uchar>((*prevsrc) & 0x0f);
+            *dst++ = static_cast<uchar>((*prevsrc) bitand 0x0f);
             *dst++ = static_cast<uchar>((*prevsrc) >> 4);
-            *dst++ = static_cast<uchar>((*prevsrc) & 0x0f);
+            *dst++ = static_cast<uchar>((*prevsrc) bitand 0x0f);
             *dst++ = static_cast<uchar>((*prevsrc) >> 4);
             prevsrc++;
             x += 4;
@@ -1492,7 +1492,7 @@ void GetMissionTarget(Package curpackage, Flight curflight, _TCHAR Buffer[])
 
             while (wp)
             {
-                if (wp->GetWPFlags() & WPF_TARGET)
+                if (wp->GetWPFlags() bitand WPF_TARGET)
                 {
                     wp->GetWPLocation(&x, &y);
 
@@ -1546,7 +1546,7 @@ void GetFlightStatus(Flight element, _TCHAR buffer[])
                     _tcscpy(buffer, gStringMgr->GetString(TXT_EGRESS));
                     found = 1;
                 }
-                else if (wp->GetWPFlags() & WPF_TARGET)
+                else if (wp->GetWPFlags() bitand WPF_TARGET)
                 {
                     _tcscpy(buffer, gStringMgr->GetString(TXT_INGRESS));
                     found = 1;
@@ -1735,7 +1735,7 @@ void UpdateMissionWindow(long ID)
 
                 while (wp)
                 {
-                    if (wp->GetWPFlags() & WPF_TARGET)
+                    if (wp->GetWPFlags() bitand WPF_TARGET)
                     {
                         GetTimeString(wp->GetWPArrivalTime(), TOT);
                         wp = NULL;

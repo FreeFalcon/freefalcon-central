@@ -694,7 +694,7 @@ int SimMoverClass::Exec(void)
 
     if (IsLocal())
     {
-        if ((requestCount > 0 and (SimLibFrameCount & 0x2F) == 0) or ((SimLibFrameCount & 0x1FF) == 0))
+        if ((requestCount > 0 and (SimLibFrameCount bitand 0x2F) == 0) or ((SimLibFrameCount bitand 0x1FF) == 0))
         {
             //newControlData = new FalconControlSurfaceMsg(Id(), FalconLocalGame);
             //newControlData->dataBlock.gameTime = SimLibElapsedTime;
@@ -719,7 +719,7 @@ int SimMoverClass::Exec(void)
             // machine controlling the entity locally
             if (IsFiring())
             {
-                if (nonLocalData->flags & NONLOCAL_GUNS_FIRING)
+                if (nonLocalData->flags bitand NONLOCAL_GUNS_FIRING)
                 {
                     // already firing, is it time to stop or fire another?
                     if (nonLocalData->timer2 <= SimLibElapsedTime)
@@ -842,7 +842,7 @@ int SimMoverClass::Exec(void)
             }
             else // not firing
             {
-                if (nonLocalData->flags & NONLOCAL_GUNS_FIRING)
+                if (nonLocalData->flags bitand NONLOCAL_GUNS_FIRING)
                 {
                     // stop firing
                     nonLocalData->flags and_eq compl NONLOCAL_GUNS_FIRING;

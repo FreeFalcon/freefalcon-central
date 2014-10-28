@@ -434,7 +434,7 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
         switch (CurMapTool->GetID())
         {
             case ADD_FLIGHT:
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                 {
                     gMapMgr->SetAllObjCallbacks(SelectTargetCB);
                     gMapMgr->SetAllAirUnitCallbacks(SelectTargetCB);
@@ -454,7 +454,7 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
                 break;
 
             case ADD_BATTALION: // Click anywhere on the map to add a unit
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                 {
                     gMapMgr->SetAllObjCallbacks(SelectTargetCB);
                     SetToolbarDirections(control->GetUserNumber(1));
@@ -463,7 +463,7 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
                 break;
 
             case ADD_NAVAL: // Click anywhere on the map to add a unit
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                 {
                     gMapMgr->SetAllObjCallbacks(SelectTargetCB);
                     SetToolbarDirections(control->GetUserNumber(1));
@@ -472,7 +472,7 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
                 break;
 
             case ADD_SQUADRON: // Click on an airbase to add a squadron
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                 {
                     gMapMgr->SetAllObjCallbacks(SelectTargetCB);
                     SetToolbarDirections(control->GetUserNumber(1));
@@ -482,7 +482,7 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
                 break;
 
             case COPY_UNIT: // Pick a unit to copy
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                 {
                     SetToolbarDirections(control->GetUserNumber(1));
                 }
@@ -490,7 +490,7 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
                 break;
 
             case DELETE_UNIT: // Pick a unit to delete
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                 {
                     SetToolbarDirections(control->GetUserNumber(1));
                 }
@@ -498,7 +498,7 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
                 break;
 
             case EDIT_UNIT: // Pick a unit to edit
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                 {
                     SetToolbarDirections(control->GetUserNumber(1));
                 }

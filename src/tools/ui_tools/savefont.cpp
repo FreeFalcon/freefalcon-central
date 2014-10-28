@@ -1,4 +1,4 @@
-// Routines to export the Selected Font into Targa format... with rectangles & kerning pairs?
+// Routines to export the Selected Font into Targa format... with rectangles bitand kerning pairs?
 
 #include <windows.h>
 #include "chandler.h"
@@ -201,14 +201,14 @@ void SetWindowLOGFONT(LOGFONT *log)
 
         if (lbox)
         {
-            lbox->SetValue(SearchList(log->lfPitchAndFamily & 3, LF_PITCH));
+            lbox->SetValue(SearchList(log->lfPitchAndFamily bitand 3, LF_PITCH));
         }
 
         lbox = (C_ListBox*)win->FindControl(LB_FAMILY);
 
         if (lbox)
         {
-            lbox->SetValue(SearchList(log->lfPitchAndFamily & 0xfc, LF_FAMILY));
+            lbox->SetValue(SearchList(log->lfPitchAndFamily bitand 0xfc, LF_FAMILY));
         }
 
         ebox = (C_EditBox*)win->FindControl(EB_FACENAME);
@@ -349,7 +349,7 @@ int CALLBACK testme(CONST LOGFONTA *logfnt, CONST TEXTMETRICA *metrics, DWORD, L
 {
     if (ItemID < 200)
     {
-        if (metrics->tmPitchAndFamily & TMPF_TRUETYPE)
+        if (metrics->tmPitchAndFamily bitand TMPF_TRUETYPE)
         {
             memcpy(&fontlog[ItemID], logfnt, sizeof(LOGFONT));
             strcpy(FontList[ItemID], logfnt->lfFaceName);

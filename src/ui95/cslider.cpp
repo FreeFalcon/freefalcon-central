@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -143,7 +143,7 @@ void C_Slider::SetSliderPos(long Pos) //!
 long C_Slider::CheckHotSpots(long relX, long relY)
 {
     // check visibility, enabled and ready
-    if ((GetFlags() & C_BIT_INVISIBLE) or !(GetFlags() & C_BIT_ENABLED) or !Ready())
+    if ((GetFlags() bitand C_BIT_INVISIBLE) or !(GetFlags() bitand C_BIT_ENABLED) or !Ready())
     {
         return(0);
     }
@@ -182,7 +182,7 @@ BOOL C_Slider::Wheel(int increments, WORD MouseX, WORD MouseY)
 {
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
     {
         return(FALSE);
     }
@@ -259,7 +259,7 @@ BOOL C_Slider::Process(long ID, short HitType)
 
 void C_Slider::Refresh()
 {
-    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX() + SX_, GetY() + SY_, GetX() + SX_ + GetW() + 1, GetY() + SY_ + GetH() + 1, GetFlags(), GetClient());
@@ -271,7 +271,7 @@ void C_Slider::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     if ( not Ready()) return;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
     rect.left = GetX();
@@ -296,7 +296,7 @@ void C_Slider::Draw(SCREEN *surface, UI95_RECT *cliprect)
         rect.right = rect.left + Slider_->Header->w;
         rect.bottom = rect.top + Slider_->Header->h;
 
-        if (GetFlags() & C_BIT_ABSOLUTE)
+        if (GetFlags() bitand C_BIT_ABSOLUTE)
         {
             if ( not Parent_->ClipToArea(&s, &rect, &Parent_->Area_))
                 return;
@@ -322,7 +322,7 @@ void C_Slider::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
         Slider_->Blit(surface, s.left, s.top, s.right - s.left, s.bottom - s.top, rect.left, rect.top);
 
-        if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
+        if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
             HighLite(surface, cliprect);
     }
 }
@@ -334,17 +334,17 @@ void C_Slider::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     clip.left = GetX() + SX_;
     clip.top = GetY() + SY_;
 
-    if (Flags_ & C_BIT_RIGHT)
+    if (Flags_ bitand C_BIT_RIGHT)
         clip.left -= GetW();
-    else if (Flags_ & C_BIT_HCENTER)
+    else if (Flags_ bitand C_BIT_HCENTER)
         clip.left -= GetW() / 2;
 
-    if (Flags_ & C_BIT_BOTTOM)
+    if (Flags_ bitand C_BIT_BOTTOM)
         clip.top -= GetH();
-    else if (Flags_ & C_BIT_VCENTER)
+    else if (Flags_ bitand C_BIT_VCENTER)
         clip.top -= GetH() / 2;
 
-    if ( not (Flags_ & C_BIT_ABSOLUTE))
+    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
     {
         clip.left += Parent_->VX_[Client_];
         clip.top += Parent_->VY_[Client_];
@@ -356,7 +356,7 @@ void C_Slider::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     if ( not Parent_->ClipToArea(&tmp, &clip, cliprect))
         return;
 
-    if ( not (Flags_ & C_BIT_ABSOLUTE))
+    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
         if ( not Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
             return;
 
@@ -367,7 +367,7 @@ BOOL C_Slider::MouseOver(long relx, long rely, C_Base *)
 {
     // Don't want to do anything here
 
-    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !Ready())
         return(FALSE);
 
     if (relx >= (GetX() + SX_) and relx < (GetX() + GetW() + SX_)  and 
@@ -385,7 +385,7 @@ BOOL C_Slider::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
     float dist;
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return(FALSE);
 
     Leave = UI_Enter(Parent_);

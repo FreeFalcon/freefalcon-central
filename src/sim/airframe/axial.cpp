@@ -360,7 +360,7 @@ void AirframeClass::Axial(float dt)
 
                     for (l = 0; l < g; l++)
                     {
-                        if (gear[l].flags & GearData::GearBroken)
+                        if (gear[l].flags bitand GearData::GearBroken)
                         {
                             ((AircraftClass*)platform)->mFaults->SetFault(FaultClass::gear_fault,
                                     FaultClass::ldgr,
@@ -369,7 +369,7 @@ void AirframeClass::Axial(float dt)
                             SetFlag(GearBroken);
                         }
 
-                        if (gear[l].flags & GearData::GearStuck)
+                        if (gear[l].flags bitand GearData::GearStuck)
                         {
                             ((AircraftClass*)platform)->mFaults->SetFault(FaultClass::gear_fault,
                                     FaultClass::ldgr,
@@ -608,18 +608,18 @@ default:
     break;
 }
 
-if (gear[0].flags & GearData::GearBroken  and 
-    gear[1].flags & GearData::GearBroken  and 
-    gear[2].flags & GearData::GearBroken)
+if (gear[0].flags bitand GearData::GearBroken  and 
+    gear[1].flags bitand GearData::GearBroken  and 
+    gear[2].flags bitand GearData::GearBroken)
 {
     ((AircraftClass*)platform)->mFaults->SetFault(FaultClass::gear_fault,
             FaultClass::ldgr, FaultClass::fail, TRUE);
     SetFlag(GearBroken);
 }
 
-if (gear[0].flags & GearData::GearStuck  and 
-    gear[1].flags & GearData::GearStuck  and 
-    gear[2].flags & GearData::GearStuck)
+if (gear[0].flags bitand GearData::GearStuck  and 
+    gear[1].flags bitand GearData::GearStuck  and 
+    gear[2].flags bitand GearData::GearStuck)
 {
     ((AircraftClass*)platform)->mFaults->SetFault(FaultClass::gear_fault,
             FaultClass::ldgr, FaultClass::fail, TRUE);

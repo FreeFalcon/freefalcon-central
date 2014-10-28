@@ -87,7 +87,7 @@ void TallyTeamKills(void)
     TheCampaign.MissionEvaluator->GetTeamDeaths(deaths);
     TheCampaign.MissionEvaluator->GetTeamScore(score);
 
-    // Tally Kills (AI & Human)
+    // Tally Kills (AI bitand Human)
     for (i = 0; i < MAX_DOGFIGHT_TEAMS; i++)
     {
         TeamTotals[i][0] = kills[i];
@@ -266,63 +266,63 @@ void PlayDogfightBite()
 
     HowIDid = FigureOutHowIDid();
 
-    if (HowIDid & (_FIRST_PLACE_ | _MOST_KILLS_) and SimDogfight.GetGameType() not_eq dog_Furball)
+    if (HowIDid bitand (_FIRST_PLACE_ | _MOST_KILLS_) and SimDogfight.GetGameType() not_eq dog_Furball)
     {
         SoundID = gDogfightBites->Pick(DF5);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if (HowIDid & _FIRST_PLACE_)
+    else if (HowIDid bitand _FIRST_PLACE_)
     {
         SoundID = gDogfightBites->Pick(DF1);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if ((HowIDid & _MOST_KILLS_) and SimDogfight.GetGameType() not_eq dog_Furball)
+    else if ((HowIDid bitand _MOST_KILLS_) and SimDogfight.GetGameType() not_eq dog_Furball)
     {
         SoundID = gDogfightBites->Pick(DF6);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if (HowIDid & _SECOND_PLACE_)
+    else if (HowIDid bitand _SECOND_PLACE_)
     {
         SoundID = gDogfightBites->Pick(DF2);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if (HowIDid & _THIRD_PLACE_)
+    else if (HowIDid bitand _THIRD_PLACE_)
     {
         SoundID = gDogfightBites->Pick(DF3);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if (HowIDid & _LAST_PLACE_)
+    else if (HowIDid bitand _LAST_PLACE_)
     {
         SoundID = gDogfightBites->Pick(DF4);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if (HowIDid & _MOST_FRAGS_)
+    else if (HowIDid bitand _MOST_FRAGS_)
     {
         SoundID = gDogfightBites->Pick(DF8);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if (HowIDid & _FEWEST_KILLS_)
+    else if (HowIDid bitand _FEWEST_KILLS_)
     {
         SoundID = gDogfightBites->Pick(DF7);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if (HowIDid & _MOST_DEATHS_)
+    else if (HowIDid bitand _MOST_DEATHS_)
     {
         SoundID = gDogfightBites->Pick(DF9);
 
@@ -383,7 +383,7 @@ void DisplayDogfightResults()
 
             while (pilot_data)
             {
-                if ( not human_only or pilot_data->pilot_flags & PFLAG_PLAYER_CONTROLLED)
+                if ( not human_only or pilot_data->pilot_flags bitand PFLAG_PLAYER_CONTROLLED)
                 {
                     AddtoSortedList(pilot_data, flight_data->flight_team);
                     TeamUsed[flight_data->flight_team] = 1;

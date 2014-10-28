@@ -623,12 +623,12 @@ void TankerBrain::DriveBoom(void)
         tmpAz = 0;
         tempEl = 0;
 
-        if ( not (flags & GivingGas) and ( not tankingPtr or tankingPtr->localData->range > 800.0F) or (flags & ClearingPlane))
+        if ( not (flags bitand GivingGas) and ( not tankingPtr or tankingPtr->localData->range > 800.0F) or (flags bitand ClearingPlane))
         {
             tmpAz = 0.0F;
             tempEl = 0;
         }
-        else if ( not (flags & GivingGas) and ( not tankingPtr or tankingPtr->localData->range - DrogueExt > 30.0F))
+        else if ( not (flags bitand GivingGas) and ( not tankingPtr or tankingPtr->localData->range - DrogueExt > 30.0F))
         {
             tmpAz = 0.0F;
             tempEl = 0;
@@ -715,7 +715,7 @@ void TankerBrain::DriveBoom(void)
             // 23NOV03 - FRB   totalrange = tmpRange + ((AircraftClass*)curThirsty)->af->GetIL78Factor() + tankingPtr->localData->range;
         }
 
-        if (curThirsty and g_nShowDebugLabels & 0x4000)
+        if (curThirsty and g_nShowDebugLabels bitand 0x4000)
         {
             char label[31];
             //  sprintf(label,"%5.1f %5.1f %5.1f",totalrange, tankingPtr->localData->range, boom[DROGUE].rx);
@@ -723,7 +723,7 @@ void TankerBrain::DriveBoom(void)
             ((DrawableBSP*)curThirsty->drawPointer)->SetLabel(label, ((DrawableBSP*)curThirsty->drawPointer)->LabelColor());
         }
 
-        if (curThirsty and g_nShowDebugLabels & 0x40000)
+        if (curThirsty and g_nShowDebugLabels bitand 0x40000)
         {
             char label[31];
             //  sprintf(label,"%5.1f %5.1f %5.1f",totalrange, tankingPtr->localData->range, boom[DROGUE].rx);
@@ -731,7 +731,7 @@ void TankerBrain::DriveBoom(void)
             ((DrawableBSP*)curThirsty->drawPointer)->SetLabel(label, ((DrawableBSP*)curThirsty->drawPointer)->LabelColor());
         }
 
-        if ( not (flags & (GivingGas | ClearingPlane)) and tankingPtr)
+        if ( not (flags bitand (GivingGas | ClearingPlane)) and tankingPtr)
         {
             if ((fabs(totalrange) < 6.0F * /*FRB*/ ScaledRM  and 
                  fabs(boom[DROGUE].az - tmpAz)*RTD < 6.0F * /*FRB*/ ScaledRM  and 
@@ -741,7 +741,7 @@ void TankerBrain::DriveBoom(void)
                  fabs(boom[DROGUE].az)*RTD < 20.0F * /*FRB*/ ScaledRM  and 
                  fabs(tankingPtr->BaseData()->Roll())*RTD < 4.0F * /* S.G.*/ ScaledRM  and 
                  fabs(tankingPtr->BaseData()->Pitch())*RTD < 6.0F * /* S.G.*/ ScaledRM)
-                or ((flags & AIready) and (tmpRefuelMode >= 3))) // 27NOV03 - FRB  AI is in position
+                or ((flags bitand AIready) and (tmpRefuelMode >= 3))) // 27NOV03 - FRB  AI is in position
             {
                 flags  or_eq  GivingGas;
                 tankMsg = new FalconTankerMessage(self->Id(), FalconLocalGame);
@@ -751,7 +751,7 @@ void TankerBrain::DriveBoom(void)
                 FalconSendMessage(tankMsg);
             }
         }
-        else if (tankingPtr and !(flags & ClearingPlane))
+        else if (tankingPtr and !(flags bitand ClearingPlane))
         {
             tmpAz = tankingPtr->localData->az;
 
@@ -773,7 +773,7 @@ void TankerBrain::DriveBoom(void)
                 FalconSendMessage(tankMsg);
             }
         }
-        else if ((flags & ClearingPlane) and tankingPtr  and 
+        else if ((flags bitand ClearingPlane) and tankingPtr  and 
                  tankingPtr->localData->range > 0.04F * NM_TO_FT)
         {
             VuEntity *entity = NULL;
@@ -838,13 +838,13 @@ void TankerBrain::DriveBoom(void)
 
     tmpRange = 0.0F;
 
-    if ( not (flags & GivingGas) and ( not tankingPtr or tankingPtr->localData->range > 800.0F) or (flags & ClearingPlane))
+    if ( not (flags bitand GivingGas) and ( not tankingPtr or tankingPtr->localData->range > 800.0F) or (flags bitand ClearingPlane))
     {
         tmpAz = 0.0F;
         tempEl =  self->af->GetBoomStoredAngle() * DTR; // 12DEC03 - FRB - Use tanker <ac>.dat stored angle
         tmpRange = 0.0F;
     }
-    else if ( not (flags & GivingGas) and ( not tankingPtr or tankingPtr->localData->range - 33.5F > rad)) // 28NOV03 - FRB - replaced 30.0F w/ rad
+    else if ( not (flags bitand GivingGas) and ( not tankingPtr or tankingPtr->localData->range - 33.5F > rad)) // 28NOV03 - FRB - replaced 30.0F w/ rad
     {
         tmpAz = 0.0F;
         tempEl = -15.0F * DTR;
@@ -864,7 +864,7 @@ void TankerBrain::DriveBoom(void)
         else
             tmpAz = tankingPtr->localData->az;
 
-        if (boom[BOOM].el * RTD > -27.2F and !(flags & GivingGas))
+        if (boom[BOOM].el * RTD > -27.2F and !(flags bitand GivingGas))
             tmpRange = 6.0F;
         else
             tmpRange = tankingPtr->localData->range - 33.5F;
@@ -935,7 +935,7 @@ void TankerBrain::DriveBoom(void)
     // THERE WILL BE FOUR USE OF tmpRefuelMode IN THE NEXT if/else if/else statement. THESE USED TO BE PlayerOptions.GetRefuelingMode()
     // END OF ADDED SECTION
 
-    if (curThirsty and g_nShowDebugLabels & 0x4000)
+    if (curThirsty and g_nShowDebugLabels bitand 0x4000)
     {
         char label[31];
         //  sprintf(label,"tot*%5.1f tmp*%5.1f R*%5.1f",totalrange, tmpRange, tankingPtr->localData->range);
@@ -944,7 +944,7 @@ void TankerBrain::DriveBoom(void)
     }
 
 
-    if ( not (flags & (GivingGas | ClearingPlane)) and tankingPtr)
+    if ( not (flags bitand (GivingGas | ClearingPlane)) and tankingPtr)
     {
         if ((fabs(boom[BOOM].ext - tankingPtr->localData->range + 33.5F) < 1.0F * /*FRB*/ ScaledRM  and 
              fabs(boom[BOOM].az - tmpAz)*RTD < 1.0F * /*FRB*/ ScaledRM  and 
@@ -952,7 +952,7 @@ void TankerBrain::DriveBoom(void)
              boom[BOOM].el * RTD < -26.1F and boom[BOOM].el * RTD > -38.9F and fabs(boom[BOOM].az)*RTD < 20.0F /*  and 
  fabs(tankingPtr->BaseData()->Roll())*RTD < 4.0F * /* S.G.*/ // ScaledRM  and 
              // fabs(tankingPtr->BaseData()->Pitch())*RTD < 4.0F * /* S.G.*/ ScaledRM) */  JPG 14 Jan03 - End of Line 881 thru 883 - pitch and roll isn't needed
-             or ((flags & AIready) and (tmpRefuelMode >= 3.0f)))) // 27NOV03 - FRB  AI is in position
+             or ((flags bitand AIready) and (tmpRefuelMode >= 3.0f)))) // 27NOV03 - FRB  AI is in position
         {
             flags  or_eq  GivingGas;
             flags and_eq compl AIready;
@@ -963,7 +963,7 @@ void TankerBrain::DriveBoom(void)
             FalconSendMessage(tankMsg);
         }
     }
-    else if (tankingPtr and !(flags & ClearingPlane))
+    else if (tankingPtr and !(flags bitand ClearingPlane))
     {
         if (fabs(boom[BOOM].ext - tankingPtr->localData->range + 33.5F) > 2.0F ||
             fabs(boom[BOOM].az - tmpAz)*RTD > 2.0F * /*FRB*/ ScaledRM ||
@@ -982,7 +982,7 @@ void TankerBrain::DriveBoom(void)
             FalconSendMessage(tankMsg);
         }
     }
-    else if ((flags & ClearingPlane) and tankingPtr and tankingPtr->localData->range > 0.04F * NM_TO_FT)
+    else if ((flags bitand ClearingPlane) and tankingPtr and tankingPtr->localData->range > 0.04F * NM_TO_FT)
     {
         VuEntity *entity = NULL;
         {
@@ -1326,7 +1326,7 @@ void TankerBrain::FollowThirsty(void)
 
         trackZ = -holdAlt;
 
-        if (flags & ClearingPlane)
+        if (flags bitand ClearingPlane)
             // desSpeed = af->CalcTASfromCAS(335.0F)*KNOTS_TO_FTPSEC; //JPG 24 Apr 04 - Removed conversions
             desSpeed = af->CalcTASfromCAS(((AircraftClass*)curThirsty)->af->GetRefuelSpeed()) * 1.2f; //*KNOTS_TO_FTPSEC; // 12DEC03 - FRB
         else  // use refuel speed for this aircraft
@@ -1445,7 +1445,7 @@ void TankerBrain::FollowThirsty(void)
                 rStick = 0.0F;   // stabilize Tanker's heading
         }
 
-        if (g_nShowDebugLabels & 0x800)
+        if (g_nShowDebugLabels bitand 0x800)
         {
             char tmpchr[32];
             dist = (float)sqrt(dist);
@@ -1471,7 +1471,7 @@ void TankerBrain::FollowThirsty(void)
         else if (stype == TNKR_KC135 and g_bLightsKC135) // when we have the lights on the KC-135 model
             DriveLights();
 
-        if (xyRange < 500.0F and !(flags & PrecontactPos)  and 
+        if (xyRange < 500.0F and !(flags bitand PrecontactPos)  and 
             fabs(tankingPtr->localData->rangedot) < 100.0F  and 
             fabs(tankingPtr->localData->az) < 35.0F * DTR)
         {
@@ -1484,11 +1484,11 @@ void TankerBrain::FollowThirsty(void)
             FalconSendMessage(tankMsg);
         }
 
-        if ( not (flags & ClearingPlane))
+        if ( not (flags bitand ClearingPlane))
             // 25NOV03 - FRB - Give directions to drogue-refueling a/c
-            // if(ServiceType not_eq DROGUE_SERVICE and !(flags & ClearingPlane))
+            // if(ServiceType not_eq DROGUE_SERVICE and !(flags bitand ClearingPlane))
         {
-            if (xyRange < 200.0F and !(flags & GivingGas)  and 
+            if (xyRange < 200.0F and !(flags bitand GivingGas)  and 
                 (SimLibElapsedTime - lastBoomCommand) > 10000)
             {
                 lastBoomCommand = SimLibElapsedTime;
@@ -1592,7 +1592,7 @@ void TankerBrain::FollowThirsty(void)
         }
 
         // Too Eratic?
-        if ( not (flags & ClearingPlane) and (flags & GivingGas) and (SimLibElapsedTime - lastStabalize) > 15000  and 
+        if ( not (flags bitand ClearingPlane) and (flags bitand GivingGas) and (SimLibElapsedTime - lastStabalize) > 15000  and 
             fabs(tankingPtr->localData->azFromdot) > 10.0F * DTR and fabs(tankingPtr->localData->elFromdot) > 10.0F * DTR)
         {
             lastStabalize = SimLibElapsedTime;
@@ -1758,7 +1758,7 @@ void TankerBrain::PurgeWaitQ(void)
 
 void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
 {
-    if ( not (flags & (IsRefueling | ClearingPlane)))
+    if ( not (flags bitand (IsRefueling | ClearingPlane)))
     {
         DigitalBrain::FrameExec(tList, tPtr);
 
@@ -2106,7 +2106,7 @@ void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
         {
             boomAzTest = max(min(boomAzTest,  23.0F * DTR), -23.0F * DTR);
             boomElTest = max(min(boomElTest, 4.0F * DTR), -40.0F * DTR);
-            boomExtTest = max(min(boomExtTest, 21.0F), 0.0F);    // PJW... was 21 & 6
+            boomExtTest = max(min(boomExtTest, 21.0F), 0.0F);    // PJW... was 21 bitand 6
 
             boom[BOOM].drawPointer->SetDOFangle(BOOM_AZIMUTH, -boomAzTest);
             boom[BOOM].drawPointer->SetDOFangle(BOOM_ELEVATION, -boomElTest);

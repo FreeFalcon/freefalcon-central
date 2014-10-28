@@ -248,9 +248,9 @@ BOOL DeviceManager::ChooseDevice(int *usrDrvNum, int *usrDevNum, int *usrWidth)
     listSlot = SendMessage(listWin, LB_GETCURSEL, 0, 0);
     ShiAssert(listSlot not_eq LB_ERR);
     packedNum = SendMessage(listWin, LB_GETITEMDATA, listSlot, 0);
-    devNum  = (packedNum >> 24) & 0xFF;
-    drvNum  = (packedNum >> 8)  & 0xFFFF;
-    modeNum = (packedNum >> 0)  & 0xFF;
+    devNum  = (packedNum >> 24) bitand 0xFF;
+    drvNum  = (packedNum >> 8)  bitand 0xFFFF;
+    modeNum = (packedNum >> 0)  bitand 0xFF;
 
     modeName = GetModeName(drvNum, devNum, modeNum);
     ShiAssert(modeName);
@@ -408,8 +408,8 @@ HRESULT CALLBACK DeviceManager::DDDriverInfo::EnumD3DDriversCallback(LPSTR lpDev
     {
         // COBRA - DX - Consider only Drivers making HW T&L
         // sfr: this causes notebooks to stop working
-        //if (lpD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT ){
-        if (lpD3DHWDeviceDesc->dwDevCaps & DisplayOptionsClass::GetDevCaps())
+        //if (lpD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_HWTRANSFORMANDLIGHT ){
+        if (lpD3DHWDeviceDesc->dwDevCaps bitand DisplayOptionsClass::GetDevCaps())
         {
             pThis->m_arrD3DDevices.push_back(D3DDeviceInfo(*lpD3DHWDeviceDesc, lpDeviceName, lpDeviceDescription));
         }
@@ -456,7 +456,7 @@ LPDDSURFACEDESC2 DeviceManager::DDDriverInfo::GetDisplayMode(int n)
 
 bool DeviceManager::DDDriverInfo::CanRenderWindowed()
 {
-    return m_caps.dwCaps2 & DDCAPS2_CANRENDERWINDOWED ? true : false;
+    return m_caps.dwCaps2 bitand DDCAPS2_CANRENDERWINDOWED ? true : false;
 }
 
 bool DeviceManager::DDDriverInfo::Is3dfx()
@@ -468,7 +468,7 @@ bool DeviceManager::DDDriverInfo::SupportsSRT()
 {
     if (devID.dwVendorId == 4634) // 3dfx
     {
-        if (devID.dwDeviceId == 1 or devID.dwDeviceId == 2) // Voodoo 1 & 2
+        if (devID.dwDeviceId == 1 or devID.dwDeviceId == 2) // Voodoo 1 bitand 2
             return false;
     }
 
@@ -519,8 +519,8 @@ bool DeviceManager::DDDriverInfo::D3DDeviceInfo::IsHardware()
 
 bool DeviceManager::DDDriverInfo::D3DDeviceInfo::CanFilterAnisotropic()
 {
-    bool bCanDoAnisotropic = (m_devDesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MAGFANISOTROPIC)  and 
-                             (m_devDesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MINFANISOTROPIC);
+    bool bCanDoAnisotropic = (m_devDesc.dpcTriCaps.dwTextureFilterCaps bitand D3DPTFILTERCAPS_MAGFANISOTROPIC)  and 
+                             (m_devDesc.dpcTriCaps.dwTextureFilterCaps bitand D3DPTFILTERCAPS_MINFANISOTROPIC);
     return bCanDoAnisotropic;
 }
 
@@ -720,7 +720,7 @@ bool DXContext::SetRenderTarget(IDirectDrawSurface7 *pRenderTarget)
 
             // RV - RED - VISTA FIX, seems Vista is returning false to the check for zBuffer availability
             // we go enumerating them and eventually use them directly
-            /* if(m_pcapsDD->dwCaps & DDSCAPS_ZBUFFER)
+            /* if(m_pcapsDD->dwCaps bitand DDSCAPS_ZBUFFER)
              {*/
             // Get the attached Z buffer surface
             IDirectDrawSurface7Ptr pDDSZB;
@@ -750,7 +750,7 @@ bool DXContext::SetRenderTarget(IDirectDrawSurface7 *pRenderTarget)
 
             // CheckCaps();
 
-            return true; // render target changed & succeeded
+            return true; // render target changed bitand succeeded
         }
 
         else
@@ -807,7 +807,7 @@ void DXContext::EnumZBufferFormats(void *parr)
 
 HRESULT CALLBACK DXContext::EnumZBufferFormatsCallback(LPDDPIXELFORMAT lpDDPixFmt, LPVOID lpContext)
 {
-    if (lpDDPixFmt->dwFlags & DDPF_ZBUFFER)
+    if (lpDDPixFmt->dwFlags bitand DDPF_ZBUFFER)
     {
         PIXELFMT_ARRAY *pThis = (PIXELFMT_ARRAY *)lpContext;
         pThis->push_back(*lpDDPixFmt);
@@ -878,82 +878,82 @@ void DXContext::CheckCaps()
 #ifdef _DEBUG
     MonoPrint("-- DXContext - Start of Caps report\n");
 
-    if (m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_SEPARATETEXTUREMEMORIES)
+    if (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_SEPARATETEXTUREMEMORIES)
         MonoPrint(" Device has separate texture memories per stage!. \n");
 
-    if (m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_TEXTURENONLOCALVIDMEM)
+    if (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_TEXTURENONLOCALVIDMEM)
         MonoPrint(" Device supports AGP texturing\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_FLOATTLVERTEX))
+    if ( not (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_FLOATTLVERTEX))
         MonoPrint(" Device does not accepts floating point for post-transform vertex data. \n");
 
-    if ( not (m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_TLVERTEXSYSTEMMEMORY))
+    if ( not (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_TLVERTEXSYSTEMMEMORY))
         MonoPrint(" Device does not accept TL VBs in system memory.\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_TLVERTEXVIDEOMEMORY))
+    if ( not (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_TLVERTEXVIDEOMEMORY))
         MonoPrint(" Device does not accept TL VBs in video memory.\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_DITHER))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps bitand D3DPRASTERCAPS_DITHER))
         MonoPrint(" No dithering\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGRANGE))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps bitand D3DPRASTERCAPS_FOGRANGE))
         MonoPrint(" No range based fog\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGVERTEX))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps bitand D3DPRASTERCAPS_FOGVERTEX))
         MonoPrint(" No vertex fog\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ZTEST))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps bitand D3DPRASTERCAPS_ZTEST))
         MonoPrint(" No Z Test support\n");
 
     if (m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps == D3DPCMPCAPS_ALWAYS ||
         m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps == D3DPCMPCAPS_NEVER)
         MonoPrint(" No Alpha Test support\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwSrcBlendCaps & D3DPBLENDCAPS_SRCALPHA))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwSrcBlendCaps bitand D3DPBLENDCAPS_SRCALPHA))
         MonoPrint(" SrcBlend SRCALPHA not supported\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwDestBlendCaps & D3DPBLENDCAPS_INVSRCALPHA))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwDestBlendCaps bitand D3DPBLENDCAPS_INVSRCALPHA))
         MonoPrint(" DestBlend INVSRCALPHA  not supported\n");
 
-    if ( not (m_pcapsDD->dwCaps & DDCAPS_COLORKEY  and 
-          m_pcapsDD->dwCKeyCaps & DDCKEYCAPS_DESTBLT  and 
-          m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_DRAWPRIMTLVERTEX))
+    if ( not (m_pcapsDD->dwCaps bitand DDCAPS_COLORKEY  and 
+          m_pcapsDD->dwCKeyCaps bitand DDCKEYCAPS_DESTBLT  and 
+          m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_DRAWPRIMTLVERTEX))
         MonoPrint(" Insufficient color key support\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_ALPHAFLATBLEND))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps bitand D3DPSHADECAPS_ALPHAFLATBLEND))
         MonoPrint(" No alpha blending with flat shading\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_COLORGOURAUDRGB))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps bitand D3DPSHADECAPS_COLORGOURAUDRGB))
         MonoPrint(" No gouraud shading\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_SPECULARFLATRGB))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps bitand D3DPSHADECAPS_SPECULARFLATRGB))
         MonoPrint(" No specular flat shading\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_SPECULARGOURAUDRGB))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps bitand D3DPSHADECAPS_SPECULARGOURAUDRGB))
         MonoPrint(" No specular gouraud shading\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_FOGGOURAUD))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps bitand D3DPSHADECAPS_FOGGOURAUD))
         MonoPrint(" No gouraud fog\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_ALPHA))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_ALPHA))
         MonoPrint(" No alpha textures\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_ALPHAPALETTE))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_ALPHAPALETTE))
         MonoPrint(" No palettized alpha textures\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_COLORKEYBLEND))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_COLORKEYBLEND))
         MonoPrint(" No color key blending support\n");
 
-    if (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_POW2)
+    if (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_POW2)
         MonoPrint(" Textures must be power of 2\n");
 
-    if (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_SQUAREONLY)
+    if (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_SQUAREONLY)
         MonoPrint(" Textures must be square\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_TRANSPARENCY))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_TRANSPARENCY))
         MonoPrint(" No texture transparency\n");
 
-    if ( not (m_pD3DHWDeviceDesc->dwTextureOpCaps & D3DTEXOPCAPS_BLENDDIFFUSEALPHA)) // required for MPR_TF_ALPHA
+    if ( not (m_pD3DHWDeviceDesc->dwTextureOpCaps bitand D3DTEXOPCAPS_BLENDDIFFUSEALPHA)) // required for MPR_TF_ALPHA
         MonoPrint(" No D3DTOP_BLENDDIFFUSEALPHA (MPR_TF_ALPHA wont work ie. smoke trails)\n");
 
     MonoPrint("-- DXContext - End of Caps report\n");

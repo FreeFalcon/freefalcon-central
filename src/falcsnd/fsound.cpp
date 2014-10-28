@@ -363,7 +363,7 @@ int InitSoundManager(HWND hWnd, int, char *falconDataDir)
         }
     }
 
-    if (gSoundFlags & FSND_REPETE)
+    if (gSoundFlags bitand FSND_REPETE)
     {
         voiceFilter = new VoiceFilter;
         voiceFilter->SetUpVoiceFilter();
@@ -390,7 +390,7 @@ int InitSoundManager(HWND hWnd, int, char *falconDataDir)
     LoadSFX(falconDataDir);
 
     //JAM 14Dec03 - Fixing -nopete CTD
-    if (gSoundFlags & FSND_REPETE)
+    if (gSoundFlags bitand FSND_REPETE)
         g_voicemap.SetVoiceCount(voiceFilter->fragfile.MaxVoices());
 
     gSoundManagerRunning = TRUE;
@@ -951,7 +951,7 @@ BOOL ReadSFXTable(char *sndtable)
 
             for (l = 0; l < sizeof(flags); l++)
             {
-                if (SFX_DEF[i].flags & 1 << l)
+                if (SFX_DEF[i].flags bitand 1 << l)
                     fprintf(t, "%s", flags[l]);
             }
 
@@ -1053,13 +1053,13 @@ BOOL ReadSFXTableTXT(char *sndtable)
             }
 
 
-            if (SFX_DEF[i].flags & (SFX_POS_SELF | SFX_POS_EXTONLY | SFX_POS_EXTINT))
+            if (SFX_DEF[i].flags bitand (SFX_POS_SELF | SFX_POS_EXTONLY | SFX_POS_EXTINT))
             {
                 // for all those types, set the External flag
                 SFX_DEF[i].flags  or_eq  SFX_POS_EXTERN;
             }
 
-            if (SFX_DEF[i].flags & SFX_POS_EXTERN)
+            if (SFX_DEF[i].flags bitand SFX_POS_EXTERN)
             {
                 // for all external types, set the 3d flag
                 SFX_DEF[i].flags  or_eq  SFX_FLAGS_3D;
@@ -1117,7 +1117,7 @@ BOOL ReadSFXTableTXT(char *sndtable)
             {
                 char flags[11] = "PLEV3FAHOR";
 
-                if (SFX_DEF[i].flags & 1 << l)
+                if (SFX_DEF[i].flags bitand 1 << l)
                     fprintf(fp, "%c", flags[l]);
             }
 
@@ -1184,7 +1184,7 @@ void LoadSFX(char *falconDataDir)
 
         for (i = 0; i < NumSFX; i++) // first pass - most important buffers
         {
-            if ((SFX_DEF[i].flags & SFX_FLAGS_HIGH) == 0)
+            if ((SFX_DEF[i].flags bitand SFX_FLAGS_HIGH) == 0)
                 continue;
 
             sprintf(fname, "%s\\%s", FalconSoundThrDirectory, SFX_DEF[i].fileName);
@@ -1200,7 +1200,7 @@ void LoadSFX(char *falconDataDir)
 
         for (i = 0; i < NumSFX; i++)
         {
-            if (SFX_DEF[i].flags & SFX_FLAGS_HIGH)
+            if (SFX_DEF[i].flags bitand SFX_FLAGS_HIGH)
                 continue;
 
             sprintf(fname, "%s\\%s", FalconSoundThrDirectory, SFX_DEF[i].fileName);
@@ -1383,22 +1383,22 @@ void F4SoundEntering3d(void)
     g_bSoundDistanceEffect = false;
     g_bSoundHearVMSExternal = false;
 
-    if (PlayerOptions.SoundFlags & SNDFNEWENG)
+    if (PlayerOptions.SoundFlags bitand SNDFNEWENG)
     {
         g_bNewEngineSounds  = true;
     }
 
-    if (PlayerOptions.SoundFlags & SNDFDOP)
+    if (PlayerOptions.SoundFlags bitand SNDFDOP)
     {
         g_bEnableDopplerSound  = true;
     }
 
-    if (PlayerOptions.SoundFlags & SNDFDISTE)
+    if (PlayerOptions.SoundFlags bitand SNDFDISTE)
     {
         g_bSoundDistanceEffect = true;
     }
 
-    if (PlayerOptions.SoundFlags & SNDFVMSEXT)
+    if (PlayerOptions.SoundFlags bitand SNDFVMSEXT)
     {
         g_bSoundHearVMSExternal = true;
     }
@@ -1498,7 +1498,7 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
     if (F4IsBadReadPtr(sfxp, sizeof(sfxp))) return;
 
     if (g_bRealisticAvionics  and 
-        (sfxp->flags & SFX_FLAGS_VMS))
+        (sfxp->flags bitand SFX_FLAGS_VMS))
     {
         AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -1523,7 +1523,7 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
 
     if (gSoundObject)
     {
-        if ((SFX_DEF[ sfxId ].flags & SFX_POS_LOOPED) ||
+        if ((SFX_DEF[ sfxId ].flags bitand SFX_POS_LOOPED) ||
             override ||
             ( not gSoundObject->IsPlaying(sfxId, 0)))
             gSoundObject->Sfx(sfxId, 0, pscale, volume, CamPos.x, CamPos.y, CamPos.z);
@@ -1565,7 +1565,7 @@ F4SoundFXPositionDriver(unsigned int begFrame, unsigned int endFrame)
         }
 
         // set stagger counter
-        sPosLoopStagger = (++sPosLoopStagger) & LOOP_STAGGER_MASK;
+        sPosLoopStagger = (++sPosLoopStagger) bitand LOOP_STAGGER_MASK;
 
         if (gSoundDriver)
         {
@@ -1802,7 +1802,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol)
     // sfr: @todo remove this hack
     if (F4IsBadReadPtr(sfxp, sizeof(sfxp))) return;
 
-    if (g_bRealisticAvionics and (sfxp->flags & SFX_FLAGS_VMS))
+    if (g_bRealisticAvionics and (sfxp->flags bitand SFX_FLAGS_VMS))
     {
         AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 

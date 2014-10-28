@@ -15,7 +15,7 @@
 
             1) file extraction from archive (zip) files.
             2) virtual file system that allows easy patching of data.
-            3) caching beyond the minimal i/o buffers & mscdex.
+            3) caching beyond the minimal i/o buffers bitand mscdex.
             4) asynchronous read/writes.
             5) event logging (for general debugging as well as to
                provide a table from which to sort the contents of
@@ -90,7 +90,7 @@
    ---------------------------------------------------------------------- */
 #include <cISO646>
 #include "lists.h"         /* list manipulation functions (+list.cpp)        */
-#include "resmgr.h"        /* exported prototypes & type definitions         */
+#include "resmgr.h"        /* exported prototypes bitand type definitions         */
 //#include "memmgr.h"
 #include "omni.h"
 
@@ -150,8 +150,8 @@ extern int  __cdecl _flush(FILE * str);
 #define _IOSETVBUF              0x0400 /* from file2.h */
 #define _SH_DENYNO              0x40   /* from share.h */
 
-#define anybuf(s)               ((s)->_flag & (_IOMYBUF|_IONBF|_IOYOURBUF))
-#define inuse(s)                ((s)->_flag & (_IOREAD|_IOWRT|_IORW))
+#define anybuf(s)               ((s)->_flag bitand (_IOMYBUF|_IONBF|_IOYOURBUF))
+#define inuse(s)                ((s)->_flag bitand (_IOREAD|_IOWRT|_IORW))
 
 
 #define SHOULD_I_CALL(idx,retval)       if( RES_CALLBACK[(idx)] )\
@@ -237,7 +237,7 @@ extern int  __cdecl _flush(FILE * str);
 
 #define NOTHING                  -1
 
-#define FLAG_TEST(a,b)           ( a & b )
+#define FLAG_TEST(a,b)           ( a bitand b )
 #define FLAG_SET(a,b)            ( a  or_eq  b )
 #define FLAG_UNSET(a,b)          ( a xor_eq compl b )
 
@@ -512,7 +512,7 @@ get_handle(void);                                       /* return an available f
 
 void
 split_path(const char * path, char * filename, char * dirpath),      /* cut a path string in two        */
-           shut_down(void);                                        /* release allocations & reset Resource Mgr.    */
+           shut_down(void);                                        /* release allocations bitand reset Resource Mgr.    */
 
 
 char
@@ -707,7 +707,7 @@ RES_EXPORT int ResInit(HWND hwnd)
     {
         dev = &RES_DEVICES[drive - 1];
 
-        if (GLOBAL_VOLUME_MASK & (1 << drive))
+        if (GLOBAL_VOLUME_MASK bitand (1 << drive))
         {
             root[0] = (char)('A' + (drive - 1));
 
@@ -1412,7 +1412,7 @@ RES_EXPORT int ResOpenFile(const char * name, int mode)
         /* if the user is trying to create a file on the harddrive,
            this is ok. */
 
-        if ( not (mode & _O_CREAT))
+        if ( not (mode bitand _O_CREAT))
         {
             SAY_ERROR(RES_ERR_FILE_NOT_FOUND, name);
 #if (RES_MULTITHREAD)
@@ -1545,7 +1545,7 @@ RES_EXPORT int ResOpenFile(const char * name, int mode)
     {
         /* may seem redundant but there are too many pathological cases otherwise */
 
-        if (mode & _O_CREAT)
+        if (mode bitand _O_CREAT)
             res_fullpath(filename, name, _MAX_PATH);    /* regardless of coercion state */
         else
             sprintf(filename, "%s%s", GLOBAL_SEARCH_PATH[ entry -> directory ], entry -> name);
@@ -2164,7 +2164,7 @@ RES_EXPORT size_t ResWriteFile(int handle, const void * buffer, size_t count)
         return(0);
     }
 
-    if ( not (file -> mode & (_O_CREAT | _O_APPEND | _O_RDWR | _O_WRONLY)))
+    if ( not (file -> mode bitand (_O_CREAT | _O_APPEND | _O_RDWR | _O_WRONLY)))
     {
         SAY_ERROR(RES_ERR_PROBLEM_WRITING, file -> filename);
 #if (RES_MULTITHREAD)
@@ -2233,7 +2233,7 @@ RES_EXPORT int ResDeleteFile(const char * name)
     IF_LOG(LOG("delete: %s\n", name));
 
 #if( !RES_USE_FLAT_MODEL )
-    /* find both the entry & the table it resides in */
+    /* find both the entry bitand the table it resides in */
     entry = hash_find_table(name, &table);
 #else
     entry = hash_find(name, GLOBAL_HASH_TABLE);
@@ -2441,7 +2441,7 @@ RES_EXPORT int ResDeleteDirectory(char * pathname, int forced)
 
     IF_LOG(LOG("deltree: %s\n", pathname));
 
-    if ( not (fileinfo.attrib & _A_SUBDIR))
+    if ( not (fileinfo.attrib bitand _A_SUBDIR))
     {
         SAY_ERROR(RES_ERR_IS_NOT_DIRECTORY, pathname);
         return(FALSE);
@@ -2464,7 +2464,7 @@ RES_EXPORT int ResDeleteDirectory(char * pathname, int forced)
             continue;
         }
 
-        if (fileinfo.attrib & _A_SUBDIR)
+        if (fileinfo.attrib bitand _A_SUBDIR)
         {
             char recurse_path[MAX_PATH];
             sprintf(recurse_path, "%s\\%s", pathname, fileinfo.name);
@@ -2910,7 +2910,7 @@ RES_EXPORT int ResSeekFile(int handle, size_t offset, int origin)
     }
 
     /* If we are writing, do seek anyway */
-    if (FILE_HANDLES[ handle ].mode & (O_WRONLY | O_RDWR))
+    if (FILE_HANDLES[ handle ].mode bitand (O_WRONLY | O_RDWR))
     {
         FILE_HANDLES[ handle ].current_pos  = lseek(FILE_HANDLES[ handle ].os_handle, offset, origin);
     }
@@ -3797,7 +3797,7 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
 
     if (directory not_eq -1)
     {
-        /* integral volume id & path index */
+        /* integral volume id bitand path index */
 
         while ( not done)
         {
@@ -3805,7 +3805,7 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
             /* don't add directories to the hash table,
                ResTreeAdd is used to recurse directories */
 
-            if ( not (data.attrib & _A_SUBDIR))
+            if ( not (data.attrib bitand _A_SUBDIR))
             {
 
                 /* Reject empty files before calling hash_add.  This
@@ -5304,7 +5304,7 @@ int __cdecl RES_FCLOSE(FILE * file)
 
 
 
-#define bigbuf(s)       ((s)->_flag & (_IOMYBUF|_IOYOURBUF))
+#define bigbuf(s)       ((s)->_flag bitand (_IOMYBUF|_IOYOURBUF))
 #define _osfile(i)      ( _pioinfo(i)->osfile
 #define FCRLF           0x04    /* CR-LF across read buffer (in text mode) */
 #define _IOCTRLZ        0x2000
@@ -5384,13 +5384,13 @@ long __cdecl RES_FTELL(FILE * stream)
 
     LOCK_STREAM(stream);
 
-    if ((stream -> _flag) & _IOARCHIVE)
+    if ((stream -> _flag) bitand _IOARCHIVE)
     {
         handle = stream -> _file;
 
         /* GFG_NOV06        count = (int)( stream -> _ptr - stream -> _base ); *//* should be safe (key word: SHOULD) */
 
-        if (handle < 0 or handle > MAX_FILE_HANDLES or (FILE_HANDLES[ handle ].os_handle == -1 and !(stream -> _flag & _IOLOOSE)))
+        if (handle < 0 or handle > MAX_FILE_HANDLES or (FILE_HANDLES[ handle ].os_handle == -1 and !(stream -> _flag bitand _IOLOOSE)))
         {
             SAY_ERROR(RES_ERR_ILLEGAL_FILE_HANDLE, "ftell");
             UNLOCK_STREAM(stream);
@@ -5401,7 +5401,7 @@ long __cdecl RES_FTELL(FILE * stream)
         }
 
         /***  GFG_NOV06
-               if( stream -> _flag & _IOARCHIVE )
+               if( stream -> _flag bitand _IOARCHIVE )
                    count = FILE_HANDLES[ handle ].current_pos - stream -> _cnt;
                else
                    count += FILE_HANDLES[ handle ].current_pos;
@@ -5448,14 +5448,14 @@ long __cdecl RES_FTELL(FILE * stream)
 
     offset = stream->_ptr - stream->_base;
 
-    if (stream->_flag & (_IOWRT | _IOREAD))
+    if (stream->_flag bitand (_IOWRT | _IOREAD))
     {
-        if (stream -> _flag & _O_TEXT)
+        if (stream -> _flag bitand _O_TEXT)
             for (p = stream->_base; p < stream->_ptr; p++)
                 if (*p == '\n')  /* adjust for '\r' */
                     offset++;
     }
-    else if ( not (stream->_flag & _IORW))
+    else if ( not (stream->_flag bitand _IORW))
     {
         errno = EINVAL;
         UNLOCK_STREAM(stream);
@@ -5474,7 +5474,7 @@ long __cdecl RES_FTELL(FILE * stream)
         return((long)offset);
     }
 
-    if (stream->_flag & _IOREAD)    /* go to preceding sector */
+    if (stream->_flag bitand _IOREAD)    /* go to preceding sector */
     {
 
         if (stream->_cnt == 0)      /* filepos holds correct location */
@@ -5494,7 +5494,7 @@ long __cdecl RES_FTELL(FILE * stream)
             /* If text mode, adjust for the cr/lf substitution. If
                binary mode, we're outta here. */
 
-            if (stream -> _flag & _O_TEXT)
+            if (stream -> _flag bitand _O_TEXT)
             {
                 /* (1) If we're not at eof, simply copy _bufsiz
                    onto rdcnt to get the # of untranslated
@@ -5524,7 +5524,7 @@ long __cdecl RES_FTELL(FILE * stream)
                        didn't tell us about it.  Check flag
                        and bump count, if necessary. */
 
-                    if (stream->_flag & _IOCTRLZ)
+                    if (stream->_flag bitand _IOCTRLZ)
                         ++rdcnt;
 
                     UNLOCK_STREAM(stream);
@@ -5546,8 +5546,8 @@ long __cdecl RES_FTELL(FILE * stream)
                     LOCK_STREAM(stream);
 
                     if ((rdcnt <= _SMALL_BUFSIZ)  and 
-                        (stream->_flag & _IOMYBUF)  and 
-                        !(stream->_flag & _IOSETVBUF))
+                        (stream->_flag bitand _IOMYBUF)  and 
+                        !(stream->_flag bitand _IOSETVBUF))
                     {
                         /* The translated contents of
                            the buffer is small and we
@@ -5661,14 +5661,14 @@ size_t __cdecl RES_FREAD(void *buffer, size_t size, size_t num, FILE *stream)
             data += nbytes;
 
             /* GFG_NOV06 */
-            if (stream -> _flag & _IOARCHIVE)
+            if (stream -> _flag bitand _IOARCHIVE)
                 FILE_HANDLES[ stream -> _file ].current_pos += nbytes;
 
 
 
 
         }              //          |<---------- MODIFIED ----------->|
-        else if ((count >= bufsize) and !(stream -> _flag & _IOARCHIVE))
+        else if ((count >= bufsize) and !(stream -> _flag bitand _IOARCHIVE))
         {
             //          |<---------- MODIFIED ----------->|
             /* If we have more than bufsize chars to read, get data
@@ -5728,7 +5728,7 @@ size_t __cdecl RES_FREAD(void *buffer, size_t size, size_t num, FILE *stream)
             --count;
 
             /* GFG_NOV06 */
-            if (stream -> _flag & _IOARCHIVE)
+            if (stream -> _flag bitand _IOARCHIVE)
                 FILE_HANDLES[ stream -> _file ].current_pos++;
 
             /* update buffer size */
@@ -5789,7 +5789,7 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
 
     LOCK_STREAM(stream);
 
-    if (stream -> _flag & _IOARCHIVE)
+    if (stream -> _flag bitand _IOARCHIVE)
     {
         pos = FILE_HANDLES[ stream -> _file ].current_pos;
 
@@ -5868,13 +5868,13 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
            read access only, decrease _bufsiz so that the next _filbuf
            won't cost quite so much */
 
-        if (stream->_flag & _IORW)
+        if (stream->_flag bitand _IORW)
             stream->_flag and_eq compl (_IOWRT | _IOREAD);
         else
         {
-            if ((stream->_flag & _IOREAD)  and 
-                (stream->_flag & _IOMYBUF)  and 
-                !(stream->_flag & _IOSETVBUF))
+            if ((stream->_flag bitand _IOREAD)  and 
+                (stream->_flag bitand _IOMYBUF)  and 
+                !(stream->_flag bitand _IOSETVBUF))
             {
                 stream->_bufsiz = _SMALL_BUFSIZ;
             }
@@ -5908,7 +5908,7 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
         }
 
 
-        if ((stream -> _flag & _IOARCHIVE) and (pos not_eq -1))
+        if ((stream -> _flag bitand _IOARCHIVE) and (pos not_eq -1))
             FILE_HANDLES[ stream -> _file ].current_pos = pos;
     }
 
@@ -5973,7 +5973,7 @@ int __cdecl _filbuf(FILE * stream)
         return(EOF);
     }
 
-    // if( !(stream -> _flag & ( _IOARCHIVE | _IOLOOSE )) ) {
+    // if( !(stream -> _flag bitand ( _IOARCHIVE | _IOLOOSE )) ) {
     //    /* You can actually remove this error trap if you want fopen
     //       as well as ResFOpen */
     //    SAY_ERROR( RES_ERR_UNKNOWN, "Stream not created with ResFOpen!" );
@@ -5985,12 +5985,12 @@ int __cdecl _filbuf(FILE * stream)
     //LRKLUDGE
     // If its a string return
     if ( not inuse(stream) ||
-        ((stream->_flag & _IOSTRG)  and 
-         !(stream->_flag & (_IOLOOSE | _IOARCHIVE))))
+        ((stream->_flag bitand _IOSTRG)  and 
+         !(stream->_flag bitand (_IOLOOSE | _IOARCHIVE))))
         return(EOF);
 
     /* if stream is opened as WRITE ONLY, set error and return */
-    if (stream -> _flag & _IOWRT)
+    if (stream -> _flag bitand _IOWRT)
     {
         stream -> _flag  or_eq  _IOERR;
         return(EOF);
@@ -6013,7 +6013,7 @@ int __cdecl _filbuf(FILE * stream)
     SHOULD_I_CALL_WITH(CALLBACK_FILL_STREAM, stream, retval);
 
     if (retval)
-        return(0xff & retval);
+        return(0xff bitand retval);
 
     /* READ OR DECOMPRESS ? */
 
@@ -6025,7 +6025,7 @@ int __cdecl _filbuf(FILE * stream)
        archive, we assume we already have a decomressed buffer from
        which to copy bytes. */
 
-    if ( not (stream -> _flag & _IOARCHIVE))
+    if ( not (stream -> _flag bitand _IOARCHIVE))
     {
         compressed_flag = FALSE;
         handle = stream -> _file;
@@ -6089,7 +6089,7 @@ int __cdecl _filbuf(FILE * stream)
             {
                 stream -> _flag  or_eq  _IOERR;
 
-                if (stream -> _flag & (_IOARCHIVE | _IOLOOSE))  /* make sure this is an fopen() file */
+                if (stream -> _flag bitand (_IOARCHIVE | _IOLOOSE))  /* make sure this is an fopen() file */
                     ResCheckMedia(file -> device);              /* if not, has media changed?        */
 
                 return(EOF);
@@ -6109,7 +6109,7 @@ int __cdecl _filbuf(FILE * stream)
         }
 
         //  Don't think I need this, but... _osfile_safe(i) expands to (_pioinfo_safe(i)->osfile)
-        //  if( !(stream -> _flag & ( _IOWRT | _IORW )) and ((_osfile_safe(_fileno(stream)) & (FTEXT|FEOFLAG)) == (FTEXT|FEOFLAG)))
+        //  if( !(stream -> _flag bitand ( _IOWRT | _IORW )) and ((_osfile_safe(_fileno(stream)) bitand (FTEXT|FEOFLAG)) == (FTEXT|FEOFLAG)))
         //      stream -> _flag  or_eq  _IOCTRLZ;
 
         /* Check for small _bufsiz (_SMALL_BUFSIZ). If it is small and
@@ -6119,15 +6119,15 @@ int __cdecl _filbuf(FILE * stream)
            if one is made, will fill the whole buffer. */
 
         if ((stream -> _bufsiz == _SMALL_BUFSIZ)  and 
-            (stream -> _flag & _IOMYBUF)  and 
-            !(stream -> _flag & _IOSETVBUF))
+            (stream -> _flag bitand _IOMYBUF)  and 
+            !(stream -> _flag bitand _IOSETVBUF))
         {
             stream -> _bufsiz = _INTERNAL_BUFSIZ;
         }
     }
 
     stream -> _cnt--;
-    return(0xff & *stream -> _ptr++);
+    return(0xff bitand *stream -> _ptr++);
 }
 
 
@@ -6756,7 +6756,7 @@ int hash(const char * string, int size)
         string++;
     }
 
-    i = (res & 0xffffff) % size;
+    i = (res bitand 0xffffff) % size;
 #endif
 
     return(i);
@@ -7761,7 +7761,7 @@ int get_handle(void)
     PURPOSE:    Returns the filename and the path for
                 a given full file desription.
 
-    PARAMS:     Full filename (path & filename), ptr to
+    PARAMS:     Full filename (path bitand filename), ptr to
                 a buffer for filename, ptr to a buffer
                 for path.
 
@@ -7814,7 +7814,7 @@ void split_path(const char * in_name, char * out_filename, char * out_dirpath)
 
 /* =======================================================
 
-    FUNCTION:   say_error (local only & debug only)
+    FUNCTION:   say_error (local only bitand debug only)
 
     PURPOSE:    Display dialog box with error message.
 
@@ -7910,19 +7910,19 @@ void dbg_print(HASH_ENTRY * data)
     printf("csize: %5d ", data -> csize);
     printf("method: %1d ", data -> method);
 
-    if (attrib & _A_RDONLY)  printf("R");
+    if (attrib bitand _A_RDONLY)  printf("R");
     else   printf(" ");
 
-    if (attrib & _A_HIDDEN)  printf("H");
+    if (attrib bitand _A_HIDDEN)  printf("H");
     else   printf(" ");
 
-    if (attrib & _A_SYSTEM)  printf("S");
+    if (attrib bitand _A_SYSTEM)  printf("S");
     else   printf(" ");
 
-    if (attrib & _A_ARCH)    printf("A");
+    if (attrib bitand _A_ARCH)    printf("A");
     else   printf(" ");
 
-    if (attrib & _A_SUBDIR)  printf("\t\t<DIR>");
+    if (attrib bitand _A_SUBDIR)  printf("\t\t<DIR>");
     else  printf("\t\t     ");
 
     printf("\n");
@@ -7988,7 +7988,7 @@ void dbg_device(DEVICE_ENTRY * dev)
     FUNCTION:    dbg_analyze_hash
 
     PURPOSE:     Print statistics regarding hash
-                 performance & contents
+                 performance bitand contents
 
     PARAMS:      Ptr to a hash table wrapper structure.
 

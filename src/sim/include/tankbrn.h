@@ -105,7 +105,7 @@ public:
     void DoneRefueling(void);
     int IsSet(int flag)
     {
-        return (flags & flag) and TRUE;
+        return (flags bitand flag) and TRUE;
     }
     SimObjectType* TankingPtr(void)
     {

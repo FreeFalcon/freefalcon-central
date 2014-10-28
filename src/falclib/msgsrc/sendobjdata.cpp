@@ -91,7 +91,7 @@ int FalconSendObjData::Process(uchar autodisp)
     if (autodisp or !TheCampaign.IsPreLoaded() or !session)
         return -1;
 
-    if (TheCampaign.Flags & CAMP_NEED_OBJ_DELTAS)
+    if (TheCampaign.Flags bitand CAMP_NEED_OBJ_DELTAS)
     {
         CampaignJoinKeepAlive();
 
@@ -124,7 +124,7 @@ int FalconSendObjData::Process(uchar autodisp)
         // Check if we've gotten all our blocks
         for (int i = 0; i < dataBlock.totalBlocks; i++)
         {
-            if ( not (session->objDataReceived[i / 8] & (1 << (i % 8))))
+            if ( not (session->objDataReceived[i / 8] bitand (1 << (i % 8))))
                 return 0;
         }
 
@@ -229,7 +229,7 @@ void SendObjectiveDeltas(FalconSessionEntity *session, VuTargetEntity *target, u
             sizeleft -= gObjBlockSize;
         }
 
-        if ( not blocksNeeded or !(blocksNeeded[curBlock / 8] & (1 << (curBlock % 8))))
+        if ( not blocksNeeded or !(blocksNeeded[curBlock / 8] bitand (1 << (curBlock % 8))))
         {
             msg = new FalconSendObjData(session->Id(), target);
             msg->dataBlock.size = (short)blocksize;

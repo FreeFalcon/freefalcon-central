@@ -409,7 +409,7 @@ bool CDXVbManager::VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices)
         if ( not pVbList[i].Class) CreateVB(i, Class);
 
         // if a VB with wrong Class next VB and skip
-        if ( not (pVbList[i].Class & Class))
+        if ( not (pVbList[i].Class bitand Class))
         {
             i++;
             continue;

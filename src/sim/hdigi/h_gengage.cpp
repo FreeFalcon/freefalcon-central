@@ -616,7 +616,7 @@ void HeliBrain::FireControl(void)
     }
 
 #endif
-    // edg: get real az & el.  Since we don't update targets every frame
+    // edg: get real az bitand el.  Since we don't update targets every frame
     // anymore, we should get a current val for more accuracy
     xft = theObject->XPos() - self->XPos();
     yft = theObject->YPos() - self->YPos();

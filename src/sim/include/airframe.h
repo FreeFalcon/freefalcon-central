@@ -1385,11 +1385,11 @@ public:
     };
     BOOL EpuIsAir()
     {
-        return (epuBurnState & EpuAir) ? TRUE : FALSE;
+        return (epuBurnState bitand EpuAir) ? TRUE : FALSE;
     };
     BOOL EpuIsHydrazine()
     {
-        return (epuBurnState & EpuHydrazine) ? TRUE : FALSE;
+        return (epuBurnState bitand EpuHydrazine) ? TRUE : FALSE;
     };
 
     unsigned char hydrAB; // JPO - state of the hydraulics system
@@ -1401,11 +1401,11 @@ public:
     };
     int HydraulicA()
     {
-        return (hydrAB & HYDR_A_SYSTEM);
+        return (hydrAB bitand HYDR_A_SYSTEM);
     };
     int HydraulicB()
     {
-        return (hydrAB & HYDR_B_SYSTEM);
+        return (hydrAB bitand HYDR_B_SYSTEM);
     };
     int HydraulicOK()
     {
@@ -1418,7 +1418,7 @@ public:
     void HydrBreak(int sys);
     void HydrDown(int sys)
     {
-        hydrAB and_eq compl (sys & HYDR_ALL);
+        hydrAB and_eq compl (sys bitand HYDR_ALL);
     };
     void HydrRestore(int sys);
 
@@ -1448,7 +1448,7 @@ public:
     unsigned int engineFlags;
     int IsEngineFlag(EngineFlags ef)
     {
-        return (engineFlags & ef) ? 1 : 0;
+        return (engineFlags bitand ef) ? 1 : 0;
     };
     void SetEngineFlag(EngineFlags ef)
     {
@@ -1543,11 +1543,11 @@ public:
     unsigned int generators;
     BOOL GeneratorRunning(Generator gen)
     {
-        return (generators & gen) ? TRUE : FALSE;
+        return (generators bitand gen) ? TRUE : FALSE;
     };
     BOOL GeneratorOK(Generator gen)
     {
-        return (generators & (gen << 1)) ? FALSE : TRUE;
+        return (generators bitand (gen << 1)) ? FALSE : TRUE;
     };
     void GeneratorOn(Generator gen)
     {
@@ -1746,7 +1746,7 @@ public:
     };
     int IsSet(int testFlag) const
     {
-        return flags & testFlag ? 1 : 0;
+        return flags bitand testFlag ? 1 : 0;
     }
     // KCK added function - this is really only needed temporarily
     void SetPosition(float x, float y, float z);

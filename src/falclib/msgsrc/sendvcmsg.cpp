@@ -139,7 +139,7 @@ int FalconSendVC::Process(uchar autodisp)
 
     MonoPrint("Got the VC Message %d\n", dataBlock.size);
 
-    if (TheCampaign.Flags & CAMP_NEED_VC)
+    if (TheCampaign.Flags bitand CAMP_NEED_VC)
     {
         count = dataBlock.size / sizeof(sent_vc);
 

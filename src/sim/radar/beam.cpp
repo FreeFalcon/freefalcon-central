@@ -30,11 +30,11 @@ void RadarDopplerClass::MoveBeam(void)
     switch (mode)
     {
         case GM:
-            if (flags & DBS1)
+            if (flags bitand DBS1)
             {
                 curScanRate = scanRate * g_fDBS1ScanRateFactor;//0.25F; // We're fudging -- Up the scan rate to reduce the latency
             }
-            else if (flags & DBS2)
+            else if (flags bitand DBS2)
             {
                 curScanRate = scanRate * g_fDBS2ScanRateFactor;//0.05F; // We're fudging -- Up the scan rate to reduce the latency
             }
@@ -415,7 +415,7 @@ void RadarDopplerClass::MoveBeam(void)
 #if 0 // This will be nice but is a bit broken inside GMComposit.cpp  SCR 8/14/98
 
                 // In GM DBS modes, the beam always sweeps from left to right
-                if ((mode == GM) and ((flags & DBS1) or (flags & DBS2)))
+                if ((mode == GM) and ((flags bitand DBS1) or (flags bitand DBS2)))
                 {
                     beamAz = max(-azScan, -MAX_ANT_EL + seekerAzCenter);
                 }

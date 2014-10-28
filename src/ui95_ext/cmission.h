@@ -99,7 +99,7 @@ public:
 
     void SetState(short state)
     {
-        State_ = static_cast<short>(state & 3);
+        State_ = static_cast<short>(state bitand 3);
     }
     short GetState()
     {

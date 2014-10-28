@@ -119,7 +119,7 @@ BOOL C_Player::Process(long ID, short HitType)
 
 void C_Player::Refresh()
 {
-    if ( not Ready() or Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
@@ -127,7 +127,7 @@ void C_Player::Refresh()
 
 void C_Player::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Icon_)
@@ -139,13 +139,13 @@ void C_Player::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Status_ and muted_)
         Status_->Draw(surface, cliprect);
 
-    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
 void C_Player::SetState(short newstate)
 {
-    State_ = static_cast<short>(newstate & 1);
+    State_ = static_cast<short>(newstate bitand 1);
 
     if (Name_)
     {
@@ -160,7 +160,7 @@ void C_Player::SetState(short newstate)
 
 void C_Player::SetMute(short mute)
 {
-    muted_ = static_cast<short>(mute & 1);
+    muted_ = static_cast<short>(mute bitand 1);
 
     if (Status_)
         Status_->Refresh();
@@ -168,7 +168,7 @@ void C_Player::SetMute(short mute)
 
 void C_Player::SetIgnore(short ignore)
 {
-    ignored_ = static_cast<short>(ignore & 1);
+    ignored_ = static_cast<short>(ignore bitand 1);
 
     if (Name_)
     {

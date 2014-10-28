@@ -26,7 +26,7 @@ void ICPClass::ExecFACKMode(void)
 
         faultCount = playerAC->mFaults->GetFFaultCount();
 
-        if (mUpdateFlags & FACK_UPDATE or ( not (mUpdateFlags & FACK_UPDATE) and faultCount))
+        if (mUpdateFlags bitand FACK_UPDATE or ( not (mUpdateFlags bitand FACK_UPDATE) and faultCount))
         {
 
             mUpdateFlags and_eq !FACK_UPDATE;
@@ -73,7 +73,7 @@ void ICPClass::ExecPfl()
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ((mUpdateFlags & FACK_UPDATE) == 0) // nothing to update;
+    if ((mUpdateFlags bitand FACK_UPDATE) == 0) // nothing to update;
         ClearPFLLines(); // reset the display
 
     mUpdateFlags and_eq compl FACK_UPDATE; // we'll have updated.
@@ -145,12 +145,12 @@ void ICPClass::PNUpdateFACKMode(int button, int)
         // previous failures on the System?
         testFunc = mFaultFunc - 1;
 
-        if (mFaultFunc and (failedFuncs & ((1 << testFunc) - 1)) > 0)
+        if (mFaultFunc and (failedFuncs bitand ((1 << testFunc) - 1)) > 0)
         {
             mFaultFunc -= 2;
             funcIdx = (1 << mFaultFunc);
 
-            while ((failedFuncs & funcIdx) == 0)
+            while ((failedFuncs bitand funcIdx) == 0)
             {
                 mFaultFunc --;
                 funcIdx = funcIdx >> 1;
@@ -178,7 +178,7 @@ void ICPClass::PNUpdateFACKMode(int button, int)
             funcIdx = (1 << 31);
             mFaultFunc = 31;
 
-            while ((failedFuncs & funcIdx) == 0)
+            while ((failedFuncs bitand funcIdx) == 0)
             {
                 mFaultFunc --;
                 funcIdx = funcIdx >> 1;
@@ -195,11 +195,11 @@ void ICPClass::PNUpdateFACKMode(int button, int)
         failedFuncs = playerAC->mFaults->GetFault((FaultClass::type_FSubSystem) faultIdx);
 
         // next failures on the System?
-        if ((failedFuncs & compl ((1 << mFaultFunc) - 1)) > 0)
+        if ((failedFuncs bitand compl ((1 << mFaultFunc) - 1)) > 0)
         {
             funcIdx = (1 << mFaultFunc);
 
-            while ((failedFuncs & funcIdx) == 0)
+            while ((failedFuncs bitand funcIdx) == 0)
             {
                 mFaultFunc ++;
                 funcIdx = funcIdx << 1;
@@ -224,7 +224,7 @@ void ICPClass::PNUpdateFACKMode(int button, int)
             funcIdx = 1;
             mFaultFunc = 0;
 
-            while ((failedFuncs & funcIdx) == 0)
+            while ((failedFuncs bitand funcIdx) == 0)
             {
                 mFaultFunc ++;
                 funcIdx = funcIdx << 1;

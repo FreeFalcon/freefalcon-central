@@ -273,7 +273,7 @@ void DigitalBrain::MissileDefeatCheck(void)
             if (((SimWeaponClass *)missileFiredEntity)->sensorArray and ((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming)
             {
                 // Check if we are in our 'count down'. First bit will be 1 if so
-                if (missileFiredTime & 0x1)
+                if (missileFiredTime bitand 0x1)
                 {
                     // Is our count down over? If not, that's it
                     if (missileFiredTime > SimLibElapsedTime)
@@ -390,7 +390,7 @@ void DigitalBrain::MissileDefeat()
                 self->Sms->EmergencyJettison();
                 SelectGroundWeapon();
             }
-            else if (rand() & 1)
+            else if (rand() bitand 1)
             {
                 self->Sms->AGJettison();
                 SelectGroundWeapon();

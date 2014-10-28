@@ -388,7 +388,7 @@ void PilotInputs::Reset(void)
 /*******************************************************************************/
 void PilotInputs::cycleCurrentEngine()
 {
-    if ((SimDriver.GetPlayerEntity())/* and (SimDriver.GetPlayerEntity()->acFlags & hasTwoEngines)*/)
+    if ((SimDriver.GetPlayerEntity())/* and (SimDriver.GetPlayerEntity()->acFlags bitand hasTwoEngines)*/)
     {
         switch (currentlyActiveEngine)
         {

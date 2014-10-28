@@ -2062,7 +2062,7 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
         {
             unit = (UnitClass *) entity;
 
-            if ((TheCampaign.Flags & CAMP_TACTICAL_EDIT) or (GetTeam(unit->GetOwner()) == FalconLocalSession->GetTeam()))
+            if ((TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) or (GetTeam(unit->GetOwner()) == FalconLocalSession->GetTeam()))
             {
                 gMapMgr->SetCurrentWaypointList(unit->Id());
 
@@ -2212,7 +2212,7 @@ void fixup_unit(Unit unit)
         {
             wp->GetWPLocation(&wx, &wy);
 
-            if (wp->GetWPFlags() & WPF_HOLDCURRENT)
+            if (wp->GetWPFlags() bitand WPF_HOLDCURRENT)
                 z = pwp->GetWPAltitude();
             else
                 z = wp->GetWPAltitude();

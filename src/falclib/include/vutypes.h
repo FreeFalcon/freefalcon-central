@@ -243,7 +243,7 @@ public:
     }
 
     // equality: everything equal
-    bool operator==(const VU_ADDRESS & rhs) const
+    bool operator==(const VU_ADDRESS bitand rhs) const
     {
         return (
                    (this->ip == rhs.ip)  and 

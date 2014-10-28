@@ -238,7 +238,7 @@ public:
     };
     int IsSetFlag(int val)
     {
-        return (flags & val ? TRUE : FALSE);
+        return (flags bitand val ? TRUE : FALSE);
     };
 
     // 2001-11-29 ADDED BY S.G. HELP FUNCTION TO SEARCH FOR A GROUND TARGET

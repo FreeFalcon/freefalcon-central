@@ -132,7 +132,7 @@ C_Entity *BuildObjective(Objective obj)
     obj->GetName(buffer, 40, TRUE);
     newinfo->SetName(35, 10, gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
-    // Set # & Airplane type
+    // Set # bitand Airplane type
     _stprintf(buffer, "%1d%% %s", newinfo->GetOperational(), gStringMgr->GetString(TXT_OPERATIONAL));
     newinfo->SetStatus(300, 10, gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
@@ -153,7 +153,7 @@ C_Feature *BuildFeature(Objective obj, long featureID, Tpoint *)
         fc = GetFeatureClassData(classID);
 
         // RV - Biker - Don't add trees to target list
-        if ( not fc or fc->Flags & FEAT_VIRTUAL or fc->Flags & FEAT_NO_HITEVAL)
+        if ( not fc or fc->Flags bitand FEAT_VIRTUAL or fc->Flags bitand FEAT_NO_HITEVAL)
             return(NULL);
 
         feat = new C_Feature;
@@ -280,7 +280,7 @@ C_Entity *BuildUnitParent(Unit unit)
 
     // Set Name
     // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified and not editing a TE, change its label to 'Bandit'
-    if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT) and unit->IsFlight() and gGps->GetTeamNo() >= 0 and unit->GetTeam() not_eq gGps->GetTeamNo() and !unit->GetIdentified(static_cast<uchar>(gGps->GetTeamNo())))
+    if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and unit->IsFlight() and gGps->GetTeamNo() >= 0 and unit->GetTeam() not_eq gGps->GetTeamNo() and !unit->GetIdentified(static_cast<uchar>(gGps->GetTeamNo())))
         _stprintf(buffer, "Bandit");
     else
         // END OF ADDED SECTION 2002-02-21
@@ -288,7 +288,7 @@ C_Entity *BuildUnitParent(Unit unit)
 
     newinfo->SetName(35, 10, gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
-    // Set # & Airplane type
+    // Set # bitand Airplane type
     _stprintf(buffer, "%1d%% %s", newinfo->GetOperational(), gStringMgr->GetString(TXT_OPERATIONAL));
     newinfo->SetStatus(300, 10, gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
@@ -313,7 +313,7 @@ C_Feature *BuildUnit(Unit un, long vehno, long vehid, Tpoint *)
         veh->InitEntity();
 
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified and not editing a TE, change its label to 'Bandit'
-        if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT) and un->IsFlight() and gGps->GetTeamNo() >= 0 and un->GetTeam() not_eq gGps->GetTeamNo() and !un->GetIdentified(static_cast<uchar>(gGps->GetTeamNo())))
+        if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and un->IsFlight() and gGps->GetTeamNo() >= 0 and un->GetTeam() not_eq gGps->GetTeamNo() and !un->GetIdentified(static_cast<uchar>(gGps->GetTeamNo())))
             veh->SetName(25, 0, "Bandit");
         else
             // END OF ADDED SECTION 2002-02-21
@@ -372,7 +372,7 @@ void AddUnitToTargetTree(Unit unit)
         }
 
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified and not editing a TE, don't break it down by vehicle so it can't be reconed either NOTE THE '!' IN FRONT OF THE WHOLE STATEMENT TO REVERSE IT
-        if ( not ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT) and unit->IsFlight() and gGps->GetTeamNo() >= 0 and unit->GetTeam() not_eq gGps->GetTeamNo() and !unit->GetIdentified(static_cast<uchar>(gGps->GetTeamNo()))))
+        if ( not ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and unit->IsFlight() and gGps->GetTeamNo() >= 0 and unit->GetTeam() not_eq gGps->GetTeamNo() and !unit->GetIdentified(static_cast<uchar>(gGps->GetTeamNo()))))
         {
             // END OF ADDED DATA 2002-02-21
             simdata.vehicleInUnit = -1;
@@ -473,7 +473,7 @@ void AddObjectiveToTargetTree(Objective obj)
             {
                 fc = GetFeatureClassData(classID);
 
-                if ( not fc or fc->Flags & FEAT_VIRTUAL)
+                if ( not fc or fc->Flags bitand FEAT_VIRTUAL)
                     continue;
 
                 obj->GetFeatureOffset(f, &y, &x, &z);
@@ -546,7 +546,7 @@ void GetGroundUnitsNear(float x, float y, float range)
         if (deltay < 0) deltay = -deltay;
 
         // KCK: I made the following change here. Not sure what was intended
-        // if((deltax < range & deltay < range) and !un->IsSquadron())
+        // if((deltax < range bitand deltay < range) and !un->IsSquadron())
         if (deltax < range and deltay < range and !un->IsSquadron())
             AddUnitToTargetTree(un);
 
@@ -572,7 +572,7 @@ void GetObjectivesNear(float x, float y, float range)
         if (deltay < 0) deltay = -deltay;
 
         // KCK: I made the following change here. Not sure what was intended
-        // if(deltax < range & deltay < range)
+        // if(deltax < range bitand deltay < range)
         if (deltax < range and deltay < range)
             AddObjectiveToTargetTree(Obj);
 

@@ -154,7 +154,7 @@ void FireControlComputer::AirAirMode(void)
                     (VehicleClassDataType *)Falcon4ClassTable[platform->Type() - VU_LAST_ENTITY_TYPE].dataPtr;
 
                 if ( not playerFCC or ( // don't do this check for ai
-                        vc and ( not (vc->Flags & 0x20000000) ||
+                        vc and ( not (vc->Flags bitand 0x20000000) ||
                                // JB 010712 Normal behavior for the 2d cockpit
                                OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit)  and 
                         !theMissile->isCaged)

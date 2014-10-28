@@ -630,7 +630,7 @@ int silence_run(int buffer[], int index)
     int i;
 
     for (i = 0 ; i < START_THRESHOLD ; i++)
-        if ( not IS_SILENCE(buffer[(index + i) & BUFFER_MASK ]))
+        if ( not IS_SILENCE(buffer[(index + i) bitand BUFFER_MASK ]))
             return(0);
 
     return(1);
@@ -648,7 +648,7 @@ int end_of_silence(int buffer[], int index)
     int i;
 
     for (i = 0 ; i < STOP_THRESHOLD ; i++)
-        if (IS_SILENCE(buffer[(index + i) & BUFFER_MASK ]))
+        if (IS_SILENCE(buffer[(index + i) bitand BUFFER_MASK ]))
             return(0);
 
     return(1);

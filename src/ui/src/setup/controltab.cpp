@@ -1926,7 +1926,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
         if (button not_eq NULL and button->GetState() not_eq C_STATE_DISABLED)
         {
-            if (flags & 0x01)
+            if (flags bitand 0x01)
                 button->SetState(C_STATE_1);
             else
                 button->SetState(C_STATE_0);
@@ -1938,7 +1938,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
         if (button not_eq NULL and button->GetState() not_eq C_STATE_DISABLED)
         {
-            if (flags & 0x02)
+            if (flags bitand 0x02)
                 button->SetState(C_STATE_1);
             else
                 button->SetState(C_STATE_0);
@@ -1950,7 +1950,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
         if (button not_eq NULL and button->GetState() not_eq C_STATE_DISABLED)
         {
-            if (flags & 0x04)
+            if (flags bitand 0x04)
                 button->SetState(C_STATE_1);
             else
                 button->SetState(C_STATE_0);
@@ -1962,7 +1962,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
         if (button not_eq NULL and button->GetState() not_eq C_STATE_DISABLED)
         {
-            if (flags & 0x08)
+            if (flags bitand 0x08)
                 button->SetState(C_STATE_1);
             else
                 button->SetState(C_STATE_0);
@@ -2164,7 +2164,7 @@ SIM_INT Calibrate ( void )
 
  IO.analog[0].isUsed = IO.analog[1].isUsed = TRUE;
 
- if ( not (S_joycaps.wCaps & JOYCAPS_HASZ))
+ if ( not (S_joycaps.wCaps bitand JOYCAPS_HASZ))
  {
  IO.analog[2].isUsed = FALSE;
  IO.analog[2].max = 0;
@@ -2176,7 +2176,7 @@ SIM_INT Calibrate ( void )
  IO.analog[2].isUsed = TRUE;
  }
 
- if ( not (S_joycaps.wCaps & JOYCAPS_HASR))
+ if ( not (S_joycaps.wCaps bitand JOYCAPS_HASR))
  {
  IO.analog[3].isUsed= FALSE;
  IO.analog[3].max = 1;
@@ -2240,7 +2240,7 @@ SIM_INT Calibrate ( void )
 
  case 2:
 
- if (S_joycaps.wCaps & JOYCAPS_HASZ)
+ if (S_joycaps.wCaps bitand JOYCAPS_HASZ)
  {
  if(Calibration.disp_text)
  {
@@ -2274,7 +2274,7 @@ SIM_INT Calibrate ( void )
  break;
 
  case 3:
- if (S_joycaps.wCaps & JOYCAPS_HASR)
+ if (S_joycaps.wCaps bitand JOYCAPS_HASR)
  {
  if(Calibration.disp_text)
  {
@@ -2416,13 +2416,13 @@ void DoShiftStates(char *mods, int ShiftStates)
 {
     int plus = 0;
 
-    if (ShiftStates & _SHIFT_DOWN_)
+    if (ShiftStates bitand _SHIFT_DOWN_)
     {
         strcat(mods, gStringMgr->GetString(TXT_SHIFT_KEY));
         plus++;
     }
 
-    if (ShiftStates & _CTRL_DOWN_)
+    if (ShiftStates bitand _CTRL_DOWN_)
     {
         if (plus)
         {
@@ -2434,7 +2434,7 @@ void DoShiftStates(char *mods, int ShiftStates)
         plus++;
     }
 
-    if (ShiftStates & _ALT_DOWN_)
+    if (ShiftStates bitand _ALT_DOWN_)
     {
         if (plus)
         {
@@ -2464,7 +2464,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
             DKScanCode == 0x45)
             return TRUE;
 
-        if (GetAsyncKeyState(VK_SHIFT) & 0x8001)
+        if (GetAsyncKeyState(VK_SHIFT) bitand 0x8001)
             ShiftStates  or_eq  _SHIFT_DOWN_;
         else
             ShiftStates and_eq compl _SHIFT_DOWN_;
@@ -2483,9 +2483,9 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
             long ID;
 
             button = (C_Button *)win->FindControl(KeyVar.CurrControl);
-            flags = ShiftStates + (button->GetUserNumber(FLAGS) & SECOND_KEY_MASK);
-            KeyVar.CommandsKeyCombo = (button->GetUserNumber(FLAGS) & KEY1_MASK) >> SECOND_KEY_SHIFT;
-            KeyVar.CommandsKeyComboMod = (button->GetUserNumber(FLAGS) & MOD1_MASK) >> SECOND_KEY_MOD_SHIFT;
+            flags = ShiftStates + (button->GetUserNumber(FLAGS) bitand SECOND_KEY_MASK);
+            KeyVar.CommandsKeyCombo = (button->GetUserNumber(FLAGS) bitand KEY1_MASK) >> SECOND_KEY_SHIFT;
+            KeyVar.CommandsKeyComboMod = (button->GetUserNumber(FLAGS) bitand MOD1_MASK) >> SECOND_KEY_MOD_SHIFT;
 
             //here is where we need to change the key combo for the function
             if (DKScanCode not_eq button->GetUserNumber(KEY2) or flags not_eq button->GetUserNumber(FLAGS))
@@ -2582,7 +2582,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
                     {
                         SetButtonColor(temp);
                         temp->SetUserNumber(KEY2, -1);
-                        temp->SetUserNumber(FLAGS, temp->GetUserNumber(FLAGS) & SECOND_KEY_MASK);
+                        temp->SetUserNumber(FLAGS, temp->GetUserNumber(FLAGS) bitand SECOND_KEY_MASK);
                         temp->Refresh();
                         temp->SetText(0, TXT_NO_KEY);
                         temp->Refresh();
@@ -3078,9 +3078,9 @@ BOOL SaveKeyMapList(char *filename)
         //int pmouse,pbutton;
 
         flags = button->GetUserNumber(FLAGS);
-        mod2 = flags & MOD2_MASK;
-        key1 = (flags & KEY1_MASK) >> SECOND_KEY_SHIFT;
-        mod1 = (flags & MOD1_MASK) >> SECOND_KEY_MOD_SHIFT;
+        mod2 = flags bitand MOD2_MASK;
+        key1 = (flags bitand KEY1_MASK) >> SECOND_KEY_SHIFT;
+        mod1 = (flags bitand MOD1_MASK) >> SECOND_KEY_MOD_SHIFT;
 
         theFunc = (InputFunctionType)button->GetUserPtr(FUNCTION_PTR);
         funcDescrip = FindStringFromFunction(theFunc);

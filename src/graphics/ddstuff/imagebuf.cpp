@@ -453,17 +453,17 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
          if(back == None)
         // MonoPrint("ImageBuffer::Setup - %dx%d front (%s) created in %s memory\n",
         // m_ddsdFront.dwWidth, m_ddsdFront.dwHeight, arrType2String[front],
-        // m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
-        // (m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"));
+        // m_ddsdFront.ddsCaps.dwCaps bitand DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
+        // (m_ddsdFront.ddsCaps.dwCaps bitand DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"));
          else
         /* MonoPrint("ImageBuffer::Setup - %dx%d front (%s) created in %s memory, back (%s) created in %s memory\n",
          m_ddsdFront.dwWidth, m_ddsdFront.dwHeight,
          arrType2String[front],
-         m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
-         (m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"),
+         m_ddsdFront.ddsCaps.dwCaps bitand DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
+         (m_ddsdFront.ddsCaps.dwCaps bitand DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"),
           arrType2String[back],
-         m_ddsdBack.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
-         (m_ddsdBack.ddsCaps.dwCaps & DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"));
+         m_ddsdBack.ddsCaps.dwCaps bitand DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
+         (m_ddsdBack.ddsCaps.dwCaps bitand DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"));
          #endif
         */
         // Set blt target surface depending on whether we will page flip or not
@@ -563,13 +563,13 @@ void ImageBuffer::ComputeColorShifts(void)
     redShift = 8;
     ShiAssert(mask);
 
-    while ( not (mask & 1))
+    while ( not (mask bitand 1))
     {
         mask >>= 1;
         redShift--;
     }
 
-    while (mask & 1)
+    while (mask bitand 1)
     {
         mask >>= 1;
         redShift--;
@@ -580,13 +580,13 @@ void ImageBuffer::ComputeColorShifts(void)
     greenShift = 16;
     ShiAssert(mask);
 
-    while ( not (mask & 1))
+    while ( not (mask bitand 1))
     {
         mask >>= 1;
         greenShift--;
     }
 
-    while (mask & 1)
+    while (mask bitand 1)
     {
         mask >>= 1;
         greenShift--;
@@ -597,13 +597,13 @@ void ImageBuffer::ComputeColorShifts(void)
     ShiAssert(mask);
     blueShift = 24;
 
-    while ( not (mask & 1))
+    while ( not (mask bitand 1))
     {
         mask >>= 1;
         blueShift--;
     }
 
-    while (mask & 1)
+    while (mask bitand 1)
     {
         mask >>= 1;
         blueShift--;
@@ -701,21 +701,21 @@ void ImageBuffer::SetChromaKey(UInt32 colorKey)
 
     // RED
     if (redShift >= 0)
-        m_dwColorKey = (colorKey >>  redShift) & m_ddsdFront.ddpfPixelFormat.dwRBitMask;
+        m_dwColorKey = (colorKey >>  redShift) bitand m_ddsdFront.ddpfPixelFormat.dwRBitMask;
     else
-        m_dwColorKey = (colorKey << -redShift) & m_ddsdFront.ddpfPixelFormat.dwRBitMask;
+        m_dwColorKey = (colorKey << -redShift) bitand m_ddsdFront.ddpfPixelFormat.dwRBitMask;
 
     // GREEN
     if (greenShift >= 0)
-        m_dwColorKey  or_eq  (colorKey >>  greenShift) & m_ddsdFront.ddpfPixelFormat.dwGBitMask;
+        m_dwColorKey  or_eq  (colorKey >>  greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
     else
-        m_dwColorKey  or_eq  (colorKey << -greenShift) & m_ddsdFront.ddpfPixelFormat.dwGBitMask;
+        m_dwColorKey  or_eq  (colorKey << -greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
 
     // BLUE
     if (blueShift >= 0)
-        m_dwColorKey  or_eq  (colorKey >>  blueShift) & m_ddsdFront.ddpfPixelFormat.dwBBitMask;
+        m_dwColorKey  or_eq  (colorKey >>  blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
     else
-        m_dwColorKey  or_eq  (colorKey << -blueShift) & m_ddsdFront.ddpfPixelFormat.dwBBitMask;
+        m_dwColorKey  or_eq  (colorKey << -blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
 
     DDCOLORKEY key = { m_dwColorKey, m_dwColorKey};
 
@@ -735,31 +735,31 @@ WORD ImageBuffer::Pixel32toPixel16(UInt32 ABGR)
     // RED
     if (redShift >= 0)
     {
-        color = (ABGR >>  redShift) & m_ddsdFront.ddpfPixelFormat.dwRBitMask;
+        color = (ABGR >>  redShift) bitand m_ddsdFront.ddpfPixelFormat.dwRBitMask;
     }
     else
     {
-        color = (ABGR << -redShift) & m_ddsdFront.ddpfPixelFormat.dwRBitMask;
+        color = (ABGR << -redShift) bitand m_ddsdFront.ddpfPixelFormat.dwRBitMask;
     }
 
     // GREEN
     if (greenShift >= 0)
     {
-        color  or_eq  (ABGR >>  greenShift) & m_ddsdFront.ddpfPixelFormat.dwGBitMask;
+        color  or_eq  (ABGR >>  greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
     }
     else
     {
-        color  or_eq  (ABGR << -greenShift) & m_ddsdFront.ddpfPixelFormat.dwGBitMask;
+        color  or_eq  (ABGR << -greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
     }
 
     // BLUE
     if (blueShift >= 0)
     {
-        color  or_eq  (ABGR >>  blueShift) & m_ddsdFront.ddpfPixelFormat.dwBBitMask;
+        color  or_eq  (ABGR >>  blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
     }
     else
     {
-        color  or_eq  (ABGR << -blueShift) & m_ddsdFront.ddpfPixelFormat.dwBBitMask;
+        color  or_eq  (ABGR << -blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
     }
 
     return (WORD)color;
@@ -775,31 +775,31 @@ DWORD ImageBuffer::Pixel32toPixel32(UInt32 ABGR)
     // RED
     if (redShift >= 0)
     {
-        color = (ABGR >>  redShift) & m_ddsdFront.ddpfPixelFormat.dwRBitMask;
+        color = (ABGR >>  redShift) bitand m_ddsdFront.ddpfPixelFormat.dwRBitMask;
     }
     else
     {
-        color = (ABGR << -redShift) & m_ddsdFront.ddpfPixelFormat.dwRBitMask;
+        color = (ABGR << -redShift) bitand m_ddsdFront.ddpfPixelFormat.dwRBitMask;
     }
 
     // GREEN
     if (greenShift >= 0)
     {
-        color  or_eq  (ABGR >>  greenShift) & m_ddsdFront.ddpfPixelFormat.dwGBitMask;
+        color  or_eq  (ABGR >>  greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
     }
     else
     {
-        color  or_eq  (ABGR << -greenShift) & m_ddsdFront.ddpfPixelFormat.dwGBitMask;
+        color  or_eq  (ABGR << -greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
     }
 
     // BLUE
     if (blueShift >= 0)
     {
-        color  or_eq  (ABGR >>  blueShift) & m_ddsdFront.ddpfPixelFormat.dwBBitMask;
+        color  or_eq  (ABGR >>  blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
     }
     else
     {
-        color  or_eq  (ABGR << -blueShift) & m_ddsdFront.ddpfPixelFormat.dwBBitMask;
+        color  or_eq  (ABGR << -blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
     }
 
     return color;
@@ -817,31 +817,31 @@ UInt32 ImageBuffer::Pixel16toPixel32(WORD pixel)
     // RED
     if (redShift >= 0)
     {
-        color = (pixel & m_ddsdFront.ddpfPixelFormat.dwRBitMask) <<  redShift;
+        color = (pixel bitand m_ddsdFront.ddpfPixelFormat.dwRBitMask) <<  redShift;
     }
     else
     {
-        color = (pixel & m_ddsdFront.ddpfPixelFormat.dwRBitMask) >> -redShift;
+        color = (pixel bitand m_ddsdFront.ddpfPixelFormat.dwRBitMask) >> -redShift;
     }
 
     // GREEN
     if (greenShift >= 0)
     {
-        color  or_eq  (pixel & m_ddsdFront.ddpfPixelFormat.dwGBitMask) <<  greenShift;
+        color  or_eq  (pixel bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask) <<  greenShift;
     }
     else
     {
-        color  or_eq  (pixel & m_ddsdFront.ddpfPixelFormat.dwGBitMask) >> -greenShift;
+        color  or_eq  (pixel bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask) >> -greenShift;
     }
 
     // BLUE
     if (blueShift >= 0)
     {
-        color  or_eq  (pixel & m_ddsdFront.ddpfPixelFormat.dwBBitMask) <<  blueShift;
+        color  or_eq  (pixel bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask) <<  blueShift;
     }
     else
     {
-        color  or_eq  (pixel & m_ddsdFront.ddpfPixelFormat.dwBBitMask) >> -blueShift;
+        color  or_eq  (pixel bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask) >> -blueShift;
     }
 
     return color;
@@ -1050,7 +1050,7 @@ void ImageBuffer::SwapBuffers(bool bDontFlip)
 
     //STOP_PROFILE("SWAP WAIT : ");
     // OW
-    if ( not bDontFlip and (m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_FLIP))
+    if ( not bDontFlip and (m_ddsdFront.ddsCaps.dwCaps bitand DDSCAPS_FLIP))
     {
         hr = m_pDDSFront->Flip(NULL, DDFLIP_WAIT);
         // hr = m_pDDSFront->Flip(NULL, DDFLIP_NOVSYNC);
@@ -1119,7 +1119,7 @@ void ImageBuffer::BackBufferToRAW(char *filename)
     bih.biPlanes = 1;
     bih.biBitCount = 24;
     bih.biCompression = BI_RGB;
-    bih.biSizeImage = ((((bih.biWidth * bih.biBitCount) + 31) & compl 31) >> 3) * bih.biHeight;
+    bih.biSizeImage = ((((bih.biWidth * bih.biBitCount) + 31) bitand compl 31) >> 3) * bih.biHeight;
 
     bfh.bfType = 0x4d42;
     bfh.bfReserved1 = 0;
@@ -1173,11 +1173,11 @@ void ImageBuffer::BackBufferToRAW(char *filename)
                     pixel = (WORD*)Pixel(imagePtr, r, c);
                     color = Pixel16toPixel32(*pixel);
 
-                    *p = (BYTE)((color & 0x00FF0000) >> 16);
+                    *p = (BYTE)((color bitand 0x00FF0000) >> 16);
                     p++; // Blue
-                    *p = (BYTE)((color & 0x0000FF00) >>  8);
+                    *p = (BYTE)((color bitand 0x0000FF00) >>  8);
                     p++; // Green
-                    *p = (BYTE)((color & 0x000000FF) >>  0);
+                    *p = (BYTE)((color bitand 0x000000FF) >>  0);
                     p++; // Red
                 }
 
@@ -1214,11 +1214,11 @@ void ImageBuffer::BackBufferToRAW(char *filename)
                     pixel = (DWORD*)Pixel(imagePtr, r, c);
                     color = Pixel32toPixel32(*pixel);
 
-                    *p = (BYTE)((color & 0x00FF0000) >> 16);
+                    *p = (BYTE)((color bitand 0x00FF0000) >> 16);
                     p++; // Blue
-                    *p = (BYTE)((color & 0x0000FF00) >>  8);
+                    *p = (BYTE)((color bitand 0x0000FF00) >>  8);
                     p++; // Green
-                    *p = (BYTE)((color & 0x000000FF) >>  0);
+                    *p = (BYTE)((color bitand 0x000000FF) >>  0);
                     p++; // Red
                 }
 

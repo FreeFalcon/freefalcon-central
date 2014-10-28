@@ -15,7 +15,7 @@ void MissileClass::Yaw(void)
     // this is still not totaly true since it will be limited to less then max g only in the yaw direction, but better imo
     nycmd = -ifd->augCommand.yaw;
 
-    if ( not (flags & EndGame))
+    if ( not (flags bitand EndGame))
         nycmd = min(max(nycmd, -auxData->maxGNormal / 1.41f), auxData->maxGNormal / 1.41f);
     else
         nycmd = min(max(nycmd, -auxData->maxGTerminal / 1.41f), auxData->maxGTerminal / 1.41f);

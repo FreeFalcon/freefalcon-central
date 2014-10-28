@@ -416,7 +416,7 @@ void AddSquadronsToMap()
 
             if (TheCampaign.IsValidSquadron(i)  or _IsF16_)
             {
-                x = TheCampaign.CampaignSquadronData[i].y; // real world x & y are y & x
+                x = TheCampaign.CampaignSquadronData[i].y; // real world x bitand y are y bitand x
                 y = TheCampaign.CampaignSquadronData[i].x;
 
                 int mapratio = MAP_RATIO;
@@ -516,7 +516,7 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
         {
             if (TheCampaign.IsValidSquadron(i)  or _IsF16_)
             {
-                x = TheCampaign.CampaignSquadronData[i].y; // real world x & y are y & x
+                x = TheCampaign.CampaignSquadronData[i].y; // real world x bitand y are y bitand x
                 y = TheCampaign.CampaignSquadronData[i].x;
 
                 // 2001-12-12 M.N. adapted for 1024 UI
@@ -986,11 +986,11 @@ void RecieveScenarioInfo()
 
     // KCK: These really should be a better way to figure out which windows need updating than
     // checking the flag field of TheCampaign. Doesn't the UI know which window groups are active?
-    if (TheCampaign.Flags & CAMP_LIGHT)
+    if (TheCampaign.Flags bitand CAMP_LIGHT)
     {
         // Do dogfight/IA stuff
     }
-    else if (TheCampaign.Flags & CAMP_TACTICAL)
+    else if (TheCampaign.Flags bitand CAMP_TACTICAL)
     {
         game = gCommsMgr->GetTargetGame();
 

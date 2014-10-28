@@ -114,25 +114,25 @@ public:
     // Nifty Access functions
     int GouraudOn(void)
     {
-        return (DispFlags & DISP_GOURAUD) and TRUE;
+        return (DispFlags bitand DISP_GOURAUD) and TRUE;
     }
     int HazingOn(void)
     {
-        return (DispFlags & DISP_HAZING) and TRUE;
+        return (DispFlags bitand DISP_HAZING) and TRUE;
     }
     int FilteringOn(void)
     {
-        return (DispFlags & DISP_BILINEAR) and TRUE;
+        return (DispFlags bitand DISP_BILINEAR) and TRUE;
     }
     int PerspectiveOn(void)
     {
-        return (DispFlags & DISP_PERSPECTIVE) and TRUE;
+        return (DispFlags bitand DISP_PERSPECTIVE) and TRUE;
     }
 
     //JAM 08Dec03
     int ShadowsOn(void)
     {
-        return (DispFlags & DISP_SHADOWS) and TRUE;
+        return (DispFlags bitand DISP_SHADOWS) and TRUE;
     }
 
     // void SetTextureLevel(int level) { DispTextureLevel = level;}
@@ -156,10 +156,10 @@ public:
 
     int ObjectDynScalingOn(void)
     {
-        return (ObjFlags & DISP_OBJ_DYN_SCALING) and TRUE;
+        return (ObjFlags bitand DISP_OBJ_DYN_SCALING) and TRUE;
     }
-    // int ObjectTexturesOn (void) { return (ObjFlags & DISP_OBJ_TEXTURES) and TRUE; }
-    // int ObjectShadingOn (void) { return (ObjFlags & DISP_OBJ_SHADING) and TRUE; }
+    // int ObjectTexturesOn (void) { return (ObjFlags bitand DISP_OBJ_TEXTURES) and TRUE; }
+    // int ObjectShadingOn (void) { return (ObjFlags bitand DISP_OBJ_SHADING) and TRUE; }
     float ObjectDetailLevel(void)
     {
         return ObjDetailLevel;
@@ -219,76 +219,76 @@ public:
     };
     int AutoTargetingOn(void)
     {
-        return (SimFlags & SIM_AUTO_TARGET) and TRUE;
+        return (SimFlags bitand SIM_AUTO_TARGET) and TRUE;
     }
     int BlackoutOn(void)
     {
-        return !(SimFlags & SIM_NO_BLACKOUT) and TRUE;
+        return !(SimFlags bitand SIM_NO_BLACKOUT) and TRUE;
     }
     int NoBlackout(void)
     {
-        return (SimFlags & SIM_NO_BLACKOUT) and TRUE;
+        return (SimFlags bitand SIM_NO_BLACKOUT) and TRUE;
     }
     int UnlimitedFuel(void)
     {
-        return (SimFlags & SIM_UNLIMITED_FUEL) and TRUE;
+        return (SimFlags bitand SIM_UNLIMITED_FUEL) and TRUE;
     }
     int UnlimitedAmmo(void)
     {
-        return (SimFlags & SIM_UNLIMITED_AMMO) and TRUE;
+        return (SimFlags bitand SIM_UNLIMITED_AMMO) and TRUE;
     }
     int UnlimitedChaff(void)
     {
-        return (SimFlags & SIM_UNLIMITED_CHAFF) and TRUE;
+        return (SimFlags bitand SIM_UNLIMITED_CHAFF) and TRUE;
     }
     int CollisionsOn(void)
     {
-        return !(SimFlags & SIM_NO_COLLISIONS) and TRUE;
+        return !(SimFlags bitand SIM_NO_COLLISIONS) and TRUE;
     }
     int NoCollisions(void)
     {
-        return (SimFlags & SIM_NO_COLLISIONS) and TRUE;
+        return (SimFlags bitand SIM_NO_COLLISIONS) and TRUE;
     }
     int NameTagsOn(void)
     {
-        return (SimFlags & SIM_NAMETAGS) and TRUE;
+        return (SimFlags bitand SIM_NAMETAGS) and TRUE;
     }
     int LiftLineOn(void)
     {
-        return (SimFlags & SIM_LIFTLINE_CUE) and TRUE;
+        return (SimFlags bitand SIM_LIFTLINE_CUE) and TRUE;
     }
     int BullseyeOn(void)
     {
-        return (SimFlags & SIM_BULLSEYE_CALLS) and TRUE;
+        return (SimFlags bitand SIM_BULLSEYE_CALLS) and TRUE;
     }
     int InvulnerableOn(void)
     {
-        return (SimFlags & SIM_INVULNERABLE) and TRUE;
+        return (SimFlags bitand SIM_INVULNERABLE) and TRUE;
     }
 
     int WeatherOn(void)
     {
-        return !(GeneralFlags & GEN_NO_WEATHER);
+        return !(GeneralFlags bitand GEN_NO_WEATHER);
     }
     int MFDTerrainOn(void)
     {
-        return (GeneralFlags & GEN_MFD_TERRAIN) and TRUE;
+        return (GeneralFlags bitand GEN_MFD_TERRAIN) and TRUE;
     }
     int HawkeyeTerrainOn(void)
     {
-        return (GeneralFlags & GEN_HAWKEYE_TERRAIN) and TRUE;
+        return (GeneralFlags bitand GEN_HAWKEYE_TERRAIN) and TRUE;
     }
     int PadlockViewOn(void)
     {
-        return (GeneralFlags & GEN_PADLOCK_VIEW) and TRUE;
+        return (GeneralFlags bitand GEN_PADLOCK_VIEW) and TRUE;
     }
     int HawkeyeViewOn(void)
     {
-        return (GeneralFlags & GEN_HAWKEYE_VIEW) and TRUE;
+        return (GeneralFlags bitand GEN_HAWKEYE_VIEW) and TRUE;
     }
     int ExternalViewOn(void)
     {
-        return (GeneralFlags & GEN_EXTERNAL_VIEW) and TRUE;
+        return (GeneralFlags bitand GEN_EXTERNAL_VIEW) and TRUE;
     }
 
     int CampaignGroundRatio(void)

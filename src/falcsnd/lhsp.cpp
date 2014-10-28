@@ -2,7 +2,7 @@
 
   LHSP.cpp
 
- Lernout & Hauspie Speech compression
+ Lernout bitand Hauspie Speech compression
 
    Version 1.02
 

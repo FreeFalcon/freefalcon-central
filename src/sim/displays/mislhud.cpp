@@ -82,8 +82,8 @@ void HudClass::DrawDogfight()
              4)Uncaged diamond self-track (break radar lock if desired)
 
             SLAVE/SCAN:
-             1)Search (100-mil reticle) & seeker nutates
-             2)Radar Lock-on (still 100 mils), TD box & diamond tracking target
+             1)Search (100-mil reticle) bitand seeker nutates
+             2)Radar Lock-on (still 100 mils), TD box bitand diamond tracking target
              3)Uncage commanded, reticle shrinks to 65-mil, uncaged diamond appears and TD box
                continues tracking
              4)Self-track (break radar lock if desired)
@@ -95,7 +95,7 @@ void HudClass::DrawDogfight()
                the other.
              4)Self-track
             BORE/SCAN:
-             1)Search (100-mil reticle) & seeker nutates
+             1)Search (100-mil reticle) bitand seeker nutates
              2)Radar lock-on (optional), fly diamond to TGT
              3)Uncage commanded, reticle shrinks to 65-mil, uncaged diamond appears and TD box
                continues tracking (if radar lock)
@@ -201,7 +201,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                     if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                     {
                         // Marco Edit - check for our missile type (ie. REAR ASPECT)
-                        // if (wc and wc->Flags & WEAP_REAR_ASPECT)
+                        // if (wc and wc->Flags bitand WEAP_REAR_ASPECT)
                         // Marco Edit - hack - check for 9P specifically)
                         wpn = playerAC->Sms->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
 
@@ -230,7 +230,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                 {
 
                     // Marco Edit - check for our missile type (ie. REAR ASPECT)
-                    // if (wc and wc->Flags & WEAP_REAR_ASPECT)
+                    // if (wc and wc->Flags bitand WEAP_REAR_ASPECT)
                     // Marco Edit - hack - check for 9P specifically)
                     if (g_bRealisticAvionics and wpn and ((CampBaseClass*)wpn)->GetSPType() == SPTYPE_AIM9P)
                     {
@@ -349,7 +349,7 @@ void HudClass::DrawAirMissile(void)
                     if (wpn)
                     {
                         // Marco Edit - check for our missile type (ie. REAR ASPECT)
-                        // if (wc and wc->Flags & WEAP_REAR_ASPECT)
+                        // if (wc and wc->Flags bitand WEAP_REAR_ASPECT)
                         // Marco Edit - hack - check for 9P specifically)
                         wpn = playerAC->Sms->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
 
@@ -380,7 +380,7 @@ void HudClass::DrawAirMissile(void)
                     if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                     {
                         // Marco Edit - check for our missile type (ie. REAR ASPECT)
-                        // if (wc and wc->Flags & WEAP_REAR_ASPECT)
+                        // if (wc and wc->Flags bitand WEAP_REAR_ASPECT)
                         // Marco Edit - hack - check for 9P specifically)
                         wpn = playerAC->Sms->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
 
@@ -753,7 +753,7 @@ void HudClass::DrawAim9Diamond(void)
                 if ((((MissileClass*)wpn)->targetPtr) and (targetData) and //JPG 24 Jun 04 - It flashes here too (only flash diamond when FCC has targeted and in range)
                     (targetData->range > FCC->missileRMin) and (targetData->range < FCC->missileRMax))
                 {
-                    if (vuxRealTime & 0x100)
+                    if (vuxRealTime bitand 0x100)
                     {
                         //Small
                         display->AdjustOriginInViewport(xPos, yPos);
@@ -781,7 +781,7 @@ void HudClass::DrawAim9Diamond(void)
                 if ((((MissileClass*)wpn)->targetPtr) and (targetData) and //Wombat778 10-16-2003 Added this mess as per MIRV (only flash diamond when FCC has targeted and in range)
                     (targetData->range > FCC->missileRMin) and (targetData->range < FCC->missileRMax))
                 {
-                    if (vuxRealTime & 0x100)
+                    if (vuxRealTime bitand 0x100)
                     {
                         display->AdjustOriginInViewport(xPos, yPos);
                         display->Line(0.0F,  Large,  Large, 0.0F);
@@ -838,7 +838,7 @@ void HudClass::DrawAim9DLZ(void)
             if (FCC->GetSubMode() == FireControlComputer::Aim9)
             {
                 // Marco Edit - check for our missile type (ie. REAR ASPECT)
-                // if (wc and wc->Flags & WEAP_REAR_ASPECT)
+                // if (wc and wc->Flags bitand WEAP_REAR_ASPECT)
                 // Marco Edit - hack - check for 9P specifically)
                 if (wpn)
                 {
@@ -1700,7 +1700,7 @@ void HudClass::DrawAim9Reticle(float radius, int showRange, int showAspect)
 
     if (targetPtr and targetData and (targetData->range < FCC->missileRneMax) and (targetData->range > FCC->missileRneMin)) //should only the MAX range be tested? Now it stops flashing if below RNE
     {
-        if (vuxRealTime & 0x100)
+        if (vuxRealTime bitand 0x100)
             DrawMissileReticle(radius, showRange, showAspect);
     }
     else

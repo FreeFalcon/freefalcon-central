@@ -211,7 +211,7 @@ int InitCommsStuff(ComDataClass *comData)
         }
     }
 
-    // We have UDP & RUDP and PTOP
+    // We have UDP bitand RUDP and PTOP
     FalconConnectionProtocol = FCP_UDP_AVAILABLE | FCP_RUDP_AVAILABLE;
     FalconConnectionType = FCT_PTOP_AVAILABLE;
     F4CommsConnectionCallback(F4COMMS_CONNECTED);
@@ -858,30 +858,30 @@ int VuxGroupConnect(VuGroupEntity *group)
     // Check for existing connections
     if ( not group->GetCommsHandle())
     {
-        if ( not (FalconConnectionProtocol & FCP_UDP_AVAILABLE) and !(FalconConnectionProtocol & FCP_SERIAL_AVAILABLE))
+        if ( not (FalconConnectionProtocol bitand FCP_UDP_AVAILABLE) and !(FalconConnectionProtocol bitand FCP_SERIAL_AVAILABLE))
         {
             // No udp connections available
             group->SetCommsHandle(NULL);
             group->SetCommsStatus(VU_CONN_INACTIVE);
         }
-        else if (FalconConnectionType & FCT_SERIAL_AVAILABLE)
+        else if (FalconConnectionType bitand FCT_SERIAL_AVAILABLE)
         {
             group->SetCommsHandle(NULL); // We'll inherit from our global group
             group->SetCommsStatus(VU_CONN_ACTIVE);
         }
-        else if (FalconConnectionType & FCT_SERVER_AVAILABLE and FalconGlobalUDPHandle)
+        else if (FalconConnectionType bitand FCT_SERVER_AVAILABLE and FalconGlobalUDPHandle)
         {
             // Point us to our server's UDP connection
             group->SetCommsHandle(NULL); // We'll inherit from our global group
             group->SetCommsStatus(VU_CONN_ACTIVE);
         }
-        else if (FalconConnectionType & FCT_BCAST_AVAILABLE and FalconGlobalUDPHandle)
+        else if (FalconConnectionType bitand FCT_BCAST_AVAILABLE and FalconGlobalUDPHandle)
         {
             // Since we have broadcast available, pass our broadcast handle
             group->SetCommsHandle(NULL); // We'll inherit from our global group
             group->SetCommsStatus(VU_CONN_ACTIVE);
         }
-        else if (FalconConnectionType & FCT_PTOP_AVAILABLE)
+        else if (FalconConnectionType bitand FCT_PTOP_AVAILABLE)
         {
             // Point to Point only - Create a new comms group which we will add shit to.
             sprintf(buffer, "%s UDP", name);
@@ -904,24 +904,24 @@ int VuxGroupConnect(VuGroupEntity *group)
 
     if ( not group->GetReliableCommsHandle())
     {
-        if ( not (FalconConnectionProtocol & FCP_TCP_AVAILABLE) and !(FalconConnectionProtocol & FCP_SERIAL_AVAILABLE) and !(FalconConnectionProtocol & FCP_RUDP_AVAILABLE))
+        if ( not (FalconConnectionProtocol bitand FCP_TCP_AVAILABLE) and !(FalconConnectionProtocol bitand FCP_SERIAL_AVAILABLE) and !(FalconConnectionProtocol bitand FCP_RUDP_AVAILABLE))
         {
             // No reliable connections available
             group->SetReliableCommsHandle(NULL);
             group->SetReliableCommsStatus(VU_CONN_INACTIVE);
         }
-        else if (FalconConnectionType & FCT_SERIAL_AVAILABLE)
+        else if (FalconConnectionType bitand FCT_SERIAL_AVAILABLE)
         {
             group->SetCommsHandle(NULL); // We'll inherit from our global group
             group->SetCommsStatus(VU_CONN_ACTIVE);
         }
-        else if (FalconConnectionType & FCT_SERVER_AVAILABLE and FalconGlobalTCPHandle)
+        else if (FalconConnectionType bitand FCT_SERVER_AVAILABLE and FalconGlobalTCPHandle)
         {
             // Point us to our server's tcp connection
             group->SetCommsHandle(NULL); // We'll inherit from our global group
             group->SetReliableCommsStatus(VU_CONN_ACTIVE);
         }
-        else if (FalconConnectionType & FCT_PTOP_AVAILABLE)
+        else if (FalconConnectionType bitand FCT_PTOP_AVAILABLE)
         {
             // Point to Point only - Create a new comms group which we will add shit to.
             sprintf(buffer, "%s RUDP", name);

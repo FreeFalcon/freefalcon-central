@@ -90,7 +90,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
         return;
     }
 
-    flash = (vuxRealTime & 0x200);
+    flash = (vuxRealTime bitand 0x200);
 
     //Check if we're in standby
     if (self->PodCooling > 0.0F) //always stby

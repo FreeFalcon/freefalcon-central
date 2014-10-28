@@ -61,7 +61,7 @@ void RadarSuperClass::ExecModes(int newDesignate, int newDrop)
         {
 
             // Update the cursor position
-            if (flags & CursorMoving)
+            if (flags bitand CursorMoving)
             {
                 // Keep same real world cursor position
                 cursorY = cursorY + 1.0f;
@@ -1072,7 +1072,7 @@ void RadarSuperClass::DrawLockedAirInfo(float h, float v)
     else
     {
         // Dimmed
-        display->SetColor((tmpColor >> 4) & 0xFF00);
+        display->SetColor((tmpColor >> 4) bitand 0xFF00);
     }
 
     // Draw the locked target's symbol (triangle with velocity line)

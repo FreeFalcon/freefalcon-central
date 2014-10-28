@@ -7,7 +7,7 @@
 #define STATE_6_TIME 30
 #define STATE_5_TIME 15
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -191,7 +191,7 @@ void C_Blip::Refresh(BLIP *blip)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((Flags_ & C_BIT_INVISIBLE) or !Parent_ or !Drawer_)
+    if ((Flags_ bitand C_BIT_INVISIBLE) or !Parent_ or !Drawer_)
         return;
 
     Leave = UI_Enter(Parent_);
@@ -205,7 +205,7 @@ void C_Blip::Refresh()
     BLIP *cur;
     F4CSECTIONHANDLE *Leave;
 
-    if ((Flags_ & C_BIT_INVISIBLE) or !Parent_ or !Drawer_)
+    if ((Flags_ bitand C_BIT_INVISIBLE) or !Parent_ or !Drawer_)
         return;
 
     Leave = UI_Enter(Parent_);
@@ -225,7 +225,7 @@ void C_Blip::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     BLIP *cur;
 
-    if ((Flags_ & C_BIT_INVISIBLE) or !Parent_ or !Drawer_)
+    if ((Flags_ bitand C_BIT_INVISIBLE) or !Parent_ or !Drawer_)
         return;
 
     cur = Root_;
@@ -233,7 +233,7 @@ void C_Blip::Draw(SCREEN *surface, UI95_RECT *cliprect)
     while (cur)
     {
         Drawer_->SetXY(cur->x, cur->y);
-        Drawer_->SetImagePtr(BlipImg_[cur->side & 7][cur->state & 7]);
+        Drawer_->SetImagePtr(BlipImg_[cur->side bitand 7][cur->state bitand 7]);
         Drawer_->Draw(surface, cliprect);
         cur = cur->Next;
     }

@@ -49,7 +49,7 @@ struct EP_PHYS_DATA
 {
     EP_STAGE_PHYS_DATA stageData[PD_NUM_STAGES];
 
-    // Speed of pilot & seat at ejection time.
+    // Speed of pilot bitand seat at ejection time.
     SIM_FLOAT ejectSpeed;
 
     // Thrust of seat in G's

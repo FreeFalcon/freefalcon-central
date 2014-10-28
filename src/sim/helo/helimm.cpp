@@ -1086,7 +1086,7 @@ HeliMMClass::SetControls(float pstick, float rstick, float throttle, float pedal
 
     ctlcpitch = throttle;
 
-    // for pedals & stick, put in a centered dead zone
+    // for pedals bitand stick, put in a centered dead zone
     // when human controlled
     if ( not isDigital)
     {

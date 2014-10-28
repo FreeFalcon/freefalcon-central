@@ -17,15 +17,15 @@ public:
     void GetCameraPos(Tpoint *pos);
     bool IsEnabled()
     {
-        return (m_flags & AVAILABLE) ? TRUE : FALSE;
+        return (m_flags bitand AVAILABLE) ? TRUE : FALSE;
     };
     bool IsFLIR()
     {
-        return (m_flags & FLIR_ON) ? TRUE : FALSE;
+        return (m_flags bitand FLIR_ON) ? TRUE : FALSE;
     };
     bool IsHonC()
     {
-        return (m_flags & CONH) == 0 ? TRUE : FALSE;
+        return (m_flags bitand CONH) == 0 ? TRUE : FALSE;
     };
     void ToggleHonC()
     {

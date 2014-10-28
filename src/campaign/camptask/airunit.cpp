@@ -127,7 +127,7 @@ int AirUnitClass::GetUnitSpeed() const
 
 int AirUnitClass::IsHelicopter() const
 {
-    if ( not (class_data->Flags & VEH_VTOL))
+    if ( not (class_data->Flags bitand VEH_VTOL))
     {
         return 0;
     }

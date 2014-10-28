@@ -1018,12 +1018,12 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                 }
 
                 // Can we see it (either with a valid lock, a jammed or fading signal?
-                if (canSee & (SG_JAMMING | SG_FADING)) // Is it a jammed or fading signal?
+                if (canSee bitand (SG_JAMMING | SG_FADING)) // Is it a jammed or fading signal?
                     tmpPtr->localData->sensorState[Radar] = Detection; // Yep, say so (weapon can't lock on 'Detection' but digi plane can track it)
                 else
                     tmpPtr->localData->sensorState[Radar] = SensorTrack; // It's a valid lock, mark it as such. Even when fading, we can launch
 
-                if ( not (canSee & SG_FADING)) // Is the signal fading?
+                if ( not (canSee bitand SG_FADING)) // Is the signal fading?
                     tmpPtr->localData->rdrLastHit = SimLibElapsedTime;// No, so update the last hit field
             }
             else
@@ -1066,7 +1066,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                     platform->SetRdrElCenter(tmpPtr->localData->el);
 
                     // Tag the target as seen from this frame, unless the target is fading
-                    if ( not (canSee & SG_FADING))
+                    if ( not (canSee bitand SG_FADING))
                     {
                         if (sendThisFrame)
                         {
@@ -1214,7 +1214,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
             /*----------------------------------*/
             /* slip, shift in a 0 for no detect */
             /*----------------------------------*/
-            rdrData->rdrDetect = rdrData->rdrDetect & 0x000f;
+            rdrData->rdrDetect = rdrData->rdrDetect bitand 0x000f;
 
             if (mode == TWS)
             {

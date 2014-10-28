@@ -199,7 +199,7 @@ bool mlrVoice::IsPlaying()
     {
         DSoundBuffer->GetStatus(&status);
 
-        if (status & DSBSTATUS_PLAYING)
+        if (status bitand DSBSTATUS_PLAYING)
         {
             return true;
         }
@@ -247,7 +247,7 @@ void mlrVoice::Play(float PScale, float Vol, float X, float Y, float Z, float VX
     vz = VZ;
 
     /*
-    if( not (sfx->flags & SFX_POS_EXTERN))
+    if( not (sfx->flags bitand SFX_POS_EXTERN))
      priority = 1;
     else
      priority = vol - (distsq / sfx->distSq) * 10000;
@@ -307,7 +307,7 @@ bool mlrVoice::AllocateBuffers(void)
         {
             if ( not DSound3dBuffer)
             {
-                if (/*sfx->flags & SFX_FLAGS_3D and */
+                if (/*sfx->flags bitand SFX_FLAGS_3D and */
                     g3dVoiceCount < 16
                 )
                 {
@@ -316,8 +316,8 @@ bool mlrVoice::AllocateBuffers(void)
 
                     if (DSound3dBuffer)  //  and 
                         //  sfx  and 
-                        // (sfx->flags & SFX_POS_EXTERN)  and 
-                        // (sfx->flags & SFX_FLAGS_3D)) // only make external 3d sounds 3d
+                        // (sfx->flags bitand SFX_POS_EXTERN)  and 
+                        // (sfx->flags bitand SFX_FLAGS_3D)) // only make external 3d sounds 3d
                     {
                         g3dVoiceCount++;
                         float maxdist = (float)  sqrt(sfx->maxDistSq);
@@ -383,14 +383,14 @@ bool mlrVoice::AllocateBuffers(void)
                 gVoiceCount++;
                 freq = Sample->Frequency;
 
-                if (sfx->flags & SFX_FLAGS_3D and g_bUse3dSound)
+                if (sfx->flags bitand SFX_FLAGS_3D and g_bUse3dSound)
                 {
                     DSoundBuffer->QueryInterface(IID_IDirectSound3DBuffer, (LPVOID *)&DSound3dBuffer);
 
                     if (DSound3dBuffer)  //  and 
                         //  sfx  and 
-                        // (sfx->flags & SFX_POS_EXTERN)  and 
-                        // (sfx->flags & SFX_FLAGS_3D)) // only make external 3d sounds 3d
+                        // (sfx->flags bitand SFX_POS_EXTERN)  and 
+                        // (sfx->flags bitand SFX_FLAGS_3D)) // only make external 3d sounds 3d
                     {
                         g3dVoiceCount++;
                         float maxdist = (float)  sqrt(sfx->maxDistSq);
@@ -458,7 +458,7 @@ void mlrVoice::PreExec()
     int retval = 0;
     vol = initvol;
 
-    if (sfx->flags & SFX_POS_EXTERN)
+    if (sfx->flags bitand SFX_POS_EXTERN)
     {
         is3d = 1;
     }
@@ -479,13 +479,13 @@ void mlrVoice::PreExec()
             isplayer = 1; // the object that called this sound is the player
 
 
-        if (sfx->flags & SFX_POS_EXTONLY)
+        if (sfx->flags bitand SFX_POS_EXTONLY)
             status = VSSTOP;
 
-        if (sfx->flags & SFX_POS_EXTERN)
+        if (sfx->flags bitand SFX_POS_EXTERN)
         {
             // don't cut the volume of sounds that are self originating from the player
-            if ((sfx->flags & SFX_POS_SELF and isplayer))
+            if ((sfx->flags bitand SFX_POS_SELF and isplayer))
             {
                 is3d = 0;
             }
@@ -496,7 +496,7 @@ void mlrVoice::PreExec()
             }
         }
 
-        if (sfx->flags & (SFX_POS_INSIDE | SFX_FLAGS_VMS)  and 
+        if (sfx->flags bitand (SFX_POS_INSIDE | SFX_FLAGS_VMS)  and 
             !isplayer  and 
             owner->SPos->platform)
         {
@@ -510,13 +510,13 @@ void mlrVoice::PreExec()
     else
     {
         // outside of pit
-        if (sfx->flags & SFX_POS_EXTINT)
+        if (sfx->flags bitand SFX_POS_EXTINT)
             status = VSSTOP;
 
-        if (sfx->flags & SFX_POS_INSIDE)     // don't play internal sound
+        if (sfx->flags bitand SFX_POS_INSIDE)     // don't play internal sound
             status = VSSTOP;
 
-        if (sfx->flags & SFX_FLAGS_VMS and !g_bSoundHearVMSExternal)
+        if (sfx->flags bitand SFX_FLAGS_VMS and !g_bSoundHearVMSExternal)
             status = VSSTOP;
     }
 
@@ -542,7 +542,7 @@ void mlrVoice::PreExec()
             status = VSSTOP;
         }
 
-        if (is3d and !IsThunder and (sfx->flags & SFX_FLAGS_CONE))
+        if (is3d and !IsThunder and (sfx->flags bitand SFX_FLAGS_CONE))
         {
             Tpoint delta = { x - gVoiceManager.listenerPosition.x,
                              y - gVoiceManager.listenerPosition.y,
@@ -718,7 +718,7 @@ void mlrVoice::Exec()
 
             m = ((dist - d2) / (1100));  // * g_fSoundDopplerFactor;
 
-            if (sfx->flags & SFX_FLAGS_REVDOP)
+            if (sfx->flags bitand SFX_FLAGS_REVDOP)
                 m = -m;
 
             // constrain to +/- mach 1
@@ -755,7 +755,7 @@ void mlrVoice::Exec()
             DSound3dBuffer->SetMode(DS3DMODE_NORMAL, DS3D_DEFERRED);
 #define DISTEFF_THRESHOLD 100
 
-            if (g_bSoundDistanceEffect and sfx->flags & SFX_POS_LOOPED)
+            if (g_bSoundDistanceEffect and sfx->flags bitand SFX_POS_LOOPED)
             {
                 // MLR 12/3/2003 - Only applied to looping sounds
                 // sounds lag behind high speed objects
@@ -804,7 +804,7 @@ void mlrVoice::Exec()
                 }
                 else
                 {
-                    // scale v from 0 to 1 between min & max dist
+                    // scale v from 0 to 1 between min bitand max dist
                     v = (distsq - sfx->min3ddist) / (sfx->maxDistSq - sfx->min3ddist);
 
                     // clamp result
@@ -844,7 +844,7 @@ void mlrVoice::Exec()
         ////////////////////////////////////
         long Frequency = freq;
 
-        if (sfx->flags & SFX_FLAGS_FREQ)
+        if (sfx->flags bitand SFX_FLAGS_FREQ)
         {
             Frequency = (long)(Frequency * pscale);
             Frequency = min(Frequency, DSBFREQUENCY_MAX);
@@ -854,14 +854,14 @@ void mlrVoice::Exec()
         ////////////////////////////////////
 
         // Play the sample
-        if (sfx->flags & SFX_POS_LOOPED)
+        if (sfx->flags bitand SFX_POS_LOOPED)
         {
             // loopy sounds
             static LARGE_INTEGER biggest = { 0 };
             LARGE_INTEGER freq, res;
             LARGE_INTEGER beg, end;
             QueryPerformanceCounter(&beg);
-            DSoundBuffer->SetFrequency(Frequency); // MLR 12/7/2003 - The freq & vol code was moved here
+            DSoundBuffer->SetFrequency(Frequency); // MLR 12/7/2003 - The freq bitand vol code was moved here
             DSoundBuffer->SetVolume((long)vol);
             DSoundBuffer->Play(0, 0, DSBPLAY_LOOPING);
             QueryPerformanceCounter(&end);
@@ -881,7 +881,7 @@ void mlrVoice::Exec()
             // NON Looped sounds
             if (g_bSoundDistanceEffect and is3d)
             {
-                //(sfx->flags & SFX_POS_EXTERN))
+                //(sfx->flags bitand SFX_POS_EXTERN))
                 // delay external sounds
                 float time,     // Elapsed time since sound was created.
                       radiussq; // MLR 12/2/2003 - The radius from the sounds origin that the soundwave is currently at.
@@ -938,7 +938,7 @@ void mlrVoice::Exec()
     }
     else
     {
-        if (sfx->flags & SFX_POS_LOOPED)
+        if (sfx->flags bitand SFX_POS_LOOPED)
         {
             // don't stop non-looping sounds, let them finish on thier own.
             status = VSSTOP;

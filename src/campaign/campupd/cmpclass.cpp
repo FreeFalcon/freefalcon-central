@@ -378,7 +378,7 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
     // why I have to do this..  sigh.
     CampLeaveCriticalSection();
 
-    if ( not (Flags & CAMP_LIGHT))
+    if ( not (Flags bitand CAMP_LIGHT))
     {
         CampaignWindow(hInst, SW_SHOW);
     }
@@ -557,7 +557,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
         BuildDivisionData();
     }
 
-    if ( not (Flags & CAMP_LIGHT) and !(Flags & CAMP_TACTICAL))
+    if ( not (Flags bitand CAMP_LIGHT) and !(Flags bitand CAMP_TACTICAL))
     {
         // KCK: By telling weathermap that we're instant action, it won't
         // cause a reloading of weather for multiple instant action runs.
@@ -675,13 +675,13 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
     CampEnterCriticalSection();
 #endif
 
-    if (Flags & CAMP_NEED_MASK)
+    if (Flags bitand CAMP_NEED_MASK)
     {
         return 0;
         // We're resuming a previous request.
         ShiAssert(0); // KCK: I don't want to do this anymore. These are sent reliably
-        need_from_master = Flags & (CAMP_NEED_MASK & compl CAMP_NEED_ENTITIES);
-        need_from_all = Flags & (CAMP_NEED_MASK & CAMP_NEED_ENTITIES);
+        need_from_master = Flags bitand (CAMP_NEED_MASK bitand compl CAMP_NEED_ENTITIES);
+        need_from_all = Flags bitand (CAMP_NEED_MASK bitand CAMP_NEED_ENTITIES);
 
         // resend our master session information requests here.
         if (need_from_master)
@@ -691,10 +691,10 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
             camprequest->dataBlock.who = FalconLocalSessionId;
             camprequest->dataBlock.dataNeeded = need_from_master;
 
-            if (need_from_master & CAMP_NEED_OBJ_DELTAS)
+            if (need_from_master bitand CAMP_NEED_OBJ_DELTAS)
                 camprequest->dataBlock.size += FS_MAXBLK / 8;
 
-            if (need_from_master & CAMP_NEED_UNIT_DATA)
+            if (need_from_master bitand CAMP_NEED_UNIT_DATA)
                 camprequest->dataBlock.size += FS_MAXBLK / 8;
 
             if (camprequest->dataBlock.size > 0)
@@ -702,13 +702,13 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
                 uchar *tmpptr;
                 camprequest->dataBlock.data = tmpptr = new uchar[camprequest->dataBlock.size];
 
-                if (need_from_master & CAMP_NEED_OBJ_DELTAS)
+                if (need_from_master bitand CAMP_NEED_OBJ_DELTAS)
                 {
                     memcpy(tmpptr, masterSession->objDataReceived, FS_MAXBLK / 8);
                     tmpptr += FS_MAXBLK / 8;
                 }
 
-                if (need_from_master & CAMP_NEED_UNIT_DATA)
+                if (need_from_master bitand CAMP_NEED_UNIT_DATA)
                     memcpy(tmpptr, masterSession->unitDataReceived, FS_MAXBLK / 8);
             }
 
@@ -741,7 +741,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
         if ( not LoadCampaignEvents(Scenario, Scenario))
             NewCampaignEvents(Scenario);
 
-        if ( not (Flags & CAMP_LIGHT))
+        if ( not (Flags bitand CAMP_LIGHT))
             ((WeatherClass*)realWeather)->CampLoad(TheCampaign.Scenario, game_Campaign);
 
         // Rebuild objective lists once, so our received data has somewhere to go
@@ -754,7 +754,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
         // Clear previous requests
         Flags and_eq compl CAMP_NEED_MASK;
 
-        if (Flags & CAMP_LIGHT)
+        if (Flags bitand CAMP_LIGHT)
         {
             need_from_master = CAMP_NEED_PERSIST | CAMP_NEED_OBJ_DELTAS | CAMP_NEED_UNIT_DATA;
             need_from_all = 0;
@@ -806,10 +806,10 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
 int CampaignClass::StartRemoteCampaign(FalconGameEntity *game)
 {
-    if ( not IsLoaded() or (Flags & CAMP_NEED_MASK))
+    if ( not IsLoaded() or (Flags bitand CAMP_NEED_MASK))
         return 0;
 
-    if ( not (Flags & CAMP_LIGHT))
+    if ( not (Flags bitand CAMP_LIGHT))
     {
         lastAirPlan = 0; // Force an air replan - To get squadron data into the ATM
         RebuildObjectiveLists();
@@ -828,7 +828,7 @@ int CampaignClass::StartRemoteCampaign(FalconGameEntity *game)
 // We check if we have everything and set ourselves up if we do.
 void CampaignClass::GotJoinData(void)
 {
-    ulong still_needed = Flags & CAMP_NEED_MASK;
+    ulong still_needed = Flags bitand CAMP_NEED_MASK;
 
     MonoPrint("Got Join data! Still needed = %x\n", still_needed);
 
@@ -854,7 +854,7 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
     FILE* fp;
     char to[MAX_PATH], from[MAX_PATH];
 
-    if ( not IsLoaded() or (Flags & CAMP_LIGHT and save_mode not_eq CAMP_SAVE_LIGHT))
+    if ( not IsLoaded() or (Flags bitand CAMP_LIGHT and save_mode not_eq CAMP_SAVE_LIGHT))
         return 0;
 
     StartWriteCampFile(gametype, savefile);
@@ -1022,9 +1022,9 @@ void CampaignClass::EndCampaign()
     // CurrentGame = NULL;
     //}
 
-    if (Flags & CAMP_LOADED)
+    if (Flags bitand CAMP_LOADED)
     {
-        if ( not (Flags & CAMP_LIGHT))
+        if ( not (Flags bitand CAMP_LIGHT))
         {
             FreeTheaterTerrain();
             // Only remove teams if we're playing a local game
@@ -1036,7 +1036,7 @@ void CampaignClass::EndCampaign()
             DisposeCampaignEvents();
         }
 
-        if ( not (Flags & CAMP_ONLINE))
+        if ( not (Flags bitand CAMP_ONLINE))
         {
             RemoveTeams(); // KCK NOTE: These could be 'silent removes' instead
         }
@@ -1505,7 +1505,7 @@ int CampaignClass::Encode(VU_BYTE **stream)
     int loop;
     long newsize, datasize;
 
-    if ( not (Flags & CAMP_LIGHT))
+    if ( not (Flags bitand CAMP_LIGHT))
     {
         // Get up to data squadron information
         VerifySquadrons(FALCON_PLAYER_TEAM);
@@ -1874,7 +1874,7 @@ int CampaignClass::RequestScenarioStats(FalconGameEntity *game)
 
 void CampaignClass::ClearCurrentPreload(void)
 {
-    if (Flags & CAMP_PRELOADED)
+    if (Flags bitand CAMP_PRELOADED)
     {
         // Cleanup from previous preload
         CampEnterCriticalSection();
@@ -1899,7 +1899,7 @@ void CampaignClass::Suspend(void)
     ThreadManager::fast_campaign();
     Flags  or_eq  CAMP_SUSPEND_REQUEST;
 
-    while ( not IsSuspended() and (Flags & CAMP_SUSPEND_REQUEST))
+    while ( not IsSuspended() and (Flags bitand CAMP_SUSPEND_REQUEST))
     {
         Sleep(100); // Wait until the campaign is actually suspended
     }
@@ -2022,7 +2022,7 @@ void CampaignClass::AddCampaignEvent(CampUIEventElement *newEvent)
 
     CampEnterCriticalSection();
 
-    if (newEvent->flags & 0x01)
+    if (newEvent->flags bitand 0x01)
     {
         if ( not PriorityEventQueue or strcmp(PriorityEventQueue->eventText, newEvent->eventText) not_eq 0)
         {

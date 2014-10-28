@@ -534,10 +534,10 @@ int com_API_private_IP(unsigned long ip)
     // ip is composed
     // XXX.YYY.ZZZ.WWW
     unsigned long x, y, z, w; //use long to avoid warning
-    x = (ip & 0xFF000000) >> 24;
-    y = (ip & 0x00FF0000) >> 16;
-    z = (ip & 0x0000FF00) >> 8;
-    w = (ip & 0x000000FF);
+    x = (ip bitand 0xFF000000) >> 24;
+    y = (ip bitand 0x00FF0000) >> 16;
+    z = (ip bitand 0x0000FF00) >> 8;
+    w = (ip bitand 0x000000FF);
 
     if (
         ((x == 127) and (y == 0) and (z == 0) and (w == 1)) or // localhost

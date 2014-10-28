@@ -243,7 +243,7 @@ Prof_extern_C void  Prof_dumpFile()
 
         for (j = 0; j < NUM_VALUES; ++j)
         {
-            if (r->value_flag & (1 << j))
+            if (r->value_flag bitand (1 << j))
             {
                 fprintf(fp, "%.4f,", r->values[j]);
             }
@@ -357,7 +357,7 @@ Prof_extern_C char** Prof_dumpOverlay()
         // now we create 3 char* with the self, hier and count values
         for (j = 0; j < NUM_VALUES; ++j)
         {
-            if (r->value_flag & (1 << j))
+            if (r->value_flag bitand (1 << j))
             {
                 char tmp[80];
                 sprintf(tmp, "%.6f", r->values[j]);

@@ -166,7 +166,7 @@ void SelectATOItemCB(long, short hittype, C_Base *control)
     gSelectedFlightID = ato->GetVUID();
     gSelectedATOFlight = gSelectedFlightID;
 
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
     {
         gCurrentFlightID = gSelectedFlightID;
 
@@ -373,7 +373,7 @@ C_ATO_Flight *BuildATOFlightInfo(Flight fl)
     newinfo->SetTask(49, 5, NULL);
     mission = fl->GetUnitMission();
 
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
     {
         // Setup list box with only valid roles
         int i, added;
@@ -408,7 +408,7 @@ C_ATO_Flight *BuildATOFlightInfo(Flight fl)
     GetCallsign(fl, buffer);
     newinfo->SetCallsign(190, 5, gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
-    // Set # & Airplane type, Squadron
+    // Set # bitand Airplane type, Squadron
     squadron = fl->GetUnitSquadron();
 
     if (squadron)
@@ -615,7 +615,7 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
     if ( not gATOAll)
         return NULL;
 
-    if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+    if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
     {
         if (FltPkg->GetTeam() not_eq FalconLocalSession->GetTeam())
             return(NULL);
@@ -631,7 +631,7 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
     if (mistype == AMIS_ABORT or mistype == AMIS_ALERT)
         return(NULL);
 
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
     {
         team = gATOAll->Find(FltPkg->GetTeam() | 0x20000000);
 
@@ -666,7 +666,7 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
         txt->SetFont(gATOAll->GetParent()->Font_);
         missiontype = gATOAll->CreateItem(AtoMiss | 0x40000000 | (FltPkg->GetTeam() << 16), C_TYPE_MENU, txt);
 
-        if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+        if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
             gATOAll->AddChildItem(team, missiontype);
         else
             gATOAll->AddItem(team, missiontype);
@@ -704,7 +704,7 @@ C_ATO_Flight *AddFlighttoATO(Flight flt)
     if ( not gATOAll)
         return NULL;
 
-    if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+    if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
     {
         if (flt->GetTeam() not_eq FalconLocalSession->GetTeam())
             return(NULL);
@@ -767,7 +767,7 @@ C_ATO_Flight *AddtoATO(Flight flt)
     if ( not gATOAll)
         return;
 
-    if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+    if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
     {
         if (flt->GetTeam() not_eq FalconLocalSession->GetTeam())
             return(NULL);
@@ -798,7 +798,7 @@ C_ATO_Flight *AddtoATO(Flight flt)
         atoitem->SetCallback(SelectATOItemCB);
         atoitem->SetFont(gATOAll->GetFont());
 
-        if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+        if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
         {
             team = gATOAll->Find(flt->GetTeam() | 0x20000000);
 
@@ -832,7 +832,7 @@ C_ATO_Flight *AddtoATO(Flight flt)
                 txt->SetFont(gATOAll->GetParent()->Font_);
                 missiontype = gATOAll->CreateItem(AtoMiss | 0x40000000 | (flt->GetTeam() << 16), C_TYPE_MENU, txt);
 
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                     gATOAll->AddChildItem(team, missiontype);
                 else
                     gATOAll->AddItem(team, missiontype);
@@ -883,7 +883,7 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
     if ( not FltPkg->Final())
         return(NULL);
 
-    if ( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+    if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
     {
         if (FltPkg->GetTeam() not_eq FalconLocalSession->GetTeam())
             return(NULL);
@@ -899,7 +899,7 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
     if (mistype == AMIS_ABORT or mistype == AMIS_ALERT)
         return(NULL);
 
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
     {
         team = gATOAll->Find(FltPkg->GetTeam() | 0x20000000);
 
@@ -934,7 +934,7 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
             txt->SetFont(gATOAll->GetParent()->Font_);
             missiontype = gATOAll->CreateItem(AtoMiss | 0x40000000 | (FltPkg->GetTeam() << 16), C_TYPE_MENU, txt);
 
-            if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+            if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                 gATOAll->AddChildItem(team, missiontype);
             else
                 gATOAll->AddItem(team, missiontype);

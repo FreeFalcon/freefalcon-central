@@ -382,7 +382,7 @@ void BuildDivisionData (void)
  {
  d = u->GetUnitDivision();
  c = u->GetOwner();
- if ( not (divlist[d] & (1 << c)))
+ if ( not (divlist[d] bitand (1 << c)))
  {
 // CampEnterCriticalSection();
  dc = new DivisionClass();

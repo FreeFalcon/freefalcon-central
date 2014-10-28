@@ -448,14 +448,14 @@ void VirtualDisplay::Line(float x1, float y1, float x2, float y2)
         y2 = y1 + (y2 - y1) * ((x1 + 1.0f) / (x1 - x2));
         x2 = -1.0f;
 
-        if (clipFlag & CLIP_LEFT)  return;
+        if (clipFlag bitand CLIP_LEFT)  return;
     }
     else if (x2 > 1.0f)
     {
         y2 = y1 + (y2 - y1) * ((x1 - 1.0f) / (x1 - x2));
         x2 = 1.0f;
 
-        if (clipFlag & CLIP_RIGHT)  return;
+        if (clipFlag bitand CLIP_RIGHT)  return;
     }
 
     if (y2 < -1.0f)
@@ -463,14 +463,14 @@ void VirtualDisplay::Line(float x1, float y1, float x2, float y2)
         x2 = x1 + (x2 - x1) * ((y1 + 1.0f) / (y1 - y2));
         y2 = -1.0f;
 
-        if (clipFlag & CLIP_BOTTOM)  return;
+        if (clipFlag bitand CLIP_BOTTOM)  return;
     }
     else if (y2 > 1.0f)
     {
         x2 = x1 + (x2 - x1) * ((y1 - 1.0f) / (y1 - y2));
         y2 = 1.0f;
 
-        if (clipFlag & CLIP_TOP)  return;
+        if (clipFlag bitand CLIP_TOP)  return;
     }
 
     Render2DLine(viewportXtoPixel(x1),

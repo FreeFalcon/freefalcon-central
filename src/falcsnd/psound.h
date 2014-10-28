@@ -312,8 +312,8 @@ public:
     long FillRiffInfo(char *memory, RIFF_FILE *riff);
     RIFF_FILE *LoadRiff(char *filename);
     // IMA ADPCM decompression stuff
-    long StreamIMAADPCM(SOUNDSTREAM *Stream, char *dest, long dlen); // This functions reads from a file, & calls appropriate decode
-    long MemStreamIMAADPCM(SOUNDSTREAM *Stream, char *dest, long dlen); // This functions reads from memory, & calls appropriate decode
+    long StreamIMAADPCM(SOUNDSTREAM *Stream, char *dest, long dlen); // This functions reads from a file, bitand calls appropriate decode
+    long MemStreamIMAADPCM(SOUNDSTREAM *Stream, char *dest, long dlen); // This functions reads from memory, bitand calls appropriate decode
     static void DSoundCheck(HRESULT hr);
 
 private:

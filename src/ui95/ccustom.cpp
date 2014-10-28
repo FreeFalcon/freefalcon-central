@@ -119,7 +119,7 @@ long C_Custom::CheckHotSpots(long relX, long relY)
 {
     short i;
 
-    if (Ready() and !(GetFlags() & C_BIT_INVISIBLE) and Parent_)
+    if (Ready() and !(GetFlags() bitand C_BIT_INVISIBLE) and Parent_)
     {
         if (relX >= GetX() and relY >= GetY() and relX < (GetX() + GetW()) and relY < (GetY() + GetH()))
         {
@@ -156,7 +156,7 @@ void C_Custom::Refresh()
 {
     short i;
 
-    if ((GetFlags() & C_BIT_INVISIBLE) or !Parent_ or !Ready())
+    if ((GetFlags() bitand C_BIT_INVISIBLE) or !Parent_ or !Ready())
         return;
 
     for (i = 0; i < Count_; i++)
@@ -167,12 +167,12 @@ void C_Custom::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     short i;
 
-    if ((GetFlags() & C_BIT_INVISIBLE) or !Parent_ or !Ready())
+    if ((GetFlags() bitand C_BIT_INVISIBLE) or !Parent_ or !Ready())
         return;
 
     for (i = 0; i < Count_; i++)
         Items_[i].Draw(surface, cliprect);
 
-    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }

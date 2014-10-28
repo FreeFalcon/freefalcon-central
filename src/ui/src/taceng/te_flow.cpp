@@ -655,7 +655,7 @@ void tactical_play_setup()
     TheCampaign.Flags  or_eq  CAMP_TACTICAL;
 
 
-    // MONUMENTOUS HACK to get team color & Flag initialized (If they aren't already)
+    // MONUMENTOUS HACK to get team color bitand Flag initialized (If they aren't already)
     for (i = 0; i < NUM_TEAMS; i++)
     {
         if (TeamInfo[i])
@@ -666,7 +666,7 @@ void tactical_play_setup()
             if ( not TeamInfo[i]->GetColor())
                 TeamInfo[i]->SetColor(static_cast<uchar>(i));
 
-            if (i and !(TeamInfo[i]->flags & TEAM_ACTIVE))
+            if (i and !(TeamInfo[i]->flags bitand TEAM_ACTIVE))
                 TeamInfo[i]->flags  or_eq  TEAM_ACTIVE;
         }
     }
@@ -816,7 +816,7 @@ void tactical_edit_mission(tactical_mission *)
 
     tactical_mission_loaded = TRUE;
 
-    // MONUMENTOUS HACK to get team color & Flag initialized (If they aren't already)
+    // MONUMENTOUS HACK to get team color bitand Flag initialized (If they aren't already)
     for (i = 0; i < NUM_TEAMS; i++)
     {
         if (TeamInfo[i])
@@ -827,7 +827,7 @@ void tactical_edit_mission(tactical_mission *)
             if ( not TeamInfo[i]->GetColor())
                 TeamInfo[i]->SetColor(static_cast<uchar>(i));
 
-            if (i and !(TeamInfo[i]->flags & TEAM_ACTIVE))
+            if (i and !(TeamInfo[i]->flags bitand TEAM_ACTIVE))
                 TeamInfo[i]->flags  or_eq  TEAM_ACTIVE;
         }
     }

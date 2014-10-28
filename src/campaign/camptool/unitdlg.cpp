@@ -948,7 +948,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 if (target)
                 {
                     target->GetLocation(&x, &y);
-                    sprintf(buffer, "%d & %d,%d", target->GetCampID(), x, y);
+                    sprintf(buffer, "%d bitand %d,%d", target->GetCampID(), x, y);
                 }
                 else
                     sprintf(buffer, "None");
@@ -1782,7 +1782,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                     while (w)
                     {
-                        if (w->GetWPFlags() & WPF_TARGET)
+                        if (w->GetWPFlags() bitand WPF_TARGET)
                         {
                             CampEntity e;
                             w->GetWPLocation(&x, &y);

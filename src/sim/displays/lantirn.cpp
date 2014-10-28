@@ -156,7 +156,7 @@ float LantirnClass::GetFov()
 
 void LantirnClass::ToggleFLIR()
 {
-    if (m_flags & FLIR_ON)
+    if (m_flags bitand FLIR_ON)
     {
         DisplayExit();
         display = NULL;

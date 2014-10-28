@@ -202,11 +202,11 @@ void DigitalBrain::SensorFusion(void)
         /*int identified = FALSE;
 
         if (self->sensorArray[i]->Type() == SensorClass::RWR) {
-         if (((RwrClass *)self->sensorArray[i])->GetTypeData()->flag & RWR_EXACT_TYPE)
+         if (((RwrClass *)self->sensorArray[i])->GetTypeData()->flag bitand RWR_EXACT_TYPE)
          identified = TRUE;
         }
         else if (self->sensorArray[i]->Type() == SensorClass::Radar) {
-         if (((RadarClass *)self->sensorArray[i])->GetRadarDatFile() and (((RadarClass *)self->sensorArray[i])->radarData->flag & RAD_NCTR) and localData->ataFrom < 45.0f * DTR and localData->range < ((RadarClass *)self->sensorArray[i])->GetRadarDatFile()->MaxNctrRange / (2.0f * (16.0f - (float)SkillLevel()) / 16.0f)) // 2002-03-05 MODIFIED BY S.G. target's aspect and skill used in the equation
+         if (((RadarClass *)self->sensorArray[i])->GetRadarDatFile() and (((RadarClass *)self->sensorArray[i])->radarData->flag bitand RAD_NCTR) and localData->ataFrom < 45.0f * DTR and localData->range < ((RadarClass *)self->sensorArray[i])->GetRadarDatFile()->MaxNctrRange / (2.0f * (16.0f - (float)SkillLevel()) / 16.0f)) // 2002-03-05 MODIFIED BY S.G. target's aspect and skill used in the equation
          identified = TRUE;
         }
         else

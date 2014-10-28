@@ -496,14 +496,14 @@ int GroundUnitClass::ChooseTarget(void)
    int react,det = Detected(this,ac,d);
    CampEntity e;
 
-   if ( not (det & REACTION_MASK))
+   if ( not (det bitand REACTION_MASK))
    return 0;
 
    e = ac->GetCampaignObject();
    react = Reaction(e,det,*d);
-   if (det & ENEMY_IN_RANGE and react)
+   if (det bitand ENEMY_IN_RANGE and react)
  *combat = 1;
- if (det & FRIENDLY_DETECTED)
+ if (det bitand FRIENDLY_DETECTED)
  {
  SetSpotted(e->GetTeam(),TheCampaign.CurrentTime);
  *spot = 1;
@@ -533,18 +533,18 @@ int GroundUnitClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spo
     if (CheckValidType(e, this))
         detTmp  or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
 
-    if ( not (detTmp & REACTION_MASK))
+    if ( not (detTmp bitand REACTION_MASK))
         return 0;
 
     react = Reaction(e, detTmp, *d);
 
-    if (det & ENEMY_IN_RANGE and react)
+    if (det bitand ENEMY_IN_RANGE and react)
         *combat = 1;
 
     // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
     // I can't let SensorFusion handle the spotting for AWAC because this will put a too big toll on the CPU
     // e has to be a flight since it is derived from an aircraft class so less checks needs to be done here then against flights below
-    if (det & FRIENDLY_DETECTED)
+    if (det bitand FRIENDLY_DETECTED)
     {
         // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
         if ((e->IsAggregate() and CheckValidType(e, this)) or (e->IsFlight() and e->GetSType() == STYPE_UNIT_AWACS))
@@ -563,21 +563,21 @@ int GroundUnitClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spo
    int react,det;
 
    det = Detected(this,e,d);
-   if ( not (det & REACTION_MASK))
+   if ( not (det bitand REACTION_MASK))
    return 0;
    react = Reaction(e,det,*d);
-   if (det & ENEMY_DETECTED)
+   if (det bitand ENEMY_DETECTED)
    e->SetSpotted(GetTeam(),TheCampaign.CurrentTime);
-   if (det & ENEMY_IN_RANGE and react)
+   if (det bitand ENEMY_IN_RANGE and react)
  *combat = 1;
- if (det & FRIENDLY_DETECTED)
+ if (det bitand FRIENDLY_DETECTED)
  {
  SetSpotted(e->GetTeam(),TheCampaign.CurrentTime);
  *spot = 1;
  }
- if (det & FRIENDLY_IN_RANGE and ((Unit)e)->GetTargetID() == Id())
+ if (det bitand FRIENDLY_IN_RANGE and ((Unit)e)->GetTargetID() == Id())
  *estr += ((Unit)e)->GetTotalVehicles();
- if (det & ENEMY_SAME_HEX)
+ if (det bitand ENEMY_SAME_HEX)
  {
  if (e->IsBattalion())
  *nomove = 1; // retval = -1;
@@ -604,22 +604,22 @@ int GroundUnitClass::DetectVs(CampEntity e, float *d, int *combat, int *spot, in
     if (CheckValidType(e, this))
         detTmp  or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
 
-    if ( not (detTmp & REACTION_MASK))
+    if ( not (detTmp bitand REACTION_MASK))
         return 0;
 
     react = Reaction(e, detTmp, *d);
 
     // We'll spot our enemy if we're not broken
-    if (det & ENEMY_DETECTED)
+    if (det bitand ENEMY_DETECTED)
     {
         if (IsAggregate() and CheckValidType(this, e))
             e->SetSpotted(GetTeam(), TheCampaign.CurrentTime, ( not e->IsFlight() or CanItIdentify(this, e, *d, e->GetMovementType()))); // 2002-02-11 MODIFIED BY S.G. Say 'identified if it's not a flight or it has the hability to identify
     }
 
-    if (det & ENEMY_IN_RANGE and react)
+    if (det bitand ENEMY_IN_RANGE and react)
         *combat = 1;
 
-    if (det & FRIENDLY_DETECTED)
+    if (det bitand FRIENDLY_DETECTED)
     {
         // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
         if ((e->IsAggregate() and CheckValidType(e, this)) or (e->IsFlight() and e->GetSType() == STYPE_UNIT_AWACS))
@@ -629,10 +629,10 @@ int GroundUnitClass::DetectVs(CampEntity e, float *d, int *combat, int *spot, in
         }
     }
 
-    if (det & FRIENDLY_IN_RANGE and ((Unit)e)->GetTargetID() == Id())
+    if (det bitand FRIENDLY_IN_RANGE and ((Unit)e)->GetTargetID() == Id())
         *estr += ((Unit)e)->GetTotalVehicles();
 
-    if (det & ENEMY_SAME_HEX)
+    if (det bitand ENEMY_SAME_HEX)
     {
         if (e->IsBattalion())
             *nomove = 1; // retval = -1;
@@ -652,31 +652,31 @@ int GroundUnitClass::DetectVs(CampEntity e, float *d, int *combat, int *spot, in
 
     det = Detected(this, e, d);
 
-    if ( not (det & REACTION_MASK))
+    if ( not (det bitand REACTION_MASK))
         return 0;
 
     // JB SOJ Don't react unless we can detect
-    if (det & ENEMY_DETECTED)
+    if (det bitand ENEMY_DETECTED)
     {
         react = Reaction(e, det, *d);
         e->SetSpotted(GetTeam(), TheCampaign.CurrentTime);
 
-        if (det & ENEMY_IN_RANGE and react)
+        if (det bitand ENEMY_IN_RANGE and react)
             *combat = 1;
     }
 
     // JB SOJ
 
-    if (det & FRIENDLY_DETECTED)
+    if (det bitand FRIENDLY_DETECTED)
     {
         SetSpotted(e->GetTeam(), TheCampaign.CurrentTime);
         *spot = 1;
     }
 
-    if (det & FRIENDLY_IN_RANGE and ((Unit)e)->GetTargetID() == Id())
+    if (det bitand FRIENDLY_IN_RANGE and ((Unit)e)->GetTargetID() == Id())
         *estr += ((Unit)e)->GetTotalVehicles();
 
-    if (det & ENEMY_SAME_HEX)
+    if (det bitand ENEMY_SAME_HEX)
     {
         if (e->IsBattalion())
             *nomove = 1; // retval = -1;
@@ -2161,7 +2161,7 @@ Objective FindRetreatPath(Unit u, int depth, int flags)
                     odist = dist + FloatToInt32(Distance(x, y, sx, sy));
                     looklist.InsertNewElement(odist, o, LADT_SORTED_LIST);
 
-                    if (flags & FIND_SECONDARYONLY and !o->IsSecondary())
+                    if (flags bitand FIND_SECONDARYONLY and !o->IsSecondary())
                         continue;
 
                     if (depth > 2 and (o->IsFrontline() or o->IsSecondline() or o->IsThirdline()))
@@ -2214,7 +2214,7 @@ o = s->GetNeighbor(n);
 if (o and !CampSearch[o->GetCampID()] and team == o->GetTeam())
 {
 looklist.ForcedInsert(o);
-if (flags & FIND_SECONDARYONLY and !o->IsSecondary())
+if (flags bitand FIND_SECONDARYONLY and !o->IsSecondary())
 continue;
 if (depth > 2 and (o->IsFrontline() or o->IsSecondline() or o->IsThirdline()))
 continue;
@@ -2472,31 +2472,31 @@ void GroundUnitClass::WriteDirty(uchar **stream)
     *(uchar*)ptr = (uchar) dirty_ground_unit;
     ptr += sizeof(uchar);
 
-    if (dirty_ground_unit & DIRTY_ORDERS)
+    if (dirty_ground_unit bitand DIRTY_ORDERS)
     {
         *(uchar*)ptr = orders;
         ptr += sizeof(uchar);
     }
 
-    if (dirty_ground_unit & DIRTY_DIVISION)
+    if (dirty_ground_unit bitand DIRTY_DIVISION)
     {
         *(short*)ptr = division;
         ptr += sizeof(short);
     }
 
-    if (dirty_ground_unit & DIRTY_AOBJ)
+    if (dirty_ground_unit bitand DIRTY_AOBJ)
     {
         *(VU_ID*)ptr = aobj;
         ptr += sizeof(VU_ID);
     }
 
-    if (dirty_ground_unit & DIRTY_SOBJ)
+    if (dirty_ground_unit bitand DIRTY_SOBJ)
     {
         *(VU_ID*)ptr = sobj;
         ptr += sizeof(VU_ID);
     }
 
-    if (dirty_ground_unit & DIRTY_POBJ)
+    if (dirty_ground_unit bitand DIRTY_POBJ)
     {
         *(VU_ID*)ptr = pobj;
         ptr += sizeof(VU_ID);
@@ -2517,27 +2517,27 @@ void GroundUnitClass::ReadDirty(VU_BYTE **stream, long *rem)
 
     memcpychk(&bits, stream, sizeof(unsigned char), rem);
 
-    if (bits & DIRTY_ORDERS)
+    if (bits bitand DIRTY_ORDERS)
     {
         memcpychk(&orders, stream, sizeof(uchar), rem);
     }
 
-    if (bits & DIRTY_DIVISION)
+    if (bits bitand DIRTY_DIVISION)
     {
         memcpychk(&division, stream, sizeof(short), rem);
     }
 
-    if (bits & DIRTY_AOBJ)
+    if (bits bitand DIRTY_AOBJ)
     {
         memcpychk(&aobj, stream, sizeof(VU_ID), rem);
     }
 
-    if (bits & DIRTY_SOBJ)
+    if (bits bitand DIRTY_SOBJ)
     {
         memcpychk(&sobj, stream, sizeof(VU_ID), rem);
     }
 
-    if (bits & DIRTY_POBJ)
+    if (bits bitand DIRTY_POBJ)
     {
         memcpychk(&pobj, stream, sizeof(VU_ID), rem);
     }

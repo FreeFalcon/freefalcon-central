@@ -89,7 +89,7 @@ void AddTabToBrief(int tab, _TCHAR *buffer, C_Window *window, _TCHAR *output);
 void AddTabToDebrief(int tab, _TCHAR *buffer, C_Window *window, _TCHAR *output);
 
 void AddEOLToBrief(_TCHAR *buffer, C_Window *window, _TCHAR *output);
-// This will return the current X & Y location in a window or string
+// This will return the current X bitand Y location in a window or string
 void GetCurrentBriefXY(int *x, int *y, _TCHAR *buffer, C_Window *window, _TCHAR *output);
 
 extern BOOL AddWordWrapTextToWindow(C_Window *win, short *x, short *y, short startcol, short endcol, COLORREF color, _TCHAR *str, long Client = 0);
@@ -724,16 +724,16 @@ static void GetWpActionToBuffer(WayPoint wp, _TCHAR *cline)
     {
         if (wp->GetWPRouteAction() == WP_NOTHING)
         {
-            if (wp->GetWPFlags() & WPF_BREAKPOINT)
+            if (wp->GetWPFlags() bitand WPF_BREAKPOINT)
                 AddStringToBuffer(WPActStr[31], cline);
             // AddIndexedStringToBuffer(381, cline);
-            else if (wp->GetWPFlags() & WPF_IP)
+            else if (wp->GetWPFlags() bitand WPF_IP)
                 AddStringToBuffer(WPActStr[32], cline);
             // AddIndexedStringToBuffer(382, cline);
-            else if (wp->GetWPFlags() & WPF_TURNPOINT)
+            else if (wp->GetWPFlags() bitand WPF_TURNPOINT)
                 AddStringToBuffer(WPActStr[33], cline);
             // AddIndexedStringToBuffer(383, cline);
-            else if (wp->GetWPFlags() & WPF_CP)
+            else if (wp->GetWPFlags() bitand WPF_CP)
                 AddStringToBuffer(WPActStr[WP_CASCP], cline);
             // AddIndexedStringToBuffer(359, cline);
             else
@@ -755,7 +755,7 @@ static void GetWpActionToBuffer(WayPoint wp, _TCHAR *cline)
 
 static void GetWpTimeToBuffer(WayPoint wp, _TCHAR *cline)
 {
-    if (wp->GetWPFlags() & WPF_ALTERNATE or wp->GetWPAction() == WP_REFUEL)
+    if (wp->GetWPFlags() bitand WPF_ALTERNATE or wp->GetWPAction() == WP_REFUEL)
         AddIndexedStringToBuffer(1650, cline);
     else
         AddTimeToBuffer(wp->GetWPArrivalTime(), cline);
@@ -763,7 +763,7 @@ static void GetWpTimeToBuffer(WayPoint wp, _TCHAR *cline)
 
 static void GetWptDist(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 {
-    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and !(wp->GetWPFlags() & WPF_ALTERNATE))
+    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and !(wp->GetWPFlags() bitand WPF_ALTERNATE))
     {
         GridIndex lx, ly, cx, cy;
         lwp->GetWPLocation(&lx, &ly);
@@ -776,7 +776,7 @@ static void GetWptDist(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 
 static void GetWptSpeed(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 {
-    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and !(wp->GetWPFlags() & WPF_ALTERNATE))
+    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and !(wp->GetWPFlags() bitand WPF_ALTERNATE))
     {
         /*
         GridIndex cx,cy,lx,ly;
@@ -794,7 +794,7 @@ static void GetWptSpeed(WayPoint wp, WayPoint lwp, _TCHAR *cline)
         float speed;
         int ispeed;
 
-        if (wp->GetWPFlags() & WPF_HOLDCURRENT)
+        if (wp->GetWPFlags() bitand WPF_HOLDCURRENT)
             speed = get_air_speed(wp->GetWPSpeed() * KM_TO_NM, lwp->GetWPAltitude());
         else
             speed = get_air_speed(wp->GetWPSpeed() * KM_TO_NM, wp->GetWPAltitude());
@@ -811,7 +811,7 @@ static int GetWpAlt(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 
     int alt = wp->GetWPAltitude();
 
-    if (lwp and wp->GetWPFlags() & WPF_HOLDCURRENT)
+    if (lwp and wp->GetWPFlags() bitand WPF_HOLDCURRENT)
         alt = lwp->GetWPAltitude();
 
     if (alt > 0)
@@ -824,9 +824,9 @@ static int GetWpAlt(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 
 static void GetWpDescription(WayPoint wp, _TCHAR *cline)
 {
-    if (wp->GetWPFlags() & WPF_ALTERNATE)
+    if (wp->GetWPFlags() bitand WPF_ALTERNATE)
         AddIndexedStringToBuffer(237, cline);
-    else if (wp->GetWPFlags() & WPF_REPEAT)
+    else if (wp->GetWPFlags() bitand WPF_REPEAT)
         AddIndexedStringToBuffer(247, cline);
     else if (wp->GetWPAction() == WP_NOTHING)
         AddIndexedStringToBuffer(1650 + wp->GetWPRouteAction(), cline);
@@ -836,7 +836,7 @@ static void GetWpDescription(WayPoint wp, _TCHAR *cline)
 
 static void GetWpHeading(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 {
-    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and !(wp->GetWPFlags() & WPF_ALTERNATE))
+    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and !(wp->GetWPFlags() bitand WPF_ALTERNATE))
     {
         GridIndex cx, cy, lx, ly;
         float heading;
@@ -899,7 +899,7 @@ void AddStringToBrief(_TCHAR *buffer, C_Window *window, _TCHAR *output)
 
 void GetCurrentBriefXY(int *x, int *y, _TCHAR *buffer, C_Window *window, _TCHAR *output)
 {
-    // KCK: The only way we can REALLY know current x & y position is to have the UI add it for us
+    // KCK: The only way we can REALLY know current x bitand y position is to have the UI add it for us
     // (and therefore do all appropriate wrapping, compression of spaces, etc, etc)
     AddStringToBrief(buffer, window, output);
     *x = CBX;
@@ -1273,7 +1273,7 @@ void GetEntityDestination(CampEntity e, _TCHAR *name)
             WayPoint w = ((Unit)e)->GetFirstUnitWP();
             CampEntity t;
 
-            while (w and !(w->GetWPFlags() & WPF_TARGET))
+            while (w and !(w->GetWPFlags() bitand WPF_TARGET))
                 w = w->GetNextWP();
 
             if (w)
@@ -2023,7 +2023,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 }
                 else if (strcmp(token, "#IF_ENEMY_AIR_RESPONSE") == 0)
                 {
-                    if (mec->responses & PRESPONSE_CA or ESquad)
+                    if (mec->responses bitand PRESPONSE_CA or ESquad)
                         stack_active[curr_stack] = 1;
                     else
                         stack_active[curr_stack] = 0;
@@ -2055,7 +2055,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                  stack_active[curr_stack] = 0;
                  while (sptr and (atoi(sptr) or *sptr == '0'))
                  {
-                 if (atoi(sptr) == ((mec->threat_stats >> 8) & 0x0F))
+                 if (atoi(sptr) == ((mec->threat_stats >> 8) bitand 0x0F))
                  stack_active[curr_stack] = 1;
                  if (sptr = strchr(sptr,' '))
                  sptr++;
@@ -2068,7 +2068,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                  stack_active[curr_stack] = 0;
                  while (sptr and (atoi(sptr) or *sptr == '0'))
                  {
-                 if (atoi(sptr) == ((mec->threat_stats >> 4) & 0x0F))
+                 if (atoi(sptr) == ((mec->threat_stats >> 4) bitand 0x0F))
                  stack_active[curr_stack] = 1;
                  if (sptr = strchr(sptr,' '))
                  sptr++;
@@ -2580,7 +2580,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                  CampEntity etar;
                  // Find out where this flight is going (find the target)
                  WayPoint w = ((Unit)reqe)->GetFirstUnitWP();
-                 while (w and !(w->GetWPFlags() & WPF_TARGET))
+                 while (w and !(w->GetWPFlags() bitand WPF_TARGET))
                  w = w->GetNextWP();
                  if (w)
                  {
@@ -3393,7 +3393,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                 if (CWayPoint and nw and nw->GetWPAltitude() not_eq CWayPoint->GetWPAltitude())
                 {
-                    if (CWayPoint->GetWPFlags() & WPF_HOLDCURRENT)
+                    if (CWayPoint->GetWPFlags() bitand WPF_HOLDCURRENT)
                     {
                         AddIndexedStringToBuffer(1600, current_line);
                         AddNumberToBuffer(CWayPoint->GetWPAltitude(), current_line);

@@ -323,12 +323,12 @@ void BuildAscii()
 
         if (vkey not_eq -1)
         {
-            kbd = static_cast<short>(MapVirtualKey(vkey, 2) & 0xff);
+            kbd = static_cast<short>(MapVirtualKey(vkey, 2) bitand 0xff);
 
             if (kbd)
             {
-                shiftstates = static_cast<short>((vkey >> 8) & 0x07);
-                scan = static_cast<short>(MapVirtualKey(vkey, 0) & 0xff);
+                shiftstates = static_cast<short>((vkey >> 8) bitand 0x07);
+                scan = static_cast<short>(MapVirtualKey(vkey, 0) bitand 0xff);
 
                 Key_Chart[scan].Ascii[shiftstates] = static_cast<char>(i);
                 Key_Chart[scan].Flags[shiftstates]  or_eq  _IS_ASCII_;
@@ -528,7 +528,7 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
     if (g_writeMissionTbl)
         WriteMissionData();
 
-    if (gSoundFlags & FSND_SOUND) // Switch for turning on/off sound stuff
+    if (gSoundFlags bitand FSND_SOUND) // Switch for turning on/off sound stuff
         InitSoundManager(FalconDisplay.appWin, 0, FalconDataDirectory);
 
     g_voicemap.LoadVoices();
@@ -1396,7 +1396,7 @@ void CampaignAutoSave(FalconGameType gametype)
             if (gCommsMgr->Online())
             {
                 // Send messages to remote players with new Iter Number
-                // So they can save their stats & update Iter in their campaign
+                // So they can save their stats bitand update Iter in their campaign
                 gCommsMgr->UpdateGameIter();
             }
         }

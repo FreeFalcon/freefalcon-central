@@ -315,8 +315,8 @@ long FindDivisionType(uchar type)
 
     while (UnitFilters[i].UIType)
     {
-        if (type == (UnitFilters[i].SubType & 0x00ffffff))
-            return((UnitFilters[i].UIType & 0x00ffffff) | _UNIT_DIVISION);
+        if (type == (UnitFilters[i].SubType bitand 0x00ffffff))
+            return((UnitFilters[i].UIType bitand 0x00ffffff) | _UNIT_DIVISION);
 
         i++;
     }

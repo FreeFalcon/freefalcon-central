@@ -589,7 +589,7 @@ VU_ERRCODE VuEntity::Handle(VuPushRequest* msg)
                 resp->RequestReliableTransmit();
                 VuMessageQueue::PostVuMessage(resp);
             }
-            else if ((1 << Domain()) & vuLocalSessionEntity->DomainMask())
+            else if ((1 << Domain()) bitand vuLocalSessionEntity->DomainMask())
             {
                 VuEntity* assoc = 0;
 

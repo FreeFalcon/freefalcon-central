@@ -11,9 +11,9 @@ extern WORD rShift[], bShift[], gShift[];
 DWORD RGB565toRGB8(WORD sc)
 {
     //unpack rgb565
-    DWORD r = (sc >> 11) & 31;
-    DWORD g = (sc >> 5) & 63;
-    DWORD b = (sc & 31);
+    DWORD r = (sc >> 11) bitand 31;
+    DWORD g = (sc >> 5) bitand 63;
+    DWORD b = (sc bitand 31);
     r <<= 3;//scale 0..31 to 0..255
     g <<= 2;//scale 0..63 to 0..255
     b <<= 3;
@@ -24,9 +24,9 @@ DWORD RGB565toRGB8(WORD sc)
 WORD RGB8toRGB565(DWORD sc)
 {
     //unpack rgb565
-    DWORD r = (sc >> 16) & 255;
-    DWORD g = (sc >> 8) & 255;
-    DWORD b = (sc & 255);
+    DWORD r = (sc >> 16) bitand 255;
+    DWORD g = (sc >> 8) bitand 255;
+    DWORD b = (sc bitand 255);
     r >>= 3;//scale to 0..31 from 0..255
     g >>= 2;//scale to 0..63 from 0..255
     b >>= 3;
@@ -864,18 +864,18 @@ void IMAGE_RSC::Blend8BitFast(WORD *dest, long front, long back)
     while (count--)
     {
         r = rShift[UIColorTable[operc][
-                       UIColorTable[front][(Palette[*sptr] >> Owner->reds) & 0x1f] +
-                       UIColorTable[back][(*dptr >> Owner->reds) & 0x1f]
+                       UIColorTable[front][(Palette[*sptr] >> Owner->reds) bitand 0x1f] +
+                       UIColorTable[back][(*dptr >> Owner->reds) bitand 0x1f]
                    ]];
 
         g = gShift[UIColorTable[operc][
-                       UIColorTable[front][(Palette[*sptr] >> Owner->greens) & 0x1f] +
-                       UIColorTable[back][(*dptr >> Owner->greens) & 0x1f]
+                       UIColorTable[front][(Palette[*sptr] >> Owner->greens) bitand 0x1f] +
+                       UIColorTable[back][(*dptr >> Owner->greens) bitand 0x1f]
                    ]];
 
         b = bShift[UIColorTable[operc][
-                       UIColorTable[front][(Palette[*sptr] >> Owner->blues) & 0x1f] +
-                       UIColorTable[back][(*dptr >> Owner->blues) & 0x1f]
+                       UIColorTable[front][(Palette[*sptr] >> Owner->blues) bitand 0x1f] +
+                       UIColorTable[back][(*dptr >> Owner->blues) bitand 0x1f]
                    ]];
 
         sptr++;
@@ -905,18 +905,18 @@ void IMAGE_RSC::Blend8BitTransparentFast(WORD *dest, long front, long back)
         if (*sptr)
         {
             r = rShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->reds) & 0x1f] +
-                           UIColorTable[back][(*dptr >> Owner->reds) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->reds) bitand 0x1f] +
+                           UIColorTable[back][(*dptr >> Owner->reds) bitand 0x1f]
                        ]];
 
             g = gShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->greens) & 0x1f] +
-                           UIColorTable[back][(*dptr >> Owner->greens) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->greens) bitand 0x1f] +
+                           UIColorTable[back][(*dptr >> Owner->greens) bitand 0x1f]
                        ]];
 
             b = bShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->blues) & 0x1f] +
-                           UIColorTable[back][(*dptr >> Owner->blues) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->blues) bitand 0x1f] +
+                           UIColorTable[back][(*dptr >> Owner->blues) bitand 0x1f]
                        ]];
             *dptr++ = static_cast<WORD>(r | g | b);
         }
@@ -953,18 +953,18 @@ void IMAGE_RSC::Blend8Bit(long doffset,long dwidth,WORD *dest,long front,long ba
  while(i--)
  {
  r=rShift[UIColorTable[operc][
- UIColorTable[front][(Palette[*sptr] >> Owner->reds) & 0x1f]+
- UIColorTable[back][(*dptr >> Owner->reds) & 0x1f]
+ UIColorTable[front][(Palette[*sptr] >> Owner->reds) bitand 0x1f]+
+ UIColorTable[back][(*dptr >> Owner->reds) bitand 0x1f]
  ]];
 
  g=gShift[UIColorTable[operc][
- UIColorTable[front][(Palette[*sptr] >> Owner->greens) & 0x1f]+
- UIColorTable[back][(*dptr >> Owner->greens) & 0x1f]
+ UIColorTable[front][(Palette[*sptr] >> Owner->greens) bitand 0x1f]+
+ UIColorTable[back][(*dptr >> Owner->greens) bitand 0x1f]
  ]];
 
  b=bShift[UIColorTable[operc][
- UIColorTable[front][(Palette[*sptr] >> Owner->blues) & 0x1f]+
- UIColorTable[back][(*dptr >> Owner->blues) & 0x1f]
+ UIColorTable[front][(Palette[*sptr] >> Owner->blues) bitand 0x1f]+
+ UIColorTable[back][(*dptr >> Owner->blues) bitand 0x1f]
  ]];
 
  sptr++;
@@ -1014,18 +1014,18 @@ void IMAGE_RSC::Blend8Bit(long doffset, long dwidth, WORD *dest, long front, lon
                 dc = RGB8toRGB565(*dptr2);
 
             r = rShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->reds) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->reds) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                        ]];
 
             g = gShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->greens) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->greens) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                        ]];
 
             b = bShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->blues) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->blues) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                        ]];
 
             sptr++;
@@ -1091,18 +1091,18 @@ void IMAGE_RSC::Blend8BitTransparent(long doffset, long dwidth, WORD *dest, long
 
 
                 r = rShift[UIColorTable[operc][
-                               UIColorTable[front][(Palette[*sptr] >> Owner->reds) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                               UIColorTable[front][(Palette[*sptr] >> Owner->reds) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                            ]];
 
                 g = gShift[UIColorTable[operc][
-                               UIColorTable[front][(Palette[*sptr] >> Owner->greens) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                               UIColorTable[front][(Palette[*sptr] >> Owner->greens) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                            ]];
 
                 b = bShift[UIColorTable[operc][
-                               UIColorTable[front][(Palette[*sptr] >> Owner->blues) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                               UIColorTable[front][(Palette[*sptr] >> Owner->blues) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                            ]];
 
                 sptr++;
@@ -1174,18 +1174,18 @@ void IMAGE_RSC::Blend8BitPart(long soffset, long scopy, long ssize, long doffset
 
 
             r = rShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->reds) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->reds) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                        ]];
 
             g = gShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->greens) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->greens) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                        ]];
 
             b = bShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->blues) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->blues) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                        ]];
 
             sptr++;
@@ -1254,18 +1254,18 @@ void IMAGE_RSC::Blend8BitTransparentPart(long soffset, long scopy, long ssize, l
 
 
                 r = rShift[UIColorTable[operc][
-                               UIColorTable[front][(Palette[*sptr] >> Owner->reds) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                               UIColorTable[front][(Palette[*sptr] >> Owner->reds) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                            ]];
 
                 g = gShift[UIColorTable[operc][
-                               UIColorTable[front][(Palette[*sptr] >> Owner->greens) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                               UIColorTable[front][(Palette[*sptr] >> Owner->greens) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                            ]];
 
                 b = bShift[UIColorTable[operc][
-                               UIColorTable[front][(Palette[*sptr] >> Owner->blues) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                               UIColorTable[front][(Palette[*sptr] >> Owner->blues) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                            ]];
 
                 sptr++;
@@ -1318,18 +1318,18 @@ void IMAGE_RSC::Blend16BitFast(WORD *dest, long front, long back)
         dc = *dptr;
 
         r = rShift[UIColorTable[operc][
-                       UIColorTable[front][(*sptr >> Owner->reds) & 0x1f] +
-                       UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                       UIColorTable[front][(*sptr >> Owner->reds) bitand 0x1f] +
+                       UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                    ]];
 
         g = gShift[UIColorTable[operc][
-                       UIColorTable[front][(*sptr >> Owner->greens) & 0x1f] +
-                       UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                       UIColorTable[front][(*sptr >> Owner->greens) bitand 0x1f] +
+                       UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                    ]];
 
         b = bShift[UIColorTable[operc][
-                       UIColorTable[front][(*sptr >> Owner->blues) & 0x1f] +
-                       UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                       UIColorTable[front][(*sptr >> Owner->blues) bitand 0x1f] +
+                       UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                    ]];
 
         sptr++;
@@ -1360,18 +1360,18 @@ void IMAGE_RSC::Blend16BitTransparentFast(WORD *dest, long front, long back)
             dc = *dptr;
 
             r = rShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->reds) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->reds) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                        ]];
 
             g = gShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->greens) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->greens) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                        ]];
 
             b = bShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->blues) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->blues) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                        ]];
             *dptr++ = static_cast<WORD>(r | g | b);
         }
@@ -1422,18 +1422,18 @@ void IMAGE_RSC::Blend16Bit(long doffset, long dwidth, WORD *dest, long front, lo
 
 
             r = rShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->reds) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->reds) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                        ]];
 
             g = gShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->greens) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->greens) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                        ]];
 
             b = bShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->blues) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->blues) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                        ]];
 
             sptr++;
@@ -1493,18 +1493,18 @@ void IMAGE_RSC::Blend16BitTransparent(long doffset, long dwidth, WORD *dest, lon
                     dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
 
                 r = rShift[UIColorTable[operc][
-                               UIColorTable[front][(*sptr >> Owner->reds) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                               UIColorTable[front][(*sptr >> Owner->reds) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                            ]];
 
                 g = gShift[UIColorTable[operc][
-                               UIColorTable[front][(*sptr >> Owner->greens) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                               UIColorTable[front][(*sptr >> Owner->greens) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                            ]];
 
                 b = bShift[UIColorTable[operc][
-                               UIColorTable[front][(*sptr >> Owner->blues) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                               UIColorTable[front][(*sptr >> Owner->blues) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                            ]];
 
                 sptr++;
@@ -1574,18 +1574,18 @@ void IMAGE_RSC::Blend16BitPart(long soffset, long scopy, long ssize, long doffse
                 dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
 
             r = rShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->reds) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->reds) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                        ]];
 
             g = gShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->greens) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->greens) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                        ]];
 
             b = bShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->blues) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->blues) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                        ]];
 
             sptr++;
@@ -1649,18 +1649,18 @@ void IMAGE_RSC::Blend16BitTransparentPart(long soffset, long scopy, long ssize, 
                     dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
 
                 r = rShift[UIColorTable[operc][
-                               UIColorTable[front][(*sptr >> Owner->reds) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                               UIColorTable[front][(*sptr >> Owner->reds) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                            ]];
 
                 g = gShift[UIColorTable[operc][
-                               UIColorTable[front][(*sptr >> Owner->greens) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                               UIColorTable[front][(*sptr >> Owner->greens) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                            ]];
 
                 b = bShift[UIColorTable[operc][
-                               UIColorTable[front][(*sptr >> Owner->blues) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                               UIColorTable[front][(*sptr >> Owner->blues) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                            ]];
 
                 sptr++;
@@ -1712,14 +1712,14 @@ WORD *IMAGE_RSC::GetPalette()
         return(NULL);
 
     if (Header->Type == _RSC_IS_IMAGE_)
-        if (Header->flags & _RSC_8_BIT_)
+        if (Header->flags bitand _RSC_8_BIT_)
             return((WORD*)(Owner->Data_ + Header->paletteoffset));
 
     return(NULL);
 }
 
 // VITAL NOTE:
-//  it is VERY important that all the source & destination parameters are
+//  it is VERY important that all the source bitand destination parameters are
 //  within the DESTINATION
 //  source checking is provided...
 //  DESTINATION is NOT checked whatsoever
@@ -1741,9 +1741,9 @@ void IMAGE_RSC::Blit(SCREEN *surface, long sx, long sy, long sw, long sh, long d
 
     if ( not sx and !sy and sw >= Header->w and sh >= Header->h)
     {
-        if (Header->flags & _RSC_USECOLORKEY_)
+        if (Header->flags bitand _RSC_USECOLORKEY_)
         {
-            if (Header->flags & _RSC_8_BIT_)
+            if (Header->flags bitand _RSC_8_BIT_)
             {
                 //XX
                 //if(Header->w == surface->width)
@@ -1768,7 +1768,7 @@ void IMAGE_RSC::Blit(SCREEN *surface, long sx, long sy, long sw, long sh, long d
         }
         else
         {
-            if (Header->flags & _RSC_8_BIT_)
+            if (Header->flags bitand _RSC_8_BIT_)
             {
                 //XX
                 // if(0)
@@ -1811,9 +1811,9 @@ void IMAGE_RSC::Blit(SCREEN *surface, long sx, long sy, long sw, long sh, long d
     doff = dy * surface->width + dx;
     ssize = Header->w * (sy + sh);
 
-    if (Header->flags & _RSC_USECOLORKEY_)
+    if (Header->flags bitand _RSC_USECOLORKEY_)
     {
-        if (Header->flags & _RSC_8_BIT_)
+        if (Header->flags bitand _RSC_8_BIT_)
         {
             if (surface->bpp == 32)   //XX
                 _Blit8BitTransparentPartTo32(soff, sw, ssize, dy * surface->width + dx, surface->width, (DWORD*)surface->mem);
@@ -1830,7 +1830,7 @@ void IMAGE_RSC::Blit(SCREEN *surface, long sx, long sy, long sw, long sh, long d
     }
     else
     {
-        if (Header->flags & _RSC_8_BIT_)
+        if (Header->flags bitand _RSC_8_BIT_)
         {
             if (surface->bpp == 32)  //XX
                 _Blit8BitPartTo32(soff, sw, ssize, dy * surface->width + dx, surface->width, (DWORD*) surface->mem);
@@ -1848,7 +1848,7 @@ void IMAGE_RSC::Blit(SCREEN *surface, long sx, long sy, long sw, long sh, long d
 }
 
 // VITAL NOTE:
-//  it is VERY important that all the source & destination parameters are
+//  it is VERY important that all the source bitand destination parameters are
 //  within the DESTINATION
 //  source checking is provided...
 //  DESTINATION is NOT checked whatsoever
@@ -1867,9 +1867,9 @@ void IMAGE_RSC::Blend(SCREEN *surface, long sx, long sy, long sw, long sh, long 
 
     if ( not sx and !sy and sw >= Header->w and sh >= Header->h)
     {
-        if (Header->flags & _RSC_USECOLORKEY_)
+        if (Header->flags bitand _RSC_USECOLORKEY_)
         {
-            if (Header->flags & _RSC_8_BIT_)
+            if (Header->flags bitand _RSC_8_BIT_)
             {
                 //if(Header->w == surface->width)
                 // Blend8BitTransparentFast(surface->mem,front,back);
@@ -1887,7 +1887,7 @@ void IMAGE_RSC::Blend(SCREEN *surface, long sx, long sy, long sw, long sh, long 
         }
         else
         {
-            if (Header->flags & _RSC_8_BIT_)
+            if (Header->flags bitand _RSC_8_BIT_)
             {
                 //if(Header->w == surface->width)
                 // Blend8BitFast(surface->mem,front,back);
@@ -1920,16 +1920,16 @@ void IMAGE_RSC::Blend(SCREEN *surface, long sx, long sy, long sw, long sh, long 
     doff = dy * surface->width + dx;
     ssize = Header->w * (sy + sh);
 
-    if (Header->flags & _RSC_USECOLORKEY_)
+    if (Header->flags bitand _RSC_USECOLORKEY_)
     {
-        if (Header->flags & _RSC_8_BIT_)
+        if (Header->flags bitand _RSC_8_BIT_)
             Blend8BitTransparentPart(soff, sw, ssize, dy * surface->width + dx, surface->width, surface->mem, front, back, surface->bpp == 32); //XX
         else
             Blend16BitTransparentPart(soff, sw, ssize, dy * surface->width + dx, surface->width, surface->mem, front, back, surface->bpp == 32); //XX
     }
     else
     {
-        if (Header->flags & _RSC_8_BIT_)
+        if (Header->flags bitand _RSC_8_BIT_)
             Blend8BitPart(soff, sw, ssize, dy * surface->width + dx, surface->width, surface->mem, front, back, surface->bpp == 32); //XX
         else
             Blend16BitPart(soff, sw, ssize, dy * surface->width + dx, surface->width, surface->mem, front, back, surface->bpp == 32); //XX
@@ -2009,7 +2009,7 @@ void IMAGE_RSC::ScaleDown8Overlay(SCREEN *surface, long *Rows, long *Cols, long 
 
         for (j = offx; j < (offx + dw); j++)
         {
-            palno = (long)(oline[Cols[j]] & 0x0f);
+            palno = (long)(oline[Cols[j]] bitand 0x0f);
 
             if (surface->bpp == 32)
             {
@@ -2179,7 +2179,7 @@ void IMAGE_RSC::ScaleUp8Overlay(SCREEN *surface, long *Rows, long *Cols, long dx
             {
                 for (j = 0; j < dw; j++)
                 {
-                    palno = (long)(oline[Cols[j]] & 0x0f);
+                    palno = (long)(oline[Cols[j]] bitand 0x0f);
                     ((DWORD*)dline)[j] = RGB565toRGB8(Palette[palno][sline[Cols[j]]]);
                 }
             }
@@ -2189,7 +2189,7 @@ void IMAGE_RSC::ScaleUp8Overlay(SCREEN *surface, long *Rows, long *Cols, long dx
 
                 for (j = 0; j < dw; j++)
                 {
-                    palno = (long)(oline[Cols[j + 1]] & 0x0f);
+                    palno = (long)(oline[Cols[j + 1]] bitand 0x0f);
                     cpyline2[count++] = RGB565toRGB8(Palette[palno][sline[Cols[j + 1]]]);
                 }
 
@@ -2224,7 +2224,7 @@ void IMAGE_RSC::ScaleUp8Overlay(SCREEN *surface, long *Rows, long *Cols, long dx
             {
                 for (j = 0; j < dw; j++)
                 {
-                    palno = (long)(oline[Cols[j]] & 0x0f);
+                    palno = (long)(oline[Cols[j]] bitand 0x0f);
                     dline[j] = Palette[palno][sline[Cols[j]]];
                 }
             }
@@ -2234,7 +2234,7 @@ void IMAGE_RSC::ScaleUp8Overlay(SCREEN *surface, long *Rows, long *Cols, long dx
 
                 for (j = 0; j < dw; j++)
                 {
-                    palno = (long)(oline[Cols[j + 1]] & 0x0f);
+                    palno = (long)(oline[Cols[j + 1]] bitand 0x0f);
                     cpyline[count++] = Palette[palno][sline[Cols[j + 1]]];
                 }
 

@@ -319,7 +319,7 @@ void C_Victory::SetXYWH(long x, long y, long w, long h)
 
 void C_Victory::Refresh()
 {
-    if ( not Ready() or Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
@@ -327,7 +327,7 @@ void C_Victory::Refresh()
 
 void C_Victory::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Number_)
@@ -348,7 +348,7 @@ void C_Victory::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Points_)
         Points_->Draw(surface, cliprect);
 
-    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
@@ -364,7 +364,7 @@ void C_Victory::SetSubParents(C_Window *Parent)
 {
     if (Number_)
     {
-        Number_->SetFlagBitOn(GetFlags() & C_BIT_ABSOLUTE);
+        Number_->SetFlagBitOn(GetFlags() bitand C_BIT_ABSOLUTE);
         Number_->SetClient(GetClient());
         Number_->SetParent(Parent);
         Number_->SetSubParents(Parent);
@@ -372,7 +372,7 @@ void C_Victory::SetSubParents(C_Window *Parent)
 
     if (Team_)
     {
-        Team_->SetFlagBitOn(GetFlags() & C_BIT_ABSOLUTE);
+        Team_->SetFlagBitOn(GetFlags() bitand C_BIT_ABSOLUTE);
         Team_->SetClient(GetClient());
         Team_->SetParent(Parent);
         Team_->SetSubParents(Parent);
@@ -380,7 +380,7 @@ void C_Victory::SetSubParents(C_Window *Parent)
 
     if (Action_)
     {
-        Action_->SetFlagBitOn(GetFlags() & C_BIT_ABSOLUTE);
+        Action_->SetFlagBitOn(GetFlags() bitand C_BIT_ABSOLUTE);
         Action_->SetClient(GetClient());
         Action_->SetParent(Parent);
         Action_->SetSubParents(Parent);
@@ -388,7 +388,7 @@ void C_Victory::SetSubParents(C_Window *Parent)
 
     if (Target_)
     {
-        Target_->SetFlagBitOn(GetFlags() & C_BIT_ABSOLUTE);
+        Target_->SetFlagBitOn(GetFlags() bitand C_BIT_ABSOLUTE);
         Target_->SetClient(GetClient());
         Target_->SetParent(Parent);
         Target_->SetSubParents(Parent);
@@ -396,7 +396,7 @@ void C_Victory::SetSubParents(C_Window *Parent)
 
     if (Args_)
     {
-        Args_->SetFlagBitOn(GetFlags() & C_BIT_ABSOLUTE);
+        Args_->SetFlagBitOn(GetFlags() bitand C_BIT_ABSOLUTE);
         Args_->SetClient(GetClient());
         Args_->SetParent(Parent);
         Args_->SetSubParents(Parent);
@@ -404,7 +404,7 @@ void C_Victory::SetSubParents(C_Window *Parent)
 
     if (Points_)
     {
-        Points_->SetFlagBitOn(GetFlags() & C_BIT_ABSOLUTE);
+        Points_->SetFlagBitOn(GetFlags() bitand C_BIT_ABSOLUTE);
         Points_->SetClient(GetClient());
         Points_->SetParent(Parent);
         Points_->SetSubParents(Parent);

@@ -69,7 +69,7 @@ int FalconTankerMessage::Process(uchar autodisp)
                             component->DBrain()->SetATCFlag(DigitalBrain::NeedToRefuel);
                             component->DBrain()->SetTanker(theTanker->Id());
                             component->DBrain()->StartRefueling();
-                            theTanker->TBrain()->SetInitial(); // M.N. reset flags to allow a turn & initial direction setup (away from FLOT)
+                            theTanker->TBrain()->SetInitial(); // M.N. reset flags to allow a turn bitand initial direction setup (away from FLOT)
                         }
                     }
 

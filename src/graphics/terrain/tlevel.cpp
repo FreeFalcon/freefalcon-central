@@ -111,9 +111,9 @@ void TLevel::Setup(int level, int width, int height, const char *mapPath)
     {
 
         // We're dropping the top bit, so no legal offset can have it set
-        ShiAssert( not (blocks[i].offset & 0x80000000));
+        ShiAssert( not (blocks[i].offset bitand 0x80000000));
         blocks[i].offset = (blocks[i].offset << 1) | 1;
-        ShiAssert((blocks[i].offset & 0x00000001));
+        ShiAssert((blocks[i].offset bitand 0x00000001));
     }
 
 
@@ -512,7 +512,7 @@ void TLevel::SetBlockPtr(UINT r, UINT c, TBlock *block)
         block->fileOffset = blocks[ r * blocks_wide + c ].offset;
 
         // Durring debugging, make sure don't already have a pointer
-        ShiAssert(block->fileOffset & 0x00000001);
+        ShiAssert(block->fileOffset bitand 0x00000001);
 
         // Replace the file offset with a memory pointer
         blocks[ r * blocks_wide + c ].ptr = block;
@@ -522,7 +522,7 @@ void TLevel::SetBlockPtr(UINT r, UINT c, TBlock *block)
         block = blocks[ r * blocks_wide + c ].ptr;
 
         // Durring debugging, make sure don't already have an offset
-        ShiAssert( not ((DWORD)block & 0x00000001));
+        ShiAssert( not ((DWORD)block bitand 0x00000001));
 
         // Put the file offset back into the block pointer array
         if ( not F4IsBadReadPtr(block, sizeof(TBlock))) // JB 010408 CTD
@@ -543,7 +543,7 @@ TBlock * TLevel::GetBlockPtr(UINT r, UINT c)
     {
         block = blocks[ r * blocks_wide + c ];
 
-        if ( not (block.offset & 0x00000001))
+        if ( not (block.offset bitand 0x00000001))
         {
             return block.ptr;
         }

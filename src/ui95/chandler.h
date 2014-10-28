@@ -299,7 +299,7 @@ public:
     }
     long UpdateWaiting()
     {
-        return(UpdateFlag & C_DRAW_UPDATE);
+        return(UpdateFlag bitand C_DRAW_UPDATE);
     }
     void PostUpdate();
     void SendUpdate();

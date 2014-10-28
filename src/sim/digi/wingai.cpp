@@ -624,9 +624,9 @@ void DigitalBrain::AiInitSSOffset(FalconWingmanMsg* msg)
     // S.G. isWing has the index position of the plane in the flight. It is ALWAYS less than the number of planes
     // if (isWing > self->GetCampaignObject()->NumberOfComponents())
     // Instead, odd plane number (wingmen) have the 1.0F side. Leaders (flight and element) have the -1.0F side
-    // if (isWing & 1)
+    // if (isWing bitand 1)
     // 2001-8-03 BUT INSTEAD, I'LL REVERSE IT SO THE WINGS GO TO THE LEFT
-    if ( not (isWing & 1))
+    if ( not (isWing bitand 1))
         side = 1.0F;
     else
         side = -1.0F;
@@ -804,7 +804,7 @@ void DigitalBrain::AiInitPince(FalconWingmanMsg* msg, int doSplit)
     // S.G. isWing has the index position of the plane in the flight. It is ALWAYS less than the number of planes
     // if (doSplit and isWing > self->GetCampaignObject()->NumberOfComponents())
     // Instead, odd plane number (wingmen) have the 1.0F side. Leaders (flight and element) have the -1.0F side
-    if (doSplit and (isWing & 1))
+    if (doSplit and (isWing bitand 1))
         side = 1.0F;
     else
         side = -1.0F;
@@ -924,7 +924,7 @@ void DigitalBrain::AiInitTrig(mlTrig* firstTrig, mlTrig* secondTrig)
     // Go left/right based on position in flight and
     // number of people in flight.
     // For a 2 ship 0 goes right, 1 goes left
-    // In a 4 ship 0 & 1 go right, 2 & 3 go left
+    // In a 4 ship 0 bitand 1 go right, 2 bitand 3 go left
 
     if (isWing >= 2 or (isWing == 1 and self->GetCampaignObject()->NumberOfComponents() < 3))
     {
@@ -1464,13 +1464,13 @@ void DigitalBrain::AiSetWeaponsAction(FalconWingmanMsg* msg, DigitalBrain::AiWea
         {
             // 2000-09-28 MODIFIED BY S.G. WHAT IF WE DON'T HAVE AN IP?
             // IN THAT CASE, CHECK IF TARGET, IF SUCH, GO BACK ONE WAYPOINT AND BREAK
-            if (tmpWaypoint->GetWPFlags() & WPF_TARGET)
+            if (tmpWaypoint->GetWPFlags() bitand WPF_TARGET)
             {
                 tmpWaypoint = tmpWaypoint->GetPrevWP();
                 break;
             }
 
-            if (tmpWaypoint->GetWPFlags() & WPF_IP)
+            if (tmpWaypoint->GetWPFlags() bitand WPF_IP)
                 break;
 
             tmpWaypoint = tmpWaypoint->GetNextWP();
@@ -2107,7 +2107,7 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
     // }
     else
     {
-        // status = clean, clear & naked
+        // status = clean, clear bitand naked
         random = 4 * (FloatToInt32((float) rand() / (float) RAND_MAX));
 
         edata[0] = flightIdx;

@@ -318,7 +318,7 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
         case Foot:
         case Wheeled:
         case Tracked:
-            if (GetRoad(x, y) and !(h & 0x01))
+            if (GetRoad(x, y) and !(h bitand 0x01))
             {
                 // It's a bridge or port, check if intact
                 if (cost > MAX_COST)
@@ -358,13 +358,13 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
                         u = GetNextUnit(&uit);
                     }
 
-                    if (o and (o->GetType() == TYPE_PORT or (o->GetType() == TYPE_BRIDGE and (o->GetObjectiveStatus() > 0 or flags & PATH_ENGINEER))))
+                    if (o and (o->GetType() == TYPE_PORT or (o->GetType() == TYPE_BRIDGE and (o->GetObjectiveStatus() > 0 or flags bitand PATH_ENGINEER))))
                         cost = 0.5F;
 
                     if (o and o->GetType() == TYPE_BRIDGE and o->GetObjectiveStatus() < 30 and assignedEng)
                         cost = 5.0F;
                 }
-                else if (flags & PATH_ROADOK and GetRoad((GridIndex)(x - dx[h]), (GridIndex)(y - dy[h])))
+                else if (flags bitand PATH_ROADOK and GetRoad((GridIndex)(x - dx[h]), (GridIndex)(y - dy[h])))
                     cost = 0.5F; // Use roads when we're allowed to
                 else
                     cost *= 0.5F; // Otherwise, lesser bonus
@@ -384,10 +384,10 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
                 {
                     o = FindNearestObjective(x, y, NULL);
 
-                    if (o->GetType() == TYPE_PORT or (o->GetType() == TYPE_BRIDGE and (o->GetObjectiveStatus() > 0 or flags & PATH_ENGINEER)))
+                    if (o->GetType() == TYPE_PORT or (o->GetType() == TYPE_BRIDGE and (o->GetObjectiveStatus() > 0 or flags bitand PATH_ENGINEER)))
                         cost = 0.5F;
                 }
-                else if (flags & PATH_RAILOK and GetRail((GridIndex)(x - dx[h]), (GridIndex)(y - dy[h]))) // Use rails when we're allowed to
+                else if (flags bitand PATH_RAILOK and GetRail((GridIndex)(x - dx[h]), (GridIndex)(y - dy[h]))) // Use rails when we're allowed to
                     cost = 0.5F;
             }
 
@@ -409,7 +409,7 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
             break;
     }
 
-    if (h & 0x01)
+    if (h bitand 0x01)
         cost *= 1.41F;
 
     return cost;
@@ -493,7 +493,7 @@ void GetNeighborCoord(AS_DataClass* asd, void* o, void* t)
 
     if (MOVE_AIR(moveType))
         leftmod = 4.0f;
-    else if (MOVE_GROUND(moveType) and moveFlags & PATH_ROADOK)
+    else if (MOVE_GROUND(moveType) and moveFlags bitand PATH_ROADOK)
         leftmod = 0.75f;
     else
         leftmod = 3.0f;
@@ -518,7 +518,7 @@ void GetNeighborCoord(AS_DataClass* asd, void* o, void* t)
 
         cost = GetMovementCost(x, y, (MoveType)moveType, moveFlags, (CampaignHeading)d);
 
-        if (MOVE_AIR(moveType) and !(moveFlags & PATH_BASIC))
+        if (MOVE_AIR(moveType) and !(moveFlags bitand PATH_BASIC))
         {
             // Add cost for air threats
             // Essentially, tcost is 0-100. This translates into # of km out of our
@@ -628,9 +628,9 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
             return 255.0F;
 
         // Check for enemy movement
-        if ( not (flags & PATH_BASIC) and GetRoE(team, owner, ROE_GROUND_FIRE))
+        if ( not (flags bitand PATH_BASIC) and GetRoE(team, owner, ROE_GROUND_FIRE))
         {
-            if (flags & PATH_ENEMYOK)
+            if (flags bitand PATH_ENEMYOK)
             {
                 // Double cost if ENEMYCOST is set
                 mult = 2.0F;
@@ -657,15 +657,15 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
         }
 
         // Check if road movement is allowed
-        if (flags & PATH_ROADOK)
+        if (flags bitand PATH_ROADOK)
             type = NoMove; // KCK: I'm using the no-move slot for road movement costs!
 
-        if (flags & PATH_RAILOK)
+        if (flags bitand PATH_RAILOK)
             type = Rail;
 
         cost = o->GetNeighborCost(neighbor, type);
 
-        if (flags & PATH_ENEMYCOST and cost < 255.0F)
+        if (flags bitand PATH_ENEMYCOST and cost < 255.0F)
         {
             cost *= mult;
 
@@ -674,7 +674,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
         }
 
         // RV - Biker - Search for engineers then build pontoon bridge
-        if ((MOVE_GROUND(type) or type == NoMove) and n->GetType() == TYPE_BRIDGE and !n->GetObjectiveStatus() and !(flags & PATH_ENGINEER))
+        if ((MOVE_GROUND(type) or type == NoMove) and n->GetType() == TYPE_BRIDGE and !n->GetObjectiveStatus() and !(flags bitand PATH_ENGINEER))
         {
             // Bridge is broke, can't go here.
             // But let's send engineers, if we havn't already
@@ -732,7 +732,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
         else
         {
             // Check for ground movement options
-            if (flags & PATH_ROADOK)
+            if (flags bitand PATH_ROADOK)
             {
                 opt = o->GetNeighborCost(neighbor, NoMove) * mult;
 
@@ -740,7 +740,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
                     cost = opt;
             }
 
-            if (flags & PATH_RAILOK)
+            if (flags bitand PATH_RAILOK)
             {
                 opt = o->GetNeighborCost(neighbor, Rail) * mult;
 
@@ -749,7 +749,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
             }
         }
 
-        if (flags & PATH_AIRBORNE)
+        if (flags bitand PATH_AIRBORNE)
         {
             opt = o->GetNeighborCost(neighbor, LowAir) * mult;
 
@@ -757,7 +757,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
                 cost = opt;
         }
 
-        if (flags & PATH_MARINE)
+        if (flags bitand PATH_MARINE)
         {
             opt = o->GetNeighborCost(neighbor, Naval) * mult;
 

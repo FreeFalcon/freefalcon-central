@@ -293,13 +293,13 @@ public      :
     //            HIWORD ( dwLS )        ,
     //            LOWORD ( dwLS )         ) ;
     // szVer will contain a string like: 5.00.1878.1
-    BOOL GetImageHlpVersion(DWORD & dwMS , DWORD & dwLS)
+    BOOL GetImageHlpVersion(DWORD bitand dwMS , DWORD bitand dwLS)
     {
         return(GetInMemoryFileVersion("IMAGEHLP.DLL" , dwMS , dwLS));
     }
 
     // Does the same thing for the PDB reading DLLs.
-    BOOL GetPDBReaderVersion(DWORD & dwMS , DWORD & dwLS)
+    BOOL GetPDBReaderVersion(DWORD bitand dwMS , DWORD bitand dwLS)
     {
         // First try MSDBI.DLL.
         if (TRUE == GetInMemoryFileVersion("MSDBI.DLL" ,
@@ -315,8 +315,8 @@ public      :
 
     // The worker function used by the previous two functions.
     BOOL GetInMemoryFileVersion(LPCTSTR szFile ,
-                                DWORD & dwMS   ,
-                                DWORD & dwLS)
+                                DWORD bitand dwMS   ,
+                                DWORD bitand dwLS)
     {
         HMODULE hInstIH = GetModuleHandle(szFile) ;
 

@@ -131,7 +131,7 @@ private:
     C_Waypoint *CurWPZ_; // Currently selected WP list (altitudes only)
     RECT CurWPArea_; // Needs to be RECT not UI95_RECT
 
-    C_DrawList *CurIcons_; // current icons for targets & airbases (will always be on when CurWP_ is displayed)
+    C_DrawList *CurIcons_; // current icons for targets bitand airbases (will always be on when CurWP_ is displayed)
 
     C_Cursor *SmallMapCtrl_; // Keeps small map up to date :)
     C_Window *DrawWindow_, *WPZWindow_;
@@ -171,23 +171,23 @@ public:
     }
     void SetAirIcons(long TeamNo, long Dir, long OffID, long OnID)
     {
-        AirIconIDs_[TeamNo & 7][Dir & 7][0] = OffID;
-        AirIconIDs_[TeamNo & 7][Dir & 7][1] = OnID;
+        AirIconIDs_[TeamNo bitand 7][Dir bitand 7][0] = OffID;
+        AirIconIDs_[TeamNo bitand 7][Dir bitand 7][1] = OnID;
     }
     void SetArmyIcons(long TeamNo, long OffID, long OnID)
     {
-        ArmyIconIDs_[TeamNo & 7][0] = OffID;
-        ArmyIconIDs_[TeamNo & 7][1] = OnID;
+        ArmyIconIDs_[TeamNo bitand 7][0] = OffID;
+        ArmyIconIDs_[TeamNo bitand 7][1] = OnID;
     }
     void SetNavyIcons(long TeamNo, long OffID, long OnID)
     {
-        NavyIconIDs_[TeamNo & 7][0] = OffID;
-        NavyIconIDs_[TeamNo & 7][1] = OnID;
+        NavyIconIDs_[TeamNo bitand 7][0] = OffID;
+        NavyIconIDs_[TeamNo bitand 7][1] = OnID;
     }
     void SetObjectiveIcons(long TeamNo, long OffID, long OnID)
     {
-        ObjIconIDs_[TeamNo & 7][0] = OffID;
-        ObjIconIDs_[TeamNo & 7][1] = OnID;
+        ObjIconIDs_[TeamNo bitand 7][0] = OffID;
+        ObjIconIDs_[TeamNo bitand 7][1] = OnID;
     }
 
     MAPICONS GetTeam(int i)

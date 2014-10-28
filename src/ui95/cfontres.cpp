@@ -172,7 +172,7 @@ long C_Fontmgr::Width(_TCHAR *str)
     while (str[i])
         //while( not F4IsBadReadPtr(&(str[i]), sizeof(_TCHAR)) and str[i]) // JB 010401 CTD (too much CPU)
     {
-        thechar = str[i] & 0xff;
+        thechar = str[i] bitand 0xff;
 
         if (thechar >= first_ and thechar <= last_)
         {
@@ -200,7 +200,7 @@ long C_Fontmgr::Width(_TCHAR *str, long len)
 
     while (str[i] and i < len)
     {
-        thechar = str[i] & 0xff;
+        thechar = str[i] bitand 0xff;
 
         if (thechar >= first_ and thechar <= last_)
         {
@@ -255,7 +255,7 @@ void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long
 
     while (str[idx] and idx < length)
     {
-        thechar = str[idx] & 0xff;
+        thechar = str[idx] bitand 0xff;
 
         if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_) //!
         {
@@ -285,16 +285,16 @@ void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long
                 {
                     if (dptr < dendh)
                     {
-                        if ( not (j & 0x7))
+                        if ( not (j bitand 0x7))
                             seg = *sptr++;
 
                         //XX
-                        //if(seg & 1)
+                        //if(seg bitand 1)
                         // *dptr++=color;
                         //else
                         // dptr++;
 
-                        if (seg & 1)
+                        if (seg bitand 1)
                         {
                             if (b32)
                                 *((DWORD*)(dptr)) = RGB565toRGB8(color);
@@ -355,7 +355,7 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
 
     while (str[idx] and idx < length)
     {
-        thechar = str[idx] & 0xff;
+        thechar = str[idx] bitand 0xff;
 
         if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_) //!
         {
@@ -393,14 +393,14 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
 
                 for (j = 0; j < fontTable_[thechar].w; j++)
                 {
-                    if ( not (j & 0x7))
+                    if ( not (j bitand 0x7))
                         seg = *sptr++;
 
                     if (dptr < dendh)
                     {
                         if (b32) //XX
                         {
-                            if (seg & 1)
+                            if (seg bitand 1)
                                 *((DWORD*)(dptr)) = RGB565toRGB8(color);
                             else
                                 *((DWORD*)(dptr)) = RGB565toRGB8(bgcolor);
@@ -409,7 +409,7 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
                         }
                         else
                         {
-                            if (seg & 1)
+                            if (seg bitand 1)
                                 *dptr++ = color;
                             else
                                 *dptr++ = bgcolor;
@@ -484,7 +484,7 @@ void C_Fontmgr::_Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, l
 
     while (str[idx] and idx < length)
     {
-        thechar = str[idx] & 0xff;
+        thechar = str[idx] bitand 0xff;
 
         if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_)
         {
@@ -505,7 +505,7 @@ void C_Fontmgr::_Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, l
 
                     for (j = 0; j < fontTable_[thechar].w; j++)
                     {
-                        if ( not (j & 0x7))
+                        if ( not (j bitand 0x7))
                         {
                             seg = *sptr++;
 
@@ -521,7 +521,7 @@ void C_Fontmgr::_Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, l
                         {
                             if (dptr >= dclipx)
                             {
-                                if (seg & 1)
+                                if (seg bitand 1)
                                     *dptr++ = color;
                                 else
                                     dptr++;
@@ -574,7 +574,7 @@ void C_Fontmgr::_Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor
 
     while (str[idx] and idx < length)
     {
-        thechar = str[idx] & 0xff;
+        thechar = str[idx] bitand 0xff;
 
         if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_)
         {
@@ -596,7 +596,7 @@ void C_Fontmgr::_Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor
 
                     for (j = 0; j < fontTable_[thechar].w; j++)
                     {
-                        if ( not (j & 0x7))
+                        if ( not (j bitand 0x7))
                         {
                             seg = *sptr++;
 
@@ -612,7 +612,7 @@ void C_Fontmgr::_Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor
                         {
                             if (dptr >= dclipx)
                             {
-                                if (seg & 1)
+                                if (seg bitand 1)
                                     *dptr++ = dwColor;
                                 else
                                     dptr++;
@@ -672,7 +672,7 @@ void C_Fontmgr::_DrawSolid16(SCREEN *surface, _TCHAR *str, long length, WORD col
 
     while (str[idx] and idx < length)
     {
-        thechar = str[idx] & 0xff;
+        thechar = str[idx] bitand 0xff;
 
         if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_)
         {
@@ -705,12 +705,12 @@ void C_Fontmgr::_DrawSolid16(SCREEN *surface, _TCHAR *str, long length, WORD col
                     {
                         if (dptr < dendh)
                         {
-                            if ( not (j & 0x7))
+                            if ( not (j bitand 0x7))
                                 seg = *sptr++;
 
                             if (dptr >= dclipx)
                             {
-                                if (seg & 1)
+                                if (seg bitand 1)
                                     *dptr++ = color;
                                 else
                                     *dptr++ = bgcolor;
@@ -774,7 +774,7 @@ void C_Fontmgr::_DrawSolid32(SCREEN *surface, _TCHAR *str, long length, DWORD co
 
     while (str[idx] and idx < length)
     {
-        thechar = str[idx] & 0xff;
+        thechar = str[idx] bitand 0xff;
 
         if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_)
         {
@@ -807,12 +807,12 @@ void C_Fontmgr::_DrawSolid32(SCREEN *surface, _TCHAR *str, long length, DWORD co
                     {
                         if (dptr < dendh)
                         {
-                            if ( not (j & 0x7))
+                            if ( not (j bitand 0x7))
                                 seg = *sptr++;
 
                             if (dptr >= dclipx)
                             {
-                                if (seg & 1)
+                                if (seg bitand 1)
                                     *dptr++ = color;
                                 else
                                     *dptr++ = bgcolor;

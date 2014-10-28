@@ -89,14 +89,14 @@ void C_ATO_Package::SetCheckBox(short x, short y, long off, long on)
 
 void C_ATO_Package::SetState(short state)
 {
-    State_ = static_cast<short>(state & 1);
+    State_ = static_cast<short>(state bitand 1);
 
     Title_->SetFgColor(Color_[State_]);
 }
 
 void C_ATO_Package::SetWPState(short state)
 {
-    WPState_ = static_cast<short>(state & 1);
+    WPState_ = static_cast<short>(state bitand 1);
 
     ShowWP_->SetImage(Image_[WPState_]);
     ShowWP_->Refresh();
@@ -155,7 +155,7 @@ BOOL C_ATO_Package::Process(long ID, short HitType)
 
 void C_ATO_Package::Refresh()
 {
-    if ( not Ready() or Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
@@ -163,7 +163,7 @@ void C_ATO_Package::Refresh()
 
 void C_ATO_Package::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Title_)
@@ -172,6 +172,6 @@ void C_ATO_Package::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (ShowWP_)
         ShowWP_->Draw(surface, cliprect);
 
-    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }

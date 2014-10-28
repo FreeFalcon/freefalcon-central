@@ -161,7 +161,7 @@ int FalconEntity::calc_dirty_bucket(int dirty_score)
     // sfr : new
     int bin = 0;
 
-    while ((dirty_score & 0x1) == 0)
+    while ((dirty_score bitand 0x1) == 0)
     {
         ++bin;
         dirty_score >>= 4;
@@ -253,7 +253,7 @@ void FalconEntity::MakeDirty(Dirty_Class bits, Dirtyness score)
         ( not IsLocal()) ||
         (VuState() not_eq VU_MEM_ACTIVE) ||
         (score <= dirty_score) ||
-        !(TheCampaign.Flags & CAMP_LOADED)
+        !(TheCampaign.Flags bitand CAMP_LOADED)
     )
     {
         return;
@@ -297,63 +297,63 @@ int FalconEntity::EncodeDirty(unsigned char **stream)
     *(short*)*stream = (short)dirty_classes;
     *stream += sizeof(short);
 
-    if (dirty_classes & DIRTY_FALCON_ENTITY)
+    if (dirty_classes bitand DIRTY_FALCON_ENTITY)
     {
         *(uchar *)(*stream) = falconFlags;
         *stream += sizeof(uchar);
     }
 
-    if (dirty_classes & DIRTY_CAMPAIGN_BASE)
+    if (dirty_classes bitand DIRTY_CAMPAIGN_BASE)
     {
         ((CampBaseClass*)this)->WriteDirty(stream);
     }
 
-    if (dirty_classes & DIRTY_OBJECTIVE)
+    if (dirty_classes bitand DIRTY_OBJECTIVE)
     {
         ((ObjectiveClass*)this)->WriteDirty(stream);
     }
 
-    if (dirty_classes & DIRTY_UNIT)
+    if (dirty_classes bitand DIRTY_UNIT)
     {
         ((UnitClass*)this)->WriteDirty(stream);
     }
 
-    if (dirty_classes & DIRTY_PACKAGE)
+    if (dirty_classes bitand DIRTY_PACKAGE)
     {
         ((PackageClass*)this)->WriteDirty(stream);
     }
 
-    if (dirty_classes & DIRTY_SQUADRON)
+    if (dirty_classes bitand DIRTY_SQUADRON)
     {
         ((SquadronClass*)this)->WriteDirty(stream);
     }
 
-    if (dirty_classes & DIRTY_FLIGHT)
+    if (dirty_classes bitand DIRTY_FLIGHT)
     {
         ((FlightClass*)this)->WriteDirty(stream);
     }
 
-    if (dirty_classes & DIRTY_GROUND_UNIT)
+    if (dirty_classes bitand DIRTY_GROUND_UNIT)
     {
         ((GroundUnitClass*)this)->WriteDirty(stream);
     }
 
-    if (dirty_classes & DIRTY_BATTALION)
+    if (dirty_classes bitand DIRTY_BATTALION)
     {
         ((BattalionClass*)this)->WriteDirty(stream);
     }
 
-    if (dirty_classes & DIRTY_TEAM)
+    if (dirty_classes bitand DIRTY_TEAM)
     {
         ((TeamClass*)this)->WriteDirty(stream);
     }
 
-    if (dirty_classes & DIRTY_SIM_BASE)
+    if (dirty_classes bitand DIRTY_SIM_BASE)
     {
         ((SimBaseClass*)this)->WriteDirty(stream);
     }
 
-    if (dirty_classes & DIRTY_AIRCRAFT)
+    if (dirty_classes bitand DIRTY_AIRCRAFT)
     {
         ((AircraftClass*)this)->WriteDirty(stream);
     }
@@ -374,62 +374,62 @@ void FalconEntity::DecodeDirty(unsigned char **stream, long *rem)
     //read bits and update count
     memcpychk(&bits, stream, sizeof(short), rem);
 
-    if (bits & DIRTY_FALCON_ENTITY)
+    if (bits bitand DIRTY_FALCON_ENTITY)
     {
         memcpychk(&falconFlags, stream, sizeof(uchar), rem);
     }
 
-    if (bits & DIRTY_CAMPAIGN_BASE)
+    if (bits bitand DIRTY_CAMPAIGN_BASE)
     {
         ((CampBaseClass*)this)->ReadDirty(stream, rem);
     }
 
-    if (bits & DIRTY_OBJECTIVE)
+    if (bits bitand DIRTY_OBJECTIVE)
     {
         ((ObjectiveClass*)this)->ReadDirty(stream, rem);
     }
 
-    if (bits & DIRTY_UNIT)
+    if (bits bitand DIRTY_UNIT)
     {
         ((UnitClass*)this)->ReadDirty(stream, rem);
     }
 
-    if (bits & DIRTY_PACKAGE)
+    if (bits bitand DIRTY_PACKAGE)
     {
         ((PackageClass*)this)->ReadDirty(stream, rem);
     }
 
-    if (bits & DIRTY_SQUADRON)
+    if (bits bitand DIRTY_SQUADRON)
     {
         ((SquadronClass*)this)->ReadDirty(stream, rem);
     }
 
-    if (bits & DIRTY_FLIGHT)
+    if (bits bitand DIRTY_FLIGHT)
     {
         ((FlightClass*)this)->ReadDirty(stream, rem);
     }
 
-    if (bits & DIRTY_GROUND_UNIT)
+    if (bits bitand DIRTY_GROUND_UNIT)
     {
         ((GroundUnitClass*)this)->ReadDirty(stream, rem);
     }
 
-    if (bits & DIRTY_BATTALION)
+    if (bits bitand DIRTY_BATTALION)
     {
         ((BattalionClass*)this)->ReadDirty(stream, rem);
     }
 
-    if (bits & DIRTY_TEAM)
+    if (bits bitand DIRTY_TEAM)
     {
         ((TeamClass*)this)->ReadDirty(stream, rem);
     }
 
-    if (bits & DIRTY_SIM_BASE)
+    if (bits bitand DIRTY_SIM_BASE)
     {
         ((SimBaseClass*)this)->ReadDirty(stream, rem);
     }
 
-    if (bits & DIRTY_AIRCRAFT)
+    if (bits bitand DIRTY_AIRCRAFT)
     {
         ((AircraftClass*)this)->ReadDirty(stream, rem);
     }
@@ -441,7 +441,7 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
 {
     static VU_TIME lastSent = 0;
 
-    if ( not (TheCampaign.Flags & CAMP_LOADED) or ((realTime - lastSent) < SIMDIRTYDATA_INTERVAL))
+    if ( not (TheCampaign.Flags bitand CAMP_LOADED) or ((realTime - lastSent) < SIMDIRTYDATA_INTERVAL))
     {
         return;
     }
@@ -516,7 +516,7 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
 void FalconEntity::DoSimDirtyData(VU_TIME realTime)
 {
     // only do if initialized
-    if ( not (TheCampaign.Flags & CAMP_LOADED) or (simDirtyBuckets == NULL))
+    if ( not (TheCampaign.Flags bitand CAMP_LOADED) or (simDirtyBuckets == NULL))
     {
         return;
     }

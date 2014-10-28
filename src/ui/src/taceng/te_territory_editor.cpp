@@ -185,13 +185,13 @@ static void flood_fill_team(int x, int y)
     if (x < 0 or y < 0 or x >= fill_width or y >= fill_height)
         return;
 
-    if (x & 1)
+    if (x bitand 1)
     {
-        old_team = (fill_src[(y * fill_width + x) / 2] & 0xf0) >> 4;
+        old_team = (fill_src[(y * fill_width + x) / 2] bitand 0xf0) >> 4;
     }
     else
     {
-        old_team = fill_src[(y * fill_width + x) / 2] & 0x0f;
+        old_team = fill_src[(y * fill_width + x) / 2] bitand 0x0f;
     }
 
     if ((old_team == gDrawTeam) or (old_team not_eq fill_team))
@@ -204,7 +204,7 @@ static void flood_fill_team(int x, int y)
     if (cover not_eq Water)
     {
 
-        if (x & 1)
+        if (x bitand 1)
         {
             fill_src[(y * fill_width + x) / 2] and_eq 0x0f;
             fill_src[(y * fill_width + x) / 2]  or_eq  gDrawTeam  << 4;
@@ -271,13 +271,13 @@ void tactical_territory_map_edit(long, short hittype, C_Base *control)
             fill_height = height;
             fill_src = src;
 
-            if (x & 1)
+            if (x bitand 1)
             {
-                fill_team = (fill_src[(y * fill_width + x) / 2] & 0xf0) >> 4;
+                fill_team = (fill_src[(y * fill_width + x) / 2] bitand 0xf0) >> 4;
             }
             else
             {
-                fill_team = fill_src[(y * fill_width + x) / 2] & 0x0f;
+                fill_team = fill_src[(y * fill_width + x) / 2] bitand 0x0f;
             }
 
             flood_fill_team(x, y);
@@ -325,7 +325,7 @@ void tactical_territory_map_edit(long, short hittype, C_Base *control)
                             // Update the ownership for all objectives/squadrons/battalions in the area
 
 
-                            if (px & 1)
+                            if (px bitand 1)
                             {
                                 src[(py * width + px) / 2] and_eq 0x0f;
                                 src[(py * width + px) / 2]  or_eq  gDrawTeam << 4;
@@ -495,10 +495,10 @@ short GetMapTeam(short x, short y)
     width = MRX >> 1;
     x = static_cast<short>(x / MAP_RATIO);
     y = static_cast<short>(y / MAP_RATIO);
-    bit = x & 1;
+    bit = x bitand 1;
     x >>= 1;
     pixel = TheCampaign.CampMapData[y * width + x];
-    pixel = static_cast<uchar>((pixel >>(bit * 4)) & 0x0f);
+    pixel = static_cast<uchar>((pixel >>(bit * 4)) bitand 0x0f);
 
     if (pixel > 0 and pixel < NUM_TEAMS)
         return(pixel);
@@ -512,7 +512,7 @@ short GetMapTeam(short x, short y)
         if (indx >= 0 and indx < TheCampaign.CampMapSize)
         {
             pixel = TheCampaign.CampMapData[indx];
-            pixel = static_cast<uchar>((pixel >>(bit * 4)) & 0x0f);
+            pixel = static_cast<uchar>((pixel >>(bit * 4)) bitand 0x0f);
 
             if (pixel > 0 and pixel < NUM_TEAMS)
                 return(pixel);

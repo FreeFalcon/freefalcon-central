@@ -24,7 +24,7 @@ static alloc_hdr_t *root = 0UL;
 char *AllocSetToAlignment(char *c)
 {
     unsigned int i = (unsigned int)c;
-    i = (i + ALIGN_BYTES - 1) & -ALIGN_BYTES;
+    i = (i + ALIGN_BYTES - 1) bitand -ALIGN_BYTES;
     return(char*)i;
 }
 
@@ -58,7 +58,7 @@ char *Alloc(int size)
     char *mem;
 
     blk = root->curr;
-    size = (size + ALIGN_BYTES - 1) & -ALIGN_BYTES;
+    size = (size + ALIGN_BYTES - 1) bitand -ALIGN_BYTES;
     mem = blk->free;
     blk->free += size;
 

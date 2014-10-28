@@ -32,7 +32,7 @@ void MissileClass::SetStatus(void)
 
     ShiAssert(wc);
 
-    if (wc and (wc->Flags & WEAP_BOMBWARHEAD) and (g_nMissileFix & 0x01))
+    if (wc and (wc->Flags bitand WEAP_BOMBWARHEAD) and (g_nMissileFix bitand 0x01))
     {
         bombwarhead = true;
     }
@@ -80,7 +80,7 @@ void MissileClass::SetStatus(void)
             {
                 if (wc)
                 {
-                    TToLive = (float)((((unsigned char *)wc)[45]) & 7);
+                    TToLive = (float)((((unsigned char *)wc)[45]) bitand 7);
 
                     if (TToLive > 4.0)
                         TToLive = TToLive * (float)2.0;
@@ -95,7 +95,7 @@ void MissileClass::SetStatus(void)
                 // Marco Edit - Check for Time to Warhead Armed
                 else if (runTime < TToLive)
                 {
-                    if (g_nMissileFix & 0x04)
+                    if (g_nMissileFix bitand 0x04)
                         done = FalconMissileEndMessage::ArmingDelay;
                     else
                         done = FalconMissileEndMessage::MinTime;
@@ -182,7 +182,7 @@ void MissileClass::SetStatus(void)
             {
                 if (wc)
                 {
-                    TToLive = (float)((((unsigned char *)wc)[45]) & 7);
+                    TToLive = (float)((((unsigned char *)wc)[45]) bitand 7);
 
                     if (TToLive > 4.0)
                         TToLive = TToLive * (float)2.0;
@@ -197,7 +197,7 @@ void MissileClass::SetStatus(void)
                 // Marco Edit - Check for Time to Warhead Armed
                 else if (runTime < TToLive)
                 {
-                    if (g_nMissileFix & 0x04)
+                    if (g_nMissileFix bitand 0x04)
                         done = FalconMissileEndMessage::ArmingDelay;
                     else
                         done = FalconMissileEndMessage::MinTime;
@@ -238,7 +238,7 @@ void MissileClass::SetStatus(void)
 //
 // ShiAssert(wc);
 //
-// if (wc and (wc->Flags & WEAP_BOMBWARHEAD) and (g_nMissileFix & 0x01))
+// if (wc and (wc->Flags bitand WEAP_BOMBWARHEAD) and (g_nMissileFix bitand 0x01))
 // bombwarhead = true;
 //
 // ShiAssert(engineData);
@@ -263,7 +263,7 @@ void MissileClass::SetStatus(void)
 //   // Marco Edit - check for our missile arming delay
 //   if (wc)
 //   {
-//   TToLive = (float)((((unsigned char *)wc)[45]) & 7) ;  //  + 1) * 2)) ;
+//   TToLive = (float)((((unsigned char *)wc)[45]) bitand 7) ;  //  + 1) * 2)) ;
 //   if (TToLive > 4.0)
 // TToLive = TToLive * (float)2.0;
 //   }
@@ -277,7 +277,7 @@ void MissileClass::SetStatus(void)
 //   // Marco Edit - Check for Time to Warhead Armed
 //   else if (runTime < TToLive)
 //   {
-//   if (g_nMissileFix & 0x04)
+//   if (g_nMissileFix bitand 0x04)
 // done = FalconMissileEndMessage::ArmingDelay;
 //   else
 // done = FalconMissileEndMessage::MinTime;
@@ -294,7 +294,7 @@ void MissileClass::SetStatus(void)
 //// target position is inside the lethal radius OR missile is higher than its maxalt,
 //// bring missile to an end. When we have missiles going high ballistic, intercept them at max altitude
 //// in case of lethalRadius, they might apply a bit of proximity damage to the target...
-// else if (runTime > 1.50f and (flags & SensorLostLock) and !targetPtr and ((g_nMissileFix & 0x20)  and 
+// else if (runTime > 1.50f and (flags bitand SensorLostLock) and !targetPtr and ((g_nMissileFix bitand 0x20)  and 
 // range * range < lethalRadiusSqrd or (wc and wc->MaxAlt and (fabs(z) > fabsf(wc->MaxAlt*1000.0f))))) //JAM 27Sep03 - Should be fabsf
 // {
 // done = FalconMissileEndMessage::NotDone; //ExceedFOV;//Cobra we can't use Missed because it is out of range
@@ -312,7 +312,7 @@ void MissileClass::SetStatus(void)
 //   /*-------------------*/
 //// 2002-03-28 MN added range^2 check, as ricept is not updated anymore if we lost our target.
 //// Fixes floating missiles on the ground
-//   else if ((flags & ClosestApprch) and (ricept*ricept > lethalRadiusSqrd or ((g_nMissileFix & 0x02) and range*range > lethalRadiusSqrd)))
+//   else if ((flags bitand ClosestApprch) and (ricept*ricept > lethalRadiusSqrd or ((g_nMissileFix bitand 0x02) and range*range > lethalRadiusSqrd)))
 //   {
 //      //done = FalconMissileEndMessage::Missed;
 // done = FalconMissileEndMessage::ExceedFOV;//Cobra we can't use Missed because it is out of range

@@ -372,7 +372,7 @@ void DrawableTrail::AddPointAtHead(Tpoint *worldPos, DWORD)
     // new TrailNodes are added to the head ChunkNode
     cn = (ChunkNode *)List.GetHead();
 
-    if (Something > 500 and cn and !(Type->flags & TTF_LINE))
+    if (Something > 500 and cn and !(Type->flags bitand TTF_LINE))
     {
         // time to make a new chunk node...
         ChunkNode *cn2;
@@ -419,7 +419,7 @@ void DrawableTrail::AddPointAtHead(Tpoint *worldPos, DWORD)
 
         float spacing = Type->spacing + NRANDPOS * Type->spcVariation;
 
-        if (Type->flags & TTF_TIMESPACED)
+        if (Type->flags bitand TTF_TIMESPACED)
         {
             if ((now - n->NowTime) >= (spacing) * 1000)
             {
@@ -458,7 +458,7 @@ void DrawableTrail::AddPointAtHead(Tpoint *worldPos, DWORD)
             }
 
 
-            // first check the distance between the worldPos & the first node.
+            // first check the distance between the worldPos bitand the first node.
             // if its less then the spacing amount, don't add a new node.
             double q = 0.0;
 
@@ -708,7 +708,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
         }
         else
         {
-            if (Type->flags & TTF_LINE)
+            if (Type->flags bitand TTF_LINE)
             {
                 // draw the trail as a simple line
                 Tpoint prevpos;
@@ -783,7 +783,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
                 if (n)
                 {
                     // draw a segmented trail
-                    if (Type->flags & TTF_SEGMENTED)
+                    if (Type->flags bitand TTF_SEGMENTED)
                     {
                         if (greenMode)
                         {
@@ -860,7 +860,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
 
                             while (n)
                             {
-                                if (n->lodBit & LODPattern[LOD])
+                                if (n->lodBit bitand LODPattern[LOD])
                                 {
 
                                     if (prevnodetype not_eq n->Type)
@@ -1952,7 +1952,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
                 a += aStep;
             }
 
-            if (gV1[i].clipFlag & CLIP_NEAR)
+            if (gV1[i].clipFlag bitand CLIP_NEAR)
             {
                 gV1[i].a = 0.0f;
             }
@@ -2047,7 +2047,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
                     a += aStep;
                 }
 
-                if (gV1[i].clipFlag & CLIP_NEAR)
+                if (gV1[i].clipFlag bitand CLIP_NEAR)
                 {
                     gV1[i].a = 0.0f;
                 }
@@ -2139,7 +2139,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
         else if (type == 16)
         {
             // 2nd point
-            if (i & 1)
+            if (i bitand 1)
                 vE.a = alpha * 0.2f;
             else
                 vE.a = alpha;
@@ -2191,7 +2191,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
                     a += aStep;
                 }
 
-                if (gV1[i].clipFlag & CLIP_NEAR)
+                if (gV1[i].clipFlag bitand CLIP_NEAR)
                 {
                     gV1[i].a = 0.0f;
                 }
@@ -2209,9 +2209,9 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
             DWORD color;
 
             color = 0xFF000000 |
-                    ((FloatToInt32(vS.r * 255.9f) & 0xFF)) |
-                    ((FloatToInt32(vS.g * 255.9f) & 0xFF) << 8) |
-                    ((FloatToInt32(vS.b * 255.9f) & 0xFF) << 16);
+                    ((FloatToInt32(vS.r * 255.9f) bitand 0xFF)) |
+                    ((FloatToInt32(vS.g * 255.9f) bitand 0xFF) << 8) |
+                    ((FloatToInt32(vS.b * 255.9f) bitand 0xFF) << 16);
 
             renderer->context.SelectForegroundColor(compl color);
             renderer->context.SelectForegroundColor(color);
@@ -2677,9 +2677,9 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
         alp = (float)intalp;
         alp = alp * 0.3f + alp * 0.7f * NRANDPOS;
         intalp = FloatToInt32(alp);
-        r = (MissleTrailTexture.palette->paletteData[j] & 0x000000ff);
-        g = (MissleTrailTexture.palette->paletteData[j] & 0x0000ff00) >> 8;
-        b = (MissleTrailTexture.palette->paletteData[j] & 0x00ff0000) >> 16;
+        r = (MissleTrailTexture.palette->paletteData[j] bitand 0x000000ff);
+        g = (MissleTrailTexture.palette->paletteData[j] bitand 0x0000ff00) >> 8;
+        b = (MissleTrailTexture.palette->paletteData[j] bitand 0x00ff0000) >> 16;
         intalp = (r + b + g) / 3;
 
         /*
@@ -2713,9 +2713,9 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
         alp = (float)intalp;
         alp = alp * 0.3f + alp * 0.7f * NRANDPOS;
         intalp = FloatToInt32(alp);
-        r = (FireTrailTexture.palette->paletteData[j] & 0x000000ff);
-        g = (FireTrailTexture.palette->paletteData[j] & 0x0000ff00) >> 8;
-        b = (FireTrailTexture.palette->paletteData[j] & 0x00ff0000) >> 16;
+        r = (FireTrailTexture.palette->paletteData[j] bitand 0x000000ff);
+        g = (FireTrailTexture.palette->paletteData[j] bitand 0x0000ff00) >> 8;
+        b = (FireTrailTexture.palette->paletteData[j] bitand 0x00ff0000) >> 16;
         intalp = (r + b + g) / 3;
 
         /*
@@ -2750,9 +2750,9 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
         alp = (float)intalp;
         alp = alp * 0.3f + alp * 0.7f * NRANDPOS;
         intalp = FloatToInt32(alp);
-        r = (SmokeTrailTexture.palette->paletteData[j] & 0x000000ff);
-        g = (SmokeTrailTexture.palette->paletteData[j] & 0x0000ff00) >> 8;
-        b = (SmokeTrailTexture.palette->paletteData[j] & 0x00ff0000) >> 16;
+        r = (SmokeTrailTexture.palette->paletteData[j] bitand 0x000000ff);
+        g = (SmokeTrailTexture.palette->paletteData[j] bitand 0x0000ff00) >> 8;
+        b = (SmokeTrailTexture.palette->paletteData[j] bitand 0x00ff0000) >> 16;
 
         // the draker the smoke, the higher the alpha
         // normalize from 0.0 to 1.0f

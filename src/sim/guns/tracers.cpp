@@ -85,7 +85,7 @@ void GunClass::UpdateTracers(int firing)
 
             firstTracer[i]->SetAlpha(max(0.05f, muzzleAlpha[i] * 1.0f));
 
-            if (i & 1)
+            if (i bitand 1)
                 firstTracer[i]->SetRGB(1.0f, 0.2f, 0.0f);
             else
                 firstTracer[i]->SetRGB(1.0f, 1.0f, 0.2f);

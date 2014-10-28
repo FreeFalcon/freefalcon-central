@@ -15,7 +15,7 @@ C_Mission::C_Mission() : C_Control()
     Color_[0] = 0xe0e0e0; // Not Selected
     Color_[1] = 0x00ff00; // Selected
     Color_[2] = 0xffff00; // Player is in this mission
-    Color_[3] = 0x00ff00; // Player is in this mission & current mission
+    Color_[3] = 0x00ff00; // Player is in this mission bitand current mission
 
     TakeOff_ = NULL;
     Mission_ = NULL;
@@ -204,7 +204,7 @@ void C_Mission::SetPriority(_TCHAR *txt)
 
 long C_Mission::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !Ready())
         return(0);
 
     if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= (GetY() + GetH()))
@@ -232,7 +232,7 @@ BOOL C_Mission::Process(long ID, short HitType)
 
 void C_Mission::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -242,7 +242,7 @@ void C_Mission::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     short i;
 
-    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or !Ready())
         return;
 
     i = GetState();
@@ -277,6 +277,6 @@ void C_Mission::Draw(SCREEN *surface, UI95_RECT *cliprect)
         Priority_->Draw(surface, cliprect);
     }
 
-    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }

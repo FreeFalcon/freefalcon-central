@@ -72,19 +72,19 @@ void AircraftClass::InitCountermeasures(void)
 void AircraftClass::DoCountermeasures(void)
 {
     // 2000-11-17 ADDED BY S.G. SO AIRCRAFT HAVE A FLAG TELLING IF THEY CARRY CHAFFS/FLARES OR NOT
-    if ( not (GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE)->Flags & 0x40000000))
+    if ( not (GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE)->Flags bitand 0x40000000))
         return;
 
     // END OF ADDED SECTION
 
-    if (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::bus))
+    if (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::bus))
         return;
 
     if ( not IsSetFlag(ON_GROUND))
     {
         if (dropFlareCmd)
         {
-            if ( not (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::flar)))
+            if ( not (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::flar)))
             {
                 DropFlare();
             }
@@ -93,7 +93,7 @@ void AircraftClass::DoCountermeasures(void)
         }
         else if (dropChaffCmd)
         {
-            if ( not (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::chaf)))
+            if ( not (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::chaf)))
             {
                 DropChaff();
             }
@@ -283,7 +283,7 @@ void AircraftClass::DropFlare(void)
 
         {
             static int chaffsid = 0; // just need a fake id so multiple chaffs can play at once.
-            chaffsid = (chaffsid + 1) & 0xf;
+            chaffsid = (chaffsid + 1) bitand 0xf;
             SoundPos.Sfx(af->auxaeroData->sndBBFlare, chaffsid);
         }
 
@@ -438,7 +438,7 @@ void AircraftClass::EWSChaffBurst(void)
 {
     PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
 
-    if (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::bus))
+    if (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::bus))
         return;
 
     if (theRwr)
@@ -460,7 +460,7 @@ void AircraftClass::EWSFlareBurst(void)
 {
     PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
 
-    if (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::bus))
+    if (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::bus))
         return;
 
     if (theRwr)

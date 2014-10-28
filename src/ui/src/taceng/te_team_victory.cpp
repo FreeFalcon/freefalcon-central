@@ -299,7 +299,7 @@ void RebuildTeamLists()
 
     for (i = 0; i < NUM_TEAMS; i++)
     {
-        if (TeamInfo[i] and (TeamInfo[i]->flags & TEAM_ACTIVE))
+        if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
             item = mk_item(i, TeamInfo[i]->GetName());
         else
         {
@@ -339,7 +339,7 @@ void InitVCArgLists()
     {
         for (i = 0; i < NUM_TEAMS; i++)
         {
-            if (TeamInfo[i] and (TeamInfo[i]->flags & TEAM_ACTIVE))
+            if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
                 item = mk_item(i, TeamInfo[i]->GetName());
             else
             {
@@ -598,7 +598,7 @@ void UpdateVCOptions(victory_condition *vc)
             {
                 fc = GetFeatureClassData(classID);
 
-                if (fc and !(fc->Flags & FEAT_VIRTUAL))
+                if (fc and !(fc->Flags bitand FEAT_VIRTUAL))
                 {
                     _tcscat(buffer, ", ");
                     _tcscat(buffer, fc->Name);
@@ -875,7 +875,7 @@ void VCSetTargetCB(long, short hittype, C_Base *control)
     SelectToolTypeCB(TARGET_VC, hittype, control);
 }
 
-// sets up the target & Args controls
+// sets up the target bitand Args controls
 void VCArgsCB(long, short hittype, C_Base *)
 {
     victory_condition *vc;
@@ -899,7 +899,7 @@ void VCArgsCB(long, short hittype, C_Base *)
     }
 }
 
-// sets up the target & Args controls
+// sets up the target bitand Args controls
 void VCSetPointsCB(long, short hittype, C_Base *control)
 {
     victory_condition *vc;
@@ -1282,7 +1282,7 @@ C_Victory *MakeVCControl(victory_condition *vc)
     lbox->SetDropDown(BID_DROPDOWN);
     lbox->SetCallback(VCChangeTeamNoCB);
     lbox->SetFlagBitOff(C_BIT_ENABLED);
-    lbox->SetFlagBitOn(gVCTree->GetFlags() & C_BIT_ENABLED);
+    lbox->SetFlagBitOn(gVCTree->GetFlags() bitand C_BIT_ENABLED);
     vcntrl->SetTeam(lbox);
 
     // Action
@@ -1296,7 +1296,7 @@ C_Victory *MakeVCControl(victory_condition *vc)
     lbox->SetOpenCallback(VCActionOpenCB);
     lbox->SetCallback(VCChangeActionCB);
     lbox->SetFlagBitOff(C_BIT_ENABLED);
-    lbox->SetFlagBitOn(gVCTree->GetFlags() & C_BIT_ENABLED);
+    lbox->SetFlagBitOn(gVCTree->GetFlags() bitand C_BIT_ENABLED);
     lbox->SetDropDown(BID_DROPDOWN);
 
     if ( not ent)
@@ -1343,7 +1343,7 @@ C_Victory *MakeVCControl(victory_condition *vc)
     lbox->SetCallback(VCArgsCB);
     lbox->SetOpenCallback(VCArgsOpenCB);
     lbox->SetFlagBitOff(C_BIT_ENABLED);
-    lbox->SetFlagBitOn(gVCTree->GetFlags() & C_BIT_ENABLED);
+    lbox->SetFlagBitOn(gVCTree->GetFlags() bitand C_BIT_ENABLED);
 
     if (vc->get_type() == vt_intercept)
         lbox->SetRoot(intercept_lbox);
@@ -1503,7 +1503,7 @@ void UpdateVCScoring(long WinID, short mode)
 
     for (i = 0; i < NUM_TEAMS; i++)
     {
-        if (TeamInfo[i] and (TeamInfo[i]->flags & TEAM_ACTIVE))
+        if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
         {
             sortindex[line] = i;
 
@@ -1608,7 +1608,7 @@ void update_team_victory_window(void)
 {
     if (gMainHandler)
     {
-        if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+        if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
             UpdateVCScoring(TAC_VC_WIN, 1);
         else
             UpdateVCScoring(TAC_VC_WIN, 0);
@@ -2094,9 +2094,9 @@ static void delete_tactical_object(long, short, C_Base *)
                     {
                         for (x = 0; x < width; x ++)
                         {
-                            if (x & 1)
+                            if (x bitand 1)
                             {
-                                old_team = (src[(y * width + x) / 2] & 0xf0) >> 4;
+                                old_team = (src[(y * width + x) / 2] bitand 0xf0) >> 4;
 
                                 if (old_team == team_mapping[loop])
                                 {
@@ -2105,7 +2105,7 @@ static void delete_tactical_object(long, short, C_Base *)
                             }
                             else
                             {
-                                old_team = src[(y * width + x) / 2] & 0xf;
+                                old_team = src[(y * width + x) / 2] bitand 0xf;
 
                                 if (old_team == team_mapping[loop])
                                 {
@@ -2353,7 +2353,7 @@ long EvaluateSituation()
 
     for (i = 0; i < NUM_TEAMS; i++)
     {
-        if (TeamInfo[i] and (TeamInfo[i]->flags & TEAM_ACTIVE))
+        if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
         {
             TeamScores[i] = GetCurrentVCScore(i);
             teams++;
@@ -2471,7 +2471,7 @@ void TriggerTacEndGame(void)
         TheCampaign.EndgameResult = 1;
         SetTimeCompression(0);
 
-        if (gMainHandler->GetWindowFlags(CP_COUNTDOWN_WIN) & C_BIT_ENABLED)
+        if (gMainHandler->GetWindowFlags(CP_COUNTDOWN_WIN) bitand C_BIT_ENABLED)
         {
             win = gMainHandler->FindWindow(CP_COUNTDOWN_WIN);
 

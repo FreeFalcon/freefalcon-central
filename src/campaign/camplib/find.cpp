@@ -281,8 +281,8 @@ void* PackXY(GridIndex x, GridIndex y)
 
 void UnpackXY(void* n, GridIndex* x, GridIndex* y)
 {
-    *x = (GridIndex)((long)n & 0xFFFF);
-    *y = (GridIndex)(((long)n >> 16) & 0xFFFF);
+    *x = (GridIndex)((long)n bitand 0xFFFF);
+    *y = (GridIndex)(((long)n >> 16) bitand 0xFFFF);
 }
 
 void Trim(GridIndex* x, GridIndex* y)
@@ -1171,7 +1171,7 @@ Objective FindNearestFriendlyObjective(Team who, GridIndex *x, GridIndex *y, int
     {
         if (GetTTRelations(o->GetTeam(), who) <= Neutral)
         {
-            if (flags & FF_SECONDLINE and o->IsFrontline())
+            if (flags bitand FF_SECONDLINE and o->IsFrontline())
             {
                 o = (Objective) myit.GetNext();
                 continue;
@@ -1211,7 +1211,7 @@ Objective FindNearestFriendlyObjective(VuFilteredList* l, Team who, GridIndex *x
     {
         if (GetTTRelations(o->GetTeam(), who) <= Neutral)
         {
-            if (flags & FF_SECONDLINE and o->IsFrontline())
+            if (flags bitand FF_SECONDLINE and o->IsFrontline())
             {
                 o = GetNextObjective(&myit);
                 continue;
@@ -1341,31 +1341,31 @@ int ScoreThreatFast(GridIndex X, GridIndex Y, int altlevel, Team who)
             return 0;
 
         case LowAltitude:
-            score = ((TheCampaign.SamMapData[i] >> ix) & 0x03) * 28;
-            score += ((TheCampaign.SamMapData[i] >> (ix + 2)) & 0x03) * 2;
+            score = ((TheCampaign.SamMapData[i] >> ix) bitand 0x03) * 28;
+            score += ((TheCampaign.SamMapData[i] >> (ix + 2)) bitand 0x03) * 2;
 
-            //score += ((TheCampaign.RadarMapData[i] >> ix) & 0x03) * 3;
+            //score += ((TheCampaign.RadarMapData[i] >> ix) bitand 0x03) * 3;
             if (own and own not_eq 0xF and GetRoE(who, own, ROE_AIR_FIRE))
                 score += 10; // 'General' threat for flying over enemy territory
 
             break;
 
         case MediumAltitude:
-            score = ((TheCampaign.SamMapData[i] >> ix) & 0x03) * 10;
-            score += ((TheCampaign.SamMapData[i] >> (ix + 2)) & 0x03) * 23;
-            //score += ((TheCampaign.RadarMapData[i] >> ix) & 0x03) * 1;
-            //score += ((TheCampaign.RadarMapData[i] >> (ix+2)) & 0x03) * 2;
+            score = ((TheCampaign.SamMapData[i] >> ix) bitand 0x03) * 10;
+            score += ((TheCampaign.SamMapData[i] >> (ix + 2)) bitand 0x03) * 23;
+            //score += ((TheCampaign.RadarMapData[i] >> ix) bitand 0x03) * 1;
+            //score += ((TheCampaign.RadarMapData[i] >> (ix+2)) bitand 0x03) * 2;
             break;
 
         case HighAltitude:
         default:
-            score = ((TheCampaign.SamMapData[i] >> (ix + 2)) & 0x03) * 30;
-            //score += ((TheCampaign.RadarMapData[i] >> (ix+2)) & 0x03) * 3;
+            score = ((TheCampaign.SamMapData[i] >> (ix + 2)) bitand 0x03) * 30;
+            //score += ((TheCampaign.RadarMapData[i] >> (ix+2)) bitand 0x03) * 3;
             break;
 
         case VeryHighAltitude:
-            score = ((TheCampaign.SamMapData[i] >> (ix + 2)) & 0x03) * 15;
-            //score += ((TheCampaign.RadarMapData[i] >> (ix+2)) & 0x03) * 3;
+            score = ((TheCampaign.SamMapData[i] >> (ix + 2)) bitand 0x03) * 15;
+            //score += ((TheCampaign.RadarMapData[i] >> (ix+2)) bitand 0x03) * 3;
             break;
     }
 
@@ -1398,7 +1398,7 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
         e->GetLocation(&x, &y);
         d = da = FloatToInt32(Distance(X, Y, x, y));
 
-        if (flags & FIND_CAUTIOUS)
+        if (flags bitand FIND_CAUTIOUS)
         {
             d = da = FloatToInt32(0.8F * d);
         }
@@ -1406,8 +1406,8 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
         if (e->GetDetectionRange(mt) > d and GetRoE(e->GetTeam(), who, roe_check))
         {
             if (
-                e->IsUnit() and !(flags & FIND_NOAIR and e->GetDomain() == DOMAIN_AIR)  and 
-                !(flags & FIND_NOMOVERS and ((Unit)e)->Moving())
+                e->IsUnit() and !(flags bitand FIND_NOAIR and e->GetDomain() == DOMAIN_AIR)  and 
+                !(flags bitand FIND_NOMOVERS and ((Unit)e)->Moving())
             )
             {
                 d = d; // placeholder. This unit is valid
@@ -1432,7 +1432,7 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
             {
                 threats += 4;
             }
-            else if (d > VisualDetectionRange[mt] and !(flags & FIND_NODETECT))
+            else if (d > VisualDetectionRange[mt] and !(flags bitand FIND_NODETECT))
             {
                 threats++;
             }
@@ -1493,9 +1493,9 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
  if (tteam[e->GetTeam()])
  {
  if (e->IsUnit()  and 
- !(flags & FIND_NOMOVERS and ((Unit)e)->Moving())  and 
- !(flags & FIND_NOAIR and e->GetDomain() == DOMAIN_AIR)  and 
- (flags & FIND_FINDUNSPOTTED or e->GetSpotted(who)))
+ !(flags bitand FIND_NOMOVERS and ((Unit)e)->Moving())  and 
+ !(flags bitand FIND_NOAIR and e->GetDomain() == DOMAIN_AIR)  and 
+ (flags bitand FIND_FINDUNSPOTTED or e->GetSpotted(who)))
  d = d; // placeholder. This unit is valid
  else if (e->IsObjective())
  d = d; // placeholder. This objective is valid
@@ -1506,9 +1506,9 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
  }
  e->GetLocation(&x,&y);
  d = FloatToInt32(Distance(X,Y,x,y));
- if (flags & FIND_CAUTIOUS)
+ if (flags bitand FIND_CAUTIOUS)
  d = FloatToInt32(0.8F*d);
- if ( not (flags & FIND_NODETECT) and e->GetDetectionRange(mt) > d)
+ if ( not (flags bitand FIND_NODETECT) and e->GetDetectionRange(mt) > d)
  got++;
  hc = e->GetAproxHitChance(mt,d);
  if (hc > 0){
@@ -1601,7 +1601,7 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
                     foundlist->ForcedInsert(e);
                     retval  or_eq  NEED_SEAD;
                 }
-                else if ( not (flags & FIND_NODETECT) and e->GetDetectionRange(mt) > d)
+                else if ( not (flags bitand FIND_NODETECT) and e->GetDetectionRange(mt) > d)
                 {
                     foundlist->ForcedInsert(e);
                     retval  or_eq  NEED_ECM;
@@ -1611,7 +1611,7 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
 
         delete myit;
 
-        if (flags & FIND_NODETECT)
+        if (flags bitand FIND_NODETECT)
         {
             pass = 10; // Skip detector pass, essentially
         }

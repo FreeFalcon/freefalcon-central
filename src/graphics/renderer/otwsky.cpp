@@ -944,7 +944,7 @@ void RenderOTW::DrawSkyHazeBand(struct HorizonRecord *pHorizon)
         dg = pHorizon->sunEffectColor.g - haze_sky_color.g;
         db = pHorizon->sunEffectColor.b - haze_sky_color.b;
 
-        if (pHorizon->horeffect & 2) num = 5;
+        if (pHorizon->horeffect bitand 2) num = 5;
     }
 
     // Build the corners of our horizon polygon
@@ -1082,7 +1082,7 @@ void RenderOTW::DrawFillerToHorizon(HorizonRecord *pHorizon)
         v2.g = earth_end_color.g + dg * lhazescale;
         v2.b = earth_end_color.b + db * lhazescale;
 
-        if (pHorizon->horeffect & 2)
+        if (pHorizon->horeffect bitand 2)
         {
             num = 5;
 
@@ -1500,10 +1500,10 @@ int RenderOTW::DrawCelestialBody(Tpoint *cntr, float dist, float alpha, float r,
     // Render the polygon
     bool gif = false;
 
-    if (g_nGfxFix & 0x04)
+    if (g_nGfxFix bitand 0x04)
         gif = true;
 
-    if (v0.clipFlag & v1.clipFlag & v2.clipFlag & v3.clipFlag) return 0; // not visible
+    if (v0.clipFlag bitand v1.clipFlag bitand v2.clipFlag bitand v3.clipFlag) return 0; // not visible
 
     DrawSquare(&v0, &v1, &v2, &v3, CULL_ALLOW_ALL, gif);
 
@@ -1592,7 +1592,7 @@ void RenderOTW::ComputeHorizonEffect(HorizonRecord *pHorizon)
     TheTimeOfDay.CalculateSunGroundPos(&sunEffectWorldSpace);
     TransformCameraCentricPoint(&sunEffectWorldSpace, &sunEffectScreenSpace);
 
-    if (1/*!(sunEffectScreenSpace.clipFlag & CLIP_NEAR)*/)
+    if (1/*!(sunEffectScreenSpace.clipFlag bitand CLIP_NEAR)*/)
     {
         pHorizon->sunEffectPos.x = sunEffectScreenSpace.x;
         pHorizon->sunEffectPos.y = sunEffectScreenSpace.y;
@@ -1607,15 +1607,15 @@ void RenderOTW::ComputeHorizonEffect(HorizonRecord *pHorizon)
     pHorizon->lhazescale = pHorizon->rhazescale = 0.0f;
     int anglesize = glConvertFromRadian(diagonal_half_angle);
     int yaw = glConvertFromRadian(Yaw());
-    int leftyaw = (yaw - anglesize) & 0x3fff;
-    int rightyaw = (yaw + anglesize) & 0x3fff;
+    int leftyaw = (yaw - anglesize) bitand 0x3fff;
+    int rightyaw = (yaw + anglesize) bitand 0x3fff;
     anglesize <<= 1;
     float sizeperangle = pHorizon->hazescale / (float)(anglesize);
     int sunyaw = TheTimeOfDay.GetSunYaw();
 
     int i, j;
-    i = (sunyaw - leftyaw) & 0x3fff;
-    j = (leftyaw - sunyaw) & 0x3fff;
+    i = (sunyaw - leftyaw) bitand 0x3fff;
+    j = (leftyaw - sunyaw) bitand 0x3fff;
 
     if (i > j)
     {
@@ -1627,8 +1627,8 @@ void RenderOTW::ComputeHorizonEffect(HorizonRecord *pHorizon)
         pHorizon->lhazescale = pHorizon->hazescale - (i * sizeperangle);
     }
 
-    i = (sunyaw - rightyaw) & 0x3fff;
-    j = (rightyaw - sunyaw) & 0x3fff;
+    i = (sunyaw - rightyaw) bitand 0x3fff;
+    j = (rightyaw - sunyaw) bitand 0x3fff;
 
     if (i > j)
     {

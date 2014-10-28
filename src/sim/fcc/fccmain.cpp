@@ -449,9 +449,9 @@ void FireControlComputer::SetSubMode(FCCSubMode newSubMode)
             platform->SOIManager(SimVehicleClass::SOI_RADAR);
             // 2001-04-18 ADDED BY S.G. I'LL SET MY RANDOM NUMBER FOR CCRP BOMBING INNACURACY NOW
             // Since autoTarget is a byte :-(  I'm limiting to just use the same value for both x and y offset :-(
-            //  autoTarget = (rand() & 0x3f) - 32; // In RP5, I'm limited to the variables I can use
-            xBombAccuracy = (rand() & 0x3f) - 32;
-            yBombAccuracy = (rand() & 0x3f) - 32;
+            //  autoTarget = (rand() bitand 0x3f) - 32; // In RP5, I'm limited to the variables I can use
+            xBombAccuracy = (rand() bitand 0x3f) - 32;
+            yBombAccuracy = (rand() bitand 0x3f) - 32;
             // COBRA - RED - 1 Second Pickle for CCRP
             PICKLE(SEC_1_PICKLE);
             break;
@@ -2756,7 +2756,7 @@ void FireControlComputer::SetSms(SMSClass *SMS)
 
     lastDogfightHp = Sms->CurHardpoint();
 
-    // missile override & aamm
+    // missile override bitand aamm
     if ( not Sms->FindWeaponType(wtAim120))
         Sms->FindWeaponType(wtAim9);
 

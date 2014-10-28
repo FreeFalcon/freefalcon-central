@@ -435,9 +435,9 @@ public:
 
     // Keyboard Support Routines
     BOOL CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount); // Called whenever a key is pressed
-    BOOL CheckHotKeys(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount); // Called whenever a key is pressed & CheckKeyboard returned FALSE
+    BOOL CheckHotKeys(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount); // Called whenever a key is pressed bitand CheckKeyboard returned FALSE
     void SetControl(long ID); // Called when mouse is used over this control
-    void SetPrevControl(); // Called when SHIFT & TAB are pressed
+    void SetPrevControl(); // Called when SHIFT bitand TAB are pressed
     void SetNextControl(); // Called when TAB is pressed
 
     // Cleanup Functions

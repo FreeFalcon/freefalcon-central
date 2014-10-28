@@ -20,7 +20,7 @@ SendStringToPrinter(_TCHAR *string, _TCHAR *title)
     ShiAssert(IsBadStringPtr(string, 8192) == 0);
     ShiAssert(IsBadStringPtr(title, 1024) == 0);
 
-    if ((g_nPrintToFile & 0x03) or g_bBriefHTML) // 0x01 + 0x02 means write to file ...and to it anyway if html is wanted
+    if ((g_nPrintToFile bitand 0x03) or g_bBriefHTML) // 0x01 + 0x02 means write to file ...and to it anyway if html is wanted
     {
         char filename[_MAX_PATH];
 
@@ -33,9 +33,9 @@ SendStringToPrinter(_TCHAR *string, _TCHAR *title)
         return 1;
     }
 
-    // if ( not g_nPrintToFile or g_nPrintToFile & 0x02) // 0x00 + 0x02 means print out
+    // if ( not g_nPrintToFile or g_nPrintToFile bitand 0x02) // 0x00 + 0x02 means print out
     //THW 2004-04-12 Never print out if HTML-Briefings are enabled
-    if ( not g_bBriefHTML or !g_nPrintToFile or (g_nPrintToFile & 0x02)) // 0x00 + 0x02 means print out
+    if ( not g_bBriefHTML or !g_nPrintToFile or (g_nPrintToFile bitand 0x02)) // 0x00 + 0x02 means print out
     {
         CoInitialize(NULL);
         ComSup::RegisterServer("GMPrint.dll");
@@ -104,12 +104,12 @@ void PrintTime(char *output, FILETIME TimeToPrint)
         // it works, and I'm not aware of a cleaner way to do it.
         if (g_bBriefHTML)
             wsprintf(output, "%d-%02d-%02d_%02d%02d%02d",
-                     (Date / 512) + 1980, (Date / 32) & 15, Date & 31,
-                     (Time / 2048), (Time / 32) & 63, (Time & 31) * 2);
+                     (Date / 512) + 1980, (Date / 32) bitand 15, Date bitand 31,
+                     (Time / 2048), (Time / 32) bitand 63, (Time bitand 31) * 2);
         else
             wsprintf(output, "%d/%d/%d %02d:%02d:%02d",
-                     (Date / 32) & 15, Date & 31, (Date / 512) + 1980,
-                     (Time / 2048), (Time / 32) & 63, (Time & 31) * 2);
+                     (Date / 32) bitand 15, Date bitand 31, (Date / 512) + 1980,
+                     (Time / 2048), (Time / 32) bitand 63, (Time bitand 31) * 2);
     }
     else
         output[0] = 0;

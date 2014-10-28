@@ -485,13 +485,13 @@ void LogBookData::UpdateCampaign(CAMP_MISS_STRUCT *MissStats)
 
     UpdateFlightHours(MissStats->FlightHours);
 
-    if (MissStats->Flags & CRASH_UNDAMAGED and !g_bDisableCrashEjectCourtMartials) // JB 010118
+    if (MissStats->Flags bitand CRASH_UNDAMAGED and !g_bDisableCrashEjectCourtMartials) // JB 010118
     {
         Pilot.Campaign.TotalScore -= 25;
         MissionResult  or_eq  CM_CRASH | COURT_MARTIAL;
     }
 
-    if (MissStats->Flags & EJECT_UNDAMAGED and !g_bDisableCrashEjectCourtMartials) // JB 010118
+    if (MissStats->Flags bitand EJECT_UNDAMAGED and !g_bDisableCrashEjectCourtMartials) // JB 010118
     {
         Pilot.Campaign.TotalScore -= 50;
         MissionResult  or_eq  CM_EJECT | COURT_MARTIAL;
@@ -515,7 +515,7 @@ void LogBookData::UpdateCampaign(CAMP_MISS_STRUCT *MissStats)
         {
             Pilot.Campaign.TotalScore -= 200;
 
-            if (MissStats->Flags & FR_HUMAN_KILLED)
+            if (MissStats->Flags bitand FR_HUMAN_KILLED)
             {
                 Pilot.Campaign.TotalScore = 0;
                 Pilot.Rank = SEC_LT;
@@ -530,14 +530,14 @@ void LogBookData::UpdateCampaign(CAMP_MISS_STRUCT *MissStats)
     }
 
     //calculate new score using complexity, no mission pts if you get court martialed!
-    if ( not (MissionResult & COURT_MARTIAL))
+    if ( not (MissionResult bitand COURT_MARTIAL))
         Pilot.Campaign.TotalScore += FloatToInt32(MissStats->Score * MissionComplexity(MissStats) * CampaignDifficulty() *
                                      PlayerOptions.Realism / 30.0F + MissStats->FlightHours);
 
     if (Pilot.Campaign.TotalScore < 0)
         Pilot.Campaign.TotalScore = 0;
 
-    if ( not (MissStats->Flags & DONT_SCORE_MISSION))
+    if ( not (MissStats->Flags bitand DONT_SCORE_MISSION))
     {
         Pilot.Campaign.Missions++;
 
@@ -610,7 +610,7 @@ void LogBookData::UpdateCampaign(CAMP_MISS_STRUCT *MissStats)
         if (Pilot.Campaign.Naval < 0)
             Pilot.Campaign.Naval = 0;
 
-        if ( not (MissionResult & COURT_MARTIAL))
+        if ( not (MissionResult bitand COURT_MARTIAL))
             AwardMedals(MissStats);
     }
 
@@ -702,10 +702,10 @@ void LogBookData::AwardMedals(CAMP_MISS_STRUCT *MissStats)
     {
         int MedalPts = 0;
 
-        if (MissStats->Flags & DESTROYED_PRIMARY)
+        if (MissStats->Flags bitand DESTROYED_PRIMARY)
             MedalPts += 2;
 
-        if (MissStats->Flags & LANDED_AIRCRAFT)
+        if (MissStats->Flags bitand LANDED_AIRCRAFT)
             MedalPts++;
 
         if ( not MissStats->WingmenLost)

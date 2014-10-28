@@ -397,7 +397,7 @@ public:
     {
         return 0;    // MLR 10/3/2004 - finishing what //me123 started
     }
-    /* BattalionClass & TaskForceClass both have this function, which is invoked in GroundClass::MissileTrack() */
+    /* BattalionClass bitand TaskForceClass both have this function, which is invoked in GroundClass::MissileTrack() */
 
     // Core functions
     void SendMessage(VU_ID id, short msg, short d1, short d2, short d3, short d4);
@@ -424,44 +424,44 @@ public:
     }
     virtual int IsEmitting(void)
     {
-        return base_flags & CBC_EMITTING;
+        return base_flags bitand CBC_EMITTING;
     }
     int IsJammed(void)
     {
-        return base_flags & CBC_JAMMED;
+        return base_flags bitand CBC_JAMMED;
     }
     // Local flag access
     int IsChecked(void)
     {
-        return local_flags & CBC_CHECKED;
+        return local_flags bitand CBC_CHECKED;
     }
     int IsAwake(void)
     {
-        return local_flags & CBC_AWAKE;
+        return local_flags bitand CBC_AWAKE;
     }
     int InPackage(void)
     {
-        return local_flags & CBC_IN_PACKAGE;
+        return local_flags bitand CBC_IN_PACKAGE;
     }
     int InSimLists(void)
     {
-        return local_flags & CBC_IN_SIM_LIST;
+        return local_flags bitand CBC_IN_SIM_LIST;
     }
     int IsInterested(void)
     {
-        return local_flags & CBC_INTEREST;
+        return local_flags bitand CBC_INTEREST;
     }
     int IsReserved(void)
     {
-        return local_flags & CBC_RESERVED_ONLY;
+        return local_flags bitand CBC_RESERVED_ONLY;
     }
     int IsAggregate(void)
     {
-        return local_flags & CBC_AGGREGATE;
+        return local_flags bitand CBC_AGGREGATE;
     }
     int IsTacan(void)
     {
-        return local_flags & CBC_HAS_TACAN;
+        return local_flags bitand CBC_HAS_TACAN;
     }
     // sfr: added for new driver
     virtual int HasEntity(VuEntity *e) const
@@ -470,7 +470,7 @@ public:
     }
     int HasDelta(void)
     {
-        return local_flags & CBC_HAS_DELTA;
+        return local_flags bitand CBC_HAS_DELTA;
     }
 
     // Getters
@@ -501,7 +501,7 @@ public:
     int GetSpotted(Team t);
     int GetIdentified(Team t)
     {
-        return (spotted >> (t + 8)) & 0x01;    // 2002-02-11 ADDED BY S.G. Getter to know if the target is identified or not.
+        return (spotted >> (t + 8)) bitand 0x01;    // 2002-02-11 ADDED BY S.G. Getter to know if the target is identified or not.
     }
 
     // Setters

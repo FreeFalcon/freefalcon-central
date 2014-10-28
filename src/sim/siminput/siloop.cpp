@@ -673,7 +673,7 @@ BOOL CleanupDIJoystick(void)
 
         HRESULT hr = gpDIDevice[AxisMap.FlightControlDevice]->GetCapabilities(&devcaps);
 
-        if (devcaps.dwFlags & DIDC_FORCEFEEDBACK)
+        if (devcaps.dwFlags bitand DIDC_FORCEFEEDBACK)
         {
             DIPROPDWORD DIPropAutoCenter;
 
@@ -727,7 +727,7 @@ BOOL CleanupDIJoystickMk2(void)
         {
             HRESULT hr = gpDIDevice[AxisMap.FlightControlDevice]->GetCapabilities(&devcaps);
 
-            if (devcaps.dwFlags & DIDC_FORCEFEEDBACK)
+            if (devcaps.dwFlags bitand DIDC_FORCEFEEDBACK)
             {
                 DIPROPDWORD DIPropAutoCenter;
 

@@ -60,7 +60,7 @@ enum Switches
 
     // MLR 2003-10-05
     COMP_PIT_AB = 25, // these are reserved for the 3d pits
-    COMP_PIT_NOS_GEAR_SW = 26, // since the 1st 4 switches & #7 are used by pit specific data,
+    COMP_PIT_NOS_GEAR_SW = 26, // since the 1st 4 switches bitand #7 are used by pit specific data,
     COMP_PIT_LT_GEAR_SW = 27, // these are set to be equal to dofs 0 - 3
     COMP_PIT_RT_GEAR_SW = 28, //
     COMP_PIT_TAIL_STROBE    = 29,
@@ -538,7 +538,7 @@ enum DOFS
     // Simple model DOF's
     SIMP_LT_STAB = 0,
     SIMP_RT_STAB = 1,
-    // this gap used by animations (including 6 & 7 actually) JPO
+    // this gap used by animations (including 6 bitand 7 actually) JPO
     SIMP_LT_AILERON = 6,
     SIMP_RT_AILERON = 7,
     SIMP_RUDDER_1 = 8,

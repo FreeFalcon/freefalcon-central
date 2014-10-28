@@ -60,8 +60,8 @@ void RenderOTW::BuildRingList(void)
 
         // Determine the location of the glue row and column at the outside of this LOD region
         // NOTE:  These two must evaluate to zero or one, as they are used arithmetically
-        LODdata[LOD].glueOnBottom   = LODdata[LOD].centerRow & 1;
-        LODdata[LOD].glueOnLeft = LODdata[LOD].centerCol & 1;
+        LODdata[LOD].glueOnBottom   = LODdata[LOD].centerRow bitand 1;
+        LODdata[LOD].glueOnLeft = LODdata[LOD].centerCol bitand 1;
 
 
 #ifdef TWO_D_MAP_AVAILABLE
@@ -935,8 +935,8 @@ void RenderOTW::TrimCornerSet(void)
                         }
 
                         // Rounding
-                        span->Tsector.startDraw = span->Tsector.startDraw & compl 1;
-                        span->Tsector.stopDraw  = span->Tsector.stopDraw  & compl 1;
+                        span->Tsector.startDraw = span->Tsector.startDraw bitand compl 1;
+                        span->Tsector.stopDraw  = span->Tsector.stopDraw  bitand compl 1;
                         span->Lsector.startDraw = (span->Lsector.startDraw - 1) | 1;
                         span->Lsector.stopDraw  = (span->Lsector.stopDraw  - 1) | 1;
                     }
@@ -982,8 +982,8 @@ void RenderOTW::TrimCornerSet(void)
                         // Rounding
                         span->Bsector.startDraw = (span->Bsector.startDraw - 1) | 1;
                         span->Bsector.stopDraw  = (span->Bsector.stopDraw  - 1) | 1;
-                        span->Rsector.startDraw = span->Rsector.startDraw & compl 1;
-                        span->Rsector.stopDraw  = span->Rsector.stopDraw  & compl 1;
+                        span->Rsector.startDraw = span->Rsector.startDraw bitand compl 1;
+                        span->Rsector.stopDraw  = span->Rsector.stopDraw  bitand compl 1;
                     }
                     else
                     {
@@ -1010,10 +1010,10 @@ void RenderOTW::TrimCornerSet(void)
                         }
 
                         // Rounding
-                        span->Bsector.startDraw = span->Bsector.startDraw & compl 1;
-                        span->Bsector.stopDraw  = span->Bsector.stopDraw  & compl 1;
-                        span->Lsector.startDraw = span->Lsector.startDraw & compl 1;
-                        span->Lsector.stopDraw  = span->Lsector.stopDraw  & compl 1;
+                        span->Bsector.startDraw = span->Bsector.startDraw bitand compl 1;
+                        span->Bsector.stopDraw  = span->Bsector.stopDraw  bitand compl 1;
+                        span->Lsector.startDraw = span->Lsector.startDraw bitand compl 1;
+                        span->Lsector.stopDraw  = span->Lsector.stopDraw  bitand compl 1;
                     }
                 }
 
@@ -1116,8 +1116,8 @@ void RenderOTW::TrimCornerSet(void)
                         span->Lsector.stopDraw  = MAX_NEGATIVE_I;
 
                         // Rounding
-                        span->Bsector.startDraw = span->Bsector.startDraw & compl 1;
-                        span->Bsector.stopDraw  = span->Bsector.stopDraw  & compl 1;
+                        span->Bsector.startDraw = span->Bsector.startDraw bitand compl 1;
+                        span->Bsector.stopDraw  = span->Bsector.stopDraw  bitand compl 1;
                         span->Rsector.startDraw = (span->Rsector.startDraw - 1) | 1;
                         span->Rsector.stopDraw  = (span->Rsector.stopDraw  - 1) | 1;
                     }
@@ -1156,8 +1156,8 @@ void RenderOTW::TrimCornerSet(void)
                         // Rounding
                         span->Tsector.startDraw = (span->Tsector.startDraw - 1) | 1;
                         span->Tsector.stopDraw  = (span->Tsector.stopDraw  - 1) | 1;
-                        span->Lsector.startDraw = span->Lsector.startDraw & compl 1;
-                        span->Lsector.stopDraw  = span->Lsector.stopDraw  & compl 1;
+                        span->Lsector.startDraw = span->Lsector.startDraw bitand compl 1;
+                        span->Lsector.stopDraw  = span->Lsector.stopDraw  bitand compl 1;
                     }
                     else
                     {
@@ -1189,10 +1189,10 @@ void RenderOTW::TrimCornerSet(void)
                         span->Lsector.stopDraw  = MAX_NEGATIVE_I;
 
                         // Rounding
-                        span->Tsector.startDraw = span->Tsector.startDraw & compl 1;
-                        span->Tsector.stopDraw  = span->Tsector.stopDraw  & compl 1;
-                        span->Rsector.startDraw = span->Rsector.startDraw & compl 1;
-                        span->Rsector.stopDraw  = span->Rsector.stopDraw  & compl 1;
+                        span->Tsector.startDraw = span->Tsector.startDraw bitand compl 1;
+                        span->Tsector.stopDraw  = span->Tsector.stopDraw  bitand compl 1;
+                        span->Rsector.startDraw = span->Rsector.startDraw bitand compl 1;
+                        span->Rsector.stopDraw  = span->Rsector.stopDraw  bitand compl 1;
                     }
                 }
             }

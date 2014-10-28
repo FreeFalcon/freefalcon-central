@@ -360,7 +360,7 @@ void HadMfdDrawable::HARMWpnMode()
 
     else if (harmPod->GetSubMode() == HarmTargetingPod::HAD)
     {
-        flash = vuxRealTime & 0x80;
+        flash = vuxRealTime bitand 0x80;
 
         harmPod->SetIntensity(GetIntensity());
 

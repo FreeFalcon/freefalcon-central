@@ -40,7 +40,7 @@ int GetCritTaxiPt(int headerindex)
 
     while (PtDataTable[point].type not_eq CritTaxiPt)
     {
-        if (PtDataTable[point].flags & PT_LAST)
+        if (PtDataTable[point].flags bitand PT_LAST)
             return point;
 
         point++;
@@ -59,7 +59,7 @@ int GetNextPt(int ptindex)
     if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
-    if ( not (PtDataTable[ptindex].flags & PT_LAST))
+    if ( not (PtDataTable[ptindex].flags bitand PT_LAST))
     {
         return ptindex + 1;
     }
@@ -88,7 +88,7 @@ int GetNextPtLoop(int ptindex)
     if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
-    if ( not (PtDataTable[ptindex].flags & PT_LAST))
+    if ( not (PtDataTable[ptindex].flags bitand PT_LAST))
     {
         return ptindex + 1;
     }
@@ -101,7 +101,7 @@ int GetNextPtCrit(int ptindex)
     if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
-    if (PtDataTable[ptindex].type not_eq CritTaxiPt and !(PtDataTable[ptindex].flags & PT_LAST))
+    if (PtDataTable[ptindex].type not_eq CritTaxiPt and !(PtDataTable[ptindex].flags bitand PT_LAST))
         return ptindex + 1;
 
     return 0;
@@ -112,7 +112,7 @@ int GetPrevPt(int ptindex)
     if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
-    if ( not (PtDataTable[ptindex].flags & PT_FIRST))
+    if ( not (PtDataTable[ptindex].flags bitand PT_FIRST))
         return ptindex - 1;
 
     return 0;
@@ -136,7 +136,7 @@ int GetPrevPtLoop(int ptindex)
     if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
-    if ( not (PtDataTable[ptindex].flags & PT_FIRST))
+    if ( not (PtDataTable[ptindex].flags bitand PT_FIRST))
         return ptindex - 1;
 
     return ptindex;
@@ -147,7 +147,7 @@ int GetPrevPtCrit(int ptindex)
     if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
-    if (PtDataTable[ptindex].type not_eq CritTaxiPt and !(PtDataTable[ptindex].flags & PT_FIRST))
+    if (PtDataTable[ptindex].type not_eq CritTaxiPt and !(PtDataTable[ptindex].flags bitand PT_FIRST))
         return ptindex - 1;
 
     return 0;
@@ -215,7 +215,7 @@ int GetFirstParkPt(int headerindex)
                 return pt; // found a parking space
         }
 
-        if (PtDataTable[pt].flags & PT_LAST)
+        if (PtDataTable[pt].flags bitand PT_LAST)
             return 0; // examined all
 
         pt ++; // FRB - Should pt be incremented???? I added pt++;  fn() not used :^(
@@ -226,7 +226,7 @@ int GetFirstParkPt(int headerindex)
 
 int GetNextParkPt(int pt)
 {
-    if (PtDataTable[pt].flags & PT_LAST)
+    if (PtDataTable[pt].flags bitand PT_LAST)
         return 0; // stop
 
     pt ++;
@@ -240,7 +240,7 @@ int GetNextParkPt(int pt)
                 return pt; // found a parking space
         }
 
-        if (PtDataTable[pt].flags & PT_LAST)
+        if (PtDataTable[pt].flags bitand PT_LAST)
             return 0; // examined all
 
         pt ++;
@@ -251,7 +251,7 @@ int GetNextParkPt(int pt)
 
 int GetPrevParkPt(int pt)
 {
-    if (PtDataTable[pt].flags & PT_FIRST)
+    if (PtDataTable[pt].flags bitand PT_FIRST)
         return 0; // stop
 
     pt --;
@@ -265,7 +265,7 @@ int GetPrevParkPt(int pt)
                 return pt; // found a parking space
         }
 
-        if (PtDataTable[pt].flags & PT_FIRST)
+        if (PtDataTable[pt].flags bitand PT_FIRST)
             return 0; // examined all
 
         pt --;
@@ -276,7 +276,7 @@ int GetPrevParkPt(int pt)
 
 int GetNextParkTypePt(int pt, int type)
 {
-    if (PtDataTable[pt].flags & PT_LAST)
+    if (PtDataTable[pt].flags bitand PT_LAST)
         return 0; // stop
 
     pt ++;
@@ -288,7 +288,7 @@ int GetNextParkTypePt(int pt, int type)
             return pt; // found a parking space
         }
 
-        if (PtDataTable[pt].flags & PT_LAST)
+        if (PtDataTable[pt].flags bitand PT_LAST)
         {
             return 0; // examined all
         }
@@ -301,7 +301,7 @@ int GetNextParkTypePt(int pt, int type)
 
 int GetPrevParkTypePt(int pt, int type)
 {
-    if (PtDataTable[pt].flags & PT_FIRST)
+    if (PtDataTable[pt].flags bitand PT_FIRST)
         return 0; // stop
 
     pt --;
@@ -311,7 +311,7 @@ int GetPrevParkTypePt(int pt, int type)
         if (PtDataTable[pt].type == type)
             return pt; // found a parking space
 
-        if (PtDataTable[pt].flags & PT_FIRST)
+        if (PtDataTable[pt].flags bitand PT_FIRST)
             return 0; // examined all
 
         pt --;

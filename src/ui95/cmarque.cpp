@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -161,7 +161,7 @@ void C_Marque::SetBGImage(long ImageID)
 
 void C_Marque::Refresh()
 {
-    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -173,10 +173,10 @@ void C_Marque::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     if ( not Ready()) return;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
-    if ( not (GetFlags() & C_BIT_ENABLED))
+    if ( not (GetFlags() bitand C_BIT_ENABLED))
         return;
 
     rect.left = GetX();
@@ -186,7 +186,7 @@ void C_Marque::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     if (Parent_->ClipToArea(&dummy, &rect, cliprect))
     {
-        if (GetFlags() & C_BIT_USEBGIMAGE)
+        if (GetFlags() bitand C_BIT_USEBGIMAGE)
             BgImage_->Draw(surface, &rect);
 
         if (Text_)

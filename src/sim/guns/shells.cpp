@@ -240,7 +240,7 @@ GunClass::UpdateShell(void)
         // ground targets get much better chance of hit
         if (t->OnGround())
         {
-            if ((rand() & 0x7) == 0x7)
+            if ((rand() bitand 0x7) == 0x7)
             {
                 hitSomething = TRUE;
                 SendDamageMessage(t,
@@ -250,7 +250,7 @@ GunClass::UpdateShell(void)
         }
         // 2000-08-30 MODIFIED BY S.G. TO ACCOMODATE FOR ALTITUDE AND SPEED.
         // 2000-09-06 CHANGED AGAIN TO A NEW EQUATION (sqrt(speed / 100) * sqrt(range / 1000))
-        // else if ( (rand() & 0x1F ) == 0x1F )
+        // else if ( (rand() bitand 0x1F ) == 0x1F )
         // Marco Edit - tried to return back to 1.08i2 + RP4 values
         // else if (40.0f * (float)rand() / 32767.0f * (float)sqrt(shellTargetPtr->localData->range * ((SimMoverClass *)shellTargetPtr->BaseData())->GetKias() / 100000.0f) < 0.040625f)
         else if (31.0f * (float)rand() / 32767.0f * (float)sqrt(shellTargetPtr->localData->range * ((SimMoverClass *)shellTargetPtr->BaseData())->GetKias() / g_fBiasFactorForFlaks) < 0.0325f)

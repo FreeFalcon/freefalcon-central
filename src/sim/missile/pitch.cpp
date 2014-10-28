@@ -20,7 +20,7 @@ void MissileClass::Pitch(void)
     // this is still not totaly true since it will be limited to less then max g only in the yaw direction, but better imo
 
     // Limit commands to +/- 40 Gs (except at endgame where anything goes)
-    if ( not (flags & EndGame))
+    if ( not (flags bitand EndGame))
         nzcmd = min(max(nzcmd, -auxData->maxGNormal / 1.41f), auxData->maxGNormal / 1.41f);
     else
         nzcmd = min(max(nzcmd, -auxData->maxGTerminal / 1.41f), auxData->maxGTerminal / 1.41f);

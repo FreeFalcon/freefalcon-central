@@ -135,7 +135,7 @@ CellData GetCell(GridIndex x, GridIndex y)
 ReliefType GetRelief(GridIndex x, GridIndex y)
 {
     ShiAssert(x >= 0 and x < Map_Max_X and y >= 0 and y < Map_Max_Y);
-    return (ReliefType)((TheaterCells[x * Map_Max_Y + y] & ReliefMask) >> ReliefShift);
+    return (ReliefType)((TheaterCells[x * Map_Max_Y + y] bitand ReliefMask) >> ReliefShift);
 }
 
 CoverType GetCover(GridIndex x, GridIndex y)
@@ -143,19 +143,19 @@ CoverType GetCover(GridIndex x, GridIndex y)
     if ((x < 0) or (x >= Map_Max_X) or (y < 0) or (y >= Map_Max_Y))
         return (CoverType) Water;
     else
-        return (CoverType)((TheaterCells[x * Map_Max_Y + y] & GroundCoverMask) >> GroundCoverShift);
+        return (CoverType)((TheaterCells[x * Map_Max_Y + y] bitand GroundCoverMask) >> GroundCoverShift);
 }
 
 char GetRoad(GridIndex x, GridIndex y)
 {
     ShiAssert(x >= 0 and x < Map_Max_X and y >= 0 and y < Map_Max_Y);
-    return (char)((TheaterCells[x * Map_Max_Y + y] & RoadMask) >> RoadShift);
+    return (char)((TheaterCells[x * Map_Max_Y + y] bitand RoadMask) >> RoadShift);
 }
 
 char GetRail(GridIndex x, GridIndex y)
 {
     ShiAssert(x >= 0 and x < Map_Max_X and y >= 0 and y < Map_Max_Y);
-    return (char)((TheaterCells[x * Map_Max_Y + y] & RailMask) >> RailShift);
+    return (char)((TheaterCells[x * Map_Max_Y + y] bitand RailMask) >> RailShift);
 }
 
 

@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -193,22 +193,22 @@ void C_Button::SetLabelFlagBitsOn(long flags)
     LabelFlags_  or_eq  flags;
 
     // Mutually exclusive flags...
-    if (flags & C_BIT_TOP)
+    if (flags bitand C_BIT_TOP)
         LabelFlags_ and_eq compl (C_BIT_VCENTER | C_BIT_BOTTOM);
 
-    if (flags & C_BIT_BOTTOM)
+    if (flags bitand C_BIT_BOTTOM)
         LabelFlags_ and_eq compl (C_BIT_VCENTER | C_BIT_TOP);
 
-    if (flags & C_BIT_VCENTER)
+    if (flags bitand C_BIT_VCENTER)
         LabelFlags_ and_eq compl (C_BIT_TOP | C_BIT_BOTTOM);
 
-    if (flags & C_BIT_LEFT)
+    if (flags bitand C_BIT_LEFT)
         LabelFlags_ and_eq compl (C_BIT_HCENTER | C_BIT_RIGHT);
 
-    if (flags & C_BIT_RIGHT)
+    if (flags bitand C_BIT_RIGHT)
         LabelFlags_ and_eq compl (C_BIT_HCENTER | C_BIT_LEFT);
 
-    if (flags & C_BIT_HCENTER)
+    if (flags bitand C_BIT_HCENTER)
         LabelFlags_ and_eq compl (C_BIT_LEFT | C_BIT_RIGHT);
 
     SetLabelInfo();
@@ -873,28 +873,28 @@ void C_Button::SetLabelInfo()
                 x = 0;
                 y = 0;
 
-                if (GetFlags() & C_BIT_HCENTER)
+                if (GetFlags() bitand C_BIT_HCENTER)
                     x = btn->Image_->GetX() - (GetW() >> 1);
-                else if (GetFlags() & C_BIT_RIGHT)
+                else if (GetFlags() bitand C_BIT_RIGHT)
                     x = btn->Image_->GetX() + GetW();
 
-                if (GetFlags() & C_BIT_VCENTER)
+                if (GetFlags() bitand C_BIT_VCENTER)
                     x = btn->Image_->GetX() - (GetH() >> 1);
 
-                if (LabelFlags_ & C_BIT_RIGHT)
+                if (LabelFlags_ bitand C_BIT_RIGHT)
                     btn->Label_->SetX(GetW() + btn->x_ + x);
-                else if (LabelFlags_ & C_BIT_LEFT)
+                else if (LabelFlags_ bitand C_BIT_LEFT)
                     btn->Label_->SetX(btn->x_ + x);
-                else if (LabelFlags_ & C_BIT_HCENTER)
+                else if (LabelFlags_ bitand C_BIT_HCENTER)
                     btn->Label_->SetX((GetW() >> 1) + btn->x_ + x);
                 else
                     btn->Label_->SetX(btn->x_ + x);
 
-                if (LabelFlags_ & C_BIT_BOTTOM)
+                if (LabelFlags_ bitand C_BIT_BOTTOM)
                     btn->Label_->SetY(GetH() + btn->y_ + y);
-                else if (LabelFlags_ & C_BIT_TOP)
+                else if (LabelFlags_ bitand C_BIT_TOP)
                     btn->Label_->SetY(btn->y_ + y);
-                else if (LabelFlags_ & C_BIT_VCENTER)
+                else if (LabelFlags_ bitand C_BIT_VCENTER)
                     btn->Label_->SetY((GetH() >> 1) + btn->y_ + y);
                 else
                     btn->Label_->SetY(btn->y_ + y);
@@ -1029,7 +1029,7 @@ void C_Button::Refresh()
     BUTTONLIST *btn;
     short i;
 
-    if ( not Root_ or !Ready() or (GetFlags() & C_BIT_INVISIBLE) or !Parent_)
+    if ( not Root_ or !Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or !Parent_)
         return;
 
     if (UseHotSpot_)
@@ -1056,7 +1056,7 @@ void C_Button::Refresh()
         }
     }
 
-    if ((GetFlags() & C_BIT_USEBGIMAGE) and BgImage_)
+    if ((GetFlags() bitand C_BIT_USEBGIMAGE) and BgImage_)
         BgImage_->Refresh();
 
     i = state_;
@@ -1070,7 +1070,7 @@ void C_Button::Refresh()
         if (btn->Image_)
             btn->Image_->Refresh();
 
-        if ( not (GetFlags() & C_BIT_NOLABEL) and btn->Label_)
+        if ( not (GetFlags() bitand C_BIT_NOLABEL) and btn->Label_)
             btn->Label_->Refresh();
     }
 }
@@ -1128,7 +1128,7 @@ void C_Button::HighLite(SCREEN *surface, UI95_RECT *cliprect)
             return;
     }
 
-    if ( not (Flags_ & C_BIT_ABSOLUTE))
+    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
     {
         clip.left += Parent_->VX_[Client_];
         clip.top += Parent_->VY_[Client_];
@@ -1139,7 +1139,7 @@ void C_Button::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     if ( not Parent_->ClipToArea(&tmp, &clip, cliprect))
         return;
 
-    if ( not (Flags_ & C_BIT_ABSOLUTE))
+    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
         if ( not Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
             return;
 
@@ -1158,10 +1158,10 @@ void C_Button::Draw(SCREEN *surface, UI95_RECT *cliprect)
     BUTTONLIST *btn;
     short i;
 
-    if ( not Root_ or !Ready() or (GetFlags() & C_BIT_INVISIBLE) or !Parent_)
+    if ( not Root_ or !Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or !Parent_)
         return;
 
-    if ( not (GetFlags() & C_BIT_ENABLED))
+    if ( not (GetFlags() bitand C_BIT_ENABLED))
         i = C_STATE_DISABLED;
     else
         i = state_;
@@ -1180,10 +1180,10 @@ void C_Button::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (btn and btn->Image_)
         btn->Image_->Draw(surface, cliprect);
 
-    if ( not (GetFlags() & C_BIT_NOLABEL) and btn and btn->Label_)
+    if ( not (GetFlags() bitand C_BIT_NOLABEL) and btn and btn->Label_)
         btn->Label_->Draw(surface, cliprect);
 
-    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
@@ -1192,7 +1192,7 @@ long C_Button::CheckHotSpots(long relx, long rely)
     BUTTONLIST *btn;
     long x, y, w, h;
 
-    if ( not Root_ or (GetFlags() & C_BIT_INVISIBLE) or !(GetFlags() & C_BIT_ENABLED) or ( not Ready() and !UseHotSpot_))
+    if ( not Root_ or (GetFlags() bitand C_BIT_INVISIBLE) or !(GetFlags() bitand C_BIT_ENABLED) or ( not Ready() and !UseHotSpot_))
         return(0);
 
 
@@ -1291,9 +1291,9 @@ BOOL C_Button::Process(long ID, short HitType)
                 while ( not btn and state_ not_eq startstate and ( not btn and state_));
             }
             else if (GetType() == C_TYPE_TOGGLE)
-                state_ = (short)((1 - state_) & 1); //!
+                state_ = (short)((1 - state_) bitand 1); //!
 
-            if (GetFlags() & C_BIT_CLOSEWINDOW)
+            if (GetFlags() bitand C_BIT_CLOSEWINDOW)
             {
                 if (Owner_ and Owner_->_GetCType_() == _CNTL_LISTBOX_)
                 {
@@ -1329,7 +1329,7 @@ BOOL C_Button::MouseOver(long relx, long rely, C_Base *me)
     BUTTONLIST *btn;
     long x, y, w, h;
 
-    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !Ready())
         return(FALSE);
 
     if (UseHotSpot_)
@@ -1411,7 +1411,7 @@ BOOL C_Button::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
     long x, y;
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !(GetFlags() & C_BIT_DRAGABLE))
+    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !(GetFlags() bitand C_BIT_DRAGABLE))
         return(FALSE);
 
     Leave = UI_Enter(Parent_);
@@ -1419,7 +1419,7 @@ BOOL C_Button::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
     x = MouseX - Parent_->GetX() - GetX();
     y = MouseY - Parent_->GetY() - GetY();
 
-    if ( not (GetFlags() & C_BIT_ABSOLUTE))
+    if ( not (GetFlags() bitand C_BIT_ABSOLUTE))
     {
         x -= Parent_->ClientArea_[GetClient()].left;
         y -= Parent_->ClientArea_[GetClient()].top;

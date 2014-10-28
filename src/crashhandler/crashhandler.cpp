@@ -700,7 +700,7 @@ InternalGetStackTraceString(DWORD                dwOpts  ,
 #endif
 
         // Do the parameters?
-        if (GSTSO_PARAMS == (dwOpts & GSTSO_PARAMS))
+        if (GSTSO_PARAMS == (dwOpts bitand GSTSO_PARAMS))
         {
             iCurr += wsprintf(g_szBuff + iCurr          ,
                               _T(" (0x%08X 0x%08X "\
@@ -711,7 +711,7 @@ InternalGetStackTraceString(DWORD                dwOpts  ,
                               g_stFrame.Params[ 3 ]) ;
         }
 
-        if (GSTSO_MODULE == (dwOpts & GSTSO_MODULE))
+        if (GSTSO_MODULE == (dwOpts bitand GSTSO_MODULE))
         {
             iCurr += wsprintf(g_szBuff + iCurr  , _T(" ")) ;
 
@@ -737,7 +737,7 @@ InternalGetStackTraceString(DWORD                dwOpts  ,
         ASSERT(iCurr < BUFF_SIZE) ;
         DWORD dwDisp ;
 
-        if (GSTSO_SYMBOL == (dwOpts & GSTSO_SYMBOL))
+        if (GSTSO_SYMBOL == (dwOpts bitand GSTSO_SYMBOL))
         {
 
             // Start looking up the exception address.
@@ -796,7 +796,7 @@ InternalGetStackTraceString(DWORD                dwOpts  ,
 
         }
 
-        if (GSTSO_SRCLINE == (dwOpts & GSTSO_SRCLINE))
+        if (GSTSO_SRCLINE == (dwOpts bitand GSTSO_SRCLINE))
         {
             ZeroMemory(&g_stLine , sizeof(IMAGEHLP_LINE)) ;
             g_stLine.SizeOfStruct = sizeof(IMAGEHLP_LINE) ;

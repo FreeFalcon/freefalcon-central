@@ -2457,7 +2457,7 @@ void OTWDriverClass::VCock_Exec(void)
         // RWR Launch warning light
         if (theRwr)
         {
-            if (theRwr->LaunchIndication() and (vuxRealTime & 0x200))
+            if (theRwr->LaunchIndication() and (vuxRealTime bitand 0x200))
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_LAUNCH, 1);
             else
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_LAUNCH, 0);
@@ -3522,7 +3522,7 @@ void OTWDriverClass::VCock_Exec(void)
     // 2001-01-31 ADDED BY S.G. SO HMS EQUIPPED PLANE HAS TWO GREEN CONCENTRIC CIRCLE IN PADLOCK VIEW
     VehicleClassDataType *vc = (VehicleClassDataType *)Falcon4ClassTable[otwPlatform->Type() - VU_LAST_ENTITY_TYPE].dataPtr;
 
-    if (vc and vc->Flags & 0x20000000)
+    if (vc and vc->Flags bitand 0x20000000)
     {
         MissileClass* theMissile;
         theMissile = (MissileClass*)(SimDriver.GetPlayerAircraft()->Sms->GetCurrentWeapon());
@@ -3534,7 +3534,7 @@ void OTWDriverClass::VCock_Exec(void)
             {
                 theMissile->RunSeeker();
 
-                if ( not theMissile->targetPtr or vuxRealTime & 0x100)  // JB 010712 Flash when we have a target locked up
+                if ( not theMissile->targetPtr or vuxRealTime bitand 0x100)  // JB 010712 Flash when we have a target locked up
                 {
                     float xDiff, left, right, top, bottom;
 

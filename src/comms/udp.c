@@ -562,7 +562,7 @@ int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
 
     if (actual->BroadcastModeOn not_eq cudp->NeedBroadcastMode)
     {
-        CAPI_setsockopt(cudp->send_sock, SOL_SOCKET, SO_BROADCAST, (char *) & (cudp->NeedBroadcastMode), sizeof(int));
+        CAPI_setsockopt(cudp->send_sock, SOL_SOCKET, SO_BROADCAST, (char *) bitand (cudp->NeedBroadcastMode), sizeof(int));
         actual->BroadcastModeOn = cudp->NeedBroadcastMode;
     }
 
@@ -935,10 +935,10 @@ int ComIPHostIDGet(com_API_handle c, char *buf, int reset)
 
     if (force_ip_address)
     {
-        buf[3] = (char)(force_ip_address & 0xff);
-        buf[2] = (char)((force_ip_address >> 8)  & 0xff);
-        buf[1] = (char)((force_ip_address >> 16) & 0xff);
-        buf[0] = (char)((force_ip_address >> 24) & 0xff);
+        buf[3] = (char)(force_ip_address bitand 0xff);
+        buf[2] = (char)((force_ip_address >> 8)  bitand 0xff);
+        buf[1] = (char)((force_ip_address >> 16) bitand 0xff);
+        buf[0] = (char)((force_ip_address >> 24) bitand 0xff);
         return 0;
     }
 

@@ -44,7 +44,7 @@ extern "C" {
     //  DVINFO structure below.
 #define CLIENT_BLOCK_VALUE(x) (_CLIENT_BLOCK|(x<<16))
     // A macro to pick out the subtype.
-#define CLIENT_BLOCK_SUBTYPE(x) ((x >> 16) & 0xFFFF)
+#define CLIENT_BLOCK_SUBTYPE(x) ((x >> 16) bitand 0xFFFF)
 
     ////////////////////////////////////////////////////////////////////////
     // The header used to initialize the dumper and validator for a specific

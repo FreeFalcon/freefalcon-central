@@ -33,7 +33,7 @@ public:
     void SetEvent(int status);
     int HasFired(void)
     {
-        return flags & CE_FIRED;
+        return flags bitand CE_FIRED;
     }
 };
 
@@ -77,8 +77,8 @@ class EventClass {
  int CheckTrigger (Trigger* trig);
  int CheckTriggers (void);
  void DoEvent (void);
- void ClearEvent (void) { flags & compl CE_FIRED; }
- int HasFired (void) { return flags & CE_FIRED; }
+ void ClearEvent (void) { flags bitand compl CE_FIRED; }
+ int HasFired (void) { return flags bitand CE_FIRED; }
  };
 */
 

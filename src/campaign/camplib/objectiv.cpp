@@ -638,7 +638,7 @@ void ObjectiveClass::SendDeaggregateData(VuTargetEntity *target)
             {
                 fc = GetFeatureClassData(classID);
 
-                if ( not fc or fc->Flags & FEAT_VIRTUAL)
+                if ( not fc or fc->Flags bitand FEAT_VIRTUAL)
                 {
                     // Gotta notify the remote machine that this is virtual.
                     value = 255;
@@ -740,7 +740,7 @@ int ObjectiveClass::Deaggregate(FalconSessionEntity *session)
         {
             fc = GetFeatureClassData(classID);
 
-            if ( not fc or fc->Flags & FEAT_VIRTUAL)
+            if ( not fc or fc->Flags bitand FEAT_VIRTUAL)
             {
                 // or fc->Priority > PlayerOptions.BuildingDetailLevel())
                 continue;
@@ -822,7 +822,7 @@ int ObjectiveClass::RecordCurrentState(FalconSessionEntity *session, int)
 
             if (GetFeatureID(f) == feature->Type() - VU_LAST_ENTITY_TYPE)
             {
-                SetFeatureStatus(f, ((SimBaseClass*)feature)->Status() & VIS_TYPE_MASK);
+                SetFeatureStatus(f, ((SimBaseClass*)feature)->Status() bitand VIS_TYPE_MASK);
             }
 
             if (session)
@@ -1320,7 +1320,7 @@ int ObjectiveClass::ApplyDamage(FalconCampWeaponsFire *cwfm, uchar bonusToHit)
         // end removed
 
         // HARMs will snap to current radar feature, if we're emitting
-        if ((WeaponDataTable[cwfm->dataBlock.weapon[i]].GuidanceFlags & WEAP_ANTIRADATION) and IsEmitting())
+        if ((WeaponDataTable[cwfm->dataBlock.weapon[i]].GuidanceFlags bitand WEAP_ANTIRADATION) and IsEmitting())
             cwfm->dataBlock.dPilotId = static_data.class_data->RadarFeature;
 
         // Tally the losses
@@ -1414,7 +1414,7 @@ int ObjectiveClass::ApplyDamage(DamType d, int *str, int f, short flags)
             hp = fc->HitPoints * 100 / fc->DamageMod[d];
 
             // Check if high explosive damage will do more
-            if ((flags & WEAP_AREA) and fc->DamageMod[HighExplosiveDam] > fc->DamageMod[d])
+            if ((flags bitand WEAP_AREA) and fc->DamageMod[HighExplosiveDam] > fc->DamageMod[d])
                 hp = fc->HitPoints * 100 / fc->DamageMod[HighExplosiveDam];
 
             s = GetFeatureStatus(f);
@@ -1448,7 +1448,7 @@ int ObjectiveClass::ApplyDamage(DamType d, int *str, int f, short flags)
                 lost++;
             }
 
-            if ( not (flags & WEAP_AREA)) // Not area effect weapon, only get one kill per shot
+            if ( not (flags bitand WEAP_AREA)) // Not area effect weapon, only get one kill per shot
                 *str = 0;
             else if (*str > MINIMUM_STRENGTH * 2) // Otherwise halve our strength and keep applying damage
                 *str /= 2; // NOTE: This doesn't guarentee nearest adjacent feature
@@ -1761,7 +1761,7 @@ int ObjectiveClass::CanDetect(FalconEntity* ent)
         {
             UnitClassDataType *uc = ((Flight)ent)->GetUnitClassData();
 
-            if (uc->Flags & VEH_STEALTH)
+            if (uc->Flags bitand VEH_STEALTH)
             {
                 // 2001-04-29 MODIFIED BY S.G. IF IT'S A STEALTH AND IT GOT HERE, IT WASN'T DETECTED VISUALLY SO ABORT RIGHT NOW
                 // dx *= 2.0F;
@@ -1864,7 +1864,7 @@ int ObjectiveClass::SiteCanDetect(FalconEntity* ent)
     {
         UnitClassDataType *uc = ((Flight)ent)->GetUnitClassData();
 
-        if (uc->Flags & VEH_STEALTH)
+        if (uc->Flags bitand VEH_STEALTH)
         {
             dx *= 2.0F;
             dy *= 2.0F;
@@ -2314,15 +2314,15 @@ void ObjectiveClass::SetFeatureStatus(int f, int n)
     // Check for critical links and set those features accordingly. NOTE: repair accross critical links too..
     if (n == VIS_DESTROYED or n == VIS_REPAIRED)
     {
-        if (FeatureEntryDataTable[static_data.class_data->FirstFeature + f].Flags & FEAT_PREV_CRIT)
+        if (FeatureEntryDataTable[static_data.class_data->FirstFeature + f].Flags bitand FEAT_PREV_CRIT)
             SetFeatureStatus(f - 1, n, f);
 
-        if (FeatureEntryDataTable[static_data.class_data->FirstFeature + f].Flags & FEAT_NEXT_CRIT)
+        if (FeatureEntryDataTable[static_data.class_data->FirstFeature + f].Flags bitand FEAT_NEXT_CRIT)
             SetFeatureStatus(f + 1, n, f);
     }
 
     f -= i * 4;
-    obj_data.fstatus[i] = (uchar)((obj_data.fstatus[i] & compl (3 << (f * 2))) | (n << (f * 2)));
+    obj_data.fstatus[i] = (uchar)((obj_data.fstatus[i] bitand compl (3 << (f * 2))) | (n << (f * 2)));
     //MakeObjectiveDirty (DIRTY_STATUS, DDP[9].priority);
     MakeObjectiveDirty(DIRTY_STATUS, SEND_NOW);
     SetDelta(1);
@@ -2340,15 +2340,15 @@ void ObjectiveClass::SetFeatureStatus(int f, int n, int from)
     // Check for critical links and set those features accordingly.
     if (n == VIS_DESTROYED or n == VIS_REPAIRED)
     {
-        if (from not_eq f - 1 and (FeatureEntryDataTable[static_data.class_data->FirstFeature + f].Flags & FEAT_PREV_CRIT))
+        if (from not_eq f - 1 and (FeatureEntryDataTable[static_data.class_data->FirstFeature + f].Flags bitand FEAT_PREV_CRIT))
             SetFeatureStatus(f - 1, n, f);
 
-        if (from not_eq f + 1 and (FeatureEntryDataTable[static_data.class_data->FirstFeature + f].Flags & FEAT_NEXT_CRIT))
+        if (from not_eq f + 1 and (FeatureEntryDataTable[static_data.class_data->FirstFeature + f].Flags bitand FEAT_NEXT_CRIT))
             SetFeatureStatus(f + 1, n, f);
     }
 
     f -= i * 4;
-    obj_data.fstatus[i] = (uchar)((obj_data.fstatus[i] & compl (3 << (f * 2))) | (n << (f * 2)));
+    obj_data.fstatus[i] = (uchar)((obj_data.fstatus[i] bitand compl (3 << (f * 2))) | (n << (f * 2)));
     ResetObjectiveStatus();
     SetDelta(1);
 }
@@ -2390,7 +2390,7 @@ int ObjectiveClass::GetFeatureStatus(int f)
     if ( not obj_data.fstatus)
         return 0;
 
-    return (obj_data.fstatus[i] >> (f * 2)) & 0x03;
+    return (obj_data.fstatus[i] >> (f * 2)) bitand 0x03;
 }
 
 int ObjectiveClass::GetFeatureValue(int f)
@@ -3178,13 +3178,13 @@ void AddChildObjectives(Objective o, Objective p, F4PFList list, int maxdist, in
         if ( not n or (CampSearch[n->GetCampID()] and n->GetObjectiveScore() <= level + 1))
             continue;
 
-        if (flags & FIND_THISOBJONLY and n->GetObjectiveParentID() not_eq p->Id())
+        if (flags bitand FIND_THISOBJONLY and n->GetObjectiveParentID() not_eq p->Id())
             continue;
 
-        if (flags & FIND_STANDARDONLY and n->IsSecondary())
+        if (flags bitand FIND_STANDARDONLY and n->IsSecondary())
             continue;
 
-        if (flags & FIND_FINDFRIENDLY and !GetRoE(o->GetTeam(), n->GetTeam(), ROE_GROUND_MOVE))
+        if (flags bitand FIND_FINDFRIENDLY and !GetRoE(o->GetTeam(), n->GetTeam(), ROE_GROUND_MOVE))
             continue;
 
         AddChildObjectives(n, p, list, maxdist - 1, level + 1, flags);
@@ -3535,7 +3535,7 @@ void ObjectiveClass::WriteDirty(unsigned char **stream)
     *ptr = (unsigned char) dirty_objective;
     ptr += sizeof(unsigned char);
 
-    if (dirty_objective & DIRTY_STATUS)
+    if (dirty_objective bitand DIRTY_STATUS)
     {
         *(uchar*)ptr = obj_data.status;
         ptr += sizeof(uchar);
@@ -3572,7 +3572,7 @@ void ObjectiveClass::ReadDirty(VU_BYTE **stream, long *rem)
     //get bitfield
     memcpychk(&bits, stream, sizeof(VU_BYTE), rem);
 
-    if (bits & DIRTY_STATUS)
+    if (bits bitand DIRTY_STATUS)
     {
         memcpychk(&obj_data.status, stream, sizeof(unsigned char), rem);
 

@@ -185,7 +185,7 @@ BOOL C_PopupMgr::OpenWindowMenu(C_Window *win, long x, long y)
         {
             if ((x - win->GetX()) >= win->ClientArea_[i].left and (y - win->GetY()) >= win->ClientArea_[i].top  and 
                 (x - win->GetX()) < win->ClientArea_[i].right and (y - win->GetY()) < win->ClientArea_[i].bottom  and 
-                win->GetClientMenu(i) and (win->GetClientFlags(i) & C_BIT_ENABLED))
+                win->GetClientMenu(i) and (win->GetClientFlags(i) bitand C_BIT_ENABLED))
             {
                 cur = Root_;
 

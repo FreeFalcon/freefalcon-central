@@ -305,7 +305,7 @@ void FireControlComputer::NavMode(void)
         }
 
         //MI send our OA's to the HUD
-        if (g_bRealisticAvionics and platform->curWaypoint and platform->curWaypoint->GetWPFlags() & WPF_TARGET)
+        if (g_bRealisticAvionics and platform->curWaypoint and platform->curWaypoint->GetWPFlags() bitand WPF_TARGET)
         {
             WayPointClass* curOA = NULL;
             WayPointClass* curVIP = NULL;
@@ -1315,7 +1315,7 @@ void FireControlComputer::DrawDESTOAPoints(void)
         if (curWaypoint)
         {
             //only do this is this is our target
-            if (platform->curWaypoint->GetWPFlags() & WPF_TARGET)
+            if (platform->curWaypoint->GetWPFlags() bitand WPF_TARGET)
             {
                 MapWaypointToDisplay(curWaypoint, &displayX, &displayY);
 
@@ -1346,7 +1346,7 @@ void FireControlComputer::DrawVIPOAPoints(void)
         if (curWaypoint)
         {
             //only do this is this is our target
-            if (platform->curWaypoint->GetWPFlags() & WPF_TARGET)
+            if (platform->curWaypoint->GetWPFlags() bitand WPF_TARGET)
             {
                 MapWaypointToDisplay(curWaypoint, &displayX, &displayY);
 
@@ -1377,7 +1377,7 @@ void FireControlComputer::DrawVRPOAPoints(void)
         if (curWaypoint)
         {
             //only do this is this is our target
-            if (platform->curWaypoint->GetWPFlags() & WPF_TARGET)
+            if (platform->curWaypoint->GetWPFlags() bitand WPF_TARGET)
             {
                 MapWaypointToDisplay(curWaypoint, &displayX, &displayY);
 
@@ -1445,7 +1445,7 @@ void FireControlComputer::MapWaypointToDisplay(WayPointClass* pwaypoint, float* 
 
 void FireControlComputer::DrawPointPair(WayPointClass* curWaypoint, float x2, float y2, float displayX, float displayY)
 {
-    if ( not (curWaypoint->GetWPFlags() & WPF_ALTERNATE))
+    if ( not (curWaypoint->GetWPFlags() bitand WPF_ALTERNATE))
         display->Line(x2, y2, displayX, displayY);
 
     DrawPointSymbol(curWaypoint, displayX, displayY);
@@ -1474,16 +1474,16 @@ void FireControlComputer::DrawPointSymbol(WayPointClass* curWaypoint, float disp
     else
         theWaypt = ((SimVehicleClass*)platform)->curWaypoint;
 
-    if ((curWaypoint not_eq theWaypt) or (vuxRealTime & 0x200))
+    if ((curWaypoint not_eq theWaypt) or (vuxRealTime bitand 0x200))
     {
 
         wpFlags = curWaypoint->GetWPFlags();
 
-        if (wpFlags & WPF_TARGET)
+        if (wpFlags bitand WPF_TARGET)
         {
             DrawTGTSymbol(displayX, displayY);
         }
-        else if (wpFlags & WPF_IP)
+        else if (wpFlags bitand WPF_IP)
         {
             DrawIPSymbol(displayX, displayY);
         }

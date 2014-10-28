@@ -37,7 +37,7 @@ extern int gGameType;
 
 using namespace std;
 
-// constructors & destructor
+// constructors bitand destructor
 FalconSessionEntity::FalconSessionEntity(ulong domainMask, char *callsign) : VuSessionEntity(domainMask, callsign)
 {
     //name = new _TCHAR[_NAME_LEN_];
@@ -877,7 +877,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
 
     // MonoPrint("Got info for session: %s - team %d - #%d\n", name, country, reqCompression);
 
-    if (gUICommsQ and (dirty & 0x00ff) and Game())
+    if (gUICommsQ and (dirty bitand 0x00ff) and Game())
     {
         gUICommsQ->Add(_Q_SESSION_UPDATE_, Id(), Game()->Id());
         UI_Refresh();

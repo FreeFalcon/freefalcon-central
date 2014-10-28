@@ -190,11 +190,11 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
 
         if (
             (retval == 0) and sq  and 
-            (msg->Flags() & VU_SEND_FAILED_MSG_FLAG)  and 
-            ((msg->Flags() & VU_RELIABLE_MSG_FLAG) or (msg->Flags() & VU_KEEPALIVE_MSG_FLAG))
+            (msg->Flags() bitand VU_SEND_FAILED_MSG_FLAG)  and 
+            ((msg->Flags() bitand VU_RELIABLE_MSG_FLAG) or (msg->Flags() bitand VU_KEEPALIVE_MSG_FLAG))
         )
         {
-            //if (msg->Flags() & VU_NORMAL_PRIORITY_MSG_FLAG){
+            //if (msg->Flags() bitand VU_NORMAL_PRIORITY_MSG_FLAG){
             sq->AddMessage(msg);
             //}
             //else{
@@ -209,7 +209,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
     // if message is remote or is a local message loopback, place in local queues
     if (
         !msg->IsLocal() ||
-        ((msg->Flags() & VU_LOOPBACK_MSG_FLAG) and msg->IsLocal())
+        ((msg->Flags() bitand VU_LOOPBACK_MSG_FLAG) and msg->IsLocal())
     )
     {
         VuMessageQueue* cur = queuecollhead_;
@@ -229,7 +229,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
     // message not added to any queue, auto destroy
     if (
         (msg->refcnt_ == 1)  and 
-        ( not msg->IsLocal() or (msg->Flags() & VU_LOOPBACK_MSG_FLAG))
+        ( not msg->IsLocal() or (msg->Flags() bitand VU_LOOPBACK_MSG_FLAG))
     )
     {
         VuExitCriticalSection();

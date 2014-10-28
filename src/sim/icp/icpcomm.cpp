@@ -24,7 +24,7 @@ char *RadioStrings[8] =
 void ICPClass::ExecCOMMMode(void)
 {
 
-    if (mUpdateFlags & COMM_UPDATE)
+    if (mUpdateFlags bitand COMM_UPDATE)
     {
         mUpdateFlags and_eq !COMM_UPDATE;
 

@@ -1701,19 +1701,19 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
             side  or_eq  8;
         }
 
-        if ((side & 0x5) == 0x5)
+        if ((side bitand 0x5) == 0x5)
         {
             NFX = md->FX;
             NLX = md->LX;
         }
 
-        if ((side & 0xa) == 0xa)
+        if ((side bitand 0xa) == 0xa)
         {
             NFY = md->FY;
             NLY = md->LY;
         }
 
-        if ((side & 0xC) == 0xC or (side & 0x3) == 0x3)
+        if ((side bitand 0xC) == 0xC or (side bitand 0x3) == 0x3)
         {
             NFX = md->FX;
             NFY = md->FY;
@@ -3245,7 +3245,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             //if(isalpha(C) and shifted)
             //C += 0x20;
 
-            if (isalpha(C) and !(GetKeyState(VK_SHIFT) & 0x80))
+            if (isalpha(C) and !(GetKeyState(VK_SHIFT) bitand 0x80))
                 C += 0x20;
 
             ProcessCommand(C);

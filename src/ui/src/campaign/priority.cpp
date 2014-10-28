@@ -295,7 +295,7 @@ void LoadTargetPriorities()
         }
 
         // CCC  to be changed to Power plant and refinery
-        // Cobra - 2/06 JG - Moved CCC to radar and moved Power plant & refinery here
+        // Cobra - 2/06 JG - Moved CCC to radar and moved Power plant bitand refinery here
         sldr = (C_Slider*)win->FindControl(TARGET_6);
 
         if (sldr)
@@ -510,7 +510,7 @@ void LoadMissionPriorities()
         }
 
         // Recon   to become Escort
-        // Cobra - 2/06 JG - Moved  AMIS_ESCORT & AMIS_SEADESCORT to Recon and changed to Recon to Escort
+        // Cobra - 2/06 JG - Moved  AMIS_ESCORT bitand AMIS_SEADESCORT to Recon and changed to Recon to Escort
         sldr = (C_Slider*)win->FindControl(MISSION_8);
 
         if (sldr)
@@ -564,7 +564,7 @@ void LoadPAKPriorities()
 
             Pal[idx] = PAKPalette[PAKPriorities[idx][teamid][0]];
 
-            if (CampControl and POD->flags & GTMOBJ_PLAYER_SET_PRIORITY)
+            if (CampControl and POD->flags bitand GTMOBJ_PLAYER_SET_PRIORITY)
                 CampControl = 0;
         }
 
@@ -647,7 +647,7 @@ void LoadDefaultTargetPriorities()
         }
 
         // CCC  to be changed to Power plant and refinery
-        // Cobra - 2/06 JG - Moved CCC to radar and moved Power plant & refinery here
+        // Cobra - 2/06 JG - Moved CCC to radar and moved Power plant bitand refinery here
         sldr = (C_Slider*)win->FindControl(TARGET_6);
 
         if (sldr)
@@ -864,7 +864,7 @@ void LoadDefaultMissionPriorities()
         }
 
         // Recon   to become Escort
-        // Cobra - 2/06 JG - Moved  AMIS_ESCORT & AMIS_SEADESCORT to Recon and changed to Recon to Escort
+        // Cobra - 2/06 JG - Moved  AMIS_ESCORT bitand AMIS_SEADESCORT to Recon and changed to Recon to Escort
         sldr = (C_Slider*)win->FindControl(MISSION_8);
 
         if (sldr)
@@ -978,7 +978,7 @@ void SaveTargetPriorities()
         }
 
         // CCC  to be changed to Power plant and refinery
-        // Cobra - 2/06 JG - Moved CCC to radar and moved Power plant & refinery here
+        // Cobra - 2/06 JG - Moved CCC to radar and moved Power plant bitand refinery here
         sldr = (C_Slider*)win->FindControl(TARGET_6);
 
         if (sldr)
@@ -1178,7 +1178,7 @@ void SaveMissionPriorities()
         }
 
         // Recon   to become Escort
-        // Cobra - 2/06 JG - Moved  AMIS_ESCORT & AMIS_SEADESCORT to Recon and changed to Recon to Escort
+        // Cobra - 2/06 JG - Moved  AMIS_ESCORT bitand AMIS_SEADESCORT to Recon and changed to Recon to Escort
         sldr = (C_Slider*)win->FindControl(MISSION_8);
 
         if (sldr)
@@ -1493,7 +1493,7 @@ BOOL PAKMapTimerCB(C_Base *me)
 
     if (CurrentPAK)
     {
-        me->SetUserNumber(0, (me->GetUserNumber(0) + 1) & 0x03);
+        me->SetUserNumber(0, (me->GetUserNumber(0) + 1) bitand 0x03);
 
         if ( not me->GetUserNumber(0))
         {

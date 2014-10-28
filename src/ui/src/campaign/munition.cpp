@@ -370,7 +370,7 @@ BOOL GetJRackAndWeapon(VehicleClassDataType* vc, Falcon4EntityClassType *classPt
     if ( not vc or !classPtr or !weapClassPtr)
         return(FALSE);
 
-    if ( not (vc->VisibleFlags & bitflag))
+    if ( not (vc->VisibleFlags bitand bitflag))
         return(FALSE);
 
     /*
@@ -387,7 +387,7 @@ BOOL GetJRackAndWeapon(VehicleClassDataType* vc, Falcon4EntityClassType *classPt
 
     // Use a rack
     /*
-    if((vc->RackFlags & bitflag) or (WeaponDataTable[WeaponIndex].Flags & WEAP_ALWAYSRACK))
+    if((vc->RackFlags bitand bitflag) or (WeaponDataTable[WeaponIndex].Flags bitand WEAP_ALWAYSRACK))
     {
         if(rackClassPtr->visType[0])
         {
@@ -543,7 +543,7 @@ BOOL GetRackAndWeapon(VehicleClassDataType* vc, short VehID, short WeaponIndex, 
     if ( not vc or !classPtr or !weapClassPtr)
         return(FALSE);
 
-    if ( not (vc->VisibleFlags & bitflag))
+    if ( not (vc->VisibleFlags bitand bitflag))
         return(FALSE);
 
     if (hardpoint < center)
@@ -577,7 +577,7 @@ BOOL GetRackAndWeapon(VehicleClassDataType* vc, short VehID, short WeaponIndex, 
         RackList = ACRacks;
     }
 
-    if (vc->RackFlags & bitflag) // Use a rack
+    if (vc->RackFlags bitand bitflag) // Use a rack
     {
         if (RackList[count].RackID[side])
         {
@@ -648,7 +648,7 @@ void ClearHardPoint(long plane, long hardpoint, long, RailInfo *rail)
      i=0;
      while(bits)
      {
-     if(bits & 1)
+     if(bits bitand 1)
      {
      Weapon=gUIViewer->Find((plane << 24) + (hardpoint << 16) + (i+1));
      if(Weapon)
@@ -838,7 +838,7 @@ void LoadHardPoint(long plane, long num, long center)
 
     if (Plane == NULL) return;
 
-    if ( not (VisFlag & (1 << num))) return;
+    if ( not (VisFlag bitand (1 << num))) return;
 
     Rack = gUIViewer->Find((plane << 24) + (num << 16));
 
@@ -881,7 +881,7 @@ void LoadHardPoint(long plane, long num, long center)
         Rack = NULL;
     }
 
-    if (RackFlag & (1 << num))
+    if (RackFlag bitand (1 << num))
     {
         if (gCurStores[plane].WeaponCount[num] == 1)
             Rack = gUIViewer->LoadBSP((plane << 24) + (num << 16), VIS_SINGLE_RACK);
@@ -1217,7 +1217,7 @@ BOOL MuniTimeCB(C_Base *control)
             }
 
             // check flight time till launch
-            if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+            if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
             {
                 takeoff = 1;
             }
@@ -1232,7 +1232,7 @@ BOOL MuniTimeCB(C_Base *control)
             // GetTimeString(takeoff,buf);
             // txt->Refresh();
             // txt->SetText(buf);
-            if ((takeoff / VU_TICS_PER_SECOND) > g_nLoadoutTimeLimit or (TheCampaign.Flags & CAMP_TACTICAL_EDIT)) // JB 010729
+            if ((takeoff / VU_TICS_PER_SECOND) > g_nLoadoutTimeLimit or (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)) // JB 010729
             {
                 txt->Refresh();
 
@@ -1360,7 +1360,7 @@ void DetermineWeight(VU_ID FlightID)
             // MLR 3/1/2004 - eeheeheehee
             for (j = 1; j < HardPoints; j++)
             {
-                // Add up pylon weight & drag
+                // Add up pylon weight bitand drag
                 int pylonid = gCurRails[i].rail[j].hardPoint.GetPylonId();
 
                 if (pylonid and gCurRails[i].rail[j].weaponCount)
@@ -1375,13 +1375,13 @@ void DetermineWeight(VU_ID FlightID)
                         {
                             _MUNITIONS_WEIGHT_[i] += (wc->Weight);
 
-                            if (vc->VisibleFlags & (1 << j)) // only do drag if it's visible
+                            if (vc->VisibleFlags bitand (1 << j)) // only do drag if it's visible
                                 _DRAG_FACTOR_[i] += wc->DragIndex;
                         }
                     }
                 }
 
-                // Add rack weight & drag
+                // Add rack weight bitand drag
                 int rackid = gCurRails[i].rail[j].hardPoint.GetRackId();
 
                 if (rackid and gCurRails[i].rail[j].weaponCount)
@@ -1396,13 +1396,13 @@ void DetermineWeight(VU_ID FlightID)
                         {
                             _MUNITIONS_WEIGHT_[i] += (wc->Weight);
 
-                            if (vc->VisibleFlags & (1 << j)) // only do drag if it's visible
+                            if (vc->VisibleFlags bitand (1 << j)) // only do drag if it's visible
                                 _DRAG_FACTOR_[i] += wc->DragIndex;
                         }
                     }
                 }
 
-                // Add weapon(s) weight & drag
+                // Add weapon(s) weight bitand drag
                 int weapid = gCurRails[i].rail[j].hardPoint.weaponId;
 
                 if (weapid and gCurRails[i].rail[j].weaponCount)
@@ -1418,7 +1418,7 @@ void DetermineWeight(VU_ID FlightID)
 
                             _MUNITIONS_WEIGHT_[i] += wc->Weight * gCurRails[i].rail[j].weaponCount;
 
-                            if (vc->VisibleFlags & (1 << j)) // only do drag if it's visible
+                            if (vc->VisibleFlags bitand (1 << j)) // only do drag if it's visible
                                 _DRAG_FACTOR_[i] += wc->DragIndex * gCurRails[i].rail[j].weaponCount;
                         }
                     }
@@ -1469,7 +1469,7 @@ void DetermineWeight(VU_ID FlightID)
 
                     while (bitflag)
                     {
-                        if (bitflag & 1)
+                        if (bitflag bitand 1)
                             count++;
 
                         bitflag >>= 1;
@@ -1493,7 +1493,7 @@ void DetermineWeight(VU_ID FlightID)
             // Add up internal stores weights
             for (j = 1; j < HardPoints; j++)
             {
-                if ( not (vc->VisibleFlags & (1 << j)) and gCurStores[i].WeaponID[j])
+                if ( not (vc->VisibleFlags bitand (1 << j)) and gCurStores[i].WeaponID[j])
                 {
                     store = NULL;
                     ShiAssert(gStores);
@@ -1620,7 +1620,7 @@ void SetupMunitionsWindow(VU_ID FlightID)
     {
         txt->SetTimerCallback(MuniTimeCB);
 
-        if (( not (TheCampaign.Flags & CAMP_TACTICAL_EDIT)) and ( not (TheCampaign.Flags & CAMP_LIGHT)))
+        if (( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)) and ( not (TheCampaign.Flags bitand CAMP_LIGHT)))
         {
             status = GetFlightStatusID(flt);
 
@@ -1787,10 +1787,10 @@ void UpdateStoresTally(C_Window *win)
     while (cur)
     {
         // Update Inventory Numbers (Out -> High)
-        if ((cur->Control_->GetID() & 0xff000000) == (1 << 25))
+        if ((cur->Control_->GetID() bitand 0xff000000) == (1 << 25))
         {
             cur->Control_->Refresh();
-            avail = TotalAvailable(static_cast<short>(cur->Control_->GetID() & 0x0000ffff));
+            avail = TotalAvailable(static_cast<short>(cur->Control_->GetID() bitand 0x0000ffff));
 
             if ( not avail)
             {
@@ -1819,7 +1819,7 @@ void UpdateStoresTally(C_Window *win)
         }
 
         // Update Onboard Count
-        if ((cur->Control_->GetID() & 0x0f000000) == (1 << 24))
+        if ((cur->Control_->GetID() bitand 0x0f000000) == (1 << 24))
         {
             cur->Control_->Refresh();
             _tcscpy(buf, " ");
@@ -1829,7 +1829,7 @@ void UpdateStoresTally(C_Window *win)
 
             for (i = 0; i < QuantityCount[FirstPlane]; i++)
             {
-                if (Quantity[FirstPlane][0][i] == (cur->Control_->GetID() & 0x00ffffff))
+                if (Quantity[FirstPlane][0][i] == (cur->Control_->GetID() bitand 0x00ffffff))
                 {
                     wid = i;
                     break;
@@ -1923,7 +1923,7 @@ void InternalArmPlaneCB(long ID, short hittype, C_Base *control)
         return;
 
     hp = ID >> 16;
-    weaponID = ID & 0x0000ffff;
+    weaponID = ID bitand 0x0000ffff;
     store = NULL;
     ShiAssert(gStores);
 
@@ -2015,7 +2015,7 @@ void ArmPlaneCB(long ID, short hittype, C_Base *control)
         return;
 
     hp = ID >> 16;
-    weaponID = ID & 0x0000ffff;
+    weaponID = ID bitand 0x0000ffff;
     store = NULL;
     ShiAssert(gStores);
 
@@ -2216,7 +2216,7 @@ void SetupLoadoutDisplay()
 
                         if (wpn == NULL)
                         {
-                            if (TheCampaign.Flags & CAMP_TACTICAL)
+                            if (TheCampaign.Flags bitand CAMP_TACTICAL)
                                 avail = 2000;
                             else
                             {
@@ -2312,7 +2312,7 @@ void SetupLoadoutDisplay()
 
                 if (wpn == NULL)
                 {
-                    if (TheCampaign.Flags & CAMP_TACTICAL)
+                    if (TheCampaign.Flags bitand CAMP_TACTICAL)
                         avail = 2000;
                     else
                     {
@@ -2453,14 +2453,14 @@ void MakeStoresList(C_Window *win, long client)
         GetType = StoresList::_ALL_;
 
     y = 1;
-    x = 174 + 240 - (HardPoints / 2) * 30 + 15 * ((HardPoints - 1) & 1);
+    x = 174 + 240 - (HardPoints / 2) * 30 + 15 * ((HardPoints - 1) bitand 1);
 
     // store's column headings
     hpnum = 1;
 
     for (i = HardPoints - 1; i > 0; i--)
     {
-        if (VisFlag & (1 << (HardPoints - i)))
+        if (VisFlag bitand (1 << (HardPoints - i)))
             _stprintf(buf, "%1d", hpnum++);
         else
         {
@@ -2587,7 +2587,7 @@ void MakeStoresList(C_Window *win, long client)
                     btn->SetUserNumber(1, cur->HardPoint[i]);
                     btn->SetUserNumber(2, 1);
 
-                    if ( not (VisFlag & (1 << (i)))) // Internal stores
+                    if ( not (VisFlag bitand (1 << (i)))) // Internal stores
                     {
                         btn->SetBackImage(INT_EMPTY);
                         btn->SetImage(C_STATE_0, INT_EMPTY);
@@ -2649,7 +2649,7 @@ void MakeStoresList(C_Window *win, long client)
                                             btn->SetImage(C_STATE_5, LAU2L_DIFF);
                                             btn->SetImage(C_STATE_DISABLED, LAU2L_DIS);
                                         }
-                                        else if (i == (HardPoints / 2) and !(HardPoints & 1))
+                                        else if (i == (HardPoints / 2) and !(HardPoints bitand 1))
                                         {
                                             btn->SetBackImage(LAU2C_EMPTY);
                                             btn->SetImage(C_STATE_0, LAU2C_EMPTY);
@@ -2713,7 +2713,7 @@ void MakeStoresList(C_Window *win, long client)
                                             btn->SetImage(C_STATE_4, LAU2L_FULL);
                                             btn->SetImage(C_STATE_5, LAU2L_DIFF);
                                         }
-                                        else if (i == (HardPoints / 2) and !(HardPoints & 1))
+                                        else if (i == (HardPoints / 2) and !(HardPoints bitand 1))
                                         {
                                             btn->SetImage(C_STATE_4, LAU2C_FULL);
                                             btn->SetImage(C_STATE_5, LAU2C_DIFF);
@@ -2841,7 +2841,7 @@ void MakeStoresList(C_Window *win, long client)
                     btn->SetFont(win->Font_);
                     btn->SetGroup(i);
 
-                    if ( not (VisFlag & (1 << (i)))) // Internal stores
+                    if ( not (VisFlag bitand (1 << (i)))) // Internal stores
                         btn->SetCallback(InternalArmPlaneCB);
                     else
                         btn->SetCallback(ArmPlaneCB);

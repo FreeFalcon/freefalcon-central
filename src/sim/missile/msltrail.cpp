@@ -74,7 +74,7 @@ void MissileClass::InitTrail(void)
     // 2002-03-28 MN if we need the engine to model "lift", don't display trails or engine glows...
     wc = (WeaponClassDataType*)classPtr->dataPtr;
 
-    if (wc and (wc->Flags & WEAP_NO_TRAIL))
+    if (wc and (wc->Flags bitand WEAP_NO_TRAIL))
         return;
 
     // 2002-03-28 MN externalised missile trail types

@@ -195,7 +195,7 @@ public:
     BOOL Process(long cID, short ButtonHitType);
     BOOL Dragable(long)
     {
-        return(GetFlags() & C_BIT_DRAGABLE);
+        return(GetFlags() bitand C_BIT_DRAGABLE);
     }
     void RecalcSize();
     void Refresh();

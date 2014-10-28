@@ -73,7 +73,7 @@ long C_DrawList::CheckHotSpots(long relX, long relY)
     long curidx;
     long x, y, w, h;
 
-    if (Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
+    if (Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return(0);
 
     Last_ = NULL;
@@ -82,7 +82,7 @@ long C_DrawList::CheckHotSpots(long relX, long relY)
 
     while (item)
     {
-        if ( not (item->Flags & C_BIT_INVISIBLE) and item->Flags & C_BIT_ENABLED)
+        if ( not (item->Flags bitand C_BIT_INVISIBLE) and item->Flags bitand C_BIT_ENABLED)
         {
             x = item->x + item->Icon->GetX();
             y = item->y + item->Icon->GetY();
@@ -121,21 +121,21 @@ void C_DrawList::Refresh()
     C_HASHNODE *me;
     long curidx;
 
-    if (Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
+    if (Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     item = (MAPICONLIST*)Root_->GetFirst(&me, &curidx);
 
     while (item)
     {
-        if ( not (item->Flags & C_BIT_INVISIBLE) and item->Flags & C_BIT_ENABLED)
+        if ( not (item->Flags bitand C_BIT_INVISIBLE) and item->Flags bitand C_BIT_ENABLED)
         {
             if (item->Icon)
             {
                 item->Owner->SetXY(item->x, item->y);
                 item->Icon->Refresh();
 
-                if ( not (GetFlags() & C_BIT_NOLABEL))
+                if ( not (GetFlags() bitand C_BIT_NOLABEL))
                 {
                     if (item->Div)
                         item->Div->Refresh();
@@ -162,21 +162,21 @@ void C_DrawList::Draw(SCREEN *surface, UI95_RECT *cliprect)
     C_HASHNODE *me;
     long curidx;
 
-    if (Flags_ & C_BIT_INVISIBLE or Parent_ == NULL)
+    if (Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     item = (MAPICONLIST*)Root_->GetFirst(&me, &curidx);
 
     while (item)
     {
-        if ( not (item->Flags & C_BIT_INVISIBLE) and item->Flags & C_BIT_ENABLED)
+        if ( not (item->Flags bitand C_BIT_INVISIBLE) and item->Flags bitand C_BIT_ENABLED)
         {
             if (item->Icon)
             {
                 item->Owner->SetXY(item->x, item->y);
                 item->Icon->Draw(surface, cliprect);
 
-                if ( not (GetFlags() & C_BIT_NOLABEL))
+                if ( not (GetFlags() bitand C_BIT_NOLABEL))
                 {
                     if (item->Div)
                         item->Div->Draw(surface, cliprect);

@@ -183,7 +183,7 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
                 ShiWarning("Unknown sim object initiater.\n");
         }
 
-        if (initData->createFlags & SIDC_REMOTE_OWNER)
+        if (initData->createFlags bitand SIDC_REMOTE_OWNER)
         {
             retval->ChangeOwner(initData->owner->Id());
         }
@@ -219,10 +219,10 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
         }
 
         /*
-        if (initData->createFlags & SIDC_SILENT_INSERT){
+        if (initData->createFlags bitand SIDC_SILENT_INSERT){
          vuDatabase->SilentInsert (retval);
         }
-        else if ( not (initData->createFlags & SIDC_NO_INSERT)){
+        else if ( not (initData->createFlags bitand SIDC_NO_INSERT)){
          vuDatabase->QuickInsert (retval);
         }*/
         // sfr: flags now take care of sending creation events

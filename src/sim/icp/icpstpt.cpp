@@ -141,7 +141,7 @@ void ICPClass::ExecSTPTMode()
         //MI Original code
         if (playerAC and playerAC->curWaypoint)  // and !playerAC->FCC->InTransistion()
         {
-            // and  mUpdateFlags & STPT_UPDATE and !((AircraftClass*)(mpOwnship))->FCC->waypointStepCmd) {
+            // and  mUpdateFlags bitand STPT_UPDATE and !((AircraftClass*)(mpOwnship))->FCC->waypointStepCmd) {
 
             // Clear the update flag
 
@@ -170,11 +170,11 @@ void ICPClass::ExecSTPTMode()
                 plannedSpeed = abs(FloatToInt32((Distance(xCurr, yCurr, xPrev, yPrev) / (arrive - depart) * FTPSEC_TO_KNOTS)));
             }
 
-            if (wpflags & WPF_TARGET)
+            if (wpflags bitand WPF_TARGET)
             {
                 type = Way_TGT;
             }
-            else if (wpflags & WPF_IP)
+            else if (wpflags bitand WPF_IP)
             {
                 type = Way_IP;
             }
@@ -221,7 +221,7 @@ void ICPClass::ExecSTPTMode()
 
             FormatTime(ETA, timeStr);
 
-            if ( not previous or  wpflags & WPF_ALTERNATE)
+            if ( not previous or  wpflags bitand WPF_ALTERNATE)
             {
                 sprintf(mpLine3, "", timeStr);
             }
@@ -239,7 +239,7 @@ void ICPClass::ExecSTPTMode()
         else if (frame == 9)
         {
 
-            if ( not previous or  wpflags & WPF_ALTERNATE)
+            if ( not previous or  wpflags bitand WPF_ALTERNATE)
             {
                 sprintf(mpLine3, "", timeStr);
             }

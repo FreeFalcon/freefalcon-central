@@ -188,7 +188,7 @@ public:
     };
     int GetStationFailed(StationFlags fl)
     {
-        return (StationsFailed & fl) == (unsigned int)fl ? 1 : 0;
+        return (StationsFailed bitand fl) == (unsigned int)fl ? 1 : 0;
     };
 
     /** status bits for the aircraft */
@@ -219,7 +219,7 @@ public:
     void ClearAcStatusBits(int bits);
     bool IsAcStatusBitsSet(int bits) const
     {
-        return (status_bits & bits) == bits;
+        return (status_bits bitand bits) == bits;
     }
 private:
     int status_bits;    ///< bitwise of DirtyAircraft
@@ -278,7 +278,7 @@ public:
     };
     int INSState(INSAlignFlags fl)
     {
-        return (INSFlags & fl) == (unsigned int)fl ? 1 : 0;
+        return (INSFlags bitand fl) == (unsigned int)fl ? 1 : 0;
     };
     void RunINS(void);
     void DoINSAlign(void);
@@ -340,7 +340,7 @@ public:
     };
     int AVTRState(AVTRStateFlags fl)
     {
-        return (AVTRFlags & fl) == (unsigned int)fl ? 1 : 0;
+        return (AVTRFlags bitand fl) == (unsigned int)fl ? 1 : 0;
     };
 
 
@@ -373,7 +373,7 @@ public:
     };
     int LEFState(LEFStateFlags fl)
     {
-        return (LEFFlags & fl) == (unsigned int)fl ? 1 : 0;
+        return (LEFFlags bitand fl) == (unsigned int)fl ? 1 : 0;
     };
     float CheckLEF(int side);
 
@@ -442,11 +442,11 @@ public:
     void           DropProgramed(void);
     int            IsF16(void)
     {
-        return (acFlags & isF16 ? TRUE : FALSE);
+        return (acFlags bitand isF16 ? TRUE : FALSE);
     }
     int            IsComplex(void)
     {
-        return ((acFlags & isComplex) ? TRUE : FALSE);
+        return ((acFlags bitand isComplex) ? TRUE : FALSE);
     }
     // 2000-11-17 ADDED BY S.G. SO AIRCRAFT CAN HAVE A ENGINE TEMPERATURE AS WELL AS 'POWER' (RPM) OUTPUT
     void SetPowerOutput(float powerOutput); //me123 changed back
@@ -579,7 +579,7 @@ public:
     unsigned int APFlag;
     int IsOn(APFlags flag)
     {
-        return APFlag & flag ? 1 : 0;
+        return APFlag bitand flag ? 1 : 0;
     };
     void SetAPFlag(APFlags flag)
     {
@@ -673,7 +673,7 @@ public:
     };
     int PowerSwitchOn(AvionicsPowerFlags fl)
     {
-        return (powerFlags & fl) ? TRUE : FALSE;
+        return (powerFlags bitand fl) ? TRUE : FALSE;
     };
 
     void PreFlight();  // JPO - do preflight checks.
@@ -708,7 +708,7 @@ public:
     unsigned int elecLights;
     bool ElecIsSet(ElectricLights lt)
     {
-        return (elecLights & lt) ? true : false;
+        return (elecLights bitand lt) ? true : false;
     };
     void ElecSet(ElectricLights lt)
     {

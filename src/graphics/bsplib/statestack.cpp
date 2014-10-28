@@ -262,7 +262,7 @@ void StateStackClass::SetCamera(const Ppoint *pos, const Pmatrix *rotWaspect, Pm
     if (g_bUse_DX_Engine)
     {
         //***************************************************************************************
-        // DX - RED - The camera & view axis has to be reverted
+        // DX - RED - The camera bitand view axis has to be reverted
         Pmatrix Temp;
         ZeroMemory(&Temp, sizeof(Temp));
         /*Temp.M31=-1.0;
@@ -347,13 +347,13 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
 
     SetWorld(rot, pos);
 
-    if ((operation & OP_WARP) or (scale not_eq 1.f))
+    if ((operation bitand OP_WARP) or (scale not_eq 1.f))
     {
         Pmatrix tempM;
         float cx, cy, cz;
         cx = cz = cy = scale;
 
-        if (operation & OP_WARP)
+        if (operation bitand OP_WARP)
         {
             cx *= sx;
             cy *= sy;
@@ -440,7 +440,7 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
 
                 // Choose perspective correction or not
                 // if ((Xlation.x > CurrentInstance->Radius() * PERSP_CORR_RADIUS_MULTIPLIER)  and 
-                // !(CurrentLOD->flags & ObjectLOD::PERSP_CORR))
+                // !(CurrentLOD->flags bitand ObjectLOD::PERSP_CORR))
                 // {
                 // RenderStateTable = RenderStateTableNPC;
                 // }
@@ -724,7 +724,7 @@ void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
 
         // Cobra - RED - Zero is Zero both in Float and Long...but Long is faster
         // ...........(lightSpecular).........................................
-        if ( not LODused and ((*(long*)&lightSpecular) & 0x7fffffff) and DisplayOptions.bSpecularLighting)
+        if ( not LODused and ((*(long*)&lightSpecular) bitand 0x7fffffff) and DisplayOptions.bSpecularLighting)
         {
             viewVector.x = ObjSpaceEye.x - p->x;
             viewVector.y = ObjSpaceEye.y - p->y;

@@ -275,7 +275,7 @@ void HelicopterClass::Init(SimInitDataClass* initData)
     //REMOVED OLD CODE; BEGIN REWRITE
     if (curWaypoint)
     {
-        if (curWaypoint == atWaypoint  and curWaypoint->GetWPFlags() & WPF_TAKEOFF
+        if (curWaypoint == atWaypoint  and curWaypoint->GetWPFlags() bitand WPF_TAKEOFF
             and curWaypoint->GetWPDepartureTime() > SimLibElapsedTime)
         {
             curWaypoint = atWaypoint;
@@ -622,7 +622,7 @@ int HelicopterClass::Exec(void)
             SoundPos.Sfx(SFX_ENGHELI);
 
         // ACMI Output
-        if (gACMIRec.IsRecording() and (SimLibFrameCount & 0x0f) == 0)
+        if (gACMIRec.IsRecording() and (SimLibFrameCount bitand 0x0f) == 0)
         {
             genPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             genPos.data.type = Type();
@@ -741,7 +741,7 @@ int HelicopterClass::Exec(void)
         // Get the controls
         GatherInputs();
 
-        // Weapons & targeting - Note: change target to the brain's selected target
+        // Weapons bitand targeting - Note: change target to the brain's selected target
         // FCC->Exec(flightLead->hBrain->targetPtr, flightLead->hBrain->targetPtr, theInputs);
 
         // fire weapons if chosen

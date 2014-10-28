@@ -164,7 +164,7 @@ void ViewRemoteLBCB(long, short hittype, C_Base *)
                 {
                     //if(plyr->GetVUID() not_eq FalconLocalSessionId)
                     {
-                        // Go Ask for Logbook info & Open logbook...
+                        // Go Ask for Logbook info bitand Open logbook...
                         // Log book should be EMPTY, until data appears...
                         // if(Player closes logbook before it's all received)
                         // cancel
@@ -803,7 +803,7 @@ void BlinkCommsButtonTimerCB(long, short, C_Base *control)
 
     if (btn)
     {
-        if ( not (btn->GetFlags() & C_BIT_FORCEMOUSEOVER))
+        if ( not (btn->GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         {
             // gSoundMgr->PlaySound(SND_HOMER);
             btn->SetFlagBitOn(C_BIT_FORCEMOUSEOVER);
@@ -1045,7 +1045,7 @@ void ProcessChatStr(CHATSTR *msg)
 
         AddMessageToChatWindow(msg->ID_, msg->Text_);
 
-        if ( not (gMainHandler->GetWindowFlags(CHAT_WIN) & C_BIT_ENABLED))
+        if ( not (gMainHandler->GetWindowFlags(CHAT_WIN) bitand C_BIT_ENABLED))
             gNewMessage = TRUE;
     }
     else if (VM) // Assume Sim is running (AND VM is initialized)
@@ -1636,7 +1636,7 @@ static void CheckPlayerGroup(FalconSessionEntity *session, C_Player *plyr)
             plyr->SetMute(1);
         }
     }
-    else if (PeopleChatType == 3) // CHAT_PACKAGE (ONLY Campaign & TE)
+    else if (PeopleChatType == 3) // CHAT_PACKAGE (ONLY Campaign bitand TE)
     {
         me = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
         player = (Flight)vuDatabase->Find(session->GetPlayerFlightID());
@@ -2585,7 +2585,7 @@ void SendTextMessageToChannel()
 
 void SimOpenChatBox(unsigned long, int state, void *)
 {
-    if ((state & KEY_DOWN))
+    if ((state bitand KEY_DOWN))
     {
         CommandsKeyCombo = -2;
         CommandsKeyComboMod = -2;

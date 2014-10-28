@@ -441,17 +441,17 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         {
                             if (role == ARO_CA)
                             {
-                                if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() & wdAir)
+                                if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() bitand wdAir)
                                     hasWeaps++;
                             }
                             else if (role == ARO_S or role == ARO_GA or role == ARO_SB or role == ARO_SEAD)
                             {
-                                if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() & wdGround)
+                                if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() bitand wdGround)
                                     hasWeaps++;
                             }
                             else if (role == ARO_ASW or role == ARO_ASHIP)
                             {
-                                if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() & wdGround)
+                                if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() bitand wdGround)
                                     hasWeaps++;
                             }
 
@@ -480,8 +480,8 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         meflags = flight_ptr->status_flags;
 
                     // What's that ?? Only true if FEVAL_GOT_TO_TARGET is true and false at the same time ??
-                    // if ( not hasFuel or !hasWeaps or ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) and !(flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET)))
-                    if ( not hasFuel or !hasWeaps or ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) and (meflags & MISEVAL_FLIGHT_STATION_OVER)))
+                    // if ( not hasFuel or !hasWeaps or ((flight->GetEvalFlags() bitand FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET) and !(flight->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET)))
+                    if ( not hasFuel or !hasWeaps or ((flight->GetEvalFlags() bitand FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET) and (meflags bitand MISEVAL_FLIGHT_STATION_OVER)))
                     {
                         if (rand() % 2)
                             radioMessage = CreateCallFromAwacs(flight, rcRELIEVED);
@@ -575,7 +575,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     }
 
                     // TJL If mission type is flagged for a divert, tell the campaign we can divert
-                    if (MissionData[flight->GetUnitMission()].flags & AMIS_EXPECT_DIVERT)
+                    if (MissionData[flight->GetUnitMission()].flags bitand AMIS_EXPECT_DIVERT)
                     {
                         flight->SetUnitPriority(0);
                         flight->SetEvalFlag(FLIGHT_ON_STATION);
@@ -656,7 +656,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                      radioMessage->dataBlock.edata[0] = -1;
                      radioMessage->dataBlock.edata[1] = -1;
                      FalconSendMessage(radioMessage, FALSE);*/
-                    if (MissionData[flight->GetUnitMission()].flags & AMIS_EXPECT_DIVERT)
+                    if (MissionData[flight->GetUnitMission()].flags bitand AMIS_EXPECT_DIVERT)
                         flight->SetDiverted(1);
 
                     // OW: Acknowledge
@@ -759,7 +759,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     // Awacs response
                     radioMessage = CreateCallFromAwacs(flight, rcVECTORALTERNATE);
 
-                    while (w and !(w->GetWPFlags() & WPF_ALTERNATE))
+                    while (w and !(w->GetWPFlags() bitand WPF_ALTERNATE))
                         w = w->GetNextWP();
 
                     if (w)

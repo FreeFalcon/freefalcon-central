@@ -338,7 +338,7 @@ int UI_Deaggregate(ObjectiveClass* objective)
         {
             fc = GetFeatureClassData(classID);
 
-            if ( not fc or fc->Flags & FEAT_VIRTUAL)
+            if ( not fc or fc->Flags bitand FEAT_VIRTUAL)
                 continue;
 
             objective->GetFeatureOffset(f, &y, &x, &z);

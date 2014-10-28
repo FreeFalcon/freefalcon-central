@@ -307,7 +307,7 @@ void OTWDriverClass::SelectExternal()
                     endFlightPoint.z = otwPlatform->ZPos() + dz;
                 }
 
-                if (rand() & 1)
+                if (rand() bitand 1)
                 {
                     endFlightVec.x = PRANDFloat();
                     endFlightVec.y = PRANDFloat();
@@ -1938,7 +1938,7 @@ void OTWDriverClass::EyeFlyStateStep(void)
 
     if (eyeFlyTgt)
     {
-        curStatus = eyeFlyTgt->Status() & VIS_TYPE_MASK;
+        curStatus = eyeFlyTgt->Status() bitand VIS_TYPE_MASK;
         curStatus ++;
         curStatus %= 4;
         eyeFlyTgt->ClearStatusBit(VIS_TYPE_MASK);

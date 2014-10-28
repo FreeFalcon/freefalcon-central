@@ -149,7 +149,7 @@ public:
 
     void SetState(short newstate)
     {
-        State_ = static_cast<short>(newstate & 1);
+        State_ = static_cast<short>(newstate bitand 1);
     }
     short GetState()
     {

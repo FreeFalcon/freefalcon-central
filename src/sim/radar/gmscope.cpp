@@ -563,13 +563,13 @@ void RadarDopplerClass::DropGMTrack(void)
         }
         else
         {
-            if (flags & NORM)
+            if (flags bitand NORM)
             {
                 mlSinCos(&trig, headingForDisplay);
                 cosAz = trig.cos;
                 sinAz = trig.sin;
 
-                if ( not (flags & SP))
+                if ( not (flags bitand SP))
                 {
                     GMat.x = platform->XPos() + tdisplayRange * cosAz * 0.5F;
                     GMat.y = platform->YPos() + tdisplayRange * sinAz * 0.5F;
@@ -644,11 +644,11 @@ void RadarDopplerClass::SetAimPoint(float xCmd, float yCmd)
         {
             float CursorSpeed = g_fCursorSpeed;
 
-            if (flags & DBS2)
+            if (flags bitand DBS2)
                 CursorSpeed *= g_fDBS2factor;
-            else if (flags & DBS1)
+            else if (flags bitand DBS1)
                 CursorSpeed *= g_fDBS1factor;
-            else if (flags & EXP)
+            else if (flags bitand EXP)
                 CursorSpeed *= g_fEXPfactor;
 
             if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
@@ -680,7 +680,7 @@ void RadarDopplerClass::SetAimPoint(float xCmd, float yCmd)
         //    groundMapRange / halfRange;
 
         // 2002-04-04 MN fix for cursor movement on the radar cone borders, only restrict to SnowPlow
-        if (((flags & SP) and (float)fabs(viewOffsetRel.y) > (viewOffsetRel.x + 1.0F)*TAN_RADAR_CONE_ANGLE))
+        if (((flags bitand SP) and (float)fabs(viewOffsetRel.y) > (viewOffsetRel.x + 1.0F)*TAN_RADAR_CONE_ANGLE))
         {
             // set to middle axis when really close to it
             if (viewOffsetRel.y > -0.05f and viewOffsetRel.y < 0.05f)
@@ -752,7 +752,7 @@ int RadarDopplerClass::CheckGMBump(void)
     switch (range)
     {
         case 10:
-            if (flags & SP) //SnowPlow
+            if (flags bitand SP) //SnowPlow
             {
                 topfactor = 1.6F;
                 bottomfactor = 0.0F;
@@ -766,7 +766,7 @@ int RadarDopplerClass::CheckGMBump(void)
             break;
 
         case 20:
-            if (flags & SP) //SnowPlow
+            if (flags bitand SP) //SnowPlow
             {
                 topfactor = 1.7F;
                 bottomfactor = 0.0078F;
@@ -780,7 +780,7 @@ int RadarDopplerClass::CheckGMBump(void)
             break;
 
         case 40:
-            if (flags & SP) //SnowPlow
+            if (flags bitand SP) //SnowPlow
             {
                 topfactor = 1.7F;
                 bottomfactor = 0.0088F;
@@ -794,7 +794,7 @@ int RadarDopplerClass::CheckGMBump(void)
             break;
 
         case 80:
-            if (flags & SP) //SnowPlow
+            if (flags bitand SP) //SnowPlow
             {
                 topfactor = 2.0F;
                 bottomfactor = 0.014497F;
@@ -887,7 +887,7 @@ int RadarDopplerClass::CheckGMBump(void)
     }
 
     // Max range available
-    if (flags & (DBS1 | DBS2) or mode == GMT or mode == SEA)
+    if (flags bitand (DBS1 | DBS2) or mode == GMT or mode == SEA)
     {
         maxIdx = NUM_RANGES - 2;
     }
@@ -964,7 +964,7 @@ void RadarDopplerClass::RestoreAGCursor()
     // now check if steerpoint position is off of the current radar range, and adjust it appropriately
     // only in NORM mode and STP mode
     // MD -- 20040229: and make this adjustment if we are ground stabilized in SP mode as well
-    if ((flags & NORM) and (( not (flags & SP)) or (IsSet(SP) and IsSet(SP_STAB))))
+    if ((flags bitand NORM) and (( not (flags bitand SP)) or (IsSet(SP) and IsSet(SP_STAB))))
     {
         // Distance to GMat, only x and y
         float dx, dy, dist, dispRange;
@@ -988,7 +988,7 @@ void RadarDopplerClass::RestoreAGCursor()
         int maxIdx;
 
         // Reuse current range, within limits of course
-        if (flags & (DBS1 | DBS2) or mode == GMT or mode == SEA)
+        if (flags bitand (DBS1 | DBS2) or mode == GMT or mode == SEA)
         {
             maxIdx = NUM_RANGES - 3;
         }
@@ -1024,7 +1024,7 @@ void RadarDopplerClass::SetGMScan(void)
     static const float TwoRootTwo = 2.0f * (float)sqrt(2.0f);
 
 
-    if (flags & EXP)
+    if (flags bitand EXP)
     {
         groundMapRange = tdisplayRange * 0.125F;
 
@@ -1051,7 +1051,7 @@ void RadarDopplerClass::SetGMScan(void)
             azScan = rwsAzs[curAzIdx];
         }
     }
-    else if (flags & DBS1)
+    else if (flags bitand DBS1)
     {
         groundMapRange = tdisplayRange * 0.125F;
 
@@ -1079,7 +1079,7 @@ void RadarDopplerClass::SetGMScan(void)
             azScan = rwsAzs[curAzIdx];
         }
     }
-    else if (flags & DBS2)
+    else if (flags bitand DBS2)
     {
         //TJL 11/17/03 Fixed DBS2 to display what is within DBS1 tick marks
         //      groundMapRange = tdisplayRange * 0.0625F;
@@ -1114,7 +1114,7 @@ void RadarDopplerClass::SetGMScan(void)
     }
     else // NORM
     {
-        ShiAssert(flags & NORM); // If not, then what mode is this???
+        ShiAssert(flags bitand NORM); // If not, then what mode is this???
         groundMapRange = tdisplayRange * 0.5F;
 
         if (displayRange <= 20.1f)
@@ -1189,7 +1189,7 @@ void RadarDopplerClass::GMDisplay(void)
     if (fovStepCmd)
     {
         fovStepCmd = 0;
-        curFov = flags & 0x0f;
+        curFov = flags bitand 0x0f;
         flags -= curFov;
         curFov = curFov << 1;
 
@@ -1209,7 +1209,7 @@ void RadarDopplerClass::GMDisplay(void)
     }
 
     // Find lookat point
-    if ( not (flags & FZ))
+    if ( not (flags bitand FZ))
     {
         viewFrom.x = platform->XPos();
         viewFrom.y = platform->YPos();
@@ -1220,7 +1220,7 @@ void RadarDopplerClass::GMDisplay(void)
 
         if ( not lockedTarget)
         {
-            if (IsSet(SP) and ( not IsSet(SP_STAB)))  // (flags & SP) // MD -- 20040215: make sure we don't snow plow after ground stabilizing!
+            if (IsSet(SP) and ( not IsSet(SP_STAB)))  // (flags bitand SP) // MD -- 20040215: make sure we don't snow plow after ground stabilizing!
             {
                 // We're in snowplow, so look out in front of the aircraft
                 GMat.x = viewFrom.x + tdisplayRange * 0.5F * trig.cos;
@@ -1233,7 +1233,7 @@ void RadarDopplerClass::GMDisplay(void)
                 GMat.y = viewCenter.y;
             }
 
-            if ( not (flags & NORM))
+            if ( not (flags bitand NORM))
             {
                 // We're zoomed in, so track the cursors
                 GMat.x += viewOffsetInertial.x;
@@ -1242,13 +1242,13 @@ void RadarDopplerClass::GMDisplay(void)
         }
         else
         {
-            if ( not (flags & NORM))
+            if ( not (flags bitand NORM))
             {
                 // We're zoomed in, so look at the target
                 GMat.x = lockedTarget->BaseData()->XPos();
                 GMat.y = lockedTarget->BaseData()->YPos();
             }
-            else if (IsSet(SP) and ( not IsSet(SP_STAB)))  // (flags & SP) // MD -- 20040215: if we aren't SP ground stabilized
+            else if (IsSet(SP) and ( not IsSet(SP_STAB)))  // (flags bitand SP) // MD -- 20040215: if we aren't SP ground stabilized
             {
                 // We're in snowplow, so look out in front of the aircraft
                 GMat.x = viewFrom.x + tdisplayRange * 0.5F * trig.cos;
@@ -1276,7 +1276,7 @@ void RadarDopplerClass::GMDisplay(void)
     }
 
     // We now now where the radar is looking.  Now decide where the display is centered
-    if (flags & NORM)
+    if (flags bitand NORM)
     {
         center.x = viewFrom.x + tdisplayRange * 0.5F * trig.cos;
         center.y = viewFrom.y + tdisplayRange * 0.5F * trig.sin;
@@ -1298,7 +1298,7 @@ void RadarDopplerClass::GMDisplay(void)
     groundLookEl = (float)atan(-dz / (float)sqrt(dy * dy + dx * dx + .1f));
 
     // Update the deltas if the cursor is off center
-    if (flags & NORM)
+    if (flags bitand NORM)
     {
         dx += viewOffsetInertial.x;
         dy += viewOffsetInertial.y;
@@ -1354,7 +1354,7 @@ void RadarDopplerClass::GMDisplay(void)
                 seekerAzCenter = -MAX_ANT_EL;
         }
 
-        curFov = flags & 0x0f;
+        curFov = flags bitand 0x0f;
         flags -= curFov;
         flags += NORM;
         SetGMScan();
@@ -1443,7 +1443,7 @@ void RadarDopplerClass::GMDisplay(void)
                 InitGain = FALSE;
             }
 
-            if ( not (flags & FZ))
+            if ( not (flags bitand FZ))
             {
                 // Decide how far along the beam scan is
                 if (beamAz >  azScan)
@@ -1479,7 +1479,7 @@ void RadarDopplerClass::GMDisplay(void)
                 }
 
                 //((RenderGMComposite*)display)->StartDraw();
-                ((RenderGMComposite*)display)->SetBeam(&viewFrom, &GMat, &center, headingForDisplay, baseAz + beamAz, beamPercent, cursorAngle, (scanDir == ScanFwd), (flags & (DBS1 | DBS2)) ? true : false);
+                ((RenderGMComposite*)display)->SetBeam(&viewFrom, &GMat, &center, headingForDisplay, baseAz + beamAz, beamPercent, cursorAngle, (scanDir == ScanFwd), (flags bitand (DBS1 | DBS2)) ? true : false);
             }
 
             // OW - restore render target and start new scene
@@ -1534,7 +1534,7 @@ void RadarDopplerClass::GMDisplay(void)
         display->SetColor(tmpColor);
 
         // Add the Airplane if in freeze mode
-        if (flags & FZ)
+        if (flags bitand FZ)
         {
             // Note the axis switch from NED to screen
             dx = platform->XPos() - GMXCenter;
@@ -1555,7 +1555,7 @@ void RadarDopplerClass::GMDisplay(void)
             display->AdjustOriginInViewport(-rx, -ry);
         }
 
-        if (flags & NORM)
+        if (flags bitand NORM)
         {
             // Add FTT Diamond if needed
             if (lockedTarget)
@@ -1694,7 +1694,7 @@ void RadarDopplerClass::GMDisplay(void)
 
             if (g_bRealisticAvionics and g_bAGRadarFixes)
             {
-                if (flags & DBS1)
+                if (flags bitand DBS1)
                 {
                     float len = 0.065F;
                     display->Line(0.25F, -len, 0.25F, len);
@@ -1705,7 +1705,7 @@ void RadarDopplerClass::GMDisplay(void)
             }
             else
             {
-                if (flags & DBS1)
+                if (flags bitand DBS1)
                 {
                     // Expansion Cues
                     display->Line(0.25F,  0.1F,  0.25F, -0.1F);
@@ -1800,7 +1800,7 @@ void RadarDopplerClass::GMDisplay(void)
 
         if (IsAGDclt(Fov) == FALSE)
         {
-            if (flags & NORM)
+            if (flags bitand NORM)
             {
                 //MI
                 if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
@@ -1810,11 +1810,11 @@ void RadarDopplerClass::GMDisplay(void)
             }
             else
             {
-                if (flags & EXP)
+                if (flags bitand EXP)
                     LabelButton(2, "EXP");
-                else if (flags & DBS1)
+                else if (flags bitand DBS1)
                     LabelButton(2, "DBS1");
-                else if (flags & DBS2)
+                else if (flags bitand DBS2)
                     LabelButton(2, "DBS2");
             }
         }
@@ -1991,9 +1991,9 @@ void RadarDopplerClass::AddTargetReturns(RenderGMRadar* renderer, bool Shaping)
     sinAz = -trig.sin;
 
     // Offset the spots correctly
-    if ( not (flags & FZ))
+    if ( not (flags bitand FZ))
     {
-        if (flags & NORM)
+        if (flags bitand NORM)
         {
             // Find center of scope
             GMXCenter = platform->XPos() + tdisplayRange * trig.cos * 0.5F;
@@ -2077,7 +2077,7 @@ void RadarDopplerClass::AddTargetReturns(RenderGMRadar* renderer, bool Shaping)
             }
         }
 
-        if (flags & NORM)
+        if (flags bitand NORM)
         {
             ry -= cursorY;
             rx -= cursorX;
@@ -2109,9 +2109,9 @@ void RadarDopplerClass::AddTargetReturnsOldStyle(GMList* curNode)
     sinAz = -trig.sin;
 
     // Offset the spots correctly
-    if ( not (flags & FZ))
+    if ( not (flags bitand FZ))
     {
-        if (flags & NORM)
+        if (flags bitand NORM)
         {
             // Find center of scope
             GMXCenter = platform->XPos() + tdisplayRange * trig.cos * 0.5F;
@@ -2184,7 +2184,7 @@ void RadarDopplerClass::AddTargetReturnsOldStyle(GMList* curNode)
             }
         }
 
-        if (flags & NORM)
+        if (flags bitand NORM)
         {
             ry -= cursorY;
             rx -= cursorX;
@@ -2247,9 +2247,9 @@ void RadarDopplerClass::DoGMDesignate(GMList* curNode)
         sinAz = -trig.sin;
 
         // Offset the spots correctly
-        if ( not (flags & FZ))
+        if ( not (flags bitand FZ))
         {
-            if (flags & NORM)
+            if (flags bitand NORM)
             {
                 // Find center of scope
                 GMXCenter = platform->XPos() + tdisplayRange * trig.cos * 0.5F;
@@ -2282,7 +2282,7 @@ void RadarDopplerClass::DoGMDesignate(GMList* curNode)
             rx /= groundMapRange;
             ry /= groundMapRange;
 
-            if (flags & NORM)
+            if (flags bitand NORM)
             {
                 ry -= cursorY;
                 rx -= cursorX;
@@ -2349,7 +2349,7 @@ void RadarDopplerClass::SetGroundTarget(FalconEntity* newTarget)
 
     if (newTarget)
     {
-        if (flags & NORM)
+        if (flags bitand NORM)
         {
             mlSinCos(&trig, groundLookAz);
             cosAz = trig.cos;
@@ -2419,7 +2419,7 @@ void RadarDopplerClass::ToggleAGfreeze()
 {
     LastAGModes = 1; // ASSOCIATOR: moved to here so that the key command works the same as the MFD command
 
-    if (flags & FZ)
+    if (flags bitand FZ)
         ClearFlagBit(FZ);
     else
         SetFlagBit(FZ);
@@ -2428,7 +2428,7 @@ void RadarDopplerClass::ToggleAGfreeze()
 // ASSOCIATOR: emulates MFD pushbutton so it remembers
 void RadarDopplerClass::ToggleAGsnowPlow()
 {
-    if (flags & SP)
+    if (flags bitand SP)
     {
         SetAGSteerpoint(TRUE);
 
@@ -2451,7 +2451,7 @@ void RadarDopplerClass::ToggleAGsnowPlow()
 /* // ASSOCIATOR: this is the old snowplow toggle that doesn't remember
 void RadarDopplerClass::ToggleAGsnowPlow()
 {
-   if (flags & SP)
+   if (flags bitand SP)
       ClearFlagBit (SP);
    else
       SetFlagBit(SP);
@@ -2483,7 +2483,7 @@ void RadarDopplerClass::GetAGCenter(float* x, float* y)
     *x = GMat.x;
     *y = GMat.y;
 
-    if ((flags & NORM))
+    if ((flags bitand NORM))
     {
         *x += viewOffsetInertial.x;
         *y += viewOffsetInertial.y;

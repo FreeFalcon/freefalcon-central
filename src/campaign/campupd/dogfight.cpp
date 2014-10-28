@@ -243,7 +243,7 @@ void DogfightClass::ApplySettingsToFlight(Flight flight)
         flight->LoadWeapons(NULL, DefaultDamageMods, Air, numAllAspectMissiles, WEAP_FORCE_ON_ONE, WEAP_HEATSEEKER);
         flight->LoadWeapons(NULL, DefaultDamageMods, Air, numRearAspectMissiles, WEAP_FORCE_ON_ONE, WEAP_HEATSEEKER | WEAP_REAR_ASPECT);
 
-        if (flags & DF_ECM_AVAIL)
+        if (flags bitand DF_ECM_AVAIL)
         {
             flight->LoadWeapons(NULL, DefaultDamageMods, Air, 1, WEAP_ECM, 0);
         }
@@ -381,7 +381,7 @@ int DogfightClass::ReadyToStart(void)
     int i, numTeams = 0;
 
     // Check if it's ok to hit the 'Fly' button
-    if ( not (flags & DF_GAME_OVER))
+    if ( not (flags bitand DF_GAME_OVER))
     {
         VuListIterator flit(AllRealList);
         unit = (Unit)flit.GetFirst();
@@ -605,7 +605,7 @@ void DogfightClass::UpdateDogfight(void)
         else
         {
             // Check for game restart
-            if ((localFlags & DF_VIEWED_SCORES) and (gameStatus == dog_Waiting))
+            if ((localFlags bitand DF_VIEWED_SCORES) and (gameStatus == dog_Waiting))
             {
                 RestartGame();
             }
@@ -820,7 +820,7 @@ void DogfightClass::RoundOver(void)
             }
 
             // 2002-04-10 MN force a kill on all alive simlist objects
-            if ( not (theObject->IsDead()) and (g_nDFRegenerateFix & 0x02))
+            if ( not (theObject->IsDead()) and (g_nDFRegenerateFix bitand 0x02))
                 theObject->SetDead(TRUE);
 
             theObject = (SimBaseClass*)updateWalker.GetNext();
@@ -962,7 +962,7 @@ void DogfightClass::RegenerateAvailableAircraft(void)
                     if (theObject == FalconLocalSession->GetPlayerEntity())
                     {
                         UnSetLocalFlag(DF_PLAYER_REQ_REGEN);
-                        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() & compl SHOW_DOGFIGHT_SCORES);
+                        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitand compl SHOW_DOGFIGHT_SCORES);
                     }
 
 #ifdef DEBUG

@@ -628,7 +628,7 @@ int MissileClass::Exec(void)
             if (launchState == InFlight)
             {
                 // ACMI Output
-                if (gACMIRec.IsRecording() and (SimLibFrameCount & 0x00000003) == 0)
+                if (gACMIRec.IsRecording() and (SimLibFrameCount bitand 0x00000003) == 0)
                 {
                     misPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
                     misPos.data.type = Type();
@@ -654,7 +654,7 @@ int MissileClass::Exec(void)
             if (
                 done == FalconMissileEndMessage::Missed  and 
                 runTime < 15.0f  and 
-                !((g_nMissileFix & 0x10) and (flags & ClosestApprch))
+                !((g_nMissileFix bitand 0x10) and (flags bitand ClosestApprch))
             )
             {
 #ifndef MISSILE_TEST_PROG
@@ -694,7 +694,7 @@ int MissileClass::Exec(void)
         if (launchState == InFlight)
         {
             // ACMI Output
-            if (gACMIRec.IsRecording() and (SimLibFrameCount & 0x00000003) == 0)
+            if (gACMIRec.IsRecording() and (SimLibFrameCount bitand 0x00000003) == 0)
             {
                 misPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
                 misPos.data.type = Type();
@@ -1107,7 +1107,7 @@ MissileClass::EndMissile(void)
         done not_eq FalconMissileEndMessage::BombImpact and // "bomb warhead" missiles hit SIM target
         done not_eq FalconMissileEndMessage::ArmingDelay) // when the warhead is not yet armed, do nothing here
     {
-        if (flags & SensorLostLock)
+        if (flags bitand SensorLostLock)
             done = FalconMissileEndMessage::ExceedFOV;
 
         // 2002-02-26 ADDED BY S.G. This is the best place to handle aggregated campaign object as target that got missed...
@@ -1281,7 +1281,7 @@ MissileClass::ApplyProximityDamage(void)
         //Instead of just attacking object you are targeting we will now loop through all aircraft ....
 
         //JAM 03Nov03 - This block is causing HARMS and many AA missiles to not cause any damage. Restoring SP3 code for now.
-        /* if( domain & wdAir ) {
+        /* if( domain bitand wdAir ) {
          SimBaseClass* testObject;
 
          if ( not SimDriver.objectList) return;
@@ -1408,7 +1408,7 @@ MissileClass::ApplyProximityDamage(void)
                     // or the target can not be damaged by proximity damage
                     if (
                         !targetPtr or testObject not_eq targetPtr->BaseData() ||
-                        (g_nMissileFix & 0x08) and testObject == targetPtr->BaseData()  and 
+                        (g_nMissileFix bitand 0x08) and testObject == targetPtr->BaseData()  and 
                         done not_eq FalconMissileEndMessage::MissileKill  and 
                         done not_eq FalconMissileEndMessage::BombImpact
                     )

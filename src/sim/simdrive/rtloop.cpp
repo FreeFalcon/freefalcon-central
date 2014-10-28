@@ -81,7 +81,7 @@ void RealTimeFunction(unsigned long, void*)
 
 #if NEW_END_CAMPAIGN
 
-    if (TheCampaign.Flags & CAMP_SHUTDOWN_REQUEST)
+    if (TheCampaign.Flags bitand CAMP_SHUTDOWN_REQUEST)
     {
         // sfr: this is the only safe place to really end the campaign
         TheCampaign.ReallyEndCampaign();

@@ -706,7 +706,7 @@ void TrackIR::InitTrackIR(HWND application_window)
     if (NP_OK == result)
     {
         TIRVersionMajor = wNPClientVer >> 8;
-        TIRVersionMinor = wNPClientVer & 0x00FF;
+        TIRVersionMinor = wNPClientVer bitand 0x00FF;
     }
 
 #ifdef DEBUG_TRACKIR_STUFF

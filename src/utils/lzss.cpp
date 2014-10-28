@@ -55,7 +55,7 @@ typedef unsigned char uchar;
 #define TREE_ROOT            WINDOW_SIZE
 #define END_OF_STREAM        0
 #define UNUSED               0
-#define MOD_WINDOW( a )      ( ( a ) & ( WINDOW_SIZE - 1 ) )
+#define MOD_WINDOW( a )      ( ( a ) bitand ( WINDOW_SIZE - 1 ) )
 
 // Compression Context (For multi-threaded usaged)
 // Basically, these were globals before, now they're allocated by the stack per call
@@ -392,7 +392,7 @@ int OutputPair(int position, int length, uchar *output_string, LZSS_COMP_CTXT* c
 {
     ctxt->DataBuffer[ ctxt->BufferOffset ] = (uchar)(length << 4);
     ctxt->DataBuffer[ ctxt->BufferOffset++ ]  or_eq  (position >> 8);
-    ctxt->DataBuffer[ ctxt->BufferOffset++ ] = (uchar)(position & 0xff);
+    ctxt->DataBuffer[ ctxt->BufferOffset++ ] = (uchar)(position bitand 0xff);
     ctxt->FlagBitMask <<= 1;
     ctxt->inc_output_string = 0;                              /**/
 
@@ -440,7 +440,7 @@ int InputBit(uchar *input_string, LZSS_COMP_CTXT* ctxt) /**/
     }
 
     ctxt->FlagBitMask <<= 1;
-    return(ctxt->DataBuffer[ 0 ] & (ctxt->FlagBitMask >> 1));
+    return(ctxt->DataBuffer[ 0 ] bitand (ctxt->FlagBitMask >> 1));
 }
 
 /*
@@ -668,7 +668,7 @@ extern "C"
                 match_position = *input_string;             /**/
                 CHSZ(srcSize, 1);
                 input_string++;                             /**/
-                match_position  or_eq  (match_length & 0xf) << 8;
+                match_position  or_eq  (match_length bitand 0xf) << 8;
                 match_length >>= 4;
                 match_length += BREAK_EVEN;
 

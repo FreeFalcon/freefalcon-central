@@ -38,7 +38,7 @@ public:
     MissileDisplayClass(SimMoverClass* newPlatform);
     int IsReady(void)
     {
-        return flags & DisplayReady;
+        return flags bitand DisplayReady;
     };
     void SetReady(int flag)
     {

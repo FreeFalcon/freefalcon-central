@@ -20,7 +20,7 @@ typedef ObjectiveClass* Objective;
 #define SPLF_IN_USE 0x04 // This entry is being used
 
 // =============================
-// Packed VU_ID & index data
+// Packed VU_ID bitand index data
 // =============================
 
 class PackedVUIDClass
@@ -90,15 +90,15 @@ public:
     void Reaggregate(void); // Cleans up the drawable object
     int IsTimed(void)
     {
-        return flags & SPLF_IS_TIMED;
+        return flags bitand SPLF_IS_TIMED;
     };
     int IsLinked(void)
     {
-        return flags & SPLF_IS_LINKED;
+        return flags bitand SPLF_IS_LINKED;
     };
     int InUse(void)
     {
-        return flags & SPLF_IN_USE;
+        return flags bitand SPLF_IN_USE;
     }
     void Cleanup(void);
     CampaignTime RemovalTime(void);

@@ -29,12 +29,12 @@ RemoteLB::~RemoteLB()
 
 void RemoteLB::Cleanup()
 {
-    if (Photo_ and (flags_ & PHOTO_CLEANUP))
+    if (Photo_ and (flags_ bitand PHOTO_CLEANUP))
         delete Photo_;
 
     Photo_ = NULL;
 
-    if (Patch_ and (flags_ & PATCH_CLEANUP))
+    if (Patch_ and (flags_ bitand PATCH_CLEANUP))
         delete Patch_;
 
     Patch_ = NULL;
@@ -99,7 +99,7 @@ void RemoteLB::ReceiveImage(uchar ID, short packetno, short length, long offset,
 
             if (Photo_)
             {
-                if (Photo_->flags & IMAGE_READY)
+                if (Photo_->flags bitand IMAGE_READY)
                     flags_  or_eq  PHOTO_READY;
 
                 flags_  or_eq  PHOTO_CLEANUP;
@@ -112,7 +112,7 @@ void RemoteLB::ReceiveImage(uchar ID, short packetno, short length, long offset,
 
             if (Patch_)
             {
-                if (Patch_->flags & IMAGE_READY)
+                if (Patch_->flags bitand IMAGE_READY)
                     flags_  or_eq  PATCH_READY;
 
                 flags_  or_eq  PATCH_CLEANUP;

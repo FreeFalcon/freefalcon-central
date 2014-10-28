@@ -47,7 +47,7 @@ public:
     };
     int IsSetFlag(int val)
     {
-        return (flags & val ? TRUE : FALSE);
+        return (flags bitand val ? TRUE : FALSE);
     };
     int SkillLevel(void)
     {

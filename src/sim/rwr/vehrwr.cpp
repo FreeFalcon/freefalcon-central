@@ -541,10 +541,10 @@ FalconEntity* VehRwrClass::CurSpike(FalconEntity *byHim, int *data)  // 2002-02-
         {
             if (detectionList[i].isLocked)   // If not even locked, don't bother...
             {
-                if (((*data & RWR_GET_STT) and detectionList[i].radarMode == RadarClass::DigiSTT) or // The lock is of the right type
-                    ((*data & RWR_GET_SAM) and detectionList[i].radarMode == RadarClass::DigiSAM) ||
-                    ((*data & RWR_GET_TWS) and detectionList[i].radarMode == RadarClass::DigiTWS) ||
-                    ((*data & RWR_GET_RWS) and detectionList[i].radarMode == RadarClass::DigiRWS))
+                if (((*data bitand RWR_GET_STT) and detectionList[i].radarMode == RadarClass::DigiSTT) or // The lock is of the right type
+                    ((*data bitand RWR_GET_SAM) and detectionList[i].radarMode == RadarClass::DigiSAM) ||
+                    ((*data bitand RWR_GET_TWS) and detectionList[i].radarMode == RadarClass::DigiTWS) ||
+                    ((*data bitand RWR_GET_RWS) and detectionList[i].radarMode == RadarClass::DigiRWS))
                 {
                     if ( not byHim or detectionList[i].entity == byHim)   // 2002-02-10 ADDED BY S.G. If we are looking at a specific target, limit your search to it
                     {
@@ -554,12 +554,12 @@ FalconEntity* VehRwrClass::CurSpike(FalconEntity *byHim, int *data)  // 2002-02-
                         if ( not curSpike->IsMissile() and TeamInfo[platform->GetTeam()]->TStance(curSpike->GetTeam()) > Neutral)
                         {
                             // If we passed a prioritisation mask and not of the right priority, just keep it for later in case we have none of that type
-                            if (*data & RWR_PRIORITIZE_MASK)
+                            if (*data bitand RWR_PRIORITIZE_MASK)
                             {
-                                if (((*data & RWR_PRIORITIZE_STT) and detectionList[i].radarMode == RadarClass::DigiSTT) or // The lock is of the right priority, return it
-                                    ((*data & RWR_PRIORITIZE_SAM) and detectionList[i].radarMode == RadarClass::DigiSAM) ||
-                                    ((*data & RWR_PRIORITIZE_TWS) and detectionList[i].radarMode == RadarClass::DigiTWS) ||
-                                    ((*data & RWR_PRIORITIZE_RWS) and detectionList[i].radarMode == RadarClass::DigiRWS))
+                                if (((*data bitand RWR_PRIORITIZE_STT) and detectionList[i].radarMode == RadarClass::DigiSTT) or // The lock is of the right priority, return it
+                                    ((*data bitand RWR_PRIORITIZE_SAM) and detectionList[i].radarMode == RadarClass::DigiSAM) ||
+                                    ((*data bitand RWR_PRIORITIZE_TWS) and detectionList[i].radarMode == RadarClass::DigiTWS) ||
+                                    ((*data bitand RWR_PRIORITIZE_RWS) and detectionList[i].radarMode == RadarClass::DigiRWS))
                                 {
                                     *data = detectionList[i].radarMode; // Pass back the radar mode to the calling function
                                     return curSpike;

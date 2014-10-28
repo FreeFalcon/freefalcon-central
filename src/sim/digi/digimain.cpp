@@ -404,7 +404,7 @@ DigitalBrain::DigitalBrain(AircraftClass *myPlatform, AirframeClass* myAf) : Bas
     // 2002-02-27 ADDED BY S.G.
     // What about flights on egress that deaggregates?
     // Look up their Eval flags and set missionComplete accordingly...
-    if (((FlightClass *)self->GetCampaignObject())->GetEvalFlags() & FEVAL_GOT_TO_TARGET)
+    if (((FlightClass *)self->GetCampaignObject())->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET)
     {
         missionComplete = TRUE;
     }

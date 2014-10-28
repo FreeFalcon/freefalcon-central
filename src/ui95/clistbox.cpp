@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -111,7 +111,7 @@ void C_ListBox::Setup(long ID, short WinType, C_Handler *Handler)
 
 void C_ListBox::Cleanup()
 {
-    if ( not (GetFlags() & C_BIT_NOCLEANUP))
+    if ( not (GetFlags() bitand C_BIT_NOCLEANUP))
         RemoveAllItems();
 
     if (BgImage_)
@@ -218,7 +218,7 @@ void C_ListBox::SetFlags(long flags)
 
     if (Label_)
     {
-        Label_->SetFlags(flags & compl (C_BIT_USEBGFILL));
+        Label_->SetFlags(flags bitand compl (C_BIT_USEBGFILL));
     }
 }
 
@@ -271,7 +271,7 @@ C_ListBox *C_ListBox::AddItem(long ID, short, _TCHAR *Str)
 
     if (Str == NULL) return(NULL);
 
-    if ( not (GetFlags() & C_BIT_REMOVE)) // Using premade list ... don't add to it
+    if ( not (GetFlags() bitand C_BIT_REMOVE)) // Using premade list ... don't add to it
         return(NULL);
 
     if (FindID(ID))
@@ -286,7 +286,7 @@ C_ListBox *C_ListBox::AddItem(long ID, short, _TCHAR *Str)
     newitem->Label_->SetColor(C_STATE_1, SelColor_);
     newitem->Label_->SetGroup(5551212);
     newitem->Label_->SetFont(Font_);
-    newitem->Label_->SetFlags((GetFlags() & compl (C_BIT_INVISIBLE | C_BIT_ABSOLUTE | C_BIT_USEBGFILL | C_BIT_REMOVE)));
+    newitem->Label_->SetFlags((GetFlags() bitand compl (C_BIT_INVISIBLE | C_BIT_ABSOLUTE | C_BIT_USEBGFILL | C_BIT_REMOVE)));
     newitem->Label_->SetOwner(this);
     newitem->Label_->SetParent(Parent_);
     newitem->Next = NULL;
@@ -373,7 +373,7 @@ void C_ListBox::RemoveAllItems()
 {
     LISTBOX *cur, *last;
 
-    if ( not (GetFlags() & C_BIT_REMOVE))
+    if ( not (GetFlags() bitand C_BIT_REMOVE))
     {
         return;
     }
@@ -507,7 +507,7 @@ void C_ListBox::SetItemFlags(long ID, long flags)
 
     if (cur)
     {
-        cur->Label_->SetFlags(flags & compl (C_BIT_USEBGFILL));
+        cur->Label_->SetFlags(flags bitand compl (C_BIT_USEBGFILL));
     }
 }
 
@@ -556,7 +556,7 @@ short C_ListBox::GetListHeight()
 
 long C_ListBox::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED))
+    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED))
         return(0);
 
     if (relX < GetX() or relX > (GetX() + GetW()) or relY < GetY() or relY > (GetY() + GetH()))
@@ -576,7 +576,7 @@ BOOL C_ListBox::Process(long ID, short HitType)
             if (Callback_)
                 (*Callback_)(ID, HitType, this);
 
-            if (GetFlags() & C_BIT_ABSOLUTE)
+            if (GetFlags() bitand C_BIT_ABSOLUTE)
                 OpenWindow((short)(Parent_->GetX() + GetX()),
                            (short)(Parent_->GetY() + GetY() + GetH() + 1),
                            (short)GetW(), (short)GetListHeight());//!
@@ -594,7 +594,7 @@ BOOL C_ListBox::Process(long ID, short HitType)
 
 void C_ListBox::Refresh()
 {
-    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1, GetY() + GetH() + 1, GetFlags(), GetClient());
@@ -602,16 +602,16 @@ void C_ListBox::Refresh()
 
 void C_ListBox::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
-    if (GetFlags() & C_BIT_USEBGIMAGE)
+    if (GetFlags() bitand C_BIT_USEBGIMAGE)
         BgImage_->Draw(surface, cliprect);
 
-    if (GetFlags() & C_BIT_USEBGFILL)
+    if (GetFlags() bitand C_BIT_USEBGFILL)
     {
         Parent_->BlitFill(surface, BgColor_, GetX() + BgRect_.left, GetY() + BgRect_.top, BgRect_.right + 1, BgRect_.bottom + 1, GetFlags(), GetClient(), cliprect);
     }
@@ -622,10 +622,10 @@ void C_ListBox::Draw(SCREEN *surface, UI95_RECT *cliprect)
         Label_->Draw(surface, cliprect);
     }
 
-    if (DropDown_ and (GetFlags() & C_BIT_ENABLED))
+    if (DropDown_ and (GetFlags() bitand C_BIT_ENABLED))
         DropDown_->Draw(surface, cliprect);
 
-    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
@@ -660,7 +660,7 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
 
     while (cur)
     {
-        if ( not (cur->Label_->GetFlags() & C_BIT_INVISIBLE))
+        if ( not (cur->Label_->GetFlags() bitand C_BIT_INVISIBLE))
         {
             i++;
         }
@@ -744,7 +744,7 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
 
     while (cur)
     {
-        if ( not (cur->Label_->GetFlags() & C_BIT_INVISIBLE))
+        if ( not (cur->Label_->GetFlags() bitand C_BIT_INVISIBLE))
         {
             if (cur->Label_->GetID() == LabelVal_)
             {

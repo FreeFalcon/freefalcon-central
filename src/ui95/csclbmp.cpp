@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -181,12 +181,12 @@ void C_ScaleBitmap::PreparePalette(COLORREF color)
 
         for (j = 0; j < img->Header->palettesize; j++)
         {
-            r = rShift[UIColorTable[100][UIColorTable[perc][(usecolor >> r_shift_) & 0x1f] +
-                                         UIColorTable[bperc][(Palette_[0][j] >> r_shift_) & 0x1f]]];
-            g = gShift[UIColorTable[100][UIColorTable[perc][(usecolor >> g_shift_) & 0x1f] +
-                                         UIColorTable[bperc][(Palette_[0][j] >> g_shift_) & 0x1f]]];
-            b = bShift[UIColorTable[100][UIColorTable[perc][(usecolor >> b_shift_) & 0x1f] +
-                                         UIColorTable[bperc][(Palette_[0][j] >> b_shift_) & 0x1f]]];
+            r = rShift[UIColorTable[100][UIColorTable[perc][(usecolor >> r_shift_) bitand 0x1f] +
+                                         UIColorTable[bperc][(Palette_[0][j] >> r_shift_) bitand 0x1f]]];
+            g = gShift[UIColorTable[100][UIColorTable[perc][(usecolor >> g_shift_) bitand 0x1f] +
+                                         UIColorTable[bperc][(Palette_[0][j] >> g_shift_) bitand 0x1f]]];
+            b = bShift[UIColorTable[100][UIColorTable[perc][(usecolor >> b_shift_) bitand 0x1f] +
+                                         UIColorTable[bperc][(Palette_[0][j] >> b_shift_) bitand 0x1f]]];
 
             Palette_[i][j] = static_cast<short>(r | b | b);
         }
@@ -239,7 +239,7 @@ void C_ScaleBitmap::SetFlags(long flags)
 
 void C_ScaleBitmap::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Image_->Refresh();
@@ -247,7 +247,7 @@ void C_ScaleBitmap::Refresh()
 
 void C_ScaleBitmap::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
     if (Image_)

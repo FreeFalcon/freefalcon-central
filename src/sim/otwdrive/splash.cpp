@@ -256,13 +256,13 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
     ShiAssert(startInvar <= stop);
 
     // Divide the dimmed color intensities by 4 (knock them down 2 bits in each channel)
-    while (srcPal < startLit) *dstPal++ = (*srcPal++ & 0x00FCFCFC) >> 1;
+    while (srcPal < startLit) *dstPal++ = (*srcPal++ bitand 0x00FCFCFC) >> 1;
 
     // Copy the "lit" color intensities
     while (srcPal < stopLit) *dstPal++ = *srcPal++;
 
     // Divide the dimmed color intensities by 4 (knock them down 2 bits in each channel)
-    while (srcPal < startInvar) *dstPal++ = (*srcPal++ & 0x00FCFCFC) >> 1;
+    while (srcPal < startInvar) *dstPal++ = (*srcPal++ bitand 0x00FCFCFC) >> 1;
 
     // Copy the invariant high portion of the palette
     while (srcPal < stop) *dstPal++ = *srcPal++;

@@ -184,7 +184,7 @@ public:
     BOOL Process(long ID, short ButtonHitType);
     BOOL Dragable(long)
     {
-        return(GetFlags() & C_BIT_DRAGABLE);
+        return(GetFlags() bitand C_BIT_DRAGABLE);
     }
     void Refresh();
     void Draw(SCREEN *surface, UI95_RECT *cliprect);

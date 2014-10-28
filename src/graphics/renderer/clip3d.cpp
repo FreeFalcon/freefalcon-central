@@ -59,7 +59,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
 
     // Clip to the near plane
-    if (clipTest & CLIP_NEAR)
+    if (clipTest bitand CLIP_NEAR)
     {
         temp = inList;
         inList = outList;
@@ -71,7 +71,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_NEAR)
+            if (((*p)->clipFlag xor (*v)->clipFlag) bitand CLIP_NEAR)
             {
                 ShiAssert(extraVertCount < MAX_EXTRA_VERTS);
                 *nextOut = &extraVerts[extraVertCount];
@@ -82,7 +82,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             }
 
             // If this vert isn't clipped, use it
-            if ( not ((*v)->clipFlag & CLIP_NEAR))
+            if ( not ((*v)->clipFlag bitand CLIP_NEAR))
             {
                 *nextOut++ = *v;
             }
@@ -165,7 +165,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 #ifndef DO_NEAR_CLIP_ONLY
 
         // Clip to the bottom plane
-        if (clipTest & CLIP_BOTTOM)
+        if (clipTest bitand CLIP_BOTTOM)
         {
             temp = inList;
             inList = outList;
@@ -177,7 +177,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_BOTTOM)
+                if (((*p)->clipFlag xor (*v)->clipFlag) bitand CLIP_BOTTOM)
                 {
                     ShiAssert(extraVertCount < MAX_EXTRA_VERTS);
                     *nextOut = &extraVerts[extraVertCount];
@@ -186,7 +186,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 }
 
                 // If this vert isn't clipped, use it
-                if ( not ((*v)->clipFlag & CLIP_BOTTOM))
+                if ( not ((*v)->clipFlag bitand CLIP_BOTTOM))
                 {
                     *nextOut++ = *v;
                 }
@@ -201,7 +201,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
 
         // Clip to the top plane
-        if (clipTest & CLIP_TOP)
+        if (clipTest bitand CLIP_TOP)
         {
             temp = inList;
             inList = outList;
@@ -213,7 +213,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_TOP)
+                if (((*p)->clipFlag xor (*v)->clipFlag) bitand CLIP_TOP)
                 {
                     ShiAssert(extraVertCount < MAX_EXTRA_VERTS);
                     *nextOut = &extraVerts[extraVertCount];
@@ -222,7 +222,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 }
 
                 // If this vert isn't clipped, use it
-                if ( not ((*v)->clipFlag & CLIP_TOP))
+                if ( not ((*v)->clipFlag bitand CLIP_TOP))
                 {
                     *nextOut++ = *v;
                 }
@@ -237,7 +237,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
 
         // Clip to the right plane
-        if (clipTest & CLIP_RIGHT)
+        if (clipTest bitand CLIP_RIGHT)
         {
             temp = inList;
             inList = outList;
@@ -249,7 +249,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_RIGHT)
+                if (((*p)->clipFlag xor (*v)->clipFlag) bitand CLIP_RIGHT)
                 {
                     ShiAssert(extraVertCount < MAX_EXTRA_VERTS);
                     *nextOut = &extraVerts[extraVertCount];
@@ -258,7 +258,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 }
 
                 // If this vert isn't clipped, use it
-                if ( not ((*v)->clipFlag & CLIP_RIGHT))
+                if ( not ((*v)->clipFlag bitand CLIP_RIGHT))
                 {
                     *nextOut++ = *v;
                 }
@@ -273,7 +273,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
 
         // Clip to the left plane
-        if (clipTest & CLIP_LEFT)
+        if (clipTest bitand CLIP_LEFT)
         {
             temp = inList;
             inList = outList;
@@ -285,7 +285,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag xor (*v)->clipFlag) & CLIP_LEFT)
+                if (((*p)->clipFlag xor (*v)->clipFlag) bitand CLIP_LEFT)
                 {
                     ShiAssert(extraVertCount < MAX_EXTRA_VERTS);
                     *nextOut = &extraVerts[extraVertCount];
@@ -294,7 +294,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 }
 
                 // If this vert isn't clipped, use it
-                if ( not ((*v)->clipFlag & CLIP_LEFT))
+                if ( not ((*v)->clipFlag bitand CLIP_LEFT))
                 {
                     *nextOut++ = *v;
                 }

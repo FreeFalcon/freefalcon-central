@@ -648,7 +648,7 @@ void SimulationDriver::Cycle()
 
                 // MLR 1/2/2005 - Since objects are added to the DB during the cycle,
                 // some object miss thier initial Exec() call
-                // this causes things like bombs & missiles launching from behind the a/c.
+                // this causes things like bombs bitand missiles launching from behind the a/c.
                 // SimBaseObject (and derived) entities that are created during
                 // Cycle will be marked for "post processing" so
                 // that they are Exec()ed for the current frame.
@@ -2139,8 +2139,8 @@ void SimulationDriver::InitACMIRecord(void)
         // once ACMI supports state change events
         featStat.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
         featStat.data.uniqueID = ACMIIDTable->Add(theObject->Id(), NULL, 0); //.num_;
-        featStat.data.newStatus = (theObject->Status() & VIS_TYPE_MASK);
-        featStat.data.prevStatus = (theObject->Status() & VIS_TYPE_MASK);
+        featStat.data.newStatus = (theObject->Status() bitand VIS_TYPE_MASK);
+        featStat.data.prevStatus = (theObject->Status() bitand VIS_TYPE_MASK);
         gACMIRec.FeatureStatusRecord(&featStat);
 
         // next one in the loop

@@ -37,7 +37,7 @@ public:
     enum SmsDrawFlags { MENUMODE = 0x1, };
     int IsSet(SmsDrawFlags fl)
     {
-        return (flags & fl) ? TRUE : FALSE;
+        return (flags bitand fl) ? TRUE : FALSE;
     };
     void SetFlag(SmsDrawFlags fl)
     {

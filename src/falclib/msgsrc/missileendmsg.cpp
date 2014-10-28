@@ -831,7 +831,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
         }
         // check for cluster bombs
         // at them moment we have no way to scale them
-        else if (wc->Flags & WEAP_CLUSTER)
+        else if (wc->Flags bitand WEAP_CLUSTER)
             //if (TRUE)
         {
             // if ground type is -1 we've exploded in air

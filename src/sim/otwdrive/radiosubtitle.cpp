@@ -552,19 +552,19 @@ void RadioSubTitle::WriteOut(void)
 /*****************************************************************************/
 unsigned long RadioSubTitle::FindChannelColour(const char theChannel)
 {
-    if (theChannel & TOFROM_TOWER)
+    if (theChannel bitand TOFROM_TOWER)
         return colour_Tower;
-    else if (theChannel & TOFROM_FLIGHT)
+    else if (theChannel bitand TOFROM_FLIGHT)
         return colour_Flight;
-    else if (theChannel & TO_PACKAGE)
+    else if (theChannel bitand TO_PACKAGE)
         return colour_ToPackage;
-    else if (theChannel & TOFROM_PACKAGE)
+    else if (theChannel bitand TOFROM_PACKAGE)
         return colour_ToFromPackage;
-    else if (theChannel & TO_TEAM)
+    else if (theChannel bitand TO_TEAM)
         return colour_Team;
-    else if (theChannel & IN_PROXIMITY)
+    else if (theChannel bitand IN_PROXIMITY)
         return colour_Proximity;
-    else if (theChannel & TO_WORLD)
+    else if (theChannel bitand TO_WORLD)
         return colour_World;
     else
         return colour_Standard;
@@ -575,19 +575,19 @@ unsigned long RadioSubTitle::FindChannelColour(const char theChannel)
 /*****************************************************************************/
 char* RadioSubTitle::FindChannelName(const char theChannel)
 {
-    if (theChannel & TOFROM_TOWER)
+    if (theChannel bitand TOFROM_TOWER)
         return "[Tower] ";
-    else if (theChannel & TOFROM_FLIGHT)
+    else if (theChannel bitand TOFROM_FLIGHT)
         return "[Flight] ";
-    else if (theChannel & TO_PACKAGE)
+    else if (theChannel bitand TO_PACKAGE)
         return "[To Package] ";
-    else if (theChannel & TOFROM_PACKAGE)
+    else if (theChannel bitand TOFROM_PACKAGE)
         return "[To/From Package] ";
-    else if (theChannel & TO_TEAM)
+    else if (theChannel bitand TO_TEAM)
         return "[Guard] ";
-    else if (theChannel & IN_PROXIMITY)
+    else if (theChannel bitand IN_PROXIMITY)
         return "[Proximity] ";
-    else if (theChannel & TO_WORLD)
+    else if (theChannel bitand TO_WORLD)
         return "[Broadcast] ";
     else
         return "[Unknown] ";

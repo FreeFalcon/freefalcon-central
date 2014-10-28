@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -299,7 +299,7 @@ void C_ScrollBar::CalcRanges()
             if (SY_ > MaxPos_)
                 SY_ = MaxPos_;
 
-            if (GetFlags() & C_BIT_USELINE)
+            if (GetFlags() bitand C_BIT_USELINE)
             {
                 BGX_ = GetW() / 2;
                 BGY_ = rect.top;
@@ -336,7 +336,7 @@ void C_ScrollBar::CalcRanges()
             if (SX_ > MaxPos_)
                 SX_ = MaxPos_;
 
-            if (GetFlags() & C_BIT_USELINE)
+            if (GetFlags() bitand C_BIT_USELINE)
             {
                 BGY_ = rect.left;
                 BGX_ = GetH() / 2;
@@ -385,7 +385,7 @@ void C_ScrollBar::UpdatePosition()
 
 long C_ScrollBar::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() & C_BIT_INVISIBLE or !(GetFlags() & C_BIT_ENABLED) or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !Ready())
         return(0);
 
     if (relX < GetX() or relX > (GetX() + GetW()) or relY < GetY() or relY > (GetY() + GetH()))
@@ -647,7 +647,7 @@ BOOL C_ScrollBar::Dragable(long)
 
 void C_ScrollBar::Refresh()
 {
-    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -659,13 +659,13 @@ void C_ScrollBar::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     if ( not Ready()) return;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
-    if (GetFlags() & C_BIT_USEBGIMAGE)
+    if (GetFlags() bitand C_BIT_USEBGIMAGE)
         BgImage_->Draw(surface, cliprect);
 
-    if (GetFlags() & C_BIT_USELINE)
+    if (GetFlags() bitand C_BIT_USELINE)
     {
         if (GetType() == C_TYPE_HORIZONTAL)
             Parent_->DrawHLine(surface, LineColor_, GetX() + BGX_, GetY() + BGY_, BGW_, C_BIT_ABSOLUTE, 0, cliprect);
@@ -706,7 +706,7 @@ void C_ScrollBar::Draw(SCREEN *surface, UI95_RECT *cliprect)
         Slider_->Blit(surface, s.left, s.top, s.right - s.left, s.bottom - s.top, rect.left, rect.top);
     }
 
-    if (MouseOver_ or (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
@@ -715,7 +715,7 @@ BOOL C_ScrollBar::Wheel(int increment, WORD MouseX, WORD MouseY)
     // long x,y;
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
     {
         return(FALSE);
     }
@@ -771,7 +771,7 @@ BOOL C_ScrollBar::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
     long x, y;
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return(FALSE);
 
     Leave = UI_Enter(Parent_);

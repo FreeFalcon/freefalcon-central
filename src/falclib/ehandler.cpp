@@ -77,8 +77,8 @@ static void PrintTime(char *output, FILETIME TimeToPrint)
         // What a silly way to print out the file date/time. Oh well,
         // it works, and I'm not aware of a cleaner way to do it.
         wsprintf(output, "%d/%d/%d %02d:%02d:%02d",
-                 (Date / 32) & 15, Date & 31, (Date / 512) + 1980,
-                 (Time / 2048), (Time / 32) & 63, (Time & 31) * 2);
+                 (Date / 32) bitand 15, Date bitand 31, (Date / 512) + 1980,
+                 (Time / 2048), (Time / 32) bitand 63, (Time bitand 31) * 2);
     }
     else
         output[0] = 0;

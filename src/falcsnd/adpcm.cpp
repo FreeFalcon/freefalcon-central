@@ -55,7 +55,7 @@ long CSoundMgr::StreamIMAADPCM(SOUNDSTREAM *Stream, char *dest, long dlen)
     }
     else if (Stream->ImaInfo->sreadidx < Stream->ImaInfo->slen)
     {
-        if ( not (Stream->ImaInfo->Status & SND_STREAM_PART2))
+        if ( not (Stream->ImaInfo->Status bitand SND_STREAM_PART2))
         {
             if ((Stream->ImaInfo->sidx % Stream->ImaInfo->srcsize) > (Stream->ImaInfo->srcsize >> 1))
             {
@@ -147,7 +147,7 @@ long CSoundMgr::StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen)
 
             while (Info->count and didx < dlen and Info->didx < Info->dlen)
             {
-                encSample = (short)(Info->leftSamples & 0x0F);
+                encSample = (short)(Info->leftSamples bitand 0x0F);
                 stepSize = step[Info->stepIndexL];
                 Info->predSampleL  = IMA_SampleDecode(encSample, Info->predSampleL, stepSize);
                 Info->stepIndexL = IMA_NextStepIndex(encSample, Info->stepIndexL);
@@ -257,13 +257,13 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
             while (Info->count and didx < dlen and Info->didx < Info->dlen)
             {
                 //left channel
-                encSampleL = (short)(Info->leftSamples & 0x0F);
+                encSampleL = (short)(Info->leftSamples bitand 0x0F);
                 stepSize = step[Info->stepIndexL];
                 Info->predSampleL = IMA_SampleDecode(encSampleL, Info->predSampleL, stepSize);
                 Info->stepIndexL = IMA_NextStepIndex(encSampleL, Info->stepIndexL);
 
                 //right channel
-                encSampleR  = (short)(Info->rightSamples & 0x0F);
+                encSampleR  = (short)(Info->rightSamples bitand 0x0F);
                 stepSize = step[Info->stepIndexR];
                 Info->predSampleR = IMA_SampleDecode(encSampleR, Info->predSampleR, stepSize);
                 Info->stepIndexR  = IMA_NextStepIndex(encSampleR, Info->stepIndexR);
@@ -376,13 +376,13 @@ long CSoundMgr::ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength)
             for (i = 8; i > 0; i--)
             {
                 //left channel
-                encSampleL = (short)(leftSamples & 0x0F);
+                encSampleL = (short)(leftSamples bitand 0x0F);
                 stepSize = step[stepIndexL];
                 predSampleL = IMA_SampleDecode(encSampleL, predSampleL, stepSize);
                 stepIndexL = IMA_NextStepIndex(encSampleL, stepIndexL);
 
                 //right channel
-                encSampleR  = (short)(rightSamples & 0x0F);
+                encSampleR  = (short)(rightSamples bitand 0x0F);
                 stepSize = step[stepIndexR];
                 predSampleR = IMA_SampleDecode(encSampleR, predSampleR, stepSize);
                 stepIndexR  = IMA_NextStepIndex(encSampleR, stepIndexR);
@@ -454,7 +454,7 @@ long CSoundMgr::ImaDecodeM16(char *sBuff, char *dBuff, long bufferLength)
             sample   = *sBuff++;
 
             //sample 1
-            encSample = (short)(sample & 0x0F);
+            encSample = (short)(sample bitand 0x0F);
             stepSize = step[stepIndex];
             predSample  = IMA_SampleDecode(encSample, predSample, stepSize);
             stepIndex = IMA_NextStepIndex(encSample, stepIndex);
@@ -506,20 +506,20 @@ short CSoundMgr::IMA_SampleDecode(short nEncodedSample, short nPredictedSample, 
     //
     lDifference = nStepSize >> 3;
 
-    if (nEncodedSample & 4)
+    if (nEncodedSample bitand 4)
         lDifference += nStepSize;
 
-    if (nEncodedSample & 2)
+    if (nEncodedSample bitand 2)
         lDifference += nStepSize >> 1;
 
-    if (nEncodedSample & 1)
+    if (nEncodedSample bitand 1)
         lDifference += nStepSize >> 2;
 
     //
     //  If the 'sign bit' of the encoded nibble is set, then the
     //  difference is negative...
     //
-    if (nEncodedSample & 8)
+    if (nEncodedSample bitand 8)
         lDifference = -lDifference;
 
     //

@@ -493,7 +493,7 @@ int DoWPAction(Flight u)
             // Check if we're planning to take off again!
             pw = w->GetNextWP();
 
-            if ( not pw or ( not (w->GetWPFlags() & WPF_TAKEOFF) and pw->GetWPAction() not_eq WP_TAKEOFF))
+            if ( not pw or ( not (w->GetWPFlags() bitand WPF_TAKEOFF) and pw->GetWPAction() not_eq WP_TAKEOFF))
             {
                 UpdateSquadronStatus(u, TRUE, FALSE);
                 return -1;
@@ -541,12 +541,12 @@ int DoWPAction(Flight u)
     }
 
     // Check Flags
-    if ((w->GetWPFlags() & WPF_REPEAT) or (w->GetWPFlags() & WPF_REPEAT_CONTINUOUS))
+    if ((w->GetWPFlags() bitand WPF_REPEAT) or (w->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS))
     {
         speed = u->GetCruiseSpeed();
 
         // Check if we've been here long enough
-        if (Camp_GetCurrentTime() > w->GetWPDepartureTime() and !(w->GetWPFlags() & WPF_REPEAT_CONTINUOUS))
+        if (Camp_GetCurrentTime() > w->GetWPDepartureTime() and !(w->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS))
         {
             // If so, go on to the next wp and adjust their times from now.
             u->SetCurrentUnitWP(w->GetNextWP());
@@ -574,7 +574,7 @@ int DoWPAction(Flight u)
         }
     }
 
-    if (w->GetWPFlags() & WPF_CP)
+    if (w->GetWPFlags() bitand WPF_CP)
     {
         if (u->GetUnitPriority() > 0 and u->GetUnitMission() == AMIS_AWACS)
         {
@@ -597,7 +597,7 @@ int DoWPAction(Flight u)
         u->SetUnitPriority(0); // We're just hanging out here... waiting for something to do.
     }
 
-    if (w->GetWPFlags() & WPF_TARGET and !(w->GetWPFlags() & WPF_LAND) and !(w->GetWPFlags() & WPF_TAKEOFF) and !(w->GetWPFlags() & WPF_CP) and !(w->GetWPFlags() & WPF_REPEAT))
+    if (w->GetWPFlags() bitand WPF_TARGET and !(w->GetWPFlags() bitand WPF_LAND) and !(w->GetWPFlags() bitand WPF_TAKEOFF) and !(w->GetWPFlags() bitand WPF_CP) and !(w->GetWPFlags() bitand WPF_REPEAT))
     {
         // Radio Chatter message
         FalconRadioChatterMessage *msg = new FalconRadioChatterMessage(u->Id(), FalconLocalGame);
@@ -610,7 +610,7 @@ int DoWPAction(Flight u)
         FalconSendMessage(msg, FALSE);
     }
 
-    if (w->GetWPFlags() & WPF_DIVERT)
+    if (w->GetWPFlags() bitand WPF_DIVERT)
         return 1;
     else if (u->Diverted())
     {
@@ -619,7 +619,7 @@ int DoWPAction(Flight u)
         // KCK NOTE: We might want to check for abort here.
     }
 
-    if (w->GetWPFlags() & WPF_TARGET or w->GetWPFlags() & WPF_TURNPOINT)
+    if (w->GetWPFlags() bitand WPF_TARGET or w->GetWPFlags() bitand WPF_TURNPOINT)
         u->SetUnitPriority(0); // We're done with our task, so we can now be reassigned
 
     return 1;

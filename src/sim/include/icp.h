@@ -516,7 +516,7 @@ public:
     };
     int IsICPSet(int testFlag)
     {
-        return ICPModeFlags & testFlag ? 1 : 0;
+        return ICPModeFlags bitand testFlag ? 1 : 0;
     };
 
     //IFF Stuff
@@ -542,7 +542,7 @@ public:
     };
     int IsIFFSet(int testFlag)
     {
-        return IFFModes & testFlag ? 1 : 0;
+        return IFFModes bitand testFlag ? 1 : 0;
     };
     void ToggleIFFFlag(int Flag)
     {

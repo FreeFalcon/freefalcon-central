@@ -79,7 +79,7 @@ void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
 {
     static int flash = false;
     // Do we draw flashing things this frame?
-    flash = vuxRealTime & 0x200;
+    flash = vuxRealTime bitand 0x200;
     static int show = 0;
     static bool oldcount = false;
 

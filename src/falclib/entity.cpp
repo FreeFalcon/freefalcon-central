@@ -1437,7 +1437,7 @@ void UpdateUnitCombatStatistics(void)
                 for (j = 0; j < OtherDam and vc; j++)
                     dam[j] += vc->DamageMod[j];
 
-                UnitDataTable[id].Flags  or_eq  vc->Flags & 0xFF;
+                UnitDataTable[id].Flags  or_eq  vc->Flags bitand 0xFF;
 
                 if (vc->MaxSpeed < mspeed)
                     mspeed = vc->MaxSpeed;
@@ -1523,7 +1523,7 @@ void UpdateUnitCombatStatistics(void)
                 {
                     j = SquadronStoresDataTable[squads].Stores[i] * 20;
 
-                    if (j > 255 or WeaponDataTable[i].Flags & WEAP_ONETENTH)
+                    if (j > 255 or WeaponDataTable[i].Flags bitand WEAP_ONETENTH)
                         j = 255;
 
                     SquadronStoresDataTable[squads].Stores[i] = (uchar)j;

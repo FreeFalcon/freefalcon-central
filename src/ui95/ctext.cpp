@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 char g_sVersion[100];
 
 enum
@@ -75,9 +75,9 @@ void C_Text::SetFixedWidth(long w)
 {
     // If you get this assert, some one called SetFixedWidth (or [FIXEDWIDTH] n ... in the scrips)
     // AFTER assigning a string to the control
-    // THIS is a BIG NO NO... unless it started out as fixed width PRIOR to SetText, & the string size
+    // THIS is a BIG NO NO... unless it started out as fixed width PRIOR to SetText, bitand the string size
     // is just being changed
-    if ( not (Flags_ & C_BIT_FIXEDSIZE))
+    if ( not (Flags_ bitand C_BIT_FIXEDSIZE))
     {
         F4Assert( not Text_->GetText());
     }
@@ -94,14 +94,14 @@ void C_Text::SetText(_TCHAR *text)
 
     if (Text_)
     {
-        if (Flags_ & C_BIT_FIXEDSIZE)
+        if (Flags_ bitand C_BIT_FIXEDSIZE)
             Text_->SetText(text);
         else
             SetTextID(gStringMgr->GetText(gStringMgr->AddText(text)));
 
         Text_->SetFlags(GetFlags());
 
-        if (GetFlags() & C_BIT_WORDWRAP)
+        if (GetFlags() bitand C_BIT_WORDWRAP)
             SetH(Text_->GetH());
         else
             SetWH(Text_->GetW(), Text_->GetH());
@@ -121,7 +121,7 @@ void C_Text::SetTextID(_TCHAR *text)
         Text_->SetText(text);
         Text_->SetFlags(GetFlags());
 
-        if (GetFlags() & C_BIT_WORDWRAP)
+        if (GetFlags() bitand C_BIT_WORDWRAP)
             SetH(Text_->GetH());
         else
             SetWH(Text_->GetW(), Text_->GetH());
@@ -208,10 +208,10 @@ void C_Text::SetFlags(long flags)
 
 void C_Text::Refresh()
 {
-    if ( not Ready() or GetFlags() & C_BIT_INVISIBLE or Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    if (BgImage_ and GetFlags() & C_BIT_USEBGIMAGE)
+    if (BgImage_ and GetFlags() bitand C_BIT_USEBGIMAGE)
         BgImage_->Refresh();
 
     if (Text_)
@@ -220,14 +220,14 @@ void C_Text::Refresh()
 
 void C_Text::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
-    if ( not (GetFlags() & C_BIT_ABSOLUTE))
+    if ( not (GetFlags() bitand C_BIT_ABSOLUTE))
         if ((GetY() + GetH() + Parent_->VY_[GetClient()]) < Parent_->ClientArea_[GetClient()].top)
             return;
 
-    if (BgImage_ and GetFlags() & C_BIT_USEBGIMAGE)
+    if (BgImage_ and GetFlags() bitand C_BIT_USEBGIMAGE)
         BgImage_->Draw(surface, cliprect);
 
     if (Text_)
@@ -244,7 +244,7 @@ void C_Text::SetSubParents(C_Window *)
         Text_->SetFlags(Flags_);
         Text_->SetInfo();
 
-        if (GetFlags() & C_BIT_WORDWRAP)
+        if (GetFlags() bitand C_BIT_WORDWRAP)
             SetH(Text_->GetH());
         else
             SetWH(Text_->GetW(), Text_->GetH());

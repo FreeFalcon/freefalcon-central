@@ -355,7 +355,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
     int repl_a_s = 0, repl_v_s = 0, repl_s = 0, repl_sa = 0, prob = 0; // A.S. debug variables
     // end added section
 
-    if ( not TeamInfo[who] or !(TeamInfo[who]->flags & TEAM_ACTIVE))
+    if ( not TeamInfo[who] or !(TeamInfo[who]->flags bitand TEAM_ACTIVE))
         return 0;
 
     sratio = fratio = rratio = 0.0F;

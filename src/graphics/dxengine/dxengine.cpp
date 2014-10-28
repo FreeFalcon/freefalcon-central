@@ -881,8 +881,8 @@ void CDXEngine::DrawSurface()
     // Selects changed Flags
     DXFlagsType ChangedFlags, DisabledFlags, EnabledFlags;
     ChangedFlags.w = m_LastFlags.w xor NewFlags.w;
-    DisabledFlags.w = ChangedFlags.w & (compl NewFlags.w);
-    EnabledFlags.w = ChangedFlags.w & NewFlags.w;
+    DisabledFlags.w = ChangedFlags.w bitand (compl NewFlags.w);
+    EnabledFlags.w = ChangedFlags.w bitand NewFlags.w;
 
 
 
@@ -947,9 +947,9 @@ void CDXEngine::DrawSurface()
     {
         TheMaterial.power = m_NODE.SURFACE->SpecularIndex;
         m_LastSpecular = m_NODE.SURFACE->DefaultSpecularity;
-        TheMaterial.dcvSpecular.r = (float)((m_LastSpecular >> 16) & 0xff) / 255.0f;
-        TheMaterial.dcvSpecular.g = (float)((m_LastSpecular >> 8) & 0xff) / 255.0f;
-        TheMaterial.dcvSpecular.b = (float)(m_LastSpecular & 0xff) / 255.0f;
+        TheMaterial.dcvSpecular.r = (float)((m_LastSpecular >> 16) bitand 0xff) / 255.0f;
+        TheMaterial.dcvSpecular.g = (float)((m_LastSpecular >> 8) bitand 0xff) / 255.0f;
+        TheMaterial.dcvSpecular.b = (float)(m_LastSpecular bitand 0xff) / 255.0f;
         m_pD3DD->SetMaterial(&TheMaterial);
     }
 
@@ -1024,10 +1024,10 @@ void CDXEngine::DrawSurface()
 float CDXEngine::Process_DOFRot(float dofrot, int dofNumber, int flags, float min, float max, float multiplier, float unused)
 {
     // Negated DOF
-    if (flags & XDOF_NEGATE) dofrot = -dofrot;
+    if (flags bitand XDOF_NEGATE) dofrot = -dofrot;
 
     // DOF Limits
-    if (flags & XDOF_MINMAX)
+    if (flags bitand XDOF_MINMAX)
     {
         if (dofrot < min) dofrot = min;
 
@@ -1035,13 +1035,13 @@ float CDXEngine::Process_DOFRot(float dofrot, int dofNumber, int flags, float mi
     }
 
     // Scaled 0-1 DOF
-    if (flags & XDOF_SUBRANGE and min not_eq max)
+    if (flags bitand XDOF_SUBRANGE and min not_eq max)
     {
         dofrot -= min;
         dofrot /= max - min;
 
         // Angular DOF
-        if (flags & XDOF_ISDOF) dofrot *= (float)(3.14159 / 180.0);
+        if (flags bitand XDOF_ISDOF) dofrot *= (float)(3.14159 / 180.0);
     }
 
     // Final Scaling
@@ -1258,7 +1258,7 @@ void CDXEngine::SWITCHManage()
     while (m_NODE.DOF->SwitchNumber == SWNumber and (m_NODE.DOF->Type == SWITCH or m_NODE.DOF->Type == XSWITCH))
     {
         // If value found then Exit here pointing the SWITCH, next to it is the SURFACE
-        if (Value & (1 << m_NODE.DOF->SwitchBranch))
+        if (Value bitand (1 << m_NODE.DOF->SwitchBranch))
         {
             PushMatrix(&AppliedState);
             return;
@@ -1376,7 +1376,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
         m_pD3DD->ComputeSphereVisibility(&p, &r, 1, 0, &ClipResult);
 
         // if Visible assert it, if not visible got to check for Lights
-        if (ClipResult & D3DSTATUS_DEFAULT) goto LightCheck;
+        if (ClipResult bitand D3DSTATUS_DEFAULT) goto LightCheck;
 
         Visible = true;
 
@@ -1420,7 +1420,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
 
         while (LightsNr--)
         {
-            if (objInst->SwitchValues[Light->Switch] & Light->SwitchMask) TheLightEngine.AddDynamicLight(Liter, Light, RotMatrix, &p, 100);
+            if (objInst->SwitchValues[Light->Switch] bitand Light->SwitchMask) TheLightEngine.AddDynamicLight(Liter, Light, RotMatrix, &p, 100);
 
             Light++;
         }
@@ -1510,7 +1510,7 @@ LightCheck:
         // and add all of them to the dynamic lights list
         while (LightsNr--)
         {
-            if (Light->Switch == -1 or (objInst->SwitchValues[Light->Switch] & Light->SwitchMask)) TheLightEngine.AddDynamicLight(Liter, Light, RotMatrix, &p, LODRange);
+            if (Light->Switch == -1 or (objInst->SwitchValues[Light->Switch] bitand Light->SwitchMask)) TheLightEngine.AddDynamicLight(Liter, Light, RotMatrix, &p, LODRange);
 
             Light++;
         }
@@ -1742,7 +1742,7 @@ void CDXEngine::FlushObjects(void)
 #ifdef STAT_DX_ENGINE
         COUNT_PROFILE("*** DX Objects");
 #endif
-        // Execute the Scripts 0 & 1 if existant
+        // Execute the Scripts 0 bitand 1 if existant
         DXScriptVariableType *Script = ((DxDbHeader*)m_VB.Root)->Scripts;
         D3DVECTOR pos;
         pos.x = AppliedState.m30;
@@ -2110,7 +2110,7 @@ void CDXEngine::FlushBuffers(void)
     // Draw the Solid Surfaces
     DrawSolidSurfaces();
 
-    // Flush Dynamic Buffers & sorted objects
+    // Flush Dynamic Buffers bitand sorted objects
     FlushDynamicObjects();
 
     //Reset Features
@@ -2177,7 +2177,7 @@ void CDXEngine::ModelInit(ObjectInstance *objInst, DxDbHeader* Header, DWORD *Te
     // Transform the model
     AppliedState = *State;
 
-    // Execute the Scripts 0 & 1 if existant
+    // Execute the Scripts 0 bitand 1 if existant
     D3DVECTOR pos;
     pos.x = AppliedState.m30;
     pos.y = AppliedState.m31;

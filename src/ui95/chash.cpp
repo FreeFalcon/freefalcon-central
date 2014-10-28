@@ -49,7 +49,7 @@ void C_Hash::Cleanup()
                 prev = cur;
                 cur = cur->Next;
 
-                if (flags_ & C_BIT_REMOVE)
+                if (flags_ bitand C_BIT_REMOVE)
                 {
                     if (Callback_)
                         (*Callback_)(prev->Record);
@@ -265,14 +265,14 @@ _TCHAR *C_Hash::FindText(long ID)
     if ( not TableSize_ or !Table_ or (ID < 0)) return(NULL);
 
     idx = ID >> 16;
-    i = ID & 0x0000ffff;
+    i = ID bitand 0x0000ffff;
 
     if (idx >= (unsigned long)TableSize_) //!
         return(NULL);
 
     cur = Table_[idx].Root_;
 
-    for (i = 0; i < (unsigned long)(ID & 0x0000ffff) and cur; i++)
+    for (i = 0; i < (unsigned long)(ID bitand 0x0000ffff) and cur; i++)
         cur = cur->Next;
 
     if (cur)
@@ -318,14 +318,14 @@ long C_Hash::FindTextID(long ID)
     if ( not TableSize_ or !Table_ or (ID < 0)) return(NULL);
 
     idx = ID >> 16;
-    i = ID & 0x0000ffff;
+    i = ID bitand 0x0000ffff;
 
     if (idx >= TableSize_)
         return(-1);
 
     cur = Table_[idx].Root_;
 
-    for (i = 0; i < (ID & 0x0000ffff) and cur; i++)
+    for (i = 0; i < (ID bitand 0x0000ffff) and cur; i++)
         cur = cur->Next;
 
     if (cur)
@@ -352,7 +352,7 @@ void C_Hash::Remove(long ID)
         prev = Table_[idx].Root_;
         Table_[idx].Root_ = Table_[idx].Root_->Next;
 
-        if (flags_ & C_BIT_REMOVE)
+        if (flags_ bitand C_BIT_REMOVE)
         {
             if (Callback_)
                 (*Callback_)(prev->Record);
@@ -378,7 +378,7 @@ void C_Hash::Remove(long ID)
                 prev = cur->Next;
                 cur->Next = cur->Next->Next;
 
-                if (flags_ & C_BIT_REMOVE)
+                if (flags_ bitand C_BIT_REMOVE)
                 {
                     if (Callback_)
                         (*Callback_)(prev->Record);
@@ -414,7 +414,7 @@ void C_Hash::RemoveOld()
             prev = Table_[i].Root_;
             Table_[i].Root_ = Table_[i].Root_->Next;
 
-            if (flags_ & C_BIT_REMOVE)
+            if (flags_ bitand C_BIT_REMOVE)
             {
                 if (Callback_)
                     (*Callback_)(prev->Record);
@@ -441,7 +441,7 @@ void C_Hash::RemoveOld()
                     prev = cur->Next;
                     cur->Next = cur->Next->Next;
 
-                    if (flags_ & C_BIT_REMOVE)
+                    if (flags_ bitand C_BIT_REMOVE)
                     {
                         if (Callback_)
                             (*Callback_)(prev->Record);
