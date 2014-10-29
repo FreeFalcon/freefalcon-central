@@ -814,7 +814,7 @@ void SimulationDriver::Pause(void)
     UPDATE_SIM_ELAPSED_SECONDS; // COBRA - RED - Scale Elapsed Seconds
 
 }
-// Retro attempt ends (hooray!)
+// Retro attempt ends (hooray)
 
 void SimulationDriver::NoPause(void)
 {

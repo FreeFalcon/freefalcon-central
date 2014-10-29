@@ -804,7 +804,7 @@ int inflate_codes(struct huft * tl, struct huft * td, int bl, int bd, COMPRESSED
                     d += e;
                 }
                 else            /* do it slow to avoid memcpy() overlap */
-#endif  /* !NOMEMCPY */
+#endif  /*  not NOMEMCPY */
                     do
                     {
                         cmp->slide[w++] = cmp->slide[d++];

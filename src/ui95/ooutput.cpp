@@ -1280,7 +1280,7 @@ void O_Output::ExtractAnim(SCREEN *surface, long FrameNo, long x, long y, UI95_R
 
 void O_Output::Extract16BitRLE(SCREEN *surface, long FrameNo, long destx, long desty, UI95_RECT *src, UI95_RECT *clip)
 {
-    src; //! Unused
+    src; //Unused
 
     ShiAssert(surface->bpp not_eq 32);  //XX
 

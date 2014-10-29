@@ -995,7 +995,7 @@ void C_Handler::ClearAllHiddenRects()
 }
 
 void C_Handler::Fill(SCREEN *surface, COLORREF Color, long x1, long y1, long x2, long y2)
-//! void C_Handler::Fill(SCREEN *surface,COLORREF Color,short x1,short y1,short x2,short y2)
+//void C_Handler::Fill(SCREEN *surface,COLORREF Color,short x1,short y1,short x2,short y2)
 {
     UI95_RECT dst;
 

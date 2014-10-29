@@ -1541,7 +1541,7 @@ C_Base *C_Window::MouseOver(long relx, long rely, C_Base *lastover)
 void C_Window::GetScreenFormat()
 {
     UI95_GetScreenColorInfo(r_mask_, r_shift_, g_mask_, g_shift_, b_mask_, b_shift_);
-    //! UI95_GetScreenColorInfo(&r_mask_,&r_shift_,&g_mask_,&g_shift_,&b_mask_,&b_shift_);
+    //UI95_GetScreenColorInfo(&r_mask_,&r_shift_,&g_mask_,&g_shift_,&b_mask_,&b_shift_);
     r_max_ = static_cast<WORD>(r_mask_ >> r_shift_);
     g_max_ = static_cast<WORD>(g_mask_ >> g_shift_);
     b_max_ = static_cast<WORD>(b_mask_ >> b_shift_);

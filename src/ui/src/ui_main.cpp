@@ -1317,7 +1317,7 @@ void GlobalSetup()
     gImageMgr->Setup();
     gImageMgr->SetColorKey(UI95_RGB24Bit(0x00ff00ff));
     UI95_GetScreenColorInfo(r_mask, r_shift, g_mask, g_shift, b_mask, b_shift);
-    //! UI95_GetScreenColorInfo(&r_mask,&r_shift,&g_mask,&g_shift,&b_mask,&b_shift);
+    //UI95_GetScreenColorInfo(&r_mask,&r_shift,&g_mask,&g_shift,&b_mask,&b_shift);
     gImageMgr->SetScreenFormat(r_shift, g_shift, b_shift);
 
     gFontList = new C_Font;

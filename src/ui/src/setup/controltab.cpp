@@ -1159,7 +1159,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
         {
             int theSat = UIInputStuff[j].theDeviceAxis->Saturation;
 
-            if (theSat == SATURATION_NONE) // no saturation. this value is -1  (do not use unsigned with this !)
+            if (theSat == SATURATION_NONE) // no saturation. this value is -1  (do not use unsigned with this )
                 listbox->SetValue(SETUP_ADVANCED_SAT_NONE);
             else if (theSat >= g_nSaturationSmall) // 1% saturation, I 'borrowed' the DZ item for this
                 listbox->SetValue(SETUP_ADVANCED_DZ_SMALL);
@@ -1689,7 +1689,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
                 if ((i >= (unsigned long) theIndex) and (i  < (unsigned long) theIndex + 8))
                 {
-                    // Retro 14Feb2004 - only do this when FFB is available (duh!)
+                    // Retro 14Feb2004 - only do this when FFB is available (duh)
                     if ((hasForceFeedback) and (PlayerOptions.GetFFB()))
                     {
                         if (IO.digital[theIndex])

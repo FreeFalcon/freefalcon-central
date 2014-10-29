@@ -1469,7 +1469,7 @@ RES_EXPORT int ResOpenFile(const char * name, int mode)
                 strcpy(filename, name);
 
             table = GLOBAL_HASH_TABLE;
-#endif /* !RES_USE_FLAT_MODEL */
+#endif /*  not RES_USE_FLAT_MODEL */
 
             strcpy(data.name, filename);
 
@@ -2073,7 +2073,7 @@ RES_EXPORT int ResCloseFile(int file)
                 SAY_ERROR(RES_ERR_UNKNOWN, "set size");
             }
 
-#endif /* !RES_USE_FLAT_MODEL */
+#endif /*  not RES_USE_FLAT_MODEL */
         }
 
         if ( not FILE_HANDLES[ file ].seek_start)   /* don't close an archive */
@@ -2633,7 +2633,7 @@ RES_EXPORT RES_DIR * ResOpenDirectory(char * pathname)
         return(dir);
     }
 
-#endif /* !RES_USE_FLAT_MODEL */
+#endif /*  not RES_USE_FLAT_MODEL */
 
     return(NULL);   /* only usefull in the hierarchical version */
 }
@@ -3080,7 +3080,7 @@ RES_EXPORT int ResGetDirectory(char * buffer)
     check = strcpy(buffer, ((HASH_TABLE *)(GLOBAL_PATH_LIST -> node)) -> name);
 #else
     check = strcpy(buffer, GLOBAL_CURRENT_PATH);
-#endif /* !RES_USE_FLAT_MODEL */
+#endif /*  not RES_USE_FLAT_MODEL */
 
     IF_LOG(LOG("get dir: %s\n", buffer));
 
@@ -3235,7 +3235,7 @@ RES_EXPORT int ResWhereIs(char * filename, char * path)
 #else /* flat model */
     //    entry = hash_find( file, GLOBAL_HASH_TABLE );  /* GFG  31/01/98 */
     entry = hash_find(filename, GLOBAL_HASH_TABLE);
-#endif /* !RES_USE_FLAT_MODEL */
+#endif /*  not RES_USE_FLAT_MODEL */
 
     if ( not entry)
     {
@@ -3762,7 +3762,7 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
 
 #else
     local_table = GLOBAL_HASH_TABLE;                /* flat mode - all entries go into the root         */
-#endif  /* !RES_USE_FLAT_MODEL */
+#endif  /*  not RES_USE_FLAT_MODEL */
 
     /* enter the files into the local hash table, keeping count of the total
        number of entries. */
@@ -3831,7 +3831,7 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
                     continue;
                 }
 
-#endif /* !RES_ALLOW_EMPTY_FILES */
+#endif /*  not RES_ALLOW_EMPTY_FILES */
 
                 if (refresh)
                 {
@@ -4814,7 +4814,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
 
         table = GLOBAL_HASH_TABLE;
 
-#endif /* !RES_USE_FLAT_MODEL */
+#endif /*  not RES_USE_FLAT_MODEL */
 
 
         /* We use a dummy _finddata_t struct to stuff an entry for
@@ -6704,7 +6704,7 @@ void res_detach_ex(ARCHIVE * archive)
             hash_delete(entry, GLOBAL_HASH_TABLE);
     }
 
-#endif /* !USE_FLAT_MODEL */
+#endif /*  not USE_FLAT_MODEL */
 
     _close(archive -> os_handle);
 
@@ -7042,7 +7042,7 @@ HASH_ENTRY * hash_add(struct _finddata_t * data, HASH_TABLE * hsh)
     entry -> archive = -1; // Changed on AUG30th  [KBR]
 #if( not RES_USE_FLAT_MODEL )
     entry -> dir = NULL;
-#endif /* !RES_USE_FLAT_MODEL */
+#endif /*  not RES_USE_FLAT_MODEL */
 
     hsh -> num_entries++;
 
@@ -7504,7 +7504,7 @@ HASH_ENTRY * hash_find_table(const char * name, HASH_TABLE ** table)
 
 #if( not RES_USE_FLAT_MODEL )
     LIST       * list = NULL;
-#endif /* !RES_USE_FLAT_MODEL */
+#endif /*  not RES_USE_FLAT_MODEL */
 
     if ( not GLOBAL_HASH_TABLE)
         return(NULL);
@@ -7701,7 +7701,7 @@ HASH_ENTRY * hash_find_table(const char * name, HASH_TABLE ** table)
         return(NULL);
     }
 
-#else /* !RES_USE_FLAT_MODEL */
+#else /*  not RES_USE_FLAT_MODEL */
 
     if (path_used)
         entry = hash_find(filename, GLOBAL_HASH_TABLE);

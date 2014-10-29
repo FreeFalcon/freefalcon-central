@@ -189,7 +189,7 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
         }
 
         // Inherit certain attributes from campaign parent
-        // HACK HACK HACK HACK HACK!
+        // HACK HACK HACK HACK HACK
         if (FalconLocalGame->GetGameType() == game_Dogfight and initData->campBase->IsUnit())
             //    if ((initData->campUnit and initData->campUnit->IsSetFalcFlag(FEC_REGENERATING)) ||
             //    (initData->campObj and initData->campObj->IsSetFalcFlag(FEC_REGENERATING)))

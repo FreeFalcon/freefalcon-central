@@ -512,7 +512,7 @@ void HarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
     }
 }
 
-// RV - I-Hawk - HAS video display. Showing symbols azimuth/elevation (not range!)
+// RV - I-Hawk - HAS video display. Showing symbols azimuth/elevation (not range)
 void HarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
 {
     static const float arrowH = 0.0375f;

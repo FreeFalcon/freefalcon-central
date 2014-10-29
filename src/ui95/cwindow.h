@@ -55,7 +55,7 @@ typedef struct
     long ID_;
     long StartX_, StartY_;
     long ItemX_, ItemY_;
-    //! short GrabType_;
+    //short GrabType_;
     long GrabType_;
     C_Window *Window_;
     C_Base *Control_;

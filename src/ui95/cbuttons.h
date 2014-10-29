@@ -108,8 +108,8 @@ public:
     void SetBackImage(long ImageID);
     void SetLabel(long ID, _TCHAR *txt);
     void SetLabel(long ID, long txtID);
-    //! void SetLabel(short ID,_TCHAR *txt);
-    //! void SetLabel(short ID,long txtID);
+    //void SetLabel(short ID,_TCHAR *txt);
+    //void SetLabel(short ID,long txtID);
     _TCHAR *GetLabel(short ID);
     void SetAllLabel(_TCHAR *txt);
     void SetAllLabel(long txtID);

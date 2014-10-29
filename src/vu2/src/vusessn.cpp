@@ -2289,7 +2289,7 @@ VU_ERRCODE VuSessionEntity::JoinGroup(VuGroupEntity* newgroup)
                 if (target and target->IsTarget())
                 {
                     VuMessage* pull = new VuPullRequest(newgroup->Id(), target);
-                    // this would likely result in replicated p2p (evil!)
+                    // this would likely result in replicated p2p (evil)
                     // pull->RequestReliableTransport();
                     VuMessageQueue::PostVuMessage(pull);
                 }

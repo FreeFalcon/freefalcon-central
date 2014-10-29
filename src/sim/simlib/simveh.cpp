@@ -310,7 +310,7 @@ float SimVehicleClass::GetIRFactor(void)
 
         if (PowerOutput() <= 1.0) //me123 status test. differensiate between idle, mil and ab
         {
-            // Marco *** IR Fix is here! 0.12 -> make it smaller to increase time for IR to drop (set to 0.04f)
+            // Marco *** IR Fix is here 0.12 -> make it smaller to increase time for IR to drop (set to 0.04f)
             // 0.05 -> Make it larger to increase 'idle' IROutput (set to 0.20f)
             // Marco edit - * by 1.2 to help out IR missiles reach RPG status
 

@@ -124,7 +124,7 @@ static BOOL InitTOOLHELP32(void)
 
     if (TRUE == bRet)
     {
-        // All OK, Jumpmaster!
+        // All OK, Jumpmaster
         g_bInitialized = TRUE ;
     }
 
@@ -243,7 +243,7 @@ BOOL TLHELPGetLoadedModules(DWORD     dwPID        ,
         bRet = FALSE ;
     }
 
-    // All OK, Jumpmaster!
+    // All OK, Jumpmaster
     SetLastError(ERROR_SUCCESS) ;
     return (bRet) ;
 }

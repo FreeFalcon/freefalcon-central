@@ -715,7 +715,7 @@ static void update_sua_load_list(void)
     if (current_tactical_mission and win)
     {
         gSelectedTeam = 0;
-        //! gSelectedTeam=-1;
+        //gSelectedTeam=-1;
         current_tactical_mission->set_team(0);
         id = 0;
 

@@ -1525,7 +1525,7 @@ PARAMETERS      :
 RETURNS         :
     FALSE - There was a problem dumping the data.  The DUMPTHREADPARAMS
             struct contains the problem.
-    TRUE  - All OK, Jumpmaster!
+    TRUE  - All OK, Jumpmaster
 ----------------------------------------------------------------------*/
 unsigned WINAPI DumpThread(LPVOID pData)
 {

@@ -406,7 +406,7 @@ void GetJoystickInput()
 
     /*******************************************************************************/
     // Copy and process throttle data (if available)
-    // engrVal goes from 0 to 1.5 !
+    // engrVal goes from 0 to 1.5
     /*******************************************************************************/
     if (IO.AnalogIsUsed(AXIS_THROTTLE))
     {
@@ -473,7 +473,7 @@ void GetJoystickInput()
 
     /*******************************************************************************/
     // Copy and process throttle2 data (if available)
-    // engrVal goes from 0 to 1.5 !
+    // engrVal goes from 0 to 1.5
     /*******************************************************************************/
     if (IO.AnalogIsUsed(AXIS_THROTTLE2))
     {

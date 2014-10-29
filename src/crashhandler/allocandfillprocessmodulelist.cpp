@@ -83,7 +83,7 @@ AllocAndFillProcessModuleList(HANDLE hHeap    ,
         SetLastError(ERROR_SUCCESS) ;
     }
 
-    // All OK, Jumpmaster!
+    // All OK, Jumpmaster
     return (pModArray) ;
 }
 

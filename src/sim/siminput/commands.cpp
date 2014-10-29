@@ -242,7 +242,7 @@ void ToggleSmoke(unsigned long, int state, void*)
 
         // edg: I'm not sure if there's a better message to handle this,
         // but I'm using track message
-        // HACK HACK HACK!  This should be status info on the aircraft concerned...
+        // HACK HACK HACK  This should be status info on the aircraft concerned...
         FalconTrackMessage* trackMsg = new FalconTrackMessage(1, SimDriver.GetPlayerAircraft()->Id(), FalconLocalGame);
         ShiAssert(trackMsg);
 

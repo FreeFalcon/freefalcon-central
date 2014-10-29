@@ -22,7 +22,7 @@
     it is better)*
 
     NOTE:  MSVC users - don't even bother trying to 'Update Dependencies'.
-           Uggh!  06/30/96 - This should work now
+           Uggh  06/30/96 - This should work now
 
  Created     Mark Adler bitand Jean-loup Gailly (GCC)
     Modified    Roger Fujii (STTNG:AFU)
@@ -598,7 +598,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
             /*            RES_UNLOCK( GLOBAL_HASH_TABLE );  GFG */
         }
 
-#endif /* !RES_USE_FLAT_MODEL */
+#endif /*  not RES_USE_FLAT_MODEL */
 
         if ( not (*data.name))
             continue;  /* this is usually a directory entry, which we'll decipher later */
@@ -620,7 +620,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
 
         if ( not entry)
             entry = hash_add(&data, table);     /* if not, create one             */
-        else /* there is already a file with the same name here! */
+        else /* there is already a file with the same name here */
             if ( not replace_flag)
                 continue;
 
@@ -1062,7 +1062,7 @@ int extract_or_test_member(int method, long fcsize, COMPRESSED_FILE * cmp)
 
         case IMPLODED:
             break;
-#endif /* !SFX */
+#endif /*  not SFX */
 
         case DEFLATED:
             cmp -> csize = fcsize;
@@ -1241,7 +1241,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
 
             for (arc -> tmp_in_ptr = arc -> tmp_in_buffer + (arc -> length - 22);
                  arc -> tmp_in_ptr >= arc -> tmp_in_buffer;
-                 arc -> tmp_in_ptr = arc -> tmp_in_ptr - 1 /* was: --inptr  uggh! */
+                 arc -> tmp_in_ptr = arc -> tmp_in_ptr - 1 /* was: --inptr  Uggh */
                 )
             {
                 //                if((native(*((int*)arc -> tmp_in_ptr)) == 'P')  and 

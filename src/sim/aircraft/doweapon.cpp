@@ -189,7 +189,7 @@ void AircraftClass::DoWeapons()
                             // Let FF know we are using this object...
                             VuReferenceEntity((VuEntity *)(DBrain()->missileFiredEntity));
                             // Clear the lsb so we know we have just set it
-                            // (we'll be off by a milisecond, so what!)
+                            // (we'll be off by a milisecond, so what)
                             DBrain()->missileFiredTime = SimLibElapsedTime bitand 0xfffffffe;
                         }
 
@@ -249,7 +249,7 @@ void AircraftClass::DoWeapons()
                         FCC->MissileLaunch(); //me123 used for "TOF" que modifed JPO
 
                         fireMissile = FALSE;
-                        // MLR Note: Maybe we should have the missle emit the sound (new bitand looped!)
+                        // MLR Note: Maybe we should have the missle emit the sound (new bitand looped)
 
                         //RV - I-Hawk - commenting this call. all missiles launches sound
                         //now handled in SMSClass::LaunchMissile()

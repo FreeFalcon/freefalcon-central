@@ -267,7 +267,7 @@ IMAGE_RSC *CreateOccupationMap(long ID, long w, long h, long palsize)
     res = new C_Resmgr;
     res->Setup(ID);
     res->SetColorKey(UI95_RGB24Bit(0x00ff00ff));
-    //! UI95_GetScreenColorInfo(&r_mask,&r_shift,&g_mask,&g_shift,&b_mask,&b_shift);
+    //UI95_GetScreenColorInfo(&r_mask,&r_shift,&g_mask,&g_shift,&b_mask,&b_shift);
     UI95_GetScreenColorInfo(r_mask, r_shift, g_mask, g_shift, b_mask, b_shift);
     res->SetScreenFormat(r_shift, g_shift, b_shift);
 
@@ -347,7 +347,7 @@ void AddSquadronsToMap()
     C_Button *btn;
     C_Resmgr *res, *res_w;
     IMAGE_RSC *rsc;
-    int i;//! was uint
+    int i;//was uint
     long IconID;
     int savex = -1, savey = -1;
     float x, y;
@@ -483,7 +483,7 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
     C_Window *win;
     C_Button *btn;
     C_Text   *txt;
-    int i;//! was uint
+    int i;//was uint
     int icony, mapratio;
     float x, y;
     float maxy;
@@ -2081,7 +2081,7 @@ void DisplayJoinStatusWindow(int bits)
     last_id;
 
     long
-    id = 0;//! uninitialized
+    id = 0;//uninitialized
 
     C_Window
     *win;

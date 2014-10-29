@@ -131,7 +131,7 @@ extern "C" {
         puiCount - The total elements in the returned array.
     RETURNS         :
         NULL  - There was a problem.
-        !NULL - The block of memory holding the HMODULEs.
+         not NULL - The block of memory holding the HMODULEs.
     ----------------------------------------------------------------------*/
     HMODULE * /*BUGSUTIL_DLLINTERFACE*/ __stdcall
     AllocAndFillProcessModuleList(HANDLE hHeap    ,
@@ -225,7 +225,7 @@ extern "C" {
         lpBaseName - The buffer that recieves the base name.
         nSize      - The size of the buffer.
     RETURNS         :
-        !0 - The length of the string copied to the buffer.
+         not 0 - The length of the string copied to the buffer.
         0  - The function failed.  To get extended error information,
              call GetLastError
     ----------------------------------------------------------------------*/

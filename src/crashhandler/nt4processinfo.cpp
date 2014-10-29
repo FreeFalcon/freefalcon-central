@@ -89,7 +89,7 @@ static BOOL InitPSAPI(void)
         return (FALSE) ;
     }
 
-    // All OK, Jumpmaster!
+    // All OK, Jumpmaster
     g_bInitialized = TRUE ;
     return (TRUE) ;
 }
@@ -194,7 +194,7 @@ BOOL NT4GetLoadedModules(DWORD     dwPID        ,
         return (FALSE) ;
     }
 
-    // All OK, Jumpmaster!
+    // All OK, Jumpmaster
     SetLastError(ERROR_SUCCESS) ;
     return (TRUE) ;
 }

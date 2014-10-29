@@ -3,7 +3,7 @@
 // Authors: Wolfram "Osram" Kuss (original)
 // Lukas "Retro" Friembichler (adapted for EECH)
 // Date: 26. Feb 2003
-// 26/09/03 adapted for FreeFalcon - SHOCK, HORROR, FALCONEERS GET (TWICE !) RECYCLED STUFF... EEEEK
+// 26/09/03 adapted for FreeFalcon - SHOCK, HORROR, FALCONEERS GET (TWICE ) RECYCLED STUFF... EEEEK
 // Update:
 //
 // Description:Implements TrackIR support for EECH

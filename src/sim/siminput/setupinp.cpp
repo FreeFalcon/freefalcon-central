@@ -608,9 +608,9 @@ void LoadFunctionTables(_TCHAR *fname)
         }
         else
         {
-            // MonoPrint ("ERROR ! %s not found\n", funcName);
+            // MonoPrint ("ERROR  %s not found\n", funcName);
 #ifdef DEBUG
-            //sprintf (tmpStr, "ERROR ! %s not found\n", funcName);
+            //sprintf (tmpStr, "ERROR  %s not found\n", funcName);
             //OutputDebugString (tmpStr);
 #endif
         }

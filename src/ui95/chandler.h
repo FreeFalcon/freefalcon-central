@@ -327,8 +327,8 @@ public:
     void RemovingControl(C_Base *control);
     void DropControl();
     void StartDrag();
-    //! short GetDragX(WORD MouseX);
-    //! short GetDragY(WORD MouseY);
+    //short GetDragX(WORD MouseX);
+    //short GetDragY(WORD MouseY);
     long GetDragX(WORD MouseX);
     long GetDragY(WORD MouseY);
     BOOL Dragging(void)
@@ -338,7 +338,7 @@ public:
         return(FALSE);
     }
     BOOL GrabItem(WORD MouseX, WORD MouseY, C_Window *overme, long GrabType);
-    //! BOOL GrabItem(WORD MouseX,WORD MouseY,C_Window *overme,short GrabType);
+    //BOOL GrabItem(WORD MouseX,WORD MouseY,C_Window *overme,short GrabType);
     BOOL DragItem(WORD MouseX, WORD MouseY, C_Window *overme);
     BOOL DropItem(WORD MouseX, WORD MouseY, C_Window *overme);
 };
