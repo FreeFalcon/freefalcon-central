@@ -459,7 +459,7 @@ void AdvancedHarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
 
         numOfDrawnTargets++;
 
-        // Adjust bac display viewport as DrawEmitter function is changing the viewport
+        // Adjust bac display viewport as DrawEmitter function is changing the viewport!
         display->AdjustOriginInViewport(-displayX, -displayY);
     }
 

@@ -449,7 +449,7 @@ int SIMLIB_IO_CLASS::LoadAxisCalibrationFile()
 }
 
 // this global array glues all properties of a real axis to an in-game axis
-// THE ORDERING IN THIS ARRAY HAS TO BE THE SAME AS IN THE GameAxis_t ENUM 
+// THE ORDERING IN THIS ARRAY HAS TO BE THE SAME AS IN THE GameAxis_t ENUM !
 GameAxisSetup_t AxisSetup[AXIS_MAX] =
 {
     // device axis deadzone saturation unipolar?

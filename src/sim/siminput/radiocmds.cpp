@@ -54,7 +54,7 @@ void RadioMessageSend(unsigned long val, int state, void*)
 
 // MD -- 20031122: Making adjustment to the following function because the control should
 // only ever change the UHF channel.  [if the ICP is broken, there is no way to change VHF
-// channel].  But it should only change the channel when the CNI switch is in "backup".
+// channel!].  But it should only change the channel when the CNI switch is in "backup".
 // of course the encoder knob physically moves either way.
 // So sayeth the dash one.
 // Leave it as it was for folks using the simplified avionics.
@@ -390,7 +390,7 @@ void TankerReadyForGas(unsigned long, int state, void*)
     {
         // JPO - requires the door to be opened.
         if (g_bRealisticAvionics  and 
-             not SimDriver.GetPlayerAircraft()->af->IsEngineFlag(AirframeClass::FuelDoorOpen))
+            !SimDriver.GetPlayerAircraft()->af->IsEngineFlag(AirframeClass::FuelDoorOpen))
             return;
 
         MenuSendTanker(FalconTankerMessage::ReadyForGas);

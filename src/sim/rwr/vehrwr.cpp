@@ -206,7 +206,7 @@ SimObjectType* VehRwrClass::Exec(SimObjectType* targetList)
         if (detectionList[i].entity->IsSim())
         {
             // JB 010727 RP5 RWR Changed to 3 seconds S.G. WHY?
-            // 2001-02-18 MODIFIED BY S.G. IN 1.08i2, THIS IS 30 SECONDS I'll change it to 6 seconds like the other if it's for the player. Also, why use floats??
+            // 2001-02-18 MODIFIED BY S.G. IN 1.08i2, THIS IS 30 SECONDS! I'll change it to 6 seconds like the other if it's for the player. Also, why use floats?!?
             // ((SimBaseClass*)detectionList[i].entity)->RdrCycleTime() * 2.0F * SEC_TO_MSEC)
             if (SimLibElapsedTime > detectionList[i].lastHit + ((SimBaseClass*)detectionList[i].entity)->RdrCycleTime() * SEC_TO_MSEC + 1000  and 
                 SimLibElapsedTime > detectionList[i].lastHit + (platform == SimDriver.GetPlayerAircraft() ? 3 * SEC_TO_MSEC : 30 * SEC_TO_MSEC))

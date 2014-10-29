@@ -222,7 +222,7 @@ bool ParseSimlibFile(void *dataPtr, const InputDataDesc *desc, SimlibFileClass* 
         if (fr.ParseField(dataPtr, buffer) == false)
         {
             // MLR 12/16/2003 -
-            // Who cares if one line failed  This breaks files that have obsolete/unsupported data in them.
+            // Who cares if one line failed!  This breaks files that have obsolete/unsupported data in them.
             // return false;
         }
     }

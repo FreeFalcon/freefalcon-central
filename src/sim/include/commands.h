@@ -1023,7 +1023,7 @@ void AWACSRequestHelp(unsigned long val, int state, void * pButton);
 void AWACSRequestRelief(unsigned long val, int state, void * pButton);
 
 // ---------------------------------------------------------------------------
-// End Flight Commands
+// End Flight Commands!
 // ---------------------------------------------------------------------------
 
 void SimSpeedyGonzalesUp(unsigned long val, int state, void *);

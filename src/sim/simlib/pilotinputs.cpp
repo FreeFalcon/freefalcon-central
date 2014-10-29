@@ -145,7 +145,7 @@ void PilotInputs::Update()
     // operations so that we don´t have to introduce 6.23*10^23 new keypresses
     //
     // Access functions to get the current controlled axis and to set it are provided
-    // insider the pilotinput class. The enum is within the class scope 
+    // insider the pilotinput class. The enum is within the class scope !
     /*******************************************************************************/
     if (playerAC)
     {
@@ -154,7 +154,7 @@ void PilotInputs::Update()
         if ((af) and (af->GetNumberEngines() == 2))
         {
             /*******************************************************************************/
-            // keyboard only, right engine axis is not even evalutated 
+            // keyboard only, right engine axis is not even evalutated !
             /*******************************************************************************/
             if (( not IO.AnalogIsUsed(AXIS_THROTTLE)) or (UseKeyboardThrottle))
             {
