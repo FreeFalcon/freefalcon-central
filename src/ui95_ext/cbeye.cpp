@@ -46,7 +46,7 @@ void C_BullsEye::SetPos(float x, float y)
     WorldX_ = x;
     WorldY_ = y;
 
-    SetXY(static_cast<long>(WorldX_ * Scale_), static_cast<long>(WorldY_ * Scale_)); //!
+    SetXY(static_cast<long>(WorldX_ * Scale_), static_cast<long>(WorldY_ * Scale_)); //
 }
 
 void C_BullsEye::SetScale(float scl)

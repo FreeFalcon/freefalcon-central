@@ -2032,7 +2032,7 @@ void ArmPlaneCB(long ID, short hittype, C_Base *control)
     if (count > control->GetUserNumber(1))
         count = 0;
 
-    if (count and  !TotalAvailable(static_cast<short>(weaponID)))
+    if (count and   not TotalAvailable(static_cast<short>(weaponID)))
         count--;
 
     if ( not count and count == startcount) //None available

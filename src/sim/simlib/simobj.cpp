@@ -547,7 +547,7 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
 
     // KCK: Don't target ejected entities
     // edg: We HAVE to put ejected pilots into the target list so they
-    // can be shot and collided with!  Missile logic may have to be changed...
+    // can be shot and collided with  Missile logic may have to be changed...
     // to reduce possible crashes and other anomalies I'm doing this only
     // for player vehicle
     if (curUpdate->EntityType()->classInfo_[VU_TYPE] == TYPE_EJECT and self not_eq SimDriver.GetPlayerEntity())
@@ -650,7 +650,7 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
         // ground untis into their target list and at a maximum of 1 NM.
         // I extended this for to include helicopters and made the range
         // go out to 5NM.  Also: Aren't aircraft AI going to need to detect
-        // ground units?!
+        // ground units?
         if (self->IsGroundVehicle() or self->IsHelicopter())
             gndRange = 15.0f * NM_TO_FT * 15.0f * NM_TO_FT;
         else

@@ -1753,7 +1753,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
 
     if ( not fl or pilotSlot == 255)
     {
-        // PETER TODO: Clear mission window's selection TOO!
+        // PETER TODO: Clear mission window's selection TOO
         FalconLocalSession->SetPlayerFlight(NULL);
         FalconLocalSession->SetPilotSlot(255);
         return;

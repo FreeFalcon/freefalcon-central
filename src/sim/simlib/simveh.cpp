@@ -1015,7 +1015,7 @@ int SimVehicleClass::Exec(void)
 
         pctStrength = strength / maxStrength;
 
-        // when we've bottomed out, kablooey!
+        // when we've bottomed out, kablooey
         // Have a look how AC behave when on ground
         if (pctStrength <= -1.0f /*|| OnGround()*/)
         {
@@ -1061,7 +1061,7 @@ int SimVehicleClass::Exec(void)
 
             SetExploding(TRUE);
 
-            //           MonoPrint ("Vehicle %d DEAD! Local: %s, Has Death Msg: %s\n",
+            //           MonoPrint ("Vehicle %d DEAD Local: %s, Has Death Msg: %s\n",
             //     Id().num_,
             // IsLocal() ? "TRUE" : "FALSE",
             // deathMessage ? "TRUE" : "FALSE" );

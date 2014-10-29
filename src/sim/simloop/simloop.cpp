@@ -314,7 +314,7 @@ void SimulationLoopControl::Loop(void)
     _controlfp(_RC_CHOP, MCW_RC); // Set the FPU to Truncate
     _controlfp(_PC_24, MCW_PC); // Set the FPU to 24 bit precision
 #else
-#error Pay special attention to rounding mode and precision effects on floating point ops!
+#error Pay special attention to rounding mode and precision effects on floating point ops
 #endif
 
     // Record the fact that we're up and running
@@ -601,13 +601,13 @@ void SimulationLoopControl::Loop(void)
                 // average over 8 frames
                 gAveSimGraphicsTime = (gAveSimGraphicsTime * 7 + gSimTime + gGraphicsTimeLast * 100) / 8;
 
-                // WARNING ! WARNING ! WARNING ! WARNING ! WARNING !
+                // WARNING  WARNING  WARNING  WARNING  WARNING 
                 // COBRA - RED - REMOVED THIS WAITING FOR CAMPAIGN - HAS TO BE TESTED FOR SIDE EFFECTS
                 //START_PROFILE("SIMLOOP:");
                 //ThreadManager::sim_signal_campaign();
                 //ThreadManager::sim_wait_for_campaign ( min( 50, ( gAveSimGraphicsTime )/3 ) );
                 //STOP_PROFILE("SIMLOOP:");
-                // WARNING ! WARNING ! WARNING ! WARNING ! WARNING !
+                // WARNING  WARNING  WARNING  WARNING  WARNING 
                 if (currentMode == StartRunningGraphics)
                 {
                     currentMode = RunningGraphics;
@@ -639,7 +639,7 @@ void SimulationLoopControl::Loop(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-//sfr: pie screens!
+//sfr: pie screens
 void SimulationLoopControl::StartLoop(void)
 {
     FlightClass *flight;
@@ -926,7 +926,7 @@ void SimulationLoopControl::StartLoop(void)
                 GameManager.ReleasePlayer(FalconLocalSession);
             }
 
-            //sfr: im leaving only this one!
+            //sfr: im leaving only this one
             OTWDriver.RenderFirstFrame();
 
             /*delayCounter = 20;
@@ -1008,7 +1008,7 @@ void SimulationLoopControl::StartLoop(void)
         while ( not CampaignAllAsleep())
         {
             Sleep(100);
-            // 2002-02-19 REMOVED BY S.G. NO NO NO! Wrong thread to do this!
+            // 2002-02-19 REMOVED BY S.G. NO NO NO Wrong thread to do this
             // 2002-01-02 ADDED BY S.G.
             // We are asked to sleep so keep doing bubble rebuild until all sim objects are sleeping
             // MonoPrint("Doing a final bubble rebuild\n");

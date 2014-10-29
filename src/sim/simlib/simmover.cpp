@@ -147,7 +147,7 @@ SimMoverClass::SimMoverClass(VU_BYTE** stream, long *rem) : SimBaseClass(stream,
         switchChange = NULL;
     }
 
-    // KCK: This shit needs to be sent too!
+    // KCK: This shit needs to be sent too
     memcpychk(&vehicleInUnit, stream, sizeof(uchar), rem);
     memcpychk(&pilotSlot, stream, sizeof(uchar), rem);
 

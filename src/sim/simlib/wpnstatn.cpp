@@ -224,7 +224,7 @@ void AdvancedWeaponStation::AttachPylonBSP(void)
 
 
     if (theParent  and 
-        !thePylon  and 
+         not thePylon  and 
         pylonId > 0  and 
         pylonId < NumWeaponTypes  and 
         WeaponDataTable[pylonId].Index >= 0)
@@ -276,7 +276,7 @@ void AdvancedWeaponStation::AttachRackBSP(void)
     }
 
     if (theParent  and 
-        !theRack  and 
+         not theRack  and 
         rackId > 0  and 
         rackId < NumWeaponTypes  and 
         WeaponDataTable[rackId].Index >= 0)

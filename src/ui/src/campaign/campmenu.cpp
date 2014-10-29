@@ -125,12 +125,12 @@ namespace FilterSaveStuff
         true, false, false, false, false, false,
         false, false, false, false, false, false,
         // Units
-        false, false, false, // this is a radiobutton, only 1 of them may be TRUE (all ot FALSE is ok)!
+        false, false, false, // this is a radiobutton, only 1 of them may be TRUE (all ot FALSE is ok)
         true, false, false, false, false, true,
         false, false, false, false, true, false,
         false,
         // Sams/Radar
-        false, false, false, false // this is a radiobutton, only 1 of them may be TRUE (all ot FALSE is ok)!
+        false, false, false, false // this is a radiobutton, only 1 of them may be TRUE (all ot FALSE is ok)
     }; // ..ugly, but whatever..
 } // namespace FilterSaveStuff, end Retro 26/10/03
 
@@ -852,7 +852,7 @@ void SteerPointMenuOpenCB(C_Base *, C_Base *)
     C_PopupList *menu;
     WayPoint wp;
 
-    // We've opened a steerpoint's popup menu. Setup current values!
+    // We've opened a steerpoint's popup menu. Setup current values
     wp = GetSelectedWayPoint();
 
     menu = gPopupMgr->GetMenu(STEERPOINT_POP);
@@ -1051,7 +1051,7 @@ void MenuReconCB(long, short, C_Base *)
                      not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)  and 
                     ent->IsFlight()  and 
                     (gGps->GetTeamNo() not_eq ent->GetTeam())  and 
-                    !ent->GetIdentified(static_cast<Team>(gGps->GetTeamNo()))
+                     not ent->GetIdentified(static_cast<Team>(gGps->GetTeamNo()))
                 )
                 {
                     range = 0.0f;

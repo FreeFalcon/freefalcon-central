@@ -904,7 +904,7 @@ namespace
         }
         else
         {
-            // BUG!
+            // BUG
             return 4096;
         }
     }
@@ -1466,7 +1466,7 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     // Note: MUST BE DXT1
     pTile->height[res]  or_eq  MPR_TI_DXT1;
 
-    // Note: 1024x1024 Max!
+    // Note: 1024x1024 Max
     switch (ddsd.dwWidth)
     {
         case 16:
@@ -1551,7 +1551,7 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     // Note: MUST BE DXT1
     pTile->heightN[res]  or_eq  MPR_TI_DXT1;
 
-    // Note: 1024x1024 Max!
+    // Note: 1024x1024 Max
     switch (ddsd.dwWidth)
     {
         case 16:

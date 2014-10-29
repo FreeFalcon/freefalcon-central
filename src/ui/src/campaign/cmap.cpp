@@ -434,7 +434,7 @@ THREAT_LIST *C_Map::AddThreat(CampEntity ent)
                 }
             }
 
-            delete threat; // JPO - no idea what this threat variable is for!
+            delete threat; // JPO - no idea what this threat variable is for
         }
     }
 
@@ -516,7 +516,7 @@ THREAT_LIST *C_Map::AddThreat(CampEntity ent)
                 }
             }
 
-            delete threat; // JPO - no idea what this threat variable is for! S.G. I DO BUT I HAVE NO TIME TO FIX IT NOW. I'LL MAKE IT RP5 COMPATIBLE FIRST
+            delete threat; // JPO - no idea what this threat variable is for S.G. I DO BUT I HAVE NO TIME TO FIX IT NOW. I'LL MAKE IT RP5 COMPATIBLE FIRST
         }
     }
 
@@ -658,7 +658,7 @@ MAPICONLIST *C_Map::AddDivision(Division div)
 
 MAPICONLIST *C_Map::AddUnit(Unit u)
 {
-    long UnitType, TypeID, LevelID = -1, brigid, batid, numarcs; //!
+    long UnitType, TypeID, LevelID = -1, brigid, batid, numarcs; //
     Unit upar;
     UnitClassDataType *UnitPtr;
     float totalstr, curstr, perc;

@@ -1635,7 +1635,7 @@ int UI_Startup()
         gPlayerBook->Load("phonebkn.da2");
     }
 
-    // THESE 2 LINES ARE VERY VERY Important!
+    // THESE 2 LINES ARE VERY VERY Important
     ShowWindow(FalconDisplay.appWin, SW_SHOWNORMAL);
     UpdateWindow(FalconDisplay.appWin);
 

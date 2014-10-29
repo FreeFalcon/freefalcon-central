@@ -905,7 +905,7 @@ void GotoFlightCB(long ID, short hittype, C_Base *control)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 //sfr: this is called when a player changes the time of a waypoint. We MUST make waypoint dirty
-// to update other flights!
+// to update other flights
 void ChangeTOSCB(long ID, short hittype, C_Base *control)
 {
     C_Clock *clk;

@@ -924,8 +924,8 @@ BOOL C_MapIcon::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     if (y > (over->ClientArea_[GetClient()].bottom - over->VY_[GetClient()]))
         y = over->ClientArea_[GetClient()].bottom - over->VY_[GetClient()];
 
-    Last_->x = static_cast<short>(x); //!
-    Last_->y = static_cast<short>(y); //!
+    Last_->x = static_cast<short>(x); //
+    Last_->y = static_cast<short>(y); //
     Last_->worldx = x / scale_;
     Last_->worldy = y / scale_;
     Refresh();

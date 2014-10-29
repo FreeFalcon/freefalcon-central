@@ -1592,7 +1592,7 @@ long GetACIDFromFlight(Flight flight)
     return(0);
 }
 
-// Use ONLY as a TreeList callback!
+// Use ONLY as a TreeList callback
 static void SelectDogfightGameCB(long, short hittype, C_Base *control)
 {
     VU_ID *tmpID;

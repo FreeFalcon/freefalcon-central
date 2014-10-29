@@ -358,7 +358,7 @@ void SimWeaponClass::SendDamageMessage(FalconEntity *testObject, float rangeSqua
 
     if (normBlastDist >= lethalCone)
     {
-        // Direct hit!
+        // Direct hit
         // message->dataBlock.damageRandomFact += 1.0F;
         message->dataBlock.damageType = damageType;
     }

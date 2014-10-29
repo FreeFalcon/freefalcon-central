@@ -1347,7 +1347,7 @@ void SetCampaignSelectCB(long ID, short hittype, C_Base *control)
     //end ExitCampSelectFix
 }
 
-// ONLY use this as a Tree Callback... or it will CRASH Badly!
+// ONLY use this as a Tree Callback... or it will CRASH Badly
 static void CampSelectGameCB(long, short hittype, C_Base *control)
 {
     VU_ID *tmpID;

@@ -332,7 +332,7 @@ void SimBaseClass::ChangeOwner(VU_ID new_owner)
 
     if (new_owner == OwnerId())
     {
-        return; // Nothing to do!
+        return; // Nothing to do
     }
 
     if (IsVehicle())
@@ -818,7 +818,7 @@ void SimBaseClass::ApplyDeathMessage(FalconDeathMessage* deathMessage)
     if (pctStrength > deathMessage->dataBlock.deathPctStrength)
         pctStrength = deathMessage->dataBlock.deathPctStrength;
 
-    //    MonoPrint ("Entity %d Got Death Msg! Local: %s, Show Explode: %s\n",
+    //    MonoPrint ("Entity %d Got Death Msg Local: %s, Show Explode: %s\n",
     //     Id().num_,
     // IsLocal() ? "TRUE" : "FALSE",
     // IsSetFlag( SHOW_EXPLOSION ) ? "TRUE" : "FALSE" );
