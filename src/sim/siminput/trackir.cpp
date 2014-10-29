@@ -723,7 +723,7 @@ void TrackIR::InitTrackIR(HWND application_window)
 
     TEST_RESULT("NP_StartDataTransmission", NP_StartDataTransmission())
 
-    g_bEnableTrackIR = true; // Retro 26/09/03 - init successful !
+    g_bEnableTrackIR = true; // Retro 26/09/03 - init successful 
     g_bTrackIRon = true;
     OTWDriver.SetHeadTracking(TRUE); // Retro 26/09/03
 

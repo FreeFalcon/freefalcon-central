@@ -1553,7 +1553,7 @@ void AircraftClass::RunGearSurfaces(void)
 
     if (IsLocal())
     {
-        if ((af->gearHandle > 0.0F or OnGround()) and !af->IsSet(AirframeClass::GearBroken))
+        if ((af->gearHandle > 0.0F or OnGround()) and  not af->IsSet(AirframeClass::GearBroken))
         {
             SetAcStatusBits(ACSTATUS_GEAR_DOWN);
         }
@@ -1654,7 +1654,7 @@ void AircraftClass::RunGearSurfaces(void)
             // lastRStick and lastYPedal defined in EOM.cpp
             // RAS 06Apr04 changed 30.0F to 50.0F to make graphical nose wheel match rate of turn.  Acutal turn radius needs to be
             // looked at.  Real F-16 nose wheel turns 32.0 degrees
-            if (IO.AnalogIsUsed(AXIS_YAW) and !af->IsSet(AirframeClass::IsDigital) or !g_bRollLinkedNWSRudder)  // Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_YAW) and  not af->IsSet(AirframeClass::IsDigital) or !g_bRollLinkedNWSRudder)  // Retro 31Dec2003
             {
                 SetDOF(COMP_NOS_GEAR_ROT, -af->lastYPedal * 50.0F * DTR * (0.5F + (80.0F * KNOTS_TO_FTPSEC - af->vt) / (160.0F * KNOTS_TO_FTPSEC)));
             }

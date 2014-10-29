@@ -321,7 +321,7 @@ void SetupGameAxis()
                             dipcp.diph.dwHeaderSize = sizeof(DIPROPHEADER);
                             dipcp.diph.dwObj = AxisOffsets[*AxisSetup[GameAxisIndex].axis];
                             dipcp.diph.dwHow = DIPH_BYOFFSET;
-                            ShiAssert(dipcp.dwCPointsNum); // if this is 0 nothing happens !
+                            ShiAssert(dipcp.dwCPointsNum); // if this is 0 nothing happens 
 
                             hres = gpDIDevice[DeviceIndex]->SetProperty(DIPROP_CPOINTS, &dipcp.diph);
                             ShiAssert(hres == DI_OK);
@@ -330,7 +330,7 @@ void SetupGameAxis()
                         {
                             // if a deadzone is defined, apply it.. values are from 10000 (100%) to 0 (0%) of
                             // physical range to both sides of the '0' point. Default to 100 (1%)
-                            // unipolar axis don´t have a deadzone !
+                            // unipolar axis don´t have a deadzone 
                             if ((AxisSetup[GameAxisIndex].deadzone) and (*AxisSetup[GameAxisIndex].deadzone))
                             {
                                 DIPROPDWORD dipdw = {{sizeof(DIPROPDWORD), sizeof(DIPROPHEADER), 0, DIPH_DEVICE}, DJOYSTICK_BUFFERSIZE};
@@ -370,7 +370,7 @@ void SetupGameAxis()
                 }
                 else
                 {
-                    ShiAssert(false); // out-of-array ! DI only specifies 8 axis (0-7) 
+                    ShiAssert(false); // out-of-array  DI only specifies 8 axis (0-7) 
                 }
 
 #pragma warning(default:4127)
@@ -576,7 +576,7 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
             if ( not memcmp(&AxisMap.FlightControllerGUID , &devinst.guidInstance, sizeof(GUID)))
             {
                 BOOL result;
-                // wohoo.. user changed nothing !
+                // wohoo.. user changed nothing 
                 result = IO.ReadFile(); // To get info about any center (or ABDetent) offsets -
                 // this (and the 'isReversed' info are the only things that are effectively read there
 

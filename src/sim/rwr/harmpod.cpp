@@ -356,7 +356,7 @@ void HarmTargetingPod::SetDesiredTarget(SimObjectType* newTarget)
         tmpElement = tmpElement->GetNext();
     }
 
-    // NOTE: when called from the AI ground attack routine this will create the element if not found !
+    // NOTE: when called from the AI ground attack routine this will create the element if not found 
     if ( not tmpElement)
     {
         tmpElement = new GroundListElement(newTarget->BaseData());
@@ -1535,7 +1535,7 @@ void HarmTargetingPod::LockListElement(GroundListElement *choice)
         {
             if (obj->BaseData() == choice->BaseObject())
             {
-                // We found a match!
+                // We found a match
                 SetSensorTarget(obj);
                 break;
             }
