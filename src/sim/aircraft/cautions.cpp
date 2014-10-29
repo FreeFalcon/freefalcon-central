@@ -36,7 +36,7 @@ void AircraftClass::CautionCheck(void)
     if ( not isDigital)
     {
         // Check fuel
-        if (af->Fuel() + af->ExternalFuel() < bingoFuel and !mFaults->GetFault(FaultClass::fms_fault))
+        if (af->Fuel() + af->ExternalFuel() < bingoFuel and not mFaults->GetFault(FaultClass::fms_fault))
         {
             if (g_bRealisticAvionics)
             {
@@ -165,7 +165,7 @@ void AircraftClass::CautionCheck(void)
         //if (g_bEnableAircraftLimits) { MI
         if (g_bRealisticAvionics)
         {
-            // Marco Edit - OverG DOES NOT affect !!!
+            // Marco Edit - OverG DOES NOT affect !
             // (at least not before the aircraft falls apart)
             //MI put back in after discussing with Marco
             CheckForOverG();
@@ -707,7 +707,7 @@ void AircraftClass::CheckForOverSpeed(void)
                 CanopyDamaged = TRUE;
             }
 
-            if (rand() % 100 < 25 and !LEFState(RT_LEF_OUT))
+            if (rand() % 100 < 25 and not LEFState(RT_LEF_OUT))
             {
                 if (LEFState(RT_LEF_DAMAGED))
                 {
@@ -742,7 +742,7 @@ void AircraftClass::DoOverGSpeedDamage(int station)
     switch (station)
     {
         case 1:
-            if (damage < 95 and !GetStationFailed(Station1_Degr) and !GetStationFailed(Station1_Fail))
+            if (damage < 95 and not GetStationFailed(Station1_Degr) and not GetStationFailed(Station1_Fail))
             {
                 mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta1, FaultClass::degr, FALSE);
                 StationFailed(Station1_Degr);
@@ -760,7 +760,7 @@ void AircraftClass::DoOverGSpeedDamage(int station)
         case 2:
             damage = rand() % 100;
 
-            if (damage < 95 and !GetStationFailed(Station2_Degr) and !GetStationFailed(Station2_Fail))
+            if (damage < 95 and not GetStationFailed(Station2_Degr) and not GetStationFailed(Station2_Fail))
             {
                 mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta2, FaultClass::degr, FALSE);
                 StationFailed(Station2_Degr);
@@ -778,7 +778,7 @@ void AircraftClass::DoOverGSpeedDamage(int station)
         case 3:
             damage = rand() % 100;
 
-            if (damage < 95 and !GetStationFailed(Station3_Degr) and !GetStationFailed(Station3_Fail))
+            if (damage < 95 and not GetStationFailed(Station3_Degr) and not GetStationFailed(Station3_Fail))
             {
                 mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta3, FaultClass::degr, FALSE);
                 StationFailed(Station3_Degr);
@@ -796,7 +796,7 @@ void AircraftClass::DoOverGSpeedDamage(int station)
         case 4:
             damage = rand() % 100;
 
-            if (damage < 95 and !GetStationFailed(Station4_Degr) and !GetStationFailed(Station4_Fail))
+            if (damage < 95 and not GetStationFailed(Station4_Degr) and not GetStationFailed(Station4_Fail))
             {
                 mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta4, FaultClass::degr, FALSE);
                 StationFailed(Station4_Degr);
@@ -814,7 +814,7 @@ void AircraftClass::DoOverGSpeedDamage(int station)
         case 5:
             damage = rand() % 100;
 
-            if (damage < 95 and !GetStationFailed(Station5_Degr) and !GetStationFailed(Station5_Fail))
+            if (damage < 95 and not GetStationFailed(Station5_Degr) and not GetStationFailed(Station5_Fail))
             {
                 mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta5, FaultClass::degr, FALSE);
                 StationFailed(Station5_Degr);
@@ -832,7 +832,7 @@ void AircraftClass::DoOverGSpeedDamage(int station)
         case 6:
             damage = rand() % 100;
 
-            if (damage < 95 and !GetStationFailed(Station6_Degr) and !GetStationFailed(Station6_Fail))
+            if (damage < 95 and not GetStationFailed(Station6_Degr) and not GetStationFailed(Station6_Fail))
             {
                 mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta6, FaultClass::degr, FALSE);
                 StationFailed(Station6_Degr);
@@ -850,7 +850,7 @@ void AircraftClass::DoOverGSpeedDamage(int station)
         case 7:
             damage = rand() % 100;
 
-            if (damage < 95 and !GetStationFailed(Station7_Degr) and !GetStationFailed(Station7_Fail))
+            if (damage < 95 and not GetStationFailed(Station7_Degr) and not GetStationFailed(Station7_Fail))
             {
                 mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta7, FaultClass::degr, FALSE);
                 StationFailed(Station7_Degr);
@@ -868,7 +868,7 @@ void AircraftClass::DoOverGSpeedDamage(int station)
         case 8:
             damage = rand() % 100;
 
-            if (damage < 95  and !GetStationFailed(Station8_Degr) and !GetStationFailed(Station8_Fail))
+            if (damage < 95  and not GetStationFailed(Station8_Degr) and not GetStationFailed(Station8_Fail))
             {
                 mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta8, FaultClass::degr, FALSE);
                 StationFailed(Station8_Degr);
@@ -886,7 +886,7 @@ void AircraftClass::DoOverGSpeedDamage(int station)
         case 9:
             damage = rand() % 100;
 
-            if (damage < 95 and !GetStationFailed(Station9_Degr) and !GetStationFailed(Station9_Fail))
+            if (damage < 95 and not GetStationFailed(Station9_Degr) and not GetStationFailed(Station9_Fail))
             {
                 mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta9, FaultClass::degr, FALSE);
                 StationFailed(Station9_Degr);
@@ -908,10 +908,10 @@ void AircraftClass::DoOverGSpeedDamage(int station)
 
 void AircraftClass::StoreToDamage(WeaponClass thing)
 {
-    if ( not g_bRealisticAvionics or (PlayerOptions.Realism < 0.76 and !isDigital))
+    if ( not g_bRealisticAvionics or (PlayerOptions.Realism < 0.76 and not isDigital))
         return;
 
-    if ( not Sms or !mFaults or !af)
+    if ( not Sms or not mFaults or not af)
         return;
 
     //Check which station to fail
@@ -1658,7 +1658,7 @@ void AircraftClass::SetExternalData(void)
 void AircraftClass::GSounds(void)
 {
     //not if we're going down
-    if ( not IsExploding() and !IsDead())
+    if ( not IsExploding() and not IsDead())
     {
         //F4SoundFXSetDist(af->auxaeroData->sndOverSpeed1, TRUE, 0.0f, 1.0f);
         //RV - I-Hawk - Added 0, 2, -1000 parameters to lower volume for such overG sound
@@ -1668,7 +1668,7 @@ void AircraftClass::GSounds(void)
 
 void AircraftClass::SSounds(void)
 {
-    if ( not IsExploding() and !IsDead())
+    if ( not IsExploding() and not IsDead())
     {
         //F4SoundFXSetDist(af->auxaeroData->sndOverSpeed2, TRUE, 0.0f, (GetKias() - af->curMaxStoreSpeed) / 25);
         if (af->curMaxStoreSpeed)

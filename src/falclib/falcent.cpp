@@ -253,7 +253,7 @@ void FalconEntity::MakeDirty(Dirty_Class bits, Dirtyness score)
         ( not IsLocal()) ||
         (VuState() not_eq VU_MEM_ACTIVE) ||
         (score <= dirty_score) ||
-        !(TheCampaign.Flags bitand CAMP_LOADED)
+         not (TheCampaign.Flags bitand CAMP_LOADED)
     )
     {
         return;
@@ -476,7 +476,7 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
                 break;
             }
 
-#if !USE_VU_COLL_FOR_DIRTY
+#if not USE_VU_COLL_FOR_DIRTY
             FalconEntityBin current(campDirtyBuckets[bucket]->front());
             campDirtyBuckets[bucket]->pop_front();
 #endif
@@ -559,7 +559,7 @@ void FalconEntity::DoSimDirtyData(VU_TIME realTime)
                 break;
             }
 
-#if !USE_VU_COLL_FOR_DIRTY
+#if not USE_VU_COLL_FOR_DIRTY
             // get the entity in FIFO fashion
             FalconEntityBin current(simDirtyBuckets[bucket]->front());
             simDirtyBuckets[bucket]->pop_front();

@@ -180,7 +180,7 @@ void SetupUnitInfoWindow(VU_ID unitID)
     if ( not un)
         return;
 
-    if ( not un->IsBattalion() and !un->IsBrigade())
+    if ( not un->IsBattalion() and not un->IsBrigade())
         return;
 
     urec = (UI_Refresher*)gGps->Find(un->GetCampID());
@@ -1152,10 +1152,10 @@ BOOL SortPilotByNameCB(TREELIST *list, TREELIST *newitem)
 {
     C_Button *btn1, *btn2;
 
-    if ( not list or !newitem)
+    if ( not list or not newitem)
         return(FALSE);
 
-    if ( not list->Item_ or !newitem->Item_)
+    if ( not list->Item_ or not newitem->Item_)
         return(FALSE);
 
     btn1 = (C_Button *)list->Item_;
@@ -1565,7 +1565,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL CampHotelSortCB(TREELIST *list, TREELIST *newitem)
 {
-    if ( not list or !newitem)
+    if ( not list or not newitem)
         return(FALSE);
 
     if (((C_Custom*)newitem->Item_)->GetValue(1) > ((C_Custom*)list->Item_)->GetValue(1))

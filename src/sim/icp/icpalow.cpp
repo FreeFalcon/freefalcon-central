@@ -93,7 +93,7 @@ void ICPClass::ExecALOWMode(void)
         //Line2
         FillDEDMatrix(1, 4, "CARA ALOW");
 
-        if ( not EDITMSLFLOOR and !TFADV)
+        if ( not EDITMSLFLOOR and not TFADV)
         {
             PossibleInputs = 5;
             ScratchPad(1, 16, 24);

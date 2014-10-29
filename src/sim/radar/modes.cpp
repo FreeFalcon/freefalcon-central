@@ -99,7 +99,7 @@ void RadarDopplerClass::RWSMode()
     /*-----------------------*/
     /* Spotlight / Designate */
     /*-----------------------*/
-    if (IsSet(Spotlight) and !designateCmd)
+    if (IsSet(Spotlight) and not designateCmd)
         SetFlagBit(Designating);
     else
         ClearFlagBit(Designating);
@@ -267,7 +267,7 @@ void RadarDopplerClass::SAMMode(void)
 
         while (rdrObj)
         {
-            if (rdrObj->BaseData()->Id() == targetUnderCursor and IsSet(Designating) and !didDesignate)
+            if (rdrObj->BaseData()->Id() == targetUnderCursor and IsSet(Designating) and not didDesignate)
             {
                 // Bug a target and go into STT
                 if (rdrObj == lockedTarget)
@@ -397,7 +397,7 @@ void RadarDopplerClass::SAMMode(void)
         if ( not dropTrackCmd)
             justdidSTT = FALSE;
 
-        if (totHits < HITS_FOR_TRACK or dropSAM or (dropTrackCmd and !justdidSTT))
+        if (totHits < HITS_FOR_TRACK or dropSAM or (dropTrackCmd and not justdidSTT))
         {
             if (platform == SimDriver.GetPlayerAircraft() and ((AircraftClass*)platform)->AutopilotType() == AircraftClass::CombatAP)
             {
@@ -449,7 +449,7 @@ void RadarDopplerClass::TWSMode(void)
         }
     }
 
-    if (oldseekerElCenter and !targetUnderCursor) //me123
+    if (oldseekerElCenter and not targetUnderCursor) //me123
     {
         seekerElCenter = min(max(oldseekerElCenter, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
         oldseekerElCenter = 0.0f;
@@ -466,7 +466,7 @@ void RadarDopplerClass::TWSMode(void)
     /*-----------------------*/
     /* Spotlight / Designate */
     /*-----------------------*/
-    if (IsSet(Spotlight) and !designateCmd)
+    if (IsSet(Spotlight) and not designateCmd)
         SetFlagBit(Designating);
     else
         ClearFlagBit(Designating);
@@ -518,10 +518,10 @@ void RadarDopplerClass::TWSMode(void)
     }
 
     // max 30 az when tgt under cursor or "locked" target
-    if ( not IsSet(Spotlight) and !IsSet(Designating))
+    if ( not IsSet(Spotlight) and not IsSet(Designating))
     {
 
-        if (targetUnderCursor or (lockedTargetData and !g_bMLU))
+        if (targetUnderCursor or (lockedTargetData and  not g_bMLU))
         {
 
             if (azScan > 30.0F * DTR)
@@ -546,7 +546,7 @@ void RadarDopplerClass::TWSMode(void)
         //check if the attached target is still in the targetlist
         rdrObj = platform->targetList;
 
-        while (rdrObj and !attach)
+        while (rdrObj and not attach)
         {
             //TJL 11/16/03 Adding init of rdrData
             rdrData = rdrObj->localData;
@@ -680,7 +680,7 @@ void RadarDopplerClass::TWSMode(void)
         seekerAzCenter = min(max(tmpVal , -MAX_ANT_EL + azScan), MAX_ANT_EL - azScan);
         tmpVal = TargetEl(platform, lockedTarget);
 
-        if ( not g_bMLU and !g_bAntElevKnobFix)   // MD -- 20031223: antenna elevation fixes
+        if ( not g_bMLU and  not g_bAntElevKnobFix)   // MD -- 20031223: antenna elevation fixes
             seekerElCenter = min(max(tmpVal, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
 
         /*------------------*/
@@ -707,7 +707,7 @@ void RadarDopplerClass::TWSMode(void)
         if ( not dropTrackCmd)
             justdidSTT = FALSE;
 
-        if ( not IsSet(STTingTarget) and ((dropTrackCmd and !justdidSTT) or totHits < HITS_FOR_TRACK))
+        if ( not IsSet(STTingTarget) and ((dropTrackCmd and not justdidSTT) or totHits < HITS_FOR_TRACK))
         {
             rangeChangeCmd = 0;
 
@@ -764,7 +764,7 @@ void RadarDopplerClass::TWSMode(void)
     /*-----------------------*/
     /* Spotlight / Designate */
     /*-----------------------*/
-    if (IsSet(Spotlight) and !designateCmd)
+    if (IsSet(Spotlight) and not designateCmd)
         SetFlagBit(Designating);
     else
         ClearFlagBit(Designating);
@@ -791,10 +791,10 @@ void RadarDopplerClass::TWSMode(void)
     else
         ClearFlagBit(Spotlight);
 
-    if ( not IsSet(Spotlight) and !IsSet(Designating) and !IsSet(STTingTarget))
+    if ( not IsSet(Spotlight) and not IsSet(Designating) and not IsSet(STTingTarget))
     {
 
-        if (targetUnderCursor or (lockedTargetData and !g_bMLU))
+        if (targetUnderCursor or (lockedTargetData and  not g_bMLU))
         {
             lastTwsAzIdx = curAzIdx;
             lastTwsBarIdx = curBarIdx;
@@ -823,7 +823,7 @@ void RadarDopplerClass::TWSMode(void)
         //check if the attached target is still in the targetlist
         rdrObj = platform->targetList;
 
-        while (rdrObj and !attach)
+        while (rdrObj and not attach)
         {
             rdrData = rdrObj->localData;
 
@@ -994,7 +994,7 @@ void RadarDopplerClass::TWSMode(void)
         if ( not dropTrackCmd)
             justdidSTT = FALSE;
 
-        if ( not IsSet(STTingTarget) and ((dropTrackCmd and !justdidSTT) and lockedTargetData->TWSTrackFileOpen))
+        if ( not IsSet(STTingTarget) and ((dropTrackCmd and not justdidSTT) and lockedTargetData->TWSTrackFileOpen))
         {
             rangeChangeCmd = 0;
 
@@ -1012,7 +1012,7 @@ void RadarDopplerClass::TWSMode(void)
     }
     else
     {
-        if (dropTrackCmd and !lockedTarget and TWSTrackDirectory)
+        if (dropTrackCmd and not lockedTarget and TWSTrackDirectory)
         {
             // on udesignate with no bugged target, clear track directory and history and rebuild
             // starting next frame.
@@ -1023,7 +1023,7 @@ void RadarDopplerClass::TWSMode(void)
         }
     }
 
-    if (IsSet(Designating) and !IsSet(STTingTarget))
+    if (IsSet(Designating) and not IsSet(STTingTarget))
     {
         curBarIdx = (twsBarIdx = lastTwsBarIdx);
         curAzIdx = (twsAzIdx = lastTwsAzIdx);
@@ -1038,7 +1038,7 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
     int totHits;
     static bool diddroptrack = FALSE;
 
-    if (oldseekerElCenter and !lockedTargetData) //me123
+    if (oldseekerElCenter and not lockedTargetData) //me123
     {
         seekerElCenter = min(max(oldseekerElCenter, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
         oldseekerElCenter = 0.0f;
@@ -1088,8 +1088,8 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
     if ( not lockedTargetData)
         return;
 
-    if ( not g_bMLU and (dropTrackCmd and !didDesignate and mode == SAM) ||
-        g_bMLU and dropTrackCmd and !diddroptrack)//me123
+    if ( not g_bMLU and (dropTrackCmd and not didDesignate and mode == SAM) ||
+        g_bMLU and dropTrackCmd and not diddroptrack)//me123
     {
         reacqFlag = (int)(ReacqusitionCount / SEC_TO_MSEC * SimLibMajorFrameRate);
         reacqEl = lockedTargetData->el;
@@ -1319,7 +1319,7 @@ void RadarDopplerClass::ACMMode(void)
     // and drop target command returns to search if we have a lock, if we dont have a lock  it changes
     /*-------------------------*/// to 20/30 from all acm modes exept in 20/30 it goes to 10/60
 
-    if (designateCmd and !lockedTarget)
+    if (designateCmd and not lockedTarget)
     {
         // don't drop the targer if it's locked me123
         ChangeMode(ACM_BORE);
@@ -1397,7 +1397,7 @@ void RadarDopplerClass::VSMode(void)
         /*-----------------------*/
         /* Spotlight / Designate */
         /*-----------------------*/
-        if (IsSet(Spotlight) and !designateCmd)
+        if (IsSet(Spotlight) and not designateCmd)
             SetFlagBit(Designating);
         else
             ClearFlagBit(Designating);

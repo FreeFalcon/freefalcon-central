@@ -205,7 +205,7 @@ void PilotInputs::Update()
         }
         else   // end Retro 12Jan2004 (this is the old, single-engine code)
         {
-            if (IO.AnalogIsUsed(AXIS_THROTTLE) and !UseKeyboardThrottle)  // Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_THROTTLE) and not UseKeyboardThrottle)  // Retro 31Dec2003
             {
                 //throttle = 1.5F - (IO.ReadAnalog(2) * 1.05F + 1.0F) * 0.75F;
                 throttle = IO.ReadAnalog(AXIS_THROTTLE); // Retro 31Dec2003

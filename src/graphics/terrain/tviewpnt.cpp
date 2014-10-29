@@ -137,7 +137,7 @@ void TViewPoint::Update(const Tpoint *position)
         blockLists[level].Update(X(), Y());
     }
 
-    // TODO:  FIX THIS CRITICAL SECTION STUFF (NO NESTING!!!)
+    // TODO:  FIX THIS CRITICAL SECTION STUFF (NO NESTING!)
     LeaveCriticalSection(&cs_update);
 
     // Figure out the viewer's height above the terrain
@@ -145,7 +145,7 @@ void TViewPoint::Update(const Tpoint *position)
     // that the following conditional tree is less confusing
     altAGL = GetGroundLevelApproximation(X(), Y()) - Z();
 
-    // TODO:  FIX THIS CRITICAL SECTION STUFF (NO NESTING!!!)
+    // TODO:  FIX THIS CRITICAL SECTION STUFF (NO NESTING!)
     EnterCriticalSection(&cs_update);
 
     // Adjust the range of active LODs based on altitude
@@ -782,7 +782,7 @@ BOOL TViewPoint::LineOfSight(Tpoint *p1, Tpoint *p2)
     {
 #define LOS_TRUE_IF_UNLOADED 1
 #if LOS_TRUE_IF_UNLOADED
-        // sfr: return TRUE if not loaded!!
+        // sfr: return TRUE if not loaded
         return TRUE;
 #else
         return FALSE;

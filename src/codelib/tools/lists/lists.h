@@ -5,7 +5,7 @@
  Written by Kevin Ray (c) 1994 Spectrum Holobyte.
    ---------------------------------------------------- */
 
-#if !defined(__LISTS_H_INCLUDED)
+#if not defined(__LISTS_H_INCLUDED)
 #  define __LISTS_H_INCLUDED  1
 
 #include "omni.h"                       /* Get our configuration */

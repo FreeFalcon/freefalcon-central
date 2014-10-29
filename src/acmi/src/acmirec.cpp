@@ -45,7 +45,7 @@ ACMIRecorder::ACMIRecorder(void)
     _csect = F4CreateCriticalSection("acmi");
     _recording = FALSE;
 
-    // edg: We Need to get this from player options!!!!
+    // edg: We Need to get this from player options
     // at the moment there doesn't seem to be a value for this in the class
     // default to 5 meg
     _maxBytesToWrite = (float)PlayerOptions.AcmiFileSize() * 1024 * 1024;

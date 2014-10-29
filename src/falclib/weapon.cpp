@@ -200,7 +200,7 @@ int GetListEntryWeapons(int list, int num)
 #ifdef DEBUG
 
     // KCK HACK FOR BAD DATA
-    if (WeaponListDataTable[list].WeaponID[num] and !WeaponListDataTable[list].Quantity[num])
+    if (WeaponListDataTable[list].WeaponID[num] and not WeaponListDataTable[list].Quantity[num])
         return 1;
 
 #endif

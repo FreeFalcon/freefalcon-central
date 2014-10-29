@@ -43,7 +43,7 @@ int LoadWeapon(int hp, int last_hp, short wid, int to_load, int max, Squadron sq
     if (wid < 0 or wid >= NumWeaponTypes)
         return 0;
 
-    if (squadron and !squadron->GetUnitStores(wid))
+    if (squadron and not squadron->GetUnitStores(wid))
     {
 #ifndef INFINITE_AI_AMMO
         // Check for infinite weapons
@@ -164,7 +164,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
 
 
 
-    if (type_flags and !(type_flags bitand WeaponDataTable[wid].Flags) and !(type_flags bitand WEAP_BAI_LOADOUT) and !(type_flags bitand WEAP_DEAD_LOADOUT))
+    if (type_flags and  not (type_flags bitand WeaponDataTable[wid].Flags) and  not (type_flags bitand WEAP_BAI_LOADOUT) and  not (type_flags bitand WEAP_DEAD_LOADOUT))
         score = 0;
 
     if (type_flags and type_flags bitand WeaponDataTable[wid].Flags)
@@ -300,8 +300,8 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
     for (hp = chp; hp <= lhp and num > 0; hp++)
     {
         // RV - Biker - Jammers now do overwrite AA and AG weapons
-        //if ( not Weapon[hp] and ( not sl or !Weapon[lhp+1-hp])) // Only check for empty hard points
-        if ( not Weapon[hp] and ( not sl or !Weapon[lhp + 1 - hp]) or ((type_flags bitand WEAP_ECM or type_flags bitand WEAP_LASER_POD) and !(WeaponDataTable[Weapon[hp]].Flags bitand (WEAP_FUEL | WEAP_RECON)))) // Only check for empty hard points
+        //if ( not Weapon[hp] and ( not sl or not Weapon[lhp+1-hp])) // Only check for empty hard points
+        if ( not Weapon[hp] and ( not sl or not Weapon[lhp + 1 - hp]) or ((type_flags bitand WEAP_ECM or type_flags bitand WEAP_LASER_POD) and  not (WeaponDataTable[Weapon[hp]].Flags bitand (WEAP_FUEL | WEAP_RECON)))) // Only check for empty hard points
             //if ( not Weapon[hp] or (temp_flags bitand WEAP_LASER_POD))
         {
             if (vc->Weapons[hp] == 255) // This is a weapon list
@@ -392,7 +392,7 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
 
 #endif
 
-        if (hp and !lw and Weapon[hp])
+        if (hp and not lw and Weapon[hp])
             lw = Weapon[hp];
 
         // RV - Biker - Maybe need to rework this

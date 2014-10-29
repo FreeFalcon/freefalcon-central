@@ -48,7 +48,7 @@ public:
     /** this structure holds BW types. If changed here, also adjust ComAPI (look for BWTYPE) */
     typedef enum
     {
-        BW_POSITIONAL = 0,   ///< positional update (MUST BE ZERO!!)
+        BW_POSITIONAL = 0,   ///< positional update (MUST BE ZERO)
         BW_DIRTY,            ///< dirty data
         BW_OTHER,            ///< other stuff
         BW_COMMON,           ///< common pool

@@ -163,7 +163,7 @@ void RenderOTW::SetLightning()
 
 void RenderOTW::ToggleGreenMode()
 {
-    GreenMode = !GreenMode;
+    GreenMode = not GreenMode;
 }
 
 
@@ -452,7 +452,7 @@ void RenderOTW::SetupStates(void)
     }
     else
     {
-        // RED - WTF..!!! if u Eneter that light is hi, u would not get lights on when light go down...
+        // RED - WTF..! if u Eneter that light is hi, u would not get lights on when light go down...
         if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS/* and TheTerrTextures.lightLevel < 0.5f*/)
         {
             state_fore = STATE_MULTITEXTURE;
@@ -960,7 +960,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
          opacity = max(opacity, 1.0 - visibility);
 
      // Handle the entering/inside/leaving cloud effects
-     if (opacity <= 0.0f and !Lightning)
+     if (opacity <= 0.0f and not Lightning)
      {
     */ // We're not being affected by a cloud, the only effect is sun glare (if any)
     PreSceneCloudOcclusion(SunGlareWashout, 0xFFFFFFFF);
@@ -1009,7 +1009,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
      color.b = (opacity*color.b + SunGlareWashout) * scaler;
 
      // JB 010618 vary the brightness on cloud thickness
-     if (g_bEnableWeatherExtensions and !thunderAndLightning)
+     if (g_bEnableWeatherExtensions and not thunderAndLightning)
      {
      float thickness = fabs(viewpoint->GetLocalCloudTops() - position.z);
      if (thickness > 0)
@@ -2217,7 +2217,7 @@ void RenderOTW::DrawWeather(const Trotation *orientation)
     {
         // draw some shapes...
 
-        // do something clever - damm out of time!!
+        // do something clever - damm out of time
         // algorithm written, (in perl) and ready to go,
         // this is the wrong place anyway, should be tied to a cloud and done in 3-d space.
     }

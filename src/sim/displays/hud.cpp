@@ -655,7 +655,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
 
     //MI removed RPM indication
     //M.N. we need RPM indication for Flightmodel testing
-    if ( not g_bNoRPMOnHud/* or !g_bRealisticAvionics*/)
+    if ( not g_bNoRPMOnHud/* or  not g_bRealisticAvionics*/)
     {
         if (ownship)
         {
@@ -687,13 +687,13 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
     //End Alpha
 
     //////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-    // COBRA - RED - HACK!!!!!! This forces a Context VB Flush to solve a loss of vertices
+    // COBRA - RED - HACK This forces a Context VB Flush to solve a loss of vertices
     // still have to find why
     /////////////////////////////////////////////////////////////////////////////////////
 
     display->TextCenter(0, 0, "", 0);
 
-    // COBRA - RED - END OF HACK !!!! \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+    // COBRA - RED - END OF HACK  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 
     display->ZeroRotationAboutOrigin();
@@ -1144,13 +1144,13 @@ void HudClass::DrawAlphaNumeric(void)
         {
             if ( not ownship->INSState(AircraftClass::INS_Aligned)  and 
                 ownship->INSState(AircraftClass::INS_AlignNorm) and (cockpitFlightData.kias <= 1.0F
-                        and !ownship->INS60kts) or ownship->INSState(AircraftClass::INS_AlignFlight))
+                        and not ownship->INS60kts) or ownship->INSState(AircraftClass::INS_AlignFlight))
             {
                 sprintf(tmpStr, "ALIGN");
             }
             else if (ownship->INSState(AircraftClass::INS_Aligned)  and 
                      ownship->INSState(AircraftClass::INS_AlignNorm) and cockpitFlightData.kias <= 1.0F
-                     and !ownship->INS60kts or ownship->INSState(AircraftClass::INS_AlignFlight))
+                     and not ownship->INS60kts or ownship->INSState(AircraftClass::INS_AlignFlight))
             {
                 if (flash)
                     sprintf(tmpStr, "ALIGN");
@@ -1459,7 +1459,7 @@ void HudClass::DrawAlphaNumeric(void)
     }
 
     //MI TFR info if needed
-    if (theLantirn and theLantirn->IsEnabled() and ownship and ownship->mFaults and !ownship->mFaults->WarnReset()
+    if (theLantirn and theLantirn->IsEnabled() and ownship and ownship->mFaults and not ownship->mFaults->WarnReset()
         and ownship->RFState not_eq 2)
     {
         char tempstr[20] = "";
@@ -1469,7 +1469,7 @@ void HudClass::DrawAlphaNumeric(void)
         else if (theLantirn->evasize  == 2 and flash)
             sprintf(tempstr, "OBSTACLE");
 
-        if (theLantirn->SpeedUp and !flash)
+        if (theLantirn->SpeedUp and not flash)
             sprintf(tempstr, "SLOW");
 
         display->TextCenter(0, 0.25, tempstr, 0);
@@ -2181,7 +2181,7 @@ bool HudClass::CheckGhostHorizon(float radius, float xOffset, float yOffset, flo
     bool ghostHorizonDrawn = false;
 
     //Ghost horizon only drawn if HUD fixes are used and we're on realistic avionics.
-    if ((g_bHUDFix == false) or !(g_bRealisticAvionics))
+    if ((g_bHUDFix == false) or  not (g_bRealisticAvionics))
     {
         return ghostHorizonDrawn;
     }
@@ -2733,7 +2733,7 @@ void HudClass::DrawTDMarker(float az, float el, float dRoll, float size)
                 {
                     if (ownship->Sms and ownship->Sms->curWeapon and ownship->Sms->curWeapon->IsMissile()  and 
                         ((MissileClass *)ownship->Sms->GetCurrentWeapon())->GetSeekerType() == SensorClass::RadarHoming  and 
-                        theRadar and !theRadar->IsSet(RadarDopplerClass::STTingTarget))
+                        theRadar and not theRadar->IsSet(RadarDopplerClass::STTingTarget))
                     {
                         display->TextCenter(0.0F, -0.1F, "GO STT", 0);
                     }

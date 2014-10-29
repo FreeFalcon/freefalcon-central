@@ -137,7 +137,7 @@ int CampDirtyData::Process(uchar autodisp)
         }
         catch (InvalidBufferException)
         {
-            fprintf(stderr, "%s %d: invalid buffer, check here!!!\n", __FILE__,  __LINE__);
+            fprintf(stderr, "%s %d: invalid buffer, check here\n", __FILE__,  __LINE__);
         }
 
 #endif

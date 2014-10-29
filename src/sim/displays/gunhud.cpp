@@ -106,7 +106,7 @@ void HudClass::DrawGuns(void)
         {
             if ((ownship->fireGun or ownship->GunFire) and ownship->Sms->MasterArm() not_eq SMSBaseClass::Safe)
             {
-                if ( not HideFunnel and !SetHideTimer)
+                if ( not HideFunnel and not SetHideTimer)
                 {
                     HideFunnelTimer = SimLibElapsedTime + 150;
                     SetHideTimer = TRUE;
@@ -127,7 +127,7 @@ void HudClass::DrawGuns(void)
             else
             {
                 //Make it appear again 1 second after we released the trigger
-                if (SetHideTimer and !SetShowTimer)
+                if (SetHideTimer and not SetShowTimer)
                 {
                     SetHideTimer = FALSE;
                     SetShowTimer = TRUE;
@@ -330,7 +330,7 @@ void HudClass::DrawFunnel(void)
         }
 
         //MI in SIM we want FEDS, but only if no locked target
-        if (g_bRealisticAvionics and !targetPtr)
+        if (g_bRealisticAvionics and not targetPtr)
         {
             //document shows that we get this even when the gun is fired for real.
             if ( not ownship->OnGround() /* and  (ownship->Sms->MasterArm() == SMSBaseClass::Sim)*/)

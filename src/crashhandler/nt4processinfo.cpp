@@ -62,7 +62,7 @@ static BOOL InitPSAPI(void)
 
     if (NULL == hInst)
     {
-        TRACE0("Unable to load PSAPI.DLL!\n") ;
+        TRACE0("Unable to load PSAPI.DLL\n") ;
         return (FALSE) ;
     }
 
@@ -74,7 +74,7 @@ static BOOL InitPSAPI(void)
 
     if (NULL == g_pEnumProcessModules)
     {
-        TRACE0("GetProcAddress failed on EnumProcessModules!\n") ;
+        TRACE0("GetProcAddress failed on EnumProcessModules\n") ;
         return (FALSE) ;
     }
 
@@ -85,7 +85,7 @@ static BOOL InitPSAPI(void)
 
     if (NULL == g_pGetModuleBaseName)
     {
-        TRACE0("GetProcAddress failed on GetModuleBaseNameA!\n") ;
+        TRACE0("GetProcAddress failed on GetModuleBaseNameA\n") ;
         return (FALSE) ;
     }
 
@@ -152,7 +152,7 @@ BOOL NT4GetLoadedModules(DWORD     dwPID        ,
 
     if (TRUE == IsBadCodePtr((FARPROC)g_pEnumProcessModules))
     {
-        TRACE0("PSAPI.DLL has been unloaded on us!\n") ;
+        TRACE0("PSAPI.DLL has been unloaded on us\n") ;
 
         // Close the process handle used.
         VERIFY(CloseHandle(hProc)) ;
@@ -179,7 +179,7 @@ BOOL NT4GetLoadedModules(DWORD     dwPID        ,
     if (((FALSE == bRet) and (uiCount > 0)) or (0 == dwTotal))
     {
         ASSERT(FALSE) ;
-        TRACE0("EnumProcessModules failed!\n") ;
+        TRACE0("EnumProcessModules failed\n") ;
         return (FALSE) ;
     }
 
@@ -189,7 +189,7 @@ BOOL NT4GetLoadedModules(DWORD     dwPID        ,
     if ((*puiRealCount > uiCount) and (uiCount > 0))
     {
         ASSERT(FALSE) ;
-        TRACE0("Buffer is too small in NT4GetLoadedModules!\n") ;
+        TRACE0("Buffer is too small in NT4GetLoadedModules\n") ;
         SetLastErrorEx(ERROR_INSUFFICIENT_BUFFER , SLE_ERROR) ;
         return (FALSE) ;
     }

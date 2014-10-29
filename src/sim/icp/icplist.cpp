@@ -898,7 +898,7 @@ void ICPClass::ExecINTGMode(void)
     }
 
     //Line1
-    if (playerAC and !playerAC->HasPower(AircraftClass::IFFPower))
+    if (playerAC and not playerAC->HasPower(AircraftClass::IFFPower))
         FillDEDMatrix(0, 1, "INTG OFF");
     else
         FillDEDMatrix(0, 1, "INTG ON");

@@ -439,7 +439,7 @@ TeamClass::TeamClass(FILE *file) :
 
             for (i = 0; i < NUM_TEAMS; i++)
             {
-                if ( not i or !who)
+                if ( not i or not who)
                     stance[i] = NoRelations;
                 else if (i not_eq who)
                     stance[i] = War;
@@ -989,7 +989,7 @@ int TeamClass::CheckControl(GridIndex X, GridIndex Y)
      return 1;
      }
      */
-    // Failure!
+    // Failure
     return 0;
 }
 #endif
@@ -1088,7 +1088,7 @@ int TeamClass::Handle(VuFullUpdateEvent *event)
     retval = VuEntity::Handle(event);
 
     // Set our flag if we've got all the team's info
-    // WARNING: we don't guarentee receipt of the managers!
+    // WARNING: we don't guarentee receipt of the managers
     flags  or_eq  TEAM_UPDATED;
 
     // Mark team data as received if we have all the teams.
@@ -1179,7 +1179,7 @@ void TeamClass::SelectGroundAction(void)
     Team t;
     TeamGndActionType enemyAction;
 
-    if ( not (flags bitand TEAM_ACTIVE) or !IsLocal())
+    if ( not (flags bitand TEAM_ACTIVE) or not IsLocal())
         return;
 
     // A.S. begin, 2001-12-09
@@ -1227,7 +1227,7 @@ void TeamClass::SelectGroundAction(void)
 
         if (bo)
         {
-            // Offensive Action! Yahoo!
+            // Offensive Action Yahoo
             if (initiative >= MIN_FULL_OFFENSIVE_INITIATIVE)
                 groundAction.actionType = GACTION_OFFENSIVE;
             else
@@ -1341,7 +1341,7 @@ void TeamClass::SelectAirActions(void)
     MissionRequest mis;
     CampaignTime current_time;
 
-    if ( not (flags bitand TEAM_ACTIVE) or !IsLocal())
+    if ( not (flags bitand TEAM_ACTIVE) or not IsLocal())
         return;
 
     if (TheCampaign.CurrentTime > defensiveAirAction.actionStopTime)
@@ -1364,7 +1364,7 @@ void TeamClass::SelectAirActions(void)
     {
         mis = (MissionRequest) lp->GetUserData();
 
-        if ( not mis->action_type and !(MissionData[mis->mission].flags bitand AMIS_FLYALWAYS))
+        if ( not mis->action_type and  not (MissionData[mis->mission].flags bitand AMIS_FLYALWAYS))
             missions_requested++;
 
         lp = lp->GetPrev();
@@ -1923,7 +1923,7 @@ void ApplyBonus(Team who, VU_ID poid, int rating)
     if (rating < 0 or applied)
         return;
 
-    for (i = 0; i < MAX_BONUSES and !applied; i++)
+    for (i = 0; i < MAX_BONUSES and not applied; i++)
     {
         if (TeamInfo[who]->bonusObjs[i] == FalconNullId)
         {
@@ -2328,7 +2328,7 @@ int GetPriority(MissionRequest mis)
         else
             distance_priority = 0; // 0
 
-        if (d > 100 and !mis->action_type and mis->mission == AMIS_SWEEP)
+        if (d > 100 and not mis->action_type and mis->mission == AMIS_SWEEP)
         {
             priority = -1;
             return -1;
@@ -2411,7 +2411,7 @@ void AddReinforcements(Team who, int inc)
     while (u)
     {
         // Activate any waiting reinforcements (note: cargoed units are inactive too, so keep an eye out)
-        if (u->GetTeam() == who and !u->Cargo() and u->GetUnitReinforcementLevel() <= TeamInfo[who]->GetReinforcement() and u->Parent())
+        if (u->GetTeam() == who and not u->Cargo() and u->GetUnitReinforcementLevel() <= TeamInfo[who]->GetReinforcement() and u->Parent())
         {
             added = 0;
 
@@ -2518,7 +2518,7 @@ void UpdateTeamStatistics(void)
                      u->GetSType() == STYPE_UNIT_FIGHTER ||
                      u->GetSType() == STYPE_UNIT_FIGHTER_BOMBER))
                 {
-                    if (u->GetUnitAirbase() == NULL or u->GetSType() == STYPE_UNIT_ATTACK_HELO or !u->GetUnitAirbase()->IsObjective())
+                    if (u->GetUnitAirbase() == NULL or u->GetSType() == STYPE_UNIT_ATTACK_HELO or not u->GetUnitAirbase()->IsObjective())
                         TeamInfo[u->GetTeam()]->SetCurrentStats()->aircraft += u->GetTotalVehicles();
                     else
                     {
@@ -2711,7 +2711,7 @@ void UpdateTeamStatistics(void)
     /* if (TeamInfo[FalconLocalSession->GetTeam()]->lastPlayerMission - TheCampaign.CurrentTime > g_nNoPlayerPlay*CampaignHours)
      ApplyPlayerInput(FalconLocalSession->GetTeam(),FalconNullId,-10);*/
 
-    // Fix by Alfred, ApplyPlayerInput is called every hour!
+    // Fix by Alfred, ApplyPlayerInput is called every hour
     int rating;
 
     if (TheCampaign.CurrentTime < CampaignHours * 10)
@@ -2767,7 +2767,7 @@ int GetTeamSituation(Team t)
     return TheCampaign.Situation;
 }
 
-// KCK: TODO!!!!
+// KCK: TODO
 int NavalSuperiority(Team who)
 {
     return 0;

@@ -87,7 +87,7 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
             break;
     }
 
-    if (size not_eq csize or !map_data)
+    if (size not_eq csize or not map_data)
     {
         // better resize it
         CampEnterCriticalSection();
@@ -190,7 +190,7 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
 
                         if (o)
                         {
-                            for (p = 1, done = 0; p < 50 and !done and o; p++)
+                            for (p = 1, done = 0; p < 50 and not done and o; p++)
                             {
                                 if (o->Id() == pakTable[p])
                                 {
@@ -483,7 +483,7 @@ int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
 
     for (i = 0; i < NUM_RADAR_ARCS; i++)
     {
-        // 2001-03-09 MODIFIEDED BY S.G. e->GetArcRatio(i) CAN BE ZERO! IF THAT HAPPENS, The for (x=... LOOP BELOW IS SQUIPPED SO HIGH ALTITUDE IS NOT MAPPED!
+        // 2001-03-09 MODIFIEDED BY S.G. e->GetArcRatio(i) CAN BE ZERO IF THAT HAPPENS, The for (x=... LOOP BELOW IS SQUIPPED SO HIGH ALTITUDE IS NOT MAPPED
         // ld[i] = (float) (((ALT_TO_BUILD_RANGES_TO / e->GetArcRatio(i)) * FT_TO_KM)/MAP_RATIO);
         if (float arcRatio = e->GetArcRatio(i))
         {

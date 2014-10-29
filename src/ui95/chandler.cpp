@@ -405,7 +405,7 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
     {
         Root_ = newwin;
     }
-    else if (thewin->GetDepth() < Root_->win->GetDepth() and thewin->GetDepth() or (thewin->GetFlags() bitand C_BIT_CANTMOVE and !(Root_->win->GetFlags() bitand C_BIT_CANTMOVE)))
+    else if (thewin->GetDepth() < Root_->win->GetDepth() and thewin->GetDepth() or (thewin->GetFlags() bitand C_BIT_CANTMOVE and  not (Root_->win->GetFlags() bitand C_BIT_CANTMOVE)))
     {
         newwin->Next = Root_;
         Root_->Prev = newwin;
@@ -417,7 +417,7 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
 
         while (cur and newwin)
         {
-            if (thewin->GetDepth() < cur->win->GetDepth() and thewin->GetDepth() or (thewin->GetFlags() bitand C_BIT_CANTMOVE and !(cur->win->GetFlags() bitand C_BIT_CANTMOVE)))
+            if (thewin->GetDepth() < cur->win->GetDepth() and thewin->GetDepth() or (thewin->GetFlags() bitand C_BIT_CANTMOVE and  not (cur->win->GetFlags() bitand C_BIT_CANTMOVE)))
             {
                 newwin->Next = cur;
                 newwin->Prev = cur->Prev;
@@ -458,7 +458,7 @@ BOOL C_Handler::ShowWindow(C_Window *thewin)
 
     while (cur)
     {
-        if (cur->win == thewin and !(cur->Flags bitand C_BIT_ENABLED))
+        if (cur->win == thewin and  not (cur->Flags bitand C_BIT_ENABLED))
         {
             cur->win->SetCritical(UI_Critical);
             cur->Flags  or_eq  C_BIT_ENABLED;
@@ -659,7 +659,7 @@ void C_Handler::WindowToFront(C_Window *thewin) // move to end of list
 
     if (Root_->win == thewin)
     {
-        if (Root_->Flags bitand C_BIT_CANTMOVE or !(Root_->Flags bitand C_BIT_ENABLED))
+        if (Root_->Flags bitand C_BIT_CANTMOVE or  not (Root_->Flags bitand C_BIT_ENABLED))
             return;
 
         found = Root_;
@@ -685,7 +685,7 @@ void C_Handler::WindowToFront(C_Window *thewin) // move to end of list
         {
             if (cur->Next->win == thewin and found == NULL)
             {
-                if (cur->Next->Flags bitand C_BIT_CANTMOVE or !(cur->Next->Flags bitand C_BIT_ENABLED))
+                if (cur->Next->Flags bitand C_BIT_CANTMOVE or  not (cur->Next->Flags bitand C_BIT_ENABLED))
                     return;
 
                 found = cur->Next;
@@ -951,7 +951,7 @@ void C_Handler::ClearHiddenRects(WHLIST *me)
 
         while (cur)
         {
-            if ((cur->Flags bitand C_BIT_ENABLED) and !(cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
+            if ((cur->Flags bitand C_BIT_ENABLED) and  not (cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
             {
                 me->win->ClearUpdateRect(cur->win->GetX() - me->win->GetX(),
                                          cur->win->GetY() - me->win->GetY(),
@@ -978,7 +978,7 @@ void C_Handler::ClearAllHiddenRects()
 
             while (cur)
             {
-                if ((cur->Flags bitand C_BIT_ENABLED) and !(cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
+                if ((cur->Flags bitand C_BIT_ENABLED) and  not (cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
                 {
                     me->win->ClearUpdateRect(cur->win->GetX() - me->win->GetX(),
                                              cur->win->GetY() - me->win->GetY(),
@@ -1118,7 +1118,7 @@ void C_Handler::Update()
     UI95_RECT src, dst;
     short i;
 
-    if ( not (UpdateFlag bitand C_DRAW_REFRESH) or !DrawFlags)
+    if ( not (UpdateFlag bitand C_DRAW_REFRESH) or not DrawFlags)
         return;
 
     Lock();
@@ -1374,7 +1374,7 @@ void C_Handler::EnableWindowGroup(long ID)
 
     while (cur)
     {
-        if (cur->win->GetGroup() == ID and !(cur->Flags bitand C_BIT_ENABLED))
+        if (cur->win->GetGroup() == ID and  not (cur->Flags bitand C_BIT_ENABLED))
         {
             ShowWindow(cur->win);
 
@@ -2207,7 +2207,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
             CurWindow_ = overme;
 
-            if (gPopupMgr->AMenuOpened() and !overme->IsMenu())
+            if (gPopupMgr->AMenuOpened() and not overme->IsMenu())
                 gPopupMgr->CloseMenu();
 
             if (Dragging())
@@ -2768,7 +2768,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 if (MouseDown_ and (GetCurrentTime() - MouseDownTime_) > 250)
                 {
 
-                    if (Grab_.Control_ and !InTimer)
+                    if (Grab_.Control_ and not InTimer)
                     {
                         if (GetAsyncKeyState(VK_LBUTTON))
                         {

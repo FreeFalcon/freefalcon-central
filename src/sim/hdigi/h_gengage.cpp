@@ -219,7 +219,7 @@ void HeliBrain::GunsEngage(void)
     yft = theObject->YPos() - self->YPos();
 
     // error for airplanes
-    if (theObject->IsAirplane() and !theObject->OnGround())
+    if (theObject->IsAirplane() and not theObject->OnGround())
     {
         xft += PRANDFloat() * 2500.0f;
         yft += PRANDFloat() * 2500.0f;
@@ -296,7 +296,7 @@ void HeliBrain::GunsEngage(void)
 
         // Correct for gravity
         //zft += 0.5F * GRAVITY * tof * tof;
-        // RV - Biker - Do it the right way!!!
+        // RV - Biker - Do it the right way!
         zft -= 0.5F * GRAVITY * tof * tof;
 
         az = (float)atan2(yft, xft);
@@ -717,7 +717,7 @@ void HeliBrain::FireControl(void)
 //               curMissile = (MissileClass *)(self->Sms->curWeapon);
 //               curMissileStation = self->Sms->curWpnStation;
 //               curMissileNum     = self->Sms->curWpnNum;
-////       MonoPrint( "HELO BRAIN Missile Selected!\n" );
+////       MonoPrint( "HELO BRAIN Missile Selected\n" );
 //            }
 //         }
 //         self->Sms->FindWeaponClass (SMSClass::AimWpn);
@@ -874,7 +874,7 @@ void HeliBrain::FireControl(void)
 //
 // if ( target )
 // {
-// if ( !target->OnGround() )
+// if (  not target->OnGround() )
 // {
 // if ( curAA )
 // {
@@ -1030,7 +1030,7 @@ void HeliBrain::WeaponSelection(void)
     }
 
     if (lastRange > maxWpnRange ||
-        !self->Sms->curWeapon  ||
+         not self->Sms->curWeapon  ||
         !targetPtr)
     {
         self->FCC->SetMasterMode(FireControlComputer::Nav);

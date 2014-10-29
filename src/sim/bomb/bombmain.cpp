@@ -68,7 +68,7 @@ BombClass::BombClass(VU_BYTE** stream, long *rem) : SimWeaponClass(stream, rem)
     memcpychk(&bt, stream, sizeof(bt), rem);
     InitLocalData(bt);
 
-    if (parent and !IsLocal())
+    if (parent and not IsLocal())
     {
         flags  or_eq  FirstFrame;
         //VuReferenceEntity (parent);
@@ -512,7 +512,7 @@ int BombClass::Exec(void)
         // special case durandal.  If x and y vel reaches 0 we fire it
         // by starting the special effect
         if ((flags bitand IsDurandal)  and 
-            !(flags bitand FireDurandal)  and 
+             not (flags bitand FireDurandal)  and 
             dx == 0.0f  and 
             dy == 0.0f)
         {
@@ -556,17 +556,17 @@ int BombClass::Exec(void)
         // realistic section would be ran. If no parent, run this
         // There is no danger of a CTD if parent is NULL because the
         // OR will have it enter the if statement without running the 'IsPlayer'.
-        //   if( not g_bRealisticAvionics or ( parent and !((AircraftClass *)parent)->IsPlayer()))
+        //   if( not g_bRealisticAvionics or ( parent and  not ((AircraftClass *)parent)->IsPlayer()))
         // Cobra - Forcing all non-Player (AI) into this section causes their bombs
         // to not be guided, thus randon hit pattern
-        //   if( not g_bRealisticAvionics or !parent)
+        //   if( not g_bRealisticAvionics or not parent)
         /////////////////////////////////////////////////////
 
         // RED -  enough enter when it's not a guided Bomb or LGB for AI
         // ( the targeting sysem would CTD if AI managed by player code,
         // As the PlayerEntity is not the one to use )
         if (
-            !g_bRealisticAvionics or !parent or !(flags bitand GUIDED_BOMB)
+             not g_bRealisticAvionics or not parent or  not (flags bitand GUIDED_BOMB)
             or (((( not ((AircraftClass *)parent.get())->IsPlayer())
                   or (((AircraftClass *)parent.get())->IsPlayer())
                   and ((AircraftClass *)parent.get())->AutopilotType() == AircraftClass::CombatAP))
@@ -632,7 +632,7 @@ int BombClass::Exec(void)
                         //#define WEAP_LGB_3RD_GEN 0x40 moved to campwp.h and changed to 0x80
                         if (wc->Flags bitand WEAP_LGB_3RD_GEN)
                             SetDelta(0.8F * XDelta() + 0.2f * desDxPrev, 0.8f * YDelta() + 0.2f * desDyPrev, ZDelta());
-                        else // 2001-10-19 MODIFIED BY S.G. IT'S * 1.05f AND NOT * 2.0f!
+                        else // 2001-10-19 MODIFIED BY S.G. IT'S * 1.05f AND NOT * 2.0f
                             SetDelta((0.8F * XDelta() + 0.2f * desDxPrev) * 1.05f, (0.8f * YDelta() + 0.2f * desDyPrev) * 1.05f, ZDelta());
                     }
 
@@ -653,7 +653,7 @@ int BombClass::Exec(void)
                     //#define WEAP_LGB_3RD_GEN 0x40 moved to campwp.h and changed to 0x80
                     if (wc->Flags bitand WEAP_LGB_3RD_GEN)
                         SetDelta(0.8F * XDelta() + 0.2f * desDxPrev, 0.8f * YDelta() + 0.2f * desDyPrev, ZDelta());
-                    else // 2001-10-19 MODIFIED BY S.G. IT'S * 1.05f AND NOT * 2.0f!
+                    else // 2001-10-19 MODIFIED BY S.G. IT'S * 1.05f AND NOT * 2.0f
                         SetDelta((0.8F * XDelta() + 0.2f * desDxPrev) * 1.05f, (0.8f * YDelta() + 0.2f * desDyPrev) * 1.05f, ZDelta());
                 }
             }
@@ -715,14 +715,14 @@ int BombClass::Exec(void)
 
                 // 18 degree limit on the seeker
                 /* JAM 17Apr04 - (range-rx * rx) yields a negative number, you can't take the square
-                 root of a negative number! In VC6, the seeker check always passes, but in VC >= 6 + PP,
+                 root of a negative number In VC6, the seeker check always passes, but in VC >= 6 + PP,
                  the check always FAILS, due to differences in how the compilers treat sqrt(-). This is
                  why LGB's consistantly missed their targets in anything but vanilla VC6.
                 */
                 if (
                     Abs(acosf(rx / range)) <= 18.f * DTR  and 
                     (parentAC->IsPlayer() and parentAC->FCC->LaserFire) ||
-                    !parentAC->IsPlayer()
+                     not parentAC->IsPlayer()
                 )
                 {
                     desDx = (deltaX) / tFall;
@@ -750,7 +750,7 @@ int BombClass::Exec(void)
                         }
                         else
                         {
-                            // 2001-10-19 MODIFIED BY S.G. IT'S * 1.05f AND NOT * 2.0f!
+                            // 2001-10-19 MODIFIED BY S.G. IT'S * 1.05f AND NOT * 2.0f
                             SetDelta(
                                 (0.8F * XDelta() + 0.2f * desDxPrev) * 1.05f,
                                 (0.8f * YDelta() + 0.2f * desDyPrev) * 1.05f,
@@ -800,7 +800,7 @@ int BombClass::Exec(void)
                     else
                      campBaseObj = (CampBaseClass *)targetPtr->BaseData();
                     // Now find out if our campaign object is aggregated
-                    if ((campBaseObj and !campBaseObj->IsAggregate()))
+                    if ((campBaseObj and not campBaseObj->IsAggregate()))
                     {
                     target = targetPtr->BaseData();
                     // Get the sim object associated to this entity number
@@ -1005,7 +1005,7 @@ int BombClass::Exec(void)
 
         //MI this else is causing our CBU's to not burst with a BA < 900 because of the check above
         //else
-        if (bheight > 0 and z >= terrainHeight - bheight and !IsSetFlag(SHOW_EXPLOSION) and bombType == BombClass::None)   //me123 check addet to making flares stop exploding
+        if (bheight > 0 and z >= terrainHeight - bheight and not IsSetFlag(SHOW_EXPLOSION) and bombType == BombClass::None)   //me123 check addet to making flares stop exploding
         {
             // for altitude detonations we start the effect here
             SetFlag(SHOW_EXPLOSION);
@@ -1364,7 +1364,7 @@ void BombClass::DoExplosion(void)
 
 
         if (hitObj == NULL  and 
-            !(endMessage->dataBlock.groundType == COVERAGE_WATER ||
+             not (endMessage->dataBlock.groundType == COVERAGE_WATER ||
               endMessage->dataBlock.groundType == COVERAGE_RIVER)
            ) // and ( ZPos() - groundZ ) > -40.0f ) // JB 010710 craters weren't showing up
         {

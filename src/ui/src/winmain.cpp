@@ -566,7 +566,7 @@ signed int PASCAL WinMain(HINSTANCE h_Instance, HINSTANCE h_previous_instance,
 {
 
 // We want the SubRange template to run only under DEBUG.
-// Don't use #ifdef DEBUG because the DEBUG macro is defined in RELEASE too!!!
+// Don't use #ifdef DEBUG because the DEBUG macro is defined in RELEASE too!
 #ifndef NDEBUG
 	SubRange<signed int, 0, 1> error_code;
 #else
@@ -969,7 +969,7 @@ void ParseCommandLine(LPSTR cmdLine)
 
 #endif
 
-            if ( not stricmp(arg, "-bandwidth") or !stricmp(arg, "-bandwith") or !stricmp(arg, "-bw"))
+            if ( not stricmp(arg, "-bandwidth") or not stricmp(arg, "-bandwith") or not stricmp(arg, "-bw"))
                 if ((arg = strtok(NULL, " ")) not_eq NULL)
                 {
                     F4CommsBandwidth = atoi(arg);
@@ -1296,7 +1296,7 @@ void SystemLevelInit()
 
     // ..ends
 
-#if !NEW_SOUND_STARTUP_ORDER
+#if not NEW_SOUND_STARTUP_ORDER
     F4SoundStart();
 #endif
 
@@ -1343,7 +1343,7 @@ void SystemLevelExit(void)
     delete gCommsMgr;
     gCommsMgr = NULL;
 
-#if !NEW_SOUND_STARTUP_ORDER
+#if not NEW_SOUND_STARTUP_ORDER
     ExitSoundManager();
 #endif
     FalconDisplay.Cleanup();
@@ -1921,7 +1921,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_SQUADRON_RECALLED:
-            MonoPrint("Player squadron recalled!\n");
+            MonoPrint("Player squadron recalled\n");
             break;
 
         case FM_SQUADRON_REBASED:
@@ -2188,7 +2188,7 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
             }
         }
 
-        if (stopMovie or !movieIsPlaying(hMovie))
+        if (stopMovie or not movieIsPlaying(hMovie))
         {
             MonoPrint("Premature movie exit.\n");
             movieClose(hMovie);

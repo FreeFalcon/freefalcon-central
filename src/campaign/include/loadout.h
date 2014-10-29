@@ -62,7 +62,7 @@ struct LoadoutStruct
      {
      bool bResult = false;
 
-     for (int i = 0; i < HARDPOINT_MAX and !bResult; ++i)
+     for (int i = 0; i < HARDPOINT_MAX and not bResult; ++i)
      {
      bResult = (WeaponID[i] not_eq rhs.WeaponID[i]) or (WeaponCount[i] not_eq rhs.WeaponCount[i]);
      }

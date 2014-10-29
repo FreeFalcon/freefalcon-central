@@ -502,7 +502,7 @@ void OTWDriverClass::ExitMenu(unsigned long i)
         SetExitMenu(FALSE);
 
         // if already set end now
-        if (endFlightTimer or !gameCompressionRatio)
+        if (endFlightTimer or not gameCompressionRatio)
         {
             endFlightTimer = vuxRealTime;
         }

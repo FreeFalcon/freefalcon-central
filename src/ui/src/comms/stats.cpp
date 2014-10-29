@@ -128,7 +128,7 @@ void PlayerStats::AddStat(long IP, long Date, long Rev, short aa, short ag, shor
 {
     StatList *newrec, *cur;
 
-    if ( not aa and ! ag and !an and !as and !missions and !rating)
+    if ( not aa and not  ag and not an and not as and not missions and not rating)
         return;
 
     cur = Find(IP, Date, Rev);

@@ -277,7 +277,7 @@ void CBExAutoPilot(void * pButton, int)
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ((playerAC == NULL) or !playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if ((playerAC == NULL) or not playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         return;
     }
@@ -1936,10 +1936,10 @@ void CBExMasterArm(void * pButton, int)
 
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
 
-    // sfr: TODO this MUST go away!!!!
+    // sfr: TODO this MUST go away
     if (
-        !F4IsBadReadPtr(playerAC, sizeof(AircraftClass*))  and 
-        !F4IsBadReadPtr(playerAC->Sms, sizeof(SMSClass))
+         not F4IsBadReadPtr(playerAC, sizeof(AircraftClass*))  and 
+         not F4IsBadReadPtr(playerAC->Sms, sizeof(SMSClass))
     )  // JB 010326 CTD
     {
         switch (playerAC->Sms->MasterArm())
@@ -4696,7 +4696,7 @@ void CBExSymWheel(void * pButton, int event)
             break;
 
         default:
-            // ShiWarning("No good state!");
+            // ShiWarning("No good state");
             break;
     }
 }

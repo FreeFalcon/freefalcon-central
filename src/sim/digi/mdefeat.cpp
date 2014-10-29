@@ -96,7 +96,7 @@ void DigitalBrain::MissileDefeatCheck(void)
     }
 
     // RV - Biker - Allow to shoot them back
-    if (((MissileClass *)self->incomingMissile[0])->parent and !((MissileClass *)self->incomingMissile[0])->parent->OnGround())
+    if (((MissileClass *)self->incomingMissile[0])->parent and  not ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
         missileShotTimer = 0;
 
     // 2000-09-05 this will make the range not target base but from us to the missile
@@ -112,7 +112,7 @@ void DigitalBrain::MissileDefeatCheck(void)
     {
         if (self->incomingMissileEvadeTimer + (6 - SkillLevel()) * SEC_TO_MSEC < SimLibElapsedTime)
         {
-            //We have spoofed the missile, now forget about it!
+            //We have spoofed the missile, now forget about it
             // Cobra - Destroy the missile
             if (missileFiredEntity)
             {
@@ -278,7 +278,7 @@ void DigitalBrain::MissileDefeatCheck(void)
                     // Is our count down over? If not, that's it
                     if (missileFiredTime > SimLibElapsedTime)
                         return;
-                    // So it is over, start evading!
+                    // So it is over, start evading
                     else
                     {
                         VuDeReferenceEntity((SimWeaponClass *)missileFiredEntity);
@@ -291,7 +291,7 @@ void DigitalBrain::MissileDefeatCheck(void)
                     //  So check how long ago the our missile was fired
                     if (missileFiredTime  + SEC_TO_MSEC * (SkillLevel() + 1) <= SimLibElapsedTime)
                     {
-                        // It was launched not long ago (skill dependant), Evade!
+                        // It was launched not long ago (skill dependant), Evade
                         VuDeReferenceEntity((SimWeaponClass *)missileFiredEntity);
                         missileFiredEntity = NULL;
                     }
@@ -377,7 +377,7 @@ void DigitalBrain::MissileDefeat()
     }
 
     // RV - Biker - Allow to shoot them back
-    if (((MissileClass *)self->incomingMissile[0])->parent and !((MissileClass *)self->incomingMissile[0])->parent->OnGround())
+    if (((MissileClass *)self->incomingMissile[0])->parent and  not ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
         missileShotTimer = 0;
 
     // RV - Biker - Maybe check some extra conditions later
@@ -399,7 +399,7 @@ void DigitalBrain::MissileDefeat()
     }
 
     // 2001-06-29 ADDED BY S.G. I WANT LEAD TO ASK WINGS TO ATTACK IF HE IS ENGAGED OTHERWISE HE WON'T...
-    if (/*!isWing  and */ ((MissileClass *)self->incomingMissile[0])->parent and ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
+    if (/* not isWing  and */ ((MissileClass *)self->incomingMissile[0])->parent and ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
     {
         // Have we given the attack yet? Oh yeah, do we have some AG weapons and do we have someone to direct?
         if (sentWingAGAttack not_eq AG_ORDER_ATTACK and IsSetATC(HasAGWeapon) and self->GetCampaignObject()->NumberOfComponents() > 1)

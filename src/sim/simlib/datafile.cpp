@@ -155,7 +155,7 @@ bool ParseField(void *dataPtr, const char *line, const InputDataDesc *desc)
 
     const char *cp = line;
 
-    while (*cp and !isspace(*cp))
+    while (*cp and not isspace(*cp))
         cp ++;
 
     if (*cp == '\0') // bad data

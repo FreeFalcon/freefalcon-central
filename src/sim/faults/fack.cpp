@@ -232,7 +232,7 @@ void FackClass::SetFault(type_CSubSystem subsystem)
                         GetFault(sec_fault) ||
                         GetFault(lef_fault))
                     {
-                        if ( not playerAC->NeedsToPlayCaution and !cockpitFlightData.IsSet(FlightData::MasterCaution))
+                        if ( not playerAC->NeedsToPlayCaution and not cockpitFlightData.IsSet(FlightData::MasterCaution))
                         {
                             playerAC->WhenToPlayCaution = vuxGameTime + 7 * CampaignSeconds;
                         }
@@ -478,7 +478,7 @@ void FackClass::SetCaution(type_CSubSystem subsystem)
     {
         mCautions.SetCaution(subsystem);
 
-        if ( not playerAC->NeedsToPlayCaution and !cockpitFlightData.IsSet(FlightData::MasterCaution))
+        if ( not playerAC->NeedsToPlayCaution and not cockpitFlightData.IsSet(FlightData::MasterCaution))
         {
             playerAC->WhenToPlayCaution = vuxGameTime + 7 * CampaignSeconds;
         }

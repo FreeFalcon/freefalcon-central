@@ -122,7 +122,7 @@ void DigitalBrain::LantirnAP(void)
         //SetYpedal( headingErr * 0.05F * RTD * self->GetVt()/cornerSpeed);
         SetYpedal(0.0F);
 
-        //quick and dirty fix to level the wings! -NEES WORK, and possibly hold holdPsi!
+        //quick and dirty fix to level the wings -NEES WORK, and possibly hold holdPsi
         theLantirn->roll = self->Roll();
         float roll_multiply = 0.0F;
 
@@ -324,7 +324,7 @@ void DigitalBrain::AltHold(void)
 {
     if (CheckAPParameters())
     {
-        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
+        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -346,7 +346,7 @@ void DigitalBrain::AltHold(void)
         // at small deltas from desired altitude so as to lead to the porpoising
         // effect we all love to hate.
         //  All that said, if you can do better than this, with a more scientific
-        // approach, please go ahead!
+        // approach, please go ahead
         // The F-16 dash one says the autopilot holds alt +/- 100 feet.  The old
         // algorithm did that too but with a lot more gyration around the desired
         // altitude reference.
@@ -381,7 +381,7 @@ void DigitalBrain::PitchRollHold(void)
 {
     if (CheckAPParameters())
     {
-        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
+        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -472,7 +472,7 @@ void DigitalBrain::FollowWP(void)
 {
     if (CheckAPParameters())
     {
-        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
+        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -524,7 +524,7 @@ void DigitalBrain::HDGSel(void)
 {
     if (CheckAPParameters())
     {
-        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
+        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -552,7 +552,7 @@ void DigitalBrain::RollHold(void)
 {
     if (CheckAPParameters())
     {
-        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
+        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -608,7 +608,7 @@ void DigitalBrain::PitchHold(void)
 {
     if (CheckAPParameters())
     {
-        // pitch switch will remain in selected pitch mode according to the dash one!
+        // pitch switch will remain in selected pitch mode according to the dash one
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -622,7 +622,7 @@ void DigitalBrain::PitchHold(void)
     // Now grab any user input to emulate stick steering during autopilot operation.
     // AP just holds the set reference.  Pressure on the stick will change the reference
     // provided the pitch and other parameters that would disconnect the AP stay within limits.
-    // Be careful to take this input only if there is some pressure on the stick though!
+    // Be careful to take this input only if there is some pressure on the stick though
     if ((UserStickInputs.pstick > 0.05F) or (UserStickInputs.pstick < -0.05F))
     {
         self->SetAPFlag(AircraftClass::StickStrng);
@@ -643,8 +643,8 @@ void DigitalBrain::CheckForTurn(void)
     //anything to do for us?
     if (HeadingDifference < -1.0F or HeadingDifference > 1.0F)
     {
-        //MI DON'T TOUCH THIS CODE!!!!
-        //my brain was smoking after I got this down! It seems to work just fine.
+        //MI DON'T TOUCH THIS CODE
+        //my brain was smoking after I got this down It seems to work just fine.
         if (HeadingDifference < 0)
         {
             //turn left

@@ -195,7 +195,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
                 if (prevObj and featureFlags bitand FEAT_PREV_CRIT and (prevObj->Status() bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED)
                 {
-                    MonoPrint("ID %d taking previous neighbor with it!\n", GetCampaignObject()->GetComponentIndex(this));
+                    MonoPrint("ID %d taking previous neighbor with it\n", GetCampaignObject()->GetComponentIndex(this));
                     prevObj->ApplyDamage(damageMessage);
                 }
                 else if (prevObj)
@@ -208,7 +208,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
                 if (nextObj and featureFlags bitand FEAT_NEXT_CRIT and (nextObj->Status() bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED)
                 {
-                    MonoPrint("ID %d taking next neighbor with it!\n", GetCampaignObject()->GetComponentIndex(this));
+                    MonoPrint("ID %d taking next neighbor with it\n", GetCampaignObject()->GetComponentIndex(this));
                     nextObj->ApplyDamage(damageMessage);
                 }
                 else if (nextObj)
@@ -342,7 +342,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
         // possible explosion
         if ((fc->Flags bitand FEAT_CAN_EXPLODE)  and 
             (pctDamage > 0.1f or pctStrength < 0.3f)  and 
-            !(rand() bitand 0x03))
+             not (rand() bitand 0x03))
         {
             ppos.z = pos.z + PRANDFloatPos() * minB.z * 0.5f + minB.z * 0.5f;
             ppos.x = pos.x + PRANDFloat() * x1;
@@ -367,7 +367,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
             SoundPos.Sfx(SFX_BOOMG1 + PRANDInt5());  // MLR 5/16/2004 -
         }
 
-        if (pctStrength <= 0.0f and !IsSetFlag(SHOW_EXPLOSION))
+        if (pctStrength <= 0.0f and not IsSetFlag(SHOW_EXPLOSION))
         {
             SetFlag(SHOW_EXPLOSION);
 

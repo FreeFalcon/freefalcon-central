@@ -401,7 +401,7 @@ long C_Image::BuildColorTable(WORD *, long , long , long)
     long sidx;
     long count;
 
-    if ( not img or !w or !h)
+    if ( not img or not w or not h)
         return(0);
 
     if (ColorOrder_)
@@ -455,7 +455,7 @@ void C_Image::MakePalette(WORD *, long)
 #if 0
     long i;
 
-    if ( not dest or !entries)
+    if ( not dest or not entries)
         return;
 
     for (i = 0; i < entries; i++)
@@ -470,7 +470,7 @@ void C_Image::ConvertTo8Bit(WORD *, unsigned char *, long, long)
 #if 0
     long i, j, didx, start, sidx;
 
-    if ( not src or !w or !h or !dest)
+    if ( not src or not w or not h or not dest)
         return;
 
     if (dest)
@@ -496,7 +496,7 @@ void C_Image::CopyArea(WORD *src, WORD *dest, long w, long h)
 {
     long i, j, didx, start, sidx;
 
-    if ( not src or !w or !h or !dest)
+    if ( not src or not w or not h or not dest)
         return;
 
     if (dest)
@@ -712,7 +712,7 @@ C_Resmgr *C_Image::LoadPrivateRes(long ID, char *filename)
 {
     C_Resmgr *res;
 
-    if ( not ID or !filename or !Root_)
+    if ( not ID or not filename or not Root_)
         return(NULL);
 
     if (Root_->Find(ID))

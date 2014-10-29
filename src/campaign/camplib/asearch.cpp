@@ -525,7 +525,7 @@ void AS_DataClass::AS_merge(int)
             T = T->next;
         }
 
-        if (T and !insert_after and !T->next)
+        if (T and not insert_after and not T->next)
             // Insert at end of the queue
             insert_after = T;
 

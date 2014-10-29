@@ -86,7 +86,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
 
 #else
 
-    if (newMode not_eq TWS and !F4IsBadReadPtr(TWSTrackDirectory, sizeof(RadarDopplerClass::TWSTrackList)))
+    if (newMode not_eq TWS and  not F4IsBadReadPtr(TWSTrackDirectory, sizeof(RadarDopplerClass::TWSTrackList)))
     {
         TWSTrackDirectory = TWSTrackDirectory->Purge();
     }
@@ -524,9 +524,9 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
     int maxIdx;
     float curCursorY = cursorY;
 
-    if (IsSOI() and !IsAG() and mode not_eq STBY) //MI added STBY check. No cursors in STBY
+    if (IsSOI() and not IsAG() and mode not_eq STBY) //MI added STBY check. No cursors in STBY
     {
-        if ((cursorXCmd not_eq 0.0F or cursorYCmd not_eq 0.0F) and !IsSet(STTingTarget))  // don't move cursor when you are in STT
+        if ((cursorXCmd not_eq 0.0F or cursorYCmd not_eq 0.0F) and not IsSet(STTingTarget))  // don't move cursor when you are in STT
         {
             if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
             {
@@ -633,7 +633,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
             // Slewing Scan
             // Make sure that we only do this when were not locking or trying to lock
-            if ( not lockedTarget or g_bMLU and !IsSet(STTingTarget))
+            if ( not lockedTarget or g_bMLU and not IsSet(STTingTarget))
             {
                 seekerAzCenter = cursorX * MAX_ANT_EL;
                 seekerAzCenter = max(min(seekerAzCenter, MAX_ANT_EL - azScan), -MAX_ANT_EL + azScan);
@@ -652,7 +652,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
                     // MD --20031223: always center on knob in absence of bugged target
                     seekerElCenter = AntElevKnob();
             }
-            else if (lockedTarget and !IsSet(STTingTarget))
+            else if (lockedTarget and not IsSet(STTingTarget))
             {
                 // MD -- 20040117: once a priority bugged target is established, the radar elevation centers
                 // more or less on that target until the bug is dropped or moved.
@@ -765,7 +765,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
                 /*--------------*/
                 /* Manual SAM ? */
                 /*--------------*/
-                if (((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0)) and !targetUnderCursor)
+                if (((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0)) and not targetUnderCursor)
                 {
                     subMode = SAM_MANUAL_MODE;
                 }
@@ -1396,8 +1396,8 @@ void RadarDopplerClass::NextTarget(void)
                 if (ObjectDetected(rdrObj))
                 {
                     //can't lock onto these
-                    if ( not rdrObj->BaseData()->OnGround() and !rdrObj->BaseData()->IsMissile()  and 
-                        !rdrObj->BaseData()->IsBomb() and !rdrObj->BaseData()->IsEject()  and 
+                    if ( not rdrObj->BaseData()->OnGround() and not rdrObj->BaseData()->IsMissile()  and 
+                        !rdrObj->BaseData()->IsBomb() and not rdrObj->BaseData()->IsEject()  and 
                         rdrObj->localData->rdrDetect)
                     {
                         if (MinRange > rdrObj->localData->range)
@@ -1541,8 +1541,8 @@ void RadarDopplerClass::FindClosest(float MinRange)
         if (ObjectDetected(rdrObj))
         {
             //can't lock onto these
-            if ( not rdrObj->BaseData()->OnGround() and !rdrObj->BaseData()->IsMissile()  and 
-                !rdrObj->BaseData()->IsBomb() and !rdrObj->BaseData()->IsEject()  and 
+            if ( not rdrObj->BaseData()->OnGround() and not rdrObj->BaseData()->IsMissile()  and 
+                !rdrObj->BaseData()->IsBomb() and not rdrObj->BaseData()->IsEject()  and 
                 rdrObj->localData->rdrDetect)
             {
                 if (rdrObj->localData->range < MinRange)

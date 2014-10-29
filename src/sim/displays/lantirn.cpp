@@ -652,7 +652,7 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
                         fabs(pos.y - fpos.y) < radius + p3.y  and 
                         fabs(pos.z - fpos.z) < radius + p3.z)
                     {
-                        //Check for tall objects when doing horizontal check!!!
+                        //Check for tall objects when doing horizontal check!
                         float sizeX, sizeY, sizeZ;
                         sizeX = ((DrawableBSP*)(testFeature->drawPointer))->instance.BoxFront();
                         sizeX -= ((DrawableBSP*)(testFeature->drawPointer))->instance.BoxBack();

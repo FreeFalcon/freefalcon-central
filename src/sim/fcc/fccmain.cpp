@@ -782,8 +782,8 @@ void FireControlComputer::NextSubMode(void)
         case Nav:
 
             // MD -- 20031203: removed this since sources seem to indicate that there is no such function in the real jet.
-            //  ASSOCIATOR Added g_bEnableFCCSubNavCycle as an option and !g_bRealisticAvionics to not break the other modes
-            if (g_bEnableFCCSubNavCycle | !g_bRealisticAvionics)
+            //  ASSOCIATOR Added g_bEnableFCCSubNavCycle as an option and  not g_bRealisticAvionics to not break the other modes
+            if (g_bEnableFCCSubNavCycle |  not g_bRealisticAvionics)
             {
                 switch (subMode)
                 {
@@ -1010,7 +1010,7 @@ SimObjectType* FireControlComputer::TargetStep(SimObjectType* startObject, int c
         }
 
         // Did we go off the end of the Features?
-        if ( not retObject and !groundTarget)
+        if ( not retObject and not groundTarget)
         {
             // Check the head of the object list
             curObject = targetList;
@@ -1084,7 +1084,7 @@ SimObjectType* FireControlComputer::TargetStep(SimObjectType* startObject, int c
         }
 
         // Off the end of the feature list?
-        if ( not retObject and !groundTarget)
+        if ( not retObject and not groundTarget)
         {
             // Check the head of the object list
             curObject = targetList;
@@ -1102,7 +1102,7 @@ SimObjectType* FireControlComputer::TargetStep(SimObjectType* startObject, int c
         }
 
         // Of the End of the object list ?
-        if ( not retObject and checkFeature and !groundTarget)
+        if ( not retObject and checkFeature and not groundTarget)
         {
             // Check features
             VuListIterator featureWalker(SimDriver.featureList);
@@ -1396,12 +1396,12 @@ void FireControlComputer::UpdatePlanned()
     //without it, everything is appearing as normal on the HSD.
     nextDlUpdate = SimLibElapsedTime + 5000/*CampaignSeconds * DATALINK_CYCLE*/;
     /*if (((AircraftClass*)platform)->mFaults->GetFault(FaultClass::dlnk_fault) ||
-    !((AircraftClass*)platform)->HasPower(AircraftClass::DLPower))
+     not ((AircraftClass*)platform)->HasPower(AircraftClass::DLPower))
     return;*/
 
     // RV version
     // nextDlUpdate = SimLibElapsedTime + CampaignSeconds * DATALINK_CYCLE;
-    //if (((AircraftClass*)platform)->mFaults->GetFault(FaultClass::dlnk_fault) or !((AircraftClass*)platform)->HasPower(AircraftClass::DLPower))
+    //if (((AircraftClass*)platform)->mFaults->GetFault(FaultClass::dlnk_fault) or  not ((AircraftClass*)platform)->HasPower(AircraftClass::DLPower))
     // return;
 
     FlightClass* theFlight = (FlightClass*)(platform->GetCampaignObject());
@@ -1424,7 +1424,7 @@ void FireControlComputer::UpdatePlanned()
         VuListIterator new_myit(AllAirList);
         nu = (Unit) new_myit.GetFirst();
 
-        while (nu and !jstar)
+        while (nu and not jstar)
         {
             cf = nu;
             nu = (Unit) new_myit.GetNext();
@@ -1458,7 +1458,7 @@ void FireControlComputer::UpdatePlanned()
         for (e = (CampEntity) myit.GetFirst(); e; e = (Unit) myit.GetNext())
         {
             if (e->GetTeam() not_eq us /* and  e->GetSpotted(us)  and 
- ( not e->IsUnit() or !((Unit)e)->Moving())  and e->GetElectronicDetectionRange(Air)*/)
+ ( not e->IsUnit() or  not ((Unit)e)->Moving())  and e->GetElectronicDetectionRange(Air)*/)
             {
                 float ex = e -> XPos();
                 float ey = e -> YPos();
@@ -1753,7 +1753,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
 
     if (masterMode not_eq Dogfight and masterMode not_eq MissileOverride) masterMode = newMode;//me123
 
-    int isAI = !playerFCC ||
+    int isAI = not playerFCC ||
                (playerFCC and ((AircraftClass *)Sms->Ownship())->AutopilotType() == AircraftClass::CombatAP) ;
 
 
@@ -1777,7 +1777,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             else
                 SetSubMode(lastDogfightGunSubMode);
 
-            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and not WeaponClassMatchesMaster(Sms->curWeaponClass))
                 if ( not Sms->FindWeaponType(wtAim9))
                     Sms->FindWeaponType(wtAim120);
 
@@ -1818,7 +1818,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             // Sms->SetCurrentHpByWeaponId(lastMissileOverrideWId);
 
 
-            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and not WeaponClassMatchesMaster(Sms->curWeaponClass))
                 if ( not Sms->FindWeaponType(wtAim120))
                     Sms->FindWeaponType(wtAim9);
 
@@ -1859,7 +1859,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             //MonoPrint("FCC:SetMasterMode - 1. CurrentWeaponType=%d\n",Sms->GetCurrentWeaponType());
 
             // make sure the AI get a proper weapon
-            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and not WeaponClassMatchesMaster(Sms->curWeaponClass))
                 if ( not Sms->FindWeaponType(wtAim120))
                     Sms->FindWeaponType(wtAim9);
 
@@ -1923,7 +1923,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             postDrop = FALSE;
             inRange = TRUE;
 
-            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and not WeaponClassMatchesMaster(Sms->curWeaponClass))
                 Sms->FindWeaponClass(wcBombWpn);
 
             if (g_bRealisticAvionics)
@@ -1952,7 +1952,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             postDrop = FALSE;
             inRange = TRUE;
 
-            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and not WeaponClassMatchesMaster(Sms->curWeaponClass))
                 Sms->FindWeaponClass(wcRocketWpn);
 
             SetSubMode(OBSOLETERCKT);
@@ -1987,7 +1987,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             inRange = TRUE;
             missileTarget = FALSE;
 
-            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and not WeaponClassMatchesMaster(Sms->curWeaponClass))
                 Sms->FindWeaponType(wtAgm65);
 
             if (WeaponClassMatchesMaster(Sms->curWeaponClass))
@@ -2057,7 +2057,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             postDrop = FALSE;
 
             // RV - I-Hawk - Get into the right HARM modes
-            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and not WeaponClassMatchesMaster(Sms->curWeaponClass))
             {
                 Sms->FindWeaponType(wtAgm88);
             }
@@ -2112,7 +2112,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             preDesignate = TRUE;
             postDrop = FALSE;
 
-            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and not WeaponClassMatchesMaster(Sms->curWeaponClass))
                 Sms->FindWeaponType(wtGBU);
 
             if (WeaponClassMatchesMaster(Sms->curWeaponClass))
@@ -2198,7 +2198,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             preDesignate = TRUE;
             postDrop = FALSE;
 
-            if (isAI and !WeaponClassMatchesMaster(Sms->curWeaponClass))
+            if (isAI and not WeaponClassMatchesMaster(Sms->curWeaponClass))
                 Sms->FindWeaponClass(wcCamera);
 
             if (WeaponClassMatchesMaster(Sms->curWeaponClass))
@@ -2659,13 +2659,13 @@ void FireControlComputer::EnterDogfightMode(void)
 
 void FireControlComputer::ToggleAAGunMode(void)
 {
-    inAAGunMode = !inAAGunMode;
+    inAAGunMode = not inAAGunMode;
     EnterAAMasterMode();
 }
 
 void FireControlComputer::ToggleAGGunMode(void)
 {
-    inAGGunMode = !inAGGunMode;
+    inAGGunMode = not inAGGunMode;
     EnterAGMasterMode();
 }
 

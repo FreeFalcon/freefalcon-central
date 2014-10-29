@@ -331,7 +331,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                         wingPlane = ((AircraftClass *)SimDriver.GetPlayerEntity()->GetCampaignObject()->GetComponentNumber(3));
 
                     // Our wing is not brain dead ;-)
-                    if (wingPlane and !wingPlane->IsDead())
+                    if (wingPlane and not wingPlane->IsDead())
                         wingBrain = wingPlane->DBrain();
 
                     // If our wing has a brain and a that brain has a target (priority to ground target)
@@ -395,7 +395,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                     // choose the element lead target if avail otherwise choose his wing's target
                     wingPlane = ((AircraftClass *)SimDriver.GetPlayerEntity()->GetCampaignObject()->GetComponentNumber(2));
 
-                    if (wingPlane and !wingPlane->IsDead())
+                    if (wingPlane and not wingPlane->IsDead())
                         wingBrain = wingPlane->DBrain();
 
                     // If our wing has a brain and a that brain has a target (priority to ground target)
@@ -409,7 +409,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                     {
                         wingPlane = ((AircraftClass *)SimDriver.GetPlayerEntity()->GetCampaignObject()->GetComponentNumber(3));
 
-                        if (wingPlane and !wingPlane->IsDead())
+                        if (wingPlane and not wingPlane->IsDead())
                             wingBrain = wingPlane->DBrain();
 
                         // If our wing has a brain and a that brain has a target (priority to ground target)
@@ -471,11 +471,11 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                         break;
 
                     // The whole flight, check all of the wing's target but only create one bubble, around the first target we find
-                    for (i = 0; !wingTgt and i < SimDriver.GetPlayerEntity()->GetCampaignObject()->NumberOfComponents(); i++)
+                    for (i = 0;  not wingTgt and i < SimDriver.GetPlayerEntity()->GetCampaignObject()->NumberOfComponents(); i++)
                     {
                         wingPlane = ((AircraftClass *)SimDriver.GetPlayerEntity()->GetCampaignObject()->GetComponentNumber(i));
 
-                        if (wingPlane and !wingPlane->IsDead())
+                        if (wingPlane and not wingPlane->IsDead())
                             wingBrain = wingPlane->DBrain();
 
                         // If our wing has a brain and a that brain has a target (priority to ground target)
@@ -711,7 +711,7 @@ VU_ID AiCheckForThreat(AircraftClass* paircraft, char domain, int position, floa
             inSideATA = TRUE;// if something is ahead of us and we are looking ther
         }
 
-        //////// Only change needed here for subtype check => AiCheckForThreat is called from both "Check" and "Clear my 6" !! //JB 052701 (from MN)
+        //////// Only change needed here for subtype check => AiCheckForThreat is called from both "Check" and "Clear my 6"  //JB 052701 (from MN)
         //if((vuDomain == DOMAIN_AIR and vuClass == CLASS_VEHICLE and (vuType == TYPE_AIRPLANE or vuType == TYPE_HELICOPTER))  //JB 052701 (from MN)
         if ((vuDomain == DOMAIN_AIR and vuClass == CLASS_VEHICLE and (vuType == TYPE_AIRPLANE) and (vuSType == STYPE_AIR_FIGHTER_BOMBER or vuSType == STYPE_AIR_FIGHTER)) // Removed Helicopters as threat (|| vuType == TYPE_HELICOPTER), added subtype check //JB 052701 (from MN)
             and inSideATA and pobjectPtr->localData->threatTime <= 60.0F)

@@ -99,7 +99,7 @@ int FalconSimCampMessage::Process(uchar autodisp)
     CampBaseClass *ent = static_cast<CampBaseClass*>(esafe.get());
     FalconSessionEntity *session = static_cast<FalconSessionEntity*>(ssafe.get());
 
-    if (autodisp or !ent or !session or !FalconLocalGame)
+    if (autodisp or not ent or not session or not FalconLocalGame)
     {
         return 0;
     }

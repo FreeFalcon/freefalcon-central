@@ -641,7 +641,7 @@ void FireControlComputer::MaverickMode(void)
                             platform->SOIManager(SimVehicleClass::SOI_RADAR);
                     }
 
-                    if (theMissile->targetPtr and designateCmd and !lastDesignate)
+                    if (theMissile->targetPtr and designateCmd and not lastDesignate)
                     {
                         SetTarget(curTarget);
                         theDisplay->LockTarget();
@@ -780,8 +780,8 @@ void FireControlComputer::MaverickMode(void)
             curWeapon  and 
             (curWeapon->parent  and 
              pa->IsPlayer()  and 
-             !(pa->AutopilotType() == AircraftClass::CombatAP)  and 
-             (curWeapon->Covered or !Sms->Powered))
+              not (pa->AutopilotType() == AircraftClass::CombatAP)  and 
+             (curWeapon->Covered or not Sms->Powered))
         )
         {
             missileTarget = FALSE;
@@ -849,7 +849,7 @@ void FireControlComputer::CheckFeatures(MissileClass* theMissile)
                 //in his head when he wrote this! Fix for the jumping cursors
                 float CurRange = (float)sqrt(dx * dx + dy * dy);
 
-                if ((CurRange < curMin) and !(testObject->IsDead() or testObject->IsExploding()))
+                if ((CurRange < curMin) and  not (testObject->IsDead() or testObject->IsExploding()))
                 {
                     closestObj = testObject;
                     curMin = CurRange;

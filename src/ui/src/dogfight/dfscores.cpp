@@ -241,7 +241,7 @@ long FigureOutHowIDid()
     }
     else
     {
-        if (player and !player->next)
+        if (player and not player->next)
             place = _LAST_PLACE_;
         else
         {

@@ -143,7 +143,7 @@ void C_Level::CalcPositions()
 
 void C_Level::Refresh()
 {
-    if ( not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or !Parent_ or !Count_)
+    if ( not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or not Parent_ or not Count_)
         return;
 
     Parent_->SetUpdateRect(DrawArea_.left, DrawArea_.top, DrawArea_.right, DrawArea_.bottom, GetFlags(), GetClient());
@@ -156,7 +156,7 @@ void C_Level::Draw(SCREEN *surface, UI95_RECT *cliprect)
     float levelx;
     float xstep;
 
-    if ( not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or !Parent_ or !Count_)
+    if ( not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or not Parent_ or not Count_)
         return;
 
     if (Count_ < 2)

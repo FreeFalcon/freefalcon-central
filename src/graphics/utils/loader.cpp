@@ -404,7 +404,7 @@ void Loader::SetPause(BOOL state)
 
 // **** COBRA - RED - THIS FUNCTION IS NO MORE USED, SUBSTITUTED FROM FOLOWING ONE
 //                    JUST KEPT TO LEAVE CALLS STILL THERE, FUNCTION NEEDING SUCH FEATURE MUST CALL
-//                    THE FOLLOWING FUNCTION ...!!!!
+//                    THE FOLLOWING FUNCTION ...
 // This call will block until the Loader queue becomes empty
 void Loader::WaitForLoader(void)
 {

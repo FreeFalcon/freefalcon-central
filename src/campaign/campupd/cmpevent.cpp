@@ -142,7 +142,7 @@ void EventClass::SetEvent(int status)
 
 int CheckTriggers(char *scenario)
 {
-    if ( not FalconLocalGame or !FalconLocalGame->IsLocal())
+    if ( not FalconLocalGame or not FalconLocalGame->IsLocal())
         return 0;
 
     if (FalconLocalSession->GetTeam() == 255)
@@ -416,7 +416,7 @@ void DisposeCampaignEvents(void)
 {
     int i;
 
-    if ( not CampEvents or !CE_Events)
+    if ( not CampEvents or not CE_Events)
         return;
 
     for (i = 0; i < CE_Events; i++)
@@ -497,7 +497,7 @@ int ReadScriptedTriggerFile(char* filename)
         else if (strcmp(token, "#ELSE") == 0)
         {
             if (curr_stack > 0 and stack_active[curr_stack - 1])
-                stack_active[curr_stack] = !stack_active[curr_stack];
+                stack_active[curr_stack] = not stack_active[curr_stack];
 
             continue;
         }
@@ -532,7 +532,7 @@ int ReadScriptedTriggerFile(char* filename)
 
                     i = atoi(sptr);
 
-                    if (i > CE_Events or !CampEvents[i]->HasFired())
+                    if (i > CE_Events or not CampEvents[i]->HasFired())
                         stack_active[curr_stack] = 0;
                     else
                         stack_active[curr_stack] = 1;

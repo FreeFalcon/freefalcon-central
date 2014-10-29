@@ -114,7 +114,7 @@ void C_Fill::SetDither(short size, short range)
 {
     short i, j;
 
-    if ((size < 3) or !(range))
+    if ((size < 3) or  not (range))
         size = 0;
 
     if (size not_eq DitherSize_)

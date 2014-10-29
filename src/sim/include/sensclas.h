@@ -91,7 +91,7 @@ public:
         return seekerElCenter;
     }
 
-#if !NO_REMOTE_BUGGED_TARGET
+#if not NO_REMOTE_BUGGED_TARGET
     FalconEntity *RemoteBuggedTarget;//me123
 #endif
 

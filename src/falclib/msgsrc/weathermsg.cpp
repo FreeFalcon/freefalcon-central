@@ -57,7 +57,7 @@ int FalconWeatherMessage::Encode(VU_BYTE **buf)
 
 int FalconWeatherMessage::Process(uchar autodisp)
 {
-    if (autodisp or !TheCampaign.IsPreLoaded()) return -1;
+    if (autodisp or not TheCampaign.IsPreLoaded()) return -1;
 
     ((WeatherClass *)realWeather)->ReceiveWeather(this);
 

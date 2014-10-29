@@ -211,7 +211,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                         }
                         else
                         {
-                            // if (((MissileClass*)wpn)->isCaged and !((MissileClass*)wpn)->isSpot)
+                            // if (((MissileClass*)wpn)->isCaged and  not ((MissileClass*)wpn)->isSpot)
                             if (g_bRealisticAvionics and ((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
                             {
                                 DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
@@ -238,7 +238,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                     }
                     else
                     {
-                        // if (((MissileClass*)wpn)->isCaged and !((MissileClass*)wpn)->isSpot)
+                        // if (((MissileClass*)wpn)->isCaged and  not ((MissileClass*)wpn)->isSpot)
                         if (g_bRealisticAvionics and wpn and (((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr)))
                         {
                             DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
@@ -360,7 +360,7 @@ void HudClass::DrawAirMissile(void)
                         }
                         else
                         {
-                            // if (((MissileClass*)wpn)->isCaged and !((MissileClass*)wpn)->isSpot)
+                            // if (((MissileClass*)wpn)->isCaged and  not ((MissileClass*)wpn)->isSpot)
                             if (g_bRealisticAvionics and ((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
                             {
                                 DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
@@ -390,7 +390,7 @@ void HudClass::DrawAirMissile(void)
                         }
                         else
                         {
-                            // if (((MissileClass*)wpn)->isCaged and !((MissileClass*)wpn)->isSpot)
+                            // if (((MissileClass*)wpn)->isCaged and  not ((MissileClass*)wpn)->isSpot)
                             if (g_bRealisticAvionics and ((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
                             {
                                 DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
@@ -499,7 +499,7 @@ void HudClass::DrawGroundMissile(void)
     CheckBreakX();
 
     //MI
-    if (g_bRealisticAvionics and !FCC->preDesignate)
+    if (g_bRealisticAvionics and not FCC->preDesignate)
         DrawBearing();
 }
 //MI
@@ -706,7 +706,7 @@ void HudClass::DrawAim9Diamond(void)
                 }
             }
 
-            if (((MissileClass*)wpn)->targetPtr)// and !((MissileClass*)wpn)->isCaged )
+            if (((MissileClass*)wpn)->targetPtr)// and  not ((MissileClass*)wpn)->isCaged )
             {
                 // Marco - here we have an uncaged seeker with a target locked
                 xPos = xPos + (((float)rand() / (float)RAND_MAX)  - 0.5f) * 0.01f;
@@ -775,7 +775,7 @@ void HudClass::DrawAim9Diamond(void)
                 }
             }
             // Marco Edit - flashing uncaged and locked diamond
-            else if (wpn and wpn->IsMissile() and !((MissileClass*)wpn)->isCaged)
+            else if (wpn and wpn->IsMissile() and  not ((MissileClass*)wpn)->isCaged)
             {
 
                 if ((((MissileClass*)wpn)->targetPtr) and (targetData) and //Wombat778 10-16-2003 Added this mess as per MIRV (only flash diamond when FCC has targeted and in range)
@@ -848,7 +848,7 @@ void HudClass::DrawAim9DLZ(void)
                     }
                     else
                     {
-                        // if (((MissileClass*)wpn)->isCaged and !((MissileClass*)wpn)->isSpot)
+                        // if (((MissileClass*)wpn)->isCaged and  not ((MissileClass*)wpn)->isSpot)
                         if (((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
                         {
                             DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
@@ -957,7 +957,7 @@ void HudClass::DrawAim120DLZ(bool dfgt)
                 DrawMissileReticle(FCC->Aim120ASECRadius(targetData->range), FALSE, TRUE);
         }
 
-        if (targetData->range < rMin or targetData->range > rMax or flash and !dfgt)
+        if (targetData->range < rMin or targetData->range > rMax or flash and not dfgt)
         {
             DrawAim120Diamond();
         }

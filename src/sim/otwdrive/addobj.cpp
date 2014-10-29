@@ -84,7 +84,7 @@ void OTWDriverClass::CreateVisualObject(SimBaseClass* theObject, int visType, fl
 
 void OTWDriverClass::InsertObjectIntoDrawList(SimBaseClass* theObject)
 {
-    if (theObject->drawPointer and !theObject->drawPointer->InDisplayList())
+    if (theObject->drawPointer and not theObject->drawPointer->InDisplayList())
     {
         // KCK: Let's try just going ahead and adding these to the list directly -
         // Assuming, of course that this is called by the Sim/Graphics thread
@@ -93,23 +93,23 @@ void OTWDriverClass::InsertObjectIntoDrawList(SimBaseClass* theObject)
         /*    No longer used
            if (theObject->IsGroundVehicle()  and 
                  ((GroundClass*)theObject)->crewDrawable  and 
-          !((GroundClass*)theObject)->crewDrawable->InDisplayList())
+           not ((GroundClass*)theObject)->crewDrawable->InDisplayList())
           viewPoint->InsertObject(((GroundClass*)theObject)->crewDrawable);
         */
         if (theObject->IsGroundVehicle()  and 
             ((GroundClass*)theObject)->truckDrawable  and 
-            !((GroundClass*)theObject)->truckDrawable->InDisplayList())
+             not ((GroundClass*)theObject)->truckDrawable->InDisplayList())
             viewPoint->InsertObject(((GroundClass*)theObject)->truckDrawable);
 
         /*
               InsertObject(theObject->drawPointer);
            if (theObject->IsGroundVehicle()  and 
                  ((GroundClass*)theObject)->crewDrawable  and 
-          !((GroundClass*)theObject)->crewDrawable->InDisplayList())
+           not ((GroundClass*)theObject)->crewDrawable->InDisplayList())
           InsertObject(((GroundClass*)theObject)->crewDrawable);
            if (theObject->IsGroundVehicle()  and 
                  ((GroundClass*)theObject)->truckDrawable  and 
-          !((GroundClass*)theObject)->truckDrawable->InDisplayList())
+           not ((GroundClass*)theObject)->truckDrawable->InDisplayList())
           InsertObject(((GroundClass*)theObject)->truckDrawable);
         */
     }
@@ -270,7 +270,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                     baseObject = NULL;
 
                 // Some things require Base Objects (like bridges and airbases)
-                if (baseObject and !((SimFeatureClass*)baseObject)->baseObject)
+                if (baseObject and  not ((SimFeatureClass*)baseObject)->baseObject)
                 {
                     // Is this a bridge?
                     if (baseObject->IsSetCampaignFlag(FEAT_ELEV_CONTAINER))
@@ -410,7 +410,7 @@ void SetLabel(SimBaseClass* theObject)
             campObj = theObject->GetCampaignObject();
 
             // FRB - Remove the Deagg condition.  Seifer new Deagg method broke the callsign in the label
-            if (campObj and campObj->IsFlight() /* and  !campObj->IsAggregate() /* and  campObj->InPackage()*/
+            if (campObj and campObj->IsFlight() /* and   not campObj->IsAggregate() /* and  campObj->InPackage()*/
                 // 2001-10-31 M.N. show flight names of our team
                 and flight and (flight->GetTeam() == campObj->GetTeam()))
             {

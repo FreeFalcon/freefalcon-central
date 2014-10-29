@@ -51,7 +51,7 @@ void C_Threat::AddCircle(long ID, long type, long worldx, long worldy, long radi
     THREAT_CIRCLE *circle;
     long i;
 
-    if ( not Root_ or ID < 1 or !radius)
+    if ( not Root_ or ID < 1 or not radius)
         return;
 
     if (Root_->Find(ID))
@@ -116,7 +116,7 @@ void C_Threat::BuildOverlay(BYTE *overlay, long w, long h, float pixelsperkm)
     long curidx;
     long i;
 
-    if (Flags_ bitand C_BIT_INVISIBLE or !Root_ or !overlay)
+    if (Flags_ bitand C_BIT_INVISIBLE or not Root_ or not overlay)
         return;
 
     myCircle.SetBuffer((char*)overlay);
@@ -130,7 +130,7 @@ void C_Threat::BuildOverlay(BYTE *overlay, long w, long h, float pixelsperkm)
         // if( not (circle->Flags bitand C_BIT_INVISIBLE)) {
         UI_Refresher *gpsItem = NULL;
 
-        if ( not (circle->Flags bitand C_BIT_INVISIBLE) and ((gpsItem = (UI_Refresher*)gGps->Find(circle->ID)) and gpsItem->MapItem_ and !(gpsItem->MapItem_->Flags bitand C_BIT_INVISIBLE)))
+        if ( not (circle->Flags bitand C_BIT_INVISIBLE) and ((gpsItem = (UI_Refresher*)gGps->Find(circle->ID)) and gpsItem->MapItem_ and  not (gpsItem->MapItem_->Flags bitand C_BIT_INVISIBLE)))
         {
             myCircle.SetCenter(static_cast<long>(static_cast<float>(circle->x) * pixelsperkm),
                                static_cast<long>(static_cast<float>(circle->y) * pixelsperkm));

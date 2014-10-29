@@ -75,7 +75,7 @@ int ComAPISend(com_API_handle c, int msgsize, int type)
     // sfr: another hack by JB...
     isBad = F4IsBadReadPtrC(c, sizeof(ComAPI)) or F4IsBadCodePtrC((FARPROC)(*c->send_func));
 
-    if (c and !isBad)
+    if (c and not isBad)
     {
         if (info_callback)
         {
@@ -165,7 +165,7 @@ int ComAPIGet(com_API_handle c)
     // sfr: another hack by JB...
     isBad = c and (F4IsBadReadPtrC(c, sizeof(ComAPI)) or F4IsBadCodePtrC((FARPROC)(*c->recv_func)));
 
-    if (c and !isBad) // JB 010404 CTD
+    if (c and not isBad) // JB 010404 CTD
     {
         size = (*c->recv_func)(c);
 
@@ -246,7 +246,7 @@ char *ComAPIRecvBufferGet(com_API_handle c)
     // sfr: another hack by JB...
     isBad = c and (F4IsBadReadPtrC(c, sizeof(ComAPI)) or F4IsBadCodePtrC((FARPROC)(*c->recv_buf_func)));
 
-    if (c and !isBad)
+    if (c and not isBad)
     {
         ret_val = (*c->recv_buf_func)(c);
     }

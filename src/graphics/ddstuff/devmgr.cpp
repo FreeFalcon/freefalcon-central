@@ -664,7 +664,7 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
 
         /*
          // Vendor specific workarounds
-         if(IsEqualGUID(m_pDevID->guidDeviceIdentifier, __uuidof(DEVGUID_3DFX_VOODOO2)) and !bFlip)
+         if(IsEqualGUID(m_pDevID->guidDeviceIdentifier, __uuidof(DEVGUID_3DFX_VOODOO2)) and not bFlip)
          {
          // The V2 (Beta 1.0 DX Driver) cannot render to offscreen plain surfaces only to flipping primary surfaces
          m_guidD3D = IID_IDirect3DRGBDevice; // force software renderer
@@ -733,7 +733,7 @@ bool DXContext::SetRenderTarget(IDirectDrawSurface7 *pRenderTarget)
 
             /* }
 
-             else MonoPrint("DXContext::AttachDepthBuffer() - Warning: No Z-Buffer support !!!\n");*/
+             else MonoPrint("DXContext::AttachDepthBuffer() - Warning: No Z-Buffer support \n");*/
 
             CheckHR(m_pD3D->CreateDevice(m_guidD3D, pRenderTarget, &m_pD3DD));
             CheckHR(m_pD3DD->GetCaps(m_pD3DHWDeviceDesc));
@@ -778,7 +778,7 @@ bool DXContext::SetRenderTarget(IDirectDrawSurface7 *pRenderTarget)
                     }
                 }
 
-                // DX - RED - U CAN CHANGE TARGET IN A SCENE...!!!
+                // DX - RED - U CAN CHANGE TARGET IN A SCENE...
                 //if( bInBeginScene ) INT3; // ASSO: break if still in BeginScene
                 //JAM
 
@@ -870,7 +870,7 @@ void DXContext::AttachDepthBuffer(IDirectDrawSurface7 *p)
         CheckHR(p->AddAttachedSurface(pDDSZB));
     }
 
-    else MonoPrint("DXContext::AttachDepthBuffer() - Warning: No Z-Buffer formats !!!\n");
+    else MonoPrint("DXContext::AttachDepthBuffer() - Warning: No Z-Buffer formats \n");
 }
 
 void DXContext::CheckCaps()
@@ -879,7 +879,7 @@ void DXContext::CheckCaps()
     MonoPrint("-- DXContext - Start of Caps report\n");
 
     if (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_SEPARATETEXTUREMEMORIES)
-        MonoPrint(" Device has separate texture memories per stage!. \n");
+        MonoPrint(" Device has separate texture memories per stage. \n");
 
     if (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_TEXTURENONLOCALVIDMEM)
         MonoPrint(" Device supports AGP texturing\n");

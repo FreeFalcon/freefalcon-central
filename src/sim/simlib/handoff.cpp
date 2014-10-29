@@ -42,7 +42,7 @@ FalconEntity* SimCampHandoff(FalconEntity *current, HandOffType style)
         // See if it reaggregated
         if (((SimBaseClass*)current)->GetCampaignObject()  and 
             ((SimBaseClass*)current)->GetCampaignObject()->IsAggregate()  and 
-            !((SimBaseClass*)current)->GetCampaignObject()->IsDead())
+             not ((SimBaseClass*)current)->GetCampaignObject()->IsDead())
         {
             // Switch to the campaign unit
             return ((SimBaseClass*)current)->GetCampaignObject();
@@ -88,7 +88,7 @@ FalconEntity* SimCampHandoff(FalconEntity *current, HandOffType style)
                     {
                         ShiAssert(simobj->IsSim());
 
-                        if (simobj->GetRadarType() == campRadarType and !simobj->IsDead())
+                        if (simobj->GetRadarType() == campRadarType and not simobj->IsDead())
                         {
                             break;
                         }
@@ -176,7 +176,7 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
 
             // is the parent in the sim lists?
             // if so we want to try and find a matching target in the target list
-            if ( not campobj or !campobj->IsAggregate() or campobj->IsDead())
+            if ( not campobj or not campobj->IsAggregate() or campobj->IsDead())
             {
                 return NULL;
             }
@@ -264,7 +264,7 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
                             simobj = campobj->GetComponentLead();
                         }
 
-                        if (simobj and (simobj->IsDead() or !simobj->IsAwake()))
+                        if (simobj and (simobj->IsDead() or not simobj->IsAwake()))
                         {
                             return NULL;
                         }

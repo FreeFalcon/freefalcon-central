@@ -115,7 +115,7 @@ typedef struct _ActiveEvent
 //
 // These are the headers and data that are used internally for the .vhs format.
 // These use offsets instead of pointers so that we can memory map them.
-// All offsets are from the start of the file!!!.
+// All offsets are from the start of the file!.
 
 ////////////////////////////////////////////////////////////////////////////////
 //

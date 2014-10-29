@@ -101,7 +101,7 @@ DigitalBrain::DigitalBrain(AircraftClass *myPlatform, AirframeClass* myAf) : Bas
 
     if (self->OnGround())
     {
-        airbase = self->TakeoffAirbase(); // we take off from this base!
+        airbase = self->TakeoffAirbase(); // we take off from this base
     }
     else
     {
@@ -120,14 +120,14 @@ DigitalBrain::DigitalBrain(AircraftClass *myPlatform, AirframeClass* myAf) : Bas
 
         //if(obj)
         // sfr: @todo remove JB check
-        if (obj and !F4IsBadReadPtr(obj, sizeof(ObjectiveClass)))
+        if (obj and  not F4IsBadReadPtr(obj, sizeof(ObjectiveClass)))
         {
             // JB 010326 CTD
             airbase = obj->Id();
         }
     }
 
-#if !NEW_INIT
+#if not NEW_INIT
     atcstatus = noATC;
     curTaxiPoint = 0;
     rwtime = 0;
@@ -187,7 +187,7 @@ DigitalBrain::DigitalBrain(AircraftClass *myPlatform, AirframeClass* myAf) : Bas
                 if (un->IsFlight())
                 {
                     if (((FlightClass *)un)->GetUnitMission() == AMIS_ESCORT)
-                        escortFlightID = un->Id(); // We got one!
+                        escortFlightID = un->Id(); // We got one
                 }
             }
 
@@ -618,7 +618,7 @@ void DigitalBrain::FrameExec(SimObjectType* curTargetList, SimObjectType* curTar
     Actions();
 
     // RV - Biker - Enable shooting missiles if flight lead is AI
-    if (flightLead and !flightLead->IsPlayer() and missileShotTimer >= SimLibElapsedTime + 4.9 * 60 * 60 * SEC_TO_MSEC)
+    if (flightLead and not flightLead->IsPlayer() and missileShotTimer >= SimLibElapsedTime + 4.9 * 60 * 60 * SEC_TO_MSEC)
     {
         missileShotTimer = SimLibElapsedTime;
     }
@@ -708,7 +708,7 @@ void DigitalBrain::CheckLead(void)
 
     if (flightLead  and 
         flightLead->VuState() == VU_MEM_ACTIVE  and 
-        !flightLead->IsDead()
+         not flightLead->IsDead()
        )
     {
         return;
@@ -720,7 +720,7 @@ void DigitalBrain::CheckLead(void)
 
         while ( not done)
         {
-            if (pobj and pobj->VuState() == VU_MEM_ACTIVE and !pobj->IsDead())
+            if (pobj and pobj->VuState() == VU_MEM_ACTIVE and not pobj->IsDead())
             {
                 done = TRUE;
                 newLead = pobj;
@@ -760,10 +760,10 @@ void DigitalBrain::SetLeader(SimBaseClass* newLead)
         }
 
         // edg: what a confusing mess... Why do we have SetLead and
-        // SetLeader?!
+        // SetLeader?
         // anyway, overreferencing has been occurring on Sleep(), when
         // SetLeader( NULL ) is called.  We then called SetLead() below,
-        // which resulted in a new flight lead!!
+        // which resulted in a new flight lead
         // check for NULL flight lead and just return
         if (flightLead not_eq NULL)
             SetLead(flightLead == self ? TRUE : FALSE);
@@ -951,7 +951,7 @@ void DigitalBrain::ReSetLabel(SimBaseClass* theObject)
     char label[40] = {0};
     long labelColor = 0xff0000ff;
 
-    if ( not theObject->IsExploding() and !theObject->IsDead())
+    if ( not theObject->IsExploding() and not theObject->IsDead())
     {
         if (classPtr->dataType == DTYPE_VEHICLE)
         {
@@ -959,7 +959,7 @@ void DigitalBrain::ReSetLabel(SimBaseClass* theObject)
             flight = FalconLocalSession->GetPlayerFlight();
             campObj = theObject->GetCampaignObject();
 
-            if (campObj and campObj->IsFlight() /* and  !campObj->IsAggregate() and campObj->InPackage()*/
+            if (campObj and campObj->IsFlight() /* and   not campObj->IsAggregate() and campObj->InPackage()*/
                 // 2001-10-31 M.N. show flight names of our team
                 and flight and flight->GetTeam() == campObj->GetTeam())
             {

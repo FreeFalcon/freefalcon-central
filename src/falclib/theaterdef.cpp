@@ -399,7 +399,7 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
     return true;
 }
 
-void TheaterList::DoSoundSetup() // must be done after END_UI !!
+void TheaterList::DoSoundSetup() // must be done after END_UI 
 {
     if (g_nSoundSwitchFix bitand 0x01)
     {

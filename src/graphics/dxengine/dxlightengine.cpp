@@ -379,7 +379,7 @@ void CDXEngine::RemoveDynamicLights(void)
 
 
 
-// *** NO MORE USED !!!! ***
+// *** NO MORE USED  ***
 // This function is the HardCoding for the PIT of the Taxi Spotlight
 void CDXEngine::DrawOwnSpot(Trotation *Rotation)
 {

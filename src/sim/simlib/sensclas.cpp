@@ -13,7 +13,7 @@ SensorClass::SensorClass(SimMoverClass* self)
     seekerAzCenter = 0.0f;
     seekerElCenter = 0.0f;
     isOn = TRUE;
-#if !NO_REMOTE_BUGGED_TARGET
+#if not NO_REMOTE_BUGGED_TARGET
     RemoteBuggedTarget = NULL;
 #endif
 }

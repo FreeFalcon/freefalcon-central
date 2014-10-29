@@ -155,7 +155,7 @@ int CheckStatus(int tid, int status)
     if ( not TacticsTable[tid].broken and status)
         return 0;
 
-    if (TacticsTable[tid].broken and !status)
+    if (TacticsTable[tid].broken and not status)
         return 0;
 
     return 1;
@@ -169,7 +169,7 @@ int CheckLosses(int tid, int losses)
     if ( not TacticsTable[tid].losses  and losses)
         return 0;
 
-    if (TacticsTable[tid].losses and !losses)
+    if (TacticsTable[tid].losses and not losses)
         return 0;
 
     return 1;
@@ -183,7 +183,7 @@ int CheckEngaged(int tid, int engaged)
     if ( not TacticsTable[tid].engaged and engaged)
         return 0;
 
-    if (TacticsTable[tid].engaged and !engaged)
+    if (TacticsTable[tid].engaged and not engaged)
         return 0;
 
     return 1;
@@ -197,7 +197,7 @@ int CheckCombat(int tid, int combat)
     if ( not TacticsTable[tid].combat and combat)
         return 0;
 
-    if (TacticsTable[tid].combat and !combat)
+    if (TacticsTable[tid].combat and not combat)
         return 0;
 
     return 1;
@@ -211,7 +211,7 @@ int CheckRetreating(int tid, int retreat)
     if ( not TacticsTable[tid].retreating and retreat)
         return 0;
 
-    if (TacticsTable[tid].retreating and !retreat)
+    if (TacticsTable[tid].retreating and not retreat)
         return 0;
 
     return 1;
@@ -225,7 +225,7 @@ int CheckOwned(int tid, int o)
     if ( not TacticsTable[tid].owned and o)
         return 0;
 
-    if (TacticsTable[tid].owned and !o)
+    if (TacticsTable[tid].owned and not o)
         return 0;
 
     return 1;
@@ -239,7 +239,7 @@ int CheckAirborne(int tid, int airborne) // These two need some thought
     if ( not TacticsTable[tid].airborne and airborne)
         return 0;
 
-    if (TacticsTable[tid].airborne and !airborne)
+    if (TacticsTable[tid].airborne and not airborne)
         return 0;
 
     return 1;
@@ -253,7 +253,7 @@ int CheckMarine(int tid, int marine) //
     if ( not TacticsTable[tid].marine and marine)
         return 0;
 
-    if (TacticsTable[tid].marine and !marine)
+    if (TacticsTable[tid].marine and not marine)
         return 0;
 
     return 1;

@@ -108,7 +108,7 @@ extern int g_nDeagTimer;
 
 #ifdef DEBUG
 // #define DEAG_DEBUG
-//#define DEBUG_COUNT // this can cause crashes when doing long debug runs !
+//#define DEBUG_COUNT // this can cause crashes when doing long debug runs 
 #define KEEP_STATISTICS
 int gUnitCount = 0;
 int gCheckConstructFunction = 0;
@@ -474,7 +474,7 @@ int UnitClass::Save(VU_BYTE **stream)
 
     if ( not IsAggregate())
     {
-        // KCK TODO: We need to send the deaggregated data as well!
+        // KCK TODO: We need to send the deaggregated data as well
     }
 
     memcpy(*stream, &last_check, sizeof(CampaignTime));
@@ -606,7 +606,7 @@ int UnitClass::ApplyDamage(FalconCampWeaponsFire *cwfm, uchar bonusToHit)
     // If so, set our target to them and choose a new tactic.
     // 2001-07-31 MODIFIED BY S.G. SO GROUND UNIT ARE NOT CAUSING A REACTION.
     // if (IsFlight() and shooter->Id() not_eq GetTargetID())
-    if (IsFlight() and !shooter->OnGround() and shooter->Id() not_eq GetTargetID())
+    if (IsFlight() and not shooter->OnGround() and shooter->Id() not_eq GetTargetID())
     {
         float d;
         int c, s, e, r = 0;
@@ -658,7 +658,7 @@ int UnitClass::ApplyDamage(FalconCampWeaponsFire *cwfm, uchar bonusToHit)
         else
         {
             // A.S. 2001-12-09, begin
-            if (shooter->IsFlight() and  IsFlight())  // Flights get only bonus for air targets as ground targets get no defensive bonus!
+            if (shooter->IsFlight() and  IsFlight())  // Flights get only bonus for air targets as ground targets get no defensive bonus
                 hc += GetVehicleClassData(shooter->GetVehicleID(0))->HitChance[mt];
 
             if (IsFlight() and hc > 5  and  shooter->IsFlight())
@@ -833,7 +833,7 @@ int UnitClass::ApplyDamage(DamType d, int* str, int where, short flags)
     }
 
     // Make sure we hit something if our target is gone
-    if (where not_eq 255 and !GetNumVehicles(where))
+    if (where not_eq 255 and not GetNumVehicles(where))
     {
         where = 255;
     }
@@ -888,9 +888,9 @@ int UnitClass::ApplyDamage(DamType d, int* str, int where, short flags)
                         // Pick a pilot to kill
                         pilot = ((Flight)this)->PickRandomPilot(0);
 
-                        // COMMENTED OUT BY S.G. DON'T RTB WHEN KILLED!
+                        // COMMENTED OUT BY S.G. DON'T RTB WHEN KILLED
                         //   I'M ALSO FORCING A KIA INSTEAD OF MIA. STATISTIC CHANGES MIGHT BE REQUIRED
-                        // JB 010228 Commented back in -- attrition rates way too high!
+                        // JB 010228 Commented back in -- attrition rates way too high
                         // JB 010710 Make configurable
                         if ( not g_bRealisticAttrition and rand() % 2)
                         {
@@ -932,10 +932,10 @@ int UnitClass::ApplyDamage(DamType d, int* str, int where, short flags)
     }
 
     // Check for death
-    if ( not vehs and !IsDead())
+    if ( not vehs and not IsDead())
     {
 #ifdef KEV_DEBUG
-        // MonoPrint("Unit %d destroyed!\n",GetCampID());
+        // MonoPrint("Unit %d destroyed\n",GetCampID());
 #endif
 
         if (IsBattalion())
@@ -1031,7 +1031,7 @@ int UnitClass::DecodeDamageData(uchar *data, Unit shooter, FalconDeathMessage *d
     // Special case shit to do..
     if (lost and IsFlight())
         UpdateSquadronStatus((Flight)this, FALSE, TRUE);
-    else if (lost and islocal and GetDomain() == DOMAIN_SEA and GetType() == TYPE_TASKFORCE and GetSType() == STYPE_UNIT_CARRIER and !GetNumVehicles(0))
+    else if (lost and islocal and GetDomain() == DOMAIN_SEA and GetType() == TYPE_TASKFORCE and GetSType() == STYPE_UNIT_CARRIER and not GetNumVehicles(0))
     {
         // A carrier is missing
         // Probably be cool to send a special news event here...
@@ -1046,7 +1046,7 @@ int UnitClass::MoraleCheck(int shot, int lost)
 {
     int morale, vehs;
 
-    if (IsDead() or !shot)
+    if (IsDead() or not shot)
     {
         return 0;
     }
@@ -1091,7 +1091,7 @@ int UnitClass::MoraleCheck(int shot, int lost)
 
         SetBroken(1);
 #ifdef KEV_DEBUG
-        // MonoPrint("Unit %d broken! %d%% chance.\n",GetCampID(),100-morale);
+        // MonoPrint("Unit %d broken %d%% chance.\n",GetCampID(),100-morale);
 #endif
         // Trigger a tactics check
         ChooseTactic();
@@ -1360,14 +1360,14 @@ int UnitClass::RecordCurrentState(FalconSessionEntity *session, int byReag)
             //
             // Check if this vehicle is dead according to the sim, and simply ignore it, if so.
             // (This will cause it not be added back into the campaign data)
-            if (byReag and vehicle->IsDead() and !vehicle->IsSetFalcFlag(FEC_REGENERATING))
+            if (byReag and vehicle->IsDead() and not vehicle->IsSetFalcFlag(FEC_REGENERATING))
             {
                 // Do nothing
             }
             // Check if this vehicle is essentially out of action for the Campaign's purpose (even if it is
             // technically alive in the sim). Theoretically, we could register this fact with the mission evaluator.
             // (This will also cause it not be added back into the campaign data)
-            else if (byReag and ( not vehicle->HasPilot() or vehicle->pctStrength < MIN_DEAD_PCT) and !vehicle->IsSetFalcFlag(FEC_REGENERATING))
+            else if (byReag and ( not vehicle->HasPilot() or vehicle->pctStrength < MIN_DEAD_PCT) and not vehicle->IsSetFalcFlag(FEC_REGENERATING))
             {
                 // I once tried simulating a death message here, but it was painfull and error prone.
                 // What will happen without this, is if a unit reaggregates while something is 'mostly
@@ -1386,7 +1386,7 @@ int UnitClass::RecordCurrentState(FalconSessionEntity *session, int byReag)
                  dtm->dataBlock.deathPctStrength = 0;
 
                  FalconEntity *lastToHit = (FalconEntity*)vuDatabase->Find( vehicle->LastShooter() );
-                 if (lastToHit and !lastToHit->IsEject() )
+                 if (lastToHit and not lastToHit->IsEject() )
                  {
                  if (lastToHit->IsSim())
                  {
@@ -1454,7 +1454,7 @@ int UnitClass::RecordCurrentState(FalconSessionEntity *session, int byReag)
 
                                     if (WeaponDataTable[loadData[pilotSlot]->WeaponID[hp]].Flags bitand WEAP_ONETENTH)
                                         //Cobra 12/08/04 This is called when returning from sim
-                                        //Causes gun rounds to be removed!!! Removed "/10"
+                                        //Causes gun rounds to be removed Removed "/10"
                                         loadData[pilotSlot]->WeaponCount[hp] = (uchar)(SMS->hardPoint[hp]->weaponCount/*/10*/);
                                     else
                                         loadData[pilotSlot]->WeaponCount[hp] = (uchar) SMS->hardPoint[hp]->weaponCount;
@@ -1544,7 +1544,7 @@ int UnitClass::RecordCurrentState(FalconSessionEntity *session, int byReag)
     }
 
     // Check for carrier death
-    if (IsTaskForce() and GetSType() == STYPE_UNIT_CARRIER and !GetNumVehicles(0))
+    if (IsTaskForce() and GetSType() == STYPE_UNIT_CARRIER and not GetNumVehicles(0))
     {
         // Probably be cool to send a special news event here...
         TeamInfo[GetTeam()]->atm->SendATMMessage(Id(), GetTeam(), FalconAirTaskingMessage::atmZapAirbase, 0, 0, NULL, 0);
@@ -1556,7 +1556,7 @@ int UnitClass::RecordCurrentState(FalconSessionEntity *session, int byReag)
 
 int UnitClass::Deaggregate(FalconSessionEntity* session)
 {
-    if ( not IsLocal() or !IsAggregate() or IsDead())
+    if ( not IsLocal() or not IsAggregate() or IsDead())
     {
         return 0;
     }
@@ -1793,7 +1793,7 @@ int UnitClass::Deaggregate(FalconSessionEntity* session)
 
 int UnitClass::Reaggregate(FalconSessionEntity* session)
 {
-    if (IsAggregate() or !IsLocal())
+    if (IsAggregate() or not IsLocal())
         return 0;
 
     if (session and session->GetPlayerEntity() and (session->GetPlayerFlight() == this))
@@ -1806,7 +1806,7 @@ int UnitClass::Reaggregate(FalconSessionEntity* session)
     RecordCurrentState(NULL, TRUE);
 
     // We need to do some special case stuff:
-    if (IsBattalion() and !IsDead())
+    if (IsBattalion() and not IsDead())
     {
         ((Battalion)this)->deag_data = new UnitDeaggregationData;
         ((Battalion)this)->deag_data->StoreDeaggregationData(this);
@@ -1862,7 +1862,7 @@ int UnitClass::Reaggregate(FalconSessionEntity* session)
 
 int UnitClass::TransferOwnership(FalconSessionEntity* session)
 {
-    if (IsAggregate() or !IsLocal())
+    if (IsAggregate() or not IsLocal())
     {
         return 0;
     }
@@ -1877,12 +1877,12 @@ int UnitClass::TransferOwnership(FalconSessionEntity* session)
     if (vehleft)
     {
         // Update our local wake status
-        if (IsAwake() and !FalconLocalSession->InSessionBubble(this, REAGREGATION_RATIO))
+        if (IsAwake() and not FalconLocalSession->InSessionBubble(this, REAGREGATION_RATIO))
         {
             Sleep();
         }
         else if (
-            !IsAwake() and (
+             not IsAwake() and (
                 session == FalconLocalSession or FalconLocalSession->InSessionBubble(this, 1.0F) > 0
             )
         )
@@ -1910,7 +1910,7 @@ int UnitClass::TransferOwnership(FalconSessionEntity* session)
 int UnitClass::Wake(void)
 {
     // sfr: in MP, we need to run entities even if we are not inside game
-#if !NEW_WAKE
+#if not NEW_WAKE
     if ( not OTWDriver.IsActive())
     {
         return 0;
@@ -1988,7 +1988,7 @@ void UnitClass::InsertInSimLists(float cameraX, float cameraY)
                         draw_pointer->SetLabel(vc->Name, TeamSimColorList[TeamInfo[GetTeam()]->GetColor()]);
                     else
                     {
-                        if (gLangIDNum <= F4LANG_GERMAN or !IsBattalion())
+                        if (gLangIDNum <= F4LANG_GERMAN or not IsBattalion())
                             draw_pointer->SetLabel(GetUnitClassName(), TeamSimColorList[TeamInfo[GetTeam()]->GetColor()]);
                         else
                         {
@@ -2052,7 +2052,7 @@ void UnitClass::RemoveFromSimLists(void)
 //sfr: changed this proto
 void UnitClass::DeaggregateFromData(VU_BYTE* data, long size)
 {
-    if (IsLocal() or !IsAggregate())
+    if (IsLocal() or not IsAggregate())
     {
         return;
     }
@@ -2304,11 +2304,11 @@ void UnitClass::ReaggregateFromData(VU_BYTE *data, long size)
 //void UnitClass::TransferOwnershipFromData (int size, uchar* data)
 void UnitClass::TransferOwnershipFromData(VU_BYTE* data, long size)
 {
-    if (IsAggregate() or IsLocal() or !data)
+    if (IsAggregate() or IsLocal() or not data)
         return;
 
 #ifndef NDEBUG
-    MonoPrint("Transfering ownership of remote Unit #%d!\n", GetCampID());
+    MonoPrint("Transfering ownership of remote Unit #%d\n", GetCampID());
 #endif
 
     VU_ID vuid;
@@ -2334,12 +2334,12 @@ void UnitClass::TransferOwnershipFromData(VU_BYTE* data, long size)
     }
 
     // Update our local wake status
-    if (IsAwake() and !FalconLocalSession->InSessionBubble(this, REAGREGATION_RATIO))
+    if (IsAwake() and not FalconLocalSession->InSessionBubble(this, REAGREGATION_RATIO))
     {
         Sleep();
     }
     else if (
-        !IsAwake() and (
+         not IsAwake() and (
             GetDeagOwner() == FalconLocalSession->Id() or FalconLocalSession->InSessionBubble(this, 1.0F) > 0
         )
     )
@@ -2522,7 +2522,7 @@ int UnitClass::NoMission(void)
         e = GetNextUnitElement();
     }
 
-    return !allplanned;
+    return  not allplanned;
 }
 
 int UnitClass::AtDestination(void)
@@ -2609,7 +2609,7 @@ void UnitClass::KillUnit(void)
     if ( not f or f == this)
         return;
 
-    if (f->CountUnitElements() == 0 and !f->IsDead())          // Nothing left in father
+    if (f->CountUnitElements() == 0 and not f->IsDead())          // Nothing left in father
         f->KillUnit();
 
     if (IsSetFalcFlag(FEC_HASPLAYERS))
@@ -2871,7 +2871,7 @@ void UnitClass::SetCombat(int p)
 void UnitClass::SetBroken(int p)
 {
     // If we just broke, send a CampUI 'withdrawing/aborted' message to everyone here
-    if ( not (unit_flags bitand U_BROKEN) and p and Real() and !IsDead())
+    if ( not (unit_flags bitand U_BROKEN) and p and Real() and not IsDead())
     {
         FalconCampEventMessage *newEvent = new FalconCampEventMessage(Id(), FalconLocalGame);
 
@@ -3107,7 +3107,7 @@ void UnitClass::SetTempDest(int t)
 
 void UnitClass::SetFinal(int p)
 {
-    if (p and !(unit_flags bitand U_FINAL))
+    if (p and  not (unit_flags bitand U_FINAL))
     {
         unit_flags  or_eq  U_FINAL;
         //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[64].priority);
@@ -3531,7 +3531,7 @@ int UnitClass::GetDetectionRange(int mt)
 
 int UnitClass::GetElectronicDetectionRange(int mt)
 {
-    // 2002-02-25 MODIFIED BY S.G. ABOVE 250 HAS A NEW MEANING SO USE THE UNIT ELECTRONIC DETECTION RANGE INSTEAD... WAS IN RP5, FORGOT TO ADD IT TO F4UT!
+    // 2002-02-25 MODIFIED BY S.G. ABOVE 250 HAS A NEW MEANING SO USE THE UNIT ELECTRONIC DETECTION RANGE INSTEAD... WAS IN RP5, FORGOT TO ADD IT TO F4UT
     // return class_data->Detection[mt];
     if (class_data->Detection[mt] > 250)
     {
@@ -3549,7 +3549,7 @@ int UnitClass::CanDetect(FalconEntity* ent)
     MoveType mt;
     int detectiontype = 0;
 
-    if (IsDead() or ent->IsDead() or (IsFlight() and !Moving()) or (ent->IsFlight() and !((FlightClass*)ent)->Moving()))
+    if (IsDead() or ent->IsDead() or (IsFlight() and not Moving()) or (ent->IsFlight() and  not ((FlightClass*)ent)->Moving()))
         return 0;
 
     mt = ent->GetMovementType();
@@ -3624,7 +3624,7 @@ int UnitClass::CanDetect(FalconEntity* ent)
     if (ent->IsFlight())
     {
         // If we don't have a radar and the sucker isn't spotted yet, just bail out.
-        if ( not IsEmitting() and !((Flight)ent)->GetSpotted(GetTeam()))
+        if ( not IsEmitting() and  not ((Flight)ent)->GetSpotted(GetTeam()))
             return 0;
 
         // If we're a batallion, try to use radar coverage masks
@@ -3734,7 +3734,7 @@ int UnitClass::CanDetect(FalconEntity* ent)
         return DETECTED_VISUAL;
 
         // If we don't have a radar and the sucker isn't spotted yet, just bail out.
-        if ( not IsEmitting() and !((Flight)ent)->GetSpotted(GetTeam()))
+        if ( not IsEmitting() and  not ((Flight)ent)->GetSpotted(GetTeam()))
         return 0;
 
         // If we're a batallion, try to use radar coverage masks
@@ -4118,7 +4118,7 @@ int UnitClass::GetFormationCruiseSpeed() const
     int      speed = 9999;
     Unit     e;
 
-    if ( not Father() or !GetFirstUnitElement())
+    if ( not Father() or not GetFirstUnitElement())
         return GetCruiseSpeed();
 
     e = GetFirstUnitElement();
@@ -4219,7 +4219,7 @@ SimBaseClass* UnitClass::GetSimTarget(void)
 
         while (theObj)
         {
-            if ( not theObj->IsDead() and !theObj->IsExploding() and theObj->IsAwake())
+            if ( not theObj->IsDead() and not theObj->IsExploding() and theObj->IsAwake())
                 return theObj;
 
             comp++;
@@ -4250,7 +4250,7 @@ CampEntity UnitClass::GetCargo(void)
     if ( not Cargo())
         return NULL;
 
-    if ( not IsFlight() and !IsTaskForce())
+    if ( not IsFlight() and not IsTaskForce())
         return NULL;
 
     return (CampEntity) vuDatabase->Find(cargo_id);
@@ -4261,7 +4261,7 @@ CampEntity UnitClass::GetTransport(void)
     if ( not Cargo())
         return NULL;
 
-    if ( not IsBattalion() and !IsSquadron())
+    if ( not IsBattalion() and not IsSquadron())
         return NULL;
 
     return (CampEntity) vuDatabase->Find(cargo_id);
@@ -4272,7 +4272,7 @@ VU_ID UnitClass::GetCargoID(void)
     if ( not Cargo())
         return FalconNullId;
 
-    if ( not IsFlight() and !IsTaskForce())
+    if ( not IsFlight() and not IsTaskForce())
         return FalconNullId;
 
     return cargo_id;
@@ -4283,7 +4283,7 @@ VU_ID UnitClass::GetTransportID(void)
     if ( not Cargo())
         return FalconNullId;
 
-    if ( not IsBattalion() and !IsSquadron())
+    if ( not IsBattalion() and not IsSquadron())
         return FalconNullId;
 
     return cargo_id;
@@ -4291,7 +4291,7 @@ VU_ID UnitClass::GetTransportID(void)
 
 void UnitClass::GetUnitDestination(GridIndex* X, GridIndex* Y)
 {
-    if ((dest_x == 0 or dest_y == 0) and !Parent())
+    if ((dest_x == 0 or dest_y == 0) and not Parent())
     {
         GetUnitParent()->GetUnitDestination(X, Y);
     }
@@ -4383,7 +4383,7 @@ void UnitClass::LoadUnit(Unit cargo)
     if ( not ourCargo)
     {
         // KCK TODO: Abort Mission
-        MonoPrint("Cargo is missing!\n");
+        MonoPrint("Cargo is missing\n");
         return;
     }
 
@@ -4657,7 +4657,7 @@ int UnitClass::CollectWeapons(uchar* dam, MoveType m, short w[], uchar wc[], int
         return 0;
 
     // KCK HACK: Ground units only take one salvo at a flight per weapon type (guided weapons only)
-    if (MOVE_AIR(m) and !IsFlight())
+    if (MOVE_AIR(m) and not IsFlight())
         max_salvos = 1;
 
     if (GetTeam() < 0 or F4IsBadCodePtr((FARPROC) TeamInfo[GetTeam()]) or GetRClass() < 0 or F4IsBadReadPtr(&(TeamInfo[GetTeam()]->max_vehicle[GetRClass()]), sizeof(uchar))) // JB 010305 CTD
@@ -4671,7 +4671,7 @@ int UnitClass::CollectWeapons(uchar* dam, MoveType m, short w[], uchar wc[], int
 
         if (bw > 0 and CanShootWeapon(bw))
         {
-            for (j = 0, gotit = 0; j < cw and !gotit; j++)
+            for (j = 0, gotit = 0; j < cw and not gotit; j++)
             {
                 if (w[j] == bw)
                 {
@@ -4768,7 +4768,7 @@ void UnitClass::SetCurrentUnitWP(WayPoint w)
 
     tw = wp_list;
 
-    if ( not tw or !w)
+    if ( not tw or not w)
     {
         // ShiAssert( not IsFlight());
         current_wp = 0;
@@ -4963,7 +4963,7 @@ void UnitClass::BuildElements(void)
     int i, R, mv = VEHICLE_GROUPS_PER_UNIT;
 
     // This is a hack- basically, Squadrons arn't "real", but need their elements built.
-    if ( not Real() and !IsSquadron())
+    if ( not Real() and not IsSquadron())
     {
         return;
     }
@@ -5915,7 +5915,7 @@ int EncodeUnitData(VU_BYTE **stream, FalconSessionEntity *owner)
 
         while (cur)
         {
-            if (( not owner or cur->OwnerId() == ownerid) and !cur->IsDead())
+            if (( not owner or cur->OwnerId() == ownerid) and not cur->IsDead())
             {
                 size += cur->SaveSize() + sizeof(short);
                 count++;
@@ -5932,7 +5932,7 @@ int EncodeUnitData(VU_BYTE **stream, FalconSessionEntity *owner)
 
         while (cur)
         {
-            if (( not owner or cur->OwnerId() == ownerid) and !cur->IsDead())
+            if (( not owner or cur->OwnerId() == ownerid) and not cur->IsDead())
             {
                 size += cur->SaveSize() + sizeof(short);
                 count++;
@@ -5955,7 +5955,7 @@ int EncodeUnitData(VU_BYTE **stream, FalconSessionEntity *owner)
 
         while (cur)
         {
-            if (( not owner or cur->OwnerId() == ownerid) and !cur->IsDead())
+            if (( not owner or cur->OwnerId() == ownerid) and not cur->IsDead())
             {
                 type = cur->Type();
                 memcpy(buf, &type, sizeof(short));
@@ -5980,7 +5980,7 @@ int EncodeUnitData(VU_BYTE **stream, FalconSessionEntity *owner)
 
         while (cur)
         {
-            if (( not owner or cur->OwnerId() == ownerid) and !cur->IsDead())
+            if (( not owner or cur->OwnerId() == ownerid) and not cur->IsDead())
             {
                 type = cur->Type();
                 newsize = cur->SaveSize();
@@ -6129,7 +6129,7 @@ UnitDeaggregationData::~UnitDeaggregationData()
 
 void UnitDeaggregationData::StoreDeaggregationData(Unit theUnit)
 {
-    if ( not theUnit or theUnit->IsAggregate() or theUnit->GetDomain() not_eq DOMAIN_LAND or !theUnit->GetComponents())
+    if ( not theUnit or theUnit->IsAggregate() or theUnit->GetDomain() not_eq DOMAIN_LAND or not theUnit->GetComponents())
         return;
 
     int vehicles = 0, slot;

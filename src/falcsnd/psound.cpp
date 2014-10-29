@@ -340,11 +340,11 @@ long CSoundMgr::FillRiffInfo(char *memory, RIFF_FILE *riff)
 
     riff->data = ptr;
 
-    if (ptr and !strncmp(ptr, "WAVE", 4))
+    if (ptr and not strncmp(ptr, "WAVE", 4))
     {
         ptr += 4;
 
-        while (ptr and !riff->Start and ptr < (riff->data + datasize))
+        while (ptr and not riff->Start and ptr < (riff->data + datasize))
         {
             hdr = ptr;
             ptr += 4;
@@ -415,11 +415,11 @@ RIFF_FILE *CSoundMgr::LoadRiff(char *filename)
 
     ptr = filedata->data;
 
-    if (ptr and !strncmp(ptr, "WAVE", 4))
+    if (ptr and not strncmp(ptr, "WAVE", 4))
     {
         ptr += 4;
 
-        while (ptr and !filedata->Start and ptr < (filedata->data + datasize))
+        while (ptr and not filedata->Start and ptr < (filedata->data + datasize))
         {
             hdr = ptr;
             ptr += 4;
@@ -930,7 +930,7 @@ BOOL CSoundMgr::PlaySample(long ID, long Flags)
             if (Sample not_eq NULL)
             {
                 /*
-                if(IsSamplePlaying(ID,0) and !(Flags bitand SND_OVERRIDE))
+                if(IsSamplePlaying(ID,0) and  not (Flags bitand SND_OVERRIDE))
                 {
                  if(Sample->Flags bitand SND_EXCLUSIVE)
                  return(FALSE);

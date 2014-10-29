@@ -168,7 +168,7 @@ void CDXVbManager::DestroyVAT(VBufferListType *pVb, CVbVAT *Vat)
         if (Vat->Next) Vat->Next->Prev = NULL;
     }
 
-    //  Kill It!!!
+    //  Kill It!
     delete Vat;
 }
 
@@ -342,7 +342,7 @@ DWORD CDXVbManager::VBAddObject(VBufferListType *Vbl, DWORD nVertices, DWORD ID)
             Vbl->pVAT = new CVbVAT(NULL, NULL, ID, 0, nVertices, Vbl->Free);
             //Update VB Free Space
             Vbl->Free -= nVertices;
-            // Gap to 1st Item is Zero..!!!
+            // Gap to 1st Item is Zero..!
             Vbl->BootGap = 0x0000;
             // Assign the Object Buffer Descriptor VAT
             pVBuffers[ID].pVAT = Vbl->pVAT;
@@ -364,7 +364,7 @@ DWORD CDXVbManager::VBAddObject(VBufferListType *Vbl, DWORD nVertices, DWORD ID)
                 Vbl->pVAT = new CVbVAT(NULL, Vbl->pVAT, ID, 0x0000, nVertices, Vbl->Free);
                 //Update VB Free Space
                 Vbl->Free -= nVertices;
-                // Gap to 1st Item is Zero..!!!
+                // Gap to 1st Item is Zero..!
                 Vbl->BootGap = 0x0000;
                 // Assign the Object Buffer Descriptor VAT
                 pVBuffers[ID].pVAT = Vbl->pVAT;
@@ -405,7 +405,7 @@ bool CDXVbManager::VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices)
     while (i < MAX_VERTEX_BUFFERS)
     {
 
-        // if a still inexistant VB ( no class assigned ) create it !!!
+        // if a still inexistant VB ( no class assigned ) create it !
         if ( not pVbList[i].Class) CreateVB(i, Class);
 
         // if a VB with wrong Class next VB and skip
@@ -431,7 +431,7 @@ bool CDXVbManager::VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices)
         i++;
     }
 
-    // if here, all is full !!!
+    // if here, all is full !
     return false;
 
 }
@@ -455,7 +455,7 @@ bool CDXVbManager::SetupModel(DWORD ID, BYTE *Root, DWORD Class)
     // Local Copy of data start
     DWORD *rt = (DWORD*)Root;
 
-    // FRB - Hack to skip huge bad model (dwNVertices > 2 million verts!!)
+    // FRB - Hack to skip huge bad model (dwNVertices > 2 million verts)
     if ((ID == 0) and (((DxDbHeader*)rt)->dwNVertices) > 100)
         return false;
 

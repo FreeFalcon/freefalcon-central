@@ -37,7 +37,7 @@ void DigitalBrain::GroundCheck(void)
         and threatPtr == NULL)
     {
         // edg: do we really ever need to do ground avoidance if we're in
-        // waypoint mode!?  The waypoint code should be smart enough....
+        // waypoint mode?  The waypoint code should be smart enough....
         // minAlt = 500.0F;
         groundAvoidNeeded = FALSE;
         ResetMaxRoll();
@@ -125,7 +125,7 @@ void DigitalBrain::GroundCheck(void)
         // Test the terrain along the likely path we will take.  Take into account the deltas along the ground
         // and the fact that we may be headed straight down so the deltas could be very small.  Since we still
         // need to test the terrain in case we're diving into a valley, test the terrain along the recovery path.
-        //  for (float i = 0.0; i < lookahead and !groundavoid; i += 0.5)
+        //  for (float i = 0.0; i < lookahead and not groundavoid; i += 0.5)
         for (float i = 0.0; i < lookahead; i += 0.5)
         {
             // Project a recovery path based on our pitch.
@@ -169,7 +169,7 @@ void DigitalBrain::GroundCheck(void)
 
     // Cobra - end of reconstruction
 
-    if (self->GetVt() < 0.1f or !groundavoid)
+    if (self->GetVt() < 0.1f or not groundavoid)
     {
         groundAvoidNeeded = FALSE;
         ResetMaxRoll();

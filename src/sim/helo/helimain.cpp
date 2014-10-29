@@ -442,7 +442,7 @@ int HelicopterClass::Exec(void)
         return TRUE;
 
     //RV - I-Hawk - Removed the burning SFX stuff here as not handled in simveh.cpp anymore...
-    if (pctStrength <= 0.0f and !IsExploding())
+    if (pctStrength <= 0.0f and not IsExploding())
     {
         Tpoint pos, vec;
 
@@ -657,7 +657,7 @@ int HelicopterClass::Exec(void)
         // does this helicopter LOD out?
         if (useDistLOD == TRUE and flightLead)
         {
-            if ( not OnGround() and distLOD < 0.5f and !IsFiring())
+            if ( not OnGround() and distLOD < 0.5f and not IsFiring())
             {
                 // should be hidden
                 SetLocalFlag(IS_HIDDEN);
@@ -848,7 +848,7 @@ int HelicopterClass::Exec(void)
 
     }
 
-    if ((GetCampaignObject() > (VuEntity*)MAX_IA_CAMP_UNIT) and !hBrain->isWing)
+    if ((GetCampaignObject() > (VuEntity*)MAX_IA_CAMP_UNIT) and not hBrain->isWing)
     {
         ((Unit)GetCampaignObject())->SimSetLocation(hf->XE.x, hf->XE.y, hf->XE.z);
         // KCK note: no reason to do these..
@@ -1097,7 +1097,7 @@ HelicopterClass::GetFormationPos(float *x, float *y, float *z)
 
     // if we're the leader just return our own position
     //TJL 11/15/03 Test
-    //if ( flightLead == this or !flightLead)
+    //if ( flightLead == this or not flightLead)
     if (flightLead == this)
     {
         *x = XPos();
@@ -1135,7 +1135,7 @@ void HelicopterClass::PromoteSubordinates(void)
     HelicopterClass *newLead = NULL;
 
     MonoPrint("*** Helicopter *** \n");
-    MonoPrint("Need to Promote Subordinates!\n");
+    MonoPrint("Need to Promote Subordinates\n");
 
     if ( not GetCampaignObject()->GetComponents())
     {
@@ -1165,7 +1165,7 @@ void HelicopterClass::PromoteSubordinates(void)
             theObj->flightLead = theObj;
             theObj->useDistLOD = FALSE;
             theObj->UnSetLocalFlag(IS_HIDDEN);
-            MonoPrint("Heli New Leader Promoted!\n");
+            MonoPrint("Heli New Leader Promoted\n");
             continue;
         }
 
@@ -1174,7 +1174,7 @@ void HelicopterClass::PromoteSubordinates(void)
         {
             // yup!
             theObj->flightLead = newLead;
-            MonoPrint("Heli Subordinate set to New Leader!\n");
+            MonoPrint("Heli Subordinate set to New Leader\n");
         }
     }
 

@@ -494,7 +494,7 @@ void TankerBrain::CallNext(void)
             sess = Sessioniter.GetFirst();
             int foundone = FALSE;
 
-            while (sess and !foundone)
+            while (sess and not foundone)
             {
                 if (sess->GetCameraEntity(0) == curThirsty)
                 {
@@ -700,7 +700,7 @@ void TankerBrain::DriveBoom(void)
 
         if (tmpRefuelMode == 3)
         {
-            ScaledRM = 2;//sfr: again! 2.0f;  // FRB - Decrease Easy hookup tolerance factor
+            ScaledRM = 2;//sfr: again 2.0f;  // FRB - Decrease Easy hookup tolerance factor
         }
 
         // 2002-03-08 MN HACK add in the drawpointer radius - this should fix DROGUE for each aircraft
@@ -751,7 +751,7 @@ void TankerBrain::DriveBoom(void)
                 FalconSendMessage(tankMsg);
             }
         }
-        else if (tankingPtr and !(flags bitand ClearingPlane))
+        else if (tankingPtr and  not (flags bitand ClearingPlane))
         {
             tmpAz = tankingPtr->localData->az;
 
@@ -864,7 +864,7 @@ void TankerBrain::DriveBoom(void)
         else
             tmpAz = tankingPtr->localData->az;
 
-        if (boom[BOOM].el * RTD > -27.2F and !(flags bitand GivingGas))
+        if (boom[BOOM].el * RTD > -27.2F and  not (flags bitand GivingGas))
             tmpRange = 6.0F;
         else
             tmpRange = tankingPtr->localData->range - 33.5F;
@@ -963,7 +963,7 @@ void TankerBrain::DriveBoom(void)
             FalconSendMessage(tankMsg);
         }
     }
-    else if (tankingPtr and !(flags bitand ClearingPlane))
+    else if (tankingPtr and  not (flags bitand ClearingPlane))
     {
         if (fabs(boom[BOOM].ext - tankingPtr->localData->range + 33.5F) > 2.0F ||
             fabs(boom[BOOM].az - tmpAz)*RTD > 2.0F * /*FRB*/ ScaledRM ||
@@ -1471,7 +1471,7 @@ void TankerBrain::FollowThirsty(void)
         else if (stype == TNKR_KC135 and g_bLightsKC135) // when we have the lights on the KC-135 model
             DriveLights();
 
-        if (xyRange < 500.0F and !(flags bitand PrecontactPos)  and 
+        if (xyRange < 500.0F and  not (flags bitand PrecontactPos)  and 
             fabs(tankingPtr->localData->rangedot) < 100.0F  and 
             fabs(tankingPtr->localData->az) < 35.0F * DTR)
         {
@@ -1486,9 +1486,9 @@ void TankerBrain::FollowThirsty(void)
 
         if ( not (flags bitand ClearingPlane))
             // 25NOV03 - FRB - Give directions to drogue-refueling a/c
-            // if(ServiceType not_eq DROGUE_SERVICE and !(flags bitand ClearingPlane))
+            // if(ServiceType not_eq DROGUE_SERVICE and  not (flags bitand ClearingPlane))
         {
-            if (xyRange < 200.0F and !(flags bitand GivingGas)  and 
+            if (xyRange < 200.0F and  not (flags bitand GivingGas)  and 
                 (SimLibElapsedTime - lastBoomCommand) > 10000)
             {
                 lastBoomCommand = SimLibElapsedTime;

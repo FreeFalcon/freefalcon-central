@@ -119,7 +119,7 @@ GroundUnitClass::GroundUnitClass(VU_BYTE **stream, long *rem) : UnitClass(stream
     o = FindObjective(aobj);
 
     // Find Secondary objective from actual
-    if (o and !o->IsSecondary() and !o->IsPrimary())
+    if (o and not o->IsSecondary() and not o->IsPrimary())
         o = o->GetObjectiveParent();
 
     if (o)
@@ -128,7 +128,7 @@ GroundUnitClass::GroundUnitClass(VU_BYTE **stream, long *rem) : UnitClass(stream
         sobj = FalconNullId;
 
     // Find Primary objective from seconday
-    if (o and !o->IsPrimary())
+    if (o and not o->IsPrimary())
         o = o->GetObjectiveParent();
 
     if (o)
@@ -697,7 +697,7 @@ int GroundUnitClass::CheckForSurrender(void)
     // If we got here, we assume we're cut off.
     // What we do is sit tight and call for help.
     // However, if our morale breaks, we'll surrender
-    if (Broken() or (IsBattalion() and !MoraleCheck(4, 0)))
+    if (Broken() or (IsBattalion() and not MoraleCheck(4, 0)))
     {
         KillUnit();
         return 0; // Zero is we surrendered
@@ -785,7 +785,7 @@ Unit BestElement(Unit u, int at, int role)
         if (e->Retreating())
             s /= 2;
 
-        if ( not e->Assigned() and s > bs and (role == GRO_RESERVE or !e->Broken()))
+        if ( not e->Assigned() and s > bs and (role == GRO_RESERVE or not e->Broken()))
         {
             be = e;
             bs = s;
@@ -882,7 +882,7 @@ int BuildGroundWP(Unit u)
     {
         // KCK: We assume we can always find transports.
         RequestAirborneTransport(u);
-        return 1; // We've got a ticket to fly!
+        return 1; // We've got a ticket to fly
     }
 
     // RV - Biker - Enable infantry units to be carried from choppers
@@ -905,7 +905,7 @@ int BuildGroundWP(Unit u)
         {
             // KCK: We assume we can always find transports.
             RequestMarineTransport(u);
-            return 1; // We've got a ticket to ride!
+            return 1; // We've got a ticket to ride
         }
 
         // KCK TODO: plan wp route to nearest port
@@ -924,7 +924,7 @@ int BuildGroundWP(Unit u)
         return 1;
     }
 
-    if ( not o or !t)
+    if ( not o or not t)
         return 0;
 
     if (u->GetUnitObjectivePath(&path, o, t) < 1) // Avoid enemy objectives
@@ -1302,7 +1302,7 @@ e = FindUnitByXY(AllRealList,X,Y,DOMAIN_LAND);
 if ( not e)
 return h;
 //  Got rid of this -\v because two moving units would never pass each other.
-// else if (e->Moving() and !e->Engaged())
+// else if (e->Moving() and not e->Engaged())
 // return Here; // It's moving, just wait your turn..
 else if (e->GetTeam() not_eq u->GetTeam())
 bh = Here; // Never move through enemy units
@@ -1465,7 +1465,7 @@ int ScorePosition(Unit battalion, int role, int role_score, Objective o, GridInd
     o->GetLocation(&ox, &oy);
 
     // Check if this is a busted bridge
-    if (role not_eq GRO_ENGINEER and o->GetType() == TYPE_BRIDGE and !o->GetObjectiveStatus())
+    if (role not_eq GRO_ENGINEER and o->GetType() == TYPE_BRIDGE and not o->GetObjectiveStatus())
         return -32000;
 
     switch (role)
@@ -1551,7 +1551,7 @@ int ScorePosition(Unit battalion, int role, int role_score, Objective o, GridInd
             break;
 
         default:
-            // MonoPrint ("ScorePosition() Error: We should never get here!\n");
+            // MonoPrint ("ScorePosition() Error: We should never get here\n");
             score = -32000;
             break;
     }
@@ -1589,7 +1589,7 @@ Objective FindBestPosition(Unit battalion, Brigade brigade, int role, F4PFList n
         // Check for invalid offensive objectives
         if ( not owned_by_us)
         {
-            if (brigade->GetUnitCurrentRole() not_eq GRO_ATTACK or !o->IsFrontline() or GetRoE(our_team, o->GetTeam(), ROE_GROUND_CAPTURE) not_eq ROE_ALLOWED)
+            if (brigade->GetUnitCurrentRole() not_eq GRO_ATTACK or not o->IsFrontline() or GetRoE(our_team, o->GetTeam(), ROE_GROUND_CAPTURE) not_eq ROE_ALLOWED)
             {
                 nearlist->Remove(o);
                 continue;
@@ -2045,7 +2045,7 @@ int RequestAirborneTransport(Unit u)
 
 int RequestMarineTransport(Unit u)
 {
-    // KCK TODO!
+    // KCK TODO
     return 1;
 }
 
@@ -2155,13 +2155,13 @@ Objective FindRetreatPath(Unit u, int depth, int flags)
             {
                 o = s->GetNeighbor(n);
 
-                if (o and !CampSearch[o->GetCampID()] and team == o->GetTeam())
+                if (o and not CampSearch[o->GetCampID()] and team == o->GetTeam())
                 {
                     o->GetLocation(&x, &y);
                     odist = dist + FloatToInt32(Distance(x, y, sx, sy));
                     looklist.InsertNewElement(odist, o, LADT_SORTED_LIST);
 
-                    if (flags bitand FIND_SECONDARYONLY and !o->IsSecondary())
+                    if (flags bitand FIND_SECONDARYONLY and not o->IsSecondary())
                         continue;
 
                     if (depth > 2 and (o->IsFrontline() or o->IsSecondline() or o->IsThirdline()))
@@ -2211,10 +2211,10 @@ CampSearch[s->GetCampID()] = 1;
 for (n=0; n<s->NumLinks(); n++)
 {
 o = s->GetNeighbor(n);
-if (o and !CampSearch[o->GetCampID()] and team == o->GetTeam())
+if (o and not CampSearch[o->GetCampID()] and team == o->GetTeam())
 {
 looklist.ForcedInsert(o);
-if (flags bitand FIND_SECONDARYONLY and !o->IsSecondary())
+if (flags bitand FIND_SECONDARYONLY and not o->IsSecondary())
 continue;
 if (depth > 2 and (o->IsFrontline() or o->IsSecondline() or o->IsThirdline()))
 continue;
@@ -2503,7 +2503,7 @@ void GroundUnitClass::WriteDirty(uchar **stream)
     }
 
     dirty_ground_unit = 0;
-    //sfr: was not updating stream, added here!
+    //sfr: was not updating stream, added here
     *stream = ptr;
 }
 

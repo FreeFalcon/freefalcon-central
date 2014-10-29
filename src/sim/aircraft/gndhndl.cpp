@@ -288,7 +288,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     else if (af->vt * impactAngle < sinkRate * 1.75F * (1.0F - ( not 
              (af->IsSet(AirframeClass::OverRunway)
               or af->IsSet(AirframeClass::OnObject)) // JB carrier
-             and !onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
+             and not onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
     {
         //bounce
 
@@ -323,7 +323,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
         return FALSE;
     }
-    else if (af->vt * impactAngle < sinkRate * 3.0F * (1.0F - ( not af->IsSet(AirframeClass::OverRunway) and !onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
+    else if (af->vt * impactAngle < sinkRate * 3.0F * (1.0F - ( not af->IsSet(AirframeClass::OverRunway) and not onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
     {
         //we hit too hard for the landing gear, crunch!
 
@@ -334,7 +334,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
         // edg note: I would have liked to put this stuff in faults, but
         // as far as I can tell we don't know xyz position there.
-        if ( not IsSetFalcFlag(FEC_INVULNERABLE) and !af->IsSet(AirframeClass::GearBroken))
+        if ( not IsSetFalcFlag(FEC_INVULNERABLE) and not af->IsSet(AirframeClass::GearBroken))
         {
             af->SetFlag(AirframeClass::EngineOff);
             af->SetFlag(AirframeClass::EngineOff2);//TJL 01/22/04 multi-engine
@@ -548,7 +548,7 @@ void AircraftClass::CheckPersistantCollision()
     for (i = 0; i < MAX_PERSISTANT_OBJECTS; i++)
     {
         // get the object
-        if ( not PersistantObjects[i].InUse() or !PersistantObjects[i].drawPointer)
+        if ( not PersistantObjects[i].InUse() or not PersistantObjects[i].drawPointer)
         {
             continue;
         }

@@ -403,8 +403,8 @@ void ObjectParent::Reference(void)
         {
             ShiAssert(FALSE == F4IsBadReadPtr(record, sizeof(*record)));  // JPO CTD check
 
-            //if (record and !F4IsBadReadPtr(record, sizeof(LODrecord)) and record->objLOD and !F4IsBadCodePtr((FARPROC) record->objLOD)) // JB 010221 CTD
-            if (record and !F4IsBadReadPtr(record, sizeof(LODrecord)) and record->objLOD and !F4IsBadReadPtr(record->objLOD, sizeof(ObjectLOD))) // JB 010318 CTD
+            //if (record and  not F4IsBadReadPtr(record, sizeof(LODrecord)) and record->objLOD and  not F4IsBadCodePtr((FARPROC) record->objLOD)) // JB 010221 CTD
+            if (record and  not F4IsBadReadPtr(record, sizeof(LODrecord)) and record->objLOD and  not F4IsBadReadPtr(record->objLOD, sizeof(ObjectLOD))) // JB 010318 CTD
                 record->objLOD->Reference();
 
             record--;
@@ -454,7 +454,7 @@ void ObjectParent::Release(bool Unlock)
         Locked = false;
 
     // RED - Release if count eraches 0, and OBJECT IS NOT LOCKED
-    if (refCount == 0 and !Locked)
+    if (refCount == 0 and  not Locked)
     {
         // Dereference each of our child LODs
         while (record >= pLODs)

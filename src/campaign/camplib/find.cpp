@@ -229,7 +229,7 @@ float DirectionTowardFriendly(GridIndex x, GridIndex y, int team)
 
         f = FindNearestObjective(x, y, NULL);
 
-        if ((f == NULL) or !f->IsFrontline())
+        if ((f == NULL) or not f->IsFrontline())
         {
             // This won't work unless we find a frontline objective. So just use the value from above
             return r;
@@ -308,7 +308,7 @@ float AngleTo(GridIndex ox, GridIndex oy, GridIndex tx, GridIndex ty)
     dx = tx - ox;
     dy = ty - oy;
 
-    if ( not dx and !dy)
+    if ( not dx and not dy)
         return 0.0F;
 
     deg = (float)atan2((float)dx, (float)dy);
@@ -328,7 +328,7 @@ CampaignHeading DirectionTo(GridIndex ox, GridIndex oy, GridIndex tx, GridIndex 
     dx = tx - ox;
     dy = ty - oy;
 
-    if ( not dx and !dy)
+    if ( not dx and not dy)
     {
         return Here;
     }
@@ -648,7 +648,7 @@ Objective FindNearestSupplySource(Objective o)
         {
             c = o->GetNeighbor(n);
 
-            if (c and !CampSearch[c->GetCampID()])
+            if (c and not CampSearch[c->GetCampID()])
             {
                 cost = GetObjectiveMovementCost(o, NULL, n, Wheeled, who, PATH_MARINE);
 
@@ -677,7 +677,7 @@ Objective FindNearestSupplySource(Objective o)
         {
             c = o->GetNeighbor(n);
 
-            if (c and !CampSearch[c->GetCampID()])
+            if (c and not CampSearch[c->GetCampID()])
             {
                 cost = GetObjectiveMovementCost(o, NULL, n, Wheeled, (uchar)who, PATH_MARINE);
 
@@ -1312,7 +1312,7 @@ int ScoreThreatFast(GridIndex X, GridIndex Y, int altlevel, Team who)
         return 32000;
     }
 
-    if ( not TheCampaign.SamMapData or !TheCampaign.RadarMapData)
+    if ( not TheCampaign.SamMapData or not TheCampaign.RadarMapData)
     {
         return 0;
     }
@@ -1406,8 +1406,8 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
         if (e->GetDetectionRange(mt) > d and GetRoE(e->GetTeam(), who, roe_check))
         {
             if (
-                e->IsUnit() and !(flags bitand FIND_NOAIR and e->GetDomain() == DOMAIN_AIR)  and 
-                !(flags bitand FIND_NOMOVERS and ((Unit)e)->Moving())
+                e->IsUnit() and  not (flags bitand FIND_NOAIR and e->GetDomain() == DOMAIN_AIR)  and 
+                 not (flags bitand FIND_NOMOVERS and ((Unit)e)->Moving())
             )
             {
                 d = d; // placeholder. This unit is valid
@@ -1432,7 +1432,7 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
             {
                 threats += 4;
             }
-            else if (d > VisualDetectionRange[mt] and !(flags bitand FIND_NODETECT))
+            else if (d > VisualDetectionRange[mt] and  not (flags bitand FIND_NODETECT))
             {
                 threats++;
             }
@@ -1493,8 +1493,8 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
  if (tteam[e->GetTeam()])
  {
  if (e->IsUnit()  and 
- !(flags bitand FIND_NOMOVERS and ((Unit)e)->Moving())  and 
- !(flags bitand FIND_NOAIR and e->GetDomain() == DOMAIN_AIR)  and 
+  not (flags bitand FIND_NOMOVERS and ((Unit)e)->Moving())  and 
+  not (flags bitand FIND_NOAIR and e->GetDomain() == DOMAIN_AIR)  and 
  (flags bitand FIND_FINDUNSPOTTED or e->GetSpotted(who)))
  d = d; // placeholder. This unit is valid
  else if (e->IsObjective())
@@ -1585,11 +1585,11 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
             }
 
             if (
-                ( not e->IsUnit() or !((Unit)e)->Moving())  and 
+                ( not e->IsUnit() or  not ((Unit)e)->Moving())  and 
 #if VU_ALL_FILTERED
-                !foundlist->Find(e)
+                 not foundlist->Find(e)
 #else
-                !foundlist->Find(e->Id())
+                 not foundlist->Find(e->Id())
 #endif
             )
             {
@@ -1643,7 +1643,7 @@ void FillDistanceList(List list, Team who, int  i, int j)
         o->GetLocation(&x, &y);
         own = o->GetTeam();
 
-        if (GetTTRelations(who, own) == Allied or !own)
+        if (GetTTRelations(who, own) == Allied or not own)
         {
             if (o->IsFrontline())
                 d = 0.0F;

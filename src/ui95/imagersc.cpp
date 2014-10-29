@@ -1739,7 +1739,7 @@ void IMAGE_RSC::Blit(SCREEN *surface, long sx, long sy, long sw, long sh, long d
     if (sx >= Header->w or sy >= Header->h)
         return;
 
-    if ( not sx and !sy and sw >= Header->w and sh >= Header->h)
+    if ( not sx and not sy and sw >= Header->w and sh >= Header->h)
     {
         if (Header->flags bitand _RSC_USECOLORKEY_)
         {
@@ -1865,7 +1865,7 @@ void IMAGE_RSC::Blend(SCREEN *surface, long sx, long sy, long sw, long sh, long 
     if (sx >= Header->w or sy >= Header->h)
         return;
 
-    if ( not sx and !sy and sw >= Header->w and sh >= Header->h)
+    if ( not sx and not sy and sw >= Header->w and sh >= Header->h)
     {
         if (Header->flags bitand _RSC_USECOLORKEY_)
         {

@@ -25,7 +25,7 @@ static WAVEFORMATEX stereo =
 
 void gMusicCallback(SOUNDSTREAM *Stream, int MessageID)
 {
-    if ( not Stream or !gMusic)
+    if ( not Stream or not gMusic)
         return;
 
     switch (MessageID)

@@ -680,7 +680,7 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
                     if (result == PAN_AND_TILT or result == PAN_ONLY)
                     {
                         snapStatus = TRACKING;
-                        //MonoPrint("Switch to TRACKING!\n");
+                        //MonoPrint("Switch to TRACKING\n");
                     }
 
                     // }

@@ -310,7 +310,7 @@ float SimVehicleClass::GetIRFactor(void)
 
         if (PowerOutput() <= 1.0) //me123 status test. differensiate between idle, mil and ab
         {
-            // Marco *** IR Fix is here!!! 0.12 -> make it smaller to increase time for IR to drop (set to 0.04f)
+            // Marco *** IR Fix is here! 0.12 -> make it smaller to increase time for IR to drop (set to 0.04f)
             // 0.05 -> Make it larger to increase 'idle' IROutput (set to 0.20f)
             // Marco edit - * by 1.2 to help out IR missiles reach RPG status
 
@@ -417,11 +417,11 @@ int SimVehicleClass::Exec(void)
     // bleed off strength when below 0.  This will allow time for
     // other effects (fire trails, ejection, etc...).  When we've reached
     // an absolute min, explode
-    if (pctStrength <= 0.0f and !IsExploding())
+    if (pctStrength <= 0.0f and not IsExploding())
     {
         // debug non local
         /*
-        if ( !IsLocal() )
+        if (  not IsLocal() )
         {
          MonoPrint( "NonLocal Dying: Pct Strength now: %f\n", pctStrength );
         }
@@ -1500,7 +1500,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
     // JB 010121 adjusted to work in MP
     if (g_bNewDamageEffects and IsSetFlag(MOTION_OWNSHIP) and // hitPoints > 0 and 2002-04-11 REMOVED BY S.G. Done below after ->af since it's now externalized
         // SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity()->AutopilotType() not_eq AircraftClass::CombatAP  and 
-        // !(gCommsMgr and gCommsMgr->Online())  and 
+        //  not (gCommsMgr and gCommsMgr->Online())  and 
         IsAirplane()  and 
         // (rand() bitand 0x7) == 0x7 and // 13% chance 2002-04-11 MOVED BY S.G. After the ->af and used the external var now
         ((AircraftClass*)this)->af  and 
@@ -1552,7 +1552,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
             lastToHit = (SimVehicleClass*)vuDatabase->Find(LastShooter());
 
-            if (lastToHit and !lastToHit->IsEject() and lastToHit->Id() not_eq damageMessage->dataBlock.fEntityID)
+            if (lastToHit and not lastToHit->IsEject() and lastToHit->Id() not_eq damageMessage->dataBlock.fEntityID)
             {
                 deathMessage->dataBlock.fEntityID = lastToHit->Id();
                 deathMessage->dataBlock.fIndex = lastToHit->Type();
@@ -1798,7 +1798,7 @@ void SimVehicleClass::StepSOI(int dir)
     //MI
     FireControlComputer* FCC = ((SimVehicleClass*)this)->GetFCC();
 
-    if ( not theRadar or !FCC or !Sms or !SimDriver.GetPlayerEntity())
+    if ( not theRadar or not FCC or not Sms or not SimDriver.GetPlayerEntity())
         return;
 
     if (Sms)
@@ -1875,7 +1875,7 @@ void SimVehicleClass::StepSOI(int dir)
                 //No, currently not SOI. If we have the HSD visible, we're going to set it there
                 if (FCC->CouldBeSOI)
                     SOIManager(SOI_FCC);
-                else if ((mslDisplay and !mslDisplay->IsSOI()) or (tPodDisplay and !tPodDisplay->IsSOI()))
+                else if ((mslDisplay and not mslDisplay->IsSOI()) or (tPodDisplay and not tPodDisplay->IsSOI()))
                     SOIManager(SOI_WEAPON);
                 else
                     SOIManager(SOI_RADAR);

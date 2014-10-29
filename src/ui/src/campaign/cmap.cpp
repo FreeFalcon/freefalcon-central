@@ -434,7 +434,7 @@ THREAT_LIST *C_Map::AddThreat(CampEntity ent)
                 }
             }
 
-            delete threat; // JPO - no idea what this threat variable is for!!!
+            delete threat; // JPO - no idea what this threat variable is for!
         }
     }
 
@@ -442,9 +442,9 @@ THREAT_LIST *C_Map::AddThreat(CampEntity ent)
     // if(ent->IsUnit() and ent->IsEmitting())
     if (ent->IsUnit())
         // THIS IS WHAT I DO IN 1.08i2 BUT NOT REQUIRED IN 1.07 (SEE AT END OF FUNCTION FOR DETAIL)
-        // if(ent->IsUnit() and !((Unit)ent)->Inactive() and (FindUnitType(ent) bitand (_UNIT_AIR_DEFENSE | _UNIT_BATTALION)))
+        // if(ent->IsUnit() and  not ((Unit)ent)->Inactive() and (FindUnitType(ent) bitand (_UNIT_AIR_DEFENSE | _UNIT_BATTALION)))
         // UI_Refresher *gpsItem=NULL;
-        // if(ent->IsUnit() and (gpsItem=(UI_Refresher*)gGps->Find(ent->GetCampID())) and gpsItem->MapItem_ and !(gpsItem->MapItem_->Flags bitand C_BIT_INVISIBLE))
+        // if(ent->IsUnit() and (gpsItem=(UI_Refresher*)gGps->Find(ent->GetCampID())) and gpsItem->MapItem_ and  not (gpsItem->MapItem_->Flags bitand C_BIT_INVISIBLE))
     {
         ent->GetLocation(&x, &y);
         ShiAssert(Map_Max_Y > 0);
@@ -516,7 +516,7 @@ THREAT_LIST *C_Map::AddThreat(CampEntity ent)
                 }
             }
 
-            delete threat; // JPO - no idea what this threat variable is for!!! S.G. I DO BUT I HAVE NO TIME TO FIX IT NOW. I'LL MAKE IT RP5 COMPATIBLE FIRST
+            delete threat; // JPO - no idea what this threat variable is for! S.G. I DO BUT I HAVE NO TIME TO FIX IT NOW. I'LL MAKE IT RP5 COMPATIBLE FIRST
         }
     }
 
@@ -924,7 +924,7 @@ MAPICONLIST *C_Map::AddVC(victory_condition *vc)
 
     if (ent)
     {
-        if ( not ent->IsUnit() and !ent->IsObjective())
+        if ( not ent->IsUnit() and not ent->IsObjective())
             return(NULL);
     }
     else
@@ -959,7 +959,7 @@ void C_Map::UpdateVC(victory_condition *vc)
 
     if (ent)
     {
-        if ( not ent->IsUnit() and !ent->IsObjective())
+        if ( not ent->IsUnit() and not ent->IsObjective())
             ent = NULL;
     }
 
@@ -1019,9 +1019,9 @@ void C_Map::BuildCurrentWPList(Unit unit)
 
     if (unit == NULL) return;
 
-    if (unit->IsFlight() and !unit->Final()) return;
+    if (unit->IsFlight() and not unit->Final()) return;
 
-    if ( not CurWP_ or !CurWPZ_)
+    if ( not CurWP_ or not CurWPZ_)
         return;
 
     airwps = static_cast<short>(unit->IsFlight());
@@ -1078,7 +1078,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
     }
     else
     {
-        if (firstwp == unit->GetCurrentUnitWP() or !airwps)
+        if (firstwp == unit->GetCurrentUnitWP() or not airwps)
         {
             CurWP_->SetFlagBitOn(C_BIT_DRAGABLE);
             CurWPZ_->SetFlagBitOn(C_BIT_DRAGABLE);
@@ -1179,7 +1179,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
             othrID = STPT_CUR_ERROR;
         }
 
-        if (unit->IsFlight() and !IsValidWP(wp, (Flight)unit))
+        if (unit->IsFlight() and not IsValidWP(wp, (Flight)unit))
             state = 2;
         else if (wp == unit->GetCurrentUnitWP())
             state = 1;
@@ -2427,7 +2427,7 @@ void C_Map::MoveCenter(long x, long y)
     if (Map_ == NULL or DrawWindow_ == NULL)
         return;
 
-    if ( not x and !y)
+    if ( not x and not y)
         return;
 
     distance = (float)(MapRect_.right - MapRect_.left) / (DrawWindow_->ClientArea_[0].right - DrawWindow_->ClientArea_[0].left);

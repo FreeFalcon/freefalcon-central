@@ -139,9 +139,9 @@ void ICPClass::ExecSTPTMode()
     if ( not g_bRealisticAvionics)
     {
         //MI Original code
-        if (playerAC and playerAC->curWaypoint)  // and !playerAC->FCC->InTransistion()
+        if (playerAC and playerAC->curWaypoint)  // and not playerAC->FCC->InTransistion()
         {
-            // and  mUpdateFlags bitand STPT_UPDATE and !((AircraftClass*)(mpOwnship))->FCC->waypointStepCmd) {
+            // and  mUpdateFlags bitand STPT_UPDATE and  not ((AircraftClass*)(mpOwnship))->FCC->waypointStepCmd) {
 
             // Clear the update flag
 

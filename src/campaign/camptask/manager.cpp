@@ -196,7 +196,7 @@ void CampManagerClass::SendMessage(VU_ID from, short msg, short d1, short d2, sh
     VuTargetEntity *target = (VuTargetEntity*) vuDatabase->Find(OwnerId());
     FalconCampTaskingMessage *message = new FalconCampTaskingMessage(Id(), target);
 
-    if (managerFlags bitand CTM_MUST_BE_OWNED and !IsLocal())
+    if (managerFlags bitand CTM_MUST_BE_OWNED and not IsLocal())
         return;
 
     message->dataBlock.from = from;

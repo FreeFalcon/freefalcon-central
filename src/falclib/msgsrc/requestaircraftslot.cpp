@@ -37,7 +37,7 @@ int UI_RequestAircraftSlot::Process(uchar autodisp)
     Flight flight;
     int retval = FALSE;
 
-    if (autodisp or !FalconLocalGame)
+    if (autodisp or not FalconLocalGame)
     {
         return FALSE;
     }
@@ -337,7 +337,7 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
         // an empty one.
         if (FalconLocalGame->GetGameType() == game_Dogfight)
         {
-            for (i = 0; i < PILOTS_PER_FLIGHT and !retval; i++)
+            for (i = 0; i < PILOTS_PER_FLIGHT and not retval; i++)
             {
                 if (flight->plane_stats[i] == AIRCRAFT_NOT_ASSIGNED)
                 {
@@ -424,7 +424,7 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
             else
             {
                 // Try and find an empty one
-                for (i = 0; i < PILOTS_PER_FLIGHT and !retval; i++)
+                for (i = 0; i < PILOTS_PER_FLIGHT and not retval; i++)
                 {
                     if (flight->player_slots[i] == 255 and flight->plane_stats[i] == AIRCRAFT_AVAILABLE)
                     {

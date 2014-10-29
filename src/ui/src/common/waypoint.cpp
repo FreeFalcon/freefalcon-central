@@ -135,7 +135,7 @@ static void SetSteerPointValues(C_Window *win, WayPointClass *wp, int)
 
     flt = (Flight)vuDatabase->Find(gActiveFlightID);
 
-    if ( not flt or !wp)
+    if ( not flt or not wp)
         return;
 
     // Depending on a combination of waypoint flags and action type, we may have special
@@ -392,7 +392,7 @@ void UpdateWaypointWindowInfo(C_Window *win, WayPointClass *wp, int wpnum, int c
 
     flt = (Flight)vuDatabase->Find(gActiveFlightID);
 
-    if ( not win or !wp or !flt)
+    if ( not win or not wp or not flt)
         return;
 
     SetSteerPointValues(win, wp, wpnum);
@@ -726,7 +726,7 @@ void DeleteWPCB(long, short hittype, C_Base *)
     flt = (Flight)vuDatabase->Find(gActiveFlightID);
     wp = get_current_waypoint();
 
-    if ( not wp or !flt)
+    if ( not wp or not flt)
         return;
 
     nw = wp->GetPrevWP();
@@ -1088,7 +1088,7 @@ void ChangeAltCB(long ID, short hittype, C_Base *)
 
     // KCK HACK: Not sure how to just refresh this waypoint - so, I'm going to only rebuild the list
     // once in a while for repeat, or on mouseup.
-    if (hittype == C_TYPE_LMOUSEUP or !(rand() % 4))
+    if (hittype == C_TYPE_LMOUSEUP or  not (rand() % 4))
     {
         // Rebuild the Z waypoint list (would be nice to just refresh)
         gMapMgr->SetCurrentWaypointList(gActiveFlightID);
@@ -1116,13 +1116,13 @@ void ChangePatrolCB(long ID, short hittype, C_Base *control)
 
         wp = get_current_waypoint();
 
-        if (wp and !(wp->GetWPFlags() bitand WPF_REPEAT))
+        if (wp and  not (wp->GetWPFlags() bitand WPF_REPEAT))
         {
             if (wp->GetNextWP()) // 2001-11-17 M.N. this crashes in really rare conditions
                 wp = wp->GetNextWP();
         }
 
-        if ( not wp and !(wp->GetWPFlags() bitand WPF_REPEAT))
+        if ( not wp and  not (wp->GetWPFlags() bitand WPF_REPEAT))
             return;
 
         time = clk->GetTime() * VU_TICS_PER_SECOND;
@@ -1326,7 +1326,7 @@ void recalculate_waypoint_list(WayPointClass *wp, int minSpeed, int maxSpeed)
         pw = wp->GetPrevWP();
         nw = wp->GetNextWP();
 
-        if (pw and !(pw->GetWPFlags() bitand WPF_TIME_LOCKED))
+        if (pw and  not (pw->GetWPFlags() bitand WPF_TIME_LOCKED))
             recalculate_waypoint(pw, minSpeed, maxSpeed);
         else if (pw)
         {
@@ -1340,7 +1340,7 @@ void recalculate_waypoint_list(WayPointClass *wp, int minSpeed, int maxSpeed)
                 wp->SetWPSpeed(0);
         }
 
-        if (nw and !(nw->GetWPFlags() bitand WPF_TIME_LOCKED))
+        if (nw and  not (nw->GetWPFlags() bitand WPF_TIME_LOCKED))
             recalculate_waypoint(nw, minSpeed, maxSpeed);
         else if (nw)
         {
@@ -1366,8 +1366,8 @@ void recalculate_waypoints(WayPointClass *wp)
 
     flt = (Flight) vuDatabase->Find(gActiveFlightID);
 
-    //if ( not flt or !wp or !flt->IsFlight())
-    if ( not flt or !wp) // JB 010326 Allow ground units
+    //if ( not flt or not wp or not flt->IsFlight())
+    if ( not flt or not wp) // JB 010326 Allow ground units
         return;
 
     //TJL 11/22/03 Remove /2 division
@@ -2191,7 +2191,7 @@ void WaypointCB(long ID, short hittype, class C_Base *ctrl)
     if (cwp)
         wpicon = cwp->GetLast();
 
-    if ( not cwp or !wpicon)
+    if ( not cwp or not wpicon)
         return;
 
     // The reason I changed this routine... (And it didn't screw up the waypoints)... is because you guys took out
@@ -2392,7 +2392,7 @@ void WaypointCB(long ID, short hittype, class C_Base *ctrl)
             // Just update the waypoint's location and check for validity
             un = (Unit)vuDatabase->Find(gMapMgr->GetCurWPID());
 
-            if ( not un or !un->IsFlight())
+            if ( not un or not un->IsFlight())
                 return;
 
             gActiveFlightID = un->Id();

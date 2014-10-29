@@ -1507,7 +1507,7 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
         {
             if (
                 OTWDriver.DisplayInCockpit() and playerAC->OnGround() ||
-                !playerAC->playBetty or !playerAC->IsSetFlag(MOTION_OWNSHIP)
+                 not playerAC->playBetty or not playerAC->IsSetFlag(MOTION_OWNSHIP)
             )
             {
                 // MD -- 20031125: except if the MAL/IND test button is being pressed to test the warning sound
@@ -1559,7 +1559,7 @@ F4SoundFXPositionDriver(unsigned int begFrame, unsigned int endFrame)
     {
         lastPlayTime = vuxRealTime;
 
-        if (gSoundManagerRunning == FALSE or !SimDriver.InSim())
+        if (gSoundManagerRunning == FALSE or not SimDriver.InSim())
         {
             return;
         }
@@ -1763,7 +1763,7 @@ void F4SoundPos::PositionalData(void)
             }
         }
 
-        if (wasInMachShadow and !inMachShadow) // don't do booms with a view change
+        if (wasInMachShadow and not inMachShadow) // don't do booms with a view change
         {
             sonicBoom = 1000;
         }
@@ -1811,7 +1811,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol)
         {
             if (
                 OTWDriver.DisplayInCockpit() and playerAC->OnGround() ||
-                !playerAC->playBetty or !playerAC->IsSetFlag(MOTION_OWNSHIP)
+                 not playerAC->playBetty or not playerAC->IsSetFlag(MOTION_OWNSHIP)
             )
             {
                 // MD -- 20031125: except if the MAL/IND test button is being pressed to test the warning sound

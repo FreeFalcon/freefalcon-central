@@ -75,7 +75,7 @@ void DigitalBrain::CommandFlight(void)
                 }
             }
 
-            if ( not stillengaging and !threatPtr) // If we are threatened, call the wingmen back regardless what they do
+            if ( not stillengaging and not threatPtr) // If we are threatened, call the wingmen back regardless what they do
             {
                 AiSendCommand(self, FalconWingmanMsg::WMRejoin, AiFlight, FalconNullId);
                 AiSendCommand(self, FalconWingmanMsg::WMCoverMode, AiFlight, FalconNullId);

@@ -382,7 +382,7 @@ VuEntityType* VuxType(ushort id)
 void VuxRetireEntity(VuEntity* theEntity)
 {
     F4Assert(theEntity);
-    MonoPrint("You dropped an entity, better find it!!!\n");
+    MonoPrint("You dropped an entity, better find it\n");
 }
 
 VuSessionEntity* vuxCreateSession(void)

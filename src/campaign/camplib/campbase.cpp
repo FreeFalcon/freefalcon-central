@@ -286,7 +286,7 @@ int CampBaseClass::Handle(VuFullUpdateEvent *event)
     // In the case of force on force TE, this is actually ok -
     // The host will receive the full update and MAKE this entity
     // local in the line above
-    // ShiAssert ( !IsLocal() );
+    // ShiAssert (  not IsLocal() );
 
     memcpy(&share_.entityType_, &tmp_ent->share_.entityType_, sizeof(ushort));
     tmp_ent->GetLocation(&x, &y);
@@ -376,7 +376,7 @@ int CampBaseClass::GetSpotted(Team t)
     if (mt > 8 or mt <= 0)
         return 1;
 
-    // sfr: bad usage here! use sum instead, since in MP clients can receive future updates
+    // sfr: bad usage here use sum instead, since in MP clients can receive future updates
     // also, in MP, messages take time to get, this is reseting spot, so added IsLocal()
     if (IsLocal() and Camp_GetCurrentTime()  > ReconLossTime[mt] + spotTime)
     {
@@ -502,7 +502,7 @@ void CampBaseClass::SetSpotted(Team t, CampaignTime time, int identified)
 {
     // Make this dirty if we wern't previously spotted or our time has expired
     // 2002-02-11 MODIFIED BY S.G. Or we were not identified and now we are
-    if (ReSpot() or !((spotted >> t) bitand 0x01) or ( not ((spotted >> (t + 8)) bitand 0x01) and identified))
+    if (ReSpot() or  not ((spotted >> t) bitand 0x01) or ( not ((spotted >> (t + 8)) bitand 0x01) and identified))
     {
         spotTime = time;
 
@@ -548,9 +548,9 @@ void CampBaseClass::SetEmitting(int e)
 
         if (
 #if VU_ALL_FILTERED
-            !EmitterList->Find(this)
+             not EmitterList->Find(this)
 #else
-            !EmitterList->Find(Id())
+             not EmitterList->Find(Id())
 #endif
         )
         {
@@ -772,7 +772,7 @@ SimBaseClass* CampBaseClass::GetComponentLead(void) // My call
 
 SimBaseClass* CampBaseClass::GetComponentNumber(int component)
 {
-    // components shouldn't be null if this camp unit is deagg'd!
+    // components shouldn't be null if this camp unit is deagg'd
     if (components)
     {
         VuListIterator cit(components);
@@ -958,7 +958,7 @@ short FindUniqueID()
                 return id;
         }
 
-        MonoPrint("Error! Exceeded max entity count!\n");
+        MonoPrint("Error Exceeded max entity count\n");
     }
 
     return 0;

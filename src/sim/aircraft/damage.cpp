@@ -277,8 +277,8 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
     }
 
     // do any type specific stuff here:
-    //   if (IsLocal() and !(this == (SimBaseClass*)SimDriver.GetPlayerEntity() and PlayerOptions.InvulnerableOn()))
-    if (IsLocal() and !IsSetFalcFlag(FEC_INVULNERABLE))
+    //   if (IsLocal() and  not (this == (SimBaseClass*)SimDriver.GetPlayerEntity() and PlayerOptions.InvulnerableOn()))
+    if (IsLocal() and not IsSetFalcFlag(FEC_INVULNERABLE))
     {
         // Randomly break something based on the damage inflicted
         // Find out who did it
@@ -341,7 +341,7 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
                     if (rand() % 100 < 10) //low chance
                         CanopyDamaged = TRUE;
 
-                    if (rand() % 100 < 25 and !LEFState(LT_LEF_OUT)) //25% we're taking damage
+                    if (rand() % 100 < 25 and not LEFState(LT_LEF_OUT)) //25% we're taking damage
                     {
                         if (LEFState(LT_LEF_DAMAGED))
                         {
@@ -391,7 +391,7 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
                     if (rand() % 100 < 10) //low chance
                         CanopyDamaged = TRUE;
 
-                    if (rand() % 100 < 25 and !LEFState(RT_LEF_OUT)) //25% we're taking damage
+                    if (rand() % 100 < 25 and not LEFState(RT_LEF_OUT)) //25% we're taking damage
                     {
                         if (LEFState(RT_LEF_DAMAGED))
                         {
@@ -433,7 +433,7 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 //MI add LEF damage
                 if (g_bRealisticAvionics and g_bNewDamageEffects)
                 {
-                    if (rand() % 100 < 25 and !LEFState(LT_LEF_OUT)) //25% we're taking damage
+                    if (rand() % 100 < 25 and not LEFState(LT_LEF_OUT)) //25% we're taking damage
                     {
                         if (LEFState(LT_LEF_DAMAGED))
                         {
@@ -476,7 +476,7 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 //MI add LEF damage
                 if (g_bRealisticAvionics and g_bNewDamageEffects)
                 {
-                    if (rand() % 100 < 25 and !LEFState(RT_LEF_OUT)) //25% we're taking damage
+                    if (rand() % 100 < 25 and not LEFState(RT_LEF_OUT)) //25% we're taking damage
                     {
                         if (LEFState(RT_LEF_DAMAGED))
                         {
@@ -2082,7 +2082,7 @@ void AircraftClass::ShowDamage(void)
 
                     //normalize by AOA
                     //If both G and AOA conditions are filled, use only G values to calculate Cxs
-                    if (doAOAVortex and !doGVortex)
+                    if (doAOAVortex and not doGVortex)
                     {
                         vortex1AlphaCx += (currentAOA - vortexAOALimit) * (1.0f / vortexAOALimit);
                         vortex1SizeCx += (currentAOA - vortexAOA) * 0.03f;
@@ -2126,7 +2126,7 @@ void AircraftClass::ShowDamage(void)
                     //using bits 5,6,7 of largeVortex to decide if this position will be used
                     //as a trail or as PS. This leavs option for some ACs to have
                     //wide vortex over the entire body and wings.
-                    if (vtx2.y and !(largeVortex bitand 32) and !(largeVortex bitand 64) and !(largeVortex bitand 128))
+                    if (vtx2.y and  not (largeVortex bitand 32) and  not (largeVortex bitand 64) and  not (largeVortex bitand 128))
                     {
                         Tpoint lvtx2, rvtx2;
 
@@ -2234,7 +2234,7 @@ void AircraftClass::ShowDamage(void)
                         if (doGVortex)
                             PSCx += currentG / 9.0f;
 
-                        if (doAOAVortex and !doGVortex)
+                        if (doAOAVortex and not doGVortex)
                             PSCx += currentAOA / vortexAOALimit;
 
                         //Get altitude factor as vortex should get thinner with altitude
@@ -2913,7 +2913,7 @@ void AircraftClass::CheckObjectCollision(void)
             continue;
         }
 
-        if (F4IsBadReadPtr(theObject, sizeof(SimBaseClass)) or !theObject->IsSim() or (OnGround() and !theObject->OnGround()))
+        if (F4IsBadReadPtr(theObject, sizeof(SimBaseClass)) or not theObject->IsSim() or (OnGround() and not theObject->OnGround()))
         {
             continue;
         }
@@ -2932,7 +2932,7 @@ void AircraftClass::CheckObjectCollision(void)
         // Stop now if the spheres don't overlap
         // special case the tanker -- we want to be able to get in closer
         // JB carrier
-        if (af->IsSet(AirframeClass::OnObject) or !OnGround())
+        if (af->IsSet(AirframeClass::OnObject) or not OnGround())
         {
             if (IsSetFlag(I_AM_A_TANKER) or theObject->IsSetFlag(I_AM_A_TANKER))
             {
@@ -3257,7 +3257,7 @@ void AircraftClass::CheckObjectCollision(void)
             PSvec.y = (theObject->YDelta());
             PSvec.z = 0;
 
-            if (af->vcas > 40.0f and af->vcas < 180.0f and af->IsSet(AirframeClass::OnObject) and !(af->IsSet(AirframeClass::Hook)))
+            if (af->vcas > 40.0f and af->vcas < 180.0f and af->IsSet(AirframeClass::OnObject) and  not (af->IsSet(AirframeClass::Hook)))
             {
                 DrawableParticleSys::PS_AddParticleEx(
                     (SFX_CAT_LAUNCH + 1), &noseGear, &PSvec);
@@ -3297,7 +3297,7 @@ void AircraftClass::CheckObjectCollision(void)
 
                 if (af->IsSet(af->GearBroken) or af->gearPos <= 0.1F)
                 {
-                    if (af->platform->DBrain() and !af->platform->IsSetFalcFlag(FEC_INVULNERABLE))
+                    if (af->platform->DBrain() and not af->platform->IsSetFalcFlag(FEC_INVULNERABLE))
                     {
                         af->platform->DBrain()->SetATCFlag(DigitalBrain::Landed);
                         af->platform->DBrain()->SetATCStatus(lCrashed);
@@ -3356,7 +3356,7 @@ void AircraftClass::CheckObjectCollision(void)
                 continue;
         }
 
-        if (isDigital or !PlayerOptions.CollisionsOn())
+        if (isDigital or not PlayerOptions.CollisionsOn())
             continue;
 
         // JB carrier end

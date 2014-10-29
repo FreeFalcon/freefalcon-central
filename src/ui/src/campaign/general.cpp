@@ -179,7 +179,7 @@ void Uni_Float(_TCHAR *buffer)
 
     decimal = gStringMgr->GetString(TXT_DECIMAL_PLACE);
 
-    if ( not decimal or !buffer)
+    if ( not decimal or not buffer)
         return;
 
     i = 0;
@@ -297,19 +297,19 @@ BOOL FileNameSortCB(TREELIST *list, TREELIST *newitem)
     _TCHAR *first, *second;
     C_Button *btn1, *btn2;
 
-    if ( not list or !newitem)
+    if ( not list or not newitem)
         return(FALSE);
 
     btn1 = (C_Button*)list->Item_;
     btn2 = (C_Button*)newitem->Item_;
 
-    if ( not btn1 or !btn2)
+    if ( not btn1 or not btn2)
         return(FALSE);
 
     first = btn1->GetText(0);
     second = btn2->GetText(0);
 
-    if ( not first or !second)
+    if ( not first or not second)
         return(FALSE);
 
     if (_tcsicmp(second, first) < 0)
@@ -324,7 +324,7 @@ void GetVirtualFileList(C_Window *win, _TCHAR virtlist[200][64], long client, lo
     C_EditBox *ebox;
     short i, half;
 
-    if ( not virtlist or !win)
+    if ( not virtlist or not win)
         return;
 
     half = static_cast<short>((win->ClientArea_[client].right - win->ClientArea_[client].left) / 2);
@@ -353,7 +353,7 @@ void GetVirtualFileList(C_Window *win, _TCHAR virtlist[200][64], long client, lo
         btn->SetUserNumber(0, 1234); // Virtual
         win->AddControl(btn);
 
-        if ( not (*starty) and !(*startx))
+        if ( not (*starty) and  not (*startx))
         {
             ebox = (C_EditBox*)win->FindControl(FILE_NAME);
 
@@ -381,7 +381,7 @@ void GetVirtualFileListTree(C_TreeList *tree, _TCHAR virtlist[200][64], long gro
     TREELIST *item;
     short i, UniqueID;
 
-    if ( not virtlist or !tree)
+    if ( not virtlist or not tree)
         return;
 
     UniqueID = static_cast<short>(tree->GetUserNumber(0));
@@ -431,7 +431,7 @@ void GetFileList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[], long clien
     long i;
     _TCHAR *ptr, *extension;
 
-    if ( not win or !cb) return;
+    if ( not win or not cb) return;
 
     ffhnd = FindFirstFile(fspec, &filedata);
     last = (ffhnd not_eq INVALID_HANDLE_VALUE);
@@ -465,7 +465,7 @@ void GetFileList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[], long clien
         {
             i = 0;
 
-            while (excludelist[i] and !ignore)
+            while (excludelist[i] and not ignore)
             {
                 if (stricmp(excludelist[i], filedata.cFileName) == 0)
                 {
@@ -573,7 +573,7 @@ void GetFileListTree(C_TreeList *tree, _TCHAR *fspec, _TCHAR *excludelist[], lon
         {
             i = 0;
 
-            while (excludelist[i] and !ignore)
+            while (excludelist[i] and not ignore)
             {
                 if (stricmp(excludelist[i], filedata.cFileName) == 0)
                 {
@@ -668,7 +668,7 @@ static void LoadSaveSelectFileCB(long, short hittype, C_Base *control)
             {
                 btn = (C_Button*)win->FindControl(LOAD);
 
-                if (btn and !(btn->GetFlags() bitand C_BIT_INVISIBLE))
+                if (btn and  not (btn->GetFlags() bitand C_BIT_INVISIBLE))
                 {
                     if (btn->GetCallback())
                     {
@@ -680,7 +680,7 @@ static void LoadSaveSelectFileCB(long, short hittype, C_Base *control)
 
                 btn = (C_Button*)win->FindControl(LOAD_VIRTUAL);
 
-                if (btn and !(btn->GetFlags() bitand C_BIT_INVISIBLE))
+                if (btn and  not (btn->GetFlags() bitand C_BIT_INVISIBLE))
                 {
                     if (btn->GetCallback())
                     {
@@ -692,7 +692,7 @@ static void LoadSaveSelectFileCB(long, short hittype, C_Base *control)
 
                 btn = (C_Button*)win->FindControl(SAVE);
 
-                if (btn and !(btn->GetFlags() bitand C_BIT_INVISIBLE))
+                if (btn and  not (btn->GetFlags() bitand C_BIT_INVISIBLE))
                 {
                     if (btn->GetCallback())
                     {
@@ -783,7 +783,7 @@ void LoadAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*Yes
     C_TreeList *tree;
     C_EditBox *ebox;
 
-    if ( not YesCB or !filespec)
+    if ( not YesCB or not filespec)
         return;
 
     win = gMainHandler->FindWindow(SAVE_WIN);
@@ -877,7 +877,7 @@ void LoadVirtualFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void
     C_Text *txt;
     C_EditBox *ebox;
 
-    if ( not YesCB or !filespec)
+    if ( not YesCB or not filespec)
         return;
 
     win = gMainHandler->FindWindow(SAVE_WIN);
@@ -975,7 +975,7 @@ void SaveAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*Yes
     C_EditBox *ebox;
     C_TreeList *tree;
 
-    if ( not YesCB or !filespec)
+    if ( not YesCB or not filespec)
         return;
 
     win = gMainHandler->FindWindow(SAVE_WIN);
@@ -1504,7 +1504,7 @@ void GetMissionTarget(Package curpackage, Flight curflight, _TCHAR Buffer[])
                 }
             }
 
-            if ( not x and !y)
+            if ( not x and not y)
             {
                 _tcscpy(Buffer, gStringMgr->GetString(TXT_NO_TARGET));
                 return;
@@ -1978,7 +1978,7 @@ void UpdateIntel(long ID)
     win = gMainHandler->FindWindow(ID);
 
     //if(win) // JB 010222 CTD
-    if (win and !F4IsBadReadPtr(win, sizeof(C_Window)) // JB 010222 CTD
+    if (win and  not F4IsBadReadPtr(win, sizeof(C_Window)) // JB 010222 CTD
         and TeamInfo[Team]) // JB 010614 CTD
     {
         if (TeamInfo[Team]->GetOffensiveAirAction()->actionType > AACTION_DCA)

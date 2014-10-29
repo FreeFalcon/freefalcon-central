@@ -3459,13 +3459,13 @@ void ACMITape::UpdateSimTapeEntities(void)
         }
 
         // insert Bsp1 too
-        if (ep->objBsp1 and !ep->objBsp1->InDisplayList())
+        if (ep->objBsp1 and not ep->objBsp1->InDisplayList())
         {
             _viewPoint->InsertObject(ep->objBsp1);
         }
 
         // insert Bsp2 too
-        if (ep->objBsp2 and !ep->objBsp2->InDisplayList())
+        if (ep->objBsp2 and not ep->objBsp2->InDisplayList())
         {
             _viewPoint->InsertObject(ep->objBsp2);
         }

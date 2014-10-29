@@ -37,7 +37,7 @@ int FalconUnitMessage::Process(uchar autodisp)
     Unit u = FindUnit(EntityId());
     int i;
 
-    if (autodisp or !u)
+    if (autodisp or not u)
         return 0;
 
     switch (dataBlock.message)
@@ -163,7 +163,7 @@ int FalconUnitMessage::Process(uchar autodisp)
                 }
             }
             else
-                MonoPrint("This is an obsolete use of this function!\n");
+                MonoPrint("This is an obsolete use of this function\n");
         }
         break;
 
@@ -179,7 +179,7 @@ int FalconUnitMessage::Process(uchar autodisp)
             Flight enemy = (Flight) FindUnit(dataBlock.from);
             Squadron squadron = (Squadron)((Flight)u)->GetUnitSquadron();
 
-            if ( not squadron or !enemy)
+            if ( not squadron or not enemy)
                 return 0;
 
             MissionRequest mis = new MissionRequestClass;

@@ -183,7 +183,7 @@ float DigitalBrain::SimpleTrackDistance(float, float rx)
 
     // get actual closure
     actualClosure = -(rx - velocitySlope) / SimLibLastMajorFrameTime;
-    //me123 machhold needs knots ! chenged af->vt() to self->GetKias
+    //me123 machhold needs knots  chenged af->vt() to self->GetKias
     MachHold(self->GetKias() + desiredClosure - actualClosure, self->GetKias(), FALSE);
     velocitySlope = rx;
     return throtl;
@@ -285,10 +285,10 @@ float DigitalBrain::SimpleTrackAzimuth(float rx, float ry, float)
 
         // 2002-01-31 ADDED BY S.G. Lets limit the roll of an AI controlled plane when going from one waypoint to the next
         if (g_bPitchLimiterForAI and // We are asking to limit AI's turn agressiveness when flying to waypoints
-            !groundAvoidNeeded and // We're not trying to avoid the ground
+             not groundAvoidNeeded and // We're not trying to avoid the ground
             (curMode == WingyMode or curMode == WaypointMode or curMode == RTBMode) and  // Following waypoint or lead
             agDoctrine == AGD_NONE and // Not doing any A2G attack (since it's in FollowWaypoints during that time)
-            ( not flightLead or !flightLead->IsSetFlag(MOTION_OWNSHIP)))   // The lead isn't the player (we must follow him whatever he does)
+            ( not flightLead or not flightLead->IsSetFlag(MOTION_OWNSHIP)))   // The lead isn't the player (we must follow him whatever he does)
         {
 
             azErr /= ((180.0f) * DTR);
@@ -351,10 +351,10 @@ float DigitalBrain::SimpleTrackElevation(float zft, float scale)
     }
 
     // 2002-01-30 ADDED BY S.G. Lets limit the pitch when we're at max climb angle
-    if (g_bPitchLimiterForAI and !groundAvoidNeeded  and 
+    if (g_bPitchLimiterForAI and not groundAvoidNeeded  and 
         (curMode == WingyMode or curMode == WaypointMode or curMode == RTBMode)  and 
         /*agDoctrine == AGD_NONE and *///Cobra removed this // Not doing any A2G attack (since it's in FollowWaypoints during that time)
-        ( not flightLead or !flightLead->IsSetFlag(MOTION_OWNSHIP) or ((AircraftClass *)flightLead)->autopilotType == AircraftClass::CombatAP) and // The lead isn't the player (we must follow him whatever he does)
+        ( not flightLead or not flightLead->IsSetFlag(MOTION_OWNSHIP) or ((AircraftClass *)flightLead)->autopilotType == AircraftClass::CombatAP) and // The lead isn't the player (we must follow him whatever he does)
         altErr > 0.0f and self->Pitch() > 0.0f)
     {
         float maxPitch = min(MAX_AF_PITCH, aeroDataset[self->af->VehicleIndex()].inputData[AeroDataSet::ThetaMax]);

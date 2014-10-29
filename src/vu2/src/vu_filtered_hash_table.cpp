@@ -3,7 +3,7 @@
 
 int foo_x3 = 0; // only for solving warnings
 
-#if !VU_ALL_FILTERED
+#if not VU_ALL_FILTERED
 
 VuFilteredHashTable::VuFilteredHashTable(VuFilter *filter, unsigned int tableSize, uint key) :
     VuHashTable(tableSize, key), filter_(filter->Copy())

@@ -80,7 +80,7 @@ int FalconCampEventMessage::Process(uchar autodisp)
     // dispatching messages during an EndCampaign() call
     CampEnterCriticalSection();
 
-    if (autodisp or !TheCampaign.IsLoaded())
+    if (autodisp or not TheCampaign.IsLoaded())
     {
         CampLeaveCriticalSection();
         return -1;

@@ -62,8 +62,8 @@ VirtualDisplay* WpnMfdDrawable::GetDisplay(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ( not playerAC or !playerAC->Sms ||
-        !playerAC->Sms->curWeapon)
+    if ( not playerAC or not playerAC->Sms ||
+         not playerAC->Sms->curWeapon)
         return privateDisplay;
 
     Sms = playerAC->Sms;
@@ -129,13 +129,13 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     display = newDisplay;
     HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
 
-    if ( not theRadar or !pFCC or !self or !Sms)
+    if ( not theRadar or not pFCC or not self or not Sms)
     {
         ShiWarning("Oh Oh shouldn't be here without a radar or FCC or player or SMS!");
         return;
     }
 
-    if ( not g_bRealisticAvionics or !Sms->curWeapon or (Sms->curWeaponType not_eq wtAgm65 and Sms->curWeaponType not_eq wtAgm88))
+    if ( not g_bRealisticAvionics or not Sms->curWeapon or (Sms->curWeaponType not_eq wtAgm65 and Sms->curWeaponType not_eq wtAgm88))
     {
         OffMode(display);
         return;
@@ -326,7 +326,7 @@ void WpnMfdDrawable::PushButton(int whichButton, int whichMFD)
                 break;
 
             case 4:
-                ((MissileClass*)Sms->GetCurrentWeapon())->HOC = !((MissileClass*)Sms->GetCurrentWeapon())->HOC;
+                ((MissileClass*)Sms->GetCurrentWeapon())->HOC =  not ((MissileClass*)Sms->GetCurrentWeapon())->HOC;
                 break;
 
             case 19:
@@ -619,7 +619,7 @@ void WpnMfdDrawable::OSBLabels(VirtualDisplay* display)
 }
 void WpnMfdDrawable::DrawRALT(VirtualDisplay* display)
 {
-    if (TheHud and !(self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
+    if (TheHud and  not (self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
         and self->af->platform->RaltReady()  and 
         TheHud->FindRollAngle(-TheHud->hat) and TheHud->FindPitchAngle(-TheHud->hat))
     {

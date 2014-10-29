@@ -140,7 +140,7 @@ BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
 
     // Open and hang onto the distant texture composite image file
     sprintf(filename, "%s%s", path, "FarTiles.RAW");
-    fartexFile.Open(filename, FALSE, !g_bUseMappedFiles);
+    fartexFile.Open(filename, FALSE,  not g_bUseMappedFiles);
 
     // Initialize the lighting conditions and register for future time of day updates
     TimeUpdateCallback(this);
@@ -166,7 +166,7 @@ BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
         fclose(fp);
 
         // Open and hang onto the distant texture DDS image file
-        fartexDDSFile.Open(szRawName, FALSE, !g_bUseMappedFiles);
+        fartexDDSFile.Open(szRawName, FALSE,  not g_bUseMappedFiles);
     }
 
     return TRUE;
@@ -754,7 +754,7 @@ void FarTexDB::FlushHandles()
         fclose(fp);
 
         // Open and hang onto the distant texture DDS image file
-        fartexDDSFile.Open(szRawName, FALSE, !g_bUseMappedFiles);
+        fartexDDSFile.Open(szRawName, FALSE,  not g_bUseMappedFiles);
     }
 }
 
@@ -821,7 +821,7 @@ bool FarTexDB::SyncDDSTextures(bool bForce)
     fclose(fpRaw);
     RemoveDirectory(texturePath);
 
-    fartexDDSFile.Open(szRawName, FALSE, !g_bUseMappedFiles);
+    fartexDDSFile.Open(szRawName, FALSE,  not g_bUseMappedFiles);
 
     return true;
 }

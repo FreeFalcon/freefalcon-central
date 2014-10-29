@@ -286,7 +286,7 @@ static void MissionSelectCB(long, short hittype, C_Base *control)
         gSelectedFlightID = gCurrentFlightID;
         flight = (Flight)vuDatabase->Find(gCurrentFlightID);
 
-        if (flight and !flight->IsDead())
+        if (flight and not flight->IsDead())
         {
             TheCampaign.MissionEvaluator->PreMissionEval(flight, 255);
             UpdateMissionWindow(win->GetID());
@@ -324,7 +324,7 @@ static void SelectMission(C_Base *control)
         gSelectedFlightID = gCurrentFlightID;
         flight = (Flight)vuDatabase->Find(gCurrentFlightID);
 
-        if (flight and !flight->IsDead())
+        if (flight and not flight->IsDead())
         {
             TheCampaign.MissionEvaluator->PreMissionEval(flight, 255);
             UpdateMissionWindow(win->GetID());
@@ -357,7 +357,7 @@ void FindMissionInBriefing(long ID)
 
             while (cur)
             {
-                if (cur->Item_ and !(cur->Item_->GetFlags() bitand C_BIT_INVISIBLE))
+                if (cur->Item_ and  not (cur->Item_->GetFlags() bitand C_BIT_INVISIBLE))
                 {
                     if (((C_Mission*)cur->Item_)->GetStatusID() < _MIS_EGRESS)
                     {
@@ -437,7 +437,7 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
             return(NULL);
     }
 
-    if ( not tree or !element or !element->GetUnitParent())
+    if ( not tree or not element or not element->GetUnitParent())
         return(NULL);
 
     // Create new record

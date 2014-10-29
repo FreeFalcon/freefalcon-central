@@ -253,7 +253,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
 
                 if (plane->IsLocal())
                 {
-                    AWACSon = !AWACSon;
+                    AWACSon = not AWACSon;
                 }
 
                 //rcJUDY
@@ -403,7 +403,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         }
                     }
 
-                    if (pEnemyFlight and !pEnemyFlight->Aborted())
+                    if (pEnemyFlight and not pEnemyFlight->Aborted())
                     {
                         RequestIntercept(pEnemyFlight, plane->GetTeam(), RI_HELP);
                         // This is the awacs's response
@@ -480,8 +480,8 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         meflags = flight_ptr->status_flags;
 
                     // What's that ?? Only true if FEVAL_GOT_TO_TARGET is true and false at the same time ??
-                    // if ( not hasFuel or !hasWeaps or ((flight->GetEvalFlags() bitand FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET) and !(flight->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET)))
-                    if ( not hasFuel or !hasWeaps or ((flight->GetEvalFlags() bitand FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET) and (meflags bitand MISEVAL_FLIGHT_STATION_OVER)))
+                    // if ( not hasFuel or not hasWeaps or ((flight->GetEvalFlags() bitand FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET) and  not (flight->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET)))
+                    if ( not hasFuel or not hasWeaps or ((flight->GetEvalFlags() bitand FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET) and (meflags bitand MISEVAL_FLIGHT_STATION_OVER)))
                     {
                         if (rand() % 2)
                             radioMessage = CreateCallFromAwacs(flight, rcRELIEVED);
@@ -709,7 +709,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     radioMessage = CreateCallFromAwacs(flight, rcVECTORALTERNATE);
 
                     // KCK: No alternative airstrip.. should we try finding one? ATC List?
-                    // TODO!!!
+                    // TODO!
                     // OW - here it is :)
 
                     vector pos;
@@ -759,7 +759,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     // Awacs response
                     radioMessage = CreateCallFromAwacs(flight, rcVECTORALTERNATE);
 
-                    while (w and !(w->GetWPFlags() bitand WPF_ALTERNATE))
+                    while (w and  not (w->GetWPFlags() bitand WPF_ALTERNATE))
                         w = w->GetNextWP();
 
                     if (w)
@@ -767,7 +767,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     else
                     {
                         // KCK: No alternative airstrip.. should we try finding one? ATC List?
-                        // TODO!!!
+                        // TODO!
                         radioMessage->dataBlock.edata[4] = 0;
                         radioMessage->dataBlock.edata[5] = 0;
                     }

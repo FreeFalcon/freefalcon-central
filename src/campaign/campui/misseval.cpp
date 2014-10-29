@@ -638,10 +638,10 @@ void MissionEvaluationClass::PreEvalFlight(Flight element, Flight flight)
         flight_ptr->target_y = ty;
         tw = element->GetFirstUnitWP();
 
-        while (tw and !(tw->GetWPFlags() bitand WPF_TARGET))
+        while (tw and  not (tw->GetWPFlags() bitand WPF_TARGET))
             tw = tw->GetNextWP();
 
-        if ( not tw or !tw->GetWPTarget())
+        if ( not tw or not tw->GetWPTarget())
             tw = element->GetOverrideWP();
 
         if (tw)
@@ -1128,7 +1128,7 @@ int MissionEvaluationClass::PostMissionEval(void)
                     pilot_data->rating = Horrible;
 
                 // KCK HACK: Per Gilman - cap success to PartSuccess if player didn't land
-                if (pilot_data->pilot_slot >= PILOTS_PER_FLIGHT and !(logbook_data.Flags bitand LANDED_AIRCRAFT) and flight_ptr->mission_success == Success and ( not gCommsMgr or !gCommsMgr->Online()))
+                if (pilot_data->pilot_slot >= PILOTS_PER_FLIGHT and  not (logbook_data.Flags bitand LANDED_AIRCRAFT) and flight_ptr->mission_success == Success and ( not gCommsMgr or not gCommsMgr->Online()))
                     flight_ptr->mission_success = PartSuccess;
 
                 // END HACK
@@ -1356,10 +1356,10 @@ int MissionEvaluationClass::MissionSuccess(FlightDataClass *flight_ptr)
 
     // Check for in progress
     if ( not (flight_ptr->status_flags bitand MISEVAL_FLIGHT_GOT_TO_TARGET)  and 
-        !(flight_ptr->status_flags bitand MISEVAL_FLIGHT_STATION_OVER)  and 
-        !(flight_ptr->status_flags bitand MISEVAL_FLIGHT_OFF_STATION)  and 
-        !(flight_ptr->status_flags bitand MISEVAL_FLIGHT_DESTROYED)  and 
-        !(flight_ptr->status_flags bitand MISEVAL_FLIGHT_ABORTED))
+         not (flight_ptr->status_flags bitand MISEVAL_FLIGHT_STATION_OVER)  and 
+         not (flight_ptr->status_flags bitand MISEVAL_FLIGHT_OFF_STATION)  and 
+         not (flight_ptr->status_flags bitand MISEVAL_FLIGHT_DESTROYED)  and 
+         not (flight_ptr->status_flags bitand MISEVAL_FLIGHT_ABORTED))
     {
         flight_ptr->failure_code = 0;
         return Incomplete;
@@ -1482,7 +1482,7 @@ int MissionEvaluationClass::MissionSuccess(FlightDataClass *flight_ptr)
         case AMIS_SWEEP:
             if (flight_ptr->status_flags bitand MISEVAL_FLIGHT_DESTROYED)
                 flight_ptr->failure_code = 30;
-            else if ((flight_ptr->status_flags bitand MISEVAL_FLIGHT_LOSSES) or !(flight_ptr->status_flags bitand MISEVAL_FLIGHT_GOT_TO_TARGET))
+            else if ((flight_ptr->status_flags bitand MISEVAL_FLIGHT_LOSSES) or  not (flight_ptr->status_flags bitand MISEVAL_FLIGHT_GOT_TO_TARGET))
             {
                 if (flight_ptr->status_flags bitand MISEVAL_FLIGHT_GOT_AKILL)
                 {
@@ -1671,7 +1671,7 @@ int MissionEvaluationClass::MissionSuccess(FlightDataClass *flight_ptr)
                     flight_ptr->failure_code = 13;
                 }
 
-                if (kills > 0 and ((fired > 0 and ((hit * 100) / fired) > 49) or (hit > 0 and !fired)))
+                if (kills > 0 and ((fired > 0 and ((hit * 100) / fired) > 49) or (hit > 0 and not fired)))
                 {
                     retval = Success;
                     flight_ptr->failure_code = 11;
@@ -1767,7 +1767,7 @@ int MissionEvaluationClass::MissionSuccess(FlightDataClass *flight_ptr)
     }
 
     // If we didn't fly it all the way home, knock off one success level
-    if (retval < Failed and !(flight_ptr->status_flags bitand MISEVAL_FLIGHT_GOT_HOME))
+    if (retval < Failed and  not (flight_ptr->status_flags bitand MISEVAL_FLIGHT_GOT_HOME))
         retval -= 1;
 
     // If we didn't fly it from the start, cap success at Partial.
@@ -1959,12 +1959,12 @@ void MissionEvaluationClass::CollectThreats(GridIndex X, GridIndex Y, int Z, int
     // Tranverse our list
     e = (Unit) myit.GetFirst();
 
-    while (e and !threat_ids[MAX_COLLECTED_THREATS - 1])
+    while (e and not threat_ids[MAX_COLLECTED_THREATS - 1])
     {
         if (tteam[e->GetTeam()])
         {
             if ( not (flags bitand FIND_NOMOVERS and e->Moving())  and 
-                !(flags bitand FIND_NOAIR and e->GetDomain() == DOMAIN_AIR)  and 
+                 not (flags bitand FIND_NOAIR and e->GetDomain() == DOMAIN_AIR)  and 
                 (flags bitand FIND_FINDUNSPOTTED or e->GetSpotted(team)))
             {
                 // Find the distance
@@ -2304,7 +2304,7 @@ void MissionEvaluationClass::RegisterShotAtPlayer(FalconWeaponsFire *wfm, unsign
     FlightDataClass *shooter_flight = flight_data;
 
     //find the target
-    while (target_flight and !target_data)
+    while (target_flight and not target_data)
     {
         if (target_flight->camp_id == CampID)
         {
@@ -2322,7 +2322,7 @@ void MissionEvaluationClass::RegisterShotAtPlayer(FalconWeaponsFire *wfm, unsign
     }
 
     // find the shooter
-    while (shooter_flight and !shooter_data)
+    while (shooter_flight and not shooter_data)
     {
         if (shooter_flight->camp_id == wfm->dataBlock.fCampID)
         {
@@ -2527,7 +2527,7 @@ void MissionEvaluationClass::RegisterHit(FalconDamageMessage *dmm)
                             // We hit with one of these weapons, match to a weapon fire event
                             tmpevent = pilot_data->weapon_data[wn].root_event;
 
-                            while (tmpevent and !foundEvent)
+                            while (tmpevent and not foundEvent)
                             {
                                 if (tmpevent->vuIdData1 == dmm->dataBlock.fWeaponUID)
                                 {
@@ -2710,7 +2710,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                 shooter_data = NULL;
                 shooter_flight = flight_data;
 
-                while (shooter_flight and !shooter_data)
+                while (shooter_flight and not shooter_data)
                 {
                     if (shooter_flight->camp_id == dtm->dataBlock.fCampID)
                     {
@@ -2902,7 +2902,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                 // UpdateEvaluators(flight_ptr, pilot_data);
 
                 // Need to determine how to tell when we're killed by a player
-                if (dtm->dataBlock.fPilotID > PILOTS_PER_FLIGHT and !logbook_data.KilledBySelf)
+                if (dtm->dataBlock.fPilotID > PILOTS_PER_FLIGHT and not logbook_data.KilledBySelf)
                     logbook_data.KilledByHuman = 1;
 
                 theEvent->eventTime = TheCampaign.CurrentTime;
@@ -2940,7 +2940,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                     target_data = NULL;
                     target_flight = flight_data;
 
-                    while (target_flight and !target_data)
+                    while (target_flight and not target_data)
                     {
                         if (target_flight->camp_id == dtm->dataBlock.dCampID)
                         {
@@ -3002,7 +3002,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                             int fid, f, value = 0, classID;
                             fid = o->static_data.class_data->FirstFeature;
 
-                            for (f = 0; f < o->static_data.class_data->Features and !value; f++, fid++)
+                            for (f = 0; f < o->static_data.class_data->Features and not value; f++, fid++)
                             {
                                 classID = o->GetFeatureID(f);
 
@@ -3023,7 +3023,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                         int bonus = 0;
 
                         if ( not dtm->dataBlock.dPilotID)
-                            bonus += 3; // Capitol ship!
+                            bonus += 3; // Capitol ship
 
                         if (GetRoE(GetTeam(dtm->dataBlock.fSide), GetTeam(dtm->dataBlock.dSide), ROE_AIR_ATTACK) == ROE_ALLOWED)
                         {
@@ -3128,7 +3128,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                             // Now we want to find the weapon fire event and replace our 'damage' message with a 'destroyed'
                             tmpevent = pilot_data->weapon_data[wn].root_event;
 
-                            while (tmpevent and !foundEvent)
+                            while (tmpevent and not foundEvent)
                             {
                                 if (tmpevent->vuIdData1 == dtm->dataBlock.fWeaponUID)
                                 {
@@ -3203,7 +3203,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                             // In IA or dogfight, don't list multiple kills or cannon kills - we have no
                             // fire event to match to, so it'd look lame. Besides, the kills are listed
                             // in another format anyway.
-                            if (tmpevent or !(TheCampaign.Flags bitand CAMP_LIGHT))
+                            if (tmpevent or  not (TheCampaign.Flags bitand CAMP_LIGHT))
                             {
                                 // Make a new event if we need to
                                 if ( not tmpevent)
@@ -3444,7 +3444,7 @@ void MissionEvaluationClass::RegisterLanding(FalconLandingMessage *lm, int pilot
 void MissionEvaluationClass::RegisterContact(Unit contact)
 {
     ulong score;
-    // KCK NOTE: This assumes that Register Contact is only called once per contact!
+    // KCK NOTE: This assumes that Register Contact is only called once per contact
 
     // KCK: This only scores threats currently.
     // Possibly, the score should vary by mission type
@@ -3765,7 +3765,7 @@ void MissionEvaluationClass::RegisterMove(Flight flight)
             // Check if we got to our target
             if (ds < TARGET_DIST_LENIENCY * TARGET_DIST_LENIENCY)
             {
-                if (flight_ptr and flight_ptr == player_element and !(meflags bitand MISEVAL_FLIGHT_GOT_TO_TARGET))
+                if (flight_ptr and flight_ptr == player_element and  not (meflags bitand MISEVAL_FLIGHT_GOT_TO_TARGET))
                     actual_tot = TheCampaign.CurrentTime;
 
                 feflags  or_eq  FEVAL_GOT_TO_TARGET;
@@ -4256,7 +4256,7 @@ PilotDataClass* MissionEvaluationClass::FindPilotData(int flight_id, int pilot_n
 
     flight_ptr = flight_data;
 
-    while (flight_ptr and !retval)
+    while (flight_ptr and not retval)
     {
         if (flight_ptr->camp_id == flight_id)
             retval = FindPilotData(flight_ptr, pilot_num);
@@ -4528,7 +4528,7 @@ void MissionEvaluationClass::RebuildEvaluationData(void)
                         // Already exists - just check for new players
                         for (i = 0; i < PILOTS_PER_FLIGHT; i++)
                         {
-                            if (flight->plane_stats[i] == AIRCRAFT_AVAILABLE and !FindPilotDataFromAC(flight_ptr, i))
+                            if (flight->plane_stats[i] == AIRCRAFT_AVAILABLE and not FindPilotDataFromAC(flight_ptr, i))
                             {
                                 // Add this pilot
                                 session = FindPlayer((Flight)uelement, i);
@@ -4559,7 +4559,7 @@ void MissionEvaluationClass::RebuildEvaluationData(void)
         }
 
         // evalCount++;
-        // if (evalCount > 500 and !(SimDogfight.flags bitand DF_GAME_OVER))
+        // if (evalCount > 500 and  not (SimDogfight.flags bitand DF_GAME_OVER))
         // {
         // // Periodically send any evaluation data we may have
         // SendAllEvalData();
@@ -4582,7 +4582,7 @@ Objective FindAlternateLandingStrip(Flight flight)
     w = flight->GetFirstUnitWP();
 
     // Find the alternate waypoint, if we've got one
-    while (w and !(w->GetWPFlags() bitand WPF_ALTERNATE))
+    while (w and  not (w->GetWPFlags() bitand WPF_ALTERNATE))
     {
         w = w->GetNextWP();
     }

@@ -44,7 +44,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
     if ( not self->IsAwake() or self->IsDead())
         return;
 
-    //we can't follow orders about how to fly if we're on the ground still!
+    //we can't follow orders about how to fly if we're on the ground still
     if (self->OnGround() or atcstatus >= lOnFinal)
         return;
 

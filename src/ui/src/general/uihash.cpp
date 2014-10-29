@@ -63,7 +63,7 @@ void *UI_Hash::Find(unsigned long ID)
     unsigned long idx;
     UI_HASHNODE *cur;
 
-    if ( not TableSize_ or !Table_) return(NULL);
+    if ( not TableSize_ or not Table_) return(NULL);
 
     idx = ID % TableSize_;
     cur = Table_[idx].Root_;
@@ -86,7 +86,7 @@ void UI_Hash::Add(unsigned long ID, void *rec)
     unsigned long idx;
     UI_HASHNODE *cur, *newhash;
 
-    if ( not TableSize_ or !Table_ or !rec) return;
+    if ( not TableSize_ or not Table_ or not rec) return;
 
     if (Find(ID)) return;
 
@@ -117,7 +117,7 @@ void UI_Hash::Remove(unsigned long ID)
     unsigned long idx;
     UI_HASHNODE *cur, *prev;
 
-    if ( not TableSize_ or !Table_) return;
+    if ( not TableSize_ or not Table_) return;
 
     idx = ID % TableSize_;
 

@@ -327,7 +327,7 @@ int GunClass::Exec(
     // edg: why go thru this exec stuff every time if there's no bullets
     // flying or the fire button isn't pressed?   Added numFlying counter
     // to determine bullets in air
-    if ( not (*fire) and !numFlying)
+    if ( not (*fire) and not numFlying)
         return whatWasHit;
 
 
@@ -642,7 +642,7 @@ int GunClass::Exec(
                 (
                     testObject->BaseData() and testObject->BaseData()->IsSim()  and 
                     ( not testObject->BaseData()->IsWeapon() or testObject->BaseData()->IsEject())  and 
-                    !((SimBaseClass*)testObject->BaseData())->IsExploding()  and 
+                     not ((SimBaseClass*)testObject->BaseData())->IsExploding()  and 
                     testObject->localData and testObject->localData->range < initBulletVelocity * (2.5F)  and 
                     ((SimBaseClass*)testObject->BaseData())->drawPointer not_eq NULL
                 )
@@ -800,7 +800,7 @@ int GunClass::Exec(
                 // only do sound and smoke effect for lead bullet....
                 // hack: seems like ground vehicles shoot into ground
                 // for some reason -- don't place craters
-                if (hitGround == FALSE and !parent->OnGround())
+                if (hitGround == FALSE and not parent->OnGround())
                 {
                     if ( not isOwnship)
                         hitGround = TRUE;
@@ -1168,7 +1168,7 @@ int GunClass::Exec(
             }
         }
     }
-    else if (*fire and !advanceQueue and bulptr->flying)
+    else if (*fire and not advanceQueue and bulptr->flying)
     {
         bulptr->x += bulptr->xdot * SimLibMajorFrameTime;
         bulptr->y += bulptr->ydot * SimLibMajorFrameTime;

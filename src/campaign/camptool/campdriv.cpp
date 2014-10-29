@@ -512,9 +512,9 @@ void RedrawUnit(Unit u)
 // return 0 or 1 depending on if this unit is a type we want to display
 int DisplayOk(Unit u)
 {
-    if (ShowReal == 1 and u->Real() and !u->Inactive())
+    if (ShowReal == 1 and u->Real() and not u->Inactive())
         return 1;
-    else if ( not ShowReal and u->Parent() and !u->Inactive())
+    else if ( not ShowReal and u->Parent() and not u->Inactive())
         return 1;
     else if (ShowReal == 2 and u->Inactive())
         return 1;
@@ -639,7 +639,7 @@ void ShowSAMs(MapData md, HDC DC)
         else
             range = e->GetWeaponRange(LowAir);
 
-        if (range > 0 and (e->IsObjective() or (e->GetDomain() not_eq DOMAIN_AIR and e->IsUnit() and !((Unit)e)->Moving())))
+        if (range > 0 and (e->IsObjective() or (e->GetDomain() not_eq DOMAIN_AIR and e->IsUnit() and  not ((Unit)e)->Moving())))
         {
             e->GetLocation(&x, &y);
             DisplaySideRange(DC, e->GetOwner(), (short)(POSX(x) + (md->CellSize >> 1)), (short)(POSY(y) + (md->CellSize >> 1)), range * md->CellSize);
@@ -1420,7 +1420,7 @@ void DeleteUnit(Unit unit)
     // Remove parent, if we're the last element
     E = unit->GetUnitParent();
 
-    if (E and !E->GetFirstUnitElement())
+    if (E and not E->GetFirstUnitElement())
         vuDatabase->Remove(E);
 
     GlobUnit = NULL;
@@ -1605,7 +1605,7 @@ void SetRefresh(MapData md)
 {
     RECT r;
 
-    if ( not md or !md->hMapWnd)
+    if ( not md or not md->hMapWnd)
         return;
 
     RefreshAll = TRUE;
@@ -2279,7 +2279,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             SetRefresh(MainMapData);
 
         case ID_VIEW_ROADS:
-            RoadsOn = !RoadsOn;
+            RoadsOn = not RoadsOn;
 
             if (RoadsOn)
                 CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_ROADS, MF_BYCOMMAND | MF_CHECKED);
@@ -2290,7 +2290,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             break;
 
         case ID_VIEW_RAILS:
-            RailsOn = !RailsOn;
+            RailsOn = not RailsOn;
 
             if (RailsOn)
                 CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RAILS, MF_BYCOMMAND | MF_CHECKED);
@@ -2301,7 +2301,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             break;
 
         case ID_VIEW_EMITTERS:
-            // MainMapData->Emitters = !MainMapData->Emitters;
+            // MainMapData->Emitters = not MainMapData->Emitters;
             Mode = 11;
 
             if (MainMapData->Emitters)
@@ -2313,7 +2313,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             break;
 
         case ID_VIEW_SAMS:
-            // MainMapData->SAMs = !MainMapData->SAMs;
+            // MainMapData->SAMs = not MainMapData->SAMs;
             Mode = 10;
 
             if (MainMapData->SAMs)
@@ -2325,7 +2325,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             break;
 
         case ID_VIEW_PLAYERBUBBLE:
-            PBubble = !PBubble;
+            PBubble = not PBubble;
 
             if (PBubble)
                 CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PLAYERBUBBLE, MF_BYCOMMAND | MF_CHECKED);
@@ -2435,7 +2435,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                         SetRoadCell(GetCell(ox, oy), 1);
 
                         // Attempt to find an adjacent land space
-                        for (i = 0, done = 0; i < 8 and !done; i += 2)
+                        for (i = 0, done = 0; i < 8 and not done; i += 2)
                         {
                             if (GetCover(ox + dx[i], oy + dy[i]) not_eq Water)
                             {
@@ -2445,7 +2445,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                         }
 
                         // Attempt to find a diagonal if no luck
-                        for (i = 1; i < 8 and !done; i += 2)
+                        for (i = 1; i < 8 and not done; i += 2)
                         {
                             if (GetCover(ox + dx[i], oy + dy[i]) not_eq Water)
                             {
@@ -2474,7 +2474,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                 {
                     ToObjective = FromObjective->GetNeighbor(i);
 
-                    if (ToObjective and !CampSearch[ToObjective->GetCampID()])
+                    if (ToObjective and not CampSearch[ToObjective->GetCampID()])
                         LinkCampaignObjectives(&path, FromObjective, ToObjective);
                 }
 
@@ -3186,7 +3186,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             else if (ShowReal == 2)
             {
                 OneUnit = FindUnitByXY(InactiveList, CurX, CurY, 0);
-                /* if (OneUnit and !OneUnit->Real())
+                /* if (OneUnit and not OneUnit->Real())
                  {
                  int foundone=0;
                  GridIndex x,y;
@@ -3201,7 +3201,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
                  if (e)
                  {
                  e = GetNextUnit(&myit);
-                 while (e and !foundone)
+                 while (e and not foundone)
                  {
                  e->GetLocation(&x,&y);
                  if (x==CurX and y==CurY and e not_eq OneUnit)
@@ -3245,7 +3245,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             //if(isalpha(C) and shifted)
             //C += 0x20;
 
-            if (isalpha(C) and !(GetKeyState(VK_SHIFT) bitand 0x80))
+            if (isalpha(C) and  not (GetKeyState(VK_SHIFT) bitand 0x80))
                 C += 0x20;
 
             ProcessCommand(C);
@@ -3540,7 +3540,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'b':
-            SHOWSTATS = !SHOWSTATS;
+            SHOWSTATS = not SHOWSTATS;
             break;
 
         case 'B':
@@ -3583,9 +3583,9 @@ void ProcessCommand(int Key)
             break;
 
         case 'E':
-            StateEdit = !StateEdit;
+            StateEdit = not StateEdit;
 
-            if (ThisTeam == 0 or !StateToEdit)
+            if (ThisTeam == 0 or not StateToEdit)
                 StateEdit = FALSE;
 
             SetRefresh(MainMapData);
@@ -3660,7 +3660,7 @@ void ProcessCommand(int Key)
                         i = LinkCampaignObjectives(&path, FromObjective, ToObjective);
 
                         if (i < 1)
-                            MessageBox(NULL, "No valid path found!", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+                            MessageBox(NULL, "No valid path found", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
 
                         if (MainMapData->ShowLinks and i > 0)
                         {
@@ -3702,7 +3702,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'L':
-            MainMapData->ShowLinks = !MainMapData->ShowLinks;
+            MainMapData->ShowLinks = not MainMapData->ShowLinks;
             SetRefresh(MainMapData);
             break;
 
@@ -3743,7 +3743,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'O':
-            MainMapData->ShowObjectives = !MainMapData->ShowObjectives;
+            MainMapData->ShowObjectives = not MainMapData->ShowObjectives;
             RebuildParentsList();
             SetRefresh(MainMapData);
             break;
@@ -3810,8 +3810,8 @@ void ProcessCommand(int Key)
             break;
 
         case 'R':
-            RoadsOn = !RoadsOn;
-            RailsOn = !RailsOn;
+            RoadsOn = not RoadsOn;
+            RailsOn = not RailsOn;
             SetRefresh(MainMapData);
             break;
 
@@ -3820,7 +3820,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'S':
-            ShowSearch = !ShowSearch;
+            ShowSearch = not ShowSearch;
             break;
 
         case 't':
@@ -3870,7 +3870,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'U':
-            MainMapData->ShowUnits = !MainMapData->ShowUnits;
+            MainMapData->ShowUnits = not MainMapData->ShowUnits;
             SetRefresh(MainMapData);
             break;
 
@@ -3896,7 +3896,7 @@ void ProcessCommand(int Key)
 
                 w = WPUnit->GetFirstUnitWP();
 
-                while (w and !gotone)
+                while (w and not gotone)
                 {
                     w->GetWPLocation(&x, &y);
 
@@ -3938,7 +3938,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'W':
-            if (WPUnit and !MainMapData->ShowWPs)
+            if (WPUnit and not MainMapData->ShowWPs)
                 MainMapData->ShowWPs = TRUE;
             else
                 MainMapData->ShowWPs = FALSE;

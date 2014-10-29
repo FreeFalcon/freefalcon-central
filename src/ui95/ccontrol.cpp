@@ -723,7 +723,7 @@ void *C_Base::GetUserPtr(long idx)
 
 BOOL C_Control::MouseOver(long relx, long rely, C_Base *me)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
         return(FALSE);
 
     if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= GetY() + GetH())

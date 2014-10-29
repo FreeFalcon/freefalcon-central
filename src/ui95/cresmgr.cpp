@@ -30,10 +30,10 @@ void C_Resmgr::ConvertToScreen()
     WORD *color = NULL;
     long count = 0;
 
-    if ( not Data_ or !Index_)
+    if ( not Data_ or not Index_)
         return;
 
-    if (reds == 10 and greens == 5 and !blues)
+    if (reds == 10 and greens == 5 and not blues)
         return;
 
     rec = (IMAGE_RSC*)Index_->GetFirst(&current, &curidx);

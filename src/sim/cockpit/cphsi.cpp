@@ -48,7 +48,7 @@ CPHsi::CPHsi()
         current_tactical_mission  and 
         current_tactical_mission->get_type() == tt_training  and 
         SimDriver.GetPlayerEntity()  and 
-        !strcmpi(current_tactical_mission->get_title(), "10 Instrument Landing"))
+         not strcmpi(current_tactical_mission->get_title(), "10 Instrument Landing"))
     {
         mpHsiValues[HSI_VAL_DESIRED_CRS] = 340.0F;
     }
@@ -245,7 +245,7 @@ void CPHsi::ExecTacan(void)
         ownshipX = SimDriver.GetPlayerEntity()->XPos();
         ownshipY = SimDriver.GetPlayerEntity()->YPos();
 
-        mpHsiFlags[HSI_FLAG_CRS_WARN] = !gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
+        mpHsiFlags[HSI_FLAG_CRS_WARN] =  not gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
         gNavigationSys->GetTCNAttribute(NavigationSystem::RANGE, &tacanRange);
 
         if (gNavigationSys->IsTCNTanker() or gNavigationSys->IsTCNAirbase() or gNavigationSys->IsTCNCarrier())   // now Carrier support
@@ -318,7 +318,7 @@ void CPHsi::ExecILSNav(void)
     {
         pcurrentWaypoint->GetLocation(&waypointX, &waypointY, &waypointZ);
         ExecBeaconProximity(playerAC->XPos(), playerAC->YPos(), waypointX, waypointY);
-        mpHsiFlags[HSI_FLAG_ILS_WARN] = !gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &gpDew);
+        mpHsiFlags[HSI_FLAG_ILS_WARN] =  not gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &gpDew);
         CalcILSCrsDev(gpDew);
     }
 
@@ -372,7 +372,7 @@ void CPHsi::ExecBeaconProximity(float x1, float y1, float x2, float y2)
         LastHSIHeading = mpHsiValues[HSI_VAL_CURRENT_HEADING];
     }
 
-    if (g_bRealisticAvionics and g_bINS and !playerAC->INSState(AircraftClass::INS_HSI_OFF_IN))
+    if (g_bRealisticAvionics and g_bINS and not playerAC->INSState(AircraftClass::INS_HSI_OFF_IN))
     {
         mpHsiValues[HSI_VAL_CURRENT_HEADING] = LastHSIHeading;
     }
@@ -563,10 +563,10 @@ void CPHsi::ExecILSTacan(void)
         ownshipX = SimDriver.GetPlayerEntity()->XPos();
         ownshipY = SimDriver.GetPlayerEntity()->YPos();
 
-        mpHsiFlags[HSI_FLAG_CRS_WARN] = !gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
+        mpHsiFlags[HSI_FLAG_CRS_WARN] =  not gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
         gNavigationSys->GetTCNAttribute(NavigationSystem::RANGE, &range);
 
-        mpHsiFlags[HSI_FLAG_ILS_WARN] = !gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &gpDew);
+        mpHsiFlags[HSI_FLAG_ILS_WARN] =  not gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &gpDew);
         ExecBeaconProximity(ownshipX, ownshipY, tacanX, tacanY);
 
         if (BeaconInRange(mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON], range))
@@ -837,7 +837,7 @@ void CPHsiView::DisplayBlit3D()
 
     mDirtyFlag = TRUE;
 
-    if ( not mDirtyFlag or !DisplayOptions.bRender2DCockpit)
+    if ( not mDirtyFlag or not DisplayOptions.bRender2DCockpit)
     {
         return;
     }

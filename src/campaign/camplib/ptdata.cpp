@@ -101,7 +101,7 @@ int GetNextPtCrit(int ptindex)
     if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
-    if (PtDataTable[ptindex].type not_eq CritTaxiPt and !(PtDataTable[ptindex].flags bitand PT_LAST))
+    if (PtDataTable[ptindex].type not_eq CritTaxiPt and  not (PtDataTable[ptindex].flags bitand PT_LAST))
         return ptindex + 1;
 
     return 0;
@@ -147,7 +147,7 @@ int GetPrevPtCrit(int ptindex)
     if ((ptindex < 0) or (ptindex >= NumPts))
         ptindex = 0;
 
-    if (PtDataTable[ptindex].type not_eq CritTaxiPt and !(PtDataTable[ptindex].flags bitand PT_FIRST))
+    if (PtDataTable[ptindex].type not_eq CritTaxiPt and  not (PtDataTable[ptindex].flags bitand PT_FIRST))
         return ptindex - 1;
 
     return 0;

@@ -232,7 +232,7 @@ int IsValidTarget(Team team, int mission, CampEntity target)
 
     if ( not target and (MissionData[mission].target == AMIS_TAR_LOCATION or MissionData[mission].target == AMIS_TAR_NONE))
         return TRUE;
-    else if (target and target->IsUnit() and ((Unit)target)->Real() and !target->IsSquadron() and MissionData[mission].target == AMIS_TAR_UNIT)
+    else if (target and target->IsUnit() and ((Unit)target)->Real() and not target->IsSquadron() and MissionData[mission].target == AMIS_TAR_UNIT)
     {
         switch (mission)
         {

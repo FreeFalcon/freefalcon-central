@@ -31,7 +31,7 @@ void FireControlComputer::HarmMode(void)
         else
             platform->SOIManager(SimVehicleClass::SOI_WEAPON);  // FRB - Test
 
-        if (designateCmd and !lastDesignate)
+        if (designateCmd and not lastDesignate)
         {
             // In POS mode the Lock is done via WPN OSBs
             if (theHTS->GetSubMode() == HarmTargetingPod::HAS or theHTS->GetSubMode() == HarmTargetingPod::HAD)

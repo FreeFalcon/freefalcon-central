@@ -91,7 +91,7 @@ int UpdateUnit(Unit u, CampaignTime DeltaTime)
     //START_PROFILE("UU REMOVE");
     // sfr: real and father units never removed here
     // @todo remove
-    if (u->IsDead() and !u->Real() and !u->Father())
+    if (u->IsDead() and not u->Real() and not u->Father())
     {
         // Check if our death timeout is up
         // Otherwise, keep this guy around for a while - for new events or other stuff
@@ -123,7 +123,7 @@ int UpdateUnit(Unit u, CampaignTime DeltaTime)
         u->SetLastCheck(TheCampaign.CurrentTime);
         //STOP_PROFILE("UU SET");
 
-        if (u->Real() and !u->GetRoster())
+        if (u->Real() and not u->GetRoster())
         {
             //START_PROFILE("UU KILL");
             u->KillUnit(); // Unit is out of vehicles, kill it off
@@ -144,7 +144,7 @@ int UpdateUnit(Unit u, CampaignTime DeltaTime)
         if (
             u->IsBattalion()  and 
             FalconLocalGame->GetGameType() == game_TacticalEngagement  and 
-            !u->GetCurrentUnitWP()
+             not u->GetCurrentUnitWP()
         )
         {
             GridIndex x, y;
@@ -251,13 +251,13 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
     float bonus = 1.0F;
     GridIndex   defx, defy, attx, atty;
 
-    if ( not att or !def)
+    if ( not att or not def)
         return -1;
 
     // 2001-06-13 ADDED BY S.G. BEFORE WE CAN REALLY COMBAT, WE MUST SEE BE ABLE TO DETECT THE TARGET OURSELF BUT ONLY IF WE ARE A BATTALION
     // This is only called by aggregated UNITS so I safely call CanDetect from att as a unit against def
     // Since this is for SOJ, limit it to battalions...
-    if (((UnitClass *)att)->IsBattalion() and !((UnitClass *)att)->CanDetect(def))
+    if (((UnitClass *)att)->IsBattalion() and  not ((UnitClass *)att)->CanDetect(def))
     {
         att->StepRadar(0, 0, 1);
         return 0;
@@ -272,8 +272,8 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
     damageMods = def->GetDamageModifiers();
     defmt = def->GetMovementType();
 
-    if (def->IsFlight() and !((Flight)def)->Moving())
-        defmt = NoMove; // Aircraft on the ground! bomb away!
+    if (def->IsFlight() and  not ((Flight)def)->Moving())
+        defmt = NoMove; // Aircraft on the ground bomb away
 
     memset(weapon, 0, sizeof(weapon));
     memset(wcount, 0, sizeof(wcount));
@@ -490,7 +490,7 @@ int DoWPAction(Flight u)
 
         case WP_LAND:
             // We're either landing mid-mission or as part of our mission -
-            // Check if we're planning to take off again!
+            // Check if we're planning to take off again
             pw = w->GetNextWP();
 
             if ( not pw or ( not (w->GetWPFlags() bitand WPF_TAKEOFF) and pw->GetWPAction() not_eq WP_TAKEOFF))
@@ -531,7 +531,7 @@ int DoWPAction(Flight u)
         case WP_PICKUP:
 
             // Pick up a unit
-            if (u->GetUnitMission() == AMIS_AIRCAV and !u->Cargo())
+            if (u->GetUnitMission() == AMIS_AIRCAV and not u->Cargo())
                 u->LoadUnit(NULL);
 
             break;
@@ -546,7 +546,7 @@ int DoWPAction(Flight u)
         speed = u->GetCruiseSpeed();
 
         // Check if we've been here long enough
-        if (Camp_GetCurrentTime() > w->GetWPDepartureTime() and !(w->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS))
+        if (Camp_GetCurrentTime() > w->GetWPDepartureTime() and  not (w->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS))
         {
             // If so, go on to the next wp and adjust their times from now.
             u->SetCurrentUnitWP(w->GetNextWP());
@@ -588,7 +588,7 @@ int DoWPAction(Flight u)
             msg->dataBlock.edata[1] = u->GetFlightLeadCallNumber();
             FalconSendMessage(msg, FALSE);
         }
-        else if (u->GetUnitMission() == AMIS_TANKER and !u->IsTacan())
+        else if (u->GetUnitMission() == AMIS_TANKER and not u->IsTacan())
         {
             // Tanker on station
             u->SetTacan(1);
@@ -597,7 +597,7 @@ int DoWPAction(Flight u)
         u->SetUnitPriority(0); // We're just hanging out here... waiting for something to do.
     }
 
-    if (w->GetWPFlags() bitand WPF_TARGET and !(w->GetWPFlags() bitand WPF_LAND) and !(w->GetWPFlags() bitand WPF_TAKEOFF) and !(w->GetWPFlags() bitand WPF_CP) and !(w->GetWPFlags() bitand WPF_REPEAT))
+    if (w->GetWPFlags() bitand WPF_TARGET and  not (w->GetWPFlags() bitand WPF_LAND) and  not (w->GetWPFlags() bitand WPF_TAKEOFF) and  not (w->GetWPFlags() bitand WPF_CP) and  not (w->GetWPFlags() bitand WPF_REPEAT))
     {
         // Radio Chatter message
         FalconRadioChatterMessage *msg = new FalconRadioChatterMessage(u->Id(), FalconLocalGame);

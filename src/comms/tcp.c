@@ -42,10 +42,10 @@ CAPIList *GlobalGroupListHead = NULL;
 /* Mutex macros */
 #define SAY_ON(a)
 #define SAY_OFF(a)
-#define CREATE_LOCK(a,b)                { a = CreateMutex( NULL, FALSE, b ); if( !a ) DebugBreak(); }
+#define CREATE_LOCK(a,b)                { a = CreateMutex( NULL, FALSE, b ); if( not a ) DebugBreak(); }
 #define REQUEST_LOCK(a)                 { int w = WaitForSingleObject(a, INFINITE); {SAY_ON(a);} if( w == WAIT_FAILED ) DebugBreak(); }
-#define RELEASE_LOCK(a)                 { {SAY_OFF(a);} if( !ReleaseMutex(a)) DebugBreak();   }
-#define DESTROY_LOCK(a)                 { if( !CloseHandle(a)) DebugBreak();   }
+#define RELEASE_LOCK(a)                 { {SAY_OFF(a);} if(  not ReleaseMutex(a)) DebugBreak();   }
+#define DESTROY_LOCK(a)                 { if(  not CloseHandle(a)) DebugBreak();   }
 
 
 
@@ -696,7 +696,7 @@ static void RequestConnection(LPVOID cvoid)
             }
 
             /* after the first WSAEWOULDBLOCK, WASEISCONN means successfull connection */
-            if (error == WSAEISCONN and !FirstWouldblock) /* got a good connection */
+            if (error == WSAEISCONN and not FirstWouldblock) /* got a good connection */
             {
                 break;
             }
@@ -2183,7 +2183,7 @@ int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
                 this_ctcp = (ComTCP *)curr->com;
 
                 //if(this_ctcp)
-                if (this_ctcp and !IsBadCodePtr((FARPROC)(*curr->com->send_func)))  // JB 010401 CTD
+                if (this_ctcp and not IsBadCodePtr((FARPROC)(*curr->com->send_func)))  // JB 010401 CTD
                 {
                     save_send_buffer = this_ctcp->send_buffer.buf;
                     this_ctcp->send_buffer.buf = group->send_buffer + group->TCP_buffer_shift;
@@ -2204,8 +2204,8 @@ int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
                 //if(this_cudp) // JB 010222 CTD
                 if (
                     this_cudp  and (this_cudp->send_buffer.buf)  and 
-                    !F4IsBadReadPtrC(this_cudp->send_buffer.buf, sizeof(char)) and // JB 010222 CTD
-                    !F4IsBadCodePtrC((FARPROC)(*curr->com->send_func))
+                     not F4IsBadReadPtrC(this_cudp->send_buffer.buf, sizeof(char)) and // JB 010222 CTD
+                     not F4IsBadCodePtrC((FARPROC)(*curr->com->send_func))
                     // JB 010401 CTD
                 )
                 {
@@ -2234,7 +2234,7 @@ int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
                 this_cudp = (ComIP *)curr->com;
 
                 //if(this_cudp)
-                if (this_cudp and !IsBadCodePtr((FARPROC)(*curr->com->send_func)))  // JB 010401 CTD
+                if (this_cudp and not IsBadCodePtr((FARPROC)(*curr->com->send_func)))  // JB 010401 CTD
                 {
                     save_send_buffer = this_cudp->send_buffer.buf;
                     this_cudp->send_buffer.buf = group->send_buffer + group->RUDP_buffer_shift;
@@ -2262,7 +2262,7 @@ int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
                 this_group = (ComGROUP *) curr->com;
 
                 //if(this_group)
-                if (this_group and !F4IsBadCodePtrC((FARPROC)(*curr->com->send_func))) // JB 010401 CTD
+                if (this_group and  not F4IsBadCodePtrC((FARPROC)(*curr->com->send_func))) // JB 010401 CTD
                 {
                     save_send_buffer = this_group->send_buffer;
                     this_group->send_buffer = group->send_buffer;

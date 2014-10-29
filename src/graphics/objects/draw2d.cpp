@@ -3387,8 +3387,8 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
 
     // a nicer effect: put a point in the center of a square, make it
     // a dark alpha and have the edges fade to 0.  LOD this effect.
-    // doFivePoints = !(typeData.flags bitand NO_FIVE_POINTS ) and ( scaleZ * sLOD > 0.4f or type == DRAW2D_LONG_HANGING_SMOKE2 );
-    doFivePoints = !(typeData.flags bitand NO_FIVE_POINTS);
+    // doFivePoints =  not (typeData.flags bitand NO_FIVE_POINTS ) and ( scaleZ * sLOD > 0.4f or type == DRAW2D_LONG_HANGING_SMOKE2 );
+    doFivePoints =  not (typeData.flags bitand NO_FIVE_POINTS);
 
     // setup rendering context
     if (sGreenMode) //JAM - FIXME

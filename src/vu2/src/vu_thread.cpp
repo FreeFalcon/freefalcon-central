@@ -175,7 +175,7 @@ VuMainThread::VuMainThread(
 {
     if (vuCollectionManager or vuDatabase)
     {
-        VU_PRINT("VU: Warning:  creating second VuMainThread!\n");
+        VU_PRINT("VU: Warning:  creating second VuMainThread\n");
     }
     else
     {

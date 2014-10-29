@@ -327,7 +327,7 @@ C_Base *FindUITextEvent(C_Window *win, long slot, long time)
     CONTROLLIST *cur;
     C_Base *found = NULL;
 
-    if ( not win or !time)
+    if ( not win or not time)
         return(NULL);
 
     cur = win->GetControlList();
@@ -533,7 +533,7 @@ void ToggleWingTrailsCB(long ID, short, C_Base*)
                 acmiView->Tape()->SetWingTrails(gDoWingTrails);
             }
 
-            //gTrailLen = 2000; // MN I want to have them even a bit longer !!! ;-) (1000 before...)
+            //gTrailLen = 2000; // MN I want to have them even a bit longer ! ;-) (1000 before...)
             gTrailLen = ACMI_TRAILS_MAX;  // MLR 12/22/2003 - now in seconds
             acmiView->Tape()->SetWingTrailLength(gTrailLen);
             MonoPrint("WingTrails Max \n");
@@ -678,7 +678,7 @@ void ToggleFirstSelectionOfOptionsCB(long ID, short hittype, C_Base *control)
 void ToggleObjScaleCB(long ID, short hittype, C_Base*)
 {
 
-    if ( not acmiView or !acmiView->Tape() or hittype not_eq C_TYPE_LMOUSEUP)
+    if ( not acmiView or not acmiView->Tape() or hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     switch (ID)

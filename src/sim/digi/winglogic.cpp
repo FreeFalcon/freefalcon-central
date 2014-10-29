@@ -126,9 +126,9 @@ void DigitalBrain::AiRunTargetSelection(void)
 
                 // 2002-03-15 ADDED BY S.G. Special case when everyone in the unit is dead... Should help the AI not targeting chutes when that's all is left...
                 // If it's a NON aggregated UNIT CAMPAIGN object, it SHOULD have components... If it doesn't, clear it's designated target.
-                if (((FalconEntity *)pnewTarget)->IsCampaign() and ((CampBaseClass *)pnewTarget)->IsUnit() and !((CampBaseClass *)pnewTarget)->IsAggregate() and ((CampBaseClass *)pnewTarget)->NumberOfComponents() == 0)
+                if (((FalconEntity *)pnewTarget)->IsCampaign() and ((CampBaseClass *)pnewTarget)->IsUnit() and  not ((CampBaseClass *)pnewTarget)->IsAggregate() and ((CampBaseClass *)pnewTarget)->NumberOfComponents() == 0)
                 {
-                    ShiAssert( not "Empty deaggregated object as a target?!?");
+                    ShiAssert( not "Empty deaggregated object as a target??");
                     mDesignatedObject = FalconNullId;
                 }
                 else
@@ -194,7 +194,7 @@ void DigitalBrain::AiSearchTargetList(VuEntity* pentity)
                 // If we already have a ground target and it is part of the unit we are being asked to target and it's still alive, keep using it (ie, don't switch)
                 if (groundTargetPtr and groundTargetPtr->BaseData()->IsSim()  and 
                     ((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject() == theTargetGroup  and 
-                    !groundTargetPtr->BaseData()->IsExploding() and !groundTargetPtr->BaseData()->IsDead()  and 
+                     not groundTargetPtr->BaseData()->IsExploding() and not groundTargetPtr->BaseData()->IsDead()  and 
                     ((SimBaseClass *)groundTargetPtr->BaseData())->pctStrength > 0.0f)
                     return;
 
@@ -227,7 +227,7 @@ void DigitalBrain::AiSearchTargetList(VuEntity* pentity)
             objectPtr = new SimObjectType(theTarget);
 #endif
             SetTarget(objectPtr);
-            // 2000-09-18 ADDED BY S.G. SO AI STARTS SHOOTING RIGHT NOW AND STOP WAITING THAT STUPID 30 SECONDS!
+            // 2000-09-18 ADDED BY S.G. SO AI STARTS SHOOTING RIGHT NOW AND STOP WAITING THAT STUPID 30 SECONDS
             missileShotTimer = 0;
             // END OF ADDED SECTION
         }
@@ -277,7 +277,7 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
             else
             {
                 // Try the loadout as long I didn't find an HARM on mine or another plane higher than us has an HARM
-                for (int j = 0; !haveHARMS and !(otherHaveHARMS and i > isWing) and flightMember[i]->Sms and j < flightMember[i]->Sms->NumHardpoints(); j++)
+                for (int j = 0;  not haveHARMS and  not (otherHaveHARMS and i > isWing) and flightMember[i]->Sms and j < flightMember[i]->Sms->NumHardpoints(); j++)
                 {
                     if (flightMember[i]->Sms->hardPoint[j]->weaponPointer and flightMember[i]->Sms->hardPoint[j]->GetWeaponClass() == wcHARMWpn)
                     {
@@ -300,7 +300,7 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
 #ifndef SG_TEST_NO_RANDOM_TARGET
 
     // 2001-10-19 ADDED BY S.G. IF WE ARE USING AN HARM OR A MAVERICK, DON'T RANDOMIZE
-    if ( not haveHARMS and !hasAGMissile and targetNumComponents)
+    if ( not haveHARMS and not hasAGMissile and targetNumComponents)
     {
         // JB 011014 Target "randomly" if its just a long line of vehicles
         if (startPos == 0)
@@ -308,7 +308,7 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
             startPos = rand() % targetNumComponents;
 
             for (i = startPos; i < targetNumComponents and startPos > 0; i++)
-                if ( not targetGroup->GetComponentEntity(i)->IsVehicle() or !targetGroup->GetComponentEntity(i)->OnGround())
+                if ( not targetGroup->GetComponentEntity(i)->IsVehicle() or not targetGroup->GetComponentEntity(i)->OnGround())
                     startPos = 0;
         }
 
@@ -342,7 +342,7 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
         {
             fc = GetFeatureClassData(((Objective)simTarg)->GetFeatureID(i));
 
-            if (fc and !F4IsBadReadPtr(fc, sizeof(fc)) and fc->Priority > 2)  // higher priority number = lower priority
+            if (fc and  not F4IsBadReadPtr(fc, sizeof(fc)) and fc->Priority > 2)  // higher priority number = lower priority
                 continue;
 
             if (((Objective)simTarg)->GetFeatureStatus(i) == VIS_DESTROYED)
@@ -389,10 +389,10 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
 
         // Is it an objective and we are not carrying HARMS (HARMS will go for the radar feature)? If so, stop right now and use that feature
         // Cobra - take out radar with whatever AG weapon you have
-        // RED -  Code Restored, was causing continuous hunting for radars with any weapon!!!!
+        // RED -  Code Restored, was causing continuous hunting for radars with any weapon
 
-        // FRB - So?!!
-        //if (targetGroup->IsObjective() and !hasHARM) break;
+        // FRB - So?
+        //if (targetGroup->IsObjective() and not hasHARM) break;
 
         // If I have HARMS or no one has any and the entity has a radar, choose it
         // 2001-07-12 S.G. Testing if radar first so it's not becoming an air defense if i have no harms
@@ -400,7 +400,7 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
             (simTarg->IsStatic() and ((SimStaticClass *)simTarg)->GetRadarType() not_eq RDR_NO_RADAR))  // It's a feature and it has a radar
         {
             // 2001-07-29 S.G. If I was shooting at the campaign object, then I stick to it
-            if ((((FlightClass *)self->GetCampaignObject())->shotAt == targetGroup and ((FlightClass *)self->GetCampaignObject())->whoShot == self) or ((((FlightClass *)self->GetCampaignObject())->whoShot == NULL) and (haveHARMS or !otherHaveHARMS)))
+            if ((((FlightClass *)self->GetCampaignObject())->shotAt == targetGroup and ((FlightClass *)self->GetCampaignObject())->whoShot == self) or ((((FlightClass *)self->GetCampaignObject())->whoShot == NULL) and (haveHARMS or not otherHaveHARMS)))
             {
                 gotRadar = TRUE;
                 firstSimTarg = simTarg; // Yes, use it for a target
@@ -477,7 +477,7 @@ SimBaseClass *DigitalBrain::FindSimAirTarget(CampBaseClass *targetGroup, int tar
         // 2002-03-08 MODIFIED BY S.G. Code change so I'm only calling GetComponentEntity once and checking if it returns non NULL
         flightMember[i] = (AircraftClass *)self->GetCampaignObject()->GetComponentEntity(i);
 
-        if (flightMember[i] and ( not flightMember[i]->IsDigital() and !flightMember[i]->IsLocal()))
+        if (flightMember[i] and ( not flightMember[i]->IsDigital() and not flightMember[i]->IsLocal()))
         {
             flightMember[i] = NULL;
         }
@@ -579,13 +579,13 @@ SimBaseClass *DigitalBrain::FindJSOWGroundTarget(CampBaseClass *targetGroup, int
             continue;
 
         // RED - TODO -
-        // FRB - Leave it!
+        // FRB - Leave it
         ///* // FRB - Cobra - Don't target low priority features (trees, fences, sheds)
         if (simTarg->IsStatic()) // It's a feature
         {
             fc = GetFeatureClassData(((Objective)simTarg)->GetFeatureID(i));
 
-            if (fc and !F4IsBadReadPtr(fc, sizeof(fc)) and fc->Priority > 2)  // higher priority number = lower priority
+            if (fc and  not F4IsBadReadPtr(fc, sizeof(fc)) and fc->Priority > 2)  // higher priority number = lower priority
                 continue;
 
             if (((Objective)simTarg)->GetFeatureStatus(i) == VIS_DESTROYED)
@@ -708,7 +708,7 @@ int DigitalBrain::FindJDAMGroundTarget(CampBaseClass *targetGroup, int targetNum
             if ((Objective)simTarg)
                 fc = GetFeatureClassData(((Objective)simTarg)->GetFeatureID(i));
 
-            if (fc and !F4IsBadReadPtr(fc, sizeof(fc)) and fc->Priority > 2)  // higher priority number = lower priority
+            if (fc and  not F4IsBadReadPtr(fc, sizeof(fc)) and fc->Priority > 2)  // higher priority number = lower priority
                 continue;
 
             if (((Objective)simTarg)->GetFeatureStatus(i) == VIS_DESTROYED)
@@ -797,7 +797,7 @@ void DigitalBrain::AiCheckEngage(void)
     // 2000-09-18 MODIFIED BY S.G. NEED THE WINGMEN TO DO ITS DUTY EVEN WHILE EXECUTING MANEUVERS...
     // 2000-09-25 MODIFIED BY S.G. NEED THE WINGMEN TO DO ITS STUFF WHEN HE HAS WEAPON FREE AS WELL
     // 2002-03-15 MODIFIED BY S.G. Perform this if mpActionFlags[AI_EXECUTE_MANEUVER] is NOT TRUE+1, since TRUE+1 mean we are doing a maneuver that's limiting the AI's ACTION to specific functions
-    // if(mpActionFlags[AI_ENGAGE_TARGET] /* REMOVED BY S.G. and !mpActionFlags[AI_EXECUTE_MANEUVER] */) {
+    // if(mpActionFlags[AI_ENGAGE_TARGET] /* REMOVED BY S.G. and not mpActionFlags[AI_EXECUTE_MANEUVER] */) {
     // if(mpActionFlags[AI_ENGAGE_TARGET] or mWeaponsAction == AI_WEAPONS_FREE) {
     if ((mpActionFlags[AI_ENGAGE_TARGET] or mWeaponsAction == AI_WEAPONS_FREE) and mpActionFlags[AI_EXECUTE_MANEUVER] not_eq TRUE + 1)
     {
@@ -875,7 +875,7 @@ void DigitalBrain::AiCheckLandTakeoff(void)
 
         AddMode(LandingMode);
     }
-    else if (self->curWaypoint->GetWPAction() == WP_LAND and !self->OnGround() and distAirbase < 30.0F * NM_TO_FT
+    else if (self->curWaypoint->GetWPAction() == WP_LAND and not self->OnGround() and distAirbase < 30.0F * NM_TO_FT
              and (missionComplete or IsSetATC(SaidRTB) or IsSetATC(SaidBingo) or mpActionFlags[AI_RTB])) // don't land if one of these conditions isn't met
     {
         if (atcstatus > lIngressing)
@@ -925,7 +925,7 @@ void DigitalBrain::AiCheckFormation(void)
 
     // edg: if the wingy was told to engage a ground target, we must make sure that they
     // will continue on waypoint mode so that they can go thru the ground attack logic
-    if (mpActionFlags[AI_ENGAGE_TARGET] and !mpActionFlags[AI_EXECUTE_MANEUVER] and (agDoctrine not_eq AGD_NONE or groundTargetPtr))
+    if (mpActionFlags[AI_ENGAGE_TARGET] and not mpActionFlags[AI_EXECUTE_MANEUVER] and (agDoctrine not_eq AGD_NONE or groundTargetPtr))
     {
         AddMode(WaypointMode);
     }

@@ -59,7 +59,7 @@ void INFOSetupRulesControls(void)
     if( FalconLocalGameEntity and FalconLocalSession  and 
      FalconLocalGameEntity->OwnerId() == FalconLocalSession->Id() )
      host = TRUE;
-    else if( not gCommsMgr->GetTargetGame() and !FalconLocalGameEntity)
+    else if( not gCommsMgr->GetTargetGame() and not FalconLocalGameEntity)
      host = TRUE;
 
     if(gCommsMgr->GetSettings()->Rules.GameStatus not_eq GAME_WAITING)
@@ -704,7 +704,7 @@ void ComplyCB(long ID, short hittype, C_Base *control)
 
         head = name;
 
-        while (*head and !_istalnum(*head))
+        while (*head and not _istalnum(*head))
             head++;
 
         tail = head;
@@ -712,13 +712,13 @@ void ComplyCB(long ID, short hittype, C_Base *control)
         while (*tail)
             tail++;
 
-        while (tail not_eq head and !_istalnum(*tail))
+        while (tail not_eq head and not _istalnum(*tail))
             tail--;
 
         tail++;
         *tail = 0;
 
-        if ((tail - head) < (3 * sizeof(_TCHAR)) or !(*head))
+        if ((tail - head) < (3 * sizeof(_TCHAR)) or  not (*head))
         {
             AreYouSure(TXT_ERROR, TXT_INVALID_GAMENAME, CloseWindowCB, CloseWindowCB);
             return;
@@ -774,7 +774,7 @@ int CheckButtonCompliance(C_Button *button, int test)
         button->Refresh();
         return FALSE;
     }
-    else if (button->GetState() == C_STATE_2 and !test)
+    else if (button->GetState() == C_STATE_2 and not test)
     {
         button->SetState(C_STATE_1);
         button->Refresh();
@@ -1104,7 +1104,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button, !CurrRules.UnlimitedFuel()))
+        if ( not CheckButtonCompliance(button,  not CurrRules.UnlimitedFuel()))
             InCompliance = FALSE;
     }
 
@@ -1112,7 +1112,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button, !CurrRules.UnlimitedChaff()))
+        if ( not CheckButtonCompliance(button,  not CurrRules.UnlimitedChaff()))
             InCompliance = FALSE;
     }
 
@@ -1120,7 +1120,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button, !CurrRules.NoCollisions()))
+        if ( not CheckButtonCompliance(button,  not CurrRules.NoCollisions()))
             InCompliance = FALSE;
     }
 
@@ -1128,7 +1128,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button, !CurrRules.NoBlackout()))
+        if ( not CheckButtonCompliance(button,  not CurrRules.NoBlackout()))
             InCompliance = FALSE;
     }
 
@@ -1137,7 +1137,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button, !CurrRules.NameTagsOn()))
+        if ( not CheckButtonCompliance(button,  not CurrRules.NameTagsOn()))
             InCompliance = FALSE;
     }
 
@@ -1154,7 +1154,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button, !CurrRules.InvulnerableOn()))
+        if ( not CheckButtonCompliance(button,  not CurrRules.InvulnerableOn()))
             InCompliance = FALSE;
     }
 
@@ -1162,7 +1162,7 @@ void CheckCompliance(void)
     button=(C_Button *)win->FindControl(AUTO_SCALE);
     if(button not_eq NULL)
     {
-     if( not CheckButtonCompliance(button,!CurrRules.InvulnerableOn()) )
+     if( not CheckButtonCompliance(button, not CurrRules.InvulnerableOn()) )
      InCompliance = FALSE;
 
      if(button->GetState() == C_STATE_1)
@@ -1666,7 +1666,7 @@ static void INFOSaveRules(void)
     /*
      if(FalconLocalGameEntity and FalconLocalSession and FalconLocalGameEntity->OwnerId() == FalconLocalSession->Id())
      host = TRUE;
-     else if( not gCommsMgr->GetTargetGame() and !FalconLocalGameEntity)
+     else if( not gCommsMgr->GetTargetGame() and not FalconLocalGameEntity)
      */
     host = modify;
 

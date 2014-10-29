@@ -129,13 +129,13 @@ int ICPClass::CheckMode(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ((IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == FIFE_BUTTON) and !IsICPSet(ICPClass::BLOCK_MODE))
+    if ((IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == FIFE_BUTTON) and not IsICPSet(ICPClass::BLOCK_MODE))
     {
         StepCruise();
         return TRUE;
     }
 
-    if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == EWS_MODE and !EWSMain)
+    if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == EWS_MODE and not EWSMain)
     {
         //you can only change progs if you're in STBY
         if (playerAC  and 
@@ -687,7 +687,7 @@ void ICPClass::CheckAutoSTPT(void)
         playerAC->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb) // MLR-NOTE Needs to consider Rockets???
         return;
 
-    if ( not playerAC or !playerAC->curWaypoint)
+    if ( not playerAC or not playerAC->curWaypoint)
         return;
 
     playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);

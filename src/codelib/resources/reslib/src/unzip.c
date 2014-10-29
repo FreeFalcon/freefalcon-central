@@ -1246,7 +1246,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
             {
                 //                if((native(*((int*)arc -> tmp_in_ptr)) == 'P')  and 
                 //                    !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))  /* GFG 31/01/98
-                if (((*(char*)(arc -> tmp_in_ptr)) == 'P') and !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
+                if (((*(char*)(arc -> tmp_in_ptr)) == 'P') and not strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
 
                 {
                     arc -> tmp_in_count -= (int)arc -> tmp_in_ptr - (int)arc -> tmp_in_buffer;
@@ -1276,7 +1276,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
                  arc -> tmp_in_ptr = arc -> tmp_in_ptr - 1
                 )
             {
-                if (((*(char*)(arc -> tmp_in_ptr)) == 'P') and !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
+                if (((*(char*)(arc -> tmp_in_ptr)) == 'P') and not strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
                 {
                     arc -> tmp_in_count -= (int)arc -> tmp_in_ptr - (int)arc -> tmp_in_buffer;
                     found = TRUE;
@@ -1314,7 +1314,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
                  arc -> tmp_in_ptr = arc -> tmp_in_ptr - 1
                 )
             {
-                if ((*(char *)arc -> tmp_in_ptr == 'P')  and !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
+                if ((*(char *)arc -> tmp_in_ptr == 'P')  and not strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
                 {
                     arc -> tmp_in_count -= ((int)arc -> tmp_in_ptr - (int)arc -> tmp_in_buffer);
                     found = TRUE;
@@ -1341,7 +1341,7 @@ fail:
 #ifdef MSWIN
         MessageBeep(1);
 #endif
-        //  if (qflag or (zipinfo_mode and !hflag))
+        //  if (qflag or (zipinfo_mode and not hflag))
         //        fprintf(stderr, "[%s]\n", zipfn);
         //  fprintf(stderr, "\
         //    End-of-central-directory signature not found.  Either this file is not\n\

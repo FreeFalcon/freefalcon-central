@@ -72,7 +72,7 @@ void ICPClass::ExecCRUSMode(void)
 
                     //check the steerpoint list
                     //get current steerpoint
-                    if (action == WP_LAND and !(wpflags bitand WPF_ALTERNATE))
+                    if (action == WP_LAND and  not (wpflags bitand WPF_ALTERNATE))
                     {
 
                         sprintf(mpLine1, "CRUISE HOME");

@@ -89,7 +89,7 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
         GameManager.AttachPlayerToVehicle(session, mover, dataBlock.pilotID);
 
         // Wake the vehicle's drawable, if it's a player only vehicle
-        if (mover->IsSetFalcFlag(FEC_PLAYERONLY) and !mover->IsAwake() and mover->GetCampaignObject()->IsAwake())
+        if (mover->IsSetFalcFlag(FEC_PLAYERONLY) and not mover->IsAwake() and mover->GetCampaignObject()->IsAwake())
         {
             VuListIterator flit(mover->GetCampaignObject()->GetComponents());
             theObject = (SimBaseClass*) flit.GetFirst();

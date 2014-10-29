@@ -29,7 +29,7 @@ bool g_bWakeTurbulence = true;
 bool g_bDrawWakeTurbulence = false;
 bool g_bWeaponLaunchUsesDrawPointerPos = false; // MLR 2/19/2004 - when weapons are launched, they are launched for
 // where thier 3d graphics were positioned, this will allow the F-111's
-// weapons to be launched from the right spot ** DOESN'T WORK!!!
+// weapons to be launched from the right spot ** DOESN'T WORK!
 
 bool g_bExtViewOnGround = false; // RAS -5Dec04- allow ext view if on ground
 bool g_bForceDXMultiThreadedCoopLevel = true; // JB 010401 Safer according to e

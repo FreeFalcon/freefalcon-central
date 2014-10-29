@@ -101,7 +101,7 @@ void C_Anim::SetFlags(long flags)
 
 void C_Anim::Refresh()
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or not Ready())
         return;
 
     if (Anim_)
@@ -110,7 +110,7 @@ void C_Anim::Refresh()
 
 void C_Anim::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or not Ready())
         return;
 
     if (Anim_)

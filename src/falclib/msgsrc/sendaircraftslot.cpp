@@ -57,7 +57,7 @@ int UI_SendAircraftSlot::Process(uchar autodisp)
 
     VuGameEntity *g = FalconLocalGame;
 
-    if (game not_eq FalconLocalGame or !session)
+    if (game not_eq FalconLocalGame or not session)
     {
         return FALSE;
     }

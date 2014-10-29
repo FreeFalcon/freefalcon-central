@@ -173,7 +173,7 @@ void GroundTaskingManagerClass::DoCalculations(void)
     POData pd;
 
     // Don't do this if we're not active, or not owned by this machine
-    if ( not (TeamInfo[owner]->flags bitand TEAM_ACTIVE) or !IsLocal())
+    if ( not (TeamInfo[owner]->flags bitand TEAM_ACTIVE) or not IsLocal())
         return;
 
     topPriority = 0;
@@ -263,7 +263,7 @@ int GroundTaskingManagerClass::Task(void)
     int action;
 
     // Don't do this if we're not active, or not owned by this machine
-    if ( not (TeamInfo[owner]->flags bitand TEAM_ACTIVE) or !IsLocal())
+    if ( not (TeamInfo[owner]->flags bitand TEAM_ACTIVE) or not IsLocal())
         return 0;
 
     action = TeamInfo[owner]->GetGroundActionType();
@@ -433,13 +433,13 @@ int GroundTaskingManagerClass::IsValidObjective(int orders, Objective o)
             break;
 
         case GORD_ASSAULT:
-            if (o->IsSecondary() and !o->IsNearfront() and o->IsBeach() and GetRoE(owner, o->GetTeam(), ROE_GROUND_CAPTURE) == ROE_ALLOWED)
+            if (o->IsSecondary() and not o->IsNearfront() and o->IsBeach() and GetRoE(owner, o->GetTeam(), ROE_GROUND_CAPTURE) == ROE_ALLOWED)
                 return 1;
 
             break;
 
         case GORD_AIRBORNE:
-            if (o->IsSecondary() and !o->IsNearfront()  and GetRoE(owner, o->GetTeam(), ROE_GROUND_CAPTURE) == ROE_ALLOWED) //  and !defended)
+            if (o->IsSecondary() and not o->IsNearfront()  and GetRoE(owner, o->GetTeam(), ROE_GROUND_CAPTURE) == ROE_ALLOWED) //  and not defended)
                 return 1;
 
             break;
@@ -451,7 +451,7 @@ int GroundTaskingManagerClass::IsValidObjective(int orders, Objective o)
             break;
 
         case GORD_DEFEND:
-            if (o->IsSecondary() and o->IsNearfront() and owner == o->GetTeam() and !o->Abandoned())
+            if (o->IsSecondary() and o->IsNearfront() and owner == o->GetTeam() and not o->Abandoned())
                 return 1;
 
             break;
@@ -486,7 +486,7 @@ int GroundTaskingManagerClass::IsValidObjective(int orders, Objective o)
 
         case GORD_RESERVE:
         default:
-            if (o->IsSecondary() and owner == o->GetTeam() and !o->IsNearfront())
+            if (o->IsSecondary() and owner == o->GetTeam() and not o->IsNearfront())
                 return 1;
 
             break;
@@ -522,7 +522,7 @@ int GroundTaskingManagerClass::GetAddBits(Objective o, int to_collect)
     if (o->Abandoned())
         add_now and_eq compl COLLECT_DEFEND;
 
-    if ( not o->IsFrontline() and !o->IsSecondline())
+    if ( not o->IsFrontline() and not o->IsSecondline())
         add_now and_eq compl (COLLECT_SECURE);
 
     if ( not o->IsBeach())
@@ -662,7 +662,7 @@ int GroundTaskingManagerClass::BuildObjectiveLists(int to_collect)
 
                 objList[i] = objList[i]->Insert(new_node, GODN_SORT_BY_PRIORITY);
 
-                // KCK EXPERIMENTAL: Try adding certain objectives twice!
+                // KCK EXPERIMENTAL: Try adding certain objectives twice
                 if (i == GORD_CAPTURE and TeamInfo[owner]->GetGroundActionType() == GACTION_OFFENSIVE and TeamInfo[owner]->GetGroundAction()->actionObjective == o->GetObjectivePrimary()->Id())
                 {
                     new_node = new GndObjDataType();
@@ -750,7 +750,7 @@ void GroundTaskingManagerClass::AddToLists(Unit u, int to_collect)
 
         if ( not o or d > 2.0F or GetRoE(o->GetTeam(), owner, ROE_GROUND_FIRE) == ROE_ALLOWED)
         {
-            // Overrun!
+            // Overrun
             u->KillUnit();
             return;
         }
@@ -796,7 +796,7 @@ void GroundTaskingManagerClass::AddToLists(Unit u, int to_collect)
         if (i == GORD_ASSAULT and u->GetUnitNormalRole() not_eq GRO_ASSAULT)
             continue;
 
-        if (i == GORD_COMMANDO and !u->Commando())
+        if (i == GORD_COMMANDO and not u->Commando())
             continue;
 
         if (i == GORD_AIRBORNE and u->GetUnitNormalRole() not_eq GRO_AIRBORNE)
@@ -828,7 +828,7 @@ int GroundTaskingManagerClass::CollectGroundAssets(int to_collect)
 
     while (u)
     {
-        if (u->GetTeam() == owner and u->GetDomain() == DOMAIN_LAND and !u->Scripted())
+        if (u->GetTeam() == owner and u->GetDomain() == DOMAIN_LAND and not u->Scripted())
         {
             // We've got at least one unit to assign - build our objective lists
             if ( not objListBuilt)
@@ -873,7 +873,7 @@ int GroundTaskingManagerClass::AssignUnit(Unit u, int orders, Objective o, int s
     POData pod;
     // SOData sod;
 
-    if ( not u or !o)
+    if ( not u or not o)
         return 0;
 
 #ifdef KEV_GDEBUG
@@ -937,7 +937,7 @@ int GroundTaskingManagerClass::AssignUnits(int orders, int mode)
     time = GetTickCount();
 #endif
 
-    if ( not objList[orders] or !canidateList[orders])
+    if ( not objList[orders] or not canidateList[orders])
         return 0;
 
     // Special case for reserve orders -

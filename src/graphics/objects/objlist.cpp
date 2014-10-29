@@ -174,7 +174,7 @@ void ObjectDisplayList::UpdateMetrics(const Tpoint *pos)
     p = head;
 
     //while ( p )
-    while (p and !F4IsBadReadPtr(p, sizeof(DrawableObject)))  // JB 010318 CTD
+    while (p and  not F4IsBadReadPtr(p, sizeof(DrawableObject)))  // JB 010318 CTD
     {
         // Update the distance metric (not less than 0)
         p->distance = max((float)fabs(x - p->position.x), (float)fabs(y - p->position.y));

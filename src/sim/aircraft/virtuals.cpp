@@ -62,7 +62,7 @@ void SimObjCheckOwnership(FalconEntity *);
 #endif
 
 
-// hack for making sure simple model STAYS SET!!!!!!
+// hack for making sure simple model STAYS SET
 BOOL playerFlightModelHack = 0;
 void MakeDogfightTopTen(int mode);
 WeaponType playerLastWeaponType = wtNone;
@@ -295,7 +295,7 @@ int AircraftClass::Sleep(void)
     // potentially we could get removed prior to exploding.   Check that
     // here for nonlocal entities
 
-    if ( not IsLocal() and pctStrength <= 0.0f and !IsSetFlag(SHOW_EXPLOSION))
+    if ( not IsLocal() and pctStrength <= 0.0f and not IsSetFlag(SHOW_EXPLOSION))
     {
         RunExplosion();
         SetFlag(SHOW_EXPLOSION);
@@ -413,7 +413,7 @@ void AircraftClass::MakePlayerVehicle(void)
     if (curWaypoint->GetWPAction() == WP_TAKEOFF)
     {
         //JPO check for preflighting the aircraft. Doit unless we are right at the begining
-        //if ( not DBrain()->IsSetATC(DigitalBrain::DonePreflight) and !DBrain()->IsAtFirstTaxipoint()) {
+        //if ( not DBrain()->IsSetATC(DigitalBrain::DonePreflight) and not DBrain()->IsAtFirstTaxipoint()) {
         //RAS-11Nov04-Fix for Ramp Start: When entering Ramp Start, jet would already be running.  Removed line
         //above and replaced with this one
         if ( not DBrain()->IsSetATC(DigitalBrain::DonePreflight))
@@ -440,7 +440,7 @@ void AircraftClass::MakePlayerVehicle(void)
         PreFlight();
     }
 
-    // just for testing simple flight model!!!
+    // just for testing simple flight model!
     // if (af->IsSet(AirframeClass::Simplified))
     // af->SetSimpleMode( SIMPLE_MODE_AF );
     //     af->SetFlag(AirframeClass::Simplified);
@@ -730,8 +730,8 @@ void AircraftClass::MakeNonPlayerVehicle()
     UnSetFalcFlag(FEC_HASPLAYERS);
 
     if (
-        !HasPilot() ||
-        ((DBrain()->ATCStatus() < tReqTaxi) and OnGround() and !af->IsSet(AirframeClass::OnObject))
+         not HasPilot() ||
+        ((DBrain()->ATCStatus() < tReqTaxi) and OnGround() and not af->IsSet(AirframeClass::OnObject))
     )
     {
         if (this == FalconLocalSession->GetPlayerEntity())

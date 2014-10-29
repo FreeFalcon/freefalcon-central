@@ -348,7 +348,7 @@ void CPDial::DisplayBlit3D()
         return;
     }
 
-    if ( not IsRendered or !DisplayOptions.bRender2DCockpit)
+    if ( not IsRendered or not DisplayOptions.bRender2DCockpit)
     {
         return;
     }
@@ -403,7 +403,7 @@ void CPDial::CreateLit(void)
                 m_pPalette->AttachToTexture(pTex);
 
                 if (
-                    !pTex->Create("CPDial", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8,
+                     not pTex->Create("CPDial", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8,
                                   (int)(mSrcRect.right - mSrcRect.left),
                                   (int)(mSrcRect.bottom - mSrcRect.top))
                 )

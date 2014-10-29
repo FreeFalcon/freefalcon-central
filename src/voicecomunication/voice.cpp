@@ -593,7 +593,7 @@ HRESULT WINAPI DirectVoiceClientMessageHandler(PVOID pvUserContext, DWORD dwMess
     {
         case DVMSGID_RECORDSTART:
         {
-            if ( not OTWDriver.pCockpitManager or !OTWDriver.pCockpitManager->mpIcp) break;
+            if ( not OTWDriver.pCockpitManager or not OTWDriver.pCockpitManager->mpIcp) break;
 
             if (g_itransmitfreq == 1)
             {
@@ -612,7 +612,7 @@ HRESULT WINAPI DirectVoiceClientMessageHandler(PVOID pvUserContext, DWORD dwMess
 
         case DVMSGID_RECORDSTOP:
         {
-            if ( not OTWDriver.pCockpitManager or !OTWDriver.pCockpitManager->mpIcp) break;
+            if ( not OTWDriver.pCockpitManager or not OTWDriver.pCockpitManager->mpIcp) break;
 
             OTWDriver.pCockpitManager->mpIcp->transmitingvoicecom1 = FALSE;
             OTWDriver.pCockpitManager->mpIcp->transmitingvoicecom2 = FALSE;
@@ -1419,7 +1419,7 @@ void CleanupDirectPlay()
         if (g_wszPath)SAFE_DELETE_ARRAY(g_wszPath);
     }
 
-    if (g_bVoiceCom and !g_pDPServer and !g_pDPClient  and (g_ipadress))  // 2002-02-07 ADDED BY S.G. ONLY IF CREATED AND WE'RE IN g_bVoiceCom MODE
+    if (g_bVoiceCom and  not g_pDPServer and  not g_pDPClient  and (g_ipadress))  // 2002-02-07 ADDED BY S.G. ONLY IF CREATED AND WE'RE IN g_bVoiceCom MODE
         DeleteCriticalSection(&g_csHostList);
 }
 
@@ -1606,24 +1606,24 @@ void RefreshVoiceFreqs()
 
     if ( not VM) return;
 
-    if (g_bHost and !g_pDPServer)return;
+    if (g_bHost and  not g_pDPServer)return;
 
-    if ( not g_bHost and !g_pDPClient)return;
+    if ( not g_bHost and  not g_pDPClient)return;
 
     if ( not g_bconected) return;
 
-    if (g_bHost and !g_dpnidLocalPlayer) return;
+    if (g_bHost and  not g_dpnidLocalPlayer) return;
 
     if ( not g_bHost and (g_afreqarrey.Freq[0][0] == 0 or g_afreqarrey.Freq[1][0] == 0 or g_afreqarrey.Freq[2][0] == 0)) return;
 
-    if ( not g_afreqarrey.count and !init)
+    if ( not g_afreqarrey.count and not init)
     {
         SetListenFreqsClient(11, 1234, 1);
         init = true;
     }
 
     if (team == FalconLocalSession->GetTeam() and com1 == VM->radiofilter[0] and com2 == VM->radiofilter[1]
-        and FalconLocalSession->Game() and !strcmp(gamename, FalconLocalSession->Game()->GameName())) return;
+        and FalconLocalSession->Game() and not strcmp(gamename, FalconLocalSession->Game()->GameName())) return;
     else if ( not FalconLocalSession->Game())return;
     else
     {
@@ -1897,11 +1897,11 @@ void Transmit(int com)
 
     if ( not VM) return;
 
-    if (g_bHost and !g_pDPServer) return;
+    if (g_bHost and  not g_pDPServer) return;
 
-    if ( not g_bHost and !g_pDPClient) return;
+    if ( not g_bHost and  not g_pDPClient) return;
 
-    if (g_bHost and !g_dpnidLocalPlayer) return;
+    if (g_bHost and  not g_dpnidLocalPlayer) return;
 
 
     VU_ID comvuid1;

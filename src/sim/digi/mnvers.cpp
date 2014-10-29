@@ -106,7 +106,7 @@ float DigitalBrain::TrackPoint(float maxGs, float speed)
 {
     float retval = 0.0F;
 
-    //TJL 08/28/04 Other things besides ATC/LANDME use this.  A/A and A/G maneuvers too!
+    //TJL 08/28/04 Other things besides ATC/LANDME use this.  A/A and A/G maneuvers too
     /*if ( not self->OnGround())
         af->SetFlaps(curMode == LandingMode);*/
     if (self->af->GetSimpleMode())
@@ -336,7 +336,7 @@ float DigitalBrain::SetPstick(float pitchError , float gLimit, int commandType)
     }
     else
     {
-        MonoPrint("digi.w: : BAD COMMAND MODE IN stickCmd!!!!!!!!!\n");
+        MonoPrint("digi.w: : BAD COMMAND MODE IN stickCmd\n");
         stickCmd = 0.0F;
     }
 
@@ -542,7 +542,7 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
                         AircraftClass *flightMember = (AircraftClass *)self->GetCampaignObject()->GetComponentEntity(i);
 
                         // This code is assuming the lead and the AI are on the same PC... Should be no problem unless another player is in Combat AP...
-                        if (flightMember and flightMember->DBrain() and !flightMember->DBrain()->mInPositionFlag)
+                        if (flightMember and flightMember->DBrain() and not flightMember->DBrain()->mInPositionFlag)
                             break;
                     }
 
@@ -622,7 +622,7 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
         //me123 status test. we are inside 6nm, somebody is pointing at us and we are head on.
 
         if (
-            targetData and !F4IsBadReadPtr(targetData, sizeof(SimObjectLocalData)) and // JB 010318 CTD
+            targetData and  not F4IsBadReadPtr(targetData, sizeof(SimObjectLocalData)) and // JB 010318 CTD
             targetData->ataFrom < 40.0f * DTR  and 
             targetData->ata < 40.0f * DTR  and 
             targetData->range < 10.0f * NM_TO_FT  and 

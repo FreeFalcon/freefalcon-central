@@ -40,12 +40,12 @@ FalconAirTaskingMessage::~FalconAirTaskingMessage(void)
 int FalconAirTaskingMessage::Process(uchar autodisp)
 {
     // I shouldn't really be getting messages if we're not loaded!?!
-    if (autodisp or !TheCampaign.IsLoaded())
+    if (autodisp or not TheCampaign.IsLoaded())
     {
         return -1;
     }
 
-    if ( not TeamInfo[dataBlock.team]->atm or !TeamInfo[dataBlock.team]->atm->IsLocal())
+    if ( not TeamInfo[dataBlock.team]->atm or not TeamInfo[dataBlock.team]->atm->IsLocal())
     {
         return -1;
     }

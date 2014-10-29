@@ -20,7 +20,7 @@
 // ===================================================
 
 // Mission defines for aircraft
-enum MissionTypeEnum          // NOTE: This must fit int a uchar!
+enum MissionTypeEnum          // NOTE: This must fit int a uchar
 {
     AMIS_NONE           = 0,
     AMIS_BARCAP         = 1, // BARCAP missions to protect a target area

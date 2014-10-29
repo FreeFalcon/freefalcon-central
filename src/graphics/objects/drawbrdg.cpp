@@ -152,7 +152,7 @@ float DrawableBridge::GetGroundLevel(float x, float y, Tpoint *normal)
         roadbed = (DrawableRoadbed*)roadbedObjects.GetNextAndAdvance();
     }
 
-    // We didn't find a containing segment!!!
+    // We didn't find a containing segment!
     // We used to assert here, but in instant action, we let tanks go on water right now...
     // So, we use the position of the container object (presumably ground level)
     if (normal)

@@ -48,7 +48,7 @@ GUID gOurGUID = OVERRIDE_GUID;
 #define F4COMMS_PARTIALLY_CONNECTED 1
 #define F4COMMS_FULLY_CONNECTED 2
 
-// KCK: These really need to come from comms itself!!
+// KCK: These really need to come from comms itself
 #define COMMS_TCP_OVERHEAD 40
 #define COMMS_UDP_OVERHEAD 12
 
@@ -682,7 +682,7 @@ void ModemConnectCallback(ComAPIHandle ch, int ret)
         {
             if (ret == 0)
             {
-                MonoPrint("ModemConnectCallback invoked: connected!\n");
+                MonoPrint("ModemConnectCallback invoked: connected\n");
                 s->SetReliableCommsHandle(ch, F4CommsMaxTCPMessageSize, F4CommsIdealTCPPacketSize);
                 s->SetReliableCommsStatus(VU_CONN_ACTIVE);
                 // Request global entities from this guy
@@ -858,7 +858,7 @@ int VuxGroupConnect(VuGroupEntity *group)
     // Check for existing connections
     if ( not group->GetCommsHandle())
     {
-        if ( not (FalconConnectionProtocol bitand FCP_UDP_AVAILABLE) and !(FalconConnectionProtocol bitand FCP_SERIAL_AVAILABLE))
+        if ( not (FalconConnectionProtocol bitand FCP_UDP_AVAILABLE) and  not (FalconConnectionProtocol bitand FCP_SERIAL_AVAILABLE))
         {
             // No udp connections available
             group->SetCommsHandle(NULL);
@@ -904,7 +904,7 @@ int VuxGroupConnect(VuGroupEntity *group)
 
     if ( not group->GetReliableCommsHandle())
     {
-        if ( not (FalconConnectionProtocol bitand FCP_TCP_AVAILABLE) and !(FalconConnectionProtocol bitand FCP_SERIAL_AVAILABLE) and !(FalconConnectionProtocol bitand FCP_RUDP_AVAILABLE))
+        if ( not (FalconConnectionProtocol bitand FCP_TCP_AVAILABLE) and  not (FalconConnectionProtocol bitand FCP_SERIAL_AVAILABLE) and  not (FalconConnectionProtocol bitand FCP_RUDP_AVAILABLE))
         {
             // No reliable connections available
             group->SetReliableCommsHandle(NULL);
@@ -995,8 +995,8 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
 
         if (
             (gConnectionStatus == F4COMMS_CONNECTED ||
-             (g_ipadress and !strcmpi(g_ipadress, "0.0.0.0")))  and 
-            !stoppingvoice and !g_pDPServer and !g_pDPClient  and (g_ipadress)
+             (g_ipadress and not strcmpi(g_ipadress, "0.0.0.0")))  and 
+            !stoppingvoice and  not g_pDPServer and  not g_pDPClient  and (g_ipadress)
         )
         {
             startupvoice(g_ipadress);//me123

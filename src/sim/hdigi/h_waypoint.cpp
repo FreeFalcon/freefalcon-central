@@ -34,7 +34,7 @@ void HeliBrain::FollowWaypoints(void)
     //   case WP_LAND:
     // if ( onStation == Arrived or onStation == Stabilizing )
     //   LandMe();
-    // else if ( !(onStation == OnStation) )
+    // else if (  not (onStation == OnStation) )
     // GoToCurrentWaypoint();
     // break;
     //
@@ -65,7 +65,7 @@ void HeliBrain::GoToCurrentWaypoint(void)
     unit = (Unit)self->GetCampaignObject();
 
     // RV - Biker - If we did miss our pickup do it now
-    if (self->curWaypoint->GetWPAction() == WP_AIRDROP and !unit->GetCargo() and onStation == NotThereYet)
+    if (self->curWaypoint->GetWPAction() == WP_AIRDROP and not unit->GetCargo() and onStation == NotThereYet)
     {
         cargo = (Unit) self->curWaypoint->GetWPTarget();
 

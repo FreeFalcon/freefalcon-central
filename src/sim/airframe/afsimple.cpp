@@ -26,7 +26,7 @@
 #include "digi.h"
 
 extern float gSpeedyGonzales;
-// hack for making sure simple model STAYS SET!!!!!!
+// hack for making sure simple model STAYS SET
 extern BOOL playerFlightModelHack;
 
 extern bool g_bSimpleFMUpdates; // JB 010805
@@ -117,7 +117,7 @@ AirframeClass::SimpleModel(void)
 
         // pitch rate
         // Modify pitch rate if going really slow
-        if (qsom * cnalpha < 1.5F and !(playerFlightModelHack  and 
+        if (qsom * cnalpha < 1.5F and  not (playerFlightModelHack  and 
                                        platform == SimDriver.GetPlayerEntity()  and 
                                        platform->AutopilotType() == AircraftClass::APOff))
         {
@@ -341,7 +341,7 @@ AirframeClass::SimpleModel(void)
 
 
 
-    if (vt and !(playerFlightModelHack  and 
+    if (vt and  not (playerFlightModelHack  and 
                 platform == SimDriver.GetPlayerEntity()  and 
                 platform->AutopilotType() == AircraftClass::APOff))
     {

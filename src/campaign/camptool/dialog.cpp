@@ -348,7 +348,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             // Zero invalid features
             for (i = 0; i < O->GetTotalFeatures(); i++)
             {
-                if (O->GetFeatureStatus(i) > 0 and !O->GetFeatureID(i))
+                if (O->GetFeatureStatus(i) > 0 and not O->GetFeatureID(i))
                     O->SetFeatureStatus(i, VIS_DESTROYED);
             }
 
@@ -385,7 +385,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             PostMessage(GetDlgItem(hDlg, IDC_OBJ_OCCVAL), WM_PAINT, 0, 0);
             j = O->GetObjectiveNameID();
 
-            if (O->IsSecondary() and !j)
+            if (O->IsSecondary() and not j)
                 PostMessage(hDlg, WM_COMMAND, IDC_OBJ_RENAME, 0);
 
             if (GetUpdateRect(hDlg, &rect, FALSE))
@@ -545,7 +545,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                         j = O->GetObjectiveNameID();
 
-                        if (O->IsSecondary() and !j)
+                        if (O->IsSecondary() and not j)
                             PostMessage(hDlg, WM_COMMAND, IDC_OBJ_RENAME, 0);
                         else if ( not O->IsSecondary() and j == 1)
                             O->SetObjectiveNameID(0);
@@ -2208,7 +2208,7 @@ BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                                 int count = 0;
                                 target_b = rand() % ((Objective)target)->GetTotalFeatures();
 
-                                while (count < 20 and (((Objective)target)->GetFeatureStatus(target_b) == VIS_DESTROYED or !((Objective)target)->GetFeatureValue(target_b)))
+                                while (count < 20 and (((Objective)target)->GetFeatureStatus(target_b) == VIS_DESTROYED or  not ((Objective)target)->GetFeatureValue(target_b)))
                                 {
                                     count++;
                                     target_b = rand() % ((Objective)target)->GetTotalFeatures();
@@ -2284,7 +2284,7 @@ int DoACheatFlight(void)
         VuListIterator flit(AllAirList);
         u = (Unit) flit.GetFirst();
 
-        while (u and !done)
+        while (u and not done)
         {
             if (u->IsFlight() and ((Flight)u)->GetUnitSquadronID() == FalconLocalSession->GetPlayerSquadronID())
             {

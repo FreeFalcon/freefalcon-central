@@ -544,7 +544,7 @@ void OTWDriverClass::RunActionCamera(void)
     // just continue with current mode
     /*
      ** edg: this was lurking on missiles too long
-     if ( otwPlatform and otwPlatform->IsWeapon() and !otwPlatform->IsEject() )
+     if ( otwPlatform and otwPlatform->IsWeapon() and not otwPlatform->IsEject() )
      {
      if ( !otwPlatform->IsDead() )
      {
@@ -594,7 +594,7 @@ void OTWDriverClass::RunActionCamera(void)
                 (theObject->IsMissile() ||
                  (
                      theObject->IsBomb()  and 
-                     !(((BombClass*)theObject)->IsSetBombFlag(BombClass::IsFlare | BombClass::IsChaff)))
+                      not (((BombClass*)theObject)->IsSetBombFlag(BombClass::IsFlare | BombClass::IsChaff)))
                 )  and 
                 !theObject->IsEject()  and 
                 (otwPlatform.get() not_eq weaponObject)
@@ -649,7 +649,7 @@ void OTWDriverClass::RunActionCamera(void)
         targetPtr = ((SimMoverClass *)talkObject)->targetPtr;
 
         // no campaign objects
-        if (targetPtr and !targetPtr->BaseData()->IsSim())
+        if (targetPtr and not targetPtr->BaseData()->IsSim())
         {
             targetPtr = NULL;
         }
@@ -719,7 +719,7 @@ void OTWDriverClass::RunActionCamera(void)
         parent = (SimBaseClass *)((SimWeaponClass *)weaponObject)->Parent();
 
         // no campaign objects
-        if (targetPtr and !targetPtr->BaseData()->IsSim())
+        if (targetPtr and not targetPtr->BaseData()->IsSim())
         {
             targetPtr = NULL;
         }
@@ -801,7 +801,7 @@ void OTWDriverClass::RunActionCamera(void)
         targetPtr = ((SimMoverClass *)firingObject)->targetPtr;
 
         // no campaign objects
-        if (targetPtr and !targetPtr->BaseData()->IsSim())
+        if (targetPtr and not targetPtr->BaseData()->IsSim())
         {
             targetPtr = NULL;
         }
@@ -896,7 +896,7 @@ void OTWDriverClass::RunActionCamera(void)
         targetPtr = ((SimMoverClass *)newObject)->targetPtr;
 
         // no campaign objects
-        if (targetPtr and !targetPtr->BaseData()->IsSim())
+        if (targetPtr and not targetPtr->BaseData()->IsSim())
         {
             targetPtr = NULL;
         }
@@ -963,7 +963,7 @@ void OTWDriverClass::RunActionCamera(void)
         targetPtr = ((SimMoverClass *)prevObject)->targetPtr;
 
         // no campaign objects
-        if (targetPtr and !targetPtr->BaseData()->IsSim())
+        if (targetPtr and not targetPtr->BaseData()->IsSim())
         {
             targetPtr = NULL;
         }
@@ -1858,7 +1858,7 @@ void OTWDriverClass::SetGraphicsOwnship(SimBaseClass* obj)
     SimBaseClass* curPlatform = otwPlatform.get();
 
     // sanity check
-    if (obj and !obj->IsSim())
+    if (obj and not obj->IsSim())
     {
         return;
     }
@@ -1874,9 +1874,9 @@ void OTWDriverClass::SetGraphicsOwnship(SimBaseClass* obj)
     if (obj)
     {
         if (
-            _isnan(obj->XPos()) or !_finite(obj->XPos()) ||
-            _isnan(obj->YPos()) or !_finite(obj->YPos()) ||
-            _isnan(obj->ZPos()) or !_finite(obj->ZPos())
+            _isnan(obj->XPos()) or not _finite(obj->XPos()) ||
+            _isnan(obj->YPos()) or not _finite(obj->YPos()) ||
+            _isnan(obj->ZPos()) or not _finite(obj->ZPos())
         )
         {
             return;
@@ -1969,7 +1969,7 @@ void OTWDriverClass::SetGraphicsOwnship(SimBaseClass* obj)
     }
 }
 
-#if !NEW_SERVER_VIEWPOINT
+#if not NEW_SERVER_VIEWPOINT
 void OTWDriverClass::ServerSetviewPoint(void)
 {
     viewPoint->Update(&ownshipPos);
@@ -2008,7 +2008,7 @@ void OTWDriverClass::Enter(void)
     OTWDisplayMode startMode = Mode2DCockpit;
 
     SetShutdown(0);
-    // FRB - ALERT!!
+    // FRB - ALERT
     // sfr: we are changing gfx context, flush all
     TheLoader.WaitLoader();
 
@@ -2690,7 +2690,7 @@ int OTWDriverClass::Exit(void)
     }
 
     OTWDriver.CleanViewpoint(); // JB 010615
-    // FRB - ALERT!!
+    // FRB - ALERT
     // sfr: we are changing gfx mode, flush loader
     TheLoader.WaitLoader();
 
@@ -2767,7 +2767,7 @@ void OTWDriverClass::ObjectSetData(SimBaseClass *obj, Tpoint *simView, Trotation
 
     /*
     // Do we want Control surface data?
-    if ( not obj->IsSimObjective() and !obj->IsLocal())
+    if ( not obj->IsSimObjective() and not obj->IsLocal())
     {
     FalconSimDataToggle *dataRequest;
 
@@ -2809,7 +2809,7 @@ void OTWDriverClass::InitViewpoint()
 {
     F4EnterCriticalSection(cs_update);
 
-    if ( not viewPoint and !bKeepClean and Texture::IsSetup())
+    if ( not viewPoint and not bKeepClean and Texture::IsSetup())
     {
         viewPoint = new RViewPoint;
         viewPoint->Setup(PlayerOptions.TerrainDistance()*FEET_PER_KM, PlayerOptions.MaxTerrainLevel(), 4, DisplayOptions.bZBuffering);
@@ -3149,7 +3149,7 @@ int OTWDriverClass::GetGroundIntersection(euler* dir, vector* pos)
 int OTWDriverClass::CheckLOS(FalconEntity *pt1, FalconEntity *pt2)
 {
     Tpoint start, finish;
-    // sfr: default value is 1 if terrain is not loadedd!!!
+    // sfr: default value is 1 if terrain is not loadedd!
     int LOS = 1;
 
     InitViewpoint();
@@ -3361,7 +3361,7 @@ void OTWDriverClass::AddViewpoint(FalconSessionEntity *session)
     FalconGameEntity *g = FalconLocalGame;
     FalconEntity *e;
 
-    if (g == NULL or !g->IsLocal() or session == NULL or ((e = session->GetPlayerEntity()) == NULL))
+    if (g == NULL or not g->IsLocal() or session == NULL or ((e = session->GetPlayerEntity()) == NULL))
     {
         return;
     }

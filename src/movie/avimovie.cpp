@@ -182,7 +182,7 @@ static void doFrame(PMOVIE item)
            Lock surface.
         */
         if ((sa->lockStatus == SURFACE_IS_UNLOCKED)  and 
-            !(item->sbType bitand SURFACE_TRY_FAST))
+             not (item->sbType bitand SURFACE_TRY_FAST))
         {
             surfaceGetPointer(item->ddSurface, sa);
 
@@ -780,7 +780,7 @@ int movieStart(int handle)
             return MOVIE_BAD_FILE;
 
         if ((streams->audioFlag bitand STREAM_AUDIO_EXTERNAL)  and 
-            !(streams->audioFlag bitand STREAM_AUDIO_PRELOAD))
+             not (streams->audioFlag bitand STREAM_AUDIO_PRELOAD))
             if (waveReadBlock(streams) not_eq RIFF_OK)
                 return MOVIE_BAD_AUDIO_FILE;
     }
@@ -1033,8 +1033,8 @@ static unsigned int __stdcall fillerThread(void* itemIn)
             */
 
             if ((streams->audioFlag bitand STREAM_AUDIO_EXTERNAL)  and 
-                !(item->status bitand MOVIE_STATUS_AUDIO_EOF)  and 
-                !(streams->audioFlag bitand STREAM_AUDIO_PRELOAD))
+                 not (item->status bitand MOVIE_STATUS_AUDIO_EOF)  and 
+                 not (streams->audioFlag bitand STREAM_AUDIO_PRELOAD))
             {
                 status = waveReadBlock(streams);
 

@@ -514,7 +514,7 @@ void CallInputFunction(unsigned long val, int state)
 
                 if (SimDriver.GetPlayerAircraft()  and 
                     SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)  and 
-                    !((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+                     not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
                 {
                     OTWDriver.pCockpitManager->Dispatch(buttonId, mouseSide);
                 }
@@ -608,9 +608,9 @@ void LoadFunctionTables(_TCHAR *fname)
         }
         else
         {
-            // MonoPrint ("ERROR !!!!! %s not found\n", funcName);
+            // MonoPrint ("ERROR ! %s not found\n", funcName);
 #ifdef DEBUG
-            //sprintf (tmpStr, "ERROR !!!!! %s not found\n", funcName);
+            //sprintf (tmpStr, "ERROR ! %s not found\n", funcName);
             //OutputDebugString (tmpStr);
 #endif
         }

@@ -309,7 +309,7 @@ void GetCallsignID(uchar* id, uchar* num, int range)
     {
         for (i = (int) * id; i < (int)*id + range; i++)
         {
-            if (i < NumCallsigns and !((CallsignData[i] >> (j - 1)) bitand 0x01))
+            if (i < NumCallsigns and  not ((CallsignData[i] >> (j - 1)) bitand 0x01))
             {
                 *id = (uchar)i;
                 *num = (uchar)j;
@@ -323,7 +323,7 @@ void GetCallsignID(uchar* id, uchar* num, int range)
 
     for (i = (int) * id; i < (int)*id + range; i++)
     {
-        if (i < NumCallsigns and !(rand() % range))
+        if (i < NumCallsigns and  not (rand() % range))
         {
             *id = (uchar)i;
             return;
@@ -387,7 +387,7 @@ void GetDogfightCallsign(Flight flight)
         {
             checkid = calltable[flight->GetTeam()][i];
 
-            if (checkid < NumCallsigns and !((CallsignData[checkid] >> (num - 1)) bitand 0x01))
+            if (checkid < NumCallsigns and  not ((CallsignData[checkid] >> (num - 1)) bitand 0x01))
             {
                 flight->callsign_id = (uchar)checkid;
                 flight->callsign_num = (uchar)num;

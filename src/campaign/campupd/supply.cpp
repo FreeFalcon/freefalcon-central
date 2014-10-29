@@ -266,7 +266,7 @@ int SendSupply(Objective s, Objective d, int *supply, int *fuel)
     PathClass path;
     int i, l, n, loss, type;
 
-    if ( not *supply and !*fuel)
+    if ( not *supply and not *fuel)
         return 0;
 
     if (GetObjectivePath(&path, s, d, Foot, s->GetTeam(), PATH_MARINE) < 1)
@@ -290,7 +290,7 @@ int SendSupply(Objective s, Objective d, int *supply, int *fuel)
             *fuel = *fuel * (100 - l) / 100;
         }
 
-        if ( not *supply and !*fuel)
+        if ( not *supply and not *fuel)
             return 0;
     }
 
@@ -304,7 +304,7 @@ void SupplyUnit(Unit u, int sneed, int supply, int fneed, int fuel)
 
     if (u->IsBattalion() or u->IsSquadron())
     {
-        if ( not supply and !fuel)
+        if ( not supply and not fuel)
             return;
 
         // KCK: We can add supply and fuel directly now, since we're asserting all
@@ -355,7 +355,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
     int repl_a_s = 0, repl_v_s = 0, repl_s = 0, repl_sa = 0, prob = 0; // A.S. debug variables
     // end added section
 
-    if ( not TeamInfo[who] or !(TeamInfo[who]->flags bitand TEAM_ACTIVE))
+    if ( not TeamInfo[who] or  not (TeamInfo[who]->flags bitand TEAM_ACTIVE))
         return 0;
 
     sratio = fratio = rratio = 0.0F;
@@ -472,7 +472,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
         if (rratio_v > MAX_SUPPLY_RATIO)
             rratio_v = MAX_SUPPLY_RATIO;
 
-        if (repl == 0)   // to handle situations like 0/0 !
+        if (repl == 0)   // to handle situations like 0/0 
         {
             rratio_a = 0;
             rratio_v = 0;
@@ -576,7 +576,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
 
                         unit->ChangeVehicles(replacements);
                     }
-                } // end added section  (important: this section replaces( not ) the section marked with ++++++ old code ++++++ !)
+                } // end added section  (important: this section replaces( not ) the section marked with ++++++ old code ++++++ )
 
                 if (fuel or supply)
                 {

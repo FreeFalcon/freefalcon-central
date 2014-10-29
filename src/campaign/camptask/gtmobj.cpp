@@ -43,7 +43,7 @@ void CleanupObjList(void)
         pod = (POData) lp->GetUserData();
         o = FindObjective(pod->objective);
 
-        if ( not o or !o->IsPrimary())
+        if ( not o or not o->IsPrimary())
             PODataList->Remove(lp);
 
         lp = np;

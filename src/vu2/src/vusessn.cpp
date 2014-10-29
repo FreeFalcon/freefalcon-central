@@ -231,7 +231,7 @@ static int MessageReceive(
             case VU_RESERVED_UPDATE_EVENT:
             case VU_UNKNOWN_MESSAGE:
             case VU_TIMER_EVENT:
-#if !NO_RELEASE_EVENT
+#if not NO_RELEASE_EVENT
             case VU_RELEASE_EVENT:
                 // these are not net events... ignore
                 break;
@@ -2087,7 +2087,7 @@ VU_ERRCODE VuSessionEntity::RemovalCallback()
 //sfr: vu change
 VU_SESSION_ID VuSessionEntity::OpenSession()
 {
-    if ( not IsLocal() or !vuGlobalGroup or !vuGlobalGroup->Connected())
+    if ( not IsLocal() or not vuGlobalGroup or not vuGlobalGroup->Connected())
     {
         return 0;
     }
@@ -2365,7 +2365,7 @@ VU_ERRCODE VuSessionEntity::JoinGame(VuGameEntity* newgame)
         return VU_NO_OP;
     }
 
-    if (newgame and !game)
+    if (newgame and not game)
     {
         action_ = VU_JOIN_GAME_ACTION;
     }
@@ -2582,7 +2582,7 @@ VU_ERRCODE VuSessionEntity::Handle(VuEvent* event)
     switch (event->Type())
     {
         case VU_DELETE_EVENT:
-#if !NO_RELEASE_EVENT
+#if not NO_RELEASE_EVENT
         case VU_RELEASE_EVENT:
 #endif
             if (Game() and this not_eq vuLocalSessionEntity)
@@ -3764,7 +3764,7 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
 
                     if ((ent->OwnerId().creator_ == sess->SessionId()) and (sess not_eq ent)  and 
                         (sess->VuState() not_eq VU_MEM_ACTIVE ||
-                         (ent->IsTransferrable() and !ent->IsGlobal())))
+                         (ent->IsTransferrable() and not ent->IsGlobal())))
                     {
                         vuDatabase->Remove(ent);
                     }
@@ -3804,7 +3804,7 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
 
                     if (index >= myseedlower[test_ent->Domain()]  and 
                         index <= myseedupper[test_ent->Domain()]  and 
-                        ent->IsTransferrable() and !ent->IsGlobal())
+                        ent->IsTransferrable() and not ent->IsGlobal())
                     {
                         ent->SetOwnerId(vuLocalSession);
                     }
@@ -3843,7 +3843,7 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
 
                     if (index >= myseedlower[test_ent->Domain()]  and 
                         index <= myseedupper[test_ent->Domain()]  and 
-                        ent->IsTransferrable() and !ent->IsGlobal()  and 
+                        ent->IsTransferrable() and not ent->IsGlobal()  and 
                         ( not sess or sess->VuState() == VU_MEM_ACTIVE))
                     {
                         ent->SetOwnerId(vuLocalSession);
@@ -3919,7 +3919,7 @@ VU_ERRCODE VuPlayerPoolGame::Distribute(VuSessionEntity *sess)
             if (
                 (ent->OwnerId().creator_ == sess->SessionId())  and 
                 ( not ent->IsPersistent())  and 
-                (sess->VuState() not_eq VU_MEM_ACTIVE or (ent->IsTransferrable() and !ent->IsGlobal()))
+                (sess->VuState() not_eq VU_MEM_ACTIVE or (ent->IsTransferrable() and not ent->IsGlobal()))
             )
             {
                 vuDatabase->Remove(ent);

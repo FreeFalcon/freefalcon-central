@@ -1503,8 +1503,8 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
 
     //if (numx >= 0 and numy >= 0) // JB 010220 CTD
     if (numx >= 0 and numy >= 0  and 
-        xarray and //!F4IsBadReadPtr(xarray, sizeof(SIM_FLOAT)) and // (too much CPU)
-        yarray //!F4IsBadReadPtr(yarray, sizeof(SIM_FLOAT)) // JB 010318 CTD (too much CPU)
+        xarray and // not F4IsBadReadPtr(xarray, sizeof(SIM_FLOAT)) and // (too much CPU)
+        yarray // not F4IsBadReadPtr(yarray, sizeof(SIM_FLOAT)) // JB 010318 CTD (too much CPU)
        )
     {
         xinpt = min(max(x, xarray[0]), xarray[numx]);

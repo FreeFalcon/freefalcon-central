@@ -49,7 +49,7 @@ void CTimeOfDay::Setup(char *dataPath)
 
     sprintf(starfile, "%s\\star.dat", dataPath);
 
-    if ( not skycolor or !(in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
+    if ( not skycolor or  not (in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
     {
         sprintf(todfile, "%s\\tod\\tod.lst.default", dataPath);
 
@@ -1032,11 +1032,11 @@ void CTimeOfDay::CreateMoonPhase(unsigned char *src, unsigned char *dest)
                 unsigned char c1 = *src++;
 #ifdef USE_TRANSPARENT_MOON
 
-                if (c1 and !(c bitand 0x80)) c1 = 0;
+                if (c1 and  not (c bitand 0x80)) c1 = 0;
 
 #else
 
-                if (c1 and !(c bitand 0x80)) c1 += 48;
+                if (c1 and  not (c bitand 0x80)) c1 += 48;
 
 #endif
                 c <<= 1;

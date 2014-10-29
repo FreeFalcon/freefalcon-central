@@ -442,7 +442,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
         EndCampaign();
     }
 
-    if ( not IsPreLoaded() and !LoadScenarioStats(gametype, savefile))
+    if ( not IsPreLoaded() and not LoadScenarioStats(gametype, savefile))
     {
         EndCampaign();
         return 0;
@@ -458,7 +458,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
 
     gCampDataVersion = ReadVersionNumber(savefile);
 
-#if !NO_LOCKS_ON_INIT_EXIT
+#if not NO_LOCKS_ON_INIT_EXIT
     CampEnterCriticalSection();
 #endif
 
@@ -491,7 +491,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
     LoadBaseObjectives(Scenario);
     LoadObjectiveDeltas(savefile);
 
-    if (gClearPilotInfo or !LoadPilotInfo(savefile))
+    if (gClearPilotInfo or not LoadPilotInfo(savefile))
     {
         NewPilotInfo();
     }
@@ -557,7 +557,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
         BuildDivisionData();
     }
 
-    if ( not (Flags bitand CAMP_LIGHT) and !(Flags bitand CAMP_TACTICAL))
+    if ( not (Flags bitand CAMP_LIGHT) and  not (Flags bitand CAMP_TACTICAL))
     {
         // KCK: By telling weathermap that we're instant action, it won't
         // cause a reloading of weather for multiple instant action runs.
@@ -607,7 +607,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
                 }
                 else
                 {
-                    if (load[0].WeaponID[0] and !load[0].WeaponCount[0])
+                    if (load[0].WeaponID[0] and not load[0].WeaponCount[0])
                         load[0].WeaponCount[0] = 50;
                 }
             }
@@ -630,7 +630,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
 
     gCampDataVersion = gCurrentDataVersion;
     TheCampaign.Resume();
-#if !NO_LOCKS_ON_INIT_EXIT
+#if not NO_LOCKS_ON_INIT_EXIT
     CampLeaveCriticalSection();
 #endif
     return 1;
@@ -671,7 +671,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
     Suspend();
 
-#if !NO_LOCKS_ON_INIT_EXIT
+#if not NO_LOCKS_ON_INIT_EXIT
     CampEnterCriticalSection();
 #endif
 
@@ -797,7 +797,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
     MonoPrint("Done requesting shit... \n");
 
-#if !NO_LOCKS_ON_INIT_EXIT
+#if not NO_LOCKS_ON_INIT_EXIT
     CampLeaveCriticalSection();
 #endif
 
@@ -830,19 +830,19 @@ void CampaignClass::GotJoinData(void)
 {
     ulong still_needed = Flags bitand CAMP_NEED_MASK;
 
-    MonoPrint("Got Join data! Still needed = %x\n", still_needed);
+    MonoPrint("Got Join data Still needed = %x\n", still_needed);
 
     if (still_needed or IsLoaded())
         return;
 
-    // We're loaded!
+    // We're loaded
     Flags  or_eq  CAMP_LOADED;
 
     gMainThread->JoinGame(gCommsMgr->GetTargetGame());
 
     // Notify UI of our success
     if (gMainHandler)
-        PostMessage(FalconDisplay.appWin, FM_JOIN_SUCCEEDED, !FalconLocalGame->IsLocal(), 0);
+        PostMessage(FalconDisplay.appWin, FM_JOIN_SUCCEEDED,  not FalconLocalGame->IsLocal(), 0);
 }
 
 #define CAMP_SAVE_NORMAL 0
@@ -876,7 +876,7 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
     }
     else
     {
-        if ( not CampMapSize or !TheaterSizeX or !CampMapData or save_mode == CAMP_SAVE_FULL)
+        if ( not CampMapSize or not TheaterSizeX or not CampMapData or save_mode == CAMP_SAVE_FULL)
             MakeCampMap(MAP_OWNERSHIP);
 
         VerifySquadrons(FALCON_PLAYER_TEAM);
@@ -898,7 +898,7 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
         switch (save_mode)
         {
             case CAMP_SAVE_LIGHT:
-                // KCK: These won't save right - no lists!
+                // KCK: These won't save right - no lists
                 // SaveBaseObjectives(savefile);
                 // SaveObjectiveDeltas(savefile);
                 break;
@@ -966,7 +966,7 @@ void CampaignClass::EndCampaign()
 {
     MonoPrint("Calling EndCampaign.. \n");
 
-#if !NEW_END_CAMPAIGN
+#if not NEW_END_CAMPAIGN
     Suspend();
 #endif
     SetTimeCompression(0);
@@ -982,7 +982,7 @@ void CampaignClass::EndCampaign()
 
     // Now clean up.
     // KCK: I loath to do this, but VU just isn't threadsafe during shutdown
-#if !NO_LOCKS_ON_INIT_EXIT
+#if not NO_LOCKS_ON_INIT_EXIT
     CampEnterCriticalSection();
     VuEnterCriticalSection();
 #endif
@@ -995,7 +995,7 @@ void CampaignClass::EndCampaign()
     FalconLocalSession->SetFlyState(FLYSTATE_IN_UI);
 
 #define JOIN_AT_END 1
-#if !JOIN_AT_END
+#if not JOIN_AT_END
     // Join the player pool
     // sfr: get the current joining new
     VuGameEntity *oldGame = CurrentGame.get();
@@ -1087,7 +1087,7 @@ void CampaignClass::EndCampaign()
 #endif
 
 
-#if !NO_LOCKS_ON_INIT_EXIT
+#if not NO_LOCKS_ON_INIT_EXIT
     VuExitCriticalSection(); // KCK: I loath to do this, but VU just isn't threadsafe during shutdown
     CampLeaveCriticalSection();
 #endif
@@ -2389,7 +2389,7 @@ void Camp_FreeMemory(void)
 {
     delete ASD;
     ASD = NULL;
-    //sfr: Real weather destructor shouldnt be here!!
+    //sfr: Real weather destructor shouldnt be here
     /* if (realWeather not_eq NULL){
      delete realWeather;
      realWeather = NULL;
@@ -2488,7 +2488,7 @@ int SaveAfterRename(char *savefile, FalconGameType gametype)
         current_tactical_mission->save_data(filename);
     }
 
-    // if ( not CampMapSize or !TheaterSizeX or !CampMapData or save_mode == CAMP_SAVE_FULL)
+    // if ( not CampMapSize or not TheaterSizeX or not CampMapData or save_mode == CAMP_SAVE_FULL)
     // MakeCampMap(MAP_OWNERSHIP);
     TheCampaign.VerifySquadrons(FALCON_PLAYER_TEAM);
 
@@ -2496,7 +2496,7 @@ int SaveAfterRename(char *savefile, FalconGameType gametype)
 
     if ( not fp)
     {
-        MonoPrint("Error opening file %s!\n", filename);
+        MonoPrint("Error opening file %s\n", filename);
         return 0;
     }
 
@@ -2516,6 +2516,6 @@ int SaveAfterRename(char *savefile, FalconGameType gametype)
 
     CampLeaveCriticalSection();
 
-    MonoPrint("RENAMING OF %s COMPLETED SUCCESSFULLY!\n", filename);
+    MonoPrint("RENAMING OF %s COMPLETED SUCCESSFULLY\n", filename);
     return 1;
 }

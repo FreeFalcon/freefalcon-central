@@ -79,7 +79,7 @@ extern bool g_bTankerWaypoints;
 extern bool g_bLargeStrike;
 
 #ifdef DEBUG
-//#define DEBUG_COUNT // this can cause crashes when doing long debug runs !
+//#define DEBUG_COUNT // this can cause crashes when doing long debug runs 
 // JPO some simple package tracking code, keeps track of whats been lost.
 #include <map>
 
@@ -147,7 +147,7 @@ MEM_POOL PackageClass::pool;
 // PackageClass Functions
 // ============================================
 
-// KCK: ALL PACKAGE CONSTRUCTION SHOULD USE THIS FUNCTION!
+// KCK: ALL PACKAGE CONSTRUCTION SHOULD USE THIS FUNCTION
 PackageClass* NewPackage(int type)
 {
     PackageClass *new_package;
@@ -241,7 +241,7 @@ PackageClass::PackageClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, r
     memcpychk(&wait_cycles, stream, sizeof(uchar), rem);
 
     // If this package has already been planned, we can save some room
-    if (Final() and !wait_cycles)
+    if (Final() and not wait_cycles)
     {
 
         memcpychk(&requests, stream, sizeof(short), rem);
@@ -434,7 +434,7 @@ int PackageClass::SaveSize(void)
            + sizeof(uchar);
 
     // If this package has already been planned, we can save some room
-    if (Final() and !wait_cycles)
+    if (Final() and not wait_cycles)
     {
         size += sizeof(short)
                 + sizeof(short)
@@ -552,7 +552,7 @@ int PackageClass::Save(VU_BYTE **stream)
     *stream += sizeof(uchar);
 
     // If this package has already been planned, we can save some room
-    if (Final() and !wait_cycles)
+    if (Final() and not wait_cycles)
     {
         memcpy(*stream, &requests, sizeof(short));
         *stream += sizeof(short);
@@ -859,7 +859,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
                 count++;
                 f = BestTargetFeature((Objective)target, targeted);
 
-                if (f >= FEATURES_PER_OBJ or !((Objective)target)->GetFeatureValue(f))
+                if (f >= FEATURES_PER_OBJ or  not ((Objective)target)->GetFeatureValue(f))
                 {
                     count = 10;
                     continue;
@@ -1012,13 +1012,13 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
             {
                 CancelFlight((Flight)flight);
 
-                if (result == PRET_ABORTED and !flights and (ls or hs))
+                if (result == PRET_ABORTED and not flights and (ls or hs))
                 {
                     // This flight couldn't get to target
                     return PRET_ABORTED;
                 }
 
-                if (result == PRET_CANCELED and !flights)
+                if (result == PRET_CANCELED and not flights)
                 {
                     // This flight probably could arm itself or get to the target -
                     // If we can disable us from finding the squadron next time through,
@@ -1096,7 +1096,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
         flights++;
     }
 
-    if ( not flights or !flight)
+    if ( not flights or not flight)
         return PRET_NO_ASSETS;
 
 #ifdef KEV_ADEBUG
@@ -1154,7 +1154,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
 
 #ifdef KEV_ADEBUG
         else
-            MonoPrint("Failed to find SEAD Escort!\n");
+            MonoPrint("Failed to find SEAD Escort\n");
 
 #endif
     }
@@ -1317,7 +1317,7 @@ int PackageClass::RecordFlightAddition(Flight flight, MissionRequest mis, int ta
         mis_request.tot = flight->GetUnitTOT();
 
         // If we can add SEAD, and havn't already decided to, check if we need to
-        if ((package_flags bitand AMIS_ADDSEAD) and !(targetd bitand NEED_SEAD))
+        if ((package_flags bitand AMIS_ADDSEAD) and  not (targetd bitand NEED_SEAD))
             targetd  or_eq  CheckPathThreats(flight);
         // If we can add ECM, check if we need to
         else if (package_flags bitand AMIS_ADDECM)
@@ -1330,7 +1330,7 @@ int PackageClass::RecordFlightAddition(Flight flight, MissionRequest mis, int ta
 
             while (w)
             {
-                if (w->GetWPFlags() bitand WPF_ASSEMBLE and !aw)
+                if (w->GetWPFlags() bitand WPF_ASSEMBLE and not aw)
                     aw = w;
 
                 if (w->GetWPFlags() bitand WPF_BREAKPOINT)
@@ -1346,7 +1346,7 @@ int PackageClass::RecordFlightAddition(Flight flight, MissionRequest mis, int ta
 
                     intarget = 1;
                 }
-                else if (intarget) // and !tw)
+                else if (intarget) // and not tw)
                 {
                     tw = w; // Just passed the target waypoint
                     intarget = 0;
@@ -1407,7 +1407,7 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
             pmis = pack->GetMissionRequest();
             flight = (FlightClass*) pack->GetFirstUnitElement();
 
-            if (flight and !flight->Aborted() and pmis->tot < startTime)
+            if (flight and not flight->Aborted() and pmis->tot < startTime)
             {
                 if ((package_flags bitand AMIS_ADDAWACS) and flight->GetUnitMission() == AMIS_AWACS)
                 {
@@ -1656,7 +1656,7 @@ void PackageClass::HandleRequestReceipt(int type, int them, VU_ID triggered_flig
 
 #ifdef KEV_ADEBUG
                 else
-                    MonoPrint("Failed to find CA Escort!\n");
+                    MonoPrint("Failed to find CA Escort\n");
 
 #endif
             }
@@ -1938,7 +1938,7 @@ Flight AttachFlight(MissionRequest mis, Package pack)
     if ( not TeamInfo[mis->who]->atm)
     {
 #ifdef KEV_DEBUG
-        MonoPrint("Error, I don't own the ATM!\n");
+        MonoPrint("Error, I don't own the ATM\n");
 #endif
         return NULL;
     }
@@ -1975,7 +1975,7 @@ Flight AttachFlight(MissionRequest mis, Package pack)
         if ( not squadron)
             return NULL;
 
-        if ( not bx and !by) // Call this our home base for this package set
+        if ( not bx and not by) // Call this our home base for this package set
         {
             squadron->GetLocation(&bx, &by);
             pack->SetLocation(bx, by);
@@ -2063,7 +2063,7 @@ void FinalizeFlight(Unit flight, int flights)
 #endif
 #endif
 
-    if (flights > 1 and !(MissionData[flight->GetUnitMission()].flags bitand AMIS_DONT_COORD) and !(MissionData[flight->GetUnitMission()].flags bitand AMIS_TARGET_ONLY))
+    if (flights > 1 and  not (MissionData[flight->GetUnitMission()].flags bitand AMIS_DONT_COORD) and  not (MissionData[flight->GetUnitMission()].flags bitand AMIS_TARGET_ONLY))
         assem = 1;
     else
         assem = 0;
@@ -2072,17 +2072,17 @@ void FinalizeFlight(Unit flight, int flights)
 
     while (w)
     {
-        if (w->GetWPFlags() bitand WPF_BREAKPOINT and !assem)
+        if (w->GetWPFlags() bitand WPF_BREAKPOINT and not assem)
             w->SetWPFlags(w->GetWPFlags() xor WPF_BREAKPOINT); // Clear our flag
 
-        if (w->GetWPFlags() bitand WPF_ASSEMBLE and !assem)
+        if (w->GetWPFlags() bitand WPF_ASSEMBLE and not assem)
         {
             w->SetWPAction(WP_NOTHING); // Clear our action
             w->SetWPRouteAction(MissionData[flight->GetUnitMission()].routewp);
             w->SetWPFlags(w->GetWPFlags() xor WPF_ASSEMBLE); // Clear our flag
         }
 
-        if (w->GetWPAction() == WP_NOTHING and !(w->GetWPFlags() bitand 0x4FF))
+        if (w->GetWPAction() == WP_NOTHING and  not (w->GetWPFlags() bitand 0x4FF))
         {
             // This is an unused waypoint (Nothing action and no flags set)
             // Check if in line or co-existant with other wps, if so, remove

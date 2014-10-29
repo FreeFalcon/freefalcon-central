@@ -698,7 +698,7 @@ CampaignTime SetWPTimes(WayPoint w, CampaignTime start, int speed, int flags)
             land = mission_time;
         }
 
-        if ((w->GetWPFlags() bitand WPF_ALTERNATE) and !(flags bitand WPTS_SET_ALTERNATE_TIMES))
+        if ((w->GetWPFlags() bitand WPF_ALTERNATE) and  not (flags bitand WPTS_SET_ALTERNATE_TIMES))
         {
             w->SetWPTimes(0);
         }
@@ -752,7 +752,7 @@ CampaignTime SetWPTimes(WayPoint w, long delta, int flags)
             land = mission_time;
         }
 
-        if ((w->GetWPFlags() bitand WPF_ALTERNATE) and !(flags bitand WPTS_SET_ALTERNATE_TIMES))
+        if ((w->GetWPFlags() bitand WPF_ALTERNATE) and  not (flags bitand WPTS_SET_ALTERNATE_TIMES))
         {
             w->SetWPTimes(0);
         }
@@ -886,8 +886,8 @@ float AdjustAltitudeForMSL_AGL(float x, float y, float z)
 
 #else
 
-    // Do we need to test for z being negative, it should anyhow. Also, MINIMUM_ASL_ALTITUDE is POSITIVE!
-    // terrain_level IS ALSO POSITIVE!
+    // Do we need to test for z being negative, it should anyhow. Also, MINIMUM_ASL_ALTITUDE is POSITIVE
+    // terrain_level IS ALSO POSITIVE
     if (z < 0.0F and z > -MINIMUM_ASL_ALTITUDE) // z is AGL if it's 'below' this altitude
         return z - terrain_level; // This returns the altitude above MSL
     else if (z < 0.0F and z + terrain_level > -500.0F) // If our -MSL height plus the terrain height is less than -500

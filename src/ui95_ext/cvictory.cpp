@@ -160,16 +160,16 @@ long C_Victory::CheckHotSpots(long relx, long rely)
         if (Team_)
             Section_ = static_cast<short>(Team_->CheckHotSpots(relx, rely));
 
-        if (Action_ and !Section_)
+        if (Action_ and not Section_)
             Section_ = static_cast<short>(Action_->CheckHotSpots(relx, rely));
 
-        if (Target_ and !Section_)
+        if (Target_ and not Section_)
             Section_ = static_cast<short>(Target_->CheckHotSpots(relx, rely));
 
-        if (Args_ and !Section_)
+        if (Args_ and not Section_)
             Section_ = static_cast<short>(Args_->CheckHotSpots(relx, rely));
 
-        if (Points_ and !Section_)
+        if (Points_ and not Section_)
             Section_ = static_cast<short>(Points_->CheckHotSpots(relx, rely));
 
         SetRelXY(relx - GetX(), rely - GetY());

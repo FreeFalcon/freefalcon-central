@@ -227,7 +227,7 @@ BOOL TLHELPGetLoadedModules(DWORD     dwPID        ,
     else
     {
         ASSERT(FALSE) ;
-        TRACE0("Failed to get first module!\n") ;
+        TRACE0("Failed to get first module\n") ;
         bRet = FALSE ;
     }
 

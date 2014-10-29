@@ -210,13 +210,13 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
     VU_ID fromID = dataBlock.from, toID = FalconNullId;
 
 
-    if (from and (from->IsDead() or (from->IsVehicle() and !((SimVehicleClass*)from)->HasPilot())))
+    if (from and (from->IsDead() or (from->IsVehicle() and  not ((SimVehicleClass*)from)->HasPilot())))
     {
         return 0;
     }
 
     // M.N. turn off all players radio chatter if wanted
-    if (from and from->IsPlayer() and !PlayerOptions.PlayerRadioVoice)
+    if (from and from->IsPlayer() and not PlayerOptions.PlayerRadioVoice)
     {
         return 0;
     }
@@ -239,7 +239,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
         }
     }
 
-    if (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING and SimDriver.RunningCampaign() and !noUIcomms)
+    if (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING and SimDriver.RunningCampaign() and not noUIcomms)
         us = FalconLocalSession->GetPlayerSquadron();
 
 #ifdef _DEBUG
@@ -251,7 +251,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
     //MonoPrint("Processing Chatter Message ID: %d  %d\n", message, !us);
 
     if ((FalconLocalSession->GetFlyState() == FLYSTATE_FLYING) ||
-        (SimDriver.RunningCampaign() and !noUIcomms) ||
+        (SimDriver.RunningCampaign() and not noUIcomms) ||
         (to and to == us))
     {
         if ( not us)
@@ -265,7 +265,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
             player_package = static_cast<PackageClass*>(player_flight->GetUnitParent());
 
         //until data is correct this only screws things up
-        if (voiceFilter and !to and from and us->GetTeam() == from->GetTeam()) // KCK: Added and !to -> basically, if you want it to warp, don't specify a target
+        if (voiceFilter and not to and from and us->GetTeam() == from->GetTeam()) // KCK: Added and not to -> basically, if you want it to warp, don't specify a target
         {
             if (DistSqu(from->XPos(), from->YPos(), us->XPos(), us->YPos()) > RADIO_PROX_RANGE * RADIO_PROX_RANGE * 4.0F) //80nm
                 return -1;

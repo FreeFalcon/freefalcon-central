@@ -71,7 +71,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
     Sms = playerAC->Sms;
     display = newDisplay;
 
-    if ( not theRadar or !pFCC or !self or !Sms)
+    if ( not theRadar or not pFCC or not self or not Sms)
     {
         ShiWarning("Oh Oh shouldn't be here without a radar or FCC or player or SMS!");
         return;
@@ -197,7 +197,7 @@ void TgpMfdDrawable::PushButton(int whichButton, int whichMFD)
     switch (whichButton)
     {
         case 0:
-            MenuMode = !MenuMode;
+            MenuMode = not MenuMode;
             break;
 
         case 2:
@@ -208,8 +208,8 @@ void TgpMfdDrawable::PushButton(int whichButton, int whichMFD)
 
         case 3:
             pFCC->LaserFire = FALSE;
-            pFCC->InhibitFire = !pFCC->InhibitFire;
-            StbyMode = !StbyMode;
+            pFCC->InhibitFire = not pFCC->InhibitFire;
+            StbyMode = not StbyMode;
             break;
 
         case 5:
@@ -220,13 +220,13 @@ void TgpMfdDrawable::PushButton(int whichButton, int whichMFD)
                 pFCC->InhibitFire = FALSE;
             }
             else if (laserPod)
-                laserPod->BHOT = !laserPod->BHOT;
+                laserPod->BHOT = not laserPod->BHOT;
 
             break;
 
         case 7:
-            pFCC->preDesignate = !pFCC->preDesignate;
-            SP = !SP;
+            pFCC->preDesignate = not pFCC->preDesignate;
+            SP = not SP;
             break;
 
         case 8:
@@ -234,9 +234,9 @@ void TgpMfdDrawable::PushButton(int whichButton, int whichMFD)
             break;
 
         case 9:
-            StbyMode = !StbyMode;
-            //pFCC->InhibitFire = !pFCC->InhibitFire;
-            MenuMode = !MenuMode;
+            StbyMode = not StbyMode;
+            //pFCC->InhibitFire = not pFCC->InhibitFire;
+            MenuMode = not MenuMode;
             break;
 
         case 19:
@@ -281,7 +281,7 @@ VirtualDisplay* TgpMfdDrawable::GetDisplay(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ( not playerAC or !playerAC->Sms)
+    if ( not playerAC or not playerAC->Sms)
         return privateDisplay;
 
     SensorClass* laserPod = FindLaserPod(playerAC->Sms->Ownship());
@@ -308,7 +308,7 @@ VirtualDisplay* TgpMfdDrawable::GetDisplay(void)
 }
 void TgpMfdDrawable::DrawRALT(VirtualDisplay* display)
 {
-    if (TheHud and !(self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
+    if (TheHud and  not (self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
         and self->af->platform->RaltReady()  and 
         TheHud->FindRollAngle(-TheHud->hat) and TheHud->FindPitchAngle(-TheHud->hat))
     {

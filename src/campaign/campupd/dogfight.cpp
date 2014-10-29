@@ -123,7 +123,7 @@ void DogfightClass::ApplySettings(void)
     int i;
 
     // KCK: Should this be done on the host only, or should everyone assume we have the same data?
-    // if ( not FalconLocalGame or !FalconLocalGame->IsLocal())
+    // if ( not FalconLocalGame or not FalconLocalGame->IsLocal())
     // return;
 
     if ( not TheCampaign.IsLoaded())

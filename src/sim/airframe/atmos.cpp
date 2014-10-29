@@ -152,7 +152,7 @@ void AirframeClass::Atmosphere(void)
 
     if (platform == SimDriver.GetPlayerAircraft())
     {
-        if ((fabs(qbar - lastqBar) > 5.0F) or !lastqBar)
+        if ((fabs(qbar - lastqBar) > 5.0F) or not lastqBar)
         {
             if ((qbar > 250) or g_bFFCenterFix)
             {

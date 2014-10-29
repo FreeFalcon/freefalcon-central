@@ -555,7 +555,7 @@ BOOL C_Waypoint::UpdateInfo(long ID, float x, float y)
             }
         }
 
-        if ((ox not_eq cur->x or oy not_eq cur->y) and !(cur->Flags bitand C_BIT_INVISIBLE))
+        if ((ox not_eq cur->x or oy not_eq cur->y) and  not (cur->Flags bitand C_BIT_INVISIBLE))
             return(TRUE);
     }
 
@@ -620,7 +620,7 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     _TCHAR buf[15];
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !Dragable(0))
+    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED) or not Dragable(0))
         return(FALSE);
 
     if (over not_eq Parent_)

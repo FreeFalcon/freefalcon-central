@@ -43,7 +43,7 @@ char* GetFilename(short x, short y)
 {
     int index, i;
 
-    if ( not Tiles or !TexCodes)
+    if ( not Tiles or not TexCodes)
         return "INVALID";
 
     i = (Map_Max_Y - (y + 1)) * Map_Max_X + x;

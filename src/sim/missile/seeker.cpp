@@ -25,7 +25,7 @@ void MissileClass::RunSeeker()
     // Shouldn't be necessary, but at this stage, lets be safe...
     // No seeker if in SAFE
     if (
-        !sensorArray or !sensorArray[0] ||
+        !sensorArray or not sensorArray[0] ||
         launchState == PreLaunch and parent and parent->IsAirplane()  and 
         ((AircraftClass*)parent.get())->Sms->MasterArm() == SMSBaseClass::Safe
     )
@@ -62,7 +62,7 @@ void MissileClass::RunSeeker()
         ) ||
         (
             launchState == InFlight and sensorArray[0]->Type() not_eq SensorClass::Radar  and 
-            ( not isSlave or !targetPtr) //I-Hawk - was missing the parentheses here, caused heat seeker locking problems
+            ( not isSlave or not targetPtr) //I-Hawk - was missing the parentheses here, caused heat seeker locking problems
         )
     )
     {
@@ -207,7 +207,7 @@ void MissileClass::RunSeeker()
         (
             inputData->mslActiveTtg > 0  and 
             launchState == InFlight and sensorArray[0]->Type() not_eq SensorClass::Radar  and 
-            ( not isSlave or !targetPtr)
+            ( not isSlave or not targetPtr)
         )
     )
     {

@@ -216,7 +216,7 @@ int RadarDopplerClass::GMObjectContactTest(FalconEntity *contact)
         /*
         else // is camp object
         {
-         // 2002-04-03 MN contact is a CAMPAIGN object now !!! We can't do SimBaseClass stuff here.
+         // 2002-04-03 MN contact is a CAMPAIGN object now ! We can't do SimBaseClass stuff here.
          // Speed test however is valid, as it checks U_MOVING flag of unit
          // As there are no campaign units that consist only of soldiers, no need to check for them here
          if(contact->GetVt() > 1.0F )
@@ -630,7 +630,7 @@ void RadarDopplerClass::SetAimPoint(float xCmd, float yCmd)
     }
 
     if (
-        (IsSOI() and !lockedTarget) ||
+        (IsSOI() and not lockedTarget) ||
         (
             ((laserPod and laserPod->IsSOI()) or (mavDisplay and mavDisplay->IsSOI()))  and 
             pac and pac->FCC and pac->FCC->preDesignate
@@ -1039,7 +1039,7 @@ void RadarDopplerClass::SetGMScan(void)
 
         //azScan = 60.0F * DTR; // Radar still scans full volume, but only displays a subset...
         //MI az is set thru the OSB now
-        if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
+        if ( not g_bRealisticAvionics or  not g_bAGRadarFixes)
             azScan = 60.0F * DTR;
         else if (g_bRealisticAvionics and g_bAGRadarFixes)
         {
@@ -1067,7 +1067,7 @@ void RadarDopplerClass::SetGMScan(void)
         //   azScan = atan2( TwoRootTwo*groundMapRange, distance from platform to GMat );
         //azScan = 15.0F * DTR;
         //MI az is set thru the OSB now
-        if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
+        if ( not g_bRealisticAvionics or  not g_bAGRadarFixes)
             azScan = 15.0F * DTR;
         else if (g_bRealisticAvionics and g_bAGRadarFixes)
         {
@@ -1100,7 +1100,7 @@ void RadarDopplerClass::SetGMScan(void)
         //   azScan = atan2( TwoRootTwo*groundMapRange, distance from platform to GMat );
         //azScan = 5.0F * DTR;
         //MI az is set thru the OSB now
-        if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
+        if ( not g_bRealisticAvionics or  not g_bAGRadarFixes)
             azScan = 5.0F * DTR;
         else if (g_bRealisticAvionics and g_bAGRadarFixes)
         {
@@ -1127,7 +1127,7 @@ void RadarDopplerClass::SetGMScan(void)
         }
 
         //MI az is set thru the OSB now
-        if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
+        if ( not g_bRealisticAvionics or  not g_bAGRadarFixes)
             azScan = MAX_ANT_EL;
         else if (g_bRealisticAvionics and g_bAGRadarFixes)
         {
@@ -1163,7 +1163,7 @@ void RadarDopplerClass::SetGMScan(void)
 
         // ((RenderGMComposite*)privateDisplay)->SetGimbalLimit( azScan );
         //MI take the azimuth we've selected thru the OSB
-        if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
+        if ( not g_bRealisticAvionics or  not g_bAGRadarFixes)
             ((RenderGMComposite*)privateDisplay)->SetGimbalLimit(MAX_ANT_EL);
         else
             ((RenderGMComposite*)privateDisplay)->SetGimbalLimit(azScan);
@@ -1339,7 +1339,7 @@ void RadarDopplerClass::GMDisplay(void)
     if (fabs(seekerAzCenter) > MAX_ANT_EL)
     {
         //MI why would we want to do this?
-        if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
+        if ( not g_bRealisticAvionics or  not g_bAGRadarFixes)
         {
             viewOffsetRel.x = 0.0F;
             viewOffsetRel.y = 0.0F;
@@ -1393,7 +1393,7 @@ void RadarDopplerClass::GMDisplay(void)
                     curgain = 1;
 
                 //MI
-                if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
+                if ( not g_bRealisticAvionics or  not g_bAGRadarFixes)
                     ((RenderGMComposite*)display)->SetGain(((RenderGMComposite*)display)->GetGain()*gainCmd);
                 else
                     ((RenderGMComposite*)display)->SetGain(curgain);
@@ -1803,7 +1803,7 @@ void RadarDopplerClass::GMDisplay(void)
             if (flags bitand NORM)
             {
                 //MI
-                if ( not g_bRealisticAvionics or !g_bAGRadarFixes)
+                if ( not g_bRealisticAvionics or  not g_bAGRadarFixes)
                     LabelButton(2, "NRM");
                 else
                     LabelButton(2, "NORM");
@@ -1820,7 +1820,7 @@ void RadarDopplerClass::GMDisplay(void)
         }
 
         if (IsAGDclt(Ovrd) == FALSE)
-            LabelButton(3, "OVRD", NULL, !IsEmitting());
+            LabelButton(3, "OVRD", NULL,  not IsEmitting());
 
         if (IsAGDclt(Cntl) == FALSE)
             LabelButton(4, "CNTL", NULL, IsSet(CtlMode));
@@ -1836,7 +1836,7 @@ void RadarDopplerClass::GMDisplay(void)
             {
                 LabelButton(6, "FZ", NULL, IsSet(FZ));
                 LabelButton(7, "SP", NULL, IsSet(SP));
-                LabelButton(9, "STP", NULL, !IsSet(SP));
+                LabelButton(9, "STP", NULL,  not IsSet(SP));
             }
 
             if (IsAGDclt(Cz) == FALSE)
@@ -1877,7 +1877,7 @@ void RadarDopplerClass::GMDisplay(void)
         // MD -- 20040515: watch out!  Until MARKs are fixed properly, curWaypoint may not point to a real waypoint
         // so check the pointer to avoid a CTD here.
         if (SimDriver.GetPlayerAircraft()  and 
-            !F4IsBadReadPtr(SimDriver.GetPlayerAircraft()->curWaypoint, sizeof(WayPointClass))
+             not F4IsBadReadPtr(SimDriver.GetPlayerAircraft()->curWaypoint, sizeof(WayPointClass))
            )
         {
             float x, y, z, dx, dy;
@@ -2510,7 +2510,7 @@ void RadarDopplerClass::AGBottomRow()
         {
             FackClass* mFaults = ((AircraftClass*)(SimDriver.GetPlayerAircraft()))->mFaults;
 
-            if (mFaults and !(mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::xmtr))
+            if (mFaults and  not (mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::xmtr))
             {
                 if (SimDriver.GetPlayerAircraft()->RFState == 1)
                     LabelButton(12, "RDY", "QUIET");
@@ -2640,8 +2640,8 @@ void RadarDopplerClass::GMMode(void)
 
         //ADDING SECTION
         //TJL 11/25/03 Fixes the 0.5 second stutter on Aircraft when in A/G mode
-        //!g_bnoRadStutter turns off the fix; this section is original code. Fix is after this.
-        while (testFeature and !g_bnoRadStutter)
+        // not g_bnoRadStutter turns off the fix; this section is original code. Fix is after this.
+        while (testFeature and  not g_bnoRadStutter)
         {
 
             if (isEmitting)
@@ -2693,7 +2693,7 @@ void RadarDopplerClass::GMMode(void)
                         {
                             if (walker == &objectWalker)
                             {
-                                // 2002-04-03 MN testFeature is a CAMPAIGN object now !!! We can't do SimBaseClass stuff here.
+                                // 2002-04-03 MN testFeature is a CAMPAIGN object now ! We can't do SimBaseClass stuff here.
                                 // Speed test however is valid, as it checks U_MOVING flag of unit
                                 // As there are no campaign units that consist only of soldiers, no need to check for them here
                                 if (testFeature->GetVt() > g_fGMTMinSpeed /*||
@@ -2857,7 +2857,7 @@ void RadarDopplerClass::GMMode(void)
                             }
                         }
 
-                        if (canSee > 1.0F and !filterthis)
+                        if (canSee > 1.0F and not filterthis)
                         {
                             tmpList = new GMList(testFeature);
                             tmpList->next = curNode;
@@ -2945,7 +2945,7 @@ void RadarDopplerClass::GMMode(void)
         while (testFeature and g_bnoRadStutter)
         {
 
-            if (isEmitting and !testFeature->IsAirplane())
+            if (isEmitting and not testFeature->IsAirplane())
 
             {
                 range = (float)sqrt(
@@ -2997,7 +2997,7 @@ void RadarDopplerClass::GMMode(void)
                         {
                             if (walker == &objectWalker)
                             {
-                                // 2002-04-03 MN testFeature is a CAMPAIGN object now !!! We can't do SimBaseClass stuff here.
+                                // 2002-04-03 MN testFeature is a CAMPAIGN object now ! We can't do SimBaseClass stuff here.
                                 // Speed test however is valid, as it checks U_MOVING flag of unit
                                 // As there are no campaign units that consist only of soldiers, no need to check for them here
                                 if (testFeature->GetVt() > g_fGMTMinSpeed /*||
@@ -3161,7 +3161,7 @@ void RadarDopplerClass::GMMode(void)
                             }
                         }
 
-                        if (canSee > 1.0F and !filterthis)
+                        if (canSee > 1.0F and not filterthis)
                         {
                             tmpList = new GMList(testFeature);
                             tmpList->next = curNode;
@@ -3321,7 +3321,7 @@ void RadarDopplerClass::GMMode(void)
                             testObject->drawPointer->GetClass() == DrawableObject::Guys)
                             FilterThis = TRUE;
 
-                        if (testObject->IsSim() and !FilterThis  and 
+                        if (testObject->IsSim() and not FilterThis  and 
                             testObject->GetVt() > g_fGMTMinSpeed  and 
                             testObject->GetVt() < g_fGMTMaxSpeed)
                         {
@@ -3394,7 +3394,7 @@ void RadarDopplerClass::GMMode(void)
                             (dy < 0.0F and dx > 0.5F * -dy))   // Left side of nose
                         {
                             // Actual LOS
-                            if (testObject->IsSim() and !OTWDriver.CheckLOS(platform, testObject))
+                            if (testObject->IsSim() and not OTWDriver.CheckLOS(platform, testObject))
                             {
                                 canSee = 0.0F;  // LOS is blocked
                             }

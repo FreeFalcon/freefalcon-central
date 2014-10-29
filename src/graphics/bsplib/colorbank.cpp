@@ -184,7 +184,7 @@ void ColorBankClass::SetColorMode(ColorMode mode)
             break;
 
         default:
-            ShiWarning("Bad color mode!");
+            ShiWarning("Bad color mode");
     }
 }
 

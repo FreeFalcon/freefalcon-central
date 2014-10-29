@@ -282,7 +282,7 @@ MFDClass::~MFDClass()
 
 
 // RED - This function creates and assigns all the drawables shared by the various MFDs
-// WARNING !! it Has to be called BEFORE ANY MFD Use/allocation
+// WARNING  it Has to be called BEFORE ANY MFD Use/allocation
 void MFDClass::CreateDrawables(void)
 {
     // 1st of all, kill anything already allocated
@@ -330,7 +330,7 @@ void MFDClass::CreateDrawables(void)
 
 
 // RED - This function destroy all the drawables shared by MFDs
-// WARNING !! it Has to be called AFTER ALL MFDs are destroyed
+// WARNING  it Has to be called AFTER ALL MFDs are destroyed
 void MFDClass::DestroyDrawables(void)
 {
     for (int i = 0; i < MaxPrivMode; i++)
@@ -831,7 +831,7 @@ void MFDClass::Exec(int clearFrame, int virtualCockpit)
     }
     else
     {
-        if (drawable and !(mode == MfdOff and clearFrame))
+        if (drawable and  not (mode == MfdOff and clearFrame))
         {
             drawable->SetMFD(id);
 
@@ -1169,7 +1169,7 @@ void MfdDrawable::DrawReference(AircraftClass *self)
             RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
 
             if (theRadar and theRadar->CurrentTarget() and theRadar->CurrentTarget()->BaseData()  and 
-                !FCC->IsAGMasterMode())
+                 not FCC->IsAGMasterMode())
             {
                 float   dx, dy, xPos = 0.0F, tgtx, yPos = 0.0F;
                 vector  collPoint;//newTarget->localData
@@ -1239,7 +1239,7 @@ void MfdDrawable::DrawReference(AircraftClass *self)
 
     if (g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 

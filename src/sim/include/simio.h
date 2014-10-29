@@ -279,7 +279,7 @@ public:
     }
     void SetAxisSmoothing(GameAxis_t id, long factor)
     {
-        analog[id].smoothingFactor = factor;    // factor has to be power of 2 !!
+        analog[id].smoothingFactor = factor;    // factor has to be power of 2 
     }
 
     // reads/writes offset-values for bipolar axis

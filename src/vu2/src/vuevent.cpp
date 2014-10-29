@@ -552,7 +552,7 @@ VU_ERRCODE VuGetRequest::Process(VU_BOOL autod)
 
                 while (ent)
                 {
-                    if ( not ent->IsPrivate() and ent->IsLocal() and !ent->IsGlobal())
+                    if ( not ent->IsPrivate() and ent->IsLocal() and not ent->IsGlobal())
                     {
                         if (ent->Id() not_eq sender->Id())
                         {
@@ -1301,7 +1301,7 @@ VU_ERRCODE VuUnmanageEvent::Process(VU_BOOL)
 #endif
 
 //--------------------------------------------------
-#if !NO_RELEASE_EVENT
+#if not NO_RELEASE_EVENT
 VuReleaseEvent::VuReleaseEvent(VuEntity* entity)
     : VuEvent(VU_RELEASE_EVENT, entity->Id(), vuLocalSessionEntity.get(), TRUE)
 {
@@ -2039,7 +2039,7 @@ VuTimerEvent::VuTimerEvent(
 
 VuTimerEvent::~VuTimerEvent()
 {
-    // sfr: FUCK!! wheres unref?
+    // sfr: FUCK wheres unref?
     if (event_)
     {
         event_->UnRef();

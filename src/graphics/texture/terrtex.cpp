@@ -904,7 +904,7 @@ namespace
         }
         else
         {
-            // BUG!!!
+            // BUG!
             return 4096;
         }
     }
@@ -1071,7 +1071,7 @@ void TextureDB::Free(SetEntry* pSet, TileEntry* pTile, int res)
     ShiAssert(pTile->handle[res] == NULL);
 
     // KLUDGE to prevent release runtime crash
-    if ( not pTile or !pSet) return;
+    if ( not pTile or not pSet) return;
 
     // Release the image memory if it isn't already gone
     if ((char*)pTile->bits[res])

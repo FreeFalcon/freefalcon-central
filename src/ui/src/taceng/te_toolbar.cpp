@@ -319,7 +319,7 @@ static void tactical_briefing_button(long, short hittype, C_Base *ctrl)
 
     flight = (Flight) vuDatabase->Find(gSelectedFlightID);
 
-    if ( not flight or !flight->IsFlight())
+    if ( not flight or not flight->IsFlight())
         return;
 
     // KCK: This should only need to be called upon selecting a flight -

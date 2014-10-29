@@ -71,7 +71,7 @@ void DigitalBrain::FollowWaypoints(void)
         // if we are a wingman and we are taking off or landing
         mpActionFlags[AI_FOLLOW_FORMATION] = FALSE; // don't follow formation
     }
-    else if (isWing and !pobj)
+    else if (isWing and not pobj)
     {
         // if we are a wingman and we can't find the leader's pointer
         mpActionFlags[AI_FOLLOW_FORMATION] = FALSE; // don't follow formation
@@ -482,8 +482,8 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
             //Adding in onStation == Crosswind; if we make it here, we are past our waypoint time
             //already so this shouldn't be a problem?
             if (((onStation == Crosswind or (onStation == NotThereYet and missionComplete))  and 
-                 groundTargetPtr == NULL) or onStation == OnStation or !(g_bAGTargetWPFix  and 
-                         self->curWaypoint->GetWPFlags() bitand WPF_TARGET and !missionComplete and missionClass == AGMission  and 
+                 groundTargetPtr == NULL) or onStation == OnStation or  not (g_bAGTargetWPFix  and 
+                         self->curWaypoint->GetWPFlags() bitand WPF_TARGET and not missionComplete and missionClass == AGMission  and 
                          curMode not_eq RTBMode and curMode not_eq LandingMode))
             {
                 // 2002-04-08 MN removed again - this stops AI from going to landing mode at all...
@@ -658,10 +658,10 @@ void DigitalBrain::GoToCurrentWaypoint(void)
             it can easily happen that a flight is too late at its target, especially for AG missions. So if we're on an AG mission,
             have not yet completed the mission, are not in RTB mode or landing mode, don't skip the target waypoint. */
 
-            // mind the ! check here !!!
-            if (onStation == OnStation or !(g_bAGTargetWPFix  and 
+            // mind the  check here 
+            if (onStation == OnStation or  not (g_bAGTargetWPFix  and 
                                             self->curWaypoint->GetWPFlags() bitand WPF_TARGET  and 
-                                            !missionComplete and missionClass == AGMission  and 
+                                             not missionComplete and missionClass == AGMission  and 
                                             curMode not_eq RTBMode and curMode not_eq LandingMode))
             {
                 // JB 020315 Don't skip to the last waypoint unless we're OnStation. Otherwise we may go into landing mode too early.
@@ -912,7 +912,7 @@ void DigitalBrain::SelectNextWaypoint(void)
         }
     }
     else if ((tmpWaypoint->GetWPFlags() bitand WPF_REPEAT)  and 
-             !(self->curWaypoint->GetWPFlags() bitand WPF_REPEAT))
+              not (self->curWaypoint->GetWPFlags() bitand WPF_REPEAT))
     {
         switch (tmpWaypoint->GetWPAction())
         {
@@ -1081,7 +1081,7 @@ void DigitalBrain::SetWaypointSpecificStuff(void)
     }
 
     // Marco edit - set Formation depending on waypoint selected
-    if (SimDriver.GetPlayerEntity() not_eq self and !isWing and self->curWaypoint->GetWPFormation() not_eq mCurFormation)
+    if (SimDriver.GetPlayerEntity() not_eq self and not isWing and self->curWaypoint->GetWPFormation() not_eq mCurFormation)
     {
         mCurFormation = self->curWaypoint->GetWPFormation() ;
         AiSendCommand(self, mCurFormation, AiFlight, FalconNullId);

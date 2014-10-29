@@ -438,7 +438,7 @@ int ObjectiveClass::Save(VU_BYTE **stream)
 
     if ( not IsAggregate())
     {
-        // KCK TODO: We need to send the deaggregated data as well!
+        // KCK TODO: We need to send the deaggregated data as well
     }
 
     memcpy(*stream, &obj_data.last_repair, sizeof(CampaignTime));
@@ -676,7 +676,7 @@ void ObjectiveClass::SendDeaggregateData(VuTargetEntity *target)
 
 int ObjectiveClass::Deaggregate(FalconSessionEntity *session)
 {
-    if ( not IsLocal() or !IsAggregate())
+    if ( not IsLocal() or not IsAggregate())
     {
         return 0;
     }
@@ -839,7 +839,7 @@ int ObjectiveClass::RecordCurrentState(FalconSessionEntity *session, int)
 //int ObjectiveClass::Reaggregate (FalconSessionEntity* session)
 int ObjectiveClass::Reaggregate(FalconSessionEntity*)
 {
-    if (IsAggregate() or !IsLocal())
+    if (IsAggregate() or not IsLocal())
         return 0;
 
     // Record current state of components
@@ -904,11 +904,11 @@ int ObjectiveClass::Reaggregate(FalconSessionEntity*)
 
 int ObjectiveClass::TransferOwnership(FalconSessionEntity* session)
 {
-    if (IsAggregate() or !IsLocal())
+    if (IsAggregate() or not IsLocal())
         return 0;
 
 #ifdef DEAG_DEBUG
-    MonoPrint("Transfering ownership of objective #%d! - owner is: %d\n", GetCampID(), session->Id().creator_.value_);
+    MonoPrint("Transfering ownership of objective #%d - owner is: %d\n", GetCampID(), session->Id().creator_.value_);
 #endif
 
     ShiAssert(FalconLocalGame->IsLocal());
@@ -939,7 +939,7 @@ int ObjectiveClass::TransferOwnership(FalconSessionEntity* session)
     RecordCurrentState(session, FALSE);
 
     // Update our local wake status
-    if (IsAwake() and !FalconLocalSession->InSessionBubble(this, REAGREGATION_RATIO))
+    if (IsAwake() and not FalconLocalSession->InSessionBubble(this, REAGREGATION_RATIO))
     {
         Sleep();
     }
@@ -954,7 +954,7 @@ int ObjectiveClass::TransferOwnership(FalconSessionEntity* session)
 int ObjectiveClass::Wake()
 {
     // sfr: in MP we need to run entities even if we are not in game
-#if !NEW_WAKE
+#if not NEW_WAKE
     if ( not OTWDriver.IsActive())
     {
         return 0;
@@ -983,7 +983,7 @@ int ObjectiveClass::Sleep(void)
     // OTWDriver.LockObject ();
     // 2002-04-14 put back in by MN - we need to sleep our features, and this does it,
     //while a more general function name could have been chosen ;)
-    SimDriver.SleepCampaignFlight(GetComponents()); //2002-02-11 REMOVED BY S.G. MPS original Cut and paste bug from UnitClass. Objectives have no flights!
+    SimDriver.SleepCampaignFlight(GetComponents()); //2002-02-11 REMOVED BY S.G. MPS original Cut and paste bug from UnitClass. Objectives have no flights
 
     SetAwake(0);
     AwakeCampaignEntities--;
@@ -1025,7 +1025,7 @@ void ObjectiveClass::RemoveFromSimLists(void)
 
 void ObjectiveClass::DeaggregateFromData(VU_BYTE* data, long size)
 {
-    if (IsLocal() or !IsAggregate() or FalconLocalGame->IsLocal())
+    if (IsLocal() or not IsAggregate() or FalconLocalGame->IsLocal())
     {
         return;
     }
@@ -1161,7 +1161,7 @@ void ObjectiveClass::ReaggregateFromData(VU_BYTE* data, long size)
         return;
 
 #ifdef DEAG_DEBUG
-    MonoPrint("Got remote reaggregation message for Objective #%d!\n", GetCampID());
+    MonoPrint("Got remote reaggregation message for Objective #%d\n", GetCampID());
 #endif
 
     ShiAssert( not FalconLocalGame->IsLocal());
@@ -1211,7 +1211,7 @@ void ObjectiveClass::ReaggregateFromData(VU_BYTE* data, long size)
 
 void ObjectiveClass::TransferOwnershipFromData(VU_BYTE* data, long size)
 {
-    if (IsAggregate() or IsLocal() or !data)
+    if (IsAggregate() or IsLocal() or not data)
     {
         return;
     }
@@ -1229,7 +1229,7 @@ void ObjectiveClass::TransferOwnershipFromData(VU_BYTE* data, long size)
     data += len;
 
 #ifdef DEAG_DEBUG
-    // MonoPrint ("Transfering ownership of remote objective #%d - new owner is %d!\n",GetCampID(),deag_owner.creator_.value_);
+    // MonoPrint ("Transfering ownership of remote objective #%d - new owner is %d\n",GetCampID(),deag_owner.creator_.value_);
 #endif
 
     // Change ownership locally
@@ -1248,12 +1248,12 @@ void ObjectiveClass::TransferOwnershipFromData(VU_BYTE* data, long size)
     }
 
     // Update our local wake status
-    if (IsAwake() and !FalconLocalSession->InSessionBubble(this, REAGREGATION_RATIO))
+    if (IsAwake() and not FalconLocalSession->InSessionBubble(this, REAGREGATION_RATIO))
     {
         Sleep();
     }
     else if (
-        !IsAwake() and (
+         not IsAwake() and (
             GetDeagOwner() == FalconLocalSession->Id() or FalconLocalSession->InSessionBubble(this, 1.0F) > 0
         )
     )
@@ -1394,7 +1394,7 @@ int ObjectiveClass::ApplyDamage(DamType d, int *str, int f, short flags)
     {
         count++;
 
-        if (f >= static_data.class_data->Features or f < 0 or GetFeatureStatus(f) == VIS_DESTROYED or !GetFeatureID(f))
+        if (f >= static_data.class_data->Features or f < 0 or GetFeatureStatus(f) == VIS_DESTROYED or not GetFeatureID(f))
         {
             // Find something to bomb
             for (fid = 0, f = 255; fid < static_data.class_data->Features and f >= static_data.class_data->Features ; fid++)
@@ -2143,7 +2143,7 @@ int ObjectiveClass::IsSupplySource(void)
 {
     if (GetType() == TYPE_CITY or GetType() == TYPE_PORT or GetType() == TYPE_DEPOT or GetType() == TYPE_ARMYBASE)
     {
-        if ( not IsFrontline() and !IsSecondline())
+        if ( not IsFrontline() and not IsSecondline())
         {
             return 1;
         }
@@ -3099,7 +3099,7 @@ int BestRepairFeature(Objective o, int *hours)
             }
         }
 
-        // if (s not_eq VIS_DESTROYED and !o->GetFeatureID(f))
+        // if (s not_eq VIS_DESTROYED and not o->GetFeatureID(f))
         // o->SetFeatureStatus(f,VIS_DESTROYED);
     }
 
@@ -3126,7 +3126,7 @@ int BestTargetFeature(Objective o, uchar targeted[])
     {
         s = o->GetFeatureStatus(f);
 
-        if (s not_eq VIS_DESTROYED and targeted and !targeted[f])
+        if (s not_eq VIS_DESTROYED and targeted and not targeted[f])
         {
             score = o->GetFeatureValue(f);
 
@@ -3184,7 +3184,7 @@ void AddChildObjectives(Objective o, Objective p, F4PFList list, int maxdist, in
         if (flags bitand FIND_STANDARDONLY and n->IsSecondary())
             continue;
 
-        if (flags bitand FIND_FINDFRIENDLY and !GetRoE(o->GetTeam(), n->GetTeam(), ROE_GROUND_MOVE))
+        if (flags bitand FIND_FINDFRIENDLY and not GetRoE(o->GetTeam(), n->GetTeam(), ROE_GROUND_MOVE))
             continue;
 
         AddChildObjectives(n, p, list, maxdist - 1, level + 1, flags);

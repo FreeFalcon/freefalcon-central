@@ -73,7 +73,7 @@ void DigitalBrain::Actions(void)
             WayPoint w = flight->GetFirstUnitWP();
             bool found = false;
 
-            while (w and !found)
+            while (w and not found)
             {
                 if (w->GetWPFlags() bitand WPF_TARGET)
                     found = true;
@@ -297,7 +297,7 @@ void DigitalBrain::Actions(void)
                 if (lastMode not_eq BugoutMode and lastMode not_eq SeparateMode and targetPtr)
                 {
                     // 2001-10-28 CHANGED BACK M.N. holdAlt is used in AltitudeHold, which needs a positive value
-                    // altitude error is calculated as holdAlt + self->ZPos() there !!!
+                    // altitude error is calculated as holdAlt + self->ZPos() there 
                     //    holdAlt = min (-5000.0F, self->ZPos());
                     //TJL 11/08/03 Hold position altitude but bug out
                     //holdAlt = min (5000.0F, -self->ZPos());
@@ -446,7 +446,7 @@ void DigitalBrain::Actions(void)
 
 #endif
 
-    // have we got a surprise for you!!
+    // have we got a surprise for you
     if ((targetPtr or threatPtr) and IsSetATC(HasTrainable) and self->HasPilot())
     {
         TrainableGunsEngage();
@@ -517,7 +517,7 @@ void DigitalBrain::AirbaseCheck()
 
     // when on Bingo, check distance to closest airbase when not having a target and not being threatened
     // return if distance is greater than g_fBingoReturnDistance
-    if (IsSetATC(SaidBingo) and !IsSetATC(SaidFumes) and !targetPtr and !threatPtr and !airbasediverted)
+    if (IsSetATC(SaidBingo) and not IsSetATC(SaidFumes) and not targetPtr and not threatPtr and not airbasediverted)
     {
         pos.x = self->XPos();
         pos.y = self->YPos();

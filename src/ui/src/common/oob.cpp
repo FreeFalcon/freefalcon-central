@@ -321,7 +321,7 @@ BOOL FindChildren(TREELIST *list, short owner)
 {
     TREELIST *item;
 
-    if ( not list or !owner)
+    if ( not list or not owner)
         return(FALSE);
 
     item = list;
@@ -345,7 +345,7 @@ BOOL FindOtherChildren(TREELIST *list, short owner)
 {
     TREELIST *item;
 
-    if ( not list or !owner)
+    if ( not list or not owner)
         return(FALSE);
 
     item = list;
@@ -472,7 +472,7 @@ void ToggleOOBTeamCB(long, short hittype, C_Base *control)
                     }
                     else
                     {
-                        if (root->Item_->GetUserNumber(0) == owner and !FindOtherChildren(root->Child, owner))
+                        if (root->Item_->GetUserNumber(0) == owner and not FindOtherChildren(root->Child, owner))
                             root->Item_->SetFlagBitOn(C_BIT_INVISIBLE);
                         else
                         {
@@ -531,7 +531,7 @@ void ToggleOOBFilterCB(long ID, short hittype, C_Base *control)
         {
             btn = (C_Button*)control->GetParent()->FindControl(TeamFlagBtnIDs[i]);
 
-            if (btn and !(btn->GetFlags() bitand C_BIT_INVISIBLE) and btn->GetState())
+            if (btn and  not (btn->GetFlags() bitand C_BIT_INVISIBLE) and btn->GetState())
             {
                 // 2002-01-04 MODIFIED BY S.G. GetTeam is 'based one' and not 'based zero' so I'll add '1' to i.
                 // root=gOOBTree->Find((GetTeam(static_cast<uchar>(i)) << 24) | Cat);
@@ -586,7 +586,7 @@ void ToggleOOBFilterCB(long ID, short hittype, C_Base *control)
      }
      else
      {
-     if(root->Item_->GetUserNumber(0) == owner and !FindOtherChildren(root->Child,owner))
+     if(root->Item_->GetUserNumber(0) == owner and not FindOtherChildren(root->Child,owner))
      root->Item_->SetFlagBitOn(C_BIT_INVISIBLE);
      else
      {
@@ -964,7 +964,7 @@ void TallyPlayerSquadrons()
             done = 0;
             cur = gPlayerSquadrons;
 
-            while (cur and !done)
+            while (cur and not done)
             {
                 if (cur->SquadronID == session->GetPlayerSquadronID())
                 {

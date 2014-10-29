@@ -165,7 +165,7 @@ void TACREFCloseWindowCB(long ID, short hittype, C_Base *control)
 
 void TACREF_PositionCamera(OBJECTINFO *Info, C_Window *win, long client)
 {
-    if ( not TAC_Viewer or !Info or !win)
+    if ( not TAC_Viewer or not Info or not win)
         return;
 
     FindCameraDeltas(Info);
@@ -308,7 +308,7 @@ static void BuildStatsTree(Statistics *stats, C_TreeList *tree)
     long catval = 0; // internal... don't use for anything
     long UniqueID = 1;
 
-    if ( not stats or !tree)
+    if ( not stats or not tree)
         return;
 
     tree->Parent_->ScanClientArea(tree->GetClient());
@@ -346,7 +346,7 @@ static void BuildDescTree(Description *desc, C_TreeList *tree)
     long textval = 0;
     long UniqueID = 1;
 
-    if ( not desc or !tree)
+    if ( not desc or not tree)
         return;
 
     tree->Parent_->ScanClientArea(tree->GetClient());
@@ -434,7 +434,7 @@ static void BuildRWRList(RWR *rwr, C_ListBox *listbox)
     long rwrval = 0;
     long UniqueID = 1;
 
-    if ( not rwr or !listbox)
+    if ( not rwr or not listbox)
         return;
 
     radar = rwr->GetFirst(&rwrval);

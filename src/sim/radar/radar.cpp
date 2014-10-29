@@ -48,7 +48,7 @@ RadarClass::RadarClass(int type, SimMoverClass* parentPlatform) : SensorClass(pa
     isEmitting = TRUE;
     targetUnderCursor = FalconNullId;
     lasttargetUnderCursor = NULL;//me123
-#if !NO_REMOTE_BUGGED_TARGET
+#if not NO_REMOTE_BUGGED_TARGET
     RemoteBuggedTarget = NULL;
 #endif
     oldseekerElCenter = 0.0f;
@@ -162,7 +162,7 @@ void RadarClass::SetDesiredTarget(SimObjectType* newTarget)
 
     // If we're not interested in our locked target anymore, tell him he's off the hook
     //if (lockedTarget) // JB 010223 CTD
-    // if (lockedTarget and !F4IsBadCodePtr((FARPROC) lockedTarget) and !F4IsBadCodePtr((FARPROC) lockedTarget->BaseData())) { // JB 010223 CTD
+    // if (lockedTarget and  not F4IsBadCodePtr((FARPROC) lockedTarget) and  not F4IsBadCodePtr((FARPROC) lockedTarget->BaseData())) { // JB 010223 CTD
     //me123 this is done in SetSensorTarget below SendTrackMsg (lockedTarget->BaseData()->Id(), Track_Unlock);
     // }
 
@@ -338,7 +338,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
 
     // END OF ADDED SECTION
     // See if the target is in the Doppler notch
-    if (target->BaseData()->OnGround() and !target->BaseData()->IsMover())
+    if (target->BaseData()->OnGround() and not target->BaseData()->IsMover())
     {
         S = 0.0f;   //me123 don't show ground target's that don't move // 2001-09-07 S.G. ARE THEY SHOWING UP ON THE GM RADAR? IF NOT, WE HAVE A PROBLEM SINCE THEY WON'T SHOW ANYWHERE...
     }

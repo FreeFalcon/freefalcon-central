@@ -119,7 +119,7 @@ void HeliBrain::CollisionCheck(void)
     }
 
     // exit mode when collision no longer probable
-    if (curMode == CollisionAvoidMode and !collision)
+    if (curMode == CollisionAvoidMode and not collision)
     {
     }
 }

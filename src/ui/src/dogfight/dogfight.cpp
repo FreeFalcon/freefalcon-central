@@ -395,7 +395,7 @@ BOOL FindSquadronType(long ClassID, long teamid)
 
     while (entity)
     {
-        if (entity->GetTeam() == teamid and entity->IsSquadron() and !entity->IsDead())
+        if (entity->GetTeam() == teamid and entity->IsSquadron() and not entity->IsDead())
         {
             if (entity->Type() == ClassID)
             {
@@ -1191,7 +1191,7 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
             // Find this player's session
             session = (FalconSessionEntity*) sit.GetFirst();
 
-            while (session and !found)
+            while (session and not found)
             {
                 if (session->GetAircraftNum() == ac and session->GetPlayerFlight() == flight and session->GetPilotSlot() == flight->player_slots[ac])
                     found = 1;
@@ -1408,7 +1408,7 @@ void BuildDFPlayerList()
 
     while (unit)
     {
-        if (unit->IsFlight() and !unit->IsDead())
+        if (unit->IsFlight() and not unit->IsDead())
         {
             // Add this flight and all aircraft to our trees
             flight = (Flight)unit;
@@ -1592,7 +1592,7 @@ long GetACIDFromFlight(Flight flight)
     return(0);
 }
 
-// Use ONLY as a TreeList callback!!!!!!!
+// Use ONLY as a TreeList callback!
 static void SelectDogfightGameCB(long, short hittype, C_Base *control)
 {
     VU_ID *tmpID;
@@ -2349,7 +2349,7 @@ void CheckFlyButton()
         Enabled = TRUE;
 
     // In dogfight games, check ready state
-    if (FalconLocalGame and FalconLocalGame->GetGameType() == game_Dogfight and !SimDogfight.ReadyToStart())
+    if (FalconLocalGame and FalconLocalGame->GetGameType() == game_Dogfight and not SimDogfight.ReadyToStart())
         Enabled = FALSE;
 
     if (Enabled)

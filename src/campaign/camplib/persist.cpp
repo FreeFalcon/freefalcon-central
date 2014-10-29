@@ -530,11 +530,11 @@ void AddRunwayCraters(Objective o, int f, int craters)
     oc = o->GetObjectiveClassData();
     rwindex = oc->PtDataIndex;
 
-    while (rwindex and !runway)
+    while (rwindex and not runway)
     {
         if (PtHeaderDataTable[rwindex].type == RunwayPt)
         {
-            for (i = 0; i < MAX_FEAT_DEPEND and !runway; i++)
+            for (i = 0; i < MAX_FEAT_DEPEND and not runway; i++)
             {
                 if (PtHeaderDataTable[rwindex].features[i] == f)
                     runway = rwindex;
@@ -632,17 +632,17 @@ void UpdateNoCampaignParentObjectsWakeState(float px, float py, float range)
             {
                 // KCK: Probably should remove objects from this list when they're dead -
                 // But I wasn't sure how ACMI uses the unset dead functionality
-                if ( not object->IsAwake() and !object->IsDead())
+                if ( not object->IsAwake() and not object->IsDead())
                     object->Wake();
             }
             else if (dsq > rsq * 1.2F)
             {
                 if (object->IsAwake() and //me123 host needs to drive missiles and bombs
                     (
-                        !vuLocalSessionEntity->Game()->IsLocal() ||
+                         not vuLocalSessionEntity->Game()->IsLocal() ||
                         vuLocalSessionEntity->Game()->IsLocal()  and 
-                        !object->IsBomb()  and 
-                        !object->IsMissile())
+                         not object->IsBomb()  and 
+                         not object->IsMissile())
                    )
                 {
                     object->Sleep();

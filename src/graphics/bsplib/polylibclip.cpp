@@ -97,7 +97,7 @@ static inline float ComputeT(float x, float y, float z, float dx, float dy, floa
             return (x + z) / (-dz - dx);
 
         default:
-            ShiWarning("Bad clip type!");
+            ShiWarning("Bad clip type");
             return 1.0f;
     }
 }
@@ -641,7 +641,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
 
     // Now replace the input data with our generated output data
-    // THERE HAD BETTER BE ENOUGH ROOM!
+    // THERE HAD BETTER BE ENOUGH ROOM
     *nVerts = i = nextOut - outList;
 
     while (i)

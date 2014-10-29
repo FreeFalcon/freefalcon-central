@@ -1374,7 +1374,7 @@ float OTWDriverClass::MoveByRate(float oldval, float newval, float rate)
     float changeval;
     float value = oldval;
 
-    if (value == newval or !gameCompressionRatio) return value; // all done
+    if (value == newval or not gameCompressionRatio) return value; // all done
 
     changeval = rate * DTR * SimLibMajorFrameTime;
 
@@ -1683,7 +1683,7 @@ void OTWDriverClass::VCock_Exec(void)
     // sfr: will test this using callbacks
 #if 1
 
-    if (cockpitFlightData.IsSet(FlightData::MasterCaution) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+    if (cockpitFlightData.IsSet(FlightData::MasterCaution) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
         vrCockpit->SetSwitchMask(2, 1);
     else
         vrCockpit->SetSwitchMask(2, 0);
@@ -1699,68 +1699,68 @@ void OTWDriverClass::VCock_Exec(void)
         //******************************************
 
         // AR/RDY light
-        if (cockpitFlightData.IsSet(FlightData::RefuelRDY) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::RefuelRDY) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARRDY_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARRDY_LIGHT, 0);
 
         // AR/NWS light
-        if (cockpitFlightData.IsSet(FlightData::RefuelAR) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::RefuelAR) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARNWS_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARNWS_LIGHT, 0);
 
         // AR/DISC light
-        if (cockpitFlightData.IsSet(FlightData::RefuelDSC) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::RefuelDSC) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARDISC_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARDISC_LIGHT, 0);
 
         // AOA BELOW light
-        if (cockpitFlightData.IsSet(FlightData::AOABelow) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::AOABelow) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOABELOW_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOABELOW_LIGHT, 0);
 
         // AOA ON light
-        if (cockpitFlightData.IsSet(FlightData::AOAOn) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::AOAOn) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOAON_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOAON_LIGHT, 0);
 
         // AOA ABOVE light
-        if (cockpitFlightData.IsSet(FlightData::AOAAbove) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::AOAAbove) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOAABOVE_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOAABOVE_LIGHT, 0);
 
         //EYEBROW CAUTION lights
         //ENG FIRE
-        if (cockpitFlightData.IsSet(FlightData::ENG_FIRE) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::ENG_FIRE) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_ENGFIRE, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_ENGFIRE, 0);
 
         //ENGINE
-        if (cockpitFlightData.IsSet(FlightData::EngineFault) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::EngineFault) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_ENGINE, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_ENGINE, 0);
 
         //HYD/OIL
-        if ((cockpitFlightData.IsSet(FlightData::HYD) or cockpitFlightData.IsSet(FlightData::OIL)) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if ((cockpitFlightData.IsSet(FlightData::HYD) or cockpitFlightData.IsSet(FlightData::OIL)) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_HYDOIL, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_HYDOIL, 0);
 
         //FLCS
-        if ((cockpitFlightData.IsSet(FlightData::FltControlSys) or cockpitFlightData.IsSet(FlightData::DUAL)) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if ((cockpitFlightData.IsSet(FlightData::FltControlSys) or cockpitFlightData.IsSet(FlightData::DUAL)) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_FLCS, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_FLCS, 0);
 
         //TO/LDG config
-        if (cockpitFlightData.IsSet(FlightData::T_L_CFG) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::T_L_CFG) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_TOLDG, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_TOLDG, 0);
@@ -1773,13 +1773,13 @@ void OTWDriverClass::VCock_Exec(void)
         else
             canopyopen = SimDriver.GetPlayerAircraft()->GetDOFValue(SIMP_CANOPY_DOF) > 0;
 
-        if ((cockpitFlightData.IsSet(FlightData::CAN) or cockpitFlightData.IsSet(FlightData::OXY_LOW) or canopyopen) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if ((cockpitFlightData.IsSet(FlightData::CAN) or cockpitFlightData.IsSet(FlightData::OXY_LOW) or canopyopen) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_CANOPY, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_CANOPY, 0);
 
         //TF-FAIL
-        if (cockpitFlightData.IsSet(FlightData::TF) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::TF) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_TFFAIL, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_TFFAIL, 0);
@@ -1800,7 +1800,7 @@ void OTWDriverClass::VCock_Exec(void)
         }
 
         //Instrument lights
-        if ((SimDriver.GetPlayerAircraft()->GetInstrumentLight()) and !SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if ((SimDriver.GetPlayerAircraft()->GetInstrumentLight()) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_INSTRUMENT_LIGHTS, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_INSTRUMENT_LIGHTS, 0);
@@ -3316,7 +3316,7 @@ void OTWDriverClass::VCock_Exec(void)
     ThreeDVertex t1;
     gSelectedCursor = 9; //Wombat778 10-11-2003 set the cursor to the default green cursor
 
-    if ((vuxRealTime - gTimeLastMouseMove < SI_MOUSE_TIME_DELTA) and !InExitMenu()) //Wombat778 10-15-2003 added so mouse cursor would disappear after a few seconds standing still. Also dont want two cursors when exit menu is up
+    if ((vuxRealTime - gTimeLastMouseMove < SI_MOUSE_TIME_DELTA) and not InExitMenu()) //Wombat778 10-15-2003 added so mouse cursor would disappear after a few seconds standing still. Also dont want two cursors when exit menu is up
     {
         //Wombat778 10-15-2003 Added the following so that mouse cursor could be drawn in green if over a button, red otherwise
         if (g_b3DClickableCursorChange)

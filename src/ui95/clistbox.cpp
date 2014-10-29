@@ -472,7 +472,7 @@ void C_ListBox::SetValueText(long inText)
 
     int width;
 
-    while (cur and !found)
+    while (cur and not found)
     {
         width = atoi(cur->Label_->GetText(C_STATE_0));
 
@@ -556,7 +556,7 @@ short C_ListBox::GetListHeight()
 
 long C_ListBox::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED))
+    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED))
         return(0);
 
     if (relX < GetX() or relX > (GetX() + GetW()) or relY < GetY() or relY > (GetY() + GetH()))

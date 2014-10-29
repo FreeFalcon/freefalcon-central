@@ -337,7 +337,7 @@ char* RadioSubTitle::GetRadioChunk(const int theTalker, const int theFrag)
 #else
 #ifdef NDEBUG
 
-    if ((theFrag < FragCount) and (theStrings[theFrag]) and (theTalker < MAX_VOICE_NUM) and !F4IsBadReadPtr(theStrings[theFrag], sizeof(csvLine)))
+    if ((theFrag < FragCount) and (theStrings[theFrag]) and (theTalker < MAX_VOICE_NUM) and  not F4IsBadReadPtr(theStrings[theFrag], sizeof(csvLine)))
     {
         return theStrings[theFrag]->Voices[theTalker];
     }

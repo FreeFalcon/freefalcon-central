@@ -172,7 +172,7 @@ void C_EditBox::DeleteRange()
 
 long C_EditBox::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED))
+    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED))
         return(0);
 
     if (relX >= GetX() and relX < (GetX() + GetW()) and relY >= GetY() and relY < (GetY() + GetH()))

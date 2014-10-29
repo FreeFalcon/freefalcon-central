@@ -269,7 +269,7 @@ int BuildBriefString(C_Window *win, _TCHAR *brief)
 
         for (TheCampaign.MissionEvaluator->curr_data = 0; TheCampaign.MissionEvaluator->curr_data < pilots; TheCampaign.MissionEvaluator->curr_data += 2)
         {
-            for (j = 0; j < weaps or !j; j++)
+            for (j = 0; j < weaps or not j; j++)
             {
                 TheCampaign.MissionEvaluator->curr_pilot = NULL;
                 TheCampaign.MissionEvaluator->curr_weapon = j;
@@ -316,7 +316,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
     ShiAssert(flight_data);//Cobra 10/31/04 TJL
 
     if ( not TheCampaign.MissionEvaluator->player_element or // MLR 3/25/2004 -
-        !TheCampaign.MissionEvaluator->player_pilot)
+         not TheCampaign.MissionEvaluator->player_pilot)
     {
         // this prevents a CTD, but makes the debried window empty
         return 0;
@@ -763,7 +763,7 @@ static void GetWpTimeToBuffer(WayPoint wp, _TCHAR *cline)
 
 static void GetWptDist(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 {
-    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and !(wp->GetWPFlags() bitand WPF_ALTERNATE))
+    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and  not (wp->GetWPFlags() bitand WPF_ALTERNATE))
     {
         GridIndex lx, ly, cx, cy;
         lwp->GetWPLocation(&lx, &ly);
@@ -776,7 +776,7 @@ static void GetWptDist(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 
 static void GetWptSpeed(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 {
-    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and !(wp->GetWPFlags() bitand WPF_ALTERNATE))
+    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and  not (wp->GetWPFlags() bitand WPF_ALTERNATE))
     {
         /*
         GridIndex cx,cy,lx,ly;
@@ -836,7 +836,7 @@ static void GetWpDescription(WayPoint wp, _TCHAR *cline)
 
 static void GetWpHeading(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 {
-    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and !(wp->GetWPFlags() bitand WPF_ALTERNATE))
+    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and  not (wp->GetWPFlags() bitand WPF_ALTERNATE))
     {
         GridIndex cx, cy, lx, ly;
         float heading;
@@ -1273,7 +1273,7 @@ void GetEntityDestination(CampEntity e, _TCHAR *name)
             WayPoint w = ((Unit)e)->GetFirstUnitWP();
             CampEntity t;
 
-            while (w and !(w->GetWPFlags() bitand WPF_TARGET))
+            while (w and  not (w->GetWPFlags() bitand WPF_TARGET))
                 w = w->GetNextWP();
 
             if (w)
@@ -1298,11 +1298,11 @@ void ReadComments(FILE* fh)
     while (c == '\n')
         c = fgetc(fh);
 
-    while (c == '/' and !feof(fh))
+    while (c == '/' and not feof(fh))
     {
         c = fgetc(fh);
 
-        while (c not_eq '\n' and !feof(fh))
+        while (c not_eq '\n' and not feof(fh))
             c = fgetc(fh);
 
         while (c == '\n')
@@ -1415,7 +1415,7 @@ int GetGender(CampEntity entity, int div)
     if ( not entity or gLangIDNum < F4LANG_GERMAN)
         return F4LANG_MASCULINE;
 
-    if (div and ( not entity->IsUnit() or !((Unit)entity)->GetUnitDivision()))
+    if (div and ( not entity->IsUnit() or  not ((Unit)entity)->GetUnitDivision()))
         div = 0;
 
     if (gLangIDNum == F4LANG_GERMAN)
@@ -1785,7 +1785,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
     _TCHAR eol[2] = { '\n', 0 };
     CampEntity target, ptarget;
 
-    if ( not mec or !mec->flight_data or !mec->flight_data->camp_id)
+    if ( not mec or not mec->flight_data or not mec->flight_data->camp_id)
         return 0;
 
     if ((fp = OpenCampFile(filename, "", "r")) == NULL)
@@ -1818,7 +1818,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
         else if (strcmp(token, "#ELSE") == 0)
         {
             if (curr_stack > 0 and stack_active[curr_stack - 1])
-                stack_active[curr_stack] = !stack_active[curr_stack];
+                stack_active[curr_stack] = not stack_active[curr_stack];
 
             continue;
         }
@@ -2257,7 +2257,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     }
                 }
                 else if (strcmp(token, "#IF_NOT_SUPPORT_HEADER") == 0)
-                    stack_active[curr_stack] = !mec->curr_data;
+                    stack_active[curr_stack] = not mec->curr_data;
                 else if (strcmp(token, "#IF_PLAYER_PILOT") == 0)
                 {
                     if (CPilotData)
@@ -2580,7 +2580,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                  CampEntity etar;
                  // Find out where this flight is going (find the target)
                  WayPoint w = ((Unit)reqe)->GetFirstUnitWP();
-                 while (w and !(w->GetWPFlags() bitand WPF_TARGET))
+                 while (w and  not (w->GetWPFlags() bitand WPF_TARGET))
                  w = w->GetNextWP();
                  if (w)
                  {
@@ -2667,7 +2667,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 Flight awacs = (Flight) vuDatabase->Find(mec->awacs_id);
                 _TCHAR name[128];
 
-                if (awacs and !awacs->IsDead())
+                if (awacs and not awacs->IsDead())
                 {
                     VehicleClassDataType *vc = (VehicleClassDataType*) Falcon4ClassTable[awacs->GetVehicleID(0)].dataPtr;
                     GetCallsign(awacs->callsign_id, awacs->callsign_num, name);
@@ -2685,7 +2685,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 Flight jstar = (Flight) vuDatabase->Find(mec->jstar_id);
                 _TCHAR name[128];
 
-                if (jstar and !jstar->IsDead())
+                if (jstar and not jstar->IsDead())
                 {
                     VehicleClassDataType *vc = (VehicleClassDataType*) Falcon4ClassTable[jstar->GetVehicleID(0)].dataPtr;
                     GetCallsign(jstar->callsign_id, jstar->callsign_num, name);
@@ -2703,7 +2703,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 Flight tanker = (Flight) vuDatabase->Find(mec->tanker_id);
                 _TCHAR name[128];
 
-                if (tanker and !tanker->IsDead())
+                if (tanker and not tanker->IsDead())
                 {
                     VehicleClassDataType *vc = (VehicleClassDataType*) Falcon4ClassTable[tanker->GetVehicleID(0)].dataPtr;
                     GetCallsign(tanker->callsign_id, tanker->callsign_num, name);
@@ -2721,7 +2721,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 Flight ecm = (Flight) vuDatabase->Find(mec->ecm_id);
                 _TCHAR name[128];
 
-                if (ecm and !ecm->IsDead())
+                if (ecm and not ecm->IsDead())
                 {
                     VehicleClassDataType *vc = (VehicleClassDataType*) Falcon4ClassTable[ecm->GetVehicleID(0)].dataPtr;
                     GetCallsign(ecm->callsign_id, ecm->callsign_num, name);
@@ -3490,7 +3490,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 int i, j, f, skip;
                 _TCHAR names[MAX_TARGET_FEATURES][30];
 
-                if ( not ptarget or !ptarget->IsObjective())
+                if ( not ptarget or not ptarget->IsObjective())
                     continue;
 
                 for (i = 0; i < MAX_TARGET_FEATURES; i++)

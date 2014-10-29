@@ -125,7 +125,7 @@ extern bool g_bScramble; //TJL 11/02/03 Enable Scramble Missions
 // SquadronClass Functions
 // ============================================
 
-// KCK: ALL SQUADRON CONSTRUCTION SHOULD USE THIS FUNCTION!
+// KCK: ALL SQUADRON CONSTRUCTION SHOULD USE THIS FUNCTION
 SquadronClass* NewSquadron(int type)
 {
     SquadronClass *new_squadron;
@@ -467,7 +467,7 @@ int SquadronClass::MoveUnit(CampaignTime time)
         if (DontPlan())
         {
             // 2001-08-06 MODIFIED BY S.G. FRIENDLY BASE WILL DO THE JOB ALL RIGHT. NO NEED TO LIMIT IT TO OUR TEAM.
-            if ( not ab or !GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
+            if ( not ab or not GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
             {
                 if (this == FalconLocalSession->GetPlayerSquadron())
                     PostMessage(FalconDisplay.appWin, FM_SQUADRON_RECALLED, 0, 0);
@@ -481,7 +481,7 @@ int SquadronClass::MoveUnit(CampaignTime time)
         // If airbase is non-functional, force a rebase
         // 2001-08-03 MODIFIED BY S.G. ONLY IF CAPTURED SHOULD IT RELOCATE. DESTROYED AIRBASE STILL OWN BY US WILL REPAIR EVENTUALLY.
         // if (ab and ab->IsObjective() and ((Objective)ab)->GetAdjustedDataRate() < 1)
-        if (ab and ab->IsObjective() and !GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
+        if (ab and ab->IsObjective() and not GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
             ab = NULL;
 
         // Check airbase location - if to near or far from front, relocate
@@ -490,8 +490,8 @@ int SquadronClass::MoveUnit(CampaignTime time)
         range = GetUnitRange();
 
         // 2001-07-05 MODIFIED BY S.G. DON'T RELOCATE IF TOO FAR FROM FLOT IF GLOBALLY SET TO ACT THAT WAY
-        // if (fd < 999.0F and (fd < range/30 or fd > range/3 or !ab)) // We're to close or to far from the front or don't have an airbase
-        if (fd < 999.0F and (fd < range / 30 or ( not (g_nAirbaseReloc bitand AirBaseRelocNoFar) and fd > range / 3) or !ab)) // We're to close or to far from the front or don't have an airbase
+        // if (fd < 999.0F and (fd < range/30 or fd > range/3 or not ab)) // We're to close or to far from the front or don't have an airbase
+        if (fd < 999.0F and (fd < range / 30 or ( not (g_nAirbaseReloc bitand AirBaseRelocNoFar) and fd > range / 3) or not ab)) // We're to close or to far from the front or don't have an airbase
         {
             // Find a better base for us
             UnitClassDataType *uc = GetUnitClassData();
@@ -505,19 +505,19 @@ int SquadronClass::MoveUnit(CampaignTime time)
                 while (o)
                 {
                     // ONLY USE YOUR OWN AIRBASE IF GLOBALLY SET TO ACT THAT WAY
-                    //if ((o->GetType() == TYPE_AIRBASE and !IsHelicopter() and GetRoE(o->GetTeam(),us,ROE_AIR_USE_BASES)) ||
+                    //if ((o->GetType() == TYPE_AIRBASE and not IsHelicopter() and GetRoE(o->GetTeam(),us,ROE_AIR_USE_BASES)) ||
                     // (o->GetType() == TYPE_ARMYBASE and IsHelicopter() and GetRoE(o->GetTeam(),us,ROE_AIR_USE_BASES)))
                     int enter = FALSE;
 
                     if (g_nAirbaseReloc bitand AirBaseRelocTeamOnly)
                     {
-                        if ((o->GetType() == TYPE_AIRBASE and !IsHelicopter() and o->GetTeam() == us) ||
+                        if ((o->GetType() == TYPE_AIRBASE and not IsHelicopter() and o->GetTeam() == us) ||
                             (o->GetType() == TYPE_ARMYBASE and IsHelicopter() and o->GetTeam() == us))
                             enter = TRUE;
                     }
                     else
                     {
-                        if ((o->GetType() == TYPE_AIRBASE and !IsHelicopter() and GetRoE(o->GetTeam(), us, ROE_AIR_USE_BASES)) ||
+                        if ((o->GetType() == TYPE_AIRBASE and not IsHelicopter() and GetRoE(o->GetTeam(), us, ROE_AIR_USE_BASES)) ||
                             (o->GetType() == TYPE_ARMYBASE and IsHelicopter() and GetRoE(o->GetTeam(), us, ROE_AIR_USE_BASES)))
                             enter = TRUE;
                     }
@@ -605,7 +605,7 @@ int SquadronClass::MoveUnit(CampaignTime time)
         {
             // 2001-08-06 MODIFIED BY S.G. FRIENDLY BASE WILL DO THE JOB ALL RIGHT. NO NEED TO LIMIT IT TO OUR TEAM.
             // if (ab->GetTeam() not_eq GetTeam())
-            if ( not ab or !GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
+            if ( not ab or not GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
             {
                 if (this == FalconLocalSession->GetPlayerSquadron())
                     PostMessage(FalconDisplay.appWin, FM_SQUADRON_RECALLED, 0, 0);
@@ -642,7 +642,7 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
         // Don't plan flag used to mean don't rebase for squadrons
         if (DontPlan())
         {
-            if ( not ab or !GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
+            if ( not ab or not GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
             {
                 KillUnit();
             }
@@ -670,7 +670,7 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
             reallocate = 1;
 
         // Reallocate if to far from front
-        if (fd < 999.0F and fd > maxDist and !(g_nAirbaseReloc bitand AirBaseRelocNoFar))
+        if (fd < 999.0F and fd > maxDist and  not (g_nAirbaseReloc bitand AirBaseRelocNoFar))
             reallocate = 2;
 
         // Reallocate if base is destroyed
@@ -819,7 +819,7 @@ int SquadronClass::GetUnitSupplyNeed(int have)
 {
 
     // RV - Biker - Separate choppers because ARMY_BASE take too long for repair so better relocate
-    if (g_bEnableABRelocation and !IsHelicopter())
+    if (g_bEnableABRelocation and not IsHelicopter())
     {
         // OW AB Relocation fix
         MoveUnit(0);
@@ -830,7 +830,7 @@ int SquadronClass::GetUnitSupplyNeed(int have)
         MoveChopperUnit(0);
     }
 
-    if (g_bScramble and !IsHelicopter())
+    if (g_bScramble and not IsHelicopter())
     {
         Scramble();
     }
@@ -1034,7 +1034,7 @@ void SquadronClass::DisposeChildren(void)
 
     while (u)
     {
-        if (u->IsFlight() and !u->Moving() and ((Flight)u)->GetUnitSquadronID() == Id())
+        if (u->IsFlight() and not u->Moving() and ((Flight)u)->GetUnitSquadronID() == Id())
             RegroupFlight((Flight)u);
 
         u = (Unit) ait.GetNext();
@@ -1265,7 +1265,7 @@ int SquadronClass::AssignPilots(Flight fl)
             if ( not plane)
             {
                 // Commander goes in first slot
-                for (pilot = 0; pilot < PILOTS_PER_SQUADRON / 3 and !got; pilot++)
+                for (pilot = 0; pilot < PILOTS_PER_SQUADRON / 3 and not got; pilot++)
                 {
                     if (GetPilotData(pilot)->pilot_status == PILOT_AVAILABLE)
                     {
@@ -1283,7 +1283,7 @@ int SquadronClass::AssignPilots(Flight fl)
             if ( not got)
             {
                 // Now Wingmen
-                for (pilot = PILOTS_PER_SQUADRON - 1; pilot >= 0 and !got; pilot--)
+                for (pilot = PILOTS_PER_SQUADRON - 1; pilot >= 0 and not got; pilot--)
                 {
                     if (GetPilotData(pilot)->pilot_status == PILOT_AVAILABLE)
                     {
@@ -1328,9 +1328,9 @@ void SquadronClass::UpdateSquadronStores(
     {
         if ( not (WeaponDataTable[weapon[i]].Flags bitand WEAP_INFINITE_MASK))
         {
-            for (j = 0, done = 0; j < HARDPOINT_MAX and !done; j++)
+            for (j = 0, done = 0; j < HARDPOINT_MAX and not done; j++)
             {
-                if (weapon[i] == weaparray[j] or !weaparray[j])
+                if (weapon[i] == weaparray[j] or not weaparray[j])
                 {
                     weaparray[j] = weapon[i];
                     weapsarray[j] += weapons[i] * planes;
@@ -1403,9 +1403,9 @@ void SquadronClass::ResupplySquadronStores(
     {
         if ( not (WeaponDataTable[weapon[i]].Flags bitand WEAP_INFINITE_MASK))
         {
-            for (j = 0, done = 0; j < HARDPOINT_MAX and !done; j++)
+            for (j = 0, done = 0; j < HARDPOINT_MAX and not done; j++)
             {
-                if (weapon[i] == weaparray[j] or !weaparray[j])
+                if (weapon[i] == weaparray[j] or not weaparray[j])
                 {
                     weaparray[j] = weapon[i];
                     weapsarray[j] += weapons[i] * planes;
@@ -1891,7 +1891,7 @@ void SquadronClass::ReadDirty(VU_BYTE **stream, long *rem)
 
     if (bits bitand DIRTY_SQUAD_STORES)
     {
-        //check this! what is the size of stores?? 600 or 1?
+        //check this what is the size of stores?? 600 or 1?
         memcpychk(stores, stream, sizeof(stores), rem);
     }
 

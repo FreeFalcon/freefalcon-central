@@ -198,7 +198,7 @@ void MouseWheelStuff::ResetAxisValue()
     {
         case AXIS_FOV:
         {
-            // should be default FOV scaled to 0-15000 !!
+            // should be default FOV scaled to 0-15000 
             theAxisValue = (long)(((float)(g_fDefaultFOV) / (float)g_fMaximumFOV) * 15000.f);
             break;
         }

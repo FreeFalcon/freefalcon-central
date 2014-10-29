@@ -142,7 +142,7 @@ void HelicopterClass::DoWeapons(void)
        else if (FCC->GetMasterMode() == FireControlComputer::AirGroundBomb  and 
           FCC->GetSubMode() == FireControlComputer::RCKT)
        {
-          if (FCC->bombPickle and Sms->curWeapon and !OnGround())
+          if (FCC->bombPickle and Sms->curWeapon and not OnGround())
           {
              // Play the sound
              F4SoundFXSetPos( SFX_RCKTLOOP, TRUE, XPos(), YPos(), ZPos(), 1.0f );

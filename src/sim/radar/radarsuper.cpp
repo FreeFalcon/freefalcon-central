@@ -1124,7 +1124,7 @@ void RadarSuperClass::DrawLockedGndInfo(float h, float v)
 
 
     // Target ID (NCTR)
-    if (lockedTarget->BaseData()->IsSim() and !((SimBaseClass*)lockedTarget->BaseData())->IsExploding())
+    if (lockedTarget->BaseData()->IsSim() and  not ((SimBaseClass*)lockedTarget->BaseData())->IsExploding())
     {
         Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
 

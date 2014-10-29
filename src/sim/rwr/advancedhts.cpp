@@ -509,7 +509,7 @@ void AdvancedHarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
     {
         for (tmpElement = FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
         {
-            if ( not lockedTarget or !lockedTarget->BaseData() or preHandoffMode == Pos)
+            if ( not lockedTarget or not lockedTarget->BaseData() or preHandoffMode == Pos)
             {
                 break;
             }
@@ -639,7 +639,7 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
         Sms = playerAC->Sms;
     }
 
-    if (Sms and !curMissile)
+    if (Sms and not curMissile)
     {
         curMissile = (MissileClass*)(Sms->GetCurrentWeapon());
     }

@@ -343,7 +343,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
 
     // No counter measures deployed by campaign things
     // countermeasures only work when tracking (for now)
-    if ( not lockedTarget or !target or !target->BaseData()->IsSim())
+    if ( not lockedTarget or not target or not target->BaseData()->IsSim())
     {
         return lockedTarget;
     }

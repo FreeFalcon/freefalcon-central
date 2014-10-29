@@ -78,7 +78,7 @@ void ICPClass::ExecPfl()
 
     mUpdateFlags and_eq compl FACK_UPDATE; // we'll have updated.
 
-    if (m_FaultDisplay == false or !playerAC or !playerAC->mFaults)
+    if (m_FaultDisplay == false or not playerAC or not playerAC->mFaults)
         return; // nothing to show
 
     if (playerAC->mFaults->GetFFaultCount() <= 0)

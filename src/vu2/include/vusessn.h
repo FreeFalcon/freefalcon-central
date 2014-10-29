@@ -1,10 +1,11 @@
 #ifndef VUSESS_H_
 #define VUSESS_H_
 
+#include <cISO646>
 #include <list>
 // sfr: uses list instead of map... may be faster than map
 #define SESSION_USES_LIST_FOR_PU 1
-#if !SESSION_USES_LIST_FOR_PU
+#if not SESSION_USES_LIST_FOR_PU
 #include <map>
 #endif
 #include <vector>

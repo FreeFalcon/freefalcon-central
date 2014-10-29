@@ -234,7 +234,7 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(Driver);
 
     // RV - RED - Sim window in windowed mode, always centered
-    if (newMode == Sim and !displayFullScreen)
+    if (newMode == Sim and not displayFullScreen)
     {
 
         int wx = GetSystemMetrics(SM_CXSCREEN);
@@ -268,7 +268,7 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
 
     if (pDI)
     {
-        /*JAM 01Dec03 if((g_bForceSoftwareGUI or pDI->Is3dfx() or !pDI->CanRenderWindowed()) and newMode not_eq Sim)
+        /*JAM 01Dec03 if((g_bForceSoftwareGUI or pDI->Is3dfx() or not pDI->CanRenderWindowed()) and newMode not_eq Sim)
          {
          // V1, V2 workaround - use primary display adapter with RGB Renderer
          int nIndexPrimary = FalconDisplay.devmgr.FindPrimaryDisplayDriver();

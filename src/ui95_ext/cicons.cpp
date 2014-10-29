@@ -302,7 +302,7 @@ MAPICONLIST *C_MapIcon::AddIconToList(
     IMAGE_RSC *img = NULL;
     _TCHAR buf[10];
 
-    if ( not ImageID or Root_->Find(CampID) or !Icons_[0])
+    if ( not ImageID or Root_->Find(CampID) or not Icons_[0])
         return(NULL);
 
     newitem = new MAPICONLIST;
@@ -571,7 +571,7 @@ void C_MapIcon::Refresh()
         }
 
         // if ( not ( not (gShowUnknown and cur->ImageID == ICON_UKN) and (GetFlags() bitand C_BIT_INVISIBLE))) { // (From above) If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
-        if ((gShowUnknown and cur->ImageID == ICON_UKN) or !(GetFlags() bitand C_BIT_INVISIBLE))   // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
+        if ((gShowUnknown and cur->ImageID == ICON_UKN) or  not (GetFlags() bitand C_BIT_INVISIBLE))   // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
         {
             // END OF ADDED SECTION 2002-02-21
             if ( not (cur->Flags bitand C_BIT_INVISIBLE) and cur->Flags bitand C_BIT_ENABLED)
@@ -629,11 +629,11 @@ void C_MapIcon::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     if (gShowUnknown and gMapMgr and (GetFlags() bitand C_BIT_INVISIBLE))
     {
-        for (int i = 0; i < _MAX_TEAMS_ and !airUnit; i++)
+        for (int i = 0; i < _MAX_TEAMS_ and not airUnit; i++)
         {
             if (gMapMgr->GetTeam(i).AirUnits)
             {
-                for (int j = 0; j < _MAP_NUM_AIR_TYPES_ and !airUnit; j++)
+                for (int j = 0; j < _MAP_NUM_AIR_TYPES_ and not airUnit; j++)
                 {
                     if (gMapMgr->GetTeam(i).AirUnits->Type[j] == this)
                         airUnit = TRUE;
@@ -655,7 +655,7 @@ void C_MapIcon::Draw(SCREEN *surface, UI95_RECT *cliprect)
         if ( not gShowUnknown and cur->ImageID == ICON_UKN)
             cur->Flags  or_eq  C_BIT_INVISIBLE;
 
-        if ((gShowUnknown and cur->ImageID == ICON_UKN) or !(GetFlags() bitand C_BIT_INVISIBLE))   // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
+        if ((gShowUnknown and cur->ImageID == ICON_UKN) or  not (GetFlags() bitand C_BIT_INVISIBLE))   // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
         {
             // END OF ADDED SECTION 2002-02-21
             if ( not (cur->Flags bitand C_BIT_INVISIBLE) and cur->Flags bitand C_BIT_ENABLED)
@@ -704,7 +704,7 @@ void C_MapIcon::Draw(SCREEN *surface, UI95_RECT *cliprect)
                         if (cur->Bat)
                             cur->Bat->Draw(surface, cliprect);
 
-                        if (cur->Label and ( not cur->Div and !cur->Brig and !cur->Bat))
+                        if (cur->Label and ( not cur->Div and not cur->Brig and not cur->Bat))
                             cur->Label->Draw(surface, cliprect);
                     }
                 }
@@ -795,7 +795,7 @@ BOOL C_MapIcon::UpdateInfo(long ID, float x, float y, long newstatus, long newst
         cur->x = (short)(cur->worldx * scale_);
         cur->y = (short)(cur->worldy * scale_);
 
-        if ((ox not_eq cur->x or oy not_eq cur->y) and !(cur->Flags bitand C_BIT_INVISIBLE))
+        if ((ox not_eq cur->x or oy not_eq cur->y) and  not (cur->Flags bitand C_BIT_INVISIBLE))
             return(TRUE);
     }
 
@@ -809,7 +809,7 @@ long C_MapIcon::CheckHotSpots(long relX, long relY)
     MAPICONLIST *cur;
     long x, y, w, h;
 
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or !(GetFlags() bitand C_BIT_ENABLED)) return(0);
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or  not (GetFlags() bitand C_BIT_ENABLED)) return(0);
 
     Last_ = NULL;
     cur = (MAPICONLIST*)Root_->GetFirst(&current, &curidx);
@@ -883,7 +883,7 @@ BOOL C_MapIcon::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     long relx, rely;
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !(GetFlags() bitand C_BIT_DRAGABLE))
+    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED) or  not (GetFlags() bitand C_BIT_DRAGABLE))
         return(FALSE);
 
     if (over not_eq Parent_)

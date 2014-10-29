@@ -104,7 +104,7 @@ SmsDrawable::SmsDrawable(SMSClass* self)
     MaxInputLines = 0;
 
     //Init some stuff
-    //Sms->Prof1 = !Sms->Prof1;  // MLR 4/5/2004 - Why???
+    //Sms->Prof1 = not Sms->Prof1;  // MLR 4/5/2004 - Why???
 
     FireControlComputer *pFCC = Sms->ownship->GetFCC();
 
@@ -312,7 +312,7 @@ void SmsDrawable::UpdateGroundSpot(void)
     }
 
     // If we don't currently have a missile but had one, use it.
-    if (thePrevMissile and !theMissile){
+    if (thePrevMissile and not theMissile){
      theMissile = thePrevMissile.get();
     }*/
     // END OF ADDED SECTION
@@ -1004,7 +1004,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
                     Sms->JDAMPowered = TRUE;
                     break;
                 }
-                else if (Sms->JDAMPowered and !Sms->curWeapon)
+                else if (Sms->JDAMPowered and not Sms->curWeapon)
                 {
                     Sms->JDAMPowered = FALSE;
                     break;
@@ -2203,7 +2203,7 @@ void SmsDrawable::WpnAAMissileButton(int whichButton, int whichMfd)
                 //MI fixup... only toggle for the 9M
                 if (cw->GetSPType() not_eq SPTYPE_AIM9P)
                 {
-                    ((MissileClass*)cw)->isSpot = !((MissileClass*)cw)->isSpot;
+                    ((MissileClass*)cw)->isSpot =  not ((MissileClass*)cw)->isSpot;
                 }
             }
 
@@ -2273,7 +2273,7 @@ void SmsDrawable::WpnAAMissileButton(int whichButton, int whichMfd)
                     //MI fixup... only toggle for pM
                     if (cw->GetSPType() not_eq SPTYPE_AIM9P)
                     {
-                        ((MissileClass*)cw)->isTD = !((MissileClass*)cw)->isTD;
+                        ((MissileClass*)cw)->isTD =  not ((MissileClass*)cw)->isTD;
                     }
                 }
             }
@@ -2285,7 +2285,7 @@ void SmsDrawable::WpnAAMissileButton(int whichButton, int whichMfd)
             //MI fixup... only for the M
             if (g_bRealisticAvionics and cw and cw->GetSPType() not_eq SPTYPE_AIM9P)
             {
-                ((MissileClass*)cw)->isSlave = !((MissileClass*)cw)->isSlave;
+                ((MissileClass*)cw)->isSlave =  not ((MissileClass*)cw)->isSlave;
             }
 
             break;
@@ -2400,7 +2400,7 @@ void SmsDrawable::BombDisplay(void)
         sprintf(tmpStr, "%d", Sms->GetAGBRippleCount() + 1);
         LabelButton(9, "RP", tmpStr);
 
-        if (g_bRealisticAvionics and !g_bMLU)
+        if (g_bRealisticAvionics and  not g_bMLU)
         {
             char tempstr[12]; //JAM 27Sep03 - Changed from 10, stack over run
             sprintf(tempstr, "AD %.2fSEC", Sms->armingdelay / 100);
@@ -2842,7 +2842,7 @@ void SmsDrawable::ChangeProf(void)
     }
 
     /*
-    Sms->Prof1 = !Sms->Prof1;
+    Sms->Prof1 = not Sms->Prof1;
 
     if(Sms->Prof1)
     {
@@ -3025,7 +3025,7 @@ void SmsDrawable::JDAMDisplay(void)
         {
             if ( not Sms->JDAMPowered) // MLR 4/3/2004 -
                 LabelButton(6,  "PWR", "OFF");
-            else if (Sms->JDAMPowered and !Sms->curWeapon)
+            else if (Sms->JDAMPowered and not Sms->curWeapon)
                 LabelButton(6,  "PWR", "OFF");
             else if (Sms->JDAMPowered and Sms->JDAMInitTimer > 7)
                 LabelButton(6,  "ALIGN");
@@ -3060,8 +3060,8 @@ void SmsDrawable::JDAMDisplay(void)
         LabelButton(9, "RP", tmpStr);
 
         // RV - Biker - Only display target name if we're in PB
-        //if(g_bRealisticAvionics and !g_bMLU)
-        if (g_bRealisticAvionics and !g_bMLU)
+        //if(g_bRealisticAvionics and  not g_bMLU)
+        if (g_bRealisticAvionics and  not g_bMLU)
         {
             if ((Sms->JDAMtargeting == SMSBaseClass::PB and self->JDAMtargetRange > 0) or (CAPplayer))
             {

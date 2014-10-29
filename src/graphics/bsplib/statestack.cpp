@@ -440,7 +440,7 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
 
                 // Choose perspective correction or not
                 // if ((Xlation.x > CurrentInstance->Radius() * PERSP_CORR_RADIUS_MULTIPLIER)  and 
-                // !(CurrentLOD->flags bitand ObjectLOD::PERSP_CORR))
+                //  not (CurrentLOD->flags bitand ObjectLOD::PERSP_CORR))
                 // {
                 // RenderStateTable = RenderStateTableNPC;
                 // }
@@ -699,7 +699,7 @@ void StateStackClass::PopVerts(void)
     ClipInfoPool = stack[stackDepth].ClipInfoPool;
 }
 
-// Cobra - RED - This function is now about 2 times faster that it was before with following changes...!!!
+// Cobra - RED - This function is now about 2 times faster that it was before with following changes...
 // can be 3 times if FIXME is solved
 void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
 {

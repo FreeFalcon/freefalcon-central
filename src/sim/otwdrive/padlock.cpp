@@ -314,9 +314,9 @@ void OTWDriverClass::Padlock_FindEnhancedPriority(BOOL)
             if (testAgainstLoMark)
             {
                 if (tgtStep >= 0)
-                    testResult = !pLoMark or Padlock_DetermineRelativePriority(pObj, objRange, isObjPainted, pLoMark, loMarkRange, isLoMarkPainted);
+                    testResult = not pLoMark or Padlock_DetermineRelativePriority(pObj, objRange, isObjPainted, pLoMark, loMarkRange, isLoMarkPainted);
                 else
-                    testResult = !pLoMark or Padlock_DetermineRelativePriority(pLoMark, loMarkRange, isLoMarkPainted, pObj, objRange, isObjPainted);
+                    testResult = not pLoMark or Padlock_DetermineRelativePriority(pLoMark, loMarkRange, isLoMarkPainted, pObj, objRange, isObjPainted);
 
                 if (testResult)
                     setLoMark = TRUE;
@@ -573,7 +573,7 @@ void OTWDriverClass::Padlock_FindRealisticPriority(BOOL)
     // Okay
     if (
         mpPadlockCandidate  and 
-        mpPadlockCandidate->GetCampaignObject() not_eq ((CampBaseClass*)0xdddddddd) and !mpPadlockCandidate->IsDead()
+        mpPadlockCandidate->GetCampaignObject() not_eq ((CampBaseClass*)0xdddddddd) and not mpPadlockCandidate->IsDead()
     )
     {
 
@@ -770,7 +770,7 @@ void OTWDriverClass::Padlock_FindRealisticPriority(BOOL)
                 (mpPadlockCandidate not_eq NULL and pObj not_eq mpPadlockCandidate))   // we have a candidate and the current is not the candidate
             {
 
-                if (( not mpPadlockCandidate and !mpPadlockPriorityObject) or attempt) // We don't have a candidate and neither a priority OR we're on our second pass
+                if (( not mpPadlockCandidate and not mpPadlockPriorityObject) or attempt) // We don't have a candidate and neither a priority OR we're on our second pass
                     testAgainstLoMark = TRUE; //   Test against the chosen one so far
                 else if (mpPadlockCandidate)   // We do have a candidate
                 {
@@ -813,9 +813,9 @@ void OTWDriverClass::Padlock_FindRealisticPriority(BOOL)
             if (testAgainstLoMark)
             {
                 if (tgtStep >= 0)
-                    testResult = !pLoMark or Padlock_DetermineRelativePriority(pObj, objRange, isObjPainted, pLoMark, loMarkRange, isLoMarkPainted);
+                    testResult = not pLoMark or Padlock_DetermineRelativePriority(pObj, objRange, isObjPainted, pLoMark, loMarkRange, isLoMarkPainted);
                 else
-                    testResult = !pLoMark or Padlock_DetermineRelativePriority(pLoMark, loMarkRange, isLoMarkPainted, pObj, objRange, isObjPainted);
+                    testResult = not pLoMark or Padlock_DetermineRelativePriority(pLoMark, loMarkRange, isLoMarkPainted, pObj, objRange, isObjPainted);
 
                 if (testResult)
                     setLoMark = TRUE;
@@ -1064,7 +1064,7 @@ BOOL OTWDriverClass::Padlock_ConsiderThisObject(SimBaseClass* pObj, BOOL isPaint
     RadarClass *pradar = NULL; // 2002-03-12 S.G.
 
     // 2002-01-24 REMOVED BY S.G. Not necessary and prevents missiles from being padlocked.
-    // if (pObj and pObj->IsSim() and pObj not_eq otwPlatform and !pObj->IsWeapon())
+    // if (pObj and pObj->IsSim() and pObj not_eq otwPlatform and not pObj->IsWeapon())
     // {
     // 2002-01-27 MODIFIED BY S.G. But prevent none threatning stuff from being padlocked
     if (pObj and pObj->IsSim() and pObj->IsWeapon())
@@ -1129,7 +1129,7 @@ BOOL OTWDriverClass::Padlock_ConsiderThisObject(SimBaseClass* pObj, BOOL isPaint
 
             // Check if this azimuth and elevation lies in the occluded zone
             // If not occluded, then continue
-            if (Padlock_CheckOcclusion(az, el) == FALSE and !pObj->IsDead())
+            if (Padlock_CheckOcclusion(az, el) == FALSE and not pObj->IsDead())
             {
 
                 // If we are in realistic mode, keep checking.  Otherwise consider the object.
@@ -1497,7 +1497,7 @@ int OTWDriverClass::Padlock_RankAAPriority(SimBaseClass* pObj, BOOL isPainted)
     // pobjTgt = (SimMoverClass*) pObj->targetPtr->BaseData();
     // }
     // Get the object's brain, if individual deaggregated aircraft
-    if (pObj->IsAirplane()) //objtype == TYPE_AIRPLANE and !pObj->IsFlight())
+    if (pObj->IsAirplane()) //objtype == TYPE_AIRPLANE and not pObj->IsFlight())
     {
         pbrain = (DigitalBrain*)((AircraftClass*)pObj)->Brain();
         mode = pbrain->GetCurrentMode();
@@ -1665,7 +1665,7 @@ int OTWDriverClass::Padlock_RankNAVPriority(SimBaseClass* pObj, BOOL isPainted)
         }
 
         // Get the object's brain, if individual deaggregated aircraft
-        if (objtype == TYPE_AIRPLANE and !pObj->IsFlight())
+        if (objtype == TYPE_AIRPLANE and not pObj->IsFlight())
         {
             pbrain = (DigitalBrain*)((AircraftClass*)pObj)->Brain();
             mode = pbrain->GetCurrentMode();
@@ -2091,7 +2091,7 @@ void OTWDriverClass::Padlock_DrawSquares(BOOL highlightPriority)
                     {
                         int labelColor = 0;
 
-                        if (mpPadlockPriorityObject and !F4IsBadReadPtr(mpPadlockPriorityObject, sizeof(SimBaseClass)) and mpPadlockPriorityObject->drawPointer and !F4IsBadReadPtr(mpPadlockPriorityObject->drawPointer, sizeof(DrawableBSP))) // JB 010319 CTD
+                        if (mpPadlockPriorityObject and  not F4IsBadReadPtr(mpPadlockPriorityObject, sizeof(SimBaseClass)) and mpPadlockPriorityObject->drawPointer and  not F4IsBadReadPtr(mpPadlockPriorityObject->drawPointer, sizeof(DrawableBSP))) // JB 010319 CTD
                             labelColor = ((DrawableBSP *)mpPadlockPriorityObject->drawPointer)->LabelColor();
 
                         int colorsub = int((objectPoint.csZ / (limit >> 3))) << 5;
@@ -2154,7 +2154,7 @@ void OTWDriverClass::Padlock_DrawSquares(BOOL highlightPriority)
 
         // END OF ADDED SECTION
 
-        if (mpPadlockCandidate and mpPadlockCandidate->GetCampaignObject() not_eq ((CampBaseClass*)0xdddddddd) and !mpPadlockCandidate->IsDead())
+        if (mpPadlockCandidate and mpPadlockCandidate->GetCampaignObject() not_eq ((CampBaseClass*)0xdddddddd) and not mpPadlockCandidate->IsDead())
         {
             pCandidate = mpPadlockCandidate;
             candidateLoc.x = pCandidate->XPos();
@@ -2339,7 +2339,7 @@ void OTWDriverClass::SetmpPadlockPriorityObject(SimBaseClass* newObject)
 
         // If mpPadlockPriorityObject is not NULL, is Sim base, is not us and is not a weapon, we must create a sim object for it
         if (mpPadlockPriorityObject and mpPadlockPriorityObject->IsSim()  and 
-            (otwPlatform.get() not_eq  mpPadlockPriorityObject) and !mpPadlockPriorityObject->IsWeapon())
+            (otwPlatform.get() not_eq  mpPadlockPriorityObject) and not mpPadlockPriorityObject->IsWeapon())
         {
 #ifdef DEBUG
             //simObjectPtr = new SimObjectType (OBJ_TAG, NULL, mpPadlockPriorityObject);

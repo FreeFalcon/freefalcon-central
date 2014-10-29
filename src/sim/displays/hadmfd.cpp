@@ -48,12 +48,12 @@ void HadMfdDrawable::Display(VirtualDisplay* newDisplay)
     Sms = playerAC->Sms;
     HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
 
-    if ( not theRadar or !pFCC or !self or !Sms)
+    if ( not theRadar or not pFCC or not self or not Sms)
     {
         return;
     }
 
-    if ( not harmPod or !self->af->GetIsHtsAble())  // offMode if no HTS pod or equivalent system on board
+    if ( not harmPod or not self->af->GetIsHtsAble())  // offMode if no HTS pod or equivalent system on board
     {
         OffMode(display);
         return;
@@ -254,7 +254,7 @@ void HadMfdDrawable::PushButton(int whichButton, int whichMFD)
 
 void HadMfdDrawable::DrawRALT(VirtualDisplay* display)
 {
-    if (TheHud and !(self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
+    if (TheHud and  not (self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
         and self->af->platform->RaltReady()  and 
         TheHud->FindRollAngle(-TheHud->hat) and TheHud->FindPitchAngle(-TheHud->hat))
     {

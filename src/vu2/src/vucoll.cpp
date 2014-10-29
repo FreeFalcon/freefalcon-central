@@ -146,7 +146,7 @@ bool VuCollection::Find(VuEntity *entity) const
         return false;
     }
 
-    if ((filter_ not_eq NULL) and !filter_->Test(entity))
+    if ((filter_ not_eq NULL) and not filter_->Test(entity))
     {
         return false;
     }

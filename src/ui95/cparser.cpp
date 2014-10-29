@@ -1528,12 +1528,12 @@ BOOL C_Parser::ParseScript(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while ( not Found and !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if ( not Comment and !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -1667,12 +1667,12 @@ C_Base *C_Parser::ControlParser()
                 // Look for token starting with '['
                 Found = 0;
 
-                while ( not Found and !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if ( not Comment and !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -1922,12 +1922,12 @@ C_Base *C_Parser::ControlParser()
                 // Look for token starting with '['
                 Found = 0;
 
-                while ( not Found and !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if ( not Comment and !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -2035,7 +2035,7 @@ C_Base *C_Parser::ControlParser()
                     // Find NON white space
                     Found = 0;
 
-                    while ( not Found and !Done and !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -2074,7 +2074,7 @@ C_Base *C_Parser::ControlParser()
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -2140,7 +2140,7 @@ C_Base *C_Parser::ControlParser()
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -2231,12 +2231,12 @@ C_Window *C_Parser::WindowParser()
                 // Look for token starting with '['
                 Found = 0;
 
-                while ( not Found and !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if ( not Comment and !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -2377,12 +2377,12 @@ C_Window *C_Parser::WindowParser()
                 // Look for token starting with '['
                 Found = 0;
 
-                while ( not Found and !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if ( not Comment and !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -2492,7 +2492,7 @@ C_Window *C_Parser::WindowParser()
                     // Find NON white space
                     Found = 0;
 
-                    while ( not Found and !Done and !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -2531,7 +2531,7 @@ C_Window *C_Parser::WindowParser()
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -2597,7 +2597,7 @@ C_Window *C_Parser::WindowParser()
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -2691,12 +2691,12 @@ C_Window *C_Parser::ParseWindow(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while ( not Found and !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if ( not Comment and !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -2805,12 +2805,12 @@ C_Base *C_Parser::ParseControl(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while ( not Found and !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if ( not Comment and !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -2950,12 +2950,12 @@ C_Image *C_Parser::ParseImage(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while ( not Found and !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if ( not Comment and !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -3046,7 +3046,7 @@ C_Image *C_Parser::ParseImage(char *filename)
                     // Find NON white space
                     Found = 0;
 
-                    while ( not Found and !Done and !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -3085,7 +3085,7 @@ C_Image *C_Parser::ParseImage(char *filename)
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -3151,7 +3151,7 @@ C_Image *C_Parser::ParseImage(char *filename)
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -3256,12 +3256,12 @@ C_Font *C_Parser::ParseFont(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while ( not Found and !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if ( not Comment and !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -3341,7 +3341,7 @@ C_Font *C_Parser::ParseFont(char *filename)
                     // Find NON white space
                     Found = 0;
 
-                    while ( not Found and !Done and !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -3380,7 +3380,7 @@ C_Font *C_Parser::ParseFont(char *filename)
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -3446,7 +3446,7 @@ C_Font *C_Parser::ParseFont(char *filename)
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -3546,12 +3546,12 @@ C_Sound *C_Parser::ParseSound(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while ( not Found and !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if ( not Comment and !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -3631,7 +3631,7 @@ C_Sound *C_Parser::ParseSound(char *filename)
                     // Find NON white space
                     Found = 0;
 
-                    while ( not Found and !Done and !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -3670,7 +3670,7 @@ C_Sound *C_Parser::ParseSound(char *filename)
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -3736,7 +3736,7 @@ C_Sound *C_Parser::ParseSound(char *filename)
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -3836,12 +3836,12 @@ C_String *C_Parser::ParseString(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while ( not Found and !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if ( not Comment and !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -3921,7 +3921,7 @@ C_String *C_Parser::ParseString(char *filename)
                     // Find NON white space
                     Found = 0;
 
-                    while ( not Found and !Done and !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -3960,7 +3960,7 @@ C_String *C_Parser::ParseString(char *filename)
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -4026,7 +4026,7 @@ C_String *C_Parser::ParseString(char *filename)
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -4136,12 +4136,12 @@ C_Movie *C_Parser::ParseMovie(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while ( not Found and !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if ( not Comment and !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -4221,7 +4221,7 @@ C_Movie *C_Parser::ParseMovie(char *filename)
                     // Find NON white space
                     Found = 0;
 
-                    while ( not Found and !Done and !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -4260,7 +4260,7 @@ C_Movie *C_Parser::ParseMovie(char *filename)
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -4326,7 +4326,7 @@ C_Movie *C_Parser::ParseMovie(char *filename)
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -4411,12 +4411,12 @@ C_Base *C_Parser::PopupParser()
                 // Look for token starting with '['
                 Found = 0;
 
-                while ( not Found and !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if ( not Comment and !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -4503,12 +4503,12 @@ C_Base *C_Parser::PopupParser()
                 // Look for token starting with '['
                 Found = 0;
 
-                while ( not Found and !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if ( not Comment and !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -4616,7 +4616,7 @@ C_Base *C_Parser::PopupParser()
                     // Find NON white space
                     Found = 0;
 
-                    while ( not Found and !Done and !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -4655,7 +4655,7 @@ C_Base *C_Parser::PopupParser()
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -4721,7 +4721,7 @@ C_Base *C_Parser::PopupParser()
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -4829,12 +4829,12 @@ C_Base *C_Parser::ParsePopupMenu(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while ( not Found and !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if ( not Comment and !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -4951,7 +4951,7 @@ C_SoundBite *C_Parser::ParseSoundBite(char *filename)
                     // Find NON white space
                     Found = 0;
 
-                    while ( not Found and !Done and !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -5002,7 +5002,7 @@ C_SoundBite *C_Parser::ParseSoundBite(char *filename)
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -5068,7 +5068,7 @@ C_SoundBite *C_Parser::ParseSoundBite(char *filename)
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while ( not Found and !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {

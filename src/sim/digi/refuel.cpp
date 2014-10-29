@@ -253,7 +253,7 @@ void DigitalBrain::AiRefuel(void)
             {
                 decelerating = true;
 
-                if ((self->drawPointer) and !((DrawableBSP*)self->drawPointer)->GetDOFangle(41))
+                if ((self->drawPointer) and  not ((DrawableBSP*)self->drawPointer)->GetDOFangle(41))
                 {
                     ((DrawableBSP*)self->drawPointer)->SetSwitchMask(13, 1);  // 29NOV03 - FRB - Open refueling door/ Display probe
                     ((DrawableBSP*)self->drawPointer)->SetDOFangle(41, self->af->GetRefuelAngle()*DTR);  // 29NOV03 - FRB - Open refueling door/ Extend probe
@@ -523,7 +523,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
 
     if (dist < refuelMode * 100.0F  and 
         fabs(tanker->Yaw() - self->Yaw()) < 3.0F * DTR * refuelMode  and 
-        fabs(tanker->GetVt() - self->GetVt())*FTPSEC_TO_KNOTS < (5.0F + 45.0F * (refuelMode /* S.G. NO! refuelMode is ALREADY -1! - 1 */))  and 
+        fabs(tanker->GetVt() - self->GetVt())*FTPSEC_TO_KNOTS < (5.0F + 45.0F * (refuelMode /* S.G. NO refuelMode is ALREADY -1 - 1 */))  and 
         fabs(self->Pitch()*DTR) < 8.0F * refuelMode  and 
         fabs(self->Roll()*DTR) < 8.0F * refuelMode)
 #endif
@@ -770,7 +770,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
         if (g_bNewRefuelHelp)
         {
             // 2002-03-06 MN in moderated mode (Simplified), once we're stuck to the boom, no stick input needed anymore
-            if (PlayerOptions.GetRefuelingMode() == ARModerated and !af->IsSet(AirframeClass::Refueling))
+            if (PlayerOptions.GetRefuelingMode() == ARModerated and not af->IsSet(AirframeClass::Refueling))
             {
                 af->pstick = (UserStickInputs.pstick - pStick) * 0.3F + pStick;
                 af->rstick = (UserStickInputs.rstick - rStick) * 0.3F + rStick;

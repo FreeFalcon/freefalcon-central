@@ -232,7 +232,7 @@ void TextureBankClass::OpenTextureFile()
     strcpy(filename, baseName);
     strcat(filename, ".TEX");
 
-    if ( not TexFileMap.Open(filename, FALSE, !g_bUseMappedFiles))
+    if ( not TexFileMap.Open(filename, FALSE,  not g_bUseMappedFiles))
     {
         char message[256];
         sprintf(message, "Failed to open object texture file %s\n", filename);
@@ -309,7 +309,7 @@ void TextureBankClass::Release(int id)
     ShiAssert(IsValidIndex(id));
     ShiAssert(TexturePool[id].refCount > 0);
 
-    // RED - no reference, no party... !!!!!
+    // RED - no reference, no party... 
     if ( not TexturePool[id].refCount) 
         return;
 
@@ -416,7 +416,7 @@ void TextureBankClass::LoaderCallBack(LoaderQ* request)
     //EnterCriticalSection(&ObjectLOD::cs_ObjectLOD);
 
     // If we're turning deferred loads off, go back and do all the loads we held up
-    if (deferredLoadState and !state)
+    if (deferredLoadState and not state)
     {
         DWORD Count = 5;
 
@@ -427,7 +427,7 @@ void TextureBankClass::LoaderCallBack(LoaderQ* request)
             if (TexturePool[id].refCount)
 
                 // This one is in use. Is it already loaded?
-                if (/*!TexturePool[id].tex.imageData  and */ !TexturePool[id].tex.TexHandle())
+                if (/* not TexturePool[id].tex.imageData  and */  not TexturePool[id].tex.TexHandle())
                 {
 
                     // Nope, go get it.
@@ -816,7 +816,7 @@ bool TextureBankClass::UpdateBank(void)
             id = CacheRelease[ReleaseOut++];
 
             // if not an order again, and no Referenced, release it
-            if ( not TexFlags[id].OnOrder and !TexturePool[id].refCount and TexFlags[id].OnRelease) TexturePool[id].tex.FreeAll();
+            if ( not TexFlags[id].OnOrder and not TexturePool[id].refCount and TexFlags[id].OnRelease) TexturePool[id].tex.FreeAll();
 
             // clear flag, in any case
             TexFlags[id].OnRelease = false;

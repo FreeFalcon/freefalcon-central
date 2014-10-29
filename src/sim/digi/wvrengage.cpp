@@ -40,7 +40,7 @@ void DigitalBrain::WvrEngageCheck(void)
     /*---------------------*/
     /* return if no target */
     /*---------------------*/
-    if (targetPtr == NULL or (mpActionFlags[AI_ENGAGE_TARGET] not_eq AI_AIR_TARGET and missionClass not_eq AAMission and !missionComplete) or curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
+    if (targetPtr == NULL or (mpActionFlags[AI_ENGAGE_TARGET] not_eq AI_AIR_TARGET and missionClass not_eq AAMission and not missionComplete) or curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
     {
         //me123     ClearTarget();
         engagementTimer = 0;
@@ -535,7 +535,7 @@ void DigitalBrain::WvrChooseTactic(void)
         /*-----------------------------*/
         /* logic is geometry dependent */
         /*-----------------------------*/
-        //ME123 WE DEFINATLY NEED TO THINK ABOUT NOSE TO NOSE OR NOSE TO TAIL FIGHT HERE !
+        //ME123 WE DEFINATLY NEED TO THINK ABOUT NOSE TO NOSE OR NOSE TO TAIL FIGHT HERE 
         // AT THE MOMENT WE JUST ROLL AND PULL NOMATTER WHAT :-(
 
 
@@ -546,7 +546,7 @@ void DigitalBrain::WvrChooseTactic(void)
         if (targetData->ata <= 90.0F * DTR and targetData->ataFrom <= 90.0F * DTR)
         {
             // how stupid are we?
-            // MODIFIED BY S.G. af->vt is in feet/second. cornerSpeed is in knot/hour!
+            // MODIFIED BY S.G. af->vt is in feet/second. cornerSpeed is in knot/hour
             // NEEDS TO BE DONE IN THE 1.08 EXE FIRST TO BE CONSISTANT
             if (af->vt < cornerSpeed * 0.3F)
                 //      if ( self->GetKias() < cornerSpeed * 0.3F )
@@ -758,15 +758,15 @@ void DigitalBrain::SetThreat(FalconEntity *obj)
     if (obj not_eq NULL and threatTimer > 0.0f)
         return;
 
-    F4Assert( not obj or !obj->IsSim() or !obj->IsHelicopter());
+    F4Assert( not obj or not obj->IsSim() or not obj->IsHelicopter());
 
-    if (obj and obj->OnGround())//Cobra We want to nail those targeting us!
+    if (obj and obj->OnGround())//Cobra We want to nail those targeting us
     {
         SetGroundTarget(obj);
         return;
     }
 
-    if (obj and !obj->OnGround())
+    if (obj and not obj->OnGround())
     {
         // if the threat is the same as our target, we don't
         // need to do anything since we're already dealing
@@ -856,7 +856,7 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
             // If it doesn't have a campaign object or it's identified... END OF ADDED SECTION plus the use of campBaseObj below
             if ( not campBaseObj or campBaseObj->GetIdentified(self->GetTeam()))
             {
-                // Yes, now you can get its combat class!
+                // Yes, now you can get its combat class
                 hisCombatClass = targetPtr->BaseData()->CombatClass();
             }
             else
@@ -887,7 +887,7 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
 
         if (type bitand DigitalBrain::WVRManeuver)
         {
-            // If no capability, don't go say you can engage!!!
+            // If no capability, don't go say you can engage
             if (theIntercept->numMerges == 0)
                 retWvr = FALSE;
             else if (theIntercept->numMerges == 1)

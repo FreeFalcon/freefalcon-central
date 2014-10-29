@@ -297,7 +297,7 @@ void Radar360Class::ExecAA(void)
         }
 
         // Skip the object if it can't be locked
-        if ( not AWACSMode and !InAALockZone(object, x, y))   // M.N. in AWACS mode, allow 360° locking
+        if ( not AWACSMode and not InAALockZone(object, x, y))   // M.N. in AWACS mode, allow 360° locking
         {
             continue;
         }
@@ -557,7 +557,7 @@ void Radar360Class::ExecAG(void)
 
 
         // Skip the object if it can't be locked
-        if ((range > rangeFT) or !InAGLockZone(cosATA, x, y))
+        if ((range > rangeFT) or not InAGLockZone(cosATA, x, y))
         {
             goto NextObject;
         }
@@ -783,7 +783,7 @@ void Radar360Class::Display(VirtualDisplay *activeDisplay)
     {
         classPtr = (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
 
-        if (lockedTarget->BaseData()->IsSim() and !((SimBaseClass*)lockedTarget->BaseData())->IsExploding())
+        if (lockedTarget->BaseData()->IsSim() and  not ((SimBaseClass*)lockedTarget->BaseData())->IsExploding())
         {
             if (classPtr->dataType == DTYPE_VEHICLE)
             {

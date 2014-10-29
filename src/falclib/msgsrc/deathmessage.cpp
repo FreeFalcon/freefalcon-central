@@ -58,7 +58,7 @@ int FalconDeathMessage::Process(uchar autodisp)
     // KCK: Chalk off a vehicle in the unit if the target is a Campaign Unit
     if (campTarget and campTarget->IsUnit())
     {
-        if ( not campTarget->IsAggregate() and target and !target->IsSetFalcFlag(FEC_REGENERATING))
+        if ( not campTarget->IsAggregate() and target and not target->IsSetFalcFlag(FEC_REGENERATING))
             campTarget->GetComponents()->Remove(target);
 
         if (campTarget->IsLocal())
@@ -73,11 +73,11 @@ int FalconDeathMessage::Process(uchar autodisp)
     // KCK: update kill records for mission evaluator.
     EvaluateKill(this, shooter, campShooter, target, campTarget);
 
-    if (target and (target->IsAirplane() or !(rand() % 3)))
+    if (target and (target->IsAirplane() or  not (rand() % 3)))
     {
         if (shooter and shooter->IsAirplane()  and 
             (GetTTRelations(shooter->GetTeam(), target->GetTeam()) >= Hostile) and rand() % 2
-            and !shooter->IsPlayer())
+            and not shooter->IsPlayer())
         {
             FalconRadioChatterMessage *radioMessage = new FalconRadioChatterMessage(shooter->Id(), FalconLocalSession);
             radioMessage->dataBlock.from = shooter->Id();
@@ -137,7 +137,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
     int kill_type = -1, tid, ps = PILOT_KIA;
     Squadron sq;
 
-    if ( not campShooter or !campTarget)
+    if ( not campShooter or not campTarget)
         return;
 
     // Determine type of kill

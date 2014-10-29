@@ -268,7 +268,7 @@ void ContextMPR::Cleanup()
     if (StateSetupCounter)
         CleanupMPRState(CHECK_PREVIOUS_STATE);
 
-    // Warning: The SIM code uses a shared DXContext which might be already toast when this function gets called!!
+    // Warning: The SIM code uses a shared DXContext which might be already toast when this function gets called
     // Under no circumstances access m_pCtxDX here
     // Btw: this was causing the infamous LGB CTD
 
@@ -615,7 +615,7 @@ void ContextMPR::SetState(WORD State, DWORD Value)
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_GOURAUD);
             }
 
-            if ((Value bitand MPR_SE_SCISSORING) and !m_bEnableScissors)
+            if ((Value bitand MPR_SE_SCISSORING) and not m_bEnableScissors)
             {
                 FlushVB();
 
@@ -2086,7 +2086,7 @@ void ContextMPR::RestoreState(GLint state)
         m_setStatesUsed.insert(state);
 #endif
 
-        if (currentState == -1 or (StateTableInternal[currentState].SE_TEXTURING and !StateTableInternal[state].SE_TEXTURING))
+        if (currentState == -1 or (StateTableInternal[currentState].SE_TEXTURING and not StateTableInternal[state].SE_TEXTURING))
             currentTexture1 = -1;
 
         currentState = state;
@@ -2114,7 +2114,7 @@ void ContextMPR::SetZBuffering(BOOL state)
         FlushVB();
         bZBuffering = state;
     }
-    else if (bZBuffering and !state)
+    else if (bZBuffering and not state)
     {
         bZBuffering = state;
     }
@@ -2172,7 +2172,7 @@ void ContextMPR::UpdateViewport()
     MonoPrint("ContextMPR::UpdateViewport()\n");
 #endif
 
-    if (m_bViewportLocked or !m_pD3DD)
+    if (m_bViewportLocked or not m_pD3DD)
         return;
 
     // get current viewport
@@ -2190,7 +2190,7 @@ void ContextMPR::UpdateViewport()
         vp.dwWidth = m_rcVP.right - m_rcVP.left;
         vp.dwHeight = m_rcVP.bottom - m_rcVP.top;
 
-        if ( not vp.dwWidth or !vp.dwHeight)
+        if ( not vp.dwWidth or not vp.dwHeight)
             return;
     }
     else
@@ -2723,7 +2723,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 pVtx->sy = xyz->y;
             }
 
-            // NOTE: HACK!!
+            // NOTE: HACK
             if (xyz->z > 5)
                 pVtx->sz = SCALE_SZ(xyz->z); // COBRA - RED - Using precomputed CXs
             else
@@ -2850,7 +2850,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
              sVertex->sx = xyz->x;
              sVertex->sy = xyz->y;
 
-             // NOTE: HACK!!
+             // NOTE: HACK
              if(xyz->z > 5)
              sVertex->sz = SCALE_SZ(xyz->z);
              else
@@ -2863,7 +2863,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
             *(Spoint*)&(sVertex->sx) = *(Spoint*)&TheStateStack.XformedPosPool[*xyzIdxPtr++];
             sVertex->rhw = 1.f / sVertex->sz;
 
-            // NOTE: HACK!!
+            // NOTE: HACK
             if (sVertex->sz > 5)
                 sVertex->sz = SCALE_SZ(sVertex->sz); // COBRA - RED - Using precomputed CXs;
             else
@@ -3715,7 +3715,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
                 pVtx->sy = pData[i]->y;
             }
 
-            // NOTE: HACK!!
+            // NOTE: HACK
             pVtx->sz = 1.0f;
             pVtx->rhw = pData[i]->q > 0.0f ? 1.0f / (pData[i]->q / Q_SCALE) : 1.0f;
 
@@ -3781,7 +3781,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
             sVertex->sx = pData[i]->x;
             sVertex->sy = pData[i]->y;
 
-            // NOTE: HACK!!
+            // NOTE: HACK
             if (pData[i]->q)
                 sVertex->sz = gCX1 + gCX2 / (pData[i]->q / Q_SCALE);
             else

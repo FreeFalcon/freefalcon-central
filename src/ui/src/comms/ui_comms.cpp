@@ -193,7 +193,7 @@ void CommsErrorDialog(long TitleID, long MessageID, void (*OKCB)(long, short, C_
     C_Button *btn;
     C_Text *txt;
 
-    if ( not MessageID or !gMainHandler)
+    if ( not MessageID or not gMainHandler)
         return;
 
     win = gMainHandler->FindWindow(COMMLINK_WIN);
@@ -376,7 +376,7 @@ extern bool g_bDrawBoundingBox;
 extern float g_fSoundDopplerFactor, g_fSoundRolloffFactor;// MLR 2003-10-17
 extern int g_nSoundUpdateMS; // MLR 2003/11/03
 
-// RV - Biker - Who does need - we do!!
+// RV - Biker - Who does need - we do
 float g_nboostguidesec = 0; //me123 how many sec we are in boostguide mode
 float g_nterminalguiderange = 0; //me123 what range we transfere to terminal guidence
 float g_nboostguideSensorPrecision = 0; //me123
@@ -424,7 +424,7 @@ void ServerChatCommand(_TCHAR *msg)
 
     if (g_nShowDebugLabels)
     {
-        if (arga and argb and !stricmp(arga, ".trail"))
+        if (arga and argb and not stricmp(arga, ".trail"))
         {
             if (atoi(argb))
             {
@@ -438,23 +438,23 @@ void ServerChatCommand(_TCHAR *msg)
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
-        if (arga and !stricmp(arga, ".trailreload"))
+        if (arga and not stricmp(arga, ".trailreload"))
         {
             LoadTrails();
         }
 
-        if (arga and !stricmp(arga, ".psreload"))
+        if (arga and not stricmp(arga, ".psreload"))
         {
             DrawableParticleSys::LoadParameters();
         }
 
-        if (arga and !stricmp(arga, ".sndreload"))
+        if (arga and not stricmp(arga, ".sndreload"))
         {
             F4ReloadSFX();
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
-        if (arga and argb and !stricmp(arga, ".snd"))
+        if (arga and argb and not stricmp(arga, ".snd"))
         {
             if (atoi(argb))
             {
@@ -468,26 +468,26 @@ void ServerChatCommand(_TCHAR *msg)
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
-        if (arga and argb and !stricmp(arga, ".sndms"))
+        if (arga and argb and not stricmp(arga, ".sndms"))
         {
             g_nSoundUpdateMS = atoi(argb);
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
-        if (arga and argb and !stricmp(arga, ".snddop"))
+        if (arga and argb and not stricmp(arga, ".snddop"))
         {
             g_fSoundDopplerFactor = (float)atof(argb);
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
-        if (arga and argb and !stricmp(arga, ".sndro"))
+        if (arga and argb and not stricmp(arga, ".sndro"))
         {
             g_fSoundRolloffFactor = (float)atof(argb);
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
         // COBRA - RED - SFX Activating cheat '.sfx {SfxNr}'
-        if ((arga and argb and !stricmp(arga, ".sfx")) or (arga and !stricmp(arga, ".")))
+        if ((arga and argb and not stricmp(arga, ".sfx")) or (arga and not stricmp(arga, ".")))
         {
             static int sfx = 0;
             static float Dist = 300;
@@ -521,14 +521,14 @@ void ServerChatCommand(_TCHAR *msg)
 
 
         // 2002-02-21 MN Allow to change the set of debug labels via the chat line
-        if (arga and argb and !stricmp(arga, ".label") and g_bActivateDebugStuff)
+        if (arga and argb and not stricmp(arga, ".label") and g_bActivateDebugStuff)
         {
             int newlabels = strtol(argb, NULL, 0); // atoi(argb); 2002-04-01 MODIFIED BY S.G. strtol will parse the inpuy string looking for standard base like 0x
             g_nShowDebugLabels = newlabels;
         }
 
         // Changes fuel level of players aircraft - for refuel testings
-        if (arga and argb and !stricmp(arga, ".fuel") and g_bActivateDebugStuff)
+        if (arga and argb and not stricmp(arga, ".fuel") and g_bActivateDebugStuff)
         {
             unsigned long newfuel = atol(argb);
             gFuelState = newfuel;
@@ -536,7 +536,7 @@ void ServerChatCommand(_TCHAR *msg)
 
         if (g_bServer)
         {
-            if (arga and argb and !stricmp(arga, ".loadte"))
+            if (arga and argb and not stricmp(arga, ".loadte"))
             {
                 DisableScenarioInfo();
                 LeaveCurrentGame();
@@ -561,7 +561,7 @@ void ServerChatCommand(_TCHAR *msg)
                 MainLastGroup = 3000;
             }
 
-            if (arga and argb and !stricmp(arga, ".acmi"))
+            if (arga and argb and not stricmp(arga, ".acmi"))
             {
                 if ( not stricmp(argb, "on"))
                 {
@@ -591,7 +591,7 @@ void ServerChatCommand(_TCHAR *msg)
                 }
             }
 
-            if (0 and arga and argb and !stricmp(arga, ".loadcam"))
+            if (0 and arga and argb and not stricmp(arga, ".loadcam"))
             {
                 DisableScenarioInfo();
                 LeaveCurrentGame();
@@ -614,7 +614,7 @@ void ServerChatCommand(_TCHAR *msg)
                 MainLastGroup = 3000;
             }
 
-            if (arga and !stricmp(arga, ".quit"))
+            if (arga and not stricmp(arga, ".quit"))
             {
                 tactical_mission_loaded = FALSE;
                 RemoveTacticalEdit();
@@ -630,91 +630,91 @@ void ServerChatCommand(_TCHAR *msg)
             }
         }
 
-        if (arga and argb and !stricmp(arga, ".mistrail") and g_bActivateDebugStuff)
+        if (arga and argb and not stricmp(arga, ".mistrail") and g_bActivateDebugStuff)
         {
             g_nmissiletrial = atoi(argb);
         }
-        else if (arga and !stricmp(arga, ".boundb") and g_bActivateDebugStuff)
+        else if (arga and not stricmp(arga, ".boundb") and g_bActivateDebugStuff)
         {
             if (g_bDrawBoundingBox)
                 g_bDrawBoundingBox = false;
             else
                 g_bDrawBoundingBox = true;
         }
-        // RV - Biker - Who does need - we do!!
-        else if (arga and argb and !stricmp(arga, ".bgs") and g_bActivateDebugStuff)
+        // RV - Biker - Who does need - we do
+        else if (arga and argb and not stricmp(arga, ".bgs") and g_bActivateDebugStuff)
         {
             g_nboostguidesec = (float)atof(argb);
         }
-        else if (arga and argb and !stricmp(arga, ".tgr") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tgr") and g_bActivateDebugStuff)
         {
             g_nterminalguiderange = (float)atof(argb);
         }
-        else if (arga and argb and !stricmp(arga, ".bgsp") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".bgsp") and g_bActivateDebugStuff)
         {
             g_nboostguideSensorPrecision = (float)atof(argb);
         }
-        else if (arga and argb and !stricmp(arga, ".sgsp") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".sgsp") and g_bActivateDebugStuff)
         {
             g_nsustainguideSensorPrecision = (float)atof(argb);
         }
-        else if (arga and argb and !stricmp(arga, ".tgsp") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tgsp") and g_bActivateDebugStuff)
         {
             g_nterminalguideSensorPrecision = (float)atof(argb);
         }
-        else if (arga and argb and !stricmp(arga, ".bgl") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".bgl") and g_bActivateDebugStuff)
         {
             g_nboostguideLead = (float)atof(argb);
         }
-        else if (arga and argb and !stricmp(arga, ".sgl") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".sgl") and g_bActivateDebugStuff)
         {
             g_nsustainguideLead = (float)atof(argb);
         }
-        else if (arga and argb and !stricmp(arga, ".tgl") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tgl") and g_bActivateDebugStuff)
         {
             g_nterminalguideLead = (float)atof(argb);
         }
-        else if (arga and argb and !stricmp(arga, ".bggn") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".bggn") and g_bActivateDebugStuff)
         {
             g_nboostguideGnav = (float)atof(argb);
         }
-        else if (arga and argb and !stricmp(arga, ".sggn") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".sggn") and g_bActivateDebugStuff)
         {
             g_nsustainguideGnav = (float)atof(argb);
         }
-        else if (arga and argb and !stricmp(arga, ".tggn") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tggn") and g_bActivateDebugStuff)
         {
             g_nterminalguideGnav = (float)atof(argb);
         }
-        else if (arga and argb and !stricmp(arga, ".bgbw") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".bgbw") and g_bActivateDebugStuff)
         {
             g_nboostguideBwap = (float)atof(argb);
         }
-        else if (arga and argb and !stricmp(arga, ".sgbw") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".sgbw") and g_bActivateDebugStuff)
         {
             g_nsustainguideBwap = (float)atof(argb);
         }
-        else if (arga and argb and !stricmp(arga, ".tgbw") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tgbw") and g_bActivateDebugStuff)
         {
             g_nterminalguideBwap = (float)atof(argb);
         }
-        else if (arga and argb and !stricmp(arga, ".cbw") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".cbw") and g_bActivateDebugStuff)
         {
             //clientbwforupdatesmodifyer = float(atoi(argb)/1000.0f);
         }
-        else if (arga and argb and !stricmp(arga, ".hbw") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".hbw") and g_bActivateDebugStuff)
         {
             //hostbwforupdatesmodifyer = float(atoi(argb)/1000.0f);
         }
-        else if (arga and argb and !stricmp(arga, ".tf") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tf") and g_bActivateDebugStuff)
         {
             g_nMpdelaytweakfactor = float(atoi(argb));
         }
-        else if (arga and argb and !stricmp(arga, ".mbw") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".mbw") and g_bActivateDebugStuff)
         {
             //MinBwForOtherData = float(atoi(argb));
         }
-        else if (arga and argb and !stricmp(arga, ".pos"))
+        else if (arga and argb and not stricmp(arga, ".pos"))
         {
             //Posupdsize = float(atoi(argb));
         }
@@ -797,7 +797,7 @@ void BlinkCommsButtonTimerCB(long, short, C_Base *control)
 
     if ( not gCommsMgr) return;
 
-    if ( not gNewMessage or !gCommsMgr->Online()) return;
+    if ( not gNewMessage or not gCommsMgr->Online()) return;
 
     btn = (C_Button *)control->Parent_->FindControl(CO_MAIN_CTRL);
 
@@ -1086,7 +1086,7 @@ void SendChatStringCB(long, short hittype, C_Base *control)
     C_Player *plyr;
     UI_SendChatMessage *chat;
 
-    if (hittype not_eq DIK_RETURN or control == NULL or !gCommsMgr->Online())
+    if (hittype not_eq DIK_RETURN or control == NULL or not gCommsMgr->Online())
         return;
 
     AddMessageToChatWindow(FalconLocalSessionId, ((C_EditBox *)control)->GetText());
@@ -1099,7 +1099,7 @@ void SendChatStringCB(long, short hittype, C_Base *control)
         {
             plyr = (C_Player*)cur->Item_;
 
-            if (plyr and plyr->GetState() and !plyr->GetIgnore())
+            if (plyr and plyr->GetState() and not plyr->GetIgnore())
             {
                 FalconSessionEntity *session = (FalconSessionEntity*) vuDatabase->Find(plyr->GetVUID());
 
@@ -2254,7 +2254,7 @@ static void PeopleSelectCB(long, short hittype, C_Base *)
     TREELIST *item;
     C_Player *player;
 
-    if (hittype not_eq C_TYPE_LMOUSEUP or !People)
+    if (hittype not_eq C_TYPE_LMOUSEUP or not People)
         return;
 
     item = People->GetLastItem();
@@ -2293,7 +2293,7 @@ static void SelectChatFilterCB(long, short hittype, C_Base *control)
 
 void UI_Refresh(void)
 {
-    if ( not FalconLocalGame or !gCommsMgr or !gMainHandler)
+    if ( not FalconLocalGame or not gCommsMgr or not gMainHandler)
     {
         return;
     }

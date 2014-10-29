@@ -187,7 +187,7 @@ void C_DrawList::Draw(SCREEN *surface, UI95_RECT *cliprect)
                     if (item->Bat)
                         item->Bat->Draw(surface, cliprect);
 
-                    if (item->Label and !item->Div and !item->Brig and !item->Bat)
+                    if (item->Label and not item->Div and not item->Brig and not item->Bat)
                         item->Label->Draw(surface, cliprect);
                 }
             }

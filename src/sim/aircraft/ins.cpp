@@ -12,7 +12,7 @@ void AircraftClass::RunINS(void)
 {
     if (INSAlign and INSState(INS_AlignNorm) or INSState(INS_AlignFlight))
     {
-        if ((OnGround() and GetKias() <= 2.0F and !INS60kts) ||
+        if ((OnGround() and GetKias() <= 2.0F and not INS60kts) ||
             INSState(INS_AlignFlight))
             DoINSAlign();
         else
@@ -20,7 +20,7 @@ void AircraftClass::RunINS(void)
 
 
     }
-    else if (INSState(INS_AlignNorm) and !INS60kts)
+    else if (INSState(INS_AlignNorm) and not INS60kts)
     {
         INSAlign = TRUE;
     }
@@ -227,7 +227,7 @@ void AircraftClass::SwitchINSToInFLT(void)
 void AircraftClass::CheckINSStatus(void)
 {
     if (INSState(AircraftClass::INS_PowerOff) ||
-        (INSState(AircraftClass::INS_Nav) and !HasAligned))
+        (INSState(AircraftClass::INS_Nav) and not HasAligned))
     {
         INSOff(AircraftClass::INS_ADI_OFF_IN);
         INSOff(AircraftClass::INS_ADI_AUX_IN);
@@ -244,7 +244,7 @@ void AircraftClass::CheckINSStatus(void)
     }
 
     if (INSState(AircraftClass::INS_PowerOff) or INSState(AircraftClass::INS_AlignNorm) ||
-        !HasAligned)
+         not HasAligned)
         INSOff(AircraftClass::INS_HUD_FPM);
     else
         INSOn(AircraftClass::INS_HUD_FPM);

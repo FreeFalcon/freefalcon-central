@@ -176,7 +176,7 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
         }
 
         waypoint = (WayPoint)&waypoint; // MCC WARNING - this tells the AI code we
-        // are still moving.....!!!!!!!!
+        // are still moving.....
     }
 
     return (waypoint);
@@ -236,10 +236,10 @@ void GNDAIClass::Fire(void)
         }
 
         // RV - Biker - Radar vehicles shouldn't do this
-        if (SimLibElapsedTime > nextFire and !(self->isEmitter and !hasWeapons))
+        if (SimLibElapsedTime > nextFire and  not (self->isEmitter and not hasWeapons))
         {
             // FRB - The weapns search above seems to break the SAM firing (decreases it or stops it)
-            //if (SimLibElapsedTime > nextFire and !(self->isEmitter and !self->Sms->GetCurrentWeapon())) {
+            //if (SimLibElapsedTime > nextFire and  not (self->isEmitter and not self->Sms->GetCurrentWeapon())) {
             nextTurretCalc = SimLibElapsedTime + TURRET_CALC_RATE;
 
             if ( not self->targetPtr->BaseData()->OnGround())
@@ -293,7 +293,7 @@ void GNDAIClass::Fire(void)
 
             // RV - Biker - Radar vehicles without weapons should do this also
             //if(SimLibElapsedTime > nextTurretCalc) {
-            if (SimLibElapsedTime > nextTurretCalc or (self->isEmitter and !self->Sms->GetCurrentWeapon()))
+            if (SimLibElapsedTime > nextTurretCalc or (self->isEmitter and not self->Sms->GetCurrentWeapon()))
             {
                 float xft, yft, zft;
                 float realRange, tof;
@@ -303,7 +303,7 @@ void GNDAIClass::Fire(void)
 
                 // RV - Biker - Adjust this
                 //if( not theWeapon)
-                if ( not theWeapon and !self->isEmitter)
+                if ( not theWeapon and not self->isEmitter)
                     return;
 
                 target = self->targetPtr->BaseData();

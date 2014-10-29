@@ -134,11 +134,11 @@ void DigitalBrain::AiMonitorTargets()
     FalconEntity* pbaseData;
     int campX, campY;
 
-    // 2000-09-13 MODIFIED BY S.G. HOW STUPID CAN YOU BE! WHO PROGRAMMED THIS HAS NO IDEA HOW ARRAY WORKS! NOT IN RP4
-    // Cobra - The pot calling the kettle black!
+    // 2000-09-13 MODIFIED BY S.G. HOW STUPID CAN YOU BE WHO PROGRAMMED THIS HAS NO IDEA HOW ARRAY WORKS NOT IN RP4
+    // Cobra - The pot calling the kettle black
     // mpSearchFlags array is AI_TOTAL_SEARCH_TYPES (3) long, thus mpSearchFlags[AI_TOTAL_SEARCH_TYPES] is referencing
     // memory outside of the array (mpSearchFlags[3]). AI_FIXATE_ON_TARGET is an index into mpSearchFlags[], not the value (true or false).
-    // so, whatever the value is in mpSearchFlags[AI_TOTAL_SEARCH_TYPES] must equal AI_FIXATE_ON_TARGET (2)...not likely!
+    // so, whatever the value is in mpSearchFlags[AI_TOTAL_SEARCH_TYPES] must equal AI_FIXATE_ON_TARGET (2)...not likely
     // The same is true for the other 2 if(mpSearchFlags[AI_TOTAL_SEARCH_TYPES] == AI_xxxxxx_TARGET) logic statements.
     //if(mpSearchFlags[AI_TOTAL_SEARCH_TYPES] == AI_FIXATE_ON_TARGET) {
     if (mpSearchFlags[AI_FIXATE_ON_TARGET])
@@ -183,7 +183,7 @@ void DigitalBrain::AiMonitorTargets()
             */
         }
     }
-    // 2000-09-13 MODIFIED BY S.G. HOW STUPID CAN YOU BE! WHO PROGRAMMED THIS HAS NO IDEA HOW ARRAY WORKS! NOT IN RP4
+    // 2000-09-13 MODIFIED BY S.G. HOW STUPID CAN YOU BE WHO PROGRAMMED THIS HAS NO IDEA HOW ARRAY WORKS NOT IN RP4
     // Cobra - see above
     //else if(mpSearchFlags[AI_TOTAL_SEARCH_TYPES] == AI_SEARCH_FOR_TARGET) {
     else if (mpSearchFlags[AI_SEARCH_FOR_TARGET])
@@ -301,7 +301,7 @@ void DigitalBrain::AiFollowLead(void)
     int flightIdx;
     AircraftClass* paircraft;
 
-    if (flightLead == self or isWing == 0 or !flightLead)
+    if (flightLead == self or isWing == 0 or not flightLead)
     {
 
         Loiter();
@@ -355,7 +355,7 @@ void DigitalBrain::AiFollowLead(void)
 
             AiCheckInPositionCall(trackX, trackY, trackZ);
 
-            // add relative formation altitude - after check in position call !
+            // add relative formation altitude - after check in position call 
             if (isWing) // only wingmen
                 trackZ = trackZ + mFormRelativeAltitude;
 

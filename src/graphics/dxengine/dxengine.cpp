@@ -1158,7 +1158,7 @@ void CDXEngine::DOF(void)
 
 #ifndef DEBUG_ENGINE
 
-    // * CONSISTENCY CHECK !!! *
+    // * CONSISTENCY CHECK ! *
     if (m_NODE.DOF->dofNumber >= m_TheObjectInstance->ParentObject->nDOFs) return;
 
 #endif
@@ -1654,14 +1654,14 @@ inline void CDXEngine::DrawNode(ObjectInstance *objInst, DWORD LightOwner, DWORD
                 k.x = 0;
                 k.y = 0;
                 k.z = 0;
-                // Draw the object IN CAMERA SPACE! - Child always depend on parent Lights...!!!
+                // Draw the object IN CAMERA SPACE! - Child always depend on parent Lights...!
                 DrawObject(subObject, &p, &k, 1, 1, 1, 1, true, LightOwner);
             }
             break;
 
         default :
             char s[128];
-            printf(s, "Corrupted Model ID : %d !!!", LodID);
+            printf(s, "Corrupted Model ID : %d !", LodID);
             MessageBox(NULL, s, "DX Engine", NULL);
 
     }
@@ -1696,7 +1696,7 @@ void CDXEngine::FlushObjects(void)
     {
 
         // ok, just entered Pit Mode
-        if (m_PitMode and !WasInPitMode)
+        if (m_PitMode and not WasInPitMode)
         {
             //START_PROFILE("3D PIT");
             // enable stenciling in Write Mode

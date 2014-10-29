@@ -1467,7 +1467,7 @@ void PlayCampaignMusic() // This function should figure out whether we are happy
 
 void PlayThatFunkyMusicWhiteBoy()
 {
-    if ( not gMusic or !MusicStopped)
+    if ( not gMusic or not MusicStopped)
         return;
 
     // if(GetCurrentTime() < (MusicStopped + 60000l))
@@ -1777,7 +1777,7 @@ int UI_Startup()
         DisplayOptions.Initialize();
     }
 
-    if ( not LogBook.CheckPassword(_T("")) and !(LogState bitand LB_CHECKED))
+    if ( not LogBook.CheckPassword(_T("")) and  not (LogState bitand LB_CHECKED))
         PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE, CheckPasswordCB, NoPasswordCB);
     else
     {

@@ -139,7 +139,7 @@ MEM_POOL BattalionClass::pool;
 // Battalion class Functions
 // ============================================
 
-// KCK: ALL BATTALION CONSTRUCTION SHOULD USE THIS FUNCTION!
+// KCK: ALL BATTALION CONSTRUCTION SHOULD USE THIS FUNCTION
 BattalionClass* NewBattalion(int type, Unit parent)
 {
     BattalionClass *new_battalion;
@@ -489,9 +489,9 @@ int BattalionClass::MoveUnit(CampaignTime time)
     lo = GetUnitObjective();
 
     if (
-        !lo or (
+         not lo or (
             Parent() and (FalconLocalGame->GetGameType() == game_Campaign)  and 
-            !TeamInfo[GetTeam()]->gtm->IsValidObjective(GetOrders(), lo)
+             not TeamInfo[GetTeam()]->gtm->IsValidObjective(GetOrders(), lo)
         )
     )
     {
@@ -507,7 +507,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
         else
         {
 #ifdef ROBIN_DEBUG
-            MonoPrint("Error: Battalion %d not assigned! - vegitating instead.\n", GetCampID());
+            MonoPrint("Error: Battalion %d not assigned - vegitating instead.\n", GetCampID());
 #endif
             SetLastCheck(GetLastCheck() + CampaignMinutes);
             return 0;
@@ -628,7 +628,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
     }
     else
     {
-        if (Retreating() and !Engaged())
+        if (Retreating() and not Engaged())
         {
             // We've retreated to our destination
             SetRetreating(0);
@@ -930,7 +930,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
             // Display what we're doing, if it's on..
             if (SHOWSTATS and Engaged() and TrackingOn[GetCampID()])
 #endif
-                MonoPrint(" - Moved!");
+                MonoPrint(" - Moved");
 
 #endif
         }
@@ -1007,7 +1007,7 @@ int BattalionClass::DoCombat()
             }
 
             // Check if our target should call in Artillery/CAS against us (Only for enemy battalions with bad odds)
-            if (e->IsUnit() and e->GetDomain() == DOMAIN_LAND and ((Unit)e)->GetOdds() < 20 and !((Unit)e)->Supported())
+            if (e->IsUnit() and e->GetDomain() == DOMAIN_LAND and ((Unit)e)->GetOdds() < 20 and  not ((Unit)e)->Supported())
             {
                 // Look for artillery or air support
                 if (RequestSupport((Unit)e, this))
@@ -1272,7 +1272,7 @@ float BattalionClass::GetSpeedModifier() const
     float d;
 
     // 2001-04-10 MODIFIED BY S.G. TimeOfDay RETURNS THE TIME OF THE DAY
-    // IN MILISECONDS! THAT'S NOT WHAT WE WANT... TimeOfDayGeneral WILL DO WHAT WE WANT
+    // IN MILISECONDS THAT'S NOT WHAT WE WANT... TimeOfDayGeneral WILL DO WHAT WE WANT
     // switch (TimeOfDay()) // Time of day modifiers
     switch (TimeOfDayGeneral()) // Time of day modifiers
     {
@@ -1529,7 +1529,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
     if (IsAggregate() or g_bOldSamActivity)
     {
         // Check if we still have any radar vehicles
-        if (class_data->RadarVehicle == 255 or !GetNumVehicles(class_data->RadarVehicle))
+        if (class_data->RadarVehicle == 255 or not GetNumVehicles(class_data->RadarVehicle))
             newMode = FEC_RADAR_OFF;
 
         // Check if we're already in our fire state
@@ -1627,7 +1627,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 
 
     // Check if we still have any radar vehicles
-    if (class_data->RadarVehicle == 255 or !GetNumVehicles(class_data->RadarVehicle))
+    if (class_data->RadarVehicle == 255 or not GetNumVehicles(class_data->RadarVehicle))
         return FEC_RADAR_OFF;
 
     assert(radarDatFileTable not_eq NULL);
@@ -1645,7 +1645,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
     float timetosearch ;
     float timetoaquire ;
 
-    if ( not d and !t) SetRadarMode(step_search_mode);
+    if ( not d and not t) SetRadarMode(step_search_mode);
 
     if (GetRadarMode() == FEC_RADAR_CHANGEMODE and step_search_mode >= FEC_RADAR_SEARCH_1)
         SetRadarMode(step_search_mode);// we are changing mode.. realy not off
@@ -1655,7 +1655,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
         case FEC_RADAR_OFF:
             timetosearch = radarData->Timetosearch1 - skill;
 
-            if (range <= radarData->Rangetosearch1 and !SEARCHtimer)
+            if (range <= radarData->Rangetosearch1 and not SEARCHtimer)
             {
                 SEARCHtimer = SimLibElapsedTime;
             }
@@ -1743,7 +1743,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
             timetoaquire = radarData->Timetoacuire - skill;
 
             // only allow to be in aquire for the coast amount of time
-            if ( not t and !d and SimLibElapsedTime - AQUIREtimer >= (unsigned)radarData->Timetocoast)
+            if ( not t and not d and SimLibElapsedTime - AQUIREtimer >= (unsigned)radarData->Timetocoast)
             {
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
                 step_search_mode = FEC_RADAR_SEARCH_3 ;
@@ -1806,7 +1806,7 @@ int BattalionClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
 
             if (simdata->ptIndex)
             {
-                // Yuck!  The first call returns only the list index, NOT a real point index.
+                // Yuck  The first call returns only the list index, NOT a real point index.
                 // To ensure we have at least one point we have to actually query for it
                 // then reset again...
                 simdata->ptIndex = GetDeaggregationPoint(0, &ent);
@@ -1857,7 +1857,7 @@ int BattalionClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
                 round++;
             }
 
-            //ShiAssert( simdata->ptIndex ); // Point list with none of the point we wanted!
+            //ShiAssert( simdata->ptIndex ); // Point list with none of the point we wanted
             // HACK to tolerate bad data -- Shouldn't have to test this.
             if (simdata->ptIndex)
             {
@@ -1944,7 +1944,7 @@ int BattalionClass::RallyUnit(int minutes)
         maxMorale = 0;  // MLR 6/26/2004 - 0 er?
 
     // Regain MORALE_REGAIN_RATE % of maxMorale each hour we've been waiting
-    if (/*!Engaged()  and */ GetUnitMorale() < maxMorale)
+    if (/* not Engaged()  and */ GetUnitMorale() < maxMorale)
     {
         increase = (MORALE_REGAIN_RATE * minutes * maxMorale) / 6000;
 
@@ -2191,7 +2191,7 @@ int BattalionClass::Reaction(CampEntity e, int knowledge, float range)
     neworders = GetUnitOrders();
 
     // Aircraft on ground are ignored (technically, we could shoot at them.. but..)
-    if (e->IsFlight() and !((Flight)e)->Moving())
+    if (e->IsFlight() and  not ((Flight)e)->Moving())
         return 0;
 
     // KCK HACK: Don't shoot at FAC aircraft.
@@ -2356,7 +2356,7 @@ int BattalionClass::CheckTactic(int tid)
         Objective o;
         FalconEntity *e = GetTarget();
 
-        if (Engaged() and !e)
+        if (Engaged() and not e)
             SetEngaged(0);
 
         if (GetUnitSupply() > 30)
@@ -2414,7 +2414,7 @@ int BattalionClass::CheckTactic(int tid)
     if ( not CheckOdds(tid, GetOdds()))
         return 0;
 
-    if (CheckWeapons(tid) == 1 and !haveWeaps)
+    if (CheckWeapons(tid) == 1 and not haveWeaps)
         return 0;
 
     if ( not CheckRole(tid, GetUnitNormalRole()))
@@ -2427,10 +2427,10 @@ int BattalionClass::CheckTactic(int tid)
         return 0; // KCK Check if our offensive's started yet.
 
     // Refused() means our request was refused. These are no longer valid tactics
-    if ( not CheckAirborne(tid, !Refused()))
+    if ( not CheckAirborne(tid,  not Refused()))
         return 0;
 
-    if ( not CheckMarine(tid, !Refused()))
+    if ( not CheckMarine(tid,  not Refused()))
         return 0;
 
     return GetTacticPriority(tid);

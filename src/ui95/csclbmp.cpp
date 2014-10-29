@@ -102,7 +102,7 @@ void C_ScaleBitmap::InitOverlay()
     IMAGE_RSC *img;
     DWORD tmp;
 
-    if ( not Image_ or !Parent_)
+    if ( not Image_ or not Parent_)
         return;
 
     img = Image_->GetImage();

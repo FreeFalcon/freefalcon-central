@@ -1934,7 +1934,7 @@ SfxClass::SfxClass(int  typeSfx,
                    float scaleSfx)
 {
 
-    // ShiAssert(baseobjSfx and !vuDatabase->Find(baseobjSfx->Id()) and baseobjSfx->VuState() == VU_MEM_CREATED);
+    // ShiAssert(baseobjSfx and not vuDatabase->Find(baseobjSfx->Id()) and baseobjSfx->VuState() == VU_MEM_CREATED);
 
     inACMI = FALSE;
     type = typeSfx;
@@ -2298,7 +2298,7 @@ SfxClass::~SfxClass(void)
     // update counters
     gTotSfx--;
 
-    if (type >= 0 and !F4IsBadReadPtr(gSfxCount, sizeof(int))) // JB 010318 CTD
+    if (type >= 0 and  not F4IsBadReadPtr(gSfxCount, sizeof(int))) // JB 010318 CTD
         gSfxCount[ type ]--;
 }
 
@@ -2754,7 +2754,7 @@ BOOL SfxClass::Exec()
             flags and_eq compl SFX_F16CRASHLANDING;
             flags and_eq compl SFX_MOVES;
         }
-        else if (hitGround and !coverage)
+        else if (hitGround and not coverage)
         {
             hitGround = FALSE;
             float scale = 15.0f;
@@ -2825,7 +2825,7 @@ BOOL SfxClass::Exec()
                 }
             }
 
-            if ((flags bitand SFX_MOVES) and !(flags bitand SFX_F16CRASH_STOP))
+            if ((flags bitand SFX_MOVES) and  not (flags bitand SFX_F16CRASH_STOP))
             {
                 flags  or_eq  SFX_F16CRASH_ADJUSTANGLE;
             }
@@ -2927,7 +2927,7 @@ BOOL SfxClass::Exec()
             if (fabs(vec.x) < 1.0f  and 
                 fabs(vec.y) < 1.0f  and 
                 lastHit  and 
-                !(flags bitand SFX_F16CRASH_ADJUSTANGLE)  and 
+                 not (flags bitand SFX_F16CRASH_ADJUSTANGLE)  and 
                 fabs(baseObj->YawDelta()) < 15.0f * DTR  and 
                 fabs(baseObj->PitchDelta()) < 15.0f * DTR  and 
                 fabs(baseObj->RollDelta()) < 15.0f * DTR  and 
@@ -2955,7 +2955,7 @@ BOOL SfxClass::Exec()
                     PlayCrashSound(F16CRASH_FELLMASK, SFX_FLAPLOOP);
                 }
             }
-            else if ( not lastHit and !(flags bitand SFX_F16CRASH_SKIPGRAVITY)) vec.z += GRAVITY * sfxFrameTime;
+            else if ( not lastHit and  not (flags bitand SFX_F16CRASH_SKIPGRAVITY)) vec.z += GRAVITY * sfxFrameTime;
 
             CalcTransformMatrix(baseObj.get());
             Tpoint point;
@@ -3064,7 +3064,7 @@ BOOL SfxClass::Exec()
 
 
     // check for hit with ground
-    if ((flags bitand SFX_MOVES) and !(flags bitand SFX_NO_GROUND_CHECK))
+    if ((flags bitand SFX_MOVES) and  not (flags bitand SFX_NO_GROUND_CHECK))
     {
         // 1st get approximation
         groundZ = OTWDriver.GetApproxGroundLevel(pos.x, pos.y);
@@ -3084,7 +3084,7 @@ BOOL SfxClass::Exec()
     int coverage = (groundType == COVERAGE_WATER) or (groundType == COVERAGE_RIVER);
 
     // does this object bounce?
-    if (hitGround and (flags bitand (SFX_BOUNCES | SFX_BOUNCES_HARD)) and !coverage)
+    if (hitGround and (flags bitand (SFX_BOUNCES | SFX_BOUNCES_HARD)) and not coverage)
     {
         // calcuate the new movement vector
         GroundReflection();
@@ -3201,7 +3201,7 @@ SfxClass::Draw(void)
         return TRUE;
 
     // this type has no drawing
-    if (( not (flags bitand SFX_F16CRASHLANDING) and !(flags bitand SFX_MOVES)) or (flags bitand SFX_TIMER_FLAG))
+    if (( not (flags bitand SFX_F16CRASHLANDING) and  not (flags bitand SFX_MOVES)) or (flags bitand SFX_TIMER_FLAG))
     {
         if (obj2d)
         {
@@ -6267,7 +6267,7 @@ SfxClass::ACMIExec(float currTime)
     }
 
     // check for hit with ground
-    if ((flags bitand SFX_MOVES) and !(flags bitand SFX_NO_GROUND_CHECK))
+    if ((flags bitand SFX_MOVES) and  not (flags bitand SFX_NO_GROUND_CHECK))
     {
         // 1st get approximation
         groundZ = OTWDriver.GetApproxGroundLevel(pos.x, pos.y);

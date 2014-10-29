@@ -230,7 +230,7 @@ void SimulationLoopControl::StartGraphics(void)
         VuListIterator objectWalker(SimDriver.objectList);
         theObject = (SimBaseClass*)objectWalker.GetFirst();
 
-        while (theObject and !someoneawake)
+        while (theObject and not someoneawake)
         {
             if (theObject->IsAwake())
             {
@@ -243,7 +243,7 @@ void SimulationLoopControl::StartGraphics(void)
         VuListIterator objecttiveswalker(SimDriver.campObjList);
         theObject = (SimBaseClass*)objecttiveswalker.GetFirst();
 
-        while (theObject and !someoneawake)
+        while (theObject and not someoneawake)
         {
             if (theObject->IsAwake())
             {
@@ -387,7 +387,7 @@ void SimulationLoopControl::Loop(void)
 
         if (
             FalconLocalGame and (
-                ((vuPlayerPoolGroup) and (FalconLocalGame->Id() not_eq vuPlayerPoolGroup->Id())) or !vuPlayerPoolGroup
+                ((vuPlayerPoolGroup) and (FalconLocalGame->Id() not_eq vuPlayerPoolGroup->Id())) or not vuPlayerPoolGroup
             )
         )
         {
@@ -473,7 +473,7 @@ void SimulationLoopControl::Loop(void)
 
                 for (
                     VuSessionEntity *sess = sessionIter.GetFirst(), *nextSess;
-                    sess not_eq NULL and !flying;
+                    sess not_eq NULL and not flying;
                     sess = nextSess
                 )
                 {
@@ -616,7 +616,7 @@ void SimulationLoopControl::Loop(void)
                 break;
 
             case RunningSim:
-#if !NEW_SYNC
+#if not NEW_SYNC
                 ThreadManager::sim_signal_campaign();
                 ThreadManager::sim_wait_for_campaign(10);
 #endif
@@ -660,7 +660,7 @@ void SimulationLoopControl::StartLoop(void)
         TheTimeOfDay.Setup(theaterdir); // load the new one
 
         // Our pause/suspend state varies by type of game and online status - set appropriately
-        if (gCommsMgr and !gCommsMgr->Online())
+        if (gCommsMgr and not gCommsMgr->Online())
         {
             TheCampaign.Suspend();
         }
@@ -792,7 +792,7 @@ void SimulationLoopControl::StartLoop(void)
         }
 
         // Check if the player was successfully attached (They could have been killed in the meantime)
-        if (player and !player->IsDead())
+        if (player and not player->IsDead())
         {
             GameManager.AnnounceEntry();
 #define START_GRAPHICS_WAIT_FOR_SIMDRIVE 1
@@ -1000,7 +1000,7 @@ void SimulationLoopControl::StartLoop(void)
 
         // sfr: this is killing remote players when server exits bubble
 #define NO_REQUEST_CAMPAIGN_SLEEP 1
-#if !NO_REQUEST_CAMPAIGN_SLEEP
+#if not NO_REQUEST_CAMPAIGN_SLEEP
         // Request that the campaign do a final bubble rebuild
         // MonoPrint("Requesting campain to do a final bubble rebuild\n");
         CampaignRequestSleep();
@@ -1129,7 +1129,7 @@ void RewakeSessions(void)
         theObject = (SimBaseClass*) session->GetPlayerEntity();
         theUnit = (UnitClass*) session->GetPlayerFlight();
 
-        if (theObject and theUnit and theUnit->IsAwake() and !theObject->IsAwake() and !theObject->IsDead() and !theObject->IsExploding())
+        if (theObject and theUnit and theUnit->IsAwake() and not theObject->IsAwake() and not theObject->IsDead() and not theObject->IsExploding())
             SimDriver.WakeObject(theObject);
 
         session = (FalconSessionEntity*)sessionWalker.GetNext();

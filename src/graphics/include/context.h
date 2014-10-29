@@ -8,9 +8,10 @@
 #ifndef _3DEJ_CONTEXT_H_
 #define _3DEJ_CONTEXT_H_
 
+#include <cISO646>
 #include "define.h"
 
-#if !defined(MPR_INTERNAL)
+#if not defined(MPR_INTERNAL)
 #include <windows.h>
 #endif
 

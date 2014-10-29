@@ -115,7 +115,7 @@ void UpdateTeamName(long team)
     TREELIST *item;
     C_Text *txt;
 
-    if ( not gATOAll or team >= NUM_TEAMS or !TeamInfo[team])
+    if ( not gATOAll or team >= NUM_TEAMS or not TeamInfo[team])
         return;
 
     item = gATOAll->Find(team | 0x20000000);
@@ -324,7 +324,7 @@ void ChangeFlightTypeCB(long, short hittype, C_Base *control)
 
     flight = (Flight) GetEntityByCampID(camp_id);
 
-    if (flight and !F4IsBadReadPtr(flight, sizeof(Flight))) // JB 010326 CTD
+    if (flight and  not F4IsBadReadPtr(flight, sizeof(Flight))) // JB 010326 CTD
         flight->SetUnitMission(type);
 }
 

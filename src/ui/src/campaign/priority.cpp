@@ -1290,7 +1290,7 @@ void UsePriotityCB(long ID, short hittype, C_Base *control)
 
     btn = (C_Button*)control->Parent_->FindControl(HQ_FLAG);
 
-    if (btn and !btn->GetState())
+    if (btn and not btn->GetState())
     {
         SaveTargetPriorities();
         SaveMissionPriorities();
@@ -1410,7 +1410,7 @@ void MapSelectPAKCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if ( not control or !PAKMap)
+    if ( not control or not PAKMap)
         return;
 
     btn = (C_Button*)control;

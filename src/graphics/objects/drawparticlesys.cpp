@@ -1049,7 +1049,7 @@ bool SubEmitter::Run(RenderOTW *renderer, ParticleNode *owner)
             {
                 epos.z = GroundLevel;
                 qty += pep->rate[0].value;
-                // ok... done... then die...!!!
+                // ok... done... then die...!
                 Alive = false;
             }
         }
@@ -1068,7 +1068,7 @@ bool SubEmitter::Run(RenderOTW *renderer, ParticleNode *owner)
                 if ( not (gtype == COVERAGE_WATER or gtype == COVERAGE_RIVER))
                 {
                     qty += pep->rate[0].value;
-                    // ok... done... then die...!!!
+                    // ok... done... then die...!
                     Alive = false;
                 }
             }
@@ -1088,7 +1088,7 @@ bool SubEmitter::Run(RenderOTW *renderer, ParticleNode *owner)
                 if ((gtype == COVERAGE_WATER or gtype == COVERAGE_RIVER))
                 {
                     qty += pep->rate[0].value;
-                    // ok... done... then die...!!!
+                    // ok... done... then die...!
                     Alive = false;
                 }
             }
@@ -1105,7 +1105,7 @@ bool SubEmitter::Run(RenderOTW *renderer, ParticleNode *owner)
                 RndTime = PRANDFloat() * RndTimeCx;
             }
 
-            // if gone past last stage, die..!!!
+            // if gone past last stage, die..!
             if (LastStage >= pep->stages) Alive = false;
 
         }
@@ -1115,7 +1115,7 @@ bool SubEmitter::Run(RenderOTW *renderer, ParticleNode *owner)
             qty = owner->EvalTimedFloat(LastStage, pep->stages, pep->rate);
             qty = qty * owner->elapsedTime + rollover;
 
-            // if gone past last stage, die..!!!
+            // if gone past last stage, die..!
             if (LastStage >= pep->stages) Alive = false;
     }
 
@@ -3023,7 +3023,7 @@ void  DrawableParticleSys::PS_PolyRun(void)
                 if (Cluster.Out) Visible = false;
 
                 // if not fully in but visible, check for visibility
-                if (Visible and !Cluster.In)
+                if (Visible and not Cluster.In)
                     if ( not TheDXEngine.DX2D_GetVisibility((D3DXVECTOR3*) &Part.pos, (ppn.EmitLight) ? size : LightRadius)) Visible = false;
 
                 // if still visible, compute distance
@@ -3047,7 +3047,7 @@ void  DrawableParticleSys::PS_PolyRun(void)
             if ( not TheDXEngine.DX2D_GetVisibility((D3DXVECTOR3*) &Part.pos, (ppn.EmitLight) ? size : LightRadius)) Visible = false;
 
             // skip all if not visible and not even in light range
-            if ( not Visible and !LightIn) goto Skip;
+            if ( not Visible and not LightIn) goto Skip;
         }
 
         /////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -3263,7 +3263,7 @@ void  DrawableParticleSys::PS_EmitterRun(void)
                         Emitter.RndTime = PRANDFloat() * Emitter.RndTimeCx;
                     }
 
-                // if gone past last stage, die..!!!
+                // if gone past last stage, die..!
                 if (Emitter.LastStage >= Emitter.PEP->stages) Alive = false;
 
                 break;
@@ -3273,7 +3273,7 @@ void  DrawableParticleSys::PS_EmitterRun(void)
                     qty = PS_EvalTimedFloat(Part.life, Emitter.LastStage, Emitter.PEP->stages, Emitter.PEP->rate);
                 qty = qty * PS_ElapsedTime + Emitter.rollover;
 
-                // if gone past last stage, die..!!!
+                // if gone past last stage, die..!
                 if (Emitter.LastStage >= Emitter.PEP->stages) Alive = false;
 
                 break;
@@ -4044,7 +4044,7 @@ void DrawableParticleSys::PS_TrailRun(void)
         PS_TPType &TPN = PS_TPN[Trail.ID];
 
         // If part is dead, remove it, all last stages have been already killed/exucuted
-        if (Trail.OWNER not_eq PS_NOPTR and !(((ParticleNodeType*)PS_Lists[PS_PARTICLES_IDX].ObjectList)[Trail.OWNER]).Alive) Trail.Alive = false;
+        if (Trail.OWNER not_eq PS_NOPTR and  not (((ParticleNodeType*)PS_Lists[PS_PARTICLES_IDX].ObjectList)[Trail.OWNER]).Alive) Trail.Alive = false;
 
         if ( not Trail.Run) goto Skip;
 
@@ -4478,7 +4478,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
 
 
             // if to be integrated, Skip the requested nodes
-            /* if(Integrate and !TrailCompleted){
+            /* if(Integrate and not TrailCompleted){
              // 1 less, as the index is alerady postincremented in upper function code
              Integrate-=1;
              // theck for Exit Index as limit
@@ -4504,7 +4504,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
              }*/
 
             // if to be integrated, Skip the requested nodes
-            if (Integrate and !TrailCompleted and Index not_eq Exit)
+            if (Integrate and not TrailCompleted and Index not_eq Exit)
             {
                 // 1 less, as the index is alerady postincremented in upper function code
                 Integrate -= 1;

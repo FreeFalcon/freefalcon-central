@@ -362,7 +362,7 @@ void CDXEngine::DX2D_Reset(void)
 
 
 // This function returns the visibility for an objects of a certain radius in a certain Pos
-// WARNING !!! This function stores the calculated position for following uses in XMMPos variable
+// WARNING ! This function stores the calculated position for following uses in XMMPos variable
 // as we suppose calculating the visibility is just before rendering same item
 // returns the Distance from Camera, -1 if out of FOV
 bool CDXEngine::DX2D_GetVisibility(D3DXVECTOR3 *Pos, float Radius, DWORD Flags)
@@ -476,7 +476,7 @@ inline bool CDXEngine::CheckBufferSpace(DWORD VbIndex, DWORD Size)
 
 
 // This function add a Quad to the vertex buffers and sorting list...
-// WARNING !!!! Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
+// WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
 void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Quad, float Radius, DWORD TexHandle)
 {
     _MM_ALIGN16 XMMVector V[4];
@@ -620,7 +620,7 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
 
 
 // This function add a Quad to the vertex buffers and sorting list...
-// WARNING !!!! Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
+// WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
 void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Tri, float Radius, DWORD TexHandle)
 {
     _MM_ALIGN16 XMMVector V[4];
@@ -710,7 +710,7 @@ void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVE
 
 
 // This function add a 2 vertex element to the vertex buffers and sorting list...
-// WARNING !!!! Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
+// WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
 void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD TexHandle)
 {
     _MM_ALIGN16 XMMVector V[2];
@@ -832,7 +832,7 @@ void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVER
 
 
 // This function add a SINGLE VERTEX element to the vertex buffers and sorting list...
-// WARNING !!!! Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
+// WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
 void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD TexHandle)
 {
     _MM_ALIGN16 XMMVector V;
@@ -1617,7 +1617,7 @@ void CDXEngine::DX2D_Flush2DObjects(void)
             if (Draw.Flags bitand POLY_3DOBJECT)
             {
                 // Draw the sorted object setting u the right mode if not already in 3D mode
-                DrawSortedAlpha(Draw.Flags bitand (0xffffff), !Mode_3D);
+                DrawSortedAlpha(Draw.Flags bitand (0xffffff),  not Mode_3D);
                 // Mark that we are in 3D mode
                 Mode_2D = false;
                 Mode_3D = true;
@@ -2204,7 +2204,7 @@ void CDXEngine::FlushBlips(void)
 
                 default :
                         char s[128];
-                    printf(s, "Corrupted Model ID : %d !!!", LodID);
+                    printf(s, "Corrupted Model ID : %d !", LodID);
                     MessageBox(NULL, s, "DX Engine", NULL);
             }
 

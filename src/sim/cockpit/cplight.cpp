@@ -83,7 +83,7 @@ void CPLight::DisplayBlit(void)
 
     mDirtyFlag = TRUE;
 
-    if ( not mDirtyFlag or !SimDriver.GetPlayerEntity())
+    if ( not mDirtyFlag or not SimDriver.GetPlayerEntity())
     {
         return;
     }
@@ -157,7 +157,7 @@ void CPLight::DisplayBlit(void)
         WasPersistant = TRUE;
     }
 
-    if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->TestLights and mPersistant not_eq 3 and !WasPersistant)
+    if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->TestLights and mPersistant not_eq 3 and not WasPersistant)
     {
         mState = TRUE;
     }
@@ -231,7 +231,7 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
 {
     mDirtyFlag = TRUE;
 
-    if ( not mDirtyFlag or !SimDriver.GetPlayerEntity())
+    if ( not mDirtyFlag or not SimDriver.GetPlayerEntity())
     {
         return;
     }
@@ -315,7 +315,7 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
         WasPersistant = TRUE;
     }
 
-    if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->TestLights and mPersistant not_eq 3 and !WasPersistant)
+    if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->TestLights and mPersistant not_eq 3 and not WasPersistant)
     {
         mState = TRUE;
     }

@@ -71,7 +71,7 @@ void DigitalBrain::DoTargeting(void)
         // If we are lead, or lead is player, look for a target
         if ( not isWing or (mDesignatedObject == FalconNullId and flightLead and flightLead->IsSetFlag(MOTION_OWNSHIP)))
         {
-            if (missionClass not_eq AAMission and !missionComplete and agDoctrine == AGD_NONE)
+            if (missionClass not_eq AAMission and not missionComplete and agDoctrine == AGD_NONE)
                 SelectGroundWeapon();
 
             campTarget = CampTargetSelection();
@@ -149,7 +149,7 @@ void DigitalBrain::DoTargeting(void)
 
             while (simobj)
             {
-                if (simobj->BaseData()->IsSim() and !((SimBaseClass*)simobj->BaseData())->IsAwake())
+                if (simobj->BaseData()->IsSim() and  not ((SimBaseClass*)simobj->BaseData())->IsAwake())
                 {
                     tmpobj = simobj->next;
 
@@ -234,7 +234,7 @@ void DigitalBrain::TargetSelection(void)
     objectPtr = targetList;
 
     // sfr: removed JB check
-    // and !F4IsBadReadPtr(objectPtr, sizeof(SimObjectType))) // JB 010224 CTD
+    // and  not F4IsBadReadPtr(objectPtr, sizeof(SimObjectType))) // JB 010224 CTD
     while (objectPtr)
     {
         FalconEntity *baseData = objectPtr->BaseData();
@@ -289,7 +289,7 @@ void DigitalBrain::TargetSelection(void)
             // EVEN IF NO SENSORS ON HIM, ACE AND VETERAN GETS TO USE GCI
             if (/*SkillLevel() < g_nLowestSkillForGCI ||*/
                 objectPtr->localData->range >= 60.0F * NM_TO_FT ||
-                !(
+                 not (
                     (
                         baseData->IsSim()  and 
                         ((SimBaseClass*)baseData)->GetCampaignObject()->GetSpotted(self->GetTeam())
@@ -396,20 +396,20 @@ void DigitalBrain::TargetSelection(void)
 
     if (missionType not_eq AMIS_AIRCAV)
     {
-        /*if (threatTime < targetTime and maxThreatPtr and !maxThreatPtr->BaseData()->OnGround() )
+        /*if (threatTime < targetTime and maxThreatPtr and not maxThreatPtr->BaseData()->OnGround() )
           SetTarget(maxThreatPtr);
-        else if (targetTime < MAX_TARGET_TIME and maxTargetPtr and !maxTargetPtr->BaseData()->OnGround() )
+        else if (targetTime < MAX_TARGET_TIME and maxTargetPtr and not maxTargetPtr->BaseData()->OnGround() )
           SetTarget(maxTargetPtr);*/
-        if (baseScore <= 5 and targetTimer < SimLibElapsedTime and maxTargetPtr[0] and !maxTargetPtr[0]->BaseData()->OnGround())
+        if (baseScore <= 5 and targetTimer < SimLibElapsedTime and maxTargetPtr[0] and not maxTargetPtr[0]->BaseData()->OnGround())
         {
             SetTarget(maxTargetPtr[0]);
             targetTimer = 0;
         }
-        else if (baseScore > 5 and maxTargetPtr[0] and !maxTargetPtr[0]->BaseData()->OnGround())
+        else if (baseScore > 5 and maxTargetPtr[0] and not maxTargetPtr[0]->BaseData()->OnGround())
         {
             SetTarget(maxTargetPtr[0]);
         }
-        else if (curSpike and !curSpike->OnGround() and !foundSpike)
+        else if (curSpike and not curSpike->OnGround() and not foundSpike)
         {
             SetThreat(curSpike);
         }
@@ -439,7 +439,7 @@ void DigitalBrain::TargetSelection(void)
            else if (threatTime < targetTime  and 
                maxThreatPtr  and 
             maxThreatPtr->BaseData()->IsAirplane()  and 
-            !maxThreatPtr->BaseData()->OnGround()  and 
+             not maxThreatPtr->BaseData()->OnGround()  and 
             maxThreatPtr->localData->range < 5.0f * NM_TO_FT )
            {
            SetTarget(maxThreatPtr);
@@ -447,15 +447,15 @@ void DigitalBrain::TargetSelection(void)
            else if (targetTime < MAX_TARGET_TIME  and 
                     maxTargetPtr  and 
          maxTargetPtr->BaseData()->IsAirplane()  and 
-         !maxTargetPtr->BaseData()->OnGround()  and 
+          not maxTargetPtr->BaseData()->OnGround()  and 
          maxTargetPtr->localData->range < 5.0f * NM_TO_FT )
            {
            SetTarget(maxTargetPtr);
            }
            else if (curSpike  and 
             curSpike->IsAirplane()  and 
-         !curSpike->OnGround()  and 
-         !foundSpike)
+          not curSpike->OnGround()  and 
+          not foundSpike)
            {
            float dx, dy, dist;
 
@@ -480,7 +480,7 @@ void DigitalBrain::TargetSelection(void)
     }
 
     // Turn on jamming if possible
-    if (curSpike and !jammertime or (flightLead and flightLead->IsSPJamming()))
+    if (curSpike and not jammertime or (flightLead and flightLead->IsSPJamming()))
     {
         if (self->HasSPJamming())
         {
@@ -529,7 +529,7 @@ FalconEntity* DigitalBrain::CampTargetSelection(void)
     campUnit->ChooseTactic();
     campTactic = campUnit->GetUnitTactic();
 
-    // set ground target pointer if on ground!
+    // set ground target pointer if on ground
     // never, ever set targetPtr to ground object
     // 2000-09-27 MODIFIED BY S.G. AI NEED TO SET ITS TARGET POINTER IF IT HAS REACHED ITS IP WAYPOINT AS WELL
     // if ( target->OnGround() and (missionClass == AAMission or missionComplete) and hasWeapons)
@@ -693,14 +693,14 @@ SimObjectType* MakeSimListFromVuList(AircraftClass *self, SimObjectType* targetL
                     tmpObject = NULL;
                 }
             }
-            else   // FRB - ALERT!
+            else   // FRB - ALERT
             {
                 // sfr: no dead or sleeping entities
                 FalconEntity *feEntity = static_cast<FalconEntity*>(curEntity);
 
                 if (
                     feEntity->IsDead() ||
-                    (feEntity->IsSim() and !static_cast<SimBaseClass*>(feEntity)->IsAwake())
+                    (feEntity->IsSim() and not static_cast<SimBaseClass*>(feEntity)->IsAwake())
                 )
                 {
                     curEntity = updateWalker.GetNext();

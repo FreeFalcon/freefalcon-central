@@ -29,7 +29,7 @@ BOOL DigitalBrain::HandleThreat(void)
         // NOTE: the current targetPtr should be the threat at this point
         if ( not targetPtr ||
             (targetPtr not_eq threatPtr) ||
-            (targetPtr->BaseData()->IsSim() and !((SimBaseClass*)targetPtr->BaseData())->IsAwake()) ||
+            (targetPtr->BaseData()->IsSim() and  not ((SimBaseClass*)targetPtr->BaseData())->IsAwake()) ||
             targetData->range > 8.0F * NM_TO_FT or //me123 changes here
             (targetData->range > 5.0F * NM_TO_FT and targetData->ataFrom > 90.0f * DTR))
         {

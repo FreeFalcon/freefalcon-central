@@ -214,7 +214,7 @@ VU_ERRCODE VuDatabase::Remove(VuEntity *entity)
 
 #if NO_RELEASE_EVENT
 
-    if (entity->IsLocal() and !entity->IsPrivate())
+    if (entity->IsLocal() and not entity->IsPrivate())
     {
         VuEvent *event = new VuDeleteEvent(entity);
         event->RequestReliableTransmit();
@@ -224,7 +224,7 @@ VU_ERRCODE VuDatabase::Remove(VuEntity *entity)
 #else
     VuEvent *event;
 
-    if (entity->IsLocal() and !entity->IsPrivate())
+    if (entity->IsLocal() and not entity->IsPrivate())
     {
         event = new VuDeleteEvent(entity);
         event->RequestReliableTransmit();
@@ -244,7 +244,7 @@ VU_ERRCODE VuDatabase::SilentRemove(VuEntity *entity)
     return CommonRemove(entity);
 }
 
-#if !NO_RELEASE_EVENT
+#if not NO_RELEASE_EVENT
 VU_ERRCODE VuDatabase::DeleteRemove(VuEntity *entity)
 {
     return CommonRemove(entity);
@@ -269,7 +269,7 @@ void VuDatabase::ReallyRemove(VuEntity *entity)
 {
     // play it safe
     VuBin<VuEntity> safe(entity);
-#if !IMMEDIATE_REMOVAL_CALLBACK
+#if not IMMEDIATE_REMOVAL_CALLBACK
     entity->RemovalCallback();
 #endif
     dbHash_->Remove(entity);
@@ -478,13 +478,13 @@ VU_ERRCODE VuDatabase::Remove(VuEntity *entity)
 
     VuEvent *event;
 
-    if (entity->IsLocal() and !entity->IsPrivate())
+    if (entity->IsLocal() and not entity->IsPrivate())
     {
         event = new VuDeleteEvent(entity);
         event->RequestReliableTransmit();
     }
 
-#if !NO_RELEASE_EVENT
+#if not NO_RELEASE_EVENT
     else
     {
         event = new VuReleaseEvent(entity);
@@ -500,7 +500,7 @@ VU_ERRCODE VuDatabase::SilentRemove(VuEntity *entity)
     return CommonRemove(entity);
 }
 
-#if !NO_RELEASE_EVENT
+#if not NO_RELEASE_EVENT
 VU_ERRCODE VuDatabase::DeleteRemove(VuEntity *entity)
 {
     return CommonRemove(entity);

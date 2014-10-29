@@ -76,8 +76,8 @@ void AircraftClass::GatherInputs(void)
     {
         // No autopilot for ownship if broken
         if (
-            !IsSetFlag(MOTION_OWNSHIP) ||
-            !(mFaults and mFaults->GetFault(FaultClass::flcs_fault) == FaultClass::a_p)
+             not IsSetFlag(MOTION_OWNSHIP) ||
+             not (mFaults and mFaults->GetFault(FaultClass::flcs_fault) == FaultClass::a_p)
         )
         {
             switch (autopilotType)
@@ -95,7 +95,7 @@ void AircraftClass::GatherInputs(void)
                     {
                         if (this == FalconLocalSession->GetPlayerEntity())
                         {
-                            if (RFState == 2 or !HasPower(AircraftClass::APPower))
+                            if (RFState == 2 or not HasPower(AircraftClass::APPower))
                             {
                                 //SILENT or no power
                                 SetAutopilot(AircraftClass::APOff);
@@ -583,7 +583,7 @@ void AircraftClass::GatherInputs(void)
 
         // JB 000820
         //if (perturb)
-        if (perturb and !g_bDisableFunkyChicken)
+        if (perturb and  not g_bDisableFunkyChicken)
         {
             // JB 000820
             ioPerturb += (af->mach - maxSpeed);
@@ -602,7 +602,7 @@ void AircraftClass::GatherInputs(void)
     // JB 000814
 
     //MI asynchronous lift
-    if (g_bRealisticAvionics and g_bNewDamageEffects and autopilotType not_eq CombatAP and !isDigital)
+    if (g_bRealisticAvionics and g_bNewDamageEffects and autopilotType not_eq CombatAP and not isDigital)
     {
         //produce asynchronous "lift"
         if (LEFState(LEFSASYNCH))
@@ -620,7 +620,7 @@ void AircraftClass::GatherInputs(void)
                 rlef = SIMP_RT_LEF;
             }
 
-            if (mFaults and !mFaults->GetFault(lef_fault))
+            if (mFaults and not mFaults->GetFault(lef_fault))
             {
                 mFaults->SetCaution(lef_fault);
             }
@@ -654,7 +654,7 @@ void AircraftClass::GatherInputs(void)
         }
         else
         {
-            if (mFaults->GetFault(lef_fault) and !LEFLocked)
+            if (mFaults->GetFault(lef_fault) and not LEFLocked)
             {
                 mFaults->ClearFault(lef_fault);
             }
@@ -664,7 +664,7 @@ void AircraftClass::GatherInputs(void)
     }
 
     // apply any perturbations to stick input
-    if (ioPerturb > 0.0f and !OnGround())
+    if (ioPerturb > 0.0f and not OnGround())
     {
         af->ypedal += PRANDFloat() * ioPerturb;
         af->rstick += PRANDFloat() * ioPerturb;

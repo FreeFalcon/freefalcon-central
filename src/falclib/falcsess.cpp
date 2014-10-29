@@ -167,7 +167,7 @@ FalconSessionEntity::FalconSessionEntity(VU_BYTE** stream, long *rem) : VuSessio
 
 FalconSessionEntity::FalconSessionEntity(FILE* filePtr) : VuSessionEntity(filePtr)
 {
-    MonoPrint("FalconSessionEntity: This function is not supported!\n");
+    MonoPrint("FalconSessionEntity: This function is not supported\n");
 }
 
 VU_ERRCODE FalconSessionEntity::InsertionCallback(void)
@@ -293,8 +293,8 @@ int FalconSessionEntity::Save(VU_BYTE** stream)
 
 int FalconSessionEntity::Save(FILE* filePtr)
 {
-    MonoPrint("FalconSessionEntity: This function is not supported!\n");
-    ShiWarning("FalconSessionEntity: This function is not supported!\n");
+    MonoPrint("FalconSessionEntity: This function is not supported\n");
+    ShiWarning("FalconSessionEntity: This function is not supported\n");
     return 0;
     filePtr;
 }

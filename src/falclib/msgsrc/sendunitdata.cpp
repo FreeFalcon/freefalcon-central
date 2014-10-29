@@ -96,7 +96,7 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
               dataBlock.block,
               dataBlock.size);
 
-    if ( not TheCampaign.IsPreLoaded() or !session)
+    if ( not TheCampaign.IsPreLoaded() or not session)
     {
         return (init - *rem);
     }
@@ -133,7 +133,7 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
         memcpy(bufptr, dataBlock.unitData, dataBlock.size);
 
 #ifdef DEBUG_STARTUP
-        MonoPrint("Got Unit Block #%d!\n", dataBlock.block);
+        MonoPrint("Got Unit Block #%d\n", dataBlock.block);
 #endif
 
         gCampJoinTries = 0;

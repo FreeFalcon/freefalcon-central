@@ -506,7 +506,7 @@ void PickTeamColors()
         if (line)
         {
             if (gSelectedTeam >= 0  and 
-                !F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo)  and 
+                 not F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo)  and 
                 TeamInfo[gSelectedTeam]->GetColor() >= 0  and 
                 TeamInfo[gSelectedTeam]->GetColor() < NUM_TEAM_COLORS)
                 line->SetColor(TeamColorList[TeamInfo[gSelectedTeam]->GetColor()]);
@@ -532,7 +532,7 @@ void PickTeamColors()
         if (line)
         {
             if (gSelectedTeam >= 0  and 
-                !F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo)  and 
+                 not F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo)  and 
                 TeamInfo[gSelectedTeam]->GetColor() >= 0  and 
                 TeamInfo[gSelectedTeam]->GetColor() < NUM_TEAM_COLORS)
                 line->SetColor(TeamColorList[TeamInfo[gSelectedTeam]->GetColor()]);
@@ -558,7 +558,7 @@ void PickTeamColors()
         if (line)
         {
             if (gSelectedTeam >= 0  and 
-                !F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo)  and 
+                 not F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo)  and 
                 TeamInfo[gSelectedTeam]->GetColor() >= 0  and 
                 TeamInfo[gSelectedTeam]->GetColor() < NUM_TEAM_COLORS)
                 line->SetColor(TeamColorList[TeamInfo[gSelectedTeam]->GetColor()]);
@@ -735,7 +735,7 @@ SquadronClass* tactical_make_squadron(VU_ID id, long ac_type)
 
     airbase = (CampBaseClass*) FindEntity(id);
 
-    if ( not airbase or !airbase->IsObjective() or airbase->GetType() not_eq TYPE_AIRBASE)
+    if ( not airbase or not airbase->IsObjective() or airbase->GetType() not_eq TYPE_AIRBASE)
         // KCK: Should probably just pick one
         return NULL;
 
@@ -773,7 +773,7 @@ void tactical_add_squadron(VU_ID id)
 
     airbase = (CampBaseClass*) FindEntity(id);
 
-    if ( not airbase or !airbase->IsObjective() or airbase->GetType() not_eq TYPE_AIRBASE)
+    if ( not airbase or not airbase->IsObjective() or airbase->GetType() not_eq TYPE_AIRBASE)
         // KCK: Should probably just pick one
         return;
 
@@ -1083,7 +1083,7 @@ void tactical_update_package(void)
 
         btn = (C_Button*)win->FindControl(PAK_TAKEOFF_LOCK);
 
-        if (btn and btn->GetState() == 1 and !gPackageTOT)
+        if (btn and btn->GetState() == 1 and not gPackageTOT)
         {
             // Get our _locked_ takeoff time
             clock = (C_Clock*)win->FindControl(PAK_TAKEOFF_TIME);
@@ -1144,7 +1144,7 @@ void SetupPackageControls(C_Window *win, C_Base *caller)
         if (w)
             takeoff = w->GetWPDepartureTime();
 
-        while (w and !(w->GetWPFlags() bitand WPF_TARGET))
+        while (w and  not (w->GetWPFlags() bitand WPF_TARGET))
             w = w->GetNextWP();
 
         if (w)
@@ -1152,8 +1152,8 @@ void SetupPackageControls(C_Window *win, C_Base *caller)
     }
 
     // sfr: addpackage
-    if ( /*!(TheCampaign.Flags bitand (CAMP_TACTICAL|CAMP_TACTICAL_EDIT)) ||*/
-        (EdittingPackage and !(TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and takeoff < TheCampaign.CurrentTime))
+    if ( /* not (TheCampaign.Flags bitand (CAMP_TACTICAL|CAMP_TACTICAL_EDIT)) ||*/
+        (EdittingPackage and  not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and takeoff < TheCampaign.CurrentTime))
     {
         // Disable these controls in campaign, or in run mode if the package has departed
         btn = (C_Button*)win->FindControl(ADD_PACKAGE_FLIGHT);
@@ -1649,7 +1649,7 @@ void KeepPackage(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (new_package and !new_package->GetFirstUnitElement())
+    if (new_package and not new_package->GetFirstUnitElement())
         DiscardPackage(ID, hittype, control);
 
     gNewSelectFlight = FalconNullId;
@@ -1776,7 +1776,7 @@ void SetPackageTimes(Package new_package, CampaignTime takeoffTime, CampaignTime
     {
         w = flight->GetFirstUnitWP();
 
-        if (w and !flight->Moving())
+        if (w and not flight->Moving())
         {
             if (takeoffTime)
                 delta = takeoffTime - w->GetWPDepartureTime();
@@ -1785,7 +1785,7 @@ void SetPackageTimes(Package new_package, CampaignTime takeoffTime, CampaignTime
                 delta += MissionData[flight->GetUnitMission()].separation * CampaignSeconds;
             else if (targetTime)
             {
-                while (w and !(w->GetWPFlags() bitand WPF_TARGET))
+                while (w and  not (w->GetWPFlags() bitand WPF_TARGET))
                     w = w->GetNextWP();
 
                 if (w)
@@ -2005,7 +2005,7 @@ void tac_select_squadron(long ID, short hittype, C_Base *control)
                 airbase = sqd->GetUnitAirbase();
 
                 //if(airbase)
-                if (airbase and !F4IsBadReadPtr(airbase, sizeof(CampBaseClass))) // JB 010326 CTD
+                if (airbase and  not F4IsBadReadPtr(airbase, sizeof(CampBaseClass))) // JB 010326 CTD
                 {
                     airbase->GetName(buffer, 40, TRUE);
                     lbox->AddItem(airbase->GetCampID(), C_TYPE_ITEM, buffer);
@@ -2317,7 +2317,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
                 target = NULL;
 
             // Set our package targe to our target if we're the first element
-            if (new_package and !new_package->GetFirstUnitElement())
+            if (new_package and not new_package->GetFirstUnitElement())
                 new_package_target = target;
         }
 
@@ -2362,7 +2362,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
         else
             mis.mission = AMIS_TRAINING;
 
-        if ( not mis.tx or !mis.ty)
+        if ( not mis.tx or not mis.ty)
         {
             // This is probably a package being editing, and the target x,y have got nuked.
             // We can get them from the package destination
@@ -2474,7 +2474,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
             }
             else
             {
-                if ((w->GetWPFlags() bitand WPF_TARGET) and !done)
+                if ((w->GetWPFlags() bitand WPF_TARGET) and not done)
                 {
                     w->SetWPFlag(WPF_TIME_LOCKED);
                     done = 1;
@@ -2730,7 +2730,7 @@ Objective FindValidObjective(Battalion bat, VU_ID current_obj, GridIndex x, Grid
      // Air defense units need to snap to SAM sites
      if ( not o)
      o = FindNearestObjective(x,y,&last,999);
-     while (o and !o->SamSite())
+     while (o and not o->SamSite())
      o = FindNearestObjective(x,y,&last,999);
      }
     */
@@ -2751,7 +2751,7 @@ void tactical_set_orders(Battalion bat, VU_ID obj, GridIndex tx, GridIndex ty)
 
     o = FindValidObjective(bat, obj, tx, ty);
 
-    if ( not o or !bat)
+    if ( not o or not bat)
     {
         return;
     }

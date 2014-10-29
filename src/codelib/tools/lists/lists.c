@@ -53,8 +53,8 @@ int LIST_MUTEX = 0;         /* If you want to bypass microsoft's very heavy
 
 #  define WAIT_FOR_LOCK(a)     WaitForSingleObject( a, INFINITE );
 #  define RELEASE_LOCK(a)      ReleaseMutex( a );
-#  define CREATE_LOCK(a)       { if( !a ) a = CreateMutex( NULL, FALSE, NULL ); \
-                                 if( !a ) KEVS_FATAL_ERROR( "Could not get mutex lock." ); }
+#  define CREATE_LOCK(a)       { if(  not a ) a = CreateMutex( NULL, FALSE, NULL ); \
+                                 if(  not a ) KEVS_FATAL_ERROR( "Could not get mutex lock." ); }
 #else
 #  define WAIT_FOR_LOCK(a)
 #  define RELEASE_LOCK(a)
@@ -401,7 +401,7 @@ ListFree(void * unit)
         }
 
     }
-    while (tbl and !done);
+    while (tbl and not done);
 
     if ( not done)
         ERROR("Couldn't find list in allocation table\n");

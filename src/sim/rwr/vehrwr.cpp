@@ -123,11 +123,11 @@ SimObjectType* VehRwrClass::Exec(SimObjectType* targetList)
     DetectListElement* listElement;
     SimObjectLocalData* localData;
 
-    while (curObj and  platform not_eq SimDriver.GetPlayerAircraft() and !F4IsBadReadPtr(curObj, sizeof(SimObjectType))) // JB 010318 CTD
+    while (curObj and  platform not_eq SimDriver.GetPlayerAircraft() and  not F4IsBadReadPtr(curObj, sizeof(SimObjectType))) // JB 010318 CTD
     {
         // if ((curObj->BaseData ()) and (curObj->BaseData()->IsSim()) and (curObj->BaseData()->GetRadarType())) // JB 010221 CTD
-        //if ((curObj->BaseData()) and !F4IsBadCodePtr((FARPROC) curObj->BaseData()) and (curObj->BaseData()->IsSim()) and (curObj->BaseData()->GetRadarType())) // JB 010221 CTD
-        if ((curObj->BaseData()) and !F4IsBadReadPtr(curObj->BaseData(), sizeof(FalconEntity)) and (curObj->BaseData()->IsSim()) and (curObj->BaseData()->GetRadarType())) // JB 010318 CTD
+        //if ((curObj->BaseData()) and  not F4IsBadCodePtr((FARPROC) curObj->BaseData()) and (curObj->BaseData()->IsSim()) and (curObj->BaseData()->GetRadarType())) // JB 010221 CTD
+        if ((curObj->BaseData()) and  not F4IsBadReadPtr(curObj->BaseData(), sizeof(FalconEntity)) and (curObj->BaseData()->IsSim()) and (curObj->BaseData()->GetRadarType())) // JB 010318 CTD
         {
             // Localize the info
             curSimObj = (SimBaseClass*)curObj->BaseData();
@@ -223,7 +223,7 @@ SimObjectType* VehRwrClass::Exec(SimObjectType* targetList)
                 //                             Also, I've seen campaign entries stay here forever with missileActivity set because the missile was launched when aggregated (hence made it here) but once it deaggregated, it stayed here. So to fix this, if it's a DEAGGREGATED campaign object, remove its lock
                 //                             I also moved 'DropTrack' on a line by itself. It's much combersome to put breakpoint if the if body is on the same line as the if statement (also done above).
                 // if ( not detectionList[i].isLocked or (SimBaseClass*)detectionList[i].entity->IsDead()) DropTrack (i);
-                if ( not detectionList[i].isLocked or detectionList[i].entity->IsDead() or !((CampBaseClass*)detectionList[i].entity)->IsAggregate())
+                if ( not detectionList[i].isLocked or detectionList[i].entity->IsDead() or  not ((CampBaseClass*)detectionList[i].entity)->IsAggregate())
                     DropTrack(i);
             }
         }
@@ -524,7 +524,7 @@ FalconEntity* VehRwrClass::CurSpike(FalconEntity *byHim, int *data)  // 2002-02-
                     curSpike = detectionList[i].entity;
 
                     // Only react to enemy activity
-                    if ( not curSpike->IsMissile() and TeamInfo[platform->GetTeam()]->TStance(curSpike->GetTeam()) > Neutral)   // 2002-02-09 MODIFIED BY S.G. Added the !IsMissile since AI do not attack missiles anyway...
+                    if ( not curSpike->IsMissile() and TeamInfo[platform->GetTeam()]->TStance(curSpike->GetTeam()) > Neutral)   // 2002-02-09 MODIFIED BY S.G. Added the  not IsMissile since AI do not attack missiles anyway...
                     {
                         return curSpike;
                     }

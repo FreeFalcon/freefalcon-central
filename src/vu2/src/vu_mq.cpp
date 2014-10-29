@@ -172,7 +172,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
 
     msg->Activate(ent);
 
-    if (ent and !msg->IsLocal() and !ent->IsLocal())
+    if (ent and not msg->IsLocal() and not ent->IsLocal())
     {
         ent->SetTransmissionTime(msg->postTime_);
     }
@@ -181,7 +181,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
     if (
         vuGlobalGroup and vuGlobalGroup->Connected()  and 
         msg->Target() and msg->Target() not_eq vuLocalSessionEntity  and 
-        msg->DoSend() and ( not ent or !ent->IsPrivate())  and 
+        msg->DoSend() and ( not ent or not ent->IsPrivate())  and 
         (vuLocalSession.creator_ not_eq VU_SESSION_NULL_CONNECTION.creator_)
     )
     {
@@ -317,7 +317,7 @@ VU_BOOL VuMessageQueue::ReallocQueue()
 VU_BOOL VuMessageQueue::AddMessage(VuMessage* event)
 {
     // JB 010121
-    if ( not event or !filter_)
+    if ( not event or not filter_)
     {
         return 0;
     }

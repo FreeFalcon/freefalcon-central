@@ -105,7 +105,7 @@ MEM_POOL BrigadeClass::pool;
 // Brigade class Functions
 // ============================================
 
-// KCK: ALL BRIGADE CONSTRUCTION SHOULD USE THIS FUNCTION!
+// KCK: ALL BRIGADE CONSTRUCTION SHOULD USE THIS FUNCTION
 BrigadeClass* NewBrigade(int type)
 {
     BrigadeClass *new_brigade;
@@ -231,7 +231,7 @@ int BrigadeClass::MoveUnit(CampaignTime time)
     // Check if we have a valid objective
     o = GetUnitObjective();
 
-    if ( not o or !TeamInfo[GetTeam()]->gtm->IsValidObjective(GetOrders(), o))
+    if ( not o or not TeamInfo[GetTeam()]->gtm->IsValidObjective(GetOrders(), o))
     {
         if (o and (GetOrders() == GORD_CAPTURE or GetOrders() == GORD_ASSAULT or GetOrders() == GORD_AIRBORNE))
             SetUnitOrders(GORD_SECURE, o->Id());
@@ -301,12 +301,12 @@ int BrigadeClass::MoveUnit(CampaignTime time)
 
         while (e)
         {
-            if ( not e->Broken() and !e->Engaged() and e->Assigned() and e->GetUnitCurrentRole() not_eq GRO_ATTACK)
+            if ( not e->Broken() and not e->Engaged() and e->Assigned() and e->GetUnitCurrentRole() not_eq GRO_ATTACK)
             {
                 e->SetAssigned(0);
                 toorder++;
             }
-            else if (e->Assigned() and !OnValidObjective(e, e->GetUnitCurrentRole(), nearlist))
+            else if (e->Assigned() and not OnValidObjective(e, e->GetUnitCurrentRole(), nearlist))
             {
                 e->SetAssigned(0);
                 toorder++;
@@ -334,7 +334,7 @@ int BrigadeClass::MoveUnit(CampaignTime time)
             {
                 e = GetUnitElement(en);
 
-                if (e and !e->Assigned())
+                if (e and not e->Assigned())
                     toorder++;
             }
         }
@@ -395,7 +395,7 @@ int BrigadeClass::ChooseTactic(void)
     haveWeaps = -1;
     tid = GTACTIC_BRIG_SECURE;
 
-    while (tid < FirstGroundTactic + GroundTactics and !priority)
+    while (tid < FirstGroundTactic + GroundTactics and not priority)
     {
         priority = CheckTactic(tid);
 
@@ -409,7 +409,7 @@ int BrigadeClass::ChooseTactic(void)
         Objective o;
         o = GetUnitObjective();
 
-        if ( not o or !o->IsSecondary())
+        if ( not o or not o->IsSecondary())
         {
             // Find a retreat path
             o = FindRetreatPath(this, 3, FIND_SECONDARYONLY);
@@ -453,7 +453,7 @@ int BrigadeClass::CheckTactic(int tid)
 
         e = GetTarget();
 
-        if (Engaged() and !e)
+        if (Engaged() and not e)
             SetEngaged(0);
 
         if (GetUnitSupply() > 20)
@@ -500,7 +500,7 @@ int BrigadeClass::CheckTactic(int tid)
     if ( not CheckOwned(tid, ourObjOwner))
         return 0;
 
-    if (TeamInfo[GetTeam()]->GetGroundAction()->actionType not_eq GACTION_OFFENSIVE and !CheckRole(tid, 0))
+    if (TeamInfo[GetTeam()]->GetGroundAction()->actionType not_eq GACTION_OFFENSIVE and not CheckRole(tid, 0))
         return 0;
 
     if ( not CheckRange(tid, ourObjDist))
@@ -1067,7 +1067,7 @@ void BrigadeClass::ReorganizeUnit (void)
  }
 #ifdef 0
  // if we don't have any reserve units, but have recon or combat elements, assign one to reserve
- for (i=GPOS_COMBAT3; ce > 1 and i>GPOS_RECON1 and !pos[GPOS_RESERVE1]; i--)
+ for (i=GPOS_COMBAT3; ce > 1 and i>GPOS_RECON1 and not pos[GPOS_RESERVE1]; i--)
  {
  if (pos[i])
  {
@@ -1126,7 +1126,7 @@ void BrigadeClass::ReorganizeEngagedUnit (void)
  while(pos[i])
  i++;
  pos[i] = e;
- if (i <= GPOS_COMBAT3 and !e->Broken() and !e->Retreating())
+ if (i <= GPOS_COMBAT3 and not e->Broken() and not e->Retreating())
  ce++;
  if (i <= GPOS_COMBAT3 and (e->Broken() or e->Retreating()))
  be++;
@@ -1145,7 +1145,7 @@ void BrigadeClass::ReorganizeEngagedUnit (void)
  {
  if (pos[i] and pos[i]->Broken())
  {
- for (j=GPOS_RESERVE1,f=0; j<=GPOS_RESERVE3 and !f; j++)
+ for (j=GPOS_RESERVE1,f=0; j<=GPOS_RESERVE3 and not f; j++)
  {
  if ( not pos[j])
  {
@@ -1159,9 +1159,9 @@ void BrigadeClass::ReorganizeEngagedUnit (void)
  // Move Unbroken reserves to empty positions
  for (i=GPOS_RESERVE1; i<=GPOS_RESERVE3; i++)
  {
- if (pos[i] and !pos[i]->Broken() and !pos[i]->Retreating())
+ if (pos[i] and not pos[i]->Broken() and not pos[i]->Retreating())
  {
- for (j=GPOS_RECON1,f=0; j<=GPOS_COMBAT3 and !f; j++)
+ for (j=GPOS_RECON1,f=0; j<=GPOS_COMBAT3 and not f; j++)
  {
  if ((int)pos[j] == -1)
  {
@@ -1219,7 +1219,7 @@ int BrigadeClass::UpdateParentStatistics(void)
 
         // nx += x;
         // ny += y;
-        if ( not nx and !ny)
+        if ( not nx and not ny)
             e->GetLocation(&nx, &ny);
 
         te++;

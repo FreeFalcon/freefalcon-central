@@ -315,7 +315,7 @@ void FireControlComputer::NavMode(void)
             float OAYPos;
             float OAZPos;
 
-            ShiAssert(platform->curWaypoint not_eq NULL or !F4IsBadReadPtr(platform->curWaypoint, sizeof(WayPointClass)));
+            ShiAssert(platform->curWaypoint not_eq NULL or  not F4IsBadReadPtr(platform->curWaypoint, sizeof(WayPointClass)));
 
             for (i = 0; i < MAX_DESTOA; i++)
             {
@@ -588,7 +588,7 @@ void FireControlComputer::SetWaypointNum(int num)
     //find the corect waypoint
     for (i = 0; i < num and curWaypoint; i++)
 
-        // 2001-07-28 MODIFIED BY S.G. ITS THE *NEXT* WAYPOINT, NOT THE PREVIOUS!!! NOT CHECKED SO COMMENTED OUT
+        // 2001-07-28 MODIFIED BY S.G. ITS THE *NEXT* WAYPOINT, NOT THE PREVIOUS! NOT CHECKED SO COMMENTED OUT
         // 2002-04-18 MN let's add a config file variable to test that later - AI uses this function, too,
         // so we need to be sure it works...
         if ( not g_bSetWaypointNumFix)
@@ -797,7 +797,7 @@ void FireControlComputer::NavDisplay(void)
     //Wombat778 11-10-2003 End of added code
 
 
-    // RV - RED - WARNING...!!!!
+    // RV - RED - WARNING...
     // THIS IS KINDA A HACK - The 2D MFDs may be stretched by pit scaling
     // Rings would became ovals ( as it should be ) but later they r turned by AC Yaw...
     // This make the Oval to physically turn...
@@ -821,7 +821,7 @@ void FireControlComputer::NavDisplay(void)
     //MI changed for Zoom
     if ( not g_bRealisticAvionics)
     {
-        if ( not IsHsdState(HSDNORINGS) and !IsHsdState(HSDFRZ))
+        if ( not IsHsdState(HSDNORINGS) and not IsHsdState(HSDFRZ))
         {
             display->SetColor(GetMfdColor(MFD_LINES));
             // Add Cardinal Headings
@@ -858,7 +858,7 @@ void FireControlComputer::NavDisplay(void)
     else
     {
         //MI this is not here if we have it expanded
-        if ( not IsHsdState(HSDNORINGS) and !IsHsdState(HSDFRZ) and HSDZoom == 0)
+        if ( not IsHsdState(HSDNORINGS) and not IsHsdState(HSDFRZ) and HSDZoom == 0)
         {
             display->SetColor(GetMfdColor(MFD_LINES));
             // Add Cardinal Headings
@@ -917,7 +917,7 @@ void FireControlComputer::NavDisplay(void)
 
             if (g_bRealisticAvionics) //MI changed
             {
-                if (HSDZoom == 0 and !IsSOI)
+                if (HSDZoom == 0 and not IsSOI)
                 {
                     DrawGhostCursor();
                     display->SetColor(GetMfdColor(MFD_SWEEP));
@@ -967,7 +967,7 @@ void FireControlComputer::NavDisplay(void)
         display->CenterOriginInViewport();
     }
 
-    // RV - RED - WARNING...!!!!
+    // RV - RED - WARNING...
     // THIS IS KINDA A HACK - The 2D MFDs may be stretched by pit scaling
     // Restore here the ORIGINAL MFDs Scaling
     display->scaleX = OldScaleX;
@@ -988,7 +988,7 @@ void FireControlComputer::NavDisplay(void)
                     if (hsdcntlcfg[i].mode == HSDCNTL)
                         LabelButton(i, hsdcntlcfg[i].label, NULL, TRUE);
                     else
-                        LabelButton(i, hsdcntlcfg[i].label, NULL, !IsHsdState(hsdcntlcfg[i].mode));
+                        LabelButton(i, hsdcntlcfg[i].label, NULL,  not IsHsdState(hsdcntlcfg[i].mode));
                 }
             }
         }
@@ -1048,7 +1048,7 @@ void FireControlComputer::NavDisplay(void)
     float ymid = y18 + (y19 - y18) / 2;
     display->TextLeftVertical(x18, ymid, tmpStr);
 
-    if ( not IsHsdState(HSDCPL) and !IsHsdState(HSDCNTL) and !IsHsdState(HSDFRZ))
+    if ( not IsHsdState(HSDCPL) and not IsHsdState(HSDCNTL) and not IsHsdState(HSDFRZ))
     {
         /*----------*/
         /* up arrow */
@@ -1089,7 +1089,7 @@ void FireControlComputer::DrawNavPoints(void)
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1164,7 +1164,7 @@ void FireControlComputer::DrawWayPoints()
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1209,7 +1209,7 @@ void FireControlComputer::DrawMarkPoints(void)
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1249,7 +1249,7 @@ void FireControlComputer::DrawLinkPoints(void)
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1299,7 +1299,7 @@ void FireControlComputer::DrawDESTOAPoints(void)
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1330,7 +1330,7 @@ void FireControlComputer::DrawVIPOAPoints(void)
     //MI
     /*if(g_bRealisticAvionics and g_bINS)
     {
-     if(playerAC and !playerAC->INSState(AircraftClass::INS_HSD_NAV))
+     if(playerAC and not playerAC->INSState(AircraftClass::INS_HSD_NAV))
      return;
     }*/
 
@@ -1361,7 +1361,7 @@ void FireControlComputer::DrawVRPOAPoints(void)
     //MI
     /*if(g_bRealisticAvionics and g_bINS)
     {
-     if(playerAC and !playerAC->INSState(AircraftClass::INS_HSD_NAV))
+     if(playerAC and not playerAC->INSState(AircraftClass::INS_HSD_NAV))
      return;
     }*/
 
@@ -1511,7 +1511,7 @@ void FireControlComputer::DrawTGTSymbol(float displayX, float displayY)
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1536,7 +1536,7 @@ void FireControlComputer::DrawIPSymbol(float displayX, float displayY)
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1560,7 +1560,7 @@ void FireControlComputer::DrawMarkSymbol(float displayX, float displayY, int typ
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1578,7 +1578,7 @@ void FireControlComputer::DrawDESTOASymbol(float displayX, float displayY)
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1598,7 +1598,7 @@ void FireControlComputer::DrawVIPOASymbol(float displayX, float displayY)
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1611,7 +1611,7 @@ void FireControlComputer::DrawVRPOASymbol(float displayX, float displayY)
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1625,7 +1625,7 @@ void FireControlComputer::DrawFLOT(void)
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1766,7 +1766,7 @@ void FireControlComputer::DrawBullseye(void)
     //MI
     /*if(g_bRealisticAvionics and g_bINS)
     {
-     if(playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+     if(playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
      return;
     }*/
 
@@ -1823,7 +1823,7 @@ void FireControlComputer::DrawPPThreats(void)
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1968,7 +1968,7 @@ void FireControlComputer::DrawGhostCursor(void)
     {
         if (g_bINS)
         {
-            if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+            if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
                 return;
         }
 
@@ -2012,7 +2012,7 @@ void FireControlComputer::DrawScanVolume(void)
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -2051,7 +2051,7 @@ void FireControlComputer::DrawBuggedTarget()
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -2138,12 +2138,12 @@ void FireControlComputer::DrawWingmen()
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
     if (((AircraftClass*)platform)->mFaults->GetFault(FaultClass::dlnk_fault) ||
-        !((AircraftClass*)platform)->HasPower(AircraftClass::DLPower))
+         not ((AircraftClass*)platform)->HasPower(AircraftClass::DLPower))
         return;
 
     //Cobra
@@ -2153,12 +2153,12 @@ void FireControlComputer::DrawWingmen()
 
         AircraftClass *wingman = (AircraftClass *)platform->GetCampaignObject()->GetComponentNumber(i);
 
-        if (wingman and !IsHsdState(HSDNOADLNK))
+        if (wingman and not IsHsdState(HSDNOADLNK))
         {
             Draw1Wingman(wingman);//Cobra added HSDNOADLINK here
         }
 
-        if (wingman and !IsHsdState(HSDNOGNDLNK))
+        if (wingman and not IsHsdState(HSDNOGNDLNK))
         {
             Draw1WingmanGnd(wingman);//Cobra
         }
@@ -2172,7 +2172,7 @@ void FireControlComputer::Draw1WingmanGnd(AircraftClass *wing)
 
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -2318,7 +2318,7 @@ void FireControlComputer::Draw1Wingman(AircraftClass *wing)
     //MI
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
         {
             return;
         }
@@ -2412,7 +2412,7 @@ void FireControlComputer::Draw1Wingman(AircraftClass *wing)
     SimObjectType *locked = (theRadar == NULL) ? NULL :  theRadar->CurrentTarget();
 
     if (
-#if !NO_REMOTE_BUGGED_TARGET
+#if not NO_REMOTE_BUGGED_TARGET
         static_cast<SimVehicleClass*>(wing)->sensorArray[1]->RemoteBuggedTarget == NULL  and 
 #endif
         (theRadar == NULL or locked == NULL)
@@ -2837,7 +2837,7 @@ void FireControlComputer::DrawAIFF(void)//Cobra 11/27/04
 
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC and !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 

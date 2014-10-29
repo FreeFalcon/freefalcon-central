@@ -304,7 +304,7 @@ void  DigitalBrain::AiClearLeadersSix(FalconWingmanMsg* msg)
         mDesignatedObject = msg->dataBlock.newTarget;
         ptgt = (AircraftClass*) vuDatabase->Find(mDesignatedObject);
 
-        if (ptgt and pfrom and !F4IsBadReadPtr(ptgt, sizeof(AircraftClass)) and !F4IsBadReadPtr(pfrom, sizeof(AircraftClass))) // JB 010318 CTD
+        if (ptgt and pfrom and  not F4IsBadReadPtr(ptgt, sizeof(AircraftClass)) and  not F4IsBadReadPtr(pfrom, sizeof(AircraftClass))) // JB 010318 CTD
         {
             if (ptgt->ZPos() - pfrom->ZPos() < -500.0F)
             {
@@ -1056,7 +1056,7 @@ void DigitalBrain::AiGoCover(void)
     AiClearManeuver();
 
     // 2001-06-16 ADDED BY S.G. NEED TO GO BACK IN NAV MODE.
-    if (self->AutopilotType() == AircraftClass::CombatAP or self->IsDigital()) // 2002-01-28 ADDED BY S.G But only if in CombatAP!!!
+    if (self->AutopilotType() == AircraftClass::CombatAP or self->IsDigital()) // 2002-01-28 ADDED BY S.G But only if in CombatAP
         self->FCC->SetMasterMode(FireControlComputer::Nav);
 
     // END OF ADDED SECTION
@@ -1122,7 +1122,7 @@ void DigitalBrain::AiRejoin(FalconWingmanMsg* msg, AiHint hint)
     short edata[10];
     int flightIdx;
 
-    //we can't rejoin if we're on the ground still!
+    //we can't rejoin if we're on the ground still
     if (self->OnGround() or atcstatus >= lOnFinal)
         return;
 
@@ -1184,7 +1184,7 @@ void DigitalBrain::AiRejoin(FalconWingmanMsg* msg, AiHint hint)
 
     flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
 
-    // 2002-03-10 MN when ordered AI to rejoin, rejoin immediately, not only when connected to the boom!
+    // 2002-03-10 MN when ordered AI to rejoin, rejoin immediately, not only when connected to the boom
     // if(self->af->IsSet(Refueling)) {
     if (refuelstatus not_eq refNoTanker and refuelstatus not_eq refDone)
     {
@@ -1217,7 +1217,7 @@ void DigitalBrain::AiRejoin(FalconWingmanMsg* msg, AiHint hint)
         edata[3] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + flightIdx + 1;
         AiMakeRadioResponse(self, rcONMYWAY, edata);
     }
-    else if (hint == AI_TAKEOFF)   // JPO take the hint!
+    else if (hint == AI_TAKEOFF)   // JPO take the hint
     {
         short edata[10];
 
@@ -1454,7 +1454,7 @@ void DigitalBrain::AiSetWeaponsAction(FalconWingmanMsg* msg, DigitalBrain::AiWea
     }
 
     //Cobra TJL let's remove the WaitingPermission.  If I give weaponsfree I'm expecting the AI
-    //to get its game on and find targets!
+    //to get its game on and find targets
     if (action == AI_WEAPONS_FREE and missionClass == AGMission /* and  IsSetATC(WaitingPermission)*/)
     {
         missileShotTimer = 0;
@@ -1560,7 +1560,7 @@ void DigitalBrain::AiSetFormation(FalconWingmanMsg* msg)
     short edata[10];
     int flightIdx;
 
-    //we can't fly in formation if we're on the ground still!
+    //we can't fly in formation if we're on the ground still
     if (self->OnGround() or atcstatus >= lOnFinal)
         return;
 
@@ -2726,7 +2726,7 @@ void DigitalBrain::AiCheckInPositionCall(float trX, float trY, float trZ)
         ydiff = trY - self->YPos();
         zdiff = trZ - self->ZPos();
 
-        if ((xdiff * xdiff + ydiff * ydiff <  250.0F * 250.0F) and fabs(zdiff) < maxZDiff)  // 2002-02-12 MODIFIED BY S.G. It's "ydiff * ydiff" not "ydiff + ydiff"! plus replaced 250.0f for maxZDiff
+        if ((xdiff * xdiff + ydiff * ydiff <  250.0F * 250.0F) and fabs(zdiff) < maxZDiff)  // 2002-02-12 MODIFIED BY S.G. It's "ydiff * ydiff" not "ydiff + ydiff" plus replaced 250.0f for maxZDiff
         {
             mInPositionFlag = TRUE;
             edata[0] = self->GetCampaignObject()->GetComponentIndex(self);

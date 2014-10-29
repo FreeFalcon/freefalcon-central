@@ -954,7 +954,7 @@ void MenuUnitDeleteCB(long, short, C_Base *)
 
                 unit->Remove();
 
-                if (pkg and !count)
+                if (pkg and not count)
                     pkg->Remove();
             }
         }
@@ -1048,7 +1048,7 @@ void MenuReconCB(long, short, C_Base *)
             {
                 // 2002-02-21 ADDED BY S.G. If not spotted by the player's team or not editing a TE, can't recon...
                 if (
-                    !(TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)  and 
+                     not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)  and 
                     ent->IsFlight()  and 
                     (gGps->GetTeamNo() not_eq ent->GetTeam())  and 
                     !ent->GetIdentified(static_cast<Team>(gGps->GetTeamNo()))
@@ -2068,7 +2068,7 @@ void MapMenuOpenCB(C_Base *themenu, C_Base *caller)
 {
     C_PopupList *menu;
 
-    if ( not themenu or !caller or !caller->Parent_)
+    if ( not themenu or not caller or not caller->Parent_)
         return;
 
     menu = (C_PopupList*)themenu;
@@ -2104,7 +2104,7 @@ void OpenUnitMenuCB(C_Base *themenu, C_Base *caller)
 {
     C_PopupList *menu;
 
-    if ( not themenu or !caller or !caller->Parent_)
+    if ( not themenu or not caller or not caller->Parent_)
         return;
 
     menu = (C_PopupList*)themenu;
@@ -2173,7 +2173,7 @@ void OpenNavalMenuCB(C_Base *themenu, C_Base *caller)
 {
     C_PopupList *menu;
 
-    if ( not themenu or !caller or !caller->Parent_)
+    if ( not themenu or not caller or not caller->Parent_)
         return;
 
     menu = (C_PopupList*)themenu;
@@ -2243,7 +2243,7 @@ void ObjMenuOpenCB(C_Base *themenu, C_Base *caller)
     C_PopupList *menu;
     bool isAirbase = false;
 
-    if ( not themenu or !caller or !caller->Parent_)
+    if ( not themenu or not caller or not caller->Parent_)
         return;
 
     if (caller->_GetCType_() == _CNTL_DRAWLIST_)
@@ -2278,7 +2278,7 @@ void ObjMenuOpenCB(C_Base *themenu, C_Base *caller)
         menu->SetItemFlagBitOn(MID_SQUADRONS, C_BIT_ENABLED);
         menu->SetItemFlagBitOff(MID_SQUADRONS, C_BIT_INVISIBLE);
 
-        if (GameType == 1 or !EditMode)
+        if (GameType == 1 or not EditMode)
             menu->SetItemFlagBitOff(MID_ADD_SQUADRON, C_BIT_ENABLED);
         else
             menu->SetItemFlagBitOn(MID_ADD_SQUADRON, C_BIT_ENABLED);

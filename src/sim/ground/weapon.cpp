@@ -386,7 +386,7 @@ void GroundClass::RotateTurret(void)
     }
     else
     {
-        if ( not targetPtr->BaseData()->OnGround() and !isAirDefense)
+        if ( not targetPtr->BaseData()->OnGround() and not isAirDefense)
         {
             newAz = 0.0F;
             newEl = 0.0F;
@@ -484,10 +484,10 @@ int GroundClass::GunTrack(void)
 
     // make guns less accurate by randomizing target position when in air, unless its AAA
     // 2000-10-19 MODIFIED BY S.G. NEW TEST FOR AAA AND REGULAR GUNS. IF FIRST BIT OF NEW FIELD IS A 1, IT'S AN AAA GUN.
-    // if ( not target->OnGround() and !isAirDefense)
+    // if ( not target->OnGround() and not isAirDefense)
     float tracerError; // JB 010106
 
-    if ((((unsigned char *)Gun->wcPtr)[31] bitand 1) == (g_bToggleAAAGunFlag bitand 1) and !target->OnGround()) // 2002-03-12 MODIFIED BY S.G. Added the 'g_bToggleAAAGunFlag' check to possibly reverse the check. RP5 reversed the check so this deals with it
+    if ((((unsigned char *)Gun->wcPtr)[31] bitand 1) == (g_bToggleAAAGunFlag bitand 1) and not target->OnGround()) // 2002-03-12 MODIFIED BY S.G. Added the 'g_bToggleAAAGunFlag' check to possibly reverse the check. RP5 reversed the check so this deals with it
     {
         //float tracerError; // JB 010106
         tracerError = PRANDFloatPos() / (float)(gai->skillLevel + 1);
@@ -552,7 +552,7 @@ int GroundClass::GunTrack(void)
     if (target->OnGround() or isAirDefense)
     {
         // Check our limits
-        if (el > 85 * DTR or (el < 5 * DTR and !target->OnGround()))
+        if (el > 85 * DTR or (el < 5 * DTR and not target->OnGround()))
             return FALSE;
 
         delta = (float)fabs(GetDOFValue(AIRDEF_AZIMUTH) - az);
@@ -752,7 +752,7 @@ int GroundClass::MissileTrack(void)
 
     // RV - Biker - Think here is a problem
     // FRB - Increased VT = 1 to VT = 3, same as GMT threshold
-    if ( not isShip and (GetVt() > 3.0f and !g_bFireOntheMove))
+    if ( not isShip and (GetVt() > 3.0f and  not g_bFireOntheMove))
         return FALSE;
 
     // check for radar-guided missiles
@@ -876,7 +876,7 @@ int GroundClass::MissileTrack(void)
     //  minAlt = max(-1500.0F, maxAlt * 0.1f);
     // minAlt = (float)(wc->Name[18]) * -32.0F;
     // 2002-02-26 MN the radar data now decides on that
-    // 2002-03-09 MN mea culpa - minAlt above put back in - this makes is weapon dependant !!
+    // 2002-03-09 MN mea culpa - minAlt above put back in - this makes is weapon dependant 
     // minAlt = (float)-(radarData->MinEngagementAlt);
     // 2002-03-09 MODIFIED BY S.G. Uses the new missile auxiliary data file instead of the radar file so it's more granular
     if (auxData)
@@ -943,7 +943,7 @@ int GroundClass::MissileTrack(void)
     float BUMP;
 
     if (GetCampaignObject() and   // MLR 5/27/2004 - CTD ?
-        /*!((BattalionClass*)GetCampaignObject())->GetMissilesFlying())*/
+        /* not ((BattalionClass*)GetCampaignObject())->GetMissilesFlying())*/
         //Cobra TJL 10/30/04
         !GetCampaignObject()->GetMissilesFlying())
     {
@@ -1052,7 +1052,7 @@ GroundClass::FindBattalionFireControl(void)
     // Search the list for a battalion radar vehicle
     while (firectl)
     {
-        if (firectl->GetRadarType() == battRadarType and !firectl->IsDead())
+        if (firectl->GetRadarType() == battRadarType and not firectl->IsDead())
         {
             battalionFireControl = firectl;
             VuReferenceEntity(battalionFireControl);

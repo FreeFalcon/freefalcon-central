@@ -37,9 +37,9 @@
 #define MISEVAL_FLIGHT_GOT_NKILL 0x00000040 // Naval kill
 #define MISEVAL_FLIGHT_GOT_SKILL 0x00000080 // Static kill
 #define MISEVAL_FLIGHT_HIT_HIGH_VAL 0x00000100 // Hit a high value target (Feature with value)
-#define MISEVAL_FLIGHT_HIT_BY_AIR 0x00001000 // Suffered loss to air (during ingress only!)
-#define MISEVAL_FLIGHT_HIT_BY_GROUND 0x00002000 // Suffered loss to ground (during ingress only!)
-#define MISEVAL_FLIGHT_HIT_BY_NAVAL 0x00004000 // Suffered loss to naval (during ingress only!)
+#define MISEVAL_FLIGHT_HIT_BY_AIR 0x00001000 // Suffered loss to air (during ingress only)
+#define MISEVAL_FLIGHT_HIT_BY_GROUND 0x00002000 // Suffered loss to ground (during ingress only)
+#define MISEVAL_FLIGHT_HIT_BY_NAVAL 0x00004000 // Suffered loss to naval (during ingress only)
 #define MISEVAL_FLIGHT_TARGET_HIT 0x00010000 // We hit our target
 #define MISEVAL_FLIGHT_TARGET_KILLED 0x00020000 // We killed out target
 #define MISEVAL_FLIGHT_TARGET_ABORTED 0x00040000 // We forced our target to abort

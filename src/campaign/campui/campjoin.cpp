@@ -158,7 +158,7 @@ void StartCampaignGame(int local, int game_type)
 // This is called any time we've received Campaign Scenario Status data (preload data)
 void CampaignPreloadSuccess(int remote_game)
 {
-    if (remote_game and !TheCampaign.IsLoaded() and gCampJoinStatus == JOIN_REQUEST_ALL_DATA)
+    if (remote_game and not TheCampaign.IsLoaded() and gCampJoinStatus == JOIN_REQUEST_ALL_DATA)
     {
         // We want the rest of the data too.
         gCampJoinStatus = JOIN_CAMP_DATA_ONLY;
@@ -168,7 +168,7 @@ void CampaignPreloadSuccess(int remote_game)
 
 void CampaignJoinSuccess(void)
 {
-    MonoPrint("Got all campaign data! Starting it up!\n");
+    MonoPrint("Got all campaign data Starting it up\n");
 
     if (gMainHandler)
         gMainHandler->RemoveUserCallback(CampaignConnectionTimer);
@@ -321,7 +321,7 @@ void CampaignJoinSuccess(void)
 
 void CampaignJoinFail(void)
 {
-    MonoPrint("Failed to get campaign data!\n");
+    MonoPrint("Failed to get campaign data\n");
 
     StopCampaignLoad();
 
@@ -343,7 +343,7 @@ void CampaignJoinFail(void)
 
 void StopCampaignLoad(void)
 {
-    MonoPrint("Stop Campaign Load!\n");
+    MonoPrint("Stop Campaign Load\n");
 
     gMainHandler->RemoveUserCallback(CampaignConnectionTimer);
 
@@ -369,7 +369,7 @@ void CampaignConnectionTimer(void)
         // If we fail to many times, we quit
         if (gCampJoinTries > 600)
         {
-            MonoPrint("Join Timed out!\n");
+            MonoPrint("Join Timed out\n");
             PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
             return;
         }

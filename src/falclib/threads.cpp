@@ -81,7 +81,7 @@ F4THREADHANDLE F4CreateThread(threadf_t tf, void *args, int createSuspended, tpr
 
 void F4JoinThread(F4THREADHANDLE t)
 {
-    if (t < 0 or t >= F4T_MAX_THREADS or !F4Thread[t].inUse)
+    if (t < 0 or t >= F4T_MAX_THREADS or  not F4Thread[t].inUse)
     {
         return;
     }

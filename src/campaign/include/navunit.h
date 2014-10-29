@@ -190,7 +190,7 @@ public:
     {
         return radar_mode;
     }
-    // 2002-03-22 MODIFIED BY S.G. DIFFERENT DECLARATION THEN FROM FalcEnt.h RESULTS IN IT NOT BEING CALLED!
+    // 2002-03-22 MODIFIED BY S.G. DIFFERENT DECLARATION THEN FROM FalcEnt.h RESULTS IN IT NOT BEING CALLED
     // sfr: modified base class
     virtual void SetRadarMode(uchar mode)
     {
@@ -198,7 +198,7 @@ public:
     }
     // virtual void SetRadarMode (int mode) { radar_mode = mode; }
     virtual void ReturnToSearch(void);
-    // 2002-03-22 MODIFIED BY S.G. DIFFERENT DECLARATION THEN FROM FalcEnt.h RESULTS IN IT NOT BEING CALLED!
+    // 2002-03-22 MODIFIED BY S.G. DIFFERENT DECLARATION THEN FROM FalcEnt.h RESULTS IN IT NOT BEING CALLED
     // sfr: modified base class
     virtual void SetSearchMode(uchar mode)
     {

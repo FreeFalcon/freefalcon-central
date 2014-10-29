@@ -47,7 +47,7 @@ int SMSClass::LaunchMissile(void)
 
     // Check for SMS Failure or other reason not to launch
     if ( not CurStationOK() ||
-        !curWeapon ||
+         not curWeapon ||
         Ownship()->OnGround() ||
         MasterArm() not_eq Arm)
     {
@@ -71,7 +71,7 @@ int SMSClass::LaunchMissile(void)
         {
             if ((curWeapon->parent  and 
                  ((AircraftClass *)curWeapon->parent.get())->IsPlayer()  and 
-                 !(((AircraftClass *)curWeapon->parent.get())->AutopilotType() == AircraftClass::CombatAP)  and 
+                  not (((AircraftClass *)curWeapon->parent.get())->AutopilotType() == AircraftClass::CombatAP)  and 
                  !Powered) and curWeapon->GetType() == TYPE_MISSILE  and 
                 curWeapon->GetSType() == STYPE_MISSILE_AIR_GROUND  and 
                 (curWeapon->GetSPType() == SPTYPE_AGM65A ||
@@ -86,7 +86,7 @@ int SMSClass::LaunchMissile(void)
         {
             if ((curWeapon->parent  and 
                  ((AircraftClass *)curWeapon->parent.get())->IsPlayer()  and 
-                 !(((AircraftClass *)curWeapon->parent.get())->AutopilotType() == AircraftClass::CombatAP)  and 
+                  not (((AircraftClass *)curWeapon->parent.get())->AutopilotType() == AircraftClass::CombatAP)  and 
                  !GetHARMPowerState()) and curWeapon->GetType() == TYPE_MISSILE  and 
                 curWeapon->GetSType() == STYPE_MISSILE_AIR_GROUND  and 
                 (curWeapon->GetSPType() == SPTYPE_AGM88))
@@ -124,7 +124,7 @@ int SMSClass::LaunchMissile(void)
             // END OF MOVED SECTION
 
             // Don't hand off ground targets to radar guided air to air missiles
-            if (curWeaponType not_eq wtAim120 or (tmpTargetPtr and !tmpTargetPtr->BaseData()->OnGround()))
+            if (curWeaponType not_eq wtAim120 or (tmpTargetPtr and not tmpTargetPtr->BaseData()->OnGround()))
             {
                 theMissile->Start(tmpTargetPtr);
             }
@@ -188,7 +188,7 @@ int SMSClass::LaunchMissile(void)
                 }
                 else
                 {
-                    if (theMissile and !theMissile->parent)
+                    if (theMissile and not theMissile->parent)
                     {
                         sfxid = SFX_MISSILE2;
                     }
@@ -414,7 +414,7 @@ int SMSClass::LaunchRocket(void)
 
     // Check for SMS Failure
     if ( not CurStationOK() ||
-        !curWeapon ||
+         not curWeapon ||
         Ownship()->OnGround() ||
         MasterArm() not_eq Arm)
     {
@@ -426,7 +426,7 @@ int SMSClass::LaunchRocket(void)
 
     // MLR 1/27/2004 - For gun pods, we won't allocate 1200 (or whatever) rounds of ammo
     //                 that would be silly.  We will allocate them as needed.
-    if (hardPoint[curHardpoint]->weaponCount and !hardPoint[curHardpoint]->weaponPointer)
+    if (hardPoint[curHardpoint]->weaponCount and not hardPoint[curHardpoint]->weaponPointer)
     {
         hardPoint[curHardpoint]->weaponPointer = InitWeaponList(ownship, hardPoint[curHardpoint]->weaponId,
                 hardPoint[curHardpoint]->GetWeaponClass(), min(10, hardPoint[curHardpoint]->weaponCount), InitAMissile);
@@ -627,7 +627,7 @@ int SMSClass::LaunchRocket(void)
         theLau = (BombClass *)curWeapon.get();
     }
 
-    if (theLau and !theLau->IsLauncher())
+    if (theLau and not theLau->IsLauncher())
     {
         return 1;
     }
@@ -778,7 +778,7 @@ int SMSClass::SubLaunchRocket(int hpId)
 
     // Check for SMS Failure
     if ( not CurStationOK() ||
-        !curWeapon ||
+         not curWeapon ||
         Ownship()->OnGround() ||
         MasterArm() not_eq Arm)
     {
@@ -808,7 +808,7 @@ int SMSClass::SubLaunchRocket(int hpId)
     // MLR 1/27/2004 - For gun pods, we won't allocate 1200 (or whatever) rounds of ammo
     //                 that would be silly.  We will allocate them as needed.
     /*
-    if(hardPoint[hpId]->weaponCount and !hardPoint[hpId]->weaponPointer)
+    if(hardPoint[hpId]->weaponCount and not hardPoint[hpId]->weaponPointer)
     {
      hardPoint[hpId]->weaponPointer = InitWeaponList (ownship, hardPoint[hpId]->weaponId,
      hardPoint[hpId]->GetWeaponClass(), min( 10, hardPoint[hpId]->weaponCount ), InitAMissile);

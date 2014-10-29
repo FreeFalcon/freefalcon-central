@@ -172,7 +172,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     //sfr: again we cant use datablock directly
     VU_BYTE *data = dataBlock.data;
 
-    if (autodisp or !shooter or !target or !shooter->IsUnit())
+    if (autodisp or not shooter or not target or not shooter->IsUnit())
         return -1;
 
     if ( not target->IsAggregate())
@@ -206,7 +206,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     if (shooter->IsAggregate())
     {
         // Send a radio chatter message to LOCAL MACHINE if shooter is a flight
-        if (shooter->IsFlight() and !SimDriver.InSim() and !(rand() % 20))
+        if (shooter->IsFlight() and not SimDriver.InSim() and  not (rand() % 20))
         {
             // Send the chatter message;
             FalconRadioChatterMessage *msg = new FalconRadioChatterMessage(shooter->Id(), FalconLocalSession);
@@ -619,7 +619,7 @@ void FireOnSimEntity(CampEntity shooter, SimBaseClass *simTarg, short weaponId)
         }
 
         // ok, it's a shell
-        // MonoPrint( "Itsa Shell!\n" );
+        // MonoPrint( "Itsa Shell\n" );
 
         // damage stuff goes here....
         if (wc->BlastRadius == 0)
@@ -1109,20 +1109,20 @@ void DoShortDistanceVisualEffects(CampEntity shooter, CampEntity target, int wea
         }
 
         // ok, it's a shell
-        // MonoPrint( "Itsa Short Distance Shell Shell!\n" );
+        // MonoPrint( "Itsa Short Distance Shell Shell\n" );
 
     }
     // itsa missile
     else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE)
     {
-        // MonoPrint( "Itsa Short Range Effect Missile!\n" );
+        // MonoPrint( "Itsa Short Range Effect Missile\n" );
 
 
     }
     // itsa missile
     else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_BOMB)
     {
-        // MonoPrint( "Itsa Short Range Effect Bomb!\n" );
+        // MonoPrint( "Itsa Short Range Effect Bomb\n" );
         itsaBomb = TRUE;
 
     }

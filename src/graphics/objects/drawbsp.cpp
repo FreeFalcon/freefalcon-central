@@ -67,7 +67,7 @@ DrawableBSP::~DrawableBSP(void)
 {
     ShiAssert(id >= 0);
 
-    // HACK!!!
+    // HACK!
     // This check should go as soon as Drawable2D stops inheriting from
     // this class.
     // if (id < 0)  return;
@@ -667,7 +667,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
     // Now compute the starting location for our label text
     if (drawLabels and labelLen)
     {
-        if ( not g_bSmartScaling and !PlayerOptions.ObjectDynScalingOn())
+        if ( not g_bSmartScaling and not PlayerOptions.ObjectDynScalingOn())
             renderer->TransformPoint(&position, &labelPoint);   // JB 010112
 
         // JB 000807 Add near label limit and labels that get brighter as they get closer
@@ -693,7 +693,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
         // Besides no need to calculate radial distance is Z distance is already greater
         if (g_bLabelRadialFix)
             if (labelPoint.clipFlag == ON_SCREEN  and 
-                labelPoint.csZ < limitcheck) //Same condition as below!!!
+                labelPoint.csZ < limitcheck) //Same condition as below!
             {
                 float dx = position.x - renderer->X();
                 float dy = position.y - renderer->Y();

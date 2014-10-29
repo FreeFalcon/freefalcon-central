@@ -49,7 +49,7 @@ void ThreadManager::start_campaign_thread(UFUNCTION function)
 
 bool ThreadManager::campaign_wait_for_sim(DWORD maxwait)
 {
-#if !NEW_SYNC
+#if not NEW_SYNC
     ResetEvent(campaign_wait_event);
 #endif
 
@@ -64,7 +64,7 @@ void ThreadManager::sim_signal_campaign()
 
 bool ThreadManager::sim_wait_for_campaign(DWORD maxwait)
 {
-#if !NEW_SYNC
+#if not NEW_SYNC
     ResetEvent(sim_wait_event);
 #endif
 

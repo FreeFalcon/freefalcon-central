@@ -505,7 +505,7 @@ extern int targetCompressionRatio;
 // This function moves the camera slighly to simulate the relative movement of
 // an imaginary formation-flying airplane that holds the camera in order to
 // heighten immersion (or such).
-// THIS function IMPLICITLY changes the cameraPos !!!
+// THIS function IMPLICITLY changes the cameraPos !
 /*****************************************************************************/
 void OTWDriverClass::DisplaceTheCamera(float dT)
 {
@@ -598,7 +598,7 @@ void OTWDriverClass::ReInitDisplacement(CamDisplacement* theDisp)
 
 void OTWDriverClass::toggleDisplaceCamera(void)
 {
-    displaceCamera = !displaceCamera;
+    displaceCamera = not displaceCamera;
 }
 #pragma warning(pop)
 // Retro 23Dec2003 end
@@ -681,7 +681,7 @@ void OTWDriverClass::BuildExternalNearList(void)
     FlushNearList();
 
     // Drop out if we have nothing to do...
-    if ( not SimDriver.objectList or DisplayInCockpit() or !otwPlatform or otwPlatform->OnGround() or !otwPlatform->drawPointer)
+    if ( not SimDriver.objectList or DisplayInCockpit() or not otwPlatform or otwPlatform->OnGround() or not otwPlatform->drawPointer)
         return;
 
     // Compute the real world camera position

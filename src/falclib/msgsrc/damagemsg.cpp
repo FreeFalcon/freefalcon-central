@@ -44,7 +44,7 @@ int FalconDamageMessage::Process(uchar autodisp)
             ((SimBaseClass*)theEntity)->ApplyDamage(this);
 
             // Record any hits directly
-            if (TheCampaign.MissionEvaluator and !(theEntity->IsSetFalcFlag(FEC_INVULNERABLE)))
+            if (TheCampaign.MissionEvaluator and  not (theEntity->IsSetFalcFlag(FEC_INVULNERABLE)))
             {
                 TheCampaign.MissionEvaluator->RegisterHit(this);
             }
@@ -101,7 +101,7 @@ int FalconDamageMessage::Process(uchar autodisp)
             // KCK: Currently Apply Damage calls register hit (sometimes multiple times). Theoretically,
             // it should be possible to call it here, like we do for sim entities - but this is a task
             // for another time.
-            // if (TheCampaign.MissionEvaluator and ( not theEntity or !theEntity->IsSetFalcFlag(FEC_INVULNERABLE)))
+            // if (TheCampaign.MissionEvaluator and ( not theEntity or not theEntity->IsSetFalcFlag(FEC_INVULNERABLE)))
             // TheCampaign.MissionEvaluator->RegisterHit(this);
         }
     }
@@ -122,7 +122,7 @@ FalconDamageMessage *CreateGroundCollisionMessage(SimVehicleClass* vehicle, int 
     FalconDamageMessage* message;
     message = new FalconDamageMessage(vehicle->Id(), target);
 
-    if (lastToHit and !lastToHit->IsEject())
+    if (lastToHit and not lastToHit->IsEject())
     {
         message->dataBlock.fEntityID  = lastToHit->Id();
         message->dataBlock.fIndex     = lastToHit->Type();

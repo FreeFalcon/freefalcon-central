@@ -60,7 +60,7 @@ void RenderOTW::SetRoofMode(BOOL state)
     }
 
     // Get the textures we'll need if the roof is being turned on
-    if (state and !texRoofTop.TexHandle())
+    if (state and not texRoofTop.TexHandle())
     {
         Tcolor light;
 
@@ -1592,7 +1592,7 @@ void RenderOTW::ComputeHorizonEffect(HorizonRecord *pHorizon)
     TheTimeOfDay.CalculateSunGroundPos(&sunEffectWorldSpace);
     TransformCameraCentricPoint(&sunEffectWorldSpace, &sunEffectScreenSpace);
 
-    if (1/*!(sunEffectScreenSpace.clipFlag bitand CLIP_NEAR)*/)
+    if (1/* not (sunEffectScreenSpace.clipFlag bitand CLIP_NEAR)*/)
     {
         pHorizon->sunEffectPos.x = sunEffectScreenSpace.x;
         pHorizon->sunEffectPos.y = sunEffectScreenSpace.y;

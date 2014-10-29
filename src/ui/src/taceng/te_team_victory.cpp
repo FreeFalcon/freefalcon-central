@@ -508,13 +508,13 @@ BOOL VCSortCB(TREELIST *list, TREELIST *newitem)
 {
     C_Victory *lvc, *nvc;
 
-    if ( not list or !newitem)
+    if ( not list or not newitem)
         return(FALSE);
 
     lvc = (C_Victory*)list->Item_;
     nvc = (C_Victory*)newitem->Item_;
 
-    if ( not lvc or !nvc)
+    if ( not lvc or not nvc)
         return(FALSE);
 
     switch (VCSortType)
@@ -573,7 +573,7 @@ void UpdateVCOptions(victory_condition *vc)
 
     vctrl = (C_Victory*)vc->control;
 
-    if ( not vctrl or !vctrl->Parent_)
+    if ( not vctrl or not vctrl->Parent_)
         return;
 
     ent = (CampEntity)vuDatabase->Find(vc->get_vu_id());
@@ -598,7 +598,7 @@ void UpdateVCOptions(victory_condition *vc)
             {
                 fc = GetFeatureClassData(classID);
 
-                if (fc and !(fc->Flags bitand FEAT_VIRTUAL))
+                if (fc and  not (fc->Flags bitand FEAT_VIRTUAL))
                 {
                     _tcscat(buffer, ", ");
                     _tcscat(buffer, fc->Name);

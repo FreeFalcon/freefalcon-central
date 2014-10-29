@@ -88,7 +88,7 @@ int FalconSendObjData::Process(uchar autodisp)
     uchar *bufptr;
     FalconSessionEntity *session = (FalconSessionEntity*) vuDatabase->Find(dataBlock.owner);
 
-    if (autodisp or !TheCampaign.IsPreLoaded() or !session)
+    if (autodisp or not TheCampaign.IsPreLoaded() or not session)
         return -1;
 
     if (TheCampaign.Flags bitand CAMP_NEED_OBJ_DELTAS)
@@ -115,7 +115,7 @@ int FalconSendObjData::Process(uchar autodisp)
         memcpy(bufptr, dataBlock.objData, dataBlock.size);
 
 #ifdef DEBUG_STARTUP
-        MonoPrint("Got Obj Block #%d!\n", dataBlock.block);
+        MonoPrint("Got Obj Block #%d\n", dataBlock.block);
 #endif
 
         // Mark this block as being received.
@@ -229,7 +229,7 @@ void SendObjectiveDeltas(FalconSessionEntity *session, VuTargetEntity *target, u
             sizeleft -= gObjBlockSize;
         }
 
-        if ( not blocksNeeded or !(blocksNeeded[curBlock / 8] bitand (1 << (curBlock % 8))))
+        if ( not blocksNeeded or  not (blocksNeeded[curBlock / 8] bitand (1 << (curBlock % 8))))
         {
             msg = new FalconSendObjData(session->Id(), target);
             msg->dataBlock.size = (short)blocksize;

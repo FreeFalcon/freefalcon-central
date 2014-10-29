@@ -305,7 +305,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
 
 
     // Send a launch message to our intended victim (if he isn't a countermeasure)
-    if (lockedTarget and !lockedTarget->BaseData()->IsWeapon())
+    if (lockedTarget and not lockedTarget->BaseData()->IsWeapon())
     {
         // 2000-08-31 ADDED BY S.G. SO ARH DOESN'T SEND A LAUNCH WHEN THE MISSILE IS LAUNCHED (IT'S COMMAND GUIDED, NOT A REAL BEAM RIDER)
         if (((MissileClass *)platform)->GetSeekerType() not_eq SensorClass::Radar)
@@ -320,8 +320,8 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
     }
 
     //me123 hardcoded gimbal limit for semiactive/beamrider missiles for now
-    //there were no limit before !!
-    // it's on purpose that this is placed after the send trach msg !!
+    //there were no limit before 
+    // it's on purpose that this is placed after the send trach msg 
     //ME123 I GUES THIS WAS A BIT TOO HACKY...IT BRAKES MP..FLOODING TRACK LOCK/UNLOCK/LAUNCH MESSAGES
     /* if (lockedTarget and lockedTarget->localData->ata > 60.0f*DTR)
      {
@@ -444,7 +444,7 @@ void BeamRiderClass::ConsiderDecoy(SimObjectType *target)
     int dummy = 0;
 
     // No counter measures deployed by campaign things
-    if ( not target or !target->BaseData()->IsSim())
+    if ( not target or not target->BaseData()->IsSim())
     {
         return;
     }

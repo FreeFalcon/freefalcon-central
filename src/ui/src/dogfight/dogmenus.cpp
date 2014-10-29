@@ -299,7 +299,7 @@ static void DeletePilotCB(long, short hittype, C_Base *)
         {
             pilot = (C_Pilot*)item->Item_;
 
-            if (pilot and !pilot->GetPlayer())
+            if (pilot and not pilot->GetPlayer())
             {
                 flt = (Flight)vuDatabase->Find(pilot->GetVUID());
 
@@ -587,7 +587,7 @@ void CheckForPlayerCB(C_Base *themenu, C_Base *caller)
     Flight flt;
     C_PopupList *menu;
 
-    if ( not themenu or !caller)
+    if ( not themenu or not caller)
         return;
 
     menu = (C_PopupList*)themenu;

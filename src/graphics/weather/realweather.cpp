@@ -242,7 +242,7 @@ DWORD RealWeather::GetObserverOrder(float ZPosition)
 
 ///////////////////////////////////////////////// VIEW ORDER TABLES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 // RED - The various drawing orders absed on weather and viewver position
-// WARNING !!!! LAYER_TOP are the overall objects, IT CLOSES THE DRAWING, so MUST BE ALWAYS PRESENT
+// WARNING  LAYER_TOP are the overall objects, IT CLOSES THE DRAWING, so MUST BE ALWAYS PRESENT
 
 // * SUNNY VIEW ORDER *
 const DWORD SunnyDrawOrder[MAX_OBSERVER_POSITIONS][MAX_2D_LAYERS] =
@@ -966,7 +966,7 @@ void RealWeather::UpdateDrawables()
                     clipFlag[i]  or_eq  GetVerticalClipFlags(vp[i].y, vp[i].z);
                 }
 
-                weatherCellArray[row][col].onScreen = ( not clipFlag[0] or !clipFlag[1] or !clipFlag[2] or !clipFlag[3]);
+                weatherCellArray[row][col].onScreen = ( not clipFlag[0] or not clipFlag[1] or not clipFlag[2] or not clipFlag[3]);
 
                 if ( not weatherCellArray[row][col].onScreen
                     and row >= shadowCell + 1 and row < numCells - shadowCell - 1

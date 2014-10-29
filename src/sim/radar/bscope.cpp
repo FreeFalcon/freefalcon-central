@@ -955,7 +955,7 @@ void RadarDopplerClass::RWSDisplay(void)
     }
 
     //MI to disable it
-    //if(IsSet(EXP) and  !g_bMLU)
+    //if(IsSet(EXP) and   not g_bMLU)
     // ToggleFlag(EXP);
 
     display->SetColor(GetMfdColor(MFD_LABELS));
@@ -1113,7 +1113,7 @@ void RadarDopplerClass::RWSDisplay(void)
                         {
                             rdrData->interrogated = FALSE;
                         }
-                        else if (self->interrogating and !rdrObj->BaseData()->OnGround())
+                        else if (self->interrogating and not rdrObj->BaseData()->OnGround())
                         {
                             rdrData->interrogated = TRUE;
                             wipeIFF = TRUE;
@@ -1745,7 +1745,7 @@ void RadarDopplerClass::TWSDisplay(void)
                         {
                             rdrData->interrogated = FALSE;
                         }
-                        else if (self->interrogating and !rdrObj->BaseData()->OnGround())
+                        else if (self->interrogating and not rdrObj->BaseData()->OnGround())
                         {
                             rdrData->interrogated = TRUE;
                             wipeIFF = TRUE;
@@ -2009,7 +2009,7 @@ void RadarDopplerClass::STTDisplay(void)
     display->TextRight(0.45F, SECOND_LINE_Y, str);
 
     // Add NCTR data for any bugged target //me123 addet check on ground bitand jamming
-    if ( not lockedTarget->BaseData()->OnGround() or !lockedTarget->BaseData()->IsSPJamming())
+    if ( not lockedTarget->BaseData()->OnGround() or not lockedTarget->BaseData()->IsSPJamming())
     {
         DrawNCTR(false);
     }
@@ -2525,7 +2525,7 @@ void RadarDopplerClass::DrawSymbol(int type, float schweemLen, int age, int flas
     if ((type == FlashBug or type == FlashTrack) and flashOff)
         return;
 
-    // RV - RED - WARNING...!!!!
+    // RV - RED - WARNING...
     // THIS IS KINDA A HACK - The 2D MFDs may be stretched by pit scaling
     // Rings would became ovals ( as it should be ) but later they r turned by AC Yaw...
     // This make the Oval to physically turn...
@@ -2644,7 +2644,7 @@ void RadarDopplerClass::DrawSymbol(int type, float schweemLen, int age, int flas
                 display->Line(g_fRadarScale *  jamSizeW,  g_fRadarScale * jamSizeH, g_fRadarScale * -jamSizeW, g_fRadarScale * -jamSizeH);
             }
 
-            break;//Cobra This was missing!!!
+            break;//Cobra This was missing!
 
         case  Det:
             if ( not g_bRealisticAvionics)
@@ -2752,7 +2752,7 @@ void RadarDopplerClass::DrawCollisionSteering(SimObjectType* buggedTarget, float
     float   dx, dy, xPos = 0.0F;
     vector  collPoint;
 
-    if ( not buggedTarget or !buggedTarget->BaseData()->IsSim())
+    if ( not buggedTarget or not buggedTarget->BaseData()->IsSim())
         return;
 
     if (IsAADclt(AttackStr)) return;
@@ -3100,7 +3100,7 @@ int RadarDopplerClass::GetBuggedData(float *x, float *y, float *dir, float *spee
     //MI I haven't seen a rdrSy[0] state of Bug.. thus we only get it in STT.
     //if (lockedTargetData->rdrSy[0] >= Bug ||
     /*if(lockedTarget ||
-      (IsSet(STTingTarget) and !lockedTarget->BaseData()->OnGround())) */
+      (IsSet(STTingTarget) and not lockedTarget->BaseData()->OnGround())) */
     if (lockedTarget)//Cobra allow ground bug to show TODO work on symbology
     {
         *x = lockedTarget->BaseData()->XPos();
@@ -3130,7 +3130,7 @@ void RadarDopplerClass::AABottomRow()
 
         FackClass* mFaults = ((AircraftClass*)(SimDriver.GetPlayerAircraft()))->mFaults;
 
-        if (mFaults and !(mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::xmtr))
+        if (mFaults and  not (mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::xmtr))
         {
             float x, y;
             char *mode = "";
@@ -3144,7 +3144,7 @@ void RadarDopplerClass::AABottomRow()
             {
                 if (SimDriver.GetPlayerAircraft()->Sms->curWeapon and SimDriver.GetPlayerAircraft()->Sms->CurStationOK())
                     mode = "RDY";
-                else if (SimDriver.GetPlayerAircraft()->Sms->curWeapon and !SimDriver.GetPlayerAircraft()->Sms->CurStationOK())
+                else if (SimDriver.GetPlayerAircraft()->Sms->curWeapon and not SimDriver.GetPlayerAircraft()->Sms->CurStationOK())
                     mode = "MAL";
             }
 
@@ -3214,7 +3214,7 @@ void RadarDopplerClass::DrawNCTR(bool TWS)
 
     // NCTR strength > 2.5 for TWS, 1.9 for NCTR
     if (lockedTarget->BaseData()->IsSim()  and 
-        !((SimBaseClass*)lockedTarget->BaseData())->IsExploding()  and 
+         not ((SimBaseClass*)lockedTarget->BaseData())->IsExploding()  and 
         (( not TWS and ReturnStrength(lockedTarget) > 1.9f)
          or (TWS and ReturnStrength(lockedTarget) > 2.5f)))
     {
@@ -3378,7 +3378,7 @@ void RadarDopplerClass::DrawReference(VirtualDisplay* display)
         case FireControlComputer::AAGun:
             //case (FireControlComputer::Gun and FCC->GetSubMode() not_eq FireControlComputer::STRAF):
         {
-            if (lockedTarget and lockedTarget->BaseData() and !FCC->IsAGMasterMode())
+            if (lockedTarget and lockedTarget->BaseData() and not FCC->IsAGMasterMode())
             {
                 float   dx = 0.0F, dy = 0.0F, xPos = 0.0F, tgtx = 0.0F, yPos = 0.0F;
                 vector  collPoint;
@@ -3452,7 +3452,7 @@ void RadarDopplerClass::DrawReference(VirtualDisplay* display)
 
     if (g_bINS)
     {
-        if (SimDriver.GetPlayerAircraft() and !SimDriver.GetPlayerAircraft()->INSState(AircraftClass::INS_HSD_STUFF))
+        if (SimDriver.GetPlayerAircraft() and not SimDriver.GetPlayerAircraft()->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 

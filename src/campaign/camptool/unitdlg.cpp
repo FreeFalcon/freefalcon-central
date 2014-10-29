@@ -657,7 +657,7 @@ void DisplayNextInStack(HWND hDlg, Unit u)
 
     e = GetNextUnit(myit);
 
-    while (e and !foundone)
+    while (e and not foundone)
     {
         e->GetLocation(&tx, &ty);
 
@@ -728,7 +728,7 @@ void ShowElementInfo(HDC DC, HWND hDlg, Unit U, short Set, short i, int asagg)
     short Rost;
     char buffer[20];
 
-    if (( not asagg or !U->Father()) and Set == 1)
+    if (( not asagg or not U->Father()) and Set == 1)
     {
         if (U->GetDomain() == DOMAIN_AIR)
         {
@@ -810,9 +810,9 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     WORD  button;
     RECT rect;
     int aggmode, shifted = 0;
-    //! int Shift=0,
-    int None = 0; //!,Size=0; // Size determines which button to display
-    //! int Change=-1;
+    // not int Shift=0,
+    int None = 0; //not,Size=0; // Size determines which button to display
+    //not int Change=-1;
     int     i, j, ulx, uly;
     Unit E, U = GlobUnit;
     static  Unit  C1;
@@ -907,7 +907,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hDC, DC;
             PAINTSTRUCT ps, nps;
             HWND hCWnd;
-            //! int c=0;
+            //not int c=0;
 
             if ( not U or U->IsDead())
             {
@@ -995,7 +995,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     // Remove parent, if we're the last element
                     E = U->GetUnitParent();
 
-                    if (E and !E->GetFirstUnitElement())
+                    if (E and not E->GetFirstUnitElement())
                         vuDatabase->Remove(E);
 
                     GlobUnit = NULL;
@@ -1249,7 +1249,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                             InvalidateRect(hDlg, &rect, TRUE);
                         }
 
-                        if (message == WM_LBUTTONDBLCLK and !E and !U->Real())
+                        if (message == WM_LBUTTONDBLCLK and not E and not U->Real())
                         {
                             GridIndex x, y;
 
@@ -1680,7 +1680,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             flights = new FalconPrivateList(&AllAirFilter);
             flights->Register();
 
-            if ( not squadrons or !flights)
+            if ( not squadrons or not flights)
                 return FALSE;
 
             squadron = flight = NULL;

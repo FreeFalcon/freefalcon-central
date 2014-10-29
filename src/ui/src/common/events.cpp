@@ -573,7 +573,7 @@ void SaveEventList(FILE *ofp,unsigned char mask[],int DebriefType)
  {
  TrackFlag=FALSE;
  Done=FALSE;
- while(eventMessage and !Done)
+ while(eventMessage and not Done)
  {
  if(TrackID == FalconNullId)
  Done=TRUE;

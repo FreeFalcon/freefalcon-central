@@ -38,8 +38,8 @@ public:
 
     typedef enum // Retro 12Jan2004
     {
-        Left_Engine = 0, // do NOT change this, it큦 an array index !!!
-        Right_Engine = 1, // do NOT change this, it큦 an array index !!!
+        Left_Engine = 0, // do NOT change this, it큦 an array index !
+        Right_Engine = 1, // do NOT change this, it큦 an array index !
         Both_Engines // do with that whatever you want :p
     } Engine_t;
 

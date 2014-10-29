@@ -516,7 +516,7 @@ void mlrVoice::PreExec()
         if (sfx->flags bitand SFX_POS_INSIDE)     // don't play internal sound
             status = VSSTOP;
 
-        if (sfx->flags bitand SFX_FLAGS_VMS and !g_bSoundHearVMSExternal)
+        if (sfx->flags bitand SFX_FLAGS_VMS and  not g_bSoundHearVMSExternal)
             status = VSSTOP;
     }
 
@@ -537,12 +537,12 @@ void mlrVoice::PreExec()
     }
     else
     {
-        if (is3d and !IsThunder and owner->SPos->inMachShadow)
+        if (is3d and not IsThunder and owner->SPos->inMachShadow)
         {
             status = VSSTOP;
         }
 
-        if (is3d and !IsThunder and (sfx->flags bitand SFX_FLAGS_CONE))
+        if (is3d and not IsThunder and (sfx->flags bitand SFX_FLAGS_CONE))
         {
             Tpoint delta = { x - gVoiceManager.listenerPosition.x,
                              y - gVoiceManager.listenerPosition.y,
@@ -579,7 +579,7 @@ void mlrVoice::PreExec()
         }
     }
 
-    if (IsThunder or !is3d)
+    if (IsThunder or not is3d)
     {
         priority = 1;
     }
@@ -705,7 +705,7 @@ void mlrVoice::Exec()
         vvz  = owner->SPos->vel.z;
         */
 
-        if (g_bEnableDopplerSound and !IsThunder)
+        if (g_bEnableDopplerSound and not IsThunder)
         {
             float d2, xx, yy, zz, m;
 
@@ -913,7 +913,7 @@ void mlrVoice::Exec()
                 }
                 else
                 {
-                    if ((distsq > sfx->maxDistSq) and !IsThunder)
+                    if ((distsq > sfx->maxDistSq) and not IsThunder)
                     {
                         // MLR 12/2/2003 - Terminate sounds that can't be heard because they've traveled to far.
                         // the sound has outlasted it's lifespan and could not be heard anymore.

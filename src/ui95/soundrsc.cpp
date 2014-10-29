@@ -4,7 +4,7 @@
 
 void *FLAT_RSC::GetData()
 {
-    if ( not Owner or !Header)
+    if ( not Owner or not Header)
         return(NULL);
 
     return(Owner->GetData() + Header->offset);

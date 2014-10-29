@@ -73,7 +73,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
     }
 
     // prevent handling messages if the graphics isn't running!
-    if (autodisp or !OTWDriver.IsActive())
+    if (autodisp or not OTWDriver.IsActive())
     {
         return FALSE;
     }

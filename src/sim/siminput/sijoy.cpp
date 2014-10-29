@@ -78,7 +78,7 @@ int g_nThrottleID = DIJOFS_Z; // OW
 #define AUTOCENTERFUN // this should bring back autocentering with the FFB-button in the advanced controls tab disabled
 #define NO_CENTER_FOR_MY_AXIS_PLEASE // Retro 9Jan2004 - what´s the point ? Doesn´t work too good anyways BTW (has offset)
 #define USE_IDLE_CUTOFF // Retro 2Feb2004 - with this enable we use analog[].cutoff as well as the ABDetent
-#define SYMMETRIC_THROTTLEDETENTS // Retro 2Feb2004 - ABDetent and cuttof var are set for BOTH throttles by the LEFT throttle !!
+#define SYMMETRIC_THROTTLEDETENTS // Retro 2Feb2004 - ABDetent and cuttof var are set for BOTH throttles by the LEFT throttle 
 
 /*****************************************************************************/
 //
@@ -406,7 +406,7 @@ void GetJoystickInput()
 
     /*******************************************************************************/
     // Copy and process throttle data (if available)
-    // engrVal goes from 0 to 1.5 !!!
+    // engrVal goes from 0 to 1.5 !
     /*******************************************************************************/
     if (IO.AnalogIsUsed(AXIS_THROTTLE))
     {
@@ -473,7 +473,7 @@ void GetJoystickInput()
 
     /*******************************************************************************/
     // Copy and process throttle2 data (if available)
-    // engrVal goes from 0 to 1.5 !!!
+    // engrVal goes from 0 to 1.5 !
     /*******************************************************************************/
     if (IO.AnalogIsUsed(AXIS_THROTTLE2))
     {
@@ -1065,7 +1065,7 @@ BOOL FAR PASCAL EnumDeviceObjects(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef
 // possible axis on a joystick at once.
 //
 // Of course, should the dataformat change (to joystick2) then we´d have to
-// change a bit here (and in the rest of the code !!)
+// change a bit here (and in the rest of the code )
 /*****************************************************************************/
 void CheckAxisOnDevice(LPDIRECTINPUTDEVICE8 pdev, const char* DevName)
 {
@@ -1191,7 +1191,7 @@ void CheckForMouseAxis(void)
 // autocenter goes OFF (we do it ourselves then), else we turn it back ON so
 // that at least centering spring forces are there, else it feels like ass.
 //
-// I´m ASSuming that this IS a FFB stick !!! You can´t check this with
+// I´m ASSuming that this IS a FFB stick ! You can´t check this with
 // HasForceFeedback however (at least not here) !
 /*****************************************************************************/
 int ActivateAutoCenter(const bool OnOff, const int theJoyIndex)
@@ -1240,7 +1240,7 @@ int ActivateAutoCenter(const bool OnOff, const int theJoyIndex)
 // FFB is only supported for the primary flight device (the one with the PITCH
 // and BANK axis)
 //
-// theJoyIndex is the index, with SIM_JOYSTICK1 deducted  !!!
+// theJoyIndex is the index, with SIM_JOYSTICK1 deducted  !
 /*****************************************************************************/
 int CheckForForceFeedback(const int theJoyIndex)
 {
@@ -1434,7 +1434,7 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
         gTotalJoy++;
 
         /*****************************************************************************/
-        // we've used up our whole array, sorry no more!!
+        // we've used up our whole array, sorry no more
         /*****************************************************************************/
         if ((SIM_JOYSTICK1 + gTotalJoy) >= SIM_NUMDEVICES)
             return DIENUM_STOP;
@@ -1874,7 +1874,7 @@ int lastStoppedEffect = -1;
 /*****************************************************************************/
 void JoystickStopEffect(int effectNum)
 {
-    if ( not hasForceFeedback or effectNum >= gNumEffectsLoaded or !gForceFeedbackEffect or !gForceFeedbackEffect[effectNum])
+    if ( not hasForceFeedback or effectNum >= gNumEffectsLoaded or not gForceFeedbackEffect or not gForceFeedbackEffect[effectNum])
         return;
 
     ShiAssert(FALSE == F4IsBadReadPtr(gForceFeedbackEffect[effectNum], sizeof * gForceFeedbackEffect[effectNum]));
@@ -1901,7 +1901,7 @@ int JoystickPlayEffect(int effectNum, int data)
     DIEFFECT        diEffect;
     LONG            rglDirections[2] = { 0, 0 };
 
-    if ( not hasForceFeedback or effectNum >= gNumEffectsLoaded or !gForceFeedbackEffect or !gForceFeedbackEffect[effectNum])
+    if ( not hasForceFeedback or effectNum >= gNumEffectsLoaded or not gForceFeedbackEffect or not gForceFeedbackEffect[effectNum])
         return FALSE;
 
     if (PlayerOptions.GetFFB() == false) // Retro 27Dec2003 - returning false here.. dunno if this is too clever though

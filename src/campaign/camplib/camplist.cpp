@@ -48,18 +48,18 @@ VU_BOOL UnitFilter::Test(VuEntity *e)
     if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
-    if (parent and !((Unit)e)->Parent())
+    if (parent and  not ((Unit)e)->Parent())
         return FALSE;
 
-    if (real and !Real((e->EntityType())->classInfo_[VU_TYPE]))
+    if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
         return FALSE;
 
-    if (host and !e->IsLocal())
+    if (host and not e->IsLocal())
         return FALSE;
 
     if ( not inactive and ((Unit)e)->Inactive())
         return FALSE;
-    else if (inactive and !((Unit)e)->Inactive())
+    else if (inactive and  not ((Unit)e)->Inactive())
         return FALSE;
 
     return TRUE;
@@ -70,18 +70,18 @@ VU_BOOL UnitFilter::RemoveTest(VuEntity *e)
     if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
-    if (parent and !((Unit)e)->Parent())
+    if (parent and  not ((Unit)e)->Parent())
         return FALSE;
 
-    if (real and !Real((e->EntityType())->classInfo_[VU_TYPE]))
+    if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
         return FALSE;
 
-    if (host and !e->IsLocal())
+    if (host and not e->IsLocal())
         return FALSE;
 
     if ( not inactive and ((Unit)e)->Inactive())
         return FALSE;
-    else if (inactive and !((Unit)e)->Inactive())
+    else if (inactive and  not ((Unit)e)->Inactive())
         return FALSE;
 
     return TRUE;
@@ -102,13 +102,13 @@ VU_BOOL AirUnitFilter::Test(VuEntity *e)
     if (((Unit)e)->GetDomain() not_eq DOMAIN_AIR)
         return FALSE;
 
-    if (parent and !((Unit)e)->Parent())
+    if (parent and  not ((Unit)e)->Parent())
         return FALSE;
 
-    if (real and !Real((e->EntityType())->classInfo_[VU_TYPE]))
+    if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
         return FALSE;
 
-    if (host and !e->IsLocal())
+    if (host and not e->IsLocal())
         return FALSE;
 
     if (((Unit)e)->Inactive())
@@ -125,13 +125,13 @@ VU_BOOL AirUnitFilter::RemoveTest(VuEntity *e)
     if (((Unit)e)->GetDomain() not_eq DOMAIN_AIR)
         return FALSE;
 
-    if (parent and !((Unit)e)->Parent())
+    if (parent and  not ((Unit)e)->Parent())
         return FALSE;
 
-    if (real and !Real((e->EntityType())->classInfo_[VU_TYPE]))
+    if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
         return FALSE;
 
-    if (host and !e->IsLocal())
+    if (host and not e->IsLocal())
         return FALSE;
 
     if (((Unit)e)->Inactive())
@@ -155,13 +155,13 @@ VU_BOOL GroundUnitFilter::Test(VuEntity *e)
     if (((Unit)e)->GetDomain() not_eq DOMAIN_LAND)
         return FALSE;
 
-    if (parent and !((Unit)e)->Parent())
+    if (parent and  not ((Unit)e)->Parent())
         return FALSE;
 
-    if (real and !Real((e->EntityType())->classInfo_[VU_TYPE]))
+    if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
         return FALSE;
 
-    if (host and !e->IsLocal())
+    if (host and not e->IsLocal())
         return FALSE;
 
     if (((Unit)e)->Inactive())
@@ -178,13 +178,13 @@ VU_BOOL GroundUnitFilter::RemoveTest(VuEntity *e)
     if (((Unit)e)->GetDomain() not_eq DOMAIN_LAND)
         return FALSE;
 
-    if (parent and !((Unit)e)->Parent())
+    if (parent and  not ((Unit)e)->Parent())
         return FALSE;
 
-    if (real and !Real((e->EntityType())->classInfo_[VU_TYPE]))
+    if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
         return FALSE;
 
-    if (host and !e->IsLocal())
+    if (host and not e->IsLocal())
         return FALSE;
 
     if (((Unit)e)->Inactive())
@@ -208,13 +208,13 @@ VU_BOOL NavalUnitFilter::Test(VuEntity *e)
     if (((Unit)e)->GetDomain() not_eq DOMAIN_SEA)
         return FALSE;
 
-    if (parent and !((Unit)e)->Parent())
+    if (parent and  not ((Unit)e)->Parent())
         return FALSE;
 
-    if (real and !Real((e->EntityType())->classInfo_[VU_TYPE]))
+    if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
         return FALSE;
 
-    if (host and !e->IsLocal())
+    if (host and not e->IsLocal())
         return FALSE;
 
     if (((Unit)e)->Inactive())
@@ -231,13 +231,13 @@ VU_BOOL NavalUnitFilter::RemoveTest(VuEntity *e)
     if (((Unit)e)->GetDomain() not_eq DOMAIN_SEA)
         return FALSE;
 
-    if (parent and !((Unit)e)->Parent())
+    if (parent and  not ((Unit)e)->Parent())
         return FALSE;
 
-    if (real and !Real((e->EntityType())->classInfo_[VU_TYPE]))
+    if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
         return FALSE;
 
-    if (host and !e->IsLocal())
+    if (host and not e->IsLocal())
         return FALSE;
 
     if (((Unit)e)->Inactive())
@@ -332,7 +332,7 @@ VU_BOOL ObjFilter::Test(VuEntity *e)
     if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
         return FALSE;
 
-    if (host and !e->IsLocal())
+    if (host and not e->IsLocal())
         return FALSE;
 
     return TRUE;
@@ -343,7 +343,7 @@ VU_BOOL ObjFilter::RemoveTest(VuEntity *e)
     if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
         return FALSE;
 
-    if (host and !e->IsLocal())
+    if (host and not e->IsLocal())
         return FALSE;
 
     return TRUE;
@@ -449,7 +449,7 @@ VuFilteredList* InactiveList = NULL; // Inactive units (reinforcements)
 // Maintained Collections
 // ==============================
 
-#if !USE_VU_COLL_FOR_CAMPAIGN
+#if not USE_VU_COLL_FOR_CAMPAIGN
 CampBaseMap::CampBaseMap(const string &name) : mutex(F4CreateCriticalSection(name.c_str())) {}
 CampBaseMap::~CampBaseMap()
 {
@@ -876,7 +876,7 @@ int RebuildFrontList(int do_barcaps, int incremental)
                     {
                         front = n->GetOwner();
                     }
-                    else if (isolated and !GetRoE(n->GetTeam(), o->GetTeam(), ROE_GROUND_CAPTURE))
+                    else if (isolated and not GetRoE(n->GetTeam(), o->GetTeam(), ROE_GROUND_CAPTURE))
                     {
                         isolated = 0;
                     }
@@ -889,7 +889,7 @@ int RebuildFrontList(int do_barcaps, int incremental)
                 }
             }
 
-            if (front and isolated and !o->IsSecondary())
+            if (front and isolated and not o->IsSecondary())
             {
                 // This objective has been cut off
                 Unit u;
@@ -935,7 +935,7 @@ int RebuildFrontList(int do_barcaps, int incremental)
                     o->ClearObjFlags(O_SECONDLINE | O_THIRDLINE);
                 }
 
-                if ( not incremental or !o->IsFrontline())
+                if ( not incremental or not o->IsFrontline())
                 {
                     FrontList->ForcedInsert(o);
                 }
@@ -1020,7 +1020,7 @@ void RebuildFLOTList(void)
                 data = PackXY(fx, fy);
                 found = 0;
 
-                while (lp and !found)
+                while (lp and not found)
                 {
                     UnpackXY(lp->GetUserData(), &x, &y);
 
@@ -1101,7 +1101,7 @@ void MarkObjectives(void)
 
                 if (n)
                 {
-                    if ( not n->IsFrontline() and !n->IsSecondline())
+                    if ( not n->IsFrontline() and not n->IsSecondline())
                     {
                         n->SetObjFlags(O_THIRDLINE);
                     }
@@ -1206,7 +1206,7 @@ int RebuildEmitterList()
                     {
                         CampEntity next = (CampEntity)airit.GetNext();
 
-                        if (a->GetTeam() == team and !a->IsObjective())
+                        if (a->GetTeam() == team and not a->IsObjective())
                         {
                             a->GetLocation(&ex, &ey);
                             d =  FloatToInt32(Distance(x, y, ex, ey));
@@ -1230,7 +1230,7 @@ int RebuildEmitterList()
                     // if (e->GetAproxHitChance(LowAir,0) > 0)
                     AirDefenseList->ForcedInsert(e);
 
-                if ( not change and ((emit and !e->IsEmitting()) or ( not emit and e->IsEmitting())))
+                if ( not change and ((emit and not e->IsEmitting()) or ( not emit and e->IsEmitting())))
                     change = 1;
 
                 e->SetEmitting(emit);
@@ -1255,11 +1255,11 @@ void StandardRebuild(void)
     RebuildFrontList(TRUE, FALSE);
     RebuildEmitterList();
 
-    if ( not build or !TheCampaign.SamMapData)
+    if ( not build or not TheCampaign.SamMapData)
     {
         TheCampaign.MakeCampMap(MAP_SAMCOVERAGE);
     }
-    else if (build == 1 or !TheCampaign.RadarMapData)
+    else if (build == 1 or not TheCampaign.RadarMapData)
     {
         TheCampaign.MakeCampMap(MAP_RADARCOVERAGE);
     }

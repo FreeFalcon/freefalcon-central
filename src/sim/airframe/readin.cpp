@@ -1385,8 +1385,8 @@ EngineData *AirframeEngineRead(SimlibFileClass* inputFile)
     // JB 010706
     engineData->hasAB = false;
 
-    for (alt = 0; alt < numAlt and !engineData->hasAB; alt++)
-        for (mach = 0; mach < numMach and !engineData->hasAB; mach++)
+    for (alt = 0; alt < numAlt and not engineData->hasAB; alt++)
+        for (mach = 0; mach < numMach and not engineData->hasAB; mach++)
             if (engineData->thrust[1][alt * numMach + mach] not_eq engineData->thrust[2][alt * numMach + mach])
                 engineData->hasAB = true;
 

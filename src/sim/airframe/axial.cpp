@@ -107,7 +107,7 @@ void AirframeClass::Axial(float dt)
         {
             // closing brake
             if (dbrake > 0.90f * dBrakeMax and dbrake < dBrakeMax  and 
-                !platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeStart)
+                 not platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeStart)
 
                ) // JB 010425
             {
@@ -115,7 +115,7 @@ void AirframeClass::Axial(float dt)
             }
 
             if (dbrake < 0.10f and dbrake > 0.0f  and 
-                !platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeEnd)
+                 not platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeEnd)
 
                ) // JB 010425
             {
@@ -127,14 +127,14 @@ void AirframeClass::Axial(float dt)
         {
             // opening brake
             if (dbrake < 0.10f and dbrake > 0.0f  and 
-                !platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeStart)
+                 not platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeStart)
                ) // JB 010425
             {
                 platform->SoundPos.Sfx(auxaeroData->sndSpdBrakeStart);
             }
 
             if (dbrake > 0.90f * dBrakeMax and dbrake < dBrakeMax   and 
-                !platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeEnd)
+                 not platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeEnd)
                ) // JB 010425
             {
                 platform->SoundPos.Sfx(auxaeroData->sndSpdBrakeEnd);
@@ -152,7 +152,7 @@ void AirframeClass::Axial(float dt)
         }
     }
 
-    if (gearHandle not_eq 0 and !IsSet(GearBroken) and IsSet(InAir))
+    if (gearHandle not_eq 0 and not IsSet(GearBroken) and IsSet(InAir))
     {
         gearPos += 0.3F * dt * gearHandle;
         gearPos = min(max(gearPos, 0.0F), 1.0F);
@@ -162,14 +162,14 @@ void AirframeClass::Axial(float dt)
         {
             // closing brake
             if (gearPos > 0.90f and gearPos < 1.0f  and 
-                !platform->SoundPos.IsPlaying(auxaeroData->sndGearCloseStart)
+                 not platform->SoundPos.IsPlaying(auxaeroData->sndGearCloseStart)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndGearCloseStart);
             }
 
             if (gearPos < 0.10f and gearPos > 0.0f  and 
-                !platform->SoundPos.IsPlaying(auxaeroData->sndGearCloseEnd)
+                 not platform->SoundPos.IsPlaying(auxaeroData->sndGearCloseEnd)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndGearCloseEnd);
@@ -180,14 +180,14 @@ void AirframeClass::Axial(float dt)
         {
             // opening brake
             if (gearPos < 0.10f and gearPos > 0.0f  and 
-                !platform->SoundPos.IsPlaying(auxaeroData->sndGearOpenStart)
+                 not platform->SoundPos.IsPlaying(auxaeroData->sndGearOpenStart)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndGearOpenStart);
             }
 
             if (gearPos > 0.90f and gearPos < 1.0f  and 
-                !platform->SoundPos.IsPlaying(auxaeroData->sndGearOpenEnd)
+                 not platform->SoundPos.IsPlaying(auxaeroData->sndGearOpenEnd)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndGearOpenEnd);
@@ -209,14 +209,14 @@ void AirframeClass::Axial(float dt)
         {
             // closing hook
             if (hookPos > 0.90f and hookPos < 1.0f  and 
-                !platform->SoundPos.IsPlaying(auxaeroData->sndHookEnd)
+                 not platform->SoundPos.IsPlaying(auxaeroData->sndHookEnd)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndHookEnd);
             }
 
             if (hookPos < 0.10f and hookPos > 0.0f  and 
-                !platform->SoundPos.IsPlaying(auxaeroData->sndHookStart)
+                 not platform->SoundPos.IsPlaying(auxaeroData->sndHookStart)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndHookStart);
@@ -226,14 +226,14 @@ void AirframeClass::Axial(float dt)
         {
             // opening hook
             if (hookPos < 0.10f and hookPos > 0.0f  and 
-                !platform->SoundPos.IsPlaying(auxaeroData->sndHookStart)
+                 not platform->SoundPos.IsPlaying(auxaeroData->sndHookStart)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndHookStart);
             }
 
             if (hookPos > 0.90f and hookPos < 1.0f  and 
-                !platform->SoundPos.IsPlaying(auxaeroData->sndHookEnd)
+                 not platform->SoundPos.IsPlaying(auxaeroData->sndHookEnd)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndHookEnd);
@@ -247,7 +247,7 @@ void AirframeClass::Axial(float dt)
     // JB carrier end
 
     //DSP hack until we can get the digi's to stay slow until the gear come up
-    if ( not platform->IsSetFalcFlag(FEC_INVULNERABLE) and gearPos > 0.1F and  !IsSet(GearBroken) and !IsSet(IsDigital))
+    if ( not platform->IsSetFalcFlag(FEC_INVULNERABLE) and gearPos > 0.1F and   not IsSet(GearBroken) and not IsSet(IsDigital))
     {
         if (gearPos > 0.9F)
             maxQbar = 350.0F;

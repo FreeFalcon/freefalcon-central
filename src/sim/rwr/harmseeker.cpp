@@ -48,7 +48,7 @@ SimObjectType* HarmSeekerClass::Exec(SimObjectType* missileTarget)
     FCC = ((SimVehicleClass*)theParent)->GetFCC();
     HTS = (HarmTargetingPod*)FindSensor(theParent, SensorClass::HTS);
 
-    if (HTS and ((MissileClass*)platform)->launchState not_eq MissileClass::PreLaunch and !launched)
+    if (HTS and ((MissileClass*)platform)->launchState not_eq MissileClass::PreLaunch and not launched)
     {
         launched = true;
         launchedInPOS = (HTS->GetPreHandoffMode() == HarmTargetingPod::Pos);

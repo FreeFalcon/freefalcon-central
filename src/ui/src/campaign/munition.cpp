@@ -367,7 +367,7 @@ BOOL GetJRackAndWeapon(VehicleClassDataType* vc, Falcon4EntityClassType *classPt
 
     bitflag = 1 << hardpoint;
 
-    if ( not vc or !classPtr or !weapClassPtr)
+    if ( not vc or not classPtr or not weapClassPtr)
         return(FALSE);
 
     if ( not (vc->VisibleFlags bitand bitflag))
@@ -540,7 +540,7 @@ BOOL GetRackAndWeapon(VehicleClassDataType* vc, short VehID, short WeaponIndex, 
 
     bitflag = 1 << hardpoint;
 
-    if ( not vc or !classPtr or !weapClassPtr)
+    if ( not vc or not classPtr or not weapClassPtr)
         return(FALSE);
 
     if ( not (vc->VisibleFlags bitand bitflag))
@@ -1947,7 +1947,7 @@ void InternalArmPlaneCB(long ID, short hittype, C_Base *control)
     if (count > control->GetUserNumber(1))
         count = control->GetUserNumber(1);
 
-    if (count and !TotalAvailable(static_cast<short>(weaponID)))
+    if (count and not TotalAvailable(static_cast<short>(weaponID)))
         count--;
 
     if ( not count and count == startcount) //None available
@@ -1991,7 +1991,7 @@ void InternalArmPlaneCB(long ID, short hittype, C_Base *control)
         {
             gCurStores[i].WeaponID[hp] = static_cast<short>(weaponID);
 
-            if (count and !TotalAvailable(static_cast<short>(weaponID)))
+            if (count and not TotalAvailable(static_cast<short>(weaponID)))
                 count--;
 
             gCurStores[i].WeaponCount[hp] = static_cast<uchar>(count);
@@ -2022,7 +2022,7 @@ void ArmPlaneCB(long ID, short hittype, C_Base *control)
     if (gStores)
         store = gStores->Find(weaponID);
 
-    if (store == NULL or !control)
+    if (store == NULL or not control)
         return;
 
     count = control->GetUserNumber(0);
@@ -2079,7 +2079,7 @@ void ArmPlaneCB(long ID, short hittype, C_Base *control)
             int ok;
             gCurStores[i].WeaponID[hp] = static_cast<short>(weaponID);
 
-            if (count and !TotalAvailable(static_cast<short>(weaponID)))
+            if (count and not TotalAvailable(static_cast<short>(weaponID)))
                 count--;
 
             gCurStores[i].WeaponCount[hp] = static_cast<uchar>(count);
@@ -2156,7 +2156,7 @@ void SetCurrentLoadout()
 
                     cur->Control_->SetUserNumber(0, 0);
 
-                    if (gCurStores[FirstPlane].WeaponCount[j] and !Diff)
+                    if (gCurStores[FirstPlane].WeaponCount[j] and not Diff)
                         cur->Control_->SetState(C_STATE_DISABLED);
                     else
                         cur->Control_->SetState(static_cast<short>(Diff));
@@ -2649,7 +2649,7 @@ void MakeStoresList(C_Window *win, long client)
                                             btn->SetImage(C_STATE_5, LAU2L_DIFF);
                                             btn->SetImage(C_STATE_DISABLED, LAU2L_DIS);
                                         }
-                                        else if (i == (HardPoints / 2) and !(HardPoints bitand 1))
+                                        else if (i == (HardPoints / 2) and  not (HardPoints bitand 1))
                                         {
                                             btn->SetBackImage(LAU2C_EMPTY);
                                             btn->SetImage(C_STATE_0, LAU2C_EMPTY);
@@ -2713,7 +2713,7 @@ void MakeStoresList(C_Window *win, long client)
                                             btn->SetImage(C_STATE_4, LAU2L_FULL);
                                             btn->SetImage(C_STATE_5, LAU2L_DIFF);
                                         }
-                                        else if (i == (HardPoints / 2) and !(HardPoints bitand 1))
+                                        else if (i == (HardPoints / 2) and  not (HardPoints bitand 1))
                                         {
                                             btn->SetImage(C_STATE_4, LAU2C_FULL);
                                             btn->SetImage(C_STATE_5, LAU2C_DIFF);
@@ -2827,7 +2827,7 @@ void MakeStoresList(C_Window *win, long client)
                                 // JPO - from default, to 0. Move default up to 5/6 case
                                 // this will only handle the no weapon case now I think,
                                 // which may not even exist.
-                            case 0: //!!marked
+                            case 0: //marked
                                 btn->SetBackImage(POD_EMPTY);
                                 btn->SetImage(C_STATE_0, POD_EMPTY);
                                 btn->SetImage(C_STATE_1, POD_EMPTY_DIFF); // should be diff

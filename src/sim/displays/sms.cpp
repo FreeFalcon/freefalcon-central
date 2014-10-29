@@ -394,7 +394,7 @@ void SMSBaseClass::LaunchWeapon(void)
     VehicleClassDataType* vc;
     int slotId;
 
-    if ( not ownship->drawPointer or !tmpTargetPtr)
+    if ( not ownship->drawPointer or not tmpTargetPtr)
     {
         return;
     }
@@ -570,11 +570,11 @@ void SMSBaseClass::SelectBestWeapon(uchar *dam, int mt, int range_km, int guns_o
     {
         if (hardPoint[i] and hardPoint[i]->weaponId and hardPoint[i]->weaponCount)
         {
-            if (range_km >= 0 and !((Unit)(ownship->GetCampaignObject()))->CanShootWeapon(hardPoint[i]->weaponId))
+            if (range_km >= 0 and  not ((Unit)(ownship->GetCampaignObject()))->CanShootWeapon(hardPoint[i]->weaponId))
             {
                 str = 0;
             } //JPO check
-            else if (guns_only and hardPoint[i]->weaponPointer and !hardPoint[i]->weaponPointer->IsGun())
+            else if (guns_only and hardPoint[i]->weaponPointer and not hardPoint[i]->weaponPointer->IsGun())
             {
                 str = 0;
             }
@@ -709,7 +709,7 @@ void SMSBaseClass::AddWeaponGraphics(void)
     DrawableBSP *drawPtr = (DrawableBSP*) ownship->drawPointer;
     VehicleClassDataType* vc;
 
-    if ( not hardPoint or !drawPtr)
+    if ( not hardPoint or not drawPtr)
         return;
 
     vc = GetVehicleClassData(ownship->Type() - VU_LAST_ENTITY_TYPE);
@@ -742,7 +742,7 @@ void SMSBaseClass::FreeWeaponGraphics(void)
     SimWeaponClass *weaponPtr;
     DrawableBSP *drawPtr = (DrawableBSP*) ownship->drawPointer;
 
-    if ( not hardPoint or !drawPtr)
+    if ( not hardPoint or not drawPtr)
         return;
 
     for (i = 0; i < numHardpoints; i++)
@@ -1618,7 +1618,7 @@ void SMSClass::Exec(void)
     RunRockets();
 
     // 2002-01-27 ADDED BY S.G. Reset curRippleCount if the current weapon is NOT a bomb...
-    if (curRippleCount and curWeapon and !curWeapon->IsBomb())
+    if (curRippleCount and curWeapon and not curWeapon->IsBomb())
     {
         curRippleCount = 0;
         nextDrop = 0;
@@ -1778,7 +1778,7 @@ void SMSClass::Exec(void)
 
 void SMSClass::SetPlayerSMS(int flag)
 {
-    if (flag and !drawable)
+    if (flag and not drawable)
     {
         drawable = new SmsDrawable(this);
     }
@@ -1894,7 +1894,7 @@ void SMSClass::EmergencyJettison(void)
     }
     else
     {
-        if (ownship->OnGround() and !GndJett)
+        if (ownship->OnGround() and not GndJett)
             return;
     }
 
@@ -1902,7 +1902,7 @@ void SMSClass::EmergencyJettison(void)
     {
         // OW Jettison fix
         /*
-         if( !(((AircraftClass *)ownship)->IsF16()  and 
+         if(  not (((AircraftClass *)ownship)->IsF16()  and 
                  (curStation == 1 or curStation == 9 or hardPoint[curStation]->GetWeaponClass() == wcECM))  and 
                  hardPoint[curStation]->GetRack())
         */
@@ -1937,7 +1937,7 @@ void SMSClass::EmergencyJettison(void)
                 }
                 else
                 {
-                    if (hardPoint[curStation] and !(hardPoint[curStation]->GetWeaponClass() == wcECM ||
+                    if (hardPoint[curStation] and  not (hardPoint[curStation]->GetWeaponClass() == wcECM ||
                                                    hardPoint[curStation]->GetWeaponClass() == wcAimWpn or hardPoint[curStation]->GetWeaponClass() == wcHARMWpn))
                     {
                         ReleaseCurWeapon(-1);
@@ -2031,7 +2031,7 @@ void SMSClass::ResetCurrentWeapon(void)
         curWeapon = hardPoint[curHardpoint]->weaponPointer;
 
         // sfr: test
-        if (curWeapon and !curWeapon->IsMissile())
+        if (curWeapon and not curWeapon->IsMissile())
         {
             printf("bug bug bug");
         }
@@ -2071,7 +2071,7 @@ void SMSClass::SetCurrentWeapon(int station, SimWeaponClass *weapon)
         {
             weapon = hardPoint[station]->weaponPointer.get();
 
-            while (weapon and !weapon->IsUseable()) // MLR 6/4/2004 -
+            while (weapon and not weapon->IsUseable()) // MLR 6/4/2004 -
             {
                 weapon = weapon->GetNextOnRail();
             }
@@ -2079,11 +2079,11 @@ void SMSClass::SetCurrentWeapon(int station, SimWeaponClass *weapon)
 
         curHardpoint   = station;
 
-        // COBRA - RED - A NEW CORRECTION, RESET WEAPON PARAMETERS IF NO WEAPON...!!!!
+        // COBRA - RED - A NEW CORRECTION, RESET WEAPON PARAMETERS IF NO WEAPON...
         if (weapon)
         {
             // sfr: test
-            if (weapon and !weapon->IsWeapon())
+            if (weapon and not weapon->IsWeapon())
             {
                 printf("bug bug bug");
             }
@@ -2192,7 +2192,7 @@ int SMSClass::WeaponStep(int symFlag)
                     SimWeaponClass *weap = hardPoint[nextHp]->weaponPointer.get();
 
                     // skip unuseable weapons
-                    while (weap and !weap->IsUseable())
+                    while (weap and not weap->IsUseable())
                     {
                         weap = weap->GetNextOnRail();
                     }
@@ -2611,7 +2611,7 @@ int SMSClass::FindWeaponClass(WeaponClass weaponDesired, int needWeapon)
                 {
                     weapPtr = hardPoint[stationUnderTest]->weaponPointer.get();
 
-                    while (weapPtr and !weapPtr->IsUseable()) // skip unusable stores
+                    while (weapPtr and not weapPtr->IsUseable()) // skip unusable stores
                     {
                         weapPtr = weapPtr->GetNextOnRail();
                     }
@@ -2666,7 +2666,7 @@ int SMSClass::FindWeaponType(WeaponType weaponDesired)
             weap = hardPoint[newHp]->weaponPointer.get();
 
             // find a useable weapon
-            while (weap and !weap->IsUseable())
+            while (weap and not weap->IsUseable())
             {
                 weap = weap->GetNextOnRail();
             }
@@ -3417,7 +3417,7 @@ int SMSClass::JettisonStation(int stationNum, JettisonMode mode)
     }
     else
     {
-        if (ownship->IsLocal() and !ownship->OnGround())
+        if (ownship->IsLocal() and not ownship->OnGround())
         {
             // RV - Biker - Only allow jettison when in plane flight
             if (mode not_eq RippedOff)
@@ -3593,7 +3593,7 @@ int SMSClass::JettisonStation(int stationNum, JettisonMode mode)
             }
         }
 
-        //if(ownship and !rippedOff)  // MLR 3/2/2004 - never used ???
+        //if(ownship and not rippedOff)  // MLR 3/2/2004 - never used ???
         // ownship->SoundPos.Sfx( SFX_JETTISON, 0, 1, 0, pos.x, pos.y, pos.z);
 
 
@@ -3705,7 +3705,7 @@ int SMSClass::JettisonStation(int stationNum, JettisonMode mode)
          tempPtr = weapPtr->GetNextOnRail();
          RemoveStore(stationNum, hardPoint[stationNum]->weaponId);
          // 2002-02-08 ADDED BY S.G. Before we delete it, we must check if the drawable->thePrevMissile is pointing to it but NOT referenced so we can clear it as well otherwise it will CTD in UpdateGroundSpot
-         if (drawable and drawable->thePrevMissile and drawable->thePrevMissile == weapPtr and !drawable->thePrevMissileIsRef)
+         if (drawable and drawable->thePrevMissile and drawable->thePrevMissile == weapPtr and not drawable->thePrevMissileIsRef)
          drawable->thePrevMissile = NULL; // Clear it as well
          delete weapPtr;
          // vuAntiDB->Remove(weapPtr);
@@ -3812,7 +3812,7 @@ void SMSClass::AddStore(int station, int storeId, int visible)
 {
     float x, y, z;
 
-    if (ownship->IsAirplane() and !UnlimitedAmmo())
+    if (ownship->IsAirplane() and not UnlimitedAmmo())
     {
         ShiAssert(((AircraftClass *)ownship)->af);
 
@@ -3912,7 +3912,7 @@ void SMSClass::ChooseLimiterMode(int hardpoint)
     storespeed = 800.0f;//me123
 
     if (ownship->IsAirplane() and ((AircraftClass *)ownship)->af  and 
-        !((AircraftClass *)ownship)->af->IsSet(AirframeClass::IsDigital))
+         not ((AircraftClass *)ownship)->af->IsSet(AirframeClass::IsDigital))
     {
         gLimit = ((AircraftClass *)ownship)->af->MaxGs();
 
@@ -4027,7 +4027,7 @@ void SMSClass::RemoveStore(int station, int storeId)
     //ShiAssert(hardPoint[station]->weaponCount > 0);
     if (hardPoint[station]->weaponCount >= 0)
     {
-        if (ownship->IsAirplane() and !UnlimitedAmmo())
+        if (ownship->IsAirplane() and not UnlimitedAmmo())
         {
             vc = GetVehicleClassData(ownship->Type() - VU_LAST_ENTITY_TYPE);
             ShiAssert(((AircraftClass *)ownship)->af);
@@ -4130,7 +4130,7 @@ void SMSBaseClass::StepMavSubMode(bool init)
     RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
     FireControlComputer *FCC = ownship->GetFCC();
 
-    if ( not theRadar or !FCC)
+    if ( not theRadar or not FCC)
         return;
 
     if ( not FCC->PlayerFCC())
@@ -4292,7 +4292,7 @@ void SMSClass::StepWeaponByID(void)
 
     found = 0;
 
-    for (i = curHardpoint + 1; i not_eq curHardpoint and !found; i++)
+    for (i = curHardpoint + 1; i not_eq curHardpoint and not found; i++)
     {
         i = i % numHardpoints;
 
@@ -4370,7 +4370,7 @@ void SMSClass::StepWeaponByID(void)
     // 2002-02-08 ADDED BY S.G.
     // From SMSClass::WeaponStep, other it will CTD.
     // This will fix the CTD but not the original cause which is why curHardpoint is -1.
-    if (curHardpoint < 0  or looped or !(playerAC and playerAC->FCC))
+    if (curHardpoint < 0  or looped or  not (playerAC and playerAC->FCC))
     {
         return; // Do nothing if no station is currently selected
     }
@@ -4481,7 +4481,7 @@ void SMSClass::StepWeaponByID(void)
             {
                 SimWeaponClass *weap = hardPoint[newHp]->weaponPointer.get();
 
-                while (weap and !weap->IsUseable())
+                while (weap and not weap->IsUseable())
                 {
                     // MLR 6/3/2004 - Skip unuseable weapons (LAUs)
                     weap = weap->GetNextOnRail();

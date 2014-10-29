@@ -135,7 +135,7 @@ void ObjectLOD::SetupTable(int file, char *basename)
     strcpy(filename, basename);
     strcat(filename, ".DXL");
 
-    if ( not ObjectLodMap.Open(filename, FALSE, !g_bUseMappedFiles))
+    if ( not ObjectLodMap.Open(filename, FALSE,  not g_bUseMappedFiles))
     {
         char message[256];
         sprintf(message, "Failed to open object LOD database %s", filename);
@@ -281,7 +281,7 @@ BOOL ObjectLOD::Fetch(void)
 
     LoadIn = Temp;
     // Kick the Loader
-    // FRB - removing Wakeup is responsible for the VERY long load times!
+    // FRB - removing Wakeup is responsible for the VERY long load times
     TheLoader.WakeUp();
 
     // Return a flag indicating whether or not the data is available for drawing

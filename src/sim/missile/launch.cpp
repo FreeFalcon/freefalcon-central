@@ -163,7 +163,7 @@ void MissileClass::Launch(void)
         // via FindRocketGroundImpact
         // MLR - drawPointer is valid due to a bug somewhere else
         //       added FindingImpact flag
-        if (drawPointer and !(flags bitand FindingImpact))
+        if (drawPointer and  not (flags bitand FindingImpact))
         {
 
             // MLR - Note - this is causing the smoke trail when rockets are selected.

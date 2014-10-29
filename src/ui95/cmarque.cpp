@@ -241,7 +241,7 @@ void C_Marque::SetSubParents(C_Window *)
         }
     }
 
-    if ( not GetW() or !GetH())
+    if ( not GetW() or not GetH())
         SetWH(Parent_->GetW(), Parent_->GetH());
 }
 

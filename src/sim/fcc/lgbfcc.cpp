@@ -61,7 +61,7 @@ void FireControlComputer::TargetingPodMode(void)
 
     // 2001-11-01 ADDED BY M.N. IT MAY BE THAT theRadar HAS LOST THE TARGET, BUT OUR TARGETING POD
     // STILL HAS IT. SO SEE IF WE HAVE ONE LOCKED WITH THE POD
-    if ( not systemTarget and !F4IsBadReadPtr(targetingPod, sizeof(targetingPod))) // M.N. CTD fix
+    if ( not systemTarget and  not F4IsBadReadPtr(targetingPod, sizeof(targetingPod))) // M.N. CTD fix
     {
         systemTarget = targetingPod->CurrentTarget();
 
@@ -71,7 +71,7 @@ void FireControlComputer::TargetingPodMode(void)
 
     // Is the currently aimed target dead or exploding ? If so, delete the pod targetpointer
     if (systemTarget and (systemTarget->BaseData()->IsDead() or systemTarget->BaseData()->IsExploding())
-        and !F4IsBadWritePtr(targetingPod, sizeof(targetingPod)))  // CTD fix
+        and  not F4IsBadWritePtr(targetingPod, sizeof(targetingPod)))  // CTD fix
     {
         systemTarget = NULL;
         targetingPod->SetDesiredTarget(NULL);
@@ -343,7 +343,7 @@ void FireControlComputer::TargetingPodMode(void)
                     targetingPod->SetYPR(yaw, pitch, roll);
                     inRange = FALSE;
 
-                    if (designateCmd and !lastDesignate)
+                    if (designateCmd and not lastDesignate)
                     {
                         preDesignate = FALSE;
                         inRange = TRUE;
@@ -377,7 +377,7 @@ void FireControlComputer::TargetingPodMode(void)
                         groundDesignateZ = tmpZ;
 
                         // Must be looking at the ground to designate
-                        if (designateCmd and !lastDesignate)
+                        if (designateCmd and not lastDesignate)
                         {
                             preDesignate = FALSE;
                             inRange = TRUE;
@@ -409,7 +409,7 @@ void FireControlComputer::TargetingPodMode(void)
                     }
                 }
 
-                if (((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0)) and !targetingPod->IsLocked())
+                if (((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0)) and not targetingPod->IsLocked())
                 {
                     if (g_bLgbFixes) // a.s. 26.Febr.2002. begin: New Code for slewing LGBs. With this code, not the angles are altered, but
                         // directly the designated point. A non-orthogonal rotation of the co-ordinate system is necessary
@@ -659,7 +659,7 @@ void FireControlComputer::TargetingPodMode(void)
                     }
 
                     // Check Features?
-                    if ( not targetingPod->CurrentTarget() and !isLimited)
+                    if ( not targetingPod->CurrentTarget() and not isLimited)
                     {
                         CheckFeatures(targetingPod);
                         curTarget = targetingPod->CurrentTarget();
@@ -677,7 +677,7 @@ void FireControlComputer::TargetingPodMode(void)
                 SetTarget(targetingPod->CurrentTarget());
             }
 
-            if (targetingPod->CurrentTarget() and !preDesignate and designateCmd and !lastDesignate)
+            if (targetingPod->CurrentTarget() and not preDesignate and designateCmd and not lastDesignate)
             {
                 targetingPod->LockTarget();
             }
@@ -711,7 +711,7 @@ void FireControlComputer::TargetingPodMode(void)
 
             if (dropTrackCmd)
             {
-                if (isLimited or !targetPtr)
+                if (isLimited or not targetPtr)
                 {
                     preDesignate = TRUE;
 
@@ -749,7 +749,7 @@ void FireControlComputer::TargetingPodMode(void)
     //MI no Laser Above 25k ft
     if (g_bRealisticAvionics and playerFCC and ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP)
     {
-        // RV - Biker - New systems (e.g. LANTIRN on F-14D) can do laser above 25k ft!!!
+        // RV - Biker - New systems (e.g. LANTIRN on F-14D) can do laser above 25k ft!
         //if(platform->ZPos() > -25000.0F)
         if (platform->ZPos() > -1.0f * ((AircraftClass *)Sms->Ownship())->af->GetMaxLasingAlt())
         {
@@ -760,7 +760,7 @@ void FireControlComputer::TargetingPodMode(void)
                 LaserWasFired = TRUE;
             }
             //auto lasing, if check needed, not inhibited, and hasn't been fired manually between the drop
-            else if (CheckForLaserFire and !InhibitFire and !LaserWasFired)
+            else if (CheckForLaserFire and not InhibitFire and not LaserWasFired)
             {
                 //Get the time before impact at which we want to lase
                 if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp)
@@ -848,12 +848,12 @@ void FireControlComputer::CheckFeatures(LaserPodClass* targetingPod)
 
                 // 2001-11-01 Added IsDead ||
                 //IsExploding check by M.N. - we don't want to bomb something that is already destroyed
-                if ((CurRange < curMin) and !(testObject->IsDead() or testObject->IsExploding()))
+                if ((CurRange < curMin) and  not (testObject->IsDead() or testObject->IsExploding()))
                 {
                     //simTarg = (SimBaseClass*)testObject;
                     //if (simTarg->IsStatic())
                     //fc = GetFeatureClassData(((Objective)simTarg)->GetFeatureID(0));
-                    //if (fc and !F4IsBadReadPtr(fc, sizeof (fc)) and fc->Priority > 2)
+                    //if (fc and  not F4IsBadReadPtr(fc, sizeof (fc)) and fc->Priority > 2)
                     // higher priority number = lower priority
                     closestObj = testObject;
                     curMin = CurRange;
@@ -924,7 +924,7 @@ void FireControlComputer::ToggleLaserArm(void)
     if (playerAC and playerAC->Sms->MasterArm() not_eq SMSBaseClass::Arm)
         return;
 
-    LaserArm = !LaserArm;
+    LaserArm = not LaserArm;
     LaserFire = FALSE;
 }
 void FireControlComputer::RecalcPos(void)

@@ -723,7 +723,7 @@ void AircraftClass::Init(SimInitDataClass* initData)
                     curWaypoint = atWaypoint;
                 }
 
-                if (SimDriver.RunningInstantAction() and !isDigital)
+                if (SimDriver.RunningInstantAction() and not isDigital)
                 {
                     af->initialPsi = 0.0F;
                     af->initialMach = 0.7F;
@@ -1084,7 +1084,7 @@ void AircraftClass::Init(SimInitDataClass* initData)
             FCC->SetSubMode(FireControlComputer::Aim9);
         }
 
-        if ( not g_bRealisticAvionics or !OnGround())  // JPO set up the systems
+        if ( not g_bRealisticAvionics or not OnGround())  // JPO set up the systems
         {
             PreFlight();
         }
@@ -1258,7 +1258,7 @@ int AircraftClass::Exec(void)
             // if we r over 90% of Mach Apply Turbulence
             if (TempTurb > 0.0f and TempTurb <= 0.1f) Turb += 10.0f * (TempTurb * TempTurb);
 
-            // if Passing Sonic Wave, Bang!!!
+            // if Passing Sonic Wave, Bang!
             if (TempTurb >= 0.1f and LastMach < 0.1f) SetPulseTurbulence(0.3f, 0.3f, 0.3f, 1.0f);
 
             LastMach = TempTurb;
@@ -1386,7 +1386,7 @@ int AircraftClass::Exec(void)
         // When doing a QuickPreflight, it can happen that the HUD is not yet setup and
         // it stays dark when entering the simulation.
         if (g_bDarkHudFix and TheHud and this == SimDriver.GetPlayerEntity()  and 
-            DBrain() and !(DBrain()->moreFlags bitand DigitalBrain::HUDSetup)  and 
+            DBrain() and  not (DBrain()->moreFlags bitand DigitalBrain::HUDSetup)  and 
             PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RAMP)
         {
             TheHud->SymWheelPos = 1.0F;
@@ -1395,7 +1395,7 @@ int AircraftClass::Exec(void)
         }
 
 
-        if (doEjectCountdown and !ejectTriggered and ejectCountdown < 0.0 and fabs(glocFactor) < 0.95F)
+        if (doEjectCountdown and not ejectTriggered and ejectCountdown < 0.0 and fabs(glocFactor) < 0.95F)
         {
             ejectTriggered = TRUE;
             //Make sure the autopilot is off;
@@ -1427,7 +1427,7 @@ int AircraftClass::Exec(void)
                 )
             )  and 
             (
-                !IsAcStatusBitsSet(ACSTATUS_PILOT_EJECTED)
+                 not IsAcStatusBitsSet(ACSTATUS_PILOT_EJECTED)
             )
         )
         {
@@ -1439,7 +1439,7 @@ int AircraftClass::Exec(void)
         //MI Emergency jettison
         if (g_bRealisticAvionics)
         {
-            if (doJettCountdown and !EmerJettTriggered and JettCountown < 0.0)
+            if (doJettCountdown and not EmerJettTriggered and JettCountown < 0.0)
             {
                 EmerJettTriggered = TRUE;
             }
@@ -1467,7 +1467,7 @@ int AircraftClass::Exec(void)
             }
 
             //MI INS
-            if (g_bINS and !isDigital)
+            if (g_bINS and not isDigital)
             {
                 RunINS();
 
@@ -1512,7 +1512,7 @@ int AircraftClass::Exec(void)
     // Base Class Exec
 
     //RV - I-Hawk - Removed the burning SFX stuff here as not handled in simveh.cpp anymore...
-    if (pctStrength <= 0.0f and !IsExploding() and (DrawableBSP*)drawPointer)
+    if (pctStrength <= 0.0f and not IsExploding() and (DrawableBSP*)drawPointer)
     {
         Trotation *orientation = &((DrawableBSP*)drawPointer)->orientation;
         Tpoint pos, vec;
@@ -1839,7 +1839,7 @@ int AircraftClass::Exec(void)
 
         // COBRA - RED - Check for Lite Pool
         if (
-            af->gearPos == 1.0F and !(af->gear[1].flags bitand GearData::GearBroken)  and 
+            af->gearPos == 1.0F and  not (af->gear[1].flags bitand GearData::GearBroken)  and 
             IsAcStatusBitsSet(ACSTATUS_EXT_LANDINGLIGHT) and IsAcStatusBitsSet(ACSTATUS_EXT_LIGHTS)
         )
         {
@@ -2017,7 +2017,7 @@ int AircraftClass::Exec(void)
         //STOP_PROFILE("AC_EXEC_5d1");
 
         if (OTWDriver.IsActive() // JPO - practice safe viewpoints people :-)
-            and !OTWDriver.IsShutdown()) // JB - come on, practice safer viewpoints ;-)
+            and not OTWDriver.IsShutdown()) // JB - come on, practice safer viewpoints ;-)
         {
             // JB carrier start
             RViewPoint* viewp = OTWDriver.GetViewpoint();
@@ -2049,7 +2049,7 @@ int AircraftClass::Exec(void)
                 }
             }
             // JB carrier end
-            else if (isDigital and DBrain() and !DBrain()->IsSetATC(DigitalBrain::DonePreflight))
+            else if (isDigital and DBrain() and not DBrain()->IsSetATC(DigitalBrain::DonePreflight))
             {
                 //in multiplay this sometimes gets fucked up for the player flight
                 // JPO - changed > to < here --- otherwise everything start started up
@@ -2059,7 +2059,7 @@ int AircraftClass::Exec(void)
                     PreFlight();
 
                     //MI if we don't tell our brain that we've preflighted, we keep on looping in that function.....
-                    if (isDigital and DBrain() and !DBrain()->IsSetATC(DigitalBrain::DonePreflight))
+                    if (isDigital and DBrain() and not DBrain()->IsSetATC(DigitalBrain::DonePreflight))
                     {
                         DBrain()->SetATCFlag(DigitalBrain::DonePreflight);
                     }
@@ -2136,7 +2136,7 @@ int AircraftClass::Exec(void)
         {
             flightIdx = flight->GetComponentIndex(this);
 
-            if ( not AWACSsaidAbort and !flightIdx) // only for flight leaders of course
+            if ( not AWACSsaidAbort and not flightIdx) // only for flight leaders of course
             {
                 WayPoint w = flight->GetFirstUnitWP();
 
@@ -2419,7 +2419,7 @@ int AircraftClass::Exec(void)
         }
 
         // check for collision with feature
-        if (af->vt > 0.0f and !isDigital and PlayerOptions.CollisionsOn())
+        if (af->vt > 0.0f and not isDigital and PlayerOptions.CollisionsOn())
             GroundFeatureCheck(af->groundZ);
         else
             FeatureCollision(af->groundZ);   //need onFlatFeature to be correct for landings
@@ -2431,7 +2431,7 @@ int AircraftClass::Exec(void)
 
             // sfr: this is causing problems in server mode
             // RED - Floting/sunked Ground park fix - if planted, refresh Z ground position
-            //if (isDigital and !af->IsSet(AirframeClass::OnObject) and af->IsSet(AirframeClass::Planted)){
+            //if (isDigital and not af->IsSet(AirframeClass::OnObject) and af->IsSet(AirframeClass::Planted)){
             // SetPosition (af->x, af->y, OTWDriver.GetGroundLevel(af->x, af->y));
             //}
 
@@ -2555,7 +2555,7 @@ int AircraftClass::Exec(void)
         // JPO - current home of lantirn execution
         // JB 010325 Only do this for the player
         //if (theLantirn and theLantirn->IsEnabled() and IsSetFlag(MOTION_OWNSHIP))
-        if (theLantirn and theLantirn->IsEnabled() and !isDigital)
+        if (theLantirn and theLantirn->IsEnabled() and not isDigital)
         {
             theLantirn->Exec(this);
         }
@@ -2569,7 +2569,7 @@ int AircraftClass::Exec(void)
             SoundPos.Sfx(af->auxaeroData->sndSpdBrakeWind, 0, GetKias() / 450.0f, (1.0F - af->speedBrake) * -100.0F);
         }
 
-        if (af->IsSet(AirframeClass::Refueling) and DBrain() and !DBrain()->IsTanker())
+        if (af->IsSet(AirframeClass::Refueling) and DBrain() and not DBrain()->IsTanker())
         {
             AircraftClass *tanker = NULL;
             tanker = (AircraftClass*)vuDatabase->Find(DBrain()->Tanker());
@@ -2579,7 +2579,7 @@ int AircraftClass::Exec(void)
             if (this not_eq SimDriver.GetPlayerEntity() and g_fAIRefuelSpeed)
                 refuelHelp = g_fAIRefuelSpeed;
 
-            if ( not tanker or !tanker->IsAirplane() ||
+            if ( not tanker or not tanker->IsAirplane() ||
                 !af->AddFuel(refuelRate * SimLibMajorFrameTime * refuelHelp * refuelHelp)
                )
             {
@@ -2741,7 +2741,7 @@ int AircraftClass::Exec(void)
     {
         if (
             (this == SimDriver.GetPlayerEntity()) and (autopilotType == CombatAP)  and 
-            (Sms->MasterArm() == SMSBaseClass::Safe) and !OnGround()
+            (Sms->MasterArm() == SMSBaseClass::Safe) and not OnGround()
         )
         {
             Sms->SetMasterArm(SMSBaseClass::Arm);
@@ -2767,7 +2767,7 @@ int AircraftClass::Exec(void)
             ExtlOff(Extl_Wing_Tail);
             ExtlOff(Extl_Flash);
         }
-        else if (curWaypoint->GetWPAction() == WP_LAND and !(IsAcStatusBitsSet(ACSTATUS_EXT_LIGHTS)))
+        else if (curWaypoint->GetWPAction() == WP_LAND and  not (IsAcStatusBitsSet(ACSTATUS_EXT_LIGHTS)))
         {
             ExtlOn(Extl_Main_Power);
             ExtlOn(Extl_Anti_Coll);
@@ -2921,7 +2921,7 @@ void AircraftClass::Eject(void)
 
         lastToHit = (SimVehicleClass*)vuDatabase->Find(LastShooter());
 
-        if (lastToHit and !lastToHit->IsEject())
+        if (lastToHit and not lastToHit->IsEject())
         {
             deathMessage->dataBlock.damageType = FalconDamageType::OtherDamage;
 
@@ -3013,7 +3013,7 @@ void AircraftClass::Eject(void)
                 for (i = 0; i < GetCampaignObject()->NumberOfComponents(); i++)
                 {
                     if (GetCampaignObject()->GetComponentEntity(i) not_eq this  and 
-                        !((SimBaseClass*)GetCampaignObject()->GetComponentEntity(i))->IsSetFlag(MOTION_OWNSHIP))
+                         not ((SimBaseClass*)GetCampaignObject()->GetComponentEntity(i))->IsSetFlag(MOTION_OWNSHIP))
                     {
                         SimBaseClass* sender = GetCampaignObject()->GetComponentEntity(i);
                         FalconRadioChatterMessage* msg;
@@ -3028,7 +3028,7 @@ void AircraftClass::Eject(void)
                         msg->dataBlock.time_to_play = 2 * CampaignSeconds;
                         FalconSendMessage(msg, FALSE);
                         // Another...
-                        // was rcAIRMANDOWNE - totally wrong !! Is now: "setup RESCAP"
+                        // was rcAIRMANDOWNE - totally wrong  Is now: "setup RESCAP"
                         msg = new FalconRadioChatterMessage(sender->Id(), FalconLocalGame);
                         msg->dataBlock.message = rcAIRMANDOWNF;
                         msg->dataBlock.from = sender->Id();
@@ -3614,7 +3614,7 @@ void AircraftClass::DecEWSProg()
 }
 void AircraftClass::ToggleBetty()
 {
-    playBetty = !playBetty;
+    playBetty = not playBetty;
 }
 //MI
 void AircraftClass::AddAVTRSeconds(void)
@@ -3879,7 +3879,7 @@ void AircraftClass::HotPitRefuel()
         float refuelRate = af->GetRefuelRate();
         af->AddFuel(refuelRate * SimLibMajorFrameTime);
     }
-    else if (af->vt <= 0.0f and OnGround() and !af->IsSet(AirframeClass::OverRunway))
+    else if (af->vt <= 0.0f and OnGround() and not af->IsSet(AirframeClass::OverRunway))
     {
         // sfr: fixing xy order
         GridIndex gx, gy;
@@ -3976,7 +3976,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
 
                     fc = GetFeatureClassData(((Objective)JDAMtarget)->GetFeatureID(JDAMtgtnum));
 
-                    if (fc and !F4IsBadReadPtr(fc, sizeof(fc)))  // higher priority number = lower priority
+                    if (fc and  not F4IsBadReadPtr(fc, sizeof(fc)))  // higher priority number = lower priority
                         Priority = fc->Priority;
                 }
                 else
@@ -4004,7 +4004,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
 
                     fc = GetFeatureClassData(((Objective)JDAMtarget)->GetFeatureID(JDAMtgtnum));
 
-                    if (fc and !F4IsBadReadPtr(fc, sizeof(fc)))  // higher priority number = lower priority
+                    if (fc and  not F4IsBadReadPtr(fc, sizeof(fc)))  // higher priority number = lower priority
                         Priority = fc->Priority;
                 }
                 else
@@ -4039,7 +4039,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
             // Not Deagg'ed, so calculate where the Feature is placed in the Objective
             fc = GetFeatureClassData(((Objective)JDAMtarget)->GetFeatureID(JDAMtgtnum));
 
-            if (fc and !F4IsBadReadPtr(fc, sizeof(fc)) and !(fc->Flags bitand FEAT_VIRTUAL))
+            if (fc and  not F4IsBadReadPtr(fc, sizeof(fc)) and  not (fc->Flags bitand FEAT_VIRTUAL))
             {
                 ((Objective)JDAMtarget)->GetFeatureOffset(JDAMtgtnum, &yy, &xx, &zz);
                 w->GetLocation(&x, &y, &z);
@@ -4060,7 +4060,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
             fc = GetFeatureClassData(((Objective)JDAMtarget)->GetFeatureID(JDAMtgtnum));
         }
 
-        if (fc and !F4IsBadReadPtr(fc, sizeof(fc)))
+        if (fc and  not F4IsBadReadPtr(fc, sizeof(fc)))
             strcpy(JDAMtargetName1, fc->Name);
         else
             strcpy(JDAMtargetName1, "xxxx");

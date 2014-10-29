@@ -144,7 +144,7 @@ GunClass::GetDamageAssessment(SimBaseClass *target, float range)
             return 0.3f + PRANDFloatPos();
     }
 
-    if (gunDomain == wdAir and !target->OnGround())
+    if (gunDomain == wdAir and not target->OnGround())
     {
         if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
         {

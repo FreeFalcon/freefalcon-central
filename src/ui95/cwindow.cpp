@@ -254,7 +254,7 @@ void C_Window::Cleanup()
 {
     CONTROLLIST *cur, *last;
 
-    if (Controls_ and !(Flags_ bitand C_BIT_NOCLEANUP))
+    if (Controls_ and  not (Flags_ bitand C_BIT_NOCLEANUP))
     {
         cur = Controls_;
 
@@ -377,7 +377,7 @@ void C_Window::ScanClientArea(long client)
     if (client >= WIN_MAX_CLIENTS)
         return;
 
-    if ( not VScroll_[client] and !HScroll_[client])
+    if ( not VScroll_[client] and not HScroll_[client])
         return;
 
     VW_[client] = 0;
@@ -387,7 +387,7 @@ void C_Window::ScanClientArea(long client)
 
     while (cur)
     {
-        if (cur->Control_ and !(cur->Control_->GetFlags() bitand C_BIT_ABSOLUTE) and !(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE) and cur->Control_->GetClient() == client)
+        if (cur->Control_ and  not (cur->Control_->GetFlags() bitand C_BIT_ABSOLUTE) and  not (cur->Control_->GetFlags() bitand C_BIT_INVISIBLE) and cur->Control_->GetClient() == client)
         {
             if ((cur->Control_->GetX() + cur->Control_->GetW()) > VW_[client])
                 VW_[client] = cur->Control_->GetX() + cur->Control_->GetW();
@@ -878,7 +878,7 @@ void C_Window::ClearUpdateRect(long x1, long y1, long x2, long y2)
 {
     short i;
 
-    if (x1 > GetW() or x2 < 0 or y1 > GetH() or y2 < 0 or !rectcount_)
+    if (x1 > GetW() or x2 < 0 or y1 > GetH() or y2 < 0 or not rectcount_)
         return;
 
     if (x1 <= 0 and y1 <= 0 and x2 >= GetW() and y2 >= GetH())
@@ -1107,7 +1107,7 @@ CONTROLLIST *C_Window::RemoveControl(CONTROLLIST *ctrl)
     CONTROLLIST *retval;
     F4CSECTIONHANDLE* Leave;
 
-    if ( not Controls_ or !ctrl)
+    if ( not Controls_ or not ctrl)
         return(NULL);
 
     Leave = UI_Enter(this);
@@ -1592,7 +1592,7 @@ void C_Window::Blend(WORD *front, UI95_RECT *frect, short fwidth, WORD *back, UI
     long fidx, bidx, didx;
     long fidxstart, bidxstart, didxstart;
 
-    if ( not front or !frect or !fwidth or !back or !brect or !bwidth or !dest or !drect or !dwidth)
+    if ( not front or not frect or not fwidth or not back or not brect or not bwidth or not dest or not drect or not dwidth)
         return;
 
     fidxstart = frect->top * fwidth;
@@ -1634,7 +1634,7 @@ void C_Window::BlendTransparent(WORD Mask, WORD *front, UI95_RECT *frect, short 
     long fidx, bidx, didx;
     long fidxstart, bidxstart, didxstart;
 
-    if ( not front or !frect or !fwidth or !back or !brect or !bwidth or !dest or !drect or !dwidth)
+    if ( not front or not frect or not fwidth or not back or not brect or not bwidth or not dest or not drect or not dwidth)
         return;
 
     fidxstart = frect->top * fwidth;
@@ -1682,7 +1682,7 @@ void C_Window::Translucency(WORD *front, UI95_RECT *frect, short fwidth, WORD *d
     long fidx, fidxstart;
     long didx, didxstart;
 
-    if ( not front or !frect or !fwidth  or !dest or !drect or !dwidth)
+    if ( not front or not frect or not fwidth  or not dest or not drect or not dwidth)
         return;
 
     fidxstart = frect->top * fwidth;
@@ -2259,7 +2259,7 @@ BOOL C_Window::ClipLine(long *x1, long *y1, long *x2, long *y2, UI95_RECT *clip)
     if (*y2 > clip->bottom)
         flag2  or_eq  LINE_CLIP_BOTTOM;
 
-    if ( not flag1 and !flag2) // return, because both points are inside clip rect
+    if ( not flag1 and not flag2) // return, because both points are inside clip rect
         return(TRUE);
 
     if (((flag1 bitand flag2) bitand LINE_CLIP_LEFT) or // If both points are on the same side of the clip rect... don't draw
@@ -2725,7 +2725,7 @@ void C_Window::SetPrevControl() // Called when SHIFT bitand TAB are pressed
 
         while (cur)
         {
-            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and cur->Control_->GetFlags() bitand C_BIT_ENABLED and !(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
+            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and cur->Control_->GetFlags() bitand C_BIT_ENABLED and  not (cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
             {
                 CurControl_ = cur->Control_;
                 CurControl_->Activate();
@@ -2749,7 +2749,7 @@ void C_Window::SetPrevControl() // Called when SHIFT bitand TAB are pressed
 
         while (cur->Control_ not_eq CurControl_)
         {
-            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and cur->Control_->GetFlags() bitand C_BIT_ENABLED and !(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
+            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and cur->Control_->GetFlags() bitand C_BIT_ENABLED and  not (cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
             {
                 CurControl_ = cur->Control_;
                 CurControl_->Activate();
@@ -2777,7 +2777,7 @@ void C_Window::SetNextControl() // Called when TAB is pressed
 
         while (cur)
         {
-            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and cur->Control_->GetFlags() bitand C_BIT_ENABLED and !(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
+            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and cur->Control_->GetFlags() bitand C_BIT_ENABLED and  not (cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
             {
                 CurControl_ = cur->Control_;
                 CurControl_->Activate();
@@ -2801,7 +2801,7 @@ void C_Window::SetNextControl() // Called when TAB is pressed
 
         while (cur->Control_ not_eq CurControl_)
         {
-            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and cur->Control_->GetFlags() bitand C_BIT_ENABLED and !(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
+            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and cur->Control_->GetFlags() bitand C_BIT_ENABLED and  not (cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
             {
                 CurControl_ = cur->Control_;
                 CurControl_->Activate();

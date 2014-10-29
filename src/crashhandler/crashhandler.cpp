@@ -184,7 +184,7 @@ BOOL __stdcall AddCrashHandlerLimitModule(HMODULE hMod)
 
     if (NULL == phTemp)
     {
-        TRACE0("Serious trouble in the house! - malloc failed!!!\n");
+        TRACE0("Serious trouble in the house! - malloc failed\n");
         return (FALSE) ;
     }
 
@@ -647,7 +647,7 @@ InternalGetStackTraceString(DWORD                dwOpts  ,
     if (TRUE == IsBadReadPtr(pExPtrs                      ,
                              sizeof(EXCEPTION_POINTERS)))
     {
-        TRACE0("GetStackTraceString - invalid pExPtrs!\n") ;
+        TRACE0("GetStackTraceString - invalid pExPtrs\n") ;
         return (NULL) ;
     }
 
@@ -935,7 +935,7 @@ LPCTSTR __stdcall GetRegisterString(EXCEPTION_POINTERS * pExPtrs)
     if (TRUE == IsBadReadPtr(pExPtrs                      ,
                              sizeof(EXCEPTION_POINTERS)))
     {
-        TRACE0("GetRegisterString - invalid pExPtrs!\n") ;
+        TRACE0("GetRegisterString - invalid pExPtrs\n") ;
         return (NULL) ;
     }
 

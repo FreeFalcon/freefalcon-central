@@ -191,7 +191,7 @@ void C_Blip::Refresh(BLIP *blip)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((Flags_ bitand C_BIT_INVISIBLE) or !Parent_ or !Drawer_)
+    if ((Flags_ bitand C_BIT_INVISIBLE) or not Parent_ or not Drawer_)
         return;
 
     Leave = UI_Enter(Parent_);
@@ -205,7 +205,7 @@ void C_Blip::Refresh()
     BLIP *cur;
     F4CSECTIONHANDLE *Leave;
 
-    if ((Flags_ bitand C_BIT_INVISIBLE) or !Parent_ or !Drawer_)
+    if ((Flags_ bitand C_BIT_INVISIBLE) or not Parent_ or not Drawer_)
         return;
 
     Leave = UI_Enter(Parent_);
@@ -225,7 +225,7 @@ void C_Blip::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     BLIP *cur;
 
-    if ((Flags_ bitand C_BIT_INVISIBLE) or !Parent_ or !Drawer_)
+    if ((Flags_ bitand C_BIT_INVISIBLE) or not Parent_ or not Drawer_)
         return;
 
     cur = Root_;

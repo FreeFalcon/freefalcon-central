@@ -163,7 +163,7 @@ void ICPClass::FifeButton(int mode)
         LeaveCNIPage();
 
         //Only set this when not here
-        if ( not Cruise_HOME and !Cruise_RNG and !Cruise_TOS)
+        if ( not Cruise_HOME and not Cruise_RNG and not Cruise_TOS)
             SetICPFlag(ICPClass::EDIT_STPT);
 
         //CRUS PAGE

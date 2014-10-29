@@ -5,7 +5,7 @@
 //
 // Notes: Ultimately should be a complete replacement for Leon Ground AI,
 // done this was to ensure something is always working. (In the end Leon Exec
-// funtion will simply call Process (); for this class and nothing else!!!).
+// funtion will simply call Process (); for this class and nothing else!).
 //
 // Notes: Transitions aren't handled as specified in the design docs (yet!).
 // By Mark McCubbin
@@ -300,8 +300,8 @@ GNDAIClass *NewGroundAI(GroundClass *us, int position, BOOL isFirst, int skill)
     if (position)
     {
         // Check if our leader exists -
-        //while (position and !simb[BattalionHeir[position].leader_idx]) // JB 010220 CTD
-        while (position and BattalionHeir[position].leader_idx >= 0 and !simb[BattalionHeir[position].leader_idx]) // JB 010220 CTD
+        //while (position and not simb[BattalionHeir[position].leader_idx]) // JB 010220 CTD
+        while (position and BattalionHeir[position].leader_idx >= 0 and not simb[BattalionHeir[position].leader_idx]) // JB 010220 CTD
             position = BattalionHeir[position].leader_idx;
 
         if (BattalionHeir[position].leader_idx >= 0) // JB 001203 //+
@@ -434,7 +434,7 @@ GNDAIClass::GNDAIClass(GroundClass *s, GNDAIClass *l, short r, int unit_id, int 
         // If we can't move, set ourselves to halted
         moveState = GNDAI_MOVE_HALTED;
     }
-    else if (SimDriver.RunningCampaignOrTactical() and !parent_unit->IsTaskForce())
+    else if (SimDriver.RunningCampaignOrTactical() and not parent_unit->IsTaskForce())
     {
         moveState = GNDAI_MOVE_GENERAL;
     }
@@ -546,7 +546,7 @@ void GNDAIClass::ProcessTargeting(void)
     //        flag so the visual object can change state
     //        too.  Should have an intermediate state with
     //        no motion OR firing to model "set up/tear down".
-    if (self->isTowed and (self->GetVt() > 0.1f) and !g_bFireOntheMove)
+    if (self->isTowed and (self->GetVt() > 0.1f) and  not g_bFireOntheMove)
     {
         self->SetTarget(NULL);
         return;
@@ -716,7 +716,7 @@ void GNDAIClass::ProcessTargeting(void)
     // RV - Biker - Switch to next target if we did take a hit (pctStrength <= 0.0f)
     //if( not self->targetPtr or self->targetPtr->BaseData()->IsDead() or newUnit not_eq oldUnit)
     if (
-        !self->targetPtr ||
+         not self->targetPtr ||
         ((SimBaseClass *)self->targetPtr->BaseData())->pctStrength <= 0.0f ||
         self->targetPtr->BaseData()->IsDead() or newUnit not_eq oldUnit
     )
@@ -730,7 +730,7 @@ void GNDAIClass::ProcessTargeting(void)
 
     if (self->targetPtr)
     {
-        if (self->isEmitter and !self->targetPtr->BaseData()->OnGround())
+        if (self->isEmitter and not self->targetPtr->BaseData()->OnGround())
         {
             RadarClass* radar = (RadarClass*)FindSensor(self, SensorClass::Radar);
             ShiAssert(radar);
@@ -1077,9 +1077,9 @@ void GNDAIClass::Order_Battalion(void)
 
                 if (moveDir < 8)
                 {
-                    // 2002-02-16 MN Aaaaaaaahh - WHO DID THIS BS - THEY MUST HAVE BEEN DRUNK !!!
+                    // 2002-02-16 MN Aaaaaaaahh - WHO DID THIS BS - THEY MUST HAVE BEEN DRUNK !
                     // Look what they have done: since when are Sim coordinates SHORT ??? No wonder the ground units move strangely...
-                    // GridToSim returns a float !!! And ideal_x/y are floats, too... Aaaaaaaaaaaaahhhhh....;-)
+                    // GridToSim returns a float ! And ideal_x/y are floats, too... Aaaaaaaaaaaaahhhhh....;-)
                     // ideal_y = (short)GridToSim(gridX + dx[moveDir]);
                     // ideal_x = (short)GridToSim(gridY + dy[moveDir]);
                     ideal_y = GridToSim(gridX + dx[moveDir]);
@@ -1159,7 +1159,7 @@ void GNDAIClass::Order_Battalion(void)
 
         if (parent_unit->IsBattalion())
         {
-            if (GetCover(cx, cy) == Water and !(o and o->GetType() == TYPE_BRIDGE))
+            if (GetCover(cx, cy) == Water and  not (o and o->GetType() == TYPE_BRIDGE))
             {
                 // that's it, we don't move anymore
                 moveState = GNDAI_MOVE_HALTED;
@@ -1208,7 +1208,7 @@ void GNDAIClass::Order_Company(void)
         // We can move, so get into formation
         formation = battalionCommand->formation;
 
-        if (formation not_eq GNDAI_FORM_COLUMN or !CheckThrough())
+        if (formation not_eq GNDAI_FORM_COLUMN or not CheckThrough())
         {
             if (InPosition(this))
             {
@@ -1239,7 +1239,7 @@ void GNDAIClass::Order_Platoon(void)
         // We can move, so get into formation
         formation = battalionCommand->formation;
 
-        if (formation not_eq GNDAI_FORM_COLUMN or !CheckThrough())
+        if (formation not_eq GNDAI_FORM_COLUMN or not CheckThrough())
         {
             if (InPosition(this))
             {
@@ -1271,7 +1271,7 @@ void GNDAIClass::Order_Squad(void)
         // We can move, so get into formation
         formation = battalionCommand->formation;
 
-        if (formation not_eq GNDAI_FORM_COLUMN or !CheckThrough())
+        if (formation not_eq GNDAI_FORM_COLUMN or not CheckThrough())
         {
             if (InPosition(this))
             {

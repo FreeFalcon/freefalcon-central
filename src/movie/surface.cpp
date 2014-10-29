@@ -141,7 +141,7 @@ void surfaceGetDescription(LPVOID surface, SURFACEDESCRIPTION *sd)
     ddsd.dwSize = sizeof(DDSURFACEDESC2);
     HRESULT hr = -1; // JB 010220 CTD
 
-    if (pDS and !F4IsBadReadPtr(pDS, sizeof(IDirectDrawSurface7))) // JB 010220 CTD
+    if (pDS and  not F4IsBadReadPtr(pDS, sizeof(IDirectDrawSurface7))) // JB 010220 CTD
         hr = pDS->GetSurfaceDesc(&ddsd);
 
     if (SUCCEEDED(hr))

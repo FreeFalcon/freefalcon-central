@@ -464,14 +464,14 @@ void CheckLandingGearHandle(void * pObject)
     int currentState;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC == NULL or !playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC == NULL or not playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         return;
     }
 
     if (playerAC->af->gearHandle <= 0.0F)
     {
-        if (playerAC->af->gearPos == 0.0F and !playerAC->mFaults->GetFault(FaultClass::gear_fault))
+        if (playerAC->af->gearPos == 0.0F and not playerAC->mFaults->GetFault(FaultClass::gear_fault))
         {
             currentState = 0; // handle up bitand wheels locked
         }
@@ -482,7 +482,7 @@ void CheckLandingGearHandle(void * pObject)
     }
     else
     {
-        if (playerAC->af->gearPos == 1.0F and !playerAC->mFaults->GetFault(FaultClass::gear_fault))
+        if (playerAC->af->gearPos == 1.0F and not playerAC->mFaults->GetFault(FaultClass::gear_fault))
         {
             currentState = 2; // handle down bitand wheels locked
         }
@@ -767,8 +767,8 @@ void CBERefuelLight(void * pObject)
     //MI NWS light fix
     //else if ( not SimDriver.GetPlayerEntity()->af->IsEngineFlag(AirframeClass::FuelDoorOpen) and pCPLight->mState > CPLIGHT_AR_NWS_RDY )
     else if (
-        !playerAC->af->IsEngineFlag(AirframeClass::FuelDoorOpen)  and 
-        !playerAC->af->IsSet(AirframeClass::NoseSteerOn)
+         not playerAC->af->IsEngineFlag(AirframeClass::FuelDoorOpen)  and 
+         not playerAC->af->IsSet(AirframeClass::NoseSteerOn)
     )
     {
         pCPLight->mState = CPLIGHT_AR_NWS_OFF;
@@ -956,7 +956,7 @@ void CBECaution9(void *pObject)
     pCPLight = (CPLight*) pObject;
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
-    // use the hook caution to set it!
+    // use the hook caution to set it
     pCPLight->mState = faultSys->GetFault(hook_fault) not_eq 0;
 }
 
@@ -1097,7 +1097,7 @@ void CBECaution15(void * pObject)
 
     pCPLight->mState = (playerAC->af->rpm * 37.0F) < 15.0F ||
                        faultSys->GetFault(FaultClass::eng_fault) not_eq 0 ||
-                       !playerAC->af->HydraulicOK();
+                        not playerAC->af->HydraulicOK();
 }
 /////////
 
@@ -1137,7 +1137,7 @@ void CBECaution16(void * pObject)
 
     // MD -- 20031221: re-wrote this so that the ENGINE half of this split face works like
     // the dash one says it does.
-    // NB!!!!  I changed the state table swapping the last two over so any cockpit art that
+    // NB  I changed the state table swapping the last two over so any cockpit art that
     // has four state support needs to flip the last two srcloc lines in the dat file for
     // this lamp now.
 
@@ -1190,7 +1190,7 @@ void CBEEng2WarningLight(void * pObject)
 
     // MD -- 20031221: re-wrote this so that the ENGINE half of this split face works like
     // the dash one says it does.
-    // NB!!!!  I changed the state table swapping the last two over so any cockpit art that
+    // NB  I changed the state table swapping the last two over so any cockpit art that
     // has four state support needs to flip the last two srcloc lines in the dat file for
     // this lamp now.
 
@@ -1797,7 +1797,7 @@ void CBEGearHandleLight(void *pObject)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC == NULL or !SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC == NULL or not SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP))
     {
         return;
     }
@@ -1820,7 +1820,7 @@ void CBEGearHandleLight(void *pObject)
         if (playerAC->af->gearPos == 0.0F) //0 = gear up
         {
             if ( not playerAC->mFaults->GetFault(FaultClass::gear_fault)  and 
-                !playerAC->mFaults->GetFault(to_ldg_config))
+                 not playerAC->mFaults->GetFault(to_ldg_config))
             {
                 pCPLight->mState = CPLIGHT_OFF; //Light off
             }

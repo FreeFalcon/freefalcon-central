@@ -85,7 +85,7 @@ MEM_POOL TaskForceClass::pool;
 // TaskForce Class Functions
 // ============================================
 
-// KCK: ALL TASK FORCE CONSTRUCTION SHOULD USE THIS FUNCTION!
+// KCK: ALL TASK FORCE CONSTRUCTION SHOULD USE THIS FUNCTION
 TaskForceClass* NewTaskForce(int type)
 {
     TaskForceClass *new_taskforce;
@@ -208,7 +208,7 @@ int TaskForceClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
 
             if (simdata->ptIndex)
             {
-                // Yuck!  The first call returns only the list index, NOT a real point index.
+                // Yuck  The first call returns only the list index, NOT a real point index.
                 // To ensure we have at least one set of points we have to actually query for them
                 // then reset again...
                 simdata->ptIndex = GetDeaggregationPoint(0, &ent);
@@ -488,7 +488,7 @@ int TaskForceClass::MoveUnit(CampaignTime time)
     o = FindNearestObjective(x, y, NULL, 1);
 
     // RV - Biker - If we are in port and have no WPs do nothing
-    if (o and o->GetType() == TYPE_PORT and !w)
+    if (o and o->GetType() == TYPE_PORT and not w)
     {
         return TRUE;
     }
@@ -732,7 +732,7 @@ int TaskForceClass::Reaction(CampEntity e, int knowledge, float range)
     tmt = e->GetMovementType();
 
     // Aircraft on ground are ignored (technically, we could shoot at them.. but..)
-    if (e->IsFlight() and !((Flight)e)->Moving())
+    if (e->IsFlight() and  not ((Flight)e)->Moving())
         return 0;
 
     // Score their threat to us
@@ -979,7 +979,7 @@ WayPoint DoWPAction(TaskForce tf, WayPoint w)
 {
     WayPoint cw;
 
-    if ( not w or !tf)
+    if ( not w or not tf)
         return NULL;
 
     // Check Actions
@@ -1017,7 +1017,7 @@ WayPoint DoWPAction(TaskForce tf, WayPoint w)
 //MI added function for movement
 int TaskForceClass::DetectOnMove(void)
 {
-    if ( not Engaged() and !(GetUnitMoved() % 5))
+    if ( not Engaged() and  not (GetUnitMoved() % 5))
         return 0;
 
     return ChooseTarget();
@@ -1056,7 +1056,7 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
     if (IsAggregate())
     {
         // Check if we still have any radar vehicles
-        if (class_data->RadarVehicle == 255 or !GetNumVehicles(class_data->RadarVehicle))
+        if (class_data->RadarVehicle == 255 or not GetNumVehicles(class_data->RadarVehicle))
             return FEC_RADAR_OFF;
 
         // Check if we're already in our fire state
@@ -1093,7 +1093,7 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 
 
     // Check if we still have any radar vehicles
-    if (class_data->RadarVehicle == 255 or !GetNumVehicles(class_data->RadarVehicle))
+    if (class_data->RadarVehicle == 255 or not GetNumVehicles(class_data->RadarVehicle))
         return FEC_RADAR_OFF;
 
     assert(radarDatFileTable not_eq NULL);
@@ -1111,7 +1111,7 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
     float timetosearch ;
     float timetoaquire ;
 
-    if ( not d and !t) SetRadarMode(search_mode);
+    if ( not d and not t) SetRadarMode(search_mode);
 
     if (GetRadarMode() == FEC_RADAR_CHANGEMODE and search_mode >= FEC_RADAR_SEARCH_1)
         SetRadarMode(search_mode);// we are changing mode.. realy not off
@@ -1121,7 +1121,7 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
         case FEC_RADAR_OFF:
             timetosearch = radarData->Timetosearch1 - skill;
 
-            if (range <= radarData->Rangetosearch1 and !SEARCHtimer) SEARCHtimer = SimLibElapsedTime;
+            if (range <= radarData->Rangetosearch1 and not SEARCHtimer) SEARCHtimer = SimLibElapsedTime;
             else if (range >= radarData->Rangetosearch1 or SimLibElapsedTime - SEARCHtimer > timetosearch + 6000.0f)SEARCHtimer = 0;
 
             if (range <= radarData->Rangetosearch1 and SEARCHtimer and SimLibElapsedTime - SEARCHtimer > timetosearch)
@@ -1197,7 +1197,7 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
             timetoaquire = radarData->Timetoacuire - skill;
 
             // only allow to be in aquire for the coast amount of time
-            if ( not t and !d and SimLibElapsedTime - AQUIREtimer >= (unsigned)radarData->Timetocoast)
+            if ( not t and not d and SimLibElapsedTime - AQUIREtimer >= (unsigned)radarData->Timetocoast)
             {
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
                 search_mode = FEC_RADAR_SEARCH_3 ;

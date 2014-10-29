@@ -156,12 +156,12 @@ void DigitalBrain::DecisionLogic(void)
     // always when defensive
     if (targetPtr)
     {
-        // edg: check for dead targets!
+        // edg: check for dead targets
 
-        // 2000-09-21 MODIFIED BY S.G. THIS IS NOT ENOUGH. IF THE PLANE IS *DYING*, STOP TARGETING IT. NOT IF IT'S EXPLODING!
+        // 2000-09-21 MODIFIED BY S.G. THIS IS NOT ENOUGH. IF THE PLANE IS *DYING*, STOP TARGETING IT. NOT IF IT'S EXPLODING
         // if ( targetPtr->BaseData()->IsExploding() )
-        // 2002-01-14 MODIFIED BY S.G. targetPtr->BaseData CAN BE A *CAMPAIGN OBJECT* Don't assume it's a SimBaseClass!!!
-        //                             Campaign object do not even have a pctStrength variable which will returned in garbage being used!
+        // 2002-01-14 MODIFIED BY S.G. targetPtr->BaseData CAN BE A *CAMPAIGN OBJECT* Don't assume it's a SimBaseClass
+        //                             Campaign object do not even have a pctStrength variable which will returned in garbage being used
         if (targetPtr->BaseData()->IsSim() and ((SimBaseClass *)targetPtr->BaseData())->pctStrength <= 0.0f)  // Dying SIM target have a damage less than 0.0f
         {
             // 2000-09-21 MODIFIED BY S.G. SetTarget DOES TOO MUCH. NEED TO CALL ClearTarget INSTEAD WHICH SIMPLY CLEARS IT, NO MATTER WHAT
@@ -173,7 +173,7 @@ void DigitalBrain::DecisionLogic(void)
             if (curMode <= DefensiveModes or curMode == GunsEngageMode or SimLibElapsedTime > self->nextGeomCalc)
             {
                 self->nextGeomCalc += self->geomCalcRate;
-                // hack! to avoid traversing a list, set the targetPtr's next var
+                // hack to avoid traversing a list, set the targetPtr's next var
                 // to NULL, then restore it
                 SimObjectType *savenext;
 
@@ -234,7 +234,7 @@ void DigitalBrain::DecisionLogic(void)
     }
 
     // 2002-02-20 ADDED BY S.G. Check if we should jettison our tanks...
-    if (self->Sms and !self->Sms->DidJettisonedTank())
+    if (self->Sms and not self->Sms->DidJettisonedTank())
     {
         if (SkillLevel() > 2)   // Smart one will do it under most condition
         {
@@ -249,7 +249,7 @@ void DigitalBrain::DecisionLogic(void)
     }
 
     // RV - Biker - If low on fuel for sure drop tanks
-    if (self->Sms and !self->Sms->DidJettisonedTank())
+    if (self->Sms and not self->Sms->DidJettisonedTank())
     {
         switch (SkillLevel())
         {
@@ -283,13 +283,13 @@ void DigitalBrain::DecisionLogic(void)
     }
 
     // RV - Biker - When no more fuel drop everything
-    if ((IsSetATC(SaidFumes) or IsSetATC(SaidFlameout)) and !self->Sms->DidEmergencyJettison())
+    if ((IsSetATC(SaidFumes) or IsSetATC(SaidFlameout)) and not self->Sms->DidEmergencyJettison())
     {
         self->Sms->EmergencyJettison();
     }
 
     // 2002-02-20 ADDED BY S.G. When damaged and going home, why bring the bombs with us...
-    if (self->Sms and !self->Sms->DidEmergencyJettison() and self->pctStrength < 0.50F)
+    if (self->Sms and not self->Sms->DidEmergencyJettison() and self->pctStrength < 0.50F)
     {
         curMissile = NULL;
         self->Sms->EmergencyJettison();
@@ -325,7 +325,7 @@ void DigitalBrain::RunDecisionRoutines(void)
             GunsEngageCheck();
             MissileEngageCheck();
 
-            // if we're not on an air-air type mission -- no bvr!
+            // if we're not on an air-air type mission -- no bvr
             //me123 bvr wil react defensive now too
             // 2002-04-12 MN put back in with config variable - if people prefer AG to not do any BVR/WVR checks
             // - switch might not be made public, but better have the hook in...
@@ -485,18 +485,18 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
     // 2000-10-09 REMOVED BY S.G. BECAUSE OF THIS, AI WON'T SWITCH TARGET WHEN ASKED
     // No targeting when on ground attack run(i.e. After IP)
     // 2001-05-05 MODIFIED BY S.G. LETS TRY SOMETHING ELSE INSTEAD
-    //if (agDoctrine not_eq AGD_NONE and !madeAGPass)
+    //if (agDoctrine not_eq AGD_NONE and not madeAGPass)
     if (newTarget and newTarget->BaseData()->GetTeam() == self->GetTeam() and (agDoctrine not_eq AGD_NONE or missionComplete))
     {
         return;
     }
 
-    // 2000-09-21 ADDED BY S.G. DON'T CHANGE TARGET IF WE ARE SUPPORTING OUR SARH MISSILE DAMN IT!
+    // 2000-09-21 ADDED BY S.G. DON'T CHANGE TARGET IF WE ARE SUPPORTING OUR SARH MISSILE DAMN IT
     // TODO: Check if 'HandleThreat' is not screwing stuff since it calls WVREngage DIRECTLY
     if (newTarget and // Assigning a target
         newTarget not_eq targetPtr and // It's a new target
         missileFiredEntity and // we launched a missile already
-        !((SimWeaponClass *)missileFiredEntity)->IsDead() and // it's not dead
+         not ((SimWeaponClass *)missileFiredEntity)->IsDead() and // it's not dead
         ((SimWeaponClass *)missileFiredEntity)->targetPtr and // it's still homing to a target
         ((SimWeaponClass *)missileFiredEntity)->sensorArray and // the missile is local (it has a sensor array)
         (((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming  and 
@@ -510,12 +510,12 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
     // Tell someone we're enaging/want to engage an air target of our own volition
     if (newTarget and // Assigning a target
         newTarget not_eq targetPtr and // It's a new target
-        !newTarget->BaseData()->OnGround() and // It's not on the ground
+         not newTarget->BaseData()->OnGround() and // It's not on the ground
         ( not mpActionFlags[AI_ENGAGE_TARGET] and missionClass == AAMission or missionComplete) and // We're not busy doing A/G stuff
         newTarget not_eq threatPtr and // It's not a threat we're reacting to
         isWing and // We're a wingy
         mDesignatedObject == FalconNullId and // We're not being directed
-        !self->OnGround()) // We're in the air
+         not self->OnGround()) // We're in the air
     {
         //F4Assert ( not newTarget->BaseData()->IsHelicopter()); // 2002-03-05 Choppers are fare game now under some conditions
 
@@ -571,7 +571,7 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
             edata[3] = (short) SimToGrid(newTarget->BaseData()->YPos()); //THW 2003-11-14 Bugfix: Swapped X/Y
             edata[4] = (short) SimToGrid(newTarget->BaseData()->XPos());
             edata[5] = (short) newTarget->BaseData()->ZPos();
-            // 2000-09-25 MODIFIED BY S.G. SO AI SAY WHAT IT IS SUPPOSED TO SAY INSTEAD OF 'HELP!'
+            // 2000-09-25 MODIFIED BY S.G. SO AI SAY WHAT IT IS SUPPOSED TO SAY INSTEAD OF 'HELP'
             // AiMakeRadioResponse( self, rcHELPNOW, edata );
             AiMakeRadioResponse(self, response, edata);
         }
@@ -615,7 +615,7 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
             }
 
             response = rcENGAGINGC;
-            // 2000-09-25 MODIFIED BY S.G. SO AI SAY WHAT IT IS SUPPOSED TO SAY INSTEAD OF 'HELP!'
+            // 2000-09-25 MODIFIED BY S.G. SO AI SAY WHAT IT IS SUPPOSED TO SAY INSTEAD OF 'HELP'
             // AiMakeRadioResponse( self, rcHELPNOW, edata );
             AiMakeRadioResponse(self, response, edata);
         }
@@ -664,7 +664,7 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
                 theRadar->SetDesiredTarget(newTarget);
             }
             else if (
-                !curMissile ||
+                 not curMissile ||
                 (curMissile->sensorArray and curMissile->sensorArray[0]->Type() not_eq SensorClass::IRST)
             )
             {
@@ -686,7 +686,7 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
             }
         }
     }
-    //edg: don't we want to clear sensor targets when no target?!
+    //edg: don't we want to clear sensor targets when no target?
     else
     {
         for (int i = 0; i < self->numSensors; i++)
@@ -796,26 +796,26 @@ void DigitalBrain::FireControl(void)
 
     // basic check for firing, time to shoot, have a missile, have a target
     if (SimLibElapsedTime < missileShotTimer ||
-        !curMissile or !targetPtr
+         not curMissile or not targetPtr
         or F4IsBadReadPtr(curMissile, sizeof(MissileClass)) // JB 010223 CTD
         or F4IsBadReadPtr(self->FCC, sizeof(FireControlComputer)) // JB 010326 CTD
         or F4IsBadReadPtr(self->Sms, sizeof(SMSClass)) // JB 010326 CTD
         or F4IsBadReadPtr(targetPtr, sizeof(SimObjectType)) // JB 010326 CTD
         or F4IsBadReadPtr(targetPtr->localData, sizeof(SimObjectLocalData)) // JB 010326 CTD
-        or !curMissile->sensorArray or F4IsBadReadPtr(curMissile->sensorArray, sizeof(SensorClass*)) // M.N. 011114 CTD
+        or not curMissile->sensorArray or F4IsBadReadPtr(curMissile->sensorArray, sizeof(SensorClass*)) // M.N. 011114 CTD
        )
     {
         return;
     }
 
     // Are we cleared to fire?
-    if (curMode not_eq MissileEngageMode and !mWeaponsAction == AI_WEAPONS_FREE)
+    if (curMode not_eq MissileEngageMode and not mWeaponsAction == AI_WEAPONS_FREE)
     {
         return;
     }
 
     // 2000-09-20 S.G. I CHANGED THE CODE SO ONLY ONE AIRPLANE CAN LAUNCH AT ANOTHER AIRPLANE (SAME CODE I ADDED TO 'TargetSelection')
-    // me123 commented out for now. it seems the incomign missiles are not getting cleared !
+    // me123 commented out for now. it seems the incomign missiles are not getting cleared 
     // 2001-08-31 S.G. FIXED PREVIOUS CODE WAS ASSUMING targetPtr WAS ALWAYS A SIM. IT CAN BE A CAMPAIGN OBJECT AS WELL, HENCE THE CTD.
     // if ((((SimBaseClass *)targetPtr->BaseData())->incomingMissile and ((SimWeaponClass *)((SimBaseClass *)targetPtr->BaseData())->incomingMissile)->parent not_eq self))
     if ((targetPtr->BaseData()->IsAirplane() and ((SimBaseClass *)targetPtr->BaseData())->incomingMissile[1]) or ( not targetPtr->BaseData()->IsAirplane() and ((SimBaseClass *)targetPtr->BaseData())->incomingMissile[0]))
@@ -909,7 +909,7 @@ void DigitalBrain::FireControl(void)
     // Roll the 'dice'
     pct = ((float)rand()) / RAND_MAX * 100.0F;
 
-    if (pct < shootShootPct and !IsSetATC(InShootShoot))
+    if (pct < shootShootPct and not IsSetATC(InShootShoot))
     {
         missileShotTimer = SimLibElapsedTime + 4 * SEC_TO_MSEC;
         //MonoPrint ("DIGI BRAIN Firing Missile at Air Unit rng = %.0F: Shoot Shoot\n", targetData->range);

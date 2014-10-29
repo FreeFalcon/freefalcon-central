@@ -44,7 +44,7 @@ public:
     }
 
     // NULL tests
-    bool operator!() const
+    bool operator not () const
     {
         return e == NULL;
     }

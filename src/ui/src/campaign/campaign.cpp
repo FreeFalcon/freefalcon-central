@@ -405,7 +405,7 @@ void UI_UpdateEventList()
 
 void StartMovieQ()
 {
-    if (gMainHandler and ReadyToPlayMovie and !MovieQInUse)
+    if (gMainHandler and ReadyToPlayMovie and not MovieQInUse)
         if (MovieCount > 0)
             PostMessage(gMainHandler->GetAppWnd(), FM_PLAY_UI_MOVIE, 0, 0);
 }
@@ -489,7 +489,7 @@ void PlayUIMovieQ()
 {
     int i;
 
-    if (gMainHandler and ReadyToPlayMovie and !MovieQInUse)
+    if (gMainHandler and ReadyToPlayMovie and not MovieQInUse)
     {
         MovieQInUse = 1;
 
@@ -523,7 +523,7 @@ void PlayUIMovieQ()
 
 void ReplayUIMovie(long MovieID)
 {
-    if (gMainHandler and ReadyToPlayMovie and !MovieQInUse)
+    if (gMainHandler and ReadyToPlayMovie and not MovieQInUse)
     {
         MovieQInUse = 1;
         TheCampaign.Suspend();
@@ -540,7 +540,7 @@ void CloseAWWWindowTimer(void)
     Flight interceptors = (Flight) vuDatabase->Find(gInterceptersId);
 
     // KCK: Close the window on timeout, interceptor death, or interceptor takeoff
-    if (gAWWTimeout < 0 or !interceptors) // or interceptors->Moving())
+    if (gAWWTimeout < 0 or not interceptors) // or interceptors->Moving())
     {
         Cancel_Scramble_CB(0, C_TYPE_LMOUSEUP, NULL);
     }
@@ -813,7 +813,7 @@ void SetupMapMgr(bool noawacsmap)
 
         // 2002-01-30 MN special AWACS map background, e.g. black with country outlines
         // 2002-03-06 MN don't display Awacsmap in TE edit mode
-        if (g_bAWACSSupport and g_bAWACSBackground and !noawacsmap)
+        if (g_bAWACSSupport and g_bAWACSBackground and not noawacsmap)
         {
             if (gImageMgr->GetImage(BIG_AWACS_MAP_ID))
                 gMapMgr->SetMapImage(BIG_AWACS_MAP_ID);
@@ -1218,7 +1218,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     gMainHandler->AddUserCallback(CampaignSoundEventCB);
 
     // Choose our next mission (default)
-    if ( not gTimeModeServer and !g_bServer)
+    if ( not gTimeModeServer and  not g_bServer)
     {
         FindMissionInBriefing(CB_MISSION_SCREEN);
     }
@@ -1510,7 +1510,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
 
     CheckCampaignFlyButton();
 
-    if ( not gTimeModeServer and !g_bServer)
+    if ( not gTimeModeServer and  not g_bServer)
     {
         FindMissionInBriefing(TAC_AIRCRAFT);
     }
@@ -1612,7 +1612,7 @@ void CampaignListCB()
             {
                 if (flt->GetTotalVehicles() < 1 or flt->IsDead())
                 {
-                    if ( not gTimeModeServer and !g_bServer)
+                    if ( not gTimeModeServer and  not g_bServer)
                     {
                         FindMissionInBriefing(CB_MISSION_SCREEN);
                     }
@@ -1622,7 +1622,7 @@ void CampaignListCB()
             }
             else
             {
-                if ( not gTimeModeServer and !g_bServer)
+                if ( not gTimeModeServer and  not g_bServer)
                 {
                     FindMissionInBriefing(CB_MISSION_SCREEN);
                     UpdateMissionWindow(CB_MISSION_SCREEN);
@@ -1660,7 +1660,7 @@ void TacEngListCB()
             {
                 if (flt->GetTotalVehicles() < 1 or flt->IsDead())
                 {
-                    if ( not gTimeModeServer and !g_bServer)
+                    if ( not gTimeModeServer and  not g_bServer)
                     {
                         FindMissionInBriefing(TAC_AIRCRAFT);
                     }
@@ -1670,7 +1670,7 @@ void TacEngListCB()
             }
             else
             {
-                if ( not gTimeModeServer and !g_bServer)
+                if ( not gTimeModeServer and  not g_bServer)
                 {
                     FindMissionInBriefing(TAC_AIRCRAFT);
                     UpdateMissionWindow(TAC_AIRCRAFT);
@@ -2447,7 +2447,7 @@ void PickCampaignPlaneCB(long ID, short hittype, C_Base *)
     }
 
     // playerPlane = flight->GetAdjustedAircraftSlot(playerPlane);
-    if ( not gTimeModeServer and !g_bServer)
+    if ( not gTimeModeServer and  not g_bServer)
     {
         RequestACSlot(flight, 0, static_cast<uchar>(playerPlane), 0, 0, 1);
     }

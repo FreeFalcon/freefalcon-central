@@ -350,7 +350,7 @@ short LogBookData::TotalKilled(void)
     return static_cast<short>(Pilot.Campaign.Killed + Pilot.Dogfight.Killed);
 }
 
-//static char XorMask[]="FreeFalcon Fun for the whole Family!!!";
+//static char XorMask[]="FreeFalcon Fun for the whole Family!";
 //static char YorMask[]="Makes other sims look like shit!";
 
 void LogBookData::Encrypt(void)
@@ -485,13 +485,13 @@ void LogBookData::UpdateCampaign(CAMP_MISS_STRUCT *MissStats)
 
     UpdateFlightHours(MissStats->FlightHours);
 
-    if (MissStats->Flags bitand CRASH_UNDAMAGED and !g_bDisableCrashEjectCourtMartials) // JB 010118
+    if (MissStats->Flags bitand CRASH_UNDAMAGED and  not g_bDisableCrashEjectCourtMartials) // JB 010118
     {
         Pilot.Campaign.TotalScore -= 25;
         MissionResult  or_eq  CM_CRASH | COURT_MARTIAL;
     }
 
-    if (MissStats->Flags bitand EJECT_UNDAMAGED and !g_bDisableCrashEjectCourtMartials) // JB 010118
+    if (MissStats->Flags bitand EJECT_UNDAMAGED and  not g_bDisableCrashEjectCourtMartials) // JB 010118
     {
         Pilot.Campaign.TotalScore -= 50;
         MissionResult  or_eq  CM_EJECT | COURT_MARTIAL;

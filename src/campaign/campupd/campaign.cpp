@@ -376,7 +376,7 @@ void RemoveUnit(Unit u)
 
 int TimeOfDayGeneral(CampaignTime time)
 {
-    // 2001-04-10 MODIFIED BY S.G. SO IT USES MILISECOND AND NOT MINUTES!
+    // 2001-04-10 MODIFIED BY S.G. SO IT USES MILISECOND AND NOT MINUTES
     //I COULD CHANGE THE .H FILE BUT IT WOULD TAKE TOO LONG TO RECOMPILE :-(
     /* if (time < TOD_SUNUP)
      return TOD_NIGHT;
@@ -487,7 +487,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 
     if (e->IsAggregate())
     {
-        if (session->InSessionBubble(e, 1.0F) and !g_bSleepAll)
+        if (session->InSessionBubble(e, 1.0F) and  not g_bSleepAll)
         {
             // It's in our bubble, post deaggregate message if host
             if (e->IsLocal())
@@ -537,7 +537,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
             // Update local sleep/wake state
             // me123 this handles local wake/sleep
             // for the host dont' handle airplanes and helicopters
-            if (e->IsUnit()  and !g_bSleepAll)
+            if (e->IsUnit()  and  not g_bSleepAll)
             {
                 want_in_sim_list = 1;
 
@@ -558,12 +558,12 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 
                     if (vuLocalSessionEntity->Game()->IsLocal())
                     {
-                        if ( not e->IsAirplane() and !e->IsHelicopter())
+                        if ( not e->IsAirplane() and not e->IsHelicopter())
                         {
                             e->Sleep();
                         }
                         else if (
-                            !e->IsObjective() ||
+                             not e->IsObjective() ||
                             (
                                 e->IsObjective() and (e->GetType() not_eq TYPE_AIRBASE) and (e->GetType() not_eq TYPE_AIRSTRIP)
                             )
@@ -571,7 +571,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
                             e->Sleep();
                     }
                 }
-                else if ( not e->IsAwake() and inbobble and !g_bSleepAll)
+                else if ( not e->IsAwake() and inbobble and  not g_bSleepAll)
                 {
                     e->Wake();
                 }
@@ -605,9 +605,9 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 
                 e->SetChecked();
             }
-            else if ( not g_bSleepAll and !e->IsSetFalcFlag(FEC_PLAYER_ENTERING)  and // we are not in sleep all mode
+            else if ( not g_bSleepAll and not e->IsSetFalcFlag(FEC_PLAYER_ENTERING)  and // we are not in sleep all mode
                      (
-                         !e->IsSetFalcFlag(FEC_PLAYERONLY) ||// not a human
+                          not e->IsSetFalcFlag(FEC_PLAYERONLY) ||// not a human
                          (
                              //human but he's attached
                              e->IsSetFalcFlag(FEC_PLAYERONLY) and e->IsSetFalcFlag(FEC_HASPLAYERS)
@@ -634,7 +634,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 
     }
 
-    if (session == FalconLocalSession and !didsimlistcrap)
+    if (session == FalconLocalSession and not didsimlistcrap)
     {
         // Update the entity's Sim List state
         if (want_in_sim_list)//me123 oldmp and InSimLists() )
@@ -754,7 +754,7 @@ void RebuildBubble(int forced)
                 while (object)
                 {
                     if ( not object->IsAwake()  and 
-                        !object->IsDead()  and 
+                         not object->IsDead()  and 
                         (object->IsBomb() or object->IsMissile()))
                     {
                         object->Wake();
@@ -896,7 +896,7 @@ void RebuildBubble(int forced)
         /* if ( not player and FalconLocalGame->IsLocal() and gCommsMgr->Online())
          player = FalconLocalSession->GetPlayerFlight();
          */
-        if (player and (player not_eq FalconLocalSession or !sCampaignSleepRequested))
+        if (player and (player not_eq FalconLocalSession or not sCampaignSleepRequested))
         {
             u = session->GetPlayerFlight();
 
@@ -964,7 +964,7 @@ void RebuildBubble(int forced)
                     while (object)
                     {
                         if (
-                            !object->IsAwake() and !object->IsDead()  and 
+                             not object->IsAwake() and not object->IsDead()  and 
                             (object->IsBomb() or object->IsMissile())
                         )
                         {
@@ -1163,9 +1163,9 @@ void RebuildBubble(int forced)
                             }
                         }
                     }
-                    else if ((u->IsBattalion() or u->IsTaskForce()) and !u->Inactive())
+                    else if ((u->IsBattalion() or u->IsTaskForce()) and not u->Inactive())
                     {
-                        if ( not u->IsDead() and !u->Inactive() and DeaggregationCheck(u, session) > 0)
+                        if ( not u->IsDead() and not u->Inactive() and DeaggregationCheck(u, session) > 0)
                         {
                             if (u->IsAggregate())
                             {
@@ -1932,7 +1932,7 @@ FILE* OpenCampFile(char *filename, char *ext, char *mode)
     // OutputDebugString (buffer);
 
     // 2002-03-25 MN added check for not being WCH file - otherwise can crash sometimes
-    // especially after theater switching situations !
+    // especially after theater switching situations 
     if ((reading_campressed_file) and (mode[0] == 'r') and strcmp(ext, "wch") not_eq 0)
     {
         if (strcmp(filename, camp_file_name) not_eq 0 and IsCampFile(camp_game_type, filename))
@@ -2417,7 +2417,7 @@ void DoCompressionLoop(void)
                 UPDATE_SIM_ELAPSED_SECONDS; // COBRA - RED - Scale Elapsed Seconds
                 gCompressTillTime = 0;
 
-                // OW FIXME: sometimes gets called when mainhandler is already freed!
+                // OW FIXME: sometimes gets called when mainhandler is already freed
                 // if (gMainHandler->GetAppWnd ())
                 if (gMainHandler and gMainHandler->GetAppWnd())
                 {
@@ -2432,7 +2432,7 @@ void DoCompressionLoop(void)
                         case game_TacticalEngagement:
                             if (pf->GetFirstUnitWP() == pf->GetCurrentUnitWP())
                             {
-                                if ((pf->GetPilotCount() < pf->GetACCount()) or !pf->GetACCount())
+                                if ((pf->GetPilotCount() < pf->GetACCount()) or not pf->GetACCount())
                                 {
                                     gCompressTillTime = 0;
                                     UI_HandleFlightScrub();
@@ -2452,7 +2452,7 @@ void DoCompressionLoop(void)
                             // more than 1 pilot... also only do this check if flight is taking off
                             if (pf->GetFirstUnitWP() == pf->GetCurrentUnitWP())
                             {
-                                if ((pf->GetPilotCount() < pf->GetACCount()) or !pf->GetACCount())
+                                if ((pf->GetPilotCount() < pf->GetACCount()) or not pf->GetACCount())
                                 {
                                     gCompressTillTime = 0;
                                     UI_HandleFlightScrub();
@@ -2597,7 +2597,7 @@ unsigned int __stdcall HandleCampaignThread(void)
         // sfr: if we do this here, we risk processing it while
         // the UI is closing. This is wrong, passing to after the suspended stuff
 #define NEW_UPDATE_HANDLE_CAMPAIGN 1
-#if !NEW_UPDATE_HANDLE_CAMPAIGN
+#if not NEW_UPDATE_HANDLE_CAMPAIGN
         UpdatePlayerSessions();
         // Send Dirty Campaign Objects
         FalconEntity::DoCampaignDirtyData(vuxRealTime);
@@ -2719,7 +2719,7 @@ unsigned int __stdcall HandleCampaignThread(void)
             gCampTime = GetTickCount() - sleepTic;
             gAveCampTime = (gAveCampTime * 7 + gCampTime) / 8;
             sleepTic = 100 * 100 / max(gAveCampTime, 10);
-#if !NEW_SYNC
+#if not NEW_SYNC
             ThreadManager::campaign_signal_sim();
             ThreadManager::campaign_wait_for_sim(max(sleepTic, 300));
 #endif
@@ -3170,7 +3170,7 @@ void RallyUnits(int minutes)
     {
         if (u->GetDomain() == DOMAIN_LAND)
         {
-            if ( not u->Scripted() and !u->Engaged() and u->GetUnitOrders() == GORD_RESERVE)
+            if ( not u->Scripted() and not u->Engaged() and u->GetUnitOrders() == GORD_RESERVE)
                 u->RallyUnit(minutes);
 
             u->UpdateParentStatistics();

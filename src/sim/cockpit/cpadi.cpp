@@ -153,7 +153,7 @@ CPAdi::CPAdi(ObjectInitStr *pobjectInitStr, ADIInitStr *padiInitStr) : CPObject(
     LastBUPRoll = 0.0F;
 
 
-    if (DisplayOptions.bRender2DCockpit and !mDoBackRect)
+    if (DisplayOptions.bRender2DCockpit and not mDoBackRect)
     {
         mpSourceBuffer = padiInitStr->sourceadi;
     }
@@ -379,7 +379,7 @@ void CPAdi::Exec(SimBaseClass *pSimBaseClass)
                 mRoll = LastBUPRoll;
             }
         }
-        else if (playerAC and !playerAC->INSState(AircraftClass::INS_ADI_OFF_IN))
+        else if (playerAC and not playerAC->INSState(AircraftClass::INS_ADI_OFF_IN))
         {
             //stay where you currently are
             mPitch = LastMainADIPitch;

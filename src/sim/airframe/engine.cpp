@@ -104,7 +104,7 @@ void AirframeClass::EngineModel(float dt)
             GeneratorOn(GenEpu);
         }
         // auto mode
-        else if ( not GeneratorRunning(GenMain) and !GeneratorRunning(GenStdby) and IsSet(InAir))
+        else if ( not GeneratorRunning(GenMain) and not GeneratorRunning(GenStdby) and IsSet(InAir))
         {
             GeneratorOn(GenEpu);
         }
@@ -247,7 +247,7 @@ void AirframeClass::EngineModel(float dt)
 
         // MD -- 20040210: add check for throttle up to idle to trigger engine light
         // use with caution...this was done at speed and not extensively tested.
-        if (g_bUseAnalogIdleCutoff and (rpm >= 0.20F) and !IO.IsAxisCutOff(AXIS_THROTTLE))
+        if (g_bUseAnalogIdleCutoff and (rpm >= 0.20F) and not IO.IsAxisCutOff(AXIS_THROTTLE))
         {
             ClearFlag(AirframeClass::EngineStopped);
             platform->mFaults->ClearFault(FaultClass::eng_fault, FaultClass::fl_out);
@@ -861,7 +861,7 @@ void AirframeClass::MultiEngineModel(float dt)
             GeneratorOn(GenEpu);
         }
         // auto mode
-        else if ( not GeneratorRunning(GenMain) and !GeneratorRunning(GenStdby) and IsSet(InAir))
+        else if ( not GeneratorRunning(GenMain) and not GeneratorRunning(GenStdby) and IsSet(InAir))
         {
             GeneratorOn(GenEpu);
         }

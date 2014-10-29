@@ -260,7 +260,7 @@ void PasswordWindow(long TitleID, long MessageID, void (*YesCB)(long, short, C_B
     C_ListBox *lbox;
     C_EditBox *ebox;
 
-    if ( not YesCB or !NoCB)
+    if ( not YesCB or not NoCB)
         return;
 
     if (LogState bitand LB_CHECKED)
@@ -537,7 +537,7 @@ void GetPilotList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[],
     int items = 0;
     _TCHAR *dst, *ptr, *extension;
 
-    if ( not win or !lbox) return;
+    if ( not win or not lbox) return;
 
     ffhnd = FindFirstFile(fspec, &filedata);
     last = (ffhnd not_eq INVALID_HANDLE_VALUE);
@@ -591,7 +591,7 @@ void GetPilotList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[],
         {
             i = 0;
 
-            while (excludelist[i] and !ignore)
+            while (excludelist[i] and not ignore)
             {
                 if (stricmp(excludelist[i], filedata.cFileName) == 0)
                     ignore = TRUE;
@@ -1408,7 +1408,7 @@ void LoadVirtualTGACB(long, short hittype, C_Base *control)
 
 void ChangeImageCB(long ID, short hittype, C_Base *control)
 {
-    if (LogState bitand LB_OPPONENT or !(LogState bitand LB_EDITABLE))
+    if (LogState bitand LB_OPPONENT or  not (LogState bitand LB_EDITABLE))
         return;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -2098,7 +2098,7 @@ void SaveLogBookCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (LogState bitand LB_OPPONENT or !(LogState bitand LB_EDITABLE))
+    if (LogState bitand LB_OPPONENT or  not (LogState bitand LB_EDITABLE))
     {
         CloseLogWindowCB(ID, hittype, control);
         return;

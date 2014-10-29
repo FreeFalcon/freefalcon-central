@@ -223,7 +223,7 @@ public:
     }
     int BlackoutOn(void)
     {
-        return !(SimFlags bitand SIM_NO_BLACKOUT) and TRUE;
+        return  not (SimFlags bitand SIM_NO_BLACKOUT) and TRUE;
     }
     int NoBlackout(void)
     {
@@ -243,7 +243,7 @@ public:
     }
     int CollisionsOn(void)
     {
-        return !(SimFlags bitand SIM_NO_COLLISIONS) and TRUE;
+        return  not (SimFlags bitand SIM_NO_COLLISIONS) and TRUE;
     }
     int NoCollisions(void)
     {
@@ -268,7 +268,7 @@ public:
 
     int WeatherOn(void)
     {
-        return !(GeneralFlags bitand GEN_NO_WEATHER);
+        return  not (GeneralFlags bitand GEN_NO_WEATHER);
     }
     int MFDTerrainOn(void)
     {

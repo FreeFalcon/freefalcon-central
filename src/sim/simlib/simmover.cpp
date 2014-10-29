@@ -506,7 +506,7 @@ int SimMoverClass::Wake(void)
     // SetDelta(0.0F, 0.0F, 0.0F);
     // SetYPRDelta(0.0F, 0.0F, 0.0F);
 
-    if (drawPointer and !IsExploding())
+    if (drawPointer and not IsExploding())
     {
         for (i = 0; i < numSwitches; i++)
         {
@@ -667,7 +667,7 @@ int SimMoverClass::Exec(void)
     if (GetCampaignObject())
         ((UnitClass*)GetCampaignObject())->SetUnitLastMove(TheCampaign.CurrentTime);
 
-    if (drawPointer and !IsExploding())
+    if (drawPointer and not IsExploding())
     {
         for (i = 0; i < numSwitches; i++)
         {
@@ -1186,7 +1186,7 @@ void SimMoverClass::UpdateLOS(SimObjectType *obj)
 
 int SimMoverClass::CheckLOS(SimObjectType *obj)
 {
-    if ( not obj or !obj->BaseData())
+    if ( not obj or not obj->BaseData())
         return FALSE;
 
     if (SimLibElapsedTime > obj->localData->nextLOSCheck)
@@ -1197,7 +1197,7 @@ int SimMoverClass::CheckLOS(SimObjectType *obj)
 
 int SimMoverClass::CheckCompositeLOS(SimObjectType *obj)
 {
-    if ( not obj or !obj->BaseData())
+    if ( not obj or not obj->BaseData())
         return FALSE;
 
     if (SimLibElapsedTime > obj->localData->nextLOSCheck)

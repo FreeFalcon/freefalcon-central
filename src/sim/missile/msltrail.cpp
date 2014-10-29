@@ -309,7 +309,7 @@ void MissileClass::UpdateTrail(void)
 
         //if (trail)
         //OTWDriver.InsertObject(trail);
-        if (engGlow and !g_bDisableMissleEngGlow) // MLR 2003-10-11 Disble the star
+        if (engGlow and  not g_bDisableMissleEngGlow) // MLR 2003-10-11 Disble the star
             OTWDriver.InsertObject(engGlow);
 
         if (engGlowBSP1)

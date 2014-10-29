@@ -660,7 +660,7 @@ void AirframeClass::Init(int idx)
 
             // simple flight model for AI's
             if (simpleMode == SIMPLE_MODE_AF
-                and !IsSet(AirframeClass::OnObject)
+                and not IsSet(AirframeClass::OnObject)
                )
             {
                 // JB carrier
@@ -754,7 +754,7 @@ void AirframeClass::Init(int idx)
 
             float xydelta = (float)sqrt(xdot * xdot + ydot * ydot);
 
-            if (xydelta and !platform->OnGround())
+            if (xydelta and not platform->OnGround())
             {
                 newSigma = (float)atan2(ydot, xdot);
             }
@@ -951,7 +951,7 @@ void AirframeClass::Init(int idx)
                             loadingFraction = weight / emptyWeight; //me123
 
                             if (( not platform->OnGround() and vcas < 60.0f ||
-                                 !platform->OnGround() and fabs(alpha)  > 18.0F  and 
+                                  not platform->OnGround() and fabs(alpha)  > 18.0F  and 
                                  vcas < 60.0f +
                                  60 * (loadingFraction - 1.3F) +
                                  10 * fabs(assymetry / weight) * 10.0F) ||

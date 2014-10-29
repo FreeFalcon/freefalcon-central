@@ -207,7 +207,7 @@ public:
     virtual int SaveSize(void);
     virtual int Save(VU_BYTE **stream);
 
-#if !USE_VU_COLL_FOR_CAMPAIGN
+#if not USE_VU_COLL_FOR_CAMPAIGN
     // function objects for associative containers holding CampBaseClass entities, such as deaggregatedMap
     /** sends deaggregated data to a target */
     class SendDeagOp

@@ -203,7 +203,7 @@ void AirframeClass::Gains(void)
     omegasp1 = max(1.0F, omegasp1);
     omegasp = omegasp1 ;
 
-    if (stallMode > Recovering or !IsSet(InAir))
+    if (stallMode > Recovering or not IsSet(InAir))
     {
         omegasp *= 2.0F;
     }
@@ -237,7 +237,7 @@ void AirframeClass::Gains(void)
 
     tp03   = max(tp03, 0.5F);
 
-    if (IsSet(AOACmdMode) or !(qsom * cnalpha))
+    if (IsSet(AOACmdMode) or  not (qsom * cnalpha))
         kp05 = tp02 * tp03 * wp01 * wp01;
     else
         kp05 = GRAVITY * tp02 * tp03 * wp01 * wp01 /

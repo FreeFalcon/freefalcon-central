@@ -25,8 +25,8 @@ extern int F4GameType;
 
 void INFOSetupRulesControls(void);
 
-static char PasswordKey1[] = "Coming soon to Stores Everywhere... FreeFalcon!!";
-static char PasswordKey2[] = "This is another stupid advertisement... hehehe!!";
+static char PasswordKey1[] = "Coming soon to Stores Everywhere... FreeFalcon";
+static char PasswordKey2[] = "This is another stupid advertisement... hehehe";
 
 // constructors bitand destructor
 FalconGameEntity::FalconGameEntity(ulong domainMask, char *gameName) : VuGameEntity(domainMask, gameName)
@@ -368,7 +368,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      }
 
      // We must be loaded in order to take over this game
-     if (new_host == FalconLocalSession and !TheCampaign.IsLoaded())
+     if (new_host == FalconLocalSession and not TheCampaign.IsLoaded())
      CampaignJoinFail(TRUE);
 
      if (new_host)
@@ -391,7 +391,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      if (( not sess or ent->OwnerId() == sess->Id()) and ent not_eq sess)
      {
      ent_class = ent->EntityType()->classInfo_[VU_CLASS];
-     if ( not new_host or (sess and !ent->IsTransferrable()))
+     if ( not new_host or (sess and not ent->IsTransferrable()))
      {
      vuDatabase->Remove(ent);
      }

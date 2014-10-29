@@ -609,7 +609,7 @@ CockpitManager::CockpitManager(
             mButtonViewTally not_eq mNumButtonViews)
         {
             char buf[0x400];
-            sprintf(buf, "Verify error detected!\n\nNumSurfaces:\t%.3d\t\tSurfaceTally:\t%.3d\nNumObjects:\t%.3d\t\tObjectTally:\t%.3d\nNumPanels:\t%.3d\t\tPanelTally:\t%.3d\nNumButtons:\t%.3d\t\tButtonTally:\t%.3d\nNumButtonViews:\t%.3d\t\tButtonViewTally:\t%.3d\t\n",
+            sprintf(buf, "Verify error detected\n\nNumSurfaces:\t%.3d\t\tSurfaceTally:\t%.3d\nNumObjects:\t%.3d\t\tObjectTally:\t%.3d\nNumPanels:\t%.3d\t\tPanelTally:\t%.3d\nNumButtons:\t%.3d\t\tButtonTally:\t%.3d\nNumButtonViews:\t%.3d\t\tButtonViewTally:\t%.3d\t\n",
                     mNumSurfaces, mSurfaceTally, mNumObjects, mObjectTally, mNumPanels, mPanelTally, mNumButtons, mButtonTally, mNumButtonViews, mButtonViewTally);
             ::MessageBox(NULL, buf, "FreeFalcon Cockpit Verifier", MB_OK | MB_SETFOREGROUND);
         }
@@ -862,7 +862,7 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
 
         if (ret == 0)
         {
-            // this shouldnt happen, parse error!
+            // this shouldnt happen, parse error
             mVersion.major = 0;
         }
 
@@ -4721,7 +4721,7 @@ float CockpitManager::GetCockpitMaskTop()
 
 #if DO_HIRESCOCK_HACK
 
-    if (mpActivePanel and !gDoCockpitHack)
+    if (mpActivePanel and not gDoCockpitHack)
     {
         returnValue = mpActivePanel->mMaskTop;
     }
@@ -4915,7 +4915,7 @@ BOOL CockpitManager::GetViewportBounds(ViewportBounds* bounds, int viewPort)
     BOOL returnValue = FALSE;
 #if DO_HIRESCOCK_HACK
 
-    if (mpActivePanel and !gDoCockpitHack)
+    if (mpActivePanel and not gDoCockpitHack)
     {
         returnValue = mpActivePanel->GetViewportBounds(bounds, viewPort);
     }
@@ -4978,7 +4978,7 @@ void CockpitManager::SetNextView(void)
 float CockpitManager::GetPan(void)
 {
 
-    if (mpActivePanel and !gDoCockpitHack)
+    if (mpActivePanel and not gDoCockpitHack)
     {
         return (mpActivePanel->mPan);
     }
@@ -4989,7 +4989,7 @@ float CockpitManager::GetPan(void)
 float CockpitManager::GetTilt(void)
 {
 
-    if (mpActivePanel and !gDoCockpitHack)
+    if (mpActivePanel and not gDoCockpitHack)
     {
         return (mpActivePanel->mTilt);
     }
@@ -5529,7 +5529,7 @@ void CockpitManager::LoadCockpitDefaults(void)
     }
 
     //MI EWS stuff
-    if (mpIcp and SimDriver.GetPlayerEntity() and !F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass)))
+    if (mpIcp and SimDriver.GetPlayerEntity() and  not F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass)))
     {
         //Chaff and Flare Bingo
         mpIcp->FlareBingo = GetPrivateProfileInt("EWS", "Flare Bingo",
@@ -5633,7 +5633,7 @@ void CockpitManager::LoadCockpitDefaults(void)
     }
 
     //MI save Cockpit selection
-    if (SimDriver.GetPlayerEntity() and !F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass)))
+    if (SimDriver.GetPlayerEntity() and  not F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass)))
     {
         sprintf(tmpStr, "WideView");
         int temp = GetPrivateProfileInt("Cockpit View", tmpStr, 0, dataFileName);
@@ -5665,8 +5665,8 @@ void CockpitManager::LoadCockpitDefaults(void)
     // sfr: TODO take this JB hack out
     if (playerAC  and 
         playerAC->Sms  and 
-        !F4IsBadReadPtr(playerAC, sizeof(AircraftClass))  and 
-        !F4IsBadCodePtr((FARPROC) playerAC->Sms))
+         not F4IsBadReadPtr(playerAC, sizeof(AircraftClass))  and 
+         not F4IsBadCodePtr((FARPROC) playerAC->Sms))
     {
         // JB 010220 CTD
         playerAC->Sms->SetMasterArm(
@@ -5977,7 +5977,7 @@ int FindCockpit(
 )
 {
 
-    // FO! sfr: plane number is no more
+    // FO sfr: plane number is no more
     // try plane number
     // FRB - Make cockpits switchable with theater
     sprintf(cockpitFolder, "%s", FalconCockpitThrDirectory);

@@ -62,10 +62,10 @@ extern "C" {
     /* Mutex macros */
 #define SAY_ON(a)
 #define SAY_OFF(a)
-#define CREATE_LOCK(a,b)                { a = CreateMutex( NULL, FALSE, b ); if( !a ) DebugBreak(); }
+#define CREATE_LOCK(a,b)                { a = CreateMutex( NULL, FALSE, b ); if( not a ) DebugBreak(); }
 #define REQUEST_LOCK(a)                 { int w = WaitForSingleObject(a, INFINITE); {SAY_ON(a);} if( w == WAIT_FAILED ) DebugBreak(); }
-#define RELEASE_LOCK(a)                 { {SAY_OFF(a);} if( !ReleaseMutex(a)) DebugBreak();   }
-#define DESTROY_LOCK(a)                 { if( !CloseHandle(a)) DebugBreak();   }
+#define RELEASE_LOCK(a)                 { {SAY_OFF(a);} if(  not ReleaseMutex(a)) DebugBreak();   }
+#define DESTROY_LOCK(a)                 { if(  not CloseHandle(a)) DebugBreak();   }
 
 
     static struct sockaddr_in comRecvAddr;
@@ -760,7 +760,7 @@ extern "C" {
                 lp = cudp->rudp_data.sending;
                 // sfr: TODO remove JB check
 
-                while (lp and !F4IsBadReadPtrC(lp, sizeof(Reliable_Packet)))
+                while (lp and  not F4IsBadReadPtrC(lp, sizeof(Reliable_Packet)))
                 {
                     count ++;
                     lp = lp->next;
@@ -768,7 +768,7 @@ extern "C" {
 
                 lp = cudp->rudp_data.oob_sending;
 
-                while (lp and !F4IsBadReadPtrC(lp, sizeof(Reliable_Packet)))  // JB 010220 CTD
+                while (lp and  not F4IsBadReadPtrC(lp, sizeof(Reliable_Packet)))  // JB 010220 CTD
                 {
                     count ++;
                     lp = lp->next;
@@ -864,7 +864,7 @@ extern "C" {
                         if (oob)
                         {
                             //if (cudp->rudp_data.oob_last_sent) // JB 010221 CTD
-                            if (cudp->rudp_data.oob_last_sent and !F4IsBadReadPtrC(cudp->rudp_data.oob_last_sent, sizeof(Reliable_Packet))) // JB 010221 CTD
+                            if (cudp->rudp_data.oob_last_sent and  not F4IsBadReadPtrC(cudp->rudp_data.oob_last_sent, sizeof(Reliable_Packet))) // JB 010221 CTD
                             {
                                 cudp->rudp_data.oob_last_sent->next = rp;
                             }
@@ -875,7 +875,7 @@ extern "C" {
                         else
                         {
                             //if (cudp->rudp_data.last_sent) // JB 010221 CTD
-                            if (cudp->rudp_data.last_sent and !F4IsBadReadPtrC(cudp->rudp_data.last_sent, sizeof(Reliable_Packet))) // JB 010221 CTD
+                            if (cudp->rudp_data.last_sent and  not F4IsBadReadPtrC(cudp->rudp_data.last_sent, sizeof(Reliable_Packet))) // JB 010221 CTD
                             {
                                 cudp->rudp_data.last_sent->next = rp;
                             }
@@ -1239,7 +1239,7 @@ extern "C" {
             return 0;
         }
 
-        if ( not size or !rp)
+        if ( not size or not rp)
         {
             return 0;
         }
@@ -1576,7 +1576,7 @@ extern "C" {
                         np = cp->next;
 
                         //while (np and needed) // JB 010223 CTD
-                        while (np and needed and !F4IsBadReadPtrC(np, sizeof(Reliable_Packet))) // JB 010223 CTD
+                        while (np and needed and  not F4IsBadReadPtrC(np, sizeof(Reliable_Packet))) // JB 010223 CTD
                         {
                             if (np->message_number == cp->message_number)
                             {
@@ -2040,7 +2040,7 @@ extern "C" {
 
                     rp = cudp->rudp_data.sending;
 
-                    while (rp and !F4IsBadReadPtrC(rp, sizeof(Reliable_Packet))) // JB 010619 CTD
+                    while (rp and  not F4IsBadReadPtrC(rp, sizeof(Reliable_Packet))) // JB 010619 CTD
                     {
                         time = RUDP_RESEND_TIME * 2;
 
@@ -2054,7 +2054,7 @@ extern "C" {
 
                     rp = cudp->rudp_data.oob_sending;
 
-                    while (rp and !F4IsBadReadPtrC(rp, sizeof(Reliable_Packet))) // JB 010619 CTD
+                    while (rp and  not F4IsBadReadPtrC(rp, sizeof(Reliable_Packet))) // JB 010619 CTD
                     {
                         time = RUDP_RESEND_TIME * 2;
 
@@ -2263,7 +2263,7 @@ extern "C" {
 
             // JB 010718 remove the protocol test?
             if (c->protocol >= 0 and c->protocol <= CAPI_LAST_PROTOCOL and // JB 010222 CTD
-                !F4IsBadReadPtrC(cudp, sizeof(ComIP))) // JB 010710 CTD
+                 not F4IsBadReadPtrC(cudp, sizeof(ComIP))) // JB 010710 CTD
             {
                 free(cudp);
             }

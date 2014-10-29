@@ -2,7 +2,7 @@
 #define _ATC_BRAIN_H
 
 #ifdef DEBUG
-//#define TEST_HACK_THAT_LEAKS // This is a BAD thing, but might help track down a bug -- remove soon!
+//#define TEST_HACK_THAT_LEAKS // This is a BAD thing, but might help track down a bug -- remove soon
 #endif
 
 class AircraftClass;

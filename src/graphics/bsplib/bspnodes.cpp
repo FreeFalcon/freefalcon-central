@@ -330,7 +330,7 @@ void BRoot::Draw(void)
     }
 
     BSubTree::Draw();
-    // LOOK HERE JAM!!!!
+    // LOOK HERE JAM
     //TheStateStack.context.setGlobalZBias(0);
 
 }

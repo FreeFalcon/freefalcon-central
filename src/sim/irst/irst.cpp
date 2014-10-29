@@ -109,7 +109,7 @@ SimObjectType* IrstClass::ConsiderDecoy(SimObjectType *target)
     int dummy = 0;
 
     // No counter measures deployed by campaign things
-    if ( not target or !target->BaseData()->IsSim())
+    if ( not target or not target->BaseData()->IsSim())
     {
         return target;
     }

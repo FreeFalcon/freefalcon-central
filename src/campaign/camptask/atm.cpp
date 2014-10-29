@@ -531,7 +531,7 @@ int AirTaskingManagerClass::Task(void)
     DWORD task_time = GetTickCount();
 
     // Don't do this if we're not active, or not owned by this machine
-    if ( not (TeamInfo[owner]->flags bitand TEAM_ACTIVE) or !IsLocal())
+    if ( not (TeamInfo[owner]->flags bitand TEAM_ACTIVE) or not IsLocal())
         return 0;
 
     // If we don't have any squadrons, don't bother
@@ -554,7 +554,7 @@ int AirTaskingManagerClass::Task(void)
     pc = NULL;
 
     // Don't bother looking unless we've gotten a new request or more airplanes
-    if ( not (flags bitand ATM_NEW_REQUESTS) and !(flags bitand ATM_NEW_PLANES))
+    if ( not (flags bitand ATM_NEW_REQUESTS) and  not (flags bitand ATM_NEW_PLANES))
         return 0;
 
     // Clear flags
@@ -579,11 +579,11 @@ int AirTaskingManagerClass::Task(void)
             continue;
         }
 
-        if (missionsFilled >= missionsToFill and !mis->action_type and !(MissionData[mis->mission].flags bitand AMIS_FLYALWAYS))
+        if (missionsFilled >= missionsToFill and not mis->action_type and  not (MissionData[mis->mission].flags bitand AMIS_FLYALWAYS))
             continue;
 
         // REMOVE ASAP
-        //Cobra someone didn't remove this and thus we had NO DCA missions!
+        //Cobra someone didn't remove this and thus we had NO DCA missions
         /*if (mis->mission == AMIS_BARCAP)
           continue;*/
         // END REMOVE
@@ -622,7 +622,7 @@ int AirTaskingManagerClass::Task(void)
                 }
 
                 // Insert this package into our active package list
-                if (pc and !(mis->flags bitand AMIS_IMMEDIATE))
+                if (pc and  not (mis->flags bitand AMIS_IMMEDIATE))
                 {
                     packageList->ForcedInsert(pc);
                     pc = NULL;
@@ -631,7 +631,7 @@ int AirTaskingManagerClass::Task(void)
                 // JB 000811 - Move the Remove and NULL around since references to mis could otherwise cause a crash (occured once)
                 //requestList->Remove(pp);//-
                 //pp = NULL;//-
-                if ( not mis->action_type and !(MissionData[mis->mission].flags bitand AMIS_FLYALWAYS))
+                if ( not mis->action_type and  not (MissionData[mis->mission].flags bitand AMIS_FLYALWAYS))
                     missionsFilled++;
 
                 requestList->Remove(pp);//+
@@ -701,7 +701,7 @@ void AirTaskingManagerClass::DoCalculations(void)
     ATMAirbaseClass *cur, *last;
 
     // Don't do this if we're not active, or not owned by this machine
-    if ( not (TeamInfo[owner]->flags bitand TEAM_ACTIVE) or !IsLocal())
+    if ( not (TeamInfo[owner]->flags bitand TEAM_ACTIVE) or not IsLocal())
         return;
 
     if ( not squadrons)
@@ -758,7 +758,7 @@ void AirTaskingManagerClass::DoCalculations(void)
 
 #ifdef DEBUG
 
-            if (airbase == sq and !sq->DontPlan())
+            if (airbase == sq and not sq->DontPlan())
             {
                 GridIndex x, y;
                 sq->GetLocation(&x, &y);
@@ -805,7 +805,7 @@ void AirTaskingManagerClass::DoCalculations(void)
     {
         airbase = (CampEntity) vuDatabase->Find(cur->id);
 
-        if ( not cur->usage or !airbase)
+        if ( not cur->usage or not airbase)
         {
             if ( not last)
                 airbaseList = cur->next;
@@ -1128,7 +1128,7 @@ int AirTaskingManagerClass::BuildSpecificDivert(Flight flight)
     VuTargetEntity *vuTarget;
 
     // Don't do this if we're not active, or not owned by this machine
-    if ( not (TeamInfo[owner]->flags bitand TEAM_ACTIVE) or !IsLocal())
+    if ( not (TeamInfo[owner]->flags bitand TEAM_ACTIVE) or not IsLocal())
         return 0;
 
     flight->GetLocation(&x, &y);
@@ -1186,7 +1186,7 @@ int AirTaskingManagerClass::BuildSpecificDivert(Flight flight)
 
     if (bm or flight->IsSetFalcFlag(FEC_HASPLAYERS))
     {
-        // Send the divert message (or divert denied if !bm and flight-Player())
+        // Send the divert message (or divert denied if  not bm and flight-Player())
         if (flight->IsSetFalcFlag(FEC_HASPLAYERS))
             vuTarget = FalconLocalGame;
         else
@@ -1249,7 +1249,7 @@ void AirTaskingManagerClass::ProcessRequest(MissionRequest request)
     else if (request->mission == AMIS_TANKER)
         FindBestLocation(request, tankerList);
 
-    if ( not request->tx or !request->ty)
+    if ( not request->tx or not request->ty)
         return;
 
     // Adjust priority and times depending on it's inclusion in an action
@@ -1281,7 +1281,7 @@ void AirTaskingManagerClass::ProcessRequest(MissionRequest request)
     {
         Objective o = (Objective)e;
 
-        if (o and !o->GetSpotted(request->who)) // and o->GetObjectiveStatus() < 100)
+        if (o and not o->GetSpotted(request->who)) // and o->GetObjectiveStatus() < 100)
         {
             // 20% chance of recon mission instead
             if ( not (rand() % 5) and o->HasDelta()) // Only recon if something's happened to it.
@@ -1301,10 +1301,10 @@ void AirTaskingManagerClass::ProcessRequest(MissionRequest request)
     {
         Unit u = (Unit)e;
 
-        if (u and !u->GetSpotted(request->who) and !FriendlyTerritory(request->tx, request->ty, request->who))
+        if (u and not u->GetSpotted(request->who) and not FriendlyTerritory(request->tx, request->ty, request->who))
         {
             // 33% chance of SAD mission instead (Except for SEAD Strike missions)
-            if (request->mission not_eq AMIS_SEADSTRIKE and !(rand() % 3))
+            if (request->mission not_eq AMIS_SEADSTRIKE and  not (rand() % 3))
             {
                 request->mission = AMIS_SAD;
                 request->targetID = FalconNullId;
@@ -1321,7 +1321,7 @@ void AirTaskingManagerClass::ProcessRequest(MissionRequest request)
     {
         Unit u = (Unit)e;
 
-        if (u and !u->GetSpotted(request->who))
+        if (u and not u->GetSpotted(request->who))
         {
             // 66% chance of PATROL mission instead
             if ((rand() % 3))
@@ -1336,7 +1336,7 @@ void AirTaskingManagerClass::ProcessRequest(MissionRequest request)
     }
 
     // Check to see if a similar mission is already in progress, and cancel if so.
-    if (packageList) // and !request->action_type)
+    if (packageList) // and not request->action_type)
     {
         VuListIterator packit(packageList);
         pack = (Package) GetFirstUnit(&packit);
@@ -1346,7 +1346,7 @@ void AirTaskingManagerClass::ProcessRequest(MissionRequest request)
             pmis = pack->GetMissionRequest();
 
             if (request->action_type == pmis->action_type  and 
-                pmis->mission == request->mission and !pack->Aborted()) // KCK: Probably want ' and  !mission finished' too
+                pmis->mission == request->mission and not pack->Aborted()) // KCK: Probably want ' and   not mission finished' too
             {
                 // We want to compare to in-progress missions differently for IMMEDIATE and non IMMEDIATE requests
                 if (request->flags bitand AMIS_IMMEDIATE)
@@ -1404,7 +1404,7 @@ void AirTaskingManagerClass::ProcessRequest(MissionRequest request)
             continue;
 
         // Check for action vs non-action missions
-        if (request->action_type and !pmis->action_type)
+        if (request->action_type and not pmis->action_type)
         {
             CampEnterCriticalSection();
             requestList->Remove(pp);
@@ -1466,7 +1466,7 @@ void AirTaskingManagerClass::ProcessRequest(MissionRequest request)
     requestList->InsertNewElement(mis->priority, mis, LADT_FREE_USER_DATA);
 
     // KCK: Increase the number of missions we're allowed to plan if this is a valid type
-    if ( not mis->action_type and !(MissionData[mis->mission].flags bitand AMIS_FLYALWAYS) and rand() % 100 < TeamInfo[mis->who]->GetGroundAction()->actionTempo)
+    if ( not mis->action_type and  not (MissionData[mis->mission].flags bitand AMIS_FLYALWAYS) and rand() % 100 < TeamInfo[mis->who]->GetGroundAction()->actionTempo)
         missionsToFill++;
 
 #ifdef KEV_ADEBUG
@@ -1580,7 +1580,7 @@ Squadron AirTaskingManagerClass::FindBestAir(MissionRequest mis, GridIndex bx, G
 
             // END OF ADDED SECTION
 
-            if ((caps bitand stats) not_eq caps or (service and !(service bitand stats)))
+            if ((caps bitand stats) not_eq caps or (service and  not (service bitand stats)))
                 continue;
 
             // 2001-04-26 ADDED BY S.G. SO STEALTH AIRCRAFT ARE NOT TASKED DURING DAYTIME. ONLY AT NIGHT...
@@ -1674,7 +1674,7 @@ Squadron AirTaskingManagerClass::FindBestAir(MissionRequest mis, GridIndex bx, G
             else
                 av = sq->FindAvailableAircraft(mis);
 
-            if ((av < mis->aircraft - 1 and !(mis->flags bitand REQF_USERESERVES)) or av < 1)
+            if ((av < mis->aircraft - 1 and  not (mis->flags bitand REQF_USERESERVES)) or av < 1)
                 continue;
 
             // Check against airbase schedule for this block and previous block
@@ -1698,7 +1698,7 @@ Squadron AirTaskingManagerClass::FindBestAir(MissionRequest mis, GridIndex bx, G
                 else if (mis->priority < 50)
                     score -= (50 - mis->priority) * bonus / 10;
 
-                if (mis->action_type or !(MissionData[mis->mission].flags bitand AMIS_FLYALWAYS))
+                if (mis->action_type or  not (MissionData[mis->mission].flags bitand AMIS_FLYALWAYS))
                     score += 5 * bonus; // Bonus for special or "hotspot" missions
                 else
                     score -= 5 * bonus;
@@ -1794,7 +1794,7 @@ Flight AirTaskingManagerClass::FindBestAirFlight(MissionRequest mis)
         cf = nu;
         nu = (Unit) myit.GetNext();
 
-        if (cf->GetType() not_eq TYPE_FLIGHT or !cf->Final() or cf->IsDead())
+        if (cf->GetType() not_eq TYPE_FLIGHT or not cf->Final() or cf->IsDead())
             continue;
 
 #ifdef REQHELP_DEBUG
@@ -1825,7 +1825,7 @@ Flight AirTaskingManagerClass::FindBestAirFlight(MissionRequest mis)
         }
 
         // Verify it's not aborting or diverted (if diverted, reevaluate if help request)
-        if (cf->Aborted() or cf->Diverted() and !(mis->flags bitand AMIS_HELP_REQUEST))
+        if (cf->Aborted() or cf->Diverted() and  not (mis->flags bitand AMIS_HELP_REQUEST))
             continue;
 
         // Check to make sure it's taken off (unless it's an alert mission)
@@ -1837,7 +1837,7 @@ Flight AirTaskingManagerClass::FindBestAirFlight(MissionRequest mis)
         stats = uc->Flags;
         score = (uc->Scores[role] + 4) / 5;
 
-        if (score <= 0 or (caps bitand stats) not_eq caps or (service and !(service bitand stats)))
+        if (score <= 0 or (caps bitand stats) not_eq caps or (service and  not (service bitand stats)))
             continue;
 
         // Check for aircraft and priority
@@ -1884,7 +1884,7 @@ Flight AirTaskingManagerClass::FindBestAirFlight(MissionRequest mis)
         // 2002-04-14 MN when the target is more than this distance away, skip the tested interceptor flight
         // when player calls for help - ignore distance
         //Cobra TEST remove first part
-        //if (d > g_nMaxInterceptDistance and !(mis->flags bitand AMIS_HELP_REQUEST))
+        //if (d > g_nMaxInterceptDistance and  not (mis->flags bitand AMIS_HELP_REQUEST))
         //continue;
         if (cf->GetUnitMission() == AMIS_ALERT and d > 250.0f/*MAX_SCRAMBLE_DISTANCE*/)
             continue;
@@ -2037,7 +2037,7 @@ int AirTaskingManagerClass::FindTakeoffSlot(VU_ID abid, WayPoint w)
     block = mins / MIN_PLAN_AIR;
     slot = mins % MIN_PLAN_AIR;
 
-    if (block < ATM_MAX_CYCLES and !(airbase->schedule[block] bitand (0x01 << slot)))
+    if (block < ATM_MAX_CYCLES and  not (airbase->schedule[block] bitand (0x01 << slot)))
     {
         // Runway is free, snap time to the minute and recalc speed
         RecalculateWaypoint(w, scheduleTime + mins * CampaignMinutes);
@@ -2048,7 +2048,7 @@ int AirTaskingManagerClass::FindTakeoffSlot(VU_ID abid, WayPoint w)
     block = mins / MIN_PLAN_AIR;
     slot = mins % MIN_PLAN_AIR;
 
-    if (block < ATM_MAX_CYCLES and !(airbase->schedule[block] bitand (0x01 << slot)))
+    if (block < ATM_MAX_CYCLES and  not (airbase->schedule[block] bitand (0x01 << slot)))
     {
         // Runway is free, snap time to the minute and recalc speed
         RecalculateWaypoint(w, scheduleTime + mins * CampaignMinutes);
@@ -2408,7 +2408,7 @@ void RebuildATMLists(void)
 
     // Increment our cycle
     // sfr: @TODO remove JB check
-    if (TeamInfo[0] and TeamInfo[0]->atm and !F4IsBadReadPtr(TeamInfo[0], sizeof(TeamClass)) and !F4IsBadReadPtr(TeamInfo[0]->atm, sizeof(AirTaskingManagerClass))) // JB 010220 CTD
+    if (TeamInfo[0] and TeamInfo[0]->atm and  not F4IsBadReadPtr(TeamInfo[0], sizeof(TeamClass)) and  not F4IsBadReadPtr(TeamInfo[0]->atm, sizeof(AirTaskingManagerClass))) // JB 010220 CTD
         cycle = (TeamInfo[0]->atm->cycle + 1) % ATM_MAX_CYCLES;
 
     for (t = 0; t < NUM_TEAMS; t++)
@@ -2451,7 +2451,7 @@ void RebuildATMLists(void)
             }
 
             // Add to the correct list;
-            if (u->GetType() == TYPE_SQUADRON and !u->Scripted())
+            if (u->GetType() == TYPE_SQUADRON and not u->Scripted())
             {
                 TeamInfo[t]->atm->squadronList->ForcedInsert(u);
                 TeamInfo[t]->atm->squadrons++;
@@ -2587,7 +2587,7 @@ int AlreadyPlanned(MissionRequestClass *mis, int who)
             {
                 pmis = pack->GetMissionRequest();
 
-                if (pmis->mission == mis->mission and pmis->targetID == mis->targetID and !pack->Aborted())
+                if (pmis->mission == mis->mission and pmis->targetID == mis->targetID and not pack->Aborted())
                     return 1;
 
                 pack = (Package) GetNextUnit(&packit);
@@ -2729,7 +2729,7 @@ void RequestIntercept(FlightClass* enemy, int who, RequIntHint hint)
 
     // Check for repeat requests/missions
     // KCK NOTE: This assumes RequestIntercept will always be called by host machine
-    // Experimental! Try no checking for repeat intercepts
+    // Experimental Try no checking for repeat intercepts
     // if (AlreadyPlanned(&mis, mis.who))
     // return;
 
@@ -2975,7 +2975,7 @@ void RecalculateWaypoint(WayPointClass *w, CampaignTime newDeparture)
         nw = w->GetNextWP();
         dist = cw->DistanceTo(nw);
 
-        while (nw and !(nw->GetWPFlags() bitand WPF_ASSEMBLE))
+        while (nw and  not (nw->GetWPFlags() bitand WPF_ASSEMBLE))
         {
             dist += cw->DistanceTo(nw);
             cw = nw;
@@ -3022,7 +3022,7 @@ void RecalculateWaypoint(WayPointClass *w, CampaignTime newDeparture)
         nw = w->GetNextWP();
         plannedSpeed = nw->GetWPSpeed();
 
-        while (nw and !(nw->GetWPFlags() bitand WPF_ASSEMBLE))
+        while (nw and  not (nw->GetWPFlags() bitand WPF_ASSEMBLE))
             nw = nw->GetNextWP();
 
         if ( not nw)

@@ -88,7 +88,7 @@ int FalconFlightPlanMessage::Process(uchar autodisp)
     //sfr: added rem for checks
 
 
-    if (autodisp or !unit or !unit->IsLocal())
+    if (autodisp or not unit or not unit->IsLocal())
     {
         return -1;
     }

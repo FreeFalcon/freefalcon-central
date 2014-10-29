@@ -557,7 +557,7 @@ static void RemoveTeamCB(long, short hittype, C_Base *)
     }
 
     // Pick a team to give all our stuff to.
-    for (i = 7; i < NUM_TEAMS and !TeamInfo[i]; i--);
+    for (i = 7; i < NUM_TEAMS and not TeamInfo[i]; i--);
 
     new_owner = i;
 

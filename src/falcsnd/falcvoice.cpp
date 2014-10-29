@@ -97,7 +97,7 @@ void SetVoiceVolumes(void)
 
 void SetVoiceVolume(int channel)
 {
-    if (VM and channel >= 0 and channel < NUM_VOICE_CHANNELS and !VM->falconVoices[channel].exitChannel)
+    if (VM and channel >= 0 and channel < NUM_VOICE_CHANNELS and not VM->falconVoices[channel].exitChannel)
     {
         F4SetStreamVolume(VM->falconVoices[channel].FalcVoiceHandle,
                           PlayerOptions.GroupVol[COM1_SOUND_GROUP + channel]);

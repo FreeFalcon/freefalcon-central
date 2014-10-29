@@ -652,7 +652,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
         //'0' BUTTON
         else if (mode == ZERO_BUTTON)
         {
-            if ((IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == FIFE_BUTTON) and !IsICPSet(ICPClass::BLOCK_MODE))
+            if ((IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == FIFE_BUTTON) and not IsICPSet(ICPClass::BLOCK_MODE))
             {
                 if (Cruise_RNG)
                 {

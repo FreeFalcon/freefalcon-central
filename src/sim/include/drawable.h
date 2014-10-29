@@ -141,7 +141,7 @@ public:
 
     virtual void Display(VirtualDisplay*)
     {
-        ShiWarning("No Display!");
+        ShiWarning("No Display");
     };
     virtual void DisplayInit(ImageBuffer*) {};
     virtual void DisplayExit(void);

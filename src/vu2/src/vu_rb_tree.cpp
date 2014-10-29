@@ -92,7 +92,7 @@ unsigned int VuRedBlackTree::Purge(VU_BOOL all)
     {
         VuEntityBin &eb = it->second;
 
-        if (all or ( not (eb->IsPrivate() and eb->IsPersistent()) and !eb->IsGlobal()))
+        if (all or ( not (eb->IsPrivate() and eb->IsPersistent()) and not eb->IsGlobal()))
         {
             it = map_.erase(it);
             ++ret;
@@ -277,7 +277,7 @@ unsigned int VuRedBlackTree::Purge(VU_BOOL all)
     {
         VuEntityBin &eb = it->second;
 
-        if (all or ( not (eb->IsPrivate() and eb->IsPersistent()) and !eb->IsGlobal()))
+        if (all or ( not (eb->IsPrivate() and eb->IsPersistent()) and not eb->IsGlobal()))
         {
             it = map_.erase(it);
             ++ret;

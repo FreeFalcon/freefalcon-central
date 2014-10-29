@@ -300,7 +300,7 @@ void SetupMapWindow()
     win = gMainHandler->FindWindow(CS_MAP_WIN);
 
     // MN turn off the occupation maps for now for 128x128 theaters - they cause CTD's...
-    if (win and !g_LargeTheater)
+    if (win and  not g_LargeTheater)
     {
         DeleteGroupList(CS_MAP_WIN);
 
@@ -422,7 +422,7 @@ void AddSquadronsToMap()
                 int mapratio = MAP_RATIO;
 
                 // 2002-02-01 MN This fixes squad selection map in hires UI - still need a solution for lowres UI
-                if (g_bHiResUI and !g_LargeTheater)
+                if (g_bHiResUI and  not g_LargeTheater)
                 {
                     mapratio /= 2;
                 }
@@ -522,7 +522,7 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
                 // 2001-12-12 M.N. adapted for 1024 UI
                 mapratio = MAP_RATIO;
 
-                if (g_bHiResUI and !g_LargeTheater)
+                if (g_bHiResUI and  not g_LargeTheater)
                     mapratio /= 2;
 
                 x = x / (FEET_PER_KM * mapratio);
@@ -1107,7 +1107,7 @@ static void CommitCB(long, short hittype, C_Base *)
 
                 if (ebox)
                 {
-                    // if( not PlayerOptions.InCompliance(game->GetRules()) or !game->CheckPassword(ebox->GetText()))
+                    // if( not PlayerOptions.InCompliance(game->GetRules()) or not game->CheckPassword(ebox->GetText()))
                     // {
                     SetupInfoWindow(ReallyJoinCB, CancelJoinCB);
                     // }
@@ -1347,7 +1347,7 @@ void SetCampaignSelectCB(long ID, short hittype, C_Base *control)
     //end ExitCampSelectFix
 }
 
-// ONLY use this as a Tree Callback... or it will CRASH Badly!!!
+// ONLY use this as a Tree Callback... or it will CRASH Badly!
 static void CampSelectGameCB(long, short hittype, C_Base *control)
 {
     VU_ID *tmpID;

@@ -606,7 +606,7 @@ void Render2D::Load2DFontSet()
 {
 #ifdef USE_TEXTURE_FONT
 
-    //Wombat778 12-12-2003 Added to allow fonts to be chosen based on the current resolution (code that runs under !g_bAutoScaleFonts is the original)
+    //Wombat778 12-12-2003 Added to allow fonts to be chosen based on the current resolution (code that runs under  not g_bAutoScaleFonts is the original)
     if ( not g_bAutoScaleFonts)
     {
         if (Font2D.fontTexture[0].LoadImage("art\\ckptart\\6x4font.gif", MPR_TI_CHROMAKEY | MPR_TI_PALETTE, FALSE))

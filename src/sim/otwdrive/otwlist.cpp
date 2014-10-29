@@ -279,7 +279,7 @@ void OTWDriverClass::RemoveObject(DrawableObject *dObj, int deleteObject)
 
     //if (dObj) // JB 010221 CTD
     // sfr: @todo remove JB check
-    if (dObj and !F4IsBadCodePtr((FARPROC) dObj))  // JB 010221 CTD
+    if (dObj and  not F4IsBadCodePtr((FARPROC) dObj))  // JB 010221 CTD
     {
 #if NEW_DRAWABLE_DESTRUCTION
 
@@ -297,7 +297,7 @@ void OTWDriverClass::RemoveObject(DrawableObject *dObj, int deleteObject)
 
 #endif
 
-        if (deleteObject and !F4IsBadWritePtr(dObj, sizeof(DrawableObject)))  // JB 010221 CTD
+        if (deleteObject and  not F4IsBadWritePtr(dObj, sizeof(DrawableObject)))  // JB 010221 CTD
         {
             delete dObj;
         }

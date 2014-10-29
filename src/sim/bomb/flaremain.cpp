@@ -126,7 +126,7 @@ void FlareClass::Start(vector* pos, vector* rate, float cD)
 
 void FlareClass::CreateGfx()
 {
-    // dont call base class since it create wrong gfx for some reason!!!!!
+    // dont call base class since it create wrong gfx for some reason
     InitTrail();
     ExtraGraphics();
 }

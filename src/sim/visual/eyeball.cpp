@@ -253,7 +253,7 @@ float EyeballClass::GetSignature(SimObjectType* obj)
 
                 // 2000-10-16 ADDED BY S.G. SO DUST/WATER TRAIL IMPROVES VISIBILITY, BUT NOT AS MUCH AS CONTRAILS OR ENGINE SMOKE...
                 // Altitude is within 10 to 80 feet off the ground and we're not over a runway
-                //if (aircraft->ZPos() - aircraft->af->groundZ >= -80.0f and object->ZPos() - ((AircraftClass *)object)->af->groundZ <= -10.0f and !aircraft->af->IsSet(AirframeClass::OverRunway))
+                //if (aircraft->ZPos() - aircraft->af->groundZ >= -80.0f and object->ZPos() - ((AircraftClass *)object)->af->groundZ <= -10.0f and not aircraft->af->IsSet(AirframeClass::OverRunway))
                 //bonus *= 2.0F;
                 // END OF ADDED SECTION (WITHIN CODE I ADDED)
 

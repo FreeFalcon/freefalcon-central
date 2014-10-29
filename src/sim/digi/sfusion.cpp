@@ -132,7 +132,7 @@ void DigitalBrain::SensorFusion(void)
           canSee = TRUE;//me123
           }
 
-          for (i = 0; i<self->numSensors and !canSee; i++)
+          for (i = 0; i<self->numSensors and not canSee; i++)
           {
           if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack ||
           localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime)
@@ -158,7 +158,7 @@ void DigitalBrain::SensorFusion(void)
          canSee = TRUE;
          }
 
-         for (i = 0; i<self->numSensors and !canSee; i++)
+         for (i = 0; i<self->numSensors and not canSee; i++)
          {
          if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack ||
          localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime)
@@ -194,7 +194,7 @@ void DigitalBrain::SensorFusion(void)
         // Go through all your sensors. If you 'see' the target and are bright enough, flag it as spotted and ask for an intercept if this FLIGHT is spotted for the first time...
         //for (i = 0; i<self->numSensors; i++) {
         //if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack or localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime) { // 2002-04-18 MODIFIED BY S.G. Reverted to and instead of ||. *MY* logic was flawed. It gaves a 'delay' (grace period) after the sensor becomes 'NoLock'.
-        //if (campBaseObj and /* and  SkillLevel() >= g_nLowestSkillForGCI  and */ !((UnitClass *)self->GetCampaignObject())->Broken()) {//Cobra removed GCI test here...not needed
+        //if (campBaseObj and /* and  SkillLevel() >= g_nLowestSkillForGCI  and */  not ((UnitClass *)self->GetCampaignObject())->Broken()) {//Cobra removed GCI test here...not needed
         //if ( not campBaseObj->GetSpotted(self->GetTeam()) and campBaseObj->IsFlight())
         //RequestIntercept((FlightClass *)campBaseObj, self->GetTeam());
 
@@ -214,7 +214,7 @@ void DigitalBrain::SensorFusion(void)
 
         campBaseObj->SetSpotted(self->GetTeam(),TheCampaign.CurrentTime, identified);
         }
-        //canSee = TRUE;  //Cobra we are removing these to test, this gave everything can see!
+        //canSee = TRUE;  //Cobra we are removing these to test, this gave everything can see
         //break;
         continue;
         }
@@ -307,7 +307,7 @@ void DigitalBrain::SensorFusion(void)
                     totalThreat += 20;
 
                 if (missionType == AMIS_BARCAP or missionType == AMIS_BARCAP2 or missionComplete
-                    or (missionClass == AGMission and !IsSetATC(HasAGWeapon)))
+                    or (missionClass == AGMission and not IsSetATC(HasAGWeapon)))
                 {
                     if (isHelo or hisCombatClass >= 7)
                         totalThreat = 5;
@@ -383,7 +383,7 @@ void DigitalBrain::SensorFusion(void)
                     else localData->threatTime = MAX_THREAT_TIME;
                  }
 
-                 else if ((baseObj->IsAirplane() or (baseObj->IsFlight() and !baseObj->IsHelicopter())) and pcId not_eq ID_NONE and pcId < ID_NEUTRAL and GuestimateCombatClass(self, baseObj) < MnvrClassA10)
+                 else if ((baseObj->IsAirplane() or (baseObj->IsFlight() and not baseObj->IsHelicopter())) and pcId not_eq ID_NONE and pcId < ID_NEUTRAL and GuestimateCombatClass(self, baseObj) < MnvrClassA10)
                  {
 
           //TJL 11/07/03 VO log says there is an radian error in this code
@@ -455,7 +455,7 @@ void DigitalBrain::SensorFusion(void)
            int isMissionTarget = canSee and campObj and (((FlightClass *)(self->GetCampaignObject()))->GetUnitMissionTargetID() == campObj->Id() or ((FlightClass *)(self->GetCampaignObject()))->GetAssignedTarget() == campObj->Id());
 
               if (canSee  and 
-           (baseObj->IsAirplane() or (baseObj->IsFlight() and !baseObj->IsHelicopter()) or (baseObj->IsHelicopter() and ((missionType not_eq AMIS_SWEEP and IsSetATC(OnSweep)) or isMissionTarget)))  and 
+           (baseObj->IsAirplane() or (baseObj->IsFlight() and not baseObj->IsHelicopter()) or (baseObj->IsHelicopter() and ((missionType not_eq AMIS_SWEEP and IsSetATC(OnSweep)) or isMissionTarget)))  and 
            pcId < ID_NEUTRAL  and 
            (GuestimateCombatClass(self, baseObj) < MnvrClassA10 or IsSetATC(OnSweep) or isMissionTarget)) // 2002-03-11 Don't assume you know the combat class
         // END OF MODIFIED SECTION 2002-03-05
@@ -526,7 +526,7 @@ int GuestimateCombatClass(AircraftClass *self, FalconEntity *baseObj)
     // If it doesn't have a campaign object or it's identified...
     if ( not campBaseObj or campBaseObj->GetIdentified(self->GetTeam()))
     {
-        // Yes, now you can get its combat class!
+        // Yes, now you can get its combat class
         return baseObj->CombatClass();
     }
     else

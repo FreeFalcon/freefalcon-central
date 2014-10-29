@@ -123,7 +123,7 @@ int GameManagerClass::CheckPlayerStatus(FalconEntity *entity)
 
     session = (FalconSessionEntity*)sessionWalker.GetFirst();
 
-    while (session and !player)
+    while (session and not player)
     {
         if (entity->IsSim() and entity == session->GetPlayerEntity())
         {
@@ -336,7 +336,7 @@ SimMoverClass* GameManagerClass::AttachPlayerToVehicle(FalconSessionEntity *play
 #endif
         // sfr: this will need changing if one day players are not aircraft anymore
         SimDriver.SetPlayerEntity(static_cast<AircraftClass*>(simEntity));
-#if !NEW_ATTACH_ORDER
+#if not NEW_ATTACH_ORDER
         // sfr: set it here, since start loop calls this too
         OTWDriver.SetGraphicsOwnship(simEntity);
 #endif
@@ -478,7 +478,7 @@ void GameManagerClass::ReleasePlayer(FalconSessionEntity *player)
         // sfr: why OnGround its not disabled ???
         // this is causing players to begin with AP on.
         // commentted out
-        if (simEntity->IsAirplane()/* and !simEntity->OnGround()*/)
+        if (simEntity->IsAirplane()/* and not simEntity->OnGround()*/)
         {
             ((AircraftClass *)simEntity)->SetAutopilot(AircraftClass::APOff);
         }

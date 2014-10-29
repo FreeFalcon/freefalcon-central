@@ -453,7 +453,7 @@ void Canvas3D::TextLeft(float x1, float y1, const char *string, int boxed)
             s[0] = string[i];
 
             // specifically check for blanks (DED text has a lot)
-            if (*s == ' ' and !boxed)
+            if (*s == ' ' and not boxed)
             {
                 ps1.x += 3.0f;
                 ps1.y += slope * 3.0f;

@@ -72,7 +72,7 @@ void HeliBrain::TargetSelection(void)
     // dead, if so let's get a new target from the campaign
     if (targetPtr  and 
         targetPtr->BaseData()->IsSim()  and 
-        (targetPtr->BaseData()->IsExploding() or !((SimBaseClass *)targetPtr->BaseData())->IsAwake()))
+        (targetPtr->BaseData()->IsExploding() or  not ((SimBaseClass *)targetPtr->BaseData())->IsAwake()))
     {
         ClearTarget();
     }
@@ -105,7 +105,7 @@ void HeliBrain::TargetSelection(void)
      if ( not simTarg) // another sanity check
      return;
 
-     if ( not simTarg->IsExploding() and !simTarg->IsDead() and simTarg->pctStrength > 0.0f) // still alive?
+     if ( not simTarg->IsExploding() and not simTarg->IsDead() and simTarg->pctStrength > 0.0f) // still alive?
      SetTargetEntity( simTarg );
 
      return;
@@ -165,7 +165,7 @@ void HeliBrain::TargetSelection(void)
             return;
 
         // set it as our target
-        if ( not simTarg->IsExploding() and !simTarg->IsDead() and simTarg->pctStrength > 0.0f) // still alive?
+        if ( not simTarg->IsExploding() and not simTarg->IsDead() and simTarg->pctStrength > 0.0f) // still alive?
             SetTargetEntity(simTarg);
 
         return;
@@ -341,7 +341,7 @@ void HeliBrain::TargetSelection(SimObjectType *tlist)
         theObject = (SimBaseClass*)tmpObj->BaseData();
 
         // edg : ERROR!
-        if ( not theObject or !tmpObj->localData)
+        if ( not theObject or not tmpObj->localData)
         {
             // get next object
             tmpObj = tmpObj->next;

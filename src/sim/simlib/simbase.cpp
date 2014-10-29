@@ -475,7 +475,7 @@ int SimBaseClass::Sleep(void)
 
 #if 0 // The code screws up IA by violently removing vehicles from the campaign unit prior to reagg, thus "losing" them.
     /*
-     if (SimDriver.RunningInstantAction() and !IsSetFlag(MOTION_OWNSHIP))
+     if (SimDriver.RunningInstantAction() and not IsSetFlag(MOTION_OWNSHIP))
      {
      // This is an instant action game - We want to remove the object
      // and regenate a new one

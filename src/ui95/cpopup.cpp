@@ -515,7 +515,7 @@ long C_PopupList::CheckHotSpots(long relX, long relY)
     POPUPLIST *cur;
     short i;
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED))
+    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED))
         return(0);
 
     if (relX < Parent_->ClientArea_[GetClient()].left or relX > Parent_->ClientArea_[GetClient()].right ||
@@ -656,7 +656,7 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
             return(TRUE);
         }
 
-        if (cur->flags_ bitand C_BIT_ENABLED and !(cur->flags_ bitand C_BIT_INVISIBLE))
+        if (cur->flags_ bitand C_BIT_ENABLED and  not (cur->flags_ bitand C_BIT_INVISIBLE))
         {
             if (cur->Type_ == C_TYPE_MENU)
             {
@@ -746,7 +746,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     if (cur)
     {
-        if (cur->Type_ == C_TYPE_NOTHING or !(cur->flags_ bitand C_BIT_ENABLED))
+        if (cur->Type_ == C_TYPE_NOTHING or  not (cur->flags_ bitand C_BIT_ENABLED))
             cur = NULL;
     }
 

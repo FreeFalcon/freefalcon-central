@@ -50,7 +50,7 @@ void CBEMachAsi(void * pObject)
 
         pCPDial = (CPDial*) pObject;
 
-        if ( not pCPDial or !pCPDial->mpOwnship) return;
+        if ( not pCPDial or not pCPDial->mpOwnship) return;
 
         if (F4IsBadReadPtr(pCPDial->mpOwnship, sizeof(pCPDial->mpOwnship))) return;
 

@@ -216,7 +216,7 @@ void OTWDriverClass::Select2DCockpitMode(bool viewreset) //Wombat778 11-18-04  a
             pCockpitManager->SetDefaultPanel(COCKPIT_DEFAULT_PANEL);
 
         //Wombat778 11-17-04
-        if (g_bSync2D3DPit and !viewreset)
+        if (g_bSync2D3DPit and not viewreset)
             pCockpitManager->Set2DPanelDirection(eyePan, eyeTilt);
     }
 }
@@ -696,7 +696,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 targetPtr = (( SimMoverClass * )otwPlatform)->targetPtr;
 
                 // any target?
-                if ( targetPtr == NULL or targetPtr->BaseData() == NULL or !targetPtr->BaseData()->IsSim())
+                if ( targetPtr == NULL or targetPtr->BaseData() == NULL or not targetPtr->BaseData()->IsSim())
                  return;
 
                 // set graphics focus to the target
@@ -995,7 +995,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 targetPtr = (( SimMoverClass * )otwPlatform)->targetPtr;
 
                 // any target?
-                if ( targetPtr == NULL or targetPtr->BaseData() == NULL or !targetPtr->BaseData()->IsSim())
+                if ( targetPtr == NULL or targetPtr->BaseData() == NULL or not targetPtr->BaseData()->IsSim())
                 {
                  // no target, look for air threat
                  newObject = FindNextViewObject( otwPlatform, NULL, NEXT_AIR_ENEMY  );
@@ -1372,30 +1372,30 @@ void OTWDriverClass::ToggleHaze(void)
 
 void OTWDriverClass::ToggleLocationDisplay(void)
 {
-    showPos = !showPos;
+    showPos = not showPos;
 }
 
 void OTWDriverClass::ToggleAeroDisplay(void)
 {
-    showAero = !showAero;
+    showAero = not showAero;
 }
 
 //TJL 11/09/03 On/Off Flaps
 void OTWDriverClass::ToggleFlapDisplay(void)
 {
-    showFlaps = !showFlaps;
+    showFlaps = not showFlaps;
 }
 
 // Retro 1Feb2004 start
 void OTWDriverClass::ToggleEngineDisplay(void)
 {
-    showEngine = !showEngine;
+    showEngine = not showEngine;
 }
 // Retro 1Feb2004 end
 
 void OTWDriverClass::ToggleThrustReverseDisplay(void)
 {
-    showThrustReverse = !showThrustReverse;
+    showThrustReverse = not showThrustReverse;
 }
 
 void OTWDriverClass::ToggleRoof(void)

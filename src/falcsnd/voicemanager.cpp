@@ -442,7 +442,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                         // best is to player
                         if (
                             (pVC->node->to == playerID)  and 
-                            // sfr: was < here!!
+                            // sfr: was < here
                             (pVC->node->priority > best->node->priority)
                         )
                         {
@@ -464,7 +464,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                 }
             }
 
-            // sfr: this breakin logic needs to be reviewed! Its not usign same as best choice!!
+            // sfr: this breakin logic needs to be reviewed! Its not usign same as best choice
             // now we check if the best conversation is enough to break a current ongoin one
             // breaking means we are interrupting an ongoing conversation to play a new one
             breakin = FALSE;
@@ -1379,7 +1379,7 @@ int VoiceManager::ListCheckChannelNum(void *node_a, int channelNum)
 // believe I need to change the code to search through prev, not next
 // also need to make sure I have null checks
 
-//AAGh!! it's a bubble sort that's using the prev? pointer
+//AAGh it's a bubble sort that's using the prev? pointer
 /*
 VMLIST *VoiceManager::VMListSort( VMLIST **list, int sortType )
 {
@@ -1389,7 +1389,7 @@ BOOL sortCritMet = FALSE;
 
   for( parent_a = list; *parent_a; parent_a = &(*parent_a)->prev )
   {
- if ( !(*parent_a)->prev )
+ if (  not (*parent_a)->prev )
  break;
  for( parent_b = &(*parent_a)->prev; *parent_b; parent_b = &(*parent_b)->prev )
  {
@@ -1569,7 +1569,7 @@ int VoiceManager::GetRadioFreq(int radio)
 
 void VoiceManager::ForwardCycleFreq(int radio)
 {
-    if (radio < 0 or radio > 1 or !this)
+    if (radio < 0 or radio > 1 or not this)
     {
         return;
     }
@@ -1587,7 +1587,7 @@ void VoiceManager::ForwardCycleFreq(int radio)
 
 void VoiceManager::BackwardCycleFreq(int radio)
 {
-    if (radio < 0 or radio > 1 or !this)
+    if (radio < 0 or radio > 1 or not this)
     {
         return;
     }
@@ -1673,7 +1673,7 @@ int VoiceManager::BuffersEmpty(int channel)
 
 void VoiceManager::SetChannelVolume(int channel, int volume)
 {
-    if (channel >= 0 and channel < NUM_VOICE_CHANNELS and !falconVoices[channel].exitChannel)
+    if (channel >= 0 and channel < NUM_VOICE_CHANNELS and not falconVoices[channel].exitChannel)
     {
         F4SetStreamVolume(falconVoices[channel].FalcVoiceHandle, volume);
     }
@@ -1708,7 +1708,7 @@ void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from, int c
 
     fromEnt = vuDatabase->Find(from);
 
-    if (fromEnt and ownship and fromEnt not_eq SimDriver.GetPlayerEntity() and !nonoise and SimDriver.InSim())
+    if (fromEnt and ownship and fromEnt not_eq SimDriver.GetPlayerEntity() and not nonoise and SimDriver.InSim())
     {
         dx = fromEnt->XPos() - ownship->XPos();
         dy = fromEnt->YPos() - ownship->YPos();

@@ -431,7 +431,7 @@ void SimulationDriver::Exit(void)
 {
     // sfr: this cannot happen in MP
 #define NO_KILL_ON_EXIT 1
-#if !NO_KILL_ON_EXIT
+#if not NO_KILL_ON_EXIT
     SimBaseClass *theObject, *nextObject;
     VuListIterator objectWalker(objectList);
 
@@ -539,7 +539,7 @@ void SimulationDriver::Cycle()
         doFile = FALSE;
     }
 
-#if !NEW_SERVER_VIEWPOINT
+#if not NEW_SERVER_VIEWPOINT
 
     //me123 the following function is needed for host to send updates while in the ui
     //with the new mp code.
@@ -553,7 +553,7 @@ void SimulationDriver::Cycle()
         int flying = FALSE;
 
         //FLYSTATE_IN_UI
-        while (sess and !flying)
+        while (sess and not flying)
         {
             // sfr: why get from DB???
             // this is fucking hack. They get from DB because UI can be closing while this is runnig
@@ -570,15 +570,15 @@ void SimulationDriver::Cycle()
         }
 
         if (
-            flying and !OTWDriver.IsActive() and FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI  and 
-            !curFlyState and !doGraphicsExit and !doExit and !TheCampaign.IsSuspended()
+            flying and not OTWDriver.IsActive() and FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI  and 
+            !curFlyState and not doGraphicsExit and not doExit and not TheCampaign.IsSuspended()
         )
         {
             Enter();
         }
         else if (
             flying and OTWDriver.IsActive() and FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI  and 
-            !curFlyState and !doGraphicsExit and !doExit and !TheCampaign.IsSuspended()
+            !curFlyState and not doGraphicsExit and not doExit and not TheCampaign.IsSuspended()
         )
         {
             if ((sess->CameraCount() > 0) and OTWDriver.GetViewpoint())
@@ -881,7 +881,7 @@ void SimulationDriver::SetPlayerEntity(SimMoverClass* newObject)
         RunningTactical()  and 
         current_tactical_mission  and 
         current_tactical_mission->get_type() == tt_training  and 
-        !strcmpi(current_tactical_mission->get_title(), "10 Instrument Landing")  and 
+         not strcmpi(current_tactical_mission->get_title(), "10 Instrument Landing")  and 
         gNavigationSys
     )
     {
@@ -928,8 +928,8 @@ void SimulationDriver::UpdateIAStats(SimBaseClass* oldEntity)
         return;
     }
     else if ( not (oldEntity->IsSetFlag(MOTION_AIR_AI))  and 
-             !(oldEntity->IsSetFlag(MOTION_GND_AI))  and 
-             !(oldEntity->IsSetFlag(MOTION_HELO_AI)))
+              not (oldEntity->IsSetFlag(MOTION_GND_AI))  and 
+              not (oldEntity->IsSetFlag(MOTION_HELO_AI)))
     {
         return;
     }
@@ -1036,7 +1036,7 @@ void SimulationDriver::SleepCampaignFlight(TailInsertList *flightList)
     ShiAssert(theObject == NULL or FALSE == F4IsBadReadPtr(theObject, sizeof * theObject));
 
     //while (theObject) // JB 010306 CTD
-    while (theObject and !F4IsBadReadPtr(theObject, sizeof(SimBaseClass))) // JB 010306 CTD
+    while (theObject and  not F4IsBadReadPtr(theObject, sizeof(SimBaseClass))) // JB 010306 CTD
     {
         theObject->Sleep();
         theObject = (SimBaseClass*)flit.GetNext();
@@ -1073,7 +1073,7 @@ void SimulationDriver::WakeObject(SimBaseClass* theObject)
 // This call makes the sim ignore this object
 void SimulationDriver::SleepObject(SimBaseClass* theObject)
 {
-    if ( not theObject or !theObject->IsAwake())
+    if ( not theObject or not theObject->IsAwake())
         return;
 
     theObject->Sleep();
@@ -1152,7 +1152,7 @@ SimBaseClass* SimulationDriver::FindNearestThreat(float* bearing, float* range, 
 
     while (theObject)
     {
-        if (theObject->IsAirplane() and !theObject->IsDead() and !theObject->OnGround() and !theObject->IsEject() and !theObject->IsDying()  and 
+        if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and not theObject->IsEject() and not theObject->IsDying()  and 
             GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile and theObject->GetCampaignObject()->GetSpotted(myTeam))
         {
             if (theObject->GetSType() == STYPE_AIR_FIGHTER ||
@@ -1212,7 +1212,7 @@ SimBaseClass* SimulationDriver::FindNearestThreat(short *x, short *y, float* alt
 
     while (theObject)
     {
-        if (theObject->IsAirplane() and !theObject->IsDead() and !theObject->OnGround() and !theObject->IsEject() and !theObject->IsDying()  and 
+        if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and not theObject->IsEject() and not theObject->IsDying()  and 
             GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile and theObject->GetCampaignObject()->GetSpotted(myTeam))
         {
             if (theObject->GetSType() == STYPE_AIR_FIGHTER ||
@@ -1274,7 +1274,7 @@ SimBaseClass* SimulationDriver::FindNearestThreat(AircraftClass* aircraft, short
 
     while (theObject)
     {
-        if (theObject->IsAirplane() and !theObject->IsDead() and !theObject->OnGround() and !theObject->IsEject() and !theObject->IsDying()  and 
+        if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and not theObject->IsEject() and not theObject->IsDying()  and 
             GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile and theObject->GetCampaignObject()->GetSpotted(myTeam))
         {
             if (theObject->GetSType() == STYPE_AIR_FIGHTER ||
@@ -1336,7 +1336,7 @@ SimBaseClass* SimulationDriver::FindNearestEnemyPlane(AircraftClass* aircraft, s
 
     while (theObject)
     {
-        if (theObject->IsAirplane() and !theObject->IsDead() and !theObject->OnGround()  and 
+        if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround()  and 
             GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile and theObject->GetCampaignObject()->GetSpotted(myTeam))
         {
             if (retval == NULL)
@@ -1407,7 +1407,7 @@ CampBaseClass* SimulationDriver::FindNearestCampThreat(AircraftClass* aircraft, 
 
     while (theUnit)
     {
-        if (theUnit->IsFlight() and !theUnit->IsDead() and GetTTRelations((Team)theUnit->GetTeam(), myTeam) >= Hostile and theUnit->GetSpotted(myTeam))
+        if (theUnit->IsFlight() and not theUnit->IsDead() and GetTTRelations((Team)theUnit->GetTeam(), myTeam) >= Hostile and theUnit->GetSpotted(myTeam))
         {
             if (theUnit->GetSType() == STYPE_UNIT_FIGHTER ||
                 theUnit->GetSType() == STYPE_UNIT_FIGHTER_BOMBER)
@@ -1481,7 +1481,7 @@ CampBaseClass* SimulationDriver::FindNearestCampEnemy(AircraftClass* aircraft, s
 
     while (theUnit)
     {
-        if (theUnit->IsFlight() and !theUnit->IsDead() and GetTTRelations((Team)theUnit->GetTeam(), myTeam) >= Hostile and theUnit->GetSpotted(myTeam))
+        if (theUnit->IsFlight() and not theUnit->IsDead() and GetTTRelations((Team)theUnit->GetTeam(), myTeam) >= Hostile and theUnit->GetSpotted(myTeam))
         {
             if (retval == NULL)
             {
@@ -1554,7 +1554,7 @@ SimBaseClass* SimulationDriver::FindNearestTraffic(AircraftClass* aircraft, Obje
         // check it is an airplane and not dead
         // check that it is not on the ground
         // checks that it is not hostile
-        if (aircraft->GetCallsignIdx() not_eq theObject->GetCallsignIdx() and theObject->IsAirplane() and !theObject->IsDead() and !theObject->OnGround()  and 
+        if (aircraft->GetCallsignIdx() not_eq theObject->GetCallsignIdx() and theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround()  and 
             GetTTRelations((Team)theObject->GetTeam(), myTeam) <= Neutral)
         {
             if (retval == NULL)
@@ -1895,7 +1895,7 @@ void SimulationDriver::InitACMIRecord(void)
         airPos.data.type = theMover->Type();
 
         // sfr: remove JB check
-        if ( not F4IsBadReadPtr((DrawableBSP*)(theMover->drawPointer), sizeof(DrawableBSP)) and theMover->GetTeam() >= 0 and !F4IsBadReadPtr(TeamInfo[theMover->GetTeam()], sizeof(TeamClass))) // JB 010326 CTD
+        if ( not F4IsBadReadPtr((DrawableBSP*)(theMover->drawPointer), sizeof(DrawableBSP)) and theMover->GetTeam() >= 0 and  not F4IsBadReadPtr(TeamInfo[theMover->GetTeam()], sizeof(TeamClass))) // JB 010326 CTD
             airPos.data.uniqueID = ACMIIDTable->Add(theMover->Id(), (char*)((DrawableBSP*)(theMover->drawPointer))->Label(), TeamInfo[theMover->GetTeam()]->GetColor()); //.num_;
 
         airPos.data.x = theMover->XPos();

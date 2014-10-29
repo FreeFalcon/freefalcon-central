@@ -121,7 +121,7 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
     display = newDisplay;
 
     // FRB - B&W display
-    if (g_bGreyMFD and !bNVGmode)
+    if (g_bGreyMFD and not bNVGmode)
         display->SetColor(0xffffffff);
 
     int tmpColor = display->Color();
@@ -180,15 +180,15 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
             else
             {
                 // FRB - B&W display
-                if (g_bGreyMFD and !bNVGmode)
+                if (g_bGreyMFD and not bNVGmode)
                     display->SetColor(0xffffffff);
 
                 //only if not in narrow view
                 if (curFOV > 3.0F * DTR)
                     DrawFOV(display);
 
-                if (playerAC and playerAC->FCC and !playerAC->FCC
-                    ->preDesignate and !IsLocked())
+                if (playerAC and playerAC->FCC and not playerAC->FCC
+                    ->preDesignate and not IsLocked())
                     display->TextCenter(0.0F, -0.4F, "AREA");
             }
 
@@ -217,8 +217,8 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
                 if (curFOV > 3.0F * DTR)
                     DrawFOV(display);
 
-                if (playerAC and playerAC->FCC and !playerAC->FCC
-                    ->preDesignate and !IsLocked())
+                if (playerAC and playerAC->FCC and not playerAC->FCC
+                    ->preDesignate and not IsLocked())
                     display->TextCenter(0.0F, -0.4F, "AREA");
             }
         }
@@ -235,25 +235,25 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
             else
             {
                 // FRB - B&W display
-                if (g_bGreyMFD and !bNVGmode)
+                if (g_bGreyMFD and not bNVGmode)
                     display->SetColor(0xffffffff);
 
                 //only if not in narrow view
                 if (curFOV > 3.0F * DTR)
                     DrawFOV(display);
 
-                if (playerAC and playerAC->FCC and !playerAC->FCC
-                    ->preDesignate and !IsLocked())
+                if (playerAC and playerAC->FCC and not playerAC->FCC
+                    ->preDesignate and not IsLocked())
                     display->TextCenter(0.0F, -0.4F, "AREA");
             }
         }
 
         if ( not IsSOI())
         {
-            if (g_bRealisticAvionics and !MenuMode)
+            if (g_bRealisticAvionics and not MenuMode)
             {
                 // FRB - B&W display
-                if (g_bGreyMFD and !bNVGmode)
+                if (g_bGreyMFD and not bNVGmode)
                     display->SetColor(0xffffffff);
                 else
                     display->SetColor(GetMfdColor(MFD_GREEN));
@@ -270,7 +270,7 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
         else
         {
             // FRB - B&W display
-            if (g_bGreyMFD and !bNVGmode)
+            if (g_bGreyMFD and not bNVGmode)
                 display->SetColor(0xffffffff);
             else
                 display->SetColor(GetMfdColor(MFD_GREEN));
@@ -291,7 +291,7 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
             if ( not MenuMode)
             {
                 // FRB - B&W display
-                if (g_bGreyMFD and !bNVGmode)
+                if (g_bGreyMFD and not bNVGmode)
                     display->SetColor(0xffffffff);
                 else
                     display->SetColor(GetMfdColor(MFD_GREEN));
@@ -310,7 +310,7 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
             if (playerAC and playerAC->FCC)
             {
                 // FRB - B&W display
-                if (g_bGreyMFD and !bNVGmode)
+                if (g_bGreyMFD and not bNVGmode)
                     display->SetColor(0xffffffff);
                 else
                     display->SetColor(GetMfdColor(MFD_GREEN));

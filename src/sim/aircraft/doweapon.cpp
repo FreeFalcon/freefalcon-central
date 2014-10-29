@@ -58,12 +58,12 @@ void AircraftClass::DoWeapons()
     //MI
     if ( not g_bRealisticAvionics or isDigital)
     {
-        fireFlag = fireGun and !OnGround() and (Sms->MasterArm() == SMSBaseClass::Arm);
+        fireFlag = fireGun and not OnGround() and (Sms->MasterArm() == SMSBaseClass::Arm);
     }
     else
     {
         //Gun can only be fired if it's selected as actual weapon
-        fireFlag = !OnGround() and (Sms->MasterArm() == SMSBaseClass::Arm) and (GunFire or fireGun);
+        fireFlag = not OnGround() and (Sms->MasterArm() == SMSBaseClass::Arm) and (GunFire or fireGun);
     }
 
     if (Guns)
@@ -154,7 +154,7 @@ void AircraftClass::DoWeapons()
             Sms->drawable->IsDisplayed()
         )
         {
-            if (FCC->releaseConsent and !OnGround())
+            if (FCC->releaseConsent and not OnGround())
                 Sms->SelectiveJettison();
         }
         // Firing A-A Missiles
@@ -162,7 +162,7 @@ void AircraftClass::DoWeapons()
                  FCC->GetMasterMode() == FireControlComputer::Dogfight ||
                  FCC->GetMasterMode() == FireControlComputer::MissileOverride)
         {
-            if (FCC->releaseConsent and !FCC->postDrop)
+            if (FCC->releaseConsent and not FCC->postDrop)
             {
                 // 2002-04-07 MN CTD fix - if in AA mode and gun is selected, pressing trigger will crash
                 if (Sms->curWeapon and Sms->curWeaponClass not_eq wcGunWpn)
@@ -179,7 +179,7 @@ void AircraftClass::DoWeapons()
                         // dereference our previous missile before setting another one
 
                         // Only if we are a digital entity
-                        if (isDigital or !isPlayer) // FRB
+                        if (isDigital or not isPlayer) // FRB
                         {
                             // If we currenly have a missile in our variable, dereference it first
                             if (DBrain()->missileFiredEntity)
@@ -270,7 +270,7 @@ void AircraftClass::DoWeapons()
         else if (FCC->GetMasterMode() == FireControlComputer::AirGroundMissile ||
                  FCC->GetMasterMode() == FireControlComputer::AirGroundHARM)
         {
-            if (FCC->releaseConsent and !FCC->postDrop)
+            if (FCC->releaseConsent and not FCC->postDrop)
             {
                 if (Sms->LaunchMissile())
                 {
@@ -339,7 +339,7 @@ void AircraftClass::DoWeapons()
         // Droping dumb bombs
             else if (FCC->GetMasterMode() == FireControlComputer::AirGroundBomb)
             {
-                // COBRA - RED - Rewritten in a decent and WORKING WAY..!!!!
+                // COBRA - RED - Rewritten in a decent and WORKING WAY..
 
                 // Ok, look for a Bomb
                 BombClass *TheBomb = FCC->GetTheBomb();
@@ -446,7 +446,7 @@ void AircraftClass::DoWeapons()
         // *** LASERS STUFF *** it has burnt height
             else if (FCC->GetMasterMode() == FireControlComputer::AirGroundLaser)
             {
-                // COBRA - RED - Rewritten in a decent and WORKING WAY..!!!!
+                // COBRA - RED - Rewritten in a decent and WORKING WAY..
 
                 // Ok, look for a Bomb
                 BombClass *TheBomb = FCC->GetTheBomb();
@@ -489,7 +489,7 @@ void AircraftClass::DoWeapons()
         // Just taking pictures for the family
             else if (FCC->GetMasterMode() == FireControlComputer::AirGroundCamera)
             {
-                if (FCC->releaseConsent and !OnGround() and Sms->curWeapon)
+                if (FCC->releaseConsent and not OnGround() and Sms->curWeapon)
                 {
                     CampBaseClass *campEntity;
                     float vpLeft, vpTop, vpRight, vpBottom;
@@ -526,7 +526,7 @@ void AircraftClass::DoWeapons()
                             //    {
                             entity = cit.GetFirst();
 
-                            while (entity and !TheHud->CanSeeTarget(curWeapon->Type(), entity, this))
+                            while (entity and not TheHud->CanSeeTarget(curWeapon->Type(), entity, this))
                                 entity = cit.GetNext();
 
                             //    }
@@ -545,7 +545,7 @@ void AircraftClass::DoWeapons()
                         VuListIterator featWalker(SimDriver.combinedFeatureList);
                         entity = featWalker.GetFirst();
 
-                        while (entity and !TheHud->CanSeeTarget(curWeapon->Type(), entity, this))
+                        while (entity and not TheHud->CanSeeTarget(curWeapon->Type(), entity, this))
                         {
                             entity = featWalker.GetNext();
                         }
@@ -556,7 +556,7 @@ void AircraftClass::DoWeapons()
                             VuListIterator objWalker(SimDriver.combinedList);
                             entity = objWalker.GetFirst();
 
-                            while (entity and !TheHud->CanSeeTarget(curWeapon->Type(), entity, this))
+                            while (entity and not TheHud->CanSeeTarget(curWeapon->Type(), entity, this))
                             {
                                 entity = objWalker.GetNext();
                             }

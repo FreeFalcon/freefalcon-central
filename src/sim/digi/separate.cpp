@@ -47,7 +47,7 @@ void DigitalBrain::SeparateCheck(void)
     }
 
     // 2001-08-31 BROUGHT BACK TO LIKE IT IS WAS ORIGINALLY (ALSO LIKE IN RP4/5)
-    if (missionClass == AAMission and !IsSetATC(AceGunsEngage))
+    if (missionClass == AAMission and not IsSetATC(AceGunsEngage))
         aaAbort = FALSE;
 
     // 2002-02-12 added by MN - Aircraftclass checks for target being occupied and sets AWACSsaidAbort
@@ -59,12 +59,12 @@ void DigitalBrain::SeparateCheck(void)
     }
 
     // 2001-12-28 MN this prevents FAC aircraft from aborting missions in 3D (they have no weapons..)
-    /* if (missionClass == AGMission and !IsSetATC(HasAGWeapon) and missionType not_eq AMIS_FAC)
+    /* if (missionClass == AGMission and not IsSetATC(HasAGWeapon) and missionType not_eq AMIS_FAC)
      {
-        if ((missionType not_eq AMIS_BDA and missionType not_eq AMIS_RECON) or !hasCamera)
+        if ((missionType not_eq AMIS_BDA and missionType not_eq AMIS_RECON) or not hasCamera)
     // 2001-05-12 ADDED BY S.G. ABORT ONLY WHEN THE MISSION IS NOT COMPLETED OR WE ARE AT THE ATTACK WAYPOINT, OTHERWISE FOLLOW WAYPOINTS HOME
     // 2001-06-21 MODIFIED BY S.G. BROUGHT BACK TO WHAT IS RELEASED
-    //    if ( not missionComplete or !self->curWaypoint or self->curWaypoint->GetWPFlags() bitand WPF_TARGET)
+    //    if ( not missionComplete or not self->curWaypoint or self->curWaypoint->GetWPFlags() bitand WPF_TARGET)
         if ( not missionComplete)
     // END OF ADDED SECTION
              agAbort = TRUE;
@@ -78,7 +78,7 @@ void DigitalBrain::SeparateCheck(void)
     if (self->pctStrength < 0.50F)
         damageAbort = TRUE;
 
-    if ((aaAbort or agAbort or campAbort or damageAbort) and !inTraining)
+    if ((aaAbort or agAbort or campAbort or damageAbort) and not inTraining)
     {
         // If pre IP go to landing, else step past target
         if (curMode not_eq RTBMode and curMode not_eq LandingMode and curMode not_eq TakeoffMode)
@@ -92,7 +92,7 @@ void DigitalBrain::SeparateCheck(void)
             // 2001-05-13 MODIFIED BY S.G. TO MAKE IT SIMILAR TO THE ABOVE agAbort CODE
             // 2001-06-21 RESTATED BY S.G. BROUGHT BACK TO WHAT IS RELEASED
             if ( not IsSetATC(ReachedIP))
-                //      if ( not missionComplete or !self->curWaypoint or self->curWaypoint->GetWPFlags() bitand WPF_TARGET)
+                //      if ( not missionComplete or not self->curWaypoint or self->curWaypoint->GetWPFlags() bitand WPF_TARGET)
             {
                 // Find the landing waypoint, and make it the current one
                 while (tmpWaypoint)
@@ -105,7 +105,7 @@ void DigitalBrain::SeparateCheck(void)
                     tmpWaypoint = tmpWaypoint->GetNextWP();
                 }
 
-                if (tmpWaypoint and !isWing)
+                if (tmpWaypoint and not isWing)
                 {
                     self->curWaypoint = tmpWaypoint;
                     SetWaypointSpecificStuff();
@@ -127,7 +127,7 @@ void DigitalBrain::SeparateCheck(void)
 
                 while (tmpWaypoint)
                 {
-                    // 2001-05-13 MODIFIED BY S.G. WPF_TARGET IS A FLAG WITHIN MANY, DON'T TEST FOR EQUALITY!
+                    // 2001-05-13 MODIFIED BY S.G. WPF_TARGET IS A FLAG WITHIN MANY, DON'T TEST FOR EQUALITY
                     //  if (tmpWaypoint->GetWPFlags() == WPF_TARGET)
                     if (tmpWaypoint->GetWPFlags() bitand WPF_TARGET)
                     {
@@ -138,7 +138,7 @@ void DigitalBrain::SeparateCheck(void)
                     tmpWaypoint = tmpWaypoint->GetNextWP();
                 }
 
-                if (tmpWaypoint and !isWing)
+                if (tmpWaypoint and not isWing)
                 {
                     self->curWaypoint = tmpWaypoint;
                     SetWaypointSpecificStuff();
@@ -452,14 +452,14 @@ void DigitalBrain::FuelCheck(void)
                 SetATCFlag(SaidBingo);
                 AiSendCommand(self, FalconWingmanMsg::WMBingoFuel, AiAllButSender);
             }
-            else if (fuelRemain < af->GetFumes() and !IsSetATC(SaidFumes))
+            else if (fuelRemain < af->GetFumes() and not IsSetATC(SaidFumes))
             {
                 // Say Fumes
                 //               MonoPrint ("Digi fumes fuel\n");
                 SetATCFlag(SaidFumes);
                 AiSendCommand(self, FalconWingmanMsg::WMFumes, AiAllButSender);
             }
-            else if (af->Fuel() == 0.0F and !IsSetATC(SaidFlameout))
+            else if (af->Fuel() == 0.0F and not IsSetATC(SaidFlameout))
             {
                 // Say Flameout
                 //               MonoPrint ("Digi flameout\n");

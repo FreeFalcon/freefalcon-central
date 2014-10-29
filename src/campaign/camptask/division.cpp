@@ -294,7 +294,7 @@ void BuildDivisionData(void)
                         dd[t] = dc;
                     }
 
-                    if ( not F4IsBadWritePtr(dc, sizeof(DivisionClass)) and dc->elements >= 0 and !F4IsBadWritePtr(&(dc->element[dc->elements]), sizeof(VU_ID))) // JB 010223 CTD
+                    if ( not F4IsBadWritePtr(dc, sizeof(DivisionClass)) and dc->elements >= 0 and  not F4IsBadWritePtr(&(dc->element[dc->elements]), sizeof(VU_ID))) // JB 010223 CTD
                     {
                         dc->element[dc->elements] = u->Id();
                         dc->elements++;

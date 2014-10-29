@@ -3,7 +3,7 @@
 // Authors: Wolfram "Osram" Kuss (original)
 // Lukas "Retro" Friembichler (adapted for EECH)
 // Date: 26. Feb 2003
-// 26/09/03 adapted for FreeFalcon - SHOCK, HORROR, FALCONEERS GET (TWICE !!!) RECYCLED STUFF... EEEEK
+// 26/09/03 adapted for FreeFalcon - SHOCK, HORROR, FALCONEERS GET (TWICE !) RECYCLED STUFF... EEEEK
 // Update:
 //
 // Description:Implements TrackIR support for EECH
@@ -736,7 +736,7 @@ void TrackIR::InitTrackIR(HWND application_window)
 
 #ifdef DEBUG_TRACKIR_STUFF
     fp = fopen("TIR_Debug.txt", "at");
-    fprintf(fp, "Init Successful !\n");
+    fprintf(fp, "Init Successful \n");
     fclose(fp);
 #endif
 }

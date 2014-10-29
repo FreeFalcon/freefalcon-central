@@ -439,11 +439,11 @@ void VoiceFilter::PlayRadioMessage(
     if (
         // sfr: JB code commented out
         (
-            pEntity /* and  !F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass))*/  and 
+            pEntity /* and   not F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass))*/  and 
             pEntity->IsEject()
         ) ||
         (
-            VM /* and  !F4IsBadReadPtr(VM, sizeof(VoiceManager))*/  and 
+            VM /* and   not F4IsBadReadPtr(VM, sizeof(VoiceManager))*/  and 
             VM->falconVoices[channel].exitChannel
         ) ||
         killThread
@@ -1157,7 +1157,7 @@ int VoiceFilter::GetBullseyeComm(int *mesgID, short *data)
 
         if (((commHdrInfo->bullseye > -1) and PlayerOptions.BullseyeOn()
              and dist * FT_TO_NM > 25 // JB 010121 if the dist is less than 25 miles don't use a bullseye call
-            ) or !SimDriver.InSim() ||
+            ) or not SimDriver.InSim() ||
             (commHdrInfo->bullseye == *mesgID))
         {
             TheCampaign.GetBullseyeLocation(&x2, &y2);

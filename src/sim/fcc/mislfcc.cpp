@@ -220,7 +220,7 @@ void FireControlComputer::AirAirMode(void)
 
                         while (curTarget)
                         {
-                            if (curTarget->BaseData()->IsSim() and !curTarget->BaseData()->IsWeapon())
+                            if (curTarget->BaseData()->IsSim() and not curTarget->BaseData()->IsWeapon())
                             {
                                 theMissile->SetTarget(curTarget);
                                 theMissile->RunSeeker();
@@ -282,7 +282,7 @@ void FireControlComputer::AirAirMode(void)
                 if (playerAC and playerAC->AutopilotType() not_eq AircraftClass::CombatAP)
                     IsCAP = false;
 
-                if (playerFCC and !IsCAP
+                if (playerFCC and not IsCAP
                     and (Sms->GetCoolState() not_eq SMSClass::COOL and Sms->GetCoolState() not_eq SMSClass::WARMING)
                     and theMissile->targetPtr and Sms->GetCurrentWeapon() and Sms->curWeaponType == wtAim9
                     and cw->GetSPType() not_eq SPTYPE_AIM9P)
@@ -320,7 +320,7 @@ void FireControlComputer::AirAirMode(void)
                 if (playerAC and playerAC->AutopilotType() not_eq AircraftClass::CombatAP)
                     IsCAP = false;
 
-                if (playerFCC and !IsCAP)
+                if (playerFCC and not IsCAP)
                 {
                     float aim9Vol = 0;
                     // Marco Edit
@@ -349,7 +349,7 @@ void FireControlComputer::AirAirMode(void)
                     }
 
 
-                    if (g_bRealisticAvionics and !irSig)
+                    if (g_bRealisticAvionics and not irSig)
                     {
                         mlTrig trig;
                         float yaw   = platform->Yaw();
@@ -625,7 +625,7 @@ void FireControlComputer::AirAirMode(void)
 
             }
             // Nutating Seekerhead
-            else if (g_bRealisticAvionics and theMissile->isCaged and !theMissile->isSpot)
+            else if (g_bRealisticAvionics and theMissile->isCaged and not theMissile->isSpot)
             {
                 if (missileSeekerAz > 0.01)
                     bAzReversed = true;

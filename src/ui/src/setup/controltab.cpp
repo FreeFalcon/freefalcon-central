@@ -854,7 +854,7 @@ void FillListBox(C_ListBox* theLB, const int theUIAxisIndex)
 // Clear all axis listboxes and refill them. Only axis that are unmapped
 // (plus the one that´s mapped to this axis) get listed.
 //
-// SHOULD ONLY BE DONE ONCE !!!!!!!!!!!!!!
+// SHOULD ONLY BE DONE ONCE 
 /************************************************************************/
 void PopulateAllListBoxes(C_Window* win)
 {
@@ -1058,7 +1058,7 @@ void AxisChangeCB(long, short hittype, C_Base *me)
                 if ((UIInputStuff[i].AxisLB == SETUP_ADVANCED_THROTTLE_AXIS) ||
                     (UIInputStuff[i].AxisLB == SETUP_ADVANCED_THROTTLE2_AXIS))
                 {
-                    // NEED TO RESET THE OLD NAME HERE !!!
+                    // NEED TO RESET THE OLD NAME HERE !
                     RePopulateAllListBoxes(win); // no change !
                     return; // tadaa !
                 }
@@ -1159,7 +1159,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
         {
             int theSat = UIInputStuff[j].theDeviceAxis->Saturation;
 
-            if (theSat == SATURATION_NONE) // no saturation. this value is -1 !!!! (do not use unsigned with this !)
+            if (theSat == SATURATION_NONE) // no saturation. this value is -1  (do not use unsigned with this !)
                 listbox->SetValue(SETUP_ADVANCED_SAT_NONE);
             else if (theSat >= g_nSaturationSmall) // 1% saturation, I 'borrowed' the DZ item for this
                 listbox->SetValue(SETUP_ADVANCED_DZ_SMALL);

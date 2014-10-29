@@ -166,7 +166,7 @@ void LantirnDrawable::Display(VirtualDisplay* newDisplay)
         else if (theLantirn->evasize  == 2 and flash)
             sprintf(tempstr, "OBSTACLE");
 
-        if (theLantirn->SpeedUp and !flash)
+        if (theLantirn->SpeedUp and not flash)
             sprintf(tempstr, "SLOW");
 
         if (playerAC and playerAC->RFState not_eq 2)
@@ -190,7 +190,7 @@ void LantirnDrawable::PushButton(int whichButton, int whichMFD)
             break;
 
         case 2:
-            lantdebug = !lantdebug;
+            lantdebug = not lantdebug;
             break;
 
         case 3:

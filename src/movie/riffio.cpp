@@ -614,7 +614,7 @@ int aviReadRecord(PAVISTREAMS streams)
                 recordLen -= (chunkLength + 8);
 
                 if ((streams->audioFlag bitand STREAM_AUDIO_EXTERNAL) ||
-                    !(streams->audioFlag bitand STREAM_AUDIO_ON))
+                     not (streams->audioFlag bitand STREAM_AUDIO_ON))
                     AVI_SEEK(streams->handle, chunkLength, \
                              SEEK_CUR);
                 else

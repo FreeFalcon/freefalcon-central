@@ -101,7 +101,7 @@ void CPButtonObject::HandleMouseEvent(int event)
     {
 
         //Wombat778 3-09-04 Check if this function is being blocked by the training script
-        //if( mTransStateToAero and !TrainingScript->IsBlocked(NULL,mCallbackSlot) )
+        //if( mTransStateToAero and not TrainingScript->IsBlocked(NULL,mCallbackSlot) )
         if (mTransStateToAero)
         {
             mTransStateToAero(this, event);     //translate button click to aero

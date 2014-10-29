@@ -60,7 +60,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
         {
             simEntity = (SimBaseClass*) theEntity;
 
-            if (simEntity and !simEntity->IsLocal() and dataBlock.weaponType == GUN)
+            if (simEntity and not simEntity->IsLocal() and dataBlock.weaponType == GUN)
             {
                 if (simEntity->nonLocalData)
                 {
@@ -113,7 +113,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
                 {
                     radioMessage->dataBlock.message = rcFIRING;
 
-                    //Total Fucking HACK!!!
+                    //Total Fucking HACK!
                     if (dataBlock.weaponType == FalconWeaponsFire::Rocket)
                         radioMessage->dataBlock.edata[0] = 887; // 2001-09-16 M.N. "Rockets" EVAL INDEX = 887, NOT 163
                     else
@@ -192,7 +192,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
         {
             ((SimBaseClass*)theTarget)->SetIncomingMissile(theMissile);
 
-            if (simEntity and !simEntity->OnGround())
+            if (simEntity and not simEntity->OnGround())
                 ((SimBaseClass*)theTarget)->SetThreat(simEntity, THREAT_MISSILE);
         }
     }
@@ -200,7 +200,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
     {
         if (theTarget and theTarget->IsSim())
         {
-            if (simEntity and !simEntity->OnGround())
+            if (simEntity and not simEntity->OnGround())
                 ((SimBaseClass*)theTarget)->SetThreat(simEntity, THREAT_GUN);
         }
     }

@@ -20,7 +20,7 @@ void CBEOilPressure(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
     rpm = ((AircraftClass *)pCPDial->mpOwnship)->af->rpm;
 
@@ -58,7 +58,7 @@ void CBEOilPressure2Dial(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
     rpm2 = ((AircraftClass *)pCPDial->mpOwnship)->af->rpm2;
 
@@ -97,7 +97,7 @@ void CBEInletTemperature(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship)
+    if ( not pCPDial or not pCPDial->mpOwnship)
         return;
 
 
@@ -153,7 +153,7 @@ void CBEInletTemperature2Dial(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship)
+    if ( not pCPDial or not pCPDial->mpOwnship)
         return;
 
     rpm = ((AircraftClass *)pCPDial->mpOwnship)->af->oldp01Eng2[0];
@@ -186,7 +186,7 @@ void CBENozPos(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
     rpmVal                  = ((AircraftClass *)pCPDial->mpOwnship)->af->rpm;
 
@@ -223,7 +223,7 @@ void CBENozPos2Dial(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
     rpmVal                  = ((AircraftClass *)pCPDial->mpOwnship)->af->rpm2;
 
@@ -258,7 +258,7 @@ void CBERPM(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
     pCPDial->mDialValue = 100.0F * ((AircraftClass *)pCPDial->mpOwnship)->af->rpm;
 }
@@ -270,7 +270,7 @@ void CBERPM2Dial(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
     pCPDial->mDialValue = 100.0F * ((AircraftClass *)pCPDial->mpOwnship)->af->rpm2;
 }
@@ -283,7 +283,7 @@ void CBEAltDial(void * pObject)
     float altitude;
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
     altitude = -((AircraftClass *)pCPDial->mpOwnship)->ZPos();
     altitude = (float)((int)altitude) - ((((int)altitude) / 1000) * 1000);
@@ -297,7 +297,7 @@ void CBEInternalFuel(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
 #if 0
     pCPDial->mDialValue = ((AircraftClass *)pCPDial->mpOwnship)->af->Fuel();
@@ -315,7 +315,7 @@ void CBEExternalFuel(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
 #if 0
     pCPDial->mDialValue = ((AircraftClass *)pCPDial->mpOwnship)->af->ExternalFuel();
@@ -333,7 +333,7 @@ void CBEEPUFuel(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
     // me123/COdec fix - all cockpits use 0-40, so we adapt it to that range.
     pCPDial->mDialValue = ((AircraftClass *)pCPDial->mpOwnship)->af->EPUFuel() * 40.0f / 100.0f;
@@ -351,7 +351,7 @@ void CBEClockHours(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
     // Get current time convert from ms to secs
     currentTime = vuxGameTime / 1000;
@@ -385,7 +385,7 @@ void CBEClockMinutes(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
     pCPDial->mDialValue =  pCPDial->mpCPManager->mMiscStates.mMinutes;
 }
@@ -396,7 +396,7 @@ void CBEClockSeconds(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
     pCPDial->mDialValue =  pCPDial->mpCPManager->mMiscStates.mSeconds;
 }
@@ -410,7 +410,7 @@ void CBEVOilPressure(void * pObject)
 
     pCPDial = (VDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
     rpm = ((AircraftClass *)pCPDial->mpOwnship)->af->rpm;
 
@@ -445,7 +445,7 @@ void CBEVInletTemperature(void * pObject)
 
     pCPDial = (VDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
     //Scale from 200 - 1200 to 2 - 12
     // 0.8 lag factor
@@ -459,7 +459,7 @@ void CBEVNozPos(void * pObject)
 
     pCPDial = (VDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
     rpmVal                  = ((AircraftClass *)pCPDial->mpOwnship)->af->rpm;
 
@@ -497,7 +497,7 @@ void CBEVRPM(void * pObject)
 
     pCPDial = (VDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
     pCPDial->mDialValue = 100.0F * ((AircraftClass *)pCPDial->mpOwnship)->af->rpm;
 }
@@ -511,7 +511,7 @@ void CBEVAltDial(void * pObject)
     float altitude;
     pCPDial = (VDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship) return;
+    if ( not pCPDial or not pCPDial->mpOwnship) return;
 
     altitude = -((AircraftClass *)pCPDial->mpOwnship)->ZPos();
     altitude = (float)((int)altitude) - ((((int)altitude) / 1000) * 1000);
@@ -524,7 +524,7 @@ void CBETrimNose(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship)
+    if ( not pCPDial or not pCPDial->mpOwnship)
         return;
 
     pCPDial->mDialValue = UserStickInputs.ptrim;
@@ -535,7 +535,7 @@ void CBETrimWing(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship)
+    if ( not pCPDial or not pCPDial->mpOwnship)
         return;
 
     pCPDial->mDialValue = -UserStickInputs.rtrim;
@@ -548,7 +548,7 @@ void CBEVVDial(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship)
+    if ( not pCPDial or not pCPDial->mpOwnship)
         return;
 
     pCPDial->mDialValue = -cockpitFlightData.zDot * 60.0F;
@@ -561,7 +561,7 @@ void CBEGDial(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship)
+    if ( not pCPDial or not pCPDial->mpOwnship)
     {
         return;
     }
@@ -578,7 +578,7 @@ void CBEWingSweepDial(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship)
+    if ( not pCPDial or not pCPDial->mpOwnship)
         return;
 
     pCPDial->mDialValue = (((AircraftClass *)pCPDial->mpOwnship)->wingSweep * RTD);
@@ -591,7 +591,7 @@ void CBEAOADial(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship)
+    if ( not pCPDial or not pCPDial->mpOwnship)
         return;
 
     pCPDial->mDialValue = cockpitFlightData.alpha;
@@ -604,7 +604,7 @@ void CBETEFDial(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship)
+    if ( not pCPDial or not pCPDial->mpOwnship)
         return;
 
     pCPDial->mDialValue = ((AircraftClass *)pCPDial->mpOwnship)->af->tefPos;
@@ -617,7 +617,7 @@ void CBELEFDial(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship)
+    if ( not pCPDial or not pCPDial->mpOwnship)
     {
         return;
     }
@@ -632,7 +632,7 @@ void CBETotalFuelDial(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship)
+    if ( not pCPDial or not pCPDial->mpOwnship)
         return;
 
     float  fwd, aft, total;
@@ -646,7 +646,7 @@ void CBEFTITLeftDial(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship)
+    if ( not pCPDial or not pCPDial->mpOwnship)
         return;
 
     pCPDial->mDialValue = ((AircraftClass *)pCPDial->mpOwnship)->af->GetFTITLeft();
@@ -659,7 +659,7 @@ void CBEFTITRightDial(void * pObject)
 
     pCPDial = (CPDial*) pObject;
 
-    if ( not pCPDial or !pCPDial->mpOwnship)
+    if ( not pCPDial or not pCPDial->mpOwnship)
         return;
 
     pCPDial->mDialValue = ((AircraftClass *)pCPDial->mpOwnship)->af->GetFTITRight();

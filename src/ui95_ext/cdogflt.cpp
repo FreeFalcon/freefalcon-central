@@ -108,7 +108,7 @@ void C_Dog_Flight::SetState(short state)
 
 long C_Dog_Flight::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
         return(0);
 
     if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= GetY() + GetH())
@@ -157,7 +157,7 @@ void C_Dog_Flight::SetSubParents(C_Window *)
 {
     long w, h;
 
-    if ( not Icon_ or !Callsign_ or !Aircraft_)
+    if ( not Icon_ or not Callsign_ or not Aircraft_)
         return;
 
     Callsign_->SetFont(Font_);

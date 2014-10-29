@@ -53,7 +53,7 @@ VU_BOOL AllSimFilter::Test(VuEntity* ent1)
                 classPtr->classInfo_[VU_CLASS] == CLASS_FEATURE
             )  and 
             (((FalconEntity*)ent1)->IsSim())  and 
-            !(((FalconEntity*)ent1)->IsPersistant())
+             not (((FalconEntity*)ent1)->IsPersistant())
         )
         {
             retval = TRUE;
@@ -141,8 +141,8 @@ VU_BOOL SimFeatureFilter::Test(VuEntity* ent1)
         /*  This was removed by Kevin 10/14/97 because it appeared to block required notifications (SCR)
               if (classPtr->classInfo_[VU_CLASS] == CLASS_FEATURE  and 
                    (((FalconEntity*)ent1)->IsSim())  and 
-                  !(((FalconEntity*)ent1)->IsPersistant())  and 
-                  !(((SimFeatureClass*)ent1)->IsSetCampaignFlag(FEAT_CONTAINER_TOP)))
+                   not (((FalconEntity*)ent1)->IsPersistant())  and 
+                   not (((SimFeatureClass*)ent1)->IsSetCampaignFlag(FEAT_CONTAINER_TOP)))
         */
         if (classPtr->classInfo_[VU_DOMAIN] and classPtr->classInfo_[VU_CLASS] == CLASS_FEATURE)
         {

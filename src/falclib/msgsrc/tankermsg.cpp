@@ -265,7 +265,7 @@ int FalconTankerMessage::Process(uchar autodisp)
 
                                 float xyRange = (float)sqrt(relPos.x * relPos.x + relPos.y * relPos.y);
 
-                                if (xyRange < 500.0F and !theTanker->TBrain()->IsSet(TankerBrain::PrecontactPos)  and 
+                                if (xyRange < 500.0F and not theTanker->TBrain()->IsSet(TankerBrain::PrecontactPos)  and 
                                     theTanker->TBrain()->TankingPtr()  and 
                                     fabs(theTanker->TBrain()->TankingPtr()->localData->rangedot) < 100.0F  and 
                                     fabs(theTanker->TBrain()->TankingPtr()->localData->az) < 35.0F * DTR)

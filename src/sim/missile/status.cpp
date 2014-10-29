@@ -62,7 +62,7 @@ void MissileClass::SetStatus(void)
     }
 
     // Do ground impact check for all missiles here
-    if (z >= groundZ and !(this->GetSWD()->weaponType == wtSAM and runTime < 1.0f))
+    if (z >= groundZ and  not (this->GetSWD()->weaponType == wtSAM and runTime < 1.0f))
     {
         done = FalconMissileEndMessage::GroundImpact;
         return;
@@ -258,7 +258,7 @@ void MissileClass::SetStatus(void)
 //// detonate when the target is within blast range (like JSOW)....
 //   //Cobra test  since ricept might not get updated enough, lets add range as well
 //   // COBRA - RED - SARH BUG - removed, causing unklocked missiles to explode as 'range' is 0 for them
-//   else if ( (ricept*ricept <= lethalRadiusSqrd/* or range * range < lethalRadiusSqrd*/) and !bombwarhead)
+//   else if ( (ricept*ricept <= lethalRadiusSqrd/* or range * range < lethalRadiusSqrd*/) and not bombwarhead)
 //   {
 //   // Marco Edit - check for our missile arming delay
 //   if (wc)
@@ -294,7 +294,7 @@ void MissileClass::SetStatus(void)
 //// target position is inside the lethal radius OR missile is higher than its maxalt,
 //// bring missile to an end. When we have missiles going high ballistic, intercept them at max altitude
 //// in case of lethalRadius, they might apply a bit of proximity damage to the target...
-// else if (runTime > 1.50f and (flags bitand SensorLostLock) and !targetPtr and ((g_nMissileFix bitand 0x20)  and 
+// else if (runTime > 1.50f and (flags bitand SensorLostLock) and not targetPtr and ((g_nMissileFix bitand 0x20)  and 
 // range * range < lethalRadiusSqrd or (wc and wc->MaxAlt and (fabs(z) > fabsf(wc->MaxAlt*1000.0f))))) //JAM 27Sep03 - Should be fabsf
 // {
 // done = FalconMissileEndMessage::NotDone; //ExceedFOV;//Cobra we can't use Missed because it is out of range
@@ -320,7 +320,7 @@ void MissileClass::SetStatus(void)
 //   /*---------------*/
 //   /* ground impact */
 //   /*---------------*/
-//   else if ( z > groundZ and !bombwarhead) // bombwarhead missiles are handled below
+//   else if ( z > groundZ and not bombwarhead) // bombwarhead missiles are handled below
 //   {
 //      // edg: this is somewhat of a hack, but I haven't had much luck fixing it
 //      // otherwise... if the parent is a ground unit and the missile has just

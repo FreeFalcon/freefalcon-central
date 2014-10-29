@@ -86,7 +86,7 @@ int FalconDivertMessage::Process(uchar autodisp)
     Flight flight = (Flight)FindUnit(EntityId());
     CampEntity target = NULL;
 
-    if (autodisp or !flight or !TheCampaign.IsLoaded())
+    if (autodisp or not flight or not TheCampaign.IsLoaded())
         return 0;
 
     if (dataBlock.mission > 0)
@@ -273,7 +273,7 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
             newTarget = 0;
     }
 
-    if (mission <= 0 or !target)
+    if (mission <= 0 or not target)
     {
         if (mission == DIVERT_DENIGNED)
             SendCallFromAwacs(flight, rcNOTASKING, to); // Divert denigned

@@ -166,7 +166,7 @@ public:
     MavSubModes MavSubMode;
     void ToggleMavPower(void)
     {
-        Powered = !Powered;
+        Powered = not Powered;
     };
     void StepMavSubMode(bool init = FALSE);
     bool JDAMPowered;//Cobra
@@ -184,7 +184,7 @@ public:
     }
     void ToggleHARMPower(void)
     {
-        HARMPowered = !HARMPowered;
+        HARMPowered = not HARMPowered;
     }
 
     int GetCurrentHardpoint(void)

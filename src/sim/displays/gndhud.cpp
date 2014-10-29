@@ -297,7 +297,7 @@ void HudClass::DrawRCKT(void)
     float maxRng = 36500.0f;
     float minRng = 18500.0F;
 
-    if (fabs(pipperEl) < 0.90F and fabs(pipperAz + vOffset) < 0.90F and FCC->airGroundRange < maxRng and !FCC->noSolution)
+    if (fabs(pipperEl) < 0.90F and fabs(pipperAz + vOffset) < 0.90F and FCC->airGroundRange < maxRng and not FCC->noSolution)
     {
         if (FCC->airGroundRange < minRng)
         {
@@ -430,7 +430,7 @@ void HudClass::DrawStrafe(void)
                                     hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F);
 
     if (fabs(pipperEl) < 0.90F and fabs(pipperAz + hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                       hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F and !FCC->noSolution)
+                                       hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F and not FCC->noSolution)
     {
         if (FCC->airGroundRange < 8000.0F)// me123 status ok. changed from 8000. TJL 11/20/03 Back to 8000 per MIRV
         {
@@ -654,7 +654,7 @@ void HudClass::DrawSteeringToRelease(void)
     }
 
     // Steering Line
-    if (FCC->inRange and !isJSOW)
+    if (FCC->inRange and not isJSOW)
     {
         steeringLineX = FCC->airGroundBearing / (20.0F * DTR);
         steeringLineX += betaHudUnits;

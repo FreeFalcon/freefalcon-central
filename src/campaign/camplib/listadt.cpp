@@ -200,13 +200,13 @@ int ListClass::SanityCheck(void)
 {
     ListElementClass *cur, *next;
 
-    if ( not front and !end)
+    if ( not front and not end)
         return 1;
 
     if (front == end and (front->prev or front->next))
         return 0;
 
-    if ((front and !end) or ( not front and end))
+    if ((front and not end) or ( not front and end))
         return 0;
 
     if (front == (void*)0xdddddddd or front == (void*)0xfcfcfcfc)

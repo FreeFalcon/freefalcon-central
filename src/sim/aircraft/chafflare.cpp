@@ -444,7 +444,7 @@ void AircraftClass::EWSChaffBurst(void)
     if (theRwr)
     {
         //RWR not on, no spikes!
-        if ( not theRwr->IsOn() or !HasPower(AircraftClass::EWSChaffPower))
+        if ( not theRwr->IsOn() or not HasPower(AircraftClass::EWSChaffPower))
             return;
     }
     else //no RWR, return anyway
@@ -465,7 +465,7 @@ void AircraftClass::EWSFlareBurst(void)
 
     if (theRwr)
     {
-        if ( not theRwr->IsOn() or !HasPower(AircraftClass::EWSFlarePower))
+        if ( not theRwr->IsOn() or not HasPower(AircraftClass::EWSFlarePower))
             return;
     }
     else //no RWR, return anyway
@@ -485,7 +485,7 @@ void AircraftClass::ReleaseManualProgram(void)
         return;
 
     if (static_cast<unsigned int>(ChaffCount) >= OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum]  and 
-        ChaffSalvoCount not_eq 0 and !theRwr->ChaffCheck)
+        ChaffSalvoCount not_eq 0 and not theRwr->ChaffCheck)
     {
         //Set our timer
         ChaffBurstInterval = static_cast<VU_TIME>(SimLibElapsedTime + (OTWDriver.pCockpitManager->mpIcp->fCHAFF_SI[EWSProgNum] * CampaignSeconds));
@@ -498,7 +498,7 @@ void AircraftClass::ReleaseManualProgram(void)
     }
 
     if (FlareCount == OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum]  and 
-        FlareSalvoCount not_eq 0 and !theRwr->FlareCheck)
+        FlareSalvoCount not_eq 0 and not theRwr->FlareCheck)
     {
         //Set our timer
         FlareBurstInterval = static_cast<VU_TIME>(SimLibElapsedTime + (OTWDriver.pCockpitManager->mpIcp->fFLARE_SI[EWSProgNum] * CampaignSeconds));

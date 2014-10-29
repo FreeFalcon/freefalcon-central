@@ -372,7 +372,7 @@ void DrawableTrail::AddPointAtHead(Tpoint *worldPos, DWORD)
     // new TrailNodes are added to the head ChunkNode
     cn = (ChunkNode *)List.GetHead();
 
-    if (Something > 500 and cn and !(Type->flags bitand TTF_LINE))
+    if (Something > 500 and cn and  not (Type->flags bitand TTF_LINE))
     {
         // time to make a new chunk node...
         ChunkNode *cn2;
@@ -1484,14 +1484,14 @@ typedef struct TrailTypeEntry
 } TrailTypeEntry;
 
 
-// !!! Have to manually add new textures here
+// ! Have to manually add new textures here
 static Texture MissleTrailTexture;
 static Texture FireTrailTexture;
 static Texture SmokeTrailTexture;
 static Texture GunTrailTexture;
 
 
-// !!! Have to manually add new trail types here
+// ! Have to manually add new trail types here
 static TrailTypeEntry types[] =
 {
     //   silum ilight lfade     tile    radius   rmax  expand   decay/s   red    green  blue   alpha  NA    NA  NA    texture
@@ -1585,7 +1585,7 @@ void LoadTrails()
 }
 
 
-// !! Add any type ids which are NOT self-illuminating here
+//  Add any type ids which are NOT self-illuminating here
 static TrailTypeEntry* liteTypes[] =
 {
     &types[0],
@@ -1604,7 +1604,7 @@ static TrailTypeEntry* liteTypes[] =
 static const int nLiteTypes = sizeof(liteTypes) / sizeof(liteTypes[0]);
 
 
-// !! Add any textures which are NOT self-illuminating here
+//  Add any textures which are NOT self-illuminating here
 static const Texture* liteTextures[] =
 {
     &MissleTrailTexture,
@@ -1804,7 +1804,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
 
 
     // Set up our drawing mode
-    if (renderer->GetObjectTextureState() and types[type].tex)// and !sGreenMode )
+    if (renderer->GetObjectTextureState() and types[type].tex)// and not sGreenMode )
     {
         gTextured = TRUE;
 
@@ -1983,14 +1983,14 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
         }
 
         // Update the alpha value for the end point now under consideration
-        if (type >= 0 and type < sizeof(types) / sizeof(TrailTypeEntry) and !F4IsBadReadPtr(current->next, sizeof(TrailElement))) // JB 010220 CTD
+        if (type >= 0 and type < sizeof(types) / sizeof(TrailTypeEntry) and  not F4IsBadReadPtr(current->next, sizeof(TrailElement))) // JB 010220 CTD
             // Somehow the next line can CTD.  Wacky!  Let's do more checks and see if the CTD moves.
             alpha  -= types[type].disipation * current->next->time;
 
         radius += types[type].expandRate * current->next->time;
         radius = min(radius, types[type].maxRadius);
 
-        if (gTextured and !types[type].selfIlum)
+        if (gTextured and not types[type].selfIlum)
         {
             if ( not types[type].selfIlum)
             {
@@ -2098,7 +2098,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
 
                 if (keepStaleSegs == FALSE)
                 {
-                    if (current->next and current->next->next and !F4IsBadReadPtr(current->next, sizeof(TrailElement)) and !F4IsBadReadPtr(current->next->next, sizeof(TrailElement))) // JB 010220 CTD
+                    if (current->next and current->next->next and  not F4IsBadReadPtr(current->next, sizeof(TrailElement)) and  not F4IsBadReadPtr(current->next->next, sizeof(TrailElement))) // JB 010220 CTD
                         delete current->next->next; // Recursivly deletes the rest of the trail
 
                     current->next->next = NULL; // Terminate the trail at the current point
@@ -2259,7 +2259,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
 
             renderer->context.SelectTexture1(types[type].tex->TexHandle());
         }
-        else if (width2 >= HIGH_LOD_VAL and gTextured and !sGreenMode)
+        else if (width2 >= HIGH_LOD_VAL and gTextured and not sGreenMode)
         {
             if (width1 >= HIGH_LOD_VAL)
             {
@@ -2325,7 +2325,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
             }
 
         }
-        else if (width1 >= HIGH_LOD_VAL and gTextured and !sGreenMode)
+        else if (width1 >= HIGH_LOD_VAL and gTextured and not sGreenMode)
         {
             float vStep = 1.0f / (float)HALF_HIGH_LOD_VERTS;
             float v = 0.0;

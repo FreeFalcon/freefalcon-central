@@ -255,7 +255,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
                         {
                             if (hr == DDERR_OUTOFVIDEOMEMORY)
                             {
-                                MonoPrint("ImageBuffer::Setup - EVICTING MANAGED TEXTURES !!\n");
+                                MonoPrint("ImageBuffer::Setup - EVICTING MANAGED TEXTURES \n");
 
                                 // if we are out of video memory, evict all managed textures and retry
                                 CheckHR(dev->GetDefaultRC()->m_pD3D->EvictManagedTextures());
@@ -321,7 +321,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
                         {
                             if (hr == DDERR_OUTOFVIDEOMEMORY)
                             {
-                                MonoPrint("ImageBuffer::Setup - EVICTING MANAGED TEXTURES !!\n");
+                                MonoPrint("ImageBuffer::Setup - EVICTING MANAGED TEXTURES \n");
 
                                 // if we are out of video memory, evict all managed textures and retry
                                 CheckHR(dev->GetDefaultRC()->m_pD3D->EvictManagedTextures());
@@ -490,7 +490,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 // Alternative setup method
 void ImageBuffer::AttachSurfaces(DisplayDevice *pDev, IDirectDrawSurface7 *pDDSFront, IDirectDrawSurface7 *pDDSBack)
 {
-    if ( not pDev or !pDDSFront)
+    if ( not pDev or not pDDSFront)
         return;
 
     if ( not pDDSBack)
@@ -860,7 +860,7 @@ void ImageBuffer::Compose(ImageBuffer *srcBuffer, RECT *dstRect, RECT *srcRect)
     bool bStretch = ((srcRect->right - srcRect->left) not_eq (dstRect->right - dstRect->left)) or ((srcRect->bottom - srcRect->top) not_eq (dstRect->bottom - dstRect->top));
     HRESULT hr;
 
-    if ( not m_bFrontRectValid and !bStretch)
+    if ( not m_bFrontRectValid and not bStretch)
     {
         if (srcRect and m_pBltTarget not_eq m_pDDSBack)
         {
@@ -907,7 +907,7 @@ void ImageBuffer::ComposeTransparent(ImageBuffer *srcBuffer, RECT *dstRect, RECT
     bool bStretch = ((srcRect->right - srcRect->left) not_eq (dstRect->right - dstRect->left)) or ((srcRect->bottom - srcRect->top) not_eq (dstRect->bottom - dstRect->top));
     HRESULT hr;
 
-    if ( not m_bFrontRectValid and !bStretch)
+    if ( not m_bFrontRectValid and not bStretch)
     {
         if (srcRect and m_pBltTarget not_eq m_pDDSBack)
         {
@@ -1061,7 +1061,7 @@ void ImageBuffer::SwapBuffers(bool bDontFlip)
 
     RECT backRect = { 0, 0, m_ddsdBack.dwWidth, m_ddsdBack.dwHeight };
 
-    if ( not m_bFrontRectValid) // assumes no clipper is attached (fullscreen) !!
+    if ( not m_bFrontRectValid) // assumes no clipper is attached (fullscreen) 
         hr = m_pDDSFront->BltFast(m_rcFront.left, m_rcFront.top, m_pDDSBack, &backRect, DDBLTFAST_WAIT | DDBLTFAST_NOCOLORKEY);
     else
         hr = m_pDDSFront->Blt(&m_rcFront, m_pDDSBack, &backRect, DDBLT_WAIT, NULL);

@@ -24,7 +24,7 @@ enum VuMessageTypes
     VU_PULL_REQUEST_MESSAGE,
     // internal events
     VU_TIMER_EVENT,
-#if !NO_RELEASE_EVENT
+#if not NO_RELEASE_EVENT
     VU_RELEASE_EVENT,
 #endif
     // event messages
@@ -55,7 +55,7 @@ enum VuMessageTypes
 #define VU_PULL_REQUEST_MESSAGE 4 // 0x00000010
 // internal events
 #define VU_TIMER_EVENT 5 // 0x00000020
-#if !NO_RELEASE_EVENT
+#if not NO_RELEASE_EVENT
 #define VU_RELEASE_EVENT 6 // 0x00000040
 #endif
 // event messages
@@ -527,7 +527,7 @@ public:
 
 //--------------------------------------------------
 #define NO_RELEASE_EVENT 1
-#if !NO_RELEASE_EVENT
+#if not NO_RELEASE_EVENT
 class VuReleaseEvent : public VuEvent
 {
 public:

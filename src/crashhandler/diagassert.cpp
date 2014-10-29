@@ -150,7 +150,7 @@ DiagAssert(DWORD     dwOverrideOpts  ,
     }
     else
     {
-        szRealLastErr = _T("**Last error code does not exist!!!!") ;
+        szRealLastErr = _T("**Last error code does not exist") ;
     }
 
     // Get the module name.
@@ -161,7 +161,7 @@ DiagAssert(DWORD     dwOverrideOpts  ,
 
     // Build the message.
     pCurrPos += (wsprintf(szBuff                                 ,
-                          _T("Debug Assertion Failed!\n\n"  \
+                          _T("Debug Assertion Failed\n\n"  \
                              "Program : %s\n"               \
                              "File : %s\n"                  \
                              "Line : %d\n"                  \
@@ -229,7 +229,7 @@ DiagAssert(DWORD     dwOverrideOpts  ,
 
     if (IDRETRY == iRet)
     {
-        // This will trigger DebugBreak!!
+        // This will trigger DebugBreak
         return (TRUE) ;
     }
 

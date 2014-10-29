@@ -305,7 +305,7 @@ static void OnClickedSettings(long, short hittype,C_Base *control)
  button = (C_Button*)win->FindControl(SETUP_JETNET_ENABLEUPLINK);
  if (button)
  {
- g_bEnableUplink = !g_bEnableUplink;
+ g_bEnableUplink =  not g_bEnableUplink;
  if (g_bEnableUplink) // now we switched from off to on, set up the uplink
  {
  // Make sure all objects are registered
@@ -675,7 +675,7 @@ C_ServerItem *MakeServerItem(C_TreeList *pTree, IGame *p)
     C_Window *pWindow;
 	TREELIST* pTreeItem = NULL;
 
-    if ( not pTree or !p)
+    if ( not pTree or not p)
         return NULL;
 
     try
@@ -1022,7 +1022,7 @@ long C_ServerItem::Size()
 
 void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 {
-    if ( not _pGame or !pParent)
+    if ( not _pGame or not pParent)
         return;
 
     GNETCORELib::IGamePtr pGame(_pGame);
@@ -1141,7 +1141,7 @@ void C_ServerItem::SetFont(long id)
 
 long C_ServerItem::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
         return(0);
 
     if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= (GetY() + GetH()))
@@ -1176,7 +1176,7 @@ void C_ServerItem::Refresh()
 
 void C_ServerItem::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or not Ready())
         return;
 
     short x = GetState();

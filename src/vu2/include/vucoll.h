@@ -266,7 +266,7 @@ protected:
 };
 #endif
 
-#if !VU_ALL_FILTERED
+#if not VU_ALL_FILTERED
 /** a list with a filter. Filters make list much more faster for search and message handling,
 * since they can discard entities immediately.
 */
@@ -465,7 +465,7 @@ public:
     /** like above, but dont send remove over network. */
     VU_ERRCODE SilentRemove(VuEntity *entity);
 
-#if !NO_RELEASE_EVENT
+#if not NO_RELEASE_EVENT
     /** called by DeleteEvent */
     VU_ERRCODE DeleteRemove(VuEntity *entity);
 #endif

@@ -113,7 +113,7 @@ MenuManager::MenuManager(int width, int height)
 
     ReadDataFile("art\\ckptart\\menu.dat");
 
-    ShiAssert(mpResDimensions); // No dimension information in the data file!
+    ShiAssert(mpResDimensions); // No dimension information in the data file
 
     backWidth = 0;
     backHeight = 0;
@@ -224,7 +224,7 @@ void MenuManager::ReadDataFile(char* pfileName)
     }
 
     CP_CLOSE(pFile);
-    ShiAssert(mResCount == 0); // Bad data in the manager information line!
+    ShiAssert(mResCount == 0); // Bad data in the manager information line
 }
 
 
@@ -519,12 +519,12 @@ void MenuManager::InitPage()
     VuListIterator myit(AllAirList);
     nu = (Unit) myit.GetFirst();
 
-    while (nu and !mAWACSavail)
+    while (nu and not mAWACSavail)
     {
         cf = nu;
         nu = (Unit) myit.GetNext();
 
-        // 2002-03-07 MN of course only AWACS from our team - doh!
+        // 2002-03-07 MN of course only AWACS from our team - doh
         if ( not cf->IsFlight() or cf->IsDead())
             continue;
 
@@ -561,7 +561,7 @@ void MenuManager::CheckItemConditions(BOOL poll)
                 mpPage->mpItems[i].mIsAvailable = TRUE;
                 mpPage->mpItems[i].mDrawColor = mpPage->mpItems[i].mNormColor;
             }
-            else if (condition == 5 and !mOnGround)
+            else if (condition == 5 and not mOnGround)
             {
                 mpPage->mpItems[i].mIsAvailable = TRUE;
                 mpPage->mpItems[i].mDrawColor = mpPage->mpItems[i].mNormColor;

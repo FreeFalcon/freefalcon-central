@@ -99,7 +99,7 @@ VuEntity* SimVUCreateVehicle(ushort type, ushort sizeShort, VU_BYTE* data)
         }
         else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_EJECT)
         {
-            // TODO: remote creation for ejected pilots!!!
+            // TODO: remote creation for ejected pilots!
             theVehicle = new EjectedPilotClass(&data, &size);
         }
     }

@@ -16,9 +16,9 @@
 #pragma warning(push,4)
 
 #ifdef USE_DINPUT_8 // Retro 15Jan2004
-#pragma message("______________Compiling with DirectInputVersion 0x0800 !!______________________")
+#pragma message("______________Compiling with DirectInputVersion 0x0800 ______________________")
 #else
-#pragma message("______________Compiling with DirectInputVersion 0x0700 !!______________________")
+#pragma message("______________Compiling with DirectInputVersion 0x0700 ______________________")
 #endif
 
 // sfr: removed
@@ -200,7 +200,7 @@ BOOL SetupDIMouseAndKeyboard(HINSTANCE, HWND hWnd)
      SetupResult = FALSE;
     }
 
-    if(SetupResult and !MouseSetupResult){
+    if(SetupResult and not MouseSetupResult){
      SetupResult = DIMessageBox(999, MB_YESNO, SSI_NO_MOUSE_INIT);
     }
     else if (MouseSetupResult)
@@ -209,7 +209,7 @@ BOOL SetupDIMouseAndKeyboard(HINSTANCE, HWND hWnd)
     }
     */
 
-    if (SetupResult and !CursorSetupResult)
+    if (SetupResult and not CursorSetupResult)
     {
         SetupResult = DIMessageBox(999, MB_YESNO, SSI_NO_CURSOR_INIT);
     }
@@ -370,7 +370,7 @@ void SetupGameAxis()
                 }
                 else
                 {
-                    ShiAssert(false); // out-of-array ! DI only specifies 8 axis (0-7) !!
+                    ShiAssert(false); // out-of-array ! DI only specifies 8 axis (0-7) 
                 }
 
 #pragma warning(default:4127)
@@ -550,7 +550,7 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
 #endif
 
     /*******************************************************************************/
-    // ok we enumerated sticks, this doesn´t mean however that they are mapped yet !!
+    // ok we enumerated sticks, this doesn´t mean however that they are mapped yet 
     /*******************************************************************************/
     if (gTotalJoy)
     {
@@ -623,7 +623,7 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
     }
     else
     {
-        MonoPrint("No Joysticks found. It would be useful to have one!! :)\n");
+        MonoPrint("No Joysticks found. It would be useful to have one :)\n");
     }
 
     gDIEnabled = TRUE;

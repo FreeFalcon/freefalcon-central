@@ -312,7 +312,7 @@ int FileVerify(void)
 
     if (retval)
     {
-        sprintf(outStr, "%d Error(s) found !!!!!\n", retval);
+        sprintf(outStr, "%d Error(s) found \n", retval);
         MonoPrint(outStr);
         outStr[strlen(outStr) - 1] = 0;
 

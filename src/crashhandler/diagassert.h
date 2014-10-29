@@ -114,7 +114,7 @@ extern "C" {
 #define ASSERTMACRO(a,x)                                            \
     do                                                              \
     {                                                               \
-        if ( !(x)                                               and  \
+        if (  not (x)                                               and  \
              DiagAssert ( a , _T ( #x ) , __FILE__  , __LINE__)    )\
         {                                                           \
                 DebugBreak ( ) ;                                    \
@@ -171,7 +171,7 @@ extern "C" {
 
 #else   // !_DEBUG
     /*//////////////////////////////////////////////////////////////////////
-                           _DEBUG Is !!NOT!! Defined
+                           _DEBUG Is NOT Defined
     //////////////////////////////////////////////////////////////////////*/
 
 #define ASSERTMACRO(a,x)

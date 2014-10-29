@@ -135,7 +135,7 @@ void C_Panner::SetImage(short state, long ImageID)
 
 long C_Panner::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or !(GetFlags() bitand C_BIT_ENABLED) or !Ready() or !Parent_)
+    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED) or not Ready() or not Parent_)
     {
         return(0);
     }

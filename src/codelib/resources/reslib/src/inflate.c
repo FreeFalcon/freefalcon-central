@@ -1125,7 +1125,7 @@ int inflate_dynamic(COMPRESSED_FILE * cmp)
 
     if ((i = huft_build(ll, nl, 257, cplens, cplext, &tl, &bl)) not_eq 0)
     {
-        //    if (i == 1 and !qflag) {
+        //    if (i == 1 and not qflag) {
         //      fprintf(stderr, "(incomplete l-tree)  ");
         //      huft_free(tl);
         //    }
@@ -1136,7 +1136,7 @@ int inflate_dynamic(COMPRESSED_FILE * cmp)
 
     if ((i = huft_build(ll + nl, nd, 0, cpdist, cpdext, &td, &bd)) not_eq 0)
     {
-        //    if (i == 1 and !qflag) {
+        //    if (i == 1 and not qflag) {
         //      fprintf(stderr, "(incomplete d-tree)  ");
         //      i = 0;
         //    }

@@ -127,7 +127,7 @@ private:
     GridIndex dest_x; // Destination
     GridIndex dest_y;
     VU_ID cargo_id; // id of our cargo, or our carrier unit
-    VU_ID target_id; // Target we're engaged with (there can be only one! (c))
+    VU_ID target_id; // Target we're engaged with (there can be only one (c))
     uchar moved;        // Moves since check
     uchar losses; // How many vehicles we've lost
     uchar tactic; // Current Unit tactic

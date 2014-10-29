@@ -364,7 +364,7 @@ bool Texture::CreateTexture(char *strName)
     ShiAssert(texHandle == NULL);
 
     // JB 010318 CTD
-    if (/* !F4IsBadReadPtr(palette,sizeof(Palette))  and */ (flags bitand MPR_TI_PALETTE))
+    if (/*  not F4IsBadReadPtr(palette,sizeof(Palette))  and */ (flags bitand MPR_TI_PALETTE))
     {
         palette->Activate();
         ShiAssert(palette->palHandle);
@@ -472,7 +472,7 @@ bool Texture::UpdateMPR(char *strName)
     ShiAssert(imageData);
     ShiAssert(texHandle);
 
-    if ( not texHandle or !imageData)
+    if ( not texHandle or not imageData)
     {
         return false;
     }
@@ -556,7 +556,7 @@ TextureHandle::~TextureHandle()
 #endif
 
     // JB 010318 CTD
-    if (m_pDDS and !F4IsBadReadPtr(m_pDDS, sizeof(IDirectDrawSurface7))) m_pDDS->Release();
+    if (m_pDDS and  not F4IsBadReadPtr(m_pDDS, sizeof(IDirectDrawSurface7))) m_pDDS->Release();
 
     m_pDDS = NULL;
 
@@ -748,7 +748,7 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
         {
             if (hr == DDERR_OUTOFVIDEOMEMORY)
             {
-                MonoPrint("TextureHandle::Create - EVICTING MANAGED TEXTURES !!\n");
+                MonoPrint("TextureHandle::Create - EVICTING MANAGED TEXTURES \n");
 
                 // If we are out of video memory, evict all managed textures and retry
                 CheckHR(rc->m_pD3D->EvictManagedTextures());
@@ -1590,7 +1590,7 @@ HRESULT CALLBACK TextureHandle::TextureSearchCallback(DDPIXELFORMAT* pddpf, VOID
     }
 
     // Make sure current alpha format agrees with requested format type
-    if ((ptsi->dwDesiredAlphaBPP) and !(pddpf->dwFlags bitand DDPF_ALPHAPIXELS) or wAlphaBits < ptsi->dwDesiredAlphaBPP)
+    if ((ptsi->dwDesiredAlphaBPP) and  not (pddpf->dwFlags bitand DDPF_ALPHAPIXELS) or wAlphaBits < ptsi->dwDesiredAlphaBPP)
     {
         return DDENUMRET_OK;
     }

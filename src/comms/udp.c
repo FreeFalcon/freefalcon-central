@@ -39,10 +39,10 @@ extern HANDLE    GlobalListLock;
 /* Mutex macros */
 #define SAY_ON(a)
 #define SAY_OFF(a)
-#define CREATE_LOCK(a,b)                { a = CreateMutex( NULL, FALSE, b ); if( !a ) DebugBreak(); }
+#define CREATE_LOCK(a,b)                { a = CreateMutex( NULL, FALSE, b ); if(  not a ) DebugBreak(); }
 #define REQUEST_LOCK(a)                 { int w = WaitForSingleObject(a, INFINITE); {SAY_ON(a);} if( w == WAIT_FAILED ) DebugBreak(); }
-#define RELEASE_LOCK(a)                 { {SAY_OFF(a);} if( !ReleaseMutex(a)) DebugBreak();   }
-#define DESTROY_LOCK(a)                 { if( !CloseHandle(a)) DebugBreak();   }
+#define RELEASE_LOCK(a)                 { {SAY_OFF(a);} if(  not ReleaseMutex(a)) DebugBreak();   }
+#define DESTROY_LOCK(a)                 { if(  not CloseHandle(a)) DebugBreak();   }
 
 
 static struct sockaddr_in comBroadcastAddr, comRecvAddr;

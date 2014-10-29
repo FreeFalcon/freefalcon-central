@@ -219,7 +219,7 @@ void MissileClass::CleanupData()
 
 void MissileClass::CleanupLocalData()
 {
-    if (runTime not_eq 0.0F and !IsDead())
+    if (runTime not_eq 0.0F and not IsDead())
     {
         SetDead(TRUE);
     }
@@ -442,7 +442,7 @@ void MissileClass::Start(SimObjectType *tgt)
     // Marco Edit - actually - if it's boresighted or uncaged
     bool hasref = false; // JB 020109 CTD fix. Engage in safe referencing.  Shooting a breathing but unlocked Mav caused a CTD because DropTarget would delete the object that was later used.
 
-    if ( not isSlave or !isCaged or tgt == NULL)// and sensorArray[0]->Type() == SensorClass::IRST) //me123 make sure only ir's are unchaged for now
+    if ( not isSlave or not isCaged or tgt == NULL)// and sensorArray[0]->Type() == SensorClass::IRST) //me123 make sure only ir's are unchaged for now
     {
         tgt = targetPtr;
 
@@ -649,12 +649,12 @@ int MissileClass::Exec(void)
             // was a prob with the Mav's exploding almost immediately on launch
             // apparently they go quickly to a Missed status.  There may be another
             // problem there -- I'm just treating the symptom
-            // 2002-04-04 MN only do that if we did not yet have closest approach on the target !!!
+            // 2002-04-04 MN only do that if we did not yet have closest approach on the target !
             // Hope this finally fixes floating missiles
             if (
                 done == FalconMissileEndMessage::Missed  and 
                 runTime < 15.0f  and 
-                !((g_nMissileFix bitand 0x10) and (flags bitand ClosestApprch))
+                 not ((g_nMissileFix bitand 0x10) and (flags bitand ClosestApprch))
             )
             {
 #ifndef MISSILE_TEST_PROG
@@ -722,7 +722,7 @@ int MissileClass::Exec(void)
     }
 
     //MI 6/01/02
-    if (Pitbull and parent and parent->IsAirplane() and !SaidPitbull)
+    if (Pitbull and parent and parent->IsAirplane() and not SaidPitbull)
     {
         float LastMissileImpactTime = 0.0F;
         float MissileActiveTime = 0.0F;
@@ -1158,7 +1158,7 @@ MissileClass::EndMissile(void)
     // (cause it hit a building or something silly like that)
 
     // 2002-03-28 MN if end message is ArmingDelay, don't apply damage at all
-    if ( not (done == FalconMissileEndMessage::ArmingDelay) and inputData and (runTime > inputData->guidanceDelay or !parent->OnGround()))
+    if ( not (done == FalconMissileEndMessage::ArmingDelay) and inputData and (runTime > inputData->guidanceDelay or not parent->OnGround()))
         ApplyProximityDamage();
 
     endMessage = new FalconMissileEndMessage(Id(), FalconLocalGame);
@@ -1293,7 +1293,7 @@ MissileClass::ApplyProximityDamage(void)
          //TJ_changes
          //Only check against planes ....
          //removed this -> dont check against plane that we already were targeting that is handled abouve ... for now .. this could become only check
-         if ( !(testObject->IsAirplane())/* or targetPtr and  ( targetPtr->BaseData()->Id() == testObject->Id() ) */ /* ) {
+         if (  not (testObject->IsAirplane())/* or targetPtr and  ( targetPtr->BaseData()->Id() == testObject->Id() ) */ /* ) {
  testObject = (SimBaseClass*) objectWalker.GetNext();
  continue;
  }

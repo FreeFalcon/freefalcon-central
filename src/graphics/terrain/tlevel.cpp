@@ -120,7 +120,7 @@ void TLevel::Setup(int level, int width, int height, const char *mapPath)
     // Open the post file for this level
     sprintf(filename, "%s\\Theater.l%0d", mapPath, level);
 
-    if (postFileMap.Open(filename, FALSE, !g_bUseMappedFiles) == false)
+    if (postFileMap.Open(filename, FALSE,  not g_bUseMappedFiles) == false)
         return;
 
     // Initialize the lighting conditions and register for future time of day updates

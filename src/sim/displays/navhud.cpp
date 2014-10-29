@@ -365,7 +365,7 @@ void HudClass::DrawAltitude(void)
                     if (-hat < lowAltWarning and (FindRollAngle(-hat) and FindPitchAngle(-hat))  and 
                         ((AircraftClass*)ownship)->af->platform->RaltReady())
                     {
-                        if (Warnflash and !((AircraftClass*)ownship)->OnGround())
+                        if (Warnflash and  not ((AircraftClass*)ownship)->OnGround())
                         {
                             DrawALString();
                         }
@@ -392,7 +392,7 @@ void HudClass::DrawAltitude(void)
                     if (-hat < lowAltWarning and (FindRollAngle(-hat) and FindPitchAngle(-hat))  and 
                         ((AircraftClass*)ownship)->af->platform->RaltReady())
                     {
-                        if (Warnflash and !((AircraftClass*)ownship)->OnGround())
+                        if (Warnflash and  not ((AircraftClass*)ownship)->OnGround())
                         {
                             DrawALString();
                         }
@@ -532,7 +532,7 @@ void HudClass::DrawAltitude(void)
         }
 
         // Non-Auto altitude scale
-        if (radarSwitch not_eq RADAR_AUTO or !lowAlt)
+        if (radarSwitch not_eq RADAR_AUTO or not lowAlt)
         {
             if (lowAlt)
             {
@@ -561,8 +561,8 @@ void HudClass::DrawAltitude(void)
             if (g_bRealisticAvionics)
             {
                 if ( not (FCC->GetMasterMode() == FireControlComputer::Missile)  and 
-                    !(FCC->GetMasterMode() == FireControlComputer::Dogfight)  and 
-                    !(FCC->GetMasterMode() == FireControlComputer::MissileOverride))
+                     not (FCC->GetMasterMode() == FireControlComputer::Dogfight)  and 
+                     not (FCC->GetMasterMode() == FireControlComputer::MissileOverride))
                 {
                     display->Line(leftEdge, winCenter,
                                   leftEdge - hudWinWidth[ALTITUDE_WINDOW] * 0.5F, winCenter);
@@ -956,7 +956,7 @@ void HudClass::DrawHeading(void)
         // MI
         if (g_bRealisticAvionics and GetDriftCOSwitch() == DRIFT_CO_OFF)
         {
-            if (((AircraftClass*)ownship)->af->gearPos > 0.5F and !((AircraftClass*)ownship->OnGround()))
+            if (((AircraftClass*)ownship)->af->gearPos > 0.5F and  not ((AircraftClass*)ownship->OnGround()))
             {
                 dy = hudWinY[BORESIGHT_CROSS_WINDOW] +
                      hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F -
@@ -1375,7 +1375,7 @@ void HudClass::DrawILS(void)
     //ATARIBABY ILS needles HUD fix
     // ILS needles on hud not get properly updated because it query pCockpitManager->mHiddenFlag
     // and this seems not get updated in 3d pit view
-    // if (gNavigationSys and !OTWDriver.pCockpitManager->mHiddenFlag)
+    // if (gNavigationSys and not OTWDriver.pCockpitManager->mHiddenFlag)
     if (gNavigationSys and (gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN ||
                            gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV)  and 
         gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &hDev))
@@ -1475,7 +1475,7 @@ void HudClass::DrawWaypoint(void)
     //MI INS stuff
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (ownship and !ownship->INSState(AircraftClass::INS_HUD_STUFF))
+        if (ownship and not ownship->INSState(AircraftClass::INS_HUD_STUFF))
             return;
     }
 
@@ -1530,7 +1530,7 @@ void HudClass::DrawWaypoint(void)
         // MI
         if (g_bRealisticAvionics and GetDriftCOSwitch() == DRIFT_CO_OFF)
         {
-            if (((AircraftClass*)ownship)->af->gearPos > 0.5F and !((AircraftClass*)ownship->OnGround()))
+            if (((AircraftClass*)ownship)->af->gearPos > 0.5F and  not ((AircraftClass*)ownship->OnGround()))
             {
                 dy = hudWinY[BORESIGHT_CROSS_WINDOW] +
                      hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F -
@@ -1599,7 +1599,7 @@ void HudClass::DrawWaypoint(void)
         }
         else
         {
-            //Here we get a inverted arrow  // JPG 17 Dec 03 NOT HERE IN REAL JET YOU DOPE!!
+            //Here we get a inverted arrow  // JPG 17 Dec 03 NOT HERE IN REAL JET YOU DOPE
             //   display->Line(headingError, headingTop + tickLen * 0.1F,
             //     headingError + 0.3F * tickLen, headingTop + tickLen * 0.8F);
             //   display->Line(headingError + 0.25F * tickLen, headingTop + tickLen * 0.8F,
@@ -1790,7 +1790,7 @@ void HudClass::TimeToSteerpoint(void)
     //MI INS stuff
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (ownship and !ownship->INSState(AircraftClass::INS_HUD_STUFF))
+        if (ownship and not ownship->INSState(AircraftClass::INS_HUD_STUFF))
             return;
     }
 
@@ -1873,7 +1873,7 @@ void HudClass::RangeToSteerpoint(void)
     //MI INS stuff
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (ownship and !ownship->INSState(AircraftClass::INS_HUD_STUFF))
+        if (ownship and not ownship->INSState(AircraftClass::INS_HUD_STUFF))
             return;
     }
 
@@ -2248,7 +2248,7 @@ void HudClass::DrawRollCue()
         //MI INS stuff
         if (g_bRealisticAvionics and g_bINS)
         {
-            if (ownship and !ownship->INSState(AircraftClass::INS_HUD_STUFF))
+            if (ownship and not ownship->INSState(AircraftClass::INS_HUD_STUFF))
             {
                 display->ZeroRotationAboutOrigin();
                 display->AdjustOriginInViewport(0,  -basey);
@@ -2283,7 +2283,7 @@ void HudClass::CheckMSLFloor(void)
         }
     }
 
-    if (-cockpitFlightData.z > (MSLFloor + 20.0F) and !WasAboveMSLFloor)
+    if (-cockpitFlightData.z > (MSLFloor + 20.0F) and not WasAboveMSLFloor)
         WasAboveMSLFloor = TRUE;
 }
 const static float TrigWidth = 0.04F;
@@ -2293,13 +2293,13 @@ void HudClass::DrawOA(void)
     //MI INS stuff
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (ownship and !ownship->INSState(AircraftClass::INS_HUD_STUFF))
+        if (ownship and not ownship->INSState(AircraftClass::INS_HUD_STUFF))
             return;
     }
 
     float xPos, yPos;
 
-    if (( not OA1Valid and !OA2Valid) or (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.)
+    if (( not OA1Valid and not OA2Valid) or (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.)
         return;
     else
     {
@@ -2374,7 +2374,7 @@ void HudClass::DrawVIP(void)
     //MI INS stuff
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (ownship and !ownship->INSState(AircraftClass::INS_HUD_STUFF))
+        if (ownship and not ownship->INSState(AircraftClass::INS_HUD_STUFF))
             return;
     }
 
@@ -2420,7 +2420,7 @@ void HudClass::DrawVRP(void)
     //MI INS stuff
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (ownship and !ownship->INSState(AircraftClass::INS_HUD_STUFF))
+        if (ownship and not ownship->INSState(AircraftClass::INS_HUD_STUFF))
             return;
     }
 
@@ -2914,7 +2914,7 @@ void HudClass::DrawAltCarret(float Alt)
 //MI
 void HudClass::DrawCruiseIndexes(void)
 {
-    if ( not OTWDriver.pCockpitManager or !OTWDriver.pCockpitManager->mpIcp)
+    if ( not OTWDriver.pCockpitManager or not OTWDriver.pCockpitManager->mpIcp)
     {
         return;
     }
