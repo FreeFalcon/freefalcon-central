@@ -1179,7 +1179,7 @@ void CheckForMouseAxis(void)
     mouse->Release();
     mouse = 0;
 #else
-    // no mousewheel axis !
+    // no mousewheel axis 
 #endif
 }
 #endif // USE_DINPUT_8
@@ -1191,15 +1191,15 @@ void CheckForMouseAxis(void)
 // autocenter goes OFF (we do it ourselves then), else we turn it back ON so
 // that at least centering spring forces are there, else it feels like ass.
 //
-// I´m ASSuming that this IS a FFB stick ! You can´t check this with
-// HasForceFeedback however (at least not here) !
+// I´m ASSuming that this IS a FFB stick  You can´t check this with
+// HasForceFeedback however (at least not here) 
 /*****************************************************************************/
 int ActivateAutoCenter(const bool OnOff, const int theJoyIndex)
 {
     ShiAssert(theJoyIndex >= 0);
     HRESULT hres;
 
-    // have to unacquire in order to set new properties !
+    // have to unacquire in order to set new properties 
     hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Unacquire();
 
     DIPROPDWORD DIPropAutoCenter;
@@ -1240,7 +1240,7 @@ int ActivateAutoCenter(const bool OnOff, const int theJoyIndex)
 // FFB is only supported for the primary flight device (the one with the PITCH
 // and BANK axis)
 //
-// theJoyIndex is the index, with SIM_JOYSTICK1 deducted  !
+// theJoyIndex is the index, with SIM_JOYSTICK1 deducted  
 /*****************************************************************************/
 int CheckForForceFeedback(const int theJoyIndex)
 {
@@ -1248,7 +1248,7 @@ int CheckForForceFeedback(const int theJoyIndex)
     HRESULT hres;
 
 #ifndef AUTOCENTERFUN
-    // have to unacquire in order to set new properties !
+    // have to unacquire in order to set new properties 
     hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Unacquire();
 #endif
 
@@ -1258,7 +1258,7 @@ int CheckForForceFeedback(const int theJoyIndex)
 
     if (theJoyIndex == AxisMap.FlightControlDevice - SIM_JOYSTICK1)  // Retro 31Dec2003
     {
-        // a total shit sandwich here.. FFB only for the primary device ! if nothing is yet mapped
+        // a total shit sandwich here.. FFB only for the primary device  if nothing is yet mapped
         // then it will have to wait till the user selects it in the appropriate screen
         if (devcaps.dwFlags bitand DIDC_FORCEFEEDBACK)
         {
@@ -1303,7 +1303,7 @@ int CheckForForceFeedback(const int theJoyIndex)
                 }
 
 #else
-                // autocenter will get turned OFF if FFB is ENABLED !
+                // autocenter will get turned OFF if FFB is ENABLED 
                 hasForceFeedback =  ActivateAutoCenter( not PlayerOptions.GetFFB(), theJoyIndex);
                 return hasForceFeedback;
 #endif
@@ -1314,13 +1314,13 @@ int CheckForForceFeedback(const int theJoyIndex)
 #ifndef AUTOCENTERFUN
         hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Acquire();
 #endif
-        return FALSE; // no ffb stick !
+        return FALSE; // no ffb stick 
     }
 
 #ifndef AUTOCENTERFUN
     hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Acquire();
 #endif
-    return FALSE; // device checked is not the primary flight stick (the only one that has FFB effects) !
+    return FALSE; // device checked is not the primary flight stick (the only one that has FFB effects) 
 }
 
 /*****************************************************************************/

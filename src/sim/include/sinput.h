@@ -72,7 +72,7 @@ typedef struct
 
 #define DINPUT_BUFFERSIZE 16
 // #define DMOUSE_BUFFERSIZE 16 // Retro 15Feb2004 -aaaargh
-#define DMOUSE_BUFFERSIZE 128 // Retro 15Feb2004 - minimum !
+#define DMOUSE_BUFFERSIZE 128 // Retro 15Feb2004 - minimum 
 #define DKEYBOARD_BUFFERSIZE 256
 #define DJOYSTICK_BUFFERSIZE 16
 

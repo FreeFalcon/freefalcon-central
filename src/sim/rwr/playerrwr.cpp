@@ -546,7 +546,7 @@ void PlayerRwrClass::DrawContact(DetectListElement *record)
         // JB 010727 Draw 'F' for friendly aircraft
         if (g_bIFFRWR and (record->radarData->RWRsymbol == RWRSYM_ADVANCED_INTERCEPTOR ||
                           record->radarData->RWRsymbol == RWRSYM_BASIC_INTERCEPTOR)  and 
-            !GetRoE(record->entity->GetTeam(), platform->GetTeam(), ROE_AIR_ENGAGE))
+             not GetRoE(record->entity->GetTeam(), platform->GetTeam(), ROE_AIR_ENGAGE))
         {
             DrawEmitterSymbol(RWRSYM_F);
         }
@@ -970,7 +970,7 @@ void PlayerRwrClass::ToggleTargetSep(void)
 int PlayerRwrClass::ManualSelect(void)
 {
 #if 1
-    return !detectionList[0].selected;
+    return  not detectionList[0].selected;
 #else
 
     // Lets look through the list
@@ -1217,7 +1217,7 @@ void PlayerRwrClass::CheckEWS(void)
         {
             //turn on ECM when getting locked up
             if (SimDriver.GetPlayerAircraft()->HasSPJamming() and not SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::blkr_fault)  and 
-                !SimDriver.GetPlayerAircraft()->ManualECM)
+                 not SimDriver.GetPlayerAircraft()->ManualECM)
             {
                 if (SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::EWSJammerPower))
                 {

@@ -441,7 +441,7 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
             // sfr: removed JB hack
             if (
                 //  not F4IsBadReadPtr(curUpdate, sizeof(SimBaseClass))  and 
-                !curUpdate->IsDead() and CheckForConcern(curUpdate, self)
+                 not curUpdate->IsDead() and CheckForConcern(curUpdate, self)
             )
             {
                 // Add after lastInUse

@@ -137,7 +137,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     if (groundType == COVERAGE_WATER ||
         groundType == COVERAGE_RIVER ||
         ( not onFlatFeature  and 
-         !af->IsSet(AirframeClass::OverRunway)  and 
+          not af->IsSet(AirframeClass::OverRunway)  and 
          (groundType == COVERAGE_THINFOREST ||
           groundType == COVERAGE_THICKFOREST ||
           groundType == COVERAGE_ROCKY ||
@@ -372,7 +372,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
             // we're taking damage.....
             message = CreateGroundCollisionMessage(this, FloatToInt32(maxStrength));
 
-            gearAbsorption = sinkRate * 3.0F * !af->IsSet(AirframeClass::GearBroken) * af->gearPos;
+            gearAbsorption = sinkRate * 3.0F *  not af->IsSet(AirframeClass::GearBroken) * af->gearPos;
 
             message->dataBlock.damageStrength = min(1000.0F, af->vt * impactAngle * 0.1F +
                                                     (af->vt * impactAngle - gearAbsorption) *

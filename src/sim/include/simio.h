@@ -66,7 +66,7 @@ typedef enum
     AXIS_RET_DEPR, // Manual Reticle Depression unipolar
     AXIS_ZOOM, // View Zoom unipolar
     AXIS_INTERCOM_VOLUME, // InterCom Volume, that´s kinda a 'master volume' for all comm channels  // unipolar
-    AXIS_MAX // Add any additional axis BEFORE that one !
+    AXIS_MAX // Add any additional axis BEFORE that one 
 } GameAxis_t;
 
 #define SIMLIB_MAX_ANALOG AXIS_MAX // max number of axis

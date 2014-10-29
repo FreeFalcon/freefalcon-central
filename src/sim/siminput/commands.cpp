@@ -992,7 +992,7 @@ void SimPickle(unsigned long, int state, void*)
             //Targeting Pod, Fire laser automatically
 
             //JAM 04Jan04 - Fixing pickle-after-ejaculate-CTD.
-            if (SimDriver.GetPlayerAircraft() and // MLR 5/4/2004 - <-- THIS IS NULL! Fixing pickle-after-ejaculate-CTD.
+            if (SimDriver.GetPlayerAircraft() and // MLR 5/4/2004 - <-- THIS IS NULL Fixing pickle-after-ejaculate-CTD.
                  not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered  and 
                  not ((AircraftClass*)SimDriver.GetPlayerAircraft())->doEjectCountdown)
                 // and   not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectCountdown) //Wombat778 4-02-04 Removed, as the ejectcountdown value is not a stable number, and causes the laser NEVER to fire automatically
@@ -3342,7 +3342,7 @@ void OTWViewZoomIn(unsigned long, int state, void*)
         OTWDriver.ViewZoomIn();
 
         /*
-        ** edg: what is this?!
+        ** edg: what is this?
         ** leave it our becuase its causing a CRASH when ejected
         theFault = theFault ++;
         if (theFault > 32)
@@ -3358,7 +3358,7 @@ void OTWViewZoomOut(unsigned long, int state, void*)
     {
         OTWDriver.ViewZoomOut();
         /*
-        ** edg: what is this?!
+        ** edg: what is this?
         ** leave it our becuase its causing a CRASH when ejected
         ((AircraftClass*)SimDriver.GetPlayerAircraft())->AddFault(1, (1 << theFault), 1, 0);
         */
@@ -3694,7 +3694,7 @@ void SimWheelBrakes(unsigned long, int state, void*)
     }
 
     // MD -- 20040106: adding support for analog wheel braking channel.
-    // Right now there is no support for differential braking!
+    // Right now there is no support for differential braking
     if (IO.AnalogIsUsed(AXIS_BRAKE_LEFT))
         return;
 
@@ -4162,7 +4162,7 @@ void SimMPOToggle(unsigned long, int state, void*)
 }
 
 // MD -- 20031120: adding commands to place the MPO switch exsplicitly for cockpit builders
-// MD -- 20031206: Mav points out that this switch is in fact a momentary!
+// MD -- 20031206: Mav points out that this switch is in fact a momentary
 
 void SimMPO(unsigned long, int state, void*)
 {
@@ -5470,7 +5470,7 @@ void SimICPNav(unsigned long, int state, void* pButton)
 
         if (
             F4IsBadReadPtr(SimDriver.GetPlayerAircraft(), sizeof(AircraftClass)) or // JB 010317 CTD
-            !SimDriver.GetPlayerAircraft()->FCC or // JB 010307 CTD
+             not SimDriver.GetPlayerAircraft()->FCC or // JB 010307 CTD
             F4IsBadReadPtr(SimDriver.GetPlayerAircraft()->FCC, sizeof(FireControlComputer)) or // JB 010307 CTD
             SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride ||
             SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::Dogfight) return;
@@ -6340,7 +6340,7 @@ void SimTACANAATR(unsigned long, int state, void*)
 // panel.  That knob does not control whether the channel controls of the UHF panel are
 // active or not; the CNI select knob on the AUX COMM panel does that.  Moved the UHF source
 // selection controls to the CNI knob functions.  TO DO (one day maybe): add implementation
-// of what this control really does! ;)
+// of what this control really does ;)
 
 void SimToggleUHFMaster(unsigned long, int state, void*)
 {

@@ -571,14 +571,14 @@ void SimulationDriver::Cycle()
 
         if (
             flying and not OTWDriver.IsActive() and FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI  and 
-            !curFlyState and not doGraphicsExit and not doExit and not TheCampaign.IsSuspended()
+             not curFlyState and not doGraphicsExit and not doExit and not TheCampaign.IsSuspended()
         )
         {
             Enter();
         }
         else if (
             flying and OTWDriver.IsActive() and FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI  and 
-            !curFlyState and not doGraphicsExit and not doExit and not TheCampaign.IsSuspended()
+             not curFlyState and not doGraphicsExit and not doExit and not TheCampaign.IsSuspended()
         )
         {
             if ((sess->CameraCount() > 0) and OTWDriver.GetViewpoint())
@@ -655,7 +655,7 @@ void SimulationDriver::Cycle()
                 // There is code in ::SimBaseClass that sets the flag FELF_ADDED_DURING_SIMDRIVER_CYCLE.
                 // We need to make sure we clear it here.
                 if (
-                    !processObjsAddedInCycle ||
+                     not processObjsAddedInCycle ||
                     (processObjsAddedInCycle and theObject->IsSetFELocalFlag(FELF_ADDED_DURING_SIMDRIVER_CYCLE))
                 )
                 {

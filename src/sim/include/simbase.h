@@ -276,7 +276,7 @@ public:
     }
 
     // Seems like this stuff (and its support "sepecial data") could move into vehicle or aircraft???
-    // LOCAL ONLY!
+    // LOCAL ONLY
     void SetChaffExpireTime(VU_TIME t)
     {
         ShiAssert(IsLocal());

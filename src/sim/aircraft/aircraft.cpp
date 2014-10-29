@@ -2580,7 +2580,7 @@ int AircraftClass::Exec(void)
                 refuelHelp = g_fAIRefuelSpeed;
 
             if ( not tanker or not tanker->IsAirplane() ||
-                !af->AddFuel(refuelRate * SimLibMajorFrameTime * refuelHelp * refuelHelp)
+                 not af->AddFuel(refuelRate * SimLibMajorFrameTime * refuelHelp * refuelHelp)
                )
             {
                 FalconTankerMessage *TankerMsg;

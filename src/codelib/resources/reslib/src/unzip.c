@@ -539,7 +539,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
         path[ path_idx + 1 ] = '\0';
         path[ path_idx + 2 ] = '\0';
 
-        if (path_idx and strcmp(path, path_was))      /* new directory! */
+        if (path_idx and strcmp(path, path_was))      /* new directory */
         {
             strcpy(path_was, path);
 
@@ -1182,7 +1182,7 @@ int readbyte(COMPRESSED_FILE * cmp)
 
    RETURNS:    Byte read or EOF token.
 
-   NOTE:       Only called from inflate.h!
+   NOTE:       Only called from inflate.h
 
        --- archive_entry should be compress_file ---
 
@@ -1245,7 +1245,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
                 )
             {
                 //                if((native(*((int*)arc -> tmp_in_ptr)) == 'P')  and 
-                //                    !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))  /* GFG 31/01/98
+                //                     not strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))  /* GFG 31/01/98
                 if (((*(char*)(arc -> tmp_in_ptr)) == 'P') and not strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
 
                 {
@@ -1301,7 +1301,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
 
         /*   ==amount=   ==done==   ==rounding==    =blksiz=  */
 
-        for (i = 1;  !found and (i <= numblks);  ++i)
+        for (i = 1;   not found and (i <= numblks);  ++i)
         {
             arc -> start_buffer -= arc -> tmp_in_size;
             lseek(arc -> os_handle, arc -> start_buffer, SEEK_SET);
@@ -1414,7 +1414,7 @@ static int get_cdir_file_hdr(cdir_file_hdr *crec, ARCHIVE * arc)     /* return P
     crec->file_comment_length = makeword(&byterec[C_FILE_COMMENT_LENGTH]);
     crec->disk_number_start = makeword(&byterec[C_DISK_NUMBER_START]);
     crec->internal_file_attributes = makeword(&byterec[C_INTERNAL_FILE_ATTRIBUTES]);
-    crec->external_file_attributes = makelong(&byterec[C_EXTERNAL_FILE_ATTRIBUTES]);  /* LONG, not word! */
+    crec->external_file_attributes = makelong(&byterec[C_EXTERNAL_FILE_ATTRIBUTES]);  /* LONG, not word */
     crec->relative_offset_local_header = makelong(&byterec[C_RELATIVE_OFFSET_LOCAL_HEADER]);
 
     return(PK_COOL);
