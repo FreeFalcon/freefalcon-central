@@ -549,7 +549,7 @@ void C_ListBox::SetItemUserData(long ID, short idx, long value)
 
 short C_ListBox::GetListHeight()
 {
-    short sResult = (short)(gFontList->GetHeight(Font_) * Count_ + 8);    //!
+    short sResult = (short)(gFontList->GetHeight(Font_) * Count_ + 8);    
 
     return sResult;
 }
@@ -579,11 +579,11 @@ BOOL C_ListBox::Process(long ID, short HitType)
             if (GetFlags() bitand C_BIT_ABSOLUTE)
                 OpenWindow((short)(Parent_->GetX() + GetX()),
                            (short)(Parent_->GetY() + GetY() + GetH() + 1),
-                           (short)GetW(), (short)GetListHeight());//!
+                           (short)GetW(), (short)GetListHeight());
             else
                 OpenWindow((short)(Parent_->GetX() + Parent_->VX_[GetClient()] + GetX()),
                            (short)(Parent_->GetY() + Parent_->VY_[GetClient()] + GetY() + GetH() + 1),
-                           (short)GetW(), (short)GetListHeight()); //!
+                           (short)GetW(), (short)GetListHeight()); 
 
             return(TRUE);
             break;
@@ -635,8 +635,8 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
     C_Line *line = NULL;
     short UseScrollBar = 0;
     short sb_w = 0, virtualh = 0;
-    int draw_y = 0; //!
-    int fh = 0, i = 0; //!
+    int draw_y = 0; 
+    int fh = 0, i = 0; 
 
     if (Handler_ == NULL)
     {
@@ -668,16 +668,16 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
         cur = cur->Next;
     }
 
-    Count_ = (short)i; //!
+    Count_ = (short)i; 
 
-    h = (short)(i * fh + 8); //!
+    h = (short)(i * fh + 8); 
 
     // if bigger than 7 elements and scrollable
     if ((h > (fh * 7 + 8)) and (ScrollBar_))
     {
         virtualh = h;
         UseScrollBar = 1;
-        h = (short)(fh * ScrollCount_ /*7*/ + 8); //!
+        h = (short)(fh * ScrollCount_ /*7*/ + 8); 
     }
 
     Window_ = new C_Window;
@@ -685,15 +685,15 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
     Window_->SetFlagBitOn(C_BIT_NOCLEANUP);
     Window_->SetClientArea(2, 2, w - 4, h - 4, 0);
 
-    if ((x + w) > Handler_->GetW()) x = (short)(Handler_->GetW() - w - 1); //!
+    if ((x + w) > Handler_->GetW()) x = (short)(Handler_->GetW() - w - 1); 
 
-    if ((y + h) > Handler_->GetH()) y = (short)(Handler_->GetH() - h - 1); //!
+    if ((y + h) > Handler_->GetH()) y = (short)(Handler_->GetH() - h - 1); 
 
     if (x < 0) x = 0;
 
     if (y < 0) y = 0;
 
-    Window_->SetRanges(0, 0, (short)Handler_->GetW(), (short)Handler_->GetH(), w, h); //!
+    Window_->SetRanges(0, 0, (short)Handler_->GetW(), (short)Handler_->GetH(), w, h); 
     Window_->SetXY(x, y);
     line = new C_Line;
     line->Setup(C_DONT_CARE, C_TYPE_VERTICAL);
@@ -714,7 +714,7 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
 
     if (ScrollBar_ and UseScrollBar)
     {
-        sb_w = (short)ScrollBar_->GetW(); //!
+        sb_w = (short)ScrollBar_->GetW(); 
         Window_->ClientArea_[0].right -= sb_w;
         ScrollBar_->SetClient(0);
         ScrollBar_->SetXY(Window_->ClientArea_[0].right, Window_->ClientArea_[0].top);

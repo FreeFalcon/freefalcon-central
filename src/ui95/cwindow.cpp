@@ -1615,7 +1615,7 @@ void C_Window::Blend(WORD *front, UI95_RECT *frect, short fwidth, WORD *back, UI
             gb = UIColorTable[bperc][(back[bidx] bitand g_mask_) >> g_shift_];
             bb = UIColorTable[bperc][(back[bidx] bitand b_mask_) >> b_shift_];
 
-            dest[didx] = static_cast<WORD>(rShift[UIColorTable[100][rf + rb]] | gShift[UIColorTable[100][gf + gb]] | bShift[UIColorTable[100][bf + bb]]); //!
+            dest[didx] = static_cast<WORD>(rShift[UIColorTable[100][rf + rb]] | gShift[UIColorTable[100][gf + gb]] | bShift[UIColorTable[100][bf + bb]]); 
             fidx++;
             bidx++;
             didx++;
@@ -1659,7 +1659,7 @@ void C_Window::BlendTransparent(WORD Mask, WORD *front, UI95_RECT *frect, short 
                 gb = UIColorTable[bperc][(back[bidx] bitand g_mask_) >> g_shift_];
                 bb = UIColorTable[bperc][(back[bidx] bitand b_mask_) >> b_shift_];
 
-                dest[didx] = static_cast<WORD>(rShift[UIColorTable[100][rf + rb]] | gShift[UIColorTable[100][gf + gb]] | bShift[UIColorTable[100][bf + bb]]); //!
+                dest[didx] = static_cast<WORD>(rShift[UIColorTable[100][rf + rb]] | gShift[UIColorTable[100][gf + gb]] | bShift[UIColorTable[100][bf + bb]]); 
             }
             else
                 dest[didx] = back[bidx];
@@ -1699,7 +1699,7 @@ void C_Window::Translucency(WORD *front, UI95_RECT *frect, short fwidth, WORD *d
             gf = UIColorTable[0][(front[fidx] bitand g_mask_) >> g_shift_];
             bf = UIColorTable[0][(front[fidx] bitand b_mask_) >> b_shift_];
 
-            dest[j + i * dwidth] = static_cast<WORD>(rShift[rf] | gShift[gf] | bShift[bf]); //!
+            dest[j + i * dwidth] = static_cast<WORD>(rShift[rf] | gShift[gf] | bShift[bf]); 
             fidx++;
             didx++;
         }
@@ -2230,7 +2230,7 @@ enum
 BOOL C_Window::ClipLine(long *x1, long *y1, long *x2, long *y2, UI95_RECT *clip)
 {
     char flag1, flag2;
-    float slope1 = 0.0, slope2 = 0.0; //!
+    float slope1 = 0.0, slope2 = 0.0; 
 
     flag1 = 0;
     flag2 = 0;

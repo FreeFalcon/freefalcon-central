@@ -381,11 +381,11 @@ void C_PopupList::SetItemState(long ID, short val)
     if (cur)
     {
         if (cur->Type_ == C_TYPE_TOGGLE)
-            cur->State_ = static_cast<short>(val bitand 1); //!
+            cur->State_ = static_cast<short>(val bitand 1); 
         else if (cur->Type_ == C_TYPE_RADIO and cur->Group_)
         {
             ClearRadioGroup(cur->Group_);
-            cur->State_ = static_cast<short>(val bitand 1); //!
+            cur->State_ = static_cast<short>(val bitand 1); 
         }
     }
 }
@@ -448,7 +448,7 @@ void C_PopupList::GetSize(short *width, short *height)
 
     w = 0;
 
-    *height = static_cast<short>(gFontList->GetHeight(Font_) * Count_); //!
+    *height = static_cast<short>(gFontList->GetHeight(Font_) * Count_); 
     cur = Root_;
 
     while (cur)
@@ -458,7 +458,7 @@ void C_PopupList::GetSize(short *width, short *height)
             if (cur->Type_ not_eq C_TYPE_NOTHING)
             {
                 if (cur->Label_)
-                    len = static_cast<short>(gFontList->StrWidth(Font_, cur->Label_->GetText())); //!
+                    len = static_cast<short>(gFontList->StrWidth(Font_, cur->Label_->GetText())); 
                 else
                     len = 0;
 
@@ -522,7 +522,7 @@ long C_PopupList::CheckHotSpots(long relX, long relY)
         relY < Parent_->ClientArea_[GetClient()].top or relY > Parent_->ClientArea_[GetClient()].bottom)
         return(0);
 
-    Selected_ = static_cast<short>((relY - 5) / gFontList->GetHeight(GetFont())); //!
+    Selected_ = static_cast<short>((relY - 5) / gFontList->GetHeight(GetFont())); 
     cur = Root_;
 
     i = 0;
@@ -669,22 +669,22 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
                         if ((Parent_->GetX() + Parent_->GetW() + w + 48 - 15) < Handler_->GetW())
                             cur->SubMenu_->OpenWindow(static_cast<short>(Parent_->GetX() + Parent_->GetW() - 15),
                                                       static_cast<short>(Selected_ * gFontList->GetHeight(GetFont()) + Parent_->GetY()),
-                                                      C_TYPE_RIGHT); //!
+                                                      C_TYPE_RIGHT); 
                         else
                             cur->SubMenu_->OpenWindow(static_cast<short>(Parent_->GetX() - w - 48 + 15),
                                                       static_cast<short>(Selected_ * gFontList->GetHeight(GetFont()) + Parent_->GetY()),
-                                                      C_TYPE_LEFT); //!
+                                                      C_TYPE_LEFT); 
                     }
                     else
                     {
                         if ((Parent_->GetX() - w - 48 + 15) > Handler_->GetX())
                             cur->SubMenu_->OpenWindow(static_cast<short>(Parent_->GetX() - w - 48 + 15),
                                                       static_cast<short>(Selected_ * gFontList->GetHeight(GetFont()) + Parent_->GetY()),
-                                                      C_TYPE_LEFT);  //!
+                                                      C_TYPE_LEFT);  
                         else
                             cur->SubMenu_->OpenWindow(static_cast<short>(Parent_->GetX() + Parent_->GetW() - 15),
                                                       static_cast<short>(Selected_ * gFontList->GetHeight(GetFont()) + Parent_->GetY()),
-                                                      C_TYPE_RIGHT); //!
+                                                      C_TYPE_RIGHT); 
                     }
                 }
             }
@@ -728,7 +728,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     drect = *cliprect;
 
-    fh = static_cast<short>(gFontList->GetHeight(GetFont())); //!
+    fh = static_cast<short>(gFontList->GetHeight(GetFont())); 
 
     cur = Root_;
     i = 0;
@@ -811,10 +811,10 @@ void C_PopupList::GetWindowSize(short *w, short *h)
     (*h) += 10;
 
     if ((*w) > Handler_->GetW())
-        (*w) = static_cast<short>(Handler_->GetW()); //!
+        (*w) = static_cast<short>(Handler_->GetW()); 
 
     if ((*h) > Handler_->GetH())
-        (*h) = static_cast<short>(Handler_->GetH()); //!
+        (*h) = static_cast<short>(Handler_->GetH()); 
 }
 
 BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
@@ -826,7 +826,7 @@ BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
     if (Handler_ == NULL)
         return(FALSE);
 
-    fh = static_cast<short>(gFontList->GetHeight(GetFont())); //!
+    fh = static_cast<short>(gFontList->GetHeight(GetFont())); 
 
     i = 0;
     cur = Root_;
@@ -873,15 +873,15 @@ BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
     if (GetFlags() bitand C_BIT_TRANSLUCENT)
         Window_->SetFlagBitOn(C_BIT_TRANSLUCENT);
 
-    if ((x + w) > Handler_->GetW()) x = static_cast<short>(Handler_->GetW() - w - 1); //!
+    if ((x + w) > Handler_->GetW()) x = static_cast<short>(Handler_->GetW() - w - 1); 
 
-    if ((y + h) > Handler_->GetH()) y = static_cast<short>(Handler_->GetH() - h - 1); //!
+    if ((y + h) > Handler_->GetH()) y = static_cast<short>(Handler_->GetH() - h - 1); 
 
     if (x < 0) x = 0;
 
     if (y < 0) y = 0;
 
-    Window_->SetRanges(0, 0, static_cast<short>(Handler_->GetW()), static_cast<short>(Handler_->GetH()), w, h); //!
+    Window_->SetRanges(0, 0, static_cast<short>(Handler_->GetW()), static_cast<short>(Handler_->GetH()), w, h); 
     Window_->SetXY(x, y);
 
     cur = Root_;

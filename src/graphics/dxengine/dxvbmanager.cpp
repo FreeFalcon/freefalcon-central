@@ -342,7 +342,7 @@ DWORD CDXVbManager::VBAddObject(VBufferListType *Vbl, DWORD nVertices, DWORD ID)
             Vbl->pVAT = new CVbVAT(NULL, NULL, ID, 0, nVertices, Vbl->Free);
             //Update VB Free Space
             Vbl->Free -= nVertices;
-            // Gap to 1st Item is Zero..!
+            // Gap to 1st Item is Zero..
             Vbl->BootGap = 0x0000;
             // Assign the Object Buffer Descriptor VAT
             pVBuffers[ID].pVAT = Vbl->pVAT;
@@ -364,7 +364,7 @@ DWORD CDXVbManager::VBAddObject(VBufferListType *Vbl, DWORD nVertices, DWORD ID)
                 Vbl->pVAT = new CVbVAT(NULL, Vbl->pVAT, ID, 0x0000, nVertices, Vbl->Free);
                 //Update VB Free Space
                 Vbl->Free -= nVertices;
-                // Gap to 1st Item is Zero..!
+                // Gap to 1st Item is Zero..
                 Vbl->BootGap = 0x0000;
                 // Assign the Object Buffer Descriptor VAT
                 pVBuffers[ID].pVAT = Vbl->pVAT;

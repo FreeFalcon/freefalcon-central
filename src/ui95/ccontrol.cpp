@@ -209,7 +209,7 @@ C_Control::C_Control(char **stream) : C_Base(stream)
         *stream += sizeof(long);
         memcpy(&value, *stream, sizeof(long));
         *stream += sizeof(long);
-        SetSound(value, (short)idx); // note that the index is the 2nd parameter//!
+        SetSound(value, (short)idx); // note that the index is the 2nd parameter
     }
 }
 
@@ -237,7 +237,7 @@ C_Control::C_Control(FILE *fp) : C_Base(fp)
     {
         fread(&idx, sizeof(long), 1, fp);
         fread(&value, sizeof(long), 1, fp);
-        SetSound(value, (short)idx); // note that the index is the 2nd parameter//!
+        SetSound(value, (short)idx); // note that the index is the 2nd parameter
     }
 }
 
@@ -807,7 +807,7 @@ void C_Base::BaseFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CNTL_SETCLIENT:
-            SetClient((short)P[0]);//!
+            SetClient((short)P[0]);
             break;
 
         case CNTL_SETX:

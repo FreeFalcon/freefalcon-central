@@ -1291,7 +1291,7 @@ BOOL C_Button::Process(long ID, short HitType)
                 while ( not btn and state_ not_eq startstate and ( not btn and state_));
             }
             else if (GetType() == C_TYPE_TOGGLE)
-                state_ = (short)((1 - state_) bitand 1); //!
+                state_ = (short)((1 - state_) bitand 1); 
 
             if (GetFlags() bitand C_BIT_CLOSEWINDOW)
             {
@@ -1532,7 +1532,7 @@ void C_Button::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CBTN_SETBUTTONCOLOR:
-            SetColor((short)P[0], (P[1] | (P[2] << 8) | (P[3] << 16))); //!
+            SetColor((short)P[0], (P[1] | (P[2] << 8) | (P[3] << 16))); 
             break;
 
         case CBTN_TEXTFLAGON:

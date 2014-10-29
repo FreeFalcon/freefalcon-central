@@ -257,7 +257,7 @@ void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long
     {
         thechar = str[idx] bitand 0xff;
 
-        if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_) //!
+        if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_) 
         {
             thechar -= first_;
             xoffset += fontTable_[thechar].lead;
@@ -357,7 +357,7 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
     {
         thechar = str[idx] bitand 0xff;
 
-        if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_) //!
+        if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_) 
         {
             thechar -= first_;
 

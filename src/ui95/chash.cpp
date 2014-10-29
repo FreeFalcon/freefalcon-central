@@ -267,7 +267,7 @@ _TCHAR *C_Hash::FindText(long ID)
     idx = ID >> 16;
     i = ID bitand 0x0000ffff;
 
-    if (idx >= (unsigned long)TableSize_) //!
+    if (idx >= (unsigned long)TableSize_) 
         return(NULL);
 
     cur = Table_[idx].Root_;

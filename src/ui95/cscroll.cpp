@@ -393,7 +393,7 @@ long C_ScrollBar::CheckHotSpots(long relX, long relY)
 
     if (Minus_)
     {
-        ControlPressed_ = static_cast<short>(Minus_->CheckHotSpots(relX, relY)); //!
+        ControlPressed_ = static_cast<short>(Minus_->CheckHotSpots(relX, relY)); 
 
         if (ControlPressed_)
         {
@@ -404,7 +404,7 @@ long C_ScrollBar::CheckHotSpots(long relX, long relY)
 
     if (Plus_)
     {
-        ControlPressed_ = static_cast<short>(Plus_->CheckHotSpots(relX, relY)); //!
+        ControlPressed_ = static_cast<short>(Plus_->CheckHotSpots(relX, relY)); 
 
         if (ControlPressed_)
         {

@@ -1504,7 +1504,7 @@ enum
 
 BOOL C_Parser::ParseScript(char *filename)
 {
-    int Done, Comment, Found, InString; //!,Finished=0;;
+    int Done, Comment, Found, InString; //,Finished=0;;
     int TokenID, Section, TokenType;
 
     if (LoadScript(filename) == FALSE)
@@ -2667,7 +2667,7 @@ C_Window *C_Parser::WindowParser()
 
 C_Window *C_Parser::ParseWindow(char *filename)
 {
-    long Done = 0, Comment = 0, Found = 0, InString = 0; //!,Finished=0;;
+    long Done = 0, Comment = 0, Found = 0, InString = 0; //,Finished=0;;
     long TokenID = 0, Section = 0, TokenType = 0;
 
     if (LoadScript(filename) == FALSE)
@@ -2781,7 +2781,7 @@ C_Window *C_Parser::ParseWindow(char *filename)
 
 C_Base *C_Parser::ParseControl(char *filename)
 {
-    long Done = 0, Comment = 0, Found = 0, InString = 0; //!,Finished=0;;
+    long Done = 0, Comment = 0, Found = 0, InString = 0; //,Finished=0;;
     long TokenID = 0, Section = 0, TokenType = 0;
 
     if (LoadScript(filename) == FALSE)

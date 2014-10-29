@@ -348,8 +348,8 @@ BOOL C_Panner::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
     w = (Image_[0]->GetW());
     h = (Image_[0]->GetH());
 
-    SX_ = (short)(MouseX - Parent_->GetX() - GetX() - DeadX_); //!
-    SY_ = (short)(MouseY - Parent_->GetY() - GetY() - DeadY_); //!
+    SX_ = (short)(MouseX - Parent_->GetX() - GetX() - DeadX_); 
+    SY_ = (short)(MouseY - Parent_->GetY() - GetY() - DeadY_); 
 
     if (SX_ > -DeadW_ and SX_ < DeadW_) SX_ = 0;
 

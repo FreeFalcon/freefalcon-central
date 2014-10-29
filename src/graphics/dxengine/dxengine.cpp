@@ -1654,7 +1654,7 @@ inline void CDXEngine::DrawNode(ObjectInstance *objInst, DWORD LightOwner, DWORD
                 k.x = 0;
                 k.y = 0;
                 k.z = 0;
-                // Draw the object IN CAMERA SPACE! - Child always depend on parent Lights...!
+                // Draw the object IN CAMERA SPACE! - Child always depend on parent Lights...
                 DrawObject(subObject, &p, &k, 1, 1, 1, 1, true, LightOwner);
             }
             break;

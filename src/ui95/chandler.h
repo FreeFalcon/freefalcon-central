@@ -167,7 +167,7 @@ private:
     BOOL OldInputMessage();
     void HelpOff();
     void CheckHelpText(SCREEN *surface);
-    void Fill(SCREEN *surface, COLORREF Color, long x1, long y1, long x2, long y2); //!
+    void Fill(SCREEN *surface, COLORREF Color, long x1, long y1, long x2, long y2); 
     void Fill(SCREEN *surface, COLORREF Color, UI95_RECT *dst);
 
 public:

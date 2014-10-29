@@ -144,7 +144,7 @@ void C_EditBox::SetFont(long Font)
 
 void C_EditBox::DeleteRange()
 {
-    int i, w; //!
+    int i, w; 
     _TCHAR *EditText_;
 
     NoChanges_ = 0;
@@ -194,7 +194,7 @@ BOOL C_EditBox::CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii, uns
 
 BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
 {
-    int i; //!
+    int i; 
     _TCHAR *EditText_;
 
     if (Text_ == NULL)
@@ -373,7 +373,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
 
 BOOL C_EditBox::CheckChar(unsigned char key)
 {
-    int i;//!
+    int i;
     _TCHAR *EditText_;
 
     if (Text_ == NULL)
@@ -404,7 +404,7 @@ BOOL C_EditBox::CheckChar(unsigned char key)
             break;
 
         case C_TYPE_FILENAME:
-            for (i = 0; i < (short)_tcsclen(_FilenameExclude_); i++) //!
+            for (i = 0; i < (short)_tcsclen(_FilenameExclude_); i++) 
                 if (key == _FilenameExclude_[i])
                     return(FALSE);
 
@@ -447,7 +447,7 @@ BOOL C_EditBox::Process(long, short HitType)
     switch (HitType)
     {
         case C_TYPE_LMOUSEDOWN:
-            SelStart_ = (short)Text_->GetCursorPos(GetRelX() - Text_->GetX(), GetRelY() - Text_->GetY()); //!
+            SelStart_ = (short)Text_->GetCursorPos(GetRelX() - Text_->GetX(), GetRelY() - Text_->GetY()); 
             SelEnd_ = SelStart_;
             break;
 
@@ -459,7 +459,7 @@ BOOL C_EditBox::Process(long, short HitType)
             }
 
             NoChanges_ = 0;
-            Cursor_ = (short)Text_->GetCursorPos(GetRelX() - Text_->GetX(), GetRelY() - Text_->GetY()); //!
+            Cursor_ = (short)Text_->GetCursorPos(GetRelX() - Text_->GetX(), GetRelY() - Text_->GetY()); 
             Start_ = Cursor_;
             End_ = Cursor_;
             Text_->SetFlags(Text_->GetFlags() bitand compl C_BIT_OPAQUE);
@@ -613,7 +613,7 @@ void C_EditBox::SetMaxLen(short len)
         MaxLen_ = len;
         Text_->SetFlags(GetFlags()& compl C_BIT_OPAQUE);
         Text_->SetFont(Font_);
-        Text_->SetTextWidth((short)(MaxLen_ + 1)); //!
+        Text_->SetTextWidth((short)(MaxLen_ + 1)); 
 
         if (GetType() == C_TYPE_TEXT)
         {
@@ -800,7 +800,7 @@ void C_EditBox::Activate()
     CopyToText();
     NoChanges_ = 1;
     Start_ = 0;
-    End_ = (short)_tcsclen(Text_->GetText()); //!
+    End_ = (short)_tcsclen(Text_->GetText()); 
     Text_->SetOpaqueRange(Start_, End_);
     Text_->SetFlags(Text_->GetFlags() | C_BIT_OPAQUE);
     Cursor_ = 0;
@@ -845,7 +845,7 @@ BOOL C_EditBox::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
     relx = MouseX - Parent_->GetX() - GetX() - Text_->GetX();
     rely = MouseY - Parent_->GetY() - GetY() - Text_->GetY();
 
-    SelEnd_ = (short)Text_->GetCursorPos(relx, rely); //!
+    SelEnd_ = (short)Text_->GetCursorPos(relx, rely); 
 
     if (SelStart_ not_eq SelEnd_)
     {
@@ -964,7 +964,7 @@ void C_EditBox::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CEB_SETDECIMALPLACES:
-            SetDecimalPlaces((short)P[0]);//!
+            SetDecimalPlaces((short)P[0]);
             break;
 
         case CEB_SETOUTLINECOLOR:

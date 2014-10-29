@@ -131,8 +131,8 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, UI95_RECT *rect, short x, shor
     WORD *dptr16 = NULL;
     WORD *sptr16 = NULL;
     WORD *Palette = NULL;
-    int neww = 0, newh = 0; //!
-    int i = 0, j = 0; //!
+    int neww = 0, newh = 0; 
+    int i = 0, j = 0; 
 
     if (Root_->Find(ID) or Finder_->Find(ID))
     {
@@ -228,8 +228,8 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, UI95_RECT *rect, short x, shor
     newentry->Header->flags = prior->Header->flags | _RSC_USECOLORKEY_;
     newentry->Header->centerx = x;
     newentry->Header->centery = y;
-    newentry->Header->w = (short)neww; //!
-    newentry->Header->h = (short)newh; //!
+    newentry->Header->w = (short)neww; 
+    newentry->Header->h = (short)newh; 
     newentry->Header->imageoffset = 0;
 
     if (newentry->Header->flags bitand _RSC_8_BIT_)
@@ -267,8 +267,8 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, short x, short y, short w, sho
     WORD *dptr16 = NULL;
     WORD *sptr16 = NULL;
     WORD *Palette = NULL;
-    int neww = 0, newh = 0; //!
-    int i = 0, j = 0; //!
+    int neww = 0, newh = 0; 
+    int i = 0, j = 0; 
 
     if (Root_->Find(ID) or Finder_->Find(ID))
     {
@@ -303,10 +303,10 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, short x, short y, short w, sho
     }
 
     if ((x + w) > prior->Header->w)
-        w = (short)(prior->Header->w - x); //!
+        w = (short)(prior->Header->w - x); 
 
     if ((y + h) > prior->Header->h)
-        h = (short)(prior->Header->h - y); //!
+        h = (short)(prior->Header->h - y); 
 
     neww = w;
     newh = h;
@@ -370,8 +370,8 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, short x, short y, short w, sho
     newentry->Header->flags = prior->Header->flags | _RSC_USECOLORKEY_;
     newentry->Header->centerx = cx;
     newentry->Header->centery = cy;
-    newentry->Header->w = (short)neww; //!
-    newentry->Header->h = (short)newh; //!
+    newentry->Header->w = (short)neww; 
+    newentry->Header->h = (short)newh; 
     newentry->Header->imageoffset = 0;
 
     if (newentry->Header->flags bitand _RSC_8_BIT_)
@@ -557,14 +557,14 @@ C_Resmgr *C_Image::LoadImage(long ID, char *file, short x, short y)
 
     if (x == -1 and y == -1)
     {
-        x = (short)(bmi.bmiHeader.biWidth  / 2);//!
-        y = (short)(bmi.bmiHeader.biHeight / 2);//!
+        x = (short)(bmi.bmiHeader.biWidth  / 2);
+        y = (short)(bmi.bmiHeader.biHeight / 2);
     }
 
     newentry->Header->centerx = x;
     newentry->Header->centery = y;
-    newentry->Header->w = (short)bmi.bmiHeader.biWidth; //!
-    newentry->Header->h = (short)bmi.bmiHeader.biHeight; //!
+    newentry->Header->w = (short)bmi.bmiHeader.biWidth; 
+    newentry->Header->h = (short)bmi.bmiHeader.biHeight; 
     newentry->Header->imageoffset = 0;
     newentry->Header->palettesize = 0;
     newentry->Header->paletteoffset = 0;
@@ -661,8 +661,8 @@ C_Resmgr *C_Image::LoadFile(long ID, char *file, short x, short y)
 
     newentry->Header->centerx = x;
     newentry->Header->centery = y;
-    newentry->Header->w = (short)bmi.bmiHeader.biWidth; //!
-    newentry->Header->h = (short)bmi.bmiHeader.biHeight; //!
+    newentry->Header->w = (short)bmi.bmiHeader.biWidth; 
+    newentry->Header->h = (short)bmi.bmiHeader.biHeight; 
     newentry->Header->imageoffset = 0;
     newentry->Header->palettesize = 0;
     newentry->Header->paletteoffset = 0;

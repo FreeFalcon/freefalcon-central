@@ -222,7 +222,7 @@ int O_Output::FitString(int idx) // returns # characters to keep on this line
 {
     // idx is the index into the start of the string
     int count, space;
-    long w; //!
+    long w; 
 
     if ( not Label_[idx])
         return(0);
@@ -233,12 +233,12 @@ int O_Output::FitString(int idx) // returns # characters to keep on this line
         w = Owner_->GetW();
 
     if ( not w)
-        return((short)_tcsclen(&Label_[idx]));    //!
+        return((short)_tcsclen(&Label_[idx]));    
 
     space = 0;
     count = 1;
 
-    while (Label_[idx + count] and gFontList->StrWidth(Font_, &Label_[idx], (short)count) < w) //!
+    while (Label_[idx + count] and gFontList->StrWidth(Font_, &Label_[idx], (short)count) < w) 
     {
         if (Label_[idx + count] == ' ')
             space = count;
@@ -254,14 +254,14 @@ int O_Output::FitString(int idx) // returns # characters to keep on this line
         count++;
     }
 
-    if (gFontList->StrWidth(Font_, &Label_[idx], (short)count) < w) //!
+    if (gFontList->StrWidth(Font_, &Label_[idx], (short)count) < w) 
         return(count);
 
     if (space)
         return(space);
 
     if (count > 1)
-        return((short)(count - 1)); //!
+        return((short)(count - 1)); 
 
     return(1);
 }
@@ -280,7 +280,7 @@ void O_Output::WordWrap()
     {
         idx = 0;
         count = 0;
-        lenstr = (short)_tcsclen(Label_); //!
+        lenstr = (short)_tcsclen(Label_); 
 
         len = FitString(idx);
 
@@ -329,9 +329,9 @@ void O_Output::WordWrap()
 
             while ((idx + len) < lenstr)
             {
-                Wrap_[count].Index = (short)idx; //!
-                Wrap_[count].Length = (short)len; //!
-                Wrap_[count].y = (short)(count * fontheight); //!
+                Wrap_[count].Index = (short)idx; 
+                Wrap_[count].Length = (short)len; 
+                Wrap_[count].y = (short)(count * fontheight); 
 
                 count++;
                 idx += len;
@@ -346,9 +346,9 @@ void O_Output::WordWrap()
                     maxw = linew;
             }
 
-            Wrap_[count].Index = (short)idx; //!
-            Wrap_[count].Length = (short)len; //!
-            Wrap_[count].y = (short)(count * fontheight); //!
+            Wrap_[count].Index = (short)idx; 
+            Wrap_[count].Length = (short)len; 
+            Wrap_[count].y = (short)(count * fontheight); 
         }
         else
         {
@@ -599,7 +599,7 @@ void O_Output::Refresh()
 long O_Output::GetCursorPos(long relx, long rely) // Based on mouse location
 {
     C_Fontmgr *cur;
-    unsigned long i, j; //!
+    unsigned long i, j; 
     long x, y, w;
 
     if (_GetOType_() not_eq _OUT_TEXT_)
@@ -616,17 +616,17 @@ long O_Output::GetCursorPos(long relx, long rely) // Based on mouse location
             return(0);
 
         if (rely > (Wrap_[WWCount_ - 1].y + cur->Height()))
-            return((short)_tcsclen(Label_));//!
+            return((short)_tcsclen(Label_));
 
         i = 0;
 
-        while (rely >= (Wrap_[i].y + cur->Height()) and i < (unsigned long)WWCount_) //!
+        while (rely >= (Wrap_[i].y + cur->Height()) and i < (unsigned long)WWCount_) 
             i++;
 
         j = 0;
         w = (cur->Width(&Label_[Wrap_[i].Index + j], 1) - 1) / 2;
 
-        while (relx >= (cur->Width(&Label_[Wrap_[i].Index], j) - 1 + w) and j < (unsigned long)Wrap_[i].Length) //!
+        while (relx >= (cur->Width(&Label_[Wrap_[i].Index], j) - 1 + w) and j < (unsigned long)Wrap_[i].Length) 
         {
             j++;
 
@@ -634,7 +634,7 @@ long O_Output::GetCursorPos(long relx, long rely) // Based on mouse location
                 w = (cur->Width(&Label_[Wrap_[i].Index + j], 1) - 1) / 2;
         }
 
-        return(short(Wrap_[i].Index + j));//!
+        return(short(Wrap_[i].Index + j));
     }
     else
     {
@@ -645,7 +645,7 @@ long O_Output::GetCursorPos(long relx, long rely) // Based on mouse location
             return(0);
 
         if (rely > y + cur->Height())
-            return((short)_tcsclen(Label_));//!
+            return((short)_tcsclen(Label_));
 
         j = 0;
         w = (cur->Width(Label_, 1) - 1) / 2;

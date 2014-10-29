@@ -156,7 +156,7 @@ BOOL C_PopupMgr::OpenMenu(long ID, long x, long y, C_Base *control)
             if (Current_->Menu->OpenCallback_)
                 (*Current_->Menu->OpenCallback_)(Current_->Menu, control);
 
-            Current_->Menu->OpenWindow(static_cast<short>(x - 20), static_cast<short>(y - 5), C_TYPE_RIGHT); //!
+            Current_->Menu->OpenWindow(static_cast<short>(x - 20), static_cast<short>(y - 5), C_TYPE_RIGHT); 
 
             LastX_ = static_cast<short>(x);
             LastY_ = static_cast<short>(y);
@@ -194,11 +194,11 @@ BOOL C_PopupMgr::OpenWindowMenu(C_Window *win, long x, long y)
                     if (cur->Menu->GetID() == win->GetClientMenu(i))
                     {
                         Current_ = cur;
-                        Current_->Menu->OpenWindow(static_cast<short>(x - 20), static_cast<short>(y - 5), C_TYPE_RIGHT); //!
+                        Current_->Menu->OpenWindow(static_cast<short>(x - 20), static_cast<short>(y - 5), C_TYPE_RIGHT); 
                         CurrentType_ = C_TYPE_WINDOW;
-                        CurrentClient_ = static_cast<short>(i); //!
-                        LastX_ = static_cast<short>(x); //!
-                        LastY_ = static_cast<short>(y); //!
+                        CurrentClient_ = static_cast<short>(i); 
+                        LastX_ = static_cast<short>(x); 
+                        LastY_ = static_cast<short>(y); 
                         return(TRUE);
                     }
 
@@ -216,9 +216,9 @@ BOOL C_PopupMgr::OpenWindowMenu(C_Window *win, long x, long y)
                 CurrentType_ = C_TYPE_WINDOW;
                 CurrentClient_ = -1;
                 Current_ = cur;
-                Current_->Menu->OpenWindow(static_cast<short>(x - 20), static_cast<short>(y - 5), C_TYPE_RIGHT); //!
-                LastX_ = static_cast<short>(x); //!
-                LastY_ = static_cast<short>(y); //!
+                Current_->Menu->OpenWindow(static_cast<short>(x - 20), static_cast<short>(y - 5), C_TYPE_RIGHT); 
+                LastX_ = static_cast<short>(x); 
+                LastY_ = static_cast<short>(y); 
                 return(TRUE);
             }
 

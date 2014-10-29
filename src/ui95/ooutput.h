@@ -189,15 +189,15 @@ public:
     }
     void SetFrame(long frame)
     {
-        frame_ = (short)frame;    //!
+        frame_ = (short)frame;    
     }
     void SetDirection(long dir)
     {
-        direction_ = (short)dir;    //!
+        direction_ = (short)dir;    
     }
     void SetAnimType(long type)
     {
-        animtype_ = (short)type;    //!
+        animtype_ = (short)type;    
     }
     void SetSrcRect(UI95_RECT *rect)
     {
@@ -210,11 +210,11 @@ public:
     void SetScaleInfo(long scale);
     void SetFrontPerc(long perc)
     {
-        fperc_ = (short)perc;    //!
+        fperc_ = (short)perc;    
     }
     void SetBackPerc(long perc)
     {
-        bperc_ = (short)perc;    //!
+        bperc_ = (short)perc;    
     }
     void SetOpaqueRange(short os, short oe)
     {
@@ -224,7 +224,7 @@ public:
 
     void SetWordWrapWidth(long w)
     {
-        WWWidth_ = (short)w;    //!
+        WWWidth_ = (short)w;    
     }
 
     // Query Functions

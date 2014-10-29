@@ -44,7 +44,7 @@ void UIBuildColorTable()
             else
             {
                 UIColorTable[i][j] = WORD(j * color);
-                rUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << reds); //!
+                rUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << reds); 
                 gUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << greens);
                 bUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << blues);
             }
@@ -52,9 +52,9 @@ void UIBuildColorTable()
 
     for (i = 0; i < 32; i++)
     {
-        Grey_1[i] = static_cast<WORD>(FloatToInt32((float)i * 0.1f)); //!
-        Grey_3[i] = static_cast<WORD>(FloatToInt32((float)i * 0.3f)); //!
-        Grey_6[i] = static_cast<WORD>(FloatToInt32((float)i * 0.6f)); //!
+        Grey_1[i] = static_cast<WORD>(FloatToInt32((float)i * 0.1f)); 
+        Grey_3[i] = static_cast<WORD>(FloatToInt32((float)i * 0.3f)); 
+        Grey_6[i] = static_cast<WORD>(FloatToInt32((float)i * 0.6f)); 
         rShift[i] = static_cast<short>(i << reds);
         gShift[i] = static_cast<short>(i << greens);
         bShift[i] = static_cast<short>(i << blues);
@@ -143,7 +143,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
         blues++;
 }
 
-/*  //!
+/*  
 void UI95_GetScreenColorInfo(WORD *r_mask,WORD *r_shift,WORD *g_mask,WORD *g_shift,WORD *b_mask,WORD *b_shift)
 {
  *r_mask = redm;
@@ -170,13 +170,13 @@ void UI95_GetScreenColorInfo(DWORD &r_mask, WORD &r_shift, DWORD &g_mask, WORD &
 
 WORD UI95_RGB15Bit(WORD rgb)
 {
-    return static_cast<WORD>(rShift[(rgb >> 10) bitand 0x1f] | gShift[(rgb >> 5) bitand 0x1f] | bShift[rgb bitand 0x1f]); //!
+    return static_cast<WORD>(rShift[(rgb >> 10) bitand 0x1f] | gShift[(rgb >> 5) bitand 0x1f] | bShift[rgb bitand 0x1f]); 
 }
 
 
 WORD UI95_RGB24Bit(unsigned long rgb)
 {
-    return static_cast<WORD>(rShift[(rgb >> 3) bitand 0x1f] | gShift[(rgb >> 11) bitand 0x1f] | bShift[(rgb >> 19) bitand 0x1f]);//!
+    return static_cast<WORD>(rShift[(rgb >> 3) bitand 0x1f] | gShift[(rgb >> 11) bitand 0x1f] | bShift[(rgb >> 19) bitand 0x1f]);
 }
 
 WORD UI95_ScreenToTga(WORD color)
@@ -187,14 +187,14 @@ WORD UI95_ScreenToTga(WORD color)
     g = ((color >> greens) bitand 0x1f) << 5;
     b = ((color >> blues)  bitand 0x1f);
 
-    return static_cast<WORD>(r | g | b); //!
+    return static_cast<WORD>(r | g | b); 
 }
 
 WORD UI95_ScreenToGrey(WORD color)
 {
     long grey = Grey_3[(color  >> reds) bitand 0x1f] + Grey_6[(color  >> greens) bitand 0x1f] + Grey_1[(color  >> blues) bitand 0x1f];
 
-    return static_cast<WORD>(rShift[grey] | gShift[grey] | bShift[grey]); //!
+    return static_cast<WORD>(rShift[grey] | gShift[grey] | bShift[grey]); 
 }
 
 /*

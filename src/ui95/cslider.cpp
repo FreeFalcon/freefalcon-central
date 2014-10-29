@@ -98,13 +98,13 @@ void C_Slider::SetSliderImage(long SliderID)
     SetReady(1);
 }
 
-void C_Slider::SetSliderRange(const long Min, const long Max)//!
+void C_Slider::SetSliderRange(const long Min, const long Max)
 {
     MinPos_ = static_cast<short>(Min);
     MaxPos_ = static_cast<short>(Max);
 }
 
-void C_Slider::SetSliderPos(long Pos) //!
+void C_Slider::SetSliderPos(long Pos) 
 {
     long dist;
 
@@ -404,8 +404,8 @@ BOOL C_Slider::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
             if (Steps_ > 0)
             {
                 dist = (float)(MaxPos_ - MinPos_) / (float)Steps_;
-                SY_ = static_cast<long>((static_cast<float>(SY_ - MinPos_) + dist / 2.0) / dist); //!
-                SY_ = static_cast<long>(static_cast<float>(SY_) * dist) + MinPos_;    //!
+                SY_ = static_cast<long>((static_cast<float>(SY_ - MinPos_) + dist / 2.0) / dist); 
+                SY_ = static_cast<long>(static_cast<float>(SY_) * dist) + MinPos_;    
             }
 
             if (SY_ > MaxPos_)
@@ -422,8 +422,8 @@ BOOL C_Slider::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
             if (Steps_ > 0)
             {
                 dist = (float)(MaxPos_ - MinPos_) / (float)Steps_;
-                SX_ = static_cast<long>((static_cast<float>(SX_ - MinPos_) + dist / 2.0) / dist); //!
-                SX_ = static_cast<long>(static_cast<float>(SX_) * dist)  + MinPos_;  //!
+                SX_ = static_cast<long>((static_cast<float>(SX_ - MinPos_) + dist / 2.0) / dist); 
+                SX_ = static_cast<long>(static_cast<float>(SX_) * dist)  + MinPos_;  
             }
 
             if (SX_ > MaxPos_)

@@ -566,7 +566,7 @@ void C_Sound::LocalFunction(short ID, long P[], _TCHAR *str, C_Handler *)
             snd = GetSound(P[0]);
 
             if (snd)
-                snd->Count = static_cast<short>(P[1]); //!
+                snd->Count = static_cast<short>(P[1]); 
 
             break;
 
