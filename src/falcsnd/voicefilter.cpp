@@ -531,7 +531,7 @@ void VoiceFilter::PlayRadioMessage(
 
     //add pop at beginning
     //int pop = rand() % NUM_VOICES;
-    int pop = rand() % 12; //JPO - only 12 of these!
+    int pop = rand() % 12; //JPO - only 12 of these
     static const short RADIO_POP = 2142;
     *dfileNum = FragToFile(pop, RADIO_POP);
     dfileNum++;

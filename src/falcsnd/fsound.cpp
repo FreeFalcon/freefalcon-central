@@ -378,7 +378,7 @@ int InitSoundManager(HWND hWnd, int, char *falconDataDir)
     if ( not ReadSFXTableTXT(sfxtable)) // MLR 2003-10-17 Parse text file if it exists
     {
         return FALSE;
-        // MLR 2003-11-19 the new sound table is mandatory!
+        // MLR 2003-11-19 the new sound table is mandatory
         /*
         sprintf (sfxtable, "%s\\%s", FalconObjectDataDir, FALCONSNDTABLE);
         if (ReadSFXTable (sfxtable) == FALSE)
@@ -461,7 +461,7 @@ int F4LoadFXSound(char filename[], long Flags, SFX_DEF_ENTRY *sfx)
  * with the exception of a generic load file and have the Wav header
  * slapped on. 8bit-22k
  */
-// MLR apparently is never used!
+// MLR apparently is never used
 //int F4LoadRawSound (int flags, char *data, int len)
 int F4LoadRawSound(int, char *data, int len)
 {
@@ -1136,7 +1136,7 @@ BOOL ReadSFXTableTXT(char *sndtable)
 
 extern char FalconDataDirectory[_MAX_PATH];
 
-// MLR Hack to allow reloading the sound data while in the 3d world!
+// MLR Hack to allow reloading the sound data while in the 3d world
 // to make dev'ing the sound data easier.
 // Odds are, if it failes, your screwed.
 void F4ReloadSFX(void)
@@ -1195,7 +1195,7 @@ void LoadSFX(char *falconDataDir)
             // if(fp)
             // fprintf(fp,"LoadSFX() didn't load %d:%s\n",i,fname);
             //}
-            // ShiAssert (SFX_DEF[i].handle not_eq SND_NO_HANDLE); // MLR 1/21/2004 - who cares!
+            // ShiAssert (SFX_DEF[i].handle not_eq SND_NO_HANDLE); // MLR 1/21/2004 - who cares
         }
 
         for (i = 0; i < NumSFX; i++)
@@ -1211,7 +1211,7 @@ void LoadSFX(char *falconDataDir)
             // if(fp)
             // fprintf(fp,"LoadSFX() didn't load %f\n",fname);
             //}
-            // ShiAssert (SFX_DEF[i].handle not_eq SND_NO_HANDLE); // MLR 1/21/2004 - who cares!
+            // ShiAssert (SFX_DEF[i].handle not_eq SND_NO_HANDLE); // MLR 1/21/2004 - who cares
         }
 
         //if(fp)
@@ -1778,7 +1778,7 @@ void F4SoundPos::PositionalData(void)
             float v = SonicBoomTable.Lookup(1.0f - (float)sonicBoom / 1000.0f);
             sonicBoom -= (int)(SimLibMajorFrameTime * 1000);
             Sfx(SFX_SONIC_BOOM, 0, 1, v);
-            //play the BOOM!
+            //play the BOOM
         }
         else
         {

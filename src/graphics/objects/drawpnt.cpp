@@ -121,7 +121,7 @@ void DrawablePoint::Draw(RenderOTW *renderer, int LOD)
         // Besides no need to calculate radial distance is Z distance is already greater
         if (g_bLabelRadialFix)
             if (labelPoint.clipFlag == ON_SCREEN  and 
-                labelPoint.csZ < limitcheck) //Same condition as below!
+                labelPoint.csZ < limitcheck) //Same condition as below
             {
                 float dx = position.x - renderer->X();
                 float dy = position.y - renderer->Y();

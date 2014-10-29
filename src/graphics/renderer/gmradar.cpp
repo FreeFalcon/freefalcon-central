@@ -322,7 +322,7 @@ void RenderGMRadar::DrawScene(void)
 
 // Called to draw roads and rivers into the radar scene.
 // Can only be used when the LOD is at or better than the last near textured level.
-// NOTE:  We trash this renderer's 2D transformation matrix!
+// NOTE:  We trash this renderer's 2D transformation matrix
 void RenderGMRadar::DrawFeatures(void)
 {
     Tpost *post;

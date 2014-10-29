@@ -68,7 +68,7 @@ void AircraftClass::DoWeapons()
 
     if (Guns)
     {
-        Guns->Exec(&fireFlag, dmx, &platformAngles, targetList, !isDigital);
+        Guns->Exec(&fireFlag, dmx, &platformAngles, targetList,  not isDigital);
 
         if (fireFlag)
         {

@@ -624,7 +624,7 @@ void FireOnSimEntity(CampEntity shooter, SimBaseClass *simTarg, short weaponId)
         // damage stuff goes here....
         if (wc->BlastRadius == 0)
         {
-            // must be a direct hit!  1-8 fer now
+            // must be a direct hit  1-8 fer now
             if ((rand() bitand 7) == 7)
             {
                 hitSomething = TRUE;
@@ -778,7 +778,7 @@ GetSimDamageMessage(CampEntity shooter,
 
     if (rangeSq < POINT_BLANK)
     {
-        // Direct hit!
+        // Direct hit
         message->dataBlock.damageType = damageType;
     }
     else
@@ -1211,7 +1211,7 @@ FireMissileAtSim(CampEntity shooter, SimBaseClass *simTarg, short weapId)
         // TODO:  Check to also ensure the radar vehicle is still alive...
         ShiAssert(shooter->GetRadarType());
 
-        // HACK!  This should never happen (hence Assert above), but since it happend tonight
+        // HACK  This should never happen (hence Assert above), but since it happend tonight
         // and the data fix may not thourough by tomorrow, I'll put in this bail out case...
         if ( not shooter->GetRadarType())
         {

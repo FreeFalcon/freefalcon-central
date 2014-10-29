@@ -115,7 +115,7 @@ void TestMfdDrawable::Display(VirtualDisplay* newDisplay)
 
         if ( not theRadar)
         {
-            ShiWarning("Oh Oh shouldn't be here without a radar!");
+            ShiWarning("Oh Oh shouldn't be here without a radar");
             return;
         }
         else

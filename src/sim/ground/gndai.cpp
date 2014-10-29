@@ -1,13 +1,13 @@
 // GNDAI, this is where all the important stuff happens in the AI (or atleast, I
-// call routines that cause important stuff to happen here!).
+// call routines that cause important stuff to happen here).
 // By Mark McCubbin
 // (c)1997
 //
 // Notes: Ultimately should be a complete replacement for Leon Ground AI,
 // done this was to ensure something is always working. (In the end Leon Exec
-// funtion will simply call Process (); for this class and nothing else!).
+// funtion will simply call Process (); for this class and nothing else).
 //
-// Notes: Transitions aren't handled as specified in the design docs (yet!).
+// Notes: Transitions aren't handled as specified in the design docs (yet).
 // By Mark McCubbin
 // (c)1997
 //
@@ -448,7 +448,7 @@ GNDAIClass::GNDAIClass(GroundClass *s, GNDAIClass *l, short r, int unit_id, int 
 }
 
 
-// Pick a leader. Heil Hitler!
+// Pick a leader. Heil Hitler
 void GNDAIClass::SetLeader(GNDAIClass* newLeader)
 {
     leader = newLeader;
@@ -772,7 +772,7 @@ void GNDAIClass::ProcessTargeting(void)
             // If our radar has no target or if it has the SAME base object
             // as us but different target pointers, switch our radar target pointer to our target pointer
             else if (
-                !radar->CurrentTarget() or (
+                 not radar->CurrentTarget() or (
                     radar->CurrentTarget() not_eq self->targetPtr  and 
                     radar->CurrentTarget()->BaseData() == self->targetPtr->BaseData()
                 )
@@ -1077,9 +1077,9 @@ void GNDAIClass::Order_Battalion(void)
 
                 if (moveDir < 8)
                 {
-                    // 2002-02-16 MN Aaaaaaaahh - WHO DID THIS BS - THEY MUST HAVE BEEN DRUNK !
+                    // 2002-02-16 MN Aaaaaaaahh - WHO DID THIS BS - THEY MUST HAVE BEEN DRUNK 
                     // Look what they have done: since when are Sim coordinates SHORT ??? No wonder the ground units move strangely...
-                    // GridToSim returns a float ! And ideal_x/y are floats, too... Aaaaaaaaaaaaahhhhh....;-)
+                    // GridToSim returns a float not And ideal_x/y are floats, too... Aaaaaaaaaaaaahhhhh....;-)
                     // ideal_y = (short)GridToSim(gridX + dx[moveDir]);
                     // ideal_x = (short)GridToSim(gridY + dy[moveDir]);
                     ideal_y = GridToSim(gridX + dx[moveDir]);
@@ -1599,7 +1599,7 @@ void GNDAIClass::PromoteSubordinates(void)
     } // JB 010318 CTD
 
     // edg: changed from assert.  A unit may have been killed just after a
-    // reagg and there may be no-one to promote!
+    // reagg and there may be no-one to promote
     if ( not self->GetCampaignObject()->GetComponents())
     {
         // set our own leader (if any) to NULL to deref

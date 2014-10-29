@@ -148,7 +148,7 @@ void SmsDrawable::CNTLPage(void)
     if (FCC->IsAGMasterMode())
         LabelButton(0, "A-G");
     else
-        ShiWarning("Should not be here when not in AG mode!");
+        ShiWarning("Should not be here when not in AG mode");
 
     //OSB2
     LabelButton(1, FCC->subModeString);

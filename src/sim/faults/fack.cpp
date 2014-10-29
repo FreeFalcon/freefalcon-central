@@ -286,46 +286,46 @@ void FackClass::ClearFault(type_CSubSystem subsystem)
     {
         //warnings
         if ( not GetFault(tf_fail) and //never get's set currently
-            !GetFault(obs_wrn) and //never get's set currently
-            !GetFault(eng_fire)  and 
-            !GetFault(eng2_fire) and //TJL 01/24/04 multi-engine
-            !GetFault(hyd)  and 
-            !GetFault(oil_press)  and 
-            !GetFault(dual_fc)  and 
-            !GetFault(to_ldg_config)  and 
-            !GetFault(fuel_low_fault)  and 
-            !GetFault(fuel_trapped)  and 
-            !GetFault(fuel_home))
+             not GetFault(obs_wrn) and //never get's set currently
+             not GetFault(eng_fire)  and 
+             not GetFault(eng2_fire) and //TJL 01/24/04 multi-engine
+             not GetFault(hyd)  and 
+             not GetFault(oil_press)  and 
+             not GetFault(dual_fc)  and 
+             not GetFault(to_ldg_config)  and 
+             not GetFault(fuel_low_fault)  and 
+             not GetFault(fuel_trapped)  and 
+             not GetFault(fuel_home))
         {
             ClearWarnReset();
         }
 
         //Cautions
         if ( not GetFault(stores_config_fault)  and 
-            !GetFault(flt_cont_fault)  and 
-            !GetFault(le_flaps_fault)  and 
-            !GetFault(engine)  and 
-            !GetFault(overheat_fault)  and 
-            !GetFault(avionics_fault)  and 
-            !GetFault(radar_alt_fault)  and 
-            !GetFault(iff_fault)  and 
-            !GetFault(ecm_fault)  and 
-            !GetFault(hook_fault)  and 
-            !GetFault(nws_fault)  and 
-            !GetFault(cabin_press_fault)  and 
-            !GetFault(fwd_fuel_low_fault)  and 
-            !GetFault(aft_fuel_low_fault)  and 
-            !GetFault(probeheat_fault)  and 
-            !GetFault(seat_notarmed_fault)  and 
-            !GetFault(buc_fault)  and 
-            !GetFault(fueloil_hot_fault)  and 
-            !GetFault(anti_skid_fault)  and 
-            !GetFault(nws_fault)  and 
-            !GetFault(oxy_low_fault)  and 
-            !GetFault(sec_fault)  and 
-            !GetFault(elec_fault)  and 
-            !GetFault(lef_fault)  and 
-            !NeedAckAvioncFault)
+             not GetFault(flt_cont_fault)  and 
+             not GetFault(le_flaps_fault)  and 
+             not GetFault(engine)  and 
+             not GetFault(overheat_fault)  and 
+             not GetFault(avionics_fault)  and 
+             not GetFault(radar_alt_fault)  and 
+             not GetFault(iff_fault)  and 
+             not GetFault(ecm_fault)  and 
+             not GetFault(hook_fault)  and 
+             not GetFault(nws_fault)  and 
+             not GetFault(cabin_press_fault)  and 
+             not GetFault(fwd_fuel_low_fault)  and 
+             not GetFault(aft_fuel_low_fault)  and 
+             not GetFault(probeheat_fault)  and 
+             not GetFault(seat_notarmed_fault)  and 
+             not GetFault(buc_fault)  and 
+             not GetFault(fueloil_hot_fault)  and 
+             not GetFault(anti_skid_fault)  and 
+             not GetFault(nws_fault)  and 
+             not GetFault(oxy_low_fault)  and 
+             not GetFault(sec_fault)  and 
+             not GetFault(elec_fault)  and 
+             not GetFault(lef_fault)  and 
+             not NeedAckAvioncFault)
         {
             ClearMasterCaution();
 
@@ -457,7 +457,7 @@ void FackClass::SetWarning(type_CSubSystem subsystem)
             playerAC->WhenToPlayWarning = vuxGameTime + (unsigned long) 1.5 * CampaignSeconds;
 
         if ( not GetFault(fuel_low_fault)  and 
-            !GetFault(fuel_home))//no betty for bingo
+             not GetFault(fuel_home))//no betty for bingo
             playerAC->NeedsToPlayWarning = TRUE;// warning
 
         SetWarnReset();

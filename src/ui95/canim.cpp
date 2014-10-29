@@ -189,7 +189,7 @@ short C_Anim::LocalFind(char *token)
 }
 
 void C_Anim::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
-//!void C_Anim::LocalFunction(short ID,long P[],_TCHAR *str,C_Handler *Hndlr)
+// not void C_Anim::LocalFunction(short ID,long P[],_TCHAR *str,C_Handler *Hndlr)
 {
 
     switch (ID)

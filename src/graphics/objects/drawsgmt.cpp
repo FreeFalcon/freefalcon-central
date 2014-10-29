@@ -243,7 +243,7 @@ public:
     AList list;
 };
 
-AList gTrailNodeStorage; // need to clean this up!
+AList gTrailNodeStorage; // need to clean this up
 int   gStorageCount = 0;
 #include <falclib/include/debuggr.h>
 
@@ -590,7 +590,7 @@ int DrawableTrail::RewindTrail(DWORD now)
 /**************************************************************************
     Cut the trail off after the specified number of points.
 ***************************************************************************/
-void DrawableTrail::TrimTrail(int len)   // len in seconds!
+void DrawableTrail::TrimTrail(int len)   // len in seconds
 {
     // shit-o function
     // most cases it's called with zero - in that case I cause an interuption
@@ -1335,7 +1335,7 @@ void DrawableTrail::ReleaseTexturesOnDevice(DXContext *rc)
 
 /*
 // just draw a line
-// it seems slower to draw a line between each node than it is to draw the polys!
+// it seems slower to draw a line between each node than it is to draw the polys
 // so we are going to draw one line every 25 nodes
 Tpoint prevpos;
 int connected;
@@ -1484,14 +1484,14 @@ typedef struct TrailTypeEntry
 } TrailTypeEntry;
 
 
-// ! Have to manually add new textures here
+//  Have to manually add new textures here
 static Texture MissleTrailTexture;
 static Texture FireTrailTexture;
 static Texture SmokeTrailTexture;
 static Texture GunTrailTexture;
 
 
-// ! Have to manually add new trail types here
+//  Have to manually add new trail types here
 static TrailTypeEntry types[] =
 {
     //   silum ilight lfade     tile    radius   rmax  expand   decay/s   red    green  blue   alpha  NA    NA  NA    texture
@@ -1984,7 +1984,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
 
         // Update the alpha value for the end point now under consideration
         if (type >= 0 and type < sizeof(types) / sizeof(TrailTypeEntry) and  not F4IsBadReadPtr(current->next, sizeof(TrailElement))) // JB 010220 CTD
-            // Somehow the next line can CTD.  Wacky!  Let's do more checks and see if the CTD moves.
+            // Somehow the next line can CTD.  Wacky  Let's do more checks and see if the CTD moves.
             alpha  -= types[type].disipation * current->next->time;
 
         radius += types[type].expandRate * current->next->time;
@@ -2203,7 +2203,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
         }
 
 
-        // HACK HACK HACK!  Take this out when Marc fixes MPR for patch 1.
+        // HACK HACK HACK  Take this out when Marc fixes MPR for patch 1.
 #if 0
         {
             DWORD color;

@@ -45,7 +45,7 @@ void TimeManager::Cleanup()
         if (CBlist[nextCallToMake].fn not_eq NULL)
         {
             //VP_changes This should be fixed, we have an error here Oct 8, 2002.
-            ShiWarning("TimeManager dieing with callbacks still registered!");
+            ShiWarning("TimeManager dieing with callbacks still registered");
             break;
         }
     }

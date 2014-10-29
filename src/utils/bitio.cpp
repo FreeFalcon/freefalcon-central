@@ -62,7 +62,7 @@ void CloseOutputBitFile(BIT_FILE *bit_file)
 {
     if (bit_file->mask not_eq 0x80)
         if (putc(bit_file->rack, bit_file->file) not_eq bit_file->rack)
-            printf("Fatal error in CloseBitFile!");
+            printf("Fatal error in CloseBitFile");
 
     fclose(bit_file->file);
     delete [] bit_file;
@@ -84,7 +84,7 @@ void OutputBit(BIT_FILE *bit_file, int bit)
     if (bit_file->mask == 0)
     {
         if (putc(bit_file->rack, bit_file->file) not_eq bit_file->rack)
-            printf("Fatal error in OutputBit!");
+            printf("Fatal error in OutputBit");
         else if ((bit_file->pacifier_counter++ bitand PACIFIER_COUNT) == 0)
             putc('.', stdout);
 
@@ -109,7 +109,7 @@ void OutputBits(BIT_FILE *bit_file, unsigned long code, int count)
         if (bit_file->mask == 0)
         {
             if (putc(bit_file->rack, bit_file->file) not_eq bit_file->rack)
-                printf("Fatal error in OutputBit!");
+                printf("Fatal error in OutputBit");
             else if ((bit_file->pacifier_counter++ bitand PACIFIER_COUNT) == 0)
                 putc('.', stdout);
 

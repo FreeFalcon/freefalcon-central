@@ -1518,7 +1518,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
         return;
 
 
-    // sanity check since time can now go backwards!
+    // sanity check since time can now go backwards
     if ( not (typeData.flags bitand ANIM_NO_CLAMP))
     {
         if (curFrame >= typeData.numTextures)
@@ -2314,7 +2314,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
     }
     else
     {
-        // if ( !renderer->GetAlphaMode() )
+        // if ( not renderer->GetAlphaMode() )
         // return;
 
         alpha = initAlpha * (1.0f - lightLevel * 0.5f) - ((float)(now - alphaStartTime)) * typeData.fadeRate;
@@ -2920,7 +2920,7 @@ void Draw2DSunGlowEffect(class RenderOTW *renderer, Tpoint *cntr, float dist, fl
     float radius, iradius;
     bool gif = false;
 
-    // if ( !renderer->GetAlphaMode() )
+    // if ( not renderer->GetAlphaMode() )
     // return;
 
     if (alpha < 0.0001)

@@ -2980,7 +2980,7 @@ void OTWDriverClass::VCock_Exec(void)
             TheHud->SetHalfAngle((float)atan(ratio) * RTD, 1.0f, VRatio);
             // TheHud->SetHalfAngle(atan (hudangy/hudangx) * RTD);
 
-            // hack!  move borsight height to boresighty from 3dckpit.dat. default 0.75f
+            // hack  move borsight height to boresighty from 3dckpit.dat. default 0.75f
             hudWinY[BORESIGHT_CROSS_WINDOW] = vBoresightY; // ASSO:
 
             TheHud->SetTarget(TheHud->Ownship()->targetPtr);
@@ -3000,7 +3000,7 @@ void OTWDriverClass::VCock_Exec(void)
             renderer->SetColor(0xff00ff00);
             // restore hud half angle
             TheHud->SetHalfAngle((float)atan(0.25 * (float)tan(30.0F * DTR)) * RTD);
-            // hack!  restore borsight height to 0.60.  sigh.
+            // hack  restore borsight height to 0.60.  sigh.
             hudWinY[BORESIGHT_CROSS_WINDOW] = 0.60f;
 
         }

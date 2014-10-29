@@ -423,7 +423,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
 
     /* OTWDriver.GetAreaFloorAndCeiling (&bottom, &top);
     if (target->BaseData()->ZPos() > top or platform->ZPos() > top) {
-     if ( !OTWDriver.CheckLOS( platform, target->BaseData() ) ) {
+     if ( not OTWDriver.CheckLOS( platform, target->BaseData() ) ) {
      S = 0.0f;
      }
     }*/

@@ -239,7 +239,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
         else
             tmpPtr->localData->sensorState[Radar] = NoTrack; // Sorry, we lost that target...
 
-        // 2000-10-07 S.G. POSSIBLE BUG!
+        // 2000-10-07 S.G. POSSIBLE BUG
         // If we are looking at our lockedTarget and we are the only one referencing it, clearing it
         // might invalidate tmpPtr->next. So I'll read it ahead of time
         SimObjectType* tmpPtrNext = tmpPtr->next;

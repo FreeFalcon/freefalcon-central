@@ -315,7 +315,7 @@ int GunClass::Exec(
         return whatWasHit;
     }
 
-    // TOTAL HACK HERE!  We observe that sometimes bullet is NULL here (why?)
+    // TOTAL HACK HERE  We observe that sometimes bullet is NULL here (why?)
     // SCR 5-9-97
     if ( not bullet)
     {
@@ -395,7 +395,7 @@ int GunClass::Exec(
             // I think it's for collision detection purposes....
             // Since we run a SimLibFrameTime sec frame and there should be roundPerSecond
             // a bullet comes out very we need to extend the vector by roundsPerSecond*SimLibFrameTime
-            // 2000-10-11 NOT TOUCHED BY S.G. BUT MAY BE HE WAS ON LSD, THIS MAKES NO SENSE!
+            // 2000-10-11 NOT TOUCHED BY S.G. BUT MAY BE HE WAS ON LSD, THIS MAKES NO SENSE
             vec.x *= roundsPerSecond * SimLibMajorFrameTime * 2.0F;
             vec.y *= roundsPerSecond * SimLibMajorFrameTime * 2.0F;
             vec.z *= roundsPerSecond * SimLibMajorFrameTime * 2.0F;
@@ -831,7 +831,7 @@ int GunClass::Exec(
                         // TRUE,
                         // bulptr->x, bulptr->y, bulptr->z, 1.0f);
                         //
-                        // if ( !PRANDInt3() )
+                        // if (  not PRANDInt3() )
                         // {
                         // /*
                         // OTWDriver.AddSfxRequest(
@@ -847,7 +847,7 @@ int GunClass::Exec(
                         // &vec);
                         //
                         // }
-                        // else if ( !PRANDInt3() )
+                        // else if (  not PRANDInt3() )
                         // {
                         // /*
                         // OTWDriver.AddSfxRequest(
@@ -1041,7 +1041,7 @@ int GunClass::Exec(
         if (parent->IsAirplane())
         {
             //RV - I-Hawk - RV new trails call changes
-            //if ( !smokeTrail )
+            //if (  not smokeTrail )
             if ( not TrailIdNew)
             {
                 //smokeTrail = new DrawableTrail(trailID);
@@ -1314,7 +1314,7 @@ BulletSphereHit(vector *sp, vector *ep, vector *tc, float r, vector *impact)
         return(-1.0f);
 
     /*
-    ** That's it, a hit!
+    ** That's it, a hit
     ** set impact point and return dist
     */
     ratio = newdist / length;

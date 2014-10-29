@@ -157,7 +157,7 @@ void FireControlComputer::AirAirMode(void)
                         vc and ( not (vc->Flags bitand 0x20000000) ||
                                // JB 010712 Normal behavior for the 2d cockpit
                                OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit)  and 
-                        !theMissile->isCaged)
+                         not theMissile->isCaged)
                    )
                 {
                     // We don't have a target so find one
@@ -169,7 +169,7 @@ void FireControlComputer::AirAirMode(void)
                         while (curTarget)
                         {
                             if (curTarget->BaseData()->IsSim()  and 
-                                !curTarget->BaseData()->IsWeapon())
+                                 not curTarget->BaseData()->IsWeapon())
                             {
                                 theMissile->SetTarget(curTarget);
                                 theMissile->RunSeeker();
@@ -204,7 +204,7 @@ void FireControlComputer::AirAirMode(void)
                     {
                         theMissile->SetTarget(targetPtr);
                         theMissile->SetSeekerPos(&theMissile->targetPtr->localData->az, &theMissile->targetPtr->localData->el);
-                        theMissile->RunSeeker(); // We still need to run the seeker even if slaved to radar ! How to get new irSig otherwise ??
+                        theMissile->RunSeeker(); // We still need to run the seeker even if slaved to radar  How to get new irSig otherwise ??
                         /*** old code irSig = targetPtr->localData->irSignature;
                          theMissile->SetTarget(targetPtr);
                          targetPtr->localData->irSignature = irSig;

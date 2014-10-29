@@ -63,7 +63,7 @@ MaverickDisplayClass::MaverickDisplayClass(SimMoverClass* newPlatform) : Missile
     {
         displayType = AGM65_IR;
     }
-    // 2000-09-20 S.G. SO WE CAN FLY ANY AIRCRAFT?!?
+    // 2000-09-20 S.G. SO WE CAN FLY ANY AIRCRAFT??
     else
         displayType = AGM65_TV;
 
@@ -159,7 +159,7 @@ void MaverickDisplayClass::DrawDisplay(void)
             */
 
             // RV - Biker - New FOV calculation (decrease curFOV -> increase zoom)
-            //if (curFOV > g_fMavEXPLevel * DTR) //Wombat778 9-28-2003 (reversed EXP and FOV...DOH!)
+            //if (curFOV > g_fMavEXPLevel * DTR) //Wombat778 9-28-2003 (reversed EXP and FOV...DOH)
             //  curFOV = g_fMavEXPLevel * DTR;
             //else
             //  curFOV = g_fMavFOVLevel * DTR;

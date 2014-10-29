@@ -3140,7 +3140,7 @@ void CSoundMgr::RemoveStream(long ID)
     if (gSoundDriver == NULL)
         return;
 
-    F4EnterCriticalSection(StreamCSection); // JPO - lock before test!
+    F4EnterCriticalSection(StreamCSection); // JPO - lock before test
 
     if (StreamList == NULL)
     {
@@ -3666,7 +3666,7 @@ SoundList::SoundList()
 
 }
 
-// MLR: doesn't copy 3d sound buffer!
+// MLR: doesn't copy 3d sound buffer
 SoundList::SoundList(SoundList *copy, IDirectSound *DSound)
 {
     ShiAssert(FALSE == F4IsBadReadPtr(DSound, sizeof * DSound));

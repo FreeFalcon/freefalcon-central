@@ -25,7 +25,7 @@ void MissileClass::RunSeeker()
     // Shouldn't be necessary, but at this stage, lets be safe...
     // No seeker if in SAFE
     if (
-        !sensorArray or not sensorArray[0] ||
+         not sensorArray or not sensorArray[0] ||
         launchState == PreLaunch and parent and parent->IsAirplane()  and 
         ((AircraftClass*)parent.get())->Sms->MasterArm() == SMSBaseClass::Safe
     )
@@ -182,7 +182,7 @@ void MissileClass::RunSeeker()
     // WILL BE DONE LATER IN THE ROUTINE ANYHOW IN SUCH A SCENARIO
     // if ((timpct < inputData->mslActiveTtg) and (sensorArray[0]->Type() not_eq SensorClass::Radar))
 
-    // ME123 WE GET A CTD HERE IF NOT MAKING THE ARH CHECK FIRST !
+    // ME123 WE GET A CTD HERE IF NOT MAKING THE ARH CHECK FIRST 
     // if (timpct *
     // ((targetPtr and targetPtr->BaseData()->IsSPJamming()) ? 1.5f : 1.0f) <
     // inputData->mslActiveTtg and sensorArray[0]->Type() not_eq SensorClass::Radar)
@@ -191,7 +191,7 @@ void MissileClass::RunSeeker()
     // inputData->mslActiveTtg > 0  and 
     // launchState == InFlight  and 
     // sensorArray[0]->Type() not_eq SensorClass::Radar  and 
-    // !isSlave
+    //  not isSlave
     //){
     // Pitbull = false;
     //}

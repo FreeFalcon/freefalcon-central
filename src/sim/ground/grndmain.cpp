@@ -181,7 +181,7 @@ void GroundClass::Init(SimInitDataClass* initData)
 
     // 2002-01-20 ADDED BY S.G. At time of creation,
     // the radar will take the mode of the battalion instead of being
-    // off until it finds a target by itself (and can it find it if its radar is off!).
+    // off until it finds a target by itself (and can it find it if its radar is off).
     // SimVehicleClass::Init created the radar so it's safe to do it here...
     if (isEmitter)
     {
@@ -797,7 +797,7 @@ int GroundClass::Exec(void)
 
         // check for sending radar emmisions
         // 2002-02-26 MODIFIED BY S.G.
-        // Added the nextTargetUpdate check to prevent the radar code to run on every frame!
+        // Added the nextTargetUpdate check to prevent the radar code to run on every frame
         if (isEmitter and nextTargetUpdate < SimLibElapsedTime)
         {
             // 2002-02-26 ADDED BY S.G. Next radar scan is 1 sec for aces, 2 for vets, etc ...
@@ -866,7 +866,7 @@ int GroundClass::Exec(void)
         // 2002-02-11 MODIFED BY S.G.
         // Since I only identify visually, need to perform this even if spotted by radar in case I can ID it.
         if (
-            /*!spottedSet and  gai->skillLevel >= 3 and */
+            /* not spottedSet and  gai->skillLevel >= 3 and */
             ((UnitClass *)GetCampaignObject())->GetSType() == STYPE_UNIT_AIR_DEFENSE  and 
             gai == gai->battalionCommand  and 
              not ((UnitClass *)GetCampaignObject())->Broken()  and 

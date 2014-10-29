@@ -209,7 +209,7 @@ int RulesClass::SaveRules(_TCHAR *filename)
     return TRUE;
 }
 
-static char PwdMask[] = "Blood makes the grass grow, kill, kill, kill!";
+static char PwdMask[] = "Blood makes the grass grow, kill, kill, kill";
 static char PwdMask2[] = "ojodp^&SANDsfsl,[poe5487wqer1]@&$N";
 
 void RulesClass::EncryptPwd(void)

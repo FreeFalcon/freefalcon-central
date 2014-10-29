@@ -624,7 +624,7 @@ void OTWDriverClass::Padlock_FindRealisticPriority(BOOL)
     if (
         mpPadlockPriorityObject  and 
         mpPadlockPriorityObject->GetCampaignObject() not_eq ((CampBaseClass*)0xdddddddd)  and 
-        !mpPadlockPriorityObject->IsDead()
+         not mpPadlockPriorityObject->IsDead()
     )
     {
         pclassPtr = (Falcon4EntityClassType*) mpPadlockPriorityObject->EntityType();
@@ -1412,7 +1412,7 @@ int OTWDriverClass::Padlock_RankAGPriority(SimBaseClass* pObj, BOOL isPainted)
         {
             priority = 1;
         } // If object is attacking player
-        else if (pobjTgt == pplayer and ((SimVehicleClass*) pObj)->GetSMS()->GetCurrentWeapon())  // KCK: This isn't always a ground class! -> or ((GroundClass*)pbaseData)->Gun)) {
+        else if (pobjTgt == pplayer and ((SimVehicleClass*) pObj)->GetSMS()->GetCurrentWeapon())  // KCK: This isn't always a ground class -> or ((GroundClass*)pbaseData)->Gun)) {
         {
             priority = 2;
         } // If object is enemy and being painted by player

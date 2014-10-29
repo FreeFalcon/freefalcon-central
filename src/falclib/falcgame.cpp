@@ -327,7 +327,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
     else
         MonoPrint("- distribute all.\n");
 
-    // KCK: Try using association to let VU do the distribution for us!
+    // KCK: Try using association to let VU do the distribution for us
     VuGameEntity::Distribute(sess);
 
     new_host = (FalconSessionEntity*)vuDatabase->Find(OwnerId());
@@ -405,7 +405,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      // KCK: If there's a valid deaggregate owner, set owner to that..
      if ((int)((SimBaseClass*)ent)->campaignObject > MAX_IA_CAMP_UNIT and ((CampBaseClass*)((SimBaseClass*)ent)->campaignObject)->deag_owner not_eq sess->Id())
      ((SimBaseClass*)ent)->ChangeOwner(((CampBaseClass*)((SimBaseClass*)ent)->campaignObject)->GetDeaggregateOwner());
-     // Otherwise, change ownership to the host (let campaign entity know too!)
+     // Otherwise, change ownership to the host (let campaign entity know too)
      else
      {
      ((SimBaseClass*)ent)->ChangeOwner(new_host);

@@ -169,7 +169,7 @@ void HudClass::DrawAirspeed(void)
 
         for (i = 0; i < NUM_VERTICAL_TICKS; i++)
         {
-            //MI don't draw into the text!
+            //MI don't draw into the text
             /*if (a >= 0  and 
               (y1 - boxY > display->TextHeight() * 1.1F ||
               y1 - boxY < -tickInc))*/
@@ -631,7 +631,7 @@ void HudClass::DrawAltitude(void)
 
             for (i = 0; i < NUM_VERTICAL_TICKS; i++)
             {
-                //MI don't draw into the text!
+                //MI don't draw into the text
                 /*if (a >= 0  and 
                   (y1 - boxY > display->TextHeight() * 1.1F ||
                   y1 - boxY < -tickInc))*/
@@ -943,7 +943,7 @@ void HudClass::DrawHeading(void)
         //MI
         if ( not g_bRealisticAvionics or ((AircraftClass*)ownship)->OnGround() ||
             (g_bRealisticAvionics and g_bINS and ownship and ownship->INSState(AircraftClass::INS_PowerOff) ||
-             !ownship->INSState(AircraftClass::INS_HUD_STUFF)))
+              not ownship->INSState(AircraftClass::INS_HUD_STUFF)))
         {
 
             headingTop = hudWinY[HEADING_WINDOW_HI] +
@@ -1002,7 +1002,7 @@ void HudClass::DrawHeading(void)
 
         //MI INS stuff
         if (g_bRealisticAvionics and g_bINS and ownship and ownship->INSState(AircraftClass::INS_PowerOff) ||
-            !ownship->INSState(AircraftClass::INS_HUD_STUFF))
+             not ownship->INSState(AircraftClass::INS_HUD_STUFF))
         {
             headingTop = hudWinY[HEADING_WINDOW_LO] +
                          hudWinHeight[HEADING_WINDOW_LO] * 0.5F;
@@ -1325,7 +1325,7 @@ void HudClass::DrawTadpole(void)
     if (g_bRealisticAvionics and g_bINS)
     {
         if (ownship and ownship->INSState(AircraftClass::INS_PowerOff) ||
-            !ownship->INSState(AircraftClass::INS_HUD_STUFF))
+             not ownship->INSState(AircraftClass::INS_HUD_STUFF))
             return;
     }
 
@@ -1517,7 +1517,7 @@ void HudClass::DrawWaypoint(void)
         //MI
         if ( not g_bRealisticAvionics or ((AircraftClass*)ownship)->OnGround() ||
             (g_bRealisticAvionics and g_bINS and ownship and ownship->INSState(AircraftClass::INS_PowerOff) ||
-             !ownship->INSState(AircraftClass::INS_HUD_STUFF)))
+              not ownship->INSState(AircraftClass::INS_HUD_STUFF)))
         {
 
             headingTop = hudWinY[HEADING_WINDOW_HI] +

@@ -953,7 +953,7 @@ Prof_Report *Prof_create_report(void)
 #endif
 
     if (speedstep_warning)
-        pob->title[1] = _strdup("WARNING: SpeedStep-like timer inconsistencies detected.  Results are unreliable!");
+        pob->title[1] = _strdup("WARNING: SpeedStep-like timer inconsistencies detected.  Results are unreliable");
 
     if (displayed_quantity == Prof_CALL_GRAPH)
     {

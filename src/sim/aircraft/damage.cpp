@@ -2534,7 +2534,7 @@ void AircraftClass::ShowDamage(void)
     // do military power smoke if its that type of craft
     // PowerOutput() runs from 0.7 (flight idle) to 1.5 (max ab) with 1.0 being mil power
     // M.N. added Poweroutput > 0.65, stops smoke trails when engine is shut down.
-    //if ( !OnGround() and af->EngineTrail() >= 0 and OTWDriver.renderer /* and  OTWDriver.renderer->GetAlphaMode()*/) {
+    //if ( not OnGround() and af->EngineTrail() >= 0 and OTWDriver.renderer /* and  OTWDriver.renderer->GetAlphaMode()*/) {
     /* if (PowerOutput() <= 1.0f and PowerOutput() > 0.65f)
      {
      AddEngineTrails(af->EngineTrail(), engineTrails); // smoke
@@ -3503,7 +3503,7 @@ void AircraftClass::AddFault(int failures, unsigned int failuresPossible, int, i
 
     for (i = 0; i < failures; i++)
     {
-        mFaults->SetFault(failuresPossible, !isDigital);
+        mFaults->SetFault(failuresPossible,  not isDigital);
     }
 
     // JPO - break hydraulics occasionally
@@ -3609,7 +3609,7 @@ void AircraftClass::AddFault(int failures, unsigned int failuresPossible, int, i
                 mFaults->SetFault((FaultClass::type_FSubSystem)failedThings[failedThing],
                                   (FaultClass::type_FFunction)(1 << numFunctions),
                                   (FaultClass::type_FSeverity) FaultClass::fail,
-                                  !isDigital); // none, fail for now
+                                   not isDigital); // none, fail for now
 
                 if (failedThings[failedThing] == FaultClass::eng_fault  and 
                     (1 << numFunctions) == hydr)

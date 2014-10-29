@@ -38,7 +38,7 @@ ObjectDisplayList::ObjectDisplayList()
 ObjectDisplayList::~ObjectDisplayList()
 {
     // Commented out because it doesn't crash and we're desperate
-    // ShiAssert ( !head );
+    // ShiAssert ( not head );
 
     // KCK: This is kept around for shits and grins (and release, I guess)
     while (head)
@@ -47,8 +47,8 @@ ObjectDisplayList::~ObjectDisplayList()
     }
 
     // Commented out because it doesn't crash and we're desperate
-    // ShiAssert ( !head ); ShiAssert( !head );
-    // ShiAssert( !tail );
+    // ShiAssert ( not head ); ShiAssert( not head );
+    // ShiAssert( not tail );
 }
 
 

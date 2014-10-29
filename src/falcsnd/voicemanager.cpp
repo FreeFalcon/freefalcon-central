@@ -464,7 +464,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                 }
             }
 
-            // sfr: this breakin logic needs to be reviewed! Its not usign same as best choice
+            // sfr: this breakin logic needs to be reviewed Its not usign same as best choice
             // now we check if the best conversation is enough to break a current ongoin one
             // breaking means we are interrupting an ongoing conversation to play a new one
             breakin = FALSE;
@@ -500,7 +500,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                 if (
                     best  and 
                     (VM->decompQueue[i].status == SLOT_IS_AVAILABLE  or breakin)  and 
-                    !VM->falconVoices[curChannel].exitChannel
+                     not VM->falconVoices[curChannel].exitChannel
                 )
                 {
                     // we have a message to be played with an available slot or
@@ -1473,7 +1473,7 @@ VMLIST *VoiceManager::VMListDestroyVCQ( VMLIST *list )
 CONVERSATION *vmVCNode;
 VMLIST *curr, *prev;
 
-  if ( !list )
+  if (  not list )
  return NULL;
 
    curr = list;
@@ -1481,7 +1481,7 @@ VMLIST *curr, *prev;
 
  while ( curr )
  {
- if ( !curr->node )
+ if (  not curr->node )
  break;
 
    vmVCNode = ( CONVERSATION * )curr->node;
@@ -1506,7 +1506,7 @@ VM_CONVLIST *VoiceManager::VMListDestroyVCQ(VM_CONVLIST *list)
     if ( not list)
         return NULL;
 
-    // JPO - go FORWARDS through the list stupid!
+    // JPO - go FORWARDS through the list stupid
     for (curr = list; curr; curr = next)
     {
         next = curr->next;
@@ -1533,7 +1533,7 @@ VM_BUFFLIST *VoiceManager::VMListDestroyVBQ(VM_BUFFLIST *list)
     if ( not list)
         return NULL;
 
-    // JPO - go FORWARDS through the list stupid!
+    // JPO - go FORWARDS through the list stupid
     for (curr = list; curr; curr = next)
     {
         next = curr->next;
@@ -1630,7 +1630,7 @@ int VoiceManager::IsChannelDone(int channel)
 {
     if (gSoundDriver)
     {
-        return !gSoundDriver->IsStreamPlaying(VM->falconVoices[channel].FalcVoiceHandle);
+        return  not gSoundDriver->IsStreamPlaying(VM->falconVoices[channel].FalcVoiceHandle);
     }
 
     return FALSE;

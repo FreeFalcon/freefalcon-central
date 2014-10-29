@@ -250,7 +250,7 @@ int F4CommsConnectionCallback(int result)
 
         if (vures == VU_ERROR)
         {
-            // KCK: Vu often doesn't clean up after itself in this case!
+            // KCK: Vu often doesn't clean up after itself in this case
             CleanupComms();
             return F4COMMS_ERROR_UDP_NOT_AVAILABLE;
         }
@@ -669,7 +669,7 @@ void ModemConnectCallback(ComAPIHandle ch, int ret)
 
     ipaddr = ComAPIQuery(ch, COMAPI_CONNECTION_ADDRESS);
 
-    ShiAssert(ch == FalconGlobalUDPHandle); // We should only have one connection!
+    ShiAssert(ch == FalconGlobalUDPHandle); // We should only have one connection
 
     // need to find session... There should be only two (us and them)
     VuEnterCriticalSection();
@@ -996,7 +996,7 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
         if (
             (gConnectionStatus == F4COMMS_CONNECTED ||
              (g_ipadress and not strcmpi(g_ipadress, "0.0.0.0")))  and 
-            !stoppingvoice and  not g_pDPServer and  not g_pDPClient  and (g_ipadress)
+             not stoppingvoice and  not g_pDPServer and  not g_pDPClient  and (g_ipadress)
         )
         {
             startupvoice(g_ipadress);//me123

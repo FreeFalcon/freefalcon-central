@@ -26,7 +26,7 @@ and come up with the distance from the center of the screen.  Is that
 possible?  It's the viewer flyby that will work best, so as the plane
 approaces and whizzes by, we can make all the feedback rise and fall exactly
 in sync, so it might feel like a real ^16 "buzzed the tower" so to speak...
-should be cool, but there's only one way to find out! :)
+should be cool, but there's only one way to find out :)
 
 escape key?
 resume sim?

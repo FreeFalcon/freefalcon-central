@@ -247,7 +247,7 @@ void RViewPoint::InsertObject(DrawableObject* object)
     }
 
     // We could only get here if the object was higher than the highest level
-    ShiWarning("Object with way to much altitude!");
+    ShiWarning("Object with way to much altitude");
 }
 
 
@@ -356,7 +356,7 @@ void RViewPoint::UpdateMoon()
 
     while (texel < stopTexel)
     {
-        if (*texel not_eq 0)   // Don't touch the chromakeyed texels!
+        if (*texel not_eq 0)   // Don't touch the chromakeyed texels
         {
             *dest++ = (BYTE)((*texel++) | 128); // Use the "green" set of palette entries
         }

@@ -254,12 +254,12 @@ void HeliBrain::GunsEngage(void)
     }
 
     // fire error more strict with range....
-    // 2001-07-05 MODIFIED BY S.G. ataerror is an angle!
+    // 2001-07-05 MODIFIED BY S.G. ataerror is an angle
     //ataerror = (INIT_GUN_VEL - targetData->range)/INIT_GUN_VEL * 80.0f;
     if (targetData->range < INIT_GUN_VEL)
         ataerror = (float)acos((double)(INIT_GUN_VEL - targetData->range) / INIT_GUN_VEL);
 
-    // 2001-07-06 MODIDIED BY S.G. WE DON'T WANT THE ROCKETS TO FIRE ONE PER 15 SECONDS! LAUNCH AT FRAME SPEED (JUST LIKE FOR PLANES)
+    // 2001-07-06 MODIDIED BY S.G. WE DON'T WANT THE ROCKETS TO FIRE ONE PER 15 SECONDS LAUNCH AT FRAME SPEED (JUST LIKE FOR PLANES)
     //if ( mslCheckTimer > 15.0f )
     //if ( mslCheckTimer > 15.0f or (mslCheckTimer > 0.25f and self->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb and self->FCC->GetSubMode() == FireControlComputer::RCKT))
     if (mslCheckTimer > 15.0f or (mslCheckTimer > 0.25f and self->FCC->GetMasterMode() == FireControlComputer::AirGroundRocket))
@@ -296,7 +296,7 @@ void HeliBrain::GunsEngage(void)
 
         // Correct for gravity
         //zft += 0.5F * GRAVITY * tof * tof;
-        // RV - Biker - Do it the right way!
+        // RV - Biker - Do it the right way
         zft -= 0.5F * GRAVITY * tof * tof;
 
         az = (float)atan2(yft, xft);
@@ -968,7 +968,7 @@ void HeliBrain::FireControl(void)
 //
 //#endif
 
-// MLR 4/23/2004 - Mike was here!
+// MLR 4/23/2004 - Mike was here
 void HeliBrain::WeaponSelection(void)
 {
     SimVehicleClass *target = NULL;
@@ -1031,7 +1031,7 @@ void HeliBrain::WeaponSelection(void)
 
     if (lastRange > maxWpnRange ||
          not self->Sms->curWeapon  ||
-        !targetPtr)
+         not targetPtr)
     {
         self->FCC->SetMasterMode(FireControlComputer::Nav);
         curMissile = NULL;

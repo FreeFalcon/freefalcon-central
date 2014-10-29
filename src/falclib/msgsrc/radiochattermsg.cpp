@@ -248,7 +248,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
 #endif
     // KCK: Ignore all this if we're not in the sim or if we've got fucked up data
 
-    //MonoPrint("Processing Chatter Message ID: %d  %d\n", message, !us);
+    //MonoPrint("Processing Chatter Message ID: %d  %d\n", message, us);
 
     if ((FalconLocalSession->GetFlyState() == FLYSTATE_FLYING) ||
         (SimDriver.RunningCampaign() and not noUIcomms) ||

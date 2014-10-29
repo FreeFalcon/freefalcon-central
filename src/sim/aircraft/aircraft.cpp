@@ -2086,7 +2086,7 @@ int AircraftClass::Exec(void)
         // digitals don't check collisions.  they just avoid.
         // this shouldn't really matter much, but it can be easily turned on
 
-        //if ( !isDigital and PlayerOptions.CollisionsOn() ) // JB carrier
+        //if ( not isDigital and PlayerOptions.CollisionsOn() ) // JB carrier
         if ( not isDigital)
         {
             // JB carrier

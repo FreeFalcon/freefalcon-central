@@ -452,7 +452,7 @@ void RenderOTW::SetupStates(void)
     }
     else
     {
-        // RED - WTF..! if u Eneter that light is hi, u would not get lights on when light go down...
+        // RED - WTF.. if u Eneter that light is hi, u would not get lights on when light go down...
         if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS/* and TheTerrTextures.lightLevel < 0.5f*/)
         {
             state_fore = STATE_MULTITEXTURE;
@@ -1045,7 +1045,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
      SetViewport( prevLeft, prevTop, prevRight, prevBottom );
      }
 
-     // And we're done!
+     // And we're done
      return;
 
      }
@@ -2205,7 +2205,7 @@ void RenderOTW::DrawWeather(const Trotation *orientation)
 
             // just vertical lines currently. Need to slant them based on speed....
             // but thats tricky, cos we have no knowledge of that here
-            // JB 010608 We do now!
+            // JB 010608 We do now
             Render2DLine(viewportXtoPixel(sx), viewportYtoPixel(sy),
                          viewportXtoPixel(sx + dx), viewportYtoPixel(sy + dy));
         }

@@ -249,12 +249,12 @@ BOOL GroundClass::DoWeapons(void)
         if (MissileTrack())
         {
             // 2002-02-28 MODIFIED BY S.G.
-            // Valid for campaign object as well, not just sim!
-            // We're testing inside for SIM or CAMPAIGN ANYWAY! Otherwise nextSamFireTime is NEVER adjusted
+            // Valid for campaign object as well, not just sim
+            // We're testing inside for SIM or CAMPAIGN ANYWAY Otherwise nextSamFireTime is NEVER adjusted
             if (
                 gai->battalionCommand  and 
                 /* targetPtr->BaseData()->IsSim()  and */
-                !targetPtr->BaseData()->OnGround()
+                 not targetPtr->BaseData()->OnGround()
             )
             {
                 gai->battalionCommand->self->allowSamFire = FALSE;
@@ -330,7 +330,7 @@ BOOL GroundClass::DoWeapons(void)
             Sms->LaunchWeapon();
             theMissile->Start(targetPtr);
 
-            // It's Alive!
+            // It's Alive
             vuDatabase->/*Quick*/Insert(theWeapon.get());
             //vuDatabase->/*Quick*/Insert(theWeapon);
             theMissile->Wake();
@@ -945,7 +945,7 @@ int GroundClass::MissileTrack(void)
     if (GetCampaignObject() and   // MLR 5/27/2004 - CTD ?
         /* not ((BattalionClass*)GetCampaignObject())->GetMissilesFlying())*/
         //Cobra TJL 10/30/04
-        !GetCampaignObject()->GetMissilesFlying())
+         not GetCampaignObject()->GetMissilesFlying())
     {
 
         BUMP = static_cast<float>(radarData->Elevationbumpamounta);

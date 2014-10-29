@@ -54,7 +54,7 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
                 else
                 {
                     // Reacquire lock only inside our seek FOV cone
-                    // 2000-08-31 MODIFIED BY S.G. SINCE THE RADAR IS STILL POINTING WHERE WHEN WE STILL HAD A LOCK, WE NEED TO OFFSET OUR BeamHalfAngle ACCORDINGLY!
+                    // 2000-08-31 MODIFIED BY S.G. SINCE THE RADAR IS STILL POINTING WHERE WHEN WE STILL HAD A LOCK, WE NEED TO OFFSET OUR BeamHalfAngle ACCORDINGLY
                     // WARNING: In the 1.08i2 patch, I forgot to add '* 2.0F' after 'radarData->BeamHalfAngle'. I'll do it in the source since it SHOULD be this way anyhow (see the other line similar below)
                     // if (fabs(lockedTarget->localData->ata) <= radarData->BeamHalfAngle)
                     if (fabs(lockedTarget->localData->ata - (float)acos(cos(platform->RdrAzCenter()) * cos(platform->RdrElCenter()))) <= radarData->BeamHalfAngle * 2.0F)
@@ -94,7 +94,7 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
                     else
                     {
                         // Reacquire lock only inside our seek FOV cone
-                        // 2000-08-31 MODIFIED BY S.G. SINCE THE RADAR IS STILL POINTING WHERE WHEN WE STILL HAD A LOCK, WE NEED TO OFFSET OUR BeamHalfAngle ACCORDINGLY!
+                        // 2000-08-31 MODIFIED BY S.G. SINCE THE RADAR IS STILL POINTING WHERE WHEN WE STILL HAD A LOCK, WE NEED TO OFFSET OUR BeamHalfAngle ACCORDINGLY
                         //    if (fabs(newLock->localData->ata) <= radarData->BeamHalfAngle * 2.0F)
                         if (fabs(newLock->localData->ata - (float)acos(cos(platform->RdrAzCenter()) * cos(platform->RdrElCenter()))) <= radarData->BeamHalfAngle * 2.0F)
                         {

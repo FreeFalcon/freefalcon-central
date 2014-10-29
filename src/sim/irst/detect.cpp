@@ -171,12 +171,12 @@ float IrstClass::GetSignature(SimObjectType* obj)
         }
         else //sylvains stuff
         {
-            /* 0-180 DEGREES IS COS -1 TO 1. SINCE IT IS SQUARED, IT BECOMES 0 TO 1. 0 BEING FRONT OR BACK!
+            /* 0-180 DEGREES IS COS -1 TO 1. SINCE IT IS SQUARED, IT BECOMES 0 TO 1. 0 BEING FRONT OR BACK
             I CHANGED IT TO 0-90 SO FRONT IS 0 AND BACK IS 1 LIKE IT SHOULD BE */
             ataFactor = (float)cos(obj->localData->ataFrom/* S.G. TO BRING IT FROM 0-180 TO 0-90 */ / 2.0F);
             ataFactor *= ataFactor;
             // Scale for aspect
-            signal *= min(1.0f, 1.2f - 1.10F * ataFactor);//me123 if they screwed the squared thing, then they most likely didn't use it here either ! so changed from 0.6 - 0.55
+            signal *= min(1.0f, 1.2f - 1.10F * ataFactor);//me123 if they screwed the squared thing, then they most likely didn't use it here either  so changed from 0.6 - 0.55
         }
 
     return signal;

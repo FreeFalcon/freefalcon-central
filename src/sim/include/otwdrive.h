@@ -300,7 +300,7 @@ public:
     // the state of the SM by one one (to CLEANUP).
     // In the next frame, the 2d stuff is active again, the drawFrontText()
     // routines reactivates the labels and put the SM into the OFF state. Now (and only now) the user may take
-    // another prettyScreenShot. Yay !
+    // another prettyScreenShot. Yay 
     enum PrettyScreenShotState { OFF = 0, EXECUTE, CLEANUP } takePrettyScreenShot;
     int LabelState;
     // Retro 7-8May2004 end

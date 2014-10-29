@@ -934,7 +934,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
             // By default, we can see the target (bit 0 at value 1)
             int canSee = SG_LOCK;
 
-            // 2000-10-07 S.G. POSSIBLE BUG! If we are looking at our lockedTarget and we are the only one referencing it, clearing it
+            // 2000-10-07 S.G. POSSIBLE BUG If we are looking at our lockedTarget and we are the only one referencing it, clearing it
             // might invalidate tmpPtr->next. So I'll read it ahead of time
             SimObjectType* tmpPtrNext = tmpPtr->next;
 
@@ -1030,7 +1030,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                 tmpPtr->localData->sensorState[Radar] = NoTrack; // Sorry, we lost that target...
 
             //
-            // 2000-10-07 S.G. POSSIBLE BUG! If we are looking at our lockedTarget and we are the only one referencing it, clearing it
+            // 2000-10-07 S.G. POSSIBLE BUG If we are looking at our lockedTarget and we are the only one referencing it, clearing it
             // might invalidate tmpPtr->next. So I'll read it ahead of time
             //SimObjectType* tmpPtrNext = tmpPtr->next;
             tmpPtrNext = tmpPtr->next;
@@ -1110,7 +1110,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
     //{
     // // do nothing
     //}
-    //else if (isEmitting) // only scans if its scanning!
+    //else if (isEmitting) // only scans if its scanning
 
     // FRB - Some problems interpreting the above conditionals
     if ( not platform->OnGround() and (isEmitting))
@@ -1158,10 +1158,10 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
 
         // Did the beam cross the object
         if (isEmitting and rdrObj->BaseData()  and // Radar On?
-            !rdrObj->BaseData()->OnGround() and // In the Air?
+             not rdrObj->BaseData()->OnGround() and // In the Air?
             ( not rdrObj->BaseData()->IsSim() or   // Campaign Entity
              ( not rdrObj->BaseData()->IsExploding() and // Live none weapon sim thing
-              !rdrObj->BaseData()->IsWeapon()))  and 
+               not rdrObj->BaseData()->IsWeapon()))  and 
             LookingAtObject(rdrObj))
         {
             rdrData->painted = TRUE;
@@ -1242,10 +1242,10 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                 }
 
                 //MI test
-                // MD -- 20040117: looks like this shouldn't have been left in...don't wipe extrapolation data!
+                // MD -- 20040117: looks like this shouldn't have been left in...don't wipe extrapolation data
                 //AddToHistory(rdrObj, None);
             }
-            else // MD -- 20040118: don't do this for TWS tracks as well!
+            else // MD -- 20040118: don't do this for TWS tracks as well
                 if ( not rdrData->TWSTrackFileOpen)
                     if (rdrData->rdrSy[0] == Solid or rdrData->rdrSy[0] == None)
                         AddToHistory(rdrObj, None);

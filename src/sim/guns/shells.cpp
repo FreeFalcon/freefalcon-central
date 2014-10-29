@@ -236,7 +236,7 @@ GunClass::UpdateShell(void)
     // damage stuff goes here....
     if (wcPtr->BlastRadius == 0)
     {
-        // must be a direct hit!  1-8 fer now
+        // must be a direct hit  1-8 fer now
         // ground targets get much better chance of hit
         if (t->OnGround())
         {

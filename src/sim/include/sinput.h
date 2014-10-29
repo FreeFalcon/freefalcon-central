@@ -64,11 +64,11 @@ typedef struct
 #define SDIERR_OTHERAPPHASPRIO "SDIERR_OTHERAPPHASPRIO"
 
 #define SSI_GENERAL "General SIM Input Error"
-#define SSI_NO_DI_INIT "Unable to Create Direct Input Object, Cannot Continue!"
+#define SSI_NO_DI_INIT "Unable to Create Direct Input Object, Cannot Continue"
 #define SSI_NO_MOUSE_INIT "Unable to Initialize Mouse, Click OK to Continue without Mouse"
 #define SSI_NO_JOYSTICK_INIT "Unable to Initialize Joystick, Click OK to Continue without Joystick"
 #define SSI_NO_CURSOR_INIT "Unable to Load Cursors, Click OK to Continue without Cursors"
-#define SSI_NO_KEYBOARD_INIT "Unable to Initialize Keyboard, Cannot Continue!"
+#define SSI_NO_KEYBOARD_INIT "Unable to Initialize Keyboard, Cannot Continue"
 
 #define DINPUT_BUFFERSIZE 16
 // #define DMOUSE_BUFFERSIZE 16 // Retro 15Feb2004 -aaaargh

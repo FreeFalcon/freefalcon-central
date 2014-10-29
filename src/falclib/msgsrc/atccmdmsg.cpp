@@ -510,7 +510,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     acBrain->SetWaitTimer(acBrain->CalcWaitTime(atcBrain));
 
                     if ( not acBrain->isWing or aircraft->IsPlayer() or aircraft->vehicleInUnit == 2 ||
-                        !atcBrain->UseSectionTakeoff((Flight)aircraft->GetCampaignObject(), dataBlock.rwindex))
+                         not atcBrain->UseSectionTakeoff((Flight)aircraft->GetCampaignObject(), dataBlock.rwindex))
                     {
                         radioMessage = CreateCallFromATC(atc, aircraft, rcPOSITIONANDHOLD, FalconLocalSession);
                         radioMessage->dataBlock.edata[3] = (short)atcBrain->GetRunwayName(dataBlock.rwindex);
@@ -530,7 +530,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     acBrain->SetWaitTimer(acBrain->CalcWaitTime(atcBrain));
 
                     if ( not acBrain->isWing or aircraft->IsPlayer() or aircraft->vehicleInUnit == 2 ||
-                        !atcBrain->UseSectionTakeoff((Flight)aircraft->GetCampaignObject(), dataBlock.rwindex))
+                         not atcBrain->UseSectionTakeoff((Flight)aircraft->GetCampaignObject(), dataBlock.rwindex))
                     {
                         if (rand() % 2 or aircraft->IsPlayer())
                         {

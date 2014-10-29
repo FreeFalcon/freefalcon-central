@@ -29,7 +29,7 @@ bool g_bWakeTurbulence = true;
 bool g_bDrawWakeTurbulence = false;
 bool g_bWeaponLaunchUsesDrawPointerPos = false; // MLR 2/19/2004 - when weapons are launched, they are launched for
 // where thier 3d graphics were positioned, this will allow the F-111's
-// weapons to be launched from the right spot ** DOESN'T WORK!
+// weapons to be launched from the right spot ** DOESN'T WORK
 
 bool g_bExtViewOnGround = false; // RAS -5Dec04- allow ext view if on ground
 bool g_bForceDXMultiThreadedCoopLevel = true; // JB 010401 Safer according to e
@@ -68,7 +68,7 @@ int g_nAIVisualRetentionSkill =  2 * 1000; // 2002-03-12 S.G. Time before AI loo
 float g_fBiasFactorForFlaks = 100000.0f; // 2002-03-12 S.G. Defaults bias for flaks. See guns.cpp
 bool g_bUseSkillForFlaks = true; // 2002-03-12 S.G. If flaks uses the skill of the ground troop or not
 float g_fTracerAccuracyFactor = 0.1f; // 2002-03-12 S.G. For tracers, multiply the dispersion (tracerError) by this value
-bool g_bToggleAAAGunFlag = false; // 2002-03-12 S.G. RP5 have set the AAA flag for NONE AAA guns and have reset it for AAA guns! This flag toggle the AAA gun check in the code
+bool g_bToggleAAAGunFlag = false; // 2002-03-12 S.G. RP5 have set the AAA flag for NONE AAA guns and have reset it for AAA guns This flag toggle the AAA gun check in the code
 bool g_bUseComplexBVRForPlayerAI = false; // 2002-03-13 S.G. If false, Player's wingman will perform RP5 BVR code instead of the SP2 BVR code
 float g_fFuelBaseProp = 100.0f; // 2002-03-14 S.G. For better fuel consomption tweaking
 float g_fFuelMultProp = 0.008f; // 2002-03-14 S.G. For better fuel consomption tweaking
@@ -524,7 +524,7 @@ int g_nSessionTimeout = 30; // 30 seconds to timeout a disconnected session (mig
 int g_nSessionUpdateRate = 15; // 15 seconds session update
 int g_nMaxInterceptDistance = 60; // only divert flights within 60 nm distance to the target
 bool g_bNewSensorPrecision = true;
-bool g_bSAM2D3DHandover = false; // 2D-3D target handover to SAMs doesn't really work this way - turn off!
+bool g_bSAM2D3DHandover = false; // 2D-3D target handover to SAMs doesn't really work this way - turn off
 int g_nChooseBullseyeFix = 0; // theater fix for finding best bullseye position
 /* 0x01 = use bullseye central position from campaign trigger files
    0x02 = change bullseye at each new day (should be tested before activated - what happens in flight, Multiplayer ?)
@@ -924,7 +924,7 @@ static ConfigOption<bool> BoolOpts[] =
     { "FireOntheMove", &g_bFireOntheMove},
     { "SAM2D3DHandover", &g_bSAM2D3DHandover},
     { "MavFix2", &g_bMavFix2},
-    { "DisableMissileEngGlow", &g_bDisableMissleEngGlow}, // MLR 2003/10/11 - get rid of that ugly star!
+    { "DisableMissileEngGlow", &g_bDisableMissleEngGlow}, // MLR 2003/10/11 - get rid of that ugly star
     { "HUDFix", &g_bHUDFix}, //Smeghead 14-Oct-2003
     { "SMSPylonLoadingFix", &g_bSMSPylonLoadingFix}, // MLR 2003/10/16
 

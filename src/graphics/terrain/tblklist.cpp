@@ -401,7 +401,7 @@ void TBlockList::InsertBlock(int row, int col)
 
     if ( not entry->block)
     {
-        ShiError("I failed to find a terrain block!");
+        ShiError("I failed to find a terrain block");
     }
 
 

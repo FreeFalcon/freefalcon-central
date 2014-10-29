@@ -80,7 +80,7 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
 
     // Store the texture path for future reference
     if (strlen(path) + 1 >= sizeof(texturePath))
-        ShiError("Texture path name overflow!");
+        ShiError("Texture path name overflow");
 
     strcpy(texturePath, path);
 

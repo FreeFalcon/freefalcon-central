@@ -51,7 +51,7 @@ int FalconLandingMessage::Process(uchar autodisp)
     else
     {
         status = PILOT_MIA;
-        // ShiAssert( not "Please show Kevin K this message!");
+        // ShiAssert( not "Please show Kevin K this message");
     }
 
 #else

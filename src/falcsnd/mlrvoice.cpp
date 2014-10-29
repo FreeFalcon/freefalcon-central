@@ -497,7 +497,7 @@ void mlrVoice::PreExec()
         }
 
         if (sfx->flags bitand (SFX_POS_INSIDE | SFX_FLAGS_VMS)  and 
-            !isplayer  and 
+             not isplayer  and 
             owner->SPos->platform)
         {
             // if we're inside the pit, but this "internal" sound is from another

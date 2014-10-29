@@ -651,7 +651,7 @@ bool SubPartTrail::Run(RenderOTW *renderer, ParticleNode *owner)
 
 int SubPartTrail::IsRunning(ParticleNode *owner)
 {
-    return !trailObj->IsTrailEmpty();
+    return  not trailObj->IsTrailEmpty();
 }
 
 /*....................................................................*/
@@ -1049,7 +1049,7 @@ bool SubEmitter::Run(RenderOTW *renderer, ParticleNode *owner)
             {
                 epos.z = GroundLevel;
                 qty += pep->rate[0].value;
-                // ok... done... then die...!
+                // ok... done... then die...
                 Alive = false;
             }
         }
@@ -1068,7 +1068,7 @@ bool SubEmitter::Run(RenderOTW *renderer, ParticleNode *owner)
                 if ( not (gtype == COVERAGE_WATER or gtype == COVERAGE_RIVER))
                 {
                     qty += pep->rate[0].value;
-                    // ok... done... then die...!
+                    // ok... done... then die...
                     Alive = false;
                 }
             }
@@ -1088,7 +1088,7 @@ bool SubEmitter::Run(RenderOTW *renderer, ParticleNode *owner)
                 if ((gtype == COVERAGE_WATER or gtype == COVERAGE_RIVER))
                 {
                     qty += pep->rate[0].value;
-                    // ok... done... then die...!
+                    // ok... done... then die...
                     Alive = false;
                 }
             }
@@ -1105,7 +1105,7 @@ bool SubEmitter::Run(RenderOTW *renderer, ParticleNode *owner)
                 RndTime = PRANDFloat() * RndTimeCx;
             }
 
-            // if gone past last stage, die..!
+            // if gone past last stage, die..
             if (LastStage >= pep->stages) Alive = false;
 
         }
@@ -1115,7 +1115,7 @@ bool SubEmitter::Run(RenderOTW *renderer, ParticleNode *owner)
             qty = owner->EvalTimedFloat(LastStage, pep->stages, pep->rate);
             qty = qty * owner->elapsedTime + rollover;
 
-            // if gone past last stage, die..!
+            // if gone past last stage, die..
             if (LastStage >= pep->stages) Alive = false;
     }
 
@@ -1828,7 +1828,7 @@ void DrawableParticleSys::Draw(class RenderOTW *renderer, int LOD)
 
             // Cobra - Moved the node killer to start of mission (otwloop.cpp)
             // also in DrawableParticleSys::AddParticle()
-            if ((n->IsDead()) /* and  !PurgeTimeInc*/) // COBRA - RED - If no1 updates PurgeTimeInc,
+            if ((n->IsDead()) /* and   not PurgeTimeInc*/) // COBRA - RED - If no1 updates PurgeTimeInc,
             {
                 // when it could be 0...???
                 n->Remove();
@@ -3263,7 +3263,7 @@ void  DrawableParticleSys::PS_EmitterRun(void)
                         Emitter.RndTime = PRANDFloat() * Emitter.RndTimeCx;
                     }
 
-                // if gone past last stage, die..!
+                // if gone past last stage, die..
                 if (Emitter.LastStage >= Emitter.PEP->stages) Alive = false;
 
                 break;
@@ -3273,7 +3273,7 @@ void  DrawableParticleSys::PS_EmitterRun(void)
                     qty = PS_EvalTimedFloat(Part.life, Emitter.LastStage, Emitter.PEP->stages, Emitter.PEP->rate);
                 qty = qty * PS_ElapsedTime + Emitter.rollover;
 
-                // if gone past last stage, die..!
+                // if gone past last stage, die..
                 if (Emitter.LastStage >= Emitter.PEP->stages) Alive = false;
 
                 break;

@@ -118,7 +118,7 @@ int FalconTrackMessage::Process(uchar autodisp)
 
     if (taggedEntity)
     {
-        // HACK HACK HACK!  This should be status info on the aircraft concerned...
+        // HACK HACK HACK  This should be status info on the aircraft concerned...
         // check for smoke on/off messages
         if (dataBlock.trackType == Track_SmokeOn)
         {

@@ -257,7 +257,7 @@ void WinAmpFrontEnd::copyCurTitle()
 char* WinAmpFrontEnd::getCurTitle()
 {
     if ( not ampexists)
-        return "No WinAMP 2.xx window found !";
+        return "No WinAMP 2.xx window found ";
 
     return currentTrackTitle;
 }
@@ -271,7 +271,7 @@ char* WinAmpFrontEnd::getCurTitle()
 char* WinAmpFrontEnd::getDEDTitle(const int theLine)
 {
     if ( not ampexists)
-        return "No WinAMP window found !";
+        return "No WinAMP window found ";
 
     if ((theLine not_eq 0) and (theLine not_eq 1))
         return 0;

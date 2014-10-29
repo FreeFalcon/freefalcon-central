@@ -546,7 +546,7 @@ void OTWDriverClass::RunActionCamera(void)
      ** edg: this was lurking on missiles too long
      if ( otwPlatform and otwPlatform->IsWeapon() and not otwPlatform->IsEject() )
      {
-     if ( !otwPlatform->IsDead() )
+     if ( not otwPlatform->IsDead() )
      {
     // check back in several secs
     actionCameraTimer = vuxRealTime + 8000;
@@ -579,8 +579,8 @@ void OTWDriverClass::RunActionCamera(void)
         {
             // we don't want to deal with campaign objects....
             if (
-                !theObject->IsSim() ||
-                !theObject->IsAwake()
+                 not theObject->IsSim() ||
+                 not theObject->IsAwake()
                 /* or theObject->IsEject()*/
             ) // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots REMOVED FOR NOW
             {
@@ -596,7 +596,7 @@ void OTWDriverClass::RunActionCamera(void)
                      theObject->IsBomb()  and 
                       not (((BombClass*)theObject)->IsSetBombFlag(BombClass::IsFlare | BombClass::IsChaff)))
                 )  and 
-                !theObject->IsEject()  and 
+                 not theObject->IsEject()  and 
                 (otwPlatform.get() not_eq weaponObject)
             )
             {
@@ -1582,7 +1582,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                     // is this an object( missile or bomb) owned by focus obj?
                     if ((theObject->IsAirplane() or theObject->IsHelicopter())  and 
                         theObject not_eq focusObj  and 
-                        // !theObject->IsEject() and // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots REMOVED FOR NOW
+                        //  not theObject->IsEject() and // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots REMOVED FOR NOW
                         theObject->GetTeam() == focusObj->GetTeam())
                     {
                         // is this the same as current?
@@ -1624,7 +1624,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 {
                     // is this an object( missile or bomb) owned by focus obj?
                     if ((theObject->IsAirplane() or theObject->IsHelicopter())  and 
-                        !theObject->IsEject() and // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots
+                         not theObject->IsEject() and // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots
                         theObject->GetTeam() not_eq focusObj->GetTeam())
                     {
                         // is this the same as current?
@@ -2086,7 +2086,7 @@ void OTWDriverClass::Enter(void)
     //   MonoPrint("Starting loader.. %d\n",vuxRealTime);
     viewPoint->Update(&ownshipPos);
 
-    // KCK: TEMPORARY FOR TIMING STATISTICS- REMOVE BEFORE FLIGHT!
+    // KCK: TEMPORARY FOR TIMING STATISTICS- REMOVE BEFORE FLIGHT
     // TheLoader.WaitForLoader();
 
     //   MonoPrint("Initializing renderer.. %d\n",vuxRealTime);
@@ -3149,7 +3149,7 @@ int OTWDriverClass::GetGroundIntersection(euler* dir, vector* pos)
 int OTWDriverClass::CheckLOS(FalconEntity *pt1, FalconEntity *pt2)
 {
     Tpoint start, finish;
-    // sfr: default value is 1 if terrain is not loadedd!
+    // sfr: default value is 1 if terrain is not loadedd
     int LOS = 1;
 
     InitViewpoint();

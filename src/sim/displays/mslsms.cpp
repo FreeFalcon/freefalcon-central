@@ -65,14 +65,14 @@ int SMSClass::LaunchMissile(void)
 
         //MI only fire Mav's if they are powered
         //M.N. these conditionals were also true for AA-2's for example, added Type and SType check
-        //always use all three checks, as the same values of stype and sptype are not unique!
+        //always use all three checks, as the same values of stype and sptype are not unique
         //M.N. don't need to uncage or power when in combat AP mode
         if (g_bRealisticAvionics)
         {
             if ((curWeapon->parent  and 
                  ((AircraftClass *)curWeapon->parent.get())->IsPlayer()  and 
                   not (((AircraftClass *)curWeapon->parent.get())->AutopilotType() == AircraftClass::CombatAP)  and 
-                 !Powered) and curWeapon->GetType() == TYPE_MISSILE  and 
+                  not Powered) and curWeapon->GetType() == TYPE_MISSILE  and 
                 curWeapon->GetSType() == STYPE_MISSILE_AIR_GROUND  and 
                 (curWeapon->GetSPType() == SPTYPE_AGM65A ||
                  curWeapon->GetSPType() == SPTYPE_AGM65B ||
@@ -87,7 +87,7 @@ int SMSClass::LaunchMissile(void)
             if ((curWeapon->parent  and 
                  ((AircraftClass *)curWeapon->parent.get())->IsPlayer()  and 
                   not (((AircraftClass *)curWeapon->parent.get())->AutopilotType() == AircraftClass::CombatAP)  and 
-                 !GetHARMPowerState()) and curWeapon->GetType() == TYPE_MISSILE  and 
+                  not GetHARMPowerState()) and curWeapon->GetType() == TYPE_MISSILE  and 
                 curWeapon->GetSType() == STYPE_MISSILE_AIR_GROUND  and 
                 (curWeapon->GetSPType() == SPTYPE_AGM88))
             {
@@ -227,7 +227,7 @@ int SMSClass::LaunchMissile(void)
             }
             else
             {
-                //MI if we launch one uncaged, the next one's caged again!
+                //MI if we launch one uncaged, the next one's caged again
                 if (curWeapon)
                 {
                     ((MissileClass*)curWeapon.get())->isCaged = TRUE;

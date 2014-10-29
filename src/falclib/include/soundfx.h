@@ -279,7 +279,7 @@ enum SFX_FLAGS
     SFX_FLAGS_FREQ  = 0x00000020, // may change frequency
     SFX_FLAGS_PAN  = 0x00000040, // obsolete // may do panning
     SFX_FLAGS_HIGH  = 0x00000080, // high priority - assign first
-    SFX_FLAGS_LOW  = 0x00000100, // obsolete // low priority - software only maybe // MLR was same as HIGH!?
+    SFX_FLAGS_LOW  = 0x00000100, // obsolete // low priority - software only maybe // MLR was same as HIGH?
     SFX_FLAGS_REVDOP = 0x00000200, // reverses doppler effect - i think this will make the AB soune more realistic
     SFX_POS_SELF     = 0x00000400, // external sound that originates from self, can be heard at full volume inside, and externally attenuated
     SFX_POS_INSIDE   = 0x00000800, // sound can only be heard when it originates from self while inside the pit.

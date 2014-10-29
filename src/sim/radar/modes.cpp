@@ -1326,7 +1326,7 @@ void RadarDopplerClass::ACMMode(void)
         SetScan();
     }
     else if (
-        !lockedTarget and mode not_eq ACM_SLEW  and 
+         not lockedTarget and mode not_eq ACM_SLEW  and 
         SimDriver.GetPlayerAircraft() and // JB 010113 CTD fix
         (SimDriver.GetPlayerAircraft()->FCC->cursorYCmd not_eq 0 ||
          SimDriver.GetPlayerAircraft()->FCC->cursorXCmd not_eq 0)

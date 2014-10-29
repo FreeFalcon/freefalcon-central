@@ -39,7 +39,7 @@ int FalconRegenerationMessage::Process(uchar autodisp)
     {
 
         // 2002-04-10 MN Why do we wait until something else sets he entity to dead
-        // if we want to regenerate it ??? Crap!
+        // if we want to regenerate it ??? Crap
         // Let's just make the not yet dead object dead and regenerate it again
         // This fixes the infamous respawning bug in Dogfights.
         if ( not (g_nDFRegenerateFix bitand 0x01))

@@ -20,7 +20,7 @@ enum
     SND_STREAM_DONE     = 0x00000004, // weve read the whole stream now
     SND_STREAM_FINAL    = 0x00000008, // we've played the whole stream now
 
-    // Use SFX_ flags instead of these!
+    // Use SFX_ flags instead of these
     //SND_LOOP_SAMPLE     =0x00000004, // MLR was: DSBSTATUS_LOOPING, same value. // MLR 12/6/2003 - OBSOLETE // Use SFX_ flags
     //SND_USE_3D          =0x00000100, // MLR 12/6/2003 - - OBSOLETE
     //SND_OVERRIDE        =0x00000400, // MLR 12/6/2003 - - OBSOLETE

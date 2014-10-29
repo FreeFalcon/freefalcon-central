@@ -351,7 +351,7 @@ void MissileClass::SetStatus(void)
 // done = FalconMissileEndMessage::FeatureImpact;
 // // might as well send the msg now....
 // // apply proximity damage may send it more damage.  However this is
-// // only from the base!
+// // only from the base
 // SendDamageMessage(hitObj,0,FalconDamageType::MissileDamage);
 // }
 // else // bombwarhead missile has hit assigned target or hit something else
@@ -368,7 +368,7 @@ void MissileClass::SetStatus(void)
 // done = FalconMissileEndMessage::FeatureImpact;
 // // might as well send the msg now....
 // // apply proximity damage may send it more damage.  However this is
-// // only from the base!
+// // only from the base
 // SendDamageMessage(hitObj,0,FalconDamageType::MissileDamage);
 // }
 // }

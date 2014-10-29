@@ -11,7 +11,7 @@ void UI95_GetScreenColorInfo
     DWORD &b_mask, WORD &b_shift
 );
 
-//!void UI95_GetScreenColorInfo(WORD *r_mask,WORD *r_shift,WORD *g_mask,WORD *g_shift,WORD *b_mask,WORD *b_shift);
+// not void UI95_GetScreenColorInfo(WORD *r_mask,WORD *r_shift,WORD *g_mask,WORD *g_shift,WORD *b_mask,WORD *b_shift);
 
 WORD UI95_RGB24Bit(unsigned long rgb);
 WORD UI95_RGB15Bit(WORD rgb);

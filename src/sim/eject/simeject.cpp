@@ -129,11 +129,11 @@ EP_PHYS_DATA F16Mode1PhysicalData =
     // Angle of ejection (in radians).
     PI / 2.0F,
     // Pitch of pilot in free fall with chute.
-    // This value must be negative!
+    // This value must be negative
     // -PI/10,
     0.0F,
     // Pitch decay of pilot in free fall with chute (radians/sec)
-    // This value must be positive!
+    // This value must be positive
     0.0F,
     //PI/200,
     // Delta yaw of pilot in free fall with chute (radians/sec)

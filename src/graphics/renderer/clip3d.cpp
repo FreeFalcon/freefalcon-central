@@ -130,7 +130,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             if ((((*(v + 1))->y - (*v)->y)) * (((*p)->x - (*v)->x)) <
                 (((*(v + 1))->x - (*v)->x)) * (((*p)->y - (*v)->y)))
             {
-                // Accept!
+                // Accept
                 break;
             }
         }
@@ -143,7 +143,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             if ((((*(v + 1))->y - (*v)->y)) * (((*p)->x - (*v)->x)) >=
                 (((*(v + 1))->x - (*v)->x)) * (((*p)->y - (*v)->y)))
             {
-                // Reject!
+                // Reject
                 break;
             }
 

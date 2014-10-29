@@ -107,13 +107,13 @@ int FalconWeaponsFire::Process(uchar autodisp)
                         else
                             radioMessage->dataBlock.edata[1] = 2; // medium
                     }
-                    else radioMessage->dataBlock.edata[1] = 0; // maddog!
+                    else radioMessage->dataBlock.edata[1] = 0; // maddog
                 }
                 else
                 {
                     radioMessage->dataBlock.message = rcFIRING;
 
-                    //Total Fucking HACK!
+                    //Total Fucking HACK
                     if (dataBlock.weaponType == FalconWeaponsFire::Rocket)
                         radioMessage->dataBlock.edata[0] = 887; // 2001-09-16 M.N. "Rockets" EVAL INDEX = 887, NOT 163
                     else

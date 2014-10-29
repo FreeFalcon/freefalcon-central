@@ -204,7 +204,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     if ( not cf->IsFlight() or cf->IsDead())
                         continue;
 
-                    // 2002-03-07 MN of course only AWACS from our team - doh!
+                    // 2002-03-07 MN of course only AWACS from our team - doh
                     if (cf->GetUnitMission() == AMIS_AWACS and cf->GetTeam() == plane->GetTeam())
                     {
                         awacs = (Flight) cf;
@@ -709,7 +709,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     radioMessage = CreateCallFromAwacs(flight, rcVECTORALTERNATE);
 
                     // KCK: No alternative airstrip.. should we try finding one? ATC List?
-                    // TODO!
+                    // TODO
                     // OW - here it is :)
 
                     vector pos;
@@ -767,7 +767,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     else
                     {
                         // KCK: No alternative airstrip.. should we try finding one? ATC List?
-                        // TODO!
+                        // TODO
                         radioMessage->dataBlock.edata[4] = 0;
                         radioMessage->dataBlock.edata[5] = 0;
                     }

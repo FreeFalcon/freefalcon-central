@@ -220,7 +220,7 @@ void FireControlComputer::NavMode(void)
                 case Aim120:
                 case Aim9:
 
-                    //case Gun: // MLR 2/8/2004 - this is not a valid submode!
+                    //case Gun: // MLR 2/8/2004 - this is not a valid submode
                     // ETE - delta Time to reach waypoint at current speed
                     if (platform->GetVt() > 2.0F)
                         TheHud->waypointArrival = TheHud->waypointRange / platform->GetVt();
@@ -588,7 +588,7 @@ void FireControlComputer::SetWaypointNum(int num)
     //find the corect waypoint
     for (i = 0; i < num and curWaypoint; i++)
 
-        // 2001-07-28 MODIFIED BY S.G. ITS THE *NEXT* WAYPOINT, NOT THE PREVIOUS! NOT CHECKED SO COMMENTED OUT
+        // 2001-07-28 MODIFIED BY S.G. ITS THE *NEXT* WAYPOINT, NOT THE PREVIOUS NOT CHECKED SO COMMENTED OUT
         // 2002-04-18 MN let's add a config file variable to test that later - AI uses this function, too,
         // so we need to be sure it works...
         if ( not g_bSetWaypointNumFix)

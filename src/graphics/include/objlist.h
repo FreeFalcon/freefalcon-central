@@ -89,7 +89,7 @@ public:
     void InsertionSortLink(DrawableObject **listhead, DrawableObject *listend);
     void QuickSortLink(DrawableObject **head, DrawableObject *end);
 
-    // HANDLE WITH CARE...!
+    // HANDLE WITH CARE...
     // COBRA - RED - This function is used from a list manager to ask the object to kill itself...
     // RemoveMe() would just remove the object from the List, KillMe() would deallocate it too
     void KillMe()

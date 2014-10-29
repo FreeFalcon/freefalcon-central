@@ -9,7 +9,7 @@ Microsoft Systems Journal, October 1997 - BugSlayer Column!
 // This file should not be included directly, include Bugslayer.h
 //  instead.
 #ifndef _BUGSLAYERUTIL_H
-#error "Include BugslayerUtil.h instead of this file directly!"
+#error "Include BugslayerUtil.h instead of this file directly"
 #endif  // _BUGSLAYERUTIL_H
 
 // Include the main header.

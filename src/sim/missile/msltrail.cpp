@@ -61,7 +61,7 @@ void MissileClass::InitTrail(void)
     if (distSq > 100.0f)
     {
         // the notification
-        ShiWarning("Something wrong with missile!  Contact Engineer!");
+        ShiWarning("Something wrong with missile  Contact Engineer");
 
         // the bandaid
         newPoint = origPoint;
@@ -266,7 +266,7 @@ void MissileClass::UpdateTrail(void)
             /*
             if ( agl < 1000.0f )
             {
-              if ( !groundGlow->InDisplayList() )
+              if (  not groundGlow->InDisplayList() )
               {
               OTWDriver.InsertObject(groundGlow );
               }

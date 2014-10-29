@@ -846,7 +846,7 @@ void FireControlComputer::CheckFeatures(MissileClass* theMissile)
                 dx = (float)fabs(testObject->XPos() - groundDesignateX);
                 dy = (float)fabs(testObject->YPos() - groundDesignateY);
                 //MI I don't know who did the original code below, but something must have been screwed
-                //in his head when he wrote this! Fix for the jumping cursors
+                //in his head when he wrote this Fix for the jumping cursors
                 float CurRange = (float)sqrt(dx * dx + dy * dy);
 
                 if ((CurRange < curMin) and  not (testObject->IsDead() or testObject->IsExploding()))
@@ -969,7 +969,7 @@ SimObjectType* FireControlComputer::MavCheckLock(MissileClass* theMissile)
         if (fabs(curTarget->localData->az - yaw) < minDist  and 
             fabs(curTarget->localData->el - pitch) < minDist  and 
             curTarget->BaseData()->IsSim()  and 
-            !curTarget->BaseData()->IsWeapon()  and 
+             not curTarget->BaseData()->IsWeapon()  and 
             curTarget->BaseData()->GetVt() <= 60 * KNOTS_TO_FTPSEC) //MI Maverik lockup fix
         {
             theMissile->SetTarget(curTarget);

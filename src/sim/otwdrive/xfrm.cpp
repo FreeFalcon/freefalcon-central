@@ -103,7 +103,7 @@ void OTWDriverClass::CalculateHeadRoll(float headRoll, Tpoint* p_at, Tpoint* p_u
 {
     // Gillman was medicated when he requested this head roll...
     // Oh yeah simple, no problem.  Well just do a rotation in 3 space about
-    // arbitrary line, piece of cake, not!
+    // arbitrary line, piece of cake, not
     // See the section entitled "Rotation Tools" in Graphics Gems, edited by Andrew S. Glassner
     // for the solution served on a silver platter.  Or see Mathematical Elements for
     // Computer Graphics, 2nd Ed. by Rodgers and Adams. Section 3-9 has a very nice explaination

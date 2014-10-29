@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
+#include <cISO646>
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -15,7 +16,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // English (U.S.) resources
 
-#if ! defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#if not defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 #ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
@@ -1110,7 +1111,7 @@ END
 
 IDD_FISTOFGOD DIALOG  0, 0, 162, 121
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "The Fist of God!"
+CAPTION "The Fist of God"
 FONT 8, "MS Sans Serif"
 BEGIN
     DEFPUSHBUTTON   "Go with this",IDOK,90,100,65,14

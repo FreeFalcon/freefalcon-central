@@ -318,7 +318,7 @@ void ICPClass::ExecWinAmpMode(void)
 
     if ( not g_bPilotEntertainment)
     {
-        ShiAssert(false); // we really shouldn´t be here then !
+        ShiAssert(false); // we really shouldn´t be here then 
         return;
     }
 

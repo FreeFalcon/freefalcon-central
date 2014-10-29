@@ -432,9 +432,9 @@ void MissileClass::Start(SimObjectType *tgt)
     // retarget now that we're 'Launching'
 
     // edg NOTE: fucking with the order we set launch state and targeting
-    // could have deleterious effects on reference counting!  We want to
+    // could have deleterious effects on reference counting  We want to
     // DropTarget BEFORE we change state to Launching.  The launch state
-    // effects how SimObjs are constructed and referenced for targeting!
+    // effects how SimObjs are constructed and referenced for targeting
     // In a Prelaunch state the missile's target has no reference.  When
     // on rail or in flight the target is COPIED in SetTarget and ref'd.
 
@@ -460,7 +460,7 @@ void MissileClass::Start(SimObjectType *tgt)
     if (hasref)
         tgt->Release();
 
-    // 2001-03-02 ADDED BY S.G. SO A LAUNCH IS DETECTED AT LAUNCH FOR SARH MISSILE!
+    // 2001-03-02 ADDED BY S.G. SO A LAUNCH IS DETECTED AT LAUNCH FOR SARH MISSILE
     if (targetPtr)
     {
         if (GetSeekerType() == SensorClass::RadarHoming and sensorArray)
@@ -649,7 +649,7 @@ int MissileClass::Exec(void)
             // was a prob with the Mav's exploding almost immediately on launch
             // apparently they go quickly to a Missed status.  There may be another
             // problem there -- I'm just treating the symptom
-            // 2002-04-04 MN only do that if we did not yet have closest approach on the target !
+            // 2002-04-04 MN only do that if we did not yet have closest approach on the target 
             // Hope this finally fixes floating missiles
             if (
                 done == FalconMissileEndMessage::Missed  and 
@@ -793,7 +793,7 @@ float MissileClass::GetRMax(float alt, float vt, float az, float targetVt, float
         return 0.0F;
 
 
-    // 2000-11-17 MODIFIED BY S.G. az CAN'T BE USED HERE BECAUSE IT CAN BE NEGATIVE AND THE DATA FILE DO NOT ACCOUNT FOR THAT. PLUS HEAD AND TAIL HAVE THE SAME VALUE (BAD!)
+    // 2000-11-17 MODIFIED BY S.G. az CAN'T BE USED HERE BECAUSE IT CAN BE NEGATIVE AND THE DATA FILE DO NOT ACCOUNT FOR THAT. PLUS HEAD AND TAIL HAVE THE SAME VALUE (BAD)
     float rmax = 10.0f;
 
     if (rangeData)
@@ -1407,7 +1407,7 @@ MissileClass::ApplyProximityDamage(void)
                     // but we have got no missile kill or BombImpact -
                     // or the target can not be damaged by proximity damage
                     if (
-                        !targetPtr or testObject not_eq targetPtr->BaseData() ||
+                         not targetPtr or testObject not_eq targetPtr->BaseData() ||
                         (g_nMissileFix bitand 0x08) and testObject == targetPtr->BaseData()  and 
                         done not_eq FalconMissileEndMessage::MissileKill  and 
                         done not_eq FalconMissileEndMessage::BombImpact

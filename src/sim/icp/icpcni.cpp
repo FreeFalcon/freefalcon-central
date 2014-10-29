@@ -47,7 +47,7 @@ void ICPClass::ExecCNIMode()
 
             // Clear the update flag
 
-            mUpdateFlags and_eq !CNI_UPDATE;
+            mUpdateFlags and_eq  not CNI_UPDATE;
 
             // Calculate Some Stuff
             if (playerAC->curWaypoint)
@@ -201,7 +201,7 @@ void ICPClass::ExecCNIMode()
         // }
         // else
         // sprintf(tempstr, "%s", VM ? RadioStrings[VM->GetRadioFreq(1)] : "XXXX");
-        // // FillDEDMatrix(0,1,"VHF"); MD -- 20031121: should show active when transmitting!
+        // // FillDEDMatrix(0,1,"VHF"); MD -- 20031121: should show active when transmitting
         // if (transmitingvoicecom2)
         // FillDEDMatrix(0,1,"VHF",2);
         // else
@@ -315,7 +315,7 @@ void ICPClass::ExecCNIMode()
         // }
         // else
         // sprintf(tempstr, "%s", VM ? RadioStrings[VM->GetRadioFreq(0)] : "XXXX");
-        // // FillDEDMatrix(2,1, "UHF"); MD -- 20031121: should show active when transmitting!
+        // // FillDEDMatrix(2,1, "UHF"); MD -- 20031121: should show active when transmitting
         // if (transmitingvoicecom1)
         // FillDEDMatrix(2,1,"UHF",2);
         // else

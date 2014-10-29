@@ -276,7 +276,7 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
         }
         else
         {
-            MonoPrint("  Failed - NULL !Dogfight\n");
+            MonoPrint("  Failed - NULL Dogfight\n");
             return FALSE;
         }
     }

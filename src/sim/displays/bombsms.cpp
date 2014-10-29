@@ -90,7 +90,7 @@ int SMSClass::DropBomb(int allowRipple)
 
         theBomb.reset((BombClass *)curWeapon.get());
 
-        // edg: it's been observed that theBomb will be NULL at times?!
+        // edg: it's been observed that theBomb will be NULL at times?
         // leonr: This happens when you ask for too many release pulses.
         if (theBomb == NULL)
         {
@@ -135,7 +135,7 @@ int SMSClass::DropBomb(int allowRipple)
                 or theBomb->IsSetBombFlag(BombClass::IsJSOW))
             {
                 // Cobra - Dynamic select of target from list
-                //TOO mode  //Cobra - !JDAMsbc = PB aggregated - Temp CTD fix
+                //TOO mode  //Cobra -  not JDAMsbc = PB aggregated - Temp CTD fix
                 if (((AircraftClass*)ownship)->GetSMS()->JDAMtargeting == SMSBaseClass::TOO
                     or  not (((AircraftClass*)ownship)->JDAMsbc))
                 {
@@ -237,7 +237,7 @@ int SMSClass::DropBomb(int allowRipple)
             g_intellivibeData.BombDropped++;
         }
 
-        // Note: The drawable for this object has already been created!
+        // Note: The drawable for this object has already been created
         theBomb->Wake();
         // Record the drop
         ownship->SendFireMessage(theBomb.get(), FalconWeaponsFire::BMB, TRUE, ownship->targetPtr);
@@ -289,7 +289,7 @@ int SMSClass::DropBomb(int allowRipple)
                         if (((AircraftClass*)ownship)->GetSMS()->JDAMtargeting == SMSBaseClass::TOO
                             or  not (((AircraftClass*)ownship)->JDAMsbc))
                         {
-                            //TOO mode  //Cobra - !JDAMsbc = PB aggregated - Temp CTD fix
+                            //TOO mode  //Cobra -  not JDAMsbc = PB aggregated - Temp CTD fix
                             theBomb->gpsx = ownship->GetFCC()->groundDesignateX;
                             theBomb->gpsy = ownship->GetFCC()->groundDesignateY;
                             theBomb->JSOWtgtID = ((AircraftClass*)ownship)->JDAMtgtnum;

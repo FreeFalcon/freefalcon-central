@@ -417,7 +417,7 @@ void Loader::WaitForLoader(void)
     // Use of this function could lock up the Engine/System
     /*if(g_bUse_DX_Engine) return;
 
-    while ( !queueIsEmpty ) {
+    while ( not queueIsEmpty ) {
 
     #ifdef LOADER_INSTRUMENT
      if (forceWakeEvent > 0) {

@@ -216,7 +216,7 @@ int RadarDopplerClass::GMObjectContactTest(FalconEntity *contact)
         /*
         else // is camp object
         {
-         // 2002-04-03 MN contact is a CAMPAIGN object now ! We can't do SimBaseClass stuff here.
+         // 2002-04-03 MN contact is a CAMPAIGN object now  We can't do SimBaseClass stuff here.
          // Speed test however is valid, as it checks U_MOVING flag of unit
          // As there are no campaign units that consist only of soldiers, no need to check for them here
          if(contact->GetVt() > 1.0F )
@@ -868,7 +868,7 @@ int RadarDopplerClass::CheckGMBump(void)
     else if (noseCursorAngle < -180.0F * DTR)
         noseCursorAngle += 360.0F * DTR;
 
-    if (fabs(noseCursorAngle) > (90.0F * DTR)) // he's behind you!
+    if (fabs(noseCursorAngle) > (90.0F * DTR)) // he's behind you
         return rangeChangeCmd;  // no bump unless the cursor is on the display in front of your jet
 
     cRangeSQ = (x * x) + (y * y);
@@ -1220,7 +1220,7 @@ void RadarDopplerClass::GMDisplay(void)
 
         if ( not lockedTarget)
         {
-            if (IsSet(SP) and ( not IsSet(SP_STAB)))  // (flags bitand SP) // MD -- 20040215: make sure we don't snow plow after ground stabilizing!
+            if (IsSet(SP) and ( not IsSet(SP_STAB)))  // (flags bitand SP) // MD -- 20040215: make sure we don't snow plow after ground stabilizing
             {
                 // We're in snowplow, so look out in front of the aircraft
                 GMat.x = viewFrom.x + tdisplayRange * 0.5F * trig.cos;
@@ -1410,7 +1410,7 @@ void RadarDopplerClass::GMDisplay(void)
             // Strange but true: that's how it works in the real thing apparently.
             // At the limits of the gain range, the knob should activate "synthetic enhancement" of the radar
             // picture.  Since the current radar model doesn't support that, For now this code merely
-            // overdrives the gain for want of something better to do!
+            // overdrives the gain for want of something better to do
 
             if (IO.AnalogIsUsed(AXIS_RANGE_KNOB))
             {
@@ -1874,7 +1874,7 @@ void RadarDopplerClass::GMDisplay(void)
         float ttg = 0.0F;
         int hr = 0, minute = 0, sec = 0;
 
-        // MD -- 20040515: watch out!  Until MARKs are fixed properly, curWaypoint may not point to a real waypoint
+        // MD -- 20040515: watch out  Until MARKs are fixed properly, curWaypoint may not point to a real waypoint
         // so check the pointer to avoid a CTD here.
         if (SimDriver.GetPlayerAircraft()  and 
              not F4IsBadReadPtr(SimDriver.GetPlayerAircraft()->curWaypoint, sizeof(WayPointClass))
@@ -2693,7 +2693,7 @@ void RadarDopplerClass::GMMode(void)
                         {
                             if (walker == &objectWalker)
                             {
-                                // 2002-04-03 MN testFeature is a CAMPAIGN object now ! We can't do SimBaseClass stuff here.
+                                // 2002-04-03 MN testFeature is a CAMPAIGN object now  We can't do SimBaseClass stuff here.
                                 // Speed test however is valid, as it checks U_MOVING flag of unit
                                 // As there are no campaign units that consist only of soldiers, no need to check for them here
                                 if (testFeature->GetVt() > g_fGMTMinSpeed /*||
@@ -2997,7 +2997,7 @@ void RadarDopplerClass::GMMode(void)
                         {
                             if (walker == &objectWalker)
                             {
-                                // 2002-04-03 MN testFeature is a CAMPAIGN object now ! We can't do SimBaseClass stuff here.
+                                // 2002-04-03 MN testFeature is a CAMPAIGN object now  We can't do SimBaseClass stuff here.
                                 // Speed test however is valid, as it checks U_MOVING flag of unit
                                 // As there are no campaign units that consist only of soldiers, no need to check for them here
                                 if (testFeature->GetVt() > g_fGMTMinSpeed /*||

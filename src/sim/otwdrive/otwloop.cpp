@@ -79,7 +79,7 @@ int tactical_is_training(void);
 #define MESSAGE_Y (0.3f)
 
 // screen position of Pause/X2/X4 text
-// Screen coordinates... woohoo!
+// Screen coordinates... woohoo
 // X is centered...
 #define COMPRESS_Y (5.0f)
 #define COMPRESS_SPACING (15.0f)
@@ -428,7 +428,7 @@ void OTWDriverClass::Reset3DParameters(void)
 
 void OTWDriverClass::RenderFirstFrame(void)
 {
-    // WARNING ! WARNING ! WARNING ! WARNING ! WARNING !
+    // WARNING  WARNING  WARNING  WARNING  WARNING 
     // RED - INIT time stuff here, then call all timed callbacks to have an update
     // situation on 3D entry
     // Start Up with appropriate Time
@@ -1456,7 +1456,7 @@ void OTWDriverClass::DisplayFrontText(void)
 #endif
 
 #ifdef AXISTEST
-#pragma message("__________AXISTEST defined, remove before release !__________")
+#pragma message("__________AXISTEST defined, remove before release __________")
     DisplayAxisValues(); // Retro 1Jan2004
 #endif
 
@@ -1898,7 +1898,7 @@ void OTWDriverClass::RenderFrame()
 
             if (mFaults  and 
                 ac->HasPower(AircraftClass::UFCPower)  and 
-                !mFaults->GetFault(FaultClass::ufc_fault)
+                 not mFaults->GetFault(FaultClass::ufc_fault)
                )
             {
                 for (int j = 0; j < 5; j++)
@@ -1949,7 +1949,7 @@ void OTWDriverClass::RenderFrame()
             otwPlatform.get() == NULL ||
             otwPlatform->IsExploding() ||
             otwPlatform->IsDead() ||
-            !otwPlatform->IsAwake() ||
+             not otwPlatform->IsAwake() ||
             TheHud->Ownship() == NULL
         )
         {
@@ -2376,11 +2376,11 @@ void OTWDriverClass::RenderFrame()
 
     // Now check if in the Pit and the platform is still valid to eventually draw the Pit...
     if (
-        !DisplayInCockpit() ||
+         not DisplayInCockpit() ||
         otwPlatform.get() == NULL ||
         otwPlatform->IsExploding() ||
         otwPlatform->IsDead() ||
-        !otwPlatform->IsAwake() ||
+         not otwPlatform->IsAwake() ||
         TheHud->Ownship() == NULL ||
         eyeFly
     )

@@ -397,7 +397,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
         else
         {
             if ((streams->audioFlag bitand STREAM_AUDIO_EXTERNAL)  and 
-                !streams->initialFrames)
+                 not streams->initialFrames)
                 streams->initialFrames = 1 + (streams->frameRate * 3 / 4);
 
             streams->audioSizePerFrame = (streams->waveFormat.nAvgBytesPerSec +

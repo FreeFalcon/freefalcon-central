@@ -145,7 +145,7 @@ void ICPClass::ExecSTPTMode()
 
             // Clear the update flag
 
-            mUpdateFlags and_eq !STPT_UPDATE;
+            mUpdateFlags and_eq  not STPT_UPDATE;
 
             // Get info from the aircraft
 

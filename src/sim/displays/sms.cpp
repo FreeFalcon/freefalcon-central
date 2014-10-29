@@ -352,7 +352,7 @@ void SMSClass::RemoveWeapon(int hp)
         (hardPoint[hp]->weaponCount > 0)
     )
     {
-        weapPtr = hardPoint[hp]->DetachFirstWeapon(); // removes BSP too!
+        weapPtr = hardPoint[hp]->DetachFirstWeapon(); // removes BSP too
 
         if ( not weapPtr)
         {
@@ -466,9 +466,9 @@ void SMSBaseClass::LaunchWeapon(void)
         // If we're direct mounted weapons and have more weapons on this hardpoint, but no weapon pointers,
         // replace the weapon with an identical copy
         if (
-            !hardPoint[curHardpoint]->GetRackOrPylon() and // MLR 2/20/2004 - added OrPylon
+             not hardPoint[curHardpoint]->GetRackOrPylon() and // MLR 2/20/2004 - added OrPylon
             hardPoint[curHardpoint]->weaponCount  and 
-            !hardPoint[curHardpoint]->weaponPointer
+             not hardPoint[curHardpoint]->weaponPointer
         )
         {
             if (theWeapon->IsMissile())
@@ -1723,7 +1723,7 @@ void SMSClass::Exec(void)
         }
     }
 
-    // We're out of coolant! We start to warm up....
+    // We're out of coolant We start to warm up....
     if (aim9coolingtimeleft <= 0 and GetCoolState() not_eq WARM)
         SetCoolState(WARMING);
 
@@ -1741,7 +1741,7 @@ void SMSClass::Exec(void)
         drawable->UpdateGroundSpot();
 
         if (ownship and // JB 010710 CTD?
-            !ownship->OnGround())
+             not ownship->OnGround())
         {
             drawable->frameCount += FloatToInt32(SimLibMajorFrameTime * SEC_TO_MSEC * 0.1F);
         }

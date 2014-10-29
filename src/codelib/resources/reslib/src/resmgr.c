@@ -713,7 +713,7 @@ RES_EXPORT int ResInit(HWND hwnd)
 
             /* According to Microsoft, most of the parameters to GetVolumeInformation are optional, however
                this is not the case.  It is possible to completely destroy the file system on a floppy
-               diskette by calling this seemingly innocuous function without all of the parameters! */
+               diskette by calling this seemingly innocuous function without all of the parameters */
 
             dev -> type = (char)(GetDriveType(root));
             dev -> letter = root[0];
@@ -1053,7 +1053,7 @@ RES_EXPORT int ResAttach(const char * attach_point_arg, const char * filename, i
 
 
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
     HASH_ENTRY * entry;
 #endif
 
@@ -1108,7 +1108,7 @@ RES_EXPORT int ResAttach(const char * attach_point_arg, const char * filename, i
 
     info.size = 0;
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
     entry = hash_find(attach_point, GLOBAL_HASH_TABLE);
 
 
@@ -1120,7 +1120,7 @@ RES_EXPORT int ResAttach(const char * attach_point_arg, const char * filename, i
        to false. */
 
 
-#if( !RES_ALLOW_ALIAS )
+#if( not RES_ALLOW_ALIAS )
 
     if ( not entry)
     {
@@ -1401,7 +1401,7 @@ RES_EXPORT int ResOpenFile(const char * name, int mode)
        pathname (eg; ..\windows\foo.c).
        ----------------------------------------------------  */
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
     entry = hash_find_table(name, &table);
 #else /* flat model */
     entry = hash_find(name, GLOBAL_HASH_TABLE);
@@ -1433,7 +1433,7 @@ RES_EXPORT int ResOpenFile(const char * name, int mode)
 
             IF_LOG(LOG("creating file: %s\n", name));
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
 
             if (strchr(name, ASCII_BACKSLASH))
             {
@@ -1552,7 +1552,7 @@ RES_EXPORT int ResOpenFile(const char * name, int mode)
 
         /* there is actually a third parameter to open() (MSVC just doesn't admit it)
            octal 666 ensures that stack-crap won't accidently create this file as
-           read-only.  Thank to Roger Fujii for this fix! */
+           read-only.  Thank to Roger Fujii for this fix */
 
         file -> os_handle = _open(filename, mode, 0x1b6 /* choked on O666 and O666L */);
 
@@ -2043,7 +2043,7 @@ RES_EXPORT int ResCloseFile(int file)
 
             split_path(FILE_HANDLES[file].filename, filename, dirpath);
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
             entry = hash_find(dirpath, GLOBAL_HASH_TABLE);
 
             if (entry)
@@ -2232,7 +2232,7 @@ RES_EXPORT int ResDeleteFile(const char * name)
 
     IF_LOG(LOG("delete: %s\n", name));
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
     /* find both the entry bitand the table it resides in */
     entry = hash_find_table(name, &table);
 #else
@@ -2305,7 +2305,7 @@ RES_EXPORT int ResModifyFile(const char * name, int flags)
 
     IF_LOG(LOG("modify: %s %d\n", name, flags));
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
     entry = hash_find_table(name, NULL);
 #else
     entry = hash_find(name, GLOBAL_HASH_TABLE);
@@ -2551,7 +2551,7 @@ RES_EXPORT RES_DIR * ResOpenDirectory(char * pathname)
 {
     //    int count = 0;
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
 
     HASH_TABLE * hsh;
     HASH_ENTRY * entry;
@@ -2745,7 +2745,7 @@ RES_EXPORT int ResExistFile(char * name)
 
     IF_LOG(LOG("exist file: %s\n", name));
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
     entry = hash_find_table(name, NULL);
 #else /* flat model */
     entry = hash_find(name, GLOBAL_HASH_TABLE);
@@ -3009,7 +3009,7 @@ RES_EXPORT int ResSetDirectory(const char * pathname)
                        of the search path.  All of the other CD
                        paths, however, are still at the bottom. */
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
     /* Force to the head of the list */
     GLOBAL_PATH_LIST = LIST_REMOVE(GLOBAL_PATH_LIST, entry -> dir);
     GLOBAL_PATH_LIST = LIST_APPEND(GLOBAL_PATH_LIST, entry -> dir);
@@ -3023,7 +3023,7 @@ RES_EXPORT int ResSetDirectory(const char * pathname)
 
 
 #if 0   // GFG May 05/98
-#if( !RES_ALLOW_ALIAS )
+#if( not RES_ALLOW_ALIAS )
 
     if (_chdir(pathname))
     {
@@ -3076,7 +3076,7 @@ RES_EXPORT int ResGetDirectory(char * buffer)
 
 #endif
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
     check = strcpy(buffer, ((HASH_TABLE *)(GLOBAL_PATH_LIST -> node)) -> name);
 #else
     check = strcpy(buffer, GLOBAL_CURRENT_PATH);
@@ -3230,7 +3230,7 @@ RES_EXPORT int ResWhereIs(char * filename, char * path)
     REQUEST_LOCK(GLOCK);
 #endif
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
     entry = hash_find_table(filename, NULL);
 #else /* flat model */
     //    entry = hash_find( file, GLOBAL_HASH_TABLE );  /* GFG  31/01/98 */
@@ -3653,7 +3653,7 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
 
     res_fullpath(tmp_path, path, (_MAX_PATH - 2));   /* non-portable */
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
     entry = hash_find(tmp_path, GLOBAL_HASH_TABLE);
 
     if (entry)
@@ -3703,7 +3703,7 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
     tmp_path[ length++ ] = ASCII_ASTERISK;
     tmp_path[ length ]   = '\0';
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
 
     /* for the hierarchical model, we create a new hash table for the directory to
        be added.  Then we insert a hashed entry into the GLOBAL_HASH_TABLE which
@@ -3927,7 +3927,7 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
         }
 
 #if 0
-        _findclose(directory);   /* done! */
+        _findclose(directory);   /* done */
 #endif
 
     }
@@ -4107,7 +4107,7 @@ RES_EXPORT int ResCountDirectory(char * path , struct _finddata_t **file_data)
 
     res_fullpath(fullpath, path, (_MAX_PATH - 3));
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
 
 #if 0
     entry = hash_find(fullpath, GLOBAL_HASH_TABLE);
@@ -4292,7 +4292,7 @@ RES_EXPORT void ResAssignPath(int index, char * path)
                 pointer - not the main instruction
                 pointer that executes the callback), you
                 should take care that the callback function
-                is short, simple and finite!
+                is short, simple and finite
 
    ======================================================= */
 
@@ -4369,7 +4369,7 @@ RES_EXPORT int ResAsynchRead(int file, void * buffer, PFV callback)
                 pointer - not the main instruction
                 pointer that executes the callback), you
                 should take care that the callback function
-                is short, simple and finite!
+                is short, simple and finite
 
    ======================================================= */
 
@@ -4409,7 +4409,7 @@ RES_EXPORT int ResAsynchWrite(int file, void * buffer, PFV callback)
     thread_id = _beginthread(asynch_write, 128 /*stack size*/, (void *)(data));
 
     //SetThreadPriority( thread_id, THREAD_PRIORITY_LOWEST );
-    //#error PROTOTYPE THIS!
+    //#error PROTOTYPE THIS
 
 
     if (thread_id == -1)
@@ -4564,7 +4564,7 @@ RES_EXPORT void ResPurge(const char * archive, const char * volume, const int * 
 
         file = ResFOpen( "test.txt", "r" );
 
-        if( !file )
+        if( not file )
             return;
 
         fscanf( file, "%s", &name );
@@ -4740,7 +4740,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
 
     /* find the file */
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
     entry = hash_find_table(name, &table);          /* look through tables in search path order */
 #else
     entry = hash_find(name, GLOBAL_HASH_TABLE);     /* look in the root hash table (flat model) */
@@ -4768,7 +4768,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
            openning the file for any writing, we can return with
            an error now. */
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
 
         /* see if the destination directory exists */
 
@@ -5340,7 +5340,7 @@ int __cdecl RES_FCLOSE(FILE * file)
 
                 If ftell doesn't work for you as it is
                 here (first of all, call me because
-                I'll be amazed!), define
+                I'll be amazed), define
                 RES_REPLACE_FTELL to be FALSE and call
                 ResFTell.  This will always work.
 
@@ -5976,7 +5976,7 @@ int __cdecl _filbuf(FILE * stream)
     // if(  not (stream -> _flag bitand ( _IOARCHIVE | _IOLOOSE )) ) {
     //    /* You can actually remove this error trap if you want fopen
     //       as well as ResFOpen */
-    //    SAY_ERROR( RES_ERR_UNKNOWN, "Stream not created with ResFOpen!" );
+    //    SAY_ERROR( RES_ERR_UNKNOWN, "Stream not created with ResFOpen" );
     //    stream -> _flag  or_eq  _IOREAD;
     //    return( EOF );
     // }
@@ -6173,7 +6173,7 @@ RES_EXPORT int ResDbgLogOpen(char * filename)
 
     /* there is actually a third parameter to open() (MSVC just doesn't admit it)
        octal 666 ensures that stack-crap won't accidently create this file as
-       read-only.  Thank to Roger Fujii for this fix! */
+       read-only.  Thank to Roger Fujii for this fix */
 
     RES_DEBUG_FILE = _open(filename, _O_RDWR | _O_CREAT | _O_TEXT, 0x1b6 /* Choked on O666L and O666 */);
 
@@ -6493,7 +6493,7 @@ void shut_down(void)
 
         LIST_DESTROY(ARCHIVE_LIST, NULL);
 
-        //UGGH! --> Why won't this compile? LIST_DESTROY( ARCHIVE_LIST, res_detach_ex );
+        //UGGH --> Why won't this compile? LIST_DESTROY( ARCHIVE_LIST, res_detach_ex );
 
         ARCHIVE_LIST = NULL;
 
@@ -6670,7 +6670,7 @@ void res_detach_ex(ARCHIVE * archive)
 
     int i;
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
     HASH_TABLE * table;
 
     for (i = 0; i < archive -> num_entries; i++)
@@ -6983,7 +6983,7 @@ HASH_ENTRY * hash_add(struct _finddata_t * data, HASH_TABLE * hsh)
         float ratio = ((float)hsh -> table_size / (float)hsh -> num_entries);
 
         if (ratio < HASH_MINIMAL_RATIO)
-            hash_resize(hsh);               /* WARNING: THIS IS STILL NOT THREAD SAFE! */
+            hash_resize(hsh);               /* WARNING: THIS IS STILL NOT THREAD SAFE */
     }
 
     hash_val = hash(data -> name, hsh -> table_size);
@@ -7040,7 +7040,7 @@ HASH_ENTRY * hash_add(struct _finddata_t * data, HASH_TABLE * hsh)
     entry -> attrib = data -> attrib | FORCE_BIT; /* FORCE_BIT ensures the field will be non-zero */
     entry -> next = NULL;
     entry -> archive = -1; // Changed on AUG30th  [KBR]
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
     entry -> dir = NULL;
 #endif /* !RES_USE_FLAT_MODEL */
 
@@ -7502,7 +7502,7 @@ HASH_ENTRY * hash_find_table(const char * name, HASH_TABLE ** table)
 
     HASH_ENTRY * entry = NULL;
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
     LIST       * list = NULL;
 #endif /* !RES_USE_FLAT_MODEL */
 
@@ -7566,7 +7566,7 @@ HASH_ENTRY * hash_find_table(const char * name, HASH_TABLE ** table)
             fullpath[wild_len + 1] = 0x00;
         }
         else
-            return(NULL);   /* improper use of wildcard directory! */
+            return(NULL);   /* improper use of wildcard directory */
     }
 
 #endif /* RES_WILDCARD_PATHS */
@@ -7614,7 +7614,7 @@ HASH_ENTRY * hash_find_table(const char * name, HASH_TABLE ** table)
         path_used = TRUE;
     }
 
-#if( !RES_USE_FLAT_MODEL ) /* HIERARCHICAL MODEL */
+#if( not RES_USE_FLAT_MODEL ) /* HIERARCHICAL MODEL */
 
     if (path_used)
     {
@@ -7830,7 +7830,7 @@ void _say_error(int error, const char * msg, int line, const char * filename)
 {
     int err_code;
     char buffer[ 255 ];
-    char title[] = "Resource Manager Error!";
+    char title[] = "Resource Manager Error";
     char blank[] = "???";
     int  retval = 1;
 
@@ -8110,7 +8110,7 @@ void dbg_dir(HASH_TABLE * hsh)
     false, and go back to the old way.
 
     NOTE: If you continue using res_fullpath, be advised that current
-    working directories of OTHER VOLUMES will not be maintained!
+    working directories of OTHER VOLUMES will not be maintained
 
     (eg F:readme.txt will parse to the literal string, not
     F:\some_dir\readme.txt).  This will not be fixed (I doubt it will

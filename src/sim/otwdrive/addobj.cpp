@@ -253,7 +253,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                 // do here since ACMI uses this function as well -- ie there
                 // should be no calls to OTWDrive list functions.  oh well for
                 // now since there are other calls in here (I thought kevin
-                // was supposed to fix this!?).
+                // was supposed to fix this?).
                 if (theObject->drawPointer and theObject->drawPointer->InDisplayList())
                 {
                     // KCK: In some cases we still need this pointer (specifically
@@ -263,7 +263,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                     theObject->drawPointer = NULL;
                 }
 
-                // note: ACMI objects DON'T have a campaignObject!
+                // note: ACMI objects DON'T have a campaignObject
                 if (theObject->GetCampaignObject())
                     baseObject = theObject->GetCampaignObject()->GetComponentLead();
                 else

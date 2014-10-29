@@ -223,7 +223,7 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
     ShiAssert(::GetCurrentThreadId() == GetWindowThreadProcessId(appWin, NULL)); // Make sure this is called by the main thread
 #endif
 
-    // sfr: only after we are finished!
+    // sfr: only after we are finished
     //currentMode = newMode;
 
     rect.top = rect.left = 0;

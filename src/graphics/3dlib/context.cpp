@@ -154,7 +154,7 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
 
         if ( not m_pCtxDX)
         {
-            ShiWarning("Failed to create device!");
+            ShiWarning("Failed to create device");
             return FALSE;
         }
 
@@ -414,7 +414,7 @@ void ContextMPR::StartFrame(void)
             TheTerrTextures.RestoreAll();
             TheFarTextures.RestoreAll();
 
-            //if( !bInBeginScene ) INT3; // ASSO: break if not in BeginScene
+            //if( not bInBeginScene ) INT3; // ASSO: break if not in BeginScene
             hr = m_pD3DD->EndScene();
             bInBeginScene = true; // ASSO:
 
@@ -451,7 +451,7 @@ void ContextMPR::FinishFrame(void *lpFnPtr)
 
     FlushVB();
 
-    //if( !bInBeginScene ) INT3; // ASSO: break if not in BeginScene
+    //if( not bInBeginScene ) INT3; // ASSO: break if not in BeginScene
     HRESULT hr = m_pD3DD->EndScene();
     bInBeginScene = false; // ASSO:
 
@@ -1888,7 +1888,7 @@ void ContextMPR::CleanupMPRState(GLint flag)
 {
     if ( not StateSetupCounter)
     {
-        ShiWarning("MPR not initialized!");
+        ShiWarning("MPR not initialized");
         return;
     }
 

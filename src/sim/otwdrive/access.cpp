@@ -658,7 +658,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
                  VuReferenceEntity(mpPadlockPriorityObject);
                  }
-                 else if ( !mpPadlockPriorityObject )
+                 else if ( not mpPadlockPriorityObject )
                  {
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
                  VuReferenceEntity(mpPadlockPriorityObject);
@@ -742,7 +742,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
                  VuReferenceEntity(mpPadlockPriorityObject);
                  }
-                 else if ( !mpPadlockPriorityObject )
+                 else if ( not mpPadlockPriorityObject )
                  {
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
                  VuReferenceEntity(mpPadlockPriorityObject);
@@ -927,7 +927,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 SetTrackPlatform(newObject);
 
                 /*
-                if ( !SimDriver.GetPlayerAircraft() )
+                if ( not SimDriver.GetPlayerAircraft() )
                  return;
 
                 // ownship is always the focus
@@ -943,7 +943,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
                  VuReferenceEntity(mpPadlockPriorityObject);
                  }
-                 else if ( !mpPadlockPriorityObject )
+                 else if ( not mpPadlockPriorityObject )
                  {
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
                  VuReferenceEntity(mpPadlockPriorityObject);
@@ -972,7 +972,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
                  VuReferenceEntity(mpPadlockPriorityObject);
                  }
-                 else if ( !mpPadlockPriorityObject )
+                 else if ( not mpPadlockPriorityObject )
                  {
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
                  VuReferenceEntity(mpPadlockPriorityObject);
@@ -988,7 +988,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
 
                 }
 
-                if ( !otwPlatform or otwPlatform->IsSimObjective())
+                if ( not otwPlatform or otwPlatform->IsSimObjective())
                  return;
 
                 // get the target (if any) of the current platform
@@ -1040,7 +1040,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 SetTrackPlatform(SimDriver.GetPlayerAircraft());
 
                 /*
-                if ( !SimDriver.GetPlayerAircraft() )
+                if ( not SimDriver.GetPlayerAircraft() )
                  return;
 
 
@@ -1054,7 +1054,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
                  VuReferenceEntity(mpPadlockPriorityObject);
                  }
-                 else if ( !mpPadlockPriorityObject )
+                 else if ( not mpPadlockPriorityObject )
                  {
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
                  VuReferenceEntity(mpPadlockPriorityObject);
@@ -1088,7 +1088,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
                  VuReferenceEntity(mpPadlockPriorityObject);
                  }
-                 else if ( !mpPadlockPriorityObject )
+                 else if ( not mpPadlockPriorityObject )
                  {
                  mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
                  VuReferenceEntity(mpPadlockPriorityObject);

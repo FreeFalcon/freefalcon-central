@@ -349,7 +349,7 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
             if ( not strnicmp(td->m_name, "Korea", 5))
                 resourceHandle[i] = ResAttach(FalconDataDirectory, tmpPath, FALSE);
             else
-                // FRB - Must use FalconDataDirectory and not FalconZipsThrDirectory (don't know why!?)
+                // FRB - Must use FalconDataDirectory and not FalconZipsThrDirectory (don't know why?)
                 //resourceHandle[i] = ResAttach (FalconZipsThrDirectory, tmpPath, TRUE);
                 resourceHandle[i] = ResAttach(FalconDataDirectory, tmpPath, TRUE);
         }

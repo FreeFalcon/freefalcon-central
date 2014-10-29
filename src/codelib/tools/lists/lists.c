@@ -72,7 +72,7 @@ int LIST_MUTEX = 0;         /* If you want to bypass microsoft's very heavy
 
   Allocate all list related memory from memory pools
 
-     (... per Roger Fuji's bitchin' bitand moanin! )
+     (... per Roger Fuji's bitchin' bitand moanin )
 
 
   Allocation Strategy:

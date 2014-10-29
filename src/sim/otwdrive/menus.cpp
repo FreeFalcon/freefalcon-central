@@ -318,7 +318,7 @@ void OTWDriverClass::TakeScreenShot(void)
     takeScreenShot = FALSE;
     today = localtime(&ltime);
     //strftime( tmpStr, _MAX_PATH-1,"%m_%d_%Y-%H_%M_%S", today );
-    strftime(tmpStr, _MAX_PATH - 1, "%Y-%m-%d_%H%M%S", today); //THW Let's have ISO-Dates! Darn Americans :)
+    strftime(tmpStr, _MAX_PATH - 1, "%Y-%m-%d_%H%M%S", today); //THW Let's have ISO-Dates Darn Americans :)
     //MI put them where they belong
 #if 0
     sprintf(fileName, "%s\\%s", FalconDataDirectory, tmpStr);

@@ -728,7 +728,7 @@ int HelicopterClass::Exec(void)
             RunSensors();
 
             /*
-            if ( !hBrain->isWing )
+            if (  not hBrain->isWing )
             {
              hBrain->TargetSelection( targetList );
             }
@@ -769,7 +769,7 @@ int HelicopterClass::Exec(void)
             tmp = (float)sqrt(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
             normal.z /= tmp;
 
-            // insure we're above ground!
+            // insure we're above ground
             hf->XE.z = OTWDriver.GetGroundLevel(hf->XE.x, hf->XE.y) - offsetZ;
 
             // if the z normal is beyond a certain value, ground is too sloped
@@ -978,7 +978,7 @@ void HelicopterClass::LandingCheck(void)
     {
         // we're taking damage.....
         /*
-        ** edg: NO DAMAGE!
+        ** edg: NO DAMAGE
         FalconDamageMessage* message;
 
           VuTargetEntity *owner_session = (VuTargetEntity*)vuDatabase->Find(OwnerId());
@@ -1149,7 +1149,7 @@ void HelicopterClass::PromoteSubordinates(void)
     {
         theObj = (HelicopterClass *)GetCampaignObject()->GetComponentEntity(i);
 
-        // num in flight may not match what's actually there!
+        // num in flight may not match what's actually there
         if (theObj == NULL)
             break;
 
@@ -1172,7 +1172,7 @@ void HelicopterClass::PromoteSubordinates(void)
         // do we set others to newly promoted leader?
         if (theObj not_eq this and newLead not_eq NULL)
         {
-            // yup!
+            // yup
             theObj->flightLead = newLead;
             MonoPrint("Heli Subordinate set to New Leader\n");
         }

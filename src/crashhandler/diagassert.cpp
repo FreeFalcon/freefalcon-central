@@ -480,7 +480,7 @@ static void DoStackTrace(LPTSTR szString  ,
         dwMachine                = IMAGE_FILE_MACHINE_ALPHA ;
         stFrame.AddrPC.Offset    = (unsigned long)stCtx.Fir ;
 #else
-#error ( "Unknown machine!" )
+#error ( "Unknown machine" )
 #endif
 
         // Loop for the first 512 stack elements.

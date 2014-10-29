@@ -630,7 +630,7 @@ void FireControlComputer::TargetingPodMode(void)
                     else if ( not g_bAGRadarFixes and theRadar->IsAG() == RadarClass::GM)
                         curTarget = NULL;
 
-                    // 2000-09-30 MODIFIED BY S.G. WHY ONLY LOOK ONE DEGREE?!? WE CALL CanSeeObject ANYHOW!
+                    // 2000-09-30 MODIFIED BY S.G. WHY ONLY LOOK ONE DEGREE?? WE CALL CanSeeObject ANYHOW
                     // 2000-10-05 WE'LL LIMIT THE PLAYER'S TARGETING POD TO ONE DEGREE SO IT DOESN'T WANDER TOO FAR OFF
                     //             minDist = 1.0F * DTR;
                     if (playerFCC and SimDriver.GetPlayerAircraft() and ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP)
@@ -641,12 +641,12 @@ void FireControlComputer::TargetingPodMode(void)
                     // END OF MODIFIED SECTION
                     while (curTarget)
                     {
-                        // 2000-10-04 MODIFIED BY S.G. DON'T TARGET AIR VEHICLE!
+                        // 2000-10-04 MODIFIED BY S.G. DON'T TARGET AIR VEHICLE
                         //                if (fabs(curTarget->localData->az - yaw) < minDist  and 
                         if (curTarget->BaseData()->OnGround() and fabs(curTarget->localData->az - yaw) < minDist  and 
                             fabs(curTarget->localData->el - pitch) < minDist  and 
                             curTarget->BaseData()->IsSim()  and 
-                            !curTarget->BaseData()->IsWeapon())
+                             not curTarget->BaseData()->IsWeapon())
                         {
                             if (targetingPod->CanSeeObject(curTarget) and targetingPod->CanDetectObject(curTarget))
                             {
@@ -749,7 +749,7 @@ void FireControlComputer::TargetingPodMode(void)
     //MI no Laser Above 25k ft
     if (g_bRealisticAvionics and playerFCC and ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP)
     {
-        // RV - Biker - New systems (e.g. LANTIRN on F-14D) can do laser above 25k ft!
+        // RV - Biker - New systems (e.g. LANTIRN on F-14D) can do laser above 25k ft
         //if(platform->ZPos() > -25000.0F)
         if (platform->ZPos() > -1.0f * ((AircraftClass *)Sms->Ownship())->af->GetMaxLasingAlt())
         {

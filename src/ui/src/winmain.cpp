@@ -279,7 +279,7 @@ void IncDecTalkerToPlay(int delta);
 void LeaveDogfight();
 void OpenMainCampaignCB(long ID, short hittype, C_Base *control);
 void OpenTEGameOverWindow();
-void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface);//!void PlayMovie(char *filename,short left,short top,short w,short h,UInt theSurface);
+void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface);// not void PlayMovie(char *filename,short left,short top,short w,short h,UInt theSurface);
 void PlayThatFunkyMusicWhiteBoy();
 void ProcessChatStr(CHATSTR *msg);
 void RebuildCurrentWPList();
@@ -417,7 +417,7 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
     HRESULT hr = CoInitialize(NULL);
 
     if (FAILED(hr))
-        MonoPrint("handle_WinMain: Error 0x%X occured during COM initialization!", hr);
+        MonoPrint("handle_WinMain: Error 0x%X occured during COM initialization", hr);
 
     // Begin - Uplink stuff
     try
@@ -443,7 +443,7 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
     }
     catch (_com_error e)
     {
-        MonoPrint("handle_WinMain: Error 0x%X occured during JetNet initialization!", e.Error());
+        MonoPrint("handle_WinMain: Error 0x%X occured during JetNet initialization", e.Error());
     }
 
     // End - Uplink stuff
@@ -560,13 +560,13 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
 
 // Main entry point. Calls initialization functions, processes message loop.
 // However, some code is called by callback functions so use breakpoints
-// to debug properly!
+// to debug properly
 signed int PASCAL WinMain(HINSTANCE h_Instance, HINSTANCE h_previous_instance,
                           LPSTR command_line, signed int command_show)
 {
 
 // We want the SubRange template to run only under DEBUG.
-// Don't use #ifdef DEBUG because the DEBUG macro is defined in RELEASE too!
+// Don't use #ifdef DEBUG because the DEBUG macro is defined in RELEASE too
 #ifndef NDEBUG
 	SubRange<signed int, 0, 1> error_code;
 #else

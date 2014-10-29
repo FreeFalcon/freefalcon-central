@@ -688,7 +688,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
             //me123 az/bar change same as rws -- MD, umm no, that's not correct...there are three fixed
             // scan patterns for TWS so any bump in Az or Bars will bump the other dimension also.  Thus
-            // these change commands now step both twsAzIdx and twsBarIdx at the same time!
+            // these change commands now step both twsAzIdx and twsBarIdx at the same time
 
             // MD -- 20040123: don't bump the scan pattern when there's a bugged track file
             if ( not lockedTarget and scanWidthCmd)
@@ -963,7 +963,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
             {
                 if (flags bitand WasMoving)
                 {
-                    // MD -- 20040229: switched ordering here - need WasMoving set to FALSE to bump!
+                    // MD -- 20040229: switched ordering here - need WasMoving set to FALSE to bump
                     flags and_eq compl WasMoving;
                 }
 
@@ -1397,7 +1397,7 @@ void RadarDopplerClass::NextTarget(void)
                 {
                     //can't lock onto these
                     if ( not rdrObj->BaseData()->OnGround() and not rdrObj->BaseData()->IsMissile()  and 
-                        !rdrObj->BaseData()->IsBomb() and not rdrObj->BaseData()->IsEject()  and 
+                         not rdrObj->BaseData()->IsBomb() and not rdrObj->BaseData()->IsEject()  and 
                         rdrObj->localData->rdrDetect)
                     {
                         if (MinRange > rdrObj->localData->range)
@@ -1542,7 +1542,7 @@ void RadarDopplerClass::FindClosest(float MinRange)
         {
             //can't lock onto these
             if ( not rdrObj->BaseData()->OnGround() and not rdrObj->BaseData()->IsMissile()  and 
-                !rdrObj->BaseData()->IsBomb() and not rdrObj->BaseData()->IsEject()  and 
+                 not rdrObj->BaseData()->IsBomb() and not rdrObj->BaseData()->IsEject()  and 
                 rdrObj->localData->rdrDetect)
             {
                 if (rdrObj->localData->range < MinRange)

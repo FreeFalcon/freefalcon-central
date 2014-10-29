@@ -23,7 +23,7 @@
 // MD -- 20031207: adding for TFR STBY lamp check
 #include "lantirn.h"
 
-/*!GetFault(obs_wrn) and //never get's set currently*/
+/* not GetFault(obs_wrn) and //never get's set currently*/
 
 //extern bool g_bEnableAircraftLimits; //me123 MI replaced with g_bRealisticAvionics
 extern bool g_bRealisticAvionics;

@@ -1496,7 +1496,7 @@ static void RemoveOldPeopleTreeCB(TREELIST *old)
 
         catch (_com_error e)
         {
-            MonoPrint("StartCampaignGame: Error 0x%X occured during UpLink startup!", e.Error());
+            MonoPrint("StartCampaignGame: Error 0x%X occured during UpLink startup", e.Error());
         }
     }
 
@@ -1855,7 +1855,7 @@ void UpdateLocalGameTree()
 
                     catch (_com_error e)
                     {
-                        MonoPrint("StartCampaignGame: Error 0x%X occured during UpLink startup!", e.Error());
+                        MonoPrint("StartCampaignGame: Error 0x%X occured during UpLink startup", e.Error());
                     }
                 }
 

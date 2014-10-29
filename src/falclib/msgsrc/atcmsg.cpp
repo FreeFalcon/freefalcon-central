@@ -354,7 +354,7 @@ int FalconATCMessage::Process(uchar autodisp)
 
                                 case lIngressing:
                                 case lTakingPosition:
-                                    ShiWarning("This should never happen!");
+                                    ShiWarning("This should never happen");
                                     radioMessage = CreateCallFromATC(atc, aircraft, rcCONTINUEINBOUND1, FalconLocalGame);
                                     //M.N. changed to 32767 -> flexibly use randomized value of max available eval indexes
                                     radioMessage->dataBlock.edata[4] = 32767;

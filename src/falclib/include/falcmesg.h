@@ -28,7 +28,7 @@ public:
         SimThread                    = 0x1,
         CampaignThread               = 0x2,
         UIThread  = 0x4,
-        VuThread  = 0x8, // Realtime thread! carefull with what you send here
+        VuThread  = 0x8, // Realtime thread carefull with what you send here
         AllThreads                   = 0xff
     };
 

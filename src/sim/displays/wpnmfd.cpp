@@ -131,7 +131,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
 
     if ( not theRadar or not pFCC or not self or not Sms)
     {
-        ShiWarning("Oh Oh shouldn't be here without a radar or FCC or player or SMS!");
+        ShiWarning("Oh Oh shouldn't be here without a radar or FCC or player or SMS");
         return;
     }
 

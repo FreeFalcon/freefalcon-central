@@ -1661,7 +1661,7 @@ inline void CDXEngine::DrawNode(ObjectInstance *objInst, DWORD LightOwner, DWORD
 
         default :
             char s[128];
-            printf(s, "Corrupted Model ID : %d !", LodID);
+            printf(s, "Corrupted Model ID : %d ", LodID);
             MessageBox(NULL, s, "DX Engine", NULL);
 
     }

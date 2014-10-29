@@ -529,7 +529,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
 
         vol_was = (char)(toupper(path[0]) - 'A');
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
 
         /* See if there is a new directory name.  If so, we need to create a new hash table,
            add this path into the global hash table, and continue add files into the new
@@ -1566,7 +1566,7 @@ int process_local_file_hdr(local_file_hdr * lrec, char * buffer)      /* return 
            entire zip and then rebuild it.  The local header should
            always be more reliable than the global, and in your case
            it is not (sorry, but you're fucked) */
-        SAY_ERROR(RES_ERR_BAD_ARCHIVE, "Big problemo, read comment!");
+        SAY_ERROR(RES_ERR_BAD_ARCHIVE, "Big problemo, read comment");
         return(PK_ERR);
     }
 

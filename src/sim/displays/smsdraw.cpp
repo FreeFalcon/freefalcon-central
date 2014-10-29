@@ -472,7 +472,7 @@ void SmsDrawable::Display(VirtualDisplay* newDisplay)
     // sfr: @todo remove this or check why it happens
     if ( not theRadar)
     {
-        ShiWarning("Oh Oh shouldn't be here without a radar!");
+        ShiWarning("Oh Oh shouldn't be here without a radar");
         return;
     }
 
@@ -2663,7 +2663,7 @@ void SmsDrawable::BottomRow(void)
 
     if ( not theRadar)
     {
-        ShiWarning("Oh Oh shouldn't be here without a radar!");
+        ShiWarning("Oh Oh shouldn't be here without a radar");
         return;
     }
     else

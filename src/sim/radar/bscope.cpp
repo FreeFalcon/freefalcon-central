@@ -559,7 +559,7 @@ void RadarDopplerClass::STBYDisplay(void)
 
         if (mode not_eq OFF)
         {
-            //LabelButton(3, "OVRD", NULL, !isEmitting);
+            //LabelButton(3, "OVRD", NULL,  not isEmitting);
             LabelButton(3, "OVRD");
             LabelButton(4, "CNTL", NULL, IsSet(CtlMode));
         }
@@ -1302,7 +1302,7 @@ void RadarDopplerClass::SAMDisplay(void)
         }
 
         //LabelButton (2, "NORM");
-        if (IsAADclt(Ovrd) == FALSE) LabelButton(3, "OVRD", NULL, !isEmitting); // JPO
+        if (IsAADclt(Ovrd) == FALSE) LabelButton(3, "OVRD", NULL,  not isEmitting); // JPO
 
         if (IsAADclt(Cntl) == FALSE) LabelButton(4, "CTNL", NULL, IsSet(CtlMode));
 
@@ -1431,7 +1431,7 @@ void RadarDopplerClass::ACMDisplay(void)
         }
     }
 
-    if (IsAADclt(Ovrd) == FALSE) LabelButton(3, "OVRD", NULL, !isEmitting);
+    if (IsAADclt(Ovrd) == FALSE) LabelButton(3, "OVRD", NULL,  not isEmitting);
 
     if (IsAADclt(Cntl) == FALSE) LabelButton(4, "CTNL", NULL, IsSet(CtlMode));
 
@@ -1495,7 +1495,7 @@ void RadarDopplerClass::TWSDisplay(void)
 
     if (IsAADclt(Ovrd) == FALSE)
     {
-        LabelButton(3, "OVRD", NULL, !isEmitting);
+        LabelButton(3, "OVRD", NULL,  not isEmitting);
     }
 
     if (IsAADclt(Cntl) == FALSE)
@@ -1935,7 +1935,7 @@ void RadarDopplerClass::VSModeDisplay(void)
         if (IsAADclt(SubMode) == FALSE) LabelButton(1, "VSR");
     }
 
-    if (IsAADclt(Ovrd) == FALSE) LabelButton(3, "OVRD", NULL, !isEmitting);
+    if (IsAADclt(Ovrd) == FALSE) LabelButton(3, "OVRD", NULL,  not isEmitting);
 
     if (IsAADclt(Cntl) == FALSE) LabelButton(4, "CTNL", NULL, IsSet(CtlMode));
 
@@ -2148,7 +2148,7 @@ void RadarDopplerClass::VSDisplay(void)
         if (IsAADclt(SubMode) == FALSE) LabelButton(1, "VSR");
     }
 
-    if (IsAADclt(Ovrd) == FALSE) LabelButton(3, "OVRD", NULL, !isEmitting);
+    if (IsAADclt(Ovrd) == FALSE) LabelButton(3, "OVRD", NULL,  not isEmitting);
 
     if (IsAADclt(Cntl) == FALSE) LabelButton(4, "CTNL", NULL, IsSet(CtlMode));
 
@@ -2226,7 +2226,7 @@ void RadarDopplerClass::VSDisplay(void)
 
 void RadarDopplerClass::DrawACQCursor(void)
 {
-    if (IsSet(STTingTarget))  // MD -- 20031222: don't draw this in STT!
+    if (IsSet(STTingTarget))  // MD -- 20031222: don't draw this in STT
         return;
 
     //MI
@@ -2644,7 +2644,7 @@ void RadarDopplerClass::DrawSymbol(int type, float schweemLen, int age, int flas
                 display->Line(g_fRadarScale *  jamSizeW,  g_fRadarScale * jamSizeH, g_fRadarScale * -jamSizeW, g_fRadarScale * -jamSizeH);
             }
 
-            break;//Cobra This was missing!
+            break;//Cobra This was missing
 
         case  Det:
             if ( not g_bRealisticAvionics)
@@ -3190,7 +3190,7 @@ void RadarDopplerClass::TargetToXY(SimObjectLocalData *localData, int hist,
 
 void RadarDopplerClass::DrawNCTR(bool TWS)
 {
-    // 2002-02-25 ADDED BY S.G. If not capable of handling NCTR, then don't do it!
+    // 2002-02-25 ADDED BY S.G. If not capable of handling NCTR, then don't do it
     if ( not (radarData->flag bitand RAD_NCTR))
         return;
 
@@ -3296,7 +3296,7 @@ void RadarDopplerClass::AGRangingDisplay(void)
     display->AdjustOriginInViewport(-FCC->groundPipperAz, -FCC->groundPipperEl);
 
     display->SetColor(GetMfdColor(MFD_LABELS));
-    LabelButton(3, "OVRD", NULL, !isEmitting);
+    LabelButton(3, "OVRD", NULL,  not isEmitting);
 
     LabelButton(4, "CNTL", NULL, IsSet(CtlMode));
 

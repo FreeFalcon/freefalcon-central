@@ -135,7 +135,7 @@ void HeliBrain::TargetSelection(void)
     campUnit->ChooseTactic();
     campTactic = campUnit->GetUnitTactic();
 
-    // sanity check and make sure its on ground, what to do if not?!...
+    // sanity check and make sure its on ground, what to do if not?...
     if ( not target ||
         campTactic == ATACTIC_RETROGRADE ||
         campTactic == ATACTIC_IGNORE ||
@@ -340,7 +340,7 @@ void HeliBrain::TargetSelection(SimObjectType *tlist)
         // Targeting should be based in type
         theObject = (SimBaseClass*)tmpObj->BaseData();
 
-        // edg : ERROR!
+        // edg : ERROR
         if ( not theObject or not tmpObj->localData)
         {
             // get next object

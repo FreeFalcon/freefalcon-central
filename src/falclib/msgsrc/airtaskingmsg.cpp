@@ -39,7 +39,7 @@ FalconAirTaskingMessage::~FalconAirTaskingMessage(void)
 
 int FalconAirTaskingMessage::Process(uchar autodisp)
 {
-    // I shouldn't really be getting messages if we're not loaded!?!
+    // I shouldn't really be getting messages if we're not loaded?
     if (autodisp or not TheCampaign.IsLoaded())
     {
         return -1;

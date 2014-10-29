@@ -91,7 +91,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
             if ((((*(v + 1))->y - (*v)->y)) * (((*p)->x - (*v)->x)) <
                 (((*(v + 1))->x - (*v)->x)) * (((*p)->y - (*v)->y)))
             {
-                // Accept!
+                // Accept
                 break;
             }
         }
@@ -104,7 +104,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
             if ((((*(v + 1))->y - (*v)->y)) * (((*p)->x - (*v)->x)) >=
                 (((*(v + 1))->x - (*v)->x)) * (((*p)->y - (*v)->y)))
             {
-                // Reject!
+                // Reject
                 break;
             }
 

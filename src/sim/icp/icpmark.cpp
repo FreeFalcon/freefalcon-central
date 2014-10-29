@@ -24,7 +24,7 @@ void ICPClass::ExecMARKMode(void)
         if (mUpdateFlags bitand MARK_UPDATE)
         {
 
-            mUpdateFlags and_eq !MARK_UPDATE;
+            mUpdateFlags and_eq  not MARK_UPDATE;
 
             gNavigationSys->GetMarkPoint(&pointType, mpLine2, mpLine3);
 

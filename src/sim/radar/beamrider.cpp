@@ -155,7 +155,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
                     //if (lockedTarget->BaseData()->IsSPJamming() ||
                     // radarPlatform->IsDead() ||
                     // radarPlatform->IsExploding() ||
-                    // !radarPlatform->IsEmitting())
+                    //  not radarPlatform->IsEmitting())
                     //{
                     if (lockedTarget)
                     {
@@ -223,7 +223,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
                     //if (lockedTarget->BaseData()->IsSPJamming() ||
                     // radarPlatform->IsDead() ||
                     // radarPlatform->IsExploding() ||
-                    // !radarPlatform->IsEmitting())
+                    //  not radarPlatform->IsEmitting())
                     //{
                     if (lockedTarget)
                     {

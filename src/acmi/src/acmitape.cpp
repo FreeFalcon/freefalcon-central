@@ -3820,7 +3820,7 @@ ACMITape::UpdateActiveEvents(void)
                 else
                 {
                  // the event is active....
-                 if ( !td->objTracer->InDisplayList() )
+                 if ( not td->objTracer->InDisplayList() )
                  _viewPoint->InsertObject( td->objTracer );
                  UpdateTracerEvent( td, _simTime - event->time );
                 }

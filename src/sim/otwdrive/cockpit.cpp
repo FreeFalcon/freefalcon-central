@@ -88,7 +88,7 @@ void OTWDriverClass::Draw2DHud(void)
 #if DO_HIRESCOCK_HACK
 
     if (
-        !gDoCockpitHack and (mOTWDisplayMode == ModeHud or mOTWDisplayMode == ModePadlockEFOV ||
+         not gDoCockpitHack and (mOTWDisplayMode == ModeHud or mOTWDisplayMode == ModePadlockEFOV ||
                             mOTWDisplayMode == Mode2DCockpit and pCockpitManager)
 #else
     if (

@@ -139,7 +139,7 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
     else if (self->GetCampaignObject())
     {
 
-        // Needs some changes here!
+        // Needs some changes here
         // (MCC - UnitMove routines)
         // VP_changes this part should be modified
         theBattalion = (BattalionClass *)self->GetCampaignObject();

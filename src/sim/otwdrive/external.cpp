@@ -232,7 +232,7 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
         chaseEl += elDir * slewRate * dT;
 
         // put limiter or range of allowable adjustable motion.
-        // it's supposed to be a satellite!
+        // it's supposed to be a satellite
         if (chaseEl > 75.0f * DTR)
             chaseEl = 75.0f * DTR;
         else if (chaseEl < -75.0f * DTR)
@@ -493,7 +493,7 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
     {
         // (If we never hit this assert, then the "else if" above could/should
         // become a simple "else".
-        // ShiAssert( !"Illegal view mode.  Shouldn't get here.  SCR." );
+        // ShiAssert( "Illegal view mode.  Shouldn't get here.  SCR." );
     }
 }
 #include "profiler.h"
@@ -505,7 +505,7 @@ extern int targetCompressionRatio;
 // This function moves the camera slighly to simulate the relative movement of
 // an imaginary formation-flying airplane that holds the camera in order to
 // heighten immersion (or such).
-// THIS function IMPLICITLY changes the cameraPos !
+// THIS function IMPLICITLY changes the cameraPos 
 /*****************************************************************************/
 void OTWDriverClass::DisplaceTheCamera(float dT)
 {
@@ -547,7 +547,7 @@ void OTWDriverClass::DisplaceTheCamera(float dT)
             float thisFrameScale = 0.1F + (float)FabsF((dir[i])->scale * Cos(dir[i]->Displ / dir[i]->maxDispl * HALF_PI));
             (dir[i])->Displ += (thisFramewobbleDistance * thisFrameScale * dir[i]->direction);
 
-            if (FabsF((dir[i])->Displ) > FabsF((dir[i])->maxDispl)) // bumped into a limit.. limits are symmetric (duh!)
+            if (FabsF((dir[i])->Displ) > FabsF((dir[i])->maxDispl)) // bumped into a limit.. limits are symmetric (duh)
             {
                 // so now we select a new cam-direction and speed (randomly)
                 ReInitDisplacement(dir[i]);
@@ -708,7 +708,7 @@ void OTWDriverClass::BuildExternalNearList(void)
         // Skip things on the groud, without draw pointers, hidden, or exploding
         if (theObject->OnGround() ||
             theObject->IsSetLocalFlag(IS_HIDDEN) ||
-            !theObject->drawPointer ||
+             not theObject->drawPointer ||
             theObject->IsExploding() ||
             otwPlatform.get() == theObject)
         {

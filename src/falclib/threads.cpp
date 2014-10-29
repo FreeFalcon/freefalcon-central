@@ -331,7 +331,7 @@ int F4SetThreadProcessor(F4THREADHANDLE theThread, int theProcessor)
 /* old stuff
 int F4SuspendThread (F4THREADHANDLE theThread)
 {
-   //F4Assert( "Don't call F4SuspendThread silly!" == NULL );
+   //F4Assert( "Don't call F4SuspendThread silly" == NULL );
  int retval = F4THREAD_ERROR;
  if (F4Thread[theThread].inUse){
  if (SuspendThread(F4Thread[theThread].handle) not_eq 0xFFFFFFFF){
@@ -343,7 +343,7 @@ int F4SuspendThread (F4THREADHANDLE theThread)
 
 int F4ResumeThread (F4THREADHANDLE theThread)
 {
- //F4Assert( "Don't call F4ResumeThread silly!" == NULL );
+ //F4Assert( "Don't call F4ResumeThread silly" == NULL );
  int retval = F4THREAD_ERROR;
  if (F4Thread[theThread].inUse){
  if (ResumeThread(F4Thread[theThread].handle) not_eq 0xFFFFFFFF){

@@ -1884,7 +1884,7 @@ void SimVehicleClass::StepSOI(int dir)
             break;
 
         default:
-            ShiWarning("Wrong SOI Direction!");
+            ShiWarning("Wrong SOI Direction");
             break;
     }
 }

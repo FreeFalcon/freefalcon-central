@@ -416,7 +416,7 @@ SfxClass::SfxClass(int  typeSfx,
     }
     else
     {
-        MonoPrint("Bad SFX Position Passed in!");
+        MonoPrint("Bad SFX Position Passed in");
         pos.x = 0.0f;
         pos.y = 0.0f;
         pos.z = 0.0f;
@@ -934,7 +934,7 @@ SfxClass::SfxClass(int typeSfx,
     }
     else
     {
-        MonoPrint("Bad SFX Position Passed in!");
+        MonoPrint("Bad SFX Position Passed in");
         pos.x = 0.0f;
         pos.y = 0.0f;
         pos.z = 0.0f;
@@ -1022,7 +1022,7 @@ SfxClass::SfxClass(int typeSfx,
     }
     else
     {
-        MonoPrint("Bad SFX Position Passed in!");
+        MonoPrint("Bad SFX Position Passed in");
         pos.x = 0.0f;
         pos.y = 0.0f;
         pos.z = 0.0f;
@@ -1128,7 +1128,7 @@ SfxClass::SfxClass(
     }
     else
     {
-        //ShiAssert( !"Bad SFX Position Passed in!" );
+        //ShiAssert( "Bad SFX Position Passed in" );
         pos.x = 0.0f;
         pos.y = 0.0f;
         pos.z = 0.0f;
@@ -1255,7 +1255,7 @@ SfxClass::SfxClass(int  typeSfx,
     }
     else
     {
-        MonoPrint("Bad SFX Position Passed in!");
+        MonoPrint("Bad SFX Position Passed in");
         pos.x = 0.0f;
         pos.y = 0.0f;
         pos.z = 0.0f;
@@ -1429,7 +1429,7 @@ SfxClass::SfxClass(int  typeSfx,
     }
     else
     {
-        MonoPrint("Bad SFX Position Passed in!");
+        MonoPrint("Bad SFX Position Passed in");
         pos.x = 0.0f;
         pos.y = 0.0f;
         pos.z = 0.0f;
@@ -1968,7 +1968,7 @@ SfxClass::SfxClass(int  typeSfx,
     }
     else
     {
-        //ShiAssert( !"Bad SFX Position Passed in!" );
+        //ShiAssert( "Bad SFX Position Passed in" );
         pos.x = 0.0f;
         pos.y = 0.0f;
         pos.z = 0.0f;
@@ -3237,7 +3237,7 @@ SfxClass::Draw(void)
 
         if (type == SFX_EJECT1)
         {
-            // hack! ejection is sideways
+            // hack ejection is sideways
             rot.M11 = 1.0f;
             rot.M12 = 0.0f;
             rot.M13 = 0.0f;
@@ -5789,7 +5789,7 @@ SfxClass::RunSecondarySfx(void)
         case SFX_NAPALM:
             // send up some fire trails
             /*
-            ** EDG: Broken right now!
+            ** EDG: Broken right now
             */
             numBursts =  2 + (int)(2.0f * gSfxLOD);
             rads = OTWDriver.GetGroundLevel(pos.x, pos.y);
@@ -5882,7 +5882,7 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
     // do we explode at end?
     if (flags bitand SFX_EXPLODE_WHEN_DONE)
     {
-        // add new effect!
+        // add new effect
         if (hitGround)
         {
             pos.z -= 40.0f;
@@ -6352,7 +6352,7 @@ SfxClass::ACMIExec(float currTime)
 
         if (type == SFX_EJECT1)
         {
-            // hack! ejection is sideways
+            // hack ejection is sideways
             rot.M11 = 1.0f;
             rot.M12 = 0.0f;
             rot.M13 = 0.0f;

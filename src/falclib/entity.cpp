@@ -1337,7 +1337,7 @@ void UpdateVehicleCombatStatistics(void)
     {
         for (mt = 0; mt < MOVEMENT_TYPES; mt++)
         {
-            // KCK: HitChance is now the inherent hitchance only!
+            // KCK: HitChance is now the inherent hitchance only
             // Units will use the calculated hitchance
             // VehicleDataTable[id].HitChance[mt] += CalculateVehicleHitChance(VehicleDataTable[id].Index,mt);
             VehicleDataTable[id].Range[mt] = CalculateVehicleRange(VehicleDataTable[id].Index, mt);
@@ -2430,7 +2430,7 @@ int RDFindBestRackWID(int GroupId, int WeaponId, int WeaponCount, struct RDRackD
                             {
                                 if (rn->wId[l] == WeaponId)
                                 {
-                                    // a match!
+                                    // a match
                                     RDCopyRackData(WeaponCount, pn, rn, rd);
                                     return 1;
                                 }
@@ -2489,7 +2489,7 @@ int RDFindBestRackWClass(int GroupId, int wClass, int WeaponCount, struct RDRack
                             {
                                 if (rn->wClass[l] == wClass)
                                 {
-                                    // a match!
+                                    // a match
                                     RDCopyRackData(WeaponCount, pn, rn, rd);
                                     return 1;
                                 }
@@ -2558,7 +2558,7 @@ int RDFindBestRackSWD(int GroupId, int SWD, int WeaponCount, struct RDRackData *
 
                                 if (rn->swd[l] == SWD)
                                 {
-                                    // a match!
+                                    // a match
                                     RDCopyRackData(WeaponCount, pn, rn, rd);
                                     return 1;
                                 }

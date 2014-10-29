@@ -28,7 +28,7 @@
    c1   30 Mar 92  M. Adler        removed lbits, dbits environment variables.
    changed BMAX to 16 for explode.  Removed
    OUTB usage, and replaced it with flush()--
-   this was a 20% speed improvement!  Added
+   this was a 20% speed improvement  Added
    an explode.c (to replace unimplod.c) that
    uses the huft routines here.  Removed
    register union.

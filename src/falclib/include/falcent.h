@@ -40,8 +40,8 @@ typedef enum { NoMove = 0,
 #define FEC_INVULNERABLE 0x20 // This thing can't be destroyed
 
 // localFlags
-#define FELF_ON_PLAYERS_GM_CONTACT_LIST      0x1 // This object is listed in the players Ground Radar target list // MLR 4/19/2004 - new!
-#define FELF_ON_PLAYERS_GMT_CONTACT_LIST     0x2 // This object is listed in the players Ground Radar target list // MLR 4/19/2004 - new!
+#define FELF_ON_PLAYERS_GM_CONTACT_LIST      0x1 // This object is listed in the players Ground Radar target list // MLR 4/19/2004 - new
+#define FELF_ON_PLAYERS_GMT_CONTACT_LIST     0x2 // This object is listed in the players Ground Radar target list // MLR 4/19/2004 - new
 #define FELF_UPDATE_TARGET_LIST_TEMP         0x4 // temporary marker for UpdateTargetList()      
 #define FELF_ADDED_DURING_SIMDRIVER_CYCLE  0x8 // Object was created during SimDriver::Cycle() and did missed having EntityDriver() called (due to hash table)
 

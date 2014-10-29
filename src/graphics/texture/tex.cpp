@@ -150,7 +150,7 @@ void Texture::SetupForDevice(DXContext *texRC, char *path)
     // Store the texture path for future reference
     if (strlen(path) + 1 >= sizeof(TexturePath))
     {
-        ShiError("Texture path name overflow!");
+        ShiError("Texture path name overflow");
     }
 
     strcpy(TexturePath, path);

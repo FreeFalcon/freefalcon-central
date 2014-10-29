@@ -1021,7 +1021,7 @@ void HudClass::CycleBrightnessSwitchUp(void)
 
     if (playerAC and playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
-        // MD -- 20040108: Comment out the power control since this switch doesn't do that!
+        // MD -- 20040108: Comment out the power control since this switch doesn't do that
         //if( not playerAC->HasPower(AircraftClass::HUDPower))
         // playerAC->PowerOn(AircraftClass::HUDPower);
         switch (brightnessSwitch)
@@ -1127,7 +1127,7 @@ void HudClass::DrawAlphaNumeric(void)
     }
 
     // Window 5 (Gs)
-    //MI (JPO - fixed elsewhere !)
+    //MI (JPO - fixed elsewhere )
     //TJL 03/07/04 F16 specific or default HUD
     if (ownship->IsF16() or ownship->af->GetTypeAC() == 0)
     {
@@ -1250,8 +1250,8 @@ void HudClass::DrawAlphaNumeric(void)
         {
             //Fuel doesn't flash warning
             if ( not ownship->mFaults->GetFault(fuel_low_fault)  and 
-                !ownship->mFaults->GetFault(fuel_trapped)  and 
-                !ownship->mFaults->GetFault(fuel_home))
+                 not ownship->mFaults->GetFault(fuel_trapped)  and 
+                 not ownship->mFaults->GetFault(fuel_home))
                 DrawWindowString(11, "WARN");
         }
     }
@@ -1791,7 +1791,7 @@ void HudClass::DrawPitchLadder(void)
         if (
             ownship  and 
             ownship->INSState(AircraftClass::INS_PowerOff) ||
-            !ownship->INSState(AircraftClass::INS_HUD_STUFF)
+             not ownship->INSState(AircraftClass::INS_HUD_STUFF)
         )
         {
             return;

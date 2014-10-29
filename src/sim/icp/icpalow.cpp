@@ -47,7 +47,7 @@ void ICPClass::ExecALOWMode(void)
 
         // if(mUpdateFlags bitand ALOW_UPDATE) {
 
-        mUpdateFlags and_eq !ALOW_UPDATE;
+        mUpdateFlags and_eq  not ALOW_UPDATE;
 
         sprintf(mpLine1, "ALOW LEVEL");
 

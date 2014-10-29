@@ -29,11 +29,11 @@ void SetupTransport( WORD port )
  wVersionRequested = MAKEWORD(1, 1);
  result = WSAStartup(wVersionRequested, &wsaData);
  if (result not_eq 0) {
- ShiError( "Transport:  We couldn't load WinSock!" );
+ ShiError( "Transport:  We couldn't load WinSock" );
  }
  if ( LOBYTE( wsaData.wVersion ) not_eq 1 or HIBYTE( wsaData.wVersion ) not_eq 1 ) {
  WSACleanup();
- ShiError( "Transport:  We couldn't find a 1.1 compatable WinSock!" );
+ ShiError( "Transport:  We couldn't find a 1.1 compatable WinSock" );
  }
 
 
@@ -79,7 +79,7 @@ unsigned Send( void* data, unsigned size )
 
  result = sendto( sock, (char*)data, size, 0, (sockaddr*)&address, sizeof(address) );
  if (result == SOCKET_ERROR) {
- ShiError("Transport:  Send failed!");
+ ShiError("Transport:  Send failed");
  }
 
  return result;
@@ -93,7 +93,7 @@ unsigned Receive( void* data, unsigned size )
 
  result = recv( sock, (char*)data, size, 0 );
  if (result == SOCKET_ERROR) {
- ShiError("Transport:  Recv failed!");
+ ShiError("Transport:  Recv failed");
  }
 
  return result;
@@ -112,7 +112,7 @@ BOOL DataReady( void )
 
  result = select( 1, &selectSet, NULL, NULL, &time );
  if (result == SOCKET_ERROR) {
- ShiError("Transport:  Select failed!");
+ ShiError("Transport:  Select failed");
  }
 
  return result;
@@ -139,7 +139,7 @@ void SetupTransport( WORD bufsize )
  gBufs[i].size = 0;
 // gBufs[i].ptr = (BYTE *)malloc( bufsize );
  gBufs[i].ptr = new BYTE[bufsize];
- if ( !gBufs[i].ptr )
+ if (  not gBufs[i].ptr )
  ShiError(" Loopback test: buffer alloc failed" );
  }
  numInBuffer = 0;

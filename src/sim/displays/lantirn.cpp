@@ -613,7 +613,7 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
             pos.y = self->YPos();
             pos.z = self->ZPos() + zOffset;
 
-            //check for MaxDistance in the direction of our vector!
+            //check for MaxDistance in the direction of our vector
             vec.x = self->XDelta();
             vec.y = self->YDelta();
             vec.z = self->ZDelta();
@@ -652,7 +652,7 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
                         fabs(pos.y - fpos.y) < radius + p3.y  and 
                         fabs(pos.z - fpos.z) < radius + p3.z)
                     {
-                        //Check for tall objects when doing horizontal check!
+                        //Check for tall objects when doing horizontal check
                         float sizeX, sizeY, sizeZ;
                         sizeX = ((DrawableBSP*)(testFeature->drawPointer))->instance.BoxFront();
                         sizeX -= ((DrawableBSP*)(testFeature->drawPointer))->instance.BoxBack();
@@ -711,7 +711,7 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
     }
 
     if (ClosestDistance < 2 * MaxDistance)
-        return ClosestDistance; //yes! We found a feature within range...
+        return ClosestDistance; //yes We found a feature within range...
     else
         return -1.0F; //we ain't found sh*t...
 }

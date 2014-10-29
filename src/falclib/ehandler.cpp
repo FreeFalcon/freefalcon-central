@@ -358,7 +358,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
 #endif
     static int BeenHere;
 
-    if (BeenHere) // Going recursive! That must mean this routine crashed!
+    if (BeenHere) // Going recursive That must mean this routine crashed
         return EXCEPTION_CONTINUE_SEARCH;
 
     BeenHere = TRUE;
