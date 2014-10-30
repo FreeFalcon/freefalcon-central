@@ -94,7 +94,7 @@ int initialize_windows_sockets(WSADATA* windows_sockets_data)
 		buffer_length = SearchPath(NULL, DLL_NAME, NULL, MAX_PATH,
 								   output_buffer, NULL);
 
-		buffer_length = 0; // my debug		
+//		buffer_length = 0; // my debug		
 		if (0 == buffer_length)
         {
             ComAPILastError = COMAPI_WINSOCKDLL_ERROR;
