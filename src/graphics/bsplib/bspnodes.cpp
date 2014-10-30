@@ -5,7 +5,7 @@
 
     This provides the structure for the runtime BSP trees.
 \***************************************************************************/
-#include <ciso646>
+#include <cISO646>
 #include "stdafx.h"
 #include "StateStack.h"
 #include "ClipFlags.h"

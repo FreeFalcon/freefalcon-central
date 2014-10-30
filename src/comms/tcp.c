@@ -1,4 +1,4 @@
-#include <ciso646>
+#include <cISO646>
 #include "capiopt.h"
 #include <stdio.h>
 #include <stdlib.h>

@@ -7,7 +7,7 @@
  for blit operations.
 \***************************************************************************/
 
-#include <ciso646>
+#include <cISO646>
 #include "stdafx.h"
 #include "Rotate.h"
 #include "Device.h"

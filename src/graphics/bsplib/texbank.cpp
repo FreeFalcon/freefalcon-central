@@ -5,7 +5,7 @@
 
  - Begin Major Rewrite
 \***************************************************************************/
-#include <ciso646>
+#include <cISO646>
 #include "stdafx.h"
 #include <io.h>
 #include <fcntl.h>

@@ -5,7 +5,7 @@
 
     Provides structures and definitions for 3D objects.
 \***************************************************************************/
-#include <ciso646>
+#include <cISO646>
 #include "stdafx.h"
 #include <io.h>
 #include <fcntl.h>

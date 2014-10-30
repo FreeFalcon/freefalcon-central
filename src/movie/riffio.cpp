@@ -11,7 +11,7 @@
    Programmed by Kuswara Pranawahadi               September 5, 1996
 */
 
-#include <ciso646>
+#include <cISO646>
 #include <windows.h>
 #include "fsound.h" //psound
 #include "riffio.h"

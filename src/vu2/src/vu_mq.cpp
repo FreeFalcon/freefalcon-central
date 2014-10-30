@@ -1,6 +1,6 @@
 /** @file vu_mq.cpp message queue implementation */
 
-#include <ciso646>
+#include <cISO646>
 #include "vu2.h"
 
 ////////////////////

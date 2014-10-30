@@ -5,7 +5,7 @@
 
     This class provides basic 2D drawing functions in a device independent fashion.
 \***************************************************************************/
-#include <ciso646>
+#include <cISO646>
 #include <math.h>
 #include "Display.h"
 #include "Render3D.h" // ASSO:

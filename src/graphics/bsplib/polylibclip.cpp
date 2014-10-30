@@ -5,7 +5,7 @@
 
     Provides clipping functions for 3D polygons of various types.
 \***************************************************************************/
-#include <ciso646>
+#include <cISO646>
 #include "stdafx.h"
 #include "StateStack.h"
 #include "ColorBank.h"

@@ -10,7 +10,7 @@
  is computed and the posts required to draw the terrain within the volume
  are identified.
 \***************************************************************************/
-#include <ciso646>
+#include <cISO646>
 #include <math.h>
 #include "TMap.h"
 #include "Tpost.h"

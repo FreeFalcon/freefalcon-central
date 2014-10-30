@@ -1,7 +1,7 @@
 #ifndef CAMPBASE_H
 #define CAMPBASE_H
 
-#include <ciso646>
+#include <cISO646>
 #include <tchar.h>
 #include "Entity.h"
 #include "FalcLib.h"

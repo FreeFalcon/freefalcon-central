@@ -12,7 +12,7 @@
 
 //___________________________________________________________________________
 
-#include <ciso646>
+#include <cISO646>
 #include "image.h"
 #include <ddraw.h> //JAM 22Sep03
 
