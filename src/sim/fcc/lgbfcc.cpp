@@ -61,7 +61,7 @@ void FireControlComputer::TargetingPodMode(void)
 
     // 2001-11-01 ADDED BY M.N. IT MAY BE THAT theRadar HAS LOST THE TARGET, BUT OUR TARGETING POD
     // STILL HAS IT. SO SEE IF WE HAVE ONE LOCKED WITH THE POD
-    if ( not systemTarget and  not F4IsBadReadPtr(targetingPod, sizeof(targetingPod))) // M.N. CTD fix
+    if ( not systemTarget and not F4IsBadReadPtr(targetingPod, sizeof(targetingPod))) // M.N. CTD fix
     {
         systemTarget = targetingPod->CurrentTarget();
 
@@ -71,7 +71,7 @@ void FireControlComputer::TargetingPodMode(void)
 
     // Is the currently aimed target dead or exploding ? If so, delete the pod targetpointer
     if (systemTarget and (systemTarget->BaseData()->IsDead() or systemTarget->BaseData()->IsExploding())
-        and  not F4IsBadWritePtr(targetingPod, sizeof(targetingPod)))  // CTD fix
+       and not F4IsBadWritePtr(targetingPod, sizeof(targetingPod)))  // CTD fix
     {
         systemTarget = NULL;
         targetingPod->SetDesiredTarget(NULL);
@@ -84,8 +84,8 @@ void FireControlComputer::TargetingPodMode(void)
     if (systemTarget)
     {
         /* JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
-        if (systemTarget->BaseData()->IsSim()  and 
-        systemTarget->BaseData()->OnGround()  and 
+        if (systemTarget->BaseData()->IsSim() and 
+        systemTarget->BaseData()->OnGround() and 
         ((SimBaseClass*)systemTarget->BaseData())->IsAwake())
         {
         ((SimBaseClass*)systemTarget->BaseData())->drawPointer->GetPosition (&pos);
@@ -109,7 +109,7 @@ void FireControlComputer::TargetingPodMode(void)
         //    if  (playerFCC and (PlayerOptions.GetAvionicsType() not_eq ATRealistic) and (subMode == SLAVE))
         // M.N. added full realism mode
         if ((playerFCC and (PlayerOptions.GetAvionicsType() not_eq ATRealistic and PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
-             and (subMode == SLAVE)) or ((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP)
+            and (subMode == SLAVE)) or ((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP)
         {
             if (systemTarget and systemTarget->BaseData()->OnGround())
             {
@@ -642,11 +642,11 @@ void FireControlComputer::TargetingPodMode(void)
                     while (curTarget)
                     {
                         // 2000-10-04 MODIFIED BY S.G. DON'T TARGET AIR VEHICLE
-                        //                if (fabs(curTarget->localData->az - yaw) < minDist  and 
-                        if (curTarget->BaseData()->OnGround() and fabs(curTarget->localData->az - yaw) < minDist  and 
-                            fabs(curTarget->localData->el - pitch) < minDist  and 
-                            curTarget->BaseData()->IsSim()  and 
-                             not curTarget->BaseData()->IsWeapon())
+                        //                if (fabs(curTarget->localData->az - yaw) < minDist and 
+                        if (curTarget->BaseData()->OnGround() and fabs(curTarget->localData->az - yaw) < minDist and 
+                            fabs(curTarget->localData->el - pitch) < minDist and 
+                            curTarget->BaseData()->IsSim() and 
+ not curTarget->BaseData()->IsWeapon())
                         {
                             if (targetingPod->CanSeeObject(curTarget) and targetingPod->CanDetectObject(curTarget))
                             {
@@ -848,12 +848,12 @@ void FireControlComputer::CheckFeatures(LaserPodClass* targetingPod)
 
                 // 2001-11-01 Added IsDead ||
                 //IsExploding check by M.N. - we don't want to bomb something that is already destroyed
-                if ((CurRange < curMin) and  not (testObject->IsDead() or testObject->IsExploding()))
+                if ((CurRange < curMin) and not (testObject->IsDead() or testObject->IsExploding()))
                 {
                     //simTarg = (SimBaseClass*)testObject;
                     //if (simTarg->IsStatic())
                     //fc = GetFeatureClassData(((Objective)simTarg)->GetFeatureID(0));
-                    //if (fc and  not F4IsBadReadPtr(fc, sizeof (fc)) and fc->Priority > 2)
+                    //if (fc and not F4IsBadReadPtr(fc, sizeof (fc)) and fc->Priority > 2)
                     // higher priority number = lower priority
                     closestObj = testObject;
                     curMin = CurRange;

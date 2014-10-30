@@ -54,9 +54,9 @@ int VisualClass::CanSeeObject(SimObjectType* obj)
     SimObjectLocalData* objData = obj->localData;
 
     // This test seems a little weird.  Could it be optimized by moving the adds and using fabs()?
-    if (objData->az < (seekerAzCenter + typeData->right)  and 
-        objData->az > (seekerAzCenter + typeData->left)  and 
-        objData->el < (seekerElCenter + typeData->top)  and 
+    if (objData->az < (seekerAzCenter + typeData->right) and 
+        objData->az > (seekerAzCenter + typeData->left) and 
+        objData->el < (seekerElCenter + typeData->top) and 
         objData->el > (seekerElCenter + typeData->bottom))
         return TRUE;
     else
@@ -66,9 +66,9 @@ int VisualClass::CanSeeObject(SimObjectType* obj)
 inline int VisualClass::CanSeeObject(float az, float el)
 {
     // This test seems a little weird.  Could it be optimized by moving the adds and using fabs()?
-    if (az < (seekerAzCenter + typeData->right)  and 
-        az > (seekerAzCenter + typeData->left)  and 
-        el < (seekerElCenter + typeData->top)  and 
+    if (az < (seekerAzCenter + typeData->right) and 
+        az > (seekerAzCenter + typeData->left) and 
+        el < (seekerElCenter + typeData->top) and 
         el > (seekerElCenter + typeData->bottom))
         return TRUE;
     else

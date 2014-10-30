@@ -192,7 +192,7 @@ BOOL Texture::LoadImage(char *filename, DWORD newFlags, BOOL addDefaultPath)
     ShiAssert(filename);
     ShiAssert(imageData == NULL);
 
-    flags or_eq  newFlags;
+    flags or_eq newFlags;
 
     if (addDefaultPath)
     {
@@ -209,7 +209,7 @@ BOOL Texture::LoadImage(char *filename, DWORD newFlags, BOOL addDefaultPath)
 
     if (texFile.imageType == IMAGE_TYPE_APL)
     {
-        flags or_eq  MPR_TI_ALPHA;
+        flags or_eq MPR_TI_ALPHA;
     }
 
     result = texFile.glOpenFileMem(fullname);
@@ -264,15 +264,15 @@ BOOL Texture::LoadImage(char *filename, DWORD newFlags, BOOL addDefaultPath)
         switch (ddsd.ddpfPixelFormat.dwFourCC)
         {
             case MAKEFOURCC('D', 'X', 'T', '1'):
-                flags or_eq  MPR_TI_DXT1;
+                flags or_eq MPR_TI_DXT1;
                 break;
 
             case MAKEFOURCC('D', 'X', 'T', '3'):
-                flags or_eq  MPR_TI_DXT3;
+                flags or_eq MPR_TI_DXT3;
                 break;
 
             case MAKEFOURCC('D', 'X', 'T', '5'):
-                flags or_eq  MPR_TI_DXT5;
+                flags or_eq MPR_TI_DXT5;
                 break;
 
             default:
@@ -282,35 +282,35 @@ BOOL Texture::LoadImage(char *filename, DWORD newFlags, BOOL addDefaultPath)
         switch (ddsd.dwWidth)
         {
             case 16:
-                flags or_eq  MPR_TI_16;
+                flags or_eq MPR_TI_16;
                 break;
 
             case 32:
-                flags or_eq  MPR_TI_32;
+                flags or_eq MPR_TI_32;
                 break;
 
             case 64:
-                flags or_eq  MPR_TI_64;
+                flags or_eq MPR_TI_64;
                 break;
 
             case 128:
-                flags or_eq  MPR_TI_128;
+                flags or_eq MPR_TI_128;
                 break;
 
             case 256:
-                flags or_eq  MPR_TI_256;
+                flags or_eq MPR_TI_256;
                 break;
 
             case 512:
-                flags or_eq  MPR_TI_512;
+                flags or_eq MPR_TI_512;
                 break;
 
             case 1024:
-                flags or_eq  MPR_TI_1024;
+                flags or_eq MPR_TI_1024;
                 break;
 
             case 2048:
-                flags or_eq  MPR_TI_2048;
+                flags or_eq MPR_TI_2048;
                 break;
 
             default:
@@ -364,7 +364,7 @@ bool Texture::CreateTexture(char *strName)
     ShiAssert(texHandle == NULL);
 
     // JB 010318 CTD
-    if (/*  not F4IsBadReadPtr(palette,sizeof(Palette))  and */ (flags bitand MPR_TI_PALETTE))
+    if (/* not F4IsBadReadPtr(palette,sizeof(Palette)) and */ (flags bitand MPR_TI_PALETTE))
     {
         palette->Activate();
         ShiAssert(palette->palHandle);
@@ -556,7 +556,7 @@ TextureHandle::~TextureHandle()
 #endif
 
     // JB 010318 CTD
-    if (m_pDDS and  not F4IsBadReadPtr(m_pDDS, sizeof(IDirectDrawSurface7))) m_pDDS->Release();
+    if (m_pDDS and not F4IsBadReadPtr(m_pDDS, sizeof(IDirectDrawSurface7))) m_pDDS->Release();
 
     m_pDDS = NULL;
 
@@ -600,7 +600,7 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
         if (info bitand MPR_TI_MIPMAP)
         {
             ddsd.dwMipMapCount = 5;
-            ddsd.ddsCaps.dwCaps or_eq  DDSCAPS_MIPMAP | DDSCAPS_COMPLEX;
+            ddsd.ddsCaps.dwCaps or_eq DDSCAPS_MIPMAP | DDSCAPS_COMPLEX;
         }
         else
         {
@@ -637,15 +637,15 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
         if (dwFlags bitand FLAG_RENDERTARGET)
         {
             // Can't render to managed surfaces
-            dwFlags or_eq  FLAG_NOTMANAGED | FLAG_MATCHPRIMARY;
+            dwFlags or_eq FLAG_NOTMANAGED | FLAG_MATCHPRIMARY;
 
             // HW devices cannot render to system memory surfaces
             if (rc and (rc->m_eDeviceCategory >= DXContext::D3DDeviceCategory_Hardware))
             {
-                dwFlags or_eq  FLAG_INLOCALVIDMEM;
+                dwFlags or_eq FLAG_INLOCALVIDMEM;
             }
 
-            ddsd.ddsCaps.dwCaps or_eq  DDSCAPS_3DDEVICE;
+            ddsd.ddsCaps.dwCaps or_eq DDSCAPS_3DDEVICE;
         }
 
         // Turn on texture management for HW devices
@@ -653,31 +653,31 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
         {
             if ( not (dwFlags bitand FLAG_NOTMANAGED))
             {
-                ddsd.ddsCaps.dwCaps2 or_eq  DDSCAPS2_TEXTUREMANAGE;
+                ddsd.ddsCaps.dwCaps2 or_eq DDSCAPS2_TEXTUREMANAGE;
 
                 // Do not create system memory copies
                 if (g_bEnableNonPersistentTextures)
-                    ddsd.ddsCaps.dwCaps2 or_eq  DDSCAPS2_DONOTPERSIST;
+                    ddsd.ddsCaps.dwCaps2 or_eq DDSCAPS2_DONOTPERSIST;
             }
             // Note: mutually exclusive with texture management
             else if (dwFlags bitand FLAG_INLOCALVIDMEM)
             {
-                ddsd.ddsCaps.dwCaps or_eq  DDSCAPS_VIDEOMEMORY;
+                ddsd.ddsCaps.dwCaps or_eq DDSCAPS_VIDEOMEMORY;
             }
         }
         else
         {
-            ddsd.ddsCaps.dwCaps  or_eq  DDSCAPS_SYSTEMMEMORY;
+            ddsd.ddsCaps.dwCaps or_eq DDSCAPS_SYSTEMMEMORY;
         }
 
         if (dwFlags bitand FLAG_HINT_STATIC)
         {
-            ddsd.ddsCaps.dwCaps2 or_eq  DDSCAPS2_HINTSTATIC;
+            ddsd.ddsCaps.dwCaps2 or_eq DDSCAPS2_HINTSTATIC;
         }
 
         if (dwFlags bitand FLAG_HINT_DYNAMIC)
         {
-            ddsd.ddsCaps.dwCaps2 or_eq  DDSCAPS2_HINTDYNAMIC;
+            ddsd.ddsCaps.dwCaps2 or_eq DDSCAPS2_HINTDYNAMIC;
         }
 
         if (m_dwFlags bitand MPR_TI_PALETTE)
@@ -724,7 +724,7 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
             else if (m_dwFlags bitand MPR_TI_DDS)
             {
                 ddsd.ddpfPixelFormat.dwSize = 32;
-                ddsd.ddpfPixelFormat.dwFlags or_eq  DDPF_FOURCC;
+                ddsd.ddpfPixelFormat.dwFlags or_eq DDPF_FOURCC;
 
                 if (m_dwFlags bitand MPR_TI_DXT1)
                 {
@@ -1590,7 +1590,7 @@ HRESULT CALLBACK TextureHandle::TextureSearchCallback(DDPIXELFORMAT* pddpf, VOID
     }
 
     // Make sure current alpha format agrees with requested format type
-    if ((ptsi->dwDesiredAlphaBPP) and  not (pddpf->dwFlags bitand DDPF_ALPHAPIXELS) or wAlphaBits < ptsi->dwDesiredAlphaBPP)
+    if ((ptsi->dwDesiredAlphaBPP) and not (pddpf->dwFlags bitand DDPF_ALPHAPIXELS) or wAlphaBits < ptsi->dwDesiredAlphaBPP)
     {
         return DDENUMRET_OK;
     }
@@ -1714,21 +1714,21 @@ DWORD RGB32ToSurfaceColor(DWORD col, LPDIRECTDRAWSURFACE7 lpDDSurface, DDSURFACE
     // GREEN
     if (greenShift >= 0)
     {
-        dwResult or_eq  (col >>  greenShift) bitand pddsd->ddpfPixelFormat.dwGBitMask;
+        dwResult or_eq (col >>  greenShift) bitand pddsd->ddpfPixelFormat.dwGBitMask;
     }
     else
     {
-        dwResult or_eq  (col << -greenShift) bitand pddsd->ddpfPixelFormat.dwGBitMask;
+        dwResult or_eq (col << -greenShift) bitand pddsd->ddpfPixelFormat.dwGBitMask;
     }
 
     // BLUE
     if (blueShift >= 0)
     {
-        dwResult or_eq  (col >>  blueShift) bitand pddsd->ddpfPixelFormat.dwBBitMask;
+        dwResult or_eq (col >>  blueShift) bitand pddsd->ddpfPixelFormat.dwBBitMask;
     }
     else
     {
-        dwResult or_eq  (col << -blueShift) bitand pddsd->ddpfPixelFormat.dwBBitMask;
+        dwResult or_eq (col << -blueShift) bitand pddsd->ddpfPixelFormat.dwBBitMask;
     }
 
     return dwResult;
@@ -1932,7 +1932,7 @@ bool Texture::DumpImageToFile(char *szFile, int palID)
      {
      bSave = TRUE;
      dwTmp and_eq 0x00FFFFFF;
-     dwTmp or_eq  0xFF000000;
+     dwTmp or_eq 0xFF000000;
      }
      else
      dwTmp = 0;

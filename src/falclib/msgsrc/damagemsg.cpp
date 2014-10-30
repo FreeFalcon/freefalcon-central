@@ -44,7 +44,7 @@ int FalconDamageMessage::Process(uchar autodisp)
             ((SimBaseClass*)theEntity)->ApplyDamage(this);
 
             // Record any hits directly
-            if (TheCampaign.MissionEvaluator and  not (theEntity->IsSetFalcFlag(FEC_INVULNERABLE)))
+            if (TheCampaign.MissionEvaluator and not (theEntity->IsSetFalcFlag(FEC_INVULNERABLE)))
             {
                 TheCampaign.MissionEvaluator->RegisterHit(this);
             }

@@ -204,7 +204,7 @@ void DrawablePlatform::UpdateMetrics(long listNo, const Tpoint *pos, TransportSt
 
     // Have the non-zero height objects update their sorting metrics
     // (The flat objects are always drawn in insertion order, and are assumed
-    //  not to move)
+    // not to move)
     tallStaticObjects.UpdateMetrics(pos);
     dynamicObjects.UpdateMetrics(listNo, pos, transList);
 
@@ -247,7 +247,7 @@ void DrawablePlatform::SortForViewpoint(void)
 
     // Have the non-zero height objects update their sort ordering
     // (The flat objects are always drawn in insertion order, and are assumed
-    //  not to move)
+    // not to move)
     tallStaticObjects.SortForViewpoint();
     dynamicObjects.SortForViewpoint();
 

@@ -164,7 +164,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
 
 
 
-    if (type_flags and  not (type_flags bitand WeaponDataTable[wid].Flags) and  not (type_flags bitand WEAP_BAI_LOADOUT) and  not (type_flags bitand WEAP_DEAD_LOADOUT))
+    if (type_flags and not (type_flags bitand WeaponDataTable[wid].Flags) and not (type_flags bitand WEAP_BAI_LOADOUT) and not (type_flags bitand WEAP_DEAD_LOADOUT))
         score = 0;
 
     if (type_flags and type_flags bitand WeaponDataTable[wid].Flags)
@@ -183,7 +183,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
     // END OF ADDED SECTION 2002-01-26
     if (type_flags bitand WEAP_BAI_LOADOUT)
     {
-        if (((WeaponDataTable[wid].GuidanceFlags bitand WEAP_LASER) and (wid not_eq 68 or wid not_eq 310)) or // 2002-01-24 MODIFIED BY S.G. Added () around the '&' statements since it has lower precedence than  and 
+        if (((WeaponDataTable[wid].GuidanceFlags bitand WEAP_LASER) and (wid not_eq 68 or wid not_eq 310)) or // 2002-01-24 MODIFIED BY S.G. Added () around the '&' statements since it has lower precedence than and 
             (WeaponDataTable[wid].GuidanceFlags bitand WEAP_RADAR) ||
             (WeaponDataTable[wid].GuidanceFlags bitand WEAP_ANTIRADATION))
             score = 0;
@@ -209,7 +209,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
     {
         score = score * WeaponDataTable[wid].Range / 100;
 
-        if ((WeaponDataTable[wid].GuidanceFlags bitand  WEAP_LASER) ||
+        if ((WeaponDataTable[wid].GuidanceFlags bitand WEAP_LASER) ||
             ( not (WeaponDataTable[wid].Flags bitand WEAP_CLUSTER) and (WeaponDataTable[wid].Flags bitand WEAP_BOMBGPS)))
             score = score / (WeaponDataTable[wid].Strength + 1) * 200;
 
@@ -301,7 +301,7 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
     {
         // RV - Biker - Jammers now do overwrite AA and AG weapons
         //if ( not Weapon[hp] and ( not sl or not Weapon[lhp+1-hp])) // Only check for empty hard points
-        if ( not Weapon[hp] and ( not sl or not Weapon[lhp + 1 - hp]) or ((type_flags bitand WEAP_ECM or type_flags bitand WEAP_LASER_POD) and  not (WeaponDataTable[Weapon[hp]].Flags bitand (WEAP_FUEL | WEAP_RECON)))) // Only check for empty hard points
+        if ( not Weapon[hp] and ( not sl or not Weapon[lhp + 1 - hp]) or ((type_flags bitand WEAP_ECM or type_flags bitand WEAP_LASER_POD) and not (WeaponDataTable[Weapon[hp]].Flags bitand (WEAP_FUEL | WEAP_RECON)))) // Only check for empty hard points
             //if ( not Weapon[hp] or (temp_flags bitand WEAP_LASER_POD))
         {
             if (vc->Weapons[hp] == 255) // This is a weapon list

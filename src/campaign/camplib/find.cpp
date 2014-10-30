@@ -1082,8 +1082,8 @@ Objective FindNearestFriendlyAirbase(Team who, GridIndex X, GridIndex Y)
     while (o not_eq NULL)
     {
         if (
-            (GetTTRelations(o->GetTeam(), who) <= Neutral)  and 
-            o->GetType() == TYPE_AIRBASE  and 
+            (GetTTRelations(o->GetTeam(), who) <= Neutral) and 
+            o->GetType() == TYPE_AIRBASE and 
             o->brain and o->brain->NumOperableRunways() // JB 010729 CTD
         )
         {
@@ -1406,8 +1406,8 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
         if (e->GetDetectionRange(mt) > d and GetRoE(e->GetTeam(), who, roe_check))
         {
             if (
-                e->IsUnit() and  not (flags bitand FIND_NOAIR and e->GetDomain() == DOMAIN_AIR)  and 
-                 not (flags bitand FIND_NOMOVERS and ((Unit)e)->Moving())
+                e->IsUnit() and not (flags bitand FIND_NOAIR and e->GetDomain() == DOMAIN_AIR) and 
+ not (flags bitand FIND_NOMOVERS and ((Unit)e)->Moving())
             )
             {
                 d = d; // placeholder. This unit is valid
@@ -1432,7 +1432,7 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
             {
                 threats += 4;
             }
-            else if (d > VisualDetectionRange[mt] and  not (flags bitand FIND_NODETECT))
+            else if (d > VisualDetectionRange[mt] and not (flags bitand FIND_NODETECT))
             {
                 threats++;
             }
@@ -1492,9 +1492,9 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
  got = 0;
  if (tteam[e->GetTeam()])
  {
- if (e->IsUnit()  and 
-  not (flags bitand FIND_NOMOVERS and ((Unit)e)->Moving())  and 
-  not (flags bitand FIND_NOAIR and e->GetDomain() == DOMAIN_AIR)  and 
+ if (e->IsUnit() and 
+ not (flags bitand FIND_NOMOVERS and ((Unit)e)->Moving()) and 
+ not (flags bitand FIND_NOAIR and e->GetDomain() == DOMAIN_AIR) and 
  (flags bitand FIND_FINDUNSPOTTED or e->GetSpotted(who)))
  d = d; // placeholder. This unit is valid
  else if (e->IsObjective())
@@ -1585,11 +1585,11 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
             }
 
             if (
-                ( not e->IsUnit() or  not ((Unit)e)->Moving())  and 
+                ( not e->IsUnit() or not ((Unit)e)->Moving()) and 
 #if VU_ALL_FILTERED
-                 not foundlist->Find(e)
+ not foundlist->Find(e)
 #else
-                 not foundlist->Find(e->Id())
+ not foundlist->Find(e->Id())
 #endif
             )
             {
@@ -1599,12 +1599,12 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
                 if (e->GetAproxHitChance(mt, d) > 0)
                 {
                     foundlist->ForcedInsert(e);
-                    retval or_eq  NEED_SEAD;
+                    retval or_eq NEED_SEAD;
                 }
                 else if ( not (flags bitand FIND_NODETECT) and e->GetDetectionRange(mt) > d)
                 {
                     foundlist->ForcedInsert(e);
-                    retval or_eq  NEED_ECM;
+                    retval or_eq NEED_ECM;
                 }
             }
         }
@@ -1720,8 +1720,8 @@ FalconSessionEntity* FindPlayer(Flight flight, uchar planeNum, uchar pilotSlot)
         while (curSession)
         {
             if (
-                curSession->GetPlayerFlightID() == flight->Id()  and 
-                curSession->GetAircraftNum() == planeNum  and 
+                curSession->GetPlayerFlightID() == flight->Id() and 
+                curSession->GetAircraftNum() == planeNum and 
                 curSession->GetPilotSlot() == pilotSlot
             )
             {

@@ -223,12 +223,12 @@ int WayPointClass::Save(VU_BYTE **stream)
 
     if (TargetID not_eq FalconNullId)
     {
-        haves or_eq  WP_HAVE_TARGET;
+        haves or_eq WP_HAVE_TARGET;
     }
 
     if (Depart not_eq Arrive)
     {
-        haves or_eq  WP_HAVE_DEPTIME;
+        haves or_eq WP_HAVE_DEPTIME;
     }
 
     memcpy(*stream, &haves, sizeof(uchar));
@@ -291,12 +291,12 @@ int WayPointClass::Save(FILE* fp)
 
     if (TargetID not_eq FalconNullId)
     {
-        haves or_eq  WP_HAVE_TARGET;
+        haves or_eq WP_HAVE_TARGET;
     }
 
     if (Depart not_eq Arrive)
     {
-        haves or_eq  WP_HAVE_DEPTIME;
+        haves or_eq WP_HAVE_DEPTIME;
     }
 
     fwrite(&haves, sizeof(uchar), 1, fp);
@@ -586,8 +586,8 @@ void WayPointClass::GetLocation(float *x, float *y, float *z) const
     {
         //Check that the Sim position and the Grid position are in sync.  If so, return the sim position
         if (
-            //(GridX == SimToGrid(SimX)) and (GridY == SimToGrid(SimY))  and 
-            (GridX == gx) and (GridY == gy)  and 
+            //(GridX == SimToGrid(SimX)) and (GridY == SimToGrid(SimY)) and 
+            (GridX == gx) and (GridY == gy) and 
             (GridZ == (short)((-1.0F * SimZ) / GRIDZ_SCALE_FACTOR))
         )
         {
@@ -666,7 +666,7 @@ CampaignTime SetWPTimes(WayPoint w, CampaignTime start, int speed, int flags)
     // If the first waypoint passed is an alternate - assume we want it's time set
     if (w->GetWPFlags() bitand WPF_ALTERNATE)
     {
-        flags or_eq  WPTS_SET_ALTERNATE_TIMES;
+        flags or_eq WPTS_SET_ALTERNATE_TIMES;
     }
 
     w->GetWPLocation(&x, &y);
@@ -698,7 +698,7 @@ CampaignTime SetWPTimes(WayPoint w, CampaignTime start, int speed, int flags)
             land = mission_time;
         }
 
-        if ((w->GetWPFlags() bitand WPF_ALTERNATE) and  not (flags bitand WPTS_SET_ALTERNATE_TIMES))
+        if ((w->GetWPFlags() bitand WPF_ALTERNATE) and not (flags bitand WPTS_SET_ALTERNATE_TIMES))
         {
             w->SetWPTimes(0);
         }
@@ -723,7 +723,7 @@ CampaignTime SetWPTimes(WayPoint w, long delta, int flags)
 
     // If the first waypoint passed is an alternate - assume we want it's time set
     if (w->GetWPFlags() bitand WPF_ALTERNATE)
-        flags or_eq  WPTS_SET_ALTERNATE_TIMES;
+        flags or_eq WPTS_SET_ALTERNATE_TIMES;
 
     length = w->GetWPArrivalTime() + delta;
 
@@ -752,7 +752,7 @@ CampaignTime SetWPTimes(WayPoint w, long delta, int flags)
             land = mission_time;
         }
 
-        if ((w->GetWPFlags() bitand WPF_ALTERNATE) and  not (flags bitand WPTS_SET_ALTERNATE_TIMES))
+        if ((w->GetWPFlags() bitand WPF_ALTERNATE) and not (flags bitand WPTS_SET_ALTERNATE_TIMES))
         {
             w->SetWPTimes(0);
         }

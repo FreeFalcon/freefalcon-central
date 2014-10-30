@@ -789,7 +789,7 @@ InternalGetStackTraceString(DWORD                dwOpts  ,
             else
             {
                 // If the symbol was not found, the source and line will
-                //  not be found either so leave now.
+                // not be found either so leave now.
                 szRet = g_szBuff ;
                 __leave ;
             }

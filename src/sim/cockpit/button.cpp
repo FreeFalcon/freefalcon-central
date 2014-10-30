@@ -640,9 +640,9 @@ BOOL CPButtonView::HandleEvent(int* cursorIndex, int event, int xpos, int ypos)
 
     BOOL isTarget = FALSE;
 
-    if (xpos >= mDestRect.left  and 
-        xpos <= mDestRect.right  and 
-        ypos >= mDestRect.top  and 
+    if (xpos >= mDestRect.left and 
+        xpos <= mDestRect.right and 
+        ypos >= mDestRect.top and 
         ypos <= mDestRect.bottom)
     {
 

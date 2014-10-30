@@ -63,7 +63,7 @@ VirtualDisplay* WpnMfdDrawable::GetDisplay(void)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if ( not playerAC or not playerAC->Sms ||
-         not playerAC->Sms->curWeapon)
+ not playerAC->Sms->curWeapon)
         return privateDisplay;
 
     Sms = playerAC->Sms;
@@ -78,7 +78,7 @@ VirtualDisplay* WpnMfdDrawable::GetDisplay(void)
         return retval;
     }
 
-    if (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponClass() == wcAgmWpn  and 
+    if (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponClass() == wcAgmWpn and 
         Sms->curWeaponType == wtAgm65)
     {
         if (theMissile and theMissile->IsMissile())
@@ -209,7 +209,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     //Reference symbol
     theRadar->GetCursorPosition(&cX, &cY);
 
-    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp  and 
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
     {
         // FRB - B&W display
@@ -326,7 +326,7 @@ void WpnMfdDrawable::PushButton(int whichButton, int whichMFD)
                 break;
 
             case 4:
-                ((MissileClass*)Sms->GetCurrentWeapon())->HOC =  not ((MissileClass*)Sms->GetCurrentWeapon())->HOC;
+                ((MissileClass*)Sms->GetCurrentWeapon())->HOC = not ((MissileClass*)Sms->GetCurrentWeapon())->HOC;
                 break;
 
             case 19:
@@ -619,8 +619,8 @@ void WpnMfdDrawable::OSBLabels(VirtualDisplay* display)
 }
 void WpnMfdDrawable::DrawRALT(VirtualDisplay* display)
 {
-    if (TheHud and  not (self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
-        and self->af->platform->RaltReady()  and 
+    if (TheHud and not (self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
+       and self->af->platform->RaltReady() and 
         TheHud->FindRollAngle(-TheHud->hat) and TheHud->FindPitchAngle(-TheHud->hat))
     {
         float x, y = 0;
@@ -865,7 +865,7 @@ void WpnMfdDrawable::OffMode(VirtualDisplay* display)
     display->SetFont(ofont);
     theRadar->GetCursorPosition(&cX, &cY);
 
-    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and  // JPG 14 Dec 03 - Added BE/ownship info
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and // JPG 14 Dec 03 - Added BE/ownship info
         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
     {
         DrawBullseyeCircle(display, cX, cY);

@@ -44,7 +44,7 @@ int CampEventDataMessage::Process(uchar autodisp)
     {
         case eventMessage:
             if (dataBlock.status)
-                CampEvents[dataBlock.event]->flags or_eq  CE_FIRED;
+                CampEvents[dataBlock.event]->flags or_eq CE_FIRED;
             else
                 CampEvents[dataBlock.event]->flags and_eq compl CE_FIRED;
 

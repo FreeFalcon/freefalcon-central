@@ -102,7 +102,7 @@ void HudClass::DrawDogfight()
              4)Self-track
             */
             //MI make it dependant on missil bore/slave
-            //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon  and 
+            //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon and 
             // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
             // DrawMissileReticle(0.3F, FALSE, TRUE);
             //else
@@ -211,7 +211,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                         }
                         else
                         {
-                            // if (((MissileClass*)wpn)->isCaged and  not ((MissileClass*)wpn)->isSpot)
+                            // if (((MissileClass*)wpn)->isCaged and not ((MissileClass*)wpn)->isSpot)
                             if (g_bRealisticAvionics and ((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
                             {
                                 DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
@@ -238,7 +238,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                     }
                     else
                     {
-                        // if (((MissileClass*)wpn)->isCaged and  not ((MissileClass*)wpn)->isSpot)
+                        // if (((MissileClass*)wpn)->isCaged and not ((MissileClass*)wpn)->isSpot)
                         if (g_bRealisticAvionics and wpn and (((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr)))
                         {
                             DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
@@ -282,7 +282,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                 {
                     // JPG 17 Jan 04 - No again MI, see above
                     //MI make it dependant on missil bore/slave
-                    //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon  and 
+                    //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon and 
                     // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
                     // DrawMissileReticle(0.3F, FALSE, TRUE);
                     //else
@@ -360,7 +360,7 @@ void HudClass::DrawAirMissile(void)
                         }
                         else
                         {
-                            // if (((MissileClass*)wpn)->isCaged and  not ((MissileClass*)wpn)->isSpot)
+                            // if (((MissileClass*)wpn)->isCaged and not ((MissileClass*)wpn)->isSpot)
                             if (g_bRealisticAvionics and ((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
                             {
                                 DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
@@ -390,7 +390,7 @@ void HudClass::DrawAirMissile(void)
                         }
                         else
                         {
-                            // if (((MissileClass*)wpn)->isCaged and  not ((MissileClass*)wpn)->isSpot)
+                            // if (((MissileClass*)wpn)->isCaged and not ((MissileClass*)wpn)->isSpot)
                             if (g_bRealisticAvionics and ((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
                             {
                                 DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
@@ -436,7 +436,7 @@ void HudClass::DrawAirMissile(void)
                 if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                 {
                     //MI make it dependant on missil bore/slave
-                    //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon  and 
+                    //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon and 
                     // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
                     // DrawMissileReticle(0.3F, FALSE, TRUE);
                     //else
@@ -706,7 +706,7 @@ void HudClass::DrawAim9Diamond(void)
                 }
             }
 
-            if (((MissileClass*)wpn)->targetPtr)// and  not ((MissileClass*)wpn)->isCaged )
+            if (((MissileClass*)wpn)->targetPtr)// and not ((MissileClass*)wpn)->isCaged )
             {
                 // Marco - here we have an uncaged seeker with a target locked
                 xPos = xPos + (((float)rand() / (float)RAND_MAX)  - 0.5f) * 0.01f;
@@ -775,7 +775,7 @@ void HudClass::DrawAim9Diamond(void)
                 }
             }
             // Marco Edit - flashing uncaged and locked diamond
-            else if (wpn and wpn->IsMissile() and  not ((MissileClass*)wpn)->isCaged)
+            else if (wpn and wpn->IsMissile() and not ((MissileClass*)wpn)->isCaged)
             {
 
                 if ((((MissileClass*)wpn)->targetPtr) and (targetData) and //Wombat778 10-16-2003 Added this mess as per MIRV (only flash diamond when FCC has targeted and in range)
@@ -824,7 +824,7 @@ void HudClass::DrawAim9DLZ(void)
     wpn = playerAC->Sms->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
 
     //MI prevent some strange things writte on the HUD
-    if (FCC->missileTarget and playerAC and playerAC->Sms  and 
+    if (FCC->missileTarget and playerAC and playerAC->Sms and 
         playerAC->Sms->curWeapon)
     {
         // Range Carat / Closure
@@ -848,7 +848,7 @@ void HudClass::DrawAim9DLZ(void)
                     }
                     else
                     {
-                        // if (((MissileClass*)wpn)->isCaged and  not ((MissileClass*)wpn)->isSpot)
+                        // if (((MissileClass*)wpn)->isCaged and not ((MissileClass*)wpn)->isSpot)
                         if (((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
                         {
                             DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
@@ -1047,7 +1047,7 @@ void HudClass::DrawAim120DLZ(bool dfgt)
 
 
     //MI Draw "HOJ" string, feature of RP4, Home on Jamming
-    else if (FCC->TargetPtr() and FCC->TargetPtr()->BaseData() and  // JB 010708 CTD
+    else if (FCC->TargetPtr() and FCC->TargetPtr()->BaseData() and // JB 010708 CTD
              FCC->TargetPtr()->BaseData()->IsSPJamming())
     {
         //only draw it when there is a missile in the air

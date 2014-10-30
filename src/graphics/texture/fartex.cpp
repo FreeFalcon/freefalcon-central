@@ -140,7 +140,7 @@ BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
 
     // Open and hang onto the distant texture composite image file
     sprintf(filename, "%s%s", path, "FarTiles.RAW");
-    fartexFile.Open(filename, FALSE,  not g_bUseMappedFiles);
+    fartexFile.Open(filename, FALSE, not g_bUseMappedFiles);
 
     // Initialize the lighting conditions and register for future time of day updates
     TimeUpdateCallback(this);
@@ -166,7 +166,7 @@ BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
         fclose(fp);
 
         // Open and hang onto the distant texture DDS image file
-        fartexDDSFile.Open(szRawName, FALSE,  not g_bUseMappedFiles);
+        fartexDDSFile.Open(szRawName, FALSE, not g_bUseMappedFiles);
     }
 
     return TRUE;
@@ -585,8 +585,8 @@ void FarTexDB::Activate(DWORD offset)
         ShiAssert(texArray[offset].handle);
 
         DWORD info = MPR_TI_DDS;
-        info or_eq  MPR_TI_DXT1;
-        info or_eq  MPR_TI_32;
+        info or_eq MPR_TI_DXT1;
+        info or_eq MPR_TI_32;
 
         ((TextureHandle *)texArray[offset].handle)->Create("FarTexDB", info, 32, IMAGE_SIZE, IMAGE_SIZE);
         ((TextureHandle *)texArray[offset].handle)->Load(0, 0, texArray[offset].bits, false, true, linearSize);
@@ -601,7 +601,7 @@ void FarTexDB::Activate(DWORD offset)
         WORD info = MPR_TI_PALETTE;
 
         if (g_bEnableStaticTerrainTextures)
-            dwFlags or_eq  TextureHandle::FLAG_HINT_STATIC;
+            dwFlags or_eq TextureHandle::FLAG_HINT_STATIC;
 
         ((TextureHandle *)texArray[offset].handle)->Create("FarTexDB", info, 8, IMAGE_SIZE, IMAGE_SIZE, dwFlags);
 
@@ -754,7 +754,7 @@ void FarTexDB::FlushHandles()
         fclose(fp);
 
         // Open and hang onto the distant texture DDS image file
-        fartexDDSFile.Open(szRawName, FALSE,  not g_bUseMappedFiles);
+        fartexDDSFile.Open(szRawName, FALSE, not g_bUseMappedFiles);
     }
 }
 
@@ -821,7 +821,7 @@ bool FarTexDB::SyncDDSTextures(bool bForce)
     fclose(fpRaw);
     RemoveDirectory(texturePath);
 
-    fartexDDSFile.Open(szRawName, FALSE,  not g_bUseMappedFiles);
+    fartexDDSFile.Open(szRawName, FALSE, not g_bUseMappedFiles);
 
     return true;
 }

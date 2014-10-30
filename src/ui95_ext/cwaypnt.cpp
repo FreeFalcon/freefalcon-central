@@ -88,7 +88,7 @@ BOOL C_Waypoint::HideByType(long typemask)
     {
         if (cur->Type bitand typemask)
         {
-            cur->Flags or_eq  C_BIT_INVISIBLE;
+            cur->Flags or_eq C_BIT_INVISIBLE;
             retval = TRUE;
         }
 
@@ -140,7 +140,7 @@ WAYPOINTLIST *C_Waypoint::AddWaypointToList(long CampID, short type, long NormID
     newitem->Flags = C_BIT_ENABLED;
 
     if (Dragable)
-        newitem->Flags or_eq  C_BIT_DRAGABLE;
+        newitem->Flags or_eq C_BIT_DRAGABLE;
 
     newitem->Dragable = Dragable;
     newitem->state = 0;
@@ -555,7 +555,7 @@ BOOL C_Waypoint::UpdateInfo(long ID, float x, float y)
             }
         }
 
-        if ((ox not_eq cur->x or oy not_eq cur->y) and  not (cur->Flags bitand C_BIT_INVISIBLE))
+        if ((ox not_eq cur->x or oy not_eq cur->y) and not (cur->Flags bitand C_BIT_INVISIBLE))
             return(TRUE);
     }
 
@@ -620,7 +620,7 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     _TCHAR buf[15];
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED) or not Dragable(0))
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Dragable(0))
         return(FALSE);
 
     if (over not_eq Parent_)

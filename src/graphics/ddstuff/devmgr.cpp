@@ -438,7 +438,7 @@ int DeviceManager::DDDriverInfo::FindDisplayMode(int nWidth, int nHeight, int nB
 {
     for (int i = 0; i < (int) m_arrModes.size(); i++)
     {
-        if (m_arrModes[i].dwWidth == nWidth and m_arrModes[i].dwHeight == nHeight  and 
+        if (m_arrModes[i].dwWidth == nWidth and m_arrModes[i].dwHeight == nHeight and 
             m_arrModes[i].ddpfPixelFormat.dwRGBBitCount == nBPP)
             return i;
     }
@@ -519,7 +519,7 @@ bool DeviceManager::DDDriverInfo::D3DDeviceInfo::IsHardware()
 
 bool DeviceManager::DDDriverInfo::D3DDeviceInfo::CanFilterAnisotropic()
 {
-    bool bCanDoAnisotropic = (m_devDesc.dpcTriCaps.dwTextureFilterCaps bitand D3DPTFILTERCAPS_MAGFANISOTROPIC)  and 
+    bool bCanDoAnisotropic = (m_devDesc.dpcTriCaps.dwTextureFilterCaps bitand D3DPTFILTERCAPS_MAGFANISOTROPIC) and 
                              (m_devDesc.dpcTriCaps.dwTextureFilterCaps bitand D3DPTFILTERCAPS_MINFANISOTROPIC);
     return bCanDoAnisotropic;
 }
@@ -651,12 +651,12 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
         MonoPrint("%s", g_CardDetails);  // JB 010215
 
         DWORD m_dwCoopFlags = NULL;
-        m_dwCoopFlags or_eq  DDSCL_FPUPRESERVE; // OW FIXME: check if this can be eliminated by eliminating ALL controlfp calls in all files
+        m_dwCoopFlags or_eq DDSCL_FPUPRESERVE; // OW FIXME: check if this can be eliminated by eliminating ALL controlfp calls in all files
 
-        if (g_bForceDXMultiThreadedCoopLevel) m_dwCoopFlags or_eq  DDSCL_MULTITHREADED;
+        if (g_bForceDXMultiThreadedCoopLevel) m_dwCoopFlags or_eq DDSCL_MULTITHREADED;
 
-        if (bFullscreen) m_dwCoopFlags or_eq  DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN | DDSCL_ALLOWREBOOT;
-        else m_dwCoopFlags or_eq  DDSCL_NORMAL;
+        if (bFullscreen) m_dwCoopFlags or_eq DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN | DDSCL_ALLOWREBOOT;
+        else m_dwCoopFlags or_eq DDSCL_NORMAL;
 
         CheckHR(m_pDD->SetCooperativeLevel(m_hWnd, m_dwCoopFlags));
 
@@ -862,7 +862,7 @@ void DXContext::AttachDepthBuffer(IDirectDrawSurface7 *p)
 
         // Software devices require system-memory depth buffers.
         if (m_eDeviceCategory == D3DDeviceCategory_Software)
-            ddsd.ddsCaps.dwCaps or_eq  DDSCAPS_SYSTEMMEMORY;
+            ddsd.ddsCaps.dwCaps or_eq DDSCAPS_SYSTEMMEMORY;
 
         CheckHR(m_pDD->CreateSurface(&ddsd, &pDDSZB, NULL));
 
@@ -913,10 +913,10 @@ void DXContext::CheckCaps()
         MonoPrint(" SrcBlend SRCALPHA not supported\n");
 
     if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwDestBlendCaps bitand D3DPBLENDCAPS_INVSRCALPHA))
-        MonoPrint(" DestBlend INVSRCALPHA  not supported\n");
+        MonoPrint(" DestBlend INVSRCALPHA not supported\n");
 
-    if ( not (m_pcapsDD->dwCaps bitand DDCAPS_COLORKEY  and 
-          m_pcapsDD->dwCKeyCaps bitand DDCKEYCAPS_DESTBLT  and 
+    if ( not (m_pcapsDD->dwCaps bitand DDCAPS_COLORKEY and 
+          m_pcapsDD->dwCKeyCaps bitand DDCKEYCAPS_DESTBLT and 
           m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_DRAWPRIMTLVERTEX))
         MonoPrint(" Insufficient color key support\n");
 

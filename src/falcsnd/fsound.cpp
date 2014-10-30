@@ -744,7 +744,7 @@ void F4SetSoundFlags(int soundIdx, long flags)
         snd = gSoundDriver->FindSample(soundIdx);
 
         if (snd not_eq NULL)
-            snd->Flags or_eq  flags;
+            snd->Flags or_eq flags;
     }
 }
 
@@ -1044,7 +1044,7 @@ BOOL ReadSFXTableTXT(char *sndtable)
                     {
                         if (*arg == flags[l])
                         {
-                            SFX_DEF[i].flags or_eq  1 << l;
+                            SFX_DEF[i].flags or_eq 1 << l;
                         }
                     }
 
@@ -1056,14 +1056,14 @@ BOOL ReadSFXTableTXT(char *sndtable)
             if (SFX_DEF[i].flags bitand (SFX_POS_SELF | SFX_POS_EXTONLY | SFX_POS_EXTINT))
             {
                 // for all those types, set the External flag
-                SFX_DEF[i].flags or_eq  SFX_POS_EXTERN;
+                SFX_DEF[i].flags or_eq SFX_POS_EXTERN;
             }
 
             if (SFX_DEF[i].flags bitand SFX_POS_EXTERN)
             {
                 // for all external types, set the 3d flag
-                SFX_DEF[i].flags or_eq  SFX_FLAGS_3D;
-                // SFX_DEF[i].flags or_eq  SFX_FLAGS_FREQ; // needed for doppler effect // this will be handled in psound
+                SFX_DEF[i].flags or_eq SFX_FLAGS_3D;
+                // SFX_DEF[i].flags or_eq SFX_FLAGS_FREQ; // needed for doppler effect // this will be handled in psound
 
             }
 
@@ -1439,8 +1439,8 @@ extern "C" void F4SoundFXSetCamPosAndOrient(Tpoint *campos, Trotation *camrot, T
             v = playerAC->af->GetSoundExternalVol() + PlayerOptions.SoundExtAttenuation;
 
             if (
-                playerAC->GetNumDOFs() > COMP_CANOPY_DOF  and 
-                playerAC->IsComplex()  and 
+                playerAC->GetNumDOFs() > COMP_CANOPY_DOF and 
+                playerAC->IsComplex() and 
                 playerAC->af->GetCanopyMaxAngle()
             )
             {
@@ -1497,7 +1497,7 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
     // Cobra - Fix CTD when exiting FF
     if (F4IsBadReadPtr(sfxp, sizeof(sfxp))) return;
 
-    if (g_bRealisticAvionics  and 
+    if (g_bRealisticAvionics and 
         (sfxp->flags bitand SFX_FLAGS_VMS))
     {
         AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
@@ -1507,7 +1507,7 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
         {
             if (
                 OTWDriver.DisplayInCockpit() and playerAC->OnGround() ||
-                 not playerAC->playBetty or not playerAC->IsSetFlag(MOTION_OWNSHIP)
+ not playerAC->playBetty or not playerAC->IsSetFlag(MOTION_OWNSHIP)
             )
             {
                 // MD -- 20031125: except if the MAL/IND test button is being pressed to test the warning sound
@@ -1811,7 +1811,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol)
         {
             if (
                 OTWDriver.DisplayInCockpit() and playerAC->OnGround() ||
-                 not playerAC->playBetty or not playerAC->IsSetFlag(MOTION_OWNSHIP)
+ not playerAC->playBetty or not playerAC->IsSetFlag(MOTION_OWNSHIP)
             )
             {
                 // MD -- 20031125: except if the MAL/IND test button is being pressed to test the warning sound

@@ -1937,7 +1937,7 @@ void IMAGE_RSC::Blend(SCREEN *surface, long sx, long sy, long sw, long sh, long 
 }
 
 // NOTE: Although ScaleUp and ScaleDown have the same parameter lists... they are VERY different,
-//       and won't work interchangably
+//      and won't work interchangably
 // Shrink a Bitmap
 void IMAGE_RSC::ScaleDown8(SCREEN *surface, long *Rows, long *Cols, long dx, long dy, long dw, long dh, long offx, long offy)
 {
@@ -2028,7 +2028,7 @@ void IMAGE_RSC::ScaleDown8Overlay(SCREEN *surface, long *Rows, long *Cols, long 
 }
 
 // NOTE: Although ScaleUp and ScaleDown have the similar parameter lists... the meanings are VERY different,
-//       and won't work interchangably
+//      and won't work interchangably
 // Grow a Bitmap
 void IMAGE_RSC::ScaleUp8(SCREEN *surface, long *Rows, long *Cols, long dx, long dy, long dw, long dh)
 {

@@ -44,11 +44,11 @@ CPHsi::CPHsi()
     ///VWF HACK: The following is a hack to make the Tac Eng Instrument
     // Landing Mission agree with the Manual
 
-    if (SimDriver.RunningTactical()  and 
-        current_tactical_mission  and 
-        current_tactical_mission->get_type() == tt_training  and 
-        SimDriver.GetPlayerEntity()  and 
-         not strcmpi(current_tactical_mission->get_title(), "10 Instrument Landing"))
+    if (SimDriver.RunningTactical() and 
+        current_tactical_mission and 
+        current_tactical_mission->get_type() == tt_training and 
+        SimDriver.GetPlayerEntity() and 
+ not strcmpi(current_tactical_mission->get_title(), "10 Instrument Landing"))
     {
         mpHsiValues[HSI_VAL_DESIRED_CRS] = 340.0F;
     }
@@ -245,7 +245,7 @@ void CPHsi::ExecTacan(void)
         ownshipX = SimDriver.GetPlayerEntity()->XPos();
         ownshipY = SimDriver.GetPlayerEntity()->YPos();
 
-        mpHsiFlags[HSI_FLAG_CRS_WARN] =  not gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
+        mpHsiFlags[HSI_FLAG_CRS_WARN] = not gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
         gNavigationSys->GetTCNAttribute(NavigationSystem::RANGE, &tacanRange);
 
         if (gNavigationSys->IsTCNTanker() or gNavigationSys->IsTCNAirbase() or gNavigationSys->IsTCNCarrier())   // now Carrier support
@@ -318,7 +318,7 @@ void CPHsi::ExecILSNav(void)
     {
         pcurrentWaypoint->GetLocation(&waypointX, &waypointY, &waypointZ);
         ExecBeaconProximity(playerAC->XPos(), playerAC->YPos(), waypointX, waypointY);
-        mpHsiFlags[HSI_FLAG_ILS_WARN] =  not gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &gpDew);
+        mpHsiFlags[HSI_FLAG_ILS_WARN] = not gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &gpDew);
         CalcILSCrsDev(gpDew);
     }
 
@@ -563,10 +563,10 @@ void CPHsi::ExecILSTacan(void)
         ownshipX = SimDriver.GetPlayerEntity()->XPos();
         ownshipY = SimDriver.GetPlayerEntity()->YPos();
 
-        mpHsiFlags[HSI_FLAG_CRS_WARN] =  not gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
+        mpHsiFlags[HSI_FLAG_CRS_WARN] = not gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
         gNavigationSys->GetTCNAttribute(NavigationSystem::RANGE, &range);
 
-        mpHsiFlags[HSI_FLAG_ILS_WARN] =  not gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &gpDew);
+        mpHsiFlags[HSI_FLAG_ILS_WARN] = not gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &gpDew);
         ExecBeaconProximity(ownshipX, ownshipY, tacanX, tacanY);
 
         if (BeaconInRange(mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON], range))
@@ -1278,7 +1278,7 @@ void CPHsiView::CreateLit(void)
 
             // Check if we can use a single texture
             if (
-                (dwMaxTextureWidth >= (unsigned int)mCompassWidth)  and 
+                (dwMaxTextureWidth >= (unsigned int)mCompassWidth) and 
                 (dwMaxTextureHeight >= (unsigned int)mCompassHeight)
             )
             {

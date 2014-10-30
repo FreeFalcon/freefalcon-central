@@ -1013,7 +1013,7 @@ void LoadFlight(VU_ID flightID)
             Object.PosZ = 0;
 
         if (classPtr->visType[0] == MapVisId(VIS_F16C) ||
-            (((DrawableBSP*)obj->object)->instance.ParentObject->nSwitches >= 10  and 
+            (((DrawableBSP*)obj->object)->instance.ParentObject->nSwitches >= 10 and 
              ((DrawableBSP*)obj->object)->instance.ParentObject->nDOFs >= 24))
         {
             // F16 switches/DOFS
@@ -1513,7 +1513,7 @@ void DetermineWeight(VU_ID FlightID)
 
         if (_CURRENT_WEIGHT_[i] > _MAX_WEIGHT_[i])
         {
-            gFlightOverloaded or_eq  1 << i;
+            gFlightOverloaded or_eq 1 << i;
         }
     }
 }
@@ -2032,7 +2032,7 @@ void ArmPlaneCB(long ID, short hittype, C_Base *control)
     if (count > control->GetUserNumber(1))
         count = 0;
 
-    if (count and   not TotalAvailable(static_cast<short>(weaponID)))
+    if (count and not TotalAvailable(static_cast<short>(weaponID)))
         count--;
 
     if ( not count and count == startcount) //None available
@@ -2649,7 +2649,7 @@ void MakeStoresList(C_Window *win, long client)
                                             btn->SetImage(C_STATE_5, LAU2L_DIFF);
                                             btn->SetImage(C_STATE_DISABLED, LAU2L_DIS);
                                         }
-                                        else if (i == (HardPoints / 2) and  not (HardPoints bitand 1))
+                                        else if (i == (HardPoints / 2) and not (HardPoints bitand 1))
                                         {
                                             btn->SetBackImage(LAU2C_EMPTY);
                                             btn->SetImage(C_STATE_0, LAU2C_EMPTY);
@@ -2713,7 +2713,7 @@ void MakeStoresList(C_Window *win, long client)
                                             btn->SetImage(C_STATE_4, LAU2L_FULL);
                                             btn->SetImage(C_STATE_5, LAU2L_DIFF);
                                         }
-                                        else if (i == (HardPoints / 2) and  not (HardPoints bitand 1))
+                                        else if (i == (HardPoints / 2) and not (HardPoints bitand 1))
                                         {
                                             btn->SetImage(C_STATE_4, LAU2C_FULL);
                                             btn->SetImage(C_STATE_5, LAU2C_DIFF);

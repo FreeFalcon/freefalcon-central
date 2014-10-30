@@ -67,7 +67,7 @@ AllocAndFillProcessModuleList(HANDLE hHeap    ,
                             pModArray               ,
                             puiCount) ;
     // Save off the last error so that the assert can still fire and
-    //  not change the value.
+    // not change the value.
     DWORD dwLastError = GetLastError() ;
     ASSERT(TRUE == bRet) ;
 

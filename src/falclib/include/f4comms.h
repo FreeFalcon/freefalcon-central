@@ -44,7 +44,7 @@ extern int F4CommsDropInterval;
 extern int F4CommsSwapInterval;
 extern int F4SessionUpdateTime;
 extern int F4SessionAliveTimeout;
-extern int F4CommsMTU;  // More of Unz and  Boosters stuff
+extern int F4CommsMTU;  // More of Unz and Boosters stuff
 // ========================================================================
 // Some defines
 // ========================================================================

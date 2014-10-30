@@ -527,11 +527,11 @@ int GroundUnitClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spo
 
     // Check type of entity before GCI is used
     if (CheckValidType(this, e))
-        detTmp or_eq  e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
+        detTmp or_eq e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
 
     // Check type of entity before GCI is used
     if (CheckValidType(e, this))
-        detTmp or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
+        detTmp or_eq GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
 
     if ( not (detTmp bitand REACTION_MASK))
         return 0;
@@ -598,11 +598,11 @@ int GroundUnitClass::DetectVs(CampEntity e, float *d, int *combat, int *spot, in
 
     // Check type of entity before GCI is used
     if (CheckValidType(this, e))
-        detTmp or_eq  e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
+        detTmp or_eq e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
 
     // Check type of entity before GCI is used
     if (CheckValidType(e, this))
-        detTmp or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
+        detTmp or_eq GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
 
     if ( not (detTmp bitand REACTION_MASK))
         return 0;
@@ -1076,7 +1076,7 @@ int BuildGroundWP(Unit u)
         //// Change them before then..
         //// Also - limit to first unit element if moving in brigade column,
         //// so we don't generate a request for every battalion in a brigade
-        if (time - Camp_GetCurrentTime() < 60 * CampaignMinutes  and 
+        if (time - Camp_GetCurrentTime() < 60 * CampaignMinutes and 
             ( not u->GetUnitElement() or u->GetUnitTactic() not_eq GTACTIC_MOVE_BRIGADE_COLUMN))
         {
             // if (n->GetType() == TYPE_BRIDGE and (n->GetTeam() == us or TeamInfo[n->GetTeam()]->GetInitiative() < 40))
@@ -1319,7 +1319,7 @@ e = FindUnitByXY(AllRealList,X,Y,DOMAIN_LAND);
 d = Distance(X,Y,nx,ny);
 cost = u->GetUnitMovementCost(X,Y,ah);
 d += cost/2.0F;
-if ( not e and  cost < MAX_COST and d < bd)
+if ( not e and cost < MAX_COST and d < bd)
 {
 bh = ah;
 bd = d;
@@ -2450,7 +2450,7 @@ void GroundUnitClass::MakeGndUnitDirty(Dirty_Ground_Unit bits, Dirtyness score)
         score = static_cast<Dirtyness>(score << 4);
     }
 
-    dirty_ground_unit or_eq  bits;
+    dirty_ground_unit or_eq bits;
 
     MakeDirty(DIRTY_GROUND_UNIT, score);
 }

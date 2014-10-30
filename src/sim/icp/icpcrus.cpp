@@ -58,7 +58,7 @@ void ICPClass::ExecCRUSMode(void)
     {
         if (mUpdateFlags bitand CRUS_UPDATE)
         {
-            mUpdateFlags and_eq  not CRUS_UPDATE;
+            mUpdateFlags and_eq not CRUS_UPDATE;
 
             sprintf(mpLine1, "CRUISE");
 
@@ -72,7 +72,7 @@ void ICPClass::ExecCRUSMode(void)
 
                     //check the steerpoint list
                     //get current steerpoint
-                    if (action == WP_LAND and  not (wpflags bitand WPF_ALTERNATE))
+                    if (action == WP_LAND and not (wpflags bitand WPF_ALTERNATE))
                     {
 
                         sprintf(mpLine1, "CRUISE HOME");
@@ -343,7 +343,7 @@ void ICPClass::PNUpdateCRUSMode(int button, int)
             //#endif
     }
 
-    mUpdateFlags or_eq  CRUS_UPDATE;
+    mUpdateFlags or_eq CRUS_UPDATE;
 }
 
 void ICPClass::CruiseRNG(void)

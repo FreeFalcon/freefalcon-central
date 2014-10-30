@@ -389,7 +389,7 @@ void CPDial::CreateLit(void)
 
             // Check if we can use a single texture
             if (
-                ((int)dwMaxTextureWidth >= mSrcRect.right - mSrcRect.left)  and 
+                ((int)dwMaxTextureWidth >= mSrcRect.right - mSrcRect.left) and 
                 ((int)dwMaxTextureHeight >= mSrcRect.bottom - mSrcRect.top)
             )
             {
@@ -403,7 +403,7 @@ void CPDial::CreateLit(void)
                 m_pPalette->AttachToTexture(pTex);
 
                 if (
-                     not pTex->Create("CPDial", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8,
+ not pTex->Create("CPDial", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8,
                                   (int)(mSrcRect.right - mSrcRect.left),
                                   (int)(mSrcRect.bottom - mSrcRect.top))
                 )

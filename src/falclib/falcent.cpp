@@ -240,7 +240,7 @@ void FalconEntity::ClearDirty(void)
 
 void FalconEntity::MakeDirty(Dirty_Class bits, Dirtyness score)
 {
-    dirty_classes or_eq  bits;
+    dirty_classes or_eq bits;
 
     // sfr: for player entities, always send reliable and immediatelly
     if (IsPlayer())
@@ -253,7 +253,7 @@ void FalconEntity::MakeDirty(Dirty_Class bits, Dirtyness score)
         ( not IsLocal()) ||
         (VuState() not_eq VU_MEM_ACTIVE) ||
         (score <= dirty_score) ||
-         not (TheCampaign.Flags bitand CAMP_LOADED)
+ not (TheCampaign.Flags bitand CAMP_LOADED)
     )
     {
         return;
@@ -613,7 +613,7 @@ void FalconEntity::MakeFalconEntityDirty(Dirty_Falcon_Entity bits, Dirtyness sco
         return;
     }
 
-    dirty_falcent or_eq  bits;
+    dirty_falcent or_eq bits;
 
     MakeDirty(DIRTY_FALCON_ENTITY, score);
 }

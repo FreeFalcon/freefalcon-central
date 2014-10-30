@@ -777,10 +777,10 @@ void FireControlComputer::MaverickMode(void)
         AircraftClass *pa = (AircraftClass *)curWeapon->parent.get();
 
         if (
-            curWeapon  and 
-            (curWeapon->parent  and 
-             pa->IsPlayer()  and 
-              not (pa->AutopilotType() == AircraftClass::CombatAP)  and 
+            curWeapon and 
+            (curWeapon->parent and 
+             pa->IsPlayer() and 
+ not (pa->AutopilotType() == AircraftClass::CombatAP) and 
              (curWeapon->Covered or not Sms->Powered))
         )
         {
@@ -849,7 +849,7 @@ void FireControlComputer::CheckFeatures(MissileClass* theMissile)
                 //in his head when he wrote this Fix for the jumping cursors
                 float CurRange = (float)sqrt(dx * dx + dy * dy);
 
-                if ((CurRange < curMin) and  not (testObject->IsDead() or testObject->IsExploding()))
+                if ((CurRange < curMin) and not (testObject->IsDead() or testObject->IsExploding()))
                 {
                     closestObj = testObject;
                     curMin = CurRange;
@@ -966,10 +966,10 @@ SimObjectType* FireControlComputer::MavCheckLock(MissileClass* theMissile)
     // Look for a target
     while (curTarget)
     {
-        if (fabs(curTarget->localData->az - yaw) < minDist  and 
-            fabs(curTarget->localData->el - pitch) < minDist  and 
-            curTarget->BaseData()->IsSim()  and 
-             not curTarget->BaseData()->IsWeapon()  and 
+        if (fabs(curTarget->localData->az - yaw) < minDist and 
+            fabs(curTarget->localData->el - pitch) < minDist and 
+            curTarget->BaseData()->IsSim() and 
+ not curTarget->BaseData()->IsWeapon() and 
             curTarget->BaseData()->GetVt() <= 60 * KNOTS_TO_FTPSEC) //MI Maverik lockup fix
         {
             theMissile->SetTarget(curTarget);

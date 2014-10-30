@@ -1127,9 +1127,9 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
 
     // Create a unique ID
     ID  = flight->GetTeam() << 24;
-    ID or_eq  flight->callsign_id << 16;
-    ID or_eq  flight->callsign_num << 8;
-    ID or_eq  (ac + 1);
+    ID or_eq flight->callsign_id << 16;
+    ID or_eq flight->callsign_num << 8;
+    ID or_eq (ac + 1);
 
     if ( not list)
         return(NULL);
@@ -1263,8 +1263,8 @@ C_Dog_Flight *AddDogfightFlight(C_TreeList *list, Flight flight)
 
     // Create a unique ID
     ID  = flight->GetTeam() << 24;
-    ID or_eq  flight->callsign_id << 16;
-    ID or_eq  flight->callsign_num << 8;
+    ID or_eq flight->callsign_id << 16;
+    ID or_eq flight->callsign_num << 8;
 
     if ( not list)
         return(NULL);

@@ -194,7 +194,7 @@ extern int  __cdecl _flush(FILE * str);
     I override with a file called c:\game\patches\foo.dat I have replaced both
     \game\foo.dat AND \object\foo.dat with the file found in c:\game\patches --
     obviously this requires that more attention be paid to reducing these
-    complexities and avoiding possible pitfalls.
+ complexities and avoiding possible pitfalls.
 
       Flat model:       Single hash table
                         All filenames are peers
@@ -238,14 +238,14 @@ extern int  __cdecl _flush(FILE * str);
 #define NOTHING                  -1
 
 #define FLAG_TEST(a,b)           ( a bitand b )
-#define FLAG_SET(a,b)            ( a or_eq  b )
+#define FLAG_SET(a,b)            ( a or_eq b )
 #define FLAG_UNSET(a,b)          ( a xor_eq compl b )
 
 #define HI_WORD(a)               ((a)>>16)
 #define LO_WORD(a)               ((a)&0x0ffff)
 
-#define SET_HIWORD(a,b)          { a or_eq  ((b)<<16);   }
-#define SET_LOWORD(a,b)          { a or_eq  (b)&0x0ffff; }
+#define SET_HIWORD(a,b)          { a or_eq ((b)<<16);   }
+#define SET_LOWORD(a,b)          { a or_eq (b)&0x0ffff; }
 
 #define WRITTEN_TO_FLAG          -1
 
@@ -680,7 +680,7 @@ RES_EXPORT int ResInit(HWND hwnd)
            crash.  Caveat Emptor.   */
         if ( not _chdrive(drive))
         {
-            GLOBAL_VOLUME_MASK or_eq  (1 << drive);
+            GLOBAL_VOLUME_MASK or_eq (1 << drive);
         }
     }
 
@@ -1469,7 +1469,7 @@ RES_EXPORT int ResOpenFile(const char * name, int mode)
                 strcpy(filename, name);
 
             table = GLOBAL_HASH_TABLE;
-#endif /*  not RES_USE_FLAT_MODEL */
+#endif /* not RES_USE_FLAT_MODEL */
 
             strcpy(data.name, filename);
 
@@ -2073,7 +2073,7 @@ RES_EXPORT int ResCloseFile(int file)
                 SAY_ERROR(RES_ERR_UNKNOWN, "set size");
             }
 
-#endif /*  not RES_USE_FLAT_MODEL */
+#endif /* not RES_USE_FLAT_MODEL */
         }
 
         if ( not FILE_HANDLES[ file ].seek_start)   /* don't close an archive */
@@ -2534,7 +2534,7 @@ RES_EXPORT int ResDeleteDirectory(char * pathname, int forced)
                directories that have not been freed.
 
                ResOpen will fail if the directory does
-               not exist or if there is not enough
+ not exist or if there is not enough
                memory to allocate space for the whole
                directory.
 
@@ -2633,7 +2633,7 @@ RES_EXPORT RES_DIR * ResOpenDirectory(char * pathname)
         return(dir);
     }
 
-#endif /*  not RES_USE_FLAT_MODEL */
+#endif /* not RES_USE_FLAT_MODEL */
 
     return(NULL);   /* only usefull in the hierarchical version */
 }
@@ -2966,7 +2966,7 @@ RES_EXPORT int ResSetDirectory(const char * pathname)
 
 #if( RES_DEBUG_PARAMS )
 
-    if ( not pathname or  not (*pathname))
+    if ( not pathname or not (*pathname))
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResSetDirectory");
         return(FALSE);
@@ -3080,7 +3080,7 @@ RES_EXPORT int ResGetDirectory(char * buffer)
     check = strcpy(buffer, ((HASH_TABLE *)(GLOBAL_PATH_LIST -> node)) -> name);
 #else
     check = strcpy(buffer, GLOBAL_CURRENT_PATH);
-#endif /*  not RES_USE_FLAT_MODEL */
+#endif /* not RES_USE_FLAT_MODEL */
 
     IF_LOG(LOG("get dir: %s\n", buffer));
 
@@ -3235,7 +3235,7 @@ RES_EXPORT int ResWhereIs(char * filename, char * path)
 #else /* flat model */
     //    entry = hash_find( file, GLOBAL_HASH_TABLE );  /* GFG  31/01/98 */
     entry = hash_find(filename, GLOBAL_HASH_TABLE);
-#endif /*  not RES_USE_FLAT_MODEL */
+#endif /* not RES_USE_FLAT_MODEL */
 
     if ( not entry)
     {
@@ -3246,24 +3246,24 @@ RES_EXPORT int ResWhereIs(char * filename, char * path)
     }
 
     if (entry -> archive not_eq -1)
-        retval or_eq  RES_ARCHIVE;
+        retval or_eq RES_ARCHIVE;
 
     type = RES_DEVICES[ entry -> volume ].type;
 
     if (type == DRIVE_CDROM)
     {
-        retval or_eq  RES_CD;
-        retval or_eq  RES_DEVICES[ entry -> volume ].id;
+        retval or_eq RES_CD;
+        retval or_eq RES_DEVICES[ entry -> volume ].id;
     }
 
     if (type == DRIVE_REMOTE)
-        retval or_eq  RES_NET;
+        retval or_eq RES_NET;
 
     if (type == DRIVE_FIXED)
-        retval or_eq  RES_HD;
+        retval or_eq RES_HD;
 
     if (type == DRIVE_REMOVABLE)
-        retval or_eq  RES_FLOPPY;
+        retval or_eq RES_FLOPPY;
 
     if (path)
         strcpy(path, GLOBAL_SEARCH_PATH[ entry -> directory ]);
@@ -3762,7 +3762,7 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
 
 #else
     local_table = GLOBAL_HASH_TABLE;                /* flat mode - all entries go into the root         */
-#endif  /*  not RES_USE_FLAT_MODEL */
+#endif  /* not RES_USE_FLAT_MODEL */
 
     /* enter the files into the local hash table, keeping count of the total
        number of entries. */
@@ -3831,7 +3831,7 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
                     continue;
                 }
 
-#endif /*  not RES_ALLOW_EMPTY_FILES */
+#endif /* not RES_ALLOW_EMPTY_FILES */
 
                 if (refresh)
                 {
@@ -4134,7 +4134,7 @@ RES_EXPORT int ResCountDirectory(char * path , struct _finddata_t **file_data)
     *file_data = data = MemMalloc(data_count * sizeof(struct _finddata_t), "ResCountDirectory");
 #endif
 
-    if ( not  data)
+    if ( not data)
     {
         SAY_ERROR(RES_ERR_NO_MEMORY, "ResCountDirectory");
         return (-1);
@@ -4814,7 +4814,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
 
         table = GLOBAL_HASH_TABLE;
 
-#endif /*  not RES_USE_FLAT_MODEL */
+#endif /* not RES_USE_FLAT_MODEL */
 
 
         /* We use a dummy _finddata_t struct to stuff an entry for
@@ -4958,7 +4958,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
 
         /* tag the structure as our own flavor (specifically 'loose') */
 
-        stream -> _flag or_eq  _IOLOOSE;
+        stream -> _flag or_eq _IOLOOSE;
 
         UNLOCK_STREAM(stream);
 
@@ -5042,7 +5042,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
         /* Tag the structure as our own flavor (specifically 'archive'), as well
            as use a vc++ uniqueness. */
 
-        stream -> _flag or_eq  (_IOARCHIVE | _IOSTRG | _IOREAD);
+        stream -> _flag or_eq (_IOARCHIVE | _IOSTRG | _IOREAD);
 
 
         /* ---------------------------------------------------------------------------
@@ -5216,7 +5216,7 @@ int __cdecl RES_FCLOSE(FILE * file)
 #if( RES_DEBUG_PARAMS )
     /* check to see if it's one of our two flavors of FILE ptrs */
 
-    if ( not file or  not (file -> _flag, (_IOARCHIVE | _IOLOOSE)))
+    if ( not file or not (file -> _flag, (_IOARCHIVE | _IOLOOSE)))
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResFClose");
         return(EOF); /* error */
@@ -5252,7 +5252,7 @@ int __cdecl RES_FCLOSE(FILE * file)
 
         /* since microsoft doesn't use have symmetry with it's _getstream()
            function (eg; _freestream()), we just set the _flag field to 0
-           and assume that's all there is to do (seems like this is true
+          and assume that's all there is to do (seems like this is true
            after looking at close.c and fclose.c */
 
         /* Actually, not quite. If the streaming io functions are used then
@@ -5327,7 +5327,7 @@ int __cdecl RES_FCLOSE(FILE * file)
 
                 However, for the sake of consistency
                 with the API for streaming functions,
-                and because I think this will work
+               and because I think this will work
                 for 99.9999% of our projects, I did
                 the skinny solution.
 
@@ -5390,7 +5390,7 @@ long __cdecl RES_FTELL(FILE * stream)
 
         /* GFG_NOV06        count = (int)( stream -> _ptr - stream -> _base ); *//* should be safe (key word: SHOULD) */
 
-        if (handle < 0 or handle > MAX_FILE_HANDLES or (FILE_HANDLES[ handle ].os_handle == -1 and  not (stream -> _flag bitand _IOLOOSE)))
+        if (handle < 0 or handle > MAX_FILE_HANDLES or (FILE_HANDLES[ handle ].os_handle == -1 and not (stream -> _flag bitand _IOLOOSE)))
         {
             SAY_ERROR(RES_ERR_ILLEGAL_FILE_HANDLE, "ftell");
             UNLOCK_STREAM(stream);
@@ -5522,7 +5522,7 @@ long __cdecl RES_FTELL(FILE * stream)
 
                     /* If last byte was ^Z, the lowio read
                        didn't tell us about it.  Check flag
-                       and bump count, if necessary. */
+                      and bump count, if necessary. */
 
                     if (stream->_flag bitand _IOCTRLZ)
                         ++rdcnt;
@@ -5545,9 +5545,9 @@ long __cdecl RES_FTELL(FILE * stream)
 
                     LOCK_STREAM(stream);
 
-                    if ((rdcnt <= _SMALL_BUFSIZ)  and 
-                        (stream->_flag bitand _IOMYBUF)  and 
-                         not (stream->_flag bitand _IOSETVBUF))
+                    if ((rdcnt <= _SMALL_BUFSIZ) and 
+                        (stream->_flag bitand _IOMYBUF) and 
+ not (stream->_flag bitand _IOSETVBUF))
                     {
                         /* The translated contents of
                            the buffer is small and we
@@ -5668,7 +5668,7 @@ size_t __cdecl RES_FREAD(void *buffer, size_t size, size_t num, FILE *stream)
 
 
         }              //          |<---------- MODIFIED ----------->|
-        else if ((count >= bufsize) and  not (stream -> _flag bitand _IOARCHIVE))
+        else if ((count >= bufsize) and not (stream -> _flag bitand _IOARCHIVE))
         {
             //          |<---------- MODIFIED ----------->|
             /* If we have more than bufsize chars to read, get data
@@ -5687,7 +5687,7 @@ size_t __cdecl RES_FREAD(void *buffer, size_t size, size_t num, FILE *stream)
             if (nread == 0)
             {
                 /* end of file -- out of here */
-                stream->_flag or_eq  _IOEOF;
+                stream->_flag or_eq _IOEOF;
                 UNLOCK_STREAM(stream);
 #if (RES_MULTITHREAD)
                 RELEASE_LOCK(GLOCK);
@@ -5697,7 +5697,7 @@ size_t __cdecl RES_FREAD(void *buffer, size_t size, size_t num, FILE *stream)
             else if (nread == (unsigned) - 1)
             {
                 /* error -- out of here */
-                stream->_flag or_eq  _IOERR;
+                stream->_flag or_eq _IOERR;
                 UNLOCK_STREAM(stream);
 #if (RES_MULTITHREAD)
                 RELEASE_LOCK(GLOCK);
@@ -5833,8 +5833,8 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
     else
     {
         if ( not inuse(stream) ||
-            ((whence not_eq SEEK_SET)  and 
-             (whence not_eq SEEK_CUR)  and 
+            ((whence not_eq SEEK_SET) and 
+             (whence not_eq SEEK_CUR) and 
              (whence not_eq SEEK_END)))
         {
             errno = EINVAL;
@@ -5872,9 +5872,9 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
             stream->_flag and_eq compl (_IOWRT | _IOREAD);
         else
         {
-            if ((stream->_flag bitand _IOREAD)  and 
-                (stream->_flag bitand _IOMYBUF)  and 
-                 not (stream->_flag bitand _IOSETVBUF))
+            if ((stream->_flag bitand _IOREAD) and 
+                (stream->_flag bitand _IOMYBUF) and 
+ not (stream->_flag bitand _IOSETVBUF))
             {
                 stream->_bufsiz = _SMALL_BUFSIZ;
             }
@@ -5973,11 +5973,11 @@ int __cdecl _filbuf(FILE * stream)
         return(EOF);
     }
 
-    // if(  not (stream -> _flag bitand ( _IOARCHIVE | _IOLOOSE )) ) {
+    // if( not (stream -> _flag bitand ( _IOARCHIVE | _IOLOOSE )) ) {
     //    /* You can actually remove this error trap if you want fopen
     //       as well as ResFOpen */
     //    SAY_ERROR( RES_ERR_UNKNOWN, "Stream not created with ResFOpen" );
-    //    stream -> _flag or_eq  _IOREAD;
+    //    stream -> _flag or_eq _IOREAD;
     //    return( EOF );
     // }
 #endif
@@ -5985,20 +5985,20 @@ int __cdecl _filbuf(FILE * stream)
     //LRKLUDGE
     // If its a string return
     if ( not inuse(stream) ||
-        ((stream->_flag bitand _IOSTRG)  and 
-          not (stream->_flag bitand (_IOLOOSE | _IOARCHIVE))))
+        ((stream->_flag bitand _IOSTRG) and 
+ not (stream->_flag bitand (_IOLOOSE | _IOARCHIVE))))
         return(EOF);
 
     /* if stream is opened as WRITE ONLY, set error and return */
     if (stream -> _flag bitand _IOWRT)
     {
-        stream -> _flag or_eq  _IOERR;
+        stream -> _flag or_eq _IOERR;
         return(EOF);
     }
 
     /* force flag */
 
-    stream -> _flag or_eq  _IOREAD;
+    stream -> _flag or_eq _IOREAD;
 
     /* Get a buffer, if necessary. (taken from _filbuf.c) */
 
@@ -6044,7 +6044,7 @@ int __cdecl _filbuf(FILE * stream)
         if (file -> os_handle == -1)
         {
             SAY_ERROR(RES_ERR_ILLEGAL_FILE_HANDLE, "_filbuf internal error");
-            stream -> _flag or_eq  _IOERR;
+            stream -> _flag or_eq _IOERR;
             return(EOF);
         }
 
@@ -6087,7 +6087,7 @@ int __cdecl _filbuf(FILE * stream)
 
             if (stream -> _cnt < 0)       /* error reading */
             {
-                stream -> _flag or_eq  _IOERR;
+                stream -> _flag or_eq _IOERR;
 
                 if (stream -> _flag bitand (_IOARCHIVE | _IOLOOSE))  /* make sure this is an fopen() file */
                     ResCheckMedia(file -> device);              /* if not, has media changed?        */
@@ -6103,14 +6103,14 @@ int __cdecl _filbuf(FILE * stream)
 
         if ((stream -> _cnt == 0) or (stream -> _cnt == -1))
         {
-            stream -> _flag or_eq  stream -> _cnt ? _IOERR : _IOEOF;
+            stream -> _flag or_eq stream -> _cnt ? _IOERR : _IOEOF;
             stream -> _cnt = 0;
             return(EOF);
         }
 
         //  Don't think I need this, but... _osfile_safe(i) expands to (_pioinfo_safe(i)->osfile)
-        //  if(  not (stream -> _flag bitand ( _IOWRT | _IORW )) and ((_osfile_safe(_fileno(stream)) bitand (FTEXT|FEOFLAG)) == (FTEXT|FEOFLAG)))
-        //      stream -> _flag or_eq  _IOCTRLZ;
+        //  if( not (stream -> _flag bitand ( _IOWRT | _IORW )) and ((_osfile_safe(_fileno(stream)) bitand (FTEXT|FEOFLAG)) == (FTEXT|FEOFLAG)))
+        //      stream -> _flag or_eq _IOCTRLZ;
 
         /* Check for small _bufsiz (_SMALL_BUFSIZ). If it is small and
            if it is our buffer, then this must be the first _filbuf after
@@ -6118,9 +6118,9 @@ int __cdecl _filbuf(FILE * stream)
            larger value (_INTERNAL_BUFSIZ) so that the next _filbuf call,
            if one is made, will fill the whole buffer. */
 
-        if ((stream -> _bufsiz == _SMALL_BUFSIZ)  and 
-            (stream -> _flag bitand _IOMYBUF)  and 
-             not (stream -> _flag bitand _IOSETVBUF))
+        if ((stream -> _bufsiz == _SMALL_BUFSIZ) and 
+            (stream -> _flag bitand _IOMYBUF) and 
+ not (stream -> _flag bitand _IOSETVBUF))
         {
             stream -> _bufsiz = _INTERNAL_BUFSIZ;
         }
@@ -6704,7 +6704,7 @@ void res_detach_ex(ARCHIVE * archive)
             hash_delete(entry, GLOBAL_HASH_TABLE);
     }
 
-#endif /*  not USE_FLAT_MODEL */
+#endif /* not USE_FLAT_MODEL */
 
     _close(archive -> os_handle);
 
@@ -7042,7 +7042,7 @@ HASH_ENTRY * hash_add(struct _finddata_t * data, HASH_TABLE * hsh)
     entry -> archive = -1; // Changed on AUG30th  [KBR]
 #if( not RES_USE_FLAT_MODEL )
     entry -> dir = NULL;
-#endif /*  not RES_USE_FLAT_MODEL */
+#endif /* not RES_USE_FLAT_MODEL */
 
     hsh -> num_entries++;
 
@@ -7504,7 +7504,7 @@ HASH_ENTRY * hash_find_table(const char * name, HASH_TABLE ** table)
 
 #if( not RES_USE_FLAT_MODEL )
     LIST       * list = NULL;
-#endif /*  not RES_USE_FLAT_MODEL */
+#endif /* not RES_USE_FLAT_MODEL */
 
     if ( not GLOBAL_HASH_TABLE)
         return(NULL);
@@ -7701,7 +7701,7 @@ HASH_ENTRY * hash_find_table(const char * name, HASH_TABLE ** table)
         return(NULL);
     }
 
-#else /*  not RES_USE_FLAT_MODEL */
+#else /* not RES_USE_FLAT_MODEL */
 
     if (path_used)
         entry = hash_find(filename, GLOBAL_HASH_TABLE);
@@ -7862,7 +7862,7 @@ void _say_error(int error, const char * msg, int line, const char * filename)
             if ((error > RES_ERR_FIRST_ERROR) and (error < RES_ERR_LAST_ERROR))
             {
                 /* error values run from -5000 up, so error will always be negative,
-                   and so will (RES_ERR_OR_FIRST+1).  We want to normalize this to
+                  and so will (RES_ERR_OR_FIRST+1).  We want to normalize this to
                    0,1,2,3... */
 
                 error = error + (-RES_ERR_FIRST_ERROR - 1);

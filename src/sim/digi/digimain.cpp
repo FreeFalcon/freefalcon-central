@@ -120,7 +120,7 @@ DigitalBrain::DigitalBrain(AircraftClass *myPlatform, AirframeClass* myAf) : Bas
 
         //if(obj)
         // sfr: @todo remove JB check
-        if (obj and  not F4IsBadReadPtr(obj, sizeof(ObjectiveClass)))
+        if (obj and not F4IsBadReadPtr(obj, sizeof(ObjectiveClass)))
         {
             // JB 010326 CTD
             airbase = obj->Id();
@@ -706,9 +706,9 @@ void DigitalBrain::CheckLead(void)
     BOOL done = FALSE;
     int i = 0;
 
-    if (flightLead  and 
-        flightLead->VuState() == VU_MEM_ACTIVE  and 
-         not flightLead->IsDead()
+    if (flightLead and 
+        flightLead->VuState() == VU_MEM_ACTIVE and 
+ not flightLead->IsDead()
        )
     {
         return;
@@ -959,9 +959,9 @@ void DigitalBrain::ReSetLabel(SimBaseClass* theObject)
             flight = FalconLocalSession->GetPlayerFlight();
             campObj = theObject->GetCampaignObject();
 
-            if (campObj and campObj->IsFlight() /* and   not campObj->IsAggregate() and campObj->InPackage()*/
+            if (campObj and campObj->IsFlight() /* and not campObj->IsAggregate() and campObj->InPackage()*/
                 // 2001-10-31 M.N. show flight names of our team
-                and flight and flight->GetTeam() == campObj->GetTeam())
+               and flight and flight->GetTeam() == campObj->GetTeam())
             {
                 char temp[40];
                 GetCallsign(((Flight)campObj)->callsign_id, ((Flight)campObj)->callsign_num, temp);

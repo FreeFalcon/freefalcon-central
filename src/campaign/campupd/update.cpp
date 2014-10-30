@@ -142,9 +142,9 @@ int UpdateUnit(Unit u, CampaignTime DeltaTime)
         // In tactical engagement, we want to make sure battalions always have a waypoint,
         // So they can be reordered
         if (
-            u->IsBattalion()  and 
-            FalconLocalGame->GetGameType() == game_TacticalEngagement  and 
-             not u->GetCurrentUnitWP()
+            u->IsBattalion() and 
+            FalconLocalGame->GetGameType() == game_TacticalEngagement and 
+ not u->GetCurrentUnitWP()
         )
         {
             GridIndex x, y;
@@ -185,7 +185,7 @@ void DetectOneWay(CampEntity a, FalconEntity *e, int d, int *det, int *ran)
     // if (a->IsUnit() and a->GetAproxWeaponRange(em) >= d and a->GetWeaponRange(em) >= d) // REMOVED BY S.G.
     // WILL MAKE SURE BOTH OBJECTS ARE PLANE, SHOOTER HAS MORE THEN JUST GUN (1 NM) AND TARGET WITHIN AT LEAST 20 NM OF US
     //Cobra changed to d <= 100 from 37 (only 20 nm)
-    if (a->IsUnit() and a->GetAproxWeaponRange(em) >= d and ((am == Air and em == Air and d <= 100  and a->GetWeaponRange(em) > 1) or a->GetWeaponRange(em, e) >= d)) // 2002-03-08 MODIFIED BY S.G. Added 'e' at the end of a->GetWeaponRange so we test the min/max weapon range against this guy
+    if (a->IsUnit() and a->GetAproxWeaponRange(em) >= d and ((am == Air and em == Air and d <= 100 and a->GetWeaponRange(em) > 1) or a->GetWeaponRange(em, e) >= d)) // 2002-03-08 MODIFIED BY S.G. Added 'e' at the end of a->GetWeaponRange so we test the min/max weapon range against this guy
         *ran = 1;
 }
 
@@ -206,7 +206,7 @@ int Detected(Unit u, FalconEntity *e, float *range)
             det = ENEMY_SAME_HEX | ENEMY_IN_RANGE | ENEMY_DETECTED | FRIENDLY_IN_RANGE;
 
         if (e->ZPos() - u->ZPos() > -5000.0f)
-            det or_eq  ENEMY_SAME_HEX | ENEMY_IN_RANGE | FRIENDLY_IN_RANGE | FRIENDLY_DETECTED;
+            det or_eq ENEMY_SAME_HEX | ENEMY_IN_RANGE | FRIENDLY_IN_RANGE | FRIENDLY_DETECTED;
 
         if (det)
             return(det);
@@ -227,16 +227,16 @@ int Detected(Unit u, FalconEntity *e, float *range)
         edet = udet; // KCK hack- let players spot only what spots them
 
     if (edet)
-        retval or_eq  FRIENDLY_DETECTED;
+        retval or_eq FRIENDLY_DETECTED;
 
     if (eran)
-        retval or_eq  FRIENDLY_IN_RANGE;
+        retval or_eq FRIENDLY_IN_RANGE;
 
     if (udet)
-        retval or_eq  ENEMY_DETECTED;
+        retval or_eq ENEMY_DETECTED;
 
     if (uran)
-        retval or_eq  ENEMY_IN_RANGE;
+        retval or_eq ENEMY_IN_RANGE;
 
     return retval;
 }
@@ -257,7 +257,7 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
     // 2001-06-13 ADDED BY S.G. BEFORE WE CAN REALLY COMBAT, WE MUST SEE BE ABLE TO DETECT THE TARGET OURSELF BUT ONLY IF WE ARE A BATTALION
     // This is only called by aggregated UNITS so I safely call CanDetect from att as a unit against def
     // Since this is for SOJ, limit it to battalions...
-    if (((UnitClass *)att)->IsBattalion() and  not ((UnitClass *)att)->CanDetect(def))
+    if (((UnitClass *)att)->IsBattalion() and not ((UnitClass *)att)->CanDetect(def))
     {
         att->StepRadar(0, 0, 1);
         return 0;
@@ -272,7 +272,7 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
     damageMods = def->GetDamageModifiers();
     defmt = def->GetMovementType();
 
-    if (def->IsFlight() and  not ((Flight)def)->Moving())
+    if (def->IsFlight() and not ((Flight)def)->Moving())
         defmt = NoMove; // Aircraft on the ground bomb away
 
     memset(weapon, 0, sizeof(weapon));
@@ -546,7 +546,7 @@ int DoWPAction(Flight u)
         speed = u->GetCruiseSpeed();
 
         // Check if we've been here long enough
-        if (Camp_GetCurrentTime() > w->GetWPDepartureTime() and  not (w->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS))
+        if (Camp_GetCurrentTime() > w->GetWPDepartureTime() and not (w->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS))
         {
             // If so, go on to the next wp and adjust their times from now.
             u->SetCurrentUnitWP(w->GetNextWP());
@@ -597,7 +597,7 @@ int DoWPAction(Flight u)
         u->SetUnitPriority(0); // We're just hanging out here... waiting for something to do.
     }
 
-    if (w->GetWPFlags() bitand WPF_TARGET and  not (w->GetWPFlags() bitand WPF_LAND) and  not (w->GetWPFlags() bitand WPF_TAKEOFF) and  not (w->GetWPFlags() bitand WPF_CP) and  not (w->GetWPFlags() bitand WPF_REPEAT))
+    if (w->GetWPFlags() bitand WPF_TARGET and not (w->GetWPFlags() bitand WPF_LAND) and not (w->GetWPFlags() bitand WPF_TAKEOFF) and not (w->GetWPFlags() bitand WPF_CP) and not (w->GetWPFlags() bitand WPF_REPEAT))
     {
         // Radio Chatter message
         FalconRadioChatterMessage *msg = new FalconRadioChatterMessage(u->Id(), FalconLocalGame);

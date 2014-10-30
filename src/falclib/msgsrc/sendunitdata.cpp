@@ -139,7 +139,7 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
         gCampJoinTries = 0;
 
         // Mark this block as being received.
-        session->unitDataReceived[dataBlock.block / 8] or_eq  (1 << (dataBlock.block % 8));
+        session->unitDataReceived[dataBlock.block / 8] or_eq (1 << (dataBlock.block % 8));
 
         // Check if we've gotten all our blocks
         for (int i = 0; i < dataBlock.totalBlocks; i++)

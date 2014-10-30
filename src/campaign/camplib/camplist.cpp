@@ -48,7 +48,7 @@ VU_BOOL UnitFilter::Test(VuEntity *e)
     if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
-    if (parent and  not ((Unit)e)->Parent())
+    if (parent and not ((Unit)e)->Parent())
         return FALSE;
 
     if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
@@ -59,7 +59,7 @@ VU_BOOL UnitFilter::Test(VuEntity *e)
 
     if ( not inactive and ((Unit)e)->Inactive())
         return FALSE;
-    else if (inactive and  not ((Unit)e)->Inactive())
+    else if (inactive and not ((Unit)e)->Inactive())
         return FALSE;
 
     return TRUE;
@@ -70,7 +70,7 @@ VU_BOOL UnitFilter::RemoveTest(VuEntity *e)
     if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
-    if (parent and  not ((Unit)e)->Parent())
+    if (parent and not ((Unit)e)->Parent())
         return FALSE;
 
     if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
@@ -81,7 +81,7 @@ VU_BOOL UnitFilter::RemoveTest(VuEntity *e)
 
     if ( not inactive and ((Unit)e)->Inactive())
         return FALSE;
-    else if (inactive and  not ((Unit)e)->Inactive())
+    else if (inactive and not ((Unit)e)->Inactive())
         return FALSE;
 
     return TRUE;
@@ -102,7 +102,7 @@ VU_BOOL AirUnitFilter::Test(VuEntity *e)
     if (((Unit)e)->GetDomain() not_eq DOMAIN_AIR)
         return FALSE;
 
-    if (parent and  not ((Unit)e)->Parent())
+    if (parent and not ((Unit)e)->Parent())
         return FALSE;
 
     if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
@@ -125,7 +125,7 @@ VU_BOOL AirUnitFilter::RemoveTest(VuEntity *e)
     if (((Unit)e)->GetDomain() not_eq DOMAIN_AIR)
         return FALSE;
 
-    if (parent and  not ((Unit)e)->Parent())
+    if (parent and not ((Unit)e)->Parent())
         return FALSE;
 
     if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
@@ -155,7 +155,7 @@ VU_BOOL GroundUnitFilter::Test(VuEntity *e)
     if (((Unit)e)->GetDomain() not_eq DOMAIN_LAND)
         return FALSE;
 
-    if (parent and  not ((Unit)e)->Parent())
+    if (parent and not ((Unit)e)->Parent())
         return FALSE;
 
     if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
@@ -178,7 +178,7 @@ VU_BOOL GroundUnitFilter::RemoveTest(VuEntity *e)
     if (((Unit)e)->GetDomain() not_eq DOMAIN_LAND)
         return FALSE;
 
-    if (parent and  not ((Unit)e)->Parent())
+    if (parent and not ((Unit)e)->Parent())
         return FALSE;
 
     if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
@@ -208,7 +208,7 @@ VU_BOOL NavalUnitFilter::Test(VuEntity *e)
     if (((Unit)e)->GetDomain() not_eq DOMAIN_SEA)
         return FALSE;
 
-    if (parent and  not ((Unit)e)->Parent())
+    if (parent and not ((Unit)e)->Parent())
         return FALSE;
 
     if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
@@ -231,7 +231,7 @@ VU_BOOL NavalUnitFilter::RemoveTest(VuEntity *e)
     if (((Unit)e)->GetDomain() not_eq DOMAIN_SEA)
         return FALSE;
 
-    if (parent and  not ((Unit)e)->Parent())
+    if (parent and not ((Unit)e)->Parent())
         return FALSE;
 
     if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
@@ -403,7 +403,7 @@ ObjProxFilter* AllObjProxFilter = NULL;
 
 VU_BOOL CampBaseFilter::Test(VuEntity *e)
 {
-    if ((e->EntityType())->classInfo_[VU_DOMAIN]  and 
+    if ((e->EntityType())->classInfo_[VU_DOMAIN] and 
         ((e->EntityType())->classInfo_[VU_CLASS] == CLASS_UNIT ||
          (e->EntityType())->classInfo_[VU_CLASS] == CLASS_OBJECTIVE))
         return TRUE;
@@ -413,7 +413,7 @@ VU_BOOL CampBaseFilter::Test(VuEntity *e)
 
 VU_BOOL CampBaseFilter::RemoveTest(VuEntity *e)
 {
-    if ((e->EntityType())->classInfo_[VU_DOMAIN]  and 
+    if ((e->EntityType())->classInfo_[VU_DOMAIN] and 
         ((e->EntityType())->classInfo_[VU_CLASS] == CLASS_UNIT ||
          (e->EntityType())->classInfo_[VU_CLASS] == CLASS_OBJECTIVE))
         return TRUE;
@@ -843,7 +843,7 @@ int RebuildFrontList(int do_barcaps, int incremental)
     //Barcap Request also needed to be converted to milliseconds.
     //if (do_barcaps and lastRequest - Camp_GetCurrentTime() > (unsigned int)BARCAP_REQUEST_INTERVAL)
     if (
-        do_barcaps  and 
+        do_barcaps and 
         (Camp_GetCurrentTime() - lastRequest > ((unsigned int)BARCAP_REQUEST_INTERVAL * CampaignMinutes))
     )
     {

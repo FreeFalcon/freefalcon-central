@@ -41,7 +41,7 @@ extern bool g_bFFCenterFix;
 /* Routine: void AirframeClass::Atmosphere(void)                   */
 /*                                                                  */
 /* Description:                                                     */
-/*    Calculates current state included pressure, mach, qbar and    */
+/*    Calculates current state included pressure, mach, qbar and */
 /*    qsom for normalizing.                                         */
 /*                                                                  */
 /* Inputs:                                                          */

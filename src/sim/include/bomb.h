@@ -119,7 +119,7 @@ public:
     };
     void SetBombFlag(int newFlag)
     {
-        flags or_eq  newFlag;
+        flags or_eq newFlag;
     };
     void ClearBombFlag(int newFlag)
     {

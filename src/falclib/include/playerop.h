@@ -223,7 +223,7 @@ public:
     }
     int BlackoutOn(void)
     {
-        return  not (SimFlags bitand SIM_NO_BLACKOUT) and TRUE;
+        return not (SimFlags bitand SIM_NO_BLACKOUT) and TRUE;
     }
     int NoBlackout(void)
     {
@@ -243,7 +243,7 @@ public:
     }
     int CollisionsOn(void)
     {
-        return  not (SimFlags bitand SIM_NO_COLLISIONS) and TRUE;
+        return not (SimFlags bitand SIM_NO_COLLISIONS) and TRUE;
     }
     int NoCollisions(void)
     {
@@ -268,7 +268,7 @@ public:
 
     int WeatherOn(void)
     {
-        return  not (GeneralFlags bitand GEN_NO_WEATHER);
+        return not (GeneralFlags bitand GEN_NO_WEATHER);
     }
     int MFDTerrainOn(void)
     {
@@ -361,7 +361,7 @@ public:
     // Setter functions
     void SetSimFlag(int flag)
     {
-        SimFlags or_eq  flag;
+        SimFlags or_eq flag;
     };
     void ClearSimFlag(int flag)
     {
@@ -370,7 +370,7 @@ public:
 
     void SetDispFlag(int flag)
     {
-        DispFlags or_eq  flag;
+        DispFlags or_eq flag;
     };
     void ClearDispFlag(int flag)
     {
@@ -379,7 +379,7 @@ public:
 
     void SetObjFlag(int flag)
     {
-        ObjFlags or_eq  flag;
+        ObjFlags or_eq flag;
     };
     void ClearObjFlag(int flag)
     {
@@ -388,7 +388,7 @@ public:
 
     void SetGenFlag(int flag)
     {
-        GeneralFlags or_eq  flag;
+        GeneralFlags or_eq flag;
     };
     void ClearGenFlag(int flag)
     {

@@ -39,7 +39,7 @@ void gMusicCallback(SOUNDSTREAM *Stream, int MessageID)
             break;
 
         case SND_MSG_FADE_OUT_DONE:
-            Stream->Status or_eq  SND_STREAM_FADEDOUT;
+            Stream->Status or_eq SND_STREAM_FADEDOUT;
 
             if (gMusic->GetFlags() == C_Music::MUSIC_PAUSE_FADE)
             {
@@ -66,7 +66,7 @@ void gMusicCallback(SOUNDSTREAM *Stream, int MessageID)
 
             if (FadeOutInteractive)
             {
-                Stream->Status or_eq  SND_STREAM_FADE_OUT;
+                Stream->Status or_eq SND_STREAM_FADE_OUT;
                 Stream->FadeOut = Stream->FadeIn;
                 FadeOutInteractive = FALSE;
                 gMusic->ToggleStream();
@@ -202,13 +202,13 @@ void C_Music::Play(SOUND_RES *snd)
         SND_FLAGS = 0;
 
         if (snd->flags bitand SOUND_LOOP)
-            SND_FLAGS or_eq  SND_STREAM_LOOP;
+            SND_FLAGS or_eq SND_STREAM_LOOP;
 
         if (snd->flags bitand SOUND_FADE_IN)
-            SND_FLAGS or_eq  SND_STREAM_FADE_IN;
+            SND_FLAGS or_eq SND_STREAM_FADE_IN;
 
         if (snd->flags bitand SOUND_FADE_OUT)
-            SND_FLAGS or_eq  SND_STREAM_FADE_OUT;
+            SND_FLAGS or_eq SND_STREAM_FADE_OUT;
 
         if (snd->flags bitand SOUND_RES_STREAM)
         {
@@ -417,7 +417,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
                 {
                     if ( not Stream->ImaInfo)
                     {
-                        Stream->Status or_eq  SND_IS_IMAADPCM;
+                        Stream->Status or_eq SND_IS_IMAADPCM;
                         Stream->ImaInfo = new IMA_STREAM;
                         memset(Stream->ImaInfo, 0, sizeof(IMA_STREAM));
                         Stream->ImaInfo->type = Header.nChannels;
@@ -456,7 +456,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
                     }
                 }
 
-                Stream->Status or_eq  SND_STREAM_CONTINUE | SND_STREAM_LOOP;
+                Stream->Status or_eq SND_STREAM_CONTINUE | SND_STREAM_LOOP;
 
                 if ( not (snd->flags bitand SOUND_LOOP))
                     Stream->Status xor_eq SND_STREAM_LOOP;
@@ -566,7 +566,7 @@ void C_Music::PlayNextInteractive()
     if (ID == CurPiece_)
         ID = (CurPiece_ + 1) % Count_[Section_][Group_];
 
-    ID or_eq  (Section_ << 16) | (Group_ << 8);
+    ID or_eq (Section_ << 16) | (Group_ << 8);
 
     MusicID = (long)Music_->Find(ID);
 

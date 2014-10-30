@@ -478,7 +478,7 @@ void OTWDriverClass::VCock_GiveGilmanHead(float dT)
         if (headMotion == HEAD_TRANSISTION3)
         {
 
-            if (/*azDir  and */ initialTilt >= -92.0F * DTR)
+            if (/*azDir and */ initialTilt >= -92.0F * DTR)
             {
 
                 if (eyeTilt < initialTilt)
@@ -2064,11 +2064,11 @@ void OTWDriverClass::VCock_Exec(void)
                 HYDA3d = HYDA3d - 0.1F;
             }
 
-            if (SimDriver.GetPlayerAircraft()->af->HydraulicB() and  HYDB3d < 3.64F)
+            if (SimDriver.GetPlayerAircraft()->af->HydraulicB() and HYDB3d < 3.64F)
             {
                 HYDB3d = HYDB3d + 0.1F;
             }
-            else if ( not SimDriver.GetPlayerAircraft()->af->HydraulicB() and  HYDB3d > 0.0F)
+            else if ( not SimDriver.GetPlayerAircraft()->af->HydraulicB() and HYDB3d > 0.0F)
             {
                 HYDB3d = HYDB3d - 0.1F;
             }
@@ -2079,7 +2079,7 @@ void OTWDriverClass::VCock_Exec(void)
         if (gNavigationSys)
         {
             if ((gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN ||
-                 gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV)  and 
+                 gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV) and 
                 gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &hILS))
             {
 
@@ -2357,11 +2357,11 @@ void OTWDriverClass::VCock_Exec(void)
             HYDA3d = MoveByRate(HYDA3d, 0.0F, 200);
         }
 
-        if (SimDriver.GetPlayerAircraft()->af->HydraulicB() and  HYDB3d < 3.64F)
+        if (SimDriver.GetPlayerAircraft()->af->HydraulicB() and HYDB3d < 3.64F)
         {
             HYDB3d = MoveByRate(HYDB3d, 3.64F, 200);
         }
-        else if ( not SimDriver.GetPlayerAircraft()->af->HydraulicB() and  HYDB3d > 0.0F)
+        else if ( not SimDriver.GetPlayerAircraft()->af->HydraulicB() and HYDB3d > 0.0F)
         {
             HYDB3d = MoveByRate(HYDB3d, 0.0F, 200);
         }
@@ -3079,7 +3079,7 @@ void OTWDriverClass::VCock_Exec(void)
             else
             {
                 //MI modified for ICP Stuff
-                if ( not SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::ufc_fault)  and 
+                if ( not SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::ufc_fault) and 
                     SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::UFCPower))
                 {
                     pCockpitManager->mpIcp->Exec();
@@ -3272,7 +3272,7 @@ void OTWDriverClass::VCock_Exec(void)
 
         if (g_b3dMFDRight)
         {
-            if (MfdDisplay[1]->GetDrawable() and  MfdDisplay[1]->GetDrawable()->GetDisplay())
+            if (MfdDisplay[1]->GetDrawable() and MfdDisplay[1]->GetDrawable()->GetDisplay())
             {
                 MfdDisplay[1]->GetDrawable()->GetDisplay()->DrawRttQuad();
             }

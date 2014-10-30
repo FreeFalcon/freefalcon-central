@@ -109,7 +109,7 @@ void ICPClass::ILSBackup(void)
     //Line1
     FillDEDMatrix(0, 1, "TCN ON");
 
-    if (gNavigationSys and gNavigationSys->GetTacanBand(NavigationSystem::AUXCOMM) == TacanList::X  and 
+    if (gNavigationSys and gNavigationSys->GetTacanBand(NavigationSystem::AUXCOMM) == TacanList::X and 
         id not_eq FalconNullId)
         FillDEDMatrix(0, 18, "ILS ON");
     else

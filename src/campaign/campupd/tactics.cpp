@@ -166,7 +166,7 @@ int CheckLosses(int tid, int losses)
     if (TacticsTable[tid].losses  == CHECK_ANY)
         return 1;
 
-    if ( not TacticsTable[tid].losses  and losses)
+    if ( not TacticsTable[tid].losses and losses)
         return 0;
 
     if (TacticsTable[tid].losses and not losses)

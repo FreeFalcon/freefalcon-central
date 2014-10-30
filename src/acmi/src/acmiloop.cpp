@@ -459,7 +459,7 @@ void ACMIView::Draw()
             // is it in existance at the moment?
             // also no poles or anything on chaff and flares
             if ((ep->flags bitand (ENTITY_FLAG_CHAFF | ENTITY_FLAG_FLARE)) ||
-                not Tape()->IsEntityInFrame(i))
+ not Tape()->IsEntityInFrame(i))
             {
                 continue;
             }
@@ -490,7 +490,7 @@ void ACMIView::Draw()
 
 
                     // do target boxes and lines
-                    if (_cameraState not_eq FREE_CAM)  // and  targindex == CameraObject() )//me123 we wanna see all lock lines
+                    if (_cameraState not_eq FREE_CAM)  // and targindex == CameraObject() )//me123 we wanna see all lock lines
                     {
                         // current attached camera object is target
                         if (targep->flags bitand ENTITY_FLAG_AIRCRAFT)

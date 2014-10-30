@@ -126,7 +126,7 @@ void DigitalBrain::AiRunTargetSelection(void)
 
                 // 2002-03-15 ADDED BY S.G. Special case when everyone in the unit is dead... Should help the AI not targeting chutes when that's all is left...
                 // If it's a NON aggregated UNIT CAMPAIGN object, it SHOULD have components... If it doesn't, clear it's designated target.
-                if (((FalconEntity *)pnewTarget)->IsCampaign() and ((CampBaseClass *)pnewTarget)->IsUnit() and  not ((CampBaseClass *)pnewTarget)->IsAggregate() and ((CampBaseClass *)pnewTarget)->NumberOfComponents() == 0)
+                if (((FalconEntity *)pnewTarget)->IsCampaign() and ((CampBaseClass *)pnewTarget)->IsUnit() and not ((CampBaseClass *)pnewTarget)->IsAggregate() and ((CampBaseClass *)pnewTarget)->NumberOfComponents() == 0)
                 {
                     ShiAssert( not "Empty deaggregated object as a target??");
                     mDesignatedObject = FalconNullId;
@@ -192,9 +192,9 @@ void DigitalBrain::AiSearchTargetList(VuEntity* pentity)
             if (theTargetGroup->OnGround())
             {
                 // If we already have a ground target and it is part of the unit we are being asked to target and it's still alive, keep using it (ie, don't switch)
-                if (groundTargetPtr and groundTargetPtr->BaseData()->IsSim()  and 
-                    ((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject() == theTargetGroup  and 
-                     not groundTargetPtr->BaseData()->IsExploding() and not groundTargetPtr->BaseData()->IsDead()  and 
+                if (groundTargetPtr and groundTargetPtr->BaseData()->IsSim() and 
+                    ((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject() == theTargetGroup and 
+ not groundTargetPtr->BaseData()->IsExploding() and not groundTargetPtr->BaseData()->IsDead() and 
                     ((SimBaseClass *)groundTargetPtr->BaseData())->pctStrength > 0.0f)
                     return;
 
@@ -277,7 +277,7 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
             else
             {
                 // Try the loadout as long I didn't find an HARM on mine or another plane higher than us has an HARM
-                for (int j = 0;  not haveHARMS and  not (otherHaveHARMS and i > isWing) and flightMember[i]->Sms and j < flightMember[i]->Sms->NumHardpoints(); j++)
+                for (int j = 0; not haveHARMS and not (otherHaveHARMS and i > isWing) and flightMember[i]->Sms and j < flightMember[i]->Sms->NumHardpoints(); j++)
                 {
                     if (flightMember[i]->Sms->hardPoint[j]->weaponPointer and flightMember[i]->Sms->hardPoint[j]->GetWeaponClass() == wcHARMWpn)
                     {
@@ -342,7 +342,7 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
         {
             fc = GetFeatureClassData(((Objective)simTarg)->GetFeatureID(i));
 
-            if (fc and  not F4IsBadReadPtr(fc, sizeof(fc)) and fc->Priority > 2)  // higher priority number = lower priority
+            if (fc and not F4IsBadReadPtr(fc, sizeof(fc)) and fc->Priority > 2)  // higher priority number = lower priority
                 continue;
 
             if (((Objective)simTarg)->GetFeatureStatus(i) == VIS_DESTROYED)
@@ -363,10 +363,10 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
                 }
 
                 if (
-                    flightMember[j]->DBrain()  and 
+                    flightMember[j]->DBrain() and 
                     (
                         (
-                            flightMember[j]->DBrain()->groundTargetPtr  and 
+                            flightMember[j]->DBrain()->groundTargetPtr and 
                             flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg
                         ) ||
                         flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg ||
@@ -585,7 +585,7 @@ SimBaseClass *DigitalBrain::FindJSOWGroundTarget(CampBaseClass *targetGroup, int
         {
             fc = GetFeatureClassData(((Objective)simTarg)->GetFeatureID(i));
 
-            if (fc and  not F4IsBadReadPtr(fc, sizeof(fc)) and fc->Priority > 2)  // higher priority number = lower priority
+            if (fc and not F4IsBadReadPtr(fc, sizeof(fc)) and fc->Priority > 2)  // higher priority number = lower priority
                 continue;
 
             if (((Objective)simTarg)->GetFeatureStatus(i) == VIS_DESTROYED)
@@ -605,7 +605,7 @@ SimBaseClass *DigitalBrain::FindJSOWGroundTarget(CampBaseClass *targetGroup, int
             if (flightMember[j]->vehicleInUnit == self->vehicleInUnit)
                 continue;
 
-            if (flightMember[j] and flightMember[j]->DBrain() and ((flightMember[j]->DBrain()->groundTargetPtr  and 
+            if (flightMember[j] and flightMember[j]->DBrain() and ((flightMember[j]->DBrain()->groundTargetPtr and 
                     flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg) ||
                     flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg ||
                     flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg))
@@ -708,7 +708,7 @@ int DigitalBrain::FindJDAMGroundTarget(CampBaseClass *targetGroup, int targetNum
             if ((Objective)simTarg)
                 fc = GetFeatureClassData(((Objective)simTarg)->GetFeatureID(i));
 
-            if (fc and  not F4IsBadReadPtr(fc, sizeof(fc)) and fc->Priority > 2)  // higher priority number = lower priority
+            if (fc and not F4IsBadReadPtr(fc, sizeof(fc)) and fc->Priority > 2)  // higher priority number = lower priority
                 continue;
 
             if (((Objective)simTarg)->GetFeatureStatus(i) == VIS_DESTROYED)
@@ -727,7 +727,7 @@ int DigitalBrain::FindJDAMGroundTarget(CampBaseClass *targetGroup, int targetNum
             if (flightMember[j]->vehicleInUnit == self->vehicleInUnit)
                 continue;
 
-            if (flightMember[j] and flightMember[j]->DBrain() and ((flightMember[j]->DBrain()->groundTargetPtr  and 
+            if (flightMember[j] and flightMember[j]->DBrain() and ((flightMember[j]->DBrain()->groundTargetPtr and 
                     flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg) ||
                     flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg ||
                     flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg))
@@ -876,7 +876,7 @@ void DigitalBrain::AiCheckLandTakeoff(void)
         AddMode(LandingMode);
     }
     else if (self->curWaypoint->GetWPAction() == WP_LAND and not self->OnGround() and distAirbase < 30.0F * NM_TO_FT
-             and (missionComplete or IsSetATC(SaidRTB) or IsSetATC(SaidBingo) or mpActionFlags[AI_RTB])) // don't land if one of these conditions isn't met
+            and (missionComplete or IsSetATC(SaidRTB) or IsSetATC(SaidBingo) or mpActionFlags[AI_RTB])) // don't land if one of these conditions isn't met
     {
         if (atcstatus > lIngressing)
             mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;

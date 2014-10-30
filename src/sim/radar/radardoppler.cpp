@@ -477,7 +477,7 @@ void RadarDopplerClass::AAPushButton(int whichButton, int whichMFD)
             break;
 
         case 18:
-            if ((mode not_eq ACM_SLEW) and (mode not_eq ACM_30x20)  and 
+            if ((mode not_eq ACM_SLEW) and (mode not_eq ACM_30x20) and 
                 (mode not_eq ACM_10x60) and (mode not_eq ACM_BORE))
             {
                 rangeChangeCmd = -1;
@@ -486,7 +486,7 @@ void RadarDopplerClass::AAPushButton(int whichButton, int whichMFD)
             break;
 
         case 19:
-            if ((mode not_eq ACM_SLEW) and (mode not_eq ACM_30x20)  and 
+            if ((mode not_eq ACM_SLEW) and (mode not_eq ACM_30x20) and 
                 (mode not_eq ACM_10x60) and (mode not_eq ACM_BORE))
             {
                 rangeChangeCmd = 1;
@@ -651,13 +651,13 @@ void RadarDopplerClass::MENUDisplay(void)
         for (int i = 0; i < 20; i++)
         {
             //MI make it master mode dependant
-            if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp  and 
+            if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
                 OTWDriver.pCockpitManager->mpIcp->IsICPSet(ICPClass::MODE_A_A))
             {
                 if (rmenuaa[i].label1)
                     LabelButton(i, rmenuaa[i].label1, rmenuaa[i].label2, mode == rmenuaa[i].mode);
             }
-            else if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp  and 
+            else if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
                      OTWDriver.pCockpitManager->mpIcp->IsICPSet(ICPClass::MODE_A_G))
             {
                 if (rmenuag[i].label1)
@@ -707,7 +707,7 @@ void RadarDopplerClass::MENUDisplay(void)
 void RadarDopplerClass::MenuPushButton(int whichButton, int whichMFD)
 {
     //MI changed
-    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp  and 
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
         OTWDriver.pCockpitManager->mpIcp->IsICPSet(ICPClass::MODE_A_A))
     {
         if (rmenuaa[whichButton].label1)
@@ -716,7 +716,7 @@ void RadarDopplerClass::MenuPushButton(int whichButton, int whichMFD)
             ClearFlagBit(MenuMode);
         }
     }
-    else if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp  and 
+    else if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
              OTWDriver.pCockpitManager->mpIcp->IsICPSet(ICPClass::MODE_A_G))
     {
         if (rmenuag[whichButton].label1)
@@ -847,8 +847,8 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
     }
 
     // JB 010224 Start Enable the CombatAP to shoot A2A missiles
-    //if (g_bSmartCombatAP and lockedTarget)  and 
-    if (g_bSmartCombatAP and lockedTarget and ((mode > 1) and (mode < 14))  and 
+    //if (g_bSmartCombatAP and lockedTarget) and 
+    if (g_bSmartCombatAP and lockedTarget and ((mode > 1) and (mode < 14)) and 
         ((AircraftClass*) platform)->autopilotType == AircraftClass::CombatAP)
     {
         int digimode;
@@ -988,7 +988,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                 {
                     // Ok so it's too low, but is it jamming? If so, follow anyway...
                     if (tmpPtr->BaseData()->IsSPJamming())
-                        canSee or_eq  SG_JAMMING; // That's our second bit being used
+                        canSee or_eq SG_JAMMING; // That's our second bit being used
                     // So it's too low and were are not jamming. When did we loose the signal?
                     else if (SimLibElapsedTime - tmpPtr->localData->rdrLastHit > radarData->CoastTime)
                     {
@@ -997,7 +997,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                     }
                     // We just lost the signal, but we can still follow it, right?
                     else
-                        canSee or_eq  SG_FADING;
+                        canSee or_eq SG_FADING;
                 }
             }
 
@@ -1009,12 +1009,12 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                 if (tmpPtr->localData->sensorState[Radar] == NoTrack)
                 {
                     tmpPtr->localData->rdrLastHit = SimLibElapsedTime;// we are starting to lock the guy
-                    canSee or_eq  SG_FADING; // this will make the sensor state max set to detection
+                    canSee or_eq SG_FADING; // this will make the sensor state max set to detection
                 }
 
-                if (radarDatFile and tmpPtr->localData->sensorState[Radar] == Detection and  SimLibElapsedTime - tmpPtr->localData->rdrLastHit < (unsigned)radarDatFile->TimeToLock)
+                if (radarDatFile and tmpPtr->localData->sensorState[Radar] == Detection and SimLibElapsedTime - tmpPtr->localData->rdrLastHit < (unsigned)radarDatFile->TimeToLock)
                 {
-                    canSee or_eq  SG_FADING;// we are attempting a lock so don't go higher then detection
+                    canSee or_eq SG_FADING;// we are attempting a lock so don't go higher then detection
                 }
 
                 // Can we see it (either with a valid lock, a jammed or fading signal?
@@ -1157,11 +1157,11 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
         rdrData = rdrObj->localData;
 
         // Did the beam cross the object
-        if (isEmitting and rdrObj->BaseData()  and // Radar On?
-             not rdrObj->BaseData()->OnGround() and // In the Air?
+        if (isEmitting and rdrObj->BaseData() and // Radar On?
+ not rdrObj->BaseData()->OnGround() and // In the Air?
             ( not rdrObj->BaseData()->IsSim() or   // Campaign Entity
              ( not rdrObj->BaseData()->IsExploding() and // Live none weapon sim thing
-               not rdrObj->BaseData()->IsWeapon()))  and 
+ not rdrObj->BaseData()->IsWeapon())) and 
             LookingAtObject(rdrObj))
         {
             rdrData->painted = TRUE;
@@ -1332,7 +1332,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
     if (lockedTarget)
     {
         // Saw this frame, so update our best guess
-        if (radarDatFile and lockedTargetData->painted and lockedTargetData->range < radarDatFile->MaxNctrRange  and 
+        if (radarDatFile and lockedTargetData->painted and lockedTargetData->range < radarDatFile->MaxNctrRange and 
             lockedTargetData->ataFrom < 45 * DTR)
         {
             // Make a guess based on range

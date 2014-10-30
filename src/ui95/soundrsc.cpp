@@ -26,7 +26,7 @@ BOOL SOUND_RSC::Play(int StreamID)
     SndFlags = 0;
 
     if (Header->flags bitand SOUND_LOOP)
-        SndFlags or_eq  SND_STREAM_LOOP;
+        SndFlags or_eq SND_STREAM_LOOP;
 
     snddata = Owner->GetData() + Header->offset;
 
@@ -69,7 +69,7 @@ BOOL SOUND_RSC::Stream(int StreamID)
     SndFlags = 0;
 
     if (Header->flags bitand SOUND_LOOP)
-        SndFlags or_eq  SND_STREAM_LOOP;
+        SndFlags or_eq SND_STREAM_LOOP;
 
     strcpy(fname, Owner->ResName());
     strcat(fname, ".rsc");

@@ -39,10 +39,10 @@ extern HANDLE    GlobalListLock;
 /* Mutex macros */
 #define SAY_ON(a)
 #define SAY_OFF(a)
-#define CREATE_LOCK(a,b)                { a = CreateMutex( NULL, FALSE, b ); if(  not a ) DebugBreak(); }
+#define CREATE_LOCK(a,b)                { a = CreateMutex( NULL, FALSE, b ); if( not a ) DebugBreak(); }
 #define REQUEST_LOCK(a)                 { int w = WaitForSingleObject(a, INFINITE); {SAY_ON(a);} if( w == WAIT_FAILED ) DebugBreak(); }
-#define RELEASE_LOCK(a)                 { {SAY_OFF(a);} if(  not ReleaseMutex(a)) DebugBreak();   }
-#define DESTROY_LOCK(a)                 { if(  not CloseHandle(a)) DebugBreak();   }
+#define RELEASE_LOCK(a)                 { {SAY_OFF(a);} if( not ReleaseMutex(a)) DebugBreak();   }
+#define DESTROY_LOCK(a)                 { if( not CloseHandle(a)) DebugBreak();   }
 
 
 static struct sockaddr_in comBroadcastAddr, comRecvAddr;
@@ -787,7 +787,7 @@ int ComUDPGet(com_API_handle c)
                 case WSAEMSGSIZE:
 
                     /* The message was too large to fit into the specified buffer
-                      and was truncated. */
+                     and was truncated. */
                 case WSAEINVAL:
 
                     /* The socket has not been bound with bind, or an unknown flag
@@ -836,7 +836,7 @@ int ComUDPGet(com_API_handle c)
             // ignore messages from me
             //sfr: added port info
             /* if ( not (
-             (((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami)  and 
+             (((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami) and 
              (((struct sockaddr_in *)(&in_addr))->sin_port == CAPI_htons(ComAPIGetMySendPort()))
              )){*/
             if (((ComAPIHeader *)cudp->recv_buffer.buf)->id not_eq cudp->whoami)

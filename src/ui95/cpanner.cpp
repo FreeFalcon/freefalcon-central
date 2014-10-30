@@ -135,7 +135,7 @@ void C_Panner::SetImage(short state, long ImageID)
 
 long C_Panner::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED) or not Ready() or not Parent_)
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready() or not Parent_)
     {
         return(0);
     }
@@ -162,9 +162,9 @@ long C_Panner::CheckHotSpots(long relX, long relY)
 
     // check image hotspot
     if (
-        relX >= (GetX() - image->GetX())  and 
-        relX <= (GetX() + GetW() - image->GetX())  and 
-        relY >= (GetY() - image->GetY())  and 
+        relX >= (GetX() - image->GetX()) and 
+        relX <= (GetX() + GetW() - image->GetX()) and 
+        relY >= (GetY() - image->GetY()) and 
         relY <= (GetY() + GetH() - image->GetY())
     )
     {

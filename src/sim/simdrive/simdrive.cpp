@@ -570,15 +570,15 @@ void SimulationDriver::Cycle()
         }
 
         if (
-            flying and not OTWDriver.IsActive() and FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI  and 
-             not curFlyState and not doGraphicsExit and not doExit and not TheCampaign.IsSuspended()
+            flying and not OTWDriver.IsActive() and FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI and 
+ not curFlyState and not doGraphicsExit and not doExit and not TheCampaign.IsSuspended()
         )
         {
             Enter();
         }
         else if (
-            flying and OTWDriver.IsActive() and FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI  and 
-             not curFlyState and not doGraphicsExit and not doExit and not TheCampaign.IsSuspended()
+            flying and OTWDriver.IsActive() and FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI and 
+ not curFlyState and not doGraphicsExit and not doExit and not TheCampaign.IsSuspended()
         )
         {
             if ((sess->CameraCount() > 0) and OTWDriver.GetViewpoint())
@@ -655,7 +655,7 @@ void SimulationDriver::Cycle()
                 // There is code in ::SimBaseClass that sets the flag FELF_ADDED_DURING_SIMDRIVER_CYCLE.
                 // We need to make sure we clear it here.
                 if (
-                     not processObjsAddedInCycle ||
+ not processObjsAddedInCycle ||
                     (processObjsAddedInCycle and theObject->IsSetFELocalFlag(FELF_ADDED_DURING_SIMDRIVER_CYCLE))
                 )
                 {
@@ -664,8 +664,8 @@ void SimulationDriver::Cycle()
                     if (theObject->EntityDriver())
                     {
                         if ( not (
-                                (theObject->IsSetFalcFlag(FEC_PLAYER_ENTERING))  and 
-                                (theObject->IsLocal())  and 
+                                (theObject->IsSetFalcFlag(FEC_PLAYER_ENTERING)) and 
+                                (theObject->IsLocal()) and 
                                 (RunningDogfight())
                             ))
                         {
@@ -878,10 +878,10 @@ void SimulationDriver::SetPlayerEntity(SimMoverClass* newObject)
     ///VWF HACK: The following is a hack to make the Tac Eng Instrument
     // Landing Mission agree with the Manual
     if (
-        RunningTactical()  and 
-        current_tactical_mission  and 
-        current_tactical_mission->get_type() == tt_training  and 
-         not strcmpi(current_tactical_mission->get_title(), "10 Instrument Landing")  and 
+        RunningTactical() and 
+        current_tactical_mission and 
+        current_tactical_mission->get_type() == tt_training and 
+ not strcmpi(current_tactical_mission->get_title(), "10 Instrument Landing") and 
         gNavigationSys
     )
     {
@@ -927,9 +927,9 @@ void SimulationDriver::UpdateIAStats(SimBaseClass* oldEntity)
         //InstantAction.ExpendWeapons(oldEntity);
         return;
     }
-    else if ( not (oldEntity->IsSetFlag(MOTION_AIR_AI))  and 
-              not (oldEntity->IsSetFlag(MOTION_GND_AI))  and 
-              not (oldEntity->IsSetFlag(MOTION_HELO_AI)))
+    else if ( not (oldEntity->IsSetFlag(MOTION_AIR_AI)) and 
+ not (oldEntity->IsSetFlag(MOTION_GND_AI)) and 
+ not (oldEntity->IsSetFlag(MOTION_HELO_AI)))
     {
         return;
     }
@@ -1036,7 +1036,7 @@ void SimulationDriver::SleepCampaignFlight(TailInsertList *flightList)
     ShiAssert(theObject == NULL or FALSE == F4IsBadReadPtr(theObject, sizeof * theObject));
 
     //while (theObject) // JB 010306 CTD
-    while (theObject and  not F4IsBadReadPtr(theObject, sizeof(SimBaseClass))) // JB 010306 CTD
+    while (theObject and not F4IsBadReadPtr(theObject, sizeof(SimBaseClass))) // JB 010306 CTD
     {
         theObject->Sleep();
         theObject = (SimBaseClass*)flit.GetNext();
@@ -1152,7 +1152,7 @@ SimBaseClass* SimulationDriver::FindNearestThreat(float* bearing, float* range, 
 
     while (theObject)
     {
-        if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and not theObject->IsEject() and not theObject->IsDying()  and 
+        if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and not theObject->IsEject() and not theObject->IsDying() and 
             GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile and theObject->GetCampaignObject()->GetSpotted(myTeam))
         {
             if (theObject->GetSType() == STYPE_AIR_FIGHTER ||
@@ -1212,7 +1212,7 @@ SimBaseClass* SimulationDriver::FindNearestThreat(short *x, short *y, float* alt
 
     while (theObject)
     {
-        if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and not theObject->IsEject() and not theObject->IsDying()  and 
+        if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and not theObject->IsEject() and not theObject->IsDying() and 
             GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile and theObject->GetCampaignObject()->GetSpotted(myTeam))
         {
             if (theObject->GetSType() == STYPE_AIR_FIGHTER ||
@@ -1274,7 +1274,7 @@ SimBaseClass* SimulationDriver::FindNearestThreat(AircraftClass* aircraft, short
 
     while (theObject)
     {
-        if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and not theObject->IsEject() and not theObject->IsDying()  and 
+        if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and not theObject->IsEject() and not theObject->IsDying() and 
             GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile and theObject->GetCampaignObject()->GetSpotted(myTeam))
         {
             if (theObject->GetSType() == STYPE_AIR_FIGHTER ||
@@ -1336,7 +1336,7 @@ SimBaseClass* SimulationDriver::FindNearestEnemyPlane(AircraftClass* aircraft, s
 
     while (theObject)
     {
-        if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround()  and 
+        if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and 
             GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile and theObject->GetCampaignObject()->GetSpotted(myTeam))
         {
             if (retval == NULL)
@@ -1554,7 +1554,7 @@ SimBaseClass* SimulationDriver::FindNearestTraffic(AircraftClass* aircraft, Obje
         // check it is an airplane and not dead
         // check that it is not on the ground
         // checks that it is not hostile
-        if (aircraft->GetCallsignIdx() not_eq theObject->GetCallsignIdx() and theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround()  and 
+        if (aircraft->GetCallsignIdx() not_eq theObject->GetCallsignIdx() and theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and 
             GetTTRelations((Team)theObject->GetTeam(), myTeam) <= Neutral)
         {
             if (retval == NULL)
@@ -1742,7 +1742,7 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
     // In Sector I
     if (relativeBearing >= 5 and relativeBearing <= 90)
     {
-        if ((normalizedTrafficHdg <= (parallelTrafficHdg - leadFwdOffset))   and 
+        if ((normalizedTrafficHdg <= (parallelTrafficHdg - leadFwdOffset))  and 
             (normalizedTrafficHdg >= pureFwdOffset))
         {
             self->brain->trafficCheck = conflictTraffic; //possible conflict
@@ -1757,7 +1757,7 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
     // In Sector II
     if (relativeBearing >= 91 and relativeBearing <= 180)
     {
-        if ((normalizedTrafficHdg <= (parallelTrafficHdg - leadRearOffset))   and 
+        if ((normalizedTrafficHdg <= (parallelTrafficHdg - leadRearOffset))  and 
             (normalizedTrafficHdg >= pureRearOffset))
         {
             if (abs(trafficKIAS - myKIAS) > speedThreshold)
@@ -1773,7 +1773,7 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
     // In Sector III
     if (relativeBearing >= 181 and relativeBearing <= 269)
     {
-        if ((normalizedTrafficHdg >= (parallelTrafficHdg + leadRearOffset))   and 
+        if ((normalizedTrafficHdg >= (parallelTrafficHdg + leadRearOffset))  and 
             (normalizedTrafficHdg <= 360 - pureRearOffset))
         {
             if (abs(trafficKIAS - myKIAS) >= speedThreshold)
@@ -1789,7 +1789,7 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
     // In Sector IV
     if (relativeBearing >= 270 and relativeBearing <= 355)
     {
-        if ((normalizedTrafficHdg >= (parallelTrafficHdg + leadFwdOffset))   and 
+        if ((normalizedTrafficHdg >= (parallelTrafficHdg + leadFwdOffset))  and 
             (normalizedTrafficHdg <= 360 - pureFwdOffset))
         {
             self->brain->trafficCheck = conflictTraffic; //possible conflict
@@ -1807,7 +1807,7 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
     {
         if (relativeBearing >= 355 and relativeBearing <= 360)
         {
-            if ((normalizedTrafficHdg >= parallelTrafficHdg)   and 
+            if ((normalizedTrafficHdg >= parallelTrafficHdg)  and 
                 (normalizedTrafficHdg <= 360))
             {
                 self->brain->trafficCheck = conflictTraffic; //possible conflict
@@ -1817,7 +1817,7 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
         }
         else
         {
-            if ((normalizedTrafficHdg <= parallelTrafficHdg)   and 
+            if ((normalizedTrafficHdg <= parallelTrafficHdg)  and 
                 (normalizedTrafficHdg >= 0))
             {
                 self->brain->trafficCheck = conflictTraffic; //possible conflict
@@ -1844,7 +1844,7 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
         }
         else
         {
-            if ((normalizedTrafficHdg >= parallelTrafficHdg)   and 
+            if ((normalizedTrafficHdg >= parallelTrafficHdg)  and 
                 (normalizedTrafficHdg <= 360))
                 if (abs(trafficKIAS - myKIAS) >= speedThreshold)
                     self->brain->trafficCheck = conflictTraffic; //possible conflict
@@ -1895,7 +1895,7 @@ void SimulationDriver::InitACMIRecord(void)
         airPos.data.type = theMover->Type();
 
         // sfr: remove JB check
-        if ( not F4IsBadReadPtr((DrawableBSP*)(theMover->drawPointer), sizeof(DrawableBSP)) and theMover->GetTeam() >= 0 and  not F4IsBadReadPtr(TeamInfo[theMover->GetTeam()], sizeof(TeamClass))) // JB 010326 CTD
+        if ( not F4IsBadReadPtr((DrawableBSP*)(theMover->drawPointer), sizeof(DrawableBSP)) and theMover->GetTeam() >= 0 and not F4IsBadReadPtr(TeamInfo[theMover->GetTeam()], sizeof(TeamClass))) // JB 010326 CTD
             airPos.data.uniqueID = ACMIIDTable->Add(theMover->Id(), (char*)((DrawableBSP*)(theMover->drawPointer))->Label(), TeamInfo[theMover->GetTeam()]->GetColor()); //.num_;
 
         airPos.data.x = theMover->XPos();
@@ -2167,7 +2167,7 @@ void ProximityCheck(SimBaseClass* thisObj)
 
             while (theObject)
             {
-                if (fabs(thisObj->XPos() - theObject->XPos()) < 20.0F * NM_TO_FT  and 
+                if (fabs(thisObj->XPos() - theObject->XPos()) < 20.0F * NM_TO_FT and 
                     fabs(thisObj->YPos() - theObject->YPos()) < 20.0F * NM_TO_FT)
                 {
                     isClose = TRUE;

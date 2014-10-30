@@ -27,7 +27,7 @@ void DigitalBrain::CollisionCheck(void)
     }
 
     /*----------------------------------------------------------*/
-    /* Reaction time is a function of gs available and          */
+    /* Reaction time is a function of gs available and */
     /* agression level (gs allowed). 2 seconds is the bare      */
     /* minimum for most situations. Modify with reaction factor */
     /*----------------------------------------------------------*/
@@ -60,7 +60,7 @@ void DigitalBrain::CollisionCheck(void)
         /*---------------*/
         /* not a problem */
         /*---------------*/
-        if (timeToImpact > reactTime  and 
+        if (timeToImpact > reactTime and 
             localData->range > hRange)
         {
             return;

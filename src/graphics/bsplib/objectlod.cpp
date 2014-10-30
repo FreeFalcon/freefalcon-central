@@ -135,7 +135,7 @@ void ObjectLOD::SetupTable(int file, char *basename)
     strcpy(filename, basename);
     strcat(filename, ".DXL");
 
-    if ( not ObjectLodMap.Open(filename, FALSE,  not g_bUseMappedFiles))
+    if ( not ObjectLodMap.Open(filename, FALSE, not g_bUseMappedFiles))
     {
         char message[256];
         sprintf(message, "Failed to open object LOD database %s", filename);

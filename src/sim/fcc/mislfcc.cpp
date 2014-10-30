@@ -86,7 +86,7 @@ void FireControlComputer::AirAirMode(void)
 
             // Marco Edit - AIM9 Spot/Scan
             if (
-                Sms->curWeaponType == wtAim9 and missileSpotScanCmd  and 
+                Sms->curWeaponType == wtAim9 and missileSpotScanCmd and 
                 cw->GetSPType() not_eq SPTYPE_AIM9P
             )
             {
@@ -129,7 +129,7 @@ void FireControlComputer::AirAirMode(void)
             }
 
             if (
-                (subMode == Aim9 or mrmSubMode == Aim9 or masterMode == Dogfight)  and 
+                (subMode == Aim9 or mrmSubMode == Aim9 or masterMode == Dogfight) and 
                 Sms->curWeaponType == wtAim9
             )
             {
@@ -156,8 +156,8 @@ void FireControlComputer::AirAirMode(void)
                 if ( not playerFCC or ( // don't do this check for ai
                         vc and ( not (vc->Flags bitand 0x20000000) ||
                                // JB 010712 Normal behavior for the 2d cockpit
-                               OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit)  and 
-                         not theMissile->isCaged)
+                               OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit) and 
+ not theMissile->isCaged)
                    )
                 {
                     // We don't have a target so find one
@@ -168,8 +168,8 @@ void FireControlComputer::AirAirMode(void)
 
                         while (curTarget)
                         {
-                            if (curTarget->BaseData()->IsSim()  and 
-                                 not curTarget->BaseData()->IsWeapon())
+                            if (curTarget->BaseData()->IsSim() and 
+ not curTarget->BaseData()->IsWeapon())
                             {
                                 theMissile->SetTarget(curTarget);
                                 theMissile->RunSeeker();
@@ -232,14 +232,14 @@ void FireControlComputer::AirAirMode(void)
                                     // if (theMissile->targetPtr->localData->ata < 1.0 * DTR)
                                     //IrstClass*  Irst = (IrstClass *)theMissile->sensorArray[0];
 
-                                    if (theMissile->isSpot and fabs(theMissile->targetPtr->localData->el - missileSeekerEl) <  0.03f  and 
+                                    if (theMissile->isSpot and fabs(theMissile->targetPtr->localData->el - missileSeekerEl) <  0.03f and 
                                         fabs(theMissile->targetPtr->localData->az - missileSeekerAz) <  0.03f)
                                     {
                                         // nb. Exec checks LOS and stuff like that
                                         break;
                                     }
 
-                                    if ( not theMissile->isSpot and fabs(theMissile->targetPtr->localData->el - missileSeekerEl) <  0.06f  and 
+                                    if ( not theMissile->isSpot and fabs(theMissile->targetPtr->localData->el - missileSeekerEl) <  0.06f and 
                                         fabs(theMissile->targetPtr->localData->az - missileSeekerAz) <  0.06f)
                                     {
                                         break;
@@ -283,9 +283,9 @@ void FireControlComputer::AirAirMode(void)
                     IsCAP = false;
 
                 if (playerFCC and not IsCAP
-                    and (Sms->GetCoolState() not_eq SMSClass::COOL and Sms->GetCoolState() not_eq SMSClass::WARMING)
-                    and theMissile->targetPtr and Sms->GetCurrentWeapon() and Sms->curWeaponType == wtAim9
-                    and cw->GetSPType() not_eq SPTYPE_AIM9P)
+                   and (Sms->GetCoolState() not_eq SMSClass::COOL and Sms->GetCoolState() not_eq SMSClass::WARMING)
+                   and theMissile->targetPtr and Sms->GetCurrentWeapon() and Sms->curWeaponType == wtAim9
+                   and cw->GetSPType() not_eq SPTYPE_AIM9P)
                 {
                     theMissile->DropTarget();
                     irSig = 0.0;
@@ -553,9 +553,9 @@ void FireControlComputer::AirAirMode(void)
                     float missileteoryMaxTof = min(missileMaxTof - 8.0f, missileTeoryRMax / MISSILE_TEORY_SPEED);
                     missileteoryMaxTof += -5.0F * (float) sin(.07F * missileteoryMaxTof); // JB 010215
                     // digi's don't shoot semi's if agregate now, so this is ok
-                    /*if (((AircraftClass *)theMissile->parent)->isDigital  and 
+                    /*if (((AircraftClass *)theMissile->parent)->isDigital and 
                      (theMissile->sensorArray[0]->Type() == SensorClass::Radar ||
-                     theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming  and 
+                     theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming and 
                      overtake * missileteoryMaxTof < missileRMax))
                      missileRMax   = overtake * missileteoryMaxTof;// missileMaxTof;
 

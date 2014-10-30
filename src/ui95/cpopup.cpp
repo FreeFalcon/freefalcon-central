@@ -359,7 +359,7 @@ void C_PopupList::SetItemFlagBitOn(long ID, long flags)
     cur = FindID(ID);
 
     if (cur)
-        cur->flags_ or_eq  flags;
+        cur->flags_ or_eq flags;
 }
 
 void C_PopupList::SetItemFlagBitOff(long ID, long flags)
@@ -515,7 +515,7 @@ long C_PopupList::CheckHotSpots(long relX, long relY)
     POPUPLIST *cur;
     short i;
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED))
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED))
         return(0);
 
     if (relX < Parent_->ClientArea_[GetClient()].left or relX > Parent_->ClientArea_[GetClient()].right ||
@@ -656,7 +656,7 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
             return(TRUE);
         }
 
-        if (cur->flags_ bitand C_BIT_ENABLED and  not (cur->flags_ bitand C_BIT_INVISIBLE))
+        if (cur->flags_ bitand C_BIT_ENABLED and not (cur->flags_ bitand C_BIT_INVISIBLE))
         {
             if (cur->Type_ == C_TYPE_MENU)
             {
@@ -700,7 +700,7 @@ void C_PopupList::Refresh()
     if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->update_ or_eq  C_DRAW_REFRESHALL;
+    Parent_->update_ or_eq C_DRAW_REFRESHALL;
     Parent_->RefreshWindow();
 }
 
@@ -746,7 +746,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     if (cur)
     {
-        if (cur->Type_ == C_TYPE_NOTHING or  not (cur->flags_ bitand C_BIT_ENABLED))
+        if (cur->Type_ == C_TYPE_NOTHING or not (cur->flags_ bitand C_BIT_ENABLED))
             cur = NULL;
     }
 
@@ -917,7 +917,7 @@ BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
     Window_->AddControl(this);
 
     Selected_ = -1;
-    Window_->update_ or_eq  C_DRAW_REFRESHALL;
+    Window_->update_ or_eq C_DRAW_REFRESHALL;
     Window_->RefreshWindow();
     Window_->SetDepth(10000);
     Window_->SetCritical(Handler_->GetCritical());

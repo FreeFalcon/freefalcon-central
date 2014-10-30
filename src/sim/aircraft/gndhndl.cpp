@@ -136,8 +136,8 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
     if (groundType == COVERAGE_WATER ||
         groundType == COVERAGE_RIVER ||
-        ( not onFlatFeature  and 
-          not af->IsSet(AirframeClass::OverRunway)  and 
+        ( not onFlatFeature and 
+ not af->IsSet(AirframeClass::OverRunway) and 
          (groundType == COVERAGE_THINFOREST ||
           groundType == COVERAGE_THICKFOREST ||
           groundType == COVERAGE_ROCKY ||
@@ -252,8 +252,8 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     if (af->vt * impactAngle < sinkRate * (1.25F - ( not 
                                            (af->IsSet(AirframeClass::OverRunway)
                                             or af->IsSet(AirframeClass::OnObject)) // JB carrier
-                                            and 
-                                            not onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
+                                           and 
+ not onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
     {
         // ok touchdown
 
@@ -288,7 +288,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     else if (af->vt * impactAngle < sinkRate * 1.75F * (1.0F - ( not 
              (af->IsSet(AirframeClass::OverRunway)
               or af->IsSet(AirframeClass::OnObject)) // JB carrier
-             and not onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
+            and not onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
     {
         //bounce
 
@@ -346,7 +346,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
                 for (int i = 0; i < af->NumGear(); i++)
                 {
-                    af->gear[i].flags or_eq  GearData::GearProblem;
+                    af->gear[i].flags or_eq GearData::GearProblem;
                     SetDOF(ComplexGearDOF[i]/*COMP_NOS_GEAR + i*/, 0.0F);
                 }
 
@@ -372,7 +372,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
             // we're taking damage.....
             message = CreateGroundCollisionMessage(this, FloatToInt32(maxStrength));
 
-            gearAbsorption = sinkRate * 3.0F *  not af->IsSet(AirframeClass::GearBroken) * af->gearPos;
+            gearAbsorption = sinkRate * 3.0F * not af->IsSet(AirframeClass::GearBroken) * af->gearPos;
 
             message->dataBlock.damageStrength = min(1000.0F, af->vt * impactAngle * 0.1F +
                                                     (af->vt * impactAngle - gearAbsorption) *
@@ -405,13 +405,13 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
                                   FaultClass::fl_out, FaultClass::fail, FALSE);
             }
 
-            if ( not af->IsSet(AirframeClass::GearBroken) and  af->gearPos > 0.0F)
+            if ( not af->IsSet(AirframeClass::GearBroken) and af->gearPos > 0.0F)
             {
                 af->gearPos = 0.2F;
 
                 for (int i = 0; i < af->NumGear(); i++)
                 {
-                    af->gear[i].flags or_eq  GearData::GearProblem;
+                    af->gear[i].flags or_eq GearData::GearProblem;
                 }
 
                 // JPO - change to only play for us.
@@ -453,7 +453,7 @@ AircraftClass::GroundFeatureCheck(float groundZ)
     FalconDamageMessage* message;
     SimBaseClass *hitFeature;
 
-    if (OnGround() and af->vcas <= 50.0f  and gCommsMgr and gCommsMgr->Online()) // JB 010107
+    if (OnGround() and af->vcas <= 50.0f and gCommsMgr and gCommsMgr->Online()) // JB 010107
         return; // JB 010107
 
     // Decide if we hit anything
@@ -560,8 +560,8 @@ void AircraftClass::CheckPersistantCollision()
         testP->drawPointer->GetPosition(&fpos);
 
         // test with gross level bounds of object
-        if (fabs(XPos() - fpos.x) < radius   and 
-            fabs(YPos() - fpos.y) < radius   and 
+        if (fabs(XPos() - fpos.x) < radius  and 
+            fabs(YPos() - fpos.y) < radius  and 
             fabs(ZPos() - fpos.z) < radius)
         {
             message = new FalconDamageMessage(Id(), FalconLocalGame);

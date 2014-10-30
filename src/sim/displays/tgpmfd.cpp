@@ -144,7 +144,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
 
     theRadar->GetCursorPosition(&cX, &cY);
 
-    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp  and 
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
         DrawBullseyeCircle(display, cX, cY);
     else
@@ -308,8 +308,8 @@ VirtualDisplay* TgpMfdDrawable::GetDisplay(void)
 }
 void TgpMfdDrawable::DrawRALT(VirtualDisplay* display)
 {
-    if (TheHud and  not (self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
-        and self->af->platform->RaltReady()  and 
+    if (TheHud and not (self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
+       and self->af->platform->RaltReady() and 
         TheHud->FindRollAngle(-TheHud->hat) and TheHud->FindPitchAngle(-TheHud->hat))
     {
         float x, y = 0;

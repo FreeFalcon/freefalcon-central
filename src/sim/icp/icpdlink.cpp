@@ -23,7 +23,7 @@ void ICPClass::ExecDLINKMode(void)
     {
         if (mUpdateFlags bitand DLINK_UPDATE)
         {
-            mUpdateFlags and_eq  not DLINK_UPDATE;
+            mUpdateFlags and_eq not DLINK_UPDATE;
 
             //MI Changed for DLINK stuff
 #if 0
@@ -98,6 +98,6 @@ void ICPClass::PNUpdateDLINKMode(int button, int mode)
         playerAC->FCC->waypointStepCmd = 1;
     }
 
-    mUpdateFlags or_eq  DLINK_UPDATE;
-    mUpdateFlags or_eq  CNI_UPDATE;
+    mUpdateFlags or_eq DLINK_UPDATE;
+    mUpdateFlags or_eq CNI_UPDATE;
 }

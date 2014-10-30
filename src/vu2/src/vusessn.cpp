@@ -915,15 +915,15 @@ int VuTargetEntity::GetMessages()
             }
 
             if (
-                session  and 
-                ((FalconSessionEntity*)vuDatabase->Find(this->Id()))->GetFlyState() not_eq  FLYSTATE_FLYING
+                session and 
+                ((FalconSessionEntity*)vuDatabase->Find(this->Id()))->GetFlyState() not_eq FLYSTATE_FLYING
             )
             {
                 session = NULL;//session is not in cockpit
             }
 
-            if (session  and 
-                ((FalconSessionEntity*)vuDatabase->Find(vuLocalSessionEntity->Game()->OwnerId()))->GetFlyState() not_eq  FLYSTATE_FLYING
+            if (session and 
+                ((FalconSessionEntity*)vuDatabase->Find(vuLocalSessionEntity->Game()->OwnerId()))->GetFlyState() not_eq FLYSTATE_FLYING
                )
             {
                 session = NULL;//host is not in cockpit
@@ -1322,7 +1322,7 @@ int VuTargetEntity::SendMessage(VuMessage* msg)
     }
 
     if (
-        (msg->Flags() bitand VU_RELIABLE_MSG_FLAG)  and 
+        (msg->Flags() bitand VU_RELIABLE_MSG_FLAG) and 
         (retval == COMAPI_WOULDBLOCK or retval == COMAPI_CONNECTION_PENDING)
     )
     {
@@ -2125,8 +2125,8 @@ VU_SESSION_ID VuSessionEntity::OpenSession()
         for (ent = iter.GetFirst(); (ent not_eq NULL); ent = iter.GetNext())
         {
             if (
-                (ent->OwnerId() == vuLocalSession)  and 
-                (ent not_eq vuPlayerPoolGroup)  and 
+                (ent->OwnerId() == vuLocalSession) and 
+                (ent not_eq vuPlayerPoolGroup) and 
                 (ent not_eq vuGlobalGroup)
             )
             {
@@ -2280,7 +2280,7 @@ VU_ERRCODE VuSessionEntity::JoinGroup(VuGroupEntity* newgroup)
         {
             VuSessionEvent *event = 0;
 
-            if ( not newgroup->IsLocal() and newgroup->SessionCount() == 0  and 
+            if ( not newgroup->IsLocal() and newgroup->SessionCount() == 0 and 
                 newgroup not_eq vuGlobalGroup)
             {
                 // we need to transfer it here...
@@ -2628,7 +2628,7 @@ VU_ERRCODE VuSessionEntity::Handle(VuFullUpdateEvent* event)
             {
                 // gather statistics
                 if (vuLocalSessionEntity->masterTimeOwner_ ==
-                    sData->masterTimeOwner_  and 
+                    sData->masterTimeOwner_ and 
                     latency_ == sData->Latency())
                 {
 
@@ -2661,7 +2661,7 @@ VU_ERRCODE VuSessionEntity::Handle(VuFullUpdateEvent* event)
                     }
                 }
             }
-            else if (sData->TimeSyncState() == VU_MASTER_SYNC  and 
+            else if (sData->TimeSyncState() == VU_MASTER_SYNC and 
                      vuLocalSessionEntity->GameId() == GameId())
             {
                 vuLocalSessionEntity->masterTime_         = sData->masterTime_;
@@ -2805,8 +2805,8 @@ VU_ERRCODE VuSessionEntity::Handle(VuSessionEvent* event)
         {
             SetTimeSync(event->syncState_);
 
-            if (event->syncState_ == VU_MASTER_SYNC  and 
-                vuLocalSessionEntity->Game() == Game()  and 
+            if (event->syncState_ == VU_MASTER_SYNC and 
+                vuLocalSessionEntity->Game() == Game() and 
                 vuLocalSessionEntity->TimeSyncState() not_eq VU_MASTER_SYNC)
             {
                 vuLocalSessionEntity->masterTimeOwner_ = Id().creator_;
@@ -3762,7 +3762,7 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
                 {
                     next = dbiter.GetNext();
 
-                    if ((ent->OwnerId().creator_ == sess->SessionId()) and (sess not_eq ent)  and 
+                    if ((ent->OwnerId().creator_ == sess->SessionId()) and (sess not_eq ent) and 
                         (sess->VuState() not_eq VU_MEM_ACTIVE ||
                          (ent->IsTransferrable() and not ent->IsGlobal())))
                     {
@@ -3785,16 +3785,16 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
             {
                 next = dbiter.GetNext();
 
-                if ( not ent->IsTransferrable()  and 
-                    sess and sess->VuState() not_eq VU_MEM_ACTIVE   and 
+                if ( not ent->IsTransferrable() and 
+                    sess and sess->VuState() not_eq VU_MEM_ACTIVE  and 
                     ent->OwnerId().creator_ == sess->SessionId())
                 {
                     vuDatabase->Remove(ent);
                 }
-                else if (( not sess or (ent->OwnerId().creator_ == sess->SessionId()))  and 
+                else if (( not sess or (ent->OwnerId().creator_ == sess->SessionId())) and 
                          ((1 << ent->Domain()) bitand vuLocalSessionEntity->DomainMask()))
                 {
-                    if (ent->Association() not_eq vuNullId  and 
+                    if (ent->Association() not_eq vuNullId and 
                         (ent2 = vuDatabase->Find(ent->Association())) not_eq 0)
                     {
                         test_ent = ent2;
@@ -3802,8 +3802,8 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
 
                     index = test_ent->Id().num_ % count[test_ent->Domain()];
 
-                    if (index >= myseedlower[test_ent->Domain()]  and 
-                        index <= myseedupper[test_ent->Domain()]  and 
+                    if (index >= myseedlower[test_ent->Domain()] and 
+                        index <= myseedupper[test_ent->Domain()] and 
                         ent->IsTransferrable() and not ent->IsGlobal())
                     {
                         ent->SetOwnerId(vuLocalSession);
@@ -3824,16 +3824,16 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
 
             while (ent)
             {
-                if ( not ent->IsTransferrable()  and 
-                    sess and sess->VuState() not_eq VU_MEM_ACTIVE   and 
+                if ( not ent->IsTransferrable() and 
+                    sess and sess->VuState() not_eq VU_MEM_ACTIVE  and 
                     ent->OwnerId().creator_ == sess->SessionId())
                 {
                     vuDatabase->Remove(ent);
                 }
-                else if (( not sess or (ent->OwnerId().creator_ == sess->SessionId()))  and 
+                else if (( not sess or (ent->OwnerId().creator_ == sess->SessionId())) and 
                          ((1 << ent->Domain()) bitand vuLocalSessionEntity->DomainMask()))
                 {
-                    if (ent->Association() not_eq vuNullId  and 
+                    if (ent->Association() not_eq vuNullId and 
                         (ent2 = vuDatabase->Find(ent->Association())) not_eq 0)
                     {
                         test_ent = ent2;
@@ -3841,9 +3841,9 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
 
                     index = test_ent->Id().num_ % count[test_ent->Domain()];
 
-                    if (index >= myseedlower[test_ent->Domain()]  and 
-                        index <= myseedupper[test_ent->Domain()]  and 
-                        ent->IsTransferrable() and not ent->IsGlobal()  and 
+                    if (index >= myseedlower[test_ent->Domain()] and 
+                        index <= myseedupper[test_ent->Domain()] and 
+                        ent->IsTransferrable() and not ent->IsGlobal() and 
                         ( not sess or sess->VuState() == VU_MEM_ACTIVE))
                     {
                         ent->SetOwnerId(vuLocalSession);
@@ -3917,8 +3917,8 @@ VU_ERRCODE VuPlayerPoolGame::Distribute(VuSessionEntity *sess)
             next = dbiter.GetNext();
 
             if (
-                (ent->OwnerId().creator_ == sess->SessionId())  and 
-                ( not ent->IsPersistent())  and 
+                (ent->OwnerId().creator_ == sess->SessionId()) and 
+                ( not ent->IsPersistent()) and 
                 (sess->VuState() not_eq VU_MEM_ACTIVE or (ent->IsTransferrable() and not ent->IsGlobal()))
             )
             {

@@ -421,7 +421,7 @@ int SimVehicleClass::Exec(void)
     {
         // debug non local
         /*
-        if (  not IsLocal() )
+        if ( not IsLocal() )
         {
          MonoPrint( "NonLocal Dying: Pct Strength now: %f\n", pctStrength );
         }
@@ -1467,9 +1467,9 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
     // burst with the plane flying thru it OK for a little while and trailing
     // some debris.  For missile damage, don't let pctStrength hit neg val
     // until it's been set to 0.  This will allow time to generate debris
-    if (strength == maxStrength  and 
-        hitPoints > strength  and 
-        IsAirplane()  and 
+    if (strength == maxStrength and 
+        hitPoints > strength and 
+        IsAirplane() and 
         damageMessage->dataBlock.damageType == FalconDamageType::MissileDamage)
     {
         hitPoints = strength;
@@ -1488,7 +1488,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
     // If damaged has been sustained then:
     // If this is our own aircraft and if we have disabled the damage jitter or a 25% chance
     // Or otherwise a 13% chance (AI controlled aircraft won't be able to fly with a bias so we want the % to be low)
-    if (hitPoints > 0  and 
+    if (hitPoints > 0 and 
         ((IsSetFlag(MOTION_OWNSHIP) and (g_bDisableFunkyChicken or (rand() bitand 0x3) == 0x3)) ||
          (rand() bitand 0x7) == 0x7))
     {
@@ -1499,11 +1499,11 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
     // JB 010121 adjusted to work in MP
     if (g_bNewDamageEffects and IsSetFlag(MOTION_OWNSHIP) and // hitPoints > 0 and 2002-04-11 REMOVED BY S.G. Done below after ->af since it's now externalized
-        // SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity()->AutopilotType() not_eq AircraftClass::CombatAP  and 
-        //  not (gCommsMgr and gCommsMgr->Online())  and 
-        IsAirplane()  and 
+        // SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity()->AutopilotType() not_eq AircraftClass::CombatAP and 
+        // not (gCommsMgr and gCommsMgr->Online()) and 
+        IsAirplane() and 
         // (rand() bitand 0x7) == 0x7 and // 13% chance 2002-04-11 MOVED BY S.G. After the ->af and used the external var now
-        ((AircraftClass*)this)->af  and 
+        ((AircraftClass*)this)->af and 
         ((AircraftClass*)this)->af->GetEngineDamageHitThreshold() < hitPoints and // 2002-04-11 ADDED BY S.G. hitPoints 'theshold' is no longer 1 or above but externalized
         ((AircraftClass*)this)->af->GetEngineDamageStopThreshold() > rand() % 100 and // 2002-04-11 ADDED BY S.G. instead of a fixed 13%, now uses an aiframe aux var
         ((AircraftClass*)this)->AutopilotType() not_eq AircraftClass::CombatAP

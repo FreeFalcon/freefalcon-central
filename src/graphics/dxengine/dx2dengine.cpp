@@ -1617,7 +1617,7 @@ void CDXEngine::DX2D_Flush2DObjects(void)
             if (Draw.Flags bitand POLY_3DOBJECT)
             {
                 // Draw the sorted object setting u the right mode if not already in 3D mode
-                DrawSortedAlpha(Draw.Flags bitand (0xffffff),  not Mode_3D);
+                DrawSortedAlpha(Draw.Flags bitand (0xffffff), not Mode_3D);
                 // Mark that we are in 3D mode
                 Mode_2D = false;
                 Mode_3D = true;

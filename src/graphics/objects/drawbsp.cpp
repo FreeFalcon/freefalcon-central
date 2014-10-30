@@ -692,7 +692,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
         // since labelPoint is local and .csZ is not used afterwards)
         // Besides no need to calculate radial distance is Z distance is already greater
         if (g_bLabelRadialFix)
-            if (labelPoint.clipFlag == ON_SCREEN  and 
+            if (labelPoint.clipFlag == ON_SCREEN and 
                 labelPoint.csZ < limitcheck) //Same condition as below
             {
                 float dx = position.x - renderer->X();
@@ -703,7 +703,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
 
         //end LabelRadialDistanceFix
 
-        if (labelPoint.clipFlag == ON_SCREEN  and 
+        if (labelPoint.clipFlag == ON_SCREEN and 
             labelPoint.csZ < limitcheck)
         {
             int colorsub = int((labelPoint.csZ / (limit >> 3))) << 5;

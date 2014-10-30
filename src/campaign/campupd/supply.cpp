@@ -73,7 +73,7 @@ int ProduceSupplies(CampaignTime deltaTime)
 
             //Cobra Added Army, depot, and port per JimG
             if ((type == TYPE_FACTORY or type == TYPE_ARMYBASE or type == TYPE_DEPOT or type == TYPE_PORT)
-                and o->GetObjectiveOldown() == o->GetOwner()) // Supply
+               and o->GetObjectiveOldown() == o->GetOwner()) // Supply
             {
                 if (g_bPowerGrid)
                 {
@@ -355,7 +355,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
     int repl_a_s = 0, repl_v_s = 0, repl_s = 0, repl_sa = 0, prob = 0; // A.S. debug variables
     // end added section
 
-    if ( not TeamInfo[who] or  not (TeamInfo[who]->flags bitand TEAM_ACTIVE))
+    if ( not TeamInfo[who] or not (TeamInfo[who]->flags bitand TEAM_ACTIVE))
         return 0;
 
     sratio = fratio = rratio = 0.0F;
@@ -491,7 +491,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
         {
             // We only supply/repair Battalions and Squadrons
             if (
-                unit->GetTeam() == who and (unit->IsBattalion() or unit->IsSquadron())  and 
+                unit->GetTeam() == who and (unit->IsBattalion() or unit->IsSquadron()) and 
                 TheCampaign.CurrentTime - unit->GetLastResupplyTime() > unit->GetUnitSupplyTime()
             )
             {
@@ -533,7 +533,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
                         prob = rand() % 100;
                         repl_a = FloatToInt32((unit->GetFullstrengthVehicles() - unit->GetTotalVehicles()) * (lambda) * rratio_a);
 
-                        if (TeamInfo[who]->GetReplacementsAvail() >= 1  and prob < 51  and (((float)unit->GetTotalVehicles()) / unit->GetFullstrengthVehicles() <= 0.8F))  // rounding up with probability 0.5
+                        if (TeamInfo[who]->GetReplacementsAvail() >= 1 and prob < 51 and (((float)unit->GetTotalVehicles()) / unit->GetFullstrengthVehicles() <= 0.8F))  // rounding up with probability 0.5
                             repl_a = FloatToInt32((float) ceil((unit->GetFullstrengthVehicles() - unit->GetTotalVehicles()) * (lambda) * rratio_a));
 
                         if (repl_a > 0)
@@ -548,7 +548,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
                         prob = rand() % 100;
                         repl_v = FloatToInt32((unit->GetFullstrengthVehicles() - unit->GetTotalVehicles()) * (1 - lambda) * rratio_v);
 
-                        if (TeamInfo[who]->GetReplacementsAvail() > 12  and prob < 51  and (((float)unit->GetTotalVehicles()) / unit->GetFullstrengthVehicles() <= 0.85F))  // rounding up
+                        if (TeamInfo[who]->GetReplacementsAvail() > 12 and prob < 51 and (((float)unit->GetTotalVehicles()) / unit->GetFullstrengthVehicles() <= 0.85F))  // rounding up
                             repl_v = FloatToInt32((float) ceil((unit->GetFullstrengthVehicles() - unit->GetTotalVehicles()) * (1 - lambda) * rratio_v));
 
                         if (repl_v > 0)

@@ -234,7 +234,7 @@ void GroundClass::Init(SimInitDataClass* initData)
     {
         // Don't move if we've got an assigned point
         gai->moveState = GNDAI_MOVE_HALTED;
-        gai->moveFlags or_eq  GNDAI_MOVE_FIXED_POSITIONS;
+        gai->moveFlags or_eq GNDAI_MOVE_FIXED_POSITIONS;
     }
 
     CalcTransformMatrix(this);
@@ -783,9 +783,9 @@ int GroundClass::Exec(void)
             SimObjectLocalData* localData = targetPtr->localData;
 
             if (
-                localData->ataFrom == 0.0f  and 
-                localData->az == 0.0f   and 
-                localData->el == 0.0f  and 
+                localData->ataFrom == 0.0f and 
+                localData->az == 0.0f  and 
+                localData->el == 0.0f and 
                 localData->range == 0.0f
             )
             {
@@ -815,11 +815,11 @@ int GroundClass::Exec(void)
             // IF WE CAN SEE THE RADAR'S TARGET AND WE ARE A AIR DEFENSE THINGY
             // NOT IN A BKOGEN MORAL STATE, MARK IT AS SPOTTED IF WE'RE BRIGHT ENOUGH
             if (
-                radar  and 
-                radar->CurrentTarget()  and 
-                gai->skillLevel >= 3  and 
-                ((UnitClass *)GetCampaignObject())->GetSType() == STYPE_UNIT_AIR_DEFENSE  and 
-                 not ((UnitClass *)GetCampaignObject())->Broken()
+                radar and 
+                radar->CurrentTarget() and 
+                gai->skillLevel >= 3 and 
+                ((UnitClass *)GetCampaignObject())->GetSType() == STYPE_UNIT_AIR_DEFENSE and 
+ not ((UnitClass *)GetCampaignObject())->Broken()
             )
             {
                 CampBaseClass *campBaseObj;
@@ -834,7 +834,7 @@ int GroundClass::Exec(void)
                 }
 
                 // JB 011002 If campBaseObj is NULL the target may be chaff
-                if (campBaseObj and  not (campBaseObj->GetSpotted(GetTeam())) and campBaseObj->IsFlight())
+                if (campBaseObj and not (campBaseObj->GetSpotted(GetTeam())) and campBaseObj->IsFlight())
                 {
                     RequestIntercept((FlightClass *)campBaseObj, GetTeam());
                 }
@@ -845,9 +845,9 @@ int GroundClass::Exec(void)
                 {
                     campBaseObj->SetSpotted(
                         GetTeam(), TheCampaign.CurrentTime,
-                        (radar->radarData->flag bitand RAD_NCTR) not_eq 0  and 
-                        radar->CurrentTarget()->localData  and 
-                        radar->CurrentTarget()->localData->ataFrom < 45.0f * DTR  and 
+                        (radar->radarData->flag bitand RAD_NCTR) not_eq 0 and 
+                        radar->CurrentTarget()->localData and 
+                        radar->CurrentTarget()->localData->ataFrom < 45.0f * DTR and 
                         radar->CurrentTarget()->localData->range <
                         radar->GetRadarDatFile()->MaxNctrRange / (2.0f * (16.0f - (float)gai->skillLevel) / 16.0f)
                     );
@@ -866,11 +866,11 @@ int GroundClass::Exec(void)
         // 2002-02-11 MODIFED BY S.G.
         // Since I only identify visually, need to perform this even if spotted by radar in case I can ID it.
         if (
-            /* not spottedSet and  gai->skillLevel >= 3 and */
-            ((UnitClass *)GetCampaignObject())->GetSType() == STYPE_UNIT_AIR_DEFENSE  and 
-            gai == gai->battalionCommand  and 
-             not ((UnitClass *)GetCampaignObject())->Broken()  and 
-            gai->GetAirTargetPtr()  and 
+            /* not spottedSet and gai->skillLevel >= 3 and */
+            ((UnitClass *)GetCampaignObject())->GetSType() == STYPE_UNIT_AIR_DEFENSE and 
+            gai == gai->battalionCommand and 
+ not ((UnitClass *)GetCampaignObject())->Broken() and 
+            gai->GetAirTargetPtr() and 
             CheckLOS(gai->GetAirTargetPtr())
         )
         {
@@ -883,7 +883,7 @@ int GroundClass::Exec(void)
 
             // JB 011002 If campBaseObj is NULL the target may be chaff
 
-            if ( not spottedSet and campBaseObj and  not (campBaseObj->GetSpotted(GetTeam())) and campBaseObj->IsFlight())
+            if ( not spottedSet and campBaseObj and not (campBaseObj->GetSpotted(GetTeam())) and campBaseObj->IsFlight())
                 RequestIntercept((FlightClass *)campBaseObj, GetTeam());
 
             if (campBaseObj)
@@ -913,13 +913,13 @@ int GroundClass::Exec(void)
         SimWeaponClass *theWeapon = Sms->GetCurrentWeapon();
 
         // FRB - This version seems to give SAMs a little more activity
-        if (SimLibElapsedTime > nextSamFireTime  and not allowSamFire)
+        if (SimLibElapsedTime > nextSamFireTime and not allowSamFire)
         {
             allowSamFire = TRUE;
         }
 
         // Biker's version
-        //if(SimLibElapsedTime > nextSamFireTime  and not allowSamFire)
+        //if(SimLibElapsedTime > nextSamFireTime and not allowSamFire)
         //{
         // if (radarDown == false or (theWeapon and theWeapon->IsMissile() and theWeapon->sensorArray[0]->Type() == SensorClass::IRST))
         // allowSamFire = TRUE;
@@ -1123,8 +1123,8 @@ int GroundClass::Exec(void)
             // (b) Make dust
             // dustTimer += SimLibMajorFrameTime;
             // if ( dustTimer > max( 0.2f,  4.5f - speedScale - gai->distLOD * 3.3f ) )
-            if (((rand() bitand 7) == 7)  and 
-                gSfxCount[ SFX_GROUND_DUSTCLOUD ] < gSfxLODCutoff  and 
+            if (((rand() bitand 7) == 7) and 
+                gSfxCount[ SFX_GROUND_DUSTCLOUD ] < gSfxLODCutoff and 
                 gTotSfx < gSfxLODTotCutoff
                )
             {

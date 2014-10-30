@@ -143,7 +143,7 @@ void C_Slider::SetSliderPos(long Pos)
 long C_Slider::CheckHotSpots(long relX, long relY)
 {
     // check visibility, enabled and ready
-    if ((GetFlags() bitand C_BIT_INVISIBLE) or  not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
+    if ((GetFlags() bitand C_BIT_INVISIBLE) or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
     {
         return(0);
     }
@@ -367,10 +367,10 @@ BOOL C_Slider::MouseOver(long relx, long rely, C_Base *)
 {
     // Don't want to do anything here
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
         return(FALSE);
 
-    if (relx >= (GetX() + SX_) and relx < (GetX() + GetW() + SX_)  and 
+    if (relx >= (GetX() + SX_) and relx < (GetX() + GetW() + SX_) and 
         rely >= (GetY() + SY_) and rely < (GetY() + GetH() + SY_))
     {
         return(TRUE);

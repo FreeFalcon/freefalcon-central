@@ -40,9 +40,9 @@ FalconEntity* SimCampHandoff(FalconEntity *current, HandOffType style)
         }
 
         // See if it reaggregated
-        if (((SimBaseClass*)current)->GetCampaignObject()  and 
-            ((SimBaseClass*)current)->GetCampaignObject()->IsAggregate()  and 
-             not ((SimBaseClass*)current)->GetCampaignObject()->IsDead())
+        if (((SimBaseClass*)current)->GetCampaignObject() and 
+            ((SimBaseClass*)current)->GetCampaignObject()->IsAggregate() and 
+ not ((SimBaseClass*)current)->GetCampaignObject()->IsDead())
         {
             // Switch to the campaign unit
             return ((SimBaseClass*)current)->GetCampaignObject();

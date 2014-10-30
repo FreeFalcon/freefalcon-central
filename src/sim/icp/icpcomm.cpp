@@ -26,7 +26,7 @@ void ICPClass::ExecCOMMMode(void)
 
     if (mUpdateFlags bitand COMM_UPDATE)
     {
-        mUpdateFlags and_eq  not COMM_UPDATE;
+        mUpdateFlags and_eq not COMM_UPDATE;
 
         FormatRadioString();
     }
@@ -309,7 +309,7 @@ void ICPClass::PNUpdateCOMMMode(int button, int)
             }
         }
 
-        mUpdateFlags or_eq  CNI_UPDATE;
+        mUpdateFlags or_eq CNI_UPDATE;
     }
     else
     {

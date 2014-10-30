@@ -620,7 +620,7 @@ VU_ERRCODE FlightClass::Handle(VuFullUpdateEvent *event)
     Flight tmp_ent = (Flight)(event->expandedData_.get());
 
     // KCK: Allow this to happen - it makes multiplayer force on force possible
-    // ShiAssert (  not IsLocal() );
+    // ShiAssert ( not IsLocal() );
 
     memcpy(&pos_.z_, &tmp_ent->pos_.z_, sizeof(BIG_SCALAR));
     memcpy(&fuel_burnt, &tmp_ent->fuel_burnt, sizeof(long));
@@ -729,7 +729,7 @@ int FlightClass::MoveUnit(CampaignTime time)
             //Cobra clean up the list if airbase destroyed
             //sfr: dont cancel deagged flights
             if (
-                (AirbaseOperational(o) == FALSE) and /* and  this not_eq FalconLocalSession->GetPlayerFlight()*/
+                (AirbaseOperational(o) == FALSE) and /* and this not_eq FalconLocalSession->GetPlayerFlight()*/
                 IsAggregate()
             )
             {
@@ -749,7 +749,7 @@ int FlightClass::MoveUnit(CampaignTime time)
             CampaignTime nextTime = TheCampaign.CurrentTime;
 
             if (
-                 not HasPilots() and (((long)(w->GetWPDepartureTime() - TheCampaign.CurrentTime)) <= PILOT_ASSIGN_TIME)
+ not HasPilots() and (((long)(w->GetWPDepartureTime() - TheCampaign.CurrentTime)) <= PILOT_ASSIGN_TIME)
             )
             {
                 Squadron sq = (Squadron)GetUnitSquadron();
@@ -1132,7 +1132,7 @@ int FlightClass::MoveUnit(CampaignTime time)
                 }
             }
             else if (
-                w and  not (w->GetWPFlags() bitand WPF_HOLDCURRENT)  and 
+                w and not (w->GetWPFlags() bitand WPF_HOLDCURRENT) and 
                 FloatToInt32(ZPos()) not_eq FloatToInt32(
                     -1.0F * AdjustAltitudeForMSL_AGL(XPos(), YPos(), -1.0F * w->GetWPAltitude())
                 )
@@ -1278,9 +1278,9 @@ int FlightClass::DumpWeapons()
         {
             // RV - Biker - Don't drop fuel tanks and jammers in 2d
             if (
-                loadout[i].WeaponID[hp] and not GetWeaponHitChance(loadout[i].WeaponID[hp], Air)  and 
-                 not (GetWeaponFlags(loadout[i].WeaponID[hp]) bitand WEAP_FUEL)  and 
-                 not (GetWeaponFlags(loadout[i].WeaponID[hp]) bitand WEAP_ECM)
+                loadout[i].WeaponID[hp] and not GetWeaponHitChance(loadout[i].WeaponID[hp], Air) and 
+ not (GetWeaponFlags(loadout[i].WeaponID[hp]) bitand WEAP_FUEL) and 
+ not (GetWeaponFlags(loadout[i].WeaponID[hp]) bitand WEAP_ECM)
             )
             {
                 loadout[i].WeaponID[hp] = 0;
@@ -1415,7 +1415,7 @@ int FlightClass::Reaction(CampEntity e, int knowledge, float range)
     omt = GetMovementType();
     tmt = e->GetMovementType();
 
-    if (e->IsFlight() and  not ((Flight)e)->Moving())
+    if (e->IsFlight() and not ((Flight)e)->Moving())
         return 0; // Aircraft on ground are ignored (technically, strike aircraft could hit them.. but..)
 
     // Score their threat to us
@@ -1893,7 +1893,7 @@ int CanItIdentify(CampEntity us, CampEntity them, float d, int mt)
 // Only real units do detection
 int FlightClass::DetectOnMove(void)
 {
-    if ( not Engaged() and  not (GetUnitMoved() % 5))
+    if ( not Engaged() and not (GetUnitMoved() % 5))
     {
         return 0;
     }
@@ -1934,7 +1934,7 @@ int FlightClass::ChooseTarget()
     was_engaged = Engaged();
     old_target = GetTarget();
     ShiAssert(
-         not old_target or old_target->IsFlight() or old_target->IsBattalion() ||
+ not old_target or old_target->IsFlight() or old_target->IsBattalion() ||
         old_target->IsTaskForce() or old_target->IsObjective() or old_target->IsAirplane()
     );
 
@@ -2003,7 +2003,7 @@ int FlightClass::ChooseTarget()
                 // so assume there is one until the unit is dead).
                 // 2001-06-19 MODIFIED BY S.G. SEAD STRIKES AND ESCORTS GO IN,
                 // NOT JUST SEAD ESCORTS (SEE COMMENTS WITHIN FOR MORE DETAILS)
-                //if (((BattalionClass *)e)->class_data->RadarVehicle < 255  and 
+                //if (((BattalionClass *)e)->class_data->RadarVehicle < 255 and 
                 // (((BattalionClass *)e)->class_data->RadarVehicle > 15 ||
                 // ((BattalionClass *)e)->GetNumVehicles(((BattalionClass *)e)->class_data->RadarVehicle)))
                 int enter = FALSE;
@@ -2113,8 +2113,8 @@ int FlightClass::ChooseTarget()
         // potentially result in the unit being removed from the 'AirDefenseList'.
         // Because of this, old_target will not get cleared. Check now to make sure it is still valid...
         if (
-            old_target and old_target->IsBattalion()  and 
-            ((BattalionClass *)old_target)->class_data->RadarVehicle < 16  and 
+            old_target and old_target->IsBattalion() and 
+            ((BattalionClass *)old_target)->class_data->RadarVehicle < 16 and 
             ((BattalionClass *)old_target)->GetNumVehicles(
                 ((BattalionClass *)old_target)->class_data->RadarVehicle
             ) == 0
@@ -2143,7 +2143,7 @@ int FlightClass::ChooseTarget()
     {
 
         if (
-            /* ADDED BY S.G. SO DEAD UNIT ARE NOT TARGETED */  not e->IsDead() and /* END OF ADDED SECTION */
+            /* ADDED BY S.G. SO DEAD UNIT ARE NOT TARGETED */ not e->IsDead() and /* END OF ADDED SECTION */
             e->IsFlight() and roea[e->GetTeam()] == ROE_ALLOWED and ((Unit)e)->Moving() and e not_eq this
             // ((Unit)e)->current_wp > 1)
         )
@@ -2259,7 +2259,7 @@ int FlightClass::ChooseTarget()
 
     if (
         w and ((w->GetWPFlags() bitand WPF_TARGET) ||
-              ((w = w->GetNextWP()) and (w->GetWPFlags() bitand WPF_TARGET) and  not (towardTarget = FALSE)))
+              ((w = w->GetNextWP()) and (w->GetWPFlags() bitand WPF_TARGET) and not (towardTarget = FALSE)))
     )
     {
         if ( not towardTarget)
@@ -2336,7 +2336,7 @@ int FlightClass::ChooseTarget()
     {
         AircraftClass *player = (AircraftClass*) session->GetPlayerEntity();
 
-        if (player and /* ADDED BY S.G. SO DEAD UNIT ARE NOT TARGETED */  not player->IsDead() and /* END OF ADDED SECTION */ session->GetTeam() < NUM_TEAMS and roea[session->GetTeam()] == ROE_ALLOWED and player->IsAirplane())
+        if (player and /* ADDED BY S.G. SO DEAD UNIT ARE NOT TARGETED */ not player->IsDead() and /* END OF ADDED SECTION */ session->GetTeam() < NUM_TEAMS and roea[session->GetTeam()] == ROE_ALLOWED and player->IsAirplane())
         {
             combat = 0;
             react = DetectVs(player, &d, &combat, &spot, &estr);
@@ -2357,7 +2357,7 @@ int FlightClass::ChooseTarget()
     // Check vs ground units, if we're of a valid mission type
     if (
         (GetUnitMission() == AMIS_JSTAR or GetUnitCurrentRole() == ARO_GA or GetUnitCurrentRole() == ARO_FAC)
-        /* and  not react_against*/
+        /* and not react_against*/
     )
     {
         ground_search_dist = GetDetectionRange(Tracked);
@@ -2374,8 +2374,8 @@ int FlightClass::ChooseTarget()
 
         while (e)
         {
-            if (e->IsBattalion()  and 
-                /* ADDED BY S.G. SO DEAD UNIT ARE NOT TARGETED */  not e->IsDead() and /* END OF ADDED SECTION */
+            if (e->IsBattalion() and 
+                /* ADDED BY S.G. SO DEAD UNIT ARE NOT TARGETED */ not e->IsDead() and /* END OF ADDED SECTION */
                 roeg[e->GetTeam()] == ROE_ALLOWED
                )
             {
@@ -2401,14 +2401,14 @@ int FlightClass::ChooseTarget()
     //            BUT WAIT SINCE THIS CODE ALREADY DOES IT SO I'LL COMBINED BOTH INTO ONE
 #if 0
 
-    if (GetUnitCurrentRole() == ARO_SEAD /* and  not react_against*/ and ::GetOwner(TheCampaign.CampMapData, x, y) not_eq who)
+    if (GetUnitCurrentRole() == ARO_SEAD /* and not react_against*/ and ::GetOwner(TheCampaign.CampMapData, x, y) not_eq who)
     {
         VuListIterator detit(EmitterList);
         e = (CampEntity)detit.GetFirst();
 
         while (e)
         {
-            if (/* ADDED BY S.G. SO DEAD UNIT ARE NOT TARGETED */  not e->IsDead() and /* END OF ADDED SECTION */ roeg[e->GetTeam()] == ROE_ALLOWED)
+            if (/* ADDED BY S.G. SO DEAD UNIT ARE NOT TARGETED */ not e->IsDead() and /* END OF ADDED SECTION */ roeg[e->GetTeam()] == ROE_ALLOWED)
             {
                 react = DetectVs(e, &d, &combat, &spot, &estr);
 
@@ -2447,7 +2447,7 @@ int FlightClass::ChooseTarget()
 #else
 
     // Don't even start testing if we have been spotted in the last ReconLossTime[GetMovementType()]/8
-    if (Camp_GetCurrentTime() - GetSpotTime() > ReconLossTime[GetMovementType()] / 8 or  not ((GetSpotted() >> enemy) bitand 0x01))
+    if (Camp_GetCurrentTime() - GetSpotTime() > ReconLossTime[GetMovementType()] / 8 or not ((GetSpotted() >> enemy) bitand 0x01))
     {
         VuListIterator detit(EmitterList);
         e = (CampEntity)detit.GetFirst();
@@ -2518,7 +2518,7 @@ int FlightClass::ChooseTarget()
         if (e and e->IsUnit() and ((e->IsFlight() and ((Unit)e)->Broken()) or ((Unit)e)->IsDead()))
             undivert = TRUE;
 
-        if (e and /* ADDED BY S.G. SO DEAD UNIT ARE NOT TARGETED */  not e->IsDead() and /* END OF ADDED SECTION */ e not_eq react_against)
+        if (e and /* ADDED BY S.G. SO DEAD UNIT ARE NOT TARGETED */ not e->IsDead() and /* END OF ADDED SECTION */ e not_eq react_against)
         {
             int tstr = 0;
             combat = 0;
@@ -2571,7 +2571,7 @@ int FlightClass::ChooseTarget()
     }
 
     // Check vs current target, if any and if not already chosen
-    if (old_target and old_target not_eq react_against and /* ADDED BY S.G. SO DEAD UNIT ARE NOT TARGETED */  not old_target->IsDead() and /* END OF ADDED SECTION */ roeg[old_target->GetTeam()] == ROE_ALLOWED)
+    if (old_target and old_target not_eq react_against and /* ADDED BY S.G. SO DEAD UNIT ARE NOT TARGETED */ not old_target->IsDead() and /* END OF ADDED SECTION */ roeg[old_target->GetTeam()] == ROE_ALLOWED)
     {
         int tstr = 0;
         combat = 0;
@@ -2596,7 +2596,7 @@ int FlightClass::ChooseTarget()
         }
     }
 
-    if ( not was_engaged and Engaged() and  not (rand() % 6))
+    if ( not was_engaged and Engaged() and not (rand() % 6))
     {
         if (/* ADDED BY S.G. SO DEAD UNIT ARE NOT TARGETED */ not react_against->IsDead() and /* END OF ADDED SECTION */react_against->IsFlight())
         {
@@ -2966,7 +2966,7 @@ int FlightClass::BuildMission(MissionRequestClass *mis)
         // if ( not (mis->flags bitand REQF_ALLOW_ERRORS) and fuelNeeded > fuelAvail + fuelAvail/2)
         // return PRET_CANCELED;
         // Otherwise require tankers
-        if (fuelNeeded > fuelAvail and  not (MissionData[mis->mission].flags bitand AMIS_FUDGE_RANGE))
+        if (fuelNeeded > fuelAvail and not (MissionData[mis->mission].flags bitand AMIS_FUDGE_RANGE))
         {
             pack->SetPackageFlags(AMIS_ADDTANKER | AMIS_NEEDTANKER);
             refuel = fuelNeeded - fuelAvail; // We use this for AddTankerWayPoints
@@ -3003,7 +3003,7 @@ int FlightClass::BuildMission(MissionRequestClass *mis)
     // if (target)
     if (target and mission not_eq AMIS_SEADESCORT)
     {
-        if (target->IsUnit() and  not ((Unit)target)->Real())
+        if (target->IsUnit() and not ((Unit)target)->Real())
             target = ((Unit)target)->GetFirstUnitElement();
 
         if (target)
@@ -3029,8 +3029,8 @@ int FlightClass::BuildMission(MissionRequestClass *mis)
     bool hasRadarVehicle = false;
 
     if (
-        target and target->IsBattalion()  and 
-        ((BattalionClass *)target)->class_data->RadarVehicle < 255 /* and  e->IsEmitting()*/
+        target and target->IsBattalion() and 
+        ((BattalionClass *)target)->class_data->RadarVehicle < 255 /* and e->IsEmitting()*/
     )  // current emitting status is not interesting here..
     {
         // If the radar vehicle index is less than 16, it's a SAM. Check if it still has a radar vehicle
@@ -3385,7 +3385,7 @@ int FlightClass::CollectWeapons(uchar* dam, MoveType m, short w[], uchar wc[], i
                 {
                     // 2001-05-01 MODIFIED BY S.G. SO VisibleFlags STATE IS REVERSED (SET IS EXTERNAL AND CLEARED IS INTERNAL)
                     // if (bhp and (vc->VisibleFlags bitand (0x01 << bhp)))
-                    if (bhp and  not (vc->VisibleFlags bitand (0x01 << bhp)))
+                    if (bhp and not (vc->VisibleFlags bitand (0x01 << bhp)))
                         shots = maxCount; // Bomb-bay - drop everything at once
                     else if (GetWeaponFireRate(bw) <= maxCount)
                         shots = GetWeaponFireRate(bw); // Fire a volley
@@ -3456,8 +3456,8 @@ F4PFList FlightClass::GetKnownEmitters(void)
             while (e)
             {
                 if (
-                    e->GetTeam() not_eq us and e->GetSpotted(us)  and 
-                    ( not e->IsUnit() or  not ((Unit)e)->Moving()) and not added[e->GetCampID()]  and 
+                    e->GetTeam() not_eq us and e->GetSpotted(us) and 
+                    ( not e->IsUnit() or not ((Unit)e)->Moving()) and not added[e->GetCampID()] and 
                     e->GetElectronicDetectionRange(Air)
                 )
                 {
@@ -3591,7 +3591,7 @@ F4PFList FlightClass::GetKnownEmitters(void)
                             jstarDetectionChance = 25;
                 }
 
-                if (e->GetTeam() not_eq us and e->GetSpotted(us) and ( not e->IsUnit() or  not ((Unit)e)->Moving()) and not added[e->GetCampID()] and e->GetElectronicDetectionRange(Air))
+                if (e->GetTeam() not_eq us and e->GetSpotted(us) and ( not e->IsUnit() or not ((Unit)e)->Moving()) and not added[e->GetCampID()] and e->GetElectronicDetectionRange(Air))
                 {
                     // RV - Biker - Those units which did move within the last hour only are detectable via JSTAR/ELINT
                     if (e->IsUnit() and e->IsBattalion() and lastMove == 0 and ((UnitClass*)e)->GetMaxSpeed() > 0 and rand() % 100 > jstarDetectionChance)
@@ -3765,13 +3765,13 @@ int FlightClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spot, i
     // Check type of entity before GCI is used
     if (CheckValidType(this, e))
     {
-        detTmp or_eq  e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
+        detTmp or_eq e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
     }
 
     // Check type of entity before GCI is used
     if (CheckValidType(e, this))
     {
-        detTmp or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
+        detTmp or_eq GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
     }
 
     // Use our temp detection mask which possibly includes GCI
@@ -3851,11 +3851,11 @@ int FlightClass::DetectVs(CampEntity e, float *d, int *combat, int *spot, int *e
 
     // Check type of entity before GCI is used
     if (CheckValidType(this, e))
-        detTmp or_eq  e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
+        detTmp or_eq e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
 
     // Check type of entity before GCI is used
     if (CheckValidType(e, this))
-        detTmp or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
+        detTmp or_eq GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
 
     // Use our temp detection mask which possibly includes GCI
     if ( not (detTmp bitand REACTION_MASK))
@@ -3863,9 +3863,9 @@ int FlightClass::DetectVs(CampEntity e, float *d, int *combat, int *spot, int *e
 
     // Don't react if on a air to ground mission, even if within MinIngoreRange unless you're spotted.
     if (
-        e->IsFlight() /* and  not (eval_flags bitand FEVAL_GOT_TO_TARGET) */  and 
-        GetUnitMission() >= AMIS_SEADSTRIKE  and 
-        GetUnitMission() <= AMIS_ECM  and 
+        e->IsFlight() /* and not (eval_flags bitand FEVAL_GOT_TO_TARGET) */ and 
+        GetUnitMission() >= AMIS_SEADSTRIKE and 
+        GetUnitMission() <= AMIS_ECM and 
         (*d > MIN_IGNORE_RANGE or not GetSpotted(e->GetTeam()))
     )
     {
@@ -4072,7 +4072,7 @@ long FlightClass::CalculateFuelAvailable(int acNum)
 
     // Find max amount of fuel this plane can carry
     //if (loadout)
-    if (loadout and  not F4IsBadReadPtr(loadout[0].WeaponID, sizeof(short))) // JB 010326 CTD
+    if (loadout and not F4IsBadReadPtr(loadout[0].WeaponID, sizeof(short))) // JB 010326 CTD
     {
         for (i = 0; i < HARDPOINT_MAX; i++)
         {
@@ -4192,7 +4192,7 @@ int FlightClass::CanAbort(void)
         return 1;
 
     // Check if off station time
-    if ((eval_flags bitand FEVAL_MISSION_STARTED) and (eval_flags bitand FEVAL_GOT_TO_TARGET) and  not (eval_flags bitand FEVAL_GOT_TO_TARGET))
+    if ((eval_flags bitand FEVAL_MISSION_STARTED) and (eval_flags bitand FEVAL_GOT_TO_TARGET) and not (eval_flags bitand FEVAL_GOT_TO_TARGET))
         return 1;
 
     return 0;
@@ -4458,10 +4458,10 @@ int FlightClass::IsSPJamming(void)
 int FlightClass::IsAreaJamming(void)
 {
     // JPO - change to basically jamming and active.
-    if (HasAreaJamming()  and 
+    if (HasAreaJamming() and 
         (eval_flags bitand FEVAL_ON_STATION)) // old test 2002-02-19 REINSTATED BY S.G. Fixed the eval_flags bug where the bit would not reset
-        //     Moving()  and 
-        //      not IsDead())
+        //     Moving() and 
+        // not IsDead())
         return TRUE;
 
     return FALSE;
@@ -4599,7 +4599,7 @@ int FlightClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
             float x, y;
 
             if (
-                PtDataTable[simdata->ptIndex].type == TakeoffPt  and 
+                PtDataTable[simdata->ptIndex].type == TakeoffPt and 
                 ((Objective)ent)->brain->UseSectionTakeoff(this, rwindex) and simdata->vehicleInUnit < 2)
             {
                 simdata->ptIndex = ((Objective)ent)->brain->FindTakeoffPt(
@@ -5242,15 +5242,15 @@ WayPoint ResetCurrentWP(Unit u)
     // JPO Logic is: if we are past our departure time at the WP, we got to do something
     // But if we are past our arrival time, and its a repeating WP, we might need to go back.
     // So do the loop anyway. last bit was already commented out.
-    while (w  and 
+    while (w and 
            (w->GetWPDepartureTime() < Camp_GetCurrentTime() or // JPO Original test
             ((w->GetWPFlags() bitand WPF_REPEAT) and w->GetWPArrivalTime() < Camp_GetCurrentTime()))
-          ) //  and w->GetWPAction() not_eq WP_LAND)
+          ) // and w->GetWPAction() not_eq WP_LAND)
     {
         if (w->GetWPFlags() bitand WPF_CRITICAL_MASK or // 2002-02-20 MODIFIED BY S.G. Needs to get here if it's a refuel waypoint under some condition as defined below. I could have added a WPF_REFUEL flag but that would have wasted a flag just to be used here anyway so we're hacking our way in
             (w->GetWPAction() == WP_REFUEL and u->IsFlight() and // Must be a flight over a WP_REFUEL waypoint
-             (( not (((FlightClass *)u)->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET) and  not ((FlightClass *)u)->HasFuel(3)) or // We haven't reached our target, refuel if we have less than 3/4 of our capacity left, otherwise skip it
-              ((((FlightClass *)u)->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET) and  not ((FlightClass *)u)->HasFuel(9))))) // We haven't reached our target, refuel if we have less than 1/4 of our capacity left, otherwise skip it
+             (( not (((FlightClass *)u)->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET) and not ((FlightClass *)u)->HasFuel(3)) or // We haven't reached our target, refuel if we have less than 3/4 of our capacity left, otherwise skip it
+              ((((FlightClass *)u)->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET) and not ((FlightClass *)u)->HasFuel(9))))) // We haven't reached our target, refuel if we have less than 1/4 of our capacity left, otherwise skip it
         {
             // Either keep heading here, or do our action and increment
             w->GetWPLocation(&x, &y);
@@ -5443,7 +5443,7 @@ Objective FindAlternateStrip(Flight flight)
     while (o)
     {
         if (
-            (o->GetType() == TYPE_AIRBASE or o->GetType() == TYPE_AIRSTRIP)  and 
+            (o->GetType() == TYPE_AIRBASE or o->GetType() == TYPE_AIRSTRIP) and 
             o->GetTeam() == flight->GetTeam() and not o->IsNearfront()
         )
         {
@@ -5451,8 +5451,8 @@ Objective FindAlternateStrip(Flight flight)
             // be the alternate airstrip neither a target
             // airbase nor the home airbase (airlift have airbases as target)
             if (
-                target  and 
-                (target->GetType() == TYPE_AIRBASE or target->GetType() == TYPE_AIRSTRIP)  and 
+                target and 
+                (target->GetType() == TYPE_AIRBASE or target->GetType() == TYPE_AIRSTRIP) and 
                 o->GetCampID() == target->GetCampID() ||
                 homebase and o->GetCampID() == homebase->GetCampID()
             )
@@ -5749,7 +5749,7 @@ void FlightClass::SetEvalFlag(uchar f, int reset)
         //if ( not (eval_flags bitand f))
         if ((eval_flags bitand f) not_eq f) // JB 010711
         {
-            eval_flags or_eq  f;
+            eval_flags or_eq f;
             //MakeFlightDirty (DIRTY_EVAL_FLAGS, DDP[106].priority);
             MakeFlightDirty(DIRTY_EVAL_FLAGS, SEND_EVENTUALLY);
         }
@@ -5861,7 +5861,7 @@ void FlightClass::MakeFlightDirty(Dirty_Flight bits, Dirtyness score)
         }
     }
 
-    dirty_flight or_eq  bits;
+    dirty_flight or_eq bits;
 
     MakeDirty(DIRTY_FLIGHT, score);
     // MonoPrint ("MakeFlightDirty bits,  score  %08x", bits, score);//me123

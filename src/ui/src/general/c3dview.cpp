@@ -575,7 +575,7 @@ BOOL C_3dViewer::ViewGreyOTW()
         {
             col = m_pImgGray->Pixel16toPixel32(mem[i]);
             col = (RGBA_GETRED(col) + RGBA_GETGREEN(col) + RGBA_GETBLUE(col)) / 3;
-            col or_eq  (col << 8) | (col << 16);
+            col or_eq (col << 8) | (col << 16);
             mem[i] = m_pImgGray->Pixel32toPixel16(col);
         }
 

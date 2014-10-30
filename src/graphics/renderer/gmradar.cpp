@@ -241,12 +241,12 @@ void RenderGMRadar::TransformScene(void)
 
             if (x < -1.0f)
             {
-                vert->clipFlag or_eq  CLIP_LEFT;
+                vert->clipFlag or_eq CLIP_LEFT;
                 ShiAssert(viewportXtoPixel(x) <= leftPixel);
             }
             else if (x > 1.0f)
             {
-                vert->clipFlag or_eq  CLIP_RIGHT;
+                vert->clipFlag or_eq CLIP_RIGHT;
                 ShiAssert(viewportXtoPixel(x) >= rightPixel);
             }
             else
@@ -514,9 +514,9 @@ void RenderGMRadar::DrawBlip(float worldX, float worldY)
     y = viewportYtoPixel(y);
 
     //Clip test
-    if ((x + 1.0f <= rightPixel)   and 
-        (x      >= leftPixel)    and 
-        (y + 1.0f <= bottomPixel)  and 
+    if ((x + 1.0f <= rightPixel)  and 
+        (x      >= leftPixel)   and 
+        (y + 1.0f <= bottomPixel) and 
         (y      >= topPixel))
     {
         SetColor(0xFF00FF00);

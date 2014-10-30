@@ -1437,7 +1437,7 @@ void UpdateUnitCombatStatistics(void)
                 for (j = 0; j < OtherDam and vc; j++)
                     dam[j] += vc->DamageMod[j];
 
-                UnitDataTable[id].Flags or_eq  vc->Flags bitand 0xFF;
+                UnitDataTable[id].Flags or_eq vc->Flags bitand 0xFF;
 
                 if (vc->MaxSpeed < mspeed)
                     mspeed = vc->MaxSpeed;
@@ -1455,7 +1455,7 @@ void UpdateUnitCombatStatistics(void)
         if (mspeed == 0)
             UnitDataTable[id].MovementType = NoMove;
 
-        if (Falcon4ClassTable[UnitDataTable[id].Index].vuClassData.classInfo_[0] == DOMAIN_AIR  and 
+        if (Falcon4ClassTable[UnitDataTable[id].Index].vuClassData.classInfo_[0] == DOMAIN_AIR and 
             Falcon4ClassTable[UnitDataTable[id].Index].vuClassData.classInfo_[2] == TYPE_SQUADRON)
         {
             // Calculate squadron's max stores, by weapons it can load
@@ -1712,7 +1712,7 @@ void LoadVisIdMap()
         if (buffer[0] == '/' or buffer[0] == '\n' or buffer[0] == '\r')
             continue;
 
-        if (sscanf(buffer, "%d => %d", &id1, &id2) == 2  and 
+        if (sscanf(buffer, "%d => %d", &id1, &id2) == 2 and 
             id1 >= 0 and id1 < MAXMAPID)
             idmap[id1] = id2;
     }
@@ -1856,7 +1856,7 @@ int FindBestRackID(int rackgroup, int count)
     {
         int rack = RackGroupTable[rackgroup].entries[i];
 
-        if (rack > 0 and rack < MaxRackObjects  and 
+        if (rack > 0 and rack < MaxRackObjects and 
             RackObjectTable[rack].maxoccupancy >= count)
             return rack;
     }
@@ -1877,8 +1877,8 @@ int FindBestRackIDByPlaneAndWeapon(int planerg, int weaponrg, int count)
         {
             int rack = RackGroupTable[planerg].entries[i];
 
-            if (rack == RackGroupTable[weaponrg].entries[j]  and 
-                rack > 0 and rack < MaxRackObjects  and 
+            if (rack == RackGroupTable[weaponrg].entries[j] and 
+                rack > 0 and rack < MaxRackObjects and 
                 RackObjectTable[rack].maxoccupancy >= count)
                 return rack;
         }
@@ -2108,11 +2108,11 @@ void RDLoadRackData(void)
                     switch (i)
                     {
                         case 0:
-                            rn->flags or_eq  RDF_EMERGENCY_JETT_RACK;
+                            rn->flags or_eq RDF_EMERGENCY_JETT_RACK;
                             break;
 
                         case 1:
-                            rn->flags or_eq  RDF_SELECTIVE_JETT_RACK;
+                            rn->flags or_eq RDF_SELECTIVE_JETT_RACK;
                             break;
                     }
                 }
@@ -2129,11 +2129,11 @@ void RDLoadRackData(void)
                     switch (i)
                     {
                         case 0:
-                            rn->flags or_eq  RDF_EMERGENCY_JETT_WEAPON;
+                            rn->flags or_eq RDF_EMERGENCY_JETT_WEAPON;
                             break;
 
                         case 1:
-                            rn->flags or_eq  RDF_SELECTIVE_JETT_WEAPON;
+                            rn->flags or_eq RDF_SELECTIVE_JETT_WEAPON;
                             break;
                     }
                 }
@@ -2317,11 +2317,11 @@ void RDLoadRackData(void)
                         switch (i)
                         {
                             case 0:
-                                pn->flags or_eq  RDF_EMERGENCY_JETT_PYLON;
+                                pn->flags or_eq RDF_EMERGENCY_JETT_PYLON;
                                 break;
 
                             case 1:
-                                pn->flags or_eq  RDF_SELECTIVE_JETT_PYLON;
+                                pn->flags or_eq RDF_SELECTIVE_JETT_PYLON;
                                 break;
                         }
                     }
@@ -2421,7 +2421,7 @@ int RDFindBestRackWID(int GroupId, int WeaponId, int WeaponCount, struct RDRackD
 
                     while (rn)
                     {
-                        if (stricmp(rn->rackName, rnn->rackName) == 0  and 
+                        if (stricmp(rn->rackName, rnn->rackName) == 0 and 
                             rn->stations >= WeaponCount)
                         {
                             int l;
@@ -2480,7 +2480,7 @@ int RDFindBestRackWClass(int GroupId, int wClass, int WeaponCount, struct RDRack
 
                     while (rn)
                     {
-                        if (stricmp(rn->rackName, rnn->rackName) == 0  and 
+                        if (stricmp(rn->rackName, rnn->rackName) == 0 and 
                             rn->stations >= WeaponCount)
                         {
                             int l;
@@ -2543,7 +2543,7 @@ int RDFindBestRackSWD(int GroupId, int SWD, int WeaponCount, struct RDRackData *
 
                     while (rn)
                     {
-                        if (stricmp(rn->rackName, rnn->rackName) == 0  and 
+                        if (stricmp(rn->rackName, rnn->rackName) == 0 and 
                             rn->stations >= WeaponCount)
                         {
                             int l;

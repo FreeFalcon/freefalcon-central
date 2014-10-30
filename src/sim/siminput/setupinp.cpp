@@ -436,7 +436,7 @@ void CallInputFunction(unsigned long val, int state)
         /* // ASSOCIATOR: Commented this out so that Comms menu will not deactivate while pressing other keys
         // Cancel the combo, whether it is handled or not
         if (
-         CommandsKeyCombo and keyDown and theFunc not_eq ScreenShot  and 
+         CommandsKeyCombo and keyDown and theFunc not_eq ScreenShot and 
          theFunc not_eq RadioMessageSend and theFunc not_eq OTWRadioMenuStep and theFunc not_eq OTWRadioMenuStepBack
         ){
          CommandsKeyCombo = 0;
@@ -448,8 +448,8 @@ void CallInputFunction(unsigned long val, int state)
 
         // ASSOCIATOR: Added so that other keys can be pressed while in Comms menus
         if (
-            CommandsKeyComboMod and CommandsKeyCombo and keyDown  and 
-            theFunc not_eq ScreenShot and theFunc not_eq RadioMessageSend and theFunc not_eq OTWRadioMenuStep  and 
+            CommandsKeyComboMod and CommandsKeyCombo and keyDown and 
+            theFunc not_eq ScreenShot and theFunc not_eq RadioMessageSend and theFunc not_eq OTWRadioMenuStep and 
             theFunc not_eq OTWRadioMenuStepBack
         )
         {
@@ -478,9 +478,9 @@ void CallInputFunction(unsigned long val, int state)
 
         // ASSOCIATOR: Added so that other keys can be pressed while in Comms menus
         if (
-            CommandsKeyCombo and theFunc not_eq ScreenShot  and 
-            theFunc not_eq RadioMessageSend  and 
-            theFunc not_eq OTWRadioMenuStep  and 
+            CommandsKeyCombo and theFunc not_eq ScreenShot and 
+            theFunc not_eq RadioMessageSend and 
+            theFunc not_eq OTWRadioMenuStep and 
             theFunc not_eq OTWRadioMenuStepBack
         )
         {
@@ -512,9 +512,9 @@ void CallInputFunction(unsigned long val, int state)
                 //theFunc(val, state, OTWDriver.pCockpitManager->GetButtonPointer(buttonId));
                 CallFunc(theFunc, val, state, OTWDriver.pCockpitManager->GetButtonPointer(buttonId));
 
-                if (SimDriver.GetPlayerAircraft()  and 
-                    SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)  and 
-                     not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+                if (SimDriver.GetPlayerAircraft() and 
+                    SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and 
+ not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
                 {
                     OTWDriver.pCockpitManager->Dispatch(buttonId, mouseSide);
                 }

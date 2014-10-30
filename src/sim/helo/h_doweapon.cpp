@@ -139,7 +139,7 @@ void HelicopterClass::DoWeapons(void)
       }
 
        }
-       else if (FCC->GetMasterMode() == FireControlComputer::AirGroundBomb  and 
+       else if (FCC->GetMasterMode() == FireControlComputer::AirGroundBomb and 
           FCC->GetSubMode() == FireControlComputer::RCKT)
        {
           if (FCC->bombPickle and Sms->curWeapon and not OnGround())

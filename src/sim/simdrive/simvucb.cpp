@@ -55,7 +55,7 @@ VuEntity* SimVUCreateVehicle(ushort type, ushort sizeShort, VU_BYTE* data)
         else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_BOMB)
         {
             // JB 010220
-            if (classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_CHAFF  and 
+            if (classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_CHAFF and 
                 classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_CHAFF1)
             {
                 theVehicle = new ChaffClass(&data, &size);
@@ -67,7 +67,7 @@ VuEntity* SimVUCreateVehicle(ushort type, ushort sizeShort, VU_BYTE* data)
                     return NULL;
                 }
             }
-            else if (classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_FLARE1  and 
+            else if (classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_FLARE1 and 
                      classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_CHAFF1 + 1)
             {
                 theVehicle = new FlareClass(&data, &size);

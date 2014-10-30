@@ -1048,10 +1048,10 @@ void MenuReconCB(long, short, C_Base *)
             {
                 // 2002-02-21 ADDED BY S.G. If not spotted by the player's team or not editing a TE, can't recon...
                 if (
-                     not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)  and 
-                    ent->IsFlight()  and 
-                    (gGps->GetTeamNo() not_eq ent->GetTeam())  and 
-                     not ent->GetIdentified(static_cast<Team>(gGps->GetTeamNo()))
+ not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and 
+                    ent->IsFlight() and 
+                    (gGps->GetTeamNo() not_eq ent->GetTeam()) and 
+ not ent->GetIdentified(static_cast<Team>(gGps->GetTeamNo()))
                 )
                 {
                     range = 0.0f;

@@ -119,7 +119,7 @@ public:
     };
     void SetFlag(int flag)
     {
-        flags or_eq  flag;
+        flags or_eq flag;
     };
     void UnSetFlag(int flag)
     {
@@ -131,7 +131,7 @@ public:
     };
     void SetLocalFlag(int flag)
     {
-        localFlags or_eq  flag;
+        localFlags or_eq flag;
     };
     void UnSetLocalFlag(int flag)
     {

@@ -25,8 +25,8 @@ void MissileClass::RunSeeker()
     // Shouldn't be necessary, but at this stage, lets be safe...
     // No seeker if in SAFE
     if (
-         not sensorArray or not sensorArray[0] ||
-        launchState == PreLaunch and parent and parent->IsAirplane()  and 
+ not sensorArray or not sensorArray[0] ||
+        launchState == PreLaunch and parent and parent->IsAirplane() and 
         ((AircraftClass*)parent.get())->Sms->MasterArm() == SMSBaseClass::Safe
     )
     {
@@ -55,13 +55,13 @@ void MissileClass::RunSeeker()
     float factor = ((targetPtr and targetPtr->BaseData()->IsSPJamming()) ? 1.5f : 1.0f);
 
     if (
-        inputData->mslActiveTtg > 0  and 
+        inputData->mslActiveTtg > 0 and 
         (
-            timpct * factor < inputData->mslActiveTtg  and 
+            timpct * factor < inputData->mslActiveTtg and 
             sensorArray[0]->Type() not_eq SensorClass::Radar
         ) ||
         (
-            launchState == InFlight and sensorArray[0]->Type() not_eq SensorClass::Radar  and 
+            launchState == InFlight and sensorArray[0]->Type() not_eq SensorClass::Radar and 
             ( not isSlave or not targetPtr) //I-Hawk - was missing the parentheses here, caused heat seeker locking problems
         )
     )
@@ -83,8 +83,8 @@ void MissileClass::RunSeeker()
     if (lockedTarget not_eq targetPtr)
     {
         if (
-            (inputData->mslActiveTtg > 0)  and 
-            (sensorArray[0]->Type() not_eq SensorClass::Radar)  and 
+            (inputData->mslActiveTtg > 0) and 
+            (sensorArray[0]->Type() not_eq SensorClass::Radar) and 
             launchState == InFlight
         )
         {
@@ -95,12 +95,12 @@ void MissileClass::RunSeeker()
         else if (targetPtr and targetPtr->localData->range * targetPtr->localData->range <= lethalRadiusSqrd)
         {
             // We were close enough to detonate, so do it
-            flags or_eq  ClosestApprch;
+            flags or_eq ClosestApprch;
         }
         else
         {
             // Record that we lost lock on our original target
-            flags or_eq  SensorLostLock;
+            flags or_eq SensorLostLock;
 
             // Update relative geometry on the new target (if any)
             if (lockedTarget)
@@ -150,7 +150,7 @@ void MissileClass::RunSeeker()
 
     // No seeker if in SAFE
     if (
-        launchState == PreLaunch and parent and parent->IsAirplane()  and 
+        launchState == PreLaunch and parent and parent->IsAirplane() and 
         ((AircraftClass*)parent.get())->Sms->MasterArm() == SMSBaseClass::Safe
     )
     {
@@ -188,10 +188,10 @@ void MissileClass::RunSeeker()
     // inputData->mslActiveTtg and sensorArray[0]->Type() not_eq SensorClass::Radar)
     // Marco edit - Also added in GoActive for 'Mad Dog' Launches
     //if (
-    // inputData->mslActiveTtg > 0  and 
-    // launchState == InFlight  and 
-    // sensorArray[0]->Type() not_eq SensorClass::Radar  and 
-    //  not isSlave
+    // inputData->mslActiveTtg > 0 and 
+    // launchState == InFlight and 
+    // sensorArray[0]->Type() not_eq SensorClass::Radar and 
+    // not isSlave
     //){
     // Pitbull = false;
     //}
@@ -199,14 +199,14 @@ void MissileClass::RunSeeker()
     float factor = ((targetPtr and targetPtr->BaseData()->IsSPJamming()) ? 1.5f : 1.0f);
 
     if (
-        inputData->mslActiveTtg > 0  and 
+        inputData->mslActiveTtg > 0 and 
         (
-            timpct * factor < inputData->mslActiveTtg  and 
+            timpct * factor < inputData->mslActiveTtg and 
             sensorArray[0]->Type() not_eq SensorClass::Radar
         ) ||
         (
-            inputData->mslActiveTtg > 0  and 
-            launchState == InFlight and sensorArray[0]->Type() not_eq SensorClass::Radar  and 
+            inputData->mslActiveTtg > 0 and 
+            launchState == InFlight and sensorArray[0]->Type() not_eq SensorClass::Radar and 
             ( not isSlave or not targetPtr)
         )
     )
@@ -263,8 +263,8 @@ void MissileClass::RunSeeker()
     if (newTarget not_eq targetPtr)
     {
         if (
-            (inputData->mslActiveTtg > 0)  and 
-            (sensorArray[0]->Type() not_eq SensorClass::Radar)  and 
+            (inputData->mslActiveTtg > 0) and 
+            (sensorArray[0]->Type() not_eq SensorClass::Radar) and 
             launchState == InFlight
         )
         {
@@ -274,12 +274,12 @@ void MissileClass::RunSeeker()
         else if (targetPtr and targetPtr->localData->range * targetPtr->localData->range <= lethalRadiusSqrd)
         {
             // We were close enough to detonate, so do it
-            flags or_eq  ClosestApprch;
+            flags or_eq ClosestApprch;
         }
         else
         {
             // Record that we lost lock on our original target
-            flags or_eq  SensorLostLock;
+            flags or_eq SensorLostLock;
 
             // Update relative geometry on the new target (if any)
             if (newTarget)
@@ -324,7 +324,7 @@ void MissileClass::RunSeeker()
             fabs(sensorArray[0]->SeekerEl() - targetPtr->localData->el) > inputData->atamax
         )
         {
-            //flags or_eq  SensorLostLock;
+            //flags or_eq SensorLostLock;
             //SetTarget( NULL );
         }
     }

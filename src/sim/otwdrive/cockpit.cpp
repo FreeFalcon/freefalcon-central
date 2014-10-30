@@ -88,7 +88,7 @@ void OTWDriverClass::Draw2DHud(void)
 #if DO_HIRESCOCK_HACK
 
     if (
-         not gDoCockpitHack and (mOTWDisplayMode == ModeHud or mOTWDisplayMode == ModePadlockEFOV ||
+ not gDoCockpitHack and (mOTWDisplayMode == ModeHud or mOTWDisplayMode == ModePadlockEFOV ||
                             mOTWDisplayMode == Mode2DCockpit and pCockpitManager)
 #else
     if (
@@ -108,7 +108,7 @@ void OTWDriverClass::Draw2DHud(void)
                 TheHud->SetTarget(NULL);
 
             if (
-                (mOTWDisplayMode == ModeHud)  and 
+                (mOTWDisplayMode == ModeHud) and 
                 ((((float)DisplayOptions.DispWidth)) == 1.25F * DisplayOptions.DispHeight)
             )
             {

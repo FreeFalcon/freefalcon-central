@@ -128,18 +128,18 @@ void PlayerStats::AddStat(long IP, long Date, long Rev, short aa, short ag, shor
 {
     StatList *newrec, *cur;
 
-    if ( not aa and not  ag and not an and not as and not missions and not rating)
+    if ( not aa and not ag and not an and not as and not missions and not rating)
         return;
 
     cur = Find(IP, Date, Rev);
 
     if (cur)
     {
-        if (cur->data.aa_kills == aa  and 
-            cur->data.ag_kills == ag  and 
-            cur->data.an_kills == an  and 
-            cur->data.as_kills == as  and 
-            cur->data.missions == missions  and 
+        if (cur->data.aa_kills == aa and 
+            cur->data.ag_kills == ag and 
+            cur->data.an_kills == an and 
+            cur->data.as_kills == as and 
+            cur->data.missions == missions and 
             cur->data.rating == rating)  // No reason to save if nothing changed
             return;
 

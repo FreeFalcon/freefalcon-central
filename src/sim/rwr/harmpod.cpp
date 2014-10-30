@@ -420,7 +420,7 @@ void HarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
     // Display the missile effective footprint
     ShiAssert(platform->IsAirplane());
 
-    if (((AircraftClass*)platform)->Sms->curWeapon  and 
+    if (((AircraftClass*)platform)->Sms->curWeapon and 
         ((AircraftClass*)platform)->Sms->curWeaponType == wtAgm88)
     {
         ShiAssert(((AircraftClass*)platform)->Sms->curWeapon->IsMissile());
@@ -994,9 +994,9 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
 
         // Check if aggregated unit can detect
         if (
-            curEmitter->IsAggregate() and                      // A campaign thing
-            curEmitter->CanDetect(platform) and                // That has us spotted
-            curEmitter->GetRadarMode() not_eq FEC_RADAR_OFF and    // And is emmitting
+            curEmitter->IsAggregate() and // A campaign thing
+            curEmitter->CanDetect(platform) and // That has us spotted
+            curEmitter->GetRadarMode() not_eq FEC_RADAR_OFF and // And is emmitting
             // JB 011016 CanDetectObject (platform))          // And there is line of sight
             CanDetectObject(curEmitter)                       // And there is line of sight // JB 011016
         )
@@ -1033,9 +1033,9 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
     // Walk our list looking for unchecked Sim things
     for (tmpElement = FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
     {
-        if (tmpElement->BaseObject()  and 
-            tmpElement->BaseObject()->IsSim()  and 
-            (tmpElement->IsSet(GroundListElement::UnChecked))  and 
+        if (tmpElement->BaseObject() and 
+            tmpElement->BaseObject()->IsSim() and 
+            (tmpElement->IsSet(GroundListElement::UnChecked)) and 
             SimLibElapsedTime >
             tmpElement->lastHit + ((SimBaseClass*)(tmpElement->BaseObject()))->RdrCycleTime() * SEC_TO_MSEC
            )
@@ -1862,8 +1862,8 @@ bool HarmTargetingPod::IsInPriorityList(int symbol)
 
         case HP: // Get only high priority threats, basically only SAMs and AAA radars
             if (symbol < RWRSYM_HAWK ||
-                (symbol > 23 and symbol not_eq 111 and symbol not_eq 112  and 
-                 symbol not_eq 117)  and 
+                (symbol > 23 and symbol not_eq 111 and symbol not_eq 112 and 
+                 symbol not_eq 117) and 
                 symbol not_eq RWRSYM_KSAM ||
                 symbol == RWRSYM_SEARCH)
             {

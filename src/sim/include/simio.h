@@ -2,7 +2,7 @@
 /*                                                                            */
 /*  Unit Name : simio.h                                                       */
 /*                                                                            */
-/*  Abstract  : Header file with class definition for SIMLIB_IO_CLASS and     */
+/*  Abstract  : Header file with class definition for SIMLIB_IO_CLASS and */
 /*              defines used in its implementation.                           */
 /*                                                                            */
 /*  Dependencies : Auto-Generated                                             */

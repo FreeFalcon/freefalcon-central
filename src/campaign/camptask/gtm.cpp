@@ -286,11 +286,11 @@ int GroundTaskingManagerClass::Task(void)
     collect = COLLECT_AIRDEFENSE | COLLECT_SUPPORT | COLLECT_REPAIR | COLLECT_RESERVE | COLLECT_DEFEND | COLLECT_RADAR;
 
     if (action == GACTION_OFFENSIVE)
-        collect or_eq  COLLECT_CAPTURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_COMMANDO | COLLECT_SECURE;
+        collect or_eq COLLECT_CAPTURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_COMMANDO | COLLECT_SECURE;
     else if (action == GACTION_MINOROFFENSIVE)
-        collect or_eq  COLLECT_SECURE;
+        collect or_eq COLLECT_SECURE;
     else if (action == GACTION_CONSOLIDATE)
-        collect or_eq  COLLECT_SECURE;
+        collect or_eq COLLECT_SECURE;
 
 #ifdef KEV_GDEBUG
     ulong ltime;
@@ -439,7 +439,7 @@ int GroundTaskingManagerClass::IsValidObjective(int orders, Objective o)
             break;
 
         case GORD_AIRBORNE:
-            if (o->IsSecondary() and not o->IsNearfront()  and GetRoE(owner, o->GetTeam(), ROE_GROUND_CAPTURE) == ROE_ALLOWED) //  and not defended)
+            if (o->IsSecondary() and not o->IsNearfront() and GetRoE(owner, o->GetTeam(), ROE_GROUND_CAPTURE) == ROE_ALLOWED) // and not defended)
                 return 1;
 
             break;
@@ -1016,7 +1016,7 @@ int GroundTaskingManagerClass::AssignUnits(int orders, int mode)
             float dist = DistanceToFront(ox, oy);
 
             // RV - Biker - Do not repair object near front only if it's a bridge
-            if (curo->obj->Type() not_eq  TYPE_BRIDGE and (curo->obj->IsFrontline() or curo->obj->IsSecondline() or curo->obj->IsThirdline() or dist < 15.0f))
+            if (curo->obj->Type() not_eq TYPE_BRIDGE and (curo->obj->IsFrontline() or curo->obj->IsSecondline() or curo->obj->IsThirdline() or dist < 15.0f))
             {
                 continue;
             }
@@ -1217,7 +1217,7 @@ void GroundTaskingManagerClass::RequestEngineer(Objective o, int division)
 
     while (u)
     {
-        if (u->GetTeam() == owner and u->GetDomain() == DOMAIN_LAND  and 
+        if (u->GetTeam() == owner and u->GetDomain() == DOMAIN_LAND and 
             u->GetUnitNormalRole() == GRO_ENGINEER and u->GetUnitDivision() == division and u->GetUnitOrders() not_eq GORD_REPAIR)
         {
             u->SetUnitOrders(GORD_REPAIR, o->Id());
@@ -1419,7 +1419,7 @@ void SendPrimaryObjectiveList(uchar teammask)
         for (team = 0; team < NUM_TEAMS; team++)
         {
             if (TeamInfo[team])
-                teammask or_eq  (1 << team);
+                teammask or_eq (1 << team);
         }
     }
 
@@ -1454,7 +1454,7 @@ void SavePrimaryObjectiveList(char* scenario)
     for (team = 0; team < NUM_TEAMS; team++)
     {
         if (TeamInfo[team])
-            teammask or_eq  (1 << team);
+            teammask or_eq (1 << team);
     }
 
     size = EncodePrimaryObjectiveList(teammask, &data);

@@ -35,7 +35,7 @@ SendStringToPrinter(_TCHAR *string, _TCHAR *title)
 
     // if ( not g_nPrintToFile or g_nPrintToFile bitand 0x02) // 0x00 + 0x02 means print out
     //THW 2004-04-12 Never print out if HTML-Briefings are enabled
-    if ( not g_bBriefHTML or  not g_nPrintToFile or (g_nPrintToFile bitand 0x02)) // 0x00 + 0x02 means print out
+    if ( not g_bBriefHTML or not g_nPrintToFile or (g_nPrintToFile bitand 0x02)) // 0x00 + 0x02 means print out
     {
         CoInitialize(NULL);
         ComSup::RegisterServer("GMPrint.dll");
@@ -97,7 +97,7 @@ void PrintTime(char *output, FILETIME TimeToPrint)
 {
     WORD Date, Time;
 
-    if (FileTimeToLocalFileTime(&TimeToPrint, &TimeToPrint)  and 
+    if (FileTimeToLocalFileTime(&TimeToPrint, &TimeToPrint) and 
         FileTimeToDosDateTime(&TimeToPrint, &Date, &Time))
     {
         // What a silly way to print out the file date/time. Oh well,
@@ -139,7 +139,7 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
     //It might be better for briefing processing programs to always have only one
     //briefing in the file...Make it configurable.
 
-    if (g_bAppendToBriefingFile and  not g_bBriefHTML) //No sense in appending HTML briefings
+    if (g_bAppendToBriefingFile and not g_bBriefHTML) //No sense in appending HTML briefings
     {
         fileID = CreateFile(fullname, GENERIC_WRITE, 0, NULL, OPEN_ALWAYS,
                             FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, NULL);

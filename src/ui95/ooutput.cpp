@@ -562,7 +562,7 @@ void O_Output::Refresh()
 
     if (_GetOType_() == _OUT_SCALEBITMAP_)
     {
-        Owner_->Parent_->update_ or_eq  C_DRAW_REFRESH;
+        Owner_->Parent_->update_ or_eq C_DRAW_REFRESH;
         Owner_->Parent_->SetUpdateRect(Owner_->Parent_->ClientArea_[Owner_->GetClient()].left,
                                        Owner_->Parent_->ClientArea_[Owner_->GetClient()].top,
                                        Owner_->Parent_->ClientArea_[Owner_->GetClient()].right,

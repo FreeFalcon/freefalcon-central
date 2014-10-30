@@ -136,7 +136,7 @@ void RadarSuperClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
     // Note if the cursors are in motion or not
     if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
-        flags or_eq  CursorMoving;
+        flags or_eq CursorMoving;
     else
         flags and_eq compl CursorMoving;
 }
@@ -1040,7 +1040,7 @@ void RadarSuperClass::DrawLockedAirInfo(float h, float v)
     // Target ID (NCTR)
     classPtr = (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
 
-    if (lockedTarget->BaseData()->IsSim() and ( not ((SimBaseClass*)lockedTarget->BaseData())->IsExploding())  and 
+    if (lockedTarget->BaseData()->IsSim() and ( not ((SimBaseClass*)lockedTarget->BaseData())->IsExploding()) and 
         (classPtr->dataType == DTYPE_VEHICLE))
     {
         sprintf(str, "%s", ((VehicleClassDataType*)(classPtr->dataPtr))->Name);
@@ -1124,7 +1124,7 @@ void RadarSuperClass::DrawLockedGndInfo(float h, float v)
 
 
     // Target ID (NCTR)
-    if (lockedTarget->BaseData()->IsSim() and  not ((SimBaseClass*)lockedTarget->BaseData())->IsExploding())
+    if (lockedTarget->BaseData()->IsSim() and not ((SimBaseClass*)lockedTarget->BaseData())->IsExploding())
     {
         Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
 

@@ -669,7 +669,7 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
             display->SetColor(GetMfdColor(MFD_WHITY_GRAY));  // "whity" gray
 
             // This one is the current target
-            if (i == POSTargetIndex and tmpElement and lockedTarget  and 
+            if (i == POSTargetIndex and tmpElement and lockedTarget and 
                 tmpElement->BaseObject() == lockedTarget->BaseData())
             {
                 curTarget = POSTargets[i];

@@ -13,9 +13,9 @@
 int RwrClass::CanSeeObject(SimObjectType* rwrObj)
 {
     if (
-        rwrObj->localData->az < typeData->right  and 
-        rwrObj->localData->az > typeData->left  and 
-        rwrObj->localData->el < typeData->top  and 
+        rwrObj->localData->az < typeData->right and 
+        rwrObj->localData->az > typeData->left and 
+        rwrObj->localData->el < typeData->top and 
         rwrObj->localData->el > typeData->bottom)
         return TRUE;
     else
@@ -46,7 +46,7 @@ int RwrClass::BeingPainted(SimObjectType* rwrObj)
             scanAz = ((SimBaseClass*)rwrObj->BaseData())->RdrAz();
             scanEl = ((SimBaseClass*)rwrObj->BaseData())->RdrEl();
 
-            if ((scanAz > fabs(rwrObj->localData->azFrom - ((SimBaseClass*)rwrObj->BaseData())->RdrAzCenter()))  and 
+            if ((scanAz > fabs(rwrObj->localData->azFrom - ((SimBaseClass*)rwrObj->BaseData())->RdrAzCenter())) and 
                 (scanEl > fabs(rwrObj->localData->elFrom - ((SimBaseClass*)rwrObj->BaseData())->RdrElCenter())))
                 return TRUE;
             else
@@ -87,7 +87,7 @@ int RwrClass::BeingPainted(SimObjectType* rwrObj)
      // RdrAzCenter()
      // RdrElCenter()
 
-     if ((scanAz > fabs(rwrObj->localData->azFrom))  and 
+     if ((scanAz > fabs(rwrObj->localData->azFrom)) and 
      (scanEl > fabs(rwrObj->localData->elFrom)))
      {
      return TRUE;
@@ -146,7 +146,7 @@ int RwrClass::CanDetectObject(SimObjectType* rwrObj)
     // radarRange * nominalRange is the range that the object can be detected at
     //if (radarRange < typeData->nominalRange and CanDetectObject(rwrObj->BaseData()))
     if (
-        (rwrObj->localData->range < radarRange * typeData->nominalRange)  and 
+        (rwrObj->localData->range < radarRange * typeData->nominalRange) and 
         platform->CheckLOS(rwrObj))
     {
         return TRUE;

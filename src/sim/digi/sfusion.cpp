@@ -115,11 +115,11 @@ void DigitalBrain::SensorFusion(void)
           // Aces get to use GCI
           // Idiots find out about you inside 1 mile anyway
           if (localData->range > 3.0F * NM_TO_FT and // gci is crap inside 3nm
-          (SkillLevel() >= 2  and 
+          (SkillLevel() >= 2 and 
            localData->range < 25.0F * NM_TO_FT||
-           SkillLevel() >=3   and 
+           SkillLevel() >=3  and 
            localData->range < 35.0F * NM_TO_FT||
-           SkillLevel() >=4   and 
+           SkillLevel() >=4  and 
            localData->range < 55.0F * NM_TO_FT)
            )//me123 not if no sensor has seen it or localData->range < 1.0F * NM_TO_FT)
           {
@@ -194,7 +194,7 @@ void DigitalBrain::SensorFusion(void)
         // Go through all your sensors. If you 'see' the target and are bright enough, flag it as spotted and ask for an intercept if this FLIGHT is spotted for the first time...
         //for (i = 0; i<self->numSensors; i++) {
         //if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack or localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime) { // 2002-04-18 MODIFIED BY S.G. Reverted to and instead of ||. *MY* logic was flawed. It gaves a 'delay' (grace period) after the sensor becomes 'NoLock'.
-        //if (campBaseObj and /* and  SkillLevel() >= g_nLowestSkillForGCI  and */  not ((UnitClass *)self->GetCampaignObject())->Broken()) {//Cobra removed GCI test here...not needed
+        //if (campBaseObj and /* and SkillLevel() >= g_nLowestSkillForGCI and */ not ((UnitClass *)self->GetCampaignObject())->Broken()) {//Cobra removed GCI test here...not needed
         //if ( not campBaseObj->GetSpotted(self->GetTeam()) and campBaseObj->IsFlight())
         //RequestIntercept((FlightClass *)campBaseObj, self->GetTeam());
 
@@ -441,7 +441,7 @@ void DigitalBrain::SensorFusion(void)
         // Have to be at war against us
         // Chopper must be our assigned or mission target or we must be on sweep (not a AMIS_SWEEP but still has OnSweep set)
         // Must be worth shooting at, unless it's our assigned or mission target (new addition so AI can go after an AWACS for example if it's their target...
-        //    if (canSee and baseObj->IsAirplane() and pcId < ID_NEUTRAL  and 
+        //    if (canSee and baseObj->IsAirplane() and pcId < ID_NEUTRAL and 
         //       (IsSetATC(OnSweep) or ((AircraftClass*)baseObj)->CombatClass() < MnvrClassA10))
         // 2002-03-11 MODIFIED BY S.G. Don't call CombatClass directly but through GuestimateCombatClass which doesn't assume you have an ID on the target
         // Since I'm going to check for this twice in the next if statement, do it once here but also do the 'canSee' test which is not CPU intensive and will prevent the test from being performed if can't see.
@@ -454,9 +454,9 @@ void DigitalBrain::SensorFusion(void)
            campObj = (CampBaseClass *)baseObj;
            int isMissionTarget = canSee and campObj and (((FlightClass *)(self->GetCampaignObject()))->GetUnitMissionTargetID() == campObj->Id() or ((FlightClass *)(self->GetCampaignObject()))->GetAssignedTarget() == campObj->Id());
 
-              if (canSee  and 
-           (baseObj->IsAirplane() or (baseObj->IsFlight() and not baseObj->IsHelicopter()) or (baseObj->IsHelicopter() and ((missionType not_eq AMIS_SWEEP and IsSetATC(OnSweep)) or isMissionTarget)))  and 
-           pcId < ID_NEUTRAL  and 
+              if (canSee and 
+           (baseObj->IsAirplane() or (baseObj->IsFlight() and not baseObj->IsHelicopter()) or (baseObj->IsHelicopter() and ((missionType not_eq AMIS_SWEEP and IsSetATC(OnSweep)) or isMissionTarget))) and 
+           pcId < ID_NEUTRAL and 
            (GuestimateCombatClass(self, baseObj) < MnvrClassA10 or IsSetATC(OnSweep) or isMissionTarget)) // 2002-03-11 Don't assume you know the combat class
         // END OF MODIFIED SECTION 2002-03-05
               {

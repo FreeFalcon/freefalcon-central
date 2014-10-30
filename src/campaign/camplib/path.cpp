@@ -269,13 +269,13 @@ costtype CostToArrive(Unit u, int orders, GridIndex x, GridIndex y, Objective t)
 
     // Movement options
     if (GetGroundRole(orders) == GRO_ATTACK)
-        flags or_eq  PATH_ENEMYOK; // | PATH_ENEMYCOST;
+        flags or_eq PATH_ENEMYOK; // | PATH_ENEMYCOST;
 
     if (u->GetSType() == STYPE_UNIT_AIRMOBILE)
-        flags or_eq  PATH_AIRBORNE;
+        flags or_eq PATH_AIRBORNE;
 
     if (u->GetSType() == STYPE_UNIT_MARINE)
-        flags or_eq  PATH_MARINE;
+        flags or_eq PATH_MARINE;
 
     o = FindNearestObjective(x, y, NULL);
 
@@ -318,7 +318,7 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
         case Foot:
         case Wheeled:
         case Tracked:
-            if (GetRoad(x, y) and  not (h bitand 0x01))
+            if (GetRoad(x, y) and not (h bitand 0x01))
             {
                 // It's a bridge or port, check if intact
                 if (cost > MAX_COST)
@@ -518,7 +518,7 @@ void GetNeighborCoord(AS_DataClass* asd, void* o, void* t)
 
         cost = GetMovementCost(x, y, (MoveType)moveType, moveFlags, (CampaignHeading)d);
 
-        if (MOVE_AIR(moveType) and  not (moveFlags bitand PATH_BASIC))
+        if (MOVE_AIR(moveType) and not (moveFlags bitand PATH_BASIC))
         {
             // Add cost for air threats
             // Essentially, tcost is 0-100. This translates into # of km out of our
@@ -674,7 +674,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
         }
 
         // RV - Biker - Search for engineers then build pontoon bridge
-        if ((MOVE_GROUND(type) or type == NoMove) and n->GetType() == TYPE_BRIDGE and not n->GetObjectiveStatus() and  not (flags bitand PATH_ENGINEER))
+        if ((MOVE_GROUND(type) or type == NoMove) and n->GetType() == TYPE_BRIDGE and not n->GetObjectiveStatus() and not (flags bitand PATH_ENGINEER))
         {
             // Bridge is broke, can't go here.
             // But let's send engineers, if we havn't already

@@ -141,11 +141,11 @@ void ICPClass::ExecSTPTMode()
         //MI Original code
         if (playerAC and playerAC->curWaypoint)  // and not playerAC->FCC->InTransistion()
         {
-            // and  mUpdateFlags bitand STPT_UPDATE and  not ((AircraftClass*)(mpOwnship))->FCC->waypointStepCmd) {
+            // and mUpdateFlags bitand STPT_UPDATE and not ((AircraftClass*)(mpOwnship))->FCC->waypointStepCmd) {
 
             // Clear the update flag
 
-            mUpdateFlags and_eq  not STPT_UPDATE;
+            mUpdateFlags and_eq not STPT_UPDATE;
 
             // Get info from the aircraft
 
@@ -363,6 +363,6 @@ void ICPClass::PNUpdateSTPTMode(int button, int)
         ((AircraftClass*)(playerAC))->FCC->waypointStepCmd = 1;
     }
 
-    mUpdateFlags or_eq  STPT_UPDATE;
-    mUpdateFlags or_eq  CNI_UPDATE;
+    mUpdateFlags or_eq STPT_UPDATE;
+    mUpdateFlags or_eq CNI_UPDATE;
 }

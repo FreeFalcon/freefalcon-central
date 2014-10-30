@@ -237,7 +237,7 @@ void AirframeClass::Gains(void)
 
     tp03   = max(tp03, 0.5F);
 
-    if (IsSet(AOACmdMode) or  not (qsom * cnalpha))
+    if (IsSet(AOACmdMode) or not (qsom * cnalpha))
         kp05 = tp02 * tp03 * wp01 * wp01;
     else
         kp05 = GRAVITY * tp02 * tp03 * wp01 * wp01 /

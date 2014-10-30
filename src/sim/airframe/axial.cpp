@@ -106,16 +106,16 @@ void AirframeClass::Axial(float dt)
         if (speedBrake < 0.0f)
         {
             // closing brake
-            if (dbrake > 0.90f * dBrakeMax and dbrake < dBrakeMax  and 
-                 not platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeStart)
+            if (dbrake > 0.90f * dBrakeMax and dbrake < dBrakeMax and 
+ not platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeStart)
 
                ) // JB 010425
             {
                 platform->SoundPos.Sfx(auxaeroData->sndSpdBrakeStart);
             }
 
-            if (dbrake < 0.10f and dbrake > 0.0f  and 
-                 not platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeEnd)
+            if (dbrake < 0.10f and dbrake > 0.0f and 
+ not platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeEnd)
 
                ) // JB 010425
             {
@@ -126,15 +126,15 @@ void AirframeClass::Axial(float dt)
         else
         {
             // opening brake
-            if (dbrake < 0.10f and dbrake > 0.0f  and 
-                 not platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeStart)
+            if (dbrake < 0.10f and dbrake > 0.0f and 
+ not platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeStart)
                ) // JB 010425
             {
                 platform->SoundPos.Sfx(auxaeroData->sndSpdBrakeStart);
             }
 
-            if (dbrake > 0.90f * dBrakeMax and dbrake < dBrakeMax   and 
-                 not platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeEnd)
+            if (dbrake > 0.90f * dBrakeMax and dbrake < dBrakeMax  and 
+ not platform->SoundPos.IsPlaying(auxaeroData->sndSpdBrakeEnd)
                ) // JB 010425
             {
                 platform->SoundPos.Sfx(auxaeroData->sndSpdBrakeEnd);
@@ -161,15 +161,15 @@ void AirframeClass::Axial(float dt)
         if (gearHandle < 0.0f)
         {
             // closing brake
-            if (gearPos > 0.90f and gearPos < 1.0f  and 
-                 not platform->SoundPos.IsPlaying(auxaeroData->sndGearCloseStart)
+            if (gearPos > 0.90f and gearPos < 1.0f and 
+ not platform->SoundPos.IsPlaying(auxaeroData->sndGearCloseStart)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndGearCloseStart);
             }
 
-            if (gearPos < 0.10f and gearPos > 0.0f  and 
-                 not platform->SoundPos.IsPlaying(auxaeroData->sndGearCloseEnd)
+            if (gearPos < 0.10f and gearPos > 0.0f and 
+ not platform->SoundPos.IsPlaying(auxaeroData->sndGearCloseEnd)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndGearCloseEnd);
@@ -179,15 +179,15 @@ void AirframeClass::Axial(float dt)
         else
         {
             // opening brake
-            if (gearPos < 0.10f and gearPos > 0.0f  and 
-                 not platform->SoundPos.IsPlaying(auxaeroData->sndGearOpenStart)
+            if (gearPos < 0.10f and gearPos > 0.0f and 
+ not platform->SoundPos.IsPlaying(auxaeroData->sndGearOpenStart)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndGearOpenStart);
             }
 
-            if (gearPos > 0.90f and gearPos < 1.0f  and 
-                 not platform->SoundPos.IsPlaying(auxaeroData->sndGearOpenEnd)
+            if (gearPos > 0.90f and gearPos < 1.0f and 
+ not platform->SoundPos.IsPlaying(auxaeroData->sndGearOpenEnd)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndGearOpenEnd);
@@ -208,15 +208,15 @@ void AirframeClass::Axial(float dt)
         if (hookHandle < 0.0f)
         {
             // closing hook
-            if (hookPos > 0.90f and hookPos < 1.0f  and 
-                 not platform->SoundPos.IsPlaying(auxaeroData->sndHookEnd)
+            if (hookPos > 0.90f and hookPos < 1.0f and 
+ not platform->SoundPos.IsPlaying(auxaeroData->sndHookEnd)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndHookEnd);
             }
 
-            if (hookPos < 0.10f and hookPos > 0.0f  and 
-                 not platform->SoundPos.IsPlaying(auxaeroData->sndHookStart)
+            if (hookPos < 0.10f and hookPos > 0.0f and 
+ not platform->SoundPos.IsPlaying(auxaeroData->sndHookStart)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndHookStart);
@@ -225,15 +225,15 @@ void AirframeClass::Axial(float dt)
         else
         {
             // opening hook
-            if (hookPos < 0.10f and hookPos > 0.0f  and 
-                 not platform->SoundPos.IsPlaying(auxaeroData->sndHookStart)
+            if (hookPos < 0.10f and hookPos > 0.0f and 
+ not platform->SoundPos.IsPlaying(auxaeroData->sndHookStart)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndHookStart);
             }
 
-            if (hookPos > 0.90f and hookPos < 1.0f  and 
-                 not platform->SoundPos.IsPlaying(auxaeroData->sndHookEnd)
+            if (hookPos > 0.90f and hookPos < 1.0f and 
+ not platform->SoundPos.IsPlaying(auxaeroData->sndHookEnd)
                )
             {
                 platform->SoundPos.Sfx(auxaeroData->sndHookEnd);
@@ -247,7 +247,7 @@ void AirframeClass::Axial(float dt)
     // JB carrier end
 
     //DSP hack until we can get the digi's to stay slow until the gear come up
-    if ( not platform->IsSetFalcFlag(FEC_INVULNERABLE) and gearPos > 0.1F and   not IsSet(GearBroken) and not IsSet(IsDigital))
+    if ( not platform->IsSetFalcFlag(FEC_INVULNERABLE) and gearPos > 0.1F and not IsSet(GearBroken) and not IsSet(IsDigital))
     {
         if (gearPos > 0.9F)
             maxQbar = 350.0F;
@@ -276,8 +276,8 @@ void AirframeClass::Axial(float dt)
 
                     for (int i = 0; i < NumGear(); i++)
                     {
-                        gear[i].flags or_eq  GearData::GearProblem;
-                        gear[i].flags or_eq  GearData::DoorBroken;
+                        gear[i].flags or_eq GearData::GearProblem;
+                        gear[i].flags or_eq GearData::DoorBroken;
 
                         if (platform->IsComplex())
                         {
@@ -317,7 +317,7 @@ void AirframeClass::Axial(float dt)
 
                             if (gear[which].strength <= 0.0F)
                             {
-                                gear[which].flags or_eq  GearData::GearBroken;
+                                gear[which].flags or_eq GearData::GearBroken;
 
                                 if (platform->IsComplex())
                                     platform->SetDOF(ComplexGearDOF[which], 0.0F);
@@ -332,7 +332,7 @@ void AirframeClass::Axial(float dt)
                             {
                                 if (gear[which].strength < 50.0F)
                                 {
-                                    gear[which].flags or_eq  GearData::GearStuck;
+                                    gear[which].flags or_eq GearData::GearStuck;
                                     platform->mFaults->SetFault(FaultClass::gear_fault,
                                                                 FaultClass::ldgr, FaultClass::fail, FALSE);
                                 }
@@ -347,9 +347,9 @@ void AirframeClass::Axial(float dt)
                             newpos = ((float)rand() / (float)RAND_MAX * 50.0F + 40.0F) * DTR;
 
                             if (dmg > 25.0F + rand() % 5)
-                                gear[which].flags or_eq  GearData::DoorBroken;
+                                gear[which].flags or_eq GearData::DoorBroken;
                             else if (dmg > 15.0F + rand() % 5)
-                                gear[which].flags or_eq  GearData::DoorStuck;
+                                gear[which].flags or_eq GearData::DoorStuck;
 
                             if (platform->IsComplex() and newpos > platform->GetDOFValue(ComplexGearDOF[which]))
                                 platform->SetDOF(ComplexGearDoorDOF[which], newpos);
@@ -463,7 +463,7 @@ case 0:
 
     if (gear[0].strength <= 0.0F)
     {
-        gear[0].flags or_eq  GearData::GearBroken;
+        gear[0].flags or_eq GearData::GearBroken;
 
         if (platform->IsComplex())
             platform->SetDOF(COMP_NOS_GEAR, 0.0F);
@@ -475,7 +475,7 @@ case 0:
     }
     else if (gear[0].strength < 50.0F)
     {
-        gear[0].flags or_eq  GearData::GearStuck;
+        gear[0].flags or_eq GearData::GearStuck;
         platform->mFaults->SetFault(FaultClass::gear_fault,
                                     FaultClass::ldgr, FaultClass::fail, FALSE);
     }
@@ -504,7 +504,7 @@ case 1:
         if (platform->IsComplex())
             platform->SetDOF(COMP_LT_GEAR, 0.0F);
 
-        gear[1].flags or_eq  GearData::GearBroken;
+        gear[1].flags or_eq GearData::GearBroken;
         platform->SoundPos.Sfx(auxaeroData->sndWheelBrakes);
         SetFlag(GearDamaged);
         ((AircraftClass*)platform)->mFaults->SetFault(FaultClass::gear_fault,
@@ -512,7 +512,7 @@ case 1:
     }
     else if (gear[1].strength < 50.0F)
     {
-        gear[1].flags or_eq  GearData::GearStuck;
+        gear[1].flags or_eq GearData::GearStuck;
         platform->mFaults->SetFault(FaultClass::gear_fault,
                                     FaultClass::ldgr, FaultClass::fail, FALSE);
     }
@@ -542,7 +542,7 @@ case 2:
         if (platform->IsComplex())
             platform->SetDOF(COMP_RT_GEAR, 0.0F);
 
-        gear[2].flags or_eq  GearData::GearBroken;
+        gear[2].flags or_eq GearData::GearBroken;
         platform->SoundPos.Sfx(auxaeroData->sndWheelBrakes);
         SetFlag(GearDamaged);
         ((AircraftClass*)platform)->mFaults->SetFault(FaultClass::gear_fault,
@@ -550,7 +550,7 @@ case 2:
     }
     else if (gear[2].strength < 50.0F)
     {
-        gear[2].flags or_eq  GearData::GearStuck;
+        gear[2].flags or_eq GearData::GearStuck;
         platform->mFaults->SetFault(FaultClass::gear_fault,
                                     FaultClass::ldgr, FaultClass::fail, FALSE);
     }
@@ -567,9 +567,9 @@ case 3:
     newpos = ((float)rand() / (float)RAND_MAX * 50.0F + 40.0F) * DTR;
 
     if (dmg > 25.0F + rand() % 5)
-        gear[0].flags or_eq  GearData::DoorBroken;
+        gear[0].flags or_eq GearData::DoorBroken;
     else if (dmg > 15.0F + rand() % 5)
-        gear[0].flags or_eq  GearData::DoorStuck;
+        gear[0].flags or_eq GearData::DoorStuck;
 
     if (platform->IsComplex() and newpos > platform->GetDOFValue(COMP_NOS_GEAR))
         platform->SetDOF(COMP_NOS_GEAR_DR, newpos);
@@ -581,9 +581,9 @@ case 4:
     newpos = ((float)rand() / (float)RAND_MAX * 50.0F + 25.0F) * DTR;
 
     if (dmg > 25.0F + rand() % 5)
-        gear[1].flags or_eq  GearData::DoorBroken;
+        gear[1].flags or_eq GearData::DoorBroken;
     else if (dmg > 15.0F + rand() % 5)
-        gear[1].flags or_eq  GearData::DoorStuck;
+        gear[1].flags or_eq GearData::DoorStuck;
 
     if (platform->IsComplex() and newpos > platform->GetDOFValue(COMP_NOS_GEAR))
         platform->SetDOF(COMP_LT_GEAR_DR, newpos);
@@ -595,9 +595,9 @@ case 5:
     newpos = ((float)rand() / (float)RAND_MAX * 50.0F + 25.0F) * DTR;
 
     if (dmg > 25.0F + rand() % 5)
-        gear[2].flags or_eq  GearData::DoorBroken;
+        gear[2].flags or_eq GearData::DoorBroken;
     else if (dmg > 15.0F + rand() % 5)
-        gear[2].flags or_eq  GearData::DoorStuck;
+        gear[2].flags or_eq GearData::DoorStuck;
 
     if (platform->IsComplex() and newpos > platform->GetDOFValue(COMP_RT_GEAR))
         platform->SetDOF(COMP_RT_GEAR_DR, newpos);
@@ -608,8 +608,8 @@ default:
     break;
 }
 
-if (gear[0].flags bitand GearData::GearBroken  and 
-    gear[1].flags bitand GearData::GearBroken  and 
+if (gear[0].flags bitand GearData::GearBroken and 
+    gear[1].flags bitand GearData::GearBroken and 
     gear[2].flags bitand GearData::GearBroken)
 {
     ((AircraftClass*)platform)->mFaults->SetFault(FaultClass::gear_fault,
@@ -617,8 +617,8 @@ if (gear[0].flags bitand GearData::GearBroken  and
     SetFlag(GearBroken);
 }
 
-if (gear[0].flags bitand GearData::GearStuck  and 
-    gear[1].flags bitand GearData::GearStuck  and 
+if (gear[0].flags bitand GearData::GearStuck and 
+    gear[1].flags bitand GearData::GearStuck and 
     gear[2].flags bitand GearData::GearStuck)
 {
     ((AircraftClass*)platform)->mFaults->SetFault(FaultClass::gear_fault,

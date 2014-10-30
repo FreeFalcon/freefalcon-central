@@ -333,7 +333,7 @@ void HudClass::DrawFunnel(void)
         if (g_bRealisticAvionics and not targetPtr)
         {
             //document shows that we get this even when the gun is fired for real.
-            if ( not ownship->OnGround() /* and  (ownship->Sms->MasterArm() == SMSBaseClass::Sim)*/)
+            if ( not ownship->OnGround() /* and (ownship->Sms->MasterArm() == SMSBaseClass::Sim)*/)
             {
                 if (ownship->fireGun and ownship->Sms->FEDS)
                     FlyFEDSBullets(TRUE);

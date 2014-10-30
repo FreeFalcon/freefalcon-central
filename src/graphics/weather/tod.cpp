@@ -49,7 +49,7 @@ void CTimeOfDay::Setup(char *dataPath)
 
     sprintf(starfile, "%s\\star.dat", dataPath);
 
-    if ( not skycolor or  not (in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
+    if ( not skycolor or not (in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
     {
         sprintf(todfile, "%s\\tod\\tod.lst.default", dataPath);
 
@@ -159,7 +159,7 @@ void CTimeOfDay::Setup(char *dataPath)
         if (TimeOfDay[i].StarIntensity > 0.0f) k = 1;
         else if (TimeOfDay[j].StarIntensity > 0.0f) k = 1;
 
-        if (k) TimeOfDay[i].Flag or_eq  GL_TIME_OF_DAY_USE_STAR;
+        if (k) TimeOfDay[i].Flag or_eq GL_TIME_OF_DAY_USE_STAR;
     }
 
 
@@ -695,13 +695,13 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
         {
             fscanf(in, "%f", &tod->SunPitch);
             tod->SunPitch = glConvertFromDegreef(tod->SunPitch);
-            tod->Flag or_eq  GL_TIME_OF_DAY_USE_SUN;
+            tod->Flag or_eq GL_TIME_OF_DAY_USE_SUN;
         }
         else if (stricmp(buffer, "MoonPitch") == 0)
         {
             fscanf(in, "%f", &tod->MoonPitch);
             tod->MoonPitch = glConvertFromDegreef(tod->MoonPitch);
-            tod->Flag or_eq  GL_TIME_OF_DAY_USE_MOON;
+            tod->Flag or_eq GL_TIME_OF_DAY_USE_MOON;
         }
         else if (stricmp(buffer, "Star") == 0)
             tod->StarIntensity = 1.0f;
@@ -910,7 +910,7 @@ void CTimeOfDay::CreateMoonPhaseMask(unsigned char *image, int phase)
                 {
                     c <<= 1;
 
-                    if ((col2 < start) or (col2 >= stop)) c or_eq  1;
+                    if ((col2 < start) or (col2 >= stop)) c or_eq 1;
 
                     col2++;
                 }
@@ -969,7 +969,7 @@ void CTimeOfDay::RotateMoonMask(int angle)
                     int l = (tv << 3) + (tu >> 3);
                     unsigned char c = (unsigned char)(1 << (7 - (tu bitand 7)));
 
-                    if (MoonPhaseMask[l] bitand c) c1 or_eq  1;
+                    if (MoonPhaseMask[l] bitand c) c1 or_eq 1;
                 }
             }
 
@@ -1032,11 +1032,11 @@ void CTimeOfDay::CreateMoonPhase(unsigned char *src, unsigned char *dest)
                 unsigned char c1 = *src++;
 #ifdef USE_TRANSPARENT_MOON
 
-                if (c1 and  not (c bitand 0x80)) c1 = 0;
+                if (c1 and not (c bitand 0x80)) c1 = 0;
 
 #else
 
-                if (c1 and  not (c bitand 0x80)) c1 += 48;
+                if (c1 and not (c bitand 0x80)) c1 += 48;
 
 #endif
                 c <<= 1;

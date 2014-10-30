@@ -145,8 +145,8 @@ DWORD Loader::MainLoop()
         {
             actionDone = false;
             // The LOD updating run
-            actionDone or_eq  ObjectLOD::UpdateLods();
-            actionDone or_eq  TheTextureBank.UpdateBank();
+            actionDone or_eq ObjectLOD::UpdateLods();
+            actionDone or_eq TheTextureBank.UpdateBank();
 
             while ((Active = GetNextRequest()) and ( not shutDown))
             {
@@ -250,9 +250,9 @@ void Loader::Enqueue(LoaderQ *New)
     {
 
         // See if this is a duplicate
-        if ((p->fileoffset == New->fileoffset)  and 
-            (p->filename == New->filename)  and 
-            (p->parameter == New->parameter)  and 
+        if ((p->fileoffset == New->fileoffset) and 
+            (p->filename == New->filename) and 
+            (p->parameter == New->parameter) and 
             (p->callback == New->callback))
         {
 
@@ -359,9 +359,9 @@ BOOL Loader::CancelRequest(void(*callback)(LoaderQ*), void *parameter, char *fil
     {
 
         // See if this is the one we want to cancel
-        if ((p->filename == filename)  and 
-            (p->fileoffset == fileoffset)  and 
-            (p->parameter == parameter)  and 
+        if ((p->filename == filename) and 
+            (p->fileoffset == fileoffset) and 
+            (p->parameter == parameter) and 
             (p->callback == callback))
         {
 

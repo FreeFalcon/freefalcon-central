@@ -427,7 +427,7 @@ BOOL C_Sound::PlaySound(SOUND_RES *Snd)
         SND_FLAGS = 0;
 
         if (Snd->flags bitand SOUND_LOOP)
-            SND_FLAGS or_eq  SND_STREAM_LOOP;
+            SND_FLAGS or_eq SND_STREAM_LOOP;
 
         Snd->SoundID = F4StartStream(Snd->filename, SND_FLAGS);
         F4SetStreamVolume(Snd->SoundID, Snd->Volume);

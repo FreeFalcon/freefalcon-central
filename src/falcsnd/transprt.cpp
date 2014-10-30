@@ -139,7 +139,7 @@ void SetupTransport( WORD bufsize )
  gBufs[i].size = 0;
 // gBufs[i].ptr = (BYTE *)malloc( bufsize );
  gBufs[i].ptr = new BYTE[bufsize];
- if (  not gBufs[i].ptr )
+ if ( not gBufs[i].ptr )
  ShiError(" Loopback test: buffer alloc failed" );
  }
  numInBuffer = 0;

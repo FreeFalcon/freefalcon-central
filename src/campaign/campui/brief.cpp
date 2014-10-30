@@ -316,7 +316,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
     ShiAssert(flight_data);//Cobra 10/31/04 TJL
 
     if ( not TheCampaign.MissionEvaluator->player_element or // MLR 3/25/2004 -
-         not TheCampaign.MissionEvaluator->player_pilot)
+ not TheCampaign.MissionEvaluator->player_pilot)
     {
         // this prevents a CTD, but makes the debried window empty
         return 0;
@@ -763,7 +763,7 @@ static void GetWpTimeToBuffer(WayPoint wp, _TCHAR *cline)
 
 static void GetWptDist(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 {
-    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and  not (wp->GetWPFlags() bitand WPF_ALTERNATE))
+    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and not (wp->GetWPFlags() bitand WPF_ALTERNATE))
     {
         GridIndex lx, ly, cx, cy;
         lwp->GetWPLocation(&lx, &ly);
@@ -776,7 +776,7 @@ static void GetWptDist(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 
 static void GetWptSpeed(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 {
-    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and  not (wp->GetWPFlags() bitand WPF_ALTERNATE))
+    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and not (wp->GetWPFlags() bitand WPF_ALTERNATE))
     {
         /*
         GridIndex cx,cy,lx,ly;
@@ -836,7 +836,7 @@ static void GetWpDescription(WayPoint wp, _TCHAR *cline)
 
 static void GetWpHeading(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 {
-    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and  not (wp->GetWPFlags() bitand WPF_ALTERNATE))
+    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and not (wp->GetWPFlags() bitand WPF_ALTERNATE))
     {
         GridIndex cx, cy, lx, ly;
         float heading;
@@ -1273,7 +1273,7 @@ void GetEntityDestination(CampEntity e, _TCHAR *name)
             WayPoint w = ((Unit)e)->GetFirstUnitWP();
             CampEntity t;
 
-            while (w and  not (w->GetWPFlags() bitand WPF_TARGET))
+            while (w and not (w->GetWPFlags() bitand WPF_TARGET))
                 w = w->GetNextWP();
 
             if (w)
@@ -1415,7 +1415,7 @@ int GetGender(CampEntity entity, int div)
     if ( not entity or gLangIDNum < F4LANG_GERMAN)
         return F4LANG_MASCULINE;
 
-    if (div and ( not entity->IsUnit() or  not ((Unit)entity)->GetUnitDivision()))
+    if (div and ( not entity->IsUnit() or not ((Unit)entity)->GetUnitDivision()))
         div = 0;
 
     if (gLangIDNum == F4LANG_GERMAN)
@@ -2580,7 +2580,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                  CampEntity etar;
                  // Find out where this flight is going (find the target)
                  WayPoint w = ((Unit)reqe)->GetFirstUnitWP();
-                 while (w and  not (w->GetWPFlags() bitand WPF_TARGET))
+                 while (w and not (w->GetWPFlags() bitand WPF_TARGET))
                  w = w->GetNextWP();
                  if (w)
                  {
@@ -2905,7 +2905,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 success = fptr->mission_success;
 
                 // 2002-02-13 MN added AWACSAbort
-                if (success not_eq Incomplete /* and  success not_eq AWACSAbort*/)
+                if (success not_eq Incomplete /* and success not_eq AWACSAbort*/)
                 {
                     // Determine losses, if necessary
                     losses = fptr->target_status;

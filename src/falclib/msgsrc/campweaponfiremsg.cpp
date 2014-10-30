@@ -206,7 +206,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     if (shooter->IsAggregate())
     {
         // Send a radio chatter message to LOCAL MACHINE if shooter is a flight
-        if (shooter->IsFlight() and not SimDriver.InSim() and  not (rand() % 20))
+        if (shooter->IsFlight() and not SimDriver.InSim() and not (rand() % 20))
         {
             // Send the chatter message;
             FalconRadioChatterMessage *msg = new FalconRadioChatterMessage(shooter->Id(), FalconLocalSession);
@@ -277,8 +277,8 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
 
     // add some additional fire effects if losses were taken, the target is
     // a battalion and the target is in the sim lists
-    if (losses  and 
-        target->InSimLists()  and 
+    if (losses and 
+        target->InSimLists() and 
         OTWDriver.IsActive())
     {
         int i;
@@ -608,7 +608,7 @@ void FireOnSimEntity(CampEntity shooter, SimBaseClass *simTarg, short weaponId)
     hitSomething = FALSE;
 
     // what have we got for a weapon?
-    if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_WEAPON  and 
+    if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_WEAPON and 
         classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_GUN)
     {
         if (wc->Flags bitand WEAP_TRACER)
@@ -1099,7 +1099,7 @@ void DoShortDistanceVisualEffects(CampEntity shooter, CampEntity target, int wea
 
 
     // what have we got for a weapon?
-    if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_WEAPON  and 
+    if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_WEAPON and 
         classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_GUN)
     {
         if (wc->Flags bitand WEAP_TRACER)
@@ -1326,7 +1326,7 @@ FireMissileAtSim(CampEntity shooter, SimBaseClass *simTarg, short weapId)
 #if 0 // This is handled by the missile itself now...
     /*
     // Need to send a launch message if this missile is radar guided
-    if (theMissile->sensorArray  and 
+    if (theMissile->sensorArray and 
     (theMissile->sensorArray[0]->Type() == SensorClass::Radar ||
     theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming)) {
 

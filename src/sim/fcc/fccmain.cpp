@@ -236,7 +236,7 @@ SimObjectType* FireControlComputer::Exec(SimObjectType* curTarget, SimObjectType
     static const float MISSILE_ALTITUDE_BONUS = 23.0f; //me123 addet here and in // JB 010215 changed from 24 to 23
     static const float MISSILE_SPEED = 1500.0f; // JB 010215 changed from 1300 to 1500
 
-    if (playerFCC  and 
+    if (playerFCC and 
         ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::fcc_fault))
     {
         SetTarget(NULL);
@@ -262,7 +262,7 @@ SimObjectType* FireControlComputer::Exec(SimObjectType* curTarget, SimObjectType
 
             missileLaunched = 0;
 
-            if (lastMissileImpactTime > 0.0F  and targetPtr)
+            if (lastMissileImpactTime > 0.0F and targetPtr)
             {
                 //me123 addet this stuff
 
@@ -348,13 +348,13 @@ SimObjectType* FireControlComputer::Exec(SimObjectType* curTarget, SimObjectType
 
 void FireControlComputer::SetSubMode(FCCSubMode newSubMode)
 {
-    if (newSubMode == CCRP  and 
-        Sms  and 
-        Sms->Ownship()  and 
+    if (newSubMode == CCRP and 
+        Sms and 
+        Sms->Ownship() and 
         Sms->Ownship()->IsAirplane() and // MLR not always owned by a/c
-        ((AircraftClass *)(Sms->Ownship()))->af  and 
+        ((AircraftClass *)(Sms->Ownship()))->af and 
         ( not ((AircraftClass *)Sms->Ownship())->af->IsSet(AirframeClass::IsDigital) ||
-         ( not (((AircraftClass *)(Sms->Ownship()))->AutopilotType() == AircraftClass::CombatAP)))  and 
+         ( not (((AircraftClass *)(Sms->Ownship()))->AutopilotType() == AircraftClass::CombatAP))) and 
         platform and RadarDataTable[platform->GetRadarType()].NominalRange == 0.0) // JB 011018
     {
         newSubMode = CCIP;
@@ -366,7 +366,7 @@ void FireControlComputer::SetSubMode(FCCSubMode newSubMode)
         return;
     }
 
-    if (masterMode not_eq Dogfight  and 
+    if (masterMode not_eq Dogfight and 
         masterMode not_eq MissileOverride)
     {
         lastSubMode = subMode;
@@ -535,7 +535,7 @@ void FireControlComputer::SetSubMode(FCCSubMode newSubMode)
                 strcpy(subModeString, "HARM");
             }
 
-            if (Sms->GetCurrentWeaponHardpoint() >= 0  and // JPO CTD fix
+            if (Sms->GetCurrentWeaponHardpoint() >= 0 and // JPO CTD fix
                 Sms->CurHardpoint() >= 0 and // JB 010805 Possible CTD check curhardpoint
                 Sms->hardPoint[Sms->CurHardpoint()] not_eq NULL) // Cobra - Sms->GetCurrentWeaponHardpoint() was causing a CTD (returned with a very large number)
             {
@@ -569,9 +569,9 @@ void FireControlComputer::SetSubMode(FCCSubMode newSubMode)
             groundPipperEl = 0.0F;
             strcpy(subModeString, "GBU");
 
-            if (Sms->GetCurrentWeaponHardpoint() >= 0  and // JPO CTD fix
+            if (Sms->GetCurrentWeaponHardpoint() >= 0 and // JPO CTD fix
                 Sms->CurHardpoint() >= 0 and // JB 010805 Possible CTD check curhardpoint
-                Sms->hardPoint[Sms->GetCurrentWeaponHardpoint()] not_eq NULL  and 
+                Sms->hardPoint[Sms->GetCurrentWeaponHardpoint()] not_eq NULL and 
                 Sms->hardPoint[Sms->GetCurrentWeaponHardpoint()]->weaponPointer)
                 Sms->SetWeaponType(Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponType());
             else
@@ -782,8 +782,8 @@ void FireControlComputer::NextSubMode(void)
         case Nav:
 
             // MD -- 20031203: removed this since sources seem to indicate that there is no such function in the real jet.
-            //  ASSOCIATOR Added g_bEnableFCCSubNavCycle as an option and  not g_bRealisticAvionics to not break the other modes
-            if (g_bEnableFCCSubNavCycle |  not g_bRealisticAvionics)
+            //  ASSOCIATOR Added g_bEnableFCCSubNavCycle as an option and not g_bRealisticAvionics to not break the other modes
+            if (g_bEnableFCCSubNavCycle | not g_bRealisticAvionics)
             {
                 switch (subMode)
                 {
@@ -902,7 +902,7 @@ void FireControlComputer::WeaponStep(void)
             // COBRA - RED - FIXING POSSIBLE CTDs
             // CCIP -> DTOS -> STRAF -> CCRP
             /*if ((Sms->GetCurrentHardpoint() > 0) and (Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType()==wtGPS or  // Cobra - no rippling GPS
-             (((BombClass*)Sms->hardPoint[Sms->GetCurrentHardpoint()]->weaponPointer)  and 
+             (((BombClass*)Sms->hardPoint[Sms->GetCurrentHardpoint()]->weaponPointer) and 
              ((BombClass*)Sms->hardPoint[Sms->GetCurrentHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW))))*/
         {
             if (TheBomb and (TheBomb->IsSetBombFlag(BombClass::IsGPS) or TheBomb->IsSetBombFlag(BombClass::IsJSOW)))
@@ -1396,12 +1396,12 @@ void FireControlComputer::UpdatePlanned()
     //without it, everything is appearing as normal on the HSD.
     nextDlUpdate = SimLibElapsedTime + 5000/*CampaignSeconds * DATALINK_CYCLE*/;
     /*if (((AircraftClass*)platform)->mFaults->GetFault(FaultClass::dlnk_fault) ||
-     not ((AircraftClass*)platform)->HasPower(AircraftClass::DLPower))
+ not ((AircraftClass*)platform)->HasPower(AircraftClass::DLPower))
     return;*/
 
     // RV version
     // nextDlUpdate = SimLibElapsedTime + CampaignSeconds * DATALINK_CYCLE;
-    //if (((AircraftClass*)platform)->mFaults->GetFault(FaultClass::dlnk_fault) or  not ((AircraftClass*)platform)->HasPower(AircraftClass::DLPower))
+    //if (((AircraftClass*)platform)->mFaults->GetFault(FaultClass::dlnk_fault) or not ((AircraftClass*)platform)->HasPower(AircraftClass::DLPower))
     // return;
 
     FlightClass* theFlight = (FlightClass*)(platform->GetCampaignObject());
@@ -1457,8 +1457,8 @@ void FireControlComputer::UpdatePlanned()
 
         for (e = (CampEntity) myit.GetFirst(); e; e = (Unit) myit.GetNext())
         {
-            if (e->GetTeam() not_eq us /* and  e->GetSpotted(us)  and 
- ( not e->IsUnit() or  not ((Unit)e)->Moving())  and e->GetElectronicDetectionRange(Air)*/)
+            if (e->GetTeam() not_eq us /* and e->GetSpotted(us) and 
+ ( not e->IsUnit() or not ((Unit)e)->Moving()) and e->GetElectronicDetectionRange(Air)*/)
             {
                 float ex = e -> XPos();
                 float ey = e -> YPos();
@@ -1695,10 +1695,10 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
     HarmTargetingPod* harmPod = (HarmTargetingPod*) FindSensor(platform, SensorClass::HTS);
 
     /* appears to not be needed anymore
-    if( playerFCC                                                   and 
-     (masterMode == Dogfight or masterMode == MissileOverride)   and 
-     newMode not_eq MissileOverride                                  and 
-     newMode not_eq Dogfight                                         and 
+    if( playerFCC                                                  and 
+     (masterMode == Dogfight or masterMode == MissileOverride)  and 
+     newMode not_eq MissileOverride                                 and 
+     newMode not_eq Dogfight                                        and 
      (Sms->curWeaponType == wtAim9 or Sms->curWeaponType == wtAim120 ))  // MLR 1/19/2004 - put these two in parenthesis
 
     {
@@ -1714,15 +1714,15 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
 
 
     // Nav only if Amux and Bmux failed, no change if FCC fail
-    if (playerFCC  and 
+    if (playerFCC and 
         (
             (
                 ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::fcc_fault)
             )
             ||
             (
-                ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::amux_fault)  and 
-                ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::bmux_fault)  and 
+                ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::amux_fault) and 
+                ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::bmux_fault) and 
                 newMode not_eq Nav
             )
         )
@@ -2130,7 +2130,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
                     InhibitFire = FALSE;
 
                     // M.N. added full realism mode
-                    if (PlayerOptions.GetAvionicsType() not_eq ATRealistic  and 
+                    if (PlayerOptions.GetAvionicsType() not_eq ATRealistic and 
                         PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
                         SetSubMode(BSGT);
                     else
@@ -2700,19 +2700,19 @@ void FireControlComputer::UpdateWeaponPtr(void)
                     if (
                         classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_BOMB ||
                         (
-                            classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ELECTRONICS  and 
+                            classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ELECTRONICS and 
                             classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_VEHICLE
                         ) ||
                         (
-                            classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_FUEL_TANK  and 
+                            classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_FUEL_TANK and 
                             classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_FUEL_TANK
                         ) ||
                         (
-                            classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_RECON  and 
+                            classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_RECON and 
                             classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_CAMERA
                         ) ||
                         (
-                            classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_LAUNCHER  and 
+                            classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_LAUNCHER and 
                             classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_ROCKET
                         )
                     )

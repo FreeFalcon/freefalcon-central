@@ -598,7 +598,7 @@ void UpdateVCOptions(victory_condition *vc)
             {
                 fc = GetFeatureClassData(classID);
 
-                if (fc and  not (fc->Flags bitand FEAT_VIRTUAL))
+                if (fc and not (fc->Flags bitand FEAT_VIRTUAL))
                 {
                     _tcscat(buffer, ", ");
                     _tcscat(buffer, fc->Name);
@@ -1414,8 +1414,8 @@ int advance_team(int team, int state)
         {
             if
             (
-                (loop not_eq team)  and 
-                (TeamInfo[loop])  and 
+                (loop not_eq team) and 
+                (TeamInfo[loop]) and 
                 (TeamInfo[loop]->GetFlag() == state)
             )
             {

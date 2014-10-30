@@ -423,7 +423,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                     {
                         // best message is from player
                         if (
-                            (pVC->node->from == playerID)  and 
+                            (pVC->node->from == playerID) and 
                             (pVC->node->priority > best->node->priority)
                         )
                         {
@@ -441,7 +441,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                     {
                         // best is to player
                         if (
-                            (pVC->node->to == playerID)  and 
+                            (pVC->node->to == playerID) and 
                             // sfr: was < here
                             (pVC->node->priority > best->node->priority)
                         )
@@ -474,15 +474,15 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                 if (
                     (
                         // message from us
-                        (VM->decompQueue[i].from not_eq FalconLocalSession->GetPlayerEntityID())  and 
-                        (best->node->priority == rpLifeThreatening)  and 
+                        (VM->decompQueue[i].from not_eq FalconLocalSession->GetPlayerEntityID()) and 
+                        (best->node->priority == rpLifeThreatening) and 
                         (VM->decompQueue[i].priority not_eq rpLifeThreatening)
                     ) ||
                     (
                         best->node->from == FalconLocalSession->GetPlayerEntityID()
                     ) ||
                     (
-                        (best and best->node->priority == rpLifeThreatening)  and 
+                        (best and best->node->priority == rpLifeThreatening) and 
                         (VM->decompQueue[i].priority not_eq rpLifeThreatening)
                     )
                 )
@@ -498,9 +498,9 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
             {
                 //if there is a message queued from PlayRadioMessage and the appropriate decompQueue is available
                 if (
-                    best  and 
-                    (VM->decompQueue[i].status == SLOT_IS_AVAILABLE  or breakin)  and 
-                     not VM->falconVoices[curChannel].exitChannel
+                    best and 
+                    (VM->decompQueue[i].status == SLOT_IS_AVAILABLE  or breakin) and 
+ not VM->falconVoices[curChannel].exitChannel
                 )
                 {
                     // we have a message to be played with an available slot or
@@ -1111,7 +1111,7 @@ VM_CONVLIST *VoiceManager::VMConvListInsert(VM_CONVLIST *list, VM_CONVLIST *newn
                 cur = cur->next;
             }
 
-            while (cur and (newnode->node->priority <= cur->node->priority)  and 
+            while (cur and (newnode->node->priority <= cur->node->priority) and 
                    (newnode->node->playTime == cur->node->playTime))
             {
                 prev = cur;
@@ -1211,7 +1211,7 @@ int VoiceManager::IsMessagePlaying(VU_ID from, VU_ID to, int msgid)
 
     for (int i = 0 ; i < NUM_VOICE_CHANNELS ; i++)
     {
-        if (decompQueue[i].from == from and  decompQueue[i].to == to and decompQueue[i].message == msgid)
+        if (decompQueue[i].from == from and decompQueue[i].to == to and decompQueue[i].message == msgid)
         {
             retval = TRUE;
             break;
@@ -1389,7 +1389,7 @@ BOOL sortCritMet = FALSE;
 
   for( parent_a = list; *parent_a; parent_a = &(*parent_a)->prev )
   {
- if (  not (*parent_a)->prev )
+ if ( not (*parent_a)->prev )
  break;
  for( parent_b = &(*parent_a)->prev; *parent_b; parent_b = &(*parent_b)->prev )
  {
@@ -1473,7 +1473,7 @@ VMLIST *VoiceManager::VMListDestroyVCQ( VMLIST *list )
 CONVERSATION *vmVCNode;
 VMLIST *curr, *prev;
 
-  if (  not list )
+  if ( not list )
  return NULL;
 
    curr = list;
@@ -1481,7 +1481,7 @@ VMLIST *curr, *prev;
 
  while ( curr )
  {
- if (  not curr->node )
+ if ( not curr->node )
  break;
 
    vmVCNode = ( CONVERSATION * )curr->node;
@@ -1630,7 +1630,7 @@ int VoiceManager::IsChannelDone(int channel)
 {
     if (gSoundDriver)
     {
-        return  not gSoundDriver->IsStreamPlaying(VM->falconVoices[channel].FalcVoiceHandle);
+        return not gSoundDriver->IsStreamPlaying(VM->falconVoices[channel].FalcVoiceHandle);
     }
 
     return FALSE;
@@ -1666,7 +1666,7 @@ int VoiceManager::PauseChannel(int channel)
 int VoiceManager::BuffersEmpty(int channel)
 {
     return (
-               VM->falconVoices[channel].voiceBuffers[0].status == BUFFER_NOT_IN_QUEUE  and 
+               VM->falconVoices[channel].voiceBuffers[0].status == BUFFER_NOT_IN_QUEUE and 
                VM->falconVoices[channel].voiceBuffers[1].status == BUFFER_NOT_IN_QUEUE
            );
 }

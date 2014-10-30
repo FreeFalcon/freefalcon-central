@@ -74,7 +74,7 @@ void RenderOTW::DrawTerrainSquare(int r, int c, int LOD)
     // If required, get the post which will provide the texture for this segment
     // and setup the texture coordinates at the corners of this square
     if (v0->RenderingStateHandle > STATE_GOURAUD
-        // and   not F4IsBadReadPtr(v0->post, sizeof(Tpost)) // JB 010318 CTD (too much CPU)
+        // and not F4IsBadReadPtr(v0->post, sizeof(Tpost)) // JB 010318 CTD (too much CPU)
        )
     {
 
@@ -163,7 +163,7 @@ void RenderOTW::DrawUpConnector(int r, int c, int LOD)
 
     // If required, get the post which will provide the texture for this segment
     if (v0->RenderingStateHandle > STATE_GOURAUD
-        and  not F4IsBadReadPtr(viewpoint, sizeof(RViewPoint)))   // JB 010408 CTD
+       and not F4IsBadReadPtr(viewpoint, sizeof(RViewPoint)))   // JB 010408 CTD
     {
         post = viewpoint->GetPost(lowRow - 1 + LODdata[LOD + 1].centerRow,
                                   lowCol   + LODdata[LOD + 1].centerCol, LOD + 1);

@@ -1239,10 +1239,10 @@ void BuildResolutionList(C_ListBox *lbox)
             if (depth == 8 or depth == 24)
                 continue;
 
-            // if(depth == 16 and  not (pD3DDI->m_devDesc.dwDeviceRenderBitDepth bitand DDBD_16))
+            // if(depth == 16 and not (pD3DDI->m_devDesc.dwDeviceRenderBitDepth bitand DDBD_16))
             if (depth == 16)
                 continue;
-            else if (depth == 32 and  not (pD3DDI->m_devDesc.dwDeviceRenderBitDepth bitand DDBD_32))
+            else if (depth == 32 and not (pD3DDI->m_devDesc.dwDeviceRenderBitDepth bitand DDBD_32))
                 continue;
 
             sprintf(buf2, "%0dx%0d - %d Bit", width, height, depth);
@@ -1554,7 +1554,7 @@ void RealWeatherCB(long, short hittype, C_Base *control)
 
     C_ListBox *lbox = (C_ListBox*)control;
 
-    if (TheCampaign.InMainUI or  not ((WeatherClass *)realWeather)->lockedCondition)
+    if (TheCampaign.InMainUI or not ((WeatherClass *)realWeather)->lockedCondition)
     {
         PlayerOptions.weatherCondition = lbox->GetTextID() - 70207;
         ((WeatherClass *)realWeather)->UpdateCondition(PlayerOptions.weatherCondition, true);

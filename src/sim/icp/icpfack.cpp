@@ -29,7 +29,7 @@ void ICPClass::ExecFACKMode(void)
         if (mUpdateFlags bitand FACK_UPDATE or ( not (mUpdateFlags bitand FACK_UPDATE) and faultCount))
         {
 
-            mUpdateFlags and_eq  not FACK_UPDATE;
+            mUpdateFlags and_eq not FACK_UPDATE;
 
             if ( not faultCount)
             {
@@ -235,5 +235,5 @@ void ICPClass::PNUpdateFACKMode(int button, int)
         mFaultFunc ++;
     }
 
-    mUpdateFlags or_eq  FACK_UPDATE;
+    mUpdateFlags or_eq FACK_UPDATE;
 }

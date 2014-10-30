@@ -17,7 +17,7 @@ void MissileClass::ClosestApproach(void)
 
     if (targetPtr and range <= auxData->proximityfuserange and range >= 5.0F)
     {
-        flags or_eq  EndGame;
+        flags or_eq EndGame;
         a.x = x;
         a.y = y;
         a.z = z;
@@ -45,7 +45,7 @@ void MissileClass::ClosestApproach(void)
         newMin = FindMinDistance(&a, &b, &c, &d);
 
         if (newMin > 1.2F * ricept)
-            flags or_eq  ClosestApprch;
+            flags or_eq ClosestApprch;
 
         ricept = min(newMin, ricept);
     }
@@ -55,7 +55,7 @@ void MissileClass::ClosestApproach(void)
 
         if (rand() % 100 < auxData->ProximityfuseChange)
         {
-            flags or_eq  ClosestApprch;
+            flags or_eq ClosestApprch;
         }
 
         count++;

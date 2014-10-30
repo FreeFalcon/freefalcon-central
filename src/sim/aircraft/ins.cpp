@@ -90,7 +90,7 @@ void AircraftClass::DoINSAlign(void)
     //if they enter the coords after 2 mins of alignment, we start from the beginning
     if (CheckUFC)
     {
-        if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp  and 
+        if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
             OTWDriver.pCockpitManager->mpIcp->INSEnterPush())
         {
             CheckUFC = FALSE;
@@ -244,7 +244,7 @@ void AircraftClass::CheckINSStatus(void)
     }
 
     if (INSState(AircraftClass::INS_PowerOff) or INSState(AircraftClass::INS_AlignNorm) ||
-         not HasAligned)
+ not HasAligned)
         INSOff(AircraftClass::INS_HUD_FPM);
     else
         INSOn(AircraftClass::INS_HUD_FPM);

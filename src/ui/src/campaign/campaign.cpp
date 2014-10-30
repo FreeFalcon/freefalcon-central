@@ -1182,8 +1182,8 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     // If we have a local game, so we are host in a multiplayer environment and start a new campaign,
     // stop the time and let the camp priorities window pop up (in CAMPUI/CampJoin.cpp)
 
-    if (FalconLocalGame->IsLocal()  and 
-        (strcmp(gUI_CampaignFile, "save0") == 0 or strcmp(gUI_CampaignFile, "save1") == 0 or strcmp(gUI_CampaignFile, "save2") == 0)  and 
+    if (FalconLocalGame->IsLocal() and 
+        (strcmp(gUI_CampaignFile, "save0") == 0 or strcmp(gUI_CampaignFile, "save1") == 0 or strcmp(gUI_CampaignFile, "save2") == 0) and 
         campaignStart) // fixes clock being set to "STOP" after a campaign mission
     {
         SetTimeCompression(0);
@@ -1218,7 +1218,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     gMainHandler->AddUserCallback(CampaignSoundEventCB);
 
     // Choose our next mission (default)
-    if ( not gTimeModeServer and  not g_bServer)
+    if ( not gTimeModeServer and not g_bServer)
     {
         FindMissionInBriefing(CB_MISSION_SCREEN);
     }
@@ -1510,7 +1510,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
 
     CheckCampaignFlyButton();
 
-    if ( not gTimeModeServer and  not g_bServer)
+    if ( not gTimeModeServer and not g_bServer)
     {
         FindMissionInBriefing(TAC_AIRCRAFT);
     }
@@ -1612,7 +1612,7 @@ void CampaignListCB()
             {
                 if (flt->GetTotalVehicles() < 1 or flt->IsDead())
                 {
-                    if ( not gTimeModeServer and  not g_bServer)
+                    if ( not gTimeModeServer and not g_bServer)
                     {
                         FindMissionInBriefing(CB_MISSION_SCREEN);
                     }
@@ -1622,7 +1622,7 @@ void CampaignListCB()
             }
             else
             {
-                if ( not gTimeModeServer and  not g_bServer)
+                if ( not gTimeModeServer and not g_bServer)
                 {
                     FindMissionInBriefing(CB_MISSION_SCREEN);
                     UpdateMissionWindow(CB_MISSION_SCREEN);
@@ -1660,7 +1660,7 @@ void TacEngListCB()
             {
                 if (flt->GetTotalVehicles() < 1 or flt->IsDead())
                 {
-                    if ( not gTimeModeServer and  not g_bServer)
+                    if ( not gTimeModeServer and not g_bServer)
                     {
                         FindMissionInBriefing(TAC_AIRCRAFT);
                     }
@@ -1670,7 +1670,7 @@ void TacEngListCB()
             }
             else
             {
-                if ( not gTimeModeServer and  not g_bServer)
+                if ( not gTimeModeServer and not g_bServer)
                 {
                     FindMissionInBriefing(TAC_AIRCRAFT);
                     UpdateMissionWindow(TAC_AIRCRAFT);
@@ -2447,7 +2447,7 @@ void PickCampaignPlaneCB(long ID, short hittype, C_Base *)
     }
 
     // playerPlane = flight->GetAdjustedAircraftSlot(playerPlane);
-    if ( not gTimeModeServer and  not g_bServer)
+    if ( not gTimeModeServer and not g_bServer)
     {
         RequestACSlot(flight, 0, static_cast<uchar>(playerPlane), 0, 0, 1);
     }

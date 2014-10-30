@@ -47,7 +47,7 @@ int SMSClass::LaunchMissile(void)
 
     // Check for SMS Failure or other reason not to launch
     if ( not CurStationOK() ||
-         not curWeapon ||
+ not curWeapon ||
         Ownship()->OnGround() ||
         MasterArm() not_eq Arm)
     {
@@ -69,11 +69,11 @@ int SMSClass::LaunchMissile(void)
         //M.N. don't need to uncage or power when in combat AP mode
         if (g_bRealisticAvionics)
         {
-            if ((curWeapon->parent  and 
-                 ((AircraftClass *)curWeapon->parent.get())->IsPlayer()  and 
-                  not (((AircraftClass *)curWeapon->parent.get())->AutopilotType() == AircraftClass::CombatAP)  and 
-                  not Powered) and curWeapon->GetType() == TYPE_MISSILE  and 
-                curWeapon->GetSType() == STYPE_MISSILE_AIR_GROUND  and 
+            if ((curWeapon->parent and 
+                 ((AircraftClass *)curWeapon->parent.get())->IsPlayer() and 
+ not (((AircraftClass *)curWeapon->parent.get())->AutopilotType() == AircraftClass::CombatAP) and 
+ not Powered) and curWeapon->GetType() == TYPE_MISSILE and 
+                curWeapon->GetSType() == STYPE_MISSILE_AIR_GROUND and 
                 (curWeapon->GetSPType() == SPTYPE_AGM65A ||
                  curWeapon->GetSPType() == SPTYPE_AGM65B ||
                  curWeapon->GetSPType() == SPTYPE_AGM65D ||
@@ -84,11 +84,11 @@ int SMSClass::LaunchMissile(void)
         // RV - I-Hawk - Fire HARMs only if powered-up
         if (g_bRealisticAvionics)
         {
-            if ((curWeapon->parent  and 
-                 ((AircraftClass *)curWeapon->parent.get())->IsPlayer()  and 
-                  not (((AircraftClass *)curWeapon->parent.get())->AutopilotType() == AircraftClass::CombatAP)  and 
-                  not GetHARMPowerState()) and curWeapon->GetType() == TYPE_MISSILE  and 
-                curWeapon->GetSType() == STYPE_MISSILE_AIR_GROUND  and 
+            if ((curWeapon->parent and 
+                 ((AircraftClass *)curWeapon->parent.get())->IsPlayer() and 
+ not (((AircraftClass *)curWeapon->parent.get())->AutopilotType() == AircraftClass::CombatAP) and 
+ not GetHARMPowerState()) and curWeapon->GetType() == TYPE_MISSILE and 
+                curWeapon->GetSType() == STYPE_MISSILE_AIR_GROUND and 
                 (curWeapon->GetSPType() == SPTYPE_AGM88))
             {
                 return FALSE;
@@ -294,8 +294,8 @@ int SMSClass::LaunchMissile(void)
     //MI SOI after firing Mav
     if (g_bRealisticAvionics)
     {
-        if (curWeapon and curWeapon->parent  and 
-            ((AircraftClass *)curWeapon->parent.get())->IsPlayer()  and 
+        if (curWeapon and curWeapon->parent and 
+            ((AircraftClass *)curWeapon->parent.get())->IsPlayer() and 
             (curWeapon->GetSPType() == SPTYPE_AGM65A ||
              curWeapon->GetSPType() == SPTYPE_AGM65B ||
              curWeapon->GetSPType() == SPTYPE_AGM65D ||
@@ -414,7 +414,7 @@ int SMSClass::LaunchRocket(void)
 
     // Check for SMS Failure
     if ( not CurStationOK() ||
-         not curWeapon ||
+ not curWeapon ||
         Ownship()->OnGround() ||
         MasterArm() not_eq Arm)
     {
@@ -778,7 +778,7 @@ int SMSClass::SubLaunchRocket(int hpId)
 
     // Check for SMS Failure
     if ( not CurStationOK() ||
-         not curWeapon ||
+ not curWeapon ||
         Ownship()->OnGround() ||
         MasterArm() not_eq Arm)
     {

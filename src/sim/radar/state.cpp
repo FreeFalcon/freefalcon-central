@@ -86,7 +86,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
 
 #else
 
-    if (newMode not_eq TWS and  not F4IsBadReadPtr(TWSTrackDirectory, sizeof(RadarDopplerClass::TWSTrackList)))
+    if (newMode not_eq TWS and not F4IsBadReadPtr(TWSTrackDirectory, sizeof(RadarDopplerClass::TWSTrackList)))
     {
         TWSTrackDirectory = TWSTrackDirectory->Purge();
     }
@@ -148,7 +148,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
             // Go to sam if there is a lock
             //MI added check for RWS mode. If this isn't here, we never make it out of RWS/SAM
             //mode. This makes sure that if we switch to RWS, we go to SAM, which is right I think.
-            if (lockedTarget  and (mode == RWS or mode == LRS))
+            if (lockedTarget and (mode == RWS or mode == LRS))
             {
                 ChangeMode(SAM);
             }
@@ -456,7 +456,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
 
             // GMT starts in snowplow
             //      if (mode == GMT)
-            //         flags or_eq  SP;//me123 no don't start in SP
+            //         flags or_eq SP;//me123 no don't start in SP
             SetEmitting(TRUE);
             prevMode = mode;
             break;
@@ -550,7 +550,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
             cursorX = min(max(cursorX, -1.0F), 1.0F);
             cursorY = min(max(cursorY, -1.0F), 1.0F);
-            flags or_eq  WasMoving;
+            flags or_eq WasMoving;
         }
         else
         {
@@ -957,7 +957,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
             {
                 SetAimPoint((float)cursorXCmd, (float)cursorYCmd);
                 SetGMScan();
-                flags or_eq  WasMoving;
+                flags or_eq WasMoving;
             }
             else
             {
@@ -1361,8 +1361,8 @@ void RadarDopplerClass::DefaultAGMode(void)
         return;
     }
 
-    if (mode not_eq GMT  and 
-        mode not_eq SEA  and 
+    if (mode not_eq GMT and 
+        mode not_eq SEA and 
         mode not_eq GM)
     {
         modeDesiredCmd = GMT;
@@ -1396,8 +1396,8 @@ void RadarDopplerClass::NextTarget(void)
                 if (ObjectDetected(rdrObj))
                 {
                     //can't lock onto these
-                    if ( not rdrObj->BaseData()->OnGround() and not rdrObj->BaseData()->IsMissile()  and 
-                         not rdrObj->BaseData()->IsBomb() and not rdrObj->BaseData()->IsEject()  and 
+                    if ( not rdrObj->BaseData()->OnGround() and not rdrObj->BaseData()->IsMissile() and 
+ not rdrObj->BaseData()->IsBomb() and not rdrObj->BaseData()->IsEject() and 
                         rdrObj->localData->rdrDetect)
                     {
                         if (MinRange > rdrObj->localData->range)
@@ -1446,7 +1446,7 @@ void RadarDopplerClass::NextTarget(void)
                             tmp = tmp->Next();
                     }
                     while ((tmp->TrackFile()->localData->extrapolateStart not_eq 0)
-                           and (tmp->TrackFile() not_eq lockedTarget));
+                          and (tmp->TrackFile() not_eq lockedTarget));
 
                 ClearSensorTarget();  // ...and release it.
 
@@ -1541,8 +1541,8 @@ void RadarDopplerClass::FindClosest(float MinRange)
         if (ObjectDetected(rdrObj))
         {
             //can't lock onto these
-            if ( not rdrObj->BaseData()->OnGround() and not rdrObj->BaseData()->IsMissile()  and 
-                 not rdrObj->BaseData()->IsBomb() and not rdrObj->BaseData()->IsEject()  and 
+            if ( not rdrObj->BaseData()->OnGround() and not rdrObj->BaseData()->IsMissile() and 
+ not rdrObj->BaseData()->IsBomb() and not rdrObj->BaseData()->IsEject() and 
                 rdrObj->localData->rdrDetect)
             {
                 if (rdrObj->localData->range < MinRange)

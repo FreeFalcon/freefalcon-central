@@ -258,7 +258,7 @@ int   inflate_free(void);
 /* The inflate algorithm uses a sliding 32K byte window on the uncompressed
    stream to find repeated byte strings.  This is implemented here as a
    circular buffer.  The index is updated simply by incrementing and then
-   and'ing with 0x7fff (32K-1). */
+  and'ing with 0x7fff (32K-1). */
 
 /* It is left to other modules to supply the 32K area.  It is assumed
    to be usable as if it were declared "uch slide[32768];" or as just
@@ -804,7 +804,7 @@ int inflate_codes(struct huft * tl, struct huft * td, int bl, int bd, COMPRESSED
                     d += e;
                 }
                 else            /* do it slow to avoid memcpy() overlap */
-#endif  /*  not NOMEMCPY */
+#endif  /* not NOMEMCPY */
                     do
                     {
                         cmp->slide[w++] = cmp->slide[d++];

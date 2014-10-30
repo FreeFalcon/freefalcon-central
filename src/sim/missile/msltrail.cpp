@@ -229,7 +229,7 @@ void MissileClass::UpdateTrail(void)
             bool contrail = false;
 
             //JAM 24Nov03
-            if (objAlt > ((WeatherClass*)realWeather)->contrailLow  and 
+            if (objAlt > ((WeatherClass*)realWeather)->contrailLow and 
                 objAlt < ((WeatherClass*)realWeather)->contrailHigh)
                 contrail = true;
 
@@ -266,7 +266,7 @@ void MissileClass::UpdateTrail(void)
             /*
             if ( agl < 1000.0f )
             {
-              if (  not groundGlow->InDisplayList() )
+              if ( not groundGlow->InDisplayList() )
               {
               OTWDriver.InsertObject(groundGlow );
               }
@@ -309,7 +309,7 @@ void MissileClass::UpdateTrail(void)
 
         //if (trail)
         //OTWDriver.InsertObject(trail);
-        if (engGlow and  not g_bDisableMissleEngGlow) // MLR 2003-10-11 Disble the star
+        if (engGlow and not g_bDisableMissleEngGlow) // MLR 2003-10-11 Disble the star
             OTWDriver.InsertObject(engGlow);
 
         if (engGlowBSP1)

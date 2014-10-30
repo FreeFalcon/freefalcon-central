@@ -139,7 +139,7 @@ public:
 
     void SetFlag(int newFlag)
     {
-        flags or_eq  newFlag;
+        flags or_eq newFlag;
     };
     void ClearFlag(int newFlag)
     {

@@ -223,10 +223,10 @@ void AdvancedWeaponStation::AttachPylonBSP(void)
     }
 
 
-    if (theParent  and 
-         not thePylon  and 
-        pylonId > 0  and 
-        pylonId < NumWeaponTypes  and 
+    if (theParent and 
+ not thePylon and 
+        pylonId > 0 and 
+        pylonId < NumWeaponTypes and 
         WeaponDataTable[pylonId].Index >= 0)
     {
         thePylon = new DrawableBSP(Falcon4ClassTable[WeaponDataTable[pylonId].Index].visType[0],
@@ -275,10 +275,10 @@ void AdvancedWeaponStation::AttachRackBSP(void)
         zPos += hpPos.z;
     }
 
-    if (theParent  and 
-         not theRack  and 
-        rackId > 0  and 
-        rackId < NumWeaponTypes  and 
+    if (theParent and 
+ not theRack and 
+        rackId > 0 and 
+        rackId < NumWeaponTypes and 
         WeaponDataTable[rackId].Index >= 0)
     {
         theRack = new DrawableBSP(Falcon4ClassTable[WeaponDataTable[rackId].Index].visType[0],

@@ -670,7 +670,7 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
             reallocate = 1;
 
         // Reallocate if to far from front
-        if (fd < 999.0F and fd > maxDist and  not (g_nAirbaseReloc bitand AirBaseRelocNoFar))
+        if (fd < 999.0F and fd > maxDist and not (g_nAirbaseReloc bitand AirBaseRelocNoFar))
             reallocate = 2;
 
         // Reallocate if base is destroyed
@@ -1485,7 +1485,7 @@ void SquadronClass::SetSchedule(int i, ulong a)
 {
     if ((schedule[i] | a) not_eq (schedule[i]))
     {
-        schedule[i] or_eq  a;
+        schedule[i] or_eq a;
         //MakeSquadronDirty (DIRTY_SCHEDULE, DDP[126].priority);
         MakeSquadronDirty(DIRTY_SCHEDULE, SEND_EVENTUALLY);
     }
@@ -1694,7 +1694,7 @@ void SquadronClass::MakeSquadronDirty(Dirty_Squadron bits, Dirtyness score)
         score = static_cast<Dirtyness>(score << 4);
     }
 
-    dirty_squadron or_eq  bits;
+    dirty_squadron or_eq bits;
 
     MakeDirty(DIRTY_SQUADRON, score);
 }

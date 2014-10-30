@@ -652,7 +652,7 @@ void tactical_play_setup()
 
     tactical_update_campaign_entities();
 
-    TheCampaign.Flags or_eq  CAMP_TACTICAL;
+    TheCampaign.Flags or_eq CAMP_TACTICAL;
 
 
     // MONUMENTOUS HACK to get team color bitand Flag initialized (If they aren't already)
@@ -666,8 +666,8 @@ void tactical_play_setup()
             if ( not TeamInfo[i]->GetColor())
                 TeamInfo[i]->SetColor(static_cast<uchar>(i));
 
-            if (i and  not (TeamInfo[i]->flags bitand TEAM_ACTIVE))
-                TeamInfo[i]->flags or_eq  TEAM_ACTIVE;
+            if (i and not (TeamInfo[i]->flags bitand TEAM_ACTIVE))
+                TeamInfo[i]->flags or_eq TEAM_ACTIVE;
         }
     }
 
@@ -827,8 +827,8 @@ void tactical_edit_mission(tactical_mission *)
             if ( not TeamInfo[i]->GetColor())
                 TeamInfo[i]->SetColor(static_cast<uchar>(i));
 
-            if (i and  not (TeamInfo[i]->flags bitand TEAM_ACTIVE))
-                TeamInfo[i]->flags or_eq  TEAM_ACTIVE;
+            if (i and not (TeamInfo[i]->flags bitand TEAM_ACTIVE))
+                TeamInfo[i]->flags or_eq TEAM_ACTIVE;
         }
     }
 
@@ -836,7 +836,7 @@ void tactical_edit_mission(tactical_mission *)
 
     tactical_update_campaign_entities();
 
-    TheCampaign.Flags or_eq  CAMP_TACTICAL | CAMP_TACTICAL_EDIT;
+    TheCampaign.Flags or_eq CAMP_TACTICAL | CAMP_TACTICAL_EDIT;
 
     TacticalEngagementSetup(true);
 

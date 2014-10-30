@@ -132,8 +132,8 @@ void HudClass::DrawAirspeed(void)
     //TJL 03/07/04 Removing ticks from everything but F-16 or default HUD
     //if ((scalesSwitch == VAH or scalesSwitch == VV_VAH) and (FCC->GetMasterMode() not_eq FireControlComputer::Dogfight))//me123 status test.
     if (
-        (ownship->IsF16() or (ownship->af->GetTypeAC() == 0))  and 
-        ((scalesSwitch == VAH) or (scalesSwitch == VV_VAH))  and 
+        (ownship->IsF16() or (ownship->af->GetTypeAC() == 0)) and 
+        ((scalesSwitch == VAH) or (scalesSwitch == VV_VAH)) and 
         (FCC->GetMasterMode() not_eq FireControlComputer::Dogfight))//me123 status test.
     {
         //MI
@@ -170,7 +170,7 @@ void HudClass::DrawAirspeed(void)
         for (i = 0; i < NUM_VERTICAL_TICKS; i++)
         {
             //MI don't draw into the text
-            /*if (a >= 0  and 
+            /*if (a >= 0 and 
               (y1 - boxY > display->TextHeight() * 1.1F ||
               y1 - boxY < -tickInc))*/
             if ( not g_bRealisticAvionics)
@@ -362,10 +362,10 @@ void HudClass::DrawAltitude(void)
                 }
                 else
                 {
-                    if (-hat < lowAltWarning and (FindRollAngle(-hat) and FindPitchAngle(-hat))  and 
+                    if (-hat < lowAltWarning and (FindRollAngle(-hat) and FindPitchAngle(-hat)) and 
                         ((AircraftClass*)ownship)->af->platform->RaltReady())
                     {
-                        if (Warnflash and  not ((AircraftClass*)ownship)->OnGround())
+                        if (Warnflash and not ((AircraftClass*)ownship)->OnGround())
                         {
                             DrawALString();
                         }
@@ -389,10 +389,10 @@ void HudClass::DrawAltitude(void)
             {
                 if (FCC->GetMasterMode() not_eq FireControlComputer::Dogfight and FCC->GetMasterMode() not_eq FireControlComputer::MissileOverride)
                 {
-                    if (-hat < lowAltWarning and (FindRollAngle(-hat) and FindPitchAngle(-hat))  and 
+                    if (-hat < lowAltWarning and (FindRollAngle(-hat) and FindPitchAngle(-hat)) and 
                         ((AircraftClass*)ownship)->af->platform->RaltReady())
                     {
-                        if (Warnflash and  not ((AircraftClass*)ownship)->OnGround())
+                        if (Warnflash and not ((AircraftClass*)ownship)->OnGround())
                         {
                             DrawALString();
                         }
@@ -422,7 +422,7 @@ void HudClass::DrawAltitude(void)
 
     //TJL 03/07/04 Only for F16 or default HUD
     if ((ownship->IsF16() or ownship->af->GetTypeAC() == 0) and (scalesSwitch == VAH  or scalesSwitch == VV_VAH)
-        and (FCC->GetMasterMode() not_eq FireControlComputer::Dogfight)) //me123 status test.
+       and (FCC->GetMasterMode() not_eq FireControlComputer::Dogfight)) //me123 status test.
     {
         //MI
         if ( not g_bRealisticAvionics)
@@ -458,7 +458,7 @@ void HudClass::DrawAltitude(void)
             //MI for CARA switch
             if (g_bRealisticAvionics)
             {
-                if (((AircraftClass*)ownship)->af->platform->IsPlayer()  and 
+                if (((AircraftClass*)ownship)->af->platform->IsPlayer() and 
                     ((AircraftClass*)ownship)->af->platform->RaltReady())
                 {
                     if (FindRollAngle(-hat) and FindPitchAngle(-hat))
@@ -489,7 +489,7 @@ void HudClass::DrawAltitude(void)
                 //MI for CARA switch
                 if (g_bRealisticAvionics)
                 {
-                    if (((AircraftClass*)ownship)->af->platform->IsPlayer()  and 
+                    if (((AircraftClass*)ownship)->af->platform->IsPlayer() and 
                         ((AircraftClass*)ownship)->af->platform->RaltReady())
                     {
                         if (FindRollAngle(-hat) and FindPitchAngle(-hat))
@@ -560,9 +560,9 @@ void HudClass::DrawAltitude(void)
             //MI
             if (g_bRealisticAvionics)
             {
-                if ( not (FCC->GetMasterMode() == FireControlComputer::Missile)  and 
-                     not (FCC->GetMasterMode() == FireControlComputer::Dogfight)  and 
-                     not (FCC->GetMasterMode() == FireControlComputer::MissileOverride))
+                if ( not (FCC->GetMasterMode() == FireControlComputer::Missile) and 
+ not (FCC->GetMasterMode() == FireControlComputer::Dogfight) and 
+ not (FCC->GetMasterMode() == FireControlComputer::MissileOverride))
                 {
                     display->Line(leftEdge, winCenter,
                                   leftEdge - hudWinWidth[ALTITUDE_WINDOW] * 0.5F, winCenter);
@@ -632,7 +632,7 @@ void HudClass::DrawAltitude(void)
             for (i = 0; i < NUM_VERTICAL_TICKS; i++)
             {
                 //MI don't draw into the text
-                /*if (a >= 0  and 
+                /*if (a >= 0 and 
                   (y1 - boxY > display->TextHeight() * 1.1F ||
                   y1 - boxY < -tickInc))*/
                 if ( not g_bRealisticAvionics)
@@ -793,7 +793,7 @@ void HudClass::DrawAltitude(void)
             //MI for CARA switch
             if (g_bRealisticAvionics)
             {
-                if (((AircraftClass*)ownship)->af->platform->IsPlayer()  and 
+                if (((AircraftClass*)ownship)->af->platform->IsPlayer() and 
                     ((AircraftClass*)ownship)->af->platform->RaltReady())
                 {
                     if (FindRollAngle(-hat) and FindPitchAngle(-hat))
@@ -824,7 +824,7 @@ void HudClass::DrawAltitude(void)
                 //MI for CARA switch
                 if (g_bRealisticAvionics)
                 {
-                    if (((AircraftClass*)ownship)->af->platform->IsPlayer()  and 
+                    if (((AircraftClass*)ownship)->af->platform->IsPlayer() and 
                         ((AircraftClass*)ownship)->af->platform->RaltReady())
                     {
                         if (FindRollAngle(-hat) and FindPitchAngle(-hat))
@@ -943,7 +943,7 @@ void HudClass::DrawHeading(void)
         //MI
         if ( not g_bRealisticAvionics or ((AircraftClass*)ownship)->OnGround() ||
             (g_bRealisticAvionics and g_bINS and ownship and ownship->INSState(AircraftClass::INS_PowerOff) ||
-              not ownship->INSState(AircraftClass::INS_HUD_STUFF)))
+ not ownship->INSState(AircraftClass::INS_HUD_STUFF)))
         {
 
             headingTop = hudWinY[HEADING_WINDOW_HI] +
@@ -956,7 +956,7 @@ void HudClass::DrawHeading(void)
         // MI
         if (g_bRealisticAvionics and GetDriftCOSwitch() == DRIFT_CO_OFF)
         {
-            if (((AircraftClass*)ownship)->af->gearPos > 0.5F and  not ((AircraftClass*)ownship->OnGround()))
+            if (((AircraftClass*)ownship)->af->gearPos > 0.5F and not ((AircraftClass*)ownship->OnGround()))
             {
                 dy = hudWinY[BORESIGHT_CROSS_WINDOW] +
                      hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F -
@@ -1002,7 +1002,7 @@ void HudClass::DrawHeading(void)
 
         //MI INS stuff
         if (g_bRealisticAvionics and g_bINS and ownship and ownship->INSState(AircraftClass::INS_PowerOff) ||
-             not ownship->INSState(AircraftClass::INS_HUD_STUFF))
+ not ownship->INSState(AircraftClass::INS_HUD_STUFF))
         {
             headingTop = hudWinY[HEADING_WINDOW_LO] +
                          hudWinHeight[HEADING_WINDOW_LO] * 0.5F;
@@ -1269,7 +1269,7 @@ void HudClass::DrawHeading(void)
         DrawTadpole();
     else
     {
-        if (FCC and FCC->GetMasterMode() == FireControlComputer::ILS  and 
+        if (FCC and FCC->GetMasterMode() == FireControlComputer::ILS and 
             OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp->GetCMDSTR())
             DrawCMDSTRG();
         else
@@ -1290,13 +1290,13 @@ void HudClass::DrawHeading(void)
 
 #else
 
-        if (FCC and FCC->IsAGMasterMode() or (playerAC->af->gearPos > 0.5F  and 
+        if (FCC and FCC->IsAGMasterMode() or (playerAC->af->gearPos > 0.5F and 
                                              fpmSwitch not_eq FPM_OFF and scalesSwitch == VV_VAH))
             DrawBankIndicator();
         //not there in Dogfight
         else
         {
-            if (FCC and FCC->GetMasterMode() not_eq FireControlComputer::Dogfight  and 
+            if (FCC and FCC->GetMasterMode() not_eq FireControlComputer::Dogfight and 
                 GetDEDSwitch() == DED_OFF)
                 DrawRollCue();
         }
@@ -1325,7 +1325,7 @@ void HudClass::DrawTadpole(void)
     if (g_bRealisticAvionics and g_bINS)
     {
         if (ownship and ownship->INSState(AircraftClass::INS_PowerOff) ||
-             not ownship->INSState(AircraftClass::INS_HUD_STUFF))
+ not ownship->INSState(AircraftClass::INS_HUD_STUFF))
             return;
     }
 
@@ -1377,7 +1377,7 @@ void HudClass::DrawILS(void)
     // and this seems not get updated in 3d pit view
     // if (gNavigationSys and not OTWDriver.pCockpitManager->mHiddenFlag)
     if (gNavigationSys and (gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN ||
-                           gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV)  and 
+                           gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV) and 
         gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &hDev))
     {
         gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &hDev);
@@ -1517,7 +1517,7 @@ void HudClass::DrawWaypoint(void)
         //MI
         if ( not g_bRealisticAvionics or ((AircraftClass*)ownship)->OnGround() ||
             (g_bRealisticAvionics and g_bINS and ownship and ownship->INSState(AircraftClass::INS_PowerOff) ||
-              not ownship->INSState(AircraftClass::INS_HUD_STUFF)))
+ not ownship->INSState(AircraftClass::INS_HUD_STUFF)))
         {
 
             headingTop = hudWinY[HEADING_WINDOW_HI] +
@@ -1530,7 +1530,7 @@ void HudClass::DrawWaypoint(void)
         // MI
         if (g_bRealisticAvionics and GetDriftCOSwitch() == DRIFT_CO_OFF)
         {
-            if (((AircraftClass*)ownship)->af->gearPos > 0.5F and  not ((AircraftClass*)ownship->OnGround()))
+            if (((AircraftClass*)ownship)->af->gearPos > 0.5F and not ((AircraftClass*)ownship->OnGround()))
             {
                 dy = hudWinY[BORESIGHT_CROSS_WINDOW] +
                      hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F -
@@ -1720,9 +1720,9 @@ void HudClass::DrawWaypoint(void)
                         }
                     } //End of HUD fix.
 
-                    if (playerAC and playerAC->curWaypoint  and 
-                        playerAC->curWaypoint->GetWPFlags() bitand WPF_TARGET  and 
-                        FCC and FCC->IsAGMasterMode()  and 
+                    if (playerAC and playerAC->curWaypoint and 
+                        playerAC->curWaypoint->GetWPFlags() bitand WPF_TARGET and 
+                        FCC and FCC->IsAGMasterMode() and 
                         FCC->GetSubMode() not_eq FireControlComputer::CCIP)
                     {
                         //This is our target, so the WP is a square, but not in CCIP, and only in AG
@@ -2063,7 +2063,7 @@ int HudClass::FindRollAngle(float Alt)
             float Roll = (Alt - 5000) / factor;
             float Angle = 30 - Roll;
 
-            if (cockpitFlightData.roll * RTD <= Angle  and 
+            if (cockpitFlightData.roll * RTD <= Angle and 
                 cockpitFlightData.roll * RTD >= -Angle)
             {
                 return TRUE;
@@ -2080,7 +2080,7 @@ int HudClass::FindRollAngle(float Alt)
             float Roll = (Alt - 15000) / factor;
             float Angle = 25 - Roll;
 
-            if (cockpitFlightData.roll * RTD <= Angle  and 
+            if (cockpitFlightData.roll * RTD <= Angle and 
                 cockpitFlightData.roll * RTD >= -Angle)
             {
                 return TRUE;
@@ -2097,7 +2097,7 @@ int HudClass::FindRollAngle(float Alt)
             float Roll = (Alt - 25000) / factor;
             float Angle = 15 - Roll;
 
-            if (cockpitFlightData.roll * RTD <= Angle  and 
+            if (cockpitFlightData.roll * RTD <= Angle and 
                 cockpitFlightData.roll * RTD >= -Angle)
             {
                 return TRUE;
@@ -2122,7 +2122,7 @@ int HudClass::FindPitchAngle(float Alt)
         //Below 5000ft we always have 30°
         if (((AircraftClass*)ownship)->af->platform->IsPlayer())
         {
-            if ((cockpitFlightData.pitch * RTD) <= 30  and 
+            if ((cockpitFlightData.pitch * RTD) <= 30 and 
                 cockpitFlightData.pitch * RTD >= -30)
             {
                 return TRUE;
@@ -2139,7 +2139,7 @@ int HudClass::FindPitchAngle(float Alt)
             float Pitch = (Alt - 5000) / factor;
             float Angle = 30 - Pitch;
 
-            if (cockpitFlightData.pitch * RTD <= Angle  and 
+            if (cockpitFlightData.pitch * RTD <= Angle and 
                 cockpitFlightData.pitch * RTD >= -Angle)
             {
                 return TRUE;
@@ -2156,7 +2156,7 @@ int HudClass::FindPitchAngle(float Alt)
             float Pitch = (Alt - 15000) / factor;
             float Angle = 25 - Pitch;
 
-            if (cockpitFlightData.pitch * RTD <= Angle  and 
+            if (cockpitFlightData.pitch * RTD <= Angle and 
                 cockpitFlightData.pitch * RTD >= -Angle)
             {
                 return TRUE;
@@ -2173,7 +2173,7 @@ int HudClass::FindPitchAngle(float Alt)
             float Pitch = (Alt - 25000) / factor;
             float Angle = 15 - Pitch;
 
-            if (cockpitFlightData.pitch * RTD <= Angle  and 
+            if (cockpitFlightData.pitch * RTD <= Angle and 
                 cockpitFlightData.pitch * RTD >= -Angle)
             {
                 return TRUE;
@@ -2271,7 +2271,7 @@ void HudClass::CheckMSLFloor(void)
         return;
 
     //Above our setting and descending
-    if (-cockpitFlightData.z <= MSLFloor + 20.0F  and 
+    if (-cockpitFlightData.z <= MSLFloor + 20.0F and 
         -cockpitFlightData.zDot < 0)
     {
         if (WasAboveMSLFloor)
@@ -2479,7 +2479,7 @@ void HudClass::DrawRALT(void)
     if (playerAC and playerAC->RFState == 2)
         return;
 
-    if (-hat < lowAltWarning and (FindRollAngle(-hat) and FindPitchAngle(-hat))  and 
+    if (-hat < lowAltWarning and (FindRollAngle(-hat) and FindPitchAngle(-hat)) and 
         ((AircraftClass*)ownship)->af->platform->RaltReady())
     {
         if ( not ((AircraftClass*)ownship)->OnGround())
@@ -2932,7 +2932,7 @@ void HudClass::DrawCruiseIndexes(void)
         case 1: //Cruise RNG
 
             //Speed
-            if (playerAC and  playerAC->af)
+            if (playerAC and playerAC->af)
             {
                 DrawAirSpeedCarret(playerAC->af->GetOptKias(2));
                 sprintf(SpeedText, "%.0f", max(min(playerAC->af->GetOptKias(2), 9999.0F), 0.0F));
@@ -2968,9 +2968,9 @@ void HudClass::DrawCruiseIndexes(void)
                             sprintf(SpeedText, "%.0f", max(min(playerAC->af->GetOptKias(2), 9999.0F), 0.0F));
                         }
                         // we are at optimum cruice let's cruice range here
-                        else if (fabs(-playerAC->ZPos() - playerAC->af->GetOptimumAltitude()) < 200.0f   and 
+                        else if (fabs(-playerAC->ZPos() - playerAC->af->GetOptimumAltitude()) < 200.0f  and 
                                  fabs(playerAC->ZDelta()) < 50.0f ||
-                                 fabs(-playerAC->ZPos() - playerAC->af->GetOptimumAltitude()) < 1000.0f   and 
+                                 fabs(-playerAC->ZPos() - playerAC->af->GetOptimumAltitude()) < 1000.0f  and 
                                  playerAC->ZDelta() > 0.0f ||
                                  -playerAC->ZPos() > playerAC->af->GetOptimumAltitude())
                         {
@@ -2995,7 +2995,7 @@ void HudClass::DrawCruiseIndexes(void)
         case 3: //Cruise Edr
 
             //Speed
-            if (playerAC and  playerAC->af)
+            if (playerAC and playerAC->af)
             {
                 DrawAirSpeedCarret(playerAC->af->GetOptKias(1));
                 sprintf(SpeedText, "%.0f", max(min(playerAC->af->GetOptKias(1), 9999.0F), 0.0F));

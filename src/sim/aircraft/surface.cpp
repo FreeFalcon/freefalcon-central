@@ -393,8 +393,8 @@ void AircraftClass::MoveDof(int dof, float newval, float rate, int ssfx, int lsf
         }
         else
         {
-            if ( not SoundPos.IsPlaying(ssfx) and  // MLR 12/30/2003 - changed IsPlaying sound call
-                not SoundPos.IsPlaying(lsfx))
+            if ( not SoundPos.IsPlaying(ssfx) and // MLR 12/30/2003 - changed IsPlaying sound call
+ not SoundPos.IsPlaying(lsfx))
                 SoundPos.Sfx(ssfx);
             else
                 SoundPos.Sfx(lsfx);
@@ -407,7 +407,7 @@ void AircraftClass::DeployDragChute(int type)
     if (af->vcas < 20.0f and af->dragChute == AirframeClass::DRAGC_DEPLOYED)
         af->dragChute = AirframeClass::DRAGC_TRAILING;
 
-    if (af->dragChute == AirframeClass::DRAGC_DEPLOYED  and 
+    if (af->dragChute == AirframeClass::DRAGC_DEPLOYED and 
         af->vcas > af->auxaeroData->dragChuteMaxSpeed)
     {
         if ((af->vcas - af->auxaeroData->dragChuteMaxSpeed) / 100 > PRANDFloatPos())
@@ -560,15 +560,15 @@ void AircraftClass::MoveSurfaces(void)
         else
             doorAngle =  0.0f * DTR;
 
-        if (af->GetGunDofType() >= COMP_WEAPON_BAY_0  and 
-            af->GetGunDofType() <= COMP_WEAPON_BAY_4  and 
+        if (af->GetGunDofType() >= COMP_WEAPON_BAY_0 and 
+            af->GetGunDofType() <= COMP_WEAPON_BAY_4 and 
             af->GetGunDofRate() > 0.0f)
         {
 
             MoveDof(af->GetGunDofType(), doorAngle, af->GetGunDofRate());
         }
 
-        if (af->GetGunSwitchType() >= COMP_WEAPON_BAY_0_SW  and 
+        if (af->GetGunSwitchType() >= COMP_WEAPON_BAY_0_SW and 
             af->GetGunSwitchType() <= COMP_WEAPON_BAY_4_SW)
         {
 
@@ -593,7 +593,7 @@ void AircraftClass::MoveSurfaces(void)
 
             }
 
-            /* if (af->GetHpSwitchType(l) >= COMP_WEAPON_BAY_0_SW  and 
+            /* if (af->GetHpSwitchType(l) >= COMP_WEAPON_BAY_0_SW and 
              af->GetHpSwitchType(l) <= COMP_WEAPON_BAY_4_SW) {
 
              if(GetDOFValue(af->GetHpDofType(l)) > 0.0f)
@@ -643,9 +643,9 @@ void AircraftClass::MoveSurfaces(void)
         // Cobra - FRB animated pilot's head
         if ((g_bAnimPilotHead) and (( not IsPlayer()) or ((IsPlayer()) and ( not g_bEnableTrackIR))
                                    or ((IsPlayer()) and (g_bEnableTrackIR)
-                                       and ((PlayerOptions.Get3dTrackIR() == false)
+                                      and ((PlayerOptions.Get3dTrackIR() == false)
                                            or (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode2DCockpit
-                                               and OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode3DCockpit)))))
+                                              and OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode3DCockpit)))))
         {
             long  nHoldSec = 3;
 
@@ -1553,7 +1553,7 @@ void AircraftClass::RunGearSurfaces(void)
 
     if (IsLocal())
     {
-        if ((af->gearHandle > 0.0F or OnGround()) and  not af->IsSet(AirframeClass::GearBroken))
+        if ((af->gearHandle > 0.0F or OnGround()) and not af->IsSet(AirframeClass::GearBroken))
         {
             SetAcStatusBits(ACSTATUS_GEAR_DOWN);
         }
@@ -1654,7 +1654,7 @@ void AircraftClass::RunGearSurfaces(void)
             // lastRStick and lastYPedal defined in EOM.cpp
             // RAS 06Apr04 changed 30.0F to 50.0F to make graphical nose wheel match rate of turn.  Acutal turn radius needs to be
             // looked at.  Real F-16 nose wheel turns 32.0 degrees
-            if (IO.AnalogIsUsed(AXIS_YAW) and  not af->IsSet(AirframeClass::IsDigital) or not g_bRollLinkedNWSRudder)  // Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_YAW) and not af->IsSet(AirframeClass::IsDigital) or not g_bRollLinkedNWSRudder)  // Retro 31Dec2003
             {
                 SetDOF(COMP_NOS_GEAR_ROT, -af->lastYPedal * 50.0F * DTR * (0.5F + (80.0F * KNOTS_TO_FTPSEC - af->vt) / (160.0F * KNOTS_TO_FTPSEC)));
             }

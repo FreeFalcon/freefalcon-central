@@ -208,8 +208,8 @@ void DigitalBrain::DecisionLogic(void)
 
     // If I'm a leader or a wingman with permission to shoot and not defensive or in waypoint mode
     // MODIFIED BY S.G. SO AI CAN STILL DEFEND THEMSELF WHEN RETURNING TO BASE (ODDLY ENOUGH, LandingMode IS WHEN RTBing
-    //  if(( not isWing or mWeaponsAction == AI_WEAPONS_FREE) and targetPtr and curMode > DefensiveModes  and 
-    if (( not isWing or mWeaponsAction == AI_WEAPONS_FREE) and targetPtr and (curMode > DefensiveModes or curMode == LandingMode)  and 
+    //  if(( not isWing or mWeaponsAction == AI_WEAPONS_FREE) and targetPtr and curMode > DefensiveModes and 
+    if (( not isWing or mWeaponsAction == AI_WEAPONS_FREE) and targetPtr and (curMode > DefensiveModes or curMode == LandingMode) and 
         (curMode not_eq WaypointMode or agDoctrine == AGD_NONE))
     {
         // Weapon selection
@@ -496,10 +496,10 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
     if (newTarget and // Assigning a target
         newTarget not_eq targetPtr and // It's a new target
         missileFiredEntity and // we launched a missile already
-         not ((SimWeaponClass *)missileFiredEntity)->IsDead() and // it's not dead
+ not ((SimWeaponClass *)missileFiredEntity)->IsDead() and // it's not dead
         ((SimWeaponClass *)missileFiredEntity)->targetPtr and // it's still homing to a target
         ((SimWeaponClass *)missileFiredEntity)->sensorArray and // the missile is local (it has a sensor array)
-        (((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming  and 
+        (((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming and 
          ((SimWeaponClass *)missileFiredEntity)->GetSPType() not_eq SPTYPE_AIM120)) // It's still being guided by us
     {
         return; // That's it, don't change target (support your missile)
@@ -510,12 +510,12 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
     // Tell someone we're enaging/want to engage an air target of our own volition
     if (newTarget and // Assigning a target
         newTarget not_eq targetPtr and // It's a new target
-         not newTarget->BaseData()->OnGround() and // It's not on the ground
+ not newTarget->BaseData()->OnGround() and // It's not on the ground
         ( not mpActionFlags[AI_ENGAGE_TARGET] and missionClass == AAMission or missionComplete) and // We're not busy doing A/G stuff
         newTarget not_eq threatPtr and // It's not a threat we're reacting to
         isWing and // We're a wingy
         mDesignatedObject == FalconNullId and // We're not being directed
-         not self->OnGround()) // We're in the air
+ not self->OnGround()) // We're in the air
     {
         //F4Assert ( not newTarget->BaseData()->IsHelicopter()); // 2002-03-05 Choppers are fare game now under some conditions
 
@@ -664,7 +664,7 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
                 theRadar->SetDesiredTarget(newTarget);
             }
             else if (
-                 not curMissile ||
+ not curMissile ||
                 (curMissile->sensorArray and curMissile->sensorArray[0]->Type() not_eq SensorClass::IRST)
             )
             {
@@ -716,7 +716,7 @@ int DigitalBrain::Stagnated(void)
 {
     int retval = FALSE;
 
-    if (fabs(ataddot) < 4.0F * DTR and fabs(rangeddot) < 50.0F  and 
+    if (fabs(ataddot) < 4.0F * DTR and fabs(rangeddot) < 50.0F and 
         fabs(self->YawDelta()) > 8.0F * DTR)
     {
         retval = TRUE;
@@ -796,7 +796,7 @@ void DigitalBrain::FireControl(void)
 
     // basic check for firing, time to shoot, have a missile, have a target
     if (SimLibElapsedTime < missileShotTimer ||
-         not curMissile or not targetPtr
+ not curMissile or not targetPtr
         or F4IsBadReadPtr(curMissile, sizeof(MissileClass)) // JB 010223 CTD
         or F4IsBadReadPtr(self->FCC, sizeof(FireControlComputer)) // JB 010326 CTD
         or F4IsBadReadPtr(self->Sms, sizeof(SMSClass)) // JB 010326 CTD
@@ -832,8 +832,8 @@ void DigitalBrain::FireControl(void)
         return;
 
     //Cobra JB is a crackhead
-    /*if (curMissile->sensorArray[0]  and 
-     (curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming or curMissile->sensorArray[0]->Type() == SensorClass::Radar)  and 
+    /*if (curMissile->sensorArray[0] and 
+     (curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming or curMissile->sensorArray[0]->Type() == SensorClass::Radar) and 
      ( targetData->range >
      (self->FCC->missileRMax * (((0.99F - isWing * 0.05f)) *(1.30-1.00f * min(((((float)SkillLevel()/2 )/ ((float)self->Sms->numOnBoard[wcAimWpn]))), 1.0f) *
      ((float)cos(targetPtr->localData->ataFrom/2) * (float)cos(targetPtr->localData->ataFrom/2)))))))
@@ -841,9 +841,9 @@ void DigitalBrain::FireControl(void)
 
     if // stuff like mavs has 20 degree off bore cabability
     (
-        curMissile->sensorArray[0]->Type() not_eq SensorClass::RadarHoming  and 
-        curMissile->sensorArray[0]->Type() not_eq SensorClass::Radar  and 
-        curMissile->sensorArray[0]->Type() not_eq SensorClass::IRST  and 
+        curMissile->sensorArray[0]->Type() not_eq SensorClass::RadarHoming and 
+        curMissile->sensorArray[0]->Type() not_eq SensorClass::Radar and 
+        curMissile->sensorArray[0]->Type() not_eq SensorClass::IRST and 
         targetData->ata > 20.0f * DTR
     )
         return;
@@ -853,7 +853,7 @@ void DigitalBrain::FireControl(void)
         return;
 
     // if // don't shoot semis if agregated
-    // (curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming  and 
+    // (curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming and 
     // ((CampBaseClass*)curMissile->parent)->IsAggregate())
     // return;
 
@@ -870,7 +870,7 @@ void DigitalBrain::FireControl(void)
 
     // ADDED BY S.G. TO MAKE SURE WE DON'T FIRE BEAM RIDER IF THE MAIN RADAR IS JAMMED (NEW: USES SensorTrack INSTEAD of noTrack)
     if (curMissile->sensorArray and curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming
-        /* and  curMissile->GetSPType() not_eq SPTYPE_AIM120*/ ||
+        /* and curMissile->GetSPType() not_eq SPTYPE_AIM120*/ ||
         curMissile->sensorArray[0]->Type() == SensorClass::Radar)
     {
         // Find the radar attached to us

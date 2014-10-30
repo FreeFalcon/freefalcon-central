@@ -53,7 +53,7 @@ void MissileClass::Atmosphere(void)
         /*------------------------*/
         /* normalizing parameters */
         /*------------------------*/
-        if (mass and  not F4IsBadReadPtr(inputData, sizeof(MissileInputData))) // JB 010317 CTD
+        if (mass and not F4IsBadReadPtr(inputData, sizeof(MissileInputData))) // JB 010317 CTD
             ifd->qsom = ifd->qbar * inputData->area / mass;
 
         ifd->qovt = ifd->qbar / vt;

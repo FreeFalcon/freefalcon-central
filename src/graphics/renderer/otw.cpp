@@ -570,8 +570,8 @@ void RenderOTW::PreSceneCloudOcclusion(float percent, DWORD color)
         float correction = 1.0f + percent * percent * 100.0f;
 
         // Red
-        if (((color bitand 0x000000FF) == 0x0)  and 
-            ((color bitand 0x0000FF00) >= 0x10)  and 
+        if (((color bitand 0x000000FF) == 0x0) and 
+            ((color bitand 0x0000FF00) >= 0x10) and 
             ((color bitand 0x00FF0000) == 0x0))
         {
 
@@ -1028,8 +1028,8 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
      // Construct a 32 bit RGB value
      ProcessColor( &color );
      c  = (FloatToInt32(color.r * 255.9f));
-     c or_eq  (FloatToInt32(color.g * 255.9f)) << 8;
-     c or_eq  (FloatToInt32(color.b * 255.9f)) << 16;
+     c or_eq (FloatToInt32(color.g * 255.9f)) << 8;
+     c or_eq (FloatToInt32(color.b * 255.9f)) << 16;
 
      // Are we IN it our NEAR it?
      if (blend >= 1.0f)
@@ -1560,18 +1560,18 @@ void RenderOTW::TransformRun(int row, int col, int run, int LOD, BOOL do_row)
 
             if (scratch_z < NEAR_CLIP)
             {
-                vert->clipFlag or_eq  CLIP_NEAR;
+                vert->clipFlag or_eq CLIP_NEAR;
             }
 
             if (fabs(scratch_y) > scratch_z)
             {
                 if (scratch_y > scratch_z)
                 {
-                    vert->clipFlag or_eq  CLIP_BOTTOM;
+                    vert->clipFlag or_eq CLIP_BOTTOM;
                 }
                 else
                 {
-                    vert->clipFlag or_eq  CLIP_TOP;
+                    vert->clipFlag or_eq CLIP_TOP;
                 }
             }
 
@@ -1579,11 +1579,11 @@ void RenderOTW::TransformRun(int row, int col, int run, int LOD, BOOL do_row)
             {
                 if (scratch_x > scratch_z)
                 {
-                    vert->clipFlag or_eq  CLIP_RIGHT;
+                    vert->clipFlag or_eq CLIP_RIGHT;
                 }
                 else
                 {
-                    vert->clipFlag or_eq  CLIP_LEFT;
+                    vert->clipFlag or_eq CLIP_LEFT;
                 }
             }
 

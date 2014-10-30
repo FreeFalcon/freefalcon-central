@@ -236,11 +236,11 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
 
                         if (o)
                         {
-                            map_data[i / 2] or_eq  o->GetTeam() << hi;
+                            map_data[i / 2] or_eq o->GetTeam() << hi;
                         }
                         else
                         {
-                            map_data[i / 2] or_eq  0xF << hi;
+                            map_data[i / 2] or_eq 0xF << hi;
                         }
                     }
                 }
@@ -318,11 +318,11 @@ uchar* UpdateCampMap(int type, uchar* map_data, GridIndex cx, GridIndex cy)
 
                         if (o)
                         {
-                            map_data[i / 2] or_eq  o->GetTeam() << hi;
+                            map_data[i / 2] or_eq o->GetTeam() << hi;
                         }
                         else
                         {
-                            map_data[i / 2] or_eq  0xF << hi;
+                            map_data[i / 2] or_eq 0xF << hi;
                         }
                     }
                 }
@@ -447,7 +447,7 @@ int AddToThreatMap(CampEntity e, uchar* map_data, int who)
             if (ld >= d and c < 3 and e->GetAproxHitChance(LowAir, FloatToInt32(d * MAP_RATIO)))
             {
                 map_data[i] xor_eq (c << li);
-                map_data[i] or_eq  ((c + 1) << li);
+                map_data[i] or_eq ((c + 1) << li);
             }
 
             c = (map_data[i] >> hi) bitand 0x03;
@@ -455,7 +455,7 @@ int AddToThreatMap(CampEntity e, uchar* map_data, int who)
             if (hd >= d and c < 3 and e->GetAproxHitChance(Air, FloatToInt32(d * MAP_RATIO)))
             {
                 map_data[i] xor_eq (c << hi);
-                map_data[i] or_eq  ((c + 1) << hi);
+                map_data[i] or_eq ((c + 1) << hi);
             }
         }
     }
@@ -535,7 +535,7 @@ int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
             if (ld[oct] >= d and c < 3)
             {
                 map_data[i] xor_eq (c << li);
-                map_data[i] or_eq  ((c + 1) << li);
+                map_data[i] or_eq ((c + 1) << li);
             }
 
             c = (map_data[i] >> hi) bitand 0x03;
@@ -543,7 +543,7 @@ int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
             if (hd >= d and c < 3)
             {
                 map_data[i] xor_eq (c << hi);
-                map_data[i] or_eq  ((c + 1) << hi);
+                map_data[i] or_eq ((c + 1) << hi);
             }
         }
     }

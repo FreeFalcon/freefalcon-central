@@ -42,7 +42,7 @@ public:
     };
     void SetReady(int flag)
     {
-        if (flag) flags or_eq  DisplayReady;
+        if (flag) flags or_eq DisplayReady;
         else flags and_eq compl DisplayReady;
     };
     virtual void DisplayInit(ImageBuffer* newImage);

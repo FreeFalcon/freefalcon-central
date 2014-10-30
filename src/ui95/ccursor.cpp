@@ -114,7 +114,7 @@ void C_Cursor::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
 long C_Cursor::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED))
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED))
         return(0);
 
     if (relx >= (GetX()) and rely >= (GetY()) and relx <= (GetX() + GetW()) and rely <= (GetY() + GetH()))
@@ -141,7 +141,7 @@ BOOL C_Cursor::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
     long x, y;
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED) or  not (GetFlags() bitand C_BIT_DRAGABLE))
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not (GetFlags() bitand C_BIT_DRAGABLE))
         return(FALSE);
 
     Leave = UI_Enter(Parent_);

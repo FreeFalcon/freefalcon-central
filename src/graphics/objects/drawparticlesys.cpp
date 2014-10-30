@@ -651,7 +651,7 @@ bool SubPartTrail::Run(RenderOTW *renderer, ParticleNode *owner)
 
 int SubPartTrail::IsRunning(ParticleNode *owner)
 {
-    return  not trailObj->IsTrailEmpty();
+    return not trailObj->IsTrailEmpty();
 }
 
 /*....................................................................*/
@@ -1828,7 +1828,7 @@ void DrawableParticleSys::Draw(class RenderOTW *renderer, int LOD)
 
             // Cobra - Moved the node killer to start of mission (otwloop.cpp)
             // also in DrawableParticleSys::AddParticle()
-            if ((n->IsDead()) /* and   not PurgeTimeInc*/) // COBRA - RED - If no1 updates PurgeTimeInc,
+            if ((n->IsDead()) /* and not PurgeTimeInc*/) // COBRA - RED - If no1 updates PurgeTimeInc,
             {
                 // when it could be 0...???
                 n->Remove();
@@ -3687,7 +3687,7 @@ void DrawableParticleSys::PS_ParticleRun(void)
             // Wind, affects anything having a Z velocity
             if (Part.WindAffected)
             {
-                /*// if not  grounded, apply wind
+                /*// if not grounded, apply wind
                 Part.pos.x += Part.Wind.x * PS_ElapsedTime;
                 Part.pos.y += Part.Wind.y * PS_ElapsedTime;*/
                 // Go to reach the wind speed
@@ -4044,7 +4044,7 @@ void DrawableParticleSys::PS_TrailRun(void)
         PS_TPType &TPN = PS_TPN[Trail.ID];
 
         // If part is dead, remove it, all last stages have been already killed/exucuted
-        if (Trail.OWNER not_eq PS_NOPTR and  not (((ParticleNodeType*)PS_Lists[PS_PARTICLES_IDX].ObjectList)[Trail.OWNER]).Alive) Trail.Alive = false;
+        if (Trail.OWNER not_eq PS_NOPTR and not (((ParticleNodeType*)PS_Lists[PS_PARTICLES_IDX].ObjectList)[Trail.OWNER]).Alive) Trail.Alive = false;
 
         if ( not Trail.Run) goto Skip;
 
@@ -4384,7 +4384,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
     Div2.d3d.x = Div2.d3d.y = Div2.d3d.z = 2.0f;
 
     // thru all the list
-    while ( not TrailCompleted /* and  PS_SubTrails<14200*/)
+    while ( not TrailCompleted /* and PS_SubTrails<14200*/)
     {
 
 #ifdef DEBUG_NEW_PS_TRAILS
@@ -5458,7 +5458,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                     // assing a link as texture
                     ppn->Texture = (ParticleTextureNode*)gpn;
                     // and signal the texture depends on a group
-                    ppn->GroupFlags or_eq  GRP_TEXTURE;
+                    ppn->GroupFlags or_eq GRP_TEXTURE;
                     ppn->drawType = PSDT_POLY;
                     // end here
                     continue;
@@ -5839,7 +5839,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                     // assing a link as texture
                     tpn->Texture = (ParticleTextureNode*)gpn;
                     // and signal the texture depends on a group
-                    tpn->GroupFlags or_eq  GRP_TEXTURE;
+                    tpn->GroupFlags or_eq GRP_TEXTURE;
                     continue;
                 }
 
@@ -5859,7 +5859,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                     // assing a link as texture
                     tpn->SideTexture = (ParticleTextureNode*)gpn;
                     // and signal the texture depends on a group
-                    tpn->GroupFlags or_eq  GRP_TEXTURE2;
+                    tpn->GroupFlags or_eq GRP_TEXTURE2;
                     continue;
                 }
 

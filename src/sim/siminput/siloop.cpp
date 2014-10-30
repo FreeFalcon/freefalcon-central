@@ -409,87 +409,87 @@ bool CheckDeviceArray()
 {
     bool retval = true;
 
-    if (AxisMap.Pitch.Device  not_eq -1)
+    if (AxisMap.Pitch.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.Pitch.Device])
             retval = false;
 
-    if (AxisMap.Bank.Device  not_eq -1)
+    if (AxisMap.Bank.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.Bank.Device])
             retval = false;
 
-    if (AxisMap.Yaw.Device  not_eq -1)
+    if (AxisMap.Yaw.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.Yaw.Device])
             retval = false;
 
-    if (AxisMap.Throttle.Device  not_eq -1)
+    if (AxisMap.Throttle.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.Throttle.Device])
             retval = false;
 
-    if (AxisMap.Throttle2.Device  not_eq -1)
+    if (AxisMap.Throttle2.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.Throttle2.Device])
             retval = false;
 
-    if (AxisMap.BrakeLeft.Device  not_eq -1)
+    if (AxisMap.BrakeLeft.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.BrakeLeft.Device])
             retval = false;
 
-    if (AxisMap.BrakeRight.Device  not_eq -1)
+    if (AxisMap.BrakeRight.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.BrakeRight.Device])
             retval = false;
 
-    if (AxisMap.FOV.Device  not_eq -1)
+    if (AxisMap.FOV.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.FOV.Device])
             retval = false;
 
-    if (AxisMap.PitchTrim.Device  not_eq -1)
+    if (AxisMap.PitchTrim.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.PitchTrim.Device])
             retval = false;
 
-    if (AxisMap.YawTrim.Device  not_eq -1)
+    if (AxisMap.YawTrim.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.YawTrim.Device])
             retval = false;
 
-    if (AxisMap.BankTrim.Device  not_eq -1)
+    if (AxisMap.BankTrim.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.BankTrim.Device])
             retval = false;
 
-    if (AxisMap.AntElev.Device  not_eq -1)
+    if (AxisMap.AntElev.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.AntElev.Device])
             retval = false;
 
-    if (AxisMap.RngKnob.Device  not_eq -1)
+    if (AxisMap.RngKnob.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.RngKnob.Device])
             retval = false;
 
-    if (AxisMap.CursorX.Device  not_eq -1)
+    if (AxisMap.CursorX.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.CursorX.Device])
             retval = false;
 
-    if (AxisMap.CursorY.Device  not_eq -1)
+    if (AxisMap.CursorY.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.CursorY.Device])
             retval = false;
 
-    if (AxisMap.Comm1Vol.Device  not_eq -1)
+    if (AxisMap.Comm1Vol.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.Comm1Vol.Device])
             retval = false;
 
-    if (AxisMap.Comm2Vol.Device  not_eq -1)
+    if (AxisMap.Comm2Vol.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.Comm2Vol.Device])
             retval = false;
 
-    if (AxisMap.MSLVol.Device  not_eq -1)
+    if (AxisMap.MSLVol.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.MSLVol.Device])
             retval = false;
 
-    if (AxisMap.ThreatVol.Device  not_eq -1)
+    if (AxisMap.ThreatVol.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.ThreatVol.Device])
             retval = false;
 
-    if (AxisMap.HudBrt.Device  not_eq -1)
+    if (AxisMap.HudBrt.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.HudBrt.Device])
             retval = false;
 
-    if (AxisMap.RetDepr.Device  not_eq -1)
+    if (AxisMap.RetDepr.Device not_eq -1)
         if ( not gpDIDevice[AxisMap.RetDepr.Device])
             retval = false;
 

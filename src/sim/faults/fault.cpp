@@ -241,7 +241,7 @@ void FaultClass::SetFault(type_FSubSystem subsystem,
         }
     }
 
-    mpFaultList[subsystem].elFunction or_eq  function;
+    mpFaultList[subsystem].elFunction or_eq function;
     mpFaultList[subsystem].elSeverity = severity;
     AddMflList(SimLibElapsedTime, subsystem, (int)severity);
 }
@@ -268,7 +268,7 @@ void FaultClass::ClearFault(type_FSubSystem subsystem)
 // JPO clear individual fault bit
 void FaultClass::ClearFault(type_FSubSystem subsystem, type_FFunction function)
 {
-    mpFaultList[subsystem].elFunction and_eq compl  function;
+    mpFaultList[subsystem].elFunction and_eq compl function;
 
     if (mpFaultList[subsystem].elFunction == nofault)
     {
@@ -439,7 +439,7 @@ void FaultClass::AddMflList(VU_TIME thetime, FaultClass::type_FSubSystem type, i
 {
     for (int i = 0; i < mLastMfl; i++)
     {
-        if (mMflList[i].type == type  and 
+        if (mMflList[i].type == type and 
             mMflList[i].subtype == subtype)
         {
             mMflList[i].no ++;

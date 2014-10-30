@@ -73,11 +73,11 @@ int FalconDeathMessage::Process(uchar autodisp)
     // KCK: update kill records for mission evaluator.
     EvaluateKill(this, shooter, campShooter, target, campTarget);
 
-    if (target and (target->IsAirplane() or  not (rand() % 3)))
+    if (target and (target->IsAirplane() or not (rand() % 3)))
     {
-        if (shooter and shooter->IsAirplane()  and 
+        if (shooter and shooter->IsAirplane() and 
             (GetTTRelations(shooter->GetTeam(), target->GetTeam()) >= Hostile) and rand() % 2
-            and not shooter->IsPlayer())
+           and not shooter->IsPlayer())
         {
             FalconRadioChatterMessage *radioMessage = new FalconRadioChatterMessage(shooter->Id(), FalconLocalSession);
             radioMessage->dataBlock.from = shooter->Id();

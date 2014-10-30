@@ -72,7 +72,7 @@ int TokenFlags(char *str, int def, char *flagstr)
             {
                 if (*arg == flagstr[l])
                 {
-                    flags or_eq  1 << l;
+                    flags or_eq 1 << l;
                 }
             }
 

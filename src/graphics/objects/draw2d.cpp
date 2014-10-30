@@ -1881,7 +1881,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
                     b = (globPal->paletteData[j] bitand 0x00ff0000) >> 16;
 
                     intalp = max((r + b + g) / 3, 120);
-                    globPal->paletteData[j] or_eq  (intalp << 24);
+                    globPal->paletteData[j] or_eq (intalp << 24);
                 }
 
                 globPal->UpdateMPR(globPal->paletteData);
@@ -2156,7 +2156,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
         alp = (float)intalp;
         alp = alp * 0.5f + alp * 0.5f * PRANDFloat();
         intalp = FloatToInt32(alp);
-        aplPal0->paletteData[j] or_eq  (intalp << 24);
+        aplPal0->paletteData[j] or_eq (intalp << 24);
     }
 
     aplPal0->UpdateMPR(aplPal0->paletteData);
@@ -2188,7 +2188,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
                 alp = alp * 0.8f + alp * 0.2f * PRANDFloat();
 
             intalp = FloatToInt32(alp);
-            aplPalI->paletteData[j] or_eq  (intalp << 24);
+            aplPalI->paletteData[j] or_eq (intalp << 24);
         }
 
         aplPalI->UpdateMPR(aplPalI->paletteData);
@@ -3387,8 +3387,8 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
 
     // a nicer effect: put a point in the center of a square, make it
     // a dark alpha and have the edges fade to 0.  LOD this effect.
-    // doFivePoints =  not (typeData.flags bitand NO_FIVE_POINTS ) and ( scaleZ * sLOD > 0.4f or type == DRAW2D_LONG_HANGING_SMOKE2 );
-    doFivePoints =  not (typeData.flags bitand NO_FIVE_POINTS);
+    // doFivePoints = not (typeData.flags bitand NO_FIVE_POINTS ) and ( scaleZ * sLOD > 0.4f or type == DRAW2D_LONG_HANGING_SMOKE2 );
+    doFivePoints = not (typeData.flags bitand NO_FIVE_POINTS);
 
     // setup rendering context
     if (sGreenMode) //JAM - FIXME

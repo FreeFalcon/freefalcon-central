@@ -189,7 +189,7 @@ BDofNode::BDofNode(BYTE *baseAddress, BNodeType **tagListPtr)
 BXDofNode::BXDofNode(BYTE *baseAddress, BNodeType **tagListPtr)
     : BSubTree(baseAddress, tagListPtr)
 {
-    flags or_eq  XDOF_ISDOF;
+    flags or_eq XDOF_ISDOF;
 }
 
 

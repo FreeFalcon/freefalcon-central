@@ -190,7 +190,7 @@ void C_Button::SetFlags(long flags)
 
 void C_Button::SetLabelFlagBitsOn(long flags)
 {
-    LabelFlags_ or_eq  flags;
+    LabelFlags_ or_eq flags;
 
     // Mutually exclusive flags...
     if (flags bitand C_BIT_TOP)
@@ -1192,7 +1192,7 @@ long C_Button::CheckHotSpots(long relx, long rely)
     BUTTONLIST *btn;
     long x, y, w, h;
 
-    if ( not Root_ or (GetFlags() bitand C_BIT_INVISIBLE) or  not (GetFlags() bitand C_BIT_ENABLED) or ( not Ready() and not UseHotSpot_))
+    if ( not Root_ or (GetFlags() bitand C_BIT_INVISIBLE) or not (GetFlags() bitand C_BIT_ENABLED) or ( not Ready() and not UseHotSpot_))
         return(0);
 
 
@@ -1220,7 +1220,7 @@ long C_Button::CheckHotSpots(long relx, long rely)
                 w = GetX() + btn->Image_->GetX() + btn->Image_->GetW() + HotSpot_.right;
                 h = GetY() + btn->Image_->GetX() + btn->Image_->GetH() + HotSpot_.bottom;
 
-                if (relx >= (x) and relx < (w)  and 
+                if (relx >= (x) and relx < (w) and 
                     rely >= (y) and rely < (h))
                 {
                     SetRelXY(relx - GetX() - HotSpot_.left, rely - GetY() - HotSpot_.top);
@@ -1240,7 +1240,7 @@ long C_Button::CheckHotSpots(long relx, long rely)
             w = btn->Image_->GetW();
             h = btn->Image_->GetH();
 
-            if (relx >= (x) and relx < (x + w)  and 
+            if (relx >= (x) and relx < (x + w) and 
                 rely >= (y) and rely < (y + h))
             {
                 SetRelXY(relx - x, rely - y);
@@ -1329,7 +1329,7 @@ BOOL C_Button::MouseOver(long relx, long rely, C_Base *me)
     BUTTONLIST *btn;
     long x, y, w, h;
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
         return(FALSE);
 
     if (UseHotSpot_)
@@ -1361,7 +1361,7 @@ BOOL C_Button::MouseOver(long relx, long rely, C_Base *me)
                 w = GetX() + btn->Image_->GetX() + btn->Image_->GetW() + HotSpot_.right;
                 h = GetY() + btn->Image_->GetX() + btn->Image_->GetH() + HotSpot_.bottom;
 
-                if (relx >= (x) and relx < (w)  and 
+                if (relx >= (x) and relx < (w) and 
                     rely >= (y) and rely < (h))
                 {
                     // Set cursor...
@@ -1389,7 +1389,7 @@ BOOL C_Button::MouseOver(long relx, long rely, C_Base *me)
             w = btn->Image_->GetW();
             h = btn->Image_->GetH();
 
-            if (relx >= (x) and relx < (x + w)  and 
+            if (relx >= (x) and relx < (x + w) and 
                 rely >= (y) and rely < (y + h))
             {
                 // Set cursor...
@@ -1411,7 +1411,7 @@ BOOL C_Button::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
     long x, y;
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED) or  not (GetFlags() bitand C_BIT_DRAGABLE))
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not (GetFlags() bitand C_BIT_DRAGABLE))
         return(FALSE);
 
     Leave = UI_Enter(Parent_);

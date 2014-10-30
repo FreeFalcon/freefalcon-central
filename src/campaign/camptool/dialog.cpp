@@ -1191,7 +1191,7 @@ BOOL WINAPI EditRelations(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     if (TeamInfo[j]->HasSatelites())
                         TeamInfo[j]->flags xor_eq TEAM_HASSATS;
                     else
-                        TeamInfo[j]->flags or_eq  TEAM_HASSATS;
+                        TeamInfo[j]->flags or_eq TEAM_HASSATS;
 
                     break;
 
@@ -2208,7 +2208,7 @@ BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                                 int count = 0;
                                 target_b = rand() % ((Objective)target)->GetTotalFeatures();
 
-                                while (count < 20 and (((Objective)target)->GetFeatureStatus(target_b) == VIS_DESTROYED or  not ((Objective)target)->GetFeatureValue(target_b)))
+                                while (count < 20 and (((Objective)target)->GetFeatureStatus(target_b) == VIS_DESTROYED or not ((Objective)target)->GetFeatureValue(target_b)))
                                 {
                                     count++;
                                     target_b = rand() % ((Objective)target)->GetTotalFeatures();

@@ -304,7 +304,7 @@ void C_Clock::SetSubParents(C_Window *Parent)
 
 long C_Clock::CheckHotSpots(long relX, long relY)
 {
-    if (Flags_ bitand C_BIT_INVISIBLE or  not (Flags_ bitand C_BIT_ENABLED) or not Ready())
+    if (Flags_ bitand C_BIT_INVISIBLE or not (Flags_ bitand C_BIT_ENABLED) or not Ready())
         return(0);
 
     if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))

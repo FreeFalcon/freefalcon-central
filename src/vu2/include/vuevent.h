@@ -215,15 +215,15 @@ public:
 
     void RequestLoopback()
     {
-        flags_ or_eq  VU_LOOPBACK_MSG_FLAG;
+        flags_ or_eq VU_LOOPBACK_MSG_FLAG;
     }
     void RequestReliableTransmit()
     {
-        flags_ or_eq  VU_RELIABLE_MSG_FLAG;
+        flags_ or_eq VU_RELIABLE_MSG_FLAG;
     }
     void RequestOutOfBandTransmit()
     {
-        flags_ or_eq  VU_OUT_OF_BAND_MSG_FLAG;
+        flags_ or_eq VU_OUT_OF_BAND_MSG_FLAG;
     }
     void RequestLowPriorityTransmit()
     {
@@ -631,7 +631,7 @@ public:
 
     void MarkAsKeepalive()
     {
-        flags_ or_eq  VU_KEEPALIVE_MSG_FLAG;
+        flags_ or_eq VU_KEEPALIVE_MSG_FLAG;
     }
 
 protected:
@@ -677,7 +677,7 @@ public:
     }
     void MarkAsKeepalive()
     {
-        flags_ or_eq  VU_KEEPALIVE_MSG_FLAG;
+        flags_ or_eq VU_KEEPALIVE_MSG_FLAG;
     }
 
 protected:

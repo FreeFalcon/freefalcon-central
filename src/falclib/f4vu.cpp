@@ -114,7 +114,7 @@ void InitVU(void)
 #endif
 
     // Make sure we're using the right VU
-#if (VU_VERSION_USED  not_eq VU_VERSION)
+#if (VU_VERSION_USED not_eq VU_VERSION)
 #error "Incorrect VU Version"
 #endif
 
@@ -122,7 +122,7 @@ void InitVU(void)
 #error "Incorrect VU Revision"
 #endif
 
-#if (VU_PATCH_USED    not_eq VU_PATCH)
+#if (VU_PATCH_USED not_eq VU_PATCH)
 #error "Incorrect VU Patch"
 #endif
 

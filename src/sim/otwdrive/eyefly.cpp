@@ -148,7 +148,7 @@ void OTWDriverClass::FindNearestBuilding(void)
             else
                 radius = 30.0F;
 
-            if (fabs(intersect.x - testFeature->XPos()) < radius  and 
+            if (fabs(intersect.x - testFeature->XPos()) < radius and 
                 fabs(intersect.y - testFeature->YPos()) < radius)
             {
                 eyeFlyTgt = testFeature;

@@ -361,7 +361,7 @@ int FlushOutputBuffer(uchar *output_string, LZSS_COMP_CTXT* ctxt)
 int OutputChar(int data, uchar *output_string, LZSS_COMP_CTXT* ctxt)
 {
     ctxt->DataBuffer[ ctxt->BufferOffset++ ] = (uchar) data;
-    ctxt->DataBuffer[ 0 ] or_eq  ctxt->FlagBitMask;
+    ctxt->DataBuffer[ 0 ] or_eq ctxt->FlagBitMask;
     ctxt->FlagBitMask <<= 1;
     ctxt->inc_output_string = 0;                              /**/
 
@@ -391,7 +391,7 @@ int OutputChar(int data, uchar *output_string, LZSS_COMP_CTXT* ctxt)
 int OutputPair(int position, int length, uchar *output_string, LZSS_COMP_CTXT* ctxt)
 {
     ctxt->DataBuffer[ ctxt->BufferOffset ] = (uchar)(length << 4);
-    ctxt->DataBuffer[ ctxt->BufferOffset++ ] or_eq  (position >> 8);
+    ctxt->DataBuffer[ ctxt->BufferOffset++ ] or_eq (position >> 8);
     ctxt->DataBuffer[ ctxt->BufferOffset++ ] = (uchar)(position bitand 0xff);
     ctxt->FlagBitMask <<= 1;
     ctxt->inc_output_string = 0;                              /**/
@@ -622,7 +622,7 @@ extern "C"
 
         // While we still have room in the output buffer
         //sfr: added check for source also
-        while (size  /* and  srcSize*/)
+        while (size  /* and srcSize*/)
         {
             CHSZ(srcSize, 1);
 
@@ -668,7 +668,7 @@ extern "C"
                 match_position = *input_string;             /**/
                 CHSZ(srcSize, 1);
                 input_string++;                             /**/
-                match_position or_eq  (match_length bitand 0xf) << 8;
+                match_position or_eq (match_length bitand 0xf) << 8;
                 match_length >>= 4;
                 match_length += BREAK_EVEN;
 

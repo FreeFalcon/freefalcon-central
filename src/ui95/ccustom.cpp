@@ -119,7 +119,7 @@ long C_Custom::CheckHotSpots(long relX, long relY)
 {
     short i;
 
-    if (Ready() and  not (GetFlags() bitand C_BIT_INVISIBLE) and Parent_)
+    if (Ready() and not (GetFlags() bitand C_BIT_INVISIBLE) and Parent_)
     {
         if (relX >= GetX() and relY >= GetY() and relX < (GetX() + GetW()) and relY < (GetY() + GetH()))
         {
@@ -130,7 +130,7 @@ long C_Custom::CheckHotSpots(long relX, long relY)
 
             for (i = 0; i < Count_; i++)
             {
-                if (relX >= Items_[i].GetX() and relX < (Items_[i].GetX() + Items_[i].GetW())  and 
+                if (relX >= Items_[i].GetX() and relX < (Items_[i].GetX() + Items_[i].GetW()) and 
                     relY >= Items_[i].GetY() and relY < (Items_[i].GetY() + Items_[i].GetH()))
                     Section_ = i;
             }

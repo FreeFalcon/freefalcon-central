@@ -105,12 +105,12 @@ static BOOL InitTOOLHELP32(void)
         //  these addresses is NULL, one of the needed lists cannot be
         //  walked.
 
-        bRet =  g_pModule32First             and 
-                g_pModule32Next              and 
-                g_pProcess32First            and 
-                g_pProcess32Next             and 
-                g_pThread32First             and 
-                g_pThread32Next              and 
+        bRet =  g_pModule32First            and 
+                g_pModule32Next             and 
+                g_pProcess32First           and 
+                g_pProcess32Next            and 
+                g_pThread32First            and 
+                g_pThread32Next             and 
                 g_pCreateToolhelp32Snapshot    ;
     }
     else
@@ -140,7 +140,7 @@ PARAMETERS      :
     dwPID        - The process ID to look into.
     uiCount      - The number of slots in the paModArray buffer.  If
                    this value is 0, then the return value will be TRUE
-                   and puiRealCount will hold the number of items
+                  and puiRealCount will hold the number of items
                    needed.
     paModArray   - The array to place the HMODULES into.  If this buffer
                    is too small to hold the result and uiCount is not

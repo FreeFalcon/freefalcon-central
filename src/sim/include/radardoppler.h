@@ -321,7 +321,7 @@ public:
     }; //MI moved to public
     void SetFlagBit(int newFlag)
     {
-        flags or_eq  newFlag;
+        flags or_eq newFlag;
     };
     void ClearFlagBit(int newFlag)
     {
@@ -360,7 +360,7 @@ protected:
     };
     void SetAADcltBit(int newFlag)
     {
-        aadclt or_eq  newFlag;
+        aadclt or_eq newFlag;
     };
     void ClearAADcltBit(int newFlag)
     {
@@ -381,7 +381,7 @@ protected:
     };
     void SetAGDcltBit(int newFlag)
     {
-        agdclt or_eq  newFlag;
+        agdclt or_eq newFlag;
     };
     void ClearAGDcltBit(int newFlag)
     {
@@ -479,13 +479,13 @@ protected :
     {
         AltTrack = 0x1,
         PmMode     = 0x2,
-        NaroBand     = 0x4,
+        NaroBand = 0x4,
         SpeedLo     = 0x8,
     };
     unsigned int radarmodeflags;
     void SetModeFlag(int flag)
     {
-        radarmodeflags or_eq  flag;
+        radarmodeflags or_eq flag;
     };
     void ClrModeFlag(int flag)
     {
@@ -509,7 +509,7 @@ protected :
     unsigned int iffmodeflags;
     void SetIFFFlags(int flag)
     {
-        iffmodeflags or_eq  flag;
+        iffmodeflags or_eq flag;
     };
     void ClrIFFFlags(int flag)
     {

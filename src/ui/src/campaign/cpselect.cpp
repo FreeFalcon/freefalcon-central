@@ -300,7 +300,7 @@ void SetupMapWindow()
     win = gMainHandler->FindWindow(CS_MAP_WIN);
 
     // MN turn off the occupation maps for now for 128x128 theaters - they cause CTD's...
-    if (win and  not g_LargeTheater)
+    if (win and not g_LargeTheater)
     {
         DeleteGroupList(CS_MAP_WIN);
 
@@ -422,7 +422,7 @@ void AddSquadronsToMap()
                 int mapratio = MAP_RATIO;
 
                 // 2002-02-01 MN This fixes squad selection map in hires UI - still need a solution for lowres UI
-                if (g_bHiResUI and  not g_LargeTheater)
+                if (g_bHiResUI and not g_LargeTheater)
                 {
                     mapratio /= 2;
                 }
@@ -522,7 +522,7 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
                 // 2001-12-12 M.N. adapted for 1024 UI
                 mapratio = MAP_RATIO;
 
-                if (g_bHiResUI and  not g_LargeTheater)
+                if (g_bHiResUI and not g_LargeTheater)
                     mapratio /= 2;
 
                 x = x / (FEET_PER_KM * mapratio);
@@ -647,7 +647,7 @@ void LoadSquadronInfo()
                     {
                         // WM 09-28-03  Display the number of players actually in the selected
                         //  squadron.  Not just the number of total players in the game.
-                        if (session->GetPlayerSquadronID()   and 
+                        if (session->GetPlayerSquadronID()  and 
                             session->GetPlayerSquadronID().num_ == SquadPtr->id.num_)
                             players++;
 
@@ -2102,7 +2102,7 @@ void DisplayJoinStatusWindow(int bits)
     }
     else
     {
-        join_status_bits or_eq  bits;
+        join_status_bits or_eq bits;
     }
 
     switch (bits)

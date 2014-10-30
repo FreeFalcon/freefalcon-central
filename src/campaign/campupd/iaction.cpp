@@ -1820,7 +1820,7 @@ void instant_action::create_flight(ia_data &data)
         new_flight->LoadWeapons(NULL, DefaultDamageMods, Air, 2, 0, WEAP_BAI_LOADOUT);
     }
 
-    //if ( not (data.guns) and  not (data.heat) and  not (data.radar))
+    //if ( not (data.guns) and not (data.heat) and not (data.radar))
     else
     {
         new_flight->LoadWeapons(NULL, DefaultDamageMods, NoMove, 0, 0, 0);

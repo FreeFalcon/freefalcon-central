@@ -256,7 +256,7 @@ float DigitalBrain::AutoTrack(float maxMnvrGs)
             SetRstick(droll * RTD - 180.0f);
             SetPstick(-ata, maxMnvrGs, AirframeClass::ErrorCommand);
         }
-        else if (droll < -150.0f * DTR  and rStick > -0.5F)
+        else if (droll < -150.0f * DTR and rStick > -0.5F)
         {
             SetRstick(droll * RTD + 180.0f);
             SetPstick(-ata, maxMnvrGs, AirframeClass::ErrorCommand);
@@ -520,7 +520,7 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
             // no burner unless in combat
             if ((curMode >= LoiterMode or curMode == LandingMode) and // 2002-02-12 MODIFIED BY S.G. Don't go in AB if you're in landing mode either
                 m2 > aeroDataset[self->af->VehicleIndex()].inputData[AeroDataSet::MinVcas] * 0.9f and // JB 011018 If we can't keep our speed up, use the buner 2002-02-12 MODIFIED BY S.G. Use a percentage of MinVcas instead.
-                ( not flightLead or flightLead and ((AircraftClass*)flightLead)->af)  and 
+                ( not flightLead or flightLead and ((AircraftClass*)flightLead)->af) and 
                 ( not flightLead or (((AircraftClass*)flightLead)->af == af or ((((AircraftClass*)flightLead)->af->rpm < 1.0F)) and // JB 011025 If the lead is using his burner, we can use ours 2002-02-12 MODIFIED BY S.G. Don't look at lead's burner or g_fFormationBurnerDistance if we're RTBing...
                                  dist < g_fFormationBurnerDistance * NM_TO_FT) or curMode == RTBMode) or // allow usage of burner if lead is more than defined distance away
                 self->OnGround()) // never use AB on ground
@@ -622,10 +622,10 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
         //me123 status test. we are inside 6nm, somebody is pointing at us and we are head on.
 
         if (
-            targetData and  not F4IsBadReadPtr(targetData, sizeof(SimObjectLocalData)) and // JB 010318 CTD
-            targetData->ataFrom < 40.0f * DTR  and 
-            targetData->ata < 40.0f * DTR  and 
-            targetData->range < 10.0f * NM_TO_FT  and 
+            targetData and not F4IsBadReadPtr(targetData, sizeof(SimObjectLocalData)) and // JB 010318 CTD
+            targetData->ataFrom < 40.0f * DTR and 
+            targetData->ata < 40.0f * DTR and 
+            targetData->range < 10.0f * NM_TO_FT and 
             targetData->range > 1.0 * NM_TO_FT)
         {
             if (SkillLevel() >= 1 and targetData->range > 8.0 * NM_TO_FT)

@@ -89,7 +89,7 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
     if (monoall == 0 ||
         ((theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG) and monoall == 1) ||
         ((theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG) and monoall == 2) ||
-        ((theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG)  and 
+        ((theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG) and 
          (theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG) and monoall == 3)
        )
         printit = 1;
@@ -693,7 +693,7 @@ FalconEvent::FalconEvent(VU_MSG_TYPE type, HandlingThread threadID, VU_ID entity
         // RequestLoopback();
         if ( not target)
             loopback = FALSE;
-        else if (target->IsGroup() and  not ((VuGroupEntity*)target)->SessionInGroup(FalconLocalSession))
+        else if (target->IsGroup() and not ((VuGroupEntity*)target)->SessionInGroup(FalconLocalSession))
             loopback = FALSE;
         else if (target->IsSession() and target not_eq FalconLocalSession)
             loopback = FALSE;

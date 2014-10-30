@@ -357,7 +357,7 @@ void FindMissionInBriefing(long ID)
 
             while (cur)
             {
-                if (cur->Item_ and  not (cur->Item_->GetFlags() bitand C_BIT_INVISIBLE))
+                if (cur->Item_ and not (cur->Item_->GetFlags() bitand C_BIT_INVISIBLE))
                 {
                     if (((C_Mission*)cur->Item_)->GetStatusID() < _MIS_EGRESS)
                     {

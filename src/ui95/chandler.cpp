@@ -405,7 +405,7 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
     {
         Root_ = newwin;
     }
-    else if (thewin->GetDepth() < Root_->win->GetDepth() and thewin->GetDepth() or (thewin->GetFlags() bitand C_BIT_CANTMOVE and  not (Root_->win->GetFlags() bitand C_BIT_CANTMOVE)))
+    else if (thewin->GetDepth() < Root_->win->GetDepth() and thewin->GetDepth() or (thewin->GetFlags() bitand C_BIT_CANTMOVE and not (Root_->win->GetFlags() bitand C_BIT_CANTMOVE)))
     {
         newwin->Next = Root_;
         Root_->Prev = newwin;
@@ -417,7 +417,7 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
 
         while (cur and newwin)
         {
-            if (thewin->GetDepth() < cur->win->GetDepth() and thewin->GetDepth() or (thewin->GetFlags() bitand C_BIT_CANTMOVE and  not (cur->win->GetFlags() bitand C_BIT_CANTMOVE)))
+            if (thewin->GetDepth() < cur->win->GetDepth() and thewin->GetDepth() or (thewin->GetFlags() bitand C_BIT_CANTMOVE and not (cur->win->GetFlags() bitand C_BIT_CANTMOVE)))
             {
                 newwin->Next = cur;
                 newwin->Prev = cur->Prev;
@@ -437,7 +437,7 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
     }
 
     thewin->SetHandler(this);
-    thewin->update_ or_eq  C_DRAW_REFRESHALL;
+    thewin->update_ or_eq C_DRAW_REFRESHALL;
     thewin->RefreshWindow();
 
     if (thewin->GetFlags() bitand C_BIT_ENABLED)
@@ -458,10 +458,10 @@ BOOL C_Handler::ShowWindow(C_Window *thewin)
 
     while (cur)
     {
-        if (cur->win == thewin and  not (cur->Flags bitand C_BIT_ENABLED))
+        if (cur->win == thewin and not (cur->Flags bitand C_BIT_ENABLED))
         {
             cur->win->SetCritical(UI_Critical);
-            cur->Flags or_eq  C_BIT_ENABLED;
+            cur->Flags or_eq C_BIT_ENABLED;
             cur->win->update_ = C_DRAW_REFRESHALL;
             cur->win->RefreshWindow();
             cur->win->SetSection(CurrentSection_);
@@ -659,7 +659,7 @@ void C_Handler::WindowToFront(C_Window *thewin) // move to end of list
 
     if (Root_->win == thewin)
     {
-        if (Root_->Flags bitand C_BIT_CANTMOVE or  not (Root_->Flags bitand C_BIT_ENABLED))
+        if (Root_->Flags bitand C_BIT_CANTMOVE or not (Root_->Flags bitand C_BIT_ENABLED))
             return;
 
         found = Root_;
@@ -685,7 +685,7 @@ void C_Handler::WindowToFront(C_Window *thewin) // move to end of list
         {
             if (cur->Next->win == thewin and found == NULL)
             {
-                if (cur->Next->Flags bitand C_BIT_CANTMOVE or  not (cur->Next->Flags bitand C_BIT_ENABLED))
+                if (cur->Next->Flags bitand C_BIT_CANTMOVE or not (cur->Next->Flags bitand C_BIT_ENABLED))
                     return;
 
                 found = cur->Next;
@@ -801,8 +801,8 @@ void C_Handler::CheckTranslucentWindows()
             while (infront)
             {
                 if ((infront->win->GetFlags() bitand C_BIT_TRANSLUCENT)
-                    and (infront->win->update_ bitand (C_DRAW_COPYWINDOW | C_DRAW_REFRESH | C_DRAW_REFRESHALL))
-                    and (infront->Flags bitand C_BIT_ENABLED))
+                   and (infront->win->update_ bitand (C_DRAW_COPYWINDOW | C_DRAW_REFRESH | C_DRAW_REFRESHALL))
+                   and (infront->Flags bitand C_BIT_ENABLED))
                 {
                     for (i = 0; i < infront->win->rectcount_; i++)
                     {
@@ -884,7 +884,7 @@ void C_Handler::SetUpdateRect(UI95_RECT *upd)
     {
         rectlist_[rectcount_] = *upd;
         rectcount_++;
-        UpdateFlag or_eq  C_DRAW_COPYWINDOW;
+        UpdateFlag or_eq C_DRAW_COPYWINDOW;
     }
     else if (rectcount_ < HND_MAX_RECTS)
     {
@@ -899,7 +899,7 @@ void C_Handler::SetUpdateRect(UI95_RECT *upd)
         rectlist_[rectcount_].right = upd->right;
         rectlist_[rectcount_].bottom = upd->bottom;
         rectcount_++;
-        UpdateFlag or_eq  C_DRAW_COPYWINDOW;
+        UpdateFlag or_eq C_DRAW_COPYWINDOW;
     }
     else
     {
@@ -908,7 +908,7 @@ void C_Handler::SetUpdateRect(UI95_RECT *upd)
         rectlist_[0].top = 0;
         rectlist_[0].right = GetW();
         rectlist_[0].bottom = GetH();
-        UpdateFlag or_eq  C_DRAW_COPYWINDOW;
+        UpdateFlag or_eq C_DRAW_COPYWINDOW;
     }
 }
 
@@ -951,7 +951,7 @@ void C_Handler::ClearHiddenRects(WHLIST *me)
 
         while (cur)
         {
-            if ((cur->Flags bitand C_BIT_ENABLED) and  not (cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
+            if ((cur->Flags bitand C_BIT_ENABLED) and not (cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
             {
                 me->win->ClearUpdateRect(cur->win->GetX() - me->win->GetX(),
                                          cur->win->GetY() - me->win->GetY(),
@@ -978,7 +978,7 @@ void C_Handler::ClearAllHiddenRects()
 
             while (cur)
             {
-                if ((cur->Flags bitand C_BIT_ENABLED) and  not (cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
+                if ((cur->Flags bitand C_BIT_ENABLED) and not (cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
                 {
                     me->win->ClearUpdateRect(cur->win->GetX() - me->win->GetX(),
                                              cur->win->GetY() - me->win->GetY(),
@@ -1374,7 +1374,7 @@ void C_Handler::EnableWindowGroup(long ID)
 
     while (cur)
     {
-        if (cur->win->GetGroup() == ID and  not (cur->Flags bitand C_BIT_ENABLED))
+        if (cur->win->GetGroup() == ID and not (cur->Flags bitand C_BIT_ENABLED))
         {
             ShowWindow(cur->win);
 
@@ -1525,8 +1525,8 @@ C_Window *C_Handler::GetWindow(short x, short y)
     {
         if (cur->Flags bitand C_BIT_ENABLED)
         {
-            if (x >= cur->win->GetX() and y >= cur->win->GetY()  and 
-                x <= (cur->win->GetX() + cur->win->GetW())  and 
+            if (x >= cur->win->GetX() and y >= cur->win->GetY() and 
+                x <= (cur->win->GetX() + cur->win->GetW()) and 
                 y <= (cur->win->GetY() + cur->win->GetH()))
                 overme = cur->win;
 
@@ -2052,13 +2052,13 @@ void C_Handler::BlitWindowNow(C_Window *win)
 
 void C_Handler::PostUpdate()
 {
-    // UpdateFlag or_eq  C_DRAW_UPDATE;
+    // UpdateFlag or_eq C_DRAW_UPDATE;
     // PostMessage(AppWindow_,C_WM_UPDATE,0,0);
 }
 
 void C_Handler::SendUpdate()
 {
-    // UpdateFlag or_eq  C_DRAW_UPDATE;
+    // UpdateFlag or_eq C_DRAW_UPDATE;
     // SendMessage(AppWindow_,C_WM_UPDATE,0,0);
 }
 
@@ -2837,13 +2837,13 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             Key = (uchar)(((lParam >> 16) bitand 0xff) | ((lParam >> 17) bitand 0x80)); //
 
             if (GetKeyState(VK_SHIFT) bitand 0x80)
-                ShiftStates or_eq  _SHIFT_DOWN_;
+                ShiftStates or_eq _SHIFT_DOWN_;
 
             if (GetKeyState(VK_MENU) bitand 0x80)
-                ShiftStates or_eq  _ALT_DOWN_;
+                ShiftStates or_eq _ALT_DOWN_;
 
             if (GetKeyState(VK_CONTROL) bitand 0x80)
-                ShiftStates or_eq  _CTRL_DOWN_;
+                ShiftStates or_eq _CTRL_DOWN_;
 
             if (GetKeyState(VK_CAPITAL) bitand 0x01)
                 if ((Key >= DIK_Q and Key <= DIK_P) or (Key >= DIK_A and Key <= DIK_L) or (Key >= DIK_Z and Key <= DIK_M))
@@ -2851,7 +2851,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
             if (GetKeyState(VK_NUMLOCK) bitand 0x01)
                 if ((Key >= DIK_NUMPAD7 and Key <= DIK_NUMPAD9) or (Key >= DIK_NUMPAD4 and Key <= DIK_NUMPAD6) or (Key >= DIK_NUMPAD1 and Key <= DIK_DECIMAL))
-                    ShiftStates or_eq  _SHIFT_DOWN_;
+                    ShiftStates or_eq _SHIFT_DOWN_;
 
             Ascii = AsciiChar(Key, ShiftStates);
 

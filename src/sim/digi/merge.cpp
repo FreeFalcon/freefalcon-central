@@ -264,7 +264,7 @@ void DigitalBrain::AccelCheck(void)
         {
             AddMode(AccelMode);
         }
-        else if (curMode == AccelMode and self->GetKias() < cornerSpeed * 0.447F  and 
+        else if (curMode == AccelMode and self->GetKias() < cornerSpeed * 0.447F and 
                  self->Pitch() > 0.0F * DTR and self->GetKias())//me123 180kias
         {
             AddMode(AccelMode);

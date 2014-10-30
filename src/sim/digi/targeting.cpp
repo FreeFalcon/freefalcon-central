@@ -149,7 +149,7 @@ void DigitalBrain::DoTargeting(void)
 
             while (simobj)
             {
-                if (simobj->BaseData()->IsSim() and  not ((SimBaseClass*)simobj->BaseData())->IsAwake())
+                if (simobj->BaseData()->IsSim() and not ((SimBaseClass*)simobj->BaseData())->IsAwake())
                 {
                     tmpobj = simobj->next;
 
@@ -214,7 +214,7 @@ void DigitalBrain::TargetSelection(void)
     if (targetPtr and (
             targetPtr->BaseData()->IsExploding() or targetPtr->BaseData()->IsDead() ||
             (
-                targetPtr->BaseData()->IsAirplane()  and 
+                targetPtr->BaseData()->IsAirplane() and 
                 ((AircraftClass*)targetPtr->BaseData())->IsAcStatusBitsSet(
                     AircraftClass::ACSTATUS_PILOT_EJECTED
                 )
@@ -234,7 +234,7 @@ void DigitalBrain::TargetSelection(void)
     objectPtr = targetList;
 
     // sfr: removed JB check
-    // and  not F4IsBadReadPtr(objectPtr, sizeof(SimObjectType))) // JB 010224 CTD
+    // and not F4IsBadReadPtr(objectPtr, sizeof(SimObjectType))) // JB 010224 CTD
     while (objectPtr)
     {
         FalconEntity *baseData = objectPtr->BaseData();
@@ -258,8 +258,8 @@ void DigitalBrain::TargetSelection(void)
 
         // Cobra add this to clear out dead missiles?
         if (
-            baseData->IsSim()  and 
-            ((SimBaseClass *)baseData)->incomingMissile[0]  and 
+            baseData->IsSim() and 
+            ((SimBaseClass *)baseData)->incomingMissile[0] and 
             ((SimBaseClass *)baseData)->incomingMissile[0]->IsDead()
         )
         {
@@ -289,13 +289,13 @@ void DigitalBrain::TargetSelection(void)
             // EVEN IF NO SENSORS ON HIM, ACE AND VETERAN GETS TO USE GCI
             if (/*SkillLevel() < g_nLowestSkillForGCI ||*/
                 objectPtr->localData->range >= 60.0F * NM_TO_FT ||
-                 not (
+ not (
                     (
-                        baseData->IsSim()  and 
+                        baseData->IsSim() and 
                         ((SimBaseClass*)baseData)->GetCampaignObject()->GetSpotted(self->GetTeam())
                     ) ||
                     (
-                        baseData->IsCampaign()  and 
+                        baseData->IsCampaign() and 
                         ((CampBaseClass*)baseData)->GetSpotted(self->GetTeam())
                     )
                 )
@@ -436,26 +436,26 @@ void DigitalBrain::TargetSelection(void)
         }
 
         /*
-           else if (threatTime < targetTime  and 
-               maxThreatPtr  and 
-            maxThreatPtr->BaseData()->IsAirplane()  and 
-             not maxThreatPtr->BaseData()->OnGround()  and 
+           else if (threatTime < targetTime and 
+               maxThreatPtr and 
+            maxThreatPtr->BaseData()->IsAirplane() and 
+ not maxThreatPtr->BaseData()->OnGround() and 
             maxThreatPtr->localData->range < 5.0f * NM_TO_FT )
            {
            SetTarget(maxThreatPtr);
            }
-           else if (targetTime < MAX_TARGET_TIME  and 
-                    maxTargetPtr  and 
-         maxTargetPtr->BaseData()->IsAirplane()  and 
-          not maxTargetPtr->BaseData()->OnGround()  and 
+           else if (targetTime < MAX_TARGET_TIME and 
+                    maxTargetPtr and 
+         maxTargetPtr->BaseData()->IsAirplane() and 
+ not maxTargetPtr->BaseData()->OnGround() and 
          maxTargetPtr->localData->range < 5.0f * NM_TO_FT )
            {
            SetTarget(maxTargetPtr);
            }
-           else if (curSpike  and 
-            curSpike->IsAirplane()  and 
-          not curSpike->OnGround()  and 
-          not foundSpike)
+           else if (curSpike and 
+            curSpike->IsAirplane() and 
+ not curSpike->OnGround() and 
+ not foundSpike)
            {
            float dx, dy, dist;
 

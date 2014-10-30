@@ -5023,7 +5023,7 @@ float CockpitManager::GetTilt(void)
 void CockpitManager::SetTOD(float newLightLevel)
 {
 
-    /* if ((fabs(lightLevel - newLightLevel) <= COCKPIT_LIGHT_CHANGE_TOLERANCE)  and 
+    /* if ((fabs(lightLevel - newLightLevel) <= COCKPIT_LIGHT_CHANGE_TOLERANCE) and 
      (OTWDriver.renderer->GetGreenMode() not_eq inNVGmode)) {
      return;
      }*/
@@ -5529,7 +5529,7 @@ void CockpitManager::LoadCockpitDefaults(void)
     }
 
     //MI EWS stuff
-    if (mpIcp and SimDriver.GetPlayerEntity() and  not F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass)))
+    if (mpIcp and SimDriver.GetPlayerEntity() and not F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass)))
     {
         //Chaff and Flare Bingo
         mpIcp->FlareBingo = GetPrivateProfileInt("EWS", "Flare Bingo",
@@ -5633,7 +5633,7 @@ void CockpitManager::LoadCockpitDefaults(void)
     }
 
     //MI save Cockpit selection
-    if (SimDriver.GetPlayerEntity() and  not F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass)))
+    if (SimDriver.GetPlayerEntity() and not F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass)))
     {
         sprintf(tmpStr, "WideView");
         int temp = GetPrivateProfileInt("Cockpit View", tmpStr, 0, dataFileName);
@@ -5663,10 +5663,10 @@ void CockpitManager::LoadCockpitDefaults(void)
     // Master Arm
     //if (SimDriver.GetPlayerEntity()) // JB 010220 CTD
     // sfr: TODO take this JB hack out
-    if (playerAC  and 
-        playerAC->Sms  and 
-         not F4IsBadReadPtr(playerAC, sizeof(AircraftClass))  and 
-         not F4IsBadCodePtr((FARPROC) playerAC->Sms))
+    if (playerAC and 
+        playerAC->Sms and 
+ not F4IsBadReadPtr(playerAC, sizeof(AircraftClass)) and 
+ not F4IsBadCodePtr((FARPROC) playerAC->Sms))
     {
         // JB 010220 CTD
         playerAC->Sms->SetMasterArm(
@@ -6182,21 +6182,21 @@ WORD TemplateInfoClass::Pixel32toPixel16(UInt32 ABGR)
     // GREEN
     if (greenShift >= 0)
     {
-        color or_eq  (ABGR >>  greenShift) bitand dwGBitMask;
+        color or_eq (ABGR >>  greenShift) bitand dwGBitMask;
     }
     else
     {
-        color or_eq  (ABGR << -greenShift) bitand dwGBitMask;
+        color or_eq (ABGR << -greenShift) bitand dwGBitMask;
     }
 
     // BLUE
     if (blueShift >= 0)
     {
-        color or_eq  (ABGR >>  blueShift) bitand dwBBitMask;
+        color or_eq (ABGR >>  blueShift) bitand dwBBitMask;
     }
     else
     {
-        color or_eq  (ABGR << -blueShift) bitand dwBBitMask;
+        color or_eq (ABGR << -blueShift) bitand dwBBitMask;
     }
 
     return (WORD)color;
@@ -6219,24 +6219,24 @@ DWORD TemplateInfoClass::Pixel32toPixel32(UInt32 ABGR)
     // GREEN
     if (greenShift >= 0)
     {
-        color or_eq  (ABGR >>  greenShift) bitand dwGBitMask;
+        color or_eq (ABGR >>  greenShift) bitand dwGBitMask;
     }
     else
     {
-        color or_eq  (ABGR << -greenShift) bitand dwGBitMask;
+        color or_eq (ABGR << -greenShift) bitand dwGBitMask;
     }
 
     // BLUE
     if (blueShift >= 0)
     {
-        color or_eq  (ABGR >>  blueShift) bitand dwBBitMask;
+        color or_eq (ABGR >>  blueShift) bitand dwBBitMask;
     }
     else
     {
-        color or_eq  (ABGR << -blueShift) bitand dwBBitMask;
+        color or_eq (ABGR << -blueShift) bitand dwBBitMask;
     }
 
-    color or_eq  ABGR bitand 0xff000000;
+    color or_eq ABGR bitand 0xff000000;
 
     return color;
 }

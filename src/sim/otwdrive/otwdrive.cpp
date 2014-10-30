@@ -579,8 +579,8 @@ void OTWDriverClass::RunActionCamera(void)
         {
             // we don't want to deal with campaign objects....
             if (
-                 not theObject->IsSim() ||
-                 not theObject->IsAwake()
+ not theObject->IsSim() ||
+ not theObject->IsAwake()
                 /* or theObject->IsEject()*/
             ) // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots REMOVED FOR NOW
             {
@@ -593,10 +593,10 @@ void OTWDriverClass::RunActionCamera(void)
             if (
                 (theObject->IsMissile() ||
                  (
-                     theObject->IsBomb()  and 
-                      not (((BombClass*)theObject)->IsSetBombFlag(BombClass::IsFlare | BombClass::IsChaff)))
-                )  and 
-                 not theObject->IsEject()  and 
+                     theObject->IsBomb() and 
+ not (((BombClass*)theObject)->IsSetBombFlag(BombClass::IsFlare | BombClass::IsChaff)))
+                ) and 
+ not theObject->IsEject() and 
                 (otwPlatform.get() not_eq weaponObject)
             )
             {
@@ -1173,7 +1173,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsSim() and theObject->IsWeapon()  and 
+                    if (theObject->IsSim() and theObject->IsWeapon() and 
                         ((SimWeaponClass*)theObject)->Parent() == focusObj)
                     {
                         // 2002-02-15 ADDED BY S.G. Don't toggle to chaff and flares (NOTE THE '!' AT THE FRONT TO REVERSE THE CONDITION)
@@ -1228,8 +1228,8 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if ((theObject->IsAirplane() or theObject->IsHelicopter())  and 
-                        theObject not_eq focusObj  and 
+                    if ((theObject->IsAirplane() or theObject->IsHelicopter()) and 
+                        theObject not_eq focusObj and 
                         theObject->GetTeam() == focusObj->GetTeam())
                     {
                         // is this the same as current?
@@ -1274,7 +1274,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if ((theObject->IsAirplane() or theObject->IsHelicopter())  and 
+                    if ((theObject->IsAirplane() or theObject->IsHelicopter()) and 
                         theObject->GetTeam() not_eq focusObj->GetTeam())
                     {
                         // is this the same as current?
@@ -1319,7 +1319,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsGroundVehicle()  and 
+                    if (theObject->IsGroundVehicle() and 
                         theObject->GetTeam() == focusObj->GetTeam())
                     {
                         // is this the same as current?
@@ -1366,7 +1366,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsGroundVehicle()  and 
+                    if (theObject->IsGroundVehicle() and 
                         theObject->GetTeam() not_eq focusObj->GetTeam())
                         // if ( theObject->GetTeam() not_eq focusObj->GetTeam() ) // 2002-02-16 MODIFIED BY S.G. NEXT_ENEMY handles now both air and ground so fixate this one on ground only...
                     {
@@ -1461,8 +1461,8 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsSim() and theObject->IsMissile()  and 
-                        ((SimMoverClass *)theObject)->targetPtr  and 
+                    if (theObject->IsSim() and theObject->IsMissile() and 
+                        ((SimMoverClass *)theObject)->targetPtr and 
                         ((SimMoverClass *)theObject)->targetPtr->BaseData() == focusObj)
                     {
                         // is this the same as current?
@@ -1527,7 +1527,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsSim() and theObject->IsWeapon()  and 
+                    if (theObject->IsSim() and theObject->IsWeapon() and 
                         ((SimWeaponClass*)theObject)->Parent() == focusObj)
                     {
                         // 2002-02-15 ADDED BY S.G. Don't toggle to chaff and flares (NOTE THE '!' AT THE FRONT TO REVERSE THE CONDITION)
@@ -1580,9 +1580,9 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if ((theObject->IsAirplane() or theObject->IsHelicopter())  and 
-                        theObject not_eq focusObj  and 
-                        //  not theObject->IsEject() and // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots REMOVED FOR NOW
+                    if ((theObject->IsAirplane() or theObject->IsHelicopter()) and 
+                        theObject not_eq focusObj and 
+                        // not theObject->IsEject() and // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots REMOVED FOR NOW
                         theObject->GetTeam() == focusObj->GetTeam())
                     {
                         // is this the same as current?
@@ -1623,8 +1623,8 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if ((theObject->IsAirplane() or theObject->IsHelicopter())  and 
-                         not theObject->IsEject() and // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots
+                    if ((theObject->IsAirplane() or theObject->IsHelicopter()) and 
+ not theObject->IsEject() and // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots
                         theObject->GetTeam() not_eq focusObj->GetTeam())
                     {
                         // is this the same as current?
@@ -1665,7 +1665,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsGroundVehicle()  and 
+                    if (theObject->IsGroundVehicle() and 
                         theObject->GetTeam() == focusObj->GetTeam())
                     {
                         // is this the same as current?
@@ -1706,7 +1706,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsGroundVehicle()  and 
+                    if (theObject->IsGroundVehicle() and 
                         theObject->GetTeam() not_eq focusObj->GetTeam())
                     {
                         // is this the same as current?
@@ -1792,9 +1792,9 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsSim()  and 
-                        theObject->IsMissile()  and 
-                        ((SimMoverClass *)theObject)->targetPtr  and 
+                    if (theObject->IsSim() and 
+                        theObject->IsMissile() and 
+                        ((SimMoverClass *)theObject)->targetPtr and 
                         ((SimMoverClass *)theObject)->targetPtr->BaseData() == focusObj)
                     {
                         // is this the same as current?
@@ -2771,7 +2771,7 @@ void OTWDriverClass::ObjectSetData(SimBaseClass *obj, Tpoint *simView, Trotation
     {
     FalconSimDataToggle *dataRequest;
 
-    if ((fabs (obj->XPos() - flyingEye->XPos()) < 3.0F * NM_TO_FT  and 
+    if ((fabs (obj->XPos() - flyingEye->XPos()) < 3.0F * NM_TO_FT and 
     fabs (obj->YPos() - flyingEye->YPos()) < 3.0F * NM_TO_FT) or obj->IsSetFlag(MOTION_OWNSHIP))
     {
     if ( not ((SimMoverClass*)obj)->DataRequested())
@@ -3090,16 +3090,16 @@ void OTWDriverClass::RemoveObjectFromDrawList(SimBaseClass* theObject)
         viewPoint->RemoveObject(theObject->drawPointer);
 
         // RED - NEW PS TRAILS - No more needed a remove
-        /*if (theObject->IsMissile()  and 
-         ((MissileClass*)theObject)->trail  and 
+        /*if (theObject->IsMissile() and 
+         ((MissileClass*)theObject)->trail and 
          ((MissileClass*)theObject)->trail->InDisplayList() )
         {
          viewPoint->RemoveObject(((MissileClass*)theObject)->trail);
         }*/
 
         if (
-            theObject->IsGroundVehicle()  and 
-            ((GroundClass*)theObject)->truckDrawable  and 
+            theObject->IsGroundVehicle() and 
+            ((GroundClass*)theObject)->truckDrawable and 
             ((GroundClass*)theObject)->truckDrawable->InDisplayList()
         )
         {
@@ -3257,7 +3257,7 @@ void OTWDriverClass::ScrollMessages()
 
     if (textMessage[0][0])
     {
-        showFrontText or_eq  SHOW_MESSAGES;
+        showFrontText or_eq SHOW_MESSAGES;
     }
     else
     {
@@ -3273,7 +3273,7 @@ void OTWDriverClass::ShowMessage(char* msg)
     {
         F4SoundFXSetDist(SFX_CP_ICP1, TRUE, 0.0f, 1.0f);
 
-        showFrontText or_eq  SHOW_MESSAGES;
+        showFrontText or_eq SHOW_MESSAGES;
 
         if (textMessage[MAX_CHAT_LINES - 1][0])
         {

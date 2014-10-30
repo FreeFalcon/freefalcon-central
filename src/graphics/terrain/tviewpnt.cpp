@@ -30,7 +30,7 @@ void TViewPoint::Setup(int minimumLOD, int maximumLOD, float *fetchRanges)
 
     minLOD  = minimumLOD;
     maxLOD  = maximumLOD;
-    nLists  = maxLOD + 1; // Wastes extra array entries if minLOD not_eq 0 (compl  50 bytes per)
+    nLists  = maxLOD + 1; // Wastes extra array entries if minLOD not_eq 0 (compl 50 bytes per)
 
     maxRange = new float[(maxLOD + 1) ];
 
@@ -598,7 +598,7 @@ float TViewPoint::GetGroundLevel(float x, float y, Tpoint *normal)
     Nz = -TheMap.Level(LOD)->FTperPOST(); // (remember positive Z is down)
 
     if (x_pos >= y_pos
-        and p1 and p3) // JB 011019 CTD fix
+       and p1 and p3) // JB 011019 CTD fix
     {
         // upper left triangle
         p2 = blockLists[LOD].GetPost(row + 1, col);
@@ -670,7 +670,7 @@ int TViewPoint::GetLODLevel(float x, float y) const
 
     // Figure out the highest detail level which has the required data available
     while (
-        lod <= maxLOD  and 
+        lod <= maxLOD and 
         blockLists[lod].RangeFromCenter(row, col) >= blockLists[lod].GetAvailablePostRange()
     )
     {

@@ -573,7 +573,7 @@ void RealWeather::GenerateClouds(bool bRandom)
         drawableCell = 1;
 
         /*if(weatherCondition > FAIR
-         and (-viewerZ) > (-stratusZ) and (-viewerZ) < (-stratusZ)+stratusDepth)
+        and (-viewerZ) > (-stratusZ) and (-viewerZ) < (-stratusZ)+stratusDepth)
         {
          numCells = 5;
          cellSize = 7168;
@@ -926,8 +926,8 @@ void RealWeather::UpdateDrawables()
             r = 0;
 
             if (PlayerOptions.ShadowsOn()
-                and row >= shadowCell and row < numCells - shadowCell
-                and col >= shadowCell and col < numCells - shadowCell)
+               and row >= shadowCell and row < numCells - shadowCell
+               and col >= shadowCell and col < numCells - shadowCell)
             {
                 shadowPos.x = sunMag;
                 shadowPos.y = shadowPos.z = 0;
@@ -962,15 +962,15 @@ void RealWeather::UpdateDrawables()
                 for (i = 0; i < 4; i++)
                 {
                     clipFlag[i]  = GetRangeClipFlags(vp[i].z, 0);
-                    clipFlag[i] or_eq  GetHorizontalClipFlags(vp[i].x, vp[i].z);
-                    clipFlag[i] or_eq  GetVerticalClipFlags(vp[i].y, vp[i].z);
+                    clipFlag[i] or_eq GetHorizontalClipFlags(vp[i].x, vp[i].z);
+                    clipFlag[i] or_eq GetVerticalClipFlags(vp[i].y, vp[i].z);
                 }
 
                 weatherCellArray[row][col].onScreen = ( not clipFlag[0] or not clipFlag[1] or not clipFlag[2] or not clipFlag[3]);
 
                 if ( not weatherCellArray[row][col].onScreen
-                    and row >= shadowCell + 1 and row < numCells - shadowCell - 1
-                    and col >= shadowCell + 1 and col < numCells - shadowCell - 1)
+                   and row >= shadowCell + 1 and row < numCells - shadowCell - 1
+                   and col >= shadowCell + 1 and col < numCells - shadowCell - 1)
                 {
                     float dx = viewerX - shadowPos.x;
                     float dy = viewerY - shadowPos.y;
@@ -1049,8 +1049,8 @@ void RealWeather::DrawRain()
         }
 
         if ( not (rainX > -40 and rainX < 40
-              and   rainY > -26 and rainY < 26
-              and   rainZ > -40 and rainZ < 40))
+             and rainY > -26 and rainY < 26
+             and rainZ > -40 and rainZ < 40))
         {
             p0.x = -brdsize + rainX;
             p0.y =  0 + rainY;

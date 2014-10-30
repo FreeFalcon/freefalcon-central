@@ -104,7 +104,7 @@ SimlibFileClass::SimlibFileClass(void)
 /*            (char *, SIM_INT)                                     */
 /*                                                                  */
 /* Description:                                                     */
-/*    Open the named file with the desired permissions and          */
+/*    Open the named file with the desired permissions and */
 /*    attributes.                                                   */
 /*                                                                  */
 /* Inputs:                                                          */

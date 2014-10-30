@@ -86,7 +86,7 @@ void C_Help::SetText(long x, long y, long w, long TextID)
 
 long C_Help::CheckHotSpots(long , long)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
         return(0);
 
     return(0);

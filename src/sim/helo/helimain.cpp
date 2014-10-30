@@ -275,8 +275,8 @@ void HelicopterClass::Init(SimInitDataClass* initData)
     //REMOVED OLD CODE; BEGIN REWRITE
     if (curWaypoint)
     {
-        if (curWaypoint == atWaypoint  and curWaypoint->GetWPFlags() bitand WPF_TAKEOFF
-            and curWaypoint->GetWPDepartureTime() > SimLibElapsedTime)
+        if (curWaypoint == atWaypoint and curWaypoint->GetWPFlags() bitand WPF_TAKEOFF
+           and curWaypoint->GetWPDepartureTime() > SimLibElapsedTime)
         {
             curWaypoint = atWaypoint;
         }
@@ -728,7 +728,7 @@ int HelicopterClass::Exec(void)
             RunSensors();
 
             /*
-            if (  not hBrain->isWing )
+            if ( not hBrain->isWing )
             {
              hBrain->TargetSelection( targetList );
             }

@@ -392,7 +392,7 @@ void ICPClass::ExecINSMode(void)
             FillDEDMatrix(0, 9, tempstr1);
             FillDEDMatrix(0, 14, tempstr2);
 
-            if ( not playerAC->HasAligned  and 
+            if ( not playerAC->HasAligned and 
                 playerAC->INSState(AircraftClass::INS_Nav))
             {
                 FillDEDMatrix(0, 14, "00");
@@ -404,7 +404,7 @@ void ICPClass::ExecINSMode(void)
                 else
                     FillDEDMatrix(0, 17, "   ");
             }
-            else if (playerAC->INSState(AircraftClass::INS_AlignNorm)  and 
+            else if (playerAC->INSState(AircraftClass::INS_AlignNorm) and 
                      playerAC->INSState(AircraftClass::INS_Aligned))
             {
                 if (vuxRealTime bitand 0x200)

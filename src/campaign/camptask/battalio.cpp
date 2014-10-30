@@ -489,9 +489,9 @@ int BattalionClass::MoveUnit(CampaignTime time)
     lo = GetUnitObjective();
 
     if (
-         not lo or (
-            Parent() and (FalconLocalGame->GetGameType() == game_Campaign)  and 
-             not TeamInfo[GetTeam()]->gtm->IsValidObjective(GetOrders(), lo)
+ not lo or (
+            Parent() and (FalconLocalGame->GetGameType() == game_Campaign) and 
+ not TeamInfo[GetTeam()]->gtm->IsValidObjective(GetOrders(), lo)
         )
     )
     {
@@ -1007,7 +1007,7 @@ int BattalionClass::DoCombat()
             }
 
             // Check if our target should call in Artillery/CAS against us (Only for enemy battalions with bad odds)
-            if (e->IsUnit() and e->GetDomain() == DOMAIN_LAND and ((Unit)e)->GetOdds() < 20 and  not ((Unit)e)->Supported())
+            if (e->IsUnit() and e->GetDomain() == DOMAIN_LAND and ((Unit)e)->GetOdds() < 20 and not ((Unit)e)->Supported())
             {
                 // Look for artillery or air support
                 if (RequestSupport((Unit)e, this))
@@ -1548,7 +1548,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 
             // KCK: Good operators could shoot before going to guide mode. Check skill and return TRUE
             if (
-                GetRadarMode() == FEC_RADAR_AQUIRE  and 
+                GetRadarMode() == FEC_RADAR_AQUIRE and 
                 rand() % 100 < TeamInfo[GetOwner()]->airDefenseExperience - MINIMUM_EXP_TO_FIRE_PREGUIDE
             )
             {
@@ -1701,7 +1701,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
                 SEARCHtimer = SimLibElapsedTime;
             }
 
-            if (d and range <= radarData->Rangetosearch3 and  SimLibElapsedTime - SEARCHtimer >= timetosearch)
+            if (d and range <= radarData->Rangetosearch3 and SimLibElapsedTime - SEARCHtimer >= timetosearch)
             {
                 step_search_mode = FEC_RADAR_SEARCH_3;
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
@@ -1772,7 +1772,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
      {
     // KCK: Good operators could shoot before going to guide mode. Check skill and return TRUE
     if (
-     GetRadarMode() == FEC_RADAR_AQUIRE  and 
+     GetRadarMode() == FEC_RADAR_AQUIRE and 
      rand()%100 < TeamInfo[GetOwner()]->airDefenseExperience - MINIMUM_EXP_TO_FIRE_PREGUIDE
     )
     {
@@ -1944,7 +1944,7 @@ int BattalionClass::RallyUnit(int minutes)
         maxMorale = 0;  // MLR 6/26/2004 - 0 er?
 
     // Regain MORALE_REGAIN_RATE % of maxMorale each hour we've been waiting
-    if (/* not Engaged()  and */ GetUnitMorale() < maxMorale)
+    if (/* not Engaged() and */ GetUnitMorale() < maxMorale)
     {
         increase = (MORALE_REGAIN_RATE * minutes * maxMorale) / 6000;
 
@@ -2191,7 +2191,7 @@ int BattalionClass::Reaction(CampEntity e, int knowledge, float range)
     neworders = GetUnitOrders();
 
     // Aircraft on ground are ignored (technically, we could shoot at them.. but..)
-    if (e->IsFlight() and  not ((Flight)e)->Moving())
+    if (e->IsFlight() and not ((Flight)e)->Moving())
         return 0;
 
     // KCK HACK: Don't shoot at FAC aircraft.
@@ -2427,10 +2427,10 @@ int BattalionClass::CheckTactic(int tid)
         return 0; // KCK Check if our offensive's started yet.
 
     // Refused() means our request was refused. These are no longer valid tactics
-    if ( not CheckAirborne(tid,  not Refused()))
+    if ( not CheckAirborne(tid, not Refused()))
         return 0;
 
-    if ( not CheckMarine(tid,  not Refused()))
+    if ( not CheckMarine(tid, not Refused()))
         return 0;
 
     return GetTacticPriority(tid);
@@ -2594,7 +2594,7 @@ void BattalionClass::MakeBattalionDirty(Dirty_Battalion bits, Dirtyness score)
         score = static_cast<Dirtyness>(score << 4);
     }
 
-    dirty_battalion or_eq  bits;
+    dirty_battalion or_eq bits;
 
     MakeDirty(DIRTY_BATTALION, score);
 }

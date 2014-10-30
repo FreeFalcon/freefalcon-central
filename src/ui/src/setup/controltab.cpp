@@ -1022,7 +1022,7 @@ void AxisChangeCB(long, short hittype, C_Base *me)
         // now how do I find out the old axis ? hmm
         for (int j = 0; DIAxisNames[j].DXAxisName; j++)
         {
-            if ((DIAxisNames[j].DXDeviceID == UIInputStuff[i].theDeviceAxis->Device)  and 
+            if ((DIAxisNames[j].DXDeviceID == UIInputStuff[i].theDeviceAxis->Device) and 
                 (DIAxisNames[j].DXAxisID == UIInputStuff[i].theDeviceAxis->Axis))
             {
                 ShiAssert(DIAxisNames[j].isMapped == true);
@@ -1043,7 +1043,7 @@ void AxisChangeCB(long, short hittype, C_Base *me)
     {
         // was not keyboard
         // so we have the change from one axis to another axis
-        if ((DIAxisNames[index].DXDeviceID == UIInputStuff[i].theDeviceAxis->Device)  and 
+        if ((DIAxisNames[index].DXDeviceID == UIInputStuff[i].theDeviceAxis->Device) and 
             (DIAxisNames[index].DXAxisID == UIInputStuff[i].theDeviceAxis->Axis))
         {
             ShiAssert(DIAxisNames[index].isMapped == true);
@@ -1070,7 +1070,7 @@ void AxisChangeCB(long, short hittype, C_Base *me)
             // now how do I find out the old axis ? hmm
             for (int j = 0; DIAxisNames[j].DXAxisName; j++)
             {
-                if ((DIAxisNames[j].DXDeviceID == UIInputStuff[i].theDeviceAxis->Device)  and 
+                if ((DIAxisNames[j].DXDeviceID == UIInputStuff[i].theDeviceAxis->Device) and 
                     (DIAxisNames[j].DXAxisID == UIInputStuff[i].theDeviceAxis->Axis))
                 {
                     DIAxisNames[j].isMapped = false;
@@ -1811,42 +1811,42 @@ void RefreshJoystickCB(long, short, C_Base *)
 
             if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) and IO.povHatAngle[i] not_eq -1)
             {
-                flags or_eq  0x01;
+                flags or_eq 0x01;
                 Direction = 0;
             }
             else if (IO.povHatAngle[i] < 6750)
             {
-                flags or_eq  0x03;
+                flags or_eq 0x03;
                 Direction = 1;
             }
             else if (IO.povHatAngle[i] < 11250)
             {
-                flags or_eq  0x02;
+                flags or_eq 0x02;
                 Direction = 2;
             }
             else if (IO.povHatAngle[i] < 15750)
             {
-                flags or_eq  0x06;
+                flags or_eq 0x06;
                 Direction = 3;
             }
             else if (IO.povHatAngle[i] < 20250)
             {
-                flags or_eq  0x04;
+                flags or_eq 0x04;
                 Direction = 4;
             }
             else if (IO.povHatAngle[i] < 24750)
             {
-                flags or_eq  0x0C;
+                flags or_eq 0x0C;
                 Direction = 5;
             }
             else if (IO.povHatAngle[i] < 29250)
             {
-                flags or_eq  0x08;
+                flags or_eq 0x08;
                 Direction = 6;
             }
             else if (IO.povHatAngle[i] < 33750)
             {
-                flags or_eq  0x09;
+                flags or_eq 0x09;
                 Direction = 7;
             }
 
@@ -2465,7 +2465,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
             return TRUE;
 
         if (GetAsyncKeyState(VK_SHIFT) bitand 0x8001)
-            ShiftStates or_eq  _SHIFT_DOWN_;
+            ShiftStates or_eq _SHIFT_DOWN_;
         else
             ShiftStates and_eq compl _SHIFT_DOWN_;
 

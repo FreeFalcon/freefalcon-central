@@ -103,7 +103,7 @@ void CPLight::DisplayBlit(void)
 
     //MI check for electrics
     if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerOff)
-        and mPersistant == 3)
+       and mPersistant == 3)
     {
         //restore our original state
         if (mState)
@@ -121,7 +121,7 @@ void CPLight::DisplayBlit(void)
         return;
     }
     else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerOff)
-             and mPersistant not_eq 3)
+            and mPersistant not_eq 3)
     {
         //restore our original state
         if (WasPersistant)
@@ -149,7 +149,7 @@ void CPLight::DisplayBlit(void)
         return;
     }
     else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerMain)
-             and mPersistant == 3)
+            and mPersistant == 3)
     {
         //make them go away
         mPersistant = 0;
@@ -249,7 +249,7 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
         return;
 
     if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerOff)
-        and mPersistant == 3)
+       and mPersistant == 3)
     {
         //restore our original state
         if (mState)
@@ -273,7 +273,7 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
         return;
     }
     else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerOff)
-             and mPersistant not_eq 3)
+            and mPersistant not_eq 3)
     {
         //restore our original state
         if (WasPersistant)
@@ -307,7 +307,7 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
         return;
     }
     else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerMain)
-             and mPersistant == 3)
+            and mPersistant == 3)
     {
         //make them go away
         mPersistant = 0;
@@ -365,7 +365,7 @@ void CPLight::CreateLit(void)
             for (int i = 0; i < mStates; i++)
             {
                 // Check if we can use a single texture
-                if (((int)(dwMaxTextureWidth) >= mpSourceBuffer[i].mWidth)  and 
+                if (((int)(dwMaxTextureWidth) >= mpSourceBuffer[i].mWidth) and 
                     ((int)(dwMaxTextureHeight) >= mpSourceBuffer[i].mHeight))
                 {
                     TextureHandle *pTex = new TextureHandle;

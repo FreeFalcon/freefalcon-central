@@ -788,7 +788,7 @@ int SimMoverClass::Exec(void)
                 else if ( not nonLocalData->timer2)
                 {
                     // we haven't yet started firing....
-                    // will be set when recieving a fire message nonLocalData->flags or_eq  NONLOCAL_GUNS_FIRING;
+                    // will be set when recieving a fire message nonLocalData->flags or_eq NONLOCAL_GUNS_FIRING;
 
                     // timer1 is the time to fire next tracer
                     // timer2 is the maximum time we'll allow firing to continue
@@ -1282,8 +1282,8 @@ SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
                     testFeature->drawPointer->GetPosition(&fpos);
 
                     // test with gross level bounds of object
-                    if (fabs(pos.x - fpos.x) < radius + p3.x  and 
-                        fabs(pos.y - fpos.y) < radius + p3.y  and 
+                    if (fabs(pos.x - fpos.x) < radius + p3.x and 
+                        fabs(pos.y - fpos.y) < radius + p3.y and 
                         fabs(pos.z - fpos.z) < radius + p3.z)
                     {
                         // if we're on the ground make sure we have a downward vector if

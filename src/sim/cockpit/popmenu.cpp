@@ -129,10 +129,10 @@ MenuManager::MenuManager(int width, int height)
 
             found = TRUE;
         }
-        else if ( not found  and 
-                 mpResDimensions[i].xRes < width  and 
-                 mpResDimensions[i].xRes > backWidth  and 
-                 mpResDimensions[i].yRes < height  and 
+        else if ( not found and 
+                 mpResDimensions[i].xRes < width and 
+                 mpResDimensions[i].xRes > backWidth and 
+                 mpResDimensions[i].yRes < height and 
                  mpResDimensions[i].yRes > backHeight)
         {
 
@@ -999,7 +999,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
                             if (role == ARO_CA)
                             {
                                 if (
-                                    sms->hardPoint[hp]  and 
+                                    sms->hardPoint[hp] and 
                                     sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() bitand wdAir
                                 )
                                 {
@@ -1009,7 +1009,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
                             else if (role == ARO_S or role == ARO_GA or role == ARO_SB or role == ARO_SEAD)
                             {
                                 if (
-                                    sms->hardPoint[hp]  and 
+                                    sms->hardPoint[hp] and 
                                     sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() bitand wdGround
                                 )
                                 {
@@ -1019,7 +1019,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
                             else if (role == ARO_ASW or role == ARO_ASHIP)
                             {
                                 if (
-                                    sms->hardPoint[hp]  and 
+                                    sms->hardPoint[hp] and 
                                     sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() bitand wdGround
                                 )
                                 {

@@ -270,7 +270,7 @@ void AirframeClass::Pitch(void)
 
         // 2003-03-12 MN changed to check for player and F-16
         // guys, this code is also used by ALL AI planes in complex mode (having a TU-16 with 9G limit )
-        if (SimDriver.GetPlayerEntity() and platform == SimDriver.GetPlayerEntity() and platform->IsAirplane()  and platform->IsF16()) // 2002-03-19 MODIFIED BY S.G. Lets make sure it's an airplane first. Seems odd to happen here but it CTD after ejecting (BT 1071)
+        if (SimDriver.GetPlayerEntity() and platform == SimDriver.GetPlayerEntity() and platform->IsAirplane() and platform->IsF16()) // 2002-03-19 MODIFIED BY S.G. Lets make sure it's an airplane first. Seems odd to happen here but it CTD after ejecting (BT 1071)
             maxCmd = 9.0f ;
         else
             maxCmd = curMaxGs ;// me123 status ok. changed from = curMaxGs to 9.0f;

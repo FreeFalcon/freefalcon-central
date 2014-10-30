@@ -304,7 +304,7 @@ void  DigitalBrain::AiClearLeadersSix(FalconWingmanMsg* msg)
         mDesignatedObject = msg->dataBlock.newTarget;
         ptgt = (AircraftClass*) vuDatabase->Find(mDesignatedObject);
 
-        if (ptgt and pfrom and  not F4IsBadReadPtr(ptgt, sizeof(AircraftClass)) and  not F4IsBadReadPtr(pfrom, sizeof(AircraftClass))) // JB 010318 CTD
+        if (ptgt and pfrom and not F4IsBadReadPtr(ptgt, sizeof(AircraftClass)) and not F4IsBadReadPtr(pfrom, sizeof(AircraftClass))) // JB 010318 CTD
         {
             if (ptgt->ZPos() - pfrom->ZPos() < -500.0F)
             {
@@ -1455,7 +1455,7 @@ void DigitalBrain::AiSetWeaponsAction(FalconWingmanMsg* msg, DigitalBrain::AiWea
 
     //Cobra TJL let's remove the WaitingPermission.  If I give weaponsfree I'm expecting the AI
     //to get its game on and find targets
-    if (action == AI_WEAPONS_FREE and missionClass == AGMission /* and  IsSetATC(WaitingPermission)*/)
+    if (action == AI_WEAPONS_FREE and missionClass == AGMission /* and IsSetATC(WaitingPermission)*/)
     {
         missileShotTimer = 0;
 

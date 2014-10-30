@@ -27,7 +27,7 @@ public:
 	SubRange bitand operator=(const InputType InputValue)
 	{
 
-		if (InputValue >= InputMinimum  and 
+		if (InputValue >= InputMinimum and 
 			InputValue <= InputMaximum)
 		{
 			mOutputValue = InputValue;

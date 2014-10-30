@@ -252,9 +252,9 @@ BOOL GroundClass::DoWeapons(void)
             // Valid for campaign object as well, not just sim
             // We're testing inside for SIM or CAMPAIGN ANYWAY Otherwise nextSamFireTime is NEVER adjusted
             if (
-                gai->battalionCommand  and 
-                /* targetPtr->BaseData()->IsSim()  and */
-                 not targetPtr->BaseData()->OnGround()
+                gai->battalionCommand and 
+                /* targetPtr->BaseData()->IsSim() and */
+ not targetPtr->BaseData()->OnGround()
             )
             {
                 gai->battalionCommand->self->allowSamFire = FALSE;
@@ -636,8 +636,8 @@ int GroundClass::GunTrack(void)
         // we need to prevent flak from firing when aircraft are flying
         // low -- it should be a gameplay feature.  SelectWeapon isn't
         // being granular enough....
-        if ( not targetPtr->BaseData()->OnGround()  and 
-            targetPtr->BaseData()->IsSim()  and 
+        if ( not targetPtr->BaseData()->OnGround() and 
+            targetPtr->BaseData()->IsSim() and 
             targetPtr->BaseData()->ZPos() - ZPos() > -2000.0f)
         {
             return FALSE;
@@ -752,7 +752,7 @@ int GroundClass::MissileTrack(void)
 
     // RV - Biker - Think here is a problem
     // FRB - Increased VT = 1 to VT = 3, same as GMT threshold
-    if ( not isShip and (GetVt() > 3.0f and  not g_bFireOntheMove))
+    if ( not isShip and (GetVt() > 3.0f and not g_bFireOntheMove))
         return FALSE;
 
     // check for radar-guided missiles
@@ -942,10 +942,10 @@ int GroundClass::MissileTrack(void)
     //if (el < 45.0f*DTR) {
     float BUMP;
 
-    if (GetCampaignObject() and   // MLR 5/27/2004 - CTD ?
+    if (GetCampaignObject() and // MLR 5/27/2004 - CTD ?
         /* not ((BattalionClass*)GetCampaignObject())->GetMissilesFlying())*/
         //Cobra TJL 10/30/04
-         not GetCampaignObject()->GetMissilesFlying())
+ not GetCampaignObject()->GetMissilesFlying())
     {
 
         BUMP = static_cast<float>(radarData->Elevationbumpamounta);

@@ -166,11 +166,11 @@ void OnSimMouseInput(HWND)
 
                 action = CP_CHECK_EVENT; //Wombat778 10-07-2003 apparently this is a fake event...seems like the right thing to do
             }
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON0 and  not (ObjData[i].dwData bitand 0x80))
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON0 and not (ObjData[i].dwData bitand 0x80))
             {
                 action = CP_MOUSE_BUTTON0;
             }
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 and  not (ObjData[i].dwData bitand 0x80))
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 and not (ObjData[i].dwData bitand 0x80))
             {
                 action = CP_MOUSE_BUTTON1;
                 oneDown = FALSE;
@@ -587,8 +587,8 @@ void OnSimMouseInput(HWND)
 
             // we come here if 1) no RMB pressed 2) not in 2d pit mode
             // aargh this (whole mouselook) code is a freaking mess 
-            if ((PlayerOptions.GetMouseLook() == true)  and 
-                (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode3DCockpit)  and 
+            if ((PlayerOptions.GetMouseLook() == true) and 
+                (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode3DCockpit) and 
                 (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode2DCockpit))
             {
                 /************************************************************************/

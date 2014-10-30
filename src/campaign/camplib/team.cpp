@@ -491,7 +491,7 @@ TeamClass::TeamClass(FILE *file) :
     // SCR HACK: Hand clobber instant action skill levels
     if (FalconLocalGame and FalconLocalGame->GetGameType() == game_InstantAction)
     {
-        ShiAssert(InstantActionSettings.PilotLevel >= 0  and  InstantActionSettings.PilotLevel <= 4);
+        ShiAssert(InstantActionSettings.PilotLevel >= 0 and InstantActionSettings.PilotLevel <= 4);
         airExperience = 60 + 10 * InstantActionSettings.PilotLevel;
         airDefenseExperience = 60 + 10 * InstantActionSettings.PilotLevel;
     }
@@ -595,7 +595,7 @@ TeamClass::TeamClass(FILE *file) :
         flags and_eq compl TEAM_UPDATED; // We're not updated until we get data from the master
     }
     else
-        flags or_eq  TEAM_UPDATED;
+        flags or_eq TEAM_UPDATED;
 
     atm = NULL;
     gtm = NULL;
@@ -996,7 +996,7 @@ int TeamClass::CheckControl(GridIndex X, GridIndex Y)
 
 void TeamClass::SetActive(int act)
 {
-    flags or_eq  TEAM_ACTIVE;
+    flags or_eq TEAM_ACTIVE;
 
     if ( not act)
         flags xor_eq TEAM_ACTIVE;
@@ -1089,7 +1089,7 @@ int TeamClass::Handle(VuFullUpdateEvent *event)
 
     // Set our flag if we've got all the team's info
     // WARNING: we don't guarentee receipt of the managers
-    flags or_eq  TEAM_UPDATED;
+    flags or_eq TEAM_UPDATED;
 
     // Mark team data as received if we have all the teams.
     for (int i = 0; i < NUM_TEAMS; i++)
@@ -1199,9 +1199,9 @@ void TeamClass::SelectGroundAction(void)
     }
 
     // If we're not currently in an action, see if we can start one
-    if (groundAction.actionType == GACTION_CONSOLIDATE  and 
-        POList  and 
-        initiative >= MIN_COUNTER_ATTACK_INITIATIVE  and 
+    if (groundAction.actionType == GACTION_CONSOLIDATE and 
+        POList and 
+        initiative >= MIN_COUNTER_ATTACK_INITIATIVE and 
         TheCampaign.CurrentTime >= groundAction.actionTimeout + ACTION_RATE)
     {
         // Select our objective
@@ -1294,7 +1294,7 @@ void TeamClass::SelectGroundAction(void)
         }
         else   // *** old code ***
         {
-            if (groundAction.actionPoints and bo) //  and GetRoE(who,bo->GetTeam(),ROE_GROUND_CAPTURE) == ROE_ALLOWED)
+            if (groundAction.actionPoints and bo) // and GetRoE(who,bo->GetTeam(),ROE_GROUND_CAPTURE) == ROE_ALLOWED)
                 return; // We've still got umph, or havn't started yet, and havn't captured our objective
         }
 
@@ -1364,7 +1364,7 @@ void TeamClass::SelectAirActions(void)
     {
         mis = (MissionRequest) lp->GetUserData();
 
-        if ( not mis->action_type and  not (MissionData[mis->mission].flags bitand AMIS_FLYALWAYS))
+        if ( not mis->action_type and not (MissionData[mis->mission].flags bitand AMIS_FLYALWAYS))
             missions_requested++;
 
         lp = lp->GetPrev();
@@ -2101,7 +2101,7 @@ void NewInitiativePointSetting(Team who)
 
     for (i = 0; i < NUM_TEAMS; i++) // old code for the other teams (replaces same code in UpdateTeamStatistics-procedure)
     {
-        if (i not_eq who  and  i not_eq et  and  TeamInfo[i]->flags bitand TEAM_ACTIVE)
+        if (i not_eq who and i not_eq et and TeamInfo[i]->flags bitand TEAM_ACTIVE)
         {
             if (TeamInfo[i]->GetInitiative() < 40)
                 TeamInfo[i]->AddInitiative((INITIATIVE_LEAK_PER_HOUR * MIN_RECALCULATE_STATISTICS) / 60);
@@ -2511,7 +2511,7 @@ void UpdateTeamStatistics(void)
             else if (u->GetDomain() == DOMAIN_AIR)
             {
                 // RV - Biker - Only count attack AC for statistic
-                if (u->GetType() == TYPE_SQUADRON  and 
+                if (u->GetType() == TYPE_SQUADRON and 
                     (u->GetSType() == STYPE_UNIT_ATTACK ||
                      u->GetSType() == STYPE_UNIT_ATTACK_HELO ||
                      u->GetSType() == STYPE_UNIT_BOMBER ||
@@ -3063,7 +3063,7 @@ void TeamClass::MakeTeamDirty(Dirty_Team bits, Dirtyness score)
         return;
     }
 
-    dirty_team or_eq  bits;
+    dirty_team or_eq bits;
     MakeDirty(DIRTY_TEAM, score);
 }
 

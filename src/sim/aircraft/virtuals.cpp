@@ -730,7 +730,7 @@ void AircraftClass::MakeNonPlayerVehicle()
     UnSetFalcFlag(FEC_HASPLAYERS);
 
     if (
-         not HasPilot() ||
+ not HasPilot() ||
         ((DBrain()->ATCStatus() < tReqTaxi) and OnGround() and not af->IsSet(AirframeClass::OnObject))
     )
     {

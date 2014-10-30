@@ -179,9 +179,9 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
 
     // outgoing message, try send. If fails, add to send queue
     if (
-        vuGlobalGroup and vuGlobalGroup->Connected()  and 
-        msg->Target() and msg->Target() not_eq vuLocalSessionEntity  and 
-        msg->DoSend() and ( not ent or not ent->IsPrivate())  and 
+        vuGlobalGroup and vuGlobalGroup->Connected() and 
+        msg->Target() and msg->Target() not_eq vuLocalSessionEntity and 
+        msg->DoSend() and ( not ent or not ent->IsPrivate()) and 
         (vuLocalSession.creator_ not_eq VU_SESSION_NULL_CONNECTION.creator_)
     )
     {
@@ -189,8 +189,8 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
         VuPendingSendQueue *sq = vuMainThread->SendQueue();
 
         if (
-            (retval == 0) and sq  and 
-            (msg->Flags() bitand VU_SEND_FAILED_MSG_FLAG)  and 
+            (retval == 0) and sq and 
+            (msg->Flags() bitand VU_SEND_FAILED_MSG_FLAG) and 
             ((msg->Flags() bitand VU_RELIABLE_MSG_FLAG) or (msg->Flags() bitand VU_KEEPALIVE_MSG_FLAG))
         )
         {
@@ -208,7 +208,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
 
     // if message is remote or is a local message loopback, place in local queues
     if (
-        not msg->IsLocal() ||
+ not msg->IsLocal() ||
         ((msg->Flags() bitand VU_LOOPBACK_MSG_FLAG) and msg->IsLocal())
     )
     {
@@ -228,7 +228,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
 
     // message not added to any queue, auto destroy
     if (
-        (msg->refcnt_ == 1)  and 
+        (msg->refcnt_ == 1) and 
         ( not msg->IsLocal() or (msg->Flags() bitand VU_LOOPBACK_MSG_FLAG))
     )
     {
@@ -278,7 +278,7 @@ int VuMessageQueue::InvalidateMessages(VU_BOOL (*evalFunc)(VuMessage*, void*), v
 
 void VuMessageQueue::RepostMessage(VuMessage* msg, int delay)
 {
-    msg->flags_ or_eq  compl VU_LOOPBACK_MSG_FLAG;
+    msg->flags_ or_eq compl VU_LOOPBACK_MSG_FLAG;
     VuTimerEvent *timer = new VuTimerEvent(0, vuxRealTime + delay, VU_DELAY_TIMER, msg);
     VuMessageQueue::PostVuMessage(timer);
 }

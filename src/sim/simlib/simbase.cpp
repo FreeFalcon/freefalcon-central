@@ -551,7 +551,7 @@ void SimBaseClass::SetRemoveFlag()
         }
     }
 
-    localFlags or_eq  REMOVE_NEXT_FRAME;
+    localFlags or_eq REMOVE_NEXT_FRAME;
 
     SetFlag(OBJ_DEAD);
 
@@ -604,7 +604,7 @@ void SimBaseClass::SetRemoveSilentFlag(void)
         }
     }
 
-    localFlags or_eq  REMOVE_NEXT_FRAME;
+    localFlags or_eq REMOVE_NEXT_FRAME;
 
     SetFlag(OBJ_DEAD);
 
@@ -984,8 +984,8 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
                 (SimDriver.RunningInstantAction() or // We're in instant action (in thise case rangeSquare will be 0 because it's the player) OR
                  ((SimVehicleClass *)speaker)->Brain()->SkillLevel() == 4 or // Skill of wingman is ace OR
                  (((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode() not_eq DigitalBrain::GunsJinkMode and // Wingman not defensive
-                  ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode()  not_eq DigitalBrain::MissileDefeatMode  and 
-                  ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode()  not_eq DigitalBrain::DefensiveModes)))
+                  ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode() not_eq DigitalBrain::MissileDefeatMode and 
+                  ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode() not_eq DigitalBrain::DefensiveModes)))
             {
 
                 // END OF ADDED SECTION EXCEPT FOR THE INDENTATION OF THE FOLLOWING CODE
@@ -1444,7 +1444,7 @@ void SimBaseClass::MakeSimBaseDirty(Dirty_Sim_Base bits, Dirtyness score)
         return;
     }
 
-    dirty_simbase or_eq  bits;
+    dirty_simbase or_eq bits;
     MakeDirty(DIRTY_SIM_BASE, score);
 }
 
@@ -1456,7 +1456,7 @@ void SimBaseClass::SetFlag(int flag)
 {
     if ( not (specialData.flags bitand flag))
     {
-        specialData.flags or_eq  flag;
+        specialData.flags or_eq flag;
         //MakeSimBaseDirty (DIRTY_SIM_FLAGS, DDP[163].priority);
         MakeSimBaseDirty(DIRTY_SIM_FLAGS, SEND_RELIABLE);
     }
@@ -1480,7 +1480,7 @@ void SimBaseClass::SetFlagSilent(int flag)
 {
     if ( not (specialData.flags bitand flag))
     {
-        specialData.flags or_eq  flag;
+        specialData.flags or_eq flag;
     }
 }
 
@@ -1552,7 +1552,7 @@ void SimBaseClass::SetStatusBit(int status)
 {
     if ( not (specialData.status bitand status))
     {
-        specialData.status or_eq  status;
+        specialData.status or_eq status;
         MakeSimBaseDirty(DIRTY_SIM_STATUS, SEND_SOON);
     }
 }

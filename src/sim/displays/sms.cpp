@@ -185,7 +185,7 @@ SMSBaseClass::SMSBaseClass(SimVehicleClass *newOwnship, short *weapId, uchar *we
                           ) ? hardPoint[i]->weaponCount : 1;
             classPtr = &Falcon4ClassTable[wd->Index];
 
-            if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_GUN  and 
+            if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_GUN and 
                 classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_WEAPON)
             {
                 // This is a gun, initialize some extra data
@@ -206,15 +206,15 @@ SMSBaseClass::SMSBaseClass(SimVehicleClass *newOwnship, short *weapId, uchar *we
             else if (
                 classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_BOMB ||
                 (
-                    classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ELECTRONICS  and 
+                    classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ELECTRONICS and 
                     classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_VEHICLE
                 ) ||
                 (
-                    classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_FUEL_TANK  and 
+                    classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_FUEL_TANK and 
                     classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_FUEL_TANK
                 ) ||
                 (
-                    classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_RECON  and 
+                    classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_RECON and 
                     classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_CAMERA
                 )
             )
@@ -226,7 +226,7 @@ SMSBaseClass::SMSBaseClass(SimVehicleClass *newOwnship, short *weapId, uchar *we
             }
             // MLR 3/5/2004 - launchers are "special" bombs
             else if (
-                classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_LAUNCHER  and 
+                classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_LAUNCHER and 
                 classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_ROCKET
             )
             {
@@ -346,9 +346,9 @@ void SMSClass::RemoveWeapon(int hp)
     VuBin<SimWeaponClass> weapPtr;
 
     if (
-        (hardPoint)  and 
-        (hp > -1)  and 
-        (hardPoint[hp]->weaponPointer)  and 
+        (hardPoint) and 
+        (hp > -1) and 
+        (hardPoint[hp]->weaponPointer) and 
         (hardPoint[hp]->weaponCount > 0)
     )
     {
@@ -416,8 +416,8 @@ void SMSBaseClass::LaunchWeapon(void)
     visFlag = vc->VisibleFlags;
 
     if (
-        (hardPoint and curHardpoint > -1)  and 
-        (hardPoint[curHardpoint]->weaponPointer)  and 
+        (hardPoint and curHardpoint > -1) and 
+        (hardPoint[curHardpoint]->weaponPointer) and 
         (hardPoint[curHardpoint]->weaponCount > 0)
     )
     {
@@ -466,9 +466,9 @@ void SMSBaseClass::LaunchWeapon(void)
         // If we're direct mounted weapons and have more weapons on this hardpoint, but no weapon pointers,
         // replace the weapon with an identical copy
         if (
-             not hardPoint[curHardpoint]->GetRackOrPylon() and // MLR 2/20/2004 - added OrPylon
-            hardPoint[curHardpoint]->weaponCount  and 
-             not hardPoint[curHardpoint]->weaponPointer
+ not hardPoint[curHardpoint]->GetRackOrPylon() and // MLR 2/20/2004 - added OrPylon
+            hardPoint[curHardpoint]->weaponCount and 
+ not hardPoint[curHardpoint]->weaponPointer
         )
         {
             if (theWeapon->IsMissile())
@@ -570,7 +570,7 @@ void SMSBaseClass::SelectBestWeapon(uchar *dam, int mt, int range_km, int guns_o
     {
         if (hardPoint[i] and hardPoint[i]->weaponId and hardPoint[i]->weaponCount)
         {
-            if (range_km >= 0 and  not ((Unit)(ownship->GetCampaignObject()))->CanShootWeapon(hardPoint[i]->weaponId))
+            if (range_km >= 0 and not ((Unit)(ownship->GetCampaignObject()))->CanShootWeapon(hardPoint[i]->weaponId))
             {
                 str = 0;
             } //JPO check
@@ -618,9 +618,9 @@ void SMSBaseClass::SelectBestWeapon(uchar *dam, int mt, int range_km, int guns_o
                                                                      ].vuClassData.classInfo_;
 
                             if (
-                                classInfoPtr[VU_DOMAIN] == DOMAIN_AIR  and 
-                                classInfoPtr[VU_CLASS] == CLASS_VEHICLE  and 
-                                classInfoPtr[VU_TYPE] == TYPE_MISSILE  and 
+                                classInfoPtr[VU_DOMAIN] == DOMAIN_AIR and 
+                                classInfoPtr[VU_CLASS] == CLASS_VEHICLE and 
+                                classInfoPtr[VU_TYPE] == TYPE_MISSILE and 
                                 classInfoPtr[VU_STYPE] == STYPE_MISSILE_SURF_AIR
                             )
                             {
@@ -935,7 +935,7 @@ SMSClass::SMSClass(SimVehicleClass *newOwnship, short *weapId, uchar *weapCnt) :
 
 
             //LRKLUDGE
-            if ((classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_RECON  and 
+            if ((classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_RECON and 
                  classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_CAMERA))
             {
                 dataIndex = Rpod_DEF;
@@ -953,7 +953,7 @@ SMSClass::SMSClass(SimVehicleClass *newOwnship, short *weapId, uchar *weapCnt) :
 
             if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_BOMB)
             {
-                if (classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_BOMB  and 
+                if (classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_BOMB and 
                     classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_DURANDAL)
                 {
                     hardPoint[i]->GetWeaponData()->cd = 1.0f;
@@ -974,8 +974,8 @@ SMSClass::SMSClass(SimVehicleClass *newOwnship, short *weapId, uchar *weapCnt) :
             }
 
             //LRKLUDGE problem w/ AA7R's
-            if ((classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE  and 
-                 classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_MISSILE_AIR_AIR  and 
+            if ((classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE and 
+                 classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_MISSILE_AIR_AIR and 
                  classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AA7R))
             {
                 hardPoint[i]->SetWeaponType(wtAim120);
@@ -990,7 +990,7 @@ SMSClass::SMSClass(SimVehicleClass *newOwnship, short *weapId, uchar *weapCnt) :
 
             // Set CBU flag appropriatly
             if (wc->Flags bitand WEAP_CLUSTER)
-                hardPoint[i]->GetWeaponData()->flags or_eq  HasBurstHeight;
+                hardPoint[i]->GetWeaponData()->flags or_eq HasBurstHeight;
 
             strcpy(hardPoint[i]->GetWeaponData()->mnemonic, wpnDefinition->mnemonic);
             IncrementStores(hardPoint[i]->GetWeaponClass(), hardPoint[i]->weaponCount);
@@ -1262,7 +1262,7 @@ void SMSClass::AddWeaponGraphics(void)
 
                     while (weapPtr)
                     {
-                        if (visFlag bitand (1 << i)  and 
+                        if (visFlag bitand (1 << i) and 
                             (first or hardPoint[i]->GetRack()))
 
                         {
@@ -1417,7 +1417,7 @@ void SMSClass::AddWeaponGraphics(void)
                      }
 
                      // if we don't have a rackBSP, then we can only attach 1 weapon
-                     if(  visFlag bitand (1 << i)  and  ( rackBSP or weapPtr == firstPtr)  )
+                     if(  visFlag bitand (1 << i) and ( rackBSP or weapPtr == firstPtr)  )
                      {
                      OTWDriver.CreateVisualObject(weapPtr);
                      ((DrawableBSP*)(weapPtr->drawPointer))->SetSwitchMask(0,1);
@@ -1479,7 +1479,7 @@ void SMSClass::AddWeaponGraphics(void)
                         weapPtr->SetRackSlot(j);
 
                         // if we don't have a rackBSP, then we can only attach 1 weapon
-                        if (visFlag bitand (1 << i)  and 
+                        if (visFlag bitand (1 << i) and 
                             (rackBSP or weapPtr == firstPtr))
                         {
                             OTWDriver.CreateVisualObject(weapPtr);
@@ -1741,7 +1741,7 @@ void SMSClass::Exec(void)
         drawable->UpdateGroundSpot();
 
         if (ownship and // JB 010710 CTD?
-             not ownship->OnGround())
+ not ownship->OnGround())
         {
             drawable->frameCount += FloatToInt32(SimLibMajorFrameTime * SEC_TO_MSEC * 0.1F);
         }
@@ -1902,8 +1902,8 @@ void SMSClass::EmergencyJettison(void)
     {
         // OW Jettison fix
         /*
-         if(  not (((AircraftClass *)ownship)->IsF16()  and 
-                 (curStation == 1 or curStation == 9 or hardPoint[curStation]->GetWeaponClass() == wcECM))  and 
+         if( not (((AircraftClass *)ownship)->IsF16() and 
+                 (curStation == 1 or curStation == 9 or hardPoint[curStation]->GetWeaponClass() == wcECM)) and 
                  hardPoint[curStation]->GetRack())
         */
         // 2002-04-21 MN this fixes release of AA weapons for F-16's, but other aircraft drop all the stuff -> crap
@@ -1911,8 +1911,8 @@ void SMSClass::EmergencyJettison(void)
 
         if ( not g_bEmergencyJettisonFix)
         {
-            if (hardPoint[curStation] and ( not (((AircraftClass *)ownship)->IsF16()  and 
-                                            (curStation == 1 or curStation == 9 or hardPoint[curStation]->GetWeaponClass() == wcECM or hardPoint[curStation]->GetWeaponClass() == wcAimWpn or hardPoint[curStation]->GetWeaponClass() == wcHARMWpn))  and 
+            if (hardPoint[curStation] and ( not (((AircraftClass *)ownship)->IsF16() and 
+                                            (curStation == 1 or curStation == 9 or hardPoint[curStation]->GetWeaponClass() == wcECM or hardPoint[curStation]->GetWeaponClass() == wcAimWpn or hardPoint[curStation]->GetWeaponClass() == wcHARMWpn)) and 
                                           (hardPoint[curStation]->GetRack() or curStation == 5 and hardPoint[curStation]->GetWeaponClass() == wcTank)))//me123 in the line above addet a check so we don't emergency jettison a-a missiles
 
             {
@@ -1928,7 +1928,7 @@ void SMSClass::EmergencyJettison(void)
             {
                 if (((AircraftClass *)ownship)->IsF16())
                 {
-                    if ( not (curStation == 1 or curStation == 9 or hardPoint[curStation]->GetWeaponClass() == wcECM or hardPoint[curStation]->GetWeaponClass() == wcAimWpn or hardPoint[curStation]->GetWeaponClass() == wcHARMWpn)  and 
+                    if ( not (curStation == 1 or curStation == 9 or hardPoint[curStation]->GetWeaponClass() == wcECM or hardPoint[curStation]->GetWeaponClass() == wcAimWpn or hardPoint[curStation]->GetWeaponClass() == wcHARMWpn) and 
                         (hardPoint[curStation]->GetRack() or curStation == 5 and hardPoint[curStation]->GetWeaponClass() == wcTank))
                     {
                         ReleaseCurWeapon(-1);
@@ -1937,7 +1937,7 @@ void SMSClass::EmergencyJettison(void)
                 }
                 else
                 {
-                    if (hardPoint[curStation] and  not (hardPoint[curStation]->GetWeaponClass() == wcECM ||
+                    if (hardPoint[curStation] and not (hardPoint[curStation]->GetWeaponClass() == wcECM ||
                                                    hardPoint[curStation]->GetWeaponClass() == wcAimWpn or hardPoint[curStation]->GetWeaponClass() == wcHARMWpn))
                     {
                         ReleaseCurWeapon(-1);
@@ -1968,7 +1968,7 @@ void SMSClass::EmergencyJettison(void)
 
     // Set a permanent flag indicating that we've done the deed
     if (jettSuccess)
-        flags or_eq  EmergencyJettisonFlag;
+        flags or_eq EmergencyJettisonFlag;
 }
 
 
@@ -1995,7 +1995,7 @@ void SMSClass::AGJettison(void)
 
     // Set a permanent flag indicating that we've done the deed
     if (jettSuccess)
-        flags or_eq  EmergencyJettisonFlag;
+        flags or_eq EmergencyJettisonFlag;
 }
 
 // 2002-02-20 ADDED BY S.G. Will jettison the tanks if empty.
@@ -2017,7 +2017,7 @@ void SMSClass::TankJettison(void)
 
         // Set a permanent flag indicating that we've done the deed
         if (jettSuccess)
-            flags or_eq  TankJettisonFlag;
+            flags or_eq TankJettisonFlag;
     }
 }
 
@@ -2337,8 +2337,8 @@ int SMSClass::WeaponStep(int symFlag)
 
             if (hardPoint[stationUnderTest] and hardPoint[stationUnderTest]->GetWeaponClass() == classDesired)
             {
-                if (hardPoint[stationUnderTest]->GetWeaponType() == typeDesired  and 
-                    hardPoint[stationUnderTest]->weaponPointer  and 
+                if (hardPoint[stationUnderTest]->GetWeaponType() == typeDesired and 
+                    hardPoint[stationUnderTest]->weaponPointer and 
                     hardPoint[stationUnderTest]->weaponPointer->IsUseable())
                 {
                     // MLR 3/6/2004 - added IsUseable (for rockets at this point)
@@ -2487,8 +2487,8 @@ void SMSClass::WeaponStep(int symFlag)
 
             if (hardPoint[stationUnderTest] and hardPoint[stationUnderTest]->GetWeaponClass() == classDesired)
             {
-                if (hardPoint[stationUnderTest]->GetWeaponType() == typeDesired  and 
-                    hardPoint[stationUnderTest]->weaponPointer  and 
+                if (hardPoint[stationUnderTest]->GetWeaponType() == typeDesired and 
+                    hardPoint[stationUnderTest]->weaponPointer and 
                     hardPoint[stationUnderTest]->weaponPointer->IsUseable()) // MLR 3/6/2004 - added IsUseable (for rockets at this point)
                 {
                     found = hardPoint[stationUnderTest]->weaponPointer;
@@ -2536,8 +2536,8 @@ int SMSClass::FindWeapon(int indexDesired)
         {
             stationUnderTest = (i + 1 + curHardpoint) % numHardpoints;
 
-            if (hardPoint[stationUnderTest] and hardPoint[stationUnderTest]->weaponPointer  and 
-                hardPoint[stationUnderTest]->weaponPointer->Type() == indexDesired  and 
+            if (hardPoint[stationUnderTest] and hardPoint[stationUnderTest]->weaponPointer and 
+                hardPoint[stationUnderTest]->weaponPointer->Type() == indexDesired and 
                 hardPoint[stationUnderTest]->weaponPointer->IsUseable()) // MLR 3/6/2004 - IsUseable()
             {
                 found = hardPoint[stationUnderTest]->weaponPointer.get();
@@ -2621,7 +2621,7 @@ int SMSClass::FindWeaponClass(WeaponClass weaponDesired, int needWeapon)
                 }
                 else if (notNeedStation < 0)
                 {
-                    notNeedStation = stationUnderTest;
+ notNeedStation = stationUnderTest;
                 }
             }
         }
@@ -2826,7 +2826,7 @@ WeaponType SMSClass::GetNextWeapon(WeaponDomain domainDesired)
         stationUnderTest = (i + 1 + curHardpoint) % numHardpoints;
 
         // Marco edit - non-zero weapon check due to problems with weapon cycling
-        if (hardPoint[stationUnderTest] and (hardPoint[stationUnderTest]->GetWeaponData()->domain bitand domainDesired)  and 
+        if (hardPoint[stationUnderTest] and (hardPoint[stationUnderTest]->GetWeaponData()->domain bitand domainDesired) and 
             (hardPoint[stationUnderTest]->weaponCount not_eq 0 ||
              hardPoint[stationUnderTest]->GetWeaponType() == wtGuns
              or hardPoint[stationUnderTest]->GetWeaponType() == wtAgm88
@@ -2848,7 +2848,7 @@ WeaponType SMSClass::GetNextWeapon(WeaponDomain domainDesired)
         }
         // ASSOCIATOR 03/12/03: Added this check so that we can now properly cycle AG guns without relying on the
         // buggy g_bUseDefinedGunDomain that causes AI to crash
-        else if (hardPoint[stationUnderTest] and (hardPoint[stationUnderTest]->GetWeaponData()->domain | wdBoth)  and 
+        else if (hardPoint[stationUnderTest] and (hardPoint[stationUnderTest]->GetWeaponData()->domain | wdBoth) and 
                  (hardPoint[stationUnderTest]->weaponCount not_eq 0 and hardPoint[stationUnderTest]->GetWeaponType() == wtGuns))
         {
             newType = hardPoint[stationUnderTest]->GetWeaponType();
@@ -3081,7 +3081,7 @@ void SMSClass::SetUnlimitedGuns(int flag)
 void SMSClass::SetUnlimitedAmmo(int newFlag)
 {
     if (newFlag)
-        flags or_eq  UnlimitedAmmoFlag;
+        flags or_eq UnlimitedAmmoFlag;
     else
         flags and_eq compl UnlimitedAmmoFlag;
 
@@ -3866,7 +3866,7 @@ void SMSClass::AddStore(int station, int storeId, int visible)
                         // MD -- 20040531: quick fix for JPO...if there's no fuel on the centerline, don't
                         // set the limiter
                         if ((station == numHardpoints / 2) and (((AircraftClass *)ownship)->af->m_tanks[AirframeClass::TANK_CLINE] > 0.0F))
-                            //if ((station == 5) and  (((AircraftClass *)ownship)->af->m_tanks[AirframeClass::TANK_CLINE] > 0.0F))
+                            //if ((station == 5) and (((AircraftClass *)ownship)->af->m_tanks[AirframeClass::TANK_CLINE] > 0.0F))
                             //if (station == 5) // centerline tank
                             //if (station == numHardpoints /2) // centerline tank
                         {
@@ -3911,8 +3911,8 @@ void SMSClass::ChooseLimiterMode(int hardpoint)
     gLimit = 9.0f;//me123
     storespeed = 800.0f;//me123
 
-    if (ownship->IsAirplane() and ((AircraftClass *)ownship)->af  and 
-         not ((AircraftClass *)ownship)->af->IsSet(AirframeClass::IsDigital))
+    if (ownship->IsAirplane() and ((AircraftClass *)ownship)->af and 
+ not ((AircraftClass *)ownship)->af->IsSet(AirframeClass::IsDigital))
     {
         gLimit = ((AircraftClass *)ownship)->af->MaxGs();
 
@@ -3926,8 +3926,8 @@ void SMSClass::ChooseLimiterMode(int hardpoint)
             for (i = 0; i < numHardpoints; i++)
             {
 
-                if (hardPoint[i] and hardPoint[i]->weaponPointer  and 
-                    hardPoint[i]->weaponCount > 0  and 
+                if (hardPoint[i] and hardPoint[i]->weaponPointer and 
+                    hardPoint[i]->weaponCount > 0 and 
                     (hardPoint[i]->GetWeaponClass() == wcRocketWpn ||
                      hardPoint[i]->GetWeaponClass() == wcBombWpn ||
                      hardPoint[i]->GetWeaponClass() == wcTank ||
@@ -4211,7 +4211,7 @@ void SMSClass::StepAAWeapon(void)
     FireControlComputer *fcc;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC  and 
+    if (playerAC and 
         playerAC->FCC)
     {
         fcc = playerAC->FCC;
@@ -4240,7 +4240,7 @@ void SMSClass::StepAGWeapon(void)
     FireControlComputer *fcc;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC  and 
+    if (playerAC and 
         playerAC->FCC)
     {
         fcc = playerAC->FCC;
@@ -4279,7 +4279,7 @@ void SMSClass::StepWeaponByID(void)
         return; // Do nothing if no station is currently selected
     }
 
-    if (hardPoint[curHardpoint]   and 
+    if (hardPoint[curHardpoint]  and 
         hardPoint[curHardpoint]->weaponCount > 0)
     {
         // these will be fallback in case we don't find something else
@@ -4296,9 +4296,9 @@ void SMSClass::StepWeaponByID(void)
     {
         i = i % numHardpoints;
 
-        if (hardPoint[i]                  and 
-            playerAC  and 
-            playerAC->FCC  and 
+        if (hardPoint[i]                 and 
+            playerAC and 
+            playerAC->FCC and 
             playerAC->FCC->CanStepToWeaponClass(hardPoint[i]->GetWeaponData()->weaponClass)
            )
         {
@@ -4340,8 +4340,8 @@ void SMSClass::StepWeaponByID(void)
 
     looped = 1;
 
-    if (newHp >= 0        and // if >-1 we found something
-        hardPoint[newHp])//  and // MLR 1/21/2004 - Just incase there's no HP
+    if (newHp >= 0       and // if >-1 we found something
+        hardPoint[newHp])// and // MLR 1/21/2004 - Just incase there's no HP
         //hardPoint[newHp]->weaponPointer )   // MLR 1/21/2004 - Just incase there's no weapon (causes CTD if NULL/Empty)
     {
         SetCurrentWeapon(newHp, hardPoint[newHp]->weaponPointer);
@@ -4370,7 +4370,7 @@ void SMSClass::StepWeaponByID(void)
     // 2002-02-08 ADDED BY S.G.
     // From SMSClass::WeaponStep, other it will CTD.
     // This will fix the CTD but not the original cause which is why curHardpoint is -1.
-    if (curHardpoint < 0  or looped or  not (playerAC and playerAC->FCC))
+    if (curHardpoint < 0  or looped or not (playerAC and playerAC->FCC))
     {
         return; // Do nothing if no station is currently selected
     }
@@ -4524,7 +4524,7 @@ int SMSClass::SetCurrentHpByWeaponId(int Id)
 
     for (i = 0; i < numHardpoints; i++)
     {
-        if (hardPoint[i]->weaponId == Id  and 
+        if (hardPoint[i]->weaponId == Id and 
             hardPoint[i]->weaponCount > 0)
         {
             SetCurrentWeapon(i);

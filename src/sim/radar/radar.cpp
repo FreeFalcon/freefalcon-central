@@ -162,7 +162,7 @@ void RadarClass::SetDesiredTarget(SimObjectType* newTarget)
 
     // If we're not interested in our locked target anymore, tell him he's off the hook
     //if (lockedTarget) // JB 010223 CTD
-    // if (lockedTarget and  not F4IsBadCodePtr((FARPROC) lockedTarget) and  not F4IsBadCodePtr((FARPROC) lockedTarget->BaseData())) { // JB 010223 CTD
+    // if (lockedTarget and not F4IsBadCodePtr((FARPROC) lockedTarget) and not F4IsBadCodePtr((FARPROC) lockedTarget->BaseData())) { // JB 010223 CTD
     //me123 this is done in SetSensorTarget below SendTrackMsg (lockedTarget->BaseData()->Id(), Track_Unlock);
     // }
 
@@ -474,7 +474,7 @@ void RadarClass::SendTrackMsg(SimObjectType* tgtptr, unsigned int trackType, uns
     while (sess)
     {
         if (
-            (sess->CameraCount() > 0)  and 
+            (sess->CameraCount() > 0) and 
             (
                 (sess->GetCameraEntity(0)->Id() == platform->Id()) ||
                 (sess->GetCameraEntity(0)->Id() == id)

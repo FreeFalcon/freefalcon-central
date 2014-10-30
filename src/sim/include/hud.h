@@ -74,7 +74,7 @@ public:
     };
     void Set(int testFlag)
     {
-        flags or_eq  testFlag;
+        flags or_eq testFlag;
     };
     void Clear(int testFlag)
     {

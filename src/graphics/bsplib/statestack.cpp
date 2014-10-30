@@ -191,8 +191,8 @@ void StateStackClass::SetFog(float alpha, Pcolor *color)
         UInt32 c;
 
         c  = FloatToInt32(color->r * 255.9f);
-        c or_eq  FloatToInt32(color->g * 255.9f) << 8;
-        c or_eq  FloatToInt32(color->b * 255.9f) << 16;
+        c or_eq FloatToInt32(color->g * 255.9f) << 8;
+        c or_eq FloatToInt32(color->b * 255.9f) << 16;
         context->SetState(MPR_STA_FOG_COLOR, c);
         D3DCOLORVALUE cx;
         cx.dvR = color->r;
@@ -439,8 +439,8 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
                 }
 
                 // Choose perspective correction or not
-                // if ((Xlation.x > CurrentInstance->Radius() * PERSP_CORR_RADIUS_MULTIPLIER)  and 
-                //  not (CurrentLOD->flags bitand ObjectLOD::PERSP_CORR))
+                // if ((Xlation.x > CurrentInstance->Radius() * PERSP_CORR_RADIUS_MULTIPLIER) and 
+                // not (CurrentLOD->flags bitand ObjectLOD::PERSP_CORR))
                 // {
                 // RenderStateTable = RenderStateTableNPC;
                 // }
@@ -570,7 +570,7 @@ void StateStackClass::DrawWarpedObject(ObjectInstance *objInst, const Pmatrix *r
             return OFF_SCREEN; // Trivial reject bottom
         }
 
-        // clipFlag or_eq  CLIP_BOTTOM;
+        // clipFlag or_eq CLIP_BOTTOM;
         return CLIP_BOTTOM;
     }
 
@@ -584,7 +584,7 @@ void StateStackClass::DrawWarpedObject(ObjectInstance *objInst, const Pmatrix *r
             return OFF_SCREEN; // Trivial reject left
         }
 
-        // clipFlag or_eq  CLIP_LEFT;
+        // clipFlag or_eq CLIP_LEFT;
         return CLIP_LEFT;
     }
 
@@ -595,7 +595,7 @@ void StateStackClass::DrawWarpedObject(ObjectInstance *objInst, const Pmatrix *r
             return OFF_SCREEN; // Trivial reject right
         }
 
-        // clipFlag or_eq  CLIP_RIGHT;
+        // clipFlag or_eq CLIP_RIGHT;
         return CLIP_RIGHT;
     }
 
@@ -608,7 +608,7 @@ void StateStackClass::DrawWarpedObject(ObjectInstance *objInst, const Pmatrix *r
             return OFF_SCREEN; // Trivial reject near
         }
 
-        // clipFlag or_eq  CLIP_NEAR;
+        // clipFlag or_eq CLIP_NEAR;
         return CLIP_NEAR;
     }
 
@@ -794,22 +794,22 @@ void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
             ClipInfoPoolNext->clipFlag = ON_SCREEN;
 
             if (scratch_z < NEAR_CLIP_DISTANCE)
-                ClipInfoPoolNext->clipFlag or_eq  CLIP_NEAR;
+                ClipInfoPoolNext->clipFlag or_eq CLIP_NEAR;
 
             if (fabs(scratch_y) > scratch_z)
             {
                 if (scratch_y > scratch_z)
-                    ClipInfoPoolNext->clipFlag or_eq  CLIP_BOTTOM;
+                    ClipInfoPoolNext->clipFlag or_eq CLIP_BOTTOM;
                 else
-                    ClipInfoPoolNext->clipFlag or_eq  CLIP_TOP;
+                    ClipInfoPoolNext->clipFlag or_eq CLIP_TOP;
             }
 
             if (fabs(scratch_x) > scratch_z)
             {
                 if (scratch_x > scratch_z)
-                    ClipInfoPoolNext->clipFlag or_eq  CLIP_RIGHT;
+                    ClipInfoPoolNext->clipFlag or_eq CLIP_RIGHT;
                 else
-                    ClipInfoPoolNext->clipFlag or_eq  CLIP_LEFT;
+                    ClipInfoPoolNext->clipFlag or_eq CLIP_LEFT;
             }
 
             ClipInfoPoolNext->csX = scratch_x;
@@ -866,22 +866,22 @@ void StateStackClass::TransformBillboardWithClip(Ppoint *p, int n, BTransformTyp
         ClipInfoPoolNext->clipFlag = ON_SCREEN;
 
         if (scratch_z < NEAR_CLIP_DISTANCE)
-            ClipInfoPoolNext->clipFlag or_eq  CLIP_NEAR;
+            ClipInfoPoolNext->clipFlag or_eq CLIP_NEAR;
 
         if (fabs(scratch_y) > scratch_z)
         {
             if (scratch_y > scratch_z)
-                ClipInfoPoolNext->clipFlag or_eq  CLIP_BOTTOM;
+                ClipInfoPoolNext->clipFlag or_eq CLIP_BOTTOM;
             else
-                ClipInfoPoolNext->clipFlag or_eq  CLIP_TOP;
+                ClipInfoPoolNext->clipFlag or_eq CLIP_TOP;
         }
 
         if (fabs(scratch_x) > scratch_z)
         {
             if (scratch_x > scratch_z)
-                ClipInfoPoolNext->clipFlag or_eq  CLIP_RIGHT;
+                ClipInfoPoolNext->clipFlag or_eq CLIP_RIGHT;
             else
-                ClipInfoPoolNext->clipFlag or_eq  CLIP_LEFT;
+                ClipInfoPoolNext->clipFlag or_eq CLIP_LEFT;
         }
 
         ClipInfoPoolNext->csX = scratch_x;

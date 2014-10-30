@@ -372,7 +372,7 @@ void DrawableTrail::AddPointAtHead(Tpoint *worldPos, DWORD)
     // new TrailNodes are added to the head ChunkNode
     cn = (ChunkNode *)List.GetHead();
 
-    if (Something > 500 and cn and  not (Type->flags bitand TTF_LINE))
+    if (Something > 500 and cn and not (Type->flags bitand TTF_LINE))
     {
         // time to make a new chunk node...
         ChunkNode *cn2;
@@ -1494,7 +1494,7 @@ static Texture GunTrailTexture;
 //  Have to manually add new trail types here
 static TrailTypeEntry types[] =
 {
-    //   silum ilight lfade     tile    radius   rmax  expand   decay/s   red    green  blue   alpha  NA    NA  NA    texture
+    //   silum ilight lfade     tile    radius   rmax  expand decay/s   red    green  blue   alpha  NA    NA  NA    texture
     {FALSE, 1.0f, 0.0040f, 3.0f,  10.0f, 20.0f,  0.018f,  0.0003f,  1.00f, 1.00f, 1.00f, 1.00f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 0 Contrail
     {FALSE, 1.0f, 0.0040f, 3.0f,   2.0f, 20.0f,  0.000f,  0.0016f,  0.90f, 0.90f, 0.90f, 0.50f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 1 Vortex
 
@@ -1857,7 +1857,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
 
     // Compute the screen space location of the starting corners
     // (Note:  since we're passing in the start and end points backward, we swap left
-    //  and right in the output)
+    // and right in the output)
     cpos.x = current->next->point.x - renderer->X();
     cpos.y = current->next->point.y - renderer->Y();
     cpos.z = current->next->point.z - renderer->Z();
@@ -1983,7 +1983,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
         }
 
         // Update the alpha value for the end point now under consideration
-        if (type >= 0 and type < sizeof(types) / sizeof(TrailTypeEntry) and  not F4IsBadReadPtr(current->next, sizeof(TrailElement))) // JB 010220 CTD
+        if (type >= 0 and type < sizeof(types) / sizeof(TrailTypeEntry) and not F4IsBadReadPtr(current->next, sizeof(TrailElement))) // JB 010220 CTD
             // Somehow the next line can CTD.  Wacky  Let's do more checks and see if the CTD moves.
             alpha  -= types[type].disipation * current->next->time;
 
@@ -2098,7 +2098,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
 
                 if (keepStaleSegs == FALSE)
                 {
-                    if (current->next and current->next->next and  not F4IsBadReadPtr(current->next, sizeof(TrailElement)) and  not F4IsBadReadPtr(current->next->next, sizeof(TrailElement))) // JB 010220 CTD
+                    if (current->next and current->next->next and not F4IsBadReadPtr(current->next, sizeof(TrailElement)) and not F4IsBadReadPtr(current->next->next, sizeof(TrailElement))) // JB 010220 CTD
                         delete current->next->next; // Recursivly deletes the rest of the trail
 
                     current->next->next = NULL; // Terminate the trail at the current point
@@ -2778,7 +2778,7 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
         alp = (float)intalp;
         alp = alp * 0.3f + alp * 0.7f * NRANDPOS;
         intalp = FloatToInt32(alp);
-        GunTrailTexture.palette->paletteData[j] or_eq  (intalp << 24);
+        GunTrailTexture.palette->paletteData[j] or_eq (intalp << 24);
     }
 
     GunTrailTexture.palette->UpdateMPR(GunTrailTexture.palette->paletteData);

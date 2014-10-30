@@ -103,7 +103,7 @@ PARAMETERS      :
     dwPID        - The process ID to look into.
     uiCount      - The number of slots in the paModArray buffer.  If
                    this value is 0, then the return value will be TRUE
-                   and puiRealCount will hold the number of items
+                  and puiRealCount will hold the number of items
                    needed.
     paModArray   - The array to place the HMODULES into.  If this buffer
                    is too small to hold the result and uiCount is not
@@ -185,7 +185,7 @@ BOOL NT4GetLoadedModules(DWORD     dwPID        ,
 
     // If the total returned in puiRealCount is larger than the value in
     //  uiCount, then return an error.  If uiCount is zero, then it is
-    //  not an error.
+    // not an error.
     if ((*puiRealCount > uiCount) and (uiCount > 0))
     {
         ASSERT(FALSE) ;

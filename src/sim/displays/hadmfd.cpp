@@ -60,7 +60,7 @@ void HadMfdDrawable::Display(VirtualDisplay* newDisplay)
     }
 
     // This makes sure we are in the correct FCC and Harmpod submodes
-    if (pFCC->GetSubMode() not_eq FireControlComputer::HTS or (harmPod->GetSubMode() not_eq HarmTargetingPod::FilterMode  and 
+    if (pFCC->GetSubMode() not_eq FireControlComputer::HTS or (harmPod->GetSubMode() not_eq HarmTargetingPod::FilterMode and 
             harmPod->GetSubMode() not_eq HarmTargetingPod::HAD))
     {
         if (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON)
@@ -254,8 +254,8 @@ void HadMfdDrawable::PushButton(int whichButton, int whichMFD)
 
 void HadMfdDrawable::DrawRALT(VirtualDisplay* display)
 {
-    if (TheHud and  not (self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
-        and self->af->platform->RaltReady()  and 
+    if (TheHud and not (self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
+       and self->af->platform->RaltReady() and 
         TheHud->FindRollAngle(-TheHud->hat) and TheHud->FindPitchAngle(-TheHud->hat))
     {
         float x, y = 0;
@@ -435,7 +435,7 @@ void HadMfdDrawable::OffMode(VirtualDisplay* display)
     display->SetFont(ofont);
     theRadar->GetCursorPosition(&cX, &cY);
 
-    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and  // JPG 14 Dec 03 - Added BE/ownship info
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and // JPG 14 Dec 03 - Added BE/ownship info
         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
     {
         DrawBullseyeCircle(display, cX, cY);

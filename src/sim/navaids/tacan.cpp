@@ -234,7 +234,7 @@ void TacanList::AddTacan(CampBaseClass *p_campEntity)
     LinkedTacanVUStr** p_next = NULL;
     LinkedTacanVUStr* p_previous = NULL;
 
-    if (p_campEntity->IsObjective()  and 
+    if (p_campEntity->IsObjective() and 
         p_campEntity->GetType() == TYPE_AIRBASE) // If inserting an airbase
     {
         domain = AG;
@@ -257,15 +257,15 @@ void TacanList::AddTacan(CampBaseClass *p_campEntity)
             }
         }
     }
-    else if (p_campEntity->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT  and 
-             p_campEntity->EntityType()->classInfo_[VU_TYPE] == TYPE_FLIGHT  and 
+    else if (p_campEntity->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT and 
+             p_campEntity->EntityType()->classInfo_[VU_TYPE] == TYPE_FLIGHT and 
              ((Unit) p_campEntity)->GetUnitMission() == AMIS_TANKER)// If inserting a tanker
     {
         ((FlightClass*)p_campEntity)->tacan_channel = (uchar) AssignChannel(p_campEntity->Id(), AA, p_campEntity->GetCampID()); // assign a unique channel
         ((FlightClass*)p_campEntity)->tacan_band = 'Y';
     }
-    else if (p_campEntity->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT  and 
-             p_campEntity->EntityType()->classInfo_[VU_TYPE] == TYPE_TASKFORCE  and 
+    else if (p_campEntity->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT and 
+             p_campEntity->EntityType()->classInfo_[VU_TYPE] == TYPE_TASKFORCE and 
              p_campEntity->GetSType() == STYPE_UNIT_CARRIER) // If inserting a carrier
     {
         ((TaskForceClass*)p_campEntity)->tacan_channel = (uchar) AssignChannel(p_campEntity->Id(), AG, p_campEntity->GetCampID()); // assign a unique channel

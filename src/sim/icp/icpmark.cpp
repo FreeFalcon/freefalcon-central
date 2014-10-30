@@ -24,7 +24,7 @@ void ICPClass::ExecMARKMode(void)
         if (mUpdateFlags bitand MARK_UPDATE)
         {
 
-            mUpdateFlags and_eq  not MARK_UPDATE;
+            mUpdateFlags and_eq not MARK_UPDATE;
 
             gNavigationSys->GetMarkPoint(&pointType, mpLine2, mpLine3);
 
@@ -125,7 +125,7 @@ void ICPClass::ENTRUpdateMARKMode(void)
 
         }
 
-        mUpdateFlags or_eq  MARK_UPDATE;
+        mUpdateFlags or_eq MARK_UPDATE;
     }
 }
 
@@ -143,6 +143,6 @@ void ICPClass::PNUpdateMARKMode(int button, int)
         playerAC->FCC->waypointStepCmd = 1;
     }
 
-    mUpdateFlags or_eq  MARK_UPDATE;
-    mUpdateFlags or_eq  CNI_UPDATE;
+    mUpdateFlags or_eq MARK_UPDATE;
+    mUpdateFlags or_eq CNI_UPDATE;
 }

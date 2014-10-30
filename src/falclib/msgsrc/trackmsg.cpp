@@ -78,10 +78,10 @@ int FalconTrackMessage::Process(uchar autodisp)
         SimMoverClass *mEntity = static_cast<SimMoverClass*>(theEntity);
 
         if (
-             not mEntity->IsLocal()  and 
-            mEntity->numSensors > 1  and 
+ not mEntity->IsLocal() and 
+            mEntity->numSensors > 1 and 
             // MN 2002-03-03 CTD
-            mEntity->sensorArray[1]  and 
+            mEntity->sensorArray[1] and 
             // JB 010604 CTD
             mEntity->IsAirplane()
         )

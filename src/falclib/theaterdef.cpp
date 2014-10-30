@@ -449,7 +449,7 @@ TheaterDef * TheaterList::GetCurrentTheater()
 
     size = sizeof(TheaterName);
 
-    if (RegQueryValueEx(theKey, "curTheater", 0, &type, (LPBYTE)TheaterName, &size) not_eq  ERROR_SUCCESS)
+    if (RegQueryValueEx(theKey, "curTheater", 0, &type, (LPBYTE)TheaterName, &size) not_eq ERROR_SUCCESS)
     {
         //TheaterName[0] = '\0';
         strcpy(TheaterName, "Korea");

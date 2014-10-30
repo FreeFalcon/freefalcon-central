@@ -660,7 +660,7 @@ void AirframeClass::Init(int idx)
 
             // simple flight model for AI's
             if (simpleMode == SIMPLE_MODE_AF
-                and not IsSet(AirframeClass::OnObject)
+               and not IsSet(AirframeClass::OnObject)
                )
             {
                 // JB carrier
@@ -927,7 +927,7 @@ void AirframeClass::Init(int idx)
             //yshape2 = yshape1;
             yshape1 = (float)fabs(ypedal);
 
-            if (platform->IsF16()  and 
+            if (platform->IsF16() and 
                 platform->AutopilotType() == AircraftClass::APOff)
             {
                 switch (stallMode)
@@ -942,16 +942,16 @@ void AirframeClass::Init(int idx)
                             zpdamp = min(zpdamp, 0.2F);
                         }
 
-                        if ( not IsSet(Simplified)  and 
+                        if ( not IsSet(Simplified) and 
                             (( not platform->OnGround() and vcas < 180.0f) ||
-                             (fabs(pshape) > 0.85F  and fabs(rshape) > 0.85F) ||
-                             (fabs(alpha)  > 18.0F) or // and  IsSet(LowSpdHorn) ) ||
+                             (fabs(pshape) > 0.85F and fabs(rshape) > 0.85F) ||
+                             (fabs(alpha)  > 18.0F) or // and IsSet(LowSpdHorn) ) ||
                              (fabs(pshape) > 0.6F and fabs(rshape) > 0.6F and IsSet(LowSpdHorn))))
                         {
                             loadingFraction = weight / emptyWeight; //me123
 
                             if (( not platform->OnGround() and vcas < 60.0f ||
-                                  not platform->OnGround() and fabs(alpha)  > 18.0F  and 
+ not platform->OnGround() and fabs(alpha)  > 18.0F and 
                                  vcas < 60.0f +
                                  60 * (loadingFraction - 1.3F) +
                                  10 * fabs(assymetry / weight) * 10.0F) ||
@@ -1031,14 +1031,14 @@ void AirframeClass::Init(int idx)
                         }
                         else if (platform->platformAngles.sinthe < 0.342F and fabs(platform->platformAngles.cosphi) > 0.82F)
                         {
-                            if (alpha > 0.0f and fabs(alpha - (60.0f + oscillationTimer * stallMagnitude * max(0.0F, (0.3F - fabs(r)) * 3.3F))) < 10.0F  and 
+                            if (alpha > 0.0f and fabs(alpha - (60.0f + oscillationTimer * stallMagnitude * max(0.0F, (0.3F - fabs(r)) * 3.3F))) < 10.0F and 
                                 oscillationSlope * q > 0.0F)
                             {
                                 stallMode = DeepStall;
 
                                 oldp02[5] = alpha - 60.0F;
                             }
-                            else if (alpha < 0.0f and fabs(alpha - (-40.0f + oscillationTimer * stallMagnitude * max(0.0F, (0.3F - fabs(r)) * 3.3F))) < 10.0F  and 
+                            else if (alpha < 0.0f and fabs(alpha - (-40.0f + oscillationTimer * stallMagnitude * max(0.0F, (0.3F - fabs(r)) * 3.3F))) < 10.0F and 
                                      oscillationSlope * q > 0.0F)
                             {
                                 stallMode = DeepStall;
@@ -1324,7 +1324,7 @@ void AirframeClass::Init(int idx)
             {
                 // if its a tank - try and guess which one.
                 // assume only three possible positions... ?
-                if (platform->Sms->hardPoint[i]  and 
+                if (platform->Sms->hardPoint[i] and 
                     platform->Sms->hardPoint[i]->GetWeaponClass() == wcTank)
                 {
                     wd = &WeaponDataTable[platform->Sms->hardPoint[i]->weaponId];
@@ -1443,7 +1443,7 @@ void AirframeClass::Init(int idx)
             {
                 // if its a tank - try and guess which one.
                 // assume only three possible positions... ?
-                if (platform->Sms->hardPoint[i]  and 
+                if (platform->Sms->hardPoint[i] and 
                     platform->Sms->hardPoint[i]->GetWeaponClass() == wcTank)
                 {
                     wd = &WeaponDataTable[platform->Sms->hardPoint[i]->weaponId];
@@ -1819,7 +1819,7 @@ void AirframeClass::Init(int idx)
                         tefPos = 0;
                     }
                 }
-                else if (mach < 0.9f and  mach >= 0.6f)
+                else if (mach < 0.9f and mach >= 0.6f)
                 {
                     if (alpha > 0.0f and alpha <= 17.0f)
                     {

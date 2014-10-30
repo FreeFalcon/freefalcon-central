@@ -77,7 +77,7 @@ void CloseInputBitFile(BIT_FILE *bit_file)
 void OutputBit(BIT_FILE *bit_file, int bit)
 {
     if (bit)
-        bit_file->rack or_eq  bit_file->mask;
+        bit_file->rack or_eq bit_file->mask;
 
     bit_file->mask >>= 1;
 
@@ -102,7 +102,7 @@ void OutputBits(BIT_FILE *bit_file, unsigned long code, int count)
     while (mask not_eq 0)
     {
         if (mask bitand code)
-            bit_file->rack or_eq  bit_file->mask;
+            bit_file->rack or_eq bit_file->mask;
 
         bit_file->mask >>= 1;
 
@@ -175,7 +175,7 @@ unsigned long InputBits(BIT_FILE *bit_file, int bit_count)
         }
 
         if (bit_file->rack bitand bit_file->mask)
-            return_value or_eq  mask;
+            return_value or_eq mask;
 
         /*
          * Packs a byte and a half into one byte. A byte for me is 5 bits - On Compression.

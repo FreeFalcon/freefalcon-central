@@ -353,7 +353,7 @@ void GetVirtualFileList(C_Window *win, _TCHAR virtlist[200][64], long client, lo
         btn->SetUserNumber(0, 1234); // Virtual
         win->AddControl(btn);
 
-        if ( not (*starty) and  not (*startx))
+        if ( not (*starty) and not (*startx))
         {
             ebox = (C_EditBox*)win->FindControl(FILE_NAME);
 
@@ -668,7 +668,7 @@ static void LoadSaveSelectFileCB(long, short hittype, C_Base *control)
             {
                 btn = (C_Button*)win->FindControl(LOAD);
 
-                if (btn and  not (btn->GetFlags() bitand C_BIT_INVISIBLE))
+                if (btn and not (btn->GetFlags() bitand C_BIT_INVISIBLE))
                 {
                     if (btn->GetCallback())
                     {
@@ -680,7 +680,7 @@ static void LoadSaveSelectFileCB(long, short hittype, C_Base *control)
 
                 btn = (C_Button*)win->FindControl(LOAD_VIRTUAL);
 
-                if (btn and  not (btn->GetFlags() bitand C_BIT_INVISIBLE))
+                if (btn and not (btn->GetFlags() bitand C_BIT_INVISIBLE))
                 {
                     if (btn->GetCallback())
                     {
@@ -692,7 +692,7 @@ static void LoadSaveSelectFileCB(long, short hittype, C_Base *control)
 
                 btn = (C_Button*)win->FindControl(SAVE);
 
-                if (btn and  not (btn->GetFlags() bitand C_BIT_INVISIBLE))
+                if (btn and not (btn->GetFlags() bitand C_BIT_INVISIBLE))
                 {
                     if (btn->GetCallback())
                     {
@@ -1309,7 +1309,7 @@ void MakeOccupationMap(IMAGE_RSC *Map)
 
         while (x < (h - 2) and x < w)
         {
-            ShiAssert(src >=  TheCampaign.CampMapData  and 
+            ShiAssert(src >=  TheCampaign.CampMapData and 
                       src < TheCampaign.CampMapData + TheCampaign.CampMapSize);
             *dst++ = static_cast<uchar>((*src) bitand 0x0f);
             *dst++ = static_cast<uchar>((*src) >> 4);
@@ -1392,7 +1392,7 @@ void MakeBigOccupationMap(IMAGE_RSC *Map)
 
         while (x < (h - 4) and x < w)
         {
-            ShiAssert(src >=  TheCampaign.CampMapData  and 
+            ShiAssert(src >=  TheCampaign.CampMapData and 
                       src < TheCampaign.CampMapData + TheCampaign.CampMapSize);
             *dst++ = static_cast<uchar>((*src) bitand 0x0f);
             *dst++ = static_cast<uchar>((*src) >> 4);
@@ -1947,7 +1947,7 @@ static void MakeBar(C_Line *line, long valueID, long Team)
 
     line->SetW(w);
 
-    line->Parent_->update_ or_eq  C_DRAW_REFRESH;
+    line->Parent_->update_ or_eq C_DRAW_REFRESH;
     line->Parent_->SetUpdateRect(line->GetUserNumber(0), line->GetUserNumber(1),
                                  line->GetUserNumber(0) + line->GetUserNumber(2),
                                  line->GetUserNumber(1) + line->GetUserNumber(3),
@@ -1978,8 +1978,8 @@ void UpdateIntel(long ID)
     win = gMainHandler->FindWindow(ID);
 
     //if(win) // JB 010222 CTD
-    if (win and  not F4IsBadReadPtr(win, sizeof(C_Window)) // JB 010222 CTD
-        and TeamInfo[Team]) // JB 010614 CTD
+    if (win and not F4IsBadReadPtr(win, sizeof(C_Window)) // JB 010222 CTD
+       and TeamInfo[Team]) // JB 010614 CTD
     {
         if (TeamInfo[Team]->GetOffensiveAirAction()->actionType > AACTION_DCA)
             win->UnHideCluster(3);

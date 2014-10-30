@@ -70,7 +70,7 @@ BombClass::BombClass(VU_BYTE** stream, long *rem) : SimWeaponClass(stream, rem)
 
     if (parent and not IsLocal())
     {
-        flags or_eq  FirstFrame;
+        flags or_eq FirstFrame;
         //VuReferenceEntity (parent);
         //parentReferenced = TRUE;
         SetYPR(parent->Yaw(), parent->Pitch(), parent->Roll());
@@ -140,7 +140,7 @@ void BombClass::InitLocalData(BombType btype)
     burstHeight = 0.0F;
     detonateHeight = 0.0F;
     timeOfDeath = 0;
-    specialData.flags or_eq  MOTION_BMB_AI;
+    specialData.flags or_eq MOTION_BMB_AI;
     flags = 0;
     dragCoeff = 0.0f;
 
@@ -200,15 +200,15 @@ void BombClass::Init()
 
     // Am I an LGB
     if (EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GUIDED)
-        flags or_eq  IsLGB;
+        flags or_eq IsLGB;
 
     //Wombat778 3-09-04 Is this a GPS bomb?
     if (EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS)
-        flags or_eq  IsGPS;
+        flags or_eq IsGPS;
 
     // Cobra - GPS/JSOW
     if (EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
-        flags or_eq  (IsGPS | IsJSOW);
+        flags or_eq (IsGPS | IsJSOW);
 
 }
 
@@ -252,7 +252,7 @@ void BombClass::Start(vector* pos, vector* rate, float cD, SimObjectType *target
 
     if (parent)
     {
-        flags or_eq  FirstFrame;
+        flags or_eq FirstFrame;
         //VuReferenceEntity (parent);
         //parentReferenced = TRUE;
         SetYPR(parent->Yaw(), parent->Pitch(), parent->Roll());
@@ -270,7 +270,7 @@ void BombClass::Start(vector* pos, vector* rate, float cD, SimObjectType *target
 
     // edg hack.  drag coeff of 1.0f we assume to be a durandal
     if (cD >= 1.0f)
-        flags or_eq  IsDurandal;
+        flags or_eq IsDurandal;
 
     SetPosition(x, y, z);
     CalcTransformMatrix(this);
@@ -501,9 +501,9 @@ int BombClass::Exec(void)
         dmx[2][2] = trigPitch.cos;
 
         // special case durandal -- when fired remove chute
-        if ((flags bitand IsDurandal)  and 
-            (flags bitand FireDurandal)  and 
-            drawPointer  and 
+        if ((flags bitand IsDurandal) and 
+            (flags bitand FireDurandal) and 
+            drawPointer and 
             ((DrawableBSP*)drawPointer)->GetNumSwitches() > 0)
         {
             ((DrawableBSP *)drawPointer)->SetSwitchMask(0, 0);
@@ -511,12 +511,12 @@ int BombClass::Exec(void)
 
         // special case durandal.  If x and y vel reaches 0 we fire it
         // by starting the special effect
-        if ((flags bitand IsDurandal)  and 
-             not (flags bitand FireDurandal)  and 
-            dx == 0.0f  and 
+        if ((flags bitand IsDurandal) and 
+ not (flags bitand FireDurandal) and 
+            dx == 0.0f and 
             dy == 0.0f)
         {
-            flags or_eq  FireDurandal;
+            flags or_eq FireDurandal;
 
             // accelerate towards ground
             SetDelta(dx, dy, ZDelta() + 500.0f);
@@ -556,7 +556,7 @@ int BombClass::Exec(void)
         // realistic section would be ran. If no parent, run this
         // There is no danger of a CTD if parent is NULL because the
         // OR will have it enter the if statement without running the 'IsPlayer'.
-        //   if( not g_bRealisticAvionics or ( parent and  not ((AircraftClass *)parent)->IsPlayer()))
+        //   if( not g_bRealisticAvionics or ( parent and not ((AircraftClass *)parent)->IsPlayer()))
         // Cobra - Forcing all non-Player (AI) into this section causes their bombs
         // to not be guided, thus randon hit pattern
         //   if( not g_bRealisticAvionics or not parent)
@@ -566,11 +566,11 @@ int BombClass::Exec(void)
         // ( the targeting sysem would CTD if AI managed by player code,
         // As the PlayerEntity is not the one to use )
         if (
-             not g_bRealisticAvionics or not parent or  not (flags bitand GUIDED_BOMB)
+ not g_bRealisticAvionics or not parent or not (flags bitand GUIDED_BOMB)
             or (((( not ((AircraftClass *)parent.get())->IsPlayer())
                   or (((AircraftClass *)parent.get())->IsPlayer())
-                  and ((AircraftClass *)parent.get())->AutopilotType() == AircraftClass::CombatAP))
-                and (flags bitand IsLGB))
+                 and ((AircraftClass *)parent.get())->AutopilotType() == AircraftClass::CombatAP))
+               and (flags bitand IsLGB))
         )
         {
             // RV - Biker - Add 2.0 sec delay for guidance
@@ -720,9 +720,9 @@ int BombClass::Exec(void)
                  why LGB's consistantly missed their targets in anything but vanilla VC6.
                 */
                 if (
-                    Abs(acosf(rx / range)) <= 18.f * DTR  and 
+                    Abs(acosf(rx / range)) <= 18.f * DTR and 
                     (parentAC->IsPlayer() and parentAC->FCC->LaserFire) ||
-                     not parentAC->IsPlayer()
+ not parentAC->IsPlayer()
                 )
                 {
                     desDx = (deltaX) / tFall;
@@ -920,7 +920,7 @@ int BombClass::Exec(void)
 
         // check for feature collision impact
 
-        if (bombType == None and  z - terrainHeight > -800.0f)
+        if (bombType == None and z - terrainHeight > -800.0f)
         {
             hitObj = FeatureCollision(terrainHeight);
 
@@ -930,7 +930,7 @@ int BombClass::Exec(void)
                 //MI
                 //if (g_bArmingDelay and (SimLibElapsedTime - timeOfDeath > armingdelay *10  or ((AircraftClass *)parent)->isDigital))
                 if (
-                    g_bRealisticAvionics  and 
+                    g_bRealisticAvionics and 
                     (SimLibElapsedTime - timeOfDeath > armingdelay * 10  ||
                      (parent and ((AircraftClass *)parent.get())->IsDigital()))
                 )
@@ -1218,8 +1218,8 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
             // until digi's are smarter about thier bombing, prevent them
             // from dying in their own blast
             // 2002-04-21 MN check for damage type and only skip if it is not a nuclear
-            if (wc->DamageType not_eq NuclearDam and (testObject == parent  and 
-                                                 parent and parent->IsAirplane()  and 
+            if (wc->DamageType not_eq NuclearDam and (testObject == parent and 
+                                                 parent and parent->IsAirplane() and 
                                                  (((AircraftClass *)parent.get())->IsDigital() ||
                                                   ((AircraftClass *)parent.get())->AutopilotType() == AircraftClass::CombatAP)))
             {
@@ -1363,8 +1363,8 @@ void BombClass::DoExplosion(void)
         FalconSendMessage(endMessage, FALSE);
 
 
-        if (hitObj == NULL  and 
-             not (endMessage->dataBlock.groundType == COVERAGE_WATER ||
+        if (hitObj == NULL and 
+ not (endMessage->dataBlock.groundType == COVERAGE_WATER ||
               endMessage->dataBlock.groundType == COVERAGE_RIVER)
            ) // and ( ZPos() - groundZ ) > -40.0f ) // JB 010710 craters weren't showing up
         {

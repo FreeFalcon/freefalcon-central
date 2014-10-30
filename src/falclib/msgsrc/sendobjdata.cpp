@@ -119,7 +119,7 @@ int FalconSendObjData::Process(uchar autodisp)
 #endif
 
         // Mark this block as being received.
-        session->objDataReceived[dataBlock.block / 8] or_eq  (1 << (dataBlock.block % 8));
+        session->objDataReceived[dataBlock.block / 8] or_eq (1 << (dataBlock.block % 8));
 
         // Check if we've gotten all our blocks
         for (int i = 0; i < dataBlock.totalBlocks; i++)
@@ -229,7 +229,7 @@ void SendObjectiveDeltas(FalconSessionEntity *session, VuTargetEntity *target, u
             sizeleft -= gObjBlockSize;
         }
 
-        if ( not blocksNeeded or  not (blocksNeeded[curBlock / 8] bitand (1 << (curBlock % 8))))
+        if ( not blocksNeeded or not (blocksNeeded[curBlock / 8] bitand (1 << (curBlock % 8))))
         {
             msg = new FalconSendObjData(session->Id(), target);
             msg->dataBlock.size = (short)blocksize;

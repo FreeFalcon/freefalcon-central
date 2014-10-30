@@ -56,7 +56,7 @@ void INFOSetupRulesControls(void)
     //host = TRUE;
     //if this is true, we are the host
     /*
-    if( FalconLocalGameEntity and FalconLocalSession  and 
+    if( FalconLocalGameEntity and FalconLocalSession and 
      FalconLocalGameEntity->OwnerId() == FalconLocalSession->Id() )
      host = TRUE;
     else if( not gCommsMgr->GetTargetGame() and not FalconLocalGameEntity)
@@ -718,7 +718,7 @@ void ComplyCB(long ID, short hittype, C_Base *control)
         tail++;
         *tail = 0;
 
-        if ((tail - head) < (3 * sizeof(_TCHAR)) or  not (*head))
+        if ((tail - head) < (3 * sizeof(_TCHAR)) or not (*head))
         {
             AreYouSure(TXT_ERROR, TXT_INVALID_GAMENAME, CloseWindowCB, CloseWindowCB);
             return;
@@ -1104,7 +1104,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button,  not CurrRules.UnlimitedFuel()))
+        if ( not CheckButtonCompliance(button, not CurrRules.UnlimitedFuel()))
             InCompliance = FALSE;
     }
 
@@ -1112,7 +1112,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button,  not CurrRules.UnlimitedChaff()))
+        if ( not CheckButtonCompliance(button, not CurrRules.UnlimitedChaff()))
             InCompliance = FALSE;
     }
 
@@ -1120,7 +1120,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button,  not CurrRules.NoCollisions()))
+        if ( not CheckButtonCompliance(button, not CurrRules.NoCollisions()))
             InCompliance = FALSE;
     }
 
@@ -1128,7 +1128,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button,  not CurrRules.NoBlackout()))
+        if ( not CheckButtonCompliance(button, not CurrRules.NoBlackout()))
             InCompliance = FALSE;
     }
 
@@ -1137,7 +1137,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button,  not CurrRules.NameTagsOn()))
+        if ( not CheckButtonCompliance(button, not CurrRules.NameTagsOn()))
             InCompliance = FALSE;
     }
 
@@ -1154,7 +1154,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button,  not CurrRules.InvulnerableOn()))
+        if ( not CheckButtonCompliance(button, not CurrRules.InvulnerableOn()))
             InCompliance = FALSE;
     }
 
@@ -2129,7 +2129,7 @@ static void INFOSaveValues(void)
     if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1 or button->GetState() == C_STATE_2)
-            PlayerOptions.GeneralFlags or_eq  GEN_NO_WEATHER;
+            PlayerOptions.GeneralFlags or_eq GEN_NO_WEATHER;
         else
             PlayerOptions.GeneralFlags and_eq compl GEN_NO_WEATHER;
     }

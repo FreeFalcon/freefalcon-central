@@ -7,7 +7,7 @@
 VU_BOOL VuResendMsgFilter::Test(VuMessage *message) const
 {
     if (
-        (message->Flags() bitand VU_SEND_FAILED_MSG_FLAG)  and 
+        (message->Flags() bitand VU_SEND_FAILED_MSG_FLAG) and 
         (message->Flags() bitand (VU_RELIABLE_MSG_FLAG | VU_KEEPALIVE_MSG_FLAG))
     )
     {

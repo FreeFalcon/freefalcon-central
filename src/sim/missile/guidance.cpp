@@ -231,7 +231,7 @@ void MissileClass::CommandGuide(void)
     // No Target
     if (runTime > inputData->guidanceDelay)
     {
-        if (g_bNewSensorPrecision and flags bitand SensorLostLock and  sensorArray and sensorArray[0] and sensorArray[0]->Type() == SensorClass::RadarHoming)
+        if (g_bNewSensorPrecision and flags bitand SensorLostLock and sensorArray and sensorArray[0] and sensorArray[0]->Type() == SensorClass::RadarHoming)
         {
             ifd->augCommand.yaw = 0.0f;
             ifd->augCommand.pitch = 0.0f;

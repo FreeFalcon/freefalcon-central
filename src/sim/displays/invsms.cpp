@@ -121,7 +121,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         tmpStr[1][0] = 0;
         tmpStr[2][0] = 0;
 
-        if (jettOnly and  not (Sms->hardPoint[hp]->GetRackDataFlags() bitand (RDF_SELECTIVE_JETT_WEAPON | RDF_SELECTIVE_JETT_RACK)))
+        if (jettOnly and not (Sms->hardPoint[hp]->GetRackDataFlags() bitand (RDF_SELECTIVE_JETT_WEAPON | RDF_SELECTIVE_JETT_RACK)))
         {
             // non jettisonable - show nothing
         }
@@ -348,7 +348,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         else
         {
             if ((sjSelected[hp] == SelectiveRack and jettOnly) or (Sms->curHardpoint == hp and not jettOnly)
-                and Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
+               and Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
             {
                 reverse = 2;
             }
@@ -392,7 +392,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         else
         {
          if(hardPointSelected bitand (1 << hp) or (Sms->curHardpoint == hp and not jettOnly)
-         and Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
+        and Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
          {
          float bx = HpInvData[hp].boxx;
          float by = HpInvData[hp].boxy;
@@ -580,7 +580,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
     else
     {
         if (hardPointSelected bitand (1 << hp) or (Sms->curHardpoint == hp and not jettOnly)
-            and Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
+           and Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
         {
             float bx = HpInvData[hp].boxx;
             float by = HpInvData[hp].boxy;
@@ -703,7 +703,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
     else
     {
         if (hardPointSelected bitand (1 << hp) or (Sms->curHardpoint == hp and not jettOnly)
-            and Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
+           and Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
         {
             float bx = HpInvData[hp].boxx;
             float by = HpInvData[hp].boxy;

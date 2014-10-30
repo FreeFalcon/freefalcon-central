@@ -123,7 +123,7 @@ VuMessage::VuMessage(
 
     if (loopback)
     {
-        flags_ or_eq  VU_LOOPBACK_MSG_FLAG;
+        flags_ or_eq VU_LOOPBACK_MSG_FLAG;
     }
 
     // note: msg id is set only for external messages which are sent out
@@ -216,7 +216,7 @@ int VuMessage::Send()
 
         if (retval <= 0)
         {
-            flags_ or_eq  VU_SEND_FAILED_MSG_FLAG;
+            flags_ or_eq VU_SEND_FAILED_MSG_FLAG;
         }
     }
 
@@ -243,7 +243,7 @@ VU_ERRCODE VuMessage::Dispatch(VU_BOOL autod)
         retval = Process(autod);
         vuDatabase->Handle(this);
         // mark as sent
-        flags_ or_eq  VU_PROCESSED_MSG_FLAG;
+        flags_ or_eq VU_PROCESSED_MSG_FLAG;
     }
 
     return retval;
@@ -881,8 +881,8 @@ VuCreateEvent::~VuCreateEvent()
     /*
     if (
      Entity() and // we have an ent ...
-     Entity()->VuState() == VU_MEM_ACTIVE and                // bitand have not yet removed it...
-     Entity()->Id().creator_ == vuLocalSession.creator_ and  // bitand it has our session tag...
+     Entity()->VuState() == VU_MEM_ACTIVE and // bitand have not yet removed it...
+     Entity()->Id().creator_ == vuLocalSession.creator_ and // bitand it has our session tag...
      vuDatabase->Find(Entity()->Id()) == 0                 // bitand it's not in the DB...
     ) {
      vuAntiDB->Insert(Entity()); // ==> put it in the anti DB
@@ -1026,8 +1026,8 @@ VU_ERRCODE VuCreateEvent::Process(VU_BOOL)
     }
 
     if (
-        Entity()  and 
-        (Entity()->OwnerId() not_eq expandedData_->OwnerId())  and 
+        Entity() and 
+        (Entity()->OwnerId() not_eq expandedData_->OwnerId()) and 
         Entity() not_eq expandedData_
     )
     {

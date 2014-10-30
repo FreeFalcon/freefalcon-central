@@ -117,8 +117,8 @@ AirframeClass::SimpleModel(void)
 
         // pitch rate
         // Modify pitch rate if going really slow
-        if (qsom * cnalpha < 1.5F and  not (playerFlightModelHack  and 
-                                       platform == SimDriver.GetPlayerEntity()  and 
+        if (qsom * cnalpha < 1.5F and not (playerFlightModelHack and 
+                                       platform == SimDriver.GetPlayerEntity() and 
                                        platform->AutopilotType() == AircraftClass::APOff))
         {
             gmmaDes = (1.0F - qsom * cnalpha / 1.5F) * -45.0F * DTR;
@@ -171,11 +171,11 @@ AirframeClass::SimpleModel(void)
             // JPG 15 Jan 04 - Fixed major crackhead tanker turns...what a big pile of goo
             // We want tankers to turn smooth ALL the time (except when landing) so in MP we aren't chasing them when they turn back like an F-15 to the first
             // track point.
-            if ((g_bTankerFMFix and platform->DBrain() and platform->DBrain()->IsTanker()  and 
-                 platform->TBrain() /* and platform->TBrain()->IsSet(TankerBrain::IsRefueling)   and 
+            if ((g_bTankerFMFix and platform->DBrain() and platform->DBrain()->IsTanker() and 
+                 platform->TBrain() /* and platform->TBrain()->IsSet(TankerBrain::IsRefueling)  and 
  platform->TBrain()->ReachedFirstTrackPoint() */) ||
-                (g_bSimpleFMUpdates and vt > 1 and gearPos < 0.7F  and 
-                 platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::LandingMode  and 
+                (g_bSimpleFMUpdates and vt > 1 and gearPos < 0.7F and 
+                 platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::LandingMode and 
                  platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::RefuelingMode))
                 r = (360.0f * GRAVITY * tan(turnangle) / (2 * PI * vt)) * DTR;
             else
@@ -193,8 +193,8 @@ AirframeClass::SimpleModel(void)
                 r = 0.0F;
         }
 
-        if ( not (playerFlightModelHack  and 
-              platform == SimDriver.GetPlayerEntity()  and 
+        if ( not (playerFlightModelHack and 
+              platform == SimDriver.GetPlayerEntity() and 
               platform->AutopilotType() == AircraftClass::APOff))
         {
 
@@ -307,8 +307,8 @@ AirframeClass::SimpleModel(void)
     // edg: my mr steen mode to allow hovering
     // speed is directly based on throtl
     // speed up yawrate
-    if (playerFlightModelHack  and 
-        platform == SimDriver.GetPlayerEntity()  and 
+    if (playerFlightModelHack and 
+        platform == SimDriver.GetPlayerEntity() and 
         platform->AutopilotType() == AircraftClass::APOff)
     {
         float oldvt;
@@ -341,8 +341,8 @@ AirframeClass::SimpleModel(void)
 
 
 
-    if (vt and  not (playerFlightModelHack  and 
-                platform == SimDriver.GetPlayerEntity()  and 
+    if (vt and not (playerFlightModelHack and 
+                platform == SimDriver.GetPlayerEntity() and 
                 platform->AutopilotType() == AircraftClass::APOff))
     {
         Gains();

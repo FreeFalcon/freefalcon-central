@@ -273,7 +273,7 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
                   GetOTWDisplayMode() == ModeTargetToSelf ||
                   GetOTWDisplayMode() == ModeTargetToWeapon ||
                   GetOTWDisplayMode() == ModeIncoming ||
-                  GetOTWDisplayMode() == ModeWeapon)  and 
+                  GetOTWDisplayMode() == ModeWeapon) and 
                  (otwTrackPlatform.get() == NULL or otwTrackPlatform == otwPlatform)
              ))
     {
@@ -533,7 +533,7 @@ void OTWDriverClass::DisplaceTheCamera(float dT)
             // 'scale' scales the movement speed of the cam, it should get slower as it
             // nears its maximum displacement.. for this, I elected to use a cos() function
             // as cos(90°) is 0 while cos(0°) is 1. So, if our displacement is equal to our
-            // max displacement the cos returns 0 (cam moves very slow),  and if our
+            // max displacement the cos returns 0 (cam moves very slow), and if our
             // displacement is very small compared to the max displacement I get 1
             // (cam moves normally)
             // the 'offset' at the beginning makes sure that the cam NEVER ceases moving as
@@ -708,7 +708,7 @@ void OTWDriverClass::BuildExternalNearList(void)
         // Skip things on the groud, without draw pointers, hidden, or exploding
         if (theObject->OnGround() ||
             theObject->IsSetLocalFlag(IS_HIDDEN) ||
-             not theObject->drawPointer ||
+ not theObject->drawPointer ||
             theObject->IsExploding() ||
             otwPlatform.get() == theObject)
         {

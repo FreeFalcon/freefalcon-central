@@ -484,8 +484,8 @@ void CleanupLinkedPersistantObjects(FalconEntity *campObject, int index, int new
         {
             persist = &PersistantObjects[i];
 
-            if (persist->unionData.campObject.num_ == vuid.num_  and 
-                persist->unionData.campObject.creator_ == vuid.creator_  and 
+            if (persist->unionData.campObject.num_ == vuid.num_ and 
+                persist->unionData.campObject.creator_ == vuid.creator_ and 
                 persist->unionData.campObject.index_ == index)
             {
                 if (newVis)
@@ -639,10 +639,10 @@ void UpdateNoCampaignParentObjectsWakeState(float px, float py, float range)
             {
                 if (object->IsAwake() and //me123 host needs to drive missiles and bombs
                     (
-                         not vuLocalSessionEntity->Game()->IsLocal() ||
-                        vuLocalSessionEntity->Game()->IsLocal()  and 
-                         not object->IsBomb()  and 
-                         not object->IsMissile())
+ not vuLocalSessionEntity->Game()->IsLocal() ||
+                        vuLocalSessionEntity->Game()->IsLocal() and 
+ not object->IsBomb() and 
+ not object->IsMissile())
                    )
                 {
                     object->Sleep();

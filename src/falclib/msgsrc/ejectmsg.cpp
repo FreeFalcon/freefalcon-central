@@ -59,7 +59,7 @@ int FalconEjectMessage::Process(uchar autodisp)
         // arriving at some point in the far, far future.
         if (
             GetOwner(TheCampaign.CampMapData, x, y) == flight->GetTeam() ||
-             not ((flight->GetCampID() + dataBlock.ePilotID) % 3))
+ not ((flight->GetCampID() + dataBlock.ePilotID) % 3))
         {
             ps = PILOT_RESCUED;
         }

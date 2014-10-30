@@ -74,7 +74,7 @@ public:
     }
     void SetFlagBitOns(long flags)
     {
-        Flags_ or_eq  flags;
+        Flags_ or_eq flags;
     }
     void SetFlagBitOff(long flags)
     {

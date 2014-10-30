@@ -335,7 +335,7 @@ void PilotInputs::Update()
             if (keyboardPickleOverride or PickleOverride)
             {
                 if ( not PickleTime) PickleTime = SimLibElapsedTime;
-                else if ((SimLibElapsedTime - PickleTime) > playerAC->FCC->GetPickleTime() and pickleButton == Off  and 
+                else if ((SimLibElapsedTime - PickleTime) > playerAC->FCC->GetPickleTime() and pickleButton == Off and 
                          playerAC->FCC->AllowMaddog())
                     pickleButton = On;
             }

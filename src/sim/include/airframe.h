@@ -1202,11 +1202,11 @@ public:
         WheelBrakes   = 0x8,
         Refueling     = 0x10,
         AOACmdMode    = 0x20,
-        AutoCommand   = 0x40,
-        GCommand      = 0x80,
-        ErrorCommand  = 0x100,
+        AutoCommand = 0x40,
+        GCommand = 0x80,
+        ErrorCommand = 0x100,
         GroundCommand = 0x200,
-        AlphaCommand  = 0x400,
+        AlphaCommand = 0x400,
         GearBroken    = 0x800,
         Planted       = 0x1000,
         Simplified    = 0x2000,
@@ -1373,11 +1373,11 @@ public:
     unsigned char epuBurnState;
     void EpuSetHydrazine()
     {
-        epuBurnState or_eq  EpuHydrazine;
+        epuBurnState or_eq EpuHydrazine;
     };
     void EpuSetAir()
     {
-        epuBurnState or_eq  EpuAir;
+        epuBurnState or_eq EpuAir;
     };
     void EpuClear()
     {
@@ -1452,11 +1452,11 @@ public:
     };
     void SetEngineFlag(EngineFlags ef)
     {
-        engineFlags or_eq  ef;
+        engineFlags or_eq ef;
     };
     void ClearEngineFlag(EngineFlags ef)
     {
-        engineFlags and_eq compl  ef;
+        engineFlags and_eq compl ef;
     };
     void ToggleEngineFlag(EngineFlags ef)
     {
@@ -1551,7 +1551,7 @@ public:
     };
     void GeneratorOn(Generator gen)
     {
-        if (GeneratorOK(gen)) generators or_eq  gen;
+        if (GeneratorOK(gen)) generators or_eq gen;
     };
     void GeneratorOff(Generator gen)
     {
@@ -1559,7 +1559,7 @@ public:
     };
     void GeneratorBreak(Generator gen)
     {
-        generators or_eq  (gen << 1);
+        generators or_eq (gen << 1);
         GeneratorOff(gen);
     };
 
@@ -1738,7 +1738,7 @@ public:
     void ResetAlpha(void);
     void SetFlag(int newFlag)
     {
-        flags or_eq  newFlag;
+        flags or_eq newFlag;
     };
     void ClearFlag(int newFlag)
     {

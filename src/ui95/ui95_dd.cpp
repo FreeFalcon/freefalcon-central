@@ -85,7 +85,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
     // RED
     reds = 0;
 
-    while (r_mask and   not (r_mask bitand 1))   // JPO cater for no reds - weird
+    while (r_mask and not (r_mask bitand 1))   // JPO cater for no reds - weird
     {
         r_mask >>= 1;
         reds++;
@@ -105,7 +105,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
     // GREEN
     greens = 0;
 
-    while (g_mask and  not (g_mask bitand 1))
+    while (g_mask and not (g_mask bitand 1))
     {
         g_mask >>= 1;
         greens++;
@@ -125,7 +125,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
     // BLUE
     blues = 0;
 
-    while (b_mask and  not (b_mask bitand 1))
+    while (b_mask and not (b_mask bitand 1))
     {
         b_mask >>= 1;
         blues++;
@@ -206,7 +206,7 @@ void UI95_GetScreenFormat(DDSURFACEDESC *desc)
 
  mask = UI95_ScreenFormat.ddpfPixelFormat.dwRBitMask;
  reds = 0;
- while(  not (mask bitand 1) ) {
+ while( not (mask bitand 1) ) {
  mask >>= 1;
  reds++;
  }
@@ -221,7 +221,7 @@ void UI95_GetScreenFormat(DDSURFACEDESC *desc)
  // GREEN
  mask = UI95_ScreenFormat.ddpfPixelFormat.dwGBitMask;
  greens = 0;
- while(  not (mask bitand 1) ) {
+ while( not (mask bitand 1) ) {
  mask >>= 1;
  greens++;
  }
@@ -236,7 +236,7 @@ void UI95_GetScreenFormat(DDSURFACEDESC *desc)
  // BLUE
  mask = UI95_ScreenFormat.ddpfPixelFormat.dwBBitMask;
  blues = 0;
- while(  not (mask bitand 1) ) {
+ while( not (mask bitand 1) ) {
  mask >>= 1;
  blues++;
  }
@@ -262,8 +262,8 @@ IDirectDrawSurface *UI95_CreateDDSurface(IDirectDraw *DD,DWORD width,DWORD heigh
     ddDescription.dwSize = sizeof( ddDescription );
     ddDescription.dwFlags = DDSD_CAPS;
 
- ddDescription.ddsCaps.dwCaps or_eq  DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN | DDSCAPS_3DDEVICE;
- ddDescription.dwFlags or_eq  DDSD_WIDTH | DDSD_HEIGHT;
+ ddDescription.ddsCaps.dwCaps or_eq DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN | DDSCAPS_3DDEVICE;
+ ddDescription.dwFlags or_eq DDSD_WIDTH | DDSD_HEIGHT;
  ddDescription.dwWidth = width;
  ddDescription.dwHeight = height;
 

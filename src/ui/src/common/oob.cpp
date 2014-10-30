@@ -531,7 +531,7 @@ void ToggleOOBFilterCB(long ID, short hittype, C_Base *control)
         {
             btn = (C_Button*)control->GetParent()->FindControl(TeamFlagBtnIDs[i]);
 
-            if (btn and  not (btn->GetFlags() bitand C_BIT_INVISIBLE) and btn->GetState())
+            if (btn and not (btn->GetFlags() bitand C_BIT_INVISIBLE) and btn->GetState())
             {
                 // 2002-01-04 MODIFIED BY S.G. GetTeam is 'based one' and not 'based zero' so I'll add '1' to i.
                 // root=gOOBTree->Find((GetTeam(static_cast<uchar>(i)) << 24) | Cat);
@@ -1305,7 +1305,7 @@ C_Entity *AddDivisionToOOB(Division div)
     if ( not Cat)
         return(NULL);
 
-    TeamID or_eq  Cat;
+    TeamID or_eq Cat;
     Team_Cat = gOOBTree->Find(TeamID);
 
     if (Team_Cat)
@@ -1366,7 +1366,7 @@ C_Base *AddItemToOOB(CampEntity entity)
     if ( not Cat)
         return(NULL);
 
-    TeamID or_eq  Cat;
+    TeamID or_eq Cat;
     Team_Cat = gOOBTree->Find(TeamID);
 
     if (Team_Cat)

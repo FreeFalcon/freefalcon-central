@@ -92,7 +92,7 @@ int process_local_file_hdr(local_file_hdr * lrec, char * buffer);
 
 /* -------------------------------------------------------------------------
 
-    E X T E R N A L   P R O T O T Y P E S   bitand   D A T A
+    E X T E R N A L   P R O T O T Y P E S   bitand D A T A
 
    ------------------------------------------------------------------------- */
 
@@ -357,7 +357,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
     /*-----------------------------------------------------------------------
         Compensate for missing or extra bytes, and seek to where the start
         of central directory should be.  If header not found, uncompensate
-        and try again (necessary for at least some Atari archives created
+       and try again (necessary for at least some Atari archives created
         with STZIP, as well as archives created by J.H. Holm's ZIPSPLIT 1.1).
       ----------------------------------------------------------------------- */
 
@@ -407,7 +407,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
         Begin main loop over blocks of member files.  We know the entire central
         directory is on this disk:  we would not have any of this information un-
         less the end-of-central-directory record was on this disk, and we would
-        not have gotten to this routine unless this is also the disk on which
+ not have gotten to this routine unless this is also the disk on which
         the central directory starts.  In practice, this had better be the ONLY
         disk in the archive, but maybe someday we'll add multi-disk support.
        ---------------------------------------------------------------------------*/
@@ -598,7 +598,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
             /*            RES_UNLOCK( GLOBAL_HASH_TABLE );  GFG */
         }
 
-#endif /*  not RES_USE_FLAT_MODEL */
+#endif /* not RES_USE_FLAT_MODEL */
 
         if ( not (*data.name))
             continue;  /* this is usually a directory entry, which we'll decipher later */
@@ -1062,7 +1062,7 @@ int extract_or_test_member(int method, long fcsize, COMPRESSED_FILE * cmp)
 
         case IMPLODED:
             break;
-#endif /*  not SFX */
+#endif /* not SFX */
 
         case DEFLATED:
             cmp -> csize = fcsize;
@@ -1244,8 +1244,8 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
                  arc -> tmp_in_ptr = arc -> tmp_in_ptr - 1 /* was: --inptr  Uggh */
                 )
             {
-                //                if((native(*((int*)arc -> tmp_in_ptr)) == 'P')  and 
-                //                     not strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))  /* GFG 31/01/98
+                //                if((native(*((int*)arc -> tmp_in_ptr)) == 'P') and 
+                // not strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))  /* GFG 31/01/98
                 if (((*(char*)(arc -> tmp_in_ptr)) == 'P') and not strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
 
                 {
@@ -1301,7 +1301,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
 
         /*   ==amount=   ==done==   ==rounding==    =blksiz=  */
 
-        for (i = 1;   not found and (i <= numblks);  ++i)
+        for (i = 1; not found and (i <= numblks);  ++i)
         {
             arc -> start_buffer -= arc -> tmp_in_size;
             lseek(arc -> os_handle, arc -> start_buffer, SEEK_SET);
@@ -1314,7 +1314,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
                  arc -> tmp_in_ptr = arc -> tmp_in_ptr - 1
                 )
             {
-                if ((*(char *)arc -> tmp_in_ptr == 'P')  and not strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
+                if ((*(char *)arc -> tmp_in_ptr == 'P') and not strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
                 {
                     arc -> tmp_in_count -= ((int)arc -> tmp_in_ptr - (int)arc -> tmp_in_buffer);
                     found = TRUE;

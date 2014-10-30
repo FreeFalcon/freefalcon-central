@@ -190,7 +190,7 @@ void GunClass::InitLocalData(int type)
 
     if (wcPtr->HitChance[ Air ] > 0 or wcPtr->HitChance[ LowAir ] > 0)
     {
-        domain or_eq  (int)wdAir;
+        domain or_eq (int)wdAir;
     }
 
     gunDomain = (WeaponDomain)domain;
@@ -483,8 +483,8 @@ int GunClass::Exec(
                     // END OF MODIFIED SECTION
                     testFeature->drawPointer->GetPosition(&fpos);
 
-                    if (fabs(p1.x - fpos.x) < vt + p3.x  and 
-                        fabs(p1.y - fpos.y) < vt + p3.y  and 
+                    if (fabs(p1.x - fpos.x) < vt + p3.x and 
+                        fabs(p1.y - fpos.y) < vt + p3.y and 
                         fabs(p1.z - fpos.z) < vt + p3.z)
                     {
                         org.x = p2.x;
@@ -628,7 +628,7 @@ int GunClass::Exec(
 
             if ( not bulptr->flying)
             {
-                whatWasHit or_eq  TRACER_HIT_FEATURE;
+                whatWasHit or_eq TRACER_HIT_FEATURE;
                 numFlying--;
                 continue;
             }
@@ -640,10 +640,10 @@ int GunClass::Exec(
             {
                 if
                 (
-                    testObject->BaseData() and testObject->BaseData()->IsSim()  and 
-                    ( not testObject->BaseData()->IsWeapon() or testObject->BaseData()->IsEject())  and 
-                     not ((SimBaseClass*)testObject->BaseData())->IsExploding()  and 
-                    testObject->localData and testObject->localData->range < initBulletVelocity * (2.5F)  and 
+                    testObject->BaseData() and testObject->BaseData()->IsSim() and 
+                    ( not testObject->BaseData()->IsWeapon() or testObject->BaseData()->IsEject()) and 
+ not ((SimBaseClass*)testObject->BaseData())->IsExploding() and 
+                    testObject->localData and testObject->localData->range < initBulletVelocity * (2.5F) and 
                     ((SimBaseClass*)testObject->BaseData())->drawPointer not_eq NULL
                 )
                 {
@@ -738,7 +738,7 @@ int GunClass::Exec(
 
             if ( not bulptr->flying)
             {
-                whatWasHit or_eq  TRACER_HIT_UNIT;
+                whatWasHit or_eq TRACER_HIT_UNIT;
                 numFlying--;
                 continue;
             }
@@ -795,7 +795,7 @@ int GunClass::Exec(
                 bulptr->z = groundZ;
                 bulptr->flying = FALSE;
                 numFlying--;
-                whatWasHit or_eq  TRACER_HIT_GROUND;
+                whatWasHit or_eq TRACER_HIT_GROUND;
 
                 // only do sound and smoke effect for lead bullet....
                 // hack: seems like ground vehicles shoot into ground
@@ -831,7 +831,7 @@ int GunClass::Exec(
                         // TRUE,
                         // bulptr->x, bulptr->y, bulptr->z, 1.0f);
                         //
-                        // if (  not PRANDInt3() )
+                        // if ( not PRANDInt3() )
                         // {
                         // /*
                         // OTWDriver.AddSfxRequest(
@@ -847,7 +847,7 @@ int GunClass::Exec(
                         // &vec);
                         //
                         // }
-                        // else if (  not PRANDInt3() )
+                        // else if ( not PRANDInt3() )
                         // {
                         // /*
                         // OTWDriver.AddSfxRequest(
@@ -927,7 +927,7 @@ int GunClass::Exec(
 
     // set position of muzzle tracers if we're firing -- only when alpha
     // blending is on
-    if (*fire)  // and  PlayerOptions.AlphaOn() )
+    if (*fire)  // and PlayerOptions.AlphaOn() )
     {
         float stagger;
         float ystagger;
@@ -1041,7 +1041,7 @@ int GunClass::Exec(
         if (parent->IsAirplane())
         {
             //RV - I-Hawk - RV new trails call changes
-            //if (  not smokeTrail )
+            //if ( not smokeTrail )
             if ( not TrailIdNew)
             {
                 //smokeTrail = new DrawableTrail(trailID);

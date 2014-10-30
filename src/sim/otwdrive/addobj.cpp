@@ -91,25 +91,25 @@ void OTWDriverClass::InsertObjectIntoDrawList(SimBaseClass* theObject)
         viewPoint->InsertObject(theObject->drawPointer);
 
         /*    No longer used
-           if (theObject->IsGroundVehicle()  and 
-                 ((GroundClass*)theObject)->crewDrawable  and 
-           not ((GroundClass*)theObject)->crewDrawable->InDisplayList())
+           if (theObject->IsGroundVehicle() and 
+                 ((GroundClass*)theObject)->crewDrawable and 
+ not ((GroundClass*)theObject)->crewDrawable->InDisplayList())
           viewPoint->InsertObject(((GroundClass*)theObject)->crewDrawable);
         */
-        if (theObject->IsGroundVehicle()  and 
-            ((GroundClass*)theObject)->truckDrawable  and 
-             not ((GroundClass*)theObject)->truckDrawable->InDisplayList())
+        if (theObject->IsGroundVehicle() and 
+            ((GroundClass*)theObject)->truckDrawable and 
+ not ((GroundClass*)theObject)->truckDrawable->InDisplayList())
             viewPoint->InsertObject(((GroundClass*)theObject)->truckDrawable);
 
         /*
               InsertObject(theObject->drawPointer);
-           if (theObject->IsGroundVehicle()  and 
-                 ((GroundClass*)theObject)->crewDrawable  and 
-           not ((GroundClass*)theObject)->crewDrawable->InDisplayList())
+           if (theObject->IsGroundVehicle() and 
+                 ((GroundClass*)theObject)->crewDrawable and 
+ not ((GroundClass*)theObject)->crewDrawable->InDisplayList())
           InsertObject(((GroundClass*)theObject)->crewDrawable);
-           if (theObject->IsGroundVehicle()  and 
-                 ((GroundClass*)theObject)->truckDrawable  and 
-           not ((GroundClass*)theObject)->truckDrawable->InDisplayList())
+           if (theObject->IsGroundVehicle() and 
+                 ((GroundClass*)theObject)->truckDrawable and 
+ not ((GroundClass*)theObject)->truckDrawable->InDisplayList())
           InsertObject(((GroundClass*)theObject)->truckDrawable);
         */
     }
@@ -201,7 +201,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
             // This is a ground thingy..
             if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_VEHICLE)
             {
-                if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_FOOT  and 
+                if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_FOOT and 
                     classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_FOOT_SQUAD)
                 {
                     // Make the ground personel as desired
@@ -270,7 +270,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                     baseObject = NULL;
 
                 // Some things require Base Objects (like bridges and airbases)
-                if (baseObject and  not ((SimFeatureClass*)baseObject)->baseObject)
+                if (baseObject and not ((SimFeatureClass*)baseObject)->baseObject)
                 {
                     // Is this a bridge?
                     if (baseObject->IsSetCampaignFlag(FEAT_ELEV_CONTAINER))
@@ -379,7 +379,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
     }
 }
 
-long TeamSimColorList[NUM_TEAMS] = { 0xfffffffe, // Thunderbird // White  not quite white so color is steady
+long TeamSimColorList[NUM_TEAMS] = { 0xfffffffe, // Thunderbird // White not quite white so color is steady
                                         0xff008000, // US // Green
                                         0xffff0000, // ROK/Shark // Blue
                                         0xff3771B2, // Japan // Brown
@@ -410,9 +410,9 @@ void SetLabel(SimBaseClass* theObject)
             campObj = theObject->GetCampaignObject();
 
             // FRB - Remove the Deagg condition.  Seifer new Deagg method broke the callsign in the label
-            if (campObj and campObj->IsFlight() /* and   not campObj->IsAggregate() /* and  campObj->InPackage()*/
+            if (campObj and campObj->IsFlight() /* and not campObj->IsAggregate() /* and campObj->InPackage()*/
                 // 2001-10-31 M.N. show flight names of our team
-                and flight and (flight->GetTeam() == campObj->GetTeam()))
+               and flight and (flight->GetTeam() == campObj->GetTeam()))
             {
                 char temp[40];
                 GetCallsign(((Flight)campObj)->callsign_id, ((Flight)campObj)->callsign_num, temp);

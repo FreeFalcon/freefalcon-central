@@ -371,7 +371,7 @@ void C_Map::CalculateDrawingParams()
     DrawWindow_->VY_[0] = -(short)((float)MapRect_.top * FEET_PER_PIXEL * scale_) + DrawWindow_->ClientArea_[0].top;
     SetTeamScales();
 
-    flags_ or_eq  I_NEED_TO_DRAW | I_NEED_TO_DRAW_MAP;
+    flags_ or_eq I_NEED_TO_DRAW | I_NEED_TO_DRAW_MAP;
     short x, y;
     TheCampaign.GetBullseyeLocation(&x, &y);
 
@@ -442,9 +442,9 @@ THREAT_LIST *C_Map::AddThreat(CampEntity ent)
     // if(ent->IsUnit() and ent->IsEmitting())
     if (ent->IsUnit())
         // THIS IS WHAT I DO IN 1.08i2 BUT NOT REQUIRED IN 1.07 (SEE AT END OF FUNCTION FOR DETAIL)
-        // if(ent->IsUnit() and  not ((Unit)ent)->Inactive() and (FindUnitType(ent) bitand (_UNIT_AIR_DEFENSE | _UNIT_BATTALION)))
+        // if(ent->IsUnit() and not ((Unit)ent)->Inactive() and (FindUnitType(ent) bitand (_UNIT_AIR_DEFENSE | _UNIT_BATTALION)))
         // UI_Refresher *gpsItem=NULL;
-        // if(ent->IsUnit() and (gpsItem=(UI_Refresher*)gGps->Find(ent->GetCampID())) and gpsItem->MapItem_ and  not (gpsItem->MapItem_->Flags bitand C_BIT_INVISIBLE))
+        // if(ent->IsUnit() and (gpsItem=(UI_Refresher*)gGps->Find(ent->GetCampID())) and gpsItem->MapItem_ and not (gpsItem->MapItem_->Flags bitand C_BIT_INVISIBLE))
     {
         ent->GetLocation(&x, &y);
         ShiAssert(Map_Max_Y > 0);
@@ -1221,7 +1221,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
                     }
                 }
 
-                wpl->Flags or_eq  UseFlag;
+                wpl->Flags or_eq UseFlag;
             }
         }
 
@@ -1277,7 +1277,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
                 CurWP_->SetLineColor(campID + i, 0x00ffffff, 0x0000ffff, 0x000000ff);
                 tmpID = new VU_ID;
                 *tmpID = unit->Id();
-                wpl->Flags or_eq  UseFlag;
+                wpl->Flags or_eq UseFlag;
                 wpl->Icon->SetUserCleanupPtr(C_STATE_0, tmpID);
                 wpl->Icon->SetUserNumber(C_STATE_1, i);
             }
@@ -1305,7 +1305,7 @@ void C_Map::BuildCurrentWPList(Unit unit)
 
                     tmpID = new VU_ID;
                     *tmpID = unit->Id();
-                    wpl->Flags or_eq  UseFlag;
+                    wpl->Flags or_eq UseFlag;
                     wpl->Icon->SetUserCleanupPtr(C_STATE_0, tmpID);
                     wpl->Icon->SetUserNumber(C_STATE_1, i);
 
@@ -1543,7 +1543,7 @@ void C_Map::BuildWPList(C_Waypoint *wplist, C_Waypoint *, Unit unit)
 
                 tmpID = new VU_ID;
                 *tmpID = unit->Id();
-                wpl->Flags or_eq  UseFlag;
+                wpl->Flags or_eq UseFlag;
                 wpl->Icon->SetUserCleanupPtr(C_STATE_0, tmpID);
                 wpl->Icon->SetUserNumber(C_STATE_1, i);
             }
@@ -1623,7 +1623,7 @@ BOOL C_Map::SetCurrentWaypointList(VU_ID unitID)
     }
 
     BuildCurrentWPList(unit);
-    flags_ or_eq  I_NEED_TO_DRAW;
+    flags_ or_eq I_NEED_TO_DRAW;
     UI_Leave(Leave);
     CampLeaveCriticalSection();
     return(TRUE);
@@ -1882,7 +1882,7 @@ void C_Map::ShowObjectiveType(long mask)
     short i, j;
     F4CSECTIONHANDLE *Leave;
 
-    ObjectiveMask_ or_eq  (1 << FindTypeIndex(mask, OBJ_TypeList, _MAP_NUM_OBJ_TYPES_));
+    ObjectiveMask_ or_eq (1 << FindTypeIndex(mask, OBJ_TypeList, _MAP_NUM_OBJ_TYPES_));
 
     Leave = UI_Enter(DrawWindow_);
 
@@ -1932,7 +1932,7 @@ void C_Map::ShowUnitType(long mask)
     short i, j, k;
     F4CSECTIONHANDLE *Leave;
 
-    UnitMask_ or_eq  (1 << FindTypeIndex(mask, GND_TypeList, _MAP_NUM_GND_TYPES_));
+    UnitMask_ or_eq (1 << FindTypeIndex(mask, GND_TypeList, _MAP_NUM_GND_TYPES_));
 
     Leave = UI_Enter(DrawWindow_);
 
@@ -2047,7 +2047,7 @@ void C_Map::ShowAirUnitType(long mask)
     short i, j;
     F4CSECTIONHANDLE *Leave;
 
-    AirUnitMask_ or_eq  (1 << FindTypeIndex(mask, AIR_TypeList, _MAP_NUM_AIR_TYPES_));
+    AirUnitMask_ or_eq (1 << FindTypeIndex(mask, AIR_TypeList, _MAP_NUM_AIR_TYPES_));
 
     Leave = UI_Enter(DrawWindow_);
 
@@ -2117,7 +2117,7 @@ void C_Map::ShowNavalUnitType(long mask)
     short i, j;
     F4CSECTIONHANDLE *Leave;
 
-    NavalUnitMask_ or_eq  (1 << FindTypeIndex(mask, NAV_TypeList, _MAP_NUM_NAV_TYPES_));
+    NavalUnitMask_ or_eq (1 << FindTypeIndex(mask, NAV_TypeList, _MAP_NUM_NAV_TYPES_));
 
     Leave = UI_Enter(DrawWindow_);
 
@@ -2261,7 +2261,7 @@ void C_Map::ShowThreatType(long mask)
             Team_[i].Units->Type[j]->Levels[2]->ShowCircles(Circles_);
 
 #endif
-    flags_ or_eq  I_NEED_TO_DRAW_MAP;
+    flags_ or_eq I_NEED_TO_DRAW_MAP;
     UI_Leave(Leave);
 }
 
@@ -2298,7 +2298,7 @@ void C_Map::HideThreatType(long mask)
             Team_[i].Units->Type[j]->Levels[2]->ShowCircles(Circles_);
 
 #endif
-    flags_ or_eq  I_NEED_TO_DRAW_MAP;
+    flags_ or_eq I_NEED_TO_DRAW_MAP;
     UI_Leave(Leave);
 }
 
@@ -2466,7 +2466,7 @@ void C_Map::TurnOnNames()
             Team_[i].AirUnits->Type[j]->SetFlagBitOff(C_BIT_NOLABEL);
     }
 
-    flags_ or_eq  I_NEED_TO_DRAW_MAP;
+    flags_ or_eq I_NEED_TO_DRAW_MAP;
 }
 
 void C_Map::TurnOnBoundaries()
@@ -2497,7 +2497,7 @@ void C_Map::TurnOffNames()
             Team_[i].AirUnits->Type[j]->SetFlagBitOn(C_BIT_NOLABEL);
     }
 
-    flags_ or_eq  I_NEED_TO_DRAW_MAP;
+    flags_ or_eq I_NEED_TO_DRAW_MAP;
 }
 
 void C_Map::TurnOffBoundaries()

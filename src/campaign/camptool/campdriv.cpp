@@ -639,7 +639,7 @@ void ShowSAMs(MapData md, HDC DC)
         else
             range = e->GetWeaponRange(LowAir);
 
-        if (range > 0 and (e->IsObjective() or (e->GetDomain() not_eq DOMAIN_AIR and e->IsUnit() and  not ((Unit)e)->Moving())))
+        if (range > 0 and (e->IsObjective() or (e->GetDomain() not_eq DOMAIN_AIR and e->IsUnit() and not ((Unit)e)->Moving())))
         {
             e->GetLocation(&x, &y);
             DisplaySideRange(DC, e->GetOwner(), (short)(POSX(x) + (md->CellSize >> 1)), (short)(POSY(y) + (md->CellSize >> 1)), range * md->CellSize);
@@ -1671,7 +1671,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
             NLX = (md->PMFX / md->CellSize) + 1;
             NLY = md->LY;
             r.left = md->PMFX - md->PFX;
-            side or_eq  1;
+            side or_eq 1;
         }
 
         if (md->PFY < md->PMFY)
@@ -1680,7 +1680,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
             NLY = (md->PMFY / md->CellSize) + 1;
             NLX = md->LX;
             r.bottom = ysize - (md->PMFY - md->PFY);
-            side or_eq  2;
+            side or_eq 2;
         }
 
         if (md->PLX > md->PMLX)
@@ -1689,7 +1689,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
             NFX = md->PMLX / md->CellSize;
             NLY = md->LY;
             r.right = md->PMLX - md->PFX;
-            side or_eq  4;
+            side or_eq 4;
         }
 
         if (md->PLY > md->PMLY)
@@ -1698,7 +1698,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
             NFY = md->PMLY / md->CellSize;
             NLX = md->LX;
             r.top = ysize - (md->PMLY - md->PFY);
-            side or_eq  8;
+            side or_eq 8;
         }
 
         if ((side bitand 0x5) == 0x5)
@@ -3245,7 +3245,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             //if(isalpha(C) and shifted)
             //C += 0x20;
 
-            if (isalpha(C) and  not (GetKeyState(VK_SHIFT) bitand 0x80))
+            if (isalpha(C) and not (GetKeyState(VK_SHIFT) bitand 0x80))
                 C += 0x20;
 
             ProcessCommand(C);

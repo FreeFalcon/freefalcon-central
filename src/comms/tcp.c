@@ -44,8 +44,8 @@ CAPIList *GlobalGroupListHead = NULL;
 #define SAY_OFF(a)
 #define CREATE_LOCK(a,b)                { a = CreateMutex( NULL, FALSE, b ); if( not a ) DebugBreak(); }
 #define REQUEST_LOCK(a)                 { int w = WaitForSingleObject(a, INFINITE); {SAY_ON(a);} if( w == WAIT_FAILED ) DebugBreak(); }
-#define RELEASE_LOCK(a)                 { {SAY_OFF(a);} if(  not ReleaseMutex(a)) DebugBreak();   }
-#define DESTROY_LOCK(a)                 { if(  not CloseHandle(a)) DebugBreak();   }
+#define RELEASE_LOCK(a)                 { {SAY_OFF(a);} if( not ReleaseMutex(a)) DebugBreak();   }
+#define DESTROY_LOCK(a)                 { if( not CloseHandle(a)) DebugBreak();   }
 
 
 
@@ -1858,7 +1858,7 @@ void ComGROUPClose(com_API_handle c)
     MonoPrint("================================\n");
 #endif
 
-    for (curr = GlobalGroupListHead ; curr  not_eq NULL ; curr = curr -> next)
+    for (curr = GlobalGroupListHead ; curr not_eq NULL ; curr = curr -> next)
     {
         ComAPIDeleteFromGroup(curr->com, c);                             /* remove this group from others */
     }
@@ -2030,7 +2030,7 @@ int  ComAPIAddToGroup(com_API_handle grouphandle, com_API_handle memberhandle)
     group->GroupHead = CAPIListRemove(group->GroupHead, memberhandle);
     group->GroupHead = CAPIListAppend(group->GroupHead);
 
-    if ( not  group->GroupHead)
+    if ( not group->GroupHead)
     {
         leave_cs();
         return COMAPI_EMPTYGROUP;
@@ -2203,9 +2203,9 @@ int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
 
                 //if(this_cudp) // JB 010222 CTD
                 if (
-                    this_cudp  and (this_cudp->send_buffer.buf)  and 
-                     not F4IsBadReadPtrC(this_cudp->send_buffer.buf, sizeof(char)) and // JB 010222 CTD
-                     not F4IsBadCodePtrC((FARPROC)(*curr->com->send_func))
+                    this_cudp and (this_cudp->send_buffer.buf) and 
+ not F4IsBadReadPtrC(this_cudp->send_buffer.buf, sizeof(char)) and // JB 010222 CTD
+ not F4IsBadCodePtrC((FARPROC)(*curr->com->send_func))
                     // JB 010401 CTD
                 )
                 {
@@ -2262,7 +2262,7 @@ int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
                 this_group = (ComGROUP *) curr->com;
 
                 //if(this_group)
-                if (this_group and  not F4IsBadCodePtrC((FARPROC)(*curr->com->send_func))) // JB 010401 CTD
+                if (this_group and not F4IsBadCodePtrC((FARPROC)(*curr->com->send_func))) // JB 010401 CTD
                 {
                     save_send_buffer = this_group->send_buffer;
                     this_group->send_buffer = group->send_buffer;

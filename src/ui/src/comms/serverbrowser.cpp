@@ -305,7 +305,7 @@ static void OnClickedSettings(long, short hittype,C_Base *control)
  button = (C_Button*)win->FindControl(SETUP_JETNET_ENABLEUPLINK);
  if (button)
  {
- g_bEnableUplink =  not g_bEnableUplink;
+ g_bEnableUplink = not g_bEnableUplink;
  if (g_bEnableUplink) // now we switched from off to on, set up the uplink
  {
  // Make sure all objects are registered
@@ -1141,7 +1141,7 @@ void C_ServerItem::SetFont(long id)
 
 long C_ServerItem::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or  not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
         return(0);
 
     if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= (GetY() + GetH()))

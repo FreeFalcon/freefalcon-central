@@ -96,7 +96,7 @@ void DigitalBrain::MissileDefeatCheck(void)
     }
 
     // RV - Biker - Allow to shoot them back
-    if (((MissileClass *)self->incomingMissile[0])->parent and  not ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
+    if (((MissileClass *)self->incomingMissile[0])->parent and not ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
         missileShotTimer = 0;
 
     // 2000-09-05 this will make the range not target base but from us to the missile
@@ -200,8 +200,8 @@ void DigitalBrain::MissileDefeatCheck(void)
         //end
 
         if (((MissileClass *)self->incomingMissile[0])->GetSeekerType() not_eq SensorClass::IRST
-            and (rwrSensor = FindSensor(self, SensorClass::RWR))
-             and 
+           and (rwrSensor = FindSensor(self, SensorClass::RWR))
+            and 
             (((MissileClass *)self->incomingMissile[0])->GetSeekerType() == SensorClass::RadarHoming
              or (((MissileClass *)self->incomingMissile[0])->sensorArray and ((MissileClass *)self->incomingMissile[0])->sensorArray[0]->Type() == SensorClass::Radar)
              or ( not ((MissileClass *)self->incomingMissile[0])->sensorArray and (rwrElement = ((VehRwrClass *)rwrSensor)->IsTracked(self->incomingMissile[0])) and rwrElement->missileLaunch)))
@@ -227,27 +227,27 @@ void DigitalBrain::MissileDefeatCheck(void)
                 else
                 {
                     if (missileRange > (8.0f * NM_TO_FT) and SimLibElapsedTime > visDetectTimer
-                        and rand() % 100 < 3)
+                       and rand() % 100 < 3)
                     {
                         int testme = 0;
                     }
                     else if (missileRange > (6.0f * NM_TO_FT) and missileRange < (8.0f * NM_TO_FT)
-                             and SimLibElapsedTime > visDetectTimer and rand() % 100 < 10)
+                            and SimLibElapsedTime > visDetectTimer and rand() % 100 < 10)
                     {
                         int testme = 0;
                     }
                     else if (missileRange > (4.0f * NM_TO_FT) and missileRange < (6.0f * NM_TO_FT)
-                             and SimLibElapsedTime > visDetectTimer and rand() % 100 < 25)
+                            and SimLibElapsedTime > visDetectTimer and rand() % 100 < 25)
                     {
                         int testme = 0;
                     }
                     else if (missileRange > (2.0f * NM_TO_FT) and missileRange < (4.0f * NM_TO_FT)
-                             and SimLibElapsedTime > visDetectTimer and rand() % 100 < 40)
+                            and SimLibElapsedTime > visDetectTimer and rand() % 100 < 40)
                     {
                         int testme = 0;
                     }
                     else if (missileRange > (0.5f * NM_TO_FT) and missileRange < (2.0f * NM_TO_FT)
-                             and SimLibElapsedTime > visDetectTimer and rand() % 100 < 65)
+                            and SimLibElapsedTime > visDetectTimer and rand() % 100 < 65)
                     {
                         int testme = 0;
                     }
@@ -377,7 +377,7 @@ void DigitalBrain::MissileDefeat()
     }
 
     // RV - Biker - Allow to shoot them back
-    if (((MissileClass *)self->incomingMissile[0])->parent and  not ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
+    if (((MissileClass *)self->incomingMissile[0])->parent and not ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
         missileShotTimer = 0;
 
     // RV - Biker - Maybe check some extra conditions later
@@ -399,7 +399,7 @@ void DigitalBrain::MissileDefeat()
     }
 
     // 2001-06-29 ADDED BY S.G. I WANT LEAD TO ASK WINGS TO ATTACK IF HE IS ENGAGED OTHERWISE HE WON'T...
-    if (/* not isWing  and */ ((MissileClass *)self->incomingMissile[0])->parent and ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
+    if (/* not isWing and */ ((MissileClass *)self->incomingMissile[0])->parent and ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
     {
         // Have we given the attack yet? Oh yeah, do we have some AG weapons and do we have someone to direct?
         if (sentWingAGAttack not_eq AG_ORDER_ATTACK and IsSetATC(HasAGWeapon) and self->GetCampaignObject()->NumberOfComponents() > 1)
@@ -484,7 +484,7 @@ void DigitalBrain::MissileDefeat()
         ((AircraftClass*)self)->DropProgramed();
 
         /*if (((MissileClass *)self->incomingMissile[0])->targetPtr)
-         if (((MissileClass *)self->incomingMissile[0])->targetPtr->localData->range > ((float)(6.0f - SkillLevel()) * NM_TO_FT)  and 
+         if (((MissileClass *)self->incomingMissile[0])->targetPtr->localData->range > ((float)(6.0f - SkillLevel()) * NM_TO_FT) and 
           ((MissileClass *)self->incomingMissile[0])->targetPtr->localData->range < ((float)(19.0f - SkillLevel()) * NM_TO_FT))
          missileShouldDrag = TRUE;
 
@@ -709,7 +709,7 @@ void DigitalBrain::MissileLastDitch(float xft, float yft, float zft)
     /*------*/
 
 
-    if (missileDefeatTtgo > LD_TIME * 0.25F and missileDefeatTtgo < LD_TIME * 0.8F  and 
+    if (missileDefeatTtgo > LD_TIME * 0.25F and missileDefeatTtgo < LD_TIME * 0.8F and 
         ((AircraftClass*)self)->HasPilot())
     {
         if (SimLibElapsedTime > self->ChaffExpireTime())

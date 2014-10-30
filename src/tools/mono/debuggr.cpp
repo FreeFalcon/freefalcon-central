@@ -888,7 +888,7 @@ void WriteDebugPixel(int x, int y)
 
     cur_val = (char *)(screen_buffer[page] + the_byte);
 #ifndef DISABLE_MONO_DISPLAY
-    *cur_val or_eq  (char)(1 << the_bit);
+    *cur_val or_eq (char)(1 << the_bit);
 #endif
 }
 
@@ -901,7 +901,7 @@ void DebugSwapbuffer()
 
     for (i = 0; i < 0x8000; i++)
     {
-        if (*((char *)(screen_buffer[page] + i))  not_eq 
+        if (*((char *)(screen_buffer[page] + i)) not_eq 
             *((char *)(screen_buffer[1 - page] + i)))
         {
 #ifndef DISABLE_MONO_DISPLAY

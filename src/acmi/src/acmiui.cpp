@@ -1249,9 +1249,9 @@ inline BOOL ACMIViewIsReady()
     return
         (
             (
-                acmiView not_eq NULL  and 
-                acmiView->Tape() not_eq NULL  and 
-                acmiView->Tape()->IsLoaded()  and 
+                acmiView not_eq NULL and 
+                acmiView->Tape() not_eq NULL and 
+                acmiView->Tape()->IsLoaded() and 
                 acmiView->TapeHasLoaded()
             ) ?
             TRUE :
@@ -1793,7 +1793,7 @@ static void ViewTimerCB(long, short, C_Base *control)
 {
     // F4EnterCriticalSection( gUICriticalSection );
     control->SetReady(1);
-    control->Parent_->update_ or_eq  C_DRAW_REFRESHALL;
+    control->Parent_->update_ or_eq C_DRAW_REFRESHALL;
     control->Parent_->RefreshWindow();
     // F4LeaveCriticalSection( gUICriticalSection );
 }
@@ -1898,7 +1898,7 @@ void MoveACMIViewTimerCB(long, short, C_Base *control)
         }
 
         control->SetUserNumber(_UI95_TIMER_COUNTER_, control->GetUserNumber(_UI95_TIMER_DELAY_));
-        control->Parent_->update_ or_eq  C_DRAW_REFRESHALL;
+        control->Parent_->update_ or_eq C_DRAW_REFRESHALL;
         control->Parent_->RefreshWindow();
     }
 
@@ -2250,7 +2250,7 @@ void ACMITrackingCB(long, short hittype, C_Base*)
 {
     if
     (
-        hittype == C_TYPE_LMOUSEUP  and 
+        hittype == C_TYPE_LMOUSEUP and 
         ACMIViewIsReady()
     )
     {
@@ -2415,8 +2415,8 @@ void ACMICamTrackingCB(long, int hittype, C_Control *control)
 
     if
     (
-        hittype == C_TYPE_SELECT  and 
-        ACMIViewIsReady()  and 
+        hittype == C_TYPE_SELECT and 
+        ACMIViewIsReady() and 
         ACMIListBox not_eq NULL
     )
     {
@@ -2446,8 +2446,8 @@ void ACMICamTrackingCB(long, short hittype, C_Base *control)
 
     if
     (
-        hittype == C_TYPE_SELECT  and 
-        ACMIViewIsReady()  and 
+        hittype == C_TYPE_SELECT and 
+        ACMIViewIsReady() and 
         ACMIListBox not_eq NULL
     )
     {
@@ -2531,8 +2531,8 @@ void ACMISubCameraCB(long, short hittype, C_Base *control)
 
     if
     (
-        hittype == C_TYPE_SELECT  and 
-        ACMIViewIsReady()  and 
+        hittype == C_TYPE_SELECT and 
+        ACMIViewIsReady() and 
         ACMIListBox not_eq NULL
     )
     {
@@ -2904,7 +2904,7 @@ void ACMIScreenCaptureCB(long, short hittype, C_Base*)
 {
     if
     (
-        hittype == C_TYPE_LMOUSEUP  and 
+        hittype == C_TYPE_LMOUSEUP and 
         ACMIViewIsReady()
     )
     {

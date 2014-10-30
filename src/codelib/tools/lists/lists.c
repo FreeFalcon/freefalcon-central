@@ -53,8 +53,8 @@ int LIST_MUTEX = 0;         /* If you want to bypass microsoft's very heavy
 
 #  define WAIT_FOR_LOCK(a)     WaitForSingleObject( a, INFINITE );
 #  define RELEASE_LOCK(a)      ReleaseMutex( a );
-#  define CREATE_LOCK(a)       { if(  not a ) a = CreateMutex( NULL, FALSE, NULL ); \
-                                 if(  not a ) KEVS_FATAL_ERROR( "Could not get mutex lock." ); }
+#  define CREATE_LOCK(a)       { if( not a ) a = CreateMutex( NULL, FALSE, NULL ); \
+                                 if( not a ) KEVS_FATAL_ERROR( "Could not get mutex lock." ); }
 #else
 #  define WAIT_FOR_LOCK(a)
 #  define RELEASE_LOCK(a)
@@ -331,7 +331,7 @@ ListValidate(void)
 
     for (tmp = table; tmp; tmp = tmp -> next)
         for (i = 0; i < ALLOC_UNITS; i++)
-            if ((tmp -> unit[i].check not_eq ALLOC_FREE_FLAG)  and 
+            if ((tmp -> unit[i].check not_eq ALLOC_FREE_FLAG) and 
                 (tmp -> unit[i].check not_eq ALLOC_USED_FLAG))
             {
                 DBG(PF("ERROR: Possible overwrite in lists."));
@@ -436,7 +436,7 @@ ListGlobalPack(void)
 
     do
     {
-        if ((tbl -> avail == ALLOC_UNITS)  and 
+        if ((tbl -> avail == ALLOC_UNITS) and 
             (tbl -> sleeping))
         {
             if (tbl -> prev)

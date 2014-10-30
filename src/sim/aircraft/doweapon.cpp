@@ -68,7 +68,7 @@ void AircraftClass::DoWeapons()
 
     if (Guns)
     {
-        Guns->Exec(&fireFlag, dmx, &platformAngles, targetList,  not isDigital);
+        Guns->Exec(&fireFlag, dmx, &platformAngles, targetList, not isDigital);
 
         if (fireFlag)
         {
@@ -150,7 +150,7 @@ void AircraftClass::DoWeapons()
 
         // If in Selective jettison mode, stop here, since the pickle button has been usurped
         if (
-            Sms->drawable and Sms->drawable->DisplayMode() == SmsDrawable::SelJet  and 
+            Sms->drawable and Sms->drawable->DisplayMode() == SmsDrawable::SelJet and 
             Sms->drawable->IsDisplayed()
         )
         {
@@ -196,11 +196,11 @@ void AircraftClass::DoWeapons()
                         // END OF ADDED SECTION
                         // JPO - two cases- dogfight mode has its own sub mode.
                         // all others use the regular.
-                        if ((FCC->GetMasterMode() not_eq FireControlComputer::Dogfight  and 
+                        if ((FCC->GetMasterMode() not_eq FireControlComputer::Dogfight and 
                              FCC->GetSubMode() == FireControlComputer::Aim9) ||
-                            (FCC->GetMasterMode() == FireControlComputer::Dogfight  and 
+                            (FCC->GetMasterMode() == FireControlComputer::Dogfight and 
                              FCC->GetDgftSubMode() == FireControlComputer::Aim9)  ||
-                            (FCC->GetMasterMode() == FireControlComputer::MissileOverride  and 
+                            (FCC->GetMasterMode() == FireControlComputer::MissileOverride and 
                              // ASSOCIATOR: Added MissileOverride here to get remembered mode
                              FCC->GetMrmSubMode() == FireControlComputer::Aim9))
                         {
@@ -213,7 +213,7 @@ void AircraftClass::DoWeapons()
 
                             // Must be an IR missile
                             if (
-                                curWeapon->IsMissile()  and 
+                                curWeapon->IsMissile() and 
                                 ((MissileClass *)curWeapon)->GetSeekerType() == SensorClass::IRST
                             )
                             {
@@ -231,9 +231,9 @@ void AircraftClass::DoWeapons()
 
                         else if (
                             FCC->GetSubMode() == FireControlComputer::Aim120 ||
-                            (FCC->GetMasterMode() == FireControlComputer::Dogfight  and 
+                            (FCC->GetMasterMode() == FireControlComputer::Dogfight and 
                              FCC->GetDgftSubMode() == FireControlComputer::Aim120) ||
-                            (FCC->GetMasterMode() == FireControlComputer::MissileOverride  and 
+                            (FCC->GetMasterMode() == FireControlComputer::MissileOverride and 
                              // ASSOCIATOR: Added MissileOverride here to get remembered mode
                              FCC->GetMrmSubMode() == FireControlComputer::Aim120)
                         )
@@ -305,7 +305,7 @@ void AircraftClass::DoWeapons()
             //if (FCC->GetMasterMode() == FireControlComputer::AirGroundBomb and // MLR 4/3/2004 -
             //FCC->GetSubMode() == FireControlComputer::RCKT)
             if (FCC->GetMasterMode() == FireControlComputer::AirGroundRocket
-                and FCC->GetSubMode() == FireControlComputer::OBSOLETERCKT) // MLR 4/3/2004 -
+               and FCC->GetSubMode() == FireControlComputer::OBSOLETERCKT) // MLR 4/3/2004 -
             {
                 if (FCC->bombPickle)
                 {
@@ -580,12 +580,12 @@ void AircraftClass::DoWeapons()
     {
         // Special case for firing a load of rockets
         //      if (FCC->GetMasterMode() == FireControlComputer::AirGroundBomb and // MLR 4/3/2004 -
-        //          FCC->GetSubMode() == FireControlComputer::RCKT   and 
-        //              Sms->IsSet(SMSBaseClass::Firing)  and 
+        //          FCC->GetSubMode() == FireControlComputer::RCKT  and 
+        //              Sms->IsSet(SMSBaseClass::Firing) and 
         //          FCC->bombPickle)
 
         if (FCC->GetMasterMode() == FireControlComputer::AirGroundRocket and // MLR 4/3/2004 -
-            Sms->IsSet(SMSBaseClass::Firing)  and 
+            Sms->IsSet(SMSBaseClass::Firing) and 
             FCC->bombPickle)
         {
             // Play the sound

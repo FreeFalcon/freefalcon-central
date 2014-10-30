@@ -283,7 +283,7 @@ void ICPClass::PNUpdateILSMode(int button, int)
             gNavigationSys->StepNextTacan();
         }
 
-        mUpdateFlags or_eq  ILS_UPDATE;
+        mUpdateFlags or_eq ILS_UPDATE;
     }
     else
         ExecILSMode();

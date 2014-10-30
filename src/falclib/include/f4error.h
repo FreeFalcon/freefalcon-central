@@ -36,7 +36,7 @@
 extern int f4AssertsOn, f4HardCrashOn;
 
 #define F4Assert( expr ) \
- if (f4AssertsOn and  not (expr)) { \
+ if (f4AssertsOn and not (expr)) { \
  char buffer[80];    \
  int choice = IDRETRY; \
  if (f4HardCrashOn) \

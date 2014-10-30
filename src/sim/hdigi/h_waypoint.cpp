@@ -34,7 +34,7 @@ void HeliBrain::FollowWaypoints(void)
     //   case WP_LAND:
     // if ( onStation == Arrived or onStation == Stabilizing )
     //   LandMe();
-    // else if (  not (onStation == OnStation) )
+    // else if ( not (onStation == OnStation) )
     // GoToCurrentWaypoint();
     // break;
     //
@@ -99,8 +99,8 @@ void HeliBrain::GoToCurrentWaypoint(void)
     }
 
     // If we are at starting WP stay on ground
-    if (self->curWaypoint->GetWPFlags() bitand WPF_TAKEOFF   and 
-        self->curWaypoint->GetWPDepartureTime() > SimLibElapsedTime  and 
+    if (self->curWaypoint->GetWPFlags() bitand WPF_TAKEOFF  and 
+        self->curWaypoint->GetWPDepartureTime() > SimLibElapsedTime and 
         self->curWaypoint->GetPrevWP() == NULL)
     {
         LevelTurn(0.0f, 0.0f, TRUE);

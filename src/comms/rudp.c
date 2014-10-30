@@ -64,8 +64,8 @@ extern "C" {
 #define SAY_OFF(a)
 #define CREATE_LOCK(a,b)                { a = CreateMutex( NULL, FALSE, b ); if( not a ) DebugBreak(); }
 #define REQUEST_LOCK(a)                 { int w = WaitForSingleObject(a, INFINITE); {SAY_ON(a);} if( w == WAIT_FAILED ) DebugBreak(); }
-#define RELEASE_LOCK(a)                 { {SAY_OFF(a);} if(  not ReleaseMutex(a)) DebugBreak();   }
-#define DESTROY_LOCK(a)                 { if(  not CloseHandle(a)) DebugBreak();   }
+#define RELEASE_LOCK(a)                 { {SAY_OFF(a);} if( not ReleaseMutex(a)) DebugBreak();   }
+#define DESTROY_LOCK(a)                 { if( not CloseHandle(a)) DebugBreak();   }
 
 
     static struct sockaddr_in comRecvAddr;
@@ -494,14 +494,14 @@ extern "C" {
             if (now - cudp->rudp_data.last_send_time > RUDP_OOB_RESEND_TIME)
             {
                 *flags = RUDPF_RESET;
-                *flags or_eq  cudp->rudp_data.reset_send;
+                *flags or_eq cudp->rudp_data.reset_send;
                 cudp->rudp_data.last_send_time = now;
             }
         }
         else if (cudp->rudp_data.reset_send == RUDP_RESET_OK)
         {
             *flags = RUDPF_RESET;
-            *flags or_eq  cudp->rudp_data.reset_send;
+            *flags or_eq cudp->rudp_data.reset_send;
             cudp->rudp_data.last_send_time = now;
         }
         else if (cudp->rudp_data.reset_send == RUDP_PING)
@@ -525,7 +525,7 @@ extern "C" {
             if (cudp->rudp_data.last_sent_received not_eq cudp->rudp_data.last_received)
             {
                 cudp->rudp_data.send_ack = FALSE;
-                *flags or_eq  RUDPF_LAST;
+                *flags or_eq RUDPF_LAST;
                 *(unsigned short*)ptr = (unsigned short)cudp->rudp_data.last_received;
 
                 cudp->rudp_data.last_sent_received = cudp->rudp_data.last_received;
@@ -537,7 +537,7 @@ extern "C" {
             if (cudp->rudp_data.last_oob_sent_received not_eq cudp->rudp_data.last_oob_received)
             {
                 cudp->rudp_data.send_oob_ack = FALSE;
-                *flags or_eq  RUDPF_LOOB;
+                *flags or_eq RUDPF_LOOB;
                 *(unsigned short*)ptr = (unsigned short)cudp->rudp_data.last_oob_received;
 
                 cudp->rudp_data.last_oob_sent_received = cudp->rudp_data.last_oob_received;
@@ -556,7 +556,7 @@ extern "C" {
             //
             // count ++;
             // cp->acknowledged = TRUE;
-            // // *flags or_eq  RUDPF_ACK;
+            // // *flags or_eq RUDPF_ACK;
             // *(unsigned short*)ptr = cp->sequence_number;
             // ptr += sizeof (short);
             // size += sizeof (short);
@@ -572,26 +572,26 @@ extern "C" {
             //
             // if (count)
             // {
-            // *flags or_eq  (count);
+            // *flags or_eq (count);
             // }
 
             // If we're sending a packet, we have a sequence number bitand data
             if (rp)
             {
-                *flags or_eq  RUDPF_SEQ;
+                *flags or_eq RUDPF_SEQ;
                 *(unsigned short*)ptr = rp->sequence_number;
                 ptr += sizeof(short);
                 size += sizeof(short);
 
                 if (rp->oob)
                 {
-                    *flags or_eq  RUDPF_OOB;
+                    *flags or_eq RUDPF_OOB;
                 }
 
                 // If we're a packetized message, send a message id, slot, etc.
                 if (rp->message_parts > 1)
                 {
-                    *flags or_eq  RUDPF_MSG;
+                    *flags or_eq RUDPF_MSG;
                     *(unsigned short*)ptr = rp->message_number;
                     ptr += sizeof(unsigned short);
                     size += sizeof(unsigned short);
@@ -760,7 +760,7 @@ extern "C" {
                 lp = cudp->rudp_data.sending;
                 // sfr: TODO remove JB check
 
-                while (lp and  not F4IsBadReadPtrC(lp, sizeof(Reliable_Packet)))
+                while (lp and not F4IsBadReadPtrC(lp, sizeof(Reliable_Packet)))
                 {
                     count ++;
                     lp = lp->next;
@@ -768,7 +768,7 @@ extern "C" {
 
                 lp = cudp->rudp_data.oob_sending;
 
-                while (lp and  not F4IsBadReadPtrC(lp, sizeof(Reliable_Packet)))  // JB 010220 CTD
+                while (lp and not F4IsBadReadPtrC(lp, sizeof(Reliable_Packet)))  // JB 010220 CTD
                 {
                     count ++;
                     lp = lp->next;
@@ -864,7 +864,7 @@ extern "C" {
                         if (oob)
                         {
                             //if (cudp->rudp_data.oob_last_sent) // JB 010221 CTD
-                            if (cudp->rudp_data.oob_last_sent and  not F4IsBadReadPtrC(cudp->rudp_data.oob_last_sent, sizeof(Reliable_Packet))) // JB 010221 CTD
+                            if (cudp->rudp_data.oob_last_sent and not F4IsBadReadPtrC(cudp->rudp_data.oob_last_sent, sizeof(Reliable_Packet))) // JB 010221 CTD
                             {
                                 cudp->rudp_data.oob_last_sent->next = rp;
                             }
@@ -875,7 +875,7 @@ extern "C" {
                         else
                         {
                             //if (cudp->rudp_data.last_sent) // JB 010221 CTD
-                            if (cudp->rudp_data.last_sent and  not F4IsBadReadPtrC(cudp->rudp_data.last_sent, sizeof(Reliable_Packet))) // JB 010221 CTD
+                            if (cudp->rudp_data.last_sent and not F4IsBadReadPtrC(cudp->rudp_data.last_sent, sizeof(Reliable_Packet))) // JB 010221 CTD
                             {
                                 cudp->rudp_data.last_sent->next = rp;
                             }
@@ -1430,7 +1430,7 @@ extern "C" {
 
             /*// sfr: added port info
             if (
-             (((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami)  and 
+             (((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami) and 
              ((struct sockaddr_in *)(&in_addr))->sin_port == CAPI_htons(ComAPIGetMySendPort())
             ){*/
             id = ((ComAPIHeader *)cudp->recv_buffer.buf)->id;
@@ -1576,7 +1576,7 @@ extern "C" {
                         np = cp->next;
 
                         //while (np and needed) // JB 010223 CTD
-                        while (np and needed and  not F4IsBadReadPtrC(np, sizeof(Reliable_Packet))) // JB 010223 CTD
+                        while (np and needed and not F4IsBadReadPtrC(np, sizeof(Reliable_Packet))) // JB 010223 CTD
                         {
                             if (np->message_number == cp->message_number)
                             {
@@ -1844,7 +1844,7 @@ extern "C" {
             // If we've not send them our last_received, or one second timeout for ack
             if
             (
-                (cudp->rudp_data.last_sent_received not_eq cudp->rudp_data.last_received)  and 
+                (cudp->rudp_data.last_sent_received not_eq cudp->rudp_data.last_received) and 
                 (now - cudp->rudp_data.last_send_time > RUDP_ACK_WAIT_TIME)
             )
             {
@@ -1853,7 +1853,7 @@ extern "C" {
 
             if
             (
-                (cudp->rudp_data.last_oob_sent_received not_eq cudp->rudp_data.last_oob_received)  and 
+                (cudp->rudp_data.last_oob_sent_received not_eq cudp->rudp_data.last_oob_received) and 
                 (now - cudp->rudp_data.last_oob_send_time > RUDP_OOB_ACK_WAIT_TIME)
             )
             {
@@ -2040,7 +2040,7 @@ extern "C" {
 
                     rp = cudp->rudp_data.sending;
 
-                    while (rp and  not F4IsBadReadPtrC(rp, sizeof(Reliable_Packet))) // JB 010619 CTD
+                    while (rp and not F4IsBadReadPtrC(rp, sizeof(Reliable_Packet))) // JB 010619 CTD
                     {
                         time = RUDP_RESEND_TIME * 2;
 
@@ -2054,7 +2054,7 @@ extern "C" {
 
                     rp = cudp->rudp_data.oob_sending;
 
-                    while (rp and  not F4IsBadReadPtrC(rp, sizeof(Reliable_Packet))) // JB 010619 CTD
+                    while (rp and not F4IsBadReadPtrC(rp, sizeof(Reliable_Packet))) // JB 010619 CTD
                     {
                         time = RUDP_RESEND_TIME * 2;
 
@@ -2263,7 +2263,7 @@ extern "C" {
 
             // JB 010718 remove the protocol test?
             if (c->protocol >= 0 and c->protocol <= CAPI_LAST_PROTOCOL and // JB 010222 CTD
-                 not F4IsBadReadPtrC(cudp, sizeof(ComIP))) // JB 010710 CTD
+ not F4IsBadReadPtrC(cudp, sizeof(ComIP))) // JB 010710 CTD
             {
                 free(cudp);
             }

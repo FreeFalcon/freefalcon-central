@@ -70,9 +70,9 @@ void HeliBrain::TargetSelection(void)
 
     // check to see if our current ground target is a sim and exploding or
     // dead, if so let's get a new target from the campaign
-    if (targetPtr  and 
-        targetPtr->BaseData()->IsSim()  and 
-        (targetPtr->BaseData()->IsExploding() or  not ((SimBaseClass *)targetPtr->BaseData())->IsAwake()))
+    if (targetPtr and 
+        targetPtr->BaseData()->IsSim() and 
+        (targetPtr->BaseData()->IsExploding() or not ((SimBaseClass *)targetPtr->BaseData())->IsAwake()))
     {
         ClearTarget();
     }
@@ -220,9 +220,9 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
 
         for (j = 0; j < usComponents; j++)
             if (flightMember[j]
-                and flightMember[j]->hBrain
-                and ((flightMember[j]->hBrain->targetPtr
-                     and flightMember[j]->hBrain->targetPtr->BaseData() == simTarg)
+               and flightMember[j]->hBrain
+               and ((flightMember[j]->hBrain->targetPtr
+                    and flightMember[j]->hBrain->targetPtr->BaseData() == simTarg)
                     or flightMember[j]->hBrain->targetHistory[0] == simTarg
                     or flightMember[j]->hBrain->targetHistory[1] == simTarg))
                 break;  // Yes, ignore it.

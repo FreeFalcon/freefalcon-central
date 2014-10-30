@@ -41,7 +41,7 @@ public:
     };
     void SetFlag(SmsDrawFlags fl)
     {
-        flags or_eq  fl;
+        flags or_eq fl;
     };
     void UnsetFlag(SmsDrawFlags fl)
     {

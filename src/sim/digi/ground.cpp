@@ -34,7 +34,7 @@ void DigitalBrain::GroundCheck(void)
         //curMode == LandingMode or // airbases with hilly terrain around need GroundCheck
         /*(curMode == WaypointMode and agDoctrine not_eq AGD_NONE) ||*/ // 2002-03-11 ADDED BY S.G. GroundAttackMode has its own ground avoidance code
         curMode == TakeoffMode //)
-        and threatPtr == NULL)
+       and threatPtr == NULL)
     {
         // edg: do we really ever need to do ground avoidance if we're in
         // waypoint mode?  The waypoint code should be smart enough....

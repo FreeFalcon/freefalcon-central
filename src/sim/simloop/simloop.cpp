@@ -497,7 +497,7 @@ void SimulationLoopControl::Loop(void)
 
                 if (
                     flying and gameCompressionRatio > 4
-                    and (gCommsMgr and gCommsMgr->Online())
+                   and (gCommsMgr and gCommsMgr->Online())
                 )
                 {
                     SetTimeCompression(1) ;
@@ -507,7 +507,7 @@ void SimulationLoopControl::Loop(void)
             }
 
             if (
-                FalconLocalSession->GetFlyState() not_eq  FLYSTATE_FLYING  and 
+                FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING and 
                 gCompressTillTime and tmpTime > gLaunchTime + 1000
             )
             {
@@ -817,9 +817,9 @@ void SimulationLoopControl::StartLoop(void)
 
             // Wait until all necessary deaggregation events have been handled
             while (
-                (gLeftToDeaggregate)  and 
-                (delayCounter)  and 
-                (SimDriver.GetPlayerEntity())  and 
+                (gLeftToDeaggregate) and 
+                (delayCounter) and 
+                (SimDriver.GetPlayerEntity()) and 
                 ( not (SimDriver.GetPlayerEntity()->IsLocal()))
             )
             {

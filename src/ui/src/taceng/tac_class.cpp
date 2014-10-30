@@ -104,7 +104,7 @@ int tactical_mission::is_flag_on(long value)
 
 void tactical_mission::set_flag(long value)
 {
-    TheCampaign.TE_flags or_eq  value;
+    TheCampaign.TE_flags or_eq value;
 }
 
 void tactical_mission::clear_flag(long value)
@@ -478,7 +478,7 @@ void tactical_mission::process_load(char *data, int size, int)
 
         while
         (
-            (len > 0)  and 
+            (len > 0) and 
             (
                 (buffer[len - 1] == '\n') ||
                 (buffer[len - 1] == '\r') ||
@@ -1186,7 +1186,7 @@ static int test_filter(victory_condition *vc, victory_condition_filter filter, i
         {
             if
             (
-                (team == vc->get_team())  and 
+                (team == vc->get_team()) and 
                 (vc->get_active())
             )
             {
@@ -1202,7 +1202,7 @@ static int test_filter(victory_condition *vc, victory_condition_filter filter, i
         {
             if
             (
-                (team == vc->get_team())  and 
+                (team == vc->get_team()) and 
                 ( not vc->get_active())
             )
             {

@@ -39,7 +39,7 @@ public:
     void ClearTarget(void);
     void SetFlag(int val)
     {
-        flags or_eq  val;
+        flags or_eq val;
     };
     void ClearFlag(int val)
     {

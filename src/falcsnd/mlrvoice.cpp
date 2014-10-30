@@ -314,9 +314,9 @@ bool mlrVoice::AllocateBuffers(void)
                     DSoundBuffer->QueryInterface(IID_IDirectSound3DBuffer,
                                                  (LPVOID *)&DSound3dBuffer);
 
-                    if (DSound3dBuffer)  //  and 
-                        //  sfx  and 
-                        // (sfx->flags bitand SFX_POS_EXTERN)  and 
+                    if (DSound3dBuffer)  // and 
+                        //  sfx and 
+                        // (sfx->flags bitand SFX_POS_EXTERN) and 
                         // (sfx->flags bitand SFX_FLAGS_3D)) // only make external 3d sounds 3d
                     {
                         g3dVoiceCount++;
@@ -387,9 +387,9 @@ bool mlrVoice::AllocateBuffers(void)
                 {
                     DSoundBuffer->QueryInterface(IID_IDirectSound3DBuffer, (LPVOID *)&DSound3dBuffer);
 
-                    if (DSound3dBuffer)  //  and 
-                        //  sfx  and 
-                        // (sfx->flags bitand SFX_POS_EXTERN)  and 
+                    if (DSound3dBuffer)  // and 
+                        //  sfx and 
+                        // (sfx->flags bitand SFX_POS_EXTERN) and 
                         // (sfx->flags bitand SFX_FLAGS_3D)) // only make external 3d sounds 3d
                     {
                         g3dVoiceCount++;
@@ -474,7 +474,7 @@ void mlrVoice::PreExec()
         // if this is an external only sound and we're in cockpit adjust
         bool isplayer = 0;
 
-        if (owner->SPos->platform  and 
+        if (owner->SPos->platform and 
             owner->SPos->platform == (SimBaseClass *)SimDriver.GetPlayerEntity())
             isplayer = 1; // the object that called this sound is the player
 
@@ -496,8 +496,8 @@ void mlrVoice::PreExec()
             }
         }
 
-        if (sfx->flags bitand (SFX_POS_INSIDE | SFX_FLAGS_VMS)  and 
-             not isplayer  and 
+        if (sfx->flags bitand (SFX_POS_INSIDE | SFX_FLAGS_VMS) and 
+ not isplayer and 
             owner->SPos->platform)
         {
             // if we're inside the pit, but this "internal" sound is from another
@@ -516,7 +516,7 @@ void mlrVoice::PreExec()
         if (sfx->flags bitand SFX_POS_INSIDE)     // don't play internal sound
             status = VSSTOP;
 
-        if (sfx->flags bitand SFX_FLAGS_VMS and  not g_bSoundHearVMSExternal)
+        if (sfx->flags bitand SFX_FLAGS_VMS and not g_bSoundHearVMSExternal)
             status = VSSTOP;
     }
 

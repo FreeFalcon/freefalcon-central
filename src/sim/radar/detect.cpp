@@ -225,7 +225,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
         S *= 1.2f;
 
 
-    if (1)// me123 agreed with jjb to test this  not g_bRP5Comp)
+    if (1)// me123 agreed with jjb to test this not g_bRP5Comp)
     {
         VU_ID lastChaffID = FalconNullId;
         VU_ID id;
@@ -239,7 +239,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
 
         // No counter measures deployed by campaign things
         // countermeasures only work when tracking (for now)
-        //MI possible CTD? added  not target->BaseData() check
+        //MI possible CTD? added not target->BaseData() check
 
         if ( not lockedTarget or not target or not target->BaseData() or not target->BaseData()->IsSim())
         {

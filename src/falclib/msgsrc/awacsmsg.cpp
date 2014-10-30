@@ -88,12 +88,12 @@ static void CollectAssistCandidates(AircraftClass *plane, stdRange2FlightMap &ar
             // - Not on a CAP or SWEEP mission
             // - Flight is engaged
 
-            if ((p not_eq plane)  and 
-                (p->GetCampaignObject() not_eq plane->GetCampaignObject())  and 
-                p->IsAirplane()  and 
-                (pFlight = (FlightClass *) p->GetCampaignObject())  and 
-                (setTmp.find(pFlight) == setTmp.end())  and 
-                (pFlight->GetAssignedTarget() == FalconNullId)  and 
+            if ((p not_eq plane) and 
+                (p->GetCampaignObject() not_eq plane->GetCampaignObject()) and 
+                p->IsAirplane() and 
+                (pFlight = (FlightClass *) p->GetCampaignObject()) and 
+                (setTmp.find(pFlight) == setTmp.end()) and 
+                (pFlight->GetAssignedTarget() == FalconNullId) and 
                 (plane->GetTeam() == p->GetTeam()))
             {
                 D3DFrame::Vector vPos(p->XPos(), p->YPos(), p->ZPos());
@@ -480,7 +480,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         meflags = flight_ptr->status_flags;
 
                     // What's that ?? Only true if FEVAL_GOT_TO_TARGET is true and false at the same time ??
-                    // if ( not hasFuel or not hasWeaps or ((flight->GetEvalFlags() bitand FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET) and  not (flight->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET)))
+                    // if ( not hasFuel or not hasWeaps or ((flight->GetEvalFlags() bitand FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET) and not (flight->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET)))
                     if ( not hasFuel or not hasWeaps or ((flight->GetEvalFlags() bitand FEVAL_MISSION_STARTED) and (flight->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET) and (meflags bitand MISEVAL_FLIGHT_STATION_OVER)))
                     {
                         if (rand() % 2)
@@ -555,15 +555,15 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     }
 #if 0 // Retro 20May2004 - fixed logic
 
-                    if (flight->GetUnitCurrentRole() not_eq ARO_GA  and 
+                    if (flight->GetUnitCurrentRole() not_eq ARO_GA and 
                         flight->GetUnitMission() not_eq (AMIS_ONCALLCAS or AMIS_PRPLANCAS or AMIS_CAS or AMIS_SAD or AMIS_INT or AMIS_BAI))
 #else
-                    if (flight->GetUnitCurrentRole() not_eq ARO_GA  and 
-                        ((flight->GetUnitMission() not_eq AMIS_ONCALLCAS)  and 
-                         (flight->GetUnitMission() not_eq AMIS_PRPLANCAS)  and 
-                         (flight->GetUnitMission() not_eq AMIS_CAS)  and 
-                         (flight->GetUnitMission() not_eq AMIS_SAD)  and 
-                         (flight->GetUnitMission() not_eq AMIS_INT)  and 
+                    if (flight->GetUnitCurrentRole() not_eq ARO_GA and 
+                        ((flight->GetUnitMission() not_eq AMIS_ONCALLCAS) and 
+                         (flight->GetUnitMission() not_eq AMIS_PRPLANCAS) and 
+                         (flight->GetUnitMission() not_eq AMIS_CAS) and 
+                         (flight->GetUnitMission() not_eq AMIS_SAD) and 
+                         (flight->GetUnitMission() not_eq AMIS_INT) and 
                          (flight->GetUnitMission() not_eq AMIS_BAI)))
 #endif // Retro 20May2004 - end
                     {
@@ -674,7 +674,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
 
                 airbase = (Objective)vuDatabase->Find(plane->HomeAirbase());
 
-                if (flight  and airbase)
+                if (flight and airbase)
                 {
                     //awacs response
                     radioMessage = CreateCallFromAwacs(flight, rcVECTORHOME);
@@ -759,7 +759,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     // Awacs response
                     radioMessage = CreateCallFromAwacs(flight, rcVECTORALTERNATE);
 
-                    while (w and  not (w->GetWPFlags() bitand WPF_ALTERNATE))
+                    while (w and not (w->GetWPFlags() bitand WPF_ALTERNATE))
                         w = w->GetNextWP();
 
                     if (w)

@@ -403,7 +403,7 @@ bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
 
             if (
                 //(session->OwnerId().creator_.value_ == CAPI_DANGLING_ID) ||
-                (session->OwnerId().creator_.value_ == owner.creator_)  and 
+                (session->OwnerId().creator_.value_ == owner.creator_) and 
                 (sAdd == address)
             )
             {
@@ -780,13 +780,13 @@ void ResyncTimes()
         if (session->GetReqCompression() > 1 and session->GetReqCompression() < best_comp)
         {
             best_comp = session->GetReqCompression();
-            remoteCompressionRequests or_eq  1 << (best_comp - 1);
+            remoteCompressionRequests or_eq 1 << (best_comp - 1);
         }
 
         if (session->GetReqCompression() < 1 and session->GetReqCompression() > best_comp)
         {
             best_comp = session->GetReqCompression();
-            remoteCompressionRequests or_eq  REMOTE_REQUEST_PAUSE;
+            remoteCompressionRequests or_eq REMOTE_REQUEST_PAUSE;
         }
 
         if (session->GetReqCompression() == 1)
@@ -858,7 +858,7 @@ int VuxGroupConnect(VuGroupEntity *group)
     // Check for existing connections
     if ( not group->GetCommsHandle())
     {
-        if ( not (FalconConnectionProtocol bitand FCP_UDP_AVAILABLE) and  not (FalconConnectionProtocol bitand FCP_SERIAL_AVAILABLE))
+        if ( not (FalconConnectionProtocol bitand FCP_UDP_AVAILABLE) and not (FalconConnectionProtocol bitand FCP_SERIAL_AVAILABLE))
         {
             // No udp connections available
             group->SetCommsHandle(NULL);
@@ -904,7 +904,7 @@ int VuxGroupConnect(VuGroupEntity *group)
 
     if ( not group->GetReliableCommsHandle())
     {
-        if ( not (FalconConnectionProtocol bitand FCP_TCP_AVAILABLE) and  not (FalconConnectionProtocol bitand FCP_SERIAL_AVAILABLE) and  not (FalconConnectionProtocol bitand FCP_RUDP_AVAILABLE))
+        if ( not (FalconConnectionProtocol bitand FCP_TCP_AVAILABLE) and not (FalconConnectionProtocol bitand FCP_SERIAL_AVAILABLE) and not (FalconConnectionProtocol bitand FCP_RUDP_AVAILABLE))
         {
             // No reliable connections available
             group->SetReliableCommsHandle(NULL);
@@ -995,8 +995,8 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
 
         if (
             (gConnectionStatus == F4COMMS_CONNECTED ||
-             (g_ipadress and not strcmpi(g_ipadress, "0.0.0.0")))  and 
-             not stoppingvoice and  not g_pDPServer and  not g_pDPClient  and (g_ipadress)
+             (g_ipadress and not strcmpi(g_ipadress, "0.0.0.0"))) and 
+ not stoppingvoice and not g_pDPServer and not g_pDPClient and (g_ipadress)
         )
         {
             startupvoice(g_ipadress);//me123
@@ -1078,8 +1078,8 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
 
     // Send FullUpdate for session if this is our game
     if (
-        (group->IsGame())  and 
-        (group->Id() == vuLocalSessionEntity->GameId())  and 
+        (group->IsGame()) and 
+        (group->Id() == vuLocalSessionEntity->GameId()) and 
         (vuLocalSessionEntity.get() not_eq session)
     )
     {

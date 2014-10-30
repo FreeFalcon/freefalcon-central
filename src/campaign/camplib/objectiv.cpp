@@ -726,7 +726,7 @@ int ObjectiveClass::Deaggregate(FalconSessionEntity *session)
 
     if (session not_eq FalconLocalSession)
     {
-        simdata.createFlags or_eq  SIDC_REMOTE_OWNER;
+        simdata.createFlags or_eq SIDC_REMOTE_OWNER;
         simdata.owner = session;
     }
 
@@ -1084,7 +1084,7 @@ void ObjectiveClass::DeaggregateFromData(VU_BYTE* data, long size)
 
     if (session not_eq FalconLocalSession)
     {
-        simdata.createFlags or_eq  SIDC_REMOTE_OWNER;
+        simdata.createFlags or_eq SIDC_REMOTE_OWNER;
         simdata.owner = session;
     }
 
@@ -1253,7 +1253,7 @@ void ObjectiveClass::TransferOwnershipFromData(VU_BYTE* data, long size)
         Sleep();
     }
     else if (
-         not IsAwake() and (
+ not IsAwake() and (
             GetDeagOwner() == FalconLocalSession->Id() or FalconLocalSession->InSessionBubble(this, 1.0F) > 0
         )
     )
@@ -2162,7 +2162,7 @@ int ObjectiveClass::HasRadarRanges(void)
 
 void ObjectiveClass::SetManual(int s)
 {
-    obj_data.obj_flags or_eq  O_MANUAL_SET;
+    obj_data.obj_flags or_eq O_MANUAL_SET;
 
     if ( not s)
         obj_data.obj_flags xor_eq O_MANUAL_SET;
@@ -2170,7 +2170,7 @@ void ObjectiveClass::SetManual(int s)
 
 void ObjectiveClass::SetJammed(int j)
 {
-    obj_data.obj_flags or_eq  O_JAMMED;
+    obj_data.obj_flags or_eq O_JAMMED;
 
     if ( not j)
         obj_data.obj_flags xor_eq O_JAMMED;
@@ -2178,7 +2178,7 @@ void ObjectiveClass::SetJammed(int j)
 
 void ObjectiveClass::SetSamSite(int s)
 {
-    obj_data.obj_flags or_eq  O_SAM_SITE;
+    obj_data.obj_flags or_eq O_SAM_SITE;
 
     if ( not s)
         obj_data.obj_flags xor_eq O_SAM_SITE;
@@ -2186,7 +2186,7 @@ void ObjectiveClass::SetSamSite(int s)
 
 void ObjectiveClass::SetArtillerySite(int a)
 {
-    obj_data.obj_flags or_eq  O_ARTILLERY_SITE;
+    obj_data.obj_flags or_eq O_ARTILLERY_SITE;
 
     if ( not a)
         obj_data.obj_flags xor_eq O_ARTILLERY_SITE;
@@ -2194,7 +2194,7 @@ void ObjectiveClass::SetArtillerySite(int a)
 
 void ObjectiveClass::SetAmbushCAPSite(int a)
 {
-    obj_data.obj_flags or_eq  O_AMBUSHCAP_SITE;
+    obj_data.obj_flags or_eq O_AMBUSHCAP_SITE;
 
     if ( not a)
         obj_data.obj_flags xor_eq O_AMBUSHCAP_SITE;
@@ -2202,7 +2202,7 @@ void ObjectiveClass::SetAmbushCAPSite(int a)
 
 void ObjectiveClass::SetBorderSite(int a)
 {
-    obj_data.obj_flags or_eq  O_BORDER_SITE;
+    obj_data.obj_flags or_eq O_BORDER_SITE;
 
     if ( not a)
         obj_data.obj_flags xor_eq O_BORDER_SITE;
@@ -2210,7 +2210,7 @@ void ObjectiveClass::SetBorderSite(int a)
 
 void ObjectiveClass::SetMountainSite(int a)
 {
-    obj_data.obj_flags or_eq  O_MOUNTAIN_SITE;
+    obj_data.obj_flags or_eq O_MOUNTAIN_SITE;
 
     if ( not a)
         obj_data.obj_flags xor_eq O_MOUNTAIN_SITE;
@@ -2218,7 +2218,7 @@ void ObjectiveClass::SetMountainSite(int a)
 
 void ObjectiveClass::SetCommandoSite(int c)
 {
-    obj_data.obj_flags or_eq  O_COMMANDO_SITE;
+    obj_data.obj_flags or_eq O_COMMANDO_SITE;
 
     if ( not c)
         obj_data.obj_flags xor_eq O_COMMANDO_SITE;
@@ -2226,7 +2226,7 @@ void ObjectiveClass::SetCommandoSite(int c)
 
 void ObjectiveClass::SetFlatSite(int a)
 {
-    obj_data.obj_flags or_eq  O_FLAT_SITE;
+    obj_data.obj_flags or_eq O_FLAT_SITE;
 
     if ( not a)
         obj_data.obj_flags xor_eq O_FLAT_SITE;
@@ -2234,7 +2234,7 @@ void ObjectiveClass::SetFlatSite(int a)
 
 void ObjectiveClass::SetRadarSite(int r)
 {
-    obj_data.obj_flags or_eq  O_RADAR_SITE;
+    obj_data.obj_flags or_eq O_RADAR_SITE;
 
     if ( not r)
         obj_data.obj_flags xor_eq O_RADAR_SITE;
@@ -2242,7 +2242,7 @@ void ObjectiveClass::SetRadarSite(int r)
 
 void ObjectiveClass::SetAbandoned(int a)
 {
-    obj_data.obj_flags or_eq  O_ABANDONED;
+    obj_data.obj_flags or_eq O_ABANDONED;
 
     if ( not a)
         obj_data.obj_flags xor_eq O_ABANDONED;
@@ -2250,7 +2250,7 @@ void ObjectiveClass::SetAbandoned(int a)
 
 void ObjectiveClass::SetNeedRepair(int r)
 {
-    obj_data.obj_flags or_eq  O_NEED_REPAIR;
+    obj_data.obj_flags or_eq O_NEED_REPAIR;
 
     if ( not r)
         obj_data.obj_flags xor_eq O_NEED_REPAIR;
@@ -2683,9 +2683,9 @@ void ObjectiveClass::RecalculateParent(void)
         // {
         // sod = GetSOData(this);
         // if (sod)
-        // sod->flags or_eq  GTMOBJ_FRONTLINE;
+        // sod->flags or_eq GTMOBJ_FRONTLINE;
         // if (pod)
-        // pod->flags or_eq  GTMOBJ_FRONTLINE;
+        // pod->flags or_eq GTMOBJ_FRONTLINE;
         // }
     }
     else
@@ -3342,9 +3342,9 @@ void CaptureObjective(Objective co, Control who, Unit u)
             f = (FlightClass*)unit;
 
             if (
-                (GetRoE(newown, unit->GetTeam(), ROE_GROUND_CAPTURE) == ROE_ALLOWED)  and 
-                (f->GetUnitAirbase() == co)  and 
-                ((f->GetCurrentUnitWP() == NULL) or (f->GetCurrentUnitWP()->GetWPAction() == WP_TAKEOFF))  and 
+                (GetRoE(newown, unit->GetTeam(), ROE_GROUND_CAPTURE) == ROE_ALLOWED) and 
+                (f->GetUnitAirbase() == co) and 
+                ((f->GetCurrentUnitWP() == NULL) or (f->GetCurrentUnitWP()->GetWPAction() == WP_TAKEOFF)) and 
                 (f->IsAggregate())
             )
             {
@@ -3382,7 +3382,7 @@ int EncodeObjectiveDeltas(VU_BYTE **stream, FalconSessionEntity *owner)
         while (ent)
         {
             if (
-                (ent->EntityType())->classInfo_[VU_CLASS] == CLASS_OBJECTIVE  and 
+                (ent->EntityType())->classInfo_[VU_CLASS] == CLASS_OBJECTIVE and 
                 ( not owner or ent->OwnerId() == ownerid)
             )
             {
@@ -3410,7 +3410,7 @@ int EncodeObjectiveDeltas(VU_BYTE **stream, FalconSessionEntity *owner)
         while (ent)
         {
             if (
-                (ent->EntityType())->classInfo_[VU_CLASS] == CLASS_OBJECTIVE  and 
+                (ent->EntityType())->classInfo_[VU_CLASS] == CLASS_OBJECTIVE and 
                 ( not owner or ent->OwnerId() == ownerid)
             )
             {
@@ -3507,7 +3507,7 @@ void ObjectiveClass::MakeObjectiveDirty(Dirty_Objective bits, Dirtyness score)
         score = static_cast<Dirtyness>(score << 4);
     }
 
-    dirty_objective or_eq  bits;
+    dirty_objective or_eq bits;
     MakeDirty(DIRTY_OBJECTIVE, score);
 }
 

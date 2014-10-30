@@ -68,7 +68,7 @@ static void IntersectNear(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color, B
 
     // Now determine if the point is out to the sides
     TheStateStack.ClipInfoPool[v->xyz].clipFlag  = GetHorizontalClipFlags(x, z);
-    TheStateStack.ClipInfoPool[v->xyz].clipFlag or_eq  GetVerticalClipFlags(y, z);
+    TheStateStack.ClipInfoPool[v->xyz].clipFlag or_eq GetVerticalClipFlags(y, z);
 
     // Compute the screen space coordinates of the new point
     register float OneOverZ = 1.0f / z;
@@ -452,7 +452,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
                 if (I) extraVertIdx.I++;
 
                 IntersectNear(p, v, nextOut, rgba not_eq NULL, I not_eq NULL, uv not_eq NULL);
-                clipTest or_eq  TheStateStack.ClipInfoPool[nextOut->xyz].clipFlag;
+                clipTest or_eq TheStateStack.ClipInfoPool[nextOut->xyz].clipFlag;
                 nextOut++;
             }
 

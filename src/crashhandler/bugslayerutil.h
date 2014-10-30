@@ -100,7 +100,7 @@ extern "C" {
         dwPID        - The process ID to look into.
         uiCount      - The number of slots in the paModArray buffer.  If
                        this value is 0, then the return value will be TRUE
-                       and puiRealCount will hold the number of items
+                      and puiRealCount will hold the number of items
                        needed.
         paModArray   - The array to place the HMODULES into.  If this buffer
                        is too small to hold the result and uiCount is not
@@ -131,7 +131,7 @@ extern "C" {
         puiCount - The total elements in the returned array.
     RETURNS         :
         NULL  - There was a problem.
-         not NULL - The block of memory holding the HMODULEs.
+ not NULL - The block of memory holding the HMODULEs.
     ----------------------------------------------------------------------*/
     HMODULE * /*BUGSUTIL_DLLINTERFACE*/ __stdcall
     AllocAndFillProcessModuleList(HANDLE hHeap    ,
@@ -225,7 +225,7 @@ extern "C" {
         lpBaseName - The buffer that recieves the base name.
         nSize      - The size of the buffer.
     RETURNS         :
-         not 0 - The length of the string copied to the buffer.
+ not 0 - The length of the string copied to the buffer.
         0  - The function failed.  To get extended error information,
              call GetLastError
     ----------------------------------------------------------------------*/

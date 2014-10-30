@@ -82,8 +82,8 @@ bool g_bUseAggresiveIncompleteA2G = true; // 2002-03-22 S.G. If false, AI on inc
 float g_fHotNoseAngle = 50.0f;  // 2002-03-22 S.G. Default angle (in degrees) before considering the target pointing at us
 float g_fMaxMARNoIdA = 10.0f;  // 2002-03-22 ADDED BY S.G. Max Start MAR for this type of aicraft when target is NOT ID'ed, fast
 float g_fMinMARNoId5kA = 5.0f;  // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, fast and below 5K
-float g_fMinMARNoId18kA = 12.0f; // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, fast  and below 18K
-float g_fMinMARNoId28kA = 17.0f; // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, fast  and below 28K
+float g_fMinMARNoId18kA = 12.0f; // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, fast and below 18K
+float g_fMinMARNoId28kA = 17.0f; // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, fast and below 28K
 float g_fMaxMARNoIdB = 5.0f;  // 2002-03-22 ADDED BY S.G. Max Start MAR for this type of aicraft when target is NOT ID'ed, medium
 float g_fMinMARNoId5kB = 3.0f;  // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, medium and below 5K
 float g_fMinMARNoId18kB = 5.0f;  // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, medium and below 18K
@@ -548,7 +548,7 @@ int g_nMissileFix = 0x7f; // several missile fixes:
      of lethalradius detonation
  0x02 also check if range*range > lethalRadiusSqrd at "closestApprch" flag
  0x04 Use ArmingDelay MissileEndMessage instead of MinTime if warhead is
-     not armed (fixes missiles being able to apply proximity damage while
+ not armed (fixes missiles being able to apply proximity damage while
  warhead is unarmed)
  0x08 Do Proximity damage to the missile's target if we didn't hit it directly
      (for example if missile lost seeker track and hits the dirt)

@@ -208,7 +208,7 @@ int IsValidMission(int dindex, int mission)
             // Helo only
             uc = (UnitClassDataType*)(Falcon4ClassTable[dindex].dataPtr);
 
-            if (uc->Scores[role]) //  and 0) // Need to check for helo types
+            if (uc->Scores[role]) // and 0) // Need to check for helo types
                 return TRUE;
 
             break;
@@ -292,7 +292,7 @@ int IsValidTarget(Team team, int mission, CampEntity target)
             case AMIS_OCASTRIKE:
 
                 // Enemy airbases, airstrips, radar, bitand CCC
-                if (GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE)  and 
+                if (GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE) and 
                     (target->GetType() == TYPE_AIRBASE or target->GetType() == TYPE_AIRSTRIP or target->GetType() == TYPE_RADAR or target->GetType() == TYPE_COM_CONTROL))
                     return TRUE;
 
@@ -301,7 +301,7 @@ int IsValidTarget(Team team, int mission, CampEntity target)
             case AMIS_INTSTRIKE:
 
                 // Enemy bridges, production facilities, ports, depots, etc.
-                if (GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE)  and 
+                if (GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE) and 
                     (target->GetType() == TYPE_BRIDGE or target->GetType() == TYPE_CHEMICAL or target->GetType() == TYPE_DEPOT or target->GetType() == TYPE_FACTORY ||
                      target->GetType() == TYPE_NUCLEAR or target->GetType() == TYPE_PORT or target->GetType() == TYPE_POWERPLANT or target->GetType() == TYPE_RAIL_TERMINAL ||
                      target->GetType() == TYPE_REFINERY))
@@ -392,12 +392,12 @@ int GetMissionFromTarget(Team team, int dindex, CampEntity target)
     {
         if ( not GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE))
             target = NULL;
-        else if ((target->GetType() == TYPE_AIRBASE or target->GetType() == TYPE_AIRSTRIP or target->GetType() == TYPE_RADAR or target->GetType() == TYPE_COM_CONTROL)  and 
+        else if ((target->GetType() == TYPE_AIRBASE or target->GetType() == TYPE_AIRSTRIP or target->GetType() == TYPE_RADAR or target->GetType() == TYPE_COM_CONTROL) and 
                  IsValidMission(dindex, AMIS_OCASTRIKE))
             return AMIS_OCASTRIKE;
         else if ((target->GetType() == TYPE_BRIDGE or target->GetType() == TYPE_CHEMICAL or target->GetType() == TYPE_DEPOT or target->GetType() == TYPE_FACTORY ||
                   target->GetType() == TYPE_NUCLEAR or target->GetType() == TYPE_PORT or target->GetType() == TYPE_POWERPLANT or target->GetType() == TYPE_RAIL_TERMINAL ||
-                  target->GetType() == TYPE_REFINERY)  and 
+                  target->GetType() == TYPE_REFINERY) and 
                  IsValidMission(dindex, AMIS_INTSTRIKE))
             return AMIS_INTSTRIKE;
         else if (IsValidMission(dindex, AMIS_STRIKE))

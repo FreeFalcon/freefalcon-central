@@ -388,10 +388,10 @@ void RadarDopplerClass::SAMMode(void)
         /* Auto Range Scale */
         /*------------------*/
         //me123 don't autorange in SAM MODE
-        //    if (lockedTargetData->range > 0.9F * tdisplayRange  and 
+        //    if (lockedTargetData->range > 0.9F * tdisplayRange and 
         //     curRangeIdx < NUM_RANGES - 1)
         //    rangeChangeCmd = 1;
-        //    else if (lockedTargetData->range < 0.4F * tdisplayRange  and 
+        //    else if (lockedTargetData->range < 0.4F * tdisplayRange and 
         //     curRangeIdx > 0)
         //    rangeChangeCmd = -1;
         if ( not dropTrackCmd)
@@ -521,7 +521,7 @@ void RadarDopplerClass::TWSMode(void)
     if ( not IsSet(Spotlight) and not IsSet(Designating))
     {
 
-        if (targetUnderCursor or (lockedTargetData and  not g_bMLU))
+        if (targetUnderCursor or (lockedTargetData and not g_bMLU))
         {
 
             if (azScan > 30.0F * DTR)
@@ -571,7 +571,7 @@ void RadarDopplerClass::TWSMode(void)
         }
 
         if (attach and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->FCC
-            and SimDriver.GetPlayerAircraft()->FCC->cursorXCmd == 0 and SimDriver.GetPlayerAircraft()->FCC->cursorYCmd == 0)
+           and SimDriver.GetPlayerAircraft()->FCC->cursorXCmd == 0 and SimDriver.GetPlayerAircraft()->FCC->cursorYCmd == 0)
 
         {
             //me123 attach the cursor
@@ -680,13 +680,13 @@ void RadarDopplerClass::TWSMode(void)
         seekerAzCenter = min(max(tmpVal , -MAX_ANT_EL + azScan), MAX_ANT_EL - azScan);
         tmpVal = TargetEl(platform, lockedTarget);
 
-        if ( not g_bMLU and  not g_bAntElevKnobFix)   // MD -- 20031223: antenna elevation fixes
+        if ( not g_bMLU and not g_bAntElevKnobFix)   // MD -- 20031223: antenna elevation fixes
             seekerElCenter = min(max(tmpVal, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
 
         /*------------------*/
         /* Auto Range Scale */
         /*------------------*/
-        if (lockedTargetData->range > 0.9F * tdisplayRange  and 
+        if (lockedTargetData->range > 0.9F * tdisplayRange and 
             curRangeIdx < NUM_RANGES - 1)
             rangeChangeCmd = 1;
 
@@ -794,7 +794,7 @@ void RadarDopplerClass::TWSMode(void)
     if ( not IsSet(Spotlight) and not IsSet(Designating) and not IsSet(STTingTarget))
     {
 
-        if (targetUnderCursor or (lockedTargetData and  not g_bMLU))
+        if (targetUnderCursor or (lockedTargetData and not g_bMLU))
         {
             lastTwsAzIdx = curAzIdx;
             lastTwsBarIdx = curBarIdx;
@@ -835,7 +835,7 @@ void RadarDopplerClass::TWSMode(void)
         }
 
         if (attach and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->FCC
-            and SimDriver.GetPlayerAircraft()->FCC->cursorXCmd == 0 and SimDriver.GetPlayerAircraft()->FCC->cursorYCmd == 0)
+           and SimDriver.GetPlayerAircraft()->FCC->cursorXCmd == 0 and SimDriver.GetPlayerAircraft()->FCC->cursorYCmd == 0)
 
         {
             //me123 attach the cursor
@@ -967,7 +967,7 @@ void RadarDopplerClass::TWSMode(void)
         /*------------------*/
         /* Auto Range Scale */
         /*------------------*/
-        if (lockedTargetData->range > 0.9F * tdisplayRange  and 
+        if (lockedTargetData->range > 0.9F * tdisplayRange and 
             curRangeIdx < NUM_RANGES - 1)
             rangeChangeCmd = 1;
 
@@ -1247,8 +1247,8 @@ void RadarDopplerClass::ACMMode(void)
             // MD -- 20031222: use a helper function
             totHits = HitsOnTrack(rdrObj->localData);
 
-            if (totHits > HITS_FOR_LOCK / 2  and 
-                rdrObj->localData->range < tdisplayRange and IsEmitting()  and 
+            if (totHits > HITS_FOR_LOCK / 2 and 
+                rdrObj->localData->range < tdisplayRange and IsEmitting() and 
                 rdrObj->localData->painted
                )
             {
@@ -1326,7 +1326,7 @@ void RadarDopplerClass::ACMMode(void)
         SetScan();
     }
     else if (
-         not lockedTarget and mode not_eq ACM_SLEW  and 
+ not lockedTarget and mode not_eq ACM_SLEW and 
         SimDriver.GetPlayerAircraft() and // JB 010113 CTD fix
         (SimDriver.GetPlayerAircraft()->FCC->cursorYCmd not_eq 0 ||
          SimDriver.GetPlayerAircraft()->FCC->cursorXCmd not_eq 0)
@@ -1340,8 +1340,8 @@ void RadarDopplerClass::ACMMode(void)
     // as the previous implementation of the key commands which did this job.  Looks like
     // if should have been here all along really.
     else if (
-        lockedTarget and mode not_eq ACM_SLEW  and 
-        SimDriver.GetPlayerAircraft()  and 
+        lockedTarget and mode not_eq ACM_SLEW and 
+        SimDriver.GetPlayerAircraft() and 
         (SimDriver.GetPlayerAircraft()->FCC->cursorYCmd not_eq 0 ||
          SimDriver.GetPlayerAircraft()->FCC->cursorXCmd not_eq 0)
     )
@@ -1455,7 +1455,7 @@ void RadarDopplerClass::VSMode(void)
                 // MD -- 20031222: use a helper function
                 totHits = HitsOnTrack(rdrData);
 
-                if (totHits >= HITS_FOR_LOCK  and 
+                if (totHits >= HITS_FOR_LOCK and 
                     IsUnderVSCursor(rdrObj, platform->Yaw()))
                 {
                     SetSensorTarget(rdrObj);
@@ -1828,8 +1828,8 @@ RadarDopplerClass::TWSTrackList* RadarDopplerClass::UpdateTWSDirectory(SimObject
                 SimObjectLocalData* rdrData = rdrObj->localData;
 
                 // pick up directory entries for targets with multiple hits that are in the scan cone
-                if ((HitsOnTrack(rdrData) > HITS_FOR_LOCK)  and 
-                    ((fabs(rdrData->az) < radarData->ScanHalfAngle)  and 
+                if ((HitsOnTrack(rdrData) > HITS_FOR_LOCK) and 
+                    ((fabs(rdrData->az) < radarData->ScanHalfAngle) and 
                      (fabs(rdrData->el) < radarData->ScanHalfAngle)))
                 {
                     if ( not rdrData->TWSTrackFileOpen) // insert new tracks only

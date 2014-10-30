@@ -294,7 +294,7 @@ void BuildDivisionData(void)
                         dd[t] = dc;
                     }
 
-                    if ( not F4IsBadWritePtr(dc, sizeof(DivisionClass)) and dc->elements >= 0 and  not F4IsBadWritePtr(&(dc->element[dc->elements]), sizeof(VU_ID))) // JB 010223 CTD
+                    if ( not F4IsBadWritePtr(dc, sizeof(DivisionClass)) and dc->elements >= 0 and not F4IsBadWritePtr(&(dc->element[dc->elements]), sizeof(VU_ID))) // JB 010223 CTD
                     {
                         dc->element[dc->elements] = u->Id();
                         dc->elements++;
@@ -367,7 +367,7 @@ void BuildDivisionData (void)
  }
  else
  {
- divlist[dc->nid] or_eq  (1 << dc->owner);
+ divlist[dc->nid] or_eq (1 << dc->owner);
  lastd = dc;
  dc = dc->next;
  }
@@ -399,7 +399,7 @@ void BuildDivisionData (void)
  DivisionData[u->GetTeam()] = dc;
  }
 // CampLeaveCriticalSection();
- divlist[d] or_eq  (1 << c);
+ divlist[d] or_eq (1 << c);
  }
  }
  u = GetNextUnit(&myit);

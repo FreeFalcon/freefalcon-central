@@ -41,11 +41,11 @@ void DigitalBrain::RollAndPull(void)
     }
 
     // SLOW FLYING COMPETITION  ??  Rollign sizzors, flat sizzors or stack...some kinda 3/9 line fight
-    if (targetData->range <= 500.0f  and 
-        (targetPtr->BaseData()->Yaw() - self->Yaw() < 30.0F * DTR)  and 
-        targetData->ata >= 55.0F * DTR  and 
-        targetData->ata <= 125.0F * DTR  and 
-        targetData->ataFrom >= 55.0F * DTR  and 
+    if (targetData->range <= 500.0f and 
+        (targetPtr->BaseData()->Yaw() - self->Yaw() < 30.0F * DTR) and 
+        targetData->ata >= 55.0F * DTR and 
+        targetData->ata <= 125.0F * DTR and 
+        targetData->ataFrom >= 55.0F * DTR and 
         targetData->ataFrom <= 125.0F * DTR
        )
 
@@ -215,7 +215,7 @@ void DigitalBrain::RollAndPull(void)
 #endif
 
         // OVERSHOOT CHECK
-        if (-self->ZPos() > 3000.0f and targetPtr->localData->ata >= 150.0F * DTR and  targetPtr->localData->range <= 2000.0f and -targetPtr->localData->rangedot * FTPSEC_TO_KNOTS > 70)
+        if (-self->ZPos() > 3000.0f and targetPtr->localData->ata >= 150.0F * DTR and targetPtr->localData->range <= 2000.0f and -targetPtr->localData->rangedot * FTPSEC_TO_KNOTS > 70)
         {
             SetTrackPoint(targetPtr);
             AutoTrack(maxGs);
@@ -229,10 +229,10 @@ void DigitalBrain::RollAndPull(void)
 
         }
         //NOT EMIDIATLY THREATENED
-        else if (-targetPtr->BaseData()->ZPos() > 5000.0f  and 
-                 targetData->range > 1000  and 
-                 targetData->ataFrom >= 15.0F * DTR  and 
-                 self->GetKias() <= cornerSpeed * 0.9f  and 
+        else if (-targetPtr->BaseData()->ZPos() > 5000.0f and 
+                 targetData->range > 1000 and 
+                 targetData->ataFrom >= 15.0F * DTR and 
+                 self->GetKias() <= cornerSpeed * 0.9f and 
                  self->Pitch() < -5 * DTR)
         {
             SetTrackPoint(targetPtr);
@@ -282,8 +282,8 @@ void DigitalBrain::EnergyManagement(void)
 {
     if (targetData->range <= 1800.0f ||
         (
-            targetData->range <= 2500.0f  and 
-            targetData->ata <= 45.0F * DTR  and 
+            targetData->range <= 2500.0f and 
+            targetData->ata <= 45.0F * DTR and 
             targetData->ataFrom >= 90.0F * DTR
         )
        )
@@ -298,7 +298,7 @@ void DigitalBrain::EnergyManagement(void)
         // if  (fabs (targetPtr->BaseData()->PitchDelta()) > 0.10F)
     {
         // is this a vertical fight ?
-        if (fabs(targetPtr->BaseData()->YawDelta()) < VERTICAL_MAGIC  and 
+        if (fabs(targetPtr->BaseData()->YawDelta()) < VERTICAL_MAGIC and 
             fabs(self->YawDelta()) < VERTICAL_MAGIC)
             //both fighter and target vertival
         {

@@ -141,7 +141,7 @@ void surfaceGetDescription(LPVOID surface, SURFACEDESCRIPTION *sd)
     ddsd.dwSize = sizeof(DDSURFACEDESC2);
     HRESULT hr = -1; // JB 010220 CTD
 
-    if (pDS and  not F4IsBadReadPtr(pDS, sizeof(IDirectDrawSurface7))) // JB 010220 CTD
+    if (pDS and not F4IsBadReadPtr(pDS, sizeof(IDirectDrawSurface7))) // JB 010220 CTD
         hr = pDS->GetSurfaceDesc(&ddsd);
 
     if (SUCCEEDED(hr))
@@ -197,7 +197,7 @@ LPVOID surfaceCreate(LPVOID ddPointer, int dibWidth, int dibHeight)
         ddsd.dwSize = sizeof(ddsd);
         ddsd.ddpfPixelFormat = ddsdMode.ddpfPixelFormat;
 
-        ddsd.dwFlags or_eq  DDSD_WIDTH | DDSD_HEIGHT;
+        ddsd.dwFlags or_eq DDSD_WIDTH | DDSD_HEIGHT;
         ddsd.dwWidth  = dibWidth;
         ddsd.dwHeight = dibHeight;
         ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;

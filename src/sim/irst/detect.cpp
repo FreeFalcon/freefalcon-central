@@ -109,7 +109,7 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
 
             else
             {
-                if (fabs(obj->localData->el - seekerElCenter) < (typeData->FOVHalfAngle / noneTrackingFactor)  and 
+                if (fabs(obj->localData->el - seekerElCenter) < (typeData->FOVHalfAngle / noneTrackingFactor) and 
                     fabs(obj->localData->az - seekerAzCenter) < (typeData->FOVHalfAngle / noneTrackingFactor))
                 {
                     tracking = TRUE ;
@@ -306,7 +306,7 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
         return FALSE;
 
     }
-    else if ((signature > 0.75F)  and (signature > PRANDFloatPos()))
+    else if ((signature > 0.75F) and (signature > PRANDFloatPos()))
     {
         return TRUE;
     }

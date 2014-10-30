@@ -112,7 +112,7 @@ int UI_RequestAircraftSlot::Process(uchar autodisp)
         UI_RequestAircraftSlot* msga = new UI_RequestAircraftSlot(FalconNullId, FalconLocalGame);
         msga->dataBlock.request_type = REQUEST_UI_UPDATE;
         // sfr: flag bug, setting all but loopback :/
-        //msga->flags_ or_eq  compl VU_LOOPBACK_MSG_FLAG;
+        //msga->flags_ or_eq compl VU_LOOPBACK_MSG_FLAG;
         msga->flags_ and_eq compl VU_LOOPBACK_MSG_FLAG;
         FalconSendMessage(msga, TRUE);
         //VuTimerEvent *timer = new VuTimerEvent(0, vuxRealTime + 1000, VU_DELAY_TIMER, msga);
@@ -292,8 +292,8 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
         dataBlock.current_pilot_slot = requester->GetAssignedPilotSlot();
 
         if (
-            (oldflight == flight)  and 
-            (FalconLocalGame->GetGameType() == game_Dogfight)  and 
+            (oldflight == flight) and 
+            (FalconLocalGame->GetGameType() == game_Dogfight) and 
             (flight->GetTotalVehicles() == 1)
         )
         {

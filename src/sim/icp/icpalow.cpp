@@ -34,7 +34,7 @@ void ICPClass::PNUpdateALOWMode(int button, int)
 
     TheHud->lowAltWarning = min(max(0.0F, TheHud->lowAltWarning), 99999.0F);
 
-    mUpdateFlags or_eq  ALOW_UPDATE;
+    mUpdateFlags or_eq ALOW_UPDATE;
 }
 void ICPClass::ExecALOWMode(void)
 {
@@ -47,7 +47,7 @@ void ICPClass::ExecALOWMode(void)
 
         // if(mUpdateFlags bitand ALOW_UPDATE) {
 
-        mUpdateFlags and_eq  not ALOW_UPDATE;
+        mUpdateFlags and_eq not ALOW_UPDATE;
 
         sprintf(mpLine1, "ALOW LEVEL");
 

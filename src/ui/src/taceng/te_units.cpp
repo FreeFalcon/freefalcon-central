@@ -505,9 +505,9 @@ void PickTeamColors()
 
         if (line)
         {
-            if (gSelectedTeam >= 0  and 
-                 not F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo)  and 
-                TeamInfo[gSelectedTeam]->GetColor() >= 0  and 
+            if (gSelectedTeam >= 0 and 
+ not F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo) and 
+                TeamInfo[gSelectedTeam]->GetColor() >= 0 and 
                 TeamInfo[gSelectedTeam]->GetColor() < NUM_TEAM_COLORS)
                 line->SetColor(TeamColorList[TeamInfo[gSelectedTeam]->GetColor()]);
 
@@ -531,9 +531,9 @@ void PickTeamColors()
 
         if (line)
         {
-            if (gSelectedTeam >= 0  and 
-                 not F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo)  and 
-                TeamInfo[gSelectedTeam]->GetColor() >= 0  and 
+            if (gSelectedTeam >= 0 and 
+ not F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo) and 
+                TeamInfo[gSelectedTeam]->GetColor() >= 0 and 
                 TeamInfo[gSelectedTeam]->GetColor() < NUM_TEAM_COLORS)
                 line->SetColor(TeamColorList[TeamInfo[gSelectedTeam]->GetColor()]);
 
@@ -557,9 +557,9 @@ void PickTeamColors()
 
         if (line)
         {
-            if (gSelectedTeam >= 0  and 
-                 not F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo)  and 
-                TeamInfo[gSelectedTeam]->GetColor() >= 0  and 
+            if (gSelectedTeam >= 0 and 
+ not F4IsBadReadPtr(TeamInfo[gSelectedTeam], sizeof * TeamInfo) and 
+                TeamInfo[gSelectedTeam]->GetColor() >= 0 and 
                 TeamInfo[gSelectedTeam]->GetColor() < NUM_TEAM_COLORS)
                 line->SetColor(TeamColorList[TeamInfo[gSelectedTeam]->GetColor()]);
 
@@ -1144,7 +1144,7 @@ void SetupPackageControls(C_Window *win, C_Base *caller)
         if (w)
             takeoff = w->GetWPDepartureTime();
 
-        while (w and  not (w->GetWPFlags() bitand WPF_TARGET))
+        while (w and not (w->GetWPFlags() bitand WPF_TARGET))
             w = w->GetNextWP();
 
         if (w)
@@ -1153,7 +1153,7 @@ void SetupPackageControls(C_Window *win, C_Base *caller)
 
     // sfr: addpackage
     if ( /* not (TheCampaign.Flags bitand (CAMP_TACTICAL|CAMP_TACTICAL_EDIT)) ||*/
-        (EdittingPackage and  not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and takeoff < TheCampaign.CurrentTime))
+        (EdittingPackage and not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and takeoff < TheCampaign.CurrentTime))
     {
         // Disable these controls in campaign, or in run mode if the package has departed
         btn = (C_Button*)win->FindControl(ADD_PACKAGE_FLIGHT);
@@ -1749,7 +1749,7 @@ void tactical_make_package(long, short hittype, C_Base *)
             mis.mission = static_cast<uchar>(type);
             mis.priority = static_cast<short>(gPackagePriority);
             mis.aircraft = 2;
-            mis.flags or_eq  REQF_ALLOW_ERRORS | REQF_TE_MISSION;
+            mis.flags or_eq REQF_ALLOW_ERRORS | REQF_TE_MISSION;
 
             new_package->SetUnitDestination(MapX, MapY);
             new_package->SetLocation(MapX, MapY);
@@ -1785,7 +1785,7 @@ void SetPackageTimes(Package new_package, CampaignTime takeoffTime, CampaignTime
                 delta += MissionData[flight->GetUnitMission()].separation * CampaignSeconds;
             else if (targetTime)
             {
-                while (w and  not (w->GetWPFlags() bitand WPF_TARGET))
+                while (w and not (w->GetWPFlags() bitand WPF_TARGET))
                     w = w->GetNextWP();
 
                 if (w)
@@ -2005,7 +2005,7 @@ void tac_select_squadron(long ID, short hittype, C_Base *control)
                 airbase = sqd->GetUnitAirbase();
 
                 //if(airbase)
-                if (airbase and  not F4IsBadReadPtr(airbase, sizeof(CampBaseClass))) // JB 010326 CTD
+                if (airbase and not F4IsBadReadPtr(airbase, sizeof(CampBaseClass))) // JB 010326 CTD
                 {
                     airbase->GetName(buffer, 40, TRUE);
                     lbox->AddItem(airbase->GetCampID(), C_TYPE_ITEM, buffer);
@@ -2444,7 +2444,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
                 mis.tot += 10 * CampaignMinutes; // Try and get us in front of our pickup point
         }
 
-        mis.flags or_eq  REQF_ALLOW_ERRORS | REQF_TE_MISSION;
+        mis.flags or_eq REQF_ALLOW_ERRORS | REQF_TE_MISSION;
         error = new_flight->BuildMission(&mis);
 
         if (error not_eq PRET_SUCCESS)

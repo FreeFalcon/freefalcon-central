@@ -315,7 +315,7 @@ void FireControlComputer::NavMode(void)
             float OAYPos;
             float OAZPos;
 
-            ShiAssert(platform->curWaypoint not_eq NULL or  not F4IsBadReadPtr(platform->curWaypoint, sizeof(WayPointClass)));
+            ShiAssert(platform->curWaypoint not_eq NULL or not F4IsBadReadPtr(platform->curWaypoint, sizeof(WayPointClass)));
 
             for (i = 0; i < MAX_DESTOA; i++)
             {
@@ -988,7 +988,7 @@ void FireControlComputer::NavDisplay(void)
                     if (hsdcntlcfg[i].mode == HSDCNTL)
                         LabelButton(i, hsdcntlcfg[i].label, NULL, TRUE);
                     else
-                        LabelButton(i, hsdcntlcfg[i].label, NULL,  not IsHsdState(hsdcntlcfg[i].mode));
+                        LabelButton(i, hsdcntlcfg[i].label, NULL, not IsHsdState(hsdcntlcfg[i].mode));
                 }
             }
         }
@@ -1784,7 +1784,7 @@ void FireControlComputer::DrawBullseye(void)
             DrawBullseyeData(display, cursorX, cursorY);
         else
         {
-            if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp  and 
+            if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
                 OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
             {
                 DrawBullseyeCircle(display, cursorX, cursorY);
@@ -2143,7 +2143,7 @@ void FireControlComputer::DrawWingmen()
     }
 
     if (((AircraftClass*)platform)->mFaults->GetFault(FaultClass::dlnk_fault) ||
-         not ((AircraftClass*)platform)->HasPower(AircraftClass::DLPower))
+ not ((AircraftClass*)platform)->HasPower(AircraftClass::DLPower))
         return;
 
     //Cobra
@@ -2202,7 +2202,7 @@ void FireControlComputer::Draw1WingmanGnd(AircraftClass *wing)
 
 #else
 
-    if (((SimVehicleClass*)wing)->sensorArray[1]->RemoteBuggedTarget == NULL  and 
+    if (((SimVehicleClass*)wing)->sensorArray[1]->RemoteBuggedTarget == NULL and 
         (theRadar == NULL or (locked = theRadar->CurrentTarget()) == NULL)) return;
 
 #endif
@@ -2413,7 +2413,7 @@ void FireControlComputer::Draw1Wingman(AircraftClass *wing)
 
     if (
 #if not NO_REMOTE_BUGGED_TARGET
-        static_cast<SimVehicleClass*>(wing)->sensorArray[1]->RemoteBuggedTarget == NULL  and 
+        static_cast<SimVehicleClass*>(wing)->sensorArray[1]->RemoteBuggedTarget == NULL and 
 #endif
         (theRadar == NULL or locked == NULL)
     )

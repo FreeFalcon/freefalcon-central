@@ -510,8 +510,8 @@ void ATCBrain::ProcessQueue(int queue)
                                 // and we aren't waiting for a landing, and we're in accelerate TO or
                                 // status is lLanded, then enter this section
                                 // don't know why it is status lLanded???
-                                if (info->schedTime < SimLibElapsedTime + 30 * CampaignSeconds  and 
-                                    info->prev == runwayQueue[queue] and not waitforlanding  and 
+                                if (info->schedTime < SimLibElapsedTime + 30 * CampaignSeconds and 
+                                    info->prev == runwayQueue[queue] and not waitforlanding and 
                                     (accelerateTakeoffs or runwayQueue[queue]->status ==  lLanded))
                                 {
                                     info->status = tTakeRunway;
@@ -583,8 +583,8 @@ void ATCBrain::ProcessQueue(int queue)
                                 // we're within 30 sec of T/O time and someone in the queue in front of us
                                 // and we're not waiting on a landing aircraft
                                 // and we're in accelerated T/O mode or status queue = lLanded
-                                if (info->schedTime < SimLibElapsedTime + 30 * CampaignSeconds  and 
-                                    info->prev == runwayQueue[queue] and not waitforlanding  and 
+                                if (info->schedTime < SimLibElapsedTime + 30 * CampaignSeconds and 
+                                    info->prev == runwayQueue[queue] and not waitforlanding and 
                                     (accelerateTakeoffs or runwayQueue[queue]->status ==  lLanded))
                                 {
                                     //RAS - lead and 2 take the runway
@@ -641,8 +641,8 @@ void ATCBrain::ProcessQueue(int queue)
                         //RAS - if next T/O acft and it's an airplane, and scheudle T/O time + ATC patience hasn't been reached
                         //and acft is going less than 5 kts (should that be conferted to ft/sec??), and T/O time has passed
                         //and next acft to T/O is not current obj???, and next acft to T/O is not on rwy, then
-                        else if (pNTOAircraft and pNTOAircraft->IsAirplane() and nextTakeoff->schedTime + FalconLocalGame->rules.AtcPatience < SimLibElapsedTime   and 
-                                 pNTOAircraft->af->vt < 5.0F * KNOTS_TO_FTPSEC and info->schedTime < SimLibElapsedTime   and 
+                        else if (pNTOAircraft and pNTOAircraft->IsAirplane() and nextTakeoff->schedTime + FalconLocalGame->rules.AtcPatience < SimLibElapsedTime  and 
+                                 pNTOAircraft->af->vt < 5.0F * KNOTS_TO_FTPSEC and info->schedTime < SimLibElapsedTime  and 
                                  pNTOAircraft->GetCampaignObject() not_eq aircraft->GetCampaignObject() and not IsOnRunway(pNTOAircraft))
                         {
                             //RAS - no aircraft on final and past T/O time + delta(60sec)
@@ -702,8 +702,8 @@ void ATCBrain::ProcessQueue(int queue)
                                     GiveOrderToSection(aircraft, tPrepToTakeRunway, 1);
                             }
                         }
-                        else if (pNTOAircraft and pNTOAircraft->IsAirplane() and nextTakeoff->schedTime + FalconLocalGame->rules.AtcPatience < SimLibElapsedTime   and 
-                                 pNTOAircraft->af->vt < 5.0F * KNOTS_TO_FTPSEC and info->schedTime < SimLibElapsedTime  and 
+                        else if (pNTOAircraft and pNTOAircraft->IsAirplane() and nextTakeoff->schedTime + FalconLocalGame->rules.AtcPatience < SimLibElapsedTime  and 
+                                 pNTOAircraft->af->vt < 5.0F * KNOTS_TO_FTPSEC and info->schedTime < SimLibElapsedTime and 
                                  pNTOAircraft->GetCampaignObject() not_eq aircraft->GetCampaignObject() and not IsOnRunway(pNTOAircraft))
                         {
                             if ( not nextLand or SimLibElapsedTime + LAND_TIME_DELTA > nextLand->schedTime)
@@ -746,7 +746,7 @@ void ATCBrain::ProcessQueue(int queue)
                         else if (nextTakeoff->aircraftID == info->aircraftID)
                         {
                             //RAS - within 30 seconds of T/O time and not waiting on landing or we're on rwy
-                            if (info->schedTime < SimLibElapsedTime + 30 * CampaignSeconds  and 
+                            if (info->schedTime < SimLibElapsedTime + 30 * CampaignSeconds and 
                                 ( not waitforlanding or IsOnRunway(aircraft)))
                             {
                                 info->status = tTakeoff;
@@ -1212,7 +1212,7 @@ void ATCBrain::ProcessPlayers(void)
                         if (player->OnGround())
                         {
                             //check to see if at their takeoff waypoint, if so request takeoff
-                            if (player->curWaypoint and player->curWaypoint->GetWPAction() == WP_TAKEOFF and not player->DBrain()->isWing  and 
+                            if (player->curWaypoint and player->curWaypoint->GetWPAction() == WP_TAKEOFF and not player->DBrain()->isWing and 
                                 player->DBrain()->Airbase() == self->Id() and player->DBrain()->IsSetATC(DigitalBrain::RequestTakeoff))
                             {
                                 player->DBrain()->ClearATCFlag(DigitalBrain::RequestTakeoff);
@@ -1234,9 +1234,9 @@ void ATCBrain::ProcessPlayers(void)
                                         while (curObj)
                                         {
                                             if (
-                                                curObj  and 
-                                                (curObj not_eq self)  and 
-                                                (curObj->GetType() == TYPE_AIRBASE)  and 
+                                                curObj and 
+                                                (curObj not_eq self) and 
+                                                (curObj->GetType() == TYPE_AIRBASE) and 
                                                 curObj->brain->InList(player->Id())
                                             )
                                             {
@@ -1300,8 +1300,8 @@ void ATCBrain::ProcessPlayers(void)
                                     while (curObj)
                                     {
                                         if (
-                                            curObj and (curObj not_eq self)  and 
-                                            (curObj->GetType() == TYPE_AIRBASE)  and 
+                                            curObj and (curObj not_eq self) and 
+                                            (curObj->GetType() == TYPE_AIRBASE) and 
                                             (curObj->brain->InList(player->Id()))
                                         )
                                         {
@@ -3459,7 +3459,7 @@ int ATCBrain::CheckVector(AircraftClass *aircraft, runwayQueueStruct* info)
     // RAS - 3Oct04 - Verify this information
     // Old information - Broken out to make easier to debug
     /*
-    if( (info->lastContacted + 30 * CampaignSeconds < SimLibElapsedTime and dist > 4.0F*turnDist  and 
+    if( (info->lastContacted + 30 * CampaignSeconds < SimLibElapsedTime and dist > 4.0F*turnDist and 
      (cosAngle < 0.965925F or info->status < lLanded and fabs(speed - vt) > 30.0F)) ||
      (info->lastContacted + 15 * CampaignSeconds < SimLibElapsedTime and cosAngle < 0.5F and dist > 3.0F*turnDist) ||
      (info->lastContacted + 8 * CampaignSeconds < SimLibElapsedTime and cosAngle < -0.866F )||
@@ -5130,8 +5130,8 @@ int ATCBrain::CheckLanding(AircraftClass *aircraft, runwayQueueStruct* landInfo)
     {
         if (landInfo)
         {
-            if (landInfo->status not_eq lEmergencyToBase and landInfo->status not_eq lEmergencyToFinal  and 
-                landInfo->status not_eq lEmergencyOnFinal and next not_eq landInfo  and 
+            if (landInfo->status not_eq lEmergencyToBase and landInfo->status not_eq lEmergencyToFinal and 
+                landInfo->status not_eq lEmergencyOnFinal and next not_eq landInfo and 
                 landInfo->status not_eq lLanded) // JB 010713 If we're already landed, then what's the big deal?
             {
                 float groundZ = OTWDriver.GetGroundLevel(aircraft->XPos(), aircraft->YPos());
@@ -5175,7 +5175,7 @@ int ATCBrain::CheckTakeoff(AircraftClass *aircraft, runwayQueueStruct* info)
             // RAS - 29Jan04 - This section changed because when you would do a touch and go, ATC would
             // still think you were on the ground.  I could not see any reason to leave
             // this the way it was.  If you are in this routine, then you are airborne because
-            //  not aircraft->OnGround() means you are flying.  if you are flying, then you should
+            // not aircraft->OnGround() means you are flying.  if you are flying, then you should
             // be removed from the ATC list unless you call inbound again.
 
             // if(info->status == lLanded)
@@ -5338,7 +5338,7 @@ int ATCBrain::CheckIfBlockingRunway(AircraftClass *aircraft, runwayQueueStruct* 
 
             // info->timer = SimLibElapsedTime + 15 * CampaignSeconds;
         }
-        else if (info->lastContacted + 90 * CampaignSeconds < SimLibElapsedTime and  // 06FEB04 - FRB - was 45 seconds
+        else if (info->lastContacted + 90 * CampaignSeconds < SimLibElapsedTime and // 06FEB04 - FRB - was 45 seconds
                  (SimLibElapsedTime > LAND_TIME_DELTA + info->schedTime ||
                   (rwindex not_eq info->rwindex and GetOppositeRunway(rwindex) not_eq info->rwindex)))
         {
@@ -5465,10 +5465,10 @@ void ATCBrain::RemoveFromAllATCs(AircraftClass *aircraft)
 int ATCBrain::UseSectionTakeoff(FlightClass *flight, int rwindex)
 {
     //TJL 10/31/03 Changing to 40 from 80
-    if (runwayStats[PtHeaderDataTable[rwindex].runwayNum].halfwidth > 40.0F  and 
+    if (runwayStats[PtHeaderDataTable[rwindex].runwayNum].halfwidth > 40.0F and 
         (flight->GetSType() == STYPE_UNIT_ATTACK ||
          flight->GetSType() == STYPE_UNIT_FIGHTER ||
-         flight->GetSType() == STYPE_UNIT_FIGHTER_BOMBER)  and 
+         flight->GetSType() == STYPE_UNIT_FIGHTER_BOMBER) and 
         flight->GetTotalVehicles() > 1)
         return TRUE;
 

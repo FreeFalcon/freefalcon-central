@@ -236,10 +236,10 @@ void GNDAIClass::Fire(void)
         }
 
         // RV - Biker - Radar vehicles shouldn't do this
-        if (SimLibElapsedTime > nextFire and  not (self->isEmitter and not hasWeapons))
+        if (SimLibElapsedTime > nextFire and not (self->isEmitter and not hasWeapons))
         {
             // FRB - The weapns search above seems to break the SAM firing (decreases it or stops it)
-            //if (SimLibElapsedTime > nextFire and  not (self->isEmitter and not self->Sms->GetCurrentWeapon())) {
+            //if (SimLibElapsedTime > nextFire and not (self->isEmitter and not self->Sms->GetCurrentWeapon())) {
             nextTurretCalc = SimLibElapsedTime + TURRET_CALC_RATE;
 
             if ( not self->targetPtr->BaseData()->OnGround())

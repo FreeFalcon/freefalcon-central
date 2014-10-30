@@ -43,7 +43,7 @@ void MissileClass::Init1(void)
     alpha = 0.0F;
     Trigenometry();
 
-    if (aeroData and  not F4IsBadReadPtr(aeroData, sizeof(MissileAeroData)))  // JB 010318 CTD
+    if (aeroData and not F4IsBadReadPtr(aeroData, sizeof(MissileAeroData)))  // JB 010318 CTD
     {
         cx = Math.TwodInterp(mach, alphat, aeroData->mach,
                              aeroData->alpha, aeroData->cx,
@@ -64,7 +64,7 @@ void MissileClass::Init1(void)
     alpha = 1.0F;
     Trigenometry();
 
-    if (aeroData and  not F4IsBadReadPtr(aeroData, sizeof(MissileAeroData))) // JB 010318 CTD
+    if (aeroData and not F4IsBadReadPtr(aeroData, sizeof(MissileAeroData))) // JB 010318 CTD
     {
         cx = Math.TwodInterp(mach, alphat, aeroData->mach,
                              aeroData->alpha, aeroData->cx,

@@ -732,7 +732,7 @@ int TaskForceClass::Reaction(CampEntity e, int knowledge, float range)
     tmt = e->GetMovementType();
 
     // Aircraft on ground are ignored (technically, we could shoot at them.. but..)
-    if (e->IsFlight() and  not ((Flight)e)->Moving())
+    if (e->IsFlight() and not ((Flight)e)->Moving())
         return 0;
 
     // Score their threat to us
@@ -796,11 +796,11 @@ int TaskForceClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spot
 
     // Check type of entity before GCI is used
     if (CheckValidType(this, e))
-        detTmp or_eq  e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
+        detTmp or_eq e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
 
     // Check type of entity before GCI is used
     if (CheckValidType(e, this))
-        detTmp or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
+        detTmp or_eq GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
 
     if ( not (detTmp bitand REACTION_MASK))
         return 0;
@@ -859,11 +859,11 @@ int TaskForceClass::DetectVs(CampEntity e, float *d, int *combat, int *spot)
 
     // Check type of entity before GCI is used
     if (CheckValidType(this, e))
-        detTmp or_eq  e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
+        detTmp or_eq e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
 
     // Check type of entity before GCI is used
     if (CheckValidType(e, this))
-        detTmp or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
+        detTmp or_eq GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
 
     if ( not (detTmp bitand REACTION_MASK))
         return 0;
@@ -1017,7 +1017,7 @@ WayPoint DoWPAction(TaskForce tf, WayPoint w)
 //MI added function for movement
 int TaskForceClass::DetectOnMove(void)
 {
-    if ( not Engaged() and  not (GetUnitMoved() % 5))
+    if ( not Engaged() and not (GetUnitMoved() % 5))
         return 0;
 
     return ChooseTarget();
@@ -1155,7 +1155,7 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 
             if ( not SEARCHtimer) SEARCHtimer = SimLibElapsedTime;
 
-            if (d and range <= radarData->Rangetosearch3 and  SimLibElapsedTime - SEARCHtimer >= timetosearch)
+            if (d and range <= radarData->Rangetosearch3 and SimLibElapsedTime - SEARCHtimer >= timetosearch)
             {
                 search_mode = FEC_RADAR_SEARCH_3;
                 SetRadarMode(FEC_RADAR_CHANGEMODE);

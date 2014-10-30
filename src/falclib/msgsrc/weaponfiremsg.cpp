@@ -67,7 +67,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
                     simEntity->nonLocalData->dx = dataBlock.dx;
                     simEntity->nonLocalData->dy = dataBlock.dy;
                     simEntity->nonLocalData->dz = dataBlock.dz;
-                    simEntity->nonLocalData->flags or_eq  NONLOCAL_GUNS_FIRING;
+                    simEntity->nonLocalData->flags or_eq NONLOCAL_GUNS_FIRING;
                     simEntity->nonLocalData->timer2 = 0;
                 }
 
@@ -76,7 +76,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
             }
 
             //Cobra test
-            if ((theEntity->IsAirplane() or theEntity->IsHelicopter()) /* and  dataBlock.weaponType not_eq FalconWeaponsFire::GUN*/)
+            if ((theEntity->IsAirplane() or theEntity->IsHelicopter()) /* and dataBlock.weaponType not_eq FalconWeaponsFire::GUN*/)
             {
                 FalconRadioChatterMessage *radioMessage = new FalconRadioChatterMessage(simEntity->Id(), FalconLocalSession);
                 radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
@@ -129,7 +129,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
             // check for Sim.  I'm not sure what needs to be done if its a camp entity
             //Cobra added weaponType check so bombs don't fall through into this section
             if (theTarget /* and theTarget->IsSim()*/ and dataBlock.weaponType < 3
-                and (theTarget->IsAirplane() or theTarget->IsHelicopter()) and (GetTTRelations(theTarget->GetTeam(), simEntity->GetTeam()) < Hostile))
+               and (theTarget->IsAirplane() or theTarget->IsHelicopter()) and (GetTTRelations(theTarget->GetTeam(), simEntity->GetTeam()) < Hostile))
             {
                 float playMessage = TRUE;
 
@@ -183,7 +183,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
 
     // if the weapon is a missile and we have a target ID, tell the target
     // there's an incoming
-    if (dataBlock.targetId not_eq vuNullId  and 
+    if (dataBlock.targetId not_eq vuNullId and 
         (dataBlock.weaponType == SRM or dataBlock.weaponType == MRM))
     {
         SimBaseClass *theMissile = (SimBaseClass*)(vuDatabase->Find(dataBlock.fWeaponUID));

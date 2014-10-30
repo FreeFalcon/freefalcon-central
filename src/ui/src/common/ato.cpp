@@ -324,7 +324,7 @@ void ChangeFlightTypeCB(long, short hittype, C_Base *control)
 
     flight = (Flight) GetEntityByCampID(camp_id);
 
-    if (flight and  not F4IsBadReadPtr(flight, sizeof(Flight))) // JB 010326 CTD
+    if (flight and not F4IsBadReadPtr(flight, sizeof(Flight))) // JB 010326 CTD
         flight->SetUnitMission(type);
 }
 

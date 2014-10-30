@@ -546,7 +546,7 @@ void GNDAIClass::ProcessTargeting(void)
     //        flag so the visual object can change state
     //        too.  Should have an intermediate state with
     //        no motion OR firing to model "set up/tear down".
-    if (self->isTowed and (self->GetVt() > 0.1f) and  not g_bFireOntheMove)
+    if (self->isTowed and (self->GetVt() > 0.1f) and not g_bFireOntheMove)
     {
         self->SetTarget(NULL);
         return;
@@ -716,7 +716,7 @@ void GNDAIClass::ProcessTargeting(void)
     // RV - Biker - Switch to next target if we did take a hit (pctStrength <= 0.0f)
     //if( not self->targetPtr or self->targetPtr->BaseData()->IsDead() or newUnit not_eq oldUnit)
     if (
-         not self->targetPtr ||
+ not self->targetPtr ||
         ((SimBaseClass *)self->targetPtr->BaseData())->pctStrength <= 0.0f ||
         self->targetPtr->BaseData()->IsDead() or newUnit not_eq oldUnit
     )
@@ -757,8 +757,8 @@ void GNDAIClass::ProcessTargeting(void)
             SimObjectLocalData* localData = self->targetPtr->localData;
 
             if (
-                localData->ataFrom == 0.0f  and 
-                localData->az == 0.0f   and 
+                localData->ataFrom == 0.0f and 
+                localData->az == 0.0f  and 
                 localData->el == 0.0f and localData->range == 0.0f
             )
             {
@@ -772,8 +772,8 @@ void GNDAIClass::ProcessTargeting(void)
             // If our radar has no target or if it has the SAME base object
             // as us but different target pointers, switch our radar target pointer to our target pointer
             else if (
-                 not radar->CurrentTarget() or (
-                    radar->CurrentTarget() not_eq self->targetPtr  and 
+ not radar->CurrentTarget() or (
+                    radar->CurrentTarget() not_eq self->targetPtr and 
                     radar->CurrentTarget()->BaseData() == self->targetPtr->BaseData()
                 )
             )
@@ -1011,7 +1011,7 @@ void GNDAIClass::Order_Battalion(void)
     int delta = 1 - g_nlookAroundWaterTiles;
 
 
-    moveFlags or_eq  GNDAI_MOVE_BATTALION; // We're the battalion lead
+    moveFlags or_eq GNDAI_MOVE_BATTALION; // We're the battalion lead
 
     // are we halted?
     if (moveState == GNDAI_MOVE_HALTED)
@@ -1159,7 +1159,7 @@ void GNDAIClass::Order_Battalion(void)
 
         if (parent_unit->IsBattalion())
         {
-            if (GetCover(cx, cy) == Water and  not (o and o->GetType() == TYPE_BRIDGE))
+            if (GetCover(cx, cy) == Water and not (o and o->GetType() == TYPE_BRIDGE))
             {
                 // that's it, we don't move anymore
                 moveState = GNDAI_MOVE_HALTED;
@@ -1360,7 +1360,7 @@ void GNDAIClass::Move_Towards_Dest(void)
 
                 if (formation == GNDAI_FORM_COLUMN)
                 {
-                    moveFlags or_eq  GNDAI_WENT_THROUGH;
+                    moveFlags or_eq GNDAI_WENT_THROUGH;
                     Process();
                     // Move_Towards_Dest();
                     return;
@@ -1372,7 +1372,7 @@ void GNDAIClass::Move_Towards_Dest(void)
         }
         else
         {
-            moveFlags or_eq  GNDAI_WENT_THROUGH;
+            moveFlags or_eq GNDAI_WENT_THROUGH;
         }
     }
 

@@ -48,7 +48,7 @@ int FalconRegenerationMessage::Process(uchar autodisp)
             {
                 MonoPrint("Delaying Regeneration Message\n");
                 // sfr: flag bug, setting all but loopback :/
-                //this->flags_ or_eq  compl VU_LOOPBACK_MSG_FLAG;
+                //this->flags_ or_eq compl VU_LOOPBACK_MSG_FLAG;
                 this->flags_ and_eq compl VU_LOOPBACK_MSG_FLAG;
                 VuTimerEvent *timer = new VuTimerEvent(0, vuxRealTime + 1000, VU_DELAY_TIMER, this);
                 VuMessageQueue::PostVuMessage(timer);
@@ -73,8 +73,8 @@ int FalconRegenerationMessage::Process(uchar autodisp)
 
         // Reset our fly state if we've been regenerated and we are in Match play
         if (
-            theObject  and 
-            theObject == FalconLocalSession->GetPlayerEntity()  and 
+            theObject and 
+            theObject == FalconLocalSession->GetPlayerEntity() and 
             SimDogfight.GetGameType() == dog_TeamMatchplay
         )
         {

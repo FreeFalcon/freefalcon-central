@@ -487,7 +487,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 
     if (e->IsAggregate())
     {
-        if (session->InSessionBubble(e, 1.0F) and  not g_bSleepAll)
+        if (session->InSessionBubble(e, 1.0F) and not g_bSleepAll)
         {
             // It's in our bubble, post deaggregate message if host
             if (e->IsLocal())
@@ -537,7 +537,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
             // Update local sleep/wake state
             // me123 this handles local wake/sleep
             // for the host dont' handle airplanes and helicopters
-            if (e->IsUnit()  and  not g_bSleepAll)
+            if (e->IsUnit() and not g_bSleepAll)
             {
                 want_in_sim_list = 1;
 
@@ -563,7 +563,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
                             e->Sleep();
                         }
                         else if (
-                             not e->IsObjective() ||
+ not e->IsObjective() ||
                             (
                                 e->IsObjective() and (e->GetType() not_eq TYPE_AIRBASE) and (e->GetType() not_eq TYPE_AIRSTRIP)
                             )
@@ -571,7 +571,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
                             e->Sleep();
                     }
                 }
-                else if ( not e->IsAwake() and inbobble and  not g_bSleepAll)
+                else if ( not e->IsAwake() and inbobble and not g_bSleepAll)
                 {
                     e->Wake();
                 }
@@ -581,7 +581,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 
         // host wake/sleep all deaged flights
         if (
-            vuLocalSessionEntity->Game()->IsLocal()  and 
+            vuLocalSessionEntity->Game()->IsLocal() and 
             ( //me123 host wake/sleep stuff
                 //handle airplanes helicopters and airbases
                 g_bSleepAll ||
@@ -605,9 +605,9 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 
                 e->SetChecked();
             }
-            else if ( not g_bSleepAll and not e->IsSetFalcFlag(FEC_PLAYER_ENTERING)  and // we are not in sleep all mode
+            else if ( not g_bSleepAll and not e->IsSetFalcFlag(FEC_PLAYER_ENTERING) and // we are not in sleep all mode
                      (
-                          not e->IsSetFalcFlag(FEC_PLAYERONLY) ||// not a human
+ not e->IsSetFalcFlag(FEC_PLAYERONLY) ||// not a human
                          (
                              //human but he's attached
                              e->IsSetFalcFlag(FEC_PLAYERONLY) and e->IsSetFalcFlag(FEC_HASPLAYERS)
@@ -753,8 +753,8 @@ void RebuildBubble(int forced)
 
                 while (object)
                 {
-                    if ( not object->IsAwake()  and 
-                         not object->IsDead()  and 
+                    if ( not object->IsAwake() and 
+ not object->IsDead() and 
                         (object->IsBomb() or object->IsMissile()))
                     {
                         object->Wake();
@@ -964,7 +964,7 @@ void RebuildBubble(int forced)
                     while (object)
                     {
                         if (
-                             not object->IsAwake() and not object->IsDead()  and 
+ not object->IsAwake() and not object->IsDead() and 
                             (object->IsBomb() or object->IsMissile())
                         )
                         {
@@ -1074,7 +1074,7 @@ void RebuildBubble(int forced)
                                                               );
                                             }
                                             else if (
-                                                u->IsFlight()  and 
+                                                u->IsFlight() and 
                                                 (((Flight)u)->GetEvalFlags() bitand FEVAL_START_COLD)
                                             )
                                             {
@@ -1082,7 +1082,7 @@ void RebuildBubble(int forced)
                                             }
                                         }
                                         else if (
-                                            u->IsSetFalcFlag(FEC_PLAYER_ENTERING | FEC_HASPLAYERS)  and 
+                                            u->IsSetFalcFlag(FEC_PLAYER_ENTERING | FEC_HASPLAYERS) and 
                                             u->IsFlight()
                                         )
                                         {
@@ -2257,8 +2257,8 @@ void SetEntryTime(Flight flight)
 
 
     //me123 give the player a few sec to make a change.
-    if ((PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY) and  timer  and 
-        (timer < (VU_TIME)(3 * CampaignSeconds))  and 
+    if ((PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY) and timer and 
+        (timer < (VU_TIME)(3 * CampaignSeconds)) and 
         (gLaunchTime < (CampaignTime)(vuxGameTime + 3 * CampaignSeconds)))
     {
 
@@ -2289,7 +2289,7 @@ int CompressCampaignUntilTakeoff(Flight flight)
 
             if (flt)
             {
-                if (flt->GetCurrentUnitWP()  and 
+                if (flt->GetCurrentUnitWP() and 
                     (flt->GetCurrentUnitWP()->GetWPAction() == WP_TAKEOFF))
                 {
 
@@ -2404,7 +2404,7 @@ void DoCompressionLoop(void)
          */
 
         // Check for sim entry
-        if (gLaunchTime <= vuxGameTime  and gCompressTillTime <= vuxGameTime)
+        if (gLaunchTime <= vuxGameTime and gCompressTillTime <= vuxGameTime)
         {
             // Now stop moving time forward and resync the campaign
             SetTimeCompression(0);
@@ -2564,7 +2564,7 @@ unsigned int __stdcall HandleCampaignThread(void)
     _controlfp(_PC_24, MCW_PC);
 #endif
 
-    TheCampaign.Flags or_eq  CAMP_RUNNING;
+    TheCampaign.Flags or_eq CAMP_RUNNING;
 
     while (ThreadManager::campaign_active())
     {
@@ -2585,7 +2585,7 @@ unsigned int __stdcall HandleCampaignThread(void)
         if (TheCampaign.Flags bitand CAMP_SUSPEND_REQUEST)
         {
             // Someone's asked us to suspend
-            TheCampaign.Flags or_eq  CAMP_SUSPENDED;
+            TheCampaign.Flags or_eq CAMP_SUSPENDED;
             TheCampaign.Flags xor_eq CAMP_SUSPEND_REQUEST;
         }
 
@@ -3188,7 +3188,7 @@ void RallyUnits(int minutes)
 
 void MakeTacticalEdit(void)
 {
-    TheCampaign.Flags or_eq  CAMP_TACTICAL_EDIT;
+    TheCampaign.Flags or_eq CAMP_TACTICAL_EDIT;
 }
 
 void RemoveTacticalEdit(void)
@@ -3198,7 +3198,7 @@ void RemoveTacticalEdit(void)
 
 void PauseTacticalEngagement(void)
 {
-    TheCampaign.Flags or_eq  CAMP_TACTICAL_PAUSE;
+    TheCampaign.Flags or_eq CAMP_TACTICAL_PAUSE;
 }
 
 void ResumeTacticalEngagement(void)

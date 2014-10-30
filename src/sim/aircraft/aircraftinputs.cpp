@@ -76,8 +76,8 @@ void AircraftClass::GatherInputs(void)
     {
         // No autopilot for ownship if broken
         if (
-             not IsSetFlag(MOTION_OWNSHIP) ||
-             not (mFaults and mFaults->GetFault(FaultClass::flcs_fault) == FaultClass::a_p)
+ not IsSetFlag(MOTION_OWNSHIP) ||
+ not (mFaults and mFaults->GetFault(FaultClass::flcs_fault) == FaultClass::a_p)
         )
         {
             switch (autopilotType)
@@ -327,7 +327,7 @@ void AircraftClass::GatherInputs(void)
         {
             if (glocFactor >= 0.99F)
             {
-                acFlags or_eq  InRecovery;
+                acFlags or_eq InRecovery;
             }
 
             af->pstick = theBrain->pStick;
@@ -401,7 +401,7 @@ void AircraftClass::GatherInputs(void)
             {
                 if (glocFactor >= 0.99F)
                 {
-                    acFlags or_eq  InRecovery;
+                    acFlags or_eq InRecovery;
                 }
 
                 af->pstick = UserStickInputs.pstick;
@@ -583,7 +583,7 @@ void AircraftClass::GatherInputs(void)
 
         // JB 000820
         //if (perturb)
-        if (perturb and  not g_bDisableFunkyChicken)
+        if (perturb and not g_bDisableFunkyChicken)
         {
             // JB 000820
             ioPerturb += (af->mach - maxSpeed);
